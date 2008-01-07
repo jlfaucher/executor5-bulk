@@ -77,7 +77,7 @@
     ts = .TestSuite~new
     ts~addTest(.TestSuite~new(.whiteSpace.testGroup))
 
-    testResult = ts~run
+    testResult = ts~execute
     call simpleFormatTestResults testResult
   end
 
@@ -87,12 +87,12 @@ return testUnitList
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
   Directives, Classes, or Routines.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::requires "OOREXXUNIT.CLS"
+::requires 'ooTest.frm'
 
 /* class: whiteSpace.testGroup - - - - - - - - - - - - - - - - - - - - - - - -*\
 
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::class "whiteSpace.testGroup" public subclass TestCase
+::class "whiteSpace.testGroup" public subclass ooTestCase
 
    -- starting with 3.2 TAB chars are treated like blanks
 ::method "test_TABs"
@@ -103,26 +103,26 @@ return testUnitList
     PLANK2=PLANK||PLANK
 
       -- test equality of TAB and blank, Rexx-philosophy
-    self~assertTrue( "subtest_01a", PLANK = TAB)
-    self~assertTrue( "subtest_01b", PLANK = "" )
-    self~assertTrue( "subtest_01c", ""    = TAB)
+    self~assertTrue(PLANK = TAB)
+    self~assertTrue(PLANK = "")
+    self~assertTrue(""    = TAB)
 
-    self~assertFalse("subtest_02a", PLANK ==TAB)
-    self~assertFalse("subtest_02b", ""    ==TAB)
-    self~assertFalse("subtest_02c", PLANK =="" )
+    self~assertFalse(PLANK ==TAB)
+    self~assertFalse(""    ==TAB)
+    self~assertFalse(PLANK =="")
 
-    self~assertTrue( "subtest_03a", PLANK2= TAB2)
-    self~assertTrue( "subtest_03b", ""    = TAB2)
-    self~assertTrue( "subtest_03c", PLANK2= ""  )
+    self~assertTrue(PLANK2= TAB2)
+    self~assertTrue(""    = TAB2)
+    self~assertTrue(PLANK2= "")
 
-    self~assertFalse("subtest_04a", PLANK2==TAB2)
-    self~assertFalse("subtest_04b", ""    ==TAB2)
-    self~assertFalse("subtest_04c", PLANK2==""  )
+    self~assertFalse(PLANK2==TAB2)
+    self~assertFalse(""    ==TAB2)
+    self~assertFalse(PLANK2=="")
 
-    self~assertEquals("subtest_05a", 3, words("word1" TAB "word2" "word3"))
-    self~assertEquals("subtest_05b", "a", PLANK "a" PLANK2)
-    self~assertEquals("subtest_05c", "a", PLANK "a" TAB2)
-    self~assertEquals("subtest_05d", "a", TAB "a" TAB2)
+    self~assertEquals(3, words("word1" TAB "word2" "word3"))
+    self~assertEquals("a", PLANK "a" PLANK2)
+    self~assertEquals("a", PLANK "a" TAB2)
+    self~assertEquals("a", TAB "a" TAB2)
 
 
    -- starting with 3.2 TAB chars are treated like blanks
@@ -148,20 +148,20 @@ return testUnitList
     s6="hey"TAB2"is-this"TAB2"you"
 
       -- delete second word
-    self~assertSame("subtest_01a", s0_p, delword(s1, 2, 1))
-    self~assertSame("subtest_01b", s0_t, delword(s2, 2, 1))
-    self~assertSame("subtest_01c", s0_p, delword(s3, 2, 1))
-    self~assertSame("subtest_01d", s0_p2, delword(s4, 2, 1))
-    self~assertSame("subtest_01e", s0_t, delword(s5, 2, 1))
-    self~assertSame("subtest_01f", s0_t2, delword(s6, 2, 1))
+    self~assertSame(s0_p, delword(s1, 2, 1))
+    self~assertSame(s0_t, delword(s2, 2, 1))
+    self~assertSame(s0_p, delword(s3, 2, 1))
+    self~assertSame(s0_p2, delword(s4, 2, 1))
+    self~assertSame(s0_t, delword(s5, 2, 1))
+    self~assertSame(s0_t2, delword(s6, 2, 1))
 
       -- delete everything starting and including the second word
-    self~assertSame("subtest_02a", s0||PLANK , delword(s1, 2))
-    self~assertSame("subtest_02b", s0||TAB   , delword(s2, 2))
-    self~assertSame("subtest_02c", s0||PLANK , delword(s3, 2))
-    self~assertSame("subtest_02d", s0||PLANK2, delword(s4, 2))
-    self~assertSame("subtest_02e", s0||TAB   , delword(s5, 2))
-    self~assertSame("subtest_02f", s0||TAB2  , delword(s6, 2))
+    self~assertSame(s0||PLANK, delword(s1, 2))
+    self~assertSame(s0||TAB, delword(s2, 2))
+    self~assertSame(s0||PLANK, delword(s3, 2))
+    self~assertSame(s0||PLANK2, delword(s4, 2))
+    self~assertSame(s0||TAB, delword(s5, 2))
+    self~assertSame(s0||TAB2, delword(s6, 2))
 
 
    -- starting with 3.2 TAB chars are treated like blanks
@@ -176,48 +176,48 @@ return testUnitList
     word5exp=PLANK
 
     parse var str word1 word2 word3 word4 .
-    self~assertSame("subtest_01", "This"  , word1)
-    self~assertSame("subtest_02", "is"    , word2)
-    self~assertSame("subtest_03", "a"     , word3)
-    self~assertSame("subtest_04", "test." , word4)
+    self~assertSame("This", word1)
+    self~assertSame("is", word2)
+    self~assertSame("a", word3)
+    self~assertSame("test.", word4)
 
     parse var str word1 word2 word3 word4 word5 .
-    self~assertSame("subtest_11", "This"  , word1)
-    self~assertSame("subtest_12", "is"    , word2)
-    self~assertSame("subtest_13", "a"     , word3)
-    self~assertSame("subtest_14", "test." , word4)
-    self~assertSame("subtest_15", ""      , word5)
+    self~assertSame("This", word1)
+    self~assertSame("is", word2)
+    self~assertSame("a", word3)
+    self~assertSame("test.", word4)
+    self~assertSame("", word5)
 
     parse var str word1 word2 word3 word4 word5
-    self~assertSame("subtest_21", "This"  , word1)
-    self~assertSame("subtest_22", "is"    , word2)
-    self~assertSame("subtest_23", "a"     , word3)
-    self~assertSame("subtest_24", "test." , word4)
-    self~assertSame("subtest_25", word5exp, word5)
+    self~assertSame("This", word1)
+    self~assertSame("is", word2)
+    self~assertSame("a", word3)
+    self~assertSame("test.", word4)
+    self~assertSame(word5exp, word5)
 
 
     str=plank2 "This" plank "is" tab "a" plank2 "test."   || tab2
     word5exp=TAB
 
     parse var str word1 word2 word3 word4 .
-    self~assertSame("subtest_31", "This"  , word1)
-    self~assertSame("subtest_32", "is"    , word2)
-    self~assertSame("subtest_33", "a"     , word3)
-    self~assertSame("subtest_34", "test." , word4)
+    self~assertSame("This", word1)
+    self~assertSame("is", word2)
+    self~assertSame("a", word3)
+    self~assertSame("test.", word4)
 
     parse var str word1 word2 word3 word4 word5 .
-    self~assertSame("subtest_41", "This"  , word1)
-    self~assertSame("subtest_42", "is"    , word2)
-    self~assertSame("subtest_43", "a"     , word3)
-    self~assertSame("subtest_44", "test." , word4)
-    self~assertSame("subtest_45", ""      , word5)
+    self~assertSame("This", word1)
+    self~assertSame("is", word2)
+    self~assertSame("a", word3)
+    self~assertSame("test.", word4)
+    self~assertSame("", word5)
 
     parse var str word1 word2 word3 word4 word5
-    self~assertSame("subtest_51", "This"  , word1)
-    self~assertSame("subtest_52", "is"    , word2)
-    self~assertSame("subtest_53", "a"     , word3)
-    self~assertSame("subtest_54", "test." , word4)
-    self~assertSame("subtest_55", word5exp, word5)
+    self~assertSame("This", word1)
+    self~assertSame("is", word2)
+    self~assertSame("a", word3)
+    self~assertSame("test.", word4)
+    self~assertSame(word5exp, word5)
 
 
    -- starting with 3.2 TAB chars are treated like blanks
@@ -234,9 +234,9 @@ return testUnitList
     str2="This" || tab   || "is" || tab   || "a" || tab   || "test."
     str3="Thisisatest."
 
-    self~assertSame("subtest_01", str1, space(str0))
-    self~assertSame("subtest_02", str2, space(str0,1,TAB))
-    self~assertSame("subtest_03", str3, space(str0,0))
+    self~assertSame(str1, space(str0))
+    self~assertSame(str2, space(str0,1,TAB))
+    self~assertSame(str3, space(str0,0))
 
 
    -- starting with 3.2 TAB chars are treated like blanks
@@ -259,15 +259,15 @@ return testUnitList
     str3b=tab2   "This" plank "is" tab "a" plank2 "test."
 
 
-    self~assertSame("subtest_01a", str1,  strip(str0a))
-    self~assertSame("subtest_01b", str1,  strip(str0a,'B'))
-    self~assertSame("subtest_02a", str2a, strip(str0a,'L'))
-    self~assertSame("subtest_03a", str3a, strip(str0a,'T'))
+    self~assertSame(str1, strip(str0a))
+    self~assertSame(str1, strip(str0a,'B'))
+    self~assertSame(str2a, strip(str0a,'L'))
+    self~assertSame(str3a, strip(str0a,'T'))
 
-    self~assertSame("subtest_04a", str1,  strip(str0b))
-    self~assertSame("subtest_04b", str1,  strip(str0b,'B'))
-    self~assertSame("subtest_05a", str2b, strip(str0b,'L'))
-    self~assertSame("subtest_05a", str3b, strip(str0b,'T'))
+    self~assertSame(str1, strip(str0b))
+    self~assertSame(str1, strip(str0b,'B'))
+    self~assertSame(str2b, strip(str0b,'L'))
+    self~assertSame(str3b, strip(str0b,'T'))
 
 
    -- starting with 3.2 TAB chars are treated like blanks
@@ -285,7 +285,7 @@ return testUnitList
     str3="This" plank "is" tab "a"
     str4="This" plank "is" tab "a" plank2 "test."
 
-    self~assertSame("subtest_01",  "This", subword(str0,1,1)  )
+    self~assertSame("This", subword(str0,1,1))
 
 
    -- starting with 3.2 TAB chars are treated like blanks
@@ -298,11 +298,11 @@ return testUnitList
 
     str0=plank2 "This" plank "is" tab "a" plank2 "test." tab2
 
-    self~assertSame("subtest_01a",  "This" , word(str0,1)  )
-    self~assertSame("subtest_01b",  "is"   , word(str0,2)  )
-    self~assertSame("subtest_01c",  "a"    , word(str0,3)  )
-    self~assertSame("subtest_01d",  "test.", word(str0,4)  )
-    self~assertSame("subtest_01e",  ""     , word(str0,5)  )
+    self~assertSame("This", word(str0,1))
+    self~assertSame("is", word(str0,2))
+    self~assertSame("a", word(str0,3))
+    self~assertSame("test.", word(str0,4))
+    self~assertSame("", word(str0,5))
 
 
    -- starting with 3.2 TAB chars are treated like blanks
@@ -317,11 +317,11 @@ return testUnitList
       --  123456789 +   123    45678
     str0=" This  is"tab"a"tab2"test."tab2
 
-    self~assertEquals("subtest_01a",  2 , wordIndex(str0,1)  )
-    self~assertEquals("subtest_01b",  8 , wordIndex(str0,2)  )
-    self~assertEquals("subtest_01c", 11 , wordIndex(str0,3)  )
-    self~assertEquals("subtest_01d", 14 , wordIndex(str0,4)  )
-    self~assertEquals("subtest_01e",  0 , wordIndex(str0,5)  )
+    self~assertEquals(2, wordIndex(str0,1))
+    self~assertEquals(8, wordIndex(str0,2))
+    self~assertEquals(11, wordIndex(str0,3))
+    self~assertEquals(14, wordIndex(str0,4))
+    self~assertEquals(0, wordIndex(str0,5))
 
 
    -- starting with 3.2 TAB chars are treated like blanks
@@ -336,11 +336,11 @@ return testUnitList
       --  123456789 +   123    45678
     str0=" This  is"tab"a"tab2"test."tab2
 
-    self~assertEquals("subtest_01a",  4 , wordLength(str0,1)  )
-    self~assertEquals("subtest_01b",  2 , wordLength(str0,2)  )
-    self~assertEquals("subtest_01c",  1 , wordLength(str0,3)  )
-    self~assertEquals("subtest_01d",  5 , wordLength(str0,4)  )
-    self~assertEquals("subtest_01e",  0 , wordLength(str0,5)  )
+    self~assertEquals(4, wordLength(str0,1))
+    self~assertEquals(2, wordLength(str0,2))
+    self~assertEquals(1, wordLength(str0,3))
+    self~assertEquals(5, wordLength(str0,4))
+    self~assertEquals(0, wordLength(str0,5))
 
 
    -- starting with 3.2 TAB chars are treated like blanks
@@ -355,11 +355,11 @@ return testUnitList
       --  123456789 +   123    45678
     str0=" This  is"tab"a"tab2"test."tab2
 
-    self~assertEquals("subtest_01a",  1 , wordPos("This" , str0))
-    self~assertEquals("subtest_01b",  2 , wordPos("is"   , str0))
-    self~assertEquals("subtest_01c",  3 , wordPos("a"    , str0))
-    self~assertEquals("subtest_01d",  4 , wordPos("test.", str0))
-    self~assertEquals("subtest_01e",  0 , wordPos("t"    , str0))
+    self~assertEquals(1, wordPos("This" , str0))
+    self~assertEquals(2, wordPos("is"   , str0))
+    self~assertEquals(3, wordPos("a"    , str0))
+    self~assertEquals(4, wordPos("test.", str0))
+    self~assertEquals(0, wordPos("t"    , str0))
 
 
    -- starting with 3.2 TAB chars are treated like blanks
@@ -374,6 +374,6 @@ return testUnitList
       --  123456789 +   123    45678
     str0=" This  is"tab"a"tab2"test."tab2
 
-    self~assertEquals("subtest_01",  4 , words(str0))
+    self~assertEquals(4, words(str0))
 
 -- End of class: whiteSpace.testGroup

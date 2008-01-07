@@ -117,18 +117,18 @@ end
       optionally list of mandatory test methods                      */
 return testGroupList
 
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
-::class "insert.testGroup" subclass TestCase public
+::class "insert.testGroup" subclass ooTestCase public
 
 ::METHOD "testInsert"
    b = .mutableBuffer~new("123456")
    b~insert("abc")
-   self~AssertEquals("Append failed 1","abc123456",b~string)
+   self~AssertEquals("abc123456", b~string, "Append failed 1")
    b~insert("abc",7,,"+")
-   self~AssertEquals("Append failed 2","abc1234abc56",b~string)
+   self~AssertEquals("abc1234abc56", b~string, "Append failed 2")
    b~insert("abc",1,0,"+")
-   self~AssertEquals("Append failed 3","abc1234abc56",b~string)
+   self~AssertEquals("abc1234abc56", b~string, "Append failed 3")
 
 ::METHOD "testInsertSyntax1"
    b = .mutableBuffer~new("123456")

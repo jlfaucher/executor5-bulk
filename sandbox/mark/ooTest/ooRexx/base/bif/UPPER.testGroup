@@ -113,15 +113,15 @@
       optionally list of mandatory test methods                      */
 return testUnitList
 
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
 -- class named exactly like file
-::class "UPPER.testGroup" subclass TestCase public
+::class "UPPER.testGroup" subclass ooTestCase public
 
 ::method "test_UPPER"
-    self~assertSame("subTest_01" , 'aBcDEfgh', UPPER('abcDEfgh', 2,  1 ))
-    self~assertSame("subTest_02" , 'abcDEfgh', UPPER('abcDEfgh', 1,  0 ))
-    self~assertSame("subTest_03" , 'abcDEfgh', UPPER('abcDEfgh', 99, 2 ))
-    self~assertSame("subTest_04" , 'aBCDEFGH', UPPER('abcDEfgh', 2     ))
-    self~assertSame("subTest_05" , 'ABCDEFGH', UPPER('abcDEfgh'        ))
+    self~assertSame('aBcDEfgh', UPPER('abcDEfgh', 2,  1 ))
+    self~assertSame('abcDEfgh', UPPER('abcDEfgh', 1,  0 ))
+    self~assertSame('abcDEfgh', UPPER('abcDEfgh', 99, 2 ))
+    self~assertSame('aBCDEFGH', UPPER('abcDEfgh', 2     ))
+    self~assertSame('ABCDEFGH', UPPER('abcDEfgh'        ))
 

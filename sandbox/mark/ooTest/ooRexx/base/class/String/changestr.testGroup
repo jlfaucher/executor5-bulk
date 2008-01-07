@@ -117,24 +117,24 @@ end
       optionally list of mandatory test methods                      */
 return testGroupList
 
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
-::class "String_changestrMethod.testGroup" subclass TestCase public
+::class "String_changestrMethod.testGroup" subclass ooTestCase public
 
 ::method "test_1"
-   self~assertSame("subTest1", '101100' , '101100'~CHANGESTR('','X')  )
+   self~assertSame('101100', '101100'~CHANGESTR('','X'))
 
 ::method "test_2"
-   self~assertSame("subTest2", ''       , ''~CHANGESTR('1','X')  )
+   self~assertSame('', ''~CHANGESTR('1','X'))
 
 ::method "test_4"
-   self~assertSame("subTest4", 'ha-lo' , 'hallo'~CHANGESTR('l','-',1)  )
+   self~assertSame('ha-lo', 'hallo'~CHANGESTR('l','-',1))
 
 ::method "test_5"
-   self~assertSame("subTest5", 'ha--o' , 'hallo'~CHANGESTR('l','-',2)  )
+   self~assertSame('ha--o', 'hallo'~CHANGESTR('l','-',2))
 
 ::method "test_6"
-   self~assertSame("subTest6", 'ha--o' , 'hallo'~CHANGESTR('l','-',3)  )
+   self~assertSame('ha--o', 'hallo'~CHANGESTR('l','-',3))
 
 ::method "test_7"
    self~expectSyntax(93.907)
@@ -143,20 +143,20 @@ return testGroupList
 -- rexxref documentation tests
 
 ::method "test_101"
-   self~assertSame("subTest101", '000'    , '101100'~CHANGESTR('1',"")  )
+   self~assertSame('000', '101100'~CHANGESTR('1',""))
 
 ::method "test_102"
-   self~assertSame("subTest102", 'X0XX00' , '101100'~CHANGESTR('1','X') )
+   self~assertSame('X0XX00', '101100'~CHANGESTR('1','X'))
 
 ::method "test_CHANGESTR"
    -- new tests
-    self~assertSame("subTest3", '101100' , '101100'~changestr('','X')  )
-    self~assertSame("subTest4", ''       , ''~changestr('1','X')  )
+    self~assertSame('101100', '101100'~changestr('','X'))
+    self~assertSame('', ''~changestr('1','X'))
 
    -- new tests: optional, trailing "count" argument
-    self~assertSame("subTest5", 'ha-lo' , 'hallo'~changeStr('l','-',1)  )
-    self~assertSame("subTest6", 'ha--o' , 'hallo'~changeStr('l','-',2)  )
-    self~assertSame("subTest7", 'ha--o' , 'hallo'~changestr('l','-',3)  )
+    self~assertSame('ha-lo', 'hallo'~changeStr('l','-',1))
+    self~assertSame('ha--o', 'hallo'~changeStr('l','-',2))
+    self~assertSame('ha--o', 'hallo'~changestr('l','-',3))
 
 ::method "test_changeStr_error_93.907"
     self~expectSyntax(93.907)

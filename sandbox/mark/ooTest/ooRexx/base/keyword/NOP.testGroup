@@ -119,23 +119,23 @@ return testGroupList
 
 
 
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
-::class "NOP.testGroup" subclass TestCase public
+::class "NOP.testGroup" subclass ooTestCase public
 
 ::method "test_1"
    Nop=1; Nop;
-   self~assertSame("subTest1-1", nop,1)
+   self~assertSame(nop, 1)
    Nop=Nop+1;
-   self~assertSame("subTest1-2", nop,2)
+   self~assertSame(nop, 2)
 
 ::method "test_2"
    Nop=Nop;
-   self~assertTrue("subTest1", 1)
+   self~assertTrue(1)
 
 ::method "test_3"
    Call sub;
-   self~assertSame("subTest1", result,'NOP')
+   self~assertSame(result, 'NOP')
    return
    sub: nop; Return 'NOP'
 

@@ -117,185 +117,185 @@ end
       optionally list of mandatory test methods                      */
 return testGroupList
 
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
-::class "pos.testGroup" subclass TestCase public
+::class "pos.testGroup" subclass ooTestCase public
 
 ::method 'test001'
     mb = .mutablebuffer~new('')
-    self~assertSame('subTest01','0',mb~pos(''))
+    self~assertSame('0', mb~pos(''))
 
 ::method 'test002'
     mb = .mutablebuffer~new('a')
-    self~assertSame('subTest01','0',mb~pos(''))
+    self~assertSame('0', mb~pos(''))
 
 ::method 'test003'
     mb = .mutablebuffer~new('123233'x)
-    self~assertSame('subTest01','0',mb~pos('',))
+    self~assertSame('0', mb~pos('',))
 
 ::method 'test004'
     a = 'abcd'
     mb = .mutablebuffer~new(a)
-    self~assertSame('subTest01','0',mb~pos(''))
+    self~assertSame('0', mb~pos(''))
 
 ::method 'test005'
     a. = 'efgh'
     mb = .mutablebuffer~new(a.~string)
-    self~assertSame('subTest01','0',mb~pos(''))
+    self~assertSame('0', mb~pos(''))
 
 ::method 'test006'
     a. = 'efgh'
     i = 3
     mb = .mutablebuffer~new(a.i)
-    self~assertSame('subTest01','0',mb~pos(''))
+    self~assertSame('0', mb~pos(''))
 
 ::method 'test007'
     mb = .mutablebuffer~new(nov.~string)
-    self~assertSame('subTest01',0,mb~pos(''))
+    self~assertSame(0, mb~pos(''))
 
 ::method 'test008'
     mb = .mutablebuffer~new(nov)
-    self~assertSame('subTest01','0',mb~pos(''))
+    self~assertSame('0', mb~pos(''))
 
 ::method 'test009'
     mb = .mutablebuffer~new(nov.~string)
-    self~assertSame('subTest01','0',mb~pos(''))
+    self~assertSame('0', mb~pos(''))
 
 ::method 'test010'
     mb = .mutablebuffer~new(nov.3)
-    self~assertSame('subTest01','0',mb~pos(''))
+    self~assertSame('0', mb~pos(''))
 
 ::method 'test011'
     mb = .mutablebuffer~new(a.nov)
-    self~assertSame('subTest01','0',mb~pos(''))
+    self~assertSame('0', mb~pos(''))
 
 ::method 'test012'
     mb = .mutablebuffer~new('abcde' 'fghij')
-    self~assertSame('subTest01','0',mb~pos(''))
+    self~assertSame('0', mb~pos(''))
 
 ::method 'test013'
     mb = .mutablebuffer~new('111'||'222')
-    self~assertSame('subTest01','0',mb~pos(''))
+    self~assertSame('0', mb~pos(''))
 
 ::method 'test014'
     mb = .mutablebuffer~new(111+12)
-    self~assertSame('subTest01','0',mb~pos(''))
+    self~assertSame('0', mb~pos(''))
 
 ::method 'test015'
     mb = .mutablebuffer~new('')
-    self~assertSame('subTest01','0',mb~pos('a'))
+    self~assertSame('0', mb~pos('a'))
 
 ::method 'test016'
     mb = .mutablebuffer~new('a')
-    self~assertSame('subTest01','1',mb~pos('a'))
+    self~assertSame('1', mb~pos('a'))
 
 ::method 'test017'
     mb = .mutablebuffer~new('123233'x)
-    self~assertSame('subTest01','2',mb~pos('2'))
+    self~assertSame('2', mb~pos('2'))
 
 ::method 'test018'
     a = 'abcd'
     mb = .mutablebuffer~new(a)
-    self~assertSame('subTest01','1',mb~pos('a'))
+    self~assertSame('1', mb~pos('a'))
 
 ::method 'test019'
     a. = 'efgh'
     mb = .mutablebuffer~new(a.~string)
-    self~assertSame('subTest01','2',mb~pos('f'))
+    self~assertSame('2', mb~pos('f'))
 
 ::method 'test020'
     a.3 = '333333'
     i = 3
     mb = .mutablebuffer~new(a.i)
-    self~assertSame('subTest01','1',mb~pos('3'))
+    self~assertSame('1', mb~pos('3'))
 
 ::method 'test021'
     mb = .mutablebuffer~new(nov.~string)
-    self~assertSame('subTest01',0,mb~pos('4'))
+    self~assertSame(0, mb~pos('4'))
 
 ::method 'test022'
     mb = .mutablebuffer~new(nov)
-    self~assertSame('subTest01','0',mb~pos('o'))
+    self~assertSame('0', mb~pos('o'))
 
 ::method 'test023'
     mb = .mutablebuffer~new(nov.~string)
-    self~assertSame('subTest01','0',mb~pos('n'))
+    self~assertSame('0', mb~pos('n'))
 
 ::method 'test024'
     mb = .mutablebuffer~new(nov.3)
-    self~assertSame('subTest01','5',mb~pos('3'))
+    self~assertSame('5', mb~pos('3'))
 
 ::method 'test025'
     mb = .mutablebuffer~new(a.nov)
-    self~assertSame('subTest01','0',mb~pos('a'))
+    self~assertSame('0', mb~pos('a'))
 
 ::method 'test026'
     mb = .mutablebuffer~new('abcde' 'fghij')
-    self~assertSame('subTest01','5',mb~pos('e',))
+    self~assertSame('5', mb~pos('e',))
 
 ::method 'test027'
     mb = .mutablebuffer~new('111'||'222')
-    self~assertSame('subTest01','4',mb~pos('2',))
+    self~assertSame('4', mb~pos('2',))
 
 ::method 'test028'
     mb = .mutablebuffer~new(111+12)
-    self~assertSame('subTest01','2',mb~pos('2'))
+    self~assertSame('2', mb~pos('2'))
 
 ::method 'test029'
     mb = .mutablebuffer~new('')
-    self~assertSame('subTest01','0',mb~pos('1'))
+    self~assertSame('0', mb~pos('1'))
 
 ::method 'test030'
     mb = .mutablebuffer~new('a')
-    self~assertSame('subTest01','0',mb~pos('1'))
+    self~assertSame('0', mb~pos('1'))
 
 ::method 'test031'
     mb = .mutablebuffer~new('123233'x)
-    self~assertSame('subTest01','0',mb~pos('1'))
+    self~assertSame('0', mb~pos('1'))
 
 ::method 'test032'
     a = 'abcd'
     mb = .mutablebuffer~new(a)
-    self~assertSame('subTest01','0',mb~pos('z'))
+    self~assertSame('0', mb~pos('z'))
 
 ::method 'test033'
     a. = 'efgh'
     mb = .mutablebuffer~new(a.~string)
-    self~assertSame('subTest01','0',mb~pos('z'))
+    self~assertSame('0', mb~pos('z'))
 
 ::method 'test034'
     a.3 = '333333'
     i = 3
     mb = .mutablebuffer~new(a.i)
-    self~assertSame('subTest01','0',mb~pos('z'))
+    self~assertSame('0', mb~pos('z'))
 
 ::method 'test035'
     mb = .mutablebuffer~new(nov)
-    self~assertSame('subTest01','0',mb~pos('z'))
+    self~assertSame('0', mb~pos('z'))
 
 ::method 'test036'
     mb = .mutablebuffer~new(nov.~string)
-    self~assertSame('subTest01','0',mb~pos('z'))
+    self~assertSame('0', mb~pos('z'))
 
 ::method 'test037'
     mb = .mutablebuffer~new(nov.3)
-    self~assertSame('subTest01','0',mb~pos('z'))
+    self~assertSame('0', mb~pos('z'))
 
 ::method 'test038'
     mb = .mutablebuffer~new(a.nov)
-    self~assertSame('subTest01','0',mb~pos('z'))
+    self~assertSame('0', mb~pos('z'))
 
 ::method 'test039'
     mb = .mutablebuffer~new('abcde' 'fghij')
-    self~assertSame('subTest01','0',mb~pos('z',))
+    self~assertSame('0', mb~pos('z',))
 
 ::method 'test040'
     mb = .mutablebuffer~new('111'||'222')
-    self~assertSame('subTest01','0',mb~pos('z'))
+    self~assertSame('0', mb~pos('z'))
 
 ::method 'test041'
     mb = .mutablebuffer~new(111+12)
-    self~assertSame('subTest01','0',mb~pos('z',))
+    self~assertSame('0', mb~pos('z',))
 
 ::method 'test042'
     .local~h = 'abcdefghijklmnopqrstuvwxyz'~reverse()
@@ -303,103 +303,103 @@ return testGroupList
 
 ::method 'test043'
     mb = .mutablebuffer~new(.h)
-    self~assertSame('subTest01','0',mb~pos('ef'))
+    self~assertSame('0', mb~pos('ef'))
 
 ::method 'test044'
     mb = .mutablebuffer~new(.h)
-    self~assertSame('subTest01','0',mb~pos('z*'))
+    self~assertSame('0', mb~pos('z*'))
 
 ::method 'test045'
     mb = .mutablebuffer~new(.h)
-    self~assertSame('subTest01','0',mb~pos('z.'))
+    self~assertSame('0', mb~pos('z.'))
 
 ::method 'test046'
     mb = .mutablebuffer~new(.h)
-    self~assertSame('subTest01','28602',mb~pos('.'))
+    self~assertSame('28602', mb~pos('.'))
 
 ::method 'test047'
     mb = .mutablebuffer~new(.h)
-    self~assertSame('subTest01','0',mb~pos('. '))
+    self~assertSame('0', mb~pos('. '))
 
 ::method 'test048'
     numeric digits 2
     mb = .mutablebuffer~new(.h)
-    self~assertSame('subTest01','28602',mb~pos('.'))
+    self~assertSame('28602', mb~pos('.'))
 
 ::method 'test049'
     mb = .mutablebuffer~new(.h)
-    self~assertSame('subTest01','0',mb~pos('ef',1))
+    self~assertSame('0', mb~pos('ef',1))
 
 ::method 'test050'
     mb = .mutablebuffer~new(.h)
-    self~assertSame('subTest01','0',mb~pos('z*',1))
+    self~assertSame('0', mb~pos('z*',1))
 
 ::method 'test051'
     mb = .mutablebuffer~new(.h)
-    self~assertSame('subTest01','0',mb~pos('z.',1))
+    self~assertSame('0', mb~pos('z.',1))
 
 ::method 'test052'
     mb = .mutablebuffer~new(.h)
-    self~assertSame('subTest01','28602',mb~pos('.',1))
+    self~assertSame('28602', mb~pos('.',1))
 
 ::method 'test053'
     mb = .mutablebuffer~new(.h)
-    self~assertSame('subTest01','0',mb~pos('. ',1))
+    self~assertSame('0', mb~pos('. ',1))
 
 ::method 'test054'
     numeric digits 2
     mb = .mutablebuffer~new(.h)
-    self~assertSame('subTest01','28602',mb~pos('.',1))
+    self~assertSame('28602', mb~pos('.',1))
 
 ::method 'test055'
     mb = .mutablebuffer~new(.h)
-    self~assertSame('subTest01','0',mb~pos('ef',1000))
+    self~assertSame('0', mb~pos('ef',1000))
 
 ::method 'test056'
     mb = .mutablebuffer~new(.h)
-    self~assertSame('subTest01','0',mb~pos('z*',1000))
+    self~assertSame('0', mb~pos('z*',1000))
 
 ::method 'test057'
     mb = .mutablebuffer~new(.h)
-    self~assertSame('subTest01','0',mb~pos('z.',1000))
+    self~assertSame('0', mb~pos('z.',1000))
 
 ::method 'test058'
     mb = .mutablebuffer~new(.h)
-    self~assertSame('subTest01','28602',mb~pos('.',1000))
+    self~assertSame('28602', mb~pos('.',1000))
 
 ::method 'test059'
     mb = .mutablebuffer~new(.h)
-    self~assertSame('subTest01','0',mb~pos('. ',1000))
+    self~assertSame('0', mb~pos('. ',1000))
 
 ::method 'test060'
     numeric digits 2
     mb = .mutablebuffer~new(.h)
-    self~assertSame('subTest01','28602',mb~pos('.',1000))
+    self~assertSame('28602', mb~pos('.',1000))
 
 ::method 'test061'
     mb = .mutablebuffer~new(.h)
-    self~assertSame('subTest01','0',mb~pos('ef',1.e5))
+    self~assertSame('0', mb~pos('ef',1.e5))
 
 ::method 'test062'
     mb = .mutablebuffer~new(.h)
-    self~assertSame('subTest01','0',mb~pos('z*',1.e5))
+    self~assertSame('0', mb~pos('z*',1.e5))
 
 ::method 'test063'
     mb = .mutablebuffer~new(.h)
-    self~assertSame('subTest01','0',mb~pos('z.',1.e5))
+    self~assertSame('0', mb~pos('z.',1.e5))
 
 ::method 'test064'
     mb = .mutablebuffer~new(.h)
-    self~assertSame('subTest01','0',mb~pos('.',1.e5))
+    self~assertSame('0', mb~pos('.',1.e5))
 
 ::method 'test065'
     mb = .mutablebuffer~new(.h)
-    self~assertSame('subTest01','0',mb~pos('. ',1.e5))
+    self~assertSame('0', mb~pos('. ',1.e5))
 
 ::method 'test066'
     numeric digits 2
     mb = .mutablebuffer~new(.h)
-    self~assertSame('subTest01','0',mb~pos('.',1.e5))
+    self~assertSame('0', mb~pos('.',1.e5))
 
 ::method 'test067'
     .local~remove(.h)
@@ -412,35 +412,35 @@ return testGroupList
 
 ::method 'test068'
     mb = .mutablebuffer~new(.s)
-    self~assertSame('subTest01',0,mb~pos('a'))
+    self~assertSame(0, mb~pos('a'))
 
 ::method 'test069'
     mb = .mutablebuffer~new(.s1)
-    self~assertSame('subTest01',1,mb~pos('a'))
+    self~assertSame(1, mb~pos('a'))
 
 ::method 'test070'
     mb = .mutablebuffer~new(.s30)
-    self~assertSame('subTest01',30,mb~pos('6.'))
+    self~assertSame(30, mb~pos('6.'))
 
 ::method 'test071'
     mb = .mutablebuffer~new(.s255)
-    self~assertSame('subTest01',255,mb~pos('*1'))
+    self~assertSame(255, mb~pos('*1'))
 
 ::method 'test072'
     mb = .mutablebuffer~new(.s32768)
-    self~assertSame('subTest01',32767,mb~pos('abc'))
+    self~assertSame(32767, mb~pos('abc'))
 
 ::method 'test073'
     mb = .mutablebuffer~new(.s32768)
-    self~assertSame('subTest01',32768,mb~pos('bc'))
+    self~assertSame(32768, mb~pos('bc'))
 
 ::method 'test074'
     mb = .mutablebuffer~new(.s32768)
-    self~assertSame('subTest01',32769,mb~pos('cde'))
+    self~assertSame(32769, mb~pos('cde'))
 
 ::method 'test075'
     mb = .mutablebuffer~new(.s500000)
-    self~assertSame('subTest01',500001,mb~pos('zzzz'))
+    self~assertSame(500001, mb~pos('zzzz'))
 
 ::method 'test076'
     .local~remove(s0)
@@ -464,55 +464,55 @@ return testGroupList
 
 ::method 'test079'
     mb = .mutablebuffer~new('123456789')
-    self~assertSame('subTest01','3',mb~pos('34',2))
+    self~assertSame('3', mb~pos('34',2))
 
 ::method 'test080'
     mb = .mutablebuffer~new('123456789')
-    self~assertSame('subTest01','3',mb~pos('34',0.02e+2))
+    self~assertSame('3', mb~pos('34',0.02e+2))
 
 ::method 'test081'
     mb = .mutablebuffer~new('123456789')
-    self~assertSame('subTest01','8',mb~pos('89',.2*30))
+    self~assertSame('8', mb~pos('89',.2*30))
 
 ::method 'test082'
     mb = .mutablebuffer~new('123456789')
-    self~assertSame('subTest01','8',mb~pos('89',.start1))
+    self~assertSame('8', mb~pos('89',.start1))
 
 ::method 'test083'
     mb = .mutablebuffer~new('123456789')
-    self~assertSame('subTest01','8',mb~pos('89',.start2))
+    self~assertSame('8', mb~pos('89',.start2))
 
 ::method 'test084'
     mb = .mutablebuffer~new('123456789')
-    self~assertSame('subTest01','8',mb~pos('89',.start3))
+    self~assertSame('8', mb~pos('89',.start3))
 
 ::method 'test085'
     mb = .mutablebuffer~new('123456789')
-    self~assertSame('subTest01','8',mb~pos('89',.start4))
+    self~assertSame('8', mb~pos('89',.start4))
 
 ::method 'test086'
     mb = .mutablebuffer~new("uvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvw")
-    self~assertSame('subTest01','3',mb~pos("wuv",.s))
+    self~assertSame('3', mb~pos("wuv",.s))
 
 ::method 'test087'
     s. = 12
     mb = .mutablebuffer~new("uvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvw")
-    self~assertSame('subTest01','12',mb~pos("wuv",s.))
+    self~assertSame('12', mb~pos("wuv",s.))
 
 ::method 'test088'
     s.3 = 13
     mb = .mutablebuffer~new("uvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvw")
-    self~assertSame('subTest01','15',mb~pos("wuv",s.3))
+    self~assertSame('15', mb~pos("wuv",s.3))
 
 ::method 'test089'
     s.s.s.s = 1
     mb = .mutablebuffer~new("uvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvw")
-    self~assertSame('subTest01','3',mb~pos("wuv",s.s.s.s))
+    self~assertSame('3', mb~pos("wuv",s.s.s.s))
 
 ::method 'test090'
     s.s.s.s = 1
     mb = .mutablebuffer~new("uvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvw")
-    self~assertSame('subTest01','3',mb~pos("wuv",s.s.s.s + .s + 1))
+    self~assertSame('3', mb~pos("wuv",s.s.s.s + .s + 1))
 
 ::method 'test091'
     .local~remove(start1)
@@ -538,7 +538,7 @@ return testGroupList
 
 ::method 'test095'
     mb = .mutablebuffer~new('--------')
-    self~assertSame('subTest01','0',mb~pos('-',0.0000001e12))
+    self~assertSame('0', mb~pos('-',0.0000001e12))
 
 ::method 'test096'
     mb = .mutablebuffer~new('--------')
@@ -555,16 +555,16 @@ return testGroupList
     b = xrange('i','s')
     c = 6
     mb = .mutablebuffer~new(a)
-    self~assertSame('subTest01','9',mb~pos(b,c))
+    self~assertSame('9', mb~pos(b,c))
 
 ::METHOD "testPos"
    b = .mutableBuffer~new("1234567890")
 
-   self~assertEquals("Wrong position 1",4,b~pos("4"))
-   self~assertEquals("Wrong position 2",4,b~pos("4",2))
-   self~assertEquals("Wrong position 3",0,b~pos("4",99))
-   self~assertEquals("Wrong position 4",0,b~pos("x"))
-   self~assertEquals("Wrong position 5",4,b~pos("456"))
+   self~assertEquals(4, b~pos("4"), "Wrong position 1")
+   self~assertEquals(4, b~pos("4",2), "Wrong position 2")
+   self~assertEquals(0, b~pos("4",99), "Wrong position 3")
+   self~assertEquals(0, b~pos("x"), "Wrong position 4")
+   self~assertEquals(4, b~pos("456"), "Wrong position 5")
 ::METHOD "testPosSyntax1"
    b = .mutableBuffer~new("1234567890")
    self~expectSyntax(93.903)

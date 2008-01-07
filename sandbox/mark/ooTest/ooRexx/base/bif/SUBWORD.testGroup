@@ -113,10 +113,10 @@
       optionally list of mandatory test methods                      */
 return testUnitList
 
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
 -- class named exactly like file
-::class "SUBWORD.testGroup" subclass TestCase public
+::class "SUBWORD.testGroup" subclass ooTestCase public
 
 ::method 'test000'
     .local~vblank = ' '
@@ -139,19 +139,19 @@ return testUnitList
     xre = subWord('SUBWORD1 SUBWORD2',2.000000009)
 
 ::method 'test003'
-    self~assertSame('subTest01','SUBWORD1 SUBWORD2',subWord('SUBWORD1 SUBWORD2',1.000000004))
+    self~assertSame('SUBWORD1 SUBWORD2', subWord('SUBWORD1 SUBWORD2',1.000000004))
 
 ::method 'test004'
-    self~assertSame('subTest01','SUBWORD2',subWord('SUBWORD1 SUBWORD2',2.000000004))
+    self~assertSame('SUBWORD2', subWord('SUBWORD1 SUBWORD2',2.000000004))
 
 ::method 'test005'
-    self~assertSame('subTest01','J',subWord('4a'x,.zeros1))
+    self~assertSame('J', subWord('4a'x,.zeros1))
 
 ::method 'test006'
-    self~assertSame('subTest01','',subWord(.vblank,2.55*200-255))
+    self~assertSame('', subWord(.vblank,2.55*200-255))
 
 ::method 'test007'
-    self~assertSame('subTest01','SUBWORD',subWord('SUBWORD','31'x))
+    self~assertSame('SUBWORD', subWord('SUBWORD','31'x))
 
 ::method 'test008'
     self~expectSyntax(93.924)
@@ -162,51 +162,51 @@ return testUnitList
     xre = subWord(' ','30'x)
 
 ::method 'test010'
-    self~assertSame('subTest01','JR',subWord('4a52'x,1E0))
+    self~assertSame('JR', subWord('4a52'x,1E0))
 
 ::method 'test011'
-    self~assertSame('subTest01','',subWord('4a52'x,2E0))
+    self~assertSame('', subWord('4a52'x,2E0))
 
 ::method 'test012'
-    self~assertSame('subTest01','A B C D E F G H I J K L M N O',subWord('4120422043204420452046204720482049204a204b204c204d204e204f'x,' 1'))
+    self~assertSame('A B C D E F G H I J K L M N O', subWord('4120422043204420452046204720482049204a204b204c204d204e204f'x,' 1'))
 
 ::method 'test013'
     numeric digits 1
-    self~assertSame('subTest01','L M N O P Q R S T U V W X Y Z',subWord(.v26,'1'||'2'))
+    self~assertSame('L M N O P Q R S T U V W X Y Z', subWord(.v26,'1'||'2'))
 
 ::method 'test014'
     numeric digits 1
-    self~assertSame('subTest01','L M N O P Q R S T U V W X Y Z',subWord(.v26,' +12 '))
+    self~assertSame('L M N O P Q R S T U V W X Y Z', subWord(.v26,' +12 '))
 
 ::method 'test015'
     numeric digits 1
-    self~assertSame('subTest01','J K L M N O P Q R S T U V W X Y Z',subWord(.v26,+12))
+    self~assertSame('J K L M N O P Q R S T U V W X Y Z', subWord(.v26,+12))
 
 ::method 'test016'
     numeric digits 1
-    self~assertSame('subTest01','L M N O P Q R S T U V W X Y Z',subWord(.v26,12))
+    self~assertSame('L M N O P Q R S T U V W X Y Z', subWord(.v26,12))
 
 ::method 'test017'
     numeric digits 1
-    self~assertSame('subTest01','S T U V W X Y Z',subWord(.v26,.v19))
+    self~assertSame('S T U V W X Y Z', subWord(.v26,.v19))
 
 ::method 'test018'
     numeric digits 1
-    self~assertSame('subTest01','N O P Q R S T U V W X Y Z',subWord(.v26,.v14))
+    self~assertSame('N O P Q R S T U V W X Y Z', subWord(.v26,.v14))
 
 ::method 'test019'
     numeric digits 1
-    self~assertSame('subTest01','2E+1',subWord(12+6,1))
+    self~assertSame('2E+1', subWord(12+6,1))
 
 ::method 'test020'
     numeric digits 1
-    self~assertSame('subTest01','12+6',subWord('12+6',1))
+    self~assertSame('12+6', subWord('12+6',1))
 
 ::method 'test021'
-    self~assertSame('subTest01','ASDF QWER ZXCV',subWord('     asdf qwer zxcv     ASDF QWER ZXCV','.004E3'))
+    self~assertSame('ASDF QWER ZXCV', subWord('     asdf qwer zxcv     ASDF QWER ZXCV','.004E3'))
 
 ::method 'test022'
-    self~assertSame('subTest01','four    five     six      seven       eight',subWord(.v8,-4+8))
+    self~assertSame('four    five     six      seven       eight', subWord(.v8,-4+8))
 
 ::method 'test023'
     self~expectSyntax(93.924)
@@ -217,19 +217,19 @@ return testUnitList
     xre = subWord(.v8,1.5)
 
 ::method 'test025'
-    self~assertSame('subTest01','',subWord('6173646620717765722041534446205157455220'x,'30303035'x))
+    self~assertSame('', subWord('6173646620717765722041534446205157455220'x,'30303035'x))
 
 ::method 'test026'
-    self~assertSame('subTest01','ZXCV',subWord('61736466207a786376000000000041534446205a584356'x,(3*3*3)/9))
+    self~assertSame('ZXCV', subWord('61736466207a786376000000000041534446205a584356'x,(3*3*3)/9))
 
 ::method 'test027'
-    self~assertSame('subTest01','NV',subWord(nv,1))
+    self~assertSame('NV', subWord(nv,1))
 
 ::method 'test028'
-    self~assertSame('subTest01','NV.',subWord(nv.,1))
+    self~assertSame('NV.', subWord(nv.,1))
 
 ::method 'test029'
-    self~assertSame('subTest01','NV.10',subWord(nv.10,1))
+    self~assertSame('NV.10', subWord(nv.10,1))
 
 ::method 'test030'
     self~expectSyntax(40.12)
@@ -248,7 +248,7 @@ return testUnitList
     xre = subWord(novala,novalb)
 
 ::method 'test034'
-    self~assertSame('subTest01','NV.',subWord(nv.,1))
+    self~assertSame('NV.', subWord(nv.,1))
 
 ::method 'test035'
     self~expectSyntax(40.12)
@@ -267,119 +267,119 @@ return testUnitList
     xre = subWord(.v125,nv.)
 
 ::method 'test039'
-    self~assertSame('subTest01','J K',subWord(.v10000,9999))
+    self~assertSame('J K', subWord(.v10000,9999))
 
 ::method 'test040'
-    self~assertSame('subTest01','K',subWord(.v10000,10000))
+    self~assertSame('K', subWord(.v10000,10000))
 
 ::method 'test041'
-    self~assertSame('subTest01','',subWord(.v10000,10001))
+    self~assertSame('', subWord(.v10000,10001))
 
 ::method 'test042'
     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
-    self~assertSame('subTest01','7 8 9 0',subWord(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX,7,))
+    self~assertSame('7 8 9 0', subWord(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX,7,))
 
 ::method 'test043'
-    self~assertSame('subTest01',.vwbwwbw,subWord(.vwbwwbw,1))
+    self~assertSame(.vwbwwbw, subWord(.vwbwwbw,1))
 
 ::method 'test044'
-    self~assertSame('subTest01',copies('*',10000)||copies(' ',5000)||'R',subWord(.vwbwwbw,2))
+    self~assertSame(copies('*',10000)||copies(' ',5000)||'R', subWord(.vwbwwbw,2))
 
 ::method 'test045'
-    self~assertSame('subTest01','R',subWord(.vwbwwbw,3))
+    self~assertSame('R', subWord(.vwbwwbw,3))
 
 ::method 'test046'
-    self~assertSame('subTest01','John'||copies(' ',10000)||'Buckley',subWord(.vwbw,1))
+    self~assertSame('John'||copies(' ',10000)||'Buckley', subWord(.vwbw,1))
 
 ::method 'test047'
-    self~assertSame('subTest01','Buckley',subWord(.vwbw,2))
+    self~assertSame('Buckley', subWord(.vwbw,2))
 
 ::method 'test048'
-    self~assertSame('subTest01','00345',subWord((00345),1))
+    self~assertSame('00345', subWord((00345),1))
 
 ::method 'test049'
-    self~assertSame('subTest01','00345',subWord((00345),1))
+    self~assertSame('00345', subWord((00345),1))
 
 ::method 'test050'
-    self~assertSame('subTest01','3 4 5',subWord((3 4 5),1))
+    self~assertSame('3 4 5', subWord((3 4 5),1))
 
 ::method 'test051'
-    self~assertSame('subTest01','4 5',subWord((3 4 5),2))
+    self~assertSame('4 5', subWord((3 4 5),2))
 
 ::method 'test052'
-    self~assertSame('subTest01','5',subWord((3 4 5),3))
+    self~assertSame('5', subWord((3 4 5),3))
 
 ::method 'test053'
-    self~assertSame('subTest01','',subWord((3 4 5),4))
+    self~assertSame('', subWord((3 4 5),4))
 
 ::method 'test054'
-    self~assertSame('subTest01','one two  three   four    five     six      seven       eight',subWord((.v8),1))
+    self~assertSame('one two  three   four    five     six      seven       eight', subWord((.v8),1))
 
 ::method 'test055'
-    self~assertSame('subTest01','six      seven       eight',subWord((.v8),6))
+    self~assertSame('six      seven       eight', subWord((.v8),6))
 
 ::method 'test056'
-    self~assertSame('subTest01','eight',subWord((.v8),8))
+    self~assertSame('eight', subWord((.v8),8))
 
 ::method 'test057'
     v8. = .v8
-    self~assertSame('subTest01','one two  three   four    five     six      seven       eight',subWord((v8.),1))
+    self~assertSame('one two  three   four    five     six      seven       eight', subWord((v8.),1))
 
 ::method 'test058'
     v8. = .v8
-    self~assertSame('subTest01','two  three   four    five     six      seven       eight',subWord((v8.),2))
+    self~assertSame('two  three   four    five     six      seven       eight', subWord((v8.),2))
 
 ::method 'test059'
     v8. = .v8
-    self~assertSame('subTest01','',subWord((v8.),9))
+    self~assertSame('', subWord((v8.),9))
 
 ::method 'test060'
     v8. = .v8
-    self~assertSame('subTest01','four    five     six      seven       eight',subWord((v8.10),4))
+    self~assertSame('four    five     six      seven       eight', subWord((v8.10),4))
 
 ::method 'test061'
     v8. = .v8
-    self~assertSame('subTest01','five     six      seven       eight',subWord((v8.10),5))
+    self~assertSame('five     six      seven       eight', subWord((v8.10),5))
 
 ::method 'test062'
     v8. = .v8
-    self~assertSame('subTest01','six      seven       eight',subWord((v8.10),6))
+    self~assertSame('six      seven       eight', subWord((v8.10),6))
 
 ::method 'test063'
-    self~assertSame('subTest01','A B C D E F G H I J K L M N O P Q R S T U V W X Y Z Z Y X W V U T S R Q P O N M L K J I H G F E D C B A',subWord(.v26||' '||reverse(.v26),1))
+    self~assertSame('A B C D E F G H I J K L M N O P Q R S T U V W X Y Z Z Y X W V U T S R Q P O N M L K J I H G F E D C B A', subWord(.v26||' '||reverse(.v26),1))
 
 ::method 'test064'
-    self~assertSame('subTest01','Z Z Y X W V U T S R Q P O N M L K J I H G F E D C B A',subWord(.v26' 'reverse(.v26),26))
+    self~assertSame('Z Z Y X W V U T S R Q P O N M L K J I H G F E D C B A', subWord(.v26' 'reverse(.v26),26))
 
 ::method 'test065'
-    self~assertSame('subTest01','Z Y X W V U T S R Q P O N M L K J I H G F E D C B A',subWord(.v26 reverse(.v26),27))
+    self~assertSame('Z Y X W V U T S R Q P O N M L K J I H G F E D C B A', subWord(.v26 reverse(.v26),27))
 
 ::method 'test066'
-    self~assertSame('subTest01','two three four five six seven',subWord('one two three four five six seven',2))
+    self~assertSame('two three four five six seven', subWord('one two three four five six seven',2))
 
 ::method 'test067'
-    self~assertSame('subTest01','',subWord(.v26,length(translate(.v26,'',' '))))
+    self~assertSame('', subWord(.v26,length(translate(.v26,'',' '))))
 
 ::method 'test068'
-    self~assertSame('subTest01','V W X Y Z',subWord(.v26,x2d(16)))
+    self~assertSame('V W X Y Z', subWord(.v26,x2d(16)))
 
 ::method 'test069'
-    self~assertSame('subTest01','CHAR',subWord(dataType(6) dataType('A'),2))
+    self~assertSame('CHAR', subWord(dataType(6) dataType('A'),2))
 
 ::method 'test070'
-    self~assertSame('subTest01','call to routine',subWord(errorText(40),lastPos('O','WORD')))
+    self~assertSame('call to routine', subWord(errorText(40),lastPos('O','WORD')))
 
 ::method 'test071'
-    self~assertSame('subTest01','BW OR',subWord(sUbWoRd('SU BW OR D',2,2),1))
+    self~assertSame('BW OR', subWord(sUbWoRd('SU BW OR D',2,2),1))
 
 ::method 'test072'
-    self~assertSame('subTest01','OR D',subWord('SU BW OR D',subWORD('1 2 3 4 5',3,1)))
+    self~assertSame('OR D', subWord('SU BW OR D',subWORD('1 2 3 4 5',3,1)))
 
 ::method 'test073'
-    self~assertSame('subTest01','D .',subWord('SU BW OR  D .',SUBWORD(1+1 2+2 3+3,2,1)))
+    self~assertSame('D .', subWord('SU BW OR  D .',SUBWORD(1+1 2+2 3+3,2,1)))
 
 ::method 'test074'
-    self~assertSame('subTest01','',subWord('',1,1))
+    self~assertSame('', subWord('',1,1))
 
 ::method 'test075'
     self~expectSyntax(40.12)
@@ -390,19 +390,19 @@ return testUnitList
     xre = subWord('SUBWORD1 SUBWORD2',2.000000009,2.000000009)
 
 ::method 'test077'
-    self~assertSame('subTest01','SUBWORD1',subWord('SUBWORD1 SUBWORD2',1.000000004,1.000000004))
+    self~assertSame('SUBWORD1', subWord('SUBWORD1 SUBWORD2',1.000000004,1.000000004))
 
 ::method 'test078'
-    self~assertSame('subTest01','SUBWORD2',subWord('SUBWORD1 SUBWORD2',2.000000004,2.000000004))
+    self~assertSame('SUBWORD2', subWord('SUBWORD1 SUBWORD2',2.000000004,2.000000004))
 
 ::method 'test079'
-    self~assertSame('subTest01','J',subWord('4a'x,.zeros1,2))
+    self~assertSame('J', subWord('4a'x,.zeros1,2))
 
 ::method 'test080'
-    self~assertSame('subTest01','',subWord(.vblank,2.55*200-255,1))
+    self~assertSame('', subWord(.vblank,2.55*200-255,1))
 
 ::method 'test081'
-    self~assertSame('subTest01','',subWord('SUBWORD','31'x,'30'x))
+    self~assertSame('', subWord('SUBWORD','31'x,'30'x))
 
 ::method 'test082'
     self~expectSyntax(93.924)
@@ -413,51 +413,51 @@ return testUnitList
     xre = subWord(' ','30'x,'30'x)
 
 ::method 'test084'
-    self~assertSame('subTest01','JR',subWord('4a52'x,1E0,1E0))
+    self~assertSame('JR', subWord('4a52'x,1E0,1E0))
 
 ::method 'test085'
-    self~assertSame('subTest01','',subWord('4a52'x,2E0,1E0))
+    self~assertSame('', subWord('4a52'x,2E0,1E0))
 
 ::method 'test086'
-    self~assertSame('subTest01','A B',subWord('4120422043204420452046204720482049204a204b204c204d204e204f'x,' 1',' 2'))
+    self~assertSame('A B', subWord('4120422043204420452046204720482049204a204b204c204d204e204f'x,' 1',' 2'))
 
 ::method 'test087'
     numeric digits 1
-    self~assertSame('subTest01','L M N O P Q R S T U V W',subWord(.v26,'1'||'2','1'||'2'))
+    self~assertSame('L M N O P Q R S T U V W', subWord(.v26,'1'||'2','1'||'2'))
 
 ::method 'test088'
     numeric digits 1
-    self~assertSame('subTest01','L M N O P Q R S T U V W',subWord(.v26,' +12 ',' +12 '))
+    self~assertSame('L M N O P Q R S T U V W', subWord(.v26,' +12 ',' +12 '))
 
 ::method 'test089'
     numeric digits 1
-    self~assertSame('subTest01','J K L M N O P Q R S',subWord(.v26,+12,+12))
+    self~assertSame('J K L M N O P Q R S', subWord(.v26,+12,+12))
 
 ::method 'test090'
     numeric digits 1
-    self~assertSame('subTest01','L M N O P Q R S T U V W',subWord(.v26,12,12))
+    self~assertSame('L M N O P Q R S T U V W', subWord(.v26,12,12))
 
 ::method 'test091'
     numeric digits 1
-    self~assertSame('subTest01','S T U V W X Y Z',subWord(.v26,.v19,.v19))
+    self~assertSame('S T U V W X Y Z', subWord(.v26,.v19,.v19))
 
 ::method 'test092'
     numeric digits 1
-    self~assertSame('subTest01','N O P Q R S T U V W X Y Z',subWord(.v26,.v14,.v14))
+    self~assertSame('N O P Q R S T U V W X Y Z', subWord(.v26,.v14,.v14))
 
 ::method 'test093'
     numeric digits 1
-    self~assertSame('subTest01','2E+1',subWord(12+6,1,1))
+    self~assertSame('2E+1', subWord(12+6,1,1))
 
 ::method 'test094'
     numeric digits 1
-    self~assertSame('subTest01','12+6',subWord('12+6',1,1))
+    self~assertSame('12+6', subWord('12+6',1,1))
 
 ::method 'test095'
-    self~assertSame('subTest01','ASDF QWER ZXCV',subWord('     asdf qwer zxcv     ASDF QWER ZXCV','.004E3','.003E3'))
+    self~assertSame('ASDF QWER ZXCV', subWord('     asdf qwer zxcv     ASDF QWER ZXCV','.004E3','.003E3'))
 
 ::method 'test096'
-    self~assertSame('subTest01','four    five     six      seven',subWord(.v8,-4+8,-4+8))
+    self~assertSame('four    five     six      seven', subWord(.v8,-4+8,-4+8))
 
 ::method 'test097'
     self~expectSyntax(93.924)
@@ -468,16 +468,16 @@ return testUnitList
     xre = subWord(.v8,1,1.5)
 
 ::method 'test099'
-    self~assertSame('subTest01','ZXCV',subWord('61736466207a786376000000000041534446205a584356'x,(3*3*3)/9,2))
+    self~assertSame('ZXCV', subWord('61736466207a786376000000000041534446205a584356'x,(3*3*3)/9,2))
 
 ::method 'test100'
-    self~assertSame('subTest01','NV',subWord(nv,1,1))
+    self~assertSame('NV', subWord(nv,1,1))
 
 ::method 'test101'
-    self~assertSame('subTest01','NV.',subWord(nv.,1,1))
+    self~assertSame('NV.', subWord(nv.,1,1))
 
 ::method 'test102'
-    self~assertSame('subTest01','NV.10',subWord(nv.10,1,1))
+    self~assertSame('NV.10', subWord(nv.10,1,1))
 
 ::method 'test103'
     self~expectSyntax(40.12)
@@ -536,128 +536,128 @@ return testUnitList
     xre = subWord(novala,novalb,novalc)
 
 ::method 'test117'
-    self~assertSame('subTest01','J K',subWord(.v10000,9999,2))
+    self~assertSame('J K', subWord(.v10000,9999,2))
 
 ::method 'test118'
-    self~assertSame('subTest01','K',subWord(.v10000,10000,2))
+    self~assertSame('K', subWord(.v10000,10000,2))
 
 ::method 'test119'
-    self~assertSame('subTest01','',subWord(.v10000,10001,2))
+    self~assertSame('', subWord(.v10000,10001,2))
 
 ::method 'test120'
     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
-    self~assertSame('subTest01','7 8 9 0',subWord(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX,7,2+3))
+    self~assertSame('7 8 9 0', subWord(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX,7,2+3))
 
 ::method 'test121'
-    self~assertSame('subTest01','J',subWord(.vwbwwbw,1,1))
+    self~assertSame('J', subWord(.vwbwwbw,1,1))
 
 ::method 'test122'
-    self~assertSame('subTest01','J'||copies(' ',5000)||copies('*',10000),subWord(.vwbwwbw,1,2))
+    self~assertSame('J'||copies(' ',5000)||copies('*',10000), subWord(.vwbwwbw,1,2))
 
 ::method 'test123'
-    self~assertSame('subTest01',copies('*',10000),subWord(.vwbwwbw,2,1))
+    self~assertSame(copies('*',10000), subWord(.vwbwwbw,2,1))
 
 ::method 'test124'
-    self~assertSame('subTest01',copies('*',10000)||copies(' ',5000)||'R',subWord(.vwbwwbw,2,2))
+    self~assertSame(copies('*',10000)||copies(' ',5000)||'R', subWord(.vwbwwbw,2,2))
 
 ::method 'test125'
-    self~assertSame('subTest01','R',subWord(.vwbwwbw,3,1))
+    self~assertSame('R', subWord(.vwbwwbw,3,1))
 
 ::method 'test126'
-    self~assertSame('subTest01','John',subWord(.vwbw,1,1))
+    self~assertSame('John', subWord(.vwbw,1,1))
 
 ::method 'test127'
-    self~assertSame('subTest01','Buckley',subWord(.vwbw,2,1))
+    self~assertSame('Buckley', subWord(.vwbw,2,1))
 
 ::method 'test128'
-    self~assertSame('subTest01','John'||copies(' ',10000)||'Buckley',subWord(.vwbw,1,2))
+    self~assertSame('John'||copies(' ',10000)||'Buckley', subWord(.vwbw,1,2))
 
 ::method 'test129'
-    self~assertSame('subTest01','Buckley',subWord(.vwbw,2,2))
+    self~assertSame('Buckley', subWord(.vwbw,2,2))
 
 ::method 'test130'
-    self~assertSame('subTest01','00345',subWord((00345),1,1))
+    self~assertSame('00345', subWord((00345),1,1))
 
 ::method 'test131'
-    self~assertSame('subTest01','00345',subWord((00345),1,2))
+    self~assertSame('00345', subWord((00345),1,2))
 
 ::method 'test132'
-    self~assertSame('subTest01','3 4 5',subWord((3 4 5),1,3))
+    self~assertSame('3 4 5', subWord((3 4 5),1,3))
 
 ::method 'test133'
-    self~assertSame('subTest01','4 5',subWord((3 4 5),2,2))
+    self~assertSame('4 5', subWord((3 4 5),2,2))
 
 ::method 'test134'
-    self~assertSame('subTest01','5',subWord((3 4 5),3,1))
+    self~assertSame('5', subWord((3 4 5),3,1))
 
 ::method 'test135'
-    self~assertSame('subTest01','',subWord((3 4 5),4,4))
+    self~assertSame('', subWord((3 4 5),4,4))
 
 ::method 'test136'
-    self~assertSame('subTest01','one two  three   four    five     six      seven       eight',subWord((.v8),1,8))
+    self~assertSame('one two  three   four    five     six      seven       eight', subWord((.v8),1,8))
 
 ::method 'test137'
-    self~assertSame('subTest01','six      seven       eight',subWord((.v8),6,4))
+    self~assertSame('six      seven       eight', subWord((.v8),6,4))
 
 ::method 'test138'
-    self~assertSame('subTest01','eight',subWord((.v8),8,3))
+    self~assertSame('eight', subWord((.v8),8,3))
 
 ::method 'test139'
     v8. = .v8
-    self~assertSame('subTest01','one two  three   four    five     six      seven       eight',subWord((v8.),1,8))
+    self~assertSame('one two  three   four    five     six      seven       eight', subWord((v8.),1,8))
 
 ::method 'test140'
     v8. = .v8
-    self~assertSame('subTest01','two  three   four    five     six      seven       eight',subWord((v8.),2,8))
+    self~assertSame('two  three   four    five     six      seven       eight', subWord((v8.),2,8))
 
 ::method 'test141'
     v8. = .v8
-    self~assertSame('subTest01','',subWord((v8.),9,1))
+    self~assertSame('', subWord((v8.),9,1))
 
 ::method 'test142'
     v8. = .v8
-    self~assertSame('subTest01','four    five     six      seven       eight',subWord((v8.10),4,5))
+    self~assertSame('four    five     six      seven       eight', subWord((v8.10),4,5))
 
 ::method 'test143'
     v8. = .v8
-    self~assertSame('subTest01','five     six      seven       eight',subWord((v8.10),5,5))
+    self~assertSame('five     six      seven       eight', subWord((v8.10),5,5))
 
 ::method 'test144'
     v8. = .v8
-    self~assertSame('subTest01','six      seven       eight',subWord((v8.10),6,4))
+    self~assertSame('six      seven       eight', subWord((v8.10),6,4))
 
 ::method 'test145'
-    self~assertSame('subTest01','A B C D E F G H I J K L M N O P Q R S T U V W X Y Z Z',subWord(.v26||' '||reverse(.v26),1,27))
+    self~assertSame('A B C D E F G H I J K L M N O P Q R S T U V W X Y Z Z', subWord(.v26||' '||reverse(.v26),1,27))
 
 ::method 'test146'
-    self~assertSame('subTest01','Z Z',subWord(.v26' 'reverse(.v26),26,2))
+    self~assertSame('Z Z', subWord(.v26' 'reverse(.v26),26,2))
 
 ::method 'test147'
-    self~assertSame('subTest01','Z Y X W V U T S R Q P O N M L K J I H G F E D C B A',subWord(.v26 reverse(.v26),27,26))
+    self~assertSame('Z Y X W V U T S R Q P O N M L K J I H G F E D C B A', subWord(.v26 reverse(.v26),27,26))
 
 ::method 'test148'
-    self~assertSame('subTest01','two three four five six',subWord('one two three four five six seven',2,subStr('3 4 5 6 7',5,1)))
+    self~assertSame('two three four five six', subWord('one two three four five six seven',2,subStr('3 4 5 6 7',5,1)))
 
 ::method 'test149'
-    self~assertSame('subTest01','',subWord(.v26,length(translate(.v26,'',' ')),.zeros1))
+    self~assertSame('', subWord(.v26,length(translate(.v26,'',' ')),.zeros1))
 
 ::method 'test150'
-    self~assertSame('subTest01','V W X Y Z',subWord(.v26,x2d(16),x2d('A')))
+    self~assertSame('V W X Y Z', subWord(.v26,x2d(16),x2d('A')))
 
 ::method 'test151'
-    self~assertSame('subTest01','CHAR',subWord(dataType(6) dataType('A'),2,dataType(7,'N')))
+    self~assertSame('CHAR', subWord(dataType(6) dataType('A'),2,dataType(7,'N')))
 
 ::method 'test152'
-    self~assertSame('subTest01','call to routine',subWord(errorText(40),lastPos('O','WORD'),WORDlength('J. R. BUCKLEY',3)))
+    self~assertSame('call to routine', subWord(errorText(40),lastPos('O','WORD'),WORDlength('J. R. BUCKLEY',3)))
 
 ::method 'test153'
-    self~assertSame('subTest01','BW OR',subWord(sUbWoRd('SU BW OR D',2,2),1,2))
+    self~assertSame('BW OR', subWord(sUbWoRd('SU BW OR D',2,2),1,2))
 
 ::method 'test154'
-    self~assertSame('subTest01','OR',subWord('SU BW OR D',subWORD('1 2 3 4 5',3,1),1))
+    self~assertSame('OR', subWord('SU BW OR D',subWORD('1 2 3 4 5',3,1),1))
 
 ::method 'test155'
-    self~assertSame('subTest01','SU BW OR  D',subWord('SU BW OR  D .',1,SUBWORD(1+1 2+2 3+3,2,1)))
+    self~assertSame('SU BW OR  D', subWord('SU BW OR  D .',1,SUBWORD(1+1 2+2 3+3,2,1)))
 
 ::method 'test156'
     .local~remove(vblank)
@@ -674,14 +674,14 @@ return testUnitList
 -- from bif.testgroup
    -- test the BIF, using examples from the documentation
 ::method "test_SUBWORD"
-    self~assertSame("subTest1" , 'is the'  , SUBWORD('Now is the time',2,2) )
-    self~assertSame("subTest2" , 'the time', SUBWORD('Now is the time',3)   )
-    self~assertSame("subTest3" , ""        , SUBWORD('Now is the time',5)   )
+    self~assertSame('is the', SUBWORD('Now is the time',2,2))
+    self~assertSame('the time', SUBWORD('Now is the time',3))
+    self~assertSame("", SUBWORD('Now is the time',5))
 
    -- new tests
-    self~assertSame("subTest4" , ''          , SUBWORD('Now is the time',2,0)     )
-    self~assertSame("subTest5" , 'the  time' , SUBWORD('Now  is  the  time  ',3)  )
-    self~assertSame("subTest6" , "time"      , SUBWORD('Now  is  the  time  ',4)  )
-    self~assertSame("subTest7" , ""          , SUBWORD('Now  is  the  time  ',5)  )
+    self~assertSame('', SUBWORD('Now is the time',2,0))
+    self~assertSame('the  time', SUBWORD('Now  is  the  time  ',3))
+    self~assertSame("time", SUBWORD('Now  is  the  time  ',4))
+    self~assertSame("", SUBWORD('Now  is  the  time  ',5))
 
 

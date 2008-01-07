@@ -117,14 +117,14 @@ end
       optionally list of mandatory test methods                      */
 return testGroupList
 
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
-::class "append.testGroup" subclass TestCase public
+::class "append.testGroup" subclass ooTestCase public
 
 ::METHOD "testAppend"
    b = .mutableBuffer~new("123")
    b~append("abc")
-   self~AssertEquals("Append failed 1","123abc",b~string)
+   self~AssertEquals("123abc", b~string, "Append failed 1")
 ::METHOD "testAppendSyntax1"
    b = .mutableBuffer~new
    self~expectSyntax(93.903)

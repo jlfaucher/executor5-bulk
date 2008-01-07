@@ -119,14 +119,14 @@ return testGroupList
 
 
 
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
-::class "INTERPRET.testGroup" subclass TestCase public
+::class "INTERPRET.testGroup" subclass ooTestCase public
 
 ::method "test_1"
    x=12
    Interpret 'x=1'
-   self~assertSame("subTest1", x,1)
+   self~assertSame(x, 1)
 
 ::method "test_2"
    self~expectSyntax(47.1)

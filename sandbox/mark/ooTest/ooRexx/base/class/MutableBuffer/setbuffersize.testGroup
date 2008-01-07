@@ -117,32 +117,32 @@ end
       optionally list of mandatory test methods                      */
 return testGroupList
 
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
-::class "setbuffersize.testGroup" subclass TestCase public
+::class "setbuffersize.testGroup" subclass ooTestCase public
 
 ::METHOD "testSetBufferSize"
    b = .mutableBuffer~new("1234567890")
    b~setBufferSize(5)
-   self~assertEquals("Buffer not truncated","12345",b~string)
-   self~assertEquals("Buffer returning wrong buffer size",5,b~getBufferSize)
+   self~assertEquals("12345", b~string, "Buffer not truncated")
+   self~assertEquals(5, b~getBufferSize, "Buffer returning wrong buffer size")
 
    b = .mutablebuffer~new("123")
    b~setBufferSize(0)
-   self~assertEquals("MutableBuffer string should be empty string","",b~string)
-   self~assertEquals("MutableBuffer buffer size should be 256 after setting to 0",256,b~getBufferSize)
+   self~assertEquals("", b~string, "MutableBuffer string should be empty string")
+   self~assertEquals(256, b~getBufferSize, "MutableBuffer buffer size should be 256 after setting to 0")
 
    b = .mutablebuffer~new("My local work")
    b~setBufferSize(109873451)
-   self~assertEquals("Set buffer to large size, string should not change","My local work",b~string)
-   self~assertEquals("Buffer size should be 109873451 after setting to 109873451",109873451,b~getBufferSize)
+   self~assertEquals("My local work", b~string, "Set buffer to large size, string should not change")
+   self~assertEquals(109873451, b~getBufferSize, "Buffer size should be 109873451 after setting to 109873451")
 
    /* This test works (as it should.)  Deferring its inclusion while I think
     * about a mechanism to exclude some tests at run time.  MarkM
 
    b~setBufferSize(999999999)
-   self~assertEquals("Set buffer to large size, string should not change","My local work",b~string)
-   self~assertEquals("Buffer size should be 999999999 after setting to 999999999",999999999,b~getBufferSize)
+   self~assertEquals("My local work", b~string, "Set buffer to large size, string should not change")
+   self~assertEquals(999999999, b~getBufferSize, "Buffer size should be 999999999 after setting to 999999999")
    */
 
    /* This test does not work.  In StringClassUtil.cpp the get_length() function
@@ -154,8 +154,8 @@ return testGroupList
 
    numeric digits 11
    b~setBufferSize(2147483647)
-   self~assertEquals("Set buffer to vey large size, string should not change","My local work",b~string)
-   self~assertEquals("Buffer size should be 2147483647 after setting to 2147483647",2147483647,b~getBufferSize)
+   self~assertEquals("My local work", b~string, "Set buffer to vey large size, string should not change")
+   self~assertEquals(2147483647, b~getBufferSize, "Buffer size should be 2147483647 after setting to 2147483647")
    */
 
 ::METHOD "testSetBufferSizeSyntax1"

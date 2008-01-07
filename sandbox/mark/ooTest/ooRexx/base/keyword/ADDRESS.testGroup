@@ -119,34 +119,34 @@ return testGroupList
 
 
 
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
-::class "ADDRESS.testGroup" subclass TestCase public
+::class "ADDRESS.testGroup" subclass ooTestCase public
 
 ::method "test_1"
    defenv=address()
    Address ''                        /* use null string                */
-   self~assertSame("subTest1-1", address(), '')
+   self~assertSame(address(), '')
    Address                           /* toggle back                    */
-   self~assertSame("subTest1-2", address(), defenv)
+   self~assertSame(address(), defenv)
 
 ::method "test_2"
    amaxl=250
    v=copies('A',amaxl)
    Address Value v
-   self~assertSame("subTest2", address(), v)
+   self~assertSame(address(), v)
 
 ::method "test_3"
    self~expectSyntax(29.1, .ooRexxUnit.knownBugFlag "1856645")
    amaxl=251
    v=copies('A',amaxl)
    Address Value v
-   self~assertSame("subTest3", address(), v)
+   self~assertSame(address(), v)
 
 ::method "test_4"
    xrc = 30
    signal off failure
    trace off
    call SysFileDelete "my.out"
-   self~assertNotSame("subTest4", rc, xrc)
+   self~assertNotSame(rc, xrc)
 

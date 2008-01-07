@@ -117,14 +117,14 @@ end
       optionally list of mandatory test methods                      */
 return testGroupList
 
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
-::class "new.testGroup" subclass TestCase public
+::class "new.testGroup" subclass ooTestCase public
 
 ::method "testInstance1"
    b = .nil
    b = .mutableBuffer~new("1234")
-   self~assertNotNull("Failed to get instance", b)
+   self~assertNotNull(b, "Failed to get instance")
 ::method "testInstance2"
    self~expectSyntax(93.938)
    b = .mutableBuffer~new(.nil)

@@ -113,10 +113,10 @@
       optionally list of mandatory test methods                      */
 return testUnitList
 
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
 -- class named exactly like file
-::class "RANDOM.testGroup" subclass TestCase public
+::class "RANDOM.testGroup" subclass ooTestCase public
 
    -- test the BIF, using examples from the documentation
 ::method "test_RANDOM"

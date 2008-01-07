@@ -113,94 +113,94 @@
       optionally list of mandatory test methods                      */
 return testUnitList
 
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
 -- class named exactly like file
-::class "SYMBOL.testGroup" subclass TestCase public
+::class "SYMBOL.testGroup" subclass ooTestCase public
 
 ::method 'test001'
-    self~assertSame('subTest01','BAD',symbol('1 '))
+    self~assertSame('BAD', symbol('1 '))
 
 ::method 'test002'
-    self~assertSame('subTest01','BAD',symbol('1 1'))
+    self~assertSame('BAD', symbol('1 1'))
 
 ::method 'test003'
-    self~assertSame('subTest01','LIT',symbol('1E1'))
+    self~assertSame('LIT', symbol('1E1'))
 
 ::method 'test004'
-    self~assertSame('subTest01','LIT',symbol('1.E1'))
+    self~assertSame('LIT', symbol('1.E1'))
 
 ::method 'test005'
-    self~assertSame('subTest01','LIT',symbol('1.1E1'))
+    self~assertSame('LIT', symbol('1.1E1'))
 
 ::method 'test006'
-    self~assertSame('subTest01','LIT',symbol('1.1E1.'))
+    self~assertSame('LIT', symbol('1.1E1.'))
 
 ::method 'test007'
-    self~assertSame('subTest01','LIT',symbol('1E1.'))
+    self~assertSame('LIT', symbol('1E1.'))
 
 ::method 'test008'
-    self~assertSame('subTest01','LIT',symbol('1.1E1.1'))
+    self~assertSame('LIT', symbol('1.1E1.1'))
 
 ::method 'test009'
-    self~assertSame('subTest01','BAD',symbol('+1E1'))
+    self~assertSame('BAD', symbol('+1E1'))
 
 ::method 'test010'
-    self~assertSame('subTest01','LIT',symbol('1E+1'))
+    self~assertSame('LIT', symbol('1E+1'))
 
 ::method 'test011'
-    self~assertSame('subTest01','BAD',symbol('1E+1+'))
+    self~assertSame('BAD', symbol('1E+1+'))
 
 ::method 'test012'
-    self~assertSame('subTest01','BAD',symbol('1E++1'))
+    self~assertSame('BAD', symbol('1E++1'))
 
 ::method 'test013'
-    self~assertSame('subTest01','BAD',symbol('1E+-1'))
+    self~assertSame('BAD', symbol('1E+-1'))
 
 ::method 'test014'
-    self~assertSame('subTest01','BAD',symbol('1E-+1'))
+    self~assertSame('BAD', symbol('1E-+1'))
 
 ::method 'test015'
-    self~assertSame('subTest01','LIT',symbol('1E1.'))
+    self~assertSame('LIT', symbol('1E1.'))
 
 ::method 'test016'
-    self~assertSame('subTest01','LIT',symbol('1E1E'))
+    self~assertSame('LIT', symbol('1E1E'))
 
 ::method 'test017'
-    self~assertSame('subTest01','BAD',symbol('1E+1.'))
+    self~assertSame('BAD', symbol('1E+1.'))
 
 ::method 'test018'
-    self~assertSame('subTest01','BAD',symbol('1E+1E1'))
+    self~assertSame('BAD', symbol('1E+1E1'))
 
 ::method 'test019'
-    self~assertSame('subTest01','BAD',symbol('1E1 '))
+    self~assertSame('BAD', symbol('1E1 '))
 
 ::method 'test020'
-    self~assertSame('subTest01','BAD',symbol('1+E1'))
+    self~assertSame('BAD', symbol('1+E1'))
 
 ::method 'test021'
-    self~assertSame('subTest01','BAD',symbol('-1E1'))
+    self~assertSame('BAD', symbol('-1E1'))
 
 ::method 'test022'
-    self~assertSame('subTest01','LIT',symbol('1E-1'))
+    self~assertSame('LIT', symbol('1E-1'))
 
 ::method 'test023'
-    self~assertSame('subTest01','BAD',symbol('1-E1'))
+    self~assertSame('BAD', symbol('1-E1'))
 
 ::method 'test024'
-    self~assertSame('subTest01','BAD',symbol('1 E1'))
+    self~assertSame('BAD', symbol('1 E1'))
 
 ::method 'test025'
-    self~assertSame('subTest01','BAD',symbol('1E 1'))
+    self~assertSame('BAD', symbol('1E 1'))
 
 ::method 'test026'
-    self~assertSame('subTest01','BAD',symbol('1E1 '))
+    self~assertSame('BAD', symbol('1E1 '))
 
 ::method 'test027'
-    self~assertSame('subTest01','LIT',symbol('1E1E+1'))
+    self~assertSame('LIT', symbol('1E1E+1'))
 
 ::method 'test028'
-    self~assertSame('subTest01','LIT',symbol('1Garbage+1'))
+    self~assertSame('LIT', symbol('1Garbage+1'))
 
 -- from bif.testgroup
    -- test the BIF, using examples from the documentation
@@ -209,16 +209,16 @@ return testUnitList
     drop a.3
     j=3
 
-    self~assertEquals("subTest1" , 'VAR'                           , SYMBOL('J')   )
-    self~assertEquals("subTest2" , 'LIT' /* has tested "3" */      , SYMBOL(J)     )
-    self~assertEquals("subTest3" , 'LIT' /* has tested A.3 */      , SYMBOL('a.j') )
-    self~assertEquals("subTest4" , 'LIT' /* a constant symbol */   , SYMBOL(2)     )
-    self~assertEquals("subTest5" , 'BAD' /* not a valid symbol */  , SYMBOL('*')   )
+    self~assertEquals('VAR', SYMBOL('J'))
+    self~assertEquals('LIT' /* has tested "3" */, SYMBOL(J))
+    self~assertEquals('LIT' /* has tested A.3 */, SYMBOL('a.j'))
+    self~assertEquals('LIT' /* a constant symbol */, SYMBOL(2))
+    self~assertEquals('BAD' /* not a valid symbol */, SYMBOL('*'))
 
    -- new tests
-    self~assertEquals("subTest6" , 'LIT' /* not a valid symbol */  , SYMBOL('.')   )
-    self~assertEquals("subTest7" , 'LIT' /* not a valid symbol */  , SYMBOL('.a')  )
-    self~assertEquals("subTest8" , 'BAD' /* not a valid symbol */  , SYMBOL('')    )
-    self~assertEquals("subTest9" , 'BAD' /* not a valid symbol */  , SYMBOL('  ')  )
+    self~assertEquals('LIT' /* not a valid symbol */, SYMBOL('.'))
+    self~assertEquals('LIT' /* not a valid symbol */, SYMBOL('.a'))
+    self~assertEquals('BAD' /* not a valid symbol */, SYMBOL(''))
+    self~assertEquals('BAD' /* not a valid symbol */, SYMBOL('  '))
 
 

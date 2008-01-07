@@ -113,52 +113,52 @@
       optionally list of mandatory test methods                      */
 return testUnitList
 
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
 -- class named exactly like file
-::class "SIGN.testGroup" subclass TestCase public
+::class "SIGN.testGroup" subclass ooTestCase public
 
 ::method 'test001'
-    self~assertSame('subTest01','0',sign(0))
+    self~assertSame('0', sign(0))
 
 ::method 'test002'
-    self~assertSame('subTest01','0',sign(+0))
+    self~assertSame('0', sign(+0))
 
 ::method 'test003'
-    self~assertSame('subTest01','0',sign(-0))
+    self~assertSame('0', sign(-0))
 
 ::method 'test004'
-    self~assertSame('subTest01','0',sign('+0'))
+    self~assertSame('0', sign('+0'))
 
 ::method 'test005'
-    self~assertSame('subTest01','0',sign('-0'))
+    self~assertSame('0', sign('-0'))
 
 ::method 'test006'
-    self~assertSame('subTest01','0',sign(0e-12))
+    self~assertSame('0', sign(0e-12))
 
 ::method 'test007'
-    self~assertSame('subTest01','0',sign(0E999999999))
+    self~assertSame('0', sign(0E999999999))
 
 ::method 'test008'
-    self~assertSame('subTest01','1',sign(1))
+    self~assertSame('1', sign(1))
 
 ::method 'test009'
-    self~assertSame('subTest01','1',sign(+1.))
+    self~assertSame('1', sign(+1.))
 
 ::method 'test010'
-    self~assertSame('subTest01','-1',sign(-2.0000000000000000))
+    self~assertSame('-1', sign(-2.0000000000000000))
 
 ::method 'test011'
-    self~assertSame('subTest01','1',sign(2.0000000000000005))
+    self~assertSame('1', sign(2.0000000000000005))
 
 ::method 'test012'
-    self~assertSame('subTest01','1',sign(333333333333333333))
+    self~assertSame('1', sign(333333333333333333))
 
 ::method 'test013'
-    self~assertSame('subTest01','-1',sign(-4444444444444444444e12))
+    self~assertSame('-1', sign(-4444444444444444444e12))
 
 ::method 'test014'
-    self~assertSame('subTest01','1',sign(9e999999999))
+    self~assertSame('1', sign(9e999999999))
 
 ::method 'test015'
     self~expectSyntax(93.943)
@@ -181,7 +181,7 @@ return testUnitList
     xre = sign('0.1e9999999999')
 
 ::method 'test020'
-    self~assertSame('subTest01','1',sign('3132'x))
+    self~assertSame('1', sign('3132'x))
 
 ::method 'test021'
     self~expectSyntax(93.943)
@@ -192,74 +192,74 @@ return testUnitList
     xre = sign(-0.1e-999999999)
 
 ::method 'test023'
-    self~assertSame('subTest01','1',sign("123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789"))
+    self~assertSame('1', sign("123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789"))
 
 ::method 'test024'
-    self~assertSame('subTest01','-1',sign(-"123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789"))
+    self~assertSame('-1', sign(-"123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789"))
 
 ::method 'test025'
-    self~assertSame('subTest01','1',sign(- -"123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789"))
+    self~assertSame('1', sign(- -"123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789"))
 
 ::method 'test026'
-    self~assertSame('subTest01','1',sign("123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789"))
+    self~assertSame('1', sign("123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789"))
 
 ::method 'test027'
-    self~assertSame('subTest01','-1',sign(- - -"123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789"))
+    self~assertSame('-1', sign(- - -"123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789"))
 
 ::method 'test028'
     v = 12
     s. = -13
     s.v = .1
-    self~assertSame('subTest01','1',sign(v))
+    self~assertSame('1', sign(v))
 
 ::method 'test029'
     v = 12
     s. = -13
     s.v = .1
-    self~assertSame('subTest01','-1',sign(s.))
+    self~assertSame('-1', sign(s.))
 
 ::method 'test030'
     v = 12
     s. = -13
     s.v = .1
-    self~assertSame('subTest01','1',sign(s.12))
+    self~assertSame('1', sign(s.12))
 
 ::method 'test031'
-    self~assertSame('subTest01',1,sign(substr('route 66',7,2)))
+    self~assertSame(1, sign(substr('route 66',7,2)))
 
 ::method 'test032'
-    self~assertSame('subTest01',1,sign(17+4))
+    self~assertSame(1, sign(17+4))
 
 ::method 'test033'
-    self~assertSame('subTest01',-1,sign(17-21))
+    self~assertSame(-1, sign(17-21))
 
 ::method 'test034'
-    self~assertSame('subTest01',0,sign(17+4-21.000000000000005))
+    self~assertSame(0, sign(17+4-21.000000000000005))
 
 ::method 'test035'
-    self~assertSame('subTest01','-1',sign(0.999999995-1))
+    self~assertSame('-1', sign(0.999999995-1))
 
 ::method 'test036'
-    self~assertSame('subTest01','0',sign(0.999999996-1))
+    self~assertSame('0', sign(0.999999996-1))
 
 ::method 'test037'
-    self~assertSame('subTest01','0',sign(1.000000000-1))
+    self~assertSame('0', sign(1.000000000-1))
 
 ::method 'test038'
-    self~assertSame('subTest01','0',sign(1.000000004-1))
+    self~assertSame('0', sign(1.000000004-1))
 
 ::method 'test039'
-    self~assertSame('subTest01','1',sign(1.000000005-1))
+    self~assertSame('1', sign(1.000000005-1))
 
 ::method 'test040'
-    self~assertSame('subTest01','-1',sign('-'||'12'))
+    self~assertSame('-1', sign('-'||'12'))
 
 ::method 'test041'
     self~expectSyntax(93.943)
     xre = sign('-'||'-12')
 
 ::method 'test042'
-    self~assertSame('subTest01','1',sign('1'||'23'||'456'||'7890'))
+    self~assertSame('1', sign('1'||'23'||'456'||'7890'))
 
 ::method 'test043'
     self~expectSyntax(93.943)
@@ -270,7 +270,7 @@ return testUnitList
     xre = sign(17+'c')
 
 ::method 'test045'
-    self~assertSame('subTest01','-1',sign('17'-'1.e2'))
+    self~assertSame('-1', sign('17'-'1.e2'))
 
 ::method 'test046'
     self~expectSyntax(93.943)
@@ -280,16 +280,16 @@ return testUnitList
     x = 0.00001e-12
     v = x
     x = sign(x)
-    self~assertSame('subTest01',1,x)
+    self~assertSame(1, x)
 
 -- from bif.testgroup
    -- test the BIF, using examples from the documentation
 ::method "test_SIGN"
-    self~assertEquals("subTest1" ,  1 , SIGN('12.3')    )
-    self~assertEquals("subTest2" , -1 , SIGN(' -0.307') )
-    self~assertEquals("subTest3" ,  0 , SIGN(0.0)       )
+    self~assertEquals(1, SIGN('12.3'))
+    self~assertEquals(-1, SIGN(' -0.307'))
+    self~assertEquals(0, SIGN(0.0))
 
    -- new tests
-    self~assertEquals("subTest4" ,  0 , SIGN(-0.0)      )
+    self~assertEquals(0, SIGN(-0.0))
 
 

@@ -117,27 +117,27 @@ end
       optionally list of mandatory test methods                      */
 return testGroupList
 
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
-::class "logicalOperators.testGroup" subclass TestCase public
+::class "logicalOperators.testGroup" subclass ooTestCase public
 
 ::method "test_logical_operators"
-   self~assertFalse( "subTest1"  , 0&0   )
-   self~assertFalse( "subTest2"  , 1&0   )
-   self~assertFalse( "subTest3"  , 0&1   )
-   self~assertTrue(  "subTest4"  , 1&1   )
-   self~assertFalse( "subTest5"  , 0&1&0 )
-   self~assertTrue(  "subTest6"  , 1&1&1 )
-   self~assertFalse( "subTest7"  , 0|0   )
-   self~assertTrue(  "subTest8"  , 1|0   )
-   self~assertTrue(  "subTest9"  , 0|1   )
-   self~assertTrue(  "subTest10" , 0|1|0 )
-   self~assertTrue(  "subTest11" , 1|0|1 )
-   self~assertTrue(  "subTest12" , 1&&0  )
-   self~assertTrue(  "subTest13" , 0&&1  )
-   self~assertFalse( "subTest14" , 1&&1  )
-   self~assertFalse( "subTest15" , 0&&0  )
-   self~assertFalse( "subTest16" , \1    )
-   self~assertTrue(  "subTest17" , \0    )
+   self~assertFalse(0&0)
+   self~assertFalse(1&0)
+   self~assertFalse(0&1)
+   self~assertTrue(1&1)
+   self~assertFalse(0&1&0)
+   self~assertTrue(1&1&1)
+   self~assertFalse(0|0)
+   self~assertTrue(1|0)
+   self~assertTrue(0|1)
+   self~assertTrue(0|1|0)
+   self~assertTrue(1|0|1)
+   self~assertTrue(1&&0)
+   self~assertTrue(0&&1)
+   self~assertFalse(1&&1)
+   self~assertFalse(0&&0)
+   self~assertFalse(\1)
+   self~assertTrue(\0)
 
 

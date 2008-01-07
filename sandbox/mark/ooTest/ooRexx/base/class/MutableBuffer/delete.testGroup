@@ -117,16 +117,16 @@ end
       optionally list of mandatory test methods                      */
 return testGroupList
 
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
-::class "delete.testGroup" subclass TestCase public
+::class "delete.testGroup" subclass ooTestCase public
 
 ::METHOD "testDelete"
    b = .mutableBuffer~new("1234567890")
    b~delete(11)
-   self~AssertEquals("Delete failed 1","1234567890",b~string)
+   self~AssertEquals("1234567890", b~string, "Delete failed 1")
    b~delete(1,2)
-   self~AssertEquals("Delete failed 2","34567890",b~string)
+   self~AssertEquals("34567890", b~string, "Delete failed 2")
 ::METHOD "testDeleteSyntax1"
    b = .mutableBuffer~new("1234567890")
    self~expectSyntax(93.903)

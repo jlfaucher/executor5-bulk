@@ -111,10 +111,10 @@
       optionally list of mandatory test methods                      */
 return testUnitList
 
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
 -- class named exactly like file
-::class "QUEUED.testGroup" subclass TestCase public
+::class "QUEUED.testGroup" subclass ooTestCase public
 
 ::method 'test000'
 -- clear the queue
@@ -127,28 +127,28 @@ return testUnitList
     xre = queued('an argument is invalid')
 
 ::method 'test002'
-    self~assertSame('subTest01',0,queued())
+    self~assertSame(0, queued())
 
 ::method 'test003'
     push 'A pushed line'
-    self~assertSame('subTest01',1,queued())
+    self~assertSame(1, queued())
 
 ::method 'test004'
     push 'A queue-d line'
-    self~assertSame('subTest01',2,queued())
+    self~assertSame(2, queued())
 
 ::method 'test005'
     do i = 1 To 1000
         push 'A queue-d line'
     end
-    self~assertSame('subTest01',1002,queued())
+    self~assertSame(1002, queued())
 
 ::method 'test006'
     z = queued()
     do i = 1 to z
         pull answer .
     end
-    self~assertSame('subTest01',0,queued())
+    self~assertSame(0, queued())
 
 ::method 'test007'
     self~expectSyntax(40.4)

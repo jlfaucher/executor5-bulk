@@ -117,9 +117,9 @@ end
       optionally list of mandatory test methods                      */
 return testGroupList
 
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
-::class "String_lengthMethod.testGroup" subclass TestCase public
+::class "String_lengthMethod.testGroup" subclass ooTestCase public
 
 ::method 'test000'
     .local~v1 = 'a'
@@ -130,99 +130,99 @@ return testGroupList
     .local~v100000 = right('z',100000)
 
 ::method 'test001'
-    self~assertSame('subTest01','0',''~length())
+    self~assertSame('0', ''~length())
 
 ::method 'test002'
-    self~assertSame('subTest01','0',''x~length())
+    self~assertSame('0', ''x~length())
 
 ::method 'test0003'
-    self~assertSame('subTest01','1','00'x~length())
+    self~assertSame('1', '00'x~length())
 
 ::method 'test004'
-    self~assertSame('subTest01','2','00'~length())
+    self~assertSame('2', '00'~length())
 
 ::method 'test005'
-    self~assertSame('subTest01','1',.v1~length())
+    self~assertSame('1', .v1~length())
 
 ::method 'test006'
-    self~assertSame('subTest01','30',.v30~length())
+    self~assertSame('30', .v30~length())
 
 ::method 'test007'
-    self~assertSame('subTest01','255',.v255~length())
+    self~assertSame('255', .v255~length())
 
 ::method 'test008'
-    self~assertSame('subTest01','256',.v256~length())
+    self~assertSame('256', .v256~length())
 
 ::method 'test009'
-    self~assertSame('subTest01','32768',.v32768~length())
+    self~assertSame('32768', .v32768~length())
 
 ::method 'test010'
-    self~assertSame('subTest01','100000',.v100000~length())
+    self~assertSame('100000', .v100000~length())
 
 ::method 'test011'
-    self~assertSame('subTest01','250','zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz'~length())
+    self~assertSame('250', 'zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz'~length())
 
 ::method 'test012'
     zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz = '1'
-    self~assertSame('subTest01','1',zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz~length())
+    self~assertSame('1', zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz~length())
 
 ::method 'test013'
     zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz = '1'
-    self~assertSame('subTest01','4',(zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz||'...')~length())
+    self~assertSame('4', (zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz||'...')~length())
 
 ::method 'test014'
     zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz = '1'
-    self~assertSame('subTest01','100001',(zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz||.v100000)~length())
+    self~assertSame('100001', (zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz||.v100000)~length())
 
 ::method 'test015'
     xre = '200'
-    self~assertSame('subTest01',.true,'8888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888'X~length() == xre)
+    self~assertSame(.true, '8888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888'X~length() == xre)
 
 ::method 'test016'
-    self~assertSame('subTest01','6',.v100000~length()~length())
+    self~assertSame('6', .v100000~length()~length())
 
 ::method 'test017'
-    self~assertSame('subTest01','9',(.v100000~length()||'abc')~length())
+    self~assertSame('9', (.v100000~length()||'abc')~length())
 
 ::method 'test018'
-    self~assertSame('subTest01','2',(17+4)~length())
+    self~assertSame('2', (17+4)~length())
 
 ::method 'test019'
-    self~assertSame('subTest01','14',(+10000000000000000000000000000000000)~length())
+    self~assertSame('14', (+10000000000000000000000000000000000)~length())
 
 ::method 'test020'
-    self~assertSame('subTest01','36','+10000000000000000000000000000000000'~length())
+    self~assertSame('36', '+10000000000000000000000000000000000'~length())
 
 ::method 'test021'
     len1 = 1
-    self~assertSame('subTest01',len1,1.0000000001**1000000~length())
+    self~assertSame(len1, 1.0000000001**1000000~length())
 
 ::method 'test022'
-    self~assertSame('subTest01','4',1111~length())
+    self~assertSame('4', 1111~length())
 
 ::method 'test023'
-    self~assertSame('subTest01','4','1111'~length())
+    self~assertSame('4', '1111'~length())
 
 ::method 'test024'
-    self~assertSame('subTest01','4','f1f1f1f1'x~length())
+    self~assertSame('4', 'f1f1f1f1'x~length())
 
 ::method 'test025'
-    self~assertSame('subTest01','3',...~length())
+    self~assertSame('3', ...~length())
 
 ::method 'test026'
-    self~assertSame('subTest01','2',nv~length())
+    self~assertSame('2', nv~length())
 
 ::method 'test027'
-    self~assertSame('subTest01','3',nv.~length())
+    self~assertSame('3', nv.~length())
 
 ::method 'test028'
-    self~assertSame('subTest01','4',nv.i~length())
+    self~assertSame('4', nv.i~length())
 
 ::method 'test029'
-    self~assertSame('subTest01','4',nv.i~length())
+    self~assertSame('4', nv.i~length())
 
 ::method 'test030'
-    self~assertSame('subTest01',8,'abcdefgh'~length())
+    self~assertSame(8, 'abcdefgh'~length())
 
 ::method 'test040'
     .local~remove(v1)
@@ -235,9 +235,9 @@ return testGroupList
 -- from bif.testgroup
 -- test the BIF, using examples from the documentation
 ::method 'test_length'
-    self~assertSame('subTest01',8,'abcdefgh'~length())
-    self~assertSame('subTest02',8,'abc defg'~length())
-    self~assertSame('subTest03',0,''~length())
+    self~assertSame(8, 'abcdefgh'~length())
+    self~assertSame(8, 'abc defg'~length())
+    self~assertSame(0, ''~length())
 
 
 

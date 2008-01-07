@@ -120,9 +120,9 @@ return testGroupList
 
 
 
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
-::class "BEEP.testGroup" subclass TestCase public
+::class "BEEP.testGroup" subclass ooTestCase public
 
 ::method "test_1"
    retc = beep(262 /* middle C */, 1)  /* 1/1000 second or standard beep */

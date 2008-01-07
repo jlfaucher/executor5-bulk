@@ -117,17 +117,17 @@ end
       optionally list of mandatory test methods                      */
 return testGroupList
 
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
-::class "caselessCountStr.testGroup" subclass TestCase public
+::class "caselessCountStr.testGroup" subclass ooTestCase public
 
 ::method "test_COUNTSTR_caseless"
 
-   self~assertEquals("subTest1" , 1 , 'J0kKk0'~caselessCountStr('KK') )
-   self~assertEquals("subTest2" , 2 , 'J0kKkK0'~caselessCountStr('KK') )
-   self~assertEquals("subTest3" , 2 , 'J0kKkK0'~caselessCountStr('kK') )
-   self~assertEquals("subTest4" , 2 , 'J0kKkK0'~caselessCountStr('Kk') )
-   self~assertEquals("subTest5" , 2 , 'J0kKkK0'~caselessCountStr('kk') )
+   self~assertEquals(1, 'J0kKk0'~caselessCountStr('KK'))
+   self~assertEquals(2, 'J0kKkK0'~caselessCountStr('KK'))
+   self~assertEquals(2, 'J0kKkK0'~caselessCountStr('kK'))
+   self~assertEquals(2, 'J0kKkK0'~caselessCountStr('Kk'))
+   self~assertEquals(2, 'J0kKkK0'~caselessCountStr('kk'))
 
 
 

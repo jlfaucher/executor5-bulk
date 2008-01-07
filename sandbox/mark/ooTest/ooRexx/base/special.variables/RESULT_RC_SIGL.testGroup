@@ -59,74 +59,26 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
+  parse source . . fileSpec
+
+  lines = .array~new
+  do i = 1 until lines[i] = "*/"
+    lines[i] = sourceline(i)
+  end
+
+  group = .TestGroup~new(fileSpec, lines)
+  group~add(.RESULT_RC_SIGL.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
 
 
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
--------------------------------------------------------------------------------------------
--- ===> adapt the "testGroupList" to your testCase classes; each element in the list is <===
--- ===> an array object, the first element containing the testCase class object, the   <===
--- ===> second element is a list of test method names which are regarded to be         <===
--- ===> mandatory (if the list remains empty all test methods are mandatory)           <===
-
-   /* list of array objects, each containing the testGroup class object and an
-      optional list of mandatory test case methods name                       */
-
-mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
-testGroupList=.list~of( .array~of(.RESULT_RC_SIGL.testGroup,  mandatoryTestMethods) )
-
-
--------------------------------------------------------------------------------------------
--- ===> the following code needs not to be individualized                              <===
-
-   -- read top comment, containing infos about this program
-arrLines=.array~new
-do i=1 to 150 until arrLines[i]="*/"
-   arrLines[i]=sourceline(i)
-end
-      -- supply information for the testClass(es) in this file; the class attribute
-      -- "TestCaseInfo" (a directory object, index points to a queue) will store
-      -- the parsed infos
-aTestGroupClass=testGroupList~at(testGroupList~first)[1] -- get first testClass
-
-   -- will parse the array lines and store result in class object
-call makeDirTestInfo aTestGroupClass, arrLines
-tmpDir=aTestGroupClass~TestCaseInfo
-parse source s   -- op_sys invocationType fullPathToThisFile
-tmpDir~setentry("test_Case-source", s)
-
-   -- now add this directory to other testCase classes, if any left
-do arr over testGroupList
-   if arr[1]=aTestGroupClass then iterate  -- already handled
-   arr[1]~TestCaseInfo=tmpDir             -- save info in class object
-end
-
--- if this file is CALLed or REQUIRED then define an entry "bRunTestLocally" in .local
--- and set it to .false; this way the independent local invocation of the tests is inhibited
-if .local~hasentry("bRunTestsLocally")=.false then
-   .local~bRunTestsLocally=.true -- if this file is executed directly, then run tests for debugging
-
-if .bRunTestsLocally=.true then  -- run ALL tests in this test unit
-do
-   ts=.testSuite~new             -- create a testSuite
-   do arr over testGroupList
-      -- create a testSuite for the given test case class, use all its testmethods
-      ts~addTest( .testSuite~new(arr[1]))
-   end
-   -- testResult=.testSuite~new(testGroupClass)~run
-   testResult=ts~run       -- now run all the tests
-
-   call simpleDumpTestResults testResult
-end
-
-   /* return list of array objects containing test case classes and
-      optionally list of mandatory test methods                      */
-return testGroupList
-
-
-
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
-
-::class "RESULT_RC_SIGL.testGroup" subclass TestCase public
+::class "RESULT_RC_SIGL.testGroup" subclass ooTestCase public
 
 ::method init
   expose fileName
@@ -162,43 +114,43 @@ return testGroupList
 
       -- "rgfTestMethodWithReturn"
    drop result             -- make sure, variable is dropped
-   self~assertSame("subTest1" , "ReturnValue",   self~rgfTestMethodWithReturn          )
-   self~assertFalse("subTest2",  var("RESULT") ) -- must not be set !
+   self~assertSame("ReturnValue", self~rgfTestMethodWithReturn)
+   self~assertFalse(var("RESULT")) -- must not be set !
 
       -- via a message object
    .message~new(self, "rgfTestMethodWithReturn")~send
-   self~assertSame("subTest3" , "ReturnValue",   result                                )
+   self~assertSame("ReturnValue", result)
       -- now that a function/method was invoked, Rexx dropped "RESULT"
-   self~assertFalse("subTest4",  var("RESULT") ) -- must not be set !
+   self~assertFalse(var("RESULT")) -- must not be set !
 
    .message~new(self, "rgfTestMethodWithReturn")~send
-   self~assertTrue("subTest5",   var("RESULT") )  -- must be set !
+   self~assertTrue(var("RESULT"))  -- must be set !
 
 
       -- routine
-   self~assertSame("subTest6" , "ReturnValue",   rgfTestRoutineWithReturn()           )
-   self~assertFalse("subTest7",  var("RESULT") ) -- must not be set !
+   self~assertSame("ReturnValue", rgfTestRoutineWithReturn())
+   self~assertFalse(var("RESULT")) -- must not be set !
 
    call rgfTestRoutineWithReturn
-   self~assertSame("subTest8" , "ReturnValue",   result                               )
+   self~assertSame("ReturnValue", result)
       -- now that a function/method was invoked, Rexx dropped "RESULT"
-   self~assertFalse("subTest9",  var("RESULT") )  -- must not be set !
+   self~assertFalse(var("RESULT"))  -- must not be set !
 
    call rgfTestRoutineWithReturn
-   self~assertTrue("subTest10",  var("RESULT") )   -- must be set !
+   self~assertTrue(var("RESULT"))   -- must be set !
 
 
       -- function
-   self~assertSame("subTest11" , "ReturnValue",  rgfTestProcedureWithReturn()         )
-   self~assertFalse("subTest12", var("RESULT") ) -- must not be set !
+   self~assertSame("ReturnValue", rgfTestProcedureWithReturn())
+   self~assertFalse(var("RESULT")) -- must not be set !
 
    call rgfTestProcedureWithReturn
-   self~assertSame("subTest13" , "ReturnValue",  result                               )
+   self~assertSame("ReturnValue", result)
       -- now that a function/method was invoked, Rexx dropped "RESULT"
-   self~assertFalse("subTest14", var("RESULT") )  -- must not be set !
+   self~assertFalse(var("RESULT"))  -- must not be set !
 
    call rgfTestProcedureWithReturn
-   self~assertTrue("subTest15",  var("RESULT") )   -- must be set !
+   self~assertTrue(var("RESULT"))   -- must be set !
 
    exit
 
@@ -210,47 +162,47 @@ return testGroupList
 
       -- "rgfTestMethodWithExit"
    drop result             -- make sure, variable is dropped
-   self~assertSame("subTest1" , "ExitValue",   self~rgfTestMethodWithExit          )
-   self~assertFalse("subTest2",  var("RESULT") ) -- must not be set !
+   self~assertSame("ExitValue", self~rgfTestMethodWithExit)
+   self~assertFalse(var("RESULT")) -- must not be set !
 
       -- via a message object
    .message~new(self, "rgfTestMethodWithExit")~send
-   self~assertSame("subTest3" , "ExitValue",  result                              )
+   self~assertSame("ExitValue", result)
       -- now that a function/method was invoked, Rexx dropped "RESULT"
-   self~assertFalse("subTest4",  var("RESULT") ) -- must not be set !
+   self~assertFalse(var("RESULT")) -- must not be set !
 
    .message~new(self, "rgfTestMethodWithExit")~send
-   self~assertTrue("subTest5",   var("RESULT") )  -- must be set !
+   self~assertTrue(var("RESULT"))  -- must be set !
 
 
       -- routine
-   self~assertSame("subTest6" , "ExitValue",   rgfTestRoutineWithExit()           )
-   self~assertFalse("subTest7",  var("RESULT") ) -- must not be set !
+   self~assertSame("ExitValue", rgfTestRoutineWithExit())
+   self~assertFalse(var("RESULT")) -- must not be set !
 
    call rgfTestRoutineWithExit
-   self~assertSame("subTest8" , "ExitValue",   result                             )
+   self~assertSame("ExitValue", result)
       -- now that a function/method was invoked, Rexx dropped "RESULT"
-   self~assertFalse("subTest9",  var("RESULT") )  -- must not be set !
+   self~assertFalse(var("RESULT"))  -- must not be set !
 
    call rgfTestRoutineWithExit
-   self~assertTrue("subTest10",  var("RESULT") )   -- must be set !
+   self~assertTrue(var("RESULT"))   -- must be set !
 
 
 ::method "test_Result_with_Reply"
 
       -- "rgfTestMethodWithReply"
    drop result             -- make sure, variable is dropped
-   self~assertSame("subTest1" , "ReplyValue",   self~rgfTestMethodWithReply          )
-   self~assertFalse("subTest2",  var("RESULT") ) -- must not be set !
+   self~assertSame("ReplyValue", self~rgfTestMethodWithReply)
+   self~assertFalse(var("RESULT")) -- must not be set !
 
       -- via a message object
    .message~new(self, "rgfTestMethodWithReply")~send
-   self~assertSame("subTest3" , "ReplyValue",  result                              )
+   self~assertSame("ReplyValue", result)
       -- now that a function/method was invoked, Rexx dropped "RESULT"
-   self~assertFalse("subTest4",  var("RESULT") ) -- must not be set !
+   self~assertFalse(var("RESULT")) -- must not be set !
 
    .message~new(self, "rgfTestMethodWithReply")~send
-   self~assertTrue("subTest5",   var("RESULT") )  -- must be set !
+   self~assertTrue(var("RESULT"))  -- must be set !
 
 
 ::method  rgfTestMethodWithReturn
@@ -274,21 +226,21 @@ return testGroupList
    if var("RESULT") then tmpResult=result -- save value of "result"
    if var("RC")     then tmpRC    =rc     -- save value of "rc"
 
-   self~assertTrue("subTest1", var("TMPRESULT"))
-   self~assertFalse("subTest1b", var("TMPRC"))
-   self~assertSame("subTest2", "234", tmpResult)  -- value of EXIT in external file
+   self~assertTrue(var("TMPRESULT"))
+   self~assertFalse(var("TMPRC"))
+   self~assertSame("234", tmpResult)  -- value of EXIT in external file
 
       -- routine
-   self~assertSame("subTest5" , "ReturnValue",   testExternalWithReturn()           )
-   self~assertFalse("subTest6",  var("RESULT") ) -- must not be set !
+   self~assertSame("ReturnValue", testExternalWithReturn())
+   self~assertFalse(var("RESULT")) -- must not be set !
 
    call testExternalWithReturn
-   self~assertSame("subTest7" , "ReturnValue",   result                               )
+   self~assertSame("ReturnValue", result)
       -- now that a function/method was invoked, Rexx dropped "RESULT"
-   self~assertFalse("subTest8",  var("RESULT") )  -- must not be set !
+   self~assertFalse(var("RESULT"))  -- must not be set !
 
    call testExternalWithReturn
-   self~assertTrue("subTest9" ,  var("RESULT") )   -- must be set !
+   self~assertTrue(var("RESULT"))   -- must be set !
 
 
    -- call as a Rexx function, hence "result" will be set
@@ -299,21 +251,21 @@ return testGroupList
    if var("RESULT") then tmpResult=result -- save value of "result"
    if var("RC")     then tmpRC    =rc     -- save value of "rc"
 
-   self~assertTrue("subTest1", var("TMPRESULT"))
-   self~assertFalse("subTest1b", var("TMPRC"))
-   self~assertSame("subTest2", "234", tmpResult)  -- value of EXIT in external file
+   self~assertTrue(var("TMPRESULT"))
+   self~assertFalse(var("TMPRC"))
+   self~assertSame("234", tmpResult)  -- value of EXIT in external file
 
       -- routine
-   self~assertSame("subTest3", "ExitValue",   testExternalWithExit()           )
-   self~assertFalse("subTest4",  var("RESULT") ) -- must not be set !
+   self~assertSame("ExitValue", testExternalWithExit())
+   self~assertFalse(var("RESULT")) -- must not be set !
 
    call testExternalWithExit
-   self~assertSame("subTest5", "ExitValue",   result                             )
+   self~assertSame("ExitValue", result)
       -- now that a function/method was invoked, Rexx dropped "RESULT"
-   self~assertFalse("subTest6",  var("RESULT") )  -- must not be set !
+   self~assertFalse(var("RESULT"))  -- must not be set !
 
    call testExternalWithExit
-   self~assertTrue("subTest7",  var("RESULT") )   -- must be set !
+   self~assertTrue(var("RESULT"))   -- must be set !
 
 
    -- now address external Rexx program as a command, hence retrieving a "RC"-value
@@ -336,9 +288,9 @@ return testGroupList
    address (currentEnvironment)              -- restore current environment
 
 --say pp(var("TMPRESULT"))
-   self~assertFalse("subTest1", var("TMPRESULT"))
-   self~assertTrue("subTest2", var("TMPRC"))
-   self~assertSame("subTest3", "234", tmpRC)  -- value of EXIT in external file
+   self~assertFalse(var("TMPRESULT"))
+   self~assertTrue(var("TMPRC"))
+   self~assertSame("234", tmpRC)  -- value of EXIT in external file
 
 
    -- check whether SIGL points to the correct lines
@@ -348,17 +300,17 @@ return testGroupList
 
    label_1 :
       -- say "l1:" sigl pp(sourceline(sigl))
-      self~assertEquals("subtest1", "signal label_1", sourceline(sigl))
+      self~assertEquals("signal label_1", sourceline(sigl))
       signal label_3
 
    label_2 :
       -- say "l2:" sigl pp(sourceline(sigl))
-      self~assertEquals("subtest2", "signal label_2", sourceline(sigl))
+      self~assertEquals("signal label_2", sourceline(sigl))
       exit
 
    label_3 :
       -- say "l3:" sigl pp(sourceline(sigl))
-      self~assertEquals("subtest3", "signal label_3", sourceline(sigl))
+      self~assertEquals("signal label_3", sourceline(sigl))
       signal label_2
 
 

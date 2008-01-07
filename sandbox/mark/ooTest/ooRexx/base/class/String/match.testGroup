@@ -117,16 +117,16 @@ end
       optionally list of mandatory test methods                      */
 return testGroupList
 
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
-::class "match.testGroup" subclass TestCase public
+::class "match.testGroup" subclass ooTestCase public
 
 ::method "test_Match"
 
     str="abcDEFghi"
-    self~assertSame("subTest_01" , 1, str~match(2, "bc"))
-    self~assertSame("subTest_02",  1, str~match(2, "bcD"))
-    self~assertSame("subTest_03" , 0, str~match(2, "bcd"))
-    self~assertSame("subTest_04" , 0, str~match(2, "ab"))
-    self~assertSame("subTest_05",  0, str~match(2, "cD"))
+    self~assertSame(1, str~match(2, "bc"))
+    self~assertSame(1, str~match(2, "bcD"))
+    self~assertSame(0, str~match(2, "bcd"))
+    self~assertSame(0, str~match(2, "ab"))
+    self~assertSame(0, str~match(2, "cD"))
 

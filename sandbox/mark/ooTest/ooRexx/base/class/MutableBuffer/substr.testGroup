@@ -117,9 +117,9 @@ end
       optionally list of mandatory test methods                      */
 return testGroupList
 
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
-::class "substr.testGroup" subclass TestCase public
+::class "substr.testGroup" subclass ooTestCase public
 
 ::method 'test000'
     .local~vblank = ' '
@@ -135,31 +135,31 @@ return testGroupList
 
 ::method 'test002'
     mb = .mutablebuffer~new('')
-    self~assertSame('subTest01',,mb~substr(1))
+    self~assertSame(, mb~substr(1))
 
 ::method 'test003'
     mb = .mutablebuffer~new(.vblank)
-    self~assertSame('subTest01',' ',mb~substr('31'x))
+    self~assertSame(' ', mb~substr('31'x))
 
 ::method 'test004'
     mb = .mutablebuffer~new('2A'x)
-    self~assertSame('subTest01','',mb~substr(0002))
+    self~assertSame('', mb~substr(0002))
 
 ::method 'test005'
     mb = .mutablebuffer~new('abcdefghijklmnopqrstuvwxyz1234')
-    self~assertSame('subTest01','4',mb~substr('00030'))
+    self~assertSame('4', mb~substr('00030'))
 
 ::method 'test006'
     mb = .mutablebuffer~new(.v256)
-    self~assertSame('subTest01','2345678',mb~substr(2.5E+2))
+    self~assertSame('2345678', mb~substr(2.5E+2))
 
 ::method 'test007'
     mb = .mutablebuffer~new(copies('5C'x,10000))
-    self~assertSame('subTest01','',mb~substr('5E+4'))
+    self~assertSame('', mb~substr('5E+4'))
 
 ::method 'test008'
     mb = .mutablebuffer~new(copies('5C'x,10000))
-    self~assertSame('subTest01',,mb~substr('+999999999'))
+    self~assertSame(, mb~substr('+999999999'))
 
 ::method 'test009'
     self~expectSyntax(93.905)
@@ -169,28 +169,28 @@ return testGroupList
 ::method 'test010'
     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1234567890'
     mb = .mutablebuffer~new(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX)
-    self~assertSame('subTest01','1234567890',mb~substr(1))
+    self~assertSame('1234567890', mb~substr(1))
 
 ::method 'test011'
     xre = copies('68'x,200)
     mb = .mutablebuffer~new('6868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868'X)
-    self~assertSame('subTest01',.true,mb~substr(1) == xre)
+    self~assertSame(.true, mb~substr(1) == xre)
 
 ::method 'test012'
     mb = .mutablebuffer~new(.v30)
-    self~assertSame('subTest01','34',mb~substr(29))
+    self~assertSame('34', mb~substr(29))
 
 ::method 'test013'
     mb = .mutablebuffer~new(.v30)
-    self~assertSame('subTest01','4',mb~substr(30))
+    self~assertSame('4', mb~substr(30))
 
 ::method 'test014'
     mb = .mutablebuffer~new(.v30)
-    self~assertSame('subTest01','',mb~substr(31))
+    self~assertSame('', mb~substr(31))
 
 ::method 'test015'
     mb = .mutablebuffer~new(.v30)
-    self~assertSame('subTest01','klmnopqrstuvwxyz1234',mb~substr('+'||'30303131'x||'.'||'3030'x||'e'||'30'x||000))
+    self~assertSame('klmnopqrstuvwxyz1234', mb~substr('+'||'30303131'x||'.'||'3030'x||'e'||'30'x||000))
 
 ::method 'test016'
     self~expectSyntax(93.905)
@@ -214,27 +214,27 @@ return testGroupList
 
 ::method 'test020'
     mb = .mutablebuffer~new('hasdghj')
-    self~assertSame('subTest01','sdghj',mb~substr(000000000000000000000000000000000000000000003))
+    self~assertSame('sdghj', mb~substr(000000000000000000000000000000000000000000003))
 
 ::method 'test021'
     mb = .mutablebuffer~new('hasdghj')
-    self~assertSame('subTest01','has',mb~substr(1,000000000000000000000000000000000000000000003))
+    self~assertSame('has', mb~substr(1,000000000000000000000000000000000000000000003))
 
 ::method 'test022'
     mb = .mutablebuffer~new('hasdghj')
-    self~assertSame('subTest01','hasdghj33',mb~substr(1,9,+000000000000000000000000000000000000000000003))
+    self~assertSame('hasdghj33', mb~substr(1,9,+000000000000000000000000000000000000000000003))
 
 ::method 'test023'
     mb = .mutablebuffer~new(.v10000)
-    self~assertSame('subTest01',copies('\\\\\\\\\',1111),mb~substr(2))
+    self~assertSame(copies('\\\\\\\\\',1111), mb~substr(2))
 
 ::method 'test024'
     mb = .mutablebuffer~new(.v10000)
-    self~assertSame('subTest01',copies('\\\\\\\\\\',1000),mb~substr(0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001))
+    self~assertSame(copies('\\\\\\\\\\',1000), mb~substr(0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001))
 
 ::method 'test025'
     mb = .mutablebuffer~new('')
-    self~assertSame('subTest01','',mb~substr(2-1,0))
+    self~assertSame('', mb~substr(2-1,0))
 
 ::method 'test026'
     mb = .mutablebuffer~new(.vblank)
@@ -243,83 +243,83 @@ return testGroupList
 
 ::method 'test027'
     mb = .mutablebuffer~new('2A'x)
-    self~assertSame('subTest01','*',mb~substr('31'x,0001))
+    self~assertSame('*', mb~substr('31'x,0001))
 
 ::method 'test028'
     xre = '*'
     mb = .mutablebuffer~new('2A'x)
-    self~assertSame('subTest01',.true,mb~substr('31'x,'3030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303031'x) == xre)
+    self~assertSame(.true, mb~substr('31'x,'3030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303031'x) == xre)
 
 ::method 'test029'
     xre = '* '
     mb = .mutablebuffer~new('2A'x)
-    self~assertSame('subTest01',.true,mb~substr('31'x,'3030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303032'x) == xre)
+    self~assertSame(.true, mb~substr('31'x,'3030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303032'x) == xre)
 
 ::method 'test030'
     mb = .mutablebuffer~new('abcdefghijklmnopqrstuvwxyz1234')
-    self~assertSame('subTest01','         ',mb~substr(0035,'9'))
+    self~assertSame('         ', mb~substr(0035,'9'))
 
 ::method 'test031'
     mb = .mutablebuffer~new('abcdefghijklmnopqrstuvwxyz1234')
-    self~assertSame('subTest01','z1234    ',mb~substr(0026,'9'))
+    self~assertSame('z1234    ', mb~substr(0026,'9'))
 
 ::method 'test032'
     mb = .mutablebuffer~new(.v256)
-    self~assertSame('subTest01','          ',mb~substr('10000','0010'))
+    self~assertSame('          ', mb~substr('10000','0010'))
 
 ::method 'test033'
     mb = .mutablebuffer~new(copies('5C'x,10000))
-    self~assertSame('subTest01','\\\\\\\\\\\',mb~substr('000001',1.1E+1))
+    self~assertSame('\\\\\\\\\\\', mb~substr('000001',1.1E+1))
 
 ::method 'test034'
     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1234567890'
     mb = .mutablebuffer~new(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX)
-    self~assertSame('subTest01','12345',mb~substr(1,5))
+    self~assertSame('12345', mb~substr(1,5))
 
 ::method 'test035'
     mb = .mutablebuffer~new(.v10000)
-    self~assertSame('subTest01','\\',mb~substr(1,0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002))
+    self~assertSame('\\', mb~substr(1,0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002))
 
 ::method 'test036'
     mb = .mutablebuffer~new(.v10000)
-    self~assertSame('subTest01','\\',mb~substr(9998,+0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002))
+    self~assertSame('\\', mb~substr(9998,+0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002))
 
 ::method 'test037'
     mb = .mutablebuffer~new(.v10000)
-    self~assertSame('subTest01','\\',mb~substr(1||'007',+0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002))
+    self~assertSame('\\', mb~substr(1||'007',+0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002))
 
 ::method 'test038'
     mb = .mutablebuffer~new(.v10000)
-    self~assertSame('subTest01','\\\22222222222222',mb~substr(9998,17,+0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002))
+    self~assertSame('\\\22222222222222', mb~substr(9998,17,+0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002))
 
 ::method 'test039'
     mb = .mutablebuffer~new('')
-    self~assertSame('subTest01',copies('|',255),mb~substr((2*3)-1,'2.55E+2','|'))
+    self~assertSame(copies('|',255), mb~substr((2*3)-1,'2.55E+2','|'))
 
 ::method 'test040'
     mb = .mutablebuffer~new(.vblank)
-    self~assertSame('subTest01',' '||copies('@',255),mb~substr(1,200+50+6,'@'))
+    self~assertSame(' '||copies('@',255), mb~substr(1,200+50+6,'@'))
 
 ::method 'test041'
     mb = .mutablebuffer~new('2A'x)
-    self~assertSame('subTest01','*'||copies('7',32767),mb~substr('31'x,32768,4+3))
+    self~assertSame('*'||copies('7',32767), mb~substr('31'x,32768,4+3))
 
 ::method 'test042'
     mb = .mutablebuffer~new('abcdefghijklmnopqrstuvwxyz1234')
-    self~assertSame('subTest01','',mb~substr(00015,'30'x,')'))
+    self~assertSame('', mb~substr(00015,'30'x,')'))
 
 ::method 'test043'
     mb = .mutablebuffer~new(copies('3132333435363738'x,32))
-    self~assertSame('subTest01','8',mb~substr('256',1,':'))
+    self~assertSame('8', mb~substr('256',1,':'))
 
 ::method 'test044'
     mb = .mutablebuffer~new(copies('\',10000))
-    self~assertSame('subTest01','\********',mb~substr('00010000','39'x,'2A'x))
+    self~assertSame('\********', mb~substr('00010000','39'x,'2A'x))
 
 ::method 'test045'
     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1234567890'
     mb = .mutablebuffer~new(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX)
-    self~assertSame('subTest01','1234567890************',mb~substr(1,22,'*'))
+    self~assertSame('1234567890************', mb~substr(1,22,'*'))
 
 ::method 'test046'
     self~expectSyntax(93.922)
@@ -338,15 +338,15 @@ return testGroupList
 
 ::method 'test049'
     mb = .mutablebuffer~new(.v30)
-    self~assertSame('subTest01','abcd',mb~substr(1,04,))
+    self~assertSame('abcd', mb~substr(1,04,))
 
 ::method 'test050'
     mb = .mutablebuffer~new(2*7 7+7+7+7+7+7 84/4 700-699)
-    self~assertSame('subTest01','14 42 21 1',mb~substr(699-698,5*2))
+    self~assertSame('14 42 21 1', mb~substr(699-698,5*2))
 
 ::method 'test051'
     mb = .mutablebuffer~new('2*7 7+7+7+7+7+7 84/4 700-699')
-    self~assertSame('subTest01','2*7 7+7+7+',mb~substr(699-698,5*2))
+    self~assertSame('2*7 7+7+7+', mb~substr(699-698,5*2))
 
 ::method 'test052'
     mb = .mutablebuffer~new('2*7 7+7+7+7+7+7 84/4 700-699')
@@ -360,34 +360,34 @@ return testGroupList
 
 ::method 'test054'
     mb = .mutablebuffer~new(2*7 7+7+7+7+7+7 84/4 700-699)
-    self~assertSame('subTest01','14 42 21 144444',mb~substr(699-698,5*3,2*2))
+    self~assertSame('14 42 21 144444', mb~substr(699-698,5*3,2*2))
 
 ::method 'test055'
     numeric digits 1
     mb = .mutablebuffer~new(2*7 7+7+7+7+7+7 84/4 700-699)
-    self~assertSame('subTest01','1E+1 5E+1 ',mb~substr(6.99-6.00,5*2))
+    self~assertSame('1E+1 5E+1 ', mb~substr(6.99-6.00,5*2))
 
 ::method 'test056'
     numeric digits 1
     mb = .mutablebuffer~new('2*7 7+7+7+7+7+7 84/4 700-699')
-    self~assertSame('subTest01','2*7 7+7+7+',mb~subStr(6.99-6.00,5*2))
+    self~assertSame('2*7 7+7+7+', mb~subStr(6.99-6.00,5*2))
 
 ::method 'test057'
     numeric digits 1
     mb = .mutablebuffer~new(2*7 7+7+7+7+7+7 84/4 700-699)
-    self~assertSame('subTest01','1E+1 5E+1 2E+1 04444',mb~substr(6.99-6.00,5*3,2*2))
+    self~assertSame('1E+1 5E+1 2E+1 04444', mb~substr(6.99-6.00,5*3,2*2))
 
 ::method 'test058'
     mb = .mutablebuffer~new(nv)
-    self~assertSame('subTest01','NV*',mb~substr(1,3,'*'))
+    self~assertSame('NV*', mb~substr(1,3,'*'))
 
 ::method 'test059'
     mb = .mutablebuffer~new(nv.~string)
-    self~assertSame('subTest01','NV.'||copies('*',10000),mb~substr(1,10003,'*'))
+    self~assertSame('NV.'||copies('*',10000), mb~substr(1,10003,'*'))
 
 ::method 'test060'
     mb = .mutablebuffer~new(nv.10)
-    self~assertSame('subTest01','NV.10*******************************************************',mb~substr(1,60,'*'))
+    self~assertSame('NV.10*******************************************************', mb~substr(1,60,'*'))
 
 ::method 'test061'
     self~expectSyntax(93.905)
@@ -491,35 +491,35 @@ return testGroupList
 
 ::method 'test081'
     mb = .mutablebuffer~new(word('ABCD BCDE CDEF DEFG',2))
-    self~assertSame('subTest01','CDE',mb~substr(left(subWord('10 20 30 40',2,1),1)))
+    self~assertSame('CDE', mb~substr(left(subWord('10 20 30 40',2,1),1)))
 
 ::method 'test082'
     mb = .mutablebuffer~new(reverse('ABCD BCDE CDEF'))
-    self~assertSame('subTest01','FEDC EDCB DCBAXXXXXXXX',mb~substr(dataType(7,'N'),x2d(16),left('XYZ',1)))
+    self~assertSame('FEDC EDCB DCBAXXXXXXXX', mb~substr(dataType(7,'N'),x2d(16),left('XYZ',1)))
 
 ::method 'test083'
     mb = .mutablebuffer~new(subWord('AB BC CD ',2,5))
-    self~assertSame('subTest01','C CD',mb~substr(pos('O','WORD'),compare('1234','123')))
+    self~assertSame('C CD', mb~substr(pos('O','WORD'),compare('1234','123')))
 
 ::method 'test084'
     mb = .mutablebuffer~new(dataType(7))
-    self~assertSame('subTest01','NUM'||'d1d1d1d1'X,mb~substr(compare('X','Y'),pos('X','      X'),d2c(209)))
+    self~assertSame('NUM'||'d1d1d1d1'X, mb~substr(compare('X','Y'),pos('X','      X'),d2c(209)))
 
 ::method 'test085'
     mb = .mutablebuffer~new('1234567890')
-    self~assertSame('subTest01','56',mb~substr(2,8)~subStr(2,6)~subStr(2,4)~subStr(2,2))
+    self~assertSame('56', mb~substr(2,8)~subStr(2,6)~subStr(2,4)~subStr(2,2))
 
 ::method 'test086'
     mb = .mutablebuffer~new('AB BC CD DE EF')
-    self~assertSame('subTest01',' EFYYYYYYYYYYYYYYYYYYY',mb~substr('1234567890'~subStr(1,2),22,'XYZ'~subStr(2,1)))
+    self~assertSame(' EFYYYYYYYYYYYYYYYYYYY', mb~substr('1234567890'~subStr(1,2),22,'XYZ'~subStr(2,1)))
 
 ::method 'test087'
     mb = .mutablebuffer~new('AB BC CD DE EF')
-    self~assertSame('subTest01',' EF**********************',mb~substr(12,'123'~subStr(2,1)||'456'~subStr(2,1),'*'))
+    self~assertSame(' EF**********************', mb~substr(12,'123'~subStr(2,1)||'456'~subStr(2,1),'*'))
 
 ::method 'test088'
     mb = .mutablebuffer~new(.v30)
-    self~assertSame('subTest01','yz1234',mb~substr(1)~subStr('123'~subStr(2,1)||'456'~subStr(2,1),567~subStr(2,1)))
+    self~assertSame('yz1234', mb~substr(1)~subStr('123'~subStr(2,1)||'456'~subStr(2,1),567~subStr(2,1)))
 
 ::method 'test089'
     .local~remove(vblank)
@@ -531,10 +531,10 @@ return testGroupList
 ::METHOD "testSubStr"
    b = .mutableBuffer~new("1234567890")
 
-   self~assertEquals("Wrong string 1","234567890",b~substr(2))
-   self~assertEquals("Wrong string 2","1",b~substr(1,1))
-   self~assertEquals("Wrong string 3","4",b~substr(4,1,"#"))
-   self~assertEquals("Wrong string 4","0#",b~substr(10,2,"#"))
+   self~assertEquals("234567890", b~substr(2), "Wrong string 1")
+   self~assertEquals("1", b~substr(1,1), "Wrong string 2")
+   self~assertEquals("4", b~substr(4,1,"#"), "Wrong string 3")
+   self~assertEquals("0#", b~substr(10,2,"#"), "Wrong string 4")
 ::METHOD "testSubStrSyntax1"
    b = .mutableBuffer~new("1234567890")
    self~expectSyntax(93.903)

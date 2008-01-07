@@ -117,53 +117,53 @@ end
       optionally list of mandatory test methods                      */
 return testGroupList
 
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
-::class "caselessChangestr.testGroup" subclass TestCase public
+::class "caselessChangestr.testGroup" subclass ooTestCase public
 
 ::method "test_ChangeStr_caseless"
 
-   self~assertSame("subTest1" , 'aABBcC' , "aAbBcC"~caselessChangeStr('b',"B")  )
-   self~assertSame("subTest2" , 'aAbbcC' , "aAbBcC"~caselessChangeStr('B',"b")  )
-   self~assertSame("subTest3" , 'aA99cC' , "aAbBcC"~caselessChangeStr('B',"9")  )
+   self~assertSame('aABBcC', "aAbBcC"~caselessChangeStr('b',"B"))
+   self~assertSame('aAbbcC', "aAbBcC"~caselessChangeStr('B',"b"))
+   self~assertSame('aA99cC', "aAbBcC"~caselessChangeStr('B',"9"))
 
    -- new tests: optional, trailing "count" argument
-    self~assertSame("subTest4a", 'ha-lo' , 'hallo'~caselessChangeStr('L','-',1)  )
-    self~assertSame("subTest4b", 'ha-lo' , 'haLlo'~caselessChangeStr('L','-',1)  )
-    self~assertSame("subTest4c", 'ha-Lo' , 'haLLo'~caselessChangeStr('L','-',1)  )
-    self~assertSame("subTest4d", 'ha-lo' , 'haLlo'~caselessChangeStr('l','-',1)  )
-    self~assertSame("subTest4e", 'ha-Lo' , 'haLLo'~caselessChangeStr('l','-',1)  )
+    self~assertSame('ha-lo', 'hallo'~caselessChangeStr('L','-',1))
+    self~assertSame('ha-lo', 'haLlo'~caselessChangeStr('L','-',1))
+    self~assertSame('ha-Lo', 'haLLo'~caselessChangeStr('L','-',1))
+    self~assertSame('ha-lo', 'haLlo'~caselessChangeStr('l','-',1))
+    self~assertSame('ha-Lo', 'haLLo'~caselessChangeStr('l','-',1))
 
-    self~assertSame("subTest5a", 'ha--o' , 'hallo'~caselessChangeStr('l','-',2)  )
-    self~assertSame("subTest5b", 'ha--o' , 'haLlo'~caselessChangeStr('L','-',2)  )
-    self~assertSame("subTest5c", 'ha--o' , 'haLLo'~caselessChangeStr('L','-',2)  )
-    self~assertSame("subTest5d", 'ha--o' , 'haLlo'~caselessChangeStr('l','-',2)  )
-    self~assertSame("subTest5e", 'ha--o' , 'haLLo'~caselessChangeStr('l','-',2)  )
+    self~assertSame('ha--o', 'hallo'~caselessChangeStr('l','-',2))
+    self~assertSame('ha--o', 'haLlo'~caselessChangeStr('L','-',2))
+    self~assertSame('ha--o', 'haLLo'~caselessChangeStr('L','-',2))
+    self~assertSame('ha--o', 'haLlo'~caselessChangeStr('l','-',2))
+    self~assertSame('ha--o', 'haLLo'~caselessChangeStr('l','-',2))
 
-    self~assertSame("subTest6a", 'ha--o' , 'hallo'~caselessChangestr('l','-',3)  )
-    self~assertSame("subTest6b", 'ha--o' , 'haLlo'~caselessChangeStr('L','-',3)  )
-    self~assertSame("subTest6c", 'ha--o' , 'haLLo'~caselessChangeStr('L','-',3)  )
-    self~assertSame("subTest6d", 'ha--o' , 'haLlo'~caselessChangeStr('l','-',3)  )
-    self~assertSame("subTest6e", 'ha--o' , 'haLLo'~caselessChangeStr('l','-',3)  )
+    self~assertSame('ha--o', 'hallo'~caselessChangestr('l','-',3))
+    self~assertSame('ha--o', 'haLlo'~caselessChangeStr('L','-',3))
+    self~assertSame('ha--o', 'haLLo'~caselessChangeStr('L','-',3))
+    self~assertSame('ha--o', 'haLlo'~caselessChangeStr('l','-',3))
+    self~assertSame('ha--o', 'haLLo'~caselessChangeStr('l','-',3))
 
 ::method "test_changeStr_caseless_error_93.907"
     self~expectSyntax(93.907)
     'aha'~caselessChangeStr('a','A',0)
 
 ::method "test_1"
-   self~assertSame("subTest1", '101100' , '101100'~caselessChangeStr('','X')  )
+   self~assertSame('101100', '101100'~caselessChangeStr('','X'))
 
 ::method "test_2"
-   self~assertSame("subTest2", ''       , ''~caselessChangeStr('1','X')  )
+   self~assertSame('', ''~caselessChangeStr('1','X'))
 
 ::method "test_4"
-   self~assertSame("subTest4", 'ha-lo' , 'hallo'~caselessChangeStr('l','-',1)  )
+   self~assertSame('ha-lo', 'hallo'~caselessChangeStr('l','-',1))
 
 ::method "test_5"
-   self~assertSame("subTest5", 'ha--o' , 'hallo'~caselessChangeStr('l','-',2)  )
+   self~assertSame('ha--o', 'hallo'~caselessChangeStr('l','-',2))
 
 ::method "test_6"
-   self~assertSame("subTest6", 'ha--o' , 'hallo'~caselessChangeStr('l','-',3)  )
+   self~assertSame('ha--o', 'hallo'~caselessChangeStr('l','-',3))
 
 ::method "test_7"
    self~expectSyntax(93.907)

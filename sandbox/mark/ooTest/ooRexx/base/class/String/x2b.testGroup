@@ -117,125 +117,125 @@ end
       optionally list of mandatory test methods                      */
 return testGroupList
 
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
-::class "String_x2bMethod.testGroup" subclass TestCase public
+::class "String_x2bMethod.testGroup" subclass ooTestCase public
 
 ::method 'test001'
-    self~assertSame('subTest01','11000011','C3'~x2b())
+    self~assertSame('11000011', 'C3'~x2b())
 
 ::method 'test002'
-    self~assertSame('subTest01','0111','7'~x2b())
+    self~assertSame('0111', '7'~x2b())
 
 ::method 'test003'
-    self~assertSame('subTest01','000111000001','1 C1'~x2b())
+    self~assertSame('000111000001', '1 C1'~x2b())
 
 ::method 'test004'
-    self~assertSame('subTest01','11000011',c2x('C3'X)~x2b())
+    self~assertSame('11000011', c2x('C3'X)~x2b())
 
 ::method 'test005'
-    self~assertSame('subTest01','10000001',d2x('129')~x2b())
+    self~assertSame('10000001', d2x('129')~x2b())
 
 ::method 'test006'
-    self~assertSame('subTest01','1100',d2x('12')~x2b())
+    self~assertSame('1100', d2x('12')~x2b())
 
 ::method 'test007'
-    self~assertSame('subTest01','0000','0'~x2b())
+    self~assertSame('0000', '0'~x2b())
 
 ::method 'test008'
-    self~assertSame('subTest01','0001','1'~x2b())
+    self~assertSame('0001', '1'~x2b())
 
 ::method 'test009'
-    self~assertSame('subTest01','0010','2'~x2b())
+    self~assertSame('0010', '2'~x2b())
 
 ::method 'test010'
-    self~assertSame('subTest01','0011','3'~x2b())
+    self~assertSame('0011', '3'~x2b())
 
 ::method 'test011'
-    self~assertSame('subTest01','0100','4'~x2b())
+    self~assertSame('0100', '4'~x2b())
 
 ::method 'test012'
-    self~assertSame('subTest01','0101','5'~x2b())
+    self~assertSame('0101', '5'~x2b())
 
 ::method 'test013'
-    self~assertSame('subTest01','0110','6'~x2b())
+    self~assertSame('0110', '6'~x2b())
 
 ::method 'test014'
-    self~assertSame('subTest01','0111','7'~x2b())
+    self~assertSame('0111', '7'~x2b())
 
 ::method 'test015'
-    self~assertSame('subTest01','1000','8'~x2b())
+    self~assertSame('1000', '8'~x2b())
 
 ::method 'test016'
-    self~assertSame('subTest01','1001','9'~x2b())
+    self~assertSame('1001', '9'~x2b())
 
 ::method 'test017'
-    self~assertSame('subTest01','1010','A'~x2b())
+    self~assertSame('1010', 'A'~x2b())
 
 ::method 'test018'
-    self~assertSame('subTest01','1011','B'~x2b())
+    self~assertSame('1011', 'B'~x2b())
 
 ::method 'test019'
-    self~assertSame('subTest01','1100','C'~x2b())
+    self~assertSame('1100', 'C'~x2b())
 
 ::method 'test020'
-    self~assertSame('subTest01','1101','D'~x2b())
+    self~assertSame('1101', 'D'~x2b())
 
 ::method 'test021'
-    self~assertSame('subTest01','1110','E'~x2b())
+    self~assertSame('1110', 'E'~x2b())
 
 ::method 'test022'
-    self~assertSame('subTest01','1111','F'~x2b())
+    self~assertSame('1111', 'F'~x2b())
 
 ::method 'test023'
-    self~assertSame('subTest01','0123456789ABCDEF'~x2b(),'0123456789abcdef'~x2b())
+    self~assertSame('0123456789ABCDEF'~x2b(), '0123456789abcdef'~x2b())
 
 ::method 'test024'
-    self~assertSame('subTest01','0123456789ABCDEF'~x2b(),'01 23 45 67 89 ab cd ef'~x2b())
+    self~assertSame('0123456789ABCDEF'~x2b(), '01 23 45 67 89 ab cd ef'~x2b())
 
 ::method 'test025'
-    self~assertSame('subTest01','0123456789ABCDEF'~x2b(),c2x('0123456789abcdef'x)~x2b())
+    self~assertSame('0123456789ABCDEF'~x2b(), c2x('0123456789abcdef'x)~x2b())
 
 ::method 'test026'
-    self~assertSame('subTest01','64',length('0123456789abcdef'~x2b()))
+    self~assertSame('64', length('0123456789abcdef'~x2b()))
 
 ::method 'test027'
     long_str.1 = copies('1a',255)
-    self~assertSame('subTest01','2040',length(long_str.1~x2b()))
+    self~assertSame('2040', length(long_str.1~x2b()))
 
 ::method 'test028'
     long_str.2 = copies('1a',256)
-    self~assertSame('subTest01','2048',length(long_str.2~x2b()))
+    self~assertSame('2048', length(long_str.2~x2b()))
 
 ::method 'test029'
     long_str.3 = copies('1a',32768)
-    self~assertSame('subTest01','262144',length(long_str.3~x2b()))
+    self~assertSame('262144', length(long_str.3~x2b()))
 
 ::method 'test030'
     long_str.4 = copies('1a',100000)
-    self~assertSame('subTest01','800000',length(long_str.4~x2b()))
+    self~assertSame('800000', length(long_str.4~x2b()))
 
 ::method 'test031'
-    self~assertSame('subTest01','',''~x2b())
+    self~assertSame('', ''~x2b())
 
 ::method 'test032'
-    self~assertSame('subTest01','',''~x2b())
+    self~assertSame('', ''~x2b())
 
 ::method 'test033'
-    self~assertSame('subTest01','',''~x2b())
+    self~assertSame('', ''~x2b())
 
 ::method 'test034'
-    self~assertSame('subTest01','0000000100000010','01 02'~x2b())
+    self~assertSame('0000000100000010', '01 02'~x2b())
 
 ::method 'test035'
-    self~assertSame('subTest01','0123456789ABCDEF'~x2b(),'0123 4567 89ab cdef'~x2b())
+    self~assertSame('0123456789ABCDEF'~x2b(), '0123 4567 89ab cdef'~x2b())
 
 ::method 'test036'
-    self~assertSame('subTest01','0123456789ABCDEF'~x2b(),'01234567 89abcdef'~x2b())
+    self~assertSame('0123456789ABCDEF'~x2b(), '01234567 89abcdef'~x2b())
 
 ::method 'test037'
     many_bl_str = '01'||copies(" ",100000)||'02'
-    self~assertSame('subTest01','0000000100000010',many_bl_str~x2b())
+    self~assertSame('0000000100000010', many_bl_str~x2b())
 
 ::method 'test038'
     self~expectSyntax(93.931)
@@ -323,10 +323,10 @@ return testGroupList
     xre = '1a'x~x2b(copies('A',100000))
 
 ::method 'test057'
-    self~assertSame('subTest01','200000',length(b2x(copies('41',100000)~x2b())))
+    self~assertSame('200000', length(b2x(copies('41',100000)~x2b())))
 
 ::method 'test058'
-    self~assertSame('subTest01','000111100010','1E2'~x2b())
+    self~assertSame('000111100010', '1E2'~x2b())
 
 ::method 'test059'
     self~expectSyntax(93.933)
@@ -337,51 +337,51 @@ return testGroupList
     xre = '1.77E+2'~x2b()
 
 ::method 'test061'
-    self~assertSame('subTest01','000100000000',(+1E2)~x2b)
+    self~assertSame('000100000000', (+1E2)~x2b)
 
 ::method 'test062'
-    self~assertSame('subTest01','000100000000',(+1E+2)~x2b)
+    self~assertSame('000100000000', (+1E+2)~x2b)
 
 ::method 'test063'
-    self~assertSame('subTest01','000101110111',(+1.77E2)~x2b)
+    self~assertSame('000101110111', (+1.77E2)~x2b)
 
 ::method 'test064'
-    self~assertSame('subTest01','000101110111',(+1.77E+2)~x2b)
+    self~assertSame('000101110111', (+1.77E+2)~x2b)
 
 ::method 'test065'
-    self~assertSame('subTest01','01000010',(+42)~x2b)
+    self~assertSame('01000010', (+42)~x2b)
 
 ::method 'test066'
-    self~assertSame('subTest01','01000010',(+21*2)~x2b)
+    self~assertSame('01000010', (+21*2)~x2b)
 
 ::method 'test067'
-    self~assertSame('subTest01','01000010',((7*3)*2)~x2b)
+    self~assertSame('01000010', ((7*3)*2)~x2b)
 
 ::method 'test068'
     numeric digits 1
-    self~assertSame('subTest01','00010000',10~x2b())
+    self~assertSame('00010000', 10~x2b())
 
 ::method 'test069'
-    self~assertSame('subTest01','0001',dataType(6,'N')~x2b())
+    self~assertSame('0001', dataType(6,'N')~x2b())
 
 ::method 'test070'
     self~expectSyntax(93.933)
     xre = dataType(6)~x2b()
 
 ::method 'test071'
-    self~assertSame('subTest01','00101000',subStr('0192837465abcdefgh',4,2)~x2b())
+    self~assertSame('00101000', subStr('0192837465abcdefgh',4,2)~x2b())
 
 -- from bif.testgroup
    -- test the BIF, using examples from the documentation
 ::method "test_X2B"
-    self~assertEquals("subTest1" , '11000011'     , 'C3'~X2B()  )
-    self~assertEquals("subTest2" , '0111'         , '7'~X2B()   )
-    self~assertEquals("subTest3" , '000111000001' , '1 C1'~X2B())
-    self~assertSame("subTest4" , '11000011'    , 'C3'x~C2X~X2B   )    --
-    self~assertSame("subTest5" , '10000001'    , '129'~D2X~X2B   )
-    self~assertSame("subTest6" , '1100'        , '12'~D2X~X2B    )
+    self~assertEquals('11000011', 'C3'~X2B())
+    self~assertEquals('0111', '7'~X2B())
+    self~assertEquals('000111000001', '1 C1'~X2B())
+    self~assertSame('11000011', 'C3'x~C2X~X2B)    --
+    self~assertSame('10000001', '129'~D2X~X2B)
+    self~assertSame('1100', '12'~D2X~X2B)
 
    -- new tests
-    self~assertEquals("subTest4" , '' , ''~X2B())
-    self~assertEquals("subTest4" , '' , ''~X2B())
+    self~assertEquals('', ''~X2B())
+    self~assertEquals('', ''~X2B())
 

@@ -113,19 +113,19 @@
       optionally list of mandatory test methods                      */
 return testUnitList
 
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
 -- class named exactly like file
-::class "FUZZ.testGroup" subclass TestCase public
+::class "FUZZ.testGroup" subclass ooTestCase public
 
    -- test the BIF
 ::method "test_FUZZ"
     numeric fuzz 0
-    self~assertEquals("subTest1",  0, fuzz())
+    self~assertEquals(0, fuzz())
 
     numeric fuzz 1
-    self~assertEquals("subTest2",  1, fuzz())
+    self~assertEquals(1, fuzz())
 
     numeric fuzz
-    self~assertEquals("subTest3",  0, fuzz())
+    self~assertEquals(0, fuzz())
 

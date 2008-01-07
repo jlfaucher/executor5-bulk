@@ -74,52 +74,87 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-use arg cmdLine
+  parse source . . fileSpec
 
-  -- Windows only test.
-  if ooRexxUnit.getOSName() <> "WINDOWS" then return .list~new
-
-  -- Executing on Windows, load the Windows specific classes.
-  prgFile = indirectRequire("WinUtils.cls")
-  if prgFile == "" then return .list~new
-  call (prgFile)
-  j = deleteFile(prgFile)
-
-  testGroupList = .list~of( .array~of( .fileNameDialog_demo.testGroup, .list~new ) )
-
-  srcLines = .array~new
-  do i = 1 to 150 until srcLines[ i ] = "*/"
-     srcLines[ i ] = sourceline( i )
+  lines=.array~new
+  do i=1 to 150 until lines[i]="*/"
+     lines[i]=sourceline(i)
   end
 
-  call makeDirTestInfo .fileNameDialog_demo.testGroup, srcLines
+  -- This is a Windows specific test.
+  group = .TestGroup~new(fileSpec, lines)
+  group~restrictOS("WINDOWS")
 
-  parse source s
-  .fileNameDialog_demo.testGroup~testCaseInfo~setentry( "test_Case-source", s )
+  -- 1.) The test cases in this GUI test need to execute in order.  So we use a
+  -- method that places the individual test cases into the test suite in the
+  -- order we specify. fetchMethodNames() returns an array of the test method
+  -- names.  The order of the names in the array will be the order the tests
+  -- are executed.
+  --
+  -- 2.) The test cases require the 'winsystm.cls' file.  Since this file only
+  -- exists in a Windows ooRexx installation, a normal ::requires directive
+  -- causes an ugly error if this .testGroup is run on a non-Windows system.  To
+  -- fix this, a custom TestSuite (.FNDlgTestSuite) is used.  The custom test
+  -- suite provides a setUp() method.  The setUp() method of a TestSuite is
+  -- invoked immediately prior to the exeuction of the tests in the test suite.
+  -- The setUp() method for .FNDlgTestSuite performs the necessary work to get
+  -- the winsystm.cls classes loaded.
+  group~addWithCollection(.fileNameDialog_demo.testGroup, fetchMethodNames(), .FNDlgTestSuite)
 
-  -- If there is no entry in the .local directory of 'bRunTestsLocally' then add
-  -- one with a value of true.
-  if \ .local~hasentry( "bRunTestsLocally" ) then
-     .local~bRunTestsLocally = .true
+  if group~isAutomatedTest then return group
 
-  -- Now honor the setting of bRunTestsLocally, which may have been set by a
-  -- caller of this test group.
-  if .bRunTestsLocally == .true then do
-    ts = .TestSuite~new
-    ts~addTest( .TestSuite~new( .fileNameDialog_demo.testGroup ) )
+  -- Not an automated test, execute the tests now.
+  testResult = group~suite~execute~~print
 
-    testResult = ts~run
-    z = simpleFormatTestResults( testResult )
-  end
-
-return testGroupList
+return testResult
 -- End of entry point.
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
   Directives, Classes, or Routines.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::requires "OOREXXUNIT.CLS"
+::requires 'ooTest.frm'
 ::requires "FileUtils.cls"
+
+/** fetchMehodNames()
+ * This is a helper function that creates an array of the test methods.  The
+ * order of the tests in the array is the order they will be executed.
+ */
+::routine fetchMethodNames
+  tests = .array~new
+  tests[1] = 'test_ooRexxInstalled'
+  tests[2] = 'test_exampleStart'
+  tests[3] = 'test_mainScreen'
+  tests[4] = 'test_firstOption'
+  tests[5] = 'test_exampleQuit'
+return tests
+
+::class 'FNDlgTestSuite' subclass TestSuite
+
+::method setUp
+  say 'In my test suite at set up'
+  say 'self class:' self~class
+  say 'self has method TestCaseInfo:' self~hasMethod('TestCaseInfo')
+  say 'TestCaseInfo is a directory: ' self~testCaseInfo~isA(.directory)
+  parse source . . fileSpec
+  say 'My file is:' fileSpec
+  say 'My error is on line:' .line
+
+  j = printTestInfo(.fileNameDialog_demo.testGroup~testCaseInfo)
+  prgFile = indirectRequire('WinUtils.cls')
+
+  if prgFile == "" then do
+    --group~markNoTests("Error loading WinUtils.cls. This test requires WinUtils.cls")
+    -- Should have: 1.) way to not run these tests.  2.) report why they are not run.
+    say 'Do NOT run the file name dialog demo test cases!'
+    say 'Report this fact to someone!'
+  end
+  else do
+    call (prgFile)
+    j = deleteFile(prgFile)
+  end
+
+::method tearDown
+  say 'In my test suite at tear down'
 
 /* class: fileNameDialog_demo.testGroup- - - - - - - - - - - - - - - - - - - -*\
 
@@ -131,41 +166,41 @@ return testGroupList
   invoked in order, sorted by method name, by the framework.  This fact is
   used to ensure the correct order of execution.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::class fileNameDialog_demo.testGroup public -
-        subclass TestCase
+::class 'fileNameDialog_demo.testGroup' public -
+        subclass ooTestCase
 
-  ::method test_001_ooRexxInstalled
+  ::method test_ooRexxInstalled
     self~class~stop = .true
 
     home = value("REXX_HOME", , 'ENVIRONMENT')
-    self~assertTrue("ooRexx must be installed and REXX_HOME set", home~length > 0)
+    self~assertTrue(home~length > 0, "ooRexx must be installed and REXX_HOME set")
 
     home = home || '\samples\fileNameDialog_demo.rex'
     j = SysFileTree(home, f., 'FOS')
-    self~assertTrue("SysFileTree must not fail", j == 0)
-    self~assertTrue("Example program must be located", f.0 == 1)
+    self~assertTrue(j == 0, "SysFileTree must not fail")
+    self~assertTrue(f.0 == 1, "Example program must be located")
 
     prgPathName = f.1
-    self~assertTrue("Example program must exist", .stream~new(prgPathName)~query("EXISTS")~length <> 0)
+    self~assertTrue(.stream~new(prgPathName)~query("EXISTS")~length <> 0, "Example program must exist")
     self~class~prgPath = prgPathName
     self~class~stop = .false
 
-  ::method  test_002_exampleStart
+  ::method test_exampleStart
     if self~class~stop then self~fail("Failure of one test causes all tests to fail.")
     self~class~stop = .true
 
     launcher = .ProgramLauncher~new(self~class~prgPath)
     ret = launcher~startProgram
 
-    self~assertEquals('launcher~startProgram should return 0',    0,     ret)
+    self~assertEquals(0, ret, 'launcher~startProgram should return 0')
 
     wf = .WindowFinder~new
 
     -- We know the example program puts up an InfoDialog first.
     wnd = wf~getWindow("Information")
 
-    self~assertEquals('Must have a WindowObject object', .WindowObject, wnd~class)
-    self~assertEquals('Window must have Information title', "Information", wnd~title)
+    self~assertEquals(.WindowObject, wnd~class, 'Must have a WindowObject object')
+    self~assertEquals("Information", wnd~title, 'Window must have Information title')
 
     -- Click the okay button to close the InfoDialog and bring up the main screen.
     wnd~pushButton("OK")
@@ -174,7 +209,7 @@ return testGroupList
     self~class~windowFinder = wf
     self~class~stop = .false
 
-  ::method test_003_mainScreen
+  ::method test_mainScreen
     if self~class~stop then self~fail("Failure of one test causes all tests to fail.")
     self~class~stop = .true
 
@@ -186,18 +221,18 @@ return testGroupList
     wnd = wf~getWindow("FileNameDialog Demonstration", , .5)
 
     -- Assert that we found the main window of the program.
-    self~assertEquals('Must have a WindowObject object', wnd~class, .WindowObject)
-    self~assertEquals('Window must have proper program title', "FileNameDialog Demonstration", wnd~title)
+    self~assertEquals(wnd~class, .WindowObject, 'Must have a WindowObject object')
+    self~assertEquals("FileNameDialog Demonstration", wnd~title, 'Window must have proper program title')
 
     self~class~stop = .false
 
-  ::method test_004_firstOption
+  ::method test_firstOption
     if self~class~stop then self~fail("Failure of one test causes all tests to fail.")
     self~class~stop = .true
 
     wf = self~class~windowFinder
     wnd = wf~getWindow("FileNameDialog Demonstration", , .5)
-    self~assertEquals('Window must have proper program title', "FileNameDialog Demonstration", wnd~title)
+    self~assertEquals("FileNameDialog Demonstration", wnd~title, 'Window must have proper program title')
 
     -- First option is radio button, ID 101.  But it should be already selected,
     -- so we just need to click the Ok button.  OK button has ID 1, so sending
@@ -206,8 +241,8 @@ return testGroupList
 
     wnd = wf~getWindow("Open a File", , .5)
 
-    self~assertEquals('Must have a WindowObject object', .WindowObject, wnd~class)
-    self~assertNotNull('Open File dialog must be active (option 1 clicked.)',  wnd)
+    self~assertEquals(.WindowObject, wnd~class, 'Must have a WindowObject object')
+    self~assertNotNull(wnd, 'Open File dialog must be active (option 1 clicked.)')
 
     -- The cancel button has ID of 2, sending a command of 2 has the effect of
     -- clicking the cancel button.  In the sample program, if the user did not
@@ -216,7 +251,7 @@ return testGroupList
     -- next.)
     wnd~sendCommand(2)
     wnd = wf~getWindow("Error", , .5)
-    self~assertNotNull('Open File dialog canceled (option 1) must have ErrorDialog',  wnd)
+    self~assertNotNull(wnd, 'Open File dialog canceled (option 1) must have ErrorDialog')
 
     -- Push OK button, should be back to main screen.
     wnd~pushButton("OK")
@@ -233,7 +268,7 @@ return testGroupList
    */
 
   -- test_999_exampleQuit()
-  ::method test_999_exampleQuit
+  ::method test_exampleQuit
 
     -- It is possible that we failed right off the bat and the WindowFinder
     -- object was never even created.  If so, just abort.
@@ -258,7 +293,7 @@ return testGroupList
 
     -- Step 4 assert that we get the correct return code for a successful
     -- execution of the example program.
-    self~assertEquals("fileNameDialog_demo return code should be 37", ret, 37)
+    self~assertEquals(ret, 37, "fileNameDialog_demo return code should be 37")
 
   -- End test_999_exampleQuit()
 

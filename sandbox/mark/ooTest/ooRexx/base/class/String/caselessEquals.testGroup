@@ -117,18 +117,18 @@ end
       optionally list of mandatory test methods                      */
 return testGroupList
 
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
-::class "caselessEquals.testGroup" subclass TestCase public
+::class "caselessEquals.testGroup" subclass ooTestCase public
 
 ::method "test_Equals_caseless"
 
-    self~assertSame("subTest_01" , 1, "a"~caselessEquals("a"))
-    self~assertSame("subTest_02" , 1, "a"~caselessEquals("A"))
-    self~assertSame("subTest_03" , 0, "a"~caselessEquals("b"))
-    self~assertSame("subTest_04" , 0, "a"~caselessEquals("B"))
-    self~assertSame("subTest_05" , 1, "b"~caselessEquals("b"))
-    self~assertSame("subTest_06" , 1, "b"~caselessEquals("B"))
-    self~assertSame("subTest_07" , 0, "b"~caselessEquals("a"))
-    self~assertSame("subTest_08" , 0, "b"~caselessEquals("A"))
+    self~assertSame(1, "a"~caselessEquals("a"))
+    self~assertSame(1, "a"~caselessEquals("A"))
+    self~assertSame(0, "a"~caselessEquals("b"))
+    self~assertSame(0, "a"~caselessEquals("B"))
+    self~assertSame(1, "b"~caselessEquals("b"))
+    self~assertSame(1, "b"~caselessEquals("B"))
+    self~assertSame(0, "b"~caselessEquals("a"))
+    self~assertSame(0, "b"~caselessEquals("A"))
 

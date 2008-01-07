@@ -120,12 +120,12 @@ return testGroupList
 
 
 
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
-::class "SPECIAL.testGroup" subclass TestCase public
+::class "SPECIAL.testGroup" subclass ooTestCase public
 
 ::method "test_1"
-   self~assertSame("subTest1", 3||3=3||3,'1')
+   self~assertSame(3||3=3||3, '1')
 
 ::method "test_2"
    xre=a||a=3||3
@@ -140,62 +140,62 @@ return testGroupList
 
 ::method "test_5"
    aa=33
-   self~assertSame("subTest1", (aa/aa||1)*3=33>0,'1')
+   self~assertSame((aa/aa||1)*3=33>0, '1')
 
 ::method "test_6"
    aa=33
-   self~assertSame("subTest1", 3||3=3||3&3||3=3||3&(aa/aa||1)*3=33>0,'1')
+   self~assertSame(3||3=3||3&3||3=3||3&(aa/aa||1)*3=33>0, '1')
 
 ::method "test_7"
-   self~assertSame("subTest1", -1111111119**2*3+17||0,'3.70370376E+180')
+   self~assertSame(-1111111119**2*3+17||0, '3.70370376E+180')
 
 ::method "test_8"
-   self~assertSame("subTest1", +1111111119**2*3+17||0,'3.70370376E+180')
+   self~assertSame(+1111111119**2*3+17||0, '3.70370376E+180')
 
 ::method "test_9"
-   self~assertSame("subTest1", -1111111119**2/3+17||0,'4.1152264E+170')
+   self~assertSame(-1111111119**2/3+17||0, '4.1152264E+170')
 
 ::method "test_10"
-   self~assertSame("subTest1", +1111111119**2/3+17||0,'4.1152264E+170')
+   self~assertSame(+1111111119**2/3+17||0, '4.1152264E+170')
 
 ::method "test_11"
-   self~assertSame("subTest1", -1111111119**2%5e55+17||0,'170')
+   self~assertSame(-1111111119**2%5e55+17||0, '170')
 
 ::method "test_12"
-   self~assertSame("subTest1", +1111111119**2%5e55+17||0,'170')
+   self~assertSame(+1111111119**2%5e55+17||0, '170')
 
 ::method "test_13"
-   self~assertSame("subTest1", -1111111119**2//5e55+17||0,'1.23456792E+180')
+   self~assertSame(-1111111119**2//5e55+17||0, '1.23456792E+180')
 
 ::method "test_14"
-   self~assertSame("subTest1", +1111111119**2//5e55+17||0,'1.23456792E+180')
+   self~assertSame(+1111111119**2//5e55+17||0, '1.23456792E+180')
 
 ::method "test_15"
-   self~assertSame("subTest1", -1111111119**2*3-17||0,'3.70370376E+180')
+   self~assertSame(-1111111119**2*3-17||0, '3.70370376E+180')
 
 ::method "test_16"
-   self~assertSame("subTest1", +1111111119**2*3-17||0,'3.70370376E+180')
+   self~assertSame(+1111111119**2*3-17||0, '3.70370376E+180')
 
 ::method "test_17"
-   self~assertSame("subTest1", -1111111119**2/3-17||0,'4.1152264E+170')
+   self~assertSame(-1111111119**2/3-17||0, '4.1152264E+170')
 
 ::method "test_18"
-   self~assertSame("subTest1", +1111111119**2/3-17||0,'4.1152264E+170')
+   self~assertSame(+1111111119**2/3-17||0, '4.1152264E+170')
 
 ::method "test_19"
-   self~assertSame("subTest1", -1111111119**2%5e55-17||0,'-170')
+   self~assertSame(-1111111119**2%5e55-17||0, '-170')
 
 ::method "test_20"
-   self~assertSame("subTest1", +1111111119**2%5e55-17||0,'-170')
+   self~assertSame(+1111111119**2%5e55-17||0, '-170')
 
 ::method "test_21"
-   self~assertSame("subTest1", -1111111119**2//5e55-17||0,'1.23456792E+180')
+   self~assertSame(-1111111119**2//5e55-17||0, '1.23456792E+180')
 
 ::method "test_22"
-   self~assertSame("subTest1", +1111111119**2//5e55-17||0,'1.23456792E+180')
+   self~assertSame(+1111111119**2//5e55-17||0, '1.23456792E+180')
 
 ::method "test_23"
-   self~assertSame("subTest1", 1=1&1|0,'1')
+   self~assertSame(1=1&1|0, '1')
 
 ::method "test_24"
    self~expectSyntax(34.901)
@@ -207,11 +207,11 @@ return testGroupList
 
 ::method "test_26"
    A=1
-   self~assertSame("subTest1", 222%222*33/33&1=0,'0')
+   self~assertSame(222%222*33/33&1=0, '0')
 
 ::method "test_27"
    A=1
-   self~assertSame("subTest1", A-222%222*33/33&1=0,'0')
+   self~assertSame(A-222%222*33/33&1=0, '0')
 
 ::method "test_28"
    self~expectSyntax(34.901)
@@ -219,17 +219,17 @@ return testGroupList
    xre=A+A&A
 
 ::method "test_29"
-   self~assertSame("subTest1", 9/3*3.||5,'95')
+   self~assertSame(9/3*3.||5, '95')
 
 ::method "test_30"
-   self~assertSame("subTest1", 9/3*(.||5),'1.5')
+   self~assertSame(9/3*(.||5), '1.5')
 
 ::method "test_31"
    self~expectSyntax(41.1)
    xre=9/3*(.||-5)
 
 ::method "test_32"
-   self~assertSame("subTest1", 3+(-5),'-2')
+   self~assertSame(3+(-5), '-2')
 
 ::method "test_33"
    self~expectSyntax(41.1)
@@ -240,16 +240,16 @@ return testGroupList
    xre=55-OVERLAY('5','123',5,1,'+')
 
 ::method "test_35"
-   self~assertSame("subTest1", 0=0&0|0&0|0&0&1|0&\1,'0')
+   self~assertSame(0=0&0|0&0|0&0&1|0&\1, '0')
 
 ::method "test_36"
-   self~assertSame("subTest1", \1+1=2&2=\0,'0')
+   self~assertSame(\1+1=2&2=\0, '0')
 
 ::method "test_37"
    lt=copies('A',249)
    h=''; lta=lt; c.lta=f1(3)+f1(4);
-   self~assertSame("subTest1", (c.lta h lta),'7 34 4')
-   self~assertSame("subTest2", h,34)
+   self~assertSame((c.lta h lta), '7 34 4')
+   self~assertSame(h, 34)
    return
    f1: Arg a; h=h||a; lta=a; Return a
 

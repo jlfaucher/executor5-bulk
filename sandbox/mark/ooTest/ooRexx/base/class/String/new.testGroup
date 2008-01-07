@@ -117,18 +117,18 @@ end
       optionally list of mandatory test methods                      */
 return testGroupList
 
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
-::class "new.testGroup" subclass TestCase public
+::class "new.testGroup" subclass ooTestCase public
 
 ::method "test_NEW"
-   self~assertSame("subTest1"   , .string~new("")   , ""  )
-   self~assertSame("subTest2"   , .string~new(" ")  , " " )
-   self~assertSame("subTest3"   , .string~new("  ") , "  ")
-   self~assertSame("subTest4"   , .string~new("ab") , "ab")
+   self~assertSame(.string~new(""), "")
+   self~assertSame(.string~new(" "), " ")
+   self~assertSame(.string~new("  "), "  ")
+   self~assertSame(.string~new("ab"), "ab")
 
-   self~assertEquals("subTest5" , .string~new("")   , ""  )
-   self~assertEquals("subTest6" , .string~new(" ")  , " " )
-   self~assertEquals("subTest7" , .string~new("  ") , "  ")
-   self~assertEquals("subTest8" , .string~new("ab") , "ab")
+   self~assertEquals(.string~new(""), "")
+   self~assertEquals(.string~new(" "), " ")
+   self~assertEquals(.string~new("  "), "  ")
+   self~assertEquals(.string~new("ab"), "ab")
 

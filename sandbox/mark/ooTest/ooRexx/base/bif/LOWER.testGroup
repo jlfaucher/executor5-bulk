@@ -113,15 +113,15 @@
       optionally list of mandatory test methods                      */
 return testUnitList
 
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
 -- class named exactly like file
-::class "LOWER.testGroup" subclass TestCase public
+::class "LOWER.testGroup" subclass ooTestCase public
 
 ::method "test_LOWER"
-    self~assertSame("subTest_01" , 'AbCdeFGH', lower('ABCdeFGH', 2,  1 ))
-    self~assertSame("subTest_02" , 'ABCdeFGH', lower('ABCdeFGH', 1,  0 ))
-    self~assertSame("subTest_03" , 'ABCdeFGH', lower('ABCdeFGH', 99, 2 ))
-    self~assertSame("subTest_04" , 'Abcdefgh', lower('ABCdeFGH', 2     ))
-    self~assertSame("subTest_05" , 'abcdefgh', lower('ABCdeFGH'        ))
+    self~assertSame('AbCdeFGH', lower('ABCdeFGH', 2,  1 ))
+    self~assertSame('ABCdeFGH', lower('ABCdeFGH', 1,  0 ))
+    self~assertSame('ABCdeFGH', lower('ABCdeFGH', 99, 2 ))
+    self~assertSame('Abcdefgh', lower('ABCdeFGH', 2     ))
+    self~assertSame('abcdefgh', lower('ABCdeFGH'        ))
 

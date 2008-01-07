@@ -103,7 +103,7 @@ Primary 3rd party sources include:
 -- create a testSuite for the given test case class, use all its testmethods
                 ts~addTest( .testSuite~new(arr[1]))
             end
-            testResult=ts~run       -- now run all the tests
+            testResult=ts~execute       -- now run all the tests
             call simpleFormatTestResults testResult
         end
 -------------------------------------------------------------------------------------------
@@ -111,9 +111,9 @@ Primary 3rd party sources include:
 -- optionally list of mandatory test methods
 return testGroupList
 -------------------------------------------------------------------------------------------
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 -------------------------------------------------------------------------------------------
-::class "RxMath.testGroup" subclass TestCase public
+::class "RxMath.testGroup" subclass ooTestCase public
 -------------------------------------------------------------------------------------------
 ::attribute digits
 -------------------------------------------------------------------------------------------
@@ -147,17 +147,17 @@ return testGroupList
                               1.732050807568877)
 -- Test each possible value of precision
     do i = 1 to 16
-        self~assertEquals('subTest'i,sqrt_expected[i],RxCalcSqrt(3,i))
+        self~assertEquals(sqrt_expected[i], RxCalcSqrt(3,i))
     end
 
 -- Test that default numeric digits' value is used if expression is not specified
     expected = sqrt_expected[self~digits]
-    self~assertEquals('subTest17',expected,RxCalcSqrt(3))
+    self~assertEquals(expected, RxCalcSqrt(3))
 
 -- Test that manually set numeric digits' value is used if expression is not specified
     numeric digits 5
     expected = sqrt_expected[digits()]
-    self~assertEquals('subTest18',expected,RxCalcSqrt(3))
+    self~assertEquals(expected, RxCalcSqrt(3))
 
 ::method 'test_RxCalcSqrtB'
 -- Test syntax on precision value of 0
@@ -184,7 +184,7 @@ return testGroupList
 -- Test significant digits when square root is a whole number
     expected = 5
     do i = 1 to 16
-        self~assertEquals('subTest'i,expected,RxCalcSqrt(25,i))
+        self~assertEquals(expected, RxCalcSqrt(25,i))
     end
 
 -------------------------------------------------------------------------------------------
@@ -192,17 +192,17 @@ return testGroupList
 ::method 'test_RxCalcExpA'
 -- Test default precision
     expected = 1.64872127
-    self~assertEquals('subTest',expected,RxCalcExp(.5))
+    self~assertEquals(expected, RxCalcExp(.5))
 
 ::method 'test_RxCalcExpB'
 -- Test lowest precision
     expected = 2
-    self~assertEquals('subTest',expected,RxCalcExp(.5,1))
+    self~assertEquals(expected, RxCalcExp(.5,1))
 
 ::method 'test_RxCalcExpC'
 -- Test highest precision
     expected = 1.648721270700128
-    self~assertEquals('subTest',expected,RxCalcExp(.5,16))
+    self~assertEquals(expected, RxCalcExp(.5,16))
 
 ::method 'testRxCalcExpD'
 -- Test invalid low precision
@@ -223,24 +223,24 @@ return testGroupList
 ::method 'testRxCalcExpG'
 -- Test default precision not equals
     expected = 1.64872128
-    self~assertNotEquals('subTest',expected,RxCalcExp(.5))
+    self~assertNotEquals(expected, RxCalcExp(.5))
 
 -------------------------------------------------------------------------------------------
 -- This set of unitTests is brought to you by the Natural Logarithm (base e) function
 ::method 'test_RxCalcLogA'
 -- Test default precision
     expected = 2.77258872
-    self~assertEquals('subTest',expected,RxCalcLog(16))
+    self~assertEquals(expected, RxCalcLog(16))
 
 ::method 'test_RxCalcLogB'
 -- Test lowest precision
     expected = 3
-    self~assertEquals('subTest',expected,RxCalcLog(16,1))
+    self~assertEquals(expected, RxCalcLog(16,1))
 
 ::method 'test_RxCalcLogC'
 -- Test highest precision
     expected = 2.772588722239781
-    self~assertEquals('subTest',expected,RxCalcLog(16,16))
+    self~assertEquals(expected, RxCalcLog(16,16))
 
 ::method 'testRxCalcLogD'
 -- Test invalid low precision
@@ -261,24 +261,24 @@ return testGroupList
 ::method 'testRxCalcLogG'
 -- Test default precision not equals
     expected = 2.77258871
-    self~assertNotEquals('subTest',expected,RxCalcLog(16))
+    self~assertNotEquals(expected, RxCalcLog(16))
 
 -------------------------------------------------------------------------------------------
 -- This set of unitTests is brought to you by the Natural Logarithm (base 10) function
 ::method 'test_RxCalcLog10A'
 -- Test default precision
     expected = 1.20411998
-    self~assertEquals('subTest',expected,RxCalcLog10(16))
+    self~assertEquals(expected, RxCalcLog10(16))
 
 ::method 'test_RxCalcLog10B'
 -- Test lowest precision
     expected = 1
-    self~assertEquals('subTest',expected,RxCalcLog10(16,1))
+    self~assertEquals(expected, RxCalcLog10(16,1))
 
 ::method 'test_RxCalcLog10C'
 -- Test highest precision
     expected = 1.204119982655925
-    self~assertEquals('subTest',expected,RxCalcLog10(16,16))
+    self~assertEquals(expected, RxCalcLog10(16,16))
 
 ::method 'testRxCalcLog10D'
 -- Test invalid low precision
@@ -299,24 +299,24 @@ return testGroupList
 ::method 'testRxCalcLog10G'
 -- Test default precision not equals
     expected = 1.20411997
-    self~assertNotEquals('subTest',expected,RxCalcLog10(16))
+    self~assertNotEquals(expected, RxCalcLog10(16))
 
 -------------------------------------------------------------------------------------------
 -- This set of unitTests is brought to you by the Hyperbolic Sine function
 ::method 'test_RxCalcSinhA'
 -- Test default precision
     expected = 0.252612317
-    self~assertEquals('subTest',expected,RxCalcSinh(.25))
+    self~assertEquals(expected, RxCalcSinh(.25))
 
 ::method 'test_RxCalcSinhB'
 -- Test lowest precision
     expected = 0.3
-    self~assertEquals('subTest',expected,RxCalcSinh(.25,1))
+    self~assertEquals(expected, RxCalcSinh(.25,1))
 
 ::method 'test_RxCalcSinhC'
 -- Test highest precision
     expected = 0.2526123168081683
-    self~assertEquals('subTest',expected,RxCalcSinh(.25,16))
+    self~assertEquals(expected, RxCalcSinh(.25,16))
 
 ::method 'testRxCalcSinhD'
 -- Test invalid low precision
@@ -337,24 +337,24 @@ return testGroupList
 ::method 'testRxCalcSinhG'
 -- Test default precision not equals
     expected = 0.252612318
-    self~assertNotEquals('subTest',expected,RxCalcSinh(.25))
+    self~assertNotEquals(expected, RxCalcSinh(.25))
 
 -------------------------------------------------------------------------------------------
 -- This set of unitTests is brought to you by the Hyperbolic Cosine function
 ::method 'test_RxCalcCoshA'
 -- Test default precision
     expected = 1.0314131
-    self~assertEquals('subTest',expected,RxCalcCosh(.25))
+    self~assertEquals(expected, RxCalcCosh(.25))
 
 ::method 'test_RxCalcCoshB'
 -- Test lowest precision
     expected = 1
-    self~assertEquals('subTest',expected,RxCalcCosh(.25,1))
+    self~assertEquals(expected, RxCalcCosh(.25,1))
 
 ::method 'test_RxCalcCoshC'
 -- Test highest precision
     expected = 1.031413099879573
-    self~assertEquals('subTest',expected,RxCalcCosh(.25,16))
+    self~assertEquals(expected, RxCalcCosh(.25,16))
 
 ::method 'testRxCalcCoshD'
 -- Test invalid low precision
@@ -375,24 +375,24 @@ return testGroupList
 ::method 'testRxCalcCoshG'
 -- Test default precision not equals
     expected = 1.0314130
-    self~assertNotEquals('subTest',expected,RxCalcCosh(.25))
+    self~assertNotEquals(expected, RxCalcCosh(.25))
 
 -------------------------------------------------------------------------------------------
 -- This set of unitTests is brought to you by the Hyperbolic Tangent function
 ::method 'test_RxCalcTanhA'
 -- Test default precision
     expected = 0.244918662
-    self~assertEquals('subTest',expected,RxCalcTanh(.25))
+    self~assertEquals(expected, RxCalcTanh(.25))
 
 ::method 'test_RxCalcTanhB'
 -- Test lowest precision
     expected = 0.2
-    self~assertEquals('subTest',expected,RxCalcTanh(.25,1))
+    self~assertEquals(expected, RxCalcTanh(.25,1))
 
 ::method 'test_RxCalcTanhC'
 -- Test highest precision
     expected = 0.2449186624037091
-    self~assertEquals('subTest',expected,RxCalcTanh(.25,16))
+    self~assertEquals(expected, RxCalcTanh(.25,16))
 
 ::method 'testRxCalcTanhD'
 -- Test invalid low precision
@@ -413,24 +413,24 @@ return testGroupList
 ::method 'testRxCalcTanhG'
 -- Test default precision not equals
     expected = 0.244918661
-    self~assertNotEquals('subTest',expected,RxCalcTanh(.25))
+    self~assertNotEquals(expected, RxCalcTanh(.25))
 
 -------------------------------------------------------------------------------------------
 -- This set of unitTests is brought to you by the Power function
 ::method 'test_RxCalcPowerA'
 -- Test default precision
     expected = 6.13**3
-    self~assertEquals('subTest',expected,RxCalcPower(6.13,3))
+    self~assertEquals(expected, RxCalcPower(6.13,3))
 
 ::method 'test_RxCalcPowerB'
 -- Test lowest precision
     expected = 2e+002
-    self~assertEquals('subTest',expected,RxCalcPower(6.13,3,1))
+    self~assertEquals(expected, RxCalcPower(6.13,3,1))
 
 ::method 'test_RxCalcPowerC'
 -- Test highest precision
     expected = 230.346397
-    self~assertEquals('subTest',expected,RxCalcPower(6.13,3,16))
+    self~assertEquals(expected, RxCalcPower(6.13,3,16))
 
 ::method 'testRxCalcPowerD'
 -- Test invalid low precision
@@ -451,24 +451,24 @@ return testGroupList
 ::method 'testRxCalcPowerG'
 -- Test default precision not equals
     expected = 6.13**4
-    self~assertNotEquals('subTest',expected,RxCalcPower(6.13,3))
+    self~assertNotEquals(expected, RxCalcPower(6.13,3))
 
 -------------------------------------------------------------------------------------------
 -- This set of unitTests is brought to you by the Sine Degrees function
 ::method 'test_RxCalcSinA'
 -- Test default precision
     expected = 0.207911691
-    self~assertEquals('subTest',expected,RxCalcSin(12))
+    self~assertEquals(expected, RxCalcSin(12))
 
 ::method 'test_RxCalcSinB'
 -- Test lowest precision
     expected = 0.2
-    self~assertEquals('subTest',expected,RxCalcSin(12,1))
+    self~assertEquals(expected, RxCalcSin(12,1))
 
 ::method 'test_RxCalcSinC'
 -- Test highest precision
     expected = 0.2079116908177594
-    self~assertEquals('subTest',expected,RxCalcSin(12,16))
+    self~assertEquals(expected, RxCalcSin(12,16))
 
 ::method 'testRxCalcSinD'
 -- Test invalid low precision
@@ -489,27 +489,27 @@ return testGroupList
 ::method 'testRxCalcSinG'
 -- Test default precision not equals
     expected = 0.207911690
-    self~assertNotEquals('subTest',expected,RxCalcSin(12))
+    self~assertNotEquals(expected, RxCalcSin(12))
 
 ::method 'testRxCalcSinH'
 -- Test supplying Degree as 'd'
     expected = 0.207911691
-    self~assertEquals('subTest',expected,RxCalcSin(12,,'d'))
+    self~assertEquals(expected, RxCalcSin(12,,'d'))
 
 ::method 'testRxCalcSinI'
 -- Test supplying Degree as 'D'
     expected = 0.207911691
-    self~assertEquals('subTest',expected,RxCalcSin(12,,'D'))
+    self~assertEquals(expected, RxCalcSin(12,,'D'))
 
 ::method 'testRxCalcSinJ'
 -- Test supplying Degree as 'degree'
     expected = 0.207911691
-    self~assertEquals('subTest',expected,RxCalcSin(12,,'degree'))
+    self~assertEquals(expected, RxCalcSin(12,,'degree'))
 
 ::method 'testRxCalcSinK'
 -- Test supplying Degree as 'DEGREE'
     expected = 0.207911691
-    self~assertEquals('subTest',expected,RxCalcSin(12,,'DEGREE'))
+    self~assertEquals(expected, RxCalcSin(12,,'DEGREE'))
 
 ::method 'testRxCalcSinL'
 -- Test supplying Degree as an invalid expression
@@ -520,17 +520,17 @@ return testGroupList
 ::method 'test_RxCalcSin_rA'
 -- Test default precision
     expected = -0.536572918
-    self~assertEquals('subTest',expected,RxCalcSin(12,,'r'))
+    self~assertEquals(expected, RxCalcSin(12,,'r'))
 
 ::method 'test_RxCalcSin_rB'
 -- Test lowest precision
     expected = -0.5
-    self~assertEquals('subTest',expected,RxCalcSin(12,1,'r'))
+    self~assertEquals(expected, RxCalcSin(12,1,'r'))
 
 ::method 'test_RxCalcSin_rC'
 -- Test highest precision
     expected = -0.5365729180004349
-    self~assertEquals('subTest',expected,RxCalcSin(12,16,'r'))
+    self~assertEquals(expected, RxCalcSin(12,16,'r'))
 
 ::method 'testRxCalcSin_rD'
 -- Test invalid low precision
@@ -551,27 +551,27 @@ return testGroupList
 ::method 'testRxCalcSin_rG'
 -- Test default precision not equals
     expected = 0.536572918
-    self~assertNotEquals('subTest',expected,RxCalcSin(12))
+    self~assertNotEquals(expected, RxCalcSin(12))
 
 ::method 'testRxCalcSin_rH'
 -- Test supplying Radian as 'r'
     expected = -0.536572918
-    self~assertEquals('subTest',expected,RxCalcSin(12,,'r'))
+    self~assertEquals(expected, RxCalcSin(12,,'r'))
 
 ::method 'testRxCalcSin_rI'
 -- Test supplying Radian as 'R'
     expected = -0.536572918
-    self~assertEquals('subTest',expected,RxCalcSin(12,,'R'))
+    self~assertEquals(expected, RxCalcSin(12,,'R'))
 
 ::method 'testRxCalcSin_rJ'
 -- Test supplying Radian as 'radian'
     expected = -0.536572918
-    self~assertEquals('subTest',expected,RxCalcSin(12,,'radian'))
+    self~assertEquals(expected, RxCalcSin(12,,'radian'))
 
 ::method 'testRxCalcSin_rK'
 -- Test supplying Radian as 'RADIAN'
     expected = -0.536572918
-    self~assertEquals('subTest',expected,RxCalcSin(12,,'RADIAN'))
+    self~assertEquals(expected, RxCalcSin(12,,'RADIAN'))
 
 ::method 'testRxCalcSin_rL'
 -- Test supplying Radian as an invalid expression
@@ -582,17 +582,17 @@ return testGroupList
 ::method 'test_RxCalcSin_gA'
 -- Test default precision
     expected = 0.187381315
-    self~assertEquals('subTest',expected,RxCalcSin(12,,'g'))
+    self~assertEquals(expected, RxCalcSin(12,,'g'))
 
 ::method 'test_RxCalcSin_gB'
 -- Test lowest precision
     expected = 0.2
-    self~assertEquals('subTest',expected,RxCalcSin(12,1,'g'))
+    self~assertEquals(expected, RxCalcSin(12,1,'g'))
 
 ::method 'test_RxCalcSin_gC'
 -- Test highest precision
     expected = 0.1873813145857246
-    self~assertEquals('subTest',expected,RxCalcSin(12,16,'g'))
+    self~assertEquals(expected, RxCalcSin(12,16,'g'))
 
 ::method 'testRxCalcSin_gD'
 -- Test invalid low precision
@@ -613,27 +613,27 @@ return testGroupList
 ::method 'testRxCalcSin_gG'
 -- Test default precision not equals
     expected = -0.187381315
-    self~assertNotEquals('subTest',expected,RxCalcSin(12))
+    self~assertNotEquals(expected, RxCalcSin(12))
 
 ::method 'testRxCalcSin_gH'
 -- Test supplying Grade as 'g'
     expected = 0.187381315
-    self~assertEquals('subTest',expected,RxCalcSin(12,,'g'))
+    self~assertEquals(expected, RxCalcSin(12,,'g'))
 
 ::method 'testRxCalcSin_gI'
 -- Test supplying Grade as 'G'
     expected = 0.187381315
-    self~assertEquals('subTest',expected,RxCalcSin(12,,'G'))
+    self~assertEquals(expected, RxCalcSin(12,,'G'))
 
 ::method 'testRxCalcSin_gJ'
 -- Test supplying Grade as 'grade'
     expected = 0.187381315
-    self~assertEquals('subTest',expected,RxCalcSin(12,,'grade'))
+    self~assertEquals(expected, RxCalcSin(12,,'grade'))
 
 ::method 'testRxCalcSin_gK'
 -- Test supplying Grade as 'GRADE'
     expected = 0.187381315
-    self~assertEquals('subTest',expected,RxCalcSin(12,,'GRADE'))
+    self~assertEquals(expected, RxCalcSin(12,,'GRADE'))
 
 ::method 'testRxCalcSin_gL'
 -- Test supplying Grade as an invalid expression
@@ -644,17 +644,17 @@ return testGroupList
 ::method 'test_RxCalcCosA'
 -- Test default precision
     expected = 0.978147601
-    self~assertEquals('subTest',expected,RxCalcCos(12))
+    self~assertEquals(expected, RxCalcCos(12))
 
 ::method 'test_RxCalcCosB'
 -- Test lowest precision
     expected = 1
-    self~assertEquals('subTest',expected,RxCalcCos(12,1))
+    self~assertEquals(expected, RxCalcCos(12,1))
 
 ::method 'test_RxCalcCosC'
 -- Test highest precision
     expected = 0.9781476007338057
-    self~assertEquals('subTest',expected,RxCalcCos(12,16))
+    self~assertEquals(expected, RxCalcCos(12,16))
 
 ::method 'testRxCalcCosD'
 -- Test invalid low precision
@@ -675,27 +675,27 @@ return testGroupList
 ::method 'testRxCalcCosG'
 -- Test default precision not equals
     expected = 0.978147600
-    self~assertNotEquals('subTest',expected,RxCalcCos(12))
+    self~assertNotEquals(expected, RxCalcCos(12))
 
 ::method 'testRxCalcCosH'
 -- Test supplying Degree as 'd'
     expected = 0.978147601
-    self~assertEquals('subTest',expected,RxCalcCos(12,,'d'))
+    self~assertEquals(expected, RxCalcCos(12,,'d'))
 
 ::method 'testRxCalcCosI'
 -- Test supplying Degree as 'D'
     expected = 0.978147601
-    self~assertEquals('subTest',expected,RxCalcCos(12,,'D'))
+    self~assertEquals(expected, RxCalcCos(12,,'D'))
 
 ::method 'testRxCalcCosJ'
 -- Test supplying Degree as 'degree'
     expected = 0.978147601
-    self~assertEquals('subTest',expected,RxCalcCos(12,,'degree'))
+    self~assertEquals(expected, RxCalcCos(12,,'degree'))
 
 ::method 'testRxCalcCosK'
 -- Test supplying Degree as 'DEGREE'
     expected = 0.978147601
-    self~assertEquals('subTest',expected,RxCalcCos(12,,'DEGREE'))
+    self~assertEquals(expected, RxCalcCos(12,,'DEGREE'))
 
 ::method 'testRxCalcCosL'
 -- Test supplying Degree as an invalid expression
@@ -706,17 +706,17 @@ return testGroupList
 ::method 'test_RxCalcCos_rA'
 -- Test default precision
     expected = 0.843853959
-    self~assertEquals('subTest',expected,RxCalcCos(12,,'r'))
+    self~assertEquals(expected, RxCalcCos(12,,'r'))
 
 ::method 'test_RxCalcCos_rB'
 -- Test lowest precision
     expected = 0.8
-    self~assertEquals('subTest',expected,RxCalcCos(12,1,'r'))
+    self~assertEquals(expected, RxCalcCos(12,1,'r'))
 
 ::method 'test_RxCalcCos_rC'
 -- Test highest precision
     expected = 0.8438539587324921
-    self~assertEquals('subTest',expected,RxCalcCos(12,16,'r'))
+    self~assertEquals(expected, RxCalcCos(12,16,'r'))
 
 ::method 'testRxCalcCos_rD'
 -- Test invalid low precision
@@ -737,27 +737,27 @@ return testGroupList
 ::method 'testRxCalcCos_rG'
 -- Test default precision not equals
     expected = 0.843853958
-    self~assertNotEquals('subTest',expected,RxCalcCos(12))
+    self~assertNotEquals(expected, RxCalcCos(12))
 
 ::method 'testRxCalcCos_rH'
 -- Test supplying Radian as 'r'
     expected = 0.843853959
-    self~assertEquals('subTest',expected,RxCalcCos(12,,'r'))
+    self~assertEquals(expected, RxCalcCos(12,,'r'))
 
 ::method 'testRxCalcCos_rI'
 -- Test supplying Radian as 'R'
     expected = 0.843853959
-    self~assertEquals('subTest',expected,RxCalcCos(12,,'R'))
+    self~assertEquals(expected, RxCalcCos(12,,'R'))
 
 ::method 'testRxCalcCos_rJ'
 -- Test supplying Radian as 'radian'
     expected = 0.843853959
-    self~assertEquals('subTest',expected,RxCalcCos(12,,'radian'))
+    self~assertEquals(expected, RxCalcCos(12,,'radian'))
 
 ::method 'testRxCalcCos_rK'
 -- Test supplying Radian as 'RADIAN'
     expected = 0.843853959
-    self~assertEquals('subTest',expected,RxCalcCos(12,,'RADIAN'))
+    self~assertEquals(expected, RxCalcCos(12,,'RADIAN'))
 
 ::method 'testRxCalcCos_rL'
 -- Test supplying Radian as an invalid expression
@@ -768,17 +768,17 @@ return testGroupList
 ::method 'test_RxCalcCos_gA'
 -- Test default precision
     expected = 0.982287251
-    self~assertEquals('subTest',expected,RxCalcCos(12,,'g'))
+    self~assertEquals(expected, RxCalcCos(12,,'g'))
 
 ::method 'test_RxCalcCos_gB'
 -- Test lowest precision
     expected = 1
-    self~assertEquals('subTest',expected,RxCalcCos(12,1,'g'))
+    self~assertEquals(expected, RxCalcCos(12,1,'g'))
 
 ::method 'test_RxCalcCos_gC'
 -- Test highest precision
     expected = 0.9822872507286887
-    self~assertEquals('subTest',expected,RxCalcCos(12,16,'g'))
+    self~assertEquals(expected, RxCalcCos(12,16,'g'))
 
 ::method 'testRxCalcCos_gD'
 -- Test invalid low precision
@@ -799,27 +799,27 @@ return testGroupList
 ::method 'testRxCalcCos_gG'
 -- Test default precision not equals
     expected = 0.982287250
-    self~assertNotEquals('subTest',expected,RxCalcCos(12))
+    self~assertNotEquals(expected, RxCalcCos(12))
 
 ::method 'testRxCalcCos_gH'
 -- Test supplying Grade as 'g'
     expected = 0.982287251
-    self~assertEquals('subTest',expected,RxCalcCos(12,,'g'))
+    self~assertEquals(expected, RxCalcCos(12,,'g'))
 
 ::method 'testRxCalcCos_gI'
 -- Test supplying Grade as 'G'
     expected = 0.982287251
-    self~assertEquals('subTest',expected,RxCalcCos(12,,'G'))
+    self~assertEquals(expected, RxCalcCos(12,,'G'))
 
 ::method 'testRxCalcCos_gJ'
 -- Test supplying Grade as 'grade'
     expected = 0.982287251
-    self~assertEquals('subTest',expected,RxCalcCos(12,,'grade'))
+    self~assertEquals(expected, RxCalcCos(12,,'grade'))
 
 ::method 'testRxCalcCos_gK'
 -- Test supplying Grade as 'GRADE'
     expected = 0.982287251
-    self~assertEquals('subTest',expected,RxCalcCos(12,,'GRADE'))
+    self~assertEquals(expected, RxCalcCos(12,,'GRADE'))
 
 ::method 'testRxCalcCos_gL'
 -- Test supplying Grade as an invalid expression
@@ -830,17 +830,17 @@ return testGroupList
 ::method 'test_RxCalcTanA'
 -- Test default precision
     expected = 0.212556562
-    self~assertEquals('subTest',expected,RxCalcTan(12))
+    self~assertEquals(expected, RxCalcTan(12))
 
 ::method 'test_RxCalcTanB'
 -- Test lowest precision
     expected = .2
-    self~assertEquals('subTest',expected,RxCalcTan(12,1))
+    self~assertEquals(expected, RxCalcTan(12,1))
 
 ::method 'test_RxCalcTanC'
 -- Test highest precision
     expected = 0.2125565616700222
-    self~assertEquals('subTest',expected,RxCalcTan(12,16))
+    self~assertEquals(expected, RxCalcTan(12,16))
 
 ::method 'testRxCalcTanD'
 -- Test invalid low precision
@@ -861,27 +861,27 @@ return testGroupList
 ::method 'testRxCalcTanG'
 -- Test default precision not equals
     expected = 0.212556561
-    self~assertNotEquals('subTest',expected,RxCalcTan(12))
+    self~assertNotEquals(expected, RxCalcTan(12))
 
 ::method 'testRxCalcTanH'
 -- Test supplying Degree as 'd'
     expected = 0.212556562
-    self~assertEquals('subTest',expected,RxCalcTan(12,,'d'))
+    self~assertEquals(expected, RxCalcTan(12,,'d'))
 
 ::method 'testRxCalcTanI'
 -- Test supplying Degree as 'D'
     expected = 0.212556562
-    self~assertEquals('subTest',expected,RxCalcTan(12,,'D'))
+    self~assertEquals(expected, RxCalcTan(12,,'D'))
 
 ::method 'testRxCalcTanJ'
 -- Test supplying Degree as 'degree'
     expected = 0.212556562
-    self~assertEquals('subTest',expected,RxCalcTan(12,,'degree'))
+    self~assertEquals(expected, RxCalcTan(12,,'degree'))
 
 ::method 'testRxCalcTanK'
 -- Test supplying Degree as 'DEGREE'
     expected = 0.212556562
-    self~assertEquals('subTest',expected,RxCalcTan(12,,'DEGREE'))
+    self~assertEquals(expected, RxCalcTan(12,,'DEGREE'))
 
 ::method 'testRxCalcTanL'
 -- Test supplying Degree as an invalid expression
@@ -892,17 +892,17 @@ return testGroupList
 ::method 'test_RxCalcTan_rA'
 -- Test default precision
     expected = -0.635859929
-    self~assertEquals('subTest',expected,RxCalcTan(12,,'r'))
+    self~assertEquals(expected, RxCalcTan(12,,'r'))
 
 ::method 'test_RxCalcTan_rB'
 -- Test lowest precision
     expected = -0.6
-    self~assertEquals('subTest',expected,RxCalcTan(12,1,'r'))
+    self~assertEquals(expected, RxCalcTan(12,1,'r'))
 
 ::method 'test_RxCalcTan_rC'
 -- Test highest precision
     expected = -0.6358599286615808
-    self~assertEquals('subTest',expected,RxCalcTan(12,16,'r'))
+    self~assertEquals(expected, RxCalcTan(12,16,'r'))
 
 ::method 'testRxCalcTan_rD'
 -- Test invalid low precision
@@ -923,27 +923,27 @@ return testGroupList
 ::method 'testRxCalcTan_rG'
 -- Test default precision not equals
     expected = -0.635859928
-    self~assertNotEquals('subTest',expected,RxCalcTan(12))
+    self~assertNotEquals(expected, RxCalcTan(12))
 
 ::method 'testRxCalcTan_rH'
 -- Test supplying Radian as 'r'
     expected = -0.635859929
-    self~assertEquals('subTest',expected,RxCalcTan(12,,'r'))
+    self~assertEquals(expected, RxCalcTan(12,,'r'))
 
 ::method 'testRxCalcTan_rI'
 -- Test supplying Radian as 'R'
     expected = -0.635859929
-    self~assertEquals('subTest',expected,RxCalcTan(12,,'R'))
+    self~assertEquals(expected, RxCalcTan(12,,'R'))
 
 ::method 'testRxCalcTan_rJ'
 -- Test supplying Radian as 'radian'
     expected = -0.635859929
-    self~assertEquals('subTest',expected,RxCalcTan(12,,'radian'))
+    self~assertEquals(expected, RxCalcTan(12,,'radian'))
 
 ::method 'testRxCalcTan_rK'
 -- Test supplying Radian as 'RADIAN'
     expected = -0.635859929
-    self~assertEquals('subTest',expected,RxCalcTan(12,,'RADIAN'))
+    self~assertEquals(expected, RxCalcTan(12,,'RADIAN'))
 
 ::method 'testRxCalcTan_rL'
 -- Test supplying Radian as an invalid expression
@@ -954,17 +954,17 @@ return testGroupList
 ::method 'test_RxCalcTan_gA'
 -- Test default precision
     expected = 0.190760202
-    self~assertEquals('subTest',expected,RxCalcTan(12,,'g'))
+    self~assertEquals(expected, RxCalcTan(12,,'g'))
 
 ::method 'test_RxCalcTan_gB'
 -- Test lowest precision
     expected = 0.2
-    self~assertEquals('subTest',expected,RxCalcTan(12,1,'g'))
+    self~assertEquals(expected, RxCalcTan(12,1,'g'))
 
 ::method 'test_RxCalcTan_gC'
 -- Test highest precision
     expected = 0.1907602022185667
-    self~assertEquals('subTest',expected,RxCalcTan(12,16,'g'))
+    self~assertEquals(expected, RxCalcTan(12,16,'g'))
 
 ::method 'testRxCalcTan_gD'
 -- Test invalid low precision
@@ -985,27 +985,27 @@ return testGroupList
 ::method 'testRxCalcTan_gG'
 -- Test default precision not equals
     expected = 0.190760201
-    self~assertNotEquals('subTest',expected,RxCalcTan(12))
+    self~assertNotEquals(expected, RxCalcTan(12))
 
 ::method 'testRxCalcTan_gH'
 -- Test supplying Grade as 'g'
     expected = 0.190760202
-    self~assertEquals('subTest',expected,RxCalcTan(12,,'g'))
+    self~assertEquals(expected, RxCalcTan(12,,'g'))
 
 ::method 'testRxCalcTan_gI'
 -- Test supplying Grade as 'G'
     expected = 0.190760202
-    self~assertEquals('subTest',expected,RxCalcTan(12,,'G'))
+    self~assertEquals(expected, RxCalcTan(12,,'G'))
 
 ::method 'testRxCalcTan_gJ'
 -- Test supplying Grade as 'grade'
     expected = 0.190760202
-    self~assertEquals('subTest',expected,RxCalcTan(12,,'grade'))
+    self~assertEquals(expected, RxCalcTan(12,,'grade'))
 
 ::method 'testRxCalcTan_gK'
 -- Test supplying Grade as 'GRADE'
     expected = 0.190760202
-    self~assertEquals('subTest',expected,RxCalcTan(12,,'GRADE'))
+    self~assertEquals(expected, RxCalcTan(12,,'GRADE'))
 
 ::method 'testRxCalcTan_gL'
 -- Test supplying Grade as an invalid expression
@@ -1016,17 +1016,17 @@ return testGroupList
 ::method 'test_RxCalcCotanA'
 -- Test default precision
     expected = 4.70463011
-    self~assertEquals('subTest',expected,RxCalcCotan(12))
+    self~assertEquals(expected, RxCalcCotan(12))
 
 ::method 'test_RxCalcCotanB'
 -- Test lowest precision
     expected = 5
-    self~assertEquals('subTest',expected,RxCalcCotan(12,1))
+    self~assertEquals(expected, RxCalcCotan(12,1))
 
 ::method 'test_RxCalcCotanC'
 -- Test highest precision
     expected = 4.704630109478453
-    self~assertEquals('subTest',expected,RxCalcCotan(12,16))
+    self~assertEquals(expected, RxCalcCotan(12,16))
 
 ::method 'testRxCalcCotanD'
 -- Test invalid low precision
@@ -1047,27 +1047,27 @@ return testGroupList
 ::method 'testRxCalcCotanG'
 -- Test default precision not equals
     expected = 4.70463010
-    self~assertNotEquals('subTest',expected,RxCalcCotan(12))
+    self~assertNotEquals(expected, RxCalcCotan(12))
 
 ::method 'testRxCalcCotanH'
 -- Test supplying Degree as 'd'
     expected = 4.70463011
-    self~assertEquals('subTest',expected,RxCalcCotan(12,,'d'))
+    self~assertEquals(expected, RxCalcCotan(12,,'d'))
 
 ::method 'testRxCalcCotanI'
 -- Test supplying Degree as 'D'
     expected = 4.70463011
-    self~assertEquals('subTest',expected,RxCalcCotan(12,,'D'))
+    self~assertEquals(expected, RxCalcCotan(12,,'D'))
 
 ::method 'testRxCalcCotanJ'
 -- Test supplying Degree as 'degree'
     expected = 4.70463011
-    self~assertEquals('subTest',expected,RxCalcCotan(12,,'degree'))
+    self~assertEquals(expected, RxCalcCotan(12,,'degree'))
 
 ::method 'testRxCalcCotanK'
 -- Test supplying Degree as 'DEGREE'
     expected = 4.70463011
-    self~assertEquals('subTest',expected,RxCalcCotan(12,,'DEGREE'))
+    self~assertEquals(expected, RxCalcCotan(12,,'DEGREE'))
 
 ::method 'testRxCalcCotanL'
 -- Test supplying Degree as an invalid expression
@@ -1078,17 +1078,17 @@ return testGroupList
 ::method 'test_RxCalcCotan_rA'
 -- Test default precision
     expected = -1.57267341
-    self~assertEquals('subTest',expected,RxCalcCotan(12,,'r'))
+    self~assertEquals(expected, RxCalcCotan(12,,'r'))
 
 ::method 'test_RxCalcCotan_rB'
 -- Test lowest precision
     expected = -2
-    self~assertEquals('subTest',expected,RxCalcCotan(12,1,'r'))
+    self~assertEquals(expected, RxCalcCotan(12,1,'r'))
 
 ::method 'test_RxCalcCotan_rC'
 -- Test highest precision
     expected = -1.572673406397689
-    self~assertEquals('subTest',expected,RxCalcCotan(12,16,'r'))
+    self~assertEquals(expected, RxCalcCotan(12,16,'r'))
 
 ::method 'testRxCalcCotan_rD'
 -- Test invalid low precision
@@ -1109,27 +1109,27 @@ return testGroupList
 ::method 'testRxCalcCotan_rG'
 -- Test default precision not equals
     expected = 1.57267341
-    self~assertNotEquals('subTest',expected,RxCalcCotan(12))
+    self~assertNotEquals(expected, RxCalcCotan(12))
 
 ::method 'testRxCalcCotan_rH'
 -- Test supplying Radian as 'r'
     expected = -1.57267341
-    self~assertEquals('subTest',expected,RxCalcCotan(12,,'r'))
+    self~assertEquals(expected, RxCalcCotan(12,,'r'))
 
 ::method 'testRxCalcCotan_rI'
 -- Test supplying Radian as 'R'
     expected = -1.57267341
-    self~assertEquals('subTest',expected,RxCalcCotan(12,,'R'))
+    self~assertEquals(expected, RxCalcCotan(12,,'R'))
 
 ::method 'testRxCalcCotan_rJ'
 -- Test supplying Radian as 'radian'
     expected = -1.57267341
-    self~assertEquals('subTest',expected,RxCalcCotan(12,,'radian'))
+    self~assertEquals(expected, RxCalcCotan(12,,'radian'))
 
 ::method 'testRxCalcCotan_rK'
 -- Test supplying Radian as 'RADIAN'
     expected = -1.57267341
-    self~assertEquals('subTest',expected,RxCalcCotan(12,,'RADIAN'))
+    self~assertEquals(expected, RxCalcCotan(12,,'RADIAN'))
 
 ::method 'testRxCalcCotan_rL'
 -- Test supplying Radian as an invalid expression
@@ -1140,17 +1140,17 @@ return testGroupList
 ::method 'test_RxCalcCotan_gA'
 -- Test default precision
     expected = 5.24218358
-    self~assertEquals('subTest',expected,RxCalcCotan(12,,'g'))
+    self~assertEquals(expected, RxCalcCotan(12,,'g'))
 
 ::method 'test_RxCalcCotan_gB'
 -- Test lowest precision
     expected = 5
-    self~assertEquals('subTest',expected,RxCalcCotan(12,1,'g'))
+    self~assertEquals(expected, RxCalcCotan(12,1,'g'))
 
 ::method 'test_RxCalcCotan_gC'
 -- Test highest precision
     expected = 5.242183581113177
-    self~assertEquals('subTest',expected,RxCalcCotan(12,16,'g'))
+    self~assertEquals(expected, RxCalcCotan(12,16,'g'))
 
 ::method 'testRxCalcCotan_gD'
 -- Test invalid low precision
@@ -1171,27 +1171,27 @@ return testGroupList
 ::method 'testRxCalcCotan_gG'
 -- Test default precision not equals
     expected = -5.24218358
-    self~assertNotEquals('subTest',expected,RxCalcCotan(12))
+    self~assertNotEquals(expected, RxCalcCotan(12))
 
 ::method 'testRxCalcCotan_gH'
 -- Test supplying Grade as 'g'
     expected = 5.24218358
-    self~assertEquals('subTest',expected,RxCalcCotan(12,,'g'))
+    self~assertEquals(expected, RxCalcCotan(12,,'g'))
 
 ::method 'testRxCalcCotan_gI'
 -- Test supplying Grade as 'G'
     expected = 5.24218358
-    self~assertEquals('subTest',expected,RxCalcCotan(12,,'G'))
+    self~assertEquals(expected, RxCalcCotan(12,,'G'))
 
 ::method 'testRxCalcCotan_gJ'
 -- Test supplying Grade as 'grade'
     expected = 5.24218358
-    self~assertEquals('subTest',expected,RxCalcCotan(12,,'grade'))
+    self~assertEquals(expected, RxCalcCotan(12,,'grade'))
 
 ::method 'testRxCalcCotan_gK'
 -- Test supplying Grade as 'GRADE'
     expected = 5.24218358
-    self~assertEquals('subTest',expected,RxCalcCotan(12,,'GRADE'))
+    self~assertEquals(expected, RxCalcCotan(12,,'GRADE'))
 
 ::method 'testRxCalcCotan_gL'
 -- Test supplying Grade as an invalid expression
@@ -1202,17 +1202,17 @@ return testGroupList
 ::method 'test_RxCalcPiA'
 -- Test default precision
     expected = 3.14159265
-    self~assertEquals('subTest',expected,RxCalcPi())
+    self~assertEquals(expected, RxCalcPi())
 
 ::method 'test_RxCalcPiB'
 -- Test lowest precision
     expected = 3
-    self~assertEquals('subTest',expected,RxCalcPi(1))
+    self~assertEquals(expected, RxCalcPi(1))
 
 ::method 'test_RxCalcPiC'
 -- Test highest precision
     expected = 3.141592653589793
-    self~assertEquals('subTest',expected,RxCalcPi(16))
+    self~assertEquals(expected, RxCalcPi(16))
 
 ::method 'testRxCalcPiD'
 -- Test invalid low precision
@@ -1233,23 +1233,23 @@ return testGroupList
 ::method 'testRxCalcPiG'
 -- Test default precision not equals
     expected = 3.14159264
-    self~assertNotEquals('subTest',expected,RxCalcPi(12))
+    self~assertNotEquals(expected, RxCalcPi(12))
 
 -- This set of unitTests is brought to you by the Arcsine Degrees function
 ::method 'test_RxCalcArcSinA'
 -- Test default precision
     expected = 8.77763055
-    self~assertEquals('subTest',expected,RxCalcArcSin(.1526))
+    self~assertEquals(expected, RxCalcArcSin(.1526))
 
 ::method 'test_RxCalcArcSinB'
 -- Test lowest precision
     expected = 9
-    self~assertEquals('subTest',expected,RxCalcArcSin(.1526,1))
+    self~assertEquals(expected, RxCalcArcSin(.1526,1))
 
 ::method 'test_RxCalcArcSinC'
 -- Test highest precision
     expected = 8.777630552223764
-    self~assertEquals('subTest',expected,RxCalcArcSin(.1526,16))
+    self~assertEquals(expected, RxCalcArcSin(.1526,16))
 
 ::method 'testRxCalcArcSinD'
 -- Test invalid low precision
@@ -1270,27 +1270,27 @@ return testGroupList
 ::method 'testRxCalcArcSinG'
 -- Test default precision not equals
     expected = 8.77763054
-    self~assertNotEquals('subTest',expected,RxCalcArcSin(.1526))
+    self~assertNotEquals(expected, RxCalcArcSin(.1526))
 
 ::method 'testRxCalcArcSinH'
 -- Test supplying Degree as 'd'
     expected = 8.77763055
-    self~assertEquals('subTest',expected,RxCalcArcSin(.1526,,'d'))
+    self~assertEquals(expected, RxCalcArcSin(.1526,,'d'))
 
 ::method 'testRxCalcArcSinI'
 -- Test supplying Degree as 'D'
     expected = 8.77763055
-    self~assertEquals('subTest',expected,RxCalcArcSin(.1526,,'D'))
+    self~assertEquals(expected, RxCalcArcSin(.1526,,'D'))
 
 ::method 'testRxCalcArcSinJ'
 -- Test supplying Degree as 'degree'
     expected = 8.77763055
-    self~assertEquals('subTest',expected,RxCalcArcSin(.1526,,'degree'))
+    self~assertEquals(expected, RxCalcArcSin(.1526,,'degree'))
 
 ::method 'testRxCalcArcSinK'
 -- Test supplying Degree as 'DEGREE'
     expected = 8.77763055
-    self~assertEquals('subTest',expected,RxCalcArcSin(.1526,,'DEGREE'))
+    self~assertEquals(expected, RxCalcArcSin(.1526,,'DEGREE'))
 
 ::method 'testRxCalcArcSinL'
 -- Test supplying Degree as an invalid expression
@@ -1301,17 +1301,17 @@ return testGroupList
 ::method 'test_RxCalcArcSin_rA'
 -- Test default precision
     expected = 0.153198554
-    self~assertEquals('subTest',expected,RxCalcArcSin(.1526,,'r'))
+    self~assertEquals(expected, RxCalcArcSin(.1526,,'r'))
 
 ::method 'test_RxCalcArcSin_rB'
 -- Test lowest precision
     expected = 0.2
-    self~assertEquals('subTest',expected,RxCalcArcSin(.1526,1,'r'))
+    self~assertEquals(expected, RxCalcArcSin(.1526,1,'r'))
 
 ::method 'test_RxCalcArcSin_rC'
 -- Test highest precision
     expected = 0.1531985536599528
-    self~assertEquals('subTest',expected,RxCalcArcSin(.1526,16,'r'))
+    self~assertEquals(expected, RxCalcArcSin(.1526,16,'r'))
 
 ::method 'testRxCalcArcSin_rD'
 -- Test invalid low precision
@@ -1332,27 +1332,27 @@ return testGroupList
 ::method 'testRxCalcArcSin_rG'
 -- Test default precision not equals
     expected = -0.153198554
-    self~assertNotEquals('subTest',expected,RxCalcArcSin(.1526))
+    self~assertNotEquals(expected, RxCalcArcSin(.1526))
 
 ::method 'testRxCalcArcSin_rH'
 -- Test supplying Radian as 'r'
     expected = 0.153198554
-    self~assertEquals('subTest',expected,RxCalcArcSin(.1526,,'r'))
+    self~assertEquals(expected, RxCalcArcSin(.1526,,'r'))
 
 ::method 'testRxCalcArcSin_rI'
 -- Test supplying Radian as 'R'
     expected = 0.153198554
-    self~assertEquals('subTest',expected,RxCalcArcSin(.1526,,'R'))
+    self~assertEquals(expected, RxCalcArcSin(.1526,,'R'))
 
 ::method 'testRxCalcArcSin_rJ'
 -- Test supplying Radian as 'radian'
     expected = 0.153198554
-    self~assertEquals('subTest',expected,RxCalcArcSin(.1526,,'radian'))
+    self~assertEquals(expected, RxCalcArcSin(.1526,,'radian'))
 
 ::method 'testRxCalcArcSin_rK'
 -- Test supplying Radian as 'RADIAN'
     expected = 0.153198554
-    self~assertEquals('subTest',expected,RxCalcArcSin(.1526,,'RADIAN'))
+    self~assertEquals(expected, RxCalcArcSin(.1526,,'RADIAN'))
 
 ::method 'testRxCalcArcSin_rL'
 -- Test supplying Radian as an invalid expression
@@ -1363,17 +1363,17 @@ return testGroupList
 ::method 'test_RxCalcArcSin_gA'
 -- Test default precision
     expected = 9.75292284
-    self~assertEquals('subTest',expected,RxCalcArcSin(.1526,,'g'))
+    self~assertEquals(expected, RxCalcArcSin(.1526,,'g'))
 
 ::method 'test_RxCalcArcSin_gB'
 -- Test lowest precision
     expected = 1e+001
-    self~assertEquals('subTest',expected,RxCalcArcSin(.1526,1,'g'))
+    self~assertEquals(expected, RxCalcArcSin(.1526,1,'g'))
 
 ::method 'test_RxCalcArcSin_gC'
 -- Test highest precision
     expected = 9.752922835804185
-    self~assertEquals('subTest',expected,RxCalcArcSin(.1526,16,'g'))
+    self~assertEquals(expected, RxCalcArcSin(.1526,16,'g'))
 
 ::method 'testRxCalcArcSin_gD'
 -- Test invalid low precision
@@ -1394,27 +1394,27 @@ return testGroupList
 ::method 'testRxCalcArcSin_gG'
 -- Test default precision not equals
     expected = 9.75292283
-    self~assertNotEquals('subTest',expected,RxCalcArcSin(.1526))
+    self~assertNotEquals(expected, RxCalcArcSin(.1526))
 
 ::method 'testRxCalcArcSin_gH'
 -- Test supplying Grade as 'g'
     expected = 9.75292284
-    self~assertEquals('subTest',expected,RxCalcArcSin(.1526,,'g'))
+    self~assertEquals(expected, RxCalcArcSin(.1526,,'g'))
 
 ::method 'testRxCalcArcSin_gI'
 -- Test supplying Grade as 'G'
     expected = 9.75292284
-    self~assertEquals('subTest',expected,RxCalcArcSin(.1526,,'G'))
+    self~assertEquals(expected, RxCalcArcSin(.1526,,'G'))
 
 ::method 'testRxCalcArcSin_gJ'
 -- Test supplying Grade as 'grade'
     expected = 9.75292284
-    self~assertEquals('subTest',expected,RxCalcArcSin(.1526,,'grade'))
+    self~assertEquals(expected, RxCalcArcSin(.1526,,'grade'))
 
 ::method 'testRxCalcArcSin_gK'
 -- Test supplying Grade as 'GRADE'
     expected = 9.75292284
-    self~assertEquals('subTest',expected,RxCalcArcSin(.1526,,'GRADE'))
+    self~assertEquals(expected, RxCalcArcSin(.1526,,'GRADE'))
 
 ::method 'testRxCalcArcSin_gL'
 -- Test supplying Grade as an invalid expression
@@ -1425,17 +1425,17 @@ return testGroupList
 ::method 'test_RxCalcArcCosA'
 -- Test default precision
     expected = 81.2223694
-    self~assertEquals('subTest',expected,RxCalcArcCos(.1526))
+    self~assertEquals(expected, RxCalcArcCos(.1526))
 
 ::method 'test_RxCalcArcCosB'
 -- Test lowest precision
     expected = 80
-    self~assertEquals('subTest',expected,RxCalcArcCos(.1526,1))
+    self~assertEquals(expected, RxCalcArcCos(.1526,1))
 
 ::method 'test_RxCalcArcCosC'
 -- Test highest precision
     expected = 81.2223694477762
-    self~assertEquals('subTest',expected,RxCalcArcCos(.1526,16))
+    self~assertEquals(expected, RxCalcArcCos(.1526,16))
 
 ::method 'testRxCalcArcCosD'
 -- Test invalid low precision
@@ -1456,27 +1456,27 @@ return testGroupList
 ::method 'testRxCalcArcCosG'
 -- Test default precision not equals
     expected = 81.2223695
-    self~assertNotEquals('subTest',expected,RxCalcArcCos(.1526))
+    self~assertNotEquals(expected, RxCalcArcCos(.1526))
 
 ::method 'testRxCalcArcCosH'
 -- Test supplying Degree as 'd'
     expected = 81.2223694
-    self~assertEquals('subTest',expected,RxCalcArcCos(.1526,,'d'))
+    self~assertEquals(expected, RxCalcArcCos(.1526,,'d'))
 
 ::method 'testRxCalcArcCosI'
 -- Test supplying Degree as 'D'
     expected = 81.2223694
-    self~assertEquals('subTest',expected,RxCalcArcCos(.1526,,'D'))
+    self~assertEquals(expected, RxCalcArcCos(.1526,,'D'))
 
 ::method 'testRxCalcArcCosJ'
 -- Test supplying Degree as 'degree'
     expected = 81.2223694
-    self~assertEquals('subTest',expected,RxCalcArcCos(.1526,,'degree'))
+    self~assertEquals(expected, RxCalcArcCos(.1526,,'degree'))
 
 ::method 'testRxCalcArcCosK'
 -- Test supplying Degree as 'DEGREE'
     expected = 81.2223694
-    self~assertEquals('subTest',expected,RxCalcArcCos(.1526,,'DEGREE'))
+    self~assertEquals(expected, RxCalcArcCos(.1526,,'DEGREE'))
 
 ::method 'testRxCalcArcCosL'
 -- Test supplying Degree as an invalid expression
@@ -1487,17 +1487,17 @@ return testGroupList
 ::method 'test_RxCalcArcCos_rA'
 -- Test default precision
     expected = 1.41759777
-    self~assertEquals('subTest',expected,RxCalcArcCos(.1526,,'r'))
+    self~assertEquals(expected, RxCalcArcCos(.1526,,'r'))
 
 ::method 'test_RxCalcArcCos_rB'
 -- Test lowest precision
     expected = 1
-    self~assertEquals('subTest',expected,RxCalcArcCos(.1526,1,'r'))
+    self~assertEquals(expected, RxCalcArcCos(.1526,1,'r'))
 
 ::method 'test_RxCalcArcCos_rC'
 -- Test highest precision
     expected = 1.417597773134944
-    self~assertEquals('subTest',expected,RxCalcArcCos(.1526,16,'r'))
+    self~assertEquals(expected, RxCalcArcCos(.1526,16,'r'))
 
 ::method 'testRxCalcArcCos_rD'
 -- Test invalid low precision
@@ -1518,27 +1518,27 @@ return testGroupList
 ::method 'testRxCalcArcCos_rG'
 -- Test default precision not equals
     expected = 1.41759778
-    self~assertNotEquals('subTest',expected,RxCalcArcCos(.1526))
+    self~assertNotEquals(expected, RxCalcArcCos(.1526))
 
 ::method 'testRxCalcArcCos_rH'
 -- Test supplying Radian as 'r'
     expected = 1.41759777
-    self~assertEquals('subTest',expected,RxCalcArcCos(.1526,,'r'))
+    self~assertEquals(expected, RxCalcArcCos(.1526,,'r'))
 
 ::method 'testRxCalcArcCos_rI'
 -- Test supplying Radian as 'R'
     expected = 1.41759777
-    self~assertEquals('subTest',expected,RxCalcArcCos(.1526,,'R'))
+    self~assertEquals(expected, RxCalcArcCos(.1526,,'R'))
 
 ::method 'testRxCalcArcCos_rJ'
 -- Test supplying Radian as 'radian'
     expected = 1.41759777
-    self~assertEquals('subTest',expected,RxCalcArcCos(.1526,,'radian'))
+    self~assertEquals(expected, RxCalcArcCos(.1526,,'radian'))
 
 ::method 'testRxCalcArcCos_rK'
 -- Test supplying Radian as 'RADIAN'
     expected = 1.41759777
-    self~assertEquals('subTest',expected,RxCalcArcCos(.1526,,'RADIAN'))
+    self~assertEquals(expected, RxCalcArcCos(.1526,,'RADIAN'))
 
 ::method 'testRxCalcArcCos_rL'
 -- Test supplying Radian as an invalid expression
@@ -1549,17 +1549,17 @@ return testGroupList
 ::method 'test_RxCalcArcCos_gA'
 -- Test default precision
     expected = 90.2470772
-    self~assertEquals('subTest',expected,RxCalcArcCos(.1526,,'g'))
+    self~assertEquals(expected, RxCalcArcCos(.1526,,'g'))
 
 ::method 'test_RxCalcArcCos_gB'
 -- Test lowest precision
     expected = 9e+001
-    self~assertEquals('subTest',expected,RxCalcArcCos(.1526,1,'g'))
+    self~assertEquals(expected, RxCalcArcCos(.1526,1,'g'))
 
 ::method 'test_RxCalcArcCos_gC'
 -- Test highest precision
     expected = 90.24707716419583
-    self~assertEquals('subTest',expected,RxCalcArcCos(.1526,16,'g'))
+    self~assertEquals(expected, RxCalcArcCos(.1526,16,'g'))
 
 ::method 'testRxCalcArcCos_gD'
 -- Test invalid low precision
@@ -1580,27 +1580,27 @@ return testGroupList
 ::method 'testRxCalcArcCos_gG'
 -- Test default precision not equals
     expected = 90.2470771
-    self~assertNotEquals('subTest',expected,RxCalcArcCos(.1526))
+    self~assertNotEquals(expected, RxCalcArcCos(.1526))
 
 ::method 'testRxCalcArcCos_gH'
 -- Test supplying Grade as 'g'
     expected = 90.2470772
-    self~assertEquals('subTest',expected,RxCalcArcCos(.1526,,'g'))
+    self~assertEquals(expected, RxCalcArcCos(.1526,,'g'))
 
 ::method 'testRxCalcArcCos_gI'
 -- Test supplying Grade as 'G'
     expected = 90.2470772
-    self~assertEquals('subTest',expected,RxCalcArcCos(.1526,,'G'))
+    self~assertEquals(expected, RxCalcArcCos(.1526,,'G'))
 
 ::method 'testRxCalcArcCos_gJ'
 -- Test supplying Grade as 'grade'
     expected = 90.2470772
-    self~assertEquals('subTest',expected,RxCalcArcCos(.1526,,'grade'))
+    self~assertEquals(expected, RxCalcArcCos(.1526,,'grade'))
 
 ::method 'testRxCalcArcCos_gK'
 -- Test supplying Grade as 'GRADE'
     expected = 90.2470772
-    self~assertEquals('subTest',expected,RxCalcArcCos(.1526,,'GRADE'))
+    self~assertEquals(expected, RxCalcArcCos(.1526,,'GRADE'))
 
 ::method 'testRxCalcArcCos_gL'
 -- Test supplying Grade as an invalid expression
@@ -1612,17 +1612,17 @@ return testGroupList
 ::method 'test_RxCalcArcTanA'
 -- Test default precision
     expected = 8.67640073
-    self~assertEquals('subTest',expected,RxCalcArcTan(.1526))
+    self~assertEquals(expected, RxCalcArcTan(.1526))
 
 ::method 'test_RxCalcArcTanB'
 -- Test lowest precision
     expected = 9
-    self~assertEquals('subTest',expected,RxCalcArcTan(.1526,1))
+    self~assertEquals(expected, RxCalcArcTan(.1526,1))
 
 ::method 'test_RxCalcArcTanC'
 -- Test highest precision
     expected = 8.6764007280094
-    self~assertEquals('subTest',expected,RxCalcArcTan(.1526,16))
+    self~assertEquals(expected, RxCalcArcTan(.1526,16))
 
 ::method 'testRxCalcArcTanD'
 -- Test invalid low precision
@@ -1643,27 +1643,27 @@ return testGroupList
 ::method 'testRxCalcArcTanG'
 -- Test default precision not equals
     expected = -8.67640073
-    self~assertNotEquals('subTest',expected,RxCalcArcTan(.1526))
+    self~assertNotEquals(expected, RxCalcArcTan(.1526))
 
 ::method 'testRxCalcArcTanH'
 -- Test supplying Degree as 'd'
     expected = 8.67640073
-    self~assertEquals('subTest',expected,RxCalcArcTan(.1526,,'d'))
+    self~assertEquals(expected, RxCalcArcTan(.1526,,'d'))
 
 ::method 'testRxCalcArcTanI'
 -- Test supplying Degree as 'D'
     expected = 8.67640073
-    self~assertEquals('subTest',expected,RxCalcArcTan(.1526,,'D'))
+    self~assertEquals(expected, RxCalcArcTan(.1526,,'D'))
 
 ::method 'testRxCalcArcTanJ'
 -- Test supplying Degree as 'degree'
     expected = 8.67640073
-    self~assertEquals('subTest',expected,RxCalcArcTan(.1526,,'degree'))
+    self~assertEquals(expected, RxCalcArcTan(.1526,,'degree'))
 
 ::method 'testRxCalcArcTanK'
 -- Test supplying Degree as 'DEGREE'
     expected = 8.67640073
-    self~assertEquals('subTest',expected,RxCalcArcTan(.1526,,'DEGREE'))
+    self~assertEquals(expected, RxCalcArcTan(.1526,,'DEGREE'))
 
 ::method 'testRxCalcArcTanL'
 -- Test supplying Degree as an invalid expression
@@ -1674,17 +1674,17 @@ return testGroupList
 ::method 'test_RxCalcArcTan_rA'
 -- Test default precision
     expected = 0.15143176
-    self~assertEquals('subTest',expected,RxCalcArcTan(.1526,,'r'))
+    self~assertEquals(expected, RxCalcArcTan(.1526,,'r'))
 
 ::method 'test_RxCalcArcTan_rB'
 -- Test lowest precision
     expected = 0.2
-    self~assertEquals('subTest',expected,RxCalcArcTan(.1526,1,'r'))
+    self~assertEquals(expected, RxCalcArcTan(.1526,1,'r'))
 
 ::method 'test_RxCalcArcTan_rC'
 -- Test highest precision
     expected = 0.1514317599261971
-    self~assertEquals('subTest',expected,RxCalcArcTan(.1526,16,'r'))
+    self~assertEquals(expected, RxCalcArcTan(.1526,16,'r'))
 
 ::method 'testRxCalcArcTan_rD'
 -- Test invalid low precision
@@ -1705,27 +1705,27 @@ return testGroupList
 ::method 'testRxCalcArcTan_rG'
 -- Test default precision not equals
     expected = -0.15143176
-    self~assertNotEquals('subTest',expected,RxCalcArcTan(.1526))
+    self~assertNotEquals(expected, RxCalcArcTan(.1526))
 
 ::method 'testRxCalcArcTan_rH'
 -- Test supplying Radian as 'r'
     expected = 0.15143176
-    self~assertEquals('subTest',expected,RxCalcArcTan(.1526,,'r'))
+    self~assertEquals(expected, RxCalcArcTan(.1526,,'r'))
 
 ::method 'testRxCalcArcTan_rI'
 -- Test supplying Radian as 'R'
     expected = 0.15143176
-    self~assertEquals('subTest',expected,RxCalcArcTan(.1526,,'R'))
+    self~assertEquals(expected, RxCalcArcTan(.1526,,'R'))
 
 ::method 'testRxCalcArcTan_rJ'
 -- Test supplying Radian as 'radian'
     expected = 0.15143176
-    self~assertEquals('subTest',expected,RxCalcArcTan(.1526,,'radian'))
+    self~assertEquals(expected, RxCalcArcTan(.1526,,'radian'))
 
 ::method 'testRxCalcArcTan_rK'
 -- Test supplying Radian as 'RADIAN'
     expected = 0.15143176
-    self~assertEquals('subTest',expected,RxCalcArcTan(.1526,,'RADIAN'))
+    self~assertEquals(expected, RxCalcArcTan(.1526,,'RADIAN'))
 
 ::method 'testRxCalcArcTan_rL'
 -- Test supplying Radian as an invalid expression
@@ -1736,17 +1736,17 @@ return testGroupList
 ::method 'test_RxCalcArcTan_gA'
 -- Test default precision
     expected = 9.64044525
-    self~assertEquals('subTest',expected,RxCalcArcTan(.1526,,'g'))
+    self~assertEquals(expected, RxCalcArcTan(.1526,,'g'))
 
 ::method 'test_RxCalcArcTan_gB'
 -- Test lowest precision
     expected = 1e+001
-    self~assertEquals('subTest',expected,RxCalcArcTan(.1526,1,'g'))
+    self~assertEquals(expected, RxCalcArcTan(.1526,1,'g'))
 
 ::method 'test_RxCalcArcTan_gC'
 -- Test highest precision
     expected = 9.640445253343781
-    self~assertEquals('subTest',expected,RxCalcArcTan(.1526,16,'g'))
+    self~assertEquals(expected, RxCalcArcTan(.1526,16,'g'))
 
 ::method 'testRxCalcArcTan_gD'
 -- Test invalid low precision
@@ -1767,27 +1767,27 @@ return testGroupList
 ::method 'testRxCalcArcTan_gG'
 -- Test default precision not equals
     expected = -9.64044525
-    self~assertNotEquals('subTest',expected,RxCalcArcTan(.1526))
+    self~assertNotEquals(expected, RxCalcArcTan(.1526))
 
 ::method 'testRxCalcArcTan_gH'
 -- Test supplying Grade as 'g'
     expected = 9.64044525
-    self~assertEquals('subTest',expected,RxCalcArcTan(.1526,,'g'))
+    self~assertEquals(expected, RxCalcArcTan(.1526,,'g'))
 
 ::method 'testRxCalcArcTan_gI'
 -- Test supplying Grade as 'G'
     expected = 9.64044525
-    self~assertEquals('subTest',expected,RxCalcArcTan(.1526,,'G'))
+    self~assertEquals(expected, RxCalcArcTan(.1526,,'G'))
 
 ::method 'testRxCalcArcTan_gJ'
 -- Test supplying Grade as 'grade'
     expected = 9.64044525
-    self~assertEquals('subTest',expected,RxCalcArcTan(.1526,,'grade'))
+    self~assertEquals(expected, RxCalcArcTan(.1526,,'grade'))
 
 ::method 'testRxCalcArcTan_gK'
 -- Test supplying Grade as 'GRADE'
     expected = 9.64044525
-    self~assertEquals('subTest',expected,RxCalcArcTan(.1526,,'GRADE'))
+    self~assertEquals(expected, RxCalcArcTan(.1526,,'GRADE'))
 
 ::method 'testRxCalcArcTan_gL'
 -- Test supplying Grade as an invalid expression
@@ -1803,11 +1803,11 @@ return testGroupList
 ::method 'testRxCalcArcSinError'
     if .ooRexxUnit.OSName == 'LINUX' then expected = 'nan'
     else expected = 'ERROR'
-    self~AssertEquals('subTest',expected,RxCalcArcSin(25))
+    self~AssertEquals(expected, RxCalcArcSin(25))
 
 ::method 'testRxCalcArcCosError'
     if .ooRexxUnit.OSName == 'LINUX' then expected = 'nan'
     else expected = 'ERROR'
-    self~AssertEquals('subTest',expected,RxCalcArcCos(25))
+    self~AssertEquals(expected, RxCalcArcCos(25))
 
 

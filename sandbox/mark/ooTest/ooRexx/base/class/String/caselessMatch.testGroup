@@ -117,17 +117,17 @@ end
       optionally list of mandatory test methods                      */
 return testGroupList
 
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
-::class "caselessMatch.testGroup" subclass TestCase public
+::class "caselessMatch.testGroup" subclass ooTestCase public
 
 ::method "test_Match_caseless"
 
     str="abcDEFghi"
-    self~assertSame("subTest_01" , 1, str~caselessMatch(2, "bc"))
-    self~assertSame("subTest_02",  1, str~caselessMatch(2, "bcD"))
-    self~assertSame("subTest_03" , 1, str~caselessMatch(2, "bcd"))
-    self~assertSame("subTest_04" , 0, str~caselessMatch(2, "ab"))
-    self~assertSame("subTest_05",  0, str~caselessMatch(2, "cD"))
+    self~assertSame(1, str~caselessMatch(2, "bc"))
+    self~assertSame(1, str~caselessMatch(2, "bcD"))
+    self~assertSame(1, str~caselessMatch(2, "bcd"))
+    self~assertSame(0, str~caselessMatch(2, "ab"))
+    self~assertSame(0, str~caselessMatch(2, "cD"))
 
 

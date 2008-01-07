@@ -117,9 +117,9 @@ end
       optionally list of mandatory test methods                      */
 return testGroupList
 
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
-::class "length.testGroup" subclass TestCase public
+::class "length.testGroup" subclass ooTestCase public
 
 ::method 'test000'
     .local~v1 = 'a'
@@ -131,128 +131,128 @@ return testGroupList
 
 ::method 'test001'
     mb = .mutablebuffer~new('')
-    self~assertSame('subTest01','0',mb~length())
+    self~assertSame('0', mb~length())
 
 ::method 'test002'
     mb = .mutablebuffer~new(''x)
-    self~assertSame('subTest01','0',mb~length())
+    self~assertSame('0', mb~length())
 
 ::method 'test0003'
     mb = .mutablebuffer~new('00'x)
-    self~assertSame('subTest01','1',mb~length())
+    self~assertSame('1', mb~length())
 
 ::method 'test004'
     mb = .mutablebuffer~new('00')
-    self~assertSame('subTest01','2',mb~length())
+    self~assertSame('2', mb~length())
 
 ::method 'test005'
     mb = .mutablebuffer~new(.v1)
-    self~assertSame('subTest01','1',mb~length())
+    self~assertSame('1', mb~length())
 
 ::method 'test006'
     mb = .mutablebuffer~new(.v30)
-    self~assertSame('subTest01','30',mb~length())
+    self~assertSame('30', mb~length())
 
 ::method 'test007'
     mb = .mutablebuffer~new(.v255)
-    self~assertSame('subTest01','255',mb~length())
+    self~assertSame('255', mb~length())
 
 ::method 'test008'
     mb = .mutablebuffer~new(.v256)
-    self~assertSame('subTest01','256',mb~length())
+    self~assertSame('256', mb~length())
 
 ::method 'test009'
     mb = .mutablebuffer~new(.v32768)
-    self~assertSame('subTest01','32768',mb~length())
+    self~assertSame('32768', mb~length())
 
 ::method 'test010'
     mb = .mutablebuffer~new(.v100000)
-    self~assertSame('subTest01','100000',mb~length())
+    self~assertSame('100000', mb~length())
 
 ::method 'test011'
     mb = .mutablebuffer~new('zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz')
-    self~assertSame('subTest01','250',mb~length())
+    self~assertSame('250', mb~length())
 
 ::method 'test012'
     zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz = '1'
     mb = .mutablebuffer~new(zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz)
-    self~assertSame('subTest01','1',mb~length())
+    self~assertSame('1', mb~length())
 
 ::method 'test013'
     zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz = '1'
     mb = .mutablebuffer~new((zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz||'...'))
-    self~assertSame('subTest01','4',mb~length())
+    self~assertSame('4', mb~length())
 
 ::method 'test014'
     zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz = '1'
     mb = .mutablebuffer~new((zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz||.v100000))
-    self~assertSame('subTest01','100001',mb~length())
+    self~assertSame('100001', mb~length())
 
 ::method 'test015'
     xre = '200'
     mb = .mutablebuffer~new('8888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888'X)
-    self~assertSame('subTest01',.true,mb~length() == xre)
+    self~assertSame(.true, mb~length() == xre)
 
 ::method 'test016'
     mb = .mutablebuffer~new(.v100000~length())
-    self~assertSame('subTest01','6',mb~length())
+    self~assertSame('6', mb~length())
 
 ::method 'test017'
     mb = .mutablebuffer~new(.v100000~length()||'abc')
-    self~assertSame('subTest01','9',mb~length())
+    self~assertSame('9', mb~length())
 
 ::method 'test018'
     mb = .mutablebuffer~new(17+4)
-    self~assertSame('subTest01','2',mb~length())
+    self~assertSame('2', mb~length())
 
 ::method 'test019'
     mb = .mutablebuffer~new(+10000000000000000000000000000000000)
-    self~assertSame('subTest01','14',mb~length())
+    self~assertSame('14', mb~length())
 
 ::method 'test020'
     mb = .mutablebuffer~new('+10000000000000000000000000000000000')
-    self~assertSame('subTest01','36',mb~length())
+    self~assertSame('36', mb~length())
 
 ::method 'test021'
     len1 = 1
     mb = .mutablebuffer~new(1.0000000001**1000000)
-    self~assertSame('subTest01',len1,mb~length())
+    self~assertSame(len1, mb~length())
 
 ::method 'test022'
     mb = .mutablebuffer~new(1111)
-    self~assertSame('subTest01','4',mb~length())
+    self~assertSame('4', mb~length())
 
 ::method 'test023'
     mb = .mutablebuffer~new('1111')
-    self~assertSame('subTest01','4',mb~length())
+    self~assertSame('4', mb~length())
 
 ::method 'test024'
     mb = .mutablebuffer~new('f1f1f1f1'x)
-    self~assertSame('subTest01','4',mb~length())
+    self~assertSame('4', mb~length())
 
 ::method 'test025'
     mb = .mutablebuffer~new(...)
-    self~assertSame('subTest01','3',mb~length())
+    self~assertSame('3', mb~length())
 
 ::method 'test026'
     mb = .mutablebuffer~new(nv)
-    self~assertSame('subTest01','2',mb~length())
+    self~assertSame('2', mb~length())
 
 ::method 'test027'
     mb = .mutablebuffer~new(nv.~string)
-    self~assertSame('subTest01','3',mb~length())
+    self~assertSame('3', mb~length())
 
 ::method 'test028'
     mb = .mutablebuffer~new(nv.i)
-    self~assertSame('subTest01','4',mb~length())
+    self~assertSame('4', mb~length())
 
 ::method 'test029'
     mb = .mutablebuffer~new(nv.i)
-    self~assertSame('subTest01','4',mb~length())
+    self~assertSame('4', mb~length())
 
 ::method 'test030'
     mb = .mutablebuffer~new('abcdefgh')
-    self~assertSame('subTest01',8,mb~length())
+    self~assertSame(8, mb~length())
 
 ::method 'test040'
     .local~remove(v1)
@@ -264,28 +264,28 @@ return testGroupList
 
 ::method 'testLength'
    b = .mutableBuffer~new("1234")
-   self~assertEquals("Wrong length",4,b~length)
+   self~assertEquals(4, b~length, "Wrong length")
 
    b = .mutableBuffer~new("123")
-   self~AssertEquals("Length incorrect before",3,b~length)
+   self~AssertEquals(3, b~length, "Length incorrect before")
 
    b~append("abc")
-   self~AssertEquals("Length incorrect after",6,b~length)
+   self~AssertEquals(6, b~length, "Length incorrect after")
 
    b = .mutableBuffer~new("123456")
-   self~AssertEquals("Length incorrect before",6,b~length)
+   self~AssertEquals(6, b~length, "Length incorrect before")
 
    b = .mutableBuffer~new("123456")
    b~insert("abc")
    b~insert("abc",7,,"+")
    b~insert("abc",1,0,"+")
-   self~AssertEquals("Length incorrect after",12,b~length)
+   self~AssertEquals(12, b~length, "Length incorrect after")
 
    b = .mutableBuffer~new("1234567890")
-   self~AssertEquals("Length incorrect before",10,b~length)
+   self~AssertEquals(10, b~length, "Length incorrect before")
    b~delete(11)
    b~delete(1,2)
-   self~AssertEquals("Length incorrect after",8,b~length)
+   self~AssertEquals(8, b~length, "Length incorrect after")
 
 
 

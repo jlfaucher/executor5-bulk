@@ -38,15 +38,44 @@
 
 /**
  * testOORexx is a planned future replacement for runTestGroups.  It is not
- * implemented.
+ * fully implemented.
  */
-
 cmdLine = arg(1)
+   say 'command line is empty string:' (cmdLine == "")
+   absoluteBegin = .TimeSpan~new(time('F'))
 
-   say "testOORexx vesion 0.0.0"
-   say "testOORexx is not implemented yet"
+   .local~bRunTestsLocally = .false
 
+   baseDir = "ooRexx"
+   --baseDir = "ooRexx\samples"
+
+   testResult = .ooRexxUnit.default.TestResult.Class~new(0)
+   --testResult~setVerbosity(0)
+   finder = .ooTestFinder~new(baseDir, ".testGroup")
+   containers = finder~seek(testResult); say 'containers items:' containers~items
+   searchEnd = .TimeSpan~new(time('F'))
+
+   suite = .ooTestSuite~new
+   suite~showProgress = .false
+   j = time('E')
+   do container over containers
+     container~suite(suite)
+   end
+   suiteEnd = .TimeSpan~new(time('F'))
+
+   say 'Executing automated test suite.'
+   suite~execute(testResult)
+   testEnd = .TimeSpan~new(time('F'))
+
+   testResult~print("My Title")
+   --call simpleFormatTestResults testResult, "My Title"
+   --call simpleDumpTestResults testResult, "My Title"
+
+   absoluteEnd = .TimeSpan~new(time('F'))
+   say 'File search:   ' (searchEnd - absoluteBegin)
+   say 'Suite Build:   ' (suiteEnd - searchEnd)
+   say 'Test execution:' (testEnd - suiteEnd)
+   say 'Total time:    ' (absoluteEnd - absoluteBegin)
 return 0
 
-::requires OOREXXUNIT.CLS
-
+::requires "ooTest.frm"

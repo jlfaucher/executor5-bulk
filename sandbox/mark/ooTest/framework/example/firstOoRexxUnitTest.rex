@@ -83,7 +83,7 @@ say copies("\\\ ///", 10)
    /* use all methods starting with "test" for creating testCases */
 ts1=.testSuite~new(.rgfAssertionTests)  -- create testCases from class object
 say "TestSuite 'ts1' consists of" pp(ts1~countTestCases) "testCase(s)."
-mtr1=ts1~run(.myTestResult~new)
+mtr1=ts1~execute(.myTestResult~new)
 mtr1~dumpResults
 mtr1~dumpLog
 
@@ -92,38 +92,38 @@ ts2=.testSuite~new
 ts2~addTest( .rgfAssertionTests~new("testAssertTrue1") ) -- individual test case
 ts2~addTest( .rgfAssertionTests~new("testAssertTrue3") ) -- individual test case
 say "TestSuite 'ts2' consists of" pp(ts2~countTestCases) "testCase(s)."
-ts2~run(.myTestResult~new) ~dumpResults
+ts2~execute(.myTestResult~new) ~dumpResults
 
    /* use only two specific test methods  */
 ts3=.testSuite~new
 ts3~addTest( .rgfAssertionTests~new("testAssertTrue2") ) -- individual test case
 ts3~addTest( .rgfAssertionTests~new("testAssertTrue4") ) -- individual test case
 say "TestSuite 'ts3' consists of" pp(ts3~countTestCases) "testCase(s)."
-ts3~run(.myTestResult~new) ~dumpResults
+ts3~execute(.myTestResult~new) ~dumpResults
 
    /* use only two specific test methods  */
 ts4=.testSuite~new
 ts4~addTest( .rgfAssertionTests~new("testAssertTrue1") ) -- individual test case
 ts4~addTest( .rgfAssertionTests~new("testAssertTrue2") ) -- individual test case
 say "TestSuite 'ts4' consists of" pp(ts4~countTestCases) "testCase(s)."
-ts4~run(.myTestResult~new) ~dumpResults
+ts4~execute(.myTestResult~new) ~dumpResults
 
    /* just for the fun of it: use a single test from the test class,
       do not supply a TestResult object, hence a default one will be created and used */
-.testSuite~new ~~addTest(.rgfAssertionTests~new("testAssertTrue4")) ~run
+.testSuite~new ~~addTest(.rgfAssertionTests~new("testAssertTrue4")) ~execute
 
 
    -- test executing a single testCase and via a test suite
 ts=.testSuite~new                            -- create a test suite
 
 tc=.rgfAssertionTests~new("testAssertTrue4") -- create a testcase
-tc~run                                       -- run this individual testcase
+tc~execute                                       -- run this individual testcase
 
 
 ts~addTest(.rgfAssertionTests~new("testAsertTrue2"))  -- create and add a testCase to suite
 ts~addTest(tc)                               -- add the previously created testCase to suite
 myTr=.myTestResult~new                       -- create explicitly a myTestResult object
-ts~run(myTr)                                 -- run the suite using "myTr" for the results
+ts~execute(myTr)                                 -- run the suite using "myTr" for the results
 -- raise syntax 40.1 array ("--- stop! ---")
 
 myTr~dumpLog            -- dump in chronological order the execution of testCases and their results
