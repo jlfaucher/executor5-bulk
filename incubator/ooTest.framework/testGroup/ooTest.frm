@@ -57,7 +57,7 @@
 */
 
 if \ .local~hasEntry('OOTEST_FRAMEWORK_VERSION') then do
-  .local~ooTest_Framework_version=090.320.20080107
+  .local~ooTest_Framework_version = 090.320.20080107
 
   -- Replace the default test result class in the environment with the ooRexx
   -- project's default class.
@@ -411,7 +411,7 @@ return a
     This allows for more comprehensive reporting.
 
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::class 'ConsoleFormatter' public subclass SimpleConsoleFormatter
+::class 'ConsoleFormatter' public subclass SimpleConsoleFormatter inherit NotificationTypes
 
   ::attribute rexxVersion get
   ::attribute rexxVersion set private
@@ -419,6 +419,9 @@ return a
   ::attribute unitVersion set private
   ::attribute ooTestVersion get
   ::attribute ooTestVersion set private
+
+  ::attribute failTable private
+  ::attribute notifications private
 
   /** init()
    *
@@ -434,20 +437,22 @@ return a
 
     parse version self~rexxVersion
     self~unitVersion = .ooRexxUnit.version
-    self~ooTestVersion = .ooTest.version
+    self~ooTestVersion = .ooTest_Framework_version
 
+    self~failTable = .nil
+    self~notifications = .nil
 
   /** printBrief()
    * The least possible print out.
    */
-  ::method printBrief
-    use arg tResult
+  ::method printBrief private
+    use arg tResult, fails
 
     say
     say ' '~copies(20) 'ooTest'
     say '  Tests:   ' tResult~runCount
-    say '  Failures:' tResult~failureCount
-    say '  Errors:  ' tResult~errorCount + tResult~ExceptionCount
+    say '  Failures:' fails['newCount']
+    say '  Errors:  ' tResult~errorCount + tResult~exceptionCount
     say
 
   /** print()
@@ -472,8 +477,11 @@ return a
     tResult = self~testResult
     verbose = self~getVerbosity
 
+    if self~failTable == .nil then self~failTable = tResult~getExtendedFailureInfo
+    if self~notifications == .nil then self~notifications = tResult~getNotifications
+
     if verbose == 0 then do
-      self~printBrief(tResult)
+      self~printBrief(tResult, failTable)
       return
     end
 
@@ -482,20 +490,16 @@ return a
       say
     end
 
-    versionStr = .ooRexxUnit.interpreterName .ooRexxUnit.languageLevel .ooRexxUnit.interpreterDate
-    say "Interpreter:" versionStr
-    say "ooRexxUnit: " .ooRexxUnit.version
-    say
-    say "Count of tests ran:            " tResult~runCount
-    say "Count of successful assertions:" tResult~assertCount
-    say "Count of failures:             " tResult~failureCount
-    say "Count of errors:               " tResult~errorCount
-    say "Count of exceptions:           " tResult~exceptionCount
-    say "Count of skipped files:        " tResult~notificationCount
-    say
+    stats = self~calcStats
+    self~printSummary(stats)
 
-    if tResult~failureCount > 0 then do data over tResult~failures
-      self~printFailureInfo(data)
+    if tResult~failureCount > 0 then do
+      if verbose < 7 then do data over self~failTable['newQ']
+        self~printFailureInfo(data)
+      end
+      else do data over tResult~failures
+        self~printFailureInfo(data)
+      end
     end
 
     if tResult~errorCount > 0 then do data over tResult~errors
@@ -506,29 +510,92 @@ return a
       self~printExceptions(data)
     end
 
+    if verbose > 3 then self~printSkippedFiles
 
-    if self~getVerbosity > 2, tResult~notificationCount > 0 then do data over tResult~getNotifications
-      self~printnotifications(data)
-    end
+    if verbose > 5 then self~printMessages
 
     -- If a number of failure or error information lines are printed, re-display
     -- the summary statistics again so that the number of failures is obvious to
     -- the user.
-    if (tResult~failureCount + tResult~errorCount + tResult~exceptionCount) > 3 | self~getVerbosity > 2 then do
-      say "Interpreter:" versionStr
-      say "ooRexxUnit: " .ooRexxUnit.version
-      say
-      say "Count of tests ran:            " tResult~runCount
-      say "Count of successful assertions:" tResult~assertCount
-      say "Count of failures:             " tResult~failureCount
-      say "Count of errors:               " tResult~errorCount
-      say "Count of exceptions:           " tResult~exceptionCount
-      say "Count of skipped files:        " tResult~notificationCount
-      say
-    end
+    if stats~totalProblems > 3 | verbose > 3 then
+      self~printSummary(stats)
 
   -- End print()
 
+  ::method printSummary
+    use arg stats
+
+    verbose = self~getVerbosity
+
+    say
+    say "Interpreter:" self~rexxVersion
+    say "ooRexxUnit: " self~unitVersion  '09'x || "ooTest:" self~ooTestVersion
+    say
+    say "Tests ran:"~left(20)  stats~tests
+    say "Assertions:"~left(20) stats~asserts
+
+    select
+      when verbose < 3 then say "Failures:"~left(20) stats~newFails
+      when verbose < 7 then do
+        say "Failures:"~left(20) stats~newFails
+        say "  (Known failures:)"~left(20) stats~knownFails
+      end
+      otherwise say "Failures:"~left(20) stats~totalFails
+    end
+    -- End select
+
+    if verbose < 3 then say "Errors:"~left(20) stats~totalErrs
+    else do
+      say "Errors:"~left(20)     stats~errs
+      say "Exceptions:"~left(20) stats~exceptions
+    end
+
+    if vebose < 3 then do
+      say
+      return
+    end
+
+    say "Skipped files:"~left(20) stats~skippedFiles
+
+    if verbose < 4 then do
+      say
+      return
+    end
+
+    say "Messages:"~left(20) stats~messages
+    say
+
+  ::method calcStats private
+    expose failTable notifications
+
+    tResult = self~testResult
+    stats = .directory~new
+
+    stats~tests      = tResult~runCount
+    stats~asserts    = tResult~assertCount
+    stats~totalFails = failTable['totalCount']
+    stats~newFails   = failTable['newCount']
+    stats~knownFails = failTable['knownCount']
+    stats~errs       = tResult~errorCount
+    stats~exceptions = tResult~exceptionCount
+    stats~totalErrs  = tResult~errorCount + tResult~exceptionCount
+
+    stats~totalProblems = stats~totalFails + stats~totalErrs
+
+    -- Brute force for now.
+    skips = 0; msgs = 0
+    do n over notifications
+      select
+        when n~type == self~SKIP_TYPE then skips += 1
+        when n~type == self~TEXT_TYPE then msgs += 1
+        otherwise nop -- For now, please fix.
+      end
+      -- End select
+    end
+    stats~skippedFiles = skips
+    stats~messages = msgs
+
+  return stats
 
   ::method printExceptions private      -- DFX TODO fix this rough outline
     use arg err
@@ -545,14 +612,40 @@ return a
     end
     say
 
-  ::method printnotifications private       -- DFX TODO fix this rough outline
-    use arg o
+  ::method printMessages private       -- DFX TODO fix this rough outline
+    expose notifications
 
-    say "[Skipped test group]"
-    say "  File:" pathCompact(o~where, 70)
-    say " " o~reason
-    if o~additional \== .nil then
-      say " " o~additional
+    do n over notifications
+      if n~type == self~TEXT_TYPE then self~printMsg(n)
+    end
+
+  ::method printMsg private
+    use arg n
+    say "[Message]" n~when
+    say "  File:" pathCompact(n~where, 70)
+    say " " n~message
+    if n~additional \== .nil then
+      say " " n~additional
+    if n~additionalObject \== .nil then
+      say "  Object involved:" n~additionalObject
+    say
+
+
+  ::method printSkippedFiles private       -- DFX TODO fix this rough outline
+    expose notifications
+
+    do s over notifications
+      if s~type == self~SKIP_TYPE then self~printSkip(s)
+    end
+
+  ::method printSkip private
+    use arg s
+
+    say "[Skipped test group]" s~when
+    say "  File:" pathCompact(s~where, 70)
+    say " " s~reason
+    if s~additional \== .nil then
+      say " " s~additional
     say
 
 -- End of class ConsoleFormatter
@@ -609,12 +702,33 @@ return a
       newFailureCount += 1
     end
 
+  /** getExtendedFailureInfo()
+   * Returns a table with the failure objects sorted into known failures and
+   * 'new' (i.e. unknown) failures.  The table has the indexes of: 'knowndQ',
+   * 'newQ', 'knownCount', 'newCount', and 'totalCount'
+   *
+   */
+  ::method getExtendedFailureInfo
+    expose newFailureCount knownFailureCount
+    t = .table~new
+    t['newQ']       = self~newFailures~copy
+    t['newCount']   = newFailureCount
+    t['knownQ']     = self~knownFailures~copy
+    t['knownCount'] = knownFailureCount
+    t['totalCount'] = newFailureCount + knownFailureCount
+    return t
+
   ::method addNotification
     use strict arg notification
     self~notifications~queue(notification)
 
+  /** getNotifications()
+   * Return a copy of the notifications queue so the caller can manipulate it
+   * however she wants.  Note that all the queue return methods should do this,
+   * just not implemented yet.
+   */
   ::method getNotifications
-    return self~notifications
+    return self~notifications~copy
 
   ::method notificationCount
     return self~notifications~items
@@ -1096,7 +1210,7 @@ return a
     if \ self~hasTests then return testSuite
 
     testTypes = self~currentTypes~intersection(testTypes)
-    if testType~items == 0 then return testSuite
+    if testTypes~items == 0 then return testSuite
 
     do t over testTypes
       testClass = tests[t]
@@ -1311,6 +1425,13 @@ return suite
             iterate
           end
 
+          -- Add a notification that this was an old style test group, so we
+          -- can update them.
+          n = .Notification~new(timeStamp(), fileName, .Notification~TEXT_TYPE )
+          n~message = "Converted old-style TestUnit list into a test group."
+          n~additionalObject = obj
+          testResult~addNotification(n)
+
           q~queue(obj)
         end
 
@@ -1398,8 +1519,8 @@ return suite
     if src~items == 0 then do
       reason = "Attempt to convert old-style TestUnit list into a TestGroup failed"
       n = .Notification~new(timeStamp(), fileName, reason)
-      n~additonal = "Error reading header source lines from the file."
-      return 0
+      data~additional = "Error reading header source lines from the file."
+      return data
     end
 
     -- Okay, an old-style TestUnit list, and we have the header meta-data.
@@ -1435,30 +1556,31 @@ return suite
 
   return lines
 
-  ::method objectIsTestUnitList
+  ::method objectIsTestUnitList private
     use arg obj, data
 
     if obj~isA(.list) then do a over obj
-      if \ a~isA(.array) then do
-        data~additional = "Item in TestUnit list is not an array"
-        return .false
-      end
-      if a~items \== 2 then do
-        data~additional = "Array item in TestUnit list does not have 2 indexes"
-        return .false
-      end
-      if \ isSubclassOf(a[1], "TestCase") then do
-        data~additional = "Index 1 of array item is not subclass of TestCase"
-        return .false
-      end
-      if \ a[2]~isA(.list) then do
-        data~additional = "Index 2 of array item is not a .List"
-        return .false
-      end
+      if \ a~isA(.array) then
+        return self~updateData(data, "Item in TestUnit list is not an array", obj)
+
+      if a~items \== 2 then
+        return self~updateData(data, "Array item in TestUnit list does not have 2 indexes", obj)
+
+      if \ isSubclassOf(a[1], "TestCase") then
+        return self~updateData(data, "Index 1 of array item is not subclass of TestCase", obj)
+
+      if \ a[2]~isA(.list) then
+        return self~updateData(data, "Index 2 of array item is not a .List", obj)
+
       return .true
     end
 
-    data~additional = "Object is not a list, object is:" obj
+  return self~updateData(data, "Object is not a list, object is:" obj)
+
+  ::method updateData private
+    use arg data, msg, obj
+    data~additional = msg
+    data~additionalObject = obj
   return .false
 
 -- End of class: ooTestFinder

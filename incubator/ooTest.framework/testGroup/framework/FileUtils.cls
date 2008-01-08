@@ -199,7 +199,7 @@ return ret
 
   -- Could be spaces in the program path name, especially on Windows.
   prgName = prgName~strip
-  if prgName~pos(' ') <> 0, prgName~left(1) \== '"' then prgName = enQuote(prgName)
+  if prgName~pos(' ') <> 0, prgName~left(1) \== '"' then prgName = .TestUtil~enQuote(prgName)
 
   cmd = 'rexx' prgName params '>' tmpOutFile stdErrToStdOut
   cmd
@@ -268,7 +268,7 @@ return execRexxPrgWithArgs(prgName, "", output)
 ::routine indirectRequire public
   use strict arg fileName
 
-  srcLines = .array~of('::requires' enQuote(fileName))
+  srcLines = .array~of('::requires' .TestUtil~enQuote(fileName))
   fullName = createRexxPrgFile(srcLines, 'tmpIndirectRequire')
 
 return fullName

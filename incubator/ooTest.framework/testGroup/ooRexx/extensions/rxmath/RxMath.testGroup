@@ -63,67 +63,52 @@ Primary 3rd party sources include:
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
+  parse source . . s
 
--------------------------------------------------------------------------------------------
-/* list of array objects, each containing the testGroup class object and an
-   optional list of mandatory test case methods name */
-    mandatoryTestMethods = .list~new
-    testGroupList=.list~of(.array~of(.RxMath.testGroup, mandatoryTestMethods))
--------------------------------------------------------------------------------------------
--- ===> the following code needs not to be individualized                              <===
--- read top comment, containing infos about this program
-    arrLines=.array~new
-    do i = 1 to 150 until arrLines[i]="*/"
-        arrLines[i]=sourceline(i)
-    end
--- supply information for the testClass(es) in this file; the class attribute
--- "TestCaseInfo" (a directory object, index points to a queue) will store
--- the parsed infos
-    aTestGroupClass = testGroupList~at(testGroupList~first)[1]
--- will parse the array lines and store result in class object
-    call makeDirTestInfo aTestGroupClass, arrLines
-    tmpDir = aTestGroupClass~TestCaseInfo
-    parse source s    -- op_sys invocationType fullPathToThisFile
-    tmpDir~setentry("test_Case-source", s)
--- now add this directory to other testCase classes, if any left
-    do arr over testGroupList
-        if arr[1] = aTestGroupClass then iterate  -- already handled
-        arr[1]~TestCaseInfo = tmpDir             -- save info in class object
-    end
+  lines=.array~new
+  do i=1 to 150 until lines[i]="*/"
+     lines[i]=sourceline(i)
+  end
 
--- if this file is CALLed or REQUIRED then define an entry "bRunTestLocally" in .local
--- and set it to .false; this way the independent local invocation of the tests is inhibited
-    if .local~hasentry("bRunTestsLocally") = .false then
-        .local~bRunTestsLocally = .true
+  -- The test cases in this test group all need the RxMath functions loaded.
+  -- Since this only needs to be done once, we create an ooTestSuite subclass
+  -- with a setUp() and a tearDown() method.  These methods will only be called
+  -- once, one time before any of the test cases are executed and one time after
+  -- all the test cases have finished.
+  --
+  -- Then, to use the test suite subclass, we add both the test case class and
+  -- the test suite to the test group using the appropriately named
+  -- addWithSuite() method.
 
-    if .bRunTestsLocally = .true then  -- run ALL tests in this test unit
-        do
-            ts=.testSuite~new             -- create a testSuite
-            do arr over testGroupList
--- create a testSuite for the given test case class, use all its testmethods
-                ts~addTest( .testSuite~new(arr[1]))
-            end
-            testResult=ts~execute       -- now run all the tests
-            call simpleFormatTestResults testResult
-        end
--------------------------------------------------------------------------------------------
--- return list of array objects containing test case classes and
--- optionally list of mandatory test methods
-return testGroupList
+  group = .TestGroup~new(s, lines)
+  group~addWithSuite(.RxMath.testGroup, .RxMathSuite)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
 -------------------------------------------------------------------------------------------
 ::requires 'ooTest.frm' -- load the ooRexxUnit classes
+-------------------------------------------------------------------------------------------
+::class 'RxMathSuite' subclass ooTestSuite public
+
+::method setUp
+    call rxfuncadd "MathLoadFuncs", "rxmath", "MathLoadFuncs"
+    call MathLoadFuncs
+
+::method tearDown
+    call MathDropFuncs
+
 -------------------------------------------------------------------------------------------
 ::class "RxMath.testGroup" subclass ooTestCase public
 -------------------------------------------------------------------------------------------
 ::attribute digits
 -------------------------------------------------------------------------------------------
 ::method 'setUp'
-    call rxfuncadd "MathLoadFuncs", "rxmath", "MathLoadFuncs"
-    call MathLoadFuncs
     self~digits = digits()
 
 ::method 'tearDown'
-    call MathDropFuncs
     numeric digits self~digits
 -------------------------------------------------------------------------------------------
 ::method 'test_RxCalcSqrtA'

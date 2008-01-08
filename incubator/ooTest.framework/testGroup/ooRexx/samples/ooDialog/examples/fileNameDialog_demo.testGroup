@@ -1,7 +1,7 @@
 #!/usr/bin/rexx
 /*
    name:             fileNameDialog_demo.testGroup
-   author:           Mark Miesfeld
+   authors:          Mark Miesfeld
    date:             2007-08-13
    version:          0.0.9
    changed:
@@ -74,22 +74,34 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
+
+  -- Test cases are returned in a test group object.  To create a test group
+  -- you need the complete name of the file the test group comes from (this
+  -- file.)  By using parse source to get the file name rather than hard coding
+  -- the name, you allow this file to be moved around in the file system without
+  -- having to edit this file.
   parse source . . fileSpec
 
+  -- The other thing required to create the test group object is the metadata
+  -- in the header of this file.  We get those lines and put them in an arrary.
   lines=.array~new
   do i=1 to 150 until lines[i]="*/"
      lines[i]=sourceline(i)
   end
 
-  -- This is a Windows specific test.
+  -- Now create the test group object.
   group = .TestGroup~new(fileSpec, lines)
+
+  -- This is a Windows specific test, so we tell the group object to not
+  -- produce any tests unless the local system is Windows.
+
   group~restrictOS("WINDOWS")
 
   -- 1.) The test cases in this GUI test need to execute in order.  So we use a
   -- method that places the individual test cases into the test suite in the
-  -- order we specify. fetchMethodNames() returns an array of the test method
-  -- names.  The order of the names in the array will be the order the tests
-  -- are executed.
+  -- order we specify. fetchMethodNames() is a convenience routine in this file
+  -- that returns an array of the test method names.  The order of the names in
+  -- the array will be the order the tests are executed.
   --
   -- 2.) The test cases require the 'winsystm.cls' file.  Since this file only
   -- exists in a Windows ooRexx installation, a normal ::requires directive
@@ -99,11 +111,50 @@
   -- invoked immediately prior to the exeuction of the tests in the test suite.
   -- The setUp() method for .FNDlgTestSuite performs the necessary work to get
   -- the winsystm.cls classes loaded.
+  --
+  -- 3.) To add the test cases in this file to the test group object we use the
+  -- addWithCollection() method.
+  --
+  -- a.) The first arg is the test case class.
+  -- b.) The second arg is the test case names.  This can be either a string
+  -- with the blank separted names, or any collection object whose items are the
+  -- names.  Note that the order the test case will be executed in is the order
+  -- that the collection object produces them.  So, if you use an ordered
+  -- collection, the test cases will be executed in that order.  But, if you
+  -- use an un-ordered collection, then the order the test cases execute in will
+  -- be undefined.
+  -- c.) The last arg is a test suite.  This arg is optional, it is only used
+  -- here because we need the set up method in the test suite.  If we did not
+  -- need a set up, we could skip the test suite arg.
   group~addWithCollection(.fileNameDialog_demo.testGroup, fetchMethodNames(), .FNDlgTestSuite)
 
+  -- The test group object knows if an automated test is being run, or if this
+  -- test group file is being executed as a stand alone test.  We simply query
+  -- the test group to see what is what.  If this is an automated test, we
+  -- return the test group object.
   if group~isAutomatedTest then return group
 
-  -- Not an automated test, execute the tests now.
+  -- Not an automated test, execute the tests now.  The steps are this:
+  -- 1.) Ask the test group to produce a test suite of its executable tests.
+  --
+  --   testSuite = group~suite
+  --
+  -- 2.) Ask the test suite to execute the tests and return a test result object
+  --
+  --   testResult = testSuite~execute
+  --
+  -- 3.) Ask the test result object to print the test results using its default
+  -- formatter.
+  --
+  --   testResult~print
+  --
+  -- 4.) Return the test result object.  This is not currently used, but could
+  -- be useful in the future, for some as yet unimagined purpose.  <grin>
+  --
+  -- return testResult
+  --
+  -- The above 4 steps can be condensed into the following two lines.
+
   testResult = group~suite~execute~~print
 
 return testResult
@@ -128,8 +179,19 @@ return testResult
   tests[5] = 'test_exampleQuit'
 return tests
 
+/** FNDlgTestSuite subclasses ooTestSuite and adds a setUp() method.  We use
+ * that method to load the WinSystm.cls file.  We don't need a tearDown() method
+ * to run at the end of the test so we just skip it.
+ */
 ::class 'FNDlgTestSuite' subclass ooTestSuite
 
+/** In the ooTest framework, a test result object is passed to the setUp()
+ * method.  This can just be ignored in most cases.  But, here it is useful.
+ * If some type of unexpected error happens, we use the test result object to
+ * pass back a notification of the error.  And, by calling the stop() method,
+ * we signal the automated test that it should not execute the test cases in
+ * this test group
+ */
 ::method setUp
   use strict arg testResult
 
@@ -140,8 +202,19 @@ return tests
   if \ isSubClassOf(testResult~class, "ooTestCollectingParameter") then
      raise syntax 88.914 array ("1 'testResult'", "ooTestCollectingParameter")
 
+  -- We use services provided by the ooTest framework to indirectly require the
+  -- WinUtils.cls.  This file requires the WinSystm.cls and we are good to go.
+  -- If we did not need any of the services in WinUtils.cls, we would just use
+  -- the indirectRequire() routine from WinSystm.cls.
   prgFile = indirectRequire('WinUtils.cls')
 
+  -- It is possible, but unklikely, that indirectRequire() encountered an error.
+  -- If it did, it returns the empty string.  We check for that.  If it did
+  -- happen, we create an exception data object to report what happened.  Add it
+  -- to the test result object, and then tell the test result object it should
+  -- stop executing this test.  (Recall that a Test is the primary abstraction
+  -- used in ooRexxUnit.  A test case method is a Test, a TestCase class is a
+  -- Test, and a test suite is a Test.)
   if prgFile == "" then do
     parse source . . fileSpec
     err = .ExceptionData~new(timeStamp(), fileSpec, "Unexpected Error")
@@ -153,12 +226,17 @@ return tests
     testResult~stop
   end
   else do
+    -- No error.  The actual requires is done by calling the program file
+    -- returned to us by indirectRequire().  Then be sure and delete the file.
     call (prgFile)
     j = deleteFile(prgFile)
   end
 
+/* We do not need a tearDown() method, so I have it commented out.  I just left
+   it here as a reminder that it is available.
 ::method tearDown
   say 'In my test suite at tear down'
+*/
 
 /* class: fileNameDialog_demo.testGroup- - - - - - - - - - - - - - - - - - - -*\
 
@@ -177,9 +255,9 @@ return tests
    */
   ::method init class
     forward class (super) continue
+
     self~ooTestType = self~GUI_SAMPLE_TEST
 
-    self~init:super
     self~prgPath = ""
     self~launcher = ""
     self~stop = .false
@@ -213,8 +291,10 @@ return tests
 
     wf = .WindowFinder~new
 
-    -- We know the example program puts up an InfoDialog first.
-    wnd = wf~getWindow("Information")
+    -- We know the example program first puts up an InfoDialog first.
+    -- Increasing the default pause (.1 seconds) to .7 seconds helps to ensure
+    -- the program execution gets started okay.
+    wnd = wf~getWindow("Information", ,.7)
 
     self~assertEquals(.WindowObject, wnd~class, 'Must have a WindowObject object')
     self~assertEquals("Information", wnd~title, 'Window must have Information title')
@@ -233,9 +313,9 @@ return tests
     wf = self~class~windowFinder
 
     -- We know the example program has this title.  That's how we can find it.
-    -- Changing the default pause to .5 seconds, because it sometimes takes the
+    -- Changing the default pause to .7 seconds, because it sometimes takes the
     -- window longer to come up.
-    wnd = wf~getWindow("FileNameDialog Demonstration", , .5)
+    wnd = wf~getWindow("FileNameDialog Demonstration", , .7)
 
     -- Assert that we found the main window of the program.
     self~assertEquals(wnd~class, .WindowObject, 'Must have a WindowObject object')

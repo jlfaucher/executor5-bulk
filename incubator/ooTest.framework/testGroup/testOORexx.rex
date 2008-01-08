@@ -49,11 +49,18 @@ cmdLine = arg(1)
    baseDir = "ooRexx"
    --baseDir = "ooRexx\samples"
 
-   -- Execute all test types, except the UNIT_LONG type.
-   types = .ooTestTypes~all~difference(.set~of(.ooTestTypes~UNIT_LONG_TEST))
-   do i over types
-     say 'got test type:' i
+   types = .nil
+
+   -- Execute all test types, except the UNIT_LONG and the GUI_SAMPLE types.
+   excluded = .set~of(.ooTestTypes~UNIT_LONG_TEST, .ooTestTypes~GUI_SAMPLE_TEST)
+   types = .ooTestTypes~all~difference(excluded)
+
+   /*
+   say 'Will execute tests of type:'
+   do type over types
+     say ' ' .ooTestTypes~nameForTest(type)
    end
+   */
 
    testResult = .ooRexxUnit.default.TestResult.Class~new
    --testResult~setVerbosity(0)
@@ -65,7 +72,8 @@ cmdLine = arg(1)
    suite~showProgress = .false
    j = time('E')
    do container over containers
-     container~suite(suite)
+     if types == .nil then container~suite(suite)
+     else container~suiteForTestTypes(types, suite)
    end
    suiteEnd = .TimeSpan~new(time('F'))
 
@@ -73,7 +81,8 @@ cmdLine = arg(1)
    suite~execute(testResult)
    testEnd = .TimeSpan~new(time('F'))
 
-   testResult~print("My Title", 4)
+   testResult~print("My Title", 6)
+   --testResult~print("My Title")
 
    absoluteEnd = .TimeSpan~new(time('F'))
    say 'File search:   ' (searchEnd - absoluteBegin)
