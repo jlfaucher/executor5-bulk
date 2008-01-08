@@ -131,21 +131,26 @@ return tests
 ::class 'FNDlgTestSuite' subclass ooTestSuite
 
 ::method setUp
-  use arg testResult
-  say 'In my test suite at set up'
+  use strict arg testResult
 
-  parse source . . fileSpec
-  say 'My file is:         ' filespec('N', fileSpec)
-  say 'My error is on line:' .line
-  say 'Should stop:        ' testResult~shouldStop
+  -- We need an ooTestCollectingParameter in case of error.  Enforcing that the
+  -- argument is passed correctly to us ensures that the test suite maintainers
+  -- fix any deviations from what is expected.  Chance are there won't be an
+  -- error.
+  if \ isSubClassOf(testResult~class, "ooTestCollectingParameter") then
+     raise syntax 88.914 array ("1 'testResult'", "ooTestCollectingParameter")
 
   prgFile = indirectRequire('WinUtils.cls')
 
   if prgFile == "" then do
-    --group~markNoTests("Error loading WinUtils.cls. This test requires WinUtils.cls")
-    -- Should have: 1.) way to not run these tests.  2.) report why they are not run.
-    say 'Do NOT run the file name dialog demo test cases!'
-    say 'Report this fact to someone!'
+    parse source . . fileSpec
+    err = .ExceptionData~new(timeStamp(), fileSpec, "Unexpected Error")
+    err~setLine(.line - 5)
+    err~severity = "Unrecoverable"
+    err~msg = "Could not create program file for indirect require of 'WinUntils.cls'"
+    err~className = self~class~id
+    testResult~addExcepiton(err)
+    testResult~stop
   end
   else do
     call (prgFile)

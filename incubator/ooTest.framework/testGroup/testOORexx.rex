@@ -49,6 +49,7 @@ cmdLine = arg(1)
    baseDir = "ooRexx"
    --baseDir = "ooRexx\samples"
 
+   -- Execute all test types, except the UNIT_LONG type.
    types = .ooTestTypes~all~difference(.set~of(.ooTestTypes~UNIT_LONG_TEST))
    do i over types
      say 'got test type:' i
@@ -83,4 +84,3 @@ return 0
 
 ::requires "ooTest.frm"
 
---::class 'LookUp' public

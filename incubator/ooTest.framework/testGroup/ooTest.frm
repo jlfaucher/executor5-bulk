@@ -538,6 +538,11 @@ return a
     if err~line <> -1 then say "  Line:" err~line
     say "  Type:" err~type "Severity:" err~severity
     say " " err~getMessage
+    if err~conditionObject <> .nil then do
+      if err~conditionObject~traceBack~isA(.list) then do line over err~conditionObject~traceBack
+        say line
+      end
+    end
     say
 
   ::method printnotifications private       -- DFX TODO fix this rough outline
@@ -1349,7 +1354,6 @@ return suite
     return container
 
     callError:
-      conditionData = condition('O')
       err = .ExceptionData~new(timeStamp(), file, "Trap")
       err~conditionObject = condition('O')
       err~msg = "Initial call of Test Group failed"
@@ -1575,11 +1579,38 @@ return suite
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::class 'PhaseReport' public subclass Notification
 
+  ::method MIN_PHASE  class; return 1
+  ::method MIN_PHASE;        return 1
+
+  ::method AUTOMATED_TEST_PHASE class; return 1
+  ::method FILE_SEARCH_PHASE    class; return 2
+  ::method SUITE_BUILD_PHASE    class; return 3
+  ::method TEST_EXECUTION_PHASE class; return 4
+  ::method AUTOMATED_TEST_PHASE;       return 1
+  ::method FILE_SEARCH_PHASE;          return 2
+  ::method SUITE_BUILD_PHASE;          return 3
+  ::method TEST_EXECUTION_PHASE;       return 4
+
+  ::method MAX_PHASE  class; return 4
+  ::method MAX_PHASE;        return 4
+
+  ::attribute begin get
+  ::attribute begin set private
+
+  ::attribute finish get
+  ::attribute finish set private
 
   ::method init
-    use strict arg dateTime, file, id
-    self~init:super(dataTime, file, self~STEP_TYPE)
+    use strict arg file, id
 
+   	self~begin = .TimeSpan~new(time('F'))
+    self~init:super(timeStamp(), file, self~STEP_TYPE)
+
+    if \ isWholeRange(type, self~MIN_PHASE, self~MAX_PHASE) then
+      raise syntax 88.907 array("2 'id'", self~MIN_PHASE, self~MAX_PHASE, type)
+
+  ::method duration
+    return (self~finish - self~begin)
 
 -- End of class: PhaseReport
 
