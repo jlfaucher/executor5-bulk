@@ -128,25 +128,29 @@ return testResult
   tests[5] = 'test_exampleQuit'
 return tests
 
-::class 'FNDlgTestSuite' subclass TestSuite
+::class 'FNDlgTestSuite' subclass ooTestSuite
 
 ::method setUp
-  say 'In my test suite at set up'
-  say 'self class:' self~class
-  say 'self has method TestCaseInfo:' self~hasMethod('TestCaseInfo')
-  say 'TestCaseInfo is a directory: ' self~testCaseInfo~isA(.directory)
-  parse source . . fileSpec
-  say 'My file is:' fileSpec
-  say 'My error is on line:' .line
+  use strict arg testResult
 
-  j = printTestInfo(.fileNameDialog_demo.testGroup~testCaseInfo)
+  -- We need an ooTestCollectingParameter in case of error.  Enforcing that the
+  -- argument is passed correctly to us ensures that the test suite maintainers
+  -- fix any deviations from what is expected.  Chance are there won't be an
+  -- error.
+  if \ isSubClassOf(testResult~class, "ooTestCollectingParameter") then
+     raise syntax 88.914 array ("1 'testResult'", "ooTestCollectingParameter")
+
   prgFile = indirectRequire('WinUtils.cls')
 
   if prgFile == "" then do
-    --group~markNoTests("Error loading WinUtils.cls. This test requires WinUtils.cls")
-    -- Should have: 1.) way to not run these tests.  2.) report why they are not run.
-    say 'Do NOT run the file name dialog demo test cases!'
-    say 'Report this fact to someone!'
+    parse source . . fileSpec
+    err = .ExceptionData~new(timeStamp(), fileSpec, "Unexpected Error")
+    err~setLine(.line - 5)
+    err~severity = "Unrecoverable"
+    err~msg = "Could not create program file for indirect require of 'WinUntils.cls'"
+    err~className = self~class~id
+    testResult~addExcepiton(err)
+    testResult~stop
   end
   else do
     call (prgFile)
@@ -166,8 +170,21 @@ return tests
   invoked in order, sorted by method name, by the framework.  This fact is
   used to ensure the correct order of execution.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::class 'fileNameDialog_demo.testGroup' public -
-        subclass ooTestCase
+::class 'fileNameDialog_demo.testGroup' public subclass ooTestCase
+
+  /** init() class method
+   * Over-ride init so that we can set the test type for this test case.
+   */
+  ::method init class
+    forward class (super) continue
+    self~ooTestType = self~GUI_SAMPLE_TEST
+
+    self~init:super
+    self~prgPath = ""
+    self~launcher = ""
+    self~stop = .false
+    self~windowFinder = ""
+
 
   ::method test_ooRexxInstalled
     self~class~stop = .true
@@ -349,13 +366,6 @@ return tests
     wnd~sendCommand(2)
     wnd = wf~getWindow("Error")
   return self~closeFromMsgBox(wf, wnd)
-
-  ::method init class
-    self~init:super
-    self~prgPath = ""
-    self~launcher = ""
-    self~stop = .false
-    self~windowFinder = ""
 
   ::method prgPath      attribute class
   ::method stop         attribute class

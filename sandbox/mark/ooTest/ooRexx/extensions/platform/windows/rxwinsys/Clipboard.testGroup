@@ -65,7 +65,7 @@
   do i=1 to 150 until lines[i]="*/"
      lines[i]=sourceline(i)
   end
-                      3/0
+
   group = .TestGroup~new(s, lines)
   group~add(.Clipboard.testGroup)
 
@@ -92,11 +92,9 @@
     end
   end
 
-  if runTests then do
-    suite = group~suite
-    testResult = suite~execute
-    j = simpleFormatTestResults(testResult)
-  end
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
 
 return group
 -- End of entry point.

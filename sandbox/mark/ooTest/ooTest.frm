@@ -40,7 +40,7 @@
    name:             ooTest.frm
    authors:          Mark Miesfeld
    date:             2007-12-05
-   version:          0.1.0
+   version:          0.9.0
 
    purpose:          An extension to the ooRexxUnit framework providing function
                      and features specific to testing the ooRexx interpreter and
@@ -57,7 +57,7 @@
 */
 
 if \ .local~hasEntry('OOTEST_FRAMEWORK_VERSION') then do
-  .local~ooTest_Framework_version=010.320.20071208
+  .local~ooTest_Framework_version=090.320.20080107
 
   -- Replace the default test result class in the environment with the ooRexx
   -- project's default class.
@@ -183,6 +183,106 @@ return a
 ::method getEvents      abstract
 
 
+/* class: ooTestTypes- - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+    A class containing the constants for the test types supported by the ooTest
+    framework.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::class 'ooTestTypes' public mixinclass Object
+
+  ::method MIN_TEST_TYPE  class; return 1
+  ::method MIN_TEST_TYPE;        return 1
+
+  ::method UNIT_TEST    class; return 1
+  ::method UNIT_TEST;          return 1
+  ::method DEFAULT_TEST class; return 1
+  ::method DEFAULT_TEST;       return 1
+
+  ::method UNIT_LONG_TEST   class; return 2
+  ::method UNIT_LONG_TEST;         return 2
+  ::method SAMPLE_TEST      class; return 3
+  ::method SAMPLE_TEST;            return 3
+  ::method GUI_SAMPLE_TEST  class; return 4
+  ::method GUI_SAMPLE_TEST;        return 4
+  ::method DOC_EXAMPLE_TEST class; return 5
+  ::method DOC_EXAMPLE_TEST;       return 5
+
+  ::method MAX_TEST_TYPE  class; return 5
+  ::method MAX_TEST_TYPE;        return 5
+
+  /** all()
+   * Returns a set of all the test types possible.
+   */
+  ::method all class
+    all = .set~new
+    do i = self~MIN_TEST_TYPE to self~MAX_TEST_TYPE
+      all~put(i)
+    end
+    return all
+
+  ::method all
+    return self~class~all
+
+  /** testForName()
+   * Returns the numeric test type constant for the specified name, or .nil if
+   * there is no such test type.
+   */
+  ::method testForName class
+    expose names
+    use strict arg name
+
+    if names~DEFAULT == .nil then self~populate
+    return names~entry(name~upper)
+
+  ::method testForName
+    use strict arg name
+    return self~class(name)
+
+  /** nameForTest()
+   * Returns the string name corresponding to a numeric test type constant, or
+   * .nil if there is no such test type.
+   */
+  ::method nameForTest class
+    expose names
+    use strict arg test
+
+    if names~DEFAULT == .nil then self~populate
+    return names~entry(test)
+
+  ::method nameForTest
+    use strict arg test
+    return self~class~nameForTest(test)
+
+
+  ::attribute names get class
+  ::attribute names set class private
+
+  ::method init class
+    expose names
+    names = .directory~new
+
+  ::method populate class private
+    expose names
+
+    itr = self~methods(.nil)
+    do while itr~available
+      name = itr~index
+      if name~right(5) == "_TEST" then do
+        name = name~left(name~length - 5)
+        number = itr~item~source[1]~word(2)
+        names~setEntry(name, number)
+        names~setEntry(number, name~lower(2))
+      end
+      itr~next
+    end
+
+-- End of class ooTestTypes
+
+
+/* class: ooTestTypes- - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+    A class containing the constants for the test types supported by the ooTest
+    framework.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+
 /* class: ooTestCase - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
 
     ooTestCases are used to test the ooRexx interpreter package.  An ooTestCase
@@ -193,18 +293,19 @@ return a
     Each method of an ooTestCase class that starts with 'test' is considered
     an individual test case.
 
-    Each ooTestCase has a class attribute defining the test type of test cases
-    of the individual test cases the class contains.  (This list is still being
+    Each ooTestCase has a class attribute defining the test type of the
+    individual test cases the class contains.  (This list is still being
     defined)
 
     UNIT SAMPLE GUI_SAMPLE DOC_EXAMPLE STRESS
 
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::class 'ooTestCase' public subclass TestCase
+::class 'ooTestCase' public subclass TestCase inherit ooTestTypes
 
-  -- ooTestType is the type of test cases contained in this test case class.
-  -- The default type is "UNIT" and other typical types are "STRESS", "SAMPLE",
-  -- "GUI_SAMPLE", "DOC_EXAMPLE", etc..
+  -- The ooTestType attribute is the type of test cases contained in this test
+  -- case class.  The default type is set here.  Test case writers need to
+  -- over-ride the class init() to provide the the test case type when the
+  -- default is not appropriate.
   ::attribute ooTestType get class
   ::attribute ooTestType set class private
 
@@ -213,7 +314,9 @@ return a
 
     -- Use the ooTestResult as the default test result.
     self~defaultTestResultClass = .ooTestResult
-    self~ooTestType = "UNIT"
+
+    -- Set the type of test cases this class contains to the default.
+    self~ooTestType = .ooTestTypes~DEFAULT_TEST
 
   -- End init( )
 
@@ -435,6 +538,11 @@ return a
     if err~line <> -1 then say "  Line:" err~line
     say "  Type:" err~type "Severity:" err~severity
     say " " err~getMessage
+    if err~conditionObject <> .nil then do
+      if err~conditionObject~traceBack~isA(.list) then do line over err~conditionObject~traceBack
+        say line
+      end
+    end
     say
 
   ::method printnotifications private       -- DFX TODO fix this rough outline
@@ -1246,7 +1354,6 @@ return suite
     return container
 
     callError:
-      conditionData = condition('O')
       err = .ExceptionData~new(timeStamp(), file, "Trap")
       err~conditionObject = condition('O')
       err~msg = "Initial call of Test Group failed"
@@ -1472,11 +1579,38 @@ return suite
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::class 'PhaseReport' public subclass Notification
 
+  ::method MIN_PHASE  class; return 1
+  ::method MIN_PHASE;        return 1
+
+  ::method AUTOMATED_TEST_PHASE class; return 1
+  ::method FILE_SEARCH_PHASE    class; return 2
+  ::method SUITE_BUILD_PHASE    class; return 3
+  ::method TEST_EXECUTION_PHASE class; return 4
+  ::method AUTOMATED_TEST_PHASE;       return 1
+  ::method FILE_SEARCH_PHASE;          return 2
+  ::method SUITE_BUILD_PHASE;          return 3
+  ::method TEST_EXECUTION_PHASE;       return 4
+
+  ::method MAX_PHASE  class; return 4
+  ::method MAX_PHASE;        return 4
+
+  ::attribute begin get
+  ::attribute begin set private
+
+  ::attribute finish get
+  ::attribute finish set private
 
   ::method init
-    use strict arg dateTime, file, id
-    self~init:super(dataTime, file, self~STEP_TYPE)
+    use strict arg file, id
 
+   	self~begin = .TimeSpan~new(time('F'))
+    self~init:super(timeStamp(), file, self~STEP_TYPE)
+
+    if \ isWholeRange(type, self~MIN_PHASE, self~MAX_PHASE) then
+      raise syntax 88.907 array("2 'id'", self~MIN_PHASE, self~MAX_PHASE, type)
+
+  ::method duration
+    return (self~finish - self~begin)
 
 -- End of class: PhaseReport
 

@@ -41,7 +41,7 @@
  * fully implemented.
  */
 cmdLine = arg(1)
-   say 'command line is empty string:' (cmdLine == "")
+
    absoluteBegin = .TimeSpan~new(time('F'))
 
    .local~bRunTestsLocally = .false
@@ -49,9 +49,15 @@ cmdLine = arg(1)
    baseDir = "ooRexx"
    --baseDir = "ooRexx\samples"
 
+   -- Execute all test types, except the UNIT_LONG type.
+   types = .ooTestTypes~all~difference(.set~of(.ooTestTypes~UNIT_LONG_TEST))
+   do i over types
+     say 'got test type:' i
+   end
+
    testResult = .ooRexxUnit.default.TestResult.Class~new
    --testResult~setVerbosity(0)
-   finder = .ooTestFinder~new(baseDir, ".testGroup")
+   finder = .ooTestFinder~new(baseDir, ".testGroup", types)
    containers = finder~seek(testResult); say 'containers items:' containers~items
    searchEnd = .TimeSpan~new(time('F'))
 
@@ -68,8 +74,6 @@ cmdLine = arg(1)
    testEnd = .TimeSpan~new(time('F'))
 
    testResult~print("My Title", 4)
-   --call simpleFormatTestResults testResult, "My Title"
-   --call simpleDumpTestResults testResult, "My Title"
 
    absoluteEnd = .TimeSpan~new(time('F'))
    say 'File search:   ' (searchEnd - absoluteBegin)
@@ -79,3 +83,4 @@ cmdLine = arg(1)
 return 0
 
 ::requires "ooTest.frm"
+
