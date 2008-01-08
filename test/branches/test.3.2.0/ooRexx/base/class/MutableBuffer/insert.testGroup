@@ -212,6 +212,7 @@ return testGroupList
     mb = .mutablebuffer~new(copies('5F'x,10000))
 -- This causes a core dump in 3.2
 --    self~assertSame('subTest01',substr(.v10000,1,50000,' ')||'A' ,mb~insert('A','5E+4')~string)
+    self~fail(.ooRexxUnit.knownBugFlag "1866822 substr(.v10000,1,50000,' ')||'A' == mb~insert('A','5E+4')~string")
 
 ::method 'test022'
     mb = .mutablebuffer~new(copies('5F'x,10000))
