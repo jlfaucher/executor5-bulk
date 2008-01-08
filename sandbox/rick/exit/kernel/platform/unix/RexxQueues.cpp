@@ -217,7 +217,7 @@ RexxMethod1(REXXOBJECT, function_queueExit,
   NativeContextBlock context;
   RexxActivation *activation = (RexxActivation *)ActivityManager::currentActivity->getCurrentActivation();
                                        /* call the exit                     */
-  context.activity->sysExitMsqNam(activation, &qname);
+  context.activity->callQueueNameExit(activation, &qname);
   return context.protect(qname);       /* and just return the exit result   */
 }
 

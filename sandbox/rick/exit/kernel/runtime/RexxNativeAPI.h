@@ -36,7 +36,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /******************************************************************************/
-/* REXX Macros                                                  oryx.h        */
+/* REXX Macros                                                                */
 /*                                                                            */
 /* Header file for REXX methods written in C.                                 */
 /*                                                                            */
@@ -44,37 +44,12 @@
 #ifndef RexxNativeAPI_H_INCLUDED
 #define RexxNativeAPI_H_INCLUDED
 
+#include "rexx.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-/******************************************************************************/
-/* Types (for general use)                                                    */
-/******************************************************************************/
-typedef const char *CSTRING;        /* pointer to zero-terminated string */
-
-typedef void *POINTER;
-
-#ifdef __cplusplus
- class RexxObject;                     /* Object Rexx root object           */
- class RexxInternalObject;             /* Object Rexx root object           */
-                                       /* reference to a REXX object        */
- typedef RexxObject *REXXOBJECT;
- #define NULLOBJECT (RexxObject *)NULL
-#else
- typedef void *REXXOBJECT;             /* reference to a REXX object        */
- #define NULLOBJECT (REXXOBJECT)0      /* null object                       */
-#endif
-
-typedef REXXOBJECT STRING;             /* REXX string object                */
-
-/******************************************************************************/
-/* Constant values (for general use)                                          */
-/* Also in RexxCore.h */
-/******************************************************************************/
-#ifndef NO_CSTRING
-# define NO_CSTRING            NULL
-#endif
 
 /******************************************************************************/
 /* New-style macros and functions                                             */

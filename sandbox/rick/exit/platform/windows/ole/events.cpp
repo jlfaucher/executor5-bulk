@@ -185,8 +185,8 @@ STDMETHODIMP OLEObjectEvent::Invoke(DISPID dispIdMember, REFIID riid, LCID lcid,
     }
 
     if (fFound) {
-      RexxObject *rxResult;
-      RexxObject *rxArray;
+      REXXOBJECT  rxResult;
+      REXXOBJECT  rxArray;
       int         i;
       int         j;
       //fprintf(stderr,"%08x %s\n",dispIdMember,pList->pszFuncName);
@@ -223,7 +223,7 @@ STDMETHODIMP OLEObjectEvent::Invoke(DISPID dispIdMember, REFIID riid, LCID lcid,
               Rexx2Variant(rxResult,&pDispParams->rgvarg[i],pDispParams->rgvarg[i].vt,-1);
             } else if (fIsRexxArray(rxResult)) {
               RexxArray  *rxArray = (RexxArray*) rxResult;
-              RexxObject *RexxStr = NULL;
+              REXXOBJECT  RexxStr = NULL;
               const char *pString = NULL;
               char        szBuff[8];
               int         k;
@@ -239,7 +239,7 @@ STDMETHODIMP OLEObjectEvent::Invoke(DISPID dispIdMember, REFIID riid, LCID lcid,
                 for (i=1,j=0; i <= k && j < (int)pDispParams->cArgs; j++) {
                   if (pList->pusOptFlags[j] & PARAMFLAG_FOUT) {
                     sprintf(szBuff,"%d",i);
-                    Rexx2Variant(ooRexxSend1(rxArray,"AT",ooRexxString(szBuff)),&pDispParams->rgvarg[j],pDispParams->rgvarg[j].vt,-1);
+                    Rexx2Variant((RexxObject *)ooRexxSend1(rxArray,"AT",ooRexxString(szBuff)),&pDispParams->rgvarg[j],pDispParams->rgvarg[j].vt,-1);
                     i++;
                   } /* end if */
                 } /* end for */

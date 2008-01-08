@@ -1131,7 +1131,7 @@ REXXOBJECT REXXENTRY REXX_SEND(REXXOBJECT receiver, CSTRING msgname, REXXOBJECT 
 /******************************************************************************/
 {
     NativeContextBlock context;
-    return context.protect((RexxObject *)receiver->sendMessage((RexxString *)new_string(msgname), (RexxArray *)arguments));
+    return context.protect(((RexxObject *)receiver)->sendMessage((RexxString *)new_string(msgname), (RexxArray *)arguments));
 }
 
 REXXOBJECT REXXENTRY REXX_SUPER(CSTRING msgname, REXXOBJECT arguments)
@@ -1312,7 +1312,7 @@ bool REXXENTRY REXX_ISDIRECTORY(REXXOBJECT object)
 /******************************************************************************/
 {
                                        /* do the validation                 */
-  return object != NULL && isOfClass(Directory, object);
+  return object != NULL && isOfClass(Directory, (RexxObject *)object);
 }
 
 

@@ -73,7 +73,10 @@ public:
         // remove ourselves from the list and give this object a
         // little hold protection.
         ActivityManager::currentActivity->protectedObjects = next;
-        holdObject(protectedObject);
+        if (protectedObject != OREF_NULL)
+        {
+            holdObject(protectedObject);
+        }
     }
 
     inline ProtectedObject & operator=(RexxObject *o)
@@ -128,5 +131,16 @@ protected:
     RexxObject *protectedObject;       // next in the chain of protected object
     ProtectedObject *next;             // the pointer protected by the object
 };
+
+
+class ProtectedSet : public ProtectedObject
+{
+public:
+    inline ProtectedSet() : ProtectedObject() { }
+    inline ~ProtectedSet() { }
+
+    void add(RexxObject *);
+};
+
 
 #endif

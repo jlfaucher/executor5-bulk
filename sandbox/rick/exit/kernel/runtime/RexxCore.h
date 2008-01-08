@@ -164,9 +164,6 @@ typedef builtin_func *pbuiltin;        /* pointer to a builtin function     */
 /******************************************************************************/
 /* Global Objects - General                                                   */
 /******************************************************************************/
-#ifdef SCRIPTING
-EXTERN RexxObject* (__stdcall *NovalueCallback)(const char *) INITGLOBALPTR;
-#endif
 
 class RexxClass;
 class RexxDirectory;
@@ -268,15 +265,6 @@ wholenumber_t message_number(RexxString *);
 #define NO_THREAD       -1
 
 /******************************************************************************/
-/* Constant GLobal values (for general use)                                   */
-/******************************************************************************/
-
-#ifndef NO_CSTRING
-# define NO_CSTRING            NULL
-#endif
-#define NO_RSTRING       NULL
-
-/******************************************************************************/
 /* Global Objects - Names                                                     */
 /******************************************************************************/
 #undef GLOBAL_NAME
@@ -306,12 +294,6 @@ const size_t A_COUNT   = 127;            /* pass arguments as pointer/count pair
 
 const int RC_OK         = 0;
 const int RC_LOGIC_ERROR  = 2;
-
-// TODO:  These belong on an activity basis
-
-RexxString *last_msgname (void);       /* last message issued               */
-RexxMethod *last_method  (void);       /* last method invoked               */
-
 
 // MAKE a static method on ClassClass.
                                        /* data converstion and validation   */
@@ -377,4 +359,18 @@ inline RexxObject * callOperatorMethod(RexxObject *object, size_t methodOffset, 
   return (object->*((PCPPM1)cppEntry))(argument);
 }
 
+
+extern "C" {
+
+int APIENTRY RexxResolveExit(const char *, REXXPFN *);
+
+APIRET APIENTRY RexxCallFunction (
+        const char *,                  /* Name of function to call   */
+        size_t,                        /* Number of arguments        */
+        PCONSTRXSTRING,                /* Array of argument strings  */
+        int            *,              /* RC from function called    */
+        PRXSTRING,                     /* Storage for returned data  */
+        const char *);                 /* Name of active data queue  */
+
+}
 #endif

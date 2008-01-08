@@ -269,7 +269,7 @@ class OrxScript : public LLLContent,
     else return NULL;
   }
 
-  void* findRexxFunction(char* name) {
+  void* findRexxFunction(const char* name) {
     ListItem *result = RexxFunctions->FindItem(name);
     if (result) return result->GetContent();
     return NULL;

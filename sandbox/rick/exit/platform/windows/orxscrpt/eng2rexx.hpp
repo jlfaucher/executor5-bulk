@@ -87,9 +87,6 @@ void WinEnterKernel(bool);
 void WinLeaveKernel(bool);
 extern "C" {
 APIRET REXXENTRY RexxRunMethod(const char *, RexxObject *, void *, RexxArray* (__stdcall *)(void*), PRXSYSEXIT, RexxObject * *, RexxObject *, ConditionData *);
-
-void REXXENTRY SetNovalueCallback( RexxObject* (__stdcall *f)(const char *) );
-void REXXENTRY SetWSHPropertyChange( RexxObject* (__stdcall *f)(RexxString*,RexxObject*,int,int*) );
 }
 // these three come from orexxole.c
 RexxObject *Variant2Rexx(VARIANT *);
