@@ -130,7 +130,7 @@ return testUnitList
     xre = subStr(.vblank,0)
 
 ::method 'test002'
-    self~assertSame('subTest01',,subStr('',1))
+    self~assertSame('subTest01',"",subStr('',1))
 
 ::method 'test003'
     self~assertSame('subTest01',' ',subStr(.vblank,'31'x))
@@ -148,7 +148,7 @@ return testUnitList
     self~assertSame('subTest01','',subStr(copies('5C'x,10000),'5E+4'))
 
 ::method 'test008'
-    self~assertSame('subTest01',,subStr(copies('5C'x,10000),'+999999999'))
+    self~assertSame('subTest01',"",subStr(copies('5C'x,10000),'+999999999'))
 
 ::method 'test009'
     self~expectSyntax(40.12)
