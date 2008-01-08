@@ -107,8 +107,8 @@ do
       -- create a testSuite for the given test case class, use all its testmethods
       ts~addTest( .testSuite~new(arr[1]))
    end
-   -- testResult=.testSuite~new(testGroupClass)~run
-   testResult=ts~run       -- now run all the tests
+   -- testResult=.testSuite~new(testGroupClass)~execute
+   testResult=ts~execute       -- now run all the tests
 
    call simpleDumpTestResults testResult
 end
@@ -972,7 +972,7 @@ return testGroupList
          When id=142 & x==3.E+6202
                Then DO; id=id+1; x=3.E-3107                            ; End;
          Otherwise Signal X9999
-         END; 
+         END;
       END
    X9999:
    self~assertTrue(1)

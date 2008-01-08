@@ -107,8 +107,8 @@ do
       -- create a testSuite for the given test case class, use all its testmethods
       ts~addTest( .testSuite~new(arr[1]))
    end
-   -- testResult=.testSuite~new(testGroupClass)~run
-   testResult=ts~run       -- now run all the tests
+   -- testResult=.testSuite~new(testGroupClass)~execute
+   testResult=ts~execute       -- now run all the tests
 
    call simpleFormatTestResults testResult
 end
@@ -133,7 +133,7 @@ return testGroupList
     xre = subStr(.vblank,0)
 
 ::method 'test002'
-    self~assertSame(, ''~subStr(1))
+    self~assertSame("", ''~subStr(1))
 
 ::method 'test003'
     self~assertSame(' ', .vblank~subStr('31'x))
@@ -151,7 +151,7 @@ return testGroupList
     self~assertSame('', copies('5C'x,10000)~subStr('5E+4'))
 
 ::method 'test008'
-    self~assertSame(, copies('5C'x,10000)~subStr('+999999999'))
+    self~assertSame("", copies('5C'x,10000)~subStr('+999999999'))
 
 ::method 'test009'
     self~expectSyntax(93.905)

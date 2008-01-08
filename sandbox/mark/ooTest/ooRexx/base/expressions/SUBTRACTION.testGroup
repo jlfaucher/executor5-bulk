@@ -108,8 +108,8 @@ do
       -- create a testSuite for the given test case class, use all its testmethods
       ts~addTest( .testSuite~new(arr[1]))
    end
-   -- testResult=.testSuite~new(testGroupClass)~run
-   testResult=ts~run       -- now run all the tests
+   -- testResult=.testSuite~new(testGroupClass)~execute
+   testResult=ts~execute       -- now run all the tests
 
    call simpleDumpTestResults testResult
 end
@@ -1432,4 +1432,4 @@ return testGroupList
    Numeric Form ENGINEERING
    Numeric Digits 5
    self~assertSame(9999999999999 - 9999999999999, 0)
- 
+

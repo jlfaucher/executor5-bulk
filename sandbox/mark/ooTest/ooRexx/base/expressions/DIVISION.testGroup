@@ -108,8 +108,8 @@ do
       -- create a testSuite for the given test case class, use all its testmethods
       ts~addTest( .testSuite~new(arr[1]))
    end
-   -- testResult=.testSuite~new(testGroupClass)~run
-   testResult=ts~run       -- now run all the tests
+   -- testResult=.testSuite~new(testGroupClass)~execute
+   testResult=ts~execute       -- now run all the tests
 
    call simpleDumpTestResults testResult
 end
@@ -1252,7 +1252,7 @@ return testGroupList
    Numeric Form ENGINEERING
    Numeric Digits 5
    self~assertSame(5678932 % 378678, 14)
- 
+
 ::method "test_367"
    minval=1e-999999999
    maxval=1e+999999999
@@ -1263,136 +1263,136 @@ return testGroupList
    self~assertSame(maxval / (100 + maxval -100), '1')
    self~assertSame(maxval / minv || 'al', '1al')
    self~assertSame(minv || al / maxval, '1E+9999999991')
- 
+
 ::method "test_368"
    self~assertSame(17/2=2, '0')
- 
+
 ::method "test_369"
    self~assertSame(2=2/17, '0')
- 
+
 ::method "test_370"
    self~assertSame(17/2>3, '1')
- 
+
 ::method "test_371"
    self~assertSame(3>2/.5, '0')
- 
+
 ::method "test_372"
    self~assertSame(17/2<3, '0')
- 
+
 ::method "test_373"
    self~assertSame(3<2/.5, '1')
- 
+
 ::method "test_374"
    self~assertSame(17/2<>2, '1')
- 
+
 ::method "test_375"
    self~assertSame(2<>2/17, '1')
- 
+
 ::method "test_376"
    self~assertSame(17/2><2, '1')
- 
+
 ::method "test_377"
    self~assertSame(2><2/17, '1')
- 
+
 ::method "test_378"
    self~assertSame(17/2\=2, '1')
- 
+
 ::method "test_379"
    self~assertSame(2\=2/17, '1')
- 
+
 ::method "test_380"
    self~assertSame(5/3>=2, '0')
- 
+
 ::method "test_381"
    self~assertSame(5/3>=3, '0')
- 
+
 ::method "test_382"
    self~assertSame(3>=3/.25, '0')
- 
+
 ::method "test_383"
    self~assertSame(3>=2/.25, '0')
- 
+
 ::method "test_384"
    self~assertSame(17/2<=3, '0')
- 
+
 ::method "test_385"
    self~assertSame(17/2<=2, '0')
- 
+
 ::method "test_386"
    self~assertSame(2<=3/.25, '1')
- 
+
 ::method "test_387"
    self~assertSame(2<=2/.25, '1')
- 
+
 ::method "test_388"
    self~assertSame(17/2==2, '0')
- 
+
 ::method "test_390"
    self~assertSame(2==2/17, '0')
- 
+
 ::method "test_391"
    self~expectSyntax(34.901)
    xre=17/1&0
- 
+
 ::method "test_392"
    self~expectSyntax(34.901)
    xre=1&1/17
- 
+
 ::method "test_393"
    self~expectSyntax(34.901)
    xre=17/1|0
- 
+
 ::method "test_394"
    self~expectSyntax(34.901)
    xre=0|1/17
- 
+
 ::method "test_395"
    self~expectSyntax(34.901)
    xre=17/1&&0
- 
+
 ::method "test_396"
    self~expectSyntax(34.901)
    xre=0&&1/17
- 
+
 ::method "test_397"
    self~assertSame(5/3\<2, '0')
- 
+
 ::method "test_398"
    self~assertSame(5/3\<2, '0')
- 
+
 ::method "test_399"
    self~assertSame(3\<3/.25, '0')
- 
+
 ::method "test_400"
    self~assertSame(3\<2/.25, '0')
- 
+
 ::method "test_401"
    self~assertSame(17/2\>3, '0')
- 
+
 ::method "test_402"
    self~assertSame(17/2\>2, '0')
- 
+
 ::method "test_403"
    self~assertSame(2\>3/.25, '1')
- 
+
 ::method "test_404"
    self~assertSame(2\>2/.25, '1')
- 
+
 ::method "test_405"
    self~assertSame(17/2\=2, '1')
- 
+
 ::method "test_406"
    self~assertSame(17/2\==2, '1')
- 
+
 ::method "test_407"
    self~assertSame(2\==2/17, '1')
- 
+
 ::method "test_408"
    self~assertSame(2\=2/.5, '1')
- 
+
 ::method "test_409"
    self~assertSame(17/2\==2, '1')
- 
+
 ::method "test_410"
    self~assertSame(2\==2/17, '1')
- 
+

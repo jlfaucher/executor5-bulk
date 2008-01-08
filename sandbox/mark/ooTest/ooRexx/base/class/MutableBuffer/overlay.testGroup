@@ -107,8 +107,8 @@ do
       -- create a testSuite for the given test case class, use all its testmethods
       ts~addTest( .testSuite~new(arr[1]))
    end
-   -- testResult=.testSuite~new(testGroupClass)~run
-   testResult=ts~run       -- now run all the tests
+   -- testResult=.testSuite~new(testGroupClass)~execute
+   testResult=ts~execute       -- now run all the tests
 
    call simpleFormatTestResults testResult
 end
@@ -412,6 +412,8 @@ return testGroupList
 
     mb = .mutablebuffer~new(.vn0000)
     self~assertSame('04E+1'||copies('8',196), mb~overLay(.vn2*.vn21,.vn1+.vn1,.vn100*.vn2,.vn4+.vn4)~string)
+    self~assertSame(mb~overLay(.vn2*.vn21,.vn1+.vn1,.vn100*.vn2,.vn4+.vn4)~string,.vn0000~overLay(.vn2*.vn21,.vn1+.vn1,.vn100*.vn2,.vn4+.vn4))
+
     self~assertSame('042'||copies('9',198), mb~overLay(.vn42,.vn4*vn.5,.vn42*.vn5,.vn4+.vn5)~string)
     self~assertSame(mb~overLay(.vn42,.vn4*vn.5,.vn42*.vn5,.vn4+.vn5)~string,.vn0000~overLay(.vn42,.vn4*vn.5,.vn42*.vn5,.vn4+.vn5))
 

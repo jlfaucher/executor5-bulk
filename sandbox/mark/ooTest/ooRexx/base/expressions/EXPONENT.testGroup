@@ -108,8 +108,8 @@ do
       -- create a testSuite for the given test case class, use all its testmethods
       ts~addTest( .testSuite~new(arr[1]))
    end
-   -- testResult=.testSuite~new(testGroupClass)~run
-   testResult=ts~run       -- now run all the tests
+   -- testResult=.testSuite~new(testGroupClass)~execute
+   testResult=ts~execute       -- now run all the tests
 
    call simpleDumpTestResults testResult
 end
@@ -309,11 +309,11 @@ return testGroupList
    self~expectSyntax(26.8)
    Numeric Digits 1
    self~assertSame(2 ** 100, 1)
- 
 
 
 
- 
+
+
 
 ::method "test_61"
    self~assertSame(0 ** 0.0, 1)

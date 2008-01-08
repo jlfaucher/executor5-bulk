@@ -49,7 +49,7 @@ cmdLine = arg(1)
    baseDir = "ooRexx"
    --baseDir = "ooRexx\samples"
 
-   testResult = .ooRexxUnit.default.TestResult.Class~new(0)
+   testResult = .ooRexxUnit.default.TestResult.Class~new
    --testResult~setVerbosity(0)
    finder = .ooTestFinder~new(baseDir, ".testGroup")
    containers = finder~seek(testResult); say 'containers items:' containers~items
@@ -67,7 +67,7 @@ cmdLine = arg(1)
    suite~execute(testResult)
    testEnd = .TimeSpan~new(time('F'))
 
-   testResult~print("My Title")
+   testResult~print("My Title", 4)
    --call simpleFormatTestResults testResult, "My Title"
    --call simpleDumpTestResults testResult, "My Title"
 

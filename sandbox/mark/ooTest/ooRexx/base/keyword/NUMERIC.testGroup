@@ -107,8 +107,8 @@ do
       -- create a testSuite for the given test case class, use all its testmethods
       ts~addTest( .testSuite~new(arr[1]))
    end
-   -- testResult=.testSuite~new(testGroupClass)~run
-   testResult=ts~run       -- now run all the tests
+   -- testResult=.testSuite~new(testGroupClass)~execute
+   testResult=ts~execute       -- now run all the tests
 
    call simpleDumpTestResults testResult
 end
@@ -204,7 +204,7 @@ return testGroupList
    Queue a2
    Queue a3
    Return
- 
+
 ::method "test_16"
    Numeric Digits 1
    Parse Value digits() fuzz() form() With dig fuz for
@@ -217,12 +217,12 @@ return testGroupList
 
    Parse Value '123456789.123456789.' With a 12 b
    self~assertSame(a, '123456789.1')
- 
+
 ::method "test_17"
    self~expectSyntax(26.2)
    Numeric Digits 1
    i4=0; Do 12; i4=i4+1; End
- 
+
 ::method "test_18"
    self~expectSyntax(26.3)
    Numeric Digits 1
@@ -604,7 +604,7 @@ return testGroupList
    self~expectSyntax(25.11)
    FORM=''; ENGINEERING=''
    Numeric Form Value ENGINEERING FORM ENGINEERING;
- 
+
 ::method "test_81"
    Numeric Digits 12
    Numeric Fuzz 9
@@ -612,14 +612,14 @@ return testGroupList
    self~assertSame(("DIGITS"() "FUZZ"() "FORM"()), (12 9 'ENGINEERING'))
    Parse Value digits() fuzz() form() With X
    self~assertSame(X, '12 9 ENGINEERING')
- 
+
 ::method "test_82"
    Numeric Digits 12
    Numeric Fuzz 9
    Numeric Form Engineering
    Numeric Digits 999999999
    self~assertTrue(1)
- 
+
 ::method "test_83"
    self~expectSyntax(33.1)
    Numeric Digits 12
