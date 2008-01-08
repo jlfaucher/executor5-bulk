@@ -92,11 +92,9 @@
     end
   end
 
-  if runTests then do
-    suite = group~suite
-    testResult = suite~execute
-    j = simpleFormatTestResults(testResult)
-  end
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
 
 return group
 -- End of entry point.
