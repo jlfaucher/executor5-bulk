@@ -57,36 +57,22 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-use arg cmdLine
+  parse source . . fileSpec;
 
-  testGroupList = .list~of( .array~of( .Chapter5Section1.testGroup, .list~new ) )
-
-  srcLines = .array~new
-  do i = 1 to 150 until srcLines[ i ] = "*/"
-     srcLines[ i ] = sourceline( i )
+  lines = .array~new
+  do i = 1 until lines[i] = "*/"
+    lines[i] = sourceline(i)
   end
 
-  call makeDirTestInfo .Chapter5Section1.testGroup, srcLines
+  group = .TestGroup~new(fileSpec, lines)
 
-  parse source s
-  .Chapter5Section1.testGroup~testCaseInfo~setentry( "test_Case-source", s )
+  group~add(.Chapter5Section1.testGroup)
 
-  -- If there is no entry in the .local directory of 'bRunTestsLocally' then add
-  -- one with a value of true.
-  if \ .local~hasentry( "bRunTestsLocally" ) then
-     .local~bRunTestsLocally = .true
+  if group~isAutomatedTest then return group
 
-  -- Now honor the setting of bRunTestsLocally, which may have been set by a
-  -- caller of this test unit.
-  if .bRunTestsLocally == .true then do
-    ts = .TestSuite~new
-    ts~addTest( .TestSuite~new( .Chapter5Section1.testGroup ) )
+  testResult = group~suite~execute~~print
 
-    testResult = ts~execute
-    call simpleFormatTestResults testResult
-  end
-
-return testGroupList
+return testResult
 -- End of entry point.
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
