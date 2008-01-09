@@ -360,7 +360,7 @@ DWORD WINAPI call_thread_function(void * Arguments)
 }
 
 
-int SysCreateThread (
+thread_id_t SysCreateThread (
   PTHREADFN ThreadProcedure,           /* address of thread procedure       */
   size_t    StackSize,                 /* required stack size               */
   void     *Arguments )                /* thread procedure argument block   */
@@ -378,7 +378,7 @@ int SysCreateThread (
      return 0;   /* error */
   }
   ((RexxActivity *)Arguments)->hThread = ht;
-  return res;
+  return (thread_id_t)res;
 }
 
 

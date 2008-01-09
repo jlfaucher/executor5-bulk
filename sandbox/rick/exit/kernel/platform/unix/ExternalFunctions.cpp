@@ -112,8 +112,6 @@
 
 #define KIOCSOUND   0x4B2F              /* start sound generation (0 for off) */
 
-extern char **environ;
-
 extern char achRexxCurDir[ CCHMAXPATH+2 ];  /* Save current working direct    */
 
 typedef struct _ENVENTRY {                  /* setlocal/endlocal structure    */
@@ -334,7 +332,7 @@ RexxMethod2 (REXXOBJECT, sysFilespec, CSTRING, Option, CSTRING, Name)
                                        /* required arguments missing?       */
   if (Option == NO_CSTRING || strlen(Option) == 0 || Name == NO_CSTRING)
                                        /* raise an error                    */
-    send_exception(Error_Incorrect_call);
+    rexx_exception(Error_Incorrect_call);
 
   NameLength = strlen(Name);           /* get filename length               */
 
@@ -367,7 +365,7 @@ RexxMethod2 (REXXOBJECT, sysFilespec, CSTRING, Option, CSTRING, Name)
 
     default:                           /* unknown option                    */
                                        /* raise an error                    */
-      send_exception(Error_Incorrect_call);
+      rexx_exception(Error_Incorrect_call);
   }
   return Retval;                       /* return extracted part             */
 }
@@ -463,7 +461,7 @@ REXXOBJECT BuildEnvlist()
   size_t      size = 0;                /* size of the new buffer     */
   char       *curr_dir;                /* current directory          */
   char       *New;                     /* starting address of buffer */
-  Environment = environ;               /* get the ptr to the environ */
+  Environment = getEnvironment();      /* get the ptr to the environ */
 
   for(;*Environment != NULL;Environment++){
     size += strlen(*Environment);      /* calculate the size for all */
@@ -496,7 +494,7 @@ REXXOBJECT BuildEnvlist()
   New += strlen(curr_dir);             /* update the pointer         */
   memcpy(New,"\0",1);                  /* write the terminator       */
   New++;                               /* update the pointer         */
-  Environment = environ;               /* reset to begin of environ  */
+  Environment = getEnvironment();      /* reset to begin of environ  */
                                        /* Loop through environment   */
                                        /* and copy all entries to the*/
                                        /* buffer, each terminating   */
@@ -531,7 +529,7 @@ void RestoreEnvironment(
   size_t size;                         /* size of the saved space    */
   size_t length;                       /* string length              */
   char  *begin;                        /* begin of saved space       */
-  char      ** Environment;            /* environment pointer        */
+  char  **Environment;                 /* environment pointer        */
 
   char  *del = NULL;                   /* ptr to old unused memory   */
   char  *Env_Var_String;               /* enviornment entry          */
@@ -539,14 +537,13 @@ void RestoreEnvironment(
   char  *np;
   int i;
 
-    Environment = environ;             /* get the current environment*/
+    Environment = getEnvironment();    /* get the current environment*/
 
   begin = current = (char *)CurrentEnv;/* get the saved space        */
   size = ((ENVENTRY*)current)->size;   /* first read out the size    */
   current += 4;                        /* update the pointer         */
   if(chdir(current) == -1)             /* restore the curr dir       */
-      send_exception1(Error_System_service_service,
-                   ooRexxArray1(ooRexxString("ERROR CHANGING DIRECTORY")));
+      rexx_exception1(Error_System_service_service, ooRexxString("ERROR CHANGING DIRECTORY"));
   current += strlen(current);          /* update the pointer         */
   current++;                           /* jump over '\0'             */
   if(!putflag){                        /* first change in the        */
@@ -565,7 +562,7 @@ void RestoreEnvironment(
                                        /* Loop through the saved env */
                                        /* entries and restore them   */
   for(;(size_t)(current-begin)<size;current+=(strlen(current)+1)){
-    Environment = environ;             /* get the environment        */
+    Environment = getEnvironment();    /* get the environment        */
     del = NULL;
     np = current;
                                        /* extract the the name       */
@@ -590,8 +587,7 @@ void RestoreEnvironment(
       }
     }
     if(putenv(current) == -1)
-      send_exception1(Error_System_service_service,
-        ooRexxArray1(ooRexxString("ERROR RESTORING ENVIRONMENT VARIABLE")));
+      rexx_exception1(Error_System_service_service, ooRexxString("ERROR RESTORING ENVIRONMENT VARIABLE"));
     if(del)                            /* if there was an old entry  */
       free(del);                       /* free it                    */
   }

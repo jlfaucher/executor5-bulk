@@ -118,7 +118,7 @@ RexxMethod2(REXXOBJECT, sysBeep, wholenumber_t, Frequency, wholenumber_t, Durati
                                        /* out of range?              */
   if (Frequency > MAX_FREQUENCY || Frequency < MIN_FREQUENCY || Duration > MAX_DURATION || Duration < MIN_DURATION)
                                        /* raise an error             */
-    send_exception(Error_Incorrect_call);
+    rexx_exception(Error_Incorrect_call);
 
   Beep((DWORD)Frequency, (DWORD)Duration);  /* sound beep                 */
   return ooRexxString("");             /* always returns a null      */
@@ -192,7 +192,7 @@ RexxMethod2 (REXXOBJECT, sysFilespec, CSTRING, Option, CSTRING, Name)
                                        /* required arguments missing?       */
   if (Option == NO_CSTRING || strlen(Option) == 0 || Name == NO_CSTRING)
                                        /* raise an error                    */
-    send_exception(Error_Incorrect_call);
+    rexx_exception(Error_Incorrect_call);
 
   NameLength = strlen(Name);           /* get filename length               */
 
@@ -294,7 +294,7 @@ RexxMethod2 (REXXOBJECT, sysFilespec, CSTRING, Option, CSTRING, Name)
 
     default:                           /* unknown option                    */
                                        /* raise an error                    */
-      send_exception(Error_Incorrect_call);
+      rexx_exception(Error_Incorrect_call);
   }
   return Retval;                       /* return extracted part             */
 }
@@ -463,7 +463,7 @@ ULONG  Icon_Flags[] =                  /* message box icon styles    */
      MB_ICONSTOP};
 
   if (Text == NULL)                    /* raise an error if empty    */
-    send_exception(Error_Incorrect_call);
+    rexx_exception(Error_Incorrect_call);
 
 
                                        /* set initial style flags    */
@@ -483,7 +483,7 @@ ULONG  Icon_Flags[] =                  /* message box icon styles    */
       }
     }
     if (Index == MaxCnt)               /* if not found raise error          */
-      send_exception(Error_Incorrect_call);
+      rexx_exception(Error_Incorrect_call);
 
   }//end else
 
@@ -499,7 +499,7 @@ ULONG  Icon_Flags[] =                  /* message box icon styles    */
       }
     }
     if (Index == MaxCnt)               /* if not found raise error          */
-      send_exception(Error_Incorrect_call);
+      rexx_exception(Error_Incorrect_call);
 
   }// end else
 

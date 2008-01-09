@@ -1237,6 +1237,24 @@ void REXXENTRY REXX_EXCEPT(int errorcode, REXXOBJECT value)
     }
 }
 
+void REXXENTRY REXX_EXCEPT1(int errorcode, REXXOBJECT value1)
+/******************************************************************************/
+/* Function:  Raise an exception on behalf of native code                     */
+/******************************************************************************/
+{
+    NativeContextBlock context;
+    reportException(errorcode, (RexxObject *)value1);
+}
+
+void REXXENTRY REXX_EXCEPT2(int errorcode, REXXOBJECT value1, REXXOBJECT value2)
+/******************************************************************************/
+/* Function:  Raise an exception on behalf of native code                     */
+/******************************************************************************/
+{
+    NativeContextBlock context;
+    reportException(errorcode, (RexxObject *)value1, (RexxObject *)value2);
+}
+
 
 void REXXENTRY REXX_RAISE(CSTRING condition, REXXOBJECT description, REXXOBJECT additional, REXXOBJECT result)
 /******************************************************************************/

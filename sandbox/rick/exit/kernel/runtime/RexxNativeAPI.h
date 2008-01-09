@@ -173,7 +173,6 @@ r  n##_m (t1 p1, t2 p2, t3 p3, t4 p4, t5 p5, t6 p6)
 #define _isdouble(r)             REXX_ISDOUBLE(r)
 #define _isdirectory(r)          REXX_ISDIRECTORY(r)
 #define _isinteger(r)            REXX_ISINTEGER(r)
-#define _ispinteger(r)           REXX_INTEGER(r)
 #define _isstring(r)             REXX_ISSTRING(r)
 #define _string(r)               REXX_OBJECT_STRING(r)
 
@@ -205,9 +204,12 @@ r  n##_m (t1 p1, t2 p2, t3 p3, t4 p4, t5 p5, t6 p6)
 #define table_at(r,i)            REXX_TABLE_GET(r,i)
 #define table_remove(r,i)        REXX_TABLE_REMOVE(r,i)
 
-#define send_condition(c,d,a)    REXX_CONDITION(c,d,a)
-#define send_exception(m)        REXX_EXCEPT(m,NULLOBJECT)
-#define send_exception1(m,a1)    REXX_EXCEPT(m,a1)
+#define rexx_condition(c,d,a)    REXX_CONDITION(c,d,a)
+#define rexx_exception(m)        REXX_EXCEPT(m, NULLOBJECT)
+#define rexx_exception_with(m, a) REXX_EXCEPT(m, a)
+#define rexx_exception1(m, v1)   REXX_EXCEPT1(m, v1)
+#define rexx_exception2(m, v1, v2)  REXX_EXCEPT2(m, v1, v2)
+
 
 
 /******************************************************************************/
@@ -259,6 +261,8 @@ bool       REXXENTRY REXX_ISDOUBLE(REXXOBJECT);
 bool       REXXENTRY REXX_ISSTRING(REXXOBJECT);
 bool       REXXENTRY REXX_ISDIRECTORY(REXXOBJECT);
 void       REXXENTRY REXX_EXCEPT(int, REXXOBJECT);
+void       REXXENTRY REXX_EXCEPT1(int, REXXOBJECT);
+void       REXXENTRY REXX_EXCEPT2(int, REXXOBJECT, REXXOBJECT);
 REXXOBJECT REXXENTRY REXX_CONDITION(REXXOBJECT, REXXOBJECT, REXXOBJECT);
 void       REXXENTRY REXX_RAISE(CSTRING, REXXOBJECT, REXXOBJECT, REXXOBJECT);
 wholenumber_t REXXENTRY REXX_INTEGER(REXXOBJECT);

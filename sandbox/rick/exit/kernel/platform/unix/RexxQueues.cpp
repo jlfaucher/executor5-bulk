@@ -61,7 +61,7 @@
 RexxMethod0(REXXOBJECT, rexx_query_queue)
 {
    REXXOBJECT queue_name;              /* current queue name                */
-   unsigned int count = 0;             /* count of lines                    */
+   size_t count = 0;                   /* count of lines                    */
    APIRET rc;                          /* queue query return code           */
 
                                        /* get the queue name                */
@@ -152,7 +152,7 @@ int  rexx_add_queue(
                                        /*  move the line to the queue       */
    rc = RexxAddQueue(string_data(queue_name), &rx_string, order);
    if (rc != 0)                        /* stream error?                     */
-     send_exception1(Error_System_service_service, ooRexxArray1(ooRexxString("SYSTEM QUEUE")));
+     rexx_exception1(Error_System_service_service, ooRexxString("SYSTEM QUEUE"));
    return rc;                          /* return the result                 */
 }
 
@@ -184,7 +184,7 @@ RexxMethod1(REXXOBJECT, rexx_create_queue,
 {
    char buf[name_parameter_length+1];  /* creation buffer                   */
    APIRET rc;                          /* creation return code              */
-   unsigned int dup_flag = 0;          /* duplicate name flag               */
+   size_t dup_flag = 0;                /* duplicate name flag               */
 
                                        /* create a queue                    */
    rc = RexxCreateQueue(buf, sizeof(buf), queue_name, &dup_flag);

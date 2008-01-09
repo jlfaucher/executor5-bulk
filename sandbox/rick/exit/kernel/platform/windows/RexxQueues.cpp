@@ -151,7 +151,7 @@ int rexx_add_queue(
                                        /*  move the line to the queue       */
    rc = RexxAddQueue(string_data(queue_name), &rx_string, order);
    if (rc != 0)                        /* stream error?                     */
-     send_exception1(Error_System_service_service, ooRexxArray1(ooRexxString("SYSTEM QUEUE")));
+     rexx_exception1(Error_System_service_service, ooRexxString("SYSTEM QUEUE"));
    return rc;                          /* return the result                 */
 }
 

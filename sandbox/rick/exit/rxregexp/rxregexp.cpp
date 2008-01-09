@@ -44,8 +44,6 @@
 #include "automaton.hpp"
 #include "regexp.hpp"
 
-#include "RexxCore.h"
-
 #include "rexx.h"
 #include "RexxNativeAPI.h"                      // REXX native interface
 
@@ -67,7 +65,7 @@ RexxMethod3(REXXOBJECT,                // Return type
     pArgString = (RexxString *) ooRexxSend0(matchtype, "STRING");
     // it must be a string
     if ( !_isstring(pArgString) )
-      send_exception1(Error_Incorrect_method_string, ooRexxArray1(ooRexxString("2")));
+      rexx_exception1(Error_Incorrect_method_string, ooRexxString("2"));
     if ( strcmp(string_data(pArgString), "MINIMAL") == 0) {
       pAutomaton->setMinimal(true);
     }
@@ -78,15 +76,14 @@ RexxMethod3(REXXOBJECT,                // Return type
     pArgString = (RexxString *) ooRexxSend0(expression, "STRING");
     // it must be a string
     if ( !_isstring(pArgString) )
-      send_exception1(Error_Incorrect_method_string, ooRexxArray1(ooRexxString("1")));
+      rexx_exception1(Error_Incorrect_method_string, ooRexxString("1"));
     iResult = pAutomaton->parse( string_data(pArgString) );
   }
 
-  sprintf(szBuffer, "%p", pAutomaton);
-  REXX_SETVAR("!AUTOMATON", ooRexxString(szBuffer));
+  REXX_SETVAR("!AUTOMATON", ooRexxPointer(pAutomaton));
 
   if (iResult)
-    send_exception(Error_Invalid_template);
+    rexx_exception(Error_Invalid_template);
 
   return ooRexxNil;
 }
@@ -96,11 +93,8 @@ RexxMethod1(REXXOBJECT,                // Return type
             OSELF, self)               // Pointer to self
 {
   automaton  *pAutomaton = NULL;
-  const char *pszString;
 
-  pszString = string_data( (RexxString*) REXX_GETVAR("!AUTOMATON") );
-  if (*pszString != '!')
-    sscanf(pszString, "%p", &pAutomaton);
+  pAutomaton = pointer_data(REXX_GETVAR("!AUTOMATON") );
   if (pAutomaton) delete pAutomaton;
 
   return ooRexxNil;
@@ -115,31 +109,33 @@ RexxMethod3(REXXOBJECT,                // Return type
   automaton  *pAutomaton = NULL;
   const char *pszString;
   char        szBuffer[32];
-  RexxString *result;
+  REXXOBJECT  result;
 
-  RexxString *pArgString = NULL;
+  REXXOBJECT  pArgString = NULL;
 
   if (!expression)
-    send_exception1(Error_Incorrect_method_noarg, ooRexxArray1(ooRexxString("1")));
+    rexx_exception1(Error_Incorrect_method_noarg, ooRexxString("1"));
 
-  pArgString = (RexxString *) ooRexxSend0(expression, "STRING");
+  pArgString = ooRexxSend0(expression, "STRING");
   // it must be a string
   if ( !_isstring(pArgString) )
-    send_exception1(Error_Incorrect_method_string, ooRexxArray1(ooRexxString("1")));
+    rexx_exception1(Error_Incorrect_method_string, ooRexxString("1"));
 
-  pszString = string_data( (RexxString*) REXX_GETVAR("!AUTOMATON") );
-  if (*pszString != '!')
-    sscanf(pszString, "%p", &pAutomaton);
+  REXXOBJECT value = REXX_GETVAR("!AUTOMATON");
+  if (value != NULLOBJECT)
+  {
+      pAutomaton = pointer_value(value);
+  }
 
   if (pAutomaton) {
     const char *pszString = string_data(pArgString);
     // moved some ptrs to re-use variables
     // optional matchtype given?
     if (matchtype) {
-      pArgString = (RexxString *) ooRexxSend0(matchtype, "STRING");
+      pArgString = ooRexxSend0(matchtype, "STRING");
       // it must be a string
       if ( !_isstring(pArgString) )
-        send_exception1(Error_Incorrect_method_string, ooRexxArray1(ooRexxString("2")));
+        rexx_exception1(Error_Incorrect_method_string, ooRexxString("2"));
       if ( strcmp(string_data(pArgString), "MINIMAL") == 0) {
         pAutomaton->setMinimal(true); // set minimal matching
       } else if (strcmp(string_data(pArgString), "CURRENT") != 0) {
@@ -147,12 +143,10 @@ RexxMethod3(REXXOBJECT,                // Return type
       }
     }
     int i = pAutomaton->parse( pszString );
-    sprintf(szBuffer, "%d", pAutomaton->getCurrentPos());
-    REXX_SETVAR("!POS", ooRexxString(szBuffer));
-    sprintf(szBuffer,"%d",i);
-    result = (RexxString*) ooRexxString(szBuffer);
+    REXX_SETVAR("!POS", ooRexxInteger(pAutomaton->getCurrentPos()));
+    result = ooRexxInteger(i);
   } else {
-    result = (RexxString*) ooRexxString("-1");
+    result = ooRexxInteger(-1);
   }
 
   return result;
@@ -166,29 +160,29 @@ RexxMethod2(REXXOBJECT,                // Return type
   automaton  *pAutomaton = NULL;
   const char *pszString;
   char        szBuffer[32];
-  RexxString *result;
+  REXXOBJECT  result;
 
-  RexxString *pArgString = NULL;
+  REXXOBJECT  pArgString = NULL;
 
   if (!string)
-    send_exception1(Error_Incorrect_method_noarg, ooRexxArray1(ooRexxString("1")));
+    rexx_exception1(Error_Incorrect_method_noarg, ooRexxString("1"));
 
-  pArgString = (RexxString *) ooRexxSend0(string, "STRING");
+  pArgString = ooRexxSend0(string, "STRING");
   // it must be a string
   if ( !_isstring(pArgString) )
-    send_exception1(Error_Incorrect_method_string, ooRexxArray1(ooRexxString("1")));
+    rexx_exception1(Error_Incorrect_method_string, ooRexxString("1"));
 
-  pszString = string_data( (RexxString*) REXX_GETVAR("!AUTOMATON") );
-  if (*pszString != '!')
-    sscanf(pszString, "%p", &pAutomaton);
+  REXXOBJECT value = REXX_GETVAR("!AUTOMATON");
+  if (value != NULLOBJECT)
+  {
+      pAutomaton = pointer_value(value);
+  }
   if (pAutomaton) {
     int i = pAutomaton->match( string_data(pArgString), (int)string_length(pArgString) );
-    sprintf(szBuffer, "%d", pAutomaton->getCurrentPos());
-    REXX_SETVAR("!POS", ooRexxString(szBuffer));
-    sprintf(szBuffer,"%d",i);
-    result = (RexxString*) ooRexxString(szBuffer);
+    REXX_SETVAR("!POS", ooRexxInteger(pAutomaton->getCurrentPos()));
+    result = ooRexxInteger(i);
   } else {
-    result = (RexxString*) ooRexxString("0");
+    result = ooRexxInteger(0);
   }
 
   return result;
@@ -204,24 +198,27 @@ RexxMethod2(REXXOBJECT,                // Return type
   const char *pszString;
   size_t      strlength;
   char        szBuffer[32];
-  RexxString *result;
-  RexxString *pArgString = NULL;
+  REXXOBJECT  result;
+  REXXOBJECT  pArgString = NULL;
   int         i;
 
   if (!string)
-    send_exception1(Error_Incorrect_method_noarg, ooRexxArray1(ooRexxString("1")));
+    rexx_exception1(Error_Incorrect_method_noarg, ooRexxString("1"));
 
-  pArgString = (RexxString *) ooRexxSend0(string, "STRING");
+  pArgString = ooRexxSend0(string, "STRING");
   // it must be a string
   if ( !_isstring(pArgString) )
-    send_exception1(Error_Incorrect_method_string, ooRexxArray1(ooRexxString("1")));
+    rexx_exception1(Error_Incorrect_method_string, ooRexxString("1"));
 
-  pszString = string_data( (RexxString*) REXX_GETVAR("!AUTOMATON") );
-  if (*pszString != '!')
-    sscanf(pszString, "%p", &pAutomaton);
+  REXXOBJECT value = REXX_GETVAR("!AUTOMATON");
+  if (value != NULLOBJECT)
+  {
+      pAutomaton = pointer_value(value);
+  }
 
   pszString = string_data(pArgString);
   strlength = string_length(pArgString);
+  int matchPosition = 0;
 
   if (pAutomaton && strlength > 0) {  /* only check when input > 0 */
     fOldState = pAutomaton->getMinimal();
@@ -248,17 +245,15 @@ RexxMethod2(REXXOBJECT,                // Return type
           strlength--;
         }
       }
-      sprintf(szBuffer, "%d", i + pAutomaton->getCurrentPos() - 1); // store end-of-match position
-    } else {
-      sprintf(szBuffer, "0");
+      matchPosition = i + pAutomaton->getCurrentPos() - 1;
     }
 
-    REXX_SETVAR("!POS", ooRexxString(szBuffer));
+    REXX_SETVAR("!POS", ooRexxInteger(matchPosition);
     sprintf(szBuffer,"%d",i);
-    result = (RexxString*) ooRexxString(szBuffer);
+    result =  ooRexxInteger(i);
     pAutomaton->setMinimal(fOldState);  // restore to state at POS invocation time
   } else {
-    result = (RexxString*) ooRexxString("0");
+    result = ooRexxInteger(0);
   }
 
   return result;
