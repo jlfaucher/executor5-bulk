@@ -214,7 +214,7 @@ return testGroupList
 
 ::method 'test022'
     mb = .mutablebuffer~new(copies('5F'x,10000))
-    self~expectSyntax(93.905)
+    self~expectSyntax(93.906)
     xre = mb~insert('A','5E+9999')
 
 ::method 'test023'
@@ -257,22 +257,22 @@ return testGroupList
 
 ::method 'test032'
     mb = .mutablebuffer~new(.v30)
-    self~expectSyntax(93.905)
+    self~expectSyntax(93.906)
     xre = mb~insert('A',1.2)
 
 ::method 'test033'
     mb = .mutablebuffer~new(.v30)
-    self~expectSyntax(93.923)
+    self~expectSyntax(93.906)
     xre = mb~insert('A','-31')
 
 ::method 'test034'
     mb = .mutablebuffer~new('hasdghj')
-    self~expectSyntax(93.905)
+    self~expectSyntax(93.906)
     xre = mb~insert('A',1E10)
 
 ::method 'test035'
     mb = .mutablebuffer~new('hasdghj')
-    self~expectSyntax(93.905)
+    self~expectSyntax(93.906)
     xre = mb~insert('A','cc'x)
 
 ::method 'test036'
@@ -420,7 +420,7 @@ return testGroupList
 
 ::method 'test070'
     mb = .mutablebuffer~new('A')
-    self~expectSyntax(93.905)
+    self~expectSyntax(93.906)
     xre = mb~insert('2*7 7+7+7+7+7+7 84/4 700-699','699-698',5*2)~string
 
 ::method 'test071'
@@ -452,12 +452,12 @@ return testGroupList
 
 ::method 'test077'
     mb = .mutablebuffer~new('B')
-    self~expectSyntax(93.905)
+    self~expectSyntax(93.906)
     xre = mb~insert('A',nv.10,3,'*')~string
 
 ::method 'test078'
     mb = .mutablebuffer~new('B')
-    self~expectSyntax(93.905)
+    self~expectSyntax(93.923)
     xre = mb~insert('A',1,nv,'*')~string
 
 ::method 'test079'
@@ -467,7 +467,7 @@ return testGroupList
 
 ::method 'test080'
     mb = .mutablebuffer~new(noval2)
-    self~expectSyntax(93.905)
+    self~expectSyntax(93.906)
     xre = mb~insert(noval1,noval3,noval4,noval5)~string
 
 ::method 'test082'
@@ -476,12 +476,12 @@ return testGroupList
 
 ::method 'test083'
     mb = .mutablebuffer~new('B')
-    self~expectSyntax(93.905)
+    self~expectSyntax(93.906)
     xre = mb~insert('A',nv.10,3,'*')~string
 
 ::method 'test084'
     mb = .mutablebuffer~new('B')
-    self~expectSyntax(93.905)
+    self~expectSyntax(93.923)
     xre = mb~insert('A',1,nv,'*')~string
 
 ::method 'test085'
@@ -491,7 +491,7 @@ return testGroupList
 
 ::method 'test086'
     mb = .mutablebuffer~new(noval2)
-    self~expectSyntax(93.905)
+    self~expectSyntax(93.906)
     xre = mb~insert(noval1,noval3,noval4,noval5)~string
 
 ::method 'test087'
@@ -675,17 +675,17 @@ return testGroupList
 
 ::method 'test124'
     mb = .mutablebuffer~new('*')
-    self~expectSyntax(93.905)
+    self~expectSyntax(93.906)
     xre = mb~insert('abcdefghijklmnopqrstuvwxyz1234',nv.10,0,'x')~string
 
 ::method 'test125'
     mb = .mutablebuffer~new('*')
-    self~expectSyntax(93.905)
+    self~expectSyntax(93.923)
     xre = mb~insert('abcdefghijklmnopqrstuvwxyz1234',1,nv,'x')~string
 
 ::method 'test126'
     mb = .mutablebuffer~new(noval2)
-    self~expectSyntax(93.905)
+    self~expectSyntax(93.906)
     xre = mb~insert(noval1,noval3,noval4,noval5)~string
 
 ::method 'test127'
@@ -698,12 +698,12 @@ return testGroupList
 
 ::method 'test129'
     mb = .mutablebuffer~new('*')
-    self~expectSyntax(93.905)
+    self~expectSyntax(93.906)
     xre = mb~insert('abcdefghijklmnopqrstuvwxyz1234',nv.10,0,'x')~string
 
 ::method 'test130'
     mb = .mutablebuffer~new('*')
-    self~expectSyntax(93.905)
+    self~expectSyntax(93.923)
     xre = mb~insert('abcdefghijklmnopqrstuvwxyz1234',1,nv,'x')~string
 
 ::method 'test131'
@@ -713,7 +713,7 @@ return testGroupList
 
 ::method 'test132'
     mb = .mutablebuffer~new(noval2)
-    self~expectSyntax(93.905)
+    self~expectSyntax(93.906)
     xre = mb~insert(noval1,noval3,noval4,noval5)~string
 
 ::method 'test133'
@@ -1355,7 +1355,7 @@ return testGroupList
    b~insert()
 ::METHOD "testInsertSyntax2"
    b = .mutableBuffer~new("123456")
-   self~expectSyntax(93.923)
+   self~expectSyntax(93.906)
    b~insert("",-1)
 ::METHOD "testInsertSyntax3"
    b = .mutableBuffer~new("123456")
@@ -1367,7 +1367,7 @@ return testGroupList
    b~insert("",,,.nil)
 ::METHOD "testInsertSyntax5"
    b = .mutableBuffer~new("123456")
-   self~expectSyntax(93.938)
+   self~expectSyntax(93.906)
    b~insert("",.nil,.nil,.nil)
 ::METHOD "testInsertSyntax6"
    b = .mutableBuffer~new("123456")
