@@ -68,17 +68,8 @@
   -- the file system without having to edit this file.
   parse source . . s
 
-  -- The other thing required to instantiate the test group object is the
-  -- metadata in the header of this file.  The meta data is contained in the
-  -- first lines of this file, up to the "*/" on a line all by itself.  We get
-  -- those lines and put them in an arrary.
-  lines=.array~new
-  do i=1 to 150 until lines[i]="*/"
-     lines[i]=sourceline(i)
-  end
-
   -- Instantiate the test group.
-  group = .TestGroup~new(s, lines)
+  group = .TestGroup~new(s)
 
   -- Once we have the test group object, we can add all the test cases in this
   -- file to the group.  The simplest case is a single test case class, as in

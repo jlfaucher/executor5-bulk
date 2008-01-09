@@ -66,35 +66,17 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-cmdLine = arg(1)
-
-  -- Only execute on Windows and Linux (if shell is bash.)
-  /*
-  if .ooRexxUnit.OSName \= "WINDOWS" & .ooRexxUnit.OSName \== "LINUX" then return .list~new
-  if .ooRexxUnit.OSName == "LINUX" & .ooRexxUnit.shellName \== "bash" then return .list~new
-  */
-  say "FIX ME SOURCEFILE.TESTGROUP"
-
-  if \ .local~hasentry("bRunTestsLocally") then runTests = .true
-  else runTests = .bRunTestsLocally
-
   parse source . . s
 
-  lines=.array~new
-  do i=1 to 150 until lines[i]="*/"
-     lines[i]=sourceline(i)
-  end
-
-  group = .TestGroup~new(s, lines)
+  group = .TestGroup~new(s)
   group~add(.SourceFile.testGroup)
+  group~restrictOS("WINDOWS LINUX")
 
-  if runTests then do
-    suite = group~suite
-    testResult = suite~execute
-    j = simpleFormatTestResults(testResult)
-  end
+  if group~isAutomatedTest then return group
 
-return group
+  testResult = group~suite~execute~~print
+
+return testResult
 -- End of entry point.
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\

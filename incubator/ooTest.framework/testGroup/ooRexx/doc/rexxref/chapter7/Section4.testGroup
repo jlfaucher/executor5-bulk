@@ -60,12 +60,7 @@
 /*----------------------------------------------------------------------------*/
   parse source . . s
 
-  lines=.array~new
-  do i=1 to 150 until lines[i]="*/"
-     lines[i]=sourceline(i)
-  end
-
-  group = .TestGroup~new(s, lines)
+  group = .TestGroup~new(s)
   group~add(.Section4_tests)
   group~markNoTests("Executing the test_beep_example_7_4_6 makes too much noise on my computer.")
 

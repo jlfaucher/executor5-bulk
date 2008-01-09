@@ -49,9 +49,11 @@ cmdLine = arg(1)
    baseDir = "ooRexx"
    --baseDir = "ooRexx\samples"
 
+   -- Set types to .nil to execute all types of tests.
    types = .nil
 
-   -- Execute all test types, except the UNIT_LONG and the GUI_SAMPLE types.
+
+   -- Here, execute all test types, except the UNIT_LONG and the GUI_SAMPLE types.
    excluded = .set~of(.ooTestTypes~UNIT_LONG_TEST, .ooTestTypes~GUI_SAMPLE_TEST)
    types = .ooTestTypes~all~difference(excluded)
 
@@ -63,7 +65,11 @@ cmdLine = arg(1)
    */
 
    testResult = .ooRexxUnit.default.TestResult.Class~new
-   --testResult~setVerbosity(0)
+
+   -- Set verbosity from 0 (least output) to 10 (most output)
+   testResult~setVerbosity(6)
+
+
    finder = .ooTestFinder~new(baseDir, ".testGroup", types)
    containers = finder~seek(testResult); say 'containers items:' containers~items
    searchEnd = .TimeSpan~new(time('F'))
@@ -81,8 +87,7 @@ cmdLine = arg(1)
    suite~execute(testResult)
    testEnd = .TimeSpan~new(time('F'))
 
-   testResult~print("My Title", 6)
-   --testResult~print("My Title")
+   testResult~print("My Title")
 
    absoluteEnd = .TimeSpan~new(time('F'))
    say 'File search:   ' (searchEnd - absoluteBegin)

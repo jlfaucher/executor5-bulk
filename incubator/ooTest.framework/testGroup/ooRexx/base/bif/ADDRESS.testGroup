@@ -55,14 +55,9 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-  parse source . . fileSpec;
+  parse source . . fileSpec
 
-  lines = .array~new
-  do i = 1 until lines[i] = "*/"
-    lines[i] = sourceline(i)
-  end
-
-  group = .TestGroup~new(fileSpec, lines)
+  group = .TestGroup~new(fileSpec)
 
   group~add(.ADDRESS.testGroup)
 

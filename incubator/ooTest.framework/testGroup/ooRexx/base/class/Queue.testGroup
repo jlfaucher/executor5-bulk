@@ -62,14 +62,8 @@ cmdLine = arg(1)
   .Queue.testGroup~setVerbose(cmdLine)
 
   -- Create a TestGroup using information specific to this file.
-  parse source . . fileSpec;
-
-  lines = .array~new
-  do i = 1 until lines[i] = "*/"
-    lines[i] = sourceline(i)
-  end
-
-  group = .TestGroup~new(fileSpec, lines)
+  parse source . . fileSpec
+  group = .TestGroup~new(fileSpec)
 
   group~add(.Queue.testGroup)
 

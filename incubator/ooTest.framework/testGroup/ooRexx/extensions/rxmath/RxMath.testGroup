@@ -64,11 +64,7 @@ Primary 3rd party sources include:
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
   parse source . . s
-
-  lines=.array~new
-  do i=1 to 150 until lines[i]="*/"
-     lines[i]=sourceline(i)
-  end
+  group = .TestGroup~new(s)
 
   -- The test cases in this test group all need the RxMath functions loaded.
   -- Since this only needs to be done once, we create an ooTestSuite subclass
@@ -80,7 +76,6 @@ Primary 3rd party sources include:
   -- the test suite to the test group using the appropriately named
   -- addWithSuite() method.
 
-  group = .TestGroup~new(s, lines)
   group~addWithSuite(.RxMath.testGroup, .RxMathSuite)
 
   if group~isAutomatedTest then return group

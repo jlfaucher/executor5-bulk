@@ -60,20 +60,13 @@
 /*----------------------------------------------------------------------------*/
   parse source . . s
 
-  lines=.array~new
-  do i=1 to 150 until lines[i]="*/"
-     lines[i]=sourceline(i)
-  end
-
-  group = .TestGroup~new(s, lines)
+  group = .TestGroup~new(s)
   group~add(.drives.testGroup)
   group~restrictOS("WINDOWS")
 
   if group~isAutomatedTest then return group
 
-  suite = group~suite
-  testResult = suite~execute
-  testResult~print
+  testResult = group~suite~execute~~print
 
 return testResult
 -- End of entry point.
@@ -107,6 +100,14 @@ return testResult
   assurance test.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::class 'drives.testGroup' public subclass ooTestCase
+
+  ::method init class
+    forward class (super) continue
+    self~ooTestType = self~SAMPLE_TEST
+
+    self~prgPath = ""
+    self~prgOutput = .array~new
+    self~stop = .false
 
   ::method test_000_Exists
     self~class~stop = .true
@@ -194,12 +195,6 @@ return testResult
     self~class~stop = .false
 
   -- The class attributes used as control and state information.
-  ::method init class
-    self~init:super
-    self~prgPath = ""
-    self~prgOutput = .array~new
-    self~stop = .false
-
   ::method prgPath      attribute class
   ::method stop         attribute class
   ::method prgOutput    attribute class

@@ -82,15 +82,8 @@
   -- having to edit this file.
   parse source . . fileSpec
 
-  -- The other thing required to create the test group object is the metadata
-  -- in the header of this file.  We get those lines and put them in an arrary.
-  lines=.array~new
-  do i=1 to 150 until lines[i]="*/"
-     lines[i]=sourceline(i)
-  end
-
   -- Now create the test group object.
-  group = .TestGroup~new(fileSpec, lines)
+  group = .TestGroup~new(fileSpec)
 
   -- This is a Windows specific test, so we tell the group object to not
   -- produce any tests unless the local system is Windows.

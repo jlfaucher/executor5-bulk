@@ -881,6 +881,23 @@ return a
   -- and that should not change.
   ::attribute mustNotExecute private
 
+  ::method readMetadata private
+    use arg fsObj
+
+    signal on notready
+
+    lines = .array~new
+    do i = 1 until lines[i] = "*/"
+      lines[i] = fsObj~linein
+    end
+    fsObj~close
+    return lines
+
+    -- Hit the end of file without finding the marker line.  We will return .nil
+    -- causing a syntax error to be raised.
+    notready:
+    fsObj~close
+    return .nil
 
   /** init()
    *
@@ -891,22 +908,21 @@ return a
    *   exist.  Relative path names are acceptable, if they will resolve from the
    *   current working directory.  This is UNLIKELY to be the case in an
    *   automated test run, so the fully qualified path name is usually needed.
-   *
-   * @param data      OPTIONAL
-   *   An array of lines containing the metadata from the file header for this
-   *   test group.  This is only useful if the file header is in the format
-   *   specified in the ooTest Framework reference.
    */
   ::method init
-    use strict arg fileSpec, data = (.array~new)
+    use strict arg fileSpec
 
     fObj = .stream~new(fileSpec)
     self~pathName = fObj~query("EXISTS")
     if self~pathName == "" then
       raise syntax 88.917 array ("1 'fileSpec'", "must be an existing file path name")
 
-    if \ data~isInstanceOf(.array) then
-      raise syntax 88.914 array ("2 'data'", "Array")
+    if fObj~open("SHAREREAD") \== "READY:" then
+      raise syntax 88.917 array ("1 'fileSpec'", "must be a readable file")
+
+    data = self~readMetadata(fObj)
+    if data == .nil then
+      raise syntax 88.917 array ("1 'fileSpec'", "TestGroup metadata format invalid. File:" fileSpec)
 
     self~tests = .table~new
     self~testsWithSuite = .table~new
@@ -1515,18 +1531,9 @@ return suite
     data~additional = ""
     if \ self~objectIsTestUnitList(obj, data) then return data
 
-    src = self~getHeader(fileName)
-    if src~items == 0 then do
-      reason = "Attempt to convert old-style TestUnit list into a TestGroup failed"
-      n = .Notification~new(timeStamp(), fileName, reason)
-      data~additional = "Error reading header source lines from the file."
-      return data
-    end
-
-    -- Okay, an old-style TestUnit list, and we have the header meta-data.
-    -- Create a TestGroup and populate it with the TestCase class(es) from the
-    -- file.
-    group = .TestGroup~new(fileName, src)
+    -- Okay, an old-style TestUnit list.  Create a TestGroup and populate it
+    -- with the TestCase class(es) from the file.
+    group = .TestGroup~new(fileName)
 
     -- objectIsTestUnitList() has already done our error checking for us.
     do a over obj

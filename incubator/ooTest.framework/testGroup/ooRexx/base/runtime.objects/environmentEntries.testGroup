@@ -61,12 +61,7 @@
 /*----------------------------------------------------------------------------*/
   parse source . . fileSpec
 
-  lines = .array~new
-  do i = 1 until lines[i] = "*/"
-    lines[i] = sourceline(i)
-  end
-
-  group = .TestGroup~new(fileSpec, lines)
+  group = .TestGroup~new(fileSpec)
   group~add(.environmentEntries.testGroup)
 
   if group~isAutomatedTest then return group
@@ -79,21 +74,24 @@ return testResult
 
 ::class "environmentEntries.testGroup" subclass ooTestCase public
 
-
-   -- ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !
-   -- ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !
-   -- ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !
 ::method "test_line_entry"
      self~assertTrue(.line~datatype("Whole"), "subTest # 1: is [.LINE] a wholeNumber?")
 
-   -- ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !
-   -- ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !
+   tmpLine = .line + 2  -- Test that .line is reasonably correct.
+   --
+   self~assertSame(tmpLine, .LINE)
 
-   tmpLine=94    -->  the following line *MUST* *BE* on line # tmpLine, otherwise the test fails !!
-   msg = "subTest '.LINE', this statement *MUST* start/be on line #" tmpLine "in the source code!"
-   self~assertSame(tmpLine, .LINE, msg)
+
    -- ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !
    -- ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !
+   -- Here tmpLine is hard coded for an absolute test.  It lines are added or
+   -- or removed above this, the test will fail.  Then the hard coded value
+   -- must be adjusted.
+   tmpLine = 94
+   --
+   --
+   --
+   self~assertSame(tmpLine, .line)
 
 
 ::method "test_local_directory_entries"

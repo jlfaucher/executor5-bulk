@@ -56,13 +56,7 @@
 /*----------------------------------------------------------------------------*/
   parse source . . fileSpec;
 
-  lines = .array~new
-  do i = 1 until lines[i] = "*/"
-    lines[i] = sourceline(i)
-  end
-
-  group = .TestGroup~new(fileSpec, lines)
-
+  group = .TestGroup~new(fileSpec)
   group~add(.CONCATENATION.testGroup)
 
   if group~isAutomatedTest then return group
