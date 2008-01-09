@@ -57,7 +57,7 @@
 */
 
 if \ .local~hasEntry('OOTEST_FRAMEWORK_VERSION') then do
-  .local~ooTest_Framework_version = 090.320.20080107
+  .local~ooTest_Framework_version = 0.9.0_3.2.0
 
   -- Replace the default test result class in the environment with the ooRexx
   -- project's default class.
@@ -176,11 +176,12 @@ return a
 ::method addNotification    abstract
 ::method getNotifications   abstract
 ::method notificationCount  abstract
-::method addException   abstract
-::method getExceptions  abstract
-::method exceptionCount abstract
-::method addEvent       abstract
-::method getEvents      abstract
+::method addException       abstract
+::method getExceptions      abstract
+::method exceptionCount     abstract
+::method addEvent           abstract
+::method getEvents          abstract
+::method eventCount         abstract
 
 
 /* class: ooTestTypes- - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
@@ -406,9 +407,9 @@ return a
     information is broken up into lines, with an attempt made to keep all lines
     no longer than 80 characers wide.
 
-    ConsoleFormatter works with an ooTestCollectingParameter test result and
-    therefore has more infomation available to it than SimpleConsoleFormatter.
-    This allows for more comprehensive reporting.
+    ConsoleFormatter works with an ooTestResult and therefore has more
+    infomation available to it than SimpleConsoleFormatter.  This allows for
+    more comprehensive reporting.
 
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::class 'ConsoleFormatter' public subclass SimpleConsoleFormatter inherit NotificationTypes
@@ -430,9 +431,9 @@ return a
     use strict arg testResult, title = ""
     forward class (super) continue
 
-    -- We need an ooTestCollectingParameter.
-    if \ isSubClassOf(testResult~class, "ooTestCollectingParameter") then
-       raise syntax 88.914 array ("1 'testResult'", "ooTestCollectingParameter")
+    -- We need an ooTestResult.
+    if \ isSubClassOf(testResult~class, "ooTestResult") then
+       raise syntax 88.914 array ("1 'testResult'", "ooTestResult")
     self~testResult = testResult
 
     parse version self~rexxVersion
@@ -519,6 +520,28 @@ return a
     -- the user.
     if stats~totalProblems > 3 | verbose > 3 then
       self~printSummary(stats)
+
+    if tResult~eventCount <> 0 then do
+      events = tResult~getEvents
+      holder = .array~new
+      do e over events
+        select
+          when e~id == .PhaseReport~AUTOMATED_TEST_PHASE then holder[1] = e
+          when e~id == .PhaseReport~FILE_SEARCH_PHASE    then holder[2] = e
+          when e~id == .PhaseReport~SUITE_BUILD_PHASE    then holder[3] = e
+          when e~id == .PhaseReport~TEST_EXECUTION_PHASE then holder[4] = e
+          otherwise nop
+        end
+        -- End select
+      end
+
+      if holder[2] \== .nil then say 'File search:       ' holder[2]~duration
+      if holder[3] \== .nil then say 'Suite construction:' holder[3]~duration
+      if holder[4] \== .nil then say 'Test execution:    ' holder[4]~duration
+      if holder[1] \== .nil then say 'Total time:        ' holder[1]~duration
+
+      if holder~items > 0 then say
+    end
 
   -- End print()
 
@@ -662,6 +685,9 @@ return a
   ::attribute knownFailures  private
   ::attribute newFailures    private
 
+  ::attribute doAutoTiming   private
+  ::attribute executionPhase private
+
   ::attribute newFailureCount   set private
   ::attribute newFailureCount   get
   ::attribute knownFailureCount set private
@@ -686,7 +712,35 @@ return a
     -- Over-ride the default formatter
     self~formatter = .ConsoleFormatter
 
+    parse source . . file
+    phase = .PhaseReport~new(file, .PhaseReport~TEST_EXECUTION_PHASE)
+    phase~description = "Stand alone execution of a TestGroup."
+    self~doAutoTiming = .true
+    self~executionPhase = phase
+
   -- End init( )
+
+  /** noAutoTiming()
+   * As a convenience when running a stand alone TestGroup, an ooTest result
+   * attempts to time the test execution phase.  It does this by creating a
+   * PhaseReport when it is initiated, setting the phase as finished when the
+   * print method is invoked, and adding the phase report to the event queue.
+   *
+   * To disable this feature invoke this method.
+   *
+   */
+  ::method noAutoTiming
+    use strict arg
+    self~doAutoTiming = .false
+    self~executionPhase = .nil
+
+  ::method print
+
+    if self~doAutoTiming, self~executionPhase \== .nil then do
+      self~executionPhase~done
+      self~addEvent(self~executionPhase)
+    end
+    forward class (super)
 
   ::method addFailure
     expose newFailureCount knownFailureCount
@@ -749,6 +803,9 @@ return a
 
   ::method getEvents
     return self~events
+
+  ::method eventCount
+    return self~events~items
 
 -- End of class: ooTestResult
 
@@ -1436,19 +1493,30 @@ return suite
 
         when \ isSubClassOf(container~class, "TestContainer") then do
           obj = self~maybeCreateContainer(container, fileName)
-          if obj~isA(.Notification) then do
-            testResult~addNotification(obj)
-            iterate
+
+          select
+            when obj~isA(.Notification) then do
+              testResult~addNotification(obj)
+              iterate
+            end
+
+            when isSubclassOf(obj~class, "ErrorReport") then do
+              testReport~addError(obj)
+              iterate
+            end
+
+            otherwise do
+              -- Add a notification that this was an old style test group, so we
+              -- can update them.
+              n = .Notification~new(timeStamp(), fileName, .Notification~TEXT_TYPE )
+              n~message = "Converted old-style TestUnit list into a test group."
+              n~additionalObject = obj
+              testResult~addNotification(n)
+
+              q~queue(obj)
+            end
           end
-
-          -- Add a notification that this was an old style test group, so we
-          -- can update them.
-          n = .Notification~new(timeStamp(), fileName, .Notification~TEXT_TYPE )
-          n~message = "Converted old-style TestUnit list into a test group."
-          n~additionalObject = obj
-          testResult~addNotification(n)
-
-          q~queue(obj)
+          -- End select
         end
 
         when \ container~hasTests then do
@@ -1516,7 +1584,7 @@ return suite
 
   /** maybeCreateContainer()
    * Attempts to create a TestGroup from object.  This is a temporary method,
-   * used to ease the migration from ooRexxUnit 1 to ooRexxUnit 2.
+   * used to ease the migration from ooRexxUnit 1 to ooRexxUnit 2.0.0.
    *
    */
   ::method maybeCreateContainer private
@@ -1532,7 +1600,9 @@ return suite
     if \ self~objectIsTestUnitList(obj, data) then return data
 
     -- Okay, an old-style TestUnit list.  Create a TestGroup and populate it
-    -- with the TestCase class(es) from the file.
+    -- with the TestCase class(es) from the file.  It is possible, but very
+    -- unlikely that .TestGroup~new will throw an exception.  So, catch it.
+    signal on any name tempHandler
     group = .TestGroup~new(fileName)
 
     -- objectIsTestUnitList() has already done our error checking for us.
@@ -1544,24 +1614,11 @@ return suite
 
     return group
 
-  ::method getHeader private
-    use arg file
-
-    f = .stream~new(file)
-		f~open("READ")
-		if f~State <> "READY" then do
-      -- Most likely will not happen, but if it does, return an empty array.
-      return .array~new
-    end
-
-    lines = .array~new
-    do i = 1 while f~state == "READY"
-      lines[i] = f~linein
-      if lines[i] = "*/" then leave
-    end
-    f~close
-
-  return lines
+  tempHandler:
+    err = .ExceptionData~new(timeStamp(), fileName, "Trap")
+    err~conditionObject = condition('O')
+    err~msg = "Creating TestGroup from old-style TestUnit list file failed."
+  return err
 
   ::method objectIsTestUnitList private
     use arg obj, data
@@ -1654,8 +1711,7 @@ return suite
     the execution of an automated suite of tests.
 
     At a minimum the object contains a time stamp, the name of the relevant
-    file, and the notification type.  3 notification types are defined: SKIPPED,
-    WARNING, MESSAGE.
+    file, and the notification type.
 
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::class 'Notification' public subclass ReportData inherit NotificationTypes
@@ -1729,17 +1785,50 @@ return suite
   ::attribute finish get
   ::attribute finish set private
 
+  ::attribute isFinished get
+  ::attribute isFinished set private
+
+  ::attribute id get
+  ::attribute id set private
+
   ::method init
     use strict arg file, id
 
    	self~begin = .TimeSpan~new(time('F'))
-    self~init:super(timeStamp(), file, self~STEP_TYPE)
-
-    if \ isWholeRange(type, self~MIN_PHASE, self~MAX_PHASE) then
+    if \ isWholeRange(id, self~MIN_PHASE, self~MAX_PHASE) then
       raise syntax 88.907 array("2 'id'", self~MIN_PHASE, self~MAX_PHASE, type)
 
+    self~init:super(timeStamp(), file, self~STEP_TYPE)
+
+    self~id = id
+    self~finish = .nil
+    self~isFinished = .false
+
+  /** done()
+   * Tells this phase that the phase is over.  Sets the finish time.  After this
+   * message, the phase duration will always be the same.
+   */
+  ::method done
+    use strict arg
+    self~finish = .TimeSpan~new(time('F'))
+    self~isFinished = .true
+
+  /** duration()
+   * The time spanned by this phase.  If the phase is not done, is not finished,
+   * then this will be the time elapsed up to this point.  When the phase is
+   * done, it will be the total time elapsed for the phase.  Once the phase is
+   * finished, duration will not change.
+   */
   ::method duration
-    return (self~finish - self~begin)
+    if \ self~isFinished then return (self~finish - .TimeSpan~new(time('F')))
+    else return (self~finish - self~begin)
+
+  ::method 'description='
+    use strict arg description
+    self~message = description
+
+  ::method 'description'
+    return self~message
 
 -- End of class: PhaseReport
 

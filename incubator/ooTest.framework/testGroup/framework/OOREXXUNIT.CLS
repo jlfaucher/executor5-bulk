@@ -161,10 +161,9 @@
 
 if \ .local~hasEntry(ooRexxUnit.version) then do
 
-  -- Define the version number with: X.Y.Z  Where X is the ooRexxUnit.cls
-  -- version, Y is the minimum ooRexx interpreter level required, and Z is the
-  -- date the version was changed.
-  .local~ooRexxUnit.version=200.320.20080107
+  -- Define the version number with: x.x.x_y.y.y  Where x is the ooRexxUnit.cls
+  -- version, and y is the minimum ooRexx interpreter level required.
+  .local~ooRexxUnit.version=2.0.0_3.2.0
 
   .local~chars.NonPrintable=xrange("00"x, "1F"x) || "FF"x  -- define non-printable chars
 

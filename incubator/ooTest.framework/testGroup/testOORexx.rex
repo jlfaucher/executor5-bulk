@@ -42,7 +42,9 @@
  */
 cmdLine = arg(1)
 
-   absoluteBegin = .TimeSpan~new(time('F'))
+   parse source . . file
+   overallPhase = .PhaseReport~new(file, .PhaseReport~AUTOMATED_TEST_PHASE)
+   searchPhase  = .PhaseReport~new(file, .PhaseReport~FILE_SEARCH_PHASE)
 
    .local~bRunTestsLocally = .false
 
@@ -65,6 +67,7 @@ cmdLine = arg(1)
    */
 
    testResult = .ooRexxUnit.default.TestResult.Class~new
+   testResult~noAutoTiming
 
    -- Set verbosity from 0 (least output) to 10 (most output)
    testResult~setVerbosity(6)
@@ -72,7 +75,9 @@ cmdLine = arg(1)
 
    finder = .ooTestFinder~new(baseDir, ".testGroup", types)
    containers = finder~seek(testResult); say 'containers items:' containers~items
-   searchEnd = .TimeSpan~new(time('F'))
+
+   testResult~addEvent(searchPhase~~done)
+   suiteBuildPhase  = .PhaseReport~new(file, .PhaseReport~SUITE_BUILD_PHASE)
 
    suite = .ooTestSuite~new
    suite~showProgress = .false
@@ -81,19 +86,18 @@ cmdLine = arg(1)
      if types == .nil then container~suite(suite)
      else container~suiteForTestTypes(types, suite)
    end
-   suiteEnd = .TimeSpan~new(time('F'))
 
+   testResult~addEvent(suiteBuildPhase~~done)
+
+   executionPhase  = .PhaseReport~new(file, .PhaseReport~TEST_EXECUTION_PHASE)
    say 'Executing automated test suite.'
    suite~execute(testResult)
-   testEnd = .TimeSpan~new(time('F'))
+
+   testResult~addEvent(executionPhase~~done)
+   testResult~addEvent(overallPhase~~done)
 
    testResult~print("My Title")
 
-   absoluteEnd = .TimeSpan~new(time('F'))
-   say 'File search:   ' (searchEnd - absoluteBegin)
-   say 'Suite Build:   ' (suiteEnd - searchEnd)
-   say 'Test execution:' (testEnd - suiteEnd)
-   say 'Total time:    ' (absoluteEnd - absoluteBegin)
 return 0
 
 ::requires "ooTest.frm"
