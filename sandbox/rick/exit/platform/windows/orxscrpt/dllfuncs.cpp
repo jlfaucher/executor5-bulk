@@ -137,8 +137,8 @@ BOOL APIENTRY DllMain(HANDLE hModule,
         RexxDeregisterExit("RexxRetrieveVariables","orxscrpt.dll");
         RexxDeregisterExit("RexxCatchExternalFunc","orxscrpt.dll");
         RexxDeregisterExit("RexxCatchExit","orxscrpt.dll");
-        RexxDeregisterExitDll("RexxNovalueHandler","orxscrpt.dll");
-        RexxDeregisterExitDll("RexxValueExtension","orxscrpt.dll");
+        RexxDeregisterExit("RexxNovalueHandler","orxscrpt.dll");
+        RexxDeregisterExit("RexxValueExtension","orxscrpt.dll");
         #if defined(DEBUGC)+defined(DEBUGZ)
         FPRINTF2(DLLlogfile,"We are done with RexxDeregisterExit\n");
         #endif

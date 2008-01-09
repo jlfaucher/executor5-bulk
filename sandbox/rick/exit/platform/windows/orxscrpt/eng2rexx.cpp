@@ -77,27 +77,30 @@ OrxScript* findEngineForThread(DWORD);
 
 OrxScript *CurrentEngine;
 
-RexxArray* __stdcall DispParms2RexxArray(void *arguments)
+REXXOBJECT __stdcall DispParms2RexxArray(void *arguments)
 {
-  RexxArray *result = NULL;
-  RexxObject *temp;
+  REXXOBJECT result = NULL;
+  REXXOBJECT temp;
   DISPPARAMS *dp = (DISPPARAMS*) arguments;
   int j;
 
   //   Thanks to the wonderful way that Windows passes variants,
   // this routine must reverse the args....
-  if (dp) {
+  if (dp)
+  {
     j = dp->cArgs;
-    result = (RexxArray*) ooRexxArray(j);
-    for (int i=0; i<j; i++) {
+    result = ooRexxArray(j);
+    for (int i=0; i<j; i++)
+    {
       temp = Variant2Rexx(&dp->rgvarg[j-i-1]);
       array_put(result,temp,i+1);
     }
 
   }
   // no arguments? set in default empty string
-  else {
-    result = (RexxArray*) ooRexxArray(1);
+  else
+  {
+    result = ooRexxArray(1);
     array_put(result, ooRexxString(""),1);
   }
 
@@ -109,28 +112,31 @@ LONG APIENTRY RexxCatchExit(LONG ExitNumber, LONG Subfunction, PEXIT parmblock)
 {
    char **names;
    size_t iCount;
-   RexxString *rxString = NULL;
+   REXXOBJECT rxString = NULL;
    LinkedList *myList = NULL;
 
    // get LISTOFNAMES, containing a pointer to the list that will
    // store all names we find out here...
-   rxString = (RexxString *)REXX_GETVAR("LISTOFNAMES");
-   if ( rxString )  {
+   rxString = REXX_GETVAR("LISTOFNAMES");
+   if ( rxString )
+   {
      sscanf(string_data(rxString),"%p",&myList);
+   }
 
-     if (myList) {
-
-       /* obtain all PUBLIC routines from the current activation */
-       REXX_GETFUNCTIONNAMES(&names,&iCount);
-       // if there were any, add to the list
-       if (iCount) {
-         while (iCount) {
-           iCount--;
-           myList->AddItem(names[iCount],LinkedList::Beginning,NULL);
-           GlobalFree(names[iCount]);
-         }
-         GlobalFree(names);
+   if (myList)
+   {
+     /* obtain all PUBLIC routines from the current activation */
+     REXX_GETFUNCTIONNAMES(&names,&iCount);
+     // if there were any, add to the list
+     if (iCount)
+     {
+       while (iCount)
+       {
+         iCount--;
+         myList->AddItem(names[iCount],LinkedList::Beginning,NULL);
+         GlobalFree(names[iCount]);
        }
+       GlobalFree(names);
      }
    }
 
@@ -150,7 +156,8 @@ LONG APIENTRY RexxRetrieveVariables(LONG ExitNumber, LONG Subfunction, PEXIT par
 {
   OrxScript     *engine    = findEngineForThread(GetCurrentThreadId());
 
-  if (engine) {
+  if (engine)
+  {
     // we need to pass a function, a member of an object doesn't work...
     // therefore a global variable that is holding the pointer to the
     // current engine. beware: this doesn't work in multi-threads...
@@ -167,7 +174,7 @@ LONG APIENTRY RexxRetrieveVariables(LONG ExitNumber, LONG Subfunction, PEXIT par
 LONG APIENTRY RexxCatchExternalFunc(LONG ExitNumber, LONG Subfunction, PEXIT pblock)
 {
   RXEXFCAL_PARM *parmblock = (RXEXFCAL_PARM*) pblock;
-  RexxObject    *result    = ooRexxNil;
+  REXXOBJECT     result    = ooRexxNil;
   const char    *fncname   = parmblock->rxfnc_name.strptr;
   OrxScript     *engine    = findEngineForThread(GetCurrentThreadId());
   PRCB           pImage    = NULL;
@@ -215,27 +222,38 @@ LONG APIENTRY RexxCatchExternalFunc(LONG ExitNumber, LONG Subfunction, PEXIT pbl
       ConditionData cd;
 
       // build argument array of REXX objects...
-      RexxArray *args = (RexxArray*) ooRexxArray(1+parmblock->rxfnc_argc);
-      RexxObject *temp;
+      REXXOBJECT args = ooRexxArray(1+parmblock->rxfnc_argc);
+      REXXOBJECT temp;
 
       // ...and invocation string
       if (function)
-        sprintf(invString,"return %s(",fncname);
+      {
+          sprintf(invString,"return %s(",fncname);
+      }
       else
-        sprintf(invString,"call %s ",fncname);
-      for (int i=0;i<parmblock->rxfnc_argc;i++) {
-        temp = (RexxObject *)rxfnc_argv[i];
+      {
+          sprintf(invString,"call %s ",fncname);
+      }
+      for (size_t i=0;i<parmblock->rxfnc_argc;i++)
+      {
+        temp = parmblock->rxfnc_argv[i];
         array_put(args,temp,i+2); // does this change current activity?? seems to be NULL when we run into okarray.c
         sprintf(buffer,"arg(%d)",i+2); // +2,because 1st argument is "CALL %s..." string
         strcat(invString,buffer);
         // not the last argument?
-        if (i<parmblock->rxfnc_argc-1)
-          strcat(invString,",");
+        if (i < parmblock->rxfnc_argc-1)
+        {
+            strcat(invString,",");
+        }
       }
       if (function)
-        strcat(invString,")");
+      {
+          strcat(invString,")");
+      }
       else
-        strcat(invString,"; exit");
+      {
+          strcat(invString,"; exit");
+      }
 
 #if defined(DEBUGZ)
       FPRINTF2(logfile,"invoke string: %s\n",invString);
@@ -267,24 +285,26 @@ LONG APIENTRY RexxCatchExternalFunc(LONG ExitNumber, LONG Subfunction, PEXIT pbl
       }
     } else {
       // ask the named items if one of them knows this function
-      hResult = engine->getNamedItems()->WhoKnows((char*) parmblock->rxfnc_name,engine->Lang,&dispID,&flags,&pDispatch,&pTypeInfo);
+      hResult = engine->getNamedItems()->WhoKnows(parmblock->rxfnc_name.strptr, engine->Lang,&dispID,&flags,&pDispatch,&pTypeInfo);
       if (hResult == S_OK) {
         // found something...
         // build DISPPARAMS structure for the invoke
         dp.cNamedArgs = 0;
-        dp.cArgs = parmblock->rxfnc_argc;
+        dp.cArgs = (UINT)parmblock->rxfnc_argc;
         VariantInit(&sResult);
         pResult = &sResult;
 
         // do we have to build an argument array?
-        if (parmblock->rxfnc_argc) {
-          RexxObject *temp;
+        if (parmblock->rxfnc_argc)
+        {
+          REXXOBJECT  temp;
           VARIANTARG *pVarArgs = (VARIANTARG*) GlobalAlloc(GMEM_FIXED,(sizeof(VARIANTARG) * dp.cArgs));
 
           dp.rgvarg = pVarArgs;
-          for (int i = 0; i < dp.cArgs; i++) {
+          for (UINT i = 0; i < dp.cArgs; i++)
+          {
             // get the REXX object
-            temp = (RexxObject *)rxfnc_argv[i];
+            temp = parmblock->rxfnc_argv[i];
 
             // arguments must be filled in from the end of the array...
             VariantInit(&(pVarArgs[dp.cArgs - i - 1]));
@@ -294,9 +314,12 @@ LONG APIENTRY RexxCatchExternalFunc(LONG ExitNumber, LONG Subfunction, PEXIT pbl
         else
           dp.rgvarg = NULL; // no argument array needed
 
-        if (dispID != -1) {
+        if (dispID != -1)
+        {
           hResult = pDispatch->Invoke(dispID, IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &dp, pResult, &sExc, &uArgErr);
-        } else {
+        }
+        else
+        {
           // call the default method of a named item object
           unsigned short wFlags = DISPATCH_METHOD;
           DISPID         PropPutDispId = DISPID_PROPERTYPUT;
@@ -350,8 +373,10 @@ LONG APIENTRY RexxCatchExternalFunc(LONG ExitNumber, LONG Subfunction, PEXIT pbl
 
         // clear argument array, free memory:
         if (dp.rgvarg) {
-          for (int i = 0; i < dp.cArgs; i++)
-            VariantClear(&(dp.rgvarg[i]));
+          for (UINT i = 0; i < dp.cArgs; i++)
+          {
+              VariantClear(&(dp.rgvarg[i]));
+          }
           GlobalFree(dp.rgvarg);
         }
 
@@ -540,10 +565,10 @@ LONG APIENTRY RexxValueExtension(LONG ExitNumber, LONG Subfunction, PEXIT pblock
     int SelectorType = 0;
     int RetCode = -1;
     const char *selectorName = parmblock->selector.strptr;
-    RexxObject *result = NULL;
+    REXXOBJECT  result = NULL;
     OrxScript  *engine = findEngineForThread(GetCurrentThreadId());
     const char *PropName = parmblock->variable_name.strptr;
-    RexxObject *newvalue = (RexxObject *)parmblock->value;
+    REXXOBJECT  newvalue = parmblock->value;
     HRESULT     hResult;
     DISPID      dispID;
     DWORD       flags;
@@ -605,7 +630,6 @@ LONG APIENTRY RexxValueExtension(LONG ExitNumber, LONG Subfunction, PEXIT pblock
                 break;
             case 2:
                 hResult = engine->getNamedItems()->WhoKnows(PropName,engine->Lang,&dispID,&flags,&pDispatch,&pTypeInfo);
-                if (PropName != &tBuffer[0]) free(PropName);
                 if (SUCCEEDED(hResult))
                 {
                     // do we have a real named item?
@@ -685,59 +709,55 @@ LONG APIENTRY RexxValueExtension(LONG ExitNumber, LONG Subfunction, PEXIT pblock
                 // a newvalue must not exist since this is read-only!
                 if (newvalue == NULL)
                 {
-                    // a name must be given
-                    if (name)
+                    // it must be "NAMEDITEMS"
+                    if (!strcmp(PropName, "NAMEDITEMS"))
                     {
-                        // it must be "NAMEDITEMS"
-                        if (!strcmp(name->getStringData(), "NAMEDITEMS"))
+                        // retrieve the NamedItem list of the engine
+                        OrxNamedItem* pItemList = engine->getNamedItems();
+                        if (pItemList)
                         {
-                            // retrieve the NamedItem list of the engine
-                            OrxNamedItem* pItemList = engine->getNamedItems();
-                            if (pItemList)
+                            int num = 0;
+                            // return a char* array with the names
+                            // num contains the number of strings
+                            char **names = pItemList->getNamedItems(&num);
+                            SAFEARRAY      *pSafeArray = NULL;
+                            SAFEARRAYBOUND  ArrayBound;
+                            VARIANT        *pVarArray = (VARIANT*) malloc(sizeof(VARIANT));
+                            VARIANT         sVariant;
+                            OLECHAR         uniBuffer[128];
+
+                            // we cannot directly use REXX to create objects
+                            // so we have to first create a OLE Array Variant
+                            // and let this be converted by the OREXXOLE.C functions
+                            if (num > 0)
                             {
-                                int num = 0;
-                                // return a char* array with the names
-                                // num contains the number of strings
-                                char **names = pItemList->getNamedItems(&num);
-                                SAFEARRAY      *pSafeArray = NULL;
-                                SAFEARRAYBOUND  ArrayBound;
-                                VARIANT        *pVarArray = (VARIANT*) malloc(sizeof(VARIANT));
-                                VARIANT         sVariant;
-                                OLECHAR         uniBuffer[128];
+                                ArrayBound.cElements = num;
+                                ArrayBound.lLbound = 0;   // zero-based
+                                pSafeArray = SafeArrayCreate(VT_VARIANT,(UINT) 1, &ArrayBound);
+                                VariantInit(pVarArray);
+                                V_VT(pVarArray) = VT_ARRAY | VT_VARIANT;
+                                V_ARRAY(pVarArray) = pSafeArray;
 
-                                // we cannot directly use REXX to create objects
-                                // so we have to first create a OLE Array Variant
-                                // and let this be converted by the OREXXOLE.C functions
-                                if (num > 0)
+                                for (long i = 0; i < num; i++)
                                 {
-                                    ArrayBound.cElements = num;
-                                    ArrayBound.lLbound = 0;   // zero-based
-                                    pSafeArray = SafeArrayCreate(VT_VARIANT,(UINT) 1, &ArrayBound);
-                                    VariantInit(pVarArray);
-                                    V_VT(pVarArray) = VT_ARRAY | VT_VARIANT;
-                                    V_ARRAY(pVarArray) = pSafeArray;
-
-                                    for (long i = 0; i < num; i++)
-                                    {
-                                        // convert to unicode
-                                        C2W(uniBuffer, names[i], 128);
-                                        // create a BSTR variant
-                                        VariantInit(&sVariant);
-                                        V_VT(&sVariant) = VT_BSTR;
-                                        V_BSTR(&sVariant) = SysAllocString(uniBuffer);
-                                        SafeArrayPutElement(pSafeArray, &i, &sVariant);
-                                        // release the char* from the string array
-                                        free(names[i]);
-                                    }
+                                    // convert to unicode
+                                    C2W(uniBuffer, names[i], 128);
+                                    // create a BSTR variant
+                                    VariantInit(&sVariant);
+                                    V_VT(&sVariant) = VT_BSTR;
+                                    V_BSTR(&sVariant) = SysAllocString(uniBuffer);
+                                    SafeArrayPutElement(pSafeArray, &i, &sVariant);
+                                    // release the char* from the string array
+                                    free(names[i]);
                                 }
-                                // release the string array
-                                free(names);
-                                // create a REXX array
-                                WinEnterKernel(false);
-                                result = Variant2Rexx(pVarArray);
-                                WinLeaveKernel(false);
-                                RetCode = 0;
                             }
+                            // release the string array
+                            free(names);
+                            // create a REXX array
+                            WinEnterKernel(false);
+                            result = Variant2Rexx(pVarArray);
+                            WinLeaveKernel(false);
+                            RetCode = 0;
                         }
                     }
                 }
@@ -766,7 +786,7 @@ LONG APIENTRY RexxNovalueHandler(LONG ExitNumber, LONG Subfunction, PEXIT pblock
 {
   RXVARNOVALUE_PARM *parmblock = (RXVARNOVALUE_PARM*) pblock;
   const char *objname = parmblock->variable_name.strptr;
-  RexxObject *result = NULL; // NULL indicates error
+  REXXOBJECT  result = NULL; // NULL indicates error
   OrxScript  *engine = findEngineForThread(GetCurrentThreadId());
   HRESULT    hResult;
   DISPID     dispID;
@@ -925,7 +945,7 @@ void __stdcall createCode(void *arguments)
   // get the info that was passed to us
   LPCOLESTR  pStrCode = ((LPCOLESTR*) arguments)[0]; // script text
   OrxScript *pEngine = ((OrxScript**) arguments)[1]; // pointer to engine
-  RexxObject  **pImage = ((RexxObject***) arguments)[2];   // result object (a string containing the image)
+  REXXOBJECT *pImage = ((REXXOBJECT **) arguments)[2];   // result object (a string containing the image)
   ConditionData *condData = ((ConditionData**) arguments)[3]; // condition info
 
   // "normal" local variables
@@ -986,10 +1006,10 @@ void __stdcall createCode(void *arguments)
 
 
 
-RexxObject *Create_securityObject(OrxScript  *pEngine,
+REXXOBJECT Create_securityObject(OrxScript  *pEngine,
                                   FILE       *logfile)
 {
-  RexxObject *securityObject = NULL;
+  REXXOBJECT securityObject = NULL;
 #define DEBUGC
 #define DEBUGZ
     FPRINTF2(logfile,"Create_securityObject - start Engine %p \n",pEngine);
@@ -1074,16 +1094,16 @@ void __stdcall runMethod(void *arguments)
   OrxScript  *pEngine = ((OrxScript**) arguments)[0]; // pointer to engine
   RCB        *RexxCode = ((PRCB *) arguments)[1];   // method image
   DISPPARAMS *parms = ((DISPPARAMS**) arguments)[2];  // COM parameters   (...either...)
-  RexxArray  *args = ((RexxArray**) arguments)[3];    // REXX parameters  (.....or.....)
-  RexxObject **pTargetResult = ((RexxObject***) arguments)[4]; // result object
+  REXXOBJECT  args = ((REXXOBJECT *) arguments)[3];   // REXX parameters  (.....or.....)
+  REXXOBJECT *pTargetResult = ((REXXOBJECT **) arguments)[4]; // result object
   VARIANT    **vResult = ((VARIANT***) arguments)[4]; // result variant
   ConditionData *condData = ((ConditionData**) arguments)[5]; // condition info
   bool       fEndThread = (((int*)arguments)[6] != 0);// end this thread?
   bool       fGetVariables = (((int*)arguments)[7] != 0); // get variables from immediate code?
 
-  RexxObject *pResult = NULL;
-  RexxObject *pMethod = NULL;
-  RexxObject *securitySource = NULL;
+  REXXOBJECT  pResult = NULL;
+  REXXOBJECT  pMethod = NULL;
+  REXXOBJECT  securitySource = NULL;
   APIRET      rc;
   RXSYSEXIT   exit_list[9];
   HRESULT     hResult=S_OK;

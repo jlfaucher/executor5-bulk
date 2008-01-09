@@ -57,7 +57,7 @@
 
 #include "rexx.h"
 #include "RexxNativeAPI.h"
-
+#include "RexxErrorCodes.h"
 #include "OLEVariant.h"
 
 /**
@@ -84,7 +84,7 @@ RexxMethod4(REXXOBJECT, OLEVariant_Init,
             OSELF, self,
             REXXOBJECT, v_value,
             REXXOBJECT, v_type,
-            REXXOBJECT, param_flags)
+            REXXSTRING, param_flags)
 {
     REXXOBJECT  vtString = NULL;
 

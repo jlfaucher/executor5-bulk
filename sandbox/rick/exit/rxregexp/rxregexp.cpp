@@ -46,38 +46,31 @@
 
 #include "rexx.h"
 #include "RexxNativeAPI.h"                      // REXX native interface
+#include "RexxErrorCodes.h"
 
 RexxMethod3(REXXOBJECT,                // Return type
             RegExp_Init,               // Object_method name
             OSELF, self,               // Pointer to self
-            REXXOBJECT, expression,    // optional regular expression
-            REXXOBJECT, matchtype)     // optional match type (MAXIMAL (def.) or MINIMAL)
+            REXXSTRING, expression,    // optional regular expression
+            REXXSTRING, matchtype)     // optional match type (MAXIMAL (def.) or MINIMAL)
 {
-  char        szBuffer[16];
   int         iResult = 0;
   automaton  *pAutomaton;
-  RexxString *pArgString = NULL;
 
   pAutomaton = new automaton();
 
   // optional matchtype given?
-  if (matchtype) {
-    pArgString = (RexxString *) ooRexxSend0(matchtype, "STRING");
-    // it must be a string
-    if ( !_isstring(pArgString) )
-      rexx_exception1(Error_Incorrect_method_string, ooRexxString("2"));
-    if ( strcmp(string_data(pArgString), "MINIMAL") == 0) {
+  if (matchtype)
+  {
+    if ( strcmp(string_data(matchtype), "MINIMAL") == 0) {
       pAutomaton->setMinimal(true);
     }
   }
 
   // optional expression given?
-  if (expression) {
-    pArgString = (RexxString *) ooRexxSend0(expression, "STRING");
-    // it must be a string
-    if ( !_isstring(pArgString) )
-      rexx_exception1(Error_Incorrect_method_string, ooRexxString("1"));
-    iResult = pAutomaton->parse( string_data(pArgString) );
+  if (expression)
+  {
+    iResult = pAutomaton->parse( string_data(expression) );
   }
 
   REXX_SETVAR("!AUTOMATON", ooRexxPointer(pAutomaton));
@@ -94,7 +87,7 @@ RexxMethod1(REXXOBJECT,                // Return type
 {
   automaton  *pAutomaton = NULL;
 
-  pAutomaton = pointer_data(REXX_GETVAR("!AUTOMATON") );
+  pAutomaton = (automaton *)pointer_value(REXX_GETVAR("!AUTOMATON") );
   if (pAutomaton) delete pAutomaton;
 
   return ooRexxNil;
@@ -103,42 +96,30 @@ RexxMethod1(REXXOBJECT,                // Return type
 RexxMethod3(REXXOBJECT,                // Return type
             RegExp_Parse,              // Object_method name
             OSELF, self,               // Pointer to self
-            REXXOBJECT, expression,    // regular expression to parse
-            REXXOBJECT, matchtype)     // optional match type (MAXIMAL (def.) or MINIMAL)
+            REXXSTRING, expression,    // regular expression to parse
+            REXXSTRING, matchtype)     // optional match type (MAXIMAL (def.) or MINIMAL)
 {
   automaton  *pAutomaton = NULL;
-  const char *pszString;
   char        szBuffer[32];
   REXXOBJECT  result;
-
-  REXXOBJECT  pArgString = NULL;
 
   if (!expression)
     rexx_exception1(Error_Incorrect_method_noarg, ooRexxString("1"));
 
-  pArgString = ooRexxSend0(expression, "STRING");
-  // it must be a string
-  if ( !_isstring(pArgString) )
-    rexx_exception1(Error_Incorrect_method_string, ooRexxString("1"));
-
   REXXOBJECT value = REXX_GETVAR("!AUTOMATON");
   if (value != NULLOBJECT)
   {
-      pAutomaton = pointer_value(value);
+      pAutomaton = (automaton *)pointer_value(value);
   }
 
   if (pAutomaton) {
-    const char *pszString = string_data(pArgString);
+    const char *pszString = string_data(expression);
     // moved some ptrs to re-use variables
     // optional matchtype given?
     if (matchtype) {
-      pArgString = ooRexxSend0(matchtype, "STRING");
-      // it must be a string
-      if ( !_isstring(pArgString) )
-        rexx_exception1(Error_Incorrect_method_string, ooRexxString("2"));
-      if ( strcmp(string_data(pArgString), "MINIMAL") == 0) {
+      if ( strcmp(string_data(matchtype), "MINIMAL") == 0) {
         pAutomaton->setMinimal(true); // set minimal matching
-      } else if (strcmp(string_data(pArgString), "CURRENT") != 0) {
+      } else if (strcmp(string_data(matchtype), "CURRENT") != 0) {
         pAutomaton->setMinimal(false); // set maximal matching
       }
     }
@@ -155,7 +136,7 @@ RexxMethod3(REXXOBJECT,                // Return type
 RexxMethod2(REXXOBJECT,                // Return type
             RegExp_Match,              // Object_method name
             OSELF, self,               // Pointer to self
-            REXXOBJECT, string)        // string to match
+            REXXSTRING, string)        // string to match
 {
   automaton  *pAutomaton = NULL;
   const char *pszString;
@@ -167,18 +148,13 @@ RexxMethod2(REXXOBJECT,                // Return type
   if (!string)
     rexx_exception1(Error_Incorrect_method_noarg, ooRexxString("1"));
 
-  pArgString = ooRexxSend0(string, "STRING");
-  // it must be a string
-  if ( !_isstring(pArgString) )
-    rexx_exception1(Error_Incorrect_method_string, ooRexxString("1"));
-
   REXXOBJECT value = REXX_GETVAR("!AUTOMATON");
   if (value != NULLOBJECT)
   {
-      pAutomaton = pointer_value(value);
+      pAutomaton = (automaton *)pointer_value(value);
   }
   if (pAutomaton) {
-    int i = pAutomaton->match( string_data(pArgString), (int)string_length(pArgString) );
+    int i = pAutomaton->match( string_data(string), (int)string_length(string) );
     REXX_SETVAR("!POS", ooRexxInteger(pAutomaton->getCurrentPos()));
     result = ooRexxInteger(i);
   } else {
@@ -191,7 +167,7 @@ RexxMethod2(REXXOBJECT,                // Return type
 RexxMethod2(REXXOBJECT,                // Return type
             RegExp_Pos,                // Object_method name
             OSELF, self,               // Pointer to self
-            REXXOBJECT, string)        // string to match
+            REXXSTRING, string)        // string to match
 {
   automaton  *pAutomaton = NULL;
   bool        fOldState;
@@ -202,22 +178,14 @@ RexxMethod2(REXXOBJECT,                // Return type
   REXXOBJECT  pArgString = NULL;
   int         i;
 
-  if (!string)
-    rexx_exception1(Error_Incorrect_method_noarg, ooRexxString("1"));
-
-  pArgString = ooRexxSend0(string, "STRING");
-  // it must be a string
-  if ( !_isstring(pArgString) )
-    rexx_exception1(Error_Incorrect_method_string, ooRexxString("1"));
-
   REXXOBJECT value = REXX_GETVAR("!AUTOMATON");
   if (value != NULLOBJECT)
   {
-      pAutomaton = pointer_value(value);
+      pAutomaton = (automaton *)pointer_value(value);
   }
 
-  pszString = string_data(pArgString);
-  strlength = string_length(pArgString);
+  pszString = string_data(string);
+  strlength = string_length(string);
   int matchPosition = 0;
 
   if (pAutomaton && strlength > 0) {  /* only check when input > 0 */
@@ -248,8 +216,7 @@ RexxMethod2(REXXOBJECT,                // Return type
       matchPosition = i + pAutomaton->getCurrentPos() - 1;
     }
 
-    REXX_SETVAR("!POS", ooRexxInteger(matchPosition);
-    sprintf(szBuffer,"%d",i);
+    REXX_SETVAR("!POS", ooRexxInteger(matchPosition));
     result =  ooRexxInteger(i);
     pAutomaton->setMinimal(fOldState);  // restore to state at POS invocation time
   } else {

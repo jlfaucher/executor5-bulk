@@ -56,7 +56,7 @@
 
 extern VOID ORexxOleFree(PVOID ptr);
 extern BOOL fIsRexxArray(REXXOBJECT TestObject);
-extern REXXOBJECT *Variant2Rexx(VARIANT *pVariant);
+extern REXXOBJECT Variant2Rexx(VARIANT *pVariant);
 extern VOID Rexx2Variant(REXXOBJECT RxObject, VARIANT *pVariant, VARTYPE DestVt, size_t iArgPos);
 
 // CTOR
@@ -220,31 +220,28 @@ STDMETHODIMP OLEObjectEvent::Invoke(DISPID dispIdMember, REFIID riid, LCID lcid,
               while ( (i<(int) pDispParams->cArgs) && !(pList->pusOptFlags[i] & PARAMFLAG_FOUT)) i++;
               // put value into out parameter
               Rexx2Variant(rxResult,&pDispParams->rgvarg[i],pDispParams->rgvarg[i].vt,-1);
-            } else if (fIsRexxArray(rxResult)) {
+            }
+            else if (fIsRexxArray(rxResult))
+            {
               REXXOBJECT rxArray = rxResult;
               REXXOBJECT  RexxStr = NULL;
               const char *pString = NULL;
-              char        szBuff[8];
               int         k;
 
-              RexxStr = ooRexxSend0(rxArray,"DIMENSION");
-              pString = string_data(ooRexxSend0(RexxStr,"STRING"));
-              sscanf(pString,"%d",&k);
+              k = (int)REXX_INTEGER(ooRexxSend0(rxArray,"DIMENSION"));
               if (k == 1) {
-                RexxStr = ooRexxSend0(rxArray,"SIZE");
-                pString = string_data(ooRexxSend0(RexxStr,"STRING"));
-                sscanf(pString,"%d",&k);
-
-                for (i=1,j=0; i <= k && j < (int)pDispParams->cArgs; j++) {
-                  if (pList->pusOptFlags[j] & PARAMFLAG_FOUT) {
-                    sprintf(szBuff,"%d",i);
-                    Rexx2Variant(ooRexxSend1(rxArray,"AT",ooRexxString(szBuff)),&pDispParams->rgvarg[j],pDispParams->rgvarg[j].vt,-1);
+                  k = (int)REXX_INTEGER(ooRexxSend0(rxArray,"SIZE"));
+                for (i=1,j=0; i <= k && j < (int)pDispParams->cArgs; j++)
+                {
+                  if (pList->pusOptFlags[j] & PARAMFLAG_FOUT)
+                  {
+                    Rexx2Variant(ooRexxSend1(rxArray,"AT",ooRexxInteger(i)),&pDispParams->rgvarg[j],pDispParams->rgvarg[j].vt,-1);
                     i++;
-                  } /* end if */
-                } /* end for */
-              } /* end if (single dim array) */
-            } /* end if out parameters exist */
-          } /* end if : ignore return value RexxNil | NULL */
+                  }
+                }
+              }
+            }
+          }
 
         }
 

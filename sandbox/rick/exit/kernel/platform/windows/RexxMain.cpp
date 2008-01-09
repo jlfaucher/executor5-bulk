@@ -113,7 +113,7 @@ typedef struct _RexxScriptInfo {       /* Control info used by various API's*/
   // these changes add the capability to use RexxRunMethod with
   // a. parameters and b. exits
   // as fas as I could make out, this function has never(!) been used up to now...
-  RexxArray* (__stdcall *func)(void*); // callback for converting arbitrary data into REXX data types (stored in a RexxArray)
+  REXXOBJECT (__stdcall *func)(void*); // callback for converting arbitrary data into REXX data types (stored in a RexxArray)
   void *args;                          // arguments for callback. if func == NULL, this will be treated as a RexxArray
   PRXSYSEXIT exits;                    // Array of system exit names used analogous to RexxStart() exits...
 } RexxScriptInfo;
@@ -595,7 +595,7 @@ BOOL APIENTRY RexxSetProcessMessages(BOOL onoff)
 APIRET REXXENTRY RexxCreateMethod(
   const char *dirname,                 /* directory name to save new method */
   PRXSTRING sourceData,                /* Buffer with Rexx source code      */
-  RexxObject * *pmethod,               /* returned method object            */
+  REXXOBJECT   *pmethod,               /* returned method object            */
   ConditionData *pRexxCondData)        /* returned condition data           */
 {
   APIRET   rc;                         /* RexxStart return code             */
@@ -651,12 +651,12 @@ APIRET REXXENTRY RexxCreateMethod(
 extern "C" {
 APIRET REXXENTRY RexxRunMethod(
   const char * dirname,
-  RexxObject * method,
+  REXXOBJECT method,
   void * args,
-  RexxArray* (__stdcall *f)(void*),
+  REXXOBJECT (__stdcall *f)(void*),
   PRXSYSEXIT exit_list,
-  RexxObject * *presult,
-  RexxObject *securityManager,
+  REXXOBJECT *presult,
+  REXXOBJECT *securityManager,
   ConditionData *pRexxCondData)        /* returned condition data           */
 {
   APIRET   rc;                         /* RexxStart return code             */
@@ -672,14 +672,14 @@ APIRET REXXENTRY RexxRunMethod(
                                        /* Create string object              */
   RexxScriptArgs.index = dirname;
   RexxScriptArgs.pmethod = (RexxMethod * *)&method;
-  RexxScriptArgs.presult = presult;
+  RexxScriptArgs.presult = (RexxObject **)presult;
   RexxScriptArgs.args = args;
   RexxScriptArgs.func = f;
   RexxScriptArgs.exits = exit_list;
 
   RexxInitialize();                    /* Perform any needed inits          */
 
-  if (securityManager) ((RexxMethod*) method)->setSecurityManager(securityManager);
+  if (securityManager) ((RexxMethod*) method)->setSecurityManager((RexxObject *)securityManager);
   tempActivity = ActivityManager::getActivity();     /* get a base activity under us      */
   store = RunActivity; // store old one
   RunActivity = tempActivity; // set to current
@@ -714,7 +714,7 @@ APIRET REXXENTRY RexxRunMethod(
 /*                                                                            */
 /******************************************************************************/
 
-APIRET REXXENTRY RexxStoreMethod(RexxObject * method, PRXSTRING scriptData)
+APIRET REXXENTRY RexxStoreMethod(REXXOBJECT method, PRXSTRING scriptData)
 
 {
   APIRET   rc;                         /* RexxStart return code             */
@@ -756,7 +756,7 @@ APIRET REXXENTRY RexxStoreMethod(RexxObject * method, PRXSTRING scriptData)
 /*                                                                            */
 /******************************************************************************/
 
-APIRET REXXENTRY RexxLoadMethod(const char *dirname, PRXSTRING scriptData, RexxObject * *pmethod)
+APIRET REXXENTRY RexxLoadMethod(const char *dirname, PRXSTRING scriptData, REXXOBJECT *pmethod)
 
 {
   APIRET   rc;                         /* RexxStart return code             */

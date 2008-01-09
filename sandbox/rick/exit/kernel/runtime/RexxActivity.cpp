@@ -2316,7 +2316,7 @@ bool RexxActivity::callNovalueExit(
 /* Function:   Calls the novalue handler for uninitialized variables          */
 /******************************************************************************/
 {
-    if (!isExitEnabled(RXVAR))         // is the exit enabled?
+    if (isExitEnabled(RXVAR))         // is the exit enabled?
     {
         RXVARNOVALUE_PARM exit_parm;       /* exit parameters                   */
         // the name is passed as an rxstring
@@ -2344,7 +2344,7 @@ bool RexxActivity::callValueExit(
 /* Function:   Calls the exit for the VALUE() BIF                             */
 /******************************************************************************/
 {
-    if (!isExitEnabled(RXVAL))         // is the exit enabled?
+    if (isExitEnabled(RXVAL))         // is the exit enabled?
     {
         RXVALCALL_PARM exit_parm;       /* exit parameters                   */
         // the name is passed as an rxstring

@@ -69,6 +69,7 @@ typedef const char *CSTRING;          /* pointer to zero-terminated string */
 typedef void *POINTER;
 typedef void *REXXOBJECT;             /* reference to a REXX object        */
 typedef REXXOBJECT STRING;            /* REXX string object                */
+typedef REXXOBJECT REXXSTRING;        /* REXX string object                */
 
 /******************************************************************************/
 /* Constant values (for general use)                                          */

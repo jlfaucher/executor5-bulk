@@ -260,6 +260,7 @@ double     REXXENTRY REXX_DOUBLE(REXXOBJECT);
 bool       REXXENTRY REXX_ISDOUBLE(REXXOBJECT);
 bool       REXXENTRY REXX_ISSTRING(REXXOBJECT);
 bool       REXXENTRY REXX_ISDIRECTORY(REXXOBJECT);
+bool       REXXENTRY REXX_ISINSTANCE(REXXOBJECT, REXXOBJECT);
 void       REXXENTRY REXX_EXCEPT(int, REXXOBJECT);
 void       REXXENTRY REXX_EXCEPT1(int, REXXOBJECT);
 void       REXXENTRY REXX_EXCEPT2(int, REXXOBJECT, REXXOBJECT);
@@ -337,6 +338,7 @@ int        REXXENTRY RexxSendMessage (REXXOBJECT receiver, const char *msgname, 
 #define REXXD_POINTER       14
 #define REXXD_CSELF         15
 #define REXXD_STRING        16
+#define REXXD_REXXSTRING    REXXD_STRING
 #define REXXD_BUFFER        17
 
 /******************************************************************************/
@@ -344,6 +346,7 @@ int        REXXENTRY RexxSendMessage (REXXOBJECT receiver, const char *msgname, 
 /******************************************************************************/
 #define REXX_ret_void(v)           v
 #define REXX_ret_REXXOBJECT(v)    *((REXXOBJECT *)*a) = v
+#define REXX_ret_REXXSTRING(v)    *((REXXOBJECT *)*a) = v
 #define REXX_ret_int(v)           *((int *)*a) = v
 #define REXX_ret_size_t(v)        *((size_t *)*a) = v
 #define REXX_ret_ssize_t(v)       *((ssize_t *)*a) = v

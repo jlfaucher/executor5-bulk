@@ -1106,6 +1106,17 @@ CSTRING REXXENTRY REXX_STRING(REXXOBJECT object)
 }
 
 
+bool REXXENTRY REXX_ISINSTANCE(REXXOBJECT object, REXXOBJECT classObject)
+/******************************************************************************/
+/* Function:  Object ISA test                                                 */
+/******************************************************************************/
+{
+    NativeContextBlock context;
+    return ((RexxObject *)object)->isInstanceOf((RexxClass *)classObject);
+
+}
+
+
 double REXXENTRY REXX_DOUBLE(REXXOBJECT object)
 /******************************************************************************/
 /* Function:  External interface to the nativeact object method               */
