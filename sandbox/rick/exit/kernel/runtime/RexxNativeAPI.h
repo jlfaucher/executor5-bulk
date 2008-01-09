@@ -191,7 +191,7 @@ r  n##_m (t1 p1, t2 p2, t3 p3, t4 p4, t5 p5, t6 p6)
 #define buffer_put(r,s,b,l)      REXX_BUFFER_COPYDATA(r,s,(CSTRING)b,l)
 
 #define integer_value(r)         REXX_INTEGER_VALUE(r)
-#define pointer_value(r)         REXX_POINTER_VALUE(r))
+#define pointer_value(r)         REXX_POINTER_VALUE(r)
 
 #define string_get(r,s,b,l)      REXX_STRING_GET(r,s,b,l)
 #define string_length(r)         REXX_STRING_LENGTH(r)

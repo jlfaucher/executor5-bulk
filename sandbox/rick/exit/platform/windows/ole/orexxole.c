@@ -1413,7 +1413,7 @@ void Rexx2Variant(REXXOBJECT _RxObject, VARIANT *pVariant, VARTYPE _DestVt, size
             V_DISPATCH(pVariant)->AddRef();
             fDone = TRUE;
         } else {
-            *V_DISPATCH(pVariant) = (IDispatch *)pointer_value(RxString);
+            V_DISPATCH(pVariant) = (IDispatch *)pointer_value(RxString);
             V_VT(pVariant) = VT_DISPATCH;
             V_DISPATCH(pVariant)->AddRef();
             fDone = TRUE;
