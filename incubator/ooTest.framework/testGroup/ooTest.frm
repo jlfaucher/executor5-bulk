@@ -184,6 +184,36 @@ return a
 ::method eventCount         abstract
 
 
+/* class: ooTestConstants- - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+    A class containing constants used in testing ooRexx.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::class 'ooTestConstants' public mixinclass Object
+
+  ::method TEST_ROOT  class; return "ooRexx"
+  ::method TEST_ROOT;        return "ooRexx"
+
+  ::method TEST_CONTAINER_EXT  class; return ".testGroup"
+  ::method TEST_CONTAINER_EXT;        return ".testGroup"
+
+  -- .nil signals no restriction on test types.
+  ::method TEST_TYPES_DEFAULT  class; return .nil
+  ::method TEST_TYPES_DEFAULT;        return .nil
+
+  ::method TEST_SUCCESS_RC   class; return 0
+  ::method TEST_SUCCESS_RC;         return 0
+  ::method TEST_HELP_RC      class; return 1
+  ::method TEST_HELP_RC;            return 1
+  ::method TEST_FAILURES_RC  class; return 2
+  ::method TEST_FAILURES_RC;        return 2
+  ::method TEST_ERRORS_RC    class; return 3
+  ::method TEST_ERRORS_RC;          return 3
+  ::method TEST_NO_TESTS_RC  class; return 4
+  ::method TEST_NO_TESTS_RC;        return 4
+
+  -- SL (back SLash or forward SLash) abbreviation for the directory separator.
+  ::method SL  class; return .ooRexxUnit.directory.separator
+  ::method SL;        return .ooRexxUnit.directory.separator
+
 /* class: ooTestTypes- - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
     A class containing the constants for the test types supported by the ooTest
     framework.
@@ -1451,6 +1481,17 @@ return suite
   ::attribute testTypes private
   ::attribute fileSpec private
 
+  /** init()
+   * Initializes this test finder.
+   *
+   * @param  root         REQUIRED
+   *   The root of the directory tree to search for test containers.
+   * @param  extension  REQUIRED
+   *   The extension for test container files
+   * @param  types      OPTIONAL
+   *   The test types to search for.  A value of nil indicates all tests and is
+   *   the default.
+   */
   ::method init
     use strict arg root, extension, types = .nil
 

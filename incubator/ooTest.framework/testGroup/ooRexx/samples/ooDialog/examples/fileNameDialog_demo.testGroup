@@ -284,10 +284,12 @@ return tests
 
     wf = .WindowFinder~new
 
+    -- Set the default pause and repetitions to pause longer and repeate less
+    wf~setPause(1)
+    wf~setRepetitions(5)
+
     -- We know the example program first puts up an InfoDialog first.
-    -- Increasing the default pause (.1 seconds) to .7 seconds helps to ensure
-    -- the program execution gets started okay.
-    wnd = wf~getWindow("Information", ,.7)
+    wnd = wf~getWindow("Information")
 
     self~assertEquals(.WindowObject, wnd~class, 'Must have a WindowObject object')
     self~assertEquals("Information", wnd~title, 'Window must have Information title')
@@ -306,9 +308,7 @@ return tests
     wf = self~class~windowFinder
 
     -- We know the example program has this title.  That's how we can find it.
-    -- Changing the default pause to .7 seconds, because it sometimes takes the
-    -- window longer to come up.
-    wnd = wf~getWindow("FileNameDialog Demonstration", , .7)
+    wnd = wf~getWindow("FileNameDialog Demonstration")
 
     -- Assert that we found the main window of the program.
     self~assertEquals(wnd~class, .WindowObject, 'Must have a WindowObject object')
@@ -321,7 +321,7 @@ return tests
     self~class~stop = .true
 
     wf = self~class~windowFinder
-    wnd = wf~getWindow("FileNameDialog Demonstration", , .5)
+    wnd = wf~getWindow("FileNameDialog Demonstration")
     self~assertEquals("FileNameDialog Demonstration", wnd~title, 'Window must have proper program title')
 
     -- First option is radio button, ID 101.  But it should be already selected,
@@ -329,7 +329,7 @@ return tests
     -- a command of 1 has the effect of clicking that button.
     wnd~sendCommand(1)
 
-    wnd = wf~getWindow("Open a File", , .5)
+    wnd = wf~getWindow("Open a File")
 
     self~assertEquals(.WindowObject, wnd~class, 'Must have a WindowObject object')
     self~assertNotNull(wnd, 'Open File dialog must be active (option 1 clicked.)')
@@ -340,7 +340,8 @@ return tests
     -- not select a file and therefore we should get an Error dialog window
     -- next.)
     wnd~sendCommand(2)
-    wnd = wf~getWindow("Error", , .5)
+
+    wnd = wf~getWindow("Error")
     self~assertNotNull(wnd, 'Open File dialog canceled (option 1) must have ErrorDialog')
 
     -- Push OK button, should be back to main screen.
@@ -373,7 +374,7 @@ return tests
       self~killExample(wf)
     end
     else do
-      wnd = wf~getWindow("FileNameDialog Demonstration", , .5)
+      wnd = wf~getWindow("FileNameDialog Demonstration")
       if wnd <> .nil then wnd~sendCommand(2)
     end
 

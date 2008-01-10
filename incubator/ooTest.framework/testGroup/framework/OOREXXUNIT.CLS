@@ -476,7 +476,7 @@ return leading || trailing
   */
   ::method MAX_VERBOSITY     class; return 10
   ::method MIN_VERBOSITY     class; return  0
-  ::method DEFAULT_VERBOSITY class; return 10
+  ::method DEFAULT_VERBOSITY class; return  2
   ::method MAX_VERBOSITY;           return 10
   ::method MIN_VERBOSITY;           return  0
   ::method DEFAULT_VERBOSITY;       return  2
@@ -1363,7 +1363,7 @@ exceptionHandler:
     type = cObj~condition
     if cObj~hasentry("CODE") then type = type cObj~code
 
-    err = .ErrorReport~new(timeStamp(), self~definedInFile, event, cObj)
+    err = .ErrorReport~new(timeStamp(), self~definedInFile, type, cObj)
     err~className = self~class~id
     err~testName = self~getName
     err~testString = self~string
