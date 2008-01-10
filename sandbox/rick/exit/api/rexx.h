@@ -674,6 +674,19 @@ APIRET APIENTRY RexxFreeMemory(
                              /* RexxAllocateMemory                   */
 typedef APIRET (APIENTRY *PFNREXXFREEMEMORY)(void *);
 
+int APIENTRY RexxResolveExit(const char *, REXXPFN *);
+
+APIRET APIENTRY RexxCallFunction (
+        const char *,                  /* Name of function to call   */
+        size_t,                        /* Number of arguments        */
+        PCONSTRXSTRING,                /* Array of argument strings  */
+        int            *,              /* RC from function called    */
+        PRXSTRING,                     /* Storage for returned data  */
+        const char *);                 /* Name of active data queue  */
+
+/***   Uppercase Entry Point Name */
+#define REXXCALLFUNCTION  RexxCallFunction
+
 #ifdef __cplusplus
 }
 #endif

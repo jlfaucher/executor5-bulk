@@ -72,6 +72,4 @@ APIRET APIENTRY RexxCallSubcom(
 }
 #endif
 
-/***   Uppercase Entry Point Name */
-#define REXXCALLFUNCTION  RexxCallFunction
 #endif

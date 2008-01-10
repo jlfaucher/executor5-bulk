@@ -359,22 +359,4 @@ inline RexxObject * callOperatorMethod(RexxObject *object, size_t methodOffset, 
   return (object->*((PCPPM1)cppEntry))(argument);
 }
 
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-int APIENTRY RexxResolveExit(const char *, REXXPFN *);
-
-APIRET APIENTRY RexxCallFunction (
-        const char *,                  /* Name of function to call   */
-        size_t,                        /* Number of arguments        */
-        PCONSTRXSTRING,                /* Array of argument strings  */
-        int            *,              /* RC from function called    */
-        PRXSTRING,                     /* Storage for returned data  */
-        const char *);                 /* Name of active data queue  */
-
-#ifdef __cplusplus
-}
-#endif
 #endif

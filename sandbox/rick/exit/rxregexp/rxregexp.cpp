@@ -47,6 +47,7 @@
 #include "rexx.h"
 #include "RexxNativeAPI.h"                      // REXX native interface
 #include "RexxErrorCodes.h"
+#include <string.h>
 
 RexxMethod3(REXXOBJECT,                // Return type
             RegExp_Init,               // Object_method name
@@ -100,7 +101,6 @@ RexxMethod3(REXXOBJECT,                // Return type
             REXXSTRING, matchtype)     // optional match type (MAXIMAL (def.) or MINIMAL)
 {
   automaton  *pAutomaton = NULL;
-  char        szBuffer[32];
   REXXOBJECT  result;
 
   if (!expression)
@@ -139,11 +139,7 @@ RexxMethod2(REXXOBJECT,                // Return type
             REXXSTRING, string)        // string to match
 {
   automaton  *pAutomaton = NULL;
-  const char *pszString;
-  char        szBuffer[32];
   REXXOBJECT  result;
-
-  REXXOBJECT  pArgString = NULL;
 
   if (!string)
     rexx_exception1(Error_Incorrect_method_noarg, ooRexxString("1"));
@@ -173,7 +169,6 @@ RexxMethod2(REXXOBJECT,                // Return type
   bool        fOldState;
   const char *pszString;
   size_t      strlength;
-  char        szBuffer[32];
   REXXOBJECT  result;
   REXXOBJECT  pArgString = NULL;
   int         i;
