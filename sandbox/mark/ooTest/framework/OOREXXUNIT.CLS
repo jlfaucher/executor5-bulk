@@ -1363,7 +1363,7 @@ exceptionHandler:
     type = cObj~condition
     if cObj~hasentry("CODE") then type = type cObj~code
 
-    err = .ErrorReport~new(timeStamp(), self~definedInFile, event, cObj)
+    err = .ErrorReport~new(timeStamp(), self~definedInFile, type, cObj)
     err~className = self~class~id
     err~testName = self~getName
     err~testString = self~string
