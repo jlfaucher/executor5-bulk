@@ -232,14 +232,7 @@ return testGroupList
    signal on failure
    trace off
 
-   -- Prevent error messages from the shell printing on the console.
-   select
-     when .ooRexxUnit.OSName == "WINDOWS"then toNull = '1>nul 2>&1'
-     when .ooRexxUnit.OSName == "LINUX"then toNull = '>/dev/null 2>&1'
-     otherwise toNull = "" -- Not sure what works on other OSes
-   end
-
-   'zxyabc' toNull -- deliberate failure, this command should not be found!
+   address xyzzy 'grue'  -- this is a deliberate unknown command
    self~assertTrue(0)
    return
 
