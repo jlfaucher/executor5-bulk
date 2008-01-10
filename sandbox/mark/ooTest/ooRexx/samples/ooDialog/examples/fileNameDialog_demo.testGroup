@@ -340,6 +340,8 @@ return tests
     -- not select a file and therefore we should get an Error dialog window
     -- next.)
     wnd~sendCommand(2)
+
+    call SysSleep(2)  -- give the error dialog time to appear
     wnd = wf~getWindow("Error", , .5)
     self~assertNotNull(wnd, 'Open File dialog canceled (option 1) must have ErrorDialog')
 
