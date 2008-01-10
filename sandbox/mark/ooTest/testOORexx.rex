@@ -57,7 +57,7 @@ cmdLine = arg(1)
 
    -- Here, execute all test types, except the UNIT_LONG and the GUI_SAMPLE types.
    excluded = .set~of(.ooTestTypes~UNIT_LONG_TEST, .ooTestTypes~GUI_SAMPLE_TEST)
-   types = .ooTestTypes~all~difference(excluded)
+   --types = .ooTestTypes~all~difference(excluded)
 
    /*
    say 'Will execute tests of type:'
@@ -70,7 +70,7 @@ cmdLine = arg(1)
    testResult~noAutoTiming
 
    -- Set verbosity from 0 (least output) to 10 (most output)
-   testResult~setVerbosity(0)
+   testResult~setVerbosity(3)
 
 
    finder = .ooTestFinder~new(baseDir, ".testGroup", types)
