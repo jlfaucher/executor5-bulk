@@ -360,7 +360,9 @@ inline RexxObject * callOperatorMethod(RexxObject *object, size_t methodOffset, 
 }
 
 
+#ifdef __cplusplus
 extern "C" {
+#endif
 
 int APIENTRY RexxResolveExit(const char *, REXXPFN *);
 
@@ -372,5 +374,7 @@ APIRET APIENTRY RexxCallFunction (
         PRXSTRING,                     /* Storage for returned data  */
         const char *);                 /* Name of active data queue  */
 
+#ifdef __cplusplus
 }
+#endif
 #endif
