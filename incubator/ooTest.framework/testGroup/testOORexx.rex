@@ -40,7 +40,9 @@
  * testOORexx is a planned future replacement for runTestGroups.  It is not
  * fully implemented.
  */
-cmdLine = arg(1)
+arguments = arg(1)
+
+   cmdLine = .CommandLine~new(arguments)
 
    parse source . . file
    overallPhase = .PhaseReport~new(file, .PhaseReport~AUTOMATED_TEST_PHASE)
@@ -70,7 +72,7 @@ cmdLine = arg(1)
    testResult~noAutoTiming
 
    -- Set verbosity from 0 (least output) to 10 (most output)
-   testResult~setVerbosity(6)
+   testResult~setVerbosity(0)
 
 
    finder = .ooTestFinder~new(baseDir, ".testGroup", types)
@@ -102,3 +104,7 @@ return 0
 
 ::requires "ooTest.frm"
 
+::class 'CommandLine' publc
+
+::method init
+  use arg

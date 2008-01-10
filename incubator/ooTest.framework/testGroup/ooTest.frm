@@ -482,11 +482,12 @@ return a
     if self~notifications == .nil then self~notifications = tResult~getNotifications
 
     if verbose == 0 then do
-      self~printBrief(tResult, failTable)
+      self~printBrief(tResult, self~failTable)
       return
     end
 
     if self~title<>"" then do
+      say
       say self~title
       say
     end
@@ -1572,7 +1573,8 @@ return suite
    */
   ::method findFiles private
     expose fileSpec
-    say 'in find files filespec:' fileSpec
+
+    -- Need to add Phase tracking.  say 'in find files filespec:' fileSpec
 
     f = .array~new
     j = SysFileTree(fileSpec, files., "FOS")
