@@ -56,52 +56,17 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-use arg cmdLine
+  parse source . . fileSpec;
 
-  -- This is a Windows specific test case.  If not on Windows, don't execute and
-  -- return an empty list to a, possible, caller.
-  if .ooRexxUnit.OSName <> "WINDOWS" then return .list~new
+  group = .TestGroup~new(fileSpec)
+  group~add(.OLEVariant.testGroup)
+  group~restrictOS("WINDOWS")
 
-  -- Create the test group list.  There is only 1 item in the list for this test
-  -- group.  The list is needed if this test group is called as one of a number
-  -- of test groups run together.
-  --
-  -- Each item consists of an array with 2 indices.  The first is a test case
-  -- class, the second is a list of mandatory tests.  There are no mandatory
-  -- tests here, so the list is empty.
-  testGroupList = .list~of( .array~of( .OLEVariant.testGroup, .list~new ) )
+  if group~isAutomatedTest then return group
 
-  -- Since there is only one item in the test group list, some of the code in
-  -- the template test units is skipped.
+  testResult = group~suite~execute~~print
 
-  -- Read this program file's metadata and save it in the TestCaseInfo class
-  -- attribute of the test case class.
-  srcLines = .array~new
-  do i = 1 to 150 until srcLines[ i ] = "*/"
-     srcLines[ i ] = sourceline( i )
-  end
-
-  call makeDirTestInfo .OLEVariant.testGroup, srcLines
-
-  parse source s
-  .OLEVariant.testGroup~testCaseInfo~setentry( "test_Case-source", s )
-
-  -- If there is no entry in the .local directory of 'bRunTestsLocally' then add
-  -- one with a value of true.
-  if \ .local~hasentry( "bRunTestsLocally" ) then
-     .local~bRunTestsLocally = .true
-
-  -- Now honor the setting of bRunTestsLocally, which may have been set by a
-  -- caller.
-  if .bRunTestsLocally == .true then do
-    ts = .TestSuite~new
-    ts~addTest( .TestSuite~new( .OLEVariant.testGroup ) )
-
-    testResult = ts~execute
-    call simpleDumpTestResults testResult
-  end
-
-return testGroupList
+return testResult
 -- End of entry point.
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\

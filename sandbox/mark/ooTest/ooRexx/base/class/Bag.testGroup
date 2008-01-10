@@ -63,12 +63,7 @@
 /*----------------------------------------------------------------------------*/
   parse source . . s
 
-  lines=.array~new
-  do i=1 to 150 until lines[i]="*/"
-     lines[i]=sourceline(i)
-  end
-
-  group = .TestGroup~new(s, lines)
+  group = .TestGroup~new(s)
   group~add(.Bag.testGroup)
 
   if group~isAutomatedTest then return group

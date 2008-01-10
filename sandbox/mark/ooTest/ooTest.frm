@@ -57,7 +57,7 @@
 */
 
 if \ .local~hasEntry('OOTEST_FRAMEWORK_VERSION') then do
-  .local~ooTest_Framework_version=090.320.20080107
+  .local~ooTest_Framework_version = 0.9.0_3.2.0
 
   -- Replace the default test result class in the environment with the ooRexx
   -- project's default class.
@@ -176,11 +176,12 @@ return a
 ::method addNotification    abstract
 ::method getNotifications   abstract
 ::method notificationCount  abstract
-::method addException   abstract
-::method getExceptions  abstract
-::method exceptionCount abstract
-::method addEvent       abstract
-::method getEvents      abstract
+::method addException       abstract
+::method getExceptions      abstract
+::method exceptionCount     abstract
+::method addEvent           abstract
+::method getEvents          abstract
+::method eventCount         abstract
 
 
 /* class: ooTestTypes- - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
@@ -406,12 +407,12 @@ return a
     information is broken up into lines, with an attempt made to keep all lines
     no longer than 80 characers wide.
 
-    ConsoleFormatter works with an ooTestCollectingParameter test result and
-    therefore has more infomation available to it than SimpleConsoleFormatter.
-    This allows for more comprehensive reporting.
+    ConsoleFormatter works with an ooTestResult and therefore has more
+    infomation available to it than SimpleConsoleFormatter.  This allows for
+    more comprehensive reporting.
 
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::class 'ConsoleFormatter' public subclass SimpleConsoleFormatter
+::class 'ConsoleFormatter' public subclass SimpleConsoleFormatter inherit NotificationTypes
 
   ::attribute rexxVersion get
   ::attribute rexxVersion set private
@@ -420,6 +421,9 @@ return a
   ::attribute ooTestVersion get
   ::attribute ooTestVersion set private
 
+  ::attribute failTable private
+  ::attribute notifications private
+
   /** init()
    *
    */
@@ -427,27 +431,29 @@ return a
     use strict arg testResult, title = ""
     forward class (super) continue
 
-    -- We need an ooTestCollectingParameter.
-    if \ isSubClassOf(testResult~class, "ooTestCollectingParameter") then
-       raise syntax 88.914 array ("1 'testResult'", "ooTestCollectingParameter")
+    -- We need an ooTestResult.
+    if \ isSubClassOf(testResult~class, "ooTestResult") then
+       raise syntax 88.914 array ("1 'testResult'", "ooTestResult")
     self~testResult = testResult
 
     parse version self~rexxVersion
     self~unitVersion = .ooRexxUnit.version
-    self~ooTestVersion = .ooTest.version
+    self~ooTestVersion = .ooTest_Framework_version
 
+    self~failTable = .nil
+    self~notifications = .nil
 
   /** printBrief()
    * The least possible print out.
    */
-  ::method printBrief
-    use arg tResult
+  ::method printBrief private
+    use arg tResult, fails
 
     say
     say ' '~copies(20) 'ooTest'
     say '  Tests:   ' tResult~runCount
-    say '  Failures:' tResult~failureCount
-    say '  Errors:  ' tResult~errorCount + tResult~ExceptionCount
+    say '  Failures:' fails['newCount']
+    say '  Errors:  ' tResult~errorCount + tResult~exceptionCount
     say
 
   /** print()
@@ -472,8 +478,11 @@ return a
     tResult = self~testResult
     verbose = self~getVerbosity
 
+    if self~failTable == .nil then self~failTable = tResult~getExtendedFailureInfo
+    if self~notifications == .nil then self~notifications = tResult~getNotifications
+
     if verbose == 0 then do
-      self~printBrief(tResult)
+      self~printBrief(tResult, self~failTable)
       return
     end
 
@@ -482,20 +491,16 @@ return a
       say
     end
 
-    versionStr = .ooRexxUnit.interpreterName .ooRexxUnit.languageLevel .ooRexxUnit.interpreterDate
-    say "Interpreter:" versionStr
-    say "ooRexxUnit: " .ooRexxUnit.version
-    say
-    say "Count of tests ran:            " tResult~runCount
-    say "Count of successful assertions:" tResult~assertCount
-    say "Count of failures:             " tResult~failureCount
-    say "Count of errors:               " tResult~errorCount
-    say "Count of exceptions:           " tResult~exceptionCount
-    say "Count of skipped files:        " tResult~notificationCount
-    say
+    stats = self~calcStats
+    self~printSummary(stats)
 
-    if tResult~failureCount > 0 then do data over tResult~failures
-      self~printFailureInfo(data)
+    if tResult~failureCount > 0 then do
+      if verbose < 7 then do data over self~failTable['newQ']
+        self~printFailureInfo(data)
+      end
+      else do data over tResult~failures
+        self~printFailureInfo(data)
+      end
     end
 
     if tResult~errorCount > 0 then do data over tResult~errors
@@ -506,29 +511,114 @@ return a
       self~printExceptions(data)
     end
 
+    if verbose > 3 then self~printSkippedFiles
 
-    if self~getVerbosity > 2, tResult~notificationCount > 0 then do data over tResult~getNotifications
-      self~printnotifications(data)
-    end
+    if verbose > 5 then self~printMessages
 
     -- If a number of failure or error information lines are printed, re-display
     -- the summary statistics again so that the number of failures is obvious to
     -- the user.
-    if (tResult~failureCount + tResult~errorCount + tResult~exceptionCount) > 3 | self~getVerbosity > 2 then do
-      say "Interpreter:" versionStr
-      say "ooRexxUnit: " .ooRexxUnit.version
-      say
-      say "Count of tests ran:            " tResult~runCount
-      say "Count of successful assertions:" tResult~assertCount
-      say "Count of failures:             " tResult~failureCount
-      say "Count of errors:               " tResult~errorCount
-      say "Count of exceptions:           " tResult~exceptionCount
-      say "Count of skipped files:        " tResult~notificationCount
-      say
+    if stats~totalProblems > 3 | verbose > 3 then
+      self~printSummary(stats)
+
+    if tResult~eventCount <> 0 then do
+      events = tResult~getEvents
+      holder = .array~new
+      do e over events
+        select
+          when e~id == .PhaseReport~AUTOMATED_TEST_PHASE then holder[1] = e
+          when e~id == .PhaseReport~FILE_SEARCH_PHASE    then holder[2] = e
+          when e~id == .PhaseReport~SUITE_BUILD_PHASE    then holder[3] = e
+          when e~id == .PhaseReport~TEST_EXECUTION_PHASE then holder[4] = e
+          otherwise nop
+        end
+        -- End select
+      end
+
+      if holder[2] \== .nil then say 'File search:       ' holder[2]~duration
+      if holder[3] \== .nil then say 'Suite construction:' holder[3]~duration
+      if holder[4] \== .nil then say 'Test execution:    ' holder[4]~duration
+      if holder[1] \== .nil then say 'Total time:        ' holder[1]~duration
+
+      if holder~items > 0 then say
     end
 
   -- End print()
 
+  ::method printSummary
+    use arg stats
+
+    verbose = self~getVerbosity
+
+    say
+    say "Interpreter:" self~rexxVersion
+    say "ooRexxUnit: " self~unitVersion  '09'x || "ooTest:" self~ooTestVersion
+    say
+    say "Tests ran:"~left(20)  stats~tests
+    say "Assertions:"~left(20) stats~asserts
+
+    select
+      when verbose < 3 then say "Failures:"~left(20) stats~newFails
+      when verbose < 7 then do
+        say "Failures:"~left(20) stats~newFails
+        say "  (Known failures:)"~left(20) stats~knownFails
+      end
+      otherwise say "Failures:"~left(20) stats~totalFails
+    end
+    -- End select
+
+    if verbose < 3 then say "Errors:"~left(20) stats~totalErrs
+    else do
+      say "Errors:"~left(20)     stats~errs
+      say "Exceptions:"~left(20) stats~exceptions
+    end
+
+    if vebose < 3 then do
+      say
+      return
+    end
+
+    say "Skipped files:"~left(20) stats~skippedFiles
+
+    if verbose < 4 then do
+      say
+      return
+    end
+
+    say "Messages:"~left(20) stats~messages
+    say
+
+  ::method calcStats private
+    expose failTable notifications
+
+    tResult = self~testResult
+    stats = .directory~new
+
+    stats~tests      = tResult~runCount
+    stats~asserts    = tResult~assertCount
+    stats~totalFails = failTable['totalCount']
+    stats~newFails   = failTable['newCount']
+    stats~knownFails = failTable['knownCount']
+    stats~errs       = tResult~errorCount
+    stats~exceptions = tResult~exceptionCount
+    stats~totalErrs  = tResult~errorCount + tResult~exceptionCount
+
+    stats~totalProblems = stats~totalFails + stats~totalErrs
+
+    -- Brute force for now.
+    skips = 0; msgs = 0
+    do n over notifications
+      select
+        when n~type == self~SKIP_TYPE then skips += 1
+        when n~type == self~TEXT_TYPE then msgs += 1
+        otherwise nop -- For now, please fix.
+      end
+      -- End select
+    end
+    stats~skippedFiles = skips
+    stats~messages = msgs
+
+  return stats
 
   ::method printExceptions private      -- DFX TODO fix this rough outline
     use arg err
@@ -545,14 +635,40 @@ return a
     end
     say
 
-  ::method printnotifications private       -- DFX TODO fix this rough outline
-    use arg o
+  ::method printMessages private       -- DFX TODO fix this rough outline
+    expose notifications
 
-    say "[Skipped test group]"
-    say "  File:" pathCompact(o~where, 70)
-    say " " o~reason
-    if o~additional \== .nil then
-      say " " o~additional
+    do n over notifications
+      if n~type == self~TEXT_TYPE then self~printMsg(n)
+    end
+
+  ::method printMsg private
+    use arg n
+    say "[Message]" n~when
+    say "  File:" pathCompact(n~where, 70)
+    say " " n~message
+    if n~additional \== .nil then
+      say " " n~additional
+    if n~additionalObject \== .nil then
+      say "  Object involved:" n~additionalObject
+    say
+
+
+  ::method printSkippedFiles private       -- DFX TODO fix this rough outline
+    expose notifications
+
+    do s over notifications
+      if s~type == self~SKIP_TYPE then self~printSkip(s)
+    end
+
+  ::method printSkip private
+    use arg s
+
+    say "[Skipped test group]" s~when
+    say "  File:" pathCompact(s~where, 70)
+    say " " s~reason
+    if s~additional \== .nil then
+      say " " s~additional
     say
 
 -- End of class ConsoleFormatter
@@ -568,6 +684,9 @@ return a
   ::attribute events         private
   ::attribute knownFailures  private
   ::attribute newFailures    private
+
+  ::attribute doAutoTiming   private
+  ::attribute executionPhase private
 
   ::attribute newFailureCount   set private
   ::attribute newFailureCount   get
@@ -593,7 +712,35 @@ return a
     -- Over-ride the default formatter
     self~formatter = .ConsoleFormatter
 
+    parse source . . file
+    phase = .PhaseReport~new(file, .PhaseReport~TEST_EXECUTION_PHASE)
+    phase~description = "Stand alone execution of a TestGroup."
+    self~doAutoTiming = .true
+    self~executionPhase = phase
+
   -- End init( )
+
+  /** noAutoTiming()
+   * As a convenience when running a stand alone TestGroup, an ooTest result
+   * attempts to time the test execution phase.  It does this by creating a
+   * PhaseReport when it is initiated, setting the phase as finished when the
+   * print method is invoked, and adding the phase report to the event queue.
+   *
+   * To disable this feature invoke this method.
+   *
+   */
+  ::method noAutoTiming
+    use strict arg
+    self~doAutoTiming = .false
+    self~executionPhase = .nil
+
+  ::method print
+
+    if self~doAutoTiming, self~executionPhase \== .nil then do
+      self~executionPhase~done
+      self~addEvent(self~executionPhase)
+    end
+    forward class (super)
 
   ::method addFailure
     expose newFailureCount knownFailureCount
@@ -609,12 +756,33 @@ return a
       newFailureCount += 1
     end
 
+  /** getExtendedFailureInfo()
+   * Returns a table with the failure objects sorted into known failures and
+   * 'new' (i.e. unknown) failures.  The table has the indexes of: 'knowndQ',
+   * 'newQ', 'knownCount', 'newCount', and 'totalCount'
+   *
+   */
+  ::method getExtendedFailureInfo
+    expose newFailureCount knownFailureCount
+    t = .table~new
+    t['newQ']       = self~newFailures~copy
+    t['newCount']   = newFailureCount
+    t['knownQ']     = self~knownFailures~copy
+    t['knownCount'] = knownFailureCount
+    t['totalCount'] = newFailureCount + knownFailureCount
+    return t
+
   ::method addNotification
     use strict arg notification
     self~notifications~queue(notification)
 
+  /** getNotifications()
+   * Return a copy of the notifications queue so the caller can manipulate it
+   * however she wants.  Note that all the queue return methods should do this,
+   * just not implemented yet.
+   */
   ::method getNotifications
-    return self~notifications
+    return self~notifications~copy
 
   ::method notificationCount
     return self~notifications~items
@@ -635,6 +803,9 @@ return a
 
   ::method getEvents
     return self~events
+
+  ::method eventCount
+    return self~events~items
 
 -- End of class: ooTestResult
 
@@ -767,6 +938,23 @@ return a
   -- and that should not change.
   ::attribute mustNotExecute private
 
+  ::method readMetadata private
+    use arg fsObj
+
+    signal on notready
+
+    lines = .array~new
+    do i = 1 until lines[i] = "*/"
+      lines[i] = fsObj~linein
+    end
+    fsObj~close
+    return lines
+
+    -- Hit the end of file without finding the marker line.  We will return .nil
+    -- causing a syntax error to be raised.
+    notready:
+    fsObj~close
+    return .nil
 
   /** init()
    *
@@ -777,22 +965,21 @@ return a
    *   exist.  Relative path names are acceptable, if they will resolve from the
    *   current working directory.  This is UNLIKELY to be the case in an
    *   automated test run, so the fully qualified path name is usually needed.
-   *
-   * @param data      OPTIONAL
-   *   An array of lines containing the metadata from the file header for this
-   *   test group.  This is only useful if the file header is in the format
-   *   specified in the ooTest Framework reference.
    */
   ::method init
-    use strict arg fileSpec, data = (.array~new)
+    use strict arg fileSpec
 
     fObj = .stream~new(fileSpec)
     self~pathName = fObj~query("EXISTS")
     if self~pathName == "" then
       raise syntax 88.917 array ("1 'fileSpec'", "must be an existing file path name")
 
-    if \ data~isInstanceOf(.array) then
-      raise syntax 88.914 array ("2 'data'", "Array")
+    if fObj~open("SHAREREAD") \== "READY:" then
+      raise syntax 88.917 array ("1 'fileSpec'", "must be a readable file")
+
+    data = self~readMetadata(fObj)
+    if data == .nil then
+      raise syntax 88.917 array ("1 'fileSpec'", "TestGroup metadata format invalid. File:" fileSpec)
 
     self~tests = .table~new
     self~testsWithSuite = .table~new
@@ -1096,7 +1283,7 @@ return a
     if \ self~hasTests then return testSuite
 
     testTypes = self~currentTypes~intersection(testTypes)
-    if testType~items == 0 then return testSuite
+    if testTypes~items == 0 then return testSuite
 
     do t over testTypes
       testClass = tests[t]
@@ -1306,12 +1493,30 @@ return suite
 
         when \ isSubClassOf(container~class, "TestContainer") then do
           obj = self~maybeCreateContainer(container, fileName)
-          if obj~isA(.Notification) then do
-            testResult~addNotification(obj)
-            iterate
-          end
 
-          q~queue(obj)
+          select
+            when obj~isA(.Notification) then do
+              testResult~addNotification(obj)
+              iterate
+            end
+
+            when isSubclassOf(obj~class, "ErrorReport") then do
+              testReport~addError(obj)
+              iterate
+            end
+
+            otherwise do
+              -- Add a notification that this was an old style test group, so we
+              -- can update them.
+              n = .Notification~new(timeStamp(), fileName, .Notification~TEXT_TYPE )
+              n~message = "Converted old-style TestUnit list into a test group."
+              n~additionalObject = obj
+              testResult~addNotification(n)
+
+              q~queue(obj)
+            end
+          end
+          -- End select
         end
 
         when \ container~hasTests then do
@@ -1367,7 +1572,8 @@ return suite
    */
   ::method findFiles private
     expose fileSpec
-    say 'in find files filespec:' fileSpec
+
+    -- Need to add Phase tracking.  say 'in find files filespec:' fileSpec
 
     f = .array~new
     j = SysFileTree(fileSpec, files., "FOS")
@@ -1379,7 +1585,7 @@ return suite
 
   /** maybeCreateContainer()
    * Attempts to create a TestGroup from object.  This is a temporary method,
-   * used to ease the migration from ooRexxUnit 1 to ooRexxUnit 2.
+   * used to ease the migration from ooRexxUnit 1 to ooRexxUnit 2.0.0.
    *
    */
   ::method maybeCreateContainer private
@@ -1394,18 +1600,11 @@ return suite
     data~additional = ""
     if \ self~objectIsTestUnitList(obj, data) then return data
 
-    src = self~getHeader(fileName)
-    if src~items == 0 then do
-      reason = "Attempt to convert old-style TestUnit list into a TestGroup failed"
-      n = .Notification~new(timeStamp(), fileName, reason)
-      n~additonal = "Error reading header source lines from the file."
-      return 0
-    end
-
-    -- Okay, an old-style TestUnit list, and we have the header meta-data.
-    -- Create a TestGroup and populate it with the TestCase class(es) from the
-    -- file.
-    group = .TestGroup~new(fileName, src)
+    -- Okay, an old-style TestUnit list.  Create a TestGroup and populate it
+    -- with the TestCase class(es) from the file.  It is possible, but very
+    -- unlikely that .TestGroup~new will throw an exception.  So, catch it.
+    signal on any name tempHandler
+    group = .TestGroup~new(fileName)
 
     -- objectIsTestUnitList() has already done our error checking for us.
     do a over obj
@@ -1416,49 +1615,37 @@ return suite
 
     return group
 
-  ::method getHeader private
-    use arg file
+  tempHandler:
+    err = .ExceptionData~new(timeStamp(), fileName, "Trap")
+    err~conditionObject = condition('O')
+    err~msg = "Creating TestGroup from old-style TestUnit list file failed."
+  return err
 
-    f = .stream~new(file)
-		f~open("READ")
-		if f~State <> "READY" then do
-      -- Most likely will not happen, but if it does, return an empty array.
-      return .array~new
-    end
-
-    lines = .array~new
-    do i = 1 while f~state == "READY"
-      lines[i] = f~linein
-      if lines[i] = "*/" then leave
-    end
-    f~close
-
-  return lines
-
-  ::method objectIsTestUnitList
+  ::method objectIsTestUnitList private
     use arg obj, data
 
     if obj~isA(.list) then do a over obj
-      if \ a~isA(.array) then do
-        data~additional = "Item in TestUnit list is not an array"
-        return .false
-      end
-      if a~items \== 2 then do
-        data~additional = "Array item in TestUnit list does not have 2 indexes"
-        return .false
-      end
-      if \ isSubclassOf(a[1], "TestCase") then do
-        data~additional = "Index 1 of array item is not subclass of TestCase"
-        return .false
-      end
-      if \ a[2]~isA(.list) then do
-        data~additional = "Index 2 of array item is not a .List"
-        return .false
-      end
+      if \ a~isA(.array) then
+        return self~updateData(data, "Item in TestUnit list is not an array", obj)
+
+      if a~items \== 2 then
+        return self~updateData(data, "Array item in TestUnit list does not have 2 indexes", obj)
+
+      if \ isSubclassOf(a[1], "TestCase") then
+        return self~updateData(data, "Index 1 of array item is not subclass of TestCase", obj)
+
+      if \ a[2]~isA(.list) then
+        return self~updateData(data, "Index 2 of array item is not a .List", obj)
+
       return .true
     end
 
-    data~additional = "Object is not a list, object is:" obj
+  return self~updateData(data, "Object is not a list, object is:" obj)
+
+  ::method updateData private
+    use arg data, msg, obj
+    data~additional = msg
+    data~additionalObject = obj
   return .false
 
 -- End of class: ooTestFinder
@@ -1525,8 +1712,7 @@ return suite
     the execution of an automated suite of tests.
 
     At a minimum the object contains a time stamp, the name of the relevant
-    file, and the notification type.  3 notification types are defined: SKIPPED,
-    WARNING, MESSAGE.
+    file, and the notification type.
 
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::class 'Notification' public subclass ReportData inherit NotificationTypes
@@ -1600,17 +1786,50 @@ return suite
   ::attribute finish get
   ::attribute finish set private
 
+  ::attribute isFinished get
+  ::attribute isFinished set private
+
+  ::attribute id get
+  ::attribute id set private
+
   ::method init
     use strict arg file, id
 
    	self~begin = .TimeSpan~new(time('F'))
-    self~init:super(timeStamp(), file, self~STEP_TYPE)
-
-    if \ isWholeRange(type, self~MIN_PHASE, self~MAX_PHASE) then
+    if \ isWholeRange(id, self~MIN_PHASE, self~MAX_PHASE) then
       raise syntax 88.907 array("2 'id'", self~MIN_PHASE, self~MAX_PHASE, type)
 
+    self~init:super(timeStamp(), file, self~STEP_TYPE)
+
+    self~id = id
+    self~finish = .nil
+    self~isFinished = .false
+
+  /** done()
+   * Tells this phase that the phase is over.  Sets the finish time.  After this
+   * message, the phase duration will always be the same.
+   */
+  ::method done
+    use strict arg
+    self~finish = .TimeSpan~new(time('F'))
+    self~isFinished = .true
+
+  /** duration()
+   * The time spanned by this phase.  If the phase is not done, is not finished,
+   * then this will be the time elapsed up to this point.  When the phase is
+   * done, it will be the total time elapsed for the phase.  Once the phase is
+   * finished, duration will not change.
+   */
   ::method duration
-    return (self~finish - self~begin)
+    if \ self~isFinished then return (self~finish - .TimeSpan~new(time('F')))
+    else return (self~finish - self~begin)
+
+  ::method 'description='
+    use strict arg description
+    self~message = description
+
+  ::method 'description'
+    return self~message
 
 -- End of class: PhaseReport
 

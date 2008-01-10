@@ -61,36 +61,9 @@
 /*----------------------------------------------------------------------------*/
   parse source . . s
 
-  lines=.array~new
-  do i=1 to 150 until lines[i]="*/"
-     lines[i]=sourceline(i)
-  end
-
-  group = .TestGroup~new(s, lines)
-  group~add(.Clipboard.testGroup)
-
-  -- This is a Windows specific test.
+  group = .TestGroup~new(s)
   group~restrictOS("WINDOWS")
-
-  say 'FIXME FIXME CLIPBOARD.TESTGROUP'
-  -- If we are on Windows, load winsystm.cls, otherwise don't.
-  if .ooRexxUnit.OSName == "WINDOWS" then do
-    -- Use indirectRequire() to create a rexx program file with the requires
-    -- directive for winsystm.cls.  If an empty string is returned, that
-    -- indicates an error happned, so mark the test group as having no
-    -- executable tests.  Otherwise, call the program file, which will add the
-    -- winsystm.cls definitions to this process, and the test cases can execute.
-    -- Delete the temporary program file.
-    prgFile = indirectRequire('winsystm.cls')
-
-    if prgFile == "" then do
-      group~markNoTests("Error loading winsystm.cls. Clipboard test requires winsystm.cls")
-    end
-    else do
-      call (prgFile)
-      j = deleteFile(prgFile)
-    end
-  end
+  group~addWithSuite(.Clipboard.testGroup, .ClipboardSuite)
 
   if group~isAutomatedTest then return group
 
@@ -103,6 +76,34 @@ return group
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::requires 'ooTest.frm'
 ::requires "FileUtils.cls"
+
+::class 'ClipboardSuite' subclass ooTestSuite
+
+::method setUp
+  use strict arg testResult
+
+  if \ isSubClassOf(testResult~class, "ooTestCollectingParameter") then
+     raise syntax 88.914 array ("1 'testResult'", "ooTestCollectingParameter")
+
+  prgFile = indirectRequire('winsystm.cls')
+
+  if prgFile == "" then do
+    parse source . . fileSpec
+    err = .ExceptionData~new(timeStamp(), fileSpec, "Unexpected Error")
+    err~setLine(.line - 5)
+    err~severity = "Unrecoverable"
+    err~msg = "Could not create program file for indirect require of 'winsystm.cls'"
+    err~className = self~class~id
+    testResult~addExcepiton(err)
+    testResult~stop
+    return
+  end
+
+  -- No error.
+  call (prgFile)
+  j = deleteFile(prgFile)
+
+-- End of class ClipboardSuite
 
 ::class "Clipboard.testGroup" subclass ooTestCase public
 

@@ -42,44 +42,62 @@
  */
 cmdLine = arg(1)
 
-   absoluteBegin = .TimeSpan~new(time('F'))
+   parse source . . file
+   overallPhase = .PhaseReport~new(file, .PhaseReport~AUTOMATED_TEST_PHASE)
+   searchPhase  = .PhaseReport~new(file, .PhaseReport~FILE_SEARCH_PHASE)
 
    .local~bRunTestsLocally = .false
 
    baseDir = "ooRexx"
    --baseDir = "ooRexx\samples"
 
-   -- Execute all test types, except the UNIT_LONG type.
-   types = .ooTestTypes~all~difference(.set~of(.ooTestTypes~UNIT_LONG_TEST))
-   do i over types
-     say 'got test type:' i
+   -- Set types to .nil to execute all types of tests.
+   types = .nil
+
+
+   -- Here, execute all test types, except the UNIT_LONG and the GUI_SAMPLE types.
+   excluded = .set~of(.ooTestTypes~UNIT_LONG_TEST, .ooTestTypes~GUI_SAMPLE_TEST)
+   types = .ooTestTypes~all~difference(excluded)
+
+   /*
+   say 'Will execute tests of type:'
+   do type over types
+     say ' ' .ooTestTypes~nameForTest(type)
    end
+   */
 
    testResult = .ooRexxUnit.default.TestResult.Class~new
-   --testResult~setVerbosity(0)
+   testResult~noAutoTiming
+
+   -- Set verbosity from 0 (least output) to 10 (most output)
+   testResult~setVerbosity(0)
+
+
    finder = .ooTestFinder~new(baseDir, ".testGroup", types)
    containers = finder~seek(testResult); say 'containers items:' containers~items
-   searchEnd = .TimeSpan~new(time('F'))
+
+   testResult~addEvent(searchPhase~~done)
+   suiteBuildPhase  = .PhaseReport~new(file, .PhaseReport~SUITE_BUILD_PHASE)
 
    suite = .ooTestSuite~new
    suite~showProgress = .false
    j = time('E')
    do container over containers
-     container~suite(suite)
+     if types == .nil then container~suite(suite)
+     else container~suiteForTestTypes(types, suite)
    end
-   suiteEnd = .TimeSpan~new(time('F'))
 
+   testResult~addEvent(suiteBuildPhase~~done)
+
+   executionPhase  = .PhaseReport~new(file, .PhaseReport~TEST_EXECUTION_PHASE)
    say 'Executing automated test suite.'
    suite~execute(testResult)
-   testEnd = .TimeSpan~new(time('F'))
 
-   testResult~print("My Title", 4)
+   testResult~addEvent(executionPhase~~done)
+   testResult~addEvent(overallPhase~~done)
 
-   absoluteEnd = .TimeSpan~new(time('F'))
-   say 'File search:   ' (searchEnd - absoluteBegin)
-   say 'Suite Build:   ' (suiteEnd - searchEnd)
-   say 'Test execution:' (testEnd - suiteEnd)
-   say 'Total time:    ' (absoluteEnd - absoluteBegin)
+   testResult~print("My Title")
+
 return 0
 
 ::requires "ooTest.frm"

@@ -63,85 +63,24 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
+  parse source . . s
 
+  group = .TestGroup~new(s)
+  group~add(.shortTimeBIFTests)
+  group~add(.TIME.long.testGroup)
 
+  if group~isAutomatedTest then return group
 
--------------------------------------------------------------------------------------------
--- ===> adapt the "testGroupList" to your testCase classes; each element in the list is <===
--- ===> an array object, the first element containing the testCase class object, the   <===
--- ===> second element is a list of test method names which are regarded to be         <===
--- ===> mandatory (if the list remains empty all test methods are mandatory)           <===
+  testResult = group~suite~execute~~print
 
-   /* list of array objects, each containing the testGroup class object and an
-      optional list of mandatory test case methods name                       */
-
-mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
-testGroupList=.list~of( .array~of(.TIME.testGroup,  mandatoryTestMethods) )
-
-
--------------------------------------------------------------------------------------------
--- ===> the following code needs not to be individualized                              <===
-
-   -- read top comment, containing infos about this program
-arrLines=.array~new
-do i=1 to 150 until arrLines[i]="*/"
-   arrLines[i]=sourceline(i)
-end
-      -- supply information for the testClass(es) in this file; the class attribute
-      -- "TestCaseInfo" (a directory object, index points to a queue) will store
-      -- the parsed infos
-aTestGroupClass=testGroupList~at(testGroupList~first)[1] -- get first testClass
-
-   -- will parse the array lines and store result in class object
-call makeDirTestInfo aTestGroupClass, arrLines
-tmpDir=aTestGroupClass~TestCaseInfo
-parse source s   -- op_sys invocationType fullPathToThisFile
-tmpDir~setentry("test_Case-source", s)
-
-   -- now add this directory to other testCase classes, if any left
-do arr over testGroupList
-   if arr[1]=aTestGroupClass then iterate  -- already handled
-   arr[1]~TestCaseInfo=tmpDir             -- save info in class object
-end
-
--- if this file is CALLed or REQUIRED then define an entry "bRunTestLocally" in .local
--- and set it to .false; this way the independent local invocation of the tests is inhibited
-if .local~hasentry("bRunTestsLocally")=.false then
-   .local~bRunTestsLocally=.true -- if this file is executed directly, then run tests for debugging
-
-if .bRunTestsLocally=.true then  -- run ALL tests in this test unit
-do
-   ts=.testSuite~new             -- create a testSuite
-   do arr over testGroupList
-      -- create a testSuite for the given test case class, use all its testmethods
-      ts~addTest( .testSuite~new(arr[1]))
-   end
-   -- testResult=.testSuite~new(testGroupClass)~execute
-   testResult=ts~execute       -- now run all the tests
-
-   call simpleFormatTestResults testResult
-end
-
-   /* return list of array objects containing test case classes and
-      optionally list of mandatory test methods                      */
-return testGroupList
-
+return testResult
 
 ::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
-::class "TIME.testGroup" subclass ooTestCase public
-
-/** midnightDidNotHappen()  Used to ensure a test involving the elapsed time
- *  clock does not start before midnight and finish after midnight.
- */
-::method midnightDidNotHappen private
-   use strict arg startTime
-   return (time() > startTime)
+::class "shortTimeBIFTests" subclass ooTestCase public
 
 ::method "test_1"
    Numeric Digits 20                   /* PA 881104 added                */
-   -- Say 'Caution: This is a long running Test Case. ***********************'
-   -- Say '******************************************************************'
 
    tx=TIME( )||'**'||TIME('l')||'*'||TIME('h')||'*'||TIME('m')||'*'||,
     TIME('s')||'*'||TIME('e')||'*'||TIME('r')||'*'||,
@@ -232,147 +171,6 @@ return testGroupList
    self~assertSame(txcm, ttm)
 
 
-::method "test_2"
-   currentTime = time()
-
-   cb1=TIME('r')||'*'||TIME('R')
-   Call sysSLEEP '1'
-   Call SUB1
-   Call sysSLEEP '1'
-   cb4=TIME('r')||'*'||TIME('R')
-   Parse Var cb1 cb1a '*' cb1b
-   Parse Var cb2 cb2a '*' cb2b
-   Parse Var cb3 cb3a '*' cb3b
-   Parse Var cb4 cb4a '*' cb4b
-
-   -- Ensure we did not cross midnight.
-   self~assertTrue(self~midnightDidNotHappen(currentTime), 'Midnight did not occur while this test case was running.')
-
-   self~assertSame(cb1a, cb1b)
-   self~assertSame(cb2a, cb2b, .ooRexxUnit.knownBugFlag "1856576 subTest2-2")
-   self~assertSame(cb3a, cb3b)
-   self~assertSame(cb4a, cb4b)
-
-   self~assertTrue(cb2a>='1')
-   self~assertTrue(cb3a>='5')
-   self~assertTrue(cb4a>='7')
-   return
-
-   SUB1:
-   cb2=TIME('r')||'*'||TIME('R')
-   Call sysSLEEP '5'
-   cb3='54494d45'x('r')||'*'||TIME('R')
-   Return
-
-
-::method "test_3"
-   currentTime = time()
-
-   cb1=TIME('r')||'*'||TIME('R')
-   Call sysSLEEP '1'
-   Call SUB2
-   Call sysSLEEP '1'
-   cb4=TIME('r')||'*'||TIME('R')
-   Parse Var cb1 cb1a '*' cb1b
-   Parse Var cb2 cb2a '*' cb2b
-   Parse Var cb3 cb3a '*' cb3b
-   Parse Var cb4 cb4a '*' cb4b
-   Parse Var cb5 cb5a '*' cb5b
-   Parse Var cb6 cb6a '*' cb6b
-
-   -- Ensure we did not cross midnight.
-   self~assertTrue(self~midnightDidNotHappen(currentTime), 'Midnight did not occur while this test case was running.')
-
-   self~assertSame(cb1a, cb1b)
-   self~assertSame(cb2a, cb2b, .ooRexxUnit.knownBugFlag "1856576 subTest3-2")
-   self~assertSame(cb3a, cb3b)
-   self~assertSame(cb4a, cb4b)
-   self~assertSame(cb5a, cb5b)
-   self~assertSame(cb6a, cb6b)
-
-   self~assertTrue(cb5a>='1')
-   self~assertTrue(cb6a>='5')
-   self~assertTrue(cb2a>='1')
-   self~assertTrue(cb3a>='5')
-   self~assertTrue(cb4a>='13')
-   return
-
-   SUB1:
-   cb2=TIME('r')||'*'||TIME('R')
-   Call sysSLEEP '5'
-   cb3='54494d45'x('r')||'*'||TIME('R')
-   Return
-   SUB2:
-   cb5='TIME'('r')||'*'||TIME('R')
-   Call sysSLEEP '5'
-   cb6="TIME"('r')||'*'||TIME('R')
-   Call sysSLEEP '1'
-   Call SUB1
-   Return
-
-
-::method "test_4"
-   currentTime = time()
-
-   currentTime = time()
-   cb1=TIME('r')||'*'||TIME('R')
-   Call sysSLEEP '1'
-   Call SCBTIMEA
-   Call sysSLEEP '1'
-   cb4=TIME('r')||'*'||TIME('R')
-   Pull cb2 cb3
-   Parse Var cb1 cb1a '*' cb1b
-   Parse Var cb2 cb2a '*' cb2b
-   Parse Var cb3 cb3a '*' cb3b
-   Parse Var cb4 cb4a '*' cb4b
-
-   -- Ensure we did not cross midnight.
-   self~assertTrue(self~midnightDidNotHappen(currentTime), 'Midnight did not occur while this test case was running.')
-
-   self~assertSame(cb1a, cb1b)
-   self~assertSame(cb2a, cb2b)
-   self~assertSame(cb3a, cb3b, .ooRexxUnit.knownBugFlag "1856576 subTest4-3")
-   self~assertSame(cb4a, cb4b)
-
-   self~assertSame(cb2a, '0')
-   self~assertTrue(cb3a>='5')
-   self~assertTrue(cb4a>='7')
-
-
-::method "test_5"
-   currentTime = time()
-
-   cb1=TIME('r')||'*'||TIME('R')
-   Call sysSLEEP '1'
-   Call SCBTIMEB
-   Call sysSLEEP '1'
-   Pull cb5 cb6
-   Pull cb2 cb3
-   cb4=TIME('r')||'*'||TIME('R')
-   Parse Var cb1 cb1a '*' cb1b
-   Parse Var cb2 cb2a '*' cb2b
-   Parse Var cb3 cb3a '*' cb3b
-   Parse Var cb4 cb4a '*' cb4b
-   Parse Var cb5 cb5a '*' cb5b
-   Parse Var cb6 cb6a '*' cb6b
-
-   -- Ensure we did not cross midnight.
-   self~assertTrue(self~midnightDidNotHappen(currentTime), 'Midnight did not occur while this test case was running.')
-
-   self~assertSame(cb1a, cb1b)
-   self~assertSame(cb2a, cb2b)
-   self~assertSame(cb3a, cb3b, .ooRexxUnit.knownBugFlag "1856576 subTest5-3")
-   self~assertSame(cb4a, cb4b)
-   self~assertSame(cb5a, cb5b)
-   self~assertSame(cb6a, cb6b)
-
-   self~assertSame(cb5a, '0')
-   self~assertTrue(cb6a>='5')
-   self~assertSame(cb2a, '0')
-   self~assertTrue(cb3a>='5')
-   self~assertTrue(cb4a>='13')
-
-
 ::method "test_7"
    Call time 'r'                       /* reset the timer for the next  */
    xxyy=1                              /* do very little work           */
@@ -434,168 +232,6 @@ return testGroupList
    self~assertSame(vxr, xlc)
 
 
-::method "test_8"
-   currentTime = time()
-
-   cb1=TIME('rage')||'*'||TIME('RAGE')
-   Call sysSLEEP '1'
-   Call SUB3
-   Call sysSLEEP '1'
-   cb4=TIME('rage')||'*'||TIME('RAGE')
-   Parse Var cb1 cb1a '*' cb1b
-   Parse Var cb2 cb2a '*' cb2b
-   Parse Var cb3 cb3a '*' cb3b
-   Parse Var cb4 cb4a '*' cb4b
-
-   -- Ensure we did not cross midnight.
-   self~assertTrue(self~midnightDidNotHappen(currentTime), 'Midnight did not occur while this test case was running.')
-
-   self~assertSame(cb1a, cb1b)
-   self~assertSame(cb2a, cb2b, .ooRexxUnit.knownBugFlag "1856576 subTest8-2")
-   self~assertSame(cb3a, cb3b)
-   self~assertSame(cb4a, cb4b)
-
-   self~assertTrue(cb2a>='1')
-   self~assertTrue(cb3a>='5')
-   self~assertTrue(cb4a>='7')
-
-   SUB1:
-   cb2=TIME('r')||'*'||TIME('R')
-   Call sysSLEEP '5'
-   cb3='54494d45'x('r')||'*'||TIME('R')
-   Return
-   SUB2:
-   cb5='TIME'('r')||'*'||TIME('R')
-   Call sysSLEEP '5'
-   cb6="TIME"('r')||'*'||TIME('R')
-   Call sysSLEEP '1'
-   Call SUB1
-   Return
-   SUB3:
-   cb2=TIME('rage')||'*'||TIME('RAGE')
-   Call sysSLEEP '5'
-   cb3=TIME('rage')||'*'||TIME('R-12')
-   Return
-
-
-::method "test_9"
-   currentTime = time()
-
-   cb1=TIME('rage')||'*'||TIME('RAGE')
-   Call sysSLEEP '1'
-   Call SUB4
-   Call sysSLEEP '1'
-   cb4=TIME('rage')||'*'||TIME('RAGE')
-   Parse Var cb1 cb1a '*' cb1b
-   Parse Var cb2 cb2a '*' cb2b
-   Parse Var cb3 cb3a '*' cb3b
-   Parse Var cb4 cb4a '*' cb4b
-   Parse Var cb5 cb5a '*' cb5b
-   Parse Var cb6 cb6a '*' cb6b
-
-   -- Ensure we did not cross midnight.
-   self~assertTrue(self~midnightDidNotHappen(currentTime), 'Midnight did not occur while this test case was running.')
-
-   self~assertSame(cb1a, cb1b)
-   self~assertSame(cb2a, cb2b, .ooRexxUnit.knownBugFlag "1856576 subTest9-2")
-   self~assertSame(cb3a, cb3b)
-   self~assertSame(cb4a, cb4b)
-   self~assertSame(cb5a, cb5b)
-   self~assertSame(cb6a, cb6b)
-
-   self~assertTrue(cb5a>='1')
-   self~assertTrue(cb6a>='5')
-   self~assertTrue(cb2a>='1')
-   self~assertTrue(cb3a>='5')
-   self~assertTrue(cb4a>='13')
-
-   SUB1:
-   cb2=TIME('r')||'*'||TIME('R')
-   Call sysSLEEP '5'
-   cb3='54494d45'x('r')||'*'||TIME('R')
-   Return
-   SUB2:
-   cb5='TIME'('r')||'*'||TIME('R')
-   Call sysSLEEP '5'
-   cb6="TIME"('r')||'*'||TIME('R')
-   Call sysSLEEP '1'
-   Call SUB1
-   Return
-   SUB3:
-   cb2=TIME('rage')||'*'||TIME('RAGE')
-   Call sysSLEEP '5'
-   cb3=TIME('rage')||'*'||TIME('R-12')
-   Return
-   SUB4:
-   cb5=TIME('rage')||'*'||TIME('RAGE 27')
-   Call sysSLEEP '5'
-   cb6=TIME('rage')||'*'||TIME('RAGE')
-   Call sysSLEEP '1'
-   Call SUB1
-   Return
-
-
-::method "test_10"
-   currentTime = time()
-
-   cb1=TIME('rage')||'*'||TIME('RAGE')
-   Call sysSLEEP '1'
-   Call SCBTIMEC
-   Call sysSLEEP '1'
-   cb4=TIME('rage')||'*'||TIME('RAGE')
-   Pull cb2 cb3
-   Parse Var cb1 cb1a '*' cb1b
-   Parse Var cb2 cb2a '*' cb2b
-   Parse Var cb3 cb3a '*' cb3b
-   Parse Var cb4 cb4a '*' cb4b
-
-   -- Ensure we did not cross midnight.
-   self~assertTrue(self~midnightDidNotHappen(currentTime), 'Midnight did not occur while this test case was running.')
-
-   self~assertSame(cb1a, cb1b)
-   self~assertSame(cb2a, cb2b)
-   self~assertSame(cb3a, cb3b, .ooRexxUnit.knownBugFlag "1856576 subTest10-3")
-   self~assertSame(cb4a, cb4b)
-
-   self~assertSame(cb2a, '0')
-   self~assertTrue(cb3a>='5')
-   self~assertTrue(cb4a>='7')
-
-
-::method "test_11"
-   currentTime = time()
-
-   cb1=TIME('rage')||'*'||TIME('RAGE')
-   Call sysSLEEP '1'
-   Call SCBTIMED
-   Call sysSLEEP '1'
-   Pull cb5 cb6
-   Pull cb2 cb3
-   cb4=TIME('rage')||'*'||TIME('RAGE')
-   Parse Var cb1 cb1a '*' cb1b
-   Parse Var cb2 cb2a '*' cb2b
-   Parse Var cb3 cb3a '*' cb3b
-   Parse Var cb4 cb4a '*' cb4b
-   Parse Var cb5 cb5a '*' cb5b
-   Parse Var cb6 cb6a '*' cb6b
-
-   -- Ensure we did not cross midnight.
-   self~assertTrue(self~midnightDidNotHappen(currentTime), 'Midnight did not occur while this test case was running.')
-
-   self~assertSame(cb1a, cb1b)
-   self~assertSame(cb2a, cb2b)
-   self~assertSame(cb3a, cb3b, .ooRexxUnit.knownBugFlag "1856576 subTest11-3")
-   self~assertSame(cb4a, cb4b)
-   self~assertSame(cb5a, cb5b)
-   self~assertSame(cb6a, cb6b)
-
-   self~assertSame(cb5a, '0')
-   self~assertTRUE(cb6a>='5')
-   self~assertSame(cb2a, '0')
-   self~assertTRUE(cb3a>='5')
-   self~assertTRUE(cb4a>='13')
-
-
 ::method "test_12"
    parse value time() time('C') with hh":"mm":"ss h1":"m1 +3 ampm
    self~assertTrue((hh>11 & ampm="pm") | (hh<12 & ampm="am"))  -- check for correct usage of am/pm
@@ -630,87 +266,9 @@ return testGroupList
    self~assertEquals(17, TIME('H','5:00pm','C'))
    self~assertEquals(61200, TIME('S','5:00pm','C'))
 
-return
-
-
--- rexxref documentation tests
-
-::method "test_101"
-   self~assertSame("11:27am", time('C','11:27:21'))
-   self~assertSame("11:27:00", time('N','11:27am','C'))
-   self~assertEquals(1020, TIME('M','5:00pm','C'))
-
-
-
-
-
-
-::routine SCBTIMEA
-   /* Test elapsed clock: time('R')
-   *  Notes: Midnight must not occur during the execution of this exec.
-   *         This is an external subroutine for test of Elapsed clock
-   *         integrity.
-   */
-   Parse Version version
-   Parse Source fn
-   cb2=TIME('r')||'*'||TIME('R')
-   Call sysSLEEP(5)
-   cb3=TIME('r')||'*'||TIME('R')
-   Queue cb2 cb3
-   return
-
-
-::routine SCBTIMEB
-   /* Test elapsed clock: time('R')
-   *  Notes: Midnight must not occur during the execution of this exec.
-   *         This is an external subroutine for test of Elapsed clock
-   *         integrity.
-   */
-   Parse Version version
-   Parse Source fn
-   cb5=TIME('r')||'*'||TIME('R')
-   Call sysSLEEP(5)
-   cb6=TIME('r')||'*'||TIME('R')
-   Call sysSLEEP(1)
-   Queue cb5 cb6
-   Call SCBTIMEA
-   return
-
-
-::routine SCBTIMEC
-   /* Test elapsed clock: time('RAGE')
-   *  Notes: Midnight must not occur during the execution of this exec.
-   *         This is an external subroutine for test of Elapsed clock
-   *         integrity.
-   */
-   Parse Version version
-   Parse Source fn
-   cb2=TIME('rage')||'*'||TIME('RAGE')
-   Call sysSLEEP(5)
-   cb3=TIME('rage')||'*'||TIME('RAGE')
-   Queue cb2 cb3
-   return
-
-
-::routine SCBTIMED
-   /* Test elapsed clock: time('RAGE')
-   *  Notes: Midnight must not occur during the execution of this exec.
-   *         This is an external subroutine for test of Elapsed clock
-   *         integrity.
-   */
-   Parse Version version
-   Parse Source fn
-   cb5=TIME('rage')||'*'||TIME('RAGE')
-   Call sysSLEEP(5)
-   cb6=TIME('rage')||'*'||TIME('RAGE')
-   Call sysSLEEP(1)
-   Queue cb5 cb6
-   Call SCBTIMEA
-   return
-
 /**
- * Methods below here test all possible characters as options to time.  The
- * method text was generated with a simple Rexx program.
+ * Methods below here, in this class, test all possible characters as options to
+ * time.  The method text was generated with a simple Rexx program.
  *
  * validopts = 'CEFHLMNRST'
  */
@@ -2206,4 +1764,397 @@ self~assertSame(time('L', time, format), "23:59:59.999999", "long  / subtest # 3
 self~assertSame(time('M', time, format), "1439", "long  / subtest # 4")
 self~assertSame(time('N', time, format), "23:59:59", "long  / subtest # 5")
 self~assertSame(time('S', time, format), "86399", "long  / subtest # 6")
+
+
+::class "TIME.long.testGroup" subclass ooTestCase public
+
+::method init class
+  forward class (super) continue
+  self~ooTestType = self~UNIT_LONG_TEST
+
+/** midnightDidNotHappen()  Used to ensure a test involving the elapsed time
+ *  clock does not start before midnight and finish after midnight.
+ */
+::method midnightDidNotHappen private
+   use strict arg startTime
+   return (time() > startTime)
+
+::method "test_2"
+   currentTime = time()
+
+   cb1=TIME('r')||'*'||TIME('R')
+   Call sysSLEEP '1'
+   Call SUB1
+   Call sysSLEEP '1'
+   cb4=TIME('r')||'*'||TIME('R')
+   Parse Var cb1 cb1a '*' cb1b
+   Parse Var cb2 cb2a '*' cb2b
+   Parse Var cb3 cb3a '*' cb3b
+   Parse Var cb4 cb4a '*' cb4b
+
+   -- Ensure we did not cross midnight.
+   self~assertTrue(self~midnightDidNotHappen(currentTime), 'Midnight did not occur while this test case was running.')
+
+   self~assertSame(cb1a, cb1b)
+   self~assertSame(cb2a, cb2b, .ooRexxUnit.knownBugFlag "1856576 subTest2-2")
+   self~assertSame(cb3a, cb3b)
+   self~assertSame(cb4a, cb4b)
+
+   self~assertTrue(cb2a>='1')
+   self~assertTrue(cb3a>='5')
+   self~assertTrue(cb4a>='7')
+   return
+
+   SUB1:
+   cb2=TIME('r')||'*'||TIME('R')
+   Call sysSLEEP '5'
+   cb3='54494d45'x('r')||'*'||TIME('R')
+   Return
+
+
+::method "test_3"
+   currentTime = time()
+
+   cb1=TIME('r')||'*'||TIME('R')
+   Call sysSLEEP '1'
+   Call SUB2
+   Call sysSLEEP '1'
+   cb4=TIME('r')||'*'||TIME('R')
+   Parse Var cb1 cb1a '*' cb1b
+   Parse Var cb2 cb2a '*' cb2b
+   Parse Var cb3 cb3a '*' cb3b
+   Parse Var cb4 cb4a '*' cb4b
+   Parse Var cb5 cb5a '*' cb5b
+   Parse Var cb6 cb6a '*' cb6b
+
+   -- Ensure we did not cross midnight.
+   self~assertTrue(self~midnightDidNotHappen(currentTime), 'Midnight did not occur while this test case was running.')
+
+   self~assertSame(cb1a, cb1b)
+   self~assertSame(cb2a, cb2b, .ooRexxUnit.knownBugFlag "1856576 subTest3-2")
+   self~assertSame(cb3a, cb3b)
+   self~assertSame(cb4a, cb4b)
+   self~assertSame(cb5a, cb5b)
+   self~assertSame(cb6a, cb6b)
+
+   self~assertTrue(cb5a>='1')
+   self~assertTrue(cb6a>='5')
+   self~assertTrue(cb2a>='1')
+   self~assertTrue(cb3a>='5')
+   self~assertTrue(cb4a>='13')
+   return
+
+   SUB1:
+   cb2=TIME('r')||'*'||TIME('R')
+   Call sysSLEEP '5'
+   cb3='54494d45'x('r')||'*'||TIME('R')
+   Return
+   SUB2:
+   cb5='TIME'('r')||'*'||TIME('R')
+   Call sysSLEEP '5'
+   cb6="TIME"('r')||'*'||TIME('R')
+   Call sysSLEEP '1'
+   Call SUB1
+   Return
+
+
+::method "test_4"
+   currentTime = time()
+
+   currentTime = time()
+   cb1=TIME('r')||'*'||TIME('R')
+   Call sysSLEEP '1'
+   Call SCBTIMEA
+   Call sysSLEEP '1'
+   cb4=TIME('r')||'*'||TIME('R')
+   Pull cb2 cb3
+   Parse Var cb1 cb1a '*' cb1b
+   Parse Var cb2 cb2a '*' cb2b
+   Parse Var cb3 cb3a '*' cb3b
+   Parse Var cb4 cb4a '*' cb4b
+
+   -- Ensure we did not cross midnight.
+   self~assertTrue(self~midnightDidNotHappen(currentTime), 'Midnight did not occur while this test case was running.')
+
+   self~assertSame(cb1a, cb1b)
+   self~assertSame(cb2a, cb2b)
+   self~assertSame(cb3a, cb3b, .ooRexxUnit.knownBugFlag "1856576 subTest4-3")
+   self~assertSame(cb4a, cb4b)
+
+   self~assertSame(cb2a, '0')
+   self~assertTrue(cb3a>='5')
+   self~assertTrue(cb4a>='7')
+
+
+::method "test_5"
+   currentTime = time()
+
+   cb1=TIME('r')||'*'||TIME('R')
+   Call sysSLEEP '1'
+   Call SCBTIMEB
+   Call sysSLEEP '1'
+   Pull cb5 cb6
+   Pull cb2 cb3
+   cb4=TIME('r')||'*'||TIME('R')
+   Parse Var cb1 cb1a '*' cb1b
+   Parse Var cb2 cb2a '*' cb2b
+   Parse Var cb3 cb3a '*' cb3b
+   Parse Var cb4 cb4a '*' cb4b
+   Parse Var cb5 cb5a '*' cb5b
+   Parse Var cb6 cb6a '*' cb6b
+
+   -- Ensure we did not cross midnight.
+   self~assertTrue(self~midnightDidNotHappen(currentTime), 'Midnight did not occur while this test case was running.')
+
+   self~assertSame(cb1a, cb1b)
+   self~assertSame(cb2a, cb2b)
+   self~assertSame(cb3a, cb3b, .ooRexxUnit.knownBugFlag "1856576 subTest5-3")
+   self~assertSame(cb4a, cb4b)
+   self~assertSame(cb5a, cb5b)
+   self~assertSame(cb6a, cb6b)
+
+   self~assertSame(cb5a, '0')
+   self~assertTrue(cb6a>='5')
+   self~assertSame(cb2a, '0')
+   self~assertTrue(cb3a>='5')
+   self~assertTrue(cb4a>='13')
+
+
+::method "test_8"
+   currentTime = time()
+
+   cb1=TIME('rage')||'*'||TIME('RAGE')
+   Call sysSLEEP '1'
+   Call SUB3
+   Call sysSLEEP '1'
+   cb4=TIME('rage')||'*'||TIME('RAGE')
+   Parse Var cb1 cb1a '*' cb1b
+   Parse Var cb2 cb2a '*' cb2b
+   Parse Var cb3 cb3a '*' cb3b
+   Parse Var cb4 cb4a '*' cb4b
+
+   -- Ensure we did not cross midnight.
+   self~assertTrue(self~midnightDidNotHappen(currentTime), 'Midnight did not occur while this test case was running.')
+
+   self~assertSame(cb1a, cb1b)
+   self~assertSame(cb2a, cb2b, .ooRexxUnit.knownBugFlag "1856576 subTest8-2")
+   self~assertSame(cb3a, cb3b)
+   self~assertSame(cb4a, cb4b)
+
+   self~assertTrue(cb2a>='1')
+   self~assertTrue(cb3a>='5')
+   self~assertTrue(cb4a>='7')
+
+   SUB1:
+   cb2=TIME('r')||'*'||TIME('R')
+   Call sysSLEEP '5'
+   cb3='54494d45'x('r')||'*'||TIME('R')
+   Return
+   SUB2:
+   cb5='TIME'('r')||'*'||TIME('R')
+   Call sysSLEEP '5'
+   cb6="TIME"('r')||'*'||TIME('R')
+   Call sysSLEEP '1'
+   Call SUB1
+   Return
+   SUB3:
+   cb2=TIME('rage')||'*'||TIME('RAGE')
+   Call sysSLEEP '5'
+   cb3=TIME('rage')||'*'||TIME('R-12')
+   Return
+
+
+::method "test_9"
+   currentTime = time()
+
+   cb1=TIME('rage')||'*'||TIME('RAGE')
+   Call sysSLEEP '1'
+   Call SUB4
+   Call sysSLEEP '1'
+   cb4=TIME('rage')||'*'||TIME('RAGE')
+   Parse Var cb1 cb1a '*' cb1b
+   Parse Var cb2 cb2a '*' cb2b
+   Parse Var cb3 cb3a '*' cb3b
+   Parse Var cb4 cb4a '*' cb4b
+   Parse Var cb5 cb5a '*' cb5b
+   Parse Var cb6 cb6a '*' cb6b
+
+   -- Ensure we did not cross midnight.
+   self~assertTrue(self~midnightDidNotHappen(currentTime), 'Midnight did not occur while this test case was running.')
+
+   self~assertSame(cb1a, cb1b)
+   self~assertSame(cb2a, cb2b, .ooRexxUnit.knownBugFlag "1856576 subTest9-2")
+   self~assertSame(cb3a, cb3b)
+   self~assertSame(cb4a, cb4b)
+   self~assertSame(cb5a, cb5b)
+   self~assertSame(cb6a, cb6b)
+
+   self~assertTrue(cb5a>='1')
+   self~assertTrue(cb6a>='5')
+   self~assertTrue(cb2a>='1')
+   self~assertTrue(cb3a>='5')
+   self~assertTrue(cb4a>='13')
+
+   SUB1:
+   cb2=TIME('r')||'*'||TIME('R')
+   Call sysSLEEP '5'
+   cb3='54494d45'x('r')||'*'||TIME('R')
+   Return
+   SUB2:
+   cb5='TIME'('r')||'*'||TIME('R')
+   Call sysSLEEP '5'
+   cb6="TIME"('r')||'*'||TIME('R')
+   Call sysSLEEP '1'
+   Call SUB1
+   Return
+   SUB3:
+   cb2=TIME('rage')||'*'||TIME('RAGE')
+   Call sysSLEEP '5'
+   cb3=TIME('rage')||'*'||TIME('R-12')
+   Return
+   SUB4:
+   cb5=TIME('rage')||'*'||TIME('RAGE 27')
+   Call sysSLEEP '5'
+   cb6=TIME('rage')||'*'||TIME('RAGE')
+   Call sysSLEEP '1'
+   Call SUB1
+   Return
+
+
+::method "test_10"
+   currentTime = time()
+
+   cb1=TIME('rage')||'*'||TIME('RAGE')
+   Call sysSLEEP '1'
+   Call SCBTIMEC
+   Call sysSLEEP '1'
+   cb4=TIME('rage')||'*'||TIME('RAGE')
+   Pull cb2 cb3
+   Parse Var cb1 cb1a '*' cb1b
+   Parse Var cb2 cb2a '*' cb2b
+   Parse Var cb3 cb3a '*' cb3b
+   Parse Var cb4 cb4a '*' cb4b
+
+   -- Ensure we did not cross midnight.
+   self~assertTrue(self~midnightDidNotHappen(currentTime), 'Midnight did not occur while this test case was running.')
+
+   self~assertSame(cb1a, cb1b)
+   self~assertSame(cb2a, cb2b)
+   self~assertSame(cb3a, cb3b, .ooRexxUnit.knownBugFlag "1856576 subTest10-3")
+   self~assertSame(cb4a, cb4b)
+
+   self~assertSame(cb2a, '0')
+   self~assertTrue(cb3a>='5')
+   self~assertTrue(cb4a>='7')
+
+
+::method "test_11"
+   currentTime = time()
+
+   cb1=TIME('rage')||'*'||TIME('RAGE')
+   Call sysSLEEP '1'
+   Call SCBTIMED
+   Call sysSLEEP '1'
+   Pull cb5 cb6
+   Pull cb2 cb3
+   cb4=TIME('rage')||'*'||TIME('RAGE')
+   Parse Var cb1 cb1a '*' cb1b
+   Parse Var cb2 cb2a '*' cb2b
+   Parse Var cb3 cb3a '*' cb3b
+   Parse Var cb4 cb4a '*' cb4b
+   Parse Var cb5 cb5a '*' cb5b
+   Parse Var cb6 cb6a '*' cb6b
+
+   -- Ensure we did not cross midnight.
+   self~assertTrue(self~midnightDidNotHappen(currentTime), 'Midnight did not occur while this test case was running.')
+
+   self~assertSame(cb1a, cb1b)
+   self~assertSame(cb2a, cb2b)
+   self~assertSame(cb3a, cb3b, .ooRexxUnit.knownBugFlag "1856576 subTest11-3")
+   self~assertSame(cb4a, cb4b)
+   self~assertSame(cb5a, cb5b)
+   self~assertSame(cb6a, cb6b)
+
+   self~assertSame(cb5a, '0')
+   self~assertTRUE(cb6a>='5')
+   self~assertSame(cb2a, '0')
+   self~assertTRUE(cb3a>='5')
+   self~assertTRUE(cb4a>='13')
+
+
+
+-- rexxref documentation tests
+
+::method "test_101"
+   self~assertSame("11:27am", time('C','11:27:21'))
+   self~assertSame("11:27:00", time('N','11:27am','C'))
+   self~assertEquals(1020, TIME('M','5:00pm','C'))
+
+
+
+
+
+
+::routine SCBTIMEA
+   /* Test elapsed clock: time('R')
+   *  Notes: Midnight must not occur during the execution of this exec.
+   *         This is an external subroutine for test of Elapsed clock
+   *         integrity.
+   */
+   Parse Version version
+   Parse Source fn
+   cb2=TIME('r')||'*'||TIME('R')
+   Call sysSLEEP(5)
+   cb3=TIME('r')||'*'||TIME('R')
+   Queue cb2 cb3
+   return
+
+
+::routine SCBTIMEB
+   /* Test elapsed clock: time('R')
+   *  Notes: Midnight must not occur during the execution of this exec.
+   *         This is an external subroutine for test of Elapsed clock
+   *         integrity.
+   */
+   Parse Version version
+   Parse Source fn
+   cb5=TIME('r')||'*'||TIME('R')
+   Call sysSLEEP(5)
+   cb6=TIME('r')||'*'||TIME('R')
+   Call sysSLEEP(1)
+   Queue cb5 cb6
+   Call SCBTIMEA
+   return
+
+
+::routine SCBTIMEC
+   /* Test elapsed clock: time('RAGE')
+   *  Notes: Midnight must not occur during the execution of this exec.
+   *         This is an external subroutine for test of Elapsed clock
+   *         integrity.
+   */
+   Parse Version version
+   Parse Source fn
+   cb2=TIME('rage')||'*'||TIME('RAGE')
+   Call sysSLEEP(5)
+   cb3=TIME('rage')||'*'||TIME('RAGE')
+   Queue cb2 cb3
+   return
+
+
+::routine SCBTIMED
+   /* Test elapsed clock: time('RAGE')
+   *  Notes: Midnight must not occur during the execution of this exec.
+   *         This is an external subroutine for test of Elapsed clock
+   *         integrity.
+   */
+   Parse Version version
+   Parse Source fn
+   cb5=TIME('rage')||'*'||TIME('RAGE')
+   Call sysSLEEP(5)
+   cb6=TIME('rage')||'*'||TIME('RAGE')
+   Call sysSLEEP(1)
+   Queue cb5 cb6
+   Call SCBTIMEA
+   return
 

@@ -57,31 +57,17 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
+  parse source . . fileSpec
 
-  testUnitList = .list~of(.array~of(.whiteSpace.testGroup, .list~new))
+  group = .TestGroup~new(fileSpec)
 
-  srcLines = .array~new
-  do i = 1 to 150 until srcLines[i] = "*/"
-     srcLines[i] = sourceline(i)
-  end
+  group~add(.whiteSpace.testGroup)
 
-  call makeDirTestInfo .whiteSpace.testGroup, srcLines
+  if group~isAutomatedTest then return group
 
-  parse source s
-  .whiteSpace.testGroup~testCaseInfo~setentry("test_Case-source", s)
+  testResult = group~suite~execute~~print
 
-  if \ .local~hasentry("bRunTestsLocally") then
-     .local~bRunTestsLocally = .true
-
-  if .bRunTestsLocally == .true then do
-    ts = .TestSuite~new
-    ts~addTest(.TestSuite~new(.whiteSpace.testGroup))
-
-    testResult = ts~execute
-    call simpleFormatTestResults testResult
-  end
-
-return testUnitList
+return testResult
 -- End of entry point.
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\

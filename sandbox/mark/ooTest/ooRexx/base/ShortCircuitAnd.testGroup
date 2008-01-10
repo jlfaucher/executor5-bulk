@@ -58,12 +58,7 @@
 /*----------------------------------------------------------------------------*/
   parse source . . fileSpec
 
-  lines = .array~new
-  do i = 1 until lines[i] = "*/"
-    lines[i] = sourceline(i)
-  end
-
-  group = .TestGroup~new(fileSpec, lines)
+  group = .TestGroup~new(fileSpec)
   group~add(.ShortCircuitAnd.testGroup)
 
   if group~isAutomatedTest then return group
@@ -75,8 +70,6 @@ return testResult
 ::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
 ::class "ShortCircuitAnd.testGroup" subclass ooTestCase public
-
-
 
 ::method "test_if"
 

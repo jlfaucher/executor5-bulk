@@ -161,10 +161,9 @@
 
 if \ .local~hasEntry(ooRexxUnit.version) then do
 
-  -- Define the version number with: X.Y.Z  Where X is the ooRexxUnit.cls
-  -- version, Y is the minimum ooRexx interpreter level required, and Z is the
-  -- date the version was changed.
-  .local~ooRexxUnit.version=200.320.20080107
+  -- Define the version number with: x.x.x_y.y.y  Where x is the ooRexxUnit.cls
+  -- version, and y is the minimum ooRexx interpreter level required.
+  .local~ooRexxUnit.version=2.0.0_3.2.0
 
   .local~chars.NonPrintable=xrange("00"x, "1F"x) || "FF"x  -- define non-printable chars
 
@@ -199,6 +198,9 @@ if \ .local~hasEntry(ooRexxUnit.version) then do
   if currentPath~caseLessPos(.ooRexxUnit.dir) == 0 then
      oldPath = value("PATH", .ooRexxUnit.dir || .ooRexxUnit.path.separator || currentPath, 'ENVIRONMENT')
 
+  -- Add the test utility class to the local environment so that it is available
+  -- to anyone running in this process.
+  .local~put(.TESTUTIL, 'TESTUTIL')
 end
 
 -- End of entry point.
@@ -368,12 +370,6 @@ return leading || trailing
 -- End pathCompact( path, len )
 
 
-/** enQuote()
- * Enclose a string in double quotes.
- */
-::routine enQuote public
-  return '"' || arg(1)~string || '"'
-
 /** pp()
  * Enclose a string value in square brackets "pretty print."
  */
@@ -419,13 +415,13 @@ return leading || trailing
 
         if start>1 then -- printable chars before section with non-printable chars ?
         do
-           chunk=enQuote(substr(str, 1, start-1))
+           chunk = .TestUtil~enQuote(substr(str, 1, start-1))
            if tmpStr~length<>0 then tmpStr~~append(" || ")~~append(chunk)
                                else tmpStr~append(chunk)
         end
 
             -- extract non-printable chars, encode them as a Rexx hex string
-        chunk=enQuote(substr(str, start, end-start+1)~c2x) || "x"
+        chunk = .TestUtil~enQuote(substr(str, start, end-start+1)~c2x) || "x"
 
         if tmpStr~length<>0 then tmpStr~~append(" || ")~~append(chunk)
                             else tmpStr~append(chunk)
@@ -435,7 +431,7 @@ return leading || trailing
      end
      else   -- only printable chars available respectively left
      do
-        if tmpStr~length<>0 then tmpStr~~append(" || ")~~append(enquote(str))
+        if tmpStr~length<>0 then tmpStr~~append(" || ")~~append(.TestUtil~enquote(str))
                             else tmpStr~append(str)
         leave         -- str=""
      end
@@ -449,6 +445,20 @@ return leading || trailing
  */
 ::routine timeStamp public
   return pp(date("S") time("L"))
+
+
+/* class: TestUtil - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+
+    A class with static (class) utility methods that can be used anywhere.
+
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::class "TestUtil" public
+
+/** enQuote()
+ * Enclose a string in double quotes.
+ */
+::method enQuote class
+  return '"' || arg(1)~string || '"'
 
 
 /* class: NoiseAdjustable- - - - - - - - - - - - - - - - - - - - - - - - - - -*\
@@ -1227,7 +1237,7 @@ return str
 ::method formatObjectInfo private
   use arg o, hint = ""
 
-  return pp(hint || ppp(o~string)", identityHash="enQuote(o~identityHash))
+  return pp(hint || ppp(o~string)", identityHash=".TestUtil~enQuote(o~identityHash))
 
 
 
