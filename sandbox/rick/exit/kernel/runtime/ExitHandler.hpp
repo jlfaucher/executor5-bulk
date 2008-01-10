@@ -44,7 +44,7 @@
 #ifndef Included_ExitHandler_hpp
 #define Included_ExitHandler_hpp
 
-#include "rexxcore.h"
+#include "RexxCore.h"
 
 class RexxActivity;
 

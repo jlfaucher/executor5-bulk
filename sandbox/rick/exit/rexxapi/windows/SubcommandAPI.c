@@ -53,7 +53,6 @@
 /*                 RexxRegisterExitDll()   Register a system exit    */
 /*                 RexxDeregisterExit()    Drop a system exit        */
 /*                 RexxQueryExit()         Query a system exit       */
-/*                 RexxCallExit()          Execute a system exit     */
 /*                 RexxRegisterFunctionExe() Register a REXX function*/
 /*                 RexxRegisterFunctionDll() Register a REXX function*/
 /*                 RexxDeregisterFunction()  Drop a REXX function    */

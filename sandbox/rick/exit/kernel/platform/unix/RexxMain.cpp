@@ -541,8 +541,8 @@ void  SysRunProgram(
       while (self->exits[i].sysexit_code != RXENDLST)
       {
                                        /* enable this exit                  */
-        ActivityManager::currentActivity->setSysExit(self->exits[i]);
-        i++;                           /* step to the next exit             */
+        ActivityManager::currentActivity->setExitHandler(self->exits[i]);
+        i++;                             /* step to the next exit             */
       }
     }
                                        /* get a new argument array          */

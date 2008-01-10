@@ -2013,8 +2013,8 @@ RexxObject * RexxActivation::rexxVariable(   /* retrieve a program entry        
  *
  * @return true if the macrospace function was located and called.
  */
-bool RexxActivation::callMacroSpaceFunction(RexxString * target, RexxObject ** arguments,
-    size_t argcount, RexxString * calltype, int order, ProtectedObject &result)
+bool RexxActivation::callMacroSpaceFunction(RexxString * target, RexxObject **_arguments,
+    size_t _argcount, RexxString * calltype, int order, ProtectedObject &_result)
 {
     unsigned short position;             /* located macro search position     */
     const char *macroName = target->getStringData();  /* point to the string data          */
@@ -2034,7 +2034,7 @@ bool RexxActivation::callMacroSpaceFunction(RexxString * target, RexxObject ** a
             return false;
         }
         /* run as a call                     */
-        routine->call(activity, (RexxObject *)this, target, arguments, argcount, calltype, OREF_NULL, EXTERNALCALL, result);
+        routine->call(activity, (RexxObject *)this, target, _arguments, _argcount, calltype, OREF_NULL, EXTERNALCALL, _result);
         // merge (class) definitions from macro with current settings
         getSource()->mergeRequired(((RexxCode *)routine->getCode())->getSourceObject());
         return true;                       /* return success we found it flag   */
@@ -2054,8 +2054,8 @@ bool RexxActivation::callMacroSpaceFunction(RexxString * target, RexxObject ** a
  *
  * @return true if the function was located and called.
  */
-bool RexxActivation::callRegisteredExternalFunction(RexxString *target, RexxObject **arguments, size_t argcount,
-    RexxString *calltype, ProtectedObject &result)
+bool RexxActivation::callRegisteredExternalFunction(RexxString *target, RexxObject **_arguments, size_t _argcount,
+    RexxString *calltype, ProtectedObject &_result)
 {
     /* default return code buffer        */
     char      default_return_buffer[DEFRXSTRING];
@@ -2095,7 +2095,7 @@ bool RexxActivation::callRegisteredExternalFunction(RexxString *target, RexxObje
 
     /* allocate enough memory for all arguments */
     /* at least one item needs to be allocated to prevent error reporting */
-    PCONSTRXSTRING argrxarray = (PCONSTRXSTRING) SysAllocateResultMemory(sizeof(CONSTRXSTRING) * Numerics::maxVal(argcount,1));
+    PCONSTRXSTRING argrxarray = (PCONSTRXSTRING) SysAllocateResultMemory(sizeof(CONSTRXSTRING) * Numerics::maxVal(argcount, (size_t)1));
     if (argrxarray == OREF_NULL)    /* memory error?                   */
     {
         reportException(Error_System_resources);
@@ -2103,10 +2103,10 @@ bool RexxActivation::callRegisteredExternalFunction(RexxString *target, RexxObje
 
     ProtectedSet savedObjects;
     /* create RXSTRING arguments         */
-    for (size_t argindex=0; argindex < argcount; argindex++)
+    for (size_t argindex=0; argindex < _argcount; argindex++)
     {
         /* get the next argument             */
-        RexxObject *argument = (RexxString *)arguments[argindex];
+        RexxObject *argument = _arguments[argindex];
         if (argument != OREF_NULL)       /* have an argument?                 */
         {
             /* force to string form              */
@@ -2139,7 +2139,7 @@ bool RexxActivation::callRegisteredExternalFunction(RexxString *target, RexxObje
     /* get ready to call the function    */
     activity->exitKernel(this);
     /* now call the external function    */
-    APIRET rc = RexxCallFunction(funcname, argcount, argrxarray, &functionrc, &funcresult, queuename);
+    APIRET rc = RexxCallFunction(funcname, _argcount, argrxarray, &functionrc, &funcresult, queuename);
     activity->enterKernel();           /* now re-enter the kernel           */
 
 /* END CRITICAL window here -->>  kernel calls now allowed again            */
@@ -2153,7 +2153,7 @@ bool RexxActivation::callRegisteredExternalFunction(RexxString *target, RexxObje
             if (funcresult.strptr)         /* If we have a result, return it    */
             {
                 /* make a string result              */
-                result = new_string(funcresult);
+                _result = new_string(funcresult);
                 /* user give us a new buffer?        */
                 if (funcresult.strptr != default_return_buffer )
                 {

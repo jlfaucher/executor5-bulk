@@ -164,7 +164,7 @@ RexxObject * SysCommand(
 
   sbrc = 0;                               /* set initial subcom return code */
                                        /* get ready to call the function    */
-  activity->exitKernel(activation, OREF_COMMAND, true);
+  activity->exitKernel(activation);
   rc=RexxCallSubcom(current_address, NULL, &rxstrcmd, &flags, &sbrc, &retstr);
   activity->enterKernel();             /* now re-enter the kernel           */
 

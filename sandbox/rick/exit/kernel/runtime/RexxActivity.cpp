@@ -2455,7 +2455,7 @@ RexxString *RexxActivity::traceInput(  /* read a line of trace input        */
         if (stream != OREF_NULL)           /* have a stream?                    */
         {
             /* read from it                      */
-            RexxString *value = (RexxString *)stream->sendMessage(OREF_LINEIN);
+            value = (RexxString *)stream->sendMessage(OREF_LINEIN);
             /* get something real?               */
             if (value == (RexxString *)TheNilObject)
             {
@@ -2487,7 +2487,7 @@ RexxString *RexxActivity::pullInput(   /* read a line of pull input         */
         if (stream != OREF_NULL)           /* have a data queue?                */
         {
             /* pull from the queue               */
-            RexxString *value = (RexxString *)stream->sendMessage(OREF_PULL);
+            value = (RexxString *)stream->sendMessage(OREF_PULL);
             /* get something real?               */
             if (value == (RexxString *)TheNilObject)
             {
@@ -2530,7 +2530,7 @@ RexxString *RexxActivity::lineIn(
         if (stream != OREF_NULL)           /* have a stream?                    */
         {
             /* read from it                      */
-            RexxString *value = (RexxString *)stream->sendMessage(OREF_LINEIN);
+            value = (RexxString *)stream->sendMessage(OREF_LINEIN);
             /* get something real?               */
             if (value == (RexxString *)TheNilObject)
             {
