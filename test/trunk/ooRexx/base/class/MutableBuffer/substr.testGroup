@@ -135,7 +135,7 @@ return testGroupList
 
 ::method 'test002'
     mb = .mutablebuffer~new('')
-    self~assertSame('subTest01',,mb~substr(1))
+    self~assertSame('subTest01',"",mb~substr(1))
 
 ::method 'test003'
     mb = .mutablebuffer~new(.vblank)
@@ -159,7 +159,7 @@ return testGroupList
 
 ::method 'test008'
     mb = .mutablebuffer~new(copies('5C'x,10000))
-    self~assertSame('subTest01',,mb~substr('+999999999'))
+    self~assertSame('subTest01',"",mb~substr('+999999999'))
 
 ::method 'test009'
     self~expectSyntax(93.924)
