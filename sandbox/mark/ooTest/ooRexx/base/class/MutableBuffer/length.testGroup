@@ -56,72 +56,22 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
+  parse source . . fileSpec
+  group = .TestGroup~new(fileSpec)
 
+  group~addWithSuite(.length.testGroup, .lengthSuite)
 
--------------------------------------------------------------------------------------------
--- ===> adapt the "testGroupList" to your testCase classes; each element in the list is <===
--- ===> an array object, the first element containing the testCase class object, the   <===
--- ===> second element is a list of test method names which are regarded to be         <===
--- ===> mandatory (if the list remains empty all test methods are mandatory)           <===
+  if group~isAutomatedTest then return group
 
-   /* list of array objects, each containing the testGroup class object and an
-      optional list of mandatory test case methods name                       */
-mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
-testGroupList=.list~of( .array~of(.length.testGroup,  mandatoryTestMethods) )
+  testResult = group~suite~execute~~print
 
-
--------------------------------------------------------------------------------------------
--- ===> the following code needs not to be individualized                              <===
-
-   -- read top comment, containing infos about this program
-arrLines=.array~new
-do i=1 to 150 until arrLines[i]="*/"
-   arrLines[i]=sourceline(i)
-end
-      -- supply information for the testClass(es) in this file; the class attribute
-      -- "TestCaseInfo" (a directory object, index points to a queue) will store
-      -- the parsed infos
-aTestGroupClass=testGroupList~at(testGroupList~first)[1] -- get first testClass
-
-   -- will parse the array lines and store result in class object
-call makeDirTestInfo aTestGroupClass, arrLines
-tmpDir=aTestGroupClass~TestCaseInfo
-parse source s   -- op_sys invocationType fullPathToThisFile
-tmpDir~setentry("test_Case-source", s)
-
-   -- now add this directory to other testCase classes, if any left
-do arr over testGroupList
-   if arr[1]=aTestGroupClass then iterate  -- already handled
-   arr[1]~TestCaseInfo=tmpDir             -- save info in class object
-end
-
--- if this file is CALLed or REQUIRED then define an entry "bRunTestLocally" in .local
--- and set it to .false; this way the independent local invocation of the tests is inhibited
-if .local~hasentry("bRunTestsLocally")=.false then
-   .local~bRunTestsLocally=.true -- if this file is executed directly, then run tests for debugging
-
-if .bRunTestsLocally=.true then  -- run ALL tests in this test unit
-do
-   ts=.testSuite~new             -- create a testSuite
-   do arr over testGroupList
-      -- create a testSuite for the given test case class, use all its testmethods
-      ts~addTest( .testSuite~new(arr[1]))
-   end
-   -- testResult=.testSuite~new(testGroupClass)~execute
-   testResult=ts~execute       -- now run all the tests
-
-   call simpleFormatTestResults testResult
-end
-
-   /* return list of array objects containing test case classes and
-      optionally list of mandatory test methods                      */
-return testGroupList
+return testResult
+-- End of entry point.
 
 ::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
-::class "length.testGroup" subclass ooTestCase public
-
-::method 'test000'
+::class 'lengthSuite' public subclass ooTestSuite
+::method setUp
     .local~v1 = 'a'
     .local~v30 = copies('8',28)||'  '
     .local~v255 = xrange('01'x,'ff'x)
@@ -129,168 +79,171 @@ return testGroupList
     .local~v32768 = copies('*',32768)
     .local~v100000 = right('z',100000)
 
-::method 'test001'
-    mb = .mutablebuffer~new('')
-    self~assertSame('0', mb~length())
-    self~assertSame('subTest02',mb~length(),''~length())
-
-::method 'test002'
-    mb = .mutablebuffer~new(''x)
-    self~assertSame('0', mb~length())
-    self~assertSame('subTest02',mb~length(),''x~length())
-
-::method 'test0003'
-    mb = .mutablebuffer~new('00'x)
-    self~assertSame('1', mb~length())
-    self~assertSame('subTest02',mb~length(),'00'x~length())
-
-::method 'test004'
-    mb = .mutablebuffer~new('00')
-    self~assertSame('2', mb~length())
-    self~assertSame('subTest02',mb~length(),'00'~length())
-
-::method 'test005'
-    mb = .mutablebuffer~new(.v1)
-    self~assertSame('1', mb~length())
-    self~assertSame('subTest02',mb~length(),.v1~length())
-
-::method 'test006'
-    mb = .mutablebuffer~new(.v30)
-    self~assertSame('30', mb~length())
-    self~assertSame('subTest02',mb~length(),.v30~length())
-
-::method 'test007'
-    mb = .mutablebuffer~new(.v255)
-    self~assertSame('255', mb~length())
-    self~assertSame('subTest02',mb~length(),.v255~length())
-
-::method 'test008'
-    mb = .mutablebuffer~new(.v256)
-    self~assertSame('256', mb~length())
-    self~assertSame('subTest02',mb~length(),.v256~length())
-
-::method 'test009'
-    mb = .mutablebuffer~new(.v32768)
-    self~assertSame('32768', mb~length())
-    self~assertSame('subTest02',mb~length(),.v32768~length())
-
-::method 'test010'
-    mb = .mutablebuffer~new(.v100000)
-    self~assertSame('100000', mb~length())
-    self~assertSame('subTest02',mb~length(),.v100000~length())
-
-::method 'test011'
-    mb = .mutablebuffer~new('zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz')
-    self~assertSame('250', mb~length())
-    self~assertSame('subTest02',mb~length(),'zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz'~length())
-
-::method 'test012'
-    zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz = '1'
-    mb = .mutablebuffer~new(zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz)
-    self~assertSame('1', mb~length())
-    self~assertSame('subTest02',mb~length(),zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz~length())
-
-::method 'test013'
-    zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz = '1'
-    mb = .mutablebuffer~new((zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz||'...'))
-    self~assertSame('4', mb~length())
-    self~assertSame('subTest02',mb~length(),(zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz||'...')~length())
-
-::method 'test014'
-    zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz = '1'
-    mb = .mutablebuffer~new((zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz||.v100000))
-    self~assertSame('100001', mb~length())
-    self~assertSame('subTest02',mb~length(),(zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz||.v100000)~length())
-
-::method 'test015'
-    xre = '200'
-    mb = .mutablebuffer~new('8888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888'X)
-    self~assertSame(.true, mb~length() == xre)
-    self~assertSame('subTest02',mb~length() == xre,'8888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888'X~length() == xre)
-
-::method 'test016'
-    mb = .mutablebuffer~new(.v100000~length())
-    self~assertSame('6', mb~length())
-    self~assertSame('subTest02',mb~length(),.v100000~length()~length())
-
-::method 'test017'
-    mb = .mutablebuffer~new(.v100000~length()||'abc')
-    self~assertSame('9', mb~length())
-    self~assertSame('subTest02',mb~length(),(.v100000~length()||'abc')~length())
-
-::method 'test018'
-    mb = .mutablebuffer~new(17+4)
-    self~assertSame('2', mb~length())
-    self~assertSame('subTest02',mb~length(),(17+4)~length())
-
-::method 'test019'
-    mb = .mutablebuffer~new(+10000000000000000000000000000000000)
-    self~assertSame('14', mb~length())
-    self~assertSame('subTest02',mb~length(),(+10000000000000000000000000000000000)~length())
-
-::method 'test020'
-    mb = .mutablebuffer~new('+10000000000000000000000000000000000')
-    self~assertSame('36', mb~length())
-    self~assertSame('subTest02',mb~length(),'+10000000000000000000000000000000000'~length())
-
-::method 'test021'
-    len1 = 1
-    mb = .mutablebuffer~new(1.0000000001**1000000)
-    self~assertSame(len1, mb~length())
-    self~assertSame('subTest02',mb~length(),1.0000000001**1000000~length())
-
-::method 'test022'
-    mb = .mutablebuffer~new(1111)
-    self~assertSame('4', mb~length())
-    self~assertSame('subTest02',mb~length(),1111~length())
-
-::method 'test023'
-    mb = .mutablebuffer~new('1111')
-    self~assertSame('4', mb~length())
-    self~assertSame('subTest02',mb~length(),'1111'~length())
-
-::method 'test024'
-    mb = .mutablebuffer~new('f1f1f1f1'x)
-    self~assertSame('4', mb~length())
-    self~assertSame('subTest02',mb~length(),'f1f1f1f1'x~length())
-
-::method 'test025'
-    mb = .mutablebuffer~new(...)
-    self~assertSame('3', mb~length())
-    self~assertSame('subTest02',mb~length(),...~length())
-
-::method 'test026'
-    mb = .mutablebuffer~new(nv)
-    self~assertSame('2', mb~length())
-    self~assertSame('subTest02',mb~length(),nv~length())
-
-::method 'test027'
-    mb = .mutablebuffer~new(nv.~string)
-    self~assertSame('3', mb~length())
-    self~assertSame('subTest02',mb~length(),nv.~length())
-
-::method 'test028'
-    mb = .mutablebuffer~new(nv.i)
-    self~assertSame('4', mb~length())
-    self~assertSame('subTest02',mb~length(),nv.i~length())
-
-::method 'test029'
-    mb = .mutablebuffer~new(nv.i)
-    self~assertSame('4', mb~length())
-    self~assertSame('subTest02',mb~length(),nv.i~length())
-
-::method 'test030'
-    mb = .mutablebuffer~new('abcdefgh')
-    self~assertSame(8, mb~length())
-    self~assertSame('subTest02',mb~length(),'abcdefgh'~length())
-
-::method 'test040'
+::method tearDown
     .local~remove(v1)
     .local~remove(v30)
     .local~remove(v255)
     .local~remove(v256)
     .local~remove(v32768)
     .local~remove(v100000)
+
+
+::class "length.testGroup" subclass ooTestCase public
+
+::method 'test001'
+    mb = .mutablebuffer~new('')
+    self~assertSame('0', mb~length())
+    self~assertSame(mb~length(),''~length())
+
+::method 'test002'
+    mb = .mutablebuffer~new(''x)
+    self~assertSame('0', mb~length())
+    self~assertSame(mb~length(),''x~length())
+
+::method 'test0003'
+    mb = .mutablebuffer~new('00'x)
+    self~assertSame('1', mb~length())
+    self~assertSame(mb~length(),'00'x~length())
+
+::method 'test004'
+    mb = .mutablebuffer~new('00')
+    self~assertSame('2', mb~length())
+    self~assertSame(mb~length(),'00'~length())
+
+::method 'test005'
+    mb = .mutablebuffer~new(.v1)
+    self~assertSame('1', mb~length())
+    self~assertSame(mb~length(),.v1~length())
+
+::method 'test006'
+    mb = .mutablebuffer~new(.v30)
+    self~assertSame('30', mb~length())
+    self~assertSame(mb~length(),.v30~length())
+
+::method 'test007'
+    mb = .mutablebuffer~new(.v255)
+    self~assertSame('255', mb~length())
+    self~assertSame(mb~length(),.v255~length())
+
+::method 'test008'
+    mb = .mutablebuffer~new(.v256)
+    self~assertSame('256', mb~length())
+    self~assertSame(mb~length(),.v256~length())
+
+::method 'test009'
+    mb = .mutablebuffer~new(.v32768)
+    self~assertSame('32768', mb~length())
+    self~assertSame(mb~length(),.v32768~length())
+
+::method 'test010'
+    mb = .mutablebuffer~new(.v100000)
+    self~assertSame('100000', mb~length())
+    self~assertSame(mb~length(),.v100000~length())
+
+::method 'test011'
+    mb = .mutablebuffer~new('zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz')
+    self~assertSame('250', mb~length())
+    self~assertSame(mb~length(),'zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz'~length())
+
+::method 'test012'
+    zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz = '1'
+    mb = .mutablebuffer~new(zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz)
+    self~assertSame('1', mb~length())
+    self~assertSame(mb~length(),zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz~length())
+
+::method 'test013'
+    zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz = '1'
+    mb = .mutablebuffer~new((zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz||'...'))
+    self~assertSame('4', mb~length())
+    self~assertSame(mb~length(),(zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz||'...')~length())
+
+::method 'test014'
+    zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz = '1'
+    mb = .mutablebuffer~new((zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz||.v100000))
+    self~assertSame('100001', mb~length())
+    self~assertSame(mb~length(),(zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz||.v100000)~length())
+
+::method 'test015'
+    xre = '200'
+    mb = .mutablebuffer~new('8888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888'X)
+    self~assertSame(.true, mb~length() == xre)
+    self~assertSame(mb~length() == xre,'8888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888'X~length() == xre)
+
+::method 'test016'
+    mb = .mutablebuffer~new(.v100000~length())
+    self~assertSame('6', mb~length())
+    self~assertSame(mb~length(),.v100000~length()~length())
+
+::method 'test017'
+    mb = .mutablebuffer~new(.v100000~length()||'abc')
+    self~assertSame('9', mb~length())
+    self~assertSame(mb~length(),(.v100000~length()||'abc')~length())
+
+::method 'test018'
+    mb = .mutablebuffer~new(17+4)
+    self~assertSame('2', mb~length())
+    self~assertSame(mb~length(),(17+4)~length())
+
+::method 'test019'
+    mb = .mutablebuffer~new(+10000000000000000000000000000000000)
+    self~assertSame('14', mb~length())
+    self~assertSame(mb~length(),(+10000000000000000000000000000000000)~length())
+
+::method 'test020'
+    mb = .mutablebuffer~new('+10000000000000000000000000000000000')
+    self~assertSame('36', mb~length())
+    self~assertSame(mb~length(),'+10000000000000000000000000000000000'~length())
+
+::method 'test021'
+    len1 = 1
+    mb = .mutablebuffer~new(1.0000000001**1000000)
+    self~assertSame(len1, mb~length())
+    self~assertSame(mb~length(),1.0000000001**1000000~length())
+
+::method 'test022'
+    mb = .mutablebuffer~new(1111)
+    self~assertSame('4', mb~length())
+    self~assertSame(mb~length(),1111~length())
+
+::method 'test023'
+    mb = .mutablebuffer~new('1111')
+    self~assertSame('4', mb~length())
+    self~assertSame(mb~length(),'1111'~length())
+
+::method 'test024'
+    mb = .mutablebuffer~new('f1f1f1f1'x)
+    self~assertSame('4', mb~length())
+    self~assertSame(mb~length(),'f1f1f1f1'x~length())
+
+::method 'test025'
+    mb = .mutablebuffer~new(...)
+    self~assertSame('3', mb~length())
+    self~assertSame(mb~length(),...~length())
+
+::method 'test026'
+    mb = .mutablebuffer~new(nv)
+    self~assertSame('2', mb~length())
+    self~assertSame(mb~length(),nv~length())
+
+::method 'test027'
+    mb = .mutablebuffer~new(nv.~string)
+    self~assertSame('3', mb~length())
+    self~assertSame(mb~length(),nv.~length())
+
+::method 'test028'
+    mb = .mutablebuffer~new(nv.i)
+    self~assertSame('4', mb~length())
+    self~assertSame(mb~length(),nv.i~length())
+
+::method 'test029'
+    mb = .mutablebuffer~new(nv.i)
+    self~assertSame('4', mb~length())
+    self~assertSame(mb~length(),nv.i~length())
+
+::method 'test030'
+    mb = .mutablebuffer~new('abcdefgh')
+    self~assertSame(8, mb~length())
+    self~assertSame(mb~length(),'abcdefgh'~length())
 
 ::method 'testLength'
    b = .mutableBuffer~new("1234")
