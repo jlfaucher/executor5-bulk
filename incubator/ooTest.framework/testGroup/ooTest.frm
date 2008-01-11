@@ -296,25 +296,29 @@ return a
     use strict arg test
     return self~class~nameForTest(test)
 
-
   ::attribute names get class
   ::attribute names set class private
+  ::attribute namesString get class
+  ::attribute namesString set class private
 
   ::method init class
-    expose names
+    expose names namesString
     names = .directory~new
+    namesString = ""
 
   ::method populate class private
     expose names
-
     itr = self~methods(.nil)
     do while itr~available
       name = itr~index
       if name~right(5) == "_TEST" then do
         name = name~left(name~length - 5)
         number = itr~item~source[1]~word(2)
+
+        n = name~lower(2)
         names~setEntry(name, number)
-        names~setEntry(number, name~lower(2))
+        names~setEntry(number, n)
+        namesString = namesString n
       end
       itr~next
     end
