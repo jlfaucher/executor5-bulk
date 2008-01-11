@@ -1,0 +1,110 @@
+#!/usr/bin/rexx
+/*
+   name:             Method.testGroup
+   author:           Rony G. Flatscher
+   date:             2007-03-21
+   version:          0.0.3
+
+-- line commented lines are ignored, when building the directory of infos from this header
+   changed:          2007-04-03, ---rgf, fixed coding error in "test_New_And_Source"
+                     2007-05-30, ---rgf, fixed a bug in "test_New_And_Source, subtest_01" (comparing with array instead of first entry)
+
+   languageLevel:    6.0.1
+   purpose:          Test the methods of the class CircularQueue.
+   remark:           just one test case which documents a bug in 3.1.1, cf.
+                     <https://sourceforge.net/tracker/index.php?func=detail&aid=1682634&group_id=119701&atid=684730>
+
+   license:          CPL 1.0 (Common Public License v1.0, see below)
+   link:
+
+// category needs not to be numbered, importance is given by position (1=most important)
+   category:         ooRexx
+   category:         Base
+   category:         Class
+   category:         Method
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . fileSpec
+
+  group = .TestGroup~new(fileSpec)
+  group~add(.Method.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+
+::class "Method.testGroup" subclass ooTestCase public
+
+::method "test_New_And_Source"
+  name="AHA"
+  value="say 'hello'; say; say 'hallo';"
+  m=.method~new(key, value)
+  self~assertSame(value, m~source~at(1))
+
+
+  value2=.array~of("say 'hello';", "say;", "say 'hallo';")
+  m2=.method~new(key, value2)
+  self~assertEquals(value2, m2~source)
+
+
+  value3=.array~of("EXPOSE logLevel; parse arg logLevel;" ,-
+                   "a=b",- -- <-- *NO* semi-colon at end!
+                   "-- some line comment " ,-
+                   "say 'hello world' " )
+  m3=.method~new(key, value3)
+  self~assertEquals(value3, m3~source)
+
+
+  value4=.array~of("EXPOSE logLevel; parse arg logLevel;" ,-
+                   "a=b;",- -- <-- semi-colon at end!
+                   "-- some line comment " ,-
+                   "say 'hello world' " )
+  m4=.method~new(key, value4)
+  src4=m4~source
+  do i=1 to value4~items
+     self~assertEquals(value4[i], src4[i])
+  end
+
+  self~assertEquals(value4, m4~source)
+
