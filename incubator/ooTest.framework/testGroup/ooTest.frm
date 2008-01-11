@@ -209,6 +209,8 @@ return a
   ::method TEST_ERRORS_RC;          return 3
   ::method TEST_NO_TESTS_RC  class; return 4
   ::method TEST_NO_TESTS_RC;        return 4
+  ::method TEST_BADARGS_RC   class; return 5
+  ::method TEST_BADARGS_RC;         return 5
 
   -- SL (back SLash or forward SLash) abbreviation for the directory separator.
   ::method SL  class; return .ooRexxUnit.directory.separator
@@ -252,6 +254,17 @@ return a
 
   ::method all
     return self~class~all
+
+  /** allNames()
+   * Returns a string of all the test type names separated by blanks.
+   */
+  ::method allNames class
+
+    if self~names~default == .nil then self~populate
+    return self~namesString
+
+  ::method allNames
+    return self~class~allNames
 
   /** testForName()
    * Returns the numeric test type constant for the specified name, or .nil if

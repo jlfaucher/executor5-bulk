@@ -107,6 +107,8 @@ return 0
 
 ::class 'CommandLine' public inherit ooTestConstants NoiseAdjustable
 
+::attribute version get
+::attribute version set private
 ::attribute needsHelp get
 ::attribute needsHelp set private
 ::attribute root get
@@ -117,7 +119,10 @@ return 0
 ::attribute testTypes set private
 
 ::attribute doLongHelp private
-::attribute errMsg
+::attribute errMsg private
+::attribute doVersionOnly private
+
+::attribute optTable private
 
 ::method init
   expose cmdLine
@@ -129,18 +134,173 @@ return 0
   if self~hasHelpArg then return
 
   self~parse
+  if self~errMsg \== .nil then return
+  if self~doVersionOnly then do
+  end
+
+::method getCommandLine
+  expose originalCommandLine
+  return originalCommandLine
 
 ::method parse private
-  expose cmdLine
+  expose cmdLine tokenCount errMsg
 
-  cmdLine = cmdLine~strip
+  cmdLine = cmdLine~space(1)
+  tokenCount = cmdLine~words
 
-  done = self~checkFormat(cmdLine)
+  done = self~checkFormat
   if done then return
 
+  do i = 1 to tokenCount
+    token = cmdLine~word(i); say 'i:' i "token:" token
+    select
+      when token~abbrev("--") then j = self~parseLongOpt(token, i)
+
+      when token~abbrev("-") then j = self~parseShortOpt(token, i)
+
+      otherwise do
+        -- The error message list is not started at this point.
+        self~errMsg = .list~of("Command line arguments must start with '-' or '--'")
+        sefl~errMsg~insert("  Error at:" cmdLine~word(i))
+        self~needsHelp = .true
+        return
+      end
+    end
+    -- End select
+    say 'j is' j
+    if j < 0 then do
+      -- The error message list *may* already have some messages.  We want these
+      -- messaged to be first in the print out.
+      if errMsg == .nil then errMsg = .list~new
+
+      k = errMsg~insert("Bad command line", .nil)
+      errMsg~insert("  Error at:" cmdLine~word(i), k)
+      self~needsHelp = .true
+      return
+    end
+    i = j
+  end
+  -- End do
+
+::method parseLongOpts private
+  self~addErrorMsg("Long argument options are not implemented yet.")
+  return -1
+
+::method parseShortOpt private
+  expose cmdLine tokenCount
+  use arg word, i
+
+  j = i
+
+  select
+    when word == '-v' then do
+      self~doVersionOnly = .true
+    end
+
+    when word == '-R' then do
+      if i == tokenCount then do
+        self~addErrorMsg("The -R option must be followed by a directory name")
+        j = -1; leave
+      end
+
+      j += 1
+      if (j + 1) < tokenCount~words, \ self~tokenIsOption(j + 1) then do
+        self~addErrorMsg("The -R option must be followed by a single directory name")
+        j = -1; leave
+      end
+
+      self~root = cmdLine~word(j) || self~SL
+    end
+
+    when word == '-T' then do
+      j = self~addTestTypes(i, '-T')
+    end
+
+    when word == '-V' then do
+      if i == tokenCount then do
+        self~addErrorMsg("The -V option must be followed by the verbosity level")
+        j = -1; leave
+      end
+
+      j += 1
+      if (j + 1) < tokenCount~words, \ self~tokenIsOption(j + 1) then do
+        self~addErrorMsg("The -V option must be followed by only 1 verbosity level")
+        j = -1; leave
+      end
+
+      level = cmdLine~word(j)
+      if \ isWholeRange(level, self~MIN_VERBOSITY, self~MAX_VERBOSITY) then do
+        self~addErrorMsg("The -V option must be followed by a valid verbosity level; found" level)
+        self~addErrorMsg("  Valid levels are in the range of" self~MIN_VERBOSITY "to" self~MAX_VERBOSITY)
+        j = -1; leave
+        self~setVerbosity(level)
+      end
+    end
+
+    when word == '-X' then do
+      j = self~addTestTypes(i, '-X')
+    end
+
+    otherwise return do
+      self~addErrorMsg( '"'cmdLine~word(i)'"' "is not a valid option")
+      j = -1
+  end
+  -- End select
+
+  return j
+
+::method addTestTypes
+  expose cmdLine tokenCount optTable
+  use strict arg i, opt
+
+  if i == tokenCount then do
+    self~addErrorMsg("The" opt "option must be followed by at least 1 test type")
+    return -1
+  end
+
+  j = i + 1
+  endPos = cmdLine~wordPos(" -", j)
+  if endPos = 0 then endPos = tokenCount
+
+  types = makeSetOfWords(cmdLine~subWord(j, (endPos - j + 1)))
+  j = endPos
+
+  tmp = .set~new
+  do t over types
+    say 't' t
+    testType = .ooTestTypes~testForName(t)
+    say 'testType' testType
+    if testType == .nil then do
+      self~addErrorMsg("The" opt "option must be followed by valid test types")
+      self~addErrorMsg(" " t "is not a valid test type.")
+      self~addErrorMsg("  Valid types are:" .ooTestTypes~allNames)
+      return -1
+    end
+    tmp~put(testType)
+  end
+
+  if opt == '-T' then optTable['testTypeIncludes'] = tmp
+  else optTable['testTypesExcludes'] = tmp
+
+  return j
+
+::method isOptionToken private
+  expose cmdLine tokenCount
+  use strict arg i
+
+  if i > tokenCount then return .false
+  else return cmdLind~word(i)~abbrev("-")
+
+
+/** addErrorMsg()  Adds msg to the end of the error messages list. */
+::method addErrorMsg private
+  expose errMsg
+  use strict arg msg
+  if errMsg == .nil then errMsg = .list~new
+  errMsg~insert(msg)
 
 ::method checkFormat private
-  use strict arg cmdLine
+  expose cmdLine tokenCount optTable
 
   if cmdLine~left(1) == "-" then return .false
 
@@ -150,22 +310,33 @@ return 0
   --  directoryName testFile
   --
   -- For now just support testFileName
-  if cmdLine~words > 2 then do
-    self~errMsg = .list~of("Command line arguments must start with '-' or '--'")
+  if tokenCount > 1 then do
+    self~addErrorMsg("Command line arguments must start with '-' or '--'")
     self~needsHelp = .true
-    return .true
+  end
+  else do
+    optTable['file'] = cmdLine
   end
 
-::method setAllDefaults private
+  return .true
 
+::method setAllDefaults private
+  expose cmdLine originalCommandLine
+
+  originalCommandLine = cmdLine~copy
+
+  self~version = "0.9.0"
   self~needsHelp = .false
   self~doLongHelp = .false
   self~errMsg = .nil
+  self~doVersionOnly = .false
 
   self~setVerbosity(self~DEFAULT_VERBOSITY)
   self~root      = self~TEST_ROOT || self~SL
   self~testTypes = self~TEST_TYPES_DEFAULT
   self~ext       = self~TEST_CONTAINER_EXT
+
+  self~optTable = .table~new
 
 
 ::method hasHelpArg private
@@ -182,19 +353,46 @@ return 0
   return .true
 
 ::method showHelp
-  say "ooTest Framwork version" .ooTest_Framework_version "testOORexx version 0.9.0"
-  say "usage: testOORexx [OPTIONS]"
-  say "Try `grep --help' for more information."
+  expose errMsg
+
+  say "testOORexx version" self~version "ooTest Framwork version" .ooTest_Framework_version
+  if self~doVersionOnly then return self~TEST_SUCCESS_RC
+
+  say
   if self~doLongHelp then return self~longHelp
 
   if errMsg == .nil then ret = self~TEST_HELP_RC
-  else ret = sefl~TEST_BADARGS_RC
+  else do
+    ret = self~TEST_BADARGS_RC
+    do line over errMsg
+      say line
+    end
+    say
+  end
 
-  say "Help is not available yet"
-  return
+  say "usage: testOORexx [OPTIONS]"
+  say "Try 'testOORexx --help' for more information."
+
+  return ret
 
 ::method longHelp private
-  say 'There is no extended help available'
-  return self~TEST_HELP_RC
+  say "usage: testOORexx [OPTIONS]"
+  say 'Test the ooRexx interpreter using OPTIONS.  With no options runs'
+  say 'the entire automated test suite.'
+  say
+  say 'Options must start with "-" or "--"'
+  say
+  say 'Test selection:'
+  say '  -R, --root=DIR               DIR is root of search tree'
+  say '  -T, --test-types=T1 T2 ..    Include test types T1 T2 ...'
+  say '  -X  --exclude-types=X1 X2 .. Exclude test types X1 X2 ...'
+  say
+  say 'Output control:'
+  say '  -h                           Show short help'
+  say '      --help                   Show this help'
+  say '  -v, --version                Show version and quit'
+  say '  -V, --verbose=NUM            Set vebosity to NUM'
 
+
+  return self~TEST_HELP_RC
 
