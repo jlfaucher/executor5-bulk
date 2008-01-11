@@ -88,9 +88,13 @@ arguments = arg(1)
    testResult~addEvent(suiteBuildPhase~~done)
 
    executionPhase  = .PhaseReport~new(file, .PhaseReport~TEST_EXECUTION_PHASE)
+   msg = 'Executing automated test suite'
    if \ cl~noTestCaseTicks, \ cl~noTicks then do
-     executionPhase~tickTock('Executing automated test suite')
-   end
+     executionPhase~tickTock(msg)
+   else
+     say msg
+
+   -- This next line is what it is all about.
    suite~execute(testResult)
 
    testResult~addEvent(executionPhase~~done)
