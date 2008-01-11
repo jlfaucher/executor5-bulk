@@ -277,6 +277,65 @@ return
 return
 
 
+/*----------------------------------------------------------------------------*/
+/* Box class                                                                  */
+/*----------------------------------------------------------------------------*/
+
+::class GtkBox public subclass GtkContainer
+
+::method init
+if arg() > 0 then raise syntax 40.4 array ('INIT', 0)
+return
+
+::method pack_end
+-- insert an object into the box with attributes
+use strict arg mywidget, expand, fill, padding
+call GrxBoxPackEnd self~pointer, mywidget~pointer, expand, fill, padding
+return
+
+::method pack_end_defaults
+-- insert an object into the box with default attributes
+use strict arg mywidget
+self~pack_end(mywidget, .true, .true, 0)
+return
+
+::method pack_start
+-- insert an object into the box with attributes
+use strict arg mywidget, expand, fill, padding
+call GrxBoxPackStart self~pointer, mywidget~pointer, expand, fill, padding
+return
+
+::method pack_start_defaults
+-- insert an object into the box with default attributes
+use strict arg mywidget
+self~pack_start(mywidget, .true, .true, 0)
+return
+
+
+/*----------------------------------------------------------------------------*/
+/* VBox class                                                                 */
+/*----------------------------------------------------------------------------*/
+
+::class GtkVBox public subclass GtkBox
+
+::method init
+if arg() = 0 then self~pointer = GrxVBoxNew()
+else use strict arg self~pointer
+return
+
+
+/*----------------------------------------------------------------------------*/
+/* HBox class                                                                 */
+/*----------------------------------------------------------------------------*/
+
+::class GtkHBox public subclass GtkBox
+
+::method init
+if arg() = 0 then self~pointer = GrxHBoxNew()
+else use strict arg self~pointer
+return
+
+
 /*============================================================================*/
 /* Class: Window                                                              */
 /*============================================================================*/
