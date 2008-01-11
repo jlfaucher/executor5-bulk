@@ -259,8 +259,9 @@ return a
    * Returns a string of all the test type names separated by blanks.
    */
   ::method allNames class
+    expose names
 
-    if self~names~default == .nil then self~populate
+    if names~default == .nil then self~populate
     return self~namesString
 
   ::method allNames
@@ -307,7 +308,7 @@ return a
     namesString = ""
 
   ::method populate class private
-    expose names
+    expose names namesString
     itr = self~methods(.nil)
     do while itr~available
       name = itr~index

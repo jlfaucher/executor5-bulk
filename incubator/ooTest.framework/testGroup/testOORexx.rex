@@ -143,7 +143,7 @@ return 0
   return originalCommandLine
 
 ::method parse private
-  expose cmdLine tokenCount errMsg
+  expose cmdLine tokenCount errMsg originalCommandLine
 
   cmdLine = cmdLine~space(1)
   tokenCount = cmdLine~words
@@ -174,7 +174,8 @@ return 0
       if errMsg == .nil then errMsg = .list~new
 
       k = errMsg~insert("Bad command line", .nil)
-      errMsg~insert("  Error at:" cmdLine~word(i), k)
+      errMsg~insert("  CommandLine:" originalCommandLine, k)
+      errMsg~insert("  Error at:   " cmdLine~word(i), k)
       self~needsHelp = .true
       return
     end
