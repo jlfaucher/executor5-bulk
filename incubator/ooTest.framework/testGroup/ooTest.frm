@@ -128,7 +128,7 @@ return s
   -- End select
 
 return a
--- End makeSetOfWords()
+-- End makeArrayOfWords()
 
 
 /** class:  TestContainer
@@ -293,9 +293,32 @@ return a
     if names~DEFAULT == .nil then self~populate
     return names~entry(test)
 
-  ::method nameForTest
-    use strict arg test
-    return self~class~nameForTest(test)
+  /** namesForTests()
+   * Returns a string containing the test names for all the corresponding
+   * numeric test type constants in a collection.  Returns .nil if: one of the
+   * items in the collection is not a test type, the argument is not a
+   * collection.
+   */
+  ::method namesForTests class
+    expose names
+    use strict arg tests
+
+    if \ tests~isA(.Collection) then .nil
+
+    if names~DEFAULT == .nil then self~populate
+
+    names__ = ""
+    do t over tests
+      name = names~entry(t)
+      if name == .nil then return .nil
+      names__ = names__ name
+    end
+
+    return names__
+
+  ::method namesForTests
+    use strict arg tests
+    return self~class~namesForTests(tests)
 
   ::attribute names get class
   ::attribute names set class private
@@ -716,8 +739,18 @@ return a
     say "[Skipped test group]" s~when
     say "  File:" pathCompact(s~where, 70)
     say " " s~reason
-    if s~additional \== .nil then
-      say " " s~additional
+
+    if s~additional \== .nil then do
+      -- We use insider knowledge here.  The ooTestFinder starts the additional
+      -- text with 'Specified Test Types' and adds the test types object.  We
+      -- check for that to provide a better output.
+      obj = s~additionalObject
+
+      if obj \== .nil, obj~isA(.set), s~additional~abbrev("Specified Test Types") then
+        say "  Specified Test Types:" .ooTestTypes~namesForTests(obj)
+      else
+        say " " s~additional
+    end
     say
 
 -- End of class ConsoleFormatter
@@ -1852,6 +1885,9 @@ return suite
   ::attribute id get
   ::attribute id set private
 
+  ::attribute isTicking private
+  ::attribute endTicking private
+
   ::method init
     use strict arg file, id
 
@@ -1864,6 +1900,47 @@ return suite
     self~id = id
     self~finish = .nil
     self~isFinished = .false
+    self~isTicking = .false
+    self~endTicking = .true
+
+  /** tickTock()
+   * Outputs dots to the screen in a separate thread.
+   */
+  ::method tickTock unguarded
+    expose isTicking
+    use arg msg
+    reply
+
+    .stdout~charout(msg)
+    isTicking = .true
+    self~endTicking = .false
+    dots = msg~length
+
+    do while \ self~endTicking
+      do i = 1 to 2
+        if self~endTicking then leave
+        j = SysSleep(.5)
+      end
+      if dots == 75 then do
+        .stdout~lineout(".")
+        dots = 0
+      end
+      else do
+        .stdout~charout(".")
+      end
+      dots += 1
+    end
+    .stdout~lineout(".")
+    isTicking = .false
+
+  /** stopTicking()
+   * Provides a way to turn off the tick tock before the duration of this phase
+   * is over.
+   */
+  ::method stopTicking unguarded
+    expose isTicking
+    self~endTicking = .true
+    guard on when \ isTicking
 
   /** done()
    * Tells this phase that the phase is over.  Sets the finish time.  After this
@@ -1873,6 +1950,8 @@ return suite
     use strict arg
     self~finish = .TimeSpan~new(time('F'))
     self~isFinished = .true
+
+    if self~isTicking then self~stopTicking
 
   /** duration()
    * The time spanned by this phase.  If the phase is not done, is not finished,

@@ -847,7 +847,7 @@ return str
   say "    Actual:  " data~actual
 
   if data~msg \== "" then
-    say "    "data~msg
+    say "    Message: " data~msg
   say
 
 ::method printErrorInfo private
