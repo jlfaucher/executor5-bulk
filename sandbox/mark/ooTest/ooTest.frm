@@ -487,6 +487,7 @@ return a
     end
 
     if self~title<>"" then do
+      say
       say self~title
       say
     end
