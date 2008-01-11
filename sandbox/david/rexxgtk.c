@@ -267,6 +267,13 @@ APIRET APIENTRY GrxLoadFuncs(char * Name,
         "GrxWindowStart",
         "GrxWindowConnectSignal",
 
+        "GrxPanedAdd1",
+        "GrxPanedAdd2",
+        "GrxPanedPack1",
+        "GrxPanedPack2",
+        "GrxHPanedNew",
+        "GrxVPanedNew",
+
     };
 
     int f;

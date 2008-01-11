@@ -63,7 +63,8 @@ OBJECTS = rexxgtk.obj \
 	grxcontainer.obj \
 	grxqueue.obj \
 	grxlabel.obj \
-	grxbutton.obj
+	grxbutton.obj \
+	grxpaned.obj
 
 
 # Build the DLL
@@ -93,6 +94,9 @@ grxlabel.obj: grxlabel.c rexxgtk.h
 
 grxbutton.obj: grxbutton.c rexxgtk.h
 	cl -c $(GRXCFLAGS) grxbutton.c
+
+grxpaned.obj: grxpaned.c rexxgtk.h
+	cl -c $(GRXCFLAGS) grxpaned.c
 
 
 

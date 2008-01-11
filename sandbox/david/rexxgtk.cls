@@ -277,9 +277,9 @@ return
 return
 
 
-/*----------------------------------------------------------------------------*/
-/* Box class                                                                  */
-/*----------------------------------------------------------------------------*/
+/*============================================================================*/
+/* Class: Box                                                                 */
+/*============================================================================*/
 
 ::class GtkBox public subclass GtkContainer
 
@@ -312,9 +312,9 @@ self~pack_start(mywidget, .true, .true, 0)
 return
 
 
-/*----------------------------------------------------------------------------*/
-/* VBox class                                                                 */
-/*----------------------------------------------------------------------------*/
+/*============================================================================*/
+/* Class: VBox                                                                */
+/*============================================================================*/
 
 ::class GtkVBox public subclass GtkBox
 
@@ -324,14 +324,73 @@ else use strict arg self~pointer
 return
 
 
-/*----------------------------------------------------------------------------*/
-/* HBox class                                                                 */
-/*----------------------------------------------------------------------------*/
+/*============================================================================*/
+/* Class: HBox                                                                */
+/*============================================================================*/
 
 ::class GtkHBox public subclass GtkBox
 
 ::method init
 if arg() = 0 then self~pointer = GrxHBoxNew()
+else use strict arg self~pointer
+return
+
+
+/*============================================================================*/
+/* Class: Paned                                                               */
+/*============================================================================*/
+
+::class GtkPaned public subclass GtkContainer
+
+::method init
+use strict arg
+return
+
+::method add1
+-- add an object to the paned
+use strict arg mywidget
+call GrxPanedAdd1 self~pointer, mywidget~pointer
+return
+
+::method add2
+-- add an object to the paned
+use strict arg mywidget
+call GrxPanedAdd2 self~pointer, mywidget~pointer
+return
+
+::method pack1
+-- pack an object in the paned
+use strict arg mywidget, resize, shrink
+call GrxPanedPack1 self~pointer, mywidget~pointer, resize, shrink
+return
+
+::method pack2
+-- pack an object in the paned
+use strict arg mywidget, resize, shrink
+call GrxPanedPack2 self~pointer, mywidget~pointer, resize, shrink
+return
+
+
+/*============================================================================*/
+/* Class: HPaned                                                              */
+/*============================================================================*/
+
+::class GtkHPaned public subclass GtkPaned
+
+::method init
+if arg() = 0 then self~pointer = GrxHPanedNew()
+else use strict arg self~pointer
+return
+
+
+/*============================================================================*/
+/* Class: VPaned                                                              */
+/*============================================================================*/
+
+::class GtkVPaned public subclass GtkPaned
+
+::method init
+if arg() = 0 then self~pointer = GrxVPanedNew()
 else use strict arg self~pointer
 return
 
@@ -388,7 +447,7 @@ return
 
 
 /*============================================================================*/
-/* Label class                                                                */
+/* Class: Label                                                               */
 /*============================================================================*/
 
 ::class GtkLabel public subclass GtkWidget
@@ -427,7 +486,7 @@ call GrxLabelSetSelectable self~pointer, flag
 return
 
 /*============================================================================*/
-/* Button class                                                               */
+/* Class: Button                                                              */
 /*============================================================================*/
 
 ::class GtkButton public subclass GtkContainer
@@ -483,7 +542,7 @@ return
 
 
 /*============================================================================*/
-/* Checkbutton class                                                          */
+/* Class: Checkbutton                                                         */
 /*============================================================================*/
 
 ::class GtkCheckbutton public subclass GtkButton
@@ -532,7 +591,7 @@ return
 
 
 /*============================================================================*/
-/* Radiobutton class                                                          */
+/* Class: Radiobutton                                                         */
 /*============================================================================*/
 
 ::class GtkRadiobutton public subclass GtkCheckbutton
