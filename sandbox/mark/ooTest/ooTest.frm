@@ -77,6 +77,7 @@ end
   Directives, Classes, or Routines.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::requires "OOREXXUNIT.CLS"
+::requires "rxregexp.cls"
 
 ::routine makeSetOfWords public
   use strict arg wordCollection, upper = .true
@@ -128,7 +129,7 @@ return s
   -- End select
 
 return a
--- End makeSetOfWords()
+-- End makeArrayOfWords()
 
 
 /** class:  TestContainer
@@ -184,6 +185,38 @@ return a
 ::method eventCount         abstract
 
 
+/* class: ooTestConstants- - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+    A class containing constants used in testing ooRexx.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::class 'ooTestConstants' public mixinclass Object
+
+  ::method TEST_ROOT  class; return "ooRexx"
+  ::method TEST_ROOT;        return "ooRexx"
+
+  ::method TEST_CONTAINER_EXT  class; return ".testGroup"
+  ::method TEST_CONTAINER_EXT;        return ".testGroup"
+
+  -- .nil signals no restriction on test types.
+  ::method TEST_TYPES_DEFAULT  class; return .nil
+  ::method TEST_TYPES_DEFAULT;        return .nil
+
+  ::method TEST_SUCCESS_RC   class; return 0
+  ::method TEST_SUCCESS_RC;         return 0
+  ::method TEST_HELP_RC      class; return 1
+  ::method TEST_HELP_RC;            return 1
+  ::method TEST_FAILURES_RC  class; return 2
+  ::method TEST_FAILURES_RC;        return 2
+  ::method TEST_ERRORS_RC    class; return 3
+  ::method TEST_ERRORS_RC;          return 3
+  ::method TEST_NO_TESTS_RC  class; return 4
+  ::method TEST_NO_TESTS_RC;        return 4
+  ::method TEST_BADARGS_RC   class; return 5
+  ::method TEST_BADARGS_RC;         return 5
+
+  -- SL (back SLash or forward SLash) abbreviation for the directory separator.
+  ::method SL  class; return .ooRexxUnit.directory.separator
+  ::method SL;        return .ooRexxUnit.directory.separator
+
 /* class: ooTestTypes- - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
     A class containing the constants for the test types supported by the ooTest
     framework.
@@ -223,6 +256,18 @@ return a
   ::method all
     return self~class~all
 
+  /** allNames()
+   * Returns a string of all the test type names separated by blanks.
+   */
+  ::method allNames class
+    expose names
+
+    if names~default == .nil then self~populate
+    return self~namesString
+
+  ::method allNames
+    return self~class~allNames
+
   /** testForName()
    * Returns the numeric test type constant for the specified name, or .nil if
    * there is no such test type.
@@ -249,29 +294,56 @@ return a
     if names~DEFAULT == .nil then self~populate
     return names~entry(test)
 
-  ::method nameForTest
-    use strict arg test
-    return self~class~nameForTest(test)
+  /** namesForTests()
+   * Returns a string containing the test names for all the corresponding
+   * numeric test type constants in a collection.  Returns .nil if: one of the
+   * items in the collection is not a test type, the argument is not a
+   * collection.
+   */
+  ::method namesForTests class
+    expose names
+    use strict arg tests
 
+    if \ tests~isA(.Collection) then return .nil
+
+    if names~DEFAULT == .nil then self~populate
+
+    names__ = ""
+    do t over tests
+      name = names~entry(t)
+      if name == .nil then return .nil
+      names__ = names__ name
+    end
+
+    return names__
+
+  ::method namesForTests
+    use strict arg tests
+    return self~class~namesForTests(tests)
 
   ::attribute names get class
   ::attribute names set class private
+  ::attribute namesString get class
+  ::attribute namesString set class private
 
   ::method init class
-    expose names
+    expose names namesString
     names = .directory~new
+    namesString = ""
 
   ::method populate class private
-    expose names
-
+    expose names namesString
     itr = self~methods(.nil)
     do while itr~available
       name = itr~index
       if name~right(5) == "_TEST" then do
         name = name~left(name~length - 5)
         number = itr~item~source[1]~word(2)
+
+        n = name~lower(2)
         names~setEntry(name, number)
-        names~setEntry(number, name~lower(2))
+        names~setEntry(number, n)
+        namesString = namesString n
       end
       itr~next
     end
@@ -668,8 +740,18 @@ return a
     say "[Skipped test group]" s~when
     say "  File:" pathCompact(s~where, 70)
     say " " s~reason
-    if s~additional \== .nil then
-      say " " s~additional
+
+    if s~additional \== .nil then do
+      -- We use insider knowledge here.  The ooTestFinder starts the additional
+      -- text with 'Specified Test Types' and adds the test types object.  We
+      -- check for that to provide a better output.
+      obj = s~additionalObject
+
+      if obj \== .nil, obj~isA(.set), s~additional~abbrev("Specified Test Types") then
+        say "  Specified Test Types:" .ooTestTypes~namesForTests(obj)
+      else
+        say " " s~additional
+    end
     say
 
 -- End of class ConsoleFormatter
@@ -1449,23 +1531,135 @@ return suite
 ::class 'ooTestFinder' public
 
   ::attribute testTypes private
-  ::attribute fileSpec private
+  ::attribute root private
+  ::attribute extension private
+  ::attribute simpleFileSpec private
+  ::attribute isSimpleSearch private
 
+  ::attribute fileIncludes private
+  ::attribute fileExcludes private
+
+  ::attribute totalFound get
+  ::attribute totalFound set private
+
+  /** init()
+   * Initializes this test finder.
+   *
+   * @param  root         REQUIRED
+   *   The root of the directory tree to search for test containers.
+   * @param  extension  REQUIRED
+   *   The extension for test container files
+   * @param  types      OPTIONAL
+   *   The test types to search for.  A value of nil indicates all tests and is
+   *   the default.
+   */
   ::method init
+    expose root extension simpleFileSpec sl
     use strict arg root, extension, types = .nil
 
     sl = .ooRexxUnit.directory.separator
-    if root~right(1) == sl then root = root~strip('T', sl)
-    if extension~left(1) == '.' then extension = extension~strip('L', '.')
-    fileSpec = root || sl || "*." || extension
+    if root~right(1) \== sl then root = root || sl
+    if extension~left(1) \== '.' then extension = '.' || extension
+
+    simpleFileSpec = root || "*" || extension
 
     self~testTypes = types
-    self~fileSpec = fileSpec
+    self~totalFound = 0
+    self~fileIncludes = .nil
+    self~fileExcludes = .nil
+    self~isSimpleSearch = .true
 
   -- End init()
 
+  /** includeFiles()
+   * Add the named file or files to the include files array.  The files are
+   * stored as regular expressions with the following conventions:  If the name
+   * ends in the extension specified in init(), and no directory slashes are in
+   * the name, then it will be considered the complete file name.  The regular
+   * expression will be: any series of characters, the directory slash the
+   * specified name.  If there are no slashes and the name does not end in the
+   * extension, then the regular expression will be any series of characters,
+   * the slash, any series of characters, the name, any series of characters,
+   * the extension.  If it does contain a slash, it will be any series of
+   * characters, and the name.
+   */
+  ::method includeFiles
+    expose fileIncludes
+    use strict arg files
+
+    if \ files~isA(.string), \ files~isA(.collection) then
+      raise syntax 88.916 array ("1 'files'", "a string or a collection" files)
+
+    if fileIncludes == .nil then fileIncludes = .array~new
+    if files~isA(.string) then do
+      regularExpression = self~buildRegEx(files)
+      fileIncludes~append(regularExpression)
+    end
+    else do file over files
+      if \ file~isA(.string) then
+        raise syntax 88.900 array("Only file names (string objects) are accepted; found" file)
+
+      regularExpression = self~buildRegEx(file)
+      fileIncludes~append(regularExpression)
+    end
+    self~isSimpleSearch = .false
+
+  ::method buildRegEx private
+    expose extension sl
+    use strict arg fileName
+
+    hasExt = (fileName~right(extension~length)~upper == extension~upper)
+    hasSlash = (fileName~pos(sl) <> 0 )
+
+    notSlash = '[^' || sl || ']*'
+    select
+      when hasExt, \ hasSlash then do
+        reg = '?*' || sl || fileName~upper
+        reg = self~maybeEscapeSlashes(reg)
+        return .RegularExpression~new(reg)
+      end
+
+      when \ hasExt, \ hasSlash then do
+        reg = '?+' || sl || notSlash || '(' || fileName~upper || ')' || notSlash || '(' || extension~upper || ')'
+        reg = self~maybeEscapeSlashes(reg)
+        return .RegularExpression~new(reg)
+      end
+
+      when hasExt, hasSlash then do
+        reg = '?*' || fileName~upper
+        reg = self~maybeEscapeSlashes(reg)
+        return .RegularExpression~new(reg)
+      end
+
+      otherwise do
+        -- \ hasExt, hasSlash
+        p = fileName~lastPos(sl)
+        parse var fileName lead =(p + 1) segment
+        reg = '?*' || lead~upper || notSlash || '(' || segment~upper || ')' || notSlash || '(' || extension~upper || ')'
+        reg = self~maybeEscapeSlashes(reg)
+        return .RegularExpression~new(reg)
+      end
+
+    end
+    -- End select
+
+  ::method maybeEscapeSlashes private
+    use strict arg exp
+
+    if .ooRexxUnit.OSName \== "WINDOWS"then return exp
+
+    escaped = ""
+    do while exp~pos('\') <> 0
+      parse var exp seg'\'exp
+      escaped = escaped || seg || '\\'
+    end
+    escaped = escaped || exp
+
+    return escaped
+
+
   ::method seek
-    expose testTypes fileSpec
+    expose testTypes simpleFileSpec
     use strict arg testResult
 
     if \ isSubClassOf(testResult~class, "ooTestCollectingParameter") then
@@ -1475,7 +1669,7 @@ return suite
     files = self~findFiles
 
     if files~items == 0 then do
-      err = .ExceptionData~new(timeStamp(), fileSpec, "Anomly")
+      err = .ExceptionData~new(timeStamp(), simpleFileSpec, "Anomly")
       err~severity = "Warning"
       err~msg = "No test containers found matching search paramters."
       testResult~addException(err)
@@ -1572,17 +1766,28 @@ return suite
    * An enhancement is to match includes and excludes.
    */
   ::method findFiles private
-    expose fileSpec
-
-    -- Need to add Phase tracking.  say 'in find files filespec:' fileSpec
+    expose simpleFileSpec
 
     f = .array~new
-    j = SysFileTree(fileSpec, files., "FOS")
+    j = SysFileTree(simpleFileSpec, files., "FOS")
+    self~totalFound = files.0
     do i = 1 to files.0
-      f~append(files.i)
+      if self~matchFile(files.i) then f~append(files.i)
     end
 
   return f
+
+  ::method matchFile
+    expose isSimpleSearch fileIncludes
+    use arg file
+
+    if isSimpleSearch then return .true
+
+    do re over fileIncludes
+      if re~match(file~upper) then return .true
+    end
+    return .false
+
 
   /** maybeCreateContainer()
    * Attempts to create a TestGroup from object.  This is a temporary method,
@@ -1691,19 +1896,21 @@ return suite
 ::class 'NotificationTypes' mixinclass Object
   /* Would prefer to use the CONSTANT directive */
   ::method MIN_TYPE  class; return 1
-
-  ::method SKIP_TYPE class; return 1
-  ::method WARN_TYPE class; return 2
-  ::method TEXT_TYPE class; return 3
-  ::method STEP_TYPE class; return 4
-  ::method MAX_TYPE  class; return 4
   ::method MIN_TYPE;        return 1
-  ::method SKIP_TYPE;       return 1
-  ::method WARN_TYPE;       return 2
-  ::method TEXT_TYPE;       return 3
-  ::method STEP_TYPE;       return 4
 
-  ::method MAX_TYPE;        return 4
+  ::method SKIP_TYPE  class; return 1
+  ::method WARN_TYPE  class; return 2
+  ::method TEXT_TYPE  class; return 3
+  ::method STEP_TYPE  class; return 4
+  ::method STATS_TYPE class; return 5
+  ::method SKIP_TYPE;        return 1
+  ::method WARN_TYPE;        return 2
+  ::method TEXT_TYPE;        return 3
+  ::method STEP_TYPE;        return 4
+  ::method STATS_TYPE;       return 5
+
+  ::method MAX_TYPE  class; return 5
+  ::method MAX_TYPE;        return 5
 
 
 /* class: Notification - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
@@ -1724,6 +1931,7 @@ return suite
 
   ::attribute additional
   ::attribute additionalObject
+  ::attribute originatorsID
 
   ::method init
     use strict arg dateTime, file, type
@@ -1753,6 +1961,7 @@ return suite
 
     self~additional = .nil
     self~additionalObject = .nil
+    self~originatorsID = .nil
 
 -- End of class: Notification
 
@@ -1793,6 +2002,9 @@ return suite
   ::attribute id get
   ::attribute id set private
 
+  ::attribute isTicking private
+  ::attribute endTicking private
+
   ::method init
     use strict arg file, id
 
@@ -1805,6 +2017,47 @@ return suite
     self~id = id
     self~finish = .nil
     self~isFinished = .false
+    self~isTicking = .false
+    self~endTicking = .true
+
+  /** tickTock()
+   * Outputs dots to the screen in a separate thread.
+   */
+  ::method tickTock unguarded
+    expose isTicking
+    use arg msg
+    reply
+
+    .stdout~charout(msg)
+    isTicking = .true
+    self~endTicking = .false
+    dots = msg~length
+
+    do while \ self~endTicking
+      do i = 1 to 2
+        if self~endTicking then leave
+        j = SysSleep(.5)
+      end
+      if dots == 75 then do
+        .stdout~lineout(".")
+        dots = 0
+      end
+      else do
+        .stdout~charout(".")
+      end
+      dots += 1
+    end
+    .stdout~lineout(".")
+    isTicking = .false
+
+  /** stopTicking()
+   * Provides a way to turn off the tick tock before the duration of this phase
+   * is over.
+   */
+  ::method stopTicking unguarded
+    expose isTicking
+    self~endTicking = .true
+    guard on when \ isTicking
 
   /** done()
    * Tells this phase that the phase is over.  Sets the finish time.  After this
@@ -1814,6 +2067,8 @@ return suite
     use strict arg
     self~finish = .TimeSpan~new(time('F'))
     self~isFinished = .true
+
+    if self~isTicking then self~stopTicking
 
   /** duration()
    * The time spanned by this phase.  If the phase is not done, is not finished,

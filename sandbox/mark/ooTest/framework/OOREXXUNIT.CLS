@@ -476,7 +476,7 @@ return leading || trailing
   */
   ::method MAX_VERBOSITY     class; return 10
   ::method MIN_VERBOSITY     class; return  0
-  ::method DEFAULT_VERBOSITY class; return 10
+  ::method DEFAULT_VERBOSITY class; return  2
   ::method MAX_VERBOSITY;           return 10
   ::method MIN_VERBOSITY;           return  0
   ::method DEFAULT_VERBOSITY;       return  2
@@ -847,7 +847,7 @@ return str
   say "    Actual:  " data~actual
 
   if data~msg \== "" then
-    say "    "data~msg
+    say "    Message: " data~msg
   say
 
 ::method printErrorInfo private
