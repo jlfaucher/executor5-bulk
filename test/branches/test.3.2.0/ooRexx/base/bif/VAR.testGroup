@@ -103,8 +103,8 @@
                 -- create a testSuite for the given test case class, use all its testmethods
                 ts~addTest( .testSuite~new(arr[1]))
             end
-            -- testResult=.testSuite~new(testUnitClass)~run
-            testResult=ts~run       -- now run all the tests
+            -- testResult=.testSuite~new(testUnitClass)~execute
+            testResult=ts~execute       -- now run all the tests
 
             call simpleFormatTestResults testResult
         end
@@ -113,20 +113,20 @@
       optionally list of mandatory test methods                      */
 return testUnitList
 
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
 -- class named exactly like file
-::class "VAR.testGroup" subclass TestCase public
+::class "VAR.testGroup" subclass ooTestCase public
 
    -- test the BIF, using examples from the documentation
 ::method "test_VAR"
     /* Following: DROP A.3; J=3 */
     DROP A.3; J=3
-    self~assertTrue("subTest1"  , VAR('J')   )
-    self~assertFalse("subTest2" , VAR(J)     ) /* has tested "3" */
-    self~assertFalse("subTest3" , VAR('a.j') ) /* has tested "A.3" */
-    self~assertFalse("subTest4" , VAR(2)     ) /* a constant symbol */
-    self~assertFalse("subTest5" , VAR('*')   ) /* an invalid symbol */
-    self~assertFalse("subTest6" , VAR('.LOCAL')   ) /* an environment symbol, not a variable */
+    self~assertTrue(VAR('J'))
+    self~assertFalse(VAR(J)) /* has tested "3" */
+    self~assertFalse(VAR('a.j')) /* has tested "A.3" */
+    self~assertFalse(VAR(2)) /* a constant symbol */
+    self~assertFalse(VAR('*')) /* an invalid symbol */
+    self~assertFalse(VAR('.LOCAL')) /* an environment symbol, not a variable */
 
 

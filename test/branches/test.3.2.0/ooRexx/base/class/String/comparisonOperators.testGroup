@@ -107,8 +107,8 @@ do
       -- create a testSuite for the given test case class, use all its testmethods
       ts~addTest( .testSuite~new(arr[1]))
    end
-   -- testResult=.testSuite~new(testGroupClass)~run
-   testResult=ts~run       -- now run all the tests
+   -- testResult=.testSuite~new(testGroupClass)~execute
+   testResult=ts~execute       -- now run all the tests
 
    call simpleFormatTestResults testResult
 end
@@ -117,50 +117,50 @@ end
       optionally list of mandatory test methods                      */
 return testGroupList
 
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
-::class "comparisonOperators.testGroup" subclass TestCase public
+::class "comparisonOperators.testGroup" subclass ooTestCase public
 
 ::method "test_comparison_operators"
-   self~assertTrue( "subTest1"  , 5=5    ) /* equal */
-   self~assertTrue( "subTest2"  , 42\=41 ) /* All of these are */
-   self~assertTrue( "subTest3"  , 42><41 ) /* "not equal" */
-   self~assertTrue( "subTest4"  , 42<>41 )
-   self~assertTrue( "subTest5"  , 13>12  ) /* Variations of */
-   self~assertTrue( "subTest6"  , 12<13  ) /* less than and */
-   self~assertTrue( "subTest7"  , 13>=12 ) /* greater than */
-   self~assertFalse("subTest8"  , 12\<13 )
-   self~assertTrue( "subTest9"  , 12<=13 )
-   self~assertTrue( "subTest10" , 12\>13 )
+   self~assertTrue(5=5) /* equal */
+   self~assertTrue(42\=41) /* All of these are */
+   self~assertTrue(42><41) /* "not equal" */
+   self~assertTrue(42<>41)
+   self~assertTrue(13>12) /* Variations of */
+   self~assertTrue(12<13) /* less than and */
+   self~assertTrue(13>=12) /* greater than */
+   self~assertFalse(12\<13)
+   self~assertTrue(12<=13)
+   self~assertTrue(12\>13)
 
-   self~assertTrue( "subTest11" , 5~'='(5)    ) /* equal */
-   self~assertTrue( "subTest12" , 42~'\='(41) ) /* All of these are */
-   self~assertTrue( "subTest13" , 42~'><'(41) ) /* "not equal" */
-   self~assertTrue( "subTest14" , 42~'<>'(41) )
-   self~assertTrue( "subTest15" , 13~'>'(12)  ) /* Variations of */
-   self~assertTrue( "subTest16" , 12~'<'(13)  ) /* less than and */
-   self~assertTrue( "subTest17" , 13~'>='(12) ) /* greater than */
-   self~assertFalse("subTest18" , 12~'\<'(13) )
-   self~assertTrue( "subTest19" , 12~'<='(13) )
-   self~assertTrue( "subTest20" , 12~'\>'(13) )
+   self~assertTrue(5~'='(5)) /* equal */
+   self~assertTrue(42~'\='(41)) /* All of these are */
+   self~assertTrue(42~'><'(41)) /* "not equal" */
+   self~assertTrue(42~'<>'(41))
+   self~assertTrue(13~'>'(12)) /* Variations of */
+   self~assertTrue(12~'<'(13)) /* less than and */
+   self~assertTrue(13~'>='(12)) /* greater than */
+   self~assertFalse(12~'\<'(13))
+   self~assertTrue(12~'<='(13))
+   self~assertTrue(12~'\>'(13))
 
    -- identical
-   self~assertTrue( "subTest21"  , 'space'  ==  'space'  )  /* Strictly equal */
-   self~assertTrue( "subTest22"  , 'space'  \== ' space' )  /* Strictly not equal */
-   self~assertTrue( "subTest23"  , 'space'  >>  ' space' )  /* Variations of */
-   self~assertTrue( "subTest24"  , ' space' <<  'space'  )  /* strictly greater */
-   self~assertTrue( "subTest25"  , 'space'  >>= ' space' )  /* than and less than */
-   self~assertTrue( "subTest26"  , 'space'  \<< ' space' )
-   self~assertTrue( "subTest27"  , ' space' <<= 'space'  )
-   self~assertTrue( "subTest28"  , ' space' \>> 'space'  )
+   self~assertTrue('space'  ==  'space')  /* Strictly equal */
+   self~assertTrue('space'  \== ' space')  /* Strictly not equal */
+   self~assertTrue('space'  >>  ' space')  /* Variations of */
+   self~assertTrue(' space' <<  'space')  /* strictly greater */
+   self~assertTrue('space'  >>= ' space')  /* than and less than */
+   self~assertTrue('space'  \<< ' space')
+   self~assertTrue(' space' <<= 'space')
+   self~assertTrue(' space' \>> 'space')
 
-   self~assertTrue( "subTest29"  , 'space'~'=='('space')   )  /* Strictly equal */
-   self~assertTrue( "subTest30"  , 'space'~'\=='(' space') )  /* Strictly not equal */
-   self~assertTrue( "subTest31"  , 'space'~'>>'(' space')  )  /* Variations of */
-   self~assertTrue( "subTest32"  , ' space'~'<<'('space')  )  /* strictly greater */
-   self~assertTrue( "subTest33"  , 'space'~'>>='(' space') )  /* than and less than */
-   self~assertTrue( "subTest34"  , 'space'~'\<<'(' space') )
-   self~assertTrue( "subTest35"  , ' space'~'<<='('space') )
-   self~assertTrue( "subTest36"  , ' space'~'\>>'('space') )
+   self~assertTrue('space'~'=='('space'))  /* Strictly equal */
+   self~assertTrue('space'~'\=='(' space'))  /* Strictly not equal */
+   self~assertTrue('space'~'>>'(' space'))  /* Variations of */
+   self~assertTrue(' space'~'<<'('space'))  /* strictly greater */
+   self~assertTrue('space'~'>>='(' space'))  /* than and less than */
+   self~assertTrue('space'~'\<<'(' space'))
+   self~assertTrue(' space'~'<<='('space'))
+   self~assertTrue(' space'~'\>>'('space'))
 
 

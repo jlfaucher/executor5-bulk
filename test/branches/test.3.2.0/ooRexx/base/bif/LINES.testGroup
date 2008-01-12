@@ -58,79 +58,67 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-  testGroupList = .list~of(.array~of(.LINES.testGroup, .list~new))
+  parse source . . s
 
-  srcLines = .array~new
-  do i = 1 to 150 until srcLines[i] = "*/"
-     srcLines[i] = sourceline(i)
-  end
+  group = .TestGroup~new(s)
+  group~add(.LINES.testGroup)
 
-  call makeDirTestInfo .LINES.testGroup, srcLines
+  if group~isAutomatedTest then return group
 
-  parse source s
-  .LINES.testGroup~testCaseInfo~setentry("test_Case-source", s)
+  suite = group~suite
+  testResult = suite~execute
+  testResult~print("Test of the LINES BIF")
 
-  if \ .local~hasentry("bRunTestsLocally") then
-     .local~bRunTestsLocally = .true
-
-  if .bRunTestsLocally == .true then do
-    ts = .TestSuite~new
-    ts~addTest(.TestSuite~new(.LINES.testGroup))
-
-    testResult = ts~run
-    call simpleFormatTestResults testResult
-  end
-
-return testGroupList
+return testResult
 -- End of entry point.
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
   Directives, Classes, or Routines.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::requires 'ooTest.frm'
 ::requires "FileUtils.cls"
 
 /* class: LINES.testGroup- - - - - - - - - - - - - - - - - - - - - - - - - - -*\
 
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::class "LINES.testGroup" public subclass TestCase
+::class "LINES.testGroup" public subclass ooTestCase
 
   ::method test_stdin_normal
 
     -- Default stream is stdin, default for omitted second arg should be Normal
-    self~assertSame("Should be no lines available in stdin", 0, lines())
+    self~assertSame(0, lines(), "Should be no lines available in stdin")
 
-    self~assertSame('stdin empty "Normal" is valid', 0, lines( , "Normal"))
-    self~assertSame('stdin empty "normal" is valid', 0, lines( , "normal"))
-    self~assertSame('stdin empty "nORmAl" is valid', 0, lines( , "nORmAl"))
-    self~assertSame('stdin empty "NORMAL" is valid', 0, lines( , "NORMAL"))
-    self~assertSame('stdin empty "NORMALLYLONGERTHANNEEDEDSHOULDBEVALID" is valid', 0, -
-                        lines( , "NORMALLYLONGERTHANNEEDEDSHOULDBEVALID"))
-    self~assertSame('stdin empty "n" is valid', 0, lines( , "n"))
-    self~assertSame('stdin empty "N" is valid', 0, lines( , "N"))
-    self~assertSame('stdin empty "Nor" is valid', 0, lines( , "Nor"))
-    self~assertSame('stdin empty "NIGHTSHADE" is valid', 0, lines( , "NIGHTSHADE"))
+    self~assertSame(0, lines( , "Normal"), 'stdin empty "Normal" is valid')
+    self~assertSame(0, lines( , "normal"), 'stdin empty "normal" is valid')
+    self~assertSame(0, lines( , "nORmAl"), 'stdin empty "nORmAl" is valid')
+    self~assertSame(0, lines( , "NORMAL"), 'stdin empty "NORMAL" is valid')
+    self~assertSame(0, lines( , "NORMALLYLONGERTHANNEEDEDSHOULDBEVALID"), 'stdin empty "NORMALLYLONGERTHANNEEDEDSHOULDBEVALID" is valid')
+    self~assertSame(0, lines( , "n"), 'stdin empty "n" is valid')
+    self~assertSame(0, lines( , "N"), 'stdin empty "N" is valid')
+    self~assertSame(0, lines( , "Nor"), 'stdin empty "Nor" is valid')
+    self~assertSame(0, lines( , "NIGHTSHADE"), 'stdin empty "NIGHTSHADE" is valid')
 
     opt = 'n'
-    self~assertSame('stdin empty use a variable for the option is valid', 0, lines( , opt))
+    self~assertSame(0, lines( , opt), 'stdin empty use a variable for the option is valid')
 
     opt = 'N' || 'uncool'~copies(5000)
-    self~assertSame('stdin empty extremely long string is valid', 0, lines( , opt))
+    self~assertSame(0, lines( , opt), 'stdin empty extremely long string is valid')
 
   ::method  test_stdin_count
-    self~assertSame('stdin empty "Count" is valid', 0, lines(, "Count"))
-    self~assertSame('stdin empty "count" is valid', 0, lines(, "count"))
-    self~assertSame('stdin empty "COUNT" is valid', 0, lines(, "COUNT"))
-    self~assertSame('stdin empty "cOuNt" is valid', 0, lines(, "cOuNt"))
+    self~assertSame(0, lines(, "Count"), 'stdin empty "Count" is valid')
+    self~assertSame(0, lines(, "count"), 'stdin empty "count" is valid')
+    self~assertSame(0, lines(, "COUNT"), 'stdin empty "COUNT" is valid')
+    self~assertSame(0, lines(, "cOuNt"), 'stdin empty "cOuNt" is valid')
 
-    self~assertSame('stdin empty "c" is valid', 0, lines(, "c"))
-    self~assertSame('stdin empty "C" is valid', 0, lines(, "C"))
-    self~assertSame('stdin empty "comic" is valid', 0, lines(, "comic"))
+    self~assertSame(0, lines(, "c"), 'stdin empty "c" is valid')
+    self~assertSame(0, lines(, "C"), 'stdin empty "C" is valid')
+    self~assertSame(0, lines(, "comic"), 'stdin empty "comic" is valid')
 
     opt = 'c'
-    self~assertSame('stdin empty use of a variable for "Count" is valid', 0, lines(, opt))
+    self~assertSame(0, lines(, opt), 'stdin empty use of a variable for "Count" is valid')
 
     opt = 'C' || "comedian"~copies(1000)
-    self~assertSame('stdin empty use of a long string for "Count" is valid', 0, lines(, opt))
+    self~assertSame(0, lines(, opt), 'stdin empty use of a long string for "Count" is valid')
 
     ::method test_fileStream_normal
 
@@ -138,27 +126,27 @@ return testGroupList
       fileName = createFile(.array~of(1, 2, 3, 4), "delMe_BIF_Lines4")
 
       -- Assert the file was created ok
-      self~assertFalse('temp file must be created', fileName == "")
+      self~assertFalse(fileName == "", 'temp file must be created')
 
-      self~assertSame('file has lines, omitted 2nd arg should return 1', 1, lines(fileName))
-      self~assertSame('file has lines, "N" for 2nd arg should return 1', 1, lines(fileName, 'N'))
-      self~assertSame('file has lines, "Normal" for 2nd arg should return 1', 1, lines(fileName, 'Normal'))
+      self~assertSame(1, lines(fileName), 'file has lines, omitted 2nd arg should return 1')
+      self~assertSame(1, lines(fileName, 'N'), 'file has lines, "N" for 2nd arg should return 1')
+      self~assertSame(1, lines(fileName, 'Normal'), 'file has lines, "Normal" for 2nd arg should return 1')
 
       -- Read 2 lines, should get same results, because file still has lines.
       do 2
         discard = linein(fileName)
       end
-      self~assertSame('file has 2 lines, omitted 2nd arg should return 1', 1, lines(fileName))
-      self~assertSame('file has 2 lines, "N" for 2nd arg should return 1', 1, lines(fileName, 'N'))
-      self~assertSame('file has 2 lines, "Normal" for 2nd arg should return 1', 1, lines(fileName, 'Normal'))
+      self~assertSame(1, lines(fileName), 'file has 2 lines, omitted 2nd arg should return 1')
+      self~assertSame(1, lines(fileName, 'N'), 'file has 2 lines, "N" for 2nd arg should return 1')
+      self~assertSame(1, lines(fileName, 'Normal'), 'file has 2 lines, "Normal" for 2nd arg should return 1')
 
       -- Read 2 lines, should get 0 for same tests.
       do 2
         discard = linein(fileName)
       end
-      self~assertSame('file has 0 lines, omitted 2nd arg should return 0', 0, lines(fileName))
-      self~assertSame('file has 0 lines, "N" for 2nd arg should return 0', 0, lines(fileName, 'N'))
-      self~assertSame('file has 0 lines, "Normal" for 2nd arg should return 0', 0, lines(fileName, 'Normal'))
+      self~assertSame(0, lines(fileName), 'file has 0 lines, omitted 2nd arg should return 0')
+      self~assertSame(0, lines(fileName, 'N'), 'file has 0 lines, "N" for 2nd arg should return 0')
+      self~assertSame(0, lines(fileName, 'Normal'), 'file has 0 lines, "Normal" for 2nd arg should return 0')
 
       -- Be sure file is closed and delete it.
       j = lineout(fileName)
@@ -173,29 +161,29 @@ return testGroupList
         txt~append(i)
       end
       fileName = createFile(txt, "delMe_BIF_Lines64")
-      self~assertFalse('temp file must be created', fileName == "")
+      self~assertFalse(fileName == "", 'temp file must be created')
 
-      self~assertSame('file has 64 lines, 2nd arg "C" should return 64', 64, lines(fileName, 'C'))
-      self~assertSame('file has 64 lines, 2nd arg "c" should return 64', 64, lines(fileName, 'c'))
-      self~assertSame('file has 64 lines, 2nd arg "count" should return 64', 64, lines(fileName, "count"))
+      self~assertSame(64, lines(fileName, 'C'), 'file has 64 lines, 2nd arg "C" should return 64')
+      self~assertSame(64, lines(fileName, 'c'), 'file has 64 lines, 2nd arg "c" should return 64')
+      self~assertSame(64, lines(fileName, "count"), 'file has 64 lines, 2nd arg "count" should return 64')
 
       -- Read 4 lines, option of count should return 60
       do 4
         discard = linein(fileName)
       end
-      self~assertSame('60 lines left, 2nd arg "C" should return 60', 60, lines(fileName, 'C'))
-      self~assertSame('60 lines left, 2nd arg "c" should return 60', 60, lines(fileName, 'c'))
-      self~assertSame('60 lines left, 2nd arg "count" should return 60', 60, lines(fileName, "count"))
+      self~assertSame(60, lines(fileName, 'C'), '60 lines left, 2nd arg "C" should return 60')
+      self~assertSame(60, lines(fileName, 'c'), '60 lines left, 2nd arg "c" should return 60')
+      self~assertSame(60, lines(fileName, "count"), '60 lines left, 2nd arg "count" should return 60')
 
       -- Read down to 0 lines, assert count is correct each time
       j = 60
       do i = 1 to 60
-        self~assertSame(j 'lines left, count option should return' j, j, lines(fileName, 'C'))
+        self~assertSame(j, lines(fileName, 'C'), j 'lines left, count option should return' j)
         discard = linein(fileName)
         j -= 1
       end
 
-      self~assertSame('0 lines left COUNT option should return 0', 0, lines(fileName, 'COUNT' ))
+      self~assertSame(0, lines(fileName, 'COUNT' ), '0 lines left COUNT option should return 0')
 
       -- Be sure file is closed and delete it.
       junk = lineout(fileName)
@@ -203,32 +191,32 @@ return testGroupList
 
     ::method test_normal_negativeTest1
 
-      self~assertSame("Non-existent stream, default 2nd arg should return 0", 0, lines('bogusZ2ls'))
-      self~assertSame("Non-existent stream, 'N' 2nd arg should return 0", 0, lines('b0sokdogusZ2ls', 'N'))
-      self~assertSame("Non-existent stream, 'NORMAL' 2nd arg should return 0", 0, lines('bklwerj4ogusZ2ls', "NORMAL"))
+      self~assertSame(0, lines('bogusZ2ls'), "Non-existent stream, default 2nd arg should return 0")
+      self~assertSame(0, lines('b0sokdogusZ2ls', 'N'), "Non-existent stream, 'N' 2nd arg should return 0")
+      self~assertSame(0, lines('bklwerj4ogusZ2ls', "NORMAL"), "Non-existent stream, 'NORMAL' 2nd arg should return 0")
 
-      self~assertSame("Non-existent stream, 'NORMAL' 2nd arg should return 0", 0, lines('', "NORMAL"))
+      self~assertSame(0, lines('', "NORMAL"), "Non-existent stream, 'NORMAL' 2nd arg should return 0")
 
     ::method test_count_negativeTest1
 
-      self~assertSame("Non-existent stream, 'count' 2nd arg should return 0", 0, lines('bogusZ2ls', 'count'))
-      self~assertSame("Non-existent stream, 'C' 2nd arg should return 0", 0, lines('b0sokdogusZ2ls', 'C'))
-      self~assertSame("Non-existent stream, 'cOUn' 2nd arg should return 0", 0, lines('bklwerj4ogusZ2ls', "cOUn"))
+      self~assertSame(0, lines('bogusZ2ls', 'count'), "Non-existent stream, 'count' 2nd arg should return 0")
+      self~assertSame(0, lines('b0sokdogusZ2ls', 'C'), "Non-existent stream, 'C' 2nd arg should return 0")
+      self~assertSame(0, lines('bklwerj4ogusZ2ls', "cOUn"), "Non-existent stream, 'cOUn' 2nd arg should return 0")
 
-      self~assertSame("Non-existent stream, 'CCC' 2nd arg should return 0", 0, lines('', "CCC"))
+      self~assertSame(0, lines('', "CCC"), "Non-existent stream, 'CCC' 2nd arg should return 0")
 
     ::method test_normal_bytes
 
       -- Create a temp file with some lines.
       fileName = createFile(.array~of('dog', 'cat', 'lion', 'tiger'), "delMe_BIF_LinesBytes")
-      self~assertFalse('temp file must be created', fileName == "")
+      self~assertFalse(fileName == "", 'temp file must be created')
 
       -- See how many bytes in size it is
       bytes = stream(fileName, "C", "QUERY SIZE")
 
       -- If we read in all the bytes, normal should return 0
       discard = charin(fileName, bytes)
-      self~assertSame('Read all bytes, 0 lines should remain', 0, lines(fileName))
+      self~assertSame(0, lines(fileName), 'Read all bytes, 0 lines should remain')
 
       -- Delete the file and create another one for the next test.
       junk = lineout(fileName)
@@ -237,7 +225,7 @@ return testGroupList
       -- If we read all the bytes but the last new line chars, lines should
       -- return 1.
       fileName = createFile(.array~of('tom', 'frank', 'john', 'harry'), "delMe_BIF_LinesBytes2")
-      self~assertFalse('temp file must be created', fileName == "")
+      self~assertFalse(fileName == "", 'temp file must be created')
       bytes = stream(fileName, "C", "QUERY SIZE")
 
       -- On Windows the last two chars are the new line chars, on unix-like,
@@ -247,7 +235,7 @@ return testGroupList
       else readBytes = bytes - 1
 
       discard = charin(fileName, readBytes)
-      self~assertSame('Read all bytes but last newline, 1 line should remain', 1, lines(fileName))
+      self~assertSame(1, lines(fileName), 'Read all bytes but last newline, 1 line should remain')
 
       -- Delete the file
       junk = lineout(fileName)
@@ -257,23 +245,23 @@ return testGroupList
 
       -- This is a repeat of test_normal_bytes, using count, and no comments.
       fileName = createFile(.array~of('dog', 'cat', 'lion', 'tiger'), "delMe_BIF_LinesCountB")
-      self~assertFalse('temp file must be created', fileName == "")
+      self~assertFalse(fileName == "", 'temp file must be created')
 
       bytes = stream(fileName, "C", "QUERY SIZE")
       discard = charin(fileName, bytes)
-      self~assertSame('Read all bytes, use "C" options, 0 lines should remain', 0, lines(fileName, 'C'))
+      self~assertSame(0, lines(fileName, 'C'), 'Read all bytes, use "C" options, 0 lines should remain')
 
       junk = lineout(fileName)
       junk = deleteFile(fileName)
       fileName = createFile(.array~of('tom', 'frank', 'john', 'harry'), "delMe_BIF_LinesCount2")
-      self~assertFalse('temp file must be created', fileName == "")
+      self~assertFalse(fileName == "", 'temp file must be created')
       bytes = stream(fileName, "C", "QUERY SIZE")
 
       if .ooRexxUnit.OSName~abbrev("WIN") then readBytes = bytes - 2
       else readBytes = bytes - 1
 
       discard = charin(fileName, readBytes)
-      self~assertSame('Read all bytes but last newline, "C" option, 1 line should remain', 1, lines(fileName))
+      self~assertSame(1, lines(fileName), 'Read all bytes but last newline, "C" option, 1 line should remain')
 
       -- Delete the file
       junk = lineout(fileName)

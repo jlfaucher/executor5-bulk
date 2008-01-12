@@ -66,47 +66,29 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-use arg cmdLine
+  parse source . . s
 
-  -- Only execute on Windows and Linux (if shell is bash.)
-  if .ooRexxUnit.OSName \= "WINDOWS" & .ooRexxUnit.OSName \== "LINUX" then return .list~new
-  if .ooRexxUnit.OSName == "LINUX" & .ooRexxUnit.shellName \== "bash" then return .list~new
+  group = .TestGroup~new(s)
+  group~add(.SourceFile.testGroup)
+  group~restrictOS("WINDOWS LINUX")
 
-  testGroupList = .list~of(.array~of(.SourceFile.testGroup, .list~new))
+  if group~isAutomatedTest then return group
 
-  srcLines = .array~new
-  do i = 1 to 150 until srcLines[i] = "*/"
-     srcLines[i] = sourceline(i)
-  end
+  testResult = group~suite~execute~~print
 
-  call makeDirTestInfo .SourceFile.testGroup, srcLines
-
-  parse source s
-  .SourceFile.testGroup~testCaseInfo~setentry("test_Case-source", s)
-
-  if \ .local~hasentry("bRunTestsLocally") then
-     .local~bRunTestsLocally = .true
-
-  if .bRunTestsLocally == .true then do
-    ts = .TestSuite~new
-    ts~addTest(.TestSuite~new(.SourceFile.testGroup))
-
-    testResult = ts~run
-    call simpleFormatTestResults testResult
-  end
-
-return testGroupList
+return testResult
 -- End of entry point.
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
   Directives, Classes, or Routines.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::requires "FileUtils.cls"   -- FileUtils.cls has a requires for OOREXXUNIT.CLS
+::requires 'ooTest.frm'
+::requires "FileUtils.cls"
 
 /* class: SourceFile.testGroup - - - - - - - - - - - - - - - - - - - - - - - -*\
 
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::class SourceFile.testGroup public subclass TestCase
+::class 'SourceFile.testGroup' public subclass ooTestCase
 
   -- Notes for logical not.  The logical not character is 0xAA.  How it appears
   -- on a screen or in an editor is dependent on a number of things, like the
@@ -132,15 +114,15 @@ return testGroupList
     fileSrc[11] = "return ret"
 
     fileName = createRexxPrgFile(fileSrc, "test_logicalNot01_temp")
-    self~assertTrue("Source file must be created", fileName <> "")
-    self~assertTrue("Source file must exist", SysIsFile(fileName))
+    self~assertTrue(fileName <> "", "Source file must be created")
+    self~assertTrue(SysIsFile(fileName), "Source file must exist")
 
     output = .array~new
     prgRC = execRexxPrg(fileName, output)
     j = deleteFile(fileName)
 
-    self~assertTrue("Program rc must be 0", prgRC == 0)
-    self~assertTrue("Program output must be correct", output[1] == "it IS friday")
+    self~assertTrue(prgRC == 0, "Program rc must be 0")
+    self~assertTrue(output[1] == "it IS friday", "Program output must be correct")
 
   -- Test \== using 0xAA (ª==) when true
   ::method test_logicalNot02
@@ -159,15 +141,15 @@ return testGroupList
     fileSrc[11] = "return ret"
 
     fileName = createRexxPrgFile(fileSrc, "test_logicalNot02_temp")
-    self~assertTrue("Source file must be created", fileName <> "")
-    self~assertTrue("Source file must exist", SysIsFile(fileName))
+    self~assertTrue(fileName <> "", "Source file must be created")
+    self~assertTrue(SysIsFile(fileName), "Source file must exist")
 
     output = .array~new
     prgRC = execRexxPrg(fileName, output)
     j = deleteFile(fileName)
 
-    self~assertTrue("Program rc must be 0", prgRC == 0)
-    self~assertTrue("Program output must be correct", output[1] == "it IS friday")
+    self~assertTrue(prgRC == 0, "Program rc must be 0")
+    self~assertTrue(output[1] == "it IS friday", "Program output must be correct")
 
   -- Test \= using 0xAA (ª=) when false
   ::method test_logicalNot03
@@ -186,15 +168,15 @@ return testGroupList
     fileSrc[11] = "return ret"
 
     fileName = createRexxPrgFile(fileSrc, "test_logicalNot03_temp")
-    self~assertTrue("Source file must be created", fileName <> "")
-    self~assertTrue("Source file must exist", SysIsFile(fileName))
+    self~assertTrue(fileName <> "", "Source file must be created")
+    self~assertTrue(SysIsFile(fileName), "Source file must exist")
 
     output = .array~new
     prgRC = execRexxPrg(fileName, output)
     j = deleteFile(fileName)
 
-    self~assertTrue("Program rc must be 0", prgRC == 1)
-    self~assertTrue("Program output must be correct", output[1] == "it is not friday")
+    self~assertTrue(prgRC == 1, "Program rc must be 0")
+    self~assertTrue(output[1] == "it is not friday", "Program output must be correct")
 
   -- Test \== using 0xAA (ª==) when false
   ::method test_logicalNot04
@@ -213,15 +195,15 @@ return testGroupList
     fileSrc[11] = "return ret"
 
     fileName = createRexxPrgFile(fileSrc, "test_logicalNot04_temp")
-    self~assertTrue("Source file must be created", fileName <> "")
-    self~assertTrue("Source file must exist", SysIsFile(fileName))
+    self~assertTrue(fileName <> "", "Source file must be created")
+    self~assertTrue(SysIsFile(fileName), "Source file must exist")
 
     output = .array~new
     prgRC = execRexxPrg(fileName, output)
     j = deleteFile(fileName)
 
-    self~assertTrue("Program rc must be 0", prgRC == 1)
-    self~assertTrue("Program output must be correct", output[1] == "it is not friday")
+    self~assertTrue(prgRC == 1, "Program rc must be 0")
+    self~assertTrue(output[1] == "it is not friday", "Program output must be correct")
 
   -- Test using ª in an expression when true
   ::method test_logicalNot05
@@ -240,15 +222,15 @@ return testGroupList
     fileSrc[11] = "return ret"
 
     fileName = createRexxPrgFile(fileSrc, "test_logicalNot05_temp")
-    self~assertTrue("Source file must be created", fileName <> "")
-    self~assertTrue("Source file must exist", SysIsFile(fileName))
+    self~assertTrue(fileName <> "", "Source file must be created")
+    self~assertTrue(SysIsFile(fileName), "Source file must exist")
 
     output = .array~new
     prgRC = execRexxPrg(fileName, output)
     j = deleteFile(fileName)
 
-    self~assertTrue("Program rc must be 0", prgRC == 0)
-    self~assertTrue("Program output must be correct", output[1] == "it IS a dog")
+    self~assertTrue(prgRC == 0, "Program rc must be 0")
+    self~assertTrue(output[1] == "it IS a dog", "Program output must be correct")
 
   -- Test using ª in an expression when false
   ::method test_logicalNot06
@@ -267,15 +249,15 @@ return testGroupList
     fileSrc[11] = "return ret"
 
     fileName = createRexxPrgFile(fileSrc, "test_logicalNot06_temp")
-    self~assertTrue("Source file must be created", fileName <> "")
-    self~assertTrue("Source file must exist", SysIsFile(fileName))
+    self~assertTrue(fileName <> "", "Source file must be created")
+    self~assertTrue(SysIsFile(fileName), "Source file must exist")
 
     output = .array~new
     prgRC = execRexxPrg(fileName, output)
     j = deleteFile(fileName)
 
-    self~assertTrue("Program rc must be 0", prgRC == 1)
-    self~assertTrue("Program output must be correct", output[1] == "it is not a dog")
+    self~assertTrue(prgRC == 1, "Program rc must be 0")
+    self~assertTrue(output[1] == "it is not a dog", "Program output must be correct")
 
   -- Test \ == using 0xAA (ª ==) when false
   ::method test_logicalNot07
@@ -294,15 +276,15 @@ return testGroupList
     fileSrc[11] = "return ret"
 
     fileName = createRexxPrgFile(fileSrc, "test_logicalNot07_temp")
-    self~assertTrue("Source file must be created", fileName <> "")
-    self~assertTrue("Source file must exist", SysIsFile(fileName))
+    self~assertTrue(fileName <> "", "Source file must be created")
+    self~assertTrue(SysIsFile(fileName), "Source file must exist")
 
     output = .array~new
     prgRC = execRexxPrg(fileName, output)
     j = deleteFile(fileName)
 
-    self~assertTrue("Program rc must be 0", prgRC == 1)
-    self~assertTrue("Program output must be correct", output[1] == "it is not friday")
+    self~assertTrue(prgRC == 1, "Program rc must be 0")
+    self~assertTrue(output[1] == "it is not friday", "Program output must be correct")
 
   -- Test \\= using 0xAA (ªª=) when false
   ::method test_logicalNot08
@@ -321,8 +303,8 @@ return testGroupList
     fileSrc[11] = "return ret"
 
     fileName = createRexxPrgFile(fileSrc, "test_logicalNot08_temp")
-    self~assertTrue("Source file must be created", fileName <> "")
-    self~assertTrue("Source file must exist", SysIsFile(fileName))
+    self~assertTrue(fileName <> "", "Source file must be created")
+    self~assertTrue(SysIsFile(fileName), "Source file must exist")
 
     output = .array~new
     prgRC = execRexxPrg(fileName, output)
@@ -338,12 +320,12 @@ return testGroupList
 
     -- Note that we assert things are as expected so that if they are not, we
     -- get a test failure, and not an unexpected error.
-    self~assertTrue("Expected error output should be at least 3 lines", output~items >= 3)
-    self~assertTrue("Expected error line must contain 'Error'", output[3]~pos("Error") <> 0)
+    self~assertTrue(output~items >= 3, "Expected error output should be at least 3 lines")
+    self~assertTrue(output[3]~pos("Error") <> 0, "Expected error line must contain 'Error'")
 
     -- Note that if the crucial part of the error message changes, this test
     -- will then fail and should be rewritten.
-    self~assertSame("Error output must be correct", errMsg, output[3]~substr(output[3]~pos("Error"), errMsgLength))
+    self~assertSame(errMsg, output[3]~substr(output[3]~pos("Error"), errMsgLength), "Error output must be correct")
 
     -- Unix/Linux bourne shells will restrict the exit code to the numbers 0 to
     -- 255.   The actual exit code is treated as modulo 256, so -35 will become
@@ -351,7 +333,7 @@ return testGroupList
     if .ooRexxUnit.OSName == "LINUX" then expectedRC = 221
     else expectedRC = -35
 
-    self~assertSame("Error exit, program rc must be" expectedRC, expectedRC, prgRC)
+    self~assertSame(expectedRC, prgRC, "Error exit, program rc must be" expectedRC)
 
 
 -- End of class: SourceFile.testGroup

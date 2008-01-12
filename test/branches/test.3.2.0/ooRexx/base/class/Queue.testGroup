@@ -1,7 +1,7 @@
 #!/usr/bin/rexx
 /*
    name:             Queue.testGroup
-   author:           Mark Miesfeld
+   authors:          Mark Miesfeld
    date:             2005-12-29
    version:          1.0.1
 
@@ -57,133 +57,29 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
+cmdLine = arg(1)
 
--- Create the test case list, (use all methods whose names start with test.)
-testGroupList=.list~of( .array~of( .Queue.testGroup, .list~new ) );
+  .Queue.testGroup~setVerbose(cmdLine)
 
--- Turn on extra messaging, if requested.  This feature is used for debugging
--- this specific test unit.  If this test unit is called by itself the caller
--- can specify that the test unit be more *verbose*.
-.Queue.testGroup~setVerbose( arg( 1 ) );
+  -- Create a TestGroup using information specific to this file.
+  parse source . . fileSpec
+  group = .TestGroup~new(fileSpec)
 
--- Read this program file's metadata and save it in the TestCaseInfo attribute
--- of each test case class.
-arrLines = .array~new;
-do i = 1 to 150 until arrLines[ i ] = "*/"
-   arrLines[ i ] = sourceline( i )
-end
+  group~add(.Queue.testGroup)
 
-aTestGroupClass = testGroupList~at( testGroupList~first )[ 1 ];
+  if group~isAutomatedTest then return group
 
-call makeDirTestInfo aTestGroupClass, arrLines;
+  testResult = group~suite~execute~~print
 
-directoryObj = aTestGroupClass~TestCaseInfo;
-parse source s;
-directoryObj~setentry( "test_Case-source", s );
-
--- Now add this directory object to any other TestCase classes in the list.
--- (In this specific case, there are no other TestCase classes.  This is left
--- as a template for other TestCase files.)
-do arr over testGroupList
-   if arr[ 1 ] = aTestGroupClass then
-     iterate;  -- Already handled.
-   arr[ 1 ]~TestCaseInfo = directoryObj;
-end
-
--- Check if we should execute the test cases now or return the test case list
--- to a caller.
-if \ .local~hasentry( "bRunTestsLocally" ) then
-   .local~bRunTestsLocally = .true
-
--- Run all tests in this test unit, if requested.
-if .bRunTestsLocally = .true then do
-  suite = .TestSuite~new;
-
-  rrc =  addTestCases( suite, testGroupList );
-  if rrc <> 0 then do
-    say "Queue.testGroup:";
-    say "  Some type of internal error, addTestCases( ) returns an error code.";
-    say "    Return code:" rrc;
-    say;
-    return testGroupList;
-  end
-
-  -- Run the tests.
-  z = time( 'E' );
-  testResult = suite~run;
-
-  if .Queue.testGroup~verbose > 0 then
-    say 'Executing all tests took' time( 'R' ) 'seconds.'
-
-  -- Print the results.
-  call simpleDumpTestResults testResult
-end
-
--- Return the test case list.
-return testGroupList
+return testResult
 -- End of entry point.
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
   Directives, Classes, or Routines.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::requires 'OOREXXUNIT.CLS';
+::requires 'ooTest.frm'
 
-/* addTestCases( suite, list ) - - - - - - - - - - - - - - - - - - - - - - - -*\
-
-  Adds all test cases in the specified list to the specified TestSuite.
-
-  Input:
-    suite REQUIRED
-      A TestSuite object in which to add the test cases.
-
-    list  REQUIRED
-      A list of test cases, needs to be in the format Rony G. Flatscher defined
-      in his original implementation of ooRexxUnit.
-
-  Returns:
-    0 on success; 1 if either argument is incorrect, 2 if some other error
-    occurred.
-\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::routine  addTestCases public;
-  use arg suite, list;
-
-  -- Check that args are the right type of objects, also handles omitted args.
-  if suite~class <> .TestSuite | list~class <> .list then
-    return 1;
-
-  do arr over list
-    if arr~class <> .array then
-      return 2;
-
-    classObject    = arr[ 1 ];
-    mandatoryTests = arr[ 2 ];
-    if classObject~class <> .class then
-      return 2;
-
-    -- See if a list of mandatory tests or all methods starting with 'test' is
-    -- indicated.
-    bMandatoryTests = .false;
-    if mandatoryTests <> .nil then
-      if mandatoryTests~class == .list then
-        if mandatoryTests~items > 0 then
-          bMandatoryTests = .true;
-
-    if bMandatoryTests then do testMethodName over mandatoryTests
-      -- Create and add a TestCase object
-      suite~addTest( classObject~new( testMethodName ) );
-    end
-    else do
-      -- Create and add a TestSuite object (all methods starting with 'test' in
-      -- the class will be used as test cases.)
-      suite~addTest( .TestSuite~new( classObject ) );
-    end
-  end
-  -- End do arr over list
-
-return 0;
--- End addTestCases( suite, list )
-
-/* class: Queue.testGroup - - - - - - - - - - - - - - - - - -*\
+/* class: Queue.testGroup- - - - - - - - - - - - - - - - - - - - - - - - - - -*\
 
     A test case class to regression test the .queue class.  The .queue class is
     one of the 'collection' classes supplied by Open Object REXX.
@@ -199,50 +95,50 @@ return 0;
       November 11, 2005
 
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::class "Queue.testGroup" public subclass TestCase;
+::class "Queue.testGroup" public subclass ooTestCase
 
   /* test_new( ) - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
       Test the .queue class method: new.
   \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-  ::method  test_new;
+  ::method  test_new
 
     if self~class~verbose > 2 then
-      say '*In test_new';
+      say '*In test_new'
 
     -- Prefix to my messages.
-    be   = "New object should be";
+    be   = "New object should be"
     have = "New object should have"
 
     -- Create what should be a new instance of a queue.
-    q = .queue~new;
+    q = .queue~new
 
     -- Test that the object is indeed an instance of .queue.
-    self~assertEquals("subtest01:" be "instance of .queue", .queue, q~class );
+    self~assertEquals(.queue, q~class, "subtest01:" be "instance of .queue")
 
     -- Test that the new object is a direct subclass of .object.
-    supers = q~class~superclasses;
+    supers = q~class~superclasses
 
-    self~assertEquals("subtest02:"  have "only 1 superclass", 2, supers~items );
+    self~assertEquals(2, supers~items, "subtest02:"  have "only 1 superclass")
 
-    self~assertEquals("subtest03:"  have ".object as superclass", .object, supers[ 1 ]  );
+    self~assertEquals(.object, supers[ 1 ], "subtest03:"  have ".object as superclass")
 
     -- Test that the object has all the .queue methods.
-    self~assertTrue("subtest04:" have '"[]" method',      q~hasmethod( "[]"        ) );
-    self~assertTrue("subtest05:" have '"[]=" method',     q~hasmethod( "[]="       ) );
-    self~assertTrue("subtest06:" have "AT method",        q~hasmethod( "AT"        ) );
-    self~assertTrue("subtest07:" have "HASINDEX method",  q~hasmethod( "HASINDEX"  ) );
-    self~assertTrue("subtest08:" have "ITEMS method",     q~hasmethod( "ITEMS"     ) );
-    self~assertTrue("subtest09:" have "MAKEARRAY method", q~hasmethod( "MAKEARRAY" ) );
-    self~assertTrue("subtest10:" have "PEEK method",      q~hasmethod( "PEEK"      ) );
-    self~assertTrue("subtest11:" have "PULL method",      q~hasmethod( "PULL"      ) );
-    self~assertTrue("subtest12:" have "PUSH method",      q~hasmethod( "PUSH"      ) );
-    self~assertTrue("subtest13:" have "PUT method",       q~hasmethod( "PUT"       ) );
-    self~assertTrue("subtest14:" have "QUEUE method",     q~hasmethod( "QUEUE"     ) );
-    self~assertTrue("subtest15:" have "REMOVE method",    q~hasmethod( "REMOVE"    ) );
-    self~assertTrue("subtest16:" have "SUPPLIER method",  q~hasmethod( "SUPPLIER"  ) );
+    self~assertTrue(q~hasmethod( "[]"        ), "subtest04:" have '"[]" method')
+    self~assertTrue(q~hasmethod( "[]="       ), "subtest05:" have '"[]=" method')
+    self~assertTrue(q~hasmethod( "AT"        ), "subtest06:" have "AT method")
+    self~assertTrue(q~hasmethod( "HASINDEX"  ), "subtest07:" have "HASINDEX method")
+    self~assertTrue(q~hasmethod( "ITEMS"     ), "subtest08:" have "ITEMS method")
+    self~assertTrue(q~hasmethod( "MAKEARRAY" ), "subtest09:" have "MAKEARRAY method")
+    self~assertTrue(q~hasmethod( "PEEK"      ), "subtest10:" have "PEEK method")
+    self~assertTrue(q~hasmethod( "PULL"      ), "subtest11:" have "PULL method")
+    self~assertTrue(q~hasmethod( "PUSH"      ), "subtest12:" have "PUSH method")
+    self~assertTrue(q~hasmethod( "PUT"       ), "subtest13:" have "PUT method")
+    self~assertTrue(q~hasmethod( "QUEUE"     ), "subtest14:" have "QUEUE method")
+    self~assertTrue(q~hasmethod( "REMOVE"    ), "subtest15:" have "REMOVE method")
+    self~assertTrue(q~hasmethod( "SUPPLIER"  ), "subtest16:" have "SUPPLIER method")
 
     -- Test that the queue is created empty.
-    self~assertEquals("subtest17:" be "empty", 0, q~items );
+    self~assertEquals(0, q~items, "subtest17:" be "empty")
 
   -- End test_new( )
 
@@ -259,12 +155,12 @@ return 0;
       ram.  So, I do not think it is un-reasonably long or uses too much of the
       system resources.
   \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-  ::method  test_newReptitively;
+  ::method  test_newReptitively
 
-    z = time( 'E' );
+    z = time( 'E' )
 
     if self~class~verbose > 2 then
-      say '*In test_newReptitively';
+      say '*In test_newReptitively'
 
     /* Used to control running of the lengthier test during implementation.
      * There is some debate in my mind whether this test should be included or
@@ -274,43 +170,43 @@ return 0;
      */
     /*
     if self~class~verbose < 4 then do
-      say 'Queue.testGroup:';
-      say '  Skipping lengthy test_newReptitively test.';
-      say;
-      return;
+      say 'Queue.testGroup:'
+      say '  Skipping lengthy test_newReptitively test.'
+      say
+      return
     end
     */
 
-    holder = .set~new;
-    count  = 100000;
+    holder = .set~new
+    count  = 100000
     do count
-      q = .queue~new;
-      q~~queue( 'one' )~~queue( 'two' )~~queue( 'three' );
-      holder~put( q );
+      q = .queue~new
+      q~~queue( 'one' )~~queue( 'two' )~~queue( 'three' )
+      holder~put( q )
     end
 
-    self~assertEquals( "Expected to create" count "unique queues", count, holder~items );
+    self~assertEquals(count, holder~items, "Expected to create" count "unique queues")
 
-    iterator = holder~supplier;
-    lastObj  = .queue~new;
-    i        = 0;
-    do while iterator~available;
-      obj = iterator~item;
-      self~assertEquals( "Every new object should be instance of queue",  .queue, obj~class );
-      self~assertEquals( "Each new queue object should now have 3 items", 3,      obj~items );
+    iterator = holder~supplier
+    lastObj  = .queue~new
+    i        = 0
+    do while iterator~available
+      obj = iterator~item
+      self~assertEquals(.queue, obj~class, "Every new object should be instance of queue")
+      self~assertEquals(3, obj~items, "Each new queue object should now have 3 items")
 
-      self~assertNotSame( "Each new queue object should be unique", obj, lastObj );
-      lastObj = obj;
+      self~assertNotSame(obj, lastObj, "Each new queue object should be unique")
+      lastObj = obj
 
-      i = i + 1;
-      iterator~next;
+      i = i + 1
+      iterator~next
     end
 
     -- Double check the logic of the test.
-    self~assertEquals( "Expected to create" count "unique queues", count, i );
+    self~assertEquals(count, i, "Expected to create" count "unique queues")
 
     if self~class~verbose > 2 then
-      say 'Creating and testing' count 'new queue objects took' time( 'R' ) 'seconds.';
+      say 'Creating and testing' count 'new queue objects took' time( 'R' ) 'seconds.'
 
   -- End test_newReptitively( )
 
@@ -325,7 +221,9 @@ return 0;
       The order in which the queue items appear in the array is the same as
       their queuing order, with the head of the queue as index 1.
   \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-  ::method  'test_[]';
+  ::method  'test_[]'
+
+    if self~class~verbose > 2 then say '*In test_[]     This test is not implemented'
 
 
   -- End test_[]( )
@@ -338,8 +236,9 @@ return 0;
       This method is the same as the PUT method. See PUT.
 
   \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-  ::method  'test_[]=';
+  ::method  'test_[]='
 
+    if self~class~verbose > 2 then say '*In test_[]=    This test is not implemented'
 
   -- End test_[]=( )
 
@@ -351,7 +250,7 @@ return 0;
       Returns the item associated with index index. If the collection has no
       item associated with index, this method returns the NIL object.
   \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-  ::method  test_at;
+  ::method  test_at
 
 
   -- End test_at( )
@@ -364,62 +263,62 @@ return 0;
       Returns 1 (true) if the collection contains any item associated with
       index index, or 0 (false).
   \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-  ::method  test_hasIndex;
+  ::method  test_hasIndex
 
     if self~class~verbose > 2 then
-      say '*In test_hasIndex';
+      say '*In test_hasIndex'
 
     -- Test that a queue with 100 items has all indexes 1 through 100, and no
     -- more.
-    q = .queue~new;
+    q = .queue~new
     do n over self~class~arrayOf100numbers
-      q~queue( n );
+      q~queue( n )
     end
     do i = 1 to 100
-      self~assertTrue( 'Queue must have an index of' i, q~hasindex( i ) );
+      self~assertTrue(q~hasindex( i ), 'Queue must have an index of' i)
     end
 
-    self~assertFalse( 'This queue can not have an index of 101', q~hasindex( 101 ) );
-    self~assertFalse( 'This queue can not have an index of 102', q~hasindex( 102 ) );
+    self~assertFalse(q~hasindex( 101 ), 'This queue can not have an index of 101')
+    self~assertFalse(q~hasindex( 102 ), 'This queue can not have an index of 102')
 
     -- Test that a relatively big integer does not cause a problem.
-    self~assertFalse( 'This queue can not have an index of 999,999,999',  q~hasindex(  999999999 ) );
+    self~assertFalse(q~hasindex(  999999999 ), 'This queue can not have an index of 999,999,999')
 
     /*
       This test does not work as I anticipated, it generates a syntax error
       rather than false.
 
-    numeric digits 10;
-    self~assertTrue( 'This queue can not have an index of 1,000,000,000', q~hasindex( 1000000000 ) );
+    numeric digits 10
+    self~assertTrue(q~hasindex( 1000000000 ), 'This queue can not have an index of 1,000,000,000')
     */
 
     /*
       Rick does not agree with my thinking that this is valid.
 
     -- Test that we can try any non-exisitent index, of any type.
-    self~assertFalse( 'No queue can have an index of 0', q~hasindex(   0 ) );
+    self~assertFalse(q~hasindex(   0 ), 'No queue can have an index of 0')
 
-    tbl = .table~new;
-    self~assertFalse( 'No queue can have an index of' tbl, q~hasindex( tbl ) );
+    tbl = .table~new
+    self~assertFalse(q~hasindex( tbl ), 'No queue can have an index of' tbl)
     */
 
     -- Test that hasindex is correct after the queue has been re-ordered.
-    q = self~fillQueueWithBoth( .queue~new );
+    q = self~fillQueueWithBoth( .queue~new )
     do i = 199 to 0 by -11
-      q~remove( i );
+      q~remove( i )
     end
-    lastIndex = q~items;
+    lastIndex = q~items
 
     do i = 1 to lastIndex
-      self~assertTrue( 'Queue must have an index of' i, q~hasindex( i ) );
+      self~assertTrue(q~hasindex( i ), 'Queue must have an index of' i)
     end
-    self~assertFalse( 'Queue can not have index of' lastIndex + 1, q~hasindex( lastIndex + 1 ) );
+    self~assertFalse(q~hasindex( lastIndex + 1 ), 'Queue can not have index of' lastIndex + 1)
 
     -- Test that hasindex is correct with an empty queue.
-    q = .queue~new;
-    self~assertFalse( 'Queue can not have an index of 1'                   1, q~hasindex(         1 ) );
-    self~assertFalse( 'Queue can not have an index of 2'                   2, q~hasindex(         2 ) );
-    self~assertFalse( 'Queue can not have an index of 999,999,999' 999999999, q~hasindex( 999999999 ) );
+    q = .queue~new
+    self~assertFalse(q~hasindex(         1 ), 'Queue can not have an index of 1'                   1)
+    self~assertFalse(q~hasindex(         2 ), 'Queue can not have an index of 2'                   2)
+    self~assertFalse(q~hasindex( 999999999 ), 'Queue can not have an index of 999,999,999' 999999999)
 
   -- End test_hasIndex( )
 
@@ -430,91 +329,91 @@ return 0;
 
       Returns the number of items in the collection.
   \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-  ::method  test_items;
+  ::method  test_items
 
     if self~class~verbose > 2 then
-      say '*In test_items';
+      say '*In test_items'
 
-    q = .queue~new;
-    self~assertTrue( 'Empty queue should have 0 items', q~items == 0 );
+    q = .queue~new
+    self~assertTrue(q~items == 0, 'Empty queue should have 0 items')
 
     -- Queue 100 numbers, should have 100 items.
     do number over self~class~arrayOf100numbers
-      q~queue( number );
+      q~queue( number )
     end
-    self~assertTrue( 'Queued 100 times, queue should have 100 items', q~items == 100 );
+    self~assertTrue(q~items == 100, 'Queued 100 times, queue should have 100 items')
 
     -- After each remove, ~items should be one less.
     do i = 100 to 1 by -1
-      q~pull;
-      self~assertEquals( "After each pull, count of items should be 1 less", i - 1, q~items );
+      q~pull
+      self~assertEquals(i - 1, q~items, "After each pull, count of items should be 1 less")
     end
 
     -- Double check we are empty.
-    self~assertTrue( 'Empty queue should have 0 items', q~items == 0 );
+    self~assertTrue(q~items == 0, 'Empty queue should have 0 items')
 
     -- Similar basic tests using objects (no reason to expect an object to be
     -- queued any different, but you never know.)
-    arr = self~class~arrayOf100objects;
+    arr = self~class~arrayOf100objects
     do i = 1 to 100
-      q~push( arr[ i ] );
-      self~assertEquals( 'Items should equal count of pushes', i, q~items );
+      q~push( arr[ i ] )
+      self~assertEquals(i, q~items, 'Items should equal count of pushes')
     end
 
     -- Remove every other object in queue, expect count of items to be correct
     -- after the queue adjusts its indexes.
-    j = 100;
+    j = 100
     do i = 100 to 1 by -2
-      q~remove( i );
-      j = j - 1;
-      self~assertEquals( 'After each remove, count of items should be 1 less', j, q~items );
+      q~remove( i )
+      j = j - 1
+      self~assertEquals(j, q~items, 'After each remove, count of items should be 1 less')
     end
 
     -- Double check my counting.
-    self~assertEquals( 'Queue should have 50 items', 50, q~items );
+    self~assertEquals(50, q~items, 'Queue should have 50 items')
 
     -- Same thing, remove every 5th object in the queue.
-    j = 50;
+    j = 50
     do i = 50 to 1 by -5
-      q~remove( i );
-      j = j - 1;
-      self~assertEquals( 'After each remove, count of items should be 1 less', j, q~items );
+      q~remove( i )
+      j = j - 1
+      self~assertEquals(j, q~items, 'After each remove, count of items should be 1 less')
     end
-    self~assertEquals( 'Queue should have 40 items', 40, q~items );
+    self~assertEquals(40, q~items, 'Queue should have 40 items')
 
     -- Use ~items in a do statement.
     do q~items
-      q~pull;
+      q~pull
     end
-    self~assertTrue( 'Queue should be empty', q~items == 0 );
+    self~assertTrue(q~items == 0, 'Queue should be empty')
 
     -- Pull from an empty queue a number of times and see that items remains 0.
     do 50
-      q~pull;
+      q~pull
     end
-    self~assertTrue( 'Queue should be empty', q~items == 0 );
+    self~assertTrue(q~items == 0, 'Queue should be empty')
 
     -- Try a relatively large number of items.
     do 1000
-      do n over self~class~arrayOf100numbers;
-        q~queue( n );
+      do n over self~class~arrayOf100numbers
+        q~queue( n )
       end
-      do o over self~class~arrayOf100objects;
-        q~push( o );
+      do o over self~class~arrayOf100objects
+        q~push( o )
       end
     end
-    self~assertEquals( 'Queue should have 200,000 items', 200000, q~items );
+    self~assertEquals(200000, q~items, 'Queue should have 200,000 items')
 
     -- Remove a couple of miscellaneous items from the queue, (which forces
     -- the queue to readjust a lot of indexes,) and check the item count.
-    q~~remove( 3  )~~remove( 11 )~~remove( 19 );
-    self~assertEquals( 'Queue should have 199,997 items', 199997, q~items );
+    q~~remove( 3  )~~remove( 11 )~~remove( 19 )
+    self~assertEquals(199997, q~items, 'Queue should have 199,997 items')
 
     -- Remove all but 1 item and check count.
     do 199996
-      q~pull;
+      q~pull
     end
-    self~assertEquals( 'Queue should have 1 item', 1, q~items );
+    self~assertEquals(1, q~items, 'Queue should have 1 item')
 
   -- End test_items( )
 
@@ -528,7 +427,7 @@ return 0;
       queue items appear in the array is the same as their queuing order, with
       the head of the queue as index 1.
   \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-  ::method  test_makearray;
+  ::method  test_makearray
 
 
   -- End test_makearray( )
@@ -541,11 +440,11 @@ return 0;
       Returns the item at the head of the queue. The collection remains
       unchanged.
   \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-  ::method  test_peek;
+  ::method  test_peek
 
     q   = .queue~new
-    obj = q~peek;
-    self~assertNull( 'Peek on empty queue should return .nil', obj );
+    obj = q~peek
+    self~assertNull(obj, 'Peek on empty queue should return .nil')
 
   -- End test_peek( )
 
@@ -557,12 +456,12 @@ return 0;
 
       Returns and removes the item at the head of the queue.
   \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-  ::method  test_pull;
+  ::method  test_pull
 
     -- Test on an empty queue.
     q   = .queue~new
-    obj = q~pull;
-    self~assertNull( 'Pull from empty queue should return .nil', obj );
+    obj = q~pull
+    self~assertNull(obj, 'Pull from empty queue should return .nil')
 
 
   -- End test_pull( )
@@ -574,7 +473,7 @@ return 0;
 
       Adds the object item to the head of the queue.
   \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-  ::method  test_push;
+  ::method  test_push
 
 
   -- End test_push( )
@@ -587,7 +486,7 @@ return 0;
       Replaces any existing item associated with the specified index with the
       new item. If the index does not exist in the queue, an error is raised.
   \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-  ::method  test_put;
+  ::method  test_put
 
 
   -- End test_put( )
@@ -595,99 +494,99 @@ return 0;
   /* test_queue( ) - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
       Test the .queue instance method: queue
   \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-  ::method  test_queue;
+  ::method  test_queue
 
     if self~class~verbose > 2 then
-      say '*In test_queue';
+      say '*In test_queue'
 
     -- Test that we can queue simple numbers ...
-    q = .queue~new;
-    do n over self~class~arrayOf100numbers;
-      q~queue( n );
+    q = .queue~new
+    do n over self~class~arrayOf100numbers
+      q~queue( n )
     end
-    self~assertEquals( 'Queued 100 times, should have 100 items', 100, q~items );
+    self~assertEquals(100, q~items, 'Queued 100 times, should have 100 items')
 
     -- ... and test we can queue objects.
     q = .queue~new
-    do o over self~class~arrayOf100objects;
-      q~queue( o );
+    do o over self~class~arrayOf100objects
+      q~queue( o )
     end
-    self~assertEquals( 'Queued 100 times, should have 100 items', 100, q~items );
+    self~assertEquals(100, q~items, 'Queued 100 times, should have 100 items')
 
     -- Test we can queue the .nil object ...
     q = .queue~new
     do 100
-      q~queue( .nil );
+      q~queue( .nil )
     end
-    self~assertEquals( 'Queued 100 times, should have 100 items', 100, q~items );
+    self~assertEquals(100, q~items, 'Queued 100 times, should have 100 items')
 
     -- ... and test each queued object is the .nil object.
     do obj over q
-      self~assertEquals( 'Each object in queue should be the .nil object', .nil, obj );
+      self~assertEquals(.nil, obj, 'Each object in queue should be the .nil object')
     end
 
     -- Test that we can queue a queue.
     q = .queue~new
-    testQ = .queue~new~~queue( 'one' )~~queue( 'two' )~~queue( 'three' );
+    testQ = .queue~new~~queue( 'one' )~~queue( 'two' )~~queue( 'three' )
     do 100
-      q~queue( testQ );
+      q~queue( testQ )
     end
-    self~assertEquals( 'Queued 100 times, should have 100 items', 100, q~items );
+    self~assertEquals(100, q~items, 'Queued 100 times, should have 100 items')
     do obj over q
-      self~assertEquals( 'Each object in queue should be the test queue', testQ, obj );
+      self~assertEquals(testQ, obj, 'Each object in queue should be the test queue')
     end
 
     -- Test that we can queue a class object.
-    q = .queue~new;
+    q = .queue~new
     do 100
-      q~queue( .method );
+      q~queue( .method )
     end
-    self~assertEquals( 'Queued 100 times, should have 100 items', 100, q~items );
+    self~assertEquals(100, q~items, 'Queued 100 times, should have 100 items')
     do obj over q
-      self~assertEquals( 'Each object in queue should be the .method class object', .method, obj );
+      self~assertEquals(.method, obj, 'Each object in queue should be the .method class object')
     end
 
     -- Test that each queued item is queued to the tail of the queue.
-    q = .queue~new;
-    do n over self~class~arrayOf100numbers;
-      q~queue( n );
-      self~assertEquals( 'Each queued object should be at the tail', n, q[ q~items ] );
+    q = .queue~new
+    do n over self~class~arrayOf100numbers
+      q~queue( n )
+      self~assertEquals(n, q[ q~items ], 'Each queued object should be at the tail')
     end
-    do o over self~class~arrayOf100objects;
-      q~queue( o );
-      self~assertEquals( 'Each queued object should be at the tail', o, q[ q~items ] );
+    do o over self~class~arrayOf100objects
+      q~queue( o )
+      self~assertEquals(o, q[ q~items ], 'Each queued object should be at the tail')
     end
 
     -- Test each queued item has the correct index.  (Doubt that this proves
     -- much the last test did not prove.)
-    q = .queue~new;
-    do n over self~class~arrayOf100numbers;
-      q~queue( n );
+    q = .queue~new
+    do n over self~class~arrayOf100numbers
+      q~queue( n )
     end
-    do o over self~class~arrayOf100objects;
-      q~queue( o );
+    do o over self~class~arrayOf100objects
+      q~queue( o )
     end
 
-    n = self~class~arrayOf100numbers;
+    n = self~class~arrayOf100numbers
     do i = 1 to 100
-      self~assertEquals( 'Queue object at index should match object at array index', n[ i ], q[ i ] );
+      self~assertEquals(n[ i ], q[ i ], 'Queue object at index should match object at array index')
     end
-    o = self~class~arrayOf100objects;
+    o = self~class~arrayOf100objects
     do i = 101 to 200
-      self~assertEquals( 'Queue object at index should match object at array index', o[ i - 100 ], q[ i ] );
+      self~assertEquals(o[ i - 100 ], q[ i ], 'Queue object at index should match object at array index')
     end
 
     -- Test that we can queue a relatively large number of times.
-    q = .queue~new;
+    q = .queue~new
     do 1000
-      do n over self~class~arrayOf100numbers;
-        q~queue( n );
+      do n over self~class~arrayOf100numbers
+        q~queue( n )
       end
-      do o over self~class~arrayOf100objects;
-        q~queue( o );
+      do o over self~class~arrayOf100objects
+        q~queue( o )
       end
     end
-    self~assertEquals( 'Queue should have 200,000 items', 200000, q~items );
+    self~assertEquals(200000, q~items, 'Queue should have 200,000 items')
 
   -- End test_queue( )
 
@@ -703,157 +602,157 @@ return 0;
       the head of the queue first.
 
   \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-  ::method  test_supplier;
+  ::method  test_supplier
 
     -- Test that the supplier method returns a supplier.
-    q = .queue~new;
-    q~queue( 1 );
+    q = .queue~new
+    q~queue( 1 )
     obj = q~supplier
-    self~assertEquals( 'Supplier method should return a supplier object (1)', .supplier, obj~class );
+    self~assertEquals(.supplier, obj~class, 'Supplier method should return a supplier object (1)')
 
     -- Test the returned supplier is correct.
-    self~assertEquals( 'Supplier index must be 1', 1, obj~index );
-    self~assertEquals( 'Supplier item must be 1',  1, obj~item  );
-    count = 0;
+    self~assertEquals(1, obj~index, 'Supplier index must be 1')
+    self~assertEquals(1, obj~item, 'Supplier item must be 1')
+    count = 0
     do while obj~available
-      count = count + 1;
-      obj~next;
+      count = count + 1
+      obj~next
     end
-    self~assertEquals( 'Supplier must have exactly 1 index/item', 1, count );
+    self~assertEquals(1, count, 'Supplier must have exactly 1 index/item')
 
     -- Test that an empty queue produces an empty supplier.
-    q     = .queue~new;
-    obj   = q~supplier;
-    count = 0;
-    self~assertEquals( 'Supplier method should return a supplier object (2)', .supplier, obj~class );
+    q     = .queue~new
+    obj   = q~supplier
+    count = 0
+    self~assertEquals(.supplier, obj~class, 'Supplier method should return a supplier object (2)')
     do while obj~available
-      count = count + 1;
-      obj~next;
+      count = count + 1
+      obj~next
     end
-    self~assertEquals( 'Supplier must not have any index/item', 0, count );
+    self~assertEquals(0, count, 'Supplier must not have any index/item')
 
     -- Test that the supplier is correct with a queue having a number of
     -- elements; that the supplier produces each and every item in the queue
     -- and nothing else.
-    q = self~fillQueueWithBoth( .queue~new );
+    q = self~fillQueueWithBoth( .queue~new )
 
-    holder = .set~new;
+    holder = .set~new
     do n over self~class~arrayOf100numbers
-      holder~put( n );
+      holder~put( n )
     end
     do o over self~class~arrayOf100objects
-      holder~put( o );
+      holder~put( o )
     end
 
     -- Save a copy of the holder for another test.
-    holderSafe = holder~copy;
+    holderSafe = holder~copy
 
-    obj   = q~supplier;
-    count = 0;
-    self~assertEquals( 'Supplier method should return a supplier object (3)', .supplier, obj~class );
+    obj   = q~supplier
+    count = 0
+    self~assertEquals(.supplier, obj~class, 'Supplier method should return a supplier object (3)')
     do while obj~available
-      count = count + 1;
-      self~assertTrue( 'Supplier item ('obj~item') must be in the holder set (1)', holder~hasindex( obj~item ) );
-      holder~remove( obj~item );
-      obj~next;
+      count = count + 1
+      self~assertTrue(holder~hasindex( obj~item ), 'Supplier item ('obj~item') must be in the holder set (1)')
+      holder~remove( obj~item )
+      obj~next
     end
-    self~assertEquals( 'Supplier must have exactly 200 indexes/items (1)',   0, holder~items );
-    self~assertEquals( 'Supplier must have exactly 200 indexes/items (2)', 200,        count );
+    self~assertEquals(0, holder~items, 'Supplier must have exactly 200 indexes/items (1)')
+    self~assertEquals(200, count, 'Supplier must have exactly 200 indexes/items (2)')
 
     -- Test that we get the same, correct supplier back if we repeat the method
     -- call.
-    holder = holderSafe;
-    obj    = q~supplier;
-    count  = 0;
-    self~assertEquals( 'Supplier method should return a supplier object (4)', .supplier, obj~class );
+    holder = holderSafe
+    obj    = q~supplier
+    count  = 0
+    self~assertEquals(.supplier, obj~class, 'Supplier method should return a supplier object (4)')
     do while obj~available
-      count = count + 1;
-      self~assertTrue( 'Supplier item ('obj~item') must be in the holder set (2)', holder~hasindex( obj~item ) );
-      holder~remove( obj~item );
-      obj~next;
+      count = count + 1
+      self~assertTrue(holder~hasindex( obj~item ), 'Supplier item ('obj~item') must be in the holder set (2)')
+      holder~remove( obj~item )
+      obj~next
     end
-    self~assertEquals( 'Supplier must have exactly 200 indexes/items (3)',   0, holder~items );
-    self~assertEquals( 'Supplier must have exactly 200 indexes/items (4)', 200,        count );
+    self~assertEquals(0, holder~items, 'Supplier must have exactly 200 indexes/items (3)')
+    self~assertEquals(200, count, 'Supplier must have exactly 200 indexes/items (4)')
 
     -- Test that the supplier is correct after the queue has been re-ordered.
     do i = 200 to 0 by -7
-      q~remove( i );
+      q~remove( i )
     end
-    total = q~items;
+    total = q~items
 
     do i = 1 to q~items
-      holder~put( q~at( i ) );
+      holder~put( q~at( i ) )
     end
 
-    obj   = q~supplier;
-    count = 0;
-    self~assertEquals( 'Supplier method should return a supplier object (5)', .supplier, obj~class );
+    obj   = q~supplier
+    count = 0
+    self~assertEquals(.supplier, obj~class, 'Supplier method should return a supplier object (5)')
     do while obj~available
-      count = count + 1;
-      self~assertTrue( 'Supplier item ('obj~item') must be in the holder set (2)', holder~hasindex( obj~item ) );
-      holder~remove( obj~item );
-      obj~next;
+      count = count + 1
+      self~assertTrue(holder~hasindex( obj~item ), 'Supplier item ('obj~item') must be in the holder set (2)')
+      holder~remove( obj~item )
+      obj~next
     end
-    self~assertEquals( 'Supplier must have exactly' total 'indexes/items (1)',     0, holder~items );
-    self~assertEquals( 'Supplier must have exactly' total 'indexes/items (2)', total,        count );
+    self~assertEquals(0, holder~items, 'Supplier must have exactly' total 'indexes/items (1)')
+    self~assertEquals(total, count, 'Supplier must have exactly' total 'indexes/items (2)')
 
   -- End test_supplier( )
 
   -- Attribute: arrayOf100objects
   --   An array to hold 100 objects.  This array is not changed by any test once
   --   it has been created, so it only needs to be initialized one time.
-  ::method  arrayOf100objects attribute class;
+  ::method  arrayOf100objects attribute class
 
   -- Attribute: arrayOf100numbers
   --   Holds the numbers 1 through 100.  Like arrayOf100objects, this array is
   --   not changed by any test cases and only needs to be initialized once.
-  ::method  arrayOf100numbers attribute class;
+  ::method  arrayOf100numbers attribute class
 
   /* setUp( ) - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
       Some initialization to be performed prior to each test running.
   \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-  ::method  setUp;
+  ::method  setUp
 
     -- Array only needs to be created and filled one time.  No test changes the
     -- array in any way.
     if self~class~arrayOf100numbers~class <> .array then do
-      arr = .array~new;
+      arr = .array~new
       do i = 1 to 100
-        arr[ i ] = i;
+        arr[ i ] = i
       end
-      self~class~arrayOf100numbers = arr;
+      self~class~arrayOf100numbers = arr
     end
 
     -- Likewise, no test changes this array.  Note, no item in this array can
     -- match an item in the arrayOf100numbers array.  Do not do: arr[ i ] = i
     if self~class~arrayOf100objects~class <> .array then do
-      arr = .array~of( 'one', 'two', 'three', 'four', 'five' );
+      arr = .array~of( 'one', 'two', 'three', 'four', 'five' )
       do i = 6 to 100
         select
           when (i // 5) == 0 then
-            arr[ i ] = .directory~new~~setentry( i, i );
+            arr[ i ] = .directory~new~~setentry( i, i )
 
           when (i // 4) == 0 then
-            arr[ i ] = .table~new~~put( i, "tableIndex"i );
+            arr[ i ] = .table~new~~put( i, "tableIndex"i )
 
           when (i // 3) == 0 then
-            arr[ i ] = .set~of( i );
+            arr[ i ] = .set~of( i )
 
           when (i // 2) == 0 then
-            arr[ i ] = .list~of( i );
+            arr[ i ] = .list~of( i )
 
           otherwise
-            arr[ i ] = .bag~of( i );
+            arr[ i ] = .bag~of( i )
 
         end
         -- End select
       end
       -- End do i = 6 to 100
 
-      self~class~arrayOf100objects = arr;
+      self~class~arrayOf100objects = arr
 
       if self~class~verbose > 9 then
-        self~printObjectArray;
+        self~printObjectArray
     end
     -- End if self~class~arrayOf100objects~class <> .array
 
@@ -871,16 +770,16 @@ return 0;
     Returns:
       The queue object.
   \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-  ::method  fillQueueWithNumbers private;
-    use arg q;
+  ::method  fillQueueWithNumbers private
+    use arg q
 
     -- Might as well take advantage of our assert facility.
-    self~assertEquals( 'Arg to fillQueueWithNumbers() method must be a queue', .queue, q~class );
+    self~assertEquals(.queue, q~class, 'Arg to fillQueueWithNumbers() method must be a queue')
     do number over self~class~arrayOf100numbers
-      q~queue( number );
+      q~queue( number )
     end
 
-  return q;
+  return q
   -- End fillQueueWithNumbers( q )
 
   /* fillQueueWithObjects( q ) - - - - - - - - - - - - - - - - - - - - - - - -*\
@@ -895,16 +794,16 @@ return 0;
     Returns:
       The queue object.
   \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-  ::method  fillQueueWithObjects private;
-    use arg q;
+  ::method  fillQueueWithObjects private
+    use arg q
 
     -- Might as well take advantage of our assert facility.
-    self~assertEquals( 'Arg to fillQueueWithObjects() method must be a queue', .queue, q~class );
+    self~assertEquals(.queue, q~class, 'Arg to fillQueueWithObjects() method must be a queue')
     do obj over self~class~arrayOf100objects
-      q~queue( obj );
+      q~queue( obj )
     end
 
-  return q;
+  return q
   -- End fillQueueWithObjects( q )
 
   /* fillQueueWithBoth( q )- - - - - - - - - - - - - - - - - - - - - - - - - -*\
@@ -920,15 +819,15 @@ return 0;
     Returns:
       The queue object.
   \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-  ::method  fillQueueWithBoth private;
-    use arg q;
+  ::method  fillQueueWithBoth private
+    use arg q
 
     -- Might as well take advantage of our assert facility.
-    self~assertEquals( 'Arg to fillQueueWithBoth() method must be a queue', .queue, q~class );
-    self~fillQueueWithNumbers( q );
-    self~fillQueueWithObjects( q );
+    self~assertEquals(.queue, q~class, 'Arg to fillQueueWithBoth() method must be a queue')
+    self~fillQueueWithNumbers( q )
+    self~fillQueueWithObjects( q )
 
-  return q;
+  return q
   -- End fillQueueWithBoth( q )
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
@@ -937,20 +836,14 @@ return 0;
   when the test unit is fully implemented.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 
-  -- Attribute-like: verbose                 public / private
+  -- verbose                 public / private
   --   Flag used while implementing this test unit.  Controls if extra messages
   --   are printed to the console while this test unit is executed.  Turn on
   --   by calling this program file using an arg of exactly 'verboseN', where
   --   N is an integer from 1 to 10.   Anything else turns the extra messages
   --   off.  The higher N, the more verbose.
-  ::method  verbose class;
-    expose verbose;
-  return verbose;
-
-  ::method  'verbose=' class private;
-    expose verbose;
-  use arg verbose;
-  -- End verbose( )
+  ::attribute verbose get class
+  ::attribute verbose set class private
 
   /* init( ) - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
 
@@ -962,11 +855,10 @@ return 0;
     Returns:
       0, always.
   \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-  ::method  init class;
-    use arg;
-    self~verbose = 0;
-    forward class (super);
-  return 0;
+  ::method  init class
+    self~verbose = 0
+    forward class (super)
+  return 0
   -- End init( )
 
   /* setVerbose( flag )- - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
@@ -982,21 +874,21 @@ return 0;
     Returns:
       The state of the verbose setting after this method executes.
   \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-  ::method  setVerbose class;
-    use arg flag;
+  ::method  setVerbose class
+    use arg flag
 
     if flag~class == .string then do
       if flag~abbrev( 'verbose' ) then do
-        N = flag~substr( 8 );
+        N = flag~substr( 8 )
         if N~datatype( 'W' ) then do
           if N > 0 & N < 11 then do
-            self~verbose = N;
+            self~verbose = N
           end
         end
       end
     end
 
-  return self~verbose;
+  return self~verbose
   -- End setVerbose( flag )
 
   /* printObjectArray( ) - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
@@ -1010,61 +902,61 @@ return 0;
     Returns:
       0, always.
   \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-  ::method  printObjectArray private;
-    use arg;
+  ::method  printObjectArray private
+    use arg
 
     if self~class~arrayOf100objects~class == .array then do
       do obj over self~class~arrayOf100objects
-        itr = .nil;
+        itr = .nil
 
         select
           when obj~class == .string then do
-            say 'Got a string.';
-            say '  Value:' obj;
+            say 'Got a string.'
+            say '  Value:' obj
           end
 
           when obj~class == .table then do
-            say 'Got a table.';
-            itr = obj~supplier;
+            say 'Got a table.'
+            itr = obj~supplier
           end
 
           when obj~class == .set then do
-            say 'Got a set.';
-            itr = obj~supplier;
+            say 'Got a set.'
+            itr = obj~supplier
           end
 
           when obj~class == .bag then do
-            say 'Got a bag.';
-            itr = obj~supplier;
+            say 'Got a bag.'
+            itr = obj~supplier
           end
 
           when obj~class == .list then do
-            say 'Got a list.';
-            itr = obj~supplier;
+            say 'Got a list.'
+            itr = obj~supplier
           end
 
           when obj~class == .directory then do
-            say 'Got a directory.';
-            itr = obj~supplier;
+            say 'Got a directory.'
+            itr = obj~supplier
           end
 
           otherwise do
-            say 'This is an error, object is not as expected!';
-            say '  Object class:' obj~class;
+            say 'This is an error, object is not as expected!'
+            say '  Object class:' obj~class
           end
         end
         -- End select
 
         if itr <> .nil then do while itr~available
-            say '  Index:' itr~index;
-            say '  Item: ' itr~item;
-            itr~next;
+            say '  Index:' itr~index
+            say '  Item: ' itr~item
+            itr~next
           end
         end
-        say;
+        say
     end
 
-  return 0;
+  return 0
   -- End printObjectArray( )
 
 -- End of class: Queue.testGroup

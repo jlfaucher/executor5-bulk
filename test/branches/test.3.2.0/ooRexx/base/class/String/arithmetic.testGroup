@@ -107,8 +107,8 @@ do
       -- create a testSuite for the given test case class, use all its testmethods
       ts~addTest( .testSuite~new(arr[1]))
    end
-   -- testResult=.testSuite~new(testGroupClass)~run
-   testResult=ts~run       -- now run all the tests
+   -- testResult=.testSuite~new(testGroupClass)~execute
+   testResult=ts~execute       -- now run all the tests
 
    call simpleFormatTestResults testResult
 end
@@ -117,29 +117,29 @@ end
       optionally list of mandatory test methods                      */
 return testGroupList
 
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
-::class "arithmetic.testGroup" subclass TestCase public
+::class "arithmetic.testGroup" subclass ooTestCase public
 
 ::method "test_arithmetic_operators"
-   self~assertEquals("subTest1" , 10 , 5+5  )
-   self~assertEquals("subTest2" , 3  , 8-5  )
-   self~assertEquals("subTest3" , 10 , 5*2  )
-   self~assertEquals("subTest4" , 3  , 6/2  )
-   self~assertEquals("subTest5" , 1  , 9//4 )
-   self~assertEquals("subTest6" , 2  , 9%4  )
-   self~assertEquals("subTest7" , 8  , 2**3 )
-   self~assertEquals("subTest8" , 5  , +5   ) /* Prefix + */
-   self~assertEquals("subTest9" , -5 , -5   ) /* Prefix - */
+   self~assertEquals(10, 5+5)
+   self~assertEquals(3, 8-5)
+   self~assertEquals(10, 5*2)
+   self~assertEquals(3, 6/2)
+   self~assertEquals(1, 9//4)
+   self~assertEquals(2, 9%4)
+   self~assertEquals(8, 2**3)
+   self~assertEquals(5, +5) /* Prefix + */
+   self~assertEquals(-5, -5) /* Prefix - */
 
-   self~assertEquals("subTest11" , 10 , 5~'+'(5)  )
-   self~assertEquals("subTest12" , 3  , 8~'-'(5)  )
-   self~assertEquals("subTest13" , 10 , 5~'*'(2)  )
-   self~assertEquals("subTest14" , 3  , 6~'/'(2)  )
-   self~assertEquals("subTest15" , 1  , 9~'//'(4) )
-   self~assertEquals("subTest16" , 2  , 9~'%'(4)  )
-   self~assertEquals("subTest17" , 8  , 2~'**'(3) )
-   self~assertEquals("subTest18" , 5  , 5~'+'     ) /* Prefix + */
-   self~assertEquals("subTest19" , -5 , 5~'-'     ) /* Prefix - */
+   self~assertEquals(10, 5~'+'(5))
+   self~assertEquals(3, 8~'-'(5))
+   self~assertEquals(10, 5~'*'(2))
+   self~assertEquals(3, 6~'/'(2))
+   self~assertEquals(1, 9~'//'(4))
+   self~assertEquals(2, 9~'%'(4))
+   self~assertEquals(8, 2~'**'(3))
+   self~assertEquals(5, 5~'+') /* Prefix + */
+   self~assertEquals(-5, 5~'-') /* Prefix - */
 
 

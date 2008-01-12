@@ -107,8 +107,8 @@ do
       -- create a testSuite for the given test case class, use all its testmethods
       ts~addTest( .testSuite~new(arr[1]))
    end
-   -- testResult=.testSuite~new(testGroupClass)~run
-   testResult=ts~run       -- now run all the tests
+   -- testResult=.testSuite~new(testGroupClass)~execute
+   testResult=ts~execute       -- now run all the tests
 
    call simpleFormatTestResults testResult
 end
@@ -117,9 +117,9 @@ end
       optionally list of mandatory test methods                      */
 return testGroupList
 
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
-::class "String_lastposMethod.testGroup" subclass TestCase public
+::class "String_lastposMethod.testGroup" subclass ooTestCase public
 
 ::method 'test000'
     .local~v26 = 'A B C D E F G H I J K L M N O P Q R S T U V W X Y Z'
@@ -133,276 +133,276 @@ return testGroupList
     .local~vxnx = '7a786376000000000041534446'x
 
 ::method 'test001'
-    self~assertSame('subTest01','0',''~lastPos(''))
+    self~assertSame('0', ''~lastPos(''))
 
 ::method 'test002'
-    self~assertSame('subTest01','1',' '~lastPos(' '))
+    self~assertSame('1', ' '~lastPos(' '))
 
 ::method 'test003'
-    self~assertSame('subTest01','1','WORD1 WORD2'~lastPos('WORD1'))
+    self~assertSame('1', 'WORD1 WORD2'~lastPos('WORD1'))
 
 ::method 'test004'
-    self~assertSame('subTest01','7','WORD1 WORD2'~lastPos('WORD2'))
+    self~assertSame('7', 'WORD1 WORD2'~lastPos('WORD2'))
 
 ::method 'test005'
-    self~assertSame('subTest01','0','WORD1 WORD2'~lastPos('WORD3'))
+    self~assertSame('0', 'WORD1 WORD2'~lastPos('WORD3'))
 
 ::method 'test006'
-    self~assertSame('subTest01','1','4a'x~lastPos('4a'x))
+    self~assertSame('1', '4a'x~lastPos('4a'x))
 
 ::method 'test007'
-    self~assertSame('subTest01','0','4a'x~lastPos('4b'x))
+    self~assertSame('0', '4a'x~lastPos('4b'x))
 
 ::method 'test008'
-    self~assertSame('subTest01','1','WORD'~lastPos('WORD'))
+    self~assertSame('1', 'WORD'~lastPos('WORD'))
 
 ::method 'test009'
-    self~assertSame('subTest01','0','WORD'~lastPos('DROW'))
+    self~assertSame('0', 'WORD'~lastPos('DROW'))
 
 ::method 'test010'
-    self~assertSame('subTest01','0','4a52'x~lastPos('20202020204a522020202020'x))
+    self~assertSame('0', '4a52'x~lastPos('20202020204a522020202020'x))
 
 ::method 'test011'
-    self~assertSame('subTest01','0','4a52'x~lastPos('20202020204a20522020202020'x))
+    self~assertSame('0', '4a52'x~lastPos('20202020204a20522020202020'x))
 
 ::method 'test012'
-    self~assertSame('subTest01','1','4120422043204420452046204720482049204a204b204c204d'x~lastPos(.vc1x))
+    self~assertSame('1', '4120422043204420452046204720482049204a204b204c204d'x~lastPos(.vc1x))
 
 ::method 'test013'
-    self~assertSame('subTest01','0','4120422043204420452046204720482049204a204b204c204d'x~lastPos(.vc140x))
+    self~assertSame('0', '4120422043204420452046204720482049204a204b204c204d'x~lastPos(.vc140x))
 
 ::method 'test014'
-    self~assertSame('subTest01','13','4120422043204420452046204720482049204a204b204c204d'x~lastPos(.vc7x))
+    self~assertSame('13', '4120422043204420452046204720482049204a204b204c204d'x~lastPos(.vc7x))
 
 ::method 'test015'
-    self~assertSame('subTest01','0','4120422043204420452046204720482049204a204b204c204d'x~lastPos(.vc740x))
+    self~assertSame('0', '4120422043204420452046204720482049204a204b204c204d'x~lastPos(.vc740x))
 
 ::method 'test016'
-    self~assertSame('subTest01','1',.v26~lastPos('A'))
+    self~assertSame('1', .v26~lastPos('A'))
 
 ::method 'test017'
-    self~assertSame('subTest01','19',.v26~lastPos('J'))
+    self~assertSame('19', .v26~lastPos('J'))
 
 ::method 'test018'
-    self~assertSame('subTest01','51',.v26~lastPos('Z'))
+    self~assertSame('51', .v26~lastPos('Z'))
 
 ::method 'test019'
-    self~assertSame('subTest01','0',.v26~lastPos('0'))
+    self~assertSame('0', .v26~lastPos('0'))
 
 ::method 'test020'
-    self~assertSame('subTest01','0',.v26~lastPos('()'))
+    self~assertSame('0', .v26~lastPos('()'))
 
 ::method 'test021'
-    self~assertSame('subTest01','0',.v26~lastPos('A     B     C     D     E     '))
+    self~assertSame('0', .v26~lastPos('A     B     C     D     E     '))
 
 ::method 'test022'
-    self~assertSame('subTest01','0',.v26~lastPos('V     W     X     Y     Z     '))
+    self~assertSame('0', .v26~lastPos('V     W     X     Y     Z     '))
 
 ::method 'test023'
-    self~assertSame('subTest01','0',.v26~lastPos('X     Y     Z     A     B     '))
+    self~assertSame('0', .v26~lastPos('X     Y     Z     A     B     '))
 
 ::method 'test024'
     numeric digits 1
-    self~assertSame('subTest01','16',(12+6 12+7 12+8 12+9)~lastPos(+19))
+    self~assertSame('16', (12+6 12+7 12+8 12+9)~lastPos(+19))
 
 ::method 'test025'
     numeric digits 1
-    self~assertSame('subTest01','0','12+6 12+7 12+8 12+9'~lastPos(+19))
+    self~assertSame('0', '12+6 12+7 12+8 12+9'~lastPos(+19))
 
 ::method 'test026'
     numeric digits 1
-    self~assertSame('subTest01','6',(12+1 12+2 12+3 12+4)~lastPos(+14))
+    self~assertSame('6', (12+1 12+2 12+3 12+4)~lastPos(+14))
 
 ::method 'test027'
     numeric digits 1
-    self~assertSame('subTest01','0','12+1 12+2 12+3 12+4'~lastPos(+14))
+    self~assertSame('0', '12+1 12+2 12+3 12+4'~lastPos(+14))
 
 ::method 'test028'
-    self~assertSame('subTest01','4',(12+6 12+7 12+8 12+9)~lastPos(+19))
+    self~assertSame('4', (12+6 12+7 12+8 12+9)~lastPos(+19))
 
 ::method 'test029'
-    self~assertSame('subTest01','0','12+6 12+7 12+8 12+9'~lastPos(+19))
+    self~assertSame('0', '12+6 12+7 12+8 12+9'~lastPos(+19))
 
 ::method 'test030'
-    self~assertSame('subTest01','4',(12+1 12+2 12+3 12+4)~lastPos(+14))
+    self~assertSame('4', (12+1 12+2 12+3 12+4)~lastPos(+14))
 
 ::method 'test031'
-    self~assertSame('subTest01','0','12+1 12+2 12+3 12+4'~lastPos(+14))
+    self~assertSame('0', '12+1 12+2 12+3 12+4'~lastPos(+14))
 
 ::method 'test032'
     self~expectSyntax(93.938)
     xre = 'NV.'~lastPos(nv.)
 
 ::method 'test033'
-    self~assertSame('subTest01',1,nv.~lastPos('NV.'))
+    self~assertSame(1, nv.~lastPos('NV.'))
 
 ::method 'test034'
-    self~assertSame('subTest01','1','NV'~lastPos(nv))
+    self~assertSame('1', 'NV'~lastPos(nv))
 
 ::method 'test035'
     self~expectSyntax(93.938)
     xre = 'NV.'~lastPos(nv.)
 
 ::method 'test036'
-    self~assertSame('subTest01','1','NV.10'~lastPos(nv.10))
+    self~assertSame('1', 'NV.10'~lastPos(nv.10))
 
 ::method 'test037'
-    self~assertSame('subTest01','1',nv~lastPos('NV'))
+    self~assertSame('1', nv~lastPos('NV'))
 
 ::method 'test038'
-    self~assertSame('subTest01','1',nv.~lastPos('NV.'))
+    self~assertSame('1', nv.~lastPos('NV.'))
 
 ::method 'test039'
-    self~assertSame('subTest01','1',nv.10~lastPos('NV.10'))
+    self~assertSame('1', nv.10~lastPos('NV.10'))
 
 ::method 'test040'
-    self~assertSame('subTest01','0','     asdf qwer zxcv     ASDF QWER ZXCV'~lastPos('qwer zxcv ASDF'))
+    self~assertSame('0', '     asdf qwer zxcv     ASDF QWER ZXCV'~lastPos('qwer zxcv ASDF'))
 
 ::method 'test041'
     v8 = 'one two  three   four    five     six      seven       eight'
-    self~assertSame('subTest01','1',v8~lastPos('one'))
+    self~assertSame('1', v8~lastPos('one'))
 
 ::method 'test042'
     v8 = 'one two  three   four    five     six      seven       eight'
-    self~assertSame('subTest01','0',v8~lastPos('two                three four'))
+    self~assertSame('0', v8~lastPos('two                three four'))
 
 ::method 'test043'
     v8 = 'one two  three   four    five     six      seven       eight'
-    self~assertSame('subTest01','0',v8~lastPos('seven eight nine'))
+    self~assertSame('0', v8~lastPos('seven eight nine'))
 
 ::method 'test044'
-    self~assertSame('subTest01','0','6173646620717765722041534446205157455220'x~lastPos('41534446202020'x))
+    self~assertSame('0', '6173646620717765722041534446205157455220'x~lastPos('41534446202020'x))
 
 ::method 'test045'
-    self~assertSame('subTest01','0','6173646620717765722041534446205157455220'x~lastPos('20202041534446'x))
+    self~assertSame('0', '6173646620717765722041534446205157455220'x~lastPos('20202041534446'x))
 
 ::method 'test046'
-    self~assertSame('subTest01','10','6173646620717765722041534446205157455220'x~lastPos('204153444620'x))
+    self~assertSame('10', '6173646620717765722041534446205157455220'x~lastPos('204153444620'x))
 
 ::method 'test047'
-    self~assertSame('subTest01','6','61736466207a786376000000000041534446205a584356'x~lastPos('7a786376'x))
+    self~assertSame('6', '61736466207a786376000000000041534446205a584356'x~lastPos('7a786376'x))
 
 ::method 'test048'
-    self~assertSame('subTest01','15','61736466207a786376000000000041534446205a584356'x~lastPos('41534446'x))
+    self~assertSame('15', '61736466207a786376000000000041534446205a584356'x~lastPos('41534446'x))
 
 ::method 'test049'
-    self~assertSame('subTest01','6','61736466207a786376000000000041534446205a584356'x~lastPos(.vxnx))
+    self~assertSame('6', '61736466207a786376000000000041534446205a584356'x~lastPos(.vxnx))
 
 ::method 'test050'
-    self~assertSame('subTest01','19997',.v10000~lastPos('J'))
+    self~assertSame('19997', .v10000~lastPos('J'))
 
 ::method 'test051'
-    self~assertSame('subTest01','0',.v10000~lastPos('J  K'))
+    self~assertSame('0', .v10000~lastPos('J  K'))
 
 ::method 'test052'
-    self~assertSame('subTest01','19997',.v10000~lastPos('J K'))
+    self~assertSame('19997', .v10000~lastPos('J K'))
 
 ::method 'test053'
-    self~assertSame('subTest01','19999',.v10000~lastPos('K'))
+    self~assertSame('19999', .v10000~lastPos('K'))
 
 ::method 'test054'
-    self~assertSame('subTest01','0',.v10000~lastPos('K J'))
+    self~assertSame('0', .v10000~lastPos('K J'))
 
 ::method 'test055'
     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
-    self~assertSame('subTest01','1',XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~lastPos('1'))
+    self~assertSame('1', XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~lastPos('1'))
 
 ::method 'test056'
     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
-    self~assertSame('subTest01','9',XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~lastPos('35'x))
+    self~assertSame('9', XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~lastPos('35'x))
 
 ::method 'test057'
     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
-    self~assertSame('subTest01','0',XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~lastPos('35202020202020202020203620372020202020202020202038'x))
+    self~assertSame('0', XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~lastPos('35202020202020202020203620372020202020202020202038'x))
 
 ::method 'test058'
-    self~assertSame('subTest01','0',.vwbwwbw~lastPos('J '||copies('*',10000)))
+    self~assertSame('0', .vwbwwbw~lastPos('J '||copies('*',10000)))
 
 ::method 'test059'
-    self~assertSame('subTest01','0',.vwbwwbw~lastPos(copies('*',10000)||' R'))
+    self~assertSame('0', .vwbwwbw~lastPos(copies('*',10000)||' R'))
 
 ::method 'test060'
-    self~assertSame('subTest01','1',.vwbwwbw~lastPos('J'))
+    self~assertSame('1', .vwbwwbw~lastPos('J'))
 
 ::method 'test061'
-    self~assertSame('subTest01','5002',.vwbwwbw~lastPos(copies('*',10000)))
+    self~assertSame('5002', .vwbwwbw~lastPos(copies('*',10000)))
 
 ::method 'test062'
-    self~assertSame('subTest01','20002',.vwbwwbw~lastPos('R'))
+    self~assertSame('20002', .vwbwwbw~lastPos('R'))
 
 ::method 'test063'
-    self~assertSame('subTest01','1',.vwbw~lastPos('John'))
+    self~assertSame('1', .vwbw~lastPos('John'))
 
 ::method 'test064'
-    self~assertSame('subTest01','10005',.vwbw~lastPos('Buckley'))
+    self~assertSame('10005', .vwbw~lastPos('Buckley'))
 
 ::method 'test065'
-    self~assertSame('subTest01','0',.vwbw~lastPos('John Buckley'))
+    self~assertSame('0', .vwbw~lastPos('John Buckley'))
 
 ::method 'test066'
-    self~assertSame('subTest01','0',.vwbw~lastPos('Buckley John'))
+    self~assertSame('0', .vwbw~lastPos('Buckley John'))
 
 ::method 'test067'
-    self~assertSame('subTest01','1',(00345 03450 34500)~lastPos(00345))
+    self~assertSame('1', (00345 03450 34500)~lastPos(00345))
 
 ::method 'test068'
-    self~assertSame('subTest01','1',(00345 03450 34500)~lastPos(00345          03450))
+    self~assertSame('1', (00345 03450 34500)~lastPos(00345          03450))
 
 ::method 'test069'
-    self~assertSame('subTest01','13',(00345 03450 34500)~lastPos(34500))
+    self~assertSame('13', (00345 03450 34500)~lastPos(34500))
 
 ::method 'test070'
-    self~assertSame('subTest01','0',(00345 03450 34500)~lastPos(34500                    00))
+    self~assertSame('0', (00345 03450 34500)~lastPos(34500                    00))
 
 ::method 'test071'
-    self~assertSame('subTest01','0',(3 4 5)~lastPos(3 4||copies(' ',10000)||5))
+    self~assertSame('0', (3 4 5)~lastPos(3 4||copies(' ',10000)||5))
 
 ::method 'test072'
     v8 = 'one two  three   four    five     six      seven       eight'
-    self~assertSame('subTest01','0',v8~lastPos('one two three five'))
+    self~assertSame('0', v8~lastPos('one two three five'))
 
 ::method 'test073'
     v8. = 'one two  three   four    five     six      seven       eight'
-    self~assertSame('subTest01','0',v8.~lastPos('four'||copies(' ',50000)||'five six'))
+    self~assertSame('0', v8.~lastPos('four'||copies(' ',50000)||'five six'))
 
 ::method 'test074'
     v8. = 'one two  three   four    five     six      seven       eight'
-    self~assertSame('subTest01','0',v8.10~lastPos('three four five',))
+    self~assertSame('0', v8.10~lastPos('three four five',))
 
 ::method 'test075'
     v8. = 'one two  three   four    five     six      seven       eight'
-    self~assertSame('subTest01','0',v8.10~lastPos('seven eight nine'))
+    self~assertSame('0', v8.10~lastPos('seven eight nine'))
 
 ::method 'test076'
     v8. = 'one two  three   four    five     six      seven       eight'
-    self~assertSame('subTest01','0',v8.10~lastPos('ten'))
+    self~assertSame('0', v8.10~lastPos('ten'))
 
 ::method 'test077'
-    self~assertSame('subTest01','51',(.v26||' '||reverse(.v26))~lastPos('Z Z',))
+    self~assertSame('51', (.v26||' '||reverse(.v26))~lastPos('Z Z',))
 
 ::method 'test078'
-    self~assertSame('subTest01','49',(.v26' 'reverse(.v26))~lastPos('Y Z Z Y'))
+    self~assertSame('49', (.v26' 'reverse(.v26))~lastPos('Y Z Z Y'))
 
 ::method 'test079'
-    self~assertSame('subTest01','47',(.v26 reverse(.v26))~lastPos('X Y Z Z Y'))
+    self~assertSame('47', (.v26 reverse(.v26))~lastPos('X Y Z Z Y'))
 
 ::method 'test080'
-    self~assertSame('subTest01','0',(.v26||' '||reverse(.v26))~lastPos('z z'))
+    self~assertSame('0', (.v26||' '||reverse(.v26))~lastPos('z z'))
 
 ::method 'test081'
-    self~assertSame('subTest01','0',(.v26' 'reverse(.v26))~lastPos('y z z y'))
+    self~assertSame('0', (.v26' 'reverse(.v26))~lastPos('y z z y'))
 
 ::method 'test082'
-    self~assertSame('subTest01','0',(.v26 reverse(.v26))~lastPos('x y z z y'))
+    self~assertSame('0', (.v26 reverse(.v26))~lastPos('x y z z y'))
 
 ::method 'test083'
-    self~assertSame('subTest01','1',substr('one two three four',5,9)~lastPos('two three'))
+    self~assertSame('1', substr('one two three four',5,9)~lastPos('two three'))
 
 ::method 'test084'
-    self~assertSame('subTest01','0',(datatype(6) datatype('A'))~lastPos('NUM                       CHAR'))
+    self~assertSame('0', (datatype(6) datatype('A'))~lastPos('NUM                       CHAR'))
 
 ::method 'test085'
-    self~assertSame('subTest01','0',(datatype(6) datatype('A'))~lastPos('num                       char'))
+    self~assertSame('0', (datatype(6) datatype('A'))~lastPos('num                       char'))
 
 ::method 'test086'
     .local~remove(v26)
@@ -427,118 +427,118 @@ return testGroupList
     .local~vxnx = '7a786376000000000041534446'x
 
 ::method 'test088'
-    self~assertSame('subTest01','0','WORD1 WORD2 WORD1 WORD2'~lastPos('WORD1',3))
+    self~assertSame('0', 'WORD1 WORD2 WORD1 WORD2'~lastPos('WORD1',3))
 
 ::method 'test089'
-    self~assertSame('subTest01','0','WORD1 WORD2 WORD1 WORD2'~lastPos('WORD2',3))
+    self~assertSame('0', 'WORD1 WORD2 WORD1 WORD2'~lastPos('WORD2',3))
 
 ::method 'test090'
-    self~assertSame('subTest01','0','WORD1 WORD2 WORD1 WORD2'~lastPos('WORD3',3))
+    self~assertSame('0', 'WORD1 WORD2 WORD1 WORD2'~lastPos('WORD3',3))
 
 ::method 'test091'
-    self~assertSame('subTest01','1','4a'x~lastPos('4a'x,1))
+    self~assertSame('1', '4a'x~lastPos('4a'x,1))
 
 ::method 'test092'
-    self~assertSame('subTest01','1','4a'x~lastPos('4a'x,2))
+    self~assertSame('1', '4a'x~lastPos('4a'x,2))
 
 ::method 'test093'
     self~expectSyntax(93.924)
     xre = '4a'x~lastPos('4b'x,0)
 
 ::method 'test094'
-    self~assertSame('subTest01','0','4a'x~lastPos('4b'x,1))
+    self~assertSame('0', '4a'x~lastPos('4b'x,1))
 
 ::method 'test095'
-    self~assertSame('subTest01','0','4a52'x~lastPos('20202020204a522020202020'x,1))
+    self~assertSame('0', '4a52'x~lastPos('20202020204a522020202020'x,1))
 
 ::method 'test096'
-    self~assertSame('subTest01','0','4a52'x~lastPos('20202020204a522020202020'x,2))
+    self~assertSame('0', '4a52'x~lastPos('20202020204a522020202020'x,2))
 
 ::method 'test097'
-    self~assertSame('subTest01','0','4120422043204420452046204720482049204a204b204c204d'x~lastPos(.vc1x,1))
+    self~assertSame('0', '4120422043204420452046204720482049204a204b204c204d'x~lastPos(.vc1x,1))
 
 ::method 'test098'
-    self~assertSame('subTest01','0','4120422043204420452046204720482049204a204b204c204d'x~lastPos(.vc1x,2))
+    self~assertSame('0', '4120422043204420452046204720482049204a204b204c204d'x~lastPos(.vc1x,2))
 
 ::method 'test099'
-    self~assertSame('subTest01','0','4120422043204420452046204720482049204a204b204c204d'x~lastPos(.vc140x,1))
+    self~assertSame('0', '4120422043204420452046204720482049204a204b204c204d'x~lastPos(.vc140x,1))
 
 ::method 'test100'
-    self~assertSame('subTest01','0','4120422043204420452046204720482049204a204b204c204d'x~lastPos(.vc140x,2))
+    self~assertSame('0', '4120422043204420452046204720482049204a204b204c204d'x~lastPos(.vc140x,2))
 
 ::method 'test101'
-    self~assertSame('subTest01','0','4120422043204420452046204720482049204a204b204c204d'x~lastPos(.vc7x,13))
+    self~assertSame('0', '4120422043204420452046204720482049204a204b204c204d'x~lastPos(.vc7x,13))
 
 ::method 'test102'
-    self~assertSame('subTest01','0','4120422043204420452046204720482049204a204b204c204d'x~lastPos(.vc740x,14))
+    self~assertSame('0', '4120422043204420452046204720482049204a204b204c204d'x~lastPos(.vc740x,14))
 
 ::method 'test103'
-    self~assertSame('subTest01','1',.v26~lastPos('A',1))
+    self~assertSame('1', .v26~lastPos('A',1))
 
 ::method 'test104'
-    self~assertSame('subTest01','1',.v26~lastPos('A',2))
+    self~assertSame('1', .v26~lastPos('A',2))
 
 ::method 'test105'
-    self~assertSame('subTest01','0',.v26~lastPos('J','39'x))
+    self~assertSame('0', .v26~lastPos('J','39'x))
 
 ::method 'test106'
-    self~assertSame('subTest01','0',.v26~lastPos('J',X2D('A')))
+    self~assertSame('0', .v26~lastPos('J',X2D('A')))
 
 ::method 'test107'
-    self~assertSame('subTest01','0',.v26~lastPos('J','3131'x))
+    self~assertSame('0', .v26~lastPos('J','3131'x))
 
 ::method 'test108'
-    self~assertSame('subTest01','0',.v26~lastPos('Z',' 25 '))
+    self~assertSame('0', .v26~lastPos('Z',' 25 '))
 
 ::method 'test109'
-    self~assertSame('subTest01','0',.v26~lastPos('0',1))
+    self~assertSame('0', .v26~lastPos('0',1))
 
 ::method 'test110'
     self~expectSyntax(93.924)
     xre = .v26~lastPos('A     B     C     D     E     ',-1)
 
 ::method 'test111'
-    self~assertSame('subTest01','0',.v26~lastPos('V     W     X     Y     Z     ',.22E02))
+    self~assertSame('0', .v26~lastPos('V     W     X     Y     Z     ',.22E02))
 
 ::method 'test112'
-    self~assertSame('subTest01','0',.v26~lastPos('X     Y     Z     A     B     ','.22E02'))
+    self~assertSame('0', .v26~lastPos('X     Y     Z     A     B     ','.22E02'))
 
 ::method 'test113'
     numeric digits 1
-    self~assertSame('subTest01','3','A Z C D E F G H I J K L M N O P Q R S T U V W X Y Z'~lastPos('Z',+19))
+    self~assertSame('3', 'A Z C D E F G H I J K L M N O P Q R S T U V W X Y Z'~lastPos('Z',+19))
 
 ::method 'test114'
     numeric digits 1
-    self~assertSame('subTest01','3','A Z C D E F G H I J K L M N O P Q R S T U V W X Y Z'~lastPos('Z',+14))
+    self~assertSame('3', 'A Z C D E F G H I J K L M N O P Q R S T U V W X Y Z'~lastPos('Z',+14))
 
 ::method 'test115'
-    self~assertSame('subTest01','3','A Z C D E F G H I J K L M N O P Q R S T U V W X Y Z'~lastPos('Z',+19))
+    self~assertSame('3', 'A Z C D E F G H I J K L M N O P Q R S T U V W X Y Z'~lastPos('Z',+19))
 
 ::method 'test116'
-    self~assertSame('subTest01','3','A Z C D E F G H I J K L M N O P Q R S T U V W X Y Z'~lastPos('Z',+14))
+    self~assertSame('3', 'A Z C D E F G H I J K L M N O P Q R S T U V W X Y Z'~lastPos('Z',+14))
 
 ::method 'test117'
     self~expectSyntax(93.938)
     xre = 'NV.'~lastPos(nv.,1)
 
 ::method 'test118'
-    self~assertSame('subTest01',0,'NV'~lastPos(nv,1))
+    self~assertSame(0, 'NV'~lastPos(nv,1))
 
 ::method 'test119'
     self~expectSyntax(93.938)
     xre = 'NV.'~lastPos(nv.,1)
 
 ::method 'test120'
-    self~assertSame('subTest01','0','NV.10'~lastPos(nv.10,1))
+    self~assertSame('0', 'NV.10'~lastPos(nv.10,1))
 
 ::method 'test121'
-    self~assertSame('subTest01','0',nv~lastPos('NV',1))
+    self~assertSame('0', nv~lastPos('NV',1))
 
 ::method 'test122'
-    self~assertSame('subTest01','0',nv.~lastPos('NV.',1))
+    self~assertSame('0', nv.~lastPos('NV.',1))
 
 ::method 'test123'
-    self~assertSame('subTest01','0',nv.10~lastPos('NV.10',1))
+    self~assertSame('0', nv.10~lastPos('NV.10',1))
 
 ::method 'test124'
     self~expectSyntax(93.905)
@@ -558,70 +558,70 @@ return testGroupList
 
 ::method 'test128'
     v8 = 'one two  three   four    five     six      seven       eight'
-    self~assertSame('subTest01','0',v8~lastPos('one',1*1))
-    self~assertSame('subTest02','0',v8~lastPos('one',2*1))
-    self~assertSame('subTest03','0',v8~lastPos('two                three four','000001'))
-    self~assertSame('subTest04','0',v8~lastPos('two                three four',000002))
-    self~assertSame('subTest05','0',v8~lastPos('two                three four',3.00))
+    self~assertSame('0', v8~lastPos('one',1*1))
+    self~assertSame('0', v8~lastPos('one',2*1))
+    self~assertSame('0', v8~lastPos('two                three four','000001'))
+    self~assertSame('0', v8~lastPos('two                three four',000002))
+    self~assertSame('0', v8~lastPos('two                three four',3.00))
 
 ::method 'test129'
-    self~assertSame('subTest01','0','6173646620717765722041534446205157455220'x~lastPos('41534446202020'x,2))
+    self~assertSame('0', '6173646620717765722041534446205157455220'x~lastPos('41534446202020'x,2))
 
 ::method 'test130'
-    self~assertSame('subTest01','0','6173646620717765722041534446205157455220'x~lastPos('41534446202020'x,3))
+    self~assertSame('0', '6173646620717765722041534446205157455220'x~lastPos('41534446202020'x,3))
 
 ::method 'test131'
-    self~assertSame('subTest01','0','6173646620717765722041534446205157455220'x~lastPos('41534446202020'x,4))
+    self~assertSame('0', '6173646620717765722041534446205157455220'x~lastPos('41534446202020'x,4))
 
 ::method 'test132'
-    self~assertSame('subTest01','0','6173646620717765722041534446205157455220'x~lastPos('20202041534446'x,3))
+    self~assertSame('0', '6173646620717765722041534446205157455220'x~lastPos('20202041534446'x,3))
 
 ::method 'test133'
-    self~assertSame('subTest01','0','6173646620717765722041534446205157455220'x~lastPos('20202041534446'x,4))
+    self~assertSame('0', '6173646620717765722041534446205157455220'x~lastPos('20202041534446'x,4))
 
 ::method 'test134'
-    self~assertSame('subTest01','0','6173646620717765722041534446205157455220'x~lastPos('20202041534446'x,5))
+    self~assertSame('0', '6173646620717765722041534446205157455220'x~lastPos('20202041534446'x,5))
 
 ::method 'test135'
-    self~assertSame('subTest01','0','6173646620717765722041534446205157455220'x~lastPos('204153444620'x,1))
+    self~assertSame('0', '6173646620717765722041534446205157455220'x~lastPos('204153444620'x,1))
 
 ::method 'test136'
-    self~assertSame('subTest01','0','6173646620717765722041534446205157455220'x~lastPos('204153444620'x,2))
+    self~assertSame('0', '6173646620717765722041534446205157455220'x~lastPos('204153444620'x,2))
 
 ::method 'test137'
-    self~assertSame('subTest01','0','6173646620717765722041534446205157455220'x~lastPos('204153444620'x,4))
+    self~assertSame('0', '6173646620717765722041534446205157455220'x~lastPos('204153444620'x,4))
 
 ::method 'test138'
-    self~assertSame('subTest01','6','61736466207a786376000000000041534446205a584356'x~lastPos('7a786376'x))
+    self~assertSame('6', '61736466207a786376000000000041534446205a584356'x~lastPos('7a786376'x))
 
 ::method 'test139'
-    self~assertSame('subTest01','15','61736466207a786376000000000041534446205a584356'x~lastPos('41534446'x))
+    self~assertSame('15', '61736466207a786376000000000041534446205a584356'x~lastPos('41534446'x))
 
 ::method 'test140'
-    self~assertSame('subTest01','6','61736466207a786376000000000041534446205a584356'x~lastPos(.vxnx))
+    self~assertSame('6', '61736466207a786376000000000041534446205a584356'x~lastPos(.vxnx))
 
 ::method 'test141'
-    self~assertSame('subTest01','9999',.v10000~lastPos('J',9999))
+    self~assertSame('9999', .v10000~lastPos('J',9999))
 
 ::method 'test142'
-    self~assertSame('subTest01','0',.v10000~lastPos('J  K','39393939'x))
+    self~assertSame('0', .v10000~lastPos('J  K','39393939'x))
 
 ::method 'test143'
-    self~assertSame('subTest01','0',.v10000~lastPos('J K','9999'))
+    self~assertSame('0', .v10000~lastPos('J K','9999'))
 
 ::method 'test144'
-    self~assertSame('subTest01','0',.v10000~lastPos('K',009999))
+    self~assertSame('0', .v10000~lastPos('K',009999))
 
 ::method 'test145'
-    self~assertSame('subTest01','0',.v10000~lastPos('K J','009999'))
+    self~assertSame('0', .v10000~lastPos('K J','009999'))
 
 ::method 'test146'
     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
-    self~assertSame('subTest01','1',XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~lastPos('1',1))
-    self~assertSame('subTest02','1',XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~lastPos('1',9))
-    self~assertSame('subTest03','0',XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~lastPos('35'x,'34'x))
-    self~assertSame('subTest04','0',XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~lastPos('35'x,'35'x))
-    self~assertSame('subTest05','0',XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~lastPos('35'x,'36'x))
+    self~assertSame('1', XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~lastPos('1',1))
+    self~assertSame('1', XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~lastPos('1',9))
+    self~assertSame('0', XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~lastPos('35'x,'34'x))
+    self~assertSame('0', XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~lastPos('35'x,'35'x))
+    self~assertSame('0', XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~lastPos('35'x,'36'x))
 
 ::method 'test147'
     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
@@ -639,92 +639,92 @@ return testGroupList
     xre = XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~lastPos('35202020203620372020202020202020202038'x,"'36'x")
 
 ::method 'test150'
-    self~assertSame('subTest01','0',.vwbwwbw~lastPos('J '||copies('*',10000),1))
+    self~assertSame('0', .vwbwwbw~lastPos('J '||copies('*',10000),1))
 
 ::method 'test151'
-    self~assertSame('subTest01','0',.vwbwwbw~lastPos('J '||copies('*',10000),0+2))
+    self~assertSame('0', .vwbwwbw~lastPos('J '||copies('*',10000),0+2))
 
 ::method 'test152'
-    self~assertSame('subTest01','0',.vwbwwbw~lastPos(copies('*',10000)||' R','3'))
+    self~assertSame('0', .vwbwwbw~lastPos(copies('*',10000)||' R','3'))
 
 ::method 'test153'
-    self~assertSame('subTest01','0',.vwbwwbw~lastPos(copies('*',10000)||' R','04'))
+    self~assertSame('0', .vwbwwbw~lastPos(copies('*',10000)||' R','04'))
 
 ::method 'test154'
-    self~assertSame('subTest01','1',.vwbwwbw~lastPos('J',1))
+    self~assertSame('1', .vwbwwbw~lastPos('J',1))
 
 ::method 'test155'
-    self~assertSame('subTest01','1',.vwbwwbw~lastPos('J',2))
+    self~assertSame('1', .vwbwwbw~lastPos('J',2))
 
 ::method 'test156'
-    self~assertSame('subTest01','0',.vwbwwbw~lastPos(copies('*',10000),'32'x))
+    self~assertSame('0', .vwbwwbw~lastPos(copies('*',10000),'32'x))
 
 ::method 'test157'
-    self~assertSame('subTest01','0',.vwbwwbw~lastPos(copies('*',10000),'33'x))
+    self~assertSame('0', .vwbwwbw~lastPos(copies('*',10000),'33'x))
 
 ::method 'test158'
-    self~assertSame('subTest01','0',.vwbwwbw~lastPos('R','000004'))
+    self~assertSame('0', .vwbwwbw~lastPos('R','000004'))
 
 ::method 'test159'
-    self~assertSame('subTest01','0',.vwbwwbw~lastPos('R','000005'))
+    self~assertSame('0', .vwbwwbw~lastPos('R','000005'))
 
 ::method 'test160'
-    self~assertSame('subTest01','0',.vwbw~lastPos('John',1))
+    self~assertSame('0', .vwbw~lastPos('John',1))
 
 ::method 'test161'
-    self~assertSame('subTest01','0',.vwbw~lastPos('John',2))
+    self~assertSame('0', .vwbw~lastPos('John',2))
 
 ::method 'test162'
-    self~assertSame('subTest01','0',.vwbw~lastPos('Buckley',1))
+    self~assertSame('0', .vwbw~lastPos('Buckley',1))
 
 ::method 'test163'
-    self~assertSame('subTest01','0',.vwbw~lastPos('Buckley',2))
+    self~assertSame('0', .vwbw~lastPos('Buckley',2))
 
 ::method 'test164'
-    self~assertSame('subTest01','0',.vwbw~lastPos('John Buckley',1))
+    self~assertSame('0', .vwbw~lastPos('John Buckley',1))
 
 ::method 'test165'
-    self~assertSame('subTest01','0',.vwbw~lastPos('John Buckley',2))
+    self~assertSame('0', .vwbw~lastPos('John Buckley',2))
 
 ::method 'test166'
-    self~assertSame('subTest01','0',(3 4 5)~lastPos(3 4||copies(' ',10000)||5,1))
+    self~assertSame('0', (3 4 5)~lastPos(3 4||copies(' ',10000)||5,1))
 
 ::method 'test167'
-    self~assertSame('subTest01','0',(3 4 5)~lastPos(3 4||copies(' ',10000)||5,2))
+    self~assertSame('0', (3 4 5)~lastPos(3 4||copies(' ',10000)||5,2))
 
 ::method 'test168'
     v8 = 'one two  three   four    five     six      seven       eight'
     v8. = v8
-    self~assertSame('subTest01','0',v8.~lastPos('four'||copies(' ',50000)||'five six',3))
-    self~assertSame('subTest01','0',v8.~lastPos('four'||copies(' ',50000)||'five six',4))
-    self~assertSame('subTest01','0',v8.~lastPos('four'||copies(' ',50000)||'five six',5))
-    self~assertSame('subTest01','0',v8.10~lastPos('three four five',1))
-    self~assertSame('subTest01','0',v8.10~lastPos('three four five',3))
-    self~assertSame('subTest01','0',v8.10~lastPos('three four five',8))
+    self~assertSame('0', v8.~lastPos('four'||copies(' ',50000)||'five six',3))
+    self~assertSame('0', v8.~lastPos('four'||copies(' ',50000)||'five six',4))
+    self~assertSame('0', v8.~lastPos('four'||copies(' ',50000)||'five six',5))
+    self~assertSame('0', v8.10~lastPos('three four five',1))
+    self~assertSame('0', v8.10~lastPos('three four five',3))
+    self~assertSame('0', v8.10~lastPos('three four five',8))
 
 ::method 'test169'
-    self~assertSame('subTest01','0',(.v26||' '||reverse(.v26))~lastPos('Z Z',23))
+    self~assertSame('0', (.v26||' '||reverse(.v26))~lastPos('Z Z',23))
 
 ::method 'test170'
-    self~assertSame('subTest01','0',(.v26' 'reverse(.v26))~lastPos('Y Z Z Y',25))
+    self~assertSame('0', (.v26' 'reverse(.v26))~lastPos('Y Z Z Y',25))
 
 ::method 'test171'
-    self~assertSame('subTest01','0',(.v26 reverse(.v26))~lastPos('X Y Z Z Y',25))
+    self~assertSame('0', (.v26 reverse(.v26))~lastPos('X Y Z Z Y',25))
 
 ::method 'test172'
-    self~assertSame('subTest01','0',subStr('one two three four',5,9)~lastPos('two three',1))
+    self~assertSame('0', subStr('one two three four',5,9)~lastPos('two three',1))
 
 ::method 'test173'
-    self~assertSame('subTest01','0',subStr('one two three four',5,9)~lastPos('two three',2))
+    self~assertSame('0', subStr('one two three four',5,9)~lastPos('two three',2))
 
 ::method 'test174'
-    self~assertSame('subTest01','0',(dataType(6) dataType('A'))~lastPos('NUM                       char',1))
+    self~assertSame('0', (dataType(6) dataType('A'))~lastPos('NUM                       char',1))
 
 ::method 'test175'
-    self~assertSame('subTest01','0',(dataType(6) dataType('A'))~lastPos('NUM                       char',2))
+    self~assertSame('0', (dataType(6) dataType('A'))~lastPos('NUM                       char',2))
 
 ::method 'test176'
-    self~assertSame('subTest01','0',(dataType(6) dataType('A'))~lastPos('NUM                       char',3))
+    self~assertSame('0', (dataType(6) dataType('A'))~lastPos('NUM                       char',3))
 
 ::method 'test177'
     .local~remove(v26)
@@ -740,13 +740,13 @@ return testGroupList
 -- from bif.testgroup
 -- test the BIF, using examples from the documentation
 ::method "test_LASTPOS"
-    self~assertEquals('subTest1',8,'abc def ghi'~lastPos(' '))
-    self~assertEquals('subTest2',0,'abcdefghi'~lastPos(' '))
-    self~assertEquals('subTest3',4,'efgxyz'~lastPos('xy'))
-    self~assertEquals('subTest4',4,'abc def ghi'~lastPos(' ',7))
+    self~assertEquals(8, 'abc def ghi'~lastPos(' '))
+    self~assertEquals(0, 'abcdefghi'~lastPos(' '))
+    self~assertEquals(4, 'efgxyz'~lastPos('xy'))
+    self~assertEquals(4, 'abc def ghi'~lastPos(' ',7))
 
 -- new tests
-    self~assertEquals('subTest5',0,'abc def ghi'~lastPos('',7))
-    self~assertEquals('subTest6',0,''~lastPos(''))
+    self~assertEquals(0, 'abc def ghi'~lastPos('',7))
+    self~assertEquals(0, ''~lastPos(''))
 
 

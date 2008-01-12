@@ -58,40 +58,24 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
+  parse source . . s
 
-  -- Windows only test.
-  if ooRexxUnit.getOSName() <> "WINDOWS" then return .list~new
+  group = .TestGroup~new(s)
+  group~add(.drives.testGroup)
+  group~restrictOS("WINDOWS")
 
-  testGroupList = .list~of(.array~of(.drives.testGroup, .list~new))
+  if group~isAutomatedTest then return group
 
-  srcLines = .array~new
-  do i = 1 to 150 until srcLines[i] = "*/"
-     srcLines[i] = sourceline(i)
-  end
+  testResult = group~suite~execute~~print
 
-  call makeDirTestInfo .drives.testGroup, srcLines
-
-  parse source s
-  .drives.testGroup~testCaseInfo~setentry("test_Case-source", s)
-
-  if \ .local~hasentry("bRunTestsLocally") then
-     .local~bRunTestsLocally = .true
-
-  if .bRunTestsLocally == .true then do
-    ts = .TestSuite~new
-    ts~addTest(.TestSuite~new(.drives.testGroup))
-
-    testResult = ts~run
-    j = simpleFormatTestResults(testResult)
-  end
-
-return testGroupList
+return testResult
 -- End of entry point.
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
   Directives, Classes, or Routines.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::requires "FileUtils.cls"  -- FileUtils.cls includes OOREXXUNIT.CLS
+::requires 'ooTest.frm'
+::requires "FileUtils.cls"
 
 /* class: drives.testGroup - - - - - - - - - - - - - - - - - - -*\
   The main purpose of this test group is to execute the sample program to assert
@@ -115,22 +99,30 @@ return testGroupList
   that this test group is not really a collection of unit tests; it is a quality
   assurance test.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::class drives.testGroup public subclass TestCase
+::class 'drives.testGroup' public subclass ooTestCase
+
+  ::method init class
+    forward class (super) continue
+    self~ooTestType = self~SAMPLE_TEST
+
+    self~prgPath = ""
+    self~prgOutput = .array~new
+    self~stop = .false
 
   ::method test_000_Exists
     self~class~stop = .true
 
     fileSearch = value("REXX_HOME", , 'ENVIRONMENT')
-    self~assertTrue("ooRexx must be installed normally with REXX_HOME set", fileSearch~length > 0)
+    self~assertTrue(fileSearch~length > 0, "ooRexx must be installed normally with REXX_HOME set")
 
     -- Look, recursively, for the drives.rex example under the samples directory.
     fileSearch = fileSearch || '\samples\drives.rex'
     j = SysFileTree(fileSearch, f., 'FOS')
-    self~assertTrue("SysFileTree must not fail", j == 0)
-    self~assertTrue("Sample program, drives.rex, must be located", f.0 == 1)
+    self~assertTrue(j == 0, "SysFileTree must not fail")
+    self~assertTrue(f.0 == 1, "Sample program, drives.rex, must be located")
 
     prgPathName = f.1
-    self~assertTrue("drives.rex must exist", .stream~new(prgPathName)~query("EXISTS")~length <> 0)
+    self~assertTrue(.stream~new(prgPathName)~query("EXISTS")~length <> 0, "drives.rex must exist")
     self~class~prgPath = prgPathName
     self~class~stop = .false
 
@@ -159,13 +151,13 @@ return testGroupList
     ret = execRexxPrg(self~class~prgPath, self~class~prgOutput)
 
     -- Check that there is not an internal error.
-    self~assertNotSame('execRexxPrg() must be called correctly', 9999, ret)
+    self~assertNotSame(9999, ret, 'execRexxPrg() must be called correctly')
 
     -- Check that some output was produced.
-    self~assertTrue('drives.rex must produce some output', self~class~prgOutput~items > 0)
+    self~assertTrue(self~class~prgOutput~items > 0, 'drives.rex must produce some output')
 
     -- Check that we got a 0 rc, which is what drives.rex returns on completion.
-    self~assertSame('drives.rex should run and return 0', 0, ret)
+    self~assertSame(0, ret, 'drives.rex should run and return 0')
 
     -- All okay, keep going.
     self~class~stop = .false
@@ -194,7 +186,7 @@ return testGroupList
     -- start of the line, because the actual value of the whole line will vary
     -- from computer to computer.
     do i = 1 to 7
-      self~assertTrue('Line' j 'must start with:' expected[i], out[j]~abbrev(expected[i]))
+      self~assertTrue(out[j]~abbrev(expected[i]), 'Line' j 'must start with:' expected[i])
       j -= 1
     end
 
@@ -203,12 +195,6 @@ return testGroupList
     self~class~stop = .false
 
   -- The class attributes used as control and state information.
-  ::method init class
-    self~init:super
-    self~prgPath = ""
-    self~prgOutput = .array~new
-    self~stop = .false
-
   ::method prgPath      attribute class
   ::method stop         attribute class
   ::method prgOutput    attribute class

@@ -107,8 +107,8 @@ do
       -- create a testSuite for the given test case class, use all its testmethods
       ts~addTest( .testSuite~new(arr[1]))
    end
-   -- testResult=.testSuite~new(testGroupClass)~run
-   testResult=ts~run       -- now run all the tests
+   -- testResult=.testSuite~new(testGroupClass)~execute
+   testResult=ts~execute       -- now run all the tests
 
    call simpleFormatTestResults testResult
 end
@@ -117,14 +117,14 @@ end
       optionally list of mandatory test methods                      */
 return testGroupList
 
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
-::class "new.testGroup" subclass TestCase public
+::class "new.testGroup" subclass ooTestCase public
 
 ::method "testInstance1"
    b = .nil
    b = .mutableBuffer~new("1234")
-   self~assertNotNull("Failed to get instance", b)
+   self~assertNotNull(b, "Failed to get instance")
 ::method "testInstance2"
    self~expectSyntax(93.938)
    b = .mutableBuffer~new(.nil)

@@ -107,8 +107,8 @@ do
       -- create a testSuite for the given test case class, use all its testmethods
       ts~addTest( .testSuite~new(arr[1]))
    end
-   -- testResult=.testSuite~new(testGroupClass)~run
-   testResult=ts~run       -- now run all the tests
+   -- testResult=.testSuite~new(testGroupClass)~execute
+   testResult=ts~execute       -- now run all the tests
 
    call simpleFormatTestResults testResult
 end
@@ -117,9 +117,9 @@ end
       optionally list of mandatory test methods                      */
 return testGroupList
 
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
-::class "String_copiesMethod.testGroup" subclass TestCase public
+::class "String_copiesMethod.testGroup" subclass ooTestCase public
 
 -- set 1 (Literal/Literal)
 ::method 'test001'
@@ -127,411 +127,411 @@ return testGroupList
     xre = ''~copies()
 
 ::method 'test002'
-    self~assertSame('subTest01','',''~copies('0'))
+    self~assertSame('', ''~copies('0'))
 
 ::method 'test003'
-    self~assertSame('subTest01','',''~copies('31'x))
+    self~assertSame('', ''~copies('31'x))
 
 ::method 'test004'
-    self~assertSame('subTest01','',''~copies('0.09E2'))
+    self~assertSame('', ''~copies('0.09E2'))
 
 ::method 'test005'
     self~expectSyntax(93.905)
     xre = ''~copies('0.09E1')
 
 ::method 'test006'
-    self~assertSame('subTest01','',''~copies('0010'))
+    self~assertSame('', ''~copies('0010'))
 
 ::method 'test007'
-    self~assertSame('subTest01','',''~copies(' 11 '))
+    self~assertSame('', ''~copies(' 11 '))
 
 ::method 'test008'
-    self~assertSame('subTest01','',''~copies(' +255 '))
+    self~assertSame('', ''~copies(' +255 '))
 
 ::method 'test009'
     self~expectSyntax(93.906)
     xre = ''~copies(' -256 ')
 
 ::method 'test010'
-    self~assertSame('subTest01',' ',' '~copies('1'))
+    self~assertSame(' ', ' '~copies('1'))
 
 ::method 'test011'
-    self~assertSame('subTest01','         ',' '~copies('39'x))
+    self~assertSame('         ', ' '~copies('39'x))
 
 ::method 'test012'
-    self~assertSame('subTest01','          ',' '~copies('0.10E2'))
+    self~assertSame('          ', ' '~copies('0.10E2'))
 
 ::method 'test013'
-    self~assertSame('subTest01',' ',' '~copies('0.10E1'))
+    self~assertSame(' ', ' '~copies('0.10E1'))
 
 ::method 'test014'
-    self~assertSame('subTest01','           ',' '~copies('0011'))
+    self~assertSame('           ', ' '~copies('0011'))
 
 ::method 'test015'
-    self~assertSame('subTest01',' '~copies(255),' '~copies(' 255 '))
+    self~assertSame(' '~copies(255), ' '~copies(' 255 '))
 
 ::method 'test016'
-    self~assertSame('subTest01',' '~copies(256),' '~copies(' +256 '))
+    self~assertSame(' '~copies(256), ' '~copies(' +256 '))
 
 ::method 'test017'
     self~expectSyntax(93.906)
     xre = ' '~copies(' -32768 ')
 
 ::method 'test018'
-    self~assertSame('subTest01','ASDFASDFASDFASDFASDFASDFASDFASDFASDF','ASDF'~copies('9'))
+    self~assertSame('ASDFASDFASDFASDFASDFASDFASDFASDFASDF', 'ASDF'~copies('9'))
 
 ::method 'test019'
-    self~assertSame('subTest01','ASDFASDFASDFASDFASDFASDFASDFASDFASDFASDF','ASDF'~copies('3130'x))
+    self~assertSame('ASDFASDFASDFASDFASDFASDFASDFASDFASDFASDF', 'ASDF'~copies('3130'x))
 
 ::method 'test020'
-    self~assertSame('subTest01','ASDFASDFASDFASDFASDFASDFASDFASDFASDFASDFASDF','ASDF'~copies('0.11E2'))
+    self~assertSame('ASDFASDFASDFASDFASDFASDFASDFASDFASDFASDFASDF', 'ASDF'~copies('0.11E2'))
 
 ::method 'test021'
     self~expectSyntax(93.905)
     xre = 'ASDF'~copies('0.11E1')
 
 ::method 'test022'
-    self~assertSame('subTest01','ASDF'~copies(255),'ASDF'~copies('00255'))
+    self~assertSame('ASDF'~copies(255), 'ASDF'~copies('00255'))
 
 ::method 'test023'
-    self~assertSame('subTest01','ASDF'~copies(256),'ASDF'~copies(' 256 '))
+    self~assertSame('ASDF'~copies(256), 'ASDF'~copies(' 256 '))
 
 ::method 'test024'
-    self~assertSame('subTest01','ASDF'~copies(32768),'ASDF'~copies(' +32768 '))
+    self~assertSame('ASDF'~copies(32768), 'ASDF'~copies(' +32768 '))
 
 ::method 'test025'
     self~expectSyntax(93.906)
     xre = 'ASDF'~copies(' -65536 ')
 
 ::method 'test026'
-    self~assertSame('subTest01','ASASASASASASASASASAS','AS'~copies('10'))
+    self~assertSame('ASASASASASASASASASAS', 'AS'~copies('10'))
 
 ::method 'test027'
-    self~assertSame('subTest01','ASASASASASASASASASASAS','AS'~copies('3131'x))
+    self~assertSame('ASASASASASASASASASASAS', 'AS'~copies('3131'x))
 
 ::method 'test028'
-    self~assertSame('subTest01','AS'~copies(255),'AS'~copies('0.255E3'))
+    self~assertSame('AS'~copies(255), 'AS'~copies('0.255E3'))
 
 ::method 'test029'
     self~expectSyntax(93.905)
     xre = 'AS'~copies('0.255E2')
 
 ::method 'test030'
-    self~assertSame('subTest01','AS'~copies(256),'AS'~copies('00256'))
+    self~assertSame('AS'~copies(256), 'AS'~copies('00256'))
 
 ::method 'test031'
-    self~assertSame('subTest01','AS'~copies(32768),'AS'~copies(' 32768 '))
+    self~assertSame('AS'~copies(32768), 'AS'~copies(' 32768 '))
 
 ::method 'test032'
-    self~assertSame('subTest01','AS'~copies(65536),'AS'~copies(' +65536 '))
+    self~assertSame('AS'~copies(65536), 'AS'~copies(' +65536 '))
 
 ::method 'test033'
     self~expectSyntax(93.906)
     xre = 'AS'~copies(' -131072 ')
 
 ::method 'test034'
-    self~assertSame('subTest01','QWERASDFZXCVQWERASDFZXCVQWERAS'~copies(11),'QWERASDFZXCVQWERASDFZXCVQWERAS'~copies('11'))
+    self~assertSame('QWERASDFZXCVQWERASDFZXCVQWERAS'~copies(11), 'QWERASDFZXCVQWERASDFZXCVQWERAS'~copies('11'))
 
 ::method 'test035'
-    self~assertSame('subTest01','QWERASDFZXCVQWERASDFZXCVQWERAS'~copies(255),'QWERASDFZXCVQWERASDFZXCVQWERAS'~copies('323535'x))
+    self~assertSame('QWERASDFZXCVQWERASDFZXCVQWERAS'~copies(255), 'QWERASDFZXCVQWERASDFZXCVQWERAS'~copies('323535'x))
 
 ::method 'test036'
-    self~assertSame('subTest01','QWERASDFZXCVQWERASDFZXCVQWERAS'~copies(256),'QWERASDFZXCVQWERASDFZXCVQWERAS'~copies('0.256E3'))
+    self~assertSame('QWERASDFZXCVQWERASDFZXCVQWERAS'~copies(256), 'QWERASDFZXCVQWERASDFZXCVQWERAS'~copies('0.256E3'))
 
 ::method 'test037'
     self~expectSyntax(93.905)
     xre = 'QWERASDFZXCVQWERASDFZXCVQWERAS'~copies('0.256E2')
 
 ::method 'test038'
-    self~assertSame('subTest01','','QWERASDFZXCVQWERASDFZXCVQWERAS'~copies(' -0 '))
+    self~assertSame('', 'QWERASDFZXCVQWERASDFZXCVQWERAS'~copies(' -0 '))
 
 ::method 'test039'
-    self~assertSame('subTest01','Q E A D Z C Q E A D Z C Q E A '~copies(255),'Q E A D Z C Q E A D Z C Q E A '~copies('255'))
+    self~assertSame('Q E A D Z C Q E A D Z C Q E A '~copies(255), 'Q E A D Z C Q E A D Z C Q E A '~copies('255'))
 
 ::method 'test040'
-    self~assertSame('subTest01','Q E A D Z C Q E A D Z C Q E A '~copies(256),'Q E A D Z C Q E A D Z C Q E A '~copies('323536'x))
+    self~assertSame('Q E A D Z C Q E A D Z C Q E A '~copies(256), 'Q E A D Z C Q E A D Z C Q E A '~copies('323536'x))
 
 ::method 'test041'
-    self~assertSame('subTest01','','Q E A D Z C Q E A D Z C Q E A '~copies(' +0 '))
+    self~assertSame('', 'Q E A D Z C Q E A D Z C Q E A '~copies(' +0 '))
 
 ::method 'test042'
     self~expectSyntax(93.906)
     xre = 'Q E A D Z C Q E A D Z C Q E A '~copies(' -1 ')
 
 ::method 'test043'
-    self~assertSame('subTest01','X'~copies(64000),'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'~copies('256'))
+    self~assertSame('X'~copies(64000), 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'~copies('256'))
 
 ::method 'test044'
     self~expectSyntax(93.905)
     xre = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'~copies('0.65536E4')
 
 ::method 'test045'
-    self~assertSame('subTest01','','XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'~copies(' 0 '))
+    self~assertSame('', 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'~copies(' 0 '))
 
 ::method 'test046'
-    self~assertSame('subTest01','X'~copies(250),'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'~copies(' +1 '))
+    self~assertSame('X'~copies(250), 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'~copies(' +1 '))
 
 ::method 'test047'
     self~expectSyntax(93.906)
     xre = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'~copies(' -9 ')
 
 ::method 'test048'
-    self~assertSame('subTest01','','     ASDF'~copies('000'))
+    self~assertSame('', '     ASDF'~copies('000'))
 
 ::method 'test049'
-    self~assertSame('subTest01','     ASDF','     ASDF'~copies(' 1 '))
+    self~assertSame('     ASDF', '     ASDF'~copies(' 1 '))
 
 ::method 'test050'
-    self~assertSame('subTest01','     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF','     ASDF'~copies(' +9 '))
+    self~assertSame('     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF', '     ASDF'~copies(' +9 '))
 
 ::method 'test051'
     self~expectSyntax(93.906)
     xre = '     ASDF'~copies(' -10 ')
 
 ::method 'test052'
-    self~assertSame('subTest01','','ASDF QWER ZXCV'~copies('0.00E2'))
+    self~assertSame('', 'ASDF QWER ZXCV'~copies('0.00E2'))
 
 ::method 'test053'
-    self~assertSame('subTest01','','ASDF QWER ZXCV'~copies('0.00E1'))
+    self~assertSame('', 'ASDF QWER ZXCV'~copies('0.00E1'))
 
 ::method 'test054'
-    self~assertSame('subTest01','ASDF QWER ZXCV','ASDF QWER ZXCV'~copies('001'))
+    self~assertSame('ASDF QWER ZXCV', 'ASDF QWER ZXCV'~copies('001'))
 
 ::method 'test055'
-    self~assertSame('subTest01','ASDF QWER ZXCV'~copies(8)||'ASDF QWER ZXCV','ASDF QWER ZXCV'~copies(' 9 '))
+    self~assertSame('ASDF QWER ZXCV'~copies(8)||'ASDF QWER ZXCV', 'ASDF QWER ZXCV'~copies(' 9 '))
 
 ::method 'test056'
-    self~assertSame('subTest01',('ASDF QWER ZXCV'||'ASDF QWER ZXCV')~copies(5),'ASDF QWER ZXCV'~copies(' +10 '))
+    self~assertSame(('ASDF QWER ZXCV'||'ASDF QWER ZXCV')~copies(5), 'ASDF QWER ZXCV'~copies(' +10 '))
 
 ::method 'test057'
     self~expectSyntax(93.906)
     xre = 'ASDF QWER ZXCV'~copies(' -11 ')
 
 ::method 'test058'
-    self~assertSame('subTest01','','ASDF     '~copies('30'x))
+    self~assertSame('', 'ASDF     '~copies('30'x))
 
 ::method 'test059'
-    self~assertSame('subTest01','ASDF     ','ASDF     '~copies('0.01E2'))
+    self~assertSame('ASDF     ', 'ASDF     '~copies('0.01E2'))
 
 ::method 'test060'
     self~expectSyntax(93.905)
     xre = 'ASDF     '~copies('0.01E1')
 
 ::method 'test061'
-    self~assertSame('subTest01','ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ','ASDF     '~copies('009'))
+    self~assertSame('ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ', 'ASDF     '~copies('009'))
 
 ::method 'test062'
-    self~assertSame('subTest01','ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ','ASDF     '~copies(' 10 '))
+    self~assertSame('ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ', 'ASDF     '~copies(' 10 '))
 
 ::method 'test063'
-    self~assertSame('subTest01','ASDF     '||('ASDF     '||'ASDF     ')~copies(5),'ASDF     '~copies(' +11 '))
+    self~assertSame('ASDF     '||('ASDF     '||'ASDF     ')~copies(5), 'ASDF     '~copies(' +11 '))
 
 ::method 'test064'
     self~expectSyntax(93.906)
     xre = 'ASDF     '~copies(' -255 ')
 
 ::method 'test065'
-    self~assertSame('subTest01','','X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X '~copies('0'))
+    self~assertSame('', 'X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X '~copies('0'))
 
 ::method 'test066'
-    self~assertSame('subTest01','X '~copies(125),'X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X '~copies('31'x))
+    self~assertSame('X '~copies(125), 'X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X '~copies('31'x))
 
 ::method 'test067'
-    self~assertSame('subTest01','X '~copies(1125),'X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X '~copies('0.09E2'))
+    self~assertSame('X '~copies(1125), 'X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X '~copies('0.09E2'))
 
 ::method 'test068'
     self~expectSyntax(93.905)
     xre = 'X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X '~copies('0.09E1')
 
 ::method 'test069'
-    self~assertSame('subTest01','X '~copies(1250),'X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X '~copies('0010'))
+    self~assertSame('X '~copies(1250), 'X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X '~copies('0010'))
 
 ::method 'test070'
-    self~assertSame('subTest01','X '~copies(1375),'X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X '~copies(' 11 '))
+    self~assertSame('X '~copies(1375), 'X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X '~copies(' 11 '))
 
 ::method 'test071'
-    self~assertSame('subTest01','X '~copies(31875),'X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X '~copies(' +255 '))
+    self~assertSame('X '~copies(31875), 'X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X '~copies(' +255 '))
 
 ::method 'test072'
     self~expectSyntax(93.906)
     xre = 'X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X '~copies(' -256 ')
 
 ::method 'test073'
-    self~assertSame('subTest01','',''X~copies('1'))
+    self~assertSame('', ''X~copies('1'))
 
 ::method 'test074'
-    self~assertSame('subTest01','',''X~copies('39'x))
+    self~assertSame('', ''X~copies('39'x))
 
 ::method 'test075'
-    self~assertSame('subTest01','',''X~copies('0.10E2'))
+    self~assertSame('', ''X~copies('0.10E2'))
 
 ::method 'test076'
     self~expectSyntax(93.905)
     xre = ''X~copies('0.10E0')
 
 ::method 'test077'
-    self~assertSame('subTest01','',''X~copies('0011'))
+    self~assertSame('', ''X~copies('0011'))
 
 ::method 'test078'
-    self~assertSame('subTest01','',''X~copies(' 255 '))
+    self~assertSame('', ''X~copies(' 255 '))
 
 ::method 'test079'
-    self~assertSame('subTest01','',''X~copies(' +256 '))
+    self~assertSame('', ''X~copies(' +256 '))
 
 ::method 'test080'
     self~expectSyntax(93.906)
     xre = ''X~copies(' -32768 ')
 
 ::method 'test081'
-    self~assertSame('subTest01','         ','20'x~copies('9'))
+    self~assertSame('         ', '20'x~copies('9'))
 
 ::method 'test082'
-    self~assertSame('subTest01','          ','20'x~copies('3130'x))
+    self~assertSame('          ', '20'x~copies('3130'x))
 
 ::method 'test083'
-    self~assertSame('subTest01','           ','20'x~copies('0.11E2'))
+    self~assertSame('           ', '20'x~copies('0.11E2'))
 
 ::method 'test084'
     self~expectSyntax(93.905)
     xre = '20'x~copies('0.11E1')
 
 ::method 'test085'
-    self~assertSame('subTest01',' '~copies(255),'20'x~copies('00255'))
+    self~assertSame(' '~copies(255), '20'x~copies('00255'))
 
 ::method 'test086'
-    self~assertSame('subTest01',' '~copies(256),'20'x~copies(' 256 '))
+    self~assertSame(' '~copies(256), '20'x~copies(' 256 '))
 
 ::method 'test087'
-    self~assertSame('subTest01',' '~copies(32768),'20'x~copies(' +32768 '))
+    self~assertSame(' '~copies(32768), '20'x~copies(' +32768 '))
 
 ::method 'test088'
-    self~assertSame('subTest01','asdfasdfasdfasdfasdfasdfasdfasdfasdfasdf','61736466'x~copies('10'))
+    self~assertSame('asdfasdfasdfasdfasdfasdfasdfasdfasdfasdf', '61736466'x~copies('10'))
 
 ::method 'test089'
-    self~assertSame('subTest01','asdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdf','61736466'x~copies('3131'x))
+    self~assertSame('asdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdf', '61736466'x~copies('3131'x))
 
 ::method 'test090'
-    self~assertSame('subTest01','asdf'~copies(255),'61736466'x~copies('0.255E3'))
+    self~assertSame('asdf'~copies(255), '61736466'x~copies('0.255E3'))
 
 ::method 'test091'
     self~expectSyntax(93.905)
     xre = '61736466'x~copies('0.255E2')
 
 ::method 'test092'
-    self~assertSame('subTest01','asdfasdf'~copies(128),'61736466'x~copies('00256'))
+    self~assertSame('asdfasdf'~copies(128), '61736466'x~copies('00256'))
 
 ::method 'test093'
-    self~assertSame('subTest01','asdfasdf'~copies(16384),'61736466'x~copies(' 32768 '))
+    self~assertSame('asdfasdf'~copies(16384), '61736466'x~copies(' 32768 '))
 
 ::method 'test094'
-    self~assertSame('subTest01','asasasasasasasasasasas','6173'x~copies('11'))
+    self~assertSame('asasasasasasasasasasas', '6173'x~copies('11'))
 
 ::method 'test095'
     self~expectSyntax(93.905)
     xre = '6173'x~copies('FF'x)
 
 ::method 'test096'
-    self~assertSame('subTest01','as'~copies(256),'6173'x~copies('0.256E3'))
+    self~assertSame('as'~copies(256), '6173'x~copies('0.256E3'))
 
 ::method 'test097'
     self~expectSyntax(93.905)
     xre = '6173'x~copies('0.256E2')
 
 ::method 'test098'
-    self~assertSame('subTest01','asas'~copies(16384),'6173'x~copies('0032768'))
+    self~assertSame('asas'~copies(16384), '6173'x~copies('0032768'))
 
 ::method 'test099'
-    self~assertSame('subTest01','asas'~copies(32768),'6173'x~copies(' 65536 '))
+    self~assertSame('asas'~copies(32768), '6173'x~copies(' 65536 '))
 
 ::method 'test100'
-    self~assertSame('subTest01','asas'~copies(65536),'6173'x~copies(' +131072 '))
+    self~assertSame('asas'~copies(65536), '6173'x~copies(' +131072 '))
 
 ::method 'test101'
-    self~assertSame('subTest01','','6173'x~copies(' -0 '))
+    self~assertSame('', '6173'x~copies(' -0 '))
 
 ::method 'test102'
-    self~assertSame('subTest01','qwerasdfzxcvqwerasdfzxcvqweras'~copies(255),'71776572617364667a78637671776572617364667a786376717765726173'x~copies('255'))
+    self~assertSame('qwerasdfzxcvqwerasdfzxcvqweras'~copies(255), '71776572617364667a78637671776572617364667a786376717765726173'x~copies('255'))
 
 ::method 'test103'
-    self~assertSame('subTest01','qwerasdfzxcvqwerasdfzxcvqweras'~copies(256),'71776572617364667a78637671776572617364667a786376717765726173'x~copies('323536'x))
+    self~assertSame('qwerasdfzxcvqwerasdfzxcvqweras'~copies(256), '71776572617364667a78637671776572617364667a786376717765726173'x~copies('323536'x))
 
 ::method 'test104'
-    self~assertSame('subTest01','qwerasdfzxcvqwerasdfzxcvqweras'~copies(256),'71776572617364667a78637671776572617364667a786376717765726173'x~copies('256'))
+    self~assertSame('qwerasdfzxcvqwerasdfzxcvqweras'~copies(256), '71776572617364667a78637671776572617364667a786376717765726173'x~copies('256'))
 
 ::method 'test105'
-    self~assertSame('subTest01','','71776572617364667a78637671776572617364667a786376717765726173'x~copies(' +0 '))
+    self~assertSame('', '71776572617364667a78637671776572617364667a786376717765726173'x~copies(' +0 '))
 
 ::method 'test106'
     self~expectSyntax(93.906)
     xre = '71776572617364667a78637671776572617364667a786376717765726173'x~copies(' -1 ')
 
 ::method 'test107'
-    self~assertSame('subTest01','q e a d z c q e a d z c q e a '~copies(256),'71206520612064207a20632071206520612064207a206320712065206120'x~copies('256'))
+    self~assertSame('q e a d z c q e a d z c q e a '~copies(256), '71206520612064207a20632071206520612064207a206320712065206120'x~copies('256'))
 
 ::method 'test108'
     self~expectSyntax(93.905)
     xre = '71206520612064207a20632071206520612064207a206320712065206120'x~copies('0.65536E4')
 
 ::method 'test109'
-    self~assertSame('subTest01','','71206520612064207a20632071206520612064207a206320712065206120'x~copies(' 0 '))
+    self~assertSame('', '71206520612064207a20632071206520612064207a206320712065206120'x~copies(' 0 '))
 
 ::method 'test110'
-    self~assertSame('subTest01','q e a d z c q e a d z c q e a ','71206520612064207a20632071206520612064207a206320712065206120'x~copies(' +1 '))
+    self~assertSame('q e a d z c q e a d z c q e a ', '71206520612064207a20632071206520612064207a206320712065206120'x~copies(' +1 '))
 
 ::method 'test111'
     self~expectSyntax(93.906)
     xre = '71206520612064207a20632071206520612064207a206320712065206120'x~copies(' -9 ')
 
 ::method 'test112'
-    self~assertSame('subTest01','     asdf'~copies(32768),'202020202061736466'x~copies('32768'))
+    self~assertSame('     asdf'~copies(32768), '202020202061736466'x~copies('32768'))
 
 ::method 'test113'
-    self~assertSame('subTest01','','202020202061736466'x~copies('000'))
+    self~assertSame('', '202020202061736466'x~copies('000'))
 
 ::method 'test114'
-    self~assertSame('subTest01','     asdf','202020202061736466'x~copies(' 1 '))
+    self~assertSame('     asdf', '202020202061736466'x~copies(' 1 '))
 
 ::method 'test115'
-    self~assertSame('subTest01','     asdf'~copies(9),'202020202061736466'x~copies(' +9 '))
+    self~assertSame('     asdf'~copies(9), '202020202061736466'x~copies(' +9 '))
 
 ::method 'test116'
     self~expectSyntax(93.906)
     xre = '202020202061736466'x~copies(' -10 ')
 
 ::method 'test117'
-    self~assertSame('subTest01','','617364662071776572207a786376'x~copies('0.00E2'))
+    self~assertSame('', '617364662071776572207a786376'x~copies('0.00E2'))
 
 ::method 'test118'
-    self~assertSame('subTest01','asdf qwer zxcv','617364662071776572207a786376'x~copies('001'))
+    self~assertSame('asdf qwer zxcv', '617364662071776572207a786376'x~copies('001'))
 
 ::method 'test119'
-    self~assertSame('subTest01','asdf qwer zxcv'~copies(9),'617364662071776572207a786376'x~copies(' 9 '))
+    self~assertSame('asdf qwer zxcv'~copies(9), '617364662071776572207a786376'x~copies(' 9 '))
 
 ::method 'test120'
-    self~assertSame('subTest01','asdf qwer zxcv'~copies(10),'617364662071776572207a786376'x~copies(' +10 '))
+    self~assertSame('asdf qwer zxcv'~copies(10), '617364662071776572207a786376'x~copies(' +10 '))
 
 ::method 'test121'
     self~expectSyntax(93.906)
     xre = '617364662071776572207a786376'x~copies(' -11 ')
 
 ::method 'test122'
-    self~assertSame('subTest01','','617364662020202020'x~copies('30'x))
+    self~assertSame('', '617364662020202020'x~copies('30'x))
 
 ::method 'test123'
-    self~assertSame('subTest01','asdf     ','617364662020202020'x~copies('0.01E2'))
+    self~assertSame('asdf     ', '617364662020202020'x~copies('0.01E2'))
 
 ::method 'test124'
     self~expectSyntax(93.905)
     xre = '617364662020202020'x~copies('0.01E1')
 
 ::method 'test125'
-    self~assertSame('subTest01','asdf     asdf     asdf     asdf     asdf     asdf     asdf     asdf     asdf     ','617364662020202020'x~copies('009'))
+    self~assertSame('asdf     asdf     asdf     asdf     asdf     asdf     asdf     asdf     asdf     ', '617364662020202020'x~copies('009'))
 
 ::method 'test126'
-    self~assertSame('subTest01','asdf     asdf     asdf     asdf     asdf     asdf     asdf     asdf     asdf     asdf     ','617364662020202020'x~copies(' 10 '))
+    self~assertSame('asdf     asdf     asdf     asdf     asdf     asdf     asdf     asdf     asdf     asdf     ', '617364662020202020'x~copies(' 10 '))
 
 ::method 'test127'
-    self~assertSame('subTest01','asdf     '~copies(11),'617364662020202020'x~copies(' +11 '))
+    self~assertSame('asdf     '~copies(11), '617364662020202020'x~copies(' +11 '))
 
 ::method 'test128'
     self~expectSyntax(93.906)
@@ -539,15 +539,15 @@ return testGroupList
 
 ::method 'test129'
     xre = ''
-    self~assertSame('subTest01',.true,'58205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820'X~copies('0') == xre)
+    self~assertSame(.true, '58205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820'X~copies('0') == xre)
 
 ::method 'test130'
     xre = 'X '~copies(125)
-    self~assertSame('subTest01',.true,'58205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820'X~copies('31'x) == xre)
+    self~assertSame(.true, '58205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820'X~copies('31'x) == xre)
 
 ::method 'test131'
     xre = 'X '~copies(1125)
-    self~assertSame('subTest01',.true,'58205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820'X~copies('0.09E2') == xre)
+    self~assertSame(.true, '58205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820'X~copies('0.09E2') == xre)
 
 ::method 'test132'
     self~expectSyntax(93.905)
@@ -555,15 +555,15 @@ return testGroupList
 
 ::method 'test133'
     xre = 'X '~copies(1250)
-    self~assertSame('subTest01',.true,'58205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820'X~copies('0010') == xre)
+    self~assertSame(.true, '58205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820'X~copies('0010') == xre)
 
 ::method 'test134'
     xre = 'X '~copies(1375)
-    self~assertSame('subTest01',.true,'58205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820'X~copies(' 11 ') == xre)
+    self~assertSame(.true, '58205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820'X~copies(' 11 ') == xre)
 
 ::method 'test135'
     xre = 'X '~copies(31875)
-    self~assertSame('subTest01',.true,'58205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820'X~copies(' +255 ') == xre)
+    self~assertSame(.true, '58205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820'X~copies(' +255 ') == xre)
 
 ::method 'test136'
     self~expectSyntax(93.906)
@@ -597,449 +597,449 @@ return testGroupList
     xre = .vnull~copies()
 
 ::method 'test139'
-    self~assertSame('subTest01','',.vnull~copies('0'))
+    self~assertSame('', .vnull~copies('0'))
 
 ::method 'test140'
-    self~assertSame('subTest01','',.vnull~copies('31'x))
+    self~assertSame('', .vnull~copies('31'x))
 
 ::method 'test141'
-    self~assertSame('subTest01','',.vnull~copies('0.09E2'))
+    self~assertSame('', .vnull~copies('0.09E2'))
 
 ::method 'test142'
     self~expectSyntax(93.905)
     xre = .vnull~copies('0.09E1')
 
 ::method 'test143'
-    self~assertSame('subTest01','',.vnull~copies('0010'))
+    self~assertSame('', .vnull~copies('0010'))
 
 ::method 'test144'
-    self~assertSame('subTest01','',.vnull~copies(' 11 '))
+    self~assertSame('', .vnull~copies(' 11 '))
 
 ::method 'test145'
-    self~assertSame('subTest01','',.vnull~copies(' +255 '))
+    self~assertSame('', .vnull~copies(' +255 '))
 
 ::method 'test146'
     self~expectSyntax(93.906)
     xre = .vnull~copies(' -256 ')
 
 ::method 'test147'
-    self~assertSame('subTest01',' ',.vblank~copies('1'))
+    self~assertSame(' ', .vblank~copies('1'))
 
 ::method 'test148'
-    self~assertSame('subTest01','         ',.vblank~copies('39'x))
+    self~assertSame('         ', .vblank~copies('39'x))
 
 ::method 'test149'
-    self~assertSame('subTest01','          ',.vblank~copies('0.10E2'))
+    self~assertSame('          ', .vblank~copies('0.10E2'))
 
 ::method 'test150'
-    self~assertSame('subTest01','           ',.vblank~copies('0011'))
+    self~assertSame('           ', .vblank~copies('0011'))
 
 ::method 'test151'
-    self~assertSame('subTest01',' '~copies(255),.vblank~copies(' 255 '))
+    self~assertSame(' '~copies(255), .vblank~copies(' 255 '))
 
 ::method 'test152'
-    self~assertSame('subTest01',' '~copies(256),.vblank~copies(' +256 '))
+    self~assertSame(' '~copies(256), .vblank~copies(' +256 '))
 
 ::method 'test153'
     self~expectSyntax(93.906)
     xre = .vblank~copies(' -32768 ')
 
 ::method 'test154'
-    self~assertSame('subTest01','ASDFASDFASDFASDFASDFASDFASDFASDFASDF',.v4c~copies('9'))
+    self~assertSame('ASDFASDFASDFASDFASDFASDFASDFASDFASDF', .v4c~copies('9'))
 
 ::method 'test155'
-    self~assertSame('subTest01','ASDFASDFASDFASDFASDFASDFASDFASDFASDFASDF',.v4c~copies('3130'x))
+    self~assertSame('ASDFASDFASDFASDFASDFASDFASDFASDFASDFASDF', .v4c~copies('3130'x))
 
 ::method 'test156'
-    self~assertSame('subTest01','ASDFASDFASDFASDFASDFASDFASDFASDFASDFASDFASDF',.v4c~copies('0.11E2'))
+    self~assertSame('ASDFASDFASDFASDFASDFASDFASDFASDFASDFASDFASDF', .v4c~copies('0.11E2'))
 
 ::method 'test157'
     self~expectSyntax(93.905)
     xre = .v4c~copies('0.11E1')
 
 ::method 'test158'
-    self~assertSame('subTest01','ASDF'~copies(255),.v4c~copies('00255'))
+    self~assertSame('ASDF'~copies(255), .v4c~copies('00255'))
 
 ::method 'test159'
-    self~assertSame('subTest01','ASDF'~copies(256),.v4c~copies(' 256 '))
+    self~assertSame('ASDF'~copies(256), .v4c~copies(' 256 '))
 
 ::method 'test160'
-    self~assertSame('subTest01','ASDF'~copies(32768),.v4c~copies(' +32768 '))
+    self~assertSame('ASDF'~copies(32768), .v4c~copies(' +32768 '))
 
 ::method 'test161'
     self~expectSyntax(93.906)
     xre = .v4c~copies(' -65536 ')
 
 ::method 'test162'
-    self~assertSame('subTest01','ASASASASASASASASASAS',.v2c~copies('10'))
+    self~assertSame('ASASASASASASASASASAS', .v2c~copies('10'))
 
 ::method 'test163'
-    self~assertSame('subTest01','ASASASASASASASASASASAS',.v2c~copies('3131'x))
+    self~assertSame('ASASASASASASASASASASAS', .v2c~copies('3131'x))
 
 ::method 'test164'
-    self~assertSame('subTest01','AS'~copies(255),.v2c~copies('0.255E3'))
+    self~assertSame('AS'~copies(255), .v2c~copies('0.255E3'))
 
 ::method 'test165'
     self~expectSyntax(93.905)
     xre = .v2c~copies('0.255E2')
 
 ::method 'test166'
-    self~assertSame('subTest01','AS'~copies(256),.v2c~copies('00256'))
+    self~assertSame('AS'~copies(256), .v2c~copies('00256'))
 
 ::method 'test167'
-    self~assertSame('subTest01','AS'~copies(32768),.v2c~copies(' 32768 '))
+    self~assertSame('AS'~copies(32768), .v2c~copies(' 32768 '))
 
 ::method 'test168'
-    self~assertSame('subTest01','AS'~copies(65536),.v2c~copies(' +65536 '))
+    self~assertSame('AS'~copies(65536), .v2c~copies(' +65536 '))
 
 ::method 'test169'
     self~expectSyntax(93.906)
     xre = .v2c~copies(' -131072 ')
 
 ::method 'test170'
-    self~assertSame('subTest01','QWERASDFZXCVQWERASDFZXCVQWERAS'~copies(11),.v30~copies('11'))
+    self~assertSame('QWERASDFZXCVQWERASDFZXCVQWERAS'~copies(11), .v30~copies('11'))
 
 ::method 'test171'
-    self~assertSame('subTest01','QWERASDFZXCVQWERASDFZXCVQWERAS'~copies(255),.v30~copies('323535'x))
+    self~assertSame('QWERASDFZXCVQWERASDFZXCVQWERAS'~copies(255), .v30~copies('323535'x))
 
 ::method 'test172'
-    self~assertSame('subTest01','QWERASDFZXCVQWERASDFZXCVQWERAS'~copies(256),.v30~copies('0.256E3'))
+    self~assertSame('QWERASDFZXCVQWERASDFZXCVQWERAS'~copies(256), .v30~copies('0.256E3'))
 
 ::method 'test173'
     self~expectSyntax(93.905)
     xre = .v30~copies('0.256E2')
 
 ::method 'test174'
-    self~assertSame('subTest01','',.v30~copies(' -0 '))
+    self~assertSame('', .v30~copies(' -0 '))
 
 ::method 'test175'
-    self~assertSame('subTest01','Q E A D Z C Q E A D Z C Q E A '~copies(255),.v15b~copies('255'))
+    self~assertSame('Q E A D Z C Q E A D Z C Q E A '~copies(255), .v15b~copies('255'))
 
 ::method 'test176'
-    self~assertSame('subTest01','Q E A D Z C Q E A D Z C Q E A '~copies(256),.v15b~copies('323536'x))
+    self~assertSame('Q E A D Z C Q E A D Z C Q E A '~copies(256), .v15b~copies('323536'x))
 
 ::method 'test177'
-    self~assertSame('subTest01','',.v15b~copies(' +0 '))
+    self~assertSame('', .v15b~copies(' +0 '))
 
 ::method 'test178'
     self~expectSyntax(93.906)
     xre = .v15b~copies(' -1 ')
 
 ::method 'test179'
-    self~assertSame('subTest01','X'~copies(64000),.v250~copies('256'))
+    self~assertSame('X'~copies(64000), .v250~copies('256'))
 
 ::method 'test180'
     self~expectSyntax(93.905)
     xre = .v250~copies('0.65536E4')
 
 ::method 'test181'
-    self~assertSame('subTest01','',.v250~copies(' 0 '))
+    self~assertSame('', .v250~copies(' 0 '))
 
 ::method 'test182'
-    self~assertSame('subTest01','X'~copies(250),.v250~copies(' +1 '))
+    self~assertSame('X'~copies(250), .v250~copies(' +1 '))
 
 ::method 'test183'
     self~expectSyntax(93.906)
     xre = .v250~copies(' -9 ')
 
 ::method 'test184'
-    self~assertSame('subTest01','     ASDF     ASDF'~copies(16384),.vb1w~copies('32768'))
+    self~assertSame('     ASDF     ASDF'~copies(16384), .vb1w~copies('32768'))
 
 ::method 'test185'
-    self~assertSame('subTest01','',.vb1w~copies('000'))
+    self~assertSame('', .vb1w~copies('000'))
 
 ::method 'test186'
-    self~assertSame('subTest01','     ASDF',.vb1w~copies(' 1 '))
+    self~assertSame('     ASDF', .vb1w~copies(' 1 '))
 
 ::method 'test187'
-    self~assertSame('subTest01','     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF',.vb1w~copies(' +9 '))
+    self~assertSame('     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF', .vb1w~copies(' +9 '))
 
 ::method 'test188'
     self~expectSyntax(93.906)
     xre = .vb1w~copies(' -10 ')
 
 ::method 'test189'
-    self~assertSame('subTest01','',.v3w~copies('0.00E2'))
+    self~assertSame('', .v3w~copies('0.00E2'))
 
 ::method 'test190'
-    self~assertSame('subTest01','ASDF QWER ZXCV',.v3w~copies('001'))
+    self~assertSame('ASDF QWER ZXCV', .v3w~copies('001'))
 
 ::method 'test191'
-    self~assertSame('subTest01','ASDF QWER ZXCV'~copies(8)||'ASDF QWER ZXCV',.v3w~copies(' 9 '))
+    self~assertSame('ASDF QWER ZXCV'~copies(8)||'ASDF QWER ZXCV', .v3w~copies(' 9 '))
 
 ::method 'test192'
-    self~assertSame('subTest01','ASDF QWER ZXCVASDF QWER ZXCV'~copies(5),.v3w~copies(' +10 '))
+    self~assertSame('ASDF QWER ZXCVASDF QWER ZXCV'~copies(5), .v3w~copies(' +10 '))
 
 ::method 'test193'
     self~expectSyntax(93.906)
     xre = .v3w~copies(' -11 ')
 
 ::method 'test194'
-    self~assertSame('subTest01','',.v1wb~copies('30'x))
+    self~assertSame('', .v1wb~copies('30'x))
 
 ::method 'test195'
-    self~assertSame('subTest01','ASDF     ',.v1wb~copies('0.01E2'))
+    self~assertSame('ASDF     ', .v1wb~copies('0.01E2'))
 
 ::method 'test196'
     self~expectSyntax(93.905)
     xre = .v1wb~copies('0.01E1')
 
 ::method 'test197'
-    self~assertSame('subTest01','ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ',.v1wb~copies('009'))
+    self~assertSame('ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ', .v1wb~copies('009'))
 
 ::method 'test198'
-    self~assertSame('subTest01','ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ',.v1wb~copies(' 10 '))
+    self~assertSame('ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ', .v1wb~copies(' 10 '))
 
 ::method 'test199'
-    self~assertSame('subTest01','ASDF     '||'ASDF     ASDF     '~copies(5),.v1wb~copies(' +11 '))
+    self~assertSame('ASDF     '||'ASDF     ASDF     '~copies(5), .v1wb~copies(' +11 '))
 
 ::method 'test200'
     self~expectSyntax(93.906)
     xre = .v1wb~copies(' -255 ')
 
 ::method 'test201'
-    self~assertSame('subTest01','',.v125b~copies('0'))
+    self~assertSame('', .v125b~copies('0'))
 
 ::method 'test202'
-    self~assertSame('subTest01','X '~copies(125),.v125b~copies('31'x))
+    self~assertSame('X '~copies(125), .v125b~copies('31'x))
 
 ::method 'test203'
-    self~assertSame('subTest01','X '~copies(1125),.v125b~copies('0.09E2'))
+    self~assertSame('X '~copies(1125), .v125b~copies('0.09E2'))
 
 ::method 'test204'
     self~expectSyntax(93.905)
     xre = .v125b~copies('0.09E1')
 
 ::method 'test205'
-    self~assertSame('subTest01','X '~copies(1250),.v125b~copies('0010'))
+    self~assertSame('X '~copies(1250), .v125b~copies('0010'))
 
 ::method 'test206'
-    self~assertSame('subTest01','X '~copies(1375),.v125b~copies(' 11 '))
+    self~assertSame('X '~copies(1375), .v125b~copies(' 11 '))
 
 ::method 'test207'
-    self~assertSame('subTest01','X '~copies(31875),.v125b~copies(' +255 '))
+    self~assertSame('X '~copies(31875), .v125b~copies(' +255 '))
 
 ::method 'test208'
     self~expectSyntax(93.906)
     xre = .v125b~copies(' -256 ')
 
 ::method 'test209'
-    self~assertSame('subTest01','',.vxnull~copies('1'))
+    self~assertSame('', .vxnull~copies('1'))
 
 ::method 'test210'
-    self~assertSame('subTest01','',.vxnull~copies('39'x))
+    self~assertSame('', .vxnull~copies('39'x))
 
 ::method 'test211'
-    self~assertSame('subTest01','',.vxnull~copies('0.10E2'))
+    self~assertSame('', .vxnull~copies('0.10E2'))
 
 ::method 'test212'
-    self~assertSame('subTest01','',.vxnull~copies('0.10E1'))
+    self~assertSame('', .vxnull~copies('0.10E1'))
 
 ::method 'test213'
-    self~assertSame('subTest01','',.vxnull~copies('0011'))
+    self~assertSame('', .vxnull~copies('0011'))
 
 ::method 'test214'
-    self~assertSame('subTest01','',.vxnull~copies(' 255 '))
+    self~assertSame('', .vxnull~copies(' 255 '))
 
 ::method 'test215'
-    self~assertSame('subTest01','',.vxnull~copies(' +256 '))
+    self~assertSame('', .vxnull~copies(' +256 '))
 
 ::method 'test216'
     self~expectSyntax(93.906)
     xre = .vxnull~copies(' -32768 ')
 
 ::method 'test217'
-    self~assertSame('subTest01','         ',.vx40~copies('9'))
+    self~assertSame('         ', .vx40~copies('9'))
 
 ::method 'test218'
-    self~assertSame('subTest01','          ',.vx40~copies('3130'x))
+    self~assertSame('          ', .vx40~copies('3130'x))
 
 ::method 'test219'
-    self~assertSame('subTest01','           ',.vx40~copies('0.11E2'))
+    self~assertSame('           ', .vx40~copies('0.11E2'))
 
 ::method 'test220'
     self~expectSyntax(93.905)
     xre = .vx40~copies('0.11E1')
 
 ::method 'test221'
-    self~assertSame('subTest01','20'x~copies(255),.vx40~copies('00255'))
+    self~assertSame('20'x~copies(255), .vx40~copies('00255'))
 
 ::method 'test222'
-    self~assertSame('subTest01','20'x~copies(256),.vx40~copies(' 256 '))
+    self~assertSame('20'x~copies(256), .vx40~copies(' 256 '))
 
 ::method 'test223'
-    self~assertSame('subTest01','20'x~copies(32768),.vx40~copies(' +32768 '))
+    self~assertSame('20'x~copies(32768), .vx40~copies(' +32768 '))
 
 ::method 'test224'
-    self~assertSame('subTest01','asdfasdfasdfasdfasdfasdfasdfasdfasdfasdf',.v4x~copies('10'))
+    self~assertSame('asdfasdfasdfasdfasdfasdfasdfasdfasdfasdf', .v4x~copies('10'))
 
 ::method 'test225'
-    self~assertSame('subTest01','asdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdf',.v4x~copies('3131'x))
+    self~assertSame('asdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdf', .v4x~copies('3131'x))
 
 ::method 'test226'
-    self~assertSame('subTest01','61736466'x~copies(255),.v4x~copies('0.255E3'))
+    self~assertSame('61736466'x~copies(255), .v4x~copies('0.255E3'))
 
 ::method 'test227'
     self~expectSyntax(93.905)
     xre = .v4x~copies('0.255E2')
 
 ::method 'test228'
-    self~assertSame('subTest01','6173646661736466'x~copies(128),.v4x~copies('00256'))
+    self~assertSame('6173646661736466'x~copies(128), .v4x~copies('00256'))
 
 ::method 'test229'
-    self~assertSame('subTest01','6173646661736466'x~copies(16384),.v4x~copies(' 32768 '))
+    self~assertSame('6173646661736466'x~copies(16384), .v4x~copies(' 32768 '))
 
 ::method 'test230'
-    self~assertSame('subTest01','asasasasasasasasasasas',.v2x~copies('11'))
+    self~assertSame('asasasasasasasasasasas', .v2x~copies('11'))
 
 ::method 'test231'
     self~expectSyntax(93.905)
     xre = .v2x~copies('FF'x)
 
 ::method 'test232'
-    self~assertSame('subTest01','6173'x~copies(256),.v2x~copies('0.256E3'))
+    self~assertSame('6173'x~copies(256), .v2x~copies('0.256E3'))
 
 ::method 'test233'
     self~expectSyntax(93.905)
     xre = .v2x~copies('0.256E2')
 
 ::method 'test234'
-    self~assertSame('subTest01','61736173'x~copies(16384),.v2x~copies('0032768'))
+    self~assertSame('61736173'x~copies(16384), .v2x~copies('0032768'))
 
 ::method 'test235'
-    self~assertSame('subTest01','61736173'x~copies(32768),.v2x~copies(' 65536 '))
+    self~assertSame('61736173'x~copies(32768), .v2x~copies(' 65536 '))
 
 ::method 'test236'
-    self~assertSame('subTest01','61736173'x~copies(65536),.v2x~copies(' +131072 '))
+    self~assertSame('61736173'x~copies(65536), .v2x~copies(' +131072 '))
 
 ::method 'test237'
-    self~assertSame('subTest01','',.v2x~copies(' -0 '))
+    self~assertSame('', .v2x~copies(' -0 '))
 
 ::method 'test238'
-    self~assertSame('subTest01','71776572617364667a78637671776572617364667a786376717765726173'x~copies(255),.v30x~copies('255'))
+    self~assertSame('71776572617364667a78637671776572617364667a786376717765726173'x~copies(255), .v30x~copies('255'))
 
 ::method 'test239'
-    self~assertSame('subTest01','71776572617364667a78637671776572617364667a786376717765726173'x~copies(256),.v30x~copies('323536'x))
+    self~assertSame('71776572617364667a78637671776572617364667a786376717765726173'x~copies(256), .v30x~copies('323536'x))
 
 ::method 'test240'
-    self~assertSame('subTest01','71776572617364667a78637671776572617364667a786376717765726173'x~copies(256),.v30x~copies('256'))
+    self~assertSame('71776572617364667a78637671776572617364667a786376717765726173'x~copies(256), .v30x~copies('256'))
 
 ::method 'test241'
-    self~assertSame('subTest01','',.v30x~copies(' +0 '))
+    self~assertSame('', .v30x~copies(' +0 '))
 
 ::method 'test242'
     self~expectSyntax(93.906)
     xre = .v30x~copies(' -1 ')
 
 ::method 'test243'
-    self~assertSame('subTest01','71206520612064207a20632071206520612064207a206320712065206120'x~copies(256),.v15bx~copies('256'))
+    self~assertSame('71206520612064207a20632071206520612064207a206320712065206120'x~copies(256), .v15bx~copies('256'))
 
 ::method 'test244'
     self~expectSyntax(93.905)
     xre = .v15bx~copies('0.65536E4')
 
 ::method 'test245'
-    self~assertSame('subTest01','',.v15bx~copies(' 0 '))
+    self~assertSame('', .v15bx~copies(' 0 '))
 
 ::method 'test246'
-    self~assertSame('subTest01','q e a d z c q e a d z c q e a ',.v15bx~copies(' +1 '))
+    self~assertSame('q e a d z c q e a d z c q e a ', .v15bx~copies(' +1 '))
 
 ::method 'test247'
     self~expectSyntax(93.906)
     xre = .v15bx~copies(' -9 ')
 
 ::method 'test248'
-    self~assertSame('subTest01','202020202061736466'x~copies(32768),.vb1x~copies('32768'))
+    self~assertSame('202020202061736466'x~copies(32768), .vb1x~copies('32768'))
 
 ::method 'test249'
-    self~assertSame('subTest01','',.vb1x~copies('000'))
+    self~assertSame('', .vb1x~copies('000'))
 
 ::method 'test250'
-    self~assertSame('subTest01','     asdf',.vb1x~copies(' 1 '))
+    self~assertSame('     asdf', .vb1x~copies(' 1 '))
 
 ::method 'test251'
-    self~assertSame('subTest01','202020202061736466'x~copies(9),.vb1x~copies(' +9 '))
+    self~assertSame('202020202061736466'x~copies(9), .vb1x~copies(' +9 '))
 
 ::method 'test252'
     self~expectSyntax(93.906)
     xre = .vb1x~copies(' -10 ')
 
 ::method 'test253'
-    self~assertSame('subTest01','',.v3wx~copies('0.00E2'))
+    self~assertSame('', .v3wx~copies('0.00E2'))
 
 ::method 'test254'
-    self~assertSame('subTest01','asdf qwer zxcv',.v3wx~copies('001'))
+    self~assertSame('asdf qwer zxcv', .v3wx~copies('001'))
 
 ::method 'test255'
-    self~assertSame('subTest01','617364662071776572207a786376'x~copies(9),.v3wx~copies(' 9 '))
+    self~assertSame('617364662071776572207a786376'x~copies(9), .v3wx~copies(' 9 '))
 
 ::method 'test256'
-    self~assertSame('subTest01','617364662071776572207a786376'x~copies(10),.v3wx~copies(' +10 '))
+    self~assertSame('617364662071776572207a786376'x~copies(10), .v3wx~copies(' +10 '))
 
 ::method 'test257'
     self~expectSyntax(93.906)
     xre = .v3wx~copies(' -11 ')
 
 ::method 'test258'
-    self~assertSame('subTest01','',.v1xb~copies('30'x))
+    self~assertSame('', .v1xb~copies('30'x))
 
 ::method 'test259'
-    self~assertSame('subTest01','asdf     ',.v1xb~copies('0.01E2'))
+    self~assertSame('asdf     ', .v1xb~copies('0.01E2'))
 
 ::method 'test260'
     self~expectSyntax(93.905)
     xre = .v1xb~copies('0.01E1')
 
 ::method 'test261'
-    self~assertSame('subTest01','asdf     asdf     asdf     asdf     asdf     asdf     asdf     asdf     asdf     ',.v1xb~copies('009'))
+    self~assertSame('asdf     asdf     asdf     asdf     asdf     asdf     asdf     asdf     asdf     ', .v1xb~copies('009'))
 
 ::method 'test262'
-    self~assertSame('subTest01','asdf     asdf     asdf     asdf     asdf     asdf     asdf     asdf     asdf     asdf     ',.v1xb~copies(' 10 '))
+    self~assertSame('asdf     asdf     asdf     asdf     asdf     asdf     asdf     asdf     asdf     asdf     ', .v1xb~copies(' 10 '))
 
 ::method 'test263'
-    self~assertSame('subTest01','617364662020202020'x~copies(11),.v1xb~copies(' +11 '))
+    self~assertSame('617364662020202020'x~copies(11), .v1xb~copies(' +11 '))
 
 ::method 'test264'
     self~expectSyntax(93.906)
     xre = .v1xb~copies(' -255 ')
 
 ::method 'test265'
-    self~assertSame('subTest01','',.v125bx~copies('0'))
+    self~assertSame('', .v125bx~copies('0'))
 
 ::method 'test266'
-    self~assertSame('subTest01','X '~copies(125),.v125bx~copies('31'x))
+    self~assertSame('X '~copies(125), .v125bx~copies('31'x))
 
 ::method 'test267'
-    self~assertSame('subTest01','X '~copies(1125),.v125bx~copies('0.09E2'))
+    self~assertSame('X '~copies(1125), .v125bx~copies('0.09E2'))
 
 ::method 'test268'
     self~expectSyntax(93.905)
     xre = .v125bx~copies('0.09E1')
 
 ::method 'test269'
-    self~assertSame('subTest01','X '~copies(1250),.v125bx~copies('0010'))
+    self~assertSame('X '~copies(1250), .v125bx~copies('0010'))
 
 ::method 'test270'
-    self~assertSame('subTest01','X '~copies(1375),.v125bx~copies(' 11 '))
+    self~assertSame('X '~copies(1375), .v125bx~copies(' 11 '))
 
 ::method 'test271'
-    self~assertSame('subTest01','X '~copies(31875),.v125bx~copies(' +255 '))
+    self~assertSame('X '~copies(31875), .v125bx~copies(' +255 '))
 
 ::method 'test272'
     self~expectSyntax(93.906)
     xre = .v125bx~copies(' -256 ')
 
 ::method 'test273'
-    self~assertSame('subTest01','NV.NV.'~copies(5),nv.~copies(10))
+    self~assertSame('NV.NV.'~copies(5), nv.~copies(10))
 
 ::method 'test274'
-    self~assertSame('subTest01','NVNVNVNVNVNVNVNVNVNV',nv~copies(10))
+    self~assertSame('NVNVNVNVNVNVNVNVNVNV', nv~copies(10))
 
 ::method 'test275'
-    self~assertSame('subTest01','NV.NV.NV.NV.NV.NV.NV.NV.NV.NV.',nv.~copies(10))
+    self~assertSame('NV.NV.NV.NV.NV.NV.NV.NV.NV.NV.', nv.~copies(10))
 
 ::method 'test276'
-    self~assertSame('subTest01','NV.10NV.10NV.10NV.10NV.10NV.10NV.10NV.10NV.10NV.10',nv.10~copies(10))
+    self~assertSame('NV.10NV.10NV.10NV.10NV.10NV.10NV.10NV.10NV.10NV.10', nv.10~copies(10))
 
 ::method 'test277'
     .local~remove(vnull)
@@ -1164,430 +1164,430 @@ return testGroupList
     xre = .vnull~copies(.nnull)
 
 ::method 'test280'
-    self~assertSame('subTest01','',.vnull~copies(.nzero))
+    self~assertSame('', .vnull~copies(.nzero))
 
 ::method 'test281'
-    self~assertSame('subTest01','',.vnull~copies(.nF1x))
+    self~assertSame('', .vnull~copies(.nF1x))
 
 ::method 'test282'
-    self~assertSame('subTest01','',.vnull~copies(.n09E2))
+    self~assertSame('', .vnull~copies(.n09E2))
 
 ::method 'test283'
     self~expectSyntax(93.905)
     xre = .vnull~copies(.n09E1)
 
 ::method 'test284'
-    self~assertSame('subTest01','',.vnull~copies(.n0010))
+    self~assertSame('', .vnull~copies(.n0010))
 
 ::method 'test285'
-    self~assertSame('subTest01','',.vnull~copies(.nl11))
+    self~assertSame('', .vnull~copies(.nl11))
 
 ::method 'test286'
-    self~assertSame('subTest01','',.vnull~copies(.np255))
+    self~assertSame('', .vnull~copies(.np255))
 
 ::method 'test287'
     self~expectSyntax(93.906)
     xre = .vnull~copies(.nn256)
 
 ::method 'test288'
-    self~assertSame('subTest01',' ',.vblank~copies(.n1))
+    self~assertSame(' ', .vblank~copies(.n1))
 
 ::method 'test289'
-    self~assertSame('subTest01','         ',.vblank~copies(.nF9x))
+    self~assertSame('         ', .vblank~copies(.nF9x))
 
 ::method 'test290'
-    self~assertSame('subTest01','          ',.vblank~copies(.n10E2))
+    self~assertSame('          ', .vblank~copies(.n10E2))
 
 ::method 'test291'
-    self~assertSame('subTest01','           ',.vblank~copies(.n0011))
+    self~assertSame('           ', .vblank~copies(.n0011))
 
 ::method 'test292'
-    self~assertSame('subTest01',' '~copies(255),.vblank~copies(.nl255))
+    self~assertSame(' '~copies(255), .vblank~copies(.nl255))
 
 ::method 'test293'
-    self~assertSame('subTest01',' '~copies(256),.vblank~copies(.np256))
+    self~assertSame(' '~copies(256), .vblank~copies(.np256))
 
 ::method 'test294'
     self~expectSyntax(93.906)
     xre = .vblank~copies(.nn32768)
 
 ::method 'test295'
-    self~assertSame('subTest01','ASDFASDFASDFASDFASDFASDFASDFASDFASDF',.v4c~copies(.n9))
+    self~assertSame('ASDFASDFASDFASDFASDFASDFASDFASDFASDF', .v4c~copies(.n9))
 
 ::method 'test296'
-    self~assertSame('subTest01','ASDFASDFASDFASDFASDFASDFASDFASDFASDFASDF',.v4c~copies(.nF1F0x))
+    self~assertSame('ASDFASDFASDFASDFASDFASDFASDFASDFASDFASDF', .v4c~copies(.nF1F0x))
 
 ::method 'test297'
-    self~assertSame('subTest01','ASDFASDFASDFASDFASDFASDFASDFASDFASDFASDFASDF',.v4c~copies(.n11E2))
+    self~assertSame('ASDFASDFASDFASDFASDFASDFASDFASDFASDFASDFASDF', .v4c~copies(.n11E2))
 
 ::method 'test298'
     self~expectSyntax(93.905)
     xre = .v4c~copies(.n11E1)
 
 ::method 'test299'
-    self~assertSame('subTest01','ASDF'~copies(255),.v4c~copies(.n00255))
+    self~assertSame('ASDF'~copies(255), .v4c~copies(.n00255))
 
 ::method 'test300'
-    self~assertSame('subTest01','ASDF'~copies(256),.v4c~copies(.nl256))
+    self~assertSame('ASDF'~copies(256), .v4c~copies(.nl256))
 
 ::method 'test301'
-    self~assertSame('subTest01','ASDF'~copies(32768),.v4c~copies(.np32768))
+    self~assertSame('ASDF'~copies(32768), .v4c~copies(.np32768))
 
 ::method 'test302'
     self~expectSyntax(93.906)
     xre = .v4c~copies(.nn65536)
 
 ::method 'test303'
-    self~assertSame('subTest01','ASASASASASASASASASAS',.v2c~copies(.n10))
+    self~assertSame('ASASASASASASASASASAS', .v2c~copies(.n10))
 
 ::method 'test304'
-    self~assertSame('subTest01','ASASASASASASASASASASAS',.v2c~copies(.nF1F1x))
+    self~assertSame('ASASASASASASASASASASAS', .v2c~copies(.nF1F1x))
 
 ::method 'test305'
-    self~assertSame('subTest01','AS'~copies(255),.v2c~copies(.n255E3))
+    self~assertSame('AS'~copies(255), .v2c~copies(.n255E3))
 
 ::method 'test306'
     self~expectSyntax(93.905)
     xre = .v2c~copies(.n255E2)
 
 ::method 'test307'
-    self~assertSame('subTest01','AS'~copies(256),.v2c~copies(.n00256))
+    self~assertSame('AS'~copies(256), .v2c~copies(.n00256))
 
 ::method 'test308'
-    self~assertSame('subTest01','AS'~copies(32768),.v2c~copies(.nl32768))
+    self~assertSame('AS'~copies(32768), .v2c~copies(.nl32768))
 
 ::method 'test309'
-    self~assertSame('subTest01','AS'~copies(65536),.v2c~copies(.np65536))
+    self~assertSame('AS'~copies(65536), .v2c~copies(.np65536))
 
 ::method 'test310'
     self~expectSyntax(93.906)
     xre = .v2c~copies(.nn131072)
 
 ::method 'test311'
-    self~assertSame('subTest01','QWERASDFZXCVQWERASDFZXCVQWERAS'~copies(11),.v30~copies(.n11))
+    self~assertSame('QWERASDFZXCVQWERASDFZXCVQWERAS'~copies(11), .v30~copies(.n11))
 
 ::method 'test312'
-    self~assertSame('subTest01','QWERASDFZXCVQWERASDFZXCVQWERAS'~copies(255),.v30~copies(.nF2F5F5x))
+    self~assertSame('QWERASDFZXCVQWERASDFZXCVQWERAS'~copies(255), .v30~copies(.nF2F5F5x))
 
 ::method 'test313'
-    self~assertSame('subTest01','QWERASDFZXCVQWERASDFZXCVQWERAS'~copies(256),.v30~copies(.n256E3))
+    self~assertSame('QWERASDFZXCVQWERASDFZXCVQWERAS'~copies(256), .v30~copies(.n256E3))
 
 ::method 'test314'
     self~expectSyntax(93.905)
     xre = .v30~copies(.n256E2)
 
 ::method 'test315'
-    self~assertSame('subTest01','',.v30~copies(.nn0))
+    self~assertSame('', .v30~copies(.nn0))
 
 ::method 'test316'
-    self~assertSame('subTest01','Q E A D Z C Q E A D Z C Q E A '~copies(255),.v15b~copies(.n255))
+    self~assertSame('Q E A D Z C Q E A D Z C Q E A '~copies(255), .v15b~copies(.n255))
 
 ::method 'test317'
-    self~assertSame('subTest01','Q E A D Z C Q E A D Z C Q E A '~copies(256),.v15b~copies(.nF2F5F6x))
+    self~assertSame('Q E A D Z C Q E A D Z C Q E A '~copies(256), .v15b~copies(.nF2F5F6x))
 
 ::method 'test318'
-    self~assertSame('subTest01','',.v15b~copies(.np0))
+    self~assertSame('', .v15b~copies(.np0))
 
 ::method 'test319'
     self~expectSyntax(93.906)
     xre = .v15b~copies(.nn1)
 
 ::method 'test320'
-    self~assertSame('subTest01','X'~copies(64000),.v250~copies(.n256))
+    self~assertSame('X'~copies(64000), .v250~copies(.n256))
 
 ::method 'test321'
     self~expectSyntax(93.905)
     xre = .v250~copies(.n65536E4)
 
 ::method 'test322'
-    self~assertSame('subTest01','',.v250~copies(.nl0))
+    self~assertSame('', .v250~copies(.nl0))
 
 ::method 'test323'
-    self~assertSame('subTest01','X'~copies(250),.v250~copies(.np1))
+    self~assertSame('X'~copies(250), .v250~copies(.np1))
 
 ::method 'test324'
     self~expectSyntax(93.906)
     xre = .v250~copies(.nn9)
 
 ::method 'test325'
-    self~assertSame('subTest01','     ASDF     ASDF'~copies(16384),.vb1w~copies(.n32768))
+    self~assertSame('     ASDF     ASDF'~copies(16384), .vb1w~copies(.n32768))
 
 ::method 'test326'
-    self~assertSame('subTest01','',.vb1w~copies(.n000))
+    self~assertSame('', .vb1w~copies(.n000))
 
 ::method 'test327'
-    self~assertSame('subTest01','     ASDF',.vb1w~copies(.nl1))
+    self~assertSame('     ASDF', .vb1w~copies(.nl1))
 
 ::method 'test328'
-    self~assertSame('subTest01','     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF',.vb1w~copies(.np9))
+    self~assertSame('     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF', .vb1w~copies(.np9))
 
 ::method 'test329'
     self~expectSyntax(93.906)
     xre = .vb1w~copies(.nn10)
 
 ::method 'test330'
-    self~assertSame('subTest01','',.v3w~copies(.n00E2))
+    self~assertSame('', .v3w~copies(.n00E2))
 
 ::method 'test331'
-    self~assertSame('subTest01','ASDF QWER ZXCV',.v3w~copies(.n001))
+    self~assertSame('ASDF QWER ZXCV', .v3w~copies(.n001))
 
 ::method 'test332'
-    self~assertSame('subTest01','ASDF QWER ZXCV'~copies(8)||'ASDF QWER ZXCV',.v3w~copies(.nl9))
+    self~assertSame('ASDF QWER ZXCV'~copies(8)||'ASDF QWER ZXCV', .v3w~copies(.nl9))
 
 ::method 'test333'
-    self~assertSame('subTest01','ASDF QWER ZXCVASDF QWER ZXCV'~copies(5),.v3w~copies(.np10))
+    self~assertSame('ASDF QWER ZXCVASDF QWER ZXCV'~copies(5), .v3w~copies(.np10))
 
 ::method 'test334'
     self~expectSyntax(93.906)
     xre = .v3w~copies(.nn11)
 
 ::method 'test335'
-    self~assertSame('subTest01','',.v1wb~copies(.nF0x))
+    self~assertSame('', .v1wb~copies(.nF0x))
 
 ::method 'test336'
-    self~assertSame('subTest01','ASDF     ',.v1wb~copies(.n01E2))
+    self~assertSame('ASDF     ', .v1wb~copies(.n01E2))
 
 ::method 'test337'
     self~expectSyntax(93.905)
     xre = .v1wb~copies(.n01E1)
 
 ::method 'test338'
-    self~assertSame('subTest01','ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ',.v1wb~copies(.n009))
+    self~assertSame('ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ', .v1wb~copies(.n009))
 
 ::method 'test339'
-    self~assertSame('subTest01','ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ',.v1wb~copies(.nl10))
+    self~assertSame('ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ', .v1wb~copies(.nl10))
 
 ::method 'test340'
-    self~assertSame('subTest01','ASDF     '||'ASDF     ASDF     '~copies(5),.v1wb~copies(.np11))
+    self~assertSame('ASDF     '||'ASDF     ASDF     '~copies(5), .v1wb~copies(.np11))
 
 ::method 'test341'
     self~expectSyntax(93.906)
     xre = .v1wb~copies(.nn255)
 
 ::method 'test342'
-    self~assertSame('subTest01','',.v125b~copies(.nzero))
+    self~assertSame('', .v125b~copies(.nzero))
 
 ::method 'test343'
-    self~assertSame('subTest01','X '~copies(125),.v125b~copies(.nF1x))
+    self~assertSame('X '~copies(125), .v125b~copies(.nF1x))
 
 ::method 'test344'
-    self~assertSame('subTest01','X '~copies(1125),.v125b~copies(.n09E2))
+    self~assertSame('X '~copies(1125), .v125b~copies(.n09E2))
 
 ::method 'test345'
     self~expectSyntax(93.905)
     xre = .v125b~copies(.n09E1)
 
 ::method 'test346'
-    self~assertSame('subTest01','X '~copies(1250),.v125b~copies(.n0010))
+    self~assertSame('X '~copies(1250), .v125b~copies(.n0010))
 
 ::method 'test347'
-    self~assertSame('subTest01','X '~copies(1375),.v125b~copies(.nl11))
+    self~assertSame('X '~copies(1375), .v125b~copies(.nl11))
 
 ::method 'test348'
-    self~assertSame('subTest01','X '~copies(31875),.v125b~copies(.np255))
+    self~assertSame('X '~copies(31875), .v125b~copies(.np255))
 
 ::method 'test349'
     self~expectSyntax(93.906)
     xre = .v125b~copies(.nn256)
 
 ::method 'test350'
-    self~assertSame('subTest01','',.vxnull~copies(.n1))
+    self~assertSame('', .vxnull~copies(.n1))
 
 ::method 'test351'
-    self~assertSame('subTest01','',.vxnull~copies(.nF9x))
+    self~assertSame('', .vxnull~copies(.nF9x))
 
 ::method 'test352'
-    self~assertSame('subTest01','',.vxnull~copies(.n10E2))
+    self~assertSame('', .vxnull~copies(.n10E2))
 
 ::method 'test353'
-    self~assertSame('subTest01','',.vxnull~copies(.n10E1))
+    self~assertSame('', .vxnull~copies(.n10E1))
 
 ::method 'test354'
-    self~assertSame('subTest01','',.vxnull~copies(.n0011))
+    self~assertSame('', .vxnull~copies(.n0011))
 
 ::method 'test355'
-    self~assertSame('subTest01','',.vxnull~copies(.nl255))
+    self~assertSame('', .vxnull~copies(.nl255))
 
 ::method 'test356'
-    self~assertSame('subTest01','',.vxnull~copies(.np256))
+    self~assertSame('', .vxnull~copies(.np256))
 
 ::method 'test357'
     self~expectSyntax(93.906)
     xre = .vxnull~copies(.nn32768)
 
 ::method 'test358'
-    self~assertSame('subTest01','         ',.vx40~copies(.n9))
+    self~assertSame('         ', .vx40~copies(.n9))
 
 ::method 'test359'
-    self~assertSame('subTest01','          ',.vx40~copies(.nF1F0x))
+    self~assertSame('          ', .vx40~copies(.nF1F0x))
 
 ::method 'test360'
-    self~assertSame('subTest01','           ',.vx40~copies(.n11E2))
+    self~assertSame('           ', .vx40~copies(.n11E2))
 
 ::method 'test361'
     self~expectSyntax(93.905)
     xre = .vx40~copies(.n11E1)
 
 ::method 'test362'
-    self~assertSame('subTest01','20'x~copies(255),.vx40~copies(.n00255))
+    self~assertSame('20'x~copies(255), .vx40~copies(.n00255))
 
 ::method 'test363'
-    self~assertSame('subTest01','20'x~copies(256),.vx40~copies(.nl256))
+    self~assertSame('20'x~copies(256), .vx40~copies(.nl256))
 
 ::method 'test364'
-    self~assertSame('subTest01','20'x~copies(32768),.vx40~copies(.np32768))
+    self~assertSame('20'x~copies(32768), .vx40~copies(.np32768))
 
 ::method 'test365'
-    self~assertSame('subTest01','asdfasdfasdfasdfasdfasdfasdfasdfasdfasdf',.v4x~copies(.n10))
+    self~assertSame('asdfasdfasdfasdfasdfasdfasdfasdfasdfasdf', .v4x~copies(.n10))
 
 ::method 'test366'
-    self~assertSame('subTest01','asdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdf',.v4x~copies(.nF1F1x))
+    self~assertSame('asdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdf', .v4x~copies(.nF1F1x))
 
 ::method 'test367'
-    self~assertSame('subTest01','61736466'x~copies(255),.v4x~copies(.n255E3))
+    self~assertSame('61736466'x~copies(255), .v4x~copies(.n255E3))
 
 ::method 'test368'
     self~expectSyntax(93.905)
     xre = .v4x~copies(.n255E2)
 
 ::method 'test369'
-    self~assertSame('subTest01','6173646661736466'x~copies(128),.v4x~copies(.n00256))
+    self~assertSame('6173646661736466'x~copies(128), .v4x~copies(.n00256))
 
 ::method 'test370'
-    self~assertSame('subTest01','6173646661736466'x~copies(16384),.v4x~copies(.nl32768))
+    self~assertSame('6173646661736466'x~copies(16384), .v4x~copies(.nl32768))
 
 ::method 'test371'
-    self~assertSame('subTest01','asasasasasasasasasasas',.v2x~copies(.n11))
+    self~assertSame('asasasasasasasasasasas', .v2x~copies(.n11))
 
 ::method 'test372'
     self~expectSyntax(93.905)
     xre = .v2x~copies(.nFFx)
 
 ::method 'test373'
-    self~assertSame('subTest01','6173'x~copies(256),.v2x~copies(.n256E3))
+    self~assertSame('6173'x~copies(256), .v2x~copies(.n256E3))
 
 ::method 'test374'
     self~expectSyntax(93.905)
     xre = .v2x~copies(.n256E2)
 
 ::method 'test375'
-    self~assertSame('subTest01','61736173'x~copies(16384),.v2x~copies(.n0032768))
+    self~assertSame('61736173'x~copies(16384), .v2x~copies(.n0032768))
 
 ::method 'test376'
-    self~assertSame('subTest01','61736173'x~copies(32768),.v2x~copies(.nl65536))
+    self~assertSame('61736173'x~copies(32768), .v2x~copies(.nl65536))
 
 ::method 'test377'
-    self~assertSame('subTest01','61736173'x~copies(65536),.v2x~copies(.np131072))
+    self~assertSame('61736173'x~copies(65536), .v2x~copies(.np131072))
 
 ::method 'test378'
-    self~assertSame('subTest01','',.v2x~copies(.nn0))
+    self~assertSame('', .v2x~copies(.nn0))
 
 ::method 'test379'
-    self~assertSame('subTest01','71776572617364667a78637671776572617364667a786376717765726173'x~copies(255),.v30x~copies(.n255))
+    self~assertSame('71776572617364667a78637671776572617364667a786376717765726173'x~copies(255), .v30x~copies(.n255))
 
 ::method 'test380'
-    self~assertSame('subTest01','71776572617364667a78637671776572617364667a786376717765726173'x~copies(256),.v30x~copies(.nF2F5F6x))
+    self~assertSame('71776572617364667a78637671776572617364667a786376717765726173'x~copies(256), .v30x~copies(.nF2F5F6x))
 
 ::method 'test381'
-    self~assertSame('subTest01','71776572617364667a78637671776572617364667a786376717765726173'x~copies(256),.v30x~copies(.n256))
+    self~assertSame('71776572617364667a78637671776572617364667a786376717765726173'x~copies(256), .v30x~copies(.n256))
 
 ::method 'test382'
-    self~assertSame('subTest01','',.v30x~copies(.np0))
+    self~assertSame('', .v30x~copies(.np0))
 
 ::method 'test383'
     self~expectSyntax(93.906)
     xre = .v30x~copies(.nn1)
 
 ::method 'test384'
-    self~assertSame('subTest01','71206520612064207a20632071206520612064207a206320712065206120'x~copies(256),.v15bx~copies(.n256))
+    self~assertSame('71206520612064207a20632071206520612064207a206320712065206120'x~copies(256), .v15bx~copies(.n256))
 
 ::method 'test385'
     self~expectSyntax(93.905)
     xre = .v15bx~copies(.n65536E4)
 
 ::method 'test386'
-    self~assertSame('subTest01','',.v15bx~copies(.nl0))
+    self~assertSame('', .v15bx~copies(.nl0))
 
 ::method 'test387'
-    self~assertSame('subTest01','q e a d z c q e a d z c q e a ',.v15bx~copies(.np1))
+    self~assertSame('q e a d z c q e a d z c q e a ', .v15bx~copies(.np1))
 
 ::method 'test388'
     self~expectSyntax(93.906)
     xre = .v15bx~copies(.nn9)
 
 ::method 'test389'
-    self~assertSame('subTest01','',.vb1x~copies(.n000))
+    self~assertSame('', .vb1x~copies(.n000))
 
 ::method 'test390'
-    self~assertSame('subTest01','     asdf',.vb1x~copies(.nl1))
+    self~assertSame('     asdf', .vb1x~copies(.nl1))
 
 ::method 'test391'
-    self~assertSame('subTest01','202020202061736466'x~copies(9),.vb1x~copies(.np9))
+    self~assertSame('202020202061736466'x~copies(9), .vb1x~copies(.np9))
 
 ::method 'test392'
     self~expectSyntax(93.906)
     xre = .vb1x~copies(.nn10)
 
 ::method 'test393'
-    self~assertSame('subTest01','',.v3wx~copies(.n00E2))
+    self~assertSame('', .v3wx~copies(.n00E2))
 
 ::method 'test394'
-    self~assertSame('subTest01','asdf qwer zxcv',.v3wx~copies(.n001))
+    self~assertSame('asdf qwer zxcv', .v3wx~copies(.n001))
 
 ::method 'test395'
-    self~assertSame('subTest01','617364662071776572207a786376'x~copies(9),.v3wx~copies(.nl9))
+    self~assertSame('617364662071776572207a786376'x~copies(9), .v3wx~copies(.nl9))
 
 ::method 'test396'
-    self~assertSame('subTest01','617364662071776572207a786376'x~copies(10),.v3wx~copies(.np10))
+    self~assertSame('617364662071776572207a786376'x~copies(10), .v3wx~copies(.np10))
 
 ::method 'test397'
     self~expectSyntax(93.906)
     xre = .v3wx~copies(.nn11)
 
 ::method 'test398'
-    self~assertSame('subTest01','',.v1xb~copies(.nF0x))
+    self~assertSame('', .v1xb~copies(.nF0x))
 
 ::method 'test399'
-    self~assertSame('subTest01','asdf     ',.v1xb~copies(.n01E2))
+    self~assertSame('asdf     ', .v1xb~copies(.n01E2))
 
 ::method 'test400'
     self~expectSyntax(93.905)
     xre = .v1xb~copies(.n01E1)
 
 ::method 'test401'
-    self~assertSame('subTest01','asdf     asdf     asdf     asdf     asdf     asdf     asdf     asdf     asdf     ',.v1xb~copies(.n009))
+    self~assertSame('asdf     asdf     asdf     asdf     asdf     asdf     asdf     asdf     asdf     ', .v1xb~copies(.n009))
 
 ::method 'test402'
-    self~assertSame('subTest01','asdf     asdf     asdf     asdf     asdf     asdf     asdf     asdf     asdf     asdf     ',.v1xb~copies(.nl10))
+    self~assertSame('asdf     asdf     asdf     asdf     asdf     asdf     asdf     asdf     asdf     asdf     ', .v1xb~copies(.nl10))
 
 ::method 'test403'
-    self~assertSame('subTest01','617364662020202020'x~copies(11),.v1xb~copies(.np11))
+    self~assertSame('617364662020202020'x~copies(11), .v1xb~copies(.np11))
 
 ::method 'test404'
     self~expectSyntax(93.906)
     xre = .v1xb~copies(.nn255)
 
 ::method 'test405'
-    self~assertSame('subTest01','',.v125bx~copies(.nzero))
+    self~assertSame('', .v125bx~copies(.nzero))
 
 ::method 'test406'
-    self~assertSame('subTest01','X '~copies(125),.v125bx~copies(.nF1x))
+    self~assertSame('X '~copies(125), .v125bx~copies(.nF1x))
 
 ::method 'test407'
-    self~assertSame('subTest01','X '~copies(1125),.v125bx~copies(.n09E2))
+    self~assertSame('X '~copies(1125), .v125bx~copies(.n09E2))
 
 ::method 'test408'
     self~expectSyntax(93.905)
     xre = .v125bx~copies(.n09E1)
 
 ::method 'test409'
-    self~assertSame('subTest01','X '~copies(1250),.v125bx~copies(.n0010))
+    self~assertSame('X '~copies(1250), .v125bx~copies(.n0010))
 
 ::method 'test410'
-    self~assertSame('subTest01','X '~copies(1375),.v125bx~copies(.nl11))
+    self~assertSame('X '~copies(1375), .v125bx~copies(.nl11))
 
 ::method 'test411'
-    self~assertSame('subTest01','X '~copies(31875),.v125bx~copies(.np255))
+    self~assertSame('X '~copies(31875), .v125bx~copies(.np255))
 
 ::method 'test412'
     self~expectSyntax(93.906)
@@ -1758,316 +1758,316 @@ return testGroupList
     .local~np131072 = ' +131072 '
 
 ::method 'test415'
-    self~assertSame('subTest01','',''~copies(.nzero))
+    self~assertSame('', ''~copies(.nzero))
 
 ::method 'test416'
-    self~assertSame('subTest01','',''~copies(.nF1x))
+    self~assertSame('', ''~copies(.nF1x))
 
 ::method 'test417'
-    self~assertSame('subTest01','',''~copies(.n09E2))
+    self~assertSame('', ''~copies(.n09E2))
 
 ::method 'test418'
-    self~assertSame('subTest01','',''~copies(.n0010))
+    self~assertSame('', ''~copies(.n0010))
 
 ::method 'test419'
-    self~assertSame('subTest01','',''~copies(.nl11))
+    self~assertSame('', ''~copies(.nl11))
 
 ::method 'test420'
-    self~assertSame('subTest01','',''~copies(.np255))
+    self~assertSame('', ''~copies(.np255))
 
 ::method 'test421'
-    self~assertSame('subTest01',' ',' '~copies(.n1))
+    self~assertSame(' ', ' '~copies(.n1))
 
 ::method 'test422'
-    self~assertSame('subTest01','         ',' '~copies(.nF9x))
+    self~assertSame('         ', ' '~copies(.nF9x))
 
 ::method 'test423'
-    self~assertSame('subTest01','          ',' '~copies(.n10E2))
+    self~assertSame('          ', ' '~copies(.n10E2))
 
 ::method 'test424'
-    self~assertSame('subTest01',' ',' '~copies(.n10E1))
+    self~assertSame(' ', ' '~copies(.n10E1))
 
 ::method 'test425'
-    self~assertSame('subTest01','           ',' '~copies(.n0011))
+    self~assertSame('           ', ' '~copies(.n0011))
 
 ::method 'test426'
-    self~assertSame('subTest01',' '~copies(255), ' '~copies(.nl255))
+    self~assertSame(' '~copies(255), ' '~copies(.nl255))
 
 ::method 'test427'
-    self~assertSame('subTest01',' '~copies(256),' '~copies(.np256))
+    self~assertSame(' '~copies(256), ' '~copies(.np256))
 
 ::method 'test428'
-    self~assertSame('subTest01','ASDFASDFASDFASDFASDFASDFASDFASDFASDF','ASDF'~copies(.n9))
+    self~assertSame('ASDFASDFASDFASDFASDFASDFASDFASDFASDF', 'ASDF'~copies(.n9))
 
 ::method 'test429'
-    self~assertSame('subTest01','ASDFASDFASDFASDFASDFASDFASDFASDFASDFASDF','ASDF'~copies(.nF1F0x))
+    self~assertSame('ASDFASDFASDFASDFASDFASDFASDFASDFASDFASDF', 'ASDF'~copies(.nF1F0x))
 
 ::method 'test430'
-    self~assertSame('subTest01','ASDFASDFASDFASDFASDFASDFASDFASDFASDFASDFASDF','ASDF'~copies(.n11E2))
+    self~assertSame('ASDFASDFASDFASDFASDFASDFASDFASDFASDFASDFASDF', 'ASDF'~copies(.n11E2))
 
 ::method 'test431'
-    self~assertSame('subTest01','ASDF'~copies(255),'ASDF'~copies(.n00255))
+    self~assertSame('ASDF'~copies(255), 'ASDF'~copies(.n00255))
 
 ::method 'test432'
-    self~assertSame('subTest01','ASDF'~copies(256),'ASDF'~copies(.nl256))
+    self~assertSame('ASDF'~copies(256), 'ASDF'~copies(.nl256))
 
 ::method 'test433'
-    self~assertSame('subTest01','ASDF'~copies(32768),'ASDF'~copies(.np32768))
+    self~assertSame('ASDF'~copies(32768), 'ASDF'~copies(.np32768))
 
 ::method 'test434'
-    self~assertSame('subTest01','ASASASASASASASASASAS','AS'~copies(.n10))
+    self~assertSame('ASASASASASASASASASAS', 'AS'~copies(.n10))
 
 ::method 'test435'
-    self~assertSame('subTest01','ASASASASASASASASASASAS','AS'~copies(.nF1F1x))
+    self~assertSame('ASASASASASASASASASASAS', 'AS'~copies(.nF1F1x))
 
 ::method 'test436'
-    self~assertSame('subTest01','AS'~copies(255),'AS'~copies(.n255E3))
+    self~assertSame('AS'~copies(255), 'AS'~copies(.n255E3))
 
 ::method 'test437'
-    self~assertSame('subTest01','AS'~copies(256),'AS'~copies(.n00256))
+    self~assertSame('AS'~copies(256), 'AS'~copies(.n00256))
 
 ::method 'test438'
-    self~assertSame('subTest01','AS'~copies(32768),'AS'~copies(.nl32768))
+    self~assertSame('AS'~copies(32768), 'AS'~copies(.nl32768))
 
 ::method 'test439'
-    self~assertSame('subTest01','AS'~copies(65536),'AS'~copies(.np65536))
+    self~assertSame('AS'~copies(65536), 'AS'~copies(.np65536))
 
 ::method 'test440'
-    self~assertSame('subTest01','QWERASDFZXCVQWERASDFZXCVQWERAS'~copies(11),'QWERASDFZXCVQWERASDFZXCVQWERAS'~copies(.n11))
+    self~assertSame('QWERASDFZXCVQWERASDFZXCVQWERAS'~copies(11), 'QWERASDFZXCVQWERASDFZXCVQWERAS'~copies(.n11))
 
 ::method 'test441'
-    self~assertSame('subTest01','QWERASDFZXCVQWERASDFZXCVQWERAS'~copies(255),'QWERASDFZXCVQWERASDFZXCVQWERAS'~copies(.nF2F5F5x))
+    self~assertSame('QWERASDFZXCVQWERASDFZXCVQWERAS'~copies(255), 'QWERASDFZXCVQWERASDFZXCVQWERAS'~copies(.nF2F5F5x))
 
 ::method 'test442'
-    self~assertSame('subTest01','QWERASDFZXCVQWERASDFZXCVQWERAS'~copies(256),'QWERASDFZXCVQWERASDFZXCVQWERAS'~copies(.n256E3))
+    self~assertSame('QWERASDFZXCVQWERASDFZXCVQWERAS'~copies(256), 'QWERASDFZXCVQWERASDFZXCVQWERAS'~copies(.n256E3))
 
 ::method 'test443'
-    self~assertSame('subTest01','','QWERASDFZXCVQWERASDFZXCVQWERAS'~copies(.nn0))
+    self~assertSame('', 'QWERASDFZXCVQWERASDFZXCVQWERAS'~copies(.nn0))
 
 ::method 'test444'
-    self~assertSame('subTest01','Q E A D Z C Q E A D Z C Q E A '~copies(255),'Q E A D Z C Q E A D Z C Q E A '~copies(.n255))
+    self~assertSame('Q E A D Z C Q E A D Z C Q E A '~copies(255), 'Q E A D Z C Q E A D Z C Q E A '~copies(.n255))
 
 ::method 'test445'
-    self~assertSame('subTest01','Q E A D Z C Q E A D Z C Q E A '~copies(256),'Q E A D Z C Q E A D Z C Q E A '~copies(.nF2F5F6x))
+    self~assertSame('Q E A D Z C Q E A D Z C Q E A '~copies(256), 'Q E A D Z C Q E A D Z C Q E A '~copies(.nF2F5F6x))
 
 ::method 'test446'
-    self~assertSame('subTest01','','Q E A D Z C Q E A D Z C Q E A '~copies(.np0))
+    self~assertSame('', 'Q E A D Z C Q E A D Z C Q E A '~copies(.np0))
 
 ::method 'test447'
-    self~assertSame('subTest01','X'~copies(64000),'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'~copies(.n256))
+    self~assertSame('X'~copies(64000), 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'~copies(.n256))
 
 ::method 'test448'
-    self~assertSame('subTest01','','XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'~copies(.nl0))
+    self~assertSame('', 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'~copies(.nl0))
 
 ::method 'test449'
-    self~assertSame('subTest01','X'~copies(250),'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'~copies(.np1))
+    self~assertSame('X'~copies(250), 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'~copies(.np1))
 
 ::method 'test450'
-    self~assertSame('subTest01','     ASDF     ASDF'~copies(16384),'     ASDF'~copies(.n32768))
+    self~assertSame('     ASDF     ASDF'~copies(16384), '     ASDF'~copies(.n32768))
 
 ::method 'test451'
-    self~assertSame('subTest01','','     ASDF'~copies(.n000))
+    self~assertSame('', '     ASDF'~copies(.n000))
 
 ::method 'test452'
-    self~assertSame('subTest01','     ASDF','     ASDF'~copies(.nl1))
+    self~assertSame('     ASDF', '     ASDF'~copies(.nl1))
 
 ::method 'test453'
-    self~assertSame('subTest01','     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF','     ASDF'~copies(.np9))
+    self~assertSame('     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF', '     ASDF'~copies(.np9))
 
 ::method 'test454'
-    self~assertSame('subTest01','','ASDF QWER ZXCV'~copies(.n00E2))
+    self~assertSame('', 'ASDF QWER ZXCV'~copies(.n00E2))
 
 ::method 'test455'
-    self~assertSame('subTest01','ASDF QWER ZXCV','ASDF QWER ZXCV'~copies(.n001))
+    self~assertSame('ASDF QWER ZXCV', 'ASDF QWER ZXCV'~copies(.n001))
 
 ::method 'test456'
-    self~assertSame('subTest01','ASDF QWER ZXCV'~copies(8)||'ASDF QWER ZXCV','ASDF QWER ZXCV'~copies(.nl9))
+    self~assertSame('ASDF QWER ZXCV'~copies(8)||'ASDF QWER ZXCV', 'ASDF QWER ZXCV'~copies(.nl9))
 
 ::method 'test457'
-    self~assertSame('subTest01',('ASDF QWER ZXCV'||'ASDF QWER ZXCV')~copies(5),'ASDF QWER ZXCV'~copies(.np10))
+    self~assertSame(('ASDF QWER ZXCV'||'ASDF QWER ZXCV')~copies(5), 'ASDF QWER ZXCV'~copies(.np10))
 
 ::method 'test458'
-    self~assertSame('subTest01','','ASDF     '~copies(.nF0x))
+    self~assertSame('', 'ASDF     '~copies(.nF0x))
 
 ::method 'test459'
-    self~assertSame('subTest01','ASDF     ','ASDF     '~copies(.n01E2))
+    self~assertSame('ASDF     ', 'ASDF     '~copies(.n01E2))
 
 ::method 'test460'
-    self~assertSame('subTest01','ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ','ASDF     '~copies(.n009))
+    self~assertSame('ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ', 'ASDF     '~copies(.n009))
 
 ::method 'test461'
-    self~assertSame('subTest01','ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ','ASDF     '~copies(.nl10))
+    self~assertSame('ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ASDF     ', 'ASDF     '~copies(.nl10))
 
 ::method 'test462'
-    self~assertSame('subTest01','ASDF     '||copies('ASDF     '||'ASDF     ',5),'ASDF     '~copies(.np11))
+    self~assertSame('ASDF     '||copies('ASDF     '||'ASDF     ',5), 'ASDF     '~copies(.np11))
 
 ::method 'test463'
-    self~assertSame('subTest01','','X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X '~copies(.nzero))
+    self~assertSame('', 'X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X '~copies(.nzero))
 
 ::method 'test464'
-    self~assertSame('subTest01','X '~copies(125),'X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X '~copies(.nF1x))
+    self~assertSame('X '~copies(125), 'X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X '~copies(.nF1x))
 
 ::method 'test465'
-    self~assertSame('subTest01','X '~copies(1125),'X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X '~copies(.n09E2))
+    self~assertSame('X '~copies(1125), 'X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X '~copies(.n09E2))
 
 ::method 'test466'
-    self~assertSame('subTest01','X '~copies(1250),'X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X '~copies(.n0010))
+    self~assertSame('X '~copies(1250), 'X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X '~copies(.n0010))
 
 ::method 'test467'
-    self~assertSame('subTest01','X '~copies(1375),'X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X '~copies(.nl11))
+    self~assertSame('X '~copies(1375), 'X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X '~copies(.nl11))
 
 ::method 'test468'
-    self~assertSame('subTest01','X '~copies(31875),'X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X '~copies(.np255))
+    self~assertSame('X '~copies(31875), 'X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X '~copies(.np255))
 
 ::method 'test469'
-    self~assertSame('subTest01','',''X~copies(.n1))
+    self~assertSame('', ''X~copies(.n1))
 
 ::method 'test470'
-    self~assertSame('subTest01','',''X~copies(.nF9x))
+    self~assertSame('', ''X~copies(.nF9x))
 
 ::method 'test471'
-    self~assertSame('subTest01','',''X~copies(.n10E2))
+    self~assertSame('', ''X~copies(.n10E2))
 
 ::method 'test472'
-    self~assertSame('subTest01','',''X~copies(.n0011))
+    self~assertSame('', ''X~copies(.n0011))
 
 ::method 'test473'
-    self~assertSame('subTest01','',''X~copies(.nl255))
+    self~assertSame('', ''X~copies(.nl255))
 
 ::method 'test474'
-    self~assertSame('subTest01','',''X~copies(.np256))
+    self~assertSame('', ''X~copies(.np256))
 
 ::method 'test475'
-    self~assertSame('subTest01','         ','20'x~copies(.n9))
+    self~assertSame('         ', '20'x~copies(.n9))
 
 ::method 'test476'
-    self~assertSame('subTest01','          ','20'x~copies(.nF1F0x))
+    self~assertSame('          ', '20'x~copies(.nF1F0x))
 
 ::method 'test477'
-    self~assertSame('subTest01','           ','20'x~copies(.n11E2))
+    self~assertSame('           ', '20'x~copies(.n11E2))
 
 ::method 'test478'
-    self~assertSame('subTest01',' '~copies(255),'20'x~copies(.n00255))
+    self~assertSame(' '~copies(255), '20'x~copies(.n00255))
 
 ::method 'test479'
-    self~assertSame('subTest01',' '~copies(256),'20'x~copies(.nl256))
+    self~assertSame(' '~copies(256), '20'x~copies(.nl256))
 
 ::method 'test480'
-    self~assertSame('subTest01',' '~copies(32768),'20'x~copies(.np32768))
+    self~assertSame(' '~copies(32768), '20'x~copies(.np32768))
 
 ::method 'test481'
-    self~assertSame('subTest01','asdfasdfasdfasdfasdfasdfasdfasdfasdfasdf','61736466'x~copies(.n10))
+    self~assertSame('asdfasdfasdfasdfasdfasdfasdfasdfasdfasdf', '61736466'x~copies(.n10))
 
 ::method 'test482'
-    self~assertSame('subTest01','asdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdf','61736466'x~copies(.nF1F1x))
+    self~assertSame('asdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdf', '61736466'x~copies(.nF1F1x))
 
 ::method 'test483'
-    self~assertSame('subTest01','asdf'~copies(255),'61736466'x~copies(.n255E3))
+    self~assertSame('asdf'~copies(255), '61736466'x~copies(.n255E3))
 
 ::method 'test484'
-    self~assertSame('subTest01','asdfasdf'~copies(128),'61736466'x~copies(.n00256))
+    self~assertSame('asdfasdf'~copies(128), '61736466'x~copies(.n00256))
 
 ::method 'test485'
-    self~assertSame('subTest01','asdfasdf'~copies(16384),'61736466'x~copies(.nl32768))
+    self~assertSame('asdfasdf'~copies(16384), '61736466'x~copies(.nl32768))
 
 ::method 'test486'
-    self~assertSame('subTest01','asasasasasasasasasasas','6173'x~copies(.n11))
+    self~assertSame('asasasasasasasasasasas', '6173'x~copies(.n11))
 
 ::method 'test487'
-    self~assertSame('subTest01','as'~copies(256),'6173'x~copies(.n256E3))
+    self~assertSame('as'~copies(256), '6173'x~copies(.n256E3))
 
 ::method 'test488'
-    self~assertSame('subTest01','asas'~copies(16384),'6173'x~copies(.n0032768))
+    self~assertSame('asas'~copies(16384), '6173'x~copies(.n0032768))
 
 ::method 'test489'
-    self~assertSame('subTest01','asas'~copies(32768),'6173'x~copies(.nl65536))
+    self~assertSame('asas'~copies(32768), '6173'x~copies(.nl65536))
 
 ::method 'test490'
-    self~assertSame('subTest01','asas'~copies(65536),'6173'x~copies(.np131072))
+    self~assertSame('asas'~copies(65536), '6173'x~copies(.np131072))
 
 ::method 'test491'
-    self~assertSame('subTest01','','6173'x~copies(.nn0))
+    self~assertSame('', '6173'x~copies(.nn0))
 
 ::method 'test492'
-    self~assertSame('subTest01','qwerasdfzxcvqwerasdfzxcvqweras'~copies(255),'71776572617364667a78637671776572617364667a786376717765726173'x~copies(.n255))
+    self~assertSame('qwerasdfzxcvqwerasdfzxcvqweras'~copies(255), '71776572617364667a78637671776572617364667a786376717765726173'x~copies(.n255))
 
 ::method 'test493'
-    self~assertSame('subTest01','qwerasdfzxcvqwerasdfzxcvqweras'~copies(256),'71776572617364667a78637671776572617364667a786376717765726173'x~copies(.nF2F5F6x))
+    self~assertSame('qwerasdfzxcvqwerasdfzxcvqweras'~copies(256), '71776572617364667a78637671776572617364667a786376717765726173'x~copies(.nF2F5F6x))
 
 ::method 'test494'
-    self~assertSame('subTest01','qwerasdfzxcvqwerasdfzxcvqweras'~copies(256),'71776572617364667a78637671776572617364667a786376717765726173'x~copies(.n256))
+    self~assertSame('qwerasdfzxcvqwerasdfzxcvqweras'~copies(256), '71776572617364667a78637671776572617364667a786376717765726173'x~copies(.n256))
 
 ::method 'test495'
-    self~assertSame('subTest01','','71776572617364667a78637671776572617364667a786376717765726173'x~copies(.np0))
+    self~assertSame('', '71776572617364667a78637671776572617364667a786376717765726173'x~copies(.np0))
 
 ::method 'test496'
-    self~assertSame('subTest01','q e a d z c q e a d z c q e a '~copies(256),'71206520612064207a20632071206520612064207a206320712065206120'x~copies(.n256))
+    self~assertSame('q e a d z c q e a d z c q e a '~copies(256), '71206520612064207a20632071206520612064207a206320712065206120'x~copies(.n256))
 
 ::method 'test497'
-    self~assertSame('subTest01','','71206520612064207a20632071206520612064207a206320712065206120'x~copies(.nl0))
+    self~assertSame('', '71206520612064207a20632071206520612064207a206320712065206120'x~copies(.nl0))
 
 ::method 'test498'
-    self~assertSame('subTest01','q e a d z c q e a d z c q e a ','71206520612064207a20632071206520612064207a206320712065206120'x~copies(.np1))
+    self~assertSame('q e a d z c q e a d z c q e a ', '71206520612064207a20632071206520612064207a206320712065206120'x~copies(.np1))
 
 ::method 'test499'
-    self~assertSame('subTest01','','202020202061736466'x~copies(.n000))
+    self~assertSame('', '202020202061736466'x~copies(.n000))
 
 ::method 'test500'
-    self~assertSame('subTest01','     asdf','202020202061736466'x~copies(.nl1))
+    self~assertSame('     asdf', '202020202061736466'x~copies(.nl1))
 
 ::method 'test501'
-    self~assertSame('subTest01','     asdf'~copies(9),'202020202061736466'x~copies(.np9))
+    self~assertSame('     asdf'~copies(9), '202020202061736466'x~copies(.np9))
 
 ::method 'test502'
-    self~assertSame('subTest01','','617364662071776572207a786376'x~copies(.n00E2))
+    self~assertSame('', '617364662071776572207a786376'x~copies(.n00E2))
 
 ::method 'test503'
-    self~assertSame('subTest01','asdf qwer zxcv','617364662071776572207a786376'x~copies(.n001))
+    self~assertSame('asdf qwer zxcv', '617364662071776572207a786376'x~copies(.n001))
 
 ::method 'test504'
-    self~assertSame('subTest01','asdf qwer zxcv'~copies(9),'617364662071776572207a786376'x~copies(.nl9))
+    self~assertSame('asdf qwer zxcv'~copies(9), '617364662071776572207a786376'x~copies(.nl9))
 
 ::method 'test505'
-    self~assertSame('subTest01','asdf qwer zxcv'~copies(10),'617364662071776572207a786376'x~copies(.np10))
+    self~assertSame('asdf qwer zxcv'~copies(10), '617364662071776572207a786376'x~copies(.np10))
 
 ::method 'test506'
-    self~assertSame('subTest01','','617364662020202020'x~copies(.nF0x))
+    self~assertSame('', '617364662020202020'x~copies(.nF0x))
 
 ::method 'test507'
-    self~assertSame('subTest01','asdf     ','617364662020202020'x~copies(.n01E2))
+    self~assertSame('asdf     ', '617364662020202020'x~copies(.n01E2))
 
 ::method 'test508'
-    self~assertSame('subTest01','asdf     asdf     asdf     asdf     asdf     asdf     asdf     asdf     asdf     ','617364662020202020'x~copies(.n009))
+    self~assertSame('asdf     asdf     asdf     asdf     asdf     asdf     asdf     asdf     asdf     ', '617364662020202020'x~copies(.n009))
 
 ::method 'test509'
-    self~assertSame('subTest01','asdf     asdf     asdf     asdf     asdf     asdf     asdf     asdf     asdf     asdf     ','617364662020202020'x~copies(.nl10))
+    self~assertSame('asdf     asdf     asdf     asdf     asdf     asdf     asdf     asdf     asdf     asdf     ', '617364662020202020'x~copies(.nl10))
 
 ::method 'test510'
-    self~assertSame('subTest01','asdf     '~copies(11),'617364662020202020'x~copies(.np11))
+    self~assertSame('asdf     '~copies(11), '617364662020202020'x~copies(.np11))
 
 ::method 'test511'
     xre = ''
-    self~assertSame('subTest01',.true,'58205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820'X~copies(.nzero) == xre)
+    self~assertSame(.true, '58205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820'X~copies(.nzero) == xre)
 
 ::method 'test512'
     xre = 'X '~copies(125)
-    self~assertSame('subTest01',.true,'58205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820'X~copies(.nF1x) == xre)
+    self~assertSame(.true, '58205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820'X~copies(.nF1x) == xre)
 
 ::method 'test513'
     xre = 'X '~copies(1125)
-    self~assertSame('subTest01',.true,'58205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820'X~copies(.n09E2) == xre)
+    self~assertSame(.true, '58205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820'X~copies(.n09E2) == xre)
 
 ::method 'test514'
     xre = 'X '~copies(1250)
-    self~assertSame('subTest01',.true,'58205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820'X~copies(.n0010) == xre)
+    self~assertSame(.true, '58205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820'X~copies(.n0010) == xre)
 
 ::method 'test515'
     xre = 'X '~copies(1375)
-    self~assertSame('subTest01',.true,'58205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820'X~copies(.nl11) == xre)
+    self~assertSame(.true, '58205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820'X~copies(.nl11) == xre)
 
 ::method 'test516'
     xre = 'X '~copies(31875)
-    self~assertSame('subTest01',.true,'58205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820'X~copies(.np255) == xre)
+    self~assertSame(.true, '58205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820582058205820'X~copies(.np255) == xre)
 
 ::method 'test517'
     self~expectSyntax(93.905)
@@ -2277,15 +2277,15 @@ return testGroupList
             do
                 z = 'JOHN'~copies(a)
                 ctr += 1
-                self~assertSame('subTest'ctr~right(2,'0'),4 * a,length(z))
+                self~assertSame(4 * a, length(z))
             end
         x += 1
     end
 
 -- rexxref documentation tests
 ::method "test_101"
-    self~assertSame("subTest101", 'abcabcabc' , 'abc'~copies(3))
+    self~assertSame('abcabcabc', 'abc'~copies(3))
 
 ::method "test_102"
-    self~assertSame("subTest102", ""          , 'abc'~copies(0))
+    self~assertSame("", 'abc'~copies(0))
 

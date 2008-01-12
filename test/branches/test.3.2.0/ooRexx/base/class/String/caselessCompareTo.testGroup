@@ -107,8 +107,8 @@ do
       -- create a testSuite for the given test case class, use all its testmethods
       ts~addTest( .testSuite~new(arr[1]))
    end
-   -- testResult=.testSuite~new(testGroupClass)~run
-   testResult=ts~run       -- now run all the tests
+   -- testResult=.testSuite~new(testGroupClass)~execute
+   testResult=ts~execute       -- now run all the tests
 
    call simpleFormatTestResults testResult
 end
@@ -117,18 +117,18 @@ end
       optionally list of mandatory test methods                      */
 return testGroupList
 
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
-::class "caselessCompareTo.testGroup" subclass TestCase public
+::class "caselessCompareTo.testGroup" subclass ooTestCase public
 
 ::method "test_CompareTo_caseless"  -- 3.2
 
-  self~assertEquals("subtest_01", -1, "a"~caselessCompareTo("B"))
-  self~assertEquals("subtest_02",  0, "a"~caselessCompareTo("A"))
-  self~assertEquals("subtest_03",  1, "b"~caselessCompareTo("A"))
+  self~assertEquals(-1, "a"~caselessCompareTo("B"))
+  self~assertEquals(0, "a"~caselessCompareTo("A"))
+  self~assertEquals(1, "b"~caselessCompareTo("A"))
 
-  self~assertEquals("subtest_04", -1, "A"~caselessCompareTo("b"))
-  self~assertEquals("subtest_05",  0, "A"~caselessCompareTo("a"))
-  self~assertEquals("subtest_06",  1, "B"~caselessCompareTo("a"))
+  self~assertEquals(-1, "A"~caselessCompareTo("b"))
+  self~assertEquals(0, "A"~caselessCompareTo("a"))
+  self~assertEquals(1, "B"~caselessCompareTo("a"))
 
 

@@ -107,8 +107,8 @@ do
       -- create a testSuite for the given test case class, use all its testmethods
       ts~addTest( .testSuite~new(arr[1]))
    end
-   -- testResult=.testSuite~new(testGroupClass)~run
-   testResult=ts~run       -- now run all the tests
+   -- testResult=.testSuite~new(testGroupClass)~execute
+   testResult=ts~execute       -- now run all the tests
 
    call simpleFormatTestResults testResult
 end
@@ -117,19 +117,19 @@ end
       optionally list of mandatory test methods                      */
 return testGroupList
 
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
-::class "equals.testGroup" subclass TestCase public
+::class "equals.testGroup" subclass ooTestCase public
 
 ::method "test_Equals"
 
-    self~assertSame("subTest_01" , 1, "a"~equals("a"))
-    self~assertSame("subTest_02" , 0, "a"~equals("A"))
-    self~assertSame("subTest_03" , 0, "a"~equals("b"))
-    self~assertSame("subTest_04" , 0, "a"~equals("B"))
-    self~assertSame("subTest_05" , 1, "b"~equals("b"))
-    self~assertSame("subTest_06" , 0, "b"~equals("B"))
-    self~assertSame("subTest_07" , 0, "b"~equals("a"))
-    self~assertSame("subTest_08" , 0, "b"~equals("A"))
+    self~assertSame(1, "a"~equals("a"))
+    self~assertSame(0, "a"~equals("A"))
+    self~assertSame(0, "a"~equals("b"))
+    self~assertSame(0, "a"~equals("B"))
+    self~assertSame(1, "b"~equals("b"))
+    self~assertSame(0, "b"~equals("B"))
+    self~assertSame(0, "b"~equals("a"))
+    self~assertSame(0, "b"~equals("A"))
 
 

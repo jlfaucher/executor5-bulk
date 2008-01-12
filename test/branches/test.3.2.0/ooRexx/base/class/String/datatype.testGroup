@@ -107,8 +107,8 @@ do
       -- create a testSuite for the given test case class, use all its testmethods
       ts~addTest( .testSuite~new(arr[1]))
    end
-   -- testResult=.testSuite~new(testGroupClass)~run
-   testResult=ts~run       -- now run all the tests
+   -- testResult=.testSuite~new(testGroupClass)~execute
+   testResult=ts~execute       -- now run all the tests
 
    call simpleFormatTestResults testResult
 end
@@ -117,18 +117,18 @@ end
       optionally list of mandatory test methods                      */
 return testGroupList
 
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
-::class "String_datatypeMethod.testGroup" subclass TestCase public
+::class "String_datatypeMethod.testGroup" subclass ooTestCase public
 
 ::method 'test01'
     s = ''
-    self~assertSame('subTest01','010000001C',dts(s))
+    self~assertSame('010000001C', dts(s))
 
 ::method 'test02'
     do i = 0 to 255
         s = d2c(i)
-        self~assertSame('subTest'i~right(3,'0'),mydts(s),dts(s))
+        self~assertSame(mydts(s), dts(s))
     end
 
 ::method 'test03'
@@ -355,38 +355,38 @@ return testGroupList
     rarray~append('000000000C')
 
     do i = 1 to sarray~items
-        self~assertSame('subTest'i~right(3,'0'),rarray[i],dts(sarray[i]))
+        self~assertSame(rarray[i], dts(sarray[i]))
     end
 
 ::method 'test04'  -- Additional tests added by Lee
-    self~assertTrue('subtest01',0~datatype('O'))
+    self~assertTrue(0~datatype('O'))
 
 ::method 'test05'
-    self~assertTrue('subtest01',1~datatype('O'))
+    self~assertTrue(1~datatype('O'))
 
 ::method 'test06'
-    self~assertFalse('subtest02',2~datatype('O'))
+    self~assertFalse(2~datatype('O'))
 
 ::method 'test07'
-    self~assertFalse('subtest03',(-1)~datatype('O'))
+    self~assertFalse((-1)~datatype('O'))
 
 ::method 'test08'
-    self~assertFalse('subtest04',''~datatype('O'))
+    self~assertFalse(''~datatype('O'))
 
 -- Found some more tests to add
 ::method 'test09'
     numeric digits 3
     a0 = 0
     a1 = 1
-    self~assertSame('subTest01','1',999~datatype('w'))
-    self~assertSame('subTest02',a1,1.004~datatype('w'))
-    self~assertSame('subTest03','0',1.005~datatype('w'))
-    self~assertSame('subTest04',a0,1.00E+3~datatype('w'))
-    self~assertSame('subTest05','0',(-1.23456789012345E-2)~datatype('w'))
+    self~assertSame('1', 999~datatype('w'))
+    self~assertSame(a1, 1.004~datatype('w'))
+    self~assertSame('0', 1.005~datatype('w'))
+    self~assertSame(a0, 1.00E+3~datatype('w'))
+    self~assertSame('0', (-1.23456789012345E-2)~datatype('w'))
 
 ::method 'test10'
     numeric digits 4
-    self~assertSame('subTest01','1',1000~datatype('w'))
+    self~assertSame('1', 1000~datatype('w'))
 
 ::routine dts
     parse arg a
@@ -469,87 +469,87 @@ return erg
 -- from bif.testgroup
    -- test the BIF, using examples from the documentation
 ::method "test_DATATYPE"
-    self~assertEquals("subTest1" , 'NUM'  , ' 12 '~datatype()     )
-    self~assertEquals("subTest2" , 'CHAR' , ""~datatype()         )
-    self~assertEquals("subTest3" , 'CHAR' , '123*'~datatype()     )
+    self~assertEquals('NUM', ' 12 '~datatype())
+    self~assertEquals('CHAR', ""~datatype())
+    self~assertEquals('CHAR', '123*'~datatype())
 
-    self~assertTrue("subTest4"  , '12.3'~datatype('N')  )
-    self~assertFalse("subTest5" , '12.3'~datatype('W')  )
-    self~assertTrue("subTest6"  , 'Fred'~datatype('M')  )
-    self~assertFalse("subTest7" , 'Fred'~datatype('U')  ) -- changed, syntax error in documentation !
-    self~assertFalse("subTest8" , 'Fred'~datatype('L')  )
-    self~assertTrue("subTest9"  , '?20K'~datatype('s')  )
-    self~assertTrue("subTest10" , 'BCd3'~datatype('X')  )
-    self~assertTrue("subTest11" , 'BC d3'~datatype('X') )
+    self~assertTrue('12.3'~datatype('N'))
+    self~assertFalse('12.3'~datatype('W'))
+    self~assertTrue('Fred'~datatype('M'))
+    self~assertFalse('Fred'~datatype('U')) -- changed, syntax error in documentation !
+    self~assertFalse('Fred'~datatype('L'))
+    self~assertTrue('?20K'~datatype('s'))
+    self~assertTrue('BCd3'~datatype('X'))
+    self~assertTrue('BC d3'~datatype('X'))
 
    -- new tests
-    self~assertTrue("subTest12" , ''~datatype(     'X') )
+    self~assertTrue(''~datatype(     'X'))
 
-    self~assertTrue("subTest13" , 'BCd3' ~datatype('A') ) -- alphanumeric
-    self~assertFalse("subTest14", 'BC-d3'~datatype('A') )
+    self~assertTrue('BCd3' ~datatype('A')) -- alphanumeric
+    self~assertFalse('BC-d3'~datatype('A'))
 
-    self~assertTrue("subTest15" , 'a1'   ~datatype('s') ) -- symbol
-    self~assertTrue("subTest16" , '.a1'  ~datatype('s') )
-    self~assertTrue("subTest17" , '_'    ~datatype('s') )
-    self~assertTrue("subTest18" , '!'    ~datatype('s') )
-    self~assertTrue("subTest19" , '?'    ~datatype('s') )
-    self~assertTrue("subTest20" , '.'    ~datatype('s') )
-    self~assertTrue("subTest21" , '1'    ~datatype('s') )
-    self~assertTrue("subTest22" , '1b_!?'~datatype('s') )
-    self~assertFalse("subTest23", '. .'  ~datatype('s') )
+    self~assertTrue('a1'   ~datatype('s')) -- symbol
+    self~assertTrue('.a1'  ~datatype('s'))
+    self~assertTrue('_'    ~datatype('s'))
+    self~assertTrue('!'    ~datatype('s'))
+    self~assertTrue('?'    ~datatype('s'))
+    self~assertTrue('.'    ~datatype('s'))
+    self~assertTrue('1'    ~datatype('s'))
+    self~assertTrue('1b_!?'~datatype('s'))
+    self~assertFalse('. .'  ~datatype('s'))
 
-    self~assertTrue("subTest24" , 'abc'  ~datatype('v') ) -- variable
-    self~assertTrue("subTest25" , '?'    ~datatype('v') )
-    self~assertTrue("subTest26" , '_'    ~datatype('v') )
-    self~assertTrue("subTest27" , '!'    ~datatype('v') )
-    self~assertTrue("subTest28" , 'a1!_?'~datatype('v') )
-    self~assertFalse("subTest29", '.'    ~datatype('v') )
-    self~assertFalse("subTest30", '.a'   ~datatype('v') )
-    self~assertFalse("subTest31", '1'    ~datatype('v') )
+    self~assertTrue('abc'  ~datatype('v')) -- variable
+    self~assertTrue('?'    ~datatype('v'))
+    self~assertTrue('_'    ~datatype('v'))
+    self~assertTrue('!'    ~datatype('v'))
+    self~assertTrue('a1!_?'~datatype('v'))
+    self~assertFalse('.'    ~datatype('v'))
+    self~assertFalse('.a'   ~datatype('v'))
+    self~assertFalse('1'    ~datatype('v'))
 
 
     a=digits()          -- get digits
     numeric digits 9
-    self~assertTrue( "subTest32", '0'    ~datatype('W')  ) -- whole number
-    self~assertTrue( "subTest33", '1'    ~datatype('W')  )
-    self~assertTrue( "subTest34", '-1'   ~datatype('W')  )
-    self~assertTrue( "subTest35", '12345'~datatype('W')  )
-    self~assertTrue( "subTest36", '1E3'  ~datatype('W')  )
-    self~assertFalse("subTest37", '1E9'  ~datatype('W')  )
+    self~assertTrue('0'    ~datatype('W')) -- whole number
+    self~assertTrue('1'    ~datatype('W'))
+    self~assertTrue('-1'   ~datatype('W'))
+    self~assertTrue('12345'~datatype('W'))
+    self~assertTrue('1E3'  ~datatype('W'))
+    self~assertFalse('1E9'  ~datatype('W'))
 
     numeric digits a
 
-    self~assertFalse("subTest44", 'z'  ~datatype('X')  )    -- heX-digits
-    self~assertTrue( "subTest45", ''  ~datatype('X')   )
+    self~assertFalse('z'  ~datatype('X'))    -- heX-digits
+    self~assertTrue(''  ~datatype('X'))
 
-    self~assertFalse("subTest46", 'z'  ~datatype('B')         )   -- binary digits
-    self~assertTrue( "subTest47", ''  ~datatype('B')          )
-    self~assertTrue( "subTest48", '01'  ~datatype('B')        )
-    self~assertTrue( "subTest49", '01101001'  ~datatype('B')  )
-    self~assertTrue( "subTest50", '0110 1001'  ~datatype('B') )
-    self~assertFalse("subTest51", '011 01001'  ~datatype('B') )
+    self~assertFalse('z'  ~datatype('B'))   -- binary digits
+    self~assertTrue(''  ~datatype('B'))
+    self~assertTrue('01'  ~datatype('B'))
+    self~assertTrue('01101001'  ~datatype('B'))
+    self~assertTrue('0110 1001'  ~datatype('B'))
+    self~assertFalse('011 01001'  ~datatype('B'))
 
 
     numeric digits 9
-    self~assertEquals("subTest52", 'NUM'   , ' 1e3       '~datatype()     )
-    self~assertEquals("subTest53", 'NUM'   , ' 123456789 '~datatype()     )
-    self~assertEquals("subTest54", 'NUM'   , ' 1234567891 '~datatype()    )
-    self~assertEquals("subTest55", 'CHAR'  , ""~datatype()                )
-    self~assertEquals("subTest56", 'CHAR'  , "a"~datatype()               )
-    self~assertEquals("subTest57", 'CHAR'  , "abc"~datatype()             )
-    self~assertEquals("subTest58", 'CHAR'  , "1A0"~datatype()             )
+    self~assertEquals('NUM', ' 1e3       '~datatype())
+    self~assertEquals('NUM', ' 123456789 '~datatype())
+    self~assertEquals('NUM', ' 1234567891 '~datatype())
+    self~assertEquals('CHAR', ""~datatype())
+    self~assertEquals('CHAR', "a"~datatype())
+    self~assertEquals('CHAR', "abc"~datatype())
+    self~assertEquals('CHAR', "1A0"~datatype())
 
-    self~assertTrue("subTest59" ,   "123456789012345"~datatype( "N" )    ) -- Numeric
-    self~assertTrue("subTest60" ,   "0"              ~datatype( "N" )    ) -- Numeric
-    self~assertTrue("subTest61" ,   "1234567890.1234"~datatype( "N" )    ) -- Numeric
-    self~assertFalse("subTest61" ,  ""               ~datatype( "N" )    ) -- Numeric
+    self~assertTrue("123456789012345"~datatype( "N" )) -- Numeric
+    self~assertTrue("0"              ~datatype( "N" )) -- Numeric
+    self~assertTrue("1234567890.1234"~datatype( "N" )) -- Numeric
+    self~assertFalse(""               ~datatype( "N" )) -- Numeric
     numeric digits a
 
-    self~assertTrue("subtest62",    0~datatype(  "O") )  -- Logical (Boolean)
-    self~assertTrue("subtest63",    1~datatype(  "O") )  -- Logical (Boolean)
-    self~assertFalse("subtest64",   2~datatype(  "O") )  -- Logical (Boolean)
-    self~assertFalse("subtest65",   (-1)~datatype( "O") )  -- Logical (Boolean)
-    self~assertFalse("subtest66",   ""~datatype( "O") )  -- Logical (Boolean)
+    self~assertTrue(0~datatype(  "O"))  -- Logical (Boolean)
+    self~assertTrue(1~datatype(  "O"))  -- Logical (Boolean)
+    self~assertFalse(2~datatype(  "O"))  -- Logical (Boolean)
+    self~assertFalse((-1)~datatype( "O"))  -- Logical (Boolean)
+    self~assertFalse(""~datatype( "O"))  -- Logical (Boolean)
 
 
    -- test the BIF, using examples from the documentation
@@ -557,16 +557,16 @@ return erg
     a=digits()          -- get digits
 
     numeric digits 1    -- make sure that numeric digits is not set to 9
-    self~assertTrue( "subTest38", '0'    ~datatype('9')  ) -- whole number under 9 digits (?)
-    self~assertTrue( "subTest39", '1'    ~datatype('9')  )
-    self~assertTrue( "subTest40", '-1'   ~datatype('9')  )
-    self~assertTrue( "subTest41", '12345' ~datatype('9')  ) -- ?
-    self~assertTrue( "subTest42", '1E3'   ~datatype('9')  ) -- ?
-    self~assertFalse( "subTest43", '1E9'  ~datatype('9')  ) -- ?
+    self~assertTrue('0'    ~datatype('9')) -- whole number under 9 digits (?)
+    self~assertTrue('1'    ~datatype('9'))
+    self~assertTrue('-1'   ~datatype('9'))
+    self~assertTrue('12345' ~datatype('9')) -- ?
+    self~assertTrue('1E3'   ~datatype('9')) -- ?
+    self~assertFalse('1E9'  ~datatype('9')) -- ?
     numeric digits a
 
 ::method "test_DATATYPE_9"
-   self~assertTrue( "subTest4" , '12'~DATATYPE('9')           )
-   self~assertTrue( "subTest5" , '-12'~DATATYPE('9')           )
+   self~assertTrue('12'~DATATYPE('9'))
+   self~assertTrue('-12'~DATATYPE('9'))
 
 

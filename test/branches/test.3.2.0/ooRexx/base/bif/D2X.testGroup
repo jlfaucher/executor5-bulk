@@ -103,8 +103,8 @@
                 -- create a testSuite for the given test case class, use all its testmethods
                 ts~addTest( .testSuite~new(arr[1]))
             end
-            -- testResult=.testSuite~new(testUnitClass)~run
-            testResult=ts~run       -- now run all the tests
+            -- testResult=.testSuite~new(testUnitClass)~execute
+            testResult=ts~execute       -- now run all the tests
 
             call simpleFormatTestResults testResult
         end
@@ -113,26 +113,26 @@
       optionally list of mandatory test methods                      */
 return testUnitList
 
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
 -- class named exactly like file
-::class "D2X.testGroup" subclass TestCase public
+::class "D2X.testGroup" subclass ooTestCase public
 
 ::method 'test01'
-    self~assertSame('subTest01','0',d2x(0))
+    self~assertSame('0', d2x(0))
 
 ::method 'test02'
-    self~assertSame('subTest01','D1',d2x(209))
+    self~assertSame('D1', d2x(209))
 
 ::method 'test03'
     num217 = 217
-    self~assertSame('subTest01','D9',d2x(num217))
+    self~assertSame('D9', d2x(num217))
 
 ::method 'test04'
-    self~assertSame('subTest01','1F4',d2x('353030'x))
+    self~assertSame('1F4', d2x('353030'x))
 
 ::method 'test05'
-    self~assertSame('subTest01','74049A8',d2x(121653672))
+    self~assertSame('74049A8', d2x(121653672))
 
 ::method 'test06'
     numeric digits 1
@@ -167,24 +167,24 @@ return testUnitList
     v09 = '195800409786083152913776902127918630077641743932097160272544'
     v10 = '57637891941312587717764400411421385408982726881092425574514687'
     vlong = v01||v02||v03||v04||v05||v06||v07||v08||v09||v10
-    self~assertSame('subTest01','7F'||copies('F',498),d2x(vlong))
+    self~assertSame('7F'||copies('F',498), d2x(vlong))
 
 ::method 'test11'
 -- call VER d2x(13.0000000000000000009),'D'; R0060:
-    self~assertSame('subTest01','D',d2x(13.0000000000000000009))
+    self~assertSame('D', d2x(13.0000000000000000009))
 
 ::method 'test12'
     self~expectSyntax(93.928)
     r = d2x(13.00000009)
 
 ::method 'test13'
-    self~assertSame('subTest01','D1',d2x(200+00+9))
+    self~assertSame('D1', d2x(200+00+9))
 
 ::method 'test14'
     num200 = 200
     num10  = 10
     num7   = 7
-    self~assertSame('subTest01','D9',d2x(num200+num10+num7))
+    self~assertSame('D9', d2x(num200+num10+num7))
 
 ::method 'test15'
     self~expectSyntax(93.927)
@@ -195,10 +195,10 @@ return testUnitList
     r = d2x(-209)
 
 ::method 'test17'
-    self~assertSame('subTest01','D1',d2x(000000000000000000000000000000000000000000000000000000000000000209))
+    self~assertSame('D1', d2x(000000000000000000000000000000000000000000000000000000000000000209))
 
 ::method 'test18'
-    self~assertSame('subTest01','D1',d2x(2.09E+2))
+    self~assertSame('D1', d2x(2.09E+2))
 
 ::method 'test19'
     self~expectSyntax(93.928)
@@ -211,12 +211,12 @@ return testUnitList
 
 ::method 'test21'
     v100000z = copies('0',100000)||'209'
-    self~assertSame('subTest01','D1',d2x(v100000z))
+    self~assertSame('D1', d2x(v100000z))
 
 ::method 'test22'
     numeric digits 10
     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX=3520514261
-    self~assertSame('subTest01','D1D6C8D5',d2x(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX))
+    self~assertSame('D1D6C8D5', d2x(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX))
 
 ::method 'test23'
     numeric digits 150
@@ -224,74 +224,74 @@ return testUnitList
     r = d2x(d2x('4500281302334194382577'))
 
 ::method 'test24'
-    self~assertSame('subTest01','0D0C',d2x(3340,4))
+    self~assertSame('0D0C', d2x(3340,4))
 
 ::method 'test25'
     v1 = 3340
     v2 = 8
     l1 = 7
     l2 = 1
-    self~assertSame('subTest01','0000D0C',d2x(v1,l1))
-    self~assertSame('subTest02','C',d2x(v1,l2))
-    self~assertSame('subTest03','0000008',d2x(v2,l1))
-    self~assertSame('subTest04','8',d2x(v2,l2))
+    self~assertSame('0000D0C', d2x(v1,l1))
+    self~assertSame('C', d2x(v1,l2))
+    self~assertSame('0000008', d2x(v2,l1))
+    self~assertSame('8', d2x(v2,l2))
 
 ::method 'test26'
-    self~assertSame('subTest01','',d2x(0,0))
+    self~assertSame('', d2x(0,0))
 
 ::method 'test27'
-    self~assertSame('subTest01','',d2x(209,0))
+    self~assertSame('', d2x(209,0))
 
 ::method 'test28'
-    self~assertSame('subTest01','1',d2x(209,1))
+    self~assertSame('1', d2x(209,1))
 
 ::method 'test29'
-    self~assertSame('subTest01','0D1',d2x(209,3))
+    self~assertSame('0D1', d2x(209,3))
 
 ::method 'test30'
-    self~assertSame('subTest01',copies('00',124)||'D1',d2x(209,250))
+    self~assertSame(copies('00',124)||'D1', d2x(209,250))
 
 ::method 'test31'
-    self~assertSame('subTest01',copies('00',124)||'0D1',d2x(209,251))
+    self~assertSame(copies('00',124)||'0D1', d2x(209,251))
 
 ::method 'test32'
-    self~assertSame('subTest01',copies('00',4999)||'D1',d2x(209,10000))
+    self~assertSame(copies('00',4999)||'D1', d2x(209,10000))
 
 ::method 'test33'
-    self~assertSame('subTest01',copies('FF',124)||'2F',d2x(-209,250))
+    self~assertSame(copies('FF',124)||'2F', d2x(-209,250))
 
 ::method 'test34'
-    self~assertSame('subTest01',copies('FF',124)||'F2F',d2x(-209,251))
+    self~assertSame(copies('FF',124)||'F2F', d2x(-209,251))
 
 ::method 'test35'
-    self~assertSame('subTest01',copies('F',9998)||'2F',d2x(-209,10000))
+    self~assertSame(copies('F',9998)||'2F', d2x(-209,10000))
 
 ::method 'test36'
-    self~assertSame('subTest01','',d2x('323137'x,0))
+    self~assertSame('', d2x('323137'x,0))
 
 ::method 'test37'
-    self~assertSame('subTest01','9',d2x('323137'x,1))
+    self~assertSame('9', d2x('323137'x,1))
 
 ::method 'test38'
-    self~assertSame('subTest01','0D9',d2x('323137'x,3))
+    self~assertSame('0D9', d2x('323137'x,3))
 
 ::method 'test39'
-    self~assertSame('subTest01',copies('0',248)||'D9',d2x('323137'x,250))
+    self~assertSame(copies('0',248)||'D9', d2x('323137'x,250))
 
 ::method 'test40'
-    self~assertSame('subTest01',copies('0',249)||'D9',d2x('323137'x,251))
+    self~assertSame(copies('0',249)||'D9', d2x('323137'x,251))
 
 ::method 'test41'
-    self~assertSame('subTest01',copies('0',9998)||'D9',d2x('323137'x,10000))
+    self~assertSame(copies('0',9998)||'D9', d2x('323137'x,10000))
 
 ::method 'test42'
-    self~assertSame('subTest01',copies('F',248)||'27',d2x(-'323137'x,250))
+    self~assertSame(copies('F',248)||'27', d2x(-'323137'x,250))
 
 ::method 'test43'
-    self~assertSame('subTest01',copies('F',249)||'27',d2x(-'323137'x,251))
+    self~assertSame(copies('F',249)||'27', d2x(-'323137'x,251))
 
 ::method 'test44'
-    self~assertSame('subTest01',copies('F',9998)||'27',d2x(-'323137'x,10000))
+    self~assertSame(copies('F',9998)||'27', d2x(-'323137'x,10000))
 
 ::method 'test45'
     numeric digits 10
@@ -299,36 +299,36 @@ return testUnitList
     num3 = 3
     num4 = 4
     num5 = 5
-    self~assertSame('subTest01','',d2x(num121etc,0))
-    self~assertSame('subTest02','1',d2x(num121etc,'31'x))
-    self~assertSame('subTest03','0B1',d2x(num121etc,num3))
-    self~assertSame('subTest04','E0B1',d2x(num121etc,num4))
-    self~assertSame('subTest05','2E0B1',d2x(num121etc,num5))
-    self~assertSame('subTest06',copies('00',121)||'4882E0B1',d2x(num121etc,2.50E+2))
-    self~assertSame('subTest07',copies('0',243)||'4882E0B1',d2x(num121etc,251))
-    self~assertSame('subTest08',copies('0',9992)||'4882E0B1',d2x(num121etc,1000*10))
+    self~assertSame('', d2x(num121etc,0))
+    self~assertSame('1', d2x(num121etc,'31'x))
+    self~assertSame('0B1', d2x(num121etc,num3))
+    self~assertSame('E0B1', d2x(num121etc,num4))
+    self~assertSame('2E0B1', d2x(num121etc,num5))
+    self~assertSame(copies('00',121)||'4882E0B1', d2x(num121etc,2.50E+2))
+    self~assertSame(copies('0',243)||'4882E0B1', d2x(num121etc,251))
+    self~assertSame(copies('0',9992)||'4882E0B1', d2x(num121etc,1000*10))
 
 ::method 'test46'
     numeric digits 10
-    self~assertSame('subTest01','5',d2x(SUBSTR('0822643520514261219862623',7,10),DATATYPE(6,'N')))
+    self~assertSame('5', d2x(SUBSTR('0822643520514261219862623',7,10),DATATYPE(6,'N')))
 
 ::method 'test47'
     numeric digits 10
-    self~assertSame('subTest01','',d2x(WORD('082264 3520514261 219862623',2),DATATYPE('A','N')))
+    self~assertSame('', d2x(WORD('082264 3520514261 219862623',2),DATATYPE('A','N')))
 
 ::method 'test48'
-    self~assertSame('subTest01','00014FBE105',d2x(SUBWORD('082264 352051461 219862623',2,1),copies('1',2)))
+    self~assertSame('00014FBE105', d2x(SUBWORD('082264 352051461 219862623',2,1),copies('1',2)))
 
 -- from bif.testgroup
    -- test the BIF, using examples from the documentation
 ::method "test_D2X"
-    self~assertSame("subTest1", '9'    , D2X(9)     )
-    self~assertSame("subTest2", '81'   , D2X(129)   )
-    self~assertSame("subTest3", '1'    , D2X(129,1) )
-    self~assertSame("subTest4", '81'   , D2X(129,2) )
-    self~assertSame("subTest5", '0081' , D2X(129,4) )
-    self~assertSame("subTest6", '01'   , D2X(257,2) )
-    self~assertSame("subTest7", '81'   , D2X(-127,2))
-    self~assertSame("subTest8", 'FF81' , D2X(-127,4))
-    self~assertSame("subTest9", ""     , D2X(12,0)  )
+    self~assertSame('9', D2X(9))
+    self~assertSame('81', D2X(129))
+    self~assertSame('1', D2X(129,1))
+    self~assertSame('81', D2X(129,2))
+    self~assertSame('0081', D2X(129,4))
+    self~assertSame('01', D2X(257,2))
+    self~assertSame('81', D2X(-127,2))
+    self~assertSame('FF81', D2X(-127,4))
+    self~assertSame("", D2X(12,0))
 

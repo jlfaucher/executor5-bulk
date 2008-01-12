@@ -107,8 +107,8 @@ do
       -- create a testSuite for the given test case class, use all its testmethods
       ts~addTest( .testSuite~new(arr[1]))
    end
-   -- testResult=.testSuite~new(testGroupClass)~run
-   testResult=ts~run       -- now run all the tests
+   -- testResult=.testSuite~new(testGroupClass)~execute
+   testResult=ts~execute       -- now run all the tests
 
    call simpleFormatTestResults testResult
 end
@@ -117,9 +117,9 @@ end
       optionally list of mandatory test methods                      */
 return testGroupList
 
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
-::class "String_delstrMethod.testGroup" subclass TestCase public
+::class "String_delstrMethod.testGroup" subclass ooTestCase public
 
 ::method 'test01'
     vblank = ' '
@@ -127,27 +127,27 @@ return testGroupList
     r = delStr(vblank,0)
 
 ::method 'test02'
-    self~assertSame('subtest01','',''~delstr(1))
+    self~assertSame('', ''~delstr(1))
 
 ::method 'test03'
     vblank = ' '
-    self~assertSame('subtest01','',vblank~delstr('31'x))
+    self~assertSame('', vblank~delstr('31'x))
 
 ::method 'test04'
-    self~assertSame('subtest01','*','2A'x~delstr(0002))
+    self~assertSame('*', '2A'x~delstr(0002))
 
 ::method 'test05'
-    self~assertSame('subtest01','abcdefghijklmnopqrstuvwxyz123','abcdefghijklmnopqrstuvwxyz1234'~delstr('00030'))
+    self~assertSame('abcdefghijklmnopqrstuvwxyz123', 'abcdefghijklmnopqrstuvwxyz1234'~delstr('00030'))
 
 ::method 'test06'
     v256 = copies('12345678',32)
-    self~assertSame('subtest01',copies('12345678',31)||'1',v256~delstr(2.5E+2))
+    self~assertSame(copies('12345678',31)||'1', v256~delstr(2.5E+2))
 
 ::method 'test07'
-    self~assertSame('subtest01',copies('\',10000),copies('5C'x,10000)~delstr('5E+4'))
+    self~assertSame(copies('\',10000), copies('5C'x,10000)~delstr('5E+4'))
 
 ::method 'test08'
-    self~assertSame('subtest01',copies('\',10000),copies('5C'x,10000)~delstr('+999999999'))
+    self~assertSame(copies('\',10000), copies('5C'x,10000)~delstr('+999999999'))
 
 ::method 'test09'
     self~expectSyntax(93.905)
@@ -159,18 +159,18 @@ return testGroupList
 
 ::method 'test11'
     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX='1234567890'
-    self~assertSame('subtest01','',XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~delstr(1))
+    self~assertSame('', XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~delstr(1))
 
 ::method 'test12'
     r = ''
-    self~assertSame('subtest01',r,'8888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888'X~delstr(1))
+    self~assertSame(r, '8888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888'X~delstr(1))
 
 ::method 'test13'
     v30 = 'abcdefghijklmnopqrstuvwxyz1234'
-    self~assertSame('subtest01','abcdefghijklmnopqrstuvwxyz12',v30~delstr(29))
-    self~assertSame('subtest02','abcdefghijklmnopqrstuvwxyz123',v30~delstr(30))
-    self~assertSame('subtest03','abcdefghijklmnopqrstuvwxyz1234',v30~delstr(31))
-    self~assertSame('subtest04','abcdefghij',v30~delstr('+'||'30303131'x||'.'||'3030'x||'e'||'30'x||000))
+    self~assertSame('abcdefghijklmnopqrstuvwxyz12', v30~delstr(29))
+    self~assertSame('abcdefghijklmnopqrstuvwxyz123', v30~delstr(30))
+    self~assertSame('abcdefghijklmnopqrstuvwxyz1234', v30~delstr(31))
+    self~assertSame('abcdefghij', v30~delstr('+'||'30303131'x||'.'||'3030'x||'e'||'30'x||000))
 
 ::method 'test14'
     v30 = 'abcdefghijklmnopqrstuvwxyz1234'
@@ -190,22 +190,22 @@ return testGroupList
     r = 'hasdghj'~delstr('cc'x)
 
 ::method 'test18'
-    self~assertSame('subtest01','ha','hasdghj'~delstr(000000000000000000000000000000000000000000003))
+    self~assertSame('ha', 'hasdghj'~delstr(000000000000000000000000000000000000000000003))
 
 ::method 'test19'
-    self~assertSame('subtest01','dghj','hasdghj'~delstr(1,000000000000000000000000000000000000000000003))
+    self~assertSame('dghj', 'hasdghj'~delstr(1,000000000000000000000000000000000000000000003))
 
 ::method 'test20'
-    self~assertSame('subtest01','','hasdghj'~delstr(1,9))
+    self~assertSame('', 'hasdghj'~delstr(1,9))
 
 ::method 'test21'
     v10000 = copies('ª',10000)
-    self~assertSame('subtest01','ª',v10000~delstr(2))
-    self~assertSame('subtest02','',v10000~delstr(0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001))
-    self~assertSame('subtest03','',v10000~delstr(0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001))
+    self~assertSame('ª', v10000~delstr(2))
+    self~assertSame('', v10000~delstr(0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001))
+    self~assertSame('', v10000~delstr(0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001))
 
 ::method 'test22'
-    self~assertSame('subtest01','',''~delstr(2-1,0))
+    self~assertSame('', ''~delstr(2-1,0))
 
 ::method 'test23'
     vblank = ' '
@@ -213,87 +213,87 @@ return testGroupList
     r = vblank~delstr(0,'31'x)
 
 ::method 'test24'
-    self~assertSame('subtest01','','2A'x~delstr('31'x,0001))
+    self~assertSame('', '2A'x~delstr('31'x,0001))
 
 ::method 'test25'
-    self~assertSame('subtest01','abcdefghijklmnopqrstuvwxyz1234','abcdefghijklmnopqrstuvwxyz1234'~delstr(0035,'9'))
+    self~assertSame('abcdefghijklmnopqrstuvwxyz1234', 'abcdefghijklmnopqrstuvwxyz1234'~delstr(0035,'9'))
 
 ::method 'test26'
-    self~assertSame('subtest01','abcdefghijklmnopqrstuvwxy','abcdefghijklmnopqrstuvwxyz1234'~delstr(0026,'9'))
+    self~assertSame('abcdefghijklmnopqrstuvwxy', 'abcdefghijklmnopqrstuvwxyz1234'~delstr(0026,'9'))
 
 ::method 'test27'
     v256 = copies('12345678',32)
-    self~assertSame('subtest01',v256,v256~delstr('10000','0010'))
+    self~assertSame(v256, v256~delstr('10000','0010'))
 
 ::method 'test28'
-    self~assertSame('subtest01','',copies('5C'x,10000)~delstr('000001'))
+    self~assertSame('', copies('5C'x,10000)~delstr('000001'))
 
 ::method 'test29'
     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX='1234567890'
-    self~assertSame('subtest01','67890',XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~delstr(1,5))
-    self~assertSame('subtest02','67890',XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~delstr(1,5))
+    self~assertSame('67890', XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~delstr(1,5))
+    self~assertSame('67890', XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~delstr(1,5))
 
 ::method 'test30'
     v10000 = copies('ª',10000)
-    self~assertSame('subtest01',copies('ª',9998),v10000~delstr(1,0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002))
-    self~assertSame('subtest02',copies('ª',9998),v10000~delstr(9998,+0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002))
-    self~assertSame('subtest03',copies('ª',9998),v10000~delstr(1||'007',+0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002))
-    self~assertSame('subtest04',copies('ª',9997),v10000~delstr(9998,17))
+    self~assertSame(copies('ª',9998), v10000~delstr(1,0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002))
+    self~assertSame(copies('ª',9998), v10000~delstr(9998,+0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002))
+    self~assertSame(copies('ª',9998), v10000~delstr(1||'007',+0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002))
+    self~assertSame(copies('ª',9997), v10000~delstr(9998,17))
 
 ::method 'test31'
-    self~assertSame('subtest01','',''~delstr((2*3)-1,'2.55E+2'))
+    self~assertSame('', ''~delstr((2*3)-1,'2.55E+2'))
 
 ::method 'test32'
-    self~assertSame('subtest01','',vblank~delstr(1,200+50+6))
+    self~assertSame('', vblank~delstr(1,200+50+6))
 
 ::method 'test33'
-    self~assertSame('subtest01','','2A'x~delstr('31'x,32768))
+    self~assertSame('', '2A'x~delstr('31'x,32768))
 
 ::method 'test34'
-    self~assertSame('subtest01','abcdefghijklmnopqrstuvwxyz1234','abcdefghijklmnopqrstuvwxyz1234'~delstr(00015,'30'x))
+    self~assertSame('abcdefghijklmnopqrstuvwxyz1234', 'abcdefghijklmnopqrstuvwxyz1234'~delstr(00015,'30'x))
 
 ::method 'test35'
-    self~assertSame('subtest01',copies('12345678',31)||'1234567',copies('3132333435363738'x,32)~delstr('256'))
+    self~assertSame(copies('12345678',31)||'1234567', copies('3132333435363738'x,32)~delstr('256'))
 
 ::method 'test36'
-    self~assertSame('subtest01',copies('ª',9999),copies('ª',10000)~delstr('00010000'))
+    self~assertSame(copies('ª',9999), copies('ª',10000)~delstr('00010000'))
 
 ::method 'test37'
     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX='1234567890'
-    self~assertSame('subtest01','',XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~delstr(1,22))
+    self~assertSame('', XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~delstr(1,22))
 
 ::method 'test38'
     v30 = 'abcdefghijklmnopqrstuvwxyz1234'
-    self~assertSame('subtest01','',v30~delstr(1,40))
-    self~assertSame('subtest02','efghijklmnopqrstuvwxyz1234',v30~delstr(1,04))
+    self~assertSame('', v30~delstr(1,40))
+    self~assertSame('efghijklmnopqrstuvwxyz1234', v30~delstr(1,04))
 
 ::method 'test39'
-    self~assertSame('subtest01','',(2*7 7+7+7+7+7+7 84/4 700-699)~delstr(699-698,5*2))
+    self~assertSame('', (2*7 7+7+7+7+7+7 84/4 700-699)~delstr(699-698,5*2))
 
 ::method 'test40'
-    self~assertSame('subtest01','7+7+7 84/4 700-699','2*7 7+7+7+7+7+7 84/4 700-699'~delstr(699-698,5*2))
+    self~assertSame('7+7+7 84/4 700-699', '2*7 7+7+7+7+7+7 84/4 700-699'~delstr(699-698,5*2))
 
 ::method 'test41'
     self~expectSyntax(93.905)
     r = '2*7 7+7+7+7+7+7 84/4 700-699'~delstr('699-698',5*2)
 
 ::method 'test42'
-    self~assertSame('subtest01','',(2*7 7+7+7+7+7+7 84/4 700-699)~delstr(699-698,5*3))
+    self~assertSame('', (2*7 7+7+7+7+7+7 84/4 700-699)~delstr(699-698,5*3))
 
 ::method 'test43'
     numeric digits 1
-    self~assertSame('subtest01','2E+1 0',(2*7 7+7+7+7+7+7 84/4 700-699)~delstr(6.99-6.00,5*2))
-    self~assertSame('subtest02','7+7+7 84/4 700-699','2*7 7+7+7+7+7+7 84/4 700-699'~delstr(6.99-6.00,5*2))
-    self~assertSame('subtest03','',(2*7 7+7+7+7+7+7 84/4 700-699)~delstr(6.99-6.00,5*3))
+    self~assertSame('2E+1 0', (2*7 7+7+7+7+7+7 84/4 700-699)~delstr(6.99-6.00,5*2))
+    self~assertSame('7+7+7 84/4 700-699', '2*7 7+7+7+7+7+7 84/4 700-699'~delstr(6.99-6.00,5*2))
+    self~assertSame('', (2*7 7+7+7+7+7+7 84/4 700-699)~delstr(6.99-6.00,5*3))
 
 ::method 'test44'
-    self~assertSame('subtest01','',nv~delstr(1,3))
+    self~assertSame('', nv~delstr(1,3))
 
 ::method 'test45'
-    self~assertSame('subtest01','',nv.~delstr(1,10003))
+    self~assertSame('', nv.~delstr(1,10003))
 
 ::method 'test46'
-    self~assertSame('subtest01','',nv.10~delstr(1,60))
+    self~assertSame('', nv.10~delstr(1,60))
 
 ::method 'test47'
     self~expectSyntax(93.905)
@@ -320,42 +320,42 @@ return testGroupList
     r = noval1~delstr(noval2,noval3)
 
 ::method 'test53'
-    self~assertSame('subtest01','B',WORD('ABCD BCDE CDEF DEFG',2)~delstr(LEFT(subword('10 20 30 40',2,1),1)))
+    self~assertSame('B', WORD('ABCD BCDE CDEF DEFG',2)~delstr(LEFT(subword('10 20 30 40',2,1),1)))
 
 ::method 'test54'
-    self~assertSame('subtest01','DCBA',reverse('ABCD BCDE CDEF')~delstr(DATATYPE(7,'N'),X2D('A')))
+    self~assertSame('DCBA', reverse('ABCD BCDE CDEF')~delstr(DATATYPE(7,'N'),X2D('A')))
 
 ::method 'test55'
-    self~assertSame('subtest01','B',subword('AB BC CD ',2,5)~delstr(POS('O','WORD'),compare('1234','123')))
+    self~assertSame('B', subword('AB BC CD ',2,5)~delstr(POS('O','WORD'),compare('1234','123')))
 
 ::method 'test56'
-    self~assertSame('subtest01','M',datatype(7)~delstr(compare('X','Y'),POS('X',' X')))
+    self~assertSame('M', datatype(7)~delstr(compare('X','Y'),POS('X',' X')))
 
 ::method 'test57'
-    self~assertSame('subtest01','167890','1234567890'~delstr(2,1)~delstr(2,1)~delstr(2,1)~delstr(2,1))
+    self~assertSame('167890', '1234567890'~delstr(2,1)~delstr(2,1)~delstr(2,1)~delstr(2,1))
 
 ::method 'test58'
-    self~assertSame('subtest01','AB BC CD DE','AB BC CD DE EF'~delstr('1234567890'~delstr(3),22))
+    self~assertSame('AB BC CD DE', 'AB BC CD DE EF'~delstr('1234567890'~delstr(3),22))
 
 ::method 'test59'
-    self~assertSame('subtest01',' EF','AB BC CD DE EF'~delstr(1,'123'~delstr(2)||'321'~delstr(1,2)))
+    self~assertSame(' EF', 'AB BC CD DE EF'~delstr(1,'123'~delstr(2)||'321'~delstr(1,2)))
 
 ::method 'test60'
     v30 = 'abcdefghijklmnopqrstuvwxyz1234'
-    self~assertSame('subtest01','fghijklmnopqrxyz1234',v30~delstr(1,5)~delstr('123'~delstr(2)||'456'~delstr(2),567~delstr(2)))
+    self~assertSame('fghijklmnopqrxyz1234', v30~delstr(1,5)~delstr('123'~delstr(2)||'456'~delstr(2),567~delstr(2)))
 
 -- from bif.testgroup
    -- test the BIF, using examples from the documentation
 ::method "test_DELSTR"
-    self~assertSame("subTest1" , 'ab'    , 'abcd'~delstr(3)   )
-    self~assertSame("subTest2" , 'abe'   , 'abcde'~delstr(3,2))
-    self~assertSame("subTest3" , 'abcde' , 'abcde'~delstr(6)  )
+    self~assertSame('ab', 'abcd'~delstr(3))
+    self~assertSame('abe', 'abcde'~delstr(3,2))
+    self~assertSame('abcde', 'abcde'~delstr(6))
 
    -- new tests
-    self~assertSame("subTest4" , ''      , 'abcde'~delstr(1)  )
-    self~assertSame("subTest5" , 'bcde'  , 'abcde'~delstr(1,1))
-    self~assertSame("subTest6" , 'abcde' , 'abcde'~delstr(1,0))
-    self~assertSame("subTest7" , 'abcde' , 'abcde'~delstr(3,0))
-    self~assertSame("subTest8" , 'abde'  , 'abcde'~delstr(3,1))
-    self~assertSame("subTest9" , 'abcde' , 'abcde'~delstr(9)  )
+    self~assertSame('', 'abcde'~delstr(1))
+    self~assertSame('bcde', 'abcde'~delstr(1,1))
+    self~assertSame('abcde', 'abcde'~delstr(1,0))
+    self~assertSame('abcde', 'abcde'~delstr(3,0))
+    self~assertSame('abde', 'abcde'~delstr(3,1))
+    self~assertSame('abcde', 'abcde'~delstr(9))
 

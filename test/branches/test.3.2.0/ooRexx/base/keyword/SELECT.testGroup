@@ -107,8 +107,8 @@ do
       -- create a testSuite for the given test case class, use all its testmethods
       ts~addTest( .testSuite~new(arr[1]))
    end
-   -- testResult=.testSuite~new(testGroupClass)~run
-   testResult=ts~run       -- now run all the tests
+   -- testResult=.testSuite~new(testGroupClass)~execute
+   testResult=ts~execute       -- now run all the tests
 
    call simpleDumpTestResults testResult
 end
@@ -119,21 +119,21 @@ return testGroupList
 
 
 
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
-::class "SELECT.testGroup" subclass TestCase public
+::class "SELECT.testGroup" subclass ooTestCase public
 
 ::method "test_1"
    Do i=3 to 1 by -1
       SELECT;WHEN i=1;THEN;R1='1';WHEN i=2;Then;R2='2';OTHERWISE;R3='3';END
       End
-   self~assertSame("subTest1", (r1 r2 r3),(1 2 3))
+   self~assertSame((r1 r2 r3), (1 2 3))
 
 ::method "test_2"
    Do i=3 to 1 by -1
       SELECT;WHEN i=1 THEN R1='1';WHEN i=2 Then R2='2';OTHERWISE R3='3';END
       End
-   self~assertSame("subTest1", (r1 r2 r3),(1 2 3))
+   self~assertSame((r1 r2 r3), (1 2 3))
 
 ::method "test_3"
    Do i=3 to 1 by -1
@@ -143,7 +143,7 @@ return testGroupList
          OTHERWISE R3='3'
          END
       End
-   self~assertSame("subTest1", (r1 r2 r3),(1 2 3))
+   self~assertSame((r1 r2 r3), (1 2 3))
 
 ::method "test_4"
    Do i=3 to 1 by -1
@@ -156,7 +156,7 @@ return testGroupList
          /* comm5 */   OTHERWISE R6='6'        /*     comm6           */
          END                                            /*     comm7           */
       End
-   self~assertSame("subTest1", (r1 r2 r3 r4 r5 r6),(1 2 3 4 5 6))
+   self~assertSame((r1 r2 r3 r4 r5 r6), (1 2 3 4 5 6))
 
 ::method "test_5"
    a.=0
@@ -175,13 +175,13 @@ return testGroupList
       /*Call check('after')*/
      END
    Do j=1 To k
-      self~assertSame("subTest1", (a.1.j a.2.j a.3.j a.4.j a.5.j),(v.1.j v.2.j v.3.j v.4.j v.5.j))
+      self~assertSame((a.1.j a.2.j a.3.j a.4.j a.5.j), (v.1.j v.2.j v.3.j v.4.j v.5.j))
       End
    return
    check:
    k=k+1
    If i<>ARG(1) Then Do;
-      If i<>4 Then self~assertTrue("subTest2", 0)
+      If i<>4 Then self~assertTrue(0)
       End;
    a.i.k=i
    j = i
@@ -190,20 +190,20 @@ return testGroupList
    If ARG(1)<i Then Return 0            /* goto next WHEN       */
    If ARG(1)=i Then Return 1            /* This THEN is wanted  */
    If i=5      Then Return 1            /* forced discrepancy btw.i&ARG */
-   self~assertTrue("subTest2", 0)
+   self~assertTrue(0)
    return 99
 
 ::method "test_6"
    SELECT;
-      WHEN i=k THEN self~assertTrue("subTest1", 0)
-      WHEN i=j Then self~assertTrue("subTest2", 0)
-      OTHERWISE     self~assertTrue("subTest3", 1)
+      WHEN i=k THEN self~assertTrue(0)
+      WHEN i=j Then self~assertTrue(0)
+      OTHERWISE     self~assertTrue(1)
       END
 
 ::method "test_7"
    SELECT;
       WHEN i=k THEN nop
-      OTHERWISE     self~assertTrue("subTest1", 1)
+      OTHERWISE     self~assertTrue(1)
       END
 
 ::method "test_8"
@@ -213,13 +213,13 @@ return testGroupList
       WHEN ff(1) THEN R1= 1 ;      /*function ref to check If evaluat*/
       OTHERWISE       R2 =2 ;
       END;
-   self~assertSame("subTest1", (r1 r2),(1 0))
+   self~assertSame((r1 r2), (1 0))
    return
    ff:                                  /* check,which WHEN is executed?*/
    If ARG(1)<i Then Return 0            /* goto next WHEN       */
    If ARG(1)=i Then Return 1            /* This THEN is wanted  */
    If i=5      Then Return 1            /* forced discrepancy btw.i&ARG */
-   self~assertTrue("subTest2", 0)
+   self~assertTrue(0)
    return 99
 
 ::method "test_9"
@@ -229,13 +229,13 @@ return testGroupList
       WHEN ff(0) THEN R1= 1 ;      /*function ref to check If evaluat*/
       OTHERWISE       R2 =2 ;
       END;
-   self~assertSame("subTest1", (r1 r2),(0 2))
+   self~assertSame((r1 r2), (0 2))
    return
    ff:                                  /* check,which WHEN is executed?*/
    If ARG(1)<i Then Return 0            /* goto next WHEN       */
    If ARG(1)=i Then Return 1            /* This THEN is wanted  */
    If i=5      Then Return 1            /* forced discrepancy btw.i&ARG */
-   self~assertTrue("subTest2", 0)
+   self~assertTrue(0)
    return 99
 
 ::method "test_10"
@@ -245,7 +245,7 @@ return testGroupList
       WHEN i     THEN R1= 1 ;      /* var with value 0 or 1          */
       OTHERWISE       R2 =2 ;
       END;
-   self~assertSame("subTest1", (r1 r2),(1 0))
+   self~assertSame((r1 r2), (1 0))
 
 ::method "test_11"
    r1=0;r2=0;
@@ -254,7 +254,7 @@ return testGroupList
       WHEN j     THEN R1= 1 ;      /* var with value 0 or 1          */
       OTHERWISE       R2 =2 ;
       END;
-   self~assertSame("subTest1", (r1 r2),(0 2))
+   self~assertSame((r1 r2), (0 2))
 
 ::method "test_12"
    self~expectSyntax(43.1)
@@ -264,7 +264,7 @@ return testGroupList
       OTHERWISE       R2= 2 ;
       END;
    id='0017'; Call ver (r1 r2),(1 0) ;R0017:
-   self~assertSame("subTest1", (r1 r2),(1 0))
+   self~assertSame((r1 r2), (1 0))
 
 ::method "test_13"
    r1=0;r2=0;
@@ -272,7 +272,7 @@ return testGroupList
       WHEN '0'   THEN R1= 1 ;      /* const with value 0 or 1       */
       OTHERWISE       R2= 2 ;
       END;
-   self~assertSame("subTest1", (r1 r2),(0 2))
+   self~assertSame((r1 r2), (0 2))
 
 ::method "test_14"
    r1=0;r2=0;                                   /* complex expressions  */
@@ -280,21 +280,21 @@ return testGroupList
       WHEN SUBSTR(11||((((5+7)*2-2)/2)**2)(9%8)(9//2),1,1) Then R1=1;
       OTHERWISE       R2 = 2;
       END;
-   self~assertSame("subTest1", (r1 r2),(1 0))
+   self~assertSame((r1 r2), (1 0))
 
 ::method "test_15"
    self~expectSyntax(34.1)
    a='a'
    SELECT
       WHEN a   THEN R1='1'
-      OTHERWISE self~assertTrue("subTest1", 0)
+      OTHERWISE self~assertTrue(0)
       END
 
 ::method "test_16"
    self~expectSyntax(34.1)
    SELECT
       WHEN  3  THEN R1='1'
-      OTHERWISE self~assertTrue("subTest1", 0)
+      OTHERWISE self~assertTrue(0)
       END
    return
 
@@ -543,7 +543,7 @@ return testGroupList
    /**/Otherwise/**/; End
    /**/Otherwise/**/; End
    /**/Otherwise/**/; End
-   self~assertTrue("subTest1", 1)
+   self~assertTrue(1)
    /*------------  Nesting in /**/Otherwise/**/ ----------*/
    a=0
    i=1; j=0
@@ -671,7 +671,7 @@ return testGroupList
    End; End
    End; End
    End;
-   self~assertTrue("subTest2", 1)
+   self~assertTrue(1)
    return
 
 ::method "test_18"
@@ -682,7 +682,7 @@ return testGroupList
 
    id=0; x="";
    Do FOREVER
---    self~assertSame("subTest1", id,cnt.ok)
+--    self~assertSame(id, cnt.ok)
 --    If id='' Then Trace ?R
       SELECT;
          When id=0 & x==""
@@ -972,8 +972,8 @@ return testGroupList
          When id=142 & x==3.E+6202
                Then DO; id=id+1; x=3.E-3107                            ; End;
          Otherwise Signal X9999
-         END; 
+         END;
       END
    X9999:
-   self~assertTrue("subTest2", 1)
+   self~assertTrue(1)
 

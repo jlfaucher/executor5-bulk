@@ -63,85 +63,24 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
+  parse source . . s
 
+  group = .TestGroup~new(s)
+  group~add(.shortTimeBIFTests)
+  group~add(.TIME.long.testGroup)
 
+  if group~isAutomatedTest then return group
 
--------------------------------------------------------------------------------------------
--- ===> adapt the "testGroupList" to your testCase classes; each element in the list is <===
--- ===> an array object, the first element containing the testCase class object, the   <===
--- ===> second element is a list of test method names which are regarded to be         <===
--- ===> mandatory (if the list remains empty all test methods are mandatory)           <===
+  testResult = group~suite~execute~~print
 
-   /* list of array objects, each containing the testGroup class object and an
-      optional list of mandatory test case methods name                       */
+return testResult
 
-mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
-testGroupList=.list~of( .array~of(.TIME.testGroup,  mandatoryTestMethods) )
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
-
--------------------------------------------------------------------------------------------
--- ===> the following code needs not to be individualized                              <===
-
-   -- read top comment, containing infos about this program
-arrLines=.array~new
-do i=1 to 150 until arrLines[i]="*/"
-   arrLines[i]=sourceline(i)
-end
-      -- supply information for the testClass(es) in this file; the class attribute
-      -- "TestCaseInfo" (a directory object, index points to a queue) will store
-      -- the parsed infos
-aTestGroupClass=testGroupList~at(testGroupList~first)[1] -- get first testClass
-
-   -- will parse the array lines and store result in class object
-call makeDirTestInfo aTestGroupClass, arrLines
-tmpDir=aTestGroupClass~TestCaseInfo
-parse source s   -- op_sys invocationType fullPathToThisFile
-tmpDir~setentry("test_Case-source", s)
-
-   -- now add this directory to other testCase classes, if any left
-do arr over testGroupList
-   if arr[1]=aTestGroupClass then iterate  -- already handled
-   arr[1]~TestCaseInfo=tmpDir             -- save info in class object
-end
-
--- if this file is CALLed or REQUIRED then define an entry "bRunTestLocally" in .local
--- and set it to .false; this way the independent local invocation of the tests is inhibited
-if .local~hasentry("bRunTestsLocally")=.false then
-   .local~bRunTestsLocally=.true -- if this file is executed directly, then run tests for debugging
-
-if .bRunTestsLocally=.true then  -- run ALL tests in this test unit
-do
-   ts=.testSuite~new             -- create a testSuite
-   do arr over testGroupList
-      -- create a testSuite for the given test case class, use all its testmethods
-      ts~addTest( .testSuite~new(arr[1]))
-   end
-   -- testResult=.testSuite~new(testGroupClass)~run
-   testResult=ts~run       -- now run all the tests
-
-   call simpleFormatTestResults testResult
-end
-
-   /* return list of array objects containing test case classes and
-      optionally list of mandatory test methods                      */
-return testGroupList
-
-
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
-
-::class "TIME.testGroup" subclass TestCase public
-
-/** midnightDidNotHappen()  Used to ensure a test involving the elapsed time
- *  clock does not start before midnight and finish after midnight.
- */
-::method midnightDidNotHappen private
-   use strict arg startTime
-   return (time() > startTime)
+::class "shortTimeBIFTests" subclass ooTestCase public
 
 ::method "test_1"
    Numeric Digits 20                   /* PA 881104 added                */
-   -- Say 'Caution: This is a long running Test Case. ***********************'
-   -- Say '******************************************************************'
 
    tx=TIME( )||'**'||TIME('l')||'*'||TIME('h')||'*'||TIME('m')||'*'||,
     TIME('s')||'*'||TIME('e')||'*'||TIME('r')||'*'||,
@@ -167,30 +106,30 @@ return testGroupList
    Parse Var vx vxl '*' vxh '*' vxm '*' vxs '*' vxe '*' vxr '*' vxc '*' vxn
    Parse Var vy vyl '*' vyh '*' vym '*' vys '*' vye '*' vyr '*' vyc '*' vyn
 
-   self~assertSame("subTest1-1", tt, txn)
-   self~assertSame("subTest1-2", txn, tyn)
-   self~assertSame("subTest1-3", vt, vxn)
-   self~assertSame("subTest1-4", vxn, vyn)
+   self~assertSame(tt, txn)
+   self~assertSame(txn, tyn)
+   self~assertSame(vt, vxn)
+   self~assertSame(vxn, vyn)
 
-   self~assertSame("subTest1-5", tx, ty)
-   self~assertSame("subTest1-6", txm, ttm+60*tth)
-   self~assertSame("subTest1-7", txs, tts+60*(ttm+60*tth))
-   If tth<10 Then self~assertSame("subTest1-8", txh, right(tth, 1))
-   else self~assertSame("subTest1-8", txh, tth)
+   self~assertSame(tx, ty)
+   self~assertSame(txm, ttm+60*tth)
+   self~assertSame(txs, tts+60*(ttm+60*tth))
+   If tth<10 Then self~assertSame(txh, right(tth, 1))
+   else self~assertSame(txh, tth)
 
-   self~assertSame(.ooRexxUnit.knownBugFlag "1856576 subTest1-9 ", vx, vy)
-   self~assertSame("subTest1-10", vxm, vtm+60*vth)
-   self~assertSame("subTest1-11", vxs, vts+60*(vtm+60*vth))
-   If vth<10 Then self~assertSame("subTest1-12", vxh, right(vth,1))
-   else self~assertSame("subTest1-12", vxh, vth)
+   self~assertSame(vx, vy, .ooRexxUnit.knownBugFlag "1856576 subTest1-9 ")
+   self~assertSame(vxm, vtm+60*vth)
+   self~assertSame(vxs, vts+60*(vtm+60*vth))
+   If vth<10 Then self~assertSame(vxh, right(vth,1))
+   else self~assertSame(vxh, vth)
 
-   self~assertSame("subTest1-13", txe, txr)
-   self~assertSame("subTest1-14", txe, '0')
+   self~assertSame(txe, txr)
+   self~assertSame(txe, '0')
 
-   self~assertSame("subTest1-15", vxe, vxr)
+   self~assertSame(vxe, vxr)
 
-   self~assertSame("subTest1-16", txl, tyl)
-   self~assertSame("subTest1-17", vxl, vyl)
+   self~assertSame(txl, tyl)
+   self~assertSame(vxl, vyl)
 
    Parse Var txl txlh ':' txlm ':' txls '.' txlms
    Parse Var vxl vxlh ':' vxlm ':' vxls '.' vxlms
@@ -201,180 +140,35 @@ return testGroupList
    vxlc=vxls+60*(vxlm+60*vxlh)+vmsc
    xlc=vxlc-txlc
 
-   self~assertSame("subTest1-18", vxr, xlc)
+   self~assertSame(vxr, xlc)
 
    Parse Var txc txch ':' txcx
    txcm=SUBSTR(txcx,1,2)
    txct=SUBSTR(txcx,3,2)
    tth1=RIGHT(tth,1)
    Select
-     When tth=0  Then self~assertSame("subTest1-19", txch txct, 12 'am')
-     When tth<10 Then self~assertSame("subTest1-19", txch txct, tth1 'am')
-     When tth<12 Then self~assertSame("subTest1-19", txch txct, tth 'am')
-     When tth=12 Then self~assertSame("subTest1-19", txch txct, tth 'pm')
-     When tth>12 Then self~assertSame("subTest1-19", txch+12 txct, tth 'pm')
-     Otherwise self~assertFalse("subTest1-19", 1)
+     When tth=0  Then self~assertSame(txch txct, 12 'am')
+     When tth<10 Then self~assertSame(txch txct, tth1 'am')
+     When tth<12 Then self~assertSame(txch txct, tth 'am')
+     When tth=12 Then self~assertSame(txch txct, tth 'pm')
+     When tth>12 Then self~assertSame(txch+12 txct, tth 'pm')
+     Otherwise self~assertFalse(1)
    End
-   self~assertSame("subTest1-20", txcm, ttm)
+   self~assertSame(txcm, ttm)
 
    Parse Var txc txch ':' txcx
    txcm=SUBSTR(txcx,1,2)
    txct=SUBSTR(txcx,3,2)
    tth1=RIGHT(tth,1)
    Select
-     When tth=0  Then self~assertSame("subTest1-21", (txch txct), '12 am')
-     When tth<10 Then self~assertSame("subTest1-21", (txch txct), (tth1 'am'))
-     When tth<12 Then self~assertSame("subTest1-21", (txch txct), (tth 'am'))
-     When tth=12 Then self~assertSame("subTest1-21", (txch txct), (tth 'pm'))
-     When tth>12 Then self~assertSame("subTest1-21", (txch+12 txct), (tth 'pm'))
-     Otherwise self~assertFalse("subTest1-21", 1)
+     When tth=0  Then self~assertSame((txch txct), '12 am')
+     When tth<10 Then self~assertSame((txch txct), (tth1 'am'))
+     When tth<12 Then self~assertSame((txch txct), (tth 'am'))
+     When tth=12 Then self~assertSame((txch txct), (tth 'pm'))
+     When tth>12 Then self~assertSame((txch+12 txct), (tth 'pm'))
+     Otherwise self~assertFalse(1)
    End
-   self~assertSame("subTest1-22", txcm, ttm)
-
-
-::method "test_2"
-   currentTime = time()
-
-   cb1=TIME('r')||'*'||TIME('R')
-   Call sysSLEEP '1'
-   Call SUB1
-   Call sysSLEEP '1'
-   cb4=TIME('r')||'*'||TIME('R')
-   Parse Var cb1 cb1a '*' cb1b
-   Parse Var cb2 cb2a '*' cb2b
-   Parse Var cb3 cb3a '*' cb3b
-   Parse Var cb4 cb4a '*' cb4b
-
-   -- Ensure we did not cross midnight.
-   self~assertTrue('Midnight did not occur while this test case was running.', -
-                   self~midnightDidNotHappen(currentTime))
-
-   self~assertSame("subTest2-1", cb1a, cb1b)
-   self~assertSame(.ooRexxUnit.knownBugFlag "1856576 subTest2-2", cb2a, cb2b)
-   self~assertSame("subTest2-3", cb3a, cb3b)
-   self~assertSame("subTest2-4", cb4a, cb4b)
-
-   self~assertTrue("subTest2-5", cb2a>='1')
-   self~assertTrue("subTest2-6", cb3a>='5')
-   self~assertTrue("subTest2-7", cb4a>='7')
-   return
-
-   SUB1:
-   cb2=TIME('r')||'*'||TIME('R')
-   Call sysSLEEP '5'
-   cb3='54494d45'x('r')||'*'||TIME('R')
-   Return
-
-
-::method "test_3"
-   currentTime = time()
-
-   cb1=TIME('r')||'*'||TIME('R')
-   Call sysSLEEP '1'
-   Call SUB2
-   Call sysSLEEP '1'
-   cb4=TIME('r')||'*'||TIME('R')
-   Parse Var cb1 cb1a '*' cb1b
-   Parse Var cb2 cb2a '*' cb2b
-   Parse Var cb3 cb3a '*' cb3b
-   Parse Var cb4 cb4a '*' cb4b
-   Parse Var cb5 cb5a '*' cb5b
-   Parse Var cb6 cb6a '*' cb6b
-
-   -- Ensure we did not cross midnight.
-   self~assertTrue('Midnight did not occur while this test case was running.', -
-                   self~midnightDidNotHappen(currentTime))
-
-   self~assertSame("subTest3-1", cb1a, cb1b)
-   self~assertSame(.ooRexxUnit.knownBugFlag "1856576 subTest3-2", cb2a, cb2b)
-   self~assertSame("subTest3-3", cb3a, cb3b)
-   self~assertSame("subTest3-4", cb4a, cb4b)
-   self~assertSame("subTest3-5", cb5a, cb5b)
-   self~assertSame("subTest3-6", cb6a, cb6b)
-
-   self~assertTrue("subTest3-7", cb5a>='1')
-   self~assertTrue("subTest3-8", cb6a>='5')
-   self~assertTrue("subTest3-9", cb2a>='1')
-   self~assertTrue("subTest3-10", cb3a>='5')
-   self~assertTrue("subTest3-11", cb4a>='13')
-   return
-
-   SUB1:
-   cb2=TIME('r')||'*'||TIME('R')
-   Call sysSLEEP '5'
-   cb3='54494d45'x('r')||'*'||TIME('R')
-   Return
-   SUB2:
-   cb5='TIME'('r')||'*'||TIME('R')
-   Call sysSLEEP '5'
-   cb6="TIME"('r')||'*'||TIME('R')
-   Call sysSLEEP '1'
-   Call SUB1
-   Return
-
-
-::method "test_4"
-   currentTime = time()
-
-   currentTime = time()
-   cb1=TIME('r')||'*'||TIME('R')
-   Call sysSLEEP '1'
-   Call SCBTIMEA
-   Call sysSLEEP '1'
-   cb4=TIME('r')||'*'||TIME('R')
-   Pull cb2 cb3
-   Parse Var cb1 cb1a '*' cb1b
-   Parse Var cb2 cb2a '*' cb2b
-   Parse Var cb3 cb3a '*' cb3b
-   Parse Var cb4 cb4a '*' cb4b
-
-   -- Ensure we did not cross midnight.
-   self~assertTrue('Midnight did not occur while this test case was running.', -
-                   self~midnightDidNotHappen(currentTime))
-
-   self~assertSame("subTest4-1", cb1a, cb1b)
-   self~assertSame("subTest4-2", cb2a, cb2b)
-   self~assertSame(.ooRexxUnit.knownBugFlag "1856576 subTest4-3", cb3a, cb3b)
-   self~assertSame("subTest4-4", cb4a, cb4b)
-
-   self~assertSame("subTest4-5", cb2a, '0')
-   self~assertTrue("subTest4-6", cb3a>='5')
-   self~assertTrue("subTest4-7", cb4a>='7')
-
-
-::method "test_5"
-   currentTime = time()
-
-   cb1=TIME('r')||'*'||TIME('R')
-   Call sysSLEEP '1'
-   Call SCBTIMEB
-   Call sysSLEEP '1'
-   Pull cb5 cb6
-   Pull cb2 cb3
-   cb4=TIME('r')||'*'||TIME('R')
-   Parse Var cb1 cb1a '*' cb1b
-   Parse Var cb2 cb2a '*' cb2b
-   Parse Var cb3 cb3a '*' cb3b
-   Parse Var cb4 cb4a '*' cb4b
-   Parse Var cb5 cb5a '*' cb5b
-   Parse Var cb6 cb6a '*' cb6b
-
-   -- Ensure we did not cross midnight.
-   self~assertTrue('Midnight did not occur while this test case was running.', -
-                   self~midnightDidNotHappen(currentTime))
-
-   self~assertSame("subTest5-1", cb1a, cb1b)
-   self~assertSame("subTest5-2", cb2a, cb2b)
-   self~assertSame(.ooRexxUnit.knownBugFlag "1856576 subTest5-3", cb3a, cb3b)
-   self~assertSame("subTest5-4", cb4a, cb4b)
-   self~assertSame("subTest5-5", cb5a, cb5b)
-   self~assertSame("subTest5-6", cb6a, cb6b)
-
-   self~assertSame("subTest5-7", cb5a, '0')
-   self~assertTrue("subTest5-8", cb6a>='5')
-   self~assertSame("subTest5-9", cb2a, '0')
-   self~assertTrue("subTest5-10", cb3a>='5')
-   self~assertTrue("subTest5-10", cb4a>='13')
+   self~assertSame(txcm, ttm)
 
 
 ::method "test_7"
@@ -406,25 +200,25 @@ return testGroupList
    Parse Var vx vxl '*' vxh '*' vxm '*' vxs '*' vxe '*' vxr '*' vxc
    Parse Var vy vyl '*' vyh '*' vym '*' vys '*' vye '*' vyr '*' vyc
 
-   self~assertSame(.ooRexxUnit.knownBugFlag "1856576 subTest7-1", tx, ty)
-   self~assertSame("subTest7-2", txm, ttm+60*tth)
-   self~assertSame("subTest7-3", txs, tts+60*(ttm+60*tth))
-   If tth<10 Then self~assertSame("subTest7-4", txh, right(tth, 1))
-   else self~assertSame("subTest7-4", txh, tth)
+   self~assertSame(tx, ty, .ooRexxUnit.knownBugFlag "1856576 subTest7-1")
+   self~assertSame(txm, ttm+60*tth)
+   self~assertSame(txs, tts+60*(ttm+60*tth))
+   If tth<10 Then self~assertSame(txh, right(tth, 1))
+   else self~assertSame(txh, tth)
 
-   self~assertSame("subTest7-5", vx, vy)
-   self~assertSame("subTest7-6", vxm, vtm+60*vth)
-   self~assertSame("subTest7-7", vxs, vts+60*(vtm+60*vth))
-   If vth<10 Then self~assertSame("subTest7-8", vxh, right(vth, 1))
-   else self~assertSame("subTest7-8", vxh, vth)
+   self~assertSame(vx, vy)
+   self~assertSame(vxm, vtm+60*vth)
+   self~assertSame(vxs, vts+60*(vtm+60*vth))
+   If vth<10 Then self~assertSame(vxh, right(vth, 1))
+   else self~assertSame(vxh, vth)
 
-   self~assertSame("subTest7-9", txe, txr)
-   self~assertTrue("subTest7-10", txe<='1')
+   self~assertSame(txe, txr)
+   self~assertTrue(txe<='1')
 
-   self~assertSame("subTest7-11", vxe, vxr)
+   self~assertSame(vxe, vxr)
 
-   self~assertSame("subTest7-12", txl, tyl)
-   self~assertSame("subTest7-13", vxl, vyl)
+   self~assertSame(txl, tyl)
+   self~assertSame(vxl, vyl)
 
    Parse Var txl txlh ':' txlm ':' txls '.' txlms
    Parse Var vxl vxlh ':' vxlm ':' vxls '.' vxlms
@@ -435,290 +229,46 @@ return testGroupList
    vxlc=vxls+60*(vxlm+60*vxlh)+vmsc
    xlc=vxlc-txlc
 
-   self~assertSame("subTest7-14", vxr, xlc)
-
-
-::method "test_8"
-   currentTime = time()
-
-   cb1=TIME('rage')||'*'||TIME('RAGE')
-   Call sysSLEEP '1'
-   Call SUB3
-   Call sysSLEEP '1'
-   cb4=TIME('rage')||'*'||TIME('RAGE')
-   Parse Var cb1 cb1a '*' cb1b
-   Parse Var cb2 cb2a '*' cb2b
-   Parse Var cb3 cb3a '*' cb3b
-   Parse Var cb4 cb4a '*' cb4b
-
-   -- Ensure we did not cross midnight.
-   self~assertTrue('Midnight did not occur while this test case was running.', -
-                   self~midnightDidNotHappen(currentTime))
-
-   self~assertSame("subTest8-1", cb1a, cb1b)
-   self~assertSame(.ooRexxUnit.knownBugFlag "1856576 subTest8-2", cb2a, cb2b)
-   self~assertSame("subTest8-3", cb3a, cb3b)
-   self~assertSame("subTest8-4", cb4a, cb4b)
-
-   self~assertTrue("subTest8-5", cb2a>='1')
-   self~assertTrue("subTest8-6", cb3a>='5')
-   self~assertTrue("subTest8-7", cb4a>='7')
-
-   SUB1:
-   cb2=TIME('r')||'*'||TIME('R')
-   Call sysSLEEP '5'
-   cb3='54494d45'x('r')||'*'||TIME('R')
-   Return
-   SUB2:
-   cb5='TIME'('r')||'*'||TIME('R')
-   Call sysSLEEP '5'
-   cb6="TIME"('r')||'*'||TIME('R')
-   Call sysSLEEP '1'
-   Call SUB1
-   Return
-   SUB3:
-   cb2=TIME('rage')||'*'||TIME('RAGE')
-   Call sysSLEEP '5'
-   cb3=TIME('rage')||'*'||TIME('R-12')
-   Return
-
-
-::method "test_9"
-   currentTime = time()
-
-   cb1=TIME('rage')||'*'||TIME('RAGE')
-   Call sysSLEEP '1'
-   Call SUB4
-   Call sysSLEEP '1'
-   cb4=TIME('rage')||'*'||TIME('RAGE')
-   Parse Var cb1 cb1a '*' cb1b
-   Parse Var cb2 cb2a '*' cb2b
-   Parse Var cb3 cb3a '*' cb3b
-   Parse Var cb4 cb4a '*' cb4b
-   Parse Var cb5 cb5a '*' cb5b
-   Parse Var cb6 cb6a '*' cb6b
-
-   -- Ensure we did not cross midnight.
-   self~assertTrue('Midnight did not occur while this test case was running.', -
-                   self~midnightDidNotHappen(currentTime))
-
-   self~assertSame("subTest9-1", cb1a, cb1b)
-   self~assertSame(.ooRexxUnit.knownBugFlag "1856576 subTest9-2", cb2a, cb2b)
-   self~assertSame("subTest9-3", cb3a, cb3b)
-   self~assertSame("subTest9-4", cb4a, cb4b)
-   self~assertSame("subTest9-5", cb5a, cb5b)
-   self~assertSame("subTest9-6", cb6a, cb6b)
-
-   self~assertTrue("subTest9-7", cb5a>='1')
-   self~assertTrue("subTest9-8", cb6a>='5')
-   self~assertTrue("subTest9-9", cb2a>='1')
-   self~assertTrue("subTest9-10", cb3a>='5')
-   self~assertTrue("subTest9-11", cb4a>='13')
-
-   SUB1:
-   cb2=TIME('r')||'*'||TIME('R')
-   Call sysSLEEP '5'
-   cb3='54494d45'x('r')||'*'||TIME('R')
-   Return
-   SUB2:
-   cb5='TIME'('r')||'*'||TIME('R')
-   Call sysSLEEP '5'
-   cb6="TIME"('r')||'*'||TIME('R')
-   Call sysSLEEP '1'
-   Call SUB1
-   Return
-   SUB3:
-   cb2=TIME('rage')||'*'||TIME('RAGE')
-   Call sysSLEEP '5'
-   cb3=TIME('rage')||'*'||TIME('R-12')
-   Return
-   SUB4:
-   cb5=TIME('rage')||'*'||TIME('RAGE 27')
-   Call sysSLEEP '5'
-   cb6=TIME('rage')||'*'||TIME('RAGE')
-   Call sysSLEEP '1'
-   Call SUB1
-   Return
-
-
-::method "test_10"
-   currentTime = time()
-
-   cb1=TIME('rage')||'*'||TIME('RAGE')
-   Call sysSLEEP '1'
-   Call SCBTIMEC
-   Call sysSLEEP '1'
-   cb4=TIME('rage')||'*'||TIME('RAGE')
-   Pull cb2 cb3
-   Parse Var cb1 cb1a '*' cb1b
-   Parse Var cb2 cb2a '*' cb2b
-   Parse Var cb3 cb3a '*' cb3b
-   Parse Var cb4 cb4a '*' cb4b
-
-   -- Ensure we did not cross midnight.
-   self~assertTrue('Midnight did not occur while this test case was running.', -
-                   self~midnightDidNotHappen(currentTime))
-
-   self~assertSame("subTest10-1", cb1a, cb1b)
-   self~assertSame("subTest10-2", cb2a, cb2b)
-   self~assertSame(.ooRexxUnit.knownBugFlag "1856576 subTest10-3", cb3a, cb3b)
-   self~assertSame("subTest10-4", cb4a, cb4b)
-
-   self~assertSame("subTest10-5", cb2a, '0')
-   self~assertTrue("subTest10-6", cb3a>='5')
-   self~assertTrue("subTest10-7", cb4a>='7')
-
-
-::method "test_11"
-   currentTime = time()
-
-   cb1=TIME('rage')||'*'||TIME('RAGE')
-   Call sysSLEEP '1'
-   Call SCBTIMED
-   Call sysSLEEP '1'
-   Pull cb5 cb6
-   Pull cb2 cb3
-   cb4=TIME('rage')||'*'||TIME('RAGE')
-   Parse Var cb1 cb1a '*' cb1b
-   Parse Var cb2 cb2a '*' cb2b
-   Parse Var cb3 cb3a '*' cb3b
-   Parse Var cb4 cb4a '*' cb4b
-   Parse Var cb5 cb5a '*' cb5b
-   Parse Var cb6 cb6a '*' cb6b
-
-   -- Ensure we did not cross midnight.
-   self~assertTrue('Midnight did not occur while this test case was running.', -
-                   self~midnightDidNotHappen(currentTime))
-
-   self~assertSame("subTest11-1", cb1a, cb1b)
-   self~assertSame("subTest11-2", cb2a, cb2b)
-   self~assertSame(.ooRexxUnit.knownBugFlag "1856576 subTest11-3", cb3a, cb3b)
-   self~assertSame("subTest11-4", cb4a, cb4b)
-   self~assertSame("subTest11-5", cb5a, cb5b)
-   self~assertSame("subTest11-6", cb6a, cb6b)
-
-   self~assertSame("subTest11-7", cb5a, '0')
-   self~assertTRUE("subTest11-8", cb6a>='5')
-   self~assertSame("subTest11-9", cb2a, '0')
-   self~assertTRUE("subTest11-10", cb3a>='5')
-   self~assertTRUE("subTest11-11", cb4a>='13')
+   self~assertSame(vxr, xlc)
 
 
 ::method "test_12"
    parse value time() time('C') with hh":"mm":"ss h1":"m1 +3 ampm
-   self~assertTrue("subTest12", (hh>11 & ampm="pm") | (hh<12 & ampm="am"))  -- check for correct usage of am/pm
+   self~assertTrue((hh>11 & ampm="pm") | (hh<12 & ampm="am"))  -- check for correct usage of am/pm
 
 
 ::method "test_13"
    parse value time() time('H') with hh":"mm":"ss h1
-   self~assertTrue("subTest13", (hh=h1) )
+   self~assertTrue((hh=h1))
 
 
 ::method "test_14"
    parse value time() time('L') with hh":"mm":"ss"."uu
-   self~assertTrue("subTest14", (datatype(uu,"w") & (length(uu)=6)) )
+   self~assertTrue((datatype(uu,"w") & (length(uu)=6)))
 
 
 ::method "test_15"
    parse value time() time('M') with hh":"mm":"ss m1
-   self~assertTrue("subTest15", ((hh*60+mm)=m1))
+   self~assertTrue(((hh*60+mm)=m1))
 
 
 ::method "test_16"
    parse value time() time('N') with t1 t2
-   self~assertTrue("subTest16", (t1==t2) )
+   self~assertTrue((t1==t2))
 
 
 ::method "test_17"
    parse value time() time('S') with hh":"mm":"ss s1
-   self~assertTrue("subTest17", ((hh*60*60+mm*60+ss)=s1))
+   self~assertTrue(((hh*60*60+mm*60+ss)=s1))
 
 
 ::method "test_18"
-   self~assertEquals("subTest10", 17    , TIME('H','5:00pm','C'))
-   self~assertEquals("subTest18", 61200 , TIME('S','5:00pm','C'))
-
-return
-
-
--- rexxref documentation tests
-
-::method "test_101"
-   self~assertSame("subTest101"  , "11:27am"  , time('C','11:27:21')    )
-   self~assertSame("subTest102"  , "11:27:00" , time('N','11:27am','C') )
-   self~assertEquals("subTest103", 1020       , TIME('M','5:00pm','C')  )
-
-
-
-
-
-
-::routine SCBTIMEA
-   /* Test elapsed clock: time('R')
-   *  Notes: Midnight must not occur during the execution of this exec.
-   *         This is an external subroutine for test of Elapsed clock
-   *         integrity.
-   */
-   Parse Version version
-   Parse Source fn
-   cb2=TIME('r')||'*'||TIME('R')
-   Call sysSLEEP(5)
-   cb3=TIME('r')||'*'||TIME('R')
-   Queue cb2 cb3
-   return
-
-
-::routine SCBTIMEB
-   /* Test elapsed clock: time('R')
-   *  Notes: Midnight must not occur during the execution of this exec.
-   *         This is an external subroutine for test of Elapsed clock
-   *         integrity.
-   */
-   Parse Version version
-   Parse Source fn
-   cb5=TIME('r')||'*'||TIME('R')
-   Call sysSLEEP(5)
-   cb6=TIME('r')||'*'||TIME('R')
-   Call sysSLEEP(1)
-   Queue cb5 cb6
-   Call SCBTIMEA
-   return
-
-
-::routine SCBTIMEC
-   /* Test elapsed clock: time('RAGE')
-   *  Notes: Midnight must not occur during the execution of this exec.
-   *         This is an external subroutine for test of Elapsed clock
-   *         integrity.
-   */
-   Parse Version version
-   Parse Source fn
-   cb2=TIME('rage')||'*'||TIME('RAGE')
-   Call sysSLEEP(5)
-   cb3=TIME('rage')||'*'||TIME('RAGE')
-   Queue cb2 cb3
-   return
-
-
-::routine SCBTIMED
-   /* Test elapsed clock: time('RAGE')
-   *  Notes: Midnight must not occur during the execution of this exec.
-   *         This is an external subroutine for test of Elapsed clock
-   *         integrity.
-   */
-   Parse Version version
-   Parse Source fn
-   cb5=TIME('rage')||'*'||TIME('RAGE')
-   Call sysSLEEP(5)
-   cb6=TIME('rage')||'*'||TIME('RAGE')
-   Call sysSLEEP(1)
-   Queue cb5 cb6
-   Call SCBTIMEA
-   return
+   self~assertEquals(17, TIME('H','5:00pm','C'))
+   self~assertEquals(61200, TIME('S','5:00pm','C'))
 
 /**
- * Methods below here test all possible characters as options to time.  The
- * method text was generated with a simple Rexx program.
+ * Methods below here, in this class, test all possible characters as options to
+ * time.  The method text was generated with a simple Rexx program.
  *
  * validopts = 'CEFHLMNRST'
  */
@@ -2018,200 +1568,593 @@ return
 ::METHOD 'test_civil_morning'
 time = '4:47am'
 format = 'C'
-self~assertSame("civil / subtest # 1", time('C', time, format), "4:47am")
-self~assertSame("hours / subtest # 2", time('H', time, format), "4")
-self~assertSame("long  / subtest # 3", time('L', time, format), "04:47:00.000000")
-self~assertSame("long  / subtest # 4", time('M', time, format), "287")
-self~assertSame("long  / subtest # 5", time('N', time, format), "04:47:00")
-self~assertSame("long  / subtest # 6", time('S', time, format), "17220")
+self~assertSame(time('C', time, format), "4:47am", "civil / subtest # 1")
+self~assertSame(time('H', time, format), "4", "hours / subtest # 2")
+self~assertSame(time('L', time, format), "04:47:00.000000", "long  / subtest # 3")
+self~assertSame(time('M', time, format), "287", "long  / subtest # 4")
+self~assertSame(time('N', time, format), "04:47:00", "long  / subtest # 5")
+self~assertSame(time('S', time, format), "17220", "long  / subtest # 6")
 
 ::METHOD 'test_civil_afternoon'
 time = '4:47pm'
 format = 'C'
-self~assertSame("civil / subtest # 1", time('C', time, format), "4:47pm")
-self~assertSame("hours / subtest # 2", time('H', time, format), "16")
-self~assertSame("long  / subtest # 3", time('L', time, format), "16:47:00.000000")
-self~assertSame("long  / subtest # 4", time('M', time, format), "1007")
-self~assertSame("long  / subtest # 5", time('N', time, format), "16:47:00")
-self~assertSame("long  / subtest # 6", time('S', time, format), "60420")
+self~assertSame(time('C', time, format), "4:47pm", "civil / subtest # 1")
+self~assertSame(time('H', time, format), "16", "hours / subtest # 2")
+self~assertSame(time('L', time, format), "16:47:00.000000", "long  / subtest # 3")
+self~assertSame(time('M', time, format), "1007", "long  / subtest # 4")
+self~assertSame(time('N', time, format), "16:47:00", "long  / subtest # 5")
+self~assertSame(time('S', time, format), "60420", "long  / subtest # 6")
 
 ::METHOD 'test_hours_morning'
 time = '4'
 format = 'H'
-self~assertSame("civil / subtest # 1", time('C', time, format), "4:00am")
-self~assertSame("hours / subtest # 2", time('H', time, format), "4")
-self~assertSame("long  / subtest # 3", time('L', time, format), "04:00:00.000000")
-self~assertSame("long  / subtest # 4", time('M', time, format), "240")
-self~assertSame("long  / subtest # 5", time('N', time, format), "04:00:00")
-self~assertSame("long  / subtest # 6", time('S', time, format), "14400")
+self~assertSame(time('C', time, format), "4:00am", "civil / subtest # 1")
+self~assertSame(time('H', time, format), "4", "hours / subtest # 2")
+self~assertSame(time('L', time, format), "04:00:00.000000", "long  / subtest # 3")
+self~assertSame(time('M', time, format), "240", "long  / subtest # 4")
+self~assertSame(time('N', time, format), "04:00:00", "long  / subtest # 5")
+self~assertSame(time('S', time, format), "14400", "long  / subtest # 6")
 
 ::METHOD 'test_hours_afternoon'
 time = '16'
 format = 'H'
-self~assertSame("civil / subtest # 1", time('C', time, format), "4:00pm")
-self~assertSame("hours / subtest # 2", time('H', time, format), "16")
-self~assertSame("long  / subtest # 3", time('L', time, format), "16:00:00.000000")
-self~assertSame("long  / subtest # 4", time('M', time, format), "960")
-self~assertSame("long  / subtest # 5", time('N', time, format), "16:00:00")
-self~assertSame("long  / subtest # 6", time('S', time, format), "57600")
+self~assertSame(time('C', time, format), "4:00pm", "civil / subtest # 1")
+self~assertSame(time('H', time, format), "16", "hours / subtest # 2")
+self~assertSame(time('L', time, format), "16:00:00.000000", "long  / subtest # 3")
+self~assertSame(time('M', time, format), "960", "long  / subtest # 4")
+self~assertSame(time('N', time, format), "16:00:00", "long  / subtest # 5")
+self~assertSame(time('S', time, format), "57600", "long  / subtest # 6")
 
 ::METHOD 'test_long_morning'
 time = '06:47:49.384783'
 format = 'L'
-self~assertSame("civil / subtest # 1", time('C', time, format), "6:47am")
-self~assertSame("hours / subtest # 2", time('H', time, format), "6")
-self~assertSame("long  / subtest # 3", time('L', time, format), "06:47:49.384783")
-self~assertSame("long  / subtest # 4", time('M', time, format), "407")
-self~assertSame("long  / subtest # 5", time('N', time, format), "06:47:49")
-self~assertSame("long  / subtest # 6", time('S', time, format), "24469")
+self~assertSame(time('C', time, format), "6:47am", "civil / subtest # 1")
+self~assertSame(time('H', time, format), "6", "hours / subtest # 2")
+self~assertSame(time('L', time, format), "06:47:49.384783", "long  / subtest # 3")
+self~assertSame(time('M', time, format), "407", "long  / subtest # 4")
+self~assertSame(time('N', time, format), "06:47:49", "long  / subtest # 5")
+self~assertSame(time('S', time, format), "24469", "long  / subtest # 6")
 
 ::METHOD 'test_long_afternoon'
 time = '16:47:49.387902'
 format = 'L'
-self~assertSame("civil / subtest # 1", time('C', time, format), "4:47pm")
-self~assertSame("hours / subtest # 2", time('H', time, format), "16")
-self~assertSame("long  / subtest # 3", time('L', time, format), "16:47:49.387902")
-self~assertSame("long  / subtest # 4", time('M', time, format), "1007")
-self~assertSame("long  / subtest # 5", time('N', time, format), "16:47:49")
-self~assertSame("long  / subtest # 6", time('S', time, format), "60469")
+self~assertSame(time('C', time, format), "4:47pm", "civil / subtest # 1")
+self~assertSame(time('H', time, format), "16", "hours / subtest # 2")
+self~assertSame(time('L', time, format), "16:47:49.387902", "long  / subtest # 3")
+self~assertSame(time('M', time, format), "1007", "long  / subtest # 4")
+self~assertSame(time('N', time, format), "16:47:49", "long  / subtest # 5")
+self~assertSame(time('S', time, format), "60469", "long  / subtest # 6")
 
 ::METHOD 'test_minutes_morning'
 time = '250'
 format = 'M'
-self~assertSame("civil / subtest # 1", time('C', time, format), "4:10am")
-self~assertSame("hours / subtest # 2", time('H', time, format), "4")
-self~assertSame("long  / subtest # 3", time('L', time, format), "04:10:00.000000")
-self~assertSame("long  / subtest # 4", time('M', time, format), "250")
-self~assertSame("long  / subtest # 5", time('N', time, format), "04:10:00")
-self~assertSame("long  / subtest # 6", time('S', time, format), "15000")
+self~assertSame(time('C', time, format), "4:10am", "civil / subtest # 1")
+self~assertSame(time('H', time, format), "4", "hours / subtest # 2")
+self~assertSame(time('L', time, format), "04:10:00.000000", "long  / subtest # 3")
+self~assertSame(time('M', time, format), "250", "long  / subtest # 4")
+self~assertSame(time('N', time, format), "04:10:00", "long  / subtest # 5")
+self~assertSame(time('S', time, format), "15000", "long  / subtest # 6")
 
 ::METHOD 'test_minutes_afternoon'
 time = '1012'
 format = 'M'
-self~assertSame("civil / subtest # 1", time('C', time, format), "4:52pm")
-self~assertSame("hours / subtest # 2", time('H', time, format), "16")
-self~assertSame("long  / subtest # 3", time('L', time, format), "16:52:00.000000")
-self~assertSame("long  / subtest # 4", time('M', time, format), "1012")
-self~assertSame("long  / subtest # 5", time('N', time, format), "16:52:00")
-self~assertSame("long  / subtest # 6", time('S', time, format), "60720")
+self~assertSame(time('C', time, format), "4:52pm", "civil / subtest # 1")
+self~assertSame(time('H', time, format), "16", "hours / subtest # 2")
+self~assertSame(time('L', time, format), "16:52:00.000000", "long  / subtest # 3")
+self~assertSame(time('M', time, format), "1012", "long  / subtest # 4")
+self~assertSame(time('N', time, format), "16:52:00", "long  / subtest # 5")
+self~assertSame(time('S', time, format), "60720", "long  / subtest # 6")
 
 ::METHOD 'test_normal_morning'
 time = '06:47:49'
 format = 'N'
-self~assertSame("civil / subtest # 1", time('C', time, format), "6:47am")
-self~assertSame("hours / subtest # 2", time('H', time, format), "6")
-self~assertSame("long  / subtest # 3", time('L', time, format), "06:47:49.000000")
-self~assertSame("long  / subtest # 4", time('M', time, format), "407")
-self~assertSame("long  / subtest # 5", time('N', time, format), "06:47:49")
-self~assertSame("long  / subtest # 6", time('S', time, format), "24469")
+self~assertSame(time('C', time, format), "6:47am", "civil / subtest # 1")
+self~assertSame(time('H', time, format), "6", "hours / subtest # 2")
+self~assertSame(time('L', time, format), "06:47:49.000000", "long  / subtest # 3")
+self~assertSame(time('M', time, format), "407", "long  / subtest # 4")
+self~assertSame(time('N', time, format), "06:47:49", "long  / subtest # 5")
+self~assertSame(time('S', time, format), "24469", "long  / subtest # 6")
 
 ::METHOD 'test_normal_afternoon'
 time = '16:47:49'
 format = 'N'
-self~assertSame("civil / subtest # 1", time('C', time, format), "4:47pm")
-self~assertSame("hours / subtest # 2", time('H', time, format), "16")
-self~assertSame("long  / subtest # 3", time('L', time, format), "16:47:49.000000")
-self~assertSame("long  / subtest # 4", time('M', time, format), "1007")
-self~assertSame("long  / subtest # 5", time('N', time, format), "16:47:49")
-self~assertSame("long  / subtest # 6", time('S', time, format), "60469")
+self~assertSame(time('C', time, format), "4:47pm", "civil / subtest # 1")
+self~assertSame(time('H', time, format), "16", "hours / subtest # 2")
+self~assertSame(time('L', time, format), "16:47:49.000000", "long  / subtest # 3")
+self~assertSame(time('M', time, format), "1007", "long  / subtest # 4")
+self~assertSame(time('N', time, format), "16:47:49", "long  / subtest # 5")
+self~assertSame(time('S', time, format), "60469", "long  / subtest # 6")
 
 ::METHOD 'test_seconds_morning'
 time = '1517'
 format = 'S'
-self~assertSame("civil / subtest # 1", time('C', time, format), "12:25am")
-self~assertSame("hours / subtest # 2", time('H', time, format), "0")
-self~assertSame("long  / subtest # 3", time('L', time, format), "00:25:17.000000")
-self~assertSame("long  / subtest # 4", time('M', time, format), "25")
-self~assertSame("long  / subtest # 5", time('N', time, format), "00:25:17")
-self~assertSame("long  / subtest # 6", time('S', time, format), "1517")
+self~assertSame(time('C', time, format), "12:25am", "civil / subtest # 1")
+self~assertSame(time('H', time, format), "0", "hours / subtest # 2")
+self~assertSame(time('L', time, format), "00:25:17.000000", "long  / subtest # 3")
+self~assertSame(time('M', time, format), "25", "long  / subtest # 4")
+self~assertSame(time('N', time, format), "00:25:17", "long  / subtest # 5")
+self~assertSame(time('S', time, format), "1517", "long  / subtest # 6")
 
 ::METHOD 'test_seconds_afternoon'
 time = '60801'
 format = 'S'
-self~assertSame("civil / subtest # 1", time('C', time, format), "4:53pm")
-self~assertSame("hours / subtest # 2", time('H', time, format), "16")
-self~assertSame("long  / subtest # 3", time('L', time, format), "16:53:21.000000")
-self~assertSame("long  / subtest # 4", time('M', time, format), "1013")
-self~assertSame("long  / subtest # 5", time('N', time, format), "16:53:21")
-self~assertSame("long  / subtest # 6", time('S', time, format), "60801")
+self~assertSame(time('C', time, format), "4:53pm", "civil / subtest # 1")
+self~assertSame(time('H', time, format), "16", "hours / subtest # 2")
+self~assertSame(time('L', time, format), "16:53:21.000000", "long  / subtest # 3")
+self~assertSame(time('M', time, format), "1013", "long  / subtest # 4")
+self~assertSame(time('N', time, format), "16:53:21", "long  / subtest # 5")
+self~assertSame(time('S', time, format), "60801", "long  / subtest # 6")
 
 ::METHOD 'test_start_day'
 time = '00:00:00.000000'
 format = 'L'
-self~assertSame("civil / subtest # 1", time('C', time, format), "12:00am")
-self~assertSame("hours / subtest # 2", time('H', time, format), "0")
-self~assertSame("long  / subtest # 3", time('L', time, format), "00:00:00.000000")
-self~assertSame("long  / subtest # 4", time('M', time, format), "0")
-self~assertSame("long  / subtest # 5", time('N', time, format), "00:00:00")
-self~assertSame("long  / subtest # 6", time('S', time, format), "0")
+self~assertSame(time('C', time, format), "12:00am", "civil / subtest # 1")
+self~assertSame(time('H', time, format), "0", "hours / subtest # 2")
+self~assertSame(time('L', time, format), "00:00:00.000000", "long  / subtest # 3")
+self~assertSame(time('M', time, format), "0", "long  / subtest # 4")
+self~assertSame(time('N', time, format), "00:00:00", "long  / subtest # 5")
+self~assertSame(time('S', time, format), "0", "long  / subtest # 6")
 
 ::METHOD 'test_past_start_day'
 time = '00:00:00.000001'
 format = 'L'
-self~assertSame("civil / subtest # 1", time('C', time, format), "12:00am")
-self~assertSame("hours / subtest # 2", time('H', time, format), "0")
-self~assertSame("long  / subtest # 3", time('L', time, format), "00:00:00.000001")
-self~assertSame("long  / subtest # 4", time('M', time, format), "0")
-self~assertSame("long  / subtest # 5", time('N', time, format), "00:00:00")
-self~assertSame("long  / subtest # 6", time('S', time, format), "0")
+self~assertSame(time('C', time, format), "12:00am", "civil / subtest # 1")
+self~assertSame(time('H', time, format), "0", "hours / subtest # 2")
+self~assertSame(time('L', time, format), "00:00:00.000001", "long  / subtest # 3")
+self~assertSame(time('M', time, format), "0", "long  / subtest # 4")
+self~assertSame(time('N', time, format), "00:00:00", "long  / subtest # 5")
+self~assertSame(time('S', time, format), "0", "long  / subtest # 6")
 
 ::METHOD 'test_ten_morning'
 time = '10:00:00.000000'
 format = 'L'
-self~assertSame("civil / subtest # 1", time('C', time, format), "10:00am")
-self~assertSame("hours / subtest # 2", time('H', time, format), "10")
-self~assertSame("long  / subtest # 3", time('L', time, format), "10:00:00.000000")
-self~assertSame("long  / subtest # 4", time('M', time, format), "600")
-self~assertSame("long  / subtest # 5", time('N', time, format), "10:00:00")
-self~assertSame("long  / subtest # 6", time('S', time, format), "36000")
+self~assertSame(time('C', time, format), "10:00am", "civil / subtest # 1")
+self~assertSame(time('H', time, format), "10", "hours / subtest # 2")
+self~assertSame(time('L', time, format), "10:00:00.000000", "long  / subtest # 3")
+self~assertSame(time('M', time, format), "600", "long  / subtest # 4")
+self~assertSame(time('N', time, format), "10:00:00", "long  / subtest # 5")
+self~assertSame(time('S', time, format), "36000", "long  / subtest # 6")
 
 ::METHOD 'test_almost_noon'
 time = '11:59:59.999999'
 format = 'L'
-self~assertSame("civil / subtest # 1", time('C', time, format), "11:59am")
-self~assertSame("hours / subtest # 2", time('H', time, format), "11")
-self~assertSame("long  / subtest # 3", time('L', time, format), "11:59:59.999999")
-self~assertSame("long  / subtest # 4", time('M', time, format), "719")
-self~assertSame("long  / subtest # 5", time('N', time, format), "11:59:59")
-self~assertSame("long  / subtest # 6", time('S', time, format), "43199")
+self~assertSame(time('C', time, format), "11:59am", "civil / subtest # 1")
+self~assertSame(time('H', time, format), "11", "hours / subtest # 2")
+self~assertSame(time('L', time, format), "11:59:59.999999", "long  / subtest # 3")
+self~assertSame(time('M', time, format), "719", "long  / subtest # 4")
+self~assertSame(time('N', time, format), "11:59:59", "long  / subtest # 5")
+self~assertSame(time('S', time, format), "43199", "long  / subtest # 6")
 
 ::METHOD 'test_noon'
 time = '12:00:00.000000'
 format = 'L'
-self~assertSame("civil / subtest # 1", time('C', time, format), "12:00pm")
-self~assertSame("hours / subtest # 2", time('H', time, format), "12")
-self~assertSame("long  / subtest # 3", time('L', time, format), "12:00:00.000000")
-self~assertSame("long  / subtest # 4", time('M', time, format), "720")
-self~assertSame("long  / subtest # 5", time('N', time, format), "12:00:00")
-self~assertSame("long  / subtest # 6", time('S', time, format), "43200")
+self~assertSame(time('C', time, format), "12:00pm", "civil / subtest # 1")
+self~assertSame(time('H', time, format), "12", "hours / subtest # 2")
+self~assertSame(time('L', time, format), "12:00:00.000000", "long  / subtest # 3")
+self~assertSame(time('M', time, format), "720", "long  / subtest # 4")
+self~assertSame(time('N', time, format), "12:00:00", "long  / subtest # 5")
+self~assertSame(time('S', time, format), "43200", "long  / subtest # 6")
 
 ::METHOD 'test_past_noon'
 time = '12:00:00.000001'
 format = 'L'
-self~assertSame("civil / subtest # 1", time('C', time, format), "12:00pm")
-self~assertSame("hours / subtest # 2", time('H', time, format), "12")
-self~assertSame("long  / subtest # 3", time('L', time, format), "12:00:00.000001")
-self~assertSame("long  / subtest # 4", time('M', time, format), "720")
-self~assertSame("long  / subtest # 5", time('N', time, format), "12:00:00")
-self~assertSame("long  / subtest # 6", time('S', time, format), "43200")
+self~assertSame(time('C', time, format), "12:00pm", "civil / subtest # 1")
+self~assertSame(time('H', time, format), "12", "hours / subtest # 2")
+self~assertSame(time('L', time, format), "12:00:00.000001", "long  / subtest # 3")
+self~assertSame(time('M', time, format), "720", "long  / subtest # 4")
+self~assertSame(time('N', time, format), "12:00:00", "long  / subtest # 5")
+self~assertSame(time('S', time, format), "43200", "long  / subtest # 6")
 
 ::METHOD 'test_ten_night'
 time = '22:00:00.000000'
 format = 'L'
-self~assertSame("civil / subtest # 1", time('C', time, format), "10:00pm")
-self~assertSame("hours / subtest # 2", time('H', time, format), "22")
-self~assertSame("long  / subtest # 3", time('L', time, format), "22:00:00.000000")
-self~assertSame("long  / subtest # 4", time('M', time, format), "1320")
-self~assertSame("long  / subtest # 5", time('N', time, format), "22:00:00")
-self~assertSame("long  / subtest # 6", time('S', time, format), "79200")
+self~assertSame(time('C', time, format), "10:00pm", "civil / subtest # 1")
+self~assertSame(time('H', time, format), "22", "hours / subtest # 2")
+self~assertSame(time('L', time, format), "22:00:00.000000", "long  / subtest # 3")
+self~assertSame(time('M', time, format), "1320", "long  / subtest # 4")
+self~assertSame(time('N', time, format), "22:00:00", "long  / subtest # 5")
+self~assertSame(time('S', time, format), "79200", "long  / subtest # 6")
 
 ::METHOD 'test_end_day'
 time = '23:59:59.999999'
 format = 'L'
-self~assertSame("civil / subtest # 1", time('C', time, format), "11:59pm")
-self~assertSame("hours / subtest # 2", time('H', time, format), "23")
-self~assertSame("long  / subtest # 3", time('L', time, format), "23:59:59.999999")
-self~assertSame("long  / subtest # 4", time('M', time, format), "1439")
-self~assertSame("long  / subtest # 5", time('N', time, format), "23:59:59")
-self~assertSame("long  / subtest # 6", time('S', time, format), "86399")
+self~assertSame(time('C', time, format), "11:59pm", "civil / subtest # 1")
+self~assertSame(time('H', time, format), "23", "hours / subtest # 2")
+self~assertSame(time('L', time, format), "23:59:59.999999", "long  / subtest # 3")
+self~assertSame(time('M', time, format), "1439", "long  / subtest # 4")
+self~assertSame(time('N', time, format), "23:59:59", "long  / subtest # 5")
+self~assertSame(time('S', time, format), "86399", "long  / subtest # 6")
+
+
+::class "TIME.long.testGroup" subclass ooTestCase public
+
+::method init class
+  forward class (super) continue
+  self~ooTestType = self~UNIT_LONG_TEST
+
+/** midnightDidNotHappen()  Used to ensure a test involving the elapsed time
+ *  clock does not start before midnight and finish after midnight.
+ */
+::method midnightDidNotHappen private
+   use strict arg startTime
+   return (time() > startTime)
+
+::method "test_2"
+   currentTime = time()
+
+   cb1=TIME('r')||'*'||TIME('R')
+   Call sysSLEEP '1'
+   Call SUB1
+   Call sysSLEEP '1'
+   cb4=TIME('r')||'*'||TIME('R')
+   Parse Var cb1 cb1a '*' cb1b
+   Parse Var cb2 cb2a '*' cb2b
+   Parse Var cb3 cb3a '*' cb3b
+   Parse Var cb4 cb4a '*' cb4b
+
+   -- Ensure we did not cross midnight.
+   self~assertTrue(self~midnightDidNotHappen(currentTime), 'Midnight did not occur while this test case was running.')
+
+   self~assertSame(cb1a, cb1b)
+   self~assertSame(cb2a, cb2b, .ooRexxUnit.knownBugFlag "1856576 subTest2-2")
+   self~assertSame(cb3a, cb3b)
+   self~assertSame(cb4a, cb4b)
+
+   self~assertTrue(cb2a>='1')
+   self~assertTrue(cb3a>='5')
+   self~assertTrue(cb4a>='7')
+   return
+
+   SUB1:
+   cb2=TIME('r')||'*'||TIME('R')
+   Call sysSLEEP '5'
+   cb3='54494d45'x('r')||'*'||TIME('R')
+   Return
+
+
+::method "test_3"
+   currentTime = time()
+
+   cb1=TIME('r')||'*'||TIME('R')
+   Call sysSLEEP '1'
+   Call SUB2
+   Call sysSLEEP '1'
+   cb4=TIME('r')||'*'||TIME('R')
+   Parse Var cb1 cb1a '*' cb1b
+   Parse Var cb2 cb2a '*' cb2b
+   Parse Var cb3 cb3a '*' cb3b
+   Parse Var cb4 cb4a '*' cb4b
+   Parse Var cb5 cb5a '*' cb5b
+   Parse Var cb6 cb6a '*' cb6b
+
+   -- Ensure we did not cross midnight.
+   self~assertTrue(self~midnightDidNotHappen(currentTime), 'Midnight did not occur while this test case was running.')
+
+   self~assertSame(cb1a, cb1b)
+   self~assertSame(cb2a, cb2b, .ooRexxUnit.knownBugFlag "1856576 subTest3-2")
+   self~assertSame(cb3a, cb3b)
+   self~assertSame(cb4a, cb4b)
+   self~assertSame(cb5a, cb5b)
+   self~assertSame(cb6a, cb6b)
+
+   self~assertTrue(cb5a>='1')
+   self~assertTrue(cb6a>='5')
+   self~assertTrue(cb2a>='1')
+   self~assertTrue(cb3a>='5')
+   self~assertTrue(cb4a>='13')
+   return
+
+   SUB1:
+   cb2=TIME('r')||'*'||TIME('R')
+   Call sysSLEEP '5'
+   cb3='54494d45'x('r')||'*'||TIME('R')
+   Return
+   SUB2:
+   cb5='TIME'('r')||'*'||TIME('R')
+   Call sysSLEEP '5'
+   cb6="TIME"('r')||'*'||TIME('R')
+   Call sysSLEEP '1'
+   Call SUB1
+   Return
+
+
+::method "test_4"
+   currentTime = time()
+
+   currentTime = time()
+   cb1=TIME('r')||'*'||TIME('R')
+   Call sysSLEEP '1'
+   Call SCBTIMEA
+   Call sysSLEEP '1'
+   cb4=TIME('r')||'*'||TIME('R')
+   Pull cb2 cb3
+   Parse Var cb1 cb1a '*' cb1b
+   Parse Var cb2 cb2a '*' cb2b
+   Parse Var cb3 cb3a '*' cb3b
+   Parse Var cb4 cb4a '*' cb4b
+
+   -- Ensure we did not cross midnight.
+   self~assertTrue(self~midnightDidNotHappen(currentTime), 'Midnight did not occur while this test case was running.')
+
+   self~assertSame(cb1a, cb1b)
+   self~assertSame(cb2a, cb2b)
+   self~assertSame(cb3a, cb3b, .ooRexxUnit.knownBugFlag "1856576 subTest4-3")
+   self~assertSame(cb4a, cb4b)
+
+   self~assertSame(cb2a, '0')
+   self~assertTrue(cb3a>='5')
+   self~assertTrue(cb4a>='7')
+
+
+::method "test_5"
+   currentTime = time()
+
+   cb1=TIME('r')||'*'||TIME('R')
+   Call sysSLEEP '1'
+   Call SCBTIMEB
+   Call sysSLEEP '1'
+   Pull cb5 cb6
+   Pull cb2 cb3
+   cb4=TIME('r')||'*'||TIME('R')
+   Parse Var cb1 cb1a '*' cb1b
+   Parse Var cb2 cb2a '*' cb2b
+   Parse Var cb3 cb3a '*' cb3b
+   Parse Var cb4 cb4a '*' cb4b
+   Parse Var cb5 cb5a '*' cb5b
+   Parse Var cb6 cb6a '*' cb6b
+
+   -- Ensure we did not cross midnight.
+   self~assertTrue(self~midnightDidNotHappen(currentTime), 'Midnight did not occur while this test case was running.')
+
+   self~assertSame(cb1a, cb1b)
+   self~assertSame(cb2a, cb2b)
+   self~assertSame(cb3a, cb3b, .ooRexxUnit.knownBugFlag "1856576 subTest5-3")
+   self~assertSame(cb4a, cb4b)
+   self~assertSame(cb5a, cb5b)
+   self~assertSame(cb6a, cb6b)
+
+   self~assertSame(cb5a, '0')
+   self~assertTrue(cb6a>='5')
+   self~assertSame(cb2a, '0')
+   self~assertTrue(cb3a>='5')
+   self~assertTrue(cb4a>='13')
+
+
+::method "test_8"
+   currentTime = time()
+
+   cb1=TIME('rage')||'*'||TIME('RAGE')
+   Call sysSLEEP '1'
+   Call SUB3
+   Call sysSLEEP '1'
+   cb4=TIME('rage')||'*'||TIME('RAGE')
+   Parse Var cb1 cb1a '*' cb1b
+   Parse Var cb2 cb2a '*' cb2b
+   Parse Var cb3 cb3a '*' cb3b
+   Parse Var cb4 cb4a '*' cb4b
+
+   -- Ensure we did not cross midnight.
+   self~assertTrue(self~midnightDidNotHappen(currentTime), 'Midnight did not occur while this test case was running.')
+
+   self~assertSame(cb1a, cb1b)
+   self~assertSame(cb2a, cb2b, .ooRexxUnit.knownBugFlag "1856576 subTest8-2")
+   self~assertSame(cb3a, cb3b)
+   self~assertSame(cb4a, cb4b)
+
+   self~assertTrue(cb2a>='1')
+   self~assertTrue(cb3a>='5')
+   self~assertTrue(cb4a>='7')
+
+   SUB1:
+   cb2=TIME('r')||'*'||TIME('R')
+   Call sysSLEEP '5'
+   cb3='54494d45'x('r')||'*'||TIME('R')
+   Return
+   SUB2:
+   cb5='TIME'('r')||'*'||TIME('R')
+   Call sysSLEEP '5'
+   cb6="TIME"('r')||'*'||TIME('R')
+   Call sysSLEEP '1'
+   Call SUB1
+   Return
+   SUB3:
+   cb2=TIME('rage')||'*'||TIME('RAGE')
+   Call sysSLEEP '5'
+   cb3=TIME('rage')||'*'||TIME('R-12')
+   Return
+
+
+::method "test_9"
+   currentTime = time()
+
+   cb1=TIME('rage')||'*'||TIME('RAGE')
+   Call sysSLEEP '1'
+   Call SUB4
+   Call sysSLEEP '1'
+   cb4=TIME('rage')||'*'||TIME('RAGE')
+   Parse Var cb1 cb1a '*' cb1b
+   Parse Var cb2 cb2a '*' cb2b
+   Parse Var cb3 cb3a '*' cb3b
+   Parse Var cb4 cb4a '*' cb4b
+   Parse Var cb5 cb5a '*' cb5b
+   Parse Var cb6 cb6a '*' cb6b
+
+   -- Ensure we did not cross midnight.
+   self~assertTrue(self~midnightDidNotHappen(currentTime), 'Midnight did not occur while this test case was running.')
+
+   self~assertSame(cb1a, cb1b)
+   self~assertSame(cb2a, cb2b, .ooRexxUnit.knownBugFlag "1856576 subTest9-2")
+   self~assertSame(cb3a, cb3b)
+   self~assertSame(cb4a, cb4b)
+   self~assertSame(cb5a, cb5b)
+   self~assertSame(cb6a, cb6b)
+
+   self~assertTrue(cb5a>='1')
+   self~assertTrue(cb6a>='5')
+   self~assertTrue(cb2a>='1')
+   self~assertTrue(cb3a>='5')
+   self~assertTrue(cb4a>='13')
+
+   SUB1:
+   cb2=TIME('r')||'*'||TIME('R')
+   Call sysSLEEP '5'
+   cb3='54494d45'x('r')||'*'||TIME('R')
+   Return
+   SUB2:
+   cb5='TIME'('r')||'*'||TIME('R')
+   Call sysSLEEP '5'
+   cb6="TIME"('r')||'*'||TIME('R')
+   Call sysSLEEP '1'
+   Call SUB1
+   Return
+   SUB3:
+   cb2=TIME('rage')||'*'||TIME('RAGE')
+   Call sysSLEEP '5'
+   cb3=TIME('rage')||'*'||TIME('R-12')
+   Return
+   SUB4:
+   cb5=TIME('rage')||'*'||TIME('RAGE 27')
+   Call sysSLEEP '5'
+   cb6=TIME('rage')||'*'||TIME('RAGE')
+   Call sysSLEEP '1'
+   Call SUB1
+   Return
+
+
+::method "test_10"
+   currentTime = time()
+
+   cb1=TIME('rage')||'*'||TIME('RAGE')
+   Call sysSLEEP '1'
+   Call SCBTIMEC
+   Call sysSLEEP '1'
+   cb4=TIME('rage')||'*'||TIME('RAGE')
+   Pull cb2 cb3
+   Parse Var cb1 cb1a '*' cb1b
+   Parse Var cb2 cb2a '*' cb2b
+   Parse Var cb3 cb3a '*' cb3b
+   Parse Var cb4 cb4a '*' cb4b
+
+   -- Ensure we did not cross midnight.
+   self~assertTrue(self~midnightDidNotHappen(currentTime), 'Midnight did not occur while this test case was running.')
+
+   self~assertSame(cb1a, cb1b)
+   self~assertSame(cb2a, cb2b)
+   self~assertSame(cb3a, cb3b, .ooRexxUnit.knownBugFlag "1856576 subTest10-3")
+   self~assertSame(cb4a, cb4b)
+
+   self~assertSame(cb2a, '0')
+   self~assertTrue(cb3a>='5')
+   self~assertTrue(cb4a>='7')
+
+
+::method "test_11"
+   currentTime = time()
+
+   cb1=TIME('rage')||'*'||TIME('RAGE')
+   Call sysSLEEP '1'
+   Call SCBTIMED
+   Call sysSLEEP '1'
+   Pull cb5 cb6
+   Pull cb2 cb3
+   cb4=TIME('rage')||'*'||TIME('RAGE')
+   Parse Var cb1 cb1a '*' cb1b
+   Parse Var cb2 cb2a '*' cb2b
+   Parse Var cb3 cb3a '*' cb3b
+   Parse Var cb4 cb4a '*' cb4b
+   Parse Var cb5 cb5a '*' cb5b
+   Parse Var cb6 cb6a '*' cb6b
+
+   -- Ensure we did not cross midnight.
+   self~assertTrue(self~midnightDidNotHappen(currentTime), 'Midnight did not occur while this test case was running.')
+
+   self~assertSame(cb1a, cb1b)
+   self~assertSame(cb2a, cb2b)
+   self~assertSame(cb3a, cb3b, .ooRexxUnit.knownBugFlag "1856576 subTest11-3")
+   self~assertSame(cb4a, cb4b)
+   self~assertSame(cb5a, cb5b)
+   self~assertSame(cb6a, cb6b)
+
+   self~assertSame(cb5a, '0')
+   self~assertTRUE(cb6a>='5')
+   self~assertSame(cb2a, '0')
+   self~assertTRUE(cb3a>='5')
+   self~assertTRUE(cb4a>='13')
+
+
+
+-- rexxref documentation tests
+
+::method "test_101"
+   self~assertSame("11:27am", time('C','11:27:21'))
+   self~assertSame("11:27:00", time('N','11:27am','C'))
+   self~assertEquals(1020, TIME('M','5:00pm','C'))
+
+
+
+
+
+
+::routine SCBTIMEA
+   /* Test elapsed clock: time('R')
+   *  Notes: Midnight must not occur during the execution of this exec.
+   *         This is an external subroutine for test of Elapsed clock
+   *         integrity.
+   */
+   Parse Version version
+   Parse Source fn
+   cb2=TIME('r')||'*'||TIME('R')
+   Call sysSLEEP(5)
+   cb3=TIME('r')||'*'||TIME('R')
+   Queue cb2 cb3
+   return
+
+
+::routine SCBTIMEB
+   /* Test elapsed clock: time('R')
+   *  Notes: Midnight must not occur during the execution of this exec.
+   *         This is an external subroutine for test of Elapsed clock
+   *         integrity.
+   */
+   Parse Version version
+   Parse Source fn
+   cb5=TIME('r')||'*'||TIME('R')
+   Call sysSLEEP(5)
+   cb6=TIME('r')||'*'||TIME('R')
+   Call sysSLEEP(1)
+   Queue cb5 cb6
+   Call SCBTIMEA
+   return
+
+
+::routine SCBTIMEC
+   /* Test elapsed clock: time('RAGE')
+   *  Notes: Midnight must not occur during the execution of this exec.
+   *         This is an external subroutine for test of Elapsed clock
+   *         integrity.
+   */
+   Parse Version version
+   Parse Source fn
+   cb2=TIME('rage')||'*'||TIME('RAGE')
+   Call sysSLEEP(5)
+   cb3=TIME('rage')||'*'||TIME('RAGE')
+   Queue cb2 cb3
+   return
+
+
+::routine SCBTIMED
+   /* Test elapsed clock: time('RAGE')
+   *  Notes: Midnight must not occur during the execution of this exec.
+   *         This is an external subroutine for test of Elapsed clock
+   *         integrity.
+   */
+   Parse Version version
+   Parse Source fn
+   cb5=TIME('rage')||'*'||TIME('RAGE')
+   Call sysSLEEP(5)
+   cb6=TIME('rage')||'*'||TIME('RAGE')
+   Call sysSLEEP(1)
+   Queue cb5 cb6
+   Call SCBTIMEA
+   return
 

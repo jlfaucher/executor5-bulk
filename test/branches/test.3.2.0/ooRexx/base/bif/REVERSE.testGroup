@@ -103,8 +103,8 @@
                 -- create a testSuite for the given test case class, use all its testmethods
                 ts~addTest( .testSuite~new(arr[1]))
             end
-            -- testResult=.testSuite~new(testUnitClass)~run
-            testResult=ts~run       -- now run all the tests
+            -- testResult=.testSuite~new(testUnitClass)~execute
+            testResult=ts~execute       -- now run all the tests
 
             call simpleFormatTestResults testResult
         end
@@ -113,133 +113,133 @@
       optionally list of mandatory test methods                      */
 return testUnitList
 
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
 -- class named exactly like file
-::class "REVERSE.testGroup" subclass TestCase public
+::class "REVERSE.testGroup" subclass ooTestCase public
 
 ::method 'test001'
-    self~assertSame('subTest01','',reverse(''))
+    self~assertSame('', reverse(''))
 
 ::method 'test002'
-    self~assertSame('subTest01','$',reverse('$'))
+    self~assertSame('$', reverse('$'))
 
 ::method 'test003'
-    self~assertSame('subTest01','Za',reverse('aZ'))
+    self~assertSame('Za', reverse('aZ'))
 
 ::method 'test004'
-    self~assertSame('subTest01','4321zyxwvutsrqponmlkjihgfedcba',reverse('abcdefghijklmnopqrstuvwxyz1234'))
+    self~assertSame('4321zyxwvutsrqponmlkjihgfedcba', reverse('abcdefghijklmnopqrstuvwxyz1234'))
 
 ::method 'test005'
-    self~assertSame('subTest01','AA'X||'zyxwvuts'||'a1'X,reverse('a1737475767778797aaa'x))
+    self~assertSame('AA'X||'zyxwvuts'||'a1'X, reverse('a1737475767778797aaa'x))
 
 ::method 'test006'
-    self~assertSame('subTest01',copies('0987654321',25),reverse("1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"))
+    self~assertSame(copies('0987654321',25), reverse("1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"))
 
 ::method 'test007'
     v20000 = copies('abcde67890',2000)
     w20000 = copies('09876edcba',2000)
-    self~assertSame('subTest01',w20000,reverse(v20000))
+    self~assertSame(w20000, reverse(v20000))
 
 ::method 'test008'
     v20000 = copies('abcde67890',2000)
     w20000 = copies('09876edcba',2000)
-    self~assertSame('subTest01','1'||w20000,reverse(v20000||'1'))
+    self~assertSame('1'||w20000, reverse(v20000||'1'))
 
 ::method 'test009'
-    self~assertSame('subTest01',12,reverse(17+4))
+    self~assertSame(12, reverse(17+4))
 
 ::method 'test010'
-    self~assertSame('subTest01','3210987654321',reverse(1234567890123))
+    self~assertSame('3210987654321', reverse(1234567890123))
 
 ::method 'test011'
-    self~assertSame('subTest01','31+E98765432.1',reverse(+12345678901234))
+    self~assertSame('31+E98765432.1', reverse(+12345678901234))
 
 ::method 'test012'
-    self~assertSame('subTest01','31+E98765432.1-',reverse(-12345678901234))
+    self~assertSame('31+E98765432.1-', reverse(-12345678901234))
 
 ::method 'test013'
     numeric form Engineering
     numeric digits 10
-    self~assertSame('subTest01','21+E09876543.21',reverse(+12345678901234))
+    self~assertSame('21+E09876543.21', reverse(+12345678901234))
 
 ::method 'test014'
     numeric form Engineering
     numeric digits 10
-    self~assertSame('subTest01','21+E09876543.21-',reverse(-12345678901234))
+    self~assertSame('21+E09876543.21-', reverse(-12345678901234))
 
 ::method 'test015'
     numeric form Engineering
     numeric digits 10
-    self~assertSame('subTest01','fed441 cbaa',reverse("a"||'abc' (12*12) ||'def'))
+    self~assertSame('fed441 cbaa', reverse("a"||'abc' (12*12) ||'def'))
 
 ::method 'test016'
     numeric form Engineering
     numeric digits 10
-    self~assertSame('subTest01','e d c b a',reverse('a' 'b' 'c'  'd'   'e'))
+    self~assertSame('e d c b a', reverse('a' 'b' 'c'  'd'   'e'))
 
 ::method 'test017'
     numeric form Engineering
     numeric digits 10
-    self~assertSame('subTest01','TSNOCYNNUF.',reverse(.funnyconst))
+    self~assertSame('TSNOCYNNUF.', reverse(.funnyconst))
 
 ::method 'test018'
     numeric form Engineering
     numeric digits 10
-    self~assertSame('subTest01','RAVEULAVON',reverse(novaluevar))
+    self~assertSame('RAVEULAVON', reverse(novaluevar))
 
 ::method 'test019'
     numeric form Engineering
     numeric digits 10
-    self~assertSame('subTest01','.TS',reverse(st.))
+    self~assertSame('.TS', reverse(st.))
 
 ::method 'test020'
     numeric form Engineering
     numeric digits 10
-    self~assertSame('subTest01','YX.TS',reverse(st.xy))
+    self~assertSame('YX.TS', reverse(st.xy))
 
 ::method 'test021'
     numeric form Engineering
     numeric digits 10
-    self~assertSame('subTest01','TSNOCYNNUF.',reverse(.funnyconst))
+    self~assertSame('TSNOCYNNUF.', reverse(.funnyconst))
 
 ::method 'test022'
     numeric form Engineering
     numeric digits 10
     x = 'anystring'
-    self~assertSame('subTest01',x,reverse(reverse(x)))
+    self~assertSame(x, reverse(reverse(x)))
 
 ::method 'test023'
     numeric form Engineering
     numeric digits 10
-    self~assertSame('subTest01',17E+3,reverse(reverse('17E+3')))
+    self~assertSame(17E+3, reverse(reverse('17E+3')))
 
 ::method 'test024'
     numeric form Engineering
     numeric digits 10
-    self~assertSame('subTest01',12,reverse(reverse(3*4)))
+    self~assertSame(12, reverse(reverse(3*4)))
 
 ::method 'test025'
     numeric form Engineering
     numeric digits 10
     v = x
     x = reverse(x)
-    self~assertSame('subTest01',V,reverse(x))
+    self~assertSame(V, reverse(x))
 
 ::method 'test026'
     numeric form Engineering
     numeric digits 10
     hansjako. = 13
-    self~assertSame('subTest01','31',reverse(value(reverse(.okajsnah))))
+    self~assertSame('31', reverse(value(reverse(.okajsnah))))
 
 -- from bif.testgroup
    -- test the BIF, using examples from the documentation
 ::method "test_REVERSE"
-    self~assertSame("subTest1" , '.cBA' , REVERSE('ABc.'))
-    self~assertSame("subTest2" , ' ZYX' , REVERSE('XYZ '))
+    self~assertSame('.cBA', REVERSE('ABc.'))
+    self~assertSame(' ZYX', REVERSE('XYZ '))
 
    -- new tests
-    self~assertSame("subTest3" , ''     , REVERSE(''    ))
-    self~assertSame("subTest4" , ''     , REVERSE(''    ))
+    self~assertSame('', REVERSE(''    ))
+    self~assertSame('', REVERSE(''    ))
 
 

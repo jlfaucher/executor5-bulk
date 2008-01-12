@@ -107,8 +107,8 @@ do
       -- create a testSuite for the given test case class, use all its testmethods
       ts~addTest( .testSuite~new(arr[1]))
    end
-   -- testResult=.testSuite~new(testGroupClass)~run
-   testResult=ts~run       -- now run all the tests
+   -- testResult=.testSuite~new(testGroupClass)~execute
+   testResult=ts~execute       -- now run all the tests
 
    call simpleFormatTestResults testResult
 end
@@ -117,16 +117,16 @@ end
       optionally list of mandatory test methods                      */
 return testGroupList
 
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
-::class "getbuffersize.testGroup" subclass TestCase public
+::class "getbuffersize.testGroup" subclass ooTestCase public
 
 ::METHOD "testGetBufferSize"
    b = .mutableBuffer~new("")
-   self~assertEquals("Buffer size incorrect 1",256,b~getBufferSize)
+   self~assertEquals(256, b~getBufferSize, "Buffer size incorrect 1")
    b = .mutableBuffer~new("",1)
-   self~assertEquals("Buffer size incorrect 2",1,b~getBufferSize)
+   self~assertEquals(1, b~getBufferSize, "Buffer size incorrect 2")
    b~append("  ")
-   self~assertEquals("Buffer size incorrect 3",2,b~getBufferSize)
+   self~assertEquals(2, b~getBufferSize, "Buffer size incorrect 3")
 
 

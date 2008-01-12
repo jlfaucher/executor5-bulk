@@ -107,8 +107,8 @@ do
       -- create a testSuite for the given test case class, use all its testmethods
       ts~addTest( .testSuite~new(arr[1]))
    end
-   -- testResult=.testSuite~new(testGroupClass)~run
-   testResult=ts~run       -- now run all the tests
+   -- testResult=.testSuite~new(testGroupClass)~execute
+   testResult=ts~execute       -- now run all the tests
 
    call simpleFormatTestResults testResult
 end
@@ -117,9 +117,9 @@ end
       optionally list of mandatory test methods                      */
 return testGroupList
 
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
-::class "String_verifyMethod.testGroup" subclass TestCase public
+::class "String_verifyMethod.testGroup" subclass ooTestCase public
 
 ::method 'test000'
     .local~v0 = ''
@@ -129,94 +129,94 @@ return testGroupList
     .local~v2 = 2
 
 ::method 'test001'
-    self~assertSame('subTest01','0',''~verify(''))
+    self~assertSame('0', ''~verify(''))
 
 ::method 'test002'
-    self~assertSame('subTest01','1','a'~verify(''))
+    self~assertSame('1', 'a'~verify(''))
 
 ::method 'test003'
-    self~assertSame('subTest01','1','A'~verify(''))
+    self~assertSame('1', 'A'~verify(''))
 
 ::method 'test004'
-    self~assertSame('subTest01','0','A'~verify('AAAAAAAAAA'))
+    self~assertSame('0', 'A'~verify('AAAAAAAAAA'))
 
 ::method 'test005'
-    self~assertSame('subTest01','0','AAAAAAAAAA'~verify('A'))
+    self~assertSame('0', 'AAAAAAAAAA'~verify('A'))
 
 ::method 'test006'
-    self~assertSame('subTest01','1','ab'~verify(''))
+    self~assertSame('1', 'ab'~verify(''))
 
 ::method 'test007'
-    self~assertSame('subTest01','0','ab'~verify('ab'))
+    self~assertSame('0', 'ab'~verify('ab'))
 
 ::method 'test008'
-    self~assertSame('subTest01','1','AB'~verify(''))
+    self~assertSame('1', 'AB'~verify(''))
 
 ::method 'test009'
-    self~assertSame('subTest01','3','ABC'~verify('AB'))
+    self~assertSame('3', 'ABC'~verify('AB'))
 
 ::method 'test010'
-    self~assertSame('subTest01','1','abcdefghijklmnopqrstuvwxyz1234'~verify(''))
+    self~assertSame('1', 'abcdefghijklmnopqrstuvwxyz1234'~verify(''))
 
 ::method 'test011'
-    self~assertSame('subTest01','1','ABCDEFGHIJKLMNOPQRSTUVWXYZ1234'~verify(''))
+    self~assertSame('1', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234'~verify(''))
 
 ::method 'test012'
-    self~assertSame('subTest01','0','A'~verify('ABCDEFGHIJKLMNOPQRSTUVWXYZ1234'))
+    self~assertSame('0', 'A'~verify('ABCDEFGHIJKLMNOPQRSTUVWXYZ1234'))
 
 ::method 'test013'
-    self~assertSame('subTest01','0','R'~verify('ABCDEFGHIJKLMNOPQRSTUVWXYZ1234'))
+    self~assertSame('0', 'R'~verify('ABCDEFGHIJKLMNOPQRSTUVWXYZ1234'))
 
 ::method 'test014'
-    self~assertSame('subTest01','0','4'~verify('ABCDEFGHIJKLMNOPQRSTUVWXYZ1234'))
+    self~assertSame('0', '4'~verify('ABCDEFGHIJKLMNOPQRSTUVWXYZ1234'))
 
 ::method 'test015'
-    self~assertSame('subTest01','0','A'~verify("ABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghij"))
+    self~assertSame('0', 'A'~verify("ABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghij"))
 
 ::method 'test016'
-    self~assertSame('subTest01','0','f'~verify("ABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghij"))
+    self~assertSame('0', 'f'~verify("ABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghij"))
 
 ::method 'test017'
-    self~assertSame('subTest01','0','j'~verify("ABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghij"))
+    self~assertSame('0', 'j'~verify("ABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghij"))
 
 ::method 'test018'
-    self~assertSame('subTest01','1','A'~verify("ABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghij",'M',1-0))
+    self~assertSame('1', 'A'~verify("ABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghij",'M',1-0))
 
 ::method 'test019'
-    self~assertSame('subTest01','0','f'~verify("ABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghij",'m',2*1))
+    self~assertSame('0', 'f'~verify("ABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghij",'m',2*1))
 
 ::method 'test020'
-    self~assertSame('subTest01','0','j'~verify("ABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghij",'Micheal Jackson',251))
+    self~assertSame('0', 'j'~verify("ABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghij",'Micheal Jackson',251))
 
 ::method 'test021'
     xre = 0
-    self~assertSame('subTest01',.true,'A'~verify("ABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghij",,000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001) == xre)
+    self~assertSame(.true, 'A'~verify("ABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghij",,000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001) == xre)
 
 ::method 'test022'
     xre = '0'
-    self~assertSame('subTest01',.true,'f'~verify("ABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghij",,'3030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303032'x) == xre)
+    self~assertSame(.true, 'f'~verify("ABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghij",,'3030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303032'x) == xre)
 
 ::method 'test023'
-    self~assertSame('subTest01','0','j'~verify("ABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghij",,251))
+    self~assertSame('0', 'j'~verify("ABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghij",,251))
 
 ::method 'test024'
-    self~assertSame('subTest01','0','j'~verify("ABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghij",,251.00000001))
+    self~assertSame('0', 'j'~verify("ABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghij",,251.00000001))
 
 ::method 'test025'
     self~expectSyntax(93.905)
     xre = 'j'~verify("ABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghij",,251.0000009)
 
 ::method 'test026'
-    self~assertSame('subTest01','1','333333333333333333333333333333333333333333333333'x~verify(''))
+    self~assertSame('1', '333333333333333333333333333333333333333333333333'x~verify(''))
 
 ::method 'test027'
-    self~assertSame('subTest01','1',1bcde~verify(''))
+    self~assertSame('1', 1bcde~verify(''))
 
 ::method 'test028'
-    self~assertSame('subTest01','1','ABCDEFG'~verify('HIJKLMN'))
+    self~assertSame('1', 'ABCDEFG'~verify('HIJKLMN'))
 
 ::method 'test029'
-    self~assertSame('subTest01',1,nova.~verify(''))
+    self~assertSame(1, nova.~verify(''))
 
 ::method 'test030'
     self~expectSyntax(93.938)
@@ -231,23 +231,23 @@ return testGroupList
     xre = ''~verify('',,noval.12)
 
 ::method 'test033'
-    self~assertSame('subTest01','1',nov~verify(''))
+    self~assertSame('1', nov~verify(''))
 
 ::method 'test034'
-    self~assertSame('subTest01','1',nova.~verify(''))
+    self~assertSame('1', nova.~verify(''))
 
 ::method 'test035'
-    self~assertSame('subTest01','1',noval.12~verify(''))
+    self~assertSame('1', noval.12~verify(''))
 
 ::method 'test036'
-    self~assertSame('subTest01','0',''~verify(nov))
+    self~assertSame('0', ''~verify(nov))
 
 ::method 'test037'
     self~expectSyntax(93.938)
     xre = ''~verify(nova.)
 
 ::method 'test038'
-    self~assertSame('subTest01','0',''~verify(noval.12))
+    self~assertSame('0', ''~verify(noval.12))
 
 ::method 'test039'
     self~expectSyntax(93.915)
@@ -274,14 +274,14 @@ return testGroupList
     xre = ''~verify('',,xoval.12)
 
 ::method 'test045'
-    self~assertSame('subTest01','0',''~verify('',nov))
+    self~assertSame('0', ''~verify('',nov))
 
 ::method 'test046'
     self~expectSyntax(93.938)
     xre = ''~verify('',nova.)
 
 ::method 'test047'
-    self~assertSame('subTest01','0',''~verify('',noval.12))
+    self~assertSame('0', ''~verify('',noval.12))
 
 ::method 'test048'
     self~expectSyntax(93.905)
@@ -296,93 +296,93 @@ return testGroupList
     xre = ''~verify('',,noval.12)
 
 ::method 'test051'
-    self~assertSame('subTest01','0',.v0~verify(''))
+    self~assertSame('0', .v0~verify(''))
 
 ::method 'test052'
-    self~assertSame('subTest01','1',.v1~verify(''))
+    self~assertSame('1', .v1~verify(''))
 
 ::method 'test053'
     v2. = '67'
-    self~assertSame('subTest01','1',v2.~verify(''))
+    self~assertSame('1', v2.~verify(''))
 
 ::method 'test054'
     v30.30 = 'abcdefghijklmnopqrstuvwxyz1234'
-    self~assertSame('subTest01','1',v30.30~verify(''))
+    self~assertSame('1', v30.30~verify(''))
 
 ::method 'test055'
-    self~assertSame('subTest01','1',.v100000~verify(''))
+    self~assertSame('1', .v100000~verify(''))
 
 ::method 'test056'
     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = 'John R. Buckley'
-    self~assertSame('subTest01','1',XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~verify('R.'))
+    self~assertSame('1', XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~verify('R.'))
 
 ::method 'test057'
     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = 'John R. Buckley'
-    self~assertSame('subTest01','0','R.'~verify(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX))
+    self~assertSame('0', 'R.'~verify(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX))
 
 ::method 'test058'
     v2. = '67'
-    self~assertSame('subTest01','0',.v1~verify(value(v2.),.vm,.v2))
+    self~assertSame('0', .v1~verify(value(v2.),.vm,.v2))
 
 ::method 'test059'
-    self~assertSame('subTest01','0','1'~verify(.v100000))
+    self~assertSame('0', '1'~verify(.v100000))
 
 ::method 'test060'
-    self~assertSame('subTest01','0',(2*3)~verify(.v100000))
+    self~assertSame('0', (2*3)~verify(.v100000))
 
 ::method 'test061'
-    self~assertSame('subTest01','0',(9-9)~verify(.v100000))
+    self~assertSame('0', (9-9)~verify(.v100000))
 
 ::method 'test062'
-    self~assertSame('subTest01','1',(112+11)~verify(''))
+    self~assertSame('1', (112+11)~verify(''))
 
 ::method 'test063'
-    self~assertSame('subTest01','1',+1.e28~verify(''))
+    self~assertSame('1', +1.e28~verify(''))
 
 ::method 'test064'
     numeric digits 1
-    self~assertSame('subTest01','0',(2*3)~verify(.v100000))
+    self~assertSame('0', (2*3)~verify(.v100000))
 
 ::method 'test065'
     numeric digits 1
-    self~assertSame('subTest01','0',(9-9)~verify(.v100000))
+    self~assertSame('0', (9-9)~verify(.v100000))
 
 ::method 'test066'
     numeric digits 1
-    self~assertSame('subTest01','1',(112+11)~verify(''))
+    self~assertSame('1', (112+11)~verify(''))
 
 ::method 'test067'
     numeric digits 1
-    self~assertSame('subTest01','1',(+1.e28)~verify(''))
+    self~assertSame('1', (+1.e28)~verify(''))
 
 ::method 'test068'
-    self~assertSame('subTest01','0','abc'~verify('',.vm))
+    self~assertSame('0', 'abc'~verify('',.vm))
 
 ::method 'test069'
-    self~assertSame('subTest01','1','abc'~verify('','n'))
+    self~assertSame('1', 'abc'~verify('','n'))
 
 ::method 'test070'
     self~expectSyntax(93.915)
     xre = 'abc'~verify('','o')
 
 ::method 'test071'
-    self~assertSame('subTest01','0',''~verify('','m'))
+    self~assertSame('0', ''~verify('','m'))
 
 ::method 'test072'
-    self~assertSame('subTest01','0',''~verify('','n'))
+    self~assertSame('0', ''~verify('','n'))
 
 ::method 'test073'
     self~expectSyntax(93.915)
     xre = ''~verify('','o')
 
 ::method 'test074'
-    self~assertSame('subTest01','1','abc'~verify(''))
+    self~assertSame('1', 'abc'~verify(''))
 
 ::method 'test075'
-    self~assertSame('subTest01','0','abc'~verify('','m',4))
+    self~assertSame('0', 'abc'~verify('','m',4))
 
 ::method 'test076'
-    self~assertSame('subTest01','0','abc'~verify('','n',4))
+    self~assertSame('0', 'abc'~verify('','n',4))
 
 ::method 'test077'
     self~expectSyntax(93.915)
@@ -393,50 +393,50 @@ return testGroupList
     xre = 'abc'~verify('','m',0)
 
 ::method 'test079'
-    self~assertSame('subTest01','0','ABC'~verify('DEF',Match))
+    self~assertSame('0', 'ABC'~verify('DEF',Match))
 
 ::method 'test080'
-    self~assertSame('subTest01','1','ABC'~verify('ABC',mona lisa))
+    self~assertSame('1', 'ABC'~verify('ABC',mona lisa))
 
 ::method 'test081'
-    self~assertSame('subTest01','0','ABC'~verify('XYZ',MAMAMAMAMAMAMAMA))
+    self~assertSame('0', 'ABC'~verify('XYZ',MAMAMAMAMAMAMAMA))
 
 ::method 'test082'
-    self~assertSame('subTest01','0','ABC'~verify('XYZ',Mother Night by Kurt Vonigut))
+    self~assertSame('0', 'ABC'~verify('XYZ',Mother Night by Kurt Vonigut))
 
 ::method 'test083'
-    self~assertSame('subTest01','0','ABC'~verify('DEF','Match'))
+    self~assertSame('0', 'ABC'~verify('DEF','Match'))
 
 ::method 'test084'
-    self~assertSame('subTest01','0','414243'x~verify('444546'x,'4d61746368'x,'31'x))
+    self~assertSame('0', '414243'x~verify('444546'x,'4d61746368'x,'31'x))
 
 ::method 'test085'
-    self~assertSame('subTest01','1','ABC'~verify('ABC','mona lisa'))
+    self~assertSame('1', 'ABC'~verify('ABC','mona lisa'))
 
 ::method 'test086'
-    self~assertSame('subTest01','0','ABC'~verify('XYZ','MAMAMAMAMAMAMAMA'))
+    self~assertSame('0', 'ABC'~verify('XYZ','MAMAMAMAMAMAMAMA'))
 
 ::method 'test087'
-    self~assertSame('subTest01','0','ABC'~verify('XYZ','Mother Night by Kurt Vonigut'))
+    self~assertSame('0', 'ABC'~verify('XYZ','Mother Night by Kurt Vonigut'))
 
 ::method 'test088'
-    self~assertSame('subTest01','0','ABC'~verify('XYZ','6d'x))
+    self~assertSame('0', 'ABC'~verify('XYZ','6d'x))
 
 ::method 'test089'
-    self~assertSame('subTest01','0','ABC'~verify('XYZ','4d'x          ))
+    self~assertSame('0', 'ABC'~verify('XYZ','4d'x          ))
 
 ::method 'test090'
-    self~assertSame('subTest01','0',subStr('ABCDEFG',2,5)~verify(word('A BCDEF G',2)))
+    self~assertSame('0', subStr('ABCDEFG',2,5)~verify(word('A BCDEF G',2)))
 
 ::method 'test091'
-    self~assertSame('subTest01','1','BCDEF'~verify('BCDEF',subStr('lmnop',2),dataType(6,'N')))
+    self~assertSame('1', 'BCDEF'~verify('BCDEF',subStr('lmnop',2),dataType(6,'N')))
 
 ::method 'test092'
-    self~assertSame('subTest01','0',dataType(6)~verify(dataType('A'),subStr(dataType(6),3),dataType(6,'A')))
+    self~assertSame('0', dataType(6)~verify(dataType('A'),subStr(dataType(6),3),dataType(6,'A')))
 
 ::method 'test093'
---    self~assertSame('subTest01','0',verify('ABC'~verify('ABC'),'ABABABABAC'~verify('AB'),,'A'~verify('')))
-    self~assertSame('subTest01','0','ABC'~verify('ABC')~verify('ABABABABAC'~verify('AB'),,'A'~verify('')))
+--    self~assertSame('0', verify('ABC'~verify('ABC'),'ABABABABAC'~verify('AB'),,'A'~verify('')))
+    self~assertSame('0', 'ABC'~verify('ABC')~verify('ABABABABAC'~verify('AB'),,'A'~verify('')))
 
 ::method 'test094'
     .local~remove(v0)
@@ -448,13 +448,13 @@ return testGroupList
 -- from bif.testgroup
    -- test the BIF, using examples from the documentation
 ::method "test_VERIFY"
-    self~assertEquals("subTest1" , 0 , '123'~VERIFY('1234567890')         )
-    self~assertEquals("subTest2" , 2 , '1Z3'~VERIFY('1234567890')         )
-    self~assertEquals("subTest3" , 1 , 'AB4T'~VERIFY('1234567890')        )
-    self~assertEquals("subTest4" , 3 , 'AB4T'~VERIFY('1234567890','M')    )
-    self~assertEquals("subTest5" , 1 , 'AB4T'~VERIFY('1234567890','N')    )
-    self~assertEquals("subTest6" , 4 , '1P3Q4'~VERIFY('1234567890', ,3)   )
-    self~assertEquals("subTest7" , 2 , '123'~VERIFY('',N,2)               )  --
-    self~assertEquals("subTest8" , 3 , 'ABCDE'~VERIFY('', ,3)             )  --
-    self~assertEquals("subTest9" , 6 , 'AB3CD5'~VERIFY('1234567890','M',4))
+    self~assertEquals(0, '123'~VERIFY('1234567890'))
+    self~assertEquals(2, '1Z3'~VERIFY('1234567890'))
+    self~assertEquals(1, 'AB4T'~VERIFY('1234567890'))
+    self~assertEquals(3, 'AB4T'~VERIFY('1234567890','M'))
+    self~assertEquals(1, 'AB4T'~VERIFY('1234567890','N'))
+    self~assertEquals(4, '1P3Q4'~VERIFY('1234567890', ,3))
+    self~assertEquals(2, '123'~VERIFY('',N,2))  --
+    self~assertEquals(3, 'ABCDE'~VERIFY('', ,3))  --
+    self~assertEquals(6, 'AB3CD5'~VERIFY('1234567890','M',4))
 

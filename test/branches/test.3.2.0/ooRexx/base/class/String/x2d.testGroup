@@ -107,8 +107,8 @@ do
       -- create a testSuite for the given test case class, use all its testmethods
       ts~addTest( .testSuite~new(arr[1]))
    end
-   -- testResult=.testSuite~new(testGroupClass)~run
-   testResult=ts~run       -- now run all the tests
+   -- testResult=.testSuite~new(testGroupClass)~execute
+   testResult=ts~execute       -- now run all the tests
 
    call simpleFormatTestResults testResult
 end
@@ -117,9 +117,9 @@ end
       optionally list of mandatory test methods                      */
 return testGroupList
 
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
-::class "String_x2dMethod.testGroup" subclass TestCase public
+::class "String_x2dMethod.testGroup" subclass ooTestCase public
 
 ::method 'test000'
     .local~x500 = copies('a',500)
@@ -129,19 +129,19 @@ return testGroupList
     .local~f504 = copies('Ff',250)||'1234'
 
 ::method 'test001'
-    self~assertSame('subTest01','0',''~x2d())
+    self~assertSame('0', ''~x2d())
 
 ::method 'test002'
-    self~assertSame('subTest01','0',''X~x2d())
+    self~assertSame('0', ''X~x2d())
 
 ::method 'test003'
-    self~assertSame('subTest01','10','a'~x2d())
+    self~assertSame('10', 'a'~x2d())
 
 ::method 'test004'
-    self~assertSame('subTest01','15','0f'~x2d())
+    self~assertSame('15', '0f'~x2d())
 
 ::method 'test005'
-    self~assertSame('subTest01','128','80'~x2d())
+    self~assertSame('128', '80'~x2d())
 
 ::method 'test006'
     self~expectSyntax(93.935)
@@ -160,7 +160,7 @@ return testGroupList
     xre = '1 23 4567 89'~x2d()
 
 ::method 'test010'
-    self~assertSame('subTest01','1893','765'~x2d())
+    self~assertSame('1893', '765'~x2d())
 
 ::method 'test011'
     self~expectSyntax(93.935)
@@ -183,20 +183,20 @@ return testGroupList
     xre = .f504~x2d()
 
 ::method 'test016'
-    self~assertSame('subTest01','-60876',.f504~x2d(5))
+    self~assertSame('-60876', .f504~x2d(5))
 
 ::method 'test017'
     numeric digits 1000
     cc250 = x2d("eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee")
-    self~assertSame('subTest01',cc250,"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"~x2d())
+    self~assertSame(cc250, "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"~x2d())
 
 ::method 'test018'
     numeric digits 1000
-    self~assertSame('subTest01','4660',01234~x2d())
+    self~assertSame('4660', 01234~x2d())
 
 ::method 'test019'
     numeric digits 1000
-    self~assertSame('subTest01','482',1E2~x2d())
+    self~assertSame('482', 1E2~x2d())
 
 ::method 'test020'
     numeric digits 1000
@@ -210,11 +210,11 @@ return testGroupList
 
 ::method 'test022'
     numeric digits 1000
-    self~assertSame('subTest01','256',(+1E+2)~x2d)
+    self~assertSame('256', (+1E+2)~x2d)
 
 ::method 'test023'
     numeric digits 1000
-    self~assertSame('subTest01','16',(+.1E2)~x2d)
+    self~assertSame('16', (+.1E2)~x2d)
 
 ::method 'test024'
     numeric digits 1000
@@ -223,14 +223,14 @@ return testGroupList
     vstem.1 = 'ab'
     vstem.vnull = 'ab cd'
     vnull = ''
-    self~assertSame('subTest01','0',vnull~x2d())
-    self~assertSame('subTest02','10',vstem.~x2d())
-    self~assertSame('subTest03','43981',vstem.vnull~x2d())
-    self~assertSame('subTest04','0',vnull~x2d())
+    self~assertSame('0', vnull~x2d())
+    self~assertSame('10', vstem.~x2d())
+    self~assertSame('43981', vstem.vnull~x2d())
+    self~assertSame('0', vnull~x2d())
 
 ::method 'test025'
     numeric digits 1000
-    self~assertSame('subTest01','47802',baba~x2d())
+    self~assertSame('47802', baba~x2d())
 
 ::method 'test026'
     numeric digits 1000
@@ -244,47 +244,47 @@ return testGroupList
 
 ::method 'test028'
     numeric digits 1000
-    self~assertSame('subTest01','256',( + 1E+2 )~x2d)
+    self~assertSame('256', ( + 1E+2 )~x2d)
 
 ::method 'test029'
     numeric digits 1000
-    self~assertSame('subTest01','257',(1 + 1E+2 )~x2d)
+    self~assertSame('257', (1 + 1E+2 )~x2d)
 
 ::method 'test030'
     numeric digits 1000
-    self~assertSame('subTest01','733294087186',('aa' 'bbbb' 'cc' '3132'x)~x2d)
+    self~assertSame('733294087186', ('aa' 'bbbb' 'cc' '3132'x)~x2d)
 
 ::method 'test031'
     numeric digits 1000
-    self~assertSame('subTest01','aabbbbcc12'~x2d(),('aa' 'bbbb' 'cc' '3132'x)~x2d)
+    self~assertSame('aabbbbcc12'~x2d(), ('aa' 'bbbb' 'cc' '3132'x)~x2d)
 
 ::method 'test032'
     numeric digits 1000
-    self~assertSame('subTest01',0,''~x2d(0))
+    self~assertSame(0, ''~x2d(0))
 
 ::method 'test033'
     numeric digits 1000
-    self~assertSame('subTest01','0',''~x2d(12))
+    self~assertSame('0', ''~x2d(12))
 
 ::method 'test034'
     numeric digits 1000
-    self~assertSame('subTest01',0,'abc'~x2d(0))
+    self~assertSame(0, 'abc'~x2d(0))
 
 ::method 'test035'
     numeric digits 1000
-    self~assertSame('subTest01','-4','abc'~x2d(1))
+    self~assertSame('-4', 'abc'~x2d(1))
 
 ::method 'test036'
     numeric digits 1000
-    self~assertSame('subTest01','-1348','abc'~x2d(3))
+    self~assertSame('-1348', 'abc'~x2d(3))
 
 ::method 'test037'
     numeric digits 1000
-    self~assertSame('subTest01','2748','abc'~x2d(5))
+    self~assertSame('2748', 'abc'~x2d(5))
 
 ::method 'test038'
     numeric digits 1000
-    self~assertSame('subTest01','2748','abc'~x2d(5))
+    self~assertSame('2748', 'abc'~x2d(5))
 
 ::method 'test039'
     numeric digits 1000
@@ -298,55 +298,55 @@ return testGroupList
 
 ::method 'test041'
     numeric digits 1000
-    self~assertSame('subTest01','4',(1+3)~x2d(1+3))
+    self~assertSame('4', (1+3)~x2d(1+3))
 
 ::method 'test042'
     numeric digits 1000
-    self~assertSame('subTest01','616',(256+12)~x2d(10+2))
+    self~assertSame('616', (256+12)~x2d(10+2))
 
 ::method 'test043'
     numeric digits 1000
-    self~assertSame('subTest01','-120','888'~x2d('32'x))
+    self~assertSame('-120', '888'~x2d('32'x))
 
 ::method 'test044'
     numeric digits 1000
-    self~assertSame('subTest01',0,'583244'x('111','30'x))
+    self~assertSame(0, '583244'x('111','30'x))
 
 ::method 'test045'
     numeric digits 1000
-    self~assertSame('subTest01',1,'583244'x('111','31'x))
+    self~assertSame(1, '583244'x('111','31'x))
 
 ::method 'test046'
     numeric digits 1000
-    self~assertSame('subTest01',17,'583244'x('111','32'x))
+    self~assertSame(17, '583244'x('111','32'x))
 
 ::method 'test047'
     numeric digits 1000
-    self~assertSame('subTest01',273,'583244'x('1 11','33'x))
+    self~assertSame(273, '583244'x('1 11','33'x))
 
 ::method 'test048'
     numeric digits 1000
-    self~assertSame('subTest01',273,'583244'x('111','34'x))
+    self~assertSame(273, '583244'x('111','34'x))
 
 ::method 'test049'
     numeric digits 1000
-    self~assertSame('subTest01',0,'583244'x('E       EE','30'x))
+    self~assertSame(0, '583244'x('E       EE','30'x))
 
 ::method 'test050'
     numeric digits 1000
-    self~assertSame('subTest01',-2,'583244'x('e EE','31'x))
+    self~assertSame(-2, '583244'x('e EE','31'x))
 
 ::method 'test051'
     numeric digits 1000
-    self~assertSame('subTest01',-18,'583244'x('eeE','32'x))
+    self~assertSame(-18, '583244'x('eeE','32'x))
 
 ::method 'test052'
     numeric digits 1000
-    self~assertSame('subTest01',-274,'583244'x('eee','33'x))
+    self~assertSame(-274, '583244'x('eee','33'x))
 
 ::method 'test053'
     numeric digits 1000
-    self~assertSame('subTest01',3822,'583244'x('eee','34'x))
+    self~assertSame(3822, '583244'x('eee','34'x))
 
 ::method 'test054'
     numeric digits 3
@@ -359,13 +359,13 @@ return testGroupList
     xre = 'a'~x2d(+12.5)
 
 ::method 'test056'
-    self~assertSame('subTest01','12345',d2x('12345'~x2d()))
+    self~assertSame('12345', d2x('12345'~x2d()))
 
 ::method 'test057'
     x = '44'
     v = x
     x = x2d(x)
-    self~assertSame('subTest01',v,x~d2x())
+    self~assertSame(v, x~d2x())
 
 ::method 'test058'
     x = '44'
@@ -373,7 +373,7 @@ return testGroupList
     x = x2d(x)
     x = v
     x = x2d(x,x)
-    self~assertSame('subTest01',x,v~x2d(v))
+    self~assertSame(x, v~x2d(v))
 
 ::method 'test059'
     self~expectSyntax(93.933)
@@ -396,10 +396,10 @@ return testGroupList
     xre = 'ab c'~x2d()
 
 ::method 'test064'
-    self~assertSame('subTest01','23','11'~x2d()~x2d())
+    self~assertSame('23', '11'~x2d()~x2d())
 
 ::method 'test065'
-    self~assertSame('subTest01','24868',c2x('a$')~x2d())
+    self~assertSame('24868', c2x('a$')~x2d())
 
 ::method 'test066'
     .local~remove(x500)
@@ -411,24 +411,24 @@ return testGroupList
 -- from bif.testgroup
    -- test the BIF, using examples from the documentation
 ::method "test_X2D"
-    self~assertEquals("subTest1" , 14                , '0E'~X2D()      )
-    self~assertEquals("subTest2" , 129               , '81'~X2D()      )
-    self~assertEquals("subTest3" , 3969              , 'F81'~X2D()     )
-    self~assertEquals("subTest4" , 65409             , 'FF81'~X2D()    )
-    self~assertEquals("subTest5" , 240 /* ASCII */   , '46 30'X~X2D()  )
-    self~assertEquals("subTest6" , 240 /* ASCII */   , '66 30'X~X2D()  )
+    self~assertEquals(14, '0E'~X2D())
+    self~assertEquals(129, '81'~X2D())
+    self~assertEquals(3969, 'F81'~X2D())
+    self~assertEquals(65409, 'FF81'~X2D())
+    self~assertEquals(240 /* ASCII */, '46 30'X~X2D())
+    self~assertEquals(240 /* ASCII */, '66 30'X~X2D())
 
-    self~assertEquals("subTest7" , -127              , '81'~X2D(2)    ) --
-    self~assertEquals("subTest8" , 129               , '81'~X2D(4)    )
-    self~assertEquals("subTest9" , -3967             , 'F081'~X2D(4)  )
-    self~assertEquals("subTest10", 129               , 'F081'~X2D(3)  )
-    self~assertEquals("subTest11", -127              , 'F081'~X2D(2)  )
-    self~assertEquals("subTest12", 1                 , 'F081'~X2D(1)  )
-    self~assertEquals("subTest13", 0                 , '0031'~X2D(0)  )
+    self~assertEquals(-127, '81'~X2D(2)) --
+    self~assertEquals(129, '81'~X2D(4))
+    self~assertEquals(-3967, 'F081'~X2D(4))
+    self~assertEquals(129, 'F081'~X2D(3))
+    self~assertEquals(-127, 'F081'~X2D(2))
+    self~assertEquals(1, 'F081'~X2D(1))
+    self~assertEquals(0, '0031'~X2D(0))
 
    -- new tests
-    self~assertEquals("subTest14", 0                 , ''~X2D()        )
-    self~assertEquals("subTest14", 0                 , ''~X2D(1)      )
-    self~assertEquals("subTest14", 0                 , ''~X2D(17)     )
+    self~assertEquals(0, ''~X2D())
+    self~assertEquals(0, ''~X2D(1))
+    self~assertEquals(0, ''~X2D(17))
 
 

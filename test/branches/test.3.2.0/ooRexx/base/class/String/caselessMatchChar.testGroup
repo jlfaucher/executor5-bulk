@@ -107,8 +107,8 @@ do
       -- create a testSuite for the given test case class, use all its testmethods
       ts~addTest( .testSuite~new(arr[1]))
    end
-   -- testResult=.testSuite~new(testGroupClass)~run
-   testResult=ts~run       -- now run all the tests
+   -- testResult=.testSuite~new(testGroupClass)~execute
+   testResult=ts~execute       -- now run all the tests
 
    call simpleFormatTestResults testResult
 end
@@ -117,14 +117,14 @@ end
       optionally list of mandatory test methods                      */
 return testGroupList
 
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
-::class "caselessMatchChar.testGroup" subclass TestCase public
+::class "caselessMatchChar.testGroup" subclass ooTestCase public
 
 ::method "test_MatchChar_caseless"
 
     str="abcDEFghi"
-    self~assertSame("subTest_01" , 1, str~CaselessMatchChar(2, "b"))
-    self~assertSame("subTest_02",  1, str~CaselessMatchChar(2, "B"))
-    self~assertSame("subTest_03" , 0, str~CaselessMatchChar(2, "c"))
+    self~assertSame(1, str~CaselessMatchChar(2, "b"))
+    self~assertSame(1, str~CaselessMatchChar(2, "B"))
+    self~assertSame(0, str~CaselessMatchChar(2, "c"))
 

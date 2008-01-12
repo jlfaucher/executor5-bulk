@@ -107,8 +107,8 @@ do
       -- create a testSuite for the given test case class, use all its testmethods
       ts~addTest( .testSuite~new(arr[1]))
    end
-   -- testResult=.testSuite~new(testGroupClass)~run
-   testResult=ts~run       -- now run all the tests
+   -- testResult=.testSuite~new(testGroupClass)~execute
+   testResult=ts~execute       -- now run all the tests
 
    call simpleFormatTestResults testResult
 end
@@ -117,16 +117,16 @@ end
       optionally list of mandatory test methods                      */
 return testGroupList
 
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
-::class "lower.testGroup" subclass TestCase public
+::class "lower.testGroup" subclass ooTestCase public
 
 ::method "test_LOWER"
 
     str='ABCdeFGH'
-    self~assertSame("subTest_01" , 'AbCdeFGH', str~lower(2,  1 ))
-    self~assertSame("subTest_02" , 'ABCdeFGH', str~lower(1,  0 ))
-    self~assertSame("subTest_03" , 'ABCdeFGH', str~lower(99, 2 ))
-    self~assertSame("subTest_04" , 'Abcdefgh', str~lower(2     ))
-    self~assertSame("subTest_05" , 'abcdefgh', str~lower        )
+    self~assertSame('AbCdeFGH', str~lower(2,  1 ))
+    self~assertSame('ABCdeFGH', str~lower(1,  0 ))
+    self~assertSame('ABCdeFGH', str~lower(99, 2 ))
+    self~assertSame('Abcdefgh', str~lower(2     ))
+    self~assertSame('abcdefgh', str~lower)
 

@@ -103,8 +103,8 @@
                 -- create a testSuite for the given test case class, use all its testmethods
                 ts~addTest( .testSuite~new(arr[1]))
             end
-            -- testResult=.testSuite~new(testUnitClass)~run
-            testResult=ts~run       -- now run all the tests
+            -- testResult=.testSuite~new(testUnitClass)~execute
+            testResult=ts~execute       -- now run all the tests
 
             call simpleFormatTestResults testResult
         end
@@ -113,10 +113,10 @@
       optionally list of mandatory test methods                      */
 return testUnitList
 
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
 -- class named exactly like file
-::class "VALUE.testGroup" subclass TestCase public
+::class "VALUE.testGroup" subclass ooTestCase public
 
 ::method 'test000'
     .local~sl = 's.'
@@ -137,19 +137,19 @@ return testUnitList
     xre = value('00'x)
 
 ::method 'test003'
-    self~assertSame('subTest01','1',value('31'x))
+    self~assertSame('1', value('31'x))
 
 ::method 'test004'
-    self~assertSame('subTest01','A',value('a'))
+    self~assertSame('A', value('a'))
 
 ::method 'test005'
-    self~assertSame('subTest01','A',value('A'))
+    self~assertSame('A', value('A'))
 
 ::method 'test006'
-    self~assertSame('subTest01','WAR',value(.vl))
+    self~assertSame('WAR', value(.vl))
 
 ::method 'test007'
-    self~assertSame('subTest01','WAR',value(.vu))
+    self~assertSame('WAR', value(.vu))
 
 ::method 'test008'
     self~expectSyntax(40.26)
@@ -163,54 +163,54 @@ return testUnitList
     sl = 's.'
     su = 'S.'
     s. = 'stemmy'
-    self~assertSame('subTest01','stemmy',value(.sl))
+    self~assertSame('stemmy', value(.sl))
 
 ::method 'test011'
     sl = 's.'
     su = 'S.'
     s. = 'stemmy'
-    self~assertSame('subTest01','stemmy',value(.su))
+    self~assertSame('stemmy', value(.su))
 
 ::method 'test012'
     cl = 'c.a'
     cu = 'C.A'
     c.a = 'compoundy'
-    self~assertSame('subTest01','compoundy',value(cl))
+    self~assertSame('compoundy', value(cl))
 
 ::method 'test013'
     cl = 'c.a'
     cu = 'C.A'
     c.a = 'compoundy'
-    self~assertSame('subTest01','compoundy',value(cu))
+    self~assertSame('compoundy', value(cu))
 
 ::method 'test014'
     sl = 's.'
-    self~assertSame('subTest01','S.',value(sl))
+    self~assertSame('S.', value(sl))
 
 ::method 'test015'
     su = 'S.'
-    self~assertSame('subTest01','S.',value(su))
+    self~assertSame('S.', value(su))
 
 ::method 'test016'
     cl = 'c.a'
-    self~assertSame('subTest01','C.A',value(cl))
+    self~assertSame('C.A', value(cl))
 
 ::method 'test017'
     cu = 'C.A'
-    self~assertSame('subTest01','C.A',value(cu))
+    self~assertSame('C.A', value(cu))
 
 ::method 'test018'
-    self~assertSame('subTest01','17',value(17))
+    self~assertSame('17', value(17))
 
 ::method 'test019'
     a = 'A'
-    self~assertSame('subTest01','.A',value(.a))
+    self~assertSame('.A', value(.a))
 
 ::method 'test020'
-    self~assertSame('subTest01','12E+17',value(12e+17))
+    self~assertSame('12E+17', value(12e+17))
 
 ::method 'test021'
-    self~assertSame('subTest01','1.2E+18',value(+12e+17))
+    self~assertSame('1.2E+18', value(+12e+17))
 
 ::method 'test022'
     self~expectSyntax(40.26)
@@ -221,78 +221,78 @@ return testUnitList
     xre = value(-12e+17)
 
 ::method 'test024'
-    self~assertSame('subTest01','0',value(0))
+    self~assertSame('0', value(0))
 -- call ver value(0),'0'; R0078:
 
 ::method 'test025'
-    self~assertSame('subTest01','1E9999999999999',value(1E9999999999999))
+    self~assertSame('1E9999999999999', value(1E9999999999999))
 
 ::method 'test026'
-    self~assertSame('subTest01',copies('Y',240),value('YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY'))
+    self~assertSame(copies('Y',240), value('YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY'))
 
 ::method 'test027'
     ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ = 'zb'
-    self~assertSame('subTest01','zb',value('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ'))
+    self~assertSame('zb', value('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ'))
 
 ::method 'test028'
-    self~assertSame('subTest01',copies('ZZ',120),value('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ'))
+    self~assertSame(copies('ZZ',120), value('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ'))
 
 ::method 'test029'
-    self~assertSame('subTest01',copies('YY',120),value(YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY))
+    self~assertSame(copies('YY',120), value(YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY))
 
 ::method 'test030'
-    self~assertSame('subTest01',copies('ZZ',120),value('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ'))
+    self~assertSame(copies('ZZ',120), value('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ'))
 
 ::method 'test031'
-    self~assertSame('subTest01','AB',value('a'||'b'))
+    self~assertSame('AB', value('a'||'b'))
 -- call ver value('a'||'b'),'AB'; R0094:
 
 ::method 'test032'
     ab = 'aabb'
-    self~assertSame('subTest01','aabb',value('a'||'b'))
+    self~assertSame('aabb', value('a'||'b'))
 
 ::method 'test033'
     a = ''
     b = 'B'
     c = '.'
-    self~assertSame('subTest01','B',value(a||b))
+    self~assertSame('B', value(a||b))
 
 ::method 'test034'
     a = ''
     b = 'B'
     c = '.'
-    self~assertSame('subTest01','.B',value(c||b))
+    self~assertSame('.B', value(c||b))
 
 ::method 'test035'
     a = ''
     b = 'B'
     c = '.'
-    self~assertSame('subTest01','B.',value(b||c))
+    self~assertSame('B.', value(b||c))
 
 ::method 'test036'
     a = ''
     b = 'B'
     c = '.'
-    self~assertSame('subTest01','B',value((A)(A)(B)))
+    self~assertSame('B', value((A)(A)(B)))
 
 ::method 'test037'
     c. = '0'
     t1 = copies(1,200)
     V2222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222 = ''
-    self~assertSame('subTest01','0',value('c.t1.V2222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222'))
+    self~assertSame('0', value('c.t1.V2222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222'))
 -- call ver value('c.t1.V2222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222'),'0'; R0113:
 
 ::method 'test038'
     VAR = 'vvvvv'
-    self~assertSame('subTest01','VVVVV',value(value('VAR')))
+    self~assertSame('VVVVV', value(value('VAR')))
 -- call ver value(value('VAR')),'VVVVV'; R0118:
 
 ::method 'test039'
-    self~assertSame('subTest01','ABCDE',value(xrange('A','E')))
+    self~assertSame('ABCDE', value(xrange('A','E')))
 -- call ver value(xrange('A','E')),'ABCDE'; R0120:
 
 ::method 'test040'
-    self~assertSame('subTest01','ABCDEFGHIJKLMNOPQRSTUVWXYZ',value(xrange('A','Z')))
+    self~assertSame('ABCDEFGHIJKLMNOPQRSTUVWXYZ', value(xrange('A','Z')))
 -- call ver value(xrange('A','Z')),'ABCDEFGHIJKLMNOPQRSTUVWXYZ'; R0121:
 
 ::method 'test041'
@@ -302,14 +302,14 @@ return testUnitList
 ::method 'test042'
     BAD = 'bad data'
     LIT = 'lit data'
-    self~assertSame('subTest01','21',value(value((17+4))))
+    self~assertSame('21', value(value((17+4))))
 -- call ver value(value((17+4))),'21'; R0127:
 
 ::method 'test043'
     stem. = 'V1'
     V1 = 'ABC'
     ABCABC = +23e5
-    self~assertSame('subTest01','V1V1',value((stem.v)(stem.)))
+    self~assertSame('V1V1', value((stem.v)(stem.)))
 -- call ver value((stem.v)(stem.)),'V1V1'; R0132:
 
 ::method 'test044'
@@ -321,7 +321,7 @@ return testUnitList
 ::method 'test045'
     R.Pucher = 'xxx'
     Name = 'Pucher'
-    self~assertSame('subTest01','xxx',value(R.Name))
+    self~assertSame('xxx', value(R.Name))
 
 ::method 'test046'
     drop a.3
@@ -330,15 +330,15 @@ return testUnitList
     i = 'i'
     j.i = 17
     jj = 'j.i'
-    self~assertSame('subTest01',3,value('J'))
-    self~assertSame('subTest01',3,value('j'))
-    self~assertSame('subTest02',17,value(jj))
-    self~assertSame('subTest03',17,value(j.i))
-    self~assertSame('subTest04',3,value(J))
-    self~assertSame('subTest05','A.3',value('a.j'))
+    self~assertSame(3, value('J'))
+    self~assertSame(3, value('j'))
+    self~assertSame(17, value(jj))
+    self~assertSame(17, value(j.i))
+    self~assertSame(3, value(J))
+    self~assertSame('A.3', value('a.j'))
 
 ::method 'test047'
-    self~assertSame('subTest06',2,value(2))
+    self~assertSame(2, value(2))
 
 ::method 'test048'
     self~expectSyntax(40.26)
@@ -350,10 +350,10 @@ return testUnitList
     K = 3
     fred = 'K'
 
-    self~assertSame('subTest01','A3',value('a'k))
-    self~assertSame('subTest02',7,value('a'k||k))
-    self~assertSame('subTest03','K',value('fred'))
-    self~assertSame('subTest04','3',value(fred))
+    self~assertSame('A3', value('a'k))
+    self~assertSame(7, value('a'k||k))
+    self~assertSame('K', value('fred'))
+    self~assertSame('3', value(fred))
 
 ::method 'test050'
     .local~remove(sl)
@@ -375,14 +375,14 @@ return testUnitList
     n = 'v'
     c = copies('*',100000)
 
-    self~assertSame('subTest01',17,value(n))
-    self~assertSame('subTest02',17,value(n,'abc'))
-    self~assertSame('subTest03','abc',value(n))
-    self~assertSame('subTest04','abc',value(n,'410042'x))
-    self~assertSame('subTest05','410042'x,value(n))
-    self~assertSame('subTest06',translate(ln),value(ln))
-    self~assertSame('subTest07',translate(ln),value(ln,c))
-    self~assertSame('subTest08',c,value(ln))
+    self~assertSame(17, value(n))
+    self~assertSame(17, value(n,'abc'))
+    self~assertSame('abc', value(n))
+    self~assertSame('abc', value(n,'410042'x))
+    self~assertSame('410042'x, value(n))
+    self~assertSame(translate(ln), value(ln))
+    self~assertSame(translate(ln), value(ln,c))
+    self~assertSame(c, value(ln))
 
 -- from bif.testgroup
    -- test the BIF, using examples from the documentation
@@ -390,32 +390,32 @@ return testUnitList
     /* After: Drop A3; A33=7; K=3; fred='K'; list.5='Hi' */
     Drop A3; A33=7; K=3; fred='K'; list.5='Hi'
 
-    self~assertSame("subTest1" , 'A3' , VALUE('a'k)    )  /* looks up A3 */
-    self~assertSame("subTest2" , '7'  , VALUE('a'k||k) )
-    self~assertSame("subTest3" , 'K'  , VALUE('fred')  )  /* looks up FRED */
-    self~assertSame("subTest4" , '3'  , VALUE(fred)    )  /* looks up K */
-    self~assertSame("subTest5" , '3'  , VALUE(fred,5)  )  /* looks up K and then sets K=5 */
-    self~assertSame("subTest6" , '5'  , VALUE(fred)    )  /* looks up K */
-    self~assertSame("subTest7" , 'Hi' , VALUE('LIST.'k))  /* looks up LIST.5 */
+    self~assertSame('A3', VALUE('a'k))  /* looks up A3 */
+    self~assertSame('7', VALUE('a'k||k))
+    self~assertSame('K', VALUE('fred'))  /* looks up FRED */
+    self~assertSame('3', VALUE(fred))  /* looks up K */
+    self~assertSame('3', VALUE(fred,5))  /* looks up K and then sets K=5 */
+    self~assertSame('5', VALUE(fred))  /* looks up K */
+    self~assertSame('Hi', VALUE('LIST.'k))  /* looks up LIST.5 */
 
    --
     /* Given that an external variable FRED has a value of 4 */
     share = 'ENVIRONMENT'
     call value 'FRED', 4, share  -- set FRED to 4
-    self~assertEquals("subTest8" , 4 , VALUE('FRED',7,share))/* says '4' and assigns */
+    self~assertEquals(4, VALUE('FRED',7,share))/* says '4' and assigns */
                                                              /* FRED a new value of 7 */
-    self~assertEquals("subTest9" , 7 , VALUE('FRED', ,share)) /* says '7' */
+    self~assertEquals(7, VALUE('FRED', ,share)) /* says '7' */
 
     call value 'FRED', .nil, share  -- delete 'FRED' from environment
-    self~assertSame("subTest10"  , "", VALUE('FRED', ,share))
+    self~assertSame("", VALUE('FRED', ,share))
 
    -- test set/getting .environment-entries
     call value 'UhU', 1, ''         -- define entry 'UHU' in .environment
-    self~assertSame("subTest11"  , 1, VALUE('UhU',   , ''))
+    self~assertSame(1, VALUE('UhU',   , ''))
     call value 'UhU', .nil, ''      -- set entry in .environment to .nil
-    self~assertSame("subTest12"  , .nil, VALUE('UhU', , ''))
+    self~assertSame(.nil, VALUE('UhU', , ''))
     .environment~remove('UHU')      -- delete entry in .environment
-    self~assertSame("subTest13"  , '.UHU', VALUE('UhU', , ''))
+    self~assertSame('.UHU', VALUE('UhU', , ''))
 
 
 

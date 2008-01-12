@@ -74,7 +74,7 @@
 
     -- Stupid Windows and its stupid spaces in path names.
     prgName = prgName~strip
-    if prgName~pos(' ') <> 0, prgName~left(1) \== '"' then prgName = '"' || prgName || '"'
+    if prgName~pos(' ') <> 0, prgName~left(1) \== '"' then prgName = .TestUtil~enQuote(prgName)
 
     if arg(2, 'O') then params = ""
     else params = arg(2)
@@ -94,8 +94,11 @@
     finished = .true
 
 ::class 'WindowFinder' public
-  ::method repetitions attribute
-  ::method sleepTime attribute
+  ::attribute repetitions get
+  ::attribute repetitions set private
+
+  ::attribute sleepTime get
+  ::attribute sleepTime set private
 
   ::method init
     expose windowMgr
@@ -118,6 +121,20 @@
     end
 
   return wnd
+
+  /** setPause()
+   * Sets the default pause for this window finder to that specified
+   */
+  ::method setPause
+    use strict arg pause  -- Need to add arg checking
+    self~sleepTime = pause
+
+  /** setRepitions()
+   * Sets the default repetitions for this window finder to that specified
+   */
+  ::method setRepetitions
+    use strict arg loop  -- Need to add arg checking
+    self~repetitions = loop
 
 
 /* displayWindowChildren( windowObj )- - - - - - - - - - - - - - - - - - - - -*\

@@ -107,8 +107,8 @@ do
       -- create a testSuite for the given test case class, use all its testmethods
       ts~addTest( .testSuite~new(arr[1]))
    end
-   -- testResult=.testSuite~new(testGroupClass)~run
-   testResult=ts~run       -- now run all the tests
+   -- testResult=.testSuite~new(testGroupClass)~execute
+   testResult=ts~execute       -- now run all the tests
 
    call simpleFormatTestResults testResult
 end
@@ -117,12 +117,12 @@ end
       optionally list of mandatory test methods                      */
 return testGroupList
 
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
-::class "String_delwordMethod.testGroup" subclass TestCase public
+::class "String_delwordMethod.testGroup" subclass ooTestCase public
 
 ::method 'test01'
-    self~assertSame('subTest01','',''~delword(1,1))
+    self~assertSame('', ''~delword(1,1))
 
 ::method 'test02'
     self~expectSyntax(93.905)
@@ -133,21 +133,21 @@ return testGroupList
     r = 'delWord1 delWord2'~delword(2.000000009,2.000000009)
 
 ::method 'test04'
-    self~assertSame('subTest01','delWord2','delWord1 delWord2'~delword(1.000000004,1.000000004))
+    self~assertSame('delWord2', 'delWord1 delWord2'~delword(1.000000004,1.000000004))
 
 ::method 'test05'
-    self~assertSame('subTest01','delWord1 ','delWord1 delWord2'~delword(2.000000004,2.000000004))
+    self~assertSame('delWord1 ', 'delWord1 delWord2'~delword(2.000000004,2.000000004))
 
 ::method 'test06'
     zeros1 = copies('0',10000)||'1'
-    self~assertSame('subTest01','','4a'x~delword(zeros1,2))
+    self~assertSame('', '4a'x~delword(zeros1,2))
 
 ::method 'test07'
     vblank = ' '
-    self~assertSame('subTest01',' ',vblank~delword(2.55*200-255,1))
+    self~assertSame(' ', vblank~delword(2.55*200-255,1))
 
 ::method 'test08'
-    self~assertSame('subTest01','delWord','delWord'~delword('31'x,'30'x))
+    self~assertSame('delWord', 'delWord'~delword('31'x,'30'x))
 
 ::method 'test09'
     self~expectSyntax(93.924)
@@ -158,34 +158,34 @@ return testGroupList
     r = ' '~delword('30'x,'30'x)
 
 ::method 'test11'
-    self~assertSame('subTest01','','4a52'x~delword(1E0,1E0))
+    self~assertSame('', '4a52'x~delword(1E0,1E0))
 
 ::method 'test12'
-    self~assertSame('subTest01','JR','4a52'x~delword(2E0,1E0))
+    self~assertSame('JR', '4a52'x~delword(2E0,1E0))
 
 ::method 'test13'
-    self~assertSame('subTest01','C D E F G H I J K L M N O','4120422043204420452046204720482049204a204b204c204d204e204f'x~delword(' 1',' 2'))
+    self~assertSame('C D E F G H I J K L M N O', '4120422043204420452046204720482049204a204b204c204d204e204f'x~delword(' 1',' 2'))
 
 ::method 'test14'
     numeric digits 1
     v26 = 'A B C D E F G H I J K L M N O P Q R S T U V W X Y Z'
     v19 = '19'
     v14 = '14'
-    self~assertSame('subTest01','A B C D E F G H I J K X Y Z',v26~delword('1'||'2','1'||'2'))
-    self~assertSame('subTest02','A B C D E F G H I J K X Y Z',v26~delword(' +12 ',' +12 '))
-    self~assertSame('subTest03','A B C D E F G H I T U V W X Y Z',v26~delword(+12,+12))
-    self~assertSame('subTest04','A B C D E F G H I J K X Y Z',v26~delword(12,12))
-    self~assertSame('subTest05','A B C D E F G H I J K L M N O P Q R ',v26~delword(v19,v19))
-    self~assertSame('subTest06','A B C D E F G H I J K L M ',v26~delword(v14,v14))
-    self~assertSame('subTest07','',(12+6)~delword(1,1))
-    self~assertSame('subTest08','',('12+6')~delword(1,1))
+    self~assertSame('A B C D E F G H I J K X Y Z', v26~delword('1'||'2','1'||'2'))
+    self~assertSame('A B C D E F G H I J K X Y Z', v26~delword(' +12 ',' +12 '))
+    self~assertSame('A B C D E F G H I T U V W X Y Z', v26~delword(+12,+12))
+    self~assertSame('A B C D E F G H I J K X Y Z', v26~delword(12,12))
+    self~assertSame('A B C D E F G H I J K L M N O P Q R ', v26~delword(v19,v19))
+    self~assertSame('A B C D E F G H I J K L M ', v26~delword(v14,v14))
+    self~assertSame('', (12+6)~delword(1,1))
+    self~assertSame('', ('12+6')~delword(1,1))
 
 ::method 'test15'
-    self~assertSame('subTest01','     asdf qwer zxcv     ','     asdf qwer zxcv     ASDF QWER ZXCV'~delword('.004E3','.003E3'))
+    self~assertSame('     asdf qwer zxcv     ', '     asdf qwer zxcv     ASDF QWER ZXCV'~delword('.004E3','.003E3'))
 
 ::method 'test16'
     v8 = 'one two  three   four    five     six      seven       eight'
-    self~assertSame('subTest01','one two  three   eight',v8~delword(-4+8,-4+8))
+    self~assertSame('one two  three   eight', v8~delword(-4+8,-4+8))
 
 ::method 'test17'
     v8 = 'one two  three   four    five     six      seven       eight'
@@ -198,16 +198,16 @@ return testGroupList
     r = v8~delword(1,1.5)
 
 ::method 'test19'
-    self~assertSame('subTest01', 'asdf zxcv     ASDF ', '61736466207a786376000000000041534446205a584356'x~delword( (3*3*3)/9, 2))
+    self~assertSame('asdf zxcv     ASDF ', '61736466207a786376000000000041534446205a584356'x~delword( (3*3*3)/9, 2))
 
 ::method 'test20'
-    self~assertSame('subTest01','',nv~delword(1,1))
+    self~assertSame('', nv~delword(1,1))
 
 ::method 'test21'
-    self~assertSame('subTest01','',nv.~delword(1,1))
+    self~assertSame('', nv.~delword(1,1))
 
 ::method 'test22'
-    self~assertSame('subTest01','',nv.10~delword(1,1))
+    self~assertSame('', nv.10~delword(1,1))
 
 ::method 'test23'
     self~expectSyntax(93.905)
@@ -239,90 +239,90 @@ return testGroupList
 
 ::method 'test31'
     v10000 = copies('J ',9999)||'K '
-    self~assertSame('subTest01',copies('J ',9998),v10000~delword(9999,2))
-    self~assertSame('subTest02',copies('J ',9999),v10000~delword(10000,2))
-    self~assertSame('subTest03',v10000,v10000~delword(10001,2))
+    self~assertSame(copies('J ',9998), v10000~delword(9999,2))
+    self~assertSame(copies('J ',9999), v10000~delword(10000,2))
+    self~assertSame(v10000, v10000~delword(10001,2))
 
 ::method 'test32'
     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
-    self~assertSame('subTest01','1 2 3 4 5 6 ',XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~delword(7,2+3))
+    self~assertSame('1 2 3 4 5 6 ', XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~delword(7,2+3))
 
 ::method 'test33'
     vwbwwbw = 'J'||copies(' ',5000)||copies('*',10000)||copies(' ',5000)||'R'
-    self~assertSame('subTest01',subword(vwbwwbw,2),vwbwwbw~delword(1,1))
-    self~assertSame('subTest02',subword(vwbwwbw,3),vwbwwbw~delword(1,2))
-    self~assertSame('subTest03','J'||copies(' ',5000)||'R',vwbwwbw~delword(2,1))
-    self~assertSame('subTest04',substr(vwbwwbw,1,5001),vwbwwbw~delword(2,2))
-    self~assertSame('subTest05',substr(vwbwwbw,1,20001),vwbwwbw~delword(3,1))
+    self~assertSame(subword(vwbwwbw,2), vwbwwbw~delword(1,1))
+    self~assertSame(subword(vwbwwbw,3), vwbwwbw~delword(1,2))
+    self~assertSame('J'||copies(' ',5000)||'R', vwbwwbw~delword(2,1))
+    self~assertSame(substr(vwbwwbw,1,5001), vwbwwbw~delword(2,2))
+    self~assertSame(substr(vwbwwbw,1,20001), vwbwwbw~delword(3,1))
 
 ::method 'test34'
     vwbw = 'John'||copies(' ',10000)||'Buckley'
-    self~assertSame('subTest01',subword(vwbw,2),vwbw~delword(1,1))
-    self~assertSame('subTest02',substr(vwbw,1,10004),vwbw~delword(2,1))
-    self~assertSame('subTest03','',vwbw~delword(1,2))
-    self~assertSame('subTest04',substr(vwbw,1,10004),vwbw~delword(2,2))
+    self~assertSame(subword(vwbw,2), vwbw~delword(1,1))
+    self~assertSame(substr(vwbw,1,10004), vwbw~delword(2,1))
+    self~assertSame('', vwbw~delword(1,2))
+    self~assertSame(substr(vwbw,1,10004), vwbw~delword(2,2))
 
 ::method 'test35'
-    self~assertSame('subTest01','',00345~delword(1,1))
+    self~assertSame('', 00345~delword(1,1))
 
 ::method 'test36'
-    self~assertSame('subTest01','',00345~delword(1,2))
+    self~assertSame('', 00345~delword(1,2))
 
 ::method 'test37'
-    self~assertSame('subTest01','',(3 4 5)~delword(1,3))
+    self~assertSame('', (3 4 5)~delword(1,3))
 
 ::method 'test38'
-    self~assertSame('subTest01','3 ',(3 4 5)~delword(2,2))
+    self~assertSame('3 ', (3 4 5)~delword(2,2))
 
 ::method 'test39'
-    self~assertSame('subTest01','3 4 ',(3 4 5)~delword(3,1))
+    self~assertSame('3 4 ', (3 4 5)~delword(3,1))
 
 ::method 'test40'
-    self~assertSame('subTest01','3 4 5',(3 4 5)~delword(4,4))
+    self~assertSame('3 4 5', (3 4 5)~delword(4,4))
 
 ::method 'test41'
     v8 = 'one two  three   four    five     six      seven       eight'
-    self~assertSame('subTest01','',delWord((v8),1,8))
-    self~assertSame('subTest02','one two  three   four    five     ',v8~delword(6,4))
-    self~assertSame('subTest03','one two  three   four    five     six      seven       ',v8~delword(8,3))
+    self~assertSame('', delWord((v8),1,8))
+    self~assertSame('one two  three   four    five     ', v8~delword(6,4))
+    self~assertSame('one two  three   four    five     six      seven       ', v8~delword(8,3))
 
     v8. = v8
-    self~assertSame('subTest04','',v8.~delword(1,8))
-    self~assertSame('subTest05','one ',v8.~delword(2,8))
-    self~assertSame('subTest06','one two  three   four    five     six      seven       eight',v8.~delword(9,1))
-    self~assertSame('subTest07','one two  three   ',v8.10~delword(4,5))
-    self~assertSame('subTest08','one two  three   four    ',v8.10~delword(5,5))
-    self~assertSame('subTest09','one two  three   four    five     ',v8.10~delword(6,4))
+    self~assertSame('', v8.~delword(1,8))
+    self~assertSame('one ', v8.~delword(2,8))
+    self~assertSame('one two  three   four    five     six      seven       eight', v8.~delword(9,1))
+    self~assertSame('one two  three   ', v8.10~delword(4,5))
+    self~assertSame('one two  three   four    ', v8.10~delword(5,5))
+    self~assertSame('one two  three   four    five     ', v8.10~delword(6,4))
 
 ::method 'test42'
     v26 = 'A B C D E F G H I J K L M N O P Q R S T U V W X Y Z'
     zeros1 = copies('0',10000)||'1'
-    self~assertSame('subTest01','Y X W V U T S R Q P O N M L K J I H G F E D C B A',(v26||' '||reverse(v26))~delword(1,27))
-    self~assertSame('subTest02','A B C D E F G H I J K L M N O P Q R S T U V W X Y Y X W V U T S R Q P O N M L K J I H G F E D C B A',(v26' 'reverse(v26))~delword(26,2))
-    self~assertSame('subTest03','A B C D E F G H I J K L M N O P Q R S T U V W X Y Z ',(v26 reverse(v26))~delword(27,26))
-    self~assertSame('subTest04','one seven',('one two three four five six seven')~delword(2,substr('3 4 5 6 7',5,1)))
-    self~assertSame('subTest05','A B C D E F G H I J K L M N O P Q R S T U V W X Y Z',v26~delword(length(translate(v26,'',' ')),zeros1))
-    self~assertSame('subTest06','A B C D E F G H I J K L M N O P Q R S T U ',v26~delword(x2d(16),x2d('A')))
+    self~assertSame('Y X W V U T S R Q P O N M L K J I H G F E D C B A', (v26||' '||reverse(v26))~delword(1,27))
+    self~assertSame('A B C D E F G H I J K L M N O P Q R S T U V W X Y Y X W V U T S R Q P O N M L K J I H G F E D C B A', (v26' 'reverse(v26))~delword(26,2))
+    self~assertSame('A B C D E F G H I J K L M N O P Q R S T U V W X Y Z ', (v26 reverse(v26))~delword(27,26))
+    self~assertSame('one seven', ('one two three four five six seven')~delword(2,substr('3 4 5 6 7',5,1)))
+    self~assertSame('A B C D E F G H I J K L M N O P Q R S T U V W X Y Z', v26~delword(length(translate(v26,'',' ')),zeros1))
+    self~assertSame('A B C D E F G H I J K L M N O P Q R S T U ', v26~delword(x2d(16),x2d('A')))
 
 ::method 'test43'
-    self~assertSame('subTest01','NUM ',(datatype(6) datatype('A'))~delword(2,datatype(7,'N')))
+    self~assertSame('NUM ', (datatype(6) datatype('A'))~delword(2,datatype(7,'N')))
 
 ::method 'test44'
-    self~assertSame('subTest01','Incorrect ',errortext(40)~delword(LASTPOS('O','WORD'),WORDlength('J. R. BUCKLEY',3)))
+    self~assertSame('Incorrect ', errortext(40)~delword(LASTPOS('O','WORD'),WORDlength('J. R. BUCKLEY',3)))
 
 ::method 'test45'
-    self~assertSame('subTest01','John ',('John R. Buckley'~delword(2,1))~delword('2 3'~delword(2,1),'1 2 3'~delword(2,2)) )
+    self~assertSame('John ', ('John R. Buckley'~delword(2,1))~delword('2 3'~delword(2,1),'1 2 3'~delword(2,2)))
 
 -- from bif.testgroup
    -- test the BIF, using examples from the documentation
 ::method "test_DELWORD"
-    self~assertSame("subTest1" , 'Now time'        , 'Now is the time'~delword(2,2))
-    self~assertSame("subTest2" , 'Now is '         , 'Now is the time '~delword(3) )
-    self~assertSame("subTest3" , 'Now is the time' , 'Now is the time'~delword(5)  )
-    self~assertSame("subTest4" , 'Now is time'     , 'Now is the time'~delword(3,1))
-    self~assertSame("subTest5" , 'Now time'        , 'Now is the time'~delword(2,2))
+    self~assertSame('Now time', 'Now is the time'~delword(2,2))
+    self~assertSame('Now is ', 'Now is the time '~delword(3))
+    self~assertSame('Now is the time', 'Now is the time'~delword(5))
+    self~assertSame('Now is time', 'Now is the time'~delword(3,1))
+    self~assertSame('Now time', 'Now is the time'~delword(2,2))
 
    -- new tests
-    self~assertSame("subTest4" , 'Now is the time' , 'Now is the time'~delword(3,0))
-    self~assertSame("subTest4" , 'Now is the time' , 'Now is the time'~delword(1,0))
+    self~assertSame('Now is the time', 'Now is the time'~delword(3,0))
+    self~assertSame('Now is the time', 'Now is the time'~delword(1,0))
 

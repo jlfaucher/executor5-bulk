@@ -109,8 +109,8 @@ do
       -- create a testSuite for the given test case class, use all its testmethods
       ts~addTest( .testSuite~new(arr[1]))
    end
-   -- testResult=.testSuite~new(testGroupClass)~run
-   testResult=ts~run       -- now run all the tests
+   -- testResult=.testSuite~new(testGroupClass)~execute
+   testResult=ts~execute       -- now run all the tests
 
    call simpleDumpTestResults testResult
 end
@@ -120,23 +120,23 @@ end
 return testGroupList
 
 
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
-::class "countstr.testGroup" subclass TestCase public
+::class "countstr.testGroup" subclass ooTestCase public
 
 ::method "test_1"
-    self~assertSame("subTest1", 0 , ''~countstr('J0KKK0')  )
+    self~assertSame(0, ''~countstr('J0KKK0'))
 
 ::method "test_2"
-    self~assertSame("subTest2", 0 , ' '~countstr('J0KKK0') )
+    self~assertSame(0, ' '~countstr('J0KKK0'))
 
 -- rexxref documentation tests
 
 ::method "test_101"
 
 ::method "test_3"
-    self~assertSame("subTest101", 4 , '101101'~countstr('1') )
+    self~assertSame(4, '101101'~countstr('1'))
 
 ::method "test_4"
-    self~assertSame("subTest104", 1 , 'J0KKK0'~countstr('KK'))
+    self~assertSame(1, 'J0KKK0'~countstr('KK'))
 

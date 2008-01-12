@@ -108,8 +108,8 @@ do
       -- create a testSuite for the given test case class, use all its testmethods
       ts~addTest( .testSuite~new(arr[1]))
    end
-   -- testResult=.testSuite~new(testGroupClass)~run
-   testResult=ts~run       -- now run all the tests
+   -- testResult=.testSuite~new(testGroupClass)~execute
+   testResult=ts~execute       -- now run all the tests
 
    call simpleDumpTestResults testResult
 end
@@ -119,24 +119,24 @@ end
 return testGroupList
 
 
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
-::class "CHANGESTR.testGroup" subclass TestCase public
+::class "CHANGESTR.testGroup" subclass ooTestCase public
 
 ::method "test_1"
-   self~assertSame("subTest1", '101100' , CHANGESTR('','101100','X')  )
+   self~assertSame('101100', CHANGESTR('','101100','X'))
 
 ::method "test_2"
-   self~assertSame("subTest2", ''       , CHANGESTR('1',''     ,'X')  )
+   self~assertSame('', CHANGESTR('1',''     ,'X'))
 
 ::method "test_4"
-   self~assertSame("subTest4", 'ha-lo' , CHANGESTR('l','hallo','-',1)  )
+   self~assertSame('ha-lo', CHANGESTR('l','hallo','-',1))
 
 ::method "test_5"
-   self~assertSame("subTest5", 'ha--o' , CHANGESTR('l','hallo','-',2)  )
+   self~assertSame('ha--o', CHANGESTR('l','hallo','-',2))
 
 ::method "test_6"
-   self~assertSame("subTest6", 'ha--o' , CHANGESTR('l','hallo','-',3)  )
+   self~assertSame('ha--o', CHANGESTR('l','hallo','-',3))
 
 ::method "test_7"
    self~expectSyntax(93.907)
@@ -146,8 +146,8 @@ return testGroupList
 -- rexxref documentation tests
 
 ::method "test_101"
-   self~assertSame("subTest101", '000'    , CHANGESTR('1','101100',"")  )
+   self~assertSame('000', CHANGESTR('1','101100',""))
 
 ::method "test_102"
-   self~assertSame("subTest102", 'X0XX00' , CHANGESTR('1','101100','X') )
+   self~assertSame('X0XX00', CHANGESTR('1','101100','X'))
 

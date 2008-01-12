@@ -103,8 +103,8 @@
                 -- create a testSuite for the given test case class, use all its testmethods
                 ts~addTest( .testSuite~new(arr[1]))
             end
-            -- testResult=.testSuite~new(testUnitClass)~run
-            testResult=ts~run       -- now run all the tests
+            -- testResult=.testSuite~new(testUnitClass)~execute
+            testResult=ts~execute       -- now run all the tests
 
             call simpleFormatTestResults testResult
         end
@@ -113,53 +113,53 @@
       optionally list of mandatory test methods                      */
 return testUnitList
 
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
 -- class named exactly like file
-::class "MAX.testGroup" subclass TestCase public
+::class "MAX.testGroup" subclass ooTestCase public
 
 ::method 'test001'
-    self~assertSame('subTest01','1.00',max(1.00,1))
+    self~assertSame('1.00', max(1.00,1))
 
 ::method 'test002'
-    self~assertSame('subTest01','1',max(1,1.00))
+    self~assertSame('1', max(1,1.00))
 
 ::method 'test003'
-    self~assertSame('subTest01','0',max(-0.00, 0))
+    self~assertSame('0', max(-0.00, 0))
 
 ::method 'test004'
-    self~assertSame('subTest01','0',max('-0.00', 0))
+    self~assertSame('0', max('-0.00', 0))
 
 ::method 'test005'
-    self~assertSame('subTest01','0',max(0,'-0.000'))
+    self~assertSame('0', max(0,'-0.000'))
 
 ::method 'test006'
-    self~assertSame('subTest01','0',max(0, 00.0))
+    self~assertSame('0', max(0, 00.0))
 
 ::method 'test007'
-    self~assertSame('subTest01','12345678.0',max(12345678.00, 12345678))
+    self~assertSame('12345678.0', max(12345678.00, 12345678))
 
 ::method 'test008'
-    self~assertSame('subTest01','12345678',max(12345678, 12345678.00))
+    self~assertSame('12345678', max(12345678, 12345678.00))
 
 ::method 'test009'
-    self~assertSame('subTest01',12345679.0,max(12345678.96, 12345679))
+    self~assertSame(12345679.0, max(12345678.96, 12345679))
 
 ::method 'test010'
-    self~assertSame('subTest01','-12345678.0',max('-12345678.00', -12345678))
+    self~assertSame('-12345678.0', max('-12345678.00', -12345678))
 
 ::method 'test011'
-    self~assertSame('subTest01','-12345678',max(-12345678, '-12345678.00'))
+    self~assertSame('-12345678', max(-12345678, '-12345678.00'))
 
 ::method 'test012'
-    self~assertSame('subTest01',-12345679,max(-12345679, '-12345678.96'))
+    self~assertSame(-12345679, max(-12345679, '-12345678.96'))
 
 -- from bif.testgroup
    -- test the BIF, using examples from the documentation
 ::method "test_MAX"
-    self~assertEquals("subTest1" , 12  , MAX(12,6,7,9)                                             )
-    self~assertEquals("subTest2" , 19  , MAX(17.3,19,17.03)                                        )
-    self~assertEquals("subTest3" , -3  , MAX(-7,-3,-4.3)                                           )
-    self~assertEquals("subTest4" , 21  , MAX(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21))
+    self~assertEquals(12, MAX(12,6,7,9))
+    self~assertEquals(19, MAX(17.3,19,17.03))
+    self~assertEquals(-3, MAX(-7,-3,-4.3))
+    self~assertEquals(21, MAX(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21))
 
 

@@ -101,8 +101,8 @@
                 -- create a testSuite for the given test case class, use all its testmethods
                 ts~addTest( .testSuite~new(arr[1]))
             end
-            -- testResult=.testSuite~new(testUnitClass)~run
-            testResult=ts~run       -- now run all the tests
+            -- testResult=.testSuite~new(testUnitClass)~execute
+            testResult=ts~execute       -- now run all the tests
 
             call simpleFormatTestResults testResult
         end
@@ -111,19 +111,19 @@
       optionally list of mandatory test methods                      */
 return testUnitList
 
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
 -- class named exactly like file
-::class "FORM.testGroup" subclass TestCase public
+::class "FORM.testGroup" subclass ooTestCase public
 
    -- test the BIF
 ::method "test_FORM"
     numeric form scientific
-    self~assertSame("subTest1", "SCIENTIFIC",  form())
+    self~assertSame("SCIENTIFIC", form())
 
     numeric form engineering
-    self~assertSame("subTest2", "ENGINEERING", form())
+    self~assertSame("ENGINEERING", form())
 
     numeric form                 -- reset to default, which is scientific
-    self~assertSame("subTest1", "SCIENTIFIC",  form())
+    self~assertSame("SCIENTIFIC", form())
 

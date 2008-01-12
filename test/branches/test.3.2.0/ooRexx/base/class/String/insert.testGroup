@@ -107,8 +107,8 @@ do
       -- create a testSuite for the given test case class, use all its testmethods
       ts~addTest( .testSuite~new(arr[1]))
    end
-   -- testResult=.testSuite~new(testGroupClass)~run
-   testResult=ts~run       -- now run all the tests
+   -- testResult=.testSuite~new(testGroupClass)~execute
+   testResult=ts~execute       -- now run all the tests
 
    call simpleFormatTestResults testResult
 end
@@ -117,9 +117,9 @@ end
       optionally list of mandatory test methods                      */
 return testGroupList
 
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
-::class "String_insertMethod.testGroup" subclass TestCase public
+::class "String_insertMethod.testGroup" subclass ooTestCase public
 
 ::method 'test001'   -- load .local variables
     .local~vblank = ' '
@@ -131,66 +131,66 @@ return testGroupList
     .local~vres2 = 'A'||copies('*',9999)||'\\\\\\\\\'
 
 ::method 'test002'
-    self~assertSame('subTest01','A ',.vblank~insert('A'))
+    self~assertSame('A ', .vblank~insert('A'))
 
 ::method 'test003'
-    self~assertSame('subTest01','A',''~insert('A'))
+    self~assertSame('A', ''~insert('A'))
 
 ::method 'test004'
-    self~assertSame('subTest01','A ',.vblank~insert('A'))
+    self~assertSame('A ', .vblank~insert('A'))
 
 ::method 'test005'
-    self~assertSame('subTest01','A*','2A'x~insert('A'))
+    self~assertSame('A*', '2A'x~insert('A'))
 
 ::method 'test006'
-    self~assertSame('subTest01','Aabcdefghijklmnopqrstuvwxyz1234','abcdefghijklmnopqrstuvwxyz1234'~insert('A'))
+    self~assertSame('Aabcdefghijklmnopqrstuvwxyz1234', 'abcdefghijklmnopqrstuvwxyz1234'~insert('A'))
 
 ::method 'test007'
-    self~assertSame('subTest01','A'||.v256,.v256~insert('A'))
+    self~assertSame('A'||.v256, .v256~insert('A'))
 
 ::method 'test008'
-    self~assertSame('subTest01','A'||.v10000,copies('5F'x,10000)~insert('A'))
+    self~assertSame('A'||.v10000, copies('5F'x,10000)~insert('A'))
 
 ::method 'test009'
     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1234567890'
-    self~assertSame('subTest01','A1234567890',XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~insert('A'))
+    self~assertSame('A1234567890', XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~insert('A'))
 
 ::method 'test010'
     xre = 'Ahhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh'
-    self~assertSame('subTest01',xre,'6868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868'X~insert('A'))
+    self~assertSame(xre, '6868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868'X~insert('A'))
 
 ::method 'test011'
-    self~assertSame('subTest01','abcdefghijklmnopqrstuvwxyz1234abcdefghijklmnopqrstuvwxyz1234',.v30~insert(.v30))
+    self~assertSame('abcdefghijklmnopqrstuvwxyz1234abcdefghijklmnopqrstuvwxyz1234', .v30~insert(.v30))
 
 ::method 'test012'
-    self~assertSame('subTest01','abcdefghijklmnopqrstuvwxyz1234AbCdEfG','AbCdEfG'~insert(.v30))
+    self~assertSame('abcdefghijklmnopqrstuvwxyz1234AbCdEfG', 'AbCdEfG'~insert(.v30))
 
 ::method 'test013'
-    self~assertSame('subTest01','Ahasdghj','hasdghj'~insert('A'))
+    self~assertSame('Ahasdghj', 'hasdghj'~insert('A'))
 
 ::method 'test014'
-    self~assertSame('subTest01','A'||.v10000,.v10000~insert('A'))
+    self~assertSame('A'||.v10000, .v10000~insert('A'))
 
 ::method 'test015'
-    self~assertSame('subTest01',' 0',0~insert(.vblank))
+    self~assertSame(' 0', 0~insert(.vblank))
 
 ::method 'test016'
-    self~assertSame('subTest01','1',1~insert(''))
+    self~assertSame('1', 1~insert(''))
 
 ::method 'test017'
-    self~assertSame('subTest01',' 1','31'x~insert(.vblank))
+    self~assertSame(' 1', '31'x~insert(.vblank))
 
 ::method 'test018'
-    self~assertSame('subTest01','*0002',insert('2A'x,0002))
+    self~assertSame('*0002', insert('2A'x,0002))
 
 ::method 'test019'
-    self~assertSame('subTest01','abcdefghijklmnopqrstuvwxyz1234A','abcdefghijklmnopqrstuvwxyz1234'~insert('A','00030'))
+    self~assertSame('abcdefghijklmnopqrstuvwxyz1234A', 'abcdefghijklmnopqrstuvwxyz1234'~insert('A','00030'))
 
 ::method 'test020'
-    self~assertSame('subTest01',substr(.v256,1,250)||'A'||substr(.v256,251) , .v256~insert('A',2.5E+2))
+    self~assertSame(substr(.v256,1,250)||'A'||substr(.v256,251), .v256~insert('A',2.5E+2))
 
 ::method 'test021'
-    self~assertSame('subTest01',substr(.v10000,1,50000,' ')||'A' , copies('5F'x,10000)~insert('A','5E+4'))
+    self~assertSame(substr(.v10000,1,50000,' ')||'A', copies('5F'x,10000)~insert('A','5E+4'))
 
 ::method 'test022'
     self~expectSyntax(93.905)
@@ -198,32 +198,32 @@ return testGroupList
 
 ::method 'test023'
     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1234567890'
-    self~assertSame('subTest01','1A234567890' , XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~insert('A',1))
+    self~assertSame('1A234567890', XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~insert('A',1))
 
 ::method 'test024'
     xre = 'hAhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh'
-    self~assertSame('subTest01',xre , '6868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868'X~insert('A',1))
+    self~assertSame(xre, '6868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868'X~insert('A',1))
 
 ::method 'test025'
-    self~assertSame('subTest01','Aabcdefghijklmnopqrstuvwxyz1234' , .v30~insert('A',0))
+    self~assertSame('Aabcdefghijklmnopqrstuvwxyz1234', .v30~insert('A',0))
 
 ::method 'test026'
-    self~assertSame('subTest01','aABbcdefghijklmnopqrstuvwxyz1234' , .v30~insert('AB',1))
+    self~assertSame('aABbcdefghijklmnopqrstuvwxyz1234', .v30~insert('AB',1))
 
 ::method 'test027'
-    self~assertSame('subTest01','abABCcdefghijklmnopqrstuvwxyz1234' , .v30~insert('ABC',2))
+    self~assertSame('abABCcdefghijklmnopqrstuvwxyz1234', .v30~insert('ABC',2))
 
 ::method 'test028'
-    self~assertSame('subTest01','abcdefghijklmnopqrstuvwxyz123ABCD4' , .v30~insert('ABCD',29))
+    self~assertSame('abcdefghijklmnopqrstuvwxyz123ABCD4', .v30~insert('ABCD',29))
 
 ::method 'test029'
-    self~assertSame('subTest01','abcdefghijklmnopqrstuvwxyz1234'||'00'X , .v30~insert('00'X,30))
+    self~assertSame('abcdefghijklmnopqrstuvwxyz1234'||'00'X, .v30~insert('00'X,30))
 
 ::method 'test030'
-    self~assertSame('subTest01','abcdefghijklmnopqrstuvwxyz1234 '||'00011AAB'X , .v30~insert('0011aAb'X,31))
+    self~assertSame('abcdefghijklmnopqrstuvwxyz1234 '||'00011AAB'X, .v30~insert('0011aAb'X,31))
 
 ::method 'test031'
-    self~assertSame('subTest01','AbCdEfG    abcdefghijklmnopqrstuvwxyz1234' , 'AbCdEfG'~insert(.v30,'+'||'30303131'x||'.'||'3030'x||'e'||'30'x||000))
+    self~assertSame('AbCdEfG    abcdefghijklmnopqrstuvwxyz1234', 'AbCdEfG'~insert(.v30,'+'||'30303131'x||'.'||'3030'x||'e'||'30'x||000))
 
 ::method 'test032'
     self~expectSyntax(93.905)
@@ -242,92 +242,92 @@ return testGroupList
     xre = 'hasdghj'~insert('A','cc'x)
 
 ::method 'test036'
-    self~assertSame('subTest01','hasAdghj' , 'hasdghj'~insert('A',000000000000000000000000000000000000000000003))
+    self~assertSame('hasAdghj', 'hasdghj'~insert('A',000000000000000000000000000000000000000000003))
 
 ::method 'test037'
-    self~assertSame('subTest01','hA  asdghj' , 'hasdghj'~insert('A',1,000000000000000000000000000000000000000000003))
+    self~assertSame('hA  asdghj', 'hasdghj'~insert('A',1,000000000000000000000000000000000000000000003))
 
 ::method 'test038'
-    self~assertSame('subTest01','hA33333333asdghj' , 'hasdghj'~insert('A',1,9,+000000000000000000000000000000000000000000003))
+    self~assertSame('hA33333333asdghj', 'hasdghj'~insert('A',1,9,+000000000000000000000000000000000000000000003))
 
 ::method 'test039'
-    self~assertSame('subTest01','__'||'A'||substr(.v10000,3) , .v10000~insert('A',2))
+    self~assertSame('__'||'A'||substr(.v10000,3), .v10000~insert('A',2))
 
 ::method 'test040'
-    self~assertSame('subTest01','_'||'A'||substr(.v10000,2) , .v10000~insert('A',0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001))
+    self~assertSame('_'||'A'||substr(.v10000,2), .v10000~insert('A',0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001))
 
 ::method 'test041'
-    self~assertSame('subTest01','A' , 'A'~insert('',2-1,0))
+    self~assertSame('A', 'A'~insert('',2-1,0))
 
 ::method 'test042'
-    self~assertSame('subTest01','A ' , 'A'~insert('',2-1,1))
+    self~assertSame('A ', 'A'~insert('',2-1,1))
 
 ::method 'test043'
-    self~assertSame('subTest01','A  ' , 'A'~insert('',2-1,2))
+    self~assertSame('A  ', 'A'~insert('',2-1,2))
 
 ::method 'test044'
-    self~assertSame('subTest01',' A' , 'A'~insert(.vblank,0,'31'x))
+    self~assertSame(' A', 'A'~insert(.vblank,0,'31'x))
 
 ::method 'test045'
-    self~assertSame('subTest01','A*' , 'A'~insert('2A'x,'31'x,0001))
+    self~assertSame('A*', 'A'~insert('2A'x,'31'x,0001))
 
 ::method 'test046'
     xre = 'A'||'2A'x
-    self~assertSame('subText01',xre , insert('2A'x,'A','31'x,'3030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303031'x))
+    self~assertSame(xre, insert('2A'x,'A','31'x,'3030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303031'x), 'subText01')
 
 ::method 'test047'
     xre = 'A* '
-    self~assertSame('subTest01',xre , 'A'~insert('2A'x,'31'x,'3030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303032'x))
+    self~assertSame(xre, 'A'~insert('2A'x,'31'x,'3030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303032'x))
 
 ::method 'test048'
-    self~assertSame('subTest01','A                                  abcdefghi' , 'A'~insert('abcdefghijklmnopqrstuvwxyz1234',0035,'9'))
+    self~assertSame('A                                  abcdefghi', 'A'~insert('abcdefghijklmnopqrstuvwxyz1234',0035,'9'))
 
 ::method 'test049'
-    self~assertSame('subTest01','A                         abcdefghi' , 'A'~insert('abcdefghijklmnopqrstuvwxyz1234',0026,'9'))
+    self~assertSame('A                         abcdefghi', 'A'~insert('abcdefghijklmnopqrstuvwxyz1234',0026,'9'))
 
 ::method 'test050'
-    self~assertSame('subTest01','A'||copies(' ',9999)||'1234567812' , 'A'~insert(.v256,'10000','0010'))
+    self~assertSame('A'||copies(' ',9999)||'1234567812', 'A'~insert(.v256,'10000','0010'))
 
 ::method 'test051'
-    self~assertSame('subTest01','A___________' , 'A'~insert(copies('5F'x,10000),'000001',1.1E+1))
+    self~assertSame('A___________', 'A'~insert(copies('5F'x,10000),'000001',1.1E+1))
 
 ::method 'test052'
     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1234567890'
-    self~assertSame('subTest01','A12345' , 'A'~insert(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX,1,5))
+    self~assertSame('A12345', 'A'~insert(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX,1,5))
 
 ::method 'test053'
-    self~assertSame('subTest01','A__' , 'A'~insert(.v10000,1,0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002))
+    self~assertSame('A__', 'A'~insert(.v10000,1,0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002))
 
 ::method 'test054'
-    self~assertSame('subTest01','A'||copies(' ',9997)||'__' , 'A'~insert(.v10000,9998,+0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002))
+    self~assertSame('A'||copies(' ',9997)||'__', 'A'~insert(.v10000,9998,+0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002))
 
 ::method 'test055'
-    self~assertSame('subTest01','A'||copies(' ',1006)||'__' , 'A'~insert(.v10000,1||'007',+0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002))
+    self~assertSame('A'||copies(' ',1006)||'__', 'A'~insert(.v10000,1||'007',+0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002))
 
 ::method 'test056'
-    self~assertSame('subTest01','A'||copies('2',9997)||'________________' , 'A'~insert(.v10000,9998,16,+0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002))
+    self~assertSame('A'||copies('2',9997)||'________________', 'A'~insert(.v10000,9998,16,+0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002))
 
 ::method 'test057'
-    self~assertSame('subTest01','A'||'||||'||''||copies('|',255) , 'A'~insert('',(2*3)-1,'2.55E+2','|'))
+    self~assertSame('A'||'||||'||''||copies('|',255), 'A'~insert('',(2*3)-1,'2.55E+2','|'))
 
 ::method 'test058'
-    self~assertSame('subTest01','A'||' '||copies('@',255) , 'A'~insert(.vblank,1,200+50+6,'@'))
+    self~assertSame('A'||' '||copies('@',255), 'A'~insert(.vblank,1,200+50+6,'@'))
 
 ::method 'test059'
-    self~assertSame('subTest01','A'||'2A'x||copies('7',32767) , 'A'~insert('2A'x,'31'x,32768,4+3))
+    self~assertSame('A'||'2A'x||copies('7',32767), 'A'~insert('2A'x,'31'x,32768,4+3))
 
 ::method 'test060'
-    self~assertSame('subTest01','A))))))))))))))' , 'A'~insert('abcdefghijklmnopqrstuvwxyz1234',00015,'30'x,')'))
+    self~assertSame('A))))))))))))))', 'A'~insert('abcdefghijklmnopqrstuvwxyz1234',00015,'30'x,')'))
 
 ::method 'test061'
-    self~assertSame('subTest01',.vres1 , 'A'~insert(copies('3132333435363738'x,32),'256',1,':'))
+    self~assertSame(.vres1, 'A'~insert(copies('3132333435363738'x,32),'256',1,':'))
 
 ::method 'test062'
-    self~assertSame('subTest01',.vres2 , 'A'~insert(copies('\',10000),'00010000','39'x,'2A'x))
+    self~assertSame(.vres2, 'A'~insert(copies('\',10000),'00010000','39'x,'2A'x))
 
 ::method 'test063'
     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1234567890'
-    self~assertSame('subTest01','A1234567890************' , 'A'~insert(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX,1,22,'*'))
+    self~assertSame('A1234567890************', 'A'~insert(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX,1,22,'*'))
 
 ::method 'test064'
     self~expectSyntax(40.23)
@@ -342,13 +342,13 @@ return testGroupList
     xre = insert(.v30,'A',1,04,'012'X)
 
 ::method 'test067'
-    self~assertSame('subTest01','Aabcd' , 'A'~insert(.v30,1,04,))
+    self~assertSame('Aabcd', 'A'~insert(.v30,1,04,))
 
 ::method 'test068'
-    self~assertSame('subTest01','A14 42 21 1' , 'A'~insert(2*7 7+7+7+7+7+7 84/4 700-699,699-698,5*2,2*2))
+    self~assertSame('A14 42 21 1', 'A'~insert(2*7 7+7+7+7+7+7 84/4 700-699,699-698,5*2,2*2))
 
 ::method 'test069'
-    self~assertSame('subTest01','A2*7 7+7+7+' , 'A'~insert('2*7 7+7+7+7+7+7 84/4 700-699',699-698,5*2,2*2))
+    self~assertSame('A2*7 7+7+7+', 'A'~insert('2*7 7+7+7+7+7+7 84/4 700-699',699-698,5*2,2*2))
 
 ::method 'test070'
     self~expectSyntax(93.905)
@@ -359,21 +359,21 @@ return testGroupList
     xre = 'A'~insert(2*7 7+7+7+7+7+7 84/4 700-699,699-698,5*3,21*2)
 
 ::method 'test072'
-    self~assertSame('subTest01','A14 42 21 144444' , 'A'~insert(2*7 7+7+7+7+7+7 84/4 700-699,699-698,5*3,2*2))
+    self~assertSame('A14 42 21 144444', 'A'~insert(2*7 7+7+7+7+7+7 84/4 700-699,699-698,5*3,2*2))
 
 ::method 'test073'
     numeric digits 1
-    self~assertSame('subTest01','A1E+1 5E+1 ' , 'A'~insert(2*7 7+7+7+7+7+7 84/4 700-699,6.99-6.00,5*2,2*2))
+    self~assertSame('A1E+1 5E+1 ', 'A'~insert(2*7 7+7+7+7+7+7 84/4 700-699,6.99-6.00,5*2,2*2))
 
 ::method 'test074'
     numeric digits 1
-    self~assertSame('subTest01','A2*7 7+7+7+' , 'A'~insert('2*7 7+7+7+7+7+7 84/4 700-699',6.99-6.00,5*2,2*2))
+    self~assertSame('A2*7 7+7+7+', 'A'~insert('2*7 7+7+7+7+7+7 84/4 700-699',6.99-6.00,5*2,2*2))
 
 ::method 'test075'
-    self~assertSame('subTest01','ANV*' , 'A'~insert(nv,1,3,'*'))
+    self~assertSame('ANV*', 'A'~insert(nv,1,3,'*'))
 
 ::method 'test076'
-    self~assertSame('subTest01','NA**V.' , nv.~insert('A',1,3,'*'))
+    self~assertSame('NA**V.', nv.~insert('A',1,3,'*'))
 
 ::method 'test077'
     self~expectSyntax(93.905)
@@ -392,7 +392,7 @@ return testGroupList
     xre = noval2~insert(noval1,noval3,noval4,noval5)
 
 ::method 'test082'
-    self~assertSame('subTest01','NA**V.' , nv.~insert('A',1,3,'*'))
+    self~assertSame('NA**V.', nv.~insert('A',1,3,'*'))
 
 ::method 'test083'
     self~expectSyntax(93.905)
@@ -413,25 +413,25 @@ return testGroupList
 ::method 'test087'
     var1 = 'John R. Buckley'
     var2 = 'One Two Three'
-    self~assertSame('subTest01','John R. Buckley' , delword(var1,2,1)~insert(subword(var1,2,1),POS('l',word(var1,3)),X2D(03)))
+    self~assertSame('John R. Buckley', delword(var1,2,1)~insert(subword(var1,2,1),POS('l',word(var1,3)),X2D(03)))
 
 ::method 'test088'
-    self~assertSame('subTest01','  \*****kkkkk\\\  ' , center('\\\\',8)~insert(copies('*',5),C2D(''),X2D('A'),D2C(107)))
+    self~assertSame('  \*****kkkkk\\\  ', center('\\\\',8)~insert(copies('*',5),C2D(''),X2D('A'),D2C(107)))
 
 ::method 'test089'
     var2 = 'One Two Three'
-    self~assertSame('subTest01','One Two Three' , (word(var2,1)' 'word(var2,3))~insert(word(var2,2),C2D(D2C(4)),C2D(D2C(5))-1))
+    self~assertSame('One Two Three', (word(var2,1)' 'word(var2,3))~insert(word(var2,2),C2D(D2C(4)),C2D(D2C(5))-1))
 
 ::method 'test090'
     var1 = 'John R. Buckley'
     var2 = 'One Two Three'
-    self~assertSame('subTest01','ONE TWO yelkcuB .R nhoJ THREE' , translate(var2)~insert(reverse(var1),lastPos('O','OOOOOOOO'),X2D(10)))
+    self~assertSame('ONE TWO yelkcuB .R nhoJ THREE', translate(var2)~insert(reverse(var1),lastPos('O','OOOOOOOO'),X2D(10)))
 
 ::method 'test091'
-    self~assertSame('subTest01','JR BUCKLEY ',' '~insert('BUCKLEY')~insert('R'~insert('J'),''~insert('0'),''~insert('3')))
+    self~assertSame('JR BUCKLEY ', ' '~insert('BUCKLEY')~insert('R'~insert('J'),''~insert('0'),''~insert('3')))
 
 ::method 'test092'
-    self~assertSame('subTest01','JR%BUCKLEY','BUCKLEY'~insert('JR',,3,'%'~insert('')))
+    self~assertSame('JR%BUCKLEY', 'BUCKLEY'~insert('JR',,3,'%'~insert('')))
 
 ::method 'test093'
     .local~remove(vblank)
@@ -467,92 +467,92 @@ return testGroupList
     .local~vn999 = 999
 
 ::method 'test094'
-    self~assertSame('subTest01',' ',' '~insert(''))
+    self~assertSame(' ', ' '~insert(''))
 
 ::method 'test095'
-    self~assertSame('subTest01',' *','*'~insert(' '))
+    self~assertSame(' *', '*'~insert(' '))
 
 ::method 'test096'
-    self~assertSame('subTest01','*abcdefghijklmnopqrstuvwxyz1234',.v30~insert(.v1))
+    self~assertSame('*abcdefghijklmnopqrstuvwxyz1234', .v30~insert(.v1))
 
 ::method 'test097'
-    self~assertSame('subTest01',.v30||.v255,copies('40'x,255)~insert('6162636465666768696a6b6c6d6e6f707172737475767778797a31323334'X))
+    self~assertSame(.v30||.v255, copies('40'x,255)~insert('6162636465666768696a6b6c6d6e6f707172737475767778797a31323334'X))
 
 ::method 'test098'
-    self~assertSame('subtest11',copies('ª',255)||copies('$',256),copies('$',256)~insert(copies('ª',255)))
+    self~assertSame(copies('ª',255)||copies('$',256), copies('$',256)~insert(copies('ª',255)))
 
 ::method 'test099'
-    self~assertSame('subTest01',.v32768||.v10000,.v10000~insert(.v32768))
+    self~assertSame(.v32768||.v10000, .v10000~insert(.v32768))
 
 ::method 'test100'
-    self~assertSame('subTest01',.v32768||.v10000,copies('\',10000)~insert(copies('@',32768),'30'x))
+    self~assertSame(.v32768||.v10000, copies('\',10000)~insert(copies('@',32768),'30'x))
 
 ::method 'test101'
-    self~assertSame('subTest01',.v1||.vblank,.v1~insert(.vblank,00000000001))
+    self~assertSame(.v1||.vblank, .v1~insert(.vblank,00000000001))
 
 ::method 'test102'
-    self~assertSame('subTest01','abcdefghi*jklmnopqrstuvwxyz1234','6162636465666768696a6b6c6d6e6f707172737475767778797a31323334'X~insert('2A'x,'     9     '))
+    self~assertSame('abcdefghi*jklmnopqrstuvwxyz1234', '6162636465666768696a6b6c6d6e6f707172737475767778797a31323334'X~insert('2A'x,'     9     '))
 
 ::method 'test103'
-    self~assertSame('subTest01',.vres1,copies('_',256)~insert(copies('@',255),'00010'))
+    self~assertSame(.vres1, copies('_',256)~insert(copies('@',255),'00010'))
 
 ::method 'test104'
-    self~assertSame('subTest01',substr(.v32768,1,255)||.v10000||substr(.v32768,256),.v32768~insert(.v10000,255))
+    self~assertSame(substr(.v32768,1,255)||.v10000||substr(.v32768,256), .v32768~insert(.v10000,255))
 
 ::method 'test105'
-    self~assertSame('subTest01',.v256||.v255,copies('5F'x,256)~insert(copies('40'x,255),'323536'x))
+    self~assertSame(.v256||.v255, copies('5F'x,256)~insert(copies('40'x,255),'323536'x))
 
 ::method 'test106'
-    self~assertSame('subTest01',.v32768||.v1,copies('40'x,32768)~insert('2A'x,'32768'))
+    self~assertSame(.v32768||.v1, copies('40'x,32768)~insert('2A'x,'32768'))
 
 ::method 'test107'
-    self~assertSame('subTest01',.v1||copies(' ',32767)||.v32768,'2A'x~insert(copies('40'x,32768),.32768E+5))
+    self~assertSame(.v1||copies(' ',32767)||.v32768, '2A'x~insert(copies('40'x,32768),.32768E+5))
 
 ::method 'test108'
-    self~assertSame('subTest01',.v1||copies(' ',9999)||.v10000,.v1~insert(.v10000,0000000000000000010000))
+    self~assertSame(.v1||copies(' ',9999)||.v10000, .v1~insert(.v10000,0000000000000000010000))
 
 ::method 'test109'
-    self~assertSame('subTest01','*','*'~insert('abcdefghijklmnopqrstuvwxyz1234',1,0))
+    self~assertSame('*', '*'~insert('abcdefghijklmnopqrstuvwxyz1234',1,0))
 
 ::method 'test110'
-    self~assertSame('subTest01',substr(.v255,1,11)||substr(.v256,1,1)||substr(.v255,12),.v255~insert(.v256,11,1))
+    self~assertSame(substr(.v255,1,11)||substr(.v256,1,1)||substr(.v255,12), .v255~insert(.v256,11,1))
 
 ::method 'test111'
-    self~assertSame('subTest01',.vres3,copies('\',10000)~insert(copies('@',32768),'3330'x,'39'x))
+    self~assertSame(.vres3, copies('\',10000)~insert(copies('@',32768),'3330'x,'39'x))
 
 ::method 'test112'
-    self~assertSame('subTest01',.v255||substr(.v256,1,30),copies('40'x,255)~insert(copies('5F'x,256),'255',30))
+    self~assertSame(.v255||substr(.v256,1,30), copies('40'x,255)~insert(copies('5F'x,256),'255',30))
 
 ::method 'test113'
-    self~assertSame('subTest01','*'||copies(' ',255)||copies('@',255),'*'~insert(copies('@',32768),256,'255'))
+    self~assertSame('*'||copies(' ',255)||copies('@',255), '*'~insert(copies('@',32768),256,'255'))
 
 ::method 'test114'
-    self~assertSame('subTest01',substr(.v10000,1,32768)||substr(.v1,1,256),.v10000~insert(.v1,32768,2||5||6))
+    self~assertSame(substr(.v10000,1,32768)||substr(.v1,1,256), .v10000~insert(.v1,32768,2||5||6))
 
 ::method 'test115'
-    self~assertSame('subTest01',.vres2,.v10000~insert(.v30,'1.6E+1','1.0E+4'))
+    self~assertSame(.vres2, .v10000~insert(.v30,'1.6E+1','1.0E+4'))
 
 ::method 'test116'
-    self~assertSame('subTest01','*','*'~insert('abcdefghijklmnopqrstuvwxyz1234',1,0,'x'))
+    self~assertSame('*', '*'~insert('abcdefghijklmnopqrstuvwxyz1234',1,0,'x'))
 
 ::method 'test117'
     self~expectSyntax(93.922)
     xre = .v255~insert(.v256,11,1,'**')
 
 ::method 'test118'
-    self~assertSame('subTest01',.vres4,copies('\',10000)~insert(copies('@',32768),30,9,+000000000000000000003))
+    self~assertSame(.vres4, copies('\',10000)~insert(copies('@',32768),30,9,+000000000000000000003))
 
 ::method 'test119'
-    self~assertSame('subTest01',.v255||.v256||'2A'x,copies('40'x,255)~insert(copies('5F'x,256),255,257,'2A'x))
+    self~assertSame(.v255||.v256||'2A'x, copies('40'x,255)~insert(copies('5F'x,256),255,257,'2A'x))
 
 ::method 'test120'
-    self~assertSame('subTest01',.vres5,'*'~insert(copies('@',32768),256,255,10-9))
+    self~assertSame(.vres5, '*'~insert(copies('@',32768),256,255,10-9))
 
 ::method 'test121'
-    self~assertSame('subTest01',substr(.v10000,1,32768)||.v1||copies(' ',255),.v10000~insert(.v1,32768,256))
+    self~assertSame(substr(.v10000,1,32768)||.v1||copies(' ',255), .v10000~insert(.v1,32768,256))
 
 ::method 'test123'
-    self~assertSame('subTest01','NV.',nv.~insert('abcdefghijklmnopqrstuvwxyz1234',1,0,'x'))
+    self~assertSame('NV.', nv.~insert('abcdefghijklmnopqrstuvwxyz1234',1,0,'x'))
 
 ::method 'test124'
     self~expectSyntax(93.905)
@@ -567,10 +567,10 @@ return testGroupList
     xre = noval2~insert(noval1,noval3,noval4,noval5)
 
 ::method 'test127'
-    self~assertSame('subTest01','*','*'~insert(nv,1,0,'x'))
+    self~assertSame('*', '*'~insert(nv,1,0,'x'))
 
 ::method 'test128'
-    self~assertSame('subTest01','NV.',nv.~insert('abcdefghijklmnopqrstuvwxyz1234',1,0,'x'))
+    self~assertSame('NV.', nv.~insert('abcdefghijklmnopqrstuvwxyz1234',1,0,'x'))
 
 ::method 'test129'
     self~expectSyntax(93.905)
@@ -589,44 +589,44 @@ return testGroupList
     xre = noval2~insert(noval1,noval3,noval4,noval5)
 
 ::method 'test133'
-    self~assertSame('subTest01','42999999999999999999999999999999999942999999999999999999',(+0000042)~insert(21*2,6*6,100/5,5+4))
+    self~assertSame('42999999999999999999999999999999999942999999999999999999', (+0000042)~insert(21*2,6*6,100/5,5+4))
 
 ::method 'test134'
-    self~assertSame('subTest01','9960669000000000000000000000000000000000000000000000000000000000000000000000',((9*100)+(9*10)+6)~insert(66||9,6-2,(6*6)*2,999-999))
+    self~assertSame('9960669000000000000000000000000000000000000000000000000000000000000000000000', ((9*100)+(9*10)+6)~insert(66||9,6-2,(6*6)*2,999-999))
 
 ::method 'test135'
-    self~assertSame('subTest01','42999999999999999999999999999999999942999999999999999999',.vn42~insert(.vn21*.vn2,.vn6*.vn6,.vn100/.vn5,.vn5+.vn4))
+    self~assertSame('42999999999999999999999999999999999942999999999999999999', .vn42~insert(.vn21*.vn2,.vn6*.vn6,.vn100/.vn5,.vn5+.vn4))
 
 ::method 'test136'
-    self~assertSame('subTest01','9960669000000000000000000000000000000000000000000000000000000000000000000000',((.vn9*.vn100)+(.vn9*.vn10)+.vn6)~insert(.vn66||.vn9,.vn6-.vn2,(.vn6*.vn6)*.vn2,.vn999-.vn999))
+    self~assertSame('9960669000000000000000000000000000000000000000000000000000000000000000000000', ((.vn9*.vn100)+(.vn9*.vn10)+.vn6)~insert(.vn66||.vn9,.vn6-.vn2,(.vn6*.vn6)*.vn2,.vn999-.vn999))
 
 ::method 'test137'
     numeric digits 1
-    self~assertSame('subTest01','4E+19999999999999999999999999999999999994E+19999999999999999',(+0000042)~insert(21*2,6*6,100/5,5+4))
+    self~assertSame('4E+19999999999999999999999999999999999994E+19999999999999999', (+0000042)~insert(21*2,6*6,100/5,5+4))
 
 ::method 'test138'
     numeric digits 1
-    self~assertSame('subTest01','1E+366900000000000000000000000000000000000000000000000000000000000000000000000000000',((9*100)+(9*10)+6)~insert(66||9,6-2,(6*6)*2,999-999))
+    self~assertSame('1E+366900000000000000000000000000000000000000000000000000000000000000000000000000000', ((9*100)+(9*10)+6)~insert(66||9,6-2,(6*6)*2,999-999))
 
 ::method 'test139'
     numeric digits 1
-    self~assertSame('subTest01','42999999999999999999999999999999999999994E+19999999999999999',.vn42~insert(.vn21*.vn2,.vn6*.vn6,.vn100/.vn5,.vn5+.vn4))
+    self~assertSame('42999999999999999999999999999999999999994E+19999999999999999', .vn42~insert(.vn21*.vn2,.vn6*.vn6,.vn100/.vn5,.vn5+.vn4))
 
 ::method 'test140'
     numeric digits 1
-    self~assertSame('subTest01','1E+366900000000000000000000000000000000000000000000000000000000000000000000000000000',((.vn9*.vn100)+(.vn9*.vn10)+.vn6)~insert(.vn66||.vn9,.vn6-.vn2,(.vn6*.vn6)*.vn2,.vn999-.vn999))
+    self~assertSame('1E+366900000000000000000000000000000000000000000000000000000000000000000000000000000', ((.vn9*.vn100)+(.vn9*.vn10)+.vn6)~insert(.vn66||.vn9,.vn6-.vn2,(.vn6*.vn6)*.vn2,.vn999-.vn999))
 
 ::method 'test141'
-    self~assertSame('subTest01','CHNUM55AR',datatype('A')~insert(datatype(6),word('0 1 2',3),center('4 5 6',1),max(3,4,5)))
+    self~assertSame('CHNUM55AR', datatype('A')~insert(datatype(6),word('0 1 2',3),center('4 5 6',1),max(3,4,5)))
 
 ::method 'test142'
-    self~assertSame('subTest01','92222222222022222222',max(5,8,9,3,4,2,0)~insert(min(5,8,9,3,4,2,0),min(11,22,33),max(9,8,7),min(9,2)))
+    self~assertSame('92222222222022222222', max(5,8,9,3,4,2,0)~insert(min(5,8,9,3,4,2,0),min(11,22,33),max(9,8,7),min(9,2)))
 
 ::method 'test143'
-    self~assertSame('subTest01','BuJR@@ckJRBuck','JR'~insert('Buck',2,4,'@')~insert('Buck'~insert('JR',2,4,'@')))
+    self~assertSame('BuJR@@ckJRBuck', 'JR'~insert('Buck',2,4,'@')~insert('Buck'~insert('JR',2,4,'@')))
 
 ::method 'test144'
-    self~assertSame('subTest01','Buck@@@@@@@@@@@@@@@@JR@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@','Buck'~insert('JR','0'~insert('2'),'0'~insert('4'),''~insert('@')))
+    self~assertSame('Buck@@@@@@@@@@@@@@@@JR@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@', 'Buck'~insert('JR','0'~insert('2'),'0'~insert('4'),''~insert('@')))
 
 ::method 'test9999'
 -- clean up .local
@@ -658,16 +658,16 @@ return testGroupList
    -- test the BIF, using examples from the documentation
 ::method "test_INSERT"
 
-    self~assertSame("subTest1" , 'abc def'      , 'abcdef'~INSERT(' ',3)     )
-    self~assertSame("subTest2" , 'abc  123   '  , 'abc'~INSERT('123',5,6)    )
-    self~assertSame("subTest3" , 'abc++123+++'  , 'abc'~INSERT('123',5,6,'+'))
-    self~assertSame("subTest4" , '123abc'       , 'abc'~INSERT('123')        )
-    self~assertSame("subTest5" , '123--abc'     , 'abc'~INSERT('123', ,5,'-'))
+    self~assertSame('abc def', 'abcdef'~INSERT(' ',3))
+    self~assertSame('abc  123   ', 'abc'~INSERT('123',5,6))
+    self~assertSame('abc++123+++', 'abc'~INSERT('123',5,6,'+'))
+    self~assertSame('123abc', 'abc'~INSERT('123'))
+    self~assertSame('123--abc', 'abc'~INSERT('123', ,5,'-'))
 
-    self~assertSame("subTest6" , 'abcdef'       , 'abcdef'~INSERT('',3)      )
-    self~assertSame("subTest7" , 'abcdef'       , 'abcdef'~INSERT(' ',3, 0)  )
-    self~assertSame("subTest8" , ''             , ''~INSERT('')              )
-    self~assertSame("subTest9" , '   '          , ''~INSERT('', 3, 0)        )
-    self~assertSame("subTest10", '    '         , ''~INSERT('', 3, 1)        )
+    self~assertSame('abcdef', 'abcdef'~INSERT('',3))
+    self~assertSame('abcdef', 'abcdef'~INSERT(' ',3, 0))
+    self~assertSame('', ''~INSERT(''))
+    self~assertSame('   ', ''~INSERT('', 3, 0))
+    self~assertSame('    ', ''~INSERT('', 3, 1))
 
 
