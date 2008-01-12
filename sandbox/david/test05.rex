@@ -47,11 +47,12 @@
 names = .array~of('Andrew', 'Joe', 'Samatha', 'Jonanthan')
 
 -- create a new top level window with a title
-window = .myMainWindow~new()
-window~title = 'Boxes'
-window~borderwidth = 10
-window~setsize(200, -1)
+window = .myMainWindow~new('GTK_WINDOW_TOPLEVEL')
+window~set_title('Boxes')
 window~connect_signal("destroy")
+
+window~set_border_width(10)
+window~set_size_request(200, -1)
 
 vbox = .GtkVBox~new()
 
@@ -62,7 +63,7 @@ do i = 1 to names~items()
    end
 
 window~add(vbox)
-window~showall()
+window~show_all()
 
 -- start the GTL main event loop
 call gtk_main

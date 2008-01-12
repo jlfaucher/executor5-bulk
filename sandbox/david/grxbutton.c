@@ -183,6 +183,44 @@ APIRET APIENTRY GrxButtonGetLabel(char * Name, size_t Argc, RXSTRING Argv[],
 
 
 /*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxButtonSetRelief                                 */
+/* Description: Set the releif stype of the button.                           */
+/* Rexx Args:   Pointer to the widget                                         */
+/*              Relief Styls                                                  */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxButtonSetRelief(char * Name, size_t Argc, RXSTRING Argv[],
+                                   char * Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+    GtkReliefStyle style;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(2, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &myWidget);
+
+    if(strcmp(Argv[0].strptr,"GTK_RELIEF_NORMAL") == 0)
+        type = GTK_RELIEF_NORMAN;
+    else if(strcmp(Argv[0].strptr,"GTK_RELIEF_HALF") == 0)
+        type = GTK_RELIEF_HALF;
+    else if(strcmp(Argv[0].strptr,"GTK_RELIEF_NONE") == 0)
+        type = GTK_RELIEF_NONE;
+    else 
+        return RXFUNC_BADCALL;
+
+    /* Set up the REXX return code */
+    *(Retstr->strptr) = '0';
+    Retstr->strlength = 1;
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
 /* Rexx External Function: GrxButtonUseUnderline                              */
 /* Description: Set the button to use mnemonics                               */
 /* Rexx Args:   Pointer to the widget                                         */

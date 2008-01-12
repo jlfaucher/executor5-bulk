@@ -45,7 +45,8 @@
 -- by Andrew Krause
 
 -- create a new top level window with a title
-window = .GTKWindow~new('Hello World')
+window = .GTKWindow~new('GTK_WINDOW_TOPLEVEL')
+window~set_title('Hello World')
 window~show()
 
 -- start the GTL main event loop

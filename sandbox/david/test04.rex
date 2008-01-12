@@ -47,10 +47,10 @@
 names = .array~of('Andrew', 'Joe', 'Samatha', 'Jonanthan')
 
 -- create a new top level window with a title
-window = .myMainWindow~new()
-window~title = 'Boxes'
-window~borderwidth = 10
-window~setsize(200, -1)
+window = .myMainWindow~new('GTK_WINDOW_TOPLEVEL')
+window~set_title('Boxes')
+window~set_border_width(10)
+window~set_size_request(200, -1)
 window~connect_signal("destroy")
 
 vbox = .GtkVBox~new()
@@ -62,7 +62,7 @@ do i = 1 to names~items()
    end
 
 window~add(vbox)
-window~showall()
+window~show_all()
 
 -- start the GTL main event loop
 call gtk_main
@@ -78,14 +78,7 @@ return
 .local['GTK_Quit'] = .true
 return
 
-::class myButton subclass GtkButton
-
-::method init
-use arg label = ''
-self~init:super
-self~use_underline = .true
-self~label = label
-return
+::class myButton subclass GtkButton_With_Mnemonic
 
 ::method signal_clicked
 -- get the pointer to the top level parent window of the button

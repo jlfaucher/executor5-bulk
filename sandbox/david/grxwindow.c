@@ -117,20 +117,19 @@ APIRET APIENTRY GrxWindowNew(const char * Name,
                              const char * Queuename, PRXSTRING Retstr)
 {
     GtkWidget       *myWidget;
-    GtkWindowType   type = GTK_WINDOW_TOPLEVEL;
+    GtkWindowType   type;
 
     /* Check for valid arguments */
-    if (Argc == 1)
-    {
-       if(!RXVALIDSTRING(Argv[0]))
-          return RXFUNC_BADCALL;
-
-       if(!strcmp(Argv[0].strptr,"GTK_WINDOW_POPUP"))
-          type = GTK_WINDOW_POPUP;
-    }
-    else if (Argc > 1) {
+    if (GrxCheckArgs(1, Argc, Argv)) {
         return RXFUNC_BADCALL;
     }
+
+    if(strcmp(Argv[0].strptr,"GTK_WINDOW_TOPLEVEL") == 0)
+        type = GTK_WINDOW_TOPLEVEL;
+    else if(strcmp(Argv[0].strptr,"GTK_WINDOW_POPUP") == 0)
+        type = GTK_WINDOW_POPUP;
+    else 
+        return RXFUNC_BADCALL;
 
     myWidget = gtk_window_new(type);
 

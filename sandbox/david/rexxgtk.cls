@@ -146,7 +146,7 @@ pointer = ptr
 .local['GTK_Database']~put(self, upper(pointer))
 return
 
-::method setsize
+::method set_size_request
 -- all widgets are created with a default size of (0,0) so they are self-sizing
 use strict arg width, height
 call GrxWidgetSetSize self~pointer, width, height
@@ -158,7 +158,7 @@ use strict arg
 call GrxWidgetShow self~pointer
 return
 
-::method showall
+::method show_all
 -- show the widget and all children (default when created is hidden)
 use strict arg
 call GrxWidgetShowAll self~pointer
@@ -247,10 +247,14 @@ use strict arg mywidget
 call GrxContainerRemove self~pointer, mywidget~pointer
 return
 
-::method 'borderwidth='
+::method 'border_width='
 -- set the amount of blank space around the objects in the container
 use strict arg width
 call GrxContainerSetBorderWidth self~pointer, width
+return
+
+::method set_border_width
+use strict arg self~border_width
 return
 
 ::method connect_signal
@@ -402,8 +406,8 @@ return
 ::class GtkWindow public subclass GtkContainer
 
 ::method init
-self~pointer = GrxWindowNew()
-use strict arg self~title = ''
+use strict arg type
+self~pointer = GrxWindowNew(type)
 return
 
 ::method uninit
@@ -417,6 +421,10 @@ expose title
 use strict arg newtitle
 call GrxWindowSetTitle self~pointer, newtitle
 title = newtitle
+return
+
+::method set_title
+use strict arg self~title
 return
 
 ::method start
@@ -485,6 +493,11 @@ use strict arg flag
 call GrxLabelSetSelectable self~pointer, flag
 return
 
+::method set_selectable
+-- set the label text
+use strict arg self~selectable
+return
+
 /*============================================================================*/
 /* Class: Button                                                              */
 /*============================================================================*/
@@ -513,6 +526,17 @@ use strict arg flag
 call GrxButtonUseUnderline self~pointer, flag
 return
 
+::method 'relief='
+-- set the button relief style
+use strict arg relief
+call GrxButtonSetRelief self~pointer, relief
+return
+
+::method set_relief
+-- set the button relief style
+use strict arg self~relief
+return
+
 ::method connect_signal
 use strict arg event
 select
@@ -538,6 +562,19 @@ return
 return
 
 ::method signal_leave
+return
+
+/*============================================================================*/
+/* Class: Button_With_Mnemonic                                                */
+/*============================================================================*/
+
+::class GtkButton_With_Mnemonic public subclass GtkButton
+
+::method init
+self~init:super
+use arg label = ''
+self~use_underline = .true
+self~label = label
 return
 
 

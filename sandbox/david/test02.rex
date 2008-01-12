@@ -45,19 +45,19 @@
 -- by Andrew Krause
 
 -- create a new top level window with a title
-window = .myMainWindow~new()
-window~title = 'Hello World'
-window~borderwidth = 10
-window~setsize(200, 100)
+window = .myMainWindow~new('GTK_WINDOW_TOPLEVEL')
+window~set_title( 'Hello World')
+window~set_border_width(10)
+window~set_size_request(200, 100)
+
 window~connect_signal("destroy")
 -- events cannot be overridden so there is no connect to a delete_event
 
 label= .GtkLabel~new('Hellow World')
-label~selectable = .true
+label~set_selectable(.true)
 
 window~add(label)
-
-window~showall()
+window~show_all()
 
 -- start the GTL main event loop
 call gtk_main

@@ -47,11 +47,12 @@
 names = .array~of('Andrew', 'Joe', 'Samatha', 'Jonanthan')
 
 -- create a new top level window with a title
-window = .myMainWindow~new()
-window~title = 'Panes'
-window~borderwidth = 10
-window~setsize(225, 150)
+window = .myMainWindow~new('GTK_WINDOW_TOPLEVEL')
+window~set_title('Panes')
 window~connect_signal("destroy")
+
+window~set_border_width(10)
+window~set_size_request(225, 150)
 
 hpaned = .GtkHPaned~new()
 button1 = .MyButton~new('Resize')
@@ -64,7 +65,7 @@ hpaned~add1(button1)
 hpaned~add2(button2)
 
 window~add(hpaned)
-window~showall()
+window~show_all()
 
 -- start the GTL main event loop
 call gtk_main
