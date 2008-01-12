@@ -87,7 +87,7 @@ arguments = arg(1)
 
    executionPhase  = .PhaseReport~new(file, .PhaseReport~TEST_EXECUTION_PHASE)
    msg = 'Executing automated test suite'
-   if \ cl~noTestCaseTicks, \ cl~noTicks then
+   if cl~doTestCaseTicks then
      executionPhase~tickTock(msg)
    else
      say msg
@@ -161,9 +161,38 @@ return 0
   self~resolveFiles
   self~resolveOptions
 
+::method showHelp
+  expose errMsg
+
+  say "testOORexx version" self~version "ooTest Framwork version" .ooTest_Framework_version
+  if self~doVersionOnly then return self~TEST_SUCCESS_RC
+
+  say
+  if self~doLongHelp then return self~longHelp
+
+  if errMsg == .nil then ret = self~TEST_HELP_RC
+  else do
+    ret = self~TEST_BADARGS_RC
+    do line over errMsg
+      say line
+    end
+    say
+  end
+
+  say "usage: testOORexx [OPTIONS]"
+  say "Try 'testOORexx --help' for more information."
+
+  return ret
+
 ::method getCommandLine
   expose originalCommandLine
   return originalCommandLine
+
+/** doTestCaseTicks()  Convenience method. */
+::method doTestCaseTicks
+  if \ self~noTicks,  \ self~noTestCaseTicks, \ self~showProgress, \ self~verboseTestCase then
+    return .true
+  return .false
 
 ::method resolveTestTypes private
   expose optTable
@@ -366,7 +395,7 @@ return 0
 
   return j
 
-::method nextOptionIndex
+::method nextOptionIndex private
   expose cmdLine tokenCount
   use strict arg start
 
@@ -503,29 +532,6 @@ return 0
   if intersect~hasIndex("--HELP") then self~doLongHelp = .true
   self~needsHelp = .true
   return .true
-
-::method showHelp
-  expose errMsg
-
-  say "testOORexx version" self~version "ooTest Framwork version" .ooTest_Framework_version
-  if self~doVersionOnly then return self~TEST_SUCCESS_RC
-
-  say
-  if self~doLongHelp then return self~longHelp
-
-  if errMsg == .nil then ret = self~TEST_HELP_RC
-  else do
-    ret = self~TEST_BADARGS_RC
-    do line over errMsg
-      say line
-    end
-    say
-  end
-
-  say "usage: testOORexx [OPTIONS]"
-  say "Try 'testOORexx --help' for more information."
-
-  return ret
 
 ::method longHelp private
   say 'Test the ooRexx interpreter using the automated ooTest framework.'
