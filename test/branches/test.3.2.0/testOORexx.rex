@@ -254,10 +254,28 @@ return 0
 
 ::method isSingleValueToken private
   expose tokenCount
-  use arg index msg
+  use strict arg index msg
 
   if (index + 2) < tokenCount, \ self~isOptionToken(index + 2) then do
-    self~addErrorMsg("The -R option must be followed by a single directory name")
+    self~addErrorMsg(msg)
+    return .false
+  end
+  return .true
+
+::method checkFileSegment private
+  expose cmdLine
+  use strict arg index
+
+  if .ooTestConstants~SL == '\' then wrongSlash = '/'; else wrongSlash = '\'
+  invalid = '*|[]:"<>?{}()+ ' || "'" || wrongSlash
+  segment = cmdLine~word(index)
+
+  pos = verify(segment, invalid, 'M')
+  if pos <> 0 then do
+    char = segment~substr(pos, 1)
+    self~addErrorMsg("The file name segment:" segment "contains an invalid character ("char")")
+    self~addErrorMsg("  File name segments can not contain invalid file name characters")
+    self~addErrorMsg("  or regular expression characters.")
     return .false
   end
   return .true
@@ -270,10 +288,12 @@ return 0
 
   select
     when word == '-f' then do
-      if self~lastToken(i, "The -f option must be followed by a file name pattern") then return -1
-      if \ self~isSingleValueToken(i, "The -F option must be followed by a single file name pattern") then return -1
+      if self~lastToken(i, "The -f option must be followed by a file name segment") then return -1
+      if \ self~isSingleValueToken(i, "The -F option must be followed by a single file name segment") then return -1
 
       j += 1
+      if \ self~checkFileSegment(j) then return -1
+
       optTable['file'] = cmdLine~word(j)
     end
 
@@ -301,8 +321,8 @@ return 0
       optTable['showTestCases'] = .true
     end
 
-    when word == '-T' then do
-      j = self~addTestTypes(i, '-T')
+    when word == '-I' then do
+      j = self~addTestTypes(i, '-I')
     end
 
     when word == '-u' then do
@@ -397,7 +417,7 @@ return 0
     tmp~put(testType)
   end
 
-  if opt == '-T' then optTable['testTypeIncludes'] = tmp
+  if opt == '-I' then optTable['testTypeIncludes'] = tmp
   else optTable['testTypesExcludes'] = tmp
 
   return j
@@ -528,9 +548,9 @@ return 0
   say ' Test selection:'
   say '  -f  --file=NAME              Excute the single NAME test group'
   say '  -F  --files=N1 N2 ...        Execute the N1 N2 ... test groups'
+  say '  -I, --test-types=T1 T2 ..    Include test types T1 T2 ...'
   say '  -p  --files-with-pattern=PA  Execute test groups matching PA'
   say '  -R, --root=DIR               DIR is root of search tree'
-  say '  -T, --test-types=T1 T2 ..    Include test types T1 T2 ...'
   say '  -X  --exclude-types=X1 X2 .. Exclude test types X1 X2 ...'
   say
   say ' Output control:'

@@ -1573,15 +1573,25 @@ return suite
 
   /** includeFiles()
    * Add the named file or files to the include files array.  The files are
-   * stored as regular expressions with the following conventions:  If the name
-   * ends in the extension specified in init(), and no directory slashes are in
-   * the name, then it will be considered the complete file name.  The regular
-   * expression will be: any series of characters, the directory slash the
-   * specified name.  If there are no slashes and the name does not end in the
-   * extension, then the regular expression will be any series of characters,
-   * the slash, any series of characters, the name, any series of characters,
-   * the extension.  If it does contain a slash, it will be any series of
-   * characters, and the name.
+   * stored as regular expressions with the following conventions:
+   *
+   * If the name ends in the extension specified in init(), and no directory
+   * slashes are in the name, then it will be considered the complete file name.
+   * The regular expression will be: any series of characters, the directory
+   * slash the specified name.
+   *
+   * If there are no slashes and the name does not end in the extension the the
+   * name will be considered a segment of a file name.  The regular expression
+   * will be any series of characters, the slash, any series of characters not a
+   * slash, the name, any series of characters not a slash, the extension.
+   *
+   * The name ends in the slash, it will be considered a directory specification
+   * and all files in the directory will be matched.  The regular expression
+   * will be any series of characters, the name, any series of characters not
+   * the slash, and the extension.
+   *
+   * Othewise, if it does contain a slash, the reqular expression will be any
+   * series of characters, and the name.
    */
   ::method includeFiles
     expose fileIncludes
@@ -1608,11 +1618,18 @@ return suite
     expose extension sl
     use strict arg fileName
 
+    endsInSlash = (fileName~right(1) == sl)
     hasExt = (fileName~right(extension~length)~upper == extension~upper)
     hasSlash = (fileName~pos(sl) <> 0 )
 
     notSlash = '[^' || sl || ']*'
     select
+      when endsInSlash then do
+        reg = '?*' || fileName~upper || notSlash || '(' || extension~upper || ')'
+        reg = self~maybeEscapeSlashes(reg)
+        return .RegularExpression~new(reg)
+      end
+
       when hasExt, \ hasSlash then do
         reg = '?*' || sl || fileName~upper
         reg = self~maybeEscapeSlashes(reg)
