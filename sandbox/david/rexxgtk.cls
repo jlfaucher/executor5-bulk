@@ -668,3 +668,84 @@ return
 return
 
 
+/*============================================================================*/
+/* Class: Table                                                               */
+/*============================================================================*/
+
+::class GtkTable public subclass GtkContainer
+
+::method init
+use strict arg rows, cols, homogeneous
+self~pointer =GrxTableNew(rows, cols, homogeneous)
+return
+
+::method attach
+use strict arg widget, left, right, top, bottom, xopt, yopt, xpad, ypad
+call GrxTableAttach self~pointer, widget~pointer, left, right, top, bottom,,
+                    xopt, yopt, xpad, ypad
+return
+
+::method set_row_spacings
+use strict arg spacing
+call GrxTableSetRowSpacings self~pointer, spacing
+return
+
+::method set_col_spacings
+use strict arg spacing
+call GrxTableSetColSpacings self~pointer, spacing
+return
+
+
+/*============================================================================*/
+/* Class: Entry                                                               */
+/*============================================================================*/
+
+::class GtkEntry public subclass GtkWidget
+
+::method init
+use strict arg
+self~pointer = GrxEntryNew()
+return
+
+::method max_length
+-- get the max length of text in the object
+use strict arg
+return GrxEntryGetMaxLength(self~pointer)
+
+::method 'max_length='
+-- set the max length of text in the object
+use strict arg len
+call GrxEntrySetMaxLength self~pointer, len
+return
+
+::method set_max_length
+use strict arg self~max_length
+return
+
+::method 'width_chars='
+-- set the visible width of the object in characters
+use strict arg width
+call GrxEntrySetWidthChars self~pointer, width
+return
+
+::method set_width_chars
+-- set the visible width of the object in characters
+use arg self~width_chars
+return
+
+::method text
+-- get the text in the object
+use strict arg
+return GrxEntryGetText(self~pointer)
+
+::method 'text='
+-- set the text in the object
+use strict arg text
+call GrxEntrySetText self~pointer, text
+return
+
+::method set_text
+-- set the text in the object
+use strict arg self~text
+return
+
