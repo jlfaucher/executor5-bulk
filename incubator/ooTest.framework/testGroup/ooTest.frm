@@ -1616,21 +1616,19 @@ return suite
       when hasExt, \ hasSlash then do
         reg = '?*' || sl || fileName~upper
         reg = self~maybeEscapeSlashes(reg)
-        return .RegularExpression~new(reg, "MAXIMAL")
+        return .RegularExpression~new(reg)
       end
 
-      --re = .RegularExpression~new('?+\\[^\\]*(INSERT)?*(.TESTGROUP)')
       when \ hasExt, \ hasSlash then do
         reg = '?+' || sl || notSlash || '(' || fileName~upper || ')' || notSlash || '(' || extension~upper || ')'
         reg = self~maybeEscapeSlashes(reg)
-        say 'reg:' reg
-        return .RegularExpression~new(reg, "MAXIMAL")
+        return .RegularExpression~new(reg)
       end
 
       when hasExt, hasSlash then do
         reg = '?*' || fileName~upper
         reg = self~maybeEscapeSlashes(reg)
-        return .RegularExpression~new(reg, "MAXIMAL")
+        return .RegularExpression~new(reg)
       end
 
       otherwise do
@@ -1639,7 +1637,7 @@ return suite
         parse var fileName lead =(p + 1) segment
         reg = '?*' || lead~upper || notSlash || '(' || segment~upper || ')' || notSlash || '(' || extension~upper || ')'
         reg = self~maybeEscapeSlashes(reg)
-        return .RegularExpression~new(reg, "MAXIMAL")
+        return .RegularExpression~new(reg)
       end
 
     end
@@ -1650,8 +1648,6 @@ return suite
 
     if .ooRexxUnit.OSName \== "WINDOWS"then return exp
 
-    say 'Non escaped:' exp
-
     escaped = ""
     do while exp~pos('\') <> 0
       parse var exp seg'\'exp
@@ -1659,7 +1655,6 @@ return suite
     end
     escaped = escaped || exp
 
-    say 'Escaped:' escaped
     return escaped
 
 
