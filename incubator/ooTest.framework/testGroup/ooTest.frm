@@ -77,6 +77,7 @@ end
   Directives, Classes, or Routines.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::requires "OOREXXUNIT.CLS"
+::requires "rxregexp.cls"
 
 ::routine makeSetOfWords public
   use strict arg wordCollection, upper = .true
@@ -303,7 +304,7 @@ return a
     expose names
     use strict arg tests
 
-    if \ tests~isA(.Collection) then .nil
+    if \ tests~isA(.Collection) then return .nil
 
     if names~DEFAULT == .nil then self~populate
 
@@ -1530,7 +1531,16 @@ return suite
 ::class 'ooTestFinder' public
 
   ::attribute testTypes private
-  ::attribute fileSpec private
+  ::attribute root private
+  ::attribute extension private
+  ::attribute simpleFileSpec private
+  ::attribute isSimpleSearch private
+
+  ::attribute fileIncludes private
+  ::attribute fileExcludes private
+
+  ::attribute totalFound get
+  ::attribute totalFound set private
 
   /** init()
    * Initializes this test finder.
@@ -1544,20 +1554,117 @@ return suite
    *   the default.
    */
   ::method init
+    expose root extension simpleFileSpec sl
     use strict arg root, extension, types = .nil
 
     sl = .ooRexxUnit.directory.separator
-    if root~right(1) == sl then root = root~strip('T', sl)
-    if extension~left(1) == '.' then extension = extension~strip('L', '.')
-    fileSpec = root || sl || "*." || extension
+    if root~right(1) \== sl then root = root || sl
+    if extension~left(1) \== '.' then extension = '.' || extension
+
+    simpleFileSpec = root || "*" || extension
 
     self~testTypes = types
-    self~fileSpec = fileSpec
+    self~totalFound = 0
+    self~fileIncludes = .nil
+    self~fileExcludes = .nil
+    self~isSimpleSearch = .true
 
   -- End init()
 
+  /** includeFiles()
+   * Add the named file or files to the include files array.  The files are
+   * stored as regular expressions with the following conventions:  If the name
+   * ends in the extension specified in init(), and no directory slashes are in
+   * the name, then it will be considered the complete file name.  The regular
+   * expression will be: any series of characters, the directory slash the
+   * specified name.  If there are no slashes and the name does not end in the
+   * extension, then the regular expression will be any series of characters,
+   * the slash, any series of characters, the name, any series of characters,
+   * the extension.  If it does contain a slash, it will be any series of
+   * characters, and the name.
+   */
+  ::method includeFiles
+    expose fileIncludes
+    use strict arg files
+
+    if \ files~isA(.string), \ files~isA(.collection) then
+      raise syntax 88.916 array ("1 'files'", "a string or a collection" files)
+
+    if fileIncludes == .nil then fileIncludes = .array~new
+    if files~isA(.string) then do
+      regularExpression = self~buildRegEx(files)
+      fileIncludes~append(regularExpression)
+    end
+    else do file over files
+      if \ file~isA(.string) then
+        raise syntax 88.900 array("Only file names (string objects) are accepted; found" file)
+
+      regularExpression = self~buildRegEx(file)
+      fileIncludes~append(regularExpression)
+    end
+    self~isSimpleSearch = .false
+
+  ::method buildRegEx private
+    expose extension sl
+    use strict arg fileName
+
+    hasExt = (fileName~right(extension~length)~upper == extension~upper)
+    hasSlash = (fileName~pos(sl) <> 0 )
+
+    notSlash = '[^' || sl || ']*'
+    select
+      when hasExt, \ hasSlash then do
+        reg = '?*' || sl || fileName~upper
+        reg = self~maybeEscapeSlashes(reg)
+        return .RegularExpression~new(reg, "MAXIMAL")
+      end
+
+      --re = .RegularExpression~new('?+\\[^\\]*(INSERT)?*(.TESTGROUP)')
+      when \ hasExt, \ hasSlash then do
+        reg = '?+' || sl || notSlash || '(' || fileName~upper || ')' || notSlash || '(' || extension~upper || ')'
+        reg = self~maybeEscapeSlashes(reg)
+        say 'reg:' reg
+        return .RegularExpression~new(reg, "MAXIMAL")
+      end
+
+      when hasExt, hasSlash then do
+        reg = '?*' || fileName~upper
+        reg = self~maybeEscapeSlashes(reg)
+        return .RegularExpression~new(reg, "MAXIMAL")
+      end
+
+      otherwise do
+        -- \ hasExt, hasSlash
+        p = fileName~lastPos(sl)
+        parse var fileName lead =(p + 1) segment
+        reg = '?*' || lead~upper || notSlash || '(' || segment~upper || ')' || notSlash || '(' || extension~upper || ')'
+        reg = self~maybeEscapeSlashes(reg)
+        return .RegularExpression~new(reg, "MAXIMAL")
+      end
+
+    end
+    -- End select
+
+  ::method maybeEscapeSlashes private
+    use strict arg exp
+
+    if .ooRexxUnit.OSName \== "WINDOWS"then return exp
+
+    say 'Non escaped:' exp
+
+    escaped = ""
+    do while exp~pos('\') <> 0
+      parse var exp seg'\'exp
+      escaped = escaped || seg || '\\'
+    end
+    escaped = escaped || exp
+
+    say 'Escaped:' escaped
+    return escaped
+
+
   ::method seek
-    expose testTypes fileSpec
+    expose testTypes simpleFileSpec
     use strict arg testResult
 
     if \ isSubClassOf(testResult~class, "ooTestCollectingParameter") then
@@ -1567,7 +1674,7 @@ return suite
     files = self~findFiles
 
     if files~items == 0 then do
-      err = .ExceptionData~new(timeStamp(), fileSpec, "Anomly")
+      err = .ExceptionData~new(timeStamp(), simpleFileSpec, "Anomly")
       err~severity = "Warning"
       err~msg = "No test containers found matching search paramters."
       testResult~addException(err)
@@ -1664,17 +1771,28 @@ return suite
    * An enhancement is to match includes and excludes.
    */
   ::method findFiles private
-    expose fileSpec
-
-    -- Need to add Phase tracking.  say 'in find files filespec:' fileSpec
+    expose simpleFileSpec
 
     f = .array~new
-    j = SysFileTree(fileSpec, files., "FOS")
+    j = SysFileTree(simpleFileSpec, files., "FOS")
+    self~totalFound = files.0
     do i = 1 to files.0
-      f~append(files.i)
+      if self~matchFile(files.i) then f~append(files.i)
     end
 
   return f
+
+  ::method matchFile
+    expose isSimpleSearch fileIncludes
+    use arg file
+
+    if isSimpleSearch then return .true
+
+    do re over fileIncludes
+      if re~match(file~upper) then return .true
+    end
+    return .false
+
 
   /** maybeCreateContainer()
    * Attempts to create a TestGroup from object.  This is a temporary method,
@@ -1783,19 +1901,21 @@ return suite
 ::class 'NotificationTypes' mixinclass Object
   /* Would prefer to use the CONSTANT directive */
   ::method MIN_TYPE  class; return 1
-
-  ::method SKIP_TYPE class; return 1
-  ::method WARN_TYPE class; return 2
-  ::method TEXT_TYPE class; return 3
-  ::method STEP_TYPE class; return 4
-  ::method MAX_TYPE  class; return 4
   ::method MIN_TYPE;        return 1
-  ::method SKIP_TYPE;       return 1
-  ::method WARN_TYPE;       return 2
-  ::method TEXT_TYPE;       return 3
-  ::method STEP_TYPE;       return 4
 
-  ::method MAX_TYPE;        return 4
+  ::method SKIP_TYPE  class; return 1
+  ::method WARN_TYPE  class; return 2
+  ::method TEXT_TYPE  class; return 3
+  ::method STEP_TYPE  class; return 4
+  ::method STATS_TYPE class; return 5
+  ::method SKIP_TYPE;        return 1
+  ::method WARN_TYPE;        return 2
+  ::method TEXT_TYPE;        return 3
+  ::method STEP_TYPE;        return 4
+  ::method STATS_TYPE;       return 5
+
+  ::method MAX_TYPE  class; return 5
+  ::method MAX_TYPE;        return 5
 
 
 /* class: Notification - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
@@ -1816,6 +1936,7 @@ return suite
 
   ::attribute additional
   ::attribute additionalObject
+  ::attribute originatorsID
 
   ::method init
     use strict arg dateTime, file, type
@@ -1845,6 +1966,7 @@ return suite
 
     self~additional = .nil
     self~additionalObject = .nil
+    self~originatorsID = .nil
 
 -- End of class: Notification
 

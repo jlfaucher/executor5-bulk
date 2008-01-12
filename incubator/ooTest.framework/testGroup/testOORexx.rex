@@ -65,9 +65,7 @@ arguments = arg(1)
 
    finder = .ooTestFinder~new(cl~root, cl~ext, cl~testTypes)
    if \ cl~simpleTestSelection then do
-     -- Here's where we need to set the finder to do non-inclusive searching.
-     -- Not implemented yet.
-     say 'Sorry single test group execution not fully implemented.'
+     finder~includeFiles(cl~testFile)
    end
    containers = finder~seek(testResult)
 
@@ -89,7 +87,7 @@ arguments = arg(1)
 
    executionPhase  = .PhaseReport~new(file, .PhaseReport~TEST_EXECUTION_PHASE)
    msg = 'Executing automated test suite'
-   if \ cl~noTestCaseTicks, \ cl~noTicks then do
+   if \ cl~noTestCaseTicks, \ cl~noTicks then
      executionPhase~tickTock(msg)
    else
      say msg
@@ -272,7 +270,11 @@ return 0
 
   select
     when word == '-f' then do
-      return self~notImplemented("-f")
+      if self~lastToken(i, "The -f option must be followed by a file name pattern") then return -1
+      if \ self~isSingleValueToken(i, "The -F option must be followed by a single file name pattern") then return -1
+
+      j += 1
+      optTable['file'] = cmdLine~word(j)
     end
 
     when word == '-F' then do
@@ -285,7 +287,7 @@ return 0
 
     when word == '-R' then do
       if self~lastToken(i, "The -R option must be followed by a directory name") then return -1
-      if \ isSingleValueToken(i, "The -R option must be followed by a single directory name") then return -1
+      if \ self~isSingleValueToken(i, "The -R option must be followed by a single directory name") then return -1
 
       j += 1
       self~root = cmdLine~word(j) || self~SL
@@ -317,7 +319,7 @@ return 0
 
     when word == '-V' then do
       if self~lastToken(i, "The -V option must be followed by the verbosity level") then return -1
-      if \ isSingleValueToken(i, "The -V option must be followed by only 1 verbosity level") then return -1
+      if \ self~isSingleValueToken(i, "The -V option must be followed by only 1 verbosity level") then return -1
 
       j += 1
       level = cmdLine~word(j)
