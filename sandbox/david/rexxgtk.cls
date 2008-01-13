@@ -460,15 +460,18 @@ return retc
 ::method connect_signal
 use strict arg event
 select
+   when event = 'activate_default' then call GrxWindowConnectSignal self~pointer, event
+   when event = 'activate_focus' then call GrxWindowConnectSignal self~pointer, event
+   when event = 'keys_changed' then call GrxWindowConnectSignal self~pointer, event
    when event = 'set_focus' then call GrxWindowConnectSignal self~pointer, event
    otherwise self~connect_signal:super(event)
    end
 return
 
-::method signal_activat_default
+::method signal_activate_default
 return
 
-::method signal_activat_focus
+::method signal_activate_focus
 return
 
 ::method signal_keys_changed
@@ -816,5 +819,52 @@ return
 ::method set_text
 -- set the text in the object
 use strict arg self~text
+return
+
+::method connect_signal
+use strict arg event
+select
+   when event = 'activate' then call GrxEntryConnectSignal self~pointer, event
+   when event = 'backspace' then call GrxEntryConnectSignal self~pointer, event
+   when event = 'copy_clipboard' then call GrxEntryConnectSignal self~pointer, event
+   when event = 'cut_clipboard' then call GrxEntryConnectSignal self~pointer, event
+   when event = 'delete_from_cursor' then call GrxEntryConnectSignal self~pointer, event
+   when event = 'insert_at_cursor' then call GrxEntryConnectSignal self~pointer, event
+   when event = 'move_cursor' then call GrxEntryConnectSignal self~pointer, event
+   when event = 'paste_clipboard' then call GrxEntryConnectSignal self~pointer, event
+   when event = 'populate_popup' then call GrxEntryConnectSignal self~pointer, event
+   when event = 'toggle_overwrite' then call GrxEntryConnectSignal self~pointer, event
+   otherwise self~connect_signal:super(event)
+   end
+return
+
+::method signal_activate
+return
+
+::method signal_backspace
+return
+
+::method signal_copy_clipboard
+return
+
+::method signal_cut_clipboard
+return
+
+::method signal_delete_from_cursor
+return
+
+::method signal_insert_at_cursor
+return
+
+::method signal_move_cursor
+return
+
+::method signal_paste_clipboard
+return
+
+::method signal_populate_popup
+return
+
+::method signal_toggle_overwrite
 return
 

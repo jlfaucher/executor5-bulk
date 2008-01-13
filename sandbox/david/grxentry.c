@@ -57,6 +57,118 @@
 /* Private Functions                                                          */
 /*============================================================================*/
 
+static void signal_func_1(GtkWidget *window,
+                          gpointer data)
+{
+    char buffer[256];
+    RXSTRING entry;
+
+    // set up the queue entry data
+#ifdef WIN32
+    sprintf(buffer, "%p %s", window, data);
+#else
+    snprintf(buffer, sizeof(buffer), "%p %s", window, data);
+#endif
+    entry.strptr = buffer;
+    entry.strlength = strlen(buffer);
+
+    // insert the signal event here
+    RexxAddQueue(GrxGetRexxQueueName(), &entry, RXQUEUE_FIFO);
+
+    return;
+}
+
+static void signal_func_2(GtkWidget *window,
+                          gchar * arg1,
+                          gpointer data)
+{
+    char buffer[256];
+    RXSTRING entry;
+
+    // set up the queue entry data
+#ifdef WIN32
+    sprintf(buffer, "%p %s %s", window, data, arg1);
+#else
+    snprintf(buffer, sizeof(buffer), "%p %s %s", window, data, arg1);
+#endif
+    entry.strptr = buffer;
+    entry.strlength = strlen(buffer);
+
+    // insert the signal event here
+    RexxAddQueue(GrxGetRexxQueueName(), &entry, RXQUEUE_FIFO);
+
+    return;
+}
+
+static void signal_func_2a(GtkWidget *window,
+                           GtkMenu * menu,
+                           gpointer data)
+{
+    char buffer[256];
+    RXSTRING entry;
+
+    // set up the queue entry data
+#ifdef WIN32
+    sprintf(buffer, "%p %s %p", window, data, menu);
+#else
+    snprintf(buffer, sizeof(buffer), "%p %s %p", window, data, menu);
+#endif
+    entry.strptr = buffer;
+    entry.strlength = strlen(buffer);
+
+    // insert the signal event here
+    RexxAddQueue(GrxGetRexxQueueName(), &entry, RXQUEUE_FIFO);
+
+    return;
+}
+
+static void signal_func_3(GtkWidget *window,
+                          GtkDeleteType type,
+                          gint arg2,
+                          gpointer data)
+{
+    char buffer[256];
+    RXSTRING entry;
+
+    // set up the queue entry data
+#ifdef WIN32
+    sprintf(buffer, "%p %s %d %d", window, data, type, arg2);
+#else
+    snprintf(buffer, sizeof(buffer), "%p %s %d %d", window, data, type, arg2);
+#endif
+    entry.strptr = buffer;
+    entry.strlength = strlen(buffer);
+
+    // insert the signal event here
+    RexxAddQueue(GrxGetRexxQueueName(), &entry, RXQUEUE_FIFO);
+
+    return;
+}
+
+static void signal_func_4(GtkWidget *window,
+                          GtkMovementStep step,
+                          gint arg2,
+                          gboolean arg3,
+                          gpointer data)
+{
+    char buffer[256];
+    RXSTRING entry;
+
+    // set up the queue entry data
+#ifdef WIN32
+    sprintf(buffer, "%p %s %d %d %d", window, data, step, arg2, arg3);
+#else
+    snprintf(buffer, sizeof(buffer), "%p %s %d %d", window, data, step, arg2, arg3);
+#endif
+    entry.strptr = buffer;
+    entry.strlength = strlen(buffer);
+
+    // insert the signal event here
+    RexxAddQueue(GrxGetRexxQueueName(), &entry, RXQUEUE_FIFO);
+
+    return;
+}
+
 
 /*============================================================================*/
 /* Public Functions                                                           */
@@ -252,6 +364,84 @@ APIRET APIENTRY GrxEntrySetWidthChars(const char * Name,
 
     if (GTK_IS_WIDGET(GTK_OBJECT(myWidget))) {
         gtk_entry_set_width_chars(GTK_ENTRY(myWidget), width); 
+    }
+
+    /* Set up the REXX return code */
+    *(Retstr->strptr) = '0';
+    Retstr->strlength = 1;
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxEntryConnectSignal                              */
+/* Description: Connect a signal function to the Widget                       */
+/* Rexx Args:   Pointer to the widget                                         */
+/*              Signal name                                                   */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxEntryConnectSignal(const char * Name,
+                                      const size_t Argc, const RXSTRING Argv[],
+                                      const char * Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(2, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &myWidget);
+
+    if (GTK_IS_WIDGET(GTK_OBJECT(myWidget))) {
+        if (strcmp(Argv[1].strptr, "activate") == 0) {
+            g_signal_connect(G_OBJECT(myWidget), "activate",
+                             G_CALLBACK(signal_func_1), "signal_activate");
+        }
+        else if (strcmp(Argv[1].strptr, "backspace") == 0) {
+            g_signal_connect(G_OBJECT(myWidget), "backspace",
+                             G_CALLBACK(signal_func_1), "signal_backspace");
+        }
+        else if (strcmp(Argv[1].strptr, "copy_clipboard") == 0) {
+            g_signal_connect(G_OBJECT(myWidget), "copy-clipboard",
+                             G_CALLBACK(signal_func_1), "signal_copy_clipboard");
+        }
+        else if (strcmp(Argv[1].strptr, "cut_clipboard") == 0) {
+            g_signal_connect(G_OBJECT(myWidget), "cut-clipboard",
+                             G_CALLBACK(signal_func_1), "signal_cut_clipboard");
+        }
+        else if (strcmp(Argv[1].strptr, "delete_from_cursor") == 0) {
+            g_signal_connect(G_OBJECT(myWidget), "delete-from-cursor",
+                             G_CALLBACK(signal_func_3), "signal_delete_from_cursor");
+        }
+        else if (strcmp(Argv[1].strptr, "insert_at_cursor") == 0) {
+            g_signal_connect(G_OBJECT(myWidget), "insert-at-cursor",
+                             G_CALLBACK(signal_func_2), "signal_insert_at_cursor");
+        }
+        else if (strcmp(Argv[1].strptr, "move_cursor") == 0) {
+            g_signal_connect(G_OBJECT(myWidget), "move-cursor",
+                             G_CALLBACK(signal_func_4), "signal_move_cursor");
+        }
+        else if (strcmp(Argv[1].strptr, "paste_clipboard") == 0) {
+            g_signal_connect(G_OBJECT(myWidget), "paste-clipboard",
+                             G_CALLBACK(signal_func_1), "signal_paste_clipboard");
+        }
+        else if (strcmp(Argv[1].strptr, "populate_popup") == 0) {
+            g_signal_connect(G_OBJECT(myWidget), "populate-popup",
+                             G_CALLBACK(signal_func_2a), "signal_populate_popup");
+        }
+        else if (strcmp(Argv[1].strptr, "toggle_overwrite") == 0) {
+            g_signal_connect(G_OBJECT(myWidget), "toggle-overwrite",
+                             G_CALLBACK(signal_func_1), "signal_toggle_overwrite");
+        }
+        else {
+            return RXFUNC_BADCALL;
+        }
+    }
+    else {
+        return RXFUNC_BADCALL;
     }
 
     /* Set up the REXX return code */
