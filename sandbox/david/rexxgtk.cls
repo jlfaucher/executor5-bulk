@@ -902,3 +902,73 @@ use strict arg widget, xpos, ypos
 call GrxFixedMove self~pointer, widget~pointer, xpos, ypos
 return
 
+
+/*============================================================================*/
+/* Class: Expander                                                            */
+/*============================================================================*/
+
+::class GtkExpander public subclass GtkContainer
+
+::method init
+use strict arg label
+self~pointer = GrxExpanderNew(label)
+return
+
+::method 'expanded='
+use strict arg flag
+call GrxExpanderSetExpanded self~pointer, flag
+return
+
+::method set_expanded
+use strict arg self~expanded
+return
+
+::method label
+use strict arg
+call GrxExpanderGetLabel self~pointer
+return
+
+::method get_label
+use strict arg
+return self~label
+
+::method 'label='
+use strict arg label
+call GrxExpanderSetLabel self~pointer, label
+return
+
+::method set_label
+use strict arg self~label
+return
+
+::method 'use_underline='
+use strict arg flag
+call GrxExpanderUseUnderline self~pointer, flag
+return
+
+::method set_use_underline
+use strict arg self~use_underline
+return
+
+::method 'spacing='
+use strict arg spacing
+call GrxExpanderSetSpacing self~pointer, spacing
+return
+
+::method set_spacing
+use strict arg self~spacing
+return
+
+
+/*============================================================================*/
+/* Class: Expander_With_Mnemonic                                              */
+/*============================================================================*/
+
+::class GtkExpander_With_Mnemonic public subclass GtkExpander
+
+::method init
+use arg label = ''
+self~init:super(label)
+self~use_underline = .true
+return
+

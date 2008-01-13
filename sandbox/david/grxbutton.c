@@ -90,8 +90,9 @@ static void signal_func_1(GtkWidget *window,
 /* Rexx Args:   None                                                          */
 /*----------------------------------------------------------------------------*/
 
-APIRET APIENTRY GrxButtonNew(char * Name, size_t Argc, RXSTRING Argv[],
-                             char * Queuename, PRXSTRING Retstr)
+APIRET APIENTRY GrxButtonNew(const char * Name,
+                             const size_t Argc, const RXSTRING Argv[],
+                             const char * Queuename, PRXSTRING Retstr)
 {
     GtkWidget *myWidget;
 
@@ -117,8 +118,9 @@ APIRET APIENTRY GrxButtonNew(char * Name, size_t Argc, RXSTRING Argv[],
 /*              Label                                                         */
 /*----------------------------------------------------------------------------*/
 
-APIRET APIENTRY GrxButtonSetLabel(char * Name, size_t Argc, RXSTRING Argv[],
-                                 char * Queuename, PRXSTRING Retstr)
+APIRET APIENTRY GrxButtonSetLabel(const char * Name,
+                                  const size_t Argc, const RXSTRING Argv[],
+                                  const char * Queuename, PRXSTRING Retstr)
 {
     GtkWidget *myWidget;
 
@@ -148,8 +150,9 @@ APIRET APIENTRY GrxButtonSetLabel(char * Name, size_t Argc, RXSTRING Argv[],
 /* Rexx Args:   Pointer to the widget                                         */
 /*----------------------------------------------------------------------------*/
 
-APIRET APIENTRY GrxButtonGetLabel(char * Name, size_t Argc, RXSTRING Argv[],
-                                 char * Queuename, PRXSTRING Retstr)
+APIRET APIENTRY GrxButtonGetLabel(const char * Name,
+                                  const size_t Argc, const RXSTRING Argv[],
+                                  const char * Queuename, PRXSTRING Retstr)
 {
     const gchar *label = NULL;
     GtkWidget *myWidget;
@@ -189,8 +192,9 @@ APIRET APIENTRY GrxButtonGetLabel(char * Name, size_t Argc, RXSTRING Argv[],
 /*              Relief Styls                                                  */
 /*----------------------------------------------------------------------------*/
 
-APIRET APIENTRY GrxButtonSetRelief(char * Name, size_t Argc, RXSTRING Argv[],
-                                   char * Queuename, PRXSTRING Retstr)
+APIRET APIENTRY GrxButtonSetRelief(const char * Name,
+                                   const size_t Argc, const RXSTRING Argv[],
+                                   const char * Queuename, PRXSTRING Retstr)
 {
     GtkWidget *myWidget;
     GtkReliefStyle style;
@@ -229,8 +233,9 @@ APIRET APIENTRY GrxButtonSetRelief(char * Name, size_t Argc, RXSTRING Argv[],
 /*              Flag                                                          */
 /*----------------------------------------------------------------------------*/
 
-APIRET APIENTRY GrxButtonUseUnderline(char * Name, size_t Argc, RXSTRING Argv[],
-                                      char * Queuename, PRXSTRING Retstr)
+APIRET APIENTRY GrxButtonUseUnderline(const char * Name,
+                                      const size_t Argc, const RXSTRING Argv[],
+                                      const char * Queuename, PRXSTRING Retstr)
 {
     GtkWidget *myWidget;
     gboolean flag;
@@ -260,8 +265,9 @@ APIRET APIENTRY GrxButtonUseUnderline(char * Name, size_t Argc, RXSTRING Argv[],
 /* Rexx Args:   Label                                                         */
 /*----------------------------------------------------------------------------*/
 
-APIRET APIENTRY GrxCheckButtonNew(char * Name, size_t Argc, RXSTRING Argv[],
-                                 char * Queuename, PRXSTRING Retstr)
+APIRET APIENTRY GrxCheckButtonNew(const char * Name,
+                                  const size_t Argc, const RXSTRING Argv[],
+                                  const char * Queuename, PRXSTRING Retstr)
 {
     GtkWidget *myWidget;
 
@@ -292,8 +298,9 @@ APIRET APIENTRY GrxCheckButtonNew(char * Name, size_t Argc, RXSTRING Argv[],
 /* Rexx Args:   Pointer to the widget                                         */
 /*----------------------------------------------------------------------------*/
 
-APIRET APIENTRY GrxCheckButtonGetState(char * Name, size_t Argc, RXSTRING Argv[],
-                                      char * Queuename, PRXSTRING Retstr)
+APIRET APIENTRY GrxCheckButtonGetState(const char * Name,
+                                       const size_t Argc, const RXSTRING Argv[],
+                                       const char * Queuename, PRXSTRING Retstr)
 {
     GtkWidget *myWidget;
     gboolean checked = FALSE;
@@ -325,8 +332,9 @@ APIRET APIENTRY GrxCheckButtonGetState(char * Name, size_t Argc, RXSTRING Argv[]
 /*              New state                                                     */
 /*----------------------------------------------------------------------------*/
 
-APIRET APIENTRY GrxCheckButtonSetState(char * Name, size_t Argc, RXSTRING Argv[],
-                                      char * Queuename, PRXSTRING Retstr)
+APIRET APIENTRY GrxCheckButtonSetState(const char * Name,
+                                       const size_t Argc, const RXSTRING Argv[],
+                                       const char * Queuename, PRXSTRING Retstr)
 {
     GtkWidget *myWidget;
     gboolean checked = FALSE;
@@ -359,8 +367,9 @@ APIRET APIENTRY GrxCheckButtonSetState(char * Name, size_t Argc, RXSTRING Argv[]
 /*              Label (optional)                                              */
 /*----------------------------------------------------------------------------*/
 
-APIRET APIENTRY GrxRadioButtonNew(char * Name, size_t Argc, RXSTRING Argv[],
-                                 char * Queuename, PRXSTRING Retstr)
+APIRET APIENTRY GrxRadioButtonNew(const char * Name,
+                                  const size_t Argc, const RXSTRING Argv[],
+                                  const char * Queuename, PRXSTRING Retstr)
 {
     GtkWidget *myWidget;
     GSList *head;
@@ -394,8 +403,9 @@ APIRET APIENTRY GrxRadioButtonNew(char * Name, size_t Argc, RXSTRING Argv[],
 /* Rexx Args:   Pointer to the widget                                         */
 /*----------------------------------------------------------------------------*/
 
-APIRET APIENTRY GrxRadioButtonGroup(char * Name, size_t Argc, RXSTRING Argv[],
-                                   char * Queuename, PRXSTRING Retstr)
+APIRET APIENTRY GrxRadioButtonGroup(const char * Name,
+                                    const size_t Argc, const RXSTRING Argv[],
+                                    const char * Queuename, PRXSTRING Retstr)
 {
     GtkWidget *myWidget;
     GSList *head = NULL;
@@ -428,8 +438,8 @@ APIRET APIENTRY GrxRadioButtonGroup(char * Name, size_t Argc, RXSTRING Argv[],
 /*----------------------------------------------------------------------------*/
 
 APIRET APIENTRY GrxButtonConnectSignal(const char * Name,
-                                          const size_t Argc, const RXSTRING Argv[],
-                                          const char * Queuename, PRXSTRING Retstr)
+                                       const size_t Argc, const RXSTRING Argv[],
+                                       const char * Queuename, PRXSTRING Retstr)
 {
     GtkWidget *myWidget;
 

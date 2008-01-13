@@ -71,8 +71,9 @@
 /*              Homogeneous flag                                              */
 /*----------------------------------------------------------------------------*/
 
-APIRET APIENTRY GrxTableNew(char * Name, size_t Argc, RXSTRING Argv[],
-                            char * Queuename, PRXSTRING Retstr)
+APIRET APIENTRY GrxTableNew(const char * Name,
+                            const size_t Argc, const RXSTRING Argv[],
+                            const char * Queuename, PRXSTRING Retstr)
 {
     GtkWidget *myWidget;
     gint rows, cols;
@@ -111,8 +112,9 @@ APIRET APIENTRY GrxTableNew(char * Name, size_t Argc, RXSTRING Argv[],
 /*              yPadding                                                       */
 /*----------------------------------------------------------------------------*/
 
-APIRET APIENTRY GrxTableAttach(char * Name, size_t Argc, RXSTRING Argv[],
-                               char * Queuename, PRXSTRING Retstr)
+APIRET APIENTRY GrxTableAttach(const char * Name,
+                               const size_t Argc, const RXSTRING Argv[],
+                               const char * Queuename, PRXSTRING Retstr)
 {
     GtkWidget *tableWidget, *myWidget;
     gint left, right, top, bottom;
@@ -170,8 +172,9 @@ APIRET APIENTRY GrxTableAttach(char * Name, size_t Argc, RXSTRING Argv[],
 /*              Spacing                                                       */
 /*----------------------------------------------------------------------------*/
 
-APIRET APIENTRY GrxTableSetRowSpacings(char * Name, size_t Argc, RXSTRING Argv[],
-                                       char * Queuename, PRXSTRING Retstr)
+APIRET APIENTRY GrxTableSetRowSpacings(const char * Name,
+                                       const size_t Argc, const RXSTRING Argv[],
+                                       const char * Queuename, PRXSTRING Retstr)
 {
     GtkWidget *myWidget;
     gint spacing;
@@ -203,8 +206,9 @@ APIRET APIENTRY GrxTableSetRowSpacings(char * Name, size_t Argc, RXSTRING Argv[]
 /*              Spacing                                                       */
 /*----------------------------------------------------------------------------*/
 
-APIRET APIENTRY GrxTableSetColSpacings(char * Name, size_t Argc, RXSTRING Argv[],
-                                       char * Queuename, PRXSTRING Retstr)
+APIRET APIENTRY GrxTableSetColSpacings(const char * Name,
+                                       const size_t Argc, const RXSTRING Argv[],
+                                       const char * Queuename, PRXSTRING Retstr)
 {
     GtkWidget *myWidget;
     gint spacing;

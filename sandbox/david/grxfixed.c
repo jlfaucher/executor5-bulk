@@ -69,8 +69,9 @@
 /* Rexx Args:   None                                                          */
 /*----------------------------------------------------------------------------*/
 
-APIRET APIENTRY GrxFixedNew(char * Name, size_t Argc, RXSTRING Argv[],
-                            char * Queuename, PRXSTRING Retstr)
+APIRET APIENTRY GrxFixedNew(const char * Name,
+                            const size_t Argc, const RXSTRING Argv[],
+                            const char * Queuename, PRXSTRING Retstr)
 {
     GtkWidget *myWidget;
 
@@ -98,8 +99,9 @@ APIRET APIENTRY GrxFixedNew(char * Name, size_t Argc, RXSTRING Argv[],
 /*              ypos                                                          */
 /*----------------------------------------------------------------------------*/
 
-APIRET APIENTRY GrxFixedPut(char * Name, size_t Argc, RXSTRING Argv[],
-                            char * Queuename, PRXSTRING Retstr)
+APIRET APIENTRY GrxFixedPut(const char * Name,
+                            const size_t Argc, const RXSTRING Argv[],
+                            const char * Queuename, PRXSTRING Retstr)
 {
     GtkWidget *fixedWidget, *myWidget;
     gint xpos, ypos;
@@ -136,8 +138,9 @@ APIRET APIENTRY GrxFixedPut(char * Name, size_t Argc, RXSTRING Argv[],
 /*              ypos                                                          */
 /*----------------------------------------------------------------------------*/
 
-APIRET APIENTRY GrxFixedMove(char * Name, size_t Argc, RXSTRING Argv[],
-                             char * Queuename, PRXSTRING Retstr)
+APIRET APIENTRY GrxFixedMove(const char * Name,
+                             const size_t Argc, const RXSTRING Argv[],
+                             const char * Queuename, PRXSTRING Retstr)
 {
     GtkWidget *fixedWidget, *myWidget;
     gint xpos, ypos;

@@ -266,22 +266,26 @@ APIRET APIENTRY GrxLoadFuncs(char * Name,
         "GrxWindowSetTitle",
         "GrxWindowStart",
         "GrxWindowConnectSignal",
-
         "GrxPanedAdd1",
         "GrxPanedAdd2",
         "GrxPanedPack1",
         "GrxPanedPack2",
         "GrxHPanedNew",
         "GrxVPanedNew",
-
         "GrxTableNew",
         "GrxTableAttach",
         "GrxTableSetRowSpacings",
         "GrxTableSetColSpacings",
-
         "GrxFixedNew",
         "GrxFixedPut",
         "GrxFixedMove",
+        "GrxExpanderNew",
+        "GrxExpanderSetExpanded",
+        "GrxExpanderSetLabel",
+        "GrxExpanderGetLabel",
+        "GrxExpanderUseUnderline",
+        "GrxExpanderSetSpacing",
+        "GrxExpanderConnectSignal",
 
     };
 
