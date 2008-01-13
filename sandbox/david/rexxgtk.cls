@@ -633,6 +633,18 @@ self~use_underline = .true
 self~label = label
 return
 
+/*============================================================================*/
+/* Class: Button_With_Label                                                   */
+/*============================================================================*/
+
+::class GtkButton_With_Label public subclass GtkButton
+
+::method init
+self~init:super
+use arg label = ''
+self~label = label
+return
+
 
 /*============================================================================*/
 /* Class: Checkbutton                                                         */
@@ -743,7 +755,7 @@ return
 
 ::method init
 use strict arg rows, cols, homogeneous
-self~pointer =GrxTableNew(rows, cols, homogeneous)
+self~pointer = GrxTableNew(rows, cols, homogeneous)
 return
 
 ::method attach
@@ -866,5 +878,27 @@ return
 return
 
 ::method signal_toggle_overwrite
+return
+
+
+/*============================================================================*/
+/* Class: Fixed                                                               */
+/*============================================================================*/
+
+::class GtkFixed public subclass GtkContainer
+
+::method init
+use strict arg
+self~pointer = GrxFixedNew()
+return
+
+::method put
+use strict arg widget, xpos, ypos
+call GrxFixedPut self~pointer, widget~pointer, xpos, ypos
+return
+
+::method move
+use strict arg widget, xpos, ypos
+call GrxFixedMove self~pointer, widget~pointer, xpos, ypos
 return
 

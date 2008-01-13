@@ -279,6 +279,10 @@ APIRET APIENTRY GrxLoadFuncs(char * Name,
         "GrxTableSetRowSpacings",
         "GrxTableSetColSpacings",
 
+        "GrxFixedNew",
+        "GrxFixedPut",
+        "GrxFixedMove",
+
     };
 
     int f;
