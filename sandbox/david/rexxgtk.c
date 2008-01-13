@@ -286,6 +286,11 @@ APIRET APIENTRY GrxLoadFuncs(char * Name,
         "GrxExpanderUseUnderline",
         "GrxExpanderSetSpacing",
         "GrxExpanderConnectSignal",
+        "GrxHandleBoxNew",
+        "GrxHandleBoxSetShadowType",
+        "GrxHandleBoxSetHandlePosition",
+        "GrxHandleBoxSetSnapEdge",
+        "GrxHandleBoxConnectSignal",
 
     };
 

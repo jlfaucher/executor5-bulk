@@ -972,3 +972,42 @@ self~init:super(label)
 self~use_underline = .true
 return
 
+
+/*============================================================================*/
+/* Class: HandleBox                                                           */
+/*============================================================================*/
+
+::class GtkHandleBox public subclass GtkContainer
+
+::method init
+use strict arg
+self~pointer = GrxHandleBoxNew()
+return
+
+::method 'shadow_type='
+use strict arg type
+call GrxHandleBoxSetShadowType self~pointer, type
+return
+
+::method set_shadow_type
+use strict arg self~shadow_type
+return
+
+::method 'handle_position='
+use strict arg type
+call GrxHandleBoxSetHandlePosition self~pointer, type
+return
+
+::method set_handle_position
+use strict arg self~handle_position
+return
+
+::method 'snap_edge='
+use strict arg type
+call GrxHandleBoxSetSnapEdge self~pointer, type
+return
+
+::method set_snap_edge
+use strict arg self~snap_edge
+return
+

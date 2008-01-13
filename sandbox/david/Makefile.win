@@ -68,7 +68,8 @@ OBJECTS = rexxgtk.obj \
 	grxtable.obj \
 	grxentrytable.obj \
 	grxfixed.obj \
-	grxexpander.obj
+	grxexpander.obj \
+	grxhandlebox.obj
 
 
 # Build the DLL
@@ -113,6 +114,9 @@ grxfixed.obj: grxfixed.c rexxgtk.h
 
 grxexpander.obj: grxexpander.c rexxgtk.h
 	cl -c $(GRXCFLAGS) grxexpander.c
+
+grxhandlebox.obj: grxhandlebox.c rexxgtk.h
+	cl -c $(GRXCFLAGS) grxhandlebox.c
 
 
 

@@ -55,7 +55,8 @@ OBJECTS = rexxgtk.o \
 	grxtable.o \
 	grxentry.o \
 	grxfixed.o \
-	grxexpander.o
+	grxexpander.o \
+	grxhandlebox.o
 
 
 # Build the shared library
@@ -99,6 +100,9 @@ grxfixed.o: grxfixed.c rexxgtk.h
 
 grxexpander.o: grxexpander.c rexxgtk.h
 	gcc -c $(GRXCFLAGS) grxexpander.c
+
+grxhandlebox.o: grxhandlebox.c rexxgtk.h
+	gcc -c $(GRXCFLAGS) grxhandlebox.c
 
 
 
