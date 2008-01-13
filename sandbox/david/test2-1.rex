@@ -44,12 +44,12 @@
 -- Foundations of GTK+ Development
 -- by Andrew Krause
 
--- create a new top level window with a title
 window = .GTKWindow~new('GTK_WINDOW_TOPLEVEL')
+-- the following could also be coded as
+--    window~title = 'Hello World'
 window~set_title('Hello World')
 window~show()
 
--- start the GTL main event loop
 call gtk_main
 
 -- we will never get here since there is no connection to a destroy routine

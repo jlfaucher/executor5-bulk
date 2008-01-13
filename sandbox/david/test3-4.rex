@@ -48,7 +48,7 @@ window = .myMainWindow~new('GTK_WINDOW_TOPLEVEL')
 window~set_title('Tables')
 window~connect_signal("destroy")
 window~set_border_width(10)
-window~set_size_request(350, 100)  -- something weird here
+window~set_size_request(350, 100)  -- the sizes in the book are too small
 
 table = .GtkTable~new(2, 2, .true)
 label = .GtkLabel~new('Enter the following information ...')
@@ -65,7 +65,6 @@ table~set_col_spacings(5)
 window~add(table)
 window~show_all()
 
--- start the GTL main event loop
 call gtk_main
 
 return

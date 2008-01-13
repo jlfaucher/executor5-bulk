@@ -46,7 +46,6 @@
 
 names = .array~of('Andrew', 'Joe', 'Samatha', 'Jonanthan')
 
--- create a new top level window with a title
 window = .myMainWindow~new('GTK_WINDOW_TOPLEVEL')
 window~set_title('Panes')
 window~connect_signal("destroy")
@@ -81,14 +80,7 @@ return
 .local['GTK_Quit'] = .true
 return
 
-::class myButton subclass GtkButton
-
-::method init
-use arg label = ''
-self~init:super
-self~use_underline = .true
-self~label = label
-return
+::class myButton subclass GtkButton_With_Mnemonic
 
 ::method signal_clicked
 -- get the pointer to the top level parent window of the button

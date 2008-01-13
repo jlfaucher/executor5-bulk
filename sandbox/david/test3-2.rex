@@ -79,14 +79,7 @@ return
 .local['GTK_Quit'] = .true
 return
 
-::class myButton subclass GtkButton
-
-::method init
-use arg label = ''
-self~init:super
-self~use_underline = .true
-self~label = label
-return
+::class myButton subclass GtkButton_With_Mnemonic
 
 ::method signal_clicked
 -- get the pointer to the top level parent window of the button

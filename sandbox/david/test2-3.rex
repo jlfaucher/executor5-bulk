@@ -44,8 +44,9 @@
 -- Foundations of GTK+ Development
 -- by Andrew Krause
 
--- create a new top level window with a title
 window = .myMainWindow~new('GTK_WINDOW_TOPLEVEL')
+-- the following could also be coded as
+--    window~title = 'Hello World'
 window~set_title('Buttons')
 window~set_border_width(25)
 window~set_size_request(200, 100)
@@ -60,7 +61,6 @@ window~add(button)
 
 window~show_all()
 
--- start the GTL main event loop
 call gtk_main
 
 return

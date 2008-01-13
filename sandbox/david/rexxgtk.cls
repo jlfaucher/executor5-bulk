@@ -114,7 +114,12 @@ use strict arg fontname
 call GrxWidgetSetFont self~pointer, fontname
 return
 
-::method grabfocus
+::method set_font
+-- set the display font for the widget
+use strict arg self~font
+return
+
+::method grab_focus
 -- set the keyboard focus to this widget
 use strict arg
 call GrxWidgetGrabFocus self~pointer
@@ -126,7 +131,7 @@ use strict arg
 call GrxWidgetHide self~pointer
 return
 
-::method hideall
+::method hide_all
 -- hide the widget and all children (default when created is hidden)
 use strict arg
 call GrxWidgetHideAll self~pointer
@@ -164,7 +169,7 @@ use strict arg
 call GrxWidgetShowAll self~pointer
 return
 
-::method access
+::method accessible
 -- get the accessibility object
 expose access_obj
 use strict arg
@@ -175,13 +180,17 @@ if access_obj = .NIL then do
    end
 return access_obj
 
-::method access_obj private
+::method get_accessible
+-- get the accessibility object
+return self~accessible
+
+::method accessible_obj private
 -- get the accessibility object
 expose access_obj
 use strict arg
 return access_obj
 
-::method 'access_obj=' private
+::method 'accessible_obj=' private
 -- set the accessibility object
 expose access_obj
 use strict arg access_obj
@@ -192,10 +201,20 @@ return
 use strict arg
 return GrxWidgetGetName(self~pointer)
 
+::method get_name
+-- get the widget name
+use strict arg
+return self~name
+
 ::method 'name=' private
 -- set widget name
 use strict arg newname
 call GrxWidgetSetName self~pointer, newname
+return
+
+::method set_name private
+-- set widget name
+use strict arg self~name
 return
 
 ::method 'sensitive=' private
@@ -203,6 +222,11 @@ return
 use strict arg flag
 if flag <> .false then flag = .true
 call GrxWidgetSetSensitive self~pointer, flag
+return
+
+::method set_sensitive private
+-- set widget sensitivity (enable/disable the widget for input)
+use strict arg self~sensitive
 return
 
 ::method run_method
@@ -232,7 +256,7 @@ return
 ::class GtkContainer public subclass GtkWidget
 
 ::method init
-use strict arg
+raise syntax 93.964 array ('A GtkContainer class cannot be instantiated.')
 return
 
 ::method add
@@ -288,7 +312,7 @@ return
 ::class GtkBox public subclass GtkContainer
 
 ::method init
-if arg() > 0 then raise syntax 40.4 array ('INIT', 0)
+yse strict arg
 return
 
 ::method pack_end
@@ -347,7 +371,7 @@ return
 ::class GtkPaned public subclass GtkContainer
 
 ::method init
-use strict arg
+raise syntax 93.964 array ('A GtkPaned class cannot be instantiated.')
 return
 
 ::method add1
@@ -462,7 +486,6 @@ return
 
 ::method init
 expose justify
-if arg() > 1 then raise syntax 40.4 array ('INIT', 1)
 self~pointer = GrxLabelNew()
 use strict arg text = ''
 self~text = text
@@ -474,6 +497,11 @@ return
 expose justify
 return justify
 
+::method get_justify
+-- get the label text justification
+expose justify
+return justify
+
 ::method 'justify='
 -- set the label text justification
 expose justify
@@ -481,10 +509,20 @@ use strict arg justify
 call GrxLabelSetJustify self~pointer, translate(justify)
 return
 
+::method set_justify
+-- set the label text justification
+use strict arg self~justify
+return
+
 ::method 'text='
 -- set the label text
 use strict arg text
 call GrxLabelSetText self~pointer, text
+return
+
+::method set_text
+-- set the label text
+use strict arg self~text
 return
 
 ::method 'selectable='
@@ -514,16 +552,31 @@ return
 use strict arg
 return GrxButtonGetLabel(self~pointer)
 
+::method get_label
+-- return the button's label
+use strict arg
+return self~label
+
 ::method 'label='
 -- set the button's label
 use strict arg label
 call GrxButtonSetLabel self~pointer, label
 return
 
+::method set_label
+-- set the button's label
+use strict arg self~label
+return
+
 ::method 'use_underline='
 -- set the button to usemnemonics
 use strict arg flag
 call GrxButtonUseUnderline self~pointer, flag
+return
+
+::method set_use_underline
+-- set the button to usemnemonics
+use strict arg self~use_underline
 return
 
 ::method 'relief='
@@ -594,10 +647,21 @@ return
 use strict arg
 return GrxCheckButtonGetState(self~pointer)
 
+::method get_state
+-- is the button checked?
+use strict arg
+return self~state
+
 ::method 'state='
 -- set the checked state
 use strict arg state
-return GrxCheckButtonSetState(self~pointer, state)
+call GrxCheckButtonSetState self~pointer, state
+return
+
+::method set_state
+-- set the checked state
+use strict arg self~state
+return
 
 ::method connect_signal
 use strict arg event
@@ -711,6 +775,11 @@ return
 -- get the max length of text in the object
 use strict arg
 return GrxEntryGetMaxLength(self~pointer)
+
+::method get_max_length
+-- get the max length of text in the object
+use strict arg
+return self~max_length
 
 ::method 'max_length='
 -- set the max length of text in the object
