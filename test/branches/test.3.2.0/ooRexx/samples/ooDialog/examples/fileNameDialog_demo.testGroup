@@ -90,6 +90,15 @@
 
   group~restrictOS("WINDOWS")
 
+  -- In addition, this is a test of a sample shipped with the release ooRexx.
+  -- We require that ooRexx be installed normally. If it appears that this is
+  -- not a normal installed ooRexx, we can tell the test group that it has no
+  -- executable tests.  To do that, we also must supply a reason.
+  home = value("REXX_HOME", , 'ENVIRONMENT')
+  if home == "" then
+    group~markNoTests("This is a test of a sample, ooRexx must be installed normally with REXX_HOME set")
+
+
   -- 1.) The test cases in this GUI test need to execute in order.  So we use a
   -- method that places the individual test cases into the test suite in the
   -- order we specify. fetchMethodNames() is a convenience routine in this file

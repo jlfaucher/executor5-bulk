@@ -61,8 +61,17 @@
   parse source . . s
 
   group = .TestGroup~new(s)
-  group~add(.drives.testGroup)
   group~restrictOS("WINDOWS")
+
+  -- This is a test of a sample shipped with the release ooRexx.  We require
+  -- that ooRexx be installed normally.
+  home = value("REXX_HOME", , 'ENVIRONMENT')
+  if home == "" then
+    group~markNoTests("This is a test of a sample, ooRexx must be installed normally with REXX_HOME set")
+
+  -- Use an ordered collection to add the tests.
+  methodNames = .array~of("test_000_Exists", "test_001_Executes", "test_002_ExpectedCompletion")
+  group~addWithCollection(.drives.testGroup, methodNames)
 
   if group~isAutomatedTest then return group
 
@@ -80,7 +89,8 @@ return testResult
 /* class: drives.testGroup - - - - - - - - - - - - - - - - - - -*\
   The main purpose of this test group is to execute the sample program to assert
   that the sample: 1.) runs 2.) completes normally.  It is not the purpose to
-  prove that SysDriveMap(), etc. are operating correctly.
+  prove that SysDriveMap(), etc. are operating correctly.  The proper place for
+  that would be in a RexxUtil test group.
 
   The test group is broken down into 3 tests.  1. ooRexx is installed correctly
   and the sample program exists.  2. The sample program executes.  3. It
@@ -90,9 +100,9 @@ return testResult
   This is *not* the usual case for unit tests, where normally each unit test
   is independent of the others.  Because of the dependence of each phase of the
   test group on the preceding phase, a control is used to check that the
-  preceding phase passed.  And, the test methods are named such that they will
-  be invoked in order.  (This is dependent on a featue of the framework that
-  sorts the test method names alphabetically.)
+  preceding phase passed.  And, the test methods are added to the test group
+  by using a collection.  The test group then ensures that test case methods are
+  executed in the same order as they are in the collection.
 
   Also, state information is stored in class attributes of the test group.
   Again, this is not the usual case for unit tests.  It arises from the fact
