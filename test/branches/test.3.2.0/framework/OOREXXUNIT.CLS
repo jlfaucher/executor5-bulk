@@ -192,11 +192,10 @@ if \ .local~hasEntry(ooRexxUnit.version) then do
   .local~ooRexxUnit.knownBugFlag = "tracker bug #"
 
   -- Capture the ooRexxUnit framework directory and ensure it is in the path.
+  -- Also capture the original path in case someone needs it.
   parse source . . fileSpec
   .local~ooRexxUnit.dir = fileSpec~left(fileSpec~caseLessPos("OOREXXUNIT.CLS") - 2 )
-  currentPath = value("PATH", , 'ENVIRONMENT')
-  if currentPath~caseLessPos(.ooRexxUnit.dir) == 0 then
-     oldPath = value("PATH", .ooRexxUnit.dir || .ooRexxUnit.path.separator || currentPath, 'ENVIRONMENT')
+  .local~ooRexxUnit.orignalPath = addToPath(.ooRexxUnit.dir)
 
   -- Add the test utility class to the local environment so that it is available
   -- to anyone running in this process.
@@ -368,6 +367,54 @@ return .false
 
 return leading || trailing
 -- End pathCompact( path, len )
+
+
+/** addToPath()
+ * Adds the specified directory to the path only if it is not already in the
+ * path.  By default the directory is added to the beginning of the path.
+ *
+ * @param  dir  REQUIRED
+ *   The directory to add to the path
+ * @param  at   OPTIONAL
+ *   Where to add the directory, beginning or end. Only the first letter is
+ *   needed.  Specifying anything other than "E"nd results in the beginning.
+ * @return  Returns the old path, the current path at time of invocation.
+ */
+::routine addToPath public
+  use strict arg dir, at = 'B'
+
+  at = at~left(1)~upper
+  if at \== 'E' then at = 'B'
+
+  curPath = value("PATH", , 'ENVIRONMENT')
+  if \ isInPath(dir) then do
+    if at == 'B' then
+      j = value("PATH", dir || .ooRexxUnit.path.separator || curPath, 'ENVIRONMENT')
+    else
+      j = value("PATH", curPath || .ooRexxUnit.path.separator || dir, 'ENVIRONMENT')
+  end
+
+return curPath
+-- End addToPath()
+
+
+/** isInPath()
+ * Returns true if the specified directory is in the current PATH, otherwise
+ * returns false.
+ */
+::routine isInPath public
+  use strict arg dir
+
+  path = value("PATH", , 'ENVIRONMENT')
+  sl   = .ooRexxUnit.directory.separator
+  sep  = .ooRexxUnit.path.separator
+
+  if path~caseLessPos(dir || sep) <> 0 then return .true
+  if path~caseLessPos(dir || sl || pathSep) <> 0 then return .true
+  if path~right(dir~length)~caselessCompare(dir) == 0 then return .true
+
+return .false
+--End isInPath()
 
 
 /** pp()

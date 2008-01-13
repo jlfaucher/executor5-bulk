@@ -40,7 +40,7 @@
    name:             ooTest.frm
    authors:          Mark Miesfeld
    date:             2007-12-05
-   version:          0.9.0
+   version:          1.0.0
 
    purpose:          An extension to the ooRexxUnit framework providing function
                      and features specific to testing the ooRexx interpreter and
@@ -57,7 +57,7 @@
 */
 
 if \ .local~hasEntry('OOTEST_FRAMEWORK_VERSION') then do
-  .local~ooTest_Framework_version = 0.9.0_3.2.0
+  .local~ooTest_Framework_version = 1.0.0_3.2.0
 
   -- Replace the default test result class in the environment with the ooRexx
   -- project's default class.
@@ -66,9 +66,7 @@ if \ .local~hasEntry('OOTEST_FRAMEWORK_VERSION') then do
   -- Capture the ooTest framework directory and ensure it is in the path.
   parse source . . fileSpec
   .local~ooTest.dir = fileSpec~left(fileSpec~caseLessPos("ooTest.frm") - 2 )
-  currentPath = value("PATH", , 'ENVIRONMENT')
-  if currentPath~caseLessPos(.ooTest.dir) == 0 then
-     oldPath = value("PATH", .ooTest.dir || .ooRexxUnit.path.separator || currentPath, 'ENVIRONMENT')
+  j = addToPath(.ooTest.dir)
 
 end
 -- End of entry point.
