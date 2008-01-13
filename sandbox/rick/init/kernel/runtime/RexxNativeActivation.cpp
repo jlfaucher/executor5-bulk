@@ -181,6 +181,15 @@ void RexxNativeActivation::prepare(
     arglist = _arglist;
 }
 
+/**
+ * Run a native method or function under the context of this activation.
+ *
+ * @param _receiver The receiver object (NULL if not a method invocation).
+ * @param _msgname  The message name.
+ * @param _argcount The argument count
+ * @param _arglist  The list of arguments.
+ * @param resultObj The returned result object.
+ */
 void RexxNativeActivation::run(
     RexxObject  *_receiver,             // the object receiver
     RexxString  *_msgname,              // the message name
@@ -541,6 +550,46 @@ void RexxNativeActivation::run(
     // Use protected object to pass back the result
     this->guardOff();                    /* release any variable locks        */
     this->argcount = 0;                  /* make sure we don't try to mark any arguments */
+    this->activity->pop(false);          /* pop this from the activity        */
+    this->setHasNoReferences();          /* mark this as not having references in case we get marked */
+    return;                             /* and finished                      */
+}
+
+
+/**
+ * Run a task under the scope of a native activation.  This is
+ * generally a bootstrapping call, such as a top-level program call,
+ * method translation, etc.
+ *
+ * @param dispatcher The dispatcher instance we're going to run.
+ */
+void RexxNativeActivation::run(ActivityDispatcher &dispatcher)
+{
+    size_t activityLevel = this->activity->getActivationLevel();
+    try
+    {
+        // make the activation hookup
+        dispatcher->setActivation(this);
+    }
+    catch (ActivityException)
+    {
+        // if we're not the current kernel holder when things return, make sure we
+        // get the lock before we continue
+        if (ActivityManager::currentActivity != activity)
+        {
+            activity->requestAccess();
+        }
+        // pass the condition information on to the dispatch unig
+        dispatcher->handleError(activity->getCondition());
+        return;
+    }
+
+    // belt and braces...this restores the activity level to whatever
+    // level we had when we made the callout.
+    this->activity->restoreActivationLevel(activityLevel);
+
+    // Use protected object to pass back the result
+    this->guardOff();                    /* release any variable locks        */
     this->activity->pop(false);          /* pop this from the activity        */
     this->setHasNoReferences();          /* mark this as not having references in case we get marked */
     return;                             /* and finished                      */

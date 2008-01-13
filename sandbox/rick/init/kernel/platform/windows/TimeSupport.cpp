@@ -42,15 +42,13 @@
 #include "RexxDateTime.hpp"
 #include "Interpreter.hpp"
 
-extern SEV rexxTimeSliceSemaphore;
-extern HANDLE rexxTimeSliceTimerOwner;
+HANDLE SystemInterpreter::timeSliceTimerOwner = 0;
 
 #define TIMESLICE_STACKSIZE 2048
 #define TIMESLICEMS 10
 
 #ifdef TIMESLICE
 extern int REXXENTRY RexxSetYield(process_id_t procid, thread_id_t threadid);
-extern bool rexxTimeSliceElapsed;
 #endif
 
 /*********************************************************************/
@@ -92,7 +90,7 @@ DWORD WINAPI TimeSliceControl(void * args)
    do
    {
       Sleep(TIMESLICEMS);
-      rexxTimeSliceElapsed = true;
+      Interpreter::setTimeSliceElapsed();
    } while (!Interpreter::isTerminated());
    rexxTimeSliceTimerOwner = 0;
 #endif
@@ -100,33 +98,33 @@ DWORD WINAPI TimeSliceControl(void * args)
 }
 
 
-void SysStartTimeSlice( void )
+void SystemInterpreter::startTimeSlice()
 /******************************************************************************/
 /* Function:  Make sure we have a Timer running and reset TimeSlice Sem       */
 /******************************************************************************/
 {
 #ifdef TIMESLICE
    ULONG thread;
-   if (rexxTimeSliceTimerOwner == 0) {           /* Is there a timer?         */
+   if (timeSliceTimerOwner == 0) {           /* Is there a timer?         */
 
      /* create a time slice timer thread */
 
-     rexxTimeSliceTimerOwner = CreateThread(NULL, TIMESLICE_STACKSIZE, TimeSliceControl, NULL, 0, &thread);
-     SetThreadPriority(rexxTimeSliceTimerOwner,THREAD_PRIORITY_NORMAL+1);  /* set a higher priority */
+     timeSliceTimerOwner = CreateThread(NULL, TIMESLICE_STACKSIZE, TimeSliceControl, NULL, 0, &thread);
+     SetThreadPriority(timeSliceTimerOwner, THREAD_PRIORITY_NORMAL+1);  /* set a higher priority */
   }
-  rexxTimeSliceElapsed = false;
+  Interpreter::clearTimeSliceElapsed();
 #endif
 }
 
 
-void SysStopTimeSlice( void )
+void SystemInterpreter::stopTimeSlice()
 /******************************************************************************/
 /* Function:  Stop the time slice timer thread                                */
 /******************************************************************************/
 {
 #ifdef TIMESLICE
-   TerminateThread(rexxTimeSliceTimerOwner, 0);
-   rexxTimeSliceTimerOwner = 0;
+   TerminateThread(timeSliceTimerOwner, 0);
+   timeSliceTimerOwner = 0;
 #endif
 }
 

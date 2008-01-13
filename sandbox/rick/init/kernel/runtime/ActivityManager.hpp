@@ -69,8 +69,8 @@ public:
     static void lockKernel();
     static void unlockKernel();
     static bool lockKernelImmediate();
-    static void createKernelLock();
-    static void closeKernelLock();
+    static void createLocks();
+    static void closeLocks();
     static void init();
     static RexxActivation *newActivation(RexxActivity *activity, RexxMethod *method, RexxCode *code, RexxActivation *parent, RexxString *calltype, RexxString *environment, int context);
     static RexxActivation *newActivation(RexxActivity *activity, RexxMethod *method, RexxCode *code);
@@ -300,7 +300,7 @@ public:
     inline ~NativeContextBlock()
     {
         // release the kernel lock
-        activity->releaseAccess();
+        ActivityManager::returnActivity(activity);
     }
 
     inline RexxObject *protect(RexxObject *o)

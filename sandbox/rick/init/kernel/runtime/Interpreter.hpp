@@ -54,6 +54,13 @@
 class Interpreter
 {
 public:
+    enum
+    {
+        SAVE_IMAGE_MODE = 0,       // image creation
+        RUN_MODE = 1               // normal run mode
+    } InterpreterStartupMode;
+
+
     static inline void getResourceLock() { MTXRQ(resourceLock); }
     static inline void releaseResourceLock() { MTXRL(resourceLock); }
     static inline void createLocks()
@@ -79,10 +86,30 @@ public:
     static void terminate();
     static bool isTerminated();
 
+    static inline bool hasTimeSliceElapsed()
+    {
+        // if we've had a time slice event, flip the event flag and return true
+        if (timeSliceElapsed)
+        {
+           timeSliceElapsed = false;
+           return true;
+        }
+        // not time to break
+        return false;
+    }
+
+
+    static inline void setTimeSliceElapsed()
+    {
+        timeSliceElapsed = true;
+    }
+
 
 protected:
     static SMTX   resourceLock;      // use to lock resources accessed outside of kernel global lock
     static SEV    terminationSem;    // used to signal that everything has shutdown
+    static int    initializations;   // indicates whether we're terminated or not
+    static bool   timeSliceElapsed;  // indicates we've had a timer interrupt
 };
 
 

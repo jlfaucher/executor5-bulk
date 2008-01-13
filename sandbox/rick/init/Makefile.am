@@ -191,7 +191,8 @@ platformHeaders = $(kernel_platform_unix_dir)/APIDefinitions.h \
                   $(kernel_platform_unix_dir)/SharedMemorySupport.h \
                   $(kernel_platform_unix_dir)/SystemCommands.h \
                   $(kernel_platform_unix_dir)/SystemSemaphores.h \
-                  $(kernel_platform_unix_dir)/ThreadSupport.hpp
+                  $(kernel_platform_unix_dir)/ThreadSupport.hpp \
+                  $(kernel_platform_unix_dir)/SystemInterpreter.hpp
 platformcommonHeaders =
 runtimeHeaders = $(runtime_dir)/DeadObject.hpp \
                  $(runtime_dir)/ClassTypeCodes.h \
@@ -208,6 +209,7 @@ runtimeHeaders = $(runtime_dir)/DeadObject.hpp \
                  $(runtime_dir)/ActivityManager.hpp \
                  $(runtime_dir)/LibraryManager.hpp \
                  $(runtime_dir)/Interpreter.hpp \
+                 $(runtime_dir)/InterpreterInstance.hpp \
                  $(runtime_dir)/ProtectedObject.hpp \
                  $(runtime_dir)/ExitHandler.hpp \
                  $(runtime_dir)/RexxBehaviour.hpp \
@@ -233,7 +235,11 @@ runtimeHeaders = $(runtime_dir)/DeadObject.hpp \
                  $(runtime_dir)/RexxNativeCode.hpp \
                  $(runtime_dir)/RexxSmartBuffer.hpp \
                  $(runtime_dir)/RexxVariable.hpp \
-                 $(runtime_dir)/RexxVariableDictionary.hpp
+                 $(runtime_dir)/RexxVariableDictionary.hpp \
+                 $(runtime_dir)/RexxStartDispatcher.hpp \
+                 $(runtime_dir)/ActivityDispatcher.hpp \
+                 $(runtime_dir)/TranslateDispatcher.hpp \
+                 $(runtime_dir)/CreateMethodDispatcher.hpp
 streamlibraryHeaders = $(streamlibrary_dir)/StreamCommandParser.h \
                        $(streamlibrary_dir)/StreamNative.h
 libHeaders = $(lib_dir)/RexxPlatformDefinitions.h \
@@ -461,8 +467,8 @@ platform_sources = $(kernel_platform_unix_dir)/ErrorMessages.cpp \
                    $(kernel_platform_unix_dir)/TimeSupport.cpp \
                    $(kernel_platform_unix_dir)/UseridFunction.cpp \
                    $(kernel_platform_unix_dir)/ValueFunction.cpp \
-                   $(kernel_platform_unix_dir)/VariablePool.cpp
-#                   $(runtime_dir)/RexxVariableDictionary2.cpp
+                   $(kernel_platform_unix_dir)/VariablePool.cpp \
+                   $(kernel_platform_unix_dir)/SystemInterpreter.cpp
 runtime_sources  = $(runtime_dir)/DeadObject.cpp \
                    $(runtime_dir)/GlobalData.cpp \
                    $(runtime_dir)/GlobalNames.cpp \
@@ -477,6 +483,7 @@ runtime_sources  = $(runtime_dir)/DeadObject.cpp \
                    $(runtime_dir)/ActivityManager.cpp \
                    $(runtime_dir)/LibraryManager.cpp \
                    $(runtime_dir)/Interpreter.cpp \
+                   $(runtime_dir)/InterpreterInstance.cpp \
                    $(runtime_dir)/RexxBehaviour.cpp \
                    $(runtime_dir)/RexxCode.cpp \
                    $(runtime_dir)/CPPCode.cpp \
@@ -503,10 +510,13 @@ runtime_sources  = $(runtime_dir)/DeadObject.cpp \
                    $(runtime_dir)/Setup.cpp \
                    $(runtime_dir)/Utilities.cpp \
                    $(runtime_dir)/Version.cpp \
-                   $(runtime_dir)/VirtualFunctionTable.cpp
+                   $(runtime_dir)/VirtualFunctionTable.cpp \
+                   $(runtime_dir)/RexxStartDispatcher.cpp \
+                   $(runtime_dir)/ActivityDispatcher.cpp \
+                   $(runtime_dir)/TranslateDispatcher.cpp \
+                   $(runtime_dir)/CreateMethodDispatcher.cpp
 streamlibrary_sources = $(streamlibrary_dir)/StreamCommandParser.cpp \
                         $(streamlibrary_dir)/StreamNative.cpp
-lib_sources = $(lib_dir)/LocalProcessData.cpp
 librexx_la_SOURCES = $(classes_sources) \
                      $(expression_sources) \
                      $(instructions_sources) \
@@ -514,8 +524,7 @@ librexx_la_SOURCES = $(classes_sources) \
                      $(kernel_platform_common_sources) \
                      $(platform_sources) \
                      $(runtime_sources) \
-                     $(streamlibrary_sources) \
-                     $(lib_sources)
+                     $(streamlibrary_sources)
 core_classes = $(rexxclasses_dir)/CoreClasses.orx \
                $(rexxclasses_dir)/StreamClasses.orx \
 	       $(rexxclasses_dir)/SystemMethods.orx

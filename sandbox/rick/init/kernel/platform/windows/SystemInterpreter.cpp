@@ -6,7 +6,7 @@
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
 /* distribution. A copy is also available at the following address:           */
-/* http://www.oorexx.org/license.html                          */
+/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
 /*                                                                            */
 /* Redistribution and use in source and binary forms, with or                 */
 /* without modification, are permitted provided that the following            */
@@ -35,20 +35,62 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-/******************************************************************************/
-/* REXX Kernel                                                  okgdata.c     */
-/*                                                                            */
-/* Global Data                                                                */
-/*                                                                            */
-/******************************************************************************/
-#define GDATA                          /* prevent some RexxCore.h declares    */
-#define EXTERN                         /* keep RexxCore.h from using extern   */
-// explicitly initialize global variable declares.
-#define INITGLOBALDATA = NULL
+/*****************************************************************************/
+/* REXX Windows Support                                                      */
+/*                                                                           */
+/* Main Windows interpreter control.  This is the preferred location for     */
+/* all platform dependent global variables.                                  */
+/* The interpreter does not instantiate an instance of this                  */
+/* class, so most variables and methods should be static.                    */
+/*                                                                           */
+/*                                                                           */
+/*****************************************************************************/
 
-#include "RexxCore.h"
-#include "StringClass.hpp"
-#include "MethodClass.hpp"
-#include "RexxNativeAPI.h"
+#include "SystemInterpreter.hpp"
 
+class InterpreterInstance:
+
+
+HINSTANCE SystemInterperter::moduleHandle = 0;      // handle to the interpeter DLL
+
+
+void SystemInterpreter::processStartup(HINSTANCE mod)
+{
+    moduleHandle = mod;
+    // startup communications with the RXAPI server
+    RxInterProcessInit(true);
+    // startup timeslice processing
+    SysStartTimeSlice();
+}
+
+
+void SystemInterpreter::processShutdown()
+{
+    SysStopTimeSlice();           // shutdown the timer thread
+    RexxDeregisterFunction(NULL); // Send PROCESS_GONE to RXAPI
+}
+
+
+
+bool SystemInterpreter::loadMessage(wholenumber_t code, char *buffer, size_t bufferLength)
+{
+    return LoadString(mouduleHandle, (UINT)code, buffer, bufferLength) != 0;
+}
+
+//TODO:  Add a system field in the instance class
+
+void SystemInterpreter::initializeInstance(InterpreterInstance *instance)
+{
+    /* Because of using the stand-alone runtime library or when using different compilers,
+       the std-streams of the calling program and the REXX.DLL might be located at different
+       addresses and therefore _file might be -1. If so, std-streams are reassigned to the
+       file standard handles returned by the system */
+    if ((stdin->_file == -1) && (GetFileType(GetStdHandle(STD_INPUT_HANDLE)) != FILE_TYPE_UNKNOWN))
+        *stdin = *_fdopen(_open_osfhandle((intptr_t)GetStdHandle(STD_INPUT_HANDLE),_O_RDONLY), "r");
+    if ((stdout->_file == -1) && (GetFileType(GetStdHandle(STD_OUTPUT_HANDLE)) != FILE_TYPE_UNKNOWN))
+        *stdout = *_fdopen(_open_osfhandle((intptr_t)GetStdHandle(STD_OUTPUT_HANDLE),_O_APPEND), "a");
+    if ((stderr->_file == -1) && (GetFileType(GetStdHandle(STD_ERROR_HANDLE)) != FILE_TYPE_UNKNOWN))
+        *stderr = *_fdopen(_open_osfhandle((intptr_t)GetStdHandle(STD_ERROR_HANDLE),_O_APPEND), "a");
+
+}
 

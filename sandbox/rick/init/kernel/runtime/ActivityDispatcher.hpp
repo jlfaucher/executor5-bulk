@@ -35,20 +35,38 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-/******************************************************************************/
-/* REXX Kernel                                                  okgdata.c     */
-/*                                                                            */
-/* Global Data                                                                */
-/*                                                                            */
-/******************************************************************************/
-#define GDATA                          /* prevent some RexxCore.h declares    */
-#define EXTERN                         /* keep RexxCore.h from using extern   */
-// explicitly initialize global variable declares.
-#define INITGLOBALDATA = NULL
-
-#include "RexxCore.h"
-#include "StringClass.hpp"
-#include "MethodClass.hpp"
-#include "RexxNativeAPI.h"
 
 
+#ifndef ActivityDispatcher_included
+#define ActivityDispatcher_included
+
+class RexxDirectory;
+class RexxNativeActivation;
+
+class ActivityDispatcher
+{
+public:
+    inline ActivityDispatcher() { ; }
+    inline ActivityDispatcher(PRXSYSEXIT e, const char *env)
+    {
+        exits = e;
+        defaultEnvironment = env;
+    }
+    inline ~ActivityDispatcher() { ; }
+
+    virtual void run();
+    virtual void handleError(wholenumber_t, RexxDirectory *);
+
+    inline void setActivation(RexxNativeActivation *a) { activation = a; }
+
+protected;
+    RexxActivity *activity;            // the activity we're running on
+    RexxNativeActivation *activation;  // the native activation we're running under
+    PRXSYSEXIT exits;                  // exits we're running with
+    const char *defaultEnvironment;    // the default execution environment
+    wholenumber_t  rc;                 // error return code
+    RexxDirectory *conditionData;      // any condition data posted due to an activity error
+};
+
+
+#endif

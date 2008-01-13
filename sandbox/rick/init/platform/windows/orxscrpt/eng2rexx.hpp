@@ -68,19 +68,9 @@ void __stdcall parseText(void*);
 void __stdcall createCode(void*);
 void __stdcall runMethod(void*);
 
-// these functions are not documented to the outside world,
-// so we have to give the prototypes here, they're not in rexx.h:
-void REXXENTRY RexxCreateDirectory(const char *);
-void REXXENTRY RexxRemoveDirectory(const char *);
-APIRET REXXENTRY RexxCreateMethod(const char *, PRXSTRING, REXXOBJECT *, ConditionData *);
-APIRET REXXENTRY RexxLoadMethod(const char *, PRXSTRING, REXXOBJECT *);
-APIRET REXXENTRY RexxStoreMethod(REXXOBJECT, PRXSTRING);
-void WinGetVariables(void (__stdcall *callback)(void*));
-void WinEnterKernel(bool);
-void WinLeaveKernel(bool);
-extern "C" {
-APIRET REXXENTRY RexxRunMethod(const char *, REXXOBJECT, void *, REXXOBJECT (__stdcall *)(void*), PRXSYSEXIT, REXXOBJECT *, REXXOBJECT, ConditionData *);
-}
+void WinGetVariables(void (REXXENTRY *callback)(const char *, REXXOBJECT));
+void WinEnterKernel();
+void WinLeaveKernel();
 // these three come from orexxole.c
 REXXOBJECT Variant2Rexx(VARIANT *);
 void Rexx2Variant(REXXOBJECT, VARIANT *, VARTYPE, size_t);

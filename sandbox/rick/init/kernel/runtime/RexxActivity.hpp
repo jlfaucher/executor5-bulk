@@ -184,7 +184,8 @@ public:
    void        releaseAccess();
    void        requestAccess();
    void        checkStackSpace();
-   void        terminateActivity();
+   void        cleanupActivityResources();
+   void        terminatePoolActivity();
    RexxObject *localMethod();
    thread_id_t threadIdMethod();
    bool isThread(thread_id_t id) { return threadid == id; }
@@ -217,7 +218,6 @@ public:
    RexxString *pullInput(RexxActivation *);
    RexxObject *lineOut(RexxString *);
    RexxString *lineIn(RexxActivation *);
-   void terminateMethod();
    wholenumber_t messageSend(RexxObject *, RexxString *, size_t, RexxObject **, ProtectedObject &);
    void generateRandomNumberSeed();
 
@@ -290,6 +290,8 @@ public:
    bool isExitEnabled(int exitNum) { return getExitHandler(exitNum).isEnabled(); }
 
 
+   InterpreterInstance *instance;      // the interpreter we're running under
+   RexxActivity *oldActivity;          // pushed nested activity
    RexxInternalStack  *activations;    /* stack of activations              */
    RexxActivationStack   frameStack;   /* our stack used for activation frames */
    RexxObject         *saveValue;      /* saved result across activity_yield*/
@@ -312,6 +314,7 @@ public:
    bool     stackcheck;                /* stack space is to be checked      */
    bool     exit;                      /* activity loop is to exit          */
    bool     requestingString;          /* in error handling currently       */
+   bool     suspended;                 // the suspension flag
    SEV      guardsem;                  /* guard expression semaphore        */
    size_t   nestedCount;               /* extent of the nesting             */
    NestedActivityState nestedInfo;     /* info saved and restored on calls  */

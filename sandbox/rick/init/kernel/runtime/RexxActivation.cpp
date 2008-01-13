@@ -373,7 +373,7 @@ RexxObject * RexxActivation::run(RexxObject *_receiver, RexxString *msgname, Rex
 
 #ifdef FIXEDTIMERS                     /* currently disabled (active on Win)*/
                 /* has time Slice expired?           */
-                if (SysTimeSliceElapsed())
+                if (Interpreter::hasTimeSliceElapsed())
                 {
                     this->activity->relinquish();    /* yield control to the activity     */
                 }

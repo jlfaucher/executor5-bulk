@@ -35,20 +35,32 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-/******************************************************************************/
-/* REXX Kernel                                                  okgdata.c     */
-/*                                                                            */
-/* Global Data                                                                */
-/*                                                                            */
-/******************************************************************************/
-#define GDATA                          /* prevent some RexxCore.h declares    */
-#define EXTERN                         /* keep RexxCore.h from using extern   */
-// explicitly initialize global variable declares.
-#define INITGLOBALDATA = NULL
 
-#include "RexxCore.h"
-#include "StringClass.hpp"
-#include "MethodClass.hpp"
-#include "RexxNativeAPI.h"
 
+#ifndef RexxStartDispatcher_included
+#define RexxStartDispatcher_included
+
+#include "ActivityDispatcher.hpp"
+
+class RexxStartDispatcher : public ActivityDispatcher
+{
+public:
+    inline RexxStartDispatcher(PRXSYSEXIT e, const char *env) : ActivityDispatcher(e, env) { ; }
+    inline ~RexxStartDispatcher() { ; }
+
+    virtual void run();
+    virtual void handleError(RexxDirectory *);
+
+    size_t     argcount;                 /* Number of args in arglist         */
+    PCONSTRXSTRING arglist;              /* Array of args                     */
+    const char *programname;             /* REXX program to run               */
+    PRXSTRING  instore;                  /* Instore array                     */
+    const char *envname;                 /* Initial cmd environment           */
+    int        calltype;                 /* How the program is called         */
+    short *    retcode;                  /* Integer form of result            */
+    PRXSTRING  result;                   /* Result returned from program      */
+};
+
+
+#endif
 

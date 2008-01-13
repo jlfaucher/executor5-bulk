@@ -35,20 +35,48 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-/******************************************************************************/
-/* REXX Kernel                                                  okgdata.c     */
-/*                                                                            */
-/* Global Data                                                                */
-/*                                                                            */
-/******************************************************************************/
-#define GDATA                          /* prevent some RexxCore.h declares    */
-#define EXTERN                         /* keep RexxCore.h from using extern   */
-// explicitly initialize global variable declares.
-#define INITGLOBALDATA = NULL
 
-#include "RexxCore.h"
-#include "StringClass.hpp"
-#include "MethodClass.hpp"
-#include "RexxNativeAPI.h"
+#include "ActivityDispatcher.hpp"
 
 
+/**
+ * Default virtual method for handling a run() methods on
+ * an activity dispatcher.
+ */
+void ActivityDispatcher::run()
+{
+    // this just returns
+}
+
+
+/**
+ * Default handler for any error conditions.  This just sets the
+ * condition information in the dispatch unit.
+ *
+ * @param c      The condition information for the error.
+ */
+void ActivityDispatcher::handleError(wholenumber_t r, RexxDirectory *c)
+{
+    // save the condition information
+    rc = r;
+    conditionData = c;
+}
+
+
+/**
+ * Invoke the dispatcher on a newly created interpreter instance.
+ */
+void ActivityDispatcher::invoke()
+{
+    // get an instance and the current activity
+    InterpreterInstance *instance = Interpreter::createInterpreterInstance(exits, envname);
+    activity = instance->enterOnCurrentThread();
+
+    // go run the instance on the current activity
+    activity->run(this);
+
+    activity->exitCurrentThread();
+    activity = OREF_NULL;
+    // terminate the instance
+    instance->terminate();
+}

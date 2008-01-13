@@ -35,20 +35,67 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-/******************************************************************************/
-/* REXX Kernel                                                  okgdata.c     */
-/*                                                                            */
-/* Global Data                                                                */
-/*                                                                            */
-/******************************************************************************/
-#define GDATA                          /* prevent some RexxCore.h declares    */
-#define EXTERN                         /* keep RexxCore.h from using extern   */
-// explicitly initialize global variable declares.
-#define INITGLOBALDATA = NULL
 
-#include "RexxCore.h"
-#include "StringClass.hpp"
-#include "MethodClass.hpp"
-#include "RexxNativeAPI.h"
 
+#ifndef CreateMethodDispatcher_included
+#define CreateMethodDispatcher_included
+
+#include "ActivityDispatcher.hpp"
+
+class ConditionDispatcher : public ActivityDispatcher
+{
+    inline CreateMethodDispatcher(PRXSYSEXIT e, const char *env, ConditionData *cd) : ActivityDispatcher(e, env) { translatedCondition = cd; }
+    inline ~CreateMethodDispatcher() { ; }
+
+    virtual void handleError(RexxDirectory *);
+
+protected:
+    ConditionData *translatedCondition;  // pointer to returned condition data
+
+};
+
+
+
+class CreateMethodDispatcher : public ConditionDispatcher
+{
+public:
+    inline CreateMethodDispatcher(ConditionData *cd) : ConditionDispatcher(NULL, NULL, cd) { ; }
+    inline ~CreateMethodDispatcher() { ; }
+
+    virtual void run();
+
+    CONSTRXSTRING programBuffer;   // the source buffer to translate from
+    REXXOBJECT    translatedMethod;  // the method object returned
+    const char   *saveDirectory;     // environment directory save method in
+};
+
+
+class LoadMethodDispatcher : public ActivityDispatcher
+{
+public:
+    inline LoadMethodDispatcher() : ActivityDispatcher(NULL, NULL) { ; }
+    inline ~LoadMethodDispatcher() { ; }
+
+    virtual void run();
+
+    CONSTRXSTRING programBuffer;   // the source buffer to translate from
+    REXXOBJECT    translatedMethod;  // the method object returned
+    const char   *saveDirectory;     // environment directory save method in
+};
+
+
+class StoreMethodDispatcher : public ActivityDispatcher
+{
+public:
+    inline LoadMethodDispatcher() : ActivityDispatcher(NULL, NULL) { ; }
+    inline ~LoadMethodDispatcher() { ; }
+
+    virtual void run();
+
+    RXSTRING programBuffer;          // the source buffer to translate from
+    REXXOBJECT    translatedMethod;  // the method object returned
+};
+
+
+#endif
 

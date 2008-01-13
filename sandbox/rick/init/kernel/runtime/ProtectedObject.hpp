@@ -101,6 +101,12 @@ public:
         return protectedObject;
     }
 
+    // cast conversion operators for some very common uses of protected object.
+    inline operator REXXOBJECT()
+    {
+        return (REXXOBJECT)protectedObject;
+    }
+
     inline operator RexxString *()
     {
         return (RexxString *)protectedObject;

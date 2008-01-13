@@ -144,11 +144,11 @@ LONG APIENTRY RexxCatchExit(LONG ExitNumber, LONG Subfunction, PEXIT parmblock)
    return RXEXIT_NOT_HANDLED;
 }
 
-void __stdcall fillVariables(void*a)
+void REXXENTRY fillVariables(const char *name, REXXOBJECT value)
 {
   //  Why can't we use this here?
   // OrxScript  *engine = findEngineForThread(GetCurrentThreadId());
-  CurrentEngine->insertVariable(a);
+  CurrentEngine->insertVariable(name, value);
 }
 
 /* Exit handler to find out the values of variables of "immediate code" */
@@ -605,27 +605,19 @@ LONG APIENTRY RexxValueExtension(LONG ExitNumber, LONG Subfunction, PEXIT pblock
                 Property = engine->GetExternalProperty(PropName);
                 if (Property)
                 {
-                    // GET
-                    WinEnterKernel(false);
                     result = Variant2Rexx(Property);
-                    WinLeaveKernel(false);
                     // PUT
                     if (newvalue)
                     {
                         VariantClear(Property);
-                        WinEnterKernel(false);
-                        //  >>> ??? <<< Does this return something that I can check for failure?
                         Rexx2Variant(newvalue, Property, VT_EMPTY /*(try your best)*/, 0 /*dummy argument?!*/);
-                        WinLeaveKernel(false);
                     }
                     RetCode = 0;
                 }
                 else
                 {
                     RetCode = 0;
-                    WinEnterKernel(false);
                     result = ooRexxString("");
-                    WinLeaveKernel(false);
                 }
                 break;
             case 2:
@@ -674,9 +666,7 @@ LONG APIENTRY RexxValueExtension(LONG ExitNumber, LONG Subfunction, PEXIT pblock
                                                 case VAR_STATIC:
                                                     break;   // can this be treated like VAR_CONST, too?
                                                 case VAR_CONST:
-                                                    WinEnterKernel(false);
                                                     result = Variant2Rexx(pVarDesc->lpvarValue);
-                                                    WinLeaveKernel(false);
                                                     RetCode = 0;
                                                     break;
                                                     // don't know what to do with these two:
@@ -698,9 +688,7 @@ LONG APIENTRY RexxValueExtension(LONG ExitNumber, LONG Subfunction, PEXIT pblock
 
                 if (result == NULL)
                 {
-                    WinEnterKernel(false);
                     result = ooRexxString("");
-                    WinLeaveKernel(false);
                 }
                 break;
             case 3:
@@ -754,9 +742,7 @@ LONG APIENTRY RexxValueExtension(LONG ExitNumber, LONG Subfunction, PEXIT pblock
                             // release the string array
                             free(names);
                             // create a REXX array
-                            WinEnterKernel(false);
                             result = Variant2Rexx(pVarArray);
-                            WinLeaveKernel(false);
                             RetCode = 0;
                         }
                     }
@@ -812,9 +798,7 @@ LONG APIENTRY RexxNovalueHandler(LONG ExitNumber, LONG Subfunction, PEXIT pblock
         // because the top activation on the activity might not be
         // "native", we have to make sure that it is
         // (Win...Kernel() must never be executed concurrently!)
-        WinEnterKernel(false);           // we only need an activation, no activity
         result = Variant2Rexx(&temp);
-        WinLeaveKernel(false);
         // this must be a variable / constant
       } else {
         if(pDispatch == engine) {
@@ -824,9 +808,7 @@ LONG APIENTRY RexxNovalueHandler(LONG ExitNumber, LONG Subfunction, PEXIT pblock
           }
         else hResult = GetProperty(NULL,pDispatch,engine->Lang,&temp,dispID);
         if (SUCCEEDED(hResult)) {
-          WinEnterKernel(false);
           result = Variant2Rexx(&temp);
-          WinLeaveKernel(false);
         }
         VariantClear(&temp);
       }
@@ -980,13 +962,6 @@ void __stdcall createCode(void *arguments)
 #if defined(DEBUGZ)
     FPRINTF2(logfile,"RexxCreateMethod success\n");
 #endif
-    // we created the method, now "flatten" it to store it in memory (NOT REXX memory, btw)
-    // when this thread has finished, the caller can use the pointer we set here
-    //rc = RexxStoreMethod(pMethod,pImage);
-#if defined(DEBUGZ)
-    if (rc)
-      FPRINTF2(logfile,"RexxStoreMethod() failed\n");
-#endif
   }
   else {
 #if defined(DEBUGZ)
@@ -1122,7 +1097,6 @@ void __stdcall runMethod(void *arguments)
     // needed? hResult = CoInitializeEx(NULL,COINIT_MULTITHREADED);
     //if ( hResult != S_OK) _asm int 3
   }
-  FPRINTF(logfile,"RexxLoadMethod %p\n",RexxCode);
 #endif
     memset((void*) condData,0,sizeof(ConditionData));
 

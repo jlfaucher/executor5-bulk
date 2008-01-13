@@ -6,7 +6,7 @@
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
 /* distribution. A copy is also available at the following address:           */
-/* http://www.oorexx.org/license.html                          */
+/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
 /*                                                                            */
 /* Redistribution and use in source and binary forms, with or                 */
 /* without modification, are permitted provided that the following            */
@@ -35,20 +35,31 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-/******************************************************************************/
-/* REXX Kernel                                                  okgdata.c     */
-/*                                                                            */
-/* Global Data                                                                */
-/*                                                                            */
-/******************************************************************************/
-#define GDATA                          /* prevent some RexxCore.h declares    */
-#define EXTERN                         /* keep RexxCore.h from using extern   */
-// explicitly initialize global variable declares.
-#define INITGLOBALDATA = NULL
+/*****************************************************************************/
+/* REXX Windows Support                                                      */
+/*                                                                           */
+/* Main Windows interpreter control.  This is the preferred location for     */
+/* all platform dependent global variables.                                  */
+/* The interpreter does not instantiate an instance of this                  */
+/* class, so most variables and methods should be static.                    */
+/*                                                                           */
+/*                                                                           */
+/*****************************************************************************/
+
+#ifndef SystemInterpreter_Included
+#define SystemInterpreter_Included
 
 #include "RexxCore.h"
-#include "StringClass.hpp"
-#include "MethodClass.hpp"
-#include "RexxNativeAPI.h"
+
+class SystemInterpreter
+{
+
+
+protected:
+
+    static HINSTANCE moduleHandle;      // handle to the interpeter DLL
+
+
+};
 
 

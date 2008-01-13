@@ -1,12 +1,11 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
 /* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
 /* distribution. A copy is also available at the following address:           */
-/* http://www.oorexx.org/license.html                          */
+/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
 /*                                                                            */
 /* Redistribution and use in source and binary forms, with or                 */
 /* without modification, are permitted provided that the following            */
@@ -36,19 +35,73 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /******************************************************************************/
-/* REXX Kernel                                                  okgdata.c     */
+/* REXX Kernel                                                                */
 /*                                                                            */
-/* Global Data                                                                */
+/* Manage a created instance of the interpreter                               */
 /*                                                                            */
 /******************************************************************************/
-#define GDATA                          /* prevent some RexxCore.h declares    */
-#define EXTERN                         /* keep RexxCore.h from using extern   */
-// explicitly initialize global variable declares.
-#define INITGLOBALDATA = NULL
+#ifndef Included_InterpreterInstance_hpp
+#define Included_Interpreterinstance_hpp
 
 #include "RexxCore.h"
-#include "StringClass.hpp"
-#include "MethodClass.hpp"
-#include "RexxNativeAPI.h"
+#include "ExitHandler.hpp"
 
+class InterpreterInstance : public RexxInternalObject
+{
+public:
+
+    // methods associated with actual interpreter instances
+    inline InterpreterInstance(RESTORETYPE restoreType) { ; };
+    InterpreterInstance();
+
+    inline void *operator new(size_t, void *ptr) {return ptr;}
+    inline void  operator delete(void *, void *) {;}
+    void *operator new(size_t);
+    inline void  operator delete(void *) {;}
+    void        live();
+    void        liveGeneral();
+
+    RexxString *getDefaultAddress() { return defaultAddress; }
+
+    InterpreterInstance(ExitHandler *handlers);
+    void addActivity(RexxActivity *);
+    void removeActivity(RexxActivity *);
+    bool terminate();
+    void waitForCompletion();
+    void attachToProcess();
+    RexxActivity *enterOnCurrentThread();
+    bool attachThread(RexxThreadContext **);
+    void exitCurrentThread();
+    RexxActivity *findActivity(thread_id_t threadId);
+    RexxDirectory *getLocalEnvironment();
+    void copyExits(ExitHandler *target);
+    void activityTerminated(RexxActivity *activity);
+    void halt();
+    void setTrace(bool setting);
+    void processExternalHalt();
+    void activityDeactivated(RexxActivity *activity);
+    void addGlobalReference(RexxObject *o);
+    void removeGlobalReference(RexxObject *o);
+    inline RexxString *getDefaultCommandEnvironment() { return getDefaultAddress(); }
+    bool        processOptions(RexxOption *options);
+
+protected:
+
+    RexxActivity        *rootActivity;       // the initial activity
+    RexxList            *allActivities;      // all activities associated with this instance
+    RexxList            *activeActivities;   // the activity table
+    RexxList            *attachedActivities; // our list of attached vs. spawned activities
+    RexxList            *spawnedActivities;  // activities this instance has spawned off
+    RexxObjectTable     *globalReferences;   // our global reference table
+    RexxString          *defaultAddress;     // the default address environment
+
+    bool terminating;                // shutdown indicator
+    bool terminated;                 // last thread cleared indicator
+    SEV  terminationSem;             // used to signal that everything has shutdown
+
+    // array of system exits
+    ExitHandler exits[RXNOOFEXITS + 1];
+};
+
+#endif
 

@@ -157,10 +157,6 @@ RexxObject * SysCommand(RexxActivation *, RexxActivity *, RexxString *, RexxStri
 void SysThreadYield(void);             /* yield thread control              */
 #endif
 
-#ifndef SysThreadInit
-void SysThreadInit(void);              /* do system thread initialization   */
-#endif
-
 #ifndef SysQueryThreadID
 thread_id_t SysQueryThreadID();        /* query the current thread          */
 #endif

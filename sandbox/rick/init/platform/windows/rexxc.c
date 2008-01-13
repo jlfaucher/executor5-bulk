@@ -60,8 +60,6 @@ extern "C" {
 BOOL   APIENTRY RexxInitialize (void);
 }
 
-extern  _declspec(dllimport) bool ProcessSaveImage;
-
 //
 //  Prototypes
 //
@@ -100,10 +98,6 @@ int __cdecl main(int argc, char *argv[])
                                        /* is this an option switch?         */
     if ((*(cp=*(argv+i)) == '-' || *cp == '\\'))
       switch (*++cp) {
-        case 'i': case 'I':            /* image build                       */
-          ProcessSaveImage = true;      /* say this is a save image          */
-          break;
-
         default:                       /* ignore other switches             */
           break;
       }
@@ -121,11 +115,7 @@ int __cdecl main(int argc, char *argv[])
     }
   }
 
-  if (ProcessSaveImage) {              /* save an image?                    */
-                                       /* This is a Saveimage ...           */
-    RexxInitialize();                  /* do normal REXX init               */
-  }
-  else if (program_name == NULL) {
+  if (program_name == NULL) {
                                        /* give a simple error message       */
     #undef printf
     printf("Syntax: REXXC ProgramName [parameter_1....parameter_n]\n");

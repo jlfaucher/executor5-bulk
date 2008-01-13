@@ -149,7 +149,7 @@ void RexxActivity::runThread()
         EVSET(this->guardsem);             /* guard semaphore                   */
 
         // try to pool this.  If the ActivityManager doesn't take, we go into termination mode
-        if (!ActivityManager::poolActivity(this))
+        if (!instance->poolActivity(this))
         {
             this->releaseAccess();
             break;
@@ -172,7 +172,7 @@ void RexxActivity::runThread()
  * Do cleanup of activity resources when an activity is completely
  * shutdown and discarded.
  */
-void RexxActivity::terminateActivity()
+void RexxActivity::cleanupActivityResources()
 {
     EVCLOSE(this->runsem);
     EVCLOSE(this->guardsem);
@@ -181,6 +181,19 @@ void RexxActivity::terminateActivity()
 #endif
 }
 
+
+/**
+ * We're leaving the current thread.  So we need to deactivate
+ * this.
+ */
+void RexxActivity::exitCurrentThread()
+{
+    // deactivate the nesting level
+    deactivate();
+    // this activity owned the kernel semaphore before entering here...release it
+    // now.
+    releaseAccess();
+}
 
 
 void *RexxActivity::operator new(size_t size)
@@ -1293,6 +1306,32 @@ void RexxActivity::popNil()
       this->numericSettings = ((RexxActivation *)old_activation)->getNumericSettings();
   }
 }
+
+
+/**
+ * Set up an activity as a root activity used either for a main
+ * interpreter thread or an attached thread.
+ *
+ * @param interpreter
+ *               The interpreter instance this thread belongs to.
+ */
+void RexxActivity::setupAttachedActivity(InterpreterInstance *interpreter)
+{
+    // we're associated with this instance
+    instance = interpreter;
+    // copy all of the system exits
+    for (int i = 0; i < LAST_EXIT; i++)
+    {
+        nestedInfo.sysexits[i] = interpreter->getExitHandler(i + 1);
+    }
+
+    // This is a root activation that will allow API functions to be called
+    // on this thread without having an active bit of ooRexx code first.
+    RexxNativeActivation *new_activation = new RexxNativeActivation(this);
+                                       /* push it on the activity stack     */
+    this->push((RexxActivationBase *)new_activation);
+}
+
 
 void RexxActivity::exitKernel(
   RexxActivation *activation)          /* activation going external on      */
@@ -2577,13 +2616,13 @@ void RexxActivity::queue(              /* write a line to the queue         */
     }
 }
 
-void  RexxActivity::terminateMethod()
+void  RexxActivity::terminatePoolActivity()
 /******************************************************************************/
 /* Function: Mark this FREE activity for termination.  Set its exit flag to 1 */
 /*   and POST its run semaphore.                                              */
 /******************************************************************************/
 {
-  this->exit = 1;                      /* Activity should exit          */
+  this->exit = true;                   /* Activity should exit          */
   EVPOST(this->runsem);                /* let him run so he knows to exi*/
 }
 
@@ -2862,6 +2901,55 @@ wholenumber_t RexxActivity::messageSend(
 }
 
 
+void RexxActivity::run(ActivityDispatcher target)
+/******************************************************************************/
+/* Function:    send a message (with message lookup) to an object.  This      */
+/*              method will do any needed activity setup before hand.         */
+/******************************************************************************/
+{
+  SYSEXCEPTIONBLOCK exreg;             /* system specific exception info    */
+  size_t  startDepth;                  /* starting depth of activation stack*/
+  NestedActivityState saveInfo;        /* saved activity info               */
+
+  result = OREF_NULL;                  /* default to no return value        */
+  this->saveNestedInfo(saveInfo);      /* save critical nesting info        */
+                                       /* make sure we have the stack base  */
+  this->nestedInfo.stackptr = SysGetThreadStackBase(TOTAL_STACK_SIZE);
+  this->generateRandomNumberSeed();    /* get a fresh random seed           */
+                                       /* Push marker onto stack so we know */
+  this->pushNil();                     /* what level we entered.            */
+  startDepth = this->depth;            /* Remember activation stack depth   */
+
+  SysRegisterSignals(&exreg);          /* register our signal handlers      */
+
+  // save the actitivation level in case there's an error unwind for an unhandled
+  // exception;
+  size_t activityLevel = getActivationLevel();
+  // create a new native activation
+  RexxNativeActivation *newNActa = new RexxNativeActivation(this);
+  push(newNActa);          /* push it on the activity stack     */
+
+  try
+  {
+      // go run the target under the new activation
+      newNActa->run(target);
+  }
+  catch (ActivityException)
+  {
+      int rc = this->error(startDepth);      /* do error cleanup                  */
+      target->handleError(rc, conditionData);
+  }
+
+  // make sure we get restored to the same base activation level.
+  restoreActivationLevel(activityLevel);
+  // give uninit objects a chance to run
+  memoryObject.runUninits();
+  this->restoreNestedInfo(saveInfo);   /* now restore to previous nesting   */
+  SysDeregisterSignals(&exreg);        /* deregister the signal handlers    */
+  this->popNil();                      /* remove the nil marker             */
+}
+
+
 /**
  * Inherit all activity-specific settings from a parent activity.
  *
@@ -2950,10 +3038,14 @@ int REXXENTRY RexxSendMessage (
   }
 
   memoryObject.runUninits();           /* be sure to finish UNINIT methods  */
+
+  // TODO This needs to be done more cleanly
                                        /* restore the nested information    */
   activity->restoreNestedInfo(saveInfo);
   SysDeregisterSignals(&exreg);        /* deregister the signal handlers    */
   activity->popNil();                  /* remove the nil marker             */
+  // cleanup any system resources this activity might own
+  activityObject->terminateActivity();
                                        /* release our activity usage        */
   ActivityManager::returnActivity(activity);
   return (int)rc;                      /* return the error code             */

@@ -47,9 +47,6 @@
 // The currently active activity.
 RexxActivity *ActivityManager::currentActivity = OREF_NULL;
 
-// activities in use
-RexxList *ActivityManager::activeActivities = OREF_NULL;
-
 // available activities we can reuse
 RexxList *ActivityManager::availableActivities = OREF_NULL;
 
@@ -85,15 +82,12 @@ SMTX ActivityManager::kernelSemaphore = 0;
 
 const size_t ACTIVATION_CACHE_SIZE = 5;
 
-// TODO:  This needs to be moved into a manager class of some type....potentially here.
-void kernelShutdown (void);
 
 /**
  * Initialize the activity manager when the interpreter starts up.
  */
 void ActivityManager::init()
 {
-    activeActivities = new_list();
     availableActivities = new_list();
     allActivities = new_list();
     activations = new (ACTIVATION_CACHE_SIZE) RexxStack(ACTIVATION_CACHE_SIZE);
@@ -112,7 +106,6 @@ void ActivityManager::live(size_t liveMark)
 /*  also been reclaimed.                                                      */
 /******************************************************************************/
 {
-  memory_mark(activeActivities);
   memory_mark(availableActivities);
   memory_mark(allActivities);
   memory_mark(activations);
@@ -134,7 +127,6 @@ void ActivityManager::liveGeneral(int reason)
 {
   if (!memoryObject.savingImage())
   {
-      memory_mark_general(activeActivities);
       memory_mark_general(availableActivities);
       memory_mark_general(allActivities);
       memory_mark_general(activations);
@@ -260,7 +252,6 @@ void ActivityManager::terminateInterpreter()
 void ActivityManager::shutdown()
 {
     processTerminating = true;
-    lockKernel();
                                        /* Make sure we wake up server       */
                                        /* Make sure all free Activities     */
                                        /*  get the terminate message        */
@@ -270,23 +261,7 @@ void ActivityManager::shutdown()
     // if there are no activities yet to shutdown, we can terminate immediately.
     // Otherwise, we need to wait for the rest of the threads to finish cleaning
     // up.  Once the last thread terminates, we can shutdown.
-    checkShutdown();
     localEnvironment = OREF_NULL;      /* no local environment              */
-    unlockKernel();                    /* Done with Kernel stuff            */
-}
-
-
-/**
- * Check to see it it's time to shutdown the entire kernel.
- * This only occurs once all of the activities have shut down.
- */
-void ActivityManager::checkShutdown()
-{
-    // if this is the last thread, time to shutdown
-    if (allActivities->items() == 0)
-    {
-        kernelShutdown();                /* time to shut things down          */
-    }
 }
 
 
@@ -403,7 +378,6 @@ RexxActivity *ActivityManager::newActivity(int priority)
                                        /* Add this activity to the table of */
                                        /* in use activities and the global  */
                                        /* table                             */
-    activeActivities->append((RexxObject *)activity);
     allActivities->append((RexxObject *)activity);
   }
   else
@@ -411,8 +385,6 @@ RexxActivity *ActivityManager::newActivity(int priority)
                                        /* We are able to reuse an activity, */
                                        /*  so just re-initialize it.        */
     new (activity) RexxActivity(true, priority);
-    // this one is in use now
-    activeActivities->append((RexxObject *)activity);
   }
   return activity;                     /* return the activity               */
 }
@@ -437,60 +409,6 @@ RexxActivity *ActivityManager::newActivity(RexxActivity *parent)
 }
 
 
-/**
- * Raise a halt condition on all running activities.
- */
-void ActivityManager::haltAllActivities()
-{
-    for (size_t listIndex = activeActivities->firstIndex() ;
-         listIndex != LIST_END;
-         listIndex = activeActivities->nextIndex(listIndex) )
-    {
-                                         /* Get the next message object to    */
-                                         /*process                            */
-        RexxActivity *activity = (RexxActivity *)allActivities->getValue(listIndex);
-        RexxActivation *currentActivation = activity->getCurrentActivation();
-
-        if (currentActivation != (RexxActivationBase *)TheNilObject)
-        {
-                                         /* Yes, issue the halt to it.        */
-            ((RexxActivation *)currentActivation)->halt(OREF_NULL);
-        }
-    }
-}
-
-
-/**
- * Raise a trace condition on all running activities.
- */
-void ActivityManager::traceAllActivities(bool on)
-{
-    for (size_t listIndex = activeActivities->firstIndex() ;
-         listIndex != LIST_END;
-         listIndex = activeActivities->nextIndex(listIndex) )
-    {
-                                         /* Get the next message object to    */
-                                         /*process                            */
-        RexxActivity *activity = (RexxActivity *)allActivities->getValue(listIndex);
-        RexxActivation *currentActivation = activity->getCurrentActivation();
-
-        if (currentActivation != (RexxActivationBase *)TheNilObject)
-        {
-            if (on)               /* turning this on?                  */
-            {
-                                         /* turn tracing on                   */
-                currentActivation->externalTraceOn();
-            }
-            else
-            {
-                                         /* turn tracing off                  */
-                currentActivation->externalTraceOff();
-            }
-        }
-    }
-}
-
-
 void ActivityManager::clearActivityPool()
 /******************************************************************************/
 /* Function:   see if there are any Uninit messages need to be send before    */
@@ -501,7 +419,7 @@ void ActivityManager::clearActivityPool()
     while (activity != OREF_NULL)
     {
         // terminate this thread
-        activity->terminateMethod();
+        activity->terminatePoolActivity();
         activity = (RexxActivity *)availableActivities->removeFirstItem();
     }
 }
@@ -520,25 +438,11 @@ void ActivityManager::clearActivityPool()
  */
 bool ActivityManager::poolActivity(RexxActivity *activity)
 {
-    // remove this from the active list
-    activeActivities->removeItem((RexxObject *)activity);
-
-    // are we shutting down?
-    if (processTerminating)
+    // are we shutting down or have too many threads in the pool?
+    if (processTerminating || availableActivities->items() > MAX_THREAD_POOL_SIZE)
     {
         // have the activity clean up its resources.
-        activity->terminateActivity();
-
-        // remove this from the activity list
-        allActivities->removeItem((RexxObject *)activity);
-        // if this is the last thread, time to shutdown
-        checkShutdown();
-        return false;
-    }
-    else if (availableActivities->items() > MAX_THREAD_POOL_SIZE)
-    {
-        // have the activity clean up its resources.
-        activity->terminateActivity();
+        activity->cleanupActivityResources();
 
         // remove this from the activity list
         allActivities->removeItem((RexxObject *)activity);
@@ -630,12 +534,19 @@ RexxActivity *ActivityManager::findActivity(thread_id_t threadId)
 /* Function:  Locate the activity associated with a thread                    */
 /******************************************************************************/
 {
-    for (size_t listIndex = allActivities->firstIndex() ;
+    // this is a critical section
+    ResourceSection lock;
+
+    // NB:  New activities are pushed on to the end, so it's prudent to search
+    // from the list end toward the front of the list.  Also, this ensures we
+    // will find the toplevel activity nested on a given thread first.
+    for (size_t listIndex = allActivities->lastIndex();
          listIndex != LIST_END;
-         listIndex = allActivities->nextIndex(listIndex) )
+         listIndex = allActivities->previousIndex(listIndex) )
     {
         RexxActivity *activity = (RexxActivity *)allActivities->getValue(listIndex);
-        if (activity->isThread(threadId))
+        // this should never happen, but we never return suspended threads
+        if (activity->isThread(threadId) && !activity->isSuspended())
         {
             return activity;
         }
@@ -727,41 +638,13 @@ void ActivityManager::returnActivity(RexxActivity *activityObject)
 /*            release the kernel semaphore.                                   */
 /******************************************************************************/
 {
-    // tell the activity he's done working at this level
-    activityObject->deactivate();
-
-    // is this thread really terminating?
-    if (activityObject->isInactive())
+    // START OF CRITICAL SECTION
     {
-        // was that our last working activity for this interpreter invocation?
-        if (activeActivities->items() == 1)
-        {
-            // This activity is currently the current activity.  We're going to run the
-            // uninits on this one, so reactivate it until we're done running
-            activityObject->activate();
-            // before we update of the data structures, make sure we process any
-            // pending uninit activity.
-            memoryObject.forceUninits();
-            // ok, deactivate this again.
-            activityObject->deactivate();
-        }
-
-        // START OF CRITICAL SECTION
-        {
-            ResourceSection lock;
-            // remove this from the active list
-            activeActivities->removeItem((RexxObject *)activityObject);
-            // and also remove from the global list
-            allActivities->removeItem((RexxObject *)activityObject);
-            // cleanup any system resources this activity might own
-            activityObject->terminateActivity();
-        }
-        // END OF CRITICAL SECTION
-                                         /* Are we terminating?               */
-        if (processTerminating)
-        {
-            checkShutdown();                /* time to shut things down          */
-        }
+        ResourceSection lock;
+        // and also remove from the global list
+        allActivities->removeItem((RexxObject *)activityObject);
+        // cleanup any system resources this activity might own
+        activityObject->terminateActivity();
     }
 
     // this activity owned the kernel semaphore before entering here...release it
@@ -779,7 +662,7 @@ void ActivityManager::returnActivity(RexxActivity *activityObject)
 void ActivityManager::activityEnded(RexxActivity *activityObject)
 {
     // was that our last working activity for this interpreter invocation?
-    if (activeActivities->items() == 1)
+    if (allActivities->items() == 1)
     {
         // This activity is currently the current activity.  We're going to run the
         // uninits on this one, so reactivate it until we're done running
@@ -794,20 +677,18 @@ void ActivityManager::activityEnded(RexxActivity *activityObject)
     // START OF CRITICAL SECTION
     {
         ResourceSection lock;       // this is a critical section
-        // remove this from the active list
-        activeActivities->removeItem((RexxObject *)activityObject);
         // and also remove from the global list
         allActivities->removeItem((RexxObject *)activityObject);
         // cleanup any system resources this activity might own
         activityObject->terminateActivity();
+                                         /* Are we terminating?               */
+        if (processTerminating && allActivitys->items() == 0)
+        {
+            // notify any waiters that we're clear
+            postTerminated();
+        }
     }
-
     // END OF CRITICAL SECTION
-                                     /* Are we terminating?               */
-    if (processTerminating)
-    {
-        checkShutdown();                /* time to shut things down          */
-    }
 
     // this activity owned the kernel semaphore before entering here...release it
     // now.
@@ -815,37 +696,113 @@ void ActivityManager::activityEnded(RexxActivity *activityObject)
 }
 
 
+/**
+ * Get a root activity for a new interpreter instance.
+ *
+ * @return The newly created activity.
+ */
+RexxActivity *ActivityManager::getRootActivity()
+{
+    // it's possible we already have an activity active for this thread.  That
+    // most likely occurs in nested RexxStart() calls.  Get that activity first,
+    // and if we have one, we'll need to push this down.
+    RexxActivity *oldActivity = findActivity();
+
+    // we need to lock the kernel to have access to the memory manager to
+    // create this activity.
+    lockKernel();
+                                   /* Get a new activity object.        */
+    RexxActivity activityObject = newActivity(NO_THREAD);
+    unlockKernel();                /* release kernel semaphore          */
+    // mark this as the root activity for an interpreter instance.  Some operations
+    // are only permitted from the root threads.
+    activityObject->setInterpreterRoot();
+
+    // Do we have a nested interpreter call occurring on the same thread?  We need to
+    // mark the old activity as suspended, and chain this to the new activity.
+    if (oldActivity != OREF_NULL)
+    {
+        oldActivity->setSuspended();
+        // this pushes this down the stack.
+        activityObject->setNestedActivity(oldActivity);
+    }
+
+    // now we need to have this activity become the kernel owner.
+    activityObject->requestAccess();
+
+    activityObject->activate();        // let the activity know it's in use, potentially nested
+    // belt-and-braces.  Make sure the current activity is explicitly set to
+    // this activity before leaving.
+    currentActivity = activityObject;
+    return activityObject;
+}
+
+
+/**
+ * Attach an activity to an interpreter instance
+ *
+ * @param instance The interpreter instance involved.
+ *
+ * @return Either an existing activity, or a new activity created for
+ *         this thread.
+ */
+RexxActivity *ActivityManager::attachActivity(InterpreterInstance *instance)
+{
+    // it's possible we already have an activity active for this thread.  That
+    // most likely occurs in nested RexxStart() calls.
+    RexxActivity *oldObject = findActivity();
+    // we have an activity created for this thread already.  The interpreter instance
+    // should already have handled the case of an attach for an already attached thread.
+    // so we're going to have a new activity to create, and potentially an existing one to
+    // suspend
+    // we need to lock the kernel to have access to the memory manager to
+    // create this activity.
+    lockKernel();
+    RexxActivity activityObject = newActivity(NO_THREAD);
+    // mark this as an attached thread.
+    activityObject->setAttached();
+    activityObject->setupAttachedActivity(instance);
+    // Do we have a nested interpreter call occurring on the same thread?  We need to
+    // mark the old activity as suspended, and chain this to the new activity.
+    if (oldActivity != OREF_NULL)
+    {
+        oldActivity->setSuspended();
+        // this pushes this down the stack.
+        activityObject->setNestedActivity(oldActivity);
+    }
+
+    unlockKernel();                /* release kernel semaphore          */
+
+    // now we need to have this activity become the kernel owner.
+    activityObject->requestAccess();
+    // belt-and-braces.  Make sure the current activity is explicitly set to
+    // this activity before leaving.
+    currentActivity = activityObject;
+    return activityObject;
+}
+
+
+/**
+ * Get an already existing activity for the current thread and
+ * give it kernel access before returning.  This will fail if
+ * the thread has not been properly attached.
+ *
+ * @return The activity for this thread.
+ */
 RexxActivity *ActivityManager::getActivity()
-/******************************************************************************/
-/* Function:  Determine the activity (or create a new one) for the thread     */
-/*            we are about to enter kernel to send a message.  We return      */
-/*            the activity object to be used to send the message.             */
-/*            The routine requests kernel access on the new activity before   */
-/*            returning.                                                      */
-/******************************************************************************/
 {
     // it's possible we already have an activity active for this thread.  That
     // most likely occurs in nested RexxStart() calls.
     RexxActivity *activityObject = findActivity();
     if (activityObject == OREF_NULL)     /* Nope, 1st time through here.      */
     {
-
-        // we need to lock the kernel to have access to the memory manager to
-        // create this activity.
-        lockKernel();
-                                       /* Get a new activity object.        */
-        activityObject = newActivity(NO_THREAD);
-        unlockKernel();                /* release kernel semaphore          */
-
-        // now we need to have this activity become the kernel owner.
-        activityObject->requestAccess();
+        // this is an error....not sure how to handle this.
+        return OREF_NULL;
     }
-    else
     {
                                        /* Activity already existed for this */
                                        /* get kernel semophore in activity  */
         activityObject->requestAccess();
-
         ResourceSection lock;          // lock the resources from this point
 
         // this might be a recursive reentry on the same thread...if not, we

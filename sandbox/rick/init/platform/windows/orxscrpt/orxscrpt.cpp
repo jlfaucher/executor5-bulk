@@ -201,9 +201,9 @@ OrxScript::OrxScript() : ulRefCount(1),
   // this is a directory that will be kept in the process local environment
   // to "anchor" our methods into REXX memory and to protect it against GC
 #if defined(DEBUGZ)
-  FPRINTF(logfile,"doing RexxCreateDirectory(%s)\n",EngineName);
+  FPRINTF(logfile,"doing RexxCreateScriptContext(%s)\n",EngineName);
 #endif
-  RexxCreateDirectory(EngineName);
+  RexxCreateScriptContext(EngineName);
   InterlockedIncrement((long *)&ulDllLocks);     //  Make sure the DLL does not go away before we do.
 
   // create code block that will be used to obtain a security manager
@@ -271,7 +271,7 @@ OrxScript::~OrxScript() {
   delete RexxCodeList;
 
   // i'm not 100% sure it is needed, but it can't hurt anyway...
-  RexxRemoveDirectory(EngineName);
+  RexxDestroyScriptContext(EngineName);
   InterlockedDecrement((long *)&ulDllLocks);
 
 #if defined(DEBUGC)+defined(DEBUGZ)
@@ -1911,10 +1911,8 @@ FPRINTF2(logfile,"OrxScript::GetSourceIDispatch()  -- GetIDsOfNames for the SubI
   return RetCode;
   }
 
-void OrxScript::insertVariable(void *args)
+void OrxScript::insertVariable(const char *varName, REXXOBJECT varValue)
 {
-  char *varName = ((char**) args)[0];
-  REXXOBJECT  varValue = ((REXXOBJECT *) args)[1];
   PGVARIANT   temp;
   HRESULT     RetCode;
   DISPID      DispID;
@@ -1941,9 +1939,6 @@ void OrxScript::insertVariable(void *args)
   // convert to variant, store it (WinEnterKernel(false) might be needed)
   temp = new GVARIANT;
   VariantInit(&(temp->Mutant));
-  //WinEnterKernel(false);
   Rexx2Variant(varValue,&(temp->Mutant),VT_EMPTY,0);
-  //WinLeaveKernel(false;)
   PropertyList.AddItem(varName,LinkedList::End,(void *)temp);
-
 }

@@ -136,6 +136,17 @@ typedef SHVBLOCK *PSHVBLOCK;
 typedef char *PEXIT;                  /* ptr to exit parameter block */
 
 
+typedef struct _RexxConditionData
+{
+  wholenumber_t code;                 // The condition CODE information
+  wholenumber_t rc;                   // The condition RC value
+  RXSTRING message;                   // The condition secondary message text
+  RXSTRING errortext;                 // The condition error text.
+  size_t  position;                   // The failure line number value
+  RXSTRING program;                   // The running program name
+} RexxConditionData;
+
+
 /*----------------------------------------------------------------------------*/
 /***    Include the other common and platform specific stuff                  */
 /*----------------------------------------------------------------------------*/
@@ -175,6 +186,24 @@ typedef APIRET (APIENTRY *PFNREXXSTART)(size_t, PCONSTRXSTRING, const char *, PR
                                         const char *, int, PRXSYSEXIT, short *,
                                         PRXSTRING);
 #define REXXSTART RexxStart
+
+
+APIRET REXXENTRY RexxTranslateProgram(
+    const char *,                       // input program name
+    const char *,                       // output file name
+    PRXSYSEXIT);                        // system exits to use during translation
+
+
+typedef APIRET (APIENTRY *PFNREXXTRANSLATEPROGRAM)(const char *, const char *, PRXSYSEXIT);
+
+#define REXXTRANSLATEPROGRAM RexxTranslateProgram
+
+
+char *REXXENTRY RexxGetVersionInformation();
+
+typedef char *(APIENTRY *PFNGETVERSIONINFORMATION)();
+
+#define REXXGETVERSIONINFORMATON RexxGetVersionInformation
 
 
 /*----------------------------------------------------------------------------*/

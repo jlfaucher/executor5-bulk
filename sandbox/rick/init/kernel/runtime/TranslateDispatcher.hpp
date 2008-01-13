@@ -35,21 +35,27 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-/******************************************************************************/
-/* REXX Library                                                 oldata.c      */
-/*                                                                            */
-/* Local process data                                                         */
-/*                                                                            */
-/******************************************************************************/
-#include <stdio.h>
-#include "RexxCore.h"
-bool  ProcessDoneInit = false;         /* initialization is done            */
-bool  ProcessDoneTerm = false;         /* termination is done               */
-bool  ProcessFirstThread = true;       /* this is the first thread          */
 
-bool  ProcessSaveImage = false;        /* saving the image                  */
-                                       /* Next line added be THU            */
-bool  RexxStartedByApplication = true; /* is REXX started by system or appl */
-bool  rexxTimeSliceElapsed = false;     /* the time slice interlock flag     */
-                                       /* Most currently accessed pool      */
+
+#ifndef TranslateDispatcher_included
+#define TranslateDispatcher_included
+
+#include "ActivityDispatcher.hpp"
+
+class TranslateDispatcher : public ActivityDispatcher
+{
+public:
+    inline TranslateDispatcher(PRXSYSEXIT e) : ActivityDispatcher(e, NULL) { ; }
+    inline ~TranslateDispatcher() { ; }
+
+    virtual void run();
+    virtual void handleError(RexxDirectory *);
+
+    const char *programname;             /* REXX program to run               */
+    PRXSTRING  instore;                  /* Instore array                     */
+    const char *outputName;              // optional program output name
+};
+
+
+#endif
 

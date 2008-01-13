@@ -55,31 +55,144 @@ SMTX Interpreter::resourceLock = 0;
 
 SEV  Interpreter::terminationSem = 0;
 
-void Interpreter::terminate()
+void Interpreter::processStartup()
 {
-    // no semaphore, we've closed already
-    if (terminationSem == 0)
-    {
-        return;
-    }
+    // the locks get create in order
+    createLocks();
+    ActivityManager::createLocks();
+    RexxMemory::createLocks()
+}
 
-    // now wait for the termination semaphore to get posted, and clear out
-    EVWAIT(terminationSem);
-    EVCLOSE(terminationSem);
-    terminationSem = 0;
-    // now clear up other resources
-    memoryObject.closeLocks();
-    ActivityManager::closeKernelLock();
+void Interpreter::processShutdown()
+{
+    // we destroy the locks in reverse order
+    RexxMemory::closeLocks()
+    ActivityManager::closeLocks();
     closeLocks();
 }
 
-bool Interpreter::isTerminated()
+
+/**
+ * Perform interpreter startup processing.
+ *
+ * @param mode   The startup mode.  This indicates whether we're saving the
+ *               image or in shutdown mode.
+ */
+void Interpreter::startInterpreter(InterpreterStartupMode mode)
 {
-    // no semaphore, we've closed already
-    if (terminationSem == 0)
+    ResourceSection lock;
+
+    // has everything been shutdown?
+    if (!isActive())
     {
-        return true;
+        // TODO:  Make sure
+        setbuf(stdout, NULL);              // turn off buffering for the output streams
+        setbuf(stderr, NULL);
+        SystemInterpreter::initialize();   // perform system specific initialization
+        // initialize the memory manager , and restore the
+        // memory image
+        memoryObject.initialize(mode == RUN_MODE);
     }
-    // if the sem is still there, we're still active
-    return false;
+    // we're live now
+    active = true;
 }
+
+
+/**
+ * Terminate the global interpreter environment, shutting down
+ * all of the interpreter instances that we can and releasing
+ * the object heap memory.
+ *
+ * @return true if everything was shutdown, false if there are reasons
+ *         why this can't be shutdown.
+ */
+bool Interpreter::terminateInterpreter()
+{
+    {
+        ResourceLock lock;      // lock in this section
+        // if already shutdown, then we've got a quick return
+        if (!isActive())
+        {
+            return true;
+        }
+
+        // we can only shutdown interpreter instances from the
+        // threads that created them.  If we have active instances,
+        // this is a "no can do" situation
+        if (interpreterInstances->items() != 0)
+        {
+            return false;
+        }
+        // lock our resources for now
+        ResourceLock lock;
+        // shutdown any of the activity manager stuff
+        ActivityManager::shutdown();
+        // now shutdown the memory object
+        memoryObject.shutdown();
+        // no initialized interpreter environment any more.
+        active = false;
+    }
+    // we need to wait for the activity manager to tell us everything is
+    // ready to go, but without holding the resource lock
+    ActivityManager::waitForTermination();
+    {
+        ResourceLock lock;      // lock in this section
+        // now shutdown the memory object
+        memoryObject.shutdown();
+        // no initialized interpreter environment any more.
+        active = false;
+    }
+    return true;
+}
+
+
+/**
+ * This is a simple test of the active flag.
+ *
+ * @return true if the interpreter environment is active, false if it
+ *         needs to be initializied before use.
+ */
+bool Interpreter::isActive()
+{
+    return active;
+}
+
+
+InterpreterInstance *Interpreter::createInterpreterInstance(PRXSYSEXIT exits, const char *defaultEnvironment)
+{
+    // make sure we initialize the global environment if it hasn't already been done
+    startInterpreter();
+    // get a new root activity for this instance.  This might result in pushing a prior level down the
+    // stack
+    RexxActivity *rootActivity = ActivityManager::getRootActivity();
+    // ok, we have an active activity here, so now we can allocate a new instance and bootstrap everything.
+    {
+        InterpreterInstance *instance = new InterpreterInstance();
+        ResourceSection lock;
+
+        // add this to the active list
+        interpreterInstances->append((RexxObject *)instance);
+
+    }
+
+    // now that this is protected from garbage collection, go and initialize everything
+    instance->initialize(rootActivity, exits, defaultEnvironment);
+    return instance;
+}
+
+
+bool Interpreter::terminateInterpreterInstance(InterpreterInstance *instance)
+{
+    // this might not be in a state where it can be terminated
+    if (!instance->terminate())
+    {
+        return false;
+    }
+
+    ResourceLock lock;
+
+    interpreterInstances->removeItem((RexxObject *)instance);
+}
+
+
+
