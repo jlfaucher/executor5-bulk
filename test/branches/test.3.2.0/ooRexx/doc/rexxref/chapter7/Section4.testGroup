@@ -62,7 +62,6 @@
 
   group = .TestGroup~new(s)
   group~add(.Section4_tests)
-  group~markNoTests("Executing the test_beep_example_7_4_6 makes too much noise on my computer.")
 
   if group~isAutomatedTest then return group
 
@@ -79,8 +78,8 @@ return testResult
 ::class "Section4_tests" subclass ooTestCase public
 
 ::method init class
-  self~init:super
-  self~ooTestType = self~DOC_EXAMPLE_TEST
+  forward class (super) continue
+  self~ooTestType = self~DOC_EXAMPLE_NOISE_TEST
 
 ::method "test_beep_example_7_4_6"
    -- Note: this only works on some Windows implementations. It is ignored
@@ -97,6 +96,6 @@ return testResult
    do i = 1 to 8
       call beep note.i, 250    /* hold each note for one-quarter second */
       ret = RESULT
-      self~assertSame("", ret, "Calling beep should produce a result in RESULT")
+      self~assertSame("", ret, "Loop:" i "Calling beep should produce a result in RESULT")
       end
-   self~assertTrue(i == (8 + 1), "Call beep loop ran 8 times")
+   self~assertTrue(i == (8 + 1))

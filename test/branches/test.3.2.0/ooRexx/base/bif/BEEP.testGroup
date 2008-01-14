@@ -55,70 +55,16 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
+  parse source . . fileSpec
+  group = .TestGroup~new(fileSpec)
 
+  group~add(.BEEP.testGroup)
 
+  if group~isAutomatedTest then return group
 
--------------------------------------------------------------------------------------------
--- ===> adapt the "testGroupList" to your testCase classes; each element in the list is <===
--- ===> an array object, the first element containing the testCase class object, the   <===
--- ===> second element is a list of test method names which are regarded to be         <===
--- ===> mandatory (if the list remains empty all test methods are mandatory)           <===
+  testResult = group~suite~execute~~print
 
-   /* list of array objects, each containing the testGroup class object and an
-      optional list of mandatory test case methods name                       */
-
-mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
-testGroupList=.list~of( .array~of(.BEEP.testGroup,  mandatoryTestMethods) )
-
-
--------------------------------------------------------------------------------------------
--- ===> the following code needs not to be individualized                              <===
-
-   -- read top comment, containing infos about this program
-arrLines=.array~new
-do i=1 to 150 until arrLines[i]="*/"
-   arrLines[i]=sourceline(i)
-end
-      -- supply information for the testClass(es) in this file; the class attribute
-      -- "TestCaseInfo" (a directory object, index points to a queue) will store
-      -- the parsed infos
-aTestGroupClass=testGroupList~at(testGroupList~first)[1] -- get first testClass
-
-   -- will parse the array lines and store result in class object
-call makeDirTestInfo aTestGroupClass, arrLines
-tmpDir=aTestGroupClass~TestCaseInfo
-parse source s   -- op_sys invocationType fullPathToThisFile
-tmpDir~setentry("test_Case-source", s)
-
-   -- now add this directory to other testCase classes, if any left
-do arr over testGroupList
-   if arr[1]=aTestGroupClass then iterate  -- already handled
-   arr[1]~TestCaseInfo=tmpDir             -- save info in class object
-end
-
--- if this file is CALLed or REQUIRED then define an entry "bRunTestLocally" in .local
--- and set it to .false; this way the independent local invocation of the tests is inhibited
-if .local~hasentry("bRunTestsLocally")=.false then
-   .local~bRunTestsLocally=.true -- if this file is executed directly, then run tests for debugging
-
-if .bRunTestsLocally=.true then  -- run ALL tests in this test unit
-do
-   ts=.testSuite~new             -- create a testSuite
-   do arr over testGroupList
-      -- create a testSuite for the given test case class, use all its testmethods
-      ts~addTest( .testSuite~new(arr[1]))
-   end
-   -- testResult=.testSuite~new(testGroupClass)~execute
-   testResult=ts~execute       -- now run all the tests
-
-   call simpleDumpTestResults testResult
-end
-
-   /* return list of array objects containing test case classes and
-      optionally list of mandatory test methods                      */
-return testGroupList
-
-
+return testResult
 
 ::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
@@ -126,26 +72,36 @@ return testGroupList
 
 ::method "test_1"
    retc = beep(262 /* middle C */, 1)  /* 1/1000 second or standard beep */
-   self~assertTrue(.true)     -- o.k., test went o.k. count assertion
-   self~assertSame(retc, '')
+   self~assertSame('', retc)
 
--- rexxref documentation tests
+::method "test_2"
+  self~expectSyntax(40)
+  retc = beep()
 
-::method "test_101"
-   -- Note: this only works on some Windows implementations. It is ignored
-   --       on Windows 95 and all *nix versions.
-   /* C scale */
-   note.1 = 262    /* middle C */
-   note.2 = 294    /*    D     */
-   note.3 = 330    /*    E     */
-   note.4 = 349    /*    F     */
-   note.5 = 392    /*    G     */
-   note.6 = 440    /*    A     */
-   note.7 = 494    /*    B     */
-   note.8 = 523    /*    C     */
-   do i = 1 to 8
-      call beep note.i, 250    /* hold each note for */
-                              /* one-quarter second */
-      end
-   self~assertTrue(.true)     -- o.k., test went o.k. count assertion
+::method "test_3"
+  self~expectSyntax(40)
+  retc = beep( , 1)
 
+::method "test_4"
+  self~expectSyntax(40)
+  retc = beep(38, )
+
+::method "test_5"
+  retc = beep(37, 1)
+  self~assertSame("", retc)
+
+::method "test_6"
+  self~expectSyntax(40)
+  retc = beep(36, 1)
+
+::method "test_7"
+  retc = beep(32767, 1)
+  self~assertSame("", retc)
+
+::method "test_8"
+  self~expectSyntax(40)
+  retc = beep(32768, 1)
+
+::method "test_9"
+  retc = beep(37, 0)
+  self~assertSame("", retc)
