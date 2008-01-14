@@ -293,6 +293,11 @@ APIRET APIENTRY GrxLoadFuncs(char * Name,
         "GrxHandleBoxSetHandlePosition",
         "GrxHandleBoxSetSnapEdge",
         "GrxHandleBoxConnectSignal",
+        "GrxEventBoxNew",
+        "GrxEventBoxSetAboveChild",
+        "GrxEventBoxGetAboveChild",
+        "GrxEventBoxSetVisibleWindow",
+        "GrxEventBoxGetVisibleWindow",
 
     };
 

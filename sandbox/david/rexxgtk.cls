@@ -1234,3 +1234,49 @@ return
 ::method signal_switch_page
 return
 
+
+/*============================================================================*/
+/* Class: EventBox                                                            */
+/*============================================================================*/
+
+::class GtkEventBox public subclass GtkContainer
+
+::method init
+use strict arg
+self~pointer = GrxEventBoxNew()
+return
+
+::method 'above_child='
+use strict arg flag
+call GrxEventBoxSetAboveChild self~pointer, flag
+return
+
+::method set_above_child
+use strict arg self~shadow_type
+return
+
+::method above_child
+use strict arg
+return GrxEventBoxGetAboveChild(self~pointer)
+
+::method get_above_child
+use strict arg
+return self~above_child
+
+::method 'visible_window='
+use strict arg flag
+call GrxEventBoxSetVisibleWindow self~pointer, flag
+return
+
+::method set_visible_window
+use strict arg self~visible_window
+return
+
+::method visible_window
+use strict arg
+return GrxEventBoxGetVisibleWindow(self~pointer)
+
+::method get_visible_window
+use strict arg
+return self~visible_window
+
