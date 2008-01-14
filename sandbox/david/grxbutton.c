@@ -112,6 +112,34 @@ APIRET APIENTRY GrxButtonNew(const char * Name,
 
 
 /*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxButtonNewFromStock                              */
+/* Description: Create a push button.                                         */
+/* Rexx Args:   Button type                                                   */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxButtonNewFromStock(const char * Name,
+                                      const size_t Argc, const RXSTRING Argv[],
+                                      const char * Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(1, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    myWidget = gtk_button_new_from_stock(Argv[0].strptr);
+	
+    /* Set up the REXX return code */
+    sprintf(Retstr->strptr, "%p", myWidget);
+              Retstr->strlength = strlen(Retstr->strptr);
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
 /* Rexx External Function: GrxButtonSetLabel                                  */
 /* Description: Set the label of the button.                                  */
 /* Rexx Args:   Pointer to the widget                                         */

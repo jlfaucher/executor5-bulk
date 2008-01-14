@@ -649,6 +649,20 @@ use arg label = ''
 self~label = label
 return
 
+/*============================================================================*/
+/* Class: Button_FromStock                                                    */
+/*============================================================================*/
+
+::class GtkButton_From_Stock public subclass GtkButton
+
+::method init
+use strict arg stockid
+self~pointer = GrxButtonNewFromStock(stockid)
+if self~pointer = 0 then do
+   raise syntax 93.900 array ('A button with the spcified stockid was not found.')
+   end
+return
+
 
 /*============================================================================*/
 /* Class: Checkbutton                                                         */
