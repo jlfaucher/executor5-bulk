@@ -237,6 +237,10 @@ if meth_inst <> .nil then do
    end
 return
 
+::attribute user_data
+-- This attribute is not a part of the GTK system. It has been added to
+-- support callbacks or any other use the user may have.
+
 ::method connect_signal
 use strict arg event
 select
@@ -1041,11 +1045,7 @@ return
 
 ::method insert_page
 -- insert a page
-if arg() > 3 then raise syntax 40.4 array ('INSERTPAGE', 3)
-if arg() < 3 then raise syntax 40.3 array ('INSERTPAGE', 3)
-use arg page, label, position
-if position~datatype('W') = 0 then ,
- raise syntax 40.12 array ('INSERTPAGE', 3, position)
+use strict arg page, label, position
 if label = .nil then labelptr = 0
 else labelptr = label~pointer
 call GrxNotebookInsertPage self~pointer, page~pointer, labelptr, position
@@ -1074,8 +1074,6 @@ return
 ::method insert_page_menu
 -- insert a page with a menu
 use strict arg page, label, menu, position
-if position~datatype('W') = 0 then ,
- raise syntax 40.12 array ('INSERTPAGE', 3, position)
 if label = .nil then labelptr = 0
 else labelptr = label~pointer
 if menu = .nil then menuptr = 0
@@ -1086,16 +1084,12 @@ return
 ::method remove_page
 -- remove a page
 use strict arg position
-if position~datatype('W') = 0 then ,
- raise syntax 40.12 array ('REMOVEPAGE', 2, position)
 call GrxNotebookRemovePage self~pointer, position
 return
 
 ::method 'show_border='
 -- set the display of a border
 use strict arg toggle
-if toggle <> .false & toggle <> .true then ,
- raise syntax 40.24 array ('SHOWBORDER=', 2, toggle)
 call GrxNotebookSetShowBorder self~pointer, toggle
 return
 
@@ -1107,8 +1101,6 @@ return
 ::method 'show_tabs='
 -- set the display of the tabs
 use strict arg toggle
-if toggle <> .false | toggle <> .true then ,
- raise syntax 40.24 array ('SHOWTABS=', 2, toggle)
 call GrxNotebookSetShowTabs self~pointer, toggle
 return
 
@@ -1131,8 +1123,6 @@ return
 ::method 'homogeneous_tabs='
 -- set the display of same-sized tabs
 use strict arg toggle
-if toggle <> .false | toggle <> .true then ,
- raise syntax 40.24 array ('HOMOGENEOUSTABS=', 2, toggle)
 call GrxNotebookSetHomogeneousTabs self~pointer, toggle
 return
 
@@ -1144,8 +1134,6 @@ return
 ::method 'tab_border='
 -- set the border size of the tabs
 use strict arg size
-if size~datatype('W') = 0 then ,
- raise syntax 40.12 array ('TABBORDER=', 2, size)
 if size < 0 then size = 2 /* 2 is the GTK+ default */
 call GrxNotebookSetTabBorder self~pointer, size
 return
@@ -1158,8 +1146,6 @@ return
 ::method 'scrollable='
 -- set the ability to scroll the tabs
 use strict arg toggle
-if toggle <> .false & toggle <> .true then ,
- raise syntax 40.24 array ('SCROLLABLE=', 2, toggle)
 call GrxNotebookSetScrollable self~pointer, toggle
 return
 
@@ -1193,11 +1179,12 @@ return
 
 ::method current_page
 -- get the current notebook page
-use strict arg page
-return GrxNotebookGetCurrentPage(self~pointer, page)
+use strict arg
+return GrxNotebookGetCurrentPage(self~pointer)
 
 ::method get_current_page
 -- get the current notebook page
+use strict arg
 return self~current_page
 
 ::method connect_signal

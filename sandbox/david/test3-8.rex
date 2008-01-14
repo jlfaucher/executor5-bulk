@@ -44,7 +44,9 @@
 -- Foundations of GTK+ Development
 -- by Andrew Krause
 
--- FIXME! This does not work yet!
+-- Note: The source code in the book is wrong. The downloaded source for the
+-- book is correct. Label controls do not respond to the "clicked" signal so
+-- we need buttons instead.
 
 window = .myMainWindow~new('GTK_WINDOW_TOPLEVEL')
 window~set_title('Notebook')
@@ -60,6 +62,9 @@ child2 = .MyButton~new('Go to page 1 to find the answer.')
 
 child1~connect_signal('clicked')
 child2~connect_signal('clicked')
+-- Store the notebook widget so we can get access to it in the callbacks
+child1~user_data = notebook
+child2~user_data = notebook
 
 notebook~append_page(child1, label1)
 notebook~append_page(child2, label2)
@@ -81,12 +86,13 @@ return
 .local['GTK_Quit'] = .true
 return
 
-::class MyButton subclass GtkButton
+::class MyButton subclass GtkButton_With_Label
 
 ::method signal_clicked
-page = self~get_current_page()
-if page = 0 then self~set_current_page(1)
-else if page = 1 then self~set_current_page(0)
+notebook = self~user_data  -- get the notebook widget
+page = notebook~get_current_page()
+if page = 0 then notebook~set_current_page(1)
+else if page = 1 then notebook~set_current_page(0)
 else nop
 return
 
