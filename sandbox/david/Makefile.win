@@ -39,26 +39,65 @@
 # Setup
 include ver.mak
 GTK = gtk+-2.0
-RX_PATH = "c:\Program Files\ooRexx"
-# This is the output from the pkg-config --cflags command
-GTKLFLAGS = gtk-win32-2.0.lib atk-1.0.lib gdk-win32-2.0.lib gdi32.lib \
-        imm32.lib shell32.lib ole32.lib gdk_pixbuf-2.0.lib \
-	pangowin32-1.0.lib pangocairo-1.0.lib \
-	cairo.lib pangoft2-1.0.lib fontconfig.lib freetype.lib z.lib \
-	pango-1.0.lib gobject-2.0.lib gmodule-2.0.lib \
-	gthread-2.0.lib glib-2.0.lib intl.lib iconv.lib
-# This is the output from the pkg-config --libs command
-GTKLIBS = -IC:/GTK/include/gtk-2.0 \
-        -IC:/GTK/lib/gtk-2.0/include -IC:/GTK/include/atk-1.0 \
-        -IC:/GTK/include/cairo -IC:/GTK/include/pango-1.0 \
-        -IC:/GTK/include/glib-2.0 -IC:/GTK/lib/glib-2.0/include \
-        -IC:/GTK/include/freetype2 -IC:/GTK/include
-GRXCFLAGS = /nologo /c /GX /MT /W1 /D_X86=1 /D_CONSOLE /DWIN32 \
-        /I $(RX_PATH)\api /DVMAJOR=$(VMAJOR) /DVMINOR=$(VMINOR) /DVREL=$(VREL) \
-	$(GTKLIBS)
-GRXLFLAGS = /nologo /DLL $(GTKLFLAGS)
+
+# Point RX_PATH at your installation of ooRexx
+RX_PATH = "C:\ooRexx"
+
+# Point GTK_PATH to your top level GTK directory.  Use unix style forward
+# slashes
+GTK_PATH = C:/Tools/gtk
+
+# Set the GTK+ include path. Provided your GTK_PATH above is correct, this
+# should work.
+#
+# However, if you have compile problems, you should generate your own.  The
+# easiest way to do this is to run pkg-config and copy the output here.  See the
+# windows-building.tx file for information on how to do this.  Use the following
+# command:
+#    pkg-config --msvc-syntax --cflags gtk+-2.0
+# It may be easier to simply run the command on your own system to be sure you
+# pick up the correct settings.  After getting the output, leave off the
+# -mms-bitfields, delete the exisiting, and past it in here.
+GTK_IPATH = -I$(GTK_PATH)/include/gtk-2.0 -I$(GTK_PATH)/lib/gtk-2.0/include    \
+            -I$(GTK_PATH)/include/atk-1.0 -I$(GTK_PATH)/include/cairo          \
+            -I$(GTK_PATH)/include/pango-1.0 -I$(GTK_PATH)/include/glib-2.0     \
+            -I$(GTK_PATH)/lib/glib-2.0/include
+
+# Set the GTK+ library path.  The same caveats as for the GTK+ include path.  If
+# you do have compile problems, generate your own settings using pkg-config.
+# Use the following command:
+#    pkg-config --msvc-syntax --libs gtk+-2.0
+#
+GTKLIBS = /libpath:$(GTK_PATH)/lib gtk-win32-2.0.lib gdk-win32-2.0.lib         \
+          atk-1.0.lib gdk_pixbuf-2.0.lib pangowin32-1.0.lib pangocairo-1.0.lib \
+          pango-1.0.lib cairo.lib gobject-2.0.lib gmodule-2.0.lib glib-2.0.lib \
+          intl.lib iconv.lib
+
+LIBS = $(GTKLIBS) $(RX_PATH)\api\rexx.lib $(RX_PATH)\api\rexxapi.lib
+
+INCLUDES = -I$(RX_PATH)\api $(GTK_IPATH)
+
+GCFLAGS_COMMON = /nologo /c /GX /MT /W3
+
+GCFLAGS_DEFINES = /D_X86=1 /D_CONSOLE /DWIN32 /DVMAJOR=$(VMAJOR) /DVMINOR=$(VMINOR) /DVREL=$(VREL)
+
+!IF "$(DBG)" == "1"
+GFLAGS_DEBUG = /Zi /Od /D_DEBUG /DEBUGTYPE:CV
+!ENDIF
+
+GRXCFLAGS = $(GCFLAGS_COMMON) $(GCFLAGS_DEFINES) $(GFLAGS_DEBUG) $(INCLUDES)
+
+# Do not add /NOENTRY to the GLFLAGS
+GLFLAGS_COMMON = /nologo /machine:IX86 /SUBSYSTEM:Windows /DLL
+
+!IF "$(DBG)" == "1"
+GLFLAGS_DEBUG = /MAP /NOLOGO /PROFILE /DEBUG -debugtype:cv
+!ENDIF
+
+GRXLFLAGS = $(GLFLAGS_COMMON) $(GLFLAGS_DEBUG)
+
 OBJECTS = rexxgtk.obj \
-        grxwidget.obj \
+	grxwidget.obj \
 	grxwindow.obj \
 	grxcontainer.obj \
 	grxqueue.obj \
@@ -66,19 +105,16 @@ OBJECTS = rexxgtk.obj \
 	grxbutton.obj \
 	grxpaned.obj \
 	grxtable.obj \
-	grxentrytable.obj \
+	grxentry.obj \
 	grxfixed.obj \
 	grxexpander.obj \
 	grxhandlebox.obj \
 	grxnotebook.obj \
 	grxeventbox.obj
 
-
 # Build the DLL
-rexxgtk.dll: $(OBJECTS)
-	link $(GRXLFLAGS) $(RX_PATH)\api\rexx.lib $(RX_PATH)\api\rexxapi.lib \
-	 $(OBJECTS)
-
+rexxgtk.dll: $(OBJECTS) rexxgtk.def
+	link $(OBJECTS) $(GRXLFLAGS) $(LIBS) /def:rexxGtk.def /OUT:$(@R).dll /implib:$(@R).lib /PDB:$(@R).pdb
 
 # Build the objects
 rexxgtk.obj: rexxgtk.c rexxgtk.h
@@ -127,7 +163,6 @@ grxeventbox.obj: grxeventbox.c rexxgtk.h
 	cl -c $(GRXCFLAGS) grxeventbox.c
 
 
-
 clean:
-	rm *.so *.o
+	del *.dll *.obj *.pdb *.lib *.exp *.map
 

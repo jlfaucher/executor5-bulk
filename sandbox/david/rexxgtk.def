@@ -1,0 +1,235 @@
+;/*----------------------------------------------------------------------------*/
+;/*                                                                            */
+;/* Copyright (c) 2008 Rexx Language Association. All rights reserved.         */
+;/*                                                                            */
+;/* This program and the accompanying materials are made available under       */
+;/* the terms of the Common Public License v1.0 which accompanies this         */
+;/* distribution. A copy is also available at the following address:           */
+;/* http://www.oorexx.org/license.html                                         */
+;/*                                                                            */
+;/* Redistribution and use in source and binary forms, with or                 */
+;/* without modification, are permitted provided that the following            */
+;/* conditions are met:                                                        */
+;/*                                                                            */
+;/* Redistributions of source code must retain the above copyright             */
+;/* notice, this list of conditions and the following disclaimer.              */
+;/* Redistributions in binary form must reproduce the above copyright          */
+;/* notice, this list of conditions and the following disclaimer in            */
+;/* the documentation and/or other materials provided with the distribution.   */
+;/*                                                                            */
+;/* Neither the name of Rexx Language Association nor the names                */
+;/* of its contributors may be used to endorse or promote products             */
+;/* derived from this software without specific prior written permission.      */
+;/*                                                                            */
+;/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+;/* AS IS AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+;/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+;/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+;/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+;/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+;/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+;/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+;/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+;/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+;/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+;/*                                                                            */
+;/*----------------------------------------------------------------------------*/
+
+
+EXPORTS
+      GRXLOADFUNCS                    =    GrxLoadFuncs
+      GRXSETREXXQUEUENAME             =    GrxSetRexxQueueName
+
+      GRXVERSION                      =    GrxVersion
+      GRXMAIN                         =    GrxMain
+      GRXMAINITERATION                =    GrxMainIteration
+
+;    GRXGSLISTUNINIT                  =   GrxGSListUninit
+;    GRXGSLISTAPPEND                  =   GrxGSListAppend
+;    GRXGSLISTPREPEND                 =   GrxGSListPrepend
+;    GRXGSLISTINSERT                  =   GrxGSListInsert
+;    GRXGLISTUNINIT                   =   GrxGListUninit
+;    GRXGLISTAPPEND                   =   GrxGListAppend
+;    GRXGLISTPREPEND                  =   GrxGListPrepend
+;    GRXGLISTINSERT                   =   GrxGListInsert
+      GRXWIDGETSHOW                   =    GrxWidgetShow
+      GRXWIDGETSHOWALL                =    GrxWidgetShowAll
+      GRXWIDGETHIDE                   =    GrxWidgetHide
+      GRXWIDGETHIDEALL                =    GrxWidgetHideAll
+      GRXWIDGETSETSIZE                =    GrxWidgetSetSize
+      GRXWIDGETDESTROY                =    GrxWidgetDestroy
+      GRXWIDGETGRABFOCUS              =    GrxWidgetGrabFocus
+      GRXWIDGETSETFONT                =    GrxWidgetSetFont
+      GRXWIDGETGETFONT                =    GrxWidgetGetFont
+      GRXWIDGETGETACCESSIBLE          =    GrxWidgetGetAccessible
+      GRXWIDGETGETNAME                =    GrxWidgetGetName
+      GRXWIDGETSETNAME                =    GrxWidgetSetName
+      GRXWIDGETSETSENSITIVE           =    GrxWidgetSetSensitive
+      GRXWIDGETCONNECTSIGNAL          =    GrxWidgetConnectSignal
+      GRXWIDGETGETTOPLEVEL            =    GrxWidgetGetTopLevel
+;    GRXMESSAGEDIALOG                 =   GrxMessageDialog
+;    GRXFILESELECTIONDIALOG           =   GrxFileSelectionDialog
+;    GRXFONTSELECTIONDIALOG           =   GrxFontSelectionDialog
+;    GRXDIALOGNEW                     =   GrxDialogNew
+;    GRXDIALOGSETTITLE                =   GrxDialogSetTitle
+;    GRXDIALOGRUN                     =   GrxDialogRun
+;    GRXDIALOGADDBUTTON               =   GrxDialogAddButton
+;    GRXDIALOGGETVBOX                 =   GrxDialogGetVBox
+;    GRXDIALOGSETTIMEOUT              =   GrxDialogSetTimeout
+      GRXBUTTONNEW                    =    GrxButtonNew
+      GRXBUTTONSETLABEL               =    GrxButtonSetLabel
+      GRXBUTTONGETLABEL               =    GrxButtonGetLabel
+      GRXBUTTONUSEUNDERLINE           =    GrxButtonUseUnderline
+      GRXBUTTONNEWFROMSTOCK           =    GrxButtonNewFromStock
+      GRXBUTTONCONNECTSIGNAL          =    GrxButtonConnectSignal
+      GRXCHECKBUTTONNEW               =    GrxCheckButtonNew
+      GRXCHECKBUTTONGETSTATE          =    GrxCheckButtonGetState
+      GRXCHECKBUTTONSETSTATE          =    GrxCheckButtonSetState
+      GRXRADIOBUTTONNEW               =    GrxRadioButtonNew
+      GRXRADIOBUTTONGROUP             =    GrxRadioButtonGroup
+      GRXCONTAINERADD                 =    GrxContainerAdd
+      GRXCONTAINERREMOVE              =    GrxContainerRemove
+      GRXCONTAINERSETBORDERWIDTH      =    GrxContainerSetBorderWidth
+      GRXCONTAINERCONNECTSIGNAL       =    GrxContainerConnectSignal
+      GRXBOXPACKSTART                 =    GrxBoxPackStart
+      GRXBOXPACKEND                   =    GrxBoxPackEnd
+      GRXVBOXNEW                      =    GrxVBoxNew
+      GRXHBOXNEW                      =    GrxHBoxNew
+;    GRXTEXTVIEWNEW                   =   GrxTextViewNew
+;    GRXTEXTVIEWSETTEXT               =   GrxTextViewSetText
+;    GRXTEXTVIEWGETTEXT               =   GrxTextViewGetText
+;    GRXTEXTVIEWSETEDITABLE           =   GrxTextViewSetEditable
+;    GRXTEXTVIEWSETWRAPMODE           =   GrxTextViewSetWrapMode
+;    GRXFRAMENEW                      =   GrxFrameNew
+;    GRXSCROLLEDWINDOWNEW             =   GrxScrolledWindowNew
+;    GRXSCROLLEDWINDOWSETPOLICY       =   GrxScrolledWindowSetPolicy
+     GRXENTRYNEW                      =    GrxEntryNew
+     GRXENTRYSETMAXLENGTH             =    GrxEntrySetMaxLength
+     GRXENTRYGETMAXLENGTH             =    GrxEntryGetMaxLength
+     GRXENTRYSETTEXT                  =    GrxEntrySetText
+     GRXENTRYGETTEXT                  =    GrxEntryGetText
+     GRXENTRYSETWIDTHCHARS            =    GrxEntrySetWidthChars
+      GRXLABELNEW                     =    GrxLabelNew
+      GRXLABELSETTEXT                 =    GrxLabelSetText
+      GRXLABELSETJUSTIFY              =    GrxLabelSetJustify
+      GRXLABELSETSELECTABLE           =    GrxLabelSetSelectable
+      GRXLABELCONNECTSIGNAL           =    GrxLabelConnectSignal
+;    GRXCLISTNEW                      =   GrxCListNew
+;    GRXCLISTUNINIT                   =   GrxCListUninit
+;    GRXCLISTSELECTED                 =   GrxCListSelected
+;    GRXCLISTSETCOLUMNTITLE           =   GrxCListSetColumnTitle
+;    GRXCLISTGETCOLUMNTITLE           =   GrxCListGetColumnTitle
+;    GRXCLISTSETTEXT                  =   GrxCListSetText
+;    GRXCLISTGETTEXT                  =   GrxCListGetText
+;    GRXCLISTAPPEND                   =   GrxCListAppend
+;    GRXCLISTPREPEND                  =   GrxCListPrepend
+;    GRXCLISTINSERT                   =   GrxCListInsert
+;    GRXCLISTSETCOLUMNWIDTH           =   GrxCListSetColumnWidth
+;    GRXHSEPARATORNEW                 =   GrxHSeparatorNew
+;    GRXVSEPARATORNEW                 =   GrxVSeparatorNew
+;    GRXCOMBONEW                      =   GrxComboNew
+;    GRXCOMBOSETPOPDOWNSTRINGS        =   GrxComboSetPopdownStrings
+;    GRXCOMBOGETSELECTED              =   GrxComboGetSelected
+;    GRXCOMBOSETVALUEINLIST           =   GrxComboSetValueInList
+;    GRXIMAGENEW                      =   GrxImageNew
+;
+;    GRXACCESSGETNAME                 =   GrxAccessGetName
+;    GRXACCESSSETNAME                 =   GrxAccessSetName
+;    GRXACCESSGETDESCRIPTION          =   GrxAccessGetDescription
+;    GRXACCESSSETDESCRIPTION          =   GrxAccessSetDescription
+;    GRXACCESSGETLAYER                =   GrxAccessGetLayer
+;    GRXACCESSGETROLE                 =   GrxAccessGetRole
+;    GRXACCESSGETROLEDESCRIPTION      =   GrxAccessGetRoleDescription
+;    GRXACCESSGETLOCALROLEDESCRIPTION =   GrxAccessGetLocalRoleDescription
+;
+      GRXNOTEBOOKNEW                  =    GrxNotebookNew
+      GRXNOTEBOOKAPPENDPAGE           =    GrxNotebookAppendPage
+      GRXNOTEBOOKPREPENDPAGE          =    GrxNotebookPrependPage
+      GRXNOTEBOOKINSERTPAGE           =    GrxNotebookInsertPage
+      GRXNOTEBOOKAPPENDPAGEMENU       =    GrxNotebookAppendPageMenu
+      GRXNOTEBOOKPREPENDPAGEMENU      =    GrxNotebookPrependPageMenu
+      GRXNOTEBOOKINSERTPAGEMENU       =    GrxNotebookInsertPageMenu
+      GRXNOTEBOOKREMOVEPAGE           =    GrxNotebookRemovePage
+      GRXNOTEBOOKSETSHOWBORDER        =    GrxNotebookSetShowBorder
+      GRXNOTEBOOKSETSHOWTABS          =    GrxNotebookSetShowTabs
+      GRXNOTEBOOKSETTABPOS            =    GrxNotebookSetTabPos
+      GRXNOTEBOOKSETHOMOGENEOUSTABS   =    GrxNotebookSetHomogeneousTabs
+      GRXNOTEBOOKSETTABBORDER         =    GrxNotebookSetTabBorder
+      GRXNOTEBOOKSETSCROLLABLE        =    GrxNotebookSetScrollable
+      GRXNOTEBOOKPOPUPENABLE          =    GrxNotebookPopupEnable
+      GRXNOTEBOOKPOPUPDISABLE         =    GrxNotebookPopupDisable
+      GRXNOTEBOOKGETCURRENTPAGE       =    GrxNotebookGetCurrentPage
+      GRXNOTEBOOKSETCURRENTPAGE       =    GrxNotebookSetCurrentPage
+;
+;    GRXSIGNALCONNECT                 =   GrxSignalConnect
+;    GRXDIALOGWAIT                    =   GrxDialogWait
+;    GRXDIALOGSTART                   =   GrxDialogStart
+;    GRXGETSIGNAL                     =   GrxGetSignal
+
+      GRXWINDOWNEW                    =    GrxWindowNew
+      GRXWINDOWSETTITLE               =    GrxWindowSetTitle
+      GRXWINDOWSTART                  =    GrxWindowStart
+      GRXWINDOWCONNECTSIGNAL          =    GrxWindowConnectSignal
+      GRXPANEDADD1                    =    GrxPanedAdd1
+      GRXPANEDADD2                    =    GrxPanedAdd2
+      GRXPANEDPACK1                   =    GrxPanedPack1
+      GRXPANEDPACK2                   =    GrxPanedPack2
+      GRXHPANEDNEW                    =    GrxHPanedNew
+      GRXVPANEDNEW                    =    GrxVPanedNew
+      GRXTABLENEW                     =    GrxTableNew
+      GRXTABLEATTACH                  =    GrxTableAttach
+      GRXTABLESETROWSPACINGS          =    GrxTableSetRowSpacings
+      GRXTABLESETCOLSPACINGS          =    GrxTableSetColSpacings
+      GRXFIXEDNEW                     =    GrxFixedNew
+      GRXFIXEDPUT                     =    GrxFixedPut
+      GRXFIXEDMOVE                    =    GrxFixedMove
+      GRXEXPANDERNEW                  =    GrxExpanderNew
+      GRXEXPANDERSETEXPANDED          =    GrxExpanderSetExpanded
+      GRXEXPANDERSETLABEL             =    GrxExpanderSetLabel
+      GRXEXPANDERGETLABEL             =    GrxExpanderGetLabel
+      GRXEXPANDERUSEUNDERLINE         =    GrxExpanderUseUnderline
+      GRXEXPANDERSETSPACING           =    GrxExpanderSetSpacing
+      GRXEXPANDERCONNECTSIGNAL        =    GrxExpanderConnectSignal
+      GRXHANDLEBOXNEW                 =    GrxHandleBoxNew
+      GRXHANDLEBOXSETSHADOWTYPE       =    GrxHandleBoxSetShadowType
+      GRXHANDLEBOXSETHANDLEPOSITION   =    GrxHandleBoxSetHandlePosition
+      GRXHANDLEBOXSETSNAPEDGE         =    GrxHandleBoxSetSnapEdge
+      GRXHANDLEBOXCONNECTSIGNAL       =    GrxHandleBoxConnectSignal
+      GRXEVENTBOXNEW                  =    GrxEventBoxNew
+      GRXEVENTBOXSETABOVECHILD        =    GrxEventBoxSetAboveChild
+      GRXEVENTBOXGETABOVECHILD        =    GrxEventBoxGetAboveChild
+      GRXEVENTBOXSETVISIBLEWINDOW     =    GrxEventBoxSetVisibleWindow
+      GRXEVENTBOXGETVISIBLEWINDOW     =    GrxEventBoxGetVisibleWindow
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

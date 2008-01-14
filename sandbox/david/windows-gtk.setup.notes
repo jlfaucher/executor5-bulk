@@ -1,0 +1,104 @@
+
+To simply view a demo of what GTK is capable of on Windows, the easiest thing
+to do is to get the GTK runtime installer from:
+
+  http://gimp-win.sourceforge.net/stable.html
+
+All you need to download is the GTK runtime, ignore the GIMP stuff.  Get:
+
+  GTK+ 2 Runtime Environment (version 2.10.13, for Windows 2000 and newer)
+
+Install it, it has an un-install that works.
+
+Then get the gtk-demo.exe from this page:
+
+  http://www.gimp.org/~tml/gimp/win32/downloads.html
+
+The gtk-demo.exe is part of this package:
+
+  gtk+-dev-2.10.14.zip
+
+Download and uzip it after you have installed the runtime above.  cd into the
+bin directory, after you have unzipped the file, and run gtk-demo.exe.
+
+/* Note that there is a Windows XP theme that gives GTK applications a very
+ * similar look and feel to Windows XP.  After setting up the GTK runtime follow
+ * the next steps to use the Windows XP theme.
+ */
+
+Locate the file gtkrc in etc:
+
+etc\gtk-2.0\gtkrc
+
+Locate the file gtkrc in share:
+
+share\themes\MS-Windows\gtk-2.0\gtkrc
+
+Compare the files and, if not the same copy the MS-Windows file over to the
+etc location.
+
+
+/* To actually do development on Windows, it is more complicated.  You can get
+ * the runtime binaries and all the needed developement files from the following
+ * page:
+ */
+
+From page http://www.gimp.org/~tml/gimp/win32/downloads.html
+
+This page has links to everything you need for both the GTK runtime and the
+files needed to do development.  It is not clear at first every thing that is
+needed for the run time to work.  So here is the list.
+
+If you download and unzip all the "runtime required" files listed here, you can
+then run the gtk-demo, without using the setup program above.  If you are only
+going to run already compiled programs, the easist thing to do is to use the
+setup program above.
+
+On the other hand to do developement you would need all the "developement"
+files listed here, in addition to a runtime.  If you are going to do
+development, it is probably easier to get all the files here and not bother
+with the runtime setup above.
+
+-- These are the main files
+
+glib-2.12.13.zip           <runtime required>
+glib-dev-2.12.13.zip       <developement>
+
+gtk+-2.10.14.zip           <runtime required>
+gtk+-dev-2.10.14.zip       <developement>
+
+pango-1.16.4.zip           <runtime required>
+pango-dev-1.16.4.zip       <developement>
+
+atk-1.12.3.zip             <runtime required>
+atk-dev-1.12.3.zip         <developement>
+
+cairo-1.4.8.zip            <runtime required>
+cairo-dev-1.4.8.zip        <developement>
+
+-- These are the additional files that are needed to get gtk-demo to work
+
+GNU libiconv              <runtime required, dev stuff included>
+
+gettext-0.14.5.zip.       <runtime required>
+gettext-dev-0.14.5.zip    <developement>
+
+/* These 3 come from GnuWin32, grab the dev files at the same time, if doing
+ * development
+ */
+libpng 1.2.8              <runtime required>
+libjpeg 6b-4              <runtime required>
+libtiff 3.6.1             <runtime required>
+
+Zlib 1.2.3                <runtime required, dev stuff included>
+
+---- These files are not needed for gtk-demo to work, but there are part of the
+     Windows installer GTK runtime.  So I suspect that they are also needed
+     for developement, to be complete.
+
+fontconfig-2.4.2-tml-20070301.zip
+fontconfig-dev-2.4.2-tml-20070301
+
+libxml2
+
+

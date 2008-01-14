@@ -46,4 +46,4 @@
 
 -- Event callbacks are not supported in rexxgtk so this example is not
 -- implementd.
-
+say "Sorry, this example is not implemented."

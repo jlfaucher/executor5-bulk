@@ -50,6 +50,8 @@ window = .GTKWindow~new('GTK_WINDOW_TOPLEVEL')
 window~set_title('Hello World')
 window~show()
 
+say 'You must ctrl-c (twice) to end this program after closing the window'
+
 call gtk_main
 
 -- we will never get here since there is no connection to a destroy routine
