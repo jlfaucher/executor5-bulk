@@ -15,9 +15,9 @@
    link:
 
    category1:        ooRexx
-   category2:        extensions
-   category3:        ole
-   category4:        special folders
+   category2:        base
+   category3:        rexxutil
+   category4:        windows
 
 */
 /*----------------------------------------------------------------------------*/
@@ -79,5 +79,9 @@ return testResult
     objFolder = objShell~nameSpace(sp)
     objFolderItem = objFolder~self
     self~assertSame(sysSystemDirectory(),objFolderItem~path)
+
+::method 'testSystem32A'
+    self~expectSyntax(40.1)
+    rv = SysSystemDirectory('c:')
 
 

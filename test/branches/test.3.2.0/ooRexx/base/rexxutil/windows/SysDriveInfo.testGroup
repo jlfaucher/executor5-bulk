@@ -1,13 +1,13 @@
 #!/usr/bin/rexx
 /*
-   name:             SysBootDrive.testGroup
+   name:             SysDriveInfo.testGroup
    author:           Lee Peedin
    date:             2008-01-14
    version:          1.0.0
    changed:
 
    languageLevel:    6.0
-   purpose:          Test SysBootDrive()
+   purpose:          Test SysDriveInfo()
    remark:
 
 
@@ -60,7 +60,7 @@
     parse source . . fileSpec;
 
     group = .TestGroup~new(fileSpec)
-    group~add(.SysBootDrive.testGroup)
+    group~add(.SysDriveInfo.testGroup)
     group~restrictOS("WINDOWS")
 
     if group~isAutomatedTest then return group
@@ -71,12 +71,12 @@ return testResult
 -- End of entry point.
 
 ::requires 'ooTest.frm'
-::class 'SysBootDrive.testgroup' subclass ooTestCase public
+::class 'SysDriveInfo.testgroup' subclass ooTestCase public
 
-::method 'testBootDrive'
-    self~assertNotNull(SysBootDrive())
+::method 'testDriveInfoWords'
+    self~assertTrue(SysDriveInfo('c:')~words >= 3)
 
-::method 'testBootDrive2'
+::method 'testDriveInfoSyntax'
     self~expectSyntax(40.1)
-    rv = SysBootDrive('c:')
+    rv = SysDriveInfo()
 

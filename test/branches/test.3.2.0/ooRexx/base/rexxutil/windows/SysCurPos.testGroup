@@ -15,9 +15,9 @@
    link:
 
    category1:        ooRexx
-   category2:        extensions
-   category3:        ole
-   category4:        special folders
+   category2:        base
+   category3:        rexxutil
+   category4:        windows
 
 */
 /*----------------------------------------------------------------------------*/
@@ -77,4 +77,8 @@ return testResult
     parse value SysCurPos() with row col
     self~assertTrue(row >= 0)
     self~assertTrue(col >= 0)
+
+::method 'testCurPos2'
+    self~expectSyntax(40.1)
+    rv = SysCurPos(-1,-1)
 
