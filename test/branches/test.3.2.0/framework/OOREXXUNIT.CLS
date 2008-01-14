@@ -195,7 +195,7 @@ if \ .local~hasEntry(ooRexxUnit.version) then do
   -- Also capture the original path in case someone needs it.
   parse source . . fileSpec
   .local~ooRexxUnit.dir = fileSpec~left(fileSpec~caseLessPos("OOREXXUNIT.CLS") - 2 )
-  .local~ooRexxUnit.orignalPath = addToPath(.ooRexxUnit.dir)
+  .local~ooRexxUnit.originalPath = addToPath(.ooRexxUnit.dir)
 
   -- Add the test utility class to the local environment so that it is available
   -- to anyone running in this process.
@@ -909,7 +909,8 @@ return str
   say "  Class:" data~className
   say "  File: " pathCompact(data~where, 70)
   say "  Event:" pp(data~type) "raised unexpectedly."
-  say "    "data~conditionObject~message
+  if data~conditionObject~message \== .nil then
+    say "    "data~conditionObject~message
   if different then
     say "    Program:" pathCompact(data~conditionObject~program, 60)
   say "    Line:   " data~line
@@ -1270,11 +1271,15 @@ return str
 
   data = .AssertFailure~new(timeStamp(), self~definedInFile, type)
 
-  if expected~left(1) == "[", expected~right(1) == "]" then data~expected = expected
-  else data~expected = self~formatObjectInfo(expected)
+  if expected~isA(.string), expected~left(1) == "[", expected~right(1) == "]" then
+    data~expected = expected
+  else
+    data~expected = self~formatObjectInfo(expected)
 
-  if actual~left(1) == "[", actual~right(1) == "]" then data~actual = actual
-  else data~actual = self~formatObjectInfo(actual)
+  if actual~isA(.string), actual~left(1) == "[", actual~right(1) == "]" then
+    data~actual = actual
+  else
+    data~actual = self~formatObjectInfo(actual)
 
   data~msg = msg
 

@@ -60,6 +60,9 @@
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::requires "winsystm.cls"
 
+/* class: ProgramLauncher- - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+    A class used to start an ooRexx program in a separate thread.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::class 'ProgramLauncher' public
 
   -- Attribute: prgResultCode
@@ -79,6 +82,11 @@
     if arg(2, 'O') then params = ""
     else params = arg(2)
 
+  /** getResult()
+   * A blocking method that waits until the launcher program finishes and then
+   * returns the program's result code.  (The return code from the launched
+   * program.)
+   */
   ::method getResult unguarded
     expose finished
     guard on when finished
@@ -89,7 +97,7 @@
 
     reply 0
 
-    prgName params
+    'rexx' prgName params
     self~prgResultCode = RC
     finished = .true
 

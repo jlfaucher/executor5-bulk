@@ -68,6 +68,10 @@ if \ .local~hasEntry('OOTEST_FRAMEWORK_VERSION') then do
   .local~ooTest.dir = fileSpec~left(fileSpec~caseLessPos("ooTest.frm") - 2 )
   j = addToPath(.ooTest.dir)
 
+  -- If not already in the environment, save the current working directory.
+  if \ .local~hasEntry(ooTest.originalWorkingDir) then
+    .local~ooTest.originalWorkingDir = directory()
+
 end
 -- End of entry point.
 
@@ -238,8 +242,14 @@ return a
   ::method DOC_EXAMPLE_TEST class; return 5
   ::method DOC_EXAMPLE_TEST;       return 5
 
-  ::method MAX_TEST_TYPE  class; return 5
-  ::method MAX_TEST_TYPE;        return 5
+  -- A test type that makes noise.  I frequently need to run the test suite in
+  -- an environment where I need these types of test cases to be skipped.  This
+  -- is a convenience for myself (Mark Miesfeld.)
+  ::method DOC_EXAMPLE_NOISE_TEST   class; return 6
+  ::method DOC_EXAMPLE_NOISE_TEST;         return 6
+
+  ::method MAX_TEST_TYPE  class; return 6
+  ::method MAX_TEST_TYPE;        return 6
 
   /** all()
    * Returns a set of all the test types possible.

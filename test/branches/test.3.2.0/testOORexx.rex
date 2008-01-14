@@ -69,6 +69,10 @@ arguments = arg(1)
    if \ isInPath(curPath, testDir, sl, pathSep) then
      newPath = testDir || pathSep || newPath
 
+   -- Before changing the current working directory, be sure and save it in case
+   -- it is needed.
+   .local~ooTest.originalWorkingDir = curDir
+
    j = directory(testDir)
    j = value("PATH", newPath, 'ENVIRONMENT')
 
