@@ -63,6 +63,8 @@
 #include "PointerClass.hpp"
 #include "BufferClass.hpp"
 #include "WeakReferenceClass.hpp"
+#include "Interpreter.hpp"
+#include "SystemInterpreter.hpp"
 
 // restore a class from its
 // associated primitive behaviour
@@ -191,8 +193,6 @@ void RexxMemory::initialize(bool _restoringImage)
     /* remember the original one         */
     originalLiveStack = liveStack;
 
-
-
     if (_restoringImage)                 /* restoring the image?              */
     {
         restoreImage();                  /* do it now...                      */
@@ -216,15 +216,12 @@ void RexxMemory::initialize(bool _restoringImage)
 
     // is this image creation?  This will build and save the image, then
     // terminate
-    if (!restoringImage)
+    if (!_restoringImage)
     {
         createImage();
     }
-    else
-    {
-        restore();                       // go restore the state of the memory object
+    restore();                           // go restore the state of the memory object
         ActivityManager::startup();      // go create the local enviroment.
-    }
 }
 
 
@@ -892,6 +889,8 @@ void RexxMemory::live(size_t liveMark)
   memory_mark(this->markTable);
   memory_mark(globalStrings);
   // now call the various subsystem managers to mark their references
+  Interpreter::live(liveMark);
+  SystemInterpreter::live(liveMark);
   ActivityManager::live(liveMark);
   LibraryManager::live(liveMark);
 }
@@ -912,6 +911,8 @@ void RexxMemory::liveGeneral(int reason)
   memory_mark_general(this->markTable);
   memory_mark_general(globalStrings);
   // now call the various subsystem managers to mark their references
+  Interpreter::liveGeneral(reason);
+  SystemInterpreter::liveGeneral(reason);
   ActivityManager::liveGeneral(reason);
   LibraryManager::liveGeneral(reason);
 }
@@ -2203,7 +2204,7 @@ void RexxMemory::create()
 /******************************************************************************/
 {
   /* Make sure memory is cleared!      */
-  memoryObject.init(false);
+  memoryObject.initialize(false);
   RexxClass::createClass();            /* get the CLASS class created       */
   RexxInteger::createClass();
   // initializer for native libraries
@@ -2224,7 +2225,7 @@ void RexxMemory::restore()
 /******************************************************************************/
 {
   /* Make sure memory is cleared! */
-  memoryObject.init(true);
+  memoryObject.initialize(true);
   /* Retrieve special saved objects    */
   /* OREF_ENV and primitive behaviours */
   /* are already restored              */

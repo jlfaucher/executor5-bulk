@@ -70,6 +70,8 @@
 #include "RexxVariableDictionary.hpp"
 #include "ProtectedObject.hpp"
 #include "PointerClass.hpp"
+#include "InterpreterInstance.hpp"
+#include "ActivityDispatcher.hpp"
 
 const size_t ACT_STACK_SIZE = 10;
 
@@ -232,11 +234,6 @@ RexxActivity::RexxActivity(
     this->numericSettings = Numerics::getDefaultSettings();
 
     if (_priority != NO_THREAD) {      /* need to create a thread?          */
-#ifdef FIXEDTIMERS
-          /* start the control thread the first time a concurrent thread is used */
-      SysStartTimeSlice();   /* Start a new timeSlice                       */
-#endif
-
       EVSET(this->runsem);             /* set the run semaphore             */
                                        /* create a thread                   */
       this->threadid = SysCreateThread((PTHREADFN)activity_thread,C_STACK_SIZE,this);
@@ -1324,6 +1321,8 @@ void RexxActivity::setupAttachedActivity(InterpreterInstance *interpreter)
     {
         nestedInfo.sysexits[i] = interpreter->getExitHandler(i + 1);
     }
+    // set the appropriate exit interlocks
+    queryTrcHlt();
 
     // This is a root activation that will allow API functions to be called
     // on this thread without having an active bit of ooRexx code first.
@@ -2901,7 +2900,7 @@ wholenumber_t RexxActivity::messageSend(
 }
 
 
-void RexxActivity::run(ActivityDispatcher target)
+void RexxActivity::run(ActivityDispatcher &target)
 /******************************************************************************/
 /* Function:    send a message (with message lookup) to an object.  This      */
 /*              method will do any needed activity setup before hand.         */

@@ -56,6 +56,8 @@
 #include "SourceFile.hpp"
 #include "DirectoryClass.hpp"
 #include "ProtectedObject.hpp"
+#include "BufferClass.hpp"
+#include "RexxInternalApis.h"
 #include <ctype.h>
 
 
@@ -530,20 +532,20 @@ RexxMethod * RexxMethod::processInstore(PRXSTRING instore, RexxString * name )
             /* unflatten the method now          */
             RexxMethod *routine = SysRestoreProgramBuffer(&buffer, name);
             // release the buffer memory
-            SysReleaseResultMemory(routine.strptr);
+            SysReleaseResultMemory(buffer.strptr);
         }
         return OREF_NULL;         // not found
     }
     if (instore[1].strptr != NULL)       /* have an image                     */
     {
         /* go convert into a method          */
-        method = SysRestoreProgramBuffer(&instore[1], name);
+        RexxMethod *method = SysRestoreProgramBuffer(&instore[1], name);
         if (method != OREF_NULL)
         {         /* did it unflatten successfully?    */
             if (instore[0].strptr != NULL)   /* have source also?                 */
             {
                 /* get a buffer object               */
-                source_buffer = new_buffer(instore[0].strlength);
+                RexxBuffer *source_buffer = new_buffer(instore[0].strlength);
                 /* copy source into the buffer       */
                 memcpy(source_buffer->address(), instore[0].strptr, instore[0].strlength);
                 /* reconnect this with the source    */
@@ -555,7 +557,7 @@ RexxMethod * RexxMethod::processInstore(PRXSTRING instore, RexxString * name )
     if (instore[0].strptr != NULL)       /* have instorage source             */
     {
         /* get a buffer object               */
-        source_buffer = new_buffer(instore[0].strlength);
+        RexxBuffer *source_buffer = new_buffer(instore[0].strlength);
         /* copy source into the buffer       */
         memcpy(source_buffer->address(), instore[0].strptr, instore[0].strlength);
 
@@ -564,7 +566,7 @@ RexxMethod * RexxMethod::processInstore(PRXSTRING instore, RexxString * name )
             memcpy(source_buffer->address(), "--", 2);
         }
         /* translate this source             */
-        method = TheMethodClass->newRexxBuffer(name, source_buffer, (RexxClass *)TheNilObject);
+        RexxMethod *method = TheMethodClass->newRexxBuffer(name, source_buffer, (RexxClass *)TheNilObject);
         /* return this back in instore[1]    */
         SysSaveProgramBuffer(&instore[1], method);
         return method;                     /* return translated source          */

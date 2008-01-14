@@ -51,14 +51,20 @@
 
 #include "RexxCore.h"
 
+class InterpreterInstance;
+
 class Interpreter
 {
 public:
-    enum
+    typedef enum
     {
         SAVE_IMAGE_MODE = 0,       // image creation
         RUN_MODE = 1               // normal run mode
     } InterpreterStartupMode;
+
+
+    static void live(size_t);
+    static void liveGeneral(int reason);
 
 
     static inline void getResourceLock() { MTXRQ(resourceLock); }
@@ -83,8 +89,11 @@ public:
         EVPOST(terminationSem);              /* let anyone who cares know we're done*/
     }
 
-    static void terminate();
+    static bool terminateInterpreter();
+    static void startInterpreter(InterpreterStartupMode mode);
     static bool isTerminated();
+    static bool isActive() { return active; }
+    static InterpreterInstance *createInterpreterInstance(PRXSYSEXIT exits, const char *defaultEnvironment);
 
     static inline bool hasTimeSliceElapsed()
     {
@@ -110,6 +119,8 @@ protected:
     static SEV    terminationSem;    // used to signal that everything has shutdown
     static int    initializations;   // indicates whether we're terminated or not
     static bool   timeSliceElapsed;  // indicates we've had a timer interrupt
+    static RexxList *instances;      // the set of interpreter instances
+    static bool   active;            // indicates whether the interpreter is initialized
 };
 
 

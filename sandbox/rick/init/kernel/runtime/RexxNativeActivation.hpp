@@ -57,6 +57,7 @@ class RexxNativeActivation : public RexxActivationBase {
   inline RexxNativeActivation(RESTORETYPE restoreType) { ; };
          RexxNativeActivation(RexxActivity *, RexxMethod *, RexxNativeCode *);
          RexxNativeActivation(RexxActivity *_activity, RexxActivation *_activation);
+         RexxNativeActivation(RexxActivity *_activity);
   void live(size_t);
   void liveGeneral(int reason);
   void flatten(RexxEnvelope *);

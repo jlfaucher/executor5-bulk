@@ -764,7 +764,7 @@ STDMETHODIMP OrxScript::Invoke(DISPID pDispID, REFIID riid, LCID plcid,
   char          lName[251],tInvokeString[4096],*FInvokeString,*Temp=NULL,NameList[MAX_PATH],*tNL;
   char          *CallType,Function=')',Procedure='\0';
   LPVOID        arguments[8];
-  ConditionData cd;
+  RexxConditionData cd;
   DISPPARAMS    dp;
   VARIANT       sResult,*mResult;
   VARIANTARG    *FCmd=NULL;

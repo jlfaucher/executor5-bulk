@@ -70,7 +70,7 @@ public:
     void waitForCompletion();
     void attachToProcess();
     RexxActivity *enterOnCurrentThread();
-    bool attachThread(RexxThreadContext **);
+    bool attachThread();
     void exitCurrentThread();
     RexxActivity *findActivity(thread_id_t threadId);
     RexxDirectory *getLocalEnvironment();
@@ -83,7 +83,8 @@ public:
     void addGlobalReference(RexxObject *o);
     void removeGlobalReference(RexxObject *o);
     inline RexxString *getDefaultCommandEnvironment() { return getDefaultAddress(); }
-    bool        processOptions(RexxOption *options);
+    bool poolActivity(RexxActivity *activity);
+    ExitHandler &getExitHandler(int exitNum) {  return exits[exitNum - 1]; }
 
 protected:
 

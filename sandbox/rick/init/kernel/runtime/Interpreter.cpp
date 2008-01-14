@@ -48,12 +48,28 @@
 
 #include "Interpreter.hpp"
 #include "ActivityManager.hpp"
+#include "ListClass.hpp"
 
 
 // global resource lock
 SMTX Interpreter::resourceLock = 0;
 
 SEV  Interpreter::terminationSem = 0;
+
+RexxList *Interpreter::interpreterInstances = OREF_NULL;
+
+void Interpreter::live(size_t liveMark)
+{
+    memory_mark(interpreterInstances);
+}
+
+void Interpreter::liveGeneral(int reason)
+{
+  if (!memoryObject.savingImage())
+  {
+      memory_mark_general(interpreterInstances);
+  }
+}
 
 void Interpreter::processStartup()
 {
@@ -88,10 +104,13 @@ void Interpreter::startInterpreter(InterpreterStartupMode mode)
         // TODO:  Make sure
         setbuf(stdout, NULL);              // turn off buffering for the output streams
         setbuf(stderr, NULL);
-        SystemInterpreter::initialize();   // perform system specific initialization
+        SystemInterpreter::startInterpreter();   // perform system specific initialization
         // initialize the memory manager , and restore the
         // memory image
-        memoryObject.initialize(mode == RUN_MODE);
+        RexxMemory::initialize(mode == RUN_MODE);
+        ActivityManager::startup();      // go create the local enviroment.
+        // create our instances list
+        interpreterInstances = new_list();
     }
     // we're live now
     active = true;
@@ -123,24 +142,20 @@ bool Interpreter::terminateInterpreter()
         {
             return false;
         }
-        // lock our resources for now
-        ResourceLock lock;
-        // shutdown any of the activity manager stuff
-        ActivityManager::shutdown();
-        // now shutdown the memory object
-        memoryObject.shutdown();
-        // no initialized interpreter environment any more.
-        active = false;
     }
+
     // we need to wait for the activity manager to tell us everything is
     // ready to go, but without holding the resource lock
     ActivityManager::waitForTermination();
     {
-        ResourceLock lock;      // lock in this section
-        // now shutdown the memory object
-        memoryObject.shutdown();
         // no initialized interpreter environment any more.
         active = false;
+        ResourceLock lock;      // lock in this section
+        SystemInterpreter::terminateInterpreter();
+
+        // now shutdown the memory object
+        memoryObject.shutdown();
+        RexxList *interpreterInstances = OREF_NULL;
     }
     return true;
 }

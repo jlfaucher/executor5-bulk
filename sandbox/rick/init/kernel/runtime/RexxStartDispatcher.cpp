@@ -176,6 +176,8 @@ void RexxStartDispatcher::run()
                 /* ...copy to return code.           */
                 retcode = return_code;
             }
+            // set the RC to the retcode value if there's no errors.
+            rc = retcode;
         }
     }
 }

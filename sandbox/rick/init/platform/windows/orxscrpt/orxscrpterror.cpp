@@ -38,12 +38,12 @@
 #include "OrxScrptError.hpp"
 
 
-OrxScriptError::OrxScriptError(FILE *Stream, ConditionData *info, bool *Exists)  :
+OrxScriptError::OrxScriptError(FILE *Stream, RexxConditionData *info, bool *Exists)  :
                                ulRefCount(1),
                                logfile(Stream) {
   if (info)
-    memcpy(&RexxErrorInfo,info,sizeof(ConditionData));
-  else memset(&RexxErrorInfo,0,sizeof(ConditionData));
+    memcpy(&RexxErrorInfo,info,sizeof(RexxConditionData));
+  else memset(&RexxErrorInfo,0,sizeof(RexxConditionData));
   RunDestructor = Exists;
   if(RunDestructor) *RunDestructor = true;
   }

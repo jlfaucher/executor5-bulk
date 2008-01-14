@@ -773,7 +773,7 @@ $(runtime_dir)/VirtualFunctionTables.cpp: $(runtime_dir)/VirtualFunctionTable.xs
 rexx.img: rexx librexxutil.la $(core_classes) $(core_platform_classes)
 	cp $(rexxclasses_dir)/*.orx .
 	cp $(kernel_platform_unix_dir)/*.orx .
-	./rexx -i
+	./rexximage -i
 	rm -f *.orx
 
 #

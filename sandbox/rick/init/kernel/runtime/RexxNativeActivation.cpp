@@ -1067,6 +1067,18 @@ RexxNativeActivation::RexxNativeActivation(RexxActivity *_activity, RexxActivati
 
 
 /**
+ * Constructor for a new native activation used to create a
+ * callback context for exit call outs.
+ *
+ * @param _activity The activity we're running under.
+ */
+RexxNativeActivation::RexxNativeActivation(RexxActivity *_activity)
+{
+    this->activity = _activity;      /* the activity running on           */
+}
+
+
+/**
  * Allocate a new native Activation.
  *
  * @param size   the allocation size.

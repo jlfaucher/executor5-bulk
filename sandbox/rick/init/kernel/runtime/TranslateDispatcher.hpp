@@ -51,7 +51,7 @@ public:
     virtual void run();
     virtual void handleError(RexxDirectory *);
 
-    const char *programname;             /* REXX program to run               */
+    const char *programName;             /* REXX program to run               */
     PRXSTRING  instore;                  /* Instore array                     */
     const char *outputName;              // optional program output name
 };

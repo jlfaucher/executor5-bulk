@@ -143,11 +143,6 @@ void SysReleaseResultMemory(void *);   /* release a result memory block     */
 bool SysExternalFunction(RexxActivation *, RexxActivity *, RexxString *, RexxString *, RexxObject **, size_t, RexxString *, ProtectedObject &);
 #endif
 
-#ifndef SysGetMacroCode
-                                       /* load a method from a macro        */
-RexxMethod * SysGetMacroCode(RexxString *);
-#endif
-
 #ifndef SysCommand
                                        /* invoke a command                  */
 RexxObject * SysCommand(RexxActivation *, RexxActivity *, RexxString *, RexxString *, RexxString **);
@@ -210,9 +205,17 @@ void SysSetupProgram(RexxActivation *);/* System specific program setup     */
 RexxMethod *SysRestoreProgram(RexxString *);
 #endif
 
+#ifndef SysRestoreProgramBuffer
+RexxMethod *SysRestoreProgramBuffer(PRXSTRING, RexxString *);
+#endif
+
 #ifndef SysSaveProgram
                                        /* Save a program image              */
 void SysSaveProgram(RexxString *, RexxMethod *);
+#endif
+
+#ifndef SysSaveProgramBuffer
+void SysSaveProgramBuffer(PRXSTRING , RexxMethod *);
 #endif
 
 #ifndef SysSourceString

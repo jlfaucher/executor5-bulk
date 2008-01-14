@@ -53,7 +53,7 @@ void ConditionDispatcher::handleError(wholenumber_t r, RexxDirectory *c)
 
     // fill in the condition information
 
-    memset(translatedCondition, 0, sizeof(ConditionData));
+    memset(translatedCondition, 0, sizeof(RexxConditionData));
     translatedCondition->code = message_number((RexxString *)conditionobj->at(OREF_CODE));
 
     translatedCondition->rc = message_number((RexxString *)conditionobj->at(OREF_RC));
@@ -68,6 +68,8 @@ void ConditionDispatcher::handleError(wholenumber_t r, RexxDirectory *c)
     errortext->copyToRxstring(translatedCondition->errortext);
     RexxString *program = (RexxString *)conditionobj->at(OREF_PROGRAM);
     program->copyToRxstring(translatedCondition->program);
+    // we set the dispatcher return code to the negated value
+    rc = -translatedCondition.rc;
 }
 
 
@@ -88,7 +90,7 @@ void CreateMethodDispatcher::run()
     // the value used in our directory is the string value of the
     // method pointer
     char buffer[32];
-    sprintf("0x%p", translatedMethod);
+    sprintf(buffer, "0x%p", translatedMethod);
     locked_objects->put((RexxObject *)translatedMethod, new_string(buffer));
 }
 
@@ -142,31 +144,9 @@ void RunMethodDispatcher::run()
         // the value used in our directory is the string value of the
         // method pointer
         char buffer[32];
-        sprintf("0x%p", result);
+        sprintf(buffer, "0x%p", result);
         locked_objects->put((RexxObject *)result, new_string(buffer));
     }
-}
-
-
-void LoadMethodDispatcher::run()
-{
-    loadedMethod = SysRestoreProgramBuffer(programBuffer, OREF_NULLSTRING);
-    if (loadedMethod != NULL)
-    {
-        RexxString *saveTarget = new_string(contextName);
-        RexxDirectory *locked_objects = (RexxDirectory *)ActivityManager::localEnvironment->at(saveTarget);
-        // the value used in our directory is the string value of the
-        // method pointer
-        char buffer[32];
-        sprintf("0x%p", translatedMethod);
-        locked_objects->put((RexxObject *)translatedMethod, new_string(buffer));
-    }
-}
-
-
-void StoreMethodDispatcher::run()
-{
-    SysSaveProgramBuffer(programBuffer, (RexxMethod *translatedMethod);
 }
 
 

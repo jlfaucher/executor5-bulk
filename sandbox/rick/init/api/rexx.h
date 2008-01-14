@@ -136,15 +136,6 @@ typedef SHVBLOCK *PSHVBLOCK;
 typedef char *PEXIT;                  /* ptr to exit parameter block */
 
 
-typedef struct _RexxConditionData
-{
-  wholenumber_t code;                 // The condition CODE information
-  wholenumber_t rc;                   // The condition RC value
-  RXSTRING message;                   // The condition secondary message text
-  RXSTRING errortext;                 // The condition error text.
-  size_t  position;                   // The failure line number value
-  RXSTRING program;                   // The running program name
-} RexxConditionData;
 
 
 /*----------------------------------------------------------------------------*/
@@ -157,6 +148,17 @@ typedef struct _RexxConditionData
 
 typedef size_t stringsize_t;           // a Rexx string size
 typedef ssize_t wholenumber_t;         // a Rexx whole number
+
+
+typedef struct _RexxConditionData
+{
+  wholenumber_t code;                 // The condition CODE information
+  wholenumber_t rc;                   // The condition RC value
+  RXSTRING message;                   // The condition secondary message text
+  RXSTRING errortext;                 // The condition error text.
+  size_t  position;                   // The failure line number value
+  RXSTRING program;                   // The running program name
+} RexxConditionData;
 
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
@@ -703,18 +705,6 @@ APIRET APIENTRY RexxFreeMemory(
                              /* RexxAllocateMemory                   */
 typedef APIRET (APIENTRY *PFNREXXFREEMEMORY)(void *);
 
-int APIENTRY RexxResolveExit(const char *, REXXPFN *);
-
-APIRET APIENTRY RexxCallFunction (
-        const char *,                  /* Name of function to call   */
-        size_t,                        /* Number of arguments        */
-        PCONSTRXSTRING,                /* Array of argument strings  */
-        int            *,              /* RC from function called    */
-        PRXSTRING,                     /* Storage for returned data  */
-        const char *);                 /* Name of active data queue  */
-
-/***   Uppercase Entry Point Name */
-#define REXXCALLFUNCTION  RexxCallFunction
 
 #ifdef __cplusplus
 }

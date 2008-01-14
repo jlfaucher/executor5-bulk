@@ -72,6 +72,8 @@
 #include "ExpressionCompoundVariable.hpp"
 #include "ProtectedObject.hpp"
 #include "ActivityManager.hpp"
+#include "Interpreter.hpp"
+#include "RexxInternalApis.h"
 
 /* max instructions without a yield */
 #define MAX_INSTRUCTIONS  100
@@ -2027,7 +2029,7 @@ bool RexxActivation::callMacroSpaceFunction(RexxString * target, RexxObject **_a
             return false;                    /* didn't really find this           */
         }
         /* unflatten the method now          */
-        RexxMethod *routine = SysGetMacroCode(target);
+        RexxMethod *routine = getMacroCode(target);
         // not restoreable is a call failure
         if (routine == OREF_NULL)
         {
@@ -2303,6 +2305,32 @@ bool RexxActivation::callExternalRexx(
 }
 
 
+/**
+ * Retrieve a macro image file from the macro space.
+ *
+ * @param macroName The name of the macro to retrieve.
+ *
+ * @return If available, the unflattened method image.
+ */
+RexxMethod *RexxActivation::getMacroCode(RexxString *macroName)
+{
+    RXSTRING       macroImage;
+    RexxMethod   * method = OREF_NULL;
+
+    macroImage.strptr = NULL;
+    if (RexxExecuteMacroFunction(macroName->getStringData(), &macroImage) == 0)
+    {
+        method = SysRestoreProgramBuffer(&macroImage, macroName);
+        // return the allocated buffer
+        if (macroImage.strptr == NULL)
+        {
+            SysReleaseResultMemory(macroImage.strptr);
+        }
+    }
+    return method;
+}
+
+
 RexxObject * RexxActivation::loadRequired(
     RexxString      * target,          /* target of the call                */
     RexxInstruction * instruction )    /* ::REQUIRES instruction from source*/
@@ -2364,7 +2392,7 @@ RexxObject * RexxActivation::loadRequired(
   /* first see if we have something in macrospace with this name */
   if (fMacroExists && (usMacroPosition == RXMACRO_SEARCH_BEFORE))
   {
-      _method = SysGetMacroCode(target);
+      _method = getMacroCode(target);
   }
 
   /* if not in PRE macrospace search order, try to load a file */
@@ -2380,7 +2408,7 @@ RexxObject * RexxActivation::loadRequired(
 
   /* if still not found try to load POST macro */
   if ((_method == OREF_NULL) && fMacroExists)
-    _method = SysGetMacroCode(target);
+    _method = getMacroCode(target);
 
   if (_method == OREF_NULL)             /* couldn't create this?             */
                                        /* report an error                   */

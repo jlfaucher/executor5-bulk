@@ -54,9 +54,12 @@
 #include "ExitHandler.hpp"
 
 
+
 class ProtectedObject;                 // needed for look aheads
 class RexxSource;
 class RexxMethod;
+class InterpreterInstance;
+class ActivityDispatcher;
 
                                        /* interface values for the          */
                                        /* activity_queue method             */
@@ -220,6 +223,7 @@ public:
    RexxString *lineIn(RexxActivation *);
    wholenumber_t messageSend(RexxObject *, RexxString *, size_t, RexxObject **, ProtectedObject &);
    void generateRandomNumberSeed();
+   void setupAttachedActivity(InterpreterInstance *interpreter);
 
    void activate() { nestedCount++; }
    void deactivate() { nestedCount--; }
@@ -232,6 +236,8 @@ public:
    bool callSecurityManager(RexxString *name, RexxDirectory *args);
    RexxObject *nativeRelease(RexxObject *result);
    void inheritSettings(RexxActivity *parent);
+   void exitCurrentThread();
+   void run(ActivityDispatcher &target);
 
    inline RexxActivationBase *current(){ return this->topActivation;}
    inline RexxActivation *getCurrentActivation() {return this->currentActivation;}

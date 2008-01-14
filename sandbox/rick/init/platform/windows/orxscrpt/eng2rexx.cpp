@@ -219,7 +219,7 @@ LONG APIENTRY RexxCatchExternalFunc(LONG ExitNumber, LONG Subfunction, PEXIT pbl
       LPVOID    arguments[8];
       char      invString[256];
       char      buffer[8];
-      ConditionData cd;
+      RexxConditionData cd;
 
       // build argument array of REXX objects...
       REXXOBJECT args = ooRexxArray(1+parmblock->rxfnc_argc);
@@ -928,7 +928,7 @@ void __stdcall createCode(void *arguments)
   LPCOLESTR  pStrCode = ((LPCOLESTR*) arguments)[0]; // script text
   OrxScript *pEngine = ((OrxScript**) arguments)[1]; // pointer to engine
   REXXOBJECT *pImage = ((REXXOBJECT **) arguments)[2];   // result object (a string containing the image)
-  ConditionData *condData = ((ConditionData**) arguments)[3]; // condition info
+  RexxConditionData *condData = ((RexxConditionData**) arguments)[3]; // condition info
 
   // "normal" local variables
   char        funcHandler[128];
@@ -996,14 +996,14 @@ REXXOBJECT Create_securityObject(OrxScript  *pEngine,
     VARIANT temp;
     OLECHAR invokeString[32];
     char args[32];
-    ConditionData condData; // condition info
+    RexxConditionData condData; // condition info
     OrxScriptError *ErrObj;
     bool        ErrObj_Exists;
     APIRET      rc;
     HRESULT     hResult=S_OK;
 
 
-    memset((void*) &condData,0,sizeof(ConditionData));
+    memset((void*) &condData,0,sizeof(RexxConditionData));
     sprintf(args,"FLAGS=%d",pEngine->getSafetyOptions());
     C2W(invokeString,args,32);
     VariantInit(&temp);
@@ -1072,7 +1072,7 @@ void __stdcall runMethod(void *arguments)
   REXXOBJECT  args = ((REXXOBJECT *) arguments)[3];   // REXX parameters  (.....or.....)
   REXXOBJECT *pTargetResult = ((REXXOBJECT **) arguments)[4]; // result object
   VARIANT    **vResult = ((VARIANT***) arguments)[4]; // result variant
-  ConditionData *condData = ((ConditionData**) arguments)[5]; // condition info
+  RexxConditionData *condData = ((RexxConditionData**) arguments)[5]; // condition info
   bool       fEndThread = (((int*)arguments)[6] != 0);// end this thread?
   bool       fGetVariables = (((int*)arguments)[7] != 0); // get variables from immediate code?
 
@@ -1098,7 +1098,7 @@ void __stdcall runMethod(void *arguments)
     //if ( hResult != S_OK) _asm int 3
   }
 #endif
-    memset((void*) condData,0,sizeof(ConditionData));
+    memset((void*) condData,0,sizeof(RexxConditionData));
 
     // thread dependend registration of the engine
     registerEngineForCallback(pEngine);

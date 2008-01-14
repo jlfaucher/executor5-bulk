@@ -68,7 +68,7 @@ InterpreterInstance::InterpreterInstance()
 }
 
 
-void InterpreterInstanceObject::live(size_t liveMark)
+void InterpreterInstance::live(size_t liveMark)
 /******************************************************************************/
 /* Function:  Normal garbage collection live marking                          */
 /******************************************************************************/
@@ -80,7 +80,7 @@ void InterpreterInstanceObject::live(size_t liveMark)
 }
 
 
-void InterpreterInstanceObject::liveGeneral(int reason)
+void InterpreterInstance::liveGeneral(int reason)
 /******************************************************************************/
 /* Function:  Generalized object marking                                      */
 /******************************************************************************/

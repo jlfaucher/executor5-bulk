@@ -41,18 +41,6 @@
 
 #include "rexx.h"
 #include "RexxNativeAPI.h"
-
-/************ DEFINED IN WINMAIN.C *****************/
-typedef struct _ConditionData {
-  int    code;
-  int    rc;
-  RXSTRING message;
-  RXSTRING errortext;
-  size_t position;
-  RXSTRING program;
-} ConditionData;
-/************ DEFINED IN WINMAIN.C *****************/
-
 #include "orxscrpt.hpp"
 #include "OrxScrptError.hpp"
 class OrxScript;

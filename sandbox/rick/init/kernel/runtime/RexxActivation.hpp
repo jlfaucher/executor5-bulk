@@ -255,6 +255,7 @@ RexxObject * activation_find  (void);
    RexxObject      * internalCall(RexxInstruction *, size_t, RexxExpressionStack *, ProtectedObject &);
    RexxObject      * internalCallTrap(RexxInstruction *, RexxDirectory *, ProtectedObject &);
    bool              callMacroSpaceFunction(RexxString *, RexxObject **, size_t, RexxString *, int, ProtectedObject &);
+   RexxMethod      * getMacroCode(RexxString *macroName);
    bool              callRegisteredExternalFunction(RexxString *, RexxObject **, size_t, RexxString *, ProtectedObject &);
    RexxObject      * command(RexxString *, RexxString *);
    int64_t           getElapsed();

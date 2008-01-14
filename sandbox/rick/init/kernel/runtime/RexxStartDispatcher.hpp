@@ -53,11 +53,11 @@ public:
 
     size_t     argcount;                 /* Number of args in arglist         */
     PCONSTRXSTRING arglist;              /* Array of args                     */
-    const char *programname;             /* REXX program to run               */
+    const char *programName;             /* REXX program to run               */
     PRXSTRING  instore;                  /* Instore array                     */
     const char *envname;                 /* Initial cmd environment           */
     int        calltype;                 /* How the program is called         */
-    short *    retcode;                  /* Integer form of result            */
+    short      retcode;                  /* Integer form of result            */
     PRXSTRING  result;                   /* Result returned from program      */
 };
 

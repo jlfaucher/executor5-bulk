@@ -44,13 +44,14 @@
 
 class ConditionDispatcher : public ActivityDispatcher
 {
-    inline CreateMethodDispatcher(PRXSYSEXIT e, const char *env, ConditionData *cd) : ActivityDispatcher(e, env) { translatedCondition = cd; }
-    inline ~CreateMethodDispatcher() { ; }
+public:
+    inline ConditionDispatcher(PRXSYSEXIT e, const char *env, RexxConditionData *cd) : ActivityDispatcher(e, env) { translatedCondition = cd; }
+    inline ~ConditionDispatcher() { ; }
 
     virtual void handleError(RexxDirectory *);
 
 protected:
-    ConditionData *translatedCondition;  // pointer to returned condition data
+    RexxConditionData *translatedCondition;  // pointer to returned condition data
 
 };
 
@@ -59,41 +60,31 @@ protected:
 class CreateMethodDispatcher : public ConditionDispatcher
 {
 public:
-    inline CreateMethodDispatcher(ConditionData *cd) : ConditionDispatcher(NULL, NULL, cd) { ; }
+    inline CreateMethodDispatcher(RexxConditionData *cd) : ConditionDispatcher(NULL, NULL, cd) { ; }
     inline ~CreateMethodDispatcher() { ; }
 
     virtual void run();
 
     CONSTRXSTRING programBuffer;   // the source buffer to translate from
     REXXOBJECT    translatedMethod;  // the method object returned
-    const char   *saveDirectory;     // environment directory save method in
+    const char   *contextName;       // environment directory save method in
 };
 
 
-class LoadMethodDispatcher : public ActivityDispatcher
+class RunMethodDispatcher : public ConditionDispatcher
 {
 public:
-    inline LoadMethodDispatcher() : ActivityDispatcher(NULL, NULL) { ; }
-    inline ~LoadMethodDispatcher() { ; }
+    inline RunMethodDispatcher(PRXSYSEXIT e, RexxConditionData *cd) : ConditionDispatcher(e, NULL, cd) { ; }
+    inline ~RunMethodDispatcher() { ; }
 
     virtual void run();
 
-    CONSTRXSTRING programBuffer;   // the source buffer to translate from
-    REXXOBJECT    translatedMethod;  // the method object returned
-    const char   *saveDirectory;     // environment directory save method in
-};
-
-
-class StoreMethodDispatcher : public ActivityDispatcher
-{
-public:
-    inline LoadMethodDispatcher() : ActivityDispatcher(NULL, NULL) { ; }
-    inline ~LoadMethodDispatcher() { ; }
-
-    virtual void run();
-
-    RXSTRING programBuffer;          // the source buffer to translate from
-    REXXOBJECT    translatedMethod;  // the method object returned
+    const char *contextName;         // name of the scripting context
+    REXXOBJECT method;               // method to run
+    void *callbackArguments;         // opaque arguments passed to callback handler
+    REXXOBJECT (REXXENTRY *argumentCallback)(void *);   // callback handler for arguments
+    REXXOBJECT securityManager;      // the security manager
+    REXXOBJECT result;               // the call result
 };
 
 

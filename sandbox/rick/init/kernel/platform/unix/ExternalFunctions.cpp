@@ -121,10 +121,7 @@ typedef struct _ENVENTRY {                  /* setlocal/endlocal structure    */
 int putflag = 0;                            /* static or dynamic env memory   */
 
 REXXOBJECT BuildEnvlist(void);
-RexxMethod *SysRestoreProgramBuffer(PRXSTRING, RexxString *);
 void RestoreEnvironment( void * );
-
-APIRET APIENTRY RexxExecuteMacroFunction (const char *, PRXSTRING );
 
 /*********************************************************************/
 /*                                                                   */
@@ -416,31 +413,6 @@ bool SysExternalFunction(
   return false;
 }
 
-
-/******************************************************************************/
-/* Name:       SysGetMacroCode                                                */
-/*                                                                            */
-/* Notes:      Retrieves the RexxMethod from a named macro in macrospace.     */
-/*             Search order is specified as second parameter.                 */
-/******************************************************************************/
-RexxMethod * SysGetMacroCode(
-  RexxString     * MacroName)
-{
-  RXSTRING       MacroImage;
-  RexxMethod   * method = OREF_NULL;
-
-  MacroImage.strptr = NULL;
-
-  /* The ExecMacro func returns a ptr to the shared memory. So we must  */
-  /* call APISTARTUP to be sure that the ptr remains valid.             */
-  APISTARTUP(MACROCHAIN);
-
-  if (RexxExecuteMacroFunction(MacroName->getStringData(), &MacroImage) == 0)
-    method = SysRestoreProgramBuffer(&MacroImage, MacroName);
-
-  APICLEANUP(MACROCHAIN);          /* now we have a copy of the routine */
-  return method;
-}
 
 /*********************************************************************/
 /*                                                                   */

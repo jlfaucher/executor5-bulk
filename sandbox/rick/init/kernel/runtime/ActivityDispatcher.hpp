@@ -56,15 +56,17 @@ public:
 
     virtual void run();
     virtual void handleError(wholenumber_t, RexxDirectory *);
+    virtual void invoke();
 
     inline void setActivation(RexxNativeActivation *a) { activation = a; }
 
-protected;
+    wholenumber_t  rc;                 // error return code
+    const char *defaultEnvironment;    // the default execution environment
+
+protected:
     RexxActivity *activity;            // the activity we're running on
     RexxNativeActivation *activation;  // the native activation we're running under
     PRXSYSEXIT exits;                  // exits we're running with
-    const char *defaultEnvironment;    // the default execution environment
-    wholenumber_t  rc;                 // error return code
     RexxDirectory *conditionData;      // any condition data posted due to an activity error
 };
 

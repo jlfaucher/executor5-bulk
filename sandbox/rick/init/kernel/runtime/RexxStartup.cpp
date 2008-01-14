@@ -55,6 +55,11 @@
 #include "RexxNativeAPI.h"
 #include "StackClass.hpp"
 #include "Interpreter.hpp"
+#include "TranslateDispatcher.hpp"
+#include "RexxStartDispatcher.hpp"
+#include "CreateMethodDispatcher.hpp"
+#include "InterpreterInstance.hpp"
+#include "RexxNativeActivation.hpp"
 
 
 int REXXENTRY RexxTerminate()
@@ -131,7 +136,7 @@ int APIENTRY RexxStart(
   short * retcode,                     /* Integer form of result            */
   PRXSTRING result)                    /* Result returned from program      */
 {
-    if (calltype == RXCOMMAND && argcount == 1 && arglist[0].strptr != NULL && StringUtil::caselessCompare(arglist, "//T") == 0)
+    if (calltype == RXCOMMAND && argcount == 1 && arglist[0].strptr != NULL && StringUtil::caselessCompare(arglist[0].strptr, "//T", arglist[0].strlength) == 0)
     {
         TranslateDispatcher arguments(exits);
         arguments.programName = programname;
@@ -142,7 +147,7 @@ int APIENTRY RexxStart(
         // go run this program
         arguments.invoke();
 
-        return arguments.retcode;          /* return the error code (negated)   */
+        return (int)arguments.rc;      /* return the error code (negated)   */
     }
 
 
@@ -157,16 +162,17 @@ int APIENTRY RexxStart(
                                        /* this is a real execution          */
     arguments.argcount = argcount;
     arguments.arglist = arglist;
-    arguments.programName programname;
+    arguments.programName = programname;
     arguments.instore = instore;
     arguments.calltype = calltype;
-    arguments.retcode = retcode;
+    arguments.retcode = 0;
     arguments.result = result;
 
     // go run this program
     arguments.invoke();
+    *retcode = arguments.retcode;
 
-    return arguments.retcode;          /* return the error code (negated)   */
+    return (int)arguments.rc;          /* return the error code (negated)   */
 }
 
 
@@ -193,7 +199,7 @@ APIRET REXXENTRY RexxTranslateProgram(const char *inFile, const char *outFile, P
     // go run this program
     arguments.invoke();
 
-    return arguments.retcode;          /* return the error code (negated)   */
+    return (APIRET)arguments.rc;       /* return the error code (negated)   */
 }
 
 
@@ -206,7 +212,7 @@ APIRET REXXENTRY RexxTranslateProgram(const char *inFile, const char *outFile, P
 void REXXENTRY RexxCreateScriptContext(const char *contextName)
 {
     // get an instance and the current activity
-    InterpreterInstance *instance = Interpreter::createInterpreterInstance(exits, envname);
+    InterpreterInstance *instance = Interpreter::createInterpreterInstance(NULL, NULL);
     RexxActivity *activity = instance->enterOnCurrentThread();
 
     // now create a directory and hang it off of the local environment.  This
@@ -231,7 +237,7 @@ void REXXENTRY RexxCreateScriptContext(const char *contextName)
 void REXXENTRY RexxDestroyScriptContext(const char *contextName)
 {
     // get an instance and the current activity
-    InterpreterInstance *instance = Interpreter::createInterpreterInstance(exits, envname);
+    InterpreterInstance *instance = Interpreter::createInterpreterInstance(NULL, NULL);
     RexxActivity *activity = instance->enterOnCurrentThread();
 
     // delete the named context from the local environment.
@@ -258,7 +264,7 @@ void REXXENTRY RexxDestroyScriptContext(const char *contextName)
 bool REXXENTRY RexxReleaseScriptReference(const char *contextName, REXXOBJECT obj)
 {
     // get an instance and the current activity
-    InterpreterInstance *instance = Interpreter::createInterpreterInstance(exits, envname);
+    InterpreterInstance *instance = Interpreter::createInterpreterInstance(NULL, NULL);
     RexxActivity *activity = instance->enterOnCurrentThread();
 
     // delete the named context from the local environment.
@@ -267,7 +273,7 @@ bool REXXENTRY RexxReleaseScriptReference(const char *contextName, REXXOBJECT ob
     // the value used in our directory is the string value of the
     // method pointer
     char buffer[32];
-    sprintf("0x%p", obj);
+    sprintf(buffer, "0x%p", obj);
     REXXOBJECT oldObject = locked_objects->remove(new_string(buffer));
 
     activity->exitCurrentThread();
@@ -297,7 +303,7 @@ APIRET REXXENTRY RexxCreateMethod(const char *context, PCONSTRXSTRING sourceData
     // create the dispatcher
     CreateMethodDispatcher arguments(pRexxCondData);
 
-    arguments.saveDirectory = dirname;
+    arguments.contextName = context;
     arguments.programBuffer = *sourceData;
     arguments.translatedMethod = NULL;
 
@@ -306,7 +312,7 @@ APIRET REXXENTRY RexxCreateMethod(const char *context, PCONSTRXSTRING sourceData
     // fill in the return value
     *pmethod = arguments.translatedMethod;
 
-    return arguments.rc;               /* return the error code             */
+    return (APIRET)arguments.rc;    /* return the error code             */
 }
 
 
@@ -337,11 +343,11 @@ APIRET REXXENTRY RexxRunMethod(
   PRXSYSEXIT exit_list,
   REXXOBJECT *presult,
   REXXOBJECT *securityManager,
-  ConditionData *pRexxCondData)        /* returned condition data           */
+  RexxConditionData *pRexxCondData)        /* returned condition data           */
 {
     RunMethodDispatcher arguments(exit_list, pRexxCondData);
 
-    arguments.saveTarget = dirname;
+    arguments.contextName = context;
     arguments.method = method;
     arguments.callbackArguments = callbackArgs;
     arguments.argumentCallback = callbackFunction;
@@ -352,7 +358,7 @@ APIRET REXXENTRY RexxRunMethod(
     // fill in the return value
     *presult = arguments.result;
 
-    return arguments.rc;               /* return the error code             */
+    return (APIRET)arguments.rc;          /* return the error code             */
 }
 
 

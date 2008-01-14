@@ -171,7 +171,7 @@ OrxScript::OrxScript() : ulRefCount(1),
   HANDLE execution;
   LPVOID arguments[4];               // for createCode
   unsigned int dummy;
-  ConditionData cd;
+  RexxConditionData cd;
 #if defined(DEBUGC)
   char   filename[MAX_PATH];
 #endif
@@ -546,7 +546,7 @@ STDMETHODIMP OrxScript::SetScriptState(SCRIPTSTATE state)
   // HANDLE    execution;
   LPVOID    arguments[8];
   REXXOBJECT resultDummy;
-  ConditionData cd;
+  RexxConditionData cd;
 
 #if defined(DEBUGC)+defined(DEBUGZ)
   FPRINTF(logfile,"OrxScript::SetScriptState (state = %s)\n",s[(int) state]);
@@ -1065,7 +1065,7 @@ STDMETHODIMP OrxScript::AddScriptlet(LPCOLESTR  pStrDefaultName,
   HANDLE     execution;
   UINT       dummy;
   PRCB       CodeBlock;
-  ConditionData cd;
+  RexxConditionData cd;
   OrxScriptError *ErrObj;
   bool        ErrObj_Exists;
   REXXOBJECT  pResult = NULL;
@@ -1232,7 +1232,7 @@ STDMETHODIMP OrxScript::ParseProcedureText(
   HANDLE     execution;
   UINT       dummy;
   PRCB       CodeBlock;
-  ConditionData cd;
+  RexxConditionData cd;
   OrxScriptError *ErrObj;
   bool        ErrObj_Exists;
 
@@ -1405,7 +1405,7 @@ STDMETHODIMP OrxScript::ParseScriptText(LPCOLESTR  pStrCode,
   DISPID     lDispID;
   UINT       dummy;
   REXXOBJECT resultDummy;
-  ConditionData cd;
+  RexxConditionData cd;
   int        result;
   int        i;
   LinkedList tempNames;

@@ -53,13 +53,14 @@
 
 class SystemInterpreter
 {
+public:
+    static void live(size_t);
+    static void liveGeneral(int reason);
 
 
 protected:
 
     static HINSTANCE moduleHandle;      // handle to the interpeter DLL
-
-
 };
 
-
+#endif
