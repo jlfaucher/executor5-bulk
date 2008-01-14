@@ -635,12 +635,15 @@ NOTE:   If the user has changed the name of a "special folder" the following lin
     self~assertNotNull(objFolderItem~name)
     self~assertNotNull(objFolderItem~path)
     self~assertTrue(objFolderItem~name~caselessPos('system32') > 0)
+
     objCollection = objFolder~items
     ctr = 0
     do objItem over objCollection
         ctr += 1
     end
     self~assertEquals(ctr,objCollection~count)
+
+    self~assertSame(sysSystemDirectory(),objFolderItem~path)
 
 ::method 'testProgramFiles'
     objShell = .oleObject~new('Shell.Application')
