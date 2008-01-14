@@ -63,15 +63,19 @@
   group = .TestGroup~new(s)
   group~restrictOS("WINDOWS")
 
-  -- This is a test of a sample shipped with the release ooRexx.  We require
-  -- that ooRexx be installed normally.
-  home = value("REXX_HOME", , 'ENVIRONMENT')
-  if home == "" then
-    group~markNoTests("This is a test of a sample, ooRexx must be installed normally with REXX_HOME set")
-
   -- Use an ordered collection to add the tests.
   methodNames = .array~of("test_000_Exists", "test_001_Executes", "test_002_ExpectedCompletion")
   group~addWithCollection(.drives.testGroup, methodNames)
+
+  -- This is a test of a sample shipped with the release ooRexx.  We require
+  -- that ooRexx be installed normally, or that it is possible to locate the
+  -- sample in some other manner.  The TestGroup class has a class method that
+  -- will locate the sample.  It returns .nil if the sample is not locatable
+  -- and the full path name to the sample if it can be located.  This method is
+  -- used here to check that the sample can be found.  If it can not be found,
+  -- we mark this test group as not having any executable tests.
+  if .TestGroup~locateSample("drives.rex") == .nil then
+      group~markNoTests("This is a test of a sample ooRexx program, but the sample can not be located")
 
   if group~isAutomatedTest then return group
 
@@ -86,15 +90,15 @@ return testResult
 ::requires 'ooTest.frm'
 ::requires "FileUtils.cls"
 
-/* class: drives.testGroup - - - - - - - - - - - - - - - - - - -*\
+/* class: drives.testGroup - - - - - - - - - - - - - - - - - - - - - - - - - -*\
   The main purpose of this test group is to execute the sample program to assert
   that the sample: 1.) runs 2.) completes normally.  It is not the purpose to
   prove that SysDriveMap(), etc. are operating correctly.  The proper place for
   that would be in a RexxUtil test group.
 
-  The test group is broken down into 3 tests.  1. ooRexx is installed correctly
-  and the sample program exists.  2. The sample program executes.  3. It
-  completes as expected.
+  The test group is broken down into 3 tests.  1. ooRexx is working and the
+  sample program exists.  2. The sample program executes.  3. It completes as
+  expected.
 
   Note that each of these tests is dependent on the preceding test passing.
   This is *not* the usual case for unit tests, where normally each unit test
@@ -122,17 +126,11 @@ return testResult
   ::method test_000_Exists
     self~class~stop = .true
 
-    fileSearch = value("REXX_HOME", , 'ENVIRONMENT')
-    self~assertTrue(fileSearch~length > 0, "ooRexx must be installed normally with REXX_HOME set")
+    prgPathName = .TestGroup~locateSample("drives.rex")
 
-    -- Look, recursively, for the drives.rex example under the samples directory.
-    fileSearch = fileSearch || '\samples\drives.rex'
-    j = SysFileTree(fileSearch, f., 'FOS')
-    self~assertTrue(j == 0, "SysFileTree must not fail")
-    self~assertTrue(f.0 == 1, "Sample program, drives.rex, must be located")
-
-    prgPathName = f.1
+    self~assertNotSame("", prgrPathName)
     self~assertTrue(.stream~new(prgPathName)~query("EXISTS")~length <> 0, "drives.rex must exist")
+
     self~class~prgPath = prgPathName
     self~class~stop = .false
 

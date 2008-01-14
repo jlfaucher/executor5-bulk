@@ -969,6 +969,61 @@ return a
   End of TestContainer interface implementation.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 
+  /** locateSample()
+   * This is a class method used for tests of the sample programs shipped with
+   * ooRexx.  The sample is searched for in the location(s) for samples programs
+   * in a normal install.  If it is not found, an attempt to find it using the
+   * assumption that the test is being executed from within a build directory.
+   * This second search allows the test suite to be run by a developer from his
+   * build directory without using a regular install.
+   */
+  ::method locateSample class
+    use strict arg name
+
+    sl = .ooRexxUnit.directory.separator
+    retObj = .nil
+
+    -- We have several possiblities here, but if REXX_HOME is set we just assume
+    -- it is set correctly.  Currently, REXX_HOME is only set on Windows.
+
+    home = value("REXX_HOME", , 'ENVIRONMENT')
+    select
+      when home \== "" then do
+        j = SysFileTree(home || sl || 'samples' || sl || name, f., 'FOS')
+        if j == 0, f.0 == 1 then retObj = f.1
+      end
+
+      when self~machineOS == "WINDOWS" then do
+        currentWorkingDirectory = directory()
+
+        newDir = directory(.ooTest.originalWorkingDir)
+        if newDir \== "" then do
+          buildRoot = directory("..\")
+          if SysIsFileDirectory(buildRoot || "\samples") then do
+            -- Okay, we are good (in all probability.)
+            j = SysFileTree(home || '\samples\' || name, f., 'FOS')
+            if j == 0, f.0 == 1 then retObj = f.1
+          end
+        end
+        j = directory(currentWorkingdirectory)
+      end
+
+      when self~machineOS == "LINUX" then do
+        -- Linux is a little more complicated.  Still need to implement this.
+        nop
+      end
+
+      otherwise do
+        -- When the test suite is starting to be run on other OSes this will
+        -- have to be filled in.
+        nop
+      end
+    end -- End select
+
+  return retObj
+  -- End locateSample()
+
+
   -- The fully qualified path name of the file this test group represents.
   ::attribute pathName get
   ::attribute pathName set private

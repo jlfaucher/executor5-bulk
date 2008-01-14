@@ -96,50 +96,15 @@
   -- a regular install.
   --
   -- Since that has shown in the past to let bugs escape, we attempt to work
-  -- around it.
-  --
-  -- 1.) We see if REXX_HOME is in the environment.  If so, fine.
-  --
-  -- 2.) If not we see if we can find the samples directory by assuming we are
-  -- in the Windows build directory.  If we can, we spoof a regular install by
-  -- adding the REXX_HOME directory to the environment.
-  --
-  home = value("REXX_HOME", , 'ENVIRONMENT')
+  -- around it. The TestGroup class has a class method used to locate sample
+  -- programs.  It will return .nil if the sample can not be located by any
+  -- means known to mankind.
 
-  if home == "" then do
-    -- When the ooTest framework is loaded, the orignal working directory is
-    -- saved.  If a developer runs the test suite from a Windows build area,
-    -- that directory is avaiable to us.
-    currentWorkingDirectory = directory()
-
-    newDir = directory(.ooTest.originalWorkingDir)
-    if newDir \== "" then do
-      buildRoot = directory("..\")
-      if SysIsFileDirectory(buildRoot || "\samples") then do
-        -- Okay, we are good (in all probability.)  Make REXX_HOME the build
-        -- root.
-        j = value("REXX_HOME", buildRoot, 'ENVIRONMENT')
-        home = value("REXX_HOME", , 'ENVIRONMENT')
-
-        -- It is conceivable, but not likely, that it is merely a coincidence
-        -- that a samples directory exists.  Maybe it is not the correct samples
-        -- directory.  Take an extra step to ensure we are good.
-        j = SysFileTree(home || '\samples\fileNameDialog_demo.rex', f., 'FOS')
-        if j <> 0 | f.0 <> 1 then do
-          -- Somethings not right, just give up.
-          j = value("REXX_HOME", .nil, 'ENVIRONMENT')
-          home = ""
-        end
-
-      end
-    end
-    j = directory(currentWorkingdirectory)
-  end
-
-  if home == "" then do
-    -- Still no REXX_HOME, so give up and mark this test group as having no
-    -- executable tests.  To do that it is required that a reason be supplied.
-      group~markNoTests("This is a test of a sample, ooRexx must be installed normally with REXX_HOME set")
+  if .TestGroup~locateSample("fileNameDialog_demo.rex") == .nil then do
+    -- The sample program can not be located, so give up and mark this test
+    -- group as having no executable tests.  To do that it is required that a
+    --reason be supplied.
+      group~markNoTests("This is a test of a sample program, but the program can not be located.")
   end
 
 
@@ -218,7 +183,7 @@ return testResult
  */
 ::routine fetchMethodNames
   tests = .array~new
-  tests[1] = 'test_ooRexxInstalled'
+  tests[1] = 'test_exampleExists'
   tests[2] = 'test_exampleStart'
   tests[3] = 'test_mainScreen'
   tests[4] = 'test_firstOption'
@@ -309,19 +274,13 @@ return tests
     self~windowFinder = ""
 
 
-  ::method test_ooRexxInstalled
+  ::method test_exampleExists
     self~class~stop = .true
 
-    home = value("REXX_HOME", , 'ENVIRONMENT')
-    self~assertTrue(home~length > 0, "ooRexx must be installed and REXX_HOME set")
+    prgPathName = .TestGroup~locateSample("fileNameDialog_demo.rex")
 
-    home = home || '\samples\fileNameDialog_demo.rex'
-    j = SysFileTree(home, f., 'FOS')
-    self~assertTrue(j == 0, "SysFileTree must not fail")
-    self~assertTrue(f.0 == 1, "Example program must be located")
-
-    prgPathName = f.1
-    self~assertTrue(.stream~new(prgPathName)~query("EXISTS")~length <> 0, "Example program must exist")
+    self~assertNotSame("", prgrPathName)
+    self~assertTrue(.stream~new(prgPathName)~query("EXISTS")~length <> 0)
     self~class~prgPath = prgPathName
     self~class~stop = .false
 
@@ -464,13 +423,13 @@ return tests
     use arg wf
 
     wnd = wf~getWindow("Open a File")
-    if wnd <> .nil then return~closeFromFNDlg(wf, wnd)
+    if wnd <> .nil then return self~closeFromFNDlg(wf, wnd)
 
     title = "FileNameDialog-Option"
     do i = 2 to 7
       wndTitle = title || i
       wnd = wf~getWindow(wndTitle)
-      if wnd <> .nil then return~closeFromFNDlg(wf, wnd)
+      if wnd <> .nil then return self~closeFromFNDlg(wf, wnd)
     end
 
     -- Yikes, we are stuck.
