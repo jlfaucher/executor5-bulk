@@ -281,7 +281,7 @@ APIRET APIENTRY GrxLabelSetSelectable(const char * Name,
 
     /* Initialize function parameters */
     sscanf(Argv[0].strptr, "%p", &myWidget);
-    flag = (gboolean) atoi(Argv[1].strptr);
+    sscanf(Argv[1].strptr, "%d", &flag);
 
     gtk_label_set_selectable(GTK_LABEL(myWidget), flag);
 

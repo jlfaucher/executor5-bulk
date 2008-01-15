@@ -275,7 +275,7 @@ APIRET APIENTRY GrxButtonUseUnderline(const char * Name,
 
     /* Initialize function parameters */
     sscanf(Argv[0].strptr, "%p", &myWidget);
-    flag = atoi(Argv[1].strptr);
+    sscanf(Argv[1].strptr, "%d", &flag);
 
     gtk_button_set_use_underline(GTK_BUTTON(myWidget), flag);
 
