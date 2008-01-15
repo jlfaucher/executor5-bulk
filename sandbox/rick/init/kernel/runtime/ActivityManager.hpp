@@ -88,10 +88,16 @@ public:
     static void exit(int retcode);
     static void startup();
     static void relinquish(RexxActivity *activity);
+    static RexxActivity *getRootActivity();
 
     static RexxActivity *currentActivity;   // the currently active thread
     static RexxDirectory *localEnvironment; // the .local environment
     static RexxObject *localServer;         // local environment initialization server
+
+    static inline void postTermination()
+    {
+        EVPOST(terminationSem);              /* let anyone who cares know we're done*/
+    }
 
 protected:
     enum
@@ -118,6 +124,7 @@ protected:
     static size_t            interpreterInstances;  // number of times an interpreter has been created.
 
     static SMTX              kernelSemaphore;       // global kernel semaphore lock
+    static SEV               terminationSem;    // used to signal that everything has shutdown
 };
 
 

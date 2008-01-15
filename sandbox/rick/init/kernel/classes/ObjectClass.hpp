@@ -558,6 +558,8 @@ class RexxActivationBase : public RexxInternalObject{
      virtual size_t digits() {return Numerics::DEFAULT_DIGITS;};
      virtual size_t fuzz() {return Numerics::DEFAULT_FUZZ;};
      virtual bool form() {return Numerics::DEFAULT_FORM;};
+     virtual NumericSettings *getNumericSettings() { Numerics::getDefaultSettings(); }
+     virtual RexxActivation *getRexxContext() { return OREF_NULL; }
      virtual void setDigits(size_t) {;};
      virtual void setFuzz(size_t) {;};
      virtual void setForm(bool) {;}
@@ -566,5 +568,6 @@ class RexxActivationBase : public RexxInternalObject{
      virtual void termination(){;};
      virtual bool hasSecurityManager() { return false; }
      virtual bool isForwarded() { return false; }
+     virtual bool isStackBase() { return false; }
 };
 #endif

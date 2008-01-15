@@ -848,6 +848,52 @@ void RexxNativeActivation::setForm(
     senderAct->setForm(_form);          /* just forward the set              */
 }
 
+
+/**
+ * Get the numeric settings for this native activation.  If we're
+ * running in the direct call context from a Rexx activation, then
+ * the settings are those inherited from the Rexx context.  Otherwise,
+ * we just return the default numeric settings.
+ *
+ * @return The current Numeric settings.
+ */
+NumericSettings *RexxNativeActivation::getNumericSettings()
+{
+    if (activation == OREF_NULL)
+    {
+        return Numerics::getDefaultSettings();
+    }
+    else
+    {
+        return activation->getNumericSettings();
+    }
+}
+
+
+/**
+ * Indicate whether this activation represents the base of the call
+ * stack.
+ *
+ * @return true if this is a base activation.
+ */
+bool RexxNativeActivation::isStackBase()
+{
+    return stackBase;
+}
+
+
+/**
+ * Return the Rexx context this operates under.  Depending on the
+ * context, this could be null.
+ *
+ * @return The parent Rexx context.
+ */
+RexxActivation *RexxNativeActivation::getRexxContext()
+{
+    return activation;    // this might be null
+}
+
+
 void RexxNativeActivation::guardOff()
 /******************************************************************************/
 /* Function:  Release a variable pool guard lock                              */

@@ -163,10 +163,14 @@ public:
    void        liveGeneral(int reason);
    void        flatten(RexxEnvelope *);
    void        run();
-   void        push(RexxActivationBase *);
-   void        pop(bool);
-   void        pushNil();
-   void        popNil();
+   void        checkActivationStack();
+   void        updateFrameMarkers();
+   void        pushStackFrame(RexxActivationBase *new_activation);
+   void        createNewActivationStack();
+   void        popStackFrame(bool  reply);
+   void        unwindStackFrame();
+   void        unwindToDepth(size_t depth);
+
    void        exitKernel(RexxActivation *);
    void        enterKernel();
    RexxObject *previous();
@@ -221,7 +225,6 @@ public:
    RexxString *pullInput(RexxActivation *);
    RexxObject *lineOut(RexxString *);
    RexxString *lineIn(RexxActivation *);
-   wholenumber_t messageSend(RexxObject *, RexxString *, size_t, RexxObject **, ProtectedObject &);
    void generateRandomNumberSeed();
    void setupAttachedActivity(InterpreterInstance *interpreter);
 
@@ -231,6 +234,7 @@ public:
    bool isInactive() { return nestedCount == 0; }
    size_t getActivationLevel() { return nestedCount; }
    void restoreActivationLevel(size_t l) { nestedCount = l; }
+   bool isSuspended() { return suspended; }
 
    bool hasSecurityManager();
    bool callSecurityManager(RexxString *name, RexxDirectory *args);
@@ -298,21 +302,34 @@ public:
 
    InterpreterInstance *instance;      // the interpreter we're running under
    RexxActivity *oldActivity;          // pushed nested activity
-   RexxInternalStack  *activations;    /* stack of activations              */
    RexxActivationStack   frameStack;   /* our stack used for activation frames */
    RexxObject         *saveValue;      /* saved result across activity_yield*/
    RexxDirectory      *conditionobj;   /* condition object for killed activi*/
    RexxTable          *requiresTable;  /* Current ::REQUIRES being installed*/
-                                       /* current REXX activation           */
-   RexxActivation     *currentActivation;
-   RexxActivationBase *topActivation;  /* current top activation            */
+
+
+   // the activation frame stack.  This stack is one RexxActivation or
+   // RexxNativeActivation for every level of the call stack.  The activationStackSize
+   // is the current size of the stack (which is expanded, if necessary).  The
+   // activationStackDepth is the current count of frames in the stack.
+   RexxInternalStack  *activations;
+   size_t   activationStackSize;
+   size_t   activationStackDepth;
+
+   // the following two fields represent the current top of the activation stack
+   // and the top Rexx frame in the stack.  Generally, if executing Rexx code,
+   // then currentRexxFrame == topStackFrame.  If we're at the base of the stack
+   // topStackFrame will be the root stack element (a RexxNativeActivation instance)
+   // and the currentRexxFrame will be OREF_NULL.  If we've made a callout from a
+   // Rexx context, then the topStackFrame will be the RexxNativeActivation that
+   // made the callout and the currentRexxFrame will be the predecessor frame.
+   RexxActivation     *currentRexxFrame;
+   RexxActivationBase *topStackFrame;
                                        /* next element in the wait queue    */
    RexxActivity       *nextWaitingActivity;
    RexxString         *currentExit;    /* current executing system exit     */
    RexxObject         *waitingObject;  /* object activity is waiting on     */
    SEV      runsem;                    /* activity run control semaphore    */
-   size_t   size;                      /* size of activation stack          */
-   size_t   depth;                     /* depth of activation stack         */
    thread_id_t threadid;               /* thread id                         */
    NumericSettings *numericSettings;   /* current activation setting values */
 

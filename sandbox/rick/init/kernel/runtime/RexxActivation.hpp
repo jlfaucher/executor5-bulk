@@ -360,7 +360,8 @@ RexxObject * activation_find  (void);
    inline void              setCurrent(RexxInstruction * v) {this->current=v;};
    inline bool              inDebug() { return ((this->settings.flags&trace_debug) != 0) && !this->debug_pause;}
    inline RexxExpressionStack * getStack() {return &this->stack; };
-   inline NumericSettings   * getNumericSettings() {return &(this->settings.numericSettings);};
+   virtual NumericSettings   *getNumericSettings() {return &(this->settings.numericSettings);};
+   virtual RexxActivation *getRexxContext();
    inline void              traceIntermediate(RexxObject * v, int p) { if (this->settings.intermediate_trace) this->traceValue(v, p); };
    inline void              traceVariable(RexxString *n, RexxObject *v)
        { if (this->settings.intermediate_trace) { this->traceTaggedValue(TRACE_PREFIX_VARIABLE, NULL, false, n, v); } };

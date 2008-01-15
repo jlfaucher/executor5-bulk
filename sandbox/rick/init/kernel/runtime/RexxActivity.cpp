@@ -73,7 +73,7 @@
 #include "InterpreterInstance.hpp"
 #include "ActivityDispatcher.hpp"
 
-const size_t ACT_STACK_SIZE = 10;
+const size_t ACT_STACK_SIZE = 20;
 
 extern "C" void activity_thread (RexxActivity *objp);
 
@@ -1116,192 +1116,172 @@ void RexxActivity::run()
   SysThreadYield();                    /* yield the thread                  */
 }
 
-void RexxActivity::push(
-    RexxActivationBase *new_activation)/* activation to add                 */
-/******************************************************************************/
-/* Function:  Push an activation onto the activity stack                      */
-/******************************************************************************/
+
+/**
+ * Check the activation stack to see if we need to expand the size.
+ */
+void RexxActivity::checkActivationStack()
 {
-  RexxInternalStack *newstack;         /* replacement activation stack      */
-
-  if (this->depth == this->size) {     /* reached the end?                  */
-                                       /* get a larger stack                */
-    newstack = new_internalstack(this->size*2);
-    for (size_t i = this->size; i != 0; i--)  /* loop through the old stack        */
-                                       /* copying onto the new stack        */
-      newstack->push(this->activations->peek(i-1));
-    this->activations = newstack;      /* replace the old stack             */
-    this->size *= 2;                   /* size is twice as big              */
-  }
-
-                                       /* add to the stack                  */
-  this->activations->push((RexxObject *)new_activation);
-  this->topActivation = new_activation;/* set this as the top one           */
-                                       /* new REXX activation?              */
-  if (isOfClass(Activation, new_activation)) {
-                                       /* this is the top REXX one too      */
-    this->currentActivation = (RexxActivation *)new_activation;
-                                       /* get the activation settings       */
-    this->numericSettings = ((RexxActivation *)new_activation)->getNumericSettings();
-    if (ActivityManager::currentActivity == this)       /* this the active activity?         */
+    // no room for a new stack frame?  need to expand the stack
+    if (this->activationStackDepth == this->activationStackSize)
     {
-                                       /* update the active values          */
+        // allocate a larger stack
+        RexxInternalStack *newstack = new_internalstack(this->activationStackSize + ACT_STACK_SIZE);
+        // now copy all of the entries over to the new frame stack
+        for (size_t i = this->activationStackSize; i != 0; i--)
+        {
+             newstack->push(this->activations->peek(i-1));
+        }
+        // update the frame information
+        this->activations = newstack;
+        this->size += ACT_STACK_SIZE;
+    }
+}
+
+
+/**
+ * Update the top of the stack markers after a push or a pop
+ * operation on the stack frame.
+ */
+void RexxActivity::updateFrameMarkers()
+{
+    // we've popped off a legit entry.  Get the new top entry and adjust
+    // the markers appropriately
+    topStackFrame = (RexxActivationBase *)activations->getTop();
+    // the new activation is the new top and there may or may not be
+    // a rexx context to deal with
+    currentRexxActivation = topStackFrame->getRexxContext(); ;
+
+    // update the numeric settings
+    numericSettings = topStackFrame->getNumericSettings();
+    // this should be tree, but make sure we don't clobber the global settings accidentally
+    if (ActivityManager::currentActivity == this)
+    {
         Numerics::setCurrentSettings(this->numericSettings);
     }
-  }
-  this->depth++;                       /* bump the depth to count this      */
 }
 
-void RexxActivity::pushNil()
-/******************************************************************************/
-/* Function:  Push an empty activaiton marker on the activity stack           */
-/******************************************************************************/
-{
-  RexxInternalStack *newstack;         /* replacement activation stack      */
 
-  if (this->depth == this->size) {     /* reached the end?                  */
-                                       /* get a larger stack                */
-    newstack = new_internalstack(this->size*2);
-    for (size_t i = this->size; i != 0; i--)  /* loop through the old stack        */
+/**
+ * Push a Rexx code activation on to the stack frame.
+ *
+ * @param new_activation
+ *               The new activation to add.
+ */
+void RexxActivity::pushStackFrame(RexxActivationBase *new_activation)
+{
+    checkActivationStack();         // make sure the stack is not filled
+    // push on to the stack and bump the depth
+    activations->push((RexxObject *)new_activation);
+    activationStackDepth++;
+    // update the frame information.
+    updateFrameMarkers();
+}
+
+
+/**
+ * Create a new set of activation stack frames on this activity.
+ * The new frame will have a RexxNativeActivation that's marked
+ * as a stack base frame.  Additional call frames are pushed on
+ * top of that activation.  Any operations that unwind the
+ * stack frames will stop when they hit the activation stack
+ * base.
+ */
+void RexxActivity::createNewActivationStack()
+{
+    // make sure we have a new stack
+    checkActivationStack();
+    // This is a root activation that will allow API functions to be called
+    // on this thread without having an active bit of ooRexx code first.
+    RexxNativeActivation *new_activation = new RexxNativeActivation(this);
+    new_activation->setStackBase();
+    // create a new root element on the stack and bump the depth indicator
+    activations->push(new_activation);
+    stackFrameDepth++;
+    // update the frame information.
+    updateFrameMarkers();
+}
+
+
+/**
+ * Pop the top activation from the frame stack.
+ *
+ * @param reply  Indicates we're popping the frame for a reply operation.  In that
+ *               case, we can't return the frame to the activation cache.
+ */
+void RexxActivity::popStackFrame(bool  reply)
+{
+    // pop off the top elements and reduce the depth
+    RexxActivationBase *poppedActivation = (RexxActivationBase *)activations->fastPop();
+    activationStackDepth--;
+
+    // did we just pop off the last element of a stack frame?  This should not happen, so
+    // push it back on to the stack
+    if (poppedActivation->isStackBase())
     {
-                                       /* copying onto the new stack        */
-        newstack->push(this->activations->peek((long)(i-1)));
+        activations->push(poppedActivation)
+        activationStackDepth++;
     }
-    this->activations = newstack;      /* replace the old stack             */
-    this->size *= 2;                   /* size is twice as big              */
-  }
-                                       /* add to the stack                  */
-  this->activations->push(TheNilObject);
-                                       /* clear out the cached values       */
-  this->topActivation = (RexxActivationBase *)TheNilObject;
-                                       /* both of them                      */
-  this->currentActivation = (RexxActivation *)TheNilObject;
-                                       /* use the default settings          */
-  this->numericSettings = Numerics::getDefaultSettings();
-  this->depth++;                       /* bump the depth to count this      */
-}
+    else
+    {
+        // update the frame information.
+        updateFrameMarkers();
 
-
-void RexxActivity::pop(
-    bool  reply)                       /* popping for REPLY purposes        */
-/******************************************************************************/
-/* Function:  Remove an activation from the activity stack                    */
-/******************************************************************************/
-{
-  RexxActivationBase *top_activation;  /* removed activation                */
-  RexxActivationBase *old_activation;  /* removed activation                */
-  RexxActivationBase *tempAct = OREF_NULL; /* current loop activation           */
-  RexxInternalStack *activationStack;  /* activation stack                  */
-  size_t i;                            /* loop counter                      */
-
-  if (0 == this->depth)                /* At the very top of stack?         */
-    return;                            /* just return;                      */
-
-  activationStack = this->activations; /* get a local copy                  */
-                                       /* pop it off the stack              */
-  top_activation = (RexxActivationBase *)activationStack->fastPop();
-  this->depth--;                       /* remove the depth                  */
-  if (this->depth == 0) {              /* this the last one?                */
-                                       /* clear out the cached values       */
-    this->topActivation = (RexxActivationBase *)TheNilObject;
-                                       /* both of them                      */
-    this->currentActivation = (RexxActivation *)TheNilObject;
-                                       /* use the default settings          */
-    this->numericSettings = Numerics::getDefaultSettings();
-  }
-  else {                               /* probably have a previous one      */
-                                       /* get the top item                  */
-    old_activation = (RexxActivationBase *)activationStack->getTop();
-                                       /* this is the top one               */
-    this->topActivation = old_activation;
-                                       /* popping a REXX activation?        */
-    if (isOfClass(Activation, top_activation)) {
-                                       /* clear this out                    */
-      old_activation = (RexxActivationBase *)TheNilObject;
-                                       /* spin down the stack               */
-      for (i = 0; tempAct != (RexxActivationBase *)TheNilObject && i < this->depth; i++) {
-                                       /* get the next item                 */
-        tempAct = (RexxActivationBase *)activationStack->peek(i);
-                                       /* find a REXX one?                  */
-        if (isOfClass(Activation, tempAct)) {
-          old_activation = tempAct; /* save this one                     */
-          break;                       /* and exit the loop                 */
+        // if this is not a reply operation and the frame we just removed is
+        // a Rexx activation, we can just cache this.
+        if (!reply && isOfClass(Activation, poppedStackFrame))
+        {
+            /* add this to the cache             */
+            ActivityManager::cacheActivation((RexxActivation *)poppedAtivation);
         }
-      }
-                                       /* set this as current               */
-      this->currentActivation = (RexxActivation *)old_activation;
-                                       /* last activation?                  */
-      if (old_activation == (RexxActivationBase*)TheNilObject)
-                                       /* use the default settings          */
-        this->numericSettings = Numerics::getDefaultSettings();
-      else
-                                       /* get the activation settings       */
-        this->numericSettings = ((RexxActivation *)old_activation)->getNumericSettings();
-      if (ActivityManager::currentActivity == this)     /* this the active activity?         */
-      {
-          Numerics::setCurrentSettings(this->numericSettings);
-      }
-      if (!reply)                      /* not a reply removal?              */
-                                       /* add this to the cache             */
-        ActivityManager::cacheActivation((RexxActivation *)top_activation);
     }
-                                       /* did we pop off .NIL?              */
-    else if (top_activation == (RexxActivationBase *)TheNilObject) {
-      activationStack->push(TheNilObject); /* Yes, force back on.               */
-      this->depth++;                   /* step the depth back up            */
-    }
-  }
 }
 
-void RexxActivity::popNil()
+
+void RexxActivity::unwindStackFrame()
 /******************************************************************************/
 /* Function:  Remove an activation marker from the activity stack             */
 /******************************************************************************/
 {
-  RexxActivationBase *old_activation;  /* removed activation                */
-  RexxActivationBase *tempAct = OREF_NULL; /* current loop activation,      */
-  RexxInternalStack *activationStack;  /* activation stack                  */
-  size_t i;                            /* loop counter                      */
-
-  activationStack = this->activations; /* get a local copy                  */
-  activationStack->fastPop();          /* pop it off the stack              */
-  this->depth--;                       /* remove the depth                  */
-  if (this->depth <= 0) {              /* this the last one?                */
-                                       /* clear out the cached values       */
-    this->topActivation = (RexxActivationBase *)TheNilObject;
-                                       /* both of them                      */
-    this->currentActivation = (RexxActivation *)TheNilObject;
-                                       /* use the default settings          */
-    this->numericSettings = Numerics::getDefaultSettings();
-    this->depth = 0;                   /* make sure this is zero            */
-  }
-  else {                               /* probably have a previous one      */
-                                       /* get the top item                  */
-    old_activation = (RexxActivationBase *)activationStack->getTop();
-                                       /* this is the top one               */
-    this->topActivation = old_activation;
-                                       /* clear this out                    */
-    old_activation = (RexxActivationBase *)TheNilObject;
-                                       /* spin down the stack               */
-    for (i = 0; tempAct != (RexxActivationBase *)TheNilObject && i < this->depth; i++) {
-                                       /* get the next item                 */
-      tempAct = (RexxActivationBase *)activationStack->peek(i);
-                                       /* find a REXX one?                  */
-      if (isOfClass(Activation, tempAct)) {
-        old_activation = tempAct;   /* save this one                     */
-        break;                         /* and exit the loop                 */
-      }
+    // pop activations off until we find the one at the base of the stack.
+    while (activationStackDepth > 0)
+    {
+        // check the top activation.  If it's a stack base item, then
+        // we've reached the unwind point.
+        RexxActivationBase *poppedActivation = activations->fastPop();
+        activationStackDepth--;
+        if (poppedActivation->isStackBase())
+        {
+            // at the very base of the activity, we keep a base item.  If this
+            // is the bottom stack frame here, then push it back on.
+            if (activationStackDepth == 0)
+            {
+                activations->push(poppedActivation);
+                depth++;
+            }
+            break;
+        }
     }
-                                       /* set this as current               */
-    this->currentActivation = (RexxActivation *)old_activation;
-                                       /* last activation?                  */
-    if (old_activation == (RexxActivationBase *)TheNilObject)
-                                       /* use the default settings          */
-        this->numericSettings = Numerics::getDefaultSettings();
-    else
-                                       /* get the activation settings       */
-      this->numericSettings = ((RexxActivation *)old_activation)->getNumericSettings();
-  }
+
+    // update the frame information.
+    updateFrameMarkers();
+}
+
+
+void RexxActivity::unwindToDepth(size_t depth)
+/******************************************************************************/
+/* Function:  Remove an activation marker from the activity stack             */
+/******************************************************************************/
+{
+    // pop elements until we unwind to the target
+    while (stackFrameDepth > depth)
+    {
+        activaitons->fastPop();
+        stackFrameDepth--;
+    }
+
+    // update the frame information.
+    updateFrameMarkers();
 }
 
 
@@ -1327,6 +1307,7 @@ void RexxActivity::setupAttachedActivity(InterpreterInstance *interpreter)
     // This is a root activation that will allow API functions to be called
     // on this thread without having an active bit of ooRexx code first.
     RexxNativeActivation *new_activation = new RexxNativeActivation(this);
+    new_activation->setStackBase();
                                        /* push it on the activity stack     */
     this->push((RexxActivationBase *)new_activation);
 }
@@ -2625,281 +2606,6 @@ void  RexxActivity::terminatePoolActivity()
   EVPOST(this->runsem);                /* let him run so he knows to exi*/
 }
 
-void process_message_arguments(
-  va_list  *arguments,                 /* variable argument list pointer    */
-  const char *interfacedefn,           /* interface definition              */
-  RexxList *argument_list )            /* returned list of arguments        */
-/******************************************************************************/
-/* Function:  Send a message to an object on behalf of an outside agent.      */
-/*            Message arguments and return type are described by the          */
-/*            interface string.                                               */
-/******************************************************************************/
-{
-  size_t   i;                          /* loop counter/array index          */
-  va_list *subArguments;               /* indirect argument descriptor      */
-  const char *subInterface;            /* indirect interface definition     */
-
-  while (*interfacedefn) {             /* process each argument             */
-    switch (*interfacedefn++) {        /* process the next argument         */
-
-      case '*':                        /* indirect reference                */
-                                       /* get the real interface pointer    */
-        subInterface = va_arg(*arguments, const char *);
-                                       /* get the indirect pointer          */
-        subArguments = va_arg(*arguments, va_list *);
-                                       /* go process recursively            */
-        process_message_arguments(subArguments, subInterface, argument_list);
-        break;
-
-      case 'b':                        /* BYTE                              */
-      case 'c':                        /* CHARACTER                         */
-      {
-                                       /* create a string object            */
-        argument_list->addLast(new_string((char) va_arg(*arguments, int)));
-        break;
-      }
-
-
-      case 'i':                        /* int                               */
-                                       /* create an integer object          */
-        argument_list->addLast(new_integer(va_arg(*arguments, int)));
-        break;
-
-      case 's':                        /* short                             */
-                                       /* create an integer object          */
-        argument_list->addLast(new_integer((short) va_arg(*arguments, int)));
-        break;
-
-      case 'd':                        /* double                            */
-      case 'f':                        /* floating point                    */
-                                       /* convert to string form            */
-        argument_list->addLast(new_string((double)va_arg(*arguments, double)));
-        break;
-
-      case 'g':                        /* unsigned number                   */
-                                       /* create an integer object          */
-        argument_list->addLast(new_numberstring((stringsize_t)va_arg(*arguments, size_t)));
-        break;
-
-      case 'h':                        /* unsigned short                    */
-                                       /* create an integer object          */
-        argument_list->addLast(new_integer((unsigned short) va_arg(*arguments, int)));
-        break;
-
-      case 'l':                        /* LONG                              */
-                                       /* create an integer object          */
-        argument_list->addLast(new_integer(va_arg(*arguments, wholenumber_t)));
-        break;
-
-      case 'o':                        /* REXX object reference             */
-                                       /* insert directly into the array    */
-        argument_list->addLast(va_arg(*arguments, RexxObject *));
-        break;
-
-      case 'A':                        /* REXX array of objects             */
-                                       /* get the OREF                      */
-        {
-          RexxArray *tempArray;
-          tempArray = va_arg(*arguments, RexxArray *);
-                                       /* get the array size                */
-          size_t arraySize = tempArray->size();
-                                       /* for each argument,                */
-          for (i = 1; i <= arraySize; i++) {
-                                       /* copy into the argument list       */
-            argument_list->addLast(tempArray->get(i));
-          }
-        }
-        break;
-
-        case 'r':                        /* RXSTRING                          */
-        {
-                                           /* get the RXSTRING                  */
-            RXSTRING temp = va_arg(*arguments, RXSTRING);
-                                           /* create a string object            */
-            argument_list->addLast(new_string(temp.strptr, temp.strlength));
-            break;
-        }
-
-      case 'n':                        /* pointer to somId                  */
-      case 'p':                        /* POINTER                           */
-      case 't':                        /* Token                             */
-      case 'B':                        /* Byte pointer                      */
-      case 'C':                        /* Character pointer                 */
-      case 'L':                        /* Pointer to LONG                   */
-      case 'V':                        /* VOID *?                           */
-      case 'R':                        /* RXSTRING *                        */
-                                       /* get the pointer                   */
-                                       /* create a pointer object           */
-        argument_list->addLast(new_pointer(va_arg(*arguments, void *)));
-        break;
-
-      case 'z':                        /* ASCII-Z string                    */
-                                       /* create a string object            */
-        argument_list->addLast(new_string(va_arg(*arguments, char *)));
-        break;
-    }
-  }
-}
-
-void process_message_result(
-  RexxObject *value,                   /* returned value                    */
-  void    *return_pointer,             /* pointer to return value location  */
-  char     interfacedefn )             /* interface definition              */
-/******************************************************************************/
-/* Function:  Convert an OREF return value into the requested message return  */
-/*            type.                                                           */
-/******************************************************************************/
-{
-  RexxObject *object_id = (RexxObject*) IntegerZero; /* object SOM id       */
-
-  switch (interfacedefn) {             /* process the return type           */
-
-      case 'b':                        /* BOOLEAN                           */
-      {
-        wholenumber_t temp = 0;
-        value->numberValue(temp, number_digits());
-                                       /* get the number                    */
-        (*((bool *)return_pointer)) = temp == 0 ? false : true;
-        break;
-      }
-      case 'c':                        /* CHARACTER                         */
-                                       /* get the first character           */
-        (*((char *)return_pointer)) = ((RexxString *)value)->getChar(0);
-        break;
-
-      case 'i':                        /* int                               */
-      {
-        wholenumber_t temp = 0;
-        value->numberValue(temp, number_digits());
-                                       /* get the number                    */
-        (*((int *)return_pointer)) = (int)temp;
-        break;
-      }
-
-      case 's':                        /* short                             */
-      {
-        wholenumber_t temp = 0;
-        value->numberValue(temp, number_digits());
-                                       /* get the number                    */
-        (*((short *)return_pointer)) = (short)temp;
-        break;
-      }
-
-      case 'd':                        /* double                            */
-      case 'f':                        /* floating point                    */
-      {
-          double temp = 0.0;
-          value->doubleValue(temp);
-                                         /* get the double                    */
-          (*((double *)return_pointer)) = temp;
-          break;
-      }
-
-      case 'g':                        /* unsigned number                   */
-      {
-          wholenumber_t temp = 0;
-          value->numberValue(temp, number_digits());
-          (*((unsigned long *)return_pointer)) = (unsigned long)temp;
-          break;
-      }
-
-      case 'h':                        /* unsigned short                   */
-      {
-        wholenumber_t temp = 0;
-        value->numberValue(temp, number_digits());
-                                       /* get the number                    */
-        (*((unsigned short *)return_pointer)) = (unsigned short)temp;
-        break;
-      }
-
-      case 'l':                        /* LONG                              */
-      {
-          wholenumber_t temp = 0;
-          value->numberValue(temp, number_digits());
-          (*((long *)return_pointer)) = (long)temp;
-          break;
-      }
-
-      case 'o':                        /* REXX object reference             */
-                                       /* copy the value directly           */
-        (*((RexxObject **)return_pointer)) = value;
-        break;
-
-      case 'n':                        /* pointer to somId                  */
-      case 'p':                        /* POINTER                           */
-      case 't':                        /* Token                             */
-      case 'B':                        /* Byte pointer                      */
-      case 'C':                        /* Character pointer                 */
-      case 'L':                        /* Pointer to LONG                   */
-      case 'V':                        /* VOID *?                           */
-      case 'R':                        /* RXSTRING *                        */
-                                       /* get the pointer value             */
-          (*((void **)return_pointer)) = (void *)((RexxPointer *)object_id)->pointer();
-        break;
-
-      case 'v':                        /* nothing returned at all           */
-        break;
-      case 'z':                        /* ASCII-Z string                    */
-                                       /* Force to a string.                */
-        value = value->stringValue();
-        (*((const char **)return_pointer)) = ((RexxString *)value)->getStringData();
-        break;
-  }
-}
-
-wholenumber_t RexxActivity::messageSend(
-    RexxObject      *receiver,         /* target object                     */
-    RexxString      *msgname,          /* name of the message to process    */
-    size_t           count,            /* count of arguments                */
-    RexxObject     **arguments,        /* array of arguments                */
-    ProtectedObject &result )          /* message result                    */
-/******************************************************************************/
-/* Function:    send a message (with message lookup) to an object.  This      */
-/*              method will do any needed activity setup before hand.         */
-/******************************************************************************/
-{
-  wholenumber_t rc;                    /* message return code               */
-  SYSEXCEPTIONBLOCK exreg;             /* system specific exception info    */
-  size_t  startDepth;                  /* starting depth of activation stack*/
-  NestedActivityState saveInfo;        /* saved activity info               */
-
-  rc = 0;                              /* default to a clean return         */
-  result = OREF_NULL;                  /* default to no return value        */
-  this->saveNestedInfo(saveInfo);      /* save critical nesting info        */
-                                       /* make sure we have the stack base  */
-  this->nestedInfo.stackptr = SysGetThreadStackBase(TOTAL_STACK_SIZE);
-  this->generateRandomNumberSeed();    /* get a fresh random seed           */
-                                       /* Push marker onto stack so we know */
-  this->pushNil();                     /* what level we entered.            */
-  startDepth = this->depth;            /* Remember activation stack depth   */
-
-  SysRegisterSignals(&exreg);          /* register our signal handlers      */
-
-  // save the actitivation level in case there's an error unwind for an unhandled
-  // exception;
-  size_t activityLevel = getActivationLevel();
-
-  try
-  {
-                                       /* issue a straight message send     */
-      receiver->messageSend(msgname, count, arguments, result);
-  }
-  catch (ActivityException)
-  {
-      rc = this->error(startDepth);      /* do error cleanup                  */
-  }
-
-  // make sure we get restored to the same base activation level.
-  restoreActivationLevel(activityLevel);
-  // give uninit objects a chance to run
-  memoryObject.runUninits();
-  this->restoreNestedInfo(saveInfo);   /* now restore to previous nesting   */
-  SysDeregisterSignals(&exreg);        /* deregister the signal handlers    */
-  this->popNil();                      /* remove the nil marker             */
-  return rc;                           /* return the error code             */
-}
-
-
 void RexxActivity::run(ActivityDispatcher &target)
 /******************************************************************************/
 /* Function:    send a message (with message lookup) to an object.  This      */
@@ -2910,13 +2616,12 @@ void RexxActivity::run(ActivityDispatcher &target)
   size_t  startDepth;                  /* starting depth of activation stack*/
   NestedActivityState saveInfo;        /* saved activity info               */
 
-  result = OREF_NULL;                  /* default to no return value        */
   this->saveNestedInfo(saveInfo);      /* save critical nesting info        */
                                        /* make sure we have the stack base  */
   this->nestedInfo.stackptr = SysGetThreadStackBase(TOTAL_STACK_SIZE);
   this->generateRandomNumberSeed();    /* get a fresh random seed           */
                                        /* Push marker onto stack so we know */
-  this->pushNil();                     /* what level we entered.            */
+  this->createNewStackFrame();         /* what level we entered.            */
   startDepth = this->depth;            /* Remember activation stack depth   */
 
   SysRegisterSignals(&exreg);          /* register our signal handlers      */
@@ -2935,8 +2640,8 @@ void RexxActivity::run(ActivityDispatcher &target)
   }
   catch (ActivityException)
   {
-      int rc = this->error(startDepth);      /* do error cleanup                  */
-      target->handleError(rc, conditionData);
+      wholenumber_t rc = this->error(startDepth);      /* do error cleanup                  */
+      target.handleError(rc, conditionobj);
   }
 
   // make sure we get restored to the same base activation level.
@@ -2945,7 +2650,9 @@ void RexxActivity::run(ActivityDispatcher &target)
   memoryObject.runUninits();
   this->restoreNestedInfo(saveInfo);   /* now restore to previous nesting   */
   SysDeregisterSignals(&exreg);        /* deregister the signal handlers    */
-  this->popNil();                      /* remove the nil marker             */
+  unwindToDepth(startDepth);
+
+  this->unwindStackFrame();            /* remove the nil marker             */
 }
 
 
@@ -2966,89 +2673,6 @@ void RexxActivity::inheritSettings(RexxActivity *parent)
 
 
 #include "RexxNativeAPI.h"             /* bring in the external definitions */
-
-int REXXENTRY RexxSendMessage (
-  REXXOBJECT  receiver,                /* receiving object                  */
-  const char *msgname,                 /* message to send                   */
-  REXXOBJECT  start_class,             /* lookup starting class             */
-  const char *interfacedefn,           /* argument, return value definition */
-  void *result_pointer,                /* pointer to returned result        */
-  ... )                                /* variable number of arguments      */
-/******************************************************************************/
-/* Function:  Send a message to an object on behalf of an outside agent.      */
-/*            Message arguments and return type are described by the          */
-/*            interface string.                                               */
-/******************************************************************************/
-{
-  RexxActivity *activity;              /* target activity                   */
-  RexxArray  *argument_array;          /* array of arguments                */
-  RexxList   *argument_list;           /* temp list of arguments            */
-  char returnType;                     /* type of return value              */
-  wholenumber_t rc;                    /* message return code               */
-  va_list arguments;                   /* message argument list             */
-  SYSEXCEPTIONBLOCK exreg;             /* system specific exception info    */
-  NestedActivityState saveInfo;        /* saved activity info               */
-  size_t startDepth;
-
-  rc = 0;                              /* default to a clean return         */
-                                       /* Find an activity for this thread  */
-                                       /* (will create one if necessary)    */
-  activity = ActivityManager::getActivity();
-  activity->saveNestedInfo(saveInfo);  /* save the nested stuff             */
-  activity->generateRandomNumberSeed();/* get a fresh random seed           */
-                                       /* Push marker onto stack so we know */
-  activity->pushNil();                 /* what level we entered.            */
-  startDepth = activity->getActivationDepth(); /* Remember activation stack depth   */
-  SysRegisterSignals(&exreg);          /* register our signal handlers      */
-  try
-  {
-      returnType = *interfacedefn++;     /* Get the return type.              */
-                                         /* get the argument list start       */
-      va_start(arguments, result_pointer);
-                                         /* create an argument list           */
-      argument_list  = new_list();
-      ProtectedObject p(argument_list);
-                                         /* go convert the arguments          */
-      process_message_arguments(&arguments, interfacedefn, argument_list);
-                                         /* now convert to an array           */
-      argument_array = argument_list->makeArray();
-      ProtectedObject p1(argument_array);
-      va_end(arguments);                 /* end of argument processing        */
-      ProtectedObject r;
-      if (start_class == NULLOBJECT)     /* no start scope given?             */
-      {
-                                         /* issue a straight message send     */
-          ((RexxObject *)receiver)->messageSend(new_string(msgname)->upper(), argument_array->size(), argument_array->data(), r);
-      }
-      else
-      {
-                                         /* go issue the message with override*/
-          ((RexxObject *)receiver)->messageSend(new_string(msgname)->upper(), argument_array->size(), argument_array->data(), (RexxObject *)start_class, r);
-      }
-      if (r != OREF_NULL) {             /* if we got a result, convert it.   */
-                                         /* convert the return result         */
-        process_message_result((RexxObject *)r, result_pointer, returnType);
-      }
-  }
-  catch (ActivityException)
-  {
-                                       /* do error cleanup                  */
-      rc = activity->error(startDepth);
-  }
-
-  memoryObject.runUninits();           /* be sure to finish UNINIT methods  */
-
-  // TODO This needs to be done more cleanly
-                                       /* restore the nested information    */
-  activity->restoreNestedInfo(saveInfo);
-  SysDeregisterSignals(&exreg);        /* deregister the signal handlers    */
-  activity->popNil();                  /* remove the nil marker             */
-  // cleanup any system resources this activity might own
-  activityObject->terminateActivity();
-                                       /* release our activity usage        */
-  ActivityManager::returnActivity(activity);
-  return (int)rc;                      /* return the error code             */
-}
 
 
 RexxObject *RexxActivity::nativeRelease(

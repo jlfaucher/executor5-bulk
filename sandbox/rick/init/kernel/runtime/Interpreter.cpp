@@ -54,7 +54,6 @@
 // global resource lock
 SMTX Interpreter::resourceLock = 0;
 
-SEV  Interpreter::terminationSem = 0;
 
 RexxList *Interpreter::interpreterInstances = OREF_NULL;
 

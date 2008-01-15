@@ -1609,6 +1609,29 @@ void RexxActivation::setForm(
 }
 
 
+/**
+ * Return the Rexx context this operates under.  Depending on the
+ * context, this could be null.
+ *
+ * @return The parent Rexx context.
+ */
+RexxActivation *RexxNativeActivation::getRexxContext()
+{
+    return this;          // I am my own grampa...I mean Rexx context.
+}
+
+
+/**
+ * Get the numeric settings for the current context.
+ *
+ * @return The new numeric settings.
+ */
+NumericSettings *RexxActivation::getNumericSettings()
+{
+    return &(this->settings.numericSettings);
+}
+
+
 RexxString * RexxActivation::trapState(
              RexxString * condition)   /* condition trapped                 */
 /******************************************************************************/

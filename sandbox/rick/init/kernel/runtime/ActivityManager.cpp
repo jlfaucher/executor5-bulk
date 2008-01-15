@@ -80,6 +80,9 @@ RexxObject *ActivityManager::localServer = OREF_NULL;
 // global lock for the interpreter
 SMTX ActivityManager::kernelSemaphore = 0;
 
+// the termination complete semaphore
+SEV  ActivityManager::terminationSem = 0;
+
 const size_t ACTIVATION_CACHE_SIZE = 5;
 
 
@@ -592,17 +595,21 @@ void ActivityManager::unlockKernel()
 /**
  * Create the global kernel lock for the ActivityManager.
  */
-void ActivityManager::createKernelLock()
+void ActivityManager::createLocks()
 {
     MTXCROPEN(kernelSemaphore, "OBJREXXKERNELSEM");
+    // this needs to be created and set
+    EVCR(terminationSem);
+    EVSET(terminationSem);
 }
 
 /**
  * Create the global kernel lock for the ActivityManager.
  */
-void ActivityManager::closeKernelLock()
+void ActivityManager::closeLocks()
 {
     MTXCL(kernelSemaphore);
+    EVCLOSE(terminationSem);
 }
 
 
@@ -644,7 +651,7 @@ void ActivityManager::returnActivity(RexxActivity *activityObject)
         // and also remove from the global list
         allActivities->removeItem((RexxObject *)activityObject);
         // cleanup any system resources this activity might own
-        activityObject->terminateActivity();
+        activityObject->cleanupActivityResources();
     }
 
     // this activity owned the kernel semaphore before entering here...release it
@@ -680,12 +687,12 @@ void ActivityManager::activityEnded(RexxActivity *activityObject)
         // and also remove from the global list
         allActivities->removeItem((RexxObject *)activityObject);
         // cleanup any system resources this activity might own
-        activityObject->terminateActivity();
+        activityObject->cleanupActivityResources();
                                          /* Are we terminating?               */
-        if (processTerminating && allActivitys->items() == 0)
+        if (processTerminating && allActivities->items() == 0)
         {
             // notify any waiters that we're clear
-            postTerminated();
+            postTermination();
         }
     }
     // END OF CRITICAL SECTION
@@ -712,7 +719,7 @@ RexxActivity *ActivityManager::getRootActivity()
     // create this activity.
     lockKernel();
                                    /* Get a new activity object.        */
-    RexxActivity activityObject = newActivity(NO_THREAD);
+    RexxActivity *activityObject = newActivity(NO_THREAD);
     unlockKernel();                /* release kernel semaphore          */
     // mark this as the root activity for an interpreter instance.  Some operations
     // are only permitted from the root threads.
@@ -856,7 +863,7 @@ void ActivityManager::startup()
     {
         ProtectedObject result;
                                              /* create a new server object        */
-        currentActivity->messageSend(server_class, OREF_NEW, 0, OREF_NULL, result);
+        server_class->messageSend(OREF_NEW, 0, OREF_NULL, result);
         localServer = (RexxObject *)result;
     }
                                          /* now release this activity         */

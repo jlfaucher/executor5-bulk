@@ -72,21 +72,11 @@ public:
     static inline void createLocks()
     {
         MTXCROPEN(resourceLock, "OBJREXXRESSEM");
-        // this needs to be created and set
-        EVCR(terminationSem);
-        EVSET(terminationSem);
     }
 
     static inline void closeLocks()
     {
         MTXCL(resourceLock);
-        EVCLOSE(terminationSem);
-        terminationSem = 0;
-    }
-
-    static inline void signalTermination()
-    {
-        EVPOST(terminationSem);              /* let anyone who cares know we're done*/
     }
 
     static bool terminateInterpreter();
@@ -116,7 +106,6 @@ public:
 
 protected:
     static SMTX   resourceLock;      // use to lock resources accessed outside of kernel global lock
-    static SEV    terminationSem;    // used to signal that everything has shutdown
     static int    initializations;   // indicates whether we're terminated or not
     static bool   timeSliceElapsed;  // indicates we've had a timer interrupt
     static RexxList *instances;      // the set of interpreter instances

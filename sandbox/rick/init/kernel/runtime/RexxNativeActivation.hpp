@@ -46,6 +46,7 @@
 
 #include "RexxActivity.hpp"
 class RexxNativeCode;
+class ActivityDispatcher;
 
 class RexxNativeActivation : public RexxActivationBase {
  public:
@@ -63,6 +64,7 @@ class RexxNativeActivation : public RexxActivationBase {
   void flatten(RexxEnvelope *);
   void prepare(RexxObject *, RexxString *, size_t, RexxObject **);
   void run(RexxObject *, RexxString *, size_t, RexxObject **, ProtectedObject &);
+  void run(ActivityDispatcher &dispatcher);
   RexxObject *saveObject(RexxObject *);
   RexxVariableDictionary *methodVariables();
   bool   isInteger(RexxObject *);
@@ -92,8 +94,10 @@ class RexxNativeActivation : public RexxActivationBase {
   void   raiseCondition(RexxString *condition, RexxString *description, RexxObject *additional, RexxObject *result);
 
   inline void   termination() { this->guardOff();}
-  inline RexxActivation *sender() {return (RexxActivation *)this->activity->sender((RexxActivationBase *)this);}
-  inline RexxActivation *getCurrentActivation() { return activity->getCurrentActivation(); }
+
+  virtual RexxActivation *getRexxContext();
+//inline RexxActivation *sender() {return (RexxActivation *)this->activity->sender((RexxActivationBase *)this);}
+//inline RexxActivation *getCurrentActivation() { return activity->getCurrentActivation(); }
   inline char        getVpavailable()   {return this->vpavailable;}
   inline RexxMethod *getMethod()        {return this->method;}
   inline RexxString *getMessageName()   {return this->msgname;}
@@ -106,6 +110,9 @@ class RexxNativeActivation : public RexxActivationBase {
   inline void        setNextStem(RexxStem *stemVar)     {this->nextstem = stemVar;}
   inline void        setCompoundElement(RexxCompoundElement *element)     {this->compoundelement = element;}
   inline RexxActivity *getActivity() { return activity; }
+  virtual bool isStackBase();
+  virtual RexxActivation *getRexxContext();
+  inline bool makeStackBase() { stackBase = true; }
 
 protected:
 
@@ -130,5 +137,6 @@ protected:
     size_t          argcount;            /* size of the argument list         */
     bool            vpavailable;         /* Variable pool access flag         */
     int             object_scope;        /* reserve/release state of variables*/
+    bool            stackBase;           // this is a stack base marker
 };
 #endif
