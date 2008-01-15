@@ -684,7 +684,7 @@ self~label = label
 return
 
 /*============================================================================*/
-/* Class: Button_FromStock                                                    */
+/* Class: Button_From_Stock                                                   */
 /*============================================================================*/
 
 ::class GtkButton_From_Stock public subclass GtkButton

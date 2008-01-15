@@ -45,16 +45,28 @@
 -- by Andrew Krause
 
 window = .myMainWindow~new('GTK_WINDOW_TOPLEVEL')
-window~set_title('Stock Buttons')
+window~set_title('Check Buttons')
 window~connect_signal("destroy")
 window~set_border_width(10)
-window~set_size_request(250, 100)
 
-button = .MyButton~new('gtk-close')
+check1 = .MyCheckButton~new('I am the main option.')
+check2 = .GtkCheckButton_With_label~new('I rely on the other guy.')
 
-button~connect_signal("clicked")
+-- save information for the callback
+check1~user_data = check2
 
-window~add(button)
+check2~set_sensitive(.false)
+check1~connect_signal("toggled")
+
+close = .MyButton~new('gtk-close')
+close~connect_signal("clicked")
+
+vbox = .GtkVBox~new(.false, 5)
+vbox~pack_start(check1, .false, .true, 0)
+vbox~pack_start(check2, .false, .true, 0)
+vbox~pack_start(close, .false, .true, 0)
+
+window~add(vbox)
 window~show_all()
 
 call gtk_main
@@ -75,5 +87,12 @@ return
 widgetpointer = upper(GrxWidgetGetTopLevel(self~pointer))
 widget = .local['GTK_Database']~at(widgetpointer)
 widget~destroy()
+return
+
+::class MyCheckButton subclass GtkCheckButton_With_Label
+
+::method signal_toggled
+if self~get_active = .true then self~user_data~set_sensitive(.true)
+else self~user_data~set_sensitive(.false)
 return
 
