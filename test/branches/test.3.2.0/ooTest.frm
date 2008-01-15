@@ -986,29 +986,32 @@ return a
     -- We have several possiblities here, but if REXX_HOME is set we just assume
     -- it is set correctly.  Currently, REXX_HOME is only set on Windows.
 
+    currentOS = .ooRexxUnit.OSName
     home = value("REXX_HOME", , 'ENVIRONMENT')
+
     select
       when home \== "" then do
         j = SysFileTree(home || sl || 'samples' || sl || name, f., 'FOS')
         if j == 0, f.0 == 1 then retObj = f.1
       end
 
-      when self~machineOS == "WINDOWS" then do
+      when currentOS == "WINDOWS" then do
         currentWorkingDirectory = directory()
+        buildRoot = self~findBuildRoot(currentOS)
 
-        newDir = directory(.ooTest.originalWorkingDir)
-        if newDir \== "" then do
-          buildRoot = directory("..\")
-          if SysIsFileDirectory(buildRoot || "\samples") then do
+        if buildRoot \== "" then do
+          sampleDir = buildRoot || "\samples\"
+
+          if SysIsFileDirectory(sampleDir) then do
             -- Okay, we are good (in all probability.)
-            j = SysFileTree(home || '\samples\' || name, f., 'FOS')
+            j = SysFileTree(sampleDir || name, f., 'FOS')
             if j == 0, f.0 == 1 then retObj = f.1
           end
         end
         j = directory(currentWorkingdirectory)
       end
 
-      when self~machineOS == "LINUX" then do
+      when currentOS == "LINUX" then do
         -- Linux is a little more complicated.  Still need to implement this.
         nop
       end
@@ -1023,6 +1026,24 @@ return a
   return retObj
   -- End locateSample()
 
+  ::method findBuildRoot class
+    use strict arg os
+
+    buildRoot = ""
+
+    tmp = directory(.ooTest.originalWorkingDir)
+    if tmp \== "" then do
+      select
+        when os == "WINDOWS" then do
+          tmp = directory("..\")
+          if tmp \== "" then buildRoot = directory()
+        end
+        when os == "LINUX" then buildRoot = directory()
+        otherwise nop
+      end
+      -- End select
+    end
+  return buildRoot
 
   -- The fully qualified path name of the file this test group represents.
   ::attribute pathName get
