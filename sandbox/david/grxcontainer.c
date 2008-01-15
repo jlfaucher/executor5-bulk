@@ -348,7 +348,7 @@ APIRET APIENTRY GrxHBoxNew(const char * Name,
     gint spacing;
 
     /* Check for valid arguments */
-    if (GrxCheckArgs(0, Argc, Argv)) {
+    if (GrxCheckArgs(2, Argc, Argv)) {
         return RXFUNC_BADCALL;
     }
 

@@ -1045,6 +1045,40 @@ return
 use strict arg self~text
 return
 
+::method visibility
+use strict arg
+return GrxEntrySetVisibility(self~pointer)
+
+::method get_visibility
+use strict arg
+return self~visibility
+
+::method 'visibility='
+use strict arg flag
+call GrxEntrySetVisibility self~pointer, flag
+return
+
+::method set_visibility
+use strict arg self~visibility
+return
+
+::method invisible_char
+use strict arg 
+return GrxEntrySetInvisibileChar(self~pointer)
+
+::method get_invisible_char
+use strict arg
+return self~invisible_char
+
+::method 'invisible_char='
+use strict arg char
+call GrxEntrySetInvisibleChar self~pointer, char
+return
+
+::method set_invisible_char
+use strict arg self~invisible_char
+return
+
 ::method connect_signal
 use strict arg event
 select

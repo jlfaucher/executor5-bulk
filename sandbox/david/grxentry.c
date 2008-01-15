@@ -375,6 +375,140 @@ APIRET APIENTRY GrxEntrySetWidthChars(const char * Name,
 
 
 /*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxEntryGetVisibility                              */
+/* Description: Get the text visibility flag                                  */
+/* Rexx Args:   Pointer to the container widget                               */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxEntryGetVisibility(const char * Name,
+                                      const size_t Argc, const RXSTRING Argv[],
+                                      const char * Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+    gboolean flag;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(1, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &myWidget);
+
+    if (GTK_IS_WIDGET(GTK_OBJECT(myWidget))) {
+        flag = gtk_entry_get_visibility(GTK_ENTRY(myWidget)); 
+    }
+
+    /* Set up the REXX return code */
+    sprintf(Retstr->strptr, "%d", flag);
+    Retstr->strlength = strlen(Retstr->strptr);
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxEntrySetVisibility                              */
+/* Description: Set the text visibility flag                                  */
+/* Rexx Args:   Pointer to the container widget                               */
+/*              flag                                                          */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxEntrySetVisibility(const char * Name,
+                                      const size_t Argc, const RXSTRING Argv[],
+                                      const char * Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+    gboolean flag;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(2, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &myWidget);
+    sscanf(Argv[1].strptr, "%p", &flag);
+
+    if (GTK_IS_WIDGET(GTK_OBJECT(myWidget))) {
+        gtk_entry_set_visibility(GTK_ENTRY(myWidget), flag); 
+    }
+
+    /* Set up the REXX return code */
+    *(Retstr->strptr) = '0';
+    Retstr->strlength = 1;
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxEntryGetInvisibleChar                           */
+/* Description: Get the text visibility flag                                  */
+/* Rexx Args:   Pointer to the container widget                               */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxEntryGetInvisibleChar(const char * Name,
+                                      const size_t Argc, const RXSTRING Argv[],
+                                      const char * Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+    gunichar ivc;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(1, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &myWidget);
+
+    if (GTK_IS_WIDGET(GTK_OBJECT(myWidget))) {
+        ivc = gtk_entry_get_invisible_char(GTK_ENTRY(myWidget)); 
+    }
+
+    /* Set up the REXX return code */
+    *Retstr->strptr= (char)ivc;
+    Retstr->strlength = 1;
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxEntrySetInvisibleChar                           */
+/* Description: Set the text visibility flag                                  */
+/* Rexx Args:   Pointer to the container widget                               */
+/*              flag                                                          */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxEntrySetInvisibleChar(const char * Name,
+                                      const size_t Argc, const RXSTRING Argv[],
+                                      const char * Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(2, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &myWidget);
+
+    if (GTK_IS_WIDGET(GTK_OBJECT(myWidget))) {
+        gtk_entry_set_invisible_char(GTK_ENTRY(myWidget), (gunichar)*Argv[1].strptr); 
+    }
+
+    /* Set up the REXX return code */
+    *(Retstr->strptr) = '0';
+    Retstr->strlength = 1;
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
 /* Rexx External Function: GrxEntryConnectSignal                              */
 /* Description: Connect a signal function to the Widget                       */
 /* Rexx Args:   Pointer to the widget                                         */
