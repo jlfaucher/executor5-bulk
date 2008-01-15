@@ -217,14 +217,13 @@ return
 use strict arg self~name
 return
 
-::method 'sensitive=' private
+::method 'sensitive='
 -- set widget sensitivity (enable/disable the widget for input)
 use strict arg flag
-if flag <> .false then flag = .true
 call GrxWidgetSetSensitive self~pointer, flag
 return
 
-::method set_sensitive private
+::method set_sensitive
 -- set widget sensitivity (enable/disable the widget for input)
 use strict arg self~sensitive
 return
@@ -316,7 +315,7 @@ return
 ::class GtkBox public subclass GtkContainer
 
 ::method init
-yse strict arg
+raise syntax 93.964 array ('A GtkBox class cannot be instantiated.')
 return
 
 ::method pack_end
@@ -343,6 +342,11 @@ use strict arg mywidget
 self~pack_start(mywidget, .true, .true, 0)
 return
 
+::method connect_signal
+use strict arg event
+self~connect_signal:super(event)
+return
+
 
 /*============================================================================*/
 /* Class: VBox                                                                */
@@ -351,8 +355,13 @@ return
 ::class GtkVBox public subclass GtkBox
 
 ::method init
-if arg() = 0 then self~pointer = GrxVBoxNew()
-else use strict arg self~pointer
+use arg homogeneous, spacing
+self~pointer = GrxVBoxNew(homogeneous, spacing)
+return
+
+::method connect_signal
+use strict arg event
+self~connect_signal:super(event)
 return
 
 
@@ -363,8 +372,13 @@ return
 ::class GtkHBox public subclass GtkBox
 
 ::method init
-if arg() = 0 then self~pointer = GrxHBoxNew()
-else use strict arg self~pointer
+use arg homogeneous, spacing
+self~pointer = GrxHBoxNew(homogeneous, spacing)
+return
+
+::method connect_signal
+use strict arg event
+self~connect_signal:super(event)
 return
 
 
@@ -402,6 +416,11 @@ use strict arg mywidget, resize, shrink
 call GrxPanedPack2 self~pointer, mywidget~pointer, resize, shrink
 return
 
+::method connect_signal
+use strict arg event
+self~connect_signal:super(event)
+return
+
 
 /*============================================================================*/
 /* Class: HPaned                                                              */
@@ -414,6 +433,11 @@ if arg() = 0 then self~pointer = GrxHPanedNew()
 else use strict arg self~pointer
 return
 
+::method connect_signal
+use strict arg event
+self~connect_signal:super(event)
+return
+
 
 /*============================================================================*/
 /* Class: VPaned                                                              */
@@ -424,6 +448,11 @@ return
 ::method init
 if arg() = 0 then self~pointer = GrxVPanedNew()
 else use strict arg self~pointer
+return
+
+::method connect_signal
+use strict arg event
+self~connect_signal:super(event)
 return
 
 
@@ -541,6 +570,11 @@ return
 ::method set_selectable
 -- set the label text
 use strict arg self~selectable
+return
+
+::method connect_signal
+use strict arg event
+self~connect_signal:super(event)
 return
 
 /*============================================================================*/
@@ -665,62 +699,155 @@ return
 
 
 /*============================================================================*/
-/* Class: Checkbutton                                                         */
+/* Class: ToggleButton                                                         */
 /*============================================================================*/
 
-::class GtkCheckbutton public subclass GtkButton
+::class GtkToggleButton public subclass GtkButton
 
 ::method init
-self~pointer = GrxCheckButtonNew()
-   use strict arg self~label = ''
+self~pointer = GrxToggleButtonNew()
+use strict arg self~label = ''
 return
 
-::method state
--- is the button checked?
+::method mode
+-- is the button display option
 use strict arg
-return GrxCheckButtonGetState(self~pointer)
+return GrxToggleButtonGetMode(self~pointer)
 
-::method get_state
--- is the button checked?
+::method get_mode
+-- is the button display option
 use strict arg
-return self~state
+return self~mode
 
-::method 'state='
+::method 'mode='
 -- set the checked state
-use strict arg state
-call GrxCheckButtonSetState self~pointer, state
+use strict arg mode
+call GrxToggleButtonSetMode self~pointer, mode
 return
 
-::method set_state
+::method set_mode
 -- set the checked state
-use strict arg self~state
+use strict arg self~mode
+return
+
+::method active
+-- is the button display option
+use strict arg
+return GrxToggleButtonGetActive(self~pointer)
+
+::method get_active
+-- is the button display option
+use strict arg
+return self~active
+
+::method 'active='
+-- set the checked state
+use strict arg active
+call GrxToggleButtonSetActive self~pointer, mode
+return
+
+::method set_active
+-- set the checked state
+use strict arg self~active
+return
+
+::method inconsistent
+-- is the button display option
+use strict arg
+return GrxToggleButtonGetInconsistent(self~pointer)
+
+::method get_inconsistent
+-- is the button display option
+use strict arg
+return self~inconsistent
+
+::method 'inconsistent='
+-- set the checked state
+use strict arg inconsistent
+call GrxToggleButtonSetInconsistent self~pointer, mode
+return
+
+::method set_inconsistent
+-- set the checked state
+use strict arg self~inconsistent
 return
 
 ::method connect_signal
 use strict arg event
 select
-   when event = 'pressed' then call GrxButtonConnectSignal self~pointer, event
-   when event = 'released' then call GrxButtonConnectSignal self~pointer, event
-   when event = 'clicked' then call GrxButtonConnectSignal self~pointer, event
-   when event = 'enter' then call GrxButtonConnectSignal self~pointer, event
-   when event = 'leave' then call GrxButtonConnectSignal self~pointer, event
+   when event = 'toggled' then call GrxToggleButtonConnectSignal self~pointer, event
    otherwise self~connect_signal:super(event)
    end
 return
 
-::method signal_pressed
+::method signal_toggled
 return
 
-::method signal_released
+/*============================================================================*/
+/* Class: ToggleButton_With_Mnemonic                                          */
+/*============================================================================*/
+
+::class GtkToggleButton_With_Mnemonic public subclass GtkToggleButton
+
+::method init
+self~init:super
+use arg label = ''
+self~use_underline = .true
+self~label = label
 return
 
-::method signal_clicked
+/*============================================================================*/
+/* Class: ToggleButton_With_Label                                             */
+/*============================================================================*/
+
+::class GtkToggleButton_With_Label public subclass GtkToggleButton
+
+::method init
+self~init:super
+use arg label = ''
+self~label = label
 return
 
-::method signal_enter
+
+/*============================================================================*/
+/* Class: Checkbutton                                                         */
+/*============================================================================*/
+
+::class GtkCheckbutton public subclass GtkToggleButton
+
+::method init
+self~pointer = GrxCheckButtonNew()
+use strict arg self~label = ''
 return
 
-::method signal_leave
+::method connect_signal
+use strict arg event
+self~connect_signal:super(event)
+return
+
+/*============================================================================*/
+/* Class: CheckButton_With_Mnemonic                                           */
+/*============================================================================*/
+
+::class GtkCheckButton_With_Mnemonic public subclass GtkCheckButton
+
+::method init
+self~init:super
+use arg label = ''
+self~use_underline = .true
+self~label = label
+return
+
+/*============================================================================*/
+/* Class: CheckButton_With_Label                                              */
+/*============================================================================*/
+
+::class GtkCheckButton_With_Label public subclass GtkCheckButton
+
+::method init
+self~init:super
+use arg label = ''
+self~label = label
 return
 
 
@@ -731,37 +858,61 @@ return
 ::class GtkRadiobutton public subclass GtkCheckbutton
 
 ::method init
-use strict arg group, label = ''
-if label <> '' then self~pointer =GrxRadioButtonNew(group~head, label)
-else self~pointer =GrxRadioButtonNew(group~head)
-group~head = GrxRadioButtonGroup(self~pointer);
+use strict arg group
+self~pointer =GrxRadioButtonNew(group~head)
+return
+
+::method group
+use strict arg
+return GrxRadioButtonGetGroup(self~pointer);
+
+::method get_group
+use strict arg
+return self~group
+
+::method 'group='
+use strict arg group
+call GrxRadioButtonSetGroup self~pointer, group~head
+return
+
+::method set_group
+use strict arg self~group
 return
 
 ::method connect_signal
 use strict arg event
 select
-   when event = 'pressed' then call GrxButtonConnectSignal self~pointer, event
-   when event = 'released' then call GrxButtonConnectSignal self~pointer, event
-   when event = 'clicked' then call GrxButtonConnectSignal self~pointer, event
-   when event = 'enter' then call GrxButtonConnectSignal self~pointer, event
-   when event = 'leave' then call GrxButtonConnectSignal self~pointer, event
+   when event = 'group_changed' then call GrxRadioButtonConnectSignal self~pointer, event
    otherwise self~connect_signal:super(event)
    end
 return
 
-::method signal_pressed
+::method signal_group_changed
 return
 
-::method signal_released
+/*============================================================================*/
+/* Class: RadioButton_With_Mnemonic                                           */
+/*============================================================================*/
+
+::class GtkRadioButton_With_Mnemonic public subclass GtkRadioButton
+
+::method init
+use arg group, label = ''
+self~init:super(group)
+self~use_underline = .true
+self~label = label
 return
 
-::method signal_clicked
-return
+/*============================================================================*/
+/* Class: RadioButton_With_Label                                              */
+/*============================================================================*/
 
-::method signal_enter
-return
+::class GtkRadioButton_With_Label public subclass GtkRadioButton
 
-::method signal_leave
+::method init
+use arg group, label = ''
+self~init:super(group)
+self~label = label
 return
 
 
@@ -790,6 +941,11 @@ return
 ::method set_col_spacings
 use strict arg spacing
 call GrxTableSetColSpacings self~pointer, spacing
+return
+
+::method connect_signal
+use strict arg event
+self~connect_signal:super(event)
 return
 
 
@@ -920,6 +1076,11 @@ use strict arg widget, xpos, ypos
 call GrxFixedMove self~pointer, widget~pointer, xpos, ypos
 return
 
+::method connect_signal
+use strict arg event
+self~connect_signal:super(event)
+return
+
 
 /*============================================================================*/
 /* Class: Expander                                                            */
@@ -977,6 +1138,11 @@ return
 use strict arg self~spacing
 return
 
+::method connect_signal
+use strict arg event
+self~connect_signal:super(event)
+return
+
 
 /*============================================================================*/
 /* Class: Expander_With_Mnemonic                                              */
@@ -1027,6 +1193,11 @@ return
 
 ::method set_snap_edge
 use strict arg self~snap_edge
+return
+
+::method connect_signal
+use strict arg event
+self~connect_signal:super(event)
 return
 
 
@@ -1293,4 +1464,9 @@ return GrxEventBoxGetVisibleWindow(self~pointer)
 ::method get_visible_window
 use strict arg
 return self~visible_window
+
+::method connect_signal
+use strict arg event
+self~connect_signal:super(event)
+return
 

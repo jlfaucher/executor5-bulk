@@ -311,13 +311,19 @@ APIRET APIENTRY GrxVBoxNew(const char * Name,
                            const char * Queuename, PRXSTRING Retstr)
 {
     GtkWidget *myWidget;
+    gboolean homogeneous;
+    gint spacing;
 
     /* Check for valid arguments */
-    if (GrxCheckArgs(0, Argc, Argv)) {
+    if (GrxCheckArgs(2, Argc, Argv)) {
         return RXFUNC_BADCALL;
     }
 
-    myWidget = gtk_vbox_new(FALSE, 0);
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%d", &homogeneous);
+    sscanf(Argv[1].strptr, "%d", &spacing);
+
+    myWidget = gtk_vbox_new(homogeneous, spacing);
 
     /* Set up the REXX return code */
     sprintf(Retstr->strptr, "%p", myWidget);
@@ -338,13 +344,19 @@ APIRET APIENTRY GrxHBoxNew(const char * Name,
                            const char * Queuename, PRXSTRING Retstr)
 {
     GtkWidget *myWidget;
+    gboolean homogeneous;
+    gint spacing;
 
     /* Check for valid arguments */
     if (GrxCheckArgs(0, Argc, Argv)) {
         return RXFUNC_BADCALL;
     }
 
-    myWidget = gtk_hbox_new(FALSE, 0);
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%d", &homogeneous);
+    sscanf(Argv[1].strptr, "%d", &spacing);
+
+    myWidget = gtk_hbox_new(homogeneous, spacing);
 
     /* Set up the REXX return code */
     sprintf(Retstr->strptr, "%p", myWidget);

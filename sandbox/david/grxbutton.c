@@ -288,6 +288,237 @@ APIRET APIENTRY GrxButtonUseUnderline(const char * Name,
 
 
 /*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxToggleButtonNew                                 */
+/* Description: Create a toggle push button.                                  */
+/* Rexx Args:   None                                                          */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxToggleButtonNew(const char * Name,
+                                   const size_t Argc, const RXSTRING Argv[],
+                                   const char * Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(0, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    myWidget = gtk_toggle_button_new();
+	
+    /* Set up the REXX return code */
+    sprintf(Retstr->strptr, "%p", myWidget);
+              Retstr->strlength = strlen(Retstr->strptr);
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxToggleButtonGetMode                             */
+/* Description: Get the display mode of the button                            */
+/* Rexx Args:   Pointer to the widget                                         */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxToggleButtonGetMode(const char * Name,
+                                       const size_t Argc, const RXSTRING Argv[],
+                                       const char * Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+    gboolean mode;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(1, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &myWidget);
+
+    if (GTK_IS_WIDGET(GTK_OBJECT(myWidget))) {
+        mode = gtk_toggle_button_get_mode(GTK_TOGGLE_BUTTON(myWidget));
+    }
+
+    /* Set up the REXX return code */
+    sprintf(Retstr->strptr, "%d", (int)mode);
+    Retstr->strlength = strlen(Retstr->strptr);
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxToggleButtonSetMode                             */
+/* Description: Set the display mode of the button                            */
+/* Rexx Args:   Pointer to the widget                                         */
+/*              New mode                                                      */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxToggleButtonSetMode(const char * Name,
+                                       const size_t Argc, const RXSTRING Argv[],
+                                       const char * Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+    gboolean mode;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(2, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &myWidget);
+    sscanf(Argv[1].strptr, "%d", &mode);
+
+    if (GTK_IS_WIDGET(GTK_OBJECT(myWidget))) {
+        gtk_toggle_button_set_mode(GTK_TOGGLE_BUTTON(myWidget), mode);
+    }
+
+    /* Set up the REXX return code */
+    *(Retstr->strptr) = '0';
+    Retstr->strlength = 1;
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxToggleButtonGetActive                           */
+/* Description: Get the active state of the button                            */
+/* Rexx Args:   Pointer to the widget                                         */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxToggleButtonGetActive(const char * Name,
+                                         const size_t Argc, const RXSTRING Argv[],
+                                         const char * Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+    gboolean state;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(1, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &myWidget);
+
+    if (GTK_IS_WIDGET(GTK_OBJECT(myWidget))) {
+        state = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(myWidget));
+    }
+
+    /* Set up the REXX return code */
+    sprintf(Retstr->strptr, "%d", (int)state);
+    Retstr->strlength = strlen(Retstr->strptr);
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxToggleButtonSetActive                           */
+/* Description: Set the active state of the button                            */
+/* Rexx Args:   Pointer to the widget                                         */
+/*              New state                                                     */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxToggleButtonSetActive(const char * Name,
+                                         const size_t Argc, const RXSTRING Argv[],
+                                         const char * Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+    gboolean state;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(2, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &myWidget);
+    sscanf(Argv[1].strptr, "%d", &state);
+
+    if (GTK_IS_WIDGET(GTK_OBJECT(myWidget))) {
+        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(myWidget), state);
+    }
+
+    /* Set up the REXX return code */
+    *(Retstr->strptr) = '0';
+    Retstr->strlength = 1;
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxToggleButtonGetInconsistent                     */
+/* Description: Get the inconsistent of the button                            */
+/* Rexx Args:   Pointer to the widget                                         */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxToggleButtonGetInconsistent(const char * Name,
+                                               const size_t Argc, const RXSTRING Argv[],
+                                               const char * Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+    gboolean state;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(1, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &myWidget);
+
+    if (GTK_IS_WIDGET(GTK_OBJECT(myWidget))) {
+        state = gtk_toggle_button_get_inconsistent(GTK_TOGGLE_BUTTON(myWidget));
+    }
+
+    /* Set up the REXX return code */
+    sprintf(Retstr->strptr, "%d", (int)state);
+    Retstr->strlength = strlen(Retstr->strptr);
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxToggleButtonSetInconsistent                     */
+/* Description: Set the inconsistent of the button                            */
+/* Rexx Args:   Pointer to the widget                                         */
+/*              New state                                                     */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxToggleButtonSetInconsistent(const char * Name,
+                                               const size_t Argc, const RXSTRING Argv[],
+                                               const char * Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+    gboolean state;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(2, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &myWidget);
+    sscanf(Argv[1].strptr, "%d", &state);
+
+    if (GTK_IS_WIDGET(GTK_OBJECT(myWidget))) {
+        gtk_toggle_button_set_inconsistent(GTK_TOGGLE_BUTTON(myWidget), state);
+    }
+
+    /* Set up the REXX return code */
+    *(Retstr->strptr) = '0';
+    Retstr->strlength = 1;
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
 /* Rexx External Function: GrxCheckButtonNew                                  */
 /* Description: Create a check button.                                        */
 /* Rexx Args:   Label                                                         */
@@ -321,74 +552,6 @@ APIRET APIENTRY GrxCheckButtonNew(const char * Name,
 
 
 /*----------------------------------------------------------------------------*/
-/* Rexx External Function: GrxCheckButtonGetState                             */
-/* Description: Get the checked state of the button                           */
-/* Rexx Args:   Pointer to the widget                                         */
-/*----------------------------------------------------------------------------*/
-
-APIRET APIENTRY GrxCheckButtonGetState(const char * Name,
-                                       const size_t Argc, const RXSTRING Argv[],
-                                       const char * Queuename, PRXSTRING Retstr)
-{
-    GtkWidget *myWidget;
-    gboolean checked = FALSE;
-
-    /* Check for valid arguments */
-    if (GrxCheckArgs(1, Argc, Argv)) {
-        return RXFUNC_BADCALL;
-    }
-
-    /* Initialize function parameters */
-    sscanf(Argv[0].strptr, "%p", &myWidget);
-
-    if (GTK_IS_WIDGET(GTK_OBJECT(myWidget))) {
-        checked = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(myWidget));
-    }
-
-    /* Set up the REXX return code */
-    sprintf(Retstr->strptr, "%d", (int)checked);
-    Retstr->strlength = strlen(Retstr->strptr);
-
-    return RXFUNC_OK;
-}
-
-
-/*----------------------------------------------------------------------------*/
-/* Rexx External Function: GrxCheckButtonSetState                             */
-/* Description: Set the checked state of the button                           */
-/* Rexx Args:   Pointer to the widget                                         */
-/*              New state                                                     */
-/*----------------------------------------------------------------------------*/
-
-APIRET APIENTRY GrxCheckButtonSetState(const char * Name,
-                                       const size_t Argc, const RXSTRING Argv[],
-                                       const char * Queuename, PRXSTRING Retstr)
-{
-    GtkWidget *myWidget;
-    gboolean checked = FALSE;
-
-    /* Check for valid arguments */
-    if (GrxCheckArgs(2, Argc, Argv)) {
-        return RXFUNC_BADCALL;
-    }
-
-    /* Initialize function parameters */
-    sscanf(Argv[0].strptr, "%p", &myWidget);
-    sscanf(Argv[1].strptr, "%d", &checked);
-
-    if (GTK_IS_WIDGET(GTK_OBJECT(myWidget))) {
-        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(myWidget), checked);
-    }
-
-    /* Set up the REXX return code */
-    *(Retstr->strptr) = '0';
-    Retstr->strlength = 1;
-
-    return RXFUNC_OK;
-}
-
-
-/*----------------------------------------------------------------------------*/
 /* Rexx External Function: GrxRadioButtonNew                                  */
 /* Description: Create a radio button.                                        */
 /* Rexx Args:   Group list                                                    */
@@ -403,7 +566,7 @@ APIRET APIENTRY GrxRadioButtonNew(const char * Name,
     GSList *head;
 
     /* Check for valid arguments */
-    if (GrxCheckArgs(2, Argc, Argv)) {
+    if (GrxCheckArgs(1, Argc, Argv)) {
         return RXFUNC_BADCALL;
     }
 
@@ -411,9 +574,6 @@ APIRET APIENTRY GrxRadioButtonNew(const char * Name,
     sscanf(Argv[0].strptr, "%p", &head);
 
     if (Argc == 2 && RXVALIDSTRING(Argv[1])) {
-        myWidget = gtk_radio_button_new_with_label(head, Argv[1].strptr);
-    }
-    else {
         myWidget = gtk_radio_button_new(head);
     }
 
@@ -426,14 +586,14 @@ APIRET APIENTRY GrxRadioButtonNew(const char * Name,
 
 
 /*----------------------------------------------------------------------------*/
-/* Rexx External Function: GrxRadioButtonGroup                                */
+/* Rexx External Function: GrxRadioButtonGetGroup                             */
 /* Description: Get the radio button group.                                   */
 /* Rexx Args:   Pointer to the widget                                         */
 /*----------------------------------------------------------------------------*/
 
-APIRET APIENTRY GrxRadioButtonGroup(const char * Name,
-                                    const size_t Argc, const RXSTRING Argv[],
-                                    const char * Queuename, PRXSTRING Retstr)
+APIRET APIENTRY GrxRadioButtonGetGroup(const char * Name,
+                                       const size_t Argc, const RXSTRING Argv[],
+                                       const char * Queuename, PRXSTRING Retstr)
 {
     GtkWidget *myWidget;
     GSList *head = NULL;
@@ -447,12 +607,46 @@ APIRET APIENTRY GrxRadioButtonGroup(const char * Name,
     sscanf(Argv[0].strptr, "%p", &myWidget);
 
     if (GTK_IS_WIDGET(GTK_OBJECT(myWidget))) {
-        head = gtk_radio_button_group(GTK_RADIO_BUTTON(myWidget));
+        head = gtk_radio_button_get_group(GTK_RADIO_BUTTON(myWidget));
     }
 
     /* Set up the REXX return code */
     sprintf(Retstr->strptr, "%p", head);
     Retstr->strlength = strlen(Retstr->strptr);
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxRadioButtonSetGroup                             */
+/* Description: Get the radio button group.                                   */
+/* Rexx Args:   Pointer to the widget                                         */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxRadioButtonSetGroup(const char * Name,
+                                       const size_t Argc, const RXSTRING Argv[],
+                                       const char * Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+    GSList *head = NULL;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(2, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &myWidget);
+    sscanf(Argv[1].strptr, "%p", &head);
+
+    if (GTK_IS_WIDGET(GTK_OBJECT(myWidget))) {
+        gtk_radio_button_set_group(GTK_RADIO_BUTTON(myWidget), head);
+    }
+
+    /* Set up the REXX return code */
+    *(Retstr->strptr) = '0';
+    Retstr->strlength = 1;
 
     return RXFUNC_OK;
 }
@@ -499,6 +693,90 @@ APIRET APIENTRY GrxButtonConnectSignal(const char * Name,
         else if (strcmp(Argv[1].strptr, "leave") == 0) {
             g_signal_connect(G_OBJECT(myWidget), "leave",
                              G_CALLBACK(signal_func_1), "signal_leave");
+        }
+        else {
+            return RXFUNC_BADCALL;
+        }
+    }
+    else {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Set up the REXX return code */
+    *(Retstr->strptr) = '0';
+    Retstr->strlength = 1;
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxToggleButtonConnectSignal                       */
+/* Description: Connect a signal function to the Widget                       */
+/* Rexx Args:   Pointer to the widget                                         */
+/*              Signal name                                                   */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxToggleButtonConnectSignal(const char * Name,
+                                       const size_t Argc, const RXSTRING Argv[],
+                                       const char * Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(2, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &myWidget);
+
+    if (GTK_IS_WIDGET(GTK_OBJECT(myWidget))) {
+        if (strcmp(Argv[1].strptr, "toggled") == 0) {
+            g_signal_connect(G_OBJECT(myWidget), "toggled",
+                             G_CALLBACK(signal_func_1), "signal_toggled");
+        }
+        else {
+            return RXFUNC_BADCALL;
+        }
+    }
+    else {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Set up the REXX return code */
+    *(Retstr->strptr) = '0';
+    Retstr->strlength = 1;
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxRadioButtonConnectSignal                        */
+/* Description: Connect a signal function to the Widget                       */
+/* Rexx Args:   Pointer to the widget                                         */
+/*              Signal name                                                   */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxRadioButtonConnectSignal(const char * Name,
+                                       const size_t Argc, const RXSTRING Argv[],
+                                       const char * Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(2, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &myWidget);
+
+    if (GTK_IS_WIDGET(GTK_OBJECT(myWidget))) {
+        if (strcmp(Argv[1].strptr, "group_changed") == 0) {
+            g_signal_connect(G_OBJECT(myWidget), "group-changed",
+                             G_CALLBACK(signal_func_1), "signal_group_changed");
         }
         else {
             return RXFUNC_BADCALL;
