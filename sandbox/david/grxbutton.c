@@ -573,9 +573,37 @@ APIRET APIENTRY GrxRadioButtonNew(const char * Name,
     /* Initialize function parameters */
     sscanf(Argv[0].strptr, "%p", &head);
 
-    if (Argc == 2 && RXVALIDSTRING(Argv[1])) {
-        myWidget = gtk_radio_button_new(head);
+    myWidget = gtk_radio_button_new(head);
+
+    /* Set up the REXX return code */
+    sprintf(Retstr->strptr, "%p", myWidget);
+    Retstr->strlength = strlen(Retstr->strptr);
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxRadioButtonNewFromWidget                        */
+/* Description: Create a radio button from another widget.                    */
+/* Rexx Args:   Pointer to the source widget                                  */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxRadioButtonNewFromWidget(const char * Name,
+                                  const size_t Argc, const RXSTRING Argv[],
+                                  const char * Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *srcWidget, *myWidget;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(1, Argc, Argv)) {
+        return RXFUNC_BADCALL;
     }
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &srcWidget);
+
+    myWidget = gtk_radio_button_new_from_widget(GTK_RADIO_BUTTON(srcWidget));
 
     /* Set up the REXX return code */
     sprintf(Retstr->strptr, "%p", myWidget);

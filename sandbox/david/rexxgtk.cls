@@ -859,7 +859,8 @@ return
 
 ::method init
 use strict arg group
-self~pointer =GrxRadioButtonNew(group~head)
+if group = .nil then self~pointer = GrxRadioButtonNew(0);
+else self~pointer = GrxRadioButtonNew(group~head)
 return
 
 ::method group
@@ -872,7 +873,8 @@ return self~group
 
 ::method 'group='
 use strict arg group
-call GrxRadioButtonSetGroup self~pointer, group~head
+if group = .nil then call GrxRadioButtonSetGroup self~pointer, 0
+else call GrxRadioButtonSetGroup self~pointer, group~head
 return
 
 ::method set_group
@@ -912,6 +914,42 @@ return
 ::method init
 use arg group, label = ''
 self~init:super(group)
+self~label = label
+return
+
+/*============================================================================*/
+/* Class: RadioButton_From_Widget                                             */
+/*============================================================================*/
+
+::class GtkRadioButton_From_Widget public subclass GtkRadioButton
+
+::method init
+use arg widget
+self~pointer = GrxRadioButtonNewFromWidget(widget~pointer)
+return
+
+/*============================================================================*/
+/* Class: RadioButton_From_Widget_With_Label                                  */
+/*============================================================================*/
+
+::class GtkRadioButton_From_Widget_With_Label public subclass GtkRadioButton_From_Widget
+
+::method init
+use arg widget, label
+self~init:super(widget)
+self~label = label
+return
+
+/*============================================================================*/
+/* Class: RadioButton_From_Widget_With_Mnemonic                               */
+/*============================================================================*/
+
+::class GtkRadioButton_From_Widget_With_Mnemonic public subclass GtkRadioButton_From_Widget
+
+::method init
+use arg widget, label
+self~init:super(widget)
+self~use_underline = .true
 self~label = label
 return
 

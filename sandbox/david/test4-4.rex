@@ -40,31 +40,25 @@
 /*----------------------------------------------------------------------------*/
 
 
--- Derived from Listing 4-3
+-- Derived from Listing 4-4
 -- Foundations of GTK+ Development
 -- by Andrew Krause
 
 window = .myMainWindow~new('GTK_WINDOW_TOPLEVEL')
-window~set_title('Check Buttons')
+window~set_title('Radio Buttons')
 window~connect_signal("destroy")
 window~set_border_width(10)
 
-check1 = .MyCheckButton~new('I am the main option.')
-check2 = .GtkCheckButton_With_label~new('I rely on the other guy.')
-
--- save information for the callback
-check1~user_data = check2
-
-check2~set_sensitive(.false)
-check1~connect_signal("toggled")
-
-close = .MyButton~new('gtk-close')
-close~connect_signal("clicked")
+radio1 = .GtkRadioButton_With_Label~new(.nil, 'I want to be clicked!')
+radio2 = .GtkRadioButton_From_Widget_With_Label~new(radio1, 'Click me instead!')
+radio3 = .GtkRadioButton_From_Widget_With_Label~new(radio1, 'No! Click me!')
+radio4 = .GtkRadioButton_From_Widget_With_Label~new(radio1, 'No! Click me instead!')
 
 vbox = .GtkVBox~new(.false, 5)
-vbox~pack_start(check1, .false, .true, 0)
-vbox~pack_start(check2, .false, .true, 0)
-vbox~pack_start(close, .false, .true, 0)
+vbox~pack_start_defaults(radio1)
+vbox~pack_start_defaults(radio2)
+vbox~pack_start_defaults(radio3)
+vbox~pack_start_defaults(radio4)
 
 window~add(vbox)
 window~show_all()
@@ -79,20 +73,5 @@ return
 
 ::method signal_destroy
 .local['GTK_Quit'] = .true
-return
-
-::class MyButton subclass GtkButton_From_Stock
-
-::method signal_clicked
-widgetpointer = upper(GrxWidgetGetTopLevel(self~pointer))
-widget = .local['GTK_Database']~at(widgetpointer)
-widget~destroy()
-return
-
-::class MyCheckButton subclass GtkCheckButton_With_Label
-
-::method signal_toggled
-if self~get_active = .true then self~user_data~set_sensitive(.true)
-else self~user_data~set_sensitive(.false)
 return
 
