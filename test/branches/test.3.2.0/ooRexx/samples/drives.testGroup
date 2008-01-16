@@ -69,12 +69,14 @@
 
   -- This is a test of a sample shipped with the release ooRexx.  We require
   -- that ooRexx be installed normally, or that it is possible to locate the
-  -- sample in some other manner.  The TestGroup class has a class method that
-  -- will locate the sample.  It returns .nil if the sample is not locatable
-  -- and the full path name to the sample if it can be located.  This method is
-  -- used here to check that the sample can be found.  If it can not be found,
-  -- we mark this test group as not having any executable tests.
-  if .TestGroup~locateSample("drives.rex") == .nil then
+  -- sample in some other manner.  The framework (in FileUtils.cls) provides a
+  -- public routine that will locate the sample.  The routine returns .nil if
+  -- the sample is not locatable and the full path name to the sample if it can
+  -- be located.  The routine is used here to check that the sample can be
+  -- found.  If it can not be found, we mark this test group as not having any
+  -- executable tests.
+
+  if locateSamplePrg("drives.rex") == .nil then
       group~markNoTests("This is a test of a sample ooRexx program, but the sample can not be located")
 
   if group~isAutomatedTest then return group
@@ -126,9 +128,9 @@ return testResult
   ::method test_000_Exists
     self~class~stop = .true
 
-    prgPathName = .TestGroup~locateSample("drives.rex")
+    prgPathName = locateSamplePrg("drives.rex")
 
-    self~assertNotSame("", prgrPathName)
+    self~assertNotNull(prgPathName)
     self~assertTrue(.stream~new(prgPathName)~query("EXISTS")~length <> 0, "drives.rex must exist")
 
     self~class~prgPath = prgPathName

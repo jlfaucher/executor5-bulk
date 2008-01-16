@@ -96,11 +96,11 @@
   -- a regular install.
   --
   -- Since that has shown in the past to let bugs escape, we attempt to work
-  -- around it. The TestGroup class has a class method used to locate sample
-  -- programs.  It will return .nil if the sample can not be located by any
-  -- means known to mankind.
+  -- around it. The framework provides (in FileUtils.cls) that can be used to
+  -- locate sample programs.  It will return .nil if the sample can not be
+  -- located by any means known to mankind.
 
-  if .TestGroup~locateSample("fileNameDialog_demo.rex") == .nil then do
+  if locateSamplePrg("fileNameDialog_demo.rex") == .nil then do
     -- The sample program can not be located, so give up and mark this test
     -- group as having no executable tests.  To do that it is required that a
     --reason be supplied.
@@ -277,9 +277,9 @@ return tests
   ::method test_exampleExists
     self~class~stop = .true
 
-    prgPathName = .TestGroup~locateSample("fileNameDialog_demo.rex")
+    prgPathName = locateSamplePrg("fileNameDialog_demo.rex")
 
-    self~assertNotSame("", prgrPathName)
+    self~assertNotNull(prgPathName)
     self~assertTrue(.stream~new(prgPathName)~query("EXISTS")~length <> 0)
     self~class~prgPath = prgPathName
     self~class~stop = .false
