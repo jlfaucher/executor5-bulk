@@ -793,9 +793,9 @@ APIRET APIENTRY GrxColorButtonGetColor(const char * Name,
 
     /* Set up the REXX return code */
 #ifdef WIN32
-    sprintf(Retstr->strptr, "#%hX$hX%hX", color.red, color.green, color.blue);
+    sprintf(Retstr->strptr, "#%04X%04X%04", color.red, color.green, color.blue);
 #else
-    snprintf(Retstr->strptr, RXAUTOBUFLEN, "#%hX$hX%hX", color.red, color.green, color.blue);
+    snprintf(Retstr->strptr, RXAUTOBUFLEN, "#%04X%04X%04X", color.red, color.green, color.blue);
 #endif
     Retstr->strlength = strlen(Retstr->strptr);;
 
