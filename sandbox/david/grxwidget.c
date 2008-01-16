@@ -523,6 +523,140 @@ APIRET APIENTRY GrxWidgetSetSensitive(const char * Name,
 
 
 /*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxWidgetGetTopLevel                               */
+/* Description: Get the top level parent window of a widget                   */
+/* Rexx Args:   Pointer to the widget                                         */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxWidgetGetTopLevel(const char * Name,
+                                     const size_t Argc, const RXSTRING Argv[],
+                                     const char * Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+    GtkWidget *parentWidget;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(1, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &myWidget);
+
+    if (GTK_IS_WIDGET(GTK_OBJECT(myWidget))) {
+        parentWidget = gtk_widget_get_toplevel(myWidget);
+    }
+    else {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Set up the REXX return code */
+    sprintf(Retstr->strptr, "%p", parentWidget);
+    Retstr->strlength = strlen(Retstr->strptr);
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxWidgetModifyBG                                  */
+/* Description: Modify the foreground type and color of the widget.           */
+/* Rexx Args:   Pointer to the widget                                         */
+/*              state                                                         */
+/*              color                                                         */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxWidgetModifyBG(const char * Name,
+                                  const size_t Argc, const RXSTRING Argv[],
+                                  const char * Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+    GtkStateType type;
+    GdkColor color;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(3, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &myWidget);
+    if(strcmp(Argv[1].strptr,"GTK_STATE_NORMAL") == 0)
+        type = GTK_STATE_NORMAL;
+    else if(strcmp(Argv[1].strptr,"GTK_STATE_ACTIVE") == 0)
+        type = GTK_STATE_ACTIVE;
+    else if(strcmp(Argv[1].strptr,"GTK_STATE_PRELIGHT") == 0)
+        type = GTK_STATE_PRELIGHT;
+    else if(strcmp(Argv[1].strptr,"GTK_STATE_SELECTED") == 0)
+        type = GTK_STATE_SELECTED;
+    else if(strcmp(Argv[1].strptr,"GTK_STATE_INSENSITIVE") == 0)
+        type = GTK_STATE_INSENSITIVE;
+    else 
+        sscanf(Argv[1].strptr, "%d", &type);
+    gdk_color_parse(Argv[2].strptr, &color);
+
+    if (GTK_IS_WIDGET(GTK_OBJECT(myWidget))) {
+        gtk_widget_modify_bg(myWidget, type, &color);
+    }
+
+    /* Set up the REXX return code */
+    *(Retstr->strptr) = '0';
+    Retstr->strlength = 1;
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxWidgetModifyFG                                  */
+/* Description: Modify the foreground type and color of the widget.           */
+/* Rexx Args:   Pointer to the widget                                         */
+/*              state                                                         */
+/*              color                                                         */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxWidgetModifyFG(const char * Name,
+                                  const size_t Argc, const RXSTRING Argv[],
+                                  const char * Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+    GtkStateType type;
+    GdkColor color;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(3, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &myWidget);
+    if(strcmp(Argv[1].strptr,"GTK_STATE_NORMAL") == 0)
+        type = GTK_STATE_NORMAL;
+    else if(strcmp(Argv[1].strptr,"GTK_STATE_ACTIVE") == 0)
+        type = GTK_STATE_ACTIVE;
+    else if(strcmp(Argv[1].strptr,"GTK_STATE_PRELIGHT") == 0)
+        type = GTK_STATE_PRELIGHT;
+    else if(strcmp(Argv[1].strptr,"GTK_STATE_SELECTED") == 0)
+        type = GTK_STATE_SELECTED;
+    else if(strcmp(Argv[1].strptr,"GTK_STATE_INSENSITIVE") == 0)
+        type = GTK_STATE_INSENSITIVE;
+    else 
+        sscanf(Argv[1].strptr, "%d", &type);
+    gdk_color_parse(Argv[2].strptr, &color);
+
+    if (GTK_IS_WIDGET(GTK_OBJECT(myWidget))) {
+        gtk_widget_modify_fg(myWidget, type, &color);
+    }
+
+    /* Set up the REXX return code */
+    *(Retstr->strptr) = '0';
+    Retstr->strlength = 1;
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
 /* Rexx External Function: GrxWidgetConnectSignal                             */
 /* Description: Connect a signal function to the Widget                       */
 /* Rexx Args:   Pointer to the widget                                         */
@@ -559,42 +693,6 @@ APIRET APIENTRY GrxWidgetConnectSignal(const char * Name,
     /* Set up the REXX return code */
     *(Retstr->strptr) = '0';
     Retstr->strlength = 1;
-
-    return RXFUNC_OK;
-}
-
-
-/*----------------------------------------------------------------------------*/
-/* Rexx External Function: GrxWidgetGetTopLevel                               */
-/* Description: Get the top level parent window of a widget                   */
-/* Rexx Args:   Pointer to the widget                                         */
-/*----------------------------------------------------------------------------*/
-
-APIRET APIENTRY GrxWidgetGetTopLevel(const char * Name,
-                                     const size_t Argc, const RXSTRING Argv[],
-                                     const char * Queuename, PRXSTRING Retstr)
-{
-    GtkWidget *myWidget;
-    GtkWidget *parentWidget;
-
-    /* Check for valid arguments */
-    if (GrxCheckArgs(1, Argc, Argv)) {
-        return RXFUNC_BADCALL;
-    }
-
-    /* Initialize function parameters */
-    sscanf(Argv[0].strptr, "%p", &myWidget);
-
-    if (GTK_IS_WIDGET(GTK_OBJECT(myWidget))) {
-        parentWidget = gtk_widget_get_toplevel(myWidget);
-    }
-    else {
-        return RXFUNC_BADCALL;
-    }
-
-    /* Set up the REXX return code */
-    sprintf(Retstr->strptr, "%p", parentWidget);
-    Retstr->strlength = strlen(Retstr->strptr);
 
     return RXFUNC_OK;
 }

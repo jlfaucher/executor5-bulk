@@ -680,6 +680,133 @@ APIRET APIENTRY GrxRadioButtonSetGroup(const char * Name,
 
 
 /*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxColorButtonNew                                  */
+/* Description: Create a color button.                                        */
+/* Rexx Args:   None                                                          */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxColorButtonNew(const char * Name,
+                                  const size_t Argc, const RXSTRING Argv[],
+                                  const char * Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(0, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    myWidget = gtk_color_button_new();
+
+    /* Set up the REXX return code */
+    sprintf(Retstr->strptr, "%p", myWidget);
+    Retstr->strlength = strlen(Retstr->strptr);
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxColorButtonSetTitle                             */
+/* Description: Create a color button.                                        */
+/* Rexx Args:   Pointer to the widget                                         */
+/*              Title                                                         */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxColorButtonSetTitle(const char * Name,
+                                  const size_t Argc, const RXSTRING Argv[],
+                                  const char * Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(2, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &myWidget);
+
+    gtk_color_button_set_title(GTK_COLOR_BUTTON(myWidget), Argv[1].strptr);
+
+    /* Set up the REXX return code */
+    *(Retstr->strptr) = '0';
+    Retstr->strlength = 1;
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxColorButtonGetColor                             */
+/* Description: Create a color button.                                        */
+/* Rexx Args:   Pointer to the widget                                         */
+/*              Title                                                         */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxColorButtonGetColor(const char * Name,
+                                  const size_t Argc, const RXSTRING Argv[],
+                                  const char * Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+    GdkColor color;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(1, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &myWidget);
+
+    gtk_color_button_get_color(GTK_COLOR_BUTTON(myWidget), &color);
+
+    /* Set up the REXX return code */
+#ifdef WIN32
+    sprintf(Retstr->strptr, "#%hX$hX%hX", color.red, color.green, color.blue);
+#else
+    snprintf(Retstr->strptr, RXAUTOBUFLEN, "#%hX$hX%hX", color.red, color.green, color.blue);
+#endif
+    Retstr->strlength = strlen(Retstr->strptr);;
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxColorButtonSetColor                             */
+/* Description: Set the color of the button.                                  */
+/* Rexx Args:   Pointer to the widget                                         */
+/*              Color                                                         */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxColorButtonSetColor(const char * Name,
+                                  const size_t Argc, const RXSTRING Argv[],
+                                  const char * Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+    GdkColor color;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(2, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &myWidget);
+    gdk_color_parse(Argv[1].strptr, &color);
+
+    gtk_color_button_set_color(GTK_COLOR_BUTTON(myWidget), &color);
+
+    /* Set up the REXX return code */
+    *(Retstr->strptr) = '0';
+    Retstr->strlength = 1;
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
 /* Rexx External Function: GrxButtonConnectSignal                             */
 /* Description: Connect a signal function to the Widget                       */
 /* Rexx Args:   Pointer to the widget                                         */
@@ -810,6 +937,50 @@ APIRET APIENTRY GrxRadioButtonConnectSignal(const char * Name,
         }
     }
     else {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Set up the REXX return code */
+    *(Retstr->strptr) = '0';
+    Retstr->strlength = 1;
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxColorButtonConnectSignal                        */
+/* Description: Connect a signal function to the Widget                       */
+/* Rexx Args:   Pointer to the widget                                         */
+/*              Signal name                                                   */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxColorButtonConnectSignal(const char * Name,
+                                       const size_t Argc, const RXSTRING Argv[],
+                                       const char * Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(2, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &myWidget);
+
+    if (GTK_IS_WIDGET(GTK_OBJECT(myWidget))) {
+        if (strcmp(Argv[1].strptr, "color_set") == 0) {
+            g_signal_connect(G_OBJECT(myWidget), "color-set",
+                             G_CALLBACK(signal_func_1), "signal_color_set");
+        }
+        else {
+            printf("Bad signal type!\n");
+            return RXFUNC_BADCALL;
+        }
+    }
+    else {
+        printf("Not a widget!\n");
         return RXFUNC_BADCALL;
     }
 

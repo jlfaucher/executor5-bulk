@@ -147,8 +147,8 @@ return pointer
 -- set the pointer to the widget
 expose pointer
 use strict arg ptr
-pointer = ptr
-.local['GTK_Database']~put(self, upper(pointer))
+pointer = upper(ptr)
+.local['GTK_Database']~put(self, pointer)
 return
 
 ::method set_size_request
@@ -226,6 +226,16 @@ return
 ::method set_sensitive
 -- set widget sensitivity (enable/disable the widget for input)
 use strict arg self~sensitive
+return
+
+::method modify_fg
+use strict arg state, color
+call GrxWidgetModifyFG self~pointer, state, color
+return
+
+::method modify_bg
+use strict arg state, color
+call GrxWidgetModifyBG self~pointer, state, color
 return
 
 ::method run_method
@@ -951,6 +961,68 @@ use arg widget, label
 self~init:super(widget)
 self~use_underline = .true
 self~label = label
+return
+
+
+/*============================================================================*/
+/* Class: Colorbutton                                                         */
+/*============================================================================*/
+
+::class GtkColorButton public subclass GtkButton
+
+::method init
+use strict arg
+self~pointer = GrxColorButtonNew()
+return
+
+::method 'title='
+use strict arg title
+self~pointer = GrxColorButtonSetTitle(self~pointer, title)
+return
+
+::method set_title
+use strict arg self~title
+return
+
+::method color
+use strict arg
+return GrxColorButtonGetColor(self~pointer)
+
+::method get_color
+use strict arg
+return self~color
+
+::method 'color='
+use strict arg color
+call GrxColorButtonSetColor self~pointer, color
+return
+
+::method set_color
+use strict arg self~color
+return
+
+::method connect_signal
+use strict arg event
+select
+   when event = 'color_set' then call GrxColorButtonConnectSignal self~pointer, event
+   otherwise self~connect_signal:super(event)
+   end
+return
+
+::method signal_color_set
+return
+
+
+/*============================================================================*/
+/* Class: Colorbutton_With_Color                                              */
+/*============================================================================*/
+
+::class GtkColorButton_With_Color public subclass GtkColorButton
+
+::method init
+use strict arg color
+self~init:super()
+self~set_color(color)
 return
 
 
