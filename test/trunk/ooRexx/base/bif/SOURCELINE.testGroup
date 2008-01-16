@@ -132,22 +132,22 @@ return testUnitList
     xre = sourceLine(-1)
 
 ::method 'test004'
-    self~assertSame('subTest01',"::method 'test003'",sourceLine(129))
+    self~assertSame('subTest01',"::method 'test003'",sourceLine(130))
 
 ::method 'test005'
     self~assertSame('subTest01',"        if arr[1]=aTestUnitClass then",sourceLine('137'~d2x))
 
 ::method 'test006'
-    self~assertSame('subTest01',"::method 'test005'",sourceLine(100+36))
+    self~assertSame('subTest01',"::method 'test005'",sourceLine(100+37))
 
 ::method 'test007'
     self~assertSame('subTest01',"    aTestUnitClass=testUnitList~at(testUnitList~first)[1] -- get first testClass",sourceLine(.80E+2))
 
 ::method 'test008'
-    self~assertSame('subTest01',"::method 'test007'",sourceLine(000000000142))
+    self~assertSame('subTest01',"::method 'test007'",sourceLine(000000000143))
 
 ::method 'test009'
-    v127 = 127
+    v127 = 128
     self~assertSame('subTest01',"    xre = sourceLine(novalue)",sourceLine(v127))
 
 ::method 'test_line_one'
@@ -177,7 +177,7 @@ return testUnitList
 
 ::method 'test_last_line'
     lastLine = "/* End of file. Don't remove this marker.  Don't add lines after this line. */"
-    self~assertSame('Text from last line should match sourceline(201)', lastLine, sourceLine(201))
+    self~assertSame('Text from last line should match sourceline(201)', lastLine, sourceLine(202))
 
 ::method 'test_negative_number'
     self~expectSyntax(40.14)
@@ -193,10 +193,10 @@ return testUnitList
 
 ::method 'test_too_large_by_one'
     self~expectSyntax(40.34)
-    src = sourceLine(202)
+    src = sourceLine(203)
 
 ::method "test_sourceline_with_no_args"
     self~assertTrue("sourceline() datatype must be a number", sourceline()~datatype("N"))
-    self~assertSame("sourceline() must return correct count of lines", 201, sourceline())
+    self~assertSame("sourceline() must return correct count of lines", 202, sourceline())
 
 /* End of file. Don't remove this marker.  Don't add lines after this line. */
