@@ -1035,7 +1035,7 @@ return a
     signal on notready
 
     lines = .array~new
-    do i = 1 until lines[i] = "*/"
+    do i = 1 until lines[i]~right(2) = "*/"
       lines[i] = fsObj~linein
     end
     fsObj~close
