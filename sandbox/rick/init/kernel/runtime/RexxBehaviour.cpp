@@ -315,21 +315,13 @@ RexxMethod *RexxBehaviour::methodLookup(
 /* Function:  Perform lowest level method lookup on an object                 */
 /******************************************************************************/
 {
-  RexxMethod * methodObj;              /* returned method object            */
-
                                        /* have a method dictionary?         */
-  if (this->methodDictionary != OREF_NULL) {
-                                       /* try to get the method             */
-    methodObj = (RexxMethod *)this->methodDictionary->stringGet(messageName);
-    if (methodObj == OREF_NULL)        /* not there?                        */
-                                       /* return .nil as the punt value     */
-      methodObj = (RexxMethod *)TheNilObject;
+  if (this->methodDictionary != OREF_NULL)
+  {
+    // just get the object directly.  Returns OREF_NULL if not found        */
+    return (RexxMethod *)this->methodDictionary->stringGet(messageName);
   }
-  else {
-                                       /* no method dictionary              */
-    methodObj = (RexxMethod *)TheNilObject;
-  }
-  return methodObj;                    /* return the method object          */
+  return OREF_NULL;
 }
 
 RexxMethod *RexxBehaviour::getMethod(
@@ -437,41 +429,39 @@ RexxMethod *RexxBehaviour::superMethod(
 /* Function:   Find a method using the given starting scope information       */
 /******************************************************************************/
 {
-  RexxArray  * scopeList;              /* working list of scopes            */
-  RexxArray  * methods;                /* list of matching method names     */
-  RexxMethod * method;                 /* located method object             */
-  size_t       scopes_size;            /* size of scopes list               */
-  size_t       methods_size;           /* size of methods list              */
-  size_t       i;                      /* loop counter                      */
-  size_t       j;                      /* loop counter                      */
-
-                                       /* if we have scopes defined and we  */
-                                       /* have a good start scope           */
-  if (this->scopes != OREF_NULL && startScope != TheNilObject) {
-                                       /* get the scope list for the given  */
-                                       /* starting scope                    */
-    scopeList = (RexxArray *)this->scopes->get(startScope);
-    if (scopeList != OREF_NULL) {      /* have a matching list?             */
-                                       /* get a list of methods             */
-      methods = this->methodDictionary->stringGetAll(messageName);
-      scopes_size = scopeList->size(); /* get the two array sizes           */
-      methods_size = methods->size();
-                                       /* search through the methods list   */
-                                       /* for the first one with a          */
-                                       /* conforming scope                  */
-      for (i = 1; i <= methods_size; i++) {
-                                       /* get the next method               */
-        method = (RexxMethod *)methods->get(i);
-                                       /* now loop through the scopes list  */
-        for (j = 1; j <= scopes_size; j++) {
-                                       /* got a matching scope here?        */
-          if (scopeList->get(j) == method->getScope())
-            return method;             /* return the method                 */
+    /* if we have scopes defined and we  */
+    /* have a good start scope           */
+    if (this->scopes != OREF_NULL && startScope != TheNilObject)
+    {
+        /* get the scope list for the given  */
+        /* starting scope                    */
+        scopeList = (RexxArray *)this->scopes->get(startScope);
+        if (scopeList != OREF_NULL)        /* have a matching list?             */
+        {
+            /* get a list of methods             */
+            RexxArray *methods = this->methodDictionary->stringGetAll(messageName);
+            size_t scopes_size = scopeList->size(); /* get the two array sizes           */
+            size_t methods_size = methods->size();
+            /* search through the methods list   */
+            /* for the first one with a          */
+            /* conforming scope                  */
+            for (size_t i = 1; i <= methods_size; i++)
+            {
+                /* get the next method               */
+                RexxMethod *method = (RexxMethod *)methods->get(i);
+                /* now loop through the scopes list  */
+                for (size_t j = 1; j <= scopes_size; j++)
+                {
+                    /* got a matching scope here?        */
+                    if (scopeList->get(j) == method->getScope())
+                    {
+                        return method;             /* return the method                 */
+                    }
+                }
+            }
         }
-      }
     }
-  }
-  return (RexxMethod *)TheNilObject;   /* nothing found                     */
+    return OREF_NULL;                    /* nothing found                     */
 }
 
 void RexxBehaviour::setMethodDictionaryScope(

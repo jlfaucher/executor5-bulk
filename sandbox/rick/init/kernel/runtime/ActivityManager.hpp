@@ -43,7 +43,6 @@ class RexxObjectTable;
 class RexxStack;
 class RexxCode;
 
-
 class ActivityManager
 {
 public:
@@ -295,28 +294,40 @@ protected:
 };
 
 
+/**
+ * A class that can be used to release kernel exclusive access inside
+ * a block and have the kernel access automatically reobtained
+ * once the UnsafeBlock object goes out of scope.
+ */
+class CalloutBlock
+{
+public:
+    CalloutBlock()
+    {
+        activity = ActivityManager::currentActivity;
+        activity->exitKernel();
+    }
+
+    ~CalloutBlock()
+    {
+        activity->enterKernel();
+    }
+protected:
+    RexxActivity *activity;
+};
+
+
 
 class NativeContextBlock
 {
 public:
-    inline NativeContextBlock()
-    {
-        activity = ActivityManager::getActivity();
-        self = (RexxNativeActivation *)ActivityManager::currentActivity->current();
-    }
-    inline ~NativeContextBlock()
-    {
-        // release the kernel lock
-        ActivityManager::returnActivity(activity);
-    }
+    NativeContextBlock();
+    ~NativeContextBlock();
+    RexxObject *protect(RexxObject *o);
 
-    inline RexxObject *protect(RexxObject *o)
-    {
-        return activity->nativeRelease(o);
-    }
-
-    RexxNativeActivation *self;
-    RexxActivity         *activity;
+    RexxNativeActivation *self;        // the native activation we operate under
+    RexxActivity         *activity;    // our current activity
+    InterpreterInstance  *instance;    // potential interpreter instance
 };
 
 #endif

@@ -75,7 +75,6 @@ class RexxNativeActivation : public RexxActivationBase {
   void  *buffer();
   void  *pointer(RexxObject *);
   RexxObject *dispatch();
-  RexxObject *getReceiver() {return  this->receiver;}
   void   traceBack(RexxList *);
   size_t digits();
   size_t fuzz();
@@ -95,9 +94,6 @@ class RexxNativeActivation : public RexxActivationBase {
 
   inline void   termination() { this->guardOff();}
 
-  virtual RexxActivation *getRexxContext();
-//inline RexxActivation *sender() {return (RexxActivation *)this->activity->sender((RexxActivationBase *)this);}
-//inline RexxActivation *getCurrentActivation() { return activity->getCurrentActivation(); }
   inline char        getVpavailable()   {return this->vpavailable;}
   inline RexxMethod *getMethod()        {return this->method;}
   inline RexxString *getMessageName()   {return this->msgname;}
@@ -112,7 +108,8 @@ class RexxNativeActivation : public RexxActivationBase {
   inline RexxActivity *getActivity() { return activity; }
   virtual bool isStackBase();
   virtual RexxActivation *getRexxContext();
-  inline bool makeStackBase() { stackBase = true; }
+  virtual RexxObject *getReceiver();
+  inline bool setStackBase() { stackBase = true; }
 
 protected:
 

@@ -124,11 +124,10 @@ RexxObject * SysCommand(
   sbrc = 0;                            /* set initial return code             */
 
 /* CRITICAL window here -->>  ABSOLUTELY NO KERNEL CALLS ALLOWED              */
-
-                                       /* get ready to call the function      */
-  activity->exitKernel(activation);
-  rc=RexxCallSubcom(current_address, NULL, &rxstrcmd, &flags, &sbrc, &retstr);
-  activity->enterKernel();             /* now re-enter the kernel           */
+  {
+      CalloutBlock releaser;
+      rc=RexxCallSubcom(current_address, NULL, &rxstrcmd, &flags, &sbrc, &retstr);
+  }
 
 /* END CRITICAL window here -->>  kernel calls now allowed again              */
 

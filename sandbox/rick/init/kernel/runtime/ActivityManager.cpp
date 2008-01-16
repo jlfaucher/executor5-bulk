@@ -869,3 +869,40 @@ void ActivityManager::startup()
                                          /* now release this activity         */
     returnActivity();
 }
+
+
+NativeContextBlock::NativeContextBlock()
+{
+    activity = ActivityManager::getActivity();
+    // if not reentering on an existing thread, we create a new instance
+    // temporarily to service this request.  Many functions will
+    // not make sense called this way.
+    if (activity == OREF_NULL)
+    {
+        // get an instance and the current activity
+        instance = Interpreter::createInterpreterInstance(NULL, NULL);
+        activity = instance->enterOnCurrentThread();
+
+    }
+    self = (RexxNativeActivation *)ActivityManager::currentActivity->getTopStackFrame();
+}
+
+NativeContextBlock::~NativeContextBlock()
+{
+    if (instance != OREF_NULL)
+    {
+        activity->exitCurrentThread();
+        // terminate the instance
+        instance->terminate();
+    }
+    else
+    {
+        // release the kernel lock
+        ActivityManager::returnActivity(activity);
+    }
+}
+
+RexxObject *NativeContextBlock::protect(RexxObject *o)
+{
+    self->saveObject(o);
+}

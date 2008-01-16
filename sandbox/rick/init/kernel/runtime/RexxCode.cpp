@@ -117,7 +117,7 @@ void RexxCode::run(
     activity->push(newacta);
                                        /* run the method and return result  */
     newacta->run(receiver, msgname, argPtr, argcount, OREF_NULL, result);
-    ActivityManager::currentActivity->yield(NULL);    /* yield control now */
+    ActivityManager::currentActivity->yieldControl();    /* yield control now */
 }
 
 

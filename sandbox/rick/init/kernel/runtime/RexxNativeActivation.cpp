@@ -894,6 +894,18 @@ RexxActivation *RexxNativeActivation::getRexxContext()
 }
 
 
+/**
+ * Get the message receiver
+ *
+ * @return The message receiver.  Returns OREF_NULL if this is not
+ *         a message activation.
+ */
+RexxObject *RexxNativeActivation::getReceiver()
+{
+    return receiver;
+}
+
+
 void RexxNativeActivation::guardOff()
 /******************************************************************************/
 /* Function:  Release a variable pool guard lock                              */

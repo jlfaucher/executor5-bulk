@@ -168,10 +168,13 @@ public:
    void        pushStackFrame(RexxActivationBase *new_activation);
    void        createNewActivationStack();
    void        popStackFrame(bool  reply);
+   void        popStackFrame(RexxActivationBase *);
    void        unwindStackFrame();
    void        unwindToDepth(size_t depth);
+   void        unwindToFrame(RexxActivation *frame);
+   void        cleanupStackFrame(RexxActivationBase *poppedStackFrame);
 
-   void        exitKernel(RexxActivation *);
+   void        exitKernel();
    void        enterKernel();
    RexxObject *previous();
    void        waitReserve(RexxObject *);
@@ -186,7 +189,7 @@ public:
    void        relinquish();
    bool        halt(RexxString *);
    bool        setTrace(bool);
-   void        yield(RexxObject *);
+   void        yieldControl();
    void        yield();
    void        releaseAccess();
    void        requestAccess();
@@ -238,14 +241,13 @@ public:
 
    bool hasSecurityManager();
    bool callSecurityManager(RexxString *name, RexxDirectory *args);
-   RexxObject *nativeRelease(RexxObject *result);
    void inheritSettings(RexxActivity *parent);
    void exitCurrentThread();
    void run(ActivityDispatcher &target);
 
-   inline RexxActivationBase *current(){ return this->topActivation;}
-   inline RexxActivation *getCurrentActivation() {return this->currentActivation;}
-   inline size_t getActivationDepth() { return depth; }
+   inline RexxActivation *getCurrentRexxFrame() {return currentRexxFrame;}
+   inline RexxActivationBase *getTopStackFrame() { return topStackFrame; }
+   inline size_t getActivationDepth() { return stackFrameDepth; }
    inline NumericSettings *getNumericSettings () {return this->numericSettings;}
    inline RexxObject *runningRequires(RexxString *program) {return this->requiresTable->stringGet(program);}
    inline void        addRunningRequires(RexxString *program) { this->requiresTable->stringAdd((RexxObject *)program, program);}
@@ -303,7 +305,6 @@ public:
    InterpreterInstance *instance;      // the interpreter we're running under
    RexxActivity *oldActivity;          // pushed nested activity
    RexxActivationStack   frameStack;   /* our stack used for activation frames */
-   RexxObject         *saveValue;      /* saved result across activity_yield*/
    RexxDirectory      *conditionobj;   /* condition object for killed activi*/
    RexxTable          *requiresTable;  /* Current ::REQUIRES being installed*/
 
@@ -314,7 +315,7 @@ public:
    // activationStackDepth is the current count of frames in the stack.
    RexxInternalStack  *activations;
    size_t   activationStackSize;
-   size_t   activationStackDepth;
+   size_t   stackFrameDepth;
 
    // the following two fields represent the current top of the activation stack
    // and the top Rexx frame in the stack.  Generally, if executing Rexx code,

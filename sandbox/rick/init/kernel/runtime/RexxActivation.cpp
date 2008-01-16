@@ -123,7 +123,7 @@ RexxActivation::RexxActivation(RexxActivity* _activity, RexxMethod * _method, Re
     this->settings.intermediate_trace = false;
     this->activation_context = METHODCALL;  // the context is a method call
                                          /* save the sender activation        */
-    this->sender = _activity->getCurrentActivation();
+    this->sender = _activity->getCurrentRexxFrame();
     this->execution_state = ACTIVE;      /* we are now in active execution    */
     this->object_scope = SCOPE_RELEASED; /* scope not reserved yet            */
     /* create a new evaluation stack.  This must be done before a */
@@ -173,7 +173,7 @@ RexxActivation::RexxActivation(RexxActivity *_activity, RexxMethod *_method, Rex
     this->activation_context = context;  /* save the context                  */
     this->settings.intermediate_trace = false;
     /* save the sender activation        */
-    this->sender = _activity->getCurrentActivation();
+    this->sender = _activity->getCurrentRexxFrame();
     this->execution_state = ACTIVE;      /* we are now in active execution    */
     this->object_scope = SCOPE_RELEASED; /* scope not reserved yet            */
     /* create a new evaluation stack.  This must be done before a */
@@ -259,7 +259,6 @@ RexxObject * RexxActivation::run(RexxObject *_receiver, RexxString *msgname, Rex
 /*            interpreter that makes the whole thing run!                     */
 /******************************************************************************/
 {
-    RexxActivationBase*activation;       /* used for unwinding activations    */
     RexxActivity      *oldActivity;      /* old activity                      */
 #ifndef FIXEDTIMERS                      /* currently disabled                */
     size_t             instructionCount; /* instructions without yielding     */
@@ -426,7 +425,7 @@ RexxObject * RexxActivation::run(RexxObject *_receiver, RexxString *msgname, Rex
                     this->sender->mergeTraps(this->condition_queue, this->handler_queue);
                 }
                 resultObj = this->result;  /* save the result                   */
-                this->activity->pop(false);        /* now pop the current activity      */
+                this->activity->popStackFrame(false);   /* now pop the current activity      */
                 /* now go run the uninit stuff       */
                 memoryObject.checkUninitQueue();
             }
@@ -461,20 +460,22 @@ RexxObject * RexxActivation::run(RexxObject *_receiver, RexxString *msgname, Rex
                 /* return our stack frame space back to the old activity. */
                 oldActivity->releaseStackFrame(framePtr);
 
-                this->activity->push(this);        /* push it on to the activity stack  */
-                oldActivity->pop(true);            /* pop existing one off the stack    */
+                this->activity->pushStackFrame(this);/* push it on to the activity stack  */
+                oldActivity->popStackFrame(true);  /* pop existing one off the stack    */
                                                    /* is the scope reserved?            */
                 if (this->object_scope == SCOPE_RESERVED)
                 {
                     /* transfer the reservation          */
                     if (!this->settings.object_variables->transfer(this->activity))
+                    {
                         /* remember the failure              */
                         this->settings.flags |= transfer_failed;
+                    }
                 }
                 /* we're now the top activation      */
-                this->sender = (RexxActivation *)TheNilObject;
+                this->sender = OREF_NULL;
                 this->activity->run();             /* continue running the new activity */
-                oldActivity->yield(OREF_NULL);     /* give other activity a chance to go*/
+                oldActivity->yieldControl();       /* give other activity a chance to go*/
             }
             return resultObj;                    /* return the result object          */
         }
@@ -486,13 +487,9 @@ RexxObject * RexxActivation::run(RexxObject *_receiver, RexxString *msgname, Rex
             {
                 throw;
             }
+            // unwind the activation stack back to our frame
+            activity->unwindToFrame(this);
 
-            /* unwind the activation stack       */
-            while ((activation = this->activity->current()) != this)
-            {
-                activation->termination();       /* prepare the activation for termin */
-                this->activity->pop(false);      /* pop the activation off the stack  */
-            }
             this->stack.clear();               /* Force the stack clear             */
                                                /* invalidate the timestamp          */
             this->settings.timestamp.valid = false;
@@ -882,30 +879,36 @@ void RexxActivation::returnFrom(
 /* Function:  process a REXX RETURN instruction                               */
 /******************************************************************************/
 {
-                                       /* already had a reply issued?       */
-  if (this->settings.flags&reply_issued && resultObj != OREF_NULL)
-                                       /* flag this as an error             */
-    reportException(Error_Execution_reply_return);
-                                       /* processing an Interpret           */
-  if (this->activation_context == INTERPRET) {
-    this->execution_state = RETURNED;  /* this is a returned state          */
-    this->next = OREF_NULL;            /* turn off execution engine         */
-                                       /* cause a return in the sender      */
-    this->sender->returnFrom(resultObj); /* activity                          */
-  }
-  else {
-    this->execution_state = RETURNED;  /* the state is returned             */
-    this->next = OREF_NULL;            /* turn off execution engine         */
-    this->result = resultObj;          /* save the return result            */
-                                       /* real program call?                */
-    if (this->activation_context&PROGRAM_LEVEL_CALL)
-                                       /* run termination exit              */
-      activity->callTerminationExit(this);
-  }
-                                       /* switch debug off to avoid debug   */
-                                       /* pause after exit entered from an  */
-  this->settings.flags &= ~trace_debug;/* interactive debug prompt          */
-  this->settings.flags |= debug_bypass;/* let debug prompt know of changes  */
+    /* already had a reply issued?       */
+    if (this->settings.flags&reply_issued && resultObj != OREF_NULL)
+    {
+        /* flag this as an error             */
+        reportException(Error_Execution_reply_return);
+    }
+    /* processing an Interpret           */
+    if (this->activation_context == INTERPRET)
+    {
+        this->execution_state = RETURNED;  /* this is a returned state          */
+        this->next = OREF_NULL;            /* turn off execution engine         */
+                                           /* cause a return in the sender      */
+        this->sender->returnFrom(resultObj); /* activity                          */
+    }
+    else
+    {
+        this->execution_state = RETURNED;  /* the state is returned             */
+        this->next = OREF_NULL;            /* turn off execution engine         */
+        this->result = resultObj;          /* save the return result            */
+                                           /* real program call?                */
+        if (this->activation_context&PROGRAM_LEVEL_CALL)
+        {
+            /* run termination exit              */
+            activity->callTerminationExit(this);
+        }
+    }
+    /* switch debug off to avoid debug   */
+    /* pause after exit entered from an  */
+    this->settings.flags &= ~trace_debug;/* interactive debug prompt          */
+    this->settings.flags |= debug_bypass;/* let debug prompt know of changes  */
 }
 
 
@@ -1018,24 +1021,26 @@ void RexxActivation::procedureExpose(
 /* Function:  Expose variables for a PROCEDURE instruction                    */
 /******************************************************************************/
 {
-                                       /* procedure not allowed here?       */
-  if (!(this->settings.flags&procedure_valid))
-                                       /* raise the appropriate error!      */
-    reportException(Error_Unexpected_procedure_call);
-                                       /* disable further procedures        */
-  this->settings.flags &= ~procedure_valid;
+    /* procedure not allowed here?       */
+    if (!(this->settings.flags&procedure_valid))
+    {
+        /* raise the appropriate error!      */
+        reportException(Error_Unexpected_procedure_call);
+    }
+    /* disable further procedures        */
+    this->settings.flags &= ~procedure_valid;
 
-  /* get a new  */
-  activity->allocateLocalVariableFrame(&settings.local_variables);
-  /* make sure we clear out the dictionary, otherwise we'll see the */
-  /* dynamic entries from the previous level. */
-  settings.local_variables.procedure(this);
+    /* get a new  */
+    activity->allocateLocalVariableFrame(&settings.local_variables);
+    /* make sure we clear out the dictionary, otherwise we'll see the */
+    /* dynamic entries from the previous level. */
+    settings.local_variables.procedure(this);
 
-  size_t i;
-  /* now expose each individual variable */
-  for (i = 0; i < count; i++) {
-      variables[i]->procedureExpose(this, sender, &stack);
-  }
+    /* now expose each individual variable */
+    for (size_t i = 0; i < count; i++)
+    {
+        variables[i]->procedureExpose(this, sender, &stack);
+    }
 }
 
 
@@ -1155,9 +1160,9 @@ void RexxActivation::exitFrom(
         do
         {
             activation->termination();       /* make sure this level cleans up    */
-            ActivityManager::currentActivity->pop(false);     /* pop this level off                */
+            ActivityManager::currentActivity->popStackFrame(false);     /* pop this level off                */
                                              /* get the next level                */
-            activation = ActivityManager::currentActivity->getCurrentActivation();
+            activation = ActivityManager::currentActivity->getCurrentRexxFrame();
         } while (!activation->isTopLevel());
 
         activation->exitFrom(resultObj);   /* tell this level to terminate      */
@@ -1272,13 +1277,17 @@ RexxActivation * RexxActivation::external()
 /* Function:  Return the top level external activation                        */
 /******************************************************************************/
 {
-                                       /* if an internal call or an         */
-                                       /* interpret, we need to pass this   */
-                                       /* along                             */
-  if (this->activation_context&INTERNAL_LEVEL_CALL)
-    return this->sender->external();   /* get our sender method             */
-  else
-    return this;                       /* already at the top level          */
+    /* if an internal call or an         */
+    /* interpret, we need to pass this   */
+    /* along                             */
+    if (this->activation_context&INTERNAL_LEVEL_CALL)
+    {
+        return this->sender->external();   /* get our sender method             */
+    }
+    else
+    {
+        return this;                       /* already at the top level          */
+    }
 }
 
 
@@ -1293,31 +1302,34 @@ void RexxActivation::raiseExit(
 /* Function:  Raise a condition using exit semantics for the returned value.  */
 /******************************************************************************/
 {
-                                       /* not internal routine or Interpret */
-                                       /* instruction activation?           */
-  if (this->activation_context&TOP_LEVEL_CALL) {
-                                       /* do the real condition raise       */
-    this->raise(condition, rc, description, additional, resultObj, conditionobj);
-    return;                            /* return if processed               */
-  }
-
-                                       /* reached the top level?            */
-  if (this->sender == (RexxActivation *)TheNilObject) {
-    this->exitFrom(resultObj);         /* turn into an exit instruction     */
-  }
-  else {
-                                       /* real program call?                */
-    if (this->activation_context&PROGRAM_LEVEL_CALL)
+    /* not internal routine or Interpret */
+    /* instruction activation?           */
+    if (this->activation_context&TOP_LEVEL_CALL)
     {
-                                       /* run termination exit              */
-      activity->callTerminationExit(this);
+        /* do the real condition raise       */
+        this->raise(condition, rc, description, additional, resultObj, conditionobj);
+        return;                            /* return if processed               */
     }
-    ProtectedObject p(this);
-    this->termination();               /* remove guarded status on object   */
-    this->activity->pop(false);        /* pop ourselves off active list     */
-                                       /* propogate the condition backward  */
-    this->sender->raiseExit(condition, rc, description, additional, resultObj, conditionobj);
-  }
+
+    /* reached the top level?            */
+    if (this->sender == OREF_NULL)
+    {
+        this->exitFrom(resultObj);         /* turn into an exit instruction     */
+    }
+    else
+    {
+        /* real program call?                */
+        if (this->activation_context&PROGRAM_LEVEL_CALL)
+        {
+            /* run termination exit              */
+            activity->callTerminationExit(this);
+        }
+        ProtectedObject p(this);
+        this->termination();               /* remove guarded status on object   */
+        this->activity->popStackFrame(false); /* pop ourselves off active list     */
+        /* propogate the condition backward  */
+        this->sender->raiseExit(condition, rc, description, additional, resultObj, conditionobj);
+    }
 }
 
 
@@ -1383,7 +1395,7 @@ void RexxActivation::raise(
         if (propagated)
         {                  /* reraising a condition?            */
             this->termination();             /* do the termination cleanup on ourselves */
-            this->activity->pop(false);      /* pop ourselves off active list     */
+            this->activity->popStackFrame(false);  /* pop ourselves off active list     */
                                              /* go propagate the condition        */
             ActivityManager::currentActivity->reraiseException(conditionobj);
         }
@@ -1396,11 +1408,14 @@ void RexxActivation::raise(
     else
     {                               /* normal condition trapping         */
                                     /* get the sender object (if any)    */
-        _sender = this->senderAct();
+        // find a predecessor Rexx activation
+        _sender = this->senderActivation();
         /* do we have a sender that is       */
         /* trapping this condition?          */
         /* do we have a sender?              */
-        if (_sender != (RexxActivation *)TheNilObject)
+
+        //TODO:  This is likely all screwed up.
+        if (_sender != OREF_NULL)
         {
             /* "tickle them" with this           */
             this->sender->trap(condition, conditionobj);
@@ -1409,6 +1424,7 @@ void RexxActivation::raise(
         throw this;                        /* unwind and process the termination*/
     }
 }
+
 
 RexxVariableDictionary * RexxActivation::getObjectVariables()
 /******************************************************************************/
@@ -1615,7 +1631,7 @@ void RexxActivation::setForm(
  *
  * @return The parent Rexx context.
  */
-RexxActivation *RexxNativeActivation::getRexxContext()
+RexxActivation *RexxActivation::getRexxContext()
 {
     return this;          // I am my own grampa...I mean Rexx context.
 }
@@ -1629,6 +1645,18 @@ RexxActivation *RexxNativeActivation::getRexxContext()
 NumericSettings *RexxActivation::getNumericSettings()
 {
     return &(this->settings.numericSettings);
+}
+
+
+/**
+ * Get the message receiver
+ *
+ * @return The message receiver.  Returns OREF_NULL if this is not
+ *         a message activation.
+ */
+RexxObject *RexxActivation::getReceiver()
+{
+    return receiver;
 }
 
 
@@ -1919,19 +1947,19 @@ void RexxActivation::unwindTrap(
   }
 }
 
-RexxActivation * RexxActivation::senderAct()
+RexxActivation * RexxActivation::senderActivation()
 /******************************************************************************/
 /* Function:  Retrieve the activation that activated this activation (whew)   */
 /******************************************************************************/
 {
-  RexxActivation     *_sender;          /* sender activation                 */
-
                                        /* get the sender from the activity  */
-  _sender = (RexxActivation *)this->getSender();
+  RexxActivationBase *_sender = this->sender;
                                        /* spin down to non-native activation*/
-  while (_sender != (RexxActivation *)TheNilObject && isOfClass(NativeActivation,sender))
-    _sender = (RexxActivation *)_sender->getSender();
-  return _sender;                      /* return that activation            */
+  while (_sender != OREF_NULL && isOfClass(NativeActivation,sender))
+  {
+      _sender = _sender->getPreviousStackFrame();
+  }
+  return (RexxActivation *)_sender;    /* return that activation            */
 }
 
 void RexxActivation::interpret(
@@ -1949,7 +1977,7 @@ void RexxActivation::interpret(
   newMethod = this->code->interpret(codestring, this->current->getLineNumber());
                                        /* create a new activation           */
   newActivation = ActivityManager::newActivation(this->activity, newMethod, (RexxCode *)newMethod->getCode(), this, OREF_NULL, OREF_NULL, INTERPRET);
-  this->activity->push(newActivation); /* push on the activity stack        */
+  this->activity->pushStackFrame(newActivation); /* push on the activity stack        */
   ProtectedObject r;
                                        /* run the internal routine on the   */
                                        /* new activation                    */
@@ -1973,7 +2001,7 @@ void RexxActivation::debugInterpret(   /* interpret interactive debug input */
         newMethod = this->code->interpret(codestring, this->current->getLineNumber());
         /* create a new activation           */
         newActivation = ActivityManager::newActivation(this->activity, newMethod, (RexxCode *)newMethod->getCode(), this, OREF_NULL, OREF_NULL, DEBUGPAUSE);
-        this->activity->push(newActivation); /* push on the activity stack        */
+        this->activity->pushStackFrame(newActivation); /* push on the activity stack        */
         ProtectedObject r;
                                              /* run the internal routine on the   */
                                              /* new activation                    */
@@ -2159,14 +2187,12 @@ bool RexxActivation::callRegisteredExternalFunction(RexxString *target, RexxObje
     /* make the RXSTRING result          */
     MAKERXSTRING(funcresult, default_return_buffer, sizeof(default_return_buffer));
 
+    APIRET rc = 0;
 /* CRITICAL window here -->>  ABSOLUTELY NO KERNEL CALLS ALLOWED            */
-
-    /* get ready to call the function    */
-    activity->exitKernel(this);
-    /* now call the external function    */
-    APIRET rc = RexxCallFunction(funcname, _argcount, argrxarray, &functionrc, &funcresult, queuename);
-    activity->enterKernel();           /* now re-enter the kernel           */
-
+    {
+        CalloutBlock releaser;
+        rc = RexxCallFunction(funcname, _argcount, argrxarray, &functionrc, &funcresult, queuename);
+    }
 /* END CRITICAL window here -->>  kernel calls now allowed again            */
 
     SysReleaseResultMemory(argrxarray);
@@ -2480,7 +2506,7 @@ RexxObject * RexxActivation::internalCall(
   newActivation = ActivityManager::newActivation(this->activity, this->settings.parent_method,
                  this->settings.parent_code, this, OREF_NULL, OREF_NULL, INTERNALCALL);
 
-  this->activity->push(newActivation); /* push on the activity stack        */
+  this->activity->pushStackFrame(newActivation); /* push on the activity stack        */
                                        /* run the internal routine on the   */
                                        /* new activation                    */
   return newActivation->run(receiver, OREF_NULL, _arguments, _argcount, target, returnObject);
@@ -2506,7 +2532,7 @@ RexxObject * RexxActivation::internalCallTrap(
                  this->settings.parent_code, this, OREF_NULL, OREF_NULL, INTERNALCALL);
                                        /* set the new condition object      */
   newActivation->setConditionObj(conditionObj);
-  this->activity->push(newActivation); /* push on the activity stack        */
+  this->activity->pushStackFrame(newActivation); /* push on the activity stack        */
                                        /* run the internal routine on the   */
                                        /* new activation                    */
   return newActivation->run(OREF_NULL, OREF_NULL, NULL, 0, target, resultObj);

@@ -416,8 +416,8 @@ RexxMethod *RexxMethodClass::newRexxCode(
     result = this->newRexxMethod(newSource, OREF_NULL);
     // new default: insert program scope into method object
     RexxCode *resultCode = (RexxCode *)result->getCode();
-    resultCode->setLocalRoutines(ActivityManager::currentActivity->getCurrentActivation()->getSource()->getLocalRoutines());
-    resultCode->setPublicRoutines(ActivityManager::currentActivity->getCurrentActivation()->getSource()->getPublicRoutines());
+    resultCode->setLocalRoutines(ActivityManager::currentActivity->getCurrentRexxFrame()->getSource()->getLocalRoutines());
+    resultCode->setPublicRoutines(ActivityManager::currentActivity->getCurrentRexxFrame()->getSource()->getPublicRoutines());
   }
 
   return result;

@@ -40,6 +40,7 @@
 #include "RexxCore.h"
 #include "ExitHandler.hpp"
 #include "RexxActivity.hpp"
+#include "ActivityManager.hpp"
 
 
 /**
@@ -58,11 +59,11 @@ int ExitHandler::call(RexxActivity *activity, RexxActivation *activation, int fu
 {
     RexxExitHandler *exit_address = (RexxExitHandler *)entryPoint;
     /* CRITICAL window here -->>  ABSOLUTELY NO KERNEL CALLS ALLOWED            */
-    activity->exitKernel(activation);
-    int rc = (int)(*exit_address)(function, subfunction, (PEXIT)parms);
-    activity->enterKernel();
+    {
+        CalloutBlock releaser;
+        return (int)(*exit_address)(function, subfunction, (PEXIT)parms);
+    }
     /* END CRITICAL window here -->>  kernel calls now allowed again            */
-    return rc;
 }
 
 /**
