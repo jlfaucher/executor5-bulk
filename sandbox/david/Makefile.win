@@ -110,7 +110,8 @@ OBJECTS = rexxgtk.obj \
 	grxexpander.obj \
 	grxhandlebox.obj \
 	grxnotebook.obj \
-	grxeventbox.obj
+	grxeventbox.obj \
+	grxrange.obj
 
 # Build the DLL
 rexxgtk.dll: $(OBJECTS) rexxgtk.def
@@ -161,6 +162,9 @@ grxnotebook.obj: grxnotebook.c rexxgtk.h
 
 grxeventbox.obj: grxeventbox.c rexxgtk.h
 	cl -c $(GRXCFLAGS) grxeventbox.c
+
+grxrange.obj: grxrange.c rexxgtk.h
+	cl -c $(GRXCFLAGS) grxrange.c
 
 
 clean:

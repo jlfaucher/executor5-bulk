@@ -1542,3 +1542,198 @@ use strict arg event
 self~connect_signal:super(event)
 return
 
+
+/*============================================================================*/
+/* Class: GtkRange                                                            */
+/*============================================================================*/
+
+::class GtkRange public subclass GtkWidget
+
+::method init
+raise syntax 93.964 array ('A GtkRange class cannot be instantiated.')
+return
+
+::method connect_signal
+use strict arg event
+select
+   when event = 'adjust_bounds' then call GrxLabelConnectSignal self~pointer, event
+   when event = 'move_slider' then call GrxLabelConnectSignal self~pointer, event
+   when event = 'value_changed' then call GrxLabelConnectSignal self~pointer, event
+   otherwise self~connect_signal:super(event)
+   end
+return
+
+::method signal_adjust_bounds
+return
+
+::method signal_move_slider
+return
+
+::method signal_value_changed
+return
+
+
+/*============================================================================*/
+/* Class: GtkScale                                                            */
+/*============================================================================*/
+
+::class GtkScale public subclass GtkRange
+
+::method init
+raise syntax 93.964 array ('A GtkScale class cannot be instantiated.')
+return
+
+::method 'digits='
+use strict arg digits
+call GrxScaleSetDigits self~pointer, digits
+return
+
+::method set_digits
+use strict arg self~digits
+
+::method digits
+use strict arg
+return GrxScaleGetDigits(self~pointer)
+
+::method get_digits
+return self~digits
+
+::method 'value_pos='
+use strict arg pos
+call GrxScaleSetValuePos self~pointer, pos
+return
+
+::method set_value_pos
+use strict arg self~value_pos
+
+::method value_pos
+use strict arg
+return GrxScaleGetValuePos(self~pointer)
+
+::method get_value_pos
+return self~digits
+
+::method connect_signal
+use strict arg event
+self~connect_signal:super(event)
+return
+
+
+/*============================================================================*/
+/* Class: GtkHScale                                                           */
+/*============================================================================*/
+
+::class GtkHScale public subclass GtkScale
+
+::method init
+use strict arg adj
+self~pointer = GrxHScaleNew(adj~value, adj~lower, adj~upper, adj~step_inc,,
+ adj~page_inc, adj~page_size)
+return
+
+
+/*============================================================================*/
+/* Class: GtkHScale_With_Range                                                */
+/*============================================================================*/
+
+::class GtkHScale_With_Range public subclass GtkHScale
+
+::method init
+use strict arg min, max, step
+self~pointer = GrxHScaleNewWithRange(min, max. step)
+return
+
+
+/*============================================================================*/
+/* Class: GtkVScale                                                           */
+/*============================================================================*/
+
+::class GtkVScale public subclass GtkScale
+
+::method init
+use strict arg adj
+self~pointer = GrxVScaleNew(adj~value, adj~lower, adj~upper, adj~step_inc,,
+ adj~page_inc, adj~page_size)
+return
+
+::method connect_signal
+use strict arg event
+self~connect_signal:super(event)
+return
+
+
+/*============================================================================*/
+/* Class: GtkVScale_With_Range                                                */
+/*============================================================================*/
+
+::class GtkVScale_With_Range public subclass GtkVScale
+
+::method init
+use strict arg min, max, step
+self~pointer = GrxVScaleNewWithRange(min, max. step)
+return
+
+
+/*============================================================================*/
+/* Class: GtkAdjustment                                                       */
+/*============================================================================*/
+
+::class GtkAdjustment public
+
+::method init
+use strict arg self~value = 0. self~lower = 0, self~upper = 0,,
+ self~step_inc = 0, self~page_inc = 0, self~page_size = 0
+return
+
+::attribute value
+::attribute lower
+::attribute upper
+::attribute step_inc
+::attribute page_inc
+::attribute page_size
+
+
+/*============================================================================*/
+/* Class: GtkSpinButton                                                       */
+/*============================================================================*/
+
+::class GtkSpinButton public subclass GtkEntry
+
+::method init
+use strict arg adj, climb_rate, digits
+self~pointer = GrxSpinButtonNew(adj~value, adj~lower, adj~upper, adj~step_inc,,
+ adj~page_inc, adj~page_size, climb_rate, digits)
+return
+
+::method connect_signal
+use strict arg event
+select
+   when event = 'change_value' then call GrxLabelConnectSignal self~pointer, event
+   when event = 'value_changed' then call GrxLabelConnectSignal self~pointer, event
+   when event = 'wrapped' then call GrxLabelConnectSignal self~pointer, event
+   otherwise self~connect_signal:super(event)
+   end
+return
+
+::method signal_change_value
+return
+
+::method signal_value_changed
+return
+
+::method signal_wrapped
+return
+
+
+/*============================================================================*/
+/* Class: GtkSpinButton                                                       */
+/*============================================================================*/
+
+::class GtkSpinButton_With_Range public subclass GtkSpinButton
+
+::method init
+use strict arg lower, upper, step_inc
+self~pointer = GrxSpinButtonNewWithRange(lower, upper, step_inc)
+return
+
+

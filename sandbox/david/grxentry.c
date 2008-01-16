@@ -122,6 +122,28 @@ static void signal_func_2a(GtkWidget *window,
     return;
 }
 
+static void signal_func_2b(GtkWidget *window,
+                           GtkScrollType arg1,
+                           gpointer data)
+{
+    char buffer[256];
+    RXSTRING entry;
+
+    // set up the queue entry data
+#ifdef WIN32
+    sprintf(buffer, "%p %s %d", window, data, arg1);
+#else
+    snprintf(buffer, sizeof(buffer), "%p %s %d", window, data, arg1);
+#endif
+    entry.strptr = buffer;
+    entry.strlength = strlen(buffer);
+
+    // insert the signal event here
+    RexxAddQueue(GrxGetRexxQueueName(), &entry, RXQUEUE_FIFO);
+
+    return;
+}
+
 static void signal_func_3(GtkWidget *window,
                           GtkDeleteType type,
                           gint arg2,
@@ -569,6 +591,142 @@ APIRET APIENTRY GrxEntryConnectSignal(const char * Name,
         else if (strcmp(Argv[1].strptr, "toggle_overwrite") == 0) {
             g_signal_connect(G_OBJECT(myWidget), "toggle-overwrite",
                              G_CALLBACK(signal_func_1), "signal_toggle_overwrite");
+        }
+        else {
+            return RXFUNC_BADCALL;
+        }
+    }
+    else {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Set up the REXX return code */
+    *(Retstr->strptr) = '0';
+    Retstr->strlength = 1;
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxSpinButtonNew                                   */
+/* Description: Create a new spin button.                                     */
+/* Rexx Args:   value                                                         */
+/*              lower                                                         */
+/*              upper                                                         */
+/*              step increment                                                */
+/*              page_increment                                                */
+/*              page size                                                     */
+/*              climb rate                                                    */
+/*              digits                                                        */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxSpinButtonNew(const char * Name,
+                            const size_t Argc, const RXSTRING Argv[],
+                            const char * Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+    GtkAdjustment *adj;
+    gdouble lower, upper, value, step_increment, page_increment, page_size;
+    gdouble climb_rate;
+    guint digits;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(8, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%lf", &value);
+    sscanf(Argv[1].strptr, "%lf", &lower);
+    sscanf(Argv[2].strptr, "%lf", &upper);
+    sscanf(Argv[3].strptr, "%lf", &step_increment);
+    sscanf(Argv[4].strptr, "%lf", &page_increment);
+    sscanf(Argv[5].strptr, "%lf", &page_size);
+    sscanf(Argv[6].strptr, "%lf", &climb_rate);
+    sscanf(Argv[7].strptr, "%u", &digits);
+
+    adj = (GtkAdjustment *) gtk_adjustment_new(value, lower, upper, step_increment,
+                                               page_increment, page_size);
+    myWidget = gtk_spin_button_new(adj, climb_rate, digits);
+//    g_free(adj);
+
+    /* Set up the REXX return code */
+    sprintf(Retstr->strptr, "%p", myWidget);
+    Retstr->strlength = strlen(Retstr->strptr);
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxSpinButtonNewWithRange                          */
+/* Description: Create a new spin button.                                     */
+/* Rexx Args:   lower                                                         */
+/*              upper                                                         */
+/*              step increment                                                */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxSpinButtonNewWithRange(const char * Name,
+                            const size_t Argc, const RXSTRING Argv[],
+                            const char * Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+    gdouble lower, upper,step_increment;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(3, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%lf", &lower);
+    sscanf(Argv[1].strptr, "%lf", &upper);
+    sscanf(Argv[2].strptr, "%lf", &step_increment);
+
+    myWidget = gtk_spin_button_new_with_range(lower, upper, step_increment);
+
+    /* Set up the REXX return code */
+    sprintf(Retstr->strptr, "%p", myWidget);
+    Retstr->strlength = strlen(Retstr->strptr);
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxSpinButtonConnectSignal                         */
+/* Description: Connect a signal function to the Widget                       */
+/* Rexx Args:   Pointer to the widget                                         */
+/*              Signal name                                                   */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxSpinButtonConnectSignal(const char * Name,
+                                      const size_t Argc, const RXSTRING Argv[],
+                                      const char * Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(2, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &myWidget);
+
+    if (GTK_IS_WIDGET(GTK_OBJECT(myWidget))) {
+        if (strcmp(Argv[1].strptr, "change_value") == 0) {
+            g_signal_connect(G_OBJECT(myWidget), "change-value",
+                             G_CALLBACK(signal_func_2b), "signal_change_value");
+        }
+        else if (strcmp(Argv[1].strptr, "value_changed") == 0) {
+            g_signal_connect(G_OBJECT(myWidget), "value-changed",
+                             G_CALLBACK(signal_func_1), "signal_value_changed");
+        }
+        else if (strcmp(Argv[1].strptr, "wrapped") == 0) {
+            g_signal_connect(G_OBJECT(myWidget), "wrapped",
+                             G_CALLBACK(signal_func_1), "signal_wrapped");
         }
         else {
             return RXFUNC_BADCALL;
