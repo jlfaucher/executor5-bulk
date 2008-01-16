@@ -1,33 +1,5 @@
 #!/usr/bin/rexx
 /*
-   name:             template01.testGroup
-   authors:          <name>
-   date:             <date>
-   version:          0.0.0
-   changed:
-
-   languageLevel:    6.0
-   purpose:          A simple template file for starting test groups.
-                     <put your purpose above>
-
-   remark:           <put any extra remarks here.  not necessarily needed.>
-
-                     <search and replace template.testGroup
-                      with the real test group name>
-
-                     You do *not* need to name your test case class the same as
-                     the file.  You can of course if you want to.
-
-                     <strip out this remark section>
-
-
-   license:          CPL 1.0 (Common Public License v1.0, see below)
-   link:
-
-   category1:        ooRexx
-   category2:        Base
-   category3:        Template
-
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
@@ -75,19 +47,12 @@
   testResult = group~suite~execute~~print
 
 return testResult
--- End of entry point.
 
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
-  Directives, Classes, or Routines.
-\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::requires 'ooTest.frm'
 
-/* class: template.testGroup - - - - - - - - - - - - - - - - - - - - - - - - -*\
-
-\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::class "template01.testGroup" public subclass ooTestCase
 
--- testMethods for each of the possible assertions
+-- testMethods for each of the possible "assert"s
 ::method 'test01'
 -- this testMethod demonstrates the use of assertEquals
     self~assertEquals('01',1)
@@ -120,18 +85,14 @@ return testResult
 -- this testMethod demonstrates the use of assertFalse
     self~assertFalse(1=='01')
 
+-- testMethods for each of the possible "expect"s
 ::method 'test09'
 -- this testMethod demonstrates the use of expectSyntax
     self~expectSyntax(42.3)
     rv = 1 / 0
 
 ::method 'test10'
--- this testMethod demonstrates the use of expectSyntax
+-- this testMethod demonstrates the use of expectCondition
     self~expectCondition("NOSTRING")
     raise NOSTRING
 
-
-
-
-
--- End of class: template.testGroup
