@@ -707,6 +707,36 @@ APIRET APIENTRY GrxColorButtonNew(const char * Name,
 
 
 /*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxColorButtonNewWithColor                         */
+/* Description: Create a color button.                                        */
+/* Rexx Args:   Color                                                         */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxColorButtonNewWithColor(const char * Name,
+                                  const size_t Argc, const RXSTRING Argv[],
+                                  const char * Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+    GdkColor color;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(1, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    gdk_color_parse(Argv[0].strptr, &color);
+
+    myWidget = gtk_color_button_new_with_color(&color);
+
+    /* Set up the REXX return code */
+    sprintf(Retstr->strptr, "%p", myWidget);
+    Retstr->strlength = strlen(Retstr->strptr);
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
 /* Rexx External Function: GrxColorButtonSetTitle                             */
 /* Description: Create a color button.                                        */
 /* Rexx Args:   Pointer to the widget                                         */

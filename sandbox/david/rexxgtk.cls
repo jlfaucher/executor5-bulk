@@ -1021,8 +1021,7 @@ return
 
 ::method init
 use strict arg color
-self~init:super()
-self~set_color(color)
+self~pointer = GrxColorButtonNewWithColor(color)
 return
 
 
