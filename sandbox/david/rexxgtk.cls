@@ -1640,7 +1640,7 @@ return
 
 ::method init
 use strict arg min, max, step
-self~pointer = GrxHScaleNewWithRange(min, max. step)
+self~pointer = GrxHScaleNewWithRange(min, max, step)
 return
 
 
@@ -1670,7 +1670,7 @@ return
 
 ::method init
 use strict arg min, max, step
-self~pointer = GrxVScaleNewWithRange(min, max. step)
+self~pointer = GrxVScaleNewWithRange(min, max, step)
 return
 
 

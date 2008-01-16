@@ -401,7 +401,7 @@ APIRET APIENTRY GrxVScaleNewWithRange(const char * Name,
     gdouble min, max, step;
 
     /* Check for valid arguments */
-    if (GrxCheckArgs(6, Argc, Argv)) {
+    if (GrxCheckArgs(3, Argc, Argv)) {
         return RXFUNC_BADCALL;
     }
 
