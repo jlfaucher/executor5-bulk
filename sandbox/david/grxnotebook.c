@@ -593,7 +593,7 @@ APIRET APIENTRY GrxNotebookSetTabPos(const char * Name,
         pos = GTK_POS_BOTTOM;
     }
     else {
-        return RXFUNC_BADCALL;
+        sscanf(Argv[1].strptr, "%d", &pos);
     }
 
     if (GTK_IS_NOTEBOOK(GTK_OBJECT(myNotebook))) {

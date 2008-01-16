@@ -234,15 +234,14 @@ APIRET APIENTRY GrxButtonSetRelief(const char * Name,
 
     /* Initialize function parameters */
     sscanf(Argv[0].strptr, "%p", &myWidget);
-
-    if(strcmp(Argv[0].strptr,"GTK_RELIEF_NORMAL") == 0)
+    if(strcmp(Argv[1].strptr,"GTK_RELIEF_NORMAL") == 0)
         style = GTK_RELIEF_NORMAL;
-    else if(strcmp(Argv[0].strptr,"GTK_RELIEF_HALF") == 0)
+    else if(strcmp(Argv[1].strptr,"GTK_RELIEF_HALF") == 0)
         style = GTK_RELIEF_HALF;
-    else if(strcmp(Argv[0].strptr,"GTK_RELIEF_NONE") == 0)
+    else if(strcmp(Argv[1].strptr,"GTK_RELIEF_NONE") == 0)
         style = GTK_RELIEF_NONE;
     else 
-        return RXFUNC_BADCALL;
+        sscanf(Argv[1].strptr, "%d", &style);
 
     gtk_button_set_relief(GTK_BUTTON(myWidget), style);
 

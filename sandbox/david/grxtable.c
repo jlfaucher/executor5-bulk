@@ -140,7 +140,7 @@ APIRET APIENTRY GrxTableAttach(const char * Name,
     else if(strcmp(Argv[6].strptr,"GTK_FILL") == 0)
         xoptions = GTK_FILL;
     else 
-        return RXFUNC_BADCALL;
+        sscanf(Argv[6].strptr, "%d", &xoptions);
     if(strcmp(Argv[7].strptr,"GTK_EXPAND") == 0)
         yoptions = GTK_EXPAND;
     else if(strcmp(Argv[7].strptr,"GTK_SHRINK") == 0)
@@ -148,7 +148,7 @@ APIRET APIENTRY GrxTableAttach(const char * Name,
     else if(strcmp(Argv[7].strptr,"GTK_FILL") == 0)
         yoptions = GTK_FILL;
     else 
-        return RXFUNC_BADCALL;
+        sscanf(Argv[7].strptr, "%d", &yoptions);
     sscanf(Argv[8].strptr, "%d", &xpad);
     sscanf(Argv[8].strptr, "%d", &ypad);
 

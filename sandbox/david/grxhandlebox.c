@@ -144,7 +144,7 @@ APIRET APIENTRY GrxHandleBoxSetShadowType(const char * Name,
     else if(strcmp(Argv[1].strptr,"GTK_SHADOW_ETCHED_OUT") == 0)
         type = GTK_SHADOW_ETCHED_OUT;
     else 
-        return RXFUNC_BADCALL;
+        sscanf(Argv[1].strptr, "%d", &type);
 
     if (GTK_IS_WIDGET(GTK_OBJECT(myWidget))) {
         gtk_handle_box_set_shadow_type(GTK_HANDLE_BOX(myWidget), type);
@@ -188,7 +188,7 @@ APIRET APIENTRY GrxHandleBoxSetHandlePosition(const char * Name,
     else if(strcmp(Argv[1].strptr,"GTK_POS_BOTTOM") == 0)
         type = GTK_POS_BOTTOM;
     else 
-        return RXFUNC_BADCALL;
+        sscanf(Argv[1].strptr, "%d", &type);
 
     if (GTK_IS_WIDGET(GTK_OBJECT(myWidget))) {
         gtk_handle_box_set_handle_position(GTK_HANDLE_BOX(myWidget), type);
@@ -232,7 +232,7 @@ APIRET APIENTRY GrxHandleBoxSetSnapEdge(const char * Name,
     else if(strcmp(Argv[1].strptr,"GTK_POS_BOTTOM") == 0)
         type = GTK_POS_BOTTOM;
     else 
-        return RXFUNC_BADCALL;
+        sscanf(Argv[1].strptr, "%d", &type);
 
     if (GTK_IS_WIDGET(GTK_OBJECT(myWidget))) {
         gtk_handle_box_set_snap_edge(GTK_HANDLE_BOX(myWidget), type);
