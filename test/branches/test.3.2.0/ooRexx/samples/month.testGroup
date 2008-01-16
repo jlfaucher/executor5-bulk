@@ -141,7 +141,8 @@ return testResult
     len = "January 1994"~length
 
     self~assertSame(31, out~items)
-    do i = 1 to 31
+    self~assertNotSame(0, out[1]~pos("January 1994"))
+    do i = 2 to 31
       self~assertSame("January 1994", out[i]~right(len), "loop-"i)
       self~assertTrue(out[i]~pos(i) <> 0, "loop-"i)
     end
