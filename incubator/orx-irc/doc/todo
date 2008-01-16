@@ -1,0 +1,45 @@
+060529
+    add ClientEvent calls to channel and nick classes
+	060609 partly done, mode parse for channel missing
+	061009 Done. still a bug with channel mode parsing
+    implement talkback objects for client, channel and users (Isn't the client~Command enough?)
+	061009 IRCCommands class is sufficient
+    make functions accessible again (in progress, working again, now all functions need to be implemented)
+	061009 Done...
+    use server-specific functions
+	like dccallow on irchighway
+    parse server parameters (done 060924)
+
+060602
+    add support for dcc
+	direct chat, file transfer, sed encryption
+	
+060609
+    Get someone to develop a client
+    clean the socket class
+	060609 INPUT bug (finally!) fixed
+	maybe the socket interface in one of the OS/2 examples should be used?
+	060924 readserv fixed by rewriting it
+    Clean the SVN repos
+	talk to ktk to move it to netlabs as primary server !? done
+    Add delayed writing (like the perl irc interface does it)
+
+061001
+    Idea to avoid client crashing because of malicious methods:
+	start method
+	    (method runs)
+	wait timeout...
+	check if the method is still running
+	wait some more time
+	return (?kill method?)
+
+061009
+    Add an Error method to the IRC class to be called by the socket class in
+    case of an error
+    
+General ToDo's:
+    Write a test application
+    Generate a list of test cases
+    Ask someone on usability
+    
+    

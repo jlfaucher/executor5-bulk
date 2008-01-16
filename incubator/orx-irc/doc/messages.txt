@@ -1,0 +1,31 @@
+Message desrciption
+Object:values
+MESSAGE: type, time created
+
+
+Sender: this is a NICK object
+User Messages:
+UMSG: Message+sender
+User-Messages without receiver:
+NICK: UMSG+newnick
+QUIT: UMSG+reason
+
+User -Messages with receiver
+UMSGR: UMSG+receiver
+PRIVMSG: UMsgR+text
+NOTICE:  UmsgR+text
+
+KILL:   Umsgr+reason target=nick
+KICK:   Umsgr+channel+reason target=nick
+TOPIC:  UMSGr+topic target=channel
+MODE:   UMSGr+modestring target=nick|channel
+
+
+Server-messages:
+SMSG:    MESSAGE
+PING:    SMSG+string
+ERROR:   SMSG
+NOTICE:  SMSG+string
+WALLOPS: SMSG+string
+NUMMSG:  SMSG+num+string
+SMODE:   SMSG+server+receiver+string

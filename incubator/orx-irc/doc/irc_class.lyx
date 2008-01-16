@@ -1,0 +1,2779 @@
+#LyX 1.5.2 created this file. For more info see http://www.lyx.org/
+\lyxformat 276
+\begin_document
+\begin_header
+\textclass scrartcl
+\begin_preamble
+\usepackage[german]{minitoc}
+\usepackage{ifpdf} % part of the hyperref bundle
+\usepackage[ps2pdf]{hyperref}
+\end_preamble
+\language english
+\inputencoding auto
+\font_roman times
+\font_sans helvet
+\font_typewriter courier
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+\graphics dvips
+\paperfontsize default
+\spacing single
+\papersize a4paper
+\use_geometry false
+\use_amsmath 1
+\use_esint 0
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\author "" 
+\end_header
+
+\begin_body
+
+\begin_layout Title
+The Object REXX IRC class
+\end_layout
+
+\begin_layout Date
+Last change: January 
+\begin_inset Formula $16^{th},\,2008$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Author
+Moritz Hoffmann
+\newline
+Open Object Rexx Team
+\end_layout
+
+\begin_layout Abstract
+This is the reference manual of the Object Rexx IRC class.
+ It describes the usage of all functionality offered by the class and its
+ sub-parts.
+ This is mostly suited for programmers.
+\end_layout
+
+\begin_layout Description
+News The Object REXX IRC class is now part of the Open Object Rexx project.
+ The orx-irc project is obsolete.
+\end_layout
+
+\begin_layout Standard
+
+\newpage
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset LatexCommand tableofcontents
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FloatList figure
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FloatList table
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\newpage
+
+\end_layout
+
+\begin_layout Section
+Introduction
+\end_layout
+
+\begin_layout Standard
+This documentation describes the Object Rexx IRC classes.
+ It is intended to be read by programmers who plan to use the class in their
+ applications.
+ But it is more than a simple reference: The documentation tries to give
+ a very new view on the IRC protocol.
+ With this new view many things can be achived that were impssible before.
+\end_layout
+
+\begin_layout Standard
+We are looking for developers! Feel free to download the source code and
+ start writing you very own client or help us extending the classes.
+ There is a to do list that contains many open items.
+\end_layout
+
+\begin_layout Subsection
+What is the aim of the orx-irc project?
+\end_layout
+
+\begin_layout Standard
+orx-irc stands for Object Rexx and IRC.
+ It is the implementation of the IRC protocol in the language Object Rexx.
+ The IRC protocol is one of the first Internet chat protocols.
+ The projects tries to give programmers very easy access to interface with
+ IRC servers of all kinds.
+\end_layout
+
+\begin_layout Standard
+When looking at the projects it is located between the TCP/IP network access
+ and the rexx interpreter at one side and the final application on the other
+ side.
+ It is intended to offer an easy to use and flexible interface for the IRC
+ protocol.
+\end_layout
+
+\begin_layout Subsection
+Audience
+\end_layout
+
+\begin_layout Standard
+This document is intended to be read by developers that want to use the
+ IRC class for writing applications.
+ It does not want to describe the IRC protocol as it is defined in several
+ RFC documents.
+ It only describes the IRC protocol as far as it is needed to understand
+ the concept of the IRC class.
+ Hence only some critical parts of the IRC protocol are discussed.
+\end_layout
+
+\begin_layout Standard
+Supplying an end-user documentation is part of a applications written with
+ the help of this class.
+\end_layout
+
+\begin_layout Subsection
+History
+\end_layout
+
+\begin_layout Standard
+It all began when Moritz once started writing a very simple bot for IRC.
+ The bot was written in Rexx and only replied to incoming messages.
+ The reply was the same string the bot received.
+ Basically it was intended to explore the capabilities of the Internet with
+ raw socket access and to understand the client/server design of Internet
+ applications.
+\end_layout
+
+\begin_layout Standard
+IRC offers a good way to understand TCP/IP's client/server topology.
+ In the middle there is one server that is the network's hub.
+ Its basic purpose is to forward messages to the targets.
+ On top of this it handles the connections, users and channels.
+\end_layout
+
+\begin_layout Standard
+The second version of the bot was much more advanced.
+ It connected to a server specified in a configuration file, offered some
+ administration functions for an authenticated user and could understand
+ CTCP messages.
+ There is a version floating around used as a greeting bot.
+ It was written in Rexx as well.
+\end_layout
+
+\begin_layout Standard
+After that Moritz decided to learn object-orientation.
+ That sounds easy, but it definitely was not.
+ Implementing the IRC protocol in an object-oriented manner is not very
+ easy, especially for an oo-programming newbie.
+ The first tries ended up in a bot that had methods instead of classes.
+ It then evolved to something grouping methods in classes and playing around
+ with objects for users and channels.
+ At this time it was neither object oriented nor procedural programmed.
+ It is easy to imagine that this combination was not working as supposed.
+\end_layout
+
+\begin_layout Standard
+It was time for a first rewrite.
+ The set of classes that were existent from this time on were working quite
+ well and simple bots could be written.
+ It even offered multi threading, event forwarding and custom handler classes.
+ This sounds promising, but in fact it still a lot of remains persisted.
+ As some parts were not fully object oriented it became nearly impossible
+ to debug and extend the classes.
+ Due to the lack of time a working version was developed and published on
+ Sourceforge.
+ It was the first public version.
+ (Well, it has hardly been downloaded
+\begin_inset ERT
+status open
+
+\begin_layout Standard
+
+
+\backslash
+ldots
+\end_layout
+
+\end_inset
+
+)
+\end_layout
+
+\begin_layout Standard
+Moritz then started studying computer science and from the knowledge he
+ gained there it was possible to redesign the whole set of classes.
+ This is the current development.
+\end_layout
+
+\begin_layout Standard
+While thinking about a new version Moritz realized that the design wouldn't
+ be as good as it was supposed to be.
+ From the new knowledge he was able to enhance the design (this time not
+ by rewriting 50%).
+ The new design includes that there is a general message class all messages
+ inherit from.
+ All messages inheriting from represent IRC messages.
+\end_layout
+
+\begin_layout Section
+What it's all about
+\end_layout
+
+\begin_layout Standard
+At the moment there are a lot of different ways to write applications for
+ IRC.
+ Either they re implement the IRC protocol or they rely on interfaces like
+ the Perl IRC interface class.
+ Others use the scripting abilities of the ircii client to write applications.
+ All approaches have their pros and cons.
+ Using a chat program like ircii means that you need to use the limited
+ scripting abilities offered there.
+ The main disadvantage is that one has to use a language tied into the client,
+ meaning that one has to learn a new language.
+ Implementing the IRC protocol again is a lot redundant work; it has been
+ implemented many times already.
+\end_layout
+
+\begin_layout Standard
+The best approach is to use an interface class that offers the programmer
+ a variety of functions and automates all things necessary.
+ That means that the programmer can focus on writing the application and
+ does not need to struggle with the implementation or usage of the IRC protocol.
+\end_layout
+
+\begin_layout Standard
+The idea behind this interface is that all functionality offered by the
+ IRC server are mapped.
+ The interface keeps automatically track of all changes and all incoming
+ events.
+ Functions that are send to the server will be method calls.
+ The interface associates the incoming data with the method call and returns
+ the information received from a server, if possible in a already parsed
+ way.
+\end_layout
+
+\begin_layout Standard
+In the end one could write an application that interfaces with the IRC protocol
+ without knowing how the IRC protocol works.
+ Nonetheless it is good to know the basics of the protocol.
+\end_layout
+
+\begin_layout Subsection
+Object Orientation
+\end_layout
+
+\begin_layout Standard
+The IRC protocol does not mention objects.
+ Due to that there are different ways to understand the messages of the
+ IRC protocol.
+\end_layout
+
+\begin_layout Standard
+As the project's name suggests the object-oriented approach has been used
+ in this case.
+ All messages floating around are message objects.
+ They have a sender and a receiver.
+ The receiver and sender are represented as objects as well.
+ With this approach it is easy to feed different parts of a client only
+ with the information necessary.
+\end_layout
+
+\begin_layout Subsection
+System context
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Standard
+\begin_inset Caption
+
+\begin_layout Standard
+System context diagramm
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename system_context.eps
+	width 100text%
+	keepAspectRatio
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The classes are to be used by a third party application.
+ They are designed to form an interface for the IRC protocol.
+ That means that all kinds of programs from bots to high level chat applications
+ can base on the classes.
+\end_layout
+
+\begin_layout Standard
+This class is just an interface between an IRC server and a client.
+ Basically it can be seen as a simple application receiving and sending
+ messages with some connection handling included.
+\end_layout
+
+\begin_layout Section
+The Project
+\end_layout
+
+\begin_layout Standard
+In order to start working with the classes offered a running Object Rexx
+ interpreter is required to be installed.
+ A very good interpreter is offered by the ooRexx project on sourceforge.net.
+ Visit 
+\begin_inset LatexCommand htmlurl
+name "Open Object Rexx"
+target "http://sourceforge.net/projects/oorexx/"
+
+\end_inset
+
+ for more information.
+\end_layout
+
+\begin_layout Standard
+Object Rexx is available for Linux, Windows, AIX and other platforms.
+\end_layout
+
+\begin_layout Subsection
+Documentation
+\end_layout
+
+\begin_layout Standard
+First there only was a small HTML-based documentation, which was OK, but
+ too hard to extend.
+ After that it was tried to use OOo, but that's not the best solution either.
+ Now LyX is used to edit a LaTeX file.
+ At the moment there is no Rexx documentation system like doxygen.
+ Thus all documentation here is hand-written and needs to be updated as
+ soon as something changes.
+ This may lead to more work compared to using an automated documenting system,
+ but it is easier than writing a documenting system.
+\end_layout
+
+\begin_layout Subsection
+Architecture
+\end_layout
+
+\begin_layout Standard
+The class is splitted into two main parts.
+\end_layout
+
+\begin_layout Standard
+The first one is the interface to the socket.
+ All communication is send over it.
+ This parts includes the conversion of message objects to strings and vise
+ versa.
+ It implements the sytax of the protocol.
+ All other parts of the class rely in this part.
+\end_layout
+
+\begin_layout Standard
+The second part is tied into the IRC class.
+ It is the part that uses the interface offered by the first part to bring
+ the sense to the communication.
+ Here the grammar of the protocol is implemented.
+ All communication have to pass through it, there is no other way for messages
+ to return to the caller.
+\end_layout
+
+\begin_layout Standard
+Messages pass through three stages during their life.
+ First the are send to the MessageHandler object of the IRC class.
+ This is a programmable class that does the low level handling of messages,
+ maily the numeric ones.
+ When there has been a IRC function call registerd this is the place where
+ the replies are cought and the function call is returned with the collected
+ result.
+ Also some mode messages that don't come with the normal MODE IRC message
+ are converted into real msgmode messages here.
+\end_layout
+
+\begin_layout Standard
+After that the messages get forwarded to their receiver class.
+ Here all the connection hadling is done.
+ Textual messages are forwarded to the receiver (which should be the own
+ client in the end), join and part messages cause the channels to update
+ their userlist and so on.
+\end_layout
+
+\begin_layout Standard
+The third stage has no influence on the `grammar' of the protocol anymore.
+ This is the place where a client would install own methods too hook messages.
+\end_layout
+
+\begin_layout Standard
+The first and third stage are quite similar in their architecture.
+ Both handler objects inherit from the same super class.
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Standard
+This section needs to be enhaced, if possible with some nice diagrams!
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Accessing the source
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Since 2008 the orx-irc project is part of the Open Object Rexx project.
+\end_layout
+
+\begin_layout Standard
+We are using subversion to manage the development.
+ Our main subversion server is 
+\begin_inset LatexCommand url
+target "https://oorexx.svn.sourceforge.net/svnroot/oorexx/incubator/orx-irc"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+The source consists of several files with the suffix 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+symbol{46}
+\end_layout
+
+\end_inset
+
+cls, a combine.cmd and a directory called doc/ and another called out/.
+ The 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+symbol{46}
+\end_layout
+
+\end_inset
+
+cls files contain the class definitons, but this is more a sematical differencia
+tion.
+ The combine.cmd combines all these files to one single class file.
+ This file is the one a client requires.
+ In the out directory there should be a sample client, in the doc directory
+ there should be a current documentation.
+\end_layout
+
+\begin_layout Subsubsection
+Compiling the irc.cls file
+\end_layout
+
+\begin_layout Standard
+The irc.cls file is a file that containes all classes.
+ The reason for this is to offer a single file with reduced size by leaving
+ away the comments and indent and to make it more portable.
+\end_layout
+
+\begin_layout Standard
+The application that combines the files is called combine.cmd and is included
+ with the project's sourcecode.
+ It is a very basic pre processor (make can't properly handle rexx code)
+ that merges the files while removing comments and additional spaces.
+\end_layout
+
+\begin_layout LyX-Code
+moritz@TP42:~/rexx/irc/orx-irc$ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+symbol{46}
+\end_layout
+
+\end_inset
+
+/combine.cmd
+\end_layout
+
+\begin_layout LyX-Code
+Read 10 files with 2000 lines and 72116 bytes.
+\end_layout
+
+\begin_layout LyX-Code
+Wrote one file with 1652 lines and 58216 bytes.
+\end_layout
+
+\begin_layout LyX-Code
+Ratio: 80%
+\end_layout
+
+\begin_layout Standard
+This application creates the class file in the out/ directory.
+\end_layout
+
+\begin_layout Subsubsection
+Using the newly generated class
+\end_layout
+
+\begin_layout Standard
+To include the class in an application the following line needs to be added
+ before the class definitions:
+\end_layout
+
+\begin_layout LyX-Code
+::REQUIRES "irc.cls"
+\end_layout
+
+\begin_layout Standard
+This statements tells the rexx interpreter to load the contents of the file
+ and make them accessible for the program requiring them.
+\end_layout
+
+\begin_layout Standard
+At the moment the class needs to be located in the same directory the applicatio
+n is located.
+ This my change as soon as there is a final version with a fixed interface.
+ Then it may be put to a directory in the system's path.
+\end_layout
+
+\begin_layout Section
+Concept
+\end_layout
+
+\begin_layout Standard
+This section describes the general conecept.
+ This should help understanding where which kind of enhancememnts are possible.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Standard
+\begin_inset Caption
+
+\begin_layout Standard
+Processing levels
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename level_processing.eps
+	lyxscale 60
+	width 100text%
+	keepAspectRatio
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Level structure
+\end_layout
+
+\begin_layout Standard
+The way messages are treated internally can be seen as different processing
+ levels.
+ The lowest level is the socket connetion itself, passing the message translatio
+n and ending in an event passed on the client.
+ Each level has a different purpose, some can be customised, others are
+ basic parts that don't need to be customized.
+ It would even be riskful for the stability to allow changes there.
+\end_layout
+
+\begin_layout Paragraph
+Level 0 --- The Socket
+\end_layout
+
+\begin_layout Standard
+The socket forms the low level access to the server.
+ It is the byte stream where messages arrive.
+ This is implemented in the socket class
+\end_layout
+
+\begin_layout Paragraph
+Level 1.1 --- Splitting the messages
+\end_layout
+
+\begin_layout Standard
+The stream arriving from the server is not split into lines; thus this has
+ to be done.
+ Each time a line (which is a message) arrives it is forwarded to the IRC
+ class object.
+ This is implemented in the LNSocket class.
+\end_layout
+
+\begin_layout Paragraph
+Level 1.2 --- Translating the messages
+\end_layout
+
+\begin_layout Standard
+The messages arriving are still just strings.
+ The next step is to convert them to message object.
+ Each message got its own class of message.
+ The translation of strings to message objects is done in the StrToMessage
+ method of the IRC class.
+\end_layout
+
+\begin_layout Paragraph
+Level 2 --- Passing the message to the client
+\end_layout
+
+\begin_layout Standard
+The message now enters the Event method of the IRC class.
+ All further processing regarding the IRC class in done here.
+\end_layout
+
+\begin_layout Standard
+First the message is passed to a customisable object, the MessageHandler
+ object.
+ This object is a subclass of the ClientEventSuper class.
+ 
+\end_layout
+
+\begin_layout Standard
+The MessageHandler object has a lot of method defined already.
+ These methods are mainly for returning results to hook'ed events.
+\end_layout
+
+\begin_layout Paragraph
+Level 3 --- Passing the message to their receiver object
+\end_layout
+
+\begin_layout Standard
+Messages like join, part and quit messages need to be tracked to know the
+ current status of the connection.
+ In order to achive this messages get forwarded to their receiver object.
+ This takes place in the channel and user class and in the Event method
+ of the IRC class in case the message was not directed at a channel or a
+ user.
+\end_layout
+
+\begin_layout Paragraph
+Level 4 --- Creating the final event
+\end_layout
+
+\begin_layout Standard
+The final event is forwarded to the ClientEvent event handler object of
+ the IRC class.
+ Like in level 2 this is a subclass of the SuperClientEvent class.
+\end_layout
+
+\begin_layout Standard
+At two levels the functionality can be altered.
+ The functionalitiy of level 2 is necessary for the reliability of the whole
+ system.
+ Only methods that need to be placed there should be placed there.
+ Where something gowes wrong in this level there is only a low chance that
+ the connection will not suffer from it.
+\end_layout
+
+\begin_layout Standard
+Events that don't need to influence a message object or the scripting functional
+itiy have to be placed in the ClientEvent object.
+ See chapter\InsetSpace ~
+
+\begin_inset LatexCommand ref
+reference "sec:Messages"
+
+\end_inset
+
+ for more examples.
+\end_layout
+
+\begin_layout Section
+Classes
+\begin_inset LatexCommand label
+name "sec:Classes"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement p
+wide false
+sideways false
+status collapsed
+
+\begin_layout Standard
+\begin_inset Caption
+
+\begin_layout Standard
+Class Diagram
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename classes.eps
+	lyxscale 40
+	width 100theight%
+	keepAspectRatio
+	scaleBeforeRotation
+	rotateAngle 90
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+ClientEvent
+\end_layout
+
+\begin_layout Standard
+This class has just one custom method, which is the unknown method.
+ It inherits all other methods from the ClientEventSuper class.
+ The unknown method receives a method name and the arguments the method
+ was called with.
+ To map the name to the actual method it looks for an entry in the 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+symbol{46}
+\end_layout
+
+\end_inset
+
+local directory with the name of the method called.
+ If this entry exists it has to be an array.
+ The array's values specify the real name of the method to be executed.
+ In the following a custom method with one of those names is searched.
+ If it's found it will be executed.
+\begin_inset Foot
+status collapsed
+
+\begin_layout Standard
+Execution continues when a runned method returned 1.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float algorithm
+wide false
+sideways false
+status collapsed
+
+\begin_layout Standard
+\begin_inset Caption
+
+\begin_layout Standard
+.ClientEvent: Unknown method lookup
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Get the name of the event.
+\end_layout
+
+\begin_layout Standard
+If the 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+symbol{46}
+\end_layout
+
+\end_inset
+
+local directory contains an array as entry for the name then iterate over
+ all entries.
+ In case there is a method defined for the current string in the array,
+ the method is executed.
+ When the method call returned 1 the search for methods is continued, otherwise
+ the execution returns to the caller.
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Standard
+This is more a test for the algorithm class :-)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+MessageHandler
+\end_layout
+
+\begin_layout Standard
+This class is very similar to the ClientEvent class.
+ The MessageHandler class implements the level one message handler of the
+ IRC class.
+ It works in flat mode, meaning that it can only store one method for each
+ name at once.
+ Because of that it can not try to continue execution.
+\end_layout
+
+\begin_layout Standard
+Methods are started with a single message object as argument.
+ The method is required to return a message object.
+ This message object is used for further processing.
+\end_layout
+
+\begin_layout Subsection
+SuperEvent
+\end_layout
+
+\begin_layout Standard
+This is the ClientEvent's and MessageHandler's super class.
+ Although they belong together they have been split up to avoid custom functions
+ from interfering with the class' variable pool.
+ As the custom methods are executed in the ClientEvent's scope the variables
+ of the SuperEvent class cannot be touched.
+\end_layout
+
+\begin_layout Standard
+The class offers two different ways of working, the stack and flat mode.
+ When running in stack mode a new method is prepended to the methods defined
+ for a name.
+ Only the top method on the stack is called.
+ If the method is removed the following one will be called from then on.
+ The flat mode is more simple: there is only one method for each name.
+ If the method gets updated, the old one will be lost.
+ If it is removed there will be no method associated with the name.
+\end_layout
+
+\begin_layout Subsubsection
+NEW
+\end_layout
+
+\begin_layout Standard
+This initializes a new instance of the class.
+ The methods directory in initialized and the working mode is set to stack.
+\end_layout
+
+\begin_layout Subsubsection
+EventSetMode
+\end_layout
+
+\begin_layout LyX-Code
+EventSetMode(mode)
+\end_layout
+
+\begin_layout Standard
+Accepts a string starting with stack or flat.
+ Sets the working mode to either stack or flat mode.
+ See the class' description for an explanation.
+ When switching from stack to flat mode all methods associated with a name
+ are dropped, expect the currently active one.
+\end_layout
+
+\begin_layout Subsubsection
+EventGetMode
+\end_layout
+
+\begin_layout Standard
+Returns either `S' or `F', for stack or flat mode.
+\end_layout
+
+\begin_layout Subsubsection
+EventSetMethod
+\end_layout
+
+\begin_layout LyX-Code
+EventSetMethod(name,source)
+\end_layout
+
+\begin_layout LyX-Code
+EventSetMethod(name,object)
+\end_layout
+
+\begin_layout Standard
+This method accepts a name and a source.
+ The name is the name that will be used to register the method internally.
+ The source object is either a string or a method object.
+ In case it is a string a new method will be created.
+\end_layout
+
+\begin_layout Standard
+If the second argument is an object different to a string or a method it
+ is stored as well.
+ When the event occurs the object receives a messages calling the method
+ name.
+\end_layout
+
+\begin_layout Standard
+All methods have to return a value.
+ To indicate that processing should continue a method has to return 1.
+ In case a method does not return a value execution can not contine.
+\end_layout
+
+\begin_layout Paragraph
+Example:
+\end_layout
+
+\begin_layout LyX-Code
+testobject = .TestClass~new
+\end_layout
+
+\begin_layout LyX-Code
+/* TestClass has a method OnConnect */
+\end_layout
+
+\begin_layout LyX-Code
+client~GetEventHandler~EventSetMethod("OnConnect",testobject)
+\end_layout
+
+\begin_layout LyX-Code
+client~GetEventHandler~EventSetMethod("OnConnect","Say 'Hi'!; return 1")
+\end_layout
+
+\begin_layout LyX-Code
+client~GetEventHandler~EventSetMethod("OnConnect",.method~new([]))
+\end_layout
+
+\begin_layout Subsubsection
+EventSetMethods
+\end_layout
+
+\begin_layout LyX-Code
+EventSetMethods(methods directory)
+\end_layout
+
+\begin_layout Standard
+This method accepts a directory.
+ An entries name is the method name, the object associated with it is either
+ a string or a method object.
+ The method forwards those values to the method EventSetMethod.
+\end_layout
+
+\begin_layout Paragraph
+Example:
+\end_layout
+
+\begin_layout LyX-Code
+client~GetEventHandler~EventSetMethods(.METHODS)
+\end_layout
+
+\begin_layout LyX-Code
+/* All local methods not belonging to a class are now loaded
+\end_layout
+
+\begin_layout LyX-Code
+into the IRC client*/
+\end_layout
+
+\begin_layout Subsubsection
+EventGetMethod
+\end_layout
+
+\begin_layout LyX-Code
+EventGetMethod(name)
+\end_layout
+
+\begin_layout LyX-Code
+EventGetMethod(name,index)
+\end_layout
+
+\begin_layout Standard
+Returns the currently active method object for a name or 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+symbol{46}
+\end_layout
+
+\end_inset
+
+nil if it doesn't exist.
+ If the index is specified it returns the method at the index.
+ As the methods are stored in a queue the head element is at index one.
+ The number of elements is returned by EventHasMethod(name).
+\end_layout
+
+\begin_layout Subsubsection
+EventRemoveMethod
+\end_layout
+
+\begin_layout LyX-Code
+EventRemoveMethod(name)
+\end_layout
+
+\begin_layout Standard
+Accepts a string that is the name of the method to be removed.
+ If the method exists the currently active method is returned and removed
+ from the stack.
+ Otherwise the 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+symbol{46}
+\end_layout
+
+\end_inset
+
+nil object is returned.
+ If the last method defined was removed, the entry in the methods directory
+ of the parent's class will also be removed.
+\end_layout
+
+\begin_layout Subsubsection
+EventHasMethod
+\end_layout
+
+\begin_layout LyX-Code
+EventHasMethod(name)
+\end_layout
+
+\begin_layout Standard
+Accepts a string.
+ Returns the number of methods defined for name.
+ If none are defined zero is returned.
+\end_layout
+
+\begin_layout Subsection
+IRC class
+\end_layout
+
+\begin_layout Standard
+This is the heart of the whole.
+ It does most of the work, all messages pass it.
+ It handles the connection and disconnection of the socket, receives messages
+ from the server and pipes internal messages to the client as needed.
+\end_layout
+
+\begin_layout Standard
+The IRC class has a users and channels array which hold the known channels
+ and user objects for the client.
+ The user at the array position 1 is the own user object.
+\end_layout
+
+\begin_layout Subsubsection
+NEW
+\end_layout
+
+\begin_layout LyX-Code
+NEW
+\end_layout
+
+\begin_layout Standard
+This method returns a new instance of the IRC class.
+ It accepts no parameters.
+ It initializes the users array, the channel array, the MessageHandler and
+ the ClientEvent object.
+ The user and channel array can be accessed via the attribute user and channel
+ of the IRC object.
+\end_layout
+
+\begin_layout Subsubsection
+Connect
+\end_layout
+
+\begin_layout LyX-Code
+Connect(host,server password,nick,username,description)
+\end_layout
+
+\begin_layout Standard
+This method accepts a host object, a server password, the default nickname,
+ the user name and a descriptive string.
+ It tries connecting to the host object, using an instance of the LNSocket
+ class.
+ In case it established a connection to the IRC server it writes connection
+ essential commands on the socket.
+\end_layout
+
+\begin_layout Paragraph
+Example:
+\end_layout
+
+\begin_layout LyX-Code
+irchost = 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+symbol{46}
+\end_layout
+
+\end_inset
+
+host~new~~SetHost("irc.someserver.com")
+\end_layout
+
+\begin_layout LyX-Code
+client  = 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+symbol{46}
+\end_layout
+
+\end_inset
+
+irc~new()
+\end_layout
+
+\begin_layout LyX-Code
+client~connect(irchost, 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+symbol{46}
+\end_layout
+
+\end_inset
+
+nil,"myname","my full name","Just a test")
+\end_layout
+
+\begin_layout Subsubsection
+DisConnect
+\end_layout
+
+\begin_layout LyX-Code
+DisConnect
+\end_layout
+
+\begin_layout Standard
+This method does the opposite of the connect method: It disconnects the
+ socket from the server.
+\end_layout
+
+\begin_layout Subsubsection
+Write
+\end_layout
+
+\begin_layout LyX-Code
+Write(message object)
+\end_layout
+
+\begin_layout Standard
+The write methods sends a message to the server.
+ It accepts any object if it is a subclass of the IRCMessage class.
+ The object has to come with an IRCString method that returns a string represent
+ing the command in a way conforming to the IRC protocol.
+\end_layout
+
+\begin_layout Paragraph
+Example:
+\end_layout
+
+\begin_layout LyX-Code
+client~Write(.msgwhois~new("Hugo"))
+\end_layout
+
+\begin_layout Subsubsection
+Writeln
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+This method is not intended to be used anymore.
+ It has been replaced by the method Write of the same class.
+\end_layout
+
+\begin_layout LyX-Code
+Writeln(string)
+\end_layout
+
+\begin_layout Standard
+This method accepts a string which will be written on the socket.
+ This method should not be called from outside, although it is possible.
+ Internally this method is used to write all things back to the server.
+ A 
+\backslash
+n
+\backslash
+r sequence is appended to the string.
+\end_layout
+
+\begin_layout Paragraph
+Example:
+\end_layout
+
+\begin_layout LyX-Code
+client~Writeln("JOIN #rexx")
+\end_layout
+
+\begin_layout Subsubsection
+Event
+\end_layout
+
+\begin_layout LyX-Code
+Event(message)
+\end_layout
+
+\begin_layout Standard
+This is the primary event dispatcher method.
+ It accepts a message object as parameter.
+ Its purpose is to forward message objects to their receiver objects.
+ On top of this it passes message object to the MessageHandler object where
+ preprocessing takes place.
+\end_layout
+
+\begin_layout Paragraph
+Example:
+\end_layout
+
+\begin_layout LyX-Code
+client~Event(.privmsg~new(client~settings~self,channel,"Hi!"))
+\end_layout
+
+\begin_layout Subsubsection
+GetEventHandler
+\end_layout
+
+\begin_layout LyX-Code
+GetEventHandler
+\end_layout
+
+\begin_layout Standard
+This method returns the ClientEvent object.
+ The ClientEvent object is the interface to custom methods.
+ See the ClientEvent class description for details about its usage.
+\end_layout
+
+\begin_layout Paragraph
+Example:
+\end_layout
+
+\begin_layout LyX-Code
+client~GetEventHandler~EventSetmethods(.METHODS)
+\end_layout
+
+\begin_layout LyX-Code
+/* All methods that don't belong to a class are now used for events */
+\end_layout
+
+\begin_layout Subsubsection
+ClientEvent
+\end_layout
+
+\begin_layout LyX-Code
+ClientEvent(name,argument object)
+\end_layout
+
+\begin_layout Standard
+This method accepts a name string and a message object.
+ It tries to execute the ClientEvent object's method "name" with the message
+ object as argument.
+ In case it fails the error is forwarded to the debug class.
+\end_layout
+
+\begin_layout Standard
+The name refers to an entry in the 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+symbol{46}
+\end_layout
+
+\end_inset
+
+local directory.
+\end_layout
+
+\begin_layout Paragraph
+Example:
+\end_layout
+
+\begin_layout LyX-Code
+self~ClientEvent("IRC.EVENT.CONNECT",self)
+\end_layout
+
+\begin_layout LyX-Code
+/* Calls the connect event with the argument self */
+\end_layout
+
+\begin_layout Subsubsection
+Available
+\end_layout
+
+\begin_layout LyX-Code
+Available(string)
+\end_layout
+
+\begin_layout Standard
+This method accepts a raw IRC string.
+ It is called by the LNSocket object whenever there arrives a new line from
+ the server.
+ This method may be subject to change.
+ It should not be called by any other object than the socket.
+\end_layout
+
+\begin_layout Subsubsection
+StrToMessage
+\end_layout
+
+\begin_layout LyX-Code
+StrToMessage(string)
+\end_layout
+
+\begin_layout Standard
+This method is called by the Available method of the same class.
+ It has a string as parameter.
+ The method is private.
+ It parses the IRC protocol and generates message objects from it.
+ On top it manages the users and channels, as far as it can be done at this
+ point.
+\end_layout
+
+\begin_layout Subsubsection
+GetReceiverObject
+\end_layout
+
+\begin_layout LyX-Code
+GetReceiverObject(name)
+\end_layout
+
+\begin_layout Standard
+This method accepts a string.
+ It then looks for a channel or user object that has the name given as parameter.
+ In case it is found the user's or channel's object is returned.
+ If it's not found 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+symbol{46}
+\end_layout
+
+\end_inset
+
+nil is returned.
+ When searching for objects user objects are found first.
+ This is no problem as channels start with a character nicks are not allowed
+ to start with.
+\end_layout
+
+\begin_layout Paragraph
+Example:
+\end_layout
+
+\begin_layout LyX-Code
+User = client~GetReceiverObject(anick)
+\end_layout
+
+\begin_layout LyX-Code
+/* anick is a variable holding a known user name*/
+\end_layout
+
+\begin_layout Subsubsection
+Attributes
+\end_layout
+
+\begin_layout Standard
+Attributes are interfaces to make important variables accessible to other
+ classes.
+\end_layout
+
+\begin_layout Description
+Users The users attribute stores all known user objects in a set.
+\end_layout
+
+\begin_layout Description
+Channels The channels attribute stores all channels the client joined.
+ It is a set as well.
+\end_layout
+
+\begin_layout Description
+MessageHandler To give applications access to the low-level message handler
+ this method returns the MessageHandler object.
+\end_layout
+
+\begin_layout Description
+Command The command attribute stores an IRCCommands instance.
+ This object implements IRC functions.
+\end_layout
+
+\begin_layout Description
+Settings The settings attribute gives access to a directory object that
+ store server specific settings.
+\end_layout
+
+\begin_layout Subsection
+Channel Class
+\end_layout
+
+\begin_layout Standard
+This class build channel objects.
+ The channel objects have a list of users who joined the channel and their
+ mode.
+ Channel objects are created and destructed automatically, there is no need
+ of a client to create channels.
+\end_layout
+
+\begin_layout Subsubsection
+New
+\end_layout
+
+\begin_layout LyX-Code
+New(irc client,name)
+\end_layout
+
+\begin_layout Standard
+The method returns a new instance of the channel class.
+ It needs to be initialized with the irc client object and the name as arguments.
+ It registers with the channels array of the client, adding a new entry.
+ The position in the array is a channel's ID.
+\end_layout
+
+\begin_layout Subsubsection
+UnInit
+\end_layout
+
+\begin_layout LyX-Code
+UnInit
+\end_layout
+
+\begin_layout Standard
+This method removes the channel from the irc client object and destructs
+ the channel object.
+ It should not be called from outside as the channel destructs automatically.
+\end_layout
+
+\begin_layout Subsubsection
+Event
+\end_layout
+
+\begin_layout LyX-Code
+Event(message)
+\end_layout
+
+\begin_layout Standard
+The event method accepts a message object.
+ From the information contained in it it takes the appropriate actions.
+ Although it is possible to send message objects to it it is not needed
+ in most cases.
+\end_layout
+
+\begin_layout Subsubsection
+MakeString
+\end_layout
+
+\begin_layout LyX-Code
+MakeString
+\end_layout
+
+\begin_layout Standard
+The MakeString method returns the channel name.
+\end_layout
+
+\begin_layout Paragraph
+Example:
+\end_layout
+
+\begin_layout LyX-Code
+::METHOD OnSay
+\end_layout
+
+\begin_layout LyX-Code
+use arg message
+\end_layout
+
+\begin_layout LyX-Code
+Say "-"message~sender~MakeString"/",
+\end_layout
+
+\begin_layout LyX-Code
+       message~receiver~MakeString"-",
+\end_layout
+
+\begin_layout LyX-Code
+       message~string
+\end_layout
+
+\begin_layout Subsubsection
+UserIsMember
+\end_layout
+
+\begin_layout LyX-Code
+UserIsMember(nick object)
+\end_layout
+
+\begin_layout Standard
+The method returns 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+symbol{46}
+\end_layout
+
+\end_inset
+
+true in case the user is a member of the channel.
+ The argument has to be an user object.
+\end_layout
+
+\begin_layout Subsubsection
+Users
+\end_layout
+
+\begin_layout LyX-Code
+Users
+\end_layout
+
+\begin_layout Standard
+This is a set storing the user objects that are members of the channel.
+\end_layout
+
+\begin_layout Subsection
+Debug Class
+\end_layout
+
+\begin_layout Standard
+The debug class is used to generate debug output that is not printed to
+ the standard out but written to a file.
+ The debug class has only class methods, meaning it can not be instanced.
+ When the file is loaded that contains the class definition the standard
+ monitor is set to the default output stream (which is STDOUT: in most cases).
+ The Initialize method can be used to change the monitor object and set
+ the logging level.
+\end_layout
+
+\begin_layout Standard
+The logging level defines what debug output is written to the monitor and
+ what is not.
+ The levels and their description can be seen in Table\InsetSpace ~
+
+\begin_inset LatexCommand vref
+reference "tab:Levels-for-debugging"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float table
+wide false
+sideways false
+status open
+
+\begin_layout Standard
+\begin_inset Caption
+
+\begin_layout Standard
+Levels for debugging
+\begin_inset LatexCommand label
+name "tab:Levels-for-debugging"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Tabular
+<lyxtabular version="3" rows="6" columns="2">
+<features>
+<column alignment="center" valignment="top" leftline="true" width="0">
+<column alignment="center" valignment="top" leftline="true" rightline="true" width="0">
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Level
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Description
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Method and routine calls
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+2
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Argument input of a method or a function
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+4
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Return values
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+8
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Intermediates
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+16
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Errors
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Description
+1/Bit\InsetSpace ~
+1 method/routine calls
+\end_layout
+
+\begin_layout Description
+2/Bit\InsetSpace ~
+2 argument input of a method or routine
+\end_layout
+
+\begin_layout Description
+4/Bit\InsetSpace ~
+3 return values
+\end_layout
+
+\begin_layout Description
+8/Bit\InsetSpace ~
+4 intermediates
+\end_layout
+
+\begin_layout Description
+16/Bit\InsetSpace ~
+5 errors
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Each entry represents a bit set.
+ The following number only logs method calls, return values and errors:
+ "10101"b.
+ To log all messages use a mask with all bits set.
+\end_layout
+
+\begin_layout Standard
+All methods defined by the debug class are class methods.
+ That means that is is not useful to create instances of the debug class.
+\end_layout
+
+\begin_layout Subsubsection
+Init
+\end_layout
+
+\begin_layout Standard
+The method is called by the Rexx interpreter.
+ It sets the monitor to the default output stream.
+ It can be called to reset the class to the default monitor object.
+\end_layout
+
+\begin_layout Subsubsection
+Initialize
+\end_layout
+
+\begin_layout Standard
+This method accepts a stream object and a bit mask.
+ It opens the stream in write and replace mode, buffering disabled to be
+ able to log from concurrent threads.
+ It stores itself in the 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+symbol{46}
+\end_layout
+
+\end_inset
+
+local directory at the entry 
+\begin_inset Quotes eld
+\end_inset
+
+DEBUG
+\begin_inset Quotes erd
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Paragraph
+Example:
+\end_layout
+
+\begin_layout LyX-Code
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+symbol{46}
+\end_layout
+
+\end_inset
+
+Debug~Initialize(.Stream~New("program.log"), "10101"b)
+\end_layout
+
+\begin_layout LyX-Code
+/* Log calls, return values and errors to program.log */
+\end_layout
+
+\begin_layout Subsubsection
+Debug
+\end_layout
+
+\begin_layout LyX-Code
+Debug(string[,level])
+\end_layout
+
+\begin_layout Standard
+This method accepts a string and a level.
+ The level is not a bit mask but a number.
+ The numbers refer to the bits.
+ A debug statement that refers to a method call would have a level of 1,
+ a call that shows intermediates and and errors would have a level of 8+16=24.
+ If the level is omitted the string is printed anyway, only that ">>" is
+ prepended to it.
+\end_layout
+
+\begin_layout Standard
+To access this method directly without accessing the 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+symbol{46}
+\end_layout
+
+\end_inset
+
+local environment there is a debug() routine that has the same parameters
+ like the Debug method.
+\end_layout
+
+\begin_layout Paragraph
+Example:
+\end_layout
+
+\begin_layout LyX-Code
+.debug~debug("Main Class: Init method called!",1)
+\end_layout
+
+\begin_layout Subsubsection
+Error
+\end_layout
+
+\begin_layout LyX-Code
+Error
+\end_layout
+
+\begin_layout LyX-Code
+Error(condition('O'))
+\end_layout
+
+\begin_layout Standard
+This method accepts an object like condition('O') returns it.
+ In case it is omitted the method tries to get the error directory, but
+ that does not always work.
+ The information included in the object is printed to the output stream.
+ If an error object is received it is stored in the 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+symbol{46}
+\end_layout
+
+\end_inset
+
+local directory at the entry IRC.DEBUG.LASTERROR.
+\end_layout
+
+\begin_layout Paragraph
+Example:
+\end_layout
+
+\begin_layout LyX-Code
+signal on syntax name syntaxerror
+\end_layout
+
+\begin_layout LyX-Code
+\begin_inset ERT
+status open
+
+\begin_layout Standard
+
+[
+\backslash
+dots]
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout LyX-Code
+syntaxerror: 
+\begin_inset ERT
+status open
+
+\begin_layout Standard
+
+
+\backslash
+symbol{46}
+\end_layout
+
+\end_inset
+
+debug~error(condition('O'))
+\end_layout
+
+\begin_layout Subsection
+Socket class
+\end_layout
+
+\begin_layout Standard
+The socket class implements a very basic interface class for working with
+ TCP/IP connections from Rexx.
+ It only supports connecting to ports of a given host.
+ Acting as a server (switching a socket to listen mode) is not supported.
+ The socket class implements wrappers for connecting and disconnecting,
+ reading and writing of data and for querying the readability.
+ The current implementation works, but is not very elegant
+\begin_inset ERT
+status open
+
+\begin_layout Standard
+
+
+\backslash
+ldots
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+LNSocket class
+\end_layout
+
+\begin_layout Standard
+LNSocket means something like `Line Socket'.
+ It inherits from the socket class.
+ This class is very special: it connects to the host just like the normal
+ socket class.
+ The difference is that it has a reference to an object.
+ Each time a full line (ending with 
+\backslash
+r
+\backslash
+n) is received from the server the class calles the method `available' of
+ the object.
+ When the connection breaks it calles the `disconnect' method.
+ At the moment the main loop that waits for data is located in this class.
+ It is true that locating it in the IRC class would be better, it is on
+ my to-do list!
+\end_layout
+
+\begin_layout Subsection
+Host class
+\end_layout
+
+\begin_layout Standard
+The host class is able to parse URLs up to a certain level [(0--9)+(:(0--9)*)].
+ In case the part in front of the colon is not an IP address it assumes
+ that it's a host name and tries to look it up.
+ The result is strored in the public attributes IP and PORT.
+\end_layout
+
+\begin_layout Subsection
+Standard routines
+\end_layout
+
+\begin_layout Subsubsection
+NowToTS
+\end_layout
+
+\begin_layout LyX-Code
+NowToTS()
+\end_layout
+
+\begin_layout Standard
+Returns the current time as a UNIX time stamp (seconds since 01--01--1970).
+\end_layout
+
+\begin_layout Paragraph
+Example:
+\end_layout
+
+\begin_layout LyX-Code
+timestamp = NowToTS()
+\end_layout
+
+\begin_layout Subsubsection
+TSToStr
+\end_layout
+
+\begin_layout LyX-Code
+TSToStr(timestamp)
+\end_layout
+
+\begin_layout Standard
+Accepts a UNIX time stamp as parameter and returns the time and date in
+ a human readable format.
+\end_layout
+
+\begin_layout Paragraph
+Example:
+\end_layout
+
+\begin_layout LyX-Code
+Say TSToStr(timestamp)
+\end_layout
+
+\begin_layout Section
+Messages
+\begin_inset LatexCommand label
+name "sec:Messages"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This chapter covers how incoming messages are handled.
+\begin_inset Foot
+status collapsed
+
+\begin_layout Standard
+Switching on the debug mode helps understanding the messages' flow!
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+First a line is read by the socket interface object.
+ As the main loop is placed inside the socket object the client is notified
+ about every new line as soon as it arrives.
+ The instance of the LNSocket class calls the method `Available' of the
+ client with the line as argument.
+ This line is in raw IRC format.
+ Basically there are two main classes of messages: numeric and non-numeric
+ messages.
+ The numeric messages are commonly used to organize the connection and to
+ return information to the client.
+ The other messages are more essential to the connection and cover all commands
+ that can be issued and textual messages.
+ There are some outgoing messages that are similar to the incoming ones,
+ but a client can not create any numeric message.
+\end_layout
+
+\begin_layout Standard
+All messages are subclasses of the ircmessage class.
+ This class only implements a time stamp.
+ When an instance is created the time stamp is initialized with the current
+ time.
+ The ircmessage only has this one property as the messages floating around
+ are very different.
+\end_layout
+
+\begin_layout Standard
+Most messages can be used in both directions from the server and back to
+ server.
+ The problem that some messages will cause the server to return a number
+ of numeric messages is covered later.
+ In order to be able to convert a message object to a string that is conform
+ to the IRC protocol the message objectes need to implement a method called
+ IRCString.
+ This method just returns the string.
+\end_layout
+
+\begin_layout Subsection
+User messages
+\end_layout
+
+\begin_layout Standard
+The main difference between user and server messages is that user messages
+ have a sender different to the server.
+ The sender is a user, which will be represented by a user object.
+ There are some messages that don't have a target attribute.
+ That means that the target is the same as the sender.
+\end_layout
+
+\begin_layout Subsubsection
+Nick message --- msgnick
+\end_layout
+
+\begin_layout Standard
+This message announces that the sender changed the nick to the new nick
+ transferred in the message.
+ The sender still has the old nick, the message gets forwarded to the internal
+ user object for the user and the nick name is updated.
+ From that time on only the new nick name exists.
+\end_layout
+
+\begin_layout Subsubsection
+Quit message --- msgquit
+\end_layout
+
+\begin_layout Standard
+If a user quits from IRC a quit message is passed to all users that shared
+ a channel with the quitting user.
+ It announces that the user is not online anymore.
+ The quit message has a string attribute that can contain some more information
+ about the reason for quitting.
+ This is only an informative string.
+\end_layout
+
+\begin_layout Subsubsection
+User messages featuring a receiver object --- umsgr
+\end_layout
+
+\begin_layout Standard
+All messages that have a target (or receiver) other than themselves inherit
+ this class.
+ 
+\end_layout
+
+\begin_layout Subsection
+The message's flow
+\end_layout
+
+\begin_layout Subsubsection
+Join message
+\end_layout
+
+\begin_layout Standard
+First the user joining a channel gets the message.
+ The user object looks for a channel with the given name.
+ If it's not found it is created.
+ The join message is then forwarded to the channel object.
+ The channel object calls the ClientEvent method to inform the application
+ of the event..
+\end_layout
+
+\begin_layout Subsubsection
+Part message
+\end_layout
+
+\begin_layout Standard
+When a user object receives a part message it forwards it to the appropriate
+ channel.
+ In case the user object is not the client if looks for any other channels
+ the user is still in.
+ If there are no channels found the user object is removed as well.
+ The user object is not removed if it is the own user's object.
+\end_layout
+
+\begin_layout Section
+How scripting works
+\end_layout
+
+\begin_layout Standard
+Internally the scripting is realized in MessageHandler object.
+ It works similar to the ClientEvent object.
+\end_layout
+
+\begin_layout Standard
+All messages arriving from the IRC server pass through the MessageHandler
+ object.
+ In case the MessageHandler has a method defined for the event associated
+ with the message object the method is executed.
+\end_layout
+
+\begin_layout Standard
+These messages check if a command call has beeen registered and insert missing
+ information if necessary.
+ In case all information has been gathered the command call is returned.
+\end_layout
+
+\begin_layout Subsection
+The MessageHandler object and its role
+\end_layout
+
+\begin_layout Standard
+The MessageHandler object has two special methods for registering and removing
+ events.
+ They are called __RegisterFunctinCall and __RemoveFunctionCall.
+ The first one accepts an object and stores it, the other one accepts the
+ same object and removes it again.
+ The objects are stored in a set.
+\end_layout
+
+\begin_layout Subsubsection
+Storing message results
+\end_layout
+
+\begin_layout Standard
+Each IRC message has a class called name||"Result" that inherits from the
+ Result class.
+ The Result class accepts a message object and a parameter when creating.
+ The parameter is the parameter for the message.
+ A Join message would have the channel to join as parameter string.
+ The message is started when the result has been collected.
+ This state has to be determined by the MessageHandler methods.
+ They send the done message to the result object.
+\end_layout
+
+\begin_layout Subsection
+Implementing IRC commands as functions
+\end_layout
+
+\begin_layout Standard
+An IRC command consists of a call and a result.
+ It's the MessageHandler's task to combine both.
+ By doing that a programmer does not need to know the IRC protocol and can
+ still be able to use all commands it implements.
+\end_layout
+
+\begin_layout Standard
+The MessageHandler class implements methods for the numeric replies and
+ for the IRC command calls.
+ When a method is called that implements an IRC command the method creates
+ aresult object for the command.
+ The result object is stored in the MessageHandler.
+\end_layout
+
+\begin_layout Standard
+After that the flag indicating the event has been completed is cleared.
+ This flag will be set as soon as the event has been completed or a timeout
+ occurred.
+ That leads to the next action: a timeout timer needs to be started.
+ It is set to call a timeout method that will set the flag.
+ Now the command is written on the socket.
+ The method called now waits for the flag to be set.
+ As mentioned before that will either be when the data has been returned
+ or when a timeout occurred.
+\end_layout
+
+\begin_layout Standard
+When the flag has been set and the timeout did not occur it is canceled.
+\end_layout
+
+\begin_layout Standard
+After that the result may be formatted and is returned.
+ The result object is removed from the MessageHandler
+\end_layout
+
+\begin_layout Subsection
+Using the functions
+\end_layout
+
+\begin_layout LyX-Code
+\begin_inset Float algorithm
+wide false
+sideways false
+status open
+
+\begin_layout Standard
+\begin_inset Caption
+
+\begin_layout Standard
+Using the Command object.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout LyX-Code
+::METHOD OnConnect UNGUARDED
+\end_layout
+
+\begin_layout LyX-Code
+    expose Client
+\end_layout
+
+\begin_layout LyX-Code
+    reply 1
+\end_layout
+
+\begin_layout LyX-Code
+    message = Client~Command~IsOn("Moritz")
+\end_layout
+
+\begin_layout LyX-Code
+    if message~Result = "Moritz" then Say "Moritz is online!"
+\end_layout
+
+\begin_layout Description
+UNGUARDED Unguarded is needed as asynchroneous access to the client object
+ is needed.
+\end_layout
+
+\begin_layout Description
+Reply The reply instruction starts threaded execution of both the method
+ and its caller.
+ It is needed as the client object still has to process incoming messages.
+ If it would not the command would not return anything but a timeout.
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+A method is forced to return a value.
+ One is returned here to indicate that processing can continue.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Each IRC class instance has an attribute named Command.
+ This attribute returns an object implementing the IRC functions.
+ Each function is a method that can be called from within the client.
+ The method returns a result object carrying all the information the server
+ returned.
+\end_layout
+
+\begin_layout Standard
+The result of the command is stored in the message's attribute 'Result'
+ in most cases.
+ Depending on the type it will either be a simple string or an array with
+ strings.
+ Some commands already return fully parsed information.
+\end_layout
+
+\begin_layout Paragraph
+Something to care about
+\end_layout
+
+\begin_layout Standard
+Commands need threads to work.
+ The calling thread is suspended while the IRC client waits for the information
+ returned.
+ To avoid locks the calling method must be unguarded and is required to
+ 'reply' the main thread to the IRC client.
+ Otherwise the execution of the IRC client blocks until the method returns.
+ The command returns after a timeout
+\begin_inset Foot
+status open
+
+\begin_layout Standard
+Value stored in IRC.TIMEOUT.SCRIPTS (seconds).
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection
+Hooking events
+\end_layout
+
+\begin_layout Standard
+Every event encountered by the irc class creates a event call.
+ There are a number of events.
+ Many events are associated with more than one method name.
+ In that case the client looks for all possible method names and executes
+ the first one found.
+\end_layout
+
+\begin_layout Standard
+The way how the hooking works is best described by giving an example.
+ It is very common that a client wants to register a method with the privmsg
+ IRC command.
+ This command basically transfers text between user and channels.
+ There is an event that is called IRC.EVENT.UPRIVMSG.
+ It is an entry in the 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+symbol{46}
+\end_layout
+
+\end_inset
+
+local directory.
+ The event is started when there arrives a privmsg that was sent to a user.
+ Now the client looks for one of the methods OnChannelPrivMsg, OnPrivMsg
+ and OnSay.
+ It tests whether there exists a method defined for one of those names.
+ If it is found it is executed.
+ The argument should be a 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+symbol{46}
+\end_layout
+
+\end_inset
+
+privmsg instance.
+\end_layout
+
+\begin_layout Standard
+The command to register an event is the following:
+\end_layout
+
+\begin_layout LyX-Code
+-- Get the eventhandler
+\end_layout
+
+\begin_layout LyX-Code
+eventhandler = client~GetEventHandler
+\end_layout
+
+\begin_layout LyX-Code
+mysay = 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+symbol{46}
+\end_layout
+
+\end_inset
+
+method~new("MySayMethod","parse arg message;Say message~string;")
+\end_layout
+
+\begin_layout LyX-Code
+-- now register the method that's stored in mysay
+\end_layout
+
+\begin_layout LyX-Code
+eventhandler~EventSetMethod("OnSay",mysay)
+\end_layout
+
+\begin_layout Standard
+The previous example registered a method for the OnSay event.
+ This is executed whenever there arrives a textual message that is not a
+ notice.
+ The method does not return 1 thus the search for previously defined methods
+ is not continued.
+ At the time the event is created all the work maintaining the integrity
+ of the class has been finished, the functionalitiy of the method is not
+ critical for the connection.
+\end_layout
+
+\begin_layout Standard
+Methods can be defined either with a source string or a method object.
+ It is better to define a method object as the translation of the source
+ could cause errors and slows the program down.
+ It is also possible to extract a method objet from an object or a class
+ using the Method or Methods methods the Class class implements.
+\end_layout
+
+\begin_layout Standard
+The methods are executed in the scope of the ClientEvent or MessageHandler
+ objects.
+ If a message is sent the execution takes place in the receiver object's
+ scope.
+\end_layout
+
+\begin_layout Subsection
+Events causing errors
+\end_layout
+
+\begin_layout Standard
+In general the error object is forwarded to the debug class.
+ This class either writes the error message to STDOUT: or the steam defined.
+ If also stores the error object in the 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+symbol{46}
+\end_layout
+
+\end_inset
+
+local directory at the entry IRC.DEBUG.LASTERROR.
+ This enables the programmer to access any last error.
+\end_layout
+
+\begin_layout Standard
+When an event method crashes a special event method is started.
+ The name is EventError.
+ The argument is the error object.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Section
+Accessing the server --- using the TalkBack objects
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Standard
+This part needs to be rewritten, the name should be changed as well...
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The purpose of this class is to provide a way to talk to the IRC server.
+\end_layout
+
+\begin_layout Standard
+A program can request a talkback object from a client, a channel and a user.
+ The object provides methods for the IRC commands that can be used on those
+ objects.
+ A user's talkback object has a PrivMsg method for example.
+ The PrivMsg method would send a standard PRIVMSG to the server.
+ At some point it could happen that the user who should receive the privmsg
+ has no local user object.
+ In that case there is a PrivMsg method offered by the client object that
+ accepts a string and one or more receivers.
+ The method creates the user objects, but in case an error message is returned
+ the user objects will be destructed again.
+ The client could query a user's host mark to see if he is online, but that
+ would slow down the client's speed I suppose.
+ Maybe that can be implemented as an optional feature.
+\end_layout
+
+\begin_layout Standard
+It could work the following way:
+\end_layout
+
+\begin_layout Standard
+-> Client: Talback requested
+\end_layout
+
+\begin_layout Standard
+-> Talkback: PrivMsg called ("Tester testing test","Hugo")
+\end_layout
+
+\begin_layout Standard
+write "HOSTMARK hugo" on socket
+\end_layout
+
+\begin_layout Standard
+wait for the result
+\end_layout
+
+\begin_layout Standard
+if result is something, then create user object
+\end_layout
+
+\begin_layout Standard
+-> "PRIVMSG hugo :Tester testing tests"
+\end_layout
+
+\begin_layout Standard
+-> return 1
+\end_layout
+
+\begin_layout Standard
+else return 0
+\end_layout
+
+\begin_layout Standard
+If there is more than one receiver specified test all of them for existence.
+ In case one doesn't exist return 0, indicating an error.
+ for the existing user there will objects be created, that enables the programme
+r to find out which users were non existing.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+\start_of_appendix
+Getting support
+\end_layout
+
+\begin_layout Standard
+As this is a projet has been created during free time it is very hard to
+ offer a wide range of support.
+ Nonetheless it is possible to contact the author via email and IRC.
+ Try moritz@antiguru.de, or connect to irc.netlabs.org and join channel #netlabs.
+\end_layout
+
+\begin_layout Section
+Bibliography
+\end_layout
+
+\begin_layout Itemize
+RFC1459, J.
+ Oikarinen and D.
+ Reed, May 1993
+\end_layout
+
+\begin_layout Itemize
+RFC2812, C.Kalt, April 200
+\end_layout
+
+\begin_layout Itemize
+ctcp.txt
+\end_layout
+
+\end_body
+\end_document

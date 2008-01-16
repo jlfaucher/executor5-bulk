@@ -245,7 +245,7 @@ data structure should cause no problem.
   ObjectIndex[CurrentPos] = Object
 
 ::METHOD ToSerializableDataCtrl
-  expose ObjectList ClassType ObjectIndex Buffer StringIndex --stat.
+  expose ObjectList ClassType ObjectIndex Buffer StringIndex stat.
   use arg Object
   -- initalize some containers
   -- store the object -> id relation
@@ -255,11 +255,11 @@ data structure should cause no problem.
   -- store id -> object relation
   ObjectList = .array~new
   
---  do i = 1 to 2
---    do j = 1 to 2 
---      stat.i.j = 0
---    end
---  end
+  do i = 1 to 2
+    do j = 1 to 2 
+      stat.i.j = 0
+    end
+  end
 
   -- the first item to be serialized is no. 1
   position = 1
@@ -282,7 +282,7 @@ data structure should cause no problem.
       Handler~Serialize(self, Buffer, Object)
     end
     -- the nil handler can not match by class
-    else if Object == .nil then
+    else if Object = .nil then
       Buffer~append("NIL")
     -- no handler found and object is not .nil, so raise an error
     else raise syntax 93.900 array ("Unable to serialize object at position" position":" Object)
@@ -292,12 +292,12 @@ data structure should cause no problem.
   -- append object structure end marker
   Buffer~append(";")
   -- return the array of lines
-/*
+
 Say "strings:" StringIndex~items
 Say "other objects:" ObjectIndex~items
-Say "cache: String:"stat.1.1"/"stat.1.2
-Say "       Object:"stat.2.1"/"stat.1.2
-*/
+Say "cache: String: total:" stat.1.1 "unique:" stat.1.2
+Say "       Object: total: "stat.2.1 "unique:" stat.2.2
+
   return buffer
 
 -- This method is called by handlers to register objects. It returns the
@@ -311,15 +311,15 @@ To avoid this stings have their own table, whereas other objects are stored
 via their identity hash value in a directory.
 */
 ::METHOD ToSerializableData
-  expose ObjectList ObjectIndex StringIndex --stat.
+  expose ObjectList ObjectIndex StringIndex stat.
   use arg Object
   if Object~class = .String then do
     -- work on strings
---    stat.1.1 += 1
+    stat.1.1 += 1
     -- this cache check will avoid serializing the same string again
     if StringIndex~hasIndex(Object) then
       return StringIndex[Object]
---    stat.1.2 += 1
+    stat.1.2 += 1
     -- the ID will be the next ObjectList entry
     CurrPos = ObjectList~size + 1
     -- Store the ID -> string and string -> ID relation
@@ -329,12 +329,12 @@ via their identity hash value in a directory.
   end
   else do
     -- work on other objects
---    stat.2.1 += 1
+    stat.2.1 += 1
     idhash = Object~identityHash
     -- this cache check will avoid serializing the same object again
     if ObjectIndex~HasIndex(idhash) then
       return ObjectIndex[idhash]
-----    stat.2.2 += 1
+    stat.2.2 += 1
     -- the ID will be the next ObjectList entry
     CurrPos = ObjectList~size + 1
     -- Store the ID -> object and object -> ID relation
@@ -502,11 +502,8 @@ by class directly.
   use strict arg Caller, arguments
   ret = .Table~new
   Caller~FromSerializedDataPut(ret)
-  start = 0
-  al = arguments~length
-  do while al > start
-    parse var arguments +(start) index ":" ptr .
-    start = start + index~length + ptr~length + 2
+  do word over arguments~makeArray(" ")
+    parse var word index ":" ptr
     ret~put(Caller~FromSerializedData(ptr), -
       Caller~FromSerializedData(index))
   end
@@ -532,14 +529,12 @@ by class directly.
   use strict arg Caller, arguments
   ret = .Stem~new
   Caller~FromSerializedDataPut(ret)
-  parse var arguments default .
-  if default \= "-" then
-    ret[] = Caller~FromSerializedData(default)
-  start = default~length+1
-  al = arguments~length
-  do while al > start
-    parse var arguments +(start) index ":" ptr .
-    start = start + index~length + ptr~length + 2
+  content = arguments~makeArray(" ")
+  if content[1] \= "-" then
+    ret[] = Caller~FromSerializedData(content[1])
+  content~remove(1)
+  do word over content
+    parse var word index ":" ptr .
     ret[Caller~FromSerializedData(index)] = -
       Caller~FromSerializedData(ptr)
   end
@@ -561,11 +556,8 @@ by class directly.
   use strict arg Caller, arguments
   ret = .Directory~new
   Caller~FromSerializedDataPut(ret)
-  start = 0
-  al = arguments~length
-  do while al > start
-    parse var arguments +(start) index ":" ptr .
-    start = start + index~length + ptr~length + 2
+  do word over arguments~makeArray(" ")
+    parse var word index ":" ptr
     ret~put(Caller~FromSerializedData(ptr), -
     Caller~FromSerializedData(index))
   end
@@ -592,13 +584,9 @@ by class directly.
   use strict arg Caller, arguments
   ret = .Array~new()
   Caller~FromSerializedDataPut(ret)
-  start = 0
-  al = arguments~length
-  do while al > start
-    parse var arguments +(start) index ":" ptr .
---    start = arguments~pos(" ",start+1)
-    start = start + index~length + ptr~length + 2
-    ret[index] = Caller~FromSerializedData(ptr)
+  do word over arguments~makeArray(" ")
+    parse var word index ":" ptr
+    ret[index] = caller~fromSerializedData(ptr)
   end
   return ret
 
@@ -616,12 +604,8 @@ by class directly.
   use strict arg Caller, arguments
   ret = .Bag~new
   Caller~FromSerializedDataPut(ret)
-  start = 0
-  al = arguments~length
-  do while al > start
-    parse var arguments +(start) ptr .
-    start = start + ptr~length + 1
-    ret~Put(Caller~FromSerializedData(ptr))
+  do ptr over arguments~makeArray(" ")
+    ret~put(caller~fromSerializedData(ptr))
   end
   return ret
 
@@ -639,12 +623,8 @@ by class directly.
   use strict arg Caller, arguments
   ret = .List~new
   Caller~FromSerializedDataPut(ret)
-  start = 0
-  al = arguments~length
-  do while al > start
-    parse var arguments +(start) ptr .
-    start = start + ptr~length + 1
-    ret~Insert(Caller~FromSerializedData(ptr))
+  do ptr over arguments~makeArray(" ")
+    ret~insert(caller~fromSerializedData(ptr))
   end
   return ret
 
@@ -662,12 +642,8 @@ by class directly.
   use strict arg Caller, arguments
   ret = .Queue~new
   Caller~FromSerializedDataPut(ret)
-  start = 0
-  al = arguments~length
-  do while al > start
-    parse var arguments +(start) ptr .
-    start = start + ptr~length + 1
-    ret~queue(Caller~FromSerializedData(ptr))
+  do ptr over arguments~makeArray(" ")
+    ret~queue(caller~fromSerializedData(ptr))
   end
   return ret
 
@@ -678,18 +654,19 @@ by class directly.
   return .CircularQueue
 ::METHOD Serialize
   use strict arg Caller, mb, Object
+  mb~append(Object~size" ")
   do item over Object
     mb~append(Caller~ToSerializableData(item) || " ")
   end
 ::METHOD DeSerialize
   use strict arg Caller,arguments
-  ret = .CircularQueue~new(arguments~words)
+  contentptr = arguments~makeArray(" ")
+  ret = .CircularQueue~new(contentptr[1])
+  -- chop off the queue size
+  contentptr~remove(1)
   Caller~FromSerializedDataPut(ret)
-  start = 0
-  al = arguments~length
-  do while al > start
-    parse var arguments +(start) ptr .
-    start = start + ptr~length + 1
-    ret~queue(Caller~FromSerializedData(ptr))
+  do ptr over contentptr
+    ret~queue(caller~fromSerializedData(ptr))
   end
   return ret
+
