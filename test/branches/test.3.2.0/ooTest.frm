@@ -248,8 +248,13 @@ return a
   ::method DOC_EXAMPLE_NOISE_TEST   class; return 6
   ::method DOC_EXAMPLE_NOISE_TEST;         return 6
 
-  ::method MAX_TEST_TYPE  class; return 6
-  ::method MAX_TEST_TYPE;        return 6
+  -- A test type for the ooTest framework examples.
+  ::method FRAMEWORK_EXAMPLE_TEST   class; return 7
+  ::method FRAMEWORK_EXAMPLE_TEST;         return 7
+
+
+  ::method MAX_TEST_TYPE  class; return 7
+  ::method MAX_TEST_TYPE;        return 7
 
   /** all()
    * Returns a set of all the test types possible.
