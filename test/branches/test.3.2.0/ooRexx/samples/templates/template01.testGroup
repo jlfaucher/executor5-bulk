@@ -1,0 +1,137 @@
+#!/usr/bin/rexx
+/*
+   name:             template01.testGroup
+   authors:          <name>
+   date:             <date>
+   version:          0.0.0
+   changed:
+
+   languageLevel:    6.0
+   purpose:          A simple template file for starting test groups.
+                     <put your purpose above>
+
+   remark:           <put any extra remarks here.  not necessarily needed.>
+
+                     <search and replace template.testGroup
+                      with the real test group name>
+
+                     You do *not* need to name your test case class the same as
+                     the file.  You can of course if you want to.
+
+                     <strip out this remark section>
+
+
+   license:          CPL 1.0 (Common Public License v1.0, see below)
+   link:
+
+   category1:        ooRexx
+   category2:        Base
+   category3:        Template
+
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007 - 2008 Rexx Language Association. All rights reserved.  */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+
+  group = .TestGroup~new(s)
+  group~add(.template01.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+  Directives, Classes, or Routines.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::requires 'ooTest.frm'
+
+/* class: template.testGroup - - - - - - - - - - - - - - - - - - - - - - - - -*\
+
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::class "template01.testGroup" public subclass ooTestCase
+
+-- testMethods for each of the possible assertions
+::method 'test01'
+-- this testMethod demonstrates the use of assertEquals
+    self~assertEquals('01',1)
+
+::method 'test02'
+-- this testMethod demonstrates the use of assertNotEquals
+    self~assertNotEquals(2,1)
+
+::method 'test03'
+-- this testMethod demonstrates the use of assertNull
+    self~assertNull(.nil)
+
+::method 'test04'
+-- this testMethod demonstrates the use of assertNotNull
+    self~assertNotNull('')
+
+::method 'test05'
+-- this testMethod demonstrates the use of assertSame
+    self~assertSame(1,1*1)
+
+::method 'test06'
+-- this testMethod demonstrates the use of assertNotSame
+    self~assertNotSame(1,'01')
+
+::method 'test07'
+-- this testMethod demonstrates the use of assertTrue
+    self~assertTrue(1='01')
+
+::method 'test08'
+-- this testMethod demonstrates the use of assertFalse
+    self~assertFalse(1=='01')
+
+::method 'test09'
+-- this testMethod demonstrates the use of expectSyntax
+    self~expectSyntax(42.3)
+    rv = 1 / 0
+
+::method 'test10'
+-- this testMethod demonstrates the use of expectSyntax
+    self~expectCondition("NOSTRING")
+    raise NOSTRING
+
+
+
+
+
+-- End of class: template.testGroup
