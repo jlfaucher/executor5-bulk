@@ -1718,7 +1718,7 @@ return suite
 
         when \ isSubClassOf(container~class, "TestContainer") then do
           obj = self~maybeCreateContainer(container, fileName)
-          say "" obj
+
           select
             when obj~isA(.Notification) then do
               testResult~addNotification(obj)
