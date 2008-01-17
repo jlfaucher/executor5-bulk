@@ -40,34 +40,25 @@
 /*----------------------------------------------------------------------------*/
 
 
--- Derived from Listing 2-2
+-- Derived from Listing 2-1
 -- Foundations of GTK+ Development
 -- by Andrew Krause
 
-window = .myMainWindow~new('GTK_WINDOW_TOPLEVEL')
-window~set_title( 'Hello World')
-window~set_border_width(10)
-window~set_size_request(200, 100)
+-- This is an alternative example that uses a more ooRexx friendly syntax. The
+-- original example uses methods that are direct ports of the GTK C function
+-- calls. This example uses a syntax that is more Rexx-like.
 
-window~connect_signal("destroy")
--- events cannot be overridden so there is no connect to a delete_event
+window = .GTKWindow~new('GTK_WINDOW_TOPLEVEL')
+window~title = 'Hello World'
+window~show()
 
-label= .GtkLabel~new('Hellow World')
-label~set_selectable(.true)
-
-window~add(label)
-window~show_all()
+say 'You must ctrl-c (twice) to end this program after closing the window'
 
 call gtk_main
 
+-- we will never get here since there is no connection to a destroy routine
 return
 
 
 ::requires 'rexxgtk.cls'
-
-::class myMainWindow subclass GtkWindow
-
-::method signal_destroy
-.local['GTK_Quit'] = .true
-return
 

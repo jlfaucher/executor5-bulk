@@ -40,26 +40,47 @@
 /*----------------------------------------------------------------------------*/
 
 
--- Derived from Listing 2-2
+-- Derived from Listing 4-9
 -- Foundations of GTK+ Development
 -- by Andrew Krause
 
+-- This is an alternative example that uses a more ooRexx friendly syntax. The
+-- original example uses methods that are direct ports of the GTK C function
+-- calls. This example uses a syntax that is more Rexx-like.
+
+-- There is a problem with the GtkColorButton returned by GTK. The GTK
+-- subsystem clains the button is not a widget! Therefore some operations
+-- fail, including the connect_signal method of the color button.
+
+say 'This test does not work due to a problem with the GTK run time not'
+say 'recognising the color button as a valid GTK widget.'
+say
+
 window = .myMainWindow~new('GTK_WINDOW_TOPLEVEL')
-window~set_title( 'Hello World')
-window~set_border_width(10)
-window~set_size_request(200, 100)
-
+window~title = 'Color Button'
 window~connect_signal("destroy")
--- events cannot be overridden so there is no connect to a delete_event
+window~border_width = 10
 
-label= .GtkLabel~new('Hellow World')
-label~set_selectable(.true)
+color = '#000033336666'  -- each color is really 16-bit number, not 8 bits
+button = .MyButton~new(color)
+button~title = 'Select a Color'
 
-window~add(label)
+label = .GtkLabel~new('Look at my color!')
+label~modify_fg('GTK_STATE_NORMAL', color)
+
+-- save data for the callback
+button~user_data = label
+
+button~connect_signal('color_set')
+
+hbox = .GtkHBox~new(.false, 5)
+hbox~pack_start_defaults(button)
+hbox~pack_start_defaults(label)
+
+window~add(hbox)
 window~show_all()
 
 call gtk_main
-
 return
 
 
@@ -69,5 +90,12 @@ return
 
 ::method signal_destroy
 .local['GTK_Quit'] = .true
+return
+
+::class MyButton subclass GtkColorButton_With_Color
+
+::method signal_color_set
+color = self~color
+self~user_data~modify_fg('GTK_STATE_NORMAL', color)
 return
 

@@ -57,7 +57,7 @@ window~set_title('Color Button')
 window~connect_signal("destroy")
 window~set_border_width(10)
 
-color = '#000033336666'  -- each color is really 16-bit number, not an 8 bits
+color = '#000033336666'  -- each color is really 16-bit number, not 8 bits
 button = .MyButton~new(color)
 button~set_title('Select a Color')
 

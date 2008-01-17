@@ -40,26 +40,37 @@
 /*----------------------------------------------------------------------------*/
 
 
--- Derived from Listing 2-2
+-- Derived from Listing 4-7
 -- Foundations of GTK+ Development
 -- by Andrew Krause
 
+-- This is an alternative example that uses a more ooRexx friendly syntax. The
+-- original example uses methods that are direct ports of the GTK C function
+-- calls. This example uses a syntax that is more Rexx-like.
+
 window = .myMainWindow~new('GTK_WINDOW_TOPLEVEL')
-window~set_title( 'Hello World')
-window~set_border_width(10)
-window~set_size_request(200, 100)
-
+window~title = 'Scales'
 window~connect_signal("destroy")
--- events cannot be overridden so there is no connect to a delete_event
+window~border_width = 10
+window~set_size_request(250, -1)
 
-label= .GtkLabel~new('Hellow World')
-label~set_selectable(.true)
+scale_int = .GtkHScale_With_Range~new(0.0, 10.0, 1.0)
+scale_float = .GtkHScale_With_Range~new(0.0, 1.0, 0.1)
 
-window~add(label)
+scale_int~digits = 0
+scale_float~digits = 1
+
+scale_int~value_pos = 'GTK_POS_RIGHT'
+scale_float~value_pos = 'GTK_POS_LEFT'
+
+vbox = .GtkVBox~new(.false, 5)
+vbox~pack_start_defaults(scale_int)
+vbox~pack_start_defaults(scale_float)
+
+window~add(vbox)
 window~show_all()
 
 call gtk_main
-
 return
 
 

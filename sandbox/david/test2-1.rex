@@ -45,8 +45,6 @@
 -- by Andrew Krause
 
 window = .GTKWindow~new('GTK_WINDOW_TOPLEVEL')
--- the following could also be coded as
---    window~title = 'Hello World'
 window~set_title('Hello World')
 window~show()
 

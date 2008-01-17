@@ -40,26 +40,39 @@
 /*----------------------------------------------------------------------------*/
 
 
--- Derived from Listing 2-2
+-- Derived from Listing 4-5
 -- Foundations of GTK+ Development
 -- by Andrew Krause
 
+-- This is an alternative example that uses a more ooRexx friendly syntax. The
+-- original example uses methods that are direct ports of the GTK C function
+-- calls. This example uses a syntax that is more Rexx-like.
+
 window = .myMainWindow~new('GTK_WINDOW_TOPLEVEL')
-window~set_title( 'Hello World')
-window~set_border_width(10)
-window~set_size_request(200, 100)
-
+window~title = 'Password'
 window~connect_signal("destroy")
--- events cannot be overridden so there is no connect to a delete_event
+window~border_width = 10
 
-label= .GtkLabel~new('Hellow World')
-label~set_selectable(.true)
+str = 'What is the password for' userid() || '?'
+question = .GtkLabel~new(str)
+label = .GtkLabel~new('Password:')
 
-window~add(label)
+pass = .GtkEntry~new()
+pass~visibility = .false
+pass~invisible_char = '*'
+
+hbox = .GtkHBox~new(.false, 5)
+hbox~pack_start_defaults(label)
+hbox~pack_start_defaults(pass)
+
+vbox = .GtkVBox~new(.false, 5)
+vbox~pack_start_defaults(question)
+vbox~pack_start_defaults(hbox)
+
+window~add(vbox)
 window~show_all()
 
 call gtk_main
-
 return
 
 

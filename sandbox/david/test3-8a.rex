@@ -40,26 +40,45 @@
 /*----------------------------------------------------------------------------*/
 
 
--- Derived from Listing 2-2
+-- Derived from Listing 3-8
 -- Foundations of GTK+ Development
 -- by Andrew Krause
 
+-- Note: The source code in the book is wrong. The downloaded source for the
+-- book is correct. Label controls do not respond to the "clicked" signal so
+-- we need buttons instead.
+
+-- This is an alternative example that uses a more ooRexx friendly syntax. The
+-- original example uses methods that are direct ports of the GTK C function
+-- calls. This example uses a syntax that is more Rexx-like.
+
 window = .myMainWindow~new('GTK_WINDOW_TOPLEVEL')
-window~set_title( 'Hello World')
-window~set_border_width(10)
+window~title = 'Notebook'
+window~connect_signal("destroy")
+window~border_width = 10
 window~set_size_request(200, 100)
 
-window~connect_signal("destroy")
--- events cannot be overridden so there is no connect to a delete_event
+notebook = .GtkNotebook~new()
+label1 = .GtkLabel~new('Page One')
+label2 = .GtkLabel~new('Page Two')
+child1 = .MyButton~new('Go to page 2 to find the answer.')
+child2 = .MyButton~new('Go to page 1 to find the answer.')
 
-label= .GtkLabel~new('Hellow World')
-label~set_selectable(.true)
+child1~connect_signal('clicked')
+child2~connect_signal('clicked')
+-- Store the notebook widget so we can get access to it in the callbacks
+child1~user_data = notebook
+child2~user_data = notebook
 
-window~add(label)
+notebook~append_page(child1, label1)
+notebook~append_page(child2, label2)
+
+notebook~tab_pos = 'GTK_POS_BOTTOM'
+
+window~add(notebook)
 window~show_all()
 
 call gtk_main
-
 return
 
 
@@ -69,5 +88,15 @@ return
 
 ::method signal_destroy
 .local['GTK_Quit'] = .true
+return
+
+::class MyButton subclass GtkButton_With_Label
+
+::method signal_clicked
+notebook = self~user_data  -- get the notebook widget
+page = notebook~current_page
+if page = 0 then notebook~current_page = 1
+else if page = 1 then notebook~current_page = 0
+else nop
 return
 

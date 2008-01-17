@@ -40,26 +40,34 @@
 /*----------------------------------------------------------------------------*/
 
 
--- Derived from Listing 2-2
+-- Derived from Listing 4-4
 -- Foundations of GTK+ Development
 -- by Andrew Krause
 
+-- This is an alternative example that uses a more ooRexx friendly syntax. The
+-- original example uses methods that are direct ports of the GTK C function
+-- calls. This example uses a syntax that is more Rexx-like.
+
 window = .myMainWindow~new('GTK_WINDOW_TOPLEVEL')
-window~set_title( 'Hello World')
-window~set_border_width(10)
-window~set_size_request(200, 100)
-
+window~title = 'Radio Buttons'
 window~connect_signal("destroy")
--- events cannot be overridden so there is no connect to a delete_event
+window~border_width = 10
 
-label= .GtkLabel~new('Hellow World')
-label~set_selectable(.true)
+radio1 = .GtkRadioButton_With_Label~new(.nil, 'I want to be clicked!')
+radio2 = .GtkRadioButton_From_Widget_With_Label~new(radio1, 'Click me instead!')
+radio3 = .GtkRadioButton_From_Widget_With_Label~new(radio1, 'No! Click me!')
+radio4 = .GtkRadioButton_From_Widget_With_Label~new(radio1, 'No! Click me instead!')
 
-window~add(label)
+vbox = .GtkVBox~new(.false, 5)
+vbox~pack_start_defaults(radio1)
+vbox~pack_start_defaults(radio2)
+vbox~pack_start_defaults(radio3)
+vbox~pack_start_defaults(radio4)
+
+window~add(vbox)
 window~show_all()
 
 call gtk_main
-
 return
 
 

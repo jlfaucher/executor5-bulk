@@ -1042,14 +1042,22 @@ call GrxTableAttach self~pointer, widget~pointer, left, right, top, bottom,,
                     xopt, yopt, xpad, ypad
 return
 
-::method set_row_spacings
+::method 'row_spacings='
 use strict arg spacing
 call GrxTableSetRowSpacings self~pointer, spacing
 return
 
-::method set_col_spacings
+::method set_row_spacings
+use strict arg self~row_spacings
+return
+
+::method 'col_spacings='
 use strict arg spacing
 call GrxTableSetColSpacings self~pointer, spacing
+return
+
+::method set_col_spacings
+use strict arg self~col_spacings
 return
 
 ::method connect_signal

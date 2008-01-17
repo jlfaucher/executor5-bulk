@@ -40,22 +40,30 @@
 /*----------------------------------------------------------------------------*/
 
 
--- Derived from Listing 2-2
+-- Derived from Listing 3-5
 -- Foundations of GTK+ Development
 -- by Andrew Krause
 
+-- This is an alternative example that uses a more ooRexx friendly syntax. The
+-- original example uses methods that are direct ports of the GTK C function
+-- calls. This example uses a syntax that is more Rexx-like.
+
 window = .myMainWindow~new('GTK_WINDOW_TOPLEVEL')
-window~set_title( 'Hello World')
-window~set_border_width(10)
-window~set_size_request(200, 100)
-
+window~title = 'Fixed'
 window~connect_signal("destroy")
--- events cannot be overridden so there is no connect to a delete_event
+window~set_border_width(10)
 
-label= .GtkLabel~new('Hellow World')
-label~set_selectable(.true)
+fixed = .GtkFixed~new()
+button1 = .MyButton~new('Pixed by Pixel ...')
+button2 = .MyButton~new('you choose by fate.')
 
-window~add(label)
+button1~connect_signal("clicked")
+button2~connect_signal("clicked")
+
+fixed~put(button1, 0, 0)
+fixed~put(button2, 20, 30)
+
+window~add(fixed)
 window~show_all()
 
 call gtk_main
@@ -69,5 +77,13 @@ return
 
 ::method signal_destroy
 .local['GTK_Quit'] = .true
+return
+
+::class MyButton subclass GtkButton_With_Label
+
+::method signal_clicked
+widgetpointer = upper(GrxWidgetGetTopLevel(self~pointer))
+widget = .local['GTK_Database']~at(widgetpointer)
+widget~destroy()
 return
 

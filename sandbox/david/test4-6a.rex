@@ -40,26 +40,34 @@
 /*----------------------------------------------------------------------------*/
 
 
--- Derived from Listing 2-2
+-- Derived from Listing 4-6
 -- Foundations of GTK+ Development
 -- by Andrew Krause
 
+-- This is an alternative example that uses a more ooRexx friendly syntax. The
+-- original example uses methods that are direct ports of the GTK C function
+-- calls. This example uses a syntax that is more Rexx-like.
+
 window = .myMainWindow~new('GTK_WINDOW_TOPLEVEL')
-window~set_title( 'Hello World')
-window~set_border_width(10)
+window~title = 'SpinButtons'
+window~connect_signal("destroy")
+window~border_width = 10
 window~set_size_request(200, 100)
 
-window~connect_signal("destroy")
--- events cannot be overridden so there is no connect to a delete_event
+integer = .GtkAdjustment~new(5.0, 0.0, 10.0, 1.0, 2.0, 2.0)
+float_pt = .GtkAdjustment~new(0.5, 0.0, 1.0, 0.1, 0.5, 0.5)
 
-label= .GtkLabel~new('Hellow World')
-label~set_selectable(.true)
+spin_int = .GtkSpinButton~new(integer, 1.0, 0)
+spin_float = .GtkSpinButton~new(float_pt, 0.1, 1)
 
-window~add(label)
+vbox = .GtkVBox~new(.false, 5)
+vbox~pack_start_defaults(spin_int)
+vbox~pack_start_defaults(spin_float)
+
+window~add(vbox)
 window~show_all()
 
 call gtk_main
-
 return
 
 

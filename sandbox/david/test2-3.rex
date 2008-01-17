@@ -45,9 +45,7 @@
 -- by Andrew Krause
 
 window = .myMainWindow~new('GTK_WINDOW_TOPLEVEL')
--- the following could also be coded as
---    window~title = 'Hello World'
-window~set_title('Buttons')
+window~title = 'Hello World'
 window~set_border_width(25)
 window~set_size_request(200, 100)
 
