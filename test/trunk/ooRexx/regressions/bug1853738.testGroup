@@ -57,42 +57,26 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.bug1853738.testGroup)
 
-  testUnitList = .list~of(.array~of(.bug1853738.testGroup, .list~new))
+  if group~isAutomatedTest then return group
 
-  srcLines = .array~new
-  do i = 1 to 150 until srcLines[i] = "*/"
-     srcLines[i] = sourceline(i)
-  end
+  testResult = group~suite~execute~~print
 
-  call makeDirTestInfo .bug1853738.testGroup, srcLines
-
-  parse source s
-  .bug1853738.testGroup~testCaseInfo~setentry("test_Case-source", s)
-
-  if \ .local~hasentry("bRunTestsLocally") then
-     .local~bRunTestsLocally = .true
-
-  if .bRunTestsLocally == .true then do
-    ts = .TestSuite~new
-    ts~addTest(.TestSuite~new(.bug1853738.testGroup))
-
-    testResult = ts~run
-    call simpleFormatTestResults testResult
-  end
-
-return testUnitList
+return testResult
 -- End of entry point.
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
   Directives, Classes, or Routines.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::requires "OOREXXUNIT.CLS"
+::requires 'ooTest.frm' 
 
 /* class: bug1853738.testGroup - - - - - - - - - - - - - - - - - - - - - - - -*\
 
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::class "bug1853738.testGroup" public subclass TestCase
+::class "bug1853738.testGroup" public subclass ooTestCase
 
   ::method test_initClass_property01
 
@@ -100,7 +84,7 @@ return testUnitList
            "value10,value11,value12,value13,value14,value15,value16,value17," || -
            "value18,value19,value20"
     a = .helper~new(data)
-    self~assertEquals("Class attribute property01 should equal value1", "value1", a~property01)
+    self~assertEquals("value1", a~property01, "Class attribute property01 should equal value1")
 
   ::method test_initClass_property20
 
@@ -108,7 +92,7 @@ return testUnitList
            "value10,value11,value12,value13,value14,value15,value16,value17," || -
            "value18,value19,value20"
     a = .helper~new(data)
-    self~assertEquals("Class attribute property20 should equal value20", "value20", a~property20)
+    self~assertEquals("value20", a~property20, "Class attribute property20 should equal value20")
 
   ::method test_initClass_property_middlle
 
@@ -116,7 +100,7 @@ return testUnitList
            "value10,value11,value12,value13,value14,value15,value16,value17," || -
            "value18,value19,value20"
     a = .helper~new(data)
-    self~assertEquals("Class attribute property10 should equal value10", "value10", a~property10)
+    self~assertEquals("value10", a~property10, "Class attribute property10 should equal value10")
 
   ::method test_initClass_property_pastData
 
@@ -124,7 +108,7 @@ return testUnitList
            "value10,value11,value12,value13,value14,value15,value16,value17," || -
            "value18,value19,value20"
     a = .helper~new(data)
-    self~assertEquals("Class attribute property21 should equal the empty string", "", a~property21)
+    self~assertEquals("", a~property21, "Class attribute property21 should equal the empty string")
 
 -- End of class: bug1853738.testGroup
 

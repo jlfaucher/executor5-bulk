@@ -56,111 +56,60 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.comparisonOperators.testGroup)
 
+  if group~isAutomatedTest then return group
 
--------------------------------------------------------------------------------------------
--- ===> adapt the "testGroupList" to your testCase classes; each element in the list is <===
--- ===> an array object, the first element containing the testCase class object, the   <===
--- ===> second element is a list of test method names which are regarded to be         <===
--- ===> mandatory (if the list remains empty all test methods are mandatory)           <===
+  testResult = group~suite~execute~~print
 
-   /* list of array objects, each containing the testGroup class object and an
-      optional list of mandatory test case methods name                       */
-mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
-testGroupList=.list~of( .array~of(.comparisonOperators.testGroup,  mandatoryTestMethods) )
+return testResult
 
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
--------------------------------------------------------------------------------------------
--- ===> the following code needs not to be individualized                              <===
-
-   -- read top comment, containing infos about this program
-arrLines=.array~new
-do i=1 to 150 until arrLines[i]="*/"
-   arrLines[i]=sourceline(i)
-end
-      -- supply information for the testClass(es) in this file; the class attribute
-      -- "TestCaseInfo" (a directory object, index points to a queue) will store
-      -- the parsed infos
-aTestGroupClass=testGroupList~at(testGroupList~first)[1] -- get first testClass
-
-   -- will parse the array lines and store result in class object
-call makeDirTestInfo aTestGroupClass, arrLines
-tmpDir=aTestGroupClass~TestCaseInfo
-parse source s   -- op_sys invocationType fullPathToThisFile
-tmpDir~setentry("test_Case-source", s)
-
-   -- now add this directory to other testCase classes, if any left
-do arr over testGroupList
-   if arr[1]=aTestGroupClass then iterate  -- already handled
-   arr[1]~TestCaseInfo=tmpDir             -- save info in class object
-end
-
--- if this file is CALLed or REQUIRED then define an entry "bRunTestLocally" in .local
--- and set it to .false; this way the independent local invocation of the tests is inhibited
-if .local~hasentry("bRunTestsLocally")=.false then
-   .local~bRunTestsLocally=.true -- if this file is executed directly, then run tests for debugging
-
-if .bRunTestsLocally=.true then  -- run ALL tests in this test unit
-do
-   ts=.testSuite~new             -- create a testSuite
-   do arr over testGroupList
-      -- create a testSuite for the given test case class, use all its testmethods
-      ts~addTest( .testSuite~new(arr[1]))
-   end
-   -- testResult=.testSuite~new(testGroupClass)~run
-   testResult=ts~run       -- now run all the tests
-
-   call simpleFormatTestResults testResult
-end
-
-   /* return list of array objects containing test case classes and
-      optionally list of mandatory test methods                      */
-return testGroupList
-
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
-
-::class "comparisonOperators.testGroup" subclass TestCase public
+::class "comparisonOperators.testGroup" subclass ooTestCase public
 
 ::method "test_comparison_operators"
-   self~assertTrue( "subTest1"  , 5=5    ) /* equal */
-   self~assertTrue( "subTest2"  , 42\=41 ) /* All of these are */
-   self~assertTrue( "subTest3"  , 42><41 ) /* "not equal" */
-   self~assertTrue( "subTest4"  , 42<>41 )
-   self~assertTrue( "subTest5"  , 13>12  ) /* Variations of */
-   self~assertTrue( "subTest6"  , 12<13  ) /* less than and */
-   self~assertTrue( "subTest7"  , 13>=12 ) /* greater than */
-   self~assertFalse("subTest8"  , 12\<13 )
-   self~assertTrue( "subTest9"  , 12<=13 )
-   self~assertTrue( "subTest10" , 12\>13 )
+   self~assertTrue(5=5) /* equal */
+   self~assertTrue(42\=41) /* All of these are */
+   self~assertTrue(42><41) /* "not equal" */
+   self~assertTrue(42<>41)
+   self~assertTrue(13>12) /* Variations of */
+   self~assertTrue(12<13) /* less than and */
+   self~assertTrue(13>=12) /* greater than */
+   self~assertFalse(12\<13)
+   self~assertTrue(12<=13)
+   self~assertTrue(12\>13)
 
-   self~assertTrue( "subTest11" , 5~'='(5)    ) /* equal */
-   self~assertTrue( "subTest12" , 42~'\='(41) ) /* All of these are */
-   self~assertTrue( "subTest13" , 42~'><'(41) ) /* "not equal" */
-   self~assertTrue( "subTest14" , 42~'<>'(41) )
-   self~assertTrue( "subTest15" , 13~'>'(12)  ) /* Variations of */
-   self~assertTrue( "subTest16" , 12~'<'(13)  ) /* less than and */
-   self~assertTrue( "subTest17" , 13~'>='(12) ) /* greater than */
-   self~assertFalse("subTest18" , 12~'\<'(13) )
-   self~assertTrue( "subTest19" , 12~'<='(13) )
-   self~assertTrue( "subTest20" , 12~'\>'(13) )
+   self~assertTrue(5~'='(5)) /* equal */
+   self~assertTrue(42~'\='(41)) /* All of these are */
+   self~assertTrue(42~'><'(41)) /* "not equal" */
+   self~assertTrue(42~'<>'(41))
+   self~assertTrue(13~'>'(12)) /* Variations of */
+   self~assertTrue(12~'<'(13)) /* less than and */
+   self~assertTrue(13~'>='(12)) /* greater than */
+   self~assertFalse(12~'\<'(13))
+   self~assertTrue(12~'<='(13))
+   self~assertTrue(12~'\>'(13))
 
    -- identical
-   self~assertTrue( "subTest21"  , 'space'  ==  'space'  )  /* Strictly equal */
-   self~assertTrue( "subTest22"  , 'space'  \== ' space' )  /* Strictly not equal */
-   self~assertTrue( "subTest23"  , 'space'  >>  ' space' )  /* Variations of */
-   self~assertTrue( "subTest24"  , ' space' <<  'space'  )  /* strictly greater */
-   self~assertTrue( "subTest25"  , 'space'  >>= ' space' )  /* than and less than */
-   self~assertTrue( "subTest26"  , 'space'  \<< ' space' )
-   self~assertTrue( "subTest27"  , ' space' <<= 'space'  )
-   self~assertTrue( "subTest28"  , ' space' \>> 'space'  )
+   self~assertTrue('space'  ==  'space')  /* Strictly equal */
+   self~assertTrue('space'  \== ' space')  /* Strictly not equal */
+   self~assertTrue('space'  >>  ' space')  /* Variations of */
+   self~assertTrue(' space' <<  'space')  /* strictly greater */
+   self~assertTrue('space'  >>= ' space')  /* than and less than */
+   self~assertTrue('space'  \<< ' space')
+   self~assertTrue(' space' <<= 'space')
+   self~assertTrue(' space' \>> 'space')
 
-   self~assertTrue( "subTest29"  , 'space'~'=='('space')   )  /* Strictly equal */
-   self~assertTrue( "subTest30"  , 'space'~'\=='(' space') )  /* Strictly not equal */
-   self~assertTrue( "subTest31"  , 'space'~'>>'(' space')  )  /* Variations of */
-   self~assertTrue( "subTest32"  , ' space'~'<<'('space')  )  /* strictly greater */
-   self~assertTrue( "subTest33"  , 'space'~'>>='(' space') )  /* than and less than */
-   self~assertTrue( "subTest34"  , 'space'~'\<<'(' space') )
-   self~assertTrue( "subTest35"  , ' space'~'<<='('space') )
-   self~assertTrue( "subTest36"  , ' space'~'\>>'('space') )
+   self~assertTrue('space'~'=='('space'))  /* Strictly equal */
+   self~assertTrue('space'~'\=='(' space'))  /* Strictly not equal */
+   self~assertTrue('space'~'>>'(' space'))  /* Variations of */
+   self~assertTrue(' space'~'<<'('space'))  /* strictly greater */
+   self~assertTrue('space'~'>>='(' space'))  /* than and less than */
+   self~assertTrue('space'~'\<<'(' space'))
+   self~assertTrue(' space'~'<<='('space'))
+   self~assertTrue(' space'~'\>>'('space'))
 
 

@@ -56,70 +56,19 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.String_b2xMethod.testGroup)
 
+  if group~isAutomatedTest then return group
 
--------------------------------------------------------------------------------------------
--- ===> adapt the "testGroupList" to your testCase classes; each element in the list is <===
--- ===> an array object, the first element containing the testCase class object, the   <===
--- ===> second element is a list of test method names which are regarded to be         <===
--- ===> mandatory (if the list remains empty all test methods are mandatory)           <===
+  testResult = group~suite~execute~~print
 
-   /* list of array objects, each containing the testGroup class object and an
-      optional list of mandatory test case methods name                       */
-mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
-testGroupList=.list~of( .array~of(.String_b2xMethod.testGroup,  mandatoryTestMethods) )
+return testResult
 
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
--------------------------------------------------------------------------------------------
--- ===> the following code needs not to be individualized                              <===
-
-   -- read top comment, containing infos about this program
-arrLines=.array~new
-do i=1 to 150 until arrLines[i]="*/"
-   arrLines[i]=sourceline(i)
-end
-      -- supply information for the testClass(es) in this file; the class attribute
-      -- "TestCaseInfo" (a directory object, index points to a queue) will store
-      -- the parsed infos
-aTestGroupClass=testGroupList~at(testGroupList~first)[1] -- get first testClass
-
-   -- will parse the array lines and store result in class object
-call makeDirTestInfo aTestGroupClass, arrLines
-tmpDir=aTestGroupClass~TestCaseInfo
-parse source s   -- op_sys invocationType fullPathToThisFile
-tmpDir~setentry("test_Case-source", s)
-
-   -- now add this directory to other testCase classes, if any left
-do arr over testGroupList
-   if arr[1]=aTestGroupClass then iterate  -- already handled
-   arr[1]~TestCaseInfo=tmpDir             -- save info in class object
-end
-
--- if this file is CALLed or REQUIRED then define an entry "bRunTestLocally" in .local
--- and set it to .false; this way the independent local invocation of the tests is inhibited
-if .local~hasentry("bRunTestsLocally")=.false then
-   .local~bRunTestsLocally=.true -- if this file is executed directly, then run tests for debugging
-
-if .bRunTestsLocally=.true then  -- run ALL tests in this test unit
-do
-   ts=.testSuite~new             -- create a testSuite
-   do arr over testGroupList
-      -- create a testSuite for the given test case class, use all its testmethods
-      ts~addTest( .testSuite~new(arr[1]))
-   end
-   -- testResult=.testSuite~new(testGroupClass)~run
-   testResult=ts~run       -- now run all the tests
-
-   call simpleFormatTestResults testResult
-end
-
-   /* return list of array objects containing test case classes and
-      optionally list of mandatory test methods                      */
-return testGroupList
-
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
-
-::class "String_b2xMethod.testGroup" subclass TestCase public
+::class "String_b2xMethod.testGroup" subclass ooTestCase public
 
 ::method "test_1"
    self~expectSyntax(93.934)
@@ -127,123 +76,123 @@ return testGroupList
 
 ::method "test_2"
    self~expectSyntax(93.932)
-   self~assertSame("subTest2", ' '~b2x, ' ')
+   self~assertSame(' '~b2x, ' ')
 
 ::method "test_3"
-   self~assertSame("subTest3", '1111'~b2x, 'F')
+   self~assertSame('1111'~b2x, 'F')
 
 ::method "test_4"
-   self~assertSame("subTest4", '0001 0001'~b2x, '11')
+   self~assertSame('0001 0001'~b2x, '11')
 
 ::method "test_5"
-   self~assertSame("subTest5", '1 0001'~b2x, '11')
+   self~assertSame('1 0001'~b2x, '11')
 
 ::method "test_6"
    self~expectSyntax(93.932)
-   self~assertSame("subTest6", ' 1111'~b2x, 'F')
+   self~assertSame(' 1111'~b2x, 'F')
 
 ::method "test_7"
    self~expectSyntax(93.932)
-   self~assertSame("subTest7", ' 0001 0001'~b2x, '11')
+   self~assertSame(' 0001 0001'~b2x, '11')
 
 ::method "test_8"
    self~expectSyntax(93.932)
-   self~assertSame("subTest8", ' 1 0001'~b2x, '11')
+   self~assertSame(' 1 0001'~b2x, '11')
 
 ::method "test_9"
    self~expectSyntax(93.932)
-   self~assertSame("subTest9", '1111 '~b2x, '1')
+   self~assertSame('1111 '~b2x, '1')
 
 ::method "test_10"
    self~expectSyntax(93.932)
-   self~assertSame("subTest10", '0001 0001 '~b2x, '11')
+   self~assertSame('0001 0001 '~b2x, '11')
 
 ::method "test_11"
    self~expectSyntax(93.932)
-   self~assertSame("subTest11", '1 0001 '~b2x, '11')
+   self~assertSame('1 0001 '~b2x, '11')
 
 ::method "test_12"
-   self~assertSame("subTest12", 1111~b2x, 'F')
+   self~assertSame(1111~b2x, 'F')
 
 ::method "test_13"
-   self~assertSame("subTest13", ( 1111)~b2x, 'F')
+   self~assertSame(( 1111)~b2x, 'F')
 
 ::method "test_14"
-   self~assertSame("subTest14", (1111 )~b2x, 'F')
+   self~assertSame((1111 )~b2x, 'F')
 
 ::method "test_15"
-   self~assertSame("subTest15", (0001 0001)~b2x, '11')
+   self~assertSame((0001 0001)~b2x, '11')
 
 ::method "test_16"
-   self~assertSame("subTest16", ( 0001 0001)~b2x, '11')
+   self~assertSame(( 0001 0001)~b2x, '11')
 
 ::method "test_17"
-   self~assertSame("subTest17", (0001 0001 )~b2x, '11')
+   self~assertSame((0001 0001 )~b2x, '11')
 
 ::method "test_18"
-   self~assertSame("subTest18", (1 0001)~b2x, '11')
+   self~assertSame((1 0001)~b2x, '11')
 
 ::method "test_19"
-   self~assertSame("subTest19", ( 1 0001)~b2x, '11')
+   self~assertSame(( 1 0001)~b2x, '11')
 
 ::method "test_20"
-   self~assertSame("subTest20", (1 0001 )~b2x, '11')
+   self~assertSame((1 0001 )~b2x, '11')
 
 ::method "test_21"
-   self~assertSame("subTest21", (10*11)~b2x, '6')
+   self~assertSame((10*11)~b2x, '6')
 
 ::method "test_22"
-   self~assertSame("subTest22", (11E+2*10)~b2x, '18')
+   self~assertSame((11E+2*10)~b2x, '18')
 
 ::method "test_23"
-   self~assertSame("subTest23", (1.01E+2+10)~b2x, '7')
+   self~assertSame((1.01E+2+10)~b2x, '7')
 
 ::method "test_24"
-   self~assertSame("subTest24", ('1'||Copies(' ',100000)||'0001')~b2x, '11')
+   self~assertSame(('1'||Copies(' ',100000)||'0001')~b2x, '11')
 
 ::method "test_25"
    self~expectSyntax(93.932)
-   self~assertSame("subTest25", ' 1 0001'~b2x, '11')
+   self~assertSame(' 1 0001'~b2x, '11')
 
 ::method "test_26"
    self~expectSyntax(93.932)
-   self~assertSame("subTest26", '1 0001 '~b2x, '11')
+   self~assertSame('1 0001 '~b2x, '11')
 
 ::method "test_27"
    self~expectSyntax(93.934)
-   self~assertSame("subTest27", Xrange('00'x,'FF'x)~b2x, '11')
+   self~assertSame(Xrange('00'x,'FF'x)~b2x, '11')
 
 ::method "test_28"
    self~expectSyntax(93.934)
-   self~assertSame("subTest28", Copies('AB',50000)~b2x, '11')
+   self~assertSame(Copies('AB',50000)~b2x, '11')
 
 ::method "test_29"
    self~expectSyntax(93.934)
-   self~assertSame("subTest29", ('\'||Copies('10',50000))~b2x, '11')
+   self~assertSame(('\'||Copies('10',50000))~b2x, '11')
 
 ::method "test_30"
-   self~assertSame("subTest30", ('1'||Copies('0',249))~b2x, '200000000000000000000000000000000000000000000000000000000000000')
+   self~assertSame(('1'||Copies('0',249))~b2x, '200000000000000000000000000000000000000000000000000000000000000')
 
 ::method "test_31"
-   self~assertSame("subTest31",(('1'||Copies('0',254))~b2x)~length, 64)
+   self~assertSame((('1'||Copies('0',254))~b2x)~length, 64)
 
 ::method "test_32"
-   self~assertSame("subTest32", (('1'||Copies('0',255))~b2x)~length, 64)
+   self~assertSame((('1'||Copies('0',255))~b2x)~length, 64)
 
 ::method "test_33"
-   self~assertSame("subTest33", ((Copies('10',50000))~b2x)~length, 25000)
+   self~assertSame(((Copies('10',50000))~b2x)~length, 25000)
 
 -- rexxref documentation tests
 
 ::method "test_101"
-   self~assertSame("subTest101", '11000011'~b2x, 'C3')
+   self~assertSame('11000011'~b2x, 'C3')
 
 ::method "test_102"
-   self~assertSame("subTest102", '10111'~b2x, '17')
+   self~assertSame('10111'~b2x, '17')
 
 ::method "test_103"
-   self~assertSame("subTest103", '101'~b2x, '5')
+   self~assertSame('101'~b2x, '5')
 
 ::method "test_104"
-   self~assertSame("subTest104", '1 1111 0000'~b2x, '1F0')
+   self~assertSame('1 1111 0000'~b2x, '1F0')
 

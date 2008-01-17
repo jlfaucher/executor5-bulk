@@ -32,10 +32,10 @@ call makeTestSuiteFromFileList l, tSuite
 */
 
 tRes=.TestResult~new         -- create a TestResult object to be used to gather the test-log infos
-tSuite~run(tRes)             -- run all the testUnits collected in the Testsuite
+tSuite~execute(tRes)             -- run all the testUnits collected in the Testsuite
 /*
    or alternatively:
-   tRes=tSuite~run           -- will create a testResult object and return it
+   tRes=tSuite~execute           -- will create a testResult object and return it
 */
 
 say "--- all testUnits did run now, inspecting the logged results..."

@@ -60,6 +60,9 @@
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::requires "winsystm.cls"
 
+/* class: ProgramLauncher- - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+    A class used to start an ooRexx program in a separate thread.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::class 'ProgramLauncher' public
 
   -- Attribute: prgResultCode
@@ -74,11 +77,16 @@
 
     -- Stupid Windows and its stupid spaces in path names.
     prgName = prgName~strip
-    if prgName~pos(' ') <> 0, prgName~left(1) \== '"' then prgName = '"' || prgName || '"'
+    if prgName~pos(' ') <> 0, prgName~left(1) \== '"' then prgName = .TestUtil~enQuote(prgName)
 
     if arg(2, 'O') then params = ""
     else params = arg(2)
 
+  /** getResult()
+   * A blocking method that waits until the launcher program finishes and then
+   * returns the program's result code.  (The return code from the launched
+   * program.)
+   */
   ::method getResult unguarded
     expose finished
     guard on when finished
@@ -89,13 +97,16 @@
 
     reply 0
 
-    prgName params
+    'rexx' prgName params
     self~prgResultCode = RC
     finished = .true
 
 ::class 'WindowFinder' public
-  ::method repetitions attribute
-  ::method sleepTime attribute
+  ::attribute repetitions get
+  ::attribute repetitions set private
+
+  ::attribute sleepTime get
+  ::attribute sleepTime set private
 
   ::method init
     expose windowMgr
@@ -118,6 +129,20 @@
     end
 
   return wnd
+
+  /** setPause()
+   * Sets the default pause for this window finder to that specified
+   */
+  ::method setPause
+    use strict arg pause  -- Need to add arg checking
+    self~sleepTime = pause
+
+  /** setRepitions()
+   * Sets the default repetitions for this window finder to that specified
+   */
+  ::method setRepetitions
+    use strict arg loop  -- Need to add arg checking
+    self~repetitions = loop
 
 
 /* displayWindowChildren( windowObj )- - - - - - - - - - - - - - - - - - - - -*\

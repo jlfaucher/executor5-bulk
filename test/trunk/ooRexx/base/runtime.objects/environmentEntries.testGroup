@@ -59,89 +59,39 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
+  parse source . . fileSpec
 
+  group = .TestGroup~new(fileSpec)
+  group~add(.environmentEntries.testGroup)
 
+  if group~isAutomatedTest then return group
 
--------------------------------------------------------------------------------------------
--- ===> adapt the "testGroupList" to your testCase classes; each element in the list is <===
--- ===> an array object, the first element containing the testCase class object, the   <===
--- ===> second element is a list of test method names which are regarded to be         <===
--- ===> mandatory (if the list remains empty all test methods are mandatory)           <===
+  testResult = group~suite~execute~~print
 
-   /* list of array objects, each containing the testGroup class object and an
-      optional list of mandatory test case methods name                       */
+return testResult
 
-mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
-testGroupList=.list~of( .array~of(.environmentEntries.testGroup,  mandatoryTestMethods) )
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
--------------------------------------------------------------------------------------------
--- ===> the following code needs not to be individualized                              <===
+::class "environmentEntries.testGroup" subclass ooTestCase public
 
-   -- read top comment, containing infos about this program
-arrLines=.array~new
-do i=1 to 150 until arrLines[i]="*/"
-   arrLines[i]=sourceline(i)
-end
-      -- supply information for the testClass(es) in this file; the class attribute
-      -- "TestCaseInfo" (a directory object, index points to a queue) will store
-      -- the parsed infos
-aTestGroupClass=testGroupList~at(testGroupList~first)[1] -- get first testClass
-
-   -- will parse the array lines and store result in class object
-call makeDirTestInfo aTestGroupClass, arrLines
-tmpDir=aTestGroupClass~TestCaseInfo
-parse source s   -- op_sys invocationType fullPathToThisFile
-tmpDir~setentry("test_Case-source", s)
-
-   -- now add this directory to other testCase classes, if any left
-do arr over testGroupList
-   if arr[1]=aTestGroupClass then iterate  -- already handled
-   arr[1]~TestCaseInfo=tmpDir             -- save info in class object
-end
-
--- if this file is CALLed or REQUIRED then define an entry "bRunTestLocally" in .local
--- and set it to .false; this way the independent local invocation of the tests is inhibited
-if .local~hasentry("bRunTestsLocally")=.false then
-   .local~bRunTestsLocally=.true -- if this file is executed directly, then run tests for debugging
-
-if .bRunTestsLocally=.true then  -- run ALL tests in this test unit
-do
-   ts=.testSuite~new             -- create a testSuite
-   do arr over testGroupList
-      -- create a testSuite for the given test case class, use all its testmethods
-      ts~addTest( .testSuite~new(arr[1]))
-   end
-   -- testResult=.testSuite~new(testGroupClass)~run
-   testResult=ts~run       -- now run all the tests
-
-   call simpleDumpTestResults testResult
-end
-
-   /* return list of array objects containing test case classes and
-      optionally list of mandatory test methods                      */
-return testGroupList
-
-
-
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
-
-::class "environmentEntries.testGroup" subclass TestCase public
-
-
-   -- ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !
-   -- ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !
-   -- ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !
 ::method "test_line_entry"
-     self~assertTrue("subTest # 1: is [.LINE] a wholeNumber?", .line~datatype("Whole"))
+     self~assertTrue(.line~datatype("Whole"), "subTest # 1: is [.LINE] a wholeNumber?")
+
+   tmpLine = .line + 2  -- Test that .line is reasonably correct.
+   --
+   self~assertSame(tmpLine, .LINE)
+
 
    -- ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !
    -- ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !
-
-   tmpLine=141    -->  the following line *MUST* *BE* on line # tmpLine, otherwise the test fails !!
-   self~assertSame("subTest '.LINE', this statement *MUST* start/be on line #" tmpLine "in the source code!", -
-                    tmpLine, .LINE)
-   -- ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !
-   -- ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !
+   -- Here tmpLine is hard coded for an absolute test.  It lines are added or
+   -- or removed above this, the test will fail.  Then the hard coded value
+   -- must be adjusted.
+   tmpLine = 94
+   --
+   --
+   --
+   self~assertSame(tmpLine, .line)
 
 
 ::method "test_local_directory_entries"
@@ -157,7 +107,7 @@ return testGroupList
 
   do i=1 to words(entries)
      w=word(entries,i)        -- extract word
-     self~assertTrue("subTest" i "entry=["w"]", .local~hasEntry(w))
+     self~assertTrue(.local~hasEntry(w), "subTest" i "entry=["w"]")
   end
 
 
@@ -215,7 +165,7 @@ return testGroupList
 
   do i=1 to words(entries)
      w=word(entries,i)        -- extract word
-     self~assertTrue("subTest #" i "entry=["w"]", .environment~hasEntry(w))
+     self~assertTrue(.environment~hasEntry(w), "subTest #" i "entry=["w"]")
   end
 
 ::method "test_environment_directory_class_object_entries"
@@ -267,66 +217,66 @@ return testGroupList
 
   do i=1 to words(entries)
      w=word(entries,i)        -- extract word
-     self~assertTrue("subTest #" i "is entry=["w"] a class object?", .environment~Entry(w)~isA(.class))
+     self~assertTrue(.environment~Entry(w)~isA(.class), "subTest #" i "is entry=["w"] a class object?")
   end
 
 ::method "test_error_monitor"
-  self~assertTrue(".error~current=.stdErr", .error~current=.stdErr)
+  self~assertTrue(.error~current=.stdErr, ".error~current=.stdErr")
 
 ::method "test_input_monitor"
-  self~assertTrue(".input~current=.stdIn", .input~current=.stdIn)
+  self~assertTrue(.input~current=.stdIn, ".input~current=.stdIn")
 
 ::method "test_output_monitor"
-  self~assertTrue(".output~current=.stdOut", .output~current=.stdOut)
+  self~assertTrue(.output~current=.stdOut, ".output~current=.stdOut")
 
 
 ::method "test_local_monitor_objects"
   entries="ERROR INPUT OUTPUT"
   do i=1 to words(entries)
      w=word(entries,i)        -- extract word
-     self~assertTrue("subTest #" i "is [."w"] a monitor object?", value("."w)~isA(.monitor))
+     self~assertTrue(value("."w)~isA(.monitor), "subTest #" i "is [."w"] a monitor object?")
   end
 
 ::method "test_local_stream_objects"
   entries="STDERR STDIN STDOUT"
   do i=1 to words(entries)
      w=word(entries,i)        -- extract word
-     self~assertTrue("subTest #" i "is [."w"] a stream object?", value("."w)~isA(.stream))
+     self~assertTrue(value("."w)~isA(.stream), "subTest #" i "is [."w"] a stream object?")
   end
 
 ::method "test_stdqueue"
-  self~assertTrue("subTest: .STDQUEUE~isA(.RexxQueue)", .STDQUE~isA(.RexxQueue))
+  self~assertTrue(.STDQUE~isA(.RexxQueue))
 
 ::method "test_true"
-  self~assertTrue(".true", .true)
+  self~assertTrue(.true, ".true")
 
 ::method "test_false"
-  self~assertFalse(".false", .false)
+  self~assertFalse(.false, ".false")
 
 
 
 ::method "test_rs"
 
-  self~assertEquals("subTest_01: .RS not set", ".RS", .RS)
+  self~assertEquals(".RS", .RS, "subTest_01: .RS not set")
 
    /* test command execution without error/failure */
   select
     when .ooRexxUnit.shellName~translate == "CMD" then do
       address cmd "exit"
-      self~assertEquals("subTest_02: .RS=0", 0, .RS)
+      self~assertEquals(0, .RS)
     end
     when .ooRexxUnit.shellName~translate == "BASH" then do
       address "bash" "exit"
-      self~assertEquals("subTest_02: .RS=0", 0, .RS)
+      self~assertEquals(0, .RS)
     end
     when .ooRexxUnit.shellName~translate == "CSH" then do
       address "csh" "exit"
-      self~assertEquals("subTest_02: .RS=0", 0, .RS)
+      self~assertEquals(0, .RS)
     end
     otherwise do
       -- Don't address to a specific environment.
       "exit"
-      self~assertEquals("subTest_02: .RS=0", 0, .RS)
+      self~assertEquals(0, .RS)
     end
   end
   -- End select
@@ -338,7 +288,7 @@ return testGroupList
   self~fail("subTest_02: .RS not '0'")
   self~fail("subTest_02: ERROR condition not trapped by 'SIGNAL ON ERROR' !")
 error_label:
-  self~assertEquals("subTest_02: .RS=1 (command raised an ERROR condition)", 1, .RS)
+  self~assertEquals(1, .RS, "subTest_02: .RS=1 (command raised an ERROR condition)")
 
 
    /* test FAILURE condition */
@@ -346,7 +296,7 @@ error_label:
   call failure_proc
   self~fail("subTest_03: FAILURE condition not trapped by 'SIGNAL ON FAILURE' !")
 failure_label:
-  self~assertEquals("subTest_03: .RS=-1 (command raised an FAILURE condition)", -1, .RS)
+  self~assertEquals(-1, .RS, "subTest_03: .RS=-1 (command raised an FAILURE condition)")
 
   return
 

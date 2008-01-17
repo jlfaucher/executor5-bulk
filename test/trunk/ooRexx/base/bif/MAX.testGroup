@@ -59,107 +59,63 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.MAX.testGroup)
 
--------------------------------------------------------------------------------------------
-   /* list of array objects, each containing the testUnit class object and an
-      optional list of mandatory test case methods name                       */
-    mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
-    testUnitList=.list~of(.array~of(.MAX.testGroup, mandatoryTestMethods))
+  if group~isAutomatedTest then return group
 
--------------------------------------------------------------------------------------------
--- ===> the following code needs not to be individualized                              <===
+  testResult = group~suite~execute~~print
 
-   -- read top comment, containing infos about this program
-    arrLines=.array~new
-    do i=1 to 150 until arrLines[i]="*/"
-        arrLines[i]=sourceline(i)
-    end
-      -- supply information for the testClass(es) in this file; the class attribute
-      -- "TestCaseInfo" (a directory object, index points to a queue) will store
-      -- the parsed infos
-    aTestUnitClass=testUnitList~at(testUnitList~first)[1] -- get first testClass
+return testResult
 
-   -- will parse the array lines and store result in class object
-    call makeDirTestInfo aTestUnitClass, arrLines
-    tmpDir=aTestUnitClass~TestCaseInfo
-    parse source s   -- op_sys invocationType fullPathToThisFile
-    tmpDir~setentry("test_Case-source", s)
-   -- now add this directory to other testCase classes, if any left
-    do arr over testUnitList
-        if arr[1]=aTestUnitClass then
-            iterate  -- already handled
-        arr[1]~TestCaseInfo=tmpDir             -- save info in class object
-    end
-
--- if this file is CALLed or REQUIRED then define an entry "bRunTestLocally" in .local
--- and set it to .false; this way the independent local invocation of the tests is inhibited
-    if .local~hasentry("bRunTestsLocally")=.false then
-        .local~bRunTestsLocally=.true -- if this file is executed directly, then run tests for debugging
-
-    if .bRunTestsLocally=.true then  -- run ALL tests in this test unit
-        do
-            ts=.testSuite~new             -- create a testSuite
-            do arr over testUnitList
-                -- create a testSuite for the given test case class, use all its testmethods
-                ts~addTest( .testSuite~new(arr[1]))
-            end
-            -- testResult=.testSuite~new(testUnitClass)~run
-            testResult=ts~run       -- now run all the tests
-
-            call simpleFormatTestResults testResult
-        end
-
-   /* return list of array objects containing test case classes and
-      optionally list of mandatory test methods                      */
-return testUnitList
-
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
 -- class named exactly like file
-::class "MAX.testGroup" subclass TestCase public
+::class "MAX.testGroup" subclass ooTestCase public
 
 ::method 'test001'
-    self~assertSame('subTest01','1.00',max(1.00,1))
+    self~assertSame('1.00', max(1.00,1))
 
 ::method 'test002'
-    self~assertSame('subTest01','1',max(1,1.00))
+    self~assertSame('1', max(1,1.00))
 
 ::method 'test003'
-    self~assertSame('subTest01','0',max(-0.00, 0))
+    self~assertSame('0', max(-0.00, 0))
 
 ::method 'test004'
-    self~assertSame('subTest01','0',max('-0.00', 0))
+    self~assertSame('0', max('-0.00', 0))
 
 ::method 'test005'
-    self~assertSame('subTest01','0',max(0,'-0.000'))
+    self~assertSame('0', max(0,'-0.000'))
 
 ::method 'test006'
-    self~assertSame('subTest01','0',max(0, 00.0))
+    self~assertSame('0', max(0, 00.0))
 
 ::method 'test007'
-    self~assertSame('subTest01','12345678.0',max(12345678.00, 12345678))
+    self~assertSame('12345678.0', max(12345678.00, 12345678))
 
 ::method 'test008'
-    self~assertSame('subTest01','12345678',max(12345678, 12345678.00))
+    self~assertSame('12345678', max(12345678, 12345678.00))
 
 ::method 'test009'
-    self~assertSame('subTest01',12345679.0,max(12345678.96, 12345679))
+    self~assertSame(12345679.0, max(12345678.96, 12345679))
 
 ::method 'test010'
-    self~assertSame('subTest01','-12345678.0',max('-12345678.00', -12345678))
+    self~assertSame('-12345678.0', max('-12345678.00', -12345678))
 
 ::method 'test011'
-    self~assertSame('subTest01','-12345678',max(-12345678, '-12345678.00'))
+    self~assertSame('-12345678', max(-12345678, '-12345678.00'))
 
 ::method 'test012'
-    self~assertSame('subTest01',-12345679,max(-12345679, '-12345678.96'))
+    self~assertSame(-12345679, max(-12345679, '-12345678.96'))
 
 -- from bif.testgroup
    -- test the BIF, using examples from the documentation
 ::method "test_MAX"
-    self~assertEquals("subTest1" , 12  , MAX(12,6,7,9)                                             )
-    self~assertEquals("subTest2" , 19  , MAX(17.3,19,17.03)                                        )
-    self~assertEquals("subTest3" , -3  , MAX(-7,-3,-4.3)                                           )
-    self~assertEquals("subTest4" , 21  , MAX(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21))
+    self~assertEquals(12, MAX(12,6,7,9))
+    self~assertEquals(19, MAX(17.3,19,17.03))
+    self~assertEquals(-3, MAX(-7,-3,-4.3))
+    self~assertEquals(21, MAX(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21))
 
 

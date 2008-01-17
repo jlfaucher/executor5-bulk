@@ -57,64 +57,20 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.X2C.testGroup)
 
--------------------------------------------------------------------------------------------
-   /* list of array objects, each containing the testUnit class object and an
-      optional list of mandatory test case methods name                       */
-    mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
-    testUnitList=.list~of(.array~of(.X2C.testGroup, mandatoryTestMethods))
+  if group~isAutomatedTest then return group
 
--------------------------------------------------------------------------------------------
--- ===> the following code needs not to be individualized                              <===
+  testResult = group~suite~execute~~print
 
-   -- read top comment, containing infos about this program
-    arrLines=.array~new
-    do i=1 to 150 until arrLines[i]="*/"
-        arrLines[i]=sourceline(i)
-    end
-      -- supply information for the testClass(es) in this file; the class attribute
-      -- "TestCaseInfo" (a directory object, index points to a queue) will store
-      -- the parsed infos
-    aTestUnitClass=testUnitList~at(testUnitList~first)[1] -- get first testClass
+return testResult
 
-   -- will parse the array lines and store result in class object
-    call makeDirTestInfo aTestUnitClass, arrLines
-    tmpDir=aTestUnitClass~TestCaseInfo
-    parse source s   -- op_sys invocationType fullPathToThisFile
-    tmpDir~setentry("test_Case-source", s)
-   -- now add this directory to other testCase classes, if any left
-    do arr over testUnitList
-        if arr[1]=aTestUnitClass then
-            iterate  -- already handled
-        arr[1]~TestCaseInfo=tmpDir             -- save info in class object
-    end
-
--- if this file is CALLed or REQUIRED then define an entry "bRunTestLocally" in .local
--- and set it to .false; this way the independent local invocation of the tests is inhibited
-    if .local~hasentry("bRunTestsLocally")=.false then
-        .local~bRunTestsLocally=.true -- if this file is executed directly, then run tests for debugging
-
-    if .bRunTestsLocally=.true then  -- run ALL tests in this test unit
-        do
-            ts=.testSuite~new             -- create a testSuite
-            do arr over testUnitList
-                -- create a testSuite for the given test case class, use all its testmethods
-                ts~addTest( .testSuite~new(arr[1]))
-            end
-            -- testResult=.testSuite~new(testUnitClass)~run
-            testResult=ts~run       -- now run all the tests
-
-            call simpleFormatTestResults testResult
-        end
-
-   /* return list of array objects containing test case classes and
-      optionally list of mandatory test methods                      */
-return testUnitList
-
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
 -- class named exactly like file
-::class "X2C.testGroup" subclass TestCase public
+::class "X2C.testGroup" subclass ooTestCase public
 
 ::method 'test000'
     .local~v255b = copies('D1',255)
@@ -132,29 +88,29 @@ return testUnitList
     xre = x2c('*')
 
 ::method 'test002'
-    self~assertSame('subTest01','',x2c(''))
+    self~assertSame('', x2c(''))
 
 ::method 'test003'
-    self~assertSame('subTest01','0A'X,x2c('A'))
+    self~assertSame('0A'X, x2c('A'))
 
 ::method 'test004'
-    self~assertSame('subTest01','F8'X,x2c('F8'))
+    self~assertSame('F8'X, x2c('F8'))
 
 ::method 'test005'
     self~expectSyntax(93.933)
     xre = x2c('4a'x)
 
 ::method 'test006'
-    self~assertSame('subTest01','0BD1D9'X,x2c('BD1D9'))
+    self~assertSame('0BD1D9'X, x2c('BD1D9'))
 
 ::method 'test007'
-    self~assertSame('subTest01','0BD1D9'X,x2c('B D1 D9'))
+    self~assertSame('0BD1D9'X, x2c('B D1 D9'))
 
 ::method 'test008'
-    self~assertSame('subTest01','D1D9C2A483929385A8'X,x2c('D1 D9 C2 A4 83 92 93 85 A8'))
+    self~assertSame('D1D9C2A483929385A8'X, x2c('D1 D9 C2 A4 83 92 93 85 A8'))
 
 ::method 'test009'
-    self~assertSame('subTest01','D1D940C2A483929385A8'X,x2c('D1D940C2A483929385A8'))
+    self~assertSame('D1D940C2A483929385A8'X, x2c('D1D940C2A483929385A8'))
 
 ::method 'test010'
     self~expectSyntax(93.931)
@@ -169,39 +125,39 @@ return testUnitList
     xre = x2c('D 1 D 9 4 0 C 2 A 4 8 3 9 2 9 3 8 5 A 8')
 
 ::method 'test013'
-    self~assertSame('subTest01','D140D940C2A483929385A8'X,x2c('D140D940C2A483929385A8'))
+    self~assertSame('D140D940C2A483929385A8'X, x2c('D140D940C2A483929385A8'))
 
 ::method 'test014'
-    self~assertSame('subTest01',copies('D1'x,255),x2c(.v255b))
+    self~assertSame(copies('D1'x,255), x2c(.v255b))
 
 ::method 'test015'
-    self~assertSame('subTest01',copies('7E'X,32768),x2c(.v32768b))
+    self~assertSame(copies('7E'X,32768), x2c(.v32768b))
 
 ::method 'test016'
-    self~assertSame('subTest01',copies('7C'X,100000),x2c(.v100000b))
+    self~assertSame(copies('7C'X,100000), x2c(.v100000b))
 
 ::method 'test017'
     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = 'D14BD94BC2A483929385A8'
-    self~assertSame('subTest01','D14BD94BC2A483929385A8'X,x2c(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX))
+    self~assertSame('D14BD94BC2A483929385A8'X, x2c(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX))
 
 ::method 'test018'
-    self~assertSame('subTest01','0123456789ABCDEF'X,x2c('0123456789abcdef'))
+    self~assertSame('0123456789ABCDEF'X, x2c('0123456789abcdef'))
 
 ::method 'test019'
-    self~assertSame('subTest01','0123456789ABCDEF'X,x2c('0123456789ABCDEF'))
+    self~assertSame('0123456789ABCDEF'X, x2c('0123456789ABCDEF'))
 
 ::method 'test020'
     self~expectSyntax(93.933)
     xre = x2c('0123456789ABCDEFG')
 
 ::method 'test021'
-    self~assertSame('subTest01','001234'X,x2c('01234'))
+    self~assertSame('001234'X, x2c('01234'))
 
 ::method 'test022'
-    self~assertSame('subTest01','056789'X,x2c('56789'))
+    self~assertSame('056789'X, x2c('56789'))
 
 ::method 'test023'
-    self~assertSame('subTest01','01E2'X,x2c('1E2'))
+    self~assertSame('01E2'X, x2c('1E2'))
 
 ::method 'test024'
     self~expectSyntax(93.933)
@@ -212,19 +168,19 @@ return testUnitList
     xre = x2c('2.55E2')
 
 ::method 'test026'
-    self~assertSame('subTest01','0100'X,x2c(+1E2))
+    self~assertSame('0100'X, x2c(+1E2))
 
 ::method 'test027'
-    self~assertSame('subTest01','0100'X,x2c(+1E+2))
+    self~assertSame('0100'X, x2c(+1E+2))
 
 ::method 'test028'
-    self~assertSame('subTest01','0255'X,x2c(+2.55E2))
+    self~assertSame('0255'X, x2c(+2.55E2))
 
 ::method 'test029'
-    self~assertSame('subTest01','42'X,x2c(+42))
+    self~assertSame('42'X, x2c(+42))
 
 ::method 'test030'
-    self~assertSame('subTest01','42'X,x2c(.vn42))
+    self~assertSame('42'X, x2c(.vn42))
 
 ::method 'test031'
     numeric digits 1
@@ -247,7 +203,7 @@ return testUnitList
     xre = x2c(+42)
 
 ::method 'test035'
-    self~assertSame('subTest01','42'X,x2c(.vn42))
+    self~assertSame('42'X, x2c(.vn42))
 
 ::method 'test036'
     self~expectSyntax(93.933)
@@ -278,23 +234,23 @@ return testUnitList
     xre = x2c(nv.10)
 
 ::method 'test043'
-    self~assertSame('subTest01','JR',x2c(c2x('JR')))
+    self~assertSame('JR', x2c(c2x('JR')))
 
 ::method 'test044'
-    self~assertSame('subTest01','0192837465ABCDEF'X,x2c(subStr('0192837465abcdefghijklmnop',1,16)))
+    self~assertSame('0192837465ABCDEF'X, x2c(subStr('0192837465abcdefghijklmnop',1,16)))
 
 ::method 'test045'
-    self~assertSame('subTest01','D1D9'X,x2c(d2x(53721)))
+    self~assertSame('D1D9'X, x2c(d2x(53721)))
 
 ::method 'test046'
-    self~assertSame('subTest01','01'X,x2c(dataType(6,'N')))
+    self~assertSame('01'X, x2c(dataType(6,'N')))
 
 ::method 'test047'
     self~expectSyntax(93.933)
     xre = x2c(dataType(6))
 
 ::method 'test048'
-    self~assertSame('subTest01','12'x,x2c(x2c('3132')))
+    self~assertSame('12'x, x2c(x2c('3132')))
 
 ::method 'test049'
     .local~remove(v255b)
@@ -310,9 +266,9 @@ return testUnitList
 -- from bif.testgroup
    -- test the BIF, using examples from the documentation
 ::method "test_X2C"
-    self~assertSame("subTest1" , 'Hello' /* ASCII */ , X2C('4865 6c6c 6f') )
-    self~assertSame("subTest2" , '72s'   /* ASCII */ , X2C('3732 73')      )
+    self~assertSame('Hello' /* ASCII */, X2C('4865 6c6c 6f'))
+    self~assertSame('72s'   /* ASCII */, X2C('3732 73'))
 
    -- new tests
-    self~assertSame("subTest3" , ''      /* ASCII */ , X2C('')             )
+    self~assertSame(''      /* ASCII */, X2C(''))
 

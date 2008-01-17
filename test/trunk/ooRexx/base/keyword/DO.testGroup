@@ -56,74 +56,22 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
+  parse source . . fileSpec
 
+  group = .TestGroup~new(fileSpec)
+  group~add(.DO.testGroup)
 
+  if group~isAutomatedTest then return group
 
--------------------------------------------------------------------------------------------
--- ===> adapt the "testGroupList" to your testCase classes; each element in the list is <===
--- ===> an array object, the first element containing the testCase class object, the   <===
--- ===> second element is a list of test method names which are regarded to be         <===
--- ===> mandatory (if the list remains empty all test methods are mandatory)           <===
+  testResult = group~suite~execute~~print
 
-   /* list of array objects, each containing the testGroup class object and an
-      optional list of mandatory test case methods name                       */
+return testResult
+-- End of entry point.
 
-mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
-testGroupList=.list~of( .array~of(.DO.testGroup,  mandatoryTestMethods) )
-
--------------------------------------------------------------------------------------------
--- ===> the following code needs not to be individualized                              <===
-
-   -- read top comment, containing infos about this program
-arrLines=.array~new
-do i=1 to 150 until arrLines[i]="*/"
-   arrLines[i]=sourceline(i)
-end
-      -- supply information for the testClass(es) in this file; the class attribute
-      -- "TestCaseInfo" (a directory object, index points to a queue) will store
-      -- the parsed infos
-aTestGroupClass=testGroupList~at(testGroupList~first)[1] -- get first testClass
-
-   -- will parse the array lines and store result in class object
-call makeDirTestInfo aTestGroupClass, arrLines
-tmpDir=aTestGroupClass~TestCaseInfo
-parse source s   -- op_sys invocationType fullPathToThisFile
-tmpDir~setentry("test_Case-source", s)
-
-   -- now add this directory to other testCase classes, if any left
-do arr over testGroupList
-   if arr[1]=aTestGroupClass then iterate  -- already handled
-   arr[1]~TestCaseInfo=tmpDir             -- save info in class object
-end
-
--- if this file is CALLed or REQUIRED then define an entry "bRunTestLocally" in .local
--- and set it to .false; this way the independent local invocation of the tests is inhibited
-if .local~hasentry("bRunTestsLocally")=.false then
-   .local~bRunTestsLocally=.true -- if this file is executed directly, then run tests for debugging
-
-if .bRunTestsLocally=.true then  -- run ALL tests in this test unit
-do
-   ts=.testSuite~new             -- create a testSuite
-   do arr over testGroupList
-      -- create a testSuite for the given test case class, use all its testmethods
-      ts~addTest( .testSuite~new(arr[1]))
-   end
-   -- testResult=.testSuite~new(testGroupClass)~run
-   testResult=ts~run       -- now run all the tests
-
-   call simpleDumpTestResults testResult
-end
-
-   /* return list of array objects containing test case classes and
-      optionally list of mandatory test methods                      */
-return testGroupList
-
-
-
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 ::requires 'FileUtils.cls'
 
-::class "DO.testGroup" subclass TestCase public
+::class "DO.testGroup" subclass ooTestCase public
 
 ::method "test_DO"
   i=0
@@ -131,7 +79,7 @@ return testGroupList
      i=i+1
      if i>3 then leave
   end
-  self~assertEquals("subtest_01", 1, i)
+  self~assertEquals(1, i)
 
 
 ::method "test_DO_4"
@@ -139,7 +87,7 @@ return testGroupList
   DO 4
      i+=1
   end
-  self~assertEquals("subtest_01", 4, i)
+  self~assertEquals(4, i)
 
 ::method "test_DO_a=4"
   i=0
@@ -147,7 +95,7 @@ return testGroupList
   DO a
      i+=1
   end
-  self~assertEquals("subtest_01", a, i)
+  self~assertEquals(a, i)
 
 
 ::method "test_DO_WHILE_i<4"
@@ -155,7 +103,7 @@ return testGroupList
   DO while i<4
      i+=1
   end
-  self~assertEquals("subtest_01", 4, i)
+  self~assertEquals(4, i)
 
 
 ::method "test_DO_WHILE_.true, .true, i<4"
@@ -163,7 +111,7 @@ return testGroupList
   DO while .true, .true, i<4
      i+=1
   end
-  self~assertEquals("subtest_01", 4, i)
+  self~assertEquals(4, i)
 
 
 ::method "test_DO_UNTIL_i>3"
@@ -171,7 +119,7 @@ return testGroupList
   DO until i>3
      i+=1
   end
-  self~assertEquals("subtest_01", 4, i)
+  self~assertEquals(4, i)
 
 
 ::method "test_DO_UNTIL_.true, .true, i>3"
@@ -179,49 +127,49 @@ return testGroupList
   DO until .true, .true, i>3
      i+=1
   end
-  self~assertEquals("subtest_01", 4, i)
+  self~assertEquals(4, i)
 
 
 ::method "test_DO_i=1"
   DO i=1
      if i=4 then leave
   end
-  self~assertEquals("subtest_01", 4, i)
+  self~assertEquals(4, i)
 
 
 ::method "test_DO_i=1_to_3"
   DO i=1 to 3
      nop
   end
-  self~assertEquals("subtest_01", 4, i)
+  self~assertEquals(4, i)
 
 
 ::method "test_DO_i=0_to_3_by_2"
   DO i=0 to 3 by 2
      nop
   end
-  self~assertEquals("subtest_01", 4, i)
+  self~assertEquals(4, i)
 
 
 ::method "test_DO_i=0_by_2"
   DO i=0 by 2
      if i>=4 then leave
   end
-  self~assertEquals("subtest_01", 4, i)
+  self~assertEquals(4, i)
 
 
 ::method "test_DO_i=-4.04 by 1.01"
   DO i=-4.04 by 1.01
      if i>=4 then leave
   end
-  self~assertEquals("subtest_01", 4.04, i)
+  self~assertEquals(4.04, i)
 
 
 ::method "test_DO_i=4.04 by -1.01"
   DO i=4.04 by -1.01
      if i<=-4 then leave
   end
-  self~assertEquals("subtest_01", -4.04, i)
+  self~assertEquals(-4.04, i)
 
 
 
@@ -229,10 +177,10 @@ return testGroupList
       -- test 1
    i=0
    DO label aha1
-      self~assertTrue("subtest_01: LABEL subkeyword on DO known", .true)
+      self~assertTrue(.true, "subtest_01: LABEL subkeyword on DO known")
       i=i+1
       DO label aha2
-         self~assertTrue("subtest_02: LABEL subkeyword on DO known", .true)
+         self~assertTrue(.true, "subtest_02: LABEL subkeyword on DO known")
          leave aha2
          self~fail("subtest_03: 'leave aha2' did not work!")
       end
@@ -240,31 +188,31 @@ return testGroupList
       leave aha1
    END aha1
 
-   self~assertEquals("subtest_04: leaving 'aha2'!", 2, i)
+   self~assertEquals(2, i, "subtest_04: leaving 'aha2'!")
 
       -- test 2
    i=0
    DO label aha1
-      self~assertTrue("subtest_05: LABEL subkeyword on DO known", .true)
+      self~assertTrue(.true, "subtest_05: LABEL subkeyword on DO known")
       i=i+1
       DO label aha2
-         self~assertTrue("subtest_06: LABEL subkeyword on DO known", .true)
+         self~assertTrue(.true, "subtest_06: LABEL subkeyword on DO known")
          leave aha1
          self~fail("subtest_07: 'leave aha2' did not work!")
       end aha2
       i=i+1
    END aha1
 
-   self~assertEquals("subtest_08: leaving 'aha1'!", 1, i)
+   self~assertEquals(1, i, "subtest_08: leaving 'aha1'!")
 
 
       -- test 3
    i=0
    DO label aha1
-      self~assertTrue("subtest_09: LABEL subkeyword on DO known", .true)
+      self~assertTrue(.true, "subtest_09: LABEL subkeyword on DO known")
       i=i+1
       DO i=1 to 15
-         self~assertTrue("subtest_10: LABEL subkeyword on DO known", .true)
+         self~assertTrue(.true, "subtest_10: LABEL subkeyword on DO known")
          leave aha1
          self~fail("subtest_11: 'leave aha2' did not work!")
       end i
@@ -272,7 +220,7 @@ return testGroupList
       leave
    END aha1
 
-   self~assertEquals("subtest_12: leaving 'aha1'!", 1, i)
+   self~assertEquals(1, i, "subtest_12: leaving 'aha1'!")
 
 
 ::method "test_DO_lable_works_with_interpret"
@@ -288,9 +236,9 @@ return testGroupList
 
    interpret str
 
-   self~assertNotEquals("i must be incremented", 0, i)
-   self~assertNotEquals("Leave aha2 did not work", 10, i)
-   self~assertEquals("Do loops with label must leave i == 2", 2, i)
+   self~assertNotEquals(0, i, "i must be incremented")
+   self~assertNotEquals(10, i, "Leave aha2 did not work")
+   self~assertEquals(2, i, "Do loops with label must leave i == 2")
 
 
 ::method "test_DO_LABEL_interpret_with_error"
@@ -317,1253 +265,1253 @@ return testGroupList
    i=0;b=0;t=0;
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 15/**/by/**/ 4 /**/to/**/ 10;is=is+1;
    End
-   self~AssertSame("subTest1", is, 2)
+   self~AssertSame(is, 2)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 7/**/by/**/ 4 /**/to/**/ 10;is=is+1;
    End
-   self~AssertSame("subTest2", is, 2)
+   self~AssertSame(is, 2)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 0/**/by/**/ 4 /**/to/**/ 10;is=is+1;
    End
-   self~AssertSame("subTest3", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 15/**/by/**/ 4 /**/to/**/ 5;is=is+1;
    End
-   self~AssertSame("subTest4", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 7/**/by/**/ 4 /**/to/**/ 5;is=is+1;
    End
-   self~AssertSame("subTest5", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 0/**/by/**/ 4 /**/to/**/ 5;is=is+1;
    End
-   self~AssertSame("subTest6", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 15/**/by/**/ 4 /**/to/**/ 0;is=is+1;
    End
-   self~AssertSame("subTest7", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 7/**/by/**/ 4 /**/to/**/ 0;is=is+1;
    End
-   self~AssertSame("subTest8", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 0/**/by/**/ 4 /**/to/**/ 0;is=is+1;
    End
-   self~AssertSame("subTest9", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 15/**/by/**/ 4 /**/to/**/ -5;is=is+1;
    End
-   self~AssertSame("subTest10", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 7/**/by/**/ 4 /**/to/**/ -5;is=is+1;
    End
-   self~AssertSame("subTest11", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 0/**/by/**/ 4 /**/to/**/ -5;is=is+1;
    End
-   self~AssertSame("subTest12", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 15/**/by/**/ 4 /**/to/**/ -10;is=is+1;
    End
-   self~AssertSame("subTest13", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 7/**/by/**/ 4 /**/to/**/ -10;is=is+1;
    End
-   self~AssertSame("subTest14", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 0/**/by/**/ 4 /**/to/**/ -10;is=is+1;
    End
-   self~AssertSame("subTest15", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 15/**/by/**/ 3 /**/to/**/ 10;is=is+1;
    End
-   self~AssertSame("subTest16", is, 2)
+   self~AssertSame(is, 2)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 7/**/by/**/ 3 /**/to/**/ 10;is=is+1;
    End
-   self~AssertSame("subTest17", is, 2)
+   self~AssertSame(is, 2)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 0/**/by/**/ 3 /**/to/**/ 10;is=is+1;
    End
-   self~AssertSame("subTest18", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 15/**/by/**/ 3 /**/to/**/ 5;is=is+1;
    End
-   self~AssertSame("subTest19", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 7/**/by/**/ 3 /**/to/**/ 5;is=is+1;
    End
-   self~AssertSame("subTest20", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 0/**/by/**/ 3 /**/to/**/ 5;is=is+1;
    End
-   self~AssertSame("subTest21", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 15/**/by/**/ 3 /**/to/**/ 0;is=is+1;
    End
-   self~AssertSame("subTest22", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 7/**/by/**/ 3 /**/to/**/ 0;is=is+1;
    End
-   self~AssertSame("subTest23", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 0/**/by/**/ 3 /**/to/**/ 0;is=is+1;
    End
-   self~AssertSame("subTest24", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 15/**/by/**/ 3 /**/to/**/ -5;is=is+1;
    End
-   self~AssertSame("subTest25", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 7/**/by/**/ 3 /**/to/**/ -5;is=is+1;
    End
-   self~AssertSame("subTest26", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 0/**/by/**/ 3 /**/to/**/ -5;is=is+1;
    End
-   self~AssertSame("subTest27", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 15/**/by/**/ 3 /**/to/**/ -10;is=is+1;
    End
-   self~AssertSame("subTest28", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 7/**/by/**/ 3 /**/to/**/ -10;is=is+1;
    End
-   self~AssertSame("subTest29", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 0/**/by/**/ 3 /**/to/**/ -10;is=is+1;
    End
-   self~AssertSame("subTest30", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 15/**/by/**/ 0 /**/to/**/ 10;is=is+1;
    If is= 15-1 Then Leave
    End
-   self~AssertSame("subTest31", is, 14)
+   self~AssertSame(is, 14)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 7/**/by/**/ 0 /**/to/**/ 10;is=is+1;
    If is= 7-1 Then Leave
    End
-   self~AssertSame("subTest32", is, 6)
+   self~AssertSame(is, 6)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 0/**/by/**/ 0 /**/to/**/ 10;is=is+1;
    If is= 0-1 Then Leave
    End
-   self~AssertSame("subTest33", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 15/**/by/**/ 0 /**/to/**/ 5;is=is+1;
    If is= 15-1 Then Leave
    End
-   self~AssertSame("subTest34", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 7/**/by/**/ 0 /**/to/**/ 5;is=is+1;
    If is= 7-1 Then Leave
    End
-   self~AssertSame("subTest35", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 0/**/by/**/ 0 /**/to/**/ 5;is=is+1;
    If is= 0-1 Then Leave
    End
-   self~AssertSame("subTest36", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 15/**/by/**/ 0 /**/to/**/ 0;is=is+1;
    If is= 15-1 Then Leave
    End
-   self~AssertSame("subTest37", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 7/**/by/**/ 0 /**/to/**/ 0;is=is+1;
    If is= 7-1 Then Leave
    End
-   self~AssertSame("subTest38", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 0/**/by/**/ 0 /**/to/**/ 0;is=is+1;
    If is= 0-1 Then Leave
    End
-   self~AssertSame("subTest39", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 15/**/by/**/ 0 /**/to/**/ -5;is=is+1;
    If is= 15-1 Then Leave
    End
-   self~AssertSame("subTest40", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 7/**/by/**/ 0 /**/to/**/ -5;is=is+1;
    If is= 7-1 Then Leave
    End
-   self~AssertSame("subTest41", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 0/**/by/**/ 0 /**/to/**/ -5;is=is+1;
    If is= 0-1 Then Leave
    End
-   self~AssertSame("subTest42", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 15/**/by/**/ 0 /**/to/**/ -10;is=is+1;
    If is= 15-1 Then Leave
    End
-   self~AssertSame("subTest43", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 7/**/by/**/ 0 /**/to/**/ -10;is=is+1;
    If is= 7-1 Then Leave
    End
-   self~AssertSame("subTest44", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 0/**/by/**/ 0 /**/to/**/ -10;is=is+1;
    If is= 0-1 Then Leave
    End
-   self~AssertSame("subTest45", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 15/**/by/**/ -3 /**/to/**/ 10;is=is+1;
    End
-   self~AssertSame("subTest46", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 7/**/by/**/ -3 /**/to/**/ 10;is=is+1;
    End
-   self~AssertSame("subTest47", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 0/**/by/**/ -3 /**/to/**/ 10;is=is+1;
    End
-   self~AssertSame("subTest48", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 15/**/by/**/ -3 /**/to/**/ 5;is=is+1;
    End
-   self~AssertSame("subTest49", is, 1)
+   self~AssertSame(is, 1)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 7/**/by/**/ -3 /**/to/**/ 5;is=is+1;
    End
-   self~AssertSame("subTest50", is, 1)
+   self~AssertSame(is, 1)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 0/**/by/**/ -3 /**/to/**/ 5;is=is+1;
    End
-   self~AssertSame("subTest51", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 15/**/by/**/ -3 /**/to/**/ 0;is=is+1;
    End
-   self~AssertSame("subTest52", is, 3)
+   self~AssertSame(is, 3)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 7/**/by/**/ -3 /**/to/**/ 0;is=is+1;
    End
-   self~AssertSame("subTest53", is, 3)
+   self~AssertSame(is, 3)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 0/**/by/**/ -3 /**/to/**/ 0;is=is+1;
    End
-   self~AssertSame("subTest54", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 15/**/by/**/ -3 /**/to/**/ -5;is=is+1;
    End
-   self~AssertSame("subTest55", is, 4)
+   self~AssertSame(is, 4)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 7/**/by/**/ -3 /**/to/**/ -5;is=is+1;
    End
-   self~AssertSame("subTest56", is, 4)
+   self~AssertSame(is, 4)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 0/**/by/**/ -3 /**/to/**/ -5;is=is+1;
    End
-   self~AssertSame("subTest57", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 15/**/by/**/ -3 /**/to/**/ -10;is=is+1;
    End
-   self~AssertSame("subTest58", is, 6)
+   self~AssertSame(is, 6)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 7/**/by/**/ -3 /**/to/**/ -10;is=is+1;
    End
-   self~AssertSame("subTest59", is, 6)
+   self~AssertSame(is, 6)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 0/**/by/**/ -3 /**/to/**/ -10;is=is+1;
    End
-   self~AssertSame("subTest60", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 15/**/by/**/ -4 /**/to/**/ 10;is=is+1;
    End
-   self~AssertSame("subTest61", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 7/**/by/**/ -4 /**/to/**/ 10;is=is+1;
    End
-   self~AssertSame("subTest62", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 0/**/by/**/ -4 /**/to/**/ 10;is=is+1;
    End
-   self~AssertSame("subTest63", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 15/**/by/**/ -4 /**/to/**/ 5;is=is+1;
    End
-   self~AssertSame("subTest64", is, 1)
+   self~AssertSame(is, 1)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 7/**/by/**/ -4 /**/to/**/ 5;is=is+1;
    End
-   self~AssertSame("subTest65", is, 1)
+   self~AssertSame(is, 1)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 0/**/by/**/ -4 /**/to/**/ 5;is=is+1;
    End
-   self~AssertSame("subTest66", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 15/**/by/**/ -4 /**/to/**/ 0;is=is+1;
    End
-   self~AssertSame("subTest67", is, 2)
+   self~AssertSame(is, 2)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 7/**/by/**/ -4 /**/to/**/ 0;is=is+1;
    End
-   self~AssertSame("subTest68", is, 2)
+   self~AssertSame(is, 2)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 0/**/by/**/ -4 /**/to/**/ 0;is=is+1;
    End
-   self~AssertSame("subTest69", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 15/**/by/**/ -4 /**/to/**/ -5;is=is+1;
    End
-   self~AssertSame("subTest70", is, 3)
+   self~AssertSame(is, 3)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 7/**/by/**/ -4 /**/to/**/ -5;is=is+1;
    End
-   self~AssertSame("subTest71", is, 3)
+   self~AssertSame(is, 3)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 0/**/by/**/ -4 /**/to/**/ -5;is=is+1;
    End
-   self~AssertSame("subTest72", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 15/**/by/**/ -4 /**/to/**/ -10;is=is+1;
    End
-   self~AssertSame("subTest73", is, 5)
+   self~AssertSame(is, 5)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 7/**/by/**/ -4 /**/to/**/ -10;is=is+1;
    End
-   self~AssertSame("subTest74", is, 5)
+   self~AssertSame(is, 5)
    is=0;/**/Do/**/ k/**/=/**/ 6 /**/for/**/ 0/**/by/**/ -4 /**/to/**/ -10;is=is+1;
    End
-   self~AssertSame("subTest75", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 15/**/by/**/ 4 /**/to/**/ 10;is=is+1;
    End
-   self~AssertSame("subTest76", is, 2)
+   self~AssertSame(is, 2)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 7/**/by/**/ 4 /**/to/**/ 10;is=is+1;
    End
-   self~AssertSame("subTest77", is, 2)
+   self~AssertSame(is, 2)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 0/**/by/**/ 4 /**/to/**/ 10;is=is+1;
    End
-   self~AssertSame("subTest78", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 15/**/by/**/ 4 /**/to/**/ 5;is=is+1;
    End
-   self~AssertSame("subTest79", is, 1)
+   self~AssertSame(is, 1)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 7/**/by/**/ 4 /**/to/**/ 5;is=is+1;
    End
-   self~AssertSame("subTest80", is, 1)
+   self~AssertSame(is, 1)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 0/**/by/**/ 4 /**/to/**/ 5;is=is+1;
    End
-   self~AssertSame("subTest81", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 15/**/by/**/ 4 /**/to/**/ 0;is=is+1;
    End
-   self~AssertSame("subTest82", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 7/**/by/**/ 4 /**/to/**/ 0;is=is+1;
    End
-   self~AssertSame("subTest83", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 0/**/by/**/ 4 /**/to/**/ 0;is=is+1;
    End
-   self~AssertSame("subTest84", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 15/**/by/**/ 4 /**/to/**/ -5;is=is+1;
    End
-   self~AssertSame("subTest85", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 7/**/by/**/ 4 /**/to/**/ -5;is=is+1;
    End
-   self~AssertSame("subTest86", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 0/**/by/**/ 4 /**/to/**/ -5;is=is+1;
    End
-   self~AssertSame("subTest87", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 15/**/by/**/ 4 /**/to/**/ -10;is=is+1;
    End
-   self~AssertSame("subTest88", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 7/**/by/**/ 4 /**/to/**/ -10;is=is+1;
    End
-   self~AssertSame("subTest89", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 0/**/by/**/ 4 /**/to/**/ -10;is=is+1;
    End
-   self~AssertSame("subTest90", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 15/**/by/**/ 3 /**/to/**/ 10;is=is+1;
    End
-   self~AssertSame("subTest91", is, 3)
+   self~AssertSame(is, 3)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 7/**/by/**/ 3 /**/to/**/ 10;is=is+1;
    End
-   self~AssertSame("subTest92", is, 3)
+   self~AssertSame(is, 3)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 0/**/by/**/ 3 /**/to/**/ 10;is=is+1;
    End
-   self~AssertSame("subTest93", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 15/**/by/**/ 3 /**/to/**/ 5;is=is+1;
    End
-   self~AssertSame("subTest94", is, 1)
+   self~AssertSame(is, 1)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 7/**/by/**/ 3 /**/to/**/ 5;is=is+1;
    End
-   self~AssertSame("subTest95", is, 1)
+   self~AssertSame(is, 1)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 0/**/by/**/ 3 /**/to/**/ 5;is=is+1;
    End
-   self~AssertSame("subTest96", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 15/**/by/**/ 3 /**/to/**/ 0;is=is+1;
    End
-   self~AssertSame("subTest97", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 7/**/by/**/ 3 /**/to/**/ 0;is=is+1;
    End
-   self~AssertSame("subTest98", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 0/**/by/**/ 3 /**/to/**/ 0;is=is+1;
    End
-   self~AssertSame("subTest99", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 15/**/by/**/ 3 /**/to/**/ -5;is=is+1;
    End
-   self~AssertSame("subTest100", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 7/**/by/**/ 3 /**/to/**/ -5;is=is+1;
    End
-   self~AssertSame("subTest101", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 0/**/by/**/ 3 /**/to/**/ -5;is=is+1;
    End
-   self~AssertSame("subTest102", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 15/**/by/**/ 3 /**/to/**/ -10;is=is+1;
    End
-   self~AssertSame("subTest103", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 7/**/by/**/ 3 /**/to/**/ -10;is=is+1;
    End
-   self~AssertSame("subTest104", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 0/**/by/**/ 3 /**/to/**/ -10;is=is+1;
    End
-   self~AssertSame("subTest105", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 15/**/by/**/ 0 /**/to/**/ 10;is=is+1;
    If is= 15-1 Then Leave
    End
-   self~AssertSame("subTest106", is, 14)
+   self~AssertSame(is, 14)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 7/**/by/**/ 0 /**/to/**/ 10;is=is+1;
    If is= 7-1 Then Leave
    End
-   self~AssertSame("subTest107", is, 6)
+   self~AssertSame(is, 6)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 0/**/by/**/ 0 /**/to/**/ 10;is=is+1;
    If is= 0-1 Then Leave
    End
-   self~AssertSame("subTest108", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 15/**/by/**/ 0 /**/to/**/ 5;is=is+1;
    If is= 15-1 Then Leave
    End
-   self~AssertSame("subTest109", is, 14)
+   self~AssertSame(is, 14)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 7/**/by/**/ 0 /**/to/**/ 5;is=is+1;
    If is= 7-1 Then Leave
    End
-   self~AssertSame("subTest110", is, 6)
+   self~AssertSame(is, 6)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 0/**/by/**/ 0 /**/to/**/ 5;is=is+1;
    If is= 0-1 Then Leave
    End
-   self~AssertSame("subTest111", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 15/**/by/**/ 0 /**/to/**/ 0;is=is+1;
    If is= 15-1 Then Leave
    End
-   self~AssertSame("subTest112", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 7/**/by/**/ 0 /**/to/**/ 0;is=is+1;
    If is= 7-1 Then Leave
    End
-   self~AssertSame("subTest113", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 0/**/by/**/ 0 /**/to/**/ 0;is=is+1;
    If is= 0-1 Then Leave
    End
-   self~AssertSame("subTest114", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 15/**/by/**/ 0 /**/to/**/ -5;is=is+1;
    If is= 15-1 Then Leave
    End
-   self~AssertSame("subTest115", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 7/**/by/**/ 0 /**/to/**/ -5;is=is+1;
    If is= 7-1 Then Leave
    End
-   self~AssertSame("subTest116", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 0/**/by/**/ 0 /**/to/**/ -5;is=is+1;
    If is= 0-1 Then Leave
    End
-   self~AssertSame("subTest117", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 15/**/by/**/ 0 /**/to/**/ -10;is=is+1;
    If is= 15-1 Then Leave
    End
-   self~AssertSame("subTest118", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 7/**/by/**/ 0 /**/to/**/ -10;is=is+1;
    If is= 7-1 Then Leave
    End
-   self~AssertSame("subTest118", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 0/**/by/**/ 0 /**/to/**/ -10;is=is+1;
    If is= 0-1 Then Leave
    End
-   self~AssertSame("subTest120", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 15/**/by/**/ -3 /**/to/**/ 10;is=is+1;
    End
-   self~AssertSame("subTest121", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 7/**/by/**/ -3 /**/to/**/ 10;is=is+1;
    End
-   self~AssertSame("subTest122", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 0/**/by/**/ -3 /**/to/**/ 10;is=is+1;
    End
-   self~AssertSame("subTest123", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 15/**/by/**/ -3 /**/to/**/ 5;is=is+1;
    End
-   self~AssertSame("subTest124", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 7/**/by/**/ -3 /**/to/**/ 5;is=is+1;
    End
-   self~AssertSame("subTest125", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 0/**/by/**/ -3 /**/to/**/ 5;is=is+1;
    End
-   self~AssertSame("subTest126", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 15/**/by/**/ -3 /**/to/**/ 0;is=is+1;
    End
-   self~AssertSame("subTest127", is, 2)
+   self~AssertSame(is, 2)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 7/**/by/**/ -3 /**/to/**/ 0;is=is+1;
    End
-   self~AssertSame("subTest128", is, 2)
+   self~AssertSame(is, 2)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 0/**/by/**/ -3 /**/to/**/ 0;is=is+1;
    End
-   self~AssertSame("subTest129", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 15/**/by/**/ -3 /**/to/**/ -5;is=is+1;
    End
-   self~AssertSame("subTest130", is, 3)
+   self~AssertSame(is, 3)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 7/**/by/**/ -3 /**/to/**/ -5;is=is+1;
    End
-   self~AssertSame("subTest131", is, 3)
+   self~AssertSame(is, 3)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 0/**/by/**/ -3 /**/to/**/ -5;is=is+1;
    End
-   self~AssertSame("subTest132", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 15/**/by/**/ -3 /**/to/**/ -10;is=is+1;
    End
-   self~AssertSame("subTest133", is, 5)
+   self~AssertSame(is, 5)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 7/**/by/**/ -3 /**/to/**/ -10;is=is+1;
    End
-   self~AssertSame("subTest134", is, 5)
+   self~AssertSame(is, 5)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 0/**/by/**/ -3 /**/to/**/ -10;is=is+1;
    End
-   self~AssertSame("subTest135", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 15/**/by/**/ -4 /**/to/**/ 10;is=is+1;
    End
-   self~AssertSame("subTest136", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 7/**/by/**/ -4 /**/to/**/ 10;is=is+1;
    End
-   self~AssertSame("subTest137", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 0/**/by/**/ -4 /**/to/**/ 10;is=is+1;
    End
-   self~AssertSame("subTest138", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 15/**/by/**/ -4 /**/to/**/ 5;is=is+1;
    End
-   self~AssertSame("subTest139", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 7/**/by/**/ -4 /**/to/**/ 5;is=is+1;
    End
-   self~AssertSame("subTest140", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 0/**/by/**/ -4 /**/to/**/ 5;is=is+1;
    End
-   self~AssertSame("subTest141", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 15/**/by/**/ -4 /**/to/**/ 0;is=is+1;
    End
-   self~AssertSame("subTest142", is, 1)
+   self~AssertSame(is, 1)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 7/**/by/**/ -4 /**/to/**/ 0;is=is+1;
    End
-   self~AssertSame("subTest143", is, 1)
+   self~AssertSame(is, 1)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 0/**/by/**/ -4 /**/to/**/ 0;is=is+1;
    End
-   self~AssertSame("subTest144", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 15/**/by/**/ -4 /**/to/**/ -5;is=is+1;
    End
-   self~AssertSame("subTest145", is, 3)
+   self~AssertSame(is, 3)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 7/**/by/**/ -4 /**/to/**/ -5;is=is+1;
    End
-   self~AssertSame("subTest146", is, 3)
+   self~AssertSame(is, 3)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 0/**/by/**/ -4 /**/to/**/ -5;is=is+1;
    End
-   self~AssertSame("subTest147", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 15/**/by/**/ -4 /**/to/**/ -10;is=is+1;
    End
-   self~AssertSame("subTest148", is, 4)
+   self~AssertSame(is, 4)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 7/**/by/**/ -4 /**/to/**/ -10;is=is+1;
    End
-   self~AssertSame("subTest149", is, 4)
+   self~AssertSame(is, 4)
    is=0;/**/Do/**/ k/**/=/**/ 3 /**/for/**/ 0/**/by/**/ -4 /**/to/**/ -10;is=is+1;
    End
-   self~AssertSame("subTest150", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 15/**/by/**/ 4 /**/to/**/ 10;is=is+1;
    End
-   self~AssertSame("subTest151", is, 3)
+   self~AssertSame(is, 3)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 7/**/by/**/ 4 /**/to/**/ 10;is=is+1;
    End
-   self~AssertSame("subTest152", is, 3)
+   self~AssertSame(is, 3)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 0/**/by/**/ 4 /**/to/**/ 10;is=is+1;
    End
-   self~AssertSame("subTest153", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 15/**/by/**/ 4 /**/to/**/ 5;is=is+1;
    End
-   self~AssertSame("subTest154", is, 2)
+   self~AssertSame(is, 2)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 7/**/by/**/ 4 /**/to/**/ 5;is=is+1;
    End
-   self~AssertSame("subTest155", is, 2)
+   self~AssertSame(is, 2)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 0/**/by/**/ 4 /**/to/**/ 5;is=is+1;
    End
-   self~AssertSame("subTest156", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 15/**/by/**/ 4 /**/to/**/ 0;is=is+1;
    End
-   self~AssertSame("subTest157", is, 1)
+   self~AssertSame(is, 1)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 7/**/by/**/ 4 /**/to/**/ 0;is=is+1;
    End
-   self~AssertSame("subTest158", is, 1)
+   self~AssertSame(is, 1)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 0/**/by/**/ 4 /**/to/**/ 0;is=is+1;
    End
-   self~AssertSame("subTest159", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 15/**/by/**/ 4 /**/to/**/ -5;is=is+1;
    End
-   self~AssertSame("subTest160", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 7/**/by/**/ 4 /**/to/**/ -5;is=is+1;
    End
-   self~AssertSame("subTest161", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 0/**/by/**/ 4 /**/to/**/ -5;is=is+1;
    End
-   self~AssertSame("subTest162", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 15/**/by/**/ 4 /**/to/**/ -10;is=is+1;
    End
-   self~AssertSame("subTest163", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 7/**/by/**/ 4 /**/to/**/ -10;is=is+1;
    End
-   self~AssertSame("subTest164", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 0/**/by/**/ 4 /**/to/**/ -10;is=is+1;
    End
-   self~AssertSame("subTest165", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 15/**/by/**/ 3 /**/to/**/ 10;is=is+1;
    End
-   self~AssertSame("subTest166", is, 4)
+   self~AssertSame(is, 4)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 7/**/by/**/ 3 /**/to/**/ 10;is=is+1;
    End
-   self~AssertSame("subTest167", is, 4)
+   self~AssertSame(is, 4)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 0/**/by/**/ 3 /**/to/**/ 10;is=is+1;
    End
-   self~AssertSame("subTest168", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 15/**/by/**/ 3 /**/to/**/ 5;is=is+1;
    End
-   self~AssertSame("subTest169", is, 2)
+   self~AssertSame(is, 2)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 7/**/by/**/ 3 /**/to/**/ 5;is=is+1;
    End
-   self~AssertSame("subTest170", is, 2)
+   self~AssertSame(is, 2)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 0/**/by/**/ 3 /**/to/**/ 5;is=is+1;
    End
-   self~AssertSame("subTest171", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 15/**/by/**/ 3 /**/to/**/ 0;is=is+1;
    End
-   self~AssertSame("subTest172", is, 1)
+   self~AssertSame(is, 1)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 7/**/by/**/ 3 /**/to/**/ 0;is=is+1;
    End
-   self~AssertSame("subTest173", is, 1)
+   self~AssertSame(is, 1)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 0/**/by/**/ 3 /**/to/**/ 0;is=is+1;
    End
-   self~AssertSame("subTest174", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 15/**/by/**/ 3 /**/to/**/ -5;is=is+1;
    End
-   self~AssertSame("subTest175", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 7/**/by/**/ 3 /**/to/**/ -5;is=is+1;
    End
-   self~AssertSame("subTest176", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 0/**/by/**/ 3 /**/to/**/ -5;is=is+1;
    End
-   self~AssertSame("subTest177", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 15/**/by/**/ 3 /**/to/**/ -10;is=is+1;
    End
-   self~AssertSame("subTest178", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 7/**/by/**/ 3 /**/to/**/ -10;is=is+1;
    End
-   self~AssertSame("subTest179", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 0/**/by/**/ 3 /**/to/**/ -10;is=is+1;
    End
-   self~AssertSame("subTest180", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 15/**/by/**/ 0 /**/to/**/ 10;is=is+1;
    If is= 15-1 Then Leave
    End
-   self~AssertSame("subTest181", is, 14)
+   self~AssertSame(is, 14)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 7/**/by/**/ 0 /**/to/**/ 10;is=is+1;
    If is= 7-1 Then Leave
    End
-   self~AssertSame("subTest182", is, 6)
+   self~AssertSame(is, 6)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 0/**/by/**/ 0 /**/to/**/ 10;is=is+1;
    If is= 0-1 Then Leave
    End
-   self~AssertSame("subTest183", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 15/**/by/**/ 0 /**/to/**/ 5;is=is+1;
    If is= 15-1 Then Leave
    End
-   self~AssertSame("subTest184", is, 14)
+   self~AssertSame(is, 14)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 7/**/by/**/ 0 /**/to/**/ 5;is=is+1;
    If is= 7-1 Then Leave
    End
-   self~AssertSame("subTest185", is, 6)
+   self~AssertSame(is, 6)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 0/**/by/**/ 0 /**/to/**/ 5;is=is+1;
    If is= 0-1 Then Leave
    End
-   self~AssertSame("subTest186", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 15/**/by/**/ 0 /**/to/**/ 0;is=is+1;
    If is= 15-1 Then Leave
    End
-   self~AssertSame("subTest187", is, 14)
+   self~AssertSame(is, 14)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 7/**/by/**/ 0 /**/to/**/ 0;is=is+1;
    If is= 7-1 Then Leave
    End
-   self~AssertSame("subTest188", is, 6)
+   self~AssertSame(is, 6)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 0/**/by/**/ 0 /**/to/**/ 0;is=is+1;
    If is= 0-1 Then Leave
    End
-   self~AssertSame("subTest189", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 15/**/by/**/ 0 /**/to/**/ -5;is=is+1;
    If is= 15-1 Then Leave
    End
-   self~AssertSame("subTest190", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 7/**/by/**/ 0 /**/to/**/ -5;is=is+1;
    If is= 7-1 Then Leave
    End
-   self~AssertSame("subTest191", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 0/**/by/**/ 0 /**/to/**/ -5;is=is+1;
    If is= 0-1 Then Leave
    End
-   self~AssertSame("subTest192", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 15/**/by/**/ 0 /**/to/**/ -10;is=is+1;
    If is= 15-1 Then Leave
    End
-   self~AssertSame("subTest193", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 7/**/by/**/ 0 /**/to/**/ -10;is=is+1;
    If is= 7-1 Then Leave
    End
-   self~AssertSame("subTest194", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 0/**/by/**/ 0 /**/to/**/ -10;is=is+1;
    If is= 0-1 Then Leave
    End
-   self~AssertSame("subTest195", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 15/**/by/**/ -3 /**/to/**/ 10;is=is+1;
    End
-   self~AssertSame("subTest196", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 7/**/by/**/ -3 /**/to/**/ 10;is=is+1;
    End
-   self~AssertSame("subTest197", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 0/**/by/**/ -3 /**/to/**/ 10;is=is+1;
    End
-   self~AssertSame("subTest198", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 15/**/by/**/ -3 /**/to/**/ 5;is=is+1;
    End
-   self~AssertSame("subTest199", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 7/**/by/**/ -3 /**/to/**/ 5;is=is+1;
    End
-   self~AssertSame("subTest200", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 0/**/by/**/ -3 /**/to/**/ 5;is=is+1;
    End
-   self~AssertSame("subTest201", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 15/**/by/**/ -3 /**/to/**/ 0;is=is+1;
    End
-   self~AssertSame("subTest202", is, 1)
+   self~AssertSame(is, 1)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 7/**/by/**/ -3 /**/to/**/ 0;is=is+1;
    End
-   self~AssertSame("subTest203", is, 1)
+   self~AssertSame(is, 1)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 0/**/by/**/ -3 /**/to/**/ 0;is=is+1;
    End
-   self~AssertSame("subTest204", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 15/**/by/**/ -3 /**/to/**/ -5;is=is+1;
    End
-   self~AssertSame("subTest205", is, 2)
+   self~AssertSame(is, 2)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 7/**/by/**/ -3 /**/to/**/ -5;is=is+1;
    End
-   self~AssertSame("subTest206", is, 2)
+   self~AssertSame(is, 2)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 0/**/by/**/ -3 /**/to/**/ -5;is=is+1;
    End
-   self~AssertSame("subTest207", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 15/**/by/**/ -3 /**/to/**/ -10;is=is+1;
    End
-   self~AssertSame("subTest208", is, 4)
+   self~AssertSame(is, 4)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 7/**/by/**/ -3 /**/to/**/ -10;is=is+1;
    End
-   self~AssertSame("subTest209", is, 4)
+   self~AssertSame(is, 4)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 0/**/by/**/ -3 /**/to/**/ -10;is=is+1;
    End
-   self~AssertSame("subTest210", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 15/**/by/**/ -4 /**/to/**/ 10;is=is+1;
    End
-   self~AssertSame("subTest211", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 7/**/by/**/ -4 /**/to/**/ 10;is=is+1;
    End
-   self~AssertSame("subTest212", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 0/**/by/**/ -4 /**/to/**/ 10;is=is+1;
    End
-   self~AssertSame("subTest213", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 15/**/by/**/ -4 /**/to/**/ 5;is=is+1;
    End
-   self~AssertSame("subTest214", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 7/**/by/**/ -4 /**/to/**/ 5;is=is+1;
    End
-   self~AssertSame("subTest215", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 0/**/by/**/ -4 /**/to/**/ 5;is=is+1;
    End
-   self~AssertSame("subTest216", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 15/**/by/**/ -4 /**/to/**/ 0;is=is+1;
    End
-   self~AssertSame("subTest217", is, 1)
+   self~AssertSame(is, 1)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 7/**/by/**/ -4 /**/to/**/ 0;is=is+1;
    End
-   self~AssertSame("subTest218", is, 1)
+   self~AssertSame(is, 1)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 0/**/by/**/ -4 /**/to/**/ 0;is=is+1;
    End
-   self~AssertSame("subTest219", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 15/**/by/**/ -4 /**/to/**/ -5;is=is+1;
    End
-   self~AssertSame("subTest220", is, 2)
+   self~AssertSame(is, 2)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 7/**/by/**/ -4 /**/to/**/ -5;is=is+1;
    End
-   self~AssertSame("subTest221", is, 2)
+   self~AssertSame(is, 2)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 0/**/by/**/ -4 /**/to/**/ -5;is=is+1;
    End
-   self~AssertSame("subTest222", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 15/**/by/**/ -4 /**/to/**/ -10;is=is+1;
    End
-   self~AssertSame("subTest23", is, 3)
+   self~AssertSame(is, 3)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 7/**/by/**/ -4 /**/to/**/ -10;is=is+1;
    End
-   self~AssertSame("subTest224", is, 3)
+   self~AssertSame(is, 3)
    is=0;/**/Do/**/ k/**/=/**/ 0 /**/for/**/ 0/**/by/**/ -4 /**/to/**/ -10;is=is+1;
    End
-   self~AssertSame("subTest25", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 15/**/by/**/ 4 /**/to/**/ 10;is=is+1;
    End
-   self~AssertSame("subTest226", is, 4)
+   self~AssertSame(is, 4)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 7/**/by/**/ 4 /**/to/**/ 10;is=is+1;
    End
-   self~AssertSame("subTest227", is, 4)
+   self~AssertSame(is, 4)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 0/**/by/**/ 4 /**/to/**/ 10;is=is+1;
    End
-   self~AssertSame("subTest228", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 15/**/by/**/ 4 /**/to/**/ 5;is=is+1;
    End
-   self~AssertSame("subTest229", is, 3)
+   self~AssertSame(is, 3)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 7/**/by/**/ 4 /**/to/**/ 5;is=is+1;
    End
-   self~AssertSame("subTest230", is, 3)
+   self~AssertSame(is, 3)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 0/**/by/**/ 4 /**/to/**/ 5;is=is+1;
    End
-   self~AssertSame("subTest231", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 15/**/by/**/ 4 /**/to/**/ 0;is=is+1;
    End
-   self~AssertSame("subTest232", is, 1)
+   self~AssertSame(is, 1)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 7/**/by/**/ 4 /**/to/**/ 0;is=is+1;
    End
-   self~AssertSame("subTest233", is, 1)
+   self~AssertSame(is, 1)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 0/**/by/**/ 4 /**/to/**/ 0;is=is+1;
    End
-   self~AssertSame("subTest234", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 15/**/by/**/ 4 /**/to/**/ -5;is=is+1;
    End
-   self~AssertSame("subTest235", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 7/**/by/**/ 4 /**/to/**/ -5;is=is+1;
    End
-   self~AssertSame("subTest236", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 0/**/by/**/ 4 /**/to/**/ -5;is=is+1;
    End
-   self~AssertSame("subTest237", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 15/**/by/**/ 4 /**/to/**/ -10;is=is+1;
    End
-   self~AssertSame("subTest238", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 7/**/by/**/ 4 /**/to/**/ -10;is=is+1;
    End
-   self~AssertSame("subTest239", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 0/**/by/**/ 4 /**/to/**/ -10;is=is+1;
    End
-   self~AssertSame("subTest240", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 15/**/by/**/ 3 /**/to/**/ 10;is=is+1;
    End
-   self~AssertSame("subTest241", is, 5)
+   self~AssertSame(is, 5)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 7/**/by/**/ 3 /**/to/**/ 10;is=is+1;
    End
-   self~AssertSame("subTest242", is, 5)
+   self~AssertSame(is, 5)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 0/**/by/**/ 3 /**/to/**/ 10;is=is+1;
    End
-   self~AssertSame("subTest243", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 15/**/by/**/ 3 /**/to/**/ 5;is=is+1;
    End
-   self~AssertSame("subTest244", is, 3)
+   self~AssertSame(is, 3)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 7/**/by/**/ 3 /**/to/**/ 5;is=is+1;
    End
-   self~AssertSame("subTest245", is, 3)
+   self~AssertSame(is, 3)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 0/**/by/**/ 3 /**/to/**/ 5;is=is+1;
    End
-   self~AssertSame("subTest246", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 15/**/by/**/ 3 /**/to/**/ 0;is=is+1;
    End
-   self~AssertSame("subTest247", is, 2)
+   self~AssertSame(is, 2)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 7/**/by/**/ 3 /**/to/**/ 0;is=is+1;
    End
-   self~AssertSame("subTest248", is, 2)
+   self~AssertSame(is, 2)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 0/**/by/**/ 3 /**/to/**/ 0;is=is+1;
    End
-   self~AssertSame("subTest249", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 15/**/by/**/ 3 /**/to/**/ -5;is=is+1;
    End
-   self~AssertSame("subTest250", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 7/**/by/**/ 3 /**/to/**/ -5;is=is+1;
    End
-   self~AssertSame("subTest251", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 0/**/by/**/ 3 /**/to/**/ -5;is=is+1;
    End
-   self~AssertSame("subTest252", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 15/**/by/**/ 3 /**/to/**/ -10;is=is+1;
    End
-   self~AssertSame("subTest253", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 7/**/by/**/ 3 /**/to/**/ -10;is=is+1;
    End
-   self~AssertSame("subTest254", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 0/**/by/**/ 3 /**/to/**/ -10;is=is+1;
    End
-   self~AssertSame("subTest255", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 15/**/by/**/ 0 /**/to/**/ 10;is=is+1;
    If is= 15-1 Then Leave
    End
-   self~AssertSame("subTest256", is, 14)
+   self~AssertSame(is, 14)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 7/**/by/**/ 0 /**/to/**/ 10;is=is+1;
    If is= 7-1 Then Leave
    End
-   self~AssertSame("subTest257", is, 6)
+   self~AssertSame(is, 6)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 0/**/by/**/ 0 /**/to/**/ 10;is=is+1;
    If is= 0-1 Then Leave
    End
-   self~AssertSame("subTest258", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 15/**/by/**/ 0 /**/to/**/ 5;is=is+1;
    If is= 15-1 Then Leave
    End
-   self~AssertSame("subTest259", is, 14)
+   self~AssertSame(is, 14)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 7/**/by/**/ 0 /**/to/**/ 5;is=is+1;
    If is= 7-1 Then Leave
    End
-   self~AssertSame("subTest260", is, 6)
+   self~AssertSame(is, 6)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 0/**/by/**/ 0 /**/to/**/ 5;is=is+1;
    If is= 0-1 Then Leave
    End
-   self~AssertSame("subTest261", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 15/**/by/**/ 0 /**/to/**/ 0;is=is+1;
    If is= 15-1 Then Leave
    End
-   self~AssertSame("subTest262", is, 14)
+   self~AssertSame(is, 14)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 7/**/by/**/ 0 /**/to/**/ 0;is=is+1;
    If is= 7-1 Then Leave
    End
-   self~AssertSame("subTest263", is, 6)
+   self~AssertSame(is, 6)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 0/**/by/**/ 0 /**/to/**/ 0;is=is+1;
    If is= 0-1 Then Leave
    End
-   self~AssertSame("subTest264", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 15/**/by/**/ 0 /**/to/**/ -5;is=is+1;
    If is= 15-1 Then Leave
    End
-   self~AssertSame("subTest265", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 7/**/by/**/ 0 /**/to/**/ -5;is=is+1;
    If is= 7-1 Then Leave
    End
-   self~AssertSame("subTest266", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 0/**/by/**/ 0 /**/to/**/ -5;is=is+1;
    If is= 0-1 Then Leave
    End
-   self~AssertSame("subTest267", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 15/**/by/**/ 0 /**/to/**/ -10;is=is+1;
    If is= 15-1 Then Leave
    End
-   self~AssertSame("subTest268", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 7/**/by/**/ 0 /**/to/**/ -10;is=is+1;
    If is= 7-1 Then Leave
    End
-   self~AssertSame("subTest269", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 0/**/by/**/ 0 /**/to/**/ -10;is=is+1;
    If is= 0-1 Then Leave
    End
-   self~AssertSame("subTest270", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 15/**/by/**/ -3 /**/to/**/ 10;is=is+1;
    End
-   self~AssertSame("subTest271", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 7/**/by/**/ -3 /**/to/**/ 10;is=is+1;
    End
-   self~AssertSame("subTest272", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 0/**/by/**/ -3 /**/to/**/ 10;is=is+1;
    End
-   self~AssertSame("subTest273", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 15/**/by/**/ -3 /**/to/**/ 5;is=is+1;
    End
-   self~AssertSame("subTest274", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 7/**/by/**/ -3 /**/to/**/ 5;is=is+1;
    End
-   self~AssertSame("subTest275", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 0/**/by/**/ -3 /**/to/**/ 5;is=is+1;
    End
-   self~AssertSame("subTest276", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 15/**/by/**/ -3 /**/to/**/ 0;is=is+1;
    End
-   self~AssertSame("subTest277", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 7/**/by/**/ -3 /**/to/**/ 0;is=is+1;
    End
-   self~AssertSame("subTest278", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 0/**/by/**/ -3 /**/to/**/ 0;is=is+1;
    End
-   self~AssertSame("subTest279", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 15/**/by/**/ -3 /**/to/**/ -5;is=is+1;
    End
-   self~AssertSame("subTest280", is, 1)
+   self~AssertSame(is, 1)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 7/**/by/**/ -3 /**/to/**/ -5;is=is+1;
    End
-   self~AssertSame("subTest281", is, 1)
+   self~AssertSame(is, 1)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 0/**/by/**/ -3 /**/to/**/ -5;is=is+1;
    End
-   self~AssertSame("subTest282", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 15/**/by/**/ -3 /**/to/**/ -10;is=is+1;
    End
-   self~AssertSame("subTest283", is, 3)
+   self~AssertSame(is, 3)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 7/**/by/**/ -3 /**/to/**/ -10;is=is+1;
    End
-   self~AssertSame("subTest284", is, 3)
+   self~AssertSame(is, 3)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 0/**/by/**/ -3 /**/to/**/ -10;is=is+1;
    End
-   self~AssertSame("subTest285", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 15/**/by/**/ -4 /**/to/**/ 10;is=is+1;
    End
-   self~AssertSame("subTest286", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 7/**/by/**/ -4 /**/to/**/ 10;is=is+1;
    End
-   self~AssertSame("subTest287", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 0/**/by/**/ -4 /**/to/**/ 10;is=is+1;
    End
-   self~AssertSame("subTest288", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 15/**/by/**/ -4 /**/to/**/ 5;is=is+1;
    End
-   self~AssertSame("subTest289", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 7/**/by/**/ -4 /**/to/**/ 5;is=is+1;
    End
-   self~AssertSame("subTest290", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 0/**/by/**/ -4 /**/to/**/ 5;is=is+1;
    End
-   self~AssertSame("subTest291", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 15/**/by/**/ -4 /**/to/**/ 0;is=is+1;
    End
-   self~AssertSame("subTest292", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 7/**/by/**/ -4 /**/to/**/ 0;is=is+1;
    End
-   self~AssertSame("subTest293", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 0/**/by/**/ -4 /**/to/**/ 0;is=is+1;
    end
-   self~AssertSame("subTest294", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 15/**/by/**/ -4 /**/to/**/ -5;is=is+1;
    End
-   self~AssertSame("subTest295", is, 1)
+   self~AssertSame(is, 1)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 7/**/by/**/ -4 /**/to/**/ -5;is=is+1;
    End
-   self~AssertSame("subTest296", is, 1)
+   self~AssertSame(is, 1)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 0/**/by/**/ -4 /**/to/**/ -5;is=is+1;
    End
-   self~AssertSame("subTest297", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 15/**/by/**/ -4 /**/to/**/ -10;is=is+1;
    End
-   self~AssertSame("subTest298", is, 2)
+   self~AssertSame(is, 2)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 7/**/by/**/ -4 /**/to/**/ -10;is=is+1;
    End
-   self~AssertSame("subTest299", is, 2)
+   self~AssertSame(is, 2)
    is=0;/**/Do/**/ k/**/=/**/ -3 /**/for/**/ 0/**/by/**/ -4 /**/to/**/ -10;is=is+1;
    End
-   self~AssertSame("subTest300", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 15/**/by/**/ 4 /**/to/**/ 10;is=is+1;
    End
-   self~AssertSame("subTest301", is, 5)
+   self~AssertSame(is, 5)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 7/**/by/**/ 4 /**/to/**/ 10;is=is+1;
    End
-   self~AssertSame("subTest302", is, 5)
+   self~AssertSame(is, 5)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 0/**/by/**/ 4 /**/to/**/ 10;is=is+1;
    End
-   self~AssertSame("subTest303", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 15/**/by/**/ 4 /**/to/**/ 5;is=is+1;
    End
-   self~AssertSame("subTest304", is, 3)
+   self~AssertSame(is, 3)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 7/**/by/**/ 4 /**/to/**/ 5;is=is+1;
    End
-   self~AssertSame("subTest305", is, 3)
+   self~AssertSame(is, 3)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 0/**/by/**/ 4 /**/to/**/ 5;is=is+1;
    End
-   self~AssertSame("subTest306", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 15/**/by/**/ 4 /**/to/**/ 0;is=is+1;
    End
-   self~AssertSame("subTest307", is, 2)
+   self~AssertSame(is, 2)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 7/**/by/**/ 4 /**/to/**/ 0;is=is+1;
    End
-   self~AssertSame("subTest308", is, 2)
+   self~AssertSame(is, 2)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 0/**/by/**/ 4 /**/to/**/ 0;is=is+1;
    End
-   self~AssertSame("subTest309", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 15/**/by/**/ 4 /**/to/**/ -5;is=is+1;
    End
-   self~AssertSame("subTest310", is, 1)
+   self~AssertSame(is, 1)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 7/**/by/**/ 4 /**/to/**/ -5;is=is+1;
    End
-   self~AssertSame("subTest311", is, 1)
+   self~AssertSame(is, 1)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 0/**/by/**/ 4 /**/to/**/ -5;is=is+1;
    End
-   self~AssertSame("subTest312", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 15/**/by/**/ 4 /**/to/**/ -10;is=is+1;
    End
-   self~AssertSame("subTest313", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 7/**/by/**/ 4 /**/to/**/ -10;is=is+1;
    End
-   self~AssertSame("subTest314", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 0/**/by/**/ 4 /**/to/**/ -10;is=is+1;
    End
-   self~AssertSame("subTest315", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 15/**/by/**/ 3 /**/to/**/ 10;is=is+1;
    End
-   self~AssertSame("subTest316", is, 6)
+   self~AssertSame(is, 6)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 7/**/by/**/ 3 /**/to/**/ 10;is=is+1;
    End
-   self~AssertSame("subTest317", is, 6)
+   self~AssertSame(is, 6)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 0/**/by/**/ 3 /**/to/**/ 10;is=is+1;
    End
-   self~AssertSame("subTest318", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 15/**/by/**/ 3 /**/to/**/ 5;is=is+1;
    End
-   self~AssertSame("subTest319", is, 4)
+   self~AssertSame(is, 4)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 7/**/by/**/ 3 /**/to/**/ 5;is=is+1;
    End
-   self~AssertSame("subTest320", is, 4)
+   self~AssertSame(is, 4)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 0/**/by/**/ 3 /**/to/**/ 5;is=is+1;
    End
-   self~AssertSame("subTest321", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 15/**/by/**/ 3 /**/to/**/ 0;is=is+1;
    End
-   self~AssertSame("subTest322", is, 3)
+   self~AssertSame(is, 3)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 7/**/by/**/ 3 /**/to/**/ 0;is=is+1;
    End
-   self~AssertSame("subTest323", is, 3)
+   self~AssertSame(is, 3)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 0/**/by/**/ 3 /**/to/**/ 0;is=is+1;
    End
-   self~AssertSame("subTest324", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 15/**/by/**/ 3 /**/to/**/ -5;is=is+1;
    End
-   self~AssertSame("subTest325", is, 1)
+   self~AssertSame(is, 1)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 7/**/by/**/ 3 /**/to/**/ -5;is=is+1;
    End
-   self~AssertSame("subTest326", is, 1)
+   self~AssertSame(is, 1)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 0/**/by/**/ 3 /**/to/**/ -5;is=is+1;
    End
-   self~AssertSame("subTest327", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 15/**/by/**/ 3 /**/to/**/ -10;is=is+1;
    End
-   self~AssertSame("subTest328", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 7/**/by/**/ 3 /**/to/**/ -10;is=is+1;
    End
-   self~AssertSame("subTest329", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 0/**/by/**/ 3 /**/to/**/ -10;is=is+1;
    End
-   self~AssertSame("subTest330", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 15/**/by/**/ 0 /**/to/**/ 10;is=is+1;
    If is= 15-1 Then Leave
    End
-   self~AssertSame("subTest331", is, 14)
+   self~AssertSame(is, 14)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 7/**/by/**/ 0 /**/to/**/ 10;is=is+1;
    If is= 7-1 Then Leave
    End
-   self~AssertSame("subTest332", is, 6)
+   self~AssertSame(is, 6)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 0/**/by/**/ 0 /**/to/**/ 10;is=is+1;
    If is= 0-1 Then Leave
    End
-   self~AssertSame("subTest333", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 15/**/by/**/ 0 /**/to/**/ 5;is=is+1;
    If is= 15-1 Then Leave
    End
-   self~AssertSame("subTest334", is, 14)
+   self~AssertSame(is, 14)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 7/**/by/**/ 0 /**/to/**/ 5;is=is+1;
    If is= 7-1 Then Leave
    End
-   self~AssertSame("subTest335", is, 6)
+   self~AssertSame(is, 6)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 0/**/by/**/ 0 /**/to/**/ 5;is=is+1;
    If is= 0-1 Then Leave
    End
-   self~AssertSame("subTest336", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 15/**/by/**/ 0 /**/to/**/ 0;is=is+1;
    If is= 15-1 Then Leave
    End
-   self~AssertSame("subTest337", is, 14)
+   self~AssertSame(is, 14)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 7/**/by/**/ 0 /**/to/**/ 0;is=is+1;
    If is= 7-1 Then Leave
    End
-   self~AssertSame("subTest338", is, 6)
+   self~AssertSame(is, 6)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 0/**/by/**/ 0 /**/to/**/ 0;is=is+1;
    If is= 0-1 Then Leave
    End
-   self~AssertSame("subTest339", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 15/**/by/**/ 0 /**/to/**/ -5;is=is+1;
    If is= 15-1 Then Leave
    End
-   self~AssertSame("subTest340", is, 14)
+   self~AssertSame(is, 14)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 7/**/by/**/ 0 /**/to/**/ -5;is=is+1;
    If is= 7-1 Then Leave
    End
-   self~AssertSame("subTest341", is, 6)
+   self~AssertSame(is, 6)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 0/**/by/**/ 0 /**/to/**/ -5;is=is+1;
    If is= 0-1 Then Leave
    End
-   self~AssertSame("subTest342", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 15/**/by/**/ 0 /**/to/**/ -10;is=is+1;
    If is= 15-1 Then Leave
    End
-   self~AssertSame("subTest343", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 7/**/by/**/ 0 /**/to/**/ -10;is=is+1;
    If is= 7-1 Then Leave
    End
-   self~AssertSame("subTest344", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 0/**/by/**/ 0 /**/to/**/ -10;is=is+1;
    If is= 0-1 Then Leave
    End
-   self~AssertSame("subTest345", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 15/**/by/**/ -3 /**/to/**/ 10;is=is+1;
    End
-   self~AssertSame("subTest346", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 7/**/by/**/ -3 /**/to/**/ 10;is=is+1;
    End
-   self~AssertSame("subTest347", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 0/**/by/**/ -3 /**/to/**/ 10;is=is+1;
    End
-   self~AssertSame("subTest348", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 15/**/by/**/ -3 /**/to/**/ 5;is=is+1;
    End
-   self~AssertSame("subTest349", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 7/**/by/**/ -3 /**/to/**/ 5;is=is+1;
    End
-   self~AssertSame("subTest350", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 0/**/by/**/ -3 /**/to/**/ 5;is=is+1;
    End
-   self~AssertSame("subTest351", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 15/**/by/**/ -3 /**/to/**/ 0;is=is+1;
    End
-   self~AssertSame("subTest352", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 7/**/by/**/ -3 /**/to/**/ 0;is=is+1;
    End
-   self~AssertSame("subTest353", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 0/**/by/**/ -3 /**/to/**/ 0;is=is+1;
    End
-   self~AssertSame("subTest354", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 15/**/by/**/ -3 /**/to/**/ -5;is=is+1;
    End
-   self~AssertSame("subTest355", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 7/**/by/**/ -3 /**/to/**/ -5;is=is+1;
    End
-   self~AssertSame("subTest356", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 0/**/by/**/ -3 /**/to/**/ -5;is=is+1;
    End
-   self~AssertSame("subTest357", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 15/**/by/**/ -3 /**/to/**/ -10;is=is+1;
    End
-   self~AssertSame("subTest358", is, 2)
+   self~AssertSame(is, 2)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 7/**/by/**/ -3 /**/to/**/ -10;is=is+1;
    End
-   self~AssertSame("subTest359", is, 2)
+   self~AssertSame(is, 2)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 0/**/by/**/ -3 /**/to/**/ -10;is=is+1;
    End
-   self~AssertSame("subTest360", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 15/**/by/**/ -4 /**/to/**/ 10;is=is+1;
    End
-   self~AssertSame("subTest361", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 7/**/by/**/ -4 /**/to/**/ 10;is=is+1;
    End
-   self~AssertSame("subTest362", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 0/**/by/**/ -4 /**/to/**/ 10;is=is+1;
    End
-   self~AssertSame("subTest363", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 15/**/by/**/ -4 /**/to/**/ 5;is=is+1;
    End
-   self~AssertSame("subTest364", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 7/**/by/**/ -4 /**/to/**/ 5;is=is+1;
    End
-   self~AssertSame("subTest365", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 0/**/by/**/ -4 /**/to/**/ 5;is=is+1;
    End
-   self~AssertSame("subTest366", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 15/**/by/**/ -4 /**/to/**/ 0;is=is+1;
    End
-   self~AssertSame("subTest367", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 7/**/by/**/ -4 /**/to/**/ 0;is=is+1;
    End
-   self~AssertSame("subTest368", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 0/**/by/**/ -4 /**/to/**/ 0;is=is+1;
    End
-   self~AssertSame("subTest369", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 15/**/by/**/ -4 /**/to/**/ -5;is=is+1;
    End
-   self~AssertSame("subTest370", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 7/**/by/**/ -4 /**/to/**/ -5;is=is+1;
    End
-   self~AssertSame("subTest371", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 0/**/by/**/ -4 /**/to/**/ -5;is=is+1;
    End
-   self~AssertSame("subTest372", is, 0)
+   self~AssertSame(is, 0)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 15/**/by/**/ -4 /**/to/**/ -10;is=is+1;
    End
-   self~AssertSame("subTest373", is, 2)
+   self~AssertSame(is, 2)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 7/**/by/**/ -4 /**/to/**/ -10;is=is+1;
    End
-   self~AssertSame("subTest374", is, 2)
+   self~AssertSame(is, 2)
    is=0;/**/Do/**/ k/**/=/**/ -6 /**/for/**/ 0/**/by/**/ -4 /**/to/**/ -10;is=is+1;
    End
-   self~AssertSame("subTest375", is, 0)
+   self~AssertSame(is, 0)
 
 ::method "test_DO_standardTest2A"
    i=0
    Do cv=13; If i>10 Then Leave; i=i+1; End;
-   self~AssertSame("subTest1", (cv i),(24 11))
+   self~AssertSame((cv i), (24 11))
    i=0;j=1
    Do cv.j= 13; If i>10 Then Leave; i=i+1; End;
-   self~AssertSame("subTest2", (cv.j i),(24 11))
+   self~AssertSame((cv.j i), (24 11))
    i=0;
    Do cv. = 13; If i>10 Then Leave; i=i+1; End;
-   self~AssertSame("subTest3", (cv. i),(24 11))
+   self~AssertSame((cv. i), (24 11))
    b=0                                   /* cv=expression    */
    Do cv=1+3; IF b=1; Then Leave; b=1; End
-   self~AssertSame("subTest4", cv,5)
+   self~AssertSame(cv, 5)
    o='';C=0                                          /* are funct.calls  */
    Do cv=f('I',1) By f('B',2) To F('T',3) For F('F',4); c=c+1; End;
-   self~AssertSame("subTest5", (cv O C),'5 IBTF 2')
+   self~AssertSame((cv O C), '5 IBTF 2')
    o='';C=0                                          /*different sequence*/
    Do cv=f('I',1) By f('B',2) For F('F',40) To F('T',3); c=c+1; End;
-   self~AssertSame("subTest6", (cv O C),'5 IBFT 2')
+   self~AssertSame((cv O C), '5 IBFT 2')
    Do i=010     To  1 By 3; Call err;      End
-   self~AssertSame("subTest7", i,'10')
+   self~AssertSame(i, '10')
    Do i=010     To 11 While i=0; Call err; End
-   self~AssertSame("subTest8", i,'10')
+   self~AssertSame(i, '10')
    Do i=010     To  1 Until 3=3; Call err; End
-   self~AssertSame("subTest9", i,'10')
+   self~AssertSame(i, '10')
    Do i=010     To 30 Until i>10;          End
-   self~AssertSame("subTest10", i,'11')
+   self~AssertSame(i, '11')
    Do i=010     To 30 Until i<100;         End
-   self~AssertSame("subTest11", i,'10')
+   self~AssertSame(i, '10')
    Do i=010e+00 To 20 By -3; Call err;     End
-   self~AssertSame("subTest12", i,'10')
+   self~AssertSame(i, '10')
    Do i=1       To 20 For 0; Call err;     End
-   self~AssertSame("subTest13", i,'1')
+   self~AssertSame(i, '1')
    Do i=1       To 20 For 1;               End
-   self~AssertSame("subTest13", i,'2')
+   self~AssertSame(i, '2')
 
    f: o=o||"ARG"(1); Return "ARG"(2)
 
 ::method "test_DO_standardTest2B"
    c=0;                                    /* cv=simple   var. */
    Do cv=1   To 5 ; c=c+1; End;
-   self~AssertSame("subTest1", (c cv),(5 6))
+   self~AssertSame((c cv), (5 6))
    c=0; j=1;                              /* cv=compound var. */
    Do cv.j=1 To 5 ; c=c+1; End;
-   self~AssertSame("subTest2", (c cv.j),(5 6))
+   self~AssertSame((c cv.j), (5 6))
    c=0;                                   /* cv=stem          */
    Do cv. =1 To 5 ; c=c+1; End;
-   self~AssertSame("subTest3", (c cv.),(5 6))
+   self~AssertSame((c cv.), (5 6))
 
 ::method "test_DO_standardTest2C"
    -- Create our external functions.
@@ -1599,7 +1547,7 @@ return testGroupList
       Do b=1 to 4;
          Do t=1 to 5;
             Do f=1 to 3;
-            self~AssertSame("subTest1-"i"-"||b"-"t"-"f, is.i.b.t.f,"SCIDOS2A"(expri.i exprb.b exprt.t exprf.f))
+            self~AssertSame(is.i.b.t.f, "SCIDOS2A"(expri.i exprb.b exprt.t exprf.f))
             End f
          End t
       End b
@@ -1611,144 +1559,144 @@ return testGroupList
 ::method "test_DO_standardTest2D"
    c=0 ; b.=2; t.=3; f.=4
    do cv=1 By b. To t. For f.; c=c+1; End;
-   self~AssertSame("subTest1", (cv c),(5 2))
+   self~AssertSame((cv c), (5 2))
 
 ::method "test_DO_standardTest2E"
    i=0;
    Do 7       ; i=i+1; End;                  /* exprr = constant         */
-   self~AssertSame("subTest1", i,7)
+   self~AssertSame(i, 7)
    i=0; exprr=7;
    Do exprr   ; i=i+1; End;                  /* exprr = variable         */
-   self~AssertSame("subTest2", i,7)
+   self~AssertSame(i, 7)
    i.=0; exprr.4=4;exprr.5=5;exprr.6=6;
    Do j=4 to 6
       Do exprr.j ; i.j=(i.j)+1; End;         /* exprr = compound variable*/
    End
-   self~AssertSame("subTest3", (i.4 i.5 i.6),(4 5 6))
+   self~AssertSame((i.4 i.5 i.6), (4 5 6))
    i=0;
    Do ((7*exprr)+1)/exprr.5 ; i=i+1; End;    /* exprr = expression       */
-   self~AssertSame("subTest4", i,10)
+   self~AssertSame(i, 10)
 
 ::method "test_DO_standardTest2F"
    i=0;
    Do 7  While i<5 ; i=i+1; End;                       /* exprw=constant */
-   self~AssertSame("subTest1", i,5)
+   self~AssertSame(i, 5)
    i=0; exprw=5
    Do 7  While i<exprw ; i=i+1; exprw=exprw+1; End;    /* exprr=variable */
-   self~AssertSame("subTest2", (i exprw),(7 12))
+   self~AssertSame((i exprw), (7 12))
    i.=0; exprw.4=4;exprw.5=5;exprw.6=6;
    Do j=4 to 6
       Do 7  While i.j<exprw.j; i.j=(i.j)+1;End;   /* exprr=compound variable*/
    End
-   self~AssertSame("subTest3", (i.4 i.5 i.6),(4 5 6))
+   self~AssertSame((i.4 i.5 i.6), (4 5 6))
    i=0; exprw=5;
    Do 7 While i<((7*exprw)-15)/exprw.5 ; i=i+1; End;  /* exprr=expression*/
-   self~AssertSame("subTest4", i,4)
+   self~AssertSame(i, 4)
    i=0;
    Do 7  Until i> 5 ; i=i+1; End;                      /* expru=constant */
-   self~AssertSame("subTest5", i,6)
+   self~AssertSame(i, 6)
    i=0; expru=5
    Do 7  Until i>=expru ; i=i+1; expru=expru+1;End;    /* expru=variable */
-   self~AssertSame("subTest6", (i expru),(7 12))
+   self~AssertSame((i expru), (7 12))
    expru=5
    i.=0; expru.4=4;expru.5=5;expru.6=6;
    Do j=4 to 6
       Do 7  Until i.j>=expru.j; i.j=(i.j)+1; End;  /*expru=compound variable*/
    End
-   self~AssertSame("subTest7", (i.4 i.5 i.6),(4 5 6))
+   self~AssertSame((i.4 i.5 i.6), (4 5 6))
    i=0;
    Do 7 Until i>=((7*expru)-15)/expru.5 ; i=i+1; End; /* expru=expression*/
-   self~AssertSame("subTest8", i,4)
+   self~AssertSame(i, 4)
 
 ::method "test_DO_standardTest2G"
    wn=12; i=0
    DO wn;  i=i+1 ;END                        /* exprr= n            */
-   self~AssertSame("subTest1", i,12)
+   self~AssertSame(i, 12)
    i=0
    DO j=0 by wn to 144; i=i+1 ;END           /* exprb= wn           */
-   self~AssertSame("subTest2", i,13)
+   self~AssertSame(i, 13)
    i=0
    DO j=0 to wn ; i=i+1 ;END                 /* exprt=wn            */
-   self~AssertSame("subTest3", i,13)
+   self~AssertSame(i, 13)
    i=0
    DO j=0 to 12 until i>wn; i=i+1 ;END      /* expru=wn            */
-   self~AssertSame("subTest4", i,13)
+   self~AssertSame(i, 13)
    i=0
    DO j=0 to 12 while i<=wn; i=i+1 ;END      /* exprw=wn            */
-   self~AssertSame("subTest5", i,13)
+   self~AssertSame(i, 13)
    NUMERIC DIGITS 1
    i=0; k=-9
    DO j=0 by wn to 144; i=i+1; k=k+1; If k=8 Then Leave; End;
-   self~AssertSame("subTest6", (j i k wn),(1E+2 1E+1 8 12))
+   self~AssertSame((j i k wn), (1E+2 1E+1 8 12))
    i=0
    DO j=0 to wn ; i=i+1 ; If i= 1E+1 Then Leave; End;
-   self~AssertSame("subTest7", (j i wn),(5 6 12))
+   self~AssertSame((j i wn), (5 6 12))
    i=0
    DO j=0 to 12 until i>wn ; i=i+1 ;If i= 1E+1 Then Leave; End;
-   self~AssertSame("subTest8", (j i wn),(5 6 12))
+   self~AssertSame((j i wn), (5 6 12))
    i=0
    DO j=0 to 12 while i<=wn; i=i+1 ; If i=1E+1 Then Leave; End;
-   self~AssertSame("subTest9", (j i wn),(5 6 12))
+   self~AssertSame((j i wn), (5 6 12))
 
 ::method "test_DO_standardTest2H"
    Drop a.
    DO I=01.2 TO 5.2
      a.i=i
    END
-   self~AssertSame("subTest40", (a.1.2 a.2.2 a.3.2 a.4.2 a.5.2),(1.2 2.2 3.2 4.2 5.2))
+   self~AssertSame((a.1.2 a.2.2 a.3.2 a.4.2 a.5.2), (1.2 2.2 3.2 4.2 5.2))
 
 ::method "test_DO_standardTest2I"
    j=0; Do To   = 1 By 1 To 5; j=j+1;End;
-   self~AssertSame("subTest1", j,5)
+   self~AssertSame(j, 5)
    j=0; Do By   = 1 By 1 To 5; j=j+1;End;
-   self~AssertSame("subTest2", j,5)
+   self~AssertSame(j, 5)
    j=0; Do For  = 1 By 1 To 5; j=j+1;End;
-   self~AssertSame("subTest3", j,5)
+   self~AssertSame(j, 5)
    j=0; Do Until= 1 By 1 To 5; j=j+1;End;
-   self~AssertSame("subTest4", j,5)
+   self~AssertSame(j, 5)
    j=0; Do While= 1 By 1 To 5; j=j+1;End;
-   self~AssertSame("subTest5", j,5)
+   self~AssertSame(j, 5)
 
 ::method "test_DO_standardTest2J"
    forever=5;
    k=0; Do i=1 to FOREVER  ; k=k+1;          End;
-   self~AssertSame("subTest1", k,5)
+   self~AssertSame(k, 5)
    k=0; Do i=1 by FOREVER to 15 ; k=k+1;     End;
-   self~AssertSame("subTest2", k,3)
+   self~AssertSame(k, 3)
    k=0; Do i=1 by 5 for FOREVER ; k=k+1;     End;
-   self~AssertSame("subTest3", k,5)
+   self~AssertSame(k, 5)
    k=0; Do FOREVER = 1 to 6; k=k+1;         End;
-   self~AssertSame("subTest4", k,6)
+   self~AssertSame(k, 6)
 
 ::method "test_DO_standardTest2K"
    SELECT;
-      WHEN i=k THEN self~assertFalse("subTest1", 1)
-      WHEN i=j Then self~assertFalse("subTest2", 1)
-      OTHERWISE     self~assertTrue("subTest3", 1)
+      WHEN i=k THEN self~assertFalse(1)
+      WHEN i=j Then self~assertFalse(1)
+      OTHERWISE     self~assertTrue(1)
       END;
    drop a; i=1;k=1;                    /* force NOVALUE             N0012*/
    SELECT;
       WHEN i=k THEN Do;            /* NOVALUE in THEN                */
-         self~assertTrue("subTest4", 1);End;
-      OTHERWISE self~assertFalse("subTest5", 1)
+         self~assertTrue(1);End;
+      OTHERWISE self~assertFalse(1)
    END;
    drop a; i=1;k=2;                    /* force NOVALUE             N0013*/
    SELECT;
-      WHEN i=k THEN self~assertFalse("subTest6", 1)
+      WHEN i=k THEN self~assertFalse(1)
       OTHERWISE     Do;            /* Novalue in OTHERWISE           */
-         self~assertTrue("subTest7", 1);End;
+         self~assertTrue(1);End;
       END;
 
 ::method "test_DO_standardTest2L"
    SELECT;
-      WHEN i=k THEN self~assertFalse("subTest1", 1)
-      WHEN i=j Then self~assertFalse("subTest2", 1)
-      OTHERWISE self~assertTrue("subTest1", 1)
+      WHEN i=k THEN self~assertFalse(1)
+      WHEN i=j Then self~assertFalse(1)
+      OTHERWISE self~assertTrue(1)
       END
    i=1;k=1;
    SELECT;
-      WHEN i=k THEN self~assertTrue("subTest4", 1)
-      OTHERWISE self~assertFalse("subTest5", 1)
+      WHEN i=k THEN self~assertTrue(1)
+      OTHERWISE self~assertFalse(1)
       END
 
 ::method "test_DO_standardTest2M"
@@ -1769,10 +1717,10 @@ return testGroupList
    -- now do the tests
    c=0
    Call intloop
-   self~AssertSame("subTest1", c,2)
+   self~AssertSame(c, 2)
    result=17
    Call SCIDOS2M
-   self~AssertSame("subTest2", RESULT,2)
+   self~AssertSame(RESULT, 2)
 
    -- now remove the external functions
    call deleteFile path'SCIDOS2M'
@@ -1788,36 +1736,36 @@ return testGroupList
    Do i=2 by 0 to 10
     j=j+1; If j>1000 Then leave;
    End
-   self~AssertSame("subTest1", j,1001)
+   self~AssertSame(j, 1001)
 
 ::method "test_DO_standardTest2O"
    do i=1 to 10
       i=2 * i                       /* change value of control variable*/
       End
-   self~AssertSame("subTest1", i,15)
+   self~AssertSame(i, 15)
 
 ::method "test_DO_standardTest2P"
    i=1 ; a.=0 ; c=0 ;
    Do a.i=1 To 7                    /* cv flipflops btw a.1 and a.2   */
       c=c+1
       If i=1 Then i=2;
-      Else Do; i=1; id='00F'||c; self~AssertSame("subTest1", a.1,a.2); End;
+      Else Do; i=1; id='00F'||c; self~AssertSame(a.1, a.2); End;
       End
-   self~AssertSame("subTest2", c,14)
+   self~AssertSame(c, 14)
 
 ::method "test_DO_standardTest2Q"
    j=0
    Do WHILE 6=6                        /* loops forever                  */
       j=j+1; If j>1000 Then leave;
       End
-   self~AssertSame("subTest1", j, 1001)
+   self~AssertSame(j, 1001)
    i=1
    a.1=2;a.2=4;a.3=8;a.4=16;
    Do a.i=a.i  to 16                   /* loops until i=4                */
       i=i+1;
       End
-   self~AssertSame("subTest2", i, 4)
-   self~AssertSame("subTest3", (a.1 a.2 a.3 a.4),'2 5 9 17')
+   self~AssertSame(i, 4)
+   self~AssertSame((a.1 a.2 a.3 a.4), '2 5 9 17')
 
 ::method "test_DO_standardTest3A-1"
    self~expectSyntax(41.1)
@@ -1846,7 +1794,7 @@ return testGroupList
 
 ::method "test_DO_standardTest3B"
    Doi=1 To 4;a=1;
-   self~AssertTrue("subTest1", 1)
+   self~AssertTrue(1)
 
 ::method "test_DO_standardTest3C-1"
    self~expectSyntax(41.1)
@@ -1876,27 +1824,27 @@ return testGroupList
    Do 0||for||0
      for=for+1
      End
-   self~AssertSame("subTest2", for, 11)
+   self~AssertSame(for, 11)
 
 ::method "test_DO_standardTest5-1"
    a=0 ; o='' ;
    Do; ; b=2; a=a+1;End;
-   self~AssertSame("subTest5-1", (a b),(1 2))
+   self~AssertSame((a b), (1 2))
 
 ::method "test_DO_standardTest5-2"
    a=0;
    Do FOREVER; a=a+1; If a=10 Then leave;End;
-   self~AssertSame("subTest5-2", (a),(10))
+   self~AssertSame((a), (10))
 
 ::method "test_DO_standardTest5-3"
    a=0;o=''
    i=5; Do   i; a=a+1;End;
-   self~AssertSame("subTest5-3", (i a),(5 5))
+   self~AssertSame((i a), (5 5))
 
 ::method "test_DO_standardTest5-4"
    a=0;o=''
    Do cv=f('I',5) TO f('T',15); a=a+1;End;
-   self~AssertSame("subTest5-4", (cv o a),(16 'IT' 11))
+   self~AssertSame((cv o a), (16 'IT' 11))
    return
    f: o=o||"ARG"(1); Return "ARG"(2)
 
@@ -1904,7 +1852,7 @@ return testGroupList
    a=0;o=''
    Do cv=f('I',5) TO f('T',15) By f('B',3)
       a=a+1;End;
-   self~AssertSame("subTest5-5", (cv o a),(17 'ITB' 4 ))
+   self~AssertSame((cv o a), (17 'ITB' 4 ))
    return
    f: o=o||"ARG"(1); Return "ARG"(2)
 
@@ -1912,7 +1860,7 @@ return testGroupList
    a=0;o=''
    Do cv=f('I',5) TO  f('T',15) For f('F',20)
       a=a+1;End;
-   self~AssertSame("subTest5-6", (cv o a),(16 'ITF' 11))
+   self~AssertSame((cv o a), (16 'ITF' 11))
    return
    f: o=o||"ARG"(1); Return "ARG"(2)
 
@@ -1920,7 +1868,7 @@ return testGroupList
    a=0;o=''
    Do cv=f('I',5) TO f('T',15) By  f('B',3) For f('F',20)
       a=a+1;End;
-   self~AssertSame("subTest5-7", (cv o a),(17 'ITBF' 4))
+   self~AssertSame((cv o a), (17 'ITBF' 4))
    return
    f: o=o||"ARG"(1); Return "ARG"(2)
 
@@ -1928,7 +1876,7 @@ return testGroupList
    a=0;o=''
    Do cv=f('I',5) TO f('T',15) For f('F',20) By f('B',3)
       a=a+1;End;
-   self~AssertSame("subTest5-8", (cv o a),(17 'ITFB' 4))
+   self~AssertSame((cv o a), (17 'ITFB' 4))
    return
    f: o=o||"ARG"(1); Return "ARG"(2)
 
@@ -1937,7 +1885,7 @@ return testGroupList
    Do cv=f('I',5) By f('B',3);
       if cv>16 then leave
       a=a+1;End;
-   self~AssertSame("subTest5-9", (cv o a),(17 'IB' 4 ))
+   self~AssertSame((cv o a), (17 'IB' 4 ))
    return
    f: o=o||"ARG"(1); Return "ARG"(2)
 
@@ -1945,7 +1893,7 @@ return testGroupList
    a=0;o=''
    Do cv=f('I',5) By f('B',3) TO f('T',15)
       a=a+1;End;
-   self~AssertSame("subTest5-10", (cv o a),(17 'IBT' 4 ))
+   self~AssertSame((cv o a), (17 'IBT' 4 ))
    return
    f: o=o||"ARG"(1); Return "ARG"(2)
 
@@ -1953,7 +1901,7 @@ return testGroupList
    a=0;o=''
    Do cv=f('I',5) By f('B',3) For f('F',20)
       a=a+1;End;
-   self~AssertSame("subTest5-11", (cv o a),(65 'IBF' 20))
+   self~AssertSame((cv o a), (65 'IBF' 20))
    return
    f: o=o||"ARG"(1); Return "ARG"(2)
 
@@ -1961,7 +1909,7 @@ return testGroupList
    a=0;o=''
    Do cv=f('I',5) By f('B',15) TO f('T',3) For f('F',20)
       a=a+1;End;
-   self~AssertSame("subTest5-12", (cv o a),(5 'IBTF' 0))
+   self~AssertSame((cv o a), (5 'IBTF' 0))
    return
    f: o=o||"ARG"(1); Return "ARG"(2)
 
@@ -1969,7 +1917,7 @@ return testGroupList
    a=0;o=''
    Do cv=f('I',5) By f('B',3) For f('F',20) TO f('T',15)
       a=a+1;End;
-   self~AssertSame("subTest5-13", (cv o a),(17 'IBFT' 4))
+   self~AssertSame((cv o a), (17 'IBFT' 4))
    return
    f: o=o||"ARG"(1); Return "ARG"(2)
 
@@ -1978,7 +1926,7 @@ return testGroupList
    Do cv=f('I',5) For f('F',20)
       if cv>16 then leave
       a=a+1;End;
-   self~AssertSame("subTest5-14", (cv o a),(17 'IF' 12))
+   self~AssertSame((cv o a), (17 'IF' 12))
    return
    f: o=o||"ARG"(1); Return "ARG"(2)
 
@@ -1986,7 +1934,7 @@ return testGroupList
    a=0;o=''
    Do cv=f('I',5) For f('F',20) To f('T',15)
       a=a+1;End;
-   self~AssertSame("subTest5-15", (cv o a),(16 'IFT' 11))
+   self~AssertSame((cv o a), (16 'IFT' 11))
    return
    f: o=o||"ARG"(1); Return "ARG"(2)
 
@@ -1994,7 +1942,7 @@ return testGroupList
    a=0;o=''
    Do cv=f('I',5) For f('F',20) By f('B',3)
       a=a+1;End;
-   self~AssertSame("subTest5-16", (cv o a),(65 'IFB' 20))
+   self~AssertSame((cv o a), (65 'IFB' 20))
    return
    f: o=o||"ARG"(1); Return "ARG"(2)
 
@@ -2002,7 +1950,7 @@ return testGroupList
    a=0;o=''
    Do cv=f('I',5) For f('F',20) TO f('T',15) By f('B',3)
       a=a+1;End;
-   self~AssertSame("subTest5-17", (cv o a),(17 'IFTB' 4))
+   self~AssertSame((cv o a), (17 'IFTB' 4))
    return
    f: o=o||"ARG"(1); Return "ARG"(2)
 
@@ -2010,7 +1958,7 @@ return testGroupList
    a=0;o=''
    Do cv=f('I',5) For f('F',20) By f('B',3) TO f('T',15)
       a=a+1;End;
-   self~AssertSame("subTest5-18", (cv o a),(17 'IFBT' 4))
+   self~AssertSame((cv o a), (17 'IFBT' 4))
    return
    f: o=o||"ARG"(1); Return "ARG"(2)
 
@@ -2019,7 +1967,7 @@ return testGroupList
    Do Until a >=7
       b=2
       a=a+1;End;
-   self~AssertSame("subTest5-19", (a b),(7 2))
+   self~AssertSame((a b), (7 2))
 
 ::method "test_DO_standardTest5-20"
    a=0
@@ -2027,21 +1975,21 @@ return testGroupList
     Until a >=7
       a=a+1;
       If a=10 Then leave;End;
-   self~AssertSame("subTest5-20", (a),(7))
+   self~AssertSame((a), (7))
 
 ::method "test_DO_standardTest5-21"
    a=0;o=''
    i=5; Do   i ,
     Until a >=7
       a=a+1;End;
-   self~AssertSame("subTest5-21", (i a),(5 5))
+   self~AssertSame((i a), (5 5))
 
 ::method "test_DO_standardTest5-22"
    a=0;o=''
    Do cv=f('I',5) TO f('T',15) ,
     Until cv>=7
       a=a+1;End;
-   self~AssertSame("subTest5-22", (cv o a),(7 'IT' 3))
+   self~AssertSame((cv o a), (7 'IT' 3))
    return
    f: o=o||"ARG"(1); Return "ARG"(2)
 
@@ -2050,7 +1998,7 @@ return testGroupList
    Do cv=f('I',5) TO f('T',15) By f('B',3),
     Until cv>=7
       a=a+1;End;
-   self~AssertSame("subTest5-23", (cv o a),(8 'ITB' 2 ))
+   self~AssertSame((cv o a), (8 'ITB' 2 ))
    return
    f: o=o||"ARG"(1); Return "ARG"(2)
 
@@ -2059,7 +2007,7 @@ return testGroupList
    Do cv=f('I',5) TO  f('T',15) For f('F',20),
     Until cv>=7
       a=a+1;End;
-   self~AssertSame("subTest5-24", (cv o a),(7 'ITF' 3))
+   self~AssertSame((cv o a), (7 'ITF' 3))
    return
    f: o=o||"ARG"(1); Return "ARG"(2)
 
@@ -2068,7 +2016,7 @@ return testGroupList
    Do cv=f('I',5) TO f('T',15) By  f('B',3) For f('F',20) ,
     Until cv>=7
       a=a+1;End;
-   self~AssertSame("subTest5-25", (cv o a),(8 'ITBF' 2))
+   self~AssertSame((cv o a), (8 'ITBF' 2))
    return
    f: o=o||"ARG"(1); Return "ARG"(2)
 
@@ -2077,7 +2025,7 @@ return testGroupList
    Do cv=f('I',5) TO f('T',15) For f('F',20) By f('B',3)  ,
     Until cv>=7
       a=a+1;End;
-   self~AssertSame("subTest5-26", (cv o a),(8 'ITFB' 2))
+   self~AssertSame((cv o a), (8 'ITFB' 2))
    return
    f: o=o||"ARG"(1); Return "ARG"(2)
 
@@ -2087,7 +2035,7 @@ return testGroupList
     Until cv>=7
       if cv>16 then leave
       a=a+1;End;
-   self~AssertSame("subTest5-27", (cv o a),(8 'IB' 2 ))
+   self~AssertSame((cv o a), (8 'IB' 2 ))
    return
    f: o=o||"ARG"(1); Return "ARG"(2)
 
@@ -2096,7 +2044,7 @@ return testGroupList
    Do cv=f('I',5) By f('B',3) TO f('T',15)               ,
     Until cv>=7
       a=a+1;End;
-   self~AssertSame("subTest5-28", (cv o a),(8 'IBT' 2 ))
+   self~AssertSame((cv o a), (8 'IBT' 2 ))
    return
    f: o=o||"ARG"(1); Return "ARG"(2)
 
@@ -2105,7 +2053,7 @@ return testGroupList
    Do cv=f('I',5) By f('B',3) For f('F',20)               ,
     Until cv>=7
       a=a+1;End;
-   self~AssertSame("subTest5-29", (cv o a),(8 'IBF' 2))
+   self~AssertSame((cv o a), (8 'IBF' 2))
    return
    f: o=o||"ARG"(1); Return "ARG"(2)
 
@@ -2114,7 +2062,7 @@ return testGroupList
    Do cv=f('I',5) By f('B',15) TO f('T',3) For f('F',20) ,
     Until cv>=7
       a=a+1;End;
-   self~AssertSame("subTest5-30", (cv o a),(5 'IBTF' 0))
+   self~AssertSame((cv o a), (5 'IBTF' 0))
    return
    f: o=o||"ARG"(1); Return "ARG"(2)
 
@@ -2123,7 +2071,7 @@ return testGroupList
    Do cv=f('I',5) By f('B',3) For f('F',20) TO f('T',15) ,
     Until cv>=7
       a=a+1;End;
-   self~AssertSame("subTest5-31", (cv o a),(8 'IBFT' 2))
+   self~AssertSame((cv o a), (8 'IBFT' 2))
    return
    f: o=o||"ARG"(1); Return "ARG"(2)
 
@@ -2133,7 +2081,7 @@ return testGroupList
     Until cv>=7
       if cv>16 then leave
       a=a+1;End;
-   self~AssertSame("subTest5-32", (cv o a),(7 'IF' 3))
+   self~AssertSame((cv o a), (7 'IF' 3))
    return
    f: o=o||"ARG"(1); Return "ARG"(2)
 
@@ -2142,7 +2090,7 @@ return testGroupList
    Do cv=f('I',5) For f('F',20) To f('T',15)             ,
     Until cv>=7
       a=a+1;End;
-   self~AssertSame("subTest5-33", (cv o a),(7 'IFT' 3))
+   self~AssertSame((cv o a), (7 'IFT' 3))
    return
    f: o=o||"ARG"(1); Return "ARG"(2)
 
@@ -2151,7 +2099,7 @@ return testGroupList
    Do cv=f('I',5) For f('F',20) By f('B',3)              ,
     Until cv>=7
       a=a+1;End;
-   self~AssertSame("subTest5-34", (cv o a),(8 'IFB' 2))
+   self~AssertSame((cv o a), (8 'IFB' 2))
    return
    f: o=o||"ARG"(1); Return "ARG"(2)
 
@@ -2160,7 +2108,7 @@ return testGroupList
    Do cv=f('I',5) For f('F',20) TO f('T',15) By f('B',3) ,
     Until cv>=7
       a=a+1;End;
-   self~AssertSame("subTest5-35", (cv o a),(8 'IFTB' 2))
+   self~AssertSame((cv o a), (8 'IFTB' 2))
    return
    f: o=o||"ARG"(1); Return "ARG"(2)
 
@@ -2169,7 +2117,7 @@ return testGroupList
    Do cv=f('I',5) For f('F',20) By f('B',3) TO f('T',15)  ,
     Until cv>=7
       a=a+1;End;
-   self~AssertSame("subTest5-36", (cv o a),(8 'IFBT' 2))
+   self~AssertSame((cv o a), (8 'IFBT' 2))
    return
    f: o=o||"ARG"(1); Return "ARG"(2)
 
@@ -2179,7 +2127,7 @@ return testGroupList
     While a <=7
       b=2
       a=a+1;End;
-   self~AssertSame("subTest5-37", (a b),(8 2))
+   self~AssertSame((a b), (8 2))
 
 ::method "test_DO_standardTest5-38"
    a=0
@@ -2187,21 +2135,21 @@ return testGroupList
     While a <=7
       a=a+1;
       If a=10 Then leave;End;
-   self~AssertSame("subTest5-38", (a),(8))
+   self~AssertSame((a), (8))
 
 ::method "test_DO_standardTest5-39"
    a=0;o=''
    i=5; Do   i ,
     While a <=7
       a=a+1;End;
-   self~AssertSame("subTest5-39", (i a),(5 5))
+   self~AssertSame((i a), (5 5))
 
 ::method "test_DO_standardTest5-40"
    a=0;o=''
    Do cv=f('I',5) TO f('T',15)                   ,
     While cv<=7
       a=a+1;End;
-   self~AssertSame("subTest5-40", (cv o a),(8 'IT' 3))
+   self~AssertSame((cv o a), (8 'IT' 3))
    return
    f: o=o||"ARG"(1); Return "ARG"(2)
 
@@ -2210,7 +2158,7 @@ return testGroupList
    Do cv=f('I',5) TO f('T',15) By f('B',3)                ,
     While cv<=7
       a=a+1;End;
-   self~AssertSame("subTest5-41", (cv o a),(8 'ITB' 1 ))
+   self~AssertSame((cv o a), (8 'ITB' 1 ))
    return
    f: o=o||"ARG"(1); Return "ARG"(2)
 
@@ -2219,7 +2167,7 @@ return testGroupList
    Do cv=f('I',5) TO  f('T',15) For f('F',20)             ,
     While cv<=7
       a=a+1;End;
-   self~AssertSame("subTest5-42", (cv o a),(8 'ITF' 3))
+   self~AssertSame((cv o a), (8 'ITF' 3))
    return
    f: o=o||"ARG"(1); Return "ARG"(2)
 
@@ -2228,7 +2176,7 @@ return testGroupList
    Do cv=f('I',5) TO f('T',15) By  f('B',3) For f('F',20) ,
     While cv<=7
       a=a+1;End;
-   self~AssertSame("subTest5-43", (cv o a),(8 'ITBF' 1))
+   self~AssertSame((cv o a), (8 'ITBF' 1))
    return
    f: o=o||"ARG"(1); Return "ARG"(2)
 
@@ -2237,7 +2185,7 @@ return testGroupList
    Do cv=f('I',5) TO f('T',15) For f('F',20) By f('B',3)  ,
     While cv<=7
       a=a+1;End;
-   self~AssertSame("subTest5-44", (cv o a),(8 'ITFB' 1))
+   self~AssertSame((cv o a), (8 'ITFB' 1))
    return
    f: o=o||"ARG"(1); Return "ARG"(2)
 
@@ -2247,7 +2195,7 @@ return testGroupList
     While cv<=7
       if cv>16 then leave
       a=a+1;End;
-   self~AssertSame("subTest5-45", (cv o a),(8 'IB' 1 ))
+   self~AssertSame((cv o a), (8 'IB' 1 ))
    return
    f: o=o||"ARG"(1); Return "ARG"(2)
 
@@ -2256,7 +2204,7 @@ return testGroupList
    Do cv=f('I',5) By f('B',3) TO f('T',15)               ,
     While cv<=7
       a=a+1;End;
-   self~AssertSame("subTest5-46", (cv o a),(8 'IBT' 1 ))
+   self~AssertSame((cv o a), (8 'IBT' 1 ))
    return
    f: o=o||"ARG"(1); Return "ARG"(2)
 
@@ -2265,7 +2213,7 @@ return testGroupList
    Do cv=f('I',5) By f('B',3) For f('F',20)               ,
     While cv<=7
       a=a+1;End;
-   self~AssertSame("subTest5-47", (cv o a),(8 'IBF' 1))
+   self~AssertSame((cv o a), (8 'IBF' 1))
    return
    f: o=o||"ARG"(1); Return "ARG"(2)
 
@@ -2274,7 +2222,7 @@ return testGroupList
    Do cv=f('I',5) By f('B',15) TO f('T',3) For f('F',20)  ,
     While cv<=7
       a=a+1;End;
-   self~AssertSame("subTest5-48", (cv o a),(5 'IBTF' 0))
+   self~AssertSame((cv o a), (5 'IBTF' 0))
    return
    f: o=o||"ARG"(1); Return "ARG"(2)
 
@@ -2283,7 +2231,7 @@ return testGroupList
    Do cv=f('I',5) By f('B',3) For f('F',20) TO f('T',15)  ,
     While cv<=7
       a=a+1;End;
-   self~AssertSame("subTest5-49", (cv o a),(8 'IBFT' 1))
+   self~AssertSame((cv o a), (8 'IBFT' 1))
    return
    f: o=o||"ARG"(1); Return "ARG"(2)
 
@@ -2293,7 +2241,7 @@ return testGroupList
     While cv<=7
       if cv>16 then leave
       a=a+1;End;
-   self~AssertSame("subTest5-50", (cv o a),(8 'IF' 3))
+   self~AssertSame((cv o a), (8 'IF' 3))
    return
    f: o=o||"ARG"(1); Return "ARG"(2)
 
@@ -2302,7 +2250,7 @@ return testGroupList
    Do cv=f('I',5) For f('F',20) To f('T',15)              ,
     While cv<=7
       a=a+1;End;
-   self~AssertSame("subTest5-51", (cv o a),(8 'IFT' 3))
+   self~AssertSame((cv o a), (8 'IFT' 3))
    return
    f: o=o||"ARG"(1); Return "ARG"(2)
 
@@ -2311,7 +2259,7 @@ return testGroupList
    Do cv=f('I',5) For f('F',20) By f('B',3)               ,
     While cv<=7
       a=a+1;End;
-   self~AssertSame("subTest5-52", (cv o a),(8 'IFB' 1))
+   self~AssertSame((cv o a), (8 'IFB' 1))
    return
    f: o=o||"ARG"(1); Return "ARG"(2)
 
@@ -2320,7 +2268,7 @@ return testGroupList
    Do cv=f('I',5) For f('F',20) TO f('T',15) By f('B',3)  ,
     While cv<=7
       a=a+1;End;
-   self~AssertSame("subTest5-53", (cv o a),(8 'IFTB' 1))
+   self~AssertSame((cv o a), (8 'IFTB' 1))
    return
    f: o=o||"ARG"(1); Return "ARG"(2)
 
@@ -2329,7 +2277,7 @@ return testGroupList
    Do cv=f('I',5) For f('F',20) By f('B',3) TO f('T',15)  ,
     While cv<=7
       a=a+1;End;
-   self~AssertSame("subTest5-54", (cv o a),(8 'IFBT' 1))
+   self~AssertSame((cv o a), (8 'IFBT' 1))
    return
    f: o=o||"ARG"(1); Return "ARG"(2)
 
@@ -2338,14 +2286,14 @@ return testGroupList
    Do until a=10
       a=a+1
       End
-   self~AssertSame("subTest5-55", (a),(10))
+   self~AssertSame((a), (10))
 
 ::method "test_DO_standardTest5-56"
    a=0
    Do while a<10
       a=a+1
       End
-   self~AssertSame("subTest5-56", (a),(10))
+   self~AssertSame((a), (10))
 
 ::method "test_DO_standardTest5-57"
    v.=0 ; t. =0 ; b. =0; f.=0  ;
@@ -2353,40 +2301,40 @@ return testGroupList
    j=1
    Do j=v.j To t.j By b.j For f.j
    End
-   self~AssertSame("subTest5-57", j,17)
+   self~AssertSame(j, 17)
 
 ::method "test_DO_standardTest5-58"
    a=0; Do i=5 To  15 ; a=a+1; end;
-   self~AssertSame("subTest5-58", a,11)
+   self~AssertSame(a, 11)
 
 ::method "test_DO_standardTest5-59"
    a=0; Do i=5 For 20 ; a=a+1; end;
-   self~AssertSame("subTest5-59", a,20)
+   self~AssertSame(a, 20)
 
 ::method "test_DO_standardTest5-60"
    a=0; Do i=1 By  1 To  9  ; a=a+1; end;
-   self~AssertSame("subTest5-60", a i,9 10)
+   self~AssertSame(a i, 9 10)
 
 ::method "test_DO_standardTest5-61"
    a=0; Do i=1 By -1 To -9  ; a=a+1; end;
-   self~AssertSame("subTest5-61", a i,'11' '-10')
+   self~AssertSame(a i, '11' '-10')
 
 ::method "test_DO_standardTest5-62"
    a=0; Do i=1 For 10 ;     a=a+1; end;
-   self~AssertSame("subTest5-62", a i,10 11)
+   self~AssertSame(a i, 10 11)
 
 ::method "test_DO_standardTest5-63"
    a=0; Do i=1 Until i=10 ; a=a+1; end;
-   self~AssertSame("subTest5-63", a i,10 10)
+   self~AssertSame(a i, 10 10)
 
 ::method "test_DO_standardTest5-64"
    a=0; Do i=1 Until a=10 ; a=a+1; end;
-   self~AssertSame("subTest5-64", a i,10 10)
+   self~AssertSame(a i, 10 10)
 
 ::method "test_DO_standardTest5-65"
    NUMERIC DIGITS 2
    a=0; Do i=1 For 13 ; a=a+1; end;
-   self~AssertSame("subTest5-65", a i,13 14)
+   self~AssertSame(a i, 13 14)
 
 ::method "test_DO_standardTest5-66"
    self~expectSyntax(26.3)
@@ -2400,7 +2348,7 @@ return testGroupList
       NUMERIC DIGITS 1
       a=a+1; end;
    NUMERIC DIGITS 2
-   self~AssertSame("subTest5-67", a i,1E+1 1E+1)
+   self~AssertSame(a i, 1E+1 1E+1)
 
 ::method "test_DO_standardTest5-68"
    c=0;cc=1
@@ -2590,7 +2538,7 @@ return testGroupList
    End i.3
    End i.2
    End i.1
-   self~AssertSame("subTest5-68", c,cc)
+   self~AssertSame(c, cc)
 
 ::method "test_DO_standardTest5-69"
    a.=0
@@ -2599,9 +2547,9 @@ return testGroupList
      If i>7 Then Leave
      i=i+1
      End
-   self~AssertSame("subTest5-69", i,8)
+   self~AssertSame(i, 8)
    Do i=-1 To 10
-     self~AssertSame("subTest5-69-"i, a.i,(0<i&i<9))
+     self~AssertSame(a.i, (0<i&i<9))
      End
 
 ::method "test_DO_standardTest5-70"
@@ -2613,22 +2561,22 @@ return testGroupList
      k=k+1
      Parse Value '0 -1 -5' With expri exprb exprt
      End
-   self~AssertSame("subTest5-70-1", k,5)
+   self~AssertSame(k, 5)
    Do i=expri To exprt By exprb
      k=k+1
      Parse Value 0 0 0 With expri exprb exprt
      End
-   self~AssertSame("subTest5-70-2", k,11)
+   self~AssertSame(k, 11)
    Do i=expri To exprt By exprb While exprb>=0
      k=k+1
      If k>31 Then exprb=-1
      End
-   self~AssertSame("subTest5-70-3", k,32)
+   self~AssertSame(k, 32)
 
 ::method "test_DO_standardTest5-71"
-   self~AssertSame("subTest5-71-1", fact(10),(2*3*4*5*6*7*8*9)0)
-   self~AssertSame("subTest5-71-2", fact(10),3628800)
-   self~AssertSame("subTest5-71-3", fact(11),facti(11))
+   self~AssertSame(fact(10), (2*3*4*5*6*7*8*9)0)
+   self~AssertSame(fact(10), 3628800)
+   self~AssertSame(fact(11), facti(11))
    return
 
    fact: Procedure
@@ -2661,17 +2609,17 @@ return testGroupList
 ::method "test_DO_standardTest5-75"
    self~expectSyntax(34.4)
    z=2
-   Do i=1 By 1 Until z; If i=2 Then self~assertTrue("subTest1", 0); End;
+   Do i=1 By 1 Until z; If i=2 Then self~assertTrue(0); End;
 
 ::method "test_DO_standardTest5-76"
    self~expectSyntax(34.4)
    z=2
-   Do i=1 To 2 Until z; If i=2 Then self~assertTrue("subTest1", 0); End;
+   Do i=1 To 2 Until z; If i=2 Then self~assertTrue(0); End;
 
 ::method "test_DO_standardTest5-77"
    self~expectSyntax(41.1)
    a='a'
-   Do i=1 By a; If i=2 Then self~assertTrue("subTest1", 0); End;
+   Do i=1 By a; If i=2 Then self~assertTrue(0); End;
 
 ::method "test_DO_standardTest5-78"
    self~expectSyntax(34.3)
@@ -2679,9 +2627,9 @@ return testGroupList
 
 ::method "test_DO_standardTest5-79"
    self~expectSyntax(34.4)
-   Do i=1 By 1 Until z; If i=2 Then self~assertTrue("subTest1", 0); End;
+   Do i=1 By 1 Until z; If i=2 Then self~assertTrue(0); End;
 
 ::method "test_DO_standardTest5-80"
    self~expectSyntax(41.1)
-   Do i=1 By a; If i=2 Then self~assertTrue("subTest1", 0); End;
+   Do i=1 By a; If i=2 Then self~assertTrue(0); End;
 

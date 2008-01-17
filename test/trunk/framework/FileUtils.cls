@@ -59,6 +59,173 @@
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::requires 'OOREXXUNIT.CLS'
 
+
+/** issueCmd()
+ * Issues a command and returns its output and return code.
+ *
+ * @param cmd     REQUIRED
+ *   The command to issue.  This should include any arguments to the command.
+ *
+ * @param output  REQUIRED [In/Out]
+ *   An array.  The output produced by issuing the command is returned in this
+ *   array.  The output is appended to the array.
+ *
+ * @return  Returns the return code produced by issuing the command.  However,
+ *          9999 is returned as an error indication.
+ */
+::routine issueCmd public
+  use strict arg cmd, output
+
+  if \ output~isInstanceOf(.array) then return 9999
+
+  -- This is only known to be good for Linux and Windows.  When issued under
+  -- another OS, it is likely to fail.  The select is used so that the proper
+  -- code can be placed here when it does fail.
+  select
+    when .ooRexxUnit.OSName == "WINDOWS" then stdErrToStdOut = '2>&1'
+    when .ooRexxUnit.OSName == "LINUX" then stdErrToStdOut = '2>&1'
+    otherwise stdErrToStdOut = '2>&1'
+  end
+
+  tmpOutFile = 'tmpXXX_delete.me'
+
+  cmd = cmd '>' tmpOutFile stdErrToStdOut
+  cmd
+  prgRet = RC
+
+  fsObj = .stream~new(tmpOutFile)
+  tmpArray = fsObj~arrayin
+  do line over tmpArray
+    output~append(line)
+  end
+  fsObj~close
+
+  j = deleteFile(tmpOutFile)
+
+return prgRet
+
+
+/** locateSamplePrg()
+ * Locates a sample program normally shipped with the ooRexx distribution.
+ *
+ * The sample is searched for in the location(s) for samples programsin a normal
+ * install.  If it is not found, an attempt to find it using the assumption that
+ * the test is being executed from within a build directory.  This second search
+ * allows the test suite to be run by a developer from his build directory
+ * without having a regular install.
+ *
+ * @param   REQUIRED name  The name of the sample program
+ * @return  The complete path name of the sample if it is located, otherwise
+ *          .nil.
+ */
+::routine locateSamplePrg public
+  use strict arg name
+
+  sl = .ooRexxUnit.directory.separator
+  retObj = .nil
+
+  -- We have several possiblities here, but if REXX_HOME is set we just assume
+  -- it is set correctly.  Currently, REXX_HOME is only set on Windows.
+
+  currentOS = .ooRexxUnit.OSName
+  home = value("REXX_HOME", , 'ENVIRONMENT')
+
+  select label FINDSAMPLE
+    when home \== "" then do
+      j = SysFileTree(home || sl || 'samples' || sl || name, f., 'FOS')
+      if j == 0, f.0 == 1 then retObj = f.1
+    end
+
+    when currentOS == "WINDOWS" then do
+      currentWorkingDirectory = directory()
+      buildRoot = findBuildRoot(currentOS)
+
+      if buildRoot \== "" then do
+        sampleDir = buildRoot || "\samples\"
+
+        if SysIsFileDirectory(sampleDir) then do
+          -- Okay, we are good (in all probability.)
+          j = SysFileTree(sampleDir || name, f., 'FOS')
+          if j == 0, f.0 == 1 then retObj = f.1
+        end
+      end
+      j = directory(currentWorkingdirectory)
+    end
+
+    when currentOS == "LINUX" then do
+      -- See if ooRexx is installed from a rpm
+      cmdOut = .array~new
+      ret = issueCmd('rpm -q ooRexx', cmdOut)
+      if ret == 0 then do
+        cmdOut~empty
+        -- Escape the dot(s) in the name (surely there is only 1, but ...)
+        escName = ""
+        tmp = name
+        do which tmp~pos('.') <> 0
+          parse var tmp front '.' tmp
+          escName = escName || front || '\.'
+        end
+        escName = escName || tmp
+
+        ret = issueCmd('rpm -q ooRexx | grep' escName, cmdOut)
+        if cmdOut~items == 1 then retObj = cmdOut[1]
+        leave FINDSAMPLE
+      end
+
+      -- See if it is a user install in /opt
+      if SysIsFileDirectory("/opt/ooRexx") then do
+        j = SysFileTree("/opt/ooRexx/share/ooRexx/" || name, f., 'FOS')
+        if j == 0, f.0 == 1 then retObj = f.1
+        leave FINDSAMPLE
+      end
+
+      -- See if we can get a build directory
+      currentWorkingDirectory = directory()
+      buildRoot = findBuildRoot(currentOS)
+
+      if buildRoot \== "" then do
+        sampleDir = buildRoot || "/samples/"
+
+        if SysIsFileDirectory(sampleDir) then do
+          -- Okay, we are good (in all probability.)
+          j = SysFileTree(sampleDir || name, f., 'FOS')
+          if j == 0, f.0 == 1 then retObj = f.1
+        end
+      end
+      j = directory(currentWorkingdirectory)
+    end
+
+    otherwise do
+      -- When the test suite is starting to be run on other OSes this will
+      -- have to be filled in.
+      nop
+    end
+  end findSample -- End select
+
+return retObj
+-- End locateSample()
+
+/** findBuildRoot()  A private helper function. */
+::routine findBuildRoot
+  use strict arg os
+
+  buildRoot = ""
+
+  tmp = directory(.ooTest.originalWorkingDir)
+  if tmp \== "" then do
+    select
+      when os == "WINDOWS" then do
+        tmp = directory("..\")
+        if tmp \== "" then buildRoot = directory()
+      end
+      when os == "LINUX" then buildRoot = directory()
+      otherwise nop
+    end
+    -- End select
+  end
+return buildRoot
+
+
 /* createFile( src, name ) - - - - - - - - - - - - - - - - - - - - - - - - - -*\
 
   Writes out a file using the supplied source.
@@ -185,40 +352,15 @@ return ret
 ::routine  execRexxPrgWithArgs public
   use strict arg prgName, params, output
 
-  if \ output~isInstanceOf(.array) then return 9999
-
-  -- Only supported on Linux (bash) and Windows.  Other OSes or shells could
-  -- be added here.  (Turns out Linux and Windows redirection is the same.)
-  select
-    when .ooRexxUnit.OSName == "WINDOWS" then stdErrToStdOut = '2>&1'
-    when .ooRexxUnit.OSName == "LINUX" then stdErrToStdOut = '2>&1'
-    otherwise return 9999
-  end
-
-  tmpOutFile = 'tmpXXX_delete.me'
-
-  -- Could be spaces in the program path name, especially on Windows.
-  prgName = prgName~strip
-  if prgName~pos(' ') <> 0, prgName~left(1) \== '"' then prgName = enQuote(prgName)
-
-  cmd = 'rexx' prgName params '>' tmpOutFile stdErrToStdOut
-  cmd
-  prgRet = RC
-
-  fsObj = .stream~new(tmpOutFile)
-  tmpArray = fsObj~arrayin
-  do line over tmpArray
-    output~append(line)
-  end
-  fsObj~close
-
-  j = deleteFile(tmpOutFile)
+  cmd = 'rexx' prgName params
+  prgRet = issueCmd(cmd, output)
 
 return prgRet
 -- End execRexxPrgWithArgs( prgName, params, output )
 
 /**
- * This is a convenience method for execRexxPrgWithArgs().
+ * This is a convenience method to execute a Rexx program with no arguments.  It
+ * delegates to execRexxPrgWithArgs().
  */
 ::routine  execRexxPrg public
   use strict arg prgName, output
@@ -268,7 +410,7 @@ return execRexxPrgWithArgs(prgName, "", output)
 ::routine indirectRequire public
   use strict arg fileName
 
-  srcLines = .array~of('::requires' enQuote(fileName))
+  srcLines = .array~of('::requires' .TestUtil~enQuote(fileName))
   fullName = createRexxPrgFile(srcLines, 'tmpIndirectRequire')
 
 return fullName

@@ -55,130 +55,78 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.NUMERIC.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
 
 
 
--------------------------------------------------------------------------------------------
--- ===> adapt the "testGroupList" to your testCase classes; each element in the list is <===
--- ===> an array object, the first element containing the testCase class object, the   <===
--- ===> second element is a list of test method names which are regarded to be         <===
--- ===> mandatory (if the list remains empty all test methods are mandatory)           <===
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
-   /* list of array objects, each containing the testGroup class object and an
-      optional list of mandatory test case methods name                       */
-
-mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
-testGroupList=.list~of( .array~of(.NUMERIC.testGroup,  mandatoryTestMethods) )
-
--------------------------------------------------------------------------------------------
--- ===> the following code needs not to be individualized                              <===
-
-   -- read top comment, containing infos about this program
-arrLines=.array~new
-do i=1 to 150 until arrLines[i]="*/"
-   arrLines[i]=sourceline(i)
-end
-      -- supply information for the testClass(es) in this file; the class attribute
-      -- "TestCaseInfo" (a directory object, index points to a queue) will store
-      -- the parsed infos
-aTestGroupClass=testGroupList~at(testGroupList~first)[1] -- get first testClass
-
-   -- will parse the array lines and store result in class object
-call makeDirTestInfo aTestGroupClass, arrLines
-tmpDir=aTestGroupClass~TestCaseInfo
-parse source s   -- op_sys invocationType fullPathToThisFile
-tmpDir~setentry("test_Case-source", s)
-
-   -- now add this directory to other testCase classes, if any left
-do arr over testGroupList
-   if arr[1]=aTestGroupClass then iterate  -- already handled
-   arr[1]~TestCaseInfo=tmpDir             -- save info in class object
-end
-
--- if this file is CALLed or REQUIRED then define an entry "bRunTestLocally" in .local
--- and set it to .false; this way the independent local invocation of the tests is inhibited
-if .local~hasentry("bRunTestsLocally")=.false then
-   .local~bRunTestsLocally=.true -- if this file is executed directly, then run tests for debugging
-
-if .bRunTestsLocally=.true then  -- run ALL tests in this test unit
-do
-   ts=.testSuite~new             -- create a testSuite
-   do arr over testGroupList
-      -- create a testSuite for the given test case class, use all its testmethods
-      ts~addTest( .testSuite~new(arr[1]))
-   end
-   -- testResult=.testSuite~new(testGroupClass)~run
-   testResult=ts~run       -- now run all the tests
-
-   call simpleDumpTestResults testResult
-end
-
-   /* return list of array objects containing test case classes and
-      optionally list of mandatory test methods                      */
-return testGroupList
-
-
-
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
-
-::class "NUMERIC.testGroup" subclass TestCase public
+::class "NUMERIC.testGroup" subclass ooTestCase public
 
 ::method "test_1"
    NUMERIC DIGITS 1
-   self~assertSame("subTest1", COPIES('9',499)+1, 1E+499)
+   self~assertSame(COPIES('9',499)+1, 1E+499)
 
 ::method "test_2"
    NUMERIC DIGITS 9
-   self~assertSame("subTest2", COPIES('9',499)+1, '1.'||COPIES('0',8)||'E+499')
+   self~assertSame(COPIES('9',499)+1, '1.'||COPIES('0',8)||'E+499')
 
 ::method "test_3"
    NUMERIC DIGITS 10
-   self~assertSame("subTest3", COPIES('9',499)+1,'1.'||COPIES('0',9)||'E+499')
+   self~assertSame(COPIES('9',499)+1, '1.'||COPIES('0',9)||'E+499')
 
 ::method "test_4"
    NUMERIC DIGITS 11
-   self~assertSame("subTest4", COPIES('9',499)+1,'1.'||COPIES('0',10)||'E+499')
+   self~assertSame(COPIES('9',499)+1, '1.'||COPIES('0',10)||'E+499')
    return
 
 ::method "test_5"
    NUMERIC DIGITS 25
-   self~assertSame("subTest5", COPIES('9',499)+1,'1.'||COPIES('0',24)||'E+499')
+   self~assertSame(COPIES('9',499)+1, '1.'||COPIES('0',24)||'E+499')
 
 ::method "test_6"
    NUMERIC DIGITS 64
-   self~assertSame("subTest6", COPIES('9',499)+1,'1.'||COPIES('0',63)||'E+499')
+   self~assertSame(COPIES('9',499)+1, '1.'||COPIES('0',63)||'E+499')
 
 ::method "test_7"
    NUMERIC DIGITS 100
-   self~assertSame("subTest7", COPIES('9',499)+1,'1.'||COPIES('0',99)||'E+499')
+   self~assertSame(COPIES('9',499)+1, '1.'||COPIES('0',99)||'E+499')
 
 ::method "test_8"
    NUMERIC DIGITS 200
-   self~assertSame("subTest8", COPIES('9',499)+1,'1.'||COPIES('0',199)||'E+499')
+   self~assertSame(COPIES('9',499)+1, '1.'||COPIES('0',199)||'E+499')
 
 ::method "test_9"
    NUMERIC DIGITS 254
-   self~assertSame("subTest9", COPIES('9',499)+1,'1.'||COPIES('0',253)||'E+499')
+   self~assertSame(COPIES('9',499)+1, '1.'||COPIES('0',253)||'E+499')
 
 ::method "test_10"
    NUMERIC DIGITS 255
-   self~assertSame("subTest10", COPIES('9',499)+1,'1.'||COPIES('0',254)||'E+499')
+   self~assertSame(COPIES('9',499)+1, '1.'||COPIES('0',254)||'E+499')
 
 ::method "test_11"
    NUMERIC DIGITS 256
-   self~assertSame("subTest11", COPIES('9',499)+1,'1.'||COPIES('0',255)||'E+499')
+   self~assertSame(COPIES('9',499)+1, '1.'||COPIES('0',255)||'E+499')
 
 ::method "test_12"
    NUMERIC DIGITS 300
-   self~assertSame("subTest12", COPIES('9',499)+1,'1.'||COPIES('0',299)||'E+499')
+   self~assertSame(COPIES('9',499)+1, '1.'||COPIES('0',299)||'E+499')
 
 ::method "test_13"
    NUMERIC DIGITS 400
-   self~assertSame("subTest13", COPIES('9',499)+1,'1.'||COPIES('0',399)||'E+499')
+   self~assertSame(COPIES('9',499)+1, '1.'||COPIES('0',399)||'E+499')
 
 ::method "test_14"
    NUMERIC DIGITS 500
-   self~assertSame("subTest14", COPIES('9',499)+1,'1'||COPIES('0',499))
+   self~assertSame(COPIES('9',499)+1, '1'||COPIES('0',499))
 
 ::method "test_15"
    Numeric Digits 12
@@ -189,10 +137,10 @@ return testGroupList
    a4=digits() fuzz() form()
    Pull a2
    Pull a3
-   self~assertSame("subTest1", a1,'12 2 ENGINEERING')
-   self~assertSame("subTest2", a2,'12 2 ENGINEERING')
-   self~assertSame("subTest3", a3,'9 0 SCIENTIFIC')
-   self~assertSame("subTest4", a4,'12 2 ENGINEERING')
+   self~assertSame(a1, '12 2 ENGINEERING')
+   self~assertSame(a2, '12 2 ENGINEERING')
+   self~assertSame(a3, '9 0 SCIENTIFIC')
+   self~assertSame(a4, '12 2 ENGINEERING')
    return
 
    X: Procedure
@@ -204,25 +152,25 @@ return testGroupList
    Queue a2
    Queue a3
    Return
- 
+
 ::method "test_16"
    Numeric Digits 1
    Parse Value digits() fuzz() form() With dig fuz for
 
-   self~assertSame("subTest1", (dig fuz for),('1 0 SCIENTIFIC'))
+   self~assertSame((dig fuz for), ('1 0 SCIENTIFIC'))
 
    Numeric Digits 2
    Parse Value '123456789.123456789.' With a +12 b
-   self~assertSame("subTest2", a,'123456789.12')
+   self~assertSame(a, '123456789.12')
 
    Parse Value '123456789.123456789.' With a 12 b
-   self~assertSame("subTest3", a,'123456789.1')
- 
+   self~assertSame(a, '123456789.1')
+
 ::method "test_17"
    self~expectSyntax(26.2)
    Numeric Digits 1
    i4=0; Do 12; i4=i4+1; End
- 
+
 ::method "test_18"
    self~expectSyntax(26.3)
    Numeric Digits 1
@@ -231,12 +179,12 @@ return testGroupList
 
 ::method "test_19"
    Numeric Digits 13
-   self~assertSame("subTest1", digits(),13)
+   self~assertSame(digits(), 13)
 
 ::method "test_20"
    Numeric Digits 13
    Numeric Fuzz 12
-   self~assertSame("subTest1", digits(),13)
+   self~assertSame(digits(), 13)
 
 ::method "test_21"
    self~expectSyntax(33.1)
@@ -265,7 +213,7 @@ return testGroupList
    Do i=01.2 to 5
      s=s i
      End
-   self~assertSame("subTest1", s,' 1 2 3 4 5')
+   self~assertSame(s, ' 1 2 3 4 5')
 
 ::method "test_26"
    Numeric Digits 1
@@ -274,12 +222,12 @@ return testGroupList
      s=s||i||'/'
      If length(s)>30 Then Leave
      End
-   self~assertSame("subTest1", s,'1/2/3/4/5/6/7/8/9/1E+1/1E+1/1E+1/1E+1/')
+   self~assertSame(s, '1/2/3/4/5/6/7/8/9/1E+1/1E+1/1E+1/1E+1/')
 
 ::method "test_27"
    Numeric Digits 13
    Numeric Digits
-   self~assertSame("subTest1", dig(),9)
+   self~assertSame(dig(), 9)
    return
    dig: Return digits()
 
@@ -300,15 +248,15 @@ return testGroupList
    Numeric Digits +12.5
 
 ::method "test_33"
-   self~assertSame("subTest1", dig(),9)
+   self~assertSame(dig(), 9)
    Numeric Digits +12.0
-   self~assertSame("subTest2", dig(),12)
+   self~assertSame(dig(), 12)
    return
    dig: Return digits()
 
 ::method "test_34"
    Numeric Digits 1.1E1+1.0
-   self~assertSame("subTest1", dig(),12)
+   self~assertSame(dig(), 12)
    return
    dig: Return digits()
 
@@ -320,7 +268,7 @@ return testGroupList
 ::method "test_36"
    Numeric Digits 3
    Numeric Digits '  + .111E+03  '  ;
-   self~assertSame("subTest1", dig(),111)
+   self~assertSame(dig(), 111)
    return
    dig: Return digits()
 
@@ -342,14 +290,14 @@ return testGroupList
 ::method "test_40"
    Numeric Digits 2
    Numeric Digits intfun1()
-   self~assertSame("subTest1", dig(),1)
+   self~assertSame(dig(), 1)
    return
    intfun1: Return 1
    dig: Return digits()
 
 ::method "test_41"
    Numeric Digits RANDOM(8,8)
-   self~assertSame("subTest1", dig(),8)
+   self~assertSame(dig(), 8)
    return
    dig: Return digits()
 
@@ -361,18 +309,18 @@ return testGroupList
    Numeric,
     Digits,
     a.
-   self~assertSame("subTest1", dig(),11)
+   self~assertSame(dig(), 11)
    Numeric Digits a.i
-   self~assertSame("subTest2", dig(),12)
+   self~assertSame(dig(), 12)
    Numeric Digits sv
-   self~assertSame("subTest3", dig(),13)
+   self~assertSame(dig(), 13)
    /**/Numeric/**/Digits/**/3/**/
-   self~assertSame("subTest4", dig(),3)
+   self~assertSame(dig(), 3)
    dig: Return digits()
 
 ::method "test_43"
    Numeric dIGITs '33'x
-   self~assertSame("subTest1", dig(),3)
+   self~assertSame(dig(), 3)
    return
    dig: Return digits()
 
@@ -388,14 +336,14 @@ return testGroupList
 ::method "test_46"
    FORM=''; ENGINEERING=''
    Numeric Digits 13 FORM ENGINEERING
-   self~assertSame("subTest1", dig(),13)
+   self~assertSame(dig(), 13)
    return
    dig: Return digits()
 
 ::method "test_47"
    Numeric Digits 1000
    Numeric Fuzz
-   self~assertSame("subTest1", fuz(),0)
+   self~assertSame(fuz(), 0)
    return
    fuz: Return fuzz()
 
@@ -421,28 +369,28 @@ return testGroupList
    return
 
 ::method "test_52"
-   self~assertSame("subTest1", fuz(),0)
+   self~assertSame(fuz(), 0)
    return
    fuz: Return fuzz()
 
 ::method "test_53"
    Numeric Digits 1000
    Numeric Fuzz +12.0
-   self~assertSame("subTest1", fuz(),12)
+   self~assertSame(fuz(), 12)
    return
    fuz: Return fuzz()
 
 ::method "test_54"
    Numeric Digits 1000
    Numeric Fuzz 1.1E1+1.0
-   self~assertSame("subTest1", fuz(),12)
+   self~assertSame(fuz(), 12)
    return
    fuz: Return fuzz()
 
 ::method "test_55"
    Numeric Digits 1000
    Numeric Fuzz intfun1()
-   self~assertSame("subTest1", fuz(),1)
+   self~assertSame(fuz(), 1)
    return
    fuz: Return fuzz()
    intfun1: Return 1
@@ -450,7 +398,7 @@ return testGroupList
 ::method "test_56"
    Numeric Digits 1000
    Numeric Fuzz RANDOM(8,8)
-   self~assertSame("subTest1", fuz(),8)
+   self~assertSame(fuz(), 8)
    return
    fuz: Return fuzz()
 
@@ -461,7 +409,7 @@ return testGroupList
     Fuzz,
     a.,
     ;
-   self~assertSame("subTest1", fuz(),11)
+   self~assertSame(fuz(), 11)
    return
    fuz: Return fuzz()
 
@@ -470,7 +418,7 @@ return testGroupList
    a.=11
    i='A'
    Numeric Fuzz a.i
-   self~assertSame("subTest1", fuz(),11)
+   self~assertSame(fuz(), 11)
    return
    fuz: Return fuzz()
 
@@ -478,14 +426,14 @@ return testGroupList
    Numeric Digits 1000
    sv=13
    Numeric Fuzz sv
-   self~assertSame("subTest1", fuz(),13)
+   self~assertSame(fuz(), 13)
    return
    fuz: Return fuzz()
 
 ::method "test_60"
    Numeric Digits 1000
    /**/Numeric/**/Fuzz/**/3/**/
-   self~assertSame("subTest1", fuz(),3)
+   self~assertSame(fuz(), 3)
    return
    fuz: Return fuzz()
 
@@ -498,7 +446,7 @@ return testGroupList
 ::method "test_62"
    sc='SCIENTIFIC'
    Numeric Form
-   self~assertSame("subTest1", for(),sc)
+   self~assertSame(for(), sc)
    return
    for: Return form()
 
@@ -520,21 +468,21 @@ return testGroupList
 
 ::method "test_67"
    sc='SCIENTIFIC'
-   self~assertSame("subTest1", for(),sc)
+   self~assertSame(for(), sc)
    return
    for: Return form()
 
 ::method "test_68"
    en='ENGINEERING'
    Numeric Form Value 'ENGINEERING'
-   self~assertSame("subTest1", for(),en)
+   self~assertSame(for(), en)
    return
    for: Return form()
 
 ::method "test_69"
    sc='SCIENTIFIC'
    Numeric Form Value 'SCIENTI'||'FI'||'43'x
-   self~assertSame("subTest1", for(),sc)
+   self~assertSame(for(), sc)
    return
    for: Return form()
 
@@ -545,14 +493,14 @@ return testGroupList
 ::method "test_71"
    sc='SCIENTIFIC'
    Numeric Form scientific
-   self~assertSame("subTest1", for(),sc)
+   self~assertSame(for(), sc)
    return
    for: Return form()
 
 ::method "test_72"
    en='ENGINEERING'
    Numeric Form Value engineering
-   self~assertSame("subTest1", for(),en)
+   self~assertSame(for(), en)
    return
    for: Return form()
 
@@ -563,7 +511,7 @@ return testGroupList
 ::method "test_74"
    en='ENGINEERING'
    Numeric Form Value intfun('f')
-   self~assertSame("subTest1", for(),en)
+   self~assertSame(for(), en)
    return
    intfun: If "ARG"(1)='f' Then Return 'ENGINEERING'
    for: Return form()
@@ -579,7 +527,7 @@ return testGroupList
    sv='ENGINEERING'
    i='A'
    Numeric Form Value a.i
-   self~assertSame("subTest1", for(),sc)
+   self~assertSame(for(), sc)
    return
    for: Return form()
 
@@ -587,7 +535,7 @@ return testGroupList
    sv='ENGINEERING'
    en='ENGINEERING'
    Numeric Form Value sv
-   self~assertSame("subTest1", for(),en)
+   self~assertSame(for(), en)
    return
    for: Return form()
 
@@ -604,22 +552,22 @@ return testGroupList
    self~expectSyntax(25.11)
    FORM=''; ENGINEERING=''
    Numeric Form Value ENGINEERING FORM ENGINEERING;
- 
+
 ::method "test_81"
    Numeric Digits 12
    Numeric Fuzz 9
    Numeric Form Engineering
-   self~assertSame("subTest1", ("DIGITS"() "FUZZ"() "FORM"()),(12 9 'ENGINEERING'))
+   self~assertSame(("DIGITS"() "FUZZ"() "FORM"()), (12 9 'ENGINEERING'))
    Parse Value digits() fuzz() form() With X
-   self~assertSame("subTest2", X,'12 9 ENGINEERING')
- 
+   self~assertSame(X, '12 9 ENGINEERING')
+
 ::method "test_82"
    Numeric Digits 12
    Numeric Fuzz 9
    Numeric Form Engineering
    Numeric Digits 999999999
-   self~assertTrue("subTest1", 1)
- 
+   self~assertTrue(1)
+
 ::method "test_83"
    self~expectSyntax(33.1)
    Numeric Digits 12
@@ -629,13 +577,13 @@ return testGroupList
 
 ::method "test_84"
    Numeric Form Value E||N||G||I||N||E||E||R||I||N||G
-   self~assertTrue("subTest1", 1)
+   self~assertTrue(1)
 
 ::method "test_85"
    Numeric Form Value E||N||G||I||N||E||E||R||I||N||G
-   self~assertSame("subTest1", case(), 'ENGINEERING')
+   self~assertSame(case(), 'ENGINEERING')
    Numeric Form Value S||C||I||E||N||T||I||F||I||C
-   self~assertSame("subTest2", case(), 'SCIENTIFIC')
+   self~assertSame(case(), 'SCIENTIFIC')
    return
    case:
    case=form()
@@ -652,10 +600,10 @@ return testGroupList
 ::method "test_88"
    str='ENGINEERING'
    Numeric Form Value str
-   self~assertSame("subTest1", case(), str)
+   self~assertSame(case(), str)
    str='SCIENTIFIC'
    Numeric Form Value str
-   self~assertSame("subTest2", case(), str)
+   self~assertSame(case(), str)
    return
    case:
    case=form()
@@ -664,10 +612,10 @@ return testGroupList
 ::method "test_89"
    str.1='ENGINEERING'
    Numeric Form Value str.1
-   self~assertSame("subTest1", case(), str.1)
+   self~assertSame(case(), str.1)
    str.2='SCIENTIFIC'
    Numeric Form Value str.2
-   self~assertSame("subTest2", case(), str.2)
+   self~assertSame(case(), str.2)
    return
    case:
    case=form()
@@ -676,10 +624,10 @@ return testGroupList
 ::method "test_90"
    str.='ENGINEERING'
    Numeric Form Value str.
-   self~assertSame("subTest1", case(), str.)
+   self~assertSame(case(), str.)
    str.='SCIENTIFIC'
    Numeric Form Value str.
-   self~assertSame("subTest2", case(), str.)
+   self~assertSame(case(), str.)
    return
    case:
    case=form()
@@ -689,10 +637,10 @@ return testGroupList
    case=''
    str='ENGINEERINGSCIENTIFIC'
    Numeric Form Value 'SUBSTR'(str,1,11)
-   self~assertSame("subTest1", case(), SUBSTR(str,1,11))
+   self~assertSame(case(), SUBSTR(str,1,11))
    str='ENGINEERINGSCIENTIFIC'
    Numeric Form Value 'SUBSTR'(str,12,10)
-   self~assertSame("subTest1", case(), SUBSTR(str,12,10))
+   self~assertSame(case(), SUBSTR(str,12,10))
    return
    case:
    case=form()

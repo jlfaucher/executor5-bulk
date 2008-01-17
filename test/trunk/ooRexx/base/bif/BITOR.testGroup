@@ -55,507 +55,454 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.BITOR.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
 
 
 
--------------------------------------------------------------------------------------------
--- ===> adapt the "testGroupList" to your testCase classes; each element in the list is <===
--- ===> an array object, the first element containing the testCase class object, the   <===
--- ===> second element is a list of test method names which are regarded to be         <===
--- ===> mandatory (if the list remains empty all test methods are mandatory)           <===
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
-   /* list of array objects, each containing the testGroup class object and an
-      optional list of mandatory test case methods name                       */
-
-mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
-testGroupList=.list~of( .array~of(.BITOR.testGroup,  mandatoryTestMethods) )
-
-
--------------------------------------------------------------------------------------------
--- ===> the following code needs not to be individualized                              <===
-
-   -- read top comment, containing infos about this program
-arrLines=.array~new
-do i=1 to 150 until arrLines[i]="*/"
-   arrLines[i]=sourceline(i)
-end
-      -- supply information for the testClass(es) in this file; the class attribute
-      -- "TestCaseInfo" (a directory object, index points to a queue) will store
-      -- the parsed infos
-aTestGroupClass=testGroupList~at(testGroupList~first)[1] -- get first testClass
-
-   -- will parse the array lines and store result in class object
-call makeDirTestInfo aTestGroupClass, arrLines
-tmpDir=aTestGroupClass~TestCaseInfo
-parse source s   -- op_sys invocationType fullPathToThisFile
-tmpDir~setentry("test_Case-source", s)
-
-   -- now add this directory to other testCase classes, if any left
-do arr over testGroupList
-   if arr[1]=aTestGroupClass then iterate  -- already handled
-   arr[1]~TestCaseInfo=tmpDir             -- save info in class object
-end
-
--- if this file is CALLed or REQUIRED then define an entry "bRunTestLocally" in .local
--- and set it to .false; this way the independent local invocation of the tests is inhibited
-if .local~hasentry("bRunTestsLocally")=.false then
-   .local~bRunTestsLocally=.true -- if this file is executed directly, then run tests for debugging
-
-if .bRunTestsLocally=.true then  -- run ALL tests in this test unit
-do
-   ts=.testSuite~new             -- create a testSuite
-   do arr over testGroupList
-      -- create a testSuite for the given test case class, use all its testmethods
-      ts~addTest( .testSuite~new(arr[1]))
-   end
-   -- testResult=.testSuite~new(testGroupClass)~run
-   testResult=ts~run       -- now run all the tests
-
-   call simpleDumpTestResults testResult
-end
-
-   /* return list of array objects containing test case classes and
-      optionally list of mandatory test methods                      */
-return testGroupList
-
-
-
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
-
-::class "BITOR.testGroup" subclass TestCase public
+::class "BITOR.testGroup" subclass ooTestCase public
 
 ::method "test_1"
-   self~assertSame("subTest1", bitor(''), '')
+   self~assertSame(bitor(''), '')
 
 ::method "test_2"
-   self~assertSame("subTest2", bitor('X'), 'X')
+   self~assertSame(bitor('X'), 'X')
 
 ::method "test_3"
-   self~assertSame("subTest3", bitor('C1'x), 'C1'x)
+   self~assertSame(bitor('C1'x), 'C1'x)
 
 ::method "test_4"
-   self~assertSame("subTest4", bitor('abc'), 'abc')
+   self~assertSame(bitor('abc'), 'abc')
 
 ::method "test_5"
-   self~assertSame("subTest5", bitor('abc'x), 'abc'x)
+   self~assertSame(bitor('abc'x), 'abc'x)
 
 ::method "test_6"
-   self~assertSame("subTest6", bitor('a bc de'x), '0ABCDE'x)
+   self~assertSame(bitor('a bc de'x), '0ABCDE'x)
 
 ::method "test_7"
    v.30='1234567890abcdefghijklmnopqrst'
-   self~assertSame("subTest7", bitor(v.30), '1234567890abcdefghijklmnopqrst')
+   self~assertSame(bitor(v.30), '1234567890abcdefghijklmnopqrst')
 
 ::method "test_8"
    v100000=Copies('abcd',25000)
-   self~assertSame("subTest8", bitor(v255.), v255.)
+   self~assertSame(bitor(v255.), v255.)
 
 ::method "test_9"
    v255.=copies('*',255)
    v256=v255.||'<'
-   self~assertSame("subTest9", bitor(v256), v256)
+   self~assertSame(bitor(v256), v256)
 
 ::method "test_10"
    v100000=Copies('abcd',25000)
-   self~assertSame("subTest10", bitor(v100000), Copies('abcd',25000))
+   self~assertSame(bitor(v100000), Copies('abcd',25000))
 
 ::method "test_11"
-   self~assertSame("subTest11", BITOR("1234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234"X),x2C(Copies('1234',61)))
+   self~assertSame(BITOR("1234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234"X), x2C(Copies('1234',61)))
 
 ::method "test_12"
-   self~assertSame("subTest12", BITOR("1919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919"),Copies('19',125))
+   self~assertSame(BITOR("1919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919"), Copies('19',125))
 
 ::method "test_13"
-   self~assertSame("subTest13", BITOR('an expression' '+'||'others'),'an expression +others')
+   self~assertSame(BITOR('an expression' '+'||'others'), 'an expression +others')
 
 ::method "test_14"
-   self~assertSame("subTest14", BITOR(17+4), '21')
+   self~assertSame(BITOR(17+4), '21')
 
 ::method "test_15"
-   self~assertSame("subTest15", BITOR(12345/3), '4115')
+   self~assertSame(BITOR(12345/3), '4115')
 
 ::method "test_16"
-   self~assertSame("subTest16", BITOR(1E-122/7), '1.42857143E-123')
+   self~assertSame(BITOR(1E-122/7), '1.42857143E-123')
 
 ::method "test_17"
-   self~assertSame("subTest17", BITOR(SUBSTR('FFFFFF FF'X,3,1)),'FF'X)
+   self~assertSame(BITOR(SUBSTR('FFFFFF FF'X,3,1)), 'FF'X)
 
 ::method "test_18"
-   self~assertSame("subTest18", BITOR('echoed'),'echoed')
+   self~assertSame(BITOR('echoed'), 'echoed')
 
 ::method "test_19"
-   self~assertSame("subTest19", BITOR(copies('one more Time', 2)),'one more Timeone more Time')
+   self~assertSame(BITOR(copies('one more Time', 2)), 'one more Timeone more Time')
 
 ::method "test_20"
-   self~assertSame("subTest20", BITOR(nv1), nv1)
+   self~assertSame(BITOR(nv1), nv1)
 
 ::method "test_21"
-   self~assertSame("subTest21", BITOR(nv2.,), nv2.)
+   self~assertSame(BITOR(nv2.,), nv2.)
 
 ::method "test_22"
-   self~assertSame("subTest22", BITOR(nv2.3,), nv2.3)
+   self~assertSame(BITOR(nv2.3,), nv2.3)
 
 ::method "test_23"
-   self~assertSame("subTest23", BITOR('', ''), '')
+   self~assertSame(BITOR('', ''), '')
 
 ::method "test_24"
-   self~assertSame("subTest24", BITOR('', 'a'), 'a')
+   self~assertSame(BITOR('', 'a'), 'a')
 
 ::method "test_25"
    v.30='1234567890abcdefghijklmnopqrst'
-   self~assertSame("subTest25", BITOR('', v.30), '1234567890abcdefghijklmnopqrst')
+   self~assertSame(BITOR('', v.30), '1234567890abcdefghijklmnopqrst')
 
 ::method "test_26"
    v100000=Copies('abcd',25000)
-   self~assertSame("subTest26", BITOR('', v100000), v100000)
+   self~assertSame(BITOR('', v100000), v100000)
 
 ::method "test_27"
-   self~assertSame("subTest27", BITOR('X', 'f3 fe'x), 'FBFE'x)
+   self~assertSame(BITOR('X', 'f3 fe'x), 'FBFE'x)
 
 ::method "test_28"
-   self~assertSame("subTest28", BITOR('C1'x, '.'), 'EF'x)
+   self~assertSame(BITOR('C1'x, '.'), 'EF'x)
 
 ::method "test_29"
-   self~assertSame("subTest29", BITOR('X', '1'), '79'x)
+   self~assertSame(BITOR('X', '1'), '79'x)
 
 ::method "test_30"
-   self~assertSame("subTest30", BITOR('abc', 'cde'), 'cfg')
+   self~assertSame(BITOR('abc', 'cde'), 'cfg')
 
 ::method "test_31"
-   self~assertSame("subTest31", BITOR('abc'x, 'abcd'x), 'ABFD'x)
+   self~assertSame(BITOR('abc'x, 'abcd'x), 'ABFD'x)
 
 ::method "test_32"
-   self~assertSame("subTest32", BITOR('a bc de'x, """"), '2ABCDE'x)
+   self~assertSame(BITOR('a bc de'x, """"), '2ABCDE'x)
 
 ::method "test_33"
    v.30='1234567890abcdefghijklmnopqrst'
-   self~assertSame("subTest33", BITOR(v.30, '1'), '1234567890abcdefghijklmnopqrst')
+   self~assertSame(BITOR(v.30, '1'), '1234567890abcdefghijklmnopqrst')
 
 ::method "test_34"
    v255.=copies('*',255)
-   self~assertSame("subTest34", BITOR(v255., '55'x), bitor('*','55'x)||substr(v255.,2))
+   self~assertSame(BITOR(v255., '55'x), bitor('*','55'x)||substr(v255.,2))
 
 ::method "test_35"
    v255.=copies('*',255)
    v256=v255.||'<'
-   self~assertSame("subTest35", BITOR(v256, ''), v256)
+   self~assertSame(BITOR(v256, ''), v256)
 
 ::method "test_36"
    v100000=Copies('abcd',25000)
    n100000=Copies('00'X,100000)
-   self~assertSame("subTest36", BITOR(v100000, n100000), v100000)
+   self~assertSame(BITOR(v100000, n100000), v100000)
 
 ::method "test_37"
    xffff='ffff'x
-   self~assertSame("subTest37", BITOR("1234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234"X,'ffff'X),xffff||x2C(Copies('1234',60)))
+   self~assertSame(BITOR("1234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234"X,'ffff'X), xffff||x2C(Copies('1234',60)))
 
 ::method "test_38"
    z=Copies('19',125)
-   self~assertSame("subTest38", BITOR(z,"1919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919"),Copies('19',125))
+   self~assertSame(BITOR(z,"1919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919"), Copies('19',125))
 
 ::method "test_39"
-   self~assertSame("subTest39", BITOR('an expression' '+'||'others','other'||'expression' 'a'),'6F7E68657A757A7573777B7F6F6F6F6F7568657273'X)
+   self~assertSame(BITOR('an expression' '+'||'others','other'||'expression' 'a'), '6F7E68657A757A7573777B7F6F6F6F6F7568657273'X)
 
 ::method "test_40"
-   self~assertSame("subTest40", BITOR(17+4,99+0),'3B39'X)
+   self~assertSame(BITOR(17+4,99+0), '3B39'X)
 
 ::method "test_41"
-   self~assertSame("subTest41", BITOR(12345/3,3/12345),'343F313530323433303133333636'X)
+   self~assertSame(BITOR(12345/3,3/12345), '343F313530323433303133333636'X)
 
 ::method "test_42"
-   self~assertSame("subTest42", BITOR(1E-122/7,1e+122/7),'1.42857143E/123')
+   self~assertSame(BITOR(1E-122/7,1e+122/7), '1.42857143E/123')
 
 ::method "test_43"
-   self~assertSame("subTest43", BITOR(SUBSTR('FFFFFF FF'X,3,1),delstr('4567',2,2)),'FF37'X)
+   self~assertSame(BITOR(SUBSTR('FFFFFF FF'X,3,1),delstr('4567',2,2)), 'FF37'X)
 
 ::method "test_44"
-   self~assertSame("subTest44", BITOR('echoed', '  c  '),'65636B6F6564'X)
+   self~assertSame(BITOR('echoed', '  c  '), '65636B6F6564'X)
 
 ::method "test_45"
-   self~assertSame("subTest45", BITOR(copies('one more Time',2),'c2'X),'EF'X||'ne more Timeone more Time')
+   self~assertSame(BITOR(copies('one more Time',2),'c2'X), 'EF'X||'ne more Timeone more Time')
 
 ::method "test_46"
    v100000=Copies('abcd',25000)
    vr74a='67726F6D616F7774736B6765'x||COPIES('abcd',49997)
-   self~assertSame("subTest46", BITOR('from outside',copies(v100000,2)),vr74a)
+   self~assertSame(BITOR('from outside',copies(v100000,2)), vr74a)
 
 ::method "test_47"
-   self~assertSame("subTest47", bitor('',33),'33')
+   self~assertSame(bitor('',33), '33')
 
 ::method "test_48"
-   self~assertSame("subTest48", BITOR(copies('3'x,2),bitor(1,' ')),'3303'x)
+   self~assertSame(BITOR(copies('3'x,2),bitor(1,' ')), '3303'x)
 
 ::method "test_49"
-   self~assertSame("subTest49", BITOR('2',nv2.),'7E56322E'x)
+   self~assertSame(BITOR('2',nv2.), '7E56322E'x)
 
 ::method "test_50"
-   self~assertSame("subTest50", BITOR('2',nv2.3),'7E56322E33'x)
+   self~assertSame(BITOR('2',nv2.3), '7E56322E33'x)
 
 ::method "test_51"
-   self~assertSame("subTest51", BITOR('1',nv1),'7F'X||'V1')
+   self~assertSame(BITOR('1',nv1), '7F'X||'V1')
 
 ::method "test_52"
-   self~assertSame("subTest52", BITOR('2',nv2.),'7E'X||'V2.')
+   self~assertSame(BITOR('2',nv2.), '7E'X||'V2.')
 
 ::method "test_53"
-   self~assertSame("subTest53", BITOR('3',nv2.3),'7F'X||'V2.3')
+   self~assertSame(BITOR('3',nv2.3), '7F'X||'V2.3')
 
 ::method "test_54"
-   self~assertSame("subTest54", BITOR(nv1,nv2.3),'NV3.3')
+   self~assertSame(BITOR(nv1,nv2.3), 'NV3.3')
 
 ::method "test_55"
-   self~assertSame("subTest55", BITOR(nv2,nv3),'NV3')
+   self~assertSame(BITOR(nv2,nv3), 'NV3')
 
 ::method "test_56"
-   self~assertSame("subTest55", BITOR('',,"A"),'')
+   self~assertSame(BITOR('',,"A"), '')
 
 ::method "test_57"
-   self~assertSame("subTest57", BITOR('X',,'00'X),'X')
+   self~assertSame(BITOR('X',,'00'X), 'X')
 
 ::method "test_58"
    self~expectSyntax(40.23)
-   self~assertSame("subTest58", BITOR('C1'X,,'sp'),'X')
+   self~assertSame(BITOR('C1'X,,'sp'), 'X')
 
 ::method "test_59"
    v="0F"X
-   self~assertSame("subTest59", BITOR('abc',,v),'6F6F6F'X)
+   self~assertSame(BITOR('abc',,v), '6F6F6F'X)
 
 ::method "test_60"
    v="0F"X
-   self~assertSame("subTest60", BITOR('abc'X,,v),'0FBF'X)
+   self~assertSame(BITOR('abc'X,,v), '0FBF'X)
 
 ::method "test_61"
-   self~assertSame("subTest61", BITOR("a bc de"X,,'' ''),'2ABCFE'X)
+   self~assertSame(BITOR("a bc de"X,,'' ''), '2ABCFE'X)
 
 ::method "test_62"
    v.30='1234567890abcdefghijklmnopqrst'
-   self~assertSame("subTest62", BITOR(v.30,,'1'),'1335577991qssuuwwyy'||'7b7b7d7d7f7f'x||'qqssu')
+   self~assertSame(BITOR(v.30,,'1'), '1335577991qssuuwwyy'||'7b7b7d7d7f7f'x||'qqssu')
 
 ::method "test_63"
    v255.=copies('*',255)
-   self~assertSame("subTest63", BITOR(v255.,,'80'X),Copies('AA'X,255))
+   self~assertSame(BITOR(v255.,,'80'X), Copies('AA'X,255))
 
 ::method "test_64"
    v255.=copies('*',255)
    v256=v255.||'<'
-   self~assertSame("subTest64", BITOR(v256,,'2'),Copies('3A'X,255)||'3E'X)
+   self~assertSame(BITOR(v256,,'2'), Copies('3A'X,255)||'3E'X)
 
 ::method "test_65"
    x7f="7f"X
    v100000=Copies('abcd',25000)
-   self~assertSame("subTest65", BITOR(v100000,,x7f),Copies('7f'X,100000))
+   self~assertSame(BITOR(v100000,,x7f), Copies('7f'X,100000))
 
 ::method "test_66"
    x08='08'X
-   self~assertSame("subTest66", BITOR("1234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234"X,,x08),x2C(Copies('1a3c',61)))
+   self~assertSame(BITOR("1234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234"X,,x08), x2C(Copies('1a3c',61)))
 
 ::method "test_67"
    x75='75'x
-   self~assertSame("subTest67", BITOR("1919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919",,x75),Copies('757D'X,125))
+   self~assertSame(BITOR("1919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919",,x75), Copies('757D'X,125))
 
 ::method "test_68"
-   self~assertSame("subTest68", BITOR('an expression' '+'||'others',,1+4),'757F35757D75777577777D7F7F353F7F757D757777'X)
+   self~assertSame(BITOR('an expression' '+'||'others',,1+4), '757F35757D75777577777D7F7F353F7F757D757777'X)
 
 ::method "test_69"
-   self~assertSame("subTest69", BITOR(17+4,,12/3),'65')
+   self~assertSame(BITOR(17+4,,12/3), '65')
 
 ::method "test_70"
-   self~assertSame("subTest70", BITOR(12345/3,,10/2),'5555')
+   self~assertSame(BITOR(12345/3,,10/2), '5555')
 
 ::method "test_71"
-   self~assertSame("subTest71", BITOR(1E-122/7,,9+12-20),1'3F3533393537313533753D313333'X)
+   self~assertSame(BITOR(1E-122/7,,9+12-20), 1'3F3533393537313533753D313333'X)
 
 ::method "test_72"
-   self~assertSame("subTest72", BITOR(SUBSTR('FFFFFF FF'X,3,1),,'.'),'FF'X)
+   self~assertSame(BITOR(SUBSTR('FFFFFF FF'X,3,1),,'.'), 'FF'X)
 
 ::method "test_73"
-   self~assertSame("subTest73", BITOR('echoed',,1),'7573797F7575'X)
+   self~assertSame(BITOR('echoed',,1), '7573797F7575'X)
 
 ::method "test_74"
-   self~assertSame("subTest74", BITOR(copies('one more Time',2),,3+'3'),'7F7E77367F7F767736767F7F777F7E77367F7F767736767f7f77'X)
+   self~assertSame(BITOR(copies('one more Time',2),,3+'3'), '7F7E77367F7F767736767F7F777F7E77367F7F767736767f7f77'X)
 
 ::method "test_75"
-   self~assertSame("subTest75", BITOR('',,'/'),'')
+   self~assertSame(BITOR('',,'/'), '')
 
 ::method "test_76"
-   self~assertSame("subTest76", BITOR(copies('3'x,2),,x2c(copies('a',2))),'ABAB'X)
+   self~assertSame(BITOR(copies('3'x,2),,x2c(copies('a',2))), 'ABAB'X)
 
 ::method "test_77"
-   self~assertSame("subTest77", BITOR(nv2.,,'x'),'7E7E7A7E'x)
+   self~assertSame(BITOR(nv2.,,'x'), '7E7E7A7E'x)
 
 ::method "test_78"
-   self~assertSame("subTest78", BITOR(nv2.3,,'x'),'7E7E7A7E'x||'{')
+   self~assertSame(BITOR(nv2.3,,'x'), '7E7E7A7E'x||'{')
 
 ::method "test_79"
-   self~assertSame("subTest79", BITOR(nv1,,'x'),'7E7E79'x)
+   self~assertSame(BITOR(nv1,,'x'), '7E7E79'x)
 
 ::method "test_80"
-   self~assertSame("subTest80", BITOR('',nv2.,'x'),'7E7E7A7E'x)
+   self~assertSame(BITOR('',nv2.,'x'), '7E7E7A7E'x)
 
 ::method "test_81"
-   self~assertSame("subTest81", BITOR('',nv2.3,'x'),'7E7E7A7E'x||'{')
+   self~assertSame(BITOR('',nv2.3,'x'), '7E7E7A7E'x||'{')
 
 ::method "test_82"
    self~expectSyntax(40.23)
-   self~assertSame("subTest82", BITOR('   ',,nv2.),' ')
+   self~assertSame(BITOR('   ',,nv2.), ' ')
 
 ::method "test_83"
    self~expectSyntax(40.23)
-   self~assertSame("subTest83", BITOR('   ',,nv2.3),' ')
+   self~assertSame(BITOR('   ',,nv2.3), ' ')
 
 ::method "test_84"
    self~expectSyntax(40.23)
-   self~assertSame("subTest84", BITOR('v2.',,nv2.3),' ')
+   self~assertSame(BITOR('v2.',,nv2.3), ' ')
 
 ::method "test_85"
    self~expectSyntax(40.23)
-   self~assertSame("subTest85", BITOR('','',''),'')
+   self~assertSame(BITOR('','',''), '')
 
 ::method "test_86"
    self~expectSyntax(40.23)
-   self~assertSame("subTest86", BITOR('','a',''),'')
+   self~assertSame(BITOR('','a',''), '')
 
 ::method "test_87"
    v100000=Copies('abcd',25000)
    a100000a=Copies('7B7A7B7E'x,25000)
-   self~assertSame("subTest87", BITOR('',v100000, 'z'),a100000a)
+   self~assertSame(BITOR('',v100000, 'z'), a100000a)
 
 ::method "test_88"
    x23='23'X
-   self~assertSame("subTest88", BITOR('X','f3 fe'X,x23),'FBFF'X)
+   self~assertSame(BITOR('X','f3 fe'X,x23), 'FBFF'X)
 
 ::method "test_89"
-   self~assertSame("subTest89", BITOR('C1'X,'.',','),'EF'X)
+   self~assertSame(BITOR('C1'X,'.',','), 'EF'X)
 
 ::method "test_90"
-   self~assertSame("subTest90", BITOR('X','1',13-6-1),'79'X)
+   self~assertSame(BITOR('X','1',13-6-1), '79'X)
 
 ::method "test_91"
    self~expectSyntax(40.23)
-   self~assertSame("subTest91", BITOR('abc','cde',-1e2-92),'79'X)
+   self~assertSame(BITOR('abc','cde',-1e2-92), '79'X)
 
 ::method "test_92"
    self~expectSyntax(40.23)
-   self~assertSame("subTest92", BITOR('abc'X,'abcd'x,'1 11'x),'79'X)
+   self~assertSame(BITOR('abc'X,'abcd'x,'1 11'x), '79'X)
 
 ::method "test_93"
    v.30='1234567890abcdefghijklmnopqrst'
-   self~assertSame("subTest93", BITOR(v.30,'1',3),'1337777'||'3b3b33737373777777777B7B7B7B7F7F7F7F7373737377'x)
+   self~assertSame(BITOR(v.30,'1',3), '1337777'||'3b3b33737373777777777B7B7B7B7F7F7F7F7373737377'x)
 
 ::method "test_94"
    v255.=copies('*',255)
-   self~assertSame("subTest94", BITOR(v255.,'55'x,'*'),bitor('*','55'x)||substr(v255.,2))
+   self~assertSame(BITOR(v255.,'55'x,'*'), bitor('*','55'x)||substr(v255.,2))
 
 ::method "test_95"
    v255.=copies('*',255)
    v256=v255.||'<'
-   self~assertSame("subTest95", BITOR(v256,'','1'),copies('3B'x,255)'3D'x)
+   self~assertSame(BITOR(v256,'','1'), copies('3B'x,255)'3D'x)
 
 ::method "test_96"
    xff="ff"X
    v100000=Copies('abcd',25000)
    n100000=Copies('00'X,100000)
-   self~assertSame("subTest96", BITOR(v100000,n100000,xff),v100000)
+   self~assertSame(BITOR(v100000,n100000,xff), v100000)
 
 ::method "test_97"
-   self~assertSame("subTest97", BITOR("1234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234"X,'0000'X,'1'),'1234'x||x2C(Copies('3335',60)))
+   self~assertSame(BITOR("1234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412341234"X,'0000'X,'1'), '1234'x||x2C(Copies('3335',60)))
 
 ::method "test_98"
    z=Copies('19',125)
    x0000='0000'x
-   self~assertSame("subTest98", BITOR(z,"1919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919",RIGHT(x0000,1)),Copies('19',125))
+   self~assertSame(BITOR(z,"1919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919191919",RIGHT(x0000,1)), Copies('19',125))
 
 ::method "test_99"
-   self~assertSame("subTest99", BITOR(17+4,99+0,1+1),'3B39'X)
+   self~assertSame(BITOR(17+4,99+0,1+1), '3B39'X)
 
 ::method "test_100"
-   self~assertSame("subTest100", BITOR(12345/3,3/12345,8/2),'343f313534363437343537373636'X)
+   self~assertSame(BITOR(12345/3,3/12345,8/2), '343f313534363437343537373636'X)
 
 ::method "test_101"
    self~expectSyntax(40.23)
-   self~assertSame("subTest101", BITOR(1E-122/7,1e+122/7,2/89),'')
+   self~assertSame(BITOR(1E-122/7,1e+122/7,2/89), '')
 
 ::method "test_102"
    xfe="fe"X
-   self~assertSame("subTest102", BITOR(SUBSTR('FFFFFF FF'X,3,1),delstr('4567',2,2),xfe),'FFFF'X)
+   self~assertSame(BITOR(SUBSTR('FFFFFF FF'X,3,1),delstr('4567',2,2),xfe), 'FFFF'X)
 
 ::method "test_103"
-   self~assertSame("subTest103", BITOR('echoed','  c  ',a),'eckoee')
+   self~assertSame(BITOR('echoed','  c  ',a), 'eckoee')
 
 ::method "test_104"
-   self~assertSame("subTest104", BITOR(copies('one more Time',2),'c2'X,';'),'EF7F7F3B7F7F7B7F3B7F7B7F7F7F7F7F3B7F7F7B7F3B7F7B7F7F'X)
+   self~assertSame(BITOR(copies('one more Time',2),'c2'X,';'), 'EF7F7F3B7F7F7B7F3B7F7B7F7F7F7F7F3B7F7F7B7F3B7F7B7F7F'X)
 
 ::method "test_105"
    v100000=Copies('abcd',25000)
    vr102a='67726F6D616F7774736B6765'x||COPIES('7F7E7F7E'X,49997)
-   self~assertSame("subTest105", BITOR('from outside',copies(v100000,2),'~'),vr102a)
+   self~assertSame(BITOR('from outside',copies(v100000,2),'~'), vr102a)
 
 ::method "test_106"
-   self~assertSame("subTest106", BITOR(''||'',33,"@"),'ss')
+   self~assertSame(BITOR(''||'',33,"@"), 'ss')
 
 ::method "test_107"
-   self~assertSame("subTest107", BITOR(copies('3'x,2),bitor(1,' '),"Z"),'335B'X)
+   self~assertSame(BITOR(copies('3'x,2),bitor(1,' '),"Z"), '335B'X)
 
 ::method "test_108"
    self~expectSyntax(40.23)
-   self~assertSame("subTest108", BITOR('1','1',nv1),'1')
+   self~assertSame(BITOR('1','1',nv1), '1')
 
 ::method "test_109"
    self~expectSyntax(40.23)
-   self~assertSame("subTest109", BITOR('3','111',nv2.3),'311')
+   self~assertSame(BITOR('3','111',nv2.3), '311')
 
 ::method "test_110"
    self~expectSyntax(40.23)
-   self~assertSame("subTest110", BITOR(nv1,mv2,mv2.3),'311')
+   self~assertSame(BITOR(nv1,mv2,mv2.3), '311')
 
 ::method "test_111"
-   self~assertSame("subTest111", BITOR(u,u,u),u)
+   self~assertSame(BITOR(u,u,u), u)
 
 ::method "test_112"
    self~expectSyntax(40.23)
-   self~assertSame("subTest112", BITOR(nv1,nv1,nv1),nv1)
+   self~assertSame(BITOR(nv1,nv1,nv1), nv1)
 
 ::method "test_113"
    self~expectSyntax(40.23)
-   self~assertSame("subTest113", BITOR(nv2.,nv2.,nv2.),nv2.)
+   self~assertSame(BITOR(nv2.,nv2.,nv2.), nv2.)
 
 ::method "test_114"
    self~expectSyntax(40.23)
-   self~assertSame("subTest114", BITOR(nv2.3,nv2.3,nv2.3),nv2.3)
+   self~assertSame(BITOR(nv2.3,nv2.3,nv2.3), nv2.3)
 
 ::method "test_115"
    self~expectSyntax(40.23)
-   self~assertSame("subTest115", BITOR('C1'X,,'sp'),'C1'x)
+   self~assertSame(BITOR('C1'X,,'sp'), 'C1'x)
 
 ::method "test_116"
    self~expectSyntax(40.23)
-   self~assertSame("subTest116", BITOR('','',''),'')
+   self~assertSame(BITOR('','',''), '')
 
 ::method "test_117"
    self~expectSyntax(40.23)
-   self~assertSame("subTest117", BITOR('','a',''),'a')
+   self~assertSame(BITOR('','a',''), 'a')
 
 ::method "test_118"
    self~expectSyntax(40.23)
-   self~assertSame("subTest118", BITOR('abc'X,'abcd'x,'1 11'x),'abc'x)
+   self~assertSame(BITOR('abc'X,'abcd'x,'1 11'x), 'abc'x)
 
 -- rexxref documentation tests
 
 ::method "test_201"
-   self~assertSame("subTest201", "12"x, bitor('12'x))
+   self~assertSame("12"x, bitor('12'x))
 
 ::method "test_202"
-   self~assertSame("subTest202", "35"x, bitor('15'x,'24'x))
+   self~assertSame("35"x, bitor('15'x,'24'x))
 
 ::method "test_203"
-   self~assertSame("subTest203", "3556"x, bitor('15'x,'2456'x))
+   self~assertSame("3556"x, bitor('15'x,'2456'x))
 
 ::method "test_204"
-   self~assertSame("subTest204", "35F6"x, bitor('15'x,'2456'x, 'F0'x))
+   self~assertSame("35F6"x, bitor('15'x,'2456'x, 'F0'x))
 
 ::method "test_205"
-   self~assertSame("subTest205", "5D5D"x, BITOR("1111"x, ,"4D"x))
+   self~assertSame("5D5D"x, BITOR("1111"x, ,"4D"x))
 
 ::method "test_206"
-   self~assertSame("subTest206", "pqrs", bitor('pQrS', ,'20'x))
+   self~assertSame("pqrs", bitor('pQrS', ,'20'x))
 

@@ -59,65 +59,20 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.SOURCELINE.testGroup)
 
--------------------------------------------------------------------------------------------
-   /* list of array objects, each containing the testUnit class object and an
-      optional list of mandatory test case methods name                       */
-    mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
-    testUnitList=.list~of(.array~of(.SOURCELINE.testGroup, mandatoryTestMethods))
+  if group~isAutomatedTest then return group
 
--------------------------------------------------------------------------------------------
--- ===> the following code needs not to be individualized                              <===
+  testResult = group~suite~execute~~print
+return testResult
 
-   -- read top comment, containing infos about this program
-    arrLines=.array~new
-    do i=1 to 150 until arrLines[i]="*/"
-        arrLines[i]=sourceline(i)
-    end
-      -- supply information for the testClass(es) in this file; the class attribute
-      -- "TestCaseInfo" (a directory object, index points to a queue) will store
-      -- the parsed infos
-    aTestUnitClass=testUnitList~at(testUnitList~first)[1] -- get first testClass
-
-   -- will parse the array lines and store result in class object
-    call makeDirTestInfo aTestUnitClass, arrLines
-    tmpDir=aTestUnitClass~TestCaseInfo
-    parse source s   -- op_sys invocationType fullPathToThisFile
-    tmpDir~setentry("test_Case-source", s)
-   -- now add this directory to other testCase classes, if any left
-    do arr over testUnitList
-        if arr[1]=aTestUnitClass then
-            iterate  -- already handled
-        arr[1]~TestCaseInfo=tmpDir             -- save info in class object
-    end
-
--- if this file is CALLed or REQUIRED then define an entry "bRunTestLocally" in .local
--- and set it to .false; this way the independent local invocation of the tests is inhibited
-    if .local~hasentry("bRunTestsLocally")=.false then
-        .local~bRunTestsLocally=.true -- if this file is executed directly, then run tests for debugging
-
-    if .bRunTestsLocally=.true then  -- run ALL tests in this test unit
-        do
-            ts=.testSuite~new             -- create a testSuite
-            do arr over testUnitList
-                -- create a testSuite for the given test case class, use all its testmethods
-                ts~addTest( .testSuite~new(arr[1]))
-            end
-            -- testResult=.testSuite~new(testUnitClass)~run
-            testResult=ts~run       -- now run all the tests
-
-            call simpleFormatTestResults testResult
-        end
-
-   /* return list of array objects containing test case classes and
-      optionally list of mandatory test methods                      */
-return testUnitList
-
-::requires OOREXXUNIT.CLS
+::requires 'ooTest.frm'
 ::requires "FileUtils.cls"
 
 -- class named exactly like file
-::class "SOURCELINE.testGroup" subclass TestCase public
+::class "SOURCELINE.testGroup" subclass ooTestCase public
 
 ::method 'test001'
     self~expectSyntax(40.14)
@@ -132,23 +87,23 @@ return testUnitList
     xre = sourceLine(-1)
 
 ::method 'test004'
-    self~assertSame('subTest01',"::method 'test003'",sourceLine(130))
+    self~assertSame("::method 'test003'", sourceLine(85))
 
 ::method 'test005'
-    self~assertSame('subTest01',"        if arr[1]=aTestUnitClass then",sourceLine('137'~d2x))
+    self~assertSame("::method 'test004'", sourceLine('137'~d2x))
 
 ::method 'test006'
-    self~assertSame('subTest01',"::method 'test005'",sourceLine(100+37))
+    self~assertSame("::method 'test005'", sourceLine(100-8))
 
 ::method 'test007'
-    self~assertSame('subTest01',"    aTestUnitClass=testUnitList~at(testUnitList~first)[1] -- get first testClass",sourceLine(.80E+2))
+    self~assertSame("::method 'test002'", sourceLine(.81E+2))
 
 ::method 'test008'
-    self~assertSame('subTest01',"::method 'test007'",sourceLine(000000000143))
+    self~assertSame("::method 'test007'", sourceLine(000000000098))
 
 ::method 'test009'
-    v127 = 128
-    self~assertSame('subTest01',"    xre = sourceLine(novalue)",sourceLine(v127))
+    v127 = 83
+    self~assertSame("    xre = sourceLine(novalue)", sourceLine(v127))
 
 ::method 'test_line_one'
     -- The intent of this test is to assert that sourceline(1) returns the
@@ -164,20 +119,20 @@ return testUnitList
 
     fileName = .ooRexxUnit.dir || .ooRexxUnit.directory.separator || "test_line_one_temp"
     fileName = createFile(fileSrc, fileName)
-    self~assertTrue("Source file must be created", fileName <> "")
-    self~assertTrue("Source file must exist", SysIsFile(fileName))
+    self~assertTrue(fileName <> "", "Source file must be created")
+    self~assertTrue(SysIsFile(fileName), "Source file must exist")
 
     line1 = 'test_line_one_temp'()
     j = deleteFile(fileName)
 
-    self~assertSame('sourceline(1) must equal first line', fileSrc[1], line1)
+    self~assertSame(fileSrc[1], line1, 'sourceline(1) must equal first line')
 
 ::method 'test_line_two'
-   self~assertEquals("sourceline(2) must equal second line" , "/*", sourceline(2))
+   self~assertEquals("/*", sourceline(2), "sourceline(2) must equal second line")
 
 ::method 'test_last_line'
     lastLine = "/* End of file. Don't remove this marker.  Don't add lines after this line. */"
-    self~assertSame('Text from last line should match sourceline(201)', lastLine, sourceLine(202))
+    self~assertSame(lastLine, sourceLine(157))
 
 ::method 'test_negative_number'
     self~expectSyntax(40.14)
@@ -196,7 +151,7 @@ return testUnitList
     src = sourceLine(203)
 
 ::method "test_sourceline_with_no_args"
-    self~assertTrue("sourceline() datatype must be a number", sourceline()~datatype("N"))
-    self~assertSame("sourceline() must return correct count of lines", 202, sourceline())
+    self~assertTrue(sourceline()~datatype("N"), "sourceline() datatype must be a number")
+    self~assertSame(157, sourceline(), "sourceline() must return correct count of lines")
 
 /* End of file. Don't remove this marker.  Don't add lines after this line. */

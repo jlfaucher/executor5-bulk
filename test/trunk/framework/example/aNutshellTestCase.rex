@@ -17,16 +17,16 @@ aTR=.TestResult~new
 
    /* now create TestCase instances, supplying the TestCase method name to be run,
       using the TestResult object 'aTR' to log the results of the tests    */
-.NutshellTestUnit~new('test.ABBREV')~run(aTR)   /* this should execute o.k.*/
+.NutshellTestUnit~new('test.ABBREV')~execute(aTR)   /* this should execute o.k.*/
 
     /* the following TestCase method should fail on the identity test      */
-.NutshellTestUnit~new('someTestCaseMethod')~run(aTR)
+.NutshellTestUnit~new('someTestCaseMethod')~execute(aTR)
 
    /* the following attempt to run a TestCase method should cause an error,
       as there is no TestCase method by the name of 'this does not exist!!'*/
-.NutshellTestUnit~new('this does not exist!!')~run(aTR)
+.NutshellTestUnit~new('this does not exist!!')~execute(aTR)
 
-.NutshellTestUnit~new('test.ABS')~run(aTR)      /* this should execute o.k.*/
+.NutshellTestUnit~new('test.ABS')~execute(aTR)      /* this should execute o.k.*/
 
    /* now dump the logged information about the TestCase results as
       logged in the TestResult object 'aTR'                                */

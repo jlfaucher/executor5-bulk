@@ -56,106 +56,55 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.String_translateMethod.testGroup)
 
+  if group~isAutomatedTest then return group
 
--------------------------------------------------------------------------------------------
--- ===> adapt the "testGroupList" to your testCase classes; each element in the list is <===
--- ===> an array object, the first element containing the testCase class object, the   <===
--- ===> second element is a list of test method names which are regarded to be         <===
--- ===> mandatory (if the list remains empty all test methods are mandatory)           <===
+  testResult = group~suite~execute~~print
 
-   /* list of array objects, each containing the testGroup class object and an
-      optional list of mandatory test case methods name                       */
-mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
-testGroupList=.list~of( .array~of(.String_translateMethod.testGroup,  mandatoryTestMethods) )
+return testResult
 
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
--------------------------------------------------------------------------------------------
--- ===> the following code needs not to be individualized                              <===
-
-   -- read top comment, containing infos about this program
-arrLines=.array~new
-do i=1 to 150 until arrLines[i]="*/"
-   arrLines[i]=sourceline(i)
-end
-      -- supply information for the testClass(es) in this file; the class attribute
-      -- "TestCaseInfo" (a directory object, index points to a queue) will store
-      -- the parsed infos
-aTestGroupClass=testGroupList~at(testGroupList~first)[1] -- get first testClass
-
-   -- will parse the array lines and store result in class object
-call makeDirTestInfo aTestGroupClass, arrLines
-tmpDir=aTestGroupClass~TestCaseInfo
-parse source s   -- op_sys invocationType fullPathToThisFile
-tmpDir~setentry("test_Case-source", s)
-
-   -- now add this directory to other testCase classes, if any left
-do arr over testGroupList
-   if arr[1]=aTestGroupClass then iterate  -- already handled
-   arr[1]~TestCaseInfo=tmpDir             -- save info in class object
-end
-
--- if this file is CALLed or REQUIRED then define an entry "bRunTestLocally" in .local
--- and set it to .false; this way the independent local invocation of the tests is inhibited
-if .local~hasentry("bRunTestsLocally")=.false then
-   .local~bRunTestsLocally=.true -- if this file is executed directly, then run tests for debugging
-
-if .bRunTestsLocally=.true then  -- run ALL tests in this test unit
-do
-   ts=.testSuite~new             -- create a testSuite
-   do arr over testGroupList
-      -- create a testSuite for the given test case class, use all its testmethods
-      ts~addTest( .testSuite~new(arr[1]))
-   end
-   -- testResult=.testSuite~new(testGroupClass)~run
-   testResult=ts~run       -- now run all the tests
-
-   call simpleFormatTestResults testResult
-end
-
-   /* return list of array objects containing test case classes and
-      optionally list of mandatory test methods                      */
-return testGroupList
-
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
-
-::class "String_translateMethod.testGroup" subclass TestCase public
+::class "String_translateMethod.testGroup" subclass ooTestCase public
 
 ::method 'test000'
     .local~vit = copies('0',100000)||'b'
     .local~vot = copies('1',100000)||'B'
 
 ::method 'test001'
-    self~assertSame('subTest01',('ABC'),'abc'~translate())
+    self~assertSame(('ABC'), 'abc'~translate())
 
 ::method 'test002'
-    self~assertSame('subTest01',('123$'),'00010203'x~translate('123',,'$'))
+    self~assertSame(('123$'), '00010203'x~translate('123',,'$'))
 
 ::method 'test003'
-    self~assertSame('subTest01',('123 '),'00010203'x~translate('123'))
+    self~assertSame(('123 '), '00010203'x~translate('123'))
 
 ::method 'test004'
-    self~assertSame('subTest01',('123 '),'00010203'x~translate('123',))
+    self~assertSame(('123 '), '00010203'x~translate('123',))
 
 ::method 'test005'
-    self~assertSame('subTest01',('aBc'),'abc'~translate(.vot,.vit))
+    self~assertSame(('aBc'), 'abc'~translate(.vot,.vit))
 
 ::method 'test006'
-    self~assertSame('subTest01',('14.def'),'abcdef'~translate('123456','aaabbbcc','.'))
+    self~assertSame(('14.def'), 'abcdef'~translate('123456','aaabbbcc','.'))
 
 ::method 'test007'
-    self~assertSame('subTest01','$$$$$$$','abcdef '~translate(,,'$'))
+    self~assertSame('$$$$$$$', 'abcdef '~translate(,,'$'))
 
 ::method 'test008'
     self~expectSyntax(93.922)
     xre = 'abcdef '~translate(,,'$1')
 
 ::method 'test009'
-    self~assertSame('subTest01','1bEdef ','abcdef '~translate(1e+17,'ac','1'))
+    self~assertSame('1bEdef ', 'abcdef '~translate(1e+17,'ac','1'))
 
 ::method 'test010'
     numeric digits 100
-    self~assertSame('subTest01','1b0def ','abcdef '~translate(+1e+17,'ac','1'))
+    self~assertSame('1b0def ', 'abcdef '~translate(+1e+17,'ac','1'))
 
 ::method 'test011'
     self~expectSyntax(93.922)
@@ -167,15 +116,15 @@ return testGroupList
 
 ::method 'test013'
     numeric digits 100
-    self~assertSame('subTest01','NOV',nov~translate(.vot,.vit,'$'))
+    self~assertSame('NOV', nov~translate(.vot,.vit,'$'))
 
 ::method 'test014'
     numeric digits 100
-    self~assertSame('subTest01','a$c','abc'~translate(nov,.vit,'$'))
+    self~assertSame('a$c', 'abc'~translate(nov,.vit,'$'))
 
 ::method 'test015'
     numeric digits 100
-    self~assertSame('subTest01','abc','abc'~translate(.vot,nov,'$'))
+    self~assertSame('abc', 'abc'~translate(.vot,nov,'$'))
 
 ::method 'test016'
     self~expectSyntax(93.922)
@@ -187,7 +136,7 @@ return testGroupList
 
 ::method 'test018'
     numeric digits 100
-    self~assertSame('subTest01','azcd','abcd'~translate('&','b')~translate('y'~translate('z','y'),'x'~translate('&','x')))
+    self~assertSame('azcd', 'abcd'~translate('&','b')~translate('y'~translate('z','y'),'x'~translate('&','x')))
 
 ::method 'test019'
     .local~remove(vit)
@@ -196,11 +145,11 @@ return testGroupList
 -- from bif.testgroup
    -- test the BIF, using examples from the documentation
 ::method "test_TRANSLATE"
-    self~assertSame("subTest1" , 'ABCDEF' , 'abcdef'~TRANSLATE()                  )
-    self~assertSame("subTest2" , 'ab2d1f' , 'abcdef'~TRANSLATE('12','ec')        )
-    self~assertSame("subTest3" , '12..ef' , 'abcdef'~TRANSLATE('12','abcd','.')  )
-    self~assertSame("subTest4" , 'A Q V'  , 'APQRV'~TRANSLATE( ,'PR')            )
-    self~assertSame("subTest5" , 'APQ  '  , 'APQRV'~TRANSLATE(XRANGE('00'X,'Q')) )
-    self~assertSame("subTest6" , 'dabc'   , '4123'~TRANSLATE('abcd','1234')      )
+    self~assertSame('ABCDEF', 'abcdef'~TRANSLATE())
+    self~assertSame('ab2d1f', 'abcdef'~TRANSLATE('12','ec'))
+    self~assertSame('12..ef', 'abcdef'~TRANSLATE('12','abcd','.'))
+    self~assertSame('A Q V', 'APQRV'~TRANSLATE( ,'PR'))
+    self~assertSame('APQ  ', 'APQRV'~TRANSLATE(XRANGE('00'X,'Q')))
+    self~assertSame('dabc', '4123'~TRANSLATE('abcd','1234'))
 
 

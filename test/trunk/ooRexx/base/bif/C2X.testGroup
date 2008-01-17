@@ -55,209 +55,156 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.C2X.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
 
 
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
--------------------------------------------------------------------------------------------
--- ===> adapt the "testGroupList" to your testCase classes; each element in the list is <===
--- ===> an array object, the first element containing the testCase class object, the   <===
--- ===> second element is a list of test method names which are regarded to be         <===
--- ===> mandatory (if the list remains empty all test methods are mandatory)           <===
-
-   /* list of array objects, each containing the testGroup class object and an
-      optional list of mandatory test case methods name                       */
-
-mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
-testGroupList=.list~of( .array~of(.C2X.testGroup,  mandatoryTestMethods) )
-
-
--------------------------------------------------------------------------------------------
--- ===> the following code needs not to be individualized                              <===
-
-   -- read top comment, containing infos about this program
-arrLines=.array~new
-do i=1 to 150 until arrLines[i]="*/"
-   arrLines[i]=sourceline(i)
-end
-      -- supply information for the testClass(es) in this file; the class attribute
-      -- "TestCaseInfo" (a directory object, index points to a queue) will store
-      -- the parsed infos
-aTestGroupClass=testGroupList~at(testGroupList~first)[1] -- get first testClass
-
-   -- will parse the array lines and store result in class object
-call makeDirTestInfo aTestGroupClass, arrLines
-tmpDir=aTestGroupClass~TestCaseInfo
-parse source s   -- op_sys invocationType fullPathToThisFile
-tmpDir~setentry("test_Case-source", s)
-
-   -- now add this directory to other testCase classes, if any left
-do arr over testGroupList
-   if arr[1]=aTestGroupClass then iterate  -- already handled
-   arr[1]~TestCaseInfo=tmpDir             -- save info in class object
-end
-
--- if this file is CALLed or REQUIRED then define an entry "bRunTestLocally" in .local
--- and set it to .false; this way the independent local invocation of the tests is inhibited
-if .local~hasentry("bRunTestsLocally")=.false then
-   .local~bRunTestsLocally=.true -- if this file is executed directly, then run tests for debugging
-
-if .bRunTestsLocally=.true then  -- run ALL tests in this test unit
-do
-   ts=.testSuite~new             -- create a testSuite
-   do arr over testGroupList
-      -- create a testSuite for the given test case class, use all its testmethods
-      ts~addTest( .testSuite~new(arr[1]))
-   end
-   -- testResult=.testSuite~new(testGroupClass)~run
-   testResult=ts~run       -- now run all the tests
-
-   call simpleDumpTestResults testResult
-end
-
-   /* return list of array objects containing test case classes and
-      optionally list of mandatory test methods                      */
-return testGroupList
-
-
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
-
-::class "C2X.testGroup" subclass TestCase public
+::class "C2X.testGroup" subclass ooTestCase public
 
 ::method "test_1"
-   self~assertSame("subTest1", C2X(''),'')
+   self~assertSame(C2X(''), '')
 
 ::method "test_2"
-   self~assertSame("subTest2", C2X('*'),'2A')
+   self~assertSame(C2X('*'), '2A')
 
 ::method "test_3"
    v30='AbCdEfGhIjKlMnOpQrStUvWxYz1234'
-   self~assertSame("subTest3", C2X(v30),'4162436445664768496A4B6C4D6E4F705172537455765778597A31323334')
+   self~assertSame(C2X(v30), '4162436445664768496A4B6C4D6E4F705172537455765778597A31323334')
 
 ::method "test_4"
-   self~assertSame("subTest4", C2X('ªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªª'),COPIES('AA',250))
+   self~assertSame(C2X('ªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªª'), COPIES('AA',250))
 
 ::method "test_5"
    v100000=COPIES('JR',50000)
-   self~assertSame("subTest5", C2X(v100000),COPIES('4A52',50000))
+   self~assertSame(C2X(v100000), COPIES('4A52',50000))
 
 ::method "test_6"
    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX='International Business Machines'
-   self~assertSame("subTest6", C2X(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX),'496E7465726E6174696F6E616C20427573696E657373204D616368696E6573')
+   self~assertSame(C2X(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX), '496E7465726E6174696F6E616C20427573696E657373204D616368696E6573')
 
 ::method "test_7"
-   self~assertSame("subTest7", C2X('D1D9'x),'D1D9')
+   self~assertSame(C2X('D1D9'x), 'D1D9')
 
 ::method "test_8"
-   self~assertSame("subTest8", C2X(+00000000000000000000000000000000000000000000000000000000000000042),'3432')
+   self~assertSame(C2X(+00000000000000000000000000000000000000000000000000000000000000042), '3432')
 
 ::method "test_9"
-   self~assertSame("subTest9", C2X(21*2),'3432')
+   self~assertSame(C2X(21*2), '3432')
 
 ::method "test_10"
-   self~assertSame("subTest10", C2X(2.1E+1*.2E+1),'3432')
+   self~assertSame(C2X(2.1E+1*.2E+1), '3432')
 
 ::method "test_11"
-   self~assertSame("subTest11", C2X((7*3)*2),'3432')
+   self~assertSame(C2X((7*3)*2), '3432')
 
 ::method "test_12"
    vn42=42
-   self~assertSame("subTest12", C2X(vn42),'3432')
+   self~assertSame(C2X(vn42), '3432')
 
 ::method "test_13"
    vn2=2
    vn21=21
-   self~assertSame("subTest13", C2X(vn21*vn2),'3432')
+   self~assertSame(C2X(vn21*vn2), '3432')
 
 ::method "test_14"
    vn2=2
    vn3=3
    vn7=7
-   self~assertSame("subTest14", C2X((vn7*vn3)*vn2),'3432')
+   self~assertSame(C2X((vn7*vn3)*vn2), '3432')
 
 ::method "test_15"
    NUMERIC DIGITS 1
-   self~assertSame("subTest15", C2X(21*2),'34452B31')
+   self~assertSame(C2X(21*2), '34452B31')
 
 ::method "test_16"
    NUMERIC DIGITS 1
-   self~assertSame("subTest16", C2X(2.1E+1*.2E+1),'34452B31')
+   self~assertSame(C2X(2.1E+1*.2E+1), '34452B31')
 
 ::method "test_17"
    NUMERIC DIGITS 1
-   self~assertSame("subTest17", C2X((7*3)*2),'34452B31')
+   self~assertSame(C2X((7*3)*2), '34452B31')
 
 ::method "test_18"
    NUMERIC DIGITS 1
    vn42=42
-   self~assertSame("subTest18", C2X(vn42),'3432')
+   self~assertSame(C2X(vn42), '3432')
 
 ::method "test_19"
    NUMERIC DIGITS 1
    vn2=2
    vn21=21
-   self~assertSame("subTest19", C2X(vn21*vn2),'34452B31')
+   self~assertSame(C2X(vn21*vn2), '34452B31')
 
 ::method "test_20"
    NUMERIC DIGITS 1
    vn2=2
    vn3=3
    vn7=7
-   self~assertSame("subTest20", C2X((vn7*vn3)*vn2),'34452B31')
+   self~assertSame(C2X((vn7*vn3)*vn2), '34452B31')
 
 ::method "test_21"
-   self~assertSame("subTest21", C2X(nv),'4E56')
+   self~assertSame(C2X(nv), '4E56')
 
 ::method "test_22"
-   self~assertSame("subTest22", C2X(nv.),'4E562E')
+   self~assertSame(C2X(nv.), '4E562E')
 
 ::method "test_23"
-   self~assertSame("subTest23", C2X(nv.10),'4E562E3130')
+   self~assertSame(C2X(nv.10), '4E562E3130')
 
 ::method "test_24"
-   self~assertSame("subTest24", C2X(nv.10),'4E562E3130')
+   self~assertSame(C2X(nv.10), '4E562E3130')
 
 ::method "test_25"
-   self~assertSame("subTest25", C2X(DATATYPE(6)),'4E554D')
+   self~assertSame(C2X(DATATYPE(6)), '4E554D')
 
 ::method "test_26"
-   self~assertSame("subTest26", C2X(SUBSTR('John R. Buckley',2,13)),'6F686E20522E204275636B6C65')
+   self~assertSame(C2X(SUBSTR('John R. Buckley',2,13)), '6F686E20522E204275636B6C65')
 
 ::method "test_27"
-   self~assertSame("subTest27", C2X(WORD('Now is the time',4)),'74696D65')
+   self~assertSame(C2X(WORD('Now is the time',4)), '74696D65')
 
 ::method "test_28"
-   self~assertSame("subTest28", C2X(SUBWORD('Now is the time',2,2)),'697320746865')
+   self~assertSame(C2X(SUBWORD('Now is the time',2,2)), '697320746865')
 
 ::method "test_29"
-   self~assertSame("subTest29", C2X(MAX(0,2,4,6,8,10)),'3130')
+   self~assertSame(C2X(MAX(0,2,4,6,8,10)), '3130')
 
 ::method "test_30"
-   self~assertSame("subTest30", C2X('John'),'4A6F686E')
+   self~assertSame(C2X('John'), '4A6F686E')
 
 ::method "test_31"
-   self~assertSame("subTest31", C2X(copies('John',2)),'4A6F686E4A6F686E')
+   self~assertSame(C2X(copies('John',2)), '4A6F686E4A6F686E')
 
 ::method "test_32"
-   self~assertSame("subTest32", X2C(C2X('JR')),'JR')
+   self~assertSame(X2C(C2X('JR')), 'JR')
 
 ::method "test_33"
-   self~assertSame("subTest33", C2X(X2C('D1D9')),'D1D9')
+   self~assertSame(C2X(X2C('D1D9')), 'D1D9')
 
 ::method "test_34"
-   self~assertSame("subTest34", C2X(C2X('1')),'3331')
+   self~assertSame(C2X(C2X('1')), '3331')
 
 ::method "test_35"
    self~expectSyntax(40.4)
-   self~assertSame("subTest35", C2X('1',1),'3331')
+   self~assertSame(C2X('1',1), '3331')
 
 -- rexxref documentation tests
 
 ::method "test_101"
-    self~assertSame("subTest101", ""       , C2X('')     )
+    self~assertSame("", C2X(''))
 
 ::method "test_102"
-    self~assertSame("subTest102", '0123'   , C2X('0123'X)) /* '30313233'X in ASCII */
+    self~assertSame('0123', C2X('0123'X)) /* '30313233'X in ASCII */
 
 ::method "test_103"
-    self~assertSame("subTest103", '5A4438' , C2X('ZD8')  ) /* '354134343338'X in ASCII */
+    self~assertSame('5A4438', C2X('ZD8')) /* '354134343338'X in ASCII */
 

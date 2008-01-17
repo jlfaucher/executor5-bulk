@@ -55,260 +55,207 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.EXPONENT.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
 
 
 
--------------------------------------------------------------------------------------------
--- ===> adapt the "testGroupList" to your testCase classes; each element in the list is <===
--- ===> an array object, the first element containing the testCase class object, the   <===
--- ===> second element is a list of test method names which are regarded to be         <===
--- ===> mandatory (if the list remains empty all test methods are mandatory)           <===
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
-   /* list of array objects, each containing the testGroup class object and an
-      optional list of mandatory test case methods name                       */
-
-mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
-testGroupList=.list~of( .array~of(.EXPONENT.testGroup,  mandatoryTestMethods) )
-
-
--------------------------------------------------------------------------------------------
--- ===> the following code needs not to be individualized                              <===
-
-   -- read top comment, containing infos about this program
-arrLines=.array~new
-do i=1 to 150 until arrLines[i]="*/"
-   arrLines[i]=sourceline(i)
-end
-      -- supply information for the testClass(es) in this file; the class attribute
-      -- "TestCaseInfo" (a directory object, index points to a queue) will store
-      -- the parsed infos
-aTestGroupClass=testGroupList~at(testGroupList~first)[1] -- get first testClass
-
-   -- will parse the array lines and store result in class object
-call makeDirTestInfo aTestGroupClass, arrLines
-tmpDir=aTestGroupClass~TestCaseInfo
-parse source s   -- op_sys invocationType fullPathToThisFile
-tmpDir~setentry("test_Case-source", s)
-
-   -- now add this directory to other testCase classes, if any left
-do arr over testGroupList
-   if arr[1]=aTestGroupClass then iterate  -- already handled
-   arr[1]~TestCaseInfo=tmpDir             -- save info in class object
-end
-
--- if this file is CALLed or REQUIRED then define an entry "bRunTestLocally" in .local
--- and set it to .false; this way the independent local invocation of the tests is inhibited
-if .local~hasentry("bRunTestsLocally")=.false then
-   .local~bRunTestsLocally=.true -- if this file is executed directly, then run tests for debugging
-
-if .bRunTestsLocally=.true then  -- run ALL tests in this test unit
-do
-   ts=.testSuite~new             -- create a testSuite
-   do arr over testGroupList
-      -- create a testSuite for the given test case class, use all its testmethods
-      ts~addTest( .testSuite~new(arr[1]))
-   end
-   -- testResult=.testSuite~new(testGroupClass)~run
-   testResult=ts~run       -- now run all the tests
-
-   call simpleFormatTestResults testResult
-end
-
-   /* return list of array objects containing test case classes and
-      optionally list of mandatory test methods                      */
-return testGroupList
-
-
-
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
-
-::class "EXPONENT.testGroup" subclass TestCase public
+::class "EXPONENT.testGroup" subclass ooTestCase public
 
 ::method "test_1"
-   self~assertSame("subTest1", 999999999E99 ** 1.0, 9.99999999E+107)
+   self~assertSame(999999999E99 ** 1.0, 9.99999999E+107)
 
 ::method "test_2"
-   self~assertSame("subTest2", 4 ** 0, 1)
+   self~assertSame(4 ** 0, 1)
 
 ::method "test_3"
-   self~assertSame("subTest3", 4 ** "-1", 0.25)
+   self~assertSame(4 ** "-1", 0.25)
 
 ::method "test_4"
-   self~assertSame("subTest4", 4 ** "-2", 0.0625)
+   self~assertSame(4 ** "-2", 0.0625)
 
 ::method "test_5"
-   self~assertSame("subTest5", 4 ** "-3", 0.015625)
+   self~assertSame(4 ** "-3", 0.015625)
 
 ::method "test_6"
-   self~assertSame("subTest6", 4 ** "-4", 0.00390625)
+   self~assertSame(4 ** "-4", 0.00390625)
 
 ::method "test_7"
-   self~assertSame("subTest7", 4 ** "-5", 0.0009765625)
+   self~assertSame(4 ** "-5", 0.0009765625)
 
 ::method "test_8"
-   self~assertSame("subTest8", 12345678977777 ** 0, 1)
+   self~assertSame(12345678977777 ** 0, 1)
 
 ::method "test_9"
-   self~assertSame("subTest9", 12345678977777 ** 1, 1.2345679E+13)
+   self~assertSame(12345678977777 ** 1, 1.2345679E+13)
 
 ::method "test_10"
-   self~assertSame("subTest10", 12345678977777 ** 2, 1.52415789E+26)
+   self~assertSame(12345678977777 ** 2, 1.52415789E+26)
 
 ::method "test_11"
-   self~assertSame("subTest11", 12345678977777 ** 3, 1.8816764E+39)
+   self~assertSame(12345678977777 ** 3, 1.8816764E+39)
 
 ::method "test_12"
-   self~assertSame("subTest12", 12345678977777 ** 4, 2.32305728E+52)
+   self~assertSame(12345678977777 ** 4, 2.32305728E+52)
 
 ::method "test_13"
-   self~assertSame("subTest13", 12345678977777 ** 5, 2.86797194E+65)
+   self~assertSame(12345678977777 ** 5, 2.86797194E+65)
 
 ::method "test_14"
-   self~assertSame("subTest14", 12345678977777 ** 20, 6.76549524E+261)
+   self~assertSame(12345678977777 ** 20, 6.76549524E+261)
 
 ::method "test_15"
-   self~assertSame("subTest15", 12345678977777 ** 40, 4.57719258E+523)
+   self~assertSame(12345678977777 ** 40, 4.57719258E+523)
 
 ::method "test_16"
-   self~assertSame("subTest16", 12345678977777 ** "-1", 8.10000003E-14)
+   self~assertSame(12345678977777 ** "-1", 8.10000003E-14)
 
 ::method "test_17"
-   self~assertSame("subTest17", 12345678977777 ** "-2", 6.56100005E-27)
+   self~assertSame(12345678977777 ** "-2", 6.56100005E-27)
 
 ::method "test_18"
-   self~assertSame("subTest18", 12345678977777 ** "-3", 5.31441005E-40)
+   self~assertSame(12345678977777 ** "-3", 5.31441005E-40)
 
 ::method "test_19"
-   self~assertSame("subTest19", 12345678977777 ** "-4", 4.30467216E-53)
+   self~assertSame(12345678977777 ** "-4", 4.30467216E-53)
 
 ::method "test_20"
-   self~assertSame("subTest20", 12345678977777 ** "-5", 3.48678446E-66)
+   self~assertSame(12345678977777 ** "-5", 3.48678446E-66)
 
 ::method "test_21"
-   self~assertSame("subTest21", 12345678977777 ** "-20", 1.4780884E-262)
+   self~assertSame(12345678977777 ** "-20", 1.4780884E-262)
 
 ::method "test_22"
-   self~assertSame("subTest22", 12345678977777 ** "-40", 2.18474531E-524)
+   self~assertSame(12345678977777 ** "-40", 2.18474531E-524)
 
 ::method "test_23"
-   self~assertSame("subTest23", 12345678900000 ** 0, 1)
+   self~assertSame(12345678900000 ** 0, 1)
 
 ::method "test_24"
-   self~assertSame("subTest24", 12345678900000 ** 1, 1.23456789E+13)
+   self~assertSame(12345678900000 ** 1, 1.23456789E+13)
 
 ::method "test_25"
-   self~assertSame("subTest25", 12345678900000 ** 2, 1.52415788E+26)
+   self~assertSame(12345678900000 ** 2, 1.52415788E+26)
 
 ::method "test_26"
-   self~assertSame("subTest26", 12345678900000 ** 5, 2.86797186E+65)
+   self~assertSame(12345678900000 ** 5, 2.86797186E+65)
 
 ::method "test_27"
-   self~assertSame("subTest27", 12345678900000 ** 20, 6.76549447E+261)
+   self~assertSame(12345678900000 ** 20, 6.76549447E+261)
 
 ::method "test_28"
-   self~assertSame("subTest28", 12345678900000 ** 40, 4.57719154E+523)
+   self~assertSame(12345678900000 ** 40, 4.57719154E+523)
 
 ::method "test_29"
-   self~assertSame("subTest29", 45.876E-15 ** 1, 0.000000000000045876)
+   self~assertSame(45.876E-15 ** 1, 0.000000000000045876)
 
 ::method "test_30"
-   self~assertSame("subTest30", 12E12 ** 333, 2.3299947E+4355)
+   self~assertSame(12E12 ** 333, 2.3299947E+4355)
 
 ::method "test_31"
-   self~assertSame("subTest31", "-12E12" ** 333, -2.3299947E+4355)
+   self~assertSame("-12E12" ** 333, -2.3299947E+4355)
 
 ::method "test_32"
-   self~assertSame("subTest32", 12E12 ** "-333",4.29185525E-4356)
+   self~assertSame(12E12 ** "-333", 4.29185525E-4356)
 
 ::method "test_33"
-   self~assertSame("subTest33", "-12E12" ** "-333", -4.29185525E-4356)
+   self~assertSame("-12E12" ** "-333", -4.29185525E-4356)
 
 ::method "test_34"
-   self~assertSame("subTest34", 12E12 ** 333, 2.3299947E+4355)
+   self~assertSame(12E12 ** 333, 2.3299947E+4355)
 
 ::method "test_35"
    Numeric Digits 20
-   self~assertSame("subTest35", 12E12 ** 333, 2.3299947038323571559E+4355)
+   self~assertSame(12E12 ** 333, 2.3299947038323571559E+4355)
 
 ::method "test_36"
-   self~assertSame("subTest36", 12000000000000 ** 333, 2.3299947E+4355)
+   self~assertSame(12000000000000 ** 333, 2.3299947E+4355)
 
 ::method "test_37"
-   self~assertSame("subTest37", 500 ** 5, 3.125E+13)
+   self~assertSame(500 ** 5, 3.125E+13)
 
 ::method "test_38"
-   self~assertSame("subTest38", 12345 ** 7, 4.36955952E+28)
+   self~assertSame(12345 ** 7, 4.36955952E+28)
 
 ::method "test_39"
-   self~assertSame("subTest39", 77E-20 ** 7, 1.60485233E-127)
+   self~assertSame(77E-20 ** 7, 1.60485233E-127)
 
 ::method "test_40"
-   self~assertSame("subTest40", 345 ** 6, 1.6862213E+15)
+   self~assertSame(345 ** 6, 1.6862213E+15)
 
 ::method "test_41"
-   self~assertSame("subTest41", 1000 ** 25, 1E+75)
+   self~assertSame(1000 ** 25, 1E+75)
 
 ::method "test_42"
-   self~assertSame("subTest42", 13 ** "-2592", 4.55859301E-2888)
+   self~assertSame(13 ** "-2592", 4.55859301E-2888)
 
 ::method "test_43"
-   self~assertSame("subTest43", 999999999E99 ** 1.0, 9.99999999E+107)
+   self~assertSame(999999999E99 ** 1.0, 9.99999999E+107)
 
 ::method "test_44"
-   self~assertSame("subTest44", 4 ** 1000, 1.1481307E+602)
+   self~assertSame(4 ** 1000, 1.1481307E+602)
 
 ::method "test_45"
-   self~assertSame("subTest45", 1000E-3 ** 300, 1)
+   self~assertSame(1000E-3 ** 300, 1)
 
 ::method "test_46"
-   self~assertSame("subTest46", 12300 ** 456, 9.92500688E+1864)
+   self~assertSame(12300 ** 456, 9.92500688E+1864)
 
 ::method "test_47"
-   self~assertSame("subTest47", 01230.0 ** 4560.00, 9.2748771E+14089)
+   self~assertSame(01230.0 ** 4560.00, 9.2748771E+14089)
 
 ::method "test_48"
-   self~assertSame("subTest48", 100 ** "-11", 1E-22)
+   self~assertSame(100 ** "-11", 1E-22)
 
 ::method "test_49"
-   self~assertSame("subTest49", 0 ** 0, 1)
+   self~assertSame(0 ** 0, 1)
 
 ::method "test_50"
-   self~assertSame("subTest50", 0.0 ** 0, 1)
+   self~assertSame(0.0 ** 0, 1)
 
 ::method "test_51"
-   self~assertSame("subTest51", 123 ** 0, 1)
+   self~assertSame(123 ** 0, 1)
 
 ::method "test_52"
-   self~assertSame("subTest52", 123456789E+10 ** 0, 1)
+   self~assertSame(123456789E+10 ** 0, 1)
 
 ::method "test_53"
-   self~assertSame("subTest53", 1.3E+5 ** 0, 1)
+   self~assertSame(1.3E+5 ** 0, 1)
 
 ::method "test_54"
-   self~assertSame("subTest54", 123.4E-3 ** 2, 0.01522756)
+   self~assertSame(123.4E-3 ** 2, 0.01522756)
 
 ::method "test_55"
-   self~assertSame("subTest55", 23.9E-8 ** 3, 1.3651919E-20)
+   self~assertSame(23.9E-8 ** 3, 1.3651919E-20)
 
 ::method "test_56"
-   self~assertSame("subTest56", 0.00000E-50 ** 0, 1)
+   self~assertSame(0.00000E-50 ** 0, 1)
 
 ::method "test_57"
-   self~assertSame("subTest57", 2 ** 9, 512)
+   self~assertSame(2 ** 9, 512)
 
 ::method "test_58"
    Numeric Digits 1
-   self~assertSame("subTest58", 2 ** 9, 5E+2)
+   self~assertSame(2 ** 9, 5E+2)
 
 ::method "test_59"
    self~expectSyntax(26.8)
    Numeric Digits 1
-   self~assertSame("subTest59", 2 ** 10, 1)
+   self~assertSame(2 ** 10, 1)
 
 ::method "test_60"
    self~expectSyntax(26.8)
    Numeric Digits 1
-   self~assertSame("subTest60", 2 ** 100, 1)
+   self~assertSame(2 ** 100, 1)
 
 
 
@@ -316,145 +263,145 @@ return testGroupList
 
 
 ::method "test_61"
-   self~assertSame("subTest61", 0 ** 0.0, 1)
+   self~assertSame(0 ** 0.0, 1)
 
 ::method "test_62"
    Numeric Digits 1
-   self~assertSame("subTest62", 0 ** 0, 1)
+   self~assertSame(0 ** 0, 1)
 
 ::method "test_63"
    Numeric Digits 3
-   self~assertSame("subTest63", 0 ** 0, 1)
+   self~assertSame(0 ** 0, 1)
 
 ::method "test_64"
    Numeric Digits 100
-   self~assertSame("subTest64", 0 ** 0, 1)
+   self~assertSame(0 ** 0, 1)
 
 ::method "test_65"
    Numeric Digits 2
-   self~assertSame("subTest65", 0 ** 0000, 1)
+   self~assertSame(0 ** 0000, 1)
 
 ::method "test_66"
-   self~assertSame("subTest66", 0 ** "-0", 1)
+   self~assertSame(0 ** "-0", 1)
 
 ::method "test_67"
-   self~assertSame("subTest67", 1E3 ** 0.0, 1)
+   self~assertSame(1E3 ** 0.0, 1)
 
 ::method "test_68"
-   self~assertSame("subTest68", 0E0 ** 1, 0)
+   self~assertSame(0E0 ** 1, 0)
 
 ::method "test_69"
-   self~assertSame("subTest69", 0E0 ** 3, 0)
+   self~assertSame(0E0 ** 3, 0)
 
 ::method "test_70"
-   self~assertSame("subTest70", 0E0 ** 5, 0)
+   self~assertSame(0E0 ** 5, 0)
 
 ::method "test_71"
-   self~assertSame("subTest71", 0E0 ** 100, 0)
+   self~assertSame(0E0 ** 100, 0)
 
 ::method "test_72"
-   self~assertSame("subTest72", 0E3 ** 1, 0)
+   self~assertSame(0E3 ** 1, 0)
 
 ::method "test_73"
-   self~assertSame("subTest73", 0E3 ** 3, 0)
+   self~assertSame(0E3 ** 3, 0)
 
 ::method "test_74"
-   self~assertSame("subTest74", "-0" ** 5, 0)
+   self~assertSame("-0" ** 5, 0)
 
 ::method "test_75"
    Numeric Digits 11
-   self~assertSame("subTest75", 2 ** 111111111, 1.8304173905E+33447777)
+   self~assertSame(2 ** 111111111, 1.8304173905E+33447777)
 
 ::method "test_76"
-   self~assertSame("subTest76", 9E999999999 ** 1, 9E+999999999)
+   self~assertSame(9E999999999 ** 1, 9E+999999999)
 
 ::method "test_77"
    self~expectSyntax(42.1)
-   self~assertSame("subTest77", 9E999999999 ** 3, 1)
+   self~assertSame(9E999999999 ** 3, 1)
 
 ::method "test_78"
    self~expectSyntax(42.1)
-   self~assertSame("subTest78", 9E999999999 ** 999999999, 1)
+   self~assertSame(9E999999999 ** 999999999, 1)
 
 ::method "test_79"
    self~expectSyntax(26.8)
    Numeric Digits 1
-   self~assertSame("subTest79", 9E999999999 ** 999999999, 1)
+   self~assertSame(9E999999999 ** 999999999, 1)
 
 ::method "test_80"
    self~expectSyntax(26.8)
    Numeric Digits 3
-   self~assertSame("subTest80", 9E999999999 ** 999999999, 1)
+   self~assertSame(9E999999999 ** 999999999, 1)
 
 ::method "test_81"
    self~expectSyntax(42.1)
    Numeric Digits 100
-   self~assertSame("subTest81", 9E999999999 ** 999999999, 1)
+   self~assertSame(9E999999999 ** 999999999, 1)
 
 ::method "test_82"
    self~expectSyntax(42.1)
-   self~assertSame("subTest82", 9E999999999 ** 999999999, 1)
+   self~assertSame(9E999999999 ** 999999999, 1)
 
 ::method "test_83"
    self~expectSyntax(41.1)
    op = 0.1E-999999999
-   self~assertSame("subTest83", op ** 999999999, 1)
+   self~assertSame(op ** 999999999, 1)
 
 ::method "test_84"
-   self~assertSame("subTest84", 1E-999999999 ** 1, 1E-999999999)
+   self~assertSame(1E-999999999 ** 1, 1E-999999999)
 
 ::method "test_85"
    self~expectSyntax(42.1)
-   self~assertSame("subTest85", 1E-999999999 ** 3, 1)
+   self~assertSame(1E-999999999 ** 3, 1)
 
 ::method "test_86"
    self~expectSyntax(41.1)
    op = 0.1E-999999999
-   self~assertSame("subTest86", op ** 1, 1)
+   self~assertSame(op ** 1, 1)
 
 ::method "test_87"
    self~expectSyntax(41.1)
    op = 0.1E-999999999
-   self~assertSame("subTest87", op ** 3, 1)
+   self~assertSame(op ** 3, 1)
 
 ::method "test_88"
    self~expectSyntax(26.8)
-   self~assertSame("subTest88", 2 ** 9999999999, 1)
+   self~assertSame(2 ** 9999999999, 1)
 
 ::method "test_89"
    Numeric Digits 1
-   self~assertSame("subTest89", 2 ** 9, 5E+2)
+   self~assertSame(2 ** 9, 5E+2)
 
 ::method "test_90"
    Numeric Digits 2
-   self~assertSame("subTest90", 2 ** 99, 6.3E+29)
+   self~assertSame(2 ** 99, 6.3E+29)
 
 ::method "test_91"
    Numeric Digits 3
-   self~assertSame("subTest91", 2 ** 99, 6.34E+29)
+   self~assertSame(2 ** 99, 6.34E+29)
 
 ::method "test_92"
    Numeric Digits 3
-   self~assertSame("subTest92", 2 ** 999, 5.36E+300)
+   self~assertSame(2 ** 999, 5.36E+300)
 
 ::method "test_93"
    Numeric Digits 4
-   self~assertSame("subTest93", 2 ** 9999, 9.975E+3009)
+   self~assertSame(2 ** 9999, 9.975E+3009)
 
 ::method "test_94"
    Numeric Digits 5
-   self~assertSame("subTest94", 2 ** 9999, 9.9753E+3009)
+   self~assertSame(2 ** 9999, 9.9753E+3009)
 
 ::method "test_95"
    self~expectSyntax(26.8)
-   self~assertSame("subTest95", 3 ** 1.05, 1)
+   self~assertSame(3 ** 1.05, 1)
 
 ::method "test_96"
    Numeric Digits 1
-   self~assertSame("subTest96", 3 ** 1.05, 3)
+   self~assertSame(3 ** 1.05, 3)
 
 ::method "test_97"
    self~expectSyntax(26.8)
    Numeric Digits 3
-   self~assertSame("subTest97", 3 ** 1.05, 3)
+   self~assertSame(3 ** 1.05, 3)
 

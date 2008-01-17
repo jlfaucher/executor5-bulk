@@ -55,214 +55,163 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
+  parse source . . fileSpec
+  group = .TestGroup~new(fileSpec)
 
+  group~add(.CONSTANT.testGroup)
+  group~add(.ConstantSyntaxErrs)
 
+  if group~isAutomatedTest then return group
 
--------------------------------------------------------------------------------------------
--- ===> adapt the "testGroupList" to your testCase classes; each element in the list is <===
--- ===> an array object, the first element containing the testCase class object, the   <===
--- ===> second element is a list of test method names which are regarded to be         <===
--- ===> mandatory (if the list remains empty all test methods are mandatory)           <===
+  testResult = group~suite~execute~~print
 
-   /* list of array objects, each containing the testGroup class object and an
-      optional list of mandatory test case methods name                       */
+return testResult
+-- End of entry point.
 
-mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
-testGroupList=.list~of( .array~of(.CONSTANT.testGroup,  mandatoryTestMethods) )
-testGroupList~insert(.array~of(.ConstantSyntaxErrs, mandatoryTestMethods))
-
--------------------------------------------------------------------------------------------
--- ===> the following code needs not to be individualized                              <===
-
-   -- read top comment, containing infos about this program
-arrLines=.array~new
-do i=1 to 150 until arrLines[i]="*/"
-   arrLines[i]=sourceline(i)
-end
-      -- supply information for the testClass(es) in this file; the class attribute
-      -- "TestCaseInfo" (a directory object, index points to a queue) will store
-      -- the parsed infos
-aTestGroupClass=testGroupList~at(testGroupList~first)[1] -- get first testClass
-
-   -- will parse the array lines and store result in class object
-call makeDirTestInfo aTestGroupClass, arrLines
-tmpDir=aTestGroupClass~TestCaseInfo
-parse source s   -- op_sys invocationType fullPathToThisFile
-tmpDir~setentry("test_Case-source", s)
-
-   -- now add this directory to other testCase classes, if any left
-do arr over testGroupList
-   if arr[1]=aTestGroupClass then iterate  -- already handled
-   arr[1]~TestCaseInfo=tmpDir             -- save info in class object
-end
-
--- if this file is CALLed or REQUIRED then define an entry "bRunTestLocally" in .local
--- and set it to .false; this way the independent local invocation of the tests is inhibited
-if .local~hasentry("bRunTestsLocally")=.false then
-   .local~bRunTestsLocally=.true -- if this file is executed directly, then run tests for debugging
-
-if .bRunTestsLocally=.true then  -- run ALL tests in this test unit
-do
-   ts=.testSuite~new             -- create a testSuite
-   do arr over testGroupList
-      -- create a testSuite for the given test case class, use all its testmethods
-      ts~addTest( .testSuite~new(arr[1]))
-   end
-   -- testResult=.testSuite~new(testGroupClass)~run
-   testResult=ts~run       -- now run all the tests
-
-   call simpleFormatTestResults testResult
-end
-
-   /* return list of array objects containing test case classes and
-      optionally list of mandatory test methods                      */
-return testGroupList
-
-
-::requires OOREXXUNIT.CLS
+::requires 'ooTest.frm'
 ::requires "FileUtils.cls"
 
-::class "CONSTANT.testGroup" subclass TestCase public
+::class "CONSTANT.testGroup" subclass ooTestCase public
 
 ::method "test_direct_definition"
 
-  self~assertEquals("s1_class", "Fred", .test~s1)
-  self~assertEquals("s2_class", "Rick", .test~s2)
-  self~assertEquals("s3_class", " ", .test~s3)
-  self~assertEquals("s4_class", " ", .test~s4)
-  self~assertEquals("n1_class", "1", .test~n1)
-  self~assertEquals("n2_class", "1.00000000000000000000", .test~n2)
-  self~assertEquals("n3_class", ".23", .test~n3)
-  self~assertEquals("n4_class", "1E4", .test~n4)
-  self~assertEquals("n5_class", "1E-4", .test~n5)
-  self~assertEquals("n6_class", "1E+4", .test~n6)
-  self~assertEquals("n7_class", "23.38885e-5", .test~n7)
-  self~assertEquals("c1_class", ".NIL", .test~c1)
-  self~assertEquals("c2_class", ".", .test~c2)
+  self~assertEquals("Fred", .test~s1, "s1_class")
+  self~assertEquals("Rick", .test~s2, "s2_class")
+  self~assertEquals(" ", .test~s3, "s3_class")
+  self~assertEquals(" ", .test~s4, "s4_class")
+  self~assertEquals("1", .test~n1, "n1_class")
+  self~assertEquals("1.00000000000000000000", .test~n2, "n2_class")
+  self~assertEquals(".23", .test~n3, "n3_class")
+  self~assertEquals("1E4", .test~n4, "n4_class")
+  self~assertEquals("1E-4", .test~n5, "n5_class")
+  self~assertEquals("1E+4", .test~n6, "n6_class")
+  self~assertEquals("23.38885e-5", .test~n7, "n7_class")
+  self~assertEquals(".NIL", .test~c1, "c1_class")
+  self~assertEquals(".", .test~c2, "c2_class")
 
   t = .test~new
 
-  self~assertEquals("s1_instance", "Fred", t~s1)
-  self~assertEquals("s2_instance", "Rick", t~s2)
-  self~assertEquals("s3_instance", " ", t~s3)
-  self~assertEquals("s4_instance", " ", t~s4)
-  self~assertEquals("n1_instance", "1", t~n1)
-  self~assertEquals("n2_instance", "1.00000000000000000000", t~n2)
-  self~assertEquals("n3_instance", ".23", t~n3)
-  self~assertEquals("n4_instance", "1E4", t~n4)
-  self~assertEquals("n5_instance", "1E-4", t~n5)
-  self~assertEquals("n6_instance", "1E+4", t~n6)
-  self~assertEquals("n7_instance", "23.38885e-5", t~n7)
-  self~assertEquals("c1_instance", ".NIL", t~c1)
-  self~assertEquals("c2_instance", ".", t~c2)
+  self~assertEquals("Fred", t~s1, "s1_instance")
+  self~assertEquals("Rick", t~s2, "s2_instance")
+  self~assertEquals(" ", t~s3, "s3_instance")
+  self~assertEquals(" ", t~s4, "s4_instance")
+  self~assertEquals("1", t~n1, "n1_instance")
+  self~assertEquals("1.00000000000000000000", t~n2, "n2_instance")
+  self~assertEquals(".23", t~n3, "n3_instance")
+  self~assertEquals("1E4", t~n4, "n4_instance")
+  self~assertEquals("1E-4", t~n5, "n5_instance")
+  self~assertEquals("1E+4", t~n6, "n6_instance")
+  self~assertEquals("23.38885e-5", t~n7, "n7_instance")
+  self~assertEquals(".NIL", t~c1, "c1_instance")
+  self~assertEquals(".", t~c2, "c2_instance")
 
-  self~assertEquals("s1_instance_class", "Fred", t~class~s1)
-  self~assertEquals("s2_instance_class", "Rick", t~class~s2)
-  self~assertEquals("s3_instance_class", " ", t~class~s3)
-  self~assertEquals("s4_instance_class", " ", t~class~s4)
-  self~assertEquals("n1_instance_class", "1", t~class~n1)
-  self~assertEquals("n2_instance_class", "1.00000000000000000000", t~class~n2)
-  self~assertEquals("n3_instance_class", ".23", t~class~n3)
-  self~assertEquals("n4_instance_class", "1E4", t~class~n4)
-  self~assertEquals("n5_instance_class", "1E-4", t~class~n5)
-  self~assertEquals("n6_instance_class", "1E+4", t~class~n6)
-  self~assertEquals("n7_instance_class", "23.38885e-5", t~class~n7)
-  self~assertEquals("c1_instance_class", ".NIL", t~class~c1)
-  self~assertEquals("c2_instance_class", ".", t~class~c2)
+  self~assertEquals("Fred", t~class~s1, "s1_instance_class")
+  self~assertEquals("Rick", t~class~s2, "s2_instance_class")
+  self~assertEquals(" ", t~class~s3, "s3_instance_class")
+  self~assertEquals(" ", t~class~s4, "s4_instance_class")
+  self~assertEquals("1", t~class~n1, "n1_instance_class")
+  self~assertEquals("1.00000000000000000000", t~class~n2, "n2_instance_class")
+  self~assertEquals(".23", t~class~n3, "n3_instance_class")
+  self~assertEquals("1E4", t~class~n4, "n4_instance_class")
+  self~assertEquals("1E-4", t~class~n5, "n5_instance_class")
+  self~assertEquals("1E+4", t~class~n6, "n6_instance_class")
+  self~assertEquals("23.38885e-5", t~class~n7, "n7_instance_class")
+  self~assertEquals(".NIL", t~class~c1, "c1_instance_class")
+  self~assertEquals(".", t~class~c2, "c2_instance_class")
 
 
 ::method "test_subclass_definition"
 
-  self~assertEquals("s1_class", "Fred", .test2~s1)
-  self~assertEquals("s2_class", "Rick", .test2~s2)
-  self~assertEquals("s3_class", " ", .test2~s3)
-  self~assertEquals("s4_class", " ", .test2~s4)
-  self~assertEquals("n1_class", "1", .test2~n1)
-  self~assertEquals("n2_class", "1.00000000000000000000", .test2~n2)
-  self~assertEquals("n3_class", ".23", .test2~n3)
-  self~assertEquals("n4_class", "1E4", .test2~n4)
-  self~assertEquals("n5_class", "1E-4", .test2~n5)
-  self~assertEquals("n6_class", "1E+4", .test2~n6)
-  self~assertEquals("n7_class", "23.38885e-5", .test2~n7)
-  self~assertEquals("c1_class", ".NIL", .test2~c1)
-  self~assertEquals("c2_class", ".", .test2~c2)
+  self~assertEquals("Fred", .test2~s1, "s1_class")
+  self~assertEquals("Rick", .test2~s2, "s2_class")
+  self~assertEquals(" ", .test2~s3, "s3_class")
+  self~assertEquals(" ", .test2~s4, "s4_class")
+  self~assertEquals("1", .test2~n1, "n1_class")
+  self~assertEquals("1.00000000000000000000", .test2~n2, "n2_class")
+  self~assertEquals(".23", .test2~n3, "n3_class")
+  self~assertEquals("1E4", .test2~n4, "n4_class")
+  self~assertEquals("1E-4", .test2~n5, "n5_class")
+  self~assertEquals("1E+4", .test2~n6, "n6_class")
+  self~assertEquals("23.38885e-5", .test2~n7, "n7_class")
+  self~assertEquals(".NIL", .test2~c1, "c1_class")
+  self~assertEquals(".", .test2~c2, "c2_class")
 
   t = .test2~new
 
-  self~assertEquals("s1_instance", "Fred", t~s1)
-  self~assertEquals("s2_instance", "Rick", t~s2)
-  self~assertEquals("s3_instance", " ", t~s3)
-  self~assertEquals("s4_instance", " ", t~s4)
-  self~assertEquals("n1_instance", "1", t~n1)
-  self~assertEquals("n2_instance", "1.00000000000000000000", t~n2)
-  self~assertEquals("n3_instance", ".23", t~n3)
-  self~assertEquals("n4_instance", "1E4", t~n4)
-  self~assertEquals("n5_instance", "1E-4", t~n5)
-  self~assertEquals("n6_instance", "1E+4", t~n6)
-  self~assertEquals("n7_instance", "23.38885e-5", t~n7)
-  self~assertEquals("c1_instance", ".NIL", t~c1)
-  self~assertEquals("c2_instance", ".", t~c2)
+  self~assertEquals("Fred", t~s1, "s1_instance")
+  self~assertEquals("Rick", t~s2, "s2_instance")
+  self~assertEquals(" ", t~s3, "s3_instance")
+  self~assertEquals(" ", t~s4, "s4_instance")
+  self~assertEquals("1", t~n1, "n1_instance")
+  self~assertEquals("1.00000000000000000000", t~n2, "n2_instance")
+  self~assertEquals(".23", t~n3, "n3_instance")
+  self~assertEquals("1E4", t~n4, "n4_instance")
+  self~assertEquals("1E-4", t~n5, "n5_instance")
+  self~assertEquals("1E+4", t~n6, "n6_instance")
+  self~assertEquals("23.38885e-5", t~n7, "n7_instance")
+  self~assertEquals(".NIL", t~c1, "c1_instance")
+  self~assertEquals(".", t~c2, "c2_instance")
 
-  self~assertEquals("s1_instance_class", "Fred", t~class~s1)
-  self~assertEquals("s2_instance_class", "Rick", t~class~s2)
-  self~assertEquals("s3_instance_class", " ", t~class~s3)
-  self~assertEquals("s4_instance_class", " ", t~class~s4)
-  self~assertEquals("n1_instance_class", "1", t~class~n1)
-  self~assertEquals("n2_instance_class", "1.00000000000000000000", t~class~n2)
-  self~assertEquals("n3_instance_class", ".23", t~class~n3)
-  self~assertEquals("n4_instance_class", "1E4", t~class~n4)
-  self~assertEquals("n5_instance_class", "1E-4", t~class~n5)
-  self~assertEquals("n6_instance_class", "1E+4", t~class~n6)
-  self~assertEquals("n7_instance_class", "23.38885e-5", t~class~n7)
-  self~assertEquals("c1_instance_class", ".NIL", t~class~c1)
-  self~assertEquals("c2_instance_class", ".", t~class~c2)
+  self~assertEquals("Fred", t~class~s1, "s1_instance_class")
+  self~assertEquals("Rick", t~class~s2, "s2_instance_class")
+  self~assertEquals(" ", t~class~s3, "s3_instance_class")
+  self~assertEquals(" ", t~class~s4, "s4_instance_class")
+  self~assertEquals("1", t~class~n1, "n1_instance_class")
+  self~assertEquals("1.00000000000000000000", t~class~n2, "n2_instance_class")
+  self~assertEquals(".23", t~class~n3, "n3_instance_class")
+  self~assertEquals("1E4", t~class~n4, "n4_instance_class")
+  self~assertEquals("1E-4", t~class~n5, "n5_instance_class")
+  self~assertEquals("1E+4", t~class~n6, "n6_instance_class")
+  self~assertEquals("23.38885e-5", t~class~n7, "n7_instance_class")
+  self~assertEquals(".NIL", t~class~c1, "c1_instance_class")
+  self~assertEquals(".", t~class~c2, "c2_instance_class")
 
 
 ::method "test_mixinclass_definition"
 
-  self~assertEquals("s1_class", "Fred", .test3~s1)
-  self~assertEquals("s2_class", "Rick", .test3~s2)
-  self~assertEquals("s3_class", " ", .test3~s3)
-  self~assertEquals("s4_class", " ", .test3~s4)
-  self~assertEquals("n1_class", "1", .test3~n1)
-  self~assertEquals("n2_class", "1.00000000000000000000", .test3~n2)
-  self~assertEquals("n3_class", ".23", .test3~n3)
-  self~assertEquals("n4_class", "1E4", .test3~n4)
-  self~assertEquals("n5_class", "1E-4", .test3~n5)
-  self~assertEquals("n6_class", "1E+4", .test3~n6)
-  self~assertEquals("n7_class", "23.38885e-5", .test3~n7)
-  self~assertEquals("c1_class", ".NIL", .test3~c1)
-  self~assertEquals("c2_class", ".", .test3~c2)
+  self~assertEquals("Fred", .test3~s1, "s1_class")
+  self~assertEquals("Rick", .test3~s2, "s2_class")
+  self~assertEquals(" ", .test3~s3, "s3_class")
+  self~assertEquals(" ", .test3~s4, "s4_class")
+  self~assertEquals("1", .test3~n1, "n1_class")
+  self~assertEquals("1.00000000000000000000", .test3~n2, "n2_class")
+  self~assertEquals(".23", .test3~n3, "n3_class")
+  self~assertEquals("1E4", .test3~n4, "n4_class")
+  self~assertEquals("1E-4", .test3~n5, "n5_class")
+  self~assertEquals("1E+4", .test3~n6, "n6_class")
+  self~assertEquals("23.38885e-5", .test3~n7, "n7_class")
+  self~assertEquals(".NIL", .test3~c1, "c1_class")
+  self~assertEquals(".", .test3~c2, "c2_class")
 
   t = .test3~new
 
-  self~assertEquals("s1_instance", "Fred", t~s1)
-  self~assertEquals("s2_instance", "Rick", t~s2)
-  self~assertEquals("s3_instance", " ", t~s3)
-  self~assertEquals("s4_instance", " ", t~s4)
-  self~assertEquals("n1_instance", "1", t~n1)
-  self~assertEquals("n2_instance", "1.00000000000000000000", t~n2)
-  self~assertEquals("n3_instance", ".23", t~n3)
-  self~assertEquals("n4_instance", "1E4", t~n4)
-  self~assertEquals("n5_instance", "1E-4", t~n5)
-  self~assertEquals("n6_instance", "1E+4", t~n6)
-  self~assertEquals("n7_instance", "23.38885e-5", t~n7)
-  self~assertEquals("c1_instance", ".NIL", t~c1)
-  self~assertEquals("c2_instance", ".", t~c2)
+  self~assertEquals("Fred", t~s1, "s1_instance")
+  self~assertEquals("Rick", t~s2, "s2_instance")
+  self~assertEquals(" ", t~s3, "s3_instance")
+  self~assertEquals(" ", t~s4, "s4_instance")
+  self~assertEquals("1", t~n1, "n1_instance")
+  self~assertEquals("1.00000000000000000000", t~n2, "n2_instance")
+  self~assertEquals(".23", t~n3, "n3_instance")
+  self~assertEquals("1E4", t~n4, "n4_instance")
+  self~assertEquals("1E-4", t~n5, "n5_instance")
+  self~assertEquals("1E+4", t~n6, "n6_instance")
+  self~assertEquals("23.38885e-5", t~n7, "n7_instance")
+  self~assertEquals(".NIL", t~c1, "c1_instance")
+  self~assertEquals(".", t~c2, "c2_instance")
 
-  self~assertEquals("s1_instance_class", "Fred", t~class~s1)
-  self~assertEquals("s2_instance_class", "Rick", t~class~s2)
-  self~assertEquals("s3_instance_class", " ", t~class~s3)
-  self~assertEquals("s4_instance_class", " ", t~class~s4)
-  self~assertEquals("n1_instance_class", "1", t~class~n1)
-  self~assertEquals("n2_instance_class", "1.00000000000000000000", t~class~n2)
-  self~assertEquals("n3_instance_class", ".23", t~class~n3)
-  self~assertEquals("n4_instance_class", "1E4", t~class~n4)
-  self~assertEquals("n5_instance_class", "1E-4", t~class~n5)
-  self~assertEquals("n6_instance_class", "1E+4", t~class~n6)
-  self~assertEquals("n7_instance_class", "23.38885e-5", t~class~n7)
-  self~assertEquals("c1_instance_class", ".NIL", t~class~c1)
-  self~assertEquals("c2_instance_class", ".", t~class~c2)
+  self~assertEquals("Fred", t~class~s1, "s1_instance_class")
+  self~assertEquals("Rick", t~class~s2, "s2_instance_class")
+  self~assertEquals(" ", t~class~s3, "s3_instance_class")
+  self~assertEquals(" ", t~class~s4, "s4_instance_class")
+  self~assertEquals("1", t~class~n1, "n1_instance_class")
+  self~assertEquals("1.00000000000000000000", t~class~n2, "n2_instance_class")
+  self~assertEquals(".23", t~class~n3, "n3_instance_class")
+  self~assertEquals("1E4", t~class~n4, "n4_instance_class")
+  self~assertEquals("1E-4", t~class~n5, "n5_instance_class")
+  self~assertEquals("1E+4", t~class~n6, "n6_instance_class")
+  self~assertEquals("23.38885e-5", t~class~n7, "n7_instance_class")
+  self~assertEquals(".NIL", t~class~c1, "c1_instance_class")
+  self~assertEquals(".", t~class~c2, "c2_instance_class")
 
 
 ::class test mixinclass object
@@ -290,7 +239,12 @@ return testGroupList
  *  to not run, the bad syntax tests are done by writing out a Rexx program
  *  with the incorrect syntax.
  */
-::class "ConstantSyntaxErrs" public subclass TestCase
+::class "ConstantSyntaxErrs" public subclass ooTestCase
+
+  -- A temporary measure.
+  ::method init class
+    forward class (super) continue
+    self~ooTestType = self~UNIT_LONG_TEST
 
   ::attribute functionFileName
 
@@ -317,7 +271,7 @@ return testGroupList
 
     -- First assert that the start of the source file has been created.  This
     -- allows for failing the test if there is some problem creating the file.
-    self~assertNotSame("Must be able to create source file", "", self~functionFileName)
+    self~assertNotSame("", self~functionFileName, "Must be able to create source file")
 
     src = .array~new
     src[1] = "return 0"
@@ -329,7 +283,7 @@ return testGroupList
     ret = 'testConstant'()
 
   ::method  test_duplicate_name
-    self~assertNotSame("Must be able to create source file", "", self~functionFileName)
+    self~assertNotSame("", self~functionFileName, "Must be able to create source file")
 
     src = .array~new
     src[1] = "return 0"
@@ -344,7 +298,7 @@ return testGroupList
     ret = 'testConstant'()
 
   ::method  test_duplicate_name_floating_methods
-    self~assertNotSame("Must be able to create source file", "", self~functionFileName)
+    self~assertNotSame("", self~functionFileName, "Must be able to create source file")
 
     src = .array~new
     src[1] = "return 0"
@@ -362,7 +316,7 @@ return testGroupList
     ret = 'testConstant'()
 
   ::method  test_code_after_directive
-    self~assertNotSame("Must be able to create source file", "", self~functionFileName)
+    self~assertNotSame("", self~functionFileName, "Must be able to create source file")
 
     src = .array~new
     src[1] = "return .TestClass~MAX_DOGS_PER_HOUSEHOLD"
@@ -379,7 +333,7 @@ return testGroupList
     ret = 'testConstant'()
 
   ::method  test_code_after_directive_floating_method
-    self~assertNotSame("Must be able to create source file", "", self~functionFileName)
+    self~assertNotSame("", self~functionFileName, "Must be able to create source file")
 
     src = .array~new
     src[1] = "::constant MAX_DOGS_PER_HOUSEHOLD 6"
@@ -396,7 +350,7 @@ return testGroupList
     ret = 'testConstant'()
 
   ::method  test_extra_values
-    self~assertNotSame("Must be able to create source file", "", self~functionFileName)
+    self~assertNotSame("", self~functionFileName, "Must be able to create source file")
 
     src = .array~new
     src[1] = "return 0"
@@ -411,7 +365,7 @@ return testGroupList
     ret = 'testConstant'()
 
   ::method  test_no_values
-    self~assertNotSame("Must be able to create source file", "", self~functionFileName)
+    self~assertNotSame("", self~functionFileName, "Must be able to create source file")
 
     src = .array~new
     src[1] = "return 0"
@@ -426,7 +380,7 @@ return testGroupList
     ret = 'testConstant'()
 
   ::method  test_math_expression
-    self~assertNotSame("Must be able to create source file", "", self~functionFileName)
+    self~assertNotSame("", self~functionFileName, "Must be able to create source file")
 
     src = .array~new
     src[1] = "return 0"

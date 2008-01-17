@@ -56,85 +56,34 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.String_changestrMethod.testGroup)
 
+  if group~isAutomatedTest then return group
 
--------------------------------------------------------------------------------------------
--- ===> adapt the "testGroupList" to your testCase classes; each element in the list is <===
--- ===> an array object, the first element containing the testCase class object, the   <===
--- ===> second element is a list of test method names which are regarded to be         <===
--- ===> mandatory (if the list remains empty all test methods are mandatory)           <===
+  testResult = group~suite~execute~~print
 
-   /* list of array objects, each containing the testGroup class object and an
-      optional list of mandatory test case methods name                       */
-mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
-testGroupList=.list~of( .array~of(.String_changestrMethod.testGroup,  mandatoryTestMethods) )
+return testResult
 
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
--------------------------------------------------------------------------------------------
--- ===> the following code needs not to be individualized                              <===
-
-   -- read top comment, containing infos about this program
-arrLines=.array~new
-do i=1 to 150 until arrLines[i]="*/"
-   arrLines[i]=sourceline(i)
-end
-      -- supply information for the testClass(es) in this file; the class attribute
-      -- "TestCaseInfo" (a directory object, index points to a queue) will store
-      -- the parsed infos
-aTestGroupClass=testGroupList~at(testGroupList~first)[1] -- get first testClass
-
-   -- will parse the array lines and store result in class object
-call makeDirTestInfo aTestGroupClass, arrLines
-tmpDir=aTestGroupClass~TestCaseInfo
-parse source s   -- op_sys invocationType fullPathToThisFile
-tmpDir~setentry("test_Case-source", s)
-
-   -- now add this directory to other testCase classes, if any left
-do arr over testGroupList
-   if arr[1]=aTestGroupClass then iterate  -- already handled
-   arr[1]~TestCaseInfo=tmpDir             -- save info in class object
-end
-
--- if this file is CALLed or REQUIRED then define an entry "bRunTestLocally" in .local
--- and set it to .false; this way the independent local invocation of the tests is inhibited
-if .local~hasentry("bRunTestsLocally")=.false then
-   .local~bRunTestsLocally=.true -- if this file is executed directly, then run tests for debugging
-
-if .bRunTestsLocally=.true then  -- run ALL tests in this test unit
-do
-   ts=.testSuite~new             -- create a testSuite
-   do arr over testGroupList
-      -- create a testSuite for the given test case class, use all its testmethods
-      ts~addTest( .testSuite~new(arr[1]))
-   end
-   -- testResult=.testSuite~new(testGroupClass)~run
-   testResult=ts~run       -- now run all the tests
-
-   call simpleFormatTestResults testResult
-end
-
-   /* return list of array objects containing test case classes and
-      optionally list of mandatory test methods                      */
-return testGroupList
-
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
-
-::class "String_changestrMethod.testGroup" subclass TestCase public
+::class "String_changestrMethod.testGroup" subclass ooTestCase public
 
 ::method "test_1"
-   self~assertSame("subTest1", '101100' , '101100'~CHANGESTR('','X')  )
+   self~assertSame('101100', '101100'~CHANGESTR('','X'))
 
 ::method "test_2"
-   self~assertSame("subTest2", ''       , ''~CHANGESTR('1','X')  )
+   self~assertSame('', ''~CHANGESTR('1','X'))
 
 ::method "test_4"
-   self~assertSame("subTest4", 'ha-lo' , 'hallo'~CHANGESTR('l','-',1)  )
+   self~assertSame('ha-lo', 'hallo'~CHANGESTR('l','-',1))
 
 ::method "test_5"
-   self~assertSame("subTest5", 'ha--o' , 'hallo'~CHANGESTR('l','-',2)  )
+   self~assertSame('ha--o', 'hallo'~CHANGESTR('l','-',2))
 
 ::method "test_6"
-   self~assertSame("subTest6", 'ha--o' , 'hallo'~CHANGESTR('l','-',3)  )
+   self~assertSame('ha--o', 'hallo'~CHANGESTR('l','-',3))
 
 ::method "test_7"
    self~expectSyntax(93.907)
@@ -143,20 +92,20 @@ return testGroupList
 -- rexxref documentation tests
 
 ::method "test_101"
-   self~assertSame("subTest101", '000'    , '101100'~CHANGESTR('1',"")  )
+   self~assertSame('000', '101100'~CHANGESTR('1',""))
 
 ::method "test_102"
-   self~assertSame("subTest102", 'X0XX00' , '101100'~CHANGESTR('1','X') )
+   self~assertSame('X0XX00', '101100'~CHANGESTR('1','X'))
 
 ::method "test_CHANGESTR"
    -- new tests
-    self~assertSame("subTest3", '101100' , '101100'~changestr('','X')  )
-    self~assertSame("subTest4", ''       , ''~changestr('1','X')  )
+    self~assertSame('101100', '101100'~changestr('','X'))
+    self~assertSame('', ''~changestr('1','X'))
 
    -- new tests: optional, trailing "count" argument
-    self~assertSame("subTest5", 'ha-lo' , 'hallo'~changeStr('l','-',1)  )
-    self~assertSame("subTest6", 'ha--o' , 'hallo'~changeStr('l','-',2)  )
-    self~assertSame("subTest7", 'ha--o' , 'hallo'~changestr('l','-',3)  )
+    self~assertSame('ha-lo', 'hallo'~changeStr('l','-',1))
+    self~assertSame('ha--o', 'hallo'~changeStr('l','-',2))
+    self~assertSame('ha--o', 'hallo'~changestr('l','-',3))
 
 ::method "test_changeStr_error_93.907"
     self~expectSyntax(93.907)

@@ -59,64 +59,20 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.XRANGE.testGroup)
 
--------------------------------------------------------------------------------------------
-   /* list of array objects, each containing the testUnit class object and an
-      optional list of mandatory test case methods name                       */
-    mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
-    testUnitList=.list~of(.array~of(.XRANGE.testGroup, mandatoryTestMethods))
+  if group~isAutomatedTest then return group
 
--------------------------------------------------------------------------------------------
--- ===> the following code needs not to be individualized                              <===
+  testResult = group~suite~execute~~print
 
-   -- read top comment, containing infos about this program
-    arrLines=.array~new
-    do i=1 to 150 until arrLines[i]="*/"
-        arrLines[i]=sourceline(i)
-    end
-      -- supply information for the testClass(es) in this file; the class attribute
-      -- "TestCaseInfo" (a directory object, index points to a queue) will store
-      -- the parsed infos
-    aTestUnitClass=testUnitList~at(testUnitList~first)[1] -- get first testClass
+return testResult
 
-   -- will parse the array lines and store result in class object
-    call makeDirTestInfo aTestUnitClass, arrLines
-    tmpDir=aTestUnitClass~TestCaseInfo
-    parse source s   -- op_sys invocationType fullPathToThisFile
-    tmpDir~setentry("test_Case-source", s)
-   -- now add this directory to other testCase classes, if any left
-    do arr over testUnitList
-        if arr[1]=aTestUnitClass then
-            iterate  -- already handled
-        arr[1]~TestCaseInfo=tmpDir             -- save info in class object
-    end
-
--- if this file is CALLed or REQUIRED then define an entry "bRunTestLocally" in .local
--- and set it to .false; this way the independent local invocation of the tests is inhibited
-    if .local~hasentry("bRunTestsLocally")=.false then
-        .local~bRunTestsLocally=.true -- if this file is executed directly, then run tests for debugging
-
-    if .bRunTestsLocally=.true then  -- run ALL tests in this test unit
-        do
-            ts=.testSuite~new             -- create a testSuite
-            do arr over testUnitList
-                -- create a testSuite for the given test case class, use all its testmethods
-                ts~addTest( .testSuite~new(arr[1]))
-            end
-            -- testResult=.testSuite~new(testUnitClass)~run
-            testResult=ts~run       -- now run all the tests
-
-            call simpleFormatTestResults testResult
-        end
-
-   /* return list of array objects containing test case classes and
-      optionally list of mandatory test methods                      */
-return testUnitList
-
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
 -- class named exactly like file
-::class "XRANGE.testGroup" subclass TestCase public
+::class "XRANGE.testGroup" subclass ooTestCase public
 
 ::method 'test000'
     .local~x0 = '000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1F'x
@@ -133,37 +89,37 @@ return testUnitList
     .local~vz = 'z'
 
 ::method 'test001'
-    self~assertSame('subTest01',.xs,xRange())
+    self~assertSame(.xs, xRange())
 
 ::method 'test002'
-    self~assertSame('subTest01',.xs,xRange(,))
+    self~assertSame(.xs, xRange(,))
 
 ::method 'test003'
-    self~assertSame('subTest01',.xs,xRange('00'X))
+    self~assertSame(.xs, xRange('00'X))
 
 ::method 'test004'
-    self~assertSame('subTest01','FF00'X,xRange('FF'X,'00'X))
+    self~assertSame('FF00'X, xRange('FF'X,'00'X))
 
 ::method 'test005'
-    self~assertSame('subTest01','FEFF0001'X,xRange('FE'X,'01'X))
+    self~assertSame('FEFF0001'X, xRange('FE'X,'01'X))
 
 ::method 'test006'
-    self~assertSame('subTest01',left(.xs,1),xRange(,'00'x))
+    self~assertSame(left(.xs,1), xRange(,'00'x))
 
 ::method 'test007'
-    self~assertSame('subTest01','abcdefghi',xRange('a','i'))
+    self~assertSame('abcdefghi', xRange('a','i'))
 
 ::method 'test008'
-    self~assertSame('subTest01',substr(.x4,2)||.x6||.x8||.xa||.xc||.xe,xRange('A'))
+    self~assertSame(substr(.x4,2)||.x6||.x8||.xa||.xc||.xe, xRange('A'))
 
 ::method 'test009'
-    self~assertSame('subTest01','1234',xRange('31'x,4))
+    self~assertSame('1234', xRange('31'x,4))
 
 ::method 'test010'
-    self~assertSame('subTest01','3',xRange(3,3))
+    self~assertSame('3', xRange(3,3))
 
 ::method 'test011'
-    self~assertSame('subTest01',substr(.xs,53)||left(.xs,52),xRange(4,3))
+    self~assertSame(substr(.xs,53)||left(.xs,52), xRange(4,3))
 
 ::method 'test012'
     self~expectSyntax(40.23)
@@ -178,43 +134,43 @@ return testUnitList
     xre = xrange('c1','c1')
 
 ::method 'test015'
-    self~assertSame('subTest01','C1'X,xRange('c1'x,'c1'x))
+    self~assertSame('C1'X, xRange('c1'x,'c1'x))
 
 ::method 'test016'
-    self~assertSame('subTest01','abcdefghijklmnopqrstuvwxyz',xRange(.va||.ns,.ns||.vz))
+    self~assertSame('abcdefghijklmnopqrstuvwxyz', xRange(.va||.ns,.ns||.vz))
 
 ::method 'test017'
-    self~assertSame('subTest01','abcdefghijklmnopqrstuvwxyz',xRange(x2c(c2x(.va)),.vz))
+    self~assertSame('abcdefghijklmnopqrstuvwxyz', xRange(x2c(c2x(.va)),.vz))
 
 ::method 'test018'
-    self~assertSame('subTest01',left(.xs,98),xRange(,.va))
+    self~assertSame(left(.xs,98), xRange(,.va))
 
 ::method 'test019'
-    self~assertSame('subTest01',substr(.xs,123),xRange(.vz))
+    self~assertSame(substr(.xs,123), xRange(.vz))
 
 ::method 'test020'
-    self~assertSame('subTest01',substr(.xs,79),xRange(n))
+    self~assertSame(substr(.xs,79), xRange(n))
 
 ::method 'test021'
-    self~assertSame('subTest01',substr(.xs,1,87),xRange(,v))
+    self~assertSame(substr(.xs,1,87), xRange(,v))
 
 ::method 'test022'
-    self~assertSame('subTest01','NOPQRSTUV',xRange(n,v))
+    self~assertSame('NOPQRSTUV', xRange(n,v))
 
 ::method 'test023'
-    self~assertSame('subTest01',7,xRange(2+5,1+6))
+    self~assertSame(7, xRange(2+5,1+6))
 
 ::method 'test024'
-    self~assertSame('subTest01',substr(.xs,58)||left(.xs,46),xRange((9+0)*1,'-'))
+    self~assertSame(substr(.xs,58)||left(.xs,46), xRange((9+0)*1,'-'))
 
 ::method 'test025'
-    self~assertSame('subTest01','.',xRange(.,.))
+    self~assertSame('.', xRange(.,.))
 
 ::method 'test026'
-    self~assertSame('subTest01',left(.xs,47),xRange(,.))
+    self~assertSame(left(.xs,47), xRange(,.))
 
 ::method 'test027'
-    self~assertSame('subTest01','ab',xRange(xrange('a','a'),xrange('b','b')))
+    self~assertSame('ab', xRange(xrange('a','a'),xrange('b','b')))
 
 ::method 'test028'
     .local~remove(x0)
@@ -239,7 +195,7 @@ return testUnitList
                 j = word(jl,ji)
                 x = d2c(i)
                 y = d2c(i)
-                self~assertSame('subTest'ii~right(3,'0'),myxrange(x,y),xRange(x,y))
+                self~assertSame(myxrange(x,y), xRange(x,y))
             end
     end
 
@@ -263,19 +219,19 @@ myxrange:
 -- from bif.testgroup
    -- test the BIF, using examples from the documentation
 ::method "test_XRANGE"
-    self~assertSame("subTest1" , 'abcdef'         , XRANGE('a','f')      )
-    self~assertSame("subTest2" , '0304050607'x    , XRANGE('03'x,'07'x)  )
-    self~assertSame("subTest3" , '0001020304'x    , XRANGE(,'04'x)       )
-    self~assertSame("subTest4" , 'FEFF000102'x    , XRANGE('FE'x,'02'x)  )
-    self~assertSame("subTest5" , 'ij' /* ASCII */ , XRANGE('i','j')      )
+    self~assertSame('abcdef', XRANGE('a','f'))
+    self~assertSame('0304050607'x, XRANGE('03'x,'07'x))
+    self~assertSame('0001020304'x, XRANGE(,'04'x))
+    self~assertSame('FEFF000102'x, XRANGE('FE'x,'02'x))
+    self~assertSame('ij' /* ASCII */, XRANGE('i','j'))
 
    -- new tests
     chars=""
     do i=0 to 255
        chars=chars||d2c(i)
     end
-    self~assertSame("subTest6", chars , XRANGE()            )
-    self~assertSame("subTest7", chars , XRANGE("00"x, "ff"x))
+    self~assertSame(chars, XRANGE())
+    self~assertSame(chars, XRANGE("00"x, "ff"x))
 
 
 

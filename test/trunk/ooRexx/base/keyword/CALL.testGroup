@@ -55,74 +55,22 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.CALL.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
 
 
 
--------------------------------------------------------------------------------------------
--- ===> adapt the "testGroupList" to your testCase classes; each element in the list is <===
--- ===> an array object, the first element containing the testCase class object, the   <===
--- ===> second element is a list of test method names which are regarded to be         <===
--- ===> mandatory (if the list remains empty all test methods are mandatory)           <===
-
-   /* list of array objects, each containing the testGroup class object and an
-      optional list of mandatory test case methods name                       */
-
-mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
-testGroupList=.list~of( .array~of(.CALL.testGroup,  mandatoryTestMethods) )
-
--------------------------------------------------------------------------------------------
--- ===> the following code needs not to be individualized                              <===
-
-   -- read top comment, containing infos about this program
-arrLines=.array~new
-do i=1 to 150 until arrLines[i]="*/"
-   arrLines[i]=sourceline(i)
-end
-      -- supply information for the testClass(es) in this file; the class attribute
-      -- "TestCaseInfo" (a directory object, index points to a queue) will store
-      -- the parsed infos
-aTestGroupClass=testGroupList~at(testGroupList~first)[1] -- get first testClass
-
-   -- will parse the array lines and store result in class object
-call makeDirTestInfo aTestGroupClass, arrLines
-tmpDir=aTestGroupClass~TestCaseInfo
-parse source s   -- op_sys invocationType fullPathToThisFile
-tmpDir~setentry("test_Case-source", s)
-
-   -- now add this directory to other testCase classes, if any left
-do arr over testGroupList
-   if arr[1]=aTestGroupClass then iterate  -- already handled
-   arr[1]~TestCaseInfo=tmpDir             -- save info in class object
-end
-
--- if this file is CALLed or REQUIRED then define an entry "bRunTestLocally" in .local
--- and set it to .false; this way the independent local invocation of the tests is inhibited
-if .local~hasentry("bRunTestsLocally")=.false then
-   .local~bRunTestsLocally=.true -- if this file is executed directly, then run tests for debugging
-
-if .bRunTestsLocally=.true then  -- run ALL tests in this test unit
-do
-   ts=.testSuite~new             -- create a testSuite
-   do arr over testGroupList
-      -- create a testSuite for the given test case class, use all its testmethods
-      ts~addTest( .testSuite~new(arr[1]))
-   end
-   -- testResult=.testSuite~new(testGroupClass)~run
-   testResult=ts~run       -- now run all the tests
-
-   call simpleFormatTestResults testResult
-end
-
-   /* return list of array objects containing test case classes and
-      optionally list of mandatory test methods                      */
-return testGroupList
-
-
-
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 ::requires 'FileUtils.cls'    -- load the FileUtils classes
 
-::class "CALL.testGroup" subclass TestCase public
+::class "CALL.testGroup" subclass ooTestCase public
 
 ::method "test_1"
    -- Create our external functions. There are 3 of them.
@@ -153,8 +101,8 @@ return testGroupList
    Call .
    CAll ,
    abcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghij
-   self~assertSame("subTest1a", s,'12345634DEFG')
-   self~assertSame("subTest1b", (sigl1 sigl2 sigl3),(sigl0+1) (sigl0+2) (sigl0+3))
+   self~assertSame(s, '12345634DEFG')
+   self~assertSame((sigl1 sigl2 sigl3), (sigl0+1) (sigl0+2) (sigl0+3))
 
    -- now remove the external functions
    call deleteFile path'SCICAL1A'
@@ -196,39 +144,39 @@ return testGroupList
    -- now do the tests
    ai=0
    Call a a(0),a(1),a(2),a(3),a(4),a(5),a(6),a(7),a(8),a(9)
-   self~assertSame("subTest3", result,xrange('0','9'))
+   self~assertSame(result, xrange('0','9'))
 
    ai=0
    Call a a(0),a(1),a(2),a(3),a(4),a(5),a(6),a(7),a(8),a(9),10
-   self~assertSame("subTest3b", result,'012345678910')
+   self~assertSame(result, '012345678910')
 
    v202='vVv'
    v203="COPIES"('xx',5000)
    v207.='ab'
    v207.1='cd'
-   Call sub0201 'abc'; self~assertSame("subTest3-201", result,201)
-   Call sub0202 v202;  self~assertSame("subTest3-202", result,0202)
-   Call sub0203 v203;  self~assertSame("subTest3-203", result,203)
-   Call sub0204 (2+3); self~assertSame("subTest3-204", result,204)
+   Call sub0201 'abc'; self~assertSame(result, 201)
+   Call sub0202 v202;  self~assertSame(result, 0202)
+   Call sub0203 v203;  self~assertSame(result, 203)
+   Call sub0204 (2+3); self~assertSame(result, 204)
    Numeric Digits 2
-   Call sub0205 +205;  self~assertSame("subTest3-205", '2.1E+2',+result)
+   Call sub0205 +205;  self~assertSame('2.1E+2', +result)
    Numeric Digits 9
    Call sub0206 12a,'0102'X;
-                       self~assertSame("subTest3-206", result, '0201'x)
+                       self~assertSame(result, '0201'x)
    Call sub0207 v207.,v207.1
-                       self~assertSame("subTest3-207", result, 'abcd')
-   Call sub0208 '',''; self~assertSame("subTest3-208", result, '')
+                       self~assertSame(result, 'abcd')
+   Call sub0208 '',''; self~assertSame(result, '')
    Call sub0209 bitor('0102'X,'2011'X),'a,' 'b,' 'and c'
-                       self~assertSame("subTest3-209", result, 'a,*b,*and*c')
+                       self~assertSame(result, 'a,*b,*and*c')
    Do i=1 to 21
      a.i=i
      End
    Call a20 a.1, a.2, a.3, a.4, a.5, a.6, a.7, a.8, a.9, a.10,,
             a.11,a.12,a.13,a.14,a.15,a.16,a.17,a.18,a.19,a.20
-   self~assertSame("subTest3-210", result, 210)
+   self~assertSame(result, 210)
    Call scical3a a.1, a.2, a.3, a.4, a.5, a.6, a.7, a.8, a.9, a.10,,
                  a.11,a.12,a.13,a.14,a.15,a.16,a.17,a.18,a.19,a.20
-   self~assertSame("subTest3-210a", result, 210)
+   self~assertSame(result, 210)
    Call a20 a.1, a.2, a.3, a.4, a.5, a.6, a.7, a.8, a.9, a.10,,
             a.11,a.12,a.13,a.14,a.15,a.16,a.17,a.18,a.19,a.20,a.21
    Call scical3a a.1, a.2, a.3, a.4, a.5, a.6, a.7, a.8, a.9, a.10,,
@@ -242,34 +190,34 @@ return testGroupList
    If "ARG"()>1 Then Do;               /* concatenate all arguments      */
       s='';
       Do ai=1 To "ARG"();
-         self~assertSame("subTest3-"ai, (ai-1),"ARG"(ai))
+         self~assertSame((ai-1), "ARG"(ai))
          s=s||"ARG"(ai);
          End;
       Return s
       End
                                        /* call as argument expression    */
-   self~assertSame("subTest3a", "ARG"(1),ai)
+   self~assertSame("ARG"(1), ai)
    ai=ai+1;                            /* increment to new number        */
    Return ai-1                         /* return old number as value     */
 
-   sub0201: self~assertSame("subTest201", arg(1), 'abc'); Return '201'
-   sub0202: self~assertSame("subTest202", arg(1), 'vVv'); Return 0202
-   sub0203: self~assertSame("subTest203", arg(1), "COPIES"('x',10000)); Return +0.0203e+004
-   sub0204: self~assertSame("subTest204", arg(1), ""5); Return 200+4
+   sub0201: self~assertSame(arg(1), 'abc'); Return '201'
+   sub0202: self~assertSame(arg(1), 'vVv'); Return 0202
+   sub0203: self~assertSame(arg(1), "COPIES"('x',10000)); Return +0.0203e+004
+   sub0204: self~assertSame(arg(1), ""5); Return 200+4
    sub0205: Numeric Digits 9
-            self~assertSame("subTest205", arg(1), "2.1E+2"); Return 205
-   sub0206: self~assertSame("subTest206a", arg(1), "12A")
-            self~assertSame("subTest206b", arg(2), "0102"X)
+            self~assertSame(arg(1), "2.1E+2"); Return 205
+   sub0206: self~assertSame(arg(1), "12A")
+            self~assertSame(arg(2), "0102"X)
             Return "RIGHT"("ARG"(2),1)"LEFT"("ARG"(2),1)
-   sub0207: self~assertSame("subTest207a", arg(1), "ab")
-            self~assertSame("subTest207b", arg(2), "cd")
+   sub0207: self~assertSame(arg(1), "ab")
+            self~assertSame(arg(2), "cd")
             Return "ARG"(1)||"ARG"(2)
-   sub0208: self~assertSame("subTest208a", arg(1), "")
-            self~assertSame("subTest208b", arg(2), ""x)
+   sub0208: self~assertSame(arg(1), "")
+            self~assertSame(arg(2), ""x)
             v208=''
             Return "ARG"(1)||"ARG"(2)||v208
-   sub0209: self~assertSame("subTest209a", arg(1), "2113"X)
-            self~assertSame("subTest209b", arg(2), 'a, b, and c')
+   sub0209: self~assertSame(arg(1), "2113"X)
+            self~assertSame(arg(2), 'a, b, and c')
             Return "TRANSLATE"("ARG"(2),'*','             ')
    a20: Procedure
         sum=0
@@ -315,19 +263,19 @@ return testGroupList
                Call SCICAL4a
               subdff=result
               dff=digits() fuzz() form()
-              self~assertSame("subTest4-"i"-"j"-"k"1", dff,'5 1 ENGINEERING')
-              self~assertSame("subTest4-"i"-"j"-"k"2", subdff,'100 0 SCIENTIFIC')
-              self~assertSame("subTest4-"i"-"j"-"k"3", novalued_var,'NOVALUED_VAR')
-              self~assertSame("subTest4-"i"-"j"-"k"4", novalued_var,'NOVALUED_VAR')
+              self~assertSame(dff, '5 1 ENGINEERING')
+              self~assertSame(subdff, '100 0 SCIENTIFIC')
+              self~assertSame(novalued_var, 'NOVALUED_VAR')
+              self~assertSame(novalued_var, 'NOVALUED_VAR')
               id=1001; Call gt "TIME"('E'),1
-              self~assertSame("subTest4-"i"-"j"-"k"5", "ADDRESS"(),cmd)
+              self~assertSame("ADDRESS"(), cmd)
               End
            ic=ic+1
            End
         End
-     self~assertSame("subTest4-3", ic,15)
+     self~assertSame(ic, 15)
      End
-   self~assertSame("Okay count should be 4", 4, cnt.ok)
+   self~assertSame(4, cnt.ok, "Okay count should be 4")
 
    -- now remove the external functions
    call deleteFile path'SCICAL4A'
@@ -353,14 +301,14 @@ return testGroupList
 
    subret:
       Address ''
-      self~assertSame("subTest4-subret", "ADDRESS"(),'')
+      self~assertSame("ADDRESS"(), '')
       Return dff
    gt: Procedure Expose id cnt. self
-      self~assertTrue("subTest4-gt id:" id "TIME('E')>1", arg(1)>=arg(2))
+      self~assertTrue(arg(1)>=arg(2), "subTest4-gt id:" id "TIME('E')>1")
       cnt.ok=cnt.ok+1
       Return
    lt: Procedure Expose id cnt. self
-      self~assertTrue("subTest4-lt id:" id "TIME('E')>1", arg(1)<arg(2))
+      self~assertTrue(arg(1)<arg(2), "subTest4-lt id:" id "TIME('E')>1")
       cnt.ok=cnt.ok+1
       Return
 
@@ -376,7 +324,7 @@ return testGroupList
 
    -- now do the tests
    cmd = address()
-   self~assertSame("subTest5", scical5a(),cmd)
+   self~assertSame(scical5a(), cmd)
 
    -- now remove the external functions
    call deleteFile path'SCICAL5A'
@@ -384,7 +332,7 @@ return testGroupList
 ::method "test_6"
    i=0
    Call SUB1
-   self~assertSame("subTest6", i, 250)
+   self~assertSame(i, 250)
    return
 
    SUB1: i=i+1; Call SUB2; Return
@@ -641,26 +589,26 @@ return testGroupList
 
 ::method "test_7"
    i=0
-   Call a 'a'; self~assertSame("subTest7-1", (result i),'a 1')
-   Call b 'b'; self~assertSame("subTest7-2", (result i),'b 2')
-   Call c 'c'; self~assertSame("subTest7-3", (result i),'c 3')
-   Call d 'd'; self~assertSame("subTest7-4", (result i),'d 4')
-   Call e 'e'; self~assertSame("subTest7-5", (result i),'e 5')
-   Call f 'f'; self~assertSame("subTest7-6", (result i),'f 6')
-   Call g 'g'; self~assertSame("subTest7-7", (result i),'g 6')
-   Call h 'h'; self~assertSame("subTest7-8", (result i),'h 6')
-   Call i 'i'; self~assertSame("subTest7-9", (result i),'i 6')
-   Call k 'k'; self~assertSame("subTest7-10", (result i),'k 7')
+   Call a 'a'; self~assertSame((result i), 'a 1')
+   Call b 'b'; self~assertSame((result i), 'b 2')
+   Call c 'c'; self~assertSame((result i), 'c 3')
+   Call d 'd'; self~assertSame((result i), 'd 4')
+   Call e 'e'; self~assertSame((result i), 'e 5')
+   Call f 'f'; self~assertSame((result i), 'f 6')
+   Call g 'g'; self~assertSame((result i), 'g 6')
+   Call h 'h'; self~assertSame((result i), 'h 6')
+   Call i 'i'; self~assertSame((result i), 'i 6')
+   Call k 'k'; self~assertSame((result i), 'k 7')
 
    i=0
-   self~assertSame("subTest7-11", (a('a') i b('b') i c('c') i),'a 1 b 2 c 3')
-   self~assertSame("subTest7-12", (d('d') i),'d 4')
-   self~assertSame("subTest7-13", (e('e') i),'e 5')
-   self~assertSame("subTest7-14", (f('f') i),'f 6')
-   self~assertSame("subTest7-15", (g('g') i),'g 6')
-   self~assertSame("subTest7-16", (h('h') i),'h 6')
-   self~assertSame("subTest7-17", (i('i') i),'i 6')
-   self~assertSame("subTest7-18", (k('k') i),'k 7')
+   self~assertSame((a('a') i b('b') i c('c') i), 'a 1 b 2 c 3')
+   self~assertSame((d('d') i), 'd 4')
+   self~assertSame((e('e') i), 'e 5')
+   self~assertSame((f('f') i), 'f 6')
+   self~assertSame((g('g') i), 'g 6')
+   self~assertSame((h('h') i), 'h 6')
+   self~assertSame((i('i') i), 'i 6')
+   self~assertSame((k('k') i), 'k 7')
    return
 
    a: b:
@@ -684,7 +632,7 @@ return testGroupList
 
 ::method "test_8"
    x=0; Call 0001
-   self~assertSame("subTest88", x, 10)
+   self~assertSame(x, 10)
    return
 
    0003: x=x+1; Call 0004; Return /* 0003 */
@@ -706,14 +654,14 @@ return testGroupList
    chk=id
    String="x=Linein('A/B/C')"
    Interpret String
-   self~assertSame("subTest9", chk,'*')
+   self~assertSame(chk, '*')
    Return
 
    Notready:
-   self~assertSame("subTest9a", condition('cs'),'NOTREADY')
-   self~assertSame("subTest9b", condition('d'),cndd)
-   self~assertSame("subTest9c", condition('i'),'CALL')
-   self~assertSame("subTest1c", condition('s'),'DELAY')
+   self~assertSame(condition('cs'), 'NOTREADY')
+   self~assertSame(condition('d'), cndd)
+   self~assertSame(condition('i'), 'CALL')
+   self~assertSame(condition('s'), 'DELAY')
    chk='*'
    return
 
@@ -730,13 +678,13 @@ return testGroupList
 
    caught = .false
    'zxyabc' toNull -- deliberate error, this command should not be found!
-   self~assertTrue("Error should be caught", caught)
+   self~assertTrue(caught, "Error should be caught")
    return
 
    error:
-   self~assertSame("subTest1a", condition('cs'),'ERROR')
-   self~assertSame("subTest1b", condition('i'),'CALL')
-   self~assertSame("subTest1c", condition('s'),'DELAY')
+   self~assertSame(condition('cs'), 'ERROR')
+   self~assertSame(condition('i'), 'CALL')
+   self~assertSame(condition('s'), 'DELAY')
    caught = .true
    return
 
@@ -744,13 +692,13 @@ return testGroupList
    call on error
    caught = .false
    call myproc
-   if \caught then self~assertTrue("subTest_1", 0)
+   if \caught then self~assertTrue(0)
    return
 
    error:
-   self~assertSame("subTest1a", condition('cs'),'ERROR')
-   self~assertSame("subTest1b", condition('i'),'CALL')
-   self~assertSame("subTest1c", condition('s'),'DELAY')
+   self~assertSame(condition('cs'), 'ERROR')
+   self~assertSame(condition('i'), 'CALL')
+   self~assertSame(condition('s'), 'DELAY')
    caught = .true
    return
 
@@ -762,13 +710,13 @@ return testGroupList
    call on user badvalue
    caught = .false
    call myproc
-   if \caught then self~assertTrue("subTest_1", 0)
+   if \caught then self~assertTrue(0)
    return
 
    badvalue:
-   self~assertSame("subTest1a", condition('cs'),'USER BADVALUE')
-   self~assertSame("subTest1b", condition('i'),'CALL')
-   self~assertSame("subTest1c", condition('s'),'DELAY')
+   self~assertSame(condition('cs'), 'USER BADVALUE')
+   self~assertSame(condition('i'), 'CALL')
+   self~assertSame(condition('s'), 'DELAY')
    caught = .true
    return
 
@@ -781,13 +729,13 @@ return testGroupList
    trace off
    caught = .false
    address xyzzy 'grue'  -- this is a deliberate unknown command
-   self~assertTrue("Error should be caught", caught)
+   self~assertTrue(caught, "Error should be caught")
    return
 
    failure:
-   self~assertSame("subTest1a", condition('cs'),'FAILURE')
-   self~assertSame("subTest1b", condition('i'),'CALL')
-   self~assertSame("subTest1c", condition('s'),'DELAY')
+   self~assertSame(condition('cs'), 'FAILURE')
+   self~assertSame(condition('i'), 'CALL')
+   self~assertSame(condition('s'), 'DELAY')
    caught = .true
    return
 
@@ -795,13 +743,13 @@ return testGroupList
    call on failure
    caught = .false
    call myproc
-   if \caught then self~assertTrue("subTest_1", 0)
+   if \caught then self~assertTrue(0)
    return
 
    failure:
-   self~assertSame("subTest1a", condition('cs'),'FAILURE')
-   self~assertSame("subTest1b", condition('i'),'CALL')
-   self~assertSame("subTest1c", condition('s'),'DELAY')
+   self~assertSame(condition('cs'), 'FAILURE')
+   self~assertSame(condition('i'), 'CALL')
+   self~assertSame(condition('s'), 'DELAY')
    caught = .true
    return
 

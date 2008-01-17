@@ -56,70 +56,19 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.Encode_DecodeBase64.testGroup)
 
+  if group~isAutomatedTest then return group
 
--------------------------------------------------------------------------------------------
--- ===> adapt the "testGroupList" to your testCase classes; each element in the list is <===
--- ===> an array object, the first element containing the testCase class object, the   <===
--- ===> second element is a list of test method names which are regarded to be         <===
--- ===> mandatory (if the list remains empty all test methods are mandatory)           <===
+  testResult = group~suite~execute~~print
 
-   /* list of array objects, each containing the testGroup class object and an
-      optional list of mandatory test case methods name                       */
-mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
-testGroupList=.list~of( .array~of(.Encode_DecodeBase64.testGroup,  mandatoryTestMethods) )
+return testResult
 
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
--------------------------------------------------------------------------------------------
--- ===> the following code needs not to be individualized                              <===
-
-   -- read top comment, containing infos about this program
-arrLines=.array~new
-do i=1 to 150 until arrLines[i]="*/"
-   arrLines[i]=sourceline(i)
-end
-      -- supply information for the testClass(es) in this file; the class attribute
-      -- "TestCaseInfo" (a directory object, index points to a queue) will store
-      -- the parsed infos
-aTestGroupClass=testGroupList~at(testGroupList~first)[1] -- get first testClass
-
-   -- will parse the array lines and store result in class object
-call makeDirTestInfo aTestGroupClass, arrLines
-tmpDir=aTestGroupClass~TestCaseInfo
-parse source s   -- op_sys invocationType fullPathToThisFile
-tmpDir~setentry("test_Case-source", s)
-
-   -- now add this directory to other testCase classes, if any left
-do arr over testGroupList
-   if arr[1]=aTestGroupClass then iterate  -- already handled
-   arr[1]~TestCaseInfo=tmpDir             -- save info in class object
-end
-
--- if this file is CALLed or REQUIRED then define an entry "bRunTestLocally" in .local
--- and set it to .false; this way the independent local invocation of the tests is inhibited
-if .local~hasentry("bRunTestsLocally")=.false then
-   .local~bRunTestsLocally=.true -- if this file is executed directly, then run tests for debugging
-
-if .bRunTestsLocally=.true then  -- run ALL tests in this test unit
-do
-   ts=.testSuite~new             -- create a testSuite
-   do arr over testGroupList
-      -- create a testSuite for the given test case class, use all its testmethods
-      ts~addTest( .testSuite~new(arr[1]))
-   end
-   -- testResult=.testSuite~new(testGroupClass)~run
-   testResult=ts~run       -- now run all the tests
-
-   call simpleFormatTestResults testResult
-end
-
-   /* return list of array objects containing test case classes and
-      optionally list of mandatory test methods                      */
-return testGroupList
-
-::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
-
-::class "Encode_DecodeBase64.testGroup" subclass TestCase public
+::class "Encode_DecodeBase64.testGroup" subclass ooTestCase public
 
 ::method setup       -- add entries to .local
       /* define data needed for the Rexx implementation of encodeBase64 and decodeBase64  */
@@ -146,11 +95,11 @@ return testGroupList
    allChars=xrange("00"x, "ff"x) -- create a string with all 8-Bit chars
    do i=1 to allChars~length
       a=allChars~left(i)         -- create a string from the left
-      self~assertSame("subTest"i"a", a, a~encodeBase64~decodeBase64)  -- test whether same value
-      -- self~assertEquals("subTest"i, a, a1~encodeBase64~decodeBase64)  -- test whether same value
+      self~assertSame(a, a~encodeBase64~decodeBase64)  -- test whether same value
+      -- self~assertEquals(a, a1~encodeBase64~decodeBase64)  -- test whether same value
 
       b=allChars~right(i)        -- create a string from the right
-      self~assertSame("subTest"i"b", b, b~encodeBase64~decodeBase64)  -- test whether same value
+      self~assertSame(b, b~encodeBase64~decodeBase64)  -- test whether same value
    end
 
    a="Hello world"
@@ -158,17 +107,17 @@ return testGroupList
       -- "Hello world" encoded value from Perl, Ruby, etc. according to Salvador's article
    a2="SGVsbG8gd29ybGQ="
 
-   self~assertSame("subTest257" , a , a2~decodeBase64 )
-   self~assertSame("subTest258" , a , a1~decodeBase64 )
+   self~assertSame(a, a2~decodeBase64)
+   self~assertSame(a, a1~decodeBase64)
 
 ::method "used_to_test_rexx_enDecoding" -- "test_Enbase64_Debase64"
    allChars=xrange("00"x, "ff"x) -- create a string with all 8-Bit chars
    do i=1 to allChars~length
       a=allChars~left(i)         -- create a string from the left
-      self~assertSame("subTest"i"a", a, debase64(enbase64(a)))  -- test whether same value
+      self~assertSame(a, debase64(enbase64(a)))  -- test whether same value
 
       b=allChars~right(i)        -- create a string from the right
-      self~assertSame("subTest"i"b", b, debase64(enbase64(b)))  -- test whether same value
+      self~assertSame(b, debase64(enbase64(b)))  -- test whether same value
    end
 
 
@@ -179,8 +128,8 @@ return testGroupList
 
    do i=1 to allChars~length
       a=allChars~left(i)         -- create a string from the left
-      self~assertSame("subTest"i, enbase64(a), a~encodeBase64)  -- test whether same value
-      -- self~assertEquals("subTest"i, enbase64(a), a~encodeBase64)  -- test whether same value
+      self~assertSame(enbase64(a), a~encodeBase64)  -- test whether same value
+      -- self~assertEquals(enbase64(a), a~encodeBase64)  -- test whether same value
    end
 
 
@@ -191,8 +140,8 @@ return testGroupList
    do i=1 to allChars~length
       a=allChars~left(i)         -- create a string from the left
       a2=enbase64(a)             -- base64 encode it
-      self~assertSame("subTest"i, a, a2~decodeBase64)  -- test whether same value
-      -- self~assertEquals("subTest"i, a, a2~decodeBase64)  -- test whether same value
+      self~assertSame(a, a2~decodeBase64)  -- test whether same value
+      -- self~assertEquals(a, a2~decodeBase64)  -- test whether same value
    end
 
 

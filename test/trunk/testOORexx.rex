@@ -1,7 +1,7 @@
 #!/usr/bin/rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2005 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2007-2008 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -36,17 +36,57 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-/**
- * testOORexx is a planned future replacement for runTestGroups.  It is not
- * implemented.
+/** testOORexx.rex
+ * This is a simple kicker program.  It sets the framework directories into the
+ * path and then invokes the program that does the actual work.
  */
+arguments = arg(1)
 
-cmdLine = arg(1)
+   parse source . . file
 
-   say "testOORexx vesion 0.0.0"
-   say "testOORexx is not implemented yet"
+   curDir  = directory()
+   curPath = value("PATH", , 'ENVIRONMENT')
+   testDir = file~left(file~caseLessPos("testOORexx.rex") - 2 )
 
-return 0
+   if testDir~pos("\") <> 0 then do
+     sl = "\"
+     pathSep = ";"
+   end
+   else do
+     sl = "/"
+     pathSep = ":"
+   end
 
-::requires OOREXXUNIT.CLS
+   ooRexxUnitDir = testDir || sl || "framework"
+   newPath = curPath
 
+   if \ isInPath(curPath, curDir, sl, pathSep) then
+     newPath = curDir || pathSep || newPath
+
+   if \ isInPath(curPath, ooRexxUnitDir, sl, pathSep) then
+     newPath = ooRexxUnitDir || pathSep || newPath
+
+   if \ isInPath(curPath, testDir, sl, pathSep) then
+     newPath = testDir || pathSep || newPath
+
+   -- Before changing the current working directory, be sure and save it in case
+   -- it is needed.
+   .local~ooTest.originalWorkingDir = curDir
+
+   j = directory(testDir)
+   j = value("PATH", newPath, 'ENVIRONMENT')
+
+   retCode = 'worker.rex'(arguments)
+
+   return retCode
+
+/** isInPath() is a public routine from ooRexxUnit.  But, we don't have access
+ * to ooRexxUnit.cls at this point.
+ */
+::routine isInPath
+  use arg path, dir, sl, sep
+
+  if path~caseLessPos(dir || sep) <> 0 then return .true
+  if path~caseLessPos(dir || sl || pathSep) <> 0 then return .true
+  if path~right(dir~length)~caselessCompare(dir) == 0 then return .true
+  return .false
