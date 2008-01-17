@@ -352,7 +352,7 @@ return ret
 ::routine  execRexxPrgWithArgs public
   use strict arg prgName, params, output
 
-  cmd = 'rexx' prgName params
+  cmd = 'rexx' .TestUtil~enQuote(prgName) params
   prgRet = issueCmd(cmd, output)
 
 return prgRet
