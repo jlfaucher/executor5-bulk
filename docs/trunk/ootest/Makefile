@@ -1,6 +1,6 @@
 #----------------------------------------------------------------------------
 #
-# Description: Makefile for the Object Rexx Math Library Documents.
+# Description: Makefile for the ooTest Framework Documents.
 #
 # Copyright (c) 2008, Rexx Language Association. All rights reserved.
 #
@@ -74,7 +74,7 @@ book1.htm: $(IMAGE_FILES) $(HTML_STYLESHEET) genindex.sgml svnrev.tmp
 	docbook2html -d ../shared/oorexx.html.dsl ootest.sgml
 
 ootest-html.zip: book1.htm
-	zip rxmath-html *.htm *.jpg
+	zip ootest-html *.htm *.jpg
 
 $(JADETEXFMT): $(HYPERREFCFG)
 	pdftex -ini \&pdflatex pdfjadetex.ini
@@ -92,6 +92,6 @@ svnrev.tmp:
 
 
 clean:
-	rm *.log *.aux *.out *.fmt *.pdf genindex.sgml *.htm *.zip \
+	@rm -f *.log *.aux *.out *.fmt *.pdf genindex.sgml *.htm *.zip \
            HTML.index *.tmp
 
