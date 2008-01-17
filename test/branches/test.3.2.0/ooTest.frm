@@ -1725,7 +1725,12 @@ return suite
               iterate
             end
 
-            when isSubclassOf(obj~class, "ErrorReport") then do
+            when obj~isA(.ExceptionData) then do
+              testResult~addException(obj)
+              iterate
+            end
+
+            when obj~isA(.ErrorReport.) then do
               testReport~addError(obj)
               iterate
             end
