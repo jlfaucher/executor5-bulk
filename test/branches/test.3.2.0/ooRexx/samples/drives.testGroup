@@ -1,26 +1,7 @@
 #!/usr/bin/rexx
 /*
-   name:             drives.testGroup
-   authors:          Mark Miesfeld
-   date:             11/24/2007
-   version:          1.0.0
-   changed:
-
-   languageLevel:    6.0
-   purpose:          Tests that the sample program, drives.rex, that is shipped
-                     with the release package works as expected.  This is a QA
-                     test more than a collection of unit tests.
-
-   remark:           This is a Windows only test group.  This test group has
-                     more comment in it than needed so it can serve as an
-                     example.
-
-   license:          CPL 1.0 (Common Public License v1.0, see below)
-   link:
-
-   category1:        ooRexx
-   category2:        Samples
-
+  SVN Revision: $Rev$
+  Change Date:  $Date$
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
@@ -76,8 +57,10 @@
   -- found.  If it can not be found, we mark this test group as not having any
   -- executable tests.
 
-  if locateSamplePrg("drives.rex") == .nil then
-      group~markNoTests("This is a test of a sample ooRexx program, but the sample can not be located")
+  if group~machineOS == "WINDOWS" then do
+    if locateSamplePrg("drives.rex") == .nil then
+        group~markNoTests("This is a test of a sample ooRexx program, but the sample can not be located")
+  end
 
   if group~isAutomatedTest then return group
 
