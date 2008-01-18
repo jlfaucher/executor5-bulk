@@ -167,7 +167,7 @@ return prgRet
         end
         escName = escName || tmp
 
-        ret = issueCmd('rpm -q ooRexx | grep' escName, cmdOut)
+        ret = issueCmd('rpm -q ooRexx --list | grep' escName, cmdOut)
         if cmdOut~items == 1 then retObj = cmdOut[1]
         leave FINDSAMPLE
       end
