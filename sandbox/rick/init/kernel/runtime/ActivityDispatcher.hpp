@@ -40,6 +40,7 @@
 #ifndef ActivityDispatcher_included
 #define ActivityDispatcher_included
 
+
 class RexxDirectory;
 class RexxNativeActivation;
 

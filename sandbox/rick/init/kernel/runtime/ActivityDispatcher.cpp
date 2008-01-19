@@ -36,7 +36,11 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
+#include "RexxCore.h"
 #include "ActivityDispatcher.hpp"
+#include "Interpreter.hpp"
+#include "InterpreterInstance.hpp"
+#include "RexxActivity.hpp"
 
 
 /**
@@ -69,11 +73,11 @@ void ActivityDispatcher::handleError(wholenumber_t r, RexxDirectory *c)
 void ActivityDispatcher::invoke()
 {
     // get an instance and the current activity
-    InterpreterInstance *instance = Interpreter::createInterpreterInstance(exits, envname);
+    InterpreterInstance *instance = Interpreter::createInterpreterInstance(exits, defaultEnvironment);
     activity = instance->enterOnCurrentThread();
 
     // go run the instance on the current activity
-    activity->run(this);
+    activity->run(*this);
 
     activity->exitCurrentThread();
     activity = OREF_NULL;

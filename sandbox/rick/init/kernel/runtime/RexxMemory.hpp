@@ -201,7 +201,7 @@ class RexxMemory : public RexxObject {
   RexxObject *setParms(RexxObject *, RexxObject *);
   RexxObject *gutCheck();
   void        memoryPoolAdded(MemorySegmentPool *);
-  void        terminate();
+  void        shutdown();
   void        liveStackFull();
   void        dumpMemoryProfile();
   char *      allocateImageBuffer(size_t size);

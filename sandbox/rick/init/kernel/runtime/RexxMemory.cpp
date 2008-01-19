@@ -2084,7 +2084,7 @@ void RexxMemory::memoryPoolAdded(MemorySegmentPool *pool)
 }
 
 
-void RexxMemory::terminate()
+void RexxMemory::shutdown()
 /******************************************************************************/
 /* Function:  Free all the memory pools currently accessed by this process    */
 /*    If not already released.  Then set process Pool to NULL, indicate       */

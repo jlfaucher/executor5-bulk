@@ -1266,7 +1266,7 @@ void RexxActivity::popStackFrame(bool  reply)
     if (poppedStackFrame->isStackBase())
     {
         activations->push((RexxObject *)poppedStackFrame);
-        activationStackDepth++;
+        stackFrameDepth++;
     }
     else
     {
@@ -1307,14 +1307,14 @@ void RexxActivity::cleanupStackFrame(RexxActivationBase *poppedStackFrame)
 void RexxActivity::popStackFrame(RexxActivationBase *target)
 {
     RexxActivationBase *poppedStackFrame = (RexxActivationBase *)activations->fastPop();
-    activationStackDepth--;
+    stackFrameDepth--;
     // pop off the top elements and reduce the depth
     while (poppedStackFrame != target)
     {
         // clean this up and potentially cache
         cleanupStackFrame(poppedStackFrame);
         poppedStackFrame = (RexxActivationBase *)activations->fastPop();
-        activationStackDepth--;
+        stackFrameDepth--;
     }
 
     // clean this up and potentially cache
@@ -1335,12 +1335,12 @@ void RexxActivity::unwindStackFrame()
         // check the top activation.  If it's a stack base item, then
         // we've reached the unwind point.
         RexxActivationBase *poppedActivation = (RexxActivationBase *)activations->fastPop();
-        activationStackDepth--;
+        stackFrameDepth--;
         if (poppedActivation->isStackBase())
         {
             // at the very base of the activity, we keep a base item.  If this
             // is the bottom stack frame here, then push it back on.
-            if (activationStackDepth == 0)
+            if (stackFrameDepth == 0)
             {
                 activations->push((RexxObject *)poppedActivation);
                 stackFrameDepth++;
@@ -1399,6 +1399,8 @@ void RexxActivity::unwindToFrame(RexxActivation *frame)
  */
 void RexxActivity::setupAttachedActivity(InterpreterInstance *interpreter)
 {
+    // mark this as an attached activity
+    attached = true;
     // we're associated with this instance
     instance = interpreter;
     // copy all of the system exits
@@ -1412,6 +1414,23 @@ void RexxActivity::setupAttachedActivity(InterpreterInstance *interpreter)
     // This is a root activation that will allow API functions to be called
     // on this thread without having an active bit of ooRexx code first.
     createNewActivationStack();
+}
+
+
+/**
+ * Cleanup the resources for a detached activity, including
+ * removing the suspended state from a pushed activity nest.
+ */
+void RexxActivity::detachInstance()
+{
+    // Undo this attached status
+    instance = OREF_NULL;
+    attached = false;
+    // if there's a nesting situation, restore the activity to active state.
+    if (nestedActivity != OREF_NULL)
+    {
+        nestedActivity->setSuspended(false);
+    }
 }
 
 
@@ -1590,7 +1609,7 @@ bool RexxActivity::halt(RexxString *d)
                                        /* get the current activation        */
     RexxActivation *activation = currentRexxFrame;
                                        /* got an activation?                */
-    if ((activation != NULL)
+    if (activation != NULL)
     {
         // please make it stop :-)
         activation->halt(d);
@@ -1614,7 +1633,7 @@ bool RexxActivity::setTrace(bool on)
                                        /* get the current activation        */
     RexxActivation *activation = currentRexxFrame;
                                        /* got an activation?                */
-    if ((activation != NULL)
+    if (activation != NULL)
     {
         if (on)                        /* turning this on?                  */
         {
@@ -2694,11 +2713,16 @@ void  RexxActivity::terminatePoolActivity()
   EVPOST(this->runsem);                /* let him run so he knows to exi*/
 }
 
+
+/**
+ * Run a task that needs to enter the interpreter on a thread.
+ * The activity will set up the root activation and run the
+ * task under that context to ensure proper error handling and
+ * kernel access.
+ *
+ * @param target The dispatcher object that implements the call out.
+ */
 void RexxActivity::run(ActivityDispatcher &target)
-/******************************************************************************/
-/* Function:    send a message (with message lookup) to an object.  This      */
-/*              method will do any needed activity setup before hand.         */
-/******************************************************************************/
 {
   SYSEXCEPTIONBLOCK exreg;             /* system specific exception info    */
   size_t  startDepth;                  /* starting depth of activation stack*/
@@ -2709,8 +2733,8 @@ void RexxActivity::run(ActivityDispatcher &target)
   this->nestedInfo.stackptr = SysGetThreadStackBase(TOTAL_STACK_SIZE);
   this->generateRandomNumberSeed();    /* get a fresh random seed           */
                                        /* Push marker onto stack so we know */
-  this->createNewStackFrame();         /* what level we entered.            */
-  startDepth = this->depth;            /* Remember activation stack depth   */
+  this->createNewActivationStack();    /* what level we entered.            */
+  startDepth = stackFrameDepth;        /* Remember activation stack depth   */
 
   SysRegisterSignals(&exreg);          /* register our signal handlers      */
 
@@ -2719,7 +2743,7 @@ void RexxActivity::run(ActivityDispatcher &target)
   size_t activityLevel = getActivationLevel();
   // create a new native activation
   RexxNativeActivation *newNActa = new RexxNativeActivation(this);
-  push(newNActa);          /* push it on the activity stack     */
+  pushStackFrame(newNActa);            /* push it on the activity stack     */
 
   try
   {
@@ -2741,6 +2765,33 @@ void RexxActivity::run(ActivityDispatcher &target)
   unwindToDepth(startDepth);
 
   this->unwindStackFrame();            /* remove the nil marker             */
+}
+
+
+
+
+/**
+ * Run a task under the context of an activity.  This will be
+ * a task that calls out from the interpreter, which the
+ * kernel lock released during the call.
+ *
+ * @param target The dispatcher object that implements the call out.
+ */
+void RexxActivity::run(CallbackDispatcher &target)
+{
+    // create new activation frame using the current Rexx frame (which can be null, but
+    // is not likely to be).
+    RexxNativeActivation *new_activation = new RexxNativeActivation(this, currentRexxFrame);
+    // this becomes the new top activation.  We also turn on the variable pool for
+    // this situation.
+    this->pushStackFrame(new_activation);
+    new_activation->enableVariablepool();
+
+    // go run this
+    new_activation->run(target);
+
+    requestAccess();                     /* get the kernel lock back          */
+    this->popStackFrame(new_activation); /* pop the top activation            */
 }
 
 

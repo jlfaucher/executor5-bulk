@@ -569,7 +569,8 @@ void RexxNativeActivation::run(ActivityDispatcher &dispatcher)
     try
     {
         // make the activation hookup
-        dispatcher->setActivation(this);
+        dispatcher.setActivation(this);
+        dispatcher.run();
     }
     catch (ActivityException)
     {
@@ -592,6 +593,69 @@ void RexxNativeActivation::run(ActivityDispatcher &dispatcher)
     this->guardOff();                    /* release any variable locks        */
     this->activity->pop(false);          /* pop this from the activity        */
     this->setHasNoReferences();          /* mark this as not having references in case we get marked */
+    return;                             /* and finished                      */
+}
+
+
+/**
+ * Run a callback under the scope of a native actvation. This is
+ * generally a call out, such as a system exit, argument
+ * callback, etc.
+ *
+ * @param dispatcher The dispatcher instance we're going to run.
+ */
+void RexxNativeActivation::run(CallbackDispatcher &dispatcher)
+{
+    size_t activityLevel = this->activity->getActivationLevel();
+    try
+    {
+        // make the activation hookup
+        // make the activation hookup
+        dispatcher.setActivation(this);
+        activity->releaseAccess();           /* force this to "safe" mode         */
+        dispatcher.run();
+        activity->requestAccess();           /* now in unsafe mode again          */
+    }
+    catch (ActivityException)
+    {
+        // if we're not the current kernel holder when things return, make sure we
+        // get the lock before we continue
+        if (ActivityManager::currentActivity != activity)
+        {
+            activity->requestAccess();
+        }
+        // pass the condition information on to the dispatch unig
+        dispatcher->handleError(activity->getCondition());
+        return;
+    }
+    catch (RexxActivation *)
+    {
+        // if we're not the current kernel holder when things return, make sure we
+        // get the lock before we continue
+        if (ActivityManager::currentActivity != activity)
+        {
+            activity->requestAccess();
+        }
+
+        this->activity->restoreActivationLevel(activityLevel);
+        // IMPORTANT NOTE:  We don't pop our activation off the stack.  This will be
+        // handled by the catcher.  Attempting to pop the stack when an error or condition has
+        // occurred can munge the activation stack, resulting bad stuff.
+        this->setHasNoReferences();        /* mark this as not having references in case we get marked */
+        // now rethrow the trapped condition so that real target can handle this.
+        throw;
+    }
+    catch (RexxNativeActivation *)
+    {
+        // if we're not the current kernel holder when things return, make sure we
+        // get the lock before we continue
+        if (ActivityManager::currentActivity != activity)
+        {
+            activity->requestAccess();
+        }
+        this->activity->restoreActivationLevel(activityLevel);
+        return;
+    }
     return;                             /* and finished                      */
 }
 

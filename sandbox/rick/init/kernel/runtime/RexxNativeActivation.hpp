@@ -47,6 +47,7 @@
 #include "RexxActivity.hpp"
 class RexxNativeCode;
 class ActivityDispatcher;
+class CallbackDispatcher;
 
 class RexxNativeActivation : public RexxActivationBase {
  public:
@@ -65,6 +66,7 @@ class RexxNativeActivation : public RexxActivationBase {
   void prepare(RexxObject *, RexxString *, size_t, RexxObject **);
   void run(RexxObject *, RexxString *, size_t, RexxObject **, ProtectedObject &);
   void run(ActivityDispatcher &dispatcher);
+  void run(CallbackDispatcher &dispatcher);
   RexxObject *saveObject(RexxObject *);
   RexxVariableDictionary *methodVariables();
   bool   isInteger(RexxObject *);
@@ -109,7 +111,7 @@ class RexxNativeActivation : public RexxActivationBase {
   virtual bool isStackBase();
   virtual RexxActivation *getRexxContext();
   virtual RexxObject *getReceiver();
-  inline bool setStackBase() { stackBase = true; }
+  inline void setStackBase() { stackBase = true; }
 
 protected:
 

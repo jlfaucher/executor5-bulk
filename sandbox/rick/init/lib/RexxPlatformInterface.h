@@ -218,6 +218,10 @@ void SysSaveProgram(RexxString *, RexxMethod *);
 void SysSaveProgramBuffer(PRXSTRING , RexxMethod *);
 #endif
 
+#ifndef SysSaveTranslatedProgram
+void SysSaveTranslatedProgram(const char *, RexxMethod *);
+#endif
+
 #ifndef SysSourceString
                                        /* Create the source string          */
 RexxString *SysSourceString(RexxString *, RexxString *);
@@ -230,6 +234,11 @@ RexxString *SysInitialAddressName();   /* get the initial address name      */
 #ifndef SysQualifyFileSystemName
                                        /* Qualify a file name               */
 RexxString *SysQualifyFileSystemName(RexxString *);
+#endif
+
+#ifndef SysFileExtension
+
+const char *SysFileExtension(const char *);
 #endif
 
 #ifndef SysClauseBoundary

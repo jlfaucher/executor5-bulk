@@ -43,6 +43,8 @@
 #include "ActivityManager.hpp"
 #include "Interpreter.hpp"
 #include "ProtectedObject.hpp"
+#include "InterpreterInstance.hpp"
+#include "RexxNativeActivation.hpp"
 
 // The currently active activity.
 RexxActivity *ActivityManager::currentActivity = OREF_NULL;
@@ -650,6 +652,13 @@ void ActivityManager::returnActivity(RexxActivity *activityObject)
         ResourceSection lock;
         // and also remove from the global list
         allActivities->removeItem((RexxObject *)activityObject);
+        // if we ended up pushing an old activity down when we attached this
+        // thread, then we need to restore the old thread to active state.
+        RexxActivity *oldActivity = activityObject->getNestedActivity();
+        if (oldActivity != OREF_NULL)
+        {
+            oldActivity->setSuspended(false);
+        }
         // cleanup any system resources this activity might own
         activityObject->cleanupActivityResources();
     }
@@ -729,7 +738,7 @@ RexxActivity *ActivityManager::getRootActivity()
     // mark the old activity as suspended, and chain this to the new activity.
     if (oldActivity != OREF_NULL)
     {
-        oldActivity->setSuspended();
+        oldActivity->setSuspended(true);
         // this pushes this down the stack.
         activityObject->setNestedActivity(oldActivity);
     }
@@ -753,11 +762,11 @@ RexxActivity *ActivityManager::getRootActivity()
  * @return Either an existing activity, or a new activity created for
  *         this thread.
  */
-RexxActivity *ActivityManager::attachActivity(InterpreterInstance *instance)
+RexxActivity *ActivityManager::attachThread(InterpreterInstance *instance)
 {
     // it's possible we already have an activity active for this thread.  That
     // most likely occurs in nested RexxStart() calls.
-    RexxActivity *oldObject = findActivity();
+    RexxActivity *oldActivity = findActivity();
     // we have an activity created for this thread already.  The interpreter instance
     // should already have handled the case of an attach for an already attached thread.
     // so we're going to have a new activity to create, and potentially an existing one to
@@ -765,15 +774,14 @@ RexxActivity *ActivityManager::attachActivity(InterpreterInstance *instance)
     // we need to lock the kernel to have access to the memory manager to
     // create this activity.
     lockKernel();
-    RexxActivity activityObject = newActivity(NO_THREAD);
+    RexxActivity *activityObject = newActivity(NO_THREAD);
     // mark this as an attached thread.
-    activityObject->setAttached();
     activityObject->setupAttachedActivity(instance);
     // Do we have a nested interpreter call occurring on the same thread?  We need to
     // mark the old activity as suspended, and chain this to the new activity.
     if (oldActivity != OREF_NULL)
     {
-        oldActivity->setSuspended();
+        oldActivity->setSuspended(true);
         // this pushes this down the stack.
         activityObject->setNestedActivity(oldActivity);
     }
@@ -905,4 +913,5 @@ NativeContextBlock::~NativeContextBlock()
 RexxObject *NativeContextBlock::protect(RexxObject *o)
 {
     self->saveObject(o);
+    return o;
 }

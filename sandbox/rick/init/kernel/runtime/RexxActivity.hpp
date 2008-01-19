@@ -60,6 +60,7 @@ class RexxSource;
 class RexxMethod;
 class InterpreterInstance;
 class ActivityDispatcher;
+class CallbackDispatcher;
 
                                        /* interface values for the          */
                                        /* activity_queue method             */
@@ -230,20 +231,29 @@ public:
    RexxString *lineIn(RexxActivation *);
    void generateRandomNumberSeed();
    void setupAttachedActivity(InterpreterInstance *interpreter);
+   void detachInstance();
 
-   void activate() { nestedCount++; }
-   void deactivate() { nestedCount--; }
-   bool isActive() { return nestedCount > 0; }
-   bool isInactive() { return nestedCount == 0; }
-   size_t getActivationLevel() { return nestedCount; }
-   void restoreActivationLevel(size_t l) { nestedCount = l; }
-   bool isSuspended() { return suspended; }
+   inline void activate() { nestedCount++; }
+   inline void deactivate() { nestedCount--; }
+   inline bool isActive() { return nestedCount > 0; }
+   inline bool isInactive() { return nestedCount == 0; }
+   inline size_t getActivationLevel() { return nestedCount; }
+   inline void restoreActivationLevel(size_t l) { nestedCount = l; }
+   inline bool isSuspended() { return suspended; }
+   inline void setSuspended(bool s) { suspended = s; }
+   inline bool isInterpreterRoot() { return interpreterRoot; }
+   inline void setInterpreterRoot() { interpreterRoot = true; }
+   inline void setNestedActivity(RexxActivity *a) { nestedActivity = a; }
+   inline RexxActivity *getNestedActivity() { return nestedActivity; }
+   inline bool isAttached() { return attached; }
+
 
    bool hasSecurityManager();
    bool callSecurityManager(RexxString *name, RexxDirectory *args);
    void inheritSettings(RexxActivity *parent);
    void exitCurrentThread();
    void run(ActivityDispatcher &target);
+   void run(CallbackDispatcher &target);
 
    inline RexxActivation *getCurrentRexxFrame() {return currentRexxFrame;}
    inline RexxActivationBase *getTopStackFrame() { return topStackFrame; }
@@ -339,12 +349,15 @@ public:
    bool     exit;                      /* activity loop is to exit          */
    bool     requestingString;          /* in error handling currently       */
    bool     suspended;                 // the suspension flag
+   bool     interpreterRoot;           // This is the root activity for an interpreter instance
+   bool     attached;                  // this is attached to an instance (vs. created directly)
    SEV      guardsem;                  /* guard expression semaphore        */
    size_t   nestedCount;               /* extent of the nesting             */
    NestedActivityState nestedInfo;     /* info saved and restored on calls  */
    ProtectedObject *protectedObjects;  // list of stack-based object protectors
    RexxString *lastMessageName;        // class called message
    RexxMethod *lastMethod;             // last called method
+   RexxActivity *nestedActivity;       // used to push down activities in threads with more than one instance
  };
 
 #endif

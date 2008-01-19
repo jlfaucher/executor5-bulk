@@ -435,7 +435,7 @@ RexxMethod *RexxBehaviour::superMethod(
     {
         /* get the scope list for the given  */
         /* starting scope                    */
-        scopeList = (RexxArray *)this->scopes->get(startScope);
+        RexxArray *scopeList = (RexxArray *)this->scopes->get(startScope);
         if (scopeList != OREF_NULL)        /* have a matching list?             */
         {
             /* get a list of methods             */

@@ -36,7 +36,15 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
+#include "RexxCore.h"
 #include "CreateMethodDispatcher.hpp"
+#include "Interpreter.hpp"
+#include "InterpreterInstance.hpp"
+#include "RexxActivity.hpp"
+#include "MethodClass.hpp"
+#include "DirectoryClass.hpp"
+#include "BufferClass.hpp"
+#include "ProtectedObject.hpp"
 
 
 
@@ -54,22 +62,22 @@ void ConditionDispatcher::handleError(wholenumber_t r, RexxDirectory *c)
     // fill in the condition information
 
     memset(translatedCondition, 0, sizeof(RexxConditionData));
-    translatedCondition->code = message_number((RexxString *)conditionobj->at(OREF_CODE));
+    translatedCondition->code = message_number((RexxString *)conditionData->at(OREF_CODE));
 
-    translatedCondition->rc = message_number((RexxString *)conditionobj->at(OREF_RC));
+    translatedCondition->rc = message_number((RexxString *)conditionData->at(OREF_RC));
 
-    RexxString *message = (RexxString *)conditionobj->at(OREF_NAME_MESSAGE);
-    if ( (RexxObject*) message != ooRexxNil)
+    RexxString *message = (RexxString *)conditionData->at(OREF_NAME_MESSAGE);
+    if ((RexxObject*) message != TheNilObject)
     {
         message->copyToRxstring(translatedCondition->message);
     }
 
-    RexxString *errortext = (RexxString *)conditionobj->at(OREF_ERRORTEXT);
+    RexxString *errortext = (RexxString *)conditionData->at(OREF_ERRORTEXT);
     errortext->copyToRxstring(translatedCondition->errortext);
-    RexxString *program = (RexxString *)conditionobj->at(OREF_PROGRAM);
+    RexxString *program = (RexxString *)conditionData->at(OREF_PROGRAM);
     program->copyToRxstring(translatedCondition->program);
     // we set the dispatcher return code to the negated value
-    rc = -translatedCondition.rc;
+    rc = -translatedCondition->rc;
 }
 
 
@@ -100,9 +108,9 @@ void RunMethodDispatcher::run()
     RexxArray *new_arglist = OREF_NULL;
 
     // callback activated?
-    if (callbackFunction != NULL)
+    if (argumentCallback != NULL)
     {
-        RunMethodArgumentCallback callback(callbackFunction, callbackArguments);
+        RunMethodArgumentCallback callback(argumentCallback, callbackArguments);
 
         activity->run(callback);
 
@@ -150,8 +158,11 @@ void RunMethodDispatcher::run()
 }
 
 
+/**
+ * Process a callout to an argument processing function.
+ */
 void RunMethodArgumentCallback::run()
 {
     // this just dispatches the callback in the correct state
-    argumentList = (RexxArray *)(callbackFunction *)(arguments);
+    argumentList = (RexxArray *)(callback*)(arguments);
 }

@@ -52,6 +52,7 @@
 #include "RexxCore.h"
 
 class InterpreterInstance;
+class RexxList;
 
 class Interpreter
 {
@@ -66,6 +67,8 @@ public:
     static void live(size_t);
     static void liveGeneral(int reason);
 
+    static void processStartup();
+    static void processShutdown();
 
     static inline void getResourceLock() { MTXRQ(resourceLock); }
     static inline void releaseResourceLock() { MTXRL(resourceLock); }
@@ -84,6 +87,7 @@ public:
     static bool isTerminated();
     static bool isActive() { return active; }
     static InterpreterInstance *createInterpreterInstance(PRXSYSEXIT exits, const char *defaultEnvironment);
+    static bool terminateInterpreterInstance(InterpreterInstance *instance);
 
     static inline bool hasTimeSliceElapsed()
     {
@@ -108,7 +112,7 @@ protected:
     static SMTX   resourceLock;      // use to lock resources accessed outside of kernel global lock
     static int    initializations;   // indicates whether we're terminated or not
     static bool   timeSliceElapsed;  // indicates we've had a timer interrupt
-    static RexxList *instances;      // the set of interpreter instances
+    static RexxList *interpreterInstances;  // the set of interpreter instances
     static bool   active;            // indicates whether the interpreter is initialized
 };
 

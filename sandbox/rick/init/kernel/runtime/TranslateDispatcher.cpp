@@ -36,7 +36,10 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
+#include "RexxCore.h"
 #include "TranslateDispatcher.hpp"
+#include "MethodClass.hpp"
+#include "ProtectedObject.hpp"
 
 
 /**
@@ -48,6 +51,7 @@ void TranslateDispatcher::run()
     ProtectedSet savedObjects;
 
     RexxString *name = OREF_NULLSTRING;     // name of the invoked program
+    RexxMethod *method;
 
     if (programName != NULL)       /* have an actual name?              */
     {
@@ -66,7 +70,7 @@ void TranslateDispatcher::run()
             /* got an error here                 */
             reportException(Error_Program_unreadable_notfound, name);
         }
-        saveObjects.add(fullname);
+        savedObjects.add(fullname);
         /* go translate the image            */
         method = TheMethodClass->newFile(fullname);
         savedObjects.add(method);
@@ -97,10 +101,10 @@ void TranslateDispatcher::run()
  *
  * @param c      The condition information for the error.
  */
-void TranslateDispatcherDispatcher::handleError(wholenumber_t r, RexxDirectory *c)
+void TranslateDispatcher::handleError(wholenumber_t r, RexxDirectory *c)
 {
     // use the base error handling and set our return code to the negated error code.
     ActivityDispatcher::handleError(rc, c);
-    retcode = -rc;
+    rc = -r;
 }
 

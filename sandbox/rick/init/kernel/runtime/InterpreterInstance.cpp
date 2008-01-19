@@ -42,7 +42,9 @@
 
 #include "InterpreterInstance.hpp"
 #include "Interpreter.hpp"
-#include "SysInterpreter.hpp"
+#include "SystemInterpreter.hpp"
+#include "ActivityManager.hpp"
+#include "RexxActivation.hpp"
 
 /**
  * Create a new Package object instance.
@@ -51,7 +53,7 @@
  *
  * @return Pointer to new object storage.
  */
-void *InterpreterInstanceObject::operator new(size_t size)
+void *InterpreterInstance::operator new(size_t size)
 {
     return new_object(size, T_InterpreterInstance);
 }
@@ -100,7 +102,7 @@ void InterpreterInstance::liveGeneral(int reason)
  */
 void InterpreterInstance::initialize(RexxActivity *activity, PRXSYSEXIT handlers, const char *defaultEnvironment)
 {
-    rootActivty = activity;
+    rootActivity = activity;
     allActivities = new_list();
     // this gets added to the entire active list.
     allActivities->append((RexxObject *)activity);
@@ -135,16 +137,21 @@ RexxActivity *InterpreterInstance::attachThread()
         return activity;
     }
 
-    ResourceLock lock;
+    ResourceSection lock;
 
     // we need to get a new activity set up for this particular thread
     activity = ActivityManager::attachThread(this);
     // add this to the activity lists
-    allActivities->append(activity);
+    allActivities->append((RexxObject *)activity);
     return activity;
 }
 
 
+/**
+ * Detach a thread from this interpreter instance.
+ *
+ * @return true if this worked ok.
+ */
 bool InterpreterInstance::detachThread()
 {
     // first check for an existing activity
@@ -157,9 +164,12 @@ bool InterpreterInstance::detachThread()
     }
     ResourceSection lock;
 
+
     allActivities->removeItem((RexxObject *)activity);
-    // this activity is no more...clean up any resources it owns.
-    activity->cleanupActivityResources():
+    // have the activity manager remove this from the global tables
+    // and perform resource cleanup
+    ActivityManager::returnActivity(activity);
+    return true;
 }
 
 
@@ -176,12 +186,12 @@ RexxActivity *InterpreterInstance::spawnActivity(RexxActivity *parent)
     // create a new activity
     RexxActivity *activity = ActivityManager::newActivity(parent);
 
-    ResourceLock lock;
+    ResourceSection lock;
 
     // we need to get a new activity set up for this particular thread
     activity = ActivityManager::attachThread(this);
     // add this to the activity lists
-    allActivities->append(activity);
+    allActivities->append((RexxObject *)activity);
     return activity;
 }
 
@@ -289,7 +299,7 @@ RexxActivity *InterpreterInstance::enterOnCurrentThread()
     ResourceSection lock;              // lock the outer control block access
 
     // attach this thread to the current activity
-    RexxActivity *activity = attachActivity();
+    RexxActivity *activity = attachThread();
     // this will also get us the kernel lock, and take care of nesting
     activity->activate();
     activity->requestAccess();
@@ -304,13 +314,16 @@ RexxActivity *InterpreterInstance::enterOnCurrentThread()
  */
 void InterpreterInstance::exitCurrentThread()
 {
-    exitCurrentThread(findActivity());
+    // find the current activity and deactivate it, and
+    // release the kernel lock.
+    RexxActivity *activity = findActivity();
+    activity->exitCurrentThread();
 }
 
 
 void InterpreterInstance::removeInactiveActivities()
 {
-    size_t count = allActivites->items();
+    size_t count = allActivities->items();
 
     // This is a bit complicated.  Each activity will be removed from the
     // head of the list, and any activity not ready for termination is
@@ -319,10 +332,10 @@ void InterpreterInstance::removeInactiveActivities()
     // If there are any items left, those are activities we can't release yet.
     for (size_t i = 0; i < count; i++)
     {
-        RexxActivity *activity = allActivities->removeFirstItem();
+        RexxActivity *activity = (RexxActivity *)allActivities->removeFirstItem();
         if (activity->isActive())
         {
-            allActivities->append((RexxObject *));
+            allActivities->append((RexxObject *)activity);
         }
         else
         {
@@ -387,131 +400,15 @@ bool InterpreterInstance::terminate()
         return true;
     }
 
-
-    RexxThread threadID;              // our thread information
-    threadID.attachThread();          // initialize with thread info
-    {
-        ResourceSection lock;
-        // termination can only be done by the creating thread, and only
-        // if the prime activity is quiesced.
-
-        if (!instanceObject->primeActivity->isSameThread(threadID) || !instanceObject->primeActivity->isQuiesced())
-        {
-            return false;
-        }
-
-        // remove the prime activity from the active list first
-        removeActivity(instanceObject->primeActivity);
-
-        if (terminated)
-        {
-            return true;
-        }
-
-        terminating = true;              // we're now terminating
-        // prepare to exit on this activity
-        instanceObject->primeActivity->startTerminationProcess();
-    }
-
-    // now loop, waiting for all of the threads to complete
-    for (;;)
-    {
-        {
-            ResourceSection lock;     // get the global resource lock
-            // if we have no active activities, then we're finished
-            if (terminated)
-            {
-                return true;          // we're done!
-            }
-        }
-        // wait for any instance to finish up so we can check to see if we're
-        // finished.
-        instanceObject->primeActivity->waitForInstanceTermination();
-    }
+    // unable to shut down
+    return false;
 }
 
-
-InterpreterInstanceObject::InterpreterInstanceObject(InterpreterInstance *i, RexxInterpreter *rexx)
-{
-    // save link back to the parent instance structure
-    instance = i;
-    interpreter = rexx;
-    // create instance-specific objects
-    localEnvironment = new_directory();
-    activeActivities = new_object_table();
-    primeActivity = OREF_NULL;
-    defaultAddress = SysInterpreter::getDefaultCommandEnvironment();
-}
-
-void InterpreterInstance::copyExits(ExitHandler *target)
-{
-    for (int i = 0; i < RXNOOFEXITS + 1; i++)
-    {
-        target[i] = exits[i];
-    }
-}
 
 void InterpreterInstance::activityTerminated(RexxActivity *activity)
 {
     // remove the activity from the active list
     removeActivity(activity);
-}
-
-
-/**
- * Raise a halt condition in all threads associated with this
- * interpreter instance.
- *
- * @return
- */
-void InterpreterInstance::halt()
-{
-    ResourceSection lock;              // lock activity changes
-
-    HashLink index;
-    RexxObjectTable * table = instanceObject->activeActivities;
-
-    for (index = table->first(); table->index(index) != OREF_NULL; index = table->next(index))
-    {
-        RexxActivity *activity = (RexxActivity *)table->value(index);
-        activity->halt(OREF_NULL);
-    }
-}
-
-
-void InterpreterInstance::setTrace(
-    bool  on_or_off )                 /* trace on/off flag                 */
-/******************************************************************************/
-/* Function:   Flip on a bit in a target activities top activation            */
-/******************************************************************************/
-{
-    ResourceSection lock;              // lock activity changes
-    HashLink index;
-
-    RexxObjectTable * table = instanceObject->activeActivities;
-
-    for (index = table->first(); table->index(index) != OREF_NULL; index = table->next(index))
-    {
-        RexxActivity *activity = (RexxActivity *)table->value(index);
-        activity->setTrace(on_or_off);
-    }
-}
-
-void InterpreterInstance::processExternalHalt()
-/******************************************************************************/
-/* Function:   Process an asynchronous halt event.                            */
-/******************************************************************************/
-{
-    HashLink index;
-
-    RexxObjectTable * table = instanceObject->activeActivities;
-
-    for (index = table->first(); table->index(index) != OREF_NULL; index = table->next(index))
-    {
-        RexxActivity *activity = (RexxActivity *)table->value(index);
-        activity->halt(OREF_NULL);
-        activity->systemInfo.halt();
-    }
 }
 
 
@@ -524,7 +421,7 @@ void InterpreterInstance::addGlobalReference(RexxObject *o)
 {
     if (o != OREF_NULL)
     {
-        instanceObject->globalReferences->put(o, o);
+        globalReferences->put(o, o);
     }
 }
 
@@ -537,7 +434,7 @@ void InterpreterInstance::removeGlobalReference(RexxObject *o)
 {
     if (o != OREF_NULL)
     {
-        instanceObject->globalReferences->remove(o);
+        globalReferences->remove(o);
     }
 }
 
@@ -554,13 +451,7 @@ void InterpreterInstance::haltAllActivities()
                                          /* Get the next message object to    */
                                          /*process                            */
         RexxActivity *activity = (RexxActivity *)allActivities->getValue(listIndex);
-        RexxActivation *currentActivation = activity->getCurrentActivation();
-
-        if (currentActivation != (RexxActivationBase *)TheNilObject)
-        {
-                                         /* Yes, issue the halt to it.        */
-            ((RexxActivation *)currentActivation)->halt(OREF_NULL);
-        }
+        activity->halt(OREF_NULL);
     }
 }
 
@@ -577,20 +468,6 @@ void InterpreterInstance::traceAllActivities(bool on)
                                          /* Get the next message object to    */
                                          /*process                            */
         RexxActivity *activity = (RexxActivity *)allActivities->getValue(listIndex);
-        RexxActivation *currentActivation = activity->getCurrentActivation();
-
-        if (currentActivation != (RexxActivationBase *)TheNilObject)
-        {
-            if (on)               /* turning this on?                  */
-            {
-                                         /* turn tracing on                   */
-                currentActivation->externalTraceOn();
-            }
-            else
-            {
-                                         /* turn tracing off                  */
-                currentActivation->externalTraceOff();
-            }
-        }
+        activity->setTrace(on);
     }
 }

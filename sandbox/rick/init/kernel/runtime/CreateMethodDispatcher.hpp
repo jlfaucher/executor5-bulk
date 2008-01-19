@@ -41,6 +41,7 @@
 #define CreateMethodDispatcher_included
 
 #include "ActivityDispatcher.hpp"
+#include "CallbackDispatcher.hpp"
 
 class ConditionDispatcher : public ActivityDispatcher
 {
@@ -48,7 +49,7 @@ public:
     inline ConditionDispatcher(PRXSYSEXIT e, const char *env, RexxConditionData *cd) : ActivityDispatcher(e, env) { translatedCondition = cd; }
     inline ~ConditionDispatcher() { ; }
 
-    virtual void handleError(RexxDirectory *);
+    virtual void handleError(wholenumber_t, RexxDirectory *);
 
 protected:
     RexxConditionData *translatedCondition;  // pointer to returned condition data
@@ -85,6 +86,21 @@ public:
     REXXOBJECT (REXXENTRY *argumentCallback)(void *);   // callback handler for arguments
     REXXOBJECT securityManager;      // the security manager
     REXXOBJECT result;               // the call result
+};
+
+
+class RunMethodArgumentCallback : public CallbackDispatcher
+{
+public:
+    inline RunMethodArgumentCallback(REXXOBJECT (REXXENTRY *f)(void *), void *a) { callback = f; arguments = a; }
+    inline ~RunMethodArgumentCallback() { ; }
+
+    virtual void run();
+
+protected:
+    void *arguments;                 // opaque arguments passed to callback handler
+    REXXOBJECT (REXXENTRY *callback)(void *);   // callback handler for arguments
+
 };
 
 

@@ -49,6 +49,8 @@
 #include "Interpreter.hpp"
 #include "ActivityManager.hpp"
 #include "ListClass.hpp"
+#include "SystemInterpreter.hpp"
+#include "InterpreterInstance.hpp"
 
 
 // global resource lock
@@ -75,13 +77,13 @@ void Interpreter::processStartup()
     // the locks get create in order
     createLocks();
     ActivityManager::createLocks();
-    RexxMemory::createLocks()
+    RexxMemory::createLocks();
 }
 
 void Interpreter::processShutdown()
 {
     // we destroy the locks in reverse order
-    RexxMemory::closeLocks()
+    RexxMemory::closeLocks();
     ActivityManager::closeLocks();
     closeLocks();
 }
@@ -100,13 +102,13 @@ void Interpreter::startInterpreter(InterpreterStartupMode mode)
     // has everything been shutdown?
     if (!isActive())
     {
-        // TODO:  Make sure
+        // TODO:  Make sure these are necessary in shared code
         setbuf(stdout, NULL);              // turn off buffering for the output streams
         setbuf(stderr, NULL);
         SystemInterpreter::startInterpreter();   // perform system specific initialization
         // initialize the memory manager , and restore the
         // memory image
-        RexxMemory::initialize(mode == RUN_MODE);
+        memoryObject.initialize(mode == RUN_MODE);
         ActivityManager::startup();      // go create the local enviroment.
         // create our instances list
         interpreterInstances = new_list();
@@ -127,7 +129,7 @@ void Interpreter::startInterpreter(InterpreterStartupMode mode)
 bool Interpreter::terminateInterpreter()
 {
     {
-        ResourceLock lock;      // lock in this section
+        ResourceSection lock;   // lock in this section
         // if already shutdown, then we've got a quick return
         if (!isActive())
         {
@@ -149,7 +151,7 @@ bool Interpreter::terminateInterpreter()
     {
         // no initialized interpreter environment any more.
         active = false;
-        ResourceLock lock;      // lock in this section
+        ResourceSection lock;      // lock in this section
         SystemInterpreter::terminateInterpreter();
 
         // now shutdown the memory object
@@ -161,32 +163,31 @@ bool Interpreter::terminateInterpreter()
 
 
 /**
- * This is a simple test of the active flag.
+ * Create a new interpreter instance.  An interpreter instance
+ * is an accessible set of threads that constitutes an interpreter
+ * environment for the purposes API access.
  *
- * @return true if the interpreter environment is active, false if it
- *         needs to be initializied before use.
+ * @param exits  The set of exits to use for this invocation.
+ * @param defaultEnvironment
+ *               The default addressible environment.
+ *
+ * @return The new interpreter instance.
  */
-bool Interpreter::isActive()
-{
-    return active;
-}
-
-
 InterpreterInstance *Interpreter::createInterpreterInstance(PRXSYSEXIT exits, const char *defaultEnvironment)
 {
     // make sure we initialize the global environment if it hasn't already been done
-    startInterpreter();
+    startInterpreter(RUN_MODE);
     // get a new root activity for this instance.  This might result in pushing a prior level down the
     // stack
     RexxActivity *rootActivity = ActivityManager::getRootActivity();
     // ok, we have an active activity here, so now we can allocate a new instance and bootstrap everything.
+    InterpreterInstance *instance = new InterpreterInstance();
+
     {
-        InterpreterInstance *instance = new InterpreterInstance();
         ResourceSection lock;
 
         // add this to the active list
         interpreterInstances->append((RexxObject *)instance);
-
     }
 
     // now that this is protected from garbage collection, go and initialize everything
@@ -195,6 +196,14 @@ InterpreterInstance *Interpreter::createInterpreterInstance(PRXSYSEXIT exits, co
 }
 
 
+/**
+ * Shutdown an interpreter instance and remove it from the list
+ * of accessible items.
+ *
+ * @param instance The instance we're shutting down.
+ *
+ * @return true if this instance was in a state that could be terminated.
+ */
 bool Interpreter::terminateInterpreterInstance(InterpreterInstance *instance)
 {
     // this might not be in a state where it can be terminated
@@ -203,9 +212,10 @@ bool Interpreter::terminateInterpreterInstance(InterpreterInstance *instance)
         return false;
     }
 
-    ResourceLock lock;
+    ResourceSection lock;
 
     interpreterInstances->removeItem((RexxObject *)instance);
+    return true;
 }
 
 

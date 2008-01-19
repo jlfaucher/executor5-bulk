@@ -36,7 +36,10 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
+#include "RexxCore.h"
 #include "RexxStartDispatcher.hpp"
+#include "ProtectedObject.hpp"
+#include "MethodClass.hpp"
 
 
 /**
@@ -48,6 +51,7 @@ void RexxStartDispatcher::run()
     ProtectedSet savedObjects;
 
     RexxString *name = OREF_NULLSTRING;     // name of the invoked program
+    RexxString *fullname = name;            // default the fulllength name to the simple name
 
     if (programName != NULL)       /* have an actual name?              */
     {
@@ -60,7 +64,7 @@ void RexxStartDispatcher::run()
     RexxArray *new_arglist = new_array(argcount);
     savedObjects.add(new_arglist);
     /* loop through the argument list    */
-    for (i = 0; i < argcount; i++)
+    for (size_t i = 0; i < argcount; i++)
     {
         /* have a real argument?             */
         if (arglist[i].strptr != NULL)
@@ -69,6 +73,8 @@ void RexxStartDispatcher::run()
             new_arglist->put(new_string(arglist[i]), i + 1);
         }
     }
+    RexxString *source_calltype;
+
     switch (calltype)                      /* turn calltype into a string       */
     {
         case  RXCOMMAND:                   /* command invocation                */
@@ -90,16 +96,18 @@ void RexxStartDispatcher::run()
             break;
     }
 
+    RexxMethod *method = OREF_NULL;
+
     if (instore == NULL)                     /* no instore request?               */
     {
         /* go resolve the name               */
-        RexxString *fullname = SysResolveProgramName(name, OREF_NULL);
+        fullname = SysResolveProgramName(name, OREF_NULL);
         if (fullname == OREF_NULL)         /* not found?                        */
         {
             /* got an error here                 */
             reportException(Error_Program_unreadable_notfound, name);
         }
-        saveObjects.add(fullname);
+        savedObjects.add(fullname);
                                            /* try to restore saved image        */
         method = SysRestoreProgram(fullname);
         if (method == OREF_NULL)           /* unable to restore?                */
@@ -119,26 +127,23 @@ void RexxStartDispatcher::run()
             /* got an error here                 */
             reportException(Error_Program_unreadable_name, name);
         }
-        fullname = name;                   /* copy the name                     */
     }
+
+    RexxString *initial_address = OREF_INITIALADDRESS;
+
     if (defaultEnvironment != NULL)                /* have an address override?         */
     {
         /* use the provided one              */
-        initial_address = new_string(defaultEnvironment));
+        initial_address = new_string(defaultEnvironment);
     }
     else
     {
         /* check for a file extension        */
-        file_extension = SysFileExtension(fullname->getStringData());
+        const char *file_extension = SysFileExtension(fullname->getStringData());
         if (file_extension != NULL)      /* have a real one?                  */
         {
             /* use extension as the environment  */
             initial_address = new_string(file_extension + 1);
-        }
-        else
-        {
-            /* use system defined default        */
-            initial_address = OREF_INITIALADDRESS;
         }
     }
     /* protect from garbage collect      */
@@ -149,7 +154,7 @@ void RexxStartDispatcher::run()
     {
         ProtectedObject program_result;
         // call the program
-        method->programCall(activity, calltype, initial_address, arguments, argcount, program_result);
+        method->runProgram(activity, source_calltype, initial_address, new_arglist->data(), argcount, program_result);
         if (result != NULL)          /* if return provided for            */
         {
             /* actually have a result to return? */
@@ -158,11 +163,11 @@ void RexxStartDispatcher::run()
                 /* force to a string value           */
                 program_result = ((RexxObject *)program_result)->stringValue();
                 // copy this into the result RXSTRING
-                ((RexxString *)program_result)->copyToRxstring(result);
+                ((RexxString *)program_result)->copyToRxstring(*result);
             }
             else                             /* make this an invalid string       */
             {
-                MAKERXSTRING(result, NULL, 0);
+                MAKERXSTRING(*result, NULL, 0);
             }
         }
 
@@ -170,11 +175,13 @@ void RexxStartDispatcher::run()
                                              /* If there is a return val...       */
         if (program_result != OREF_NULL)
         {
+            wholenumber_t return_code;
+
             /* if a whole number...              */
             if (((RexxObject *)program_result)->numberValue(return_code) && return_code <= SHRT_MAX && return_code >= SHRT_MIN)
             {
                 /* ...copy to return code.           */
-                retcode = return_code;
+                retcode = (short)return_code;
             }
             // set the RC to the retcode value if there's no errors.
             rc = retcode;
@@ -193,6 +200,6 @@ void RexxStartDispatcher::handleError(wholenumber_t r, RexxDirectory *c)
 {
     // use the base error handling and set our return code to the negated error code.
     ActivityDispatcher::handleError(rc, c);
-    retcode = -rc;
+    retcode = (short)-rc;
 }
 

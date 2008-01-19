@@ -51,40 +51,47 @@ class InterpreterInstance : public RexxInternalObject
 public:
 
     // methods associated with actual interpreter instances
-    inline InterpreterInstance(RESTORETYPE restoreType) { ; };
+    inline InterpreterInstance(RESTORETYPE restoreType) { ; }
     InterpreterInstance();
 
     inline void *operator new(size_t, void *ptr) {return ptr;}
     inline void  operator delete(void *, void *) {;}
     void *operator new(size_t);
     inline void  operator delete(void *) {;}
-    void        live();
-    void        liveGeneral();
+    void        live(size_t);
+    void        liveGeneral(int);
 
     RexxString *getDefaultAddress() { return defaultAddress; }
 
     InterpreterInstance(ExitHandler *handlers);
     void addActivity(RexxActivity *);
     void removeActivity(RexxActivity *);
+    void initialize(RexxActivity *activity, PRXSYSEXIT handlers, const char *defaultEnvironment);
     bool terminate();
     void waitForCompletion();
     void attachToProcess();
     RexxActivity *enterOnCurrentThread();
-    bool attachThread();
+    RexxActivity *attachThread();
+    bool detachThread();
+    RexxActivity *spawnActivity(RexxActivity *parent);
     void exitCurrentThread();
     RexxActivity *findActivity(thread_id_t threadId);
+    RexxActivity *findActivity();
     RexxDirectory *getLocalEnvironment();
     void copyExits(ExitHandler *target);
     void activityTerminated(RexxActivity *activity);
-    void halt();
-    void setTrace(bool setting);
-    void processExternalHalt();
     void activityDeactivated(RexxActivity *activity);
     void addGlobalReference(RexxObject *o);
     void removeGlobalReference(RexxObject *o);
     inline RexxString *getDefaultCommandEnvironment() { return getDefaultAddress(); }
     bool poolActivity(RexxActivity *activity);
     ExitHandler &getExitHandler(int exitNum) {  return exits[exitNum - 1]; }
+    void setExitHandler(int exitNum, REXXPFN e) { getExitHandler(exitNum).setEntryPoint(e); }
+    void setExitHandler(int exitNum, const char *e) { getExitHandler(exitNum).resolve(e); }
+    void setExitHandler(RXSYSEXIT &e) { getExitHandler(e.sysexit_code).resolve(e.sysexit_name); }
+    void removeInactiveActivities();
+    void haltAllActivities();
+    void traceAllActivities(bool on);
 
 protected:
 

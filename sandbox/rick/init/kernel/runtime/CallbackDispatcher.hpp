@@ -37,23 +37,30 @@
 /*----------------------------------------------------------------------------*/
 
 
-#ifndef TranslateDispatcher_included
-#define TranslateDispatcher_included
+#ifndef CallbackDispatcher_included
+#define CallbackDispatcher_included
 
-#include "ActivityDispatcher.hpp"
 
-class TranslateDispatcher : public ActivityDispatcher
+class RexxDirectory;
+class RexxNativeActivation;
+
+class CallbackDispatcher
 {
 public:
-    inline TranslateDispatcher(PRXSYSEXIT e) : ActivityDispatcher(e, NULL) { ; }
-    inline ~TranslateDispatcher() { ; }
+    inline CallbackDispatcher() { ; }
+    inline ~CallbackDispatcher() { ; }
 
     virtual void run();
     virtual void handleError(wholenumber_t, RexxDirectory *);
 
-    const char *programName;             /* REXX program to run               */
-    PRXSTRING  instore;                  /* Instore array                     */
-    const char *outputName;              // optional program output name
+    inline void setContext(RexxActivity *act, RexxNativeActivation *a) { activity = act; activation = a; }
+
+    wholenumber_t  rc;                 // error return code
+
+protected:
+    RexxActivity *activity;            // the activity we're running on
+    RexxNativeActivation *activation;  // the native activation we're running under
+    RexxDirectory *conditionData;      // any condition data posted due to an activity error
 };
 
 

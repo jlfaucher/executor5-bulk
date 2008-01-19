@@ -57,6 +57,9 @@ public:
     static void live(size_t);
     static void liveGeneral(int reason);
 
+    static void startInterpreter();
+    static void terminateInterpreter();
+
 
 protected:
 

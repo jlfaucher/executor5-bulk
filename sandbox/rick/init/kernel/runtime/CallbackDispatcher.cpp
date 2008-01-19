@@ -36,26 +36,34 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
+#include "RexxCore.h"
+#include "CallbackDispatcher.hpp"
+#include "Interpreter.hpp"
+#include "InterpreterInstance.hpp"
+#include "RexxActivity.hpp"
 
-#ifndef TranslateDispatcher_included
-#define TranslateDispatcher_included
 
-#include "ActivityDispatcher.hpp"
-
-class TranslateDispatcher : public ActivityDispatcher
+/**
+ * Default virtual method for handling a run() methods on
+ * an activity dispatcher.
+ */
+void CallbackDispatcher::run()
 {
-public:
-    inline TranslateDispatcher(PRXSYSEXIT e) : ActivityDispatcher(e, NULL) { ; }
-    inline ~TranslateDispatcher() { ; }
-
-    virtual void run();
-    virtual void handleError(wholenumber_t, RexxDirectory *);
-
-    const char *programName;             /* REXX program to run               */
-    PRXSTRING  instore;                  /* Instore array                     */
-    const char *outputName;              // optional program output name
-};
+    // this just returns
+}
 
 
-#endif
+/**
+ * Default handler for any error conditions.  This just sets the
+ * condition information in the dispatch unit.
+ *
+ * @param c      The condition information for the error.
+ */
+void CallbackDispatcher::handleError(wholenumber_t r, RexxDirectory *c)
+{
+    // save the condition information
+    rc = r;
+    conditionData = c;
+}
+
 

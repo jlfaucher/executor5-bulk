@@ -88,6 +88,7 @@ public:
     static void startup();
     static void relinquish(RexxActivity *activity);
     static RexxActivity *getRootActivity();
+    static RexxActivity *attachThread(InterpreterInstance *instance);
 
     static RexxActivity *currentActivity;   // the currently active thread
     static RexxDirectory *localEnvironment; // the .local environment
@@ -96,6 +97,11 @@ public:
     static inline void postTermination()
     {
         EVPOST(terminationSem);              /* let anyone who cares know we're done*/
+    }
+
+    static inline void waitForTermination()
+    {
+        EVWAIT(terminationSem);              // wait until this is posted
     }
 
 protected:

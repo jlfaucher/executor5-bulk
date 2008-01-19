@@ -130,7 +130,7 @@ OKIOBJ1=$(OR_OUTDIR)\RexxActivation.$(OBJ) $(OR_OUTDIR)\RexxActivity.$(OBJ) $(OR
         $(OR_OUTDIR)\RexxBehaviour.$(OBJ)  $(OR_OUTDIR)\BufferClass.$(OBJ) $(OR_OUTDIR)\ActivityManager.$(OBJ) \
 	$(OR_OUTDIR)\Interpreter.$(OBJ) $(OR_OUTDIR)\Interpreter.$(OBJ) $(OR_OUTDIR)\RexxStartDispatcher.$(OBJ) \
 	$(OR_OUTDIR)\InterpreterInstance.$(OBJ) $(OR_OUTDIR)\ActivityDispatcher.$(OBJ) $(OR_OUTDIR)\TranslateDispatcher.$(OBJ) \
-	(OR_OUTDIR)\CreateMethodDispatcher.$(OBJ)
+	$(OR_OUTDIR)\CreateMethodDispatcher.$(OBJ)
 OKIOBJ2=$(OR_OUTDIR)\RexxHashTable.$(OBJ)  $(OR_OUTDIR)\RexxCode.$(OBJ) $(OR_OUTDIR)\LibraryManager.$(OBJ) \
         $(OR_OUTDIR)\RexxListTable.$(OBJ) $(OR_OUTDIR)\RexxNativeActivation.$(OBJ) $(OR_OUTDIR)\RexxNativeCode.$(OBJ) \
 	$(OR_OUTDIR)\CPPCode.$(OBJ)

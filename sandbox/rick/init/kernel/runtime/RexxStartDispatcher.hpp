@@ -49,7 +49,7 @@ public:
     inline ~RexxStartDispatcher() { ; }
 
     virtual void run();
-    virtual void handleError(RexxDirectory *);
+    virtual void handleError(wholenumber_t, RexxDirectory *);
 
     size_t     argcount;                 /* Number of args in arglist         */
     PCONSTRXSTRING arglist;              /* Array of args                     */
