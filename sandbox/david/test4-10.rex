@@ -44,13 +44,6 @@
 -- Foundations of GTK+ Development
 -- by Andrew Krause
 
--- There is a problem with the GtkFileFilter returned by GTK. The GTK
--- subsystem claims the filter is not a filter!
-
-say 'This test does not work due to a problem with the GTK run time not'
-say 'recognising the file filter as a valid GTK filter.'
-say
-
 window = .myMainWindow~new('GTK_WINDOW_TOPLEVEL')
 window~set_title('File Chhoser Button')
 window~connect_signal("destroy")
@@ -80,8 +73,9 @@ filter1~add_pattern('*.jpg')
 filter1~add_pattern('*.gif')
 filter2~add_pattern('*')
 
-chooser1~add_filter(filter1)
-chooser1~add_filter(filter2)
+chooser2~add_filter(filter1)
+chooser2~add_filter(filter2)
+say 'got here'
 
 vbox = .GtkVBox~new(.false, 5)
 vbox~pack_start_defaults(chooser1)

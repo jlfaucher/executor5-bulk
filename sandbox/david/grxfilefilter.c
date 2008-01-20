@@ -109,7 +109,7 @@ APIRET APIENTRY GrxFileFilterSetName(const char * Name,
     }
 
     /* Initialize function parameters */
-    sscanf(Argv[1].strptr, "%p", &filter);
+    sscanf(Argv[0].strptr, "%p", &filter);
 
     gtk_file_filter_set_name(filter, Argv[1].strptr);
 
@@ -140,7 +140,7 @@ APIRET APIENTRY GrxFileFilterAddPattern(const char * Name,
     }
 
     /* Initialize function parameters */
-    sscanf(Argv[1].strptr, "%p", &filter);
+    sscanf(Argv[0].strptr, "%p", &filter);
 
     gtk_file_filter_add_pattern(filter, Argv[1].strptr);
 

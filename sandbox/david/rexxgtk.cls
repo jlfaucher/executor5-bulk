@@ -1865,7 +1865,7 @@ return
 
 ::method add_filter
 use strict arg filter
-call GrxFileChooserAddFilter self~pointer, filter
+call GrxFileChooserAddFilter self~pointer, filter~pointer
 return
 
 ::method filename
@@ -1909,6 +1909,10 @@ expose pointer
 use strict arg
 pointer = GrxFileFilterNew()
 return
+
+::method pointer
+expose pointer
+return pointer
 
 ::method 'name='
 expose pointer
