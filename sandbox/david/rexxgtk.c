@@ -203,6 +203,8 @@ APIRET APIENTRY GrxLoadFuncs(char * Name,
         "GrxColorButtonGetColor",
         "GrxColorButtonSetColor",
         "GrxColorButtonConnectSignal",
+        "GrxFileChooserButtonNew",
+        "GrxFileChooserButtonConnectSignal",
         "GrxContainerAdd",
         "GrxContainerRemove",
         "GrxContainerSetBorderWidth",
@@ -332,6 +334,15 @@ APIRET APIENTRY GrxLoadFuncs(char * Name,
         "GrxHScaleNewWithRange",
         "GrxVScaleNew",
         "GrxVScaleNewWithRange",
+
+        // Interface Classes
+        "GrxFileChooserSetCurrentFolder",
+        "GrxFileChooserAddFilter",
+        "GrxFileChooserGetFilename",
+        "GrxFileChooserConnectSignal",
+        "GrxFileFilterNew",
+        "GrxFileFilterSetName",
+        "GrxFileFilterAddPattern",
 
     };
 

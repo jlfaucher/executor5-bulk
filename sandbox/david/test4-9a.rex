@@ -49,7 +49,7 @@
 -- calls. This example uses a syntax that is more Rexx-like.
 
 -- There is a problem with the GtkColorButton returned by GTK. The GTK
--- subsystem clains the button is not a widget! Therefore some operations
+-- subsystem claims the button is not a widget! Therefore some operations
 -- fail, including the connect_signal method of the color button.
 
 say 'This test does not work due to a problem with the GTK run time not'

@@ -59,7 +59,9 @@ OBJECTS = rexxgtk.o \
 	grxhandlebox.o \
 	grxnotebook.o \
 	grxeventbox.o \
-	grxrange.o
+	grxrange.o \
+	grxinterfaces.o \
+	grxfilefilter.o
 
 
 # Build the shared library
@@ -115,6 +117,12 @@ grxeventbox.o: grxeventbox.c rexxgtk.h
 
 grxrange.o: grxrange.c rexxgtk.h
 	gcc -c $(GRXCFLAGS) grxrange.c
+
+grxinterfaces.o: grxinterfaces.c rexxgtk.h
+	gcc -c $(GRXCFLAGS) grxinterfaces.c
+
+grxfilefilter.o: grxfilefilter.c rexxgtk.h
+	gcc -c $(GRXCFLAGS) grxfilefilter.c
 
 
 

@@ -40,40 +40,55 @@
 /*----------------------------------------------------------------------------*/
 
 
--- Derived from Listing 4-9
+-- Derived from Listing 4-10
 -- Foundations of GTK+ Development
 -- by Andrew Krause
 
--- There is a problem with the GtkColorButton returned by GTK. The GTK
--- subsystem claims the button is not a widget! Therefore some operations
--- fail, including the connect_signal method of the color button.
+-- There is a problem with the GtkFileFilter returned by GTK. The GTK
+-- subsystem claims the filter is not a filter!
 
 say 'This test does not work due to a problem with the GTK run time not'
-say 'recognising the color button as a valid GTK widget.'
+say 'recognising the file filter as a valid GTK filter.'
 say
 
 window = .myMainWindow~new('GTK_WINDOW_TOPLEVEL')
-window~set_title('Color Button')
+window~set_title('File Chhoser Button')
 window~connect_signal("destroy")
 window~set_border_width(10)
 
-color = '#000033336666'  -- each color is really 16-bit number, not 8 bits
-button = .MyButton~new(color)
-button~set_title('Select a Color')
+label = .GtkLabel~new()
 
-label = .GtkLabel~new('Look at my color!')
-label~modify_fg('GTK_STATE_NORMAL', color)
+chooser1 = .MyButton1~new('Chooser a folder', 'GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER')
+chooser2 = .MyButton2~new('Chooser a folder', 'GTK_FILE_CHOOSER_ACTION_OPEN')
 
 -- save data for the callback
-button~user_data = label
+chooser1~user_data = chooser2
+chooser2~user_data = label
 
-button~connect_signal('color_set')
+chooser1~connect_signal('selection_changed')
+chooser2~connect_signal('selection_changed')
 
-hbox = .GtkHBox~new(.false, 5)
-hbox~pack_start_defaults(button)
-hbox~pack_start_defaults(label)
+chooser1~set_current_folder('/home/'userid())
+chooser2~set_current_folder('/home/'userid())
 
-window~add(hbox)
+filter1 = .GtkFileFilter~new()
+filter2 = .GtkFileFilter~new()
+filter1~set_name('Image Files')
+filter2~set_name('All Files')
+filter1~add_pattern('*.png')
+filter1~add_pattern('*.jpg')
+filter1~add_pattern('*.gif')
+filter2~add_pattern('*')
+
+chooser1~add_filter(filter1)
+chooser1~add_filter(filter2)
+
+vbox = .GtkVBox~new(.false, 5)
+vbox~pack_start_defaults(chooser1)
+vbox~pack_start_defaults(chooser2)
+vbox~pack_start_defaults(label)
+
+window~add(vbox)
 window~show_all()
 
 call gtk_main
@@ -88,11 +103,17 @@ return
 .local['GTK_Quit'] = .true
 return
 
-::class MyButton subclass GtkColorButton_With_Color
+::class MyButton1 subclass GtkFileChooserButton
 
-::method signal_color_set
-color = self~get_color()
-say color
-self~user_data~modify_fg('GTK_STATE_NORMAL', color)
+::method signal_selection_changed
+folder = self~get_filename(self~pointer)
+self~user_data~set_current_folder(folder)
+return
+
+::class MyButton2 subclass GtkFileChooserButton
+
+::method signal_selection_changed
+file = self~get_filename()
+self~user_data~set_text(file)
 return
 

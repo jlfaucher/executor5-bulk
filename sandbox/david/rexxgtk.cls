@@ -254,9 +254,9 @@ return
 use strict arg event
 select
    when event = 'destroy' then call GrxWidgetConnectSignal self~pointer, event
-   otherwise nop
+   otherwise return .false  -- this class has no parents
    end
-return
+return .true
 
 ::method signal_destroy
 return
@@ -264,6 +264,8 @@ return
 
 /*============================================================================*/
 /* Class: Container                                                           */
+/* Note:  This is strictly a base class. It should never be instantiated on   */
+/*        its own. You should instantiate one of its subclasses instead.      */
 /*============================================================================*/
 
 ::class GtkContainer public subclass GtkWidget
@@ -301,9 +303,9 @@ select
    when event = 'check_resize' then call GrxContainerConnectSignal self~pointer, event
    when event = 'removs' then call GrxContainerConnectSignal self~pointer, event
    when event = 'set_focus_child' then call GrxContainerConnectSignal self~pointer, event
-   otherwise self~connect_signal:super(event)
+   otherwise return self~connect_signal:super(event)
    end
-return
+return .true
 
 ::method signal_add
 return
@@ -320,6 +322,8 @@ return
 
 /*============================================================================*/
 /* Class: Box                                                                 */
+/* Note:  This is strictly a base class. It should never be instantiated on   */
+/*        its own. You should instantiate one of its subclasses instead.      */
 /*============================================================================*/
 
 ::class GtkBox public subclass GtkContainer
@@ -354,25 +358,7 @@ return
 
 ::method connect_signal
 use strict arg event
-self~connect_signal:super(event)
-return
-
-
-/*============================================================================*/
-/* Class: VBox                                                                */
-/*============================================================================*/
-
-::class GtkVBox public subclass GtkBox
-
-::method init
-use arg homogeneous, spacing
-self~pointer = GrxVBoxNew(homogeneous, spacing)
-return
-
-::method connect_signal
-use strict arg event
-self~connect_signal:super(event)
-return
+return self~connect_signal:super(event)
 
 
 /*============================================================================*/
@@ -388,12 +374,29 @@ return
 
 ::method connect_signal
 use strict arg event
-self~connect_signal:super(event)
+return self~connect_signal:super(event)
+
+
+/*============================================================================*/
+/* Class: VBox                                                                */
+/*============================================================================*/
+
+::class GtkVBox public subclass GtkBox
+
+::method init
+use arg homogeneous, spacing
+self~pointer = GrxVBoxNew(homogeneous, spacing)
 return
+
+::method connect_signal
+use strict arg event
+return self~connect_signal:super(event)
 
 
 /*============================================================================*/
 /* Class: Paned                                                               */
+/* Note:  This is strictly a base class. It should never be instantiated on   */
+/*        its own. You should instantiate one of its subclasses instead.      */
 /*============================================================================*/
 
 ::class GtkPaned public subclass GtkContainer
@@ -428,8 +431,7 @@ return
 
 ::method connect_signal
 use strict arg event
-self~connect_signal:super(event)
-return
+return self~connect_signal:super(event)
 
 
 /*============================================================================*/
@@ -445,8 +447,7 @@ return
 
 ::method connect_signal
 use strict arg event
-self~connect_signal:super(event)
-return
+return self~connect_signal:super(event)
 
 
 /*============================================================================*/
@@ -462,8 +463,7 @@ return
 
 ::method connect_signal
 use strict arg event
-self~connect_signal:super(event)
-return
+return self~connect_signal:super(event)
 
 
 /*============================================================================*/
@@ -507,9 +507,9 @@ select
    when event = 'activate_focus' then call GrxWindowConnectSignal self~pointer, event
    when event = 'keys_changed' then call GrxWindowConnectSignal self~pointer, event
    when event = 'set_focus' then call GrxWindowConnectSignal self~pointer, event
-   otherwise self~connect_signal:super(event)
+   otherwise return self~connect_signal:super(event)
    end
-return
+return .true
 
 ::method signal_activate_default
 return
@@ -533,8 +533,10 @@ return
 ::method init
 expose justify
 self~pointer = GrxLabelNew()
-use strict arg text = ''
-self~text = text
+if arg() = 1 then do
+   use strict arg text = ''
+   self~text = text
+   end
 justify = 'GTK_JUSTIFY_CENTER'
 return
 
@@ -584,8 +586,7 @@ return
 
 ::method connect_signal
 use strict arg event
-self~connect_signal:super(event)
-return
+return self~connect_signal:super(event)
 
 /*============================================================================*/
 /* Class: Button                                                              */
@@ -649,9 +650,9 @@ select
    when event = 'clicked' then call GrxButtonConnectSignal self~pointer, event
    when event = 'enter' then call GrxButtonConnectSignal self~pointer, event
    when event = 'leave' then call GrxButtonConnectSignal self~pointer, event
-   otherwise self~connect_signal:super(event)
+   otherwise return self~connect_signal:super(event)
    end
-return
+return .true
 
 ::method signal_pressed
 return
@@ -786,9 +787,9 @@ return
 use strict arg event
 select
    when event = 'toggled' then call GrxToggleButtonConnectSignal self~pointer, event
-   otherwise self~connect_signal:super(event)
+   otherwise return self~connect_signal:super(event)
    end
-return
+return .true
 
 ::method signal_toggled
 return
@@ -832,8 +833,7 @@ return
 
 ::method connect_signal
 use strict arg event
-self~connect_signal:super(event)
-return
+return self~connect_signal:super(event)
 
 /*============================================================================*/
 /* Class: CheckButton_With_Mnemonic                                           */
@@ -895,9 +895,9 @@ return
 use strict arg event
 select
    when event = 'group_changed' then call GrxRadioButtonConnectSignal self~pointer, event
-   otherwise self~connect_signal:super(event)
+   otherwise return self~connect_signal:super(event)
    end
-return
+return .true
 
 ::method signal_group_changed
 return
@@ -965,7 +965,7 @@ return
 
 
 /*============================================================================*/
-/* Class: Colorbutton                                                         */
+/* Class: ColorButton                                                         */
 /*============================================================================*/
 
 ::class GtkColorButton public subclass GtkButton
@@ -1005,16 +1005,16 @@ return
 use strict arg event
 select
    when event = 'color_set' then call GrxColorButtonConnectSignal self~pointer, event
-   otherwise self~connect_signal:super(event)
+   otherwise return self~connect_signal:super(event)
    end
-return
+return .true
 
 ::method signal_color_set
 return
 
 
 /*============================================================================*/
-/* Class: Colorbutton_With_Color                                              */
+/* Class: ColorButton_With_Color                                              */
 /*============================================================================*/
 
 ::class GtkColorButton_With_Color public subclass GtkColorButton
@@ -1022,6 +1022,29 @@ return
 ::method init
 use strict arg color
 self~pointer = GrxColorButtonNewWithColor(color)
+return
+
+
+/*============================================================================*/
+/* Class: FileChooserButton                                                   */
+/*============================================================================*/
+
+::class GtkFileChooserButton public subclass GtkHBox inherit GtkFileChooser
+
+::method init
+use strict arg title, action
+self~pointer = GrxFileChooserButtonNew(title, action)
+return
+
+::method connect_signal
+use strict arg event
+select
+   when event = 'file_set' then call GrxFileChooserButtonConnectSignal self~pointer, event
+   otherwise return self~connect_signal:super(event)
+   end
+return .true
+
+::method signal_color_set
 return
 
 
@@ -1062,8 +1085,7 @@ return
 
 ::method connect_signal
 use strict arg event
-self~connect_signal:super(event)
-return
+return self~connect_signal:super(event)
 
 
 /*============================================================================*/
@@ -1171,9 +1193,9 @@ select
    when event = 'paste_clipboard' then call GrxEntryConnectSignal self~pointer, event
    when event = 'populate_popup' then call GrxEntryConnectSignal self~pointer, event
    when event = 'toggle_overwrite' then call GrxEntryConnectSignal self~pointer, event
-   otherwise self~connect_signal:super(event)
+   otherwise return self~connect_signal:super(event)
    end
-return
+return .true
 
 ::method signal_activate
 return
@@ -1229,8 +1251,7 @@ return
 
 ::method connect_signal
 use strict arg event
-self~connect_signal:super(event)
-return
+return self~connect_signal:super(event)
 
 
 /*============================================================================*/
@@ -1291,8 +1312,7 @@ return
 
 ::method connect_signal
 use strict arg event
-self~connect_signal:super(event)
-return
+return self~connect_signal:super(event)
 
 
 /*============================================================================*/
@@ -1348,8 +1368,7 @@ return
 
 ::method connect_signal
 use strict arg event
-self~connect_signal:super(event)
-return
+return self~connect_signal:super(event)
 
 
 /*============================================================================*/
@@ -1536,9 +1555,9 @@ select
    when event = 'reorder_tab' then call GrxLabelConnectSignal self~pointer, event
    when event = 'select_page' then call GrxLabelConnectSignal self~pointer, event
    when event = 'switch_page' then call GrxLabelConnectSignal self~pointer, event
-   otherwise self~connect_signal:super(event)
+   otherwise return self~connect_signal:super(event)
    end
-return
+return .true
 
 ::method signal_change_current_page
 return
@@ -1618,12 +1637,13 @@ return self~visible_window
 
 ::method connect_signal
 use strict arg event
-self~connect_signal:super(event)
-return
+return self~connect_signal:super(event)
 
 
 /*============================================================================*/
 /* Class: GtkRange                                                            */
+/* Note:  This is strictly a base class. It should never be instantiated on   */
+/*        its own. You should instantiate one of its subclasses instead.      */
 /*============================================================================*/
 
 ::class GtkRange public subclass GtkWidget
@@ -1638,9 +1658,9 @@ select
    when event = 'adjust_bounds' then call GrxLabelConnectSignal self~pointer, event
    when event = 'move_slider' then call GrxLabelConnectSignal self~pointer, event
    when event = 'value_changed' then call GrxLabelConnectSignal self~pointer, event
-   otherwise self~connect_signal:super(event)
+   otherwise return self~connect_signal:super(event)
    end
-return
+return .true
 
 ::method signal_adjust_bounds
 return
@@ -1654,6 +1674,8 @@ return
 
 /*============================================================================*/
 /* Class: GtkScale                                                            */
+/* Note:  This is strictly a base class. It should never be instantiated on   */
+/*        its own. You should instantiate one of its subclasses instead.      */
 /*============================================================================*/
 
 ::class GtkScale public subclass GtkRange
@@ -1694,8 +1716,7 @@ return self~digits
 
 ::method connect_signal
 use strict arg event
-self~connect_signal:super(event)
-return
+return self~connect_signal:super(event)
 
 
 /*============================================================================*/
@@ -1737,8 +1758,7 @@ return
 
 ::method connect_signal
 use strict arg event
-self~connect_signal:super(event)
-return
+return self~connect_signal:super(event)
 
 
 /*============================================================================*/
@@ -1790,9 +1810,9 @@ select
    when event = 'change_value' then call GrxLabelConnectSignal self~pointer, event
    when event = 'value_changed' then call GrxLabelConnectSignal self~pointer, event
    when event = 'wrapped' then call GrxLabelConnectSignal self~pointer, event
-   otherwise self~connect_signal:super(event)
+   otherwise return self~connect_signal:super(event)
    end
-return
+return .true
 
 ::method signal_change_value
 return
@@ -1814,5 +1834,102 @@ return
 use strict arg lower, upper, step_inc
 self~pointer = GrxSpinButtonNewWithRange(lower, upper, step_inc)
 return
+
+
+/*============================================================================*/
+/*============================================================================*/
+/*============================================================================*/
+/* These are helper classes. Most of these just provide interfaces for other  */
+/* classes to use. Some are just standalone classes.                          */
+/*============================================================================*/
+/*============================================================================*/
+/*============================================================================*/
+
+
+/*============================================================================*/
+/* Class: GtkFileChooser                                                       */
+/* Note:  This is strictly a base class. It should never be instantiated on   */
+/*        its own. It is here strictly to provide an interface.               */
+/*============================================================================*/
+
+::class GtkFileChooser public mixinclass Object
+
+::method init
+raise syntax 93.964 array ('A GtkFileChooser class cannot be instantiated.')
+return
+
+::method set_current_folder
+use strict arg dir
+call GrxFileChooserSetCurrentFolder self~pointer, dir
+return
+
+::method add_filter
+use strict arg filter
+call GrxFileChooserAddFilter self~pointer, filter
+return
+
+::method filename
+return GrxFileChooserGetFilename self~pointer
+
+::method get_filename
+return self~filename
+
+::method connect_signal
+use strict arg event
+select
+   when event = 'current_folder_changed' then call GrxFileChooserConnectSignal self~pointer, event
+   when event = 'file_activated' then call GrxFileChooserConnectSignal self~pointer, event
+   when event = 'selection_changed' then call GrxFileChooserConnectSignal self~pointer, event
+   when event = 'update_preview' then call GrxFileChooserConnectSignal self~pointer, event
+   otherwise return .false  -- this class has no parents
+   end
+return .true
+
+::method signal_current_folder_changed
+return
+
+::method signal_file_activated
+return
+
+::method signal_selection_changed
+return
+
+::method signal_update_preview
+return
+
+
+/*============================================================================*/
+/* Class: GtkFileFilter                                                        */
+/*============================================================================*/
+
+::class GtkFileFilter public
+
+::method init
+expose pointer
+use strict arg
+pointer = GrxFileFilterNew()
+return
+
+::method 'name='
+expose pointer
+use strict arg name
+call GrxFileFilterSetName pointer, name
+return
+
+::method set_name
+expose pointer
+use strict arg self~name
+return
+
+::method add_pattern
+expose pointer
+use strict arg pattern
+call GrxFileFilterAddPattern pointer, pattern
+return
+
+
+
+
+
 
 

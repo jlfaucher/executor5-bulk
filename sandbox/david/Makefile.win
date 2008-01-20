@@ -111,7 +111,9 @@ OBJECTS = rexxgtk.obj \
 	grxhandlebox.obj \
 	grxnotebook.obj \
 	grxeventbox.obj \
-	grxrange.obj
+	grxrange.obj \
+	grxinterfaces.obj \
+	grxfilefilter.obj
 
 # Build the DLL
 rexxgtk.dll: $(OBJECTS) rexxgtk.def
@@ -165,6 +167,12 @@ grxeventbox.obj: grxeventbox.c rexxgtk.h
 
 grxrange.obj: grxrange.c rexxgtk.h
 	cl -c $(GRXCFLAGS) grxrange.c
+
+grxinterfaces.obj: grxinterfaces.c rexxgtk.h
+	cl -c $(GRXCFLAGS) grxinterfaces.c
+
+grxfilefilter.obj: grxfilefilter.c rexxgtk.h
+	cl -c $(GRXCFLAGS) grxfilefilter.c
 
 
 clean:

@@ -837,6 +837,47 @@ APIRET APIENTRY GrxColorButtonSetColor(const char * Name,
 
 
 /*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxFileChooserButtonNew                            */
+/* Description: Create a file chooser button                                  */
+/* Rexx Args:   Title                                                         */
+/*              Action                                                        */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxFileChooserButtonNew(const char * Name,
+                                  const size_t Argc, const RXSTRING Argv[],
+                                  const char * Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+    GtkFileChooserAction action;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(2, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Initialize function parameters */
+    if(strcmp(Argv[1].strptr,"GTK_FILE_CHOOSER_ACTION_OPEN") == 0)
+        action = GTK_FILE_CHOOSER_ACTION_OPEN;
+    else if(strcmp(Argv[1].strptr,"GTK_FILE_CHOOSER_ACTION_SAVE") == 0)
+        action = GTK_FILE_CHOOSER_ACTION_SAVE;
+    else if(strcmp(Argv[1].strptr,"GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER") == 0)
+        action = GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER;
+    else if(strcmp(Argv[1].strptr,"GTK_FILE_CHOOSER_ACTION_CREATE_FOLDER") == 0)
+        action = GTK_FILE_CHOOSER_ACTION_CREATE_FOLDER;
+    else 
+        sscanf(Argv[1].strptr, "%d", &action);
+
+    myWidget = gtk_file_chooser_button_new(Argv[0].strptr, action);
+
+    /* Set up the REXX return code */
+    sprintf(Retstr->strptr, "%p", myWidget);
+    Retstr->strlength = strlen(Retstr->strptr);
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
 /* Rexx External Function: GrxButtonConnectSignal                             */
 /* Description: Connect a signal function to the Widget                       */
 /* Rexx Args:   Pointer to the widget                                         */
@@ -1003,6 +1044,50 @@ APIRET APIENTRY GrxColorButtonConnectSignal(const char * Name,
         if (strcmp(Argv[1].strptr, "color_set") == 0) {
             g_signal_connect(G_OBJECT(myWidget), "color-set",
                              G_CALLBACK(signal_func_1), "signal_color_set");
+        }
+        else {
+            printf("Bad signal type!\n");
+            return RXFUNC_BADCALL;
+        }
+    }
+    else {
+        printf("Not a widget!\n");
+        return RXFUNC_BADCALL;
+    }
+
+    /* Set up the REXX return code */
+    *(Retstr->strptr) = '0';
+    Retstr->strlength = 1;
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxChooserButtonConnectSignal                      */
+/* Description: Connect a signal function to the Widget                       */
+/* Rexx Args:   Pointer to the widget                                         */
+/*              Signal name                                                   */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxChooserButtonConnectSignal(const char * Name,
+                                       const size_t Argc, const RXSTRING Argv[],
+                                       const char * Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(2, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &myWidget);
+
+    if (GTK_IS_WIDGET(GTK_OBJECT(myWidget))) {
+        if (strcmp(Argv[1].strptr, "file_set") == 0) {
+            g_signal_connect(G_OBJECT(myWidget), "file-set",
+                             G_CALLBACK(signal_func_1), "signal_file_set");
         }
         else {
             printf("Bad signal type!\n");
