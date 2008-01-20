@@ -79,11 +79,11 @@ BOOL WINAPI DllMain(
    if (fdwReason == DLL_PROCESS_ATTACH)
    {
        // perform the interpreter start up
-       SystemInterpreter.startup(hinstDll);
+       SystemInterpreter::processStartup(hinstDll);
    }
    else if (fdwReason == DLL_PROCESS_DETACH)
    {
-       SystemInterpreter.shutdown();
+       SystemInterpreter::processShutdown();
    }
    return TRUE;
 }

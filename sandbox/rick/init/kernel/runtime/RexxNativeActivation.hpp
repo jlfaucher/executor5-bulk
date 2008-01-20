@@ -110,6 +110,7 @@ class RexxNativeActivation : public RexxActivationBase {
   inline RexxActivity *getActivity() { return activity; }
   virtual bool isStackBase();
   virtual RexxActivation *getRexxContext();
+  virtual NumericSettings *getNumericSettings();
   virtual RexxObject *getReceiver();
   inline void setStackBase() { stackBase = true; }
 

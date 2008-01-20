@@ -52,6 +52,7 @@ public:
 
     virtual void run();
     virtual void handleError(wholenumber_t, RexxDirectory *);
+    virtual void handleError(RexxDirectory *);
 
     inline void setContext(RexxActivity *act, RexxNativeActivation *a) { activity = act; activation = a; }
 

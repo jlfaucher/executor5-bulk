@@ -46,12 +46,20 @@
 /*                                                                           */
 /*****************************************************************************/
 
+#include "RexxCore.h"
 #include "SystemInterpreter.hpp"
+#include "Interpreter.hpp"
+#include "RexxAPIManager.h"
 
-class InterpreterInstance:
+#include <stdlib.h>
+#include <stdio.h>
+#include <fcntl.h>
+#include <io.h>
+
+class InterpreterInstance;
 
 
-HINSTANCE SystemInterpretrter::moduleHandle = 0;      // handle to the interpeter DLL
+HINSTANCE SystemInterpreter::moduleHandle = 0;      // handle to the interpeter DLL
 
 
 void SystemInterpreter::processStartup(HINSTANCE mod)
@@ -60,14 +68,18 @@ void SystemInterpreter::processStartup(HINSTANCE mod)
     // startup communications with the RXAPI server
     RxInterProcessInit(true);
     // startup timeslice processing
-    SysStartTimeSlice();
+    startTimeSlice();
+    // now do the platform independent startup
+    Interpreter::processStartup();
 }
 
 
 void SystemInterpreter::processShutdown()
 {
-    SysStopTimeSlice();           // shutdown the timer thread
+    stopTimeSlice();              // shutdown the timer thread
     RexxDeregisterFunction(NULL); // Send PROCESS_GONE to RXAPI
+    // now do the platform independent shutdown
+    Interpreter::processStartup();
 }
 
 
@@ -94,9 +106,19 @@ void SystemInterpreter::liveGeneral(int reason)
 }
 
 
+/**
+ * Load a message from the system message resources.
+ *
+ * @param code   The error message identifier.
+ * @param buffer The buffer for the returned message.
+ * @param bufferLength
+ *               The length of th message buffer.
+ *
+ * @return The success/failure indicator.
+ */
 bool SystemInterpreter::loadMessage(wholenumber_t code, char *buffer, size_t bufferLength)
 {
-    return LoadString(mouduleHandle, (UINT)code, buffer, bufferLength) != 0;
+    return LoadString(moduleHandle, (UINT)code, buffer, (int)bufferLength) != 0;
 }
 
 //TODO:  Add a system field in the instance class
@@ -118,15 +140,5 @@ void SystemInterpreter::initializeInstance(InterpreterInstance *instance)
 
 void SystemInterpreter::terminateInstance(InterpreterInstance *instance)
 {
-    /* Because of using the stand-alone runtime library or when using different compilers,
-       the std-streams of the calling program and the REXX.DLL might be located at different
-       addresses and therefore _file might be -1. If so, std-streams are reassigned to the
-       file standard handles returned by the system */
-    if ((stdin->_file == -1) && (GetFileType(GetStdHandle(STD_INPUT_HANDLE)) != FILE_TYPE_UNKNOWN))
-        *stdin = *_fdopen(_open_osfhandle((intptr_t)GetStdHandle(STD_INPUT_HANDLE),_O_RDONLY), "r");
-    if ((stdout->_file == -1) && (GetFileType(GetStdHandle(STD_OUTPUT_HANDLE)) != FILE_TYPE_UNKNOWN))
-        *stdout = *_fdopen(_open_osfhandle((intptr_t)GetStdHandle(STD_OUTPUT_HANDLE),_O_APPEND), "a");
-    if ((stderr->_file == -1) && (GetFileType(GetStdHandle(STD_ERROR_HANDLE)) != FILE_TYPE_UNKNOWN))
-        *stderr = *_fdopen(_open_osfhandle((intptr_t)GetStdHandle(STD_ERROR_HANDLE),_O_APPEND), "a");
 }
 

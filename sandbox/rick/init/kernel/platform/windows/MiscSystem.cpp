@@ -51,6 +51,7 @@
 #include "malloc.h"
 #include "SystemVersion.h"
 #include <signal.h>
+#include "Interpreter.hpp"
 
 extern bool UseMessageLoop = false;
 
@@ -314,7 +315,7 @@ BOOL __stdcall WinConsoleCtrlHandler(DWORD dwCtrlType)
       if (SignalCount > 1) return FALSE;    /* send signal to system */
   }
 
-  ActivityManager::haltAllActivities();
+  Interpreter::haltAllActivities();
   return true;      /* ignore signal */
 }
 

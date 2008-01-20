@@ -84,9 +84,10 @@ public:
 
     static bool terminateInterpreter();
     static void startInterpreter(InterpreterStartupMode mode);
-    static bool isTerminated();
-    static bool isActive() { return active; }
+    static inline bool isTerminated() { return !active; }
+    static inline bool isActive() { return active; }
     static InterpreterInstance *createInterpreterInstance(PRXSYSEXIT exits, const char *defaultEnvironment);
+    static inline InterpreterInstance *createInterpreterInstance() { return createInterpreterInstance(NULL, NULL); }
     static bool terminateInterpreterInstance(InterpreterInstance *instance);
 
     static inline bool hasTimeSliceElapsed()
@@ -102,10 +103,9 @@ public:
     }
 
 
-    static inline void setTimeSliceElapsed()
-    {
-        timeSliceElapsed = true;
-    }
+    static inline void setTimeSliceElapsed() { timeSliceElapsed = true; }
+    static inline void clearTimeSliceElapsed() { timeSliceElapsed = false; }
+    static void haltAllActivities();
 
 
 protected:

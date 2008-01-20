@@ -41,6 +41,7 @@
 #include "ExitHandler.hpp"
 #include "RexxActivity.hpp"
 #include "ActivityManager.hpp"
+#include "RexxInternalApis.h"
 
 
 /**

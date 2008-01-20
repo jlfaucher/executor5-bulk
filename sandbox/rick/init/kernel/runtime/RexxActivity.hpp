@@ -137,6 +137,7 @@ public:
 
    void runThread();
    wholenumber_t error(size_t);
+   wholenumber_t errorNumber(RexxDirectory *conditionObject);
    bool        raiseCondition(RexxString *, RexxObject *, RexxString *, RexxObject *, RexxObject *, RexxDirectory *);
    void        raiseException(wholenumber_t, SourceLocation *, RexxSource *, RexxString *, RexxArray *, RexxObject *);
    void        reportAnException(wholenumber_t, const char *);
@@ -185,7 +186,6 @@ public:
    void        checkDeadLock(RexxActivity *);
    void        postRelease();
    void        kill(RexxDirectory *);
-   RexxActivationBase *sender(RexxActivationBase *);
    void        joinKernelQueue();
    void        relinquish();
    bool        halt(RexxString *);
@@ -232,6 +232,7 @@ public:
    void generateRandomNumberSeed();
    void setupAttachedActivity(InterpreterInstance *interpreter);
    void detachInstance();
+   inline InterpreterInstance *getInstance() { return instance; }
 
    inline void activate() { nestedCount++; }
    inline void deactivate() { nestedCount--; }

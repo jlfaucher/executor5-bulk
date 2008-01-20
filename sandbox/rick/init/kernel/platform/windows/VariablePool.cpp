@@ -189,7 +189,7 @@ int   SysVariablePool(
 
  pshvblock = (PSHVBLOCK)requests;      /* copy the request block pointer    */
                                        /* get the REXX activation           */
- activation = self->getCurrentActivation();
+ activation = self->getRexxContext();
 
  while (pshvblock) {                   /* while more request blocks         */
   pshvblock->shvret = 0;               /* set the block return code         */

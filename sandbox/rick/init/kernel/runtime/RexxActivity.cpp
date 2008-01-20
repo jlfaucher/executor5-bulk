@@ -303,6 +303,7 @@ wholenumber_t RexxActivity::error(size_t startDepth)
         }
         this->popStackFrame(false);        /* pop the activation off            */
     }
+
     wholenumber_t rc = Error_Interpretation/1000;      /* set default return code           */
     /* did we get a condtion object?     */
     if (this->conditionobj != OREF_NULL)
@@ -311,6 +312,27 @@ wholenumber_t RexxActivity::error(size_t startDepth)
         this->display(this->conditionobj);
         // try to convert.  Leaves unchanged if not value
         this->conditionobj->at(OREF_RC)->numberValue(rc);
+    }
+    return rc;                           /* return the error code             */
+}
+
+
+/**
+ * Extract an error number from a syntax condition object.
+ *
+ * @param conditionObject
+ *               The condition object for the extract.
+ *
+ * @return The RC value associated with the condition.
+ */
+wholenumber_t RexxActivity::errorNumber(RexxDirectory *conditionObject)
+{
+    wholenumber_t rc = Error_Interpretation/1000;      /* set default return code           */
+    /* did we get a condtion object?     */
+    if (conditionObject != OREF_NULL)
+    {
+        // try to convert.  Leaves unchanged if not value
+        conditionObject->at(OREF_RC)->numberValue(rc);
     }
     return rc;                           /* return the error code             */
 }
@@ -368,11 +390,13 @@ bool RexxActivity::raiseCondition(
                                        /* invoke the error traps, on all    */
                                        /*  nativeacts until reach 1st       */
                                        /*  also give 1st activation a shot. */
-  for (activation = this->getTopStackFrame() ; activation != (RexxActivation *)TheNilObject; activation = this->sender(activation))
+  for (activation = this->getTopStackFrame() ; !activation->isStackBase(); activation = activation->getPreviousStackFrame())
   {
-    handled = activation->trap(condition, conditionObj);
-    if (isOfClass(Activation, activation)) /* reached our 1st activation yet.   */
-      break;                           /* yes, break out of loop            */
+      handled = activation->trap(condition, conditionObj);
+      if (isOfClass(Activation, activation)) /* reached our 1st activation yet.   */
+      {
+          break;                           /* yes, break out of loop            */
+      }
   }
 
   /* Control will not return here if the condition was trapped via*/

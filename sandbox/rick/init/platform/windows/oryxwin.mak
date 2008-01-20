@@ -39,7 +39,7 @@
 # ORYXWIN.MAK make file
 #------------------------
 # What we want to build...
-all: $(OR_OUTDIR)\rexx.exe $(OR_OUTDIR)\rexximage.exe $(OR_OUTDIR)\rexxhide.exe $(OR_OUTDIR)\rexxpaws.exe COPYICOFILES
+all: $(OR_OUTDIR)\rexximage.exe $(OR_OUTDIR)\rexx.exe $(OR_OUTDIR)\orx.exe $(OR_OUTDIR)\rexxhide.exe $(OR_OUTDIR)\rexxpaws.exe COPYICOFILES
      @ECHO ...
      @ECHO All done ....
 
@@ -61,27 +61,21 @@ KERNELOBJ =
 ICOFILES=$(OR_OUTDIR)\orxw.ico
 
 #
-# *** winrexx.EXE
+# *** ORX.EXE
 #
-# oryxi link is for setimagename only
-# $(OR_OUTDIR)\winrexx.exe : $(ORYXWOBJ) $(KERNELOBJ) $(OR_OUTDIR)\$(@B).res
-#    $(OR_LINK) $(ORYXWOBJ) $(KERNELOBJ) $(OR_OUTDIR)\$(@B).res $(lflags_common) /STACK:524288 \
-#    $(OR_OUTDIR)\rexxapi.lib \
-#    $(OR_OUTDIR)\rexx.lib \
-#    $(libs_dll) \
-#    -out:$(OR_OUTDIR)\$(@B).exe
-
-#
-# *** rexx.exe
-#
-# oryxi link is for setimagename only
-# build orx.exe so there is no problem with debug infor for rexx.exe and rexx.dll
-$(OR_OUTDIR)\rexx.exe : $(REXXCOBJ) $(KERNELOBJ) $(OR_OUTDIR)\rexx.res
+# We build this module as ORX.EXE, then copy it to rexx.exe so we can avoid problems
+# with debug information for rexx.dll and rexx.exe.
+$(OR_OUTDIR)\ORX.exe : $(REXXCOBJ) $(KERNELOBJ) $(OR_OUTDIR)\rexx.res
     $(OR_LINK) $(REXXCOBJ) $(KERNELOBJ) $(OR_OUTDIR)\rexx.res $(lflags_common_console) /STACK:524288 \
     $(OR_OUTDIR)\rexxapi.lib \
     $(OR_OUTDIR)\rexx.lib \
     $(libs_dll) \
     -out:$(OR_OUTDIR)\$(@B).exe
+
+$(OR_OUTDIR)\rexx.exe : $(OR_OUTDIR)\orx.exe
+    @ECHO .
+    @ECHO Copying $(@B).exe
+    COPY $(OR_OUTDIR)\orx.exe $(OR_OUTDIR)\$(@B).exe
 
 $(OR_OUTDIR)\rexxhide.exe : $(REXXCHOBJ) $(KERNELOBJ) $(OR_OUTDIR)\rexx.res
     $(OR_LINK) $(REXXCHOBJ) $(KERNELOBJ) $(OR_OUTDIR)\rexx.res $(lflags_common) /STACK:524288 \
@@ -101,8 +95,8 @@ $(OR_OUTDIR)\rexxpaws.exe : $(REXXPOBJ) $(KERNELOBJ) $(OR_OUTDIR)\rexx.res
 #
 # oryxi link is for setimagename only
 # build orx.exe so there is no problem with debug infor for rexx.exe and rexx.dll
-$(OR_OUTDIR)\rexximage.exe : $(REXXiOBJ) $(KERNELOBJ) $(OR_OUTDIR)\rexx.res
-    $(OR_LINK) $(REXXiOBJ) $(KERNELOBJ) $(OR_OUTDIR)\rexx.res $(lflags_common_console) /STACK:524288 \
+$(OR_OUTDIR)\rexximage.exe : $(REXXIOBJ) $(KERNELOBJ) $(OR_OUTDIR)\rexx.res
+    $(OR_LINK) $(REXXIOBJ) $(KERNELOBJ) $(OR_OUTDIR)\rexx.res $(lflags_common_console) /STACK:524288 \
     $(OR_OUTDIR)\rexxapi.lib \
     $(OR_OUTDIR)\rexx.lib \
     $(libs_dll) \

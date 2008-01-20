@@ -45,6 +45,7 @@
 #include "DirectoryClass.hpp"
 #include "BufferClass.hpp"
 #include "ProtectedObject.hpp"
+#include "RexxNativeActivation.hpp"
 
 
 
@@ -117,20 +118,14 @@ void RunMethodDispatcher::run()
         new_arglist = callback.argumentList;
         activation->saveObject(new_arglist);
     }
-    else if (directArguments != NULLOBJECT)
-    {
-        // func == NULL && args != NULL => treat as RexxArray;
-        new_arglist = (RexxArray*)directArguments;
-        activation->saveObject(new_arglist);
-    }
     // use dummy argument array
     else
     {
         // this is just the null argument list
-        new_arglist = NULLARRAY;
+        new_arglist = TheNullArray;
     }
 
-    RexxString *initial_address = new_string(defaultEnvironment)
+    RexxString *initial_address = new_string(defaultEnvironment);
     /* protect from garbage collect      */
     activation->saveObject(initial_address);
 
@@ -143,7 +138,7 @@ void RunMethodDispatcher::run()
     /* run and get the result            */
     ProtectedObject program_result;
     // call the program
-    ((RexxMethod *)method->programCall(activity, OREF_SCRIPT, initial_address, new_arglist->data(), new_arglist->size()t, program_result);
+    ((RexxMethod *)method)->runProgram(activity, OREF_SCRIPT, initial_address, new_arglist->data(), new_arglist->size(), program_result);
     result = (REXXOBJECT)program_result;
     if (result != NULLOBJECT)
     {
@@ -164,5 +159,5 @@ void RunMethodDispatcher::run()
 void RunMethodArgumentCallback::run()
 {
     // this just dispatches the callback in the correct state
-    argumentList = (RexxArray *)(callback*)(arguments);
+    argumentList = (RexxArray *)callback(arguments);
 }

@@ -221,7 +221,7 @@ void RexxMemory::initialize(bool _restoringImage)
         createImage();
     }
     restore();                           // go restore the state of the memory object
-        ActivityManager::startup();      // go create the local enviroment.
+    ActivityManager::startup();          // go create the local enviroment.
 }
 
 
@@ -2203,19 +2203,17 @@ void RexxMemory::create()
 /* Function:  Initial memory setup during image build                         */
 /******************************************************************************/
 {
-  /* Make sure memory is cleared!      */
-  memoryObject.initialize(false);
-  RexxClass::createClass();            /* get the CLASS class created       */
-  RexxInteger::createClass();
-  // initializer for native libraries
-  LibraryManager::init();
-  /* Now get our savestack and         */
-  /*savetable                          */
-  memoryObject.setUpMemoryTables(OREF_NULL);
-                                       /* Create/Open Shared MUTEX          */
-                                       /* Semophores used to serialize      */
-                                       /* the flatten/unflatten process     */
-  memoryObject.createLocks();
+    RexxClass::createClass();            /* get the CLASS class created       */
+    RexxInteger::createClass();
+    // initializer for native libraries
+    LibraryManager::init();
+    /* Now get our savestack and         */
+    /*savetable                          */
+    memoryObject.setUpMemoryTables(OREF_NULL);
+                                         /* Create/Open Shared MUTEX          */
+                                         /* Semophores used to serialize      */
+                                         /* the flatten/unflatten process     */
+    memoryObject.createLocks();
 }
 
 
@@ -2224,58 +2222,52 @@ void RexxMemory::restore()
 /* Function:  Memory management image restore functions                       */
 /******************************************************************************/
 {
-  /* Make sure memory is cleared! */
-  memoryObject.initialize(true);
-  /* Retrieve special saved objects    */
-  /* OREF_ENV and primitive behaviours */
-  /* are already restored              */
-                                       /* start restoring class OREF_s      */
-  RESTORE_CLASS(Object, RexxClass);
-  RESTORE_CLASS(Class, RexxClass);
-                                       /* (CLASS is already restored)       */
-  RESTORE_CLASS(String, RexxStringClass);
-  RESTORE_CLASS(Array, RexxClass);
-  RESTORE_CLASS(Directory, RexxClass);
-  RESTORE_CLASS(Integer, RexxIntegerClass);
-  RESTORE_CLASS(List, RexxListClass);
-  RESTORE_CLASS(Message, RexxClass);
-  RESTORE_CLASS(Method, RexxMethodClass);
-  RESTORE_CLASS(NumberString, RexxNumberStringClass);
-  RESTORE_CLASS(Queue, RexxClass);
-  RESTORE_CLASS(Stem, RexxClass);
-  RESTORE_CLASS(Supplier, RexxClass);
-  RESTORE_CLASS(Table, RexxClass);
-  RESTORE_CLASS(Relation, RexxClass);
-  RESTORE_CLASS(MutableBuffer, RexxMutableBufferClass);
-  RESTORE_CLASS(Pointer, RexxClass);
-  RESTORE_CLASS(Buffer, RexxClass);
-  RESTORE_CLASS(WeakReference, RexxClass);
+    /* Retrieve special saved objects    */
+    /* OREF_ENV and primitive behaviours */
+    /* are already restored              */
+                                         /* start restoring class OREF_s      */
+    RESTORE_CLASS(Object, RexxClass);
+    RESTORE_CLASS(Class, RexxClass);
+                                         /* (CLASS is already restored)       */
+    RESTORE_CLASS(String, RexxStringClass);
+    RESTORE_CLASS(Array, RexxClass);
+    RESTORE_CLASS(Directory, RexxClass);
+    RESTORE_CLASS(Integer, RexxIntegerClass);
+    RESTORE_CLASS(List, RexxListClass);
+    RESTORE_CLASS(Message, RexxClass);
+    RESTORE_CLASS(Method, RexxMethodClass);
+    RESTORE_CLASS(NumberString, RexxNumberStringClass);
+    RESTORE_CLASS(Queue, RexxClass);
+    RESTORE_CLASS(Stem, RexxClass);
+    RESTORE_CLASS(Supplier, RexxClass);
+    RESTORE_CLASS(Table, RexxClass);
+    RESTORE_CLASS(Relation, RexxClass);
+    RESTORE_CLASS(MutableBuffer, RexxMutableBufferClass);
+    RESTORE_CLASS(Pointer, RexxClass);
+    RESTORE_CLASS(Buffer, RexxClass);
+    RESTORE_CLASS(WeakReference, RexxClass);
 
-  memoryObject.setOldSpace();          /* Mark Memory Object as OldSpace    */
-  /* initialize the tables used for garbage collection. */
-  memoryObject.setUpMemoryTables(new_object_table());
-                                       /* If first one through, generate all*/
-  IntegerZero   = new_integer(0);      /*  static integers we want to use...*/
-  IntegerOne    = new_integer(1);      /* This will allow us to use static  */
-  IntegerTwo    = new_integer(2);      /* integers instead of having to do a*/
-  IntegerThree  = new_integer(3);      /* new_integer evrytime....          */
-  IntegerFour   = new_integer(4);
-  IntegerFive   = new_integer(5);
-  IntegerSix    = new_integer(6);
-  IntegerSeven  = new_integer(7);
-  IntegerEight  = new_integer(8);
-  IntegerNine   = new_integer(9);
-  IntegerMinusOne = new_integer(-1);
+    memoryObject.setOldSpace();          /* Mark Memory Object as OldSpace    */
+    /* initialize the tables used for garbage collection. */
+    memoryObject.setUpMemoryTables(new_object_table());
+                                         /* If first one through, generate all*/
+    IntegerZero   = new_integer(0);      /*  static integers we want to use...*/
+    IntegerOne    = new_integer(1);      /* This will allow us to use static  */
+    IntegerTwo    = new_integer(2);      /* integers instead of having to do a*/
+    IntegerThree  = new_integer(3);      /* new_integer evrytime....          */
+    IntegerFour   = new_integer(4);
+    IntegerFive   = new_integer(5);
+    IntegerSix    = new_integer(6);
+    IntegerSeven  = new_integer(7);
+    IntegerEight  = new_integer(8);
+    IntegerNine   = new_integer(9);
+    IntegerMinusOne = new_integer(-1);
 
-  // the activity manager will create the local server, which will use the
-  // stream classes.  We need to get the external libraries reloaded before
-  // that happens.
-  LibraryManager::reload();
-  ActivityManager::init();             /* do activity restores              */
-  memoryObject.enableOrefChecks();     /* enable setCheckOrefs...           */
-                                       /* Create/Open Shared MUTEX          */
-                                       /* Semophores used to serialize      */
-                                       /* the flatten/unflatten process     */
-  memoryObject.createLocks();
+    // the activity manager will create the local server, which will use the
+    // stream classes.  We need to get the external libraries reloaded before
+    // that happens.
+    LibraryManager::reload();
+    ActivityManager::init();             /* do activity restores              */
+    memoryObject.enableOrefChecks();     /* enable setCheckOrefs...           */
 }
 

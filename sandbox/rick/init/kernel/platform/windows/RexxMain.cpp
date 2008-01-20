@@ -68,6 +68,7 @@
 #include "Interpreter.hpp"
 #include "ProtectedObject.hpp"
 #include "PointerClass.hpp"
+#include "InterpreterInstance.hpp"
 
 #include <fcntl.h>
 #include <io.h>
@@ -87,21 +88,6 @@ bool HandleException = true;           /* Global switch for Exception Handling *
 /* use it if possible                                                */
 /*********************************************************************/
 extern "C" {
-void SearchPrecision(
-  size_t   *precision)                 /* required precision         */
-{
-    *precision = Numerics::DEFAULT_DIGITS;   /* set default digit count    */
-
-/* give me the numeric digits settings of the current actitity       */
-
-    RexxActivity *activity = ActivityManager::findActivity();
-    if (activity != OREF_NULL)
-    {
-        RexxActivation *activation = activity->getCurrentActivation();
-        *precision = activation->digits();
-    }
-}
-}
 
 // this function can be used to retrieve the value of "top level" variables
 // on exit (RXTER). for each variable name that is found a call to the passed-in
@@ -111,7 +97,7 @@ void WinGetVariables(void (REXXENTRY *f)(const char *, REXXOBJECT))
 {
     NativeContextBlock context;
 
-    RexxArray *result context.getCurrentActivation()->getAllLocalVariables();
+    RexxArray *result = context.self->getRexxContext()->getAllLocalVariables();
 
     for (size_t i=result->size(); i>0; i--)
     {
@@ -123,8 +109,8 @@ void WinGetVariables(void (REXXENTRY *f)(const char *, REXXOBJECT))
 void WinEnterKernel()
 {
     // get an instance and the current activity
-    InterpreterInstance *instance = Interpreter::createInterpreterInstance(exits, envname);
-    activity = instance->enterOnCurrentThread();
+    InterpreterInstance *instance = Interpreter::createInterpreterInstance();
+    instance->enterOnCurrentThread();
 }
 
 void WinLeaveKernel()

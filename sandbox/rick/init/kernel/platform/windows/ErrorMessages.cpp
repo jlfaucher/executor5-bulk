@@ -50,7 +50,7 @@ RexxString *  SysMessageText(
 
                                        /* loop through looking for the      */
                                        /* error code                        */
-    if (SysInterpreter::loadString(code, dataArea, sizeof(dataArea - 1)))
+    if (SystemInterpreter::loadMessage(code, dataArea, sizeof(dataArea - 1)))
     {
         return new_string(dataArea);
     }

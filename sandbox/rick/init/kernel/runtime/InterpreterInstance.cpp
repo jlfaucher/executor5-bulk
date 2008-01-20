@@ -405,13 +405,6 @@ bool InterpreterInstance::terminate()
 }
 
 
-void InterpreterInstance::activityTerminated(RexxActivity *activity)
-{
-    // remove the activity from the active list
-    removeActivity(activity);
-}
-
-
 /**
  * Add an object to the global references table.
  *

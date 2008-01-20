@@ -67,3 +67,19 @@ void CallbackDispatcher::handleError(wholenumber_t r, RexxDirectory *c)
 }
 
 
+/**
+ * Default handler for any error conditions.  This just sets the
+ * condition information in the dispatch unit.
+ *
+ * @param c      The condition information for the error.
+ */
+void CallbackDispatcher::handleError(RexxDirectory *c)
+{
+    // this only gets added if there is a condition
+    if (c != OREF_NULL)
+    {
+        handleError(activity->errorNumber(c), c);
+    }
+}
+
+

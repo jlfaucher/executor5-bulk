@@ -79,7 +79,6 @@ public:
     RexxActivity *findActivity();
     RexxDirectory *getLocalEnvironment();
     void copyExits(ExitHandler *target);
-    void activityTerminated(RexxActivity *activity);
     void activityDeactivated(RexxActivity *activity);
     void addGlobalReference(RexxObject *o);
     void removeGlobalReference(RexxObject *o);

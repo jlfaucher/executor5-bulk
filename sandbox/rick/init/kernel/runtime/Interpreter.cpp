@@ -56,8 +56,12 @@
 // global resource lock
 SMTX Interpreter::resourceLock = 0;
 
-
 RexxList *Interpreter::interpreterInstances = OREF_NULL;
+
+// the interpreter active state flag
+bool Interpreter::active = false;
+// used for timeslice dispatching
+bool Interpreter::timeSliceElapsed = false;
 
 void Interpreter::live(size_t liveMark)
 {
@@ -175,8 +179,6 @@ bool Interpreter::terminateInterpreter()
  */
 InterpreterInstance *Interpreter::createInterpreterInstance(PRXSYSEXIT exits, const char *defaultEnvironment)
 {
-    // make sure we initialize the global environment if it hasn't already been done
-    startInterpreter(RUN_MODE);
     // get a new root activity for this instance.  This might result in pushing a prior level down the
     // stack
     RexxActivity *rootActivity = ActivityManager::getRootActivity();
@@ -219,4 +221,21 @@ bool Interpreter::terminateInterpreterInstance(InterpreterInstance *instance)
 }
 
 
+/**
+ * Tell the interpreter to have all of the instances halt its activities.
+ */
+void Interpreter::haltAllActivities()
+{
+    ResourceSection lock;
 
+    for (size_t listIndex = interpreterInstances->firstIndex() ;
+         listIndex != LIST_END;
+         listIndex = interpreterInstances->nextIndex(listIndex) )
+    {
+                                         /* Get the next message object to    */
+                                         /*process                            */
+        InterpreterInstance *instance = (InterpreterInstance *)interpreterInstances->getValue(listIndex);
+        // halt every thing
+        instance->haltAllActivities();
+    }
+}

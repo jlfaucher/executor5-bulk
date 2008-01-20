@@ -60,6 +60,7 @@
 #include "CreateMethodDispatcher.hpp"
 #include "InterpreterInstance.hpp"
 #include "RexxNativeActivation.hpp"
+#include "RexxInternalApis.h"
 
 
 int REXXENTRY RexxTerminate()
@@ -212,7 +213,7 @@ APIRET REXXENTRY RexxTranslateProgram(const char *inFile, const char *outFile, P
 void REXXENTRY RexxCreateScriptContext(const char *contextName)
 {
     // get an instance and the current activity
-    InterpreterInstance *instance = Interpreter::createInterpreterInstance(NULL, NULL);
+    InterpreterInstance *instance = Interpreter::createInterpreterInstance();
     RexxActivity *activity = instance->enterOnCurrentThread();
 
     // now create a directory and hang it off of the local environment.  This
@@ -237,7 +238,7 @@ void REXXENTRY RexxCreateScriptContext(const char *contextName)
 void REXXENTRY RexxDestroyScriptContext(const char *contextName)
 {
     // get an instance and the current activity
-    InterpreterInstance *instance = Interpreter::createInterpreterInstance(NULL, NULL);
+    InterpreterInstance *instance = Interpreter::createInterpreterInstance();
     RexxActivity *activity = instance->enterOnCurrentThread();
 
     // delete the named context from the local environment.
@@ -264,7 +265,7 @@ void REXXENTRY RexxDestroyScriptContext(const char *contextName)
 bool REXXENTRY RexxReleaseScriptReference(const char *contextName, REXXOBJECT obj)
 {
     // get an instance and the current activity
-    InterpreterInstance *instance = Interpreter::createInterpreterInstance(NULL, NULL);
+    InterpreterInstance *instance = Interpreter::createInterpreterInstance();
     RexxActivity *activity = instance->enterOnCurrentThread();
 
     // delete the named context from the local environment.
@@ -506,6 +507,11 @@ APIRET REXXENTRY RexxResetTrace(process_id_t procid, thread_id_t threadid)
 }
 
 
+/**
+ * Retrieve the current digits setting for an external context.
+ *
+ * @param precision The current precision.
+ */
 void RexxGetCurrentPrecision(size_t   *precision)
 {
     NativeContextBlock context;

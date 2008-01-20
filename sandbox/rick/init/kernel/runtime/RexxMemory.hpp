@@ -126,7 +126,7 @@ class MemorySegmentPool : public MemorySegmentPoolHeader
    MemorySegmentPool();
    MemorySegment *newSegment(size_t minSize);
    MemorySegment *newLargeSegment(size_t minSize);
-   MemorySegmentPool *freePool(void); /* CHM - defect 96: add return value */
+   void               freePool(void);
    MemorySegmentPool *nextPool() {return this->next;}
    void               setNext( MemorySegmentPool *nextPool ); /* CHM - def.96: new function */
 

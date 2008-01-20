@@ -97,6 +97,8 @@ public:
 
     virtual void run();
 
+    RexxArray *argumentList;
+
 protected:
     void *arguments;                 // opaque arguments passed to callback handler
     REXXOBJECT (REXXENTRY *callback)(void *);   // callback handler for arguments

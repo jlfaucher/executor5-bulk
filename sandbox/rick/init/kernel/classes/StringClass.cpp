@@ -1616,7 +1616,7 @@ RexxObject *RexxString::evaluate(
  *
  * @param r
  */
-void RexxString::copyToRxstring(RXSTRING r)
+void RexxString::copyToRxstring(RXSTRING &r)
 {
     size_t result_length = getLength() + 1;
     if (r.strptr == NULL || r.strlength < result_length)

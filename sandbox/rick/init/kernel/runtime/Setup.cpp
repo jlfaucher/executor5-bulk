@@ -78,6 +78,8 @@
 #include "BufferClass.hpp"
 #include "WeakReferenceClass.hpp"
 #include "CPPCode.hpp"
+#include "Interpreter.hpp"
+#include "InterpreterInstance.hpp"
 
 
 /*****************************************************************************/
@@ -169,7 +171,9 @@ void RexxMemory::createImage()
   RexxMemory::create();                /* create initial memory stuff       */
 
   ActivityManager::init();             /* Initialize the activity managers  */
-  ActivityManager::getActivity();      /* (will create one if necessary)    */
+  // get an instance and the current activity
+  InterpreterInstance *instance = Interpreter::createInterpreterInstance();
+  instance->enterOnCurrentThread();
 
                                        /* avoid that through caching        */
                                        /* TheTrueObject == IntegerOne etc.  */

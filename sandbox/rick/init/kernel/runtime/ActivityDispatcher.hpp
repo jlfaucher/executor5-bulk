@@ -57,9 +57,10 @@ public:
 
     virtual void run();
     virtual void handleError(wholenumber_t, RexxDirectory *);
+    virtual void handleError(RexxDirectory *);
     virtual void invoke();
 
-    inline void setActivation(RexxNativeActivation *a) { activation = a; }
+    inline void setContext(RexxActivity *act, RexxNativeActivation *a) { activity = act; activation = a; }
 
     wholenumber_t  rc;                 // error return code
     const char *defaultEnvironment;    // the default execution environment

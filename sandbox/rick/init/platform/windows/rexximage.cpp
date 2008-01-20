@@ -36,7 +36,8 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-#include <rexx.h>                           /* needed for RexxStart()     */
+#include "rexx.h"
+#include "RexxInternalApis.h"
 
 int __cdecl main(int argc, char *argv[])
 {

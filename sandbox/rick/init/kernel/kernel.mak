@@ -128,9 +128,9 @@ OKPOBJ4=$(OR_OUTDIR)\QueueClass.$(OBJ)  $(OR_OUTDIR)\SupplierClass.$(OBJ)  \
 OKPOBJ5=$(OR_OUTDIR)\IntegerClass.$(OBJ)    $(OR_OUTDIR)\NumberStringClass.$(OBJ)
 OKIOBJ1=$(OR_OUTDIR)\RexxActivation.$(OBJ) $(OR_OUTDIR)\RexxActivity.$(OBJ) $(OR_OUTDIR)\KeywordConstants.$(OBJ)  \
         $(OR_OUTDIR)\RexxBehaviour.$(OBJ)  $(OR_OUTDIR)\BufferClass.$(OBJ) $(OR_OUTDIR)\ActivityManager.$(OBJ) \
-	$(OR_OUTDIR)\Interpreter.$(OBJ) $(OR_OUTDIR)\Interpreter.$(OBJ) $(OR_OUTDIR)\RexxStartDispatcher.$(OBJ) \
+	$(OR_OUTDIR)\Interpreter.$(OBJ) $(OR_OUTDIR)\SystemInterpreter.$(OBJ) $(OR_OUTDIR)\RexxStartDispatcher.$(OBJ) \
 	$(OR_OUTDIR)\InterpreterInstance.$(OBJ) $(OR_OUTDIR)\ActivityDispatcher.$(OBJ) $(OR_OUTDIR)\TranslateDispatcher.$(OBJ) \
-	$(OR_OUTDIR)\CreateMethodDispatcher.$(OBJ)
+	$(OR_OUTDIR)\CreateMethodDispatcher.$(OBJ) $(OR_OUTDIR)\CallbackDispatcher.$(OBJ)
 OKIOBJ2=$(OR_OUTDIR)\RexxHashTable.$(OBJ)  $(OR_OUTDIR)\RexxCode.$(OBJ) $(OR_OUTDIR)\LibraryManager.$(OBJ) \
         $(OR_OUTDIR)\RexxListTable.$(OBJ) $(OR_OUTDIR)\RexxNativeActivation.$(OBJ) $(OR_OUTDIR)\RexxNativeCode.$(OBJ) \
 	$(OR_OUTDIR)\CPPCode.$(OBJ)

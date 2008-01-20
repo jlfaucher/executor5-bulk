@@ -52,6 +52,8 @@ APIRET APIENTRY RexxCallFunction (const char *, size_t, PCONSTRXSTRING, int *, P
 
 APIRET APIENTRY RexxExecuteMacroFunction (const char *, PRXSTRING );
 
+void REXXENTRY RexxCreateInterpreterImage();
+
 #ifdef __cplusplus
 }
 #endif

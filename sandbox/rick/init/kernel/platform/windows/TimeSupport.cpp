@@ -41,8 +41,9 @@
 #include "RexxNativeAPI.h"
 #include "RexxDateTime.hpp"
 #include "Interpreter.hpp"
+#include "SystemInterpreter.hpp"
 
-HANDLE SystemInterpreter::timeSliceTimerOwner = 0;
+HANDLE SystemInterpreter::timeSliceTimerThread = 0;
 
 #define TIMESLICE_STACKSIZE 2048
 #define TIMESLICEMS 10
@@ -92,7 +93,7 @@ DWORD WINAPI TimeSliceControl(void * args)
       Sleep(TIMESLICEMS);
       Interpreter::setTimeSliceElapsed();
    } while (!Interpreter::isTerminated());
-   rexxTimeSliceTimerOwner = 0;
+   SystemInterpreter::setTimeSliceTimerThread(0);
 #endif
    return 0;
 }
@@ -105,12 +106,13 @@ void SystemInterpreter::startTimeSlice()
 {
 #ifdef TIMESLICE
    ULONG thread;
-   if (timeSliceTimerOwner == 0) {           /* Is there a timer?         */
+   if (timeSliceTimerThread == 0)
+   {           /* Is there a timer?         */
 
      /* create a time slice timer thread */
 
-     timeSliceTimerOwner = CreateThread(NULL, TIMESLICE_STACKSIZE, TimeSliceControl, NULL, 0, &thread);
-     SetThreadPriority(timeSliceTimerOwner, THREAD_PRIORITY_NORMAL+1);  /* set a higher priority */
+     timeSliceTimerThread = CreateThread(NULL, TIMESLICE_STACKSIZE, TimeSliceControl, NULL, 0, &thread);
+     SetThreadPriority(timeSliceTimerThread, THREAD_PRIORITY_NORMAL+1);  /* set a higher priority */
   }
   Interpreter::clearTimeSliceElapsed();
 #endif
@@ -123,8 +125,8 @@ void SystemInterpreter::stopTimeSlice()
 /******************************************************************************/
 {
 #ifdef TIMESLICE
-   TerminateThread(timeSliceTimerOwner, 0);
-   timeSliceTimerOwner = 0;
+   TerminateThread(timeSliceTimerThread, 0);
+   timeSliceTimerThread = 0;
 #endif
 }
 

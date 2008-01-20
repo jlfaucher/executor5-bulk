@@ -215,7 +215,7 @@ RexxMethod1(REXXOBJECT, function_queueExit,
 
     RexxString *temp = (RexxString *)queue_name;
                                        /* call the exit                     */
-    RexxActivation *activation = (RexxActivation *)ActivityManager::currentActivity->getCurrentActivation();
+    RexxActivation *activation = ActivityManager::currentActivity->getCurrentRexxFrame();
     context.activity->callQueueNameExit(activation, temp);
     return context.protect(temp);          /* and just return the exit result   */
 }
