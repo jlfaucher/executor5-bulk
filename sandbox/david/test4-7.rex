@@ -46,7 +46,7 @@
 
 window = .myMainWindow~new('GTK_WINDOW_TOPLEVEL')
 window~set_title('Scales')
-window~connect_signal("destroy")
+window~signal_connect("destroy")
 window~set_border_width(10)
 window~set_size_request(250, -1)
 

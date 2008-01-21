@@ -50,7 +50,7 @@
 
 window = .myMainWindow~new('GTK_WINDOW_TOPLEVEL')
 window~title = 'Radio Buttons'
-window~connect_signal("destroy")
+window~signal_connect("destroy")
 window~border_width = 10
 
 radio1 = .GtkRadioButton_With_Label~new(.nil, 'I want to be clicked!')

@@ -50,13 +50,13 @@
 
 window = .myMainWindow~new('GTK_WINDOW_TOPLEVEL')
 window~title = 'Stock Buttons'
-window~connect_signal("destroy")
+window~signal_connect("destroy")
 window~border_width = 10
 window~set_size_request(250, 100)
 
 button = .MyButton~new('gtk-close')
 
-button~connect_signal("clicked")
+button~signal_connect("clicked")
 
 window~add(button)
 window~show_all()

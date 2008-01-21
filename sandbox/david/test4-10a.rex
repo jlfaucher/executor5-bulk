@@ -50,7 +50,7 @@
 
 window = .myMainWindow~new('GTK_WINDOW_TOPLEVEL')
 window~title = 'File Chhoser Button'
-window~connect_signal("destroy")
+window~signal_connect("destroy")
 window~set_border_width(10)
 
 label = .GtkLabel~new()
@@ -62,8 +62,8 @@ chooser2 = .MyButton2~new('Chooser a folder', 'GTK_FILE_CHOOSER_ACTION_OPEN')
 chooser1~user_data = chooser2
 chooser2~user_data = label
 
-chooser1~connect_signal('selection_changed')
-chooser2~connect_signal('selection_changed')
+chooser1~signal_connect('selection_changed')
+chooser2~signal_connect('selection_changed')
 
 chooser1~set_current_folder('/home/'userid())
 chooser2~set_current_folder('/home/'userid())

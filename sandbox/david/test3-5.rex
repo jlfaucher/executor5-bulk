@@ -46,15 +46,15 @@
 
 window = .myMainWindow~new('GTK_WINDOW_TOPLEVEL')
 window~set_title('Fixed')
-window~connect_signal("destroy")
+window~signal_connect("destroy")
 window~set_border_width(10)
 
 fixed = .GtkFixed~new()
 button1 = .MyButton~new('Pixed by Pixel ...')
 button2 = .MyButton~new('you choose by fate.')
 
-button1~connect_signal("clicked")
-button2~connect_signal("clicked")
+button1~signal_connect("clicked")
+button2~signal_connect("clicked")
 
 fixed~put(button1, 0, 0)
 fixed~put(button2, 20, 30)

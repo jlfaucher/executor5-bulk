@@ -53,7 +53,7 @@ window~title = 'Hello World'
 window~border_width = 10
 window~set_size_request(200, 100)
 
-window~connect_signal("destroy")
+window~signal_connect("destroy")
 -- events cannot be overridden so there is no connect to a delete_event
 
 label= .GtkLabel~new('Hellow World')

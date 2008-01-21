@@ -48,7 +48,7 @@ names = .array~of('Andrew', 'Joe', 'Samatha', 'Jonanthan')
 
 window = .myMainWindow~new('GTK_WINDOW_TOPLEVEL')
 window~set_title('Panes')
-window~connect_signal("destroy")
+window~signal_connect("destroy")
 
 window~set_border_width(10)
 window~set_size_request(225, 150)
@@ -57,8 +57,8 @@ hpaned = .GtkHPaned~new()
 button1 = .MyButton~new('Resize')
 button2 = .MyButton~new('Me!')
 
-button1~connect_signal("clicked")
-button2~connect_signal("clicked")
+button1~signal_connect("clicked")
+button2~signal_connect("clicked")
 
 hpaned~add1(button1)
 hpaned~add2(button2)

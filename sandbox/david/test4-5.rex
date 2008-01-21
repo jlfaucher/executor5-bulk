@@ -46,7 +46,7 @@
 
 window = .myMainWindow~new('GTK_WINDOW_TOPLEVEL')
 window~set_title('Password')
-window~connect_signal("destroy")
+window~signal_connect("destroy")
 window~set_border_width(10)
 
 str = 'What is the password for' userid() || '?'

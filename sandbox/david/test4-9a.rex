@@ -50,7 +50,7 @@
 
 window = .myMainWindow~new('GTK_WINDOW_TOPLEVEL')
 window~title = 'Color Button'
-window~connect_signal("destroy")
+window~signal_connect("destroy")
 window~border_width = 10
 
 color = '#000033336666'  -- each color is really 16-bit number, not 8 bits
@@ -63,7 +63,7 @@ label~modify_fg('GTK_STATE_NORMAL', color)
 -- save data for the callback
 button~user_data = label
 
-button~connect_signal('color_set')
+button~signal_connect('color_set')
 
 hbox = .GtkHBox~new(.false, 5)
 hbox~pack_start_defaults(button)

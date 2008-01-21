@@ -46,7 +46,7 @@
 
 window = .myMainWindow~new('GTK_WINDOW_TOPLEVEL')
 window~set_title('Check Buttons')
-window~connect_signal("destroy")
+window~signal_connect("destroy")
 window~set_border_width(10)
 
 check1 = .MyCheckButton~new('I am the main option.')
@@ -56,10 +56,10 @@ check2 = .GtkCheckButton_With_label~new('I rely on the other guy.')
 check1~user_data = check2
 
 check2~set_sensitive(.false)
-check1~connect_signal("toggled")
+check1~signal_connect("toggled")
 
 close = .MyButton~new('gtk-close')
-close~connect_signal("clicked")
+close~signal_connect("clicked")
 
 vbox = .GtkVBox~new(.false, 5)
 vbox~pack_start(check1, .false, .true, 0)

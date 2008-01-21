@@ -54,14 +54,14 @@ window = .myMainWindow~new('GTK_WINDOW_TOPLEVEL')
 window~title = 'Boxes'
 window~border_width = 10
 window~set_size_request(200, -1)
-window~connect_signal("destroy")
+window~signal_connect("destroy")
 
 vbox = .GtkVBox~new()
 
 do i = 1 to names~items()
    button = .myButton~new(names[i])
    vbox~pack_start_defaults(button)
-   button~connect_signal("clicked")
+   button~signal_connect("clicked")
    end
 
 window~add(vbox)

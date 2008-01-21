@@ -46,7 +46,7 @@
 
 window = .myMainWindow~new('GTK_WINDOW_TOPLEVEL')
 window~set_title('Tables')
-window~connect_signal("destroy")
+window~signal_connect("destroy")
 window~set_border_width(10)
 window~set_size_request(350, 100)  -- the sizes in the book are too small
 

@@ -54,7 +54,7 @@
 
 window = .myMainWindow~new('GTK_WINDOW_TOPLEVEL')
 window~title = 'Notebook'
-window~connect_signal("destroy")
+window~signal_connect("destroy")
 window~border_width = 10
 window~set_size_request(200, 100)
 
@@ -64,8 +64,8 @@ label2 = .GtkLabel~new('Page Two')
 child1 = .MyButton~new('Go to page 2 to find the answer.')
 child2 = .MyButton~new('Go to page 1 to find the answer.')
 
-child1~connect_signal('clicked')
-child2~connect_signal('clicked')
+child1~signal_connect('clicked')
+child2~signal_connect('clicked')
 -- Store the notebook widget so we can get access to it in the callbacks
 child1~user_data = notebook
 child2~user_data = notebook

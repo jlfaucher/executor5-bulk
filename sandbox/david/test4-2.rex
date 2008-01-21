@@ -46,7 +46,7 @@
 
 window = .myMainWindow~new('GTK_WINDOW_TOPLEVEL')
 window~set_title('Toggle Buttons')
-window~connect_signal("destroy")
+window~signal_connect("destroy")
 window~set_border_width(10)
 
 vbox = .GtkVBox~new(.true, 5)
@@ -57,8 +57,8 @@ toggle2 = .MyButton~new('_No! Deactivate the other one!')
 toggle1~user_data = toggle2
 toggle2~user_data = toggle1
 
-toggle1~connect_signal("toggled")
-toggle2~connect_signal("toggled")
+toggle1~signal_connect("toggled")
+toggle2~signal_connect("toggled")
 
 vbox~pack_start_defaults(toggle1)
 vbox~pack_start_defaults(toggle2)

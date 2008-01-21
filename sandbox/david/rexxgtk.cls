@@ -250,7 +250,7 @@ return
 -- This attribute is not a part of the GTK system. It has been added to
 -- support callbacks or any other use the user may have.
 
-::method connect_signal
+::method signal_connect
 use strict arg event
 select
    when event = 'destroy' then call GrxWidgetConnectSignal self~pointer, event
@@ -296,14 +296,14 @@ return
 use strict arg self~border_width
 return
 
-::method connect_signal
+::method signal_connect
 use strict arg event
 select
    when event = 'add' then call GrxContainerConnectSignal self~pointer, event
    when event = 'check_resize' then call GrxContainerConnectSignal self~pointer, event
    when event = 'removs' then call GrxContainerConnectSignal self~pointer, event
    when event = 'set_focus_child' then call GrxContainerConnectSignal self~pointer, event
-   otherwise return self~connect_signal:super(event)
+   otherwise return self~signal_connect:super(event)
    end
 return .true
 
@@ -356,9 +356,9 @@ use strict arg mywidget
 self~pack_start(mywidget, .true, .true, 0)
 return
 
-::method connect_signal
+::method signal_connect
 use strict arg event
-return self~connect_signal:super(event)
+return self~signal_connect:super(event)
 
 
 /*============================================================================*/
@@ -372,9 +372,9 @@ use arg homogeneous, spacing
 self~pointer = GrxHBoxNew(homogeneous, spacing)
 return
 
-::method connect_signal
+::method signal_connect
 use strict arg event
-return self~connect_signal:super(event)
+return self~signal_connect:super(event)
 
 
 /*============================================================================*/
@@ -388,9 +388,9 @@ use arg homogeneous, spacing
 self~pointer = GrxVBoxNew(homogeneous, spacing)
 return
 
-::method connect_signal
+::method signal_connect
 use strict arg event
-return self~connect_signal:super(event)
+return self~signal_connect:super(event)
 
 
 /*============================================================================*/
@@ -429,9 +429,9 @@ use strict arg mywidget, resize, shrink
 call GrxPanedPack2 self~pointer, mywidget~pointer, resize, shrink
 return
 
-::method connect_signal
+::method signal_connect
 use strict arg event
-return self~connect_signal:super(event)
+return self~signal_connect:super(event)
 
 
 /*============================================================================*/
@@ -445,9 +445,9 @@ if arg() = 0 then self~pointer = GrxHPanedNew()
 else use strict arg self~pointer
 return
 
-::method connect_signal
+::method signal_connect
 use strict arg event
-return self~connect_signal:super(event)
+return self~signal_connect:super(event)
 
 
 /*============================================================================*/
@@ -461,9 +461,9 @@ if arg() = 0 then self~pointer = GrxVPanedNew()
 else use strict arg self~pointer
 return
 
-::method connect_signal
+::method signal_connect
 use strict arg event
-return self~connect_signal:super(event)
+return self~signal_connect:super(event)
 
 
 /*============================================================================*/
@@ -500,14 +500,14 @@ use strict arg
 retc = GrxWindowStart(self~pointer)
 return retc
 
-::method connect_signal
+::method signal_connect
 use strict arg event
 select
    when event = 'activate_default' then call GrxWindowConnectSignal self~pointer, event
    when event = 'activate_focus' then call GrxWindowConnectSignal self~pointer, event
    when event = 'keys_changed' then call GrxWindowConnectSignal self~pointer, event
    when event = 'set_focus' then call GrxWindowConnectSignal self~pointer, event
-   otherwise return self~connect_signal:super(event)
+   otherwise return self~signal_connect:super(event)
    end
 return .true
 
@@ -584,9 +584,9 @@ return
 use strict arg self~selectable
 return
 
-::method connect_signal
+::method signal_connect
 use strict arg event
-return self~connect_signal:super(event)
+return self~signal_connect:super(event)
 
 /*============================================================================*/
 /* Class: Button                                                              */
@@ -642,7 +642,7 @@ return
 use strict arg self~relief
 return
 
-::method connect_signal
+::method signal_connect
 use strict arg event
 select
    when event = 'pressed' then call GrxButtonConnectSignal self~pointer, event
@@ -650,7 +650,7 @@ select
    when event = 'clicked' then call GrxButtonConnectSignal self~pointer, event
    when event = 'enter' then call GrxButtonConnectSignal self~pointer, event
    when event = 'leave' then call GrxButtonConnectSignal self~pointer, event
-   otherwise return self~connect_signal:super(event)
+   otherwise return self~signal_connect:super(event)
    end
 return .true
 
@@ -783,11 +783,11 @@ return
 use strict arg self~inconsistent
 return
 
-::method connect_signal
+::method signal_connect
 use strict arg event
 select
    when event = 'toggled' then call GrxToggleButtonConnectSignal self~pointer, event
-   otherwise return self~connect_signal:super(event)
+   otherwise return self~signal_connect:super(event)
    end
 return .true
 
@@ -831,9 +831,9 @@ self~pointer = GrxCheckButtonNew()
 use strict arg self~label = ''
 return
 
-::method connect_signal
+::method signal_connect
 use strict arg event
-return self~connect_signal:super(event)
+return self~signal_connect:super(event)
 
 /*============================================================================*/
 /* Class: CheckButton_With_Mnemonic                                           */
@@ -891,11 +891,11 @@ return
 use strict arg self~group
 return
 
-::method connect_signal
+::method signal_connect
 use strict arg event
 select
    when event = 'group_changed' then call GrxRadioButtonConnectSignal self~pointer, event
-   otherwise return self~connect_signal:super(event)
+   otherwise return self~signal_connect:super(event)
    end
 return .true
 
@@ -1001,11 +1001,11 @@ return
 use strict arg self~color
 return
 
-::method connect_signal
+::method signal_connect
 use strict arg event
 select
    when event = 'color_set' then call GrxColorButtonConnectSignal self~pointer, event
-   otherwise return self~connect_signal:super(event)
+   otherwise return self~signal_connect:super(event)
    end
 return .true
 
@@ -1036,14 +1036,14 @@ use strict arg title, action
 self~pointer = GrxFileChooserButtonNew(title, action)
 return
 
-::method connect_signal
+::method signal_connect
 use strict arg event
 -- first try the GtkFileChooser class hiearchy first
-if self~connect_signal:.GtkFileChooser(event) = .true then return .true
+if self~signal_connect:.GtkFileChooser(event) = .true then return .true
 -- now try the standard hiearchy
 select
    when event = 'file_set' then call GrxFileChooserButtonConnectSignal self~pointer, event
-   otherwise return self~connect_signal:super(event)
+   otherwise return self~signal_connect:super(event)
    end
 return .true
 
@@ -1086,9 +1086,9 @@ return
 use strict arg self~col_spacings
 return
 
-::method connect_signal
+::method signal_connect
 use strict arg event
-return self~connect_signal:super(event)
+return self~signal_connect:super(event)
 
 
 /*============================================================================*/
@@ -1183,7 +1183,7 @@ return
 use strict arg self~invisible_char
 return
 
-::method connect_signal
+::method signal_connect
 use strict arg event
 select
    when event = 'activate' then call GrxEntryConnectSignal self~pointer, event
@@ -1196,7 +1196,7 @@ select
    when event = 'paste_clipboard' then call GrxEntryConnectSignal self~pointer, event
    when event = 'populate_popup' then call GrxEntryConnectSignal self~pointer, event
    when event = 'toggle_overwrite' then call GrxEntryConnectSignal self~pointer, event
-   otherwise return self~connect_signal:super(event)
+   otherwise return self~signal_connect:super(event)
    end
 return .true
 
@@ -1252,9 +1252,9 @@ use strict arg widget, xpos, ypos
 call GrxFixedMove self~pointer, widget~pointer, xpos, ypos
 return
 
-::method connect_signal
+::method signal_connect
 use strict arg event
-return self~connect_signal:super(event)
+return self~signal_connect:super(event)
 
 
 /*============================================================================*/
@@ -1313,9 +1313,9 @@ return
 use strict arg self~spacing
 return
 
-::method connect_signal
+::method signal_connect
 use strict arg event
-return self~connect_signal:super(event)
+return self~signal_connect:super(event)
 
 
 /*============================================================================*/
@@ -1369,9 +1369,9 @@ return
 use strict arg self~snap_edge
 return
 
-::method connect_signal
+::method signal_connect
 use strict arg event
-return self~connect_signal:super(event)
+return self~signal_connect:super(event)
 
 
 /*============================================================================*/
@@ -1545,7 +1545,7 @@ return GrxNotebookGetCurrentPage(self~pointer)
 use strict arg
 return self~current_page
 
-::method connect_signal
+::method signal_connect
 use strict arg event
 select
    when event = 'change_current_page' then call GrxLabelConnectSignal self~pointer, event
@@ -1558,7 +1558,7 @@ select
    when event = 'reorder_tab' then call GrxLabelConnectSignal self~pointer, event
    when event = 'select_page' then call GrxLabelConnectSignal self~pointer, event
    when event = 'switch_page' then call GrxLabelConnectSignal self~pointer, event
-   otherwise return self~connect_signal:super(event)
+   otherwise return self~signal_connect:super(event)
    end
 return .true
 
@@ -1638,9 +1638,9 @@ return GrxEventBoxGetVisibleWindow(self~pointer)
 use strict arg
 return self~visible_window
 
-::method connect_signal
+::method signal_connect
 use strict arg event
-return self~connect_signal:super(event)
+return self~signal_connect:super(event)
 
 
 /*============================================================================*/
@@ -1655,13 +1655,13 @@ return self~connect_signal:super(event)
 raise syntax 93.964 array ('A GtkRange class cannot be instantiated.')
 return
 
-::method connect_signal
+::method signal_connect
 use strict arg event
 select
    when event = 'adjust_bounds' then call GrxLabelConnectSignal self~pointer, event
    when event = 'move_slider' then call GrxLabelConnectSignal self~pointer, event
    when event = 'value_changed' then call GrxLabelConnectSignal self~pointer, event
-   otherwise return self~connect_signal:super(event)
+   otherwise return self~signal_connect:super(event)
    end
 return .true
 
@@ -1717,9 +1717,9 @@ return GrxScaleGetValuePos(self~pointer)
 ::method get_value_pos
 return self~digits
 
-::method connect_signal
+::method signal_connect
 use strict arg event
-return self~connect_signal:super(event)
+return self~signal_connect:super(event)
 
 
 /*============================================================================*/
@@ -1759,9 +1759,9 @@ self~pointer = GrxVScaleNew(adj~value, adj~lower, adj~upper, adj~step_inc,,
  adj~page_inc, adj~page_size)
 return
 
-::method connect_signal
+::method signal_connect
 use strict arg event
-return self~connect_signal:super(event)
+return self~signal_connect:super(event)
 
 
 /*============================================================================*/
@@ -1807,13 +1807,13 @@ self~pointer = GrxSpinButtonNew(adj~value, adj~lower, adj~upper, adj~step_inc,,
  adj~page_inc, adj~page_size, climb_rate, digits)
 return
 
-::method connect_signal
+::method signal_connect
 use strict arg event
 select
    when event = 'change_value' then call GrxLabelConnectSignal self~pointer, event
    when event = 'value_changed' then call GrxLabelConnectSignal self~pointer, event
    when event = 'wrapped' then call GrxLabelConnectSignal self~pointer, event
-   otherwise return self~connect_signal:super(event)
+   otherwise return self~signal_connect:super(event)
    end
 return .true
 
@@ -1877,7 +1877,7 @@ return GrxFileChooserGetFilename(self~pointer)
 ::method get_filename
 return self~filename
 
-::method connect_signal
+::method signal_connect
 use strict arg event
 select
    when event = 'current_folder_changed' then call GrxFileChooserConnectSignal self~pointer, event

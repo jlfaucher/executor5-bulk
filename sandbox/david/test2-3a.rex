@@ -53,11 +53,11 @@ window~title = 'Hello World'
 window~border_width = 25
 window~set_size_request(200, 100)
 
-window~connect_signal("destroy")
+window~signal_connect("destroy")
 
 button = .MyButton~new('_Close')
 
-button~connect_signal("clicked")
+button~signal_connect("clicked")
 
 window~add(button)
 
