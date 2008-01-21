@@ -80,7 +80,7 @@ return
 
 
 /*============================================================================*/
-/* Class:Widget                                                               */
+/* Class: GtkWidget                                                           */
 /*============================================================================*/
 
 ::class GtkWidget public
@@ -263,7 +263,7 @@ return
 
 
 /*============================================================================*/
-/* Class: Container                                                           */
+/* Class: GtkContainer                                                        */
 /* Note:  This is strictly a base class. It should never be instantiated on   */
 /*        its own. You should instantiate one of its subclasses instead.      */
 /*============================================================================*/
@@ -321,7 +321,7 @@ return
 
 
 /*============================================================================*/
-/* Class: Box                                                                 */
+/* Class: GtkBox                                                              */
 /* Note:  This is strictly a base class. It should never be instantiated on   */
 /*        its own. You should instantiate one of its subclasses instead.      */
 /*============================================================================*/
@@ -362,7 +362,7 @@ return self~signal_connect:super(event)
 
 
 /*============================================================================*/
-/* Class: HBox                                                                */
+/* Class: GtkHBox                                                             */
 /*============================================================================*/
 
 ::class GtkHBox public subclass GtkBox
@@ -378,7 +378,7 @@ return self~signal_connect:super(event)
 
 
 /*============================================================================*/
-/* Class: VBox                                                                */
+/* Class: GtkVBox                                                             */
 /*============================================================================*/
 
 ::class GtkVBox public subclass GtkBox
@@ -394,7 +394,7 @@ return self~signal_connect:super(event)
 
 
 /*============================================================================*/
-/* Class: Paned                                                               */
+/* Class: GtkPaned                                                            */
 /* Note:  This is strictly a base class. It should never be instantiated on   */
 /*        its own. You should instantiate one of its subclasses instead.      */
 /*============================================================================*/
@@ -435,7 +435,7 @@ return self~signal_connect:super(event)
 
 
 /*============================================================================*/
-/* Class: HPaned                                                              */
+/* Class: GtkHPaned                                                           */
 /*============================================================================*/
 
 ::class GtkHPaned public subclass GtkPaned
@@ -451,7 +451,7 @@ return self~signal_connect:super(event)
 
 
 /*============================================================================*/
-/* Class: VPaned                                                              */
+/* Class: GtkVPaned                                                           */
 /*============================================================================*/
 
 ::class GtkVPaned public subclass GtkPaned
@@ -467,7 +467,7 @@ return self~signal_connect:super(event)
 
 
 /*============================================================================*/
-/* Class: Window                                                              */
+/* Class: GtkWindow                                                           */
 /*============================================================================*/
 
 ::class GtkWindow public subclass GtkContainer
@@ -525,7 +525,7 @@ return
 
 
 /*============================================================================*/
-/* Class: Label                                                               */
+/* Class: GtkLabel                                                            */
 /*============================================================================*/
 
 ::class GtkLabel public subclass GtkWidget
@@ -589,7 +589,7 @@ use strict arg event
 return self~signal_connect:super(event)
 
 /*============================================================================*/
-/* Class: Button                                                              */
+/* Class: GtkButton                                                           */
 /*============================================================================*/
 
 ::class GtkButton public subclass GtkContainer
@@ -670,7 +670,7 @@ return
 return
 
 /*============================================================================*/
-/* Class: Button_With_Mnemonic                                                */
+/* Class: GtkButton_With_Mnemonic                                             */
 /*============================================================================*/
 
 ::class GtkButton_With_Mnemonic public subclass GtkButton
@@ -683,7 +683,7 @@ self~label = label
 return
 
 /*============================================================================*/
-/* Class: Button_With_Label                                                   */
+/* Class: GtkButton_With_Label                                                */
 /*============================================================================*/
 
 ::class GtkButton_With_Label public subclass GtkButton
@@ -695,7 +695,7 @@ self~label = label
 return
 
 /*============================================================================*/
-/* Class: Button_From_Stock                                                   */
+/* Class: GtkButton_From_Stock                                                */
 /*============================================================================*/
 
 ::class GtkButton_From_Stock public subclass GtkButton
@@ -710,7 +710,7 @@ return
 
 
 /*============================================================================*/
-/* Class: ToggleButton                                                         */
+/* Class: GtkToggleButton                                                      */
 /*============================================================================*/
 
 ::class GtkToggleButton public subclass GtkButton
@@ -795,7 +795,7 @@ return .true
 return
 
 /*============================================================================*/
-/* Class: ToggleButton_With_Mnemonic                                          */
+/* Class: GtkToggleButton_With_Mnemonic                                       */
 /*============================================================================*/
 
 ::class GtkToggleButton_With_Mnemonic public subclass GtkToggleButton
@@ -808,7 +808,7 @@ self~label = label
 return
 
 /*============================================================================*/
-/* Class: ToggleButton_With_Label                                             */
+/* Class: GtkToggleButton_With_Label                                          */
 /*============================================================================*/
 
 ::class GtkToggleButton_With_Label public subclass GtkToggleButton
@@ -821,7 +821,7 @@ return
 
 
 /*============================================================================*/
-/* Class: Checkbutton                                                         */
+/* Class: GtkCheckbutton                                                      */
 /*============================================================================*/
 
 ::class GtkCheckbutton public subclass GtkToggleButton
@@ -836,7 +836,7 @@ use strict arg event
 return self~signal_connect:super(event)
 
 /*============================================================================*/
-/* Class: CheckButton_With_Mnemonic                                           */
+/* Class: GtkCheckButton_With_Mnemonic                                        */
 /*============================================================================*/
 
 ::class GtkCheckButton_With_Mnemonic public subclass GtkCheckButton
@@ -849,7 +849,7 @@ self~label = label
 return
 
 /*============================================================================*/
-/* Class: CheckButton_With_Label                                              */
+/* Class: GtkCheckButton_With_Label                                           */
 /*============================================================================*/
 
 ::class GtkCheckButton_With_Label public subclass GtkCheckButton
@@ -862,10 +862,10 @@ return
 
 
 /*============================================================================*/
-/* Class: Radiobutton                                                         */
+/* Class: GtkRadioButton                                                      */
 /*============================================================================*/
 
-::class GtkRadiobutton public subclass GtkCheckbutton
+::class GtkRadioButton public subclass GtkCheckbutton
 
 ::method init
 use strict arg group
@@ -903,7 +903,7 @@ return .true
 return
 
 /*============================================================================*/
-/* Class: RadioButton_With_Mnemonic                                           */
+/* Class: GtkRadioButton_With_Mnemonic                                        */
 /*============================================================================*/
 
 ::class GtkRadioButton_With_Mnemonic public subclass GtkRadioButton
@@ -916,7 +916,7 @@ self~label = label
 return
 
 /*============================================================================*/
-/* Class: RadioButton_With_Label                                              */
+/* Class: GtkRadioButton_With_Label                                           */
 /*============================================================================*/
 
 ::class GtkRadioButton_With_Label public subclass GtkRadioButton
@@ -928,7 +928,7 @@ self~label = label
 return
 
 /*============================================================================*/
-/* Class: RadioButton_From_Widget                                             */
+/* Class: GtkRadioButton_From_Widget                                          */
 /*============================================================================*/
 
 ::class GtkRadioButton_From_Widget public subclass GtkRadioButton
@@ -939,7 +939,7 @@ self~pointer = GrxRadioButtonNewFromWidget(widget~pointer)
 return
 
 /*============================================================================*/
-/* Class: RadioButton_From_Widget_With_Label                                  */
+/* Class: GtkRadioButton_From_Widget_With_Label                               */
 /*============================================================================*/
 
 ::class GtkRadioButton_From_Widget_With_Label public subclass GtkRadioButton_From_Widget
@@ -951,7 +951,7 @@ self~label = label
 return
 
 /*============================================================================*/
-/* Class: RadioButton_From_Widget_With_Mnemonic                               */
+/* Class: GtkRadioButton_From_Widget_With_Mnemonic                            */
 /*============================================================================*/
 
 ::class GtkRadioButton_From_Widget_With_Mnemonic public subclass GtkRadioButton_From_Widget
@@ -965,7 +965,7 @@ return
 
 
 /*============================================================================*/
-/* Class: ColorButton                                                         */
+/* Class: GtkColorButton                                                      */
 /*============================================================================*/
 
 ::class GtkColorButton public subclass GtkButton
@@ -1014,7 +1014,7 @@ return
 
 
 /*============================================================================*/
-/* Class: ColorButton_With_Color                                              */
+/* Class: GtkColorButton_With_Color                                           */
 /*============================================================================*/
 
 ::class GtkColorButton_With_Color public subclass GtkColorButton
@@ -1026,7 +1026,7 @@ return
 
 
 /*============================================================================*/
-/* Class: FileChooserButton                                                   */
+/* Class: GtkFileChooserButton                                                */
 /*============================================================================*/
 
 ::class GtkFileChooserButton public subclass GtkHBox inherit GtkFileChooser
@@ -1052,7 +1052,7 @@ return
 
 
 /*============================================================================*/
-/* Class: Table                                                               */
+/* Class: GtkTable                                                            */
 /*============================================================================*/
 
 ::class GtkTable public subclass GtkContainer
@@ -1092,7 +1092,7 @@ return self~signal_connect:super(event)
 
 
 /*============================================================================*/
-/* Class: Entry                                                               */
+/* Class: GtkEntry                                                            */
 /*============================================================================*/
 
 ::class GtkEntry public subclass GtkWidget
@@ -1232,7 +1232,7 @@ return
 
 
 /*============================================================================*/
-/* Class: Fixed                                                               */
+/* Class: GtkFixed                                                            */
 /*============================================================================*/
 
 ::class GtkFixed public subclass GtkContainer
@@ -1258,7 +1258,7 @@ return self~signal_connect:super(event)
 
 
 /*============================================================================*/
-/* Class: Expander                                                            */
+/* Class: GtkExpander                                                         */
 /*============================================================================*/
 
 ::class GtkExpander public subclass GtkContainer
@@ -1319,7 +1319,7 @@ return self~signal_connect:super(event)
 
 
 /*============================================================================*/
-/* Class: Expander_With_Mnemonic                                              */
+/* Class: GtkExpander_With_Mnemonic                                           */
 /*============================================================================*/
 
 ::class GtkExpander_With_Mnemonic public subclass GtkExpander
@@ -1332,7 +1332,7 @@ return
 
 
 /*============================================================================*/
-/* Class: HandleBox                                                           */
+/* Class: GtkHandleBox                                                        */
 /*============================================================================*/
 
 ::class GtkHandleBox public subclass GtkContainer
@@ -1375,7 +1375,7 @@ return self~signal_connect:super(event)
 
 
 /*============================================================================*/
-/* Class: Notebook                                                            */
+/* Class: GtkNotebook                                                         */
 /*============================================================================*/
 
 ::class GtkNotebook public subclass GtkContainer
@@ -1594,7 +1594,7 @@ return
 
 
 /*============================================================================*/
-/* Class: EventBox                                                            */
+/* Class: GtkEventBox                                                         */
 /*============================================================================*/
 
 ::class GtkEventBox public subclass GtkContainer
@@ -1850,9 +1850,9 @@ return
 
 
 /*============================================================================*/
-/* Class: GtkFileChooser                                                       */
-/* Note:  This is strictly a base class. It should never be instantiated on   */
-/*        its own. It is here strictly to provide an interface.               */
+/* Class: GtkFileChooser                                                      */
+/* Note:  This is strictly a mixin class. It should never be instantiated on  */
+/*        its own. You should instantiate one of its subclasses instead.      */
 /*============================================================================*/
 
 ::class GtkFileChooser public mixinclass Object
@@ -1902,7 +1902,7 @@ return
 
 
 /*============================================================================*/
-/* Class: GtkFileFilter                                                        */
+/* Class: GtkFileFilter                                                       */
 /*============================================================================*/
 
 ::class GtkFileFilter public
