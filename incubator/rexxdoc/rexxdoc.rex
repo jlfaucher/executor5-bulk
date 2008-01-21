@@ -19,6 +19,9 @@ do o over classes
     say methods[p]~doc
   end
 end
+do r over parser~tree~requires
+  say r~string r~getFile~string r~getFile~name
+end
 
 ::CLASS FileParser
 ::METHOD defaultOptions CLASS
@@ -34,14 +37,15 @@ end
   return defaultOptions
 
 ::METHOD Init
-  expose file data tree has options parseState
+  expose file data tree has options parseState node
   use strict arg file, options = (self~class~defaultOptions), parent = .nil
   tree = .SourceFile~new(file, "", "", parent)
   parseState = .ParseState~new(file,options)
   has = .directory~new
+  node = .nil
 
 ::METHOD Parse
-  expose file data state options
+  expose file data state options tree
   buffer = .array~new
   inDoc = .false
   expectDefinition = .false
@@ -60,7 +64,7 @@ end
     if state != "RXDOC" & lastChar = "," | lastChar = "-" then do 
       append = .true
       -- cut the last character
-      prefix = line~left(line~length-1)
+      prefix = line~left(line~length-1)||" "
     end
     else if append then do 
       append = .false
@@ -74,13 +78,19 @@ end
       self~parseLine(line,i)
     end
   end
+  -- start resolving missing references only when this is the root parser
+  -- this method is propagated through the whole tree
+  if tree~parent = .nil then tree~resolve
+
 ::ATTRIBUTE Tree Get
 ::ATTRIBUTE ParseState Get
 
-::METHOD resetRxDoc
+::METHOD getResetRxDoc
   expose rxdoc
+  r = rxdoc
   -- In future rxdoc will be a special object...
   rxdoc = "(No documentation)"
+  return r
 
 ::METHOD parseLine PRIVATE
   expose tree node state nextstate has accu rxdoc options
@@ -94,23 +104,31 @@ end
     when state = "UNDETERMINED" then do
       if line~left(2) = "::" then repeat("DIRECTIVE")
       else if line~left(3) = "/**" then repeat("RXDOC")
-      else if line~caselessPos("procedure") > 0 then repeat("PROCEDURE")
+      else if line~caselessPos(": procedure") > 0 then do
+        parse upper var line name": PROCEDURE"
+        if 0 = name~verify("ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890") then
+          repeat("PROCEDURE")
+      end
     end
     when state = "DIRECTIVE" then do
-      has~directive = .true
       line = line~right(line~length - 2)
       directive = line~word(1)~upper
       parameters = line~delword(1)
       select
+        -- parse routines
+        when directive = "ROUTINE" then do
+          rd = .RoutineDirective~new(self,options)~~parse(line,self~getResetRxDoc, tree)
+          tree~routines~put(rd~getObject)
+          node = .nil
+        end
         when directive = "REQUIRES"  & has~ClassMethod = .nil then do
-          rd = .RequiresDirective~new(self,options)~~parse(line,rxdoc)
+          rd = .RequiresDirective~new(self,options)~~parse(line,self~getResetRxDoc, tree)
           tree~requires~put(rd~getObject)
         end
         -- parse ::CLASS
         when directive = "CLASS" then do
           has~ClassMethod = .true
-          cp = .ClassDirective~new(self)~~parse(line,rxdoc)
-          self~resetRxDoc
+          cp = .ClassDirective~new(self)~~parse(line,self~getResetRxDoc,tree)
           node = cp~getObject
           tree~classes~put(node)
         end
@@ -118,29 +136,36 @@ end
         when directive = "METHOD" then do
           has~ClassMethod = .true
           -- Is this a floating method or does it belong to some class?
-          if var("node") then
+          if node \= .nil then
             target = node
           else
             target = tree
-          mp = .MethodDirective~new(self)~~parse(line,rxdoc,target)
+          mp = .MethodDirective~new(self)~~parse(line,self~getResetRxDoc,target)
           method = mp~getObject
           target~methods~put(method)
-          self~resetRxDoc
         end
         -- parse ::ATTRIBUTE
         when directive = "ATTRIBUTE" then do
-          name = line~word(2)
-          node~attributes~put(.SourceAttribute~new(name, "", rxdoc, node))
-          self~resetRxDoc
+          has~ClassMethod = .true
+          if node \= .nil then
+            target = node
+          else
+            target = tree
+          ad = .AttributeDirective~new(self, tree)~~parse(line,self~getResetRxDoc,target)
+          attribute = ad~getObject
+          target~methods~put(attribute)
         end
         -- parse ::CONSTANT
         when directive = "CONSTANT" then do
-          name = line~word(2)
-          node~attributes~put(.SourceConstant~new(name, "", rxdoc, node))
-          self~resetRxDoc
+          if node = .nil then self~ParseState~error("Constant without class")
+          else do
+            cd = .ConstantDirective~new(self)~~parse(line,self~getResetRxDoc,node)
+            constant= cd~getObject
+            node~constants~put(constant)
+          end
         end
         otherwise do
-          self~ParseState~warn("Incorrect directive:" directive)
+          self~ParseState~warn("Unknown directive:" directive)
         end
       end
       state = "UNDETERMINED"
@@ -161,7 +186,10 @@ end
       end
     end
 -- just ignore procedures now, this needs to be implemented
-    when state = "PROCEDURE" then state = "UNDETERMINED"
+    when state = "PROCEDURE" then do
+      state = "UNDETERMINED"
+      self~ParseState~warn("Procedure not evaluated")
+    end
     otherwise do
       self~ParseState~warn("Incorrect state reached:" state)
     end
@@ -207,9 +235,84 @@ end
 ::CLASS Directive
 ::METHOD name Abstract
 ::METHOD parse Abstract
-::METHOD getObject
+::METHOD getObject ABSTRACT
 
 ::CLASS AttributeDirective SUBCLASS Directive
+::METHOD Init
+  expose parser tree
+  use strict arg parser, tree
+::ATTRIBUTE name Get
+::METHOD parse
+  expose parser tree name attribute
+  use strict arg line, rxdoc, target
+  parse var line . name tokens
+  attribute = .SourceAttribute~new(name, "", rxdoc, target)
+  has_getOrSet = .false
+  has_guarded = .false
+  has_protected = .false
+  has_private = .false
+  has_class = .false
+  do j = 3 to line~words
+    modifier = line~word(j)~upper
+    select
+      when modifier = "GET" & has_getOrSet = .false then do
+        has_getOrSet = .true
+        attribute~setAccess("GET")
+      end
+      when modifier = "SET" & has_getOrSet = .false then do
+        has_getOrSet = .true
+        attribute~setAccess("SET")
+      end
+      when modifier = "GUARDED" & has_guarded = .false then do
+        has_guarded = .true
+        attribute~setGuarded
+      end
+      when modifier = "UNGUARDED" & has_guarded = .false then do
+        has_guarded = .true
+        attribute~setUnguarded
+      end
+      when modifier = "PROTECTED" & has_protected = .false then do
+        has_protected = .true
+        attribute~setProtected
+      end
+      when modifier = "UNPROTECTED" & has_protected = .false then do
+        has_protected = .true
+        attribute~setUnprotected
+      end
+      when modifier = "PRIVATE" & has_private = .false then do
+        has_private = .true
+        attribute~setPrivate
+      end
+      when modifier = "PUBLIC" & has_private = .false then do
+        has_private = .true
+        attribute~setPublic
+      end
+      when modifier = "CLASS" & has_class = .false then do
+        has_class = .true
+        attribute~setClassMethod
+      end
+      otherwise do
+        flags = "("
+        if has_guarded then
+          if method~isGuarded then flags||="Guarded "
+          else flags||="Unguarded "
+        if has_protected then
+          if method~isProtected then flags||="Protected "
+          else flags||="Unptotected "
+        if has_private then
+          if method~isPrivate then flags||="Private "
+          else flags||="Public"
+        if has_class then flags||="Class"
+        flags ||= ")"
+        if flags = "()" then flags = ""
+        parser~ParseState~warn("Keyword error" modifier "attribute" name flags)
+      end
+    end
+  end
+::METHOD getObject
+  expose attribute
+  return attribute
+
 ::CLASS ClassDirective SUBCLASS Directive
 ::METHOD Init
   expose parser
@@ -229,7 +332,8 @@ end
   has_mixinsubclass = .false
   has_visibility = .false
   has_inherit = .false
-  tokens = line~makeArray(" ")
+  has_inherit_token = .false
+  tokens = line~space~makeArray(" ")
   i = 3
   do while i <= tokens~size
     token = tokens[i]~upper
@@ -237,17 +341,23 @@ end
       when token = "METACLASS" & has_metaclass = .false & has_inherit = .false then do
         has_metaclass = .true
         i+=1
-        class~metaclass = parser~tree~getClass(tokens[i])
+        t = tokens[i]
+        if t = .nil then parser~parseState~error("Missing symbol after METACLASS")
+        class~metaclass = t
       end
       when token = "SUBCLASS" & has_mixinsubclass = .false & has_inherit = .false then do
         has_mixinsubclass = .true
         i+=1
-        class~subclass = parser~tree~getClass(tokens[i])
+        t = tokens[i]
+        if t = .nil then parser~parseState~error("Missing symbol after SUBCLASS")
+        class~subclass = t
       end
       when token = "MIXINCLASS" & has_mixinsubclass = .false & has_inherit = .false then do
         has_mixinsubclass = .true
         i+=1
-        class~mixinclass = parser~tree~getClass(tokens[i])
+        t = tokens[i]
+        if t = .nil then parser~parseState~error("Missing symbol after MIXINCLASS")
+        class~mixinclass = t
       end
       when token = "PRIVATE" & has_visibility = .false & has_inherit = .false then do
         has_visibility = .true
@@ -261,13 +371,33 @@ end
         has_inherit = .true
       end
       when has_inherit then do
-        class~inherit~append(parser~tree~getClass(token))
+        has_inherit_token = .true
+        class~inherit~append(token)
       end
       otherwise parser~ParseState~error("Keyword error" token", class" name)
     end
     i+=1
   end
-parser~ParseState~error(line)
+  if has_inherit & \ has_inherit_token then
+    parser~ParseState~error("Missing symbol after INHERIT")
+
+::CLASS ConstantDirective SUBCLASS Directive
+::METHOD Init
+  expose parser
+  use strict arg parser
+::ATTRIBUTE name Get
+::METHOD parse
+  expose parser name sourceConstant
+  use strict arg line, doc, target
+  parse var line . name value
+  if name = "" then
+    parser~parseState("Missing name for constant")
+  sourceConstant = .SourceConstant~new(name, "", doc, target)
+  sourceConstant~setValue(value)
+  
+::METHOD getObject
+  expose sourceConstant
+  return sourceConstant
 
 ::CLASS MethodDirective SUBCLASS Directive
 ::METHOD Init
@@ -283,7 +413,7 @@ parser~ParseState~error(line)
   expose name method parser
   use strict arg line, rxdoc, target
   name = line~word(2)
-  method = .sourcemethod~new(name, "", rxdoc, target)
+  method = .SourceMethod~new(name, "", rxdoc, target)
   has_guarded = .false
   has_protected = .false
   has_private = .false
@@ -330,6 +460,7 @@ parser~ParseState~error(line)
         method~setAbstract
       end
       otherwise do
+        flags = "("
         if has_guarded then
           if method~isGuarded then flags="Guarded "
           else flags="Unguarded "
@@ -342,7 +473,9 @@ parser~ParseState~error(line)
         if has_class then flags||="Class "
         if has_attribute then flags||="Attribute "
         if has_abstract then flags||="Abstract "
-        parser~ParseState~warn("Keyword error" modifier "("j-2") method" name "("flags~strip")")
+        flags ||= ")"
+        if flags = "()" then flags = ""
+        parser~ParseState~warn("Keyword error" modifier "method" name flags)
       end
     end
   end
@@ -353,18 +486,36 @@ parser~ParseState~error(line)
   use strict arg parser, options
 ::ATTRIBUTE name Get
 ::METHOD getObject
-  expose sourceFile
-  return sourceFile
+  expose sourceRequires
+  use strict arg
+  return sourceRequires
 ::METHOD parse
-  expose parser name sourceFile options
-  use arg line, rxdoc, parent
+  expose parser name sourceRequires options
+  use strict arg line, rxdoc, parent
   parse var line '"'name'"'
   if name = "" then parse var line . name
-  if options~follow.requires then do
-    sourceFile = .FileParser~new(name,options,parser~tree)~~parse~tree
-  end
-  else sourceFile = .nil
+  sourceRequires = .SourceRequires~new(name, rxdoc, parent, options)
+
 ::CLASS RoutineDirective SUBCLASS Directive
+::METHOD Init
+  expose parser options
+  use strict arg parser, options
+::ATTRIBUTE name Get
+::METHOD getObject
+  expose sourceRoutine
+  use strict arg
+  return sourceRoutine
+::METHOD parse
+  expose parser name sourceRoutine options
+  use strict arg line, rxdoc, parent
+  parse var line . name visibility
+  sourceRoutine = .SourceRoutine~new(name,"",rxdoc,parent)
+  if visibility \= "" then
+    if visibility~caselessEquals("PRIVATE") then
+      sourceRoutine~setPrivate
+    else if visibility~caselessEquals("PUBLIC") then
+      sourceRoutine~setPublic
+    else parser~ParseState~error("Invalid option" visibility "on routine" name)
 
 ::CLASS Tag
 ::METHOD name ABSTRACT
@@ -388,6 +539,8 @@ parser~ParseState~error(line)
 ::ATTRIBUTE Doc
 ::ATTRIBUTE Parent Get
 
+::METHOD resolve ABSTRACT
+
 ::CLASS SourceFile SUBCLASS SourceElement
 ::METHOD INIT
   expose classes methods routines packageDoc name requires
@@ -404,6 +557,21 @@ parser~ParseState~error(line)
 ::ATTRIBUTE Routines Get
 ::ATTRIBUTE Requires Get
 
+::METHOD resolve
+  expose classes methods requires routines
+  do require over requires
+    require~resolve
+  end
+  do class over classes
+    class~resolve
+  end
+  do method over methods
+    method~resolve
+  end
+  do routine over routines
+    routine~resolve
+  end
+
 /** Recursive method to find a class with a matching name
  * This method searches the whole parse tree for a matching class.
  * It tries to reassemble the class resolution code from the ooRexx
@@ -413,6 +581,7 @@ parser~ParseState~error(line)
   expose classes requires
   use strict arg name, include_private = .true, recurse = .true
   found = .false
+  if name = .nil then return "NIL"
   -- search local classes
   do class over classes
     if class~name~caselessEquals(name) then do
@@ -423,33 +592,54 @@ parser~ParseState~error(line)
     end
   end
   if \ found then do
-    class = .nil
     if recurse then
       do req over requires
-        class = req~getClass(name,.false, .false)
+        file = req~getFile
+        if file \= .nil then
+          class = file~getClass(name,.false, .false)
       end
     if self~parent \= .nil then
       class = self~parent~getClass(name,false, .false)
-    else class = .nil
+    else class = name
   end
-  if class \= .nil then say class~name
-  else say "not found:"name
+--  if \ class~isinstanceOf(.string) then say class~name
+--  else say "not found:"name
   return class
 
 ::CLASS SourceClass SUBCLASS SourceElement
 ::METHOD INIT
-  expose methods attributes private inherit metaclass subclass mixinclass
+  expose methods attributes private inherit metaclass subclass mixinclass constants
   methods = .set~new
   attributes = .set~new
+  constants = .set~new
   inherit = .list~new
   private = .true
   metaclass = .nil
-  subclass = .object
+  subclass = "OBJECT"
   mixinclass = .nil
   forward class (super)
 
+::METHOD resolve
+  expose methods attributes metaclass subclass mixinclass inherit
+  do method over methods
+    method~resolve
+  end
+  do attribute over attributes
+    attribute~resolve
+  end
+  if metaclass \= .nil then
+    metaclass = self~parent~getClass(metaclass)
+  subclass = self~parent~getClass(subclass)
+  mixinclass = self~parent~getClass(mixinclass)
+  new_inherit = .list~new
+  do i over inherit
+    new_inherit~append(self~parent~getClass(i))
+  end
+  inherit = new_inherit
+
 ::ATTRIBUTE Methods Get
 ::ATTRIBUTE attributes Get
+::ATTRIBUTE constants Get
 
 ::ATTRIBUTE Metaclass
 ::ATTRIBUTE Subclass
@@ -481,17 +671,17 @@ parser~ParseState~error(line)
   end
   return .nil
 
-::CLASS SourceMethod SUBCLASS SourceElement
+::CLASS SourceAbstractMethod SUBCLASS SourceElement
 ::METHOD Init
   expose guarded protected private
   guarded = .true
   protected = .false
   private = .false
   class = .false
-  attribute = .false
   abstract = .false
   forward class (super)
 
+::METHOD resolve
 ::METHOD isGuarded
   expose guarded; return guarded
 ::METHOD isUnguarded
@@ -525,6 +715,12 @@ parser~ParseState~error(line)
 ::METHOD setClassMethod
   expose class; class = .true
 
+::CLASS SourceMethod SUBCLASS SourceAbstractMethod
+::METHOD Init
+  expose attribute
+  attribute = .false
+  forward class (super)
+
 ::METHOD isAttribute
   expose attribute; return attribute
 ::METHOD setAttribute
@@ -536,6 +732,54 @@ parser~ParseState~error(line)
   expose abstract; abstract = .true
 
 ::CLASS SourceAttribute SUBCLASS SourceElement
+::METHOD Init
+  expose access
+  access = "SET/GET"
+  forward class (super)
+
+::METHOD setAccess
+  expose access; use arg access  
+::METHOD getAccess
+  expose access; use arg access
+::METHOD resolve
+
 ::CLASS SourceConstant SUBCLASS SourceElement
+::METHOD resolve
+::METHOD setValue
+  expose value; use strict arg value
+::METHOD getValue
+  expose value; return value
+
 ::CLASS SourceRoutine SUBCLASS SourceElement
+::METHOD Init
+  expose private
+  private = .false
+  forward class (super)
+::METHOD resolve
+::METHOD isPrivate
+  expose private; return private
+::METHOD isPublic
+  expose private; return \ private
+::METHOD setPublic
+  expose private; private = .false
+::METHOD setPrivate
+  expose private; private = .true
 ::CLASS SourceProcedure SUBCLASS SourceElement
+::METHOD resolve
+
+::CLASS SourceRequires SUBCLASS SourceElement
+::METHOD Init
+  expose options sourceFile
+  use strict arg name,rxdoc, target, options
+  sourceFile = .nil
+  forward class (super) array (name, "", rxdoc, target)
+::METHOD resolve
+  expose options sourceFile
+  if options~follow.requires then do
+    sourceFile = .FileParser~new(self~name,options,self~parent)~~parse~tree
+    -- the fileParse does not do this automatically here
+    sourceFile~resolve
+  end
+::METHOD getFile
+  expose sourceFile
+  return sourceFile
