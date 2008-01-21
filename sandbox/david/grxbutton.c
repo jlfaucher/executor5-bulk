@@ -878,6 +878,95 @@ APIRET APIENTRY GrxFileChooserButtonNew(const char * Name,
 
 
 /*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxFontButtonNew                                   */
+/* Description: Create a font button.                                         */
+/* Rexx Args:   None                                                          */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxFontButtonNew(const char * Name,
+                                 const size_t Argc, const RXSTRING Argv[],
+                                 const char * Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(0, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    myWidget = gtk_font_button_new();
+
+    /* Set up the REXX return code */
+    sprintf(Retstr->strptr, "%p", myWidget);
+    Retstr->strlength = strlen(Retstr->strptr);
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxFontButtonSetTitle                              */
+/* Description: Set the title of the font button.                             */
+/* Rexx Args:   Pointer to the widget                                         */
+/*              Title                                                         */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxFontButtonSetTitle(const char * Name,
+                                  const size_t Argc, const RXSTRING Argv[],
+                                  const char * Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(2, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &myWidget);
+
+    gtk_font_button_set_title(GTK_FONT_BUTTON(myWidget), Argv[1].strptr);
+
+    /* Set up the REXX return code */
+    *(Retstr->strptr) = '0';
+    Retstr->strlength = 1;
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxFontButtonGetFontName                           */
+/* Description: Get the font name.   .                                        */
+/* Rexx Args:   Pointer to the widget                                         */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxFontButtonGetFontName(const char * Name,
+                                  const size_t Argc, const RXSTRING Argv[],
+                                  const char * Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+    const gchar * font;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(1, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &myWidget);
+
+    font = gtk_font_button_get_font_name(GTK_FONT_BUTTON(myWidget));
+
+    /* Set up the REXX return code */
+    strcpy(Retstr->strptr, font);
+    Retstr->strlength = strlen(Retstr->strptr);;
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
 /* Rexx External Function: GrxButtonConnectSignal                             */
 /* Description: Connect a signal function to the Widget                       */
 /* Rexx Args:   Pointer to the widget                                         */
@@ -1088,6 +1177,50 @@ APIRET APIENTRY GrxChooserButtonConnectSignal(const char * Name,
         if (strcmp(Argv[1].strptr, "file_set") == 0) {
             g_signal_connect(G_OBJECT(myWidget), "file-set",
                              G_CALLBACK(signal_func_1), "signal_file_set");
+        }
+        else {
+            printf("Bad signal type!\n");
+            return RXFUNC_BADCALL;
+        }
+    }
+    else {
+        printf("Not a widget!\n");
+        return RXFUNC_BADCALL;
+    }
+
+    /* Set up the REXX return code */
+    *(Retstr->strptr) = '0';
+    Retstr->strlength = 1;
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxFontButtonConnectSignal                         */
+/* Description: Connect a signal function to the Widget                       */
+/* Rexx Args:   Pointer to the widget                                         */
+/*              Signal name                                                   */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxFontButtonConnectSignal(const char * Name,
+                                       const size_t Argc, const RXSTRING Argv[],
+                                       const char * Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(2, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &myWidget);
+
+    if (GTK_IS_WIDGET(GTK_OBJECT(myWidget))) {
+        if (strcmp(Argv[1].strptr, "font_set") == 0) {
+            g_signal_connect(G_OBJECT(myWidget), "font-set",
+                             G_CALLBACK(signal_func_1), "signal_font_set");
         }
         else {
             printf("Bad signal type!\n");

@@ -1052,6 +1052,46 @@ return
 
 
 /*============================================================================*/
+/* Class: GtkFontButton                                                       */
+/*============================================================================*/
+
+::class GtkFontButton public subclass GtkButton
+
+::method init
+use strict arg
+self~pointer = GrxFontButtonNew()
+return
+
+::method 'title='
+use strict arg title
+call GrxFontButtonSetTitle self~pointer, title
+return
+
+::method set_title
+use strict arg self~title
+return
+
+::method font_name
+use strict arg
+return GrxFontButtonGetFontName(self~pointer)
+
+::method get_font_name
+use strict arg
+return self~font_name
+
+::method signal_connect
+use strict arg event
+select
+   when event = 'font_set' then call GrxFontButtonConnectSignal self~pointer, event
+   otherwise return self~signal_connect:super(event)
+   end
+return .true
+
+::method signal_font_set
+return
+
+
+/*============================================================================*/
 /* Class: GtkTable                                                            */
 /*============================================================================*/
 

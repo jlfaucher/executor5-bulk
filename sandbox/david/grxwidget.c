@@ -355,7 +355,6 @@ APIRET APIENTRY GrxWidgetSetFont(const char * Name,
 /* Rexx External Function: GrxWidgetGetFont                                   */
 /* Description: Get the font the widget uses                                  */
 /* Rexx Args:   Pointer to the widget                                         */
-/*              Font name                                                     */
 /*----------------------------------------------------------------------------*/
 
 APIRET APIENTRY GrxWidgetGetFont(const char * Name,
@@ -366,7 +365,7 @@ APIRET APIENTRY GrxWidgetGetFont(const char * Name,
     GtkStyle *style = NULL;
 
     /* Check for valid arguments */
-    if (GrxCheckArgs(2, Argc, Argv)) {
+    if (GrxCheckArgs(1, Argc, Argv)) {
         return RXFUNC_BADCALL;
     }
 
