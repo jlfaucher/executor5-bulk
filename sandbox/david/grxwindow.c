@@ -177,57 +177,6 @@ APIRET APIENTRY GrxWindowSetTitle(const char * Name,
 
 
 /*----------------------------------------------------------------------------*/
-/* Rexx External Function: GrxWindowStart                                     */
-/* Description: Start the background main loop returns GThread object         */
-/* Rexx Args:   Pointer to the window widget                                  */
-/*----------------------------------------------------------------------------*/
-
-static void dlgClose( GtkWidget *dialog, gpointer data )
-{
-	if(gtk_main_level()) // Quit main loop if it exists.
-       gtk_main_quit();
-}
-
-static gpointer DialogThread(gpointer dialog)
-{
-	gtk_signal_connect(GTK_OBJECT(dialog), "destroy", GTK_SIGNAL_FUNC(dlgClose), 0);
-
-    gdk_threads_enter();
-	gtk_main();
-    gdk_threads_leave();
-
-    return (gpointer) 0;
-}
-
-APIRET APIENTRY GrxWindowStart(const char * Name,
-                               const size_t Argc, const RXSTRING Argv[],
-                               const char * Queuename, PRXSTRING Retstr)
-{
-    GtkWidget *myWidget;
-    GThread   *thd          = 0;
-
-    /* Check for valid arguments */
-    if (GrxCheckArgs(1, Argc, Argv)) {
-        return RXFUNC_BADCALL;
-    }
-
-    /* Initialize function parameters */
-    sscanf(Argv[0].strptr, "%p", &myWidget);
-
-    if (GTK_IS_WIDGET(GTK_OBJECT(myWidget))) {
-        /* Start the dialog thread */
-        thd =  g_thread_create( DialogThread, myWidget, 1, NULL);
-    }
-
-    /* Set up the REXX return code */
-    sprintf(Retstr->strptr, "%p", thd);
-    Retstr->strlength = strlen(Retstr->strptr);
-
-    return RXFUNC_OK;
-}
-
-
-/*----------------------------------------------------------------------------*/
 /* Rexx External Function: GrxWindowConnectSignal                             */
 /* Description: Connect a signal function to the Widget                       */
 /* Rexx Args:   Pointer to the widget                                         */

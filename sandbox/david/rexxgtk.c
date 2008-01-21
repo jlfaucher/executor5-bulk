@@ -297,7 +297,6 @@ APIRET APIENTRY GrxLoadFuncs(char * Name,
 
         "GrxWindowNew",
         "GrxWindowSetTitle",
-        "GrxWindowStart",
         "GrxWindowConnectSignal",
         "GrxPanedAdd1",
         "GrxPanedAdd2",
