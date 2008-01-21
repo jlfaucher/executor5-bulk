@@ -1868,14 +1868,67 @@ return
 
 
 /*============================================================================*/
-/* Class: GtkSpinButton                                                       */
+/* Class: GtkImage                                                            */
 /*============================================================================*/
 
-::class GtkSpinButton_With_Range public subclass GtkSpinButton
+::class GtkImage public subclass GtkWidget
 
 ::method init
-use strict arg lower, upper, step_inc
-self~pointer = GrxSpinButtonNewWithRange(lower, upper, step_inc)
+use strict arg
+self~pointer = GrxImageNew()
+return
+
+::method set_from_file
+use strict arg filename
+call GrxImageSetFromFile self~pointer, filename
+return
+
+::method set_from_stock
+use strict arg stockname, size
+call GrxImageSetFromStock self~pointer, stockname, size
+return
+
+::method set_from_icon_name
+use strict arg iconname, size
+call GrxImageSetFromIconName self~pointer, iconname, size
+return
+
+
+/*============================================================================*/
+/* Class: GtkImage_From_File                                                  */
+/*============================================================================*/
+
+::class GtkImage_From_File public subclass GtkImage
+
+::method init
+self~init:super()
+use strict arg self~set_from_file
+return
+
+
+/*============================================================================*/
+/* Class: GtkImage_From_Stock                                                 */
+/*============================================================================*/
+
+::class GtkImageFromStock public subclass GtkImage
+
+::method init
+self~init:super()
+use strict arg stockname, size
+self~set_from_stock(stockname, size)
+return
+
+
+/*============================================================================*/
+/* Class: GtkImage_From_Icon_Name                                             */
+/*============================================================================*/
+
+::class GtkImageFromIconName public subclass GtkImage
+
+::method init
+self~init:super()
+use strict arg iconname, size
+self~set_from_icon_name(iconname, size)
 return
 
 

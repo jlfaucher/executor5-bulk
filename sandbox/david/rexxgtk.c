@@ -337,6 +337,10 @@ APIRET APIENTRY GrxLoadFuncs(char * Name,
         "GrxHScaleNewWithRange",
         "GrxVScaleNew",
         "GrxVScaleNewWithRange",
+        "GrxImageNew",
+        "GrxImageSetFromFile",
+        "GrxImageSetFromStock",
+        "GrxImageSetFromIconName",
 
         // Interface Classes
         "GrxFileChooserSetCurrentFolder",

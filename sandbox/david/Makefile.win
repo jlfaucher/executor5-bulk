@@ -113,7 +113,8 @@ OBJECTS = rexxgtk.obj \
 	grxeventbox.obj \
 	grxrange.obj \
 	grxinterfaces.obj \
-	grxfilefilter.obj
+	grxfilefilter.obj \
+	grximage.obj
 
 # Build the DLL
 rexxgtk.dll: $(OBJECTS) rexxgtk.def
@@ -173,6 +174,9 @@ grxinterfaces.obj: grxinterfaces.c rexxgtk.h
 
 grxfilefilter.obj: grxfilefilter.c rexxgtk.h
 	cl -c $(GRXCFLAGS) grxfilefilter.c
+
+grximage.obj: grximage.c rexxgtk.h
+	cl -c $(GRXCFLAGS) grximage.c
 
 
 clean:
