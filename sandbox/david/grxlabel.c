@@ -174,7 +174,7 @@ APIRET APIENTRY GrxLabelSetText(const char * Name,
     GtkWidget *myWidget;
 
     /* Check for valid arguments */
-    if (GrxCheckArgs(2, Argc, Argv)) {
+    if (Argc != 2 || !RXVALIDSTRING(Argv[0])) {
         return RXFUNC_BADCALL;
     }
 

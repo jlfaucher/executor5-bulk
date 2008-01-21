@@ -164,7 +164,7 @@ APIRET APIENTRY GrxFileChooserGetFilename(const char * Name,
                                      const char * Queuename, PRXSTRING Retstr)
 {
     GtkWidget *myWidget;
-    gchar * file = "\0";
+    gchar * file;
 
     /* Check for valid arguments */
     if (GrxCheckArgs(1, Argc, Argv)) {
@@ -176,6 +176,9 @@ APIRET APIENTRY GrxFileChooserGetFilename(const char * Name,
 
     if (GTK_IS_WIDGET(GTK_OBJECT(myWidget))) {
         file = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(myWidget));
+    }
+    if (file == NULL) {
+        file = "\0";
     }
 
     /* Set up the REXX return code */

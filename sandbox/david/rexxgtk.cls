@@ -1038,13 +1038,16 @@ return
 
 ::method connect_signal
 use strict arg event
+-- first try the GtkFileChooser class hiearchy first
+if self~connect_signal:.GtkFileChooser(event) = .true then return .true
+-- now try the standard hiearchy
 select
    when event = 'file_set' then call GrxFileChooserButtonConnectSignal self~pointer, event
    otherwise return self~connect_signal:super(event)
    end
 return .true
 
-::method signal_color_set
+::method signal_file_set
 return
 
 
@@ -1869,7 +1872,7 @@ call GrxFileChooserAddFilter self~pointer, filter~pointer
 return
 
 ::method filename
-return GrxFileChooserGetFilename self~pointer
+return GrxFileChooserGetFilename(self~pointer)
 
 ::method get_filename
 return self~filename
@@ -1881,7 +1884,7 @@ select
    when event = 'file_activated' then call GrxFileChooserConnectSignal self~pointer, event
    when event = 'selection_changed' then call GrxFileChooserConnectSignal self~pointer, event
    when event = 'update_preview' then call GrxFileChooserConnectSignal self~pointer, event
-   otherwise return .false  -- this class has no parents
+   otherwise return .false  -- this class has no parent
    end
 return .true
 
