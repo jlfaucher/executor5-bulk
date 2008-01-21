@@ -977,7 +977,7 @@ return
 
 ::method 'title='
 use strict arg title
-self~pointer = GrxColorButtonSetTitle(self~pointer, title)
+call GrxColorButtonSetTitle self~pointer, title
 return
 
 ::method set_title

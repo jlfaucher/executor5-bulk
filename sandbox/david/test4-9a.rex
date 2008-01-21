@@ -48,14 +48,6 @@
 -- original example uses methods that are direct ports of the GTK C function
 -- calls. This example uses a syntax that is more Rexx-like.
 
--- There is a problem with the GtkColorButton returned by GTK. The GTK
--- subsystem claims the button is not a widget! Therefore some operations
--- fail, including the connect_signal method of the color button.
-
-say 'This test does not work due to a problem with the GTK run time not'
-say 'recognising the color button as a valid GTK widget.'
-say
-
 window = .myMainWindow~new('GTK_WINDOW_TOPLEVEL')
 window~title = 'Color Button'
 window~connect_signal("destroy")
