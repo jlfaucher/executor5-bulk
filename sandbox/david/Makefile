@@ -62,11 +62,12 @@ OBJECTS = rexxgtk.o \
 	grxrange.o \
 	grxinterfaces.o \
 	grxfilefilter.o \
-	grximage.o
+	grximage.o \
+	grxdialog.o
 
 
 # Build the shared library
-rexxgtk.so: $(OBJECTS)
+librexxgtk.so: $(OBJECTS)
 	gcc $(GRXLFLAGS) -lrexx -lrexxapi -o librexxgtk.so $(OBJECTS)
 
 
@@ -127,6 +128,9 @@ grxfilefilter.o: grxfilefilter.c rexxgtk.h
 
 grximage.o: grximage.c rexxgtk.h
 	gcc -c $(GRXCFLAGS) grximage.c
+
+grxdialog.o: grxdialog.c rexxgtk.h
+	gcc -c $(GRXCFLAGS) grxdialog.c
 
 
 

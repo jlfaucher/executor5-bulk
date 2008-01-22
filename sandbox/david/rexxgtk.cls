@@ -368,6 +368,10 @@ return self~signal_connect:super(event)
 ::class GtkHBox public subclass GtkBox
 
 ::method init
+if arg() = 1 then do
+   use strict arg self~pointer
+   return
+   end
 use arg homogeneous, spacing
 self~pointer = GrxHBoxNew(homogeneous, spacing)
 return
@@ -384,6 +388,10 @@ return self~signal_connect:super(event)
 ::class GtkVBox public subclass GtkBox
 
 ::method init
+if arg() = 1 then do
+   use strict arg self~pointer
+   return
+   end
 use arg homogeneous, spacing
 self~pointer = GrxVBoxNew(homogeneous, spacing)
 return
@@ -521,6 +529,76 @@ return
 return
 
 ::method signal_set_focus
+return
+
+
+/*============================================================================*/
+/* Class: GtkDialog                                                           */
+/*============================================================================*/
+
+::class GtkDialog public subclass GtkWindow
+
+::method init
+use strict arg
+ptrs = GrxDialogNew()
+parse var ptrs self~pointer self~vbox .
+return
+
+::method 'vbox=' private
+expose vbox
+use strict arg vbox_ptr
+vbox = .GtkVBox~new(vbox_ptr)
+return vbox
+
+::method vbox
+expose vbox
+return vbox
+
+::method 'has_separator='
+use strict arg flag
+call GrxDialogSetHasSeparator self~pointer, flag
+return
+
+::method set_has_separator
+use strict arg flag
+self~has_separator = flag
+return
+
+::method add_button
+use strict arg text, resp
+call GrxDialogAddButton self~pointer, text, resp
+return
+
+::method run
+use strict arg
+return GrxDialogRun(self~pointer)
+
+::method signal_connect
+use strict arg event
+select
+   when event = 'close' then call GrxDialogConnectSignal self~pointer, event
+   when event = 'response' then call GrxDialogConnectSignal self~pointer, event
+   otherwise return self~signal_connect:super(event)
+   end
+return .true
+
+::method signal_close
+return
+
+::method signal_response
+return
+
+
+/*============================================================================*/
+/* Class: GtkDialog_With_Buttons                                              */
+/*============================================================================*/
+
+::class GtkDialog_With_Buttons public subclass GtkDialog
+
+::method init
+use strict arg title, parent, type, button_text, button_resp
+ptrs = GrxDialogNewWithButtons(title, parent~pointer, type, button_text, button_resp)
+parse var ptrs self~pointer self~vbox .
 return
 
 
@@ -1910,7 +1988,7 @@ return
 /* Class: GtkImage_From_Stock                                                 */
 /*============================================================================*/
 
-::class GtkImageFromStock public subclass GtkImage
+::class GtkImage_From_Stock public subclass GtkImage
 
 ::method init
 self~init:super()
