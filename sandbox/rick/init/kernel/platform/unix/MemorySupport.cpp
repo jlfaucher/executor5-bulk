@@ -274,15 +274,12 @@ MemorySegment *MemorySegmentPool::newLargeSegment(size_t minSize)
     }
 }
 
-MemorySegmentPool  * MemorySegmentPool::freePool()       // add return value
+void MemorySegmentPool::freePool()       // add return value
 /*********************************************************************/
 /* Function:: Free this pool object                                  */
 /*********************************************************************/
 {
-    MemorySegmentPool *nextPtr;
-    nextPtr = this->next;
     free(this);
-    return nextPtr;
 }
 
 /******************** added by weigold *******************************/

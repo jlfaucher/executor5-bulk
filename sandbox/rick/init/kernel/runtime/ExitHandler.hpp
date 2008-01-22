@@ -82,7 +82,7 @@ class ExitHandlerDispatcher : public CallbackDispatcher
 {
 public:
     inline ExitHandlerDispatcher(REXXPFN e, int code, int subcode, void *a) { entryPoint = e; major = code; minor = subcode; parms = a; }
-    inline ~ExitHandlerDispatcher() { ; }
+    virtual ~ExitHandlerDispatcher() { ; }
 
     virtual void run();
 

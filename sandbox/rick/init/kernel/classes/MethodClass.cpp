@@ -533,6 +533,7 @@ RexxMethod * RexxMethod::processInstore(PRXSTRING instore, RexxString * name )
             RexxMethod *routine = SysRestoreProgramBuffer(&buffer, name);
             // release the buffer memory
             SysReleaseResultMemory(buffer.strptr);
+            return routine; 
         }
         return OREF_NULL;         // not found
     }

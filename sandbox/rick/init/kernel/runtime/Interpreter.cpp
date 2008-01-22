@@ -199,7 +199,7 @@ bool Interpreter::terminateInterpreter()
 
         // now shutdown the memory object
         memoryObject.shutdown();
-        RexxList *interpreterInstances = OREF_NULL;
+        interpreterInstances = OREF_NULL;
     }
     return true;
 }

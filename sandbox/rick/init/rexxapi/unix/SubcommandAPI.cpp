@@ -63,6 +63,7 @@
 #include "SubcommandAPI.h"
 #include "RexxAPIManager.h"
 #include "APIUtilities.h"
+#include "RexxInternalApis.h"
 #include <unistd.h>
 #include <sys/shm.h>
 

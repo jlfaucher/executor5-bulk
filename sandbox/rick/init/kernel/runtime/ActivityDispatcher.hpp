@@ -53,7 +53,7 @@ public:
         exits = e;
         defaultEnvironment = env;
     }
-    inline ~ActivityDispatcher() { ; }
+    virtual ~ActivityDispatcher() { ; }
 
     virtual void run();
     virtual void handleError(wholenumber_t, RexxDirectory *);

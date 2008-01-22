@@ -46,7 +46,7 @@ class RexxStartDispatcher : public ActivityDispatcher
 {
 public:
     inline RexxStartDispatcher(PRXSYSEXIT e, const char *env) : ActivityDispatcher(e, env) { ; }
-    inline ~RexxStartDispatcher() { ; }
+    virtual ~RexxStartDispatcher() { ; }
 
     virtual void run();
     virtual void handleError(wholenumber_t, RexxDirectory *);

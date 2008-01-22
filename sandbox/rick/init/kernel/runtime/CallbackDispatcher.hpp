@@ -48,7 +48,7 @@ class CallbackDispatcher
 {
 public:
     inline CallbackDispatcher() { ; }
-    inline ~CallbackDispatcher() { ; }
+    virtual ~CallbackDispatcher() { ; }
 
     virtual void run();
     virtual void handleError(wholenumber_t, RexxDirectory *);

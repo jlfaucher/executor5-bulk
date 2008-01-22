@@ -516,7 +516,7 @@ APIRET APIENTRY RexxExecuteMacroFunction(
 
   if((tmp=does_exist(name,NULL))){     /* if name exists in list...  */
     // allocate a new buffer in local memory
-    p->strptr = RexxAllocateMemory(MDATA(tmp)->i_size)
+    p->strptr = (char *)RexxAllocateMemory(MDATA(tmp)->i_size); 
     if (p->strptr == NULL)
     {
         rc = RXMACRO_NO_STORAGE;

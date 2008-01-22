@@ -66,7 +66,6 @@
 extern "C" {
 #endif
 bool   APIENTRY RexxInitialize (void);
-char * APIENTRY RexxGetVersionInformation(void);
 #ifdef __cplusplus
 }
 #endif

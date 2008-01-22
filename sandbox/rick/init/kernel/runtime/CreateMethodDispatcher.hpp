@@ -47,7 +47,7 @@ class ConditionDispatcher : public ActivityDispatcher
 {
 public:
     inline ConditionDispatcher(PRXSYSEXIT e, const char *env, RexxConditionData *cd) : ActivityDispatcher(e, env) { translatedCondition = cd; }
-    inline ~ConditionDispatcher() { ; }
+    virtual ~ConditionDispatcher() { ; }
 
     virtual void handleError(wholenumber_t, RexxDirectory *);
 
@@ -62,7 +62,7 @@ class CreateMethodDispatcher : public ConditionDispatcher
 {
 public:
     inline CreateMethodDispatcher(RexxConditionData *cd) : ConditionDispatcher(NULL, NULL, cd) { ; }
-    inline ~CreateMethodDispatcher() { ; }
+    virtual ~CreateMethodDispatcher() { ; }
 
     virtual void run();
 
@@ -76,7 +76,7 @@ class RunMethodDispatcher : public ConditionDispatcher
 {
 public:
     inline RunMethodDispatcher(PRXSYSEXIT e, RexxConditionData *cd) : ConditionDispatcher(e, NULL, cd) { ; }
-    inline ~RunMethodDispatcher() { ; }
+    virtual ~RunMethodDispatcher() { ; }
 
     virtual void run();
 

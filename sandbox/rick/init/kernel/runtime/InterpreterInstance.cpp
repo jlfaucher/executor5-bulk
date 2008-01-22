@@ -366,7 +366,7 @@ bool InterpreterInstance::terminate()
         return false;
     }
 
-    bool terminated = false;
+    terminated = false;
     // turn on the global termination in process flag
     terminating = true;
 

@@ -357,7 +357,6 @@ inline char **getEnvironment()
 #ifdef __cplusplus
 extern "C" {
 #endif
-char * APIENTRY RexxGetVersionInformation();
 #ifdef SEMAPHORE_DEBUG
 void SysRequestMutexSem (SMTX psem);   /* request a mutex semaphore         */
                                        /* request a mutex (immediate return)*/

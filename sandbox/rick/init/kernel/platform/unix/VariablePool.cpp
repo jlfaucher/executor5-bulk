@@ -202,7 +202,7 @@ int SysVariablePool(
 
     pshvblock = (PSHVBLOCK)requests;      /* copy the request block pointer    */
                                           /* get the variable dictionary       */
-    activation = self->getCurrentActivation();
+    activation = self->getRexxContext();         
 
     while (pshvblock)
     {                   /* while more request blocks         */

@@ -46,7 +46,7 @@ class TranslateDispatcher : public ActivityDispatcher
 {
 public:
     inline TranslateDispatcher(PRXSYSEXIT e) : ActivityDispatcher(e, NULL) { ; }
-    inline ~TranslateDispatcher() { ; }
+    virtual ~TranslateDispatcher() { ; }
 
     virtual void run();
     virtual void handleError(wholenumber_t, RexxDirectory *);

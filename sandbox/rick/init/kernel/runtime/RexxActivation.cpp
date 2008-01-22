@@ -2364,19 +2364,19 @@ bool RexxActivation::callExternalRexx(
 RexxMethod *RexxActivation::getMacroCode(RexxString *macroName)
 {
     RXSTRING       macroImage;
-    RexxMethod   * method = OREF_NULL;
+    RexxMethod   * macroMethod = OREF_NULL;
 
     macroImage.strptr = NULL;
     if (RexxExecuteMacroFunction(macroName->getStringData(), &macroImage) == 0)
     {
-        method = SysRestoreProgramBuffer(&macroImage, macroName);
+        macroMethod = SysRestoreProgramBuffer(&macroImage, macroName);
         // return the allocated buffer
         if (macroImage.strptr == NULL)
         {
             SysReleaseResultMemory(macroImage.strptr);
         }
     }
-    return method;
+    return macroMethod;
 }
 
 
