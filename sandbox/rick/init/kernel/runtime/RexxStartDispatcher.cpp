@@ -50,6 +50,10 @@ void RexxStartDispatcher::run()
 {
     ProtectedSet savedObjects;
 
+    // set default return values
+    rc = 0;
+    retcode = 0;
+
     RexxString *name = OREF_NULLSTRING;     // name of the invoked program
     RexxString *fullname = name;            // default the fulllength name to the simple name
 
@@ -170,8 +174,6 @@ void RexxStartDispatcher::run()
                 MAKERXSTRING(*result, NULL, 0);
             }
         }
-
-        retcode = 0;                         /* set default rc value              */
                                              /* If there is a return val...       */
         if (program_result != OREF_NULL)
         {

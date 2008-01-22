@@ -512,9 +512,9 @@ APIRET REXXENTRY RexxResetTrace(process_id_t procid, thread_id_t threadid)
  *
  * @param precision The current precision.
  */
-void RexxGetCurrentPrecision(size_t   *precision)
+size_t RexxGetCurrentPrecision()
 {
     NativeContextBlock context;
     // get the digits setting from the current context.
-    *precision = context.self->digits();
+    return context.self->digits();
 }

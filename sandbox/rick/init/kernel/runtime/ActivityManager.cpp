@@ -76,9 +76,6 @@ size_t ActivityManager::interpreterInstances = 0;
 // the local environment
 RexxDirectory *ActivityManager::localEnvironment = OREF_NULL;
 
-// the local server object
-RexxObject *ActivityManager::localServer = OREF_NULL;
-
 // global lock for the interpreter
 SMTX ActivityManager::kernelSemaphore = 0;
 
@@ -117,7 +114,6 @@ void ActivityManager::live(size_t liveMark)
   memory_mark(firstWaitingActivity);
   memory_mark(lastWaitingActivity);
   memory_mark(localEnvironment);
-  memory_mark(localServer);
 }
 
 void ActivityManager::liveGeneral(int reason)
@@ -138,7 +134,6 @@ void ActivityManager::liveGeneral(int reason)
       memory_mark_general(firstWaitingActivity);
       memory_mark_general(lastWaitingActivity);
       memory_mark_general(localEnvironment);
-      memory_mark_general(localServer);
   }
 }
 
@@ -843,33 +838,16 @@ void ActivityManager::relinquish(RexxActivity *activity)
 
 
 /**
- * Perform activity manager starupt processing.
+ * Enter a native context block.  This will locate the appropriate
+ * activity for this callback and acquire kernel access on that
+ * activity.  If this thread has never been used, then a new
+ * interpreter instance will be created and the thread attached
+ * to that instance.
  */
-void ActivityManager::startup()
-{
-    // if we have a local server created already, don't recurse.
-    if (localServer != OREF_NULL)
-    {
-        return;
-    }
-
-    getActivity();                       /* get an activity set up            */
-                                         /* get the local environment         */
-                                         /* get the server class              */
-    RexxObject *server_class = env_find(new_string("!SERVER"));
-    {
-        ProtectedObject result;
-                                             /* create a new server object        */
-        server_class->messageSend(OREF_NEW, 0, OREF_NULL, result);
-        localServer = (RexxObject *)result;
-    }
-                                         /* now release this activity         */
-    returnActivity();
-}
-
-
 NativeContextBlock::NativeContextBlock()
 {
+    // default to no instance
+    instance = OREF_NULL;
     activity = ActivityManager::getActivity();
     // if not reentering on an existing thread, we create a new instance
     // temporarily to service this request.  Many functions will
@@ -884,21 +862,32 @@ NativeContextBlock::NativeContextBlock()
     self = (RexxNativeActivation *)ActivityManager::currentActivity->getTopStackFrame();
 }
 
+
+/**
+ * Release the kernal access and cleanup when the context block
+ * goes out of scope.
+ */
 NativeContextBlock::~NativeContextBlock()
 {
+    activity->exitCurrentThread();
     if (instance != OREF_NULL)
     {
-        activity->exitCurrentThread();
         // terminate the instance
         instance->terminate();
     }
-    else
-    {
-        // release the kernel lock
-        ActivityManager::returnActivity(activity);
-    }
 }
 
+
+/**
+ * Protect an object that associated with the current native
+ * context.  This creates a local reference that will lock
+ * the object into memory until the native activation is
+ * popped off the stack.
+ *
+ * @param o      The object to protect (can be null).
+ *
+ * @return The protected object.
+ */
 RexxObject *NativeContextBlock::protect(RexxObject *o)
 {
     self->saveObject(o);

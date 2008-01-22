@@ -170,6 +170,7 @@ void RexxMemory::createImage()
 {
   RexxMemory::create();                /* create initial memory stuff       */
 
+  Interpreter::init();                 // the interpreter subsystem first
   ActivityManager::init();             /* Initialize the activity managers  */
   // get an instance and the current activity
   InterpreterInstance *instance = Interpreter::createInterpreterInstance();

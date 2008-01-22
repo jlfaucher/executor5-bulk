@@ -221,7 +221,6 @@ void RexxMemory::initialize(bool _restoringImage)
         createImage();
     }
     restore();                           // go restore the state of the memory object
-    ActivityManager::startup();          // go create the local enviroment.
 }
 
 
@@ -2266,6 +2265,7 @@ void RexxMemory::restore()
     // the activity manager will create the local server, which will use the
     // stream classes.  We need to get the external libraries reloaded before
     // that happens.
+    Interpreter::init();
     LibraryManager::reload();
     ActivityManager::init();             /* do activity restores              */
     memoryObject.enableOrefChecks();     /* enable setCheckOrefs...           */

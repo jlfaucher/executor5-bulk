@@ -146,30 +146,6 @@ void RexxNativeActivation::liveGeneral(int reason)
   }
 }
 
-void RexxNativeActivation::flatten(RexxEnvelope *envelope)
-/******************************************************************************/
-/* Function:  Flatten an object                                               */
-/******************************************************************************/
-{
-  setUpFlatten(RexxNativeActivation)
-
-     flatten_reference(newThis->argArray, envelope);
-     flatten_reference(newThis->receiver, envelope);
-     flatten_reference(newThis->method, envelope);
-     flatten_reference(newThis->activity, envelope);
-     flatten_reference(newThis->activation, envelope);
-     flatten_reference(newThis->msgname, envelope);
-     flatten_reference(newThis->savelist, envelope);
-     flatten_reference(newThis->objnotify, envelope);
-     flatten_reference(newThis->result, envelope);
-     flatten_reference(newThis->nextstem, envelope);
-     flatten_reference(newThis->compoundelement, envelope);
-     flatten_reference(newThis->nextcurrent, envelope);
-     flatten_reference(newThis->objectVariables, envelope);
-     flatten_reference(newThis->firstSavedObject, envelope);
-
-  cleanUpFlatten
-}
 
 void RexxNativeActivation::prepare(
     RexxObject  *_receiver,
@@ -568,31 +544,14 @@ void RexxNativeActivation::run(
 void RexxNativeActivation::run(ActivityDispatcher &dispatcher)
 {
     size_t activityLevel = this->activity->getActivationLevel();
-    try
-    {
-        // make the activation hookup
-        dispatcher.setContext(activity, this);
-        dispatcher.run();
-    }
-    catch (ActivityException)
-    {
-        // if we're not the current kernel holder when things return, make sure we
-        // get the lock before we continue
-        if (ActivityManager::currentActivity != activity)
-        {
-            activity->requestAccess();
-        }
-        // pass the condition information on to the dispatch unig
-        dispatcher.handleError(activity->getCurrentCondition());
-        return;
-    }
+    // make the activation hookup
+    dispatcher.setContext(activity, this);
+    dispatcher.run();
 
     // belt and braces...this restores the activity level to whatever
     // level we had when we made the callout.
     this->activity->restoreActivationLevel(activityLevel);
 
-    // Use protected object to pass back the result
-    this->guardOff();                    /* release any variable locks        */
     this->activity->popStackFrame(this); /* pop this from the activity        */
     this->setHasNoReferences();          /* mark this as not having references in case we get marked */
     return;                              /* and finished                      */
@@ -689,26 +648,31 @@ RexxVariableDictionary *RexxNativeActivation::methodVariables()
 /* Function:  Retrieve the set of method variables                            */
 /******************************************************************************/
 {
-                                       /* first retrieval?                  */
-  if (this->objectVariables == OREF_NULL) {
-                                       /* is the receiver an activation?    */
-    if (isOfClass(Activation,this->receiver))
-                                       /* retrieve the method variables     */
-      this->objectVariables = ((RexxActivation *)this->receiver)->getLocalVariables();
-    else {
-                                       /* must be wanting the ovd set of    */
-                                       /*variables                          */
-      this->objectVariables = (RexxVariableDictionary *)this->receiver->getObjectVariables(this->method->getScope());
-                                       /* guarded method?                   */
-      if (this->object_scope == SCOPE_RELEASED && this->method->isGuarded()) {
-                                       /* reserve the variable scope        */
-        this->objectVariables->reserve(this->activity);
-                                       /* and remember for later            */
-        this->object_scope = SCOPE_RESERVED;
-      }
+    /* first retrieval?                  */
+    if (this->objectVariables == OREF_NULL)
+    {
+        // not a method invocation?
+        if (receiver == OREF_NULL)
+        {
+            /* retrieve the method variables     */
+            this->objectVariables = ((RexxActivation *)this->receiver)->getLocalVariables();
+        }
+        else
+        {
+            /* must be wanting the ovd set of    */
+            /*variables                          */
+            this->objectVariables = (RexxVariableDictionary *)this->receiver->getObjectVariables(this->method->getScope());
+            /* guarded method?                   */
+            if (this->object_scope == SCOPE_RELEASED && this->method->isGuarded())
+            {
+                /* reserve the variable scope        */
+                this->objectVariables->reserve(this->activity);
+                /* and remember for later            */
+                this->object_scope = SCOPE_RESERVED;
+            }
+        }
     }
-  }
-  return this->objectVariables;        /* return the dictionary             */
+    return this->objectVariables;        /* return the dictionary             */
 }
 
 

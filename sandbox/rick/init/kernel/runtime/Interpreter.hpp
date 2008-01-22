@@ -63,6 +63,7 @@ public:
         RUN_MODE = 1               // normal run mode
     } InterpreterStartupMode;
 
+    static void init();
 
     static void live(size_t);
     static void liveGeneral(int reason);
@@ -106,6 +107,8 @@ public:
     static inline void setTimeSliceElapsed() { timeSliceElapsed = true; }
     static inline void clearTimeSliceElapsed() { timeSliceElapsed = false; }
     static void haltAllActivities();
+
+    static RexxObject *localServer;         // local environment initialization server
 
 
 protected:

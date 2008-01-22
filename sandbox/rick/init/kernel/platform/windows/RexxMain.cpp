@@ -83,10 +83,6 @@ extern bool UseMessageLoop;  /* speciality for VAC++ */
 
 bool HandleException = true;           /* Global switch for Exception Handling */
 
-/*********************************************************************/
-/* Function SearchPrecision:  Check the precision of the activity and*/
-/* use it if possible                                                */
-/*********************************************************************/
 extern "C" {
 
 // this function can be used to retrieve the value of "top level" variables

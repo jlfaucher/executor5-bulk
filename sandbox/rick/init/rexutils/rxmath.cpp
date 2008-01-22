@@ -99,6 +99,7 @@ extern int errno;
  * rexx includes
  *------------------------------------------------------------------*/
 #include "rexx.h"
+#include "RexxInternalApis.h"
 
 #if defined(OPSYS_AIX) || defined(LINUX)
 #include "locale.h"
@@ -185,7 +186,6 @@ static const char *MathFncTable[] =
 extern "C" {
 #endif
 
-void SearchPrecision(size_t *);
 void RxErrMsgSet(const char *);
 void RxErrMsgSet1(const char *);
 
@@ -345,7 +345,7 @@ int matherr(struct __exception *x)         /* return string            */
 * RC:        true - Good number converted                           *
 *            false - Invalid number supplied.                       *
 *********************************************************************/
-bool string2size_t( 
+bool string2size_t(
   const char *string,                  /* string to convert          */
   size_t *number)                      /* converted number           */
 {
@@ -420,7 +420,7 @@ int   ValidateMath(
 
   RxErrMsgSet1("0");
 
-  SearchPrecision(precision);
+  *precision = RexxGetCurrentPrecision();
 
   if (numargs < 1 || numargs > 2)
   {
@@ -480,7 +480,7 @@ int   ValidateTrig(
 
 /* give me the numeric digits settings of the current actitity       */
 
-  SearchPrecision(&precision);
+  precision = RexxGetCurrentPrecision();
 
   if (numargs < 1 || numargs > 3)
   {
@@ -632,7 +632,7 @@ int   ValidateArcTrig(
   nco = 1.;                            /* set default conversion     */
 
   RxErrMsgSet1("0");
-  SearchPrecision(&precision);
+  precision = RexxGetCurrentPrecision();
 
   if (numargs < 1 || numargs > 3)
   {
@@ -910,7 +910,7 @@ APIRET APIENTRY RxCalcPower(            /* Power function.           */
 
   RxErrMsgSet1("0");
 
-  SearchPrecision(&precision);
+  precision = RexxGetCurrentPrecision();
 
   if (numargs < 2 || numargs > 3)
   {
@@ -1046,7 +1046,8 @@ APIRET APIENTRY RxCalcPi(               /* Pi function                */
   int  rc;
   errno = 0;                                     /* validate the inputs        */
   rc = VALID_ROUTINE;
-  SearchPrecision(&precision);
+
+  precision = RexxGetCurrentPrecision();
 
   RxErrMsgSet1("0");               /* setting MATHERROR to 0     */
 

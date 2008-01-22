@@ -107,7 +107,10 @@ void InterpreterInstance::initialize(RexxActivity *activity, PRXSYSEXIT handlers
     // this gets added to the entire active list.
     allActivities->append((RexxObject *)activity);
     globalReferences = new_object_table();
-    defaultAddress = new_string(defaultEnvironment);
+    if (defaultEnvironment != NULL)
+    {
+        defaultAddress = new_string(defaultEnvironment);
+    }
 
     // if we have handlers, initialize the array
     if (handlers != NULL)

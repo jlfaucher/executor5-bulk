@@ -51,6 +51,8 @@
 #include "ListClass.hpp"
 #include "SystemInterpreter.hpp"
 #include "InterpreterInstance.hpp"
+#include "DirectoryClass.hpp"
+#include "ProtectedObject.hpp"
 
 
 // global resource lock
@@ -58,14 +60,28 @@ SMTX Interpreter::resourceLock = 0;
 
 RexxList *Interpreter::interpreterInstances = OREF_NULL;
 
+// the local server object
+RexxObject *Interpreter::localServer = OREF_NULL;
+
 // the interpreter active state flag
 bool Interpreter::active = false;
 // used for timeslice dispatching
 bool Interpreter::timeSliceElapsed = false;
 
+
+/**
+ * Initialize the interpreter subsystem.
+ */
+void Interpreter::init()
+{
+    interpreterInstances = new_list();
+}
+
+
 void Interpreter::live(size_t liveMark)
 {
     memory_mark(interpreterInstances);
+    memory_mark(localServer);
 }
 
 void Interpreter::liveGeneral(int reason)
@@ -73,6 +89,7 @@ void Interpreter::liveGeneral(int reason)
   if (!memoryObject.savingImage())
   {
       memory_mark_general(interpreterInstances);
+      memory_mark_general(localServer);
   }
 }
 
@@ -113,9 +130,31 @@ void Interpreter::startInterpreter(InterpreterStartupMode mode)
         // initialize the memory manager , and restore the
         // memory image
         memoryObject.initialize(mode == RUN_MODE);
-        ActivityManager::startup();      // go create the local enviroment.
         // create our instances list
         interpreterInstances = new_list();
+        // if we have a local server created already, don't recurse.
+        if (localServer == OREF_NULL)
+        {
+            InterpreterInstance *instance = Interpreter::createInterpreterInstance();
+            RexxActivity *activity = instance->enterOnCurrentThread();
+            /* get the local environment         */
+            /* get the server class              */
+            RexxObject *server_class = env_find(new_string("!SERVER"));
+
+            // NOTE:  This is a second block so that the
+            // protected object's destructor gets run before
+            // the activity is removed as the current activity.
+            {
+                ProtectedObject result;
+                /* create a new server object        */
+                server_class->messageSend(OREF_NEW, 0, OREF_NULL, result);
+                localServer = (RexxObject *)result;
+            }
+
+            activity->exitCurrentThread();
+            // terminate the instance
+            instance->terminate();
+        }
     }
     // we're live now
     active = true;
@@ -179,6 +218,21 @@ bool Interpreter::terminateInterpreter()
  */
 InterpreterInstance *Interpreter::createInterpreterInstance(PRXSYSEXIT exits, const char *defaultEnvironment)
 {
+    // We need to ensure that the interpreter is initialized before we create an
+    // interpreter instance.  There are some nasty recursion problems that can result,
+    // so this needs to be done carefully and the initialization needs to be protected by
+    // the resource lock during the entire process.
+    {
+        ResourceSection lock;
+        // if our instances list has not been created yet, then the memory subsystem has not
+        // been created yet.  Keep the lock during the entire process.
+        if (interpreterInstances == OREF_NULL)
+        {
+            startInterpreter(RUN_MODE);
+        }
+    }
+
+
     // get a new root activity for this instance.  This might result in pushing a prior level down the
     // stack
     RexxActivity *rootActivity = ActivityManager::getRootActivity();

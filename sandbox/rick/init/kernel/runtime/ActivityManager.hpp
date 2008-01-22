@@ -85,14 +85,12 @@ public:
     static void yieldCurrentActivity();
     static bool yieldActivity(thread_id_t thread_id);
     static void exit(int retcode);
-    static void startup();
     static void relinquish(RexxActivity *activity);
     static RexxActivity *getRootActivity();
     static RexxActivity *attachThread(InterpreterInstance *instance);
 
     static RexxActivity *currentActivity;   // the currently active thread
     static RexxDirectory *localEnvironment; // the .local environment
-    static RexxObject *localServer;         // local environment initialization server
 
     static inline void postTermination()
     {

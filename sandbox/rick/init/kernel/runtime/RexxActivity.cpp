@@ -630,7 +630,6 @@ void RexxActivity::raiseException(
     RexxString      *programname;        /* current program name              */
     RexxInteger     *rc;                 /* integer return code               */
     RexxString      *code;               /* error code in decimal form        */
-    RexxActivation  *poppedActivation;   /* activation popped from the stack  */
     RexxString      *errortext;          /* primary error message             */
     RexxString      *message;            /* secondary error message           */
     wholenumber_t    primary;            /* primary message code              */
@@ -781,24 +780,18 @@ void RexxActivity::raiseException(
     {
         /* fill in the propagation status    */
         exobj->put(TheTrueObject, OREF_PROPAGATED);
-        /* unwind the activation stack       */
-        while ((poppedActivation = (RexxActivation *)this->getTopStackFrame()) != activation)
-        {
-            // shut this down and clean it up
-            popStackFrame(poppedActivation);
-        }
-
-        if ((activation != OREF_NULL) &&
-            (activation->getIndent() > MAX_TRACEBACK_LIST))
-        {
-            traceback->addLast(new_string("     >...<"));
-        }
-
-        /* actually have an activation?      */
+        // if we have an Rexx context to work with, unwind to that point, but adding the traceback
         if (activation != OREF_NULL)
         {
+            // unwind the frame to this point
+            unwindToFrame(activation);
+            if (activation->getIndent() > MAX_TRACEBACK_LIST)
+            {
+                traceback->addLast(new_string("     >...<"));
+            }
             popStackFrame(activation);     // remove it from the stack
         }
+
         this->raisePropagate(exobj);       /* pass on down the chain            */
     }
 }
@@ -946,7 +939,7 @@ void RexxActivity::raisePropagate(
     RexxActivationBase *activation = getTopStackFrame(); /* get the current activation        */
 
     /* loop to the top of the stack      */
-    while (activation != OREF_NULL)
+    while (activation != OREF_NULL && !activation->isStackBase())
     {
         /* give this one a chance to trap    */
         /* (will never return for trapped    */
@@ -2752,7 +2745,6 @@ void RexxActivity::run(ActivityDispatcher &target)
   size_t  startDepth;                  /* starting depth of activation stack*/
   NestedActivityState saveInfo;        /* saved activity info               */
 
-  this->saveNestedInfo(saveInfo);      /* save critical nesting info        */
                                        /* make sure we have the stack base  */
   this->nestedInfo.stackptr = SysGetThreadStackBase(TOTAL_STACK_SIZE);
   this->generateRandomNumberSeed();    /* get a fresh random seed           */
@@ -2776,6 +2768,14 @@ void RexxActivity::run(ActivityDispatcher &target)
   }
   catch (ActivityException)
   {
+      // if we're not the current kernel holder when things return, make sure we
+      // get the lock before we continue
+      if (ActivityManager::currentActivity != this)
+      {
+          requestAccess();
+      }
+
+      // now do error processing
       wholenumber_t rc = this->error(startDepth);      /* do error cleanup                  */
       target.handleError(rc, conditionobj);
   }
@@ -2786,9 +2786,8 @@ void RexxActivity::run(ActivityDispatcher &target)
   memoryObject.runUninits();
   this->restoreNestedInfo(saveInfo);   /* now restore to previous nesting   */
   SysDeregisterSignals(&exreg);        /* deregister the signal handlers    */
+  // unwind to the same stack depth as the start, removing all new entries
   unwindToDepth(startDepth);
-
-  this->unwindStackFrame();            /* remove the nil marker             */
 }
 
 

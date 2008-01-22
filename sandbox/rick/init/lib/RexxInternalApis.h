@@ -54,6 +54,8 @@ APIRET APIENTRY RexxExecuteMacroFunction (const char *, PRXSTRING );
 
 void REXXENTRY RexxCreateInterpreterImage();
 
+size_t RexxGetCurrentPrecision();
+
 #ifdef __cplusplus
 }
 #endif
