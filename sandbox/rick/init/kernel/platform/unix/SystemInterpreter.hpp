@@ -35,63 +35,38 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-/******************************************************************************/
-/* REXX Kernel                                                                */
-/*                                                                            */
-/* Manage a created instance of the interpreter                               */
-/*                                                                            */
-/******************************************************************************/
-#ifndef Included_ExitHandler_hpp
-#define Included_ExitHandler_hpp
+/*****************************************************************************/
+/* REXX Windows Support                                                      */
+/*                                                                           */
+/* Main Unix interpreter control.  This is the preferred location for        */
+/* all platform dependent global variables.                                  */
+/* The interpreter does not instantiate an instance of this                  */
+/* class, so most variables and methods should be static.                    */
+/*                                                                           */
+/*                                                                           */
+/*****************************************************************************/
+
+#ifndef SystemInterpreter_Included
+#define SystemInterpreter_Included
 
 #include "RexxCore.h"
-#include "CallbackDispatcher.hpp"
 
-class RexxActivity;
+class InterpreterInstance;
 
-class ExitHandler
+class SystemInterpreter
 {
 public:
-    inline ExitHandler() : entryPoint(NULL) { }
-    void setEntryPoint(REXXPFN e) { entryPoint = e; }
-    inline bool isEnabled()
-    {
-        return entryPoint != NULL;
-    }
+    static void live(size_t);
+    static void liveGeneral(int reason);
 
-    inline void disable()
-    {
-        entryPoint = NULL;
-    }
+    static void processStartup();
+    static void processShutdown();
 
-    int call(RexxActivity *activity, RexxActivation *activation, int major, int minor, void *parms);
-    inline ExitHandler & operator= (ExitHandler &o)
-    {
-        entryPoint = o.entryPoint;
-        return *this;
-    }
+    static void startInterpreter();
+    static void terminateInterpreter();
 
-    void resolve(const char *name);
-
-protected:
-    REXXPFN    entryPoint;             // resolved exit entry point
-};
-
-
-class ExitHandlerDispatcher : public CallbackDispatcher
-{
-public:
-    inline ExitHandlerDispatcher(REXXPFN e, int code, int subcode, void *a) { entryPoint = e; major = code; minor = subcode; parms = a; }
-    inline ~ExitHandlerDispatcher() { ; }
-
-    virtual void run();
-
-    int        rc;                        // handler return code
-    int        major;                     // major exit code
-    int        minor;                     // minor exit code
-    REXXPFN    entryPoint;                // resolved exit entry point
-    void      *parms;                     // opaque arguments passed to callback handler
+    static void initializeInstance(InterpreterInstance *instance);
+    static void terminateInstance(InterpreterInstance *instance);
 };
 
 #endif
-

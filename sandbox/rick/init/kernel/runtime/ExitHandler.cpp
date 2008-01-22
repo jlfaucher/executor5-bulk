@@ -58,13 +58,11 @@
  */
 int ExitHandler::call(RexxActivity *activity, RexxActivation *activation, int function, int subfunction, void *parms)
 {
-    RexxExitHandler *exit_address = (RexxExitHandler *)entryPoint;
-    /* CRITICAL window here -->>  ABSOLUTELY NO KERNEL CALLS ALLOWED            */
-    {
-        CalloutBlock releaser;
-        return (int)(*exit_address)(function, subfunction, (PEXIT)parms);
-    }
-    /* END CRITICAL window here -->>  kernel calls now allowed again            */
+    ExitHandlerDispatcher dispatcher(entryPoint, function, subfunction, parms);
+
+    // run this and give back the return code
+    activity->run(dispatcher);
+    return dispatcher.rc;
 }
 
 /**
@@ -78,3 +76,13 @@ void ExitHandler::resolve(const char *name)
     RexxResolveExit(name, &entryPoint);
 }
 
+
+
+/**
+ * Process a callout to a system exit function.
+ */
+void ExitHandlerDispatcher::run()
+{
+    RexxExitHandler *exit_address = (RexxExitHandler *)entryPoint;
+    rc = (int)(*exit_address)(major, minor, (PEXIT)parms);
+}

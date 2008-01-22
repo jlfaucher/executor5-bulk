@@ -239,7 +239,8 @@ runtimeHeaders = $(runtime_dir)/DeadObject.hpp \
                  $(runtime_dir)/RexxStartDispatcher.hpp \
                  $(runtime_dir)/ActivityDispatcher.hpp \
                  $(runtime_dir)/TranslateDispatcher.hpp \
-                 $(runtime_dir)/CreateMethodDispatcher.hpp
+                 $(runtime_dir)/CreateMethodDispatcher.hpp \
+                 $(runtime_dir)/CallbackDispatcher.hpp
 streamlibraryHeaders = $(streamlibrary_dir)/StreamCommandParser.h \
                        $(streamlibrary_dir)/StreamNative.h
 libHeaders = $(lib_dir)/RexxPlatformDefinitions.h \
@@ -514,7 +515,8 @@ runtime_sources  = $(runtime_dir)/DeadObject.cpp \
                    $(runtime_dir)/RexxStartDispatcher.cpp \
                    $(runtime_dir)/ActivityDispatcher.cpp \
                    $(runtime_dir)/TranslateDispatcher.cpp \
-                   $(runtime_dir)/CreateMethodDispatcher.cpp
+                   $(runtime_dir)/CreateMethodDispatcher.cpp \
+                   $(runtime_dir)/CallbackDispatcher.cpp
 streamlibrary_sources = $(streamlibrary_dir)/StreamCommandParser.cpp \
                         $(streamlibrary_dir)/StreamNative.cpp
 librexx_la_SOURCES = $(classes_sources) \

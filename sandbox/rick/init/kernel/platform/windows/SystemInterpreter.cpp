@@ -79,7 +79,7 @@ void SystemInterpreter::processShutdown()
     stopTimeSlice();              // shutdown the timer thread
     RexxDeregisterFunction(NULL); // Send PROCESS_GONE to RXAPI
     // now do the platform independent shutdown
-    Interpreter::processStartup();
+    Interpreter::processShutdown();
 }
 
 
