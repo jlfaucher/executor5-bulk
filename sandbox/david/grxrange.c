@@ -152,7 +152,7 @@ APIRET APIENTRY GrxScaleSetDigits(const char * Name,
     sscanf(Argv[1].strptr, "%d", &digits);
 
     gtk_scale_set_digits(GTK_SCALE(myWidget), digits);
-	
+
     /* Set up the REXX return code */
     *Retstr->strptr = '0';
     Retstr->strlength = 1;
@@ -184,7 +184,7 @@ APIRET APIENTRY GrxScaleGetDigits(const char * Name,
     sscanf(Argv[0].strptr, "%p", &myWidget);
 
     digits = gtk_scale_get_digits(GTK_SCALE(myWidget));
-	
+
     /* Set up the REXX return code */
     sprintf(Retstr->strptr, "%d", digits);
     Retstr->strlength = strlen(Retstr->strptr);
@@ -222,11 +222,11 @@ APIRET APIENTRY GrxScaleSetValuePos(const char * Name,
         type = GTK_POS_TOP;
     else if(strcmp(Argv[1].strptr,"GTK_POS_BOTTOM") == 0)
         type = GTK_POS_BOTTOM;
-    else 
+    else
         sscanf(Argv[1].strptr, "%d", &type);
 
     gtk_scale_set_value_pos(GTK_SCALE(myWidget), type);
-	
+
     /* Set up the REXX return code */
     *Retstr->strptr = '0';
     Retstr->strlength = 1;
@@ -241,7 +241,7 @@ APIRET APIENTRY GrxScaleSetValuePos(const char * Name,
 /* Rexx Args:   Pointer to the hscale or vscale                               */
 /*----------------------------------------------------------------------------*/
 
-APIRET APIENTRY GrxScaleGetVlauePos(const char * Name,
+APIRET APIENTRY GrxScaleGetValuePos(const char * Name,
                              const size_t Argc, const RXSTRING Argv[],
                              const char * Queuename, PRXSTRING Retstr)
 {
@@ -257,7 +257,7 @@ APIRET APIENTRY GrxScaleGetVlauePos(const char * Name,
     sscanf(Argv[0].strptr, "%p", &myWidget);
 
     type = gtk_scale_get_value_pos(GTK_SCALE(myWidget));
-	
+
     /* Set up the REXX return code */
     sprintf(Retstr->strptr, "%d", type);
     Retstr->strlength = strlen(Retstr->strptr);
@@ -301,7 +301,7 @@ APIRET APIENTRY GrxHScaleNew(const char * Name,
     adj = (GtkAdjustment *) gtk_adjustment_new(value, lower, upper, step_increment,
                                                page_increment, page_size);
     myWidget = gtk_hscale_new(adj);
-	
+
     /* Set up the REXX return code */
     sprintf(Retstr->strptr, "%p", myWidget);
     Retstr->strlength = strlen(Retstr->strptr);
@@ -334,7 +334,7 @@ APIRET APIENTRY GrxHScaleNewWithRange(const char * Name,
     sscanf(Argv[2].strptr, "%lf", &step);
 
     myWidget = gtk_hscale_new_with_range(min, max, step);
-	
+
     /* Set up the REXX return code */
     sprintf(Retstr->strptr, "%p", myWidget);
     Retstr->strlength = strlen(Retstr->strptr);
@@ -378,7 +378,7 @@ APIRET APIENTRY GrxVScaleNew(const char * Name,
     adj = (GtkAdjustment *) gtk_adjustment_new(value, lower, upper, step_increment,
                                                page_increment, page_size);
     myWidget = gtk_vscale_new(adj);
-	
+
     /* Set up the REXX return code */
     sprintf(Retstr->strptr, "%p", myWidget);
     Retstr->strlength = strlen(Retstr->strptr);
@@ -411,7 +411,7 @@ APIRET APIENTRY GrxVScaleNewWithRange(const char * Name,
     sscanf(Argv[2].strptr, "%lf", &step);
 
     myWidget = gtk_vscale_new_with_range(min, max, step);
-	
+
     /* Set up the REXX return code */
     sprintf(Retstr->strptr, "%p", myWidget);
     Retstr->strlength = strlen(Retstr->strptr);

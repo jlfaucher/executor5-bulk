@@ -1,8 +1,27 @@
 
-To simply view a demo of what GTK is capable of on Windows, the easiest thing
-to do is to get the GTK runtime installer from:
+These instructions are intended to be of some help for ooRexx users trying to
+get an idea of what rexxGTK will be like.  Unfortunately, due to the changing
+nature of the Internet, step by step instructions like these quickly become
+out of date.  Sorry, I can't do anything about that.
+
+You can follow the below instructions to get the GTK runtime set up on your
+system and then take a look at the rexxgtk example programs.  To do that, skip
+the steps about locating the gtk-demo program.
+
+However, you may want to view a demo of what GTK is capable of on Windows.  To
+do that set up the GTK runtime and then locate gtk-demo.exe.
+
+You can take one of two approaches to get the GTK runtime set up.
+
+You can get the entire gimp package from:
 
   http://gimp-win.sourceforge.net/stable.html
+
+and install it.
+
+Or you can get just the runtime from:
+
+  http://gimp-win.sourceforge.net/old.html
 
 All you need to download is the GTK runtime, ignore the GIMP stuff.  Get:
 
@@ -10,33 +29,48 @@ All you need to download is the GTK runtime, ignore the GIMP stuff.  Get:
 
 Install it, it has an un-install that works.
 
-Then get the gtk-demo.exe from this page:
+Then get gtk-demo.exe.  What you get depends on if you installed gimp or just
+the run time.
 
-  http://www.gimp.org/~tml/gimp/win32/downloads.html
-
-The gtk-demo.exe is part of this package:
+If you installed just the 2.10.13 run time, then get:
 
   gtk+-dev-2.10.14.zip
+from
+  http://ftp.gnome.org/pub/gnome/binaries/win32/gtk+/2.10/
 
-Download and uzip it after you have installed the runtime above.  cd into the
-bin directory, after you have unzipped the file, and run gtk-demo.exe.
+If you installed all of gimp then you are on your own.  You need to determine
+the GTK runtime version installed with gimp.  Find the matching gtk+-dev zip
+file on:
+
+  http://ftp.gnome.org/pub/gnome/binaries/win32/
+
+and download it.
+
+The gtk-demo.exe is part of the gtk+-dev zip file.  After downloading it, unzip
+it in a temp directory and locate gtk-demo.exe.  I personally would move it
+somewhere and then delete the gtk+-dev files.
+
+Once you have gtk-demo.exe, you just execute it like any other Windows program.
 
 /* Note that there is a Windows XP theme that gives GTK applications a very
  * similar look and feel to Windows XP.  After setting up the GTK runtime follow
  * the next steps to use the Windows XP theme.
  */
 
-Locate the file gtkrc in etc:
+In your installed GTK run time directory tree, locate:
 
-etc\gtk-2.0\gtkrc
+etc\gtk-2.0\
 
-Locate the file gtkrc in share:
+See if there is a gtkrc file there.  Also locate the file gtkrc in share:
 
 share\themes\MS-Windows\gtk-2.0\gtkrc
 
 Compare the files and, if not the same copy the MS-Windows file over to the
-etc location.
+etc location.  (Note there may be no gtkrc in etc\gtk-2.0 to begin with, or
+it may already be the MS-Windows file.)
 
+If you are not going to do development, then you are done.  ;-)  Below is for
+a developer trying to set up a build environment.
 
 /* To actually do development on Windows, it is more complicated.  You can get
  * the runtime binaries and all the needed developement files from the following

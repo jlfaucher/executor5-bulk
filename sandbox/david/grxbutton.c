@@ -102,7 +102,7 @@ APIRET APIENTRY GrxButtonNew(const char * Name,
     }
 
     myWidget = gtk_button_new();
-	
+
     /* Set up the REXX return code */
     sprintf(Retstr->strptr, "%p", myWidget);
               Retstr->strlength = strlen(Retstr->strptr);
@@ -130,7 +130,7 @@ APIRET APIENTRY GrxButtonNewFromStock(const char * Name,
     }
 
     myWidget = gtk_button_new_from_stock(Argv[0].strptr);
-	
+
     /* Set up the REXX return code */
     sprintf(Retstr->strptr, "%p", myWidget);
               Retstr->strlength = strlen(Retstr->strptr);
@@ -240,7 +240,7 @@ APIRET APIENTRY GrxButtonSetRelief(const char * Name,
         style = GTK_RELIEF_HALF;
     else if(strcmp(Argv[1].strptr,"GTK_RELIEF_NONE") == 0)
         style = GTK_RELIEF_NONE;
-    else 
+    else
         sscanf(Argv[1].strptr, "%d", &style);
 
     gtk_button_set_relief(GTK_BUTTON(myWidget), style);
@@ -304,7 +304,7 @@ APIRET APIENTRY GrxToggleButtonNew(const char * Name,
     }
 
     myWidget = gtk_toggle_button_new();
-	
+
     /* Set up the REXX return code */
     sprintf(Retstr->strptr, "%p", myWidget);
               Retstr->strlength = strlen(Retstr->strptr);
@@ -539,7 +539,7 @@ APIRET APIENTRY GrxCheckButtonNew(const char * Name,
     }
     else {
         myWidget = gtk_check_button_new();
-		
+
     }
 
     /* Set up the REXX return code */
@@ -864,7 +864,7 @@ APIRET APIENTRY GrxFileChooserButtonNew(const char * Name,
         action = GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER;
     else if(strcmp(Argv[1].strptr,"GTK_FILE_CHOOSER_ACTION_CREATE_FOLDER") == 0)
         action = GTK_FILE_CHOOSER_ACTION_CREATE_FOLDER;
-    else 
+    else
         sscanf(Argv[1].strptr, "%d", &action);
 
     myWidget = gtk_file_chooser_button_new(Argv[0].strptr, action);
@@ -1153,13 +1153,13 @@ APIRET APIENTRY GrxColorButtonConnectSignal(const char * Name,
 
 
 /*----------------------------------------------------------------------------*/
-/* Rexx External Function: GrxChooserButtonConnectSignal                      */
+/* Rexx External Function: GrxFileChooserButtonConnectSignal                  */
 /* Description: Connect a signal function to the Widget                       */
 /* Rexx Args:   Pointer to the widget                                         */
 /*              Signal name                                                   */
 /*----------------------------------------------------------------------------*/
 
-APIRET APIENTRY GrxChooserButtonConnectSignal(const char * Name,
+APIRET APIENTRY GrxFileChooserButtonConnectSignal(const char * Name,
                                        const size_t Argc, const RXSTRING Argv[],
                                        const char * Queuename, PRXSTRING Retstr)
 {
