@@ -89,7 +89,7 @@ extern "C" {
 // on exit (RXTER). for each variable name that is found a call to the passed-in
 // function is made [a pair ((char*) varname,(RexxObject*) varvalue)].
 // please note that this does not work for multi-threaded environments!
-void WinGetVariables(void (REXXENTRY *f)(const char *, REXXOBJECT))
+void REXXENTRY WinGetVariables(void (REXXENTRY *f)(const char *, REXXOBJECT))
 {
     NativeContextBlock context;
 
@@ -102,14 +102,14 @@ void WinGetVariables(void (REXXENTRY *f)(const char *, REXXOBJECT))
     }
 }
 
-void WinEnterKernel()
+void REXXENTRY WinEnterKernel()
 {
     // get an instance and the current activity
     InterpreterInstance *instance = Interpreter::createInterpreterInstance();
     instance->enterOnCurrentThread();
 }
 
-void WinLeaveKernel()
+void REXXENTRY WinLeaveKernel()
 {
     RexxActivity *activity = ActivityManager::currentActivity;
     InterpreterInstance *instance = activity->getInstance();

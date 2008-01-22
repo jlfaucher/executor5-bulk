@@ -56,6 +56,18 @@ void REXXENTRY RexxCreateInterpreterImage();
 
 size_t RexxGetCurrentPrecision();
 
+void REXXENTRY RexxCreateScriptContext(const char *contextName);
+
+void REXXENTRY RexxDestroyScriptContext(const char *contextName);
+
+bool REXXENTRY RexxReleaseScriptReference(const char *contextName, REXXOBJECT obj);
+
+APIRET REXXENTRY RexxCreateMethod(const char *context, PCONSTRXSTRING sourceData, REXXOBJECT   *pmethod, RexxConditionData *pRexxCondData);
+
+APIRET REXXENTRY RexxRunMethod(const char * context, REXXOBJECT method, void * callbackArgs,
+  REXXOBJECT (REXXENTRY *callbackFunction)(void *), PRXSYSEXIT exit_list, REXXOBJECT *presult,
+  REXXOBJECT securityManager, RexxConditionData *pRexxCondData);
+
 #ifdef __cplusplus
 }
 #endif

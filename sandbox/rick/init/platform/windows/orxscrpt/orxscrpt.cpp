@@ -1940,5 +1940,5 @@ void OrxScript::insertVariable(const char *varName, REXXOBJECT varValue)
   temp = new GVARIANT;
   VariantInit(&(temp->Mutant));
   Rexx2Variant(varValue,&(temp->Mutant),VT_EMPTY,0);
-  PropertyList.AddItem(varName,LinkedList::End,(void *)temp);
+  PropertyList.AddItem(const_cast<char *>(varName),LinkedList::End,(void *)temp);
 }

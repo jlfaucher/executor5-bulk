@@ -933,7 +933,7 @@ void __stdcall createCode(void *arguments)
   // "normal" local variables
   char        funcHandler[128];
   char       *script = NULL;
-  RXSTRING    source;
+  CONSTRXSTRING source;
   APIRET      rc;
 
 
@@ -1128,9 +1128,9 @@ void __stdcall runMethod(void *arguments)
       // successful execution?
       if (condData->rc == 0) {
         // _asm int 3
-        WinEnterKernel(true);
+        WinEnterKernel();
         Rexx2Variant(pResult, *vResult, VT_EMPTY /*(try your best)*/, 0 /*dummy argument?!*/);
-        WinLeaveKernel(true);
+        WinLeaveKernel();
         if (V_VT(*vResult) == VT_ERROR)
           (*vResult)->vt = VT_EMPTY;
       }

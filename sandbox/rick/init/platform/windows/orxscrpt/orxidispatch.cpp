@@ -869,7 +869,7 @@ STDMETHODIMP OrxScript::Invoke(DISPID pDispID, REFIID riid, LCID plcid,
    */
   if(SUCCEEDED(RetCode)) {
     // Now convert it to wide characters.
-    ISMaxLen = strlen(FInvokeString)+1;
+    ISMaxLen = (int)strlen(FInvokeString)+1;
     //   >>> ??? <<< Code for the case where this has no invocation string.
     if(ISMaxLen > 1) {
       if(ISMaxLen > (sizeof(invokeString)/sizeof(OLECHAR))) {

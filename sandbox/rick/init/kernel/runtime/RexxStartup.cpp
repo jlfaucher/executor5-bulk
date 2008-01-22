@@ -336,15 +336,9 @@ APIRET REXXENTRY RexxCreateMethod(const char *context, PCONSTRXSTRING sourceData
  *
  * @return The return code from running this program (0 indicates success).
  */
-APIRET REXXENTRY RexxRunMethod(
-  const char * context,
-  REXXOBJECT method,
-  void * callbackArgs,
-  REXXOBJECT (REXXENTRY *callbackFunction)(void *),
-  PRXSYSEXIT exit_list,
-  REXXOBJECT *presult,
-  REXXOBJECT *securityManager,
-  RexxConditionData *pRexxCondData)        /* returned condition data           */
+APIRET REXXENTRY RexxRunMethod(const char * context, REXXOBJECT method, void * callbackArgs,
+  REXXOBJECT (REXXENTRY *callbackFunction)(void *), PRXSYSEXIT exit_list, REXXOBJECT *presult,
+  REXXOBJECT securityManager, RexxConditionData *pRexxCondData)        /* returned condition data           */
 {
     RunMethodDispatcher arguments(exit_list, pRexxCondData);
 

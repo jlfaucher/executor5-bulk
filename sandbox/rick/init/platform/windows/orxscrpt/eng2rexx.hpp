@@ -41,6 +41,7 @@
 
 #include "rexx.h"
 #include "RexxNativeAPI.h"
+#include "RexxInternalApis.h"
 #include "orxscrpt.hpp"
 #include "OrxScrptError.hpp"
 class OrxScript;
@@ -56,9 +57,17 @@ void __stdcall parseText(void*);
 void __stdcall createCode(void*);
 void __stdcall runMethod(void*);
 
-void WinGetVariables(void (REXXENTRY *callback)(const char *, REXXOBJECT));
-void WinEnterKernel();
-void WinLeaveKernel();
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+void REXXENTRY WinGetVariables(void (REXXENTRY *callback)(const char *, REXXOBJECT));
+void REXXENTRY WinEnterKernel();
+void REXXENTRY WinLeaveKernel();
+#ifdef __cplusplus
+}
+#endif
+
 // these three come from orexxole.c
 REXXOBJECT Variant2Rexx(VARIANT *);
 void Rexx2Variant(REXXOBJECT, VARIANT *, VARTYPE, size_t);
