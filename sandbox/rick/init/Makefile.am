@@ -469,6 +469,7 @@ platform_sources = $(kernel_platform_unix_dir)/ErrorMessages.cpp \
                    $(kernel_platform_unix_dir)/UseridFunction.cpp \
                    $(kernel_platform_unix_dir)/ValueFunction.cpp \
                    $(kernel_platform_unix_dir)/VariablePool.cpp \
+                   $(kernel_platform_unix_dir)/SystemInitialization.cpp \
                    $(kernel_platform_unix_dir)/SystemInterpreter.cpp
 runtime_sources  = $(runtime_dir)/DeadObject.cpp \
                    $(runtime_dir)/GlobalData.cpp \
@@ -551,7 +552,7 @@ librexx_la_CXXFLAGS  = $(COMMON_CPPFLAGS) \
                        -I$(kernel_platform_unix_dir) \
                        -I$(rexxapi_unix_dir)
 
-librexx_la_LDFLAGS = $(VERSION_INFO)
+librexx_la_LDFLAGS = $(VERSION_INFO) -nostartfiles
 #################### rexx ##########################
 # Sources for rexx
 #

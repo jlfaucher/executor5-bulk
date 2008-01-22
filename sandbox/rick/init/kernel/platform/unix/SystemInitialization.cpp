@@ -35,52 +35,25 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-/******************************************************************************/
-/*  wininit.c - dllentrypoint for oryxk.dll                                   */
-/*                                                                            */
-/******************************************************************************/
-#include <stdio.h>                          /* Get printf, FILE type, etc.    */
-#include <string.h>                         /* Get strcpy, strcat, etc.       */
-#include <stdlib.h>                         /* Get system, max_path etc...    */
+
 #include "RexxCore.h"
 #include "SystemInterpreter.hpp"
 
-/*
- */
-/********************************************************************/
-/*                                                                  */
-/* Function name:      DllMain                                      */
-/*                                                                  */
-/* Description:        EntryPoint for REXX.DLL                      */
-/*                                                                  */
-/* Function:           Called by O/S whenever a process attaches    */
-/*                     or detaches from the DLL.                    */
-/*                     This entry point is used to initialize the   */
-/*                     memory manager, and check to make sure       */
-/*                     it is functioning.                           */
-/*                                                                  */
-/* Inputs:             Defined by DllEntryPoint function of Windows */
-/*                                                                  */
-/* Outputs:            true if successful, false if failure.        */
-/*                                                                  */
-/* Notes:                                                           */
-/*                                                                  */
-/*                                                                  */
-/********************************************************************/
-BOOL WINAPI DllMain(
-  HINSTANCE hinstDll,
-  DWORD fdwReason,
-  LPVOID lpvReserved)
+
+int _init(void) __attribute__((constructor));
+int _fini(void) __attribute__((destructor));
+
+
+int _init(void)
 {
-   if (fdwReason == DLL_PROCESS_ATTACH)
-   {
-       // perform the interpreter start up
-       SystemInterpreter::processStartup(hinstDll);
-   }
-   else if (fdwReason == DLL_PROCESS_DETACH)
-   {
-       SystemInterpreter::processShutdown();
-   }
-   return TRUE;
+    // perform the interpreter start up
+    SystemInterpreter::processStartup();
+    return 0;
 }
 
+
+int _fini(void)
+{
+    SystemInterpreter::processShutdown();
+    return 0;
+}
