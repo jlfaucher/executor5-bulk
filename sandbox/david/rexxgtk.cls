@@ -368,10 +368,6 @@ return self~signal_connect:super(event)
 ::class GtkHBox public subclass GtkBox
 
 ::method init
-if arg() = 1 then do
-   use strict arg self~pointer
-   return
-   end
 use arg homogeneous, spacing
 self~pointer = GrxHBoxNew(homogeneous, spacing)
 return
@@ -382,16 +378,23 @@ return self~signal_connect:super(event)
 
 
 /*============================================================================*/
+/* Class: GtkHBox_From_Pointer                                                */
+/*============================================================================*/
+
+::class GtkHBox_From_Pointer private subclass GtkHBox
+
+::method init
+use strict arg self~pointer
+return
+
+
+/*============================================================================*/
 /* Class: GtkVBox                                                             */
 /*============================================================================*/
 
 ::class GtkVBox public subclass GtkBox
 
 ::method init
-if arg() = 1 then do
-   use strict arg self~pointer
-   return
-   end
 use arg homogeneous, spacing
 self~pointer = GrxVBoxNew(homogeneous, spacing)
 return
@@ -399,6 +402,17 @@ return
 ::method signal_connect
 use strict arg event
 return self~signal_connect:super(event)
+
+
+/*============================================================================*/
+/* Class: GtkVBox_From_Pointer                                                */
+/*============================================================================*/
+
+::class GtkVBox_From_Pointer private subclass GtkVBox
+
+::method init
+use strict arg self~pointer
+return
 
 
 /*============================================================================*/
@@ -547,7 +561,7 @@ return
 ::method 'vbox=' private
 expose vbox
 use strict arg vbox_ptr
-vbox = .GtkVBox~new(vbox_ptr)
+vbox = .GtkVBox_From_Pointer~new(vbox_ptr)
 return vbox
 
 ::method vbox
