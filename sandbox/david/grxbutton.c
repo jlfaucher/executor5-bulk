@@ -951,7 +951,7 @@ APIRET APIENTRY GrxFontButtonGetFontName(const char * Name,
     font = gtk_font_button_get_font_name(GTK_FONT_BUTTON(myWidget));
 
     /* Set up the REXX return code */
-    strcpy(Retstr->strptr, font);
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%s", font);
     Retstr->strlength = strlen(Retstr->strptr);;
 
     return RXFUNC_OK;

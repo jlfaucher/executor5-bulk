@@ -81,7 +81,7 @@ APIRET APIENTRY GrxSetRexxQueueName(const char * Name,
         return RXFUNC_BADCALL;
     }
 
-    strcpy(RexxQueueName, Argv[0].strptr);
+    g_snprintf(RexxQueueName, sizeof(RexxQueueName), "%s", Argv[0].strptr);
 
     *Retstr->strptr = '0';
     Retstr->strlength = 1;

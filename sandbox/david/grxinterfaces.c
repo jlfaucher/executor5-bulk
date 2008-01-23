@@ -181,7 +181,7 @@ APIRET APIENTRY GrxFileChooserGetFilename(const char * Name,
     if (strlen(file) > RXAUTOBUFLEN) {
         Retstr->strptr = (gchar *)RexxAllocateMemory(strlen(file) + 1);
     }
-    strcpy(Retstr->strptr, file);
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%s", file);
     Retstr->strlength = strlen(Retstr->strptr);
 
     return RXFUNC_OK;

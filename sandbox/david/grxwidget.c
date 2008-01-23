@@ -443,7 +443,7 @@ APIRET APIENTRY GrxWidgetGetName(const char * Name,
     name = gtk_widget_get_name(myWidget);
 
     /* Set up the REXX return code */
-    strcpy(Retstr->strptr, name);
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%s", name);
     Retstr->strlength = strlen(Retstr->strptr);
 
     return RXFUNC_OK;
