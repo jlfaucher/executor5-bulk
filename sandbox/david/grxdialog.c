@@ -398,3 +398,105 @@ APIRET APIENTRY GrxDialogConnectSignal(const char * Name,
     return RXFUNC_OK;
 }
 
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxMessageDialogNew                                */
+/* Description: Create a message dialog                                       */
+/* Rexx Args:   Parent window pointer                                         */
+/*              Message type                                                  */
+/*              Button set                                                    */
+/*              Message text                                                  */
+/*----------------------------------------------------------------------------*/
+
+ULONG APIENTRY GrxMessageDialogNew(PSZ Name, LONG Argc, RXSTRING Argv[],
+                                   PSZ Queuename, PRXSTRING Retstr)
+{
+    GtkWindow *parentWindow;
+    GtkWidget *myWidget;
+    gint flags;
+    GtkMessageType type;
+    GtkButtonsType btype;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(5, Argc, Argv))
+        return RXFUNC_BADCALL;
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &parentWindow);
+    if (!strcmp(Argv[1].strptr, "GTK_DIALOG_MODAL"))
+        flags = GTK_DIALOG_MODAL;
+    else if (!strcmp(Argv[1].strptr, "GTK_DIALOG_DESTROY_WITH_PARENT"))
+        flags = GTK_DIALOG_DESTROY_WITH_PARENT;
+    else if (!strcmp(Argv[1].strptr, "GTK_DIALOG_NO_SEPARATOR"))
+        flags = GTK_DIALOG_NO_SEPARATOR;
+    else
+        sscanf(Argv[1].strptr, "%d", &flags);
+    if (!strcmp(Argv[2].strptr, "GTK_MESSAGE_INFO"))
+        type = GTK_MESSAGE_INFO;
+    else if (!strcmp(Argv[2].strptr, "GTK_MESSAGE_WARNING"))
+        type = GTK_MESSAGE_WARNING;
+    else if (!strcmp(Argv[2].strptr, "GTK_MESSAGE_QUESTION"))
+        type = GTK_MESSAGE_QUESTION;
+    else if (!strcmp(Argv[2].strptr, "GTK_MESSAGE_ERROR"))
+        type = GTK_MESSAGE_ERROR;
+    else if (!strcmp(Argv[2].strptr, "GTK_MESSAGE_OTHER"))
+        type = GTK_MESSAGE_OTHER;
+    else
+        sscanf(Argv[2].strptr, "%d", &type);
+    if (!strcmp(Argv[3].strptr, "GTK_BUTTONS_NONE"))
+        btype = GTK_BUTTONS_NONE;
+    else if (!strcmp(Argv[3].strptr, "GTK_BUTTONS_OK"))
+        btype = GTK_BUTTONS_OK;
+    else if (!strcmp(Argv[3].strptr, "GTK_BUTTONS_CLOSE"))
+        btype = GTK_BUTTONS_CLOSE;
+    else if (!strcmp(Argv[3].strptr, "GTK_BUTTONS_CANCEL"))
+        btype = GTK_BUTTONS_CANCEL;
+    else if (!strcmp(Argv[3].strptr, "GTK_BUTTONS_YES_NO"))
+        btype = GTK_BUTTONS_YES_NO;
+    else if (!strcmp(Argv[3].strptr, "GTK_BUTTONS_OK_CANCEL"))
+        btype = GTK_BUTTONS_OK_CANCEL;
+    else
+        sscanf(Argv[3].strptr, "%d", &btype);
+
+    myWidget = gtk_message_dialog_new(parentWindow, flags,
+                                      type, btype, Argv[4].strptr);
+
+    /* Set up the REXX return code */
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%p %p", myWidget, GTK_DIALOG(myWidget)->vbox);
+    Retstr->strlength = strlen(Retstr->strptr);
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxFontSelectionDialog                             */
+/* Description: Create a font selection dialog                                */
+/* Rexx Args:   None                                                          */
+/*----------------------------------------------------------------------------*/
+
+ULONG APIENTRY GrxFontSelectionDialog(PSZ Name, LONG Argc, RXSTRING Argv[],
+                                      PSZ Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+    gint response;
+    char *font = NULL;
+
+    /* Check for valid arguments */
+    if (Argc > 1) {
+        return RXFUNC_BADCALL;
+    }
+
+    /* display and run the dialog */
+    myWidget = gtk_font_selection_dialog_new(Argv[0].strptr);
+
+    gtk_font_selection_dialog_set_preview_text(GTK_FONT_SELECTION_DIALOG(myWidget),
+                                               "abcdefghijk ABCDEFGKIJK 1234567890");
+
+    /* Set up the REXX return code */
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%p %p", myWidget, GTK_DIALOG(myWidget)->vbox);
+    Retstr->strlength = strlen(Retstr->strptr);
+
+    return RXFUNC_OK;
+}
+

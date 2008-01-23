@@ -630,6 +630,21 @@ return
 
 
 /*============================================================================*/
+/* Class: GtkMessageDialog                                                    */
+/*============================================================================*/
+
+::class GtkMessageDialog public subclass GtkDialog
+
+::method init
+use strict arg parent, flags, type, button, text
+if parent = .nil then ptr = 0
+else ptr = parent~pointer
+ptrs = GrxMessageDialogNew(ptr, flags, type, button, text)
+parse var ptrs self~pointer self~vbox .
+return
+
+
+/*============================================================================*/
 /* Class: GtkLabel                                                            */
 /*============================================================================*/
 
