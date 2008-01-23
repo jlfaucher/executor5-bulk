@@ -290,6 +290,39 @@ APIRET APIENTRY GrxDialogSetHasSeparator(const char * Name,
 
 
 /*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxDialogSetDefaultResponse                        */
+/* Description: Toggle the seperator                                          */
+/* Rexx Args:   Pointer to the dialog                                         */
+/*              Response id                                                   */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxDialogSetDefaultResponse(const char * Name,
+                             const size_t Argc, const RXSTRING Argv[],
+                             const char * Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+    gint resptype;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(2, Argc, Argv))
+        return RXFUNC_BADCALL;
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &myWidget);
+    resptype = str2resp(Argv[1].strptr);
+
+    // add the button
+    gtk_dialog_set_default_response(GTK_DIALOG(myWidget), resptype);
+
+    /* Set up the REXX return code */
+    *(Retstr->strptr) = '0';
+    Retstr->strlength = 1;
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
 /* Rexx External Function: GrxDialogRun                                       */
 /* Description: Run the dialog                                                */
 /* Rexx Args:   Pointer to the dialog                                         */

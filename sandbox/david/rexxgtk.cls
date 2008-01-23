@@ -578,6 +578,15 @@ use strict arg flag
 self~has_separator = flag
 return
 
+::method 'default_response='
+use strict arg resp
+call GrxDialogSetDefaultResponse self~pointer, resp
+return
+
+::method set_default_response
+use strict arg self~default_response
+return
+
 ::method add_button
 use strict arg text, resp
 call GrxDialogAddButton self~pointer, text, resp
@@ -613,7 +622,9 @@ return
 
 ::method init
 use strict arg title, parent, type, button_text, button_resp
-ptrs = GrxDialogNewWithButtons(title, parent~pointer, type, button_text, button_resp)
+if parent = .nil then ptr = 0
+else ptr = parent~pointer
+ptrs = GrxDialogNewWithButtons(title, ptr, type, button_text, button_resp)
 parse var ptrs self~pointer self~vbox .
 return
 
@@ -1202,6 +1213,12 @@ call GrxTableAttach self~pointer, widget~pointer, left, right, top, bottom,,
                     xopt, yopt, xpad, ypad
 return
 
+::method attach_defaults
+use strict arg widget, left, right, top, bottom
+call GrxTableAttach self~pointer, widget~pointer, left, right, top, bottom,,
+                    5, 5, 0, 0
+return
+
 ::method 'row_spacings='
 use strict arg spacing
 call GrxTableSetRowSpacings self~pointer, spacing
@@ -1271,6 +1288,11 @@ return
 -- get the text in the object
 use strict arg
 return GrxEntryGetText(self~pointer)
+
+::method get_text
+-- get the text in the object
+use strict arg
+return self~text
 
 ::method 'text='
 -- set the text in the object

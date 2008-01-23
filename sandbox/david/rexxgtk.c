@@ -176,6 +176,7 @@ APIRET APIENTRY GrxLoadFuncs(char * Name,
         "GrxDialogRun",
         "GrxDialogAddButton",
         "GrxDialogSetHasSeparator",
+        "GrxDialogSetDefaultResponse",
         "GrxDialogConnectSignal",
 //      "GrxDialogSetTitle",
 //      "GrxDialogRun",
@@ -354,6 +355,11 @@ APIRET APIENTRY GrxLoadFuncs(char * Name,
         "GrxFileFilterNew",
         "GrxFileFilterSetName",
         "GrxFileFilterAddPattern",
+
+        "GrxGetUserName",
+        "GrxGetRealName",
+        "GrxGetHomeDir",
+        "GrxGetHostName",
 
     };
 
