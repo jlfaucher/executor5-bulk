@@ -40,12 +40,12 @@
 /*----------------------------------------------------------------------------*/
 
 
--- Derived from Listing 5-1
+-- Derived from Listing 5-2
 -- Foundations of GTK+ Development
 -- by Andrew Krause
 
 window = .myMainWindow~new('GTK_WINDOW_TOPLEVEL')
-window~title = 'Dialogs'
+window~set_title('Dialogs')
 window~signal_connect("destroy")
 window~set_border_width(10)
 
@@ -74,10 +74,10 @@ return
 ::class MyButton subclass GtkButton_With_Mnemonic
 
 ::method signal_clicked
-dialog = .GtkDialog_With_Buttons~new('Information', self~user_data,,
-                                     'GTK_DIALOG_MODAL',,
-                                     'gtk-ok', 'GTK_RESPONSE_OK')
-dialog~has_separator = .false
+dialog = .myDialog~new('Information', self~user_data,,
+                       'GTK_DIALOG_MODAL',,
+                       'gtk-ok', 'GTK_RESPONSE_OK')
+dialog~set_has_separator(.false)
 
 label= .GtkLabel~new('The button was clicked!')
 image = .GtkImage_From_Stock~new('gtk-dialog-info', 'GTK_ICON_SIZE_DIALOG')
@@ -90,7 +90,12 @@ hbox~pack_start_defaults(label)
 dialog~vbox~pack_start_defaults(hbox)
 dialog~show_all()
 
-dialog~run_dialog()
-dialog~destroy()
+dialog~signal_connect("response")
+return
+
+::class myDialog subclass GtkDialog_With_Buttons
+
+::method signal_response
+self~destroy()
 return
 

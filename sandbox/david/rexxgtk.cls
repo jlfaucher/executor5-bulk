@@ -583,7 +583,9 @@ use strict arg text, resp
 call GrxDialogAddButton self~pointer, text, resp
 return
 
-::method run
+::method run_dialog
+-- Note: the name of this method cannot be 'run' as that would override the
+-- private 'run' instance method of the ooRexx Object class.
 use strict arg
 return GrxDialogRun(self~pointer)
 
