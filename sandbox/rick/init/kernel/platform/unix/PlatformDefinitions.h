@@ -123,8 +123,6 @@
 #define HMTX SMTX
 #define SEV  RexxSemaphore *
                              // semaphore definitions and init
-extern int SecureFlag;
-
 /******************************************************************************/
 /* REQUIRED:  Define the REXX type for exceptions.  These can be system       */
 /* specific exception registration info or any place holder type if this      */

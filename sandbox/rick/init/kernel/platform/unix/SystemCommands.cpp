@@ -93,8 +93,6 @@
 
 extern int putflag;
 
-extern char achRexxCurDir[ CCHMAXPATH+2 ];  /* Save current working direct    */
-
 char * args[MAX_COMMAND_ARGS+1];            /* Array for argument parsing */
 
 int sys_command(const char *cmd, CMD_TYPE local_env_type);
@@ -570,11 +568,11 @@ bool sys_process_cd(const char * cmd, int * rc)
 
     free(dir_buf);
 
-    if (!getcwd(achRexxCurDir, CCHMAXPATH))    /* Save current working direct */
+    if (!getcwd(SystemInterpreter::currentWorkingDirectory, CCHMAXPATH))    /* Save current working direct */
     {
-      strncpy( achRexxCurDir, getenv("PWD"), CCHMAXPATH);
-      achRexxCurDir[CCHMAXPATH - 1] = '\0';
-      if (achRexxCurDir[0] != '/' )
+      strncpy( SystemInterpreter::currentWorkingDirectory, getenv("PWD"), CCHMAXPATH);
+      SystemInterpreter::currentWorkingDirectory[CCHMAXPATH - 1] = '\0';
+      if (SystemInterpreter::currentWorkingDirectory[0] != '/' )
         reportException(Error_System_service);  /* Complain if it fails        */
     }
     return true;

@@ -57,6 +57,26 @@ class InterpreterInstance;
 
 void SystemInterpreter::processStartup()
 {
+    atexit(RxExitClearNormal);
+    /* Set the cleanup handler for unconditional process termination          */
+    struct sigaction new_action;
+    struct sigaction old_action;
+
+    /* Set up the structure to specify the new action                         */
+    new_action.sa_handler = RxExitClear;
+    old_action.sa_handler = NULL;
+    sigfillset(&new_action.sa_mask);
+    new_action.sa_flags = SA_RESTART;
+
+/* Termination signals are set by Object REXX whenever the signals were not set */
+/* from outside (calling C-routine). The SIGSEGV signal is not set any more, so */
+/* that we now get a coredump instead of a hang up                              */
+
+    sigaction(SIGINT, NULL, &old_action);
+    if (old_action.sa_handler == NULL)           /* not set by ext. exit handler*/
+    {
+        sigaction(SIGINT, &new_action, NULL);  /* exitClear on SIGTERM signal     */
+    }
     // now do the platform independent startup
     Interpreter::processStartup();
 }
@@ -71,6 +91,26 @@ void SystemInterpreter::processShutdown()
 
 void SystemInterpreter::startInterpreter()
 {
+    int  lRC;                            /* Return Code                       */
+    if (!getcwd(currentWorkingDirectory, CCHMAXPATH))    /* Save current working direct */
+    {
+        strncpy( currentWorkingDirectory, getenv("PWD"), CCHMAXPATH);
+        currentWorkingDirectory[CCHMAXPATH - 1] = '\0';
+        if (currentWorkingDirectory[0] != '/' )
+        {
+            logicError(" *** ERROR: No current working directory for REXX!\n");
+        }
+        else
+        {
+            lRC = RxAPIHOMEset();            /* Set the REXX HOME                 */
+        }
+    }
+    lRC = RxAPIHOMEset();                /* Set the REXX HOME                 */
+
+    if ( lRC )
+    {
+        logicError(" *** ERROR: No HOME or RXHOME directory for REXX!\n");
+    }
 }
 
 
@@ -102,3 +142,22 @@ void SystemInterpreter::terminateInstance(InterpreterInstance *instance)
 }
 
 
+/**
+ * Get the current working directory for the process.
+ *
+ * @return The current working directory as a Rexx string.
+ */
+RexxString *SystemInterpreter::getCurrentWorkingDirectory()
+{
+    if (!getcwd(currentWorkingDirector, CCHMAXPATH) || (rc != 0)) /* Get current working direct */
+    {
+       strncpy(currentWorkingDirectory, getenv("PWD"), CCHMAXPATH);
+       currentWorkingDirectory[CCHMAXPATH - 1] = '\0';
+       if ((achRexxCurDir[0] != '/' ) || (rc != 0))
+       {
+           return ooRexxString("");              /* No directory returned       */
+       }
+    }
+    return ooRexxString(currentWorkingDirectory); /* Return the current directory*/
+
+}

@@ -83,6 +83,7 @@
 #include "ActivityManager.hpp"
 #include "ProtectedObject.hpp"
 #include "StringUtil.hpp"
+#include "SystemDirectory.hpp"
 
 
 #define CMDBUFSIZE      1024                 /* Max size of executable cmd     */
@@ -111,8 +112,6 @@
 #define CCHMAXPATH PATH_MAX+1
 
 #define KIOCSOUND   0x4B2F              /* start sound generation (0 for off) */
-
-extern char achRexxCurDir[ CCHMAXPATH+2 ];  /* Save current working direct    */
 
 typedef struct _ENVENTRY {                  /* setlocal/endlocal structure    */
   size_t   size;                            /* size of the saved memory       */
@@ -305,14 +304,7 @@ RexxMethod1(REXXOBJECT, sysDirectory, CSTRING, dir)
       rc = chdir(dir);                   /* change to the new directory     */
   }
 
-  if (!getcwd(achRexxCurDir, CCHMAXPATH) || (rc != 0)) /* Get current working direct */
-  {
-     strncpy( achRexxCurDir, getenv("PWD"), CCHMAXPATH);
-     achRexxCurDir[CCHMAXPATH - 1] = '\0';
-     if ((achRexxCurDir[0] != '/' ) || (rc != 0))
-       return ooRexxString("");              /* No directory returned       */
-  }
-  return ooRexxString(achRexxCurDir);        /* Return the current directory*/
+  return SystemInterpreter::getCurrentWorkingDirectory();
 }
 
 

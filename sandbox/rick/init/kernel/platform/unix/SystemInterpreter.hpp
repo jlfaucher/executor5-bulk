@@ -51,6 +51,8 @@
 
 #include "RexxCore.h"
 
+#define CCHMAXPATH PATH_MAX+1
+
 class InterpreterInstance;
 
 class SystemInterpreter
@@ -67,6 +69,13 @@ public:
 
     static void initializeInstance(InterpreterInstance *instance);
     static void terminateInstance(InterpreterInstance *instance);
+    static RexxString *getCurrentWorkingDirectory();
+
+protected:
+
+    // saved current working directory
+    char currentWorkingDirectory[CCHMAXPATH+2];
+
 };
 
 #endif
