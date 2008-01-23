@@ -64,11 +64,7 @@ static void signal_func_1(GtkWidget *window,
     RXSTRING entry;
 
     // set up the queue entry data
-#ifdef WIN32
-    sprintf(buffer, "%p %s", window, data);
-#else
-    snprintf(buffer, sizeof(buffer), "%p %s", window, data);
-#endif
+    g_snprintf(buffer, sizeof(buffer), "%p %s", window, data);
     entry.strptr = buffer;
     entry.strlength = strlen(buffer);
 

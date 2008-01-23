@@ -64,11 +64,7 @@ static void signal_func_1(GtkWidget *window,
     RXSTRING entry;
 
     // set up the queue entry data
-#ifdef WIN32
-    sprintf(buffer, "%p %s", window, data);
-#else
-    snprintf(buffer, sizeof(buffer), "%p %s", window, data);
-#endif
+    g_snprintf(buffer, sizeof(buffer), "%p %s", window, data);
     entry.strptr = buffer;
     entry.strlength = strlen(buffer);
 
@@ -86,11 +82,7 @@ static void signal_func_2(GtkWidget *window,
     RXSTRING entry;
 
     // set up the queue entry data
-#ifdef WIN32
-    sprintf(buffer, "%p %s %s", window, data, arg1);
-#else
-    snprintf(buffer, sizeof(buffer), "%p %s %s", window, data, arg1);
-#endif
+    g_snprintf(buffer, sizeof(buffer), "%p %s %s", window, data, arg1);
     entry.strptr = buffer;
     entry.strlength = strlen(buffer);
 
@@ -108,11 +100,7 @@ static void signal_func_2a(GtkWidget *window,
     RXSTRING entry;
 
     // set up the queue entry data
-#ifdef WIN32
-    sprintf(buffer, "%p %s %p", window, data, menu);
-#else
-    snprintf(buffer, sizeof(buffer), "%p %s %p", window, data, menu);
-#endif
+    g_snprintf(buffer, sizeof(buffer), "%p %s %p", window, data, menu);
     entry.strptr = buffer;
     entry.strlength = strlen(buffer);
 
@@ -130,11 +118,7 @@ static void signal_func_2b(GtkWidget *window,
     RXSTRING entry;
 
     // set up the queue entry data
-#ifdef WIN32
-    sprintf(buffer, "%p %s %d", window, data, arg1);
-#else
-    snprintf(buffer, sizeof(buffer), "%p %s %d", window, data, arg1);
-#endif
+    g_snprintf(buffer, sizeof(buffer), "%p %s %d", window, data, arg1);
     entry.strptr = buffer;
     entry.strlength = strlen(buffer);
 
@@ -153,11 +137,7 @@ static void signal_func_3(GtkWidget *window,
     RXSTRING entry;
 
     // set up the queue entry data
-#ifdef WIN32
-    sprintf(buffer, "%p %s %d %d", window, data, type, arg2);
-#else
-    snprintf(buffer, sizeof(buffer), "%p %s %d %d", window, data, type, arg2);
-#endif
+    g_snprintf(buffer, sizeof(buffer), "%p %s %d %d", window, data, type, arg2);
     entry.strptr = buffer;
     entry.strlength = strlen(buffer);
 
@@ -177,11 +157,7 @@ static void signal_func_4(GtkWidget *window,
     RXSTRING entry;
 
     // set up the queue entry data
-#ifdef WIN32
-    sprintf(buffer, "%p %s %d %d %d", window, data, step, arg2, arg3);
-#else
-    snprintf(buffer, sizeof(buffer), "%p %s %d %d", window, data, step, arg2, arg3);
-#endif
+    g_snprintf(buffer, sizeof(buffer), "%p %s %d %d", window, data, step, arg2, arg3);
     entry.strptr = buffer;
     entry.strlength = strlen(buffer);
 
@@ -217,7 +193,7 @@ APIRET APIENTRY GrxEntryNew(const char * Name,
     myWidget = gtk_entry_new();
 
     /* Set up the REXX return code */
-    sprintf(Retstr->strptr, "%p", myWidget);
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%p", myWidget);
     Retstr->strlength = strlen(Retstr->strptr);
 
     return RXFUNC_OK;
@@ -285,7 +261,7 @@ APIRET APIENTRY GrxEntryGetMaxLength(const char * Name,
     }
 
     /* Set up the REXX return code */
-    sprintf(Retstr->strptr, "%d", maxlen);
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%d", maxlen);
     Retstr->strlength = strlen(Retstr->strptr);
 
     return RXFUNC_OK;
@@ -354,7 +330,7 @@ APIRET APIENTRY GrxEntryGetText(const char * Name,
     if (strlen(text) > RXAUTOBUFLEN - 1) {
         Retstr->strptr = RexxAllocateMemory(strlen(text) + 1);
     }
-    sprintf(Retstr->strptr, "%s", text);
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%s", text);
     Retstr->strlength = strlen(Retstr->strptr);
 
     return RXFUNC_OK;
@@ -422,7 +398,7 @@ APIRET APIENTRY GrxEntryGetVisibility(const char * Name,
     }
 
     /* Set up the REXX return code */
-    sprintf(Retstr->strptr, "%d", flag);
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%d", flag);
     Retstr->strlength = strlen(Retstr->strptr);
 
     return RXFUNC_OK;
@@ -652,7 +628,7 @@ APIRET APIENTRY GrxSpinButtonNew(const char * Name,
 //    g_free(adj);
 
     /* Set up the REXX return code */
-    sprintf(Retstr->strptr, "%p", myWidget);
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%p", myWidget);
     Retstr->strlength = strlen(Retstr->strptr);
 
     return RXFUNC_OK;
@@ -687,7 +663,7 @@ APIRET APIENTRY GrxSpinButtonNewWithRange(const char * Name,
     myWidget = gtk_spin_button_new_with_range(lower, upper, step_increment);
 
     /* Set up the REXX return code */
-    sprintf(Retstr->strptr, "%p", myWidget);
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%p", myWidget);
     Retstr->strlength = strlen(Retstr->strptr);
 
     return RXFUNC_OK;

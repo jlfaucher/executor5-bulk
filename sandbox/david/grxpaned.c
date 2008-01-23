@@ -235,7 +235,7 @@ APIRET APIENTRY GrxVPanedNew(const char * Name,
     myWidget = gtk_vpaned_new();
 
     /* Set up the REXX return code */
-    sprintf(Retstr->strptr, "%p", myWidget);
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%p", myWidget);
     Retstr->strlength = strlen(Retstr->strptr);
 
     return RXFUNC_OK;
@@ -262,7 +262,7 @@ APIRET APIENTRY GrxHPanedNew(const char * Name,
     myWidget = gtk_hpaned_new();
 
     /* Set up the REXX return code */
-    sprintf(Retstr->strptr, "%p", myWidget);
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%p", myWidget);
     Retstr->strlength = strlen(Retstr->strptr);
 
     return RXFUNC_OK;

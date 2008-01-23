@@ -83,7 +83,7 @@ APIRET APIENTRY GrxFixedNew(const char * Name,
     myWidget = gtk_fixed_new();
 	
     /* Set up the REXX return code */
-    sprintf(Retstr->strptr, "%p", myWidget);
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%p", myWidget);
               Retstr->strlength = strlen(Retstr->strptr);
 
     return RXFUNC_OK;

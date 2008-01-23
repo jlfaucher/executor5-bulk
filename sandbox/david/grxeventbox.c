@@ -83,7 +83,7 @@ APIRET APIENTRY GrxEventBoxNew(const char * Name,
     myWidget = gtk_event_box_new();
 	
     /* Set up the REXX return code */
-    sprintf(Retstr->strptr, "%p", myWidget);
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%p", myWidget);
     Retstr->strlength = strlen(Retstr->strptr);
 
     return RXFUNC_OK;
@@ -151,7 +151,7 @@ APIRET APIENTRY GrxEventBoxGetAboveChild(const char * Name,
     }
 
     /* Set up the REXX return code */
-    sprintf(Retstr->strptr, "%d", flag);
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%d", flag);
     Retstr->strlength = strlen(Retstr->strptr);
 
     return RXFUNC_OK;
@@ -219,7 +219,7 @@ APIRET APIENTRY GrxEventBoxGetVisibleWindow(const char * Name,
     }
 
     /* Set up the REXX return code */
-    sprintf(Retstr->strptr, "%d", flag);
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%d", flag);
     Retstr->strlength = strlen(Retstr->strptr);
 
     return RXFUNC_OK;

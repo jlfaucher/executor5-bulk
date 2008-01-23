@@ -83,7 +83,7 @@ APIRET APIENTRY GrxFileFilterNew(const char * Name,
     filter = gtk_file_filter_new();
 
     /* Set up the REXX return code */
-    sprintf(Retstr->strptr, "%p", filter);
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%p", filter);
     Retstr->strlength = strlen(Retstr->strptr);
 
     return RXFUNC_OK;

@@ -90,8 +90,8 @@ APIRET APIENTRY GrxTableNew(const char * Name,
     myWidget = gtk_table_new(rows, cols, homogeneous);
 	
     /* Set up the REXX return code */
-    sprintf(Retstr->strptr, "%p", myWidget);
-              Retstr->strlength = strlen(Retstr->strptr);
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%p", myWidget);
+    Retstr->strlength = strlen(Retstr->strptr);
 
     return RXFUNC_OK;
 }

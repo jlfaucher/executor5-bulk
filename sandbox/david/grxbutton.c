@@ -64,11 +64,7 @@ static void signal_func_1(GtkWidget *window,
     RXSTRING entry;
 
     // set up the queue entry data
-#ifdef WIN32
-    sprintf(buffer, "%p %s", window, data);
-#else
-    snprintf(buffer, sizeof(buffer), "%p %s", window, data);
-#endif
+    g_snprintf(buffer, sizeof(buffer), "%p %s", window, data);
     entry.strptr = buffer;
     entry.strlength = strlen(buffer);
 
@@ -104,8 +100,8 @@ APIRET APIENTRY GrxButtonNew(const char * Name,
     myWidget = gtk_button_new();
 
     /* Set up the REXX return code */
-    sprintf(Retstr->strptr, "%p", myWidget);
-              Retstr->strlength = strlen(Retstr->strptr);
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%p", myWidget);
+    Retstr->strlength = strlen(Retstr->strptr);
 
     return RXFUNC_OK;
 }
@@ -132,8 +128,8 @@ APIRET APIENTRY GrxButtonNewFromStock(const char * Name,
     myWidget = gtk_button_new_from_stock(Argv[0].strptr);
 
     /* Set up the REXX return code */
-    sprintf(Retstr->strptr, "%p", myWidget);
-              Retstr->strlength = strlen(Retstr->strptr);
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%p", myWidget);
+    Retstr->strlength = strlen(Retstr->strptr);
 
     return RXFUNC_OK;
 }
@@ -306,8 +302,8 @@ APIRET APIENTRY GrxToggleButtonNew(const char * Name,
     myWidget = gtk_toggle_button_new();
 
     /* Set up the REXX return code */
-    sprintf(Retstr->strptr, "%p", myWidget);
-              Retstr->strlength = strlen(Retstr->strptr);
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%p", myWidget);
+    Retstr->strlength = strlen(Retstr->strptr);
 
     return RXFUNC_OK;
 }
@@ -339,7 +335,7 @@ APIRET APIENTRY GrxToggleButtonGetMode(const char * Name,
     }
 
     /* Set up the REXX return code */
-    sprintf(Retstr->strptr, "%d", (int)mode);
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%d", (int)mode);
     Retstr->strlength = strlen(Retstr->strptr);
 
     return RXFUNC_OK;
@@ -407,7 +403,7 @@ APIRET APIENTRY GrxToggleButtonGetActive(const char * Name,
     }
 
     /* Set up the REXX return code */
-    sprintf(Retstr->strptr, "%d", (int)state);
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%d", (int)state);
     Retstr->strlength = strlen(Retstr->strptr);
 
     return RXFUNC_OK;
@@ -475,7 +471,7 @@ APIRET APIENTRY GrxToggleButtonGetInconsistent(const char * Name,
     }
 
     /* Set up the REXX return code */
-    sprintf(Retstr->strptr, "%d", (int)state);
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%d", (int)state);
     Retstr->strlength = strlen(Retstr->strptr);
 
     return RXFUNC_OK;
@@ -543,7 +539,7 @@ APIRET APIENTRY GrxCheckButtonNew(const char * Name,
     }
 
     /* Set up the REXX return code */
-    sprintf(Retstr->strptr, "%p", myWidget);
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%p", myWidget);
     Retstr->strlength = strlen(Retstr->strptr);
 
     return RXFUNC_OK;
@@ -575,7 +571,7 @@ APIRET APIENTRY GrxRadioButtonNew(const char * Name,
     myWidget = gtk_radio_button_new(head);
 
     /* Set up the REXX return code */
-    sprintf(Retstr->strptr, "%p", myWidget);
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%p", myWidget);
     Retstr->strlength = strlen(Retstr->strptr);
 
     return RXFUNC_OK;
@@ -605,7 +601,7 @@ APIRET APIENTRY GrxRadioButtonNewFromWidget(const char * Name,
     myWidget = gtk_radio_button_new_from_widget(GTK_RADIO_BUTTON(srcWidget));
 
     /* Set up the REXX return code */
-    sprintf(Retstr->strptr, "%p", myWidget);
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%p", myWidget);
     Retstr->strlength = strlen(Retstr->strptr);
 
     return RXFUNC_OK;
@@ -638,7 +634,7 @@ APIRET APIENTRY GrxRadioButtonGetGroup(const char * Name,
     }
 
     /* Set up the REXX return code */
-    sprintf(Retstr->strptr, "%p", head);
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%p", head);
     Retstr->strlength = strlen(Retstr->strptr);
 
     return RXFUNC_OK;
@@ -699,7 +695,7 @@ APIRET APIENTRY GrxColorButtonNew(const char * Name,
     myWidget = gtk_color_button_new();
 
     /* Set up the REXX return code */
-    sprintf(Retstr->strptr, "%p", myWidget);
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%p", myWidget);
     Retstr->strlength = strlen(Retstr->strptr);
 
     return RXFUNC_OK;
@@ -729,7 +725,7 @@ APIRET APIENTRY GrxColorButtonNewWithColor(const char * Name,
     myWidget = gtk_color_button_new_with_color(&color);
 
     /* Set up the REXX return code */
-    sprintf(Retstr->strptr, "%p", myWidget);
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%p", myWidget);
     Retstr->strlength = strlen(Retstr->strptr);
 
     return RXFUNC_OK;
@@ -792,11 +788,7 @@ APIRET APIENTRY GrxColorButtonGetColor(const char * Name,
     gtk_color_button_get_color(GTK_COLOR_BUTTON(myWidget), &color);
 
     /* Set up the REXX return code */
-#ifdef WIN32
-    sprintf(Retstr->strptr, "#%04X%04X%04", color.red, color.green, color.blue);
-#else
     snprintf(Retstr->strptr, RXAUTOBUFLEN, "#%04X%04X%04X", color.red, color.green, color.blue);
-#endif
     Retstr->strlength = strlen(Retstr->strptr);;
 
     return RXFUNC_OK;
@@ -870,7 +862,7 @@ APIRET APIENTRY GrxFileChooserButtonNew(const char * Name,
     myWidget = gtk_file_chooser_button_new(Argv[0].strptr, action);
 
     /* Set up the REXX return code */
-    sprintf(Retstr->strptr, "%p", myWidget);
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%p", myWidget);
     Retstr->strlength = strlen(Retstr->strptr);
 
     return RXFUNC_OK;
@@ -897,7 +889,7 @@ APIRET APIENTRY GrxFontButtonNew(const char * Name,
     myWidget = gtk_font_button_new();
 
     /* Set up the REXX return code */
-    sprintf(Retstr->strptr, "%p", myWidget);
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%p", myWidget);
     Retstr->strlength = strlen(Retstr->strptr);
 
     return RXFUNC_OK;

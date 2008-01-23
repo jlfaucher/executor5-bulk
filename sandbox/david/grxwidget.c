@@ -65,11 +65,7 @@ static void signal_func_1(GtkWidget *window,
     RXSTRING entry;
 
     // set up the queue entry data
-#ifdef WIN32
-    sprintf(buffer, "%p %s", window, data);
-#else
-    snprintf(buffer, sizeof(buffer), "%p %s", window, data);
-#endif
+    g_snprintf(buffer, sizeof(buffer), "%p %s", window, data);
     entry.strptr = buffer;
     entry.strlength = strlen(buffer);
 
@@ -378,8 +374,8 @@ APIRET APIENTRY GrxWidgetGetFont(const char * Name,
 
     /* Set up the REXX return code */
     if (style != NULL) {
-        sprintf(Retstr->strptr, "%s",
-                pango_font_description_to_string(style->font_desc));
+        g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%s",
+                   pango_font_description_to_string(style->font_desc));
     }
     else {
         *(Retstr->strptr) = '\0';
@@ -415,7 +411,7 @@ APIRET APIENTRY GrxWidgetGetAccessible(const char * Name,
     access = gtk_widget_get_accessible(myWidget);
 
     /* Set up the REXX return code */
-    sprintf(Retstr->strptr, "%p", access);
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%p", access);
     Retstr->strlength = strlen(Retstr->strptr);
 
 
@@ -550,7 +546,7 @@ APIRET APIENTRY GrxWidgetGetTopLevel(const char * Name,
     }
 
     /* Set up the REXX return code */
-    sprintf(Retstr->strptr, "%p", parentWidget);
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%p", parentWidget);
     Retstr->strlength = strlen(Retstr->strptr);
 
     return RXFUNC_OK;

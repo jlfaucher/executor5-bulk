@@ -64,11 +64,7 @@ static void signal_func_1(GtkWidget *window,
     RXSTRING entry;
 
     // set up the queue entry data
-#ifdef WIN32
-    sprintf(buffer, "%p %s", window, data);
-#else
-    snprintf(buffer, sizeof(buffer), "%p %s", window, data);
-#endif
+    g_snprintf(buffer, sizeof(buffer), "%p %s", window, data);
     entry.strptr = buffer;
     entry.strlength = strlen(buffer);
 
@@ -86,11 +82,7 @@ static void signal_func_2(GtkWidget *window,
     RXSTRING entry;
 
     // set up the queue entry data
-#ifdef WIN32
-    sprintf(buffer, "%p %s %d", window, data, arg1);
-#else
-    snprintf(buffer, sizeof(buffer), "%p %s %d", window, data, arg1);
-#endif
+    g_snprintf(buffer, sizeof(buffer), "%p %s %d", window, data, arg1);
     entry.strptr = buffer;
     entry.strlength = strlen(buffer);
 
@@ -108,11 +100,7 @@ static void signal_func_2a(GtkWidget *window,
     RXSTRING entry;
 
     // set up the queue entry data
-#ifdef WIN32
-    sprintf(buffer, "%p %s %lf", window, data, arg1);
-#else
-    snprintf(buffer, sizeof(buffer), "%p %s %f", window, data, arg1);
-#endif
+    g_snprintf(buffer, sizeof(buffer), "%p %s %f", window, data, arg1);
     entry.strptr = buffer;
     entry.strlength = strlen(buffer);
 
@@ -186,7 +174,7 @@ APIRET APIENTRY GrxScaleGetDigits(const char * Name,
     digits = gtk_scale_get_digits(GTK_SCALE(myWidget));
 
     /* Set up the REXX return code */
-    sprintf(Retstr->strptr, "%d", digits);
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%d", digits);
     Retstr->strlength = strlen(Retstr->strptr);
 
     return RXFUNC_OK;
@@ -259,7 +247,7 @@ APIRET APIENTRY GrxScaleGetValuePos(const char * Name,
     type = gtk_scale_get_value_pos(GTK_SCALE(myWidget));
 
     /* Set up the REXX return code */
-    sprintf(Retstr->strptr, "%d", type);
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%d", type);
     Retstr->strlength = strlen(Retstr->strptr);
 
     return RXFUNC_OK;
@@ -303,7 +291,7 @@ APIRET APIENTRY GrxHScaleNew(const char * Name,
     myWidget = gtk_hscale_new(adj);
 
     /* Set up the REXX return code */
-    sprintf(Retstr->strptr, "%p", myWidget);
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%p", myWidget);
     Retstr->strlength = strlen(Retstr->strptr);
 
     return RXFUNC_OK;
@@ -336,7 +324,7 @@ APIRET APIENTRY GrxHScaleNewWithRange(const char * Name,
     myWidget = gtk_hscale_new_with_range(min, max, step);
 
     /* Set up the REXX return code */
-    sprintf(Retstr->strptr, "%p", myWidget);
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%p", myWidget);
     Retstr->strlength = strlen(Retstr->strptr);
 
     return RXFUNC_OK;
@@ -380,7 +368,7 @@ APIRET APIENTRY GrxVScaleNew(const char * Name,
     myWidget = gtk_vscale_new(adj);
 
     /* Set up the REXX return code */
-    sprintf(Retstr->strptr, "%p", myWidget);
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%p", myWidget);
     Retstr->strlength = strlen(Retstr->strptr);
 
     return RXFUNC_OK;
@@ -413,7 +401,7 @@ APIRET APIENTRY GrxVScaleNewWithRange(const char * Name,
     myWidget = gtk_vscale_new_with_range(min, max, step);
 
     /* Set up the REXX return code */
-    sprintf(Retstr->strptr, "%p", myWidget);
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%p", myWidget);
     Retstr->strlength = strlen(Retstr->strptr);
 
     return RXFUNC_OK;

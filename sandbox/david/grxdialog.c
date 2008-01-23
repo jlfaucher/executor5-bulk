@@ -64,11 +64,7 @@ static void signal_func_1(GtkWidget *window,
     RXSTRING entry;
 
     // set up the queue entry data
-#ifdef WIN32
-    sprintf(buffer, "%p %s", window, data);
-#else
-    snprintf(buffer, sizeof(buffer), "%p %s", window, data);
-#endif
+    g_snprintf(buffer, sizeof(buffer), "%p %s", window, data);
     entry.strptr = buffer;
     entry.strlength = strlen(buffer);
 
@@ -87,11 +83,7 @@ static void signal_func_2(GtkWidget *window,
     RXSTRING entry;
 
     // set up the queue entry data
-#ifdef WIN32
-    sprintf(buffer, "%p %s %d", window, data);
-#else
-    snprintf(buffer, sizeof(buffer), "%p %s", window, data, arg1);
-#endif
+    g_snprintf(buffer, sizeof(buffer), "%p %s", window, data, arg1);
     entry.strptr = buffer;
     entry.strlength = strlen(buffer);
 
@@ -159,7 +151,7 @@ APIRET APIENTRY GrxDialogNew(const char * Name,
     myWidget = gtk_dialog_new();
 
     /* Set up the REXX return code */
-    sprintf(Retstr->strptr, "%p %p", myWidget, GTK_DIALOG(myWidget)->vbox);
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%p %p", myWidget, GTK_DIALOG(myWidget)->vbox);
     Retstr->strlength = strlen(Retstr->strptr);
 
     return RXFUNC_OK;
@@ -223,7 +215,7 @@ APIRET APIENTRY GrxDialogNewWithButtons(const char * Name,
     }
 
     /* Set up the REXX return code */
-    sprintf(Retstr->strptr, "%p %p", myWidget, GTK_DIALOG(myWidget)->vbox);
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%p %p", myWidget, GTK_DIALOG(myWidget)->vbox);
     Retstr->strlength = strlen(Retstr->strptr);
 
     return RXFUNC_OK;
@@ -321,7 +313,7 @@ APIRET APIENTRY GrxDialogRun(const char * Name,
     resp = gtk_dialog_run(GTK_DIALOG(myWidget));
 
     /* Set up the REXX return code */
-    sprintf(Retstr->strptr, "%d", resp);
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%d", resp);
     Retstr->strlength = strlen(Retstr->strptr);
 
     return RXFUNC_OK;

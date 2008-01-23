@@ -65,11 +65,7 @@ static void signal_func_2(GtkWidget *window,
     RXSTRING entry;
 
     // set up the queue entry data
-#ifdef WIN32
-    sprintf(buffer, "%p %s %d", window, data, arg1);
-#else
-    snprintf(buffer, sizeof(buffer), "%p %s %d", window, data, arg1);
-#endif
+    g_snprintf(buffer, sizeof(buffer), "%p %s %d", window, data, arg1);
     entry.strptr = buffer;
     entry.strlength = strlen(buffer);
 
@@ -87,11 +83,7 @@ static void signal_func_2a(GtkWidget *window,
     RXSTRING entry;
 
     // set up the queue entry data
-#ifdef WIN32
-    sprintf(buffer, "%p %s %d", window, data, arg1);
-#else
-    snprintf(buffer, sizeof(buffer), "%p %s %d", window, data, arg1);
-#endif
+    g_snprintf(buffer, sizeof(buffer), "%p %s %d", window, data, arg1);
     entry.strptr = buffer;
     entry.strlength = strlen(buffer);
 
@@ -110,11 +102,7 @@ static void signal_func_3(GtkWidget *window,
     RXSTRING entry;
 
     // set up the queue entry data
-#ifdef WIN32
-    sprintf(buffer, "%p %s %p %u", window, data, widget, arg2);
-#else
-    snprintf(buffer, sizeof(buffer), "%p %s %p %u", window, data, widget, arg2);
-#endif
+    g_snprintf(buffer, sizeof(buffer), "%p %s %p %u", window, data, widget, arg2);
     entry.strptr = buffer;
     entry.strlength = strlen(buffer);
 
@@ -133,11 +121,7 @@ static void signal_func_3a(GtkWidget *window,
     RXSTRING entry;
 
     // set up the queue entry data
-#ifdef WIN32
-    sprintf(buffer, "%p %s %d %d", window, data, arg1, arg2);
-#else
-    snprintf(buffer, sizeof(buffer), "%p %s %d %d", window, data, arg1, arg2);
-#endif
+    g_snprintf(buffer, sizeof(buffer), "%p %s %d %d", window, data, arg1, arg2);
     entry.strptr = buffer;
     entry.strlength = strlen(buffer);
 
@@ -157,11 +141,7 @@ static void signal_func_4(GtkWidget *window,
     RXSTRING entry;
 
     // set up the queue entry data
-#ifdef WIN32
-    sprintf(buffer, "%p %s %p %d %d", window, data, widget, arg2, arg3);
-#else
-    snprintf(buffer, sizeof(buffer), "%p %s %p %d %d", window, data, widget, arg2, arg3);
-#endif
+    g_snprintf(buffer, sizeof(buffer), "%p %s %p %d %d", window, data, widget, arg2, arg3);
     entry.strptr = buffer;
     entry.strlength = strlen(buffer);
 
@@ -197,7 +177,7 @@ APIRET APIENTRY GrxNotebookNew(const char * Name,
     myWidget = gtk_notebook_new();
 
     /* Set up the REXX return code */
-    sprintf(Retstr->strptr, "%p", myWidget);
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%p", myWidget);
     Retstr->strlength = strlen(Retstr->strptr);
 
     return RXFUNC_OK;
@@ -803,7 +783,7 @@ APIRET APIENTRY GrxNotebookGetCurrentPage(const char * Name,
     }
 
     /* Set up the REXX return code */
-    sprintf(Retstr->strptr, "%d", page);
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%d", page);
     Retstr->strlength = strlen(Retstr->strptr);
 
     return RXFUNC_OK;

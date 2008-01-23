@@ -371,7 +371,7 @@ APIRET APIENTRY GrxLoadFuncs(char * Name,
        retc |= RexxRegisterFunctionDll((char *) EntryPoint[f], "rexxgtk", (char *) EntryPoint[f]);
     }
 
-    sprintf(Retstr->strptr, "%u", (unsigned int) retc);
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%u", (unsigned int) retc);
     Retstr->strlength = strlen(Retstr->strptr);
     return RXFUNC_OK;
 }
@@ -393,8 +393,7 @@ APIRET APIENTRY GrxVersion(const char * Name,
         return RXFUNC_BADCALL;
     }
 
-    sprintf(Retstr->strptr, "%d.%d.%d", VMAJOR, VMINOR, VREL);
-
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%d.%d.%d", VMAJOR, VMINOR, VREL);
     Retstr->strlength = strlen(Retstr->strptr);
     return RXFUNC_OK;
 }

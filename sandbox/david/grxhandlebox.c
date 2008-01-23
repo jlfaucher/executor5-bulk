@@ -65,11 +65,7 @@ static void signal_func_2(GtkWidget *window,
     RXSTRING entry;
 
     // set up the queue entry data
-#ifdef WIN32
-    sprintf(buffer, "%p %s %p", window, data, widget);
-#else
-    snprintf(buffer, sizeof(buffer), "%p %s %p", window, data, widget);
-#endif
+    g_snprintf(buffer, sizeof(buffer), "%p %s %p", window, data, widget);
     entry.strptr = buffer;
     entry.strlength = strlen(buffer);
 
@@ -105,8 +101,8 @@ APIRET APIENTRY GrxHandleBoxNew(const char * Name,
     myWidget = gtk_handle_box_new();
 	
     /* Set up the REXX return code */
-    sprintf(Retstr->strptr, "%p", myWidget);
-              Retstr->strlength = strlen(Retstr->strptr);
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%p", myWidget);
+    Retstr->strlength = strlen(Retstr->strptr);
 
     return RXFUNC_OK;
 }
