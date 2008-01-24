@@ -84,7 +84,7 @@ dialog~vbox~pack_start_defaults(table)
 dialog~show_all()
 
 retc = dialog~run_dialog()
-if retc = -5 /* GTK_RESPONSE_OK */ then do
+if Value2String('GTK_RESPONSE_TYPE', retc) = 'GTK_RESPONSE_OK' then do
    say 'User Name:' user~text
    say 'Real Name:' real~text
    say 'Home Folder:' home~text
