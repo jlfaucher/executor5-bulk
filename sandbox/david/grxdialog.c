@@ -483,9 +483,8 @@ ULONG APIENTRY GrxFontSelectionDialog(PSZ Name, LONG Argc, RXSTRING Argv[],
     char *font = NULL;
 
     /* Check for valid arguments */
-    if (Argc > 1) {
+    if (GrxCheckArgs(1, Argc, Argv))
         return RXFUNC_BADCALL;
-    }
 
     /* display and run the dialog */
     myWidget = gtk_font_selection_dialog_new(Argv[0].strptr);
@@ -496,6 +495,412 @@ ULONG APIENTRY GrxFontSelectionDialog(PSZ Name, LONG Argc, RXSTRING Argv[],
     /* Set up the REXX return code */
     g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%p %p", myWidget, GTK_DIALOG(myWidget)->vbox);
     Retstr->strlength = strlen(Retstr->strptr);
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxAboutDialogNew                                  */
+/* Description: Create an about dialog                                        */
+/* Rexx Args:   None                                                          */
+/*----------------------------------------------------------------------------*/
+
+ULONG APIENTRY GrxAboutDialogNew(PSZ Name, LONG Argc, RXSTRING Argv[],
+                                 PSZ Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(0, Argc, Argv))
+        return RXFUNC_BADCALL;
+
+    myWidget = gtk_about_dialog_new();
+
+    /* Set up the REXX return code */
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%p", myWidget);
+    Retstr->strlength = strlen(Retstr->strptr);
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxAboutDialogSetProgramName                       */
+/* Description: Set the program name                                          */
+/* Rexx Args:   Pointer to the dialog                                         */
+/*              Program name                                                  */
+/*----------------------------------------------------------------------------*/
+
+ULONG APIENTRY GrxAboutDialogSetProgramName(PSZ Name, LONG Argc, RXSTRING Argv[],
+                                            PSZ Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(2, Argc, Argv))
+        return RXFUNC_BADCALL;
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &myWidget);
+
+//    gtk_about_dialog_set_program_name(GTK_ABOUT_DIALOG(myWidget), Argv[1].strptr);
+    gtk_about_dialog_set_name(GTK_ABOUT_DIALOG(myWidget), Argv[1].strptr);
+
+    /* Set up the REXX return code */
+    *(Retstr->strptr) = '0';
+    Retstr->strlength = 1;
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxAboutDialogSetVersion                           */
+/* Description: Set the version                                               */
+/* Rexx Args:   Pointer to the dialog                                         */
+/*              Version                                                       */
+/*----------------------------------------------------------------------------*/
+
+ULONG APIENTRY GrxAboutDialogSetVersion(PSZ Name, LONG Argc, RXSTRING Argv[],
+                                        PSZ Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(2, Argc, Argv))
+        return RXFUNC_BADCALL;
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &myWidget);
+
+    gtk_about_dialog_set_version(GTK_ABOUT_DIALOG(myWidget), Argv[1].strptr);
+
+    /* Set up the REXX return code */
+    *(Retstr->strptr) = '0';
+    Retstr->strlength = 1;
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxAboutDialogSetCopyright                         */
+/* Description: Set the copyright notice                                      */
+/* Rexx Args:   Pointer to the dialog                                         */
+/*              Copyright                                                     */
+/*----------------------------------------------------------------------------*/
+
+ULONG APIENTRY GrxAboutDialogSetCopyright(PSZ Name, LONG Argc, RXSTRING Argv[],
+                                          PSZ Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(2, Argc, Argv))
+        return RXFUNC_BADCALL;
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &myWidget);
+
+    gtk_about_dialog_set_copyright(GTK_ABOUT_DIALOG(myWidget), Argv[1].strptr);
+
+    /* Set up the REXX return code */
+    *(Retstr->strptr) = '0';
+    Retstr->strlength = 1;
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxAboutDialogSetComments                          */
+/* Description: Set the comments                                              */
+/* Rexx Args:   Pointer to the dialog                                         */
+/*              Comment                                                       */
+/*----------------------------------------------------------------------------*/
+
+ULONG APIENTRY GrxAboutDialogSetComments(PSZ Name, LONG Argc, RXSTRING Argv[],
+                                         PSZ Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(2, Argc, Argv))
+        return RXFUNC_BADCALL;
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &myWidget);
+
+    gtk_about_dialog_set_comments(GTK_ABOUT_DIALOG(myWidget), Argv[1].strptr);
+
+    /* Set up the REXX return code */
+    *(Retstr->strptr) = '0';
+    Retstr->strlength = 1;
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxAboutDialogSetLicense                           */
+/* Description: Set the license                                               */
+/* Rexx Args:   Pointer to the dialog                                         */
+/*              License                                                       */
+/*----------------------------------------------------------------------------*/
+
+ULONG APIENTRY GrxAboutDialogSetLicense(PSZ Name, LONG Argc, RXSTRING Argv[],
+                                        PSZ Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(2, Argc, Argv))
+        return RXFUNC_BADCALL;
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &myWidget);
+
+    gtk_about_dialog_set_license(GTK_ABOUT_DIALOG(myWidget), Argv[1].strptr);
+
+    /* Set up the REXX return code */
+    *(Retstr->strptr) = '0';
+    Retstr->strlength = 1;
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxAboutDialogSetWrapLicense                       */
+/* Description: Set the wrap license flag                                     */
+/* Rexx Args:   Pointer to the dialog                                         */
+/*              Flag                                                          */
+/*----------------------------------------------------------------------------*/
+
+ULONG APIENTRY GrxAboutDialogSetWrapLicense(PSZ Name, LONG Argc, RXSTRING Argv[],
+                                            PSZ Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+    gboolean flag;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(2, Argc, Argv))
+        return RXFUNC_BADCALL;
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &myWidget);
+    sscanf(Argv[1].strptr, "%d", &flag);
+
+    gtk_about_dialog_set_wrap_license(GTK_ABOUT_DIALOG(myWidget), flag);
+
+    /* Set up the REXX return code */
+    *(Retstr->strptr) = '0';
+    Retstr->strlength = 1;
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxAboutDialogSetWebsite                           */
+/* Description: Set the website                                               */
+/* Rexx Args:   Pointer to the dialog                                         */
+/*              Website                                                       */
+/*----------------------------------------------------------------------------*/
+
+ULONG APIENTRY GrxAboutDialogSetWebsite(PSZ Name, LONG Argc, RXSTRING Argv[],
+                                        PSZ Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(2, Argc, Argv))
+        return RXFUNC_BADCALL;
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &myWidget);
+
+    gtk_about_dialog_set_website(GTK_ABOUT_DIALOG(myWidget), Argv[1].strptr);
+
+    /* Set up the REXX return code */
+    *(Retstr->strptr) = '0';
+    Retstr->strlength = 1;
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxAboutDialogSetWebsiteLabel                      */
+/* Description: Set the website label                                         */
+/* Rexx Args:   Pointer to the dialog                                         */
+/*              Website                                                       */
+/*----------------------------------------------------------------------------*/
+
+ULONG APIENTRY GrxAboutDialogSetWebsiteLabel(PSZ Name, LONG Argc, RXSTRING Argv[],
+                                             PSZ Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(2, Argc, Argv))
+        return RXFUNC_BADCALL;
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &myWidget);
+
+    gtk_about_dialog_set_website_label(GTK_ABOUT_DIALOG(myWidget), Argv[1].strptr);
+
+    /* Set up the REXX return code */
+    *(Retstr->strptr) = '0';
+    Retstr->strlength = 1;
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxAboutDialogSetAuthors                           */
+/* Description: Set the authors                                               */
+/* Rexx Args:   Pointer to the dialog                                         */
+/*              Author (could repeat)                                         */
+/*----------------------------------------------------------------------------*/
+
+ULONG APIENTRY GrxAboutDialogSetAuthors(PSZ Name, LONG Argc, RXSTRING Argv[],
+                                        PSZ Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+    const gchar **authors;
+    size_t i;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(2, 2, Argv))
+        return RXFUNC_BADCALL;
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &myWidget);
+    authors = (const gchar **)g_malloc(sizeof(void *) * Argc);
+    for (i = 0; i < Argc - 1; i++) {
+        authors[i] = Argv[i + 1].strptr;
+    }
+    authors[i] = NULL;
+
+    gtk_about_dialog_set_authors(GTK_ABOUT_DIALOG(myWidget), authors);
+
+    g_free(authors);
+
+    /* Set up the REXX return code */
+    *(Retstr->strptr) = '0';
+    Retstr->strlength = 1;
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxAboutDialogSetArtists                           */
+/* Description: Set the artists                                               */
+/* Rexx Args:   Pointer to the dialog                                         */
+/*              Author (could repeat)                                         */
+/*----------------------------------------------------------------------------*/
+
+ULONG APIENTRY GrxAboutDialogSetArtists(PSZ Name, LONG Argc, RXSTRING Argv[],
+                                        PSZ Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+    const gchar **authors;
+    size_t i;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(2, 2, Argv))
+        return RXFUNC_BADCALL;
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &myWidget);
+    authors = (const gchar **)g_malloc(sizeof(void *) * Argc);
+    for (i = 0; i < Argc - 1; i++) {
+        authors[i] = Argv[i + 1].strptr;
+    }
+    authors[i] = NULL;
+
+    gtk_about_dialog_set_artists(GTK_ABOUT_DIALOG(myWidget), authors);
+
+    g_free(authors);
+
+    /* Set up the REXX return code */
+    *(Retstr->strptr) = '0';
+    Retstr->strlength = 1;
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxAboutDialogSetDocumenters                       */
+/* Description: Set the documenters                                           */
+/* Rexx Args:   Pointer to the dialog                                         */
+/*              Author (could repeat)                                         */
+/*----------------------------------------------------------------------------*/
+
+ULONG APIENTRY GrxAboutDialogSetDocumenters(PSZ Name, LONG Argc, RXSTRING Argv[],
+                                            PSZ Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+    const gchar **authors;
+    size_t i;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(2, 2, Argv))
+        return RXFUNC_BADCALL;
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &myWidget);
+    authors = (const gchar **)g_malloc(sizeof(void *) * Argc);
+    for (i = 0; i < Argc - 1; i++) {
+        authors[i] = Argv[i + 1].strptr;
+    }
+    authors[i] = NULL;
+
+    gtk_about_dialog_set_documenters(GTK_ABOUT_DIALOG(myWidget), authors);
+
+    g_free(authors);
+
+    /* Set up the REXX return code */
+    *(Retstr->strptr) = '0';
+    Retstr->strlength = 1;
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxAboutDialogSetLogo                              */
+/* Description: Set the logo                                                  */
+/* Rexx Args:   Pointer to the dialog                                         */
+/*              Logo (filename)                                               */
+/*----------------------------------------------------------------------------*/
+
+ULONG APIENTRY GrxAboutDialogSetLogo(PSZ Name, LONG Argc, RXSTRING Argv[],
+                                     PSZ Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+    GdkPixbuf *logo;
+    GError *error = NULL;              // we will just ignore this error
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(2, Argc, Argv))
+        return RXFUNC_BADCALL;
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &myWidget);
+    logo = gdk_pixbuf_new_from_file(Argv[1].strptr, &error);
+
+    gtk_about_dialog_set_logo(GTK_ABOUT_DIALOG(myWidget), logo);
+
+    /* Set up the REXX return code */
+    *(Retstr->strptr) = '0';
+    Retstr->strlength = 1;
 
     return RXFUNC_OK;
 }

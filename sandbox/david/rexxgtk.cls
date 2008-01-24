@@ -645,6 +645,124 @@ return
 
 
 /*============================================================================*/
+/* Class: GtkAboutDialog                                                      */
+/*============================================================================*/
+
+::class GtkAboutDialog public subclass GtkDialog
+
+::method init
+use strict arg
+self~pointer = GrxAboutDialogNew()
+self~vbox = .nil
+return
+
+::method 'program_name='
+use strict arg pgmname
+call GrxAboutDialogSetProgramName self~pointer, pgmname
+return
+
+::method set_program_name
+use strict arg self~program_name
+return
+
+::method 'version='
+use strict arg v
+call GrxAboutDialogSetVersion self~pointer, v
+return
+
+::method set_version
+use strict arg self~version
+return
+
+::method 'copyright='
+use strict arg copyright
+call GrxAboutDialogSetCopyright self~pointer, copyright
+return
+
+::method set_copyright
+use strict arg self~copyright
+return
+
+::method 'comments='
+use strict arg comments
+call GrxAboutDialogSetComments self~pointer, comments
+return
+
+::method set_comments
+use strict arg self~comments
+return
+
+::method 'license='
+use strict arg license
+call GrxAboutDialogSetLicense self~pointer, license
+return
+
+::method set_license
+use strict arg self~license
+return
+
+::method 'wrap_license='
+use strict arg wraplicense
+call GrxAboutDialogSetWrapLicense self~pointer, wraplicense
+return
+
+::method set_wrap_license
+use strict arg self~wrap_license
+return
+
+::method 'website='
+use strict arg website
+call GrxAboutDialogSetWebsite self~pointer, website
+return
+
+::method set_website
+use strict arg self~website
+return
+
+::method 'website_label='
+use strict arg label
+call GrxAboutDialogSetWebsiteLabel self~pointer, label
+return
+
+::method set_website_label
+use strict arg self~website_label
+return
+
+::method set_authors
+stmt = 'call GrxAboutDialogSetAuthors self~pointer'
+do i = 1 to arg()
+   stmt = stmt',' arg(i)
+   end
+interpret stmt
+return
+
+::method set_artists
+stmt = 'call GrxAboutDialogSetArtists self~pointer'
+do i = 1 to arg()
+   stmt = stmt',' arg(i)
+   end
+interpret stmt
+return
+
+::method set_documenters
+stmt = 'call GrxAboutDialogSetDocumenters self~pointer'
+do i = 1 to arg()
+   stmt = stmt',' arg(i)
+   end
+interpret stmt
+return
+
+::method 'logo='
+use strict arg logo
+call GrxAboutDialogSetLogo self~pointer, logo
+return
+
+::method set_logo
+use strict arg self~logo
+return
+
+
+/*============================================================================*/
 /* Class: GtkLabel                                                            */
 /*============================================================================*/
 
