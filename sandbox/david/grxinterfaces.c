@@ -115,6 +115,41 @@ APIRET APIENTRY GrxFileChooserSetCurrentFolder(const char * Name,
 
 
 /*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxFileChooserSetSelectMultiple                    */
+/* Description: Set the multiple selection flag    .                          */
+/* Rexx Args:   Pointer to the widget                                         */
+/*              flag                                                          */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxFileChooserSetSelectMultiple(const char * Name,
+                                     const size_t Argc, const RXSTRING Argv[],
+                                     const char * Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+    gboolean flag;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(2, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &myWidget);
+    sscanf(Argv[1].strptr, "%d", &flag);
+
+    if (GTK_IS_WIDGET(GTK_OBJECT(myWidget))) {
+        gtk_file_chooser_set_select_multiple(GTK_FILE_CHOOSER(myWidget), flag);
+    }
+
+    /* Set up the REXX return code */
+    *(Retstr->strptr) = '0';
+    Retstr->strlength = 1;
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
 /* Rexx External Function: GrxFileChooserAddFilter                            */
 /* Description: Add a filter to the widget.                                   */
 /* Rexx Args:   Pointer to the widget                                         */
@@ -182,6 +217,39 @@ APIRET APIENTRY GrxFileChooserGetFilename(const char * Name,
         Retstr->strptr = (gchar *)RexxAllocateMemory(strlen(file) + 1);
     }
     g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%s", file);
+    Retstr->strlength = strlen(Retstr->strptr);
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxFileChooserGetFilenames                         */
+/* Description: Get the current selected filenames                            */
+/* Rexx Args:   Pointer to the chooser                                        */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxFileChooserGetFilenames(const char * Name,
+                                     const size_t Argc, const RXSTRING Argv[],
+                                     const char * Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+    GSList * list;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(1, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &myWidget);
+
+    if (GTK_IS_WIDGET(GTK_OBJECT(myWidget))) {
+        list = gtk_file_chooser_get_filenames(GTK_FILE_CHOOSER(myWidget));
+    }
+
+    /* Set up the REXX return code */
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%p", list);
     Retstr->strlength = strlen(Retstr->strptr);
 
     return RXFUNC_OK;

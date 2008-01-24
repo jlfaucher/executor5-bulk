@@ -763,6 +763,21 @@ return
 
 
 /*============================================================================*/
+/* Class: GtkFileChooserDialog                                                */
+/*============================================================================*/
+
+::class GtkFileChooserDialog public subclass GtkDialog inherit GtkFileChooser
+
+::method init
+use strict arg title, parent, action, btext, bresp
+if parent = .nil then ptr = 0
+else ptr = parent~pointer
+self~pointer = GrxFileChooserDialogNew(title, ptr, action, btext, bresp)
+self~vbox = .nil
+return
+
+
+/*============================================================================*/
 /* Class: GtkLabel                                                            */
 /*============================================================================*/
 
@@ -2184,6 +2199,127 @@ return
 /*============================================================================*/
 /*============================================================================*/
 /*============================================================================*/
+/* These are classes specific to Glib.                                        */
+/*============================================================================*/
+/*============================================================================*/
+/*============================================================================*/
+
+
+/*============================================================================*/
+/* Class: GSList                                                              */
+/*============================================================================*/
+
+::class GSList public
+
+::method init
+use strict arg self~head = 0
+return
+
+::method uninit
+call GrxGSListUninit self~head
+return
+
+::method append
+-- append an item string to the list
+use strict arg item
+self~head = GrxGSListAppend(self~head, item)
+return
+
+::method head
+-- return the head of the list
+expose head
+use strict arg
+return head
+
+::method 'head='
+-- set the head of the list
+expose head
+use strict arg head
+return
+
+::method insert
+-- append an item string to the list
+use strict arg item, position
+self~head = GrxGSListInsert(self~head, item, position)
+return
+
+::method toArray
+-- convert the list to an array
+use strict arg
+ptr = self~head
+list = .Array~new()
+do while ptr <> '(nil)'
+   list~append(GrxGSListItem(ptr))
+   ptr = GrxGSListNext(ptr)
+   end
+return list
+
+::method prepend
+-- prepend an item string to the list
+use strict arg item
+self~head = GrxGSListPrepend(self~head, item)
+return
+
+
+/*============================================================================*/
+/* Class: GList                                                               */
+/*============================================================================*/
+
+::class GList public subclass object
+
+::method init
+use strict arg self~head = 0
+return
+
+::method uninit
+call GrxGListUninit self~head
+return
+
+::method append
+-- append an item string to the list
+use arg strict item
+self~head = GrxGListAppend(self~head, item)
+return
+
+::method head
+-- return the head of the list
+expose head
+use strict arg
+return head
+
+::method 'head='
+-- set the head of the list
+expose head
+use strict arg head
+return
+
+::method insert
+-- insert an item string to the list
+use strict arg item, position
+self~head = GrxGListInsert(self~head, item, position)
+return
+
+::method toArray
+-- convert the list to an array
+use strict arg
+ptr = self~head
+list = .Array~new()
+do while ptr <> 0
+   list~append(GrxGSListItem(ptr))
+   ptr = GrxGSListNext(ptr)
+   end
+return list
+
+::method prepend
+-- prepend an item string to the list
+use strict arg item
+self~head = GrxGListPrepend(self~head, item)
+return
+
+
+/*============================================================================*/
+/*============================================================================*/
+/*============================================================================*/
 /* These are helper classes. Most of these just provide interfaces for other  */
 /* classes to use. Some are just standalone classes.                          */
 /*============================================================================*/
@@ -2218,6 +2354,23 @@ return GrxFileChooserGetFilename(self~pointer)
 
 ::method get_filename
 return self~filename
+
+::method filenames
+ptr = GrxFileChooserGetFileNames(self~pointer)
+list = .GSList~new(ptr)
+return list~toArray()
+
+::method get_filenames
+return self~filenames()
+
+::method 'select_multiple='
+use strict arg flag
+call GrxFileChooserSetSelectMultiple self~pointer, flag
+return
+
+::method set_select_multiple
+use strict arg self~select_multiple
+return
 
 ::method signal_connect
 use strict arg event

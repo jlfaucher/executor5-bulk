@@ -40,34 +40,20 @@
 /*----------------------------------------------------------------------------*/
 
 
--- Derived from Listing 5-5
+-- Derived from Listing 5-7
 -- Foundations of GTK+ Development
 -- by Andrew Krause
 
-dialog = .GtkAboutDialog~new()
+dialog = .GtkFileChooserDialog~new('Create a Folder ...', .nil,,
+                                   'GTK_FILE_CHOOSER_ACTION_CREATE_FOLDER',,
+                                   'gtk-cancel', 'GTK_RESPONSE_CANCEL')
+dialog~add_button('gtk-ok', 'GTK_RESPONSE_OK')
 
-logo = './oorexx.jpg'
-
-dialog~set_logo(logo)
-
-dialog~program_name = 'GtkAboutDialog'
-dialog~version = GrxVersion()
-dialog~copyright = '(c) 2008 Rexx Language Association. All rights reserved.'
-dialog~comments = 'All About GtkAboutDialog'
-
-dialog~license = 'License: CPL v1.0'
-dialog~website = 'http://www.oorexx.org/'
-dialog~website_label = 'ooRexx Web Site'
-
-dialog~set_authors('W. David Ashley', 'Mark Miesfeld')
-dialog~set_documenters('W. David Ashley')
--- the following statement is not in the original example
-dialog~set_artists('Julian Choy')
-
-dialog~show_all()
-
-dialog~run_dialog()
-
+retc = dialog~run_dialog()
+if retc = -5 then do
+   filename = dialog~get_filename()
+   say 'Creating directory:' filename
+   end
 dialog~destroy()
 return
 

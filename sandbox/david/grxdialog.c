@@ -470,6 +470,54 @@ ULONG APIENTRY GrxMessageDialogNew(PSZ Name, LONG Argc, RXSTRING Argv[],
 
 
 /*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxFileChooserDialogNew                            */
+/* Description: Create a file chooser dialog                                  */
+/* Rexx Args:   Title                                                         */
+/*          :   Parent window pointer                                         */
+/*              Message type                                                  */
+/*              Button set                                                    */
+/*              Message text                                                  */
+/*----------------------------------------------------------------------------*/
+
+ULONG APIENTRY GrxFileChooserDialogNew(PSZ Name, LONG Argc, RXSTRING Argv[],
+                                       PSZ Queuename, PRXSTRING Retstr)
+{
+    GtkWindow *parentWindow;
+    GtkWidget *myWidget;
+    GtkFileChooserAction action;
+    gint resptype;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(5, Argc, Argv))
+        return RXFUNC_BADCALL;
+
+    /* Initialize function parameters */
+    sscanf(Argv[1].strptr, "%p", &parentWindow);
+    if (!strcmp(Argv[2].strptr, "GTK_FILE_CHOOSER_ACTION_OPEN"))
+        action = GTK_FILE_CHOOSER_ACTION_OPEN;
+    else if (!strcmp(Argv[2].strptr, "GTK_FILE_CHOOSER_ACTION_SAVE"))
+        action = GTK_FILE_CHOOSER_ACTION_SAVE;
+    else if (!strcmp(Argv[2].strptr, "GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER"))
+        action = GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER;
+    else if (!strcmp(Argv[2].strptr, "GTK_FILE_CHOOSER_ACTION_CREATE_FOLDER"))
+        action = GTK_FILE_CHOOSER_ACTION_CREATE_FOLDER;
+    else
+        sscanf(Argv[2].strptr, "%d", &action);
+    resptype = str2resp(Argv[4].strptr);
+
+    myWidget = gtk_file_chooser_dialog_new(Argv[0].strptr, parentWindow,
+                                           action, Argv[3].strptr,
+                                           resptype, NULL);
+
+    /* Set up the REXX return code */
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%p", myWidget);
+    Retstr->strlength = strlen(Retstr->strptr);
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
 /* Rexx External Function: GrxFontSelectionDialog                             */
 /* Description: Create a font selection dialog                                */
 /* Rexx Args:   None                                                          */

@@ -40,37 +40,52 @@
 /*----------------------------------------------------------------------------*/
 
 
--- Derived from Listing 5-5
+-- Derived from Listing 5-6
 -- Foundations of GTK+ Development
 -- by Andrew Krause
 
-dialog = .GtkAboutDialog~new()
+window = .myMainWindow~new('GTK_WINDOW_TOPLEVEL')
+window~title = 'Save a File'
+window~signal_connect("destroy")
+window~set_border_width(10)
 
-logo = './oorexx.jpg'
+window~set_size_request(200, 100)
 
-dialog~set_logo(logo)
+button = .MyButton~new('Save a File')
 
-dialog~program_name = 'GtkAboutDialog'
-dialog~version = GrxVersion()
-dialog~copyright = '(c) 2008 Rexx Language Association. All rights reserved.'
-dialog~comments = 'All About GtkAboutDialog'
+-- save data for the callback
+button~user_data = window
 
-dialog~license = 'License: CPL v1.0'
-dialog~website = 'http://www.oorexx.org/'
-dialog~website_label = 'ooRexx Web Site'
+button~signal_connect('clicked')
 
-dialog~set_authors('W. David Ashley', 'Mark Miesfeld')
-dialog~set_documenters('W. David Ashley')
--- the following statement is not in the original example
-dialog~set_artists('Julian Choy')
+window~add(button)
+window~show_all()
 
-dialog~show_all()
-
-dialog~run_dialog()
-
-dialog~destroy()
+call gtk_main
 return
 
 
 ::requires 'rexxgtk.cls'
+
+::class myMainWindow subclass GtkWindow
+
+::method signal_destroy
+.local['GTK_Quit'] = .true
+return
+
+::class MyButton subclass GtkButton_With_Label
+
+::method signal_clicked
+dialog = .GtkFileChooserDialog~new('Save File As ...', self~user_data,,
+                                   'GTK_FILE_CHOOSER_ACTION_SAVE',,
+                                   'gtk-cancel', 'GTK_RESPONSE_CANCEL')
+dialog~add_button('gtk-save', 'GTK_RESPONSE_ACCEPT')
+
+retc = dialog~run_dialog()
+if retc = -3 then do
+   filename = dialog~filename
+   self~label = filename
+   end
+dialog~destroy()
+return
 

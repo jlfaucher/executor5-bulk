@@ -40,34 +40,24 @@
 /*----------------------------------------------------------------------------*/
 
 
--- Derived from Listing 5-5
+-- Derived from Listing 5-8
 -- Foundations of GTK+ Development
 -- by Andrew Krause
 
-dialog = .GtkAboutDialog~new()
+dialog = .GtkFileChooserDialog~new('Open File(s) ...', .nil,,
+                                   'GTK_FILE_CHOOSER_ACTION_OPEN',,
+                                   'gtk-cancel', 'GTK_RESPONSE_CANCEL')
+dialog~add_button('gtk-open', 'GTK_RESPONSE_ACCEPT')
 
-logo = './oorexx.jpg'
+dialog~set_select_multiple(.true)
 
-dialog~set_logo(logo)
-
-dialog~program_name = 'GtkAboutDialog'
-dialog~version = GrxVersion()
-dialog~copyright = '(c) 2008 Rexx Language Association. All rights reserved.'
-dialog~comments = 'All About GtkAboutDialog'
-
-dialog~license = 'License: CPL v1.0'
-dialog~website = 'http://www.oorexx.org/'
-dialog~website_label = 'ooRexx Web Site'
-
-dialog~set_authors('W. David Ashley', 'Mark Miesfeld')
-dialog~set_documenters('W. David Ashley')
--- the following statement is not in the original example
-dialog~set_artists('Julian Choy')
-
-dialog~show_all()
-
-dialog~run_dialog()
-
+retc = dialog~run_dialog()
+if retc = -3 then do
+   filenames = dialog~get_filenames()
+   do filename over filenames
+      say filename 'was selected:'
+      end
+   end
 dialog~destroy()
 return
 

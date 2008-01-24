@@ -170,3 +170,361 @@ APIRET APIENTRY GrxGetHostName(const char * Name,
     return RXFUNC_OK;
 }
 
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxGSListUninit                                    */
+/* Description: Free list storage                                             */
+/* Rexx Args:   Pointer to the list head                                      */
+/*----------------------------------------------------------------------------*/
+
+ULONG APIENTRY GrxGSListUninit(PSZ Name, LONG Argc, RXSTRING Argv[],
+                               PSZ Queuename, PRXSTRING Retstr)
+{
+    GSList *myList;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(1, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &myList);
+
+    g_slist_free(myList);
+
+    /* Set up the REXX return code */
+    *(Retstr->strptr) = '0';
+    Retstr->strlength = 1;
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxGSListAppend                                    */
+/* Description: Append an item to the list.                                   */
+/* Rexx Args:   Group list head                                               */
+/*              Item string                                                   */
+/*----------------------------------------------------------------------------*/
+
+ULONG APIENTRY GrxGSListAppend(PSZ Name, LONG Argc, RXSTRING Argv[],
+                               PSZ Queuename, PRXSTRING Retstr)
+{
+    GSList *head;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(2, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &head);
+
+    head = g_slist_append(head, Argv[1].strptr);
+
+    /* Set up the REXX return code */
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%p", head);
+    Retstr->strlength = strlen(Retstr->strptr);
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxGSListPrepend                                   */
+/* Description: Prepend an item to the list.                                  */
+/* Rexx Args:   Group list head                                               */
+/*              Item string                                                   */
+/*----------------------------------------------------------------------------*/
+
+ULONG APIENTRY GrxGSListPrepend(PSZ Name, LONG Argc, RXSTRING Argv[],
+                                PSZ Queuename, PRXSTRING Retstr)
+{
+    GSList *head;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(2, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &head);
+
+    head = g_slist_prepend(head, Argv[1].strptr);
+
+    /* Set up the REXX return code */
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%p", head);
+    Retstr->strlength = strlen(Retstr->strptr);
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxGSListInsert                                    */
+/* Description: Insert an item to the list.                                   */
+/* Rexx Args:   Group list head                                               */
+/*              Item string                                                   */
+/*              Position (one-based)                                          */
+/*----------------------------------------------------------------------------*/
+
+ULONG APIENTRY GrxGSListInsert(PSZ Name, LONG Argc, RXSTRING Argv[],
+                               PSZ Queuename, PRXSTRING Retstr)
+{
+    GSList *head;
+    gint pos;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(3, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &head);
+    sscanf(Argv[2].strptr, "%d", &pos);
+
+    head = g_slist_insert(head, Argv[1].strptr, pos - 1);
+
+    /* Set up the REXX return code */
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%p", head);
+    Retstr->strlength = strlen(Retstr->strptr);
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxGSListItem                                      */
+/* Description: Get the list item                                             */
+/* Rexx Args:   Item pointer                                                  */
+/*----------------------------------------------------------------------------*/
+
+ULONG APIENTRY GrxGSListItem(PSZ Name, LONG Argc, RXSTRING Argv[],
+                             PSZ Queuename, PRXSTRING Retstr)
+{
+    GSList *item;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(1, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &item);
+
+    /* Set up the REXX return code */
+    if (strlen(item->data) > RXAUTOBUFLEN) {
+        Retstr->strptr = (char *) RexxAllocateMemory(strlen(item->data) + 1);
+    }
+    strcpy(Retstr->strptr, item->data);
+    Retstr->strlength = strlen(Retstr->strptr);
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxGSListNext                                      */
+/* Description: Get the pointer to the next list item                         */
+/* Rexx Args:   Item pointer                                                  */
+/*----------------------------------------------------------------------------*/
+
+ULONG APIENTRY GrxGSListNext(PSZ Name, LONG Argc, RXSTRING Argv[],
+                             PSZ Queuename, PRXSTRING Retstr)
+{
+    GSList *item;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(1, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &item);
+
+    /* Set up the REXX return code */
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%p", item->next);
+    Retstr->strlength = strlen(Retstr->strptr);
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxGListUninit                                     */
+/* Description: Free list storage                                             */
+/* Rexx Args:   Pointer to the list head                                      */
+/*----------------------------------------------------------------------------*/
+
+ULONG APIENTRY GrxGListUninit(PSZ Name, LONG Argc, RXSTRING Argv[],
+                              PSZ Queuename, PRXSTRING Retstr)
+{
+    GList *myList;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(1, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &myList);
+
+    g_list_free(myList);
+
+    /* Set up the REXX return code */
+    *(Retstr->strptr) = '0';
+    Retstr->strlength = 1;
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxGListAppend                                     */
+/* Description: Append an item to the list.                                   */
+/* Rexx Args:   Group list head                                               */
+/*              Item string                                                   */
+/*----------------------------------------------------------------------------*/
+
+ULONG APIENTRY GrxGListAppend(PSZ Name, LONG Argc, RXSTRING Argv[],
+                              PSZ Queuename, PRXSTRING Retstr)
+{
+    GList *head;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(2, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &head);
+
+    head = g_list_append(head, Argv[1].strptr);
+
+    /* Set up the REXX return code */
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%p", head);
+    Retstr->strlength = strlen(Retstr->strptr);
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxGListPrepend                                    */
+/* Description: Prepend an item to the list.                                  */
+/* Rexx Args:   Group list head                                               */
+/*              Item string                                                   */
+/*----------------------------------------------------------------------------*/
+
+ULONG APIENTRY GrxGListPrepend(PSZ Name, LONG Argc, RXSTRING Argv[],
+                               PSZ Queuename, PRXSTRING Retstr)
+{
+    GList *head;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(2, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &head);
+
+    head = g_list_prepend(head, Argv[1].strptr);
+
+    /* Set up the REXX return code */
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%p", head);
+    Retstr->strlength = strlen(Retstr->strptr);
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxGListInsert                                     */
+/* Description: Insert an item to the list.                                   */
+/* Rexx Args:   Group list head                                               */
+/*              Item string                                                   */
+/*              Position (one-based)                                          */
+/*----------------------------------------------------------------------------*/
+
+ULONG APIENTRY GrxGListInsert(PSZ Name, LONG Argc, RXSTRING Argv[],
+                              PSZ Queuename, PRXSTRING Retstr)
+{
+    GList *head;
+    gint pos;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(3, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &head);
+    sscanf(Argv[2].strptr, "%d", &pos);
+
+    head = g_list_insert(head, Argv[1].strptr, pos - 1);
+
+    /* Set up the REXX return code */
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%p", head);
+    Retstr->strlength = strlen(Retstr->strptr);
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxGListItem                                       */
+/* Description: Get the list item                                             */
+/* Rexx Args:   Item pointer                                                  */
+/*----------------------------------------------------------------------------*/
+
+ULONG APIENTRY GrxGListItem(PSZ Name, LONG Argc, RXSTRING Argv[],
+                            PSZ Queuename, PRXSTRING Retstr)
+{
+    GList *item;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(1, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &item);
+
+    /* Set up the REXX return code */
+    if (strlen(item->data) > RXAUTOBUFLEN) {
+        Retstr->strptr = (char *) RexxAllocateMemory(strlen(item->data) + 1);
+    }
+    strcpy(Retstr->strptr, item->data);
+    Retstr->strlength = strlen(Retstr->strptr);
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxGListNext                                       */
+/* Description: Get the pointer to the next list item                         */
+/* Rexx Args:   Item pointer                                                  */
+/*----------------------------------------------------------------------------*/
+
+ULONG APIENTRY GrxGListNext(PSZ Name, LONG Argc, RXSTRING Argv[],
+                            PSZ Queuename, PRXSTRING Retstr)
+{
+    GList *item;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(1, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &item);
+
+    /* Set up the REXX return code */
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%p", item->next);
+    Retstr->strlength = strlen(Retstr->strptr);
+
+    return RXFUNC_OK;
+}
+
