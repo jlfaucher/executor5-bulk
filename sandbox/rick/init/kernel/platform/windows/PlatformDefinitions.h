@@ -124,21 +124,6 @@ typedef int SYSEXCEPTIONBLOCK;
 typedef void (* PTHREADFN)(void *);    /* define a thread function          */
 
 /******************************************************************************/
-/* REQUIRED:  Define any special requirements for external entry calls back   */
-/* into the interpreter.  The default is no special requirements.             */
-/******************************************************************************/
-
-#define REXXENTRY APIENTRY
-
-/******************************************************************************/
-/* REQUIRED:  This was needed for Windows. Any entry points containing        */
-/* variable length arguments need to use __cdecl calling convention.          */
-/******************************************************************************/
-
-#define VLAREXXENTRY __cdecl           /* external entry points       */
-#define VLAENTRY __cdecl               /* internal entry points       */
-
-/******************************************************************************/
 /* REQUIRED:  Definitions for REXX semaphore functions.  These default to     */
 /* the REXX library semaphore package, but can be redefined to map directly   */
 /* to system specific functions too.                                          */

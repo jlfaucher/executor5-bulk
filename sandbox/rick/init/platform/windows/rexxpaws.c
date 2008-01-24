@@ -50,16 +50,16 @@
 #include <string.h>                         /* needed for strlen()        */
 
 extern "C" {
-BOOL   APIENTRY RexxInitialize (void);
+BOOL   REXXENTRY RexxInitialize (void);
 }
 
 //
 //  Prototypes
 //
 int __cdecl main(int argc, char *argv[]);  /* main entry point           */
-LONG APIENTRY MY_IOEXIT( LONG ExitNumber, LONG Subfunction, PEXIT ParmBlock);
+LONG REXXENTRY MY_IOEXIT( LONG ExitNumber, LONG Subfunction, PEXIT ParmBlock);
 
-extern "C" char *APIENTRY RexxGetVersionInformation(void);
+extern "C" char *REXXENTRY RexxGetVersionInformation(void);
 
 #include "ArgumentParser.h"  /* defines getArguments and freeArguments */
 

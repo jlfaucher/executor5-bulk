@@ -68,7 +68,6 @@
 
 #include "RexxAPIManager.h"
 #include "APIDefinitions.h"
-#include "SubcommandAPI.h"
 #include "APIUtilities.h"
 #include "Interpreter.hpp"
 
@@ -93,7 +92,7 @@
 /*   Mainline path looks like this:                                           */
 /*     RexxStart => server_RexxStart                                          */
 /******************************************************************************/
-int  APIENTRY ApiRexxStart(
+int ApiRexxStart(
   size_t argcount,                     /* Number of args in arglist         */
   PCONSTRXSTRING arglist,              /* Array of args                     */
   const char *programname,             /* REXX program to run               */

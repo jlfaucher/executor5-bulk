@@ -62,14 +62,6 @@
 
 #include "rexx.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-bool   APIENTRY RexxInitialize (void);
-#ifdef __cplusplus
-}
-#endif
-
 #if defined(AIX)
 #define SYSINITIALADDRESS "ksh"
 #elif defined(OPSYS_SUN)

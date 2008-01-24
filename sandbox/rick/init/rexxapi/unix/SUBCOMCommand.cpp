@@ -56,8 +56,7 @@
 #include <stdio.h>
 
 #include "rexx.h"                      /* for REXXSAA functionality  */
-#include "PlatformDefinitions.h"
-#include "SubcommandAPI.h"             /* get RexxLoadSubcom calls   */
+#include "RexxInternalApis.h"          /* Get private REXXAPI API's         */
 #include "RexxAPIManager.h"
                                        /* old msg constants replaced!*/
 #include "RexxErrorCodes.h"

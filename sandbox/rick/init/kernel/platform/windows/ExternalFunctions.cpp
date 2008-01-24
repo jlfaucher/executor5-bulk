@@ -69,7 +69,7 @@
 #include "MethodClass.hpp"
 #include "SourceFile.hpp"
 #include "RexxNativeAPI.h"                  /* Lot's of useful REXX macros    */
-#include "SubcommandAPI.h"                  /* Get private REXXAPI API's      */
+#include "RexxInternalApis.h"          /* Get private REXXAPI API's         */
 #include "RexxAPIManager.h"
 #include "ProtectedObject.hpp"
 #include "StringUtil.hpp"

@@ -49,8 +49,8 @@ class OrxScript;
 extern HANDLE mutex;
 extern Index *thread2EngineList;
 
-LONG APIENTRY RexxCatchExit(LONG, LONG, PEXIT);
-LONG APIENTRY RexxCatchExternalFunc(LONG, LONG, PEXIT);
+LONG REXXENTRY RexxCatchExit(LONG, LONG, PEXIT);
+LONG REXXENTRY RexxCatchExternalFunc(LONG, LONG, PEXIT);
 int __stdcall scriptSecurity(CLSID,IUnknown*);
 REXXOBJECT Create_securityObject(OrxScript *, FILE *);
 void __stdcall parseText(void*);

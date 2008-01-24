@@ -62,9 +62,10 @@
 #include "RexxActivity.hpp"
 #include "RexxNativeAPI.h"                           /* Lot's of useful REXX macros    */
 #include "ActivityManager.hpp"
+#include "SystemInterpreter.hpp"
 
 #include "SystemCommands.h"
-#include "SubcommandAPI.h"                  /* Get private REXX API's         */
+#include "RexxInternalApis.h"
 #include <sys/types.h>
 #include <pwd.h>
 #include <limits.h>
@@ -567,14 +568,8 @@ bool sys_process_cd(const char * cmd, int * rc)
     *rc = chdir(dir_buf);
 
     free(dir_buf);
-
-    if (!getcwd(SystemInterpreter::currentWorkingDirectory, CCHMAXPATH))    /* Save current working direct */
-    {
-      strncpy( SystemInterpreter::currentWorkingDirectory, getenv("PWD"), CCHMAXPATH);
-      SystemInterpreter::currentWorkingDirectory[CCHMAXPATH - 1] = '\0';
-      if (SystemInterpreter::currentWorkingDirectory[0] != '/' )
-        reportException(Error_System_service);  /* Complain if it fails        */
-    }
+    // update our current working dir. 
+    SystemInterpreter::updateCurrentWorkingDirectory(); 
     return true;
 }
 

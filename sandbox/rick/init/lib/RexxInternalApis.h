@@ -46,15 +46,15 @@
 extern "C" {
 #endif
 
-int APIENTRY RexxResolveExit(const char *, REXXPFN *);
+int REXXENTRY RexxResolveExit(const char *, REXXPFN *);
 
-APIRET APIENTRY RexxCallFunction (const char *, size_t, PCONSTRXSTRING, int *, PRXSTRING, const char *);
+APIRET REXXENTRY RexxCallFunction (const char *, size_t, PCONSTRXSTRING, int *, PRXSTRING, const char *);
 
-APIRET APIENTRY RexxExecuteMacroFunction (const char *, PRXSTRING );
+APIRET REXXENTRY RexxExecuteMacroFunction (const char *, PRXSTRING );
 
 void REXXENTRY RexxCreateInterpreterImage();
 
-size_t RexxGetCurrentPrecision();
+size_t REXXENTRY RexxGetCurrentPrecision();
 
 void REXXENTRY RexxCreateScriptContext(const char *contextName);
 
@@ -67,6 +67,12 @@ APIRET REXXENTRY RexxCreateMethod(const char *context, PCONSTRXSTRING sourceData
 APIRET REXXENTRY RexxRunMethod(const char * context, REXXOBJECT method, void * callbackArgs,
   REXXOBJECT (REXXENTRY *callbackFunction)(void *), PRXSYSEXIT exit_list, REXXOBJECT *presult,
   REXXOBJECT securityManager, RexxConditionData *pRexxCondData);
+
+APIRET REXXENTRY RexxLoadSubcom(const char *, const char *); 
+
+/***    RexxCallSubcom - Execute a command in an environment */
+APIRET REXXENTRY RexxCallSubcom(const char *, const char *, PCONSTRXSTRING,    
+         unsigned short *, wholenumber_t *, PRXSTRING );       
 
 #ifdef __cplusplus
 }

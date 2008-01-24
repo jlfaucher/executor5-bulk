@@ -77,13 +77,13 @@
 #include "MethodClass.hpp"
 #include "SourceFile.hpp"
 #include "RexxNativeAPI.h"                           /* Lot's of useful REXX macros    */
-#include "SubcommandAPI.h"
+#include "RexxInternalApis.h"          /* Get private REXXAPI API's         */
 #include "RexxAPIManager.h"
 #include "APIUtilities.h"
 #include "ActivityManager.hpp"
 #include "ProtectedObject.hpp"
 #include "StringUtil.hpp"
-#include "SystemDirectory.hpp"
+#include "SystemInterpreter.hpp"
 
 
 #define CMDBUFSIZE      1024                 /* Max size of executable cmd     */
@@ -303,8 +303,12 @@ RexxMethod1(REXXOBJECT, sysDirectory, CSTRING, dir)
     else
       rc = chdir(dir);                   /* change to the new directory     */
   }
-
-  return SystemInterpreter::getCurrentWorkingDirectory();
+  // update our working directory and return it. 
+  if (rc == 0)
+  {
+      SystemInterpreter::updateCurrentWorkingDirectory(); 
+  }
+  return ooRexxString(SystemInterpreter::currentWorkingDirectory); 
 }
 
 
@@ -436,13 +440,11 @@ REXXOBJECT BuildEnvlist()
   if (!(curr_dir=(char *)malloc(CCHMAXPATH+2)))/* malloc storage for cwd*/
     reportException(Error_System_service);
 
-  if (!getcwd(curr_dir,CCHMAXPATH))    /* get current directory      */
-  {
-     strncpy( achRexxCurDir, getenv("PWD"), CCHMAXPATH);
-     achRexxCurDir[CCHMAXPATH - 1] = '\0';
-     if (achRexxCurDir[0] != '/' )
-       reportException(Error_System_service);/* Complain if it fails*/
-  }
+  // make sure we have a working directory
+  SystemInterpreter::updateCurrentWorkingDirectory(); 
+  // start with a copy of that 
+  strcpy(curr_dir, SystemInterpreter::currentWorkingDirectory); 
+
   size += strlen(curr_dir);            /* add the space for curr dir */
   size++;                              /* and its terminating '\0'   */
   size += 4;                           /* this is for the size itself*/

@@ -69,12 +69,10 @@ public:
 
     static void initializeInstance(InterpreterInstance *instance);
     static void terminateInstance(InterpreterInstance *instance);
-    static RexxString *getCurrentWorkingDirectory();
-
-protected:
+    static void updateCurrentWorkingDirectory();
 
     // saved current working directory
-    char currentWorkingDirectory[CCHMAXPATH+2];
+    static char currentWorkingDirectory[CCHMAXPATH+2];
 
 };
 

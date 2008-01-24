@@ -50,7 +50,7 @@
 #include <io.h>
 
 extern "C" {
-BOOL   APIENTRY RexxInitialize (void);
+BOOL   REXXENTRY RexxInitialize (void);
 }
 
 #include "ArgumentParser.h"  /* defines getArguments and freeArguments */

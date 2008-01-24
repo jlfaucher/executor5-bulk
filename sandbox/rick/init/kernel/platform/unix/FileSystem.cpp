@@ -50,6 +50,7 @@
 #include "BufferClass.hpp"
 #include "RexxNativeAPI.h"
 #include "ProtectedObject.hpp"
+#include "SystemInterpreter.hpp"
 #include <string.h>
 #include <stdio.h>
 #include <stddef.h>
@@ -72,8 +73,6 @@
 #define DEFEXT  ".CMD"           /* leave default for AIX REXX programs too */
 #define DEFEXT1  ".cmd"
 //#define TEMPEXT ".ORX"         /* Temporary development extension   */
-
-extern char achRexxCurDir[ CCHMAXPATH+2 ];    /* Save current working direct */
 
 RexxString * LocateProgram(RexxString *, const char *[], int);
 const char * SearchFileName(const char *, char);
@@ -242,7 +241,7 @@ const char *SearchFileName(
   const char *Name,                    /* name of rexx proc to check         */
   char       chCont )                  /* Control char for search and output */
 {
-    char       achFullName[CCHMAXPATH + 2]; /* temporary name buffer           */
+    static char achFullName[CCHMAXPATH + 2]; /* temporary name buffer           */
     char       achTempName[CCHMAXPATH + 2]; /* temporary name buffer           */
     char *     p;
     char *     q;
@@ -323,7 +322,7 @@ const char *SearchFileName(
                     if ( achFullName[0] == '\0' )
                     {
                         enddir=strrchr(SystemInterpreter::currentWorkingDirectory,'/');              /* Copy path */
-                        memcpy(achFullName, SystemInterpreter::currentWorkingDirectory, enddir-(&achRexxCurDir[0]));
+                        memcpy(achFullName, SystemInterpreter::currentWorkingDirectory, enddir-(&SystemInterpreter::currentWorkingDirectory[0]));
                         achFullName[enddir-(&SystemInterpreter::currentWorkingDirectory[0])] = '\0'; /* Terminate */
                     }
                     else

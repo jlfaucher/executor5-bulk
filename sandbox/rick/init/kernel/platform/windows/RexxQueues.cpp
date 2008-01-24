@@ -49,7 +49,7 @@
 #include "RexxNativeAPI.h"                      /* Lot's of useful REXX macros       */
 #include "StreamNative.h"
 #include "ActivityManager.hpp"
-#include "SubcommandAPI.h"             /* Get private REXXAPI API's         */
+#include "RexxInternalApis.h"          /* Get private REXXAPI API's         */
 
 /********************************************************************************************/
 /* Rexx_query_queue                                                                         */

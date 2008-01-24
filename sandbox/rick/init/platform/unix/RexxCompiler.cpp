@@ -75,7 +75,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-APIRET APIENTRY RexxTranslateProgram(const char *, const char *);
+APIRET REXXENTRY RexxTranslateProgram(const char *, const char *);
 #ifdef __cplusplus
 }
 #endif

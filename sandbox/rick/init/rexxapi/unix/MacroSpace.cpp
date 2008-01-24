@@ -76,6 +76,7 @@
 #include "RexxAPIManager.h"                  /* RexxxExecuteMacroFunction() */
 #include "APIUtilities.h"
 #include "SharedMemorySupport.h"
+#include "RexxInternalApis.h"
 #include <sys/stat.h>
 #include <unistd.h>
 
@@ -85,7 +86,7 @@
 
 #include <dlfcn.h>
 
-int  APIENTRY ApiRexxStart(size_t argcount, PCONSTRXSTRING arglist, const char *programname,
+int  REXXENTRY ApiRexxStart(size_t argcount, PCONSTRXSTRING arglist, const char *programname,
     PRXSTRING instore, const char *envname, int calltype, PRXSYSEXIT exits, short * retcode, PRXSTRING result);
 
 extern REXXAPIDATA  *apidata;          /* Global state data          */
@@ -142,7 +143,7 @@ static int rxstrtofile(FILE *,const char *, size_t);
 /*  Output:             return code                                  */
 /*                                                                   */
 /*********************************************************************/
-APIRET APIENTRY RexxAddMacro(
+APIRET REXXENTRY RexxAddMacro(
   const char *n,                       /* name of macro function     */
   const char *s,                       /* name of file               */
   size_t pos )                         /* search order pos request   */
@@ -227,7 +228,7 @@ APIRET APIENTRY RexxAddMacro(
 /*                                                                   */
 /*********************************************************************/
 
-APIRET APIENTRY RexxDropMacro(
+APIRET REXXENTRY RexxDropMacro(
   const char * n )                     /* name of macro to delete    */
 {
   size_t p;                             /* pointer to function struct */
@@ -275,7 +276,7 @@ APIRET APIENTRY RexxDropMacro(
 /*                                                                   */
 /*********************************************************************/
 
-APIRET APIENTRY RexxClearMacroSpace()
+APIRET REXXENTRY RexxClearMacroSpace()
 {
   size_t  rc;                           /* return code from function  */
 
@@ -319,7 +320,7 @@ APIRET APIENTRY RexxClearMacroSpace()
 /*                                                                   */
 /*********************************************************************/
 
-APIRET APIENTRY RexxSaveMacroSpace(
+APIRET REXXENTRY RexxSaveMacroSpace(
   size_t    ac,                       /* count of arguments         */
   const char **av,                    /* argument list              */
   const char * fnam )                 /* file name                  */
@@ -397,7 +398,7 @@ APIRET APIENTRY RexxSaveMacroSpace(
 /*                                                                   */
 /*********************************************************************/
 
-APIRET APIENTRY RexxLoadMacroSpace(
+APIRET REXXENTRY RexxLoadMacroSpace(
   size_t    ac,                        /* argument count             */
   const char **av,                     /* list of argument strings   */
   const char * fnam )                  /* file name to load functs   */
@@ -434,7 +435,7 @@ APIRET APIENTRY RexxLoadMacroSpace(
 /*                                                                   */
 /*********************************************************************/
 
-APIRET APIENTRY RexxQueryMacro(
+APIRET REXXENTRY RexxQueryMacro(
   const char *name,                    /* name to search for         */
   unsigned short *pos)                 /* pointer for return of pos  */
 {
@@ -467,7 +468,7 @@ APIRET APIENTRY RexxQueryMacro(
 /*                                                                   */
 /*********************************************************************/
 
-APIRET APIENTRY RexxReorderMacro(
+APIRET REXXENTRY RexxReorderMacro(
   const char *name,                    /* name of function to change */
   size_t  pos )                        /* new position for function  */
 {
@@ -505,7 +506,7 @@ APIRET APIENTRY RexxReorderMacro(
 /*                                                                   */
 /*********************************************************************/
 
-APIRET APIENTRY RexxExecuteMacroFunction(
+APIRET REXXENTRY RexxExecuteMacroFunction(
   const char *name,                    /* name of func to find       */
   PRXSTRING p )                        /* storage for image return   */
 {

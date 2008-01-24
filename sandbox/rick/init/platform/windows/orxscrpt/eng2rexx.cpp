@@ -108,7 +108,7 @@ REXXOBJECT __stdcall DispParms2RexxArray(void *arguments)
 }
 
 /* Exit handler to find out the names of any functions in currently parsed script */
-LONG APIENTRY RexxCatchExit(LONG ExitNumber, LONG Subfunction, PEXIT parmblock)
+LONG REXXENTRY RexxCatchExit(LONG ExitNumber, LONG Subfunction, PEXIT parmblock)
 {
    char **names;
    size_t iCount;
@@ -152,7 +152,7 @@ void REXXENTRY fillVariables(const char *name, REXXOBJECT value)
 }
 
 /* Exit handler to find out the values of variables of "immediate code" */
-LONG APIENTRY RexxRetrieveVariables(LONG ExitNumber, LONG Subfunction, PEXIT parmblock)
+LONG REXXENTRY RexxRetrieveVariables(LONG ExitNumber, LONG Subfunction, PEXIT parmblock)
 {
   OrxScript     *engine    = findEngineForThread(GetCurrentThreadId());
 
@@ -171,7 +171,7 @@ LONG APIENTRY RexxRetrieveVariables(LONG ExitNumber, LONG Subfunction, PEXIT par
 }
 
 /* Exit handler for external function calls */
-LONG APIENTRY RexxCatchExternalFunc(LONG ExitNumber, LONG Subfunction, PEXIT pblock)
+LONG REXXENTRY RexxCatchExternalFunc(LONG ExitNumber, LONG Subfunction, PEXIT pblock)
 {
   RXEXFCAL_PARM *parmblock = (RXEXFCAL_PARM*) pblock;
   REXXOBJECT     result    = ooRexxNil;
@@ -559,7 +559,7 @@ int __stdcall scriptSecurity(CLSID clsid, IUnknown *pObject)
 *  it will be handled by OrxIDispatch, just as if JScript called.
 *
 ******************************************************************************/
-LONG APIENTRY RexxValueExtension(LONG ExitNumber, LONG Subfunction, PEXIT pblock)
+LONG REXXENTRY RexxValueExtension(LONG ExitNumber, LONG Subfunction, PEXIT pblock)
 {
     RXVALCALL_PARM *parmblock = (RXVALCALL_PARM*) pblock;
     int SelectorType = 0;
@@ -768,7 +768,7 @@ LONG APIENTRY RexxValueExtension(LONG ExitNumber, LONG Subfunction, PEXIT pblock
 /* unknown callback                                                     */
 /* this will deal with objects that REXX is unaware of, but the engine  */
 /* is...                                                                */
-LONG APIENTRY RexxNovalueHandler(LONG ExitNumber, LONG Subfunction, PEXIT pblock)
+LONG REXXENTRY RexxNovalueHandler(LONG ExitNumber, LONG Subfunction, PEXIT pblock)
 {
   RXVARNOVALUE_PARM *parmblock = (RXVARNOVALUE_PARM*) pblock;
   const char *objname = parmblock->variable_name.strptr;

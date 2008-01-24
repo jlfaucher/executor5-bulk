@@ -63,7 +63,7 @@
 #include "IntegerClass.hpp"
 #include "RexxNativeAPI.h"                      /* REXX interface/native method code */
 #include "APIServiceTables.h"
-#include "SubcommandAPI.h"
+#include "RexxInternalApis.h"          /* Get private REXXAPI API's         */
 #include "RexxAPIManager.h"
 #include "Interpreter.hpp"
 #include "ProtectedObject.hpp"
@@ -120,7 +120,7 @@ void REXXENTRY WinLeaveKernel()
 }
 
 
-BOOL APIENTRY RexxSetProcessMessages(BOOL onoff)
+BOOL REXXENTRY RexxSetProcessMessages(BOOL onoff)
 {
    bool old;
    old = UseMessageLoop;

@@ -56,13 +56,13 @@
 #include "RexxNativeAPI.h"             /* Lot's of useful REXX macros    */
 #include "ActivityManager.hpp"
 #include "ProtectedObject.hpp"
+#include "RexxInternalApis.h"          /* Get private REXXAPI API's         */
 
 #define CMDBUFSIZE32S 260              /* Max size of executable cmd     */
 #define CMDBUFSIZENT 8092              /* Max size of executable cmd     */
 #define CMDDEFNAME32S "COMMAND.COM"    /* Default Win 95   cmd handler   */
 #define CMDDEFNAMENT "CMD.EXE"         /* Default Win NT   cmd handler   */
 #define DEFEXT "REX"                   /* Default Win  REXX program ext  */
-#include "SubcommandAPI.h"             /* Get private REXXAPI API's      */
 #define UNKNOWN_COMMAND 1              /* unknown command return code    */
 #include "direct.h"
 

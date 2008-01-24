@@ -51,9 +51,21 @@
 #include "Interpreter.hpp"
 #include "RexxAPIManager.h"
 
+#if defined( HAVE_SIGNAL_H )
+# include <signal.h>
+#endif
+
+#if defined( HAVE_SYS_SIGNAL_H )
+# include <sys/signal.h>
+#endif
+
+void RxExitClear(int);
+void RxExitClearNormal();
 
 class InterpreterInstance;
 
+// the saved current working directory. 
+char SystemInterpreter::currentWorkingDirectory[CCHMAXPATH+2];
 
 void SystemInterpreter::processStartup()
 {
@@ -91,25 +103,17 @@ void SystemInterpreter::processShutdown()
 
 void SystemInterpreter::startInterpreter()
 {
-    int  lRC;                            /* Return Code                       */
-    if (!getcwd(currentWorkingDirectory, CCHMAXPATH))    /* Save current working direct */
+    // save the working directory, and raise an error if we can't get this 
+    updateCurrentWorkingDirectory(); 
+    if (strlen(currentWorkingDirectory) == 0)
     {
-        strncpy( currentWorkingDirectory, getenv("PWD"), CCHMAXPATH);
-        currentWorkingDirectory[CCHMAXPATH - 1] = '\0';
-        if (currentWorkingDirectory[0] != '/' )
-        {
-            logicError(" *** ERROR: No current working directory for REXX!\n");
-        }
-        else
-        {
-            lRC = RxAPIHOMEset();            /* Set the REXX HOME                 */
-        }
+        logic_error(" *** ERROR: No current working directory for REXX!\n");
     }
-    lRC = RxAPIHOMEset();                /* Set the REXX HOME                 */
 
-    if ( lRC )
+    // make sure we have the home set appropriately 
+    if ( RxAPIHOMEset() )
     {
-        logicError(" *** ERROR: No HOME or RXHOME directory for REXX!\n");
+        logic_error(" *** ERROR: No HOME or RXHOME directory for REXX!\n");
     }
 }
 
@@ -147,17 +151,15 @@ void SystemInterpreter::terminateInstance(InterpreterInstance *instance)
  *
  * @return The current working directory as a Rexx string.
  */
-RexxString *SystemInterpreter::getCurrentWorkingDirectory()
+void SystemInterpreter::updateCurrentWorkingDirectory()
 {
-    if (!getcwd(currentWorkingDirector, CCHMAXPATH) || (rc != 0)) /* Get current working direct */
+    if (!getcwd(currentWorkingDirectory, CCHMAXPATH)) /* Get current working direct */
     {
        strncpy(currentWorkingDirectory, getenv("PWD"), CCHMAXPATH);
        currentWorkingDirectory[CCHMAXPATH - 1] = '\0';
-       if ((achRexxCurDir[0] != '/' ) || (rc != 0))
+       if (currentWorkingDirectory[0] != '/' )
        {
-           return ooRexxString("");              /* No directory returned       */
+           currentWorkingDirectory[0] = '\0'; 
        }
     }
-    return ooRexxString(currentWorkingDirectory); /* Return the current directory*/
-
 }

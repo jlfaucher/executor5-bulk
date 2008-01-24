@@ -126,7 +126,7 @@ void REXXENTRY RexxCreateInterpreterImage()
 /*   and runs the requested program.                                          */
 /*                                                                            */
 /******************************************************************************/
-int APIENTRY RexxStart(
+int REXXENTRY RexxStart(
   size_t argcount,                     /* Number of args in arglist         */
   PCONSTRXSTRING arglist,              /* Array of args                     */
   const char *programname,             /* REXX program to run               */
@@ -506,7 +506,7 @@ APIRET REXXENTRY RexxResetTrace(process_id_t procid, thread_id_t threadid)
  *
  * @param precision The current precision.
  */
-size_t RexxGetCurrentPrecision()
+size_t REXXENTRY RexxGetCurrentPrecision()
 {
     NativeContextBlock context;
     // get the digits setting from the current context.

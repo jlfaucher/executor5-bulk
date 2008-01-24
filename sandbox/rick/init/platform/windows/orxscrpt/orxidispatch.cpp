@@ -87,7 +87,7 @@ FL VariantTypes[] = {             // V - ertical flags
   {VT_DISPATCH,"IDispatch"},
   {VT_ERROR,"S Codes"},
   {VT_BOOL,"Boolean"},
-  {VT_VARIANT,"Variant FAR *"},
+  {VT_VARIANT,"Variant *"},
   {VT_UNKNOWN,"IUnknown"},
   {VT_DECIMAL,"Decimal"},
   {VT_I1,"Char"},

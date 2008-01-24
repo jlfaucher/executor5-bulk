@@ -57,14 +57,14 @@
 #include <string.h>                         /* needed for strlen()        */
 
 extern "C" {
-BOOL   APIENTRY RexxInitialize (void);
+BOOL   REXXENTRY RexxInitialize (void);
 }
 
 //
 //  Prototypes
 //
 int __cdecl main(int argc, char *argv[]);  /* main entry point           */
-LONG APIENTRY MY_IOEXIT( LONG ExitNumber, LONG Subfunction, PEXIT ParmBlock);
+LONG REXXENTRY MY_IOEXIT( LONG ExitNumber, LONG Subfunction, PEXIT ParmBlock);
 
 //
 //  MAIN program
@@ -175,7 +175,7 @@ int __cdecl main(int argc, char *argv[])
 }
 
 
-LONG APIENTRY MY_IOEXIT(
+LONG REXXENTRY MY_IOEXIT(
      LONG ExitNumber,
      LONG Subfunction,
      PEXIT parmblock)

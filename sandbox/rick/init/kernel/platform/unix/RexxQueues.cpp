@@ -53,8 +53,7 @@
 #include "StreamNative.h"
 #include "ActivityManager.hpp"
 #include "RexxNativeActivation.hpp"
-
-#include "SubcommandAPI.h"                 /* Get private REXX API's        */
+#include "RexxInternalApis.h"          /* Get private REXXAPI API's         */
 
 /****************************************************************************/
 /* Rexx_query_queue                                                         */
