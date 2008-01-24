@@ -68,7 +68,7 @@ typedef DWORD process_id_t;
 #ifdef __cplusplus
 extern "C" {
 #endif
-typedef size_t (RexxEntry *REXXPFN)();
+typedef size_t (REXXENTRY *REXXPFN)();
 #ifdef __cplusplus
 }
 #endif

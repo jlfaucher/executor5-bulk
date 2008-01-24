@@ -262,7 +262,7 @@ void REXXENTRY RexxDestroyScriptContext(const char *contextName)
  * @return true if this object was held in the target context, false if
  *         it was not found.
  */
-bool REXXENTRY RexxReleaseScriptReference(const char *contextName, REXXOBJECT obj)
+int REXXENTRY RexxReleaseScriptReference(const char *contextName, REXXOBJECT obj)
 {
     // get an instance and the current activity
     InterpreterInstance *instance = Interpreter::createInterpreterInstance();

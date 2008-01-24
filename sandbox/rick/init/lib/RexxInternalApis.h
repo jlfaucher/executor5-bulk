@@ -60,7 +60,7 @@ void REXXENTRY RexxCreateScriptContext(const char *contextName);
 
 void REXXENTRY RexxDestroyScriptContext(const char *contextName);
 
-bool REXXENTRY RexxReleaseScriptReference(const char *contextName, REXXOBJECT obj);
+int REXXENTRY RexxReleaseScriptReference(const char *contextName, REXXOBJECT obj);
 
 APIRET REXXENTRY RexxCreateMethod(const char *context, PCONSTRXSTRING sourceData, REXXOBJECT   *pmethod, RexxConditionData *pRexxCondData);
 
@@ -68,11 +68,11 @@ APIRET REXXENTRY RexxRunMethod(const char * context, REXXOBJECT method, void * c
   REXXOBJECT (REXXENTRY *callbackFunction)(void *), PRXSYSEXIT exit_list, REXXOBJECT *presult,
   REXXOBJECT securityManager, RexxConditionData *pRexxCondData);
 
-APIRET REXXENTRY RexxLoadSubcom(const char *, const char *); 
+APIRET REXXENTRY RexxLoadSubcom(const char *, const char *);
 
 /***    RexxCallSubcom - Execute a command in an environment */
-APIRET REXXENTRY RexxCallSubcom(const char *, const char *, PCONSTRXSTRING,    
-         unsigned short *, wholenumber_t *, PRXSTRING );       
+APIRET REXXENTRY RexxCallSubcom(const char *, const char *, PCONSTRXSTRING,
+         unsigned short *, wholenumber_t *, PRXSTRING );
 
 #ifdef __cplusplus
 }
