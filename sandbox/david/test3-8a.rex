@@ -52,7 +52,7 @@
 -- original example uses methods that are direct ports of the GTK C function
 -- calls. This example uses a syntax that is more Rexx-like.
 
-window = .myMainWindow~new('GTK_WINDOW_TOPLEVEL')
+window = .myMainWindow~new(GTK_WINDOW_TOPLEVEL)
 window~title = 'Notebook'
 window~signal_connect("destroy")
 window~border_width = 10
@@ -73,7 +73,7 @@ child2~user_data = notebook
 notebook~append_page(child1, label1)
 notebook~append_page(child2, label2)
 
-notebook~tab_pos = 'GTK_POS_BOTTOM'
+notebook~tab_pos = GTK_POS_BOTTOM
 
 window~add(notebook)
 window~show_all()

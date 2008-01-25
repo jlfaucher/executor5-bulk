@@ -48,7 +48,7 @@
 -- original example uses methods that are direct ports of the GTK C function
 -- calls. This example uses a syntax that is more Rexx-like.
 
-window = .myMainWindow~new('GTK_WINDOW_TOPLEVEL')
+window = .myMainWindow~new(GTK_WINDOW_TOPLEVEL)
 window~title = 'Tables'
 window~signal_connect("destroy")
 window~border_width = 10
@@ -59,9 +59,9 @@ label = .GtkLabel~new('Enter the following information ...')
 label2 = .GtkLabel~new('Name: ')
 name = .GtkEntry~new()
 
-table~attach(label, 0, 2, 0, 1, 'GTK_EXPAND', 'GTK_SHRINK', 0, 0)
-table~attach(label2, 0, 1, 1, 2, 'GTK_EXPAND', 'GTK_SHRINK', 0, 0)
-table~attach(name, 1, 2, 1, 2, 'GTK_EXPAND', 'GTK_SHRINK', 0, 0)
+table~attach(label, 0, 2, 0, 1, GTK_EXPAND, GTK_SHRINK, 0, 0)
+table~attach(label2, 0, 1, 1, 2, GTK_EXPAND, GTK_SHRINK, 0, 0)
+table~attach(name, 1, 2, 1, 2, GTK_EXPAND, GTK_SHRINK, 0, 0)
 
 table~row_spacings = 5
 table~col_spacings = 5

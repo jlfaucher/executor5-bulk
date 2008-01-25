@@ -45,14 +45,14 @@
 -- by Andrew Krause
 
 dialog = .GtkFileChooserDialog~new('Open File(s) ...', .nil,,
-                                   'GTK_FILE_CHOOSER_ACTION_OPEN',,
-                                   'gtk-cancel', 'GTK_RESPONSE_CANCEL')
-dialog~add_button('gtk-open', 'GTK_RESPONSE_ACCEPT')
+                                   GTK_FILE_CHOOSER_ACTION_OPEN,,
+                                   'gtk-cancel', GTK_RESPONSE_CANCEL)
+dialog~add_button('gtk-open', GTK_RESPONSE_ACCEPT)
 
 dialog~select_multiple = .true
 
 retc = dialog~dialog_run()
-if retc = 'GTK_RESPONSE_ACCEPT' then do
+if retc = GTK_RESPONSE_ACCEPT then do
    filenames = dialog~filenames
    do filename over filenames
       say filename 'was selected:'

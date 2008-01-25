@@ -44,13 +44,13 @@
 -- Foundations of GTK+ Development
 -- by Andrew Krause
 
-names = .array~of('Andrew', 'Joe', 'Samatha', 'Jonanthan')
-
 -- This is an alternative example that uses a more ooRexx friendly syntax. The
 -- original example uses methods that are direct ports of the GTK C function
 -- calls. This example uses a syntax that is more Rexx-like.
 
-window = .myMainWindow~new('GTK_WINDOW_TOPLEVEL')
+names = .array~of('Andrew', 'Joe', 'Samatha', 'Jonanthan')
+
+window = .myMainWindow~new(GTK_WINDOW_TOPLEVEL)
 window~title = 'Boxes'
 window~border_width = 10
 window~set_size_request(200, -1)

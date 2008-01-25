@@ -48,7 +48,7 @@
 -- original example uses methods that are direct ports of the GTK C function
 -- calls. This example uses a syntax that is more Rexx-like.
 
-window = .myMainWindow~new('GTK_WINDOW_TOPLEVEL')
+window = .myMainWindow~new(GTK_WINDOW_TOPLEVEL)
 window~title = 'Color Button'
 window~signal_connect("destroy")
 window~border_width = 10
@@ -58,7 +58,7 @@ button = .MyButton~new(color)
 button~title = 'Select a Color'
 
 label = .GtkLabel~new('Look at my color!')
-label~modify_fg('GTK_STATE_NORMAL', color)
+label~modify_fg(GTK_STATE_NORMAL, color)
 
 -- save data for the callback
 button~user_data = label
@@ -88,6 +88,6 @@ return
 
 ::method signal_color_set
 color = self~color
-self~user_data~modify_fg('GTK_STATE_NORMAL', color)
+self~user_data~modify_fg(GTK_STATE_NORMAL, color)
 return
 

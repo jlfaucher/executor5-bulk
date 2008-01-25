@@ -51,7 +51,7 @@
 names = .array~of('Andrew', 'Joe', 'Samatha', 'Jonanthan')
 
 -- create a new top level window with a title
-window = .myMainWindow~new('GTK_WINDOW_TOPLEVEL')
+window = .myMainWindow~new(GTK_WINDOW_TOPLEVEL)
 window~title = 'Boxes'
 window~signal_connect("destroy")
 

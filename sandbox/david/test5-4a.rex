@@ -44,7 +44,7 @@
 -- Foundations of GTK+ Development
 -- by Andrew Krause
 
-window = .myMainWindow~new('GTK_WINDOW_TOPLEVEL')
+window = .myMainWindow~new(GTK_WINDOW_TOPLEVEL)
 window~title = 'Message Dialogs'
 window~signal_connect("destroy")
 window~set_border_width(10)
@@ -74,8 +74,8 @@ return
 ::class MyButton subclass GtkButton_With_Mnemonic
 
 ::method signal_clicked
-dialog = .GtkMessageDialog~new(self~user_data, 'GTK_DIALOG_MODAL',,
-                               'GTK_MESSAGE_INFO', 'GTK_BUTTONS_OK',,
+dialog = .GtkMessageDialog~new(self~user_data, GTK_DIALOG_MODAL,,
+                               GTK_MESSAGE_INFO, GTK_BUTTONS_OK,,
                                'The button was clicked!')
 dialog~title = 'Information'
 

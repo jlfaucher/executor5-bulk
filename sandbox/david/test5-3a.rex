@@ -45,10 +45,10 @@
 -- by Andrew Krause
 
 dialog = .GtkDialog_With_Buttons~new('Edit User Information', .nil,,
-                                   'GTK_DIALOG_MODAL',,
-                                   'gtk-ok', 'GTK_RESPONSE_OK')
-dialog~add_button('gtk-cancel', 'GTK_RESPONSE_CANCEL')
-dialog~set_default_response("GTK_RESPONSE_OK")
+                                   GTK_DIALOG_MODAL,,
+                                   'gtk-ok', GTK_RESPONSE_OK)
+dialog~add_button('gtk-cancel', GTK_RESPONSE_CANCEL)
+dialog~set_default_response(GTK_RESPONSE_OK)
 
 lbl1 = .GtkLabel~new('User Name')
 lbl2 = .GtkLabel~new('Real Name')
@@ -84,7 +84,7 @@ dialog~vbox~pack_start_defaults(table)
 dialog~show_all()
 
 retc = dialog~dialog_run()
-if retc = 'GTK_RESPONSE_OK' then do
+if retc = GTK_RESPONSE_OK then do
    say 'User Name:' user~text
    say 'Real Name:' real~text
    say 'Home Folder:' home~text

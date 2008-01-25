@@ -48,7 +48,7 @@
 -- original example uses methods that are direct ports of the GTK C function
 -- calls. This example uses a syntax that is more Rexx-like.
 
-window = .myMainWindow~new('GTK_WINDOW_TOPLEVEL')
+window = .myMainWindow~new(GTK_WINDOW_TOPLEVEL)
 window~title = 'Scales'
 window~signal_connect("destroy")
 window~border_width = 10
@@ -60,8 +60,8 @@ scale_float = .GtkHScale_With_Range~new(0.0, 1.0, 0.1)
 scale_int~digits = 0
 scale_float~digits = 1
 
-scale_int~value_pos = 'GTK_POS_RIGHT'
-scale_float~value_pos = 'GTK_POS_LEFT'
+scale_int~value_pos = GTK_POS_RIGHT
+scale_float~value_pos = GTK_POS_LEFT
 
 vbox = .GtkVBox~new(.false, 5)
 vbox~pack_start_defaults(scale_int)

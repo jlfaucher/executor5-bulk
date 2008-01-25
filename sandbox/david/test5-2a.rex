@@ -44,7 +44,7 @@
 -- Foundations of GTK+ Development
 -- by Andrew Krause
 
-window = .myMainWindow~new('GTK_WINDOW_TOPLEVEL')
+window = .myMainWindow~new(GTK_WINDOW_TOPLEVEL)
 window~title = 'Dialogs'
 window~signal_connect("destroy")
 window~set_border_width(10)
@@ -75,12 +75,12 @@ return
 
 ::method signal_clicked
 dialog = .myDialog~new('Information', self~user_data,,
-                       'GTK_DIALOG_MODAL',,
-                       'gtk-ok', 'GTK_RESPONSE_OK')
+                       GTK_DIALOG_MODAL,,
+                       'gtk-ok', GTK_RESPONSE_OK)
 dialog~has_separator = .false
 
 label= .GtkLabel~new('The button was clicked!')
-image = .GtkImage_From_Stock~new('gtk-dialog-info', 'GTK_ICON_SIZE_DIALOG')
+image = .GtkImage_From_Stock~new('gtk-dialog-info', GTK_ICON_SIZE_DIALOG)
 
 hbox = .GtkHBox~new(.false, 5)
 hbox~set_border_width(10)

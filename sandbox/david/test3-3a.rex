@@ -50,7 +50,7 @@
 
 names = .array~of('Andrew', 'Joe', 'Samatha', 'Jonanthan')
 
-window = .myMainWindow~new('GTK_WINDOW_TOPLEVEL')
+window = .myMainWindow~new(GTK_WINDOW_TOPLEVEL)
 window~title = 'Panes'
 window~signal_connect("destroy")
 

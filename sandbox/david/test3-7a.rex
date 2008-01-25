@@ -48,7 +48,7 @@
 -- original example uses methods that are direct ports of the GTK C function
 -- calls. This example uses a syntax that is more Rexx-like.
 
-window = .myMainWindow~new('GTK_WINDOW_TOPLEVEL')
+window = .myMainWindow~new(GTK_WINDOW_TOPLEVEL)
 window~title = 'Handle Box'
 window~signal_connect("destroy")
 window~border_width = 10
@@ -57,9 +57,9 @@ window~set_size_request(200, 100)
 handle = .GtkHandleBox~new()
 label = .GtkLabel~new('Detach Me')
 
-handle~shadow_type = 'GTK_SHADOW_IN'
-handle~handle_position = 'GTK_POS_LEFT'
-handle~snap_edge = 'GTK_POS_TOP'
+handle~shadow_type = GTK_SHADOW_IN
+handle~handle_position = GTK_POS_LEFT
+handle~snap_edge = GTK_POS_TOP
 
 handle~add(label)
 window~add(handle)

@@ -48,15 +48,15 @@
 -- original example uses methods that are direct ports of the GTK C function
 -- calls. This example uses a syntax that is more Rexx-like.
 
-window = .myMainWindow~new('GTK_WINDOW_TOPLEVEL')
+window = .myMainWindow~new(GTK_WINDOW_TOPLEVEL)
 window~title = 'File Chhoser Button'
 window~signal_connect("destroy")
 window~set_border_width(10)
 
 label = .GtkLabel~new()
 
-chooser1 = .MyButton1~new('Chooser a folder', 'GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER')
-chooser2 = .MyButton2~new('Chooser a folder', 'GTK_FILE_CHOOSER_ACTION_OPEN')
+chooser1 = .MyButton1~new('Chooser a folder', GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER)
+chooser2 = .MyButton2~new('Chooser a folder', GTK_FILE_CHOOSER_ACTION_OPEN)
 
 -- save data for the callback
 chooser1~user_data = chooser2

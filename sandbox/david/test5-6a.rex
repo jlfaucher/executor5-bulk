@@ -44,7 +44,7 @@
 -- Foundations of GTK+ Development
 -- by Andrew Krause
 
-window = .myMainWindow~new('GTK_WINDOW_TOPLEVEL')
+window = .myMainWindow~new(GTK_WINDOW_TOPLEVEL)
 window~title = 'Save a File'
 window~signal_connect("destroy")
 window~set_border_width(10)
@@ -77,12 +77,12 @@ return
 
 ::method signal_clicked
 dialog = .GtkFileChooserDialog~new('Save File As ...', self~user_data,,
-                                   'GTK_FILE_CHOOSER_ACTION_SAVE',,
-                                   'gtk-cancel', 'GTK_RESPONSE_CANCEL')
-dialog~add_button('gtk-save', 'GTK_RESPONSE_ACCEPT')
+                                   GTK_FILE_CHOOSER_ACTION_SAVE,,
+                                   'gtk-cancel', GTK_RESPONSE_CANCEL)
+dialog~add_button('gtk-save', GTK_RESPONSE_ACCEPT)
 
 retc = dialog~dialog_run()
-if retc = 'GTK_RESPONSE_ACCEPT' then do
+if retc = GTK_RESPONSE_ACCEPT then do
    filename = dialog~filename
    self~label = filename
    end
