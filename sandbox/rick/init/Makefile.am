@@ -304,7 +304,7 @@ BUILT_SOURCES = $(errorHeaders) \
 #
 # Binary targets
 #
-bin_PROGRAMS = rexx rexxc rxqueue rxsubcom rxdelipc
+bin_PROGRAMS = rexximage rexx rexxc rxqueue rxsubcom rxdelipc
 
 #
 # Shared library targets
@@ -572,6 +572,27 @@ rexx_CXXFLAGS  = $(COMMON_CPPFLAGS) \
 #
 rexx_LDADD   = librexx.la librexxapi.la @ORX_LDADD_EXECUTABLE@
 rexx_LDFLAGS = @ORX_LDFLAGS_EXECUTABLE@
+
+
+#################### rexx ##########################
+# Sources for rexx
+#
+rexximage_SOURCES = $(platform_unix_dir)/rexximage.cpp
+#
+# Preprocessor flags for rexximage
+#
+rexximage_CXXFLAGS  = $(COMMON_CPPFLAGS) \
+                 -I$(lib_dir) \
+                 -I$(api_dir) \
+                 -I$(platform_api_dir) \
+                 -I$(messages_dir) \
+                 -I$(kernel_platform_unix_dir) \
+                 -I$(rexxapi_unix_dir)
+#
+# Extra libraries for rexx
+#
+rexximage_LDADD   = librexx.la librexxapi.la @ORX_LDADD_EXECUTABLE@
+rexximage_LDFLAGS = @ORX_LDFLAGS_EXECUTABLE@
 
 #################### rexxc #########################
 # Sources for rexxc
