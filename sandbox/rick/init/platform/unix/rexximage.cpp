@@ -39,7 +39,7 @@
 #include "rexx.h"
 #include "RexxInternalApis.h"
 
-int __cdecl main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
     RexxCreateInterpreterImage();
 }

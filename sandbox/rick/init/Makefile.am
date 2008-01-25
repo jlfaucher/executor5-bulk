@@ -794,7 +794,7 @@ $(runtime_dir)/PrimitiveBehaviours.cpp: $(runtime_dir)/PrimitiveBehaviours.xsl $
 $(runtime_dir)/VirtualFunctionTables.cpp: $(runtime_dir)/VirtualFunctionTable.xsl $(classesXML)
 	sh ./xsl.sh $(@) $(classesXML) $(runtime_dir)/VirtualFunctionTable.xsl
 
-rexx.img: rexx librexxutil.la $(core_classes) $(core_platform_classes)
+rexx.img: rexximage librexxutil.la $(core_classes) $(core_platform_classes)
 	cp $(rexxclasses_dir)/*.orx .
 	cp $(kernel_platform_unix_dir)/*.orx .
 	./rexximage -i

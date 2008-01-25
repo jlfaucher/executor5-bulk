@@ -74,7 +74,7 @@ int REXXENTRY RexxTerminate()
     return Interpreter::terminateInterpreter() ? 0 : 1;
 }
 
-bool REXXENTRY RexxInitialize ()
+int REXXENTRY RexxInitialize ()
 /******************************************************************************/
 /* Function:  Perform main kernel initializations                             */
 /******************************************************************************/
@@ -85,7 +85,7 @@ bool REXXENTRY RexxInitialize ()
     return true;
 }
 
-bool REXXENTRY RexxQuery ()
+int REXXENTRY RexxQuery ()
 /******************************************************************************/
 /* Function:  Determine if the REXX interpreter is initialized and active     */
 /******************************************************************************/

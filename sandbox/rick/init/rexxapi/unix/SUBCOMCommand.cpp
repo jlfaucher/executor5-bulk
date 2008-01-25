@@ -56,6 +56,7 @@
 #include <stdio.h>
 
 #include "rexx.h"                      /* for REXXSAA functionality  */
+#include "PlatformDefinitions.h"        /* added for cat name + defs          */
 #include "RexxInternalApis.h"          /* Get private REXXAPI API's         */
 #include "RexxAPIManager.h"
                                        /* old msg constants replaced!*/

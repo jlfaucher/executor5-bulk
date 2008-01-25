@@ -56,10 +56,6 @@
 #include <stdio.h>                          /* needed for printf()        */
 #include <string.h>                         /* needed for strlen()        */
 
-extern "C" {
-BOOL   REXXENTRY RexxInitialize (void);
-}
-
 //
 //  Prototypes
 //
