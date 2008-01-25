@@ -46,8 +46,8 @@
 
 dialog = .GtkFileChooserDialog~new('Open File(s) ...', .nil,,
                                    'GTK_FILE_CHOOSER_ACTION_OPEN',,
-                                   'gtk-cancel', 'GTK_RESPONSE_CANCEL')
-dialog~add_button('gtk-open', 'GTK_RESPONSE_ACCEPT')
+                                   StockID('GTK_STOCK_CANCEL'), 'GTK_RESPONSE_CANCEL')
+dialog~add_button(StockID('GTK_STOCK_OPEN'), 'GTK_RESPONSE_ACCEPT')
 
 dialog~set_select_multiple(.true)
 

@@ -58,7 +58,7 @@ check1~user_data = check2
 check2~set_sensitive(.false)
 check1~signal_connect("toggled")
 
-close = .MyButton~new('gtk-close')
+close = .MyButton~new(StockID('GTK_STOCK_CLOSE'))
 close~signal_connect("clicked")
 
 vbox = .GtkVBox~new(.false, 5)

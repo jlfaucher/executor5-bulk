@@ -46,8 +46,8 @@
 
 dialog = .GtkFileChooserDialog~new('Create a Folder ...', .nil,,
                                    'GTK_FILE_CHOOSER_ACTION_CREATE_FOLDER',,
-                                   'gtk-cancel', 'GTK_RESPONSE_CANCEL')
-dialog~add_button('gtk-ok', 'GTK_RESPONSE_OK')
+                                   StockID('GTK_STOCK_CANCEL'), 'GTK_RESPONSE_CANCEL')
+dialog~add_button(StockID('GTK_STOCK_OK'), 'GTK_RESPONSE_OK')
 
 retc = dialog~dialog_run()
 if retc = 'GTK_RESPONSE_OK' then do
