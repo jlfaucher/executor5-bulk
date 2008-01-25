@@ -62,6 +62,10 @@
 
 #define RXFUNC_BADCALL 40
 
+typedef struct _constants {
+    const gchar * name;
+    const gint value;
+} GrxConstants;
 
 
 /*----------------------------------------------------------------------------*/
@@ -70,6 +74,8 @@
 
 extern char * rexxgtk_argv[];
 extern int rexxgtk_argc;
+
+extern GrxConstants GrxResponseType[];
 
 
 /*----------------------------------------------------------------------------*/

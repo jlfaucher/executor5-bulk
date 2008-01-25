@@ -79,7 +79,7 @@ dialog = .GtkMessageDialog~new(self~user_data, 'GTK_DIALOG_MODAL',,
                                'The button was clicked!')
 dialog~set_title('Information')
 
-dialog~run_dialog()
+dialog~dialog_run()
 dialog~destroy()
 return
 

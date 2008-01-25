@@ -83,8 +83,8 @@ table~set_border_width(5)
 dialog~vbox~pack_start_defaults(table)
 dialog~show_all()
 
-retc = dialog~run_dialog()
-if Value2String('GTK_RESPONSE_TYPE', retc) = 'GTK_RESPONSE_OK' then do
+retc = dialog~dialog_run()
+if retc = 'GTK_RESPONSE_OK' then do
    say 'User Name:' user~get_text()
    say 'Real Name:' real~get_text()
    say 'Home Folder:' home~get_text()

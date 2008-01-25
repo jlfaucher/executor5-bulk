@@ -90,7 +90,7 @@ hbox~pack_start_defaults(label)
 dialog~vbox~pack_start_defaults(hbox)
 dialog~show_all()
 
-dialog~run_dialog()
+dialog~dialog_run()
 dialog~destroy()
 return
 

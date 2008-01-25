@@ -44,15 +44,10 @@
 
 
 /*----------------------------------------------------------------------------*/
-/* Private variables                                                          */
+/* Public variables                                                           */
 /*----------------------------------------------------------------------------*/
 
-typedef struct _constants {
-    const gchar * name;
-    const gint value;
-} CONSTANTS;
-
-CONSTANTS constResponse[] = {
+GrxConstants GrxResponseType[] = {
     "GTK_RESPONSE_NONE"  , GTK_RESPONSE_NONE,
     "GTK_RESPONSE_REJECT", GTK_RESPONSE_REJECT,
     "GTK_RESPONSE_ACCEPT", GTK_RESPONSE_ACCEPT,
@@ -65,11 +60,6 @@ CONSTANTS constResponse[] = {
     "GTK_RESPONSE_HELP",   GTK_RESPONSE_HELP,
     NULL, 0,
 };
-
-
-
-
-
 
 
 /*----------------------------------------------------------------------------*/
@@ -98,7 +88,7 @@ APIRET APIENTRY GrxConstantString2Value(const char * Name,
                                     const size_t Argc, const RXSTRING Argv[],
                                     const char * Queuename, PRXSTRING Retstr)
 {
-    CONSTANTS *constants;
+    GrxConstants *resp;
     gint value = 0, i = 0;
 
     /* Check for valid arguments */
@@ -107,24 +97,27 @@ APIRET APIENTRY GrxConstantString2Value(const char * Name,
     }
 
     // Get the correct structure address
-    if (strcmp(Argv[0].strptr, "GTK_RESPONSE_TYPE") == 0)
-        constants = constResponse;
+    if (strcmp(Argv[0].strptr, "GTKRESPONSETYPE") == 0)
+        resp = GrxResponseType;
 //    else if (strcmp(Argv[0].strptr, "GTK_JUSTIFY_RIGHT") == 0)
 //        jtype = GTK_JUSTIFY_RIGHT;
     else
         return RXFUNC_BADCALL;
 
     // Get the value
-    while (constants[i].name != NULL) {
-        if (strcmp(constants[i].name, Argv[1].strptr) == 0) {
-            value = constants[i].value;
+    while (resp[i].name != NULL) {
+        if (strcmp(resp[i].name, Argv[1].strptr) == 0) {
+            value = resp[i].value;
             break;
         }
         i++;
     }
 
     /* Set up the Rexx return code */
-    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%d", value);
+    if (resp == NULL)
+        g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%s", Argv[1].strptr);
+    else
+        g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%d", value);
     Retstr->strlength = strlen(Retstr->strptr);
 
     return RXFUNC_OK;
@@ -142,7 +135,7 @@ APIRET APIENTRY GrxValue2ConstantString(const char * Name,
                                     const size_t Argc, const RXSTRING Argv[],
                                     const char * Queuename, PRXSTRING Retstr)
 {
-    CONSTANTS * constants;
+    GrxConstants *resp;
     gint value, i = 0;
     const gchar *str = "\0";
 
@@ -152,8 +145,8 @@ APIRET APIENTRY GrxValue2ConstantString(const char * Name,
     }
 
     // Get the correct structure address
-    if (strcmp(Argv[0].strptr, "GTK_RESPONSE_TYPE") == 0)
-        constants = constResponse;
+    if (strcmp(Argv[0].strptr, "GTKRESPONSETYPE") == 0)
+        resp = GrxResponseType;
 //    else if (strcmp(Argv[0].strptr, "GTK_JUSTIFY_RIGHT") == 0)
 //        jtype = GTK_JUSTIFY_RIGHT;
     else
@@ -161,16 +154,19 @@ APIRET APIENTRY GrxValue2ConstantString(const char * Name,
     sscanf(Argv[1].strptr, "%d", &value);
 
     // Get the value
-    while (constants[i].name != NULL) {
-        if (constants[i].value == value) {
-            str = constants[i].name;
+    while (resp[i].name != NULL) {
+        if (resp[i].value == value) {
+            str = resp[i].name;
             break;
         }
         i++;
     }
 
     /* Set up the Rexx return code */
-    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%s", str);
+    if (resp == NULL)
+        g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%s", Argv[1].strptr);
+    else
+        g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%s", str);
     Retstr->strlength = strlen(Retstr->strptr);
 
     return RXFUNC_OK;

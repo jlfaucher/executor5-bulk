@@ -333,7 +333,8 @@ APIRET APIENTRY GrxDialogRun(const char * Name,
                              const char * Queuename, PRXSTRING Retstr)
 {
     GtkWidget *myWidget;
-    gint resp;
+    gint response, i = 0;
+    GrxConstants *resp = GrxResponseType;
 
     /* Check for valid arguments */
     if (GrxCheckArgs(1, Argc, Argv))
@@ -342,11 +343,22 @@ APIRET APIENTRY GrxDialogRun(const char * Name,
     /* Initialize function parameters */
     sscanf(Argv[0].strptr, "%p", &myWidget);
 
-    // add the button
-    resp = gtk_dialog_run(GTK_DIALOG(myWidget));
+    // run the dialog
+    response = gtk_dialog_run(GTK_DIALOG(myWidget));
 
-    /* Set up the REXX return code */
-    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%d", resp);
+    // convert the response
+    while (resp[i].name != NULL) {
+        if (resp[i].value == response) {
+            break;
+        }
+        i++;
+    }
+
+    /* Set up the Rexx return code */
+    if (resp == NULL)
+        g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%d", response);
+    else
+        g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%s", resp[i].name);
     Retstr->strlength = strlen(Retstr->strptr);
 
     return RXFUNC_OK;

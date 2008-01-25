@@ -51,8 +51,8 @@ dialog~add_button('gtk-open', 'GTK_RESPONSE_ACCEPT')
 
 dialog~set_select_multiple(.true)
 
-retc = dialog~run_dialog()
-if Value2String('GTK_RESPONSE_TYPE', retc) = 'GTK_RESPONSE_ACCEPT' then do
+retc = dialog~dialog_run()
+if retc = 'GTK_RESPONSE_ACCEPT' then do
    filenames = dialog~get_filenames()
    do filename over filenames
       say filename 'was selected:'

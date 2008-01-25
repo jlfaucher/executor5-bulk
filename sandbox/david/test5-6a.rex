@@ -81,8 +81,8 @@ dialog = .GtkFileChooserDialog~new('Save File As ...', self~user_data,,
                                    'gtk-cancel', 'GTK_RESPONSE_CANCEL')
 dialog~add_button('gtk-save', 'GTK_RESPONSE_ACCEPT')
 
-retc = dialog~run_dialog()
-if Value2String('GTK_RESPONSE_TYPE', retc) = 'GTK_RESPONSE_ACCEPT' then do
+retc = dialog~dialog_run()
+if retc = 'GTK_RESPONSE_ACCEPT' then do
    filename = dialog~filename
    self~label = filename
    end

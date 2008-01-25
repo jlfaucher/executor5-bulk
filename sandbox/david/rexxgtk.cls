@@ -610,7 +610,7 @@ use strict arg text, resp
 call GrxDialogAddButton self~pointer, text, resp
 return
 
-::method run_dialog
+::method dialog_run
 -- Note: the name of this method cannot be 'run' as that would override the
 -- private 'run' instance method of the ooRexx Object class.
 use strict arg
@@ -2266,6 +2266,7 @@ return
 use strict arg
 ptr = self~head
 list = .Array~new()
+if ptr = 0 then return list
 do while ptr <> '(nil)'
    list~append(GrxGSListItem(ptr))
    ptr = GrxGSListNext(ptr)
@@ -2322,9 +2323,10 @@ return
 use strict arg
 ptr = self~head
 list = .Array~new()
-do while ptr <> 0
+if ptr = 0 then return list
+do while ptr <> '(nil)'
    list~append(GrxGSListItem(ptr))
-   ptr = GrxGSListNext(ptr)
+   ptr = GrxGListNext(ptr)
    end
 return list
 
