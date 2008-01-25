@@ -5,25 +5,15 @@
 * all directives and collects comments belonging to them.
 * @todo Add a RXDOC class, composite pattern
 **/
-use strict arg file
-parser = .FileParser~new(file)
-parser~parse
-say parser~tree
-classes = parser~tree~classes
-do o over classes
-  say o
-  say classes[o]~doc~makestring
-  methods = classes[o]~methods
-  do p over methods
-    say "  "p
-    say methods[p]~doc
-  end
-end
-do r over parser~tree~requires
-  say r~string r~getFile~string r~getFile~name
-end
+if .environment~FileParser = .nil then .environment~FileParser = .FileParser
 
+/** This is the main class for parsing rexx source files. It produces a parse
+* tree that can be used to create a visualisation of the source.
+*/
 ::CLASS FileParser
+/** This method returns the default options. A parser can be created with
+* custom options, but they should be a modified copy of the default options.
+*/
 ::METHOD defaultOptions CLASS
   expose defaultOptions
   if var("defaultOptions") then return defaultOptions
@@ -36,6 +26,10 @@ end
 
   return defaultOptions
 
+/** Initializer for the FileParser class. The first argument is the file name
+* followed by optional options and a parent tree. The parent tree is only used
+* internally.
+*/
 ::METHOD Init
   expose file data tree has options parseState node
   use strict arg file, options = (self~class~defaultOptions), parent = .nil
@@ -44,6 +38,8 @@ end
   has = .directory~new
   node = .nil
 
+/** Call this method to start parsing a file. 
+*/
 ::METHOD Parse
   expose file data state options tree
   buffer = .array~new
@@ -60,16 +56,16 @@ end
     lastChar = line~right(1)
     -- check options if - and , at the end of line are to be evaluated
     if options~evaluate.continuation then
-    -- only evaluate line continuation outside rxdoc sections
-    if state != "RXDOC" & lastChar = "," | lastChar = "-" then do 
-      append = .true
-      -- cut the last character
-      prefix = line~left(line~length-1)||" "
-    end
-    else if append then do 
-      append = .false
-      prefix = ""
-    end
+      -- only evaluate line continuation outside rxdoc sections
+      if state != "RXDOC" & lastChar = "," | lastChar = "-" then do 
+        append = .true
+        -- cut the last character
+        prefix = line~left(line~length-1)||" "
+      end
+      else if append then do 
+        append = .false
+        prefix = ""
+      end
 
     if \ append then do
 --      say line
@@ -85,13 +81,18 @@ end
 ::ATTRIBUTE Tree Get
 ::ATTRIBUTE ParseState Get
 
-::METHOD getResetRxDoc
+/** Get the current RXDOC and reset it
+*/
+::METHOD getResetRxDoc PRIVATE
   expose rxdoc
   r = rxdoc
   -- In future rxdoc will be a special object...
-  rxdoc = "(No documentation)"
+  rxdoc = .rxdoc~new
   return r
 
+/** The main parsing method. It maintains a state for the current parsing
+* state. It creates parsers for source elements.
+*/
 ::METHOD parseLine PRIVATE
   expose tree node state nextstate has accu rxdoc options
   use arg line
@@ -179,7 +180,7 @@ end
       else do
         if tree~doc = .nil then
           tree~doc = rxdoc
-        if \ var("accu") then accu = .array~new
+        if \ var("accu") then accu = .rxdoc~new
         -- "* " is needed to match only the last * char
         parse var line "* " remain
         accu~append(remain)
@@ -205,11 +206,8 @@ end
   use arg state
   self~parseLine(line,i)
 
-::METHOD parseClass PRIVATE
-  use arg line buffer
-  name = line~word(2)
-  return .SourceClass~new(name, "", buffer, "")
-
+/** A simple class to hold the parse state and to report warnings and errors.
+*/
 ::CLASS ParseState
 ::METHOD Init
   expose fileName line lineNumber options
@@ -231,6 +229,20 @@ end
   use arg message
   .stderr~say("E" fileName":"lineNUmber message)
 
+
+::CLASS RXDOC
+::METHOD Init
+  expose content
+  use strict arg
+  content = .array~new
+::METHOD append
+  expose content
+  use strict arg what
+  content~append(what)
+::METHOD MakeArray
+  expose content
+  if var("content") then return content~copy
+  else return .array~of("(No documentation available)")
 
 ::CLASS Directive
 ::METHOD name Abstract
