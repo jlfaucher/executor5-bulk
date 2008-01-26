@@ -212,18 +212,14 @@ APIRET REXXENTRY RexxTranslateProgram(const char *inFile, const char *outFile, P
  */
 void REXXENTRY RexxCreateScriptContext(const char *contextName)
 {
-    // get an instance and the current activity
-    InterpreterInstance *instance = Interpreter::createInterpreterInstance();
-    RexxActivity *activity = instance->enterOnCurrentThread();
-
+    // Get an instance.  This also gives the root activity of the instance
+    // the kernel lock.
+    InstanceBlock instance;
     // now create a directory and hang it off of the local environment.  This
     // will persist in the environment until the entire interpreter environment is
     // terminated.
     RexxString *context = new_string(contextName);
     ActivityManager::localEnvironment->put(new_directory(), context);
-    activity->exitCurrentThread();
-    // terminate the instance
-    instance->terminate();
 }
 
 
@@ -237,17 +233,13 @@ void REXXENTRY RexxCreateScriptContext(const char *contextName)
  */
 void REXXENTRY RexxDestroyScriptContext(const char *contextName)
 {
-    // get an instance and the current activity
-    InterpreterInstance *instance = Interpreter::createInterpreterInstance();
-    RexxActivity *activity = instance->enterOnCurrentThread();
+    // Get an instance.  This also gives the root activity of the instance
+    // the kernel lock.
+    InstanceBlock instance;
 
     // delete the named context from the local environment.
     RexxString *context = new_string(contextName);
     ActivityManager::localEnvironment->remove(context);
-
-    activity->exitCurrentThread();
-    // terminate the instance
-    instance->terminate();
 }
 
 
@@ -264,9 +256,9 @@ void REXXENTRY RexxDestroyScriptContext(const char *contextName)
  */
 int REXXENTRY RexxReleaseScriptReference(const char *contextName, REXXOBJECT obj)
 {
-    // get an instance and the current activity
-    InterpreterInstance *instance = Interpreter::createInterpreterInstance();
-    RexxActivity *activity = instance->enterOnCurrentThread();
+    // Get an instance.  This also gives the root activity of the instance
+    // the kernel lock.
+    InstanceBlock instance;
 
     // delete the named context from the local environment.
     RexxString *context = new_string(contextName);
@@ -276,10 +268,6 @@ int REXXENTRY RexxReleaseScriptReference(const char *contextName, REXXOBJECT obj
     char buffer[32];
     sprintf(buffer, "0x%p", obj);
     REXXOBJECT oldObject = locked_objects->remove(new_string(buffer));
-
-    activity->exitCurrentThread();
-    // terminate the instance
-    instance->terminate();
 
     // the return code indicates the removed object matches the input object
     return oldObject == obj;

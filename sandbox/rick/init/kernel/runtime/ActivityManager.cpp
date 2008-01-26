@@ -854,12 +854,13 @@ NativeContextBlock::NativeContextBlock()
     // not make sense called this way.
     if (activity == OREF_NULL)
     {
-        // get an instance and the current activity
+        // Get an instance.  This also gives the root activity of the instance
+        // the kernel lock.
         instance = Interpreter::createInterpreterInstance();
-        activity = instance->enterOnCurrentThread();
+        activity = instance->getRootActivity();
 
     }
-    self = (RexxNativeActivation *)ActivityManager::currentActivity->getTopStackFrame();
+    self = (RexxNativeActivation *)activity->getTopStackFrame();
 }
 
 

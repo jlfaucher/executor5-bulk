@@ -165,4 +165,17 @@ private:
 };
 
 
+
+class InstanceBlock
+{
+public:
+    InstanceBlock();
+    InstanceBlock(PRXSYSEXIT exits, const char *defaultEnvironment);
+    ~InstanceBlock();
+
+    RexxActivity         *activity;    // our current activity
+    InterpreterInstance  *instance;    // potential interpreter instance
+};
+
+
 #endif

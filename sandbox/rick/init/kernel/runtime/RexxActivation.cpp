@@ -2123,32 +2123,13 @@ bool RexxActivation::callRegisteredExternalFunction(RexxString *target, RexxObje
 
     if (RexxQueryFunction(funcname) != 0)    /* is the function registered ?  */
     {
-        /* this a system routine?            */
-        if (StringUtil::caselessCompare(funcname, "SYS", 3) == 0)
-        {
-            // This is unconditional...it will fail if already loaded.
-            if (RexxRegisterFunctionDll("SYSLOADFUNCS", "REXXUTIL", "SysLoadFuncs") == 0)
-            {
-                /* first registration?               */
-                /* set up an result RXSTRING         */
-                MAKERXSTRING(funcresult, default_return_buffer, sizeof(default_return_buffer));
-                /* call the function loader          */
-                RexxCallFunction("SYSLOADFUNCS", 0, (PCONSTRXSTRING)NULL, &functionrc, &funcresult, "");
-
-            }
-            /* Do we have the function?          */
-            if (RexxQueryFunction(funcname) != 0)
-            {
-                return false;                    /* truely not found                  */
-            }
-        }
         // not located
         return false;
     }
 
     /* allocate enough memory for all arguments */
     /* at least one item needs to be allocated to prevent error reporting */
-    PCONSTRXSTRING argrxarray = (PCONSTRXSTRING) SysAllocateResultMemory(sizeof(CONSTRXSTRING) * Numerics::maxVal(argcount, (size_t)1));
+    PCONSTRXSTRING argrxarray = (PCONSTRXSTRING) SysAllocateResultMemory(sizeof(CONSTRXSTRING) * Numerics::maxVal(_argcount, (size_t)1));
     if (argrxarray == OREF_NULL)    /* memory error?                   */
     {
         reportException(Error_System_resources);

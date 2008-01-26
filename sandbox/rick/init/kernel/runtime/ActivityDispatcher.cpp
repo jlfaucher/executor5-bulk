@@ -88,15 +88,9 @@ void ActivityDispatcher::handleError(RexxDirectory *c)
  */
 void ActivityDispatcher::invoke()
 {
-    // get an instance and the current activity
-    InterpreterInstance *instance = Interpreter::createInterpreterInstance(exits, defaultEnvironment);
-    activity = instance->enterOnCurrentThread();
+    // this creates a new instance to run under, with an active activity
+    InstanceBlock instance(exits, defaultEnvironment);
 
     // go run the instance on the current activity
-    activity->run(*this);
-
-    activity->exitCurrentThread();
-    activity = OREF_NULL;
-    // terminate the instance
-    instance->terminate();
+    instance.activity->run(*this);
 }

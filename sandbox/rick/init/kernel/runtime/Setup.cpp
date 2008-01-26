@@ -172,9 +172,9 @@ void RexxMemory::createImage()
 
   Interpreter::init();                 // the interpreter subsystem first
   ActivityManager::init();             /* Initialize the activity managers  */
-  // get an instance and the current activity
+  // Get an instance.  This also gives the root activity of the instance
+  // the kernel lock.
   InterpreterInstance *instance = Interpreter::createInterpreterInstance();
-  instance->enterOnCurrentThread();
 
                                        /* avoid that through caching        */
                                        /* TheTrueObject == IntegerOne etc.  */

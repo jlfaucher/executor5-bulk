@@ -104,9 +104,9 @@ void REXXENTRY WinGetVariables(void (REXXENTRY *f)(const char *, REXXOBJECT))
 
 void REXXENTRY WinEnterKernel()
 {
-    // get an instance and the current activity
+    // Get an instance.  This also gives the root activity of the instance
+    // the kernel lock.
     InterpreterInstance *instance = Interpreter::createInterpreterInstance();
-    instance->enterOnCurrentThread();
 }
 
 void REXXENTRY WinLeaveKernel()

@@ -62,6 +62,7 @@ public:
     void        liveGeneral(int);
 
     RexxString *getDefaultAddress() { return defaultAddress; }
+    RexxActivity *getRootActivity() { return rootActivity; }
 
     InterpreterInstance(ExitHandler *handlers);
     void addActivity(RexxActivity *);

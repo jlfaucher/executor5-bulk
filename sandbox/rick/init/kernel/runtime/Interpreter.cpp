@@ -53,6 +53,7 @@
 #include "InterpreterInstance.hpp"
 #include "DirectoryClass.hpp"
 #include "ProtectedObject.hpp"
+#include "RexxInternalApis.h"
 
 
 // global resource lock
@@ -99,6 +100,21 @@ void Interpreter::processStartup()
     createLocks();
     ActivityManager::createLocks();
     RexxMemory::createLocks();
+
+    // This is unconditional...it will fail if already loaded.
+    if (RexxRegisterFunctionDll("SYSLOADFUNCS", "REXXUTIL", "SysLoadFuncs") == 0)
+    {
+        /* default return code buffer        */
+        char      default_return_buffer[DEFRXSTRING];
+        RXSTRING funcresult;
+        int functionrc;                      /* Return code from function         */
+
+        /* first registration?               */
+        /* set up an result RXSTRING         */
+        MAKERXSTRING(funcresult, default_return_buffer, sizeof(default_return_buffer));
+        /* call the function loader          */
+        RexxCallFunction("SYSLOADFUNCS", 0, (PCONSTRXSTRING)NULL, &functionrc, &funcresult, "");
+    }
 }
 
 void Interpreter::processShutdown()
@@ -135,8 +151,9 @@ void Interpreter::startInterpreter(InterpreterStartupMode mode)
         // if we have a local server created already, don't recurse.
         if (localServer == OREF_NULL)
         {
-            InterpreterInstance *instance = Interpreter::createInterpreterInstance();
-            RexxActivity *activity = instance->enterOnCurrentThread();
+            // Get an instance.  This also gives the root activity of the instance
+            // the kernel lock.
+            InstanceBlock instance;
             /* get the local environment         */
             /* get the server class              */
             RexxObject *server_class = env_find(new_string("!SERVER"));
@@ -150,10 +167,6 @@ void Interpreter::startInterpreter(InterpreterStartupMode mode)
                 server_class->messageSend(OREF_NEW, 0, OREF_NULL, result);
                 localServer = (RexxObject *)result;
             }
-
-            activity->exitCurrentThread();
-            // terminate the instance
-            instance->terminate();
         }
     }
     // we're live now
@@ -292,4 +305,46 @@ void Interpreter::haltAllActivities()
         // halt every thing
         instance->haltAllActivities();
     }
+}
+
+
+/**
+ * Manage a context where a new interpreter instance is created
+ * for the purposes of acquiring an activity, and the activity
+ * is released and the instance is terminated upon leaving the
+ * block.
+ */
+InstanceBlock::InstanceBlock()
+{
+    // Get an instance.  This also gives the root activity of the instance
+    // the kernel lock.
+    instance = Interpreter::createInterpreterInstance();
+    activity = instance->getRootActivity();
+}
+
+
+/**
+ * Manage a context where a new interpreter instance is created
+ * for the purposes of acquiring an activity, and the activity
+ * is released and the instance is terminated upon leaving the
+ * block.
+ */
+InstanceBlock::InstanceBlock(PRXSYSEXIT exits, const char *defaultEnvironment)
+{
+    // Get an instance.  This also gives the root activity of the instance
+    // the kernel lock.
+    instance = Interpreter::createInterpreterInstance(exits, defaultEnvironment);
+    activity = instance->getRootActivity();
+}
+
+
+/**
+ * Release the kernal access and cleanup when the context block
+ * goes out of scope.
+ */
+InstanceBlock::~InstanceBlock()
+{
+    activity->exitCurrentThread();
+    // terminate the instance
+    instance->terminate();
 }
