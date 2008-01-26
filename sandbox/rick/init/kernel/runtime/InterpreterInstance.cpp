@@ -97,8 +97,11 @@ void InterpreterInstance::liveGeneral(int reason)
 /**
  * Initialize an interpreter instance.
  *
- * @param handlers The exit handlers
- * @param ud       User defined data pointer.
+ * @param activity The root activity for the interpreter instance.
+ * @param handlers The exit handlers used by all threads running under this instance.
+ * @param defaultEnvironment
+ *                 The default address environment for this interpreter instance.  Each
+ *                 active interpreter instance can define its own default environment.
  */
 void InterpreterInstance::initialize(RexxActivity *activity, PRXSYSEXIT handlers, const char *defaultEnvironment)
 {
@@ -122,6 +125,9 @@ void InterpreterInstance::initialize(RexxActivity *activity, PRXSYSEXIT handlers
             setExitHandler(handlers[i]);
         }
     }
+
+    // associate the thread with this instance
+    activity->setupAttachedActivity(this);
 }
 
 
@@ -143,9 +149,11 @@ RexxActivity *InterpreterInstance::attachThread()
     ResourceSection lock;
 
     // we need to get a new activity set up for this particular thread
-    activity = ActivityManager::attachThread(this);
+    activity = ActivityManager::attachThread();
     // add this to the activity lists
     allActivities->append((RexxObject *)activity);
+    // associate the thread with this instance
+    activity->setupAttachedActivity(this);
     return activity;
 }
 
@@ -191,10 +199,10 @@ RexxActivity *InterpreterInstance::spawnActivity(RexxActivity *parent)
 
     ResourceSection lock;
 
-    // we need to get a new activity set up for this particular thread
-    activity = ActivityManager::attachThread(this);
     // add this to the activity lists
     allActivities->append((RexxObject *)activity);
+    // associate the thread with this instance
+    activity->addToInstance(this);
     return activity;
 }
 

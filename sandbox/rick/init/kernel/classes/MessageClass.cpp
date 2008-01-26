@@ -309,7 +309,7 @@ RexxObject *RexxMessage::start(RexxObject *_receiver)
                                        /* get the current activity          */
   oldActivity = ActivityManager::currentActivity;
                                        /* Create the new activity           */
-  newActivity = new_activity(oldActivity);
+  newActivity = oldActivity->spawnReply();
                                        /* indicate the activity the send    */
                                        /*message should come in on.         */
   OrefSet(this, this->startActivity, newActivity);

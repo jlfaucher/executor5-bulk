@@ -175,6 +175,7 @@ public:
    void        unwindToDepth(size_t depth);
    void        unwindToFrame(RexxActivation *frame);
    void        cleanupStackFrame(RexxActivationBase *poppedStackFrame);
+   RexxActivity *spawnReply();
 
    void        exitKernel();
    void        enterKernel();
@@ -231,6 +232,7 @@ public:
    RexxString *lineIn(RexxActivation *);
    void generateRandomNumberSeed();
    void setupAttachedActivity(InterpreterInstance *interpreter);
+   void addToInstance(InterpreterInstance *interpreter);
    void detachInstance();
    inline InterpreterInstance *getInstance() { return instance; }
 

@@ -1737,30 +1737,30 @@ RexxObject  *RexxObject::defMethods(
 /* Function:  Add a table of methods to an object's behaviour               */
 /****************************************************************************/
 {
-  HashLink i;                          /* loop counter                      */
-  RexxMethod *method;
-  RexxString *name;
-
-                                       /* make a copy of the behaviour      */
-  OrefSet(this, this->behaviour, (RexxBehaviour *)this->behaviour->copy());
-                                       /* loop through the list of methods  */
-  for (i = methods->first(); methods->available(i); i = methods->next(i)) {
-                                       /* Get the methjod Object            */
-    method = (RexxMethod *)methods->value(i);
-    if (method != TheNilObject)        /* not a removal?                    */
-                                       /* set a new scope on this           */
-      method = method->newScope((RexxClass *)this);
-    else
-                                       /* no real method added              */
-      method = (RexxMethod *)TheNilObject;
-                                       /* Get the name for this method      */
-    name = (RexxString *)methods->index(i);
-    name = name->upper();              /* make sure the name is upperCase.  */
-                                       /* add this method to the object's   */
-                                       /* behaviour                         */
-    this->behaviour->define(name, method);
-  }
-  return OREF_NULL;
+    /* make a copy of the behaviour      */
+    OrefSet(this, this->behaviour, (RexxBehaviour *)this->behaviour->copy());
+    /* loop through the list of methods  */
+    for (HashLink i = methods->first(); methods->available(i); i = methods->next(i))
+    {
+        /* Get the methjod Object            */
+        RexxMethod *method = (RexxMethod *)methods->value(i);
+        if (method != TheNilObject)        /* not a removal?                    */
+        {
+            /* set a new scope on this           */
+            method = method->newScope((RexxClass *)this);
+        }
+        else
+        {
+            method = OREF_NULL;       // this is a method removal
+        }
+        /* Get the name for this method      */
+        RexxString *name = (RexxString *)methods->index(i);
+        name = name->upper();              /* make sure the name is upperCase.  */
+                                           /* add this method to the object's   */
+                                           /* behaviour                         */
+        this->behaviour->define(name, method);
+    }
+    return OREF_NULL;
 }
 
 RexxObject  *RexxObject::defMethod(

@@ -436,7 +436,7 @@ RexxObject * RexxActivation::run(RexxObject *_receiver, RexxString *msgname, Rex
                 this->next = this->current->nextInstruction;
                 oldActivity = this->activity;      /* save the current activity         */
                                                    /* clone the current activity        */
-                this->activity = new_activity(oldActivity);
+                this->activity = oldActivity->spawnReply();
 
                 /* save the pointer to the start of our stack frame.  We're */
                 /* going to need to release this after we migrate everything */
@@ -461,6 +461,8 @@ RexxObject * RexxActivation::run(RexxObject *_receiver, RexxString *msgname, Rex
                 oldActivity->releaseStackFrame(framePtr);
 
                 this->activity->pushStackFrame(this);/* push it on to the activity stack  */
+                // pop the old one off of the stack frame (but without returning it to
+                // the activation cache)
                 oldActivity->popStackFrame(true);  /* pop existing one off the stack    */
                                                    /* is the scope reserved?            */
                 if (this->object_scope == SCOPE_RESERVED)

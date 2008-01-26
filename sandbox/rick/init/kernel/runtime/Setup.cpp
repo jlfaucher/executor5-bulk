@@ -710,12 +710,12 @@ void RexxMemory::createImage()
 
                                        /* delete these methods from stems by*/
                                        /* using .nil as the methobj         */
-  TheStemBehaviour->define(getGlobalName(CHAR_STRICT_EQUAL)          , (RexxMethod *)TheNilObject);
-  TheStemBehaviour->define(getGlobalName(CHAR_EQUAL)                 , (RexxMethod *)TheNilObject);
-  TheStemBehaviour->define(getGlobalName(CHAR_STRICT_BACKSLASH_EQUAL), (RexxMethod *)TheNilObject);
-  TheStemBehaviour->define(getGlobalName(CHAR_BACKSLASH_EQUAL)       , (RexxMethod *)TheNilObject);
-  TheStemBehaviour->define(getGlobalName(CHAR_LESSTHAN_GREATERTHAN)  , (RexxMethod *)TheNilObject);
-  TheStemBehaviour->define(getGlobalName(CHAR_GREATERTHAN_LESSTHAN)  , (RexxMethod *)TheNilObject);
+  TheStemBehaviour->define(getGlobalName(CHAR_STRICT_EQUAL)          , OREF_NULL);
+  TheStemBehaviour->define(getGlobalName(CHAR_EQUAL)                 , OREF_NULL);
+  TheStemBehaviour->define(getGlobalName(CHAR_STRICT_BACKSLASH_EQUAL), OREF_NULL);
+  TheStemBehaviour->define(getGlobalName(CHAR_BACKSLASH_EQUAL)       , OREF_NULL);
+  TheStemBehaviour->define(getGlobalName(CHAR_LESSTHAN_GREATERTHAN)  , OREF_NULL);
+  TheStemBehaviour->define(getGlobalName(CHAR_GREATERTHAN_LESSTHAN)  , OREF_NULL);
 
                                        /* Now call the class subclassable   */
                                        /* method                            */

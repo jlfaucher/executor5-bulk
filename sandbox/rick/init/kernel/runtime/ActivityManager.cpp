@@ -757,7 +757,7 @@ RexxActivity *ActivityManager::getRootActivity()
  * @return Either an existing activity, or a new activity created for
  *         this thread.
  */
-RexxActivity *ActivityManager::attachThread(InterpreterInstance *instance)
+RexxActivity *ActivityManager::attachThread()
 {
     // it's possible we already have an activity active for this thread.  That
     // most likely occurs in nested RexxStart() calls.
@@ -770,8 +770,6 @@ RexxActivity *ActivityManager::attachThread(InterpreterInstance *instance)
     // create this activity.
     lockKernel();
     RexxActivity *activityObject = newActivity(NO_THREAD);
-    // mark this as an attached thread.
-    activityObject->setupAttachedActivity(instance);
     // Do we have a nested interpreter call occurring on the same thread?  We need to
     // mark the old activity as suspended, and chain this to the new activity.
     if (oldActivity != OREF_NULL)

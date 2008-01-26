@@ -201,7 +201,7 @@ void RexxStartDispatcher::run()
 void RexxStartDispatcher::handleError(wholenumber_t r, RexxDirectory *c)
 {
     // use the base error handling and set our return code to the negated error code.
-    ActivityDispatcher::handleError(rc, c);
-    retcode = (short)-rc;
+    ActivityDispatcher::handleError(-r, c);
+    retcode = (short)rc;
 }
 

@@ -267,6 +267,21 @@ RexxActivity::RexxActivity(
     }
 }
 
+
+/**
+ * Create a new activity for processing a method reply
+ * instruction.
+ *
+ * @return The newly created activity.
+ */
+RexxActivity *RexxActivity::spawnReply()
+{
+    // recreate a new activiy in the same instance
+    return instance->spawnActivity(this);
+}
+
+
+
 void RexxActivity::generateRandomNumberSeed()
 /******************************************************************************/
 /* Function:  Generate a fresh random number seed.                            */
@@ -1416,8 +1431,26 @@ void RexxActivity::unwindToFrame(RexxActivation *frame)
  */
 void RexxActivity::setupAttachedActivity(InterpreterInstance *interpreter)
 {
+    // associate this with the instance
+    addToInstance(interpreter);
+
     // mark this as an attached activity
     attached = true;
+    // This is a root activation that will allow API functions to be called
+    // on this thread without having an active bit of ooRexx code first.
+    createNewActivationStack();
+}
+
+
+/**
+ * Set up an activity as a root activity used either for a main
+ * interpreter thread or an attached thread.
+ *
+ * @param interpreter
+ *               The interpreter instance this thread belongs to.
+ */
+void RexxActivity::addToInstance(InterpreterInstance *interpreter)
+{
     // we're associated with this instance
     instance = interpreter;
     // copy all of the system exits
@@ -1427,10 +1460,6 @@ void RexxActivity::setupAttachedActivity(InterpreterInstance *interpreter)
     }
     // set the appropriate exit interlocks
     queryTrcHlt();
-
-    // This is a root activation that will allow API functions to be called
-    // on this thread without having an active bit of ooRexx code first.
-    createNewActivationStack();
 }
 
 
