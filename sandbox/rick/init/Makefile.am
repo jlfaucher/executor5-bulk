@@ -300,7 +300,7 @@ windowsFiles = \
 # These error message files are built BEFORE any other target
 #
 BUILT_SOURCES = $(errorHeaders) \
-                rexx.img @REXXCAT@
+                rexx.img @REXXCAT@ ooTest
 #
 # Binary targets
 #
@@ -801,6 +801,13 @@ rexx.img: rexximage librexxutil.la $(core_classes) $(core_platform_classes)
 	rm -f *.orx
 
 #
+# This ensures a developer can run the test suite from the build directory
+#
+ooTest:
+	cp $(rxregexp_dir)/rxregexp.cls .
+	cp $(rexutils_dir)/rxftp.cls .
+
+#
 # distribution files
 #
 EXTRA_DIST = $(messages_dir)/RexxMessageNumbers.xsl \
@@ -869,6 +876,7 @@ am_config_clean-local:
 	rm -fr $(PACKAGE)-*.tar.gz
 	rm -fr $(PACKAGE)-*.zip
 	rm -fr $(top_srcdir)/rpm
+	rm -f $(top_srcdir)/*.cls
 
 install-exec-local:
 	echo $(DESTDIR) is destdir

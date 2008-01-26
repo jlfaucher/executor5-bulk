@@ -2125,8 +2125,8 @@ bool RexxActivation::callRegisteredExternalFunction(RexxString *target, RexxObje
 
     if (RexxQueryFunction(funcname) != 0)    /* is the function registered ?  */
     {
-        // not located
-        return false;
+         // not located
+         return false;
     }
 
     /* allocate enough memory for all arguments */
