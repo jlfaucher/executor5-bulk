@@ -645,11 +645,16 @@ return
 use strict arg self~title
 return
 
-::method start
--- run the window in a background thread
-use strict arg
-retc = GrxWindowStart(self~pointer)
-return retc
+::method 'modal='
+-- set the window's modal flag
+expose title
+use strict arg flag
+call GrxWindowSetModal self~pointer, flag
+return
+
+::method set_modal
+use strict arg self~modal
+return
 
 ::method signal_connect
 use strict arg event
