@@ -169,6 +169,41 @@ APIRET APIENTRY GrxWindowSetTitle(const char * Name,
 
 
 /*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxWindowSetModal                                  */
+/* Description: Set the window modal flag                                     */
+/* Rexx Args:   Pointer to the widget                                         */
+/*              Modal flag                                                    */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxWindowSetModal(const char * Name,
+                                  const size_t Argc, const RXSTRING Argv[],
+                                  const char * Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+    gboolean flag;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(2, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &myWidget);
+    sscanf(Argv[1].strptr, "%d", &flag);
+
+    if (GTK_IS_WIDGET(GTK_OBJECT(myWidget))) {
+        gtk_window_set_modal(GTK_WINDOW(myWidget), flag);
+    }
+
+    /* Set up the REXX return code */
+    *(Retstr->strptr) = '0';
+    Retstr->strlength = 1;
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
 /* Rexx External Function: GrxWindowConnectSignal                             */
 /* Description: Connect a signal function to the Widget                       */
 /* Rexx Args:   Pointer to the widget                                         */
