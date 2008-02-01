@@ -24,13 +24,21 @@ out~say("</body></html>")
   if doc~class \= .string then do
     accu = ""
     do d over doc
-      accu||=d"<br>"
+      if d~strip = "" then accu||="<br>"
+      else accu||=" "d
     end
-    return accu
+    return accu"<br>"
   end
   else return doc"<br>"
 ::ROUTINE printFile
   use arg tree, out
+  out~say(doc2string(tree~doc))
+      out~say("<pre>")
+      do s over tree~source~source
+        if s = "" then iterate
+        out~say(s)
+      end
+      out~say("</pre>")
   classes = tree~classes
   out~say("<h1>Classes</h1>")
   do o over classes  
@@ -42,8 +50,14 @@ out~say("</body></html>")
     out~say("<h3>Methods</h3>")
     methods = classes[o]~methods
     do p over methods
-      out~say(p~name"<br>")
+      out~say("<strong>"p~name"</strong><br>")
       out~say(doc2string(p~doc))
+      out~say("<pre>")
+      do s over p~source~source
+        if s = "" then iterate
+        out~say(s)
+      end
+      out~say("</pre>")
     end
   end
 return ""

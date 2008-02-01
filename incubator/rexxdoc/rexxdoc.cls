@@ -29,11 +29,15 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
 /** Initializer for the FileParser class. The first argument is the file name
 * followed by optional options and a parent tree. The parent tree is only used
 * internally.
+* @param file The file name to work with.
+* @param options Optional options directory. If not supplied the default option
+* directory is used instead.
+* @param parent The parent file, defaults to .nil.
+* @todo Allow working on in buffer source.
 */
 ::METHOD Init
   expose file data tree has options parseState node
   use strict arg file, options = (self~class~defaultOptions), parent = .nil
-  tree = .SourceFile~new(file, "", "", parent)
   parseState = .ParseState~new(file,options)
   has = .directory~new
   node = .nil
@@ -41,9 +45,9 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
 /** Call this method to start parsing a file. 
 */
 ::METHOD Parse
-  expose file data state options tree
-  buffer = .array~new
-  inDoc = .false
+  expose file state options tree source
+  source = .SourceContainer~new
+  tree = .SourceFile~new(file, source, "", parent)
   expectDefinition = .false
   fileStream = .stream~new(file)
   i = 0
@@ -51,7 +55,7 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
   prefix = ""
   do while fileStream~lines > 0
     i+=1
-    line = prefix||fileStream~lineIn~strip
+    line = prefix||fileStream~lineIn
     -- handle continuation chars
     lastChar = line~right(1)
     -- check options if - and , at the end of line are to be evaluated
@@ -66,12 +70,10 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
         append = .false
         prefix = ""
       end
-
     if \ append then do
---      say line
       self~ParseState~lineNumber = i
       self~ParseState~line = line
-      self~parseLine(line,i)
+      self~parseLine(line~strip,line)
     end
   end
   -- start resolving missing references only when this is the root parser
@@ -80,6 +82,7 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
 
 ::ATTRIBUTE Tree Get
 ::ATTRIBUTE ParseState Get
+::ATTRIBUTE Options Get
 
 /** Get the current RXDOC and reset it
 */
@@ -94,10 +97,10 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
 * state. It creates parsers for source elements.
 */
 ::METHOD parseLine PRIVATE
-  expose tree node state nextstate has accu rxdoc options
-  use arg line
+  expose tree node state nextstate has accu rxdoc options source
+  use arg line, rawline
   if \ var("state") then state = "UNDETERMINED"
--- say state
+--  say state
   select
     -- the initial state, everything can follow
     -- to avoid parsing wrong files there is a "has" directory that contains
@@ -110,26 +113,28 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
         if 0 = name~verify("ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890") then
           repeat("PROCEDURE")
       end
+      if source \= .nil then source~append(rawline)
     end
     when state = "DIRECTIVE" then do
+      source = .SourceContainer~new
       line = line~right(line~length - 2)
       directive = line~word(1)~upper
       parameters = line~delword(1)
       select
         -- parse routines
         when directive = "ROUTINE" then do
-          rd = .RoutineDirective~new(self,options)~~parse(line,self~getResetRxDoc, tree)
+          rd = .RoutineDirective~new(self)~~parse(line,source,self~getResetRxDoc, tree)
           tree~routines~put(rd~getObject)
           node = .nil
         end
         when directive = "REQUIRES"  & has~ClassMethod = .nil then do
-          rd = .RequiresDirective~new(self,options)~~parse(line,self~getResetRxDoc, tree)
+          rd = .RequiresDirective~new(self)~~parse(line,source,self~getResetRxDoc, tree)
           tree~requires~put(rd~getObject)
         end
         -- parse ::CLASS
         when directive = "CLASS" then do
           has~ClassMethod = .true
-          cp = .ClassDirective~new(self)~~parse(line,self~getResetRxDoc,tree)
+          cp = .ClassDirective~new(self)~~parse(line,source,self~getResetRxDoc,tree)
           node = cp~getObject
           tree~classes~put(node)
         end
@@ -141,7 +146,7 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
             target = node
           else
             target = tree
-          mp = .MethodDirective~new(self)~~parse(line,self~getResetRxDoc,target)
+          mp = .MethodDirective~new(self)~~parse(line,source,self~getResetRxDoc,target)
           method = mp~getObject
           target~methods~put(method)
         end
@@ -152,7 +157,7 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
             target = node
           else
             target = tree
-          ad = .AttributeDirective~new(self, tree)~~parse(line,self~getResetRxDoc,target)
+          ad = .AttributeDirective~new(self)~~parse(line,source,self~getResetRxDoc,target)
           attribute = ad~getObject
           target~methods~put(attribute)
         end
@@ -160,7 +165,7 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
         when directive = "CONSTANT" then do
           if node = .nil then self~ParseState~error("Constant without class")
           else do
-            cd = .ConstantDirective~new(self)~~parse(line,self~getResetRxDoc,node)
+            cd = .ConstantDirective~new(self)~~parse(line,source,self~getResetRxDoc,node)
             constant= cd~getObject
             node~constants~put(constant)
           end
@@ -178,9 +183,9 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
         drop accu
       end
       else do
-        if tree~doc = .nil then
-          tree~doc = rxdoc
         if \ var("accu") then accu = .rxdoc~new
+        if tree~doc = "" then
+          tree~doc = accu
         -- "* " is needed to match only the last * char
         parse var line "* " remain
         accu~append(remain)
@@ -219,17 +224,31 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
 ::ATTRIBUTE FileName
 ::ATTRIBUTE LineNumber
 
+/** This method prints a warning with the text passed as parameter. Additionally
+* it adds the file name and line number to the warning shown. If the option
+* warn.as.error is set the warning will be shown as error. .stderr is used
+* for printing the warning.
+* @param message The warning message.
+*/
 ::METHOD Warn
   expose fileName line lineNumber options
   if options~warn.as.error then forward message "error"
   use arg message
   .stderr~say("W" fileName":"lineNUmber message)
+
+/** This method prints an error message. Additionally
+* it adds the file name and line number to the error. .stderr is used
+* for printing the error. Errors indicate that the source code contains some
+* hard error that will prevent the file from being executed by the interpreter.
+* @param message The error message.
+*/
 ::METHOD Error
   expose fileName line lineNumber
   use arg message
   .stderr~say("E" fileName":"lineNUmber message)
 
-
+/** A base class for rexx doc strings. This is not yet finished.
+*/
 ::CLASS RXDOC
 ::METHOD Init
   expose content
@@ -244,21 +263,34 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
   if var("content") then return content~copy
   else return .array~of("(No documentation available)")
 
+/** A simple class that collects source entries belonging to a directive.
+*/
+::CLASS SourceContainer
+::METHOD Init
+  expose source
+  source = .array~new
+::METHOD append
+  expose source
+  use strict arg line
+  source~append(line)
+::ATTRIBUTE source Get
+
 ::CLASS Directive
+::METHOD Init
+  expose parser
+  use strict arg parser
+::ATTRIBUTE parser Get
 ::METHOD name Abstract
 ::METHOD parse Abstract
 ::METHOD getObject ABSTRACT
 
 ::CLASS AttributeDirective SUBCLASS Directive
-::METHOD Init
-  expose parser tree
-  use strict arg parser, tree
 ::ATTRIBUTE name Get
 ::METHOD parse
-  expose parser tree name attribute
-  use strict arg line, rxdoc, target
+  expose name attribute
+  use strict arg line, source, rxdoc, target
   parse var line . name tokens
-  attribute = .SourceAttribute~new(name, "", rxdoc, target)
+  attribute = .SourceAttribute~new(name, source, rxdoc, target)
   has_getOrSet = .false
   has_guarded = .false
   has_protected = .false
@@ -317,7 +349,7 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
         if has_class then flags||="Class"
         flags ||= ")"
         if flags = "()" then flags = ""
-        parser~ParseState~warn("Keyword error" modifier "attribute" name flags)
+        self~parser~ParseState~warn("Keyword error" modifier "attribute" name flags)
       end
     end
   end
@@ -326,9 +358,6 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
   return attribute
 
 ::CLASS ClassDirective SUBCLASS Directive
-::METHOD Init
-  expose parser
-  use strict arg parser
 ::METHOD name
   expose name
   return name
@@ -336,10 +365,10 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
   expose class
   return class
 ::METHOD parse
-  expose name class parser
-  use strict arg line, rxdoc, target = .nil
+  expose name class
+  use strict arg line, source, rxdoc, target = .nil
   name = line~word(2)
-  class = .sourceclass~new(name,"",rxdoc,target)
+  class = .sourceclass~new(name,source,rxdoc,target)
   has_metaclass = .false
   has_mixinsubclass = .false
   has_visibility = .false
@@ -354,21 +383,21 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
         has_metaclass = .true
         i+=1
         t = tokens[i]
-        if t = .nil then parser~parseState~error("Missing symbol after METACLASS")
+        if t = .nil then self~parser~parseState~error("Missing symbol after METACLASS")
         class~metaclass = t
       end
       when token = "SUBCLASS" & has_mixinsubclass = .false & has_inherit = .false then do
         has_mixinsubclass = .true
         i+=1
         t = tokens[i]
-        if t = .nil then parser~parseState~error("Missing symbol after SUBCLASS")
+        if t = .nil then self~parser~parseState~error("Missing symbol after SUBCLASS")
         class~subclass = t
       end
       when token = "MIXINCLASS" & has_mixinsubclass = .false & has_inherit = .false then do
         has_mixinsubclass = .true
         i+=1
         t = tokens[i]
-        if t = .nil then parser~parseState~error("Missing symbol after MIXINCLASS")
+        if t = .nil then self~parser~parseState~error("Missing symbol after MIXINCLASS")
         class~mixinclass = t
       end
       when token = "PRIVATE" & has_visibility = .false & has_inherit = .false then do
@@ -386,25 +415,22 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
         has_inherit_token = .true
         class~inherit~append(token)
       end
-      otherwise parser~ParseState~error("Keyword error" token", class" name)
+      otherwise self~parser~ParseState~error("Keyword error" token", class" name)
     end
     i+=1
   end
   if has_inherit & \ has_inherit_token then
-    parser~ParseState~error("Missing symbol after INHERIT")
+    self~parser~ParseState~error("Missing symbol after INHERIT")
 
 ::CLASS ConstantDirective SUBCLASS Directive
-::METHOD Init
-  expose parser
-  use strict arg parser
 ::ATTRIBUTE name Get
 ::METHOD parse
-  expose parser name sourceConstant
-  use strict arg line, doc, target
+  expose name sourceConstant
+  use strict arg line, source, doc, target
   parse var line . name value
   if name = "" then
-    parser~parseState("Missing name for constant")
-  sourceConstant = .SourceConstant~new(name, "", doc, target)
+    self~parser~parseState("Missing name for constant")
+  sourceConstant = .SourceConstant~new(name, source, doc, target)
   sourceConstant~setValue(value)
   
 ::METHOD getObject
@@ -412,9 +438,6 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
   return sourceConstant
 
 ::CLASS MethodDirective SUBCLASS Directive
-::METHOD Init
-  expose parser
-  use strict arg parser
 ::METHOD name
   expose name
   return name
@@ -422,10 +445,10 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
   expose method
   return method
 ::METHOD parse
-  expose name method parser
-  use strict arg line, rxdoc, target
+  expose name method
+  use strict arg line, source, rxdoc, target
   name = line~word(2)
-  method = .SourceMethod~new(name, "", rxdoc, target)
+  method = .SourceMethod~new(name, source, rxdoc, target)
   has_guarded = .false
   has_protected = .false
   has_private = .false
@@ -487,47 +510,41 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
         if has_abstract then flags||="Abstract "
         flags ||= ")"
         if flags = "()" then flags = ""
-        parser~ParseState~warn("Keyword error" modifier "method" name flags)
+        self~parser~ParseState~warn("Keyword error" modifier "method" name flags)
       end
     end
   end
 
 ::CLASS RequiresDirective SUBCLASS Directive
-::METHOD Init
-  expose parser options
-  use strict arg parser, options
 ::ATTRIBUTE name Get
 ::METHOD getObject
   expose sourceRequires
   use strict arg
   return sourceRequires
 ::METHOD parse
-  expose parser name sourceRequires options
-  use strict arg line, rxdoc, parent
+  expose name sourceRequires
+  use strict arg line, source, rxdoc, parent
   parse var line '"'name'"'
   if name = "" then parse var line . name
-  sourceRequires = .SourceRequires~new(name, rxdoc, parent, options)
+  sourceRequires = .SourceRequires~new(name, source, rxdoc, parent, self~parser~options)
 
 ::CLASS RoutineDirective SUBCLASS Directive
-::METHOD Init
-  expose parser options
-  use strict arg parser, options
 ::ATTRIBUTE name Get
 ::METHOD getObject
   expose sourceRoutine
   use strict arg
   return sourceRoutine
 ::METHOD parse
-  expose parser name sourceRoutine options
-  use strict arg line, rxdoc, parent
+  expose name sourceRoutine
+  use strict arg line, source rxdoc, parent
   parse var line . name visibility
-  sourceRoutine = .SourceRoutine~new(name,"",rxdoc,parent)
+  sourceRoutine = .SourceRoutine~new(name,source,rxdoc,parent)
   if visibility \= "" then
     if visibility~caselessEquals("PRIVATE") then
       sourceRoutine~setPrivate
     else if visibility~caselessEquals("PUBLIC") then
       sourceRoutine~setPublic
-    else parser~ParseState~error("Invalid option" visibility "on routine" name)
+    else self~parser~ParseState~error("Invalid option" visibility "on routine" name)
 
 ::CLASS Tag
 ::METHOD name ABSTRACT
@@ -782,9 +799,9 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
 ::CLASS SourceRequires SUBCLASS SourceElement
 ::METHOD Init
   expose options sourceFile
-  use strict arg name,rxdoc, target, options
+  use strict arg name, source, rxdoc, target, options
   sourceFile = .nil
-  forward class (super) array (name, "", rxdoc, target)
+  forward class (super) array (name, source, rxdoc, target)
 ::METHOD resolve
   expose options sourceFile
   if options~follow.requires then do
