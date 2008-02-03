@@ -97,6 +97,7 @@ class RexxSource : public RexxInternalObject {
   inline RexxSource(RESTORETYPE restoreType) { ; };
   void        initBuffered(RexxObject *);
   void        initFile();
+  void        extractNameInformation();
   bool        reconnect();
   void        setReconnect();
   void        setBufferedSource(RexxBuffer *newSource) { this->initBuffered((RexxObject *)newSource); }
@@ -144,6 +145,7 @@ class RexxSource : public RexxInternalObject {
   void        mergeRequired(RexxSource *);
   BaseCode   *resolveRoutine(RexxString *);
   RexxClass  *resolveClass(RexxString *, RexxActivation *);
+  RexxString *resolveProgramName(RexxActivity *activity, RexxString *name);
   void        processInstall(RexxActivation *);
   RexxCode   *translate(RexxDirectory *);
   void        resolveDependencies();
@@ -225,6 +227,9 @@ class RexxSource : public RexxInternalObject {
   inline RexxInstruction *topDo() { return (RexxInstruction *)(this->control->peek()); };
   inline void        setProgramName(RexxString *name) { OrefSet(this, this->programName, name); };
   inline RexxString *getProgramName() { return this->programName; }
+  inline RexxString *getProgramDirectory() { return this->programDirectory; }
+  inline RexxString *getProgramExtension() { return this->programExtension; }
+  inline RexxString *getProgramFile() { return this->programFile; }
   inline RexxDirectory *getMethods() { return this->methods; };
   inline void        pushOperator(RexxToken *operatorToken) { this->operators->pushRexx((RexxObject *)operatorToken); };
   inline RexxToken  *popOperator() { return (RexxToken *)(this->operators->pullRexx()); };
@@ -322,6 +327,9 @@ protected:
   size_t flags;                        /* parsing flags                     */
   RexxArray  *sourceArray;             /* source lines for this code        */
   RexxString *programName;             /* name of the source program        */
+  RexxString *programDirectory;        // the directory location of the program (used for resolving calls)
+  RexxString *programFile;             // just the file name of the program
+  RexxString *programExtension;        // optional program extension
   SecurityManager *securityManager;    /* source execution time security    */
   const char *current;                 /* current working line              */
   RexxClause *clause;                  /* current clause being created      */

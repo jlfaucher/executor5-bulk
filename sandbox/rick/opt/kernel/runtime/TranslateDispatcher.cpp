@@ -64,7 +64,7 @@ void TranslateDispatcher::run()
     if (instore == NULL)                     /* no instore request?               */
     {
         /* go resolve the name               */
-        RexxString *fullname = SysResolveProgramName(name, OREF_NULL);
+        RexxString *fullname = activity->resolveProgramName(name, OREF_NULL, OREF_NULL);
         if (fullname == OREF_NULL)         /* not found?                        */
         {
             /* got an error here                 */

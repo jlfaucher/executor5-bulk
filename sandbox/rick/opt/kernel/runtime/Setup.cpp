@@ -1227,7 +1227,7 @@ void RexxMemory::createImage()
                                            /* create the BaseClasses method and run it*/
       symb = getGlobalName(BASEIMAGELOAD);   /* get a name version of the string  */
                                            /* go resolve the program name       */
-      programName = SysResolveProgramName(symb, OREF_NULL);
+      programName = ActivityManager::currentActivity->resolveProgramName(symb, OREF_NULL, OREF_NULL);
       // create a new stack frame to run under
       ActivityManager::currentActivity->createNewActivationStack();
       try

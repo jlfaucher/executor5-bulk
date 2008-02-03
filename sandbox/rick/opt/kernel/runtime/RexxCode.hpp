@@ -87,6 +87,7 @@ class RexxCode : public BaseCode
    inline RexxCode *interpret(RexxString *s, size_t n) { return source->interpret(s, labels, n); }
    inline RexxDirectory *getMethods() { return source->getMethods(); };
    inline BaseCode *resolveRoutine(RexxString *n) { return source->resolveRoutine(n); }
+   inline RexxString *resolveProgramName(RexxActivity *activity, RexxString *name) { return source->resolveProgram(activity, name); }
    inline void        mergeRequired(RexxSource *s) { source->mergeRequired(s); }
    virtual void run(RexxActivity *, RexxMethod *, RexxObject *, RexxString *,  size_t, RexxObject **, ProtectedObject &);
    virtual void call(RexxActivity *, RexxString *,  RexxObject **, size_t, RexxString *, RexxString *, int, ProtectedObject &);

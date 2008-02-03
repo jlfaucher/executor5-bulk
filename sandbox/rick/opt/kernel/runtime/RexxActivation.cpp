@@ -2181,7 +2181,6 @@ RexxObject *RexxActivation::externalCall(RexxString *target, size_t _argcount, R
  */
 bool RexxActivation::callExternalRexx(
   RexxString *      target,            /* Name of external function         */
-  RexxString *      parent,            /* name of the parent file           */
   RexxObject **     _arguments,        /* Argument array                    */
   size_t            _argcount,         /* number of arguments in the call   */
   RexxString *      calltype,          /* Type of call                      */
@@ -2194,7 +2193,7 @@ bool RexxActivation::callExternalRexx(
   RexxMethod *routine;                 /* Method object from target         */
 
                                        /* Get full name including path      */
-  filename = SysResolveProgramName(target, parent);
+  filename = resolveProgramName(target);
   if (filename != OREF_NULL) {         /* found something?                  */
     this->stack.push(filename);        /* protect the file name here        */
                                        /* try to restore saved image        */
@@ -2259,7 +2258,7 @@ RexxCode *RexxActivation::getMacroCode(RexxString *macroName)
  */
 RexxString *RexxActivation::resolveProgram(RexxString *name)
 {
-    activity->resolveProgram(name, this->code->getProgramName();
+    return code->resolveProgramName(activity, name);
 }
 
 

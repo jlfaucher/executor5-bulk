@@ -252,7 +252,7 @@ RexxObject * activation_find  (void);
    RexxString      * trapState(RexxString *);
    void              trapDelay(RexxString *);
    void              trapUndelay(RexxString *);
-   bool              callExternalRexx(RexxString *, RexxString *, RexxObject **, size_t, RexxString *, ProtectedObject &);
+   bool              callExternalRexx(RexxString *, RexxObject **, size_t, RexxString *, ProtectedObject &);
    RexxObject      * externalCall(RexxString *, size_t, RexxExpressionStack *, RexxString *, ProtectedObject &);
    RexxObject      * internalCall(RexxInstruction *, size_t, RexxExpressionStack *, ProtectedObject &);
    RexxObject      * internalCallTrap(RexxInstruction *, RexxDirectory *, ProtectedObject &);

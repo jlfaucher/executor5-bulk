@@ -67,11 +67,6 @@ void SysGetCurrentTime(RexxDateTime *);/* get the current time              */
 extern int SysVariablePool(RexxNativeActivation *, void *, bool);
 #endif
 
-#ifndef SysResolveProgramName
-                                       /* resolve rexx program file names   */
-RexxString *SysResolveProgramName(RexxString *, RexxString *);
-#endif
-
 #ifndef SysRelinquish
 void SysRelinquish(void);              /* allow the system to run           */
 #endif

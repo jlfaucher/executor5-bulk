@@ -189,6 +189,7 @@ RexxString * RexxCode::getProgramName()
   return this->source->getProgramName();
 }
 
+
 void * RexxCode::operator new(size_t size)
 /******************************************************************************/
 /* Function:  Create a new rexx method code instance                          */

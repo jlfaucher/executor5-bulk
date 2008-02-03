@@ -105,7 +105,7 @@ void RexxStartDispatcher::run()
     if (instore == NULL)                     /* no instore request?               */
     {
         /* go resolve the name               */
-        fullname = SysResolveProgramName(name, OREF_NULL);
+        fullname = activity->resolveProgramName(name, OREF_NULL, OREF_NULL);
         if (fullname == OREF_NULL)         /* not found?                        */
         {
             /* got an error here                 */

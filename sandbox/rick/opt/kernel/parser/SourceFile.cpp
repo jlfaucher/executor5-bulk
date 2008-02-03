@@ -117,6 +117,7 @@ void RexxSource::initBuffered(
         char *start;                   /* start of the buffer               */
   size_t length;                       /* length of the buffer              */
 
+  extractNameInformation();            // make sure we have name information to work with
                                        /* set the source buffer             */
   OrefSet(this, this->sourceBuffer, (RexxBuffer *)source_buffer);
   OrefSet(this, this->sourceIndices, (RexxBuffer *)new RexxSmartBuffer(1024));
@@ -181,25 +182,24 @@ void RexxSource::initBuffered(
   this->position(1, 0);                /* set position at the first line    */
 }
 
+
 void RexxSource::initFile()
 /******************************************************************************/
 /* Function:  Initialize a source object, reading the source from a file      */
 /******************************************************************************/
 {
-  const char *file_name;               /* ASCII-Z version of the file name  */
-  RexxBuffer *program_source;          /* read in program source object     */
-
-                                       /* get the file name pointer         */
-  file_name = this->programName->getStringData();
+  extractNameInformation();            // make sure we have name information to work with
                                        /* load the program file             */
-  program_source = (RexxBuffer *)SysReadProgram(file_name);
-  if (program_source == OREF_NULL) {   /* Program not found or read error?  */
+  RexxBuffer *program_source = (RexxBuffer *)SysReadProgram(programName->getStringData());
+  if (program_source == OREF_NULL)     /* Program not found or read error?  */
+  {
                                        /* report this                       */
     reportException(Error_Program_unreadable_name, this->programName);
   }
 
 #ifdef SCRIPTING
-  else if (program_source->getLength() > 9) {
+  if (program_source->getLength() > 9)
+  {
     char begin[10];
     char end[4];
     // check, if XML comments have to be removed from the script... (engine situation)
@@ -220,6 +220,24 @@ void RexxSource::initFile()
 
                                        /* go process the buffer now         */
   this->initBuffered((RexxObject *)this->sourceBuffer);
+}
+
+
+/**
+ * Extract various bits of the source name to give us directory,
+ * extension and file portions to be used for searches for additional
+ * files.
+ */
+void RexxSource::extractNameInformation()
+{
+    if (programName == OREF_NULL)
+    {
+        return;
+    }
+
+    OrefSet(this, this->programDirectory, SystemInterpreter::extractDirectory(programName));
+    OrefSet(this, this->programExtension, SystemInterpreter::extractExtension(programName));
+    OrefSet(this, this->programFile, SystemInterpreter::extractFile(programName));
 }
 
 bool RexxSource::reconnect()
@@ -439,6 +457,9 @@ void RexxSource::live(size_t liveMark)
 {
   memory_mark(this->sourceArray);
   memory_mark(this->programName);
+  memory_mark(this->programDirectory);
+  memory_mark(this->programExtension);
+  memory_mark(this->programFile);
   memory_mark(this->clause);
   memory_mark(this->securityManager);
   memory_mark(this->sourceBuffer);
@@ -502,6 +523,9 @@ void RexxSource::liveGeneral(int reason)
 #endif
   memory_mark_general(this->sourceArray);
   memory_mark_general(this->programName);
+  memory_mark_general(this->programDirectory);
+  memory_mark_general(this->programExtension);
+  memory_mark_general(this->programFile);
   memory_mark_general(this->clause);
   memory_mark_general(this->securityManager);
   memory_mark_general(this->sourceBuffer);
@@ -554,6 +578,9 @@ void RexxSource::flatten (RexxEnvelope *envelope)
     this->securityManager = OREF_NULL;
     flatten_reference(newThis->sourceArray, envelope);
     flatten_reference(newThis->programName, envelope);
+    flatten_reference(newThis->programDirectory, envelope);
+    flatten_reference(newThis->programExtension, envelope);
+    flatten_reference(newThis->programFile, envelope);
     flatten_reference(newThis->clause, envelope);
     flatten_reference(newThis->securityManager, envelope);
     flatten_reference(newThis->sourceBuffer, envelope);
@@ -1137,6 +1164,23 @@ BaseCode *RexxSource::resolveRoutine(
         routineObject = (BaseCode *)(this->merged_public_routines->entry(routineName));
     }
     return routineObject;                /* return the object                 */
+}
+
+
+/**
+ * Resolve an external call in the context of the program making the
+ * call.  This will use the directory and extension of the context
+ * program to modify the search order.
+ *
+ * @param activity The current activity
+ * @param name     The target name
+ *
+ * @return The fully resolved string name of the target program, if one is
+ *         located.
+ */
+RexxString *RexxSource::resolveProgramName(RexxActivity *activity, RexxString *name)
+{
+    return activity->resolveProgram(name, programDirectory, programExtension);
 }
 
 

@@ -380,7 +380,6 @@ bool SysExternalFunction(
   RexxActivation * activation,         /* Current Activation                */
   RexxActivity   * activity,           /* activity in use                   */
   RexxString     * target,             /* Name of external function         */
-  RexxString     * parent,             /* Parent program                    */
   RexxObject    ** arguments,          /* Argument array                    */
   size_t           argcount,           /* count of arguments                */
   RexxString     * calltype,           /* Type of call                      */
@@ -396,7 +395,7 @@ bool SysExternalFunction(
       return true;
   }
                                        /* have activation do the call       */
-  if (activation->callExternalRexx(target, parent, arguments, argcount, calltype, result))
+  if (activation->callExternalRexx(target, arguments, argcount, calltype, result))
   {
       return true;
   }
