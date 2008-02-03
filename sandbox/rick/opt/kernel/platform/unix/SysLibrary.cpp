@@ -1,11 +1,12 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2008 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
+/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
 /* distribution. A copy is also available at the following address:           */
-/* http://www.oorexx.org/license.html                          */
+/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
 /*                                                                            */
 /* Redistribution and use in source and binary forms, with or                 */
 /* without modification, are permitted provided that the following            */
@@ -35,50 +36,71 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /******************************************************************************/
-#ifndef Included_LibraryManager
-#define Included_LibraryManager
+/* REXX Shared runtime                                                        */
+/*                                                                            */
+/* Unix implementation of the SysLibrary                                      */
+/*                                                                            */
+/******************************************************************************/
 
-#include "RexxNativeCode.hpp"
-
-class RexxDirectory;
-
-
-class InternalMethodEntry
-{
-public:
-    inline InternalMethodEntry(const char *n, PNMF e) : entryName(n), entryPoint(e) { }
-
-    const char *entryName;
-    PNMF   entryPoint;
-};
-
-
-class LibraryManager
-{
-public:
-    static void init();
-    static void live(size_t);
-    static void liveGeneral(int reason);
-    static inline RexxDirectory *getLibraries() { return libraries; }
-    static void restore(RexxDirectory *savedLibraries);
-    static void reload();
-    static RexxNativeCode *createNativeCode(RexxString *procedure, RexxString *library);
-    static RexxNativeCode *createInternalNativeCode(size_t index);
-    static void reloadLibrary(RexxString *libraryName, RexxDirectory *libraryInfo);
-    static RexxDirectory *loadLibrary(RexxString *libraryName);
-    static inline PNMF resolveInternalMethod(size_t index) { return internalMethodTable[index].entryPoint; }
-    static PNMF resolveExternalMethod(RexxString *procedure, RexxString *library);
-    static size_t resolveInternalMethod(RexxString *name);
-
-protected:
-    // directory of loaded libraries
-    static RexxDirectory *libraries;
-    // table of internal native methods.
-    static InternalMethodEntry internalMethodTable[];
-};
-
-
-inline RexxNativeCode *new_native_code(RexxString *p, RexxString *l) { return LibraryManager::createNativeCode(p, l); }
-
+#ifdef HAVE_CONFIG_H
+# include "config.h"
 #endif
+
+#include "SysLibrary.hpp"
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <dlfcn.h>
+
+
+#define MAX_LIBRARY_NAME_LENGTH 250
+//TODO:  Add conditional compilation for Apple OSX
+#define SYSTEM_LIBRARY_EXTENSION "so"
+#define LIBARY_NAME_BUFFER_LENGTH (MAX_LIBRARY_NAME_LENGTH + sizeof("/usr/lib/lib.") + sizeof(SYSTEM_LIBRARY_EXTENSION))
+
+SysLibrary::SysLibrary()
+{
+    libraryHandle = NULL;
+}
+
+
+void * SysLibrary::getProcedure(
+  const char *name)                      /* required procedure name           */
+/******************************************************************************/
+/* Function:  Resolve a named procedure in a library                          */
+/******************************************************************************/
+{
+    return dlsym(libraryHandle, name);
+}
+
+
+bool SysLibrary::load(
+    const char *name)                    /* required library name             */
+/******************************************************************************/
+/* Function:  Load a named library, returning success/failure flag            */
+/******************************************************************************/
+{
+    char nameBuffer[LIBARY_NAME_BUFFER_LENGTH];
+
+    if (strlen(name) > MAX_LIBRARY_NAME_LENGTH)
+    {
+        return false;
+    }
+
+    sprintf(nameBuffer, "lib%s.%s", name, SYSTEM_LIBRARY_EXTENSION);
+    // try loading directly
+    libraryHandle = dlopen(nameBuffer, RTLD_LAZY);
+    // if not found, then try from /usr/lib
+    if (libraryHandle == NULL)
+    {
+        sprintf(nameBuffer, "/usr/lib/lib%s.%s", name, SYSTEM_LIBRARY_EXTENSION);
+        libraryHandle = dlopen(nameBuffer, RTLD_LAZY);
+        // still can't find it?
+        if (libraryHandle == NULL)
+        {
+            return false;
+        }
+    }
+    return true;     // loaded successfully
+}
 
