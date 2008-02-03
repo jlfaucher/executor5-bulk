@@ -82,14 +82,14 @@ class RexxCode : public BaseCode
    inline bool isTraceable() { return source->isTraceable(); }
    inline bool isInterpret() { return source->isInterpret(); }
    inline RexxString *extract(SourceLocation &l) { return source->extract(l); }
-   inline RexxObject *getSecurityManager() { return source->getSecurityManager(); }
+   inline SecurityManager *getSecurityManager() { return source->getSecurityManager(); }
    inline void        install(RexxActivation *activation) { source->install(activation); }
-   inline RexxMethod *interpret(RexxString *s, size_t n) { return source->interpret(s, labels, n); }
+   inline RexxCode *interpret(RexxString *s, size_t n) { return source->interpret(s, labels, n); }
    inline RexxDirectory *getMethods() { return source->getMethods(); };
-   inline RexxMethod *resolveRoutine(RexxString *n) { return source->resolveRoutine(n); }
+   inline BaseCode *resolveRoutine(RexxString *n) { return source->resolveRoutine(n); }
    inline void        mergeRequired(RexxSource *s) { source->mergeRequired(s); }
    virtual void run(RexxActivity *, RexxMethod *, RexxObject *, RexxString *,  size_t, RexxObject **, ProtectedObject &);
-   virtual void call(RexxActivity *, RexxMethod *, RexxObject *,  RexxString *,  RexxObject **, size_t, RexxString *, RexxString *, int, ProtectedObject &);
+   virtual void call(RexxActivity *, RexxString *,  RexxObject **, size_t, RexxString *, RexxString *, int, ProtectedObject &);
 
 protected:
 

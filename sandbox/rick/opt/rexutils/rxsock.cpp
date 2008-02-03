@@ -839,10 +839,10 @@ static int Initialized = 0;
 /*------------------------------------------------------------------
  * Rexx external function gateway
  *------------------------------------------------------------------*/
-APIRET REXXENTRY SockFunctionGateWay(const char *name, size_t argc, PCONSTRXSTRING argv, const char *qName, PRXSTRING  retStr)
+RexxReturnCode REXXENTRY SockFunctionGateWay(const char *name, size_t argc, PCONSTRXSTRING argv, const char *qName, PRXSTRING  retStr)
 {
     size_t                       i;
-    APIRET                       ulRc;
+    RexxReturnCode                       ulRc;
     RexxFunctionHandler         *pRxFunc;
 #ifdef WIN32
     WORD wVersionRequested;
@@ -905,7 +905,7 @@ APIRET REXXENTRY SockFunctionGateWay(const char *name, size_t argc, PCONSTRXSTRI
 /*------------------------------------------------------------------
  *
  *------------------------------------------------------------------*/
-APIRET REXXENTRY SockVersion(const char *name, size_t argc, PCONSTRXSTRING argv, const char *qName, PRXSTRING  retStr)
+RexxReturnCode REXXENTRY SockVersion(const char *name, size_t argc, PCONSTRXSTRING argv, const char *qName, PRXSTRING  retStr)
 {
     sprintf(retStr->strptr, "%d.%d.%d", ORX_VER, ORX_REL, ORX_MOD);
     retStr->strlength = strlen(retStr->strptr);
@@ -915,7 +915,7 @@ APIRET REXXENTRY SockVersion(const char *name, size_t argc, PCONSTRXSTRING argv,
 /*-/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\-*/
 /*-\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/-*/
 #if defined(OPSYS_AIX) || defined(OPSYS_LINUX)
-APIRET REXXENTRY SOCKLOADFUNCS(const char *name, size_t argc, PCONSTRXSTRING argv, const char *qName, PRXSTRING  retStr)
+RexxReturnCode REXXENTRY SOCKLOADFUNCS(const char *name, size_t argc, PCONSTRXSTRING argv, const char *qName, PRXSTRING  retStr)
 {
     return(SockLoadFuncs( name, argc, argv, qName, retStr ));
 }
@@ -924,7 +924,7 @@ APIRET REXXENTRY SOCKLOADFUNCS(const char *name, size_t argc, PCONSTRXSTRING arg
 /*------------------------------------------------------------------
  * load the function package
  *------------------------------------------------------------------*/
-APIRET REXXENTRY SockLoadFuncs(const char *name, size_t argc, PCONSTRXSTRING argv, const char *qName, PRXSTRING  retStr)
+RexxReturnCode REXXENTRY SockLoadFuncs(const char *name, size_t argc, PCONSTRXSTRING argv, const char *qName, PRXSTRING  retStr)
 {
     size_t i;
 
@@ -957,7 +957,7 @@ APIRET REXXENTRY SockLoadFuncs(const char *name, size_t argc, PCONSTRXSTRING arg
 /*------------------------------------------------------------------
  * drop the function package
  *------------------------------------------------------------------*/
-APIRET REXXENTRY SockDropFuncs(const char *name, size_t argc, PCONSTRXSTRING argv, const char *qName, PRXSTRING  retStr)
+RexxReturnCode REXXENTRY SockDropFuncs(const char *name, size_t argc, PCONSTRXSTRING argv, const char *qName, PRXSTRING  retStr)
 {
     size_t i;
 
@@ -985,7 +985,7 @@ APIRET REXXENTRY SockDropFuncs(const char *name, size_t argc, PCONSTRXSTRING arg
 /*------------------------------------------------------------------
  * cause a trap to unload the DLL
  *------------------------------------------------------------------*/
-APIRET REXXENTRY SockDie(const char *name, size_t argc, PCONSTRXSTRING argv, const char *qName, PRXSTRING  retStr)
+RexxReturnCode REXXENTRY SockDie(const char *name, size_t argc, PCONSTRXSTRING argv, const char *qName, PRXSTRING  retStr)
 {
     int *p;
 

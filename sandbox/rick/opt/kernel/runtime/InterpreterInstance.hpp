@@ -45,9 +45,14 @@
 
 #include "RexxCore.h"
 #include "ExitHandler.hpp"
+#include "ActivationApiContexts.hpp"
+#include "SysInterpreterInstance.hpp"
 
 class InterpreterInstance : public RexxInternalObject
 {
+// the SysInterpreterInstance is essentially an extension of this class,
+// so it is given full access to the interpreter instance fields.
+friend class SysInterpreterInstance;
 public:
 
     // methods associated with actual interpreter instances
@@ -89,19 +94,25 @@ public:
     void setExitHandler(int exitNum, REXXPFN e) { getExitHandler(exitNum).setEntryPoint(e); }
     void setExitHandler(int exitNum, const char *e) { getExitHandler(exitNum).resolve(e); }
     void setExitHandler(RXSYSEXIT &e) { getExitHandler(e.sysexit_code).resolve(e.sysexit_name); }
+    void setExitHandler(RexxContextExit &e) { getExitHandler(e.sysexit_code).resolve(e.handler); }
     void removeInactiveActivities();
     void haltAllActivities();
     void traceAllActivities(bool on);
 
 protected:
+    InstanceContext      context;            // our externalizied instance context
 
     RexxActivity        *rootActivity;       // the initial activity
+    SecurityManager     *securityManager;    // the security manager for our instance
     RexxList            *allActivities;      // all activities associated with this instance
     RexxList            *activeActivities;   // the activity table
     RexxList            *attachedActivities; // our list of attached vs. spawned activities
     RexxList            *spawnedActivities;  // activities this instance has spawned off
     RexxObjectTable     *globalReferences;   // our global reference table
     RexxString          *defaultAddress;     // the default address environment
+    RexxString          *searchPath;         // additional Rexx search path
+    RexxString          *searchExtensions;   // extensions to search on for external calls
+    void                *applicationData;    // application specific data
 
     bool terminating;                // shutdown indicator
     bool terminated;                 // last thread cleared indicator
@@ -109,6 +120,8 @@ protected:
 
     // array of system exits
     ExitHandler exits[RXNOOFEXITS + 1];
+
+    static RexxInstanceInterface interfaceVector;   // single interface vector instance
 };
 
 #endif

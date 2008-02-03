@@ -45,11 +45,7 @@
 #define RexxNativeAPI_H_INCLUDED
 
 #include "rexx.h"
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
+#include "oorexxapi.h"
 
 /******************************************************************************/
 /* New-style macros and functions                                             */
@@ -82,89 +78,6 @@ extern "C" {
 #define ooRexxEnvironment        REXX_ENVIRONMENT()
 #define ooRexxLocal              REXX_LOCAL()
 #define ooRexxRaiseCondition(c, d, a, r) REXX_RAISE(c, d, a, r)
-
-#ifndef __cplusplus
-#define RexxMethod0(r,n) r  n##_m (void); \
-static char n##_t[] = {REXXD_##r,0};    \
-char * REXXENTRY n (void **a) {if (a != 0) {REXX_ret_##r(n##_m());} return n##_t;} \
-r  n##_m (void)
-
-#define RexxMethod1(r,n,t1,p1) r  n##_m (t1 p1); \
-static char n##_t[] = {REXXD_##r,REXXD_##t1,0}; \
-char * REXXENTRY n (void **a) {if (a != 0) {REXX_ret_##r(n##_m(*((t1 *)*(a+1))));} return n##_t;} \
-r  n##_m (t1 p1)
-
-#define RexxMethod2(r,n,t1,p1,t2,p2) r  n##_m (t1 p1, t2 p2); \
-static char n##_t[] = {REXXD_##r,REXXD_##t1,REXXD_##t2,0}; \
-char * REXXENTRY n (void **a) {if (a != 0) {REXX_ret_##r(n##_m(*((t1 *)*(a+1)),*((t2 *)*(a+2))));} return n##_t;} \
-r  n##_m (t1 p1, t2 p2)
-
-#define RexxMethod3(r,n,t1,p1,t2,p2,t3,p3) r  n##_m (t1 p1, t2 p2, t3 p3); \
-static char n##_t[] = {REXXD_##r,REXXD_##t1,REXXD_##t2,REXXD_##t3,0}; \
-char * REXXENTRY n (void **a) {if (a != 0) {REXX_ret_##r(n##_m(*((t1 *)*(a+1)),*((t2 *)*(a+2)),*((t3 *)*(a+3))));} return n##_t;} \
-r  n##_m (t1 p1, t2 p2, t3 p3)
-
-#define RexxMethod4(r,n,t1,p1,t2,p2,t3,p3,t4,p4) r  n##_m (t1 p1, t2 p2, t3 p3, t4 p4); \
-static char n##_t[] = {REXXD_##r,REXXD_##t1,REXXD_##t2,REXXD_##t3,REXXD_##t4,0}; \
-char * REXXENTRY n (void **a) {if (a != 0) {REXX_ret_##r(n##_m(*((t1 *)*(a+1)),*((t2 *)*(a+2)),*((t3 *)*(a+3)),*((t4 *)*(a+4))));} return n##_t;} \
-r  n##_m (t1 p1, t2 p2, t3 p3, t4 p4)
-
-#define RexxMethod5(r,n,t1,p1,t2,p2,t3,p3,t4,p4,t5,p5) r  n##_m (t1 p1, t2 p2, t3 p3, t4 p4, t5 p5); \
-static char n##_t[] = {REXXD_##r,REXXD_##t1,REXXD_##t2,REXXD_##t3,REXXD_##t4,REXXD_##t5,0}; \
-char * REXXENTRY n (void **a) {if (a != 0) {REXX_ret_##r(n##_m(*((t1 *)*(a+1)),*((t2 *)*(a+2)),*((t3 *)*(a+3)),*((t4 *)*(a+4)),*((t5 *)*(a+5))));} return n##_t;} \
-r  n##_m (t1 p1, t2 p2, t3 p3, t4 p4, t5 p5)
-
-#define RexxMethod6(r,n,t1,p1,t2,p2,t3,p3,t4,p4,t5,p5,t6,p6) r  n##_m (t1 p1, t2 p2, t3 p3, t4 p4, t5 p5, t6 p6); \
-static char n##_t[] = {REXXD_##r,REXXD_##t1,REXXD_##t2,REXXD_##t3,REXXD_##t4,REXXD_##t5,REXXD_##t6,0}; \
-char * REXXENTRY n (void **a) {if (a != 0) {REXX_ret_##r(n##_m(*((t1 *)*(a+1)),*((t2 *)*(a+2)),*((t3 *)*(a+3)),*((t4 *)*(a+4)),*((t5 *)*(a+5)),*((t6 *)*(a+6))));} return n##_t;} \
-r  n##_m (t1 p1, t2 p2, t3 p3, t4 p4, t5 p5, t6 p6)
-
-#else
-
-#define RexxMethod0(r,n) r  n##_m (void); \
-static char n##_t[] = {REXXD_##r,0};    \
-extern "C" char * REXXENTRY n(void **a);           \
-char * REXXENTRY n (void **a) {if (a != 0) {REXX_ret_##r(n##_m());} return n##_t;} \
-r  n##_m (void)
-
-#define RexxMethod1(r,n,t1,p1) r  n##_m (t1 p1); \
-static char n##_t[] = {REXXD_##r,REXXD_##t1,0}; \
-extern "C" char * REXXENTRY n(void **a);           \
-char * REXXENTRY n (void **a) {if (a != 0) {REXX_ret_##r(n##_m(*((t1 *)*(a+1))));} return n##_t;} \
-r  n##_m (t1 p1)
-
-#define RexxMethod2(r,n,t1,p1,t2,p2) r  n##_m (t1 p1, t2 p2); \
-static char n##_t[] = {REXXD_##r,REXXD_##t1,REXXD_##t2,0}; \
-extern "C" char * REXXENTRY n(void **a);           \
-char * REXXENTRY n (void **a) {if (a != 0) {REXX_ret_##r(n##_m(*((t1 *)*(a+1)),*((t2 *)*(a+2))));} return n##_t;} \
-r  n##_m (t1 p1, t2 p2)
-
-#define RexxMethod3(r,n,t1,p1,t2,p2,t3,p3) r  n##_m (t1 p1, t2 p2, t3 p3); \
-static char n##_t[] = {REXXD_##r,REXXD_##t1,REXXD_##t2,REXXD_##t3,0}; \
-extern "C" char * REXXENTRY n(void **a);           \
-char * REXXENTRY n (void **a) {if (a != 0) {REXX_ret_##r(n##_m(*((t1 *)*(a+1)),*((t2 *)*(a+2)),*((t3 *)*(a+3))));} return n##_t;} \
-r  n##_m (t1 p1, t2 p2, t3 p3)
-
-#define RexxMethod4(r,n,t1,p1,t2,p2,t3,p3,t4,p4) r  n##_m (t1 p1, t2 p2, t3 p3, t4 p4); \
-static char n##_t[] = {REXXD_##r,REXXD_##t1,REXXD_##t2,REXXD_##t3,REXXD_##t4,0}; \
-extern "C" char * REXXENTRY n(void **a);           \
-char * REXXENTRY n (void **a) {if (a != 0) {REXX_ret_##r(n##_m(*((t1 *)*(a+1)),*((t2 *)*(a+2)),*((t3 *)*(a+3)),*((t4 *)*(a+4))));} return n##_t;} \
-r  n##_m (t1 p1, t2 p2, t3 p3, t4 p4)
-
-#define RexxMethod5(r,n,t1,p1,t2,p2,t3,p3,t4,p4,t5,p5) r  n##_m (t1 p1, t2 p2, t3 p3, t4 p4, t5 p5); \
-static char n##_t[] = {REXXD_##r,REXXD_##t1,REXXD_##t2,REXXD_##t3,REXXD_##t4,REXXD_##t5,0}; \
-extern "C" char * REXXENTRY n(void **a);           \
-char * REXXENTRY n (void **a) {if (a != 0) {REXX_ret_##r(n##_m(*((t1 *)*(a+1)),*((t2 *)*(a+2)),*((t3 *)*(a+3)),*((t4 *)*(a+4)),*((t5 *)*(a+5))));} return n##_t;} \
-r  n##_m (t1 p1, t2 p2, t3 p3, t4 p4, t5 p5)
-
-#define RexxMethod6(r,n,t1,p1,t2,p2,t3,p3,t4,p4,t5,p5,t6,p6) r  n##_m (t1 p1, t2 p2, t3 p3, t4 p4, t5 p5, t6 p6); \
-static char n##_t[] = {REXXD_##r,REXXD_##t1,REXXD_##t2,REXXD_##t3,REXXD_##t4,REXXD_##t5,REXXD_##t6,0}; \
-extern "C" char * REXXENTRY n(void **a);           \
-char * REXXENTRY n (void **a) {if (a != 0) {REXX_ret_##r(n##_m(*((t1 *)*(a+1)),*((t2 *)*(a+2)),*((t3 *)*(a+3)),*((t4 *)*(a+4)),*((t5 *)*(a+5)),*((t6 *)*(a+6))));} return n##_t;} \
-r  n##_m (t1 p1, t2 p2, t3 p3, t4 p4, t5 p5, t6 p6)
-
-#endif
-
 
 #define _cstring(r)              REXX_STRING(r)
 #define _double(r)               REXX_DOUBLE(r)
@@ -211,21 +124,6 @@ r  n##_m (t1 p1, t2 p2, t3 p3, t4 p4, t5 p5, t6 p6)
 #define rexx_exception2(m, v1, v2)  REXX_EXCEPT2(m, v1, v2)
 
 
-
-/******************************************************************************/
-/* Old-style macros and internal definitions follow..... don't use!!          */
-/******************************************************************************/
-
-/******************************************************************************/
-/* Types (used in macro expansions and function prototypes)                   */
-/******************************************************************************/
-#define ONULL   REXXOBJECT
-#define OSELF   REXXOBJECT
-#define CSELF   void *
-#define BUFFER  void *
-#define ARGLIST REXXOBJECT
-#define SCOPE   REXXOBJECT
-#define MSGNAME REXXOBJECT
 
 /******************************************************************************/
 /* Primitive Message Names (for general use except where indicated)           */
@@ -313,47 +211,6 @@ int        REXXENTRY RexxQuery (void);
 int        REXXENTRY RexxTerminate (void);
 int        REXXENTRY RexxInitialize (void);
 
-#ifdef __cplusplus
-}
-#endif
-
-/******************************************************************************/
-/* Interface Datatypes (used in macro expansions)                             */
-/******************************************************************************/
-#define REXXD_void          1
-#define REXXD_OBJECT        2
-#define REXXD_REXXOBJECT    REXXD_OBJECT
-#define REXXD_int           3
-#define REXXD_size_t        4
-#define REXXD_ssize_t       5
-#define REXXD_stringsize_t  6
-#define REXXD_wholenumber_t 7
-#define REXXD_double        8
-#define REXXD_CSTRING       9
-#define REXXD_OSELF         10
-#define REXXD_ARGLIST       11
-#define REXXD_MSGNAME       12
-#define REXXD_SCOPE         13
-#define REXXD_POINTER       14
-#define REXXD_CSELF         15
-#define REXXD_STRING        16
-#define REXXD_REXXSTRING    REXXD_STRING
-#define REXXD_BUFFER        17
-
-/******************************************************************************/
-/* Internal Macros (used in macro expansions)                                 */
-/******************************************************************************/
-#define REXX_ret_void(v)           v
-#define REXX_ret_REXXOBJECT(v)    *((REXXOBJECT *)*a) = v
-#define REXX_ret_REXXSTRING(v)    *((REXXOBJECT *)*a) = v
-#define REXX_ret_int(v)           *((int *)*a) = v
-#define REXX_ret_size_t(v)        *((size_t *)*a) = v
-#define REXX_ret_ssize_t(v)       *((ssize_t *)*a) = v
-#define REXX_ret_stringsize_t(v)  *((stringsize_t *)*a) = v
-#define REXX_ret_wholenumber_t(v) *((wholenumber_t *)*a) = v
-#define REXX_ret_double(v)        *((double *)*a) = v
-#define REXX_ret_CSTRING(v)       *((CSTRING *)*a) = v
-#define REXX_ret_POINTER(v)       *((void  **)*a) = v
 #ifdef __cplusplus
 }
 #endif

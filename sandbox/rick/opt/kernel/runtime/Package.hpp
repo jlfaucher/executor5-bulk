@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2008 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -35,32 +35,63 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-#ifndef REXXPLATFORMAPIS_INCLUDED
-#define REXXPLATFORMAPIS_INCLUDED
+/******************************************************************************/
+/* REXX Kernel                                                                */
+/*                                                                            */
+/* Primitive Rexx function/method package                                     */
+/*                                                                            */
+/******************************************************************************/
+#ifndef Package_Included
+#define Package_Included
 
-/***    RexxPullQueue - Retrieve data from an External Data Queue */
-typedef struct _REXXDATETIME {         /* REXX time stamp format            */
-  uint16_t       hours;                /* hour of the day (24-hour)         */
-  uint16_t       minutes;              /* minute of the hour                */
-  uint16_t       seconds;              /* second of the minute              */
-  uint16_t       hundredths;           /* hundredths of a second            */
-  uint16_t       day;                  /* day of the month                  */
-  uint16_t       month;                /* month of the year                 */
-  uint16_t       year;                 /* current year                      */
-  uint16_t       weekday;              /* day of the week                   */
-  uint32_t       microseconds;         /* microseconds                      */
-  uint32_t       yearday;              /* day number within the year        */
-} REXXDATETIME;
+#include "RexxCore.h"
+#include "SysLibrary.hpp"
+#include "oorexx.h"
 
-/***    RexxPullQueue - Retrieve data from an External Data Queue */
+class PackageManager;
 
-RexxReturnCode REXXENTRY RexxPullQueue (
-        const char *,                          /* Name of queue to read from  */
-        PRXSTRING,                             /* RXSTRING to receive data    */
-        REXXDATETIME *,                        /* Stor for data date/time     */
-        size_t);                               /* wait status (WAIT|NOWAIT)   */
-typedef RexxReturnCode (REXXENTRY *PFNREXXPULLQUEUE)(const char *, PCONSTRXSTRING, REXXDATETIME *,
-                                           size_t);
+typedef RexxPackageEntry * (RexxEntry *PACKAGE_LOADER)();
 
-#endif /* REXXPLATFORMAPIS_INCLUDED */
+class Package : public RexxInternalObject
+{
+public:
+    inline void *operator new(size_t, void *ptr) {return ptr;}
+    inline void  operator delete(void *, void *) {;}
+    void *operator new(size_t);
+    inline void  operator delete(void *) {;}
+
+    Package(RexxString *n, PackageManager *m, RexxPackageEntry *p);
+    inline Package(RESTORETYPE restoreType) { ; };
+
+    void   live();
+    void   liveGeneral();
+    bool   load(PackageManager *manager);
+    void   unload();
+    RexxPackageEntry *getPackageTable();
+    void   loadPackage(PackageManager *manager, ooRexxPackageEntry *p);
+    void   loadFunctions(PackageManager *manager, ooRexxFunctionEntry *table);
+    void   loadMethods(PackageManager *manager, ooRexxMethodEntry *table);
+    RexxNativeFunction *resolveFunction(RexxString *name, RexxString *procedure);
+    RexxMethodEntry *locateMethodEntry(RexxString *name);
+    RexxFunctionEntry *locateFunctionEntry(RexxString *name);
+    RexxNativeMethod *resolveMethod(RexxString *name);
+    void   refreshPackage();
+    void   refreshPackage(ooRexxPackageEntry *p);
+    inline bool isLoaded() { return loaded; }
+    inline bool isInternal() { return internal; }
+    inline bool isPackage() { return ispackage; }
+
+protected:
+
+    RexxPackageEntry *package;  // loaded package information
+    RexxString *libraryName;   // the name of the library
+    RexxDirectory *functions;  // loaded functions
+    RexxDirectory *methods;    // loaded functions
+    SysLibrary  lib;           // the library management handle
+    bool        ispackage;     // this is a valid package vs. classic oldstyle
+    bool        loaded;        // we've at least been able to load the library
+    bool        internal;      // this is an internal package...no library load required.
+};
+
+#endif
 

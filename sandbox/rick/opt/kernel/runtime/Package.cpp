@@ -1,0 +1,389 @@
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
+/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+/******************************************************************************/
+/* REXX Kernel                                                                */
+/*                                                                            */
+/* Primitive Package management                                               */
+/*                                                                            */
+/******************************************************************************/
+
+#include "RexxCore.h"
+#include "Package.hpp"
+#include "PackageManager.hpp"
+#include "Interpreter.hpp"
+#include "RexxNativeCode.hpp"
+
+
+/**
+ * Create a new Package object instance.
+ *
+ * @param size   Size of the object.
+ *
+ * @return Pointer to new object storage.
+ */
+void *Package::operator new(size_t size)
+{
+    return new_object(size, T_Package);
+}
+
+
+/**
+ * Constructor for a loaded package.
+ *
+ * @param n      Name of the library associated with this package.  This is
+ *               also the name used to load the library when requested.
+ */
+Package::Package(RexxString *n)
+{
+    ClearObject(this);
+    OrefSet(this, libraryName, n);
+}
+
+/**
+ * Constructor for a loaded package.
+ *
+ * @param n      Name of the library associated with this package.  This is
+ *               also the name used to load the library when requested.
+ * @param m      The package manager that orchestrates the loading operations.
+ * @param p      The packag table attached to this package name.
+ */
+Package::Package(RexxString *n, RexxPackageEntry *p)
+{
+    ClearObject(this);
+    OrefSet(this, libraryName, n);
+    // this is an internal package.
+    internal = true;
+    loadPackage(p);
+}
+
+/**
+ * Normal live marking.
+ */
+void Package::live(size_t liveMark)
+{
+    memory_mark(libraryName);
+    memory_mark(functions);
+    memory_mark(methods);
+}
+
+/**
+ * Generalized live marking.
+ */
+void Package::liveGeneral()
+{
+    memory_mark_general(libraryName);
+    memory_mark_general(functions);
+    memory_mark_general(methods);
+}
+
+
+/**
+ * Perform the initial loading of a package.  The loading
+ * process involves resolving the external library and
+ * attempting to resolve a Rexx package exporter routine
+ * in the library.  If the library loads, but does not have
+ * the package exporter function, this is a classic library.
+ *
+ * If we do find a package exporter, then we can load all of
+ * the functions immediately.  Method loads are deferred
+ * until the first request.
+ *
+ * @param manager The package manager we're attached to.
+ *
+ * @return True if we were able to load this as proper ooRexx package
+ *         file, false if either step failed.  We do not throw
+ *         exceptions here, since these are usually loaded in the
+ *         context of operations that return an error result instead
+ *         of an exception.
+ */
+bool Package::load()
+{
+    // try to load the package table.
+    RexxPackageEntry *table = getPackageTable();
+    // if this is NULL, return false to the manager
+    if (table == NULL)
+    {
+        return false;
+    }
+    // call the loader to get the package tables and set them up.
+    loadPackage(table);
+    return true;
+}
+
+
+
+/**
+ * Unload a package library.
+ */
+void Package::unload()
+{
+    // the internal packages don't get unloaded
+    if (!loaded)
+    {
+        return;
+    }
+
+    // call an unloader, if we have one.
+    if (unloader != NULL)
+    {
+        ActivityContext *context = currentActivity()->getActivityContext();
+        // unload the package
+        unloader(context);
+        currentActivity()->releaseActivityContext(context);
+    }
+    lib.unload();
+}
+
+
+/**
+ * Load a library and see if it is possible to retrieve
+ * a package entry from the library.
+ *
+ * @return A package table entry, if possible.  A load failure or
+ *         no package loading functions returns NULL.
+ */
+RexxPackageEntry *Package::getPackageTable()
+{
+    // first try to load the libary
+    PACKAGE_LOADER loader;
+    // reset the library handle that was saved in the image.
+    lib.reset();
+
+    if (!lib.load(libraryName->getStringData()))
+    {
+        // we don't report an exception here.  This may have
+        // just been a probe attempt to see if we're real.  We'll
+        // leave the exception decisions up to the package manager.
+        return NULL;
+    }
+
+    // we're loaded now, vs. just a package fronting a name.
+    loaded = true;
+    // the try to resolve a package getting structure
+    // resolve the function address
+    PFN entry = (PFN)lib.getProcedure("ooRexxGetPackage");
+    if (entry == NULL)
+    {
+        // again, this is not an exception...this could just be
+        // a classic style function registration.
+        return NULL;
+    }
+    loader = (PACKAGE_LOADER)entry;
+    // call the loader to get the package tables and set them up.
+    return (*loader)();
+}
+
+
+/**
+ * Load a package with a provided package definition.
+ *
+ * @param manager The package manager instance we're attached to.
+ * @param p       The package table entry.
+ */
+void Package::loadPackage(RexxPackageEntry *p)
+{
+    ispackage = true;
+    package = p;       //NB:  this is NOT an object, so OrefSet is not needed.
+    // load the function table
+    loadFunctions(package->functions);
+
+    // call a loader, if we have one.
+    if (p->loader != NULL)
+    {
+        ActivityContext *context = currentActivity()->getActivityContext();
+        // load the package
+        p->loader((RexxThreadContext *)context);
+        currentActivity()->releaseActivityContext(context);
+    }
+}
+
+
+/**
+ * Load all of the functions in a package, registering them
+ * with the package manager.
+ *
+ * @param manager The package manager we're associated with.
+ * @param table   The package table describing this package.
+ */
+void Package::loadFunctions(RexxFunctionEntry *table)
+{
+    // no functions exported by this package?  Just return without
+    // doing anything.
+    if (table == NULL)
+    {
+        return;
+    }
+
+    // create a directory of loaded functions.
+    OrefSet(this, functions, new_directory());
+
+    while (table->style != 0)
+    {
+        // table names tend to be specified in friendly form, we need to
+        // convert them to uppercase because "normal" Rexx function names
+        // tend to be uppercase.
+        RexxString *target = new_upper_string(table->name)->upper();
+
+        RexxFunction *func = OREF_NULL;
+        if (table->style == FUNCTION_CLASSIC_STYLE)
+        {
+            func = new RegisteredFunction(libraryName, table->name, (PREGISTEREDFUNCTION)table->entryPoint);
+        }
+        else
+        {
+            func = new RexxNativeFunction(libraryName, table->name, (PNATIVEFUNCTION)table->entryPoint);
+        }
+
+
+        // add this to the global function pool
+        PackageManager::addPackageFunction(target, func);
+        // step to the next table entry
+        table++;
+    }
+}
+
+
+
+/**
+ * Locate a named method entry from the package registration
+ * table.
+ *
+ * @param name   The target name.
+ *
+ * @return The entry associated with the target entry, if it exists.
+ *         NULL indicates a not found condition.
+ */
+RexxMethodEntry *Package::locateMethodEntry(RexxString *name)
+{
+    ooRexxMethodEntry *entry = package->methods;
+
+    // scan the exported method table for the required method
+    while (entry->style != 0)
+    {
+        // is this one a name match?  Make a method, add it to
+        // the table, and return.
+        if (name->strICompare(entry->name))
+        {
+            return entry;
+        }
+        entry++;
+    }
+    return NULL;
+}
+
+
+/**
+ * Locate a named function entry from the package registration
+ * table.
+ *
+ * @param name   The target name.
+ *
+ * @return A pointer to the located function structure.  Returns NULL
+ *         if the package doesn't exist.
+ */
+ooRexxFunctionEntry *Package::locateFunctionEntry(RexxString *name)
+{
+    RexxFunctionEntry *entry = package->functions;
+
+    // scan the exported method table for the required method
+    while (entry->style != 0)
+    {
+        // is this one a name match?  Make a method, add it to
+        // the table, and return.
+        if (name->strICompare((stringchar_t *)entry->name))
+        {
+            return entry;
+        }
+        entry++;
+    }
+    return NULL;
+}
+
+
+/**
+ * Get a NativeCode object for a method associated with a
+ * package.
+ *
+ * @param name   Name of the target method.
+ *
+ * @return A RexxNativeCode object for this method, if located.
+ */
+RexxNativeMethod *Package::resolveMethod(RexxString *name)
+{
+    // create our methods table if not yet created.
+    if (methods == OREF_NULL)
+    {
+        OrefSet(this, methods, new_directory());
+    }
+
+    // see if this is in the table yet.
+    RexxNativeMethod *code = (RexxNativeCode *)methods->at(name);
+    if (code == OREF_NULL)
+    {
+        // find the package definition
+        ooRexxMethodEntry *entry = locateMethodEntry(name);
+        // if we found one with this name, create a native method out of it.
+        if (entry != NULL)
+        {
+            codei = new RexxNativeMethod(libraryName, name, (PNATIVEMETHOD)entry->entryPoint);
+            methods->put((RexxObject *)code, name);
+            return code;
+        }
+        // This, we know from nothing....
+        return OREF_NULL;
+    }
+    // had this cached already.
+    return code;
+}
+
+
+
+/**
+ * Refresh a non-internal package after an image restore.
+ *
+ * @param manager The package manager instance.
+ */
+void Package::refreshPackage()
+{
+    RexxPackageEntry *table = getPackageTable();
+    if (table == OREF_NULL)
+    {
+        logic_error("Failure loading required base library");
+    }
+}
+

@@ -84,6 +84,7 @@
 #include "ProtectedObject.hpp"
 #include "StringUtil.hpp"
 #include "SystemInterpreter.hpp"
+#include "PackageManager.hpp"
 
 
 #define CMDBUFSIZE      1024                 /* Max size of executable cmd     */
@@ -290,7 +291,7 @@ char *resolve_tilde(const char *path)
 /****************************************************************************/
 RexxMethod1(REXXOBJECT, sysDirectory, CSTRING, dir)
 {
-  APIRET rc;
+  RexxReturnCode rc;
   char  *rdir;                         /* resolved path */
 
   rc = 0;
@@ -303,12 +304,12 @@ RexxMethod1(REXXOBJECT, sysDirectory, CSTRING, dir)
     else
       rc = chdir(dir);                   /* change to the new directory     */
   }
-  // update our working directory and return it. 
+  // update our working directory and return it.
   if (rc == 0)
   {
-      SystemInterpreter::updateCurrentWorkingDirectory(); 
+      SystemInterpreter::updateCurrentWorkingDirectory();
   }
-  return ooRexxString(SystemInterpreter::currentWorkingDirectory); 
+  return ooRexxString(SystemInterpreter::currentWorkingDirectory);
 }
 
 
@@ -390,7 +391,7 @@ bool SysExternalFunction(
       return true;
   }
                                        /* no luck try for a registered func */
-  if (activation->callRegisteredExternalFunction(target, arguments, argcount, calltype, result))
+  if (PackageManager::callNativeFunction(activation, activity, target, arguments, argcount, result))
   {
       return true;
   }
@@ -441,9 +442,9 @@ REXXOBJECT BuildEnvlist()
     reportException(Error_System_service);
 
   // make sure we have a working directory
-  SystemInterpreter::updateCurrentWorkingDirectory(); 
-  // start with a copy of that 
-  strcpy(curr_dir, SystemInterpreter::currentWorkingDirectory); 
+  SystemInterpreter::updateCurrentWorkingDirectory();
+  // start with a copy of that
+  strcpy(curr_dir, SystemInterpreter::currentWorkingDirectory);
 
   size += strlen(curr_dir);            /* add the space for curr dir */
   size++;                              /* and its terminating '\0'   */

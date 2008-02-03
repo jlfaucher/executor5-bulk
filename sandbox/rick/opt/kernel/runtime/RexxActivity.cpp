@@ -1977,20 +1977,13 @@ bool RexxActivity::callFunctionExit(
 /*             the function system exit.                                      */
 /******************************************************************************/
 {
-    /* need to do a security check?      */
-    if (activation->hasSecurityManager())
+    // give the security manager the first pass
+    SecurityManager *manager = activation->getSecurityManager();
+    if (manager != OREF_NULL)
     {
-        RexxDirectory *securityArgs = new_directory();    /* get a directory item              */
-        /* add the function name             */
-        securityArgs->put(rname, OREF_NAME);
-        /* and the arguments                 */
-        securityArgs->put(new (argcount, arguments) RexxArray, OREF_ARGUMENTS);
-        /* did manager handle this?          */
-        if (activation->callSecurityManager(OREF_CALL, securityArgs))
+        if (manager->checkFunctionCall(rname, argcount, arguments, funcResult)
         {
-            /* get the return code               */
-            funcresult = securityArgs->fastAt(OREF_RESULT);
-            return false;                    /* we've handled this                */
+            return false;
         }
     }
 
@@ -2169,34 +2162,13 @@ bool RexxActivity::callCommandExit(
 /*             the command system exit.                                       */
 /******************************************************************************/
 {
-    /* need to do a security check?      */
-    if (activation->hasSecurityManager())
+    // give the security manager the first pass
+    SecurityManager *manager = activation->getSecurityManager();
+    if (manager != OREF_NULL)
     {
-        RexxDirectory *securityArgs = new_directory();    /* get a directory item              */
-                                           /* add the command                   */
-        securityArgs->put(cmdname, OREF_COMMAND);
-        /* and the target                    */
-        securityArgs->put(environment, OREF_ADDRESS);
-        /* did manager handle this?          */
-        if (activation->callSecurityManager(OREF_COMMAND, securityArgs))
+        if (manager->checkCommand(cmdname, environment, conditions, cmdresult))
         {
-            /* get the return code               */
-            *cmdresult = securityArgs->fastAt(OREF_RC);
-            if (*cmdresult == OREF_NULL)     /* no return code provide?           */
-            {
-                *cmdresult = IntegerZero;      /* use a zero return code            */
-            }
-            /* failure indicated?                */
-            if (securityArgs->fastAt(OREF_FAILURENAME) != OREF_NULL)
-            {
-                *conditions = OREF_FAILURENAME;/* raise a FAILURE condition         */
-            }
-            /* how about an error condition?     */
-            else if (securityArgs->fastAt(OREF_ERRORNAME) != OREF_NULL)
-            {
-                *conditions = OREF_ERRORNAME;  /* raise an ERROR condition          */
-            }
-            return false;                    /* we've handled this                */
+            return false;
         }
     }
 
@@ -2528,36 +2500,18 @@ bool RexxActivity::callValueExit(
 
 
 /**
- * Test if the activity is currently running in a context that
- * requires a security manager call.
+ * Retrieve the current security manager instance.
  *
- * @return true if there is an active security manager, false otherwise.
+ * @return
  */
-bool RexxActivity::hasSecurityManager()
+SecurityManager *RexxActivity::getSecurityManager()
 {
     if (currentRexxFrame != OREF_NULL)
     {
-        return currentRexxFrame->hasSecurityManager();
+        return currentRexxFrame->getSecurityManager();
     }
-    return false;
-}
-
-
-/**
- * Make a call to the current context security manager.
- *
- * @param name   The name of the check operation.
- * @param args   The arguments directory to the call.
- *
- * @return The return result from the call.
- */
-bool RexxActivity::callSecurityManager(RexxString *name, RexxDirectory *args)
-{
-    if (currentRexxFrame != OREF_NULL)
-    {
-        return currentRexxFrame->callSecurityManager(name, args);
-    }
-    return true;    // should not happen, but if called when not possible, allow this
+    // return the manager from the instance
+    return instance->getSecurityManager();
 }
 
 
@@ -2860,6 +2814,51 @@ void RexxActivity::inheritSettings(RexxActivity *parent)
         nestedInfo.sysexits[i] = parent->nestedInfo.sysexits[i];
     }
     nestedInfo.clauseExitUsed = parent->nestedInfo.clauseExitUsed;
+}
+
+
+/**
+ * Set up a method context for use before a call out.
+ *
+ * @param context The method context to initialize.
+ * @param owner   The native activation that owns this context.
+ */
+void RexxActivity::createMethodContext(MethodContext &context, RexxNativeActivation *owner)
+{
+    // hook this up with the activity
+    context.threadContext.threadContext = &threadContext.threadContext;
+    context.threadContext.functions = &methodContextFunctions;
+    context.context = owner;
+}
+
+
+/**
+ * Set up a call context for use before a call out.
+ *
+ * @param context The method context to initialize.
+ * @param owner   The native activation that owns this context.
+ */
+void RexxActivity::createCallContext(CallContext &context, RexxNativeActivation *owner)
+{
+    // hook this up with the activity
+    context.threadContext.threadContext = &threadContext.threadContext;
+    context.threadContext.functions = &callContextFunctions;
+    context.context = owner;
+}
+
+void RexxActivity::createExitContext(ExitContext *context, RexxNativeActivation *owner)
+
+/**
+ * Set up an exit  context for use before a call out.
+ *
+ * @param context The method context to initialize.
+ * @param owner   The native activation that owns this context.
+ */
+{
+    // hook this up with the activity
+    context.threadContext.threadContext = &threadContext.threadContext;
+    context.threadContext.functions = &exitContextFunctions;
+    context.context = owner;
 }
 
 

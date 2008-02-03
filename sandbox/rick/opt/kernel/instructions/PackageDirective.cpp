@@ -1,12 +1,12 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2008 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
 /* distribution. A copy is also available at the following address:           */
-/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
+/* http://www.oorexx.org/license.html                          */
 /*                                                                            */
 /* Redistribution and use in source and binary forms, with or                 */
 /* without modification, are permitted provided that the following            */
@@ -35,32 +35,92 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-#ifndef REXXPLATFORMAPIS_INCLUDED
-#define REXXPLATFORMAPIS_INCLUDED
+/******************************************************************************/
+/* REXX Kernel                                         PackageDirective.cpp   */
+/*                                                                            */
+/* Primitive Translator Abstract Directive Code                               */
+/*                                                                            */
+/******************************************************************************/
+#include <stdlib.h>
+#include "RexxCore.h"
+#include "PackageDirective.hpp"
+#include "Clause.hpp"
 
-/***    RexxPullQueue - Retrieve data from an External Data Queue */
-typedef struct _REXXDATETIME {         /* REXX time stamp format            */
-  uint16_t       hours;                /* hour of the day (24-hour)         */
-  uint16_t       minutes;              /* minute of the hour                */
-  uint16_t       seconds;              /* second of the minute              */
-  uint16_t       hundredths;           /* hundredths of a second            */
-  uint16_t       day;                  /* day of the month                  */
-  uint16_t       month;                /* month of the year                 */
-  uint16_t       year;                 /* current year                      */
-  uint16_t       weekday;              /* day of the week                   */
-  uint32_t       microseconds;         /* microseconds                      */
-  uint32_t       yearday;              /* day number within the year        */
-} REXXDATETIME;
 
-/***    RexxPullQueue - Retrieve data from an External Data Queue */
 
-RexxReturnCode REXXENTRY RexxPullQueue (
-        const char *,                          /* Name of queue to read from  */
-        PRXSTRING,                             /* RXSTRING to receive data    */
-        REXXDATETIME *,                        /* Stor for data date/time     */
-        size_t);                               /* wait status (WAIT|NOWAIT)   */
-typedef RexxReturnCode (REXXENTRY *PFNREXXPULLQUEUE)(const char *, PCONSTRXSTRING, REXXDATETIME *,
-                                           size_t);
+/**
+ * Construct a PackageDirective.
+ *
+ * @param n      The name of the requires target.
+ * @param clause The source file clause containing the directive.
+ */
+PackageDirective::PackageDirective(RexxString *n, RexxClause *clause) : RexxDirective(clause, KEYWORD_PACKAGE)
+{
+    name = n;
+}
 
-#endif /* REXXPLATFORMAPIS_INCLUDED */
+/**
+ * Normal garbage collecting live mark.
+ *
+ * @param liveMark The current live object mark.
+ */
+void PackageDirective::live(size_t liveMark)
+{
+    memory_mark(this->nextInstruction);  // must be first one marked (though normally null)
+    memory_mark(this->name);
+}
+
+
+/**
+ * The generalized object marking routine.
+ *
+ * @param reason The processing faze we're running the mark on.
+ */
+void PackageDirective::liveGeneral(int reason)
+{
+    memory_mark_general(this->nextInstruction);  // must be first one marked (though normally null)
+    memory_mark_general(this->name);
+}
+
+
+/**
+ * Flatten the directive instance.
+ *
+ * @param envelope The envelope we're flattening into.
+ */
+void PackageDirective::flatten(RexxEnvelope *envelope)
+{
+    setUpFlatten(PackageDirective)
+
+        flatten_reference(newThis->nextInstruction, envelope);
+        flatten_reference(newThis->name, envelope);
+
+    cleanUpFlatten
+}
+
+
+/**
+ * Allocate a new requires directive.
+ *
+ * @param size   The size of the object.
+ *
+ * @return The memory for the new object.
+ */
+void *PackageDirective::operator new(size_t size)
+{
+    return new_object(size, T_PackageDirective); /* Get new object                    */
+}
+
+
+/**
+ * Do install-time processing of the ::requires directive.  This
+ * will resolve the directive and merge all of the public information
+ * from the resolved file into this program context.
+ *
+ * @param activation The activation we're running under for the install.
+ */
+void PackageDirective::install(RexxActivation *context)
+{
+    context->resolvePackage(name, this);
+}
 

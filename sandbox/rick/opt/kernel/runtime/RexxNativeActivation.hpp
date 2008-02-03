@@ -57,12 +57,10 @@ class RexxNativeActivation : public RexxActivationBase {
   inline void  operator delete(void *) { ; }
 
   inline RexxNativeActivation(RESTORETYPE restoreType) { ; };
-         RexxNativeActivation(RexxActivity *, RexxMethod *, RexxNativeCode *);
          RexxNativeActivation(RexxActivity *_activity, RexxActivation *_activation);
          RexxNativeActivation(RexxActivity *_activity);
   void live(size_t);
   void liveGeneral(int reason);
-  void prepare(RexxObject *, RexxString *, size_t, RexxObject **);
   void run(RexxObject *, RexxString *, size_t, RexxObject **, ProtectedObject &);
   void run(ActivityDispatcher &dispatcher);
   void run(CallbackDispatcher &dispatcher);

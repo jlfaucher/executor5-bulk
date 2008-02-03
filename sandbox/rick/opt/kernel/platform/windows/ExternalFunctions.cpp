@@ -73,6 +73,7 @@
 #include "RexxAPIManager.h"
 #include "ProtectedObject.hpp"
 #include "StringUtil.hpp"
+#include "PackageManager.hpp"
 
 #define DEFEXT "REX"                        /* Default OS/2 REXX program ext  */
 #define DIRLEN        256                   /* length of a directory          */
@@ -320,7 +321,7 @@ bool SysExternalFunction(
       return true;
   }
                                        /* no luck try for a registered func */
-  if (activation->callRegisteredExternalFunction(target, arguments, argcount, calltype, result))
+  if (PackageManager::callNativeFunction(activation, activity, target, arguments, argcount, result))
   {
       return true;
   }

@@ -63,7 +63,7 @@
 #include "ExpressionBaseVariable.hpp"
 #include "RexxNativeAPI.h"                  /* Get C-method declares, etc.    */
 
-APIRET REXXENTRY RexxStemSort(const char *stemname, int order, int type,
+RexxReturnCode REXXENTRY RexxStemSort(const char *stemname, int order, int type,
     size_t start, size_t end, size_t firstcol, size_t lastcol);
 
 #define IS_EQUAL(s,l)  (s->strCompare(l))
@@ -83,7 +83,7 @@ APIRET REXXENTRY RexxStemSort(const char *stemname, int order, int type,
 /* Output:                                                                    */
 /*   true if the sort succeeded, false for any parameter errors.              */
 /******************************************************************************/
-APIRET REXXENTRY RexxStemSort(const char *stemname, int order, int type,
+RexxReturnCode REXXENTRY RexxStemSort(const char *stemname, int order, int type,
     size_t start, size_t end, size_t firstcol, size_t lastcol)
 {
     if (!RexxQuery())                         /* Are we up?                     */
@@ -102,7 +102,7 @@ APIRET REXXENTRY RexxStemSort(const char *stemname, int order, int type,
 /*   rc - Composite return code for all request blocks (individual rc's are   */
 /*        set within the shvret fields of each request block).                */
 /******************************************************************************/
-APIRET REXXENTRY RexxVariablePool(PSHVBLOCK pshvblock)
+RexxReturnCode REXXENTRY RexxVariablePool(PSHVBLOCK pshvblock)
 {
 
   if (!RexxQuery())                         /* Are we up?                     */

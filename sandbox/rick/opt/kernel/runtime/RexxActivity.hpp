@@ -250,9 +250,7 @@ public:
    inline RexxActivity *getNestedActivity() { return nestedActivity; }
    inline bool isAttached() { return attached; }
 
-
-   bool hasSecurityManager();
-   bool callSecurityManager(RexxString *name, RexxDirectory *args);
+   SecurityManager *getSecurityManager();
    void inheritSettings(RexxActivity *parent);
    void exitCurrentThread();
    void run(ActivityDispatcher &target);
@@ -278,6 +276,8 @@ public:
    inline RexxMethod *getLastMethod() { return lastMethod; }
    inline void setLastMethod(RexxString *n, RexxMethod *m) { lastMessageName = n; lastMethod = m; }
    inline int  getPriority() { return priority; }
+
+   inline RexxThreadContext *getThreadContext() { return &threadContext.threadContext; }
 
    inline void allocateStackFrame(RexxExpressionStack *stack, size_t entries)
    {
@@ -316,6 +316,7 @@ public:
 
 
    InterpreterInstance *instance;      // the interpreter we're running under
+   ActivityContext      threadContext; // the handed out activity context
    RexxActivity *oldActivity;          // pushed nested activity
    RexxActivationStack   frameStack;   /* our stack used for activation frames */
    RexxDirectory      *conditionobj;   /* condition object for killed activi*/
@@ -361,6 +362,12 @@ public:
    RexxString *lastMessageName;        // class called message
    RexxMethod *lastMethod;             // last called method
    RexxActivity *nestedActivity;       // used to push down activities in threads with more than one instance
+
+   // structures containing the various interface vectors
+   static RexxThreadInterface threadContextFunctions;
+   static MethodContextInterface methodContextFunctions;
+   static CallContextInterface callContextFunctions;
+   static ExitContextInterface exitContextFunctions;
  };
 
 #endif

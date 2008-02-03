@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2008 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -35,32 +35,35 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-#ifndef REXXPLATFORMAPIS_INCLUDED
-#define REXXPLATFORMAPIS_INCLUDED
+/******************************************************************************/
+/* REXX Kernel                                                                */
+/*                                                                            */
+/* Primitive Rexx security manager reference                                  */
+/*                                                                            */
+/******************************************************************************/
+#ifndef SecurityManager_Included
+#define SecurityManager_Included
 
-/***    RexxPullQueue - Retrieve data from an External Data Queue */
-typedef struct _REXXDATETIME {         /* REXX time stamp format            */
-  uint16_t       hours;                /* hour of the day (24-hour)         */
-  uint16_t       minutes;              /* minute of the hour                */
-  uint16_t       seconds;              /* second of the minute              */
-  uint16_t       hundredths;           /* hundredths of a second            */
-  uint16_t       day;                  /* day of the month                  */
-  uint16_t       month;                /* month of the year                 */
-  uint16_t       year;                 /* current year                      */
-  uint16_t       weekday;              /* day of the week                   */
-  uint32_t       microseconds;         /* microseconds                      */
-  uint32_t       yearday;              /* day number within the year        */
-} REXXDATETIME;
+#include "RexxCore.h"
 
-/***    RexxPullQueue - Retrieve data from an External Data Queue */
+class SecurityManager : public RexxInternalObject
+{
+public:
+    inline void *operator new(size_t, void *ptr) {return ptr;}
+    inline void  operator delete(void *, void *) {;}
+    void *operator new(size_t);
+    inline void  operator delete(void *) {;}
 
-RexxReturnCode REXXENTRY RexxPullQueue (
-        const char *,                          /* Name of queue to read from  */
-        PRXSTRING,                             /* RXSTRING to receive data    */
-        REXXDATETIME *,                        /* Stor for data date/time     */
-        size_t);                               /* wait status (WAIT|NOWAIT)   */
-typedef RexxReturnCode (REXXENTRY *PFNREXXPULLQUEUE)(const char *, PCONSTRXSTRING, REXXDATETIME *,
-                                           size_t);
+    inline SecurityManager(RexxObject *m) { manager = m; }
+    inline SecurityManager(RESTORETYPE restoreType) { ; };
 
-#endif /* REXXPLATFORMAPIS_INCLUDED */
+    void         live(size_t);
+    void         liveGeneral(int reason);
+
+protected:
+
+    RexxObject *manager;       // the wrappered manager object
+};
+
+#endif
 

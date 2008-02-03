@@ -87,6 +87,7 @@ class ProtectedObject;
 #define transfer_failed     0x10000000 /* transfer of variable lock failure */
 
 #define elapsed_reset       0x20000000 // The elapsed time stamp was reset via time('r')
+#define guarded_method      0x40000000 // this is a guarded method
 
 /* execution_state values */
 #define ACTIVE    0
@@ -130,7 +131,8 @@ class ActivationSettings
       RexxString    * calltype;            /* (COMMAND/METHOD/FUNCTION/ROUTINE) */
       RexxDirectory * streams;             /* Directory of openned streams      */
       RexxString    * halt_description;    /* description from a HALT condition */
-      RexxObject    * securityManager;     /* security manager object           */
+      SecurityManager * securityManager;   /* security manager object           */
+      RexxObject    * scope;               // scope of the method call
       size_t traceoption;                  /* current active trace option       */
       size_t flags;                        /* trace/numeric and other settings  */
       wholenumber_t trace_skip;            /* count of trace events to skip     */
@@ -255,8 +257,7 @@ RexxObject * activation_find  (void);
    RexxObject      * internalCall(RexxInstruction *, size_t, RexxExpressionStack *, ProtectedObject &);
    RexxObject      * internalCallTrap(RexxInstruction *, RexxDirectory *, ProtectedObject &);
    bool              callMacroSpaceFunction(RexxString *, RexxObject **, size_t, RexxString *, int, ProtectedObject &);
-   RexxMethod      * getMacroCode(RexxString *macroName);
-   bool              callRegisteredExternalFunction(RexxString *, RexxObject **, size_t, RexxString *, ProtectedObject &);
+   static RexxCode * getMacroCode(RexxString *macroName);
    RexxObject      * command(RexxString *, RexxString *);
    int64_t           getElapsed();
    RexxDateTime      getTime();
@@ -319,7 +320,6 @@ RexxObject * activation_find  (void);
    void              closeStreams();
    void              checkTrapTable();
    RexxDirectory   * getStreams();
-   bool              callSecurityManager(RexxString *, RexxDirectory *);
    RexxObject  *novalueHandler(RexxString *);
    RexxVariableBase *retriever(RexxString *);
    RexxVariableBase *directRetriever(RexxString *);
@@ -390,9 +390,11 @@ RexxObject * activation_find  (void);
    inline void              pauseLabel() { if ((this->settings.flags&(trace_labels | trace_debug)) == (trace_labels | trace_debug)) this->debugPause(); };
    inline void              pauseCommand() { if ((this->settings.flags&(trace_commands | trace_debug)) == (trace_commands | trace_debug)) this->debugPause(); };
 
-   inline bool              hasSecurityManager() { return this->settings.securityManager != OREF_NULL; }
+   inline SecurityManager  *getSecurityManager() { return this->settings.securityManager; }
    inline bool              isTopLevel() { return (this->activation_context&TOP_LEVEL_CALL) != 0; }
    inline bool              isForwarded() { return (this->settings.flags&forwarded) != 0; }
+   inline bool              isGuarded() { return (this->settings.flags&guarded_method != 0; }
+   inline bool              setGuarded() { return (this->settings.flags&guarded_method) != 0; }
 
    inline bool              isExternalTraceOn() { return (this->settings.flags&trace_on) != 0; }
    inline void              setExternalTraceOn() { this->settings.flags |= trace_on; }
@@ -654,7 +656,6 @@ RexxObject * activation_find  (void);
 
    ActivationSettings   settings;      /* inherited REXX settings           */
    RexxExpressionStack  stack;         /* current evaluation stack          */
-   RexxMethod          *method;        /* executed method                   */
    RexxCode            *code;          /* rexx method object                */
    RexxObject          *receiver;      /* target of a message invocation    */
    RexxActivity        *activity;      /* current running activation        */

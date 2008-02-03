@@ -130,7 +130,6 @@ void RexxMethod::run(
 
 void RexxMethod::call(
     RexxActivity *activity,            /* activity running under            */
-    RexxObject *receiver,              /* object receiving the message      */
     RexxString *msgname,               /* message to be run                 */
     RexxObject**argPtr,                /* arguments to the method           */
     size_t      argcount,              /* the count of arguments            */
@@ -144,7 +143,7 @@ void RexxMethod::call(
 {
     ProtectedObject p(this);           // belt-and-braces to make sure this is protected
     // just forward this to the code object
-    code->call(activity, this, receiver, msgname, argPtr, argcount, calltype, environment, context, result);
+    code->call(activity, this, msgname, argPtr, argcount, calltype, environment, context, result);
 }
 
 
@@ -472,7 +471,7 @@ RexxMethod *RexxMethodClass::newFileRexx(
                                        /* get the method name as a string   */
   filename = REQUIRED_STRING(filename, ARG_ONE);
                                        /* create a source object            */
-  source = ((RexxSource *)TheNilObject)->classNewFile(filename);
+  source = RexxSource::classNewFile(filename);
   ProtectedObject p(source);
                                        /* finish up processing of this      */
   RexxMethod * newMethod = this->newRexxMethod(source, (RexxClass *)TheNilObject);
@@ -502,7 +501,7 @@ RexxMethod *RexxMethodClass::newRexxBuffer(
                                        /* raise an error                    */
     reportException(Error_Incorrect_method_noarg, IntegerTwo);
                                        /* create a source object            */
-  newSource = (RexxSource *)((RexxSource *)TheNilObject)->classNewBuffered(pgmname, source);
+  newSource = (RexxSource *)RexxSource::classNewBuffered(pgmname, source);
   // we need to protect this source object until parsing is complete
   ProtectedObject p(newSource);
                                        /* now complete method creation      */
@@ -533,7 +532,7 @@ RexxMethod * RexxMethod::processInstore(PRXSTRING instore, RexxString * name )
             RexxMethod *routine = SysRestoreProgramBuffer(&buffer, name);
             // release the buffer memory
             SysReleaseResultMemory(buffer.strptr);
-            return routine; 
+            return routine;
         }
         return OREF_NULL;         // not found
     }
@@ -576,7 +575,7 @@ RexxMethod * RexxMethod::processInstore(PRXSTRING instore, RexxString * name )
 }
 
 
-RexxMethod *RexxMethodClass::newEntry(PNMF entry)
+RexxMethod *RexxMethodClass::newEntry(PNATIVEMETHOD entry)
                         /* routine entry point               */
 /******************************************************************************/
 /* Function:  Create a native method from an entry point                      */
@@ -606,6 +605,7 @@ RexxMethod *RexxMethodClass::restore(
   return (RexxMethod *)envelope->getReceiver();
 }
 
+
 RexxMethod *RexxMethodClass::newFile(
     RexxString *filename)              /* name of the target file           */
 /******************************************************************************/
@@ -613,7 +613,7 @@ RexxMethod *RexxMethodClass::newFile(
 /******************************************************************************/
 {
                                        /* create a source object            */
-  RexxSource *source = ((RexxSource *)TheNilObject)->classNewFile(filename);
+  RexxSource *source = RexxSource::classNewFile(filename);
   ProtectedObject p(source);
                                        /* finish up processing of this      */
   return this->newRexxMethod(source, (RexxClass *)TheNilObject);
@@ -621,19 +621,70 @@ RexxMethod *RexxMethodClass::newFile(
 
 
 
+/**
+ * Run this code as a method invocation.
+ *
+ * @param activity  The current activity.
+ * @param method    The method we're invoking.
+ * @param receiver  The method target object.
+ * @param msgname   The name the method was invoked under.
+ * @param argCount  The count of arguments.
+ * @param arguments The argument pointer.
+ * @param result    The returned result.
+ */
 void BaseCode::run(RexxActivity *activity, RexxMethod *method, RexxObject *receiver, RexxString *msgname, size_t argCount, RexxObject **arguments, ProtectedObject &result)
 {
-    // this is a NOP for the base
+    // The subcasses decide which of run and call are allowed
+    reportException(Error_Interpretation);
 }
 
 
-void BaseCode::call(RexxActivity *activity, RexxMethod *method, RexxObject *receiver,  RexxString *msgname,
-   RexxObject **arguments, size_t argcount, RexxString *ct, RexxString *env, int context, ProtectedObject &result)
+/**
+ * Invoke a code element as a call target.  This form is generally
+ * only used for calls from Rexx code to Rexx code or for top level
+ * program invocation.
+ *
+ * @param activity  The activity we're running under.
+ * @param msgname   The name of the program or name used to invoke the routine.
+ * @param arguments The arguments to the method.
+ * @param argcount  The count of arguments.
+ * @param ct        The call context.
+ * @param env       The current address environment.
+ * @param context   The type of call being made (program call, internal call, interpret,
+ *                  etc.)
+ * @param result    The returned result.
+ */
+void BaseCode::call(RexxActivity *activity, RexxString *msgname, RexxObject **arguments, size_t argcount, RexxString *ct, RexxString *env, int context, ProtectedObject &result)
 {
-    run(activity, method, receiver, msgname, argcount, arguments, result);
+    // the default for this is the simplified call.   This is used by Rexx code to make calls to
+    // both Rexx programs and native routines, so the polymorphism simplifies the processing.
+    call(activity, msgname, arguments, argcount, result);
 }
 
 
+/**
+ * Simplified call form used for calling from Rexx code to native code.
+ *
+ * @param activity  The current activity.
+ * @param msgname   The name of the call.
+ * @param arguments the call arguments.
+ * @param argcount  The count of arguments.
+ * @param result    The returned result.
+ */
+void BaseCode::call(RexxActivity *activity, RexxString *msgname, RexxObject **arguments, size_t argcount, ProtectedObject &result)
+{
+    // The subcasses decide which of run and call are allowed
+    reportException(Error_Interpretation);
+}
+
+
+/**
+ * Return source informaton for a BaseCode object.  If not
+ * representing an element in a source file, this returns
+ * an empty array.
+ *
+ * @return A null array.
+ */
 RexxArray *BaseCode::getSource()
 {
                                        /* this is always a null array       */
@@ -641,6 +692,14 @@ RexxArray *BaseCode::getSource()
 }
 
 
+/**
+ * Set the security manager in the code source context.
+ *
+ * @param manager The new security manager.
+ *
+ * @return Returns true if the manager could be set.  Non-Rexx code objects
+ *         just return false unconditionally.
+ */
 RexxObject *BaseCode::setSecurityManager(RexxObject *manager)
 /******************************************************************************/
 /* Function:  Associate a security manager with a method's source             */
@@ -648,4 +707,14 @@ RexxObject *BaseCode::setSecurityManager(RexxObject *manager)
 {
     // the default is just to return a failure
     return TheFalseObject;
+}
+
+
+/**
+ * Perform any needed resolution before calling a BaseCode
+ * object.  The default resolution step is a no-op.
+ */
+void BaseCode::resolve()
+{
+    // nothing to do by default
 }

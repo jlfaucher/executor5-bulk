@@ -792,25 +792,11 @@ void RexxObject::processProtectedMethod(
     /* have an activation?               */
     if (activation != OREF_NULL)
     {
-        /* have a security manager?          */
-        if (activation->hasSecurityManager())
+        SecurityManager *manager = activation->getSecurityManager();
+        // the security manager can replace provide a new result
+        if (manager->checkProtectedMethod(this, messageName, count, arguments, result)
         {
-            RexxDirectory *securityArgs = new_directory();  /* get the security args             */
-            /* stuff in the name                 */
-            securityArgs->put(messageName, OREF_NAME);
-            /* add in the actual object          */
-            securityArgs->put(this, OREF_OBJECTSYM);
-            /* get an array for the arguments */
-            RexxArray *argumentArray = new (count, arguments) RexxArray;
-            /* add in the arguments              */
-            securityArgs->put(argumentArray, OREF_ARGUMENTS);
-            /* now go ask permission             */
-            if (((RexxActivation *)activation)->callSecurityManager(OREF_METHODNAME, securityArgs))
-            {
-                /* handled, just return the result   */
-                result = securityArgs->fastAt(OREF_RESULT);
-                return;
-            }
+            return;
         }
     }
     /* run the method                    */

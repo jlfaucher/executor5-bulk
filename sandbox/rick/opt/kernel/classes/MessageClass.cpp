@@ -305,7 +305,7 @@ RexxObject *RexxMessage::start(RexxObject *_receiver)
   }
                                        /* create a native method object     */
                                        /*  this method is found in OKNMSG.C */
-  newNMethod = new_method(new RexxNativeCode((PNMF)message_nstart));
+  newNMethod = new_method(new RexxNativeCode((PNATIVEMETHOD)message_nstart));
                                        /* get the current activity          */
   oldActivity = ActivityManager::currentActivity;
                                        /* Create the new activity           */

@@ -468,8 +468,6 @@ class RexxObject : public RexxInternalObject {
      RexxObject  *copyRexx();
      RexxObject  *unknownRexx(RexxString *, RexxArray *);
      RexxObject  *hasMethodRexx(RexxString *);
-     RexxObject  *initProxyRexx(RexxInteger *);
-     bool         callSecurityManager(RexxString *, RexxDirectory *);
      // compare 2 values for equality, potentially falling back on the
      // "==" method for the test.
      bool inline equalValue(RexxObject *other)
@@ -563,7 +561,7 @@ public:
     virtual bool trap(RexxString *, RexxDirectory *) {return false;};
     virtual void setObjNotify(RexxMessage *) {;};
     virtual void termination(){;};
-    virtual bool hasSecurityManager() { return false; }
+    virtual SecurityManager *getSecurityManager()
     virtual bool isForwarded() { return false; }
     virtual bool isStackBase() { return false; }
     virtual RexxObject *getReceiver() { return OREF_NULL; }

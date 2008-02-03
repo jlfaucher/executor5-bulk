@@ -49,33 +49,91 @@
 class RexxNativeCode : public BaseCode
 {
   public:
+
+   RexxNativeCode(RexxString *, RexxString *);
+   void        live(size_t);
+   void        liveGeneral(int reason);
+   virtual void reinit(Package *) = 0;
+   virtual void call(RexxActivity *, RexxString *,  RexxObject **, size_t, ProtectedObject &) = 0;
+
+protected:
+   RexxString *package;               // the package name
+   RexxString *name;                  // the mapped method name
+};
+
+
+class RexxNativeMethod : public RexxNativeCode
+{
+  public:
    inline void *operator new(size_t size, void *ptr) { return ptr; }
    void        *operator new(size_t size);
    inline void  operator delete(void *) { ; }
    inline void  operator delete(void *, void *) { ; }
 
-   inline RexxNativeCode(RESTORETYPE restoreType) { ; };
-   RexxNativeCode(RexxString *, RexxString *, PNMF);
-   RexxNativeCode(PNMF, size_t);
-   RexxNativeCode(PNMF);
-   void        reinit(RexxPointer *);
-   void        live(size_t);
-   void        liveGeneral(int reason);
+   inline RexxNativeMethod(RESTORETYPE restoreType) { ; };
+   RexxNativeMethod(RexxString *, RexxString *, PNATIVEMETHOD);
+   RexxNativeMethod(PNATIVEMETHOD);
+   virtual void reinit(Package *);
+
    void        flatten(RexxEnvelope *envelope);
    RexxObject *unflatten(RexxEnvelope *envelope);
+
    virtual void run(RexxActivity *activity, RexxMethod *method, RexxObject *receiver, RexxString *messageName,
        size_t count, RexxObject **argPtr, ProtectedObject &result);
 
-   inline PNMF        getEntry() { return this->entry; };
-   inline void        setEntry(PNMF v) { this->entry = v; };
-   static void        createClass();
-   static void        restoreClass();
+protected:
+   PNATIVEMETHOD entry;               // method entry point.
+};
+
+
+class RexxFunction : public RexxNativeCode
+{
+  public:
+
+   inline RexxFunction(RexxString *p, RexxString *n) : RexxNativeCode(p, n) { }
+
+   virtual void call(RexxActivity *, RexxString *,  RexxObject **, size_t, ProtectedObject &) = 0;
+};
+
+
+class RexxNativeFunction : public RexxFunction
+{
+  public:
+   inline void *operator new(size_t size, void *ptr) { return ptr; }
+   void        *operator new(size_t size);
+   inline void  operator delete(void *) { ; }
+   inline void  operator delete(void *, void *) { ; }
+
+   inline RexxNativeFunction(RESTORETYPE restoreType) { ; };
+   inline RexxNativeFunction(RexxString *p, RexxString *n, PNATIVEFUNCTION e) : RexxFunction(p, n), entry(e) { }
+   virtual void reinit(Package *);
+
+   void        flatten(RexxEnvelope *envelope);
+   RexxObject *unflatten(RexxEnvelope *envelope);
+
+   virtual void call(RexxActivity *, RexxString *,  RexxObject **, size_t, ProtectedObject &);
 
 protected:
-   RexxString *library;               // the library name
-   RexxString *procedure;             /* External Procedur name            */
-   PNMF        entry;                 /* method entry point.               */
-   size_t      index;                 /* internal native method            */
+   PNATIVEFUNCTION entry;               // method entry point.
+};
+
+
+class RegisteredFunction : public RexxFunction
+{
+  public:
+   inline void *operator new(size_t size, void *ptr) { return ptr; }
+   void        *operator new(size_t size);
+   inline void  operator delete(void *) { ; }
+   inline void  operator delete(void *, void *) { ; }
+
+   inline RegisteredFunction(RESTORETYPE restoreType) { ; };
+   RegisteredFunction(RexxString *n, RexxFunctionHandler *e)  : RexxFunction(OREF_NULL, n), entry(e) { }
+   RegisteredFunction(RexxString *p, RexxString *n, RexxFunctionHandler *)  : RexxFunction(p, n), entry(e) { }
+
+   virtual void call(RexxActivity *, RexxString *,  RexxObject **, size_t, ProtectedObject &);
+
+protected:
+   RexxFunctionHandler *entry;          // method entry point.
 };
 
 #endif

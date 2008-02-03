@@ -50,6 +50,7 @@
 #include "StackClass.hpp"
 #include "Token.hpp"
 #include "Clause.hpp"
+#include "SecurityManager.hpp"
 
 class RexxInstruction;
 class RexxInstructionDo;
@@ -62,7 +63,6 @@ class RexxCompoundVariable;
 #define new_instruction(name, type) this->sourceNewObject(sizeof(RexxInstruction##type), The##type##InstructionBehaviour, KEYWORD_##name)
 #define new_variable_instruction(name, type, size) this->sourceNewObject(size, The##type##InstructionBehaviour, KEYWORD_##name)
 
-#define requires_allowed 0x00000001    /* ::REQUIRES directives still valid */
 #define _interpret       0x00000002    /* this is interpret translation     */
 #define _install         0x00000004    /* installation stuff required       */
 #define reclaimed        0x00000008    /* last clause only partially used   */
@@ -134,17 +134,18 @@ class RexxSource : public RexxInternalObject {
   void        globalSetup();
   RexxString *packLiteral(size_t, size_t, int);
   RexxMethod *method();
-  RexxMethod *interpretMethod(RexxDirectory *);
-  RexxMethod *interpret(RexxString *, RexxDirectory *, size_t);
+  RexxCode   *generateCode();
+  RexxCode   *interpretMethod(RexxDirectory *);
+  RexxCode   *interpret(RexxString *, RexxDirectory *, size_t);
   void        checkDirective();
   bool        hasBody();
   RexxObject *toss(RexxObject *);
   void        cleanup();
   void        mergeRequired(RexxSource *);
-  RexxMethod *resolveRoutine(RexxString *);
+  BaseCode   *resolveRoutine(RexxString *);
   RexxClass  *resolveClass(RexxString *, RexxActivation *);
   void        processInstall(RexxActivation *);
-  RexxMethod *translate(RexxDirectory *);
+  RexxCode   *translate(RexxDirectory *);
   void        resolveDependencies();
   void        completeClass();
   void        directive();
@@ -159,7 +160,7 @@ class RexxSource : public RexxInternalObject {
   void        createAttributeSetterMethod(RexxDirectory *target, RexxString *name, RexxVariableBase *retriever, bool privateMethod, bool protectedMethod, bool guardedMethod);
   void        createConstantGetterMethod(RexxDirectory *classTarget, RexxDirectory *target, RexxString *name, RexxObject *value);
   void        flushControl(RexxInstruction *);
-  RexxMethod *translateBlock(RexxDirectory *);
+  RexxCode   *translateBlock(RexxDirectory *);
   RexxInstruction *instruction();
   RexxVariableBase *addVariable(RexxString *);
   RexxStemVariable  *addStem(RexxString *);
@@ -204,8 +205,9 @@ class RexxSource : public RexxInternalObject {
   void        errorPosition(int, RexxToken *);
   void        errorToken(int, RexxToken *);
   void        blockError(RexxInstruction *);
-  RexxSource *classNewBuffered(RexxString *, RexxBuffer *);
-  RexxSource *classNewFile(RexxString *);
+  static RexxSource *classNewBuffered(RexxString *, RexxBuffer *);
+  static RexxSource *classNewFile(RexxString *);
+  static RexxCode   *generateCodeFromFile(RexxString *);
   RexxObject *sourceNewObject(size_t, RexxBehaviour *, int);
   void        parseTraceSetting(RexxString *, size_t *, size_t *);
   size_t      processVariableList(int);
@@ -291,8 +293,8 @@ class RexxSource : public RexxInternalObject {
   void        holdObject(RexxObject *object) { this->holdstack->push(object);};
   void        saveObject(RexxObject *object) { this->savelist->put(object, object); };
   void        removeObj(RexxObject *object) { if (object != OREF_NULL) this->savelist->remove(object); };
-  void        setSecurityManager(RexxObject *manager) { OrefSet(this, this->securityManager, manager); }
-  RexxObject *getSecurityManager() { return securityManager; }
+  void        setSecurityManager(RexxObject *manager) { OrefSet(this, this->securityManager, new SecurityManager(manager)); }
+  SecurityManager *getSecurityManager() { return securityManager; }
 
   inline RexxDirectory *getLocalRoutines() { return routines; }
   inline RexxDirectory *getPublicRoutines() { return public_routines; }
@@ -320,7 +322,7 @@ protected:
   size_t flags;                        /* parsing flags                     */
   RexxArray  *sourceArray;             /* source lines for this code        */
   RexxString *programName;             /* name of the source program        */
-  RexxObject *securityManager;         /* source execution time security    */
+  SecurityManager *securityManager;    /* source execution time security    */
   const char *current;                 /* current working line              */
   RexxClause *clause;                  /* current clause being created      */
   RexxBuffer *sourceBuffer;            /* contiguous buffered source        */
@@ -335,8 +337,10 @@ protected:
 
   RexxDirectory *routines;             /* routines found on directives      */
   RexxDirectory *public_routines;      /* PUBLIC routines directive routines*/
+  RexxArray     *packages;             // packages requiring loading
   RexxArray     *requires;             /* requires directives               */
   RexxArray     *classes;              /* classes found on directives       */
+  RexxArray     *nativeCode;           // native funtions/methods requiring resolution
                                        /* all public installed classes      */
   RexxDirectory *installed_public_classes;
   RexxDirectory *installed_classes;    /* entire list of installed classes  */

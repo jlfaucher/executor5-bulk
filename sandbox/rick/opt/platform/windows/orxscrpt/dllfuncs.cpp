@@ -50,7 +50,7 @@ BOOL APIENTRY DllMain(HANDLE hModule,
                       DWORD  ul_reason_for_call,
                       LPVOID lpReserved) {
 
-  APIRET   rc;                        /* return code from REXX     */
+  RexxReturnCode   rc;                        /* return code from REXX     */
   ListItem    *Current;
   OrxScript   *Content;
 

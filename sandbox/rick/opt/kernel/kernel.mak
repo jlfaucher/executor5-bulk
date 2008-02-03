@@ -107,7 +107,7 @@ OTPOBJS=$(OTSOBJ1)  $(OTSOBJ2) $(OTIOBJ1) $(OTIOBJ2) $(OTIOBJ3) \
 
 # Following all part of rexx
 OKCOBJ1=$(OR_OUTDIR)\Version.$(OBJ)
-OKCOBJ2= $(OR_OUTDIR)\RexxStartup.$(OBJ)  $(OR_OUTDIR)\Utilities.$(OBJ)
+OKCOBJ2= $(OR_OUTDIR)\APIRoutines.$(OBJ)  $(OR_OUTDIR)\Utilities.$(OBJ)
 OKAOBJS= $(OR_OUTDIR)\GlobalData.$(OBJ)  $(OR_OUTDIR)\GlobalNames.$(OBJ)
 OKLOBJS=$(OR_OUTDIR)\Setup.$(OBJ) $(OR_OUTDIR)\InstructionParser.$(OBJ) \
         $(OR_OUTDIR)\Scanner.$(OBJ)
@@ -188,7 +188,7 @@ ORXFILES=$(OR_OUTDIR)\CoreClasses.orx  $(OR_OUTDIR)\StreamClasses.orx \
 	 $(OR_OUTDIR)\PlatformObjects.orx $(OR_OUTDIR)\orexxole.cls
 
 #define critical header files for forcing recomp
-ORXHEADERS=$(KMESSAGES)\RexxErrorCodes.h $(KMESSAGES)\RexxMessageNumbers.h $(KMESSAGES)\RexxMessageTable.h $(KCORE)\RexxCore.h \
+ORXHEADERS=$(KAPI)\oorexxerrors.h $(KMESSAGES)\RexxErrorCodes.h $(KMESSAGES)\RexxMessageNumbers.h $(KMESSAGES)\RexxMessageTable.h $(KCORE)\RexxCore.h \
     $(KCORE)\PrimitiveBehaviourNames.h $(KCORE)\ClassTypeCodes.h
 
 
@@ -290,6 +290,11 @@ $(KMESSAGES)\RexxMessageTable.h: $(KMESSAGES)\RexxMessageTable.xsl $(KMESSAGES)\
     @ECHO Generating $(@)
     xalan -o $(@) $(KMESSAGES)\rexxmsg.xml $(KMESSAGES)\RexxMessageTable.xsl
 
+$(KAPI)\api\oorexxerrors.h: $(KMESSAGES)\ApiErrorCodes.xsl $(KMESSAGES)\rexxmsg.xml
+    @ECHO .
+    @ECHO Generating $(@)
+    xalan -o $(@) $(KMESSAGES)\rexxmsg.xml $(KMESSAGES)\ApiErrorCodes.xsl
+
 $(KCORE)\PrimitiveBehaviourNames.h: $(KCORE)\PrimitiveBehaviourNames.xsl $(KCORE)\PrimitiveClasses.xml
     @ECHO .
     @ECHO Generating $(@)
@@ -314,6 +319,7 @@ $(OR_OUTDIR)\winmsgtb.res: $(KWINDOWS)\winmsgtb.rc $(KMESSAGES)\DocErrorMessages
     @ECHO .
     @ECHO ResourceCompiling $(@)
         $(rc) $(rcflags_common) $(OR_ORYXRCINCL) -r -fo$(@) $(KWINDOWS)\winmsgtb.rc
+
 
 # Update the version information block
 $(OR_OUTDIR)\verinfo.res: $(KWINDOWS)\verinfo.rc
@@ -412,6 +418,15 @@ ORXHEADERS: $(ORXHEADERS)
 # *** For .CPP files in OR_ORYXLSRC directory
 #
 {$(KCORE)}.cpp{$(OR_OUTDIR)}.obj:
+    @ECHO .
+    @ECHO Compiling $(**)
+    $(OR_CC)  $(cflags_common) $(cflags_dll) /Fo$(@) $(Tp)$(**) $(OR_ORYXINCL)
+
+#
+# *** Inference Rule for CPP->OBJ
+# *** For .CPP files in OR_ORYXLSRC directory
+#
+{$(KAPI)}.cpp{$(OR_OUTDIR)}.obj:
     @ECHO .
     @ECHO Compiling $(**)
     $(OR_CC)  $(cflags_common) $(cflags_dll) /Fo$(@) $(Tp)$(**) $(OR_ORYXINCL)

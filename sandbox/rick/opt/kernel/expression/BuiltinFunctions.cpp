@@ -1886,84 +1886,89 @@ RexxObject *resolve_stream(            /* resolve a stream name             */
 /* Function:  Convert a stream name into a stream object                      */
 /******************************************************************************/
 {
-  RexxObject    *stream;               /* associated stream                 */
-  RexxDirectory *streamTable;          /* current set of open streams       */
-  RexxObject    *streamClass;          /* current stream class              */
-  RexxString    *qualifiedName;        /* qualified file name               */
-  RexxDirectory *securityArgs;         /* security check arguments          */
+    RexxObject    *stream;               /* associated stream                 */
+    RexxDirectory *streamTable;          /* current set of open streams       */
+    RexxObject    *streamClass;          /* current stream class              */
+    RexxString    *qualifiedName;        /* qualified file name               */
+    RexxDirectory *securityArgs;         /* security check arguments          */
 
-  if (added) *added = false;           /* when caller requires stream table entry then initialize */
-  streamTable = context->getStreams(); /* get the current stream set        */
-  if (fullName)                        /* fullName requested?               */
-    *fullName = name;                  /* initialize to name                */
-  /* if length of name is 0, then it's the same as omitted */
-  if (name == OREF_NULL || name->getLength() == 0) { /* no name?                 */
-    if (input) {                       /* input operation?                  */
-                                       /* get the default output stream     */
-      stream = ActivityManager::localEnvironment->at(OREF_INPUT);
+    if (added) *added = false;           /* when caller requires stream table entry then initialize */
+    streamTable = context->getStreams(); /* get the current stream set        */
+    if (fullName)                        /* fullName requested?               */
+    {
+        *fullName = name;                  /* initialize to name                */
     }
-    else {
-                                       /* get the default output stream     */
-      stream = ActivityManager::localEnvironment->at(OREF_OUTPUT);
-    }
-  }
-                                       /* standard input stream?            */
-  else if (name->strICompare(CHAR_STDIN) || name->strICompare(CHAR_CSTDIN))
-                                       /* get the default output stream     */
-    stream = ActivityManager::localEnvironment->at(OREF_INPUT);
-                                       /* standard output stream?           */
-  else if (name->strICompare(CHAR_STDOUT) || name->strICompare(CHAR_CSTDOUT))
-                                       /* get the default output stream     */
-    stream = ActivityManager::localEnvironment->at(OREF_OUTPUT);
-                                       /* standard error stream?            */
-  else if (name->strICompare(CHAR_STDERR) || name->strICompare(CHAR_CSTDERR))
-                                       /* get the default output stream     */
-    stream = ActivityManager::localEnvironment->at(OREF_ERRORNAME);
-  else {
-//  stream = streamTable->at(name);    /* first try supplied name           */
-//  if (stream != OREF_NULL)           /* get one?                          */
-//    return stream;                   /* get out of here                   */
-                                       /* go get the qualified name         */
-    qualifiedName = (RexxString *)SysQualifyFileSystemName(name);
-    if (fullName)                      /* fullName requested?               */
-      *fullName = qualifiedName;       /* provide qualified name            */
-    stack->push(qualifiedName);        /* Protect from GC.                  */
-    /* Note: stream name is pushed to the stack to be protected from GC;    */
-    /* e.g. it is used by the caller to remove stream from stream table.    */
-    /* The stack will be reset after the function was executed and the      */
-    /* protection is released                                               */
-                                       /* see if we've already opened this  */
-    stream = streamTable->at(qualifiedName);
-    if (stream == OREF_NULL) {         /* not open                          */
-                                       /* need to secure this?              */
-      if (context->hasSecurityManager()) {
-        securityArgs = new_directory();/* get the information directory     */
-                                       /* put the name in the directory     */
-        securityArgs->put(qualifiedName, OREF_NAME);
-        if (context->callSecurityManager(OREF_STREAM, securityArgs)) {
-          stream = securityArgs->fastAt(OREF_STREAM);
-          if (stream == OREF_NULL)     /* in an expression and need a result*/
-                                       /* need to raise an exception        */
-            reportException(Error_No_result_object_message, OREF_STREAM);
-                                       /* add to the streams table          */
-          streamTable->put(stream, qualifiedName);
-          return stream;               /* return the stream object          */
+    /* if length of name is 0, then it's the same as omitted */
+    if (name == OREF_NULL || name->getLength() == 0)   /* no name?                 */
+    {
+        if (input)                         /* input operation?                  */
+        {
+            /* get the default output stream     */
+            stream = ActivityManager::localEnvironment->at(OREF_INPUT);
         }
-      }
-                                       /* get the stream class              */
-      streamClass = TheEnvironment->at(OREF_STREAM);
-                                       /* create a new stream object        */
-      stream = streamClass->sendMessage(OREF_NEW, name);
-
-      if (added) {                     /* open the stream?   begin          */
-                                       /* add to the streams table          */
-        streamTable->put(stream, qualifiedName);
-        *added = true;                 /* mark it as added to stream table  */
-      }
+        else
+        {
+            /* get the default output stream     */
+            stream = ActivityManager::localEnvironment->at(OREF_OUTPUT);
+        }
     }
-  }
+    /* standard input stream?            */
+    else if (name->strICompare(CHAR_STDIN) || name->strICompare(CHAR_CSTDIN))
+    {
+        /* get the default output stream     */
+        stream = ActivityManager::localEnvironment->at(OREF_INPUT);
+    }
+    /* standard output stream?           */
+    else if (name->strICompare(CHAR_STDOUT) || name->strICompare(CHAR_CSTDOUT))
+    {
+        /* get the default output stream     */
+        stream = ActivityManager::localEnvironment->at(OREF_OUTPUT);
+    }
+    /* standard error stream?            */
+    else if (name->strICompare(CHAR_STDERR) || name->strICompare(CHAR_CSTDERR))
+    {
+        /* get the default output stream     */
+        stream = ActivityManager::localEnvironment->at(OREF_ERRORNAME);
+    }
+    else
+    {
+        /* go get the qualified name         */
+        qualifiedName = (RexxString *)SysQualifyFileSystemName(name);
+        if (fullName)                      /* fullName requested?               */
+        {
+            *fullName = qualifiedName;       /* provide qualified name            */
+        }
+        stack->push(qualifiedName);        /* Protect from GC.                  */
+        /* Note: stream name is pushed to the stack to be protected from GC;    */
+        /* e.g. it is used by the caller to remove stream from stream table.    */
+        /* The stack will be reset after the function was executed and the      */
+        /* protection is released                                               */
+        /* see if we've already opened this  */
+        stream = streamTable->at(qualifiedName);
+        if (stream == OREF_NULL)           /* not open                          */
+        {
+            SecurityManager *manager = context->getSecurityManager();
+            stream = manager->checkStreamAccess(qualifiedName);
+            if (stream != OREF_NULL)
+            {
+                streamTable->put(stream, qualifiedName);
+                return stream;               /* return the stream object          */
+            }
+            /* get the stream class              */
+            streamClass = TheEnvironment->at(OREF_STREAM);
+            /* create a new stream object        */
+            stream = streamClass->sendMessage(OREF_NEW, name);
 
-  return stream;                       /* return the stream object          */
+            if (added)                       /* open the stream?   begin          */
+            {
+                /* add to the streams table          */
+                streamTable->put(stream, qualifiedName);
+                *added = true;                 /* mark it as added to stream table  */
+            }
+        }
+    }
+
+    return stream;                       /* return the stream object          */
 }
 
 bool check_queue(                      /* check to see if stream is to queue*/

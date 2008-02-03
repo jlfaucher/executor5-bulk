@@ -1,12 +1,12 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2008 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
 /* distribution. A copy is also available at the following address:           */
-/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
+/* http://www.oorexx.org/license.html                          */
 /*                                                                            */
 /* Redistribution and use in source and binary forms, with or                 */
 /* without modification, are permitted provided that the following            */
@@ -35,32 +35,39 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-#ifndef REXXPLATFORMAPIS_INCLUDED
-#define REXXPLATFORMAPIS_INCLUDED
+/******************************************************************************/
+/* REXX Kernel                                            RexxDirective.cpp   */
+/*                                                                            */
+/* Primitive Translator Abstract Directive Code                               */
+/*                                                                            */
+/******************************************************************************/
+#include <stdlib.h>
+#include "RexxCore.h"
+#include "RexxDirective.hpp"
+#include "Clause.hpp"
 
-/***    RexxPullQueue - Retrieve data from an External Data Queue */
-typedef struct _REXXDATETIME {         /* REXX time stamp format            */
-  uint16_t       hours;                /* hour of the day (24-hour)         */
-  uint16_t       minutes;              /* minute of the hour                */
-  uint16_t       seconds;              /* second of the minute              */
-  uint16_t       hundredths;           /* hundredths of a second            */
-  uint16_t       day;                  /* day of the month                  */
-  uint16_t       month;                /* month of the year                 */
-  uint16_t       year;                 /* current year                      */
-  uint16_t       weekday;              /* day of the week                   */
-  uint32_t       microseconds;         /* microseconds                      */
-  uint32_t       yearday;              /* day number within the year        */
-} REXXDATETIME;
+/**
+ * Construct a new directive instruction.
+ *
+ * @param clause The clause this directive is derived from.  Used to obtain
+ *               the location information.
+ * @param type   The type of directive.
+ */
+RexxDirective::RexxDirective(RexxClause *clause, int type)
+{
+    this->clearObject();                 /* start out clean                   */
+                                         /* record the instruction type       */
+    this->instructionType = type;
+    if (clause != OREF_NULL)
+    {           /* have a clause object?             */
+                /* fill in default location info     */
+        instructionLocation = clause->getLocation();
+    }
+    else
+    {
+        // zero the location
+        instructionLocation.setStart(0, 0);
+    }
+}
 
-/***    RexxPullQueue - Retrieve data from an External Data Queue */
-
-RexxReturnCode REXXENTRY RexxPullQueue (
-        const char *,                          /* Name of queue to read from  */
-        PRXSTRING,                             /* RXSTRING to receive data    */
-        REXXDATETIME *,                        /* Stor for data date/time     */
-        size_t);                               /* wait status (WAIT|NOWAIT)   */
-typedef RexxReturnCode (REXXENTRY *PFNREXXPULLQUEUE)(const char *, PCONSTRXSTRING, REXXDATETIME *,
-                                           size_t);
-
-#endif /* REXXPLATFORMAPIS_INCLUDED */
 

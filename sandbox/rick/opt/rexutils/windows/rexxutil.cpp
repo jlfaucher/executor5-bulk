@@ -4120,7 +4120,7 @@ LONG REXXENTRY SysRequestMutexSem(
   PRXSTRING retstr )                   /* Return RXSTRING            */
 {
   void     *handle;                    /* mutex handle               */
-  APIRET    rc;                        /* creation return code       */
+  RexxReturnCode    rc;                        /* creation return code       */
   int       timeout;                   /* timeout value              */
 
   if (numargs < 1 ||                   /* too few, or                */
@@ -4368,7 +4368,7 @@ LONG REXXENTRY SysWaitEventSem(
   PRXSTRING retstr )                   /* Return RXSTRING            */
 {
   void     *handle;                    /* mutex handle               */
-  APIRET    rc;                        /* creation return code       */
+  RexxReturnCode    rc;                        /* creation return code       */
   int       timeout;                   /* timeout value              */
 
   if (numargs < 1 ||                   /* too few, or                */
@@ -4415,7 +4415,7 @@ LONG REXXENTRY SysSetPriority(
 {
   int       pclass;                    /* priority class             */
   int       level;                     /* priority level             */
-  APIRET    rc;                        /* creation return code       */
+  RexxReturnCode    rc;                        /* creation return code       */
   HANDLE    process;
   HANDLE    thread;
   DWORD     iclass=-1;
@@ -5615,7 +5615,7 @@ LONG REXXENTRY SysGetFileDateTime(
 }
 
 
-APIRET REXXENTRY RexxStemSort(const char *stemname, int order, int type,
+RexxReturnCode REXXENTRY RexxStemSort(const char *stemname, int order, int type,
     size_t start, size_t end, size_t firstcol, size_t lastcol);
 
 /*************************************************************************
@@ -5764,7 +5764,7 @@ LONG REXXENTRY SysStemDelete(
   PRXSTRING retstr )                   /* Return RXSTRING            */
 
 {
-  APIRET        rc;
+  RexxReturnCode        rc;
   CHAR          szStemName[255];
   PSZ           pszStemIdx;
   CHAR          szValue[255];
@@ -5935,7 +5935,7 @@ LONG REXXENTRY SysStemInsert(
   PRXSTRING retstr )                   /* Return RXSTRING            */
 
 {
-  APIRET        rc;
+  RexxReturnCode        rc;
   CHAR          szStemName[255];
   PSZ           pszStemIdx;
   CHAR          szValue[255];
@@ -6095,7 +6095,7 @@ LONG REXXENTRY SysStemCopy(
   PRXSTRING retstr )                   /* Return RXSTRING            */
 
 {
-  APIRET        rc;
+  RexxReturnCode        rc;
   CHAR          szFromStemName[255];
   CHAR          szToStemName[255];
   PSZ           pszFromStemIdx;
@@ -6905,7 +6905,7 @@ LONG REXXENTRY SysWinGetPrinters(
   DWORD currentSize = 10*sizeof(PRINTER_INFO_2)*sizeof(char);
   char *pArray = (char*) malloc(sizeof(char)*currentSize);
   SHVBLOCK shvb;
-  APIRET rc;
+  RexxReturnCode rc;
 
   if (numargs != 1)                    /* If no args, then its an    */
                                        /* incorrect call             */

@@ -1,12 +1,12 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2008 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
 /* distribution. A copy is also available at the following address:           */
-/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
+/* http://www.oorexx.org/license.html                          */
 /*                                                                            */
 /* Redistribution and use in source and binary forms, with or                 */
 /* without modification, are permitted provided that the following            */
@@ -35,32 +35,47 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-#ifndef REXXPLATFORMAPIS_INCLUDED
-#define REXXPLATFORMAPIS_INCLUDED
+/******************************************************************************/
+/* REXX Kernel                                          ClassDirective.hpp    */
+/*                                                                            */
+/* Primitive Abstract Directive Class Definitions                             */
+/*                                                                            */
+/******************************************************************************/
+#ifndef Included_ClassDirective
+#define Included_ClassDirective
 
-/***    RexxPullQueue - Retrieve data from an External Data Queue */
-typedef struct _REXXDATETIME {         /* REXX time stamp format            */
-  uint16_t       hours;                /* hour of the day (24-hour)         */
-  uint16_t       minutes;              /* minute of the hour                */
-  uint16_t       seconds;              /* second of the minute              */
-  uint16_t       hundredths;           /* hundredths of a second            */
-  uint16_t       day;                  /* day of the month                  */
-  uint16_t       month;                /* month of the year                 */
-  uint16_t       year;                 /* current year                      */
-  uint16_t       weekday;              /* day of the week                   */
-  uint32_t       microseconds;         /* microseconds                      */
-  uint32_t       yearday;              /* day number within the year        */
-} REXXDATETIME;
+#include "RexxDirective.hpp"
 
-/***    RexxPullQueue - Retrieve data from an External Data Queue */
+class ClassDirective : public RexxDirective
+{
+ friend class RexxSource;
+ public:
+           void *operator new(size_t);
+    inline void *operator new(size_t size, void *objectPtr) { return objectPtr; }
+    inline void  operator delete(void *) { }
+    inline void  operator delete(void *, void *) { }
 
-RexxReturnCode REXXENTRY RexxPullQueue (
-        const char *,                          /* Name of queue to read from  */
-        PRXSTRING,                             /* RXSTRING to receive data    */
-        REXXDATETIME *,                        /* Stor for data date/time     */
-        size_t);                               /* wait status (WAIT|NOWAIT)   */
-typedef RexxReturnCode (REXXENTRY *PFNREXXPULLQUEUE)(const char *, PCONSTRXSTRING, REXXDATETIME *,
-                                           size_t);
+    PackageDirective(RexxString *, RexxClause *);
+    inline PackageDirective(RESTORETYPE restoreType) { ; };
 
-#endif /* REXXPLATFORMAPIS_INCLUDED */
+    void live(size_t);
+    void liveGeneral(int reason);
+    void flatten(RexxEnvelope *);
+
+    inline RexxString *getName() { return name; }
+
+protected:
+    RexxString *publicName;         // the published name of the class
+    RexxString *idName;             // the internal ID name
+    RexxString *metaClassName;      // name of the class meta class
+    RexxString *subclassName;       // the class used for the subclassing operation.
+    RexxArray  *inheritsClasses;    // the names of inherited classes
+    RexxTable  *instanceMethods;    // the methods attached to this class
+    RexxTable  *classMethods;       // the set of class methods
+    bool        publicClass;        // this is a public class
+    bool        mixinClass;         // this is a mixin class
+
+};
+
+#endif
 

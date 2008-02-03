@@ -558,7 +558,7 @@ extern "C" {
 #endif
 
 #if defined(AIX) || defined(LINUX)
-APIRET REXXENTRY SysLoadFuncs(
+RexxReturnCode REXXENTRY SysLoadFuncs(
     const char *name,                    /* Function name              */
     size_t numargs,                      /* Number of arguments        */
     CONSTRXSTRING args[],                /* Argument array             */
@@ -1687,7 +1687,7 @@ sigaction(SIGPIPE, &new_action, NULL); /* exitClear on broken pipe            */
 * Return:    NO_UTIL_ERROR                                               *
 *************************************************************************/
 
-APIRET REXXENTRY SysSleep(
+RexxReturnCode REXXENTRY SysSleep(
     const char *name,                    /* Function name              */
     size_t numargs,                      /* Number of arguments        */
     CONSTRXSTRING args[],                /* Argument array             */
@@ -1776,7 +1776,7 @@ APIRET REXXENTRY SysSleep(
 * Return:    null string                                                 *
 *************************************************************************/
 /* Entry for upper case function name                                */
-APIRET REXXENTRY SYSLOADFUNCS(
+RexxReturnCode REXXENTRY SYSLOADFUNCS(
     const char *name,                    /* Function name              */
     size_t numargs,                      /* Number of arguments        */
     CONSTRXSTRING args[],                /* Argument array             */
@@ -1786,7 +1786,7 @@ APIRET REXXENTRY SYSLOADFUNCS(
    return( SysLoadFuncs( name, numargs, args, queuename,  retstr ) );
 }
 
-APIRET REXXENTRY SysLoadFuncs(
+RexxReturnCode REXXENTRY SysLoadFuncs(
     const char *name,                    /* Function name              */
     size_t numargs,                      /* Number of arguments        */
     CONSTRXSTRING args[],                /* Argument array             */
@@ -1818,7 +1818,7 @@ APIRET REXXENTRY SysLoadFuncs(
 * Return:    NO_UTIL_ERROR - Successful.                                 *
 *************************************************************************/
 
-APIRET REXXENTRY SysDropFuncs(
+RexxReturnCode REXXENTRY SysDropFuncs(
     const char *name,                    /* Function name              */
     size_t numargs,                      /* Number of arguments        */
     CONSTRXSTRING args[],                /* Argument array             */
@@ -1850,7 +1850,7 @@ APIRET REXXENTRY SysDropFuncs(
 * Return:    NO_UTIL_ERROR - Successful.                              *
 **********************************************************************/
 
-APIRET REXXENTRY SysCls(
+RexxReturnCode REXXENTRY SysCls(
     const char *name,                    /* Function name              */
     size_t numargs,                      /* Number of arguments        */
     CONSTRXSTRING args[],                /* Argument array             */
@@ -1876,14 +1876,14 @@ APIRET REXXENTRY SysCls(
 * Return:    return code from RexxAddMacro                               *
 *************************************************************************/
 
-APIRET REXXENTRY SysAddRexxMacro(
+RexxReturnCode REXXENTRY SysAddRexxMacro(
     const char *name,                    /* Function name              */
     size_t numargs,                      /* Number of arguments        */
     CONSTRXSTRING args[],                /* Argument array             */
     const char * queuename,              /* Current queue              */
     PRXSTRING retstr )                   /* Return RXSTRING            */
 {
-  APIRET      rc;                      /* creation return code       */
+  RexxReturnCode      rc;                      /* creation return code       */
   size_t       position;                /* added position             */
 
   if (numargs < 2 || numargs > 3 ||    /* wrong number?              */
@@ -1926,14 +1926,14 @@ APIRET REXXENTRY SysAddRexxMacro(
 * Return:    return code from RexxDropMacro                              *
 *************************************************************************/
 
-APIRET REXXENTRY SysDropRexxMacro(
+RexxReturnCode REXXENTRY SysDropRexxMacro(
     const char *name,                    /* Function name              */
     size_t numargs,                      /* Number of arguments        */
     CONSTRXSTRING args[],                /* Argument array             */
     const char * queuename,              /* Current queue              */
     PRXSTRING retstr )                   /* Return RXSTRING            */
 {
-  APIRET      rc;                      /* creation return code       */
+  RexxReturnCode      rc;                      /* creation return code       */
 
   if (numargs != 1)                    /* wrong number?              */
     return INVALID_ROUTINE;            /* raise error condition      */
@@ -1954,14 +1954,14 @@ APIRET REXXENTRY SysDropRexxMacro(
 * Return:    return code from RexxClearMacroSpace()                      *
 *************************************************************************/
 
-APIRET REXXENTRY SysClearRexxMacroSpace(
+RexxReturnCode REXXENTRY SysClearRexxMacroSpace(
     const char *name,                    /* Function name              */
     size_t numargs,                      /* Number of arguments        */
     CONSTRXSTRING args[],                /* Argument array             */
     const char * queuename,              /* Current queue              */
     PRXSTRING retstr )                   /* Return RXSTRING            */
 {
-  APIRET      rc;                      /* creation return code       */
+  RexxReturnCode      rc;                      /* creation return code       */
 
   if (numargs)                         /* wrong number?              */
     return INVALID_ROUTINE;            /* raise error condition      */
@@ -1981,14 +1981,14 @@ APIRET REXXENTRY SysClearRexxMacroSpace(
 *                                                                        *
 * Return:    return code from RexxSaveMacroSpace()                       *
 *************************************************************************/
-APIRET REXXENTRY SysSaveRexxMacroSpace(
+RexxReturnCode REXXENTRY SysSaveRexxMacroSpace(
     const char *name,                    /* Function name              */
     size_t numargs,                      /* Number of arguments        */
     CONSTRXSTRING args[],                /* Argument array             */
     const char * queuename,              /* Current queue              */
     PRXSTRING retstr )                   /* Return RXSTRING            */
 {
-  APIRET      rc;                      /* creation return code       */
+  RexxReturnCode      rc;                      /* creation return code       */
 
   if (numargs != 1)                    /* wrong number?              */
     return INVALID_ROUTINE;            /* raise error condition      */
@@ -2010,14 +2010,14 @@ APIRET REXXENTRY SysSaveRexxMacroSpace(
 * Return:    return code from RexxLoadMacroSpace()                       *
 *************************************************************************/
 
-APIRET REXXENTRY SysLoadRexxMacroSpace(
+RexxReturnCode REXXENTRY SysLoadRexxMacroSpace(
     const char *name,                    /* Function name              */
     size_t numargs,                      /* Number of arguments        */
     CONSTRXSTRING args[],                /* Argument array             */
     const char * queuename,              /* Current queue              */
     PRXSTRING retstr )                   /* Return RXSTRING            */
 {
-  APIRET      rc;                      /* creation return code       */
+  RexxReturnCode      rc;                      /* creation return code       */
 
   if (numargs != 1)                    /* wrong number?              */
     return INVALID_ROUTINE;            /* raise error condition      */
@@ -2038,7 +2038,7 @@ APIRET REXXENTRY SysLoadRexxMacroSpace(
 *                                                                        *
 * Return:    position of the macro ('B' or 'A'), returns null for errors.*
 *************************************************************************/
-APIRET REXXENTRY SysQueryRexxMacro(
+RexxReturnCode REXXENTRY SysQueryRexxMacro(
     const char *name,                    /* Function name              */
     size_t numargs,                      /* Number of arguments        */
     CONSTRXSTRING args[],                /* Argument array             */
@@ -2073,14 +2073,14 @@ APIRET REXXENTRY SysQueryRexxMacro(
 *                                                                        *
 * Return:    return code from RexxReorderMacro                           *
 *************************************************************************/
-APIRET REXXENTRY SysReorderRexxMacro(
+RexxReturnCode REXXENTRY SysReorderRexxMacro(
     const char *name,                    /* Function name              */
     size_t numargs,                      /* Number of arguments        */
     CONSTRXSTRING args[],                /* Argument array             */
     const char * queuename,              /* Current queue              */
     PRXSTRING retstr )                   /* Return RXSTRING            */
 {
-  APIRET      rc;                      /* creation return code       */
+  RexxReturnCode      rc;                      /* creation return code       */
   size_t       position;                /* added position             */
 
   if (numargs != 2 ||                  /* wrong number?              */
@@ -2114,7 +2114,7 @@ APIRET REXXENTRY SysReorderRexxMacro(
 *                                                                        *
 *************************************************************************/
 
-APIRET REXXENTRY SysMkDir(
+RexxReturnCode REXXENTRY SysMkDir(
     const char *name,                    /* Function name              */
     size_t numargs,                      /* Number of arguments        */
     CONSTRXSTRING args[],                /* Argument array             */
@@ -2197,7 +2197,7 @@ APIRET REXXENTRY SysMkDir(
 *                                                                        *
 *************************************************************************/
 
-APIRET REXXENTRY SysRmDir(
+RexxReturnCode REXXENTRY SysRmDir(
     const char *name,                    /* Function name              */
     size_t numargs,                      /* Number of arguments        */
     CONSTRXSTRING args[],                /* Argument array             */
@@ -2288,7 +2288,7 @@ APIRET REXXENTRY SysRmDir(
 * Return:    Return code from DosDelete() function.                      *
 *************************************************************************/
 
-APIRET REXXENTRY SysFileDelete(
+RexxReturnCode REXXENTRY SysFileDelete(
     const char *name,                    /* Function name              */
     size_t numargs,                      /* Number of arguments        */
     CONSTRXSTRING args[],                /* Argument array             */
@@ -2367,7 +2367,7 @@ APIRET REXXENTRY SysFileDelete(
 *            ERROR_NOMEM     - Out of memory.                            *
 *************************************************************************/
 
-APIRET REXXENTRY SysFileSearch(
+RexxReturnCode REXXENTRY SysFileSearch(
     const char *name,                    /* Function name              */
     size_t numargs,                      /* Number of arguments        */
     CONSTRXSTRING args[],                /* Argument array             */
@@ -2509,7 +2509,7 @@ APIRET REXXENTRY SysFileSearch(
 *            ''     - Specified file not found along path.               *
 *************************************************************************/
 
-APIRET REXXENTRY SysSearchPath(
+RexxReturnCode REXXENTRY SysSearchPath(
     const char *name,                    /* Function name              */
     size_t numargs,                      /* Number of arguments        */
     CONSTRXSTRING args[],                /* Argument array             */
@@ -2570,7 +2570,7 @@ APIRET REXXENTRY SysSearchPath(
 * Return:    Linux Version                                               *
 *************************************************************************/
 
-APIRET REXXENTRY SysLinVer(
+RexxReturnCode REXXENTRY SysLinVer(
     const char *name,                    /* Function name              */
     size_t numargs,                      /* Number of arguments        */
     CONSTRXSTRING args[],                /* Argument array             */
@@ -2600,7 +2600,7 @@ APIRET REXXENTRY SysLinVer(
 * Return:    Operating System name (LINUX/AIX/WINDOWS) and Version       *
 *************************************************************************/
 
-APIRET REXXENTRY SysVersion(
+RexxReturnCode REXXENTRY SysVersion(
     const char *name,                    /* Function name              */
     size_t numargs,                      /* Number of arguments        */
     CONSTRXSTRING args[],                /* Argument array             */
@@ -2636,7 +2636,7 @@ APIRET REXXENTRY SysVersion(
 *                     SysCloseEventSem, and SysOpenEventSem              *
 *            '' - Empty string in case of any error                      *
 *************************************************************************/
-APIRET REXXENTRY SysCreateEventSem(
+RexxReturnCode REXXENTRY SysCreateEventSem(
     const char *name,                    /* Function name              */
     size_t numargs,                      /* Number of arguments        */
     CONSTRXSTRING args[],                /* Argument array             */
@@ -2767,7 +2767,7 @@ APIRET REXXENTRY SysCreateEventSem(
 * Return:    result - return code from DosOpenEventSem                   *
 *************************************************************************/
 
-APIRET REXXENTRY SysOpenEventSem(
+RexxReturnCode REXXENTRY SysOpenEventSem(
     const char *name,                    /* Function name              */
     size_t numargs,                      /* Number of arguments        */
     CONSTRXSTRING args[],                /* Argument array             */
@@ -2831,7 +2831,7 @@ APIRET REXXENTRY SysOpenEventSem(
 * Return:    result - return code from DosResetEventSem                  *
 *************************************************************************/
 
-APIRET REXXENTRY SysResetEventSem(
+RexxReturnCode REXXENTRY SysResetEventSem(
     const char *name,                    /* Function name              */
     size_t numargs,                      /* Number of arguments        */
     CONSTRXSTRING args[],                /* Argument array             */
@@ -2905,7 +2905,7 @@ APIRET REXXENTRY SysResetEventSem(
 * Return:    result - return code from DosPostEventSem                   *
 *************************************************************************/
 
-APIRET REXXENTRY SysPostEventSem(
+RexxReturnCode REXXENTRY SysPostEventSem(
     const char *name,                    /* Function name              */
     size_t numargs,                      /* Number of arguments        */
     CONSTRXSTRING args[],                /* Argument array             */
@@ -2974,7 +2974,7 @@ APIRET REXXENTRY SysPostEventSem(
 * Return:    result - return code from DosCloseEventSem                  *
 *************************************************************************/
 
-APIRET REXXENTRY SysCloseEventSem(
+RexxReturnCode REXXENTRY SysCloseEventSem(
     const char *name,                    /* Function name              */
     size_t numargs,                      /* Number of arguments        */
     CONSTRXSTRING args[],                /* Argument array             */
@@ -3076,7 +3076,7 @@ APIRET REXXENTRY SysCloseEventSem(
 * Return:    result - return code from DosWaitEventSem                   *
 *************************************************************************/
 
-APIRET REXXENTRY SysWaitEventSem(
+RexxReturnCode REXXENTRY SysWaitEventSem(
     const char *name,                    /* Function name              */
     size_t numargs,                      /* Number of arguments        */
     CONSTRXSTRING args[],                /* Argument array             */
@@ -3219,7 +3219,7 @@ APIRET REXXENTRY SysWaitEventSem(
 *                     SysCloseEventSem, and SysOpenEventSem              *
 *            '' - Empty string in case of any error                      *
 *************************************************************************/
-APIRET REXXENTRY SysCreateMutexSem(
+RexxReturnCode REXXENTRY SysCreateMutexSem(
     const char *name,                    /* Function name              */
     size_t numargs,                      /* Number of arguments        */
     CONSTRXSTRING args[],                /* Argument array             */
@@ -3343,7 +3343,7 @@ APIRET REXXENTRY SysCreateMutexSem(
 * Return:    result - return code from DosOpenEventSem                   *
 *************************************************************************/
 
-APIRET REXXENTRY SysOpenMutexSem(
+RexxReturnCode REXXENTRY SysOpenMutexSem(
     const char *name,                    /* Function name              */
     size_t numargs,                      /* Number of arguments        */
     CONSTRXSTRING args[],                /* Argument array             */
@@ -3407,7 +3407,7 @@ APIRET REXXENTRY SysOpenMutexSem(
 * Return:    result - return code from DosWaitEventSem                   *
 *************************************************************************/
 
-APIRET REXXENTRY SysRequestMutexSem(
+RexxReturnCode REXXENTRY SysRequestMutexSem(
     const char *name,                    /* Function name              */
     size_t numargs,                      /* Number of arguments        */
     CONSTRXSTRING args[],                /* Argument array             */
@@ -3560,7 +3560,7 @@ APIRET REXXENTRY SysRequestMutexSem(
 * Return:    result - return code from DosCloseEventSem                  *
 *************************************************************************/
 
-APIRET REXXENTRY SysReleaseMutexSem(
+RexxReturnCode REXXENTRY SysReleaseMutexSem(
     const char *name,                    /* Function name              */
     size_t numargs,                      /* Number of arguments        */
     CONSTRXSTRING args[],                /* Argument array             */
@@ -3630,7 +3630,7 @@ APIRET REXXENTRY SysReleaseMutexSem(
 * Return:    result - return code from DosCloseEventSem                  *
 *************************************************************************/
 
-APIRET REXXENTRY SysCloseMutexSem(
+RexxReturnCode REXXENTRY SysCloseMutexSem(
     const char *name,                    /* Function name              */
     size_t numargs,                      /* Number of arguments        */
     CONSTRXSTRING args[],                /* Argument array             */
@@ -3747,7 +3747,7 @@ APIRET REXXENTRY SysCloseMutexSem(
 *            ERROR_NOMEM     - Out of memory.                            *
 *************************************************************************/
 
-APIRET REXXENTRY SysFileTree(
+RexxReturnCode REXXENTRY SysFileTree(
     const char *name,                    /* Function name              */
     size_t numargs,                      /* Number of arguments        */
     CONSTRXSTRING args[],                /* Argument array             */
@@ -3902,7 +3902,7 @@ APIRET REXXENTRY SysFileTree(
 *            ''    - No more files exist given specified template.       *
 *************************************************************************/
 
-APIRET REXXENTRY SysTempFileName(
+RexxReturnCode REXXENTRY SysTempFileName(
     const char *name,                    /* Function name              */
     size_t numargs,                      /* Number of arguments        */
     CONSTRXSTRING args[],                /* Argument array             */
@@ -4058,7 +4058,7 @@ APIRET REXXENTRY SysTempFileName(
 *                                                                        *
 *************************************************************************/
 
-APIRET REXXENTRY SysSetPriority(
+RexxReturnCode REXXENTRY SysSetPriority(
     const char *name,                    /* Function name              */
     size_t numargs,                      /* Number of arguments        */
     CONSTRXSTRING args[],                /* Argument array             */
@@ -4067,7 +4067,7 @@ APIRET REXXENTRY SysSetPriority(
 {
   int       pclass;                    /* priority class                      */
   int       level;                     /* priority level                      */
-  APIRET    rc;                        /* creation return code                */
+  RexxReturnCode    rc;                        /* creation return code                */
 
   if (numargs != 2 ||                  /* must have two                       */
       !RXVALIDSTRING(args[0]))         /* first is omitted                    */
@@ -4127,7 +4127,7 @@ APIRET REXXENTRY SysSetPriority(
 *            Reason: keep portability                                    *
 *************************************************************************/
 
-APIRET REXXENTRY SysGetMessage(
+RexxReturnCode REXXENTRY SysGetMessage(
     const char *name,                    /* Function name              */
     size_t numargs,                      /* Number of arguments        */
     CONSTRXSTRING args[],                /* Argument array             */
@@ -4359,7 +4359,7 @@ APIRET REXXENTRY SysGetMessage(
 *            supports the selection of a set in the msg catalog.         *
 *************************************************************************/
 
-APIRET REXXENTRY SysGetMessageX(
+RexxReturnCode REXXENTRY SysGetMessageX(
     const char *name,                    /* Function name              */
     size_t numargs,                      /* Number of arguments        */
     CONSTRXSTRING args[],                /* Argument array             */
@@ -4586,7 +4586,7 @@ APIRET REXXENTRY SysGetMessageX(
 * Return:    The key striked.                                            *
 *************************************************************************/
 
-APIRET REXXENTRY SysGetKey(
+RexxReturnCode REXXENTRY SysGetKey(
     const char *name,                    /* Function name              */
     size_t numargs,                      /* Number of arguments        */
     CONSTRXSTRING args[],                /* Argument array             */
@@ -4633,14 +4633,14 @@ APIRET REXXENTRY SysGetKey(
 * Return:    null string                                                 *
 *************************************************************************/
 
-APIRET REXXENTRY SysAddFuncPkg(
+RexxReturnCode REXXENTRY SysAddFuncPkg(
     const char *name,                    /* Function name              */
     size_t numargs,                      /* Number of arguments        */
     CONSTRXSTRING args[],                /* Argument array             */
     const char * queuename,              /* Current queue              */
     PRXSTRING retstr )                   /* Return RXSTRING            */
 {
-  APIRET rc = NULL;
+  RexxReturnCode rc = NULL;
   int    j;                            /* Counter                    */
   size_t arglength;                    /* length of the count        */
   char *  argstring;                    /* input sleep time           */
@@ -4701,7 +4701,7 @@ APIRET REXXENTRY SysAddFuncPkg(
 * Function:  SysAddCmdPkg    like SysAddFuncPkg                          *
 *                                                                        *
 *************************************************************************/
-APIRET REXXENTRY SysAddCmdPkg(
+RexxReturnCode REXXENTRY SysAddCmdPkg(
     const char *name,                    /* Function name              */
     size_t numargs,                      /* Number of arguments        */
     CONSTRXSTRING args[],                /* Argument array             */
@@ -4730,14 +4730,14 @@ APIRET REXXENTRY SysAddCmdPkg(
 * Return:    NO_UTIL_ERROR - Successful.                                 *
 *************************************************************************/
 
-APIRET REXXENTRY SysDropFuncPkg(
+RexxReturnCode REXXENTRY SysDropFuncPkg(
     const char *name,                    /* Function name              */
     size_t numargs,                      /* Number of arguments        */
     CONSTRXSTRING args[],                /* Argument array             */
     const char * queuename,              /* Current queue              */
     PRXSTRING retstr )                   /* Return RXSTRING            */
 {
-  APIRET rc = NULL;
+  RexxReturnCode rc = NULL;
   int    j;                            /* Counter                    */
   size_t arglength;                    /* length of the count        */
   char *  argstring;                    /* input sleep time           */
@@ -4796,7 +4796,7 @@ APIRET REXXENTRY SysDropFuncPkg(
 * Function:  SysDropCmdPkg    like SysDropFuncPkg                        *
 *                                                                        *
 *************************************************************************/
-APIRET REXXENTRY SysDropCmdPkg(
+RexxReturnCode REXXENTRY SysDropCmdPkg(
     const char *name,                    /* Function name              */
     size_t numargs,                      /* Number of arguments        */
     CONSTRXSTRING args[],                /* Argument array             */
@@ -4821,7 +4821,7 @@ APIRET REXXENTRY SysDropCmdPkg(
 * Return:    Process_ID                                                  *
 *************************************************************************/
 
-APIRET REXXENTRY SysGetpid(
+RexxReturnCode REXXENTRY SysGetpid(
     const char *name,                    /* Function name              */
     size_t numargs,                      /* Number of arguments        */
     CONSTRXSTRING args[],                /* Argument array             */
@@ -4851,7 +4851,7 @@ APIRET REXXENTRY SysGetpid(
 * Return:    Process_ID   ( to parent child''s ID / to child the ID 0 )  *
 *************************************************************************/
 
-APIRET REXXENTRY SysFork(
+RexxReturnCode REXXENTRY SysFork(
     const char *name,                    /* Function name              */
     size_t numargs,                      /* Number of arguments        */
     CONSTRXSTRING args[],                /* Argument array             */
@@ -4880,7 +4880,7 @@ APIRET REXXENTRY SysFork(
 * Return:    exit code of child                                          *
 *************************************************************************/
 
-APIRET REXXENTRY SysWait(
+RexxReturnCode REXXENTRY SysWait(
     const char *name,                    /* Function name              */
     size_t numargs,                      /* Number of arguments        */
     CONSTRXSTRING args[],                /* Argument array             */
@@ -4912,7 +4912,7 @@ APIRET REXXENTRY SysWait(
 * Return:    'handle handle'     ( handle for read and handle for write )*
 *************************************************************************/
 
-APIRET REXXENTRY SysCreatePipe(
+RexxReturnCode REXXENTRY SysCreatePipe(
     const char *name,                    /* Function name              */
     size_t numargs,                      /* Number of arguments        */
     CONSTRXSTRING args[],                /* Argument array             */
@@ -4970,14 +4970,14 @@ APIRET REXXENTRY SysCreatePipe(
 *            -1 - failure during dump                                     *
 *************************************************************************/
 
-APIRET REXXENTRY SysDumpVariables(
+RexxReturnCode REXXENTRY SysDumpVariables(
     const char *name,                    /* Function name              */
     size_t numargs,                      /* Number of arguments        */
     CONSTRXSTRING args[],                /* Argument array             */
     const char * queuename,              /* Current queue              */
     PRXSTRING retstr )                   /* Return RXSTRING            */
 {
-  APIRET    rc;                        /* Ret code                   */
+  RexxReturnCode    rc;                        /* Ret code                   */
   SHVBLOCK  shvb;
   int       handle;
   bool      fCloseFile = false;
@@ -5053,7 +5053,7 @@ APIRET REXXENTRY SysDumpVariables(
 *            other - date and time as YYYY-MM-DD HH:MM:SS                *
 *************************************************************************/
 
-APIRET REXXENTRY SysGetFileDateTime(
+RexxReturnCode REXXENTRY SysGetFileDateTime(
     const char *name,                    /* Function name              */
     size_t numargs,                      /* Number of arguments        */
     CONSTRXSTRING args[],                /* Argument array             */
@@ -5140,7 +5140,7 @@ APIRET REXXENTRY SysGetFileDateTime(
 *            -1 - failure attribute update                               *
 *************************************************************************/
 
-APIRET REXXENTRY SysSetFileDateTime(
+RexxReturnCode REXXENTRY SysSetFileDateTime(
     const char *name,                    /* Function name              */
     size_t numargs,                      /* Number of arguments        */
     CONSTRXSTRING args[],                /* Argument array             */
@@ -5225,7 +5225,7 @@ APIRET REXXENTRY SysSetFileDateTime(
 }
 
 
-APIRET REXXENTRY RexxStemSort(const char *stemname, int order, int type,
+RexxReturnCode REXXENTRY RexxStemSort(const char *stemname, int order, int type,
     size_t start, size_t end, size_t firstcol, size_t lastcol);
 
 /*************************************************************************
@@ -5246,7 +5246,7 @@ APIRET REXXENTRY RexxStemSort(const char *stemname, int order, int type,
 *            -1 - sort failed                                            *
 *************************************************************************/
 
-APIRET REXXENTRY SysStemSort(
+RexxReturnCode REXXENTRY SysStemSort(
     const char *name,                    /* Function name              */
     size_t numargs,                      /* Number of arguments        */
     CONSTRXSTRING args[],                /* Argument array             */
@@ -5365,14 +5365,14 @@ APIRET REXXENTRY SysStemSort(
 *            -1 - delete failed                                          *
 *************************************************************************/
 
-APIRET REXXENTRY SysStemDelete(
+RexxReturnCode REXXENTRY SysStemDelete(
     const char *name,                    /* Function name              */
     size_t numargs,                      /* Number of arguments        */
     CONSTRXSTRING args[],                /* Argument array             */
     const char * queuename,              /* Current queue              */
     PRXSTRING retstr )                   /* Return RXSTRING            */
 {
-  APIRET        rc;
+  RexxReturnCode        rc;
   char          szStemName[255];
   char *        pszStemIdx;
   char          szValue[255];
@@ -5535,14 +5535,14 @@ APIRET REXXENTRY SysStemDelete(
 *            -1 - insert failed                                          *
 *************************************************************************/
 
-APIRET REXXENTRY SysStemInsert(
+RexxReturnCode REXXENTRY SysStemInsert(
     const char *name,                    /* Function name              */
     size_t numargs,                      /* Number of arguments        */
     CONSTRXSTRING args[],                /* Argument array             */
     const char * queuename,              /* Current queue              */
     PRXSTRING retstr )                   /* Return RXSTRING            */
 {
-  APIRET        rc;
+  RexxReturnCode        rc;
   char          szStemName[255];
   char *        pszStemIdx;
   char          szValue[255];
@@ -5694,14 +5694,14 @@ APIRET REXXENTRY SysStemInsert(
 *            -1 - stem copy failed                                       *
 *************************************************************************/
 
-APIRET REXXENTRY SysStemCopy(
+RexxReturnCode REXXENTRY SysStemCopy(
     const char *name,                    /* Function name              */
     size_t numargs,                      /* Number of arguments        */
     CONSTRXSTRING args[],                /* Argument array             */
     const char * queuename,              /* Current queue              */
     PRXSTRING retstr )                   /* Return RXSTRING            */
 {
-  APIRET        rc;
+  RexxReturnCode        rc;
   char          szFromStemName[255];
   char          szToStemName[255];
   char *        pszFromStemIdx;
@@ -5981,7 +5981,7 @@ APIRET REXXENTRY SysStemCopy(
 *    NEW:    "PRCVDSIG"  -  returns current process received signals      *
 ***************************************************************************/
 
-APIRET REXXENTRY SysQueryProcess(
+RexxReturnCode REXXENTRY SysQueryProcess(
     const char *name,                    /* Function name              */
     size_t numargs,                      /* Number of arguments        */
     CONSTRXSTRING args[],                /* Argument array             */
@@ -6122,7 +6122,7 @@ APIRET REXXENTRY SysQueryProcess(
 * Return:    Description or empty string                                 *
 *************************************************************************/
 
-APIRET REXXENTRY SysGetErrortext(
+RexxReturnCode REXXENTRY SysGetErrortext(
     const char *name,                    /* Function name              */
     size_t numargs,                      /* Number of arguments        */
     CONSTRXSTRING args[],                /* Argument array             */
@@ -6162,7 +6162,7 @@ APIRET REXXENTRY SysGetErrortext(
 * Return:    REXXUTIL.DLL Version                                        *
 *************************************************************************/
 
-APIRET REXXENTRY SysUtilVersion(
+RexxReturnCode REXXENTRY SysUtilVersion(
     const char *name,                    /* Function name              */
     size_t numargs,                      /* Number of arguments        */
     CONSTRXSTRING args[],                /* Argument array             */
@@ -6188,7 +6188,7 @@ APIRET REXXENTRY SysUtilVersion(
 * Return:    Logical.                                                    *
 *************************************************************************/
 
-APIRET REXXENTRY SysIsFile(
+RexxReturnCode REXXENTRY SysIsFile(
     const char *name,                    /* Function name              */
     size_t numargs,                      /* Number of arguments        */
     CONSTRXSTRING args[],                /* Argument array             */
@@ -6221,7 +6221,7 @@ APIRET REXXENTRY SysIsFile(
 * Return:    Logical.                                                    *
 *************************************************************************/
 
-APIRET REXXENTRY SysIsFileDirectory(
+RexxReturnCode REXXENTRY SysIsFileDirectory(
     const char *name,                    /* Function name              */
     size_t numargs,                      /* Number of arguments        */
     CONSTRXSTRING args[],                /* Argument array             */
@@ -6253,7 +6253,7 @@ APIRET REXXENTRY SysIsFileDirectory(
 * Return:    Logical.                                                    *
 *************************************************************************/
 
-APIRET REXXENTRY SysIsFileLink(
+RexxReturnCode REXXENTRY SysIsFileLink(
     const char *name,                    /* Function name              */
     size_t numargs,                      /* Number of arguments        */
     CONSTRXSTRING args[],                /* Argument array             */

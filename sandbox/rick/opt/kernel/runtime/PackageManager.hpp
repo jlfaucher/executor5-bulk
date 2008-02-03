@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2008 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -35,32 +35,46 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-#ifndef REXXPLATFORMAPIS_INCLUDED
-#define REXXPLATFORMAPIS_INCLUDED
+/******************************************************************************/
+/* REXX Kernel                                                                */
+/*                                                                            */
+/* Primitive Rexx function/method package                                     */
+/*                                                                            */
+/******************************************************************************/
+#ifndef PackageManager_Included
+#define PackageManager_Included
 
-/***    RexxPullQueue - Retrieve data from an External Data Queue */
-typedef struct _REXXDATETIME {         /* REXX time stamp format            */
-  uint16_t       hours;                /* hour of the day (24-hour)         */
-  uint16_t       minutes;              /* minute of the hour                */
-  uint16_t       seconds;              /* second of the minute              */
-  uint16_t       hundredths;           /* hundredths of a second            */
-  uint16_t       day;                  /* day of the month                  */
-  uint16_t       month;                /* month of the year                 */
-  uint16_t       year;                 /* current year                      */
-  uint16_t       weekday;              /* day of the week                   */
-  uint32_t       microseconds;         /* microseconds                      */
-  uint32_t       yearday;              /* day number within the year        */
-} REXXDATETIME;
+#include "RexxCore.h"
+#include "Package.hpp"
 
-/***    RexxPullQueue - Retrieve data from an External Data Queue */
+class PackageManager
+{
+public:
+    static void        live();
+    static void        liveGeneral();
+    static Package    *getPackage(RexxString *name);
+    static Package    *loadPackage(RexxString *name);
+    static PNATIVEMETHOD      resolveMethodEntry(RexxString *packageName, RexxString *methodName);
+    static RexxNativeCode    *resolveMethod(RexxString *packageName, RexxString *methodName);
+    static PNATIVEFUNCTION   *resolveFunction(RexxString *function, RexxString *package, RexxString *procedure);
+    static void        loadInternalPackage(RexxString *name, RexxPackageEntry *p);
+    static void        createRootPackages();
+    static void        restoreRootPackages(PackageManager *master);
+    FunctionActivator *findFunction(RexxString *name);
+    void        addFunction(RexxString *name, FunctionActivator *func);
+    RexxObject *addRegisteredFunction(RexxString *name, RexxString *module, RexxString *proc);
+    RexxObject *dropRegisteredFunction(RexxString *name);
+    RexxObject *queryRegisteredFunction(RexxString *name);
+    void        unload();
 
-RexxReturnCode REXXENTRY RexxPullQueue (
-        const char *,                          /* Name of queue to read from  */
-        PRXSTRING,                             /* RXSTRING to receive data    */
-        REXXDATETIME *,                        /* Stor for data date/time     */
-        size_t);                               /* wait status (WAIT|NOWAIT)   */
-typedef RexxReturnCode (REXXENTRY *PFNREXXPULLQUEUE)(const char *, PCONSTRXSTRING, REXXDATETIME *,
-                                           size_t);
+    static PackageManager *singleInstance;
 
-#endif /* REXXPLATFORMAPIS_INCLUDED */
+protected:
+    static RexxDirectory *packages;        // our loaded packages
+    static RexxDirectory *packageFunctions; // table of functions loaded from packages
+    static RexxDirectory *registeredFunctions;  // table of functions resolved by older registration mechanisms
+    static Package *rexxPackage;           // generated internal rexx package;
+};
+
+#endif
 

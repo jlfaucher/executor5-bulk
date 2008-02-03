@@ -839,7 +839,7 @@ void __stdcall parseText(void *arguments)
   RXSTRING instore[2];
   RXSYSEXIT exit_list[9];
   RXSTRING  rexxretval;
-  APIRET    rc;
+  RexxReturnCode    rc;
   SHORT     rexxrc = 0;
 
   char funcHandler[128];
@@ -934,7 +934,7 @@ void __stdcall createCode(void *arguments)
   char        funcHandler[128];
   char       *script = NULL;
   CONSTRXSTRING source;
-  APIRET      rc;
+  RexxReturnCode      rc;
 
 
 #if defined(DEBUGC)+defined(DEBUGZ)
@@ -1079,7 +1079,7 @@ void __stdcall runMethod(void *arguments)
   REXXOBJECT  pResult = NULL;
   REXXOBJECT  pMethod = NULL;
   REXXOBJECT  securitySource = NULL;
-  APIRET      rc;
+  RexxReturnCode      rc;
   RXSYSEXIT   exit_list[9];
   HRESULT     hResult=S_OK;
   OrxScriptError *ErrObj;

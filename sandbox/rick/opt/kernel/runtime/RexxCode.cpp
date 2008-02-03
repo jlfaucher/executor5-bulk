@@ -77,8 +77,6 @@ RexxCode::RexxCode(
 
 void RexxCode::call(
     RexxActivity *activity,            /* activity running under            */
-    RexxMethod *method,                // the method object getting invoked
-    RexxObject *receiver,              /* object receiving the message      */
     RexxString *msgname,               /* message to be run                 */
     RexxObject**argPtr,                /* arguments to the method           */
     size_t      argcount,              /* the count of arguments            */
@@ -93,10 +91,10 @@ void RexxCode::call(
     // check the stack space before proceeding
     activity->checkStackSpace();       /* have enough stack space?          */
                                        /* add to the activity stack         */
-    RexxActivation *newacta = ActivityManager::newActivation(activity, method, this, OREF_NULL, calltype, environment, context);
+    RexxActivation *newacta = ActivityManager::newActivation(activity, this, OREF_NULL, calltype, environment, context);
     activity->pushStackFrame(newacta);
                 /* run the method and return result  */
-    newacta->run(receiver, msgname, argPtr, argcount, OREF_NULL, result);
+    newacta->run(OREF_NULL, msgname, argPtr, argcount, OREF_NULL, result);
 }
 
 

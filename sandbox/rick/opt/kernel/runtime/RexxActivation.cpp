@@ -118,7 +118,11 @@ RexxActivation::RexxActivation(RexxActivity* _activity, RexxMethod * _method, Re
 {
     this->clearObject();                 /* start with a fresh object         */
     this->activity = _activity;          /* save the activity pointer         */
-    this->method = _method;              /* save the method pointer           */
+    this->scope = _method->getScope();   // save the scope
+    if (_method->isGuarded())            // make sure we set the appropriate guarded state
+    {
+        setGuarded();
+    }
     this->code = _code;                  /* get the REXX method object        */
     this->settings.intermediate_trace = false;
     this->activation_context = METHODCALL;  // the context is a method call
@@ -137,8 +141,6 @@ RexxActivation::RexxActivation(RexxActivity* _activity, RexxMethod * _method, Re
     this->setHasReferences();
                                        /* get initial settings template     */
     this->settings = activationSettingsTemplate;
-                                       /* set up for internal calls         */
-    this->settings.parent_method = this->method;
                                        /* save the source also              */
     this->settings.parent_code = this->code;
 
@@ -158,12 +160,11 @@ RexxActivation::RexxActivation(RexxActivity* _activity, RexxMethod * _method, Re
 }
 
 
-RexxActivation::RexxActivation(RexxActivity *_activity, RexxMethod *_method, RexxCode *_code, RexxActivation *_parent,
+RexxActivation::RexxActivation(RexxActivity *_activity, RexxCode *_code, RexxActivation *_parent,
     RexxString *calltype, RexxString *env, int context)
 {
     this->clearObject();                 /* start with a fresh object         */
     this->activity = _activity;          /* save the activity pointer         */
-    this->method = _method;              /* save the method pointer           */
     this->code = _code;                  /* get the REXX method object        */
     if (context == DEBUGPAUSE)           /* actually a debug pause?           */
     {
@@ -210,8 +211,6 @@ RexxActivation::RexxActivation(RexxActivity *_activity, RexxMethod *_method, Rex
     {
         /* get initial settings template     */
         this->settings = activationSettingsTemplate;
-        /* set up for internal calls         */
-        this->settings.parent_method = this->method;
         /* save the source also              */
         this->settings.parent_code = this->code;
 
@@ -300,10 +299,10 @@ RexxObject * RexxActivation::run(RexxObject *_receiver, RexxString *msgname, Rex
             else
             {
                 /* guarded method?                   */
-                if (this->method->isGuarded())
+                if (isGuarded())
                 {
                     /* get the object variables          */
-                    this->settings.object_variables = this->receiver->getObjectVariables(this->method->getScope());
+                    this->settings.object_variables = this->receiver->getObjectVariables(this->scope);
                     /* reserve the variable scope        */
                     this->settings.object_variables->reserve(this->activity);
                     /* and remember for later            */
@@ -312,7 +311,7 @@ RexxObject * RexxActivation::run(RexxObject *_receiver, RexxString *msgname, Rex
                 /* initialize the this variable      */
                 this->setLocalVariable(OREF_SELF, VARIABLE_SELF, this->receiver);
                 /* initialize the SUPER variable     */
-                this->setLocalVariable(OREF_SUPER, VARIABLE_SUPER, this->receiver->superScope(this->method->getScope()));
+                this->setLocalVariable(OREF_SUPER, VARIABLE_SUPER, this->receiver->superScope(this->scope));
             }
         }
         else
@@ -748,7 +747,7 @@ void RexxActivation::live(size_t liveMark)
 /******************************************************************************/
 {
   memory_mark(this->receiver);
-  memory_mark(this->method);
+  memory_mark(this->scope);
   memory_mark(this->code);
   memory_mark(this->settings.securityManager);
   memory_mark(this->receiver);
@@ -768,7 +767,6 @@ void RexxActivation::live(size_t liveMark)
   memory_mark(this->condition_queue);
   memory_mark(this->settings.traps);
   memory_mark(this->settings.conditionObj);
-  memory_mark(this->settings.parent_method);
   memory_mark(this->settings.parent_code);
   memory_mark(this->settings.current_env);
   memory_mark(this->settings.alternate_env);
@@ -798,7 +796,6 @@ void RexxActivation::liveGeneral(int reason)
 /* Function:  Generalized object marking                                      */
 /******************************************************************************/
 {
-  memory_mark_general(this->method);
   memory_mark_general(this->receiver);
   memory_mark_general(this->code);
   memory_mark_general(this->settings.securityManager);
@@ -819,7 +816,6 @@ void RexxActivation::liveGeneral(int reason)
   memory_mark_general(this->condition_queue);
   memory_mark_general(this->settings.traps);
   memory_mark_general(this->settings.conditionObj);
-  memory_mark_general(this->settings.parent_method);
   memory_mark_general(this->settings.parent_code);
   memory_mark_general(this->settings.current_env);
   memory_mark_general(this->settings.alternate_env);
@@ -1434,10 +1430,12 @@ RexxVariableDictionary * RexxActivation::getObjectVariables()
 /******************************************************************************/
 {
                                        /* no retrieved yet?                 */
-  if (this->settings.object_variables == OREF_NULL) {
+  if (this->settings.object_variables == OREF_NULL)
+  {
                                        /* get the object variables          */
-    this->settings.object_variables = this->receiver->getObjectVariables(this->method->getScope());
-    if (this->method->isGuarded()) {   /* guarded method?                   */
+    this->settings.object_variables = this->receiver->getObjectVariables(this->scope);
+    if (isGuarded())                   /* guarded method?                   */
+    {
                                        /* reserve the variable scope        */
       this->settings.object_variables->reserve(this->activity);
                                        /* and remember for later            */
@@ -1565,7 +1563,7 @@ void RexxActivation::guardOn()
                                        /* not retrieved yet?                */
     if (this->settings.object_variables == OREF_NULL)
                                        /* get the object variables          */
-      this->settings.object_variables = this->receiver->getObjectVariables(this->method->getScope());
+      this->settings.object_variables = this->receiver->getObjectVariables(this->scope);
                                        /* lock the variable dictionary      */
     this->settings.object_variables->reserve(this->activity);
                                        /* set the state here also           */
@@ -1978,7 +1976,7 @@ void RexxActivation::interpret(
                                        /* translate the code                */
   newMethod = this->code->interpret(codestring, this->current->getLineNumber());
                                        /* create a new activation           */
-  newActivation = ActivityManager::newActivation(this->activity, newMethod, (RexxCode *)newMethod->getCode(), this, OREF_NULL, OREF_NULL, INTERPRET);
+  newActivation = ActivityManager::newActivation(this->activity, (RexxCode *)newMethod->getCode(), this, OREF_NULL, OREF_NULL, INTERPRET);
   this->activity->pushStackFrame(newActivation); /* push on the activity stack        */
   ProtectedObject r;
                                        /* run the internal routine on the   */
@@ -2002,7 +2000,7 @@ void RexxActivation::debugInterpret(   /* interpret interactive debug input */
         /* translate the code                */
         newMethod = this->code->interpret(codestring, this->current->getLineNumber());
         /* create a new activation           */
-        newActivation = ActivityManager::newActivation(this->activity, newMethod, (RexxCode *)newMethod->getCode(), this, OREF_NULL, OREF_NULL, DEBUGPAUSE);
+        newActivation = ActivityManager::newActivation(this->activity, (RexxCode *)newMethod->getCode(), this, OREF_NULL, OREF_NULL, DEBUGPAUSE);
         this->activity->pushStackFrame(newActivation); /* push on the activity stack        */
         ProtectedObject r;
                                              /* run the internal routine on the   */
@@ -2099,118 +2097,6 @@ bool RexxActivation::callMacroSpaceFunction(RexxString * target, RexxObject **_a
 
 
 /**
- * Attempt to call a register native code function.
- *
- * @param target    The target function name.
- * @param arguments The argument pointer.
- * @param argcount  The count of arguments,
- * @param calltype  The type of call (FUNCTION or SUBROUTINE)
- * @param result    The function result.
- *
- * @return true if the function was located and called.
- */
-bool RexxActivation::callRegisteredExternalFunction(RexxString *target, RexxObject **_arguments, size_t _argcount,
-    RexxString *calltype, ProtectedObject &_result)
-{
-    /* default return code buffer        */
-    char      default_return_buffer[DEFRXSTRING];
-
-    const char *funcname = target->getStringData();   /* point to the function name        */
-
-    RXSTRING funcresult;
-    int functionrc;                      /* Return code from function         */
-
-    // set a default result value
-    result = OREF_NULL;
-
-    if (RexxQueryFunction(funcname) != 0)    /* is the function registered ?  */
-    {
-         // not located
-         return false;
-    }
-
-    /* allocate enough memory for all arguments */
-    /* at least one item needs to be allocated to prevent error reporting */
-    PCONSTRXSTRING argrxarray = (PCONSTRXSTRING) SysAllocateResultMemory(sizeof(CONSTRXSTRING) * Numerics::maxVal(_argcount, (size_t)1));
-    if (argrxarray == OREF_NULL)    /* memory error?                   */
-    {
-        reportException(Error_System_resources);
-    }
-
-    ProtectedSet savedObjects;
-    /* create RXSTRING arguments         */
-    for (size_t argindex=0; argindex < _argcount; argindex++)
-    {
-        /* get the next argument             */
-        RexxObject *argument = _arguments[argindex];
-        if (argument != OREF_NULL)       /* have an argument?                 */
-        {
-            /* force to string form              */
-            RexxString *stringArgument = argument->stringValue();
-            // if the string version is not the same, we're going to need to make
-            // sure the string version is protected from garbage collection until
-            // the call is finished
-            if (stringArgument != argument)
-            {
-                // make sure this is protected
-                savedObjects.add(stringArgument);
-            }
-            stringArgument->toRxstring(argrxarray[argindex]);
-        }
-        else                             /* have an omitted argument          */
-        {
-            /* give it zero length               */
-            argrxarray[argindex].strlength = 0;
-            /* and a zero pointer                */
-            argrxarray[argindex].strptr = NULL;
-        }
-    }
-    /* get the current queue name        */
-    const char *queuename = SysGetCurrentQueue()->getStringData();
-    /* make the RXSTRING result          */
-    MAKERXSTRING(funcresult, default_return_buffer, sizeof(default_return_buffer));
-
-    APIRET rc = 0;
-/* CRITICAL window here -->>  ABSOLUTELY NO KERNEL CALLS ALLOWED            */
-    {
-        CalloutBlock releaser;
-        rc = RexxCallFunction(funcname, _argcount, argrxarray, &functionrc, &funcresult, queuename);
-    }
-/* END CRITICAL window here -->>  kernel calls now allowed again            */
-
-    SysReleaseResultMemory(argrxarray);
-
-    if (rc == 0)                       /* If good rc from RexxCallFunc      */
-    {
-        if (functionrc == 0)             /* If good rc from function          */
-        {
-            if (funcresult.strptr)         /* If we have a result, return it    */
-            {
-                /* make a string result              */
-                _result = new_string(funcresult);
-                /* user give us a new buffer?        */
-                if (funcresult.strptr != default_return_buffer )
-                {
-                    /* free it                           */
-                    SysReleaseResultMemory(funcresult.strptr);
-                }
-            }
-        }
-        else                             /* Bad rc from function, signal      */
-        {
-            /* error                             */
-            reportException(Error_Incorrect_call_external, target);
-        }
-    }
-    else                               /* Bad rc from RexxCallFunction,     */
-    {
-        reportException(Error_Routine_not_found_name, target);
-    }
-    return true;                      /* Show what happened                */
-}
-
-
-/**
  * Main method for performing an external routine call.  This
  * orchestrates the search order for locating an external routine.
  *
@@ -2231,11 +2117,11 @@ RexxObject *RexxActivation::externalCall(RexxString *target, size_t _argcount, R
 
 
     // Step 1:  Check for a ::ROUTINE definition in the local context
-    RexxMethod *routine = this->settings.parent_code->resolveRoutine(target);
+    BaseCode *routine = this->settings.parent_code->resolveRoutine(target);
     if (routine != OREF_NULL)
     {
         // call and return the result
-        routine->call(this->activity, (RexxObject *)this, target, _arguments, _argcount, calltype, OREF_NULL, EXTERNALCALL, resultObj);
+        routine->call(this->activity, target, _arguments, _argcount, calltype, OREF_NULL, EXTERNALCALL, resultObj);
         return(RexxObject *)resultObj;
     }
     // Step 2:  See if the function call exit fields this one
@@ -2244,11 +2130,11 @@ RexxObject *RexxActivation::externalCall(RexxString *target, size_t _argcount, R
         return(RexxObject *)resultObj;
     }
     // Step 3:  Check the global functions directory
-    routine = (RexxMethod *)TheFunctionsDirectory->get(target);
+    routine = (BaseCode *)TheFunctionsDirectory->get(target);
     if (routine != OREF_NULL)        /* not found yet?                    */
     {
         // call and return the result
-        routine->call(this->activity, (RexxObject *)this, target, _arguments, _argcount, calltype, OREF_NULL, EXTERNALCALL, resultObj);
+        routine->call(this->activity, target, _arguments, _argcount, calltype, OREF_NULL, EXTERNALCALL, resultObj);
         return(RexxObject *)resultObj;
     }
 
@@ -2265,7 +2151,7 @@ RexxObject *RexxActivation::externalCall(RexxString *target, size_t _argcount, R
     }
 
     // Step 6:  The globally published public routines
-    routine = (RexxMethod*) ThePublicRoutines->entry(target);
+    routine = (BaseCode *)ThePublicRoutines->entry(target);
     // if it's made it through all of these steps without finding anything, we
     // finally have a routine non found situation
     if (routine == OREF_NULL)
@@ -2273,7 +2159,7 @@ RexxObject *RexxActivation::externalCall(RexxString *target, size_t _argcount, R
         reportException(Error_Routine_not_found_name, target);
     }
     // call the last option and return the result
-    routine->call(this->activity, (RexxObject *)this, target, _arguments, _argcount, calltype, OREF_NULL, EXTERNALCALL, resultObj);
+    routine->call(this->activity, target, _arguments, _argcount, calltype, OREF_NULL, EXTERNALCALL, resultObj);
     return(RexxObject *)resultObj;
 }
 
@@ -2344,10 +2230,10 @@ bool RexxActivation::callExternalRexx(
  *
  * @return If available, the unflattened method image.
  */
-RexxMethod *RexxActivation::getMacroCode(RexxString *macroName)
+RexxCode *RexxActivation::getMacroCode(RexxString *macroName)
 {
     RXSTRING       macroImage;
-    RexxMethod   * macroMethod = OREF_NULL;
+    RexxCode     * macroMethod = OREF_NULL;
 
     macroImage.strptr = NULL;
     if (RexxExecuteMacroFunction(macroName->getStringData(), &macroImage) == 0)
@@ -2363,109 +2249,61 @@ RexxMethod *RexxActivation::getMacroCode(RexxString *macroName)
 }
 
 
-RexxObject * RexxActivation::loadRequired(
-    RexxString      * target,          /* target of the call                */
-    RexxInstruction * instruction )    /* ::REQUIRES instruction from source*/
-/******************************************************************************/
-/* Function:  Load a routine for a ::REQUIRED directive instruction           */
-/******************************************************************************/
+/**
+ * This is resolved in the context of the calling program.
+ *
+ * @param name   The name to resolve.
+ *
+ * @return The fully resolved program name, or OREF_NULL if this can't be
+ *         located.
+ */
+RexxString *RexxActivation::resolveProgram(RexxString *name)
 {
-  RexxString    * fullname = OREF_NULL;/* fully resolved install name       */
-  RexxMethod    * _method = OREF_NULL; /* method to invoke                  */
-  RexxDirectory * securityArgs = OREF_NULL;   /* security check arguments          */
-  ProtectedObject resultObj;
-  unsigned short  usMacroPosition;     /* macro search order                */
-  bool            fFileExists = true;  /* does required file exist          */
-  bool            fMacroExists = false;/* does required macro exist         */
+    activity->resolveProgram(name, this->code->getProgramName();
+}
 
-                                       /* set the current instruction for   */
-  this->current = instruction;         /* error reporting                   */
-  if (this->hasSecurityManager()) {    /* need to perform a security check? */
-    securityArgs = new_directory();    /* get the security arguments        */
-                                       /* add the program name              */
-    securityArgs->put(target, OREF_NAME);
-                                       /* did manager handle this?          */
-    if (this->callSecurityManager(OREF_REQUIRES, securityArgs))
-                                       /* get the resolved name             */
-      fullname = (RexxString *)securityArgs->fastAt(OREF_NAME);
-    else
-                                       /* go resolve the name               */
-      fullname = SysResolveProgramName(target, this->code->getProgramName());
-  }
-  else
-                                       /* go resolve the name               */
-    fullname = SysResolveProgramName(target, this->code->getProgramName());
 
-  /* if fullname is still OREF_NULL then no file was found, remember this */
-  if (fullname == OREF_NULL)
-  {
-    fFileExists = false;
-    fullname = target; /* use target name for all other things */
-  }
+/**
+ * Load a ::REQUIRES directive when the source file is first
+ * invoked.
+ *
+ * @param target The name of the ::REQUIRES
+ * @param instruction
+ *               The directive instruction being processed.
+ */
+void RexxActivation::loadRequired(RexxString *target, RexxInstruction *instruction)
+{
+    // this will cause the correct location to be used for error reporting
+    this->current = instruction;
+    // get a fully resolved name for this....we might locate this under either name
+    RexxString *fullName = resolveProgram(target);
 
-  /* check to see whether a macro exists */
-  fMacroExists = (RexxQueryMacro(target->getStringData(), &usMacroPosition) == 0);
-  if (fMacroExists && (usMacroPosition == RXMACRO_SEARCH_BEFORE))
-    fullname = target; /* use target name for references because macro will be used */
+    ProtectedObject p;
+    RexxCode *requiresFile = PackageManager::getRequires(activity, target, fullName, p);
 
-  this->stack.push(fullname);           /* protect the name                  */
-  /* Check whether or not required file is listed in the "STATIC_REQUIRES" directory */
-  if (TheStaticRequires->entry(fullname) != OREF_NULL)
-  {
-      this->stack.pop();                   /* now remove the protection         */
-      return TheNilObject;                 /* already loaded, just quit without loading */
-  }
-                                       /* Are we already trying to install  */
-                                       /*this ::REQUIRES?                   */
-  if (this->activity->runningRequires(fullname) != OREF_NULL) {
-    reportException(Error_Translation_duplicate_requires);
-  }
-
-  /* first see if we have something in macrospace with this name */
-  if (fMacroExists && (usMacroPosition == RXMACRO_SEARCH_BEFORE))
-  {
-      _method = getMacroCode(target);
-  }
-
-  /* if not in PRE macrospace search order, try to load a file */
-  if (fFileExists && (_method == OREF_NULL))
-  {
-    _method = SysRestoreProgram(fullname);/* try to restore saved image      */
-    if (_method == OREF_NULL) {           /* unable to restore?              */
-                                         /* go translate the image          */
-      _method = TheMethodClass->newFile(fullname);
-      SysSaveProgram(fullname, _method);  /* go save this method             */
+    if (requiresFile == OREF_NULL)             /* couldn't create this?             */
+    {
+        /* report an error                   */
+        reportException(Error_Routine_not_found_requires, target);
     }
-  }
+    /* now merge all of the info         */
+    this->settings.parent_code->mergeRequired(requiresFile->getSourceObject());
+}
 
-  /* if still not found try to load POST macro */
-  if ((_method == OREF_NULL) && fMacroExists)
-    _method = getMacroCode(target);
 
-  if (_method == OREF_NULL)             /* couldn't create this?             */
-                                       /* report an error                   */
-    reportException(Error_Routine_not_found_requires, target);
-                                       /* Indicate this routine is being    */
-                                       /*installed                          */
-  ProtectedObject p(method);
-
-  this->activity->addRunningRequires(fullname);
-  if (this->hasSecurityManager())
-  {
-
-    RexxObject *manager = securityArgs->fastAt(new_string(CHAR_SECURITYMANAGER));
-    if (manager != OREF_NULL && manager != TheNilObject)
-      _method->setSecurityManager(manager);
-  }
-  this->stack.pop();                   /* now remove the protection         */
-                                       /* run a special way                 */
-  _method->call(this->activity, (RexxObject *)this, target, NULL, 0, OREF_ROUTINENAME, OREF_NULL, EXTERNALCALL, resultObj);
-                                       /* No longer installing routine.     */
-  this->activity->removeRunningRequires(fullname);
-  RexxCode *methodCode = (RexxCode *)_method->getCode();
-                                       /* now merge all of the info         */
-  this->settings.parent_code->mergeRequired(methodCode->getSourceObject());
-  return _method;                      /* return the method  (but not needed!)  */
+/**
+ * Load a package defined by a ::PACKAGE directive.
+ *
+ * @param target The name of the package.
+ * @param instruction
+ *               The ::PACKAGE directive being loaded.
+ */
+void RexxActivation::loadPackage(RexxString *target, RexxInstruction *instruction)
+{
+    // this will cause the correct location to be used for error reporting
+    this->current = instruction;
+    // have the package manager resolve the package
+    PackageManager::getPackage(name);
 }
 
 
@@ -2486,7 +2324,7 @@ RexxObject * RexxActivation::internalCall(
                                        /* initialize the SIGL variable      */
   this->setLocalVariable(OREF_SIGL, VARIABLE_SIGL, new_integer(lineNum));
                                        /* create a new activation           */
-  newActivation = ActivityManager::newActivation(this->activity, this->settings.parent_method,
+  newActivation = ActivityManager::newActivation(this->activity,
                  this->settings.parent_code, this, OREF_NULL, OREF_NULL, INTERNALCALL);
 
   this->activity->pushStackFrame(newActivation); /* push on the activity stack        */
@@ -2511,7 +2349,7 @@ RexxObject * RexxActivation::internalCallTrap(
                                        /* initialize the SIGL variable      */
   this->setLocalVariable(OREF_SIGL, VARIABLE_SIGL, new_integer(lineNum));
                                        /* create a new activation           */
-  newActivation = ActivityManager::newActivation(this->activity, this->settings.parent_method,
+  newActivation = ActivityManager::newActivation(this->activity,
                  this->settings.parent_code, this, OREF_NULL, OREF_NULL, INTERNALCALL);
                                        /* set the new condition object      */
   newActivation->setConditionObj(conditionObj);
@@ -3541,29 +3379,6 @@ void RexxActivation::closeStreams()
       }
     }
   }
-}
-
-
-bool RexxActivation::callSecurityManager(
-    RexxString    *methodName,         /* name of the security method       */
-    RexxDirectory *_arguments )         /* security argument directory       */
-/******************************************************************************/
-/* Function:  Invoke the security manager and return success/failure          */
-/******************************************************************************/
-{
-  RexxObject * resultObj;              /* return result                     */
-
-  this->stack.push(_arguments);        /* protect arguments on stack        */
-                                       /* call the security manager and     */
-                                       /* return the pass/handled setting   */
-  resultObj = this->settings.securityManager->sendMessage(methodName, _arguments);
-  if (resultObj == OREF_NULL)          /* no return result?                 */
-                                       /* need to raise an exception        */
-    reportException(Error_No_result_object_message, methodName);
-  this->stack.pop();                   /* free up the arguments             */
-  holdObject(_arguments);              /* protect them for a bit            */
-                                       /* return the pass/handled flag      */
-  return resultObj->truthValue(Error_Logical_value_authorization);
 }
 
 

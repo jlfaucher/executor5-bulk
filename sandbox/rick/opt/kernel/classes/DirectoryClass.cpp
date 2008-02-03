@@ -569,26 +569,27 @@ RexxObject *RexxDirectory::atRexx(
 /*               NOSTRING.                                                    */
 /******************************************************************************/
 {
-  RexxObject *temp;                    /* Temporary holder for return value */
+    RexxObject *temp;                    /* Temporary holder for return value */
 
-                                       /* get as a string parameter         */
-  _index = REQUIRED_STRING(_index, ARG_ONE);
-  // is this the .local object?
-  if ((RexxDirectory *)(ActivityManager::localEnvironment) == this &&
-      ActivityManager::currentActivity->hasSecurityManager()) {
-    RexxDirectory *securityArgs;       /* security check arguments          */
-    securityArgs = new_directory();
-    securityArgs->put(_index, OREF_NAME);
-    securityArgs->put(TheNilObject, OREF_RESULT);
-    if (ActivityManager::currentActivity->callSecurityManager(OREF_LOCAL, securityArgs))
-                                       /* get the result and return         */
-      return securityArgs->fastAt(OREF_RESULT);
-  }
-  temp = this->at(_index);             /* run real AT                       */
-                                       /* if we found nothing or the method */
-  if (temp == OREF_NULL)               /* we ran returned nothing           */
-    temp = TheNilObject;               /* return TheNilObject as a default  */
-  return temp;                         /* return the value                  */
+                                         /* get as a string parameter         */
+    _index = REQUIRED_STRING(_index, ARG_ONE);
+    // is this the .local object?  We'll need to check with the security manager
+    if ((RexxDirectory *)(ActivityManager::localEnvironment) == this)
+    {
+        SecurityManager *manager = ActivityManager::currentActivity->getSecurityManager();
+        temp = manager->checkLocalAccess(_index);
+        if (temp != OREF_NULL)
+        {
+            return temp;
+        }
+    }
+    temp = this->at(_index);             /* run real AT                       */
+                                         /* if we found nothing or the method */
+    if (temp == OREF_NULL)               /* we ran returned nothing           */
+    {
+        temp = TheNilObject;               /* return TheNilObject as a default  */
+    }
+    return temp;                         /* return the value                  */
 }
 
 RexxObject *RexxDirectory::put(

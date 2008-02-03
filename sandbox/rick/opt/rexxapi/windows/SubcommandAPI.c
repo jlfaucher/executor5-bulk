@@ -191,7 +191,7 @@ extern LOCALREXXAPIDATA RexxinitLocal;
 /*                                                                   */
 /*********************************************************************/
 
-APIRET
+RexxReturnCode
 REXXENTRY
 RexxRegisterSubcomDll(
   const char *   EnvName,                       /* Subcom name                */
@@ -231,7 +231,7 @@ RexxRegisterSubcomDll(
 /*                                                                   */
 /*********************************************************************/
 
-APIRET
+RexxReturnCode
 REXXENTRY
 RexxRegisterSubcomExe(
   const char *  EnvName,               /* Subcom name                */
@@ -260,7 +260,7 @@ RexxRegisterSubcomExe(
 /*                                                                   */
 /*********************************************************************/
 
-APIRET
+RexxReturnCode
 REXXENTRY
 RexxDeregisterSubcom(
   const char * name,                            /* Environment Name           */
@@ -294,7 +294,7 @@ RexxDeregisterSubcom(
 /*                                                                   */
 /*********************************************************************/
 
-APIRET
+RexxReturnCode
 REXXENTRY
 RexxQuerySubcom(
   const char *     name,               /* Environment Name           */
@@ -323,7 +323,7 @@ RexxQuerySubcom(
 /*                                                                   */
 /*********************************************************************/
 
-APIRET REXXENTRY RexxLoadSubcom(
+RexxReturnCode REXXENTRY RexxLoadSubcom(
   const char * name,                   /* Name of Subcommand Environ */
   const char * dll )                   /* Module name of its' DLL    */
 {
@@ -352,7 +352,7 @@ APIRET REXXENTRY RexxLoadSubcom(
 /*                                                                   */
 /*********************************************************************/
 
-APIRET REXXENTRY RexxCallSubcom(
+RexxReturnCode REXXENTRY RexxCallSubcom(
     const char *name,             /* Name of Subcommand Environ */
     const char *dll,              /* Module name of its DLL     */
     PCONSTRXSTRING cmd,           /* Command string to be passed*/
@@ -361,7 +361,7 @@ APIRET REXXENTRY RexxCallSubcom(
     PRXSTRING rv)                 /* Stor for returned string   */
 {
   RexxSubcomHandler *subcom_addr;
-  APIRET  rc;                          /* Function return code.      */
+  RexxReturnCode  rc;                          /* Function return code.      */
 
                                        /* Load the handler           */
   if (!(rc=RegLoad(name, dll, REGSUBCOMM, (REXXPFN *)&subcom_addr)))
@@ -408,7 +408,7 @@ APIRET REXXENTRY RexxCallSubcom(
 /*                                                                   */
 /*********************************************************************/
 
-APIRET
+RexxReturnCode
 REXXENTRY
 RexxRegisterExitDll(
   const char *   EnvName,              /* Exit name                  */
@@ -448,7 +448,7 @@ RexxRegisterExitDll(
 /*                                                                   */
 /*********************************************************************/
 
-APIRET
+RexxReturnCode
 REXXENTRY
 RexxRegisterExitExe(
   const char *EnvName,               /* exit name                  */
@@ -476,7 +476,7 @@ RexxRegisterExitExe(
 /*                                                                   */
 /*********************************************************************/
 
-APIRET
+RexxReturnCode
 REXXENTRY
 RexxDeregisterExit(
   const char * name,                            /* Environment Name           */
@@ -508,7 +508,7 @@ RexxDeregisterExit(
 /*                                                                   */
 /*********************************************************************/
 
-APIRET
+RexxReturnCode
 REXXENTRY
 RexxQueryExit(
   const char * name,                   /* Environment Name           */
@@ -572,7 +572,7 @@ int REXXENTRY RexxResolveExit(
 /*                                                                   */
 /*********************************************************************/
 
-APIRET
+RexxReturnCode
 REXXENTRY
 RexxRegisterFunctionDll(
   const char *   EnvName,                       /* Subcom name                */
@@ -608,7 +608,7 @@ RexxRegisterFunctionDll(
 /*                                                                   */
 /*********************************************************************/
 
-APIRET
+RexxReturnCode
 REXXENTRY
 RexxRegisterFunctionExe(
   const char *   EnvName,              /* Subcom name                */
@@ -633,7 +633,7 @@ RexxRegisterFunctionExe(
 /*                                                                   */
 /*********************************************************************/
 
-APIRET
+RexxReturnCode
 REXXENTRY
 RexxDeregisterFunction(
   const char * name )                  /* Environment Name           */
@@ -659,12 +659,12 @@ RexxDeregisterFunction(
 /*                                                                   */
 /*********************************************************************/
 
-APIRET
+RexxReturnCode
 REXXENTRY
 RexxQueryFunction(
   const char * name )                  /* Environment Name           */
 {
-  APIRET  rc;                          /* General Return code holder */
+  RexxReturnCode  rc;                          /* General Return code holder */
   USHORT exist;                        /* existance flage            */
 
   rc = RegQuery(name, NULL, &exist, NULL,  /* Perform the query.   */
@@ -711,7 +711,7 @@ RexxQueryFunction(
 /*                                                                   */
 /*********************************************************************/
                                        /*                            */
-APIRET REXXENTRY RexxCallFunction(
+RexxReturnCode REXXENTRY RexxCallFunction(
 const char *  fn,                      /* name of function to call   */
 size_t        ac,                      /* number of arguments        */
 PCONSTRXSTRING av,                     /* argument array             */
@@ -720,7 +720,7 @@ PRXSTRING     sel,                     /* storage for returned data  */
 const char *  qnam )                   /* name of active queue       */
 {
   RexxFunctionHandler *func_address;   /* address of external func   */
-  APIRET      lrc;                     /* local return code          */
+  RexxReturnCode      lrc;                     /* local return code          */
 
   lrc = 0;
                                        /* Load the handler           */
@@ -1211,7 +1211,7 @@ int memmgrcheckexe(
 /* try to shutdown the RXAPI.EXE */
 /* request from toronto */
 
-APIRET REXXENTRY RexxShutDownAPI(void)
+RexxReturnCode REXXENTRY RexxShutDownAPI(void)
 {
   size_t dummy;
 

@@ -74,7 +74,7 @@
 #include <io.h>
 
 #ifdef TIMESLICE                       /* System Yielding function prototype*/
-APIRET REXXENTRY RexxSetYield(process_id_t procid, thread_id_t threadid);
+RexxReturnCode REXXENTRY RexxSetYield(process_id_t procid, thread_id_t threadid);
 #endif /*timeslice*/
 
 
@@ -145,7 +145,7 @@ BOOL REXXENTRY RexxSetProcessMessages(BOOL onoff)
 /*         a system yield via activity_relinquish.                            */
 /*                                                                            */
 /******************************************************************************/
-APIRET REXXENTRY RexxSetYield(process_id_t procid, thread_id_t threadid)
+RexxReturnCode REXXENTRY RexxSetYield(process_id_t procid, thread_id_t threadid)
 {
   if (RexxQuery()) {                        /* Are we up?                     */
     if (ActivityManager::yieldActivity(threadid))    /* Set yield condition?           */

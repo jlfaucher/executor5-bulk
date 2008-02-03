@@ -51,7 +51,7 @@ class RexxString;
 class RexxInteger;
 class RexxActivity;
 class RexxActivation;
-class RexxMethod;
+class RexxCode;
 class RexxDateTime;
 class RexxNativeActivation;
 class RexxBuffer;
@@ -202,24 +202,24 @@ void SysSetupProgram(RexxActivation *);/* System specific program setup     */
 
 #ifndef SysRestoreProgram
                                        /* Restore a program image           */
-RexxMethod *SysRestoreProgram(RexxString *);
+RexxCode *SysRestoreProgram(RexxString *);
 #endif
 
 #ifndef SysRestoreProgramBuffer
-RexxMethod *SysRestoreProgramBuffer(PRXSTRING, RexxString *);
+RexxCode *SysRestoreProgramBuffer(PRXSTRING, RexxString *);
 #endif
 
 #ifndef SysSaveProgram
                                        /* Save a program image              */
-void SysSaveProgram(RexxString *, RexxMethod *);
+void SysSaveProgram(RexxString *, RexxCode *);
 #endif
 
 #ifndef SysSaveProgramBuffer
-void SysSaveProgramBuffer(PRXSTRING , RexxMethod *);
+void SysSaveProgramBuffer(PRXSTRING , RexxCode *);
 #endif
 
 #ifndef SysSaveTranslatedProgram
-void SysSaveTranslatedProgram(const char *, RexxMethod *);
+void SysSaveTranslatedProgram(const char *, RexxCode *);
 #endif
 
 #ifndef SysSourceString

@@ -65,26 +65,31 @@
 #include <math.h>
 #include <limits.h>
 
-static size_t tsize[] = {
-    0,                        // not used
-    0,                        // void
-    sizeof(RexxObject *),
-    sizeof(int),
-    sizeof(size_t),
-    sizeof(ssize_t),
-    sizeof(stringsize_t),
-    sizeof(wholenumber_t),
-    sizeof(double),
-    sizeof(CSTRING),
-    sizeof(RexxObject *),      /* OSELF */
-    sizeof(RexxObject *),      /* ARGLIST */
-    sizeof(RexxObject *),      /* MSGNAME */
-    sizeof(RexxObject *),      /* SCOPE */
-    sizeof(void *),            /* POINTER */
-    sizeof(void *),            /* CSELF */
-    sizeof(RexxObject *),      /* STRING */
-    sizeof(void *)             /* BUFFER */
-};
+
+/**
+ * Constructor for a new native activation used to create a
+ * callback context for exit call outs.
+ *
+ * @param _activity The activity we're running under.
+ */
+RexxNativeActivation::RexxNativeActivation(RexxActivity *_activity, RexxActivation*_activation)
+{
+    this->activity = _activity;      /* the activity running on           */
+    this->activation = _activation;  // our parent context
+}
+
+
+/**
+ * Constructor for a new native activation used to create a
+ * callback context for exit call outs.
+ *
+ * @param _activity The activity we're running under.
+ */
+RexxNativeActivation::RexxNativeActivation(RexxActivity *_activity)
+{
+    this->activity = _activity;      /* the activity running on           */
+}
+
 
 void RexxNativeActivation::live(size_t liveMark)
 /******************************************************************************/
@@ -147,17 +152,776 @@ void RexxNativeActivation::liveGeneral(int reason)
 }
 
 
-void RexxNativeActivation::prepare(
-    RexxObject  *_receiver,
-    RexxString  *_msgname,
-    size_t       _argcount,             /* argument count                    */
-    RexxObject **_arglist)              /* method argument list              */
+void RexxNativeActivation::reportSignatureError()
+/******************************************************************************/
+/* Function:  Report a method signature error                                 */
+/******************************************************************************/
 {
-    receiver = _receiver;
-    msgname = _msgname;
-    argcount = _argcount;
-    arglist = _arglist;
+    if (activationType == METHOD_ACTIVATION)
+    {
+        reportException(Error_Incorrect_method_signature);
+    }
+    else
+    {
+        reportException(Error_Incorrect_call_signature);
+    }
 }
+
+void RexxNativeActivation::reportStemError(size_t position, RexxObject *object)
+/******************************************************************************/
+/* Function:  Report a method signature error                                 */
+/******************************************************************************/
+{
+    if (activationType == METHOD_ACTIVATION)
+    {
+        reportException(Error_Incorrect_method_nostem, position + 1, object);
+    }
+    else
+    {
+        reportException(Error_Incorrect_call_nostem, position + 1, object);
+    }
+}
+
+
+void RexxNativeActivation::processArguments(
+    size_t       argcount,             /* argument count                    */
+    RexxObject **arglist,              /* method argument list              */
+    uint16_t    *argumentTypes,        // the type descriptor string
+    ValueDescriptor *descriptors,      // descriptors for the arguments
+    size_t       maximumArgumentCount) // our maximum argument count
+/******************************************************************************/
+/* Function:  Execute a REXX native method                                    */
+/******************************************************************************/
+{
+    size_t inputIndex = 0;            // no arguments used yet             */
+    size_t outputIndex = 1;           // we start filling in from the second (first is return value)
+    bool usedArglist = false;         // if we request the argument list, then there's no requirement
+                                      // to use up all of the passed arguments individually.
+
+    // set up the return value descriptor
+    descriptors[0].type = *argumentTypes;
+    descriptors[0].value.value_int64_t = 0;
+    // the first type in the signature is the return value, which we skip for now
+    uint16_t *currentType = argumentTypes + 1;
+    // now loop through the type information.  Some of the types are "created"
+    // arguments that don't appear directly in the method/function invocation.
+    // We can't directly do a 1-for-1 mapping
+    for (; *currentType != REXX_ARGUMENT_TERMINATOR; currentType++)
+    {
+        // make sure we don't get a buffer overload
+        if (outputIndex >= maximumArgumentCount)
+        {
+            reportSignatureError();
+        }
+
+        uint16_t type = ARGUMENT_TYPE(*currentType);
+        bool isOptional = IS_OPTIONAL_ARGUMENT(*currentType);
+
+        descriptors[outputIndex].type = type;           // fill in the type
+        switch (type)
+        {
+            // reference to the receiver object...if this is a function call,
+            // then this will be OREF NULL.
+            case REXX_VALUE_OSELF:                /* reference to SELF                 */
+            {
+                // this doesn't make any sense for a function call
+                if (activationType != METHOD_ACTIVATION)
+                {
+                    reportSignatureError();
+                }
+                // fill in the receiver object and mark it...
+                descriptors[outputIndex].value.value_RexxObjectPtr = this->u_receiver;
+                descriptors[outputIndex].flags = ARGUMENT_EXISTS | SPECIAL_ARGUMENT;
+                break;
+            }
+
+            case REXX_VALUE_CSELF:                /* reference to CSELF                */
+            {
+                // this doesn't make any sense for a function call
+                if (activationType != METHOD_ACTIVATION)
+                {
+                    reportSignatureError();
+                }
+                descriptors[outputIndex].value.value_POINTER = this->cself();
+                descriptors[outputIndex].flags = ARGUMENT_EXISTS | SPECIAL_ARGUMENT;
+                break;
+            }
+
+            case REXX_VALUE_BUFFER:               /* reference to Buffered storage     */
+            {
+                // this doesn't make any sense for a function call
+                if (activationType != METHOD_ACTIVATION)
+                {
+                    reportSignatureError();
+                }
+                descriptors[outputIndex].flags = ARGUMENT_EXISTS | SPECIAL_ARGUMENT;
+                descriptors[outputIndex].value.value_POINTER = this->buffer();
+                break;
+            }
+
+            case REXX_VALUE_ARGLIST:              /* need the argument list            */
+            {
+                descriptors[outputIndex].flags = ARGUMENT_EXISTS | SPECIAL_ARGUMENT;
+                descriptors[outputIndex].value.value_RexxArrayObject = getArguments();
+                // we've used this
+                usedArglist = true;
+                break;
+            }
+
+            // This is either the message name used to invoke a method or
+            // the name used to call a function
+            case REXX_VALUE_NAME:
+            {
+                descriptors[outputIndex].flags = ARGUMENT_EXISTS | SPECIAL_ARGUMENT;
+                descriptors[outputIndex].value.value_CSTRING = (CSTRING)this->msgname->getStringData();
+                break;
+            }
+
+            // this is a real argument taken from the argument list
+            default:                         /* still within argument bounds?     */
+            {
+                if (inputIndex < argcount && arglist[inputIndex] != OREF_NULL)
+                {
+                    // all of these arguments exist
+                    descriptors[outputIndex].flags = ARGUMENT_EXISTS;
+                    RexxObject *argument = arglist[inputIndex];    /* get the next argument             */
+                    switch (*currentType)
+                    {               /* process this type                 */
+
+                        case REXX_VALUE_RexxObjectPtr:  /* arbitrary object reference        */
+                        {
+                            descriptors[outputIndex].value.value_RexxObjectPtr = argument;
+                            break;
+                        }
+
+                        case REXX_VALUE_int:            /* integer value                     */
+                        {
+                            // convert and copy                  */
+                            descriptors[outputIndex].value.value_int = (int)wholeNumberValue(argument, inputIndex, INT_MAX, INT_MIN);
+                            break;
+                        }
+
+                        case REXX_VALUE_int8_t:            /* 8-bit integer value               */
+                        {
+                            descriptors[outputIndex].value.value_int8_t = (int8_t)wholeNumberValue(argument, inputIndex, INT8_MAX, INT8_MIN);
+                            break;
+                        }
+
+                        case REXX_VALUE_int16_t:            /* integer value                     */
+                        {
+                            descriptors[outputIndex].value.value_int16_t = (int16_t)wholeNumberValue(argument, inputIndex, INT16_MAX, INT16_MIN);
+                            break;
+                        }
+
+                        case REXX_VALUE_int32_t:            /* integer value                     */
+                        {
+                            descriptors[outputIndex].value.value_int32_t = (int32_t)wholeNumberValue(argument, inputIndex, INT32_MAX, INT32_MIN);
+                            break;
+                        }
+
+                        case REXX_VALUE_int64_t:            /* integer value                     */
+                        {
+                            descriptors[outputIndex].value.value_int64_t = (int64_t)int64Value(argument, inputIndex);
+                            break;
+                        }
+
+                        case REXX_VALUE_uint8_t:            /* 8-bit integer value               */
+                        {
+                            descriptors[outputIndex].value.value_uint8_t = (uint8_t)unsignedNumberValue(argument, inputIndex, UINT8_MAX);
+                            break;
+                        }
+
+                        case REXX_VALUE_uint16_t:            /* integer value                     */
+                        {
+                            descriptors[outputIndex].value.value_uint16_t = (uint16_t)unsignedNumberValue(argument, inputIndex, UINT16_MAX);
+                            break;
+                        }
+
+                        case REXX_VALUE_uint32_t:            /* integer value                     */
+                        {
+                            descriptors[outputIndex].value.value_uint32_t = (uint32_t)unsignedNumberValue(argument, inputIndex, UINT32_MAX);
+                            break;
+                        }
+
+                        case REXX_VALUE_uint64_t:            /* integer value                     */
+                        {
+                            descriptors[outputIndex].value.value_uint64_t = (uint64_t)unsignedInt64Value(argument, inputIndex);
+                            break;
+                        }
+
+                        case REXX_VALUE_size_t:            /* integer value                     */
+                        {
+                            descriptors[outputIndex].value.value_size_t = (size_t)unsignedNumberValue(argument, inputIndex, SIZE_MAX);
+                            break;
+                        }
+
+                        case REXX_VALUE_RexxBoolean:       /* integer value                     */
+                        {
+                            descriptors[outputIndex].value.value_RexxBoolean = (RexxBoolean)argument->truthValue(Error_Logical_value_method);
+                            break;
+                        }
+
+                        // The Rexx whole number one is checked against the human digits limit
+                        case REXX_VALUE_wholenumber_t:  /* number value                      */
+                        {
+                            descriptors[outputIndex].value.value_wholenumber_t = (wholenumber_t)wholeNumberValue(argument, inputIndex, Numerics::MAX_WHOLENUMBER, Numerics::MIN_WHOLENUMBER);
+                            break;
+                        }
+
+                        // an unsigned string number value
+                        case REXX_VALUE_RexxUnsignedNumber:
+                        {
+                            descriptors[outputIndex].value.value_RexxUnsignedNumber = (stringsize_t)unsignedNumberValue(argument, inputIndex, Numerics::MAX_STRINGSIZE);
+                            break;
+                        }
+
+                        case REXX_VALUE_double:         /* double value                      */
+                        {
+                            descriptors[outputIndex].value.value_double = this->getDoubleValue(argument);
+                            break;
+                        }
+
+
+                        case REXX_VALUE_float:          /* float value                      */
+                        {
+                            descriptors[outputIndex].value.value_float = (float)this->getDoubleValue(argument);
+                            break;
+                        }
+
+                        case REXX_VALUE_CSTRING:        /* ASCII-Z string value              */
+                        {
+                            descriptors[outputIndex].value.value_CSTRING = this->cstring(argument);
+                            break;
+                        }
+
+                        case REXX_VALUE_RexxStringObject: /* Required STRING object            */
+                        {
+                            /* force to a string value           */
+                            RexxString *temp = REQUIRED_STRING(argument, inputIndex + 1) ;
+                            // if this forced a string object to be created,
+                            // we need to protect it here.
+                            if (temp != argument)
+                            {
+                                                     /* make it safe                      */
+                                createLocalReference(temp);
+                            }
+                            /* set the result in                 */
+                            descriptors[outputIndex].value.value_RexxStringObject = temp;
+                            break;
+
+                        }
+
+                        case REXX_VALUE_RexxArrayObject: /* Required ARRAY object            */
+                        {
+                            /* force to a string value           */
+                            RexxArray *temp = REQUIRED_ARRAY(argument, inputIndex + 1) ;
+                            // if this forced a string object to be created,
+                            // we need to protect it here.
+                            if (temp != argument)
+                            {
+                                                     /* make it safe                      */
+                                createLocalReference(temp);
+                            }
+                            /* set the result in                 */
+                            descriptors[outputIndex].value.value_RexxArrayObject = temp;
+                            break;
+
+                        }
+
+                        case REXX_VALUE_RexxStemObject: /* Required Stem object            */
+                        {
+                            // Stem arguments get special handling.  If the argument
+                            // object is already a stem object, we're done.  Otherwise,
+                            // we get the string value of the argument and use that
+                            // to resolve a stem name in the current context.  If the
+                            // trailing period is not given on the name, one will be added.
+                            // Note that the second form is only available if this is a
+                            // call context.  This is an error for a method context.
+
+                            // is this a stem already?
+                            if (isStem(argument))
+                            {
+                                /* set the result in                 */
+                                descriptors[outputIndex].value.value_RexxStemObject = argument;
+                                break;
+                            }
+
+                            // this spesn't make any sense for a function call
+                            if (activationType == METHOD_ACTIVATION)
+                            {
+                                reportStemError(inputIndex, argument);
+                            }
+
+                            /* force to a string value           */
+                            RexxString *temp = REQUIRED_STRING(argument, inputIndex + 1) ;
+                            // if this forced a string object to be created,
+                            // we need to protect it here.
+                            if (temp != argument)
+                            {
+                                                     /* make it safe                      */
+                                createLocalReference(temp);
+                            }
+
+                            // see if we can retrieve this stem
+                            RexxObject *stem = getContextStem(temp);
+                            if (stem == OREF_NULL)
+                            {
+                                reportStemError(inputIndex, argument);
+                            }
+                            /* set the result in                 */
+                            descriptors[outputIndex].value.value_RexxStemObject = stem;
+                            break;
+
+                        }
+
+                        case REXX_VALUE_POINTER:
+                        {
+                            descriptors[outputIndex].value.value_POINTER = this->pointer(argument);
+                            break;
+                        }
+
+                        default:                   /* something messed up               */
+                        {
+                            reportSignatureError();
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    // if this was not an option argument
+                    if (!isOptional)
+                    {
+                        missingArgument(inputIndex + 1);
+                    }
+
+                    // this is a non-specified argument
+                    descriptors[outputIndex].flags = 0;
+                    switch (type)
+                    {
+
+                        case REXX_VALUE_RexxStringObject: /* no object here                    */
+                        case REXX_VALUE_RexxArrayObject: /* no object here                    */
+                        case REXX_VALUE_RexxObjectPtr:  /* no object here                    */
+                        case REXX_VALUE_int:            /* non-integer value                 */
+                        case REXX_VALUE_int64_t:        /* non-integer value                 */
+                        case REXX_VALUE_int32_t:        /* non-integer value                 */
+                        case REXX_VALUE_int16_t:        /* non-integer value                 */
+                        case REXX_VALUE_int8_t:         /* non-integer value                 */
+                        case REXX_VALUE_wholenumber_t:     /* non-existent long                 */
+                        case REXX_VALUE_RexxUnsignedNumber: /* non-existent long                 */
+                        case REXX_VALUE_RexxBoolean:    // this must be a boolean value
+                        case REXX_VALUE_double:         /* non-existent double               */
+                        case REXX_VALUE_float:          /* non-existent double               */
+                        case REXX_VALUE_size_t:         /* non-existent double               */
+                        case REXX_VALUE_CSTRING:        /* missing character string          */
+                        case REXX_VALUE_POINTER:
+                        {
+                            // set this as a 64-bit value to clear everything out
+                            descriptors[outputIndex].value.value_int64_t = 0;
+                            break;
+                        }
+                                                   /* still an error if not there       */
+                        default:                   /* something messed up               */
+                        {
+                            reportSignatureError();
+                            break;
+                        }
+                    }
+                }
+                inputIndex++;              // we've used up one more input argument
+                break;
+            }
+        }
+        outputIndex++;                 /* step to the next argument         */
+        argumentTypes++;               // and the next output position pointer
+    }
+    if (inputIndex < argcount && !usedArglist)    /* extra, unwanted arguments?        */
+    {
+                                         /* got too many                      */
+        reportException(Error_Incorrect_method_maxarg, inputIndex);
+    }
+}
+
+RexxObject *RexxNativeActivation::valueToObject(
+    ValueDescriptor *value)     // this is passed as a pointer so we dereference properly
+/******************************************************************************/
+/* Function:  Convert a return value into a Rexx object based on type sig.    */
+/******************************************************************************/
+{
+    switch (value->type)
+    {
+        case REXX_VALUE_RexxObjectPtr:          /* Object reference                  */
+        {
+            return value->value.value_RexxObjectPtr; // just return the object value
+        }
+
+        case REXX_VALUE_int:                    /* integer value                     */
+        {
+            return Numerics::toObject((wholenumber_t)value->value.value_int);
+        }
+
+        case REXX_VALUE_int8_t:                         /* integer value                     */
+        {
+            return Numerics::toObject(value->value.value_int8_t);
+        }
+
+        case REXX_VALUE_int16_t:                        /* integer value                     */
+        {
+            return Numerics::toObject(value->value.value_int16_t);
+        }
+
+        case REXX_VALUE_int32_t:                        /* integer value                     */
+        {
+            return Numerics::toObject((wholenumber_t)value->value.value_int32_t);
+        }
+
+        case REXX_VALUE_int64_t:                        /* integer value                     */
+        {
+            return Numerics::toObject(value->value.value_int64_t);
+        }
+
+        case REXX_VALUE_intptr_t:                       /* integer value                     */
+        {
+            return Numerics::toObject((wholenumber_t)value->value.value_intptr_t);
+        }
+
+        case REXX_VALUE_size_t:                        /* integer value                     */
+        {
+            return Numerics::toObject((stringsize_t)value->value.value_size_t);
+        }
+
+        case REXX_VALUE_wholenumber_t:        /* long integer value                */
+        {
+            return Numerics::toObject((wholenumber_t)value->value.value_wholenumber_t);
+        }
+
+        case REXX_VALUE_RexxUnsignedNumber:     /* long integer value                */
+        {
+            return Numerics::toObject((stringsize_t)value->value.value_RexxUnsignedNumber);
+        }
+
+        case REXX_VALUE_double:                 /* double value                      */
+        {
+            return new_string(value->value.value_double);
+        }
+
+        case REXX_VALUE_float:                  /* float value                      */
+        {
+            return new_string(value->value.value_float);
+        }
+
+        case REXX_VALUE_CSTRING:                /* ASCII-Z string                    */
+        {
+            char *string = value->value.value_CSTRING;
+            // return return nothing if a null pointer is returned.
+            if (string == NULL)
+            {
+                return OREF_NULL;
+            }
+            return new_string(string);             // make a Rexx string from this
+        }
+
+        case REXX_VALUE_POINTER:
+        {
+            // just wrap the pointer in a pointer object
+            return new_pointer(value->value.value_POINTER);
+        }
+
+        default:
+        {
+            reportSignatureError();      // bad method signature problem
+            break;
+        }
+    }
+    return OREF_NULL;
+}
+
+
+/**
+ * Convert a Rexx object into the requested value type, if possible.
+ *
+ * @param o      The source object.
+ * @param value  The receiving value structure, which also defines the type.
+ *
+ * @return true if the value was convertable, false otherwise.
+ */
+bool RexxNativeActivation::objectToValue(RexxObject *o, ValueDescriptor *value)
+{
+    switch (value->type)
+    {
+        case REXX_VALUE_RexxObjectPtr:          /* Object reference                  */
+        {
+            // silly, but this always works.
+            value->value.value_RexxObjectPtr = (RexxObjectPtr)o;
+            return true;
+        }
+        case REXX_VALUE_int:            /* integer value                     */
+        {
+            wholenumber_t temp = 0;
+            // convert and copy                  */
+            bool success = Numerics::objectToWholeNumber(o, temp, INT_MAX, INT_MIN);
+            value->value.value_int = (int)temp;
+            return success;
+        }
+
+        case REXX_VALUE_int8_t:            /* 8-bit integer value               */
+        {
+            wholenumber_t temp = 0;
+            // convert and copy                  */
+            bool success = Numerics::objectToWholeNumber(o, temp, INT8_MAX, INT8_MIN);
+            value->value.value_int8_t = (int8_t)temp;
+            return success;
+        }
+
+        case REXX_VALUE_int16_t:            /* integer value                     */
+        {
+            wholenumber_t temp = 0;
+            // convert and copy                  */
+            bool success = Numerics::objectToWholeNumber(o, temp, INT16_MAX, INT16_MIN);
+            value->value.value_int16_t = (int16_t)temp;
+            return success;
+        }
+
+        case REXX_VALUE_int32_t:            /* integer value                     */
+        {
+            wholenumber_t temp = 0;
+            // convert and copy                  */
+            bool success = Numerics::objectToWholeNumber(o, temp, INT32_MAX, INT32_MIN);
+            value->value.value_int32_t = (int32_t)temp;
+            return success;
+        }
+
+        case REXX_VALUE_int64_t:            /* integer value                     */
+        {
+            int64_t temp = 0;
+            // convert and copy                  */
+            bool success = Numerics::objectToInt64(o, temp);
+            value->value.value_int64_t = (int64_t)temp;
+            return success;
+        }
+
+        case REXX_VALUE_uint8_t:            /* 8-bit integer value               */
+        {
+            stringsize_t temp = 0;
+            // convert and copy                  */
+            bool success = Numerics::objectToStringSize(o, temp, UINT8_MAX);
+            value->value.value_uint8_t = (uint8_t)temp;
+            return success;
+        }
+
+        case REXX_VALUE_uint16_t:            /* integer value                     */
+        {
+            stringsize_t temp = 0;
+            // convert and copy                  */
+            bool success = Numerics::objectToStringSize(o, temp, UINT16_MAX);
+            value->value.value_uint16_t = (uint16_t)temp;
+            return success;
+        }
+
+        case REXX_VALUE_uint32_t:            /* integer value                     */
+        {
+            stringsize_t temp = 0;
+            // convert and copy                  */
+            bool success = Numerics::objectToStringSize(o, temp, UINT32_MAX);
+            value->value.value_uint32_t = (uint32_t)temp;
+            return success;
+        }
+
+        case REXX_VALUE_uint64_t:            /* integer value                     */
+        {
+            uint64_t temp = 0;
+            // convert and copy                  */
+            bool success = Numerics::objectToUnsignedInt64(o, temp);
+            value->value.value_uint64_t = (uint64_t)temp;
+            return success;
+        }
+
+        case REXX_VALUE_size_t:            /* integer value                     */
+        {
+            stringsize_t temp = 0;
+            // convert and copy                  */
+            bool success = Numerics::objectToStringSize(o, temp, SIZE_MAX);
+            value->value.value_size_t = (size_t)temp;
+            return success;
+        }
+
+        case REXX_VALUE_RexxBoolean:       /* integer value                     */
+        {
+            // this will raise an error, which we'll clear before return
+            value->value.value_RexxBoolean = (RexxBoolean)o->truthValue(Error_Logical_value_method);
+            return true;
+        }
+
+        // The Rexx whole number one is checked against the human digits limit
+        case REXX_VALUE_wholenumber_t:  /* number value                      */
+        {
+            wholenumber_t temp = 0;
+            // convert and copy                  */
+            bool success = Numerics::objectToWholeNumber(o, temp, Numerics::MAX_WHOLENUMBER, Numerics::MIN_WHOLENUMBER);
+            value->value.value_wholenumber_t = (wholenumber_t)temp;
+            return success;
+        }
+
+        // an unsigned string number value
+        case REXX_VALUE_RexxUnsignedNumber:
+        {
+            stringsize_t temp = 0;
+            // convert and copy                  */
+            bool success = Numerics::objectToStringSize(o, temp, Numerics::MAX_STRINGSIZE);
+            value->value.value_RexxUnsignedNumber = (RexxUnsignedNumber)temp;
+            return success;
+        }
+
+        case REXX_VALUE_double:         /* double value                      */
+        {
+            return o->doubleValue(&value->value.value_double);
+        }
+
+
+        case REXX_VALUE_float:          /* float value                      */
+        {
+            double temp = 0.0;
+            bool success = o->doubleValue(&temp);
+            value->value.value_float = (float)temp;
+            return success;
+        }
+
+        case REXX_VALUE_CSTRING:        /* ASCII-Z string value              */
+        {
+            value->value.value_CSTRING = this->cstring(o);
+            return true;
+        }
+
+        case REXX_VALUE_RexxStringObject: /* Required STRING object            */
+        {
+            /* force to a string value           */
+            RexxString *temp = REQUIRED_STRING(o, 1) ;
+            // if this forced a string object to be created,
+            // we need to protect it here.
+            if (temp != o)
+            {
+                                     /* make it safe                      */
+                createLocalReference(temp);
+            }
+            /* set the result in                 */
+            value->value.value_RexxStringObject = temp;
+            return true;
+
+        }
+
+        case REXX_VALUE_RexxArrayObject: /* Required ARRAY object            */
+        {
+            /* force to a string value           */
+            RexxArray *temp = REQUIRED_ARRAY(o, 1) ;
+            // if this forced a string object to be created,
+            // we need to protect it here.
+            if (temp != o)
+            {
+                                     /* make it safe                      */
+                createLocalReference(temp);
+            }
+            /* set the result in                 */
+            value->value.value_RexxArrayObject = temp;
+            return true;
+
+        }
+
+        case REXX_VALUE_RexxStemObject: /* Required Stem object            */
+        {
+            // Stem os get special handling.  If the o
+            // object is already a stem object, we're done.  Otherwise,
+            // we get the string value of the o and use that
+            // to resolve a stem name in the current context.  If the
+            // trailing period is not given on the name, one will be added.
+            // Note that the second form is only available if this is a
+            // call context.  This is an error for a method context.
+
+            // is this a stem already?
+            if (isStem(o))
+            {
+                /* set the result in                 */
+                value->value.value_RexxStemObject = o;
+                return true;
+            }
+
+            // this doesn't make any sense for a function call
+            if (activationType == METHOD_ACTIVATION)
+            {
+                return false;
+            }
+
+            /* force to a string value           */
+            RexxString *temp = REQUIRED_STRING(o, 1) ;
+            // if this forced a string object to be created,
+            // we need to protect it here.
+            if (temp != o)
+            {
+                                     /* make it safe                      */
+                createLocalReference(temp);
+            }
+
+            // see if we can retrieve this stem
+            RexxObject *stem = getContextStem(temp);
+            if (stem == OREF_NULL)
+            {
+                return false;
+            }
+            /* set the result in                 */
+            value->value.value_RexxStemObject = stem;
+            return true;
+        }
+
+        case REXX_VALUE_POINTER:
+        {
+            value->value.value_POINTER = this->pointer(o);
+            return true;
+        }
+
+        default:                   /* something messed up               */
+        {
+            return false;
+        }
+    }
+    return false;
+}
+
+void RexxNativeActivation::createLocalReference(
+    RexxObject *objr)                  /* object to save                    */
+/******************************************************************************/
+/* Function:  Protect an object until the native activation terminates        */
+/******************************************************************************/
+{
+  if (objr != OREF_NULL) {             /* have an object?                   */
+      // make sure we protect this from a GC triggered by this table creation.
+      ProtectedObject p1(objr);
+      if (this->savelist == OREF_NULL) /* second saved object?              */
+      {
+                                         /* create the save list now          */
+          this->savelist = new_object_table();
+      }
+                                       /* add to the save table             */
+      this->savelist->put(TheNilObject, objr);
+  }
+}
+
+void RexxNativeActivation::removeLocalReference(
+    RexxObject *objr)                  /* object to save                    */
+/******************************************************************************/
+/* Function:  Protect an object until the native activation terminates        */
+/******************************************************************************/
+{
+    // if the reference is non-null
+  if (objr != OREF_NULL)
+  {
+      // make sure we have a savelist before trying to remove this
+      if (savelist != OREF_NULL)
+      {
+          savelist->remove(objr);
+      }
+  }
+}
+
 
 /**
  * Run a native method or function under the context of this activation.
@@ -168,241 +932,42 @@ void RexxNativeActivation::prepare(
  * @param _arglist  The list of arguments.
  * @param resultObj The returned result object.
  */
-void RexxNativeActivation::run(
-    RexxObject  *_receiver,             // the object receiver
-    RexxString  *_msgname,              // the message name
-    size_t       _argcount,             /* argument count                    */
-    RexxObject **_arglist,              /* method argument list              */
-    ProtectedObject &resultObj)         // the returned result
-/******************************************************************************/
-/* Function:  Execute a REXX native method                                    */
-/******************************************************************************/
+void RexxNativeActivation::run(RexxMethod *_method, RexxNativeMethod *_code, RexxObject  *_receiver,
+    RexxString  *_msgname, size_t _argcount, RexxObject **_arglist, ProtectedObject &resultObj)
 {
-    PNMF         methp;                  /* method entry point                */
-    char       * itypes;                 /* pointer to method types           */
-    void       * ivalues[16];            /* array of converted arguments      */
-    void      ** ivalp = ivalues;        /* pointer to current value          */
-    char         ibuffer[100];           /* arguments buffer                  */
-    char       * ibufp = ibuffer;        /* current buffer pointer            */
-    char       * tp;                     /* current type                      */
-    size_t       i;                      /* current argument position         */
-    RexxObject * argument;               /* current argument object           */
-    bool         used_arglist;           /* method requested an arglist       */
-
+    // anchor the relevant context information
+    method = _method;
     receiver = _receiver;
     msgname = _msgname;
-    this->arglist = _arglist;            /* save the argument information     */
-    this->argcount = _argcount;          /* set the argument count            */
-    used_arglist = false;                /* no arglist requested              */
-                                         /* get the entry point address       */
-    methp = this->code->getEntry();
-    itypes = (*methp)(0);                /* get type information from method  */
-    *ivalues = ibufp;
-    ibufp += tsize[(int)(*itypes)];      /* step over first type              */
-    i = 0;                               /* no arguments used yet             */
-                                         /* loop through the type information */
-    for (tp = itypes+1, ivalp = ivalues+1; *tp; tp++, ivalp++)
-    {
-        *ivalp = ibufp;
-        ibufp += tsize[(int)(*tp)];        /* step over the type                */
-        switch (*tp)
-        {                     /* switch based on this type         */
+    arglist = _arglist;
+    argcount = _argcount;
 
-            case REXXD_OSELF:                /* reference to SELF                 */
-                *((RexxObject **)*ivalp) = this->receiver;
-                break;
+    ValueDescriptor arguments[MAX_NATIVE_ARGUMENTS];
 
-            case REXXD_CSELF:                /* reference to CSELF                */
-                *((void **)*ivalp) = this->cself();
-                break;
+    MethodContext context;               // the passed out method context
 
-            case REXXD_BUFFER:               /* reference to Buffered storage     */
-                *((void **)*ivalp) = this->buffer();
-                break;
+    // build a context pointer to pass out
+    activity->createMethodContext(context, this);
 
-            case REXXD_ARGLIST:              /* need the argument list            */
-                /* create the argument array */
-                argArray = new (argcount, arglist) RexxArray;
-                *((RexxObject **)*ivalp) = argArray;
-                used_arglist = true;           /* passing along everything          */
-                break;
+    context.threadContext.arguments = arguments;
 
-            case REXXD_MSGNAME:              /* the message name                  */
-                *((RexxObject **)*ivalp) = this->msgname;
-                break;
+    // get the entry point address of the target method
+    PNATIVEMETHOD methp = _code->getNativeEntry();
 
-            default:                         /* still within argument bounds?     */
-                if (i < argcount && arglist[i] != OREF_NULL)
-                {
-                    argument = arglist[i];       /* get the next argument             */
-                    switch (*tp)
-                    {               /* process this type                 */
-
-                        case REXXD_OBJECT:         /* arbitrary object reference        */
-                            *((RexxObject **)*ivalp) = argument;
-                            break;
-
-                        case REXXD_int:            /* integer value                     */
-                            {
-                                wholenumber_t temp;
-                                if (!argument->numberValue(temp, this->digits()))
-                                {
-                                    /* this is an error                  */
-                                    reportException(Error_Incorrect_method_whole, i+1, argument);
-                                }
-                                *((int *)*ivalp) = (int)temp;
-                                break;
-                            }
-
-                        case REXXD_size_t:           /* long value                        */
-                            {
-                                stringsize_t temp;
-                                if (!argument->unsignedNumberValue(temp, this->digits()))
-                                {
-                                    /* this is an error                  */
-                                    reportException(Error_Incorrect_method_whole, i+1, argument);
-                                }
-                                *((size_t *)*ivalp) = (size_t)temp;
-                                break;
-                            }
-
-                        case REXXD_ssize_t:           /* long value                        */
-                            {
-                                wholenumber_t temp;
-                                if (!argument->numberValue(temp, this->digits()))
-                                {
-                                    /* this is an error                  */
-                                    reportException(Error_Incorrect_method_whole, i+1, argument);
-                                }
-                                *((ssize_t *)*ivalp) = (ssize_t)temp;
-                                break;
-                            }
-
-                        case REXXD_stringsize_t:           /* long value                        */
-                            {
-                                stringsize_t temp;
-                                if (!argument->unsignedNumberValue(temp, this->digits()))
-                                {
-                                    /* this is an error                  */
-                                    reportException(Error_Incorrect_method_whole, i+1, argument);
-                                }
-                                *((stringsize_t *)*ivalp) = (stringsize_t)temp;
-                                break;
-                            }
-
-                        case REXXD_wholenumber_t:           /* long value                        */
-                            {
-                                wholenumber_t temp;
-                                if (!argument->numberValue(temp, this->digits()))
-                                {
-                                    /* this is an error                  */
-                                    reportException(Error_Incorrect_method_whole, i+1, argument);
-                                }
-                                *((wholenumber_t *)*ivalp) = (wholenumber_t)temp;
-                                break;
-                            }
-
-                        case REXXD_double:         /* double value                      */
-                            {
-                                double temp;
-                                if (!argument->doubleValue(temp))
-                                {
-                                    /* this is an error                  */
-                                    reportException(Error_Incorrect_method_number, i+1, argument);
-                                }
-                                *((double *)*ivalp) = (double)temp;
-                                break;
-                            }
-
-                        case REXXD_CSTRING:        /* ASCII-Z string value              */
-                            *((const char **)*ivalp) = this->cstring(argument);
-                            break;
-
-                        case REXXD_STRING:         /* Required STRING object            */
-                            {
-                                /* force to a string value           */
-                                RexxObject *temp = REQUIRED_STRING(argument,(int)i + 1) ;
-                                if (temp != argument)    /* new object created?               */
-                                                         /* make it safe                      */
-                                    this->saveObject(temp);
-                                /* set the result in                 */
-                                *((RexxObject **)*ivalp) = temp;
-                                break;
-
-                            }
-
-                        case REXXD_POINTER:
-                            *((void **)*ivalp) = this->pointer(argument);
-                            break;
-
-                        default:                   /* something messed up               */
-                            logic_error("unsupported native method argument type");
-                            break;
-                    }
-                }
-                else
-                {                         /* no value provided, use default    */
-                    switch (*tp)
-                    {
-
-                        case REXXD_STRING:         /* no object here                    */
-                        case REXXD_OBJECT:         /* no object here                    */
-                            *((RexxObject **)*ivalp) = OREF_NULL;
-                            break;
-
-                        case REXXD_int:            /* non-integer value                 */
-                            *((int *)*ivalp) = INT_MAX;
-                            break;
-
-                        case REXXD_size_t:           /* non-existent long                 */
-                            *((size_t *)*ivalp) = SIZE_MAX;
-                            break;
-
-                        case REXXD_ssize_t:           /* non-existent long                 */
-                            *((ssize_t *)*ivalp) = SSIZE_MAX;
-                            break;
-
-                        case REXXD_stringsize_t:      /* non-existent long                 */
-                            *((stringsize_t *)*ivalp) = SIZE_MAX;
-                            break;
-
-                        case REXXD_wholenumber_t:           /* non-existent long                 */
-                            *((wholenumber_t *)*ivalp) = SSIZE_MAX;
-                            break;
-
-                        case REXXD_double:         /* non-existent double               */
-                            *((double *)*ivalp) = +HUGE_VAL;
-                            break;
-
-                        case REXXD_CSTRING:        /* missing character string          */
-                            *((CSTRING *)*ivalp) = NO_CSTRING;
-                            break;
-
-                        case REXXD_POINTER:
-                            *((void **)*ivalp) = NULL;
-                            break;
-
-                        default:                   /* still an error if not there       */
-                            logic_error("unsupported native method argument type");
-                            break;
-                    }
-                }
-                i++;                           /* step to the next argument         */
-                break;
-        }
-    }
-    if (i < argcount && !used_arglist)   /* extra, unwanted arguments?        */
-    {
-                                         /* got too many                      */
-        reportException(Error_Incorrect_method_maxarg, i);
-    }
+    // retrieve the argument signatures and process them
+    uint16_t *types = (*methp)((RexxMethodContext *)&context, NULL);
+    processArguments(argcount, arglist, types, arguments, MAX_NATIVE_ARGUMENTS);
 
     size_t activityLevel = this->activity->getActivationLevel();
     try
     {
         activity->releaseAccess();           /* force this to "safe" mode         */
-        (*methp)(ivalues);                   /* process the method call           */
+                                             /* process the method call           */
+        (*methp)((RexxMethodContext *)&context, arguments);
         activity->requestAccess();           /* now in unsafe mode again          */
+
+        // process the returned result
+        result = valueToObject(arguments);
     }
     catch (RexxActivation *)
     {
@@ -459,70 +1024,6 @@ void RexxNativeActivation::run(
     /* give up reference to receiver so that it can be garbage collected */
     this->receiver = OREF_NULL;
 
-    // set a default result
-    result = OREF_NULL;
-
-    switch (*itypes)
-    {                   /* now process the return value      */
-        case REXXD_void:                   /* void, this is just a NULL OREF    */
-            result = OREF_NULL;
-            break;
-
-        case REXXD_OBJECT:                 /* Object reference                  */
-            /* no result returned?               */
-            if (*((RexxObject **)*ivalues) != OREF_NULL)
-            {
-                /* give a direct pointer to this     */
-                result = *((RexxObject **)*ivalues);
-            }
-            break;
-
-        case REXXD_int:                    /* integer value                     */
-            result = new_integer(*((int *)*ivalues));
-            break;
-
-        case REXXD_size_t:                 /* long integer value                */
-            result = new_integer(*((size_t *)*ivalues));
-            break;
-
-        case REXXD_ssize_t:
-            result = new_integer(*((ssize_t *)*ivalues));
-            break;
-
-        case REXXD_stringsize_t:
-            result = new_integer(*((stringsize_t *)*ivalues));
-            break;
-
-        case REXXD_wholenumber_t:
-            result = new_integer(*((wholenumber_t *)*ivalues));
-            break;
-
-        case REXXD_double:                 /* double value                      */
-            result = new_string(*((double *)*ivalues));
-            break;
-
-        case REXXD_CSTRING:                /* ASCII-Z string                    */
-            /* no string returned?               */
-            if (*((CSTRING *)*ivalues) != NO_CSTRING)
-            {
-                /* convert to a string object        */
-                result = new_string(*((CSTRING *)*ivalues));
-            }
-            break;
-
-        case REXXD_POINTER:
-            if (*((void **)*ivalues) != NULL)/* no pointer?                       */
-            {
-                /* make this an integer value        */
-                result = new_pointer(*((void **)*ivalues));
-            }
-            break;
-
-        default:
-            logic_error("unsupported native method result type");
-            break;
-    }
-
     // set the return value and get outta here
     resultObj = this->result;
     // Use protected object to pass back the result
@@ -530,7 +1031,262 @@ void RexxNativeActivation::run(
     this->argcount = 0;                  /* make sure we don't try to mark any arguments */
     this->activity->popStackFrame(this); /* pop this from the activity        */
     this->setHasNoReferences();          /* mark this as not having references in case we get marked */
-    return;                             /* and finished                      */
+}
+
+
+/**
+ * Process a native function call.
+ *
+ * @param entryPoint The target function entry point.
+ * @param count      The number of arguments.
+ * @param list       The list of arguments.
+ * @param result     A protected object to receive the function result.
+ */
+void RexxNativeActivation::callNativeFunction(RexxNativeFunction *code, RexxString *functionName, size_t count,
+    RexxObject **list, ProtectedObject &result)
+{
+    // anchor the context stuff
+    msgName = functionName;
+    arglist = list;
+    argcount = count;
+
+    ValueDescriptor arguments[MAX_NATIVE_ARGUMENTS];
+
+    CallContext context;               // the passed out method context
+
+    // build a context pointer to pass out
+    activity->createCallContext(context, this);
+
+    context.threadContext.arguments = arguments;
+
+    // get the entry point address of the target method
+    PNATIVEFUNCTION methp = code->getEntry();
+
+    // retrieve the argument signatures and process them
+    uint16_t *types = (*methp)((RexxCallContext *)&context, NULL);
+    processArguments(argcount, arglist, types, arguments, MAX_NATIVE_ARGUMENTS);
+
+    size_t activityLevel = this->activity->getActivationLevel();
+    try
+    {
+        activity->releaseAccess();           /* force this to "safe" mode         */
+                                             /* process the method call           */
+        (*methp)((RexxCallContext *)&context, arguments);
+        activity->requestAccess();           /* now in unsafe mode again          */
+
+        // process the returned result
+        result = valueToObject(arguments);
+    }
+    catch (RexxActivation *)
+    {
+        // if we're not the current kernel holder when things return, make sure we
+        // get the lock before we continue
+        if (ActivityManager::currentActivity != activity)
+        {
+            activity->requestAccess();
+        }
+
+        this->argcount = 0;                /* make sure we don't try to mark any arguments */
+        // the lock holder gets here by longjmp from a kernel reentry.  We need to
+        // make sure the activation count gets reset, else we'll accumulate bogus
+        // nesting levels that will make it look like this activity is still in use
+        // when in fact we're done with it.
+        this->activity->restoreActivationLevel(activityLevel);
+        // IMPORTANT NOTE:  We don't pop our activation off the stack.  This will be
+        // handled by the catcher.  Attempting to pop the stack when an error or condition has
+        // occurred can munge the activation stack, resulting bad stuff.
+        this->setHasNoReferences();        /* mark this as not having references in case we get marked */
+        // now rethrow the trapped condition so that real target can handle this.
+        throw;
+    }
+    catch (RexxNativeActivation *)
+    {
+        // if we're not the current kernel holder when things return, make sure we
+        // get the lock before we continue
+        if (ActivityManager::currentActivity != activity)
+        {
+            activity->requestAccess();
+        }
+        this->argcount = 0;                /* make sure we don't try to mark any arguments */
+        // the lock holder gets here by longjmp from a kernel reentry.  We need to
+        // make sure the activation count gets reset, else we'll accumulate bogus
+        // nesting levels that will make it look like this activity is still in use
+        // when in fact we're done with it.
+        this->activity->restoreActivationLevel(activityLevel);
+        this->activity->popStackFrame(this);   /* pop this from the activity        */
+        this->setHasNoReferences();        /* mark this as not having references in case we get marked */
+        // set the return value and get outta here
+        resultObj = this->result;
+        return;
+    }
+
+    // belt and braces...this restores the activity level to whatever
+    // level we had when we made the callout.
+    this->activity->restoreActivationLevel(activityLevel);
+
+    /* give up reference to receiver so that it can be garbage collected */
+    this->receiver = OREF_NULL;
+
+    // set the return value and get outta here
+    resultObj = this->result;
+    this->argcount = 0;                  /* make sure we don't try to mark any arguments */
+    this->activity->popStackFrame(this); /* pop this from the activity        */
+    this->setHasNoReferences();          /* mark this as not having references in case we get marked */
+}
+
+
+/**
+ * Process a native function call.
+ *
+ * @param entryPoint The target function entry point.
+ * @param count      The number of arguments.
+ * @param list       The list of arguments.
+ * @param result     A protected object to receive the function result.
+ */
+void RexxNativeActivation::callRegisteredFunction(RegisteredFunction *code, RexxString *functionName, size_t count,
+    RexxObject **list, ProtectedObject &result)
+{
+    // anchor the context stuff
+    msgName = functionName;
+    arglist = list;
+    argcount = count;
+
+    // get the entry point address of the target method
+    RexxFunctionHandler *methp = code->getEntry();
+
+    CONSTRXSTRING   arguments[MAX_NATIVE_ARGUMENTS];
+    CONSTRXSTRING *argPtr = arguments;
+
+    // unlike the other variants, we don't have a cap on arguments.  If we have more than the preallocated
+    // set, then dynamically allocate a buffer object to hold the memory and anchor it in the
+    // activation saved objects.
+    if (count > MAX_NATIVE_ARGUMENTS)
+    {
+        RexxBuffer *buffer = new_buffer(sizeof(CONSTRXSTRING) * count);
+        // this keeps the buffer alive until the activation is popped.
+        saveObject(buffer);
+        argPtr = (CONSTRXSTRING *)buffer->getData();
+    }
+
+    // all of the arguments now need to be converted to string arguments
+    for (size_t argindex=0; argindex < count; argindex++)
+    {
+        /* get the next argument             */
+        RexxObject *argument = _arguments[argindex];
+        if (argument != OREF_NULL)       /* have an argument?                 */
+        {
+            /* force to string form              */
+            RexxString *stringArgument = argument->stringValue();
+            // if the string version is not the same, we're going to need to make
+            // sure the string version is protected from garbage collection until
+            // the call is finished
+            if (stringArgument != argument)
+            {
+                // make sure this is protected
+                savedObject(stringArgument);
+            }
+            stringArgument->toRxstring(argPtr[argindex]);
+        }
+        else                             /* have an omitted argument          */
+        {
+            /* give it zero length               */
+            argPtr[argindex].strlength = 0;
+            /* and a zero pointer                */
+            argPtr[argindex].strptr = NULL;
+        }
+    }
+    /* get the current queue name        */
+    const char *queuename = SysGetCurrentQueue()->getStringData();
+    RXSTRING funcresult;
+    int functionrc;                      /* Return code from function         */
+
+    /* make the RXSTRING result          */
+    MAKERXSTRING(funcresult, default_return_buffer, sizeof(default_return_buffer));
+
+
+
+    size_t activityLevel = this->activity->getActivationLevel();
+    try
+    {
+        activity->releaseAccess();           /* force this to "safe" mode         */
+        // now process the function call
+        functionrc = (*methp)(functionName->getStringData(), count, argPtr, queuename, funcresult);
+        activity->requestAccess();           /* now in unsafe mode again          */
+
+        // process the returned result
+        result = valueToObject(arguments);
+    }
+    catch (RexxActivation *)
+    {
+        // if we're not the current kernel holder when things return, make sure we
+        // get the lock before we continue
+        if (ActivityManager::currentActivity != activity)
+        {
+            activity->requestAccess();
+        }
+
+        this->argcount = 0;                /* make sure we don't try to mark any arguments */
+        // the lock holder gets here by longjmp from a kernel reentry.  We need to
+        // make sure the activation count gets reset, else we'll accumulate bogus
+        // nesting levels that will make it look like this activity is still in use
+        // when in fact we're done with it.
+        this->activity->restoreActivationLevel(activityLevel);
+        // IMPORTANT NOTE:  We don't pop our activation off the stack.  This will be
+        // handled by the catcher.  Attempting to pop the stack when an error or condition has
+        // occurred can munge the activation stack, resulting bad stuff.
+        this->setHasNoReferences();        /* mark this as not having references in case we get marked */
+        // now rethrow the trapped condition so that real target can handle this.
+        throw;
+    }
+    catch (RexxNativeActivation *)
+    {
+        // if we're not the current kernel holder when things return, make sure we
+        // get the lock before we continue
+        if (ActivityManager::currentActivity != activity)
+        {
+            activity->requestAccess();
+        }
+        this->argcount = 0;                /* make sure we don't try to mark any arguments */
+        // the lock holder gets here by longjmp from a kernel reentry.  We need to
+        // make sure the activation count gets reset, else we'll accumulate bogus
+        // nesting levels that will make it look like this activity is still in use
+        // when in fact we're done with it.
+        this->activity->restoreActivationLevel(activityLevel);
+        this->activity->popStackFrame(this);   /* pop this from the activity        */
+        this->setHasNoReferences();        /* mark this as not having references in case we get marked */
+        // set the return value and get outta here
+        resultObj = this->result;
+        return;
+    }
+
+    // belt and braces...this restores the activity level to whatever
+    // level we had when we made the callout.
+    this->activity->restoreActivationLevel(activityLevel);
+
+    // now process the function return value
+    if (functionrc == 0)             /* If good rc from function          */
+    {
+        if (funcresult.strptr != NULL)         /* If we have a result, return it    */
+        {
+            /* make a string result              */
+            resultObj = new_string(funcresult);
+            /* user give us a new buffer?        */
+            if (funcresult.strptr != default_return_buffer )
+            {
+                /* free it                           */
+                SysReleaseResultMemory(funcresult.strptr);
+            }
+        }
+    }
+    else                             /* Bad rc from function, signal      */
+    {
+        /* error                             */
+        reportException(Error_Incorrect_call_external, functionName);
+    }
+
+    this->argcount = 0;                  /* make sure we don't try to mark any arguments */
+    this->activity->popStackFrame(this); /* pop this from the activity        */
+    this->setHasNoReferences();          /* mark this as not having references in case we get marked */
 }
 
 
@@ -1143,46 +1899,6 @@ void RexxNativeActivation::raiseCondition(RexxString *condition, RexxString *des
     // We only return here if no activation above us has trapped this.  If we do return, then
     // we terminate the call by throw this up the stack.
     throw this;
-}
-
-
-/**
- * Constructor for a new native activation.
- *
- * @param _activity The activity we're running under.
- * @param _method   The method we're executing.
- * @param _code     The native code controlling the execution.
- */
-RexxNativeActivation::RexxNativeActivation(RexxActivity *_activity, RexxMethod *_method, RexxNativeCode *_code)
-{
-    this->activity = _activity;      /* the activity running on           */
-    this->method = _method;
-    this->code = _code;
-}
-
-
-/**
- * Constructor for a new native activation used to create a
- * callback context for exit call outs.
- *
- * @param _activity The activity we're running under.
- */
-RexxNativeActivation::RexxNativeActivation(RexxActivity *_activity, RexxActivation*_activation)
-{
-    this->activity = _activity;      /* the activity running on           */
-    this->activation = _activation;  // our parent context
-}
-
-
-/**
- * Constructor for a new native activation used to create a
- * callback context for exit call outs.
- *
- * @param _activity The activity we're running under.
- */
-RexxNativeActivation::RexxNativeActivation(RexxActivity *_activity)
-{
-    this->activity = _activity;      /* the activity running on           */
 }
 
 

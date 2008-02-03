@@ -62,7 +62,7 @@ RexxMethod0(REXXOBJECT, rexx_query_queue)
 {
    REXXOBJECT queue_name;              /* current queue name                */
    size_t count = 0;                   /* count of lines                    */
-   APIRET rc;                          /* queue query return code           */
+   RexxReturnCode rc;                          /* queue query return code           */
 
                                        /* get the queue name                */
    queue_name = ooRexxVarValue("NAMED_QUEUE");
@@ -79,7 +79,7 @@ RexxMethod0(REXXOBJECT, rexx_pull_queue)
 {
    RXSTRING buf;                       /* pulled line buffer                */
    REXXDATETIME dt;                    /* line time stamp                   */
-   APIRET rc;                          /* pull return code                  */
+   RexxReturnCode rc;                          /* pull return code                  */
    REXXOBJECT oref_buf;                /* returned string object            */
    REXXOBJECT queue_name;              /* current queue name                */
 
@@ -109,7 +109,7 @@ RexxMethod0(REXXOBJECT, rexx_linein_queue)
 {
    RXSTRING buf;                       /* pulled line buffer                */
    REXXDATETIME dt;                    /* line time stamp                   */
-   APIRET rc;                          /* pull return code                  */
+   RexxReturnCode rc;                          /* pull return code                  */
    REXXOBJECT oref_buf;                /* returned string object            */
    REXXOBJECT queue_name;              /* current queue name                */
 
@@ -139,7 +139,7 @@ int  rexx_add_queue(
   int         order )                  /* queuing order                     */
 {
    CONSTRXSTRING rx_string;            /* rxstring to return                */
-   APIRET rc;                          /* queue return code                 */
+   RexxReturnCode rc;                          /* queue return code                 */
    REXXOBJECT queue_name;              /* current queue name                */
 
    if (queue_line == NULLOBJECT)       /* no line given?                    */
@@ -183,7 +183,7 @@ RexxMethod1(REXXOBJECT, rexx_create_queue,
   CSTRING, queue_name)                 /* current queue name                */
 {
    char buf[name_parameter_length+1];  /* creation buffer                   */
-   APIRET rc;                          /* creation return code              */
+   RexxReturnCode rc;                          /* creation return code              */
    size_t dup_flag = 0;                /* duplicate name flag               */
 
                                        /* create a queue                    */
@@ -215,7 +215,7 @@ RexxMethod1(REXXOBJECT, function_queueExit,
 
 
   NativeContextBlock context;
-  RexxActivation *activation = context.self->getRexxContext(); 
+  RexxActivation *activation = context.self->getRexxContext();
                                        /* call the exit                     */
   context.activity->callQueueNameExit(activation, qname);
   return context.protect(qname);       /* and just return the exit result   */
