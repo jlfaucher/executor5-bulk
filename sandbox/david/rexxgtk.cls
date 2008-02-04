@@ -779,6 +779,26 @@ return
 
 
 /*============================================================================*/
+/* Class: GtkColorSelectionDialog                                             */
+/*============================================================================*/
+
+::class GtkColorSelectionDialog public subclass GtkDialog
+
+::method init
+use strict arg title, color, alpha
+self~pointer = GrxColorSelectionDialogNew(title, color, alpha)
+return
+
+::method color
+use strict arg
+return GrxColorSelectionDialogGetColor(self~pointer)
+
+::method get_color
+use strict arg
+return self~color
+
+
+/*============================================================================*/
 /* Class: GtkAboutDialog                                                      */
 /*============================================================================*/
 

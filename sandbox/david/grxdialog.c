@@ -83,7 +83,7 @@ static void signal_func_2(GtkWidget *window,
     RXSTRING entry;
 
     // set up the queue entry data
-    g_snprintf(buffer, sizeof(buffer), "%p %s", window, data, arg1);
+    g_snprintf(buffer, sizeof(buffer), "%p %s %d", window, data, arg1);
     entry.strptr = buffer;
     entry.strlength = strlen(buffer);
 
@@ -961,6 +961,78 @@ ULONG APIENTRY GrxAboutDialogSetLogo(PSZ Name, LONG Argc, RXSTRING Argv[],
     /* Set up the REXX return code */
     *(Retstr->strptr) = '0';
     Retstr->strlength = 1;
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxColorSelectionDialogNew                         */
+/* Description: Create a color selection dialog                               */
+/* Rexx Args:   Title                                                         */
+/*          :   Initial color                                                 */
+/*          :   Initial alpha (optional)                                      */
+/*----------------------------------------------------------------------------*/
+
+ULONG APIENTRY GrxColorSelectionDialogNew(PSZ Name, LONG Argc, RXSTRING Argv[],
+                                          PSZ Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget, *colorsel;
+    GdkColor color;
+    guint alpha = 65535;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(2, 2, Argv))
+        return RXFUNC_BADCALL;
+
+    /* Initialize function parameters */
+    if (Argc == 3) {
+        sscanf(Argv[2].strptr, "%u", &alpha);
+    }
+
+    myWidget = gtk_color_selection_dialog_new(Argv[0].strptr);
+    colorsel = GTK_COLOR_SELECTION_DIALOG(myWidget)->colorsel;
+    gtk_color_selection_set_has_opacity_control(GTK_COLOR_SELECTION(colorsel),
+                                                TRUE);
+    gtk_color_selection_set_current_color(GTK_COLOR_SELECTION(colorsel), &color);
+    gtk_color_selection_set_current_alpha(GTK_COLOR_SELECTION(colorsel), alpha);
+
+    /* Set up the REXX return code */
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%p", myWidget);
+    Retstr->strlength = strlen(Retstr->strptr);
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxColorSelectionDialogGetColor                    */
+/* Description: Get the selected color                                        */
+/* Rexx Args:   Dialog widget                                                 */
+/*----------------------------------------------------------------------------*/
+
+ULONG APIENTRY GrxColorSelectionDialogGetColor(PSZ Name, LONG Argc, RXSTRING Argv[],
+                                          PSZ Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget, *colorsel;
+    GdkColor color;
+    guint alpha;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(1, Argc, Argv))
+        return RXFUNC_BADCALL;
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &myWidget);
+
+    colorsel = GTK_COLOR_SELECTION_DIALOG(myWidget)->colorsel;
+    gtk_color_selection_get_current_color(GTK_COLOR_SELECTION(colorsel), &color);
+    alpha = gtk_color_selection_get_current_alpha(GTK_COLOR_SELECTION(colorsel));
+
+    /* Set up the REXX return code */
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "#%04X%04X%04X%04X",
+               color.red, color.green, color.blue, alpha);
+    Retstr->strlength = strlen(Retstr->strptr);
 
     return RXFUNC_OK;
 }

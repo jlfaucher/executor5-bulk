@@ -208,6 +208,8 @@ APIRET APIENTRY GrxLoadFuncs(char * Name,
         "GrxAboutDialogSetDocumenters",
         "GrxAboutDialogSetLogo",
         "GrxFileChooserDialogNew",
+        "GrxColorSelectionDialogNew",
+        "GrxColorSelectionDialogGetColor",
 
         // Button functions
         "GrxButtonNew",
