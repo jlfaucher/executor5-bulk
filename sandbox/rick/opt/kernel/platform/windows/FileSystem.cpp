@@ -49,6 +49,7 @@
 #include "RexxNativeAPI.h"
 #include "ActivityManager.hpp"
 #include "ProtectedObject.hpp"
+#include "SysInterpreterInstance.hpp"
 #include <string.h>
 #include <io.h>
 #include <fcntl.h>
@@ -62,9 +63,6 @@
 #define WANT_GETLONGPATHNAME_WRAPPER   /* NT and Windows 95                 */
 #include <NewAPIs.h>
 
-RexxString * LocateProgram(RexxString *, const char *[], int);
-bool  SearchFileName(const char *, char *);
-void GetLongName(char *, DWORD);
 bool FindFirstFile(const char *Name);
 FILE * SysBinaryFilemode(FILE *, bool);
 int SysFFlush(FILE *);
@@ -196,12 +194,14 @@ RexxString *SysInterpreterInstance::resolveProgram(RexxString *_name, RexxString
     const char *parentDir = _parentDir == OREF_NULL ? NULL : _parentDir->getStringData();
     const char *parentExtension = _parentExtension == OREF_NULL ? NULL : _parentExtension->getStringData();
 
+    SysSearchPath searchPath(parentDir, parentExtension);
+
 
     // if the file already has an extension, this dramatically reduces the number
     // of searches we need to make.
     if (hasExtension(name))
     {
-        if (searchName(name, parentDir, NULL, resolvedName))
+        if (searchName(name, searchPath.path, NULL, resolvedName))
         {
             return new_string(resolvedName);
         }
@@ -211,7 +211,7 @@ RexxString *SysInterpreterInstance::resolveProgram(RexxString *_name, RexxString
     // if we have a parent extension provided, use that in preference to any default searches
     if (parentExtension != NULL)
     {
-        if (searchName(name, parentDir, parentExtension, resolvedName))
+        if (searchName(name, searchPath.path, parentExtension, resolvedName))
         {
             return new_string(resolvedName);
         }
@@ -224,7 +224,7 @@ RexxString *SysInterpreterInstance::resolveProgram(RexxString *_name, RexxString
     {
         RexxString *ext = (RexxString *)searchExtensions->get(i);
 
-        if (searchName(name, parentDir, ext->getStringData(), resolvedName))
+        if (searchName(name, searchPath.path, ext->getStringData(), resolvedName))
         {
             return new_string(resolvedName);
         }
@@ -279,7 +279,7 @@ bool SysInterpreterInstance::hasExtension(const char *name)
  * @return true if the file was located.  A true returns indicates the
  *         resolved file name has been placed in the provided buffer.
  */
-bool SysInterpreterInstance::searchName(const char *name, const char *directory, const char *extension, char *resolvedName)
+bool SysInterpreterInstance::searchName(const char *name, const char *path, const char *extension, char *resolvedName)
 {
     UnsafeBlock releaser;
     // this is for building a temporary name
@@ -298,34 +298,10 @@ bool SysInterpreterInstance::searchName(const char *name, const char *directory,
         return true;
     }
 
-
-    // if we have a directory, then use that directory as a search path first
-    if (directory != OREF_NULL )
-    {
-        if (searchPath(name, directory, extension, resolvedName))
-        {
-            return true;
-        }
-    }
-
-
-    // if the instance was created with an extension path, search it first
-    if (instance->searchPath != OREF_NULL )
-    {
-        if (searchPath(name, instance->searchPath()->getStringData(), extension, resolvedName))
-        {
-            return true;
-        }
-    }
-
-
-    // now do the default search path
-    if (searchPath(name, NULL, extension, resolved))
+    if (searchPath(name, path, extension, resolvedName))
     {
         return true;
     }
-
-    return false;
 }
 
 
@@ -386,7 +362,7 @@ bool SysInterpreterInstance::searchPath(const char *name, const char *path, cons
     unsigned int errorMode = SetErrorMode(SEM_FAILCRITICALERRORS);
 
     LPTSTR ppszFilePart=NULL;            // file name only in buffer
-    if (SearchPath((LPCTSTR)NULL, (LPCTSTR)name, (LPCTSTR)extension, CCHMAXPATH, (LPTSTR)reslvedlName, &ppszFilePart))
+    if (SearchPath((LPCTSTR)path, (LPCTSTR)name, (LPCTSTR)extension, CCHMAXPATH, (LPTSTR)resolvedlName, &ppszFilePart))
     {
         DWORD fileAttrib = GetFileAttributes((LPTSTR)fullName);
 
@@ -437,122 +413,6 @@ const char *SysFileExtension(
   if (Length == 0)                     /* if no residual length             */
     return  NULL;                      /* so return null extension          */
   return --Scan;                       /* return extension position         */
-}
-
-/*********************************************************************/
-/*                                                                   */
-/* FUNCTION    : LocateProgram                                       */
-/*                                                                   */
-/* DESCRIPTION : Finds out if file name is minimally correct. Finds  */
-/*               out if file exists. If it exists, then produce      */
-/*               fullpath name.                                      */
-/*                                                                   */
-/*********************************************************************/
-RexxString * LocateProgram(
-  RexxString * InName,                 /* name of rexx proc to check        */
-  const char  *Extensions[],           /* array of extensions to check      */
-  int          ExtensionCount )        /* count of extensions               */
-{
-  char       TempName[CCHMAXPATH + 2]; /* temporary name buffer             */
-  char       FullName[CCHMAXPATH + 2]; /* temporary name buffer             */
-  const char  *Name;                   /* ASCII-Z version of the name       */
-  const char  *Extension;              /* start of file extension           */
-  RexxString * Result;                 /* returned name                     */
-  int          i;                      /* loop counter                      */
-  size_t       ExtensionSpace;         /* room for an extension             */
-
-  // retrofit by IH
-  bool         Found;                  /* found the file                    */
-
-  {
-      UnsafeBlock releaser;
-
-      Name = InName->getStringData();      /* point to the string data          */
-      Found = false;                       /* no name found yet                 */
-      Extension = SysFileExtension(Name);  /* locate the file extension start   */
-
-      if (!Extension) {                    /* have an extension?                */
-                           /* get space left for an extension   */
-        ExtensionSpace = sizeof(TempName) - strlen(Name);
-                           /* loop through the extensions list  */
-        for (i = 0; !Found && i < ExtensionCount; i++) {
-                           /* copy over the name                */
-          strncpy(TempName, Name, sizeof(TempName));
-                           /* copy over the extension           */
-          strncat(TempName, Extensions[i], ExtensionSpace);
-                           /* check this version of the name    */
-          Found = SearchFileName(TempName, FullName);
-        }
-      }
-      if (!Found)                          /* not found?  try without extensions*/
-                           /* check on the "raw" name last      */
-        Found = SearchFileName(Name, FullName);
-  }
-  if (Found)                           /* got one?                          */
-                       /* get as a string object            */
-    Result = new_string(FullName);
-  else
-    Result = OREF_NULL;                /* this wasn't found                 */
-  return Result;                       /* return the name                   */
-}
-
-/*********************************************************************/
-/*                                                                   */
-/* FUNCTION    : SearchFileName                                      */
-/*                                                                   */
-/* DESCRIPTION : Search for a given filename, returning the fully    */
-/*               resolved name if it is found.                       */
-/*                                                                   */
-/*********************************************************************/
-
-bool SearchFileName(
-  const char *Name,                    /* name of rexx proc to check        */
-  char       *FullName )               /* fully resolved name               */
-{
-  size_t     NameLength;               /* length of name                    */
-
-  DWORD dwFileAttrib;             // file attributes
-  LPTSTR ppszFilePart=NULL;            // file name only in buffer
-  unsigned int errorMode;
-
-  NameLength = strlen(Name);           /* get length of incoming name       */
-
-                       /* if name is too small or big       */
-  if (NameLength < 1 || NameLength > CCHMAXPATH)
-    return false;                  /* then Not a rexx proc name         */
-                       /* now try for original name         */
-  errorMode = SetErrorMode(SEM_FAILCRITICALERRORS);
-  if (GetFullPathName(Name, CCHMAXPATH, (LPTSTR)FullName, &ppszFilePart)) {
-                       /* make sure it really exists        */
-                       // make sure it's not a directory
-     if (-1 != (dwFileAttrib=GetFileAttributes((LPTSTR)FullName))
-    && (dwFileAttrib != FILE_ATTRIBUTE_DIRECTORY))
-     {
-                       /* got it! get its case-preserved long file name */
-       GetLongName(FullName, CCHMAXPATH);
-       SetErrorMode(errorMode);
-       return true;
-     }
-  }
-                       /* try searching the path            */
-  if ( SearchPath(NULL,                // search default order
-          (LPCTSTR)Name,       // @ of filename
-          NULL,                // @ of extension, no default
-          CCHMAXPATH,          // len of buffer
-          (LPTSTR)FullName,    // buffer for found
-          &ppszFilePart) )
-                       // make sure it's not a directory
-     if (-1 != (dwFileAttrib=GetFileAttributes((LPTSTR)FullName))
-    && (dwFileAttrib != FILE_ATTRIBUTE_DIRECTORY))
-     {
-                       /* got it! get its case-preserved long file name */
-       GetLongName(FullName, CCHMAXPATH);
-       SetErrorMode(errorMode);
-       return true;
-     }
-
-  SetErrorMode(errorMode);
-  return false;                    /* not found                         */
 }
 
 
