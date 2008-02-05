@@ -771,7 +771,7 @@ return
 
 ::method init
 use strict arg parent, flags, type, button, text
-if parent = .nil then ptr = 0
+if parent = .nil then ptr = '0'
 else ptr = parent~pointer
 ptrs = GrxMessageDialogNew(ptr, flags, type, button, text)
 parse var ptrs self~pointer self~vbox .
@@ -796,6 +796,44 @@ return GrxColorSelectionDialogGetColor(self~pointer)
 ::method get_color
 use strict arg
 return self~color
+
+
+/*============================================================================*/
+/* Class: GtkFontSelectionDialog                                              */
+/*============================================================================*/
+
+::class GtkFontSelectionDialog public subclass GtkDialog
+
+::method init
+use strict arg title
+self~pointer = GrxFontSelectionDialogNew(title)
+return
+
+::method 'font_name='
+use strict arg fname
+call GrxFontSelectionDialogSetFontName self~pointer, fname
+return
+
+::method set_font_name
+use strict arg self~font_name
+return
+
+::method font_name
+use strict arg
+return GrxFontSelectionDialogGetFontName(self~pointer)
+
+::method get_font_name
+use strict arg
+return self~font_name
+
+::method 'preview_text='
+use strict arg text
+call GrxFontSelectionDialogSetPreviewText self~pointer, text
+return
+
+::method set_preview_text
+use strict arg self~preview_text
+return
 
 
 /*============================================================================*/

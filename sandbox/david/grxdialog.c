@@ -415,13 +415,15 @@ APIRET APIENTRY GrxDialogConnectSignal(const char * Name,
 /* Rexx External Function: GrxMessageDialogNew                                */
 /* Description: Create a message dialog                                       */
 /* Rexx Args:   Parent window pointer                                         */
+/*              Flags                                                         */
 /*              Message type                                                  */
 /*              Button set                                                    */
 /*              Message text                                                  */
 /*----------------------------------------------------------------------------*/
 
-ULONG APIENTRY GrxMessageDialogNew(PSZ Name, LONG Argc, RXSTRING Argv[],
-                                   PSZ Queuename, PRXSTRING Retstr)
+APIRET APIENTRY GrxMessageDialogNew(const char * Name,
+                                    const size_t Argc, const RXSTRING Argv[],
+                                    const char * Queuename, PRXSTRING Retstr)
 {
     GtkWindow *parentWindow;
     GtkWidget *myWidget;
@@ -491,8 +493,9 @@ ULONG APIENTRY GrxMessageDialogNew(PSZ Name, LONG Argc, RXSTRING Argv[],
 /*              Message text                                                  */
 /*----------------------------------------------------------------------------*/
 
-ULONG APIENTRY GrxFileChooserDialogNew(PSZ Name, LONG Argc, RXSTRING Argv[],
-                                       PSZ Queuename, PRXSTRING Retstr)
+APIRET APIENTRY GrxFileChooserDialogNew(const char * Name,
+                                        const size_t Argc, const RXSTRING Argv[],
+                                        const char * Queuename, PRXSTRING Retstr)
 {
     GtkWindow *parentWindow;
     GtkWidget *myWidget;
@@ -530,31 +533,118 @@ ULONG APIENTRY GrxFileChooserDialogNew(PSZ Name, LONG Argc, RXSTRING Argv[],
 
 
 /*----------------------------------------------------------------------------*/
-/* Rexx External Function: GrxFontSelectionDialog                             */
+/* Rexx External Function: GrxFontSelectionDialogNew                          */
 /* Description: Create a font selection dialog                                */
 /* Rexx Args:   None                                                          */
 /*----------------------------------------------------------------------------*/
 
-ULONG APIENTRY GrxFontSelectionDialog(PSZ Name, LONG Argc, RXSTRING Argv[],
-                                      PSZ Queuename, PRXSTRING Retstr)
+APIRET APIENTRY GrxFontSelectionDialogNew(const char * Name,
+                                          const size_t Argc, const RXSTRING Argv[],
+                                          const char * Queuename, PRXSTRING Retstr)
 {
     GtkWidget *myWidget;
-    gint response;
-    char *font = NULL;
 
     /* Check for valid arguments */
     if (GrxCheckArgs(1, Argc, Argv))
         return RXFUNC_BADCALL;
 
-    /* display and run the dialog */
     myWidget = gtk_font_selection_dialog_new(Argv[0].strptr);
 
-    gtk_font_selection_dialog_set_preview_text(GTK_FONT_SELECTION_DIALOG(myWidget),
-                                               "abcdefghijk ABCDEFGKIJK 1234567890");
+    /* Set up the REXX return code */
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%p", myWidget);
+    Retstr->strlength = strlen(Retstr->strptr);
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxFontSelectionDialogSetFontName                  */
+/* Description: Set the dialog font name                                      */
+/* Rexx Args:   Pointer to the dialog                                         */
+/*              Font name                                                     */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxFontSelectionDialogSetFontName(const char * Name,
+                                                  const size_t Argc, const RXSTRING Argv[],
+                                                  const char * Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(2, Argc, Argv))
+        return RXFUNC_BADCALL;
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &myWidget);
+
+    gtk_font_selection_dialog_set_font_name(GTK_FONT_SELECTION_DIALOG(myWidget),
+                                            Argv[1].strptr);
 
     /* Set up the REXX return code */
-    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%p %p", myWidget, GTK_DIALOG(myWidget)->vbox);
+    *(Retstr->strptr) = '0';
+    Retstr->strlength = 1;
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxFontSelectionDialogGetFontName                  */
+/* Description: Get the dialog font name                                      */
+/* Rexx Args:   Pointer to the dialog                                         */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxFontSelectionDialogGetFontName(const char * Name,
+                                                  const size_t Argc, const RXSTRING Argv[],
+                                                  const char * Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+    gchar * font;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(1, Argc, Argv))
+        return RXFUNC_BADCALL;
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &myWidget);
+
+    font = gtk_font_selection_dialog_get_font_name(GTK_FONT_SELECTION_DIALOG(myWidget));
+
+    /* Set up the REXX return code */
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%s", font);
     Retstr->strlength = strlen(Retstr->strptr);
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxFontSelectionDialogSetPreviewText               */
+/* Description: Set the dialog preview text                                   */
+/* Rexx Args:   Pointer to the dialog                                         */
+/*              Font name                                                     */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxFontSelectionDialogSetPreviewText(const char * Name,
+                                                     const size_t Argc, const RXSTRING Argv[],
+                                                     const char * Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(2, Argc, Argv))
+        return RXFUNC_BADCALL;
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &myWidget);
+
+    gtk_font_selection_dialog_set_preview_text(GTK_FONT_SELECTION_DIALOG(myWidget),
+                                               Argv[1].strptr);
+
+    /* Set up the REXX return code */
+    *(Retstr->strptr) = '0';
+    Retstr->strlength = 1;
 
     return RXFUNC_OK;
 }
@@ -566,8 +656,9 @@ ULONG APIENTRY GrxFontSelectionDialog(PSZ Name, LONG Argc, RXSTRING Argv[],
 /* Rexx Args:   None                                                          */
 /*----------------------------------------------------------------------------*/
 
-ULONG APIENTRY GrxAboutDialogNew(PSZ Name, LONG Argc, RXSTRING Argv[],
-                                 PSZ Queuename, PRXSTRING Retstr)
+APIRET APIENTRY GrxAboutDialogNew(const char * Name,
+                                  const size_t Argc, const RXSTRING Argv[],
+                                  const char * Queuename, PRXSTRING Retstr)
 {
     GtkWidget *myWidget;
 
@@ -592,8 +683,9 @@ ULONG APIENTRY GrxAboutDialogNew(PSZ Name, LONG Argc, RXSTRING Argv[],
 /*              Program name                                                  */
 /*----------------------------------------------------------------------------*/
 
-ULONG APIENTRY GrxAboutDialogSetProgramName(PSZ Name, LONG Argc, RXSTRING Argv[],
-                                            PSZ Queuename, PRXSTRING Retstr)
+APIRET APIENTRY GrxAboutDialogSetProgramName(const char * Name,
+                                             const size_t Argc, const RXSTRING Argv[],
+                                             const char * Queuename, PRXSTRING Retstr)
 {
     GtkWidget *myWidget;
 
@@ -622,8 +714,9 @@ ULONG APIENTRY GrxAboutDialogSetProgramName(PSZ Name, LONG Argc, RXSTRING Argv[]
 /*              Version                                                       */
 /*----------------------------------------------------------------------------*/
 
-ULONG APIENTRY GrxAboutDialogSetVersion(PSZ Name, LONG Argc, RXSTRING Argv[],
-                                        PSZ Queuename, PRXSTRING Retstr)
+APIRET APIENTRY GrxAboutDialogSetVersion(const char * Name,
+                                         const size_t Argc, const RXSTRING Argv[],
+                                         const char * Queuename, PRXSTRING Retstr)
 {
     GtkWidget *myWidget;
 
@@ -651,8 +744,9 @@ ULONG APIENTRY GrxAboutDialogSetVersion(PSZ Name, LONG Argc, RXSTRING Argv[],
 /*              Copyright                                                     */
 /*----------------------------------------------------------------------------*/
 
-ULONG APIENTRY GrxAboutDialogSetCopyright(PSZ Name, LONG Argc, RXSTRING Argv[],
-                                          PSZ Queuename, PRXSTRING Retstr)
+APIRET APIENTRY GrxAboutDialogSetCopyright(const char * Name,
+                                           const size_t Argc, const RXSTRING Argv[],
+                                           const char * Queuename, PRXSTRING Retstr)
 {
     GtkWidget *myWidget;
 
@@ -680,8 +774,9 @@ ULONG APIENTRY GrxAboutDialogSetCopyright(PSZ Name, LONG Argc, RXSTRING Argv[],
 /*              Comment                                                       */
 /*----------------------------------------------------------------------------*/
 
-ULONG APIENTRY GrxAboutDialogSetComments(PSZ Name, LONG Argc, RXSTRING Argv[],
-                                         PSZ Queuename, PRXSTRING Retstr)
+APIRET APIENTRY GrxAboutDialogSetComments(const char * Name,
+                                          const size_t Argc, const RXSTRING Argv[],
+                                          const char * Queuename, PRXSTRING Retstr)
 {
     GtkWidget *myWidget;
 
@@ -709,8 +804,9 @@ ULONG APIENTRY GrxAboutDialogSetComments(PSZ Name, LONG Argc, RXSTRING Argv[],
 /*              License                                                       */
 /*----------------------------------------------------------------------------*/
 
-ULONG APIENTRY GrxAboutDialogSetLicense(PSZ Name, LONG Argc, RXSTRING Argv[],
-                                        PSZ Queuename, PRXSTRING Retstr)
+APIRET APIENTRY GrxAboutDialogSetLicense(const char * Name,
+                                         const size_t Argc, const RXSTRING Argv[],
+                                         const char * Queuename, PRXSTRING Retstr)
 {
     GtkWidget *myWidget;
 
@@ -738,8 +834,9 @@ ULONG APIENTRY GrxAboutDialogSetLicense(PSZ Name, LONG Argc, RXSTRING Argv[],
 /*              Flag                                                          */
 /*----------------------------------------------------------------------------*/
 
-ULONG APIENTRY GrxAboutDialogSetWrapLicense(PSZ Name, LONG Argc, RXSTRING Argv[],
-                                            PSZ Queuename, PRXSTRING Retstr)
+APIRET APIENTRY GrxAboutDialogSetWrapLicense(const char * Name,
+                                             const size_t Argc, const RXSTRING Argv[],
+                                             const char * Queuename, PRXSTRING Retstr)
 {
     GtkWidget *myWidget;
     gboolean flag;
@@ -769,8 +866,9 @@ ULONG APIENTRY GrxAboutDialogSetWrapLicense(PSZ Name, LONG Argc, RXSTRING Argv[]
 /*              Website                                                       */
 /*----------------------------------------------------------------------------*/
 
-ULONG APIENTRY GrxAboutDialogSetWebsite(PSZ Name, LONG Argc, RXSTRING Argv[],
-                                        PSZ Queuename, PRXSTRING Retstr)
+APIRET APIENTRY GrxAboutDialogSetWebsite(const char * Name,
+                                         const size_t Argc, const RXSTRING Argv[],
+                                         const char * Queuename, PRXSTRING Retstr)
 {
     GtkWidget *myWidget;
 
@@ -798,8 +896,9 @@ ULONG APIENTRY GrxAboutDialogSetWebsite(PSZ Name, LONG Argc, RXSTRING Argv[],
 /*              Website                                                       */
 /*----------------------------------------------------------------------------*/
 
-ULONG APIENTRY GrxAboutDialogSetWebsiteLabel(PSZ Name, LONG Argc, RXSTRING Argv[],
-                                             PSZ Queuename, PRXSTRING Retstr)
+APIRET APIENTRY GrxAboutDialogSetWebsiteLabel(const char * Name,
+                                              const size_t Argc, const RXSTRING Argv[],
+                                              const char * Queuename, PRXSTRING Retstr)
 {
     GtkWidget *myWidget;
 
@@ -827,8 +926,9 @@ ULONG APIENTRY GrxAboutDialogSetWebsiteLabel(PSZ Name, LONG Argc, RXSTRING Argv[
 /*              Author (could repeat)                                         */
 /*----------------------------------------------------------------------------*/
 
-ULONG APIENTRY GrxAboutDialogSetAuthors(PSZ Name, LONG Argc, RXSTRING Argv[],
-                                        PSZ Queuename, PRXSTRING Retstr)
+APIRET APIENTRY GrxAboutDialogSetAuthors(const char * Name,
+                                         const size_t Argc, const RXSTRING Argv[],
+                                         const char * Queuename, PRXSTRING Retstr)
 {
     GtkWidget *myWidget;
     const gchar **authors;
@@ -865,8 +965,9 @@ ULONG APIENTRY GrxAboutDialogSetAuthors(PSZ Name, LONG Argc, RXSTRING Argv[],
 /*              Author (could repeat)                                         */
 /*----------------------------------------------------------------------------*/
 
-ULONG APIENTRY GrxAboutDialogSetArtists(PSZ Name, LONG Argc, RXSTRING Argv[],
-                                        PSZ Queuename, PRXSTRING Retstr)
+APIRET APIENTRY GrxAboutDialogSetArtists(const char * Name,
+                                         const size_t Argc, const RXSTRING Argv[],
+                                         const char * Queuename, PRXSTRING Retstr)
 {
     GtkWidget *myWidget;
     const gchar **authors;
@@ -903,8 +1004,9 @@ ULONG APIENTRY GrxAboutDialogSetArtists(PSZ Name, LONG Argc, RXSTRING Argv[],
 /*              Author (could repeat)                                         */
 /*----------------------------------------------------------------------------*/
 
-ULONG APIENTRY GrxAboutDialogSetDocumenters(PSZ Name, LONG Argc, RXSTRING Argv[],
-                                            PSZ Queuename, PRXSTRING Retstr)
+APIRET APIENTRY GrxAboutDialogSetDocumenters(const char * Name,
+                                             const size_t Argc, const RXSTRING Argv[],
+                                             const char * Queuename, PRXSTRING Retstr)
 {
     GtkWidget *myWidget;
     const gchar **authors;
@@ -941,8 +1043,9 @@ ULONG APIENTRY GrxAboutDialogSetDocumenters(PSZ Name, LONG Argc, RXSTRING Argv[]
 /*              Logo (filename)                                               */
 /*----------------------------------------------------------------------------*/
 
-ULONG APIENTRY GrxAboutDialogSetLogo(PSZ Name, LONG Argc, RXSTRING Argv[],
-                                     PSZ Queuename, PRXSTRING Retstr)
+APIRET APIENTRY GrxAboutDialogSetLogo(const char * Name,
+                                      const size_t Argc, const RXSTRING Argv[],
+                                      const char * Queuename, PRXSTRING Retstr)
 {
     GtkWidget *myWidget;
     GdkPixbuf *logo;
@@ -974,8 +1077,9 @@ ULONG APIENTRY GrxAboutDialogSetLogo(PSZ Name, LONG Argc, RXSTRING Argv[],
 /*          :   Initial alpha (optional)                                      */
 /*----------------------------------------------------------------------------*/
 
-ULONG APIENTRY GrxColorSelectionDialogNew(PSZ Name, LONG Argc, RXSTRING Argv[],
-                                          PSZ Queuename, PRXSTRING Retstr)
+APIRET APIENTRY GrxColorSelectionDialogNew(const char * Name,
+                                           const size_t Argc, const RXSTRING Argv[],
+                                           const char * Queuename, PRXSTRING Retstr)
 {
     GtkWidget *myWidget, *colorsel;
     GdkColor color;
@@ -1011,8 +1115,9 @@ ULONG APIENTRY GrxColorSelectionDialogNew(PSZ Name, LONG Argc, RXSTRING Argv[],
 /* Rexx Args:   Dialog widget                                                 */
 /*----------------------------------------------------------------------------*/
 
-ULONG APIENTRY GrxColorSelectionDialogGetColor(PSZ Name, LONG Argc, RXSTRING Argv[],
-                                          PSZ Queuename, PRXSTRING Retstr)
+APIRET APIENTRY GrxColorSelectionDialogGetColor(const char * Name,
+                                                const size_t Argc, const RXSTRING Argv[],
+                                                const char * Queuename, PRXSTRING Retstr)
 {
     GtkWidget *myWidget, *colorsel;
     GdkColor color;
