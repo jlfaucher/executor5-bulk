@@ -226,7 +226,7 @@ APIRET APIENTRY GrxWindowConnectSignal(const char * Name,
 
     if (GTK_IS_WIDGET(GTK_OBJECT(myWidget))) {
         if (strcmp(Argv[1].strptr, "activate_default") == 0) {
-            g_signal_connect(G_OBJECT(myWidget), "destroy",
+            g_signal_connect(G_OBJECT(myWidget), "activate-default",
                              G_CALLBACK(signal_func_1), "signal_activate_default");
         }
         else if (strcmp(Argv[1].strptr, "activate_focus") == 0) {

@@ -65,7 +65,8 @@ OBJECTS = rexxgtk.o \
 	grximage.o \
 	grxdialog.o \
 	grxglib.o \
-	grxconstants.o
+	grxconstants.o \
+	grxassistant.o
 
 
 # Build the shared library
@@ -139,6 +140,9 @@ grxglib.o: grxglib.c rexxgtk.h
 
 grxconstants.o: grxconstants.c rexxgtk.h
 	gcc -c $(GRXCFLAGS) grxconstants.c
+
+grxassistant.o: grxassistant.c rexxgtk.h
+	gcc -c $(GRXCFLAGS) grxassistant.c
 
 
 

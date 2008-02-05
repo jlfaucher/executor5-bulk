@@ -184,6 +184,25 @@ APIRET APIENTRY GrxLoadFuncs(char * Name,
         "GrxWidgetModifyBG",
         "GrxWidgetModifyFG",
 
+        // Window functions
+        "GrxWindowNew",
+        "GrxWindowSetTitle",
+        "GrxWindowSetModal",
+        "GrxWindowConnectSignal",
+
+        // Assistant functions
+        "GrxAssistantNew",
+        "GrxAssistantSetCurrentPage",
+        "GrxAssistantPrependPage",
+        "GrxAssistantAppendPage",
+        "GrxAssistantInsertPage",
+        "GrxAssistantSetPageType",
+        "GrxAssistantSetPageTitle",
+        "GrxAssistantSetPageComplete",
+        "GrxAssistantSetPageHeaderImage",
+        "GrxAssistantSetPageSideImage",
+        "GrxAssistantConnectSignal",
+
         // Dialog functions
         "GrxDialogNew",
         "GrxDialogNewWithButtons",
@@ -348,12 +367,6 @@ APIRET APIENTRY GrxLoadFuncs(char * Name,
         "GrxNotebookPopupDisable",
         "GrxNotebookGetCurrentPage",
         "GrxNotebookSetCurrentPage",
-
-        // Window functions
-        "GrxWindowNew",
-        "GrxWindowSetTitle",
-        "GrxWindowSetModal",
-        "GrxWindowConnectSignal",
 
         // Range, Scale, and Slider functions
         "GrxRangeConnectSignal",

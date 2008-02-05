@@ -970,6 +970,86 @@ return
 
 
 /*============================================================================*/
+/* Class: GtkAssistant                                                        */
+/*============================================================================*/
+
+::class GtkAssistant public subclass GtkWindow
+
+::method init
+use strict arg
+self~pointer = GrxAssistantNew()
+return
+
+::method set_current_page
+use strict arg widget, num
+call GrxAssistantSetCurrentPage self~pointer, widget~pointer, num
+return
+
+::method prepend_page
+use strict arg widget
+call GrxAssistantPrependPage self~pointer, widget~pointer
+return
+
+::method append_page
+use strict arg widget
+call GrxAssistantAppendPage self~pointer, widget~pointer
+return
+
+::method insert_page
+use strict arg widget, num
+call GrxAssistantInsertPage self~pointer, widget~pointer, num
+return
+
+::method set_page_type
+use strict arg widget, type
+call GrxAssistantSetPageType self~pointer, widget~pointer, type
+return
+
+::method set_page_title
+use strict arg widget, title
+call GrxAssistantSetPageTitle self~pointer, widget~pointer, title
+return
+
+::method set_page_complete
+use strict arg widget, flag
+call GrxAssistantSetPageComplete self~pointer, widget~pointer, flag
+return
+
+::method set_page_header_image
+use strict arg widget, image
+call GrxAssistantSetPageHeaderImage self~pointer, widget~pointer, image
+return
+
+::method set_page_side_image
+use strict arg widget, image
+call GrxAssistantSetPageSideImage self~pointer, widget~pointer, image
+return
+
+::method signal_connect
+use strict arg event
+select
+   when event = 'apply' then call GrxDialogConnectSignal self~pointer, event
+   when event = 'cancel' then call GrxDialogConnectSignal self~pointer, event
+   when event = 'close' then call GrxDialogConnectSignal self~pointer, event
+   when event = 'prepare' then call GrxDialogConnectSignal self~pointer, event
+   otherwise return self~signal_connect:super(event)
+   end
+return .true
+
+::method signal_apply
+return
+
+::method signal_cancel
+return
+
+::method signal_close
+return
+
+::method signal_prepare
+return
+
+
+/*============================================================================*/
 /* Class: GtkLabel                                                            */
 /*============================================================================*/
 
