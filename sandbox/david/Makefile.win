@@ -118,7 +118,8 @@ OBJECTS = rexxgtk.obj \
 	grxdialog.obj \
 	grxglib.obj \
 	grxconstants.obj \
-	grxassistant.obj
+	grxassistant.obj \
+	grxprogressbar.obj
 
 # Build the DLL
 rexxgtk.dll: $(OBJECTS) rexxgtk.def
@@ -193,6 +194,9 @@ grxconstants.obj: grxconstants.c rexxgtk.h
 
 grxassistant.obj: grxassistant.c rexxgtk.h
 	cl -c $(GRXCFLAGS) grxassistant.c
+
+grxprogressbar.obj: grxprogressbar.c rexxgtk.h
+	cl -c $(GRXCFLAGS) grxprogressbar.c
 
 
 clean:

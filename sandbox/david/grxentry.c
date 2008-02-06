@@ -536,6 +536,10 @@ APIRET APIENTRY GrxEntryConnectSignal(const char * Name,
             g_signal_connect(G_OBJECT(myWidget), "backspace",
                              G_CALLBACK(signal_func_1), "signal_backspace");
         }
+        else if (strcmp(Argv[1].strptr, "changed") == 0) {
+            g_signal_connect(G_OBJECT(myWidget), "changed",
+                             G_CALLBACK(signal_func_1), "signal_changed");
+        }
         else if (strcmp(Argv[1].strptr, "copy_clipboard") == 0) {
             g_signal_connect(G_OBJECT(myWidget), "copy-clipboard",
                              G_CALLBACK(signal_func_1), "signal_copy_clipboard");

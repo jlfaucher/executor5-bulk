@@ -63,19 +63,36 @@ call GrxSetRexxQueueName .local['GTK_Queue']
 
 ::routine gtk_main public
 do while .local['GTK_Quit'] = .false
-   call GrxMainIteration
-   old_queue = RxQueue('Set', .local['GTK_Queue'])
-   do while queued() > 0
-      pull pointer msg args
-      say pointer msg args
-      widget = .local['GTK_Database']~at(pointer)
-      if widget <> .nil then do
-         widget~run_method(msg, args)
-         end
-      end
-   call RxQueue 'Set', old_queue
+   call gtk_main_iteration
    end
-.local['GTK_Quit'] = .false  -- we need this for nested calls to this method
+.local['GTK_Quit'] = .false  -- we need this for recursive calls to this function
+return
+
+
+/*============================================================================*/
+/* Routine: gtk_events_pending                                                */
+/*============================================================================*/
+
+::routine gtk_events_pending public
+return GrxEventsPending
+
+
+/*============================================================================*/
+/* Routine: gtk_main_iteration                                                */
+/*============================================================================*/
+
+::routine gtk_main_iteration public
+call GrxMainIteration
+old_queue = RxQueue('Set', .local['GTK_Queue'])
+do while queued() > 0
+   pull pointer msg args
+   say pointer msg args
+   widget = .local['GTK_Database']~at(pointer)
+   if widget <> .nil then do
+      widget~run_method(msg, args)
+      end
+   end
+call RxQueue 'Set', old_queue
 return
 
 
@@ -545,6 +562,22 @@ return
 
 
 /*============================================================================*/
+/* Class: GtkAlignment                                                        */
+/*============================================================================*/
+
+::class GtkAlignment public subclass GtkContainer
+
+::method init
+use arg xalign, yalign, xscale, yscale
+self~pointer = GrxAlignmentNew(xalign, yalign, xscale, yscale)
+return
+
+::method signal_connect
+use strict arg event
+return self~signal_connect:super(event)
+
+
+/*============================================================================*/
 /* Class: GtkPaned                                                            */
 /* Note:  This is strictly a base class. It should never be instantiated on   */
 /*        its own. You should instantiate one of its subclasses instead.      */
@@ -985,20 +1018,30 @@ use strict arg widget, num
 call GrxAssistantSetCurrentPage self~pointer, widget~pointer, num
 return
 
+::method current_page
+use strict arg
+return GrxAssistantGetCurrentPage(self~pointer)
+
+::method get_current_page
+use strict arg
+return self~current_page()
+
+::method get_nth_page
+use strict arg num
+ptr =  GrxAssistantGetNthPage(self~pointer, num)
+return .local['GTK_Database']~at(ptr~upper())
+
 ::method prepend_page
 use strict arg widget
-call GrxAssistantPrependPage self~pointer, widget~pointer
-return
+return GrxAssistantPrependPage(self~pointer, widget~pointer)
 
 ::method append_page
 use strict arg widget
-call GrxAssistantAppendPage self~pointer, widget~pointer
-return
+return GrxAssistantAppendPage(self~pointer, widget~pointer)
 
 ::method insert_page
 use strict arg widget, num
-call GrxAssistantInsertPage self~pointer, widget~pointer, num
-return
+return GrxAssistantInsertPage(self~pointer, widget~pointer, num)
 
 ::method set_page_type
 use strict arg widget, type
@@ -1028,10 +1071,10 @@ return
 ::method signal_connect
 use strict arg event
 select
-   when event = 'apply' then call GrxDialogConnectSignal self~pointer, event
-   when event = 'cancel' then call GrxDialogConnectSignal self~pointer, event
-   when event = 'close' then call GrxDialogConnectSignal self~pointer, event
-   when event = 'prepare' then call GrxDialogConnectSignal self~pointer, event
+   when event = 'apply' then call GrxAssistantConnectSignal self~pointer, event
+   when event = 'cancel' then call GrxAssistantConnectSignal self~pointer, event
+   when event = 'close' then call GrxAssistantConnectSignal self~pointer, event
+   when event = 'prepare' then call GrxAssistantConnectSignal self~pointer, event
    otherwise return self~signal_connect:super(event)
    end
 return .true
@@ -1764,6 +1807,7 @@ use strict arg event
 select
    when event = 'activate' then call GrxEntryConnectSignal self~pointer, event
    when event = 'backspace' then call GrxEntryConnectSignal self~pointer, event
+   when event = 'changed' then call GrxEntryConnectSignal self~pointer, event
    when event = 'copy_clipboard' then call GrxEntryConnectSignal self~pointer, event
    when event = 'cut_clipboard' then call GrxEntryConnectSignal self~pointer, event
    when event = 'delete_from_cursor' then call GrxEntryConnectSignal self~pointer, event
@@ -1780,6 +1824,9 @@ return .true
 return
 
 ::method signal_backspace
+return
+
+::method signal_changed
 return
 
 ::method signal_copy_clipboard
@@ -2465,6 +2512,35 @@ return
 self~init:super()
 use strict arg iconname, size
 self~set_from_icon_name(iconname, size)
+return
+
+
+/*============================================================================*/
+/* Class: GtkProgressBar                                                      */
+/*============================================================================*/
+
+::class GtkProgressBar public subclass GtkWidget
+
+::method init
+self~pointer = GrxProgressBarNew()
+return
+
+::method 'text='
+use strict arg text
+call GrxProgressBar self~pointer, text
+return
+
+::method set_text
+use strict arg self~text
+return
+
+::method 'fraction='
+use strict arg fraction
+call GrxProgressbarSetFraction self~pointer, fraction
+return
+
+::method set_fraction
+use strict arg self~fraction
 return
 
 

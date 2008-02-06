@@ -139,6 +139,7 @@ APIRET APIENTRY GrxLoadFuncs(char * Name,
     {
         // Some general GTK functions
         "GrxVersion",
+        "GrxEventsPending",
         "GrxMain",
         "GrxMainIteration",
         "GrxValue2ConstantString",
@@ -193,6 +194,8 @@ APIRET APIENTRY GrxLoadFuncs(char * Name,
         // Assistant functions
         "GrxAssistantNew",
         "GrxAssistantSetCurrentPage",
+        "GrxAssistantGetCurrentPage",
+        "GrxAssistantGetNthPage",
         "GrxAssistantPrependPage",
         "GrxAssistantAppendPage",
         "GrxAssistantInsertPage",
@@ -277,6 +280,7 @@ APIRET APIENTRY GrxLoadFuncs(char * Name,
         "GrxContainerConnectSignal",
         "GrxBoxPackStart",
         "GrxBoxPackEnd",
+        "GrxAlignmentNew",
         "GrxVBoxNew",
         "GrxHBoxNew",
         "GrxPanedAdd1",
@@ -324,6 +328,7 @@ APIRET APIENTRY GrxLoadFuncs(char * Name,
         "GrxEntryGetInvisibleChar",
         "GrxEntrySetInvisibleChar",
         "GrxEntrySetWidthChars",
+        "GrxEntryConnectSignal",
 
         // Label functions
         "GrxLabelNew",
@@ -392,6 +397,11 @@ APIRET APIENTRY GrxLoadFuncs(char * Name,
         "GrxFileChooserGetFilenames",
         "GrxFileChooserSetSelectMultiple",
         "GrxFileChooserConnectSignal",
+
+        // Progress bar functions
+        "GrxProgressBarNew",
+        "GrxProgressBarSetFraction",
+        "GrxProgressBarSetText",
 
         // Filter filter functions
         "GrxFileFilterNew",
@@ -471,6 +481,29 @@ int GrxCheckArgs(
             return 1;
         }
     }
+    return 0;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxEventsPending                                   */
+/* Description: Return a flag    .                                            */
+/* Rexx Args:   None                                                          */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxEventsPending(const char * Name,
+                                 const long Argc, const RXSTRING Argv[],
+                                 const char * Queuename, PRXSTRING Retstr)
+{
+    gboolean flag;
+
+    if (GrxCheckArgs(0, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+    flag = gtk_events_pending();
+
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%d", flag);
+    Retstr->strlength = strlen(Retstr->strptr);
     return 0;
 }
 

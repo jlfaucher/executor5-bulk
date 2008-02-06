@@ -161,6 +161,74 @@ APIRET APIENTRY GrxAssistantSetCurrentPage(const char * Name,
 
 
 /*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxAssistantGetCurrentPage                         */
+/* Description: Get the current page                                          */
+/* Rexx Args:   Pointer to the widget                                         */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxAssistantGetCurrentPage(const char * Name,
+                                       const size_t Argc, const RXSTRING Argv[],
+                                       const char * Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+    gint pagenum;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(1, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &myWidget);
+
+    if (GTK_IS_WIDGET(GTK_OBJECT(myWidget))) {
+        pagenum = gtk_assistant_get_current_page(GTK_ASSISTANT(myWidget));
+    }
+
+    /* Set up the REXX return code */
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%d", pagenum + 1);
+    Retstr->strlength = strlen(Retstr->strptr);
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxAssistantGetNthPage                             */
+/* Description: Get the nth page                                              */
+/* Rexx Args:   Pointer to the widget                                         */
+/*              Page number                                                   */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxAssistantGetNthPage(const char * Name,
+                                       const size_t Argc, const RXSTRING Argv[],
+                                       const char * Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget, *pageWidget;
+    gint pagenum;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(2, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &myWidget);
+    sscanf(Argv[1].strptr, "%d", &pagenum);
+
+    if (GTK_IS_WIDGET(GTK_OBJECT(myWidget))) {
+        pageWidget = gtk_assistant_get_nth_page(GTK_ASSISTANT(myWidget), pagenum - 1);
+    }
+
+    /* Set up the REXX return code */
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%p", pageWidget);
+    Retstr->strlength = strlen(Retstr->strptr);
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
 /* Rexx External Function: GrxAssistantPrependPage                            */
 /* Description: Prepend a page to the assistant                               */
 /* Rexx Args:   Pointer to the widget                                         */
@@ -172,6 +240,7 @@ APIRET APIENTRY GrxAssistantPrependPage(const char * Name,
                                        const char * Queuename, PRXSTRING Retstr)
 {
     GtkWidget *myWidget, *page;
+    gint pagenum = 0;
 
     /* Check for valid arguments */
     if (GrxCheckArgs(2, Argc, Argv)) {
@@ -183,12 +252,12 @@ APIRET APIENTRY GrxAssistantPrependPage(const char * Name,
     sscanf(Argv[1].strptr, "%p", &page);
 
     if (GTK_IS_WIDGET(GTK_OBJECT(myWidget))) {
-        gtk_assistant_prepend_page(GTK_ASSISTANT(myWidget), page);
+        pagenum = gtk_assistant_prepend_page(GTK_ASSISTANT(myWidget), page);
     }
 
     /* Set up the REXX return code */
-    *(Retstr->strptr) = '0';
-    Retstr->strlength = 1;
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%d", pagenum + 1);
+    Retstr->strlength = strlen(Retstr->strptr);
 
     return RXFUNC_OK;
 }
@@ -206,6 +275,7 @@ APIRET APIENTRY GrxAssistantAppendPage(const char * Name,
                                        const char * Queuename, PRXSTRING Retstr)
 {
     GtkWidget *myWidget, *page;
+    gint pagenum = 0;
 
     /* Check for valid arguments */
     if (GrxCheckArgs(2, Argc, Argv)) {
@@ -217,12 +287,12 @@ APIRET APIENTRY GrxAssistantAppendPage(const char * Name,
     sscanf(Argv[1].strptr, "%p", &page);
 
     if (GTK_IS_WIDGET(GTK_OBJECT(myWidget))) {
-        gtk_assistant_append_page(GTK_ASSISTANT(myWidget), page);
+        pagenum = gtk_assistant_append_page(GTK_ASSISTANT(myWidget), page);
     }
 
     /* Set up the REXX return code */
-    *(Retstr->strptr) = '0';
-    Retstr->strlength = 1;
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%d", pagenum + 1);
+    Retstr->strlength = strlen(Retstr->strptr);
 
     return RXFUNC_OK;
 }
@@ -241,7 +311,7 @@ APIRET APIENTRY GrxAssistantInsertPage(const char * Name,
                                        const char * Queuename, PRXSTRING Retstr)
 {
     GtkWidget *myWidget, *page;
-    gint pagenum;
+    gint pagenum, newpagenum;
 
     /* Check for valid arguments */
     if (GrxCheckArgs(3, Argc, Argv)) {
@@ -254,12 +324,12 @@ APIRET APIENTRY GrxAssistantInsertPage(const char * Name,
     sscanf(Argv[2].strptr, "%d", &pagenum);
 
     if (GTK_IS_WIDGET(GTK_OBJECT(myWidget))) {
-        gtk_assistant_insert_page(GTK_ASSISTANT(myWidget), page, pagenum - 1);
+        newpagenum = gtk_assistant_insert_page(GTK_ASSISTANT(myWidget), page, pagenum - 1);
     }
 
     /* Set up the REXX return code */
-    *(Retstr->strptr) = '0';
-    Retstr->strlength = 1;
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%d", newpagenum + 1);
+    Retstr->strlength = strlen(Retstr->strptr);
 
     return RXFUNC_OK;
 }
@@ -328,7 +398,7 @@ APIRET APIENTRY GrxAssistantSetPageTitle(const char * Name,
     GtkWidget *myWidget, *page;
 
     /* Check for valid arguments */
-    if (GrxCheckArgs(3, Argc, Argv)) {
+    if (GrxCheckArgs(2, 2, Argv)) { // don't check arg 3
         return RXFUNC_BADCALL;
     }
 

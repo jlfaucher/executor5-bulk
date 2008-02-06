@@ -359,6 +359,43 @@ APIRET APIENTRY GrxHBoxNew(const char * Name,
 
 
 /*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxAlignmentNew                                    */
+/* Description: Create a new alignment                                        */
+/* Rexx Args:   xalign                                                        */
+/*              yalign                                                        */
+/*              xscale                                                        */
+/*              yscale                                                        */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxAlignmentNew(const char * Name,
+                                const size_t Argc, const RXSTRING Argv[],
+                                const char * Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+    gfloat xalign, yalign, xscale, yscale;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(4, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%f", &xalign);
+    sscanf(Argv[1].strptr, "%f", &yalign);
+    sscanf(Argv[2].strptr, "%f", &xscale);
+    sscanf(Argv[3].strptr, "%f", &yscale);
+
+    myWidget = gtk_alignment_new(xalign, yalign, xscale, yscale);
+
+    /* Set up the REXX return code */
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%p", myWidget);
+    Retstr->strlength = strlen(Retstr->strptr);
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
 /* Rexx External Function: GrxContainerConnectSignal                          */
 /* Description: Connect a signal function to the Widget                       */
 /* Rexx Args:   Pointer to the widget                                         */
