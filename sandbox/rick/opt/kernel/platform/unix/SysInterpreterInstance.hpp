@@ -54,4 +54,13 @@ protected:
 };
 
 
+class SysSearchPath
+{
+    SysSearchPath(const char *parent, const char *extension);
+    ~SysSearchPath();
+
+    const char *path;        // the constructed path
+};
+
+
 #endif

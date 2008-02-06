@@ -159,6 +159,7 @@ typedef char *PEXIT;                  /* ptr to exit parameter block */
 
 typedef size_t stringsize_t;           // a Rexx string size
 typedef ssize_t wholenumber_t;         // a Rexx whole number
+typedef size_t  logical_t;             // a Rexx logical (1 or 0) value
 
 // a synonym for readability
 #define RexxEntry REXXENTRY

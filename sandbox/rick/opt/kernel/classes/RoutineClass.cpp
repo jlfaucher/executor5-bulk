@@ -62,83 +62,48 @@
 
 
 // singleton class instance
-RexxMethodClass *RexxMethod::classInstance = OREF_NULL;
+RexxClass *RoutineClass::classInstance = OREF_NULL;
 
-RexxMethod::RexxMethod(BaseCode *codeObj)
+
+RoutineClass::RoutineClass(BaseCode *codeObj)
 /******************************************************************************/
 /* Function:  Initialize a method object                                      */
 /******************************************************************************/
 {
     this->clearObject();                 /* start out fresh                   */
-    this->methodFlags = 0;               /* clear all of the flags            */
     OrefSet(this, this->code, codeObj);  /* store the code                    */
 }
 
-RexxMethod::RexxMethod(RexxSource *source)
-/******************************************************************************/
-/* Function:  Initialize a method object                                      */
-/******************************************************************************/
-{
-    this->clearObject();                 /* start out fresh                   */
-    this->methodFlags = 0;               /* clear all of the flags            */
-    OrefSet(this, this->code, source->generateCode());  /* store the code                    */
-}
-
-void RexxMethod::live(size_t liveMark)
+void RoutineClass::live(size_t liveMark)
 /******************************************************************************/
 /* Function:  Normal garbage collection live marking                          */
 /******************************************************************************/
 {
-    memory_mark(this->scope);
     memory_mark(this->code);
-    memory_mark(this->objectVariables);
 }
 
-void RexxMethod::liveGeneral(int reason)
+void RoutineClass::liveGeneral(int reason)
 /******************************************************************************/
 /* Function:  Generalized object marking                                      */
 /******************************************************************************/
 {
-    memory_mark_general(this->scope);
     memory_mark_general(this->code);
-    memory_mark_general(this->objectVariables);
 }
 
-void RexxMethod::flatten(RexxEnvelope *envelope)
+void RoutineClass::flatten(RexxEnvelope *envelope)
 /******************************************************************************/
 /* Function:  Flatten an object                                               */
 /******************************************************************************/
 {
-  setUpFlatten(RexxMethod)
+  setUpFlatten(RoutineClass)
 
-   flatten_reference(newThis->scope, envelope);
    flatten_reference(newThis->code, envelope);
-   flatten_reference(newThis->objectVariables, envelope);
 
   cleanUpFlatten
 }
 
 
-void RexxMethod::run(
-    RexxActivity *activity,            /* activity running under            */
-    RexxObject *receiver,              /* object receiving the message      */
-    RexxString *msgname,               /* message to be run                 */
-    size_t count,                      /* count of arguments                */
-    RexxObject **argPtr,               /* arguments to the method           */
-    ProtectedObject &result)           // the returned result
-/******************************************************************************/
-/* Function:  Run a method on an object                                       */
-/******************************************************************************/
-{
-    ProtectedObject p(this);           // belt-and-braces to make sure this is protected
-    // save this as the most recently executed method
-    ActivityManager::currentActivity->setLastMethod(msgname, this);
-    // just forward this to the code object
-    code->run(activity, this, receiver, msgname, count, argPtr, result);
-}
-
-
-void RexxMethod::call(
+void RoutineClass::call(
     RexxActivity *activity,            /* activity running under            */
     RexxString *msgname,               /* message to be run                 */
     RexxObject**argPtr,                /* arguments to the method           */
@@ -157,7 +122,7 @@ void RexxMethod::call(
 }
 
 
-void RexxMethod::runProgram(
+void RoutineClass::runProgram(
     RexxActivity *activity,
     RexxString * calltype,             /* type of invocation                */
     RexxString * environment,          /* initial address                   */
@@ -174,28 +139,7 @@ void RexxMethod::runProgram(
 }
 
 
-RexxMethod *RexxMethod::newScope(
-    RexxClass  *_scope)                 /* new method scope                  */
-/******************************************************************************/
-/* Function:  Create a new method with a given scope                          */
-/******************************************************************************/
-{
-  RexxMethod *newMethod;               /* the copied method                 */
-
-  if (this->scope == OREF_NULL) {      /* nothing set yet?                  */
-    OrefSet(this, this->scope, _scope); /* just set it directly              */
-    return this;                       /* and pass back unchanged           */
-  }
-  else {
-                                       /* copy the method                   */
-    newMethod= (RexxMethod *)this->copy();
-                                       /* give the method the new scope     */
-    OrefSet(newMethod, newMethod->scope, _scope);
-    return newMethod;                  /* and return it                     */
-  }
-}
-
-RexxArray  *RexxMethod::source()
+RexxArray  *RoutineClass::source()
 /******************************************************************************/
 /* Function:  Return an array of source strings that represent this method    */
 /******************************************************************************/
@@ -203,7 +147,8 @@ RexxArray  *RexxMethod::source()
     return code->getSource();
 }
 
-RexxObject *RexxMethod::setSecurityManager(
+
+RexxObject *RoutineClass::setSecurityManager(
     RexxObject *manager)               /* supplied security manager         */
 /******************************************************************************/
 /* Function:  Associate a security manager with a method's source             */
@@ -212,83 +157,8 @@ RexxObject *RexxMethod::setSecurityManager(
     return code->setSecurityManager(manager);
 }
 
-void RexxMethod::setScope(
-    RexxClass  *_scope)                /* scope for the method              */
-/******************************************************************************/
-/* Function:  Set a scope for a method without making a copy of the method    */
-/*            object.                                                         */
-/******************************************************************************/
-{
-  OrefSet(this, this->scope, _scope);  /* just set the scope                */
-}
 
-RexxObject *RexxMethod::setUnGuardedRexx()
-/******************************************************************************/
-/* Function:  Flag a method as being an unguarded method                      */
-/******************************************************************************/
-{
-  this->setUnGuarded();                /* turn on the UNGUARDED state     */
-  return OREF_NULL;                    /* return nothing                    */
-}
-
-RexxObject *RexxMethod::setGuardedRexx( )
-/******************************************************************************/
-/* Function:  Flag a method as being a guarded method (the default)           */
-/******************************************************************************/
-{
-  this->setGuarded();                  /* flip back to the GUARDED state    */
-  return OREF_NULL;                    /* return nothing                    */
-}
-
-RexxObject *RexxMethod::setPrivateRexx()
-/******************************************************************************/
-/* Function:  Flag a method as being a private method                         */
-/******************************************************************************/
-{
-  this->setPrivate();                  /* turn on the PRIVATE flag          */
-  return OREF_NULL;                    /* always return nothing             */
-}
-
-RexxObject *RexxMethod::setProtectedRexx()
-/******************************************************************************/
-/* Function:  Flag a method as being a private method                         */
-/******************************************************************************/
-{
-  this->setProtected();                /* turn on the PROTECTED flag        */
-  return OREF_NULL;                    /* always return nothing             */
-}
-
-/**
- * Return the Guarded setting for a method object.
- *
- * @return .true if the method is guarded.  .false otherwise.
- */
-RexxObject *RexxMethod::isGuardedRexx( )
-{
-    return isGuarded() ? TheTrueObject : TheFalseObject;
-}
-
-/**
- * Return the Private setting for a method object.
- *
- * @return .true if the method is private.  .false otherwise.
- */
-RexxObject *RexxMethod::isPrivateRexx( )
-{
-    return isPrivate() ? TheTrueObject : TheFalseObject;
-}
-
-/**
- * Return the Protected setting for a method object.
- *
- * @return .true if the method is protected.  .false otherwise.
- */
-RexxObject *RexxMethod::isProtectedRexx( )
-{
-    return isProtected() ? TheTrueObject : TheFalseObject;
-}
-
-RexxSmartBuffer *RexxMethod::saveMethod()
+RexxSmartBuffer *RoutineClass::save()
 /******************************************************************************/
 /* Function: Flatten translated method into a buffer for storage into EA's etc*/
 /******************************************************************************/
@@ -303,28 +173,29 @@ RexxSmartBuffer *RexxMethod::saveMethod()
   return envelope->getBuffer();        /* return the buffer                 */
 }
 
-void *RexxMethod::operator new (size_t size)
+void *RoutineClass::operator new (size_t size)
 /******************************************************************************/
 /* Function:  create a new method instance                                    */
 /******************************************************************************/
 {
                                          /* get a new method object           */
-    RexxObject *newObj = new_object(size, T_Method);
+    RexxObject *newObj = new_object(size, T_Routine);
     return newObj;                       /* Initialize this new method        */
 }
 
 
-RexxMethod *RexxMethod::newRexxMethod(
-    RexxSource *source,                /* source object for the method      */
-    RexxClass  *scope)                 /* scope to use                      */
-/******************************************************************************/
-/* Function:  Convert a new source object to a method with the given scope    */
-/******************************************************************************/
+/**
+ * Create a new Routine object from a source object.  This
+ * creates a top-level routine object.
+ *
+ * @param source The original source object.
+ *
+ * @return A RoutineClass instance.
+ */
+RoutineClass *RoutineClass::newRoutineRexx(RexxSource *source)
 {
-
-
                                        /* create a new method object        */
-  RexxMethod *newMethod = new RexxMethod(source);
+  RexxCode *newCode = source->generateCode();
   if (scope != OREF_NULL)              /* given a scope too?                */
   {
       newMethod->setScope(scope);        /* set the scope                     */
@@ -332,22 +203,7 @@ RexxMethod *RexxMethod::newRexxMethod(
   return newMethod;                    /* return the new method object      */
 }
 
-
-/**
- * Static method used for constructing new method objects in
- * various contexts (such as the define method on the Class class).
- *
- * @param pgmname  The name of the method we're creating.
- * @param source   The method source (either a string or an array).
- * @param position The position used for reporting errors.  This is the position
- *                 of the source argument for the calling method context.
- * @param parentScope
- *                 The parent code we inherit routine scope from.  This overrides
- *                 anything that might be defined in single method code.
- *
- * @return The constructed method object.
- */
-RexxMethod *RexxMethod::newMethodObject(RexxString *pgmname, RexxObject *source, RexxObject *position, RexxMethod *parentScope)
+RexxMethod *RexxMethod::newRoutineObject(RexxString *pgmname, RexxObject *source, RexxObject *position, RexxSource *parentSource)
 {
   RexxSource *newSource;               /* created source object             */
 
@@ -401,15 +257,11 @@ RexxMethod *RexxMethod::newMethodObject(RexxString *pgmname, RexxObject *source,
   RexxSource *newSource = new RexxSource (pgmname, newSourceArray);
 
   ProtectedObject p(newSource);
-  Rexxmethod *result = RexxMethod::newRexxMethod(newSource, OREF_NULL);
+  Rexxmethod *result = RexxMethod::newRexxRoutine(newSource);
   RexxCode *resultCode = (RexxCode *)result->getCode();
 
   // if we've been provided with a scope, use it
-  if (parentScope != OREF_NULL)
-  {
-      parentSource = parentScope->getSourceObject();
-  }
-  else
+  if (parentSource == OREF_NULL)
   {
       // see if we have an active context and use the current source as the basis for the lookup
       RexxActivation *currentContext = ActivityManager::currentActivity->getCurrentRexxFrame();
@@ -429,7 +281,7 @@ RexxMethod *RexxMethod::newMethodObject(RexxString *pgmname, RexxObject *source,
 }
 
 
-RexxMethod *RexxMethod::newRexx(
+RoutineClass *RoutineClass::newRexx(
     RexxObject **init_args,            /* subclass init arguments           */
     size_t       argCount)             /* number of arguments passed        */
 /******************************************************************************/
@@ -439,7 +291,6 @@ RexxMethod *RexxMethod::newRexx(
 {
   RexxObject *pgmname;                 /* method name                       */
   RexxObject *source;                  /* Array or string object            */
-  RexxMethod *newMethod;               /* newly created method object       */
   RexxObject *option = OREF_NULL;
   size_t initCount = 0;                /* count of arguments we pass along  */
 
@@ -450,14 +301,14 @@ RexxMethod *RexxMethod::newRexx(
   RexxString *nameString = REQUIRED_STRING(pgmname, ARG_ONE);
   required_arg(source, TWO);           /* make sure we have the second too  */
 
-  RexxMethod *sourceContext = OREF_NULL;
+  RexxSource *sourceContext = OREF_NULL;
   // retrieve extra parameter if exists
   if (initCount != 0)
   {
       process_new_args(init_args, initCount, &init_args, &initCount, 1, (RexxObject **)&option, NULL);
       if (isOfClass(Method, option))
       {
-          sourceContext = (RexxMethod *)option;
+          sourceContext = (RexxMethod *)option->getSource();
       }
       else
       {
@@ -474,21 +325,23 @@ RexxMethod *RexxMethod::newRexx(
           }
       }
   }
-                                       /* go create a method                */
-  newMethod = RexxMethod::newMethodObject(nameString, source, IntegerTwo, sourceContext);
+
+  RexxRoutine *newMethod = newRoutineObject(nameString, source, IntegerTwo, sourceContext);
   ProtectedObject p(newMethod);
                                        /* Give new object its behaviour     */
-  newMethod->setBehaviour(((RexxClass)this)->getInstanceBehaviour());
-   if (this->hasUninitDefined()) {        /* does object have an UNINT method  */
-     newMethod->hasUninit();              /* Make sure everyone is notified.   */
-   }
+  newMethod->setBehaviour(((RexxClass *)this)->getInstanceBehaviour());
+  if (((RexxClass *)this)->hasUninitDefined())
+  {
+    newMethod->hasUninit();           /* Make sure everyone is notified.   */
+  }
                                        /* now send an INIT message          */
   newMethod->sendMessage(OREF_INIT, init_args, initCount);
   return newMethod;                    /* return the new method             */
 }
 
 
-RexxMethod *RexxMethod::newFileRexx(RexxString *filename)
+RoutineClass *RoutineClass::newFileRexx(
+    RexxString *filename)              /* name of the target file           */
 /******************************************************************************/
 /* Function:  Create a method from a fully resolved file name                 */
 /******************************************************************************/
@@ -499,11 +352,13 @@ RexxMethod *RexxMethod::newFileRexx(RexxString *filename)
   RexxSource *source = RexxSource::classNewFile(filename);
   ProtectedObject p(source);
                                        /* finish up processing of this      */
-  RexxMethod * newMethod = newRexxMethod(source, (RexxClass *)TheNilObject);
+  RoutineClass * newMethod = newRoutine(source, (RexxClass *)TheNilObject);
   ProtectedObject p2(newMethod);
                                        /* Give new object its behaviour     */
   newMethod->setBehaviour(((RexxClass *)this)->getInstanceBehaviour());
-   if (this->hasUninitDefined()) {     /* does object have an UNINT method  */
+  /* does object have an UNINT method  */
+   if (((RexxClass *)this)->hasUninitDefined())
+   {
      newMethod->hasUninit();           /* Make sure everyone is notified.   */
    }
                                        /* now send an INIT message          */
@@ -512,10 +367,9 @@ RexxMethod *RexxMethod::newFileRexx(RexxString *filename)
 }
 
 
-RexxMethod *RexxMethod::newRexxBuffer(
+RoutineClass *RoutineClass::newRexxBuffer(
       RexxString *pgmname,             /* file name to process              */
-      RexxBuffer *source,              /* String or buffer with source      */
-      RexxClass  *scope)               /* Scope for this method             */
+      RexxBuffer *source)              /* String or buffer with source      */
 /******************************************************************************/
 /* Function:  Build a new method object from buffered REXX source             */
 /******************************************************************************/
@@ -523,18 +377,18 @@ RexxMethod *RexxMethod::newRexxBuffer(
   if (source == OREF_NULL)             /* didn't get source?                */
   {
                                        /* raise an error                    */
-      reportException(Error_Incorrect_method_noarg, IntegerTwo);
+    reportException(Error_Incorrect_method_noarg, IntegerTwo);
   }
                                        /* create a source object            */
-  RexxSource *newSource = RexxSource::classNewBuffered(pgmname, source);
+  RexxSource *newSource = (RexxSource *)RexxSource::classNewBuffered(pgmname, source);
   // we need to protect this source object until parsing is complete
   ProtectedObject p(newSource);
                                        /* now complete method creation      */
-  return newRexxMethod(newSource, scope);
+  return newRoutine(newSource);
 }
 
 
-RexxMethod * RexxMethod::processInstore(PRXSTRING instore, RexxString * name )
+RexxRoutine * RoutineClass::processInstore(PRXSTRING instore, RexxString * name )
 /******************************************************************************/
 /* Function:  Process instorage execution arguments                           */
 /******************************************************************************/
@@ -590,7 +444,7 @@ RexxMethod * RexxMethod::processInstore(PRXSTRING instore, RexxString * name )
             memcpy(source_buffer->address(), "--", 2);
         }
         /* translate this source             */
-        RexxMethod *method = newRexxBuffer(name, source_buffer, (RexxClass *)TheNilObject);
+        RexxRoutine *method = newRexxBuffer(name, source_buffer);
         /* return this back in instore[1]    */
         SysSaveProgramBuffer(&instore[1], method);
         return method;                     /* return translated source          */
@@ -599,7 +453,7 @@ RexxMethod * RexxMethod::processInstore(PRXSTRING instore, RexxString * name )
 }
 
 
-RexxMethod *RexxMethod::restore(
+RoutineClass *RoutineClass::restore(
     RexxBuffer *buffer,                /* buffer containing the method      */
     char *startPointer)                /* first character of the method     */
 /******************************************************************************/
@@ -615,11 +469,11 @@ RexxMethod *RexxMethod::restore(
                                        /* The receiver object is an envelope*/
                                        /* whose receiver is the actual      */
                                        /* method object we're restoring     */
-  return (RexxMethod *)envelope->getReceiver();
+  return (RoutineClass *)envelope->getReceiver();
 }
 
 
-RexxMethod *RexxMethod::newFile(
+RexxRoutine *RoutineClass::newFile(
     RexxString *filename)              /* name of the target file           */
 /******************************************************************************/
 /* Function:  Create a method from a fully resolved file name                 */
@@ -629,105 +483,6 @@ RexxMethod *RexxMethod::newFile(
   RexxSource *source = RexxSource::classNewFile(filename);
   ProtectedObject p(source);
                                        /* finish up processing of this      */
-  return newRexxMethod(source, (RexxClass *)TheNilObject);
+  return newRoutine(source);
 }
 
-
-
-/**
- * Run this code as a method invocation.
- *
- * @param activity  The current activity.
- * @param method    The method we're invoking.
- * @param receiver  The method target object.
- * @param msgname   The name the method was invoked under.
- * @param argCount  The count of arguments.
- * @param arguments The argument pointer.
- * @param result    The returned result.
- */
-void BaseCode::run(RexxActivity *activity, RexxMethod *method, RexxObject *receiver, RexxString *msgname, size_t argCount, RexxObject **arguments, ProtectedObject &result)
-{
-    // The subcasses decide which of run and call are allowed
-    reportException(Error_Interpretation);
-}
-
-
-/**
- * Invoke a code element as a call target.  This form is generally
- * only used for calls from Rexx code to Rexx code or for top level
- * program invocation.
- *
- * @param activity  The activity we're running under.
- * @param msgname   The name of the program or name used to invoke the routine.
- * @param arguments The arguments to the method.
- * @param argcount  The count of arguments.
- * @param ct        The call context.
- * @param env       The current address environment.
- * @param context   The type of call being made (program call, internal call, interpret,
- *                  etc.)
- * @param result    The returned result.
- */
-void BaseCode::call(RexxActivity *activity, RexxString *msgname, RexxObject **arguments, size_t argcount, RexxString *ct, RexxString *env, int context, ProtectedObject &result)
-{
-    // the default for this is the simplified call.   This is used by Rexx code to make calls to
-    // both Rexx programs and native routines, so the polymorphism simplifies the processing.
-    call(activity, msgname, arguments, argcount, result);
-}
-
-
-/**
- * Simplified call form used for calling from Rexx code to native code.
- *
- * @param activity  The current activity.
- * @param msgname   The name of the call.
- * @param arguments the call arguments.
- * @param argcount  The count of arguments.
- * @param result    The returned result.
- */
-void BaseCode::call(RexxActivity *activity, RexxString *msgname, RexxObject **arguments, size_t argcount, ProtectedObject &result)
-{
-    // The subcasses decide which of run and call are allowed
-    reportException(Error_Interpretation);
-}
-
-
-/**
- * Return source informaton for a BaseCode object.  If not
- * representing an element in a source file, this returns
- * an empty array.
- *
- * @return A null array.
- */
-RexxArray *BaseCode::getSource()
-{
-                                       /* this is always a null array       */
-    return (RexxArray *)TheNullArray->copy();
-}
-
-
-/**
- * Set the security manager in the code source context.
- *
- * @param manager The new security manager.
- *
- * @return Returns true if the manager could be set.  Non-Rexx code objects
- *         just return false unconditionally.
- */
-RexxObject *BaseCode::setSecurityManager(RexxObject *manager)
-/******************************************************************************/
-/* Function:  Associate a security manager with a method's source             */
-/******************************************************************************/
-{
-    // the default is just to return a failure
-    return TheFalseObject;
-}
-
-
-/**
- * Perform any needed resolution before calling a BaseCode
- * object.  The default resolution step is a no-op.
- */
-void BaseCode::resolve()
-{
-    // nothing to do by default
-}

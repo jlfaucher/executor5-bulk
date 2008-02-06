@@ -38,37 +38,73 @@
 /******************************************************************************/
 /* REXX Kernel                                                                */
 /*                                                                            */
-/* list of REXX internal native methods                                       */
+/* Package definition for exported native methods in the "REXX" package       */
 /*                                                                            */
 /******************************************************************************/
 
-//NOTE:  This file gets included multiple times to define different tables, so
-// it does not have standard #ifndef multiple include protections.
-   INTERNAL_METHOD(alarm_startTimer)
-   INTERNAL_METHOD(alarm_stopTimer)
-   INTERNAL_METHOD(stream_init)
-   INTERNAL_METHOD(stream_chars)
-   INTERNAL_METHOD(stream_lines)
-   INTERNAL_METHOD(stream_position)
-   INTERNAL_METHOD(stream_state)
-   INTERNAL_METHOD(stream_description)
-   INTERNAL_METHOD(stream_query_position)
-   INTERNAL_METHOD(stream_charout)
-   INTERNAL_METHOD(stream_charin)
-   INTERNAL_METHOD(stream_linein)
-   INTERNAL_METHOD(stream_lineout)
-   INTERNAL_METHOD(qualify)
-   INTERNAL_METHOD(query_exists)
-   INTERNAL_METHOD(query_size)
-   INTERNAL_METHOD(query_time)
-   INTERNAL_METHOD(handle_set)
-   INTERNAL_METHOD(std_set)
-   INTERNAL_METHOD(stream_flush)
-   INTERNAL_METHOD(query_handle)
-   INTERNAL_METHOD(query_streamtype)
-   INTERNAL_METHOD(stream_close)
-   INTERNAL_METHOD(stream_open)
-   INTERNAL_METHOD(rexx_push_queue)
-   INTERNAL_METHOD(rexx_queue_queue)
-   INTERNAL_METHOD(rexx_pull_queue)
-   INTERNAL_METHOD(rexx_linein_queue)
+#include "oorexx.h"
+
+
+#define INTERNAL_METHOD(name) REXX_METHOD_PROTOTYPE(name)
+
+#include "NativeMethods.h"             // bring in the standard list,
+#include "SysNativeMethods.h"          // plus any system extensions
+
+#undef  INTERNAL_METHOD
+#define INTERNAL_METHOD(name) REXX_METHOD(name, name)
+
+// now build the actual entry list
+ooRexxMethodEntry rexx_methods[] =
+{
+#include "NativeMethods.h"             // bring in the standard list,
+#include "SysNativeMethods.h"          // plus any system extensions
+};
+
+
+#define INTERNAL_FUNCTION(name) REXX_TYPED_FUNCTION_PROTOTYPE(name)
+#define INTERNAL_NAMED_FUNCTION(name, entry) REXX_TYPED_FUNCTION_PROTOTYPE(entry)
+
+#include "NativeFunctions.h"             // bring in the standard list,
+#include "SysNativeFunctions.h"          // plus any system extensions
+
+#undef  INTERNAL_FUNCTION
+#define INTERNAL_FUNCTION(name) REXX_TYPED_FUNCTION(name, name)
+
+#undef  INTERNAL_NAMED_FUNCTION
+#define INTERNAL_NAMED_FUNCTION(name, entry) REXX_TYPED_FUNCTION(name, entry)
+
+// now build the actual entry list
+ooRexxFunctionEntry rexx_functions[] =
+{
+#include "NativeFunctions.h"             // bring in the standard list,
+#include "SysNativeFunctions.h"          // plus any system extensions
+};
+
+ooRexxPackageEntry rexx_package_entry =
+{
+    STANDARD_PACKAGE_HEADER
+    "REXX",                              // name of the package
+    "4.0",                               // package information
+    NULL,                                // no load/unload functions
+    NULL,
+    rexx_functions,                      // the exported functions
+    rexx_methods                         // the exported methods
+};
+
+#undef INTERNAL_FUNCTION
+#undef INTERNAL_NAMED_FUNCTION
+#define INTERNAL_FUNCTION(name) REXX_TYPED_FUNCTION_PROTOTYPE(name)
+#define INTERNAL_NAMED_FUNCTION(name, entry) REXX_TYPED_FUNCTION_PROTOTYPE(entry)
+
+#include "CommonSysUtils.h"              // bring in the standard list,
+#include "PlatformSysUtils.h"            // plus any system extensions
+
+#undef INTERNAL_FUNCTION
+#undef INTERNAL_NAMED_FUNCTION
+#define INTERNAL_FUNCTION(name) REXX_TYPED_FUNCTION(name, name)
+#define INTERNAL_NAMED_FUNCTION(name, entry) REXX_TYPED_FUNCTION(name, entry)
+
+// and initialize the PackageManager pointers to these tables.
+#include "Package.hpp"
+
+RexxPackageEntry *PackageManager::rexxPackageTable = &rexx_package_entry;

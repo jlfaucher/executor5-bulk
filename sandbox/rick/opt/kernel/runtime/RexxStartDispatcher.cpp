@@ -143,11 +143,11 @@ void RexxStartDispatcher::run()
     else
     {
         /* check for a file extension        */
-        const char *file_extension = SysFileExtension(fullname->getStringData());
-        if (file_extension != NULL)      /* have a real one?                  */
+        RexxString *file_extension = SystemInterpreter::extractExtension(fullname);
+        if (file_extension != OREF_NULL)      /* have a real one?                  */
         {
             /* use extension as the environment  */
-            initial_address = new_string(file_extension + 1);
+            initial_address = file_extension;
         }
     }
     /* protect from garbage collect      */

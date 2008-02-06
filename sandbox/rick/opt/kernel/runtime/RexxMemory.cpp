@@ -87,7 +87,6 @@ RexxMemory memoryObject;
 RexxDirectory *RexxMemory::globalStrings = OREF_NULL;
 RexxDirectory *RexxMemory::environment = OREF_NULL;       // global environment
 RexxDirectory *RexxMemory::publicRoutines = OREF_NULL;    // statically defined public routines
-RexxDirectory *RexxMemory::staticRequires = OREF_NULL;    // statically defined requires
 RexxDirectory *RexxMemory::functionsDir = OREF_NULL;      // statically defined requires
 RexxDirectory *RexxMemory::commonRetrievers = OREF_NULL;
 RexxDirectory *RexxMemory::kernel = OREF_NULL;
@@ -859,7 +858,6 @@ void RexxMemory::restoreImage()
   TheNullPointer   = (RexxPointer *)saveArray->get(saveArray_NULLPOINTER);
   TheClassClass  = (RexxClass *)saveArray->get(saveArray_CLASS);
   TheCommonRetrievers = (RexxDirectory *)saveArray->get(saveArray_COMMON_RETRIEVERS);
-  TheStaticRequires   = (RexxDirectory *)saveArray->get(saveArray_STATIC_REQ);
   ThePublicRoutines   = (RexxDirectory *)saveArray->get(saveArray_PUBLIC_RTN);
 
   /* restore the global strings        */
@@ -1631,7 +1629,6 @@ void RexxMemory::saveImage(void)
   saveArray->put((RexxObject *)TheFunctionsDirectory,  saveArray_FUNCTIONS);
   saveArray->put((RexxObject *)TheCommonRetrievers,    saveArray_COMMON_RETRIEVERS);
   saveArray->put((RexxObject *)saveStrings(), saveArray_NAME_STRINGS);
-  saveArray->put((RexxObject *)TheStaticRequires,       saveArray_STATIC_REQ);
   saveArray->put((RexxObject *)ThePublicRoutines,       saveArray_PUBLIC_RTN);
 
                                        /* create the behaviour array        */

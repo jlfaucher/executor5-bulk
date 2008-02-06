@@ -46,19 +46,22 @@
 
 #include "MethodClass.hpp"
 
+
 class RexxNativeCode : public BaseCode
 {
   public:
 
+   inline RexxNativeCode() { }
    RexxNativeCode(RexxString *, RexxString *);
    void        live(size_t);
    void        liveGeneral(int reason);
-   virtual void reinit(Package *) = 0;
    virtual void call(RexxActivity *, RexxString *,  RexxObject **, size_t, ProtectedObject &) = 0;
+   virtual RexxSource *getSourceObject();
 
 protected:
    RexxString *package;               // the package name
    RexxString *name;                  // the mapped method name
+   RexxSource *source;                // source this is attached to
 };
 
 
@@ -73,7 +76,6 @@ class RexxNativeMethod : public RexxNativeCode
    inline RexxNativeMethod(RESTORETYPE restoreType) { ; };
    RexxNativeMethod(RexxString *, RexxString *, PNATIVEMETHOD);
    RexxNativeMethod(PNATIVEMETHOD);
-   virtual void reinit(Package *);
 
    void        flatten(RexxEnvelope *envelope);
    RexxObject *unflatten(RexxEnvelope *envelope);
@@ -90,9 +92,8 @@ class RexxFunction : public RexxNativeCode
 {
   public:
 
+   inline RexxFunction() { }
    inline RexxFunction(RexxString *p, RexxString *n) : RexxNativeCode(p, n) { }
-
-   virtual void call(RexxActivity *, RexxString *,  RexxObject **, size_t, ProtectedObject &) = 0;
 };
 
 
@@ -106,7 +107,6 @@ class RexxNativeFunction : public RexxFunction
 
    inline RexxNativeFunction(RESTORETYPE restoreType) { ; };
    inline RexxNativeFunction(RexxString *p, RexxString *n, PNATIVEFUNCTION e) : RexxFunction(p, n), entry(e) { }
-   virtual void reinit(Package *);
 
    void        flatten(RexxEnvelope *envelope);
    RexxObject *unflatten(RexxEnvelope *envelope);
@@ -128,7 +128,7 @@ class RegisteredFunction : public RexxFunction
 
    inline RegisteredFunction(RESTORETYPE restoreType) { ; };
    RegisteredFunction(RexxString *n, RexxFunctionHandler *e)  : RexxFunction(OREF_NULL, n), entry(e) { }
-   RegisteredFunction(RexxString *p, RexxString *n, RexxFunctionHandler *)  : RexxFunction(p, n), entry(e) { }
+   RegisteredFunction(RexxString *p, RexxString *n, RexxFunctionHandler *e)  : RexxFunction(p, n), entry(e) { }
 
    virtual void call(RexxActivity *, RexxString *,  RexxObject **, size_t, ProtectedObject &);
 

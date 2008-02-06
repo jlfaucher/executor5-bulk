@@ -568,8 +568,6 @@ bool sys_process_cd(const char * cmd, int * rc)
     *rc = chdir(dir_buf);
 
     free(dir_buf);
-    // update our current working dir. 
-    SystemInterpreter::updateCurrentWorkingDirectory(); 
     return true;
 }
 

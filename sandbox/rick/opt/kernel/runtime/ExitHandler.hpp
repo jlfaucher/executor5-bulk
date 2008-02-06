@@ -77,15 +77,15 @@ public:
 
 protected:
 
-    enum {
+    typedef enum {
         UNRESOLVED,
-        REGISTERED,
+        REGISTERED_NAME,
         DIRECT
-    };
+    } ExitType;
 
 
     REXXPFN    entryPoint;             // resolved exit entry point
-    int        type;                   // the type of call
+    ExitType   type;                   // the type of call
 };
 
 
@@ -105,7 +105,7 @@ public:
 };
 
 
-class ContextExitHandlerDispatcher : public CallbackDispatcher
+class ContextExitHandlerDispatcher : public ExitHandlerDispatcher
 {
 public:
     inline ContextExitHandlerDispatcher(REXXPFN e, int code, int subcode, void *a) : ExitHandlerDispatcher(e, code, subcode, a) { }

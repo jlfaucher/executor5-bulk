@@ -6,7 +6,7 @@
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
 /* distribution. A copy is also available at the following address:           */
-/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
+/* http://www.oorexx.org/license.html                          */
 /*                                                                            */
 /* Redistribution and use in source and binary forms, with or                 */
 /* without modification, are permitted provided that the following            */
@@ -36,39 +36,56 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /******************************************************************************/
-/* REXX Kernel                                                                */
+/* REXX Kernel                                             RoutineClass.hpp   */
 /*                                                                            */
-/* list of REXX internal native methods                                       */
+/* Primitive Kernel Method Class Definitions                                  */
 /*                                                                            */
 /******************************************************************************/
+#ifndef Included_RoutineClass
+#define Included_RoutineClass
 
-//NOTE:  This file gets included multiple times to define different tables, so
-// it does not have standard #ifndef multiple include protections.
-   INTERNAL_METHOD(alarm_startTimer)
-   INTERNAL_METHOD(alarm_stopTimer)
-   INTERNAL_METHOD(stream_init)
-   INTERNAL_METHOD(stream_chars)
-   INTERNAL_METHOD(stream_lines)
-   INTERNAL_METHOD(stream_position)
-   INTERNAL_METHOD(stream_state)
-   INTERNAL_METHOD(stream_description)
-   INTERNAL_METHOD(stream_query_position)
-   INTERNAL_METHOD(stream_charout)
-   INTERNAL_METHOD(stream_charin)
-   INTERNAL_METHOD(stream_linein)
-   INTERNAL_METHOD(stream_lineout)
-   INTERNAL_METHOD(qualify)
-   INTERNAL_METHOD(query_exists)
-   INTERNAL_METHOD(query_size)
-   INTERNAL_METHOD(query_time)
-   INTERNAL_METHOD(handle_set)
-   INTERNAL_METHOD(std_set)
-   INTERNAL_METHOD(stream_flush)
-   INTERNAL_METHOD(query_handle)
-   INTERNAL_METHOD(query_streamtype)
-   INTERNAL_METHOD(stream_close)
-   INTERNAL_METHOD(stream_open)
-   INTERNAL_METHOD(rexx_push_queue)
-   INTERNAL_METHOD(rexx_queue_queue)
-   INTERNAL_METHOD(rexx_pull_queue)
-   INTERNAL_METHOD(rexx_linein_queue)
+#include "RexxMethod.hpp"
+
+ class RoutineClass : public RexxObject
+ {
+  public:
+  void *operator new(size_t);
+  inline void *operator new(size_t size, void *ptr) { return ptr; };
+  RoutineClass(BaseCode *_code);
+  inline RoutineClass(RESTORETYPE restoreType) { ; };
+
+  void execute(RexxObject *, RexxObject *);
+  void live(size_t);
+  void liveGeneral(int reason);
+  void flatten(RexxEnvelope*);
+
+  void          call(RexxActivity *,  RexxString *,  RexxObject **, size_t, RexxString *, RexxString *, int, ProtectedObject &);
+  void          call(RexxActivity *,  RexxString *,  RexxObject **, size_t, ProtectedObject &);
+  void          runProgram(RexxActivity *activity, RexxString * calltype, RexxString * environment, RexxObject **arguments, size_t argCount, ProtectedObject &result);
+
+  RexxArray   *source();
+  RexxSource  *getSourceObject();
+  RexxSmartBuffer *save();
+  RexxObject  *setSecurityManager(RexxObject *);
+
+  static RoutineClass *newRexxMethod(RexxSource *, RexxClass  *);
+  static RoutineClass *newRexxCode(RexxString *, RexxObject *, RexxObject *, RexxSource *s);
+  static RoutineClass *newRexx(RexxObject **, size_t);
+  static RoutineClass *newRexxBuffer(RexxString *, RexxBuffer *, RexxClass  *);
+  static RoutineClass *restore(RexxBuffer *, char *);
+  static RoutineClass *newFile(RexxString *);
+  static RoutineClass *newFileRexx(RexxString *);
+
+  inline BaseCode  *getCode()     { return this->code; }
+  static RoutineClass *processInstore(PRXSTRING instore, RexxString * name );
+
+  static RexxClass *classInstance;
+
+ protected:
+     BaseCode   *code;               // the backing code object
+ };
+
+
+inline RoutineClass *new_routine(BaseCode *c)  { return new RoutineClass(c); }
+#endif
+

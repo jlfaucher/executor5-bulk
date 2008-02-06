@@ -455,6 +455,7 @@ void RexxSource::live(size_t liveMark)
 /* Perform garbage collection marking of a source object                      */
 /******************************************************************************/
 {
+  memory_mark(this->parentSource);
   memory_mark(this->sourceArray);
   memory_mark(this->programName);
   memory_mark(this->programDirectory);
@@ -522,6 +523,7 @@ void RexxSource::liveGeneral(int reason)
   }
 #endif
   memory_mark_general(this->sourceArray);
+  memory_mark_general(this->parentSource);
   memory_mark_general(this->programName);
   memory_mark_general(this->programDirectory);
   memory_mark_general(this->programExtension);
@@ -577,6 +579,7 @@ void RexxSource::flatten (RexxEnvelope *envelope)
     this->sourceIndices = OREF_NULL;
     this->securityManager = OREF_NULL;
     flatten_reference(newThis->sourceArray, envelope);
+    flatten_reference(newThis->parentSource, envelope);
     flatten_reference(newThis->programName, envelope);
     flatten_reference(newThis->programDirectory, envelope);
     flatten_reference(newThis->programExtension, envelope);
@@ -932,20 +935,6 @@ void RexxSource::globalSetup()
 }
 
 
-RexxMethod *RexxSource::method()
-/******************************************************************************/
-/* Function:  Convert a source object into an executable method               */
-/******************************************************************************/
-{
-  this->globalSetup();                 /* do the global setup part          */
-                                       /* translate the source program      */
-  RexxCode *newCode = this->translate(OREF_NULL);
-  ProtectedObject p(newCode);
-  this->cleanup();                     /* release temporary tables          */
-  return new_method(newCode);          /* return the method                 */
-}
-
-
 RexxCode *RexxSource::generateCode()
 /******************************************************************************/
 /* Function:  Convert a source object into an executable method               */
@@ -1081,37 +1070,93 @@ void RexxSource::cleanup()
   OrefSet(this, this->currentInstruction, OREF_NULL);
 }
 
-void RexxSource::mergeRequired(
-    RexxSource *source)                /* source to merge into              */
+
+/**
+ * Merge a parent source context into our context so all of the
+ * bits that are visible in the parent are also resolvable in our
+ * context.  This is mostly used for dynamically created methods.
+ *
+ * @param parent The parent source context.
+ */
+void RexxSource::inheritSourceContext(RexxSource *source)
+{
+    // set this as a parent
+    OrefSet(this, this->parentSource, source);
+}
+
+
+void RexxSource::mergeRequired(RexxSource *source)
 /******************************************************************************/
 /* Function:  Merge all public class and routine information from a called    */
 /*            program into the full public information of this program.       */
 /******************************************************************************/
 {
-  size_t i;                            /* loop index                        */
-
-                                       /* have routines?                    */
-  if (source->public_routines != OREF_NULL || source->merged_public_routines) {
+  // has the source already merged in some public routines?  pull those in first,
+  // so that the direct set will override
+  if (source_merge_public_routines != OREF_NULL)
+  {
                                        /* first merged attempt?             */
     if (this->merged_public_routines == OREF_NULL)
+    {
                                        /* get the directory                 */
-      OrefSet(this, this->merged_public_routines, new_directory());
-                                       /* do the merged set first           */
-    if (source->merged_public_routines != OREF_NULL) {
+        OrefSet(this, this->merged_public_routines, new_directory());
+    }
                                        /* loop through the list of routines */
-      for (i = source->merged_public_routines->first(); source->merged_public_routines->available(i); i = source->merged_public_routines->next(i)) {
+      for (size_t i = source->merged_public_routines->first(); source->merged_public_routines->available(i); i = source->merged_public_routines->next(i))
+      {
                                        /* copy the routine over             */
         this->merged_public_routines->setEntry((RexxString *)source->merged_public_routines->index(i), source->merged_public_routines->value(i));
       }
+
+  }
+
+  // now process the direct set
+  if (source->public_routines != OREF_NULL)
+  {
+                                       /* first merged attempt?             */
+    if (this->merged_public_routines == OREF_NULL)
+    {
+                                       /* get the directory                 */
+        OrefSet(this, this->merged_public_routines, new_directory());
     }
-                                       /* have public routines              */
-    if (source->public_routines != OREF_NULL) {
                                        /* loop through the list of routines */
-      for (i = source->public_routines->first(); source->public_routines->available(i); i = source->public_routines->next(i)) {
+      for (size_t i = source->public_routines->first(); source->public_routines->available(i); i = source->public_routines->next(i))
+      {
                                        /* copy the routine over             */
         this->merged_public_routines->setEntry((RexxString *)source->public_routines->index(i), source->public_routines->value(i));
       }
-    }
+  }
+
+
+  // now do the same process for any of the class contexts
+  if (source->merged_public_classes != OREF_NULL)
+  {
+      if (this->merged_public_classes == OREF_NULL)
+      {
+                                         /* get the directory                 */
+        OrefSet(this, this->merged_public_classes, new_directory());
+      }
+                                       /* loop through the list of classes, */
+      for (i = source->merged_public_classes->first(); source->merged_public_classes->available(i); i = source->merged_public_classes->next(i))
+      {
+                                       /* copy the routine over             */
+        this->merged_public_classes->setEntry((RexxString *)source->merged_public_classes->index(i), source->merged_public_classes->value(i));
+      }
+  }
+
+  if (source->merged_public_classes != OREF_NULL)
+  {
+      if (this->merged_public_classes == OREF_NULL)
+      {
+                                         /* get the directory                 */
+        OrefSet(this, this->merged_public_classes, new_directory());
+      }
+                                       /* loop through the list of classes, */
+      for (i = source->installed_public_classes->first(); source->merged_public_classes->available(i); i = source->merged_public_classes->next(i))
+      {
+                                       /* copy the routine over             */
+        this->merged_public_classes->setEntry((RexxString *)source->merged_public_classes->index(i), source->merged_public_classes->value(i));
+      }
   }
 
                                        /* have classes also?                */
@@ -1140,30 +1185,79 @@ void RexxSource::mergeRequired(
 }
 
 
-BaseCode *RexxSource::resolveRoutine(
-    RexxString *routineName )          /* target routine name               */
-/******************************************************************************/
-/* Function:  Try to resolve a routine name from the information held by this */
-/*            source object.                                                  */
-/******************************************************************************/
+/**
+ * Resolve a directly defined class object in this or a parent
+ * context.
+ *
+ * @param name   The name we're searching for (all uppercase).
+ *
+ * @return A resolved class object, if found.
+ */
+RoutineClass *RexxSource::resolveLocalRoutine(RexxString *name)
 {
-    BaseCode *routineObject = OREF_NULL; /* no routine found yet              */
-    if (this->routines != OREF_NULL)     /* have locally defined routines?    */
+    // if we have one locally, then return it.
+    if (this->routines != OREF_NULL)
     {
         /* try for a local one first         */
-        routineObject = (BaseCode *)(this->routines->entry(routineName));
-        if (routineObject != OREF_NULL)    /* did this work?                    */
+        RoutineClass *result = (RoutineClass *)(this->routines->fastAt(name));
+        if (result != OREF_NULL)
         {
-            return routineObject;            /* return now                        */
+            return result;
         }
     }
-    /* have publically defined routines? */
+
+    // we might have a chained context, so check it also
+    if (parentSource != OREF_NULL)
+    {
+        return parentSource->resolveLocalRoutine(name);
+    }
+    // nope, no got one
+    return OREF_NULL;
+}
+
+
+RoutineClass *RoutineClass::resolvePublicRoutine(RexxString *name)
+{
+    // if we have one locally, then return it.
     if (this->merged_public_routines != OREF_NULL)
     {
-        /* try for a public one now          */
-        routineObject = (BaseCode *)(this->merged_public_routines->entry(routineName));
+        /* try for a local one first         */
+        RoutineClass *result = (RoutineClass *)(this->merged_public_routines->fastAt(name));
+        if (result != OREF_NULL)
+        {
+            return result;
+        }
     }
-    return routineObject;                /* return the object                 */
+
+    // we might have a chained context, so check it also
+    if (parentSource != OREF_NULL)
+    {
+        return parentSource->resolvePublicRoutine(name);
+    }
+    // nope, no got one
+    return OREF_NULL;
+}
+
+
+/**
+ * Resolve a routine from this source files base context.
+ *
+ * @param routineName
+ *               The routine name of interest.
+ *
+ * @return A RoutineClass instance if located.  Returns OREF_NULL if this
+ *         is not known at this level.
+ */
+RoutineClass *RexxSource::resolveRoutine(RexxString *routineName)
+{
+    BaseCode *routineObject = resolveLocalRoutine(routineName);
+    if (routineObject != OREF_NULL)
+    {
+        return routineObject;
+    }
+
+    // now try for one pulled in from ::REQUIRES objects
+    return resolvePublicRoutine(name);
 }
 
 
@@ -1184,38 +1278,87 @@ RexxString *RexxSource::resolveProgramName(RexxActivity *activity, RexxString *n
 }
 
 
-RexxClass *RexxSource::resolveClass(
-    RexxString     *className,         /* name of the target class          */
-    RexxActivation *context )          /* the execution context             */
-/******************************************************************************/
-/* Function:  Try to resolve a class name from the information held by this   */
-/*            source object.                                                  */
-/******************************************************************************/
+/**
+ * Resolve a directly defined class object in this or a parent
+ * context.
+ *
+ * @param name   The name we're searching for (all uppercase).
+ *
+ * @return A resolved class object, if found.
+ */
+RexxClass *RexxSource::resolveInstalledClass(RexxString *name)
 {
-    RexxString *internalName = className->upper();   /* upper case it                     */
-    RexxClass *classObject = OREF_NULL;             /* default to not found              */
-    /* have locally defined classes?     */
+    // if we have one locally, then return it.
     if (this->installed_classes != OREF_NULL)
     {
         /* try for a local one first         */
-        classObject = (RexxClass *)(this->installed_classes->fastAt(internalName));
-        if (classObject != OREF_NULL)      /* did this work?                    */
+        RexxClass *result = (RexxClass *)(this->installed_classes->fastAt(name));
+        if (result != OREF_NULL)
         {
-            return classObject;              /* return now                        */
-        }
-    }
-    /* have publically defined classes?  */
-    if (this->merged_public_classes != OREF_NULL)
-    {
-        /* try for a local one first         */
-        classObject = (RexxClass *)(this->merged_public_classes->fastAt(internalName));
-        if (classObject != OREF_NULL)      /* did this work?                    */
-        {
-            return classObject;              /* return now                        */
+            return result;
         }
     }
 
-    /* normal execution?                 */
+    // we might have a chained context, so check it also
+    if (parentSource != OREF_NULL)
+    {
+        return parentSource->resolveInstalledClass(name);
+    }
+    // nope, no got one
+    return OREF_NULL;
+}
+
+
+RexxClass *RexxSource::resolvePublicClass(RexxString *name)
+{
+    // if we have one locally, then return it.
+    if (this->merged_public_classes != OREF_NULL)
+    {
+        /* try for a local one first         */
+        RexxClass *result = (RexxClass *)(this->merged_public_classes->fastAt(name));
+        if (result != OREF_NULL)
+        {
+            return result;
+        }
+    }
+
+    // we might have a chained context, so check it also
+    if (parentSource != OREF_NULL)
+    {
+        return parentSource->resolvePublicClass(name);
+    }
+    // nope, no got one
+    return OREF_NULL;
+}
+
+
+/**
+ * Resolve a class from this source file context (including any
+ * chained parent contexts).
+ *
+ * @param className The target name of the class.
+ *
+ * @return The resolved class object, if any.
+ */
+RexxClass *RexxSource::resolveClass(RexxString *className)
+{
+    RexxString *internalName = className->upper();   /* upper case it                     */
+    // check for a directly defined one in the source context chain
+    RexxClass *classObject = resolveInstalledClass(internalName);
+    // return if we got one
+    if (classObject != OREF_NULL)
+    {
+        return classObject;
+    }
+    // now try for public classes we pulled in from other contexts
+    classObject = resolvePublicClass(internalName);
+    // return if we got one
+    if (classObject != OREF_NULL)
+    {
+        return classObject;
+    }
+
+    // give the security manager a go
     if (this->securityManager != OREF_NULL)
     {
         classObject = securityManager->checkLocalAccess(internalName);
@@ -1224,6 +1367,7 @@ RexxClass *RexxSource::resolveClass(
             return classObject);
         }
     }
+
     /* send message to .local            */
     classObject = (RexxClass *)(ActivityManager::localEnvironment->at(internalName));
     if (classObject != OREF_NULL)
@@ -1240,6 +1384,7 @@ RexxClass *RexxSource::resolveClass(
             return classObject);
         }
     }
+
     /* last chance, try the environment  */
     return(RexxClass *)(TheEnvironment->at(internalName));
 }

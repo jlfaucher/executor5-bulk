@@ -498,6 +498,5 @@ CHARCONSTANT(WITH,       "WITH");
 
 CHARCONSTANT(ZERO, "0");
 
-CHARCONSTANT(STATIC_REQUIRES, "STATIC_REQUIRES");  /* Name for the directory that holds static requires */
 CHARCONSTANT(PUBLIC_ROUTINES, "PUBLIC_ROUTINES");  /* Name for the directory that holds public routines */
 #endif

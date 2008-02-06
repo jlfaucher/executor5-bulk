@@ -63,8 +63,8 @@ class RexxMethodClass;
   void liveGeneral(int reason);
   void flatten(RexxEnvelope*);
   void          run(RexxActivity *,  RexxObject *, RexxString *,  size_t, RexxObject **, ProtectedObject &);
-  void          call(RexxActivity *,  RexxObject *,  RexxString *,  RexxObject **, size_t, RexxString *, RexxString *, int, ProtectedObject &);
-  void          call(RexxActivity *,  RexxObject *,  RexxString *,  RexxObject **, size_t, RexxString *, RexxString *, int, ProtectedObject &);
+  void          call(RexxActivity *,  RexxString *,  RexxObject **, size_t, RexxString *, RexxString *, int, ProtectedObject &);
+  void          call(RexxActivity *,  RexxString *,  RexxObject **, size_t, ProtectedObject &);
   void          runProgram(RexxActivity *activity, RexxString * calltype, RexxString * environment, RexxObject **arguments, size_t argCount, ProtectedObject &result);
   RexxMethod  *newScope(RexxClass  *);
   RexxArray   *source();
@@ -92,7 +92,16 @@ class RexxMethodClass;
    inline RexxClass *getScope() {return this->scope;}
 
    inline BaseCode  *getCode()     { return this->code; }
+   RexxMethod  *newRexx(RexxObject **, size_t);
+   RexxMethod  *newFileRexx(RexxString *);
+
    static RexxMethod *processInstore(PRXSTRING instore, RexxString * name );
+   static RexxMethod  *newRexxMethod(RexxSource *, RexxClass  *);
+   static RexxMethod  *newRexxCode(RexxString *, RexxObject *, RexxObject *, RexxSource *a);
+   static RexxMethod  *newRexxBuffer(RexxString *, RexxBuffer *, RexxClass  *);
+   static RexxMethod  *newEntry(PNATIVEMETHOD);
+   static RexxMethod  *restore(RexxBuffer *, char *);
+   static RexxMethod  *newFile(RexxString *);
 
    static RexxMethodClass *classInstance;
 
@@ -109,17 +118,6 @@ class RexxMethodClass;
    BaseCode   *code;                   // the backing code object
  };
 
-class RexxMethodClass : public RexxClass {
- public:
-  RexxMethod  *newRexxMethod(RexxSource *, RexxClass  *);
-  RexxMethod  *newRexxCode(RexxString *, RexxObject *, RexxObject *, RexxObject *a = OREF_NULL);
-  RexxMethod  *newRexx(RexxObject **, size_t);
-  RexxMethod  *newRexxBuffer(RexxString *, RexxBuffer *, RexxClass  *);
-  RexxMethod  *newEntry(PNATIVEMETHOD);
-  RexxMethod  *restore(RexxBuffer *, char *);
-  RexxMethod  *newFile(RexxString *);
-  RexxMethod  *newFileRexx(RexxString *);
-};
 
 
 inline RexxMethod *new_method(BaseCode *c)  { return new RexxMethod(c); }

@@ -2520,6 +2520,107 @@ BUILTIN(COUNTSTR) {
   return new_integer(count);           /* return the new count              */
 }
 
+
+#define RXFUNCADD_MIN 2
+#define RXFUNCADD_MAX 3
+#define RXFUNCADD_name   1
+#define RXFUNCADD_module 2
+#define RXFUNCADD_proc   3
+
+BUILTIN(RXFUNCADD)
+{
+  fixArgs(RXFUNCADD);                 /* check on required number of args  */
+
+  // we require a name and module, but the
+  // procedure is optional.  If not specified, we
+  // use the function name directly.
+  RexxString *name = requiredString(RXFUNCADD, name);
+  RexxString *module = requiredString(RXFUNCADD, module);
+  RexxString proc = optionalString(RXFUNCADD, proc);
+
+  if (proc == OREF_NULL)
+  {
+      proc = name;
+  }
+
+  // hand this off to the package manager.
+  return PackageManager::addRegisteredFunction(name, module, proc);
+}
+
+#define RXFUNCDROP_MIN 1
+#define RXFUNCDROP_MAX 1
+#define RXFUNCDROP_name   1
+
+BUILTIN(RXFUNCDROP)
+{
+  fixArgs(RXFUNCDROP);                 /* check on required number of args  */
+
+  // only a name is required.
+  RexxString *name = requiredString(RXFUNCDROP, name);
+
+  // hand this off to the package manager.
+  return PackageManager::dropRegisteredFunction(name);
+}
+
+#define RXFUNCQUERY_MIN 1
+#define RXFUNCQUERY_MAX 1
+#define RXFUNCQUERY_name   1
+
+BUILTIN(RXFUNCQUERY)
+{
+  fixArgs(RXFUNCQUERY);                 /* check on required number of args  */
+
+  // only a name is required.
+  RexxString *name = requiredString(RXFUNCQUERY, name);
+
+  // hand this off to the package manager.
+  return PackageManager::dropRegisteredFunction(name);
+}
+
+
+#define QUEUEEXIT_MIN 1
+#define QUEUEEXIT_MAX 1
+#define QUEUEEXIT_name   1
+
+
+// This somewhat funny function is implemented as a builtin because it
+// requires quite a bit of internal access.
+BUILTIN(QUEUEEXIT)
+{
+  fixArgs(QUEUEEXIT);                   /* check on required number of args  */
+
+  // only a name is required.
+  RexxString *name = requiredString(QUEUEEXIT, name);
+                                       /* call the exit                     */
+  context->activity->callQueueNameExit(context, &name);
+  // make sure we have real object to return
+  if (name == OREF_NULL)
+  {
+      name = OREF_NULLSTRING;
+  }
+  return name;
+}
+
+#define SETLOCAL_MIN 0
+#define SETLOCAL_MAX 0
+
+BUILTIN(SETLOCAL)
+{
+  checkArgs(SETLOCAL);              /* check on required number of args  */
+  // the external environment implements this
+  return SysInterpreter::pushEnvironment(context);
+}
+
+#define ENDLOCAL_MIN 0
+#define ENDLOCAL_MAX 0
+
+BUILTIN(ENDLOCAL)
+{
+  checkArgs(ENDLOCAL);              /* check on required number of args  */
+  // the external environment implements this
+  return SysInterpreter::popEnvironment(context);
+}
+
                                        /* the following builtin function    */
                                        /* table must maintain the same order*/
                                        /* as the builtin function codes used*/
@@ -2600,5 +2701,11 @@ pbuiltin builtin_table[] = {
   &builtin_function_USERID           ,
   &builtin_function_LOWER            ,
   &builtin_function_UPPER            ,
+  &builtin_function_RXFUNCADD        ,
+  &builtin_function_RXFUNCDROP       ,
+  &builtin_function_RXFUNCQUERY      ,
+  &builtin_function_ENDLOCAL         ,
+  &builtin_function_SETLOCAL         ,
+  &builtin_function_QUEUEEXIT        ,
 };
 

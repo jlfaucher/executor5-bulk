@@ -186,6 +186,7 @@ KeywordEntry RexxSource::builtinFunctions[] = {        /* built-in function tabl
     KeywordEntry(CHAR_DELSTR,      BUILTIN_DELSTR),
     KeywordEntry(CHAR_DELWORD,     BUILTIN_DELWORD),
     KeywordEntry(CHAR_DIGITS,      BUILTIN_DIGITS),
+    KeywordEntry(CHAR_ENDLOCAL,    BUILTIN_ENDLOCAL),
     KeywordEntry(CHAR_ERRORTEXT,   BUILTIN_ERRORTEXT),
     KeywordEntry(CHAR_FORM,        BUILTIN_FORM),
     KeywordEntry(CHAR_FORMAT,      BUILTIN_FORMAT),
@@ -206,6 +207,10 @@ KeywordEntry RexxSource::builtinFunctions[] = {        /* built-in function tabl
     KeywordEntry(CHAR_RANDOM,      BUILTIN_RANDOM),
     KeywordEntry(CHAR_REVERSE,     BUILTIN_REVERSE),
     KeywordEntry(CHAR_RIGHT,       BUILTIN_RIGHT),
+    KeywordEntry(CHAR_RXFUNCADD,   BUILTIN_RXFUNCADD),
+    KeywordEntry(CHAR_RXFUNCDELETE,BUILTIN_RXFUNCDELETE),
+    KeywordEntry(CHAR_RXFUNCQUERY, BUILTIN_RXFUNCQUERY),
+    KeywordEntry(CHAR_SETLOCAL,    BUILTIN_SETLOCAL),
     KeywordEntry(CHAR_SIGN,        BUILTIN_SIGN),
     KeywordEntry(CHAR_SOURCELINE,  BUILTIN_SOURCELINE),
     KeywordEntry(CHAR_SPACE,       BUILTIN_SPACE),
@@ -232,6 +237,7 @@ KeywordEntry RexxSource::builtinFunctions[] = {        /* built-in function tabl
     KeywordEntry(CHAR_X2C,         BUILTIN_X2C),
     KeywordEntry(CHAR_X2D,         BUILTIN_X2D),
     KeywordEntry(CHAR_XRANGE,      BUILTIN_XRANGE),
+    KeywordEntry(CHAR_QUEUEEXIT,   BUILTIN_QUEUEEXIT),
 };
 
 /*********************************************************************/

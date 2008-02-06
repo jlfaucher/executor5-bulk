@@ -41,9 +41,10 @@
 /* Header file for ooRexx methods written in C.                               */
 /*                                                                            */
 /******************************************************************************/
-#ifndef RexxNativeInterface_INCLUDED
-#define RexxNativeInterface_INCLUDED
+#ifndef RexxNativeInterface_Included
+#define RexxNativeInterface_Included
 
+#include "rexx.h"
 #include "oorexxerrors.h"
 
 BEGIN_EXTERN_C()
@@ -178,15 +179,7 @@ typedef struct _RexxPackageEntry
 
 END_EXTERN_C()
 
-#ifdef __cplusplus
- class RexxObject;                     /* Object Rexx root object           */
-                                       /* reference to a REX object        */
- typedef RexxObject *RexxObjectPtr;
- #define NULLOBJECT ((RexxObjectPtr)NULL)
-#else
- typedef void *RexxObjectPtr;          // reference to a REXX object
- #define NULLOBJECT ((RexxObjectPtr)0) // null object
-#endif
+typedef void *RexxObjectPtr;          // reference to a REXX object
 
 typedef RexxObjectPtr RexxStringObject;   // Rexx string object
 typedef RexxObjectPtr RexxBufferStringObject;   // Rexx string "under construction"
@@ -222,13 +215,14 @@ typedef struct
         RexxObjectPtr         value_OSELF;
         RexxObjectPtr         value_RexxObjectPtr;
         int                   value_int;
-        wholenumber_t            value_wholenumber_t;
+        wholenumber_t         value_wholenumber_t;
+        stringsize_t          value_stringsize_t;
+        logical_t             value_logical_t;
         double                value_double;
         CSTRING               value_CSTRING;
         RexxClassObject       value_RexxClassObject;
         POINTER               value_POINTER;
         RexxStringObject      value_RexxStringObject;
-        RexxUnsignedNumber    value_RexxUnsignedNumber;
         float                 value_float;
         int8_t                value_int8_t;
         int16_t               value_int16_t;
@@ -238,10 +232,10 @@ typedef struct
         uint16_t              value_uint16_t;
         uint32_t              value_uint32_t;
         uint64_t              value_uint64_t;
-        size_t                value_size_t;
         intptr_t              value_intptr_t;
         uintptr_t             value_uintptr_t;
-        RexxBoolean           value_RexxBoolean;
+        size_t                value_size_t;
+        ssize_t               value_ssize_t;
         RexxArrayObject       value_RexxArrayObject;
         RexxStemObject        value_RexxStemObject;
 
@@ -250,13 +244,14 @@ typedef struct
         // preprocessor to generate a mapped symbol name.
         RexxObjectPtr         value_OPTIONAL_RexxObjectPtr;
         int                   value_OPTIONAL_int;
-        wholenumber_t            value_OPTIONAL_wholenumber_t;
+        wholenumber_t         value_OPTIONAL_wholenumber_t;
+        stringsize_t          value_OPTIONAL_stringsize_t;
+        logical_t             value_OPTIONAL_logical_t;
         double                value_OPTIONAL_double;
         CSTRING               value_OPTIONAL_CSTRING;
         RexxClassObject       value_OPTIONAL_RexxClassObject;
         POINTER               value_OPTIONAL_POINTER;
         RexxStringObject      value_OPTIONAL_RexxStringObject;
-        RexxUnsignedNumber    value_OPTIONAL_RexxUnsignedNumber;
         float                 value_OPTIONAL_float;
         int8_t                value_OPTIONAL_int8_t;
         int16_t               value_OPTIONAL_int16_t;
@@ -266,10 +261,9 @@ typedef struct
         uint16_t              value_OPTIONAL_uint16_t;
         uint32_t              value_OPTIONAL_uint32_t;
         uint64_t              value_OPTIONAL_uint64_t;
-        size_t                value_OPTIONAL_size_t;
         intptr_t              value_OPTIONAL_intptr_t;
         uintptr_t             value_OPTIONAL_uintptr_t;
-        RexxBoolean           value_OPTIONAL_RexxBoolean;
+        ssize_t               value_OPTIONAL_ssize_t;
         RexxArrayObject       value_OPTIONAL_RexxArrayObject;
         RexxStemObject        value_OPTIONAL_RexxStemObject;
     } value;
@@ -280,7 +274,7 @@ typedef struct
 
 
 
-// The initial address environment, passed as a RexxStringPointer value.
+// The initial address environment, passed as a CSTRING value.
 #define INITIAL_ADDRESS_ENVIRONMENT "InitialAddress"
 // Opaque user data, passed as a POINTER value.
 #define APPLICATION_DATA            "ApplicationData"
@@ -302,17 +296,17 @@ typedef struct
 } RexxOption;
 
 
-typedef struct _ConditionData {
+typedef struct _RexxCondition {
   wholenumber_t code;                   // full condition code
   wholenumber_t rc;                     // return code value
-  RexxUnsignedNumber position;       // line number position
+  size_t           position;         // line number position
   RexxStringObject conditionName;    // name of the condition
   RexxStringObject message;          // fully filled in message
   RexxStringObject errortext;        // major error text
   RexxStringObject program;          // program name
   RexxStringObject description;      // program name
   RexxArrayObject  additional;       // additional information
-} ConditionData;
+} RexxCondition;
 
 #define INSTANCE_INTERFACE_VERSION 100
 
@@ -321,10 +315,10 @@ typedef struct
     wholenumber_t interfaceVersion;    // The interface version identifier
 
     void        (RexxEntry *Terminate)(RexxInstance *);
-    RexxBoolean (RexxEntry *AttachThread)(RexxInstance *, RexxThreadContext **);
-    RexxBoolean (RexxEntry *CreateScriptContext)(RexxInstance *, RexxScriptContext **, RexxOption *);
+    logical_t   (RexxEntry *AttachThread)(RexxInstance *, RexxThreadContext **);
+    logical_t   (RexxEntry *CreateScriptContext)(RexxInstance *, RexxScriptContext **, RexxOption *);
     void        (RexxEntry *Halt)(RexxInstance *);
-    void        (RexxEntry *SetTrace)(RexxInstance *, RexxBoolean);
+    void        (RexxEntry *SetTrace)(RexxInstance *, logical_t);
 } RexxInstanceInterface;
 
 #define THREAD_INTERFACE_VERSION 100
@@ -336,9 +330,9 @@ typedef struct
     wholenumber_t interfaceVersion;    // The interface version identifier
 
     void             (RexxEntry *DeleteContext)(RexxScriptContext *);
-    void             (RexxEntry *AddVariableBinding)(RexxStringPointer, ValueDescriptor *);
-    void             (RexxEntry *RemoveVariableBinding)(RexxStringPointer);
-    RexxObjectPtr    (RexxEntry *GetVariableValue)(RexxStringPointer);
+    void             (RexxEntry *AddVariableBinding)(CSTRING, ValueDescriptor *);
+    void             (RexxEntry *RemoveVariableBinding)(CSTRING);
+    RexxObjectPtr    (RexxEntry *GetVariableValue)(CSTRING);
 } RexxScriptInterface;
 
 
@@ -348,130 +342,130 @@ typedef struct
 
     void             (RexxEntry *DetachThread)(RexxThreadContext *);
     void             (RexxEntry *HaltThread)(RexxThreadContext *);
-    void             (RexxEntry *SetThreadTrace)(RexxThreadContext *, RexxBoolean);
+    void             (RexxEntry *SetThreadTrace)(RexxThreadContext *, logical_t);
     RexxObjectPtr    (RexxEntry *RequestGlobalReference)(RexxThreadContext *, RexxObjectPtr);
     void             (RexxEntry *ReleaseGlobalReference)(RexxThreadContext *, RexxObjectPtr);
     void             (RexxEntry *ReleaseLocalReference)(RexxThreadContext *, RexxObjectPtr);
 
-    RexxObjectPtr  (RexxEntry *SendMessage)(RexxThreadContext *, RexxObjectPtr, RexxStringPointer, RexxArrayObject);
-    RexxObjectPtr  (RexxEntry *SendMessage0)(RexxThreadContext *, RexxObjectPtr, RexxStringPointer);
-    RexxObjectPtr  (RexxEntry *SendMessage1)(RexxThreadContext *, RexxObjectPtr, RexxStringPointer, RexxObjectPtr);
-    RexxObjectPtr  (RexxEntry *SendMessage2)(RexxThreadContext *, RexxObjectPtr, RexxStringPointer, RexxObjectPtr, RexxObjectPtr);
+    RexxObjectPtr  (RexxEntry *SendMessage)(RexxThreadContext *, RexxObjectPtr, CSTRING, RexxArrayObject);
+    RexxObjectPtr  (RexxEntry *SendMessage0)(RexxThreadContext *, RexxObjectPtr, CSTRING);
+    RexxObjectPtr  (RexxEntry *SendMessage1)(RexxThreadContext *, RexxObjectPtr, CSTRING, RexxObjectPtr);
+    RexxObjectPtr  (RexxEntry *SendMessage2)(RexxThreadContext *, RexxObjectPtr, CSTRING, RexxObjectPtr, RexxObjectPtr);
 
     RexxDirectoryObject (RexxEntry *GetLocalEnvironment)(RexxThreadContext *);
     RexxDirectoryObject (RexxEntry *GetGlobalEnvironment)(RexxThreadContext *);
 
-    RexxBoolean      (RexxEntry *IsSameType)(RexxThreadContext *, RexxObjectPtr, RexxObjectPtr);
-    RexxBoolean      (RexxEntry *IsInstanceOf)(RexxThreadContext *, RexxObjectPtr, RexxClassObject);
-    RexxClassObject  (RexxEntry *FindClass)(RexxThreadContext *, RexxStringPointer);
-    RexxClassObject  (RexxEntry *FindClassFromMethod)(RexxThreadContext *, RexxMethodObject, RexxStringPointer);
-    RexxBoolean      (RexxEntry *HasMethod)(RexxThreadContext *, RexxObjectPtr, RexxStringPointer);
+    logical_t        (RexxEntry *IsSameType)(RexxThreadContext *, RexxObjectPtr, RexxObjectPtr);
+    logical_t        (RexxEntry *IsInstanceOf)(RexxThreadContext *, RexxObjectPtr, RexxClassObject);
+    RexxClassObject  (RexxEntry *FindClass)(RexxThreadContext *, CSTRING);
+    RexxClassObject  (RexxEntry *FindClassFromMethod)(RexxThreadContext *, RexxMethodObject, CSTRING);
+    logical_t        (RexxEntry *HasMethod)(RexxThreadContext *, RexxObjectPtr, CSTRING);
 
-    RexxMethodObject (RexxEntry *NewMethod)(RexxThreadContext *, RexxStringPointer, RexxUnsignedNumber);
+    RexxMethodObject (RexxEntry *NewMethod)(RexxThreadContext *, CSTRING, size_t);
     RexxDirectoryObject (RexxEntry *GetMethodRoutines)(RexxThreadContext *, RexxMethodObject);
     RexxDirectoryObject (RexxEntry *GetMethodClasses)(RexxThreadContext *, RexxMethodObject);
     RexxDirectoryObject (RexxEntry *GetMethodMethods)(RexxThreadContext *, RexxMethodObject);
     RexxObjectPtr    (RexxEntry *CallMethod)(RexxThreadContext *, RexxMethodObject, RexxArrayObject);
     RexxBufferObject (RexxEntry *SaveMethod)(RexxThreadContext *, RexxMethodObject);
-    RexxMethodObject (RexxEntry *LoadMethod)(RexxThreadContext *, RexxStringPointer d, size_t l);
+    RexxMethodObject (RexxEntry *LoadMethod)(RexxThreadContext *, CSTRING d, size_t l);
 
     RexxObjectPtr    (RexxEntry *NewObject)(RexxThreadContext *);
     RexxObjectPtr    (RexxEntry *NumberToObject)(RexxThreadContext *, wholenumber_t);
     RexxObjectPtr    (RexxEntry *UintptrToObject)(RexxThreadContext *, uintptr_t);
     RexxObjectPtr    (RexxEntry *ValueToObject)(RexxThreadContext *, ValueDescriptor *);
-    RexxBoolean      (RexxEntry *ObjectToValue)(RexxThreadContext *, RexxObjectPtr, ValueDescriptor *);
-    RexxObjectPtr    (RexxEntry *UnsignedNumberToObject)(RexxThreadContext *, RexxUnsignedNumber);
-    RexxBoolean      (RexxEntry *ObjectToNumber)(RexxThreadContext *, RexxObjectPtr, wholenumber_t *);
-    RexxBoolean      (RexxEntry *ObjectToUnsignedNumber)(RexxThreadContext *, RexxObjectPtr, RexxUnsignedNumber *);
+    logical_t        (RexxEntry *ObjectToValue)(RexxThreadContext *, RexxObjectPtr, ValueDescriptor *);
+    RexxObjectPtr    (RexxEntry *UnsignedNumberToObject)(RexxThreadContext *, stringsize_t);
+    logical_t        (RexxEntry *ObjectToNumber)(RexxThreadContext *, RexxObjectPtr, wholenumber_t *);
+    logical_t        (RexxEntry *ObjectToUnsignedNumber)(RexxThreadContext *, RexxObjectPtr, stringsize_t *);
     RexxObjectPtr    (RexxEntry *Int64ToObject)(RexxThreadContext *, int64_t);
     RexxObjectPtr    (RexxEntry *UnsignedInt64ToObject)(RexxThreadContext *, uint64_t);
-    RexxBoolean      (RexxEntry *ObjectToInt64)(RexxThreadContext *, RexxObjectPtr, int64_t *);
-    RexxBoolean      (RexxEntry *ObjectToUnsignedInt64)(RexxThreadContext *, RexxObjectPtr, uint64_t *);
-    RexxBoolean      (RexxEntry *ObjectToUintptr)(RexxThreadContext *, RexxObjectPtr, uintptr_t *);
+    logical_t        (RexxEntry *ObjectToInt64)(RexxThreadContext *, RexxObjectPtr, int64_t *);
+    logical_t        (RexxEntry *ObjectToUnsignedInt64)(RexxThreadContext *, RexxObjectPtr, uint64_t *);
+    logical_t        (RexxEntry *ObjectToUintptr)(RexxThreadContext *, RexxObjectPtr, uintptr_t *);
     RexxObjectPtr    (RexxEntry *DoubleToObject)(RexxThreadContext *, double);
     RexxObjectPtr    (RexxEntry *DoubleToObjectWithPrecision)(RexxThreadContext *, double, wholenumber_t precision);
-    RexxBoolean      (RexxEntry *ObjectToDouble)(RexxThreadContext *, RexxObjectPtr, double *);
+    logical_t        (RexxEntry *ObjectToDouble)(RexxThreadContext *, RexxObjectPtr, double *);
 
     RexxStringObject  (RexxEntry *ObjectToString)(RexxThreadContext *, RexxObjectPtr);
-    RexxStringPointer (RexxEntry *ObjectToStringValue)(RexxThreadContext *, RexxObjectPtr);
-    size_t  (RexxEntry *StringGet)(RexxThreadContext *, RexxStringObject, size_t, RexxStringPointer, size_t);
+    CSTRING (RexxEntry *ObjectToStringValue)(RexxThreadContext *, RexxObjectPtr);
+    size_t  (RexxEntry *StringGet)(RexxThreadContext *, RexxStringObject, size_t, CSTRING, size_t);
     size_t  (RexxEntry *StringLength)(RexxThreadContext *, RexxStringObject);
-    RexxStringPointer (RexxEntry *StringData)(RexxThreadContext *, RexxStringObject);
-    RexxStringObject  (RexxEntry *NewString)(RexxThreadContext *, RexxStringPointer, size_t);
-    RexxStringObject  (RexxEntry *NewStringFromAsciiz)(RexxThreadContext *, RexxStringPointer);
+    CSTRING (RexxEntry *StringData)(RexxThreadContext *, RexxStringObject);
+    RexxStringObject  (RexxEntry *NewString)(RexxThreadContext *, CSTRING, size_t);
+    RexxStringObject  (RexxEntry *NewStringFromAsciiz)(RexxThreadContext *, CSTRING);
     RexxStringObject  (RexxEntry *StringUpper)(RexxThreadContext *, RexxStringObject);
     RexxStringObject  (RexxEntry *StringLower)(RexxThreadContext *, RexxStringObject);
-    RexxBoolean       (RexxEntry *IsString)(RexxThreadContext *, RexxObjectPtr);
+    logical_t         (RexxEntry *IsString)(RexxThreadContext *, RexxObjectPtr);
 
     RexxBufferStringObject  (RexxEntry *NewBufferString)(RexxThreadContext *, size_t);
     size_t  (RexxEntry *BufferStringLength)(RexxThreadContext *, RexxBufferStringObject);
-    RexxStringPointer (RexxEntry *BufferStringData)(RexxThreadContext *, RexxBufferStringObject);
+    CSTRING (RexxEntry *BufferStringData)(RexxThreadContext *, RexxBufferStringObject);
     RexxStringObject  (RexxEntry *FinishBufferString)(RexxThreadContext *, RexxBufferStringObject, size_t);
 
     void             (RexxEntry *TablePut)(RexxThreadContext *, RexxTableObject, RexxObjectPtr, RexxObjectPtr);
     RexxObjectPtr    (RexxEntry *TableGet)(RexxThreadContext *, RexxTableObject, RexxObjectPtr);
     RexxObjectPtr    (RexxEntry *TableRemove)(RexxThreadContext *, RexxTableObject, RexxObjectPtr);
     RexxTableObject  (RexxEntry *NewTable)(RexxThreadContext *);
-    RexxBoolean      (RexxEntry *IsTable)(RexxThreadContext *, RexxObjectPtr);
+    logical_t        (RexxEntry *IsTable)(RexxThreadContext *, RexxObjectPtr);
 
-    void             (RexxEntry *DirectoryPut)(RexxThreadContext *, RexxDirectoryObject, RexxObjectPtr, RexxStringPointer);
-    RexxObjectPtr    (RexxEntry *DirectoryAt)(RexxThreadContext *, RexxDirectoryObject, RexxStringPointer);
-    RexxObjectPtr    (RexxEntry *DirectoryRemove)(RexxThreadContext *, RexxDirectoryObject, RexxStringPointer);
+    void             (RexxEntry *DirectoryPut)(RexxThreadContext *, RexxDirectoryObject, RexxObjectPtr, CSTRING);
+    RexxObjectPtr    (RexxEntry *DirectoryAt)(RexxThreadContext *, RexxDirectoryObject, CSTRING);
+    RexxObjectPtr    (RexxEntry *DirectoryRemove)(RexxThreadContext *, RexxDirectoryObject, CSTRING);
     RexxDirectoryObject  (RexxEntry *NewDirectory)(RexxThreadContext *);
-    RexxBoolean      (RexxEntry *IsDirectory)(RexxThreadContext *, RexxObjectPtr);
+    logical_t        (RexxEntry *IsDirectory)(RexxThreadContext *, RexxObjectPtr);
 
-    RexxObjectPtr   (RexxEntry *ArrayAt)(RexxThreadContext *, RexxArrayObject, RexxUnsignedNumber);
-    RexxBoolean     (RexxEntry *ArrayHasIndex)(RexxThreadContext *, RexxArrayObject, RexxUnsignedNumber);
-    void            (RexxEntry *ArrayPut)(RexxThreadContext *, RexxArrayObject, RexxObjectPtr, RexxUnsignedNumber);
-    RexxUnsignedNumber (RexxEntry *ArraySize)(RexxThreadContext *, RexxArrayObject);
-    wholenumber_t      (RexxEntry *ArrayDimension)(RexxThreadContext *, RexxArrayObject);
-    RexxArrayObject (RexxEntry *NewArray)(RexxThreadContext *, RexxUnsignedNumber);
+    RexxObjectPtr   (RexxEntry *ArrayAt)(RexxThreadContext *, RexxArrayObject, size_t);
+    logical_t       (RexxEntry *ArrayHasIndex)(RexxThreadContext *, RexxArrayObject, size_t);
+    void            (RexxEntry *ArrayPut)(RexxThreadContext *, RexxArrayObject, RexxObjectPtr, size_t);
+    size_t          (RexxEntry *ArraySize)(RexxThreadContext *, RexxArrayObject);
+    wholenumber_t   (RexxEntry *ArrayDimension)(RexxThreadContext *, RexxArrayObject);
+    RexxArrayObject (RexxEntry *NewArray)(RexxThreadContext *, size_t);
     RexxArrayObject (RexxEntry *ArrayOfOne)(RexxThreadContext *, RexxObjectPtr);
     RexxArrayObject (RexxEntry *ArrayOfTwo)(RexxThreadContext *, RexxObjectPtr, RexxObjectPtr);
-    RexxBoolean     (RexxEntry *IsArray)(RexxThreadContext *, RexxObjectPtr);
+    logical_t       (RexxEntry *IsArray)(RexxThreadContext *, RexxObjectPtr);
 
-    RexxStringPointer (RexxEntry *BufferData)(RexxThreadContext *, RexxBufferObject);
+    CSTRING (RexxEntry *BufferData)(RexxThreadContext *, RexxBufferObject);
     wholenumber_t        (RexxEntry *BufferLength)(RexxThreadContext *, RexxBufferObject);
-    RexxBufferObject  (RexxEntry *NewBuffer)(RexxThreadContext *, RexxUnsignedNumber);
-    RexxBoolean       (RexxEntry *IsBuffer)(RexxThreadContext *, RexxObjectPtr);
+    RexxBufferObject  (RexxEntry *NewBuffer)(RexxThreadContext *, size_t);
+    logical_t         (RexxEntry *IsBuffer)(RexxThreadContext *, RexxObjectPtr);
 
     wholenumber_t        (RexxEntry *IntegerValue)(RexxThreadContext *, RexxIntegerObject);
     RexxIntegerObject (RexxEntry *NewInteger)(RexxThreadContext *, wholenumber_t);
-    RexxBoolean       (RexxEntry *IsInteger)(RexxThreadContext *, RexxObjectPtr);
+    logical_t         (RexxEntry *IsInteger)(RexxThreadContext *, RexxObjectPtr);
 
     POINTER           (RexxEntry *PointerValue)(RexxThreadContext *, RexxPointerObject);
     RexxPointerObject (RexxEntry *NewPointer)(RexxThreadContext *, POINTER);
-    RexxBoolean       (RexxEntry *IsPointer)(RexxThreadContext *, RexxObjectPtr);
+    logical_t         (RexxEntry *IsPointer)(RexxThreadContext *, RexxObjectPtr);
 
     RexxObjectPtr    (RexxEntry *SupplierValue)(RexxThreadContext *, RexxSupplierObject);
     RexxObjectPtr    (RexxEntry *SupplierIndex)(RexxThreadContext *, RexxSupplierObject);
-    RexxBoolean      (RexxEntry *SupplierAvailable)(RexxThreadContext *, RexxSupplierObject);
+    logical_t        (RexxEntry *SupplierAvailable)(RexxThreadContext *, RexxSupplierObject);
     void             (RexxEntry *SupplierNext)(RexxThreadContext *, RexxSupplierObject);
     RexxSupplierObject (RexxEntry *NewSupplier)(RexxThreadContext *, RexxArrayObject values, RexxArrayObject names);
 
-    void             (RexxEntry *SetStemElement)(RexxThreadContext *, RexxStemObject, RexxStringPointer, RexxObjectPtr);
-    RexxObjectPtr    (RexxEntry *GetStemElement)(RexxThreadContext *, RexxStemObject, RexxStringPointer);
-    void             (RexxEntry *DropStemElement)(RexxThreadContext *, RexxStemObject, RexxStringPointer);
-    void             (RexxEntry *SetStemArrayElement)(RexxThreadContext *, RexxStemObject, RexxUnsignedNumber, RexxObjectPtr);
-    RexxObjectPtr    (RexxEntry *GetStemArrayElement)(RexxThreadContext *, RexxStemObject, RexxUnsignedNumber);
-    void             (RexxEntry *DropStemArrayElement)(RexxThreadContext *, RexxStemObject, RexxUnsignedNumber);
+    void             (RexxEntry *SetStemElement)(RexxThreadContext *, RexxStemObject, CSTRING, RexxObjectPtr);
+    RexxObjectPtr    (RexxEntry *GetStemElement)(RexxThreadContext *, RexxStemObject, CSTRING);
+    void             (RexxEntry *DropStemElement)(RexxThreadContext *, RexxStemObject, CSTRING);
+    void             (RexxEntry *SetStemArrayElement)(RexxThreadContext *, RexxStemObject, size_t, RexxObjectPtr);
+    RexxObjectPtr    (RexxEntry *GetStemArrayElement)(RexxThreadContext *, RexxStemObject, size_t);
+    void             (RexxEntry *DropStemArrayElement)(RexxThreadContext *, RexxStemObject, size_t);
     RexxSupplierObject (RexxEntry *GetAllStemElements)(RexxThreadContext *, RexxStemObject);
     RexxObjectPtr    (RexxEntry *GetStemValue)(RexxThreadContext *, RexxStemObject);
-    RexxBoolean      (RexxEntry *IsStem)(RexxThreadContext *, RexxObjectPtr);
+    logical_t        (RexxEntry *IsStem)(RexxThreadContext *, RexxObjectPtr);
 
-    void             (RexxEntry *RaiseException)(RexxThreadContext *, RexxUnsignedNumber);
-    void             (RexxEntry *RaiseException1)(RexxThreadContext *, RexxUnsignedNumber, RexxObjectPtr);
-    void             (RexxEntry *RaiseException2)(RexxThreadContext *, RexxUnsignedNumber, RexxObjectPtr, RexxObjectPtr);
-    void             (RexxEntry *RaiseExceptionArray)(RexxThreadContext *, RexxUnsignedNumber, RexxArrayObject);
-    void             (RexxEntry *RaiseCondition)(RexxThreadContext *, RexxStringPointer, RexxStringPointer, RexxArrayObject, RexxObjectPtr);
-    RexxBoolean      (RexxEntry *CheckCondition)(RexxThreadContext *);
+    void             (RexxEntry *RaiseException)(RexxThreadContext *, size_t);
+    void             (RexxEntry *RaiseException1)(RexxThreadContext *, size_t, RexxObjectPtr);
+    void             (RexxEntry *RaiseException2)(RexxThreadContext *, size_t, RexxObjectPtr, RexxObjectPtr);
+    void             (RexxEntry *RaiseExceptionArray)(RexxThreadContext *, size_t, RexxArrayObject);
+    void             (RexxEntry *RaiseCondition)(RexxThreadContext *, CSTRING, CSTRING, RexxArrayObject, RexxObjectPtr);
+    logical_t        (RexxEntry *CheckCondition)(RexxThreadContext *);
     RexxDirectoryObject (RexxEntry *GetConditionInfo)(RexxThreadContext *);
-    void             (RexxEntry *DecodeConditionInfo)(RexxThreadContext *, RexxDirectoryObject, ConditionData *);
+    void             (RexxEntry *DecodeConditionInfo)(RexxThreadContext *, RexxDirectoryObject, RexxCondition *);
     void             (RexxEntry *ClearCondition)(RexxThreadContext *);
 
-    void             (RexxEntry *AddScript)(RexxScriptContext *, RexxStringPointer, RexxStringPointer, size_t);
-    void             (RexxEntry *RunScript)(RexxScriptContext *, RexxStringPointer, RexxStringPointer, size_t, wholenumber_t, ValueDescriptor *);
-    void             (RexxEntry *CallScript)(RexxScriptContext *, RexxStringPointer, wholenumber_t, ValueDescriptor *);
+    void             (RexxEntry *AddScript)(RexxScriptContext *, CSTRING, CSTRING, size_t);
+    void             (RexxEntry *RunScript)(RexxScriptContext *, CSTRING, CSTRING, size_t, wholenumber_t, ValueDescriptor *);
+    void             (RexxEntry *CallScript)(RexxScriptContext *, CSTRING, wholenumber_t, ValueDescriptor *);
 
     RexxObjectPtr    RexxNil;
     RexxObjectPtr    RexxTrue;
@@ -488,19 +482,19 @@ typedef struct
     wholenumber_t interfaceVersion;    // The interface version identifier
 
     RexxArrayObject  (RexxEntry *GetArguments)(RexxMethodContext *);
-    RexxObjectPtr    (RexxEntry *GetArgument)(RexxMethodContext *, RexxUnsignedNumber);
-    RexxStringPointer    (RexxEntry *GetMessageName)(RexxMethodContext *);
+    RexxObjectPtr    (RexxEntry *GetArgument)(RexxMethodContext *, size_t);
+    CSTRING    (RexxEntry *GetMessageName)(RexxMethodContext *);
     RexxMethodObject (RexxEntry *GetMethod)(RexxMethodContext *);
     RexxObjectPtr    (RexxEntry *GetSelf)(RexxMethodContext *);
     RexxObjectPtr    (RexxEntry *GetSuper)(RexxMethodContext *);
-    void             (RexxEntry *SetObjectVariable)(RexxMethodContext *, RexxStringPointer, RexxObjectPtr);
-    RexxObjectPtr    (RexxEntry *GetObjectVariable)(RexxMethodContext *, RexxStringPointer);
-    void             (RexxEntry *DropObjectVariable)(RexxMethodContext *, RexxStringPointer);
-    RexxObjectPtr    (RexxEntry *SendSuperMessage)(RexxMethodContext *, RexxStringPointer, RexxArrayObject);
-    RexxObjectPtr    (RexxEntry *SendOverrideMessage)(RexxMethodContext *, RexxStringPointer, RexxClassObject, RexxArrayObject);
+    void             (RexxEntry *SetObjectVariable)(RexxMethodContext *, CSTRING, RexxObjectPtr);
+    RexxObjectPtr    (RexxEntry *GetObjectVariable)(RexxMethodContext *, CSTRING);
+    void             (RexxEntry *DropObjectVariable)(RexxMethodContext *, CSTRING);
+    RexxObjectPtr    (RexxEntry *SendSuperMessage)(RexxMethodContext *, CSTRING, RexxArrayObject);
+    RexxObjectPtr    (RexxEntry *SendOverrideMessage)(RexxMethodContext *, CSTRING, RexxClassObject, RexxArrayObject);
     void             (RexxEntry *SetGuardOn)(RexxMethodContext *);
     void             (RexxEntry *SetGuardOff)(RexxMethodContext *);
-    RexxClassObject  (RexxEntry *FindContextClass)(RexxMethodContext *, RexxStringPointer);
+    RexxClassObject  (RexxEntry *FindContextClass)(RexxMethodContext *, CSTRING);
 } MethodContextInterface;
 
 #define CALL_INTERFACE_VERSION 100
@@ -510,16 +504,16 @@ typedef struct
     wholenumber_t interfaceVersion;    // The interface version identifier
 
     RexxArrayObject  (RexxEntry *GetArguments)(RexxCallContext *);
-    RexxObjectPtr    (RexxEntry *GetArgument)(RexxCallContext *, RexxUnsignedNumber);
-    void             (RexxEntry *SetContextVariable)(RexxCallContext *, RexxStringPointer, RexxObjectPtr);
-    RexxObjectPtr    (RexxEntry *GetContextVariable)(RexxCallContext *, RexxStringPointer);
-    void             (RexxEntry *DropContextVariable)(RexxCallContext *, RexxStringPointer);
+    RexxObjectPtr    (RexxEntry *GetArgument)(RexxCallContext *, size_t);
+    void             (RexxEntry *SetContextVariable)(RexxCallContext *, CSTRING, RexxObjectPtr);
+    RexxObjectPtr    (RexxEntry *GetContextVariable)(RexxCallContext *, CSTRING);
+    void             (RexxEntry *DropContextVariable)(RexxCallContext *, CSTRING);
     RexxSupplierObject (RexxEntry *GetAllContextVariables)(RexxCallContext *);
     RexxStemObject   (RexxEntry *ResolveStemVariable)(RexxCallContext *, RexxObjectPtr);
     void             (RexxEntry *InvalidRoutine)(RexxCallContext *);
     wholenumber_t       (RexxEntry *GetContextDigits)(RexxCallContext *);
     wholenumber_t       (RexxEntry *GetContextFuzz)(RexxCallContext *);
-    RexxBoolean      (RexxEntry *GetContextForm)(RexxCallContext *);
+    logical_t        (RexxEntry *GetContextForm)(RexxCallContext *);
 } CallContextInterface;
 
 #define EXIT_INTERFACE_VERSION 100
@@ -527,9 +521,9 @@ typedef struct
 typedef struct
 {
     wholenumber_t interfaceVersion;    // The interface version identifier
-    void             (RexxEntry *SetContextVariable)(RexxExitContext *, RexxStringPointer, RexxObjectPtr);
-    RexxObjectPtr    (RexxEntry *GetContextVariable)(RexxExitContext *, RexxStringPointer);
-    void             (RexxEntry *DropContextVariable)(RexxExitContext *, RexxStringPointer);
+    void             (RexxEntry *SetContextVariable)(RexxExitContext *, CSTRING, RexxObjectPtr);
+    RexxObjectPtr    (RexxEntry *GetContextVariable)(RexxExitContext *, CSTRING);
+    void             (RexxEntry *DropContextVariable)(RexxExitContext *, CSTRING);
     RexxSupplierObject (RexxEntry *GetAllContextVariables)(RexxExitContext *);
 } ExitContextInterface;
 
@@ -544,11 +538,11 @@ struct RexxInstance_
     {
         functions->Terminate(this);
     }
-    RexxBoolean AttachThread(RexxThreadContext **tc)
+    logical_t AttachThread(RexxThreadContext **tc)
     {
         return functions->AttachThread(this, tc);
     }
-    RexxBoolean CreateScriptContext(RexxScriptContext **sc, RexxOption *ro)
+    logical_t CreateScriptContext(RexxScriptContext **sc, RexxOption *ro)
     {
         return functions->CreateScriptContext(this, sc, ro);
     }
@@ -556,7 +550,7 @@ struct RexxInstance_
     {
         functions->Halt(this);
     }
-    void SetTrace(RexxBoolean s)
+    void SetTrace(logical_t s)
     {
         functions->SetTrace(this, s);
     }
@@ -590,7 +584,7 @@ struct RexxThreadContext_
     {
         functions->HaltThread(this);
     }
-    void SetThreadTrace(RexxBoolean s)
+    void SetThreadTrace(logical_t s)
     {
         functions->SetThreadTrace(this, s);
     }
@@ -598,28 +592,28 @@ struct RexxThreadContext_
     {
         return functions->RequestGlobalReference(this, o);
     }
-    void      ReleaseGlobalReference(RexxObjectPtr o)
+    void ReleaseGlobalReference(RexxObjectPtr o)
     {
         functions->ReleaseGlobalReference(this, o);
     }
-    void      ReleaseLocalReference(RexxObjectPtr o)
+    void ReleaseLocalReference(RexxObjectPtr o)
     {
         functions->ReleaseLocalReference(this, o);
     }
 
-    RexxObjectPtr  SendMessage(RexxObjectPtr o, RexxStringPointer msg, RexxArrayObject arr)
+    RexxObjectPtr SendMessage(RexxObjectPtr o, CSTRING msg, RexxArrayObject arr)
     {
         return functions->SendMessage(this, o, msg, arr);
     }
-    RexxObjectPtr  SendMessage0(RexxObjectPtr o, RexxStringPointer msg)
+    RexxObjectPtr SendMessage0(RexxObjectPtr o, CSTRING msg)
     {
         return functions->SendMessage0(this, o, msg);
     }
-    RexxObjectPtr  SendMessage1(RexxObjectPtr o, RexxStringPointer msg, RexxObjectPtr a1)
+    RexxObjectPtr SendMessage1(RexxObjectPtr o, CSTRING msg, RexxObjectPtr a1)
     {
         return functions->SendMessage1(this, o, msg, a1);
     }
-    RexxObjectPtr  SendMessage2(RexxObjectPtr o, RexxStringPointer msg, RexxObjectPtr a1, RexxObjectPtr a2)
+    RexxObjectPtr SendMessage2(RexxObjectPtr o, CSTRING msg, RexxObjectPtr a1, RexxObjectPtr a2)
     {
         return functions->SendMessage2(this, o, msg, a1, a2);
     }
@@ -632,28 +626,28 @@ struct RexxThreadContext_
     {
         return functions->GetGlobalEnvironment(this);
     }
-    RexxBoolean      IsSameType(RexxObjectPtr o1, RexxObjectPtr o2)
+    logical_t IsSameType(RexxObjectPtr o1, RexxObjectPtr o2)
     {
         return functions->IsSameType(this, o1, o2);
     }
-    RexxBoolean      IsInstanceOf(RexxObjectPtr o, RexxClassObject co)
+    logical_t IsInstanceOf(RexxObjectPtr o, RexxClassObject co)
     {
         return functions->IsInstanceOf(this, o, co);
     }
-    RexxClassObject  FindClass(RexxStringPointer s)
+    RexxClassObject FindClass(CSTRING s)
     {
         return functions->FindClass(this, s);
     }
-    RexxClassObject  FindClassFromMethod(RexxMethodObject m, RexxStringPointer n)
+    RexxClassObject FindClassFromMethod(RexxMethodObject m, CSTRING n)
     {
         return functions->FindClassFromMethod(this, m, n);
     }
-    RexxBoolean      HasMethod(RexxObjectPtr o, RexxStringPointer m)
+    logical_t HasMethod(RexxObjectPtr o, CSTRING m)
     {
         return functions->HasMethod(this, o, m);
     }
 
-    RexxMethodObject NewMethod(RexxStringPointer s, RexxUnsignedNumber n)
+    RexxMethodObject NewMethod(CSTRING s, size_t n)
     {
         return functions->NewMethod(this, s, n);
     }
@@ -677,127 +671,127 @@ struct RexxThreadContext_
     {
         return functions->SaveMethod(this, m);
     }
-    RexxMethodObject LoadMethod(RexxStringPointer d, size_t l)
+    RexxMethodObject LoadMethod(CSTRING d, size_t l)
     {
         return functions->LoadMethod(this, d, l);
     }
 
-    RexxObjectPtr    NewObject()
+    RexxObjectPtr NewObject()
     {
         return functions->NewObject(this);
     }
-    RexxObjectPtr    NumberToObject(wholenumber_t n)
+    RexxObjectPtr NumberToObject(wholenumber_t n)
     {
         return functions->NumberToObject(this, n);
     }
-    RexxObjectPtr    UintptrToObject(uintptr_t n)
+    RexxObjectPtr UintptrToObject(uintptr_t n)
     {
         return functions->UintptrToObject(this, n);
     }
-    RexxObjectPtr    UnsignedNumberToObject(RexxUnsignedNumber n)
+    RexxObjectPtr UnsignedNumberToObject(size_t n)
     {
         return functions->UnsignedNumberToObject(this, n);
     }
-    RexxBoolean      ObjectToNumber(RexxObjectPtr o, wholenumber_t *n)
+    logical_t ObjectToNumber(RexxObjectPtr o, wholenumber_t *n)
     {
         return functions->ObjectToNumber(this, o, n);
     }
-    RexxBoolean      ObjectToUnsignedNumber(RexxObjectPtr o, RexxUnsignedNumber *n)
+    logical_t ObjectToUnsignedNumber(RexxObjectPtr o, size_t *n)
     {
         return functions->ObjectToUnsignedNumber(this, o, n);
     }
-    RexxObjectPtr    Int64ToObject(int64_t i)
+    RexxObjectPtr Int64ToObject(int64_t i)
     {
         return functions->Int64ToObject(this, i);
     }
-    RexxObjectPtr    UnsignedInt64ToObject(uint64_t u)
+    RexxObjectPtr UnsignedInt64ToObject(uint64_t u)
     {
         return functions->UnsignedInt64ToObject(this, u);
     }
-    RexxBoolean      ObjectToInt64(RexxObjectPtr o, int64_t *i)
+    logical_t ObjectToInt64(RexxObjectPtr o, int64_t *i)
     {
         return functions->ObjectToInt64(this, o, i);
     }
-    RexxBoolean      ObjectToUnsignedInt64(RexxObjectPtr o, uint64_t *u)
+    logical_t ObjectToUnsignedInt64(RexxObjectPtr o, uint64_t *u)
     {
         return functions->ObjectToUnsignedInt64(this, o, u);
     }
-    RexxBoolean      ObjectToUintptr(RexxObjectPtr o, uintptr_t *n)
+    logical_t ObjectToUintptr(RexxObjectPtr o, uintptr_t *n)
     {
         return functions->ObjectToUintptr(this, o, n);
     }
-    RexxObjectPtr    DoubleToObject(double d)
+    RexxObjectPtr DoubleToObject(double d)
     {
         return functions->DoubleToObject(this, d);
     }
-    RexxObjectPtr    DoubleToObjectWithPrecision(double d, wholenumber_t precision)
+    RexxObjectPtr DoubleToObjectWithPrecision(double d, wholenumber_t precision)
     {
         return functions->DoubleToObjectWithPrecision(this, d, precision);
     }
-    RexxBoolean      ObjectToDouble(RexxObjectPtr o, double *d)
+    logical_t ObjectToDouble(RexxObjectPtr o, double *d)
     {
         return functions->ObjectToDouble(this, o, d);
     }
-    RexxObjectPtr    ValueToObject(ValueDescriptor *v)
+    RexxObjectPtr ValueToObject(ValueDescriptor *v)
     {
         return functions->ValueToObject(this, v);
     }
-    RexxBoolean      ObjectToValue(RexxObjectPtr o, ValueDescriptor *v)
+    logical_t ObjectToValue(RexxObjectPtr o, ValueDescriptor *v)
     {
         return functions->ObjectToValue(this, o, v);
     }
-    RexxStringObject  ObjectToString(RexxObjectPtr o)
+    RexxStringObject ObjectToString(RexxObjectPtr o)
     {
         return functions->ObjectToString(this, o);
     }
-    RexxStringPointer ObjectToStringValue(RexxObjectPtr o)
+    CSTRING ObjectToStringValue(RexxObjectPtr o)
     {
         return functions->ObjectToStringValue(this, o);
     }
-    size_t  StringGet(RexxStringObject o, size_t len1, RexxStringPointer s, size_t len2)
+    size_t StringGet(RexxStringObject o, size_t len1, CSTRING s, size_t len2)
     {
         return functions->StringGet(this, o, len1, s, len2);
     }
-    size_t  StringLength(RexxStringObject o)
+    size_t StringLength(RexxStringObject o)
     {
         return functions->StringLength(this, o);
     }
-    RexxStringPointer StringData(RexxStringObject o)
+    CSTRING StringData(RexxStringObject o)
     {
         return functions->StringData(this, o);
     }
-    RexxStringObject  NewString(RexxStringPointer s, size_t len)
+    RexxStringObject NewString(CSTRING s, size_t len)
     {
         return functions->NewString(this, s, len);
     }
-    RexxStringObject  NewStringFromAsciiz(RexxStringPointer s)
+    RexxStringObject NewStringFromAsciiz(CSTRING s)
     {
         return functions->NewStringFromAsciiz(this, s);
     }
-    RexxStringObject  StringUpper(RexxStringObject s)
+    RexxStringObject StringUpper(RexxStringObject s)
     {
         return functions->StringUpper(this, s);
     }
-    RexxStringObject  StringLower(RexxStringObject s)
+    RexxStringObject StringLower(RexxStringObject s)
     {
         return functions->StringLower(this, s);
     }
-    RexxBoolean       IsString(RexxObjectPtr o)
+    logical_t IsString(RexxObjectPtr o)
     {
         return functions->IsString(this, o);
     }
 
-    RexxBufferStringObject  NewBufferString(size_t len)
+    RexxBufferStringObject NewBufferString(size_t len)
     {
         return functions->NewBufferString(this, len);
     }
 
-    size_t  BufferStringLength(RexxBufferStringObject o)
+    size_t BufferStringLength(RexxBufferStringObject o)
     {
         return functions->BufferStringLength(this, o);
     }
 
-    RexxStringPointer BufferStringData(RexxBufferStringObject o)
+    CSTRING BufferStringData(RexxBufferStringObject o)
     {
         return functions->BufferStringData(this, o);
     }
@@ -807,62 +801,62 @@ struct RexxThreadContext_
         return functions->FinishBufferString(this, o, l);
     }
 
-    void             TablePut(RexxTableObject to, RexxObjectPtr o1, RexxObjectPtr o2)
+    void TablePut(RexxTableObject to, RexxObjectPtr o1, RexxObjectPtr o2)
     {
         functions->TablePut(this, to, o1, o2);
     }
-    RexxObjectPtr    TableGet(RexxTableObject to, RexxObjectPtr o)
+    RexxObjectPtr TableGet(RexxTableObject to, RexxObjectPtr o)
     {
 
         return functions->TableGet(this, to, o);
     }
-    RexxObjectPtr    TableRemove(RexxTableObject to, RexxObjectPtr o)
+    RexxObjectPtr TableRemove(RexxTableObject to, RexxObjectPtr o)
     {
         return functions->TableRemove(this, to, o);
     }
-    RexxTableObject  NewTable()
+    RexxTableObject NewTable()
     {
         return functions->NewTable(this);
     }
-    RexxBoolean      IsTable(RexxObjectPtr o)
+    logical_t IsTable(RexxObjectPtr o)
     {
         return functions->IsTable(this, o);
     }
 
-    void             DirectoryPut(RexxDirectoryObject diro, RexxObjectPtr o, RexxStringPointer s)
+    void DirectoryPut(RexxDirectoryObject diro, RexxObjectPtr o, CSTRING s)
     {
         functions->DirectoryPut(this, diro, o, s);
     }
-    RexxObjectPtr    DirectoryAt(RexxDirectoryObject to, RexxStringPointer s)
+    RexxObjectPtr DirectoryAt(RexxDirectoryObject to, CSTRING s)
     {
         return functions->DirectoryAt(this, to, s);
     }
-    RexxObjectPtr    DirectoryRemove(RexxDirectoryObject to, RexxStringPointer s)
+    RexxObjectPtr DirectoryRemove(RexxDirectoryObject to, CSTRING s)
     {
         return functions->DirectoryRemove(this, to, s);
     }
-    RexxDirectoryObject  NewDirectory()
+    RexxDirectoryObject NewDirectory()
     {
         return functions->NewDirectory(this);
     }
-    RexxBoolean      IsDirectory(RexxObjectPtr o)
+    logical_t IsDirectory(RexxObjectPtr o)
     {
         return functions->IsDirectory(this, o);
     }
 
-    RexxObjectPtr   ArrayAt(RexxArrayObject ao, RexxUnsignedNumber n)
+    RexxObjectPtr ArrayAt(RexxArrayObject ao, size_t n)
     {
         return functions->ArrayAt(this, ao, n);
     }
-    RexxBoolean     ArrayHasIndex(RexxArrayObject ao, RexxUnsignedNumber n)
+    logical_t ArrayHasIndex(RexxArrayObject ao, size_t n)
     {
         return functions->ArrayHasIndex(this, ao, n);
     }
-    void            ArrayPut(RexxArrayObject ao, RexxObjectPtr o, RexxUnsignedNumber n)
+    void ArrayPut(RexxArrayObject ao, RexxObjectPtr o, size_t n)
     {
         functions->ArrayPut(this, ao, o, n);
     }
-    RexxUnsignedNumber ArraySize(RexxArrayObject ao)
+    size_t ArraySize(RexxArrayObject ao)
     {
         return functions->ArraySize(this, ao);
     }
@@ -870,28 +864,28 @@ struct RexxThreadContext_
     {
         return functions->ArrayDimension(this, ao);
     }
-    RexxArrayObject    NewArray(RexxUnsignedNumber n)
+    RexxArrayObject NewArray(size_t n)
     {
         return functions->NewArray(this, n);
     }
-    RexxArrayObject    ArrayOfOne(RexxObjectPtr o)
+    RexxArrayObject ArrayOfOne(RexxObjectPtr o)
     {
         return functions->ArrayOfOne(this, o);
     }
-    RexxArrayObject    ArrayOfTwo(RexxObjectPtr o1, RexxObjectPtr o2)
+    RexxArrayObject ArrayOfTwo(RexxObjectPtr o1, RexxObjectPtr o2)
     {
         return functions->ArrayOfTwo(this, o1, o2);
     }
-    RexxBoolean     IsArray(RexxObjectPtr o)
+    logical_t IsArray(RexxObjectPtr o)
     {
         return functions->IsArray(this, o);
     }
 
-    RexxStringPointer    BufferData(RexxBufferObject bo)
+    CSTRING BufferData(RexxBufferObject bo)
     {
         return functions->BufferData(this, bo);
     }
-    wholenumber_t  BufferLength(RexxBufferObject bo)
+    wholenumber_t BufferLength(RexxBufferObject bo)
     {
         return functions->BufferLength(this, bo);
     }
@@ -899,12 +893,12 @@ struct RexxThreadContext_
     {
         return functions->NewBuffer(this, n);
     }
-    RexxBoolean      IsBuffer(RexxObjectPtr o)
+    logical_t IsBuffer(RexxObjectPtr o)
     {
         return functions->IsBuffer(this, o);
     }
 
-    wholenumber_t   IntegerValue(RexxIntegerObject io)
+    wholenumber_t IntegerValue(RexxIntegerObject io)
     {
         return functions->IntegerValue(this, io);
     }
@@ -912,12 +906,12 @@ struct RexxThreadContext_
     {
         return functions->NewInteger(this, n);
     }
-    RexxBoolean       IsInteger(RexxObjectPtr o)
+    logical_t IsInteger(RexxObjectPtr o)
     {
         return functions->IsInteger(this, o);
     }
 
-    POINTER           PointerValue(RexxPointerObject po)
+    POINTER PointerValue(RexxPointerObject po)
     {
         return functions->PointerValue(this, po);
     }
@@ -925,24 +919,24 @@ struct RexxThreadContext_
     {
         return functions->NewPointer(this, po);
     }
-    RexxBoolean       IsPointer(RexxObjectPtr o)
+    logical_t IsPointer(RexxObjectPtr o)
     {
         return functions->IsPointer(this, o);
     }
 
-    RexxObjectPtr    SupplierValue(RexxSupplierObject so)
+    RexxObjectPtr SupplierValue(RexxSupplierObject so)
     {
         return functions->SupplierValue(this, so);
     }
-    RexxObjectPtr    SupplierIndex(RexxSupplierObject so)
+    RexxObjectPtr SupplierIndex(RexxSupplierObject so)
     {
         return functions->SupplierIndex(this, so);
     }
-    RexxBoolean      SupplierAvailable(RexxSupplierObject so)
+    logical_t SupplierAvailable(RexxSupplierObject so)
     {
         return functions->SupplierAvailable(this, so);
     }
-    void             SupplierNext(RexxSupplierObject so)
+    void SupplierNext(RexxSupplierObject so)
     {
         functions->SupplierNext(this, so);
     }
@@ -951,27 +945,27 @@ struct RexxThreadContext_
         return functions->NewSupplier(this, values, names);
     }
 
-    void             SetStemElement(RexxStemObject so, RexxStringPointer s, RexxObjectPtr o)
+    void SetStemElement(RexxStemObject so, CSTRING s, RexxObjectPtr o)
     {
         functions->SetStemElement(this, so, s, o);
     }
-    RexxObjectPtr    GetStemElement(RexxStemObject so, RexxStringPointer s)
+    RexxObjectPtr GetStemElement(RexxStemObject so, CSTRING s)
     {
         return functions->GetStemElement(this, so, s);
     }
-    void DropStemElement(RexxStemObject so, RexxStringPointer s)
+    void DropStemElement(RexxStemObject so, CSTRING s)
     {
         functions->DropStemElement(this, so, s);
     }
-    void             SetStemArrayElement(RexxStemObject so, RexxUnsignedNumber n, RexxObjectPtr o)
+    void SetStemArrayElement(RexxStemObject so, size_t n, RexxObjectPtr o)
     {
         functions->SetStemArrayElement(this, so, n, o);
     }
-    RexxObjectPtr    GetStemArrayElement(RexxStemObject so, RexxUnsignedNumber n)
+    RexxObjectPtr GetStemArrayElement(RexxStemObject so, size_t n)
     {
         return functions->GetStemArrayElement(this, so, n);
     }
-    void DropStemArrayElement(RexxStemObject so, RexxUnsignedNumber n)
+    void DropStemArrayElement(RexxStemObject so, size_t n)
     {
         functions->DropStemArrayElement(this, so, n);
     }
@@ -979,36 +973,36 @@ struct RexxThreadContext_
     {
         return functions->GetAllStemElements(this, so);
     }
-    RexxObjectPtr    GetStemValue(RexxStemObject so)
+    RexxObjectPtr GetStemValue(RexxStemObject so)
     {
         return functions->GetStemValue(this, so);
     }
-    RexxBoolean      IsStem(RexxObjectPtr o)
+    logical_t IsStem(RexxObjectPtr o)
     {
         return functions->IsStem(this, o);
     }
 
-    void RaiseException(RexxUnsignedNumber n)
+    void RaiseException(size_t n)
     {
         functions->RaiseException(this, n);
     }
-    void RaiseException1(RexxUnsignedNumber n, RexxObjectPtr o)
+    void RaiseException1(size_t n, RexxObjectPtr o)
     {
         functions->RaiseException1(this, n, o);
     }
-    void RaiseException2(RexxUnsignedNumber n, RexxObjectPtr o1, RexxObjectPtr o2)
+    void RaiseException2(size_t n, RexxObjectPtr o1, RexxObjectPtr o2)
     {
         functions->RaiseException2(this, n, o1, o2);
     }
-    void RaiseExceptionArray(RexxUnsignedNumber n, RexxArrayObject ao)
+    void RaiseExceptionArray(size_t n, RexxArrayObject ao)
     {
         functions->RaiseExceptionArray(this, n, ao);
     }
-    void RaiseCondition(RexxStringPointer s1, RexxStringPointer s2, RexxArrayObject ao, RexxObjectPtr o)
+    void RaiseCondition(CSTRING s1, CSTRING s2, RexxArrayObject ao, RexxObjectPtr o)
     {
         functions->RaiseCondition(this, s1, s2, ao, o);
     }
-    RexxBoolean      CheckCondition()
+    logical_t CheckCondition()
     {
         return functions->CheckCondition(this);
     }
@@ -1016,24 +1010,24 @@ struct RexxThreadContext_
     {
         return functions->GetConditionInfo(this);
     }
-    void             DecodeConditionInfo(RexxDirectoryObject diro, ConditionData *c)
+    void DecodeConditionInfo(RexxDirectoryObject diro, RexxCondition *c)
     {
         functions->DecodeConditionInfo(this, diro, c);
     }
-    void             ClearCondition()
+    void ClearCondition()
     {
         functions->ClearCondition(this);
     }
 
-    RexxObjectPtr    NilObject()
+    RexxObjectPtr Nil()
     {
         return functions->RexxNil;
     }
-    RexxObjectPtr    TrueObject()
+    RexxObjectPtr True()
     {
         return functions->RexxTrue;
     }
-    RexxObjectPtr    FalseObject()
+    RexxObjectPtr False()
     {
         return functions->RexxFalse;
     }
@@ -1059,28 +1053,28 @@ struct RexxMethodContext_
     {
         return threadContext->RequestGlobalReference(o);
     }
-    void      ReleaseGlobalReference(RexxObjectPtr o)
+    void ReleaseGlobalReference(RexxObjectPtr o)
     {
         threadContext->ReleaseGlobalReference(o);
     }
-    void      ReleaseLocalReference(RexxObjectPtr o)
+    void ReleaseLocalReference(RexxObjectPtr o)
     {
         threadContext->ReleaseLocalReference(o);
     }
 
-    RexxObjectPtr  SendMessage(RexxObjectPtr o, RexxStringPointer s, RexxArrayObject ao)
+    RexxObjectPtr SendMessage(RexxObjectPtr o, CSTRING s, RexxArrayObject ao)
     {
         return threadContext->SendMessage(o, s, ao);
     }
-    RexxObjectPtr  SendMessage0(RexxObjectPtr o, RexxStringPointer s)
+    RexxObjectPtr SendMessage0(RexxObjectPtr o, CSTRING s)
     {
         return threadContext->SendMessage0(o, s);
     }
-    RexxObjectPtr  SendMessage1(RexxObjectPtr o, RexxStringPointer s, RexxObjectPtr a1)
+    RexxObjectPtr SendMessage1(RexxObjectPtr o, CSTRING s, RexxObjectPtr a1)
     {
         return threadContext->SendMessage1(o, s, a1);
     }
-    RexxObjectPtr  SendMessage2(RexxObjectPtr o, RexxStringPointer s, RexxObjectPtr a1, RexxObjectPtr a2)
+    RexxObjectPtr SendMessage2(RexxObjectPtr o, CSTRING s, RexxObjectPtr a1, RexxObjectPtr a2)
     {
         return threadContext->SendMessage2(o, s, a1, a2);
     }
@@ -1094,28 +1088,28 @@ struct RexxMethodContext_
         return threadContext->GetGlobalEnvironment();
     }
 
-    RexxBoolean      IsSameType(RexxObjectPtr o1, RexxObjectPtr o2)
+    logical_t IsSameType(RexxObjectPtr o1, RexxObjectPtr o2)
     {
         return threadContext->IsSameType(o1, o2);
     }
-    RexxBoolean      IsInstanceOf(RexxObjectPtr o, RexxClassObject co)
+    logical_t IsInstanceOf(RexxObjectPtr o, RexxClassObject co)
     {
         return threadContext->IsInstanceOf(o, co);
     }
-    RexxClassObject  FindClass(RexxStringPointer s)
+    RexxClassObject FindClass(CSTRING s)
     {
         return threadContext->FindClass(s);
     }
-    RexxClassObject  FindClassFromMethod(RexxMethodObject m, RexxStringPointer n)
+    RexxClassObject FindClassFromMethod(RexxMethodObject m, CSTRING n)
     {
         return threadContext->FindClassFromMethod(m, n);
     }
-    RexxBoolean      HasMethod(RexxObjectPtr o, RexxStringPointer m)
+    logical_t HasMethod(RexxObjectPtr o, CSTRING m)
     {
         return threadContext->HasMethod(o, m);
     }
 
-    RexxMethodObject NewMethod(RexxStringPointer s, RexxUnsignedNumber n)
+    RexxMethodObject NewMethod(CSTRING s, size_t n)
     {
         return threadContext->NewMethod(s, n);
     }
@@ -1139,81 +1133,81 @@ struct RexxMethodContext_
     {
         return threadContext->SaveMethod(m);
     }
-    RexxMethodObject LoadMethod(RexxStringPointer d, size_t l)
+    RexxMethodObject LoadMethod(CSTRING d, size_t l)
     {
         return threadContext->LoadMethod(d, l);
     }
 
-    RexxObjectPtr    NewObject()
+    RexxObjectPtr NewObject()
     {
         return threadContext->NewObject();
     }
-    RexxObjectPtr    NumberToObject(wholenumber_t n)
+    RexxObjectPtr NumberToObject(wholenumber_t n)
     {
         return threadContext->NumberToObject(n);
     }
-    RexxObjectPtr    UintptrToObject(uintptr_t n)
+    RexxObjectPtr UintptrToObject(uintptr_t n)
     {
         return threadContext->UintptrToObject(n);
     }
-    RexxObjectPtr    ValueToObject(ValueDescriptor *v)
+    RexxObjectPtr ValueToObject(ValueDescriptor *v)
     {
         return threadContext->ValueToObject(v);
     }
-    RexxObjectPtr    UnsignedNumberToObject(RexxUnsignedNumber u)
+    RexxObjectPtr UnsignedNumberToObject(size_t u)
     {
         return threadContext->UnsignedNumberToObject(u);
     }
-    RexxBoolean      ObjectToNumber(RexxObjectPtr o, wholenumber_t *n)
+    logical_t ObjectToNumber(RexxObjectPtr o, wholenumber_t *n)
     {
         return threadContext->ObjectToNumber(o, n);
     }
-    RexxBoolean      ObjectToUnsignedNumber(RexxObjectPtr o, RexxUnsignedNumber *n)
+    logical_t ObjectToUnsignedNumber(RexxObjectPtr o, size_t *n)
     {
         return threadContext->ObjectToUnsignedNumber(o, n);
     }
-    RexxObjectPtr    Int64ToObject(int64_t i)
+    RexxObjectPtr Int64ToObject(int64_t i)
     {
         return threadContext->Int64ToObject(i);
     }
-    RexxObjectPtr    UnsignedInt64ToObject(uint64_t u)
+    RexxObjectPtr UnsignedInt64ToObject(uint64_t u)
     {
         return threadContext->UnsignedInt64ToObject(u);
     }
-    RexxBoolean      ObjectToInt64(RexxObjectPtr o, int64_t *i)
+    logical_t ObjectToInt64(RexxObjectPtr o, int64_t *i)
     {
         return threadContext->ObjectToInt64(o, i);
     }
-    RexxBoolean      ObjectToUnsignedInt64(RexxObjectPtr o, uint64_t *u)
+    logical_t ObjectToUnsignedInt64(RexxObjectPtr o, uint64_t *u)
     {
         return threadContext->ObjectToUnsignedInt64(o, u);
     }
-    RexxBoolean      ObjectToUintptr(RexxObjectPtr o, uintptr_t *n)
+    logical_t ObjectToUintptr(RexxObjectPtr o, uintptr_t *n)
     {
         return threadContext->ObjectToUintptr(o, n);
     }
-    RexxObjectPtr    DoubleToObject(double d)
+    RexxObjectPtr DoubleToObject(double d)
     {
         return threadContext->DoubleToObject(d);
     }
-    RexxObjectPtr    DoubleToObjectWithPrecision(double d, wholenumber_t precision)
+    RexxObjectPtr DoubleToObjectWithPrecision(double d, wholenumber_t precision)
     {
         return threadContext->DoubleToObjectWithPrecision(d, precision);
     }
-    RexxBoolean      ObjectToDouble(RexxObjectPtr o, double *d)
+    logical_t ObjectToDouble(RexxObjectPtr o, double *d)
     {
         return threadContext->ObjectToDouble(o, d);
     }
 
-    RexxStringObject  ObjectToString(RexxObjectPtr o)
+    RexxStringObject ObjectToString(RexxObjectPtr o)
     {
         return threadContext->ObjectToString(o);
     }
-    RexxStringPointer ObjectToStringValue(RexxObjectPtr o)
+    CSTRING ObjectToStringValue(RexxObjectPtr o)
     {
         return threadContext->ObjectToStringValue(o);
     }
-    size_t  StringGet(RexxStringObject o, size_t n1, RexxStringPointer s, size_t n2)
+    size_t  StringGet(RexxStringObject o, size_t n1, CSTRING s, size_t n2)
     {
         return threadContext->StringGet(o, n1, s, n2);
     }
@@ -1221,42 +1215,42 @@ struct RexxMethodContext_
     {
         return threadContext->StringLength(o);
     }
-    RexxStringPointer StringData(RexxStringObject o)
+    CSTRING StringData(RexxStringObject o)
     {
         return threadContext->StringData(o);
     }
-    RexxStringObject  NewString(RexxStringPointer s, size_t len)
+    RexxStringObject NewString(CSTRING s, size_t len)
     {
         return threadContext->NewString(s, len);
     }
-    RexxStringObject  NewStringFromAsciiz(RexxStringPointer s)
+    RexxStringObject NewStringFromAsciiz(CSTRING s)
     {
         return threadContext->NewStringFromAsciiz(s);
     }
-    RexxStringObject  StringUpper(RexxStringObject s)
+    RexxStringObject StringUpper(RexxStringObject s)
     {
         return threadContext->StringUpper(s);
     }
-    RexxStringObject  StringLower(RexxStringObject s)
+    RexxStringObject StringLower(RexxStringObject s)
     {
         return threadContext->StringLower(s);
     }
-    RexxBoolean       IsString(RexxObjectPtr o)
+    logical_t IsString(RexxObjectPtr o)
     {
         return threadContext->IsString(o);
     }
 
-    RexxBufferStringObject  NewBufferString(size_t len)
+    RexxBufferStringObject NewBufferString(size_t len)
     {
         return threadContext->NewBufferString(len);
     }
 
-    size_t  BufferStringLength(RexxBufferStringObject o)
+    size_t BufferStringLength(RexxBufferStringObject o)
     {
         return threadContext->BufferStringLength(o);
     }
 
-    RexxStringPointer BufferStringData(RexxBufferStringObject o)
+    CSTRING BufferStringData(RexxBufferStringObject o)
     {
         return threadContext->BufferStringData(o);
     }
@@ -1266,61 +1260,61 @@ struct RexxMethodContext_
         return threadContext->FinishBufferString(o, l);
     }
 
-    void             TablePut(RexxTableObject to, RexxObjectPtr o1, RexxObjectPtr o2)
+    void TablePut(RexxTableObject to, RexxObjectPtr o1, RexxObjectPtr o2)
     {
         threadContext->TablePut(to, o1, o2);
     }
-    RexxObjectPtr    TableGet(RexxTableObject to, RexxObjectPtr o)
+    RexxObjectPtr TableGet(RexxTableObject to, RexxObjectPtr o)
     {
         return threadContext->TableGet(to, o);
     }
-    RexxObjectPtr    TableRemove(RexxTableObject to, RexxObjectPtr o)
+    RexxObjectPtr TableRemove(RexxTableObject to, RexxObjectPtr o)
     {
         return threadContext->TableRemove(to, o);
     }
-    RexxTableObject  NewTable()
+    RexxTableObject NewTable()
     {
         return threadContext->NewTable();
     }
-    RexxBoolean      IsTable(RexxObjectPtr o)
+    logical_t IsTable(RexxObjectPtr o)
     {
         return threadContext->IsTable(o);
     }
 
-    void             DirectoryPut(RexxDirectoryObject diro, RexxObjectPtr o, RexxStringPointer s)
+    void DirectoryPut(RexxDirectoryObject diro, RexxObjectPtr o, CSTRING s)
     {
         threadContext->DirectoryPut(diro, o, s);
     }
-    RexxObjectPtr    DirectoryAt(RexxDirectoryObject to, RexxStringPointer s)
+    RexxObjectPtr DirectoryAt(RexxDirectoryObject to, CSTRING s)
     {
         return threadContext->DirectoryAt(to, s);
     }
-    RexxObjectPtr    DirectoryRemove(RexxDirectoryObject to, RexxStringPointer s)
+    RexxObjectPtr DirectoryRemove(RexxDirectoryObject to, CSTRING s)
     {
         return threadContext->DirectoryRemove(to, s);
     }
-    RexxDirectoryObject  NewDirectory()
+    RexxDirectoryObject NewDirectory()
     {
         return threadContext->NewDirectory();
     }
-    RexxBoolean      IsDirectory(RexxObjectPtr o)
+    logical_t IsDirectory(RexxObjectPtr o)
     {
         return threadContext->IsDirectory(o);
     }
 
-    RexxObjectPtr   ArrayAt(RexxArrayObject ao, RexxUnsignedNumber n)
+    RexxObjectPtr ArrayAt(RexxArrayObject ao, size_t n)
     {
         return threadContext->ArrayAt(ao, n);
     }
-    RexxBoolean     ArrayHasIndex(RexxArrayObject ao, RexxUnsignedNumber n)
+    logical_t ArrayHasIndex(RexxArrayObject ao, size_t n)
     {
         return threadContext->ArrayHasIndex(ao, n);
     }
-    void            ArrayPut(RexxArrayObject ao, RexxObjectPtr o, RexxUnsignedNumber n)
+    void ArrayPut(RexxArrayObject ao, RexxObjectPtr o, size_t n)
     {
         threadContext->ArrayPut(ao, o, n);
     }
-    RexxUnsignedNumber ArraySize(RexxArrayObject ao)
+    size_t ArraySize(RexxArrayObject ao)
     {
         return threadContext->ArraySize(ao);
     }
@@ -1328,28 +1322,28 @@ struct RexxMethodContext_
     {
         return threadContext->ArrayDimension(ao);
     }
-    RexxArrayObject    NewArray(RexxUnsignedNumber n)
+    RexxArrayObject NewArray(size_t n)
     {
         return threadContext->NewArray(n);
     }
-    RexxArrayObject    ArrayOfOne(RexxObjectPtr o)
+    RexxArrayObject ArrayOfOne(RexxObjectPtr o)
     {
         return threadContext->ArrayOfOne(o);
     }
-    RexxArrayObject    ArrayOfTwo(RexxObjectPtr o1, RexxObjectPtr o2)
+    RexxArrayObject ArrayOfTwo(RexxObjectPtr o1, RexxObjectPtr o2)
     {
         return threadContext->ArrayOfTwo(o1, o2);
     }
-    RexxBoolean     IsArray(RexxObjectPtr o)
+    logical_t IsArray(RexxObjectPtr o)
     {
         return threadContext->IsArray(o);
     }
 
-    RexxStringPointer    BufferData(RexxBufferObject bo)
+    CSTRING BufferData(RexxBufferObject bo)
     {
         return threadContext->BufferData(bo);
     }
-    wholenumber_t  BufferLength(RexxBufferObject bo)
+    wholenumber_t BufferLength(RexxBufferObject bo)
     {
         return threadContext->BufferLength(bo);
     }
@@ -1357,12 +1351,12 @@ struct RexxMethodContext_
     {
         return threadContext->NewBuffer(n);
     }
-    RexxBoolean      IsBuffer(RexxObjectPtr o)
+    logical_t IsBuffer(RexxObjectPtr o)
     {
         return threadContext->IsBuffer(o);
     }
 
-    wholenumber_t   IntegerValue(RexxIntegerObject io)
+    wholenumber_t IntegerValue(RexxIntegerObject io)
     {
         return threadContext->IntegerValue(io);
     }
@@ -1370,12 +1364,12 @@ struct RexxMethodContext_
     {
         return threadContext->NewInteger(n);
     }
-    RexxBoolean       IsInteger(RexxObjectPtr o)
+    logical_t IsInteger(RexxObjectPtr o)
     {
         return threadContext->IsInteger(o);
     }
 
-    POINTER           PointerValue(RexxPointerObject po)
+    POINTER PointerValue(RexxPointerObject po)
     {
         return threadContext->PointerValue(po);
     }
@@ -1383,24 +1377,24 @@ struct RexxMethodContext_
     {
         return threadContext->NewPointer(p);
     }
-    RexxBoolean       IsPointer(RexxObjectPtr o)
+    logical_t IsPointer(RexxObjectPtr o)
     {
         return threadContext->IsPointer(o);
     }
 
-    RexxObjectPtr    SupplierValue(RexxSupplierObject so)
+    RexxObjectPtr SupplierValue(RexxSupplierObject so)
     {
         return threadContext->SupplierValue(so);
     }
-    RexxObjectPtr    SupplierIndex(RexxSupplierObject so)
+    RexxObjectPtr SupplierIndex(RexxSupplierObject so)
     {
         return threadContext->SupplierIndex(so);
     }
-    RexxBoolean      SupplierAvailable(RexxSupplierObject so)
+    logical_t SupplierAvailable(RexxSupplierObject so)
     {
         return threadContext->SupplierAvailable(so);
     }
-    void             SupplierNext(RexxSupplierObject so)
+    void SupplierNext(RexxSupplierObject so)
     {
         threadContext->SupplierNext(so);
     }
@@ -1409,27 +1403,27 @@ struct RexxMethodContext_
         return threadContext->NewSupplier(values, names);
     }
 
-    void             SetStemElement(RexxStemObject so, RexxStringPointer s, RexxObjectPtr o)
+    void SetStemElement(RexxStemObject so, CSTRING s, RexxObjectPtr o)
     {
         threadContext->SetStemElement(so, s, o);
     }
-    RexxObjectPtr    GetStemElement(RexxStemObject so, RexxStringPointer s)
+    RexxObjectPtr GetStemElement(RexxStemObject so, CSTRING s)
     {
         return threadContext->GetStemElement(so, s);
     }
-    void DropStemElement(RexxStemObject so, RexxStringPointer s)
+    void DropStemElement(RexxStemObject so, CSTRING s)
     {
         threadContext->DropStemElement(so, s);
     }
-    void             SetStemArrayElement(RexxStemObject so, RexxUnsignedNumber n, RexxObjectPtr o)
+    void SetStemArrayElement(RexxStemObject so, size_t n, RexxObjectPtr o)
     {
         threadContext->SetStemArrayElement(so, n, o);
     }
-    RexxObjectPtr    GetStemArrayElement(RexxStemObject so, RexxUnsignedNumber n)
+    RexxObjectPtr GetStemArrayElement(RexxStemObject so, size_t n)
     {
         return threadContext->GetStemArrayElement(so, n);
     }
-    void DropStemArrayElement(RexxStemObject so, RexxUnsignedNumber n)
+    void DropStemArrayElement(RexxStemObject so, size_t n)
     {
         threadContext->DropStemArrayElement(so, n);
     }
@@ -1437,36 +1431,36 @@ struct RexxMethodContext_
     {
         return threadContext->GetAllStemElements(so);
     }
-    RexxObjectPtr    GetStemValue(RexxStemObject so)
+    RexxObjectPtr GetStemValue(RexxStemObject so)
     {
         return threadContext->GetStemValue(so);
     }
-    RexxBoolean      IsStem(RexxObjectPtr o)
+    logical_t IsStem(RexxObjectPtr o)
     {
         return threadContext->IsStem(o);
     }
 
-    void RaiseException(RexxUnsignedNumber n)
+    void RaiseException(size_t n)
     {
         threadContext->RaiseException(n);
     }
-    void RaiseException1(RexxUnsignedNumber n, RexxObjectPtr o)
+    void RaiseException1(size_t n, RexxObjectPtr o)
     {
         threadContext->RaiseException1(n, o);
     }
-    void RaiseException2(RexxUnsignedNumber n, RexxObjectPtr o1, RexxObjectPtr o2)
+    void RaiseException2(size_t n, RexxObjectPtr o1, RexxObjectPtr o2)
     {
         threadContext->RaiseException2(n, o1, o2);
     }
-    void RaiseExceptionArray(RexxUnsignedNumber n, RexxArrayObject ao)
+    void RaiseExceptionArray(size_t n, RexxArrayObject ao)
     {
         threadContext->RaiseExceptionArray(n, ao);
     }
-    void RaiseCondition(RexxStringPointer s1, RexxStringPointer s2, RexxArrayObject ao, RexxObjectPtr o)
+    void RaiseCondition(CSTRING s1, CSTRING s2, RexxArrayObject ao, RexxObjectPtr o)
     {
         threadContext->RaiseCondition(s1, s2, ao, o);
     }
-    RexxBoolean      CheckCondition()
+    logical_t CheckCondition()
     {
         return threadContext->CheckCondition();
     }
@@ -1474,41 +1468,41 @@ struct RexxMethodContext_
     {
         return threadContext->GetConditionInfo();
     }
-    void             DecodeConditionInfo(RexxDirectoryObject diro, ConditionData *c)
+    void DecodeConditionInfo(RexxDirectoryObject diro, RexxCondition *c)
     {
         threadContext->DecodeConditionInfo(diro, c);
     }
-    void             ClearCondition()
+    void ClearCondition()
     {
         threadContext->ClearCondition();
     }
 
-    RexxObjectPtr    NilObject()
+    RexxObjectPtr Nil()
     {
-        return threadContext->NilObject();
+        return threadContext->Nil();
     }
-    RexxObjectPtr    TrueObject()
+    RexxObjectPtr True()
     {
-        return threadContext->TrueObject();
+        return threadContext->True();
     }
-    RexxObjectPtr    FalseObject()
+    RexxObjectPtr False()
     {
-        return threadContext->FalseObject();
+        return threadContext->False();
     }
     RexxStringObject NullString()
     {
         return threadContext->NullString();
     }
 
-    RexxArrayObject  GetArguments()
+    RexxArrayObject GetArguments()
     {
         return functions->GetArguments(this);
     }
-    RexxObjectPtr    GetArgument(RexxUnsignedNumber n)
+    RexxObjectPtr GetArgument(size_t n)
     {
         return functions->GetArgument(this, n);
     }
-    RexxStringPointer GetMessageName()
+    CSTRING GetMessageName()
     {
         return functions->GetMessageName(this);
     }
@@ -1516,43 +1510,43 @@ struct RexxMethodContext_
     {
         return functions->GetMethod(this);
     }
-    RexxObjectPtr    GetSelf()
+    RexxObjectPtr GetSelf()
     {
         return functions->GetSelf(this);
     }
-    RexxObjectPtr    GetSuper()
+    RexxObjectPtr GetSuper()
     {
         return functions->GetSuper(this);
     }
-    void             SetObjectVariable(RexxStringPointer s, RexxObjectPtr o)
+    void SetObjectVariable(CSTRING s, RexxObjectPtr o)
     {
         functions->SetObjectVariable(this, s, o);
     }
-    RexxObjectPtr    GetObjectVariable(RexxStringPointer s)
+    RexxObjectPtr GetObjectVariable(CSTRING s)
     {
         return functions->GetObjectVariable(this, s);
     }
-    void             DropObjectVariable(RexxStringPointer s)
+    void DropObjectVariable(CSTRING s)
     {
         functions->DropObjectVariable(this, s);
     }
-    RexxObjectPtr    SendSuperMessage(RexxStringPointer s, RexxArrayObject o)
+    RexxObjectPtr SendSuperMessage(CSTRING s, RexxArrayObject o)
     {
         return functions->SendSuperMessage(this, s, o);
     }
-    RexxObjectPtr    SendOverrideMessage(RexxStringPointer s, RexxClassObject c, RexxArrayObject o)
+    RexxObjectPtr SendOverrideMessage(CSTRING s, RexxClassObject c, RexxArrayObject o)
     {
         return functions->SendOverrideMessage(this, s, c, o);
     }
-    void             SetGuardOn()
+    void SetGuardOn()
     {
         functions->SetGuardOn(this);
     }
-    void             SetGuardOff()
+    void SetGuardOff()
     {
         functions->SetGuardOff(this);
     }
-    RexxClassObject FindContextClass(RexxStringPointer n)
+    RexxClassObject FindContextClass(CSTRING n)
     {
         return functions->FindContextClass(this, n);
     }
@@ -1574,27 +1568,27 @@ struct RexxCallContext_
     {
         return threadContext->RequestGlobalReference(o);
     }
-    void      ReleaseGlobalReference(RexxObjectPtr o)
+    void ReleaseGlobalReference(RexxObjectPtr o)
     {
         threadContext->ReleaseGlobalReference(o);
     }
-    void      ReleaseLocalReference(RexxObjectPtr o)
+    void ReleaseLocalReference(RexxObjectPtr o)
     {
         threadContext->ReleaseLocalReference(o);
     }
-    RexxObjectPtr  SendMessage(RexxObjectPtr o, RexxStringPointer s, RexxArrayObject ao)
+    RexxObjectPtr SendMessage(RexxObjectPtr o, CSTRING s, RexxArrayObject ao)
     {
         return threadContext->SendMessage(o, s, ao);
     }
-    RexxObjectPtr  SendMessage0(RexxObjectPtr o, RexxStringPointer s)
+    RexxObjectPtr SendMessage0(RexxObjectPtr o, CSTRING s)
     {
         return threadContext->SendMessage0(o, s);
     }
-    RexxObjectPtr  SendMessage1(RexxObjectPtr o, RexxStringPointer s, RexxObjectPtr a1)
+    RexxObjectPtr SendMessage1(RexxObjectPtr o, CSTRING s, RexxObjectPtr a1)
     {
         return threadContext->SendMessage1(o, s, a1);
     }
-    RexxObjectPtr  SendMessage2(RexxObjectPtr o, RexxStringPointer s, RexxObjectPtr a1, RexxObjectPtr a2)
+    RexxObjectPtr SendMessage2(RexxObjectPtr o, CSTRING s, RexxObjectPtr a1, RexxObjectPtr a2)
     {
         return threadContext->SendMessage2(o, s, a1, a2);
     }
@@ -1608,28 +1602,28 @@ struct RexxCallContext_
         return threadContext->GetGlobalEnvironment();
     }
 
-    RexxBoolean      IsSameType(RexxObjectPtr o1, RexxObjectPtr o2)
+    logical_t IsSameType(RexxObjectPtr o1, RexxObjectPtr o2)
     {
         return threadContext->IsSameType(o1, o2);
     }
-    RexxBoolean      IsInstanceOf(RexxObjectPtr o, RexxClassObject co)
+    logical_t IsInstanceOf(RexxObjectPtr o, RexxClassObject co)
     {
         return threadContext->IsInstanceOf(o, co);
     }
-    RexxClassObject  FindClass(RexxStringPointer s)
+    RexxClassObject FindClass(CSTRING s)
     {
         return threadContext->FindClass(s);
     }
-    RexxClassObject  FindClassFromMethod(RexxMethodObject m, RexxStringPointer n)
+    RexxClassObject FindClassFromMethod(RexxMethodObject m, CSTRING n)
     {
         return threadContext->FindClassFromMethod(m, n);
     }
-    RexxBoolean      HasMethod(RexxObjectPtr o, RexxStringPointer m)
+    logical_t HasMethod(RexxObjectPtr o, CSTRING m)
     {
         return threadContext->HasMethod(o, m);
     }
 
-    RexxMethodObject NewMethod(RexxStringPointer s, RexxUnsignedNumber n)
+    RexxMethodObject NewMethod(CSTRING s, size_t n)
     {
         return threadContext->NewMethod(s, n);
     }
@@ -1653,124 +1647,124 @@ struct RexxCallContext_
     {
         return threadContext->SaveMethod(m);
     }
-    RexxMethodObject LoadMethod(RexxStringPointer d, size_t l)
+    RexxMethodObject LoadMethod(CSTRING d, size_t l)
     {
         return threadContext->LoadMethod(d, l);
     }
 
-    RexxObjectPtr    NewObject()
+    RexxObjectPtr NewObject()
     {
         return threadContext->NewObject();
     }
-    RexxObjectPtr    NumberToObject(wholenumber_t n)
+    RexxObjectPtr NumberToObject(wholenumber_t n)
     {
         return threadContext->NumberToObject(n);
     }
-    RexxObjectPtr    UintptrToObject(uintptr_t n)
+    RexxObjectPtr UintptrToObject(uintptr_t n)
     {
         return threadContext->UintptrToObject(n);
     }
-    RexxObjectPtr    ValueToObject(ValueDescriptor *v)
+    RexxObjectPtr ValueToObject(ValueDescriptor *v)
     {
         return threadContext->ValueToObject(v);
     }
-    RexxObjectPtr    UnsignedNumberToObject(RexxUnsignedNumber u)
+    RexxObjectPtr UnsignedNumberToObject(size_t u)
     {
         return threadContext->UnsignedNumberToObject(u);
     }
-    RexxBoolean      ObjectToNumber(RexxObjectPtr o, wholenumber_t *n)
+    logical_t ObjectToNumber(RexxObjectPtr o, wholenumber_t *n)
     {
         return threadContext->ObjectToNumber(o, n);
     }
-    RexxBoolean      ObjectToUnsignedNumber(RexxObjectPtr o, RexxUnsignedNumber *n)
+    logical_t ObjectToUnsignedNumber(RexxObjectPtr o, size_t *n)
     {
         return threadContext->ObjectToUnsignedNumber(o, n);
     }
-    RexxObjectPtr    Int64ToObject(int64_t i)
+    RexxObjectPtr Int64ToObject(int64_t i)
     {
         return threadContext->Int64ToObject(i);
     }
-    RexxObjectPtr    UnsignedInt64ToObject(uint64_t u)
+    RexxObjectPtr UnsignedInt64ToObject(uint64_t u)
     {
         return threadContext->UnsignedInt64ToObject(u);
     }
-    RexxBoolean      ObjectToInt64(RexxObjectPtr o, int64_t *i)
+    logical_t ObjectToInt64(RexxObjectPtr o, int64_t *i)
     {
         return threadContext->ObjectToInt64(o, i);
     }
-    RexxBoolean      ObjectToUnsignedInt64(RexxObjectPtr o, uint64_t *u)
+    logical_t ObjectToUnsignedInt64(RexxObjectPtr o, uint64_t *u)
     {
         return threadContext->ObjectToUnsignedInt64(o, u);
     }
-    RexxBoolean      ObjectToUintptr(RexxObjectPtr o, uintptr_t *n)
+    logical_t ObjectToUintptr(RexxObjectPtr o, uintptr_t *n)
     {
         return threadContext->ObjectToUintptr(o, n);
     }
-    RexxObjectPtr    DoubleToObject(double d)
+    RexxObjectPtr DoubleToObject(double d)
     {
         return threadContext->DoubleToObject(d);
     }
-    RexxObjectPtr    DoubleToObjectWithPrecision(double d, wholenumber_t precision)
+    RexxObjectPtr DoubleToObjectWithPrecision(double d, wholenumber_t precision)
     {
         return threadContext->DoubleToObjectWithPrecision(d, precision);
     }
-    RexxBoolean      ObjectToDouble(RexxObjectPtr o, double *d)
+    logical_t ObjectToDouble(RexxObjectPtr o, double *d)
     {
         return threadContext->ObjectToDouble(o, d);
     }
 
-    RexxStringObject  ObjectToString(RexxObjectPtr o)
+    RexxStringObject ObjectToString(RexxObjectPtr o)
     {
         return threadContext->ObjectToString(o);
     }
-    RexxStringPointer ObjectToStringValue(RexxObjectPtr o)
+    CSTRING ObjectToStringValue(RexxObjectPtr o)
     {
         return threadContext->ObjectToStringValue(o);
     }
-    size_t  StringGet(RexxStringObject o, size_t n1, RexxStringPointer s, size_t n2)
+    size_t StringGet(RexxStringObject o, size_t n1, CSTRING s, size_t n2)
     {
         return threadContext->StringGet(o, n1, s, n2);
     }
-    size_t  StringLength(RexxStringObject o)
+    size_t StringLength(RexxStringObject o)
     {
         return threadContext->StringLength(o);
     }
-    RexxStringPointer StringData(RexxStringObject o)
+    CSTRING StringData(RexxStringObject o)
     {
         return threadContext->StringData(o);
     }
-    RexxStringObject  NewString(RexxStringPointer s, size_t len)
+    RexxStringObject NewString(CSTRING s, size_t len)
     {
         return threadContext->NewString(s, len);
     }
-    RexxStringObject  NewStringFromAsciiz(RexxStringPointer s)
+    RexxStringObject NewStringFromAsciiz(CSTRING s)
     {
         return threadContext->NewStringFromAsciiz(s);
     }
-    RexxStringObject  StringUpper(RexxStringObject s)
+    RexxStringObject StringUpper(RexxStringObject s)
     {
         return threadContext->StringUpper(s);
     }
-    RexxStringObject  StringLower(RexxStringObject s)
+    RexxStringObject StringLower(RexxStringObject s)
     {
         return threadContext->StringLower(s);
     }
-    RexxBoolean       IsString(RexxObjectPtr o)
+    logical_t IsString(RexxObjectPtr o)
     {
         return threadContext->IsString(o);
     }
 
-    RexxBufferStringObject  NewBufferString(size_t len)
+    RexxBufferStringObject NewBufferString(size_t len)
     {
         return threadContext->NewBufferString(len);
     }
 
-    size_t  BufferStringLength(RexxBufferStringObject o)
+    size_t BufferStringLength(RexxBufferStringObject o)
     {
         return threadContext->BufferStringLength(o);
     }
 
-    RexxStringPointer BufferStringData(RexxBufferStringObject o)
+    CSTRING BufferStringData(RexxBufferStringObject o)
     {
         return threadContext->BufferStringData(o);
     }
@@ -1780,15 +1774,15 @@ struct RexxCallContext_
         return threadContext->FinishBufferString(o, l);
     }
 
-    void             TablePut(RexxTableObject to, RexxObjectPtr o1, RexxObjectPtr o2)
+    void TablePut(RexxTableObject to, RexxObjectPtr o1, RexxObjectPtr o2)
     {
         threadContext->TablePut(to, o1, o2);
     }
-    RexxObjectPtr    TableGet(RexxTableObject to, RexxObjectPtr o)
+    RexxObjectPtr TableGet(RexxTableObject to, RexxObjectPtr o)
     {
         return threadContext->TableGet(to, o);
     }
-    RexxObjectPtr    TableRemove(RexxTableObject to, RexxObjectPtr o)
+    RexxObjectPtr TableRemove(RexxTableObject to, RexxObjectPtr o)
     {
         return threadContext->TableRemove(to, o);
     }
@@ -1796,45 +1790,45 @@ struct RexxCallContext_
     {
         return threadContext->NewTable();
     }
-    RexxBoolean      IsTable(RexxObjectPtr o)
+    logical_t IsTable(RexxObjectPtr o)
     {
         return threadContext->IsTable(o);
     }
 
-    void             DirectoryPut(RexxDirectoryObject diro, RexxObjectPtr o, RexxStringPointer s)
+    void DirectoryPut(RexxDirectoryObject diro, RexxObjectPtr o, CSTRING s)
     {
         threadContext->DirectoryPut(diro, o, s);
     }
-    RexxObjectPtr    DirectoryAt(RexxDirectoryObject to, RexxStringPointer s)
+    RexxObjectPtr DirectoryAt(RexxDirectoryObject to, CSTRING s)
     {
         return threadContext->DirectoryAt(to, s);
     }
-    RexxObjectPtr    DirectoryRemove(RexxDirectoryObject to, RexxStringPointer s)
+    RexxObjectPtr DirectoryRemove(RexxDirectoryObject to, CSTRING s)
     {
         return threadContext->DirectoryRemove(to, s);
     }
-    RexxDirectoryObject  NewDirectory()
+    RexxDirectoryObject NewDirectory()
     {
         return threadContext->NewDirectory();
     }
-    RexxBoolean      IsDirectory(RexxObjectPtr o)
+    logical_t IsDirectory(RexxObjectPtr o)
     {
         return threadContext->IsDirectory(o);
     }
 
-    RexxObjectPtr   ArrayAt(RexxArrayObject ao, RexxUnsignedNumber n)
+    RexxObjectPtr ArrayAt(RexxArrayObject ao, size_t n)
     {
         return threadContext->ArrayAt(ao, n);
     }
-    RexxBoolean     ArrayHasIndex(RexxArrayObject ao, RexxUnsignedNumber n)
+    logical_t ArrayHasIndex(RexxArrayObject ao, size_t n)
     {
         return threadContext->ArrayHasIndex(ao, n);
     }
-    void            ArrayPut(RexxArrayObject ao, RexxObjectPtr o, RexxUnsignedNumber n)
+    void ArrayPut(RexxArrayObject ao, RexxObjectPtr o, size_t n)
     {
         threadContext->ArrayPut(ao, o, n);
     }
-    RexxUnsignedNumber ArraySize(RexxArrayObject ao)
+    size_t ArraySize(RexxArrayObject ao)
     {
         return threadContext->ArraySize(ao);
     }
@@ -1842,28 +1836,28 @@ struct RexxCallContext_
     {
         return threadContext->ArrayDimension(ao);
     }
-    RexxArrayObject    NewArray(RexxUnsignedNumber n)
+    RexxArrayObject NewArray(size_t n)
     {
         return threadContext->NewArray(n);
     }
-    RexxArrayObject    ArrayOfOne(RexxObjectPtr o)
+    RexxArrayObject ArrayOfOne(RexxObjectPtr o)
     {
         return threadContext->ArrayOfOne(o);
     }
-    RexxArrayObject    ArrayOfTwo(RexxObjectPtr o1, RexxObjectPtr o2)
+    RexxArrayObject ArrayOfTwo(RexxObjectPtr o1, RexxObjectPtr o2)
     {
         return threadContext->ArrayOfTwo(o1, o2);
     }
-    RexxBoolean     IsArray(RexxObjectPtr o)
+    logical_t IsArray(RexxObjectPtr o)
     {
         return threadContext->IsArray(o);
     }
 
-    RexxStringPointer    BufferData(RexxBufferObject bo)
+    CSTRING BufferData(RexxBufferObject bo)
     {
         return threadContext->BufferData(bo);
     }
-    wholenumber_t  BufferLength(RexxBufferObject bo)
+    wholenumber_t BufferLength(RexxBufferObject bo)
     {
         return threadContext->BufferLength(bo);
     }
@@ -1871,12 +1865,12 @@ struct RexxCallContext_
     {
         return threadContext->NewBuffer(n);
     }
-    RexxBoolean      IsBuffer(RexxObjectPtr o)
+    logical_t IsBuffer(RexxObjectPtr o)
     {
         return threadContext->IsBuffer(o);
     }
 
-    wholenumber_t   IntegerValue(RexxIntegerObject io)
+    wholenumber_t IntegerValue(RexxIntegerObject io)
     {
         return threadContext->IntegerValue(io);
     }
@@ -1884,12 +1878,12 @@ struct RexxCallContext_
     {
         return threadContext->NewInteger(n);
     }
-    RexxBoolean       IsInteger(RexxObjectPtr o)
+    logical_t IsInteger(RexxObjectPtr o)
     {
         return threadContext->IsInteger(o);
     }
 
-    POINTER           PointerValue(RexxPointerObject po)
+    POINTER PointerValue(RexxPointerObject po)
     {
         return threadContext->PointerValue(po);
     }
@@ -1897,24 +1891,24 @@ struct RexxCallContext_
     {
         return threadContext->NewPointer(p);
     }
-    RexxBoolean       IsPointer(RexxObjectPtr o)
+    logical_t IsPointer(RexxObjectPtr o)
     {
         return threadContext->IsPointer(o);
     }
 
-    RexxObjectPtr    SupplierValue(RexxSupplierObject so)
+    RexxObjectPtr SupplierValue(RexxSupplierObject so)
     {
         return threadContext->SupplierValue(so);
     }
-    RexxObjectPtr    SupplierIndex(RexxSupplierObject so)
+    RexxObjectPtr SupplierIndex(RexxSupplierObject so)
     {
         return threadContext->SupplierIndex(so);
     }
-    RexxBoolean      SupplierAvailable(RexxSupplierObject so)
+    logical_t SupplierAvailable(RexxSupplierObject so)
     {
         return threadContext->SupplierAvailable(so);
     }
-    void             SupplierNext(RexxSupplierObject so)
+    void SupplierNext(RexxSupplierObject so)
     {
         threadContext->SupplierNext(so);
     }
@@ -1923,27 +1917,27 @@ struct RexxCallContext_
         return threadContext->NewSupplier(values, names);
     }
 
-    void             SetStemElement(RexxStemObject so, RexxStringPointer s, RexxObjectPtr o)
+    void SetStemElement(RexxStemObject so, CSTRING s, RexxObjectPtr o)
     {
         threadContext->SetStemElement(so, s, o);
     }
-    RexxObjectPtr    GetStemElement(RexxStemObject so, RexxStringPointer s)
+    RexxObjectPtr GetStemElement(RexxStemObject so, CSTRING s)
     {
         return threadContext->GetStemElement(so, s);
     }
-    void DropStemElement(RexxStemObject so, RexxStringPointer s)
+    void DropStemElement(RexxStemObject so, CSTRING s)
     {
         threadContext->DropStemElement(so, s);
     }
-    void             SetStemArrayElement(RexxStemObject so, RexxUnsignedNumber n, RexxObjectPtr o)
+    void SetStemArrayElement(RexxStemObject so, size_t n, RexxObjectPtr o)
     {
         threadContext->SetStemArrayElement(so, n, o);
     }
-    RexxObjectPtr    GetStemArrayElement(RexxStemObject so, RexxUnsignedNumber n)
+    RexxObjectPtr GetStemArrayElement(RexxStemObject so, size_t n)
     {
         return threadContext->GetStemArrayElement(so, n);
     }
-    void DropStemArrayElement(RexxStemObject so, RexxUnsignedNumber n)
+    void DropStemArrayElement(RexxStemObject so, size_t n)
     {
         threadContext->DropStemArrayElement(so, n);
     }
@@ -1951,36 +1945,36 @@ struct RexxCallContext_
     {
         return threadContext->GetAllStemElements(so);
     }
-    RexxObjectPtr    GetStemValue(RexxStemObject so)
+    RexxObjectPtr GetStemValue(RexxStemObject so)
     {
         return threadContext->GetStemValue(so);
     }
-    RexxBoolean      IsStem(RexxObjectPtr o)
+    logical_t IsStem(RexxObjectPtr o)
     {
         return threadContext->IsStem(o);
     }
 
-    void RaiseException(RexxUnsignedNumber n)
+    void RaiseException(size_t n)
     {
         threadContext->RaiseException(n);
     }
-    void RaiseException1(RexxUnsignedNumber n, RexxObjectPtr o)
+    void RaiseException1(size_t n, RexxObjectPtr o)
     {
         threadContext->RaiseException1(n, o);
     }
-    void RaiseException2(RexxUnsignedNumber n, RexxObjectPtr o1, RexxObjectPtr o2)
+    void RaiseException2(size_t n, RexxObjectPtr o1, RexxObjectPtr o2)
     {
         threadContext->RaiseException2(n, o1, o2);
     }
-    void RaiseExceptionArray(RexxUnsignedNumber n, RexxArrayObject ao)
+    void RaiseExceptionArray(size_t n, RexxArrayObject ao)
     {
         threadContext->RaiseExceptionArray(n, ao);
     }
-    void RaiseCondition(RexxStringPointer s1, RexxStringPointer s2, RexxArrayObject ao, RexxObjectPtr o)
+    void RaiseCondition(CSTRING s1, CSTRING s2, RexxArrayObject ao, RexxObjectPtr o)
     {
         threadContext->RaiseCondition(s1, s2, ao, o);
     }
-    RexxBoolean      CheckCondition()
+    logical_t CheckCondition()
     {
         return threadContext->CheckCondition();
     }
@@ -1988,49 +1982,49 @@ struct RexxCallContext_
     {
         return threadContext->GetConditionInfo();
     }
-    void             DecodeConditionInfo(RexxDirectoryObject diro, ConditionData *c)
+    void DecodeConditionInfo(RexxDirectoryObject diro, RexxCondition *c)
     {
         threadContext->DecodeConditionInfo(diro, c);
     }
-    void             ClearCondition()
+    void ClearCondition()
     {
         threadContext->ClearCondition();
     }
 
-    RexxObjectPtr    NilObject()
+    RexxObjectPtr NilObject()
     {
-        return threadContext->NilObject();
+        return threadContext->Nil();
     }
-    RexxObjectPtr    TrueObject()
+    RexxObjectPtr TrueObject()
     {
-        return threadContext->TrueObject();
+        return threadContext->True();
     }
-    RexxObjectPtr    FalseObject()
+    RexxObjectPtr FalseObject()
     {
-        return threadContext->FalseObject();
+        return threadContext->False();
     }
     RexxStringObject NullString()
     {
         return threadContext->NullString();
     }
 
-    RexxArrayObject  GetArguments()
+    RexxArrayObject GetArguments()
     {
         return functions->GetArguments(this);
     }
-    RexxObjectPtr    GetArgument(RexxUnsignedNumber n)
+    RexxObjectPtr GetArgument(size_t n)
     {
         return functions->GetArgument(this, n);
     }
-    void             SetContextVariable(RexxStringPointer s, RexxObjectPtr o)
+    void SetContextVariable(CSTRING s, RexxObjectPtr o)
     {
         functions->SetContextVariable(this, s, o);
     }
-    RexxObjectPtr    GetContextVariable(RexxStringPointer s)
+    RexxObjectPtr GetContextVariable(CSTRING s)
     {
         return functions->GetContextVariable(this, s);
     }
-    void             DropContextVariable(RexxStringPointer s)
+    void DropContextVariable(CSTRING s)
     {
         functions->DropContextVariable(this, s);
     }
@@ -2043,7 +2037,7 @@ struct RexxCallContext_
     {
         return functions->GetAllContextVariables(this);
     }
-    void             InvalidRoutine()
+    void InvalidRoutine()
     {
         functions->InvalidRoutine(this);
     }
@@ -2055,7 +2049,7 @@ struct RexxCallContext_
     {
         return functions->GetContextFuzz(this);
     }
-    RexxBoolean GetContextForm()
+    logical_t GetContextForm()
     {
         return functions->GetContextForm(this);
     }
@@ -2078,28 +2072,28 @@ struct RexxExitContext_
     {
         return threadContext->RequestGlobalReference(o);
     }
-    void      ReleaseGlobalReference(RexxObjectPtr o)
+    void ReleaseGlobalReference(RexxObjectPtr o)
     {
         threadContext->ReleaseGlobalReference(o);
     }
-    void      ReleaseLocalReference(RexxObjectPtr o)
+    void ReleaseLocalReference(RexxObjectPtr o)
     {
         threadContext->ReleaseLocalReference(o);
     }
 
-    RexxObjectPtr  SendMessage(RexxObjectPtr o, RexxStringPointer s, RexxArrayObject ao)
+    RexxObjectPtr SendMessage(RexxObjectPtr o, CSTRING s, RexxArrayObject ao)
     {
         return threadContext->SendMessage(o, s, ao);
     }
-    RexxObjectPtr  SendMessage0(RexxObjectPtr o, RexxStringPointer s)
+    RexxObjectPtr SendMessage0(RexxObjectPtr o, CSTRING s)
     {
         return threadContext->SendMessage0(o, s);
     }
-    RexxObjectPtr  SendMessage1(RexxObjectPtr o, RexxStringPointer s, RexxObjectPtr a1)
+    RexxObjectPtr SendMessage1(RexxObjectPtr o, CSTRING s, RexxObjectPtr a1)
     {
         return threadContext->SendMessage1(o, s, a1);
     }
-    RexxObjectPtr  SendMessage2(RexxObjectPtr o, RexxStringPointer s, RexxObjectPtr a1, RexxObjectPtr a2)
+    RexxObjectPtr SendMessage2(RexxObjectPtr o, CSTRING s, RexxObjectPtr a1, RexxObjectPtr a2)
     {
         return threadContext->SendMessage2(o, s, a1, a2);
     }
@@ -2113,28 +2107,28 @@ struct RexxExitContext_
         return threadContext->GetGlobalEnvironment();
     }
 
-    RexxBoolean      IsSameType(RexxObjectPtr o1, RexxObjectPtr o2)
+    logical_t IsSameType(RexxObjectPtr o1, RexxObjectPtr o2)
     {
         return threadContext->IsSameType(o1, o2);
     }
-    RexxBoolean      IsInstanceOf(RexxObjectPtr o, RexxClassObject co)
+    logical_t IsInstanceOf(RexxObjectPtr o, RexxClassObject co)
     {
         return threadContext->IsInstanceOf(o, co);
     }
-    RexxClassObject  FindClass(RexxStringPointer s)
+    RexxClassObject FindClass(CSTRING s)
     {
         return threadContext->FindClass(s);
     }
-    RexxClassObject  FindClassFromMethod(RexxMethodObject m, RexxStringPointer n)
+    RexxClassObject FindClassFromMethod(RexxMethodObject m, CSTRING n)
     {
         return threadContext->FindClassFromMethod(m, n);
     }
-    RexxBoolean      HasMethod(RexxObjectPtr o, RexxStringPointer m)
+    logical_t HasMethod(RexxObjectPtr o, CSTRING m)
     {
         return threadContext->HasMethod(o, m);
     }
 
-    RexxMethodObject NewMethod(RexxStringPointer s, RexxUnsignedNumber n)
+    RexxMethodObject NewMethod(CSTRING s, size_t n)
     {
         return threadContext->NewMethod(s, n);
     }
@@ -2158,124 +2152,124 @@ struct RexxExitContext_
     {
         return threadContext->SaveMethod(m);
     }
-    RexxMethodObject LoadMethod(RexxStringPointer d, size_t l)
+    RexxMethodObject LoadMethod(CSTRING d, size_t l)
     {
         return threadContext->LoadMethod(d, l);
     }
 
-    RexxObjectPtr    NewObject()
+    RexxObjectPtr NewObject()
     {
         return threadContext->NewObject();
     }
-    RexxObjectPtr    NumberToObject(wholenumber_t n)
+    RexxObjectPtr NumberToObject(wholenumber_t n)
     {
         return threadContext->NumberToObject(n);
     }
-    RexxObjectPtr    UintptrToObject(uintptr_t n)
+    RexxObjectPtr intptrToObject(uintptr_t n)
     {
         return threadContext->UintptrToObject(n);
     }
-    RexxObjectPtr    ValueToObject(ValueDescriptor *v)
+    RexxObjectPtr ValueToObject(ValueDescriptor *v)
     {
         return threadContext->ValueToObject(v);
     }
-    RexxObjectPtr    UnsignedNumberToObject(RexxUnsignedNumber u)
+    RexxObjectPtr UnsignedNumberToObject(size_t u)
     {
         return threadContext->UnsignedNumberToObject(u);
     }
-    RexxBoolean      ObjectToNumber(RexxObjectPtr o, wholenumber_t *n)
+    logical_t ObjectToNumber(RexxObjectPtr o, wholenumber_t *n)
     {
         return threadContext->ObjectToNumber(o, n);
     }
-    RexxBoolean      ObjectToUnsignedNumber(RexxObjectPtr o, RexxUnsignedNumber *n)
+    logical_t ObjectToUnsignedNumber(RexxObjectPtr o, size_t *n)
     {
         return threadContext->ObjectToUnsignedNumber(o, n);
     }
-    RexxObjectPtr    Int64ToObject(int64_t i)
+    RexxObjectPtr Int64ToObject(int64_t i)
     {
         return threadContext->Int64ToObject(i);
     }
-    RexxObjectPtr    UnsignedInt64ToObject(uint64_t u)
+    RexxObjectPtr UnsignedInt64ToObject(uint64_t u)
     {
         return threadContext->UnsignedInt64ToObject(u);
     }
-    RexxBoolean      ObjectToInt64(RexxObjectPtr o, int64_t *i)
+    logical_t ObjectToInt64(RexxObjectPtr o, int64_t *i)
     {
         return threadContext->ObjectToInt64(o, i);
     }
-    RexxBoolean      ObjectToUnsignedInt64(RexxObjectPtr o, uint64_t *u)
+    logical_t ObjectToUnsignedInt64(RexxObjectPtr o, uint64_t *u)
     {
         return threadContext->ObjectToUnsignedInt64(o, u);
     }
-    RexxBoolean      ObjectToUintptr(RexxObjectPtr o, uintptr_t *n)
+    logical_t ObjectToUintptr(RexxObjectPtr o, uintptr_t *n)
     {
         return threadContext->ObjectToUintptr(o, n);
     }
-    RexxObjectPtr    DoubleToObject(double d)
+    RexxObjectPtr DoubleToObject(double d)
     {
         return threadContext->DoubleToObject(d);
     }
-    RexxObjectPtr    DoubleToObjectWithPrecision(double d, wholenumber_t precision)
+    RexxObjectPtr DoubleToObjectWithPrecision(double d, wholenumber_t precision)
     {
         return threadContext->DoubleToObjectWithPrecision(d, precision);
     }
-    RexxBoolean      ObjectToDouble(RexxObjectPtr o, double *d)
+    logical_t ObjectToDouble(RexxObjectPtr o, double *d)
     {
         return threadContext->ObjectToDouble(o, d);
     }
 
-    RexxStringObject  ObjectToString(RexxObjectPtr o)
+    RexxStringObject ObjectToString(RexxObjectPtr o)
     {
         return threadContext->ObjectToString(o);
     }
-    RexxStringPointer ObjectToStringValue(RexxObjectPtr o)
+    CSTRING ObjectToStringValue(RexxObjectPtr o)
     {
         return threadContext->ObjectToStringValue(o);
     }
-    size_t  StringGet(RexxStringObject o, size_t n1, RexxStringPointer s, size_t n2)
+    size_t StringGet(RexxStringObject o, size_t n1, CSTRING s, size_t n2)
     {
         return threadContext->StringGet(o, n1, s, n2);
     }
-    size_t  StringLength(RexxStringObject o)
+    size_t StringLength(RexxStringObject o)
     {
         return threadContext->StringLength(o);
     }
-    RexxStringPointer StringData(RexxStringObject o)
+    CSTRING StringData(RexxStringObject o)
     {
         return threadContext->StringData(o);
     }
-    RexxStringObject  NewString(RexxStringPointer s, size_t len)
+    RexxStringObject NewString(CSTRING s, size_t len)
     {
         return threadContext->NewString(s, len);
     }
-    RexxStringObject  NewStringFromAsciiz(RexxStringPointer s)
+    RexxStringObject NewStringFromAsciiz(CSTRING s)
     {
         return threadContext->NewStringFromAsciiz(s);
     }
-    RexxStringObject  StringUpper(RexxStringObject s)
+    RexxStringObject StringUpper(RexxStringObject s)
     {
         return threadContext->StringUpper(s);
     }
-    RexxStringObject  StringLower(RexxStringObject s)
+    RexxStringObject StringLower(RexxStringObject s)
     {
         return threadContext->StringLower(s);
     }
-    RexxBoolean       IsString(RexxObjectPtr o)
+    logical_t IsString(RexxObjectPtr o)
     {
         return threadContext->IsString(o);
     }
 
-    RexxBufferStringObject  NewBufferString(size_t len)
+    RexxBufferStringObject NewBufferString(size_t len)
     {
         return threadContext->NewBufferString(len);
     }
 
-    size_t  BufferStringLength(RexxBufferStringObject o)
+    size_t BufferStringLength(RexxBufferStringObject o)
     {
         return threadContext->BufferStringLength(o);
     }
 
-    RexxStringPointer BufferStringData(RexxBufferStringObject o)
+    CSTRING BufferStringData(RexxBufferStringObject o)
     {
         return threadContext->BufferStringData(o);
     }
@@ -2285,61 +2279,61 @@ struct RexxExitContext_
         return threadContext->FinishBufferString(o, l);
     }
 
-    void             TablePut(RexxTableObject to, RexxObjectPtr o1, RexxObjectPtr o2)
+    void TablePut(RexxTableObject to, RexxObjectPtr o1, RexxObjectPtr o2)
     {
         threadContext->TablePut(to, o1, o2);
     }
-    RexxObjectPtr    TableGet(RexxTableObject to, RexxObjectPtr o)
+    RexxObjectPtr TableGet(RexxTableObject to, RexxObjectPtr o)
     {
         return threadContext->TableGet(to, o);
     }
-    RexxObjectPtr    TableRemove(RexxTableObject to, RexxObjectPtr o)
+    RexxObjectPtr TableRemove(RexxTableObject to, RexxObjectPtr o)
     {
         return threadContext->TableRemove(to, o);
     }
-    RexxTableObject  NewTable()
+    RexxTableObject NewTable()
     {
         return threadContext->NewTable();
     }
-    RexxBoolean      IsTable(RexxObjectPtr o)
+    logical_t IsTable(RexxObjectPtr o)
     {
         return threadContext->IsTable(o);
     }
 
-    void             DirectoryPut(RexxDirectoryObject diro, RexxObjectPtr o, RexxStringPointer s)
+    void DirectoryPut(RexxDirectoryObject diro, RexxObjectPtr o, CSTRING s)
     {
         threadContext->DirectoryPut(diro, o, s);
     }
-    RexxObjectPtr    DirectoryAt(RexxDirectoryObject to, RexxStringPointer s)
+    RexxObjectPtr DirectoryAt(RexxDirectoryObject to, CSTRING s)
     {
         return threadContext->DirectoryAt(to, s);
     }
-    RexxObjectPtr    DirectoryRemove(RexxDirectoryObject to, RexxStringPointer s)
+    RexxObjectPtr DirectoryRemove(RexxDirectoryObject to, CSTRING s)
     {
         return threadContext->DirectoryRemove(to, s);
     }
-    RexxDirectoryObject  NewDirectory()
+    RexxDirectoryObject NewDirectory()
     {
         return threadContext->NewDirectory();
     }
-    RexxBoolean      IsDirectory(RexxObjectPtr o)
+    logical_t IsDirectory(RexxObjectPtr o)
     {
         return threadContext->IsDirectory(o);
     }
 
-    RexxObjectPtr   ArrayAt(RexxArrayObject ao, RexxUnsignedNumber n)
+    RexxObjectPtr ArrayAt(RexxArrayObject ao, size_t n)
     {
         return threadContext->ArrayAt(ao, n);
     }
-    RexxBoolean     ArrayHasIndex(RexxArrayObject ao, RexxUnsignedNumber n)
+    logical_t ArrayHasIndex(RexxArrayObject ao, size_t n)
     {
         return threadContext->ArrayHasIndex(ao, n);
     }
-    void            ArrayPut(RexxArrayObject ao, RexxObjectPtr o, RexxUnsignedNumber n)
+    void ArrayPut(RexxArrayObject ao, RexxObjectPtr o, size_t n)
     {
         threadContext->ArrayPut(ao, o, n);
     }
-    RexxUnsignedNumber ArraySize(RexxArrayObject ao)
+    size_t ArraySize(RexxArrayObject ao)
     {
         return threadContext->ArraySize(ao);
     }
@@ -2347,28 +2341,28 @@ struct RexxExitContext_
     {
         return threadContext->ArrayDimension(ao);
     }
-    RexxArrayObject    NewArray(RexxUnsignedNumber n)
+    RexxArrayObject NewArray(size_t n)
     {
         return threadContext->NewArray(n);
     }
-    RexxArrayObject    ArrayOfOne(RexxObjectPtr o)
+    RexxArrayObject ArrayOfOne(RexxObjectPtr o)
     {
         return threadContext->ArrayOfOne(o);
     }
-    RexxArrayObject    ArrayOfTwo(RexxObjectPtr o1, RexxObjectPtr o2)
+    RexxArrayObject ArrayOfTwo(RexxObjectPtr o1, RexxObjectPtr o2)
     {
         return threadContext->ArrayOfTwo(o1, o2);
     }
-    RexxBoolean     IsArray(RexxObjectPtr o)
+    logical_t IsArray(RexxObjectPtr o)
     {
         return threadContext->IsArray(o);
     }
 
-    RexxStringPointer    BufferData(RexxBufferObject bo)
+    CSTRING BufferData(RexxBufferObject bo)
     {
         return threadContext->BufferData(bo);
     }
-    wholenumber_t  BufferLength(RexxBufferObject bo)
+    wholenumber_t BufferLength(RexxBufferObject bo)
     {
         return threadContext->BufferLength(bo);
     }
@@ -2376,12 +2370,12 @@ struct RexxExitContext_
     {
         return threadContext->NewBuffer(n);
     }
-    RexxBoolean      IsBuffer(RexxObjectPtr o)
+    logical_t IsBuffer(RexxObjectPtr o)
     {
         return threadContext->IsBuffer(o);
     }
 
-    wholenumber_t   IntegerValue(RexxIntegerObject io)
+    wholenumber_t IntegerValue(RexxIntegerObject io)
     {
         return threadContext->IntegerValue(io);
     }
@@ -2389,12 +2383,12 @@ struct RexxExitContext_
     {
         return threadContext->NewInteger(n);
     }
-    RexxBoolean       IsInteger(RexxObjectPtr o)
+    logical_t IsInteger(RexxObjectPtr o)
     {
         return threadContext->IsInteger(o);
     }
 
-    POINTER           PointerValue(RexxPointerObject po)
+    POINTER PointerValue(RexxPointerObject po)
     {
         return threadContext->PointerValue(po);
     }
@@ -2402,24 +2396,24 @@ struct RexxExitContext_
     {
         return threadContext->NewPointer(p);
     }
-    RexxBoolean       IsPointer(RexxObjectPtr o)
+    logical_t IsPointer(RexxObjectPtr o)
     {
         return threadContext->IsPointer(o);
     }
 
-    RexxObjectPtr    SupplierValue(RexxSupplierObject so)
+    RexxObjectPtr SupplierValue(RexxSupplierObject so)
     {
         return threadContext->SupplierValue(so);
     }
-    RexxObjectPtr    SupplierIndex(RexxSupplierObject so)
+    RexxObjectPtr SupplierIndex(RexxSupplierObject so)
     {
         return threadContext->SupplierIndex(so);
     }
-    RexxBoolean      SupplierAvailable(RexxSupplierObject so)
+    logical_t SupplierAvailable(RexxSupplierObject so)
     {
         return threadContext->SupplierAvailable(so);
     }
-    void             SupplierNext(RexxSupplierObject so)
+    void SupplierNext(RexxSupplierObject so)
     {
         threadContext->SupplierNext(so);
     }
@@ -2428,27 +2422,27 @@ struct RexxExitContext_
         return threadContext->NewSupplier(values, names);
     }
 
-    void             SetStemElement(RexxStemObject so, RexxStringPointer s, RexxObjectPtr o)
+    void SetStemElement(RexxStemObject so, CSTRING s, RexxObjectPtr o)
     {
         threadContext->SetStemElement(so, s, o);
     }
-    RexxObjectPtr    GetStemElement(RexxStemObject so, RexxStringPointer s)
+    RexxObjectPtr GetStemElement(RexxStemObject so, CSTRING s)
     {
         return threadContext->GetStemElement(so, s);
     }
-    void DropStemElement(RexxStemObject so, RexxStringPointer s)
+    void DropStemElement(RexxStemObject so, CSTRING s)
     {
         threadContext->DropStemElement(so, s);
     }
-    void             SetStemArrayElement(RexxStemObject so, RexxUnsignedNumber n, RexxObjectPtr o)
+    void SetStemArrayElement(RexxStemObject so, size_t n, RexxObjectPtr o)
     {
         threadContext->SetStemArrayElement(so, n, o);
     }
-    RexxObjectPtr    GetStemArrayElement(RexxStemObject so, RexxUnsignedNumber n)
+    RexxObjectPtr GetStemArrayElement(RexxStemObject so, size_t n)
     {
         return threadContext->GetStemArrayElement(so, n);
     }
-    void DropStemArrayElement(RexxStemObject so, RexxUnsignedNumber n)
+    void DropStemArrayElement(RexxStemObject so, size_t n)
     {
         threadContext->DropStemArrayElement(so, n);
     }
@@ -2456,36 +2450,36 @@ struct RexxExitContext_
     {
         return threadContext->GetAllStemElements(so);
     }
-    RexxObjectPtr    GetStemValue(RexxStemObject so)
+    RexxObjectPtr GetStemValue(RexxStemObject so)
     {
         return threadContext->GetStemValue(so);
     }
-    RexxBoolean      IsStem(RexxObjectPtr o)
+    logical_t IsStem(RexxObjectPtr o)
     {
         return threadContext->IsStem(o);
     }
 
-    void RaiseException(RexxUnsignedNumber n)
+    void RaiseException(size_t n)
     {
         threadContext->RaiseException(n);
     }
-    void RaiseException1(RexxUnsignedNumber n, RexxObjectPtr o)
+    void RaiseException1(size_t n, RexxObjectPtr o)
     {
         threadContext->RaiseException1(n, o);
     }
-    void RaiseException2(RexxUnsignedNumber n, RexxObjectPtr o1, RexxObjectPtr o2)
+    void RaiseException2(size_t n, RexxObjectPtr o1, RexxObjectPtr o2)
     {
         threadContext->RaiseException2(n, o1, o2);
     }
-    void RaiseExceptionArray(RexxUnsignedNumber n, RexxArrayObject ao)
+    void RaiseExceptionArray(size_t n, RexxArrayObject ao)
     {
         threadContext->RaiseExceptionArray(n, ao);
     }
-    void RaiseCondition(RexxStringPointer s1, RexxStringPointer s2, RexxArrayObject ao, RexxObjectPtr o)
+    void RaiseCondition(CSTRING s1, CSTRING s2, RexxArrayObject ao, RexxObjectPtr o)
     {
         threadContext->RaiseCondition(s1, s2, ao, o);
     }
-    RexxBoolean      CheckCondition()
+    logical_t CheckCondition()
     {
         return threadContext->CheckCondition();
     }
@@ -2493,40 +2487,40 @@ struct RexxExitContext_
     {
         return threadContext->GetConditionInfo();
     }
-    void             DecodeConditionInfo(RexxDirectoryObject diro, ConditionData *c)
+    void DecodeConditionInfo(RexxDirectoryObject diro, RexxCondition *c)
     {
         threadContext->DecodeConditionInfo(diro, c);
     }
-    void             ClearCondition()
+    void ClearCondition()
     {
         threadContext->ClearCondition();
     }
 
-    RexxObjectPtr    NilObject()
+    RexxObjectPtr Nil()
     {
-        return threadContext->NilObject();
+        return threadContext->Nil();
     }
-    RexxObjectPtr    TrueObject()
+    RexxObjectPtr True()
     {
-        return threadContext->TrueObject();
+        return threadContext->True();
     }
-    RexxObjectPtr    FalseObject()
+    RexxObjectPtr False()
     {
-        return threadContext->FalseObject();
+        return threadContext->False();
     }
     RexxStringObject NullString()
     {
         return threadContext->NullString();
     }
-    void             SetContextVariable(RexxStringPointer s, RexxObjectPtr o)
+    void SetContextVariable(CSTRING s, RexxObjectPtr o)
     {
         functions->SetContextVariable(this, s, o);
     }
-    RexxObjectPtr    GetContextVariable(RexxStringPointer s)
+    RexxObjectPtr GetContextVariable(CSTRING s)
     {
         return functions->GetContextVariable(this, s);
     }
-    void             DropContextVariable(RexxStringPointer s)
+    void DropContextVariable(CSTRING s)
     {
         functions->DropContextVariable(this, s);
     }
@@ -2538,16 +2532,7 @@ struct RexxExitContext_
 };
 
 
-/***    Structure for system exit block (RXSYSEXIT) */
-
-typedef struct
-{
-   RexxCallback       entry_point;    /* subcom enviro for sysexit  */
-   wholenumber_t         exit_code;      /* sysexit function code      */
-}  RexxExitCallback;
-
-
-RexxReturnCode RexxEntry RexxCreateInterpreter(RexxInstance **, RexxThreadContext **, RexxExitCallback *, RexxOption *);
+RexxReturnCode RexxEntry RexxCreateInterpreter(RexxInstance **, RexxThreadContext **, RexxOption *);
 
 
 /******************************************************************************/
@@ -2565,12 +2550,12 @@ RexxReturnCode RexxEntry RexxCreateInterpreter(RexxInstance **, RexxThreadContex
 
 #define REXX_VALUE_RexxObjectPtr          11
 #define REXX_VALUE_int                    12
-#define REXX_VALUE_wholenumber_t             13
+#define REXX_VALUE_wholenumber_t          13
 #define REXX_VALUE_double                 14
 #define REXX_VALUE_CSTRING                15
 #define REXX_VALUE_POINTER                16
 #define REXX_VALUE_RexxStringObject       17
-#define REXX_VALUE_RexxUnsignedNumber     18
+#define REXX_VALUE_stringsize_t           18
 #define REXX_VALUE_float                  19
 #define REXX_VALUE_int8_t                 20
 #define REXX_VALUE_int16_t                21
@@ -2582,21 +2567,22 @@ RexxReturnCode RexxEntry RexxCreateInterpreter(RexxInstance **, RexxThreadContex
 #define REXX_VALUE_size_t                 27
 #define REXX_VALUE_intptr_t               28
 #define REXX_VALUE_uintptr_t              29
-#define REXX_VALUE_RexxBoolean            30
+#define REXX_VALUE_logical_t              30
 #define REXX_VALUE_RexxArrayObject        31
 #define REXX_VALUE_RexxStemObject         32
 #define REXX_VALUE_uint64_t               33
+#define REXX_VALUE_ssize_t                34
 
 #define REXX_OPTIONAL_ARGUMENT                 0x8000
 
 #define REXX_VALUE_OPTIONAL_RexxObjectPtr         (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_RexxObjectPtr)
 #define REXX_VALUE_OPTIONAL_int                   (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_int)
-#define REXX_VALUE_OPTIONAL_wholenumber_t            (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_wholenumber_t)
+#define REXX_VALUE_OPTIONAL_wholenumber_t         (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_wholenumber_t)
 #define REXX_VALUE_OPTIONAL_double                (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_double)
 #define REXX_VALUE_OPTIONAL_CSTRING               (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_CSTRING)
 #define REXX_VALUE_OPTIONAL_POINTER               (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_POINTER)
 #define REXX_VALUE_OPTIONAL_RexxStringObject      (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_RexxStringObject)
-#define REXX_VALUE_OPTIONAL_RexxUnsignedNumber    (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_RexxUnsignedNumber)
+#define REXX_VALUE_OPTIONAL_stringsize_t          (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_stringsize_t)
 #define REXX_VALUE_OPTIONAL_float                 (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_float)
 #define REXX_VALUE_OPTIONAL_int8_t                (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_int8_t)
 #define REXX_VALUE_OPTIONAL_int16_t               (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_int16_t)
@@ -2607,9 +2593,10 @@ RexxReturnCode RexxEntry RexxCreateInterpreter(RexxInstance **, RexxThreadContex
 #define REXX_VALUE_OPTIONAL_uint32_t              (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_uint32_t)
 #define REXX_VALUE_OPTIONAL_uint64_t              (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_uint32_t)
 #define REXX_VALUE_OPTIONAL_size_t                (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_size_t)
+#define REXX_VALUE_OPTIONAL_ssize_t               (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_ssize_t)
 #define REXX_VALUE_OPTIONAL_intptr_t              (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_intptr_t)
 #define REXX_VALUE_OPTIONAL_uintptr_t             (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_uintptr_t)
-#define REXX_VALUE_OPTIONAL_RexxBoolean           (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_RexxBoolean)
+#define REXX_VALUE_OPTIONAL_logical_t             (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_logical_t)
 #define REXX_VALUE_OPTIONAL_RexxArrayObject       (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_RexxArrayObject)
 #define REXX_VALUE_OPTIONAL_RexxStemObject        (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_RexxStemObject)
 
@@ -2625,12 +2612,12 @@ RexxReturnCode RexxEntry RexxCreateInterpreter(RexxInstance **, RexxThreadContex
 
 #define ARGUMENT_TYPE_RexxObjectPtr         RexxObjectPtr
 #define ARGUMENT_TYPE_int                   int
-#define ARGUMENT_TYPE_wholenumber_t            wholenumber_t
+#define ARGUMENT_TYPE_wholenumber_t         wholenumber_t
+#define ARGUMENT_TYPE_stringsize_t          stringsize_t
 #define ARGUMENT_TYPE_double                double
 #define ARGUMENT_TYPE_CSTRING               CSTRING
 #define ARGUMENT_TYPE_POINTER               POINTER
 #define ARGUMENT_TYPE_RexxStringObject      RexxStringObject
-#define ARGUMENT_TYPE_RexxUnsignedNumber    RexxUnsignedNumber
 #define ARGUMENT_TYPE_float                 float
 #define ARGUMENT_TYPE_int8_t                int8_t
 #define ARGUMENT_TYPE_int16_t               int16_t
@@ -2641,20 +2628,21 @@ RexxReturnCode RexxEntry RexxCreateInterpreter(RexxInstance **, RexxThreadContex
 #define ARGUMENT_TYPE_uint32_t              uint32_t
 #define ARGUMENT_TYPE_uint64_t              uint64_t
 #define ARGUMENT_TYPE_size_t                size_t
+#define ARGUMENT_TYPE_ssize_t               ssize_t
 #define ARGUMENT_TYPE_intptr_t              intptr_t
 #define ARGUMENT_TYPE_uintptr_t             uintptr_t
-#define ARGUMENT_TYPE_RexxBoolean           RexxBoolean
+#define ARGUMENT_TYPE_logical_t             logical_t
 #define ARGUMENT_TYPE_RexxArrayObject       RexxArrayObject
 #define ARGUMENT_TYPE_RexxStemObject        RexxStemObject
 
 #define ARGUMENT_TYPE_OPTIONAL_RexxObjectPtr         RexxObjectPtr
 #define ARGUMENT_TYPE_OPTIONAL_int                   int
-#define ARGUMENT_TYPE_OPTIONAL_wholenumber_t            wholenumber_t
+#define ARGUMENT_TYPE_OPTIONAL_wholenumber_t         wholenumber_t
+#define ARGUMENT_TYPE_OPTIONAL_stringsize_t          stringsize_t
 #define ARGUMENT_TYPE_OPTIONAL_double                double
 #define ARGUMENT_TYPE_OPTIONAL_CSTRING               CSTRING
 #define ARGUMENT_TYPE_OPTIONAL_POINTER               POINTER
 #define ARGUMENT_TYPE_OPTIONAL_RexxStringObject      RexxStringObject
-#define ARGUMENT_TYPE_OPTIONAL_RexxUnsignedNumber    RexxUnsignedNumber
 #define ARGUMENT_TYPE_OPTIONAL_float                 float
 #define ARGUMENT_TYPE_OPTIONAL_int8_t                int8_t
 #define ARGUMENT_TYPE_OPTIONAL_int16_t               int16_t
@@ -2665,9 +2653,10 @@ RexxReturnCode RexxEntry RexxCreateInterpreter(RexxInstance **, RexxThreadContex
 #define ARGUMENT_TYPE_OPTIONAL_uint32_t              uint32_t
 #define ARGUMENT_TYPE_OPTIONAL_uint64_t              uint64_t
 #define ARGUMENT_TYPE_OPTIONAL_size_t                size_t
+#define ARGUMENT_TYPE_OPTIONAL_ssize_t               ssize_t
 #define ARGUMENT_TYPE_OPTIONAL_intptr_t              intptr_t
 #define ARGUMENT_TYPE_OPTIONAL_uintptr_t             uintptr_t
-#define ARGUMENT_TYPE_OPTIONAL_RexxBoolean           RexxBoolean
+#define ARGUMENT_TYPE_OPTIONAL_logical_t             logical_t
 #define ARGUMENT_TYPE_OPTIONAL_RexxArrayObject       RexxArrayObject
 #define ARGUMENT_TYPE_OPTIONAL_RexxStemObject        RexxStemObject
 

@@ -89,7 +89,8 @@ OTIOBJ6=$(OR_OUTDIR)\LeaveInstruction.$(OBJ) $(OR_OUTDIR)\MessageInstruction.$(O
 OTIOBJ7=$(OR_OUTDIR)\OptionsInstruction.$(OBJ) $(OR_OUTDIR)\OtherwiseInstruction.$(OBJ) $(OR_OUTDIR)\ParseInstruction.$(OBJ) \
         $(OR_OUTDIR)\ProcedureInstruction.$(OBJ)
 
-OTIOBJ8=$(OR_OUTDIR)\QueueInstruction.$(OBJ) $(OR_OUTDIR)\RaiseInstruction.$(OBJ)
+OTIOBJ8=$(OR_OUTDIR)\QueueInstruction.$(OBJ) $(OR_OUTDIR)\RaiseInstruction.$(OBJ) $(OR_OUTDIR)\RexxDirective.$(OBJ) \
+	$(OR_OUTDIR)\RequiresDirective.$(OBJ) $(OR_OUTDIR)\PackageDirective.$(OBJ)  $(OR_OUTDIR)\ClassDirective.$(OBJ)
 OTIOBJ9=$(OR_OUTDIR)\ReplyInstruction.$(OBJ) $(OR_OUTDIR)\ReturnInstruction.$(OBJ)   $(OR_OUTDIR)\SayInstruction.$(OBJ) \
         $(OR_OUTDIR)\SelectInstruction.$(OBJ)
 OTIOBJ10=$(OR_OUTDIR)\SignalInstruction.$(OBJ) $(OR_OUTDIR)\ThenInstruction.$(OBJ) $(OR_OUTDIR)\TraceInstruction.$(OBJ) \
@@ -107,7 +108,7 @@ OTPOBJS=$(OTSOBJ1)  $(OTSOBJ2) $(OTIOBJ1) $(OTIOBJ2) $(OTIOBJ3) \
 
 # Following all part of rexx
 OKCOBJ1=$(OR_OUTDIR)\Version.$(OBJ)
-OKCOBJ2= $(OR_OUTDIR)\APIRoutines.$(OBJ)  $(OR_OUTDIR)\Utilities.$(OBJ)
+OKCOBJ2= $(OR_OUTDIR)\Utilities.$(OBJ)
 OKAOBJS= $(OR_OUTDIR)\GlobalData.$(OBJ)  $(OR_OUTDIR)\GlobalNames.$(OBJ)
 OKLOBJS=$(OR_OUTDIR)\Setup.$(OBJ) $(OR_OUTDIR)\InstructionParser.$(OBJ) \
         $(OR_OUTDIR)\Scanner.$(OBJ)
@@ -130,8 +131,8 @@ OKIOBJ1=$(OR_OUTDIR)\RexxActivation.$(OBJ) $(OR_OUTDIR)\RexxActivity.$(OBJ) $(OR
         $(OR_OUTDIR)\RexxBehaviour.$(OBJ)  $(OR_OUTDIR)\BufferClass.$(OBJ) $(OR_OUTDIR)\ActivityManager.$(OBJ) \
 	$(OR_OUTDIR)\Interpreter.$(OBJ) $(OR_OUTDIR)\SystemInterpreter.$(OBJ) $(OR_OUTDIR)\RexxStartDispatcher.$(OBJ) \
 	$(OR_OUTDIR)\InterpreterInstance.$(OBJ) $(OR_OUTDIR)\ActivityDispatcher.$(OBJ) $(OR_OUTDIR)\TranslateDispatcher.$(OBJ) \
-	$(OR_OUTDIR)\CreateMethodDispatcher.$(OBJ) $(OR_OUTDIR)\CallbackDispatcher.$(OBJ)
-OKIOBJ2=$(OR_OUTDIR)\RexxHashTable.$(OBJ)  $(OR_OUTDIR)\RexxCode.$(OBJ) $(OR_OUTDIR)\LibraryManager.$(OBJ) \
+	$(OR_OUTDIR)\CreateMethodDispatcher.$(OBJ) $(OR_OUTDIR)\CallbackDispatcher.$(OBJ) $(OR_OUTDIR)\SecurityManager.$(OBJ)
+OKIOBJ2=$(OR_OUTDIR)\RexxHashTable.$(OBJ)  $(OR_OUTDIR)\RexxCode.$(OBJ) $(OR_OUTDIR)\PackageManager.$(OBJ) \
         $(OR_OUTDIR)\RexxListTable.$(OBJ) $(OR_OUTDIR)\RexxNativeActivation.$(OBJ) $(OR_OUTDIR)\RexxNativeCode.$(OBJ) \
 	$(OR_OUTDIR)\CPPCode.$(OBJ)
 OKIOBJ3=$(OR_OUTDIR)\RexxCollection.$(OBJ)   $(OR_OUTDIR)\RexxSmartBuffer.$(OBJ) $(OR_OUTDIR)\StackClass.$(OBJ)  \
@@ -188,7 +189,7 @@ ORXFILES=$(OR_OUTDIR)\CoreClasses.orx  $(OR_OUTDIR)\StreamClasses.orx \
 	 $(OR_OUTDIR)\PlatformObjects.orx $(OR_OUTDIR)\orexxole.cls
 
 #define critical header files for forcing recomp
-ORXHEADERS=$(KAPI)\oorexxerrors.h $(KMESSAGES)\RexxErrorCodes.h $(KMESSAGES)\RexxMessageNumbers.h $(KMESSAGES)\RexxMessageTable.h $(KCORE)\RexxCore.h \
+ORXHEADERS=$(OR_ORYXAPI)\oorexxerrors.h $(KMESSAGES)\RexxErrorCodes.h $(KMESSAGES)\RexxMessageNumbers.h $(KMESSAGES)\RexxMessageTable.h $(KCORE)\RexxCore.h \
     $(KCORE)\PrimitiveBehaviourNames.h $(KCORE)\ClassTypeCodes.h
 
 
@@ -290,7 +291,7 @@ $(KMESSAGES)\RexxMessageTable.h: $(KMESSAGES)\RexxMessageTable.xsl $(KMESSAGES)\
     @ECHO Generating $(@)
     xalan -o $(@) $(KMESSAGES)\rexxmsg.xml $(KMESSAGES)\RexxMessageTable.xsl
 
-$(KAPI)\api\oorexxerrors.h: $(KMESSAGES)\ApiErrorCodes.xsl $(KMESSAGES)\rexxmsg.xml
+$(OR_ORYXAPI)\api\oorexxerrors.h: $(KMESSAGES)\ApiErrorCodes.xsl $(KMESSAGES)\rexxmsg.xml
     @ECHO .
     @ECHO Generating $(@)
     xalan -o $(@) $(KMESSAGES)\rexxmsg.xml $(KMESSAGES)\ApiErrorCodes.xsl

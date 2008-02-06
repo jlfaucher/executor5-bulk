@@ -44,7 +44,7 @@
 #ifndef ActivationApiContexts_Included
 #define ActivationApiContexts_Included
 
-#include "oorexx.h"
+#include "RexxCore.h"
 
 class RexxActivity;
 class RexxNativeActivation;

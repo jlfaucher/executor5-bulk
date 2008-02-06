@@ -149,7 +149,7 @@ RexxString *SystemInterpreter::extractExtension(RexxString *file)
  *         does not include a directory portion, then the entire
  *         string is returned
  */
-RexxString *SystemInterpreter::extractDirectory(RexxString *file)
+RexxString *SystemInterpreter::extractFile(RexxString *file)
 {
     const char *pathName = file->getStringData();
     const char *endPtr = pathName + file->getLength() - 1;
@@ -251,7 +251,7 @@ bool SysInterpreterInstance::hasExtension(const char *name)
     while (name < endPtr)
     {
         // find the first directory element?
-        if (*endPtr == '\\')
+        if (*endPtr == '/')
         {
             return false;        // found a directory portion before an extension...we're extensionless
         }
@@ -376,43 +376,6 @@ bool SysInterpreterInstance::searchPath(const char *name, const char *path, cons
         }
     }
     return false;        // not found
-}
-
-
-/*********************************************************************/
-/*                                                                   */
-/* FUNCTION    : SysFileExtension                                    */
-/*                                                                   */
-/* DESCRIPTION : Looks for a file extension in given string. Returns */
-/*               the ext in null-terminated string form. If no file  */
-/*               ext returns an empty pointer.                       */
-/*                                                                   */
-/*********************************************************************/
-
-const char *SysFileExtension(
-  const char *Name )                   /* file name                         */
-{
-  const char *Scan;                    /* scanning pointer                  */
-  size_t    Length;                    /* extension length                  */
-
-  Scan = strrchr(Name, '\\');          /* have a path?                      */
-  if (Scan)                            /* find one?                         */
-    Scan++;                            /* step over last backspace          */
-  else
-    Scan = Name;                       /* no path, use name                 */
-
-    /* Look for the last occurence of period in the name. If not            */
-    /* found OR if found and the chars after the last period are all        */
-    /* periods or spaces, then we do not have an extension.                 */
-
-  if ((!(Scan = strrchr(Scan, '.'))) || strspn(Scan, ". ") == strlen(Scan))
-    return NULL;                       /* just return a null                */
-
-  Scan++;                              /* step over the period              */
-  Length = strlen(Scan);               /* calculate residual length         */
-  if (Length == 0)                     /* if no residual length             */
-    return  NULL;                      /* so return null extension          */
-  return --Scan;                       /* return extension position         */
 }
 
 

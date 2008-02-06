@@ -38,37 +38,11 @@
 /******************************************************************************/
 /* REXX Kernel                                                                */
 /*                                                                            */
-/* list of REXX internal native methods                                       */
+/* list of REXX system-specific native methods.                               */
 /*                                                                            */
 /******************************************************************************/
 
 //NOTE:  This file gets included multiple times to define different tables, so
 // it does not have standard #ifndef multiple include protections.
-   INTERNAL_METHOD(alarm_startTimer)
-   INTERNAL_METHOD(alarm_stopTimer)
-   INTERNAL_METHOD(stream_init)
-   INTERNAL_METHOD(stream_chars)
-   INTERNAL_METHOD(stream_lines)
-   INTERNAL_METHOD(stream_position)
-   INTERNAL_METHOD(stream_state)
-   INTERNAL_METHOD(stream_description)
-   INTERNAL_METHOD(stream_query_position)
-   INTERNAL_METHOD(stream_charout)
-   INTERNAL_METHOD(stream_charin)
-   INTERNAL_METHOD(stream_linein)
-   INTERNAL_METHOD(stream_lineout)
-   INTERNAL_METHOD(qualify)
-   INTERNAL_METHOD(query_exists)
-   INTERNAL_METHOD(query_size)
-   INTERNAL_METHOD(query_time)
-   INTERNAL_METHOD(handle_set)
-   INTERNAL_METHOD(std_set)
-   INTERNAL_METHOD(stream_flush)
-   INTERNAL_METHOD(query_handle)
-   INTERNAL_METHOD(query_streamtype)
-   INTERNAL_METHOD(stream_close)
-   INTERNAL_METHOD(stream_open)
-   INTERNAL_METHOD(rexx_push_queue)
-   INTERNAL_METHOD(rexx_queue_queue)
-   INTERNAL_METHOD(rexx_pull_queue)
-   INTERNAL_METHOD(rexx_linein_queue)
+
+// Windows doesn't currently have any of these.

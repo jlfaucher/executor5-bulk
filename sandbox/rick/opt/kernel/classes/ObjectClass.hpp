@@ -61,6 +61,7 @@
   class RexxMethod;
   class RexxMessage;
   class ProtectedObject;
+  class SecurityManager;
 
 
   enum
@@ -561,7 +562,7 @@ public:
     virtual bool trap(RexxString *, RexxDirectory *) {return false;};
     virtual void setObjNotify(RexxMessage *) {;};
     virtual void termination(){;};
-    virtual SecurityManager *getSecurityManager()
+    virtual SecurityManager *getSecurityManager();
     virtual bool isForwarded() { return false; }
     virtual bool isStackBase() { return false; }
     virtual RexxObject *getReceiver() { return OREF_NULL; }

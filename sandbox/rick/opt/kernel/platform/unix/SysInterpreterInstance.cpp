@@ -54,3 +54,43 @@ void SysInterpreterInstance::initialize(InterpreterInstance *i, RexxOptions *opt
 {
     instance = i;
 }
+
+
+SysSearchPath::SysSearchPath(const char *parentDir, const char *extensionPath)
+{
+    char temp[4];             // this is just a temp buffer to check component sizes
+
+    size_t pathSize = GetEnvironmentVariable("PATH", temp, sizeof(temp));
+    size_t parentSize = parentDir == NULL ? 0 : strlen(parentDir);
+    size_t extensionSize = extensionPath == NULL ? 0 : strlen(extensionPath);
+
+
+    // enough room for separators and a terminating null
+    char *path = SysAllocateResultMemory(pathSize + parentSize + extensionSize + 8);
+    *path = '\0';     // add a null character so strcat can work
+    if (parentDir != NULL)
+    {
+        strcpy(path, parentDir);
+        strcat(path, ";");
+    }
+
+    // add on the current directory
+    strcat(path, ".;");
+
+    if (extensionPath != NULL)
+    {
+        strcat(path, extensionPath);
+        strcat(path, ";");
+    }
+
+    GetEnvironmentVariable("PATH", path + strlen(path), pathSize + 1);
+}
+
+
+/**
+ * Deconstructor for releasing storage used by the constructed path.
+ */
+SysSearchPath::~SysSearchPath()
+{
+    SysReleaseResultMemory(path);
+}

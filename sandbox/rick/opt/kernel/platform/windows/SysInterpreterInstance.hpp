@@ -45,7 +45,7 @@
 
 class SysInterpreterInstance
 {
-public;
+public:
     void        live(size_t);
     void        liveGeneral(int);
 

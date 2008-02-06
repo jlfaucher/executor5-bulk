@@ -47,7 +47,7 @@
 #ifndef RexxCore_INCLUDED
 #define RexxCore_INCLUDED
 
-#include "rexx.h"                 // this is the core to everything
+#include "oorexxapi.h"                 // this is the core to everything
 
 /* ANSI C definitions */
 #include <stdio.h>
@@ -169,7 +169,6 @@ class RexxClass;
 class RexxDirectory;
 class RexxIntegerClass;
 class RexxListClass;
-class RexxMethodClass;
 class RexxArray;
 class RexxNumberStringClass;
 class RexxStringClass;

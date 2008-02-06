@@ -134,7 +134,6 @@ class RexxSource : public RexxInternalObject {
   unsigned int locateToken(RexxToken *);
   void        globalSetup();
   RexxString *packLiteral(size_t, size_t, int);
-  RexxMethod *method();
   RexxCode   *generateCode();
   RexxCode   *interpretMethod(RexxDirectory *);
   RexxCode   *interpret(RexxString *, RexxDirectory *, size_t);
@@ -342,7 +341,7 @@ protected:
   size_t interpret_adjust;             /* INTERPRET adjustment              */
 
                                        /* start of directives section       */
-
+  RexxSource    *parentSource;         // a parent source context environment;
   RexxDirectory *routines;             /* routines found on directives      */
   RexxDirectory *public_routines;      /* PUBLIC routines directive routines*/
   RexxArray     *packages;             // packages requiring loading

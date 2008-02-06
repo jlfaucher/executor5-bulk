@@ -69,11 +69,7 @@ public:
 
     static void initializeInstance(InterpreterInstance *instance);
     static void terminateInstance(InterpreterInstance *instance);
-    static void updateCurrentWorkingDirectory();
-
-    // saved current working directory
-    static char currentWorkingDirectory[CCHMAXPATH+2];
-
+    static void getCurrentWorkingDirectory(char *);
 };
 
 #endif

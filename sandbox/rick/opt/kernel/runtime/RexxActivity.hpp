@@ -52,6 +52,7 @@
 #include "RexxLocalVariables.hpp"
 #include "SourceLocation.hpp"
 #include "ExitHandler.hpp"
+#include "ActivationApiContexts.hpp"
 
 
 

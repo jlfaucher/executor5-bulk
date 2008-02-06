@@ -237,11 +237,9 @@ void RexxMemory::createImage()
   TheSystem->makeProxiedObject();
 
   ThePublicRoutines = new_directory();
-  TheStaticRequires = new_directory();
-
 
                                        /* RexxMethod                        */
-  CLASS_CREATE(Method, "Method", RexxMethodClass);
+  CLASS_CREATE(Method, "Method", RexxClass);
   CLASS_CREATE(Queue, "Queue", RexxClass);      /* RexxQueue                         */
   CLASS_CREATE(List, "List", RexxListClass);   /* RexxList                          */
   CLASS_CREATE(Stem, "Stem", RexxClass);       /* RexxStem                          */
@@ -554,8 +552,8 @@ void RexxMemory::createImage()
 
                                        /* Add the NEW methods to the        */
                                        /* class behaviour                   */
-  defineKernelMethod(CHAR_NEW     , TheMethodClassBehaviour, CPPM(RexxMethodClass::newRexx), A_COUNT);
-  defineKernelMethod(CHAR_NEWFILE , TheMethodClassBehaviour, CPPM(RexxMethodClass::newFileRexx), 1);
+  defineKernelMethod(CHAR_NEW     , TheMethodClassBehaviour, CPPM(RexxMethod::newRexx), A_COUNT);
+  defineKernelMethod(CHAR_NEWFILE , TheMethodClassBehaviour, CPPM(RexxMethod::newFileRexx), 1);
                                        /* set the scope of the methods to   */
                                        /* this classes oref                 */
   TheMethodClassBehaviour->setMethodDictionaryScope(TheMethodClass);
@@ -1187,7 +1185,6 @@ void RexxMemory::createImage()
   kernel_public(CHAR_TRUE             ,TheTrueObject   ,TheEnvironment);
 
   kernel_public(CHAR_PUBLIC_ROUTINES  ,ThePublicRoutines, TheEnvironment);
-  kernel_public(CHAR_STATIC_REQUIRES  ,TheStaticRequires, TheEnvironment);
 
   /* set up the kernel directory (MEMORY done elsewhere) */
   kernel_public(CHAR_INTEGER          ,TheIntegerClass     , TheKernel);

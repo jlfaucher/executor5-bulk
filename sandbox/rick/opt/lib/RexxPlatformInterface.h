@@ -231,11 +231,6 @@ RexxString *SysInitialAddressName();   /* get the initial address name      */
 RexxString *SysQualifyFileSystemName(RexxString *);
 #endif
 
-#ifndef SysFileExtension
-
-const char *SysFileExtension(const char *);
-#endif
-
 #ifndef SysClauseBoundary
                                        /* Do system clause boundary stuff   */
 void SysClauseBoundary(RexxActivation *);

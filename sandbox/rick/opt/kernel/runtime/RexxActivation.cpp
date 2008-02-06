@@ -279,7 +279,7 @@ RexxObject * RexxActivation::run(RexxObject *_receiver, RexxString *msgname, Rex
         this->arglist = _arglist;           /* set the argument list             */
         this->argcount = _argcount;
         /* first entry into here?            */
-        if (this->activation_context&TOP_LEVEL_CALL)
+        if (this->isTopLevelCall())
         {
             /* save entry argument list for      */
             /* variable pool fetch private       */
@@ -290,7 +290,7 @@ RexxObject * RexxActivation::run(RexxObject *_receiver, RexxString *msgname, Rex
             this->next = this->code->getFirstInstruction();  /* ask the method for the start point*/
             this->current = this->next;      /* set the current too (for errors)  */
                                              /* not an internal method?           */
-            if (this->activation_context&PROGRAM_LEVEL_CALL)
+            if (this->isProgramLevelCall())
             {
                 /* run initialization exit           */
                 activity->callInitializationExit(this);
@@ -339,7 +339,7 @@ RexxObject * RexxActivation::run(RexxObject *_receiver, RexxString *msgname, Rex
         }
     }
     /* internal call?                    */
-    if (this->activation_context == INTERNALCALL)
+    if (this->isInternalCall())
     {
         start = this->next;                /* get the starting point            */
                                            /* scan over the internal labels     */
@@ -408,7 +408,7 @@ RexxObject * RexxActivation::run(RexxObject *_receiver, RexxString *msgname, Rex
             if (this->execution_state == RETURNED)
             {
                 this->termination();               /* do activation termination process */
-                if (this->activation_context == INTERPRET)
+                if (this->isInterpret())
                 {
                     /* save the nested setting */
                     bool nested = this->sender->settings.local_variables.isNested();
@@ -884,7 +884,7 @@ void RexxActivation::returnFrom(
         reportException(Error_Execution_reply_return);
     }
     /* processing an Interpret           */
-    if (this->activation_context == INTERPRET)
+    if (this->isInterpret())
     {
         this->execution_state = RETURNED;  /* this is a returned state          */
         this->next = OREF_NULL;            /* turn off execution engine         */
@@ -897,7 +897,7 @@ void RexxActivation::returnFrom(
         this->next = OREF_NULL;            /* turn off execution engine         */
         this->result = resultObj;          /* save the return result            */
                                            /* real program call?                */
-        if (this->activation_context&PROGRAM_LEVEL_CALL)
+        if (this->isProgramLevelCall())
         {
             /* run termination exit              */
             activity->callTerminationExit(this);
@@ -1136,7 +1136,7 @@ void RexxActivation::exitFrom(
     this->settings.flags &= ~trace_debug;/* interactive debug prompt          */
     this->settings.flags |= debug_bypass;/* let debug prompt know of changes  */
                                          /* at a main program level?          */
-    if (this->activation_context&TOP_LEVEL_CALL)
+    if (this->isTopLevelCall())
     {
         /* already had a reply issued?       */
         if (this->settings.flags&reply_issued && result != OREF_NULL)
@@ -1145,7 +1145,7 @@ void RexxActivation::exitFrom(
             reportException(Error_Execution_reply_exit);
         }
         /* real program call?                */
-        if (this->activation_context&PROGRAM_LEVEL_CALL)
+        if (this->isProgramLevelCall())
         {
             /* run termination exit              */
             activity->callTerminationExit(this);
@@ -1177,9 +1177,11 @@ void RexxActivation::implicitExit()
 {
   /* at a main program level or completing an INTERPRET */
   /* instruction? */
-  if (this->activation_context&TOP_LEVEL_CALL || this->activation_context == INTERPRET) {
+  if (this->isTopLevelCall() || this->isInterpret())
+  {
                                        /* real program call?                */
-      if (this->activation_context&PROGRAM_LEVEL_CALL) {
+      if (this->isProgramLevelCall())
+      {
                                        /* run termination exit              */
           this->activity->callTerminationExit(this);
       }
@@ -1226,7 +1228,8 @@ void RexxActivation::checkTrapTable()
     this->settings.traps = new_directory();
                                        /* have to copy the trap table for an*/
                                        /* internal routine call?            */
-  else if (this->activation_context == INTERNALCALL && !(this->settings.flags&traps_copied)) {
+  else if (this->isInternalCall() && !(this->settings.flags&traps_copied))
+  {
                                        /* copy the table                    */
     this->settings.traps = (RexxDirectory *)this->settings.traps->copy();
                                        /* record that we've copied this     */
@@ -1262,11 +1265,14 @@ void RexxActivation::trapOff(
                                        /* remove the trap                   */
   this->settings.traps->remove(condition);
                                        /* novalue condition?                */
-  if (this->activation_context != INTERNALCALL && condition->strCompare(CHAR_NOVALUE)) {
+  if (!this->isInternalCall() && condition->strCompare(CHAR_NOVALUE))
+  {
                                        /* not also trapping ANY?            */
     if (this->settings.traps->at(OREF_ANY) == OREF_NULL)
+    {
                                        /* tag the method dictionary         */
       this->settings.local_variables.setNovalueOff();
+    }
   }
 }
 
@@ -1278,7 +1284,7 @@ RexxActivation * RexxActivation::external()
     /* if an internal call or an         */
     /* interpret, we need to pass this   */
     /* along                             */
-    if (this->activation_context&INTERNAL_LEVEL_CALL)
+    if (this->isInternalLevelCall())
     {
         return this->sender->external();   /* get our sender method             */
     }
@@ -1302,7 +1308,7 @@ void RexxActivation::raiseExit(
 {
     /* not internal routine or Interpret */
     /* instruction activation?           */
-    if (this->activation_context&TOP_LEVEL_CALL)
+    if (this->isTopLevelCall())
     {
         /* do the real condition raise       */
         this->raise(condition, rc, description, additional, resultObj, conditionobj);
@@ -1317,7 +1323,7 @@ void RexxActivation::raiseExit(
     else
     {
         /* real program call?                */
-        if (this->activation_context&PROGRAM_LEVEL_CALL)
+        if (this->isProgramLevelCall())
         {
             /* run termination exit              */
             activity->callTerminationExit(this);
@@ -1454,14 +1460,17 @@ RexxDirectory *RexxActivation::getStreams()
                                        /* not created yet?                  */
   if (this->settings.streams == OREF_NULL) {
                                        /* first entry into here?            */
-    if (this->activation_context&PROGRAM_OR_METHOD) {
+    if (this->isProgramOrMethod())
+    {
                                        /* always use a new directory        */
       this->settings.streams = new_directory();
     }
     else
+    {
                                        /* alway's use caller's for internal */
                                        /* call, external call or interpret  */
       this->settings.streams = this->sender->getStreams();
+    }
   }
   return this->settings.streams;       /* return the stream table           */
 }
@@ -1475,12 +1484,14 @@ void RexxActivation::signalTo(
   size_t lineNum;
                                        /* internal routine or Interpret     */
                                        /* instruction activation?           */
-  if (this->activation_context == INTERPRET) {
+  if (this->isInterpret())
+  {
     this->execution_state = RETURNED;  /* signal interpret termination      */
     this->next = OREF_NULL;            /* turn off execution engine         */
     this->sender->signalTo(target);    /* propogate the signal backward     */
   }
-  else {
+  else
+  {
                                        /* initialize the SIGL variable      */
     lineNum = this->current->getLineNumber();/* get the instruction line number   */
     this->setLocalVariable(OREF_SIGL, VARIABLE_SIGL, new_integer(lineNum));
@@ -1834,7 +1845,7 @@ bool RexxActivation::trap(             /* trap a condition                  */
         if (handler->isType(KEYWORD_SIGNAL))
         {
             /* not an Interpret instruction?     */
-            if (this->activation_context != INTERPRET)
+            if (this->isInterpret())
             {
                 throw this;                    /* unwind and process the trap       */
             }
@@ -1935,12 +1946,14 @@ void RexxActivation::unwindTrap(
 /******************************************************************************/
 {
                                        /* still an interpret level?         */
-  if (this->activation_context == INTERPRET) {
+  if (this->inInterpret())
+  {
                                        /* merge the traps                   */
     this->sender->mergeTraps(this->condition_queue, this->handler_queue);
     this->sender->unwindTrap(child);   /* unwind another level              */
   }
-  else {                               /* reached the "parent" level        */
+  else                                 /* reached the "parent" level        */
+  {
                                        /* pull back the settings            */
     child->putSettings(this->settings);
     throw this;                        /* unwind and process the trap       */
@@ -2040,7 +2053,7 @@ RexxObject * RexxActivation::rexxVariable(   /* retrieve a program entry        
   {
       // if this is an interpret, we need to report the line number of
       // the context that calls the interpret.
-      if (this->activation_context == INTERPRET)
+      if (this->isInterpret())
       {
           return sender->rexxVariable(name);
       }
@@ -2481,7 +2494,7 @@ size_t RexxActivation::getRandomSeed(
 
                                        /* currently in an internal routine  */
                                        /* or interpret instruction?         */
-  if (this->activation_context&INTERNAL_LEVEL_CALL)
+  if (this->isInternalLevelCall())
                                        /* forward along                     */
     return this->sender->getRandomSeed(seed);
 
@@ -3320,17 +3333,19 @@ void RexxActivation::pushEnvironment(
 /******************************************************************************/
 {
                                        /* internal call or interpret?         */
-  if (this->activation_context&TOP_LEVEL_CALL) {
+  if (this->isTopLevelCall())
+  {
                                        /* nope, push environment here.        */
                                        /* DO we have a environment list?      */
-    if (!this->environmentList) {
+    if (!this->environmentList)
+    {
                                        /* nope, create one                    */
       this->environmentList = new_list();
-
     }
     this->environmentList->addFirst(environment);
   }
-  else {                               /* nope, process up the chain.         */
+  else                                 /* nope, process up the chain.         */
+  {
                                        /* Yes, forward on the message.        */
     this->sender->pushEnvironment(environment);
   }
@@ -3342,10 +3357,12 @@ RexxObject * RexxActivation::popEnvironment()
 /******************************************************************************/
 {
                                        /* internal call or interpret?         */
-  if (this->activation_context&TOP_LEVEL_CALL) {
+  if (this->isTopLevelCall())
+  {
                                        /* nope, we puop Environemnt here      */
                                        /* DO we have a environment list?      */
-    if (this->environmentList) {
+    if (this->environmentList)
+    {
                                        /* yup, return first element           */
       return  this->environmentList->removeFirst();
 
@@ -3368,11 +3385,13 @@ void RexxActivation::closeStreams()
   RexxString    *index;                /* index for stream directory        */
 
                                        /* exiting a bottom level?           */
-  if (this->activation_context&PROGRAM_OR_METHOD) {
+  if (this->isProgramOrMethod())
+  {
     streams = this->settings.streams;  /* get the streams directory         */
     if (streams != OREF_NULL) {        /* actually have a table?            */
                                        /* traverse this                     */
-      for (HashLink j = streams->first(); (index = (RexxString *)streams->index(j)) != OREF_NULL; j = streams->next(j)) {
+      for (HashLink j = streams->first(); (index = (RexxString *)streams->index(j)) != OREF_NULL; j = streams->next(j))
+      {
                                        /* closing each stream               */
         streams->at(index)->sendMessage(OREF_CLOSE);
       }

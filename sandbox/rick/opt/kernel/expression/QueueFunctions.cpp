@@ -6,7 +6,7 @@
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
 /* distribution. A copy is also available at the following address:           */
-/* http://www.oorexx.org/license.html                          */
+/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
 /*                                                                            */
 /* Redistribution and use in source and binary forms, with or                 */
 /* without modification, are permitted provided that the following            */
@@ -37,174 +37,176 @@
 /*----------------------------------------------------------------------------*/
 /*********************************************************************/
 /*                                                                   */
-/*  Function:  System dependent queue support routines               */
+/*  Function:  Queue support routines                                */
 /*                                                                   */
 /*********************************************************************/
 
 #include <string.h>                    /* Get strcpy, strcat, etc.          */
 #include <stdlib.h>
 
-#include "RexxCore.h"                    /* global REXX declarations          */
+#include "RexxCore.h"                  /* global REXX declarations          */
 #include "StringClass.hpp"
-#include "RexxNativeAPI.h"                      /* Lot's of useful REXX macros       */
-#include "StreamNative.h"
-#include "ActivityManager.hpp"
-#include "RexxInternalApis.h"          /* Get private REXXAPI API's         */
+
+#include "oorexx.h"                    /* Include REXX header               */
+#include "InternalAPI.hpp"             /* Get private REXXAPI API's         */
 
 /********************************************************************************************/
 /* Rexx_query_queue                                                                         */
 /********************************************************************************************/
-RexxMethod0(REXXOBJECT, rexx_query_queue)
+RexxMethod0(size_t, rexx_query_queue)
 {
-   REXXOBJECT queue_name;              /* current queue name                */
+   RexxStringObject queue_name;        /* current queue name                */
    size_t count = 0;                   /* count of lines                    */
-   RexxReturnCode rc;                          /* queue query return code           */
 
                                        /* get the queue name                */
-   queue_name = ooRexxVarValue("NAMED_QUEUE");
-   REXX_GUARD_OFF();                   /* turn off the guard lock           */
+   queue_name = context->GetObjectVariable("NAMED_QUEUE");
                                        /* query the queue                   */
-   rc = RexxQueryQueue((char *)string_data(queue_name), &count);
-                                       /* return zero for any errors        */
-   return rc ? IntegerZero : ooRexxInteger(count);
+   RexxQueryQueue(context->ObjectToStringValue(queue_name), &count);
+
+   return count;
 }
 
 /********************************************************************************************/
 /* Rexx_pull_queue                                                                          */
 /********************************************************************************************/
-RexxMethod0(REXXOBJECT, rexx_pull_queue)
+RexxMethod0(RexxObjectPtr, rexx_pull_queue)
 {
    RXSTRING buf;                       /* pulled line buffer                */
-   SYSTEMTIME dt;                      /* line time stamp                   */
-   RexxReturnCode rc;                          /* pull return code                  */
-   REXXOBJECT oref_buf;                /* returned string object            */
-   REXXOBJECT queue_name;              /* current queue name                */
+   RexxReturnCode rc;                  /* pull return code                  */
 
                                        /* get the queue name                */
-   queue_name = ooRexxVarValue("NAMED_QUEUE");
-   REXX_GUARD_OFF();                   /* turn off the guard lock           */
+   RexxObjectPtr queue_name = context->GetObjectVariable("NAMED_QUEUE");
 
    buf.strptr = NULL;                  /* ask for a returned buffer         */
    buf.strlength = 0;
                                        /* pull a line                       */
-   rc = RexxPullQueue((char *)string_data(queue_name), &buf, &dt, RXQUEUE_NOWAIT);
+   rc = RexxPullQueue(context->ObjectToStringValue(queue_name), &buf, NULL, RXQUEUE_NOWAIT);
 
-   if (!rc) {                          /* get a pulled line?                */
-     oref_buf = ooRexxStringL(buf.strptr, buf.strlength);
-     if (buf.strptr && buf.strlength)  /* have a queue item?                */
-                                       /* free the buffer item              */
-       SysReleaseResultMemory(buf.strptr);
-     return oref_buf;                  /* return the item                   */
+   if (!rc)
+   {                                   /* get a pulled line?                */
+       RexxObjectPtr result = context->NewString(buf.strptr, buf.strlength);
+       if (buf.strptr != OREF_NULL)
+       {
+           RexxFreeMemory(buf.strptr);
+       }
+       return result;
    }
-   return TheNilObject;                /* give back a failure               */
+   return context->NilObject();        /* give back a failure               */
 }
 
 /********************************************************************************************/
 /* Rexx_linein_queue                                                                        */
 /********************************************************************************************/
-RexxMethod0(REXXOBJECT, rexx_linein_queue)
+RexxMethod0(RexxObjectPtr, rexx_linein_queue)
 {
-   RXSTRING buf;                       /* pulled line buffer                */
-   SYSTEMTIME dt;                      /* line time stamp                   */
-   RexxReturnCode rc;                          /* pull return code                  */
-   REXXOBJECT oref_buf;                /* returned string object            */
-   REXXOBJECT queue_name;              /* current queue name                */
+   RxString buf;                       /* pulled line buffer                */
+   RexxReturnCode rc;                  /* pull return code                  */
+   RexxObjectPtr queue_name;           /* current queue name                */
 
                                        /* get the queue name                */
-   queue_name = ooRexxVarValue("NAMED_QUEUE");
-   REXX_GUARD_OFF();                   /* turn off the guard lock           */
+   queue_name = context->GetObjectVariable("NAMED_QUEUE");
 
    buf.strptr = NULL;                  /* ask for a returned buffer         */
    buf.strlength = 0;
                                        /* pull a line                       */
-   rc = RexxPullQueue((char *)string_data(queue_name), &buf, &dt, RXQUEUE_WAIT);
+   rc = RexxPullQueue(context->ObjectToStringValue(queue_name), &buf, NULL, RXQUEUE_WAIT);
 
-   if (!rc) {                          /* get a pulled line?                */
-     oref_buf = ooRexxStringL(buf.strptr, buf.strlength);
-     if (buf.strptr)                   /* have a queue item?                */
-                                       /* free the buffer item              */
-       SysReleaseResultMemory(buf.strptr);
-     return oref_buf;                  /* return the item                   */
+   if (!rc)                            /* get a pulled line?                */
+   {
+       RexxObjectPtr result = context->NewString(buf.strptr, buf.strlength);
+       if (buf.strptr != OREF_NULL)
+       {
+           ooRexxFreeMemory(buf.strptr);
+       }
+       return result;
    }
-   return TheNilObject;                /* give back a failure               */
+   return context->NilObject();        /* give back a failure               */
 }
 
 /********************************************************************************************/
 /* add a line to a rexx queue                                                               */
 /********************************************************************************************/
-int rexx_add_queue(
-  REXXOBJECT  queue_line,              /* line to add                       */
+RexxNumber rexx_add_queue(
+  RexxMethodContext *context,          // the call context
+  RexxStringObject  queue_line,        /* line to add                       */
   int         order )                  /* queuing order                     */
 {
-   CONSTRXSTRING rx_string;            /* rxstring to return                */
-   RexxReturnCode rc;                          /* queue return code                 */
-   REXXOBJECT queue_name;              /* current queue name                */
+    char buffer = 0;                   // buffer for an empty string
+    CONSTRXSTRING rx_string;           // rxstring to push
+    RexxReturnCode rc;                 // queue return code
 
    if (queue_line == NULLOBJECT)       /* no line given?                    */
-     queue_line = OREF_NULLSTRING;     /* just add a null line              */
+   {
+       // just use a null string value
+       MAKERXSTRING(rx_string, buffer, 0);
+   }
+   else
+   {
+       MAKERXSTRING(rx_string, context->StringData(queue_line), context->StringLength(queue_line));
+   }
                                        /* get the queue name                */
-   queue_name = ooRexxVarValue("NAMED_QUEUE");
-   REXX_GUARD_OFF();                   /* turn off the guard lock           */
-                                       /*  move the info to rxstring        */
-   rx_string.strptr = string_data(queue_line);
-   rx_string.strlength = string_length(queue_line);
+   RexxObjectPtr queue_name = context->GetObjectVariable("NAMED_QUEUE");
                                        /*  move the line to the queue       */
-   rc = RexxAddQueue(string_data(queue_name), &rx_string, order);
+   rc = RexxAddQueue(context->ObjectToStringValue(queue_name), &rx_string, order);
    if (rc != 0)                        /* stream error?                     */
-     rexx_exception1(Error_System_service_service, ooRexxString("SYSTEM QUEUE"));
+   {
+       context->RaiseException1(Rexx_Error_System_service_service, context->NewStringFromAsciiz("SYSTEM QUEUE"));
+   }
    return rc;                          /* return the result                 */
 }
 
 /********************************************************************************************/
 /* Rexx_push_queue                                                                          */
 /********************************************************************************************/
-RexxMethod1(int, rexx_push_queue,
-   REXXOBJECT, queue_line)             /* line to queue                     */
+RexxMethod1(RexxNumber, rexx_push_queue,
+   OPTIONAL_RexxStringObject, queue_line)  /* line to queue                     */
 {
                                        /* push a line onto the queue        */
-   return rexx_add_queue(queue_line, RXQUEUE_LIFO);
+   return rexx_add_queue(context, queue_line, RXQUEUE_LIFO);
 }
 
 /********************************************************************************************/
 /* Rexx_queue_queue                                                                         */
 /********************************************************************************************/
-RexxMethod1(int, rexx_queue_queue,
-   REXXOBJECT, queue_line)             /* line to queue                     */
+RexxMethod1(RexxNumber, rexx_queue_queue,
+   OPTIONAL_RexxStringObject, queue_line)  /* line to queue                     */
 {
                                        /* queue a line onto the queue       */
-   return rexx_add_queue(queue_line, RXQUEUE_FIFO);
+   return rexx_add_queue(context, queue_line, RXQUEUE_FIFO);
 }
 
 /********************************************************************************************/
 /* Rexx_create_queue                                                                        */
 /********************************************************************************************/
-RexxMethod1(REXXOBJECT, rexx_create_queue,
+RexxMethod1(RexxStringObject, rexx_create_queue,
   CSTRING, queue_name)                 /* current queue name                */
 {
-   char buf[name_parameter_length+1];  /* creation buffer                   */
-   RexxReturnCode rc;                          /* creation return code              */
-   size_t dup_flag = 0;                /* duplicate name flag               */
+   char buf[MAX_QUEUE_NAME_LENGTH+1];  /* creation buffer                   */
+   RexxReturnCode rc;                  /* creation return code              */
+   size_t        dup_flag = 0;         /* duplicate name flag               */
 
                                        /* create a queue                    */
-   rc = RexxCreateQueue((char *)buf, sizeof(buf), (char *)queue_name, &dup_flag);
+   rc = RexxCreateQueue(buf, sizeof(buf), queue_name, &dup_flag);
 
    if (!rc)                            /* work ok?                          */
-     return ooRexxString(buf);         /* return the created name           */
-
-   return OREF_NULLSTRING;             /* just return a null string         */
+   {
+       return context->NewStringFromAsciiz(buf);
+   }
+   return context->NullString();       /* just return a null string         */
 }
 
 /********************************************************************************************/
 /* Rexx_delete_queue                                                                        */
 /********************************************************************************************/
-RexxMethod1(int, rexx_delete_queue,
+RexxMethod1(wholenumber_t, rexx_delete_queue,
   CSTRING, queue_name)
 {
                                        /* just delete the queue             */
-  return RexxDeleteQueue((char *)queue_name);
+  return RexxDeleteQueue(queue_name);
 }
 
-// retrofit by IH
+
+
 /********************************************************************************************/
 /* function_queueExit                                                                       */
 /********************************************************************************************/

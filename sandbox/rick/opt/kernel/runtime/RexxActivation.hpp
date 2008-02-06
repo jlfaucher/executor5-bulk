@@ -213,8 +213,11 @@ RexxObject * activation_find  (void);
    inline bool isInterpret() { return activation_context == INTERPRET; }
    inline bool isInternalCall() { return activation_context == INTERNALCALL; }
    inline bool isMethod() { return activation_context == METHODCALL; }
-   inline bool isTopLevelCall() { return activation_context == METHODCALL; }
+   inline bool isProgram() { return activation_context == PROGRAMCALL; }
+   inline bool isTopLevelCall() { return (activation_context & TOP_LEVEL_CALL) != 0; }
+   inline bool isProgramLevelCall() { return (activation_context & PROGRAM_LEVEL_CALL) != 0; }
    inline bool isNestedCall() { return (activation_context & INTERNAL_LEVEL_CALL) != 0; }
+   inline bool isProgramOrMethod() { return (activation_context & PROGRAM_OR_METHOD) != 0; }
 
    RexxObject *run(RexxObject *_receiver, RexxString *msgname, RexxObject **_arglist,
        size_t _argcount, RexxInstruction * start, ProtectedObject &resultObj);
