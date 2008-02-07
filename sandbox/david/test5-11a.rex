@@ -45,15 +45,15 @@
 -- by Andrew Krause
 
 page = .Array~new()
-page[1] = .PageInfo~new(.nil, -1, 'Introduction', 'GTK_ASSISTANT_PAGE_INFO', .true)
-page[2] = .PageInfo~new(.nil, -1, '', 'GTK_ASSISTANT_PAGE_CONTENT', .false)
-page[3] = .PageInfo~new(.nil, -1, 'Click the Check Button', 'GTK_ASSISTANT_PAGE_CONTENT', .false)
-page[4] = .PageInfo~new(.nil, -1, 'Click the Button', 'GTK_ASSISTANT_PAGE_PROGRESS', .false)
-page[5] = .PageInfo~new(.nil, -1, 'Confirmation', 'GTK_ASSISTANT_PAGE_CONFIRM', .true)
+page[1] = .PageInfo~new(.nil, -1, 'Introduction', GTK_ASSISTANT_PAGE_INFO, .true)
+page[2] = .PageInfo~new(.nil, -1, '', GTK_ASSISTANT_PAGE_CONTENT, .false)
+page[3] = .PageInfo~new(.nil, -1, 'Click the Check Button', GTK_ASSISTANT_PAGE_CONTENT, .false)
+page[4] = .PageInfo~new(.nil, -1, 'Click the Button', GTK_ASSISTANT_PAGE_PROGRESS, .false)
+page[5] = .PageInfo~new(.nil, -1, 'Confirmation', GTK_ASSISTANT_PAGE_CONFIRM, .true)
 
 assistant = .myAssistant~new()
 assistant~set_size_request(450,300)
-assistant~set_title('GtkAssistant Example')
+assistant~title = 'GtkAssistant Example'
 
 assistant~signal_connect('destroy')
 
@@ -129,8 +129,8 @@ return
 ::class myEntry subclass GtkEntry
 
 ::method signal_changed
-text = self~get_text()
-num = self~user_data~get_current_page()
+text = self~text
+num = self~user_data~current_page
 page = self~user_data~get_nth_page(num)
 self~user_data~~set_page_complete(page, length(text))
 return
@@ -139,14 +139,14 @@ return
 
 ::method signal_clicked
 percent = 0
-self~set_sensitive(.false)
+self~sensitive = .false
 assistant = self~user_data[1]
 progress = self~user_data[2]
 page = self~user_data[3]
 do while percent <= 100
    message = percent'% Complete'
-   progress~set_fraction(percent / 100)
-   progress~set_text(message)
+   progress~fraction = percent / 100
+   progress~text = message
    do while gtk_events_pending()
       call gtk_main_iteration
       end
@@ -159,7 +159,7 @@ return
 ::class myCheckButton subclass GtkCheckButton_With_Label
 
 ::method signal_toggled
-active = self~get_active()
+active = self~active
 self~user_data~set_page_complete(self, active)
 return
 

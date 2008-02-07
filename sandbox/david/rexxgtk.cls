@@ -70,11 +70,20 @@ return
 
 
 /*============================================================================*/
+/* Routine: gtk_main_quit                                                     */
+/*============================================================================*/
+
+::routine gtk_main_quit public
+.local['GTK_Quit'] = .true
+return
+
+
+/*============================================================================*/
 /* Routine: gtk_events_pending                                                */
 /*============================================================================*/
 
 ::routine gtk_events_pending public
-return GrxEventsPending
+return GrxEventsPending()
 
 
 /*============================================================================*/
@@ -2527,7 +2536,7 @@ return
 
 ::method 'text='
 use strict arg text
-call GrxProgressBar self~pointer, text
+call GrxProgressBarSetText self~pointer, text
 return
 
 ::method set_text
