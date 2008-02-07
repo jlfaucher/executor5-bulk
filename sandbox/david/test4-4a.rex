@@ -76,6 +76,6 @@ return
 ::class myMainWindow subclass GtkWindow
 
 ::method signal_destroy
-.local['GTK_Quit'] = .true
+call gtk_main_quit
 return
 

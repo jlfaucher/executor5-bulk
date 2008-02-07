@@ -73,7 +73,7 @@ select
       end
    otherwise do
       self~destroy()
-      .local['GTK_Quit'] = .true
+      call gtk_main_quit
       end
    end
 return
