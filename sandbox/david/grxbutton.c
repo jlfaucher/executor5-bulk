@@ -788,7 +788,7 @@ APIRET APIENTRY GrxColorButtonGetColor(const char * Name,
     gtk_color_button_get_color(GTK_COLOR_BUTTON(myWidget), &color);
 
     /* Set up the REXX return code */
-    snprintf(Retstr->strptr, RXAUTOBUFLEN, "#%04X%04X%04X", color.red, color.green, color.blue);
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "#%04X%04X%04X", color.red, color.green, color.blue);
     Retstr->strlength = strlen(Retstr->strptr);;
 
     return RXFUNC_OK;
