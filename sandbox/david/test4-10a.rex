@@ -65,8 +65,8 @@ chooser2~user_data = label
 chooser1~signal_connect('selection_changed')
 chooser2~signal_connect('selection_changed')
 
-chooser1~set_current_folder(GrxGetHomeDir())
-chooser2~set_current_folder(GrxGetUserName())
+chooser1~current_folder = g_get_home_dir()
+chooser2~current_folder = g_get_user_name()
 
 filter1 = .GtkFileFilter~new()
 filter2 = .GtkFileFilter~new()
