@@ -2563,10 +2563,61 @@ return
 
 
 /*============================================================================*/
+/* Routine: g_message                                                         */
+/*============================================================================*/
+
+::routine g_message public
+use strict arg msg
+call GrxMessage(msg)
+return
+
+
+/*============================================================================*/
+/* Routine: g_warning                                                         */
+/*============================================================================*/
+
+::routine g_warning public
+use strict arg msg
+call GrxWarning(msg)
+return
+
+
+/*============================================================================*/
+/* Routine: g_critical                                                        */
+/*============================================================================*/
+
+::routine g_critical public
+use strict arg msg
+call GrxCritical(msg)
+return
+
+
+/*============================================================================*/
+/* Routine: g_Error                                                           */
+/*============================================================================*/
+
+::routine g_error public
+use strict arg msg
+call GrxError(msg)
+return
+
+
+/*============================================================================*/
+/* Routine: g_debug                                                           */
+/*============================================================================*/
+
+::routine g_debug public
+use strict arg msg
+call GrxDebug(msg)
+return
+
+
+/*============================================================================*/
 /* Routine: g_get_user_name                                                   */
 /*============================================================================*/
 
 ::routine g_get_user_name public
+use strict arg
 return GrxGetUserName()
 
 
@@ -2575,6 +2626,7 @@ return GrxGetUserName()
 /*============================================================================*/
 
 ::routine g_get_real_name public
+use strict arg
 return GrxGetRealName()
 
 
@@ -2583,6 +2635,7 @@ return GrxGetRealName()
 /*============================================================================*/
 
 ::routine g_get_home_dir public
+use strict arg
 return GrxGetHomeDir()
 
 
@@ -2591,6 +2644,7 @@ return GrxGetHomeDir()
 /*============================================================================*/
 
 ::routine g_get_host_name public
+use strict arg
 return GrxGetHostName()
 
 

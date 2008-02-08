@@ -64,6 +64,141 @@
 
 
 /*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxMessage                                         */
+/* Description: Message logging                                               */
+/* Rexx Args:   Message string                                                */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxMessage(const char * Name,
+                           const size_t Argc, const RXSTRING Argv[],
+                           const char * Queuename, PRXSTRING Retstr)
+{
+    const gchar * user;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(1, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    g_message(Argv[0].strptr);
+	
+    /* Set up the REXX return code */
+    *(Retstr->strptr) = '0';
+    Retstr->strlength = 1;
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxWarning                                         */
+/* Description: Warning logging                                               */
+/* Rexx Args:   Message string                                                */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxWarning(const char * Name,
+                           const size_t Argc, const RXSTRING Argv[],
+                           const char * Queuename, PRXSTRING Retstr)
+{
+    const gchar * user;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(1, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    g_warging(Argv[0].strptr);
+	
+    /* Set up the REXX return code */
+    *(Retstr->strptr) = '0';
+    Retstr->strlength = 1;
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxCritical                                        */
+/* Description: Critical logging                                              */
+/* Rexx Args:   Message string                                                */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxCritical(const char * Name,
+                            const size_t Argc, const RXSTRING Argv[],
+                            const char * Queuename, PRXSTRING Retstr)
+{
+    const gchar * user;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(1, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    g_critical(Argv[0].strptr);
+	
+    /* Set up the REXX return code */
+    *(Retstr->strptr) = '0';
+    Retstr->strlength = 1;
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxError                                           */
+/* Description: Error logging                                                 */
+/* Rexx Args:   Message string                                                */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxError(const char * Name,
+                         const size_t Argc, const RXSTRING Argv[],
+                         const char * Queuename, PRXSTRING Retstr)
+{
+    const gchar * user;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(1, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    g_error(Argv[0].strptr);
+	
+    /* Set up the REXX return code */
+    *(Retstr->strptr) = '0';
+    Retstr->strlength = 1;
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxDebug                                           */
+/* Description: Debug logging                                                 */
+/* Rexx Args:   Message string                                                */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxDebug(const char * Name,
+                         const size_t Argc, const RXSTRING Argv[],
+                         const char * Queuename, PRXSTRING Retstr)
+{
+    const gchar * user;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(1, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    g_debug(Argv[0].strptr);
+	
+    /* Set up the REXX return code */
+    *(Retstr->strptr) = '0';
+    Retstr->strlength = 1;
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
 /* Rexx External Function: GrxGetUserName                                     */
 /* Description: Return the user name.                                         */
 /* Rexx Args:   None                                                          */

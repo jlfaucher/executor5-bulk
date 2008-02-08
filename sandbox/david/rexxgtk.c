@@ -149,6 +149,11 @@ APIRET APIENTRY GrxLoadFuncs(char * Name,
         "GrxSetRexxQueueName",
 
         // GLib functions
+        "GrxMessage",
+        "GrxWarning",
+        "GrxCritical",
+        "GrxError",
+        "GrxDebug",
         "GrxGetUserName",
         "GrxGetRealName",
         "GrxGetHomeDir",
