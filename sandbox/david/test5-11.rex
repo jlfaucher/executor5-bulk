@@ -45,7 +45,7 @@
 -- by Andrew Krause
 
 page = .Array~new()
-page[1] = .PageInfo~new(.nil, -1, 'Introduction', 'GTK_ASSISTANT_PAGE_INFO', .true)
+page[1] = .PageInfo~new(.nil, -1, 'Introduction', 'GTK_ASSISTANT_PAGE_INTRO', .true)
 page[2] = .PageInfo~new(.nil, -1, '', 'GTK_ASSISTANT_PAGE_CONTENT', .false)
 page[3] = .PageInfo~new(.nil, -1, 'Click the Check Button', 'GTK_ASSISTANT_PAGE_CONTENT', .false)
 page[4] = .PageInfo~new(.nil, -1, 'Click the Button', 'GTK_ASSISTANT_PAGE_PROGRESS', .false)
