@@ -948,7 +948,7 @@ APIRET APIENTRY GrxAboutDialogSetAuthors(const char * Name,
 
     gtk_about_dialog_set_authors(GTK_ABOUT_DIALOG(myWidget), authors);
 
-    g_free(authors);
+    g_free((gpointer)authors);
 
     /* Set up the REXX return code */
     *(Retstr->strptr) = '0';
@@ -987,7 +987,7 @@ APIRET APIENTRY GrxAboutDialogSetArtists(const char * Name,
 
     gtk_about_dialog_set_artists(GTK_ABOUT_DIALOG(myWidget), authors);
 
-    g_free(authors);
+    g_free((gpointer)authors);
 
     /* Set up the REXX return code */
     *(Retstr->strptr) = '0';
@@ -1026,7 +1026,7 @@ APIRET APIENTRY GrxAboutDialogSetDocumenters(const char * Name,
 
     gtk_about_dialog_set_documenters(GTK_ABOUT_DIALOG(myWidget), authors);
 
-    g_free(authors);
+    g_free((gpointer)authors);
 
     /* Set up the REXX return code */
     *(Retstr->strptr) = '0';
@@ -1083,7 +1083,7 @@ APIRET APIENTRY GrxColorSelectionDialogNew(const char * Name,
 {
     GtkWidget *myWidget, *colorsel;
     GdkColor color;
-    guint alpha = 65535;
+    guint16 alpha = 65535;
 
     /* Check for valid arguments */
     if (GrxCheckArgs(2, 2, Argv))
