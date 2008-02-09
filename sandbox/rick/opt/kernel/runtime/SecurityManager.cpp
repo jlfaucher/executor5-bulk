@@ -205,7 +205,7 @@ bool SecurityManager::checkFunctionCall(RexxString *functionName, size_t count, 
  *
  * @return true if the security manager handled this call, false otherwise.
  */
-bool SecurityManager::checkFunctionCall(RexxString *command, RexxString *env, RexxString **conditions, RexxObject **result)
+bool SecurityManager::checkCommand(RexxString *command, RexxString *env, RexxString **conditions, RexxObject **result)
 {
     // no method here
     if (manager == OREF_NULL)

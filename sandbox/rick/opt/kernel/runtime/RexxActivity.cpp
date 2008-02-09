@@ -2014,7 +2014,7 @@ bool RexxActivity::callFunctionExit(
     SecurityManager *manager = activation->getSecurityManager();
     if (manager != OREF_NULL)
     {
-        if (manager->checkFunctionCall(rname, argcount, arguments, funcResult)
+        if (manager->checkFunctionCall(rname, argcount, arguments, funcresult))
         {
             return false;
         }
@@ -2879,7 +2879,7 @@ void RexxActivity::createCallContext(CallContext &context, RexxNativeActivation 
     context.context = owner;
 }
 
-void RexxActivity::createExitContext(ExitContext *context, RexxNativeActivation *owner)
+void RexxActivity::createExitContext(ExitContext &context, RexxNativeActivation *owner)
 
 /**
  * Set up an exit  context for use before a call out.

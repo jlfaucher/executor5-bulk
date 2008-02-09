@@ -407,7 +407,7 @@ RexxRoutine * RoutineClass::processInstore(PRXSTRING instore, RexxString * name 
             /* get the image of function         */
             RexxExecuteMacroFunction(name->getStringData(), &buffer);
             /* unflatten the method now          */
-            RexxMethod *routine = SysRestoreProgramBuffer(&buffer, name);
+            RoutineClass *routine = SysRestoreProgramBuffer(&buffer, name);
             // release the buffer memory
             SysReleaseResultMemory(buffer.strptr);
             return routine;
@@ -417,8 +417,8 @@ RexxRoutine * RoutineClass::processInstore(PRXSTRING instore, RexxString * name 
     if (instore[1].strptr != NULL)       /* have an image                     */
     {
         /* go convert into a method          */
-        RexxMethod *method = SysRestoreProgramBuffer(&instore[1], name);
-        if (method != OREF_NULL)
+        RoutineClass *routine = SysRestoreProgramBuffer(&instore[1], name);
+        if (routine != OREF_NULL)
         {         /* did it unflatten successfully?    */
             if (instore[0].strptr != NULL)   /* have source also?                 */
             {
@@ -427,9 +427,9 @@ RexxRoutine * RoutineClass::processInstore(PRXSTRING instore, RexxString * name 
                 /* copy source into the buffer       */
                 memcpy(source_buffer->address(), instore[0].strptr, instore[0].strlength);
                 /* reconnect this with the source    */
-                ((RexxCode *)method)->getSourceObject()->setBufferedSource(source_buffer);
+                routin->getSourceObject()->setBufferedSource(source_buffer);
             }
-            return method;                   /* go return it                      */
+            return routine;                  /* go return it                      */
         }
     }
     if (instore[0].strptr != NULL)       /* have instorage source             */
@@ -444,10 +444,10 @@ RexxRoutine * RoutineClass::processInstore(PRXSTRING instore, RexxString * name 
             memcpy(source_buffer->address(), "--", 2);
         }
         /* translate this source             */
-        RexxRoutine *method = newRexxBuffer(name, source_buffer);
+        RexxRoutine *routine = newRexxBuffer(name, source_buffer);
         /* return this back in instore[1]    */
         SysSaveProgramBuffer(&instore[1], method);
-        return method;                     /* return translated source          */
+        return routine;                    /* return translated source          */
     }
     return OREF_NULL;                    /* processing failed                 */
 }

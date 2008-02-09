@@ -57,7 +57,7 @@
 #include "Interpreter.hpp"
 #include "TranslateDispatcher.hpp"
 #include "RexxStartDispatcher.hpp"
-#include "CreateMethodDispatcher.hpp"
+#include "CreateRoutineDispatcher.hpp"
 #include "InterpreterInstance.hpp"
 #include "RexxNativeActivation.hpp"
 #include "RexxInternalApis.h"
@@ -280,17 +280,17 @@ int REXXENTRY RexxReleaseScriptReference(const char *contextName, REXXOBJECT obj
  *
  * @param context    The scripting context name.
  * @param sourceData The source for the program to transform into a method.
- * @param pmethod    The returned method object reference.
+ * @param proutine   The returned method object reference.
  * @param pRexxCondData
  *                   Any error condition data returned for a translation failure.
  *
  * @return The translation return code.
  */
-RexxReturnCode REXXENTRY RexxCreateMethod(const char *context, PCONSTRXSTRING sourceData,
-  REXXOBJECT   *pmethod, RexxConditionData *pRexxCondData)
+RexxReturnCode REXXENTRY RexxCreateRoutine(const char *context, PCONSTRXSTRING sourceData,
+  REXXOBJECT   *proutine, RexxConditionData *pRexxCondData)
 {
     // create the dispatcher
-    CreateMethodDispatcher arguments(pRexxCondData);
+    CreateRoutineDispatcher arguments(pRexxCondData);
 
     arguments.contextName = context;
     arguments.programBuffer = *sourceData;
@@ -309,7 +309,7 @@ RexxReturnCode REXXENTRY RexxCreateMethod(const char *context, PCONSTRXSTRING so
  * Run a method in a scripting context.
  *
  * @param context   The name of the script context (used to anchor returned results).
- * @param method    The method to run.
+ * @param routine   The function to run.
  * @param callbackArgs
  *                  Opaque argument function used by the argument callback for
  *                  marshaling arguments into ooRexx objects.
@@ -324,14 +324,14 @@ RexxReturnCode REXXENTRY RexxCreateMethod(const char *context, PCONSTRXSTRING so
  *
  * @return The return code from running this program (0 indicates success).
  */
-RexxReturnCode REXXENTRY RexxRunMethod(const char * context, REXXOBJECT method, void * callbackArgs,
+RexxReturnCode REXXENTRY RexxRunRoutine(const char * context, REXXOBJECT routine, void * callbackArgs,
   REXXOBJECT (REXXENTRY *callbackFunction)(void *), PRXSYSEXIT exit_list, REXXOBJECT *presult,
   REXXOBJECT securityManager, RexxConditionData *pRexxCondData)        /* returned condition data           */
 {
-    RunMethodDispatcher arguments(exit_list, pRexxCondData);
+    RunRoutineDispatcher arguments(exit_list, pRexxCondData);
 
     arguments.contextName = context;
-    arguments.method = method;
+    arguments.routine = routine;
     arguments.callbackArguments = callbackArgs;
     arguments.argumentCallback = callbackFunction;
     arguments.securityManager = securityManager;

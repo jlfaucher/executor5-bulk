@@ -36,22 +36,17 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* Methods specific for AIX and Linux */
-                                       /* copy .methods, to begin with    */
-                                       /*  This is our starting point for */
-                                       /* The return directory of methods */
-meths = .methods~copy
-
 
 functions = .kernel~functions          /* get the function table            */
 /**************************************************************/
 /* Define the Linux system specific functions                 */
 /**************************************************************/
-functions['BEEP']            = meths~function_beep
-functions['SETLOCAL']        = meths~function_setlocal
-functions['ENDLOCAL']        = meths~function_endlocal
-functions['DIRECTORY']       = meths~function_directory
-functions['RXQUEUE']         = meths~function_rxqueue
-functions['FILESPEC']        = meths~function_filespec
+functions['BEEP']            = .functions~function_beep
+functions['SETLOCAL']        = .functions~function_setlocal
+functions['ENDLOCAL']        = .functions~function_endlocal
+functions['DIRECTORY']       = .functions~function_directory
+functions['RXQUEUE']         = .functions~function_rxqueue
+functions['FILESPEC']        = .functions~function_filespec
                                        /* Return system specific methods  */
 return meths
 /* **************************************** */

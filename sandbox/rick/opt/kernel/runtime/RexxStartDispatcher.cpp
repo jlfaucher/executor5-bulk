@@ -39,7 +39,8 @@
 #include "RexxCore.h"
 #include "RexxStartDispatcher.hpp"
 #include "ProtectedObject.hpp"
-#include "MethodClass.hpp"
+#include "RoutineClass.hpp"
+#include "SystemInterpreter.hpp"
 
 
 /**
@@ -100,7 +101,7 @@ void RexxStartDispatcher::run()
             break;
     }
 
-    RexxMethod *method = OREF_NULL;
+    RoutineClass *program = OREF_NULL;
 
     if (instore == NULL)                     /* no instore request?               */
     {
@@ -113,20 +114,20 @@ void RexxStartDispatcher::run()
         }
         savedObjects.add(fullname);
                                            /* try to restore saved image        */
-        method = SysRestoreProgram(fullname);
-        if (method == OREF_NULL)           /* unable to restore?                */
+        program = SysRestoreProgram(fullname);
+        if (program == OREF_NULL)          /* unable to restore?                */
         {
             /* go translate the image            */
-            method = TheMethodClass->newFile(fullname);
-            savedObjects.add(method);
-            SysSaveProgram(fullname, method);/* go save this method               */
+            program = RoutineClass::newFile(fullname);
+            savedObjects.add(program);
+            SysSaveProgram(fullname, program);/* go save this method               */
         }
     }
     else                                 /* have an instore program           */
     {
         /* go handle instore parms           */
-        method = RexxMethod::processInstore(instore, name);
-        if (method == OREF_NULL)           /* couldn't get it?                  */
+        program = RoutineClass::processInstore(instore, name);
+        if (program == OREF_NULL)        /* couldn't get it?                  */
         {
             /* got an error here                 */
             reportException(Error_Program_unreadable_name, name);
@@ -154,11 +155,11 @@ void RexxStartDispatcher::run()
 
     savedObjects.add(initial_address);
     /* actually need to run this?        */
-    if (method != OREF_NULL)
+    if (program != OREF_NULL)
     {
         ProtectedObject program_result;
         // call the program
-        method->runProgram(activity, source_calltype, initial_address, new_arglist->data(), argcount, program_result);
+        program->runProgram(activity, source_calltype, initial_address, new_arglist->data(), argcount, program_result);
         if (result != NULL)          /* if return provided for            */
         {
             /* actually have a result to return? */

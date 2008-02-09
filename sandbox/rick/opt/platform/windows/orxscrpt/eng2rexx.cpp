@@ -957,15 +957,15 @@ void __stdcall createCode(void *arguments)
   MAKERXSTRING(source,script,strlen(script));
 
   condData->rc = 0;  // clear to ok
-  rc = RexxCreateMethod(pEngine->getEngineName(),&source,pImage,condData);
+  rc = RexxCreateRoutine(pEngine->getEngineName(),&source,pImage,condData);
   if (condData->rc == 0) {
 #if defined(DEBUGZ)
-    FPRINTF2(logfile,"RexxCreateMethod success\n");
+    FPRINTF2(logfile,"RexxCreateRoutine success\n");
 #endif
   }
   else {
 #if defined(DEBUGZ)
-    FPRINTF2(logfile,"RexxCreateMethod with %s failed: %s\n",script,condData->errortext.strptr);
+    FPRINTF2(logfile,"RexxCreateRoutine with %s failed: %s\n",script,condData->errortext.strptr);
 #endif
   }
 
@@ -1017,7 +1017,7 @@ REXXOBJECT Create_securityObject(OrxScript  *pEngine,
 #if defined(DEBUGZ)
     FPRINTF2(logfile,"Create_securityObject - About to use SecurityManager %p\n",pEngine->getSecurityManager());
 #endif
-    rc = RexxRunMethod(pEngine->getEngineName(),pEngine->getSecurityManager(),&dp,DispParms2RexxArray,NULL,&securityObject,NULL,&condData);
+    rc = RexxRunRoutine(pEngine->getEngineName(),pEngine->getSecurityManager(),&dp,DispParms2RexxArray,NULL,&securityObject,NULL,&condData);
     VariantClear(&temp);
     if (condData.rc) {
       // an error occured: init excep info
@@ -1124,7 +1124,7 @@ void __stdcall runMethod(void *arguments)
     // if this was invoked with DISPPARMs, we need to convert the arguments,
     // plus the return object must be converted to a VARIANT
     if (parms) {
-      rc = RexxRunMethod(pEngine->getEngineName(),RexxCode->Code,parms,DispParms2RexxArray,exit_list,&pResult,pEngine->getSecurityObject(),condData);
+      rc = RexxRunRoutine(pEngine->getEngineName(),RexxCode->Code,parms,DispParms2RexxArray,exit_list,&pResult,pEngine->getSecurityObject(),condData);
       // successful execution?
       if (condData->rc == 0) {
         // _asm int 3
@@ -1136,7 +1136,7 @@ void __stdcall runMethod(void *arguments)
       }
     }
     else
-      rc = RexxRunMethod(pEngine->getEngineName(),RexxCode->Code,args,NULL,exit_list,pTargetResult,pEngine->getSecurityObject(),condData);
+      rc = RexxRunRoutine(pEngine->getEngineName(),RexxCode->Code,args,NULL,exit_list,pTargetResult,pEngine->getSecurityObject(),condData);
 
     condData->position += RexxCode->StartingLN;
 
@@ -1167,7 +1167,7 @@ void __stdcall runMethod(void *arguments)
     }
     else {
 #if defined(DEBUGZ)
-      FPRINTF2(logfile,"RexxRunMethod success. Returned object: %p.\n",pResult);
+      FPRINTF2(logfile,"RexxRunRoutine success. Returned object: %p.\n",pResult);
 #endif
     }
 

@@ -73,6 +73,10 @@ public:
     static inline void setTimeSliceTimerThread(HANDLE h) { timeSliceTimerThread = h; }
     static bool loadMessage(wholenumber_t code, char *buffer, size_t bufferLength);
 
+    static RexxString *extractDirectory(RexxString *file);
+    static RexxString *extractExtension(RexxString *file);
+    static RexxString *extractFile(RexxString *file);
+
 
 protected:
 

@@ -516,7 +516,7 @@ RoutineClass *PackageManager::getRequires(RexxActivity *activity, RexxString *sh
     WeakReference *requiresRef = (WeakReference *)loadedRequires->get(name);
     if (requiresRef != OREF_NULL)
     {
-        RexxCode *resolved = (RexxCode *)requiresRef->getValue();
+        RoutineClass *resolved = (RoutineClass)requiresRef->getValue();
         if (resolved != OREF_NULL)
         {
             result = resolved;
@@ -535,7 +535,7 @@ RoutineClass *PackageManager::getRequires(RexxActivity *activity, RexxString *sh
     if (checkMacroSpace && (macroPosition == RXMACRO_SEARCH_BEFORE))
     {
         getMacroSpaceRequires(activity, name, result, securityManager);
-        return (RexxCode *)(RexxObject *)result;
+        return (RoutineClass *)(RexxObject *)result;
     }
 
     // it's possible we don't have a file version of this
@@ -582,12 +582,12 @@ RoutineClass *PackageManager::getRequires(RexxActivity *activity, RexxString *sh
 }
 
 
-void PackageManager::getMacroSpaceRequires(RexxActivity *activity, RexxString *name, ProtectedObject &result, RexxObject *securityManager)
+RoutineClass *PackageManager::getMacroSpaceRequires(RexxActivity *activity, RexxString *name, ProtectedObject &result, RexxObject *securityManager)
 {
     // make sure we're not stuck in a circular reference
     activity->checkRequires(name);
     // unflatten the method and protect it
-    RexxCode *code = RexxActivation::getMacroCode(name);
+    RoutineClass *code = RexxActivation::getMacroCode(name);
     result = code;
 
     if (securityManager == OREF_NULL)
@@ -597,19 +597,21 @@ void PackageManager::getMacroSpaceRequires(RexxActivity *activity, RexxString *n
     runRequires(activity, name, code);
     WeakReference *ref = new WeakReference(code);
     loadedRequires->put(ref, name);
+    return code;
 }
 
 
-void PackageManager::getRequiresFile(RexxActivity *activity, RexxString *name, ProtectedObject &result)
+RoutineClass *PackageManager::getRequiresFile(RexxActivity *activity, RexxString *name, ProtectedObject &result)
 {
     // make sure we're not stuck in a circular reference
     activity->checkRequires(name);
     // try to load this from a previously compiled source file
-    RexxCode *code = SysRestoreProgram(name);
+    RexxRoutine *code = SysRestoreProgram(name);
     if (code == OREF_NULL)             /* unable to restore?              */
     {
                                          /* go translate the image          */
-         code = RexxSource::generateCodeFromFile(fullname);
+         code = new_routine(RexxSource::generateCodeFromFile(fullname));
+         result = code;
          SysSaveProgram(name, code);     /* go save this method             */
     }
 
@@ -618,9 +620,11 @@ void PackageManager::getRequiresFile(RexxActivity *activity, RexxString *name, P
     {
         code->setSecurityManager(securityManager);
     }
+
     runRequires(activity, name, code);
     WeakReference *ref = new WeakReference(code);
     loadedRequires->put(ref, name);
+    return code;
 }
 
 
@@ -630,7 +634,7 @@ void PackageManager::runRequires(RexxActivity *activity, RexxString *name, Routi
 
     // make sure we reference the circular reference stack
     activity->addRunningRequires(name);
-    code->call(activity, name, NULL, 0, OREF_ROUTINENAME, OREF_NULL, EXTERNALCALL, dummy);
+    code->call(activity, name, NULL, 0, dummy);
                                          /* No longer installing routine.     */
     this->activity->removeRunningRequires(name);
 }

@@ -69,7 +69,10 @@ InterpreterInstance::InterpreterInstance()
     EVSET(terminationSem);
 
     // fill in the interface vectore
-    context.threadContext.functions = &interfaceVector;
+    context.instanceContext.functions = &interfaceVector;
+    // this back-link allows us to recover the instance pointer on the
+    // API callbacks.
+    context.instance = this;
 }
 
 

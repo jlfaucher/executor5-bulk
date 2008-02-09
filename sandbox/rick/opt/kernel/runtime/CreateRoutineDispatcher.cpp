@@ -37,11 +37,11 @@
 /*----------------------------------------------------------------------------*/
 
 #include "RexxCore.h"
-#include "CreateMethodDispatcher.hpp"
+#include "CreateRoutineDispatcher.hpp"
 #include "Interpreter.hpp"
 #include "InterpreterInstance.hpp"
 #include "RexxActivity.hpp"
-#include "MethodClass.hpp"
+#include "RoutineClass.hpp"
 #include "DirectoryClass.hpp"
 #include "BufferClass.hpp"
 #include "ProtectedObject.hpp"
@@ -86,32 +86,32 @@ void ConditionDispatcher::handleError(wholenumber_t r, RexxDirectory *c)
  * Default virtual method for handling a run() methods on
  * an activity dispatcher.
  */
-void CreateMethodDispatcher::run()
+void CreateRoutineDispatcher::run()
 {
                                           /* get a buffer object               */
     RexxBuffer *source_buffer = new_buffer(programBuffer);
     ProtectedObject p(source_buffer);
                                           /* translate this source             */
-    translatedMethod = (REXXOBJECT)RexxMethod::newRexxBuffer(OREF_NULLSTRING, source_buffer, (RexxClass *)TheNilObject);
+    translatedRoutine = (REXXOBJECT)RoutineClass::newRexxBuffer(OREF_NULLSTRING, source_buffer);
 
     RexxString *saveTarget = new_string(contextName);
     RexxDirectory *locked_objects = (RexxDirectory *)ActivityManager::localEnvironment->at(saveTarget);
     // the value used in our directory is the string value of the
     // method pointer
     char buffer[32];
-    sprintf(buffer, "0x%p", translatedMethod);
-    locked_objects->put((RexxObject *)translatedMethod, new_string(buffer));
+    sprintf(buffer, "0x%p", translatedRoutine);
+    locked_objects->put(translatedRoutine, new_string(buffer));
 }
 
 
-void RunMethodDispatcher::run()
+void RunRoutineDispatcher::run()
 {
     RexxArray *new_arglist = OREF_NULL;
 
     // callback activated?
     if (argumentCallback != NULL)
     {
-        RunMethodArgumentCallback callback(argumentCallback, callbackArguments);
+        RunRoutineArgumentCallback callback(argumentCallback, callbackArguments);
 
         activity->run(callback);
 
@@ -132,13 +132,13 @@ void RunMethodDispatcher::run()
     // configure the method security manager
     if (securityManager != NULLOBJECT)
     {
-        ((RexxMethod*)method)->setSecurityManager((RexxObject *)securityManager);
+        ((RoutineClass *)routine)->setSecurityManager((RexxObject *)securityManager);
     }
 
     /* run and get the result            */
     ProtectedObject program_result;
     // call the program
-    ((RexxMethod *)method)->runProgram(activity, OREF_SCRIPT, initial_address, new_arglist->data(), new_arglist->size(), program_result);
+    ((RoutineClass *)routine)->runProgram(activity, OREF_SCRIPT, initial_address, new_arglist->data(), new_arglist->size(), program_result);
     result = (REXXOBJECT)program_result;
     if (result != NULLOBJECT)
     {
@@ -156,7 +156,7 @@ void RunMethodDispatcher::run()
 /**
  * Process a callout to an argument processing function.
  */
-void RunMethodArgumentCallback::run()
+void RunRoutineArgumentCallback::run()
 {
     // this just dispatches the callback in the correct state
     argumentList = (RexxArray *)callback(arguments);

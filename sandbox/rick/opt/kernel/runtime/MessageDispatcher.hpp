@@ -47,8 +47,8 @@ class RexxMessage;
 class MessageDispatcher : public ActivityDispatcher
 {
 public:
-    inline MessageDispatcher(RexxMessage *m) : ActivityDispatcher(OREF_NULL, OREF_NULL) { ; }
-    virtual ~RexxStartDispatcher() { ; }
+    inline MessageDispatcher(RexxMessage *m) : ActivityDispatcher(OREF_NULL, OREF_NULL), message(m) { ; }
+    virtual ~MessageDispatcher() { ; }
 
     virtual void run();
     virtual void handleError(wholenumber_t, RexxDirectory *);

@@ -233,6 +233,7 @@ class RexxSource : public RexxInternalObject {
   inline RexxString *getProgramExtension() { return this->programExtension; }
   inline RexxString *getProgramFile() { return this->programFile; }
   inline RexxDirectory *getMethods() { return this->methods; };
+  inline RexxDirectory *getRoutines() { return this->routines; };
   inline void        pushOperator(RexxToken *operatorToken) { this->operators->pushRexx((RexxObject *)operatorToken); };
   inline RexxToken  *popOperator() { return (RexxToken *)(this->operators->pullRexx()); };
   inline RexxToken  *topOperator() { return (RexxToken *)(this->operators->peek()); };

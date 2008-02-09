@@ -306,6 +306,9 @@ public:
    void setExitHandler(int exitNum, const char *e) { getExitHandler(exitNum).resolve(e); }
    void setExitHandler(RXSYSEXIT &e) { getExitHandler(e.sysexit_code).resolve(e.sysexit_name); }
    RexxString *resolveProgramName(RexxString *, RexxString *, RexxString *);
+   void createMethodContext(MethodContext &context, RexxNativeActivation *owner);
+   void createCallContext(CallContext &context, RexxNativeActivation *owner);
+   void createExitContext(ExitContext &context, RexxNativeActivation *owner);
 
    // TODO:  This needs to be replaced by a system object.
 #ifdef THREADHANDLE

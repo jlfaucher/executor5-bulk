@@ -35,25 +35,19 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-                                       /* copy .methods, to begin with    */
-                                       /*  This is our starting point for */
-                                       /* The return directory of methods */
-meths = .methods~copy
 
 functions = .kernel~functions          /* get the function table            */
   /**************************************************************/
   /* Define the Windows system specific functions               */
   /**************************************************************/
-functions['BEEP']         = meths~function_beep
-functions['SETLOCAL']     = meths~function_setlocal
-functions['ENDLOCAL']     = meths~function_endlocal
-functions['FILESPEC']     = meths~function_filespec
-functions['DIRECTORY']    = meths~function_directory
-functions['RXQUEUE']      = meths~function_rxqueue
-functions['RXMESSAGEBOX'] = meths~function_rxmessagebox
+functions['BEEP']         = .functions~function_beep
+functions['SETLOCAL']     = .functions~function_setlocal
+functions['ENDLOCAL']     = .functions~function_endlocal
+functions['FILESPEC']     = .functions~function_filespec
+functions['DIRECTORY']    = .functions~function_directory
+functions['RXQUEUE']      = .functions~function_rxqueue
+functions['RXMESSAGEBOX'] = .functions~function_rxmessagebox
 
-                                       /* Return system specific methods  */
-return meths
 
 /* **************************************** */
 /*    F U N C T I O N    M E T H O D S      */

@@ -80,8 +80,8 @@ public:
         RexxObject **arguments, size_t argcount, ProtectedObject &result);
 
     static RoutineClass *getRequires(RexxActivity *activity, RexxString *shortName, RexxString *resolvedName, ProtectedObject &result);
-    static void          getMacroSpaceRequires(RexxActivity *activity, RexxString *name, ProtectedObject &result, RexxObject *securityManager);
-    static void          getRequiresFile(RexxActivity *activity, RexxString *name, ProtectedObject &result);
+    static RoutineClass *getMacroSpaceRequires(RexxActivity *activity, RexxString *name, ProtectedObject &result, RexxObject *securityManager);
+    static RoutineClass *getRequiresFile(RexxActivity *activity, RexxString *name, ProtectedObject &result);
     static void          runRequires(RexxActivity *activity, RexxString *name, RoutineClass *code);
 
 protected:

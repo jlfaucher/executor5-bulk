@@ -57,11 +57,6 @@
 // singleton class instance
 RexxClass *RexxMessage::classInstance = OREF_NULL;
 
-                                       /* message_nstart, found in oknmsg.c */
-extern "C" {
-  char * REXXENTRY message_nstart (void**);
-}
-
 RexxMessage::RexxMessage(
     RexxObject *_target,                /* message target                    */
     RexxObject *_message,               /* message to issue                  */
@@ -302,9 +297,7 @@ RexxObject *RexxMessage::send(RexxObject *_receiver)
 RexxObject *RexxMessage::start(RexxObject *_receiver)
 /******************************************************************************/
 /* Function:  Since a start is to happen Async, we create a new activity      */
-/*            and Native Method, which will invoke the message_nstart method  */
-/*            (located in OKNMSG.C) which simple does a send to his message   */
-/*            object on the new activity.                                     */
+/*            using ourselves as a dispatch target.                           */
 /******************************************************************************/
 {
     /* has message already been sent or  */

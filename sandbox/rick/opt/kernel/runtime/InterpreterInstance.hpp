@@ -72,7 +72,7 @@ public:
     InterpreterInstance(ExitHandler *handlers);
     void addActivity(RexxActivity *);
     void removeActivity(RexxActivity *);
-    void initialize(RexxActivity *activity, PRXSYSEXIT handlers, const char *defaultEnvironment);
+    void initialize(RexxActivity *activity, RexxOption *options);
     bool terminate();
     void waitForCompletion();
     void attachToProcess();
@@ -99,8 +99,14 @@ public:
     void haltAllActivities();
     void traceAllActivities(bool on);
     inline RexxString *resolveProgramName(RexxString *name, RexxString *dir, RexxString *ext) { return sysInstance.resolveProgramName(name, dir, ext); }
+    inline SecurityManager *getSecurityManager() { return securityManager; }
+    void setSecurityManager(RexxObject *m);
 
 protected:
+
+    bool processOptions(RexxOption *options);
+
+
     InstanceContext      context;            // our externalizied instance context
     SysInterpreterInstance sysInstance;      // our platform specific helper
 

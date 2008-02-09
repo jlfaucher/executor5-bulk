@@ -123,14 +123,13 @@ RexxMethod *SysRestoreTranslatedProgram(RexxString *, FILE *Handle);
 /*                                                                   */
 /*********************************************************************/
 
-RexxMethod *SysRestoreProgram(
+RoutineClass *SysRestoreProgram(
   RexxString *FileName )               /* name of file to process           */
 
 {
   FILE         *Handle;                /* output file handle                */
   const char   *File;                  /* ASCII-Z file name                 */
 
-  RexxMethod  * Method;                /* unflattened method                */
   FILE_CONTROL  Control;               /* control information               */
   char        * StartPointer;          /* start of buffered method          */
   RexxBuffer  * Buffer;                /* Buffer to unflatten               */
@@ -155,7 +154,7 @@ RexxMethod *SysRestoreProgram(
     return OREF_NULL;                  /* no restored image                 */
 
                                        /* see if this is a "sourceless" one */
-  Method = SysRestoreTranslatedProgram(FileName, Handle);
+  RoutineClass *program = SysRestoreTranslatedProgram(FileName, Handle);
   if (Method != OREF_NULL)             /* get a method out of this?         */
     return Method;                     /* this process is finished          */
 /* this is to load the tokenized form that is eventually stored behind the script */
@@ -212,14 +211,14 @@ RexxMethod *SysRestoreProgram(
   memcpy(StartPointer, MethodInfo, BufferSize);
   GlobalFree(MethodInfo);              /* done with the tokenize buffer     */
                                        /* "puff" this out usable form       */
-  Method = TheMethodClass->restore(Buffer, StartPointer);
-  ProtectedObject p1(Method);
-  Source = ((RexxCode*)Method->getCode())->getSourceObject();   /* and now the source object         */
+  program = RoutineClass::restore(Buffer, StartPointer);
+  ProtectedObject p1(program;
+  Source = program->getSourceObject();   /* and now the source object         */
                                        /* switch the file name (this might  */
                                        /* be different than the name        */
   Source->setProgramName(FileName);    /* originally saved under            */
   Source->setReconnect();              /* allow source file reconnection    */
-  return Method;                       /* return the unflattened method     */
+  return program;                      /* return the unflattened method     */
 }
 
 /*********************************************************************/
@@ -311,7 +310,7 @@ void SysSaveProgram(
 /*                                                                   */
 /*********************************************************************/
 
-RexxMethod *SysRestoreProgramBuffer(
+ProgramClass *SysRestoreProgramBuffer(
   PRXSTRING    InBuffer,               /* pointer to stored method          */
   RexxString  *Name)                   /* name associated with the program  */
 {
@@ -320,7 +319,6 @@ RexxMethod *SysRestoreProgramBuffer(
   char         *StartPointer;          /* start of buffered information     */
   RexxBuffer   *Buffer;                /* Buffer to unflatten               */
   size_t        BufferSize;            /* size of the buffer                */
-  RexxMethod   *Method;                /* unflattened method                */
   RexxSource   *Source;                /* REXX source object                */
 
                                        /* address the control information   */
@@ -340,14 +338,14 @@ RexxMethod *SysRestoreProgramBuffer(
   memcpy(StartPointer, MethodInfo, BufferSize);
   ProtectedObject p(Buffer);
                                        /* "puff" this out usable form       */
-  Method = TheMethodClass->restore(Buffer, StartPointer);
-  Source = ((RexxCode*)Method->getCode())->getSourceObject();   /* and now the source object         */
+  program = RoutineClass::restore(Buffer, StartPointer);
+  Source = program->getSourceObject();   /* and now the source object         */
                                        /* switch the file name (this might  */
                                        /* be different than the name        */
   Source->setProgramName(Name);        /* originally saved under            */
                                        /* NOTE:  no source file reconnect   */
                                        /* is possible here                  */
-  return Method;                       /* return the unflattened method     */
+  return program;                      /* return the unflattened method     */
 }
                                        /* point to the flattened method     */
 /*********************************************************************/
@@ -358,7 +356,7 @@ RexxMethod *SysRestoreProgramBuffer(
 /*               instorage buffer.                                   */
 /*                                                                   */
 /*********************************************************************/
-RexxMethod *SysRestoreInstoreProgram(
+RoutineClass *SysRestoreInstoreProgram(
   PRXSTRING    InBuffer,               /* pointer to stored method          */
   RexxString * Name)                   /* name associated with the program  */
 {
@@ -385,7 +383,7 @@ RexxMethod *SysRestoreInstoreProgram(
 /*********************************************************************/
 void SysSaveProgramBuffer(
   PRXSTRING    OutBuffer,              /* location to save the program      */
-  RexxMethod  *Method )                /* method to save                    */
+  RoutineClass *program)               /* method to save                    */
 {
   PFILE_CONTROL Control;               /* control information               */
   char         *Buffer;                /* buffer pointer                    */
@@ -396,7 +394,7 @@ void SysSaveProgramBuffer(
   RexxString   *Version;               /* REXX version string               */
 
   ProtectedObject p(Method);
-  FlatBuffer = Method->saveMethod();   /* flatten the method                */
+  FlatBuffer = program->save();        /* flatten the method                */
                                        /* retrieve the length of the buffer */
   BufferLength = (LONG)FlatBuffer->current;
   MethodBuffer = FlatBuffer->buffer;   /* get to the actual data buffer     */
@@ -429,10 +427,9 @@ void SysSaveProgramBuffer(
 /*                                                                   */
 /*********************************************************************/
 
-// retrofit by IH
 void SysSaveTranslatedProgram(
   const char  *File,                   /* name of file to process           */
-  RexxMethod  *Method )                /* method to save                    */
+  RoutineClass *program)               /* method to save                    */
 {
   FILE         *Handle;                /* output file handle                */
   FILE_CONTROL  Control;               /* control information               */
@@ -446,8 +443,8 @@ void SysSaveTranslatedProgram(
   if (Handle == NULL)                  /* get an open error?                */
                                        /* got an error here                 */
     reportException(Error_Program_unreadable_output_error, File);
-  ProtectedObject p(Method);
-  FlatBuffer = Method->saveMethod();   /* flatten the method                */
+  ProtectedObject p(program);
+  FlatBuffer = program->save();        /* flatten the method                */
   ProtectedObject p2(FlatBuffer);
                                        /* retrieve the length of the buffer */
   BufferLength = (LONG)FlatBuffer->current;
@@ -463,7 +460,7 @@ void SysSaveTranslatedProgram(
   Control.Magic = MAGIC;               /* magic signature number            */
   Control.ImageSize = BufferLength;    /* add the buffer length             */
   {
-      UnsafeBlock;
+      UnsafeBlock releaser;
 
       fwrite(compiledHeader, 1, sizeof(compiledHeader), Handle);
                                            /* now the control info              */
@@ -482,7 +479,7 @@ void SysSaveTranslatedProgram(
 /*                                                                   */
 /*********************************************************************/
 
-RexxMethod *SysRestoreTranslatedProgram(
+RoutineClass *SysRestoreTranslatedProgram(
   RexxString *FileName,                /* name of file to process           */
   FILE       *Handle )                 /* handle of the file to process     */
 {
@@ -491,7 +488,6 @@ RexxMethod *SysRestoreTranslatedProgram(
   RexxBuffer   *Buffer;                /* Buffer to unflatten               */
   size_t        BufferSize;            /* size of the buffer                */
   size_t        BytesRead;             /* actual bytes read                 */
-  RexxMethod   *Method;                /* unflattened method                */
   RexxSource   *Source;                /* REXX source object                */
                                        /* temporary read buffer             */
   char          fileTag[sizeof(compiledHeader)];
@@ -527,13 +523,13 @@ RexxMethod *SysRestoreTranslatedProgram(
       fclose(Handle);                      /* close the file                    */
   }
                                        /* "puff" this out usable form       */
-  Method = TheMethodClass->restore(Buffer, StartPointer);
-  ProtectedObject p2(Method);
-  Source = ((RexxCode*)Method->getCode())->getSourceObject();   /* and now the source object         */
+  RoutineClass *program = RoutineClass::restore(Buffer, StartPointer);
+  ProtectedObject p2(program);
+  Source = program->getSourceObject();   /* and now the source object         */
                                        /* switch the file name (this might  */
                                        /* be different than the name        */
   Source->setProgramName(FileName);    /* originally saved under            */
-  return Method;                       /* return the unflattened method     */
+  return program;                      /* return the unflattened method     */
 }
 
 

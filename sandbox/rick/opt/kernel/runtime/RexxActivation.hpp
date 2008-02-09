@@ -260,7 +260,8 @@ RexxObject * activation_find  (void);
    RexxObject      * internalCall(RexxInstruction *, size_t, RexxExpressionStack *, ProtectedObject &);
    RexxObject      * internalCallTrap(RexxInstruction *, RexxDirectory *, ProtectedObject &);
    bool              callMacroSpaceFunction(RexxString *, RexxObject **, size_t, RexxString *, int, ProtectedObject &);
-   static RexxCode * getMacroCode(RexxString *macroName);
+   static RoutineClass* getMacroCode(RexxString *macroName);
+   RexxString       *resolveProgramName(RexxString *name);
    RexxObject      * command(RexxString *, RexxString *);
    int64_t           getElapsed();
    RexxDateTime      getTime();
@@ -307,7 +308,8 @@ RexxObject * activation_find  (void);
    void              propagateExit(RexxObject *);
    void              setDefaultAddress(RexxString *);
    bool              internalMethod();
-   RexxObject      * loadRequired(RexxString *, RexxInstruction *);
+   RoutineClass    * loadRequired(RexxString *, RexxInstruction *);
+   void              loadPackage(RexxString *target, RexxInstruction *instruction);
    RexxObject      * rexxVariable(RexxString *);
    void              pushEnvironment(RexxObject *);
    RexxObject      * popEnvironment();
@@ -634,7 +636,7 @@ RexxObject * activation_find  (void);
        /* if we're nested, we need to make sure that any variable */
        /* dictionary created at this level is propagated back to */
        /* the caller. */
-       if (isNestedCall() && settings.local_variables.isNested())
+       if (isInternalLevelCall() && settings.local_variables.isNested())
        {
            sender->setLocalVariableDictionary(settings.local_variables.getNestedDictionary());
        }
@@ -642,10 +644,11 @@ RexxObject * activation_find  (void);
        {
            // we need to cleanup the local variables and return them to the
            // cache.
-           size_t i;
-           for (i = 0; i < settings.local_variables.size; i++) {
+           for (size_t i = 0; i < settings.local_variables.size; i++)
+           {
                RexxVariable *var = settings.local_variables.get(i);
-               if (var != OREF_NULL && var->isLocal(this)) {
+               if (var != OREF_NULL && var->isLocal(this))
+               {
                    cacheLocalVariable(var);
                }
            }

@@ -37,8 +37,8 @@
 /*----------------------------------------------------------------------------*/
 
 
-#ifndef CreateMethodDispatcher_included
-#define CreateMethodDispatcher_included
+#ifndef CreateRoutineDispatcher_included
+#define CreateRoutineDispatcher_included
 
 #include "ActivityDispatcher.hpp"
 #include "CallbackDispatcher.hpp"
@@ -58,30 +58,30 @@ protected:
 
 
 
-class CreateMethodDispatcher : public ConditionDispatcher
+class CreateRoutineDispatcher : public ConditionDispatcher
 {
 public:
-    inline CreateMethodDispatcher(RexxConditionData *cd) : ConditionDispatcher(NULL, NULL, cd) { ; }
-    virtual ~CreateMethodDispatcher() { ; }
+    inline CreateRoutineDispatcher(RexxConditionData *cd) : ConditionDispatcher(NULL, NULL, cd) { ; }
+    virtual ~CreateRoutineDispatcher() { ; }
 
     virtual void run();
 
-    CONSTRXSTRING programBuffer;   // the source buffer to translate from
-    REXXOBJECT    translatedMethod;  // the method object returned
+    CONSTRXSTRING programBuffer;     // the source buffer to translate from
+    REXXOBJECT    translatedRoutine; // the routine object returned
     const char   *contextName;       // environment directory save method in
 };
 
 
-class RunMethodDispatcher : public ConditionDispatcher
+class RunRoutineDispatcher : public ConditionDispatcher
 {
 public:
-    inline RunMethodDispatcher(PRXSYSEXIT e, RexxConditionData *cd) : ConditionDispatcher(e, NULL, cd) { ; }
-    virtual ~RunMethodDispatcher() { ; }
+    inline RunRoutineDispatcher(PRXSYSEXIT e, RexxConditionData *cd) : ConditionDispatcher(e, NULL, cd) { ; }
+    virtual ~RunRoutineDispatcher() { ; }
 
     virtual void run();
 
     const char *contextName;         // name of the scripting context
-    REXXOBJECT method;               // method to run
+    REXXOBJECT routine;              // routine to run
     void *callbackArguments;         // opaque arguments passed to callback handler
     REXXOBJECT (REXXENTRY *argumentCallback)(void *);   // callback handler for arguments
     REXXOBJECT securityManager;      // the security manager
@@ -89,11 +89,11 @@ public:
 };
 
 
-class RunMethodArgumentCallback : public CallbackDispatcher
+class RunRoutineArgumentCallback : public CallbackDispatcher
 {
 public:
-    inline RunMethodArgumentCallback(REXXOBJECT (REXXENTRY *f)(void *), void *a) { callback = f; arguments = a; }
-    inline ~RunMethodArgumentCallback() { ; }
+    inline RunRoutineArgumentCallback(REXXOBJECT (REXXENTRY *f)(void *), void *a) { callback = f; arguments = a; }
+    inline ~RunRoutineArgumentCallback() { ; }
 
     virtual void run();
 

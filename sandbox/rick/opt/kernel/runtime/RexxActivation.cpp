@@ -74,6 +74,7 @@
 #include "ActivityManager.hpp"
 #include "Interpreter.hpp"
 #include "RexxInternalApis.h"
+#include "PackageManager.hpp"
 
 /* max instructions without a yield */
 #define MAX_INSTRUCTIONS  100
@@ -2001,8 +2002,6 @@ void RexxActivation::debugInterpret(   /* interpret interactive debug input */
 /* Function:  Interpret a string created for interactive debug                */
 /******************************************************************************/
 {
-    RexxActivation * newActivation;      /* new activation for call           */
-
     this->debug_pause = true;            /* now in debug pause                */
     try
     {
@@ -2034,32 +2033,43 @@ RexxObject * RexxActivation::rexxVariable(   /* retrieve a program entry        
 /* Function:  Retrieve a REXX defined "dot" environment variable              */
 /******************************************************************************/
 {
-  if (name->strCompare(CHAR_METHODS)) {/* is this ".methods"                */
-                                       /* get the methods directory         */
-    return (RexxObject *)this->settings.parent_code->getMethods();
-  }
-  else if (name->strCompare(CHAR_RS)) {/* command return status (".rs")?    */
-    if (this->settings.flags&return_status_set)
-                                       /* returned as an integer object     */
-      return new_integer(this->settings.return_status);
-    else                               /* just return the name              */
-      return name->concatToCstring(".");
-  }
-  else if (name->strCompare(CHAR_LINE))  /* current line (".line")?    */
-  {
-      // if this is an interpret, we need to report the line number of
-      // the context that calls the interpret.
-      if (this->isInterpret())
-      {
-          return sender->rexxVariable(name);
-      }
-      else
-      {
+    if (name->strCompare(CHAR_METHODS))  /* is this ".methods"                */
+    {
+        /* get the methods directory         */
+        return(RexxObject *)this->settings.parent_code->getMethods();
+    }
+    else if (name->strCompare(CHAR_ROUTINES))  /* is this ".routines"                */
+    {
+        /* get the methods directory         */
+        return(RexxObject *)this->settings.parent_code->getRoutines();
+    }
+    else if (name->strCompare(CHAR_RS))  /* command return status (".rs")?    */
+    {
+        if (this->settings.flags&return_status_set)
+        {
+            /* returned as an integer object     */
+            return new_integer(this->settings.return_status);
+        }
+        else                               /* just return the name              */
+        {
+            return name->concatToCstring(".");
+        }
+    }
+    else if (name->strCompare(CHAR_LINE))  /* current line (".line")?    */
+    {
+        // if this is an interpret, we need to report the line number of
+        // the context that calls the interpret.
+        if (this->isInterpret())
+        {
+            return sender->rexxVariable(name);
+        }
+        else
+        {
 
-          return new_integer(this->current->getLineNumber());
-      }
-  }
-  return OREF_NULL;                    // not recognized
+            return new_integer(this->current->getLineNumber());
+        }
+    }
+    return OREF_NULL;                    // not recognized
 }
 
 
@@ -2089,7 +2099,7 @@ bool RexxActivation::callMacroSpaceFunction(RexxString * target, RexxObject **_a
             return false;                    /* didn't really find this           */
         }
         /* unflatten the method now          */
-        RexxCode *routine = getMacroCode(target);
+        RoutineClass *routine = getMacroCode(target);
         // not restoreable is a call failure
         if (routine == OREF_NULL)
         {
@@ -2098,7 +2108,7 @@ bool RexxActivation::callMacroSpaceFunction(RexxString * target, RexxObject **_a
         /* run as a call                     */
         routine->call(activity, target, _arguments, _argcount, calltype, OREF_NULL, EXTERNALCALL, _result);
         // merge (class) definitions from macro with current settings
-        getSource()->mergeRequired(((RexxCode *)routine->getCode())->getSourceObject());
+        getSource()->mergeRequired(routine->getSourceObject());
         return true;                       /* return success we found it flag   */
     }
     return false;                        /* nope, nothing to find here        */
@@ -2192,36 +2202,39 @@ bool RexxActivation::callExternalRexx(
 /* Function:  Call a rexx protram as an external routine                      */
 /******************************************************************************/
 {
-  RexxString *filename;                /* Full name (string REXXOBJECT)     */
-  RexxMethod *routine;                 /* Method object from target         */
-
-                                       /* Get full name including path      */
-  filename = resolveProgramName(target);
-  if (filename != OREF_NULL) {         /* found something?                  */
-    this->stack.push(filename);        /* protect the file name here        */
-                                       /* try to restore saved image        */
-    routine = SysRestoreProgram(filename);
-    if (routine == OREF_NULL) {        /* unable to restore?                */
-                                       /* go translate the image            */
-      routine = TheMethodClass->newFile(filename);
-                                       /* go save this method               */
-      SysSaveProgram(filename, routine);
+    /* Get full name including path      */
+    RexxString *filename = resolveProgramName(target);
+    if (filename != OREF_NULL)           /* found something?                  */
+    {
+        this->stack.push(filename);        /* protect the file name here        */
+                                           /* try to restore saved image        */
+        RoutineClass *routine = SysRestoreProgram(filename);
+        if (routine == OREF_NULL)          /* unable to restore?                */
+        {
+            /* go translate the image            */
+            routine = RoutineClass::newFile(filename);
+            /* go save this method               */
+            SysSaveProgram(filename, routine);
+        }
+        this->stack.pop();                 /* remove the protected name         */
+        if (routine == OREF_NULL)          /* Do we have a method???            */
+        {
+            return false;                    /* No, return not found              */
+        }
+        else                               /* Try to run method                 */
+        {
+            ProtectedObject p(routine);
+            /* run as a call                     */
+            routine->call(this->activity, target, _arguments, _argcount, calltype, this->settings.current_env, EXTERNALCALL, resultObj);
+            /* now merge all of the public info  */
+            this->settings.parent_code->mergeRequired(routine->getSourceObject());
+            return true;                     /* Return routine found flag         */
+        }
     }
-    this->stack.pop();                 /* remove the protected name         */
-    if (routine == OREF_NULL)          /* Do we have a method???            */
-      return false;                    /* No, return not found              */
-    else {                             /* Try to run method                 */
-      ProtectedObject p(routine);
-                                       /* run as a call                     */
-      routine->call(this->activity, (RexxObject *)this, target, _arguments, _argcount, calltype, this->settings.current_env, EXTERNALCALL, resultObj);
-      RexxCode *routineCode = (RexxCode *)routine->getCode();
-                                       /* now merge all of the public info  */
-      this->settings.parent_code->mergeRequired(routineCode->getSourceObject());
-      return true;                     /* Return routine found flag         */
+    else
+    {
+        return false;                      /* this wasn't found                 */
     }
-  }
-  else
-    return false;                      /* this wasn't found                 */
 }
 
 
@@ -2232,22 +2245,22 @@ bool RexxActivation::callExternalRexx(
  *
  * @return If available, the unflattened method image.
  */
-RexxCode *RexxActivation::getMacroCode(RexxString *macroName)
+RoutineClass *RexxActivation::getMacroCode(RexxString *macroName)
 {
     RXSTRING       macroImage;
-    RexxCode     * macroMethod = OREF_NULL;
+    RoutineClass * macroRoutine = OREF_NULL;
 
     macroImage.strptr = NULL;
     if (RexxExecuteMacroFunction(macroName->getStringData(), &macroImage) == 0)
     {
-        macroMethod = SysRestoreProgramBuffer(&macroImage, macroName);
+        macroRoutine = SysRestoreProgramBuffer(&macroImage, macroName);
         // return the allocated buffer
         if (macroImage.strptr == NULL)
         {
             SysReleaseResultMemory(macroImage.strptr);
         }
     }
-    return macroMethod;
+    return macroRoutine;
 }
 
 
@@ -2259,7 +2272,7 @@ RexxCode *RexxActivation::getMacroCode(RexxString *macroName)
  * @return The fully resolved program name, or OREF_NULL if this can't be
  *         located.
  */
-RexxString *RexxActivation::resolveProgram(RexxString *name)
+RexxString *RexxActivation::resolveProgramName(RexxString *name)
 {
     return code->resolveProgramName(activity, name);
 }
@@ -2273,15 +2286,15 @@ RexxString *RexxActivation::resolveProgram(RexxString *name)
  * @param instruction
  *               The directive instruction being processed.
  */
-void RexxActivation::loadRequired(RexxString *target, RexxInstruction *instruction)
+RoutineClass *RexxActivation::loadRequired(RexxString *target, RexxInstruction *instruction)
 {
     // this will cause the correct location to be used for error reporting
     this->current = instruction;
     // get a fully resolved name for this....we might locate this under either name
-    RexxString *fullName = resolveProgram(target);
+    RexxString *fullName = resolveProgramName(target);
 
     ProtectedObject p;
-    RexxCode *requiresFile = PackageManager::getRequires(activity, target, fullName, p);
+    RoutineClass *requiresFile = PackageManager::getRequires(activity, target, fullName, p);
 
     if (requiresFile == OREF_NULL)             /* couldn't create this?             */
     {
@@ -2290,6 +2303,8 @@ void RexxActivation::loadRequired(RexxString *target, RexxInstruction *instructi
     }
     /* now merge all of the info         */
     this->settings.parent_code->mergeRequired(requiresFile->getSourceObject());
+
+    return requiresFile;
 }
 
 
@@ -2305,7 +2320,7 @@ void RexxActivation::loadPackage(RexxString *target, RexxInstruction *instructio
     // this will cause the correct location to be used for error reporting
     this->current = instruction;
     // have the package manager resolve the package
-    PackageManager::getPackage(name);
+    PackageManager::getPackage(target);
 }
 
 

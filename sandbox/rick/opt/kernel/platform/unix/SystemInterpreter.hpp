@@ -70,6 +70,10 @@ public:
     static void initializeInstance(InterpreterInstance *instance);
     static void terminateInstance(InterpreterInstance *instance);
     static void getCurrentWorkingDirectory(char *);
+
+    static RexxString *extractDirectory(RexxString *file);
+    static RexxString *extractExtension(RexxString *file);
+    static RexxString *extractFile(RexxString *file);
 };
 
 #endif
