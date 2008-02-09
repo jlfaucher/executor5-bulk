@@ -794,7 +794,7 @@ void RexxObject::processProtectedMethod(
     {
         SecurityManager *manager = activation->getSecurityManager();
         // the security manager can replace provide a new result
-        if (manager->checkProtectedMethod(this, messageName, count, arguments, result)
+        if (manager->checkProtectedMethod(this, messageName, count, arguments, result))
         {
             return;
         }
@@ -1447,27 +1447,38 @@ RexxObject  *RexxObject::setMethod(
 /* Function:  Add a new method to an object instance                          */
 /******************************************************************************/
 {
-                                       /* get the message name as a string  */
-  msgname = REQUIRED_STRING(msgname, ARG_ONE)->upper();
-  if (option) {
-    option = REQUIRED_STRING(option, ARG_THREE);
-    if (!stricmp("OBJECT",option->getStringData())) {
-      // do nothing if OBJECT
-    } else if (!stricmp("FLOAT",option->getStringData()))
-      // "FLOAT" makes option a NULL pointer, causing the old default behaviour on setMethod...
-      option = OREF_NULL;
-    else
-      reportException(Error_Incorrect_call_list, CHAR_SETMETHOD, IntegerThree, "\"FLOAT\", \"OBJECT\"", option);
-  }
+    /* get the message name as a string  */
+    msgname = REQUIRED_STRING(msgname, ARG_ONE)->upper();
+    if (option)
+    {
+        option = REQUIRED_STRING(option, ARG_THREE);
+        if (!stricmp("OBJECT",option->getStringData()))
+        {
+            // do nothing if OBJECT
+        }
+        else if (!stricmp("FLOAT",option->getStringData()))
+        {
+            // "FLOAT" makes option a NULL pointer, causing the old default behaviour on setMethod...
+            option = OREF_NULL;
+        }
+        else
+        {
+            reportException(Error_Incorrect_call_list, CHAR_SETMETHOD, IntegerThree, "\"FLOAT\", \"OBJECT\"", option);
+        }
+    }
 
-  if (methobj == OREF_NULL)            /* we weren't passed a method,       */
-                                       /* add a dummy method                */
-    methobj = (RexxMethod *)TheNilObject;
-  else if (!isOfClass(Method, methobj))    /* not a method type already?        */
-                                       /* make one from a string or array   */
-    methobj = TheMethodClass->newRexxCode(msgname, (RexxObject *)methobj, IntegerTwo, OREF_NULL);
-  this->defMethod(msgname, methobj, option);   /* defMethod handles all the details */
-  return OREF_NULL;                    /* no return value                   */
+    if (methobj == OREF_NULL)            /* we weren't passed a method,       */
+    {
+        /* add a dummy method                */
+        methobj = (RexxMethod *)TheNilObject;
+    }
+    else if (!isOfClass(Method, methobj))    /* not a method type already?        */
+    {
+        /* make one from a string or array   */
+        methobj = RexxMethod::newMethodObject(msgname, (RexxObject *)methobj, IntegerTwo, OREF_NULL);
+    }
+    this->defMethod(msgname, methobj, option);   /* defMethod handles all the details */
+    return OREF_NULL;                    /* no return value                   */
 }
 
 RexxObject  *RexxObject::unsetMethod(
@@ -1645,76 +1656,85 @@ RexxObject  *RexxObject::run(
 /*            behaviour.                                                    */
 /****************************************************************************/
 {
-  RexxMethod *methobj;                 /* the object method                 */
-  RexxString *option;                  /* run option string                 */
-  RexxArray  *arglist = OREF_NULL;     /* forwarded option string           */
-  RexxObject **argumentPtr = NULL;     /* default to no arguments passed along */
-  size_t argcount = 0;
+    RexxArray  *arglist = OREF_NULL;     /* forwarded option string           */
+    RexxObject **argumentPtr = NULL;     /* default to no arguments passed along */
+    size_t argcount = 0;
 
-                                       /* get the method object             */
-  methobj = (RexxMethod *)arguments[0];
-  required_arg(methobj, ONE);          /* make sure we have a method        */
-  if (!isOfClass(Method, methobj)) {       /* this a method object?             */
-                                       /* create a method object            */
-    methobj = TheMethodClass->newRexxCode(OREF_RUN, (RexxObject *)methobj, IntegerOne, OREF_NULL);
-                                       /* set the correct scope             */
-    methobj->setScope((RexxClass *)TheNilObject);
-  }
-  else
-                                       /* ensure correct scope on method    */
-    methobj = methobj->newScope((RexxClass *)TheNilObject);
-  // we need to save this, since we might be working off of a newly created
-  // one or a copy
-  ProtectedObject p(methobj);
-
-  if (argCount > 1) {                  /* if any arguments passed           */
-                                       /* get the 1st one, its the option   */
-    option = (RexxString *)arguments[1];
-                                       /* this is now required              */
-    option = REQUIRED_STRING(option, ARG_TWO);
-                                       /* process the different options     */
-    switch (toupper(option->getChar(0))) {
-        case 'A':                        /* args are an array                 */
-        {
-                                           /* so they say, make sure we have an */
-                                           /* array and we were only passed 3   */
-                                           /*args                               */
-            if (argCount < 3)              /* not enough arguments?             */
-              missing_argument(ARG_THREE); /* this is an error                  */
-            if (argCount > 3)              /* too many arguments?               */
-             reportException(Error_Incorrect_method_maxarg, IntegerThree);
-                                           /* now get the array                 */
-            arglist = (RexxArray *)arguments[2];
-                                           /* force to array form               */
-            arglist = REQUEST_ARRAY(arglist);
-                                           /* not an array?                     */
-            if (arglist == TheNilObject || arglist->getDimension() != 1)
-                                           /* raise an error                    */
-              reportException(Error_Incorrect_method_noarray, arguments[2]);
-            // request array may create a new one...keep it safe
-            ProtectedObject p1(arglist);
-            /* grab the argument information */
-            argumentPtr = arglist->data();
-            argcount = arglist->size();
-            break;
-        }
-
-      case 'I':                        /* args are "strung out"             */
-        /* point to the array data for the second value */
-        argumentPtr = arguments + 2;
-        argcount = argCount - 2;
-        break;
-
-      default:
-                                       /* invalid option                    */
-        reportException(Error_Incorrect_method_option, "AI", option);
-        break;
+    /* get the method object             */
+    RexxMethod *methobj = (RexxMethod *)arguments[0];
+    required_arg(methobj, ONE);          /* make sure we have a method        */
+    if (!isOfClass(Method, methobj))         /* this a method object?             */
+    {
+        /* create a method object            */
+        methobj = RexxMethod::newMethodObject(OREF_RUN, (RexxObject *)methobj, IntegerOne, OREF_NULL);
+        /* set the correct scope             */
+        methobj->setScope((RexxClass *)TheNilObject);
     }
-  }
-  ProtectedObject result;
-                                       /* now just run the method....       */
-  methobj->call(ActivityManager::currentActivity, this, OREF_NONE, argumentPtr, argcount, OREF_METHODNAME, OREF_NULL, METHODCALL, result);
-  return (RexxObject *)result;
+    else
+    {
+        /* ensure correct scope on method    */
+        methobj = methobj->newScope((RexxClass *)TheNilObject);
+    }
+    // we need to save this, since we might be working off of a newly created
+    // one or a copy
+    ProtectedObject p(methobj);
+
+    if (argCount > 1)                    /* if any arguments passed           */
+    {
+        /* get the 1st one, its the option   */
+        RexxString *option = (RexxString *)arguments[1];
+        /* this is now required              */
+        option = REQUIRED_STRING(option, ARG_TWO);
+        /* process the different options     */
+        switch (toupper(option->getChar(0)))
+        {
+            case 'A':                        /* args are an array                 */
+                {
+                    /* so they say, make sure we have an */
+                    /* array and we were only passed 3   */
+                    /*args                               */
+                    if (argCount < 3)              /* not enough arguments?             */
+                    {
+                        missing_argument(ARG_THREE); /* this is an error                  */
+                    }
+                    if (argCount > 3)              /* too many arguments?               */
+                    {
+                        reportException(Error_Incorrect_method_maxarg, IntegerThree);
+                    }
+                    /* now get the array                 */
+                    arglist = (RexxArray *)arguments[2];
+                    /* force to array form               */
+                    arglist = REQUEST_ARRAY(arglist);
+                    /* not an array?                     */
+                    if (arglist == TheNilObject || arglist->getDimension() != 1)
+                    {
+                        /* raise an error                    */
+                        reportException(Error_Incorrect_method_noarray, arguments[2]);
+                    }
+                    // request array may create a new one...keep it safe
+                    ProtectedObject p1(arglist);
+                    /* grab the argument information */
+                    argumentPtr = arglist->data();
+                    argcount = arglist->size();
+                    break;
+                }
+
+            case 'I':                        /* args are "strung out"             */
+                /* point to the array data for the second value */
+                argumentPtr = arguments + 2;
+                argcount = argCount - 2;
+                break;
+
+            default:
+                /* invalid option                    */
+                reportException(Error_Incorrect_method_option, "AI", option);
+                break;
+        }
+    }
+    ProtectedObject result;
+    /* now just run the method....       */
+    methobj->run(ActivityManager::currentActivity, this, OREF_NONE, argcount, argumentPtr, result);
+    return (RexxObject *)result;
 }
 
 RexxObject  *RexxObject::defMethods(
@@ -1757,40 +1777,50 @@ RexxObject  *RexxObject::defMethod(
 /* Function:  Add a method to an object's behaviour                         */
 /****************************************************************************/
 {
-  RexxMethod *methcopy;                /* copy of the original method       */
-                                       /* default scope "FLOAT"             */
-  RexxClass  *targetClass = (RexxClass*) TheNilObject;
+    RexxMethod *methcopy;                /* copy of the original method       */
+                                         /* default scope "FLOAT"             */
+    RexxClass  *targetClass = (RexxClass*) TheNilObject;
 
-  msgname = msgname->upper();          /* add this as an uppercase name     */
-  if (methobj != TheNilObject) {       /* not a removal?                    */
-                                       /* got an option? */
-    if (option) {
-      if (!stricmp("OBJECT",option->getStringData()))
-        targetClass = this->behaviour->getOwningClass();
-      else
-        reportException(Error_Incorrect_call_list, CHAR_SETMETHOD, IntegerThree, "\"FLOAT\", \"OBJECT\"", option);
+    msgname = msgname->upper();          /* add this as an uppercase name     */
+    if (methobj != TheNilObject)         /* not a removal?                    */
+    {
+        /* got an option? */
+        if (option)
+        {
+            if (!stricmp("OBJECT",option->getStringData()))
+            {
+                targetClass = this->behaviour->getOwningClass();
+            }
+            else
+            {
+                reportException(Error_Incorrect_call_list, CHAR_SETMETHOD, IntegerThree, "\"FLOAT\", \"OBJECT\"", option);
+            }
+        }
+        /* set a new scope on this           */
+        methcopy = methobj->newScope(targetClass);
     }
-                                       /* set a new scope on this           */
-    methcopy = methobj->newScope(targetClass);
-  }
-  else
-                                       /* no real method added              */
-    methcopy = (RexxMethod *)TheNilObject;
-                                       /* is this the first added method?   */
-  if (this->behaviour->getInstanceMethodDictionary() == OREF_NULL) {
+    else
+    {
+        /* no real method added              */
+        methcopy = (RexxMethod *)TheNilObject;
+    }
+    /* is this the first added method?   */
+    if (this->behaviour->getInstanceMethodDictionary() == OREF_NULL)
+    {
 
 /* copy primitive behaviour object and define the method, a copy is made to */
 /* ensure that we don't update the behaviour of any other object, since they*/
 /* may have been sharing the mvd.                                           */
-    OrefSet(this, this->behaviour, (RexxBehaviour *)this->behaviour->copy());
-  }
-                                       /* now add this to the behaviour     */
-  this->behaviour->addMethod(msgname, methcopy);
-                                       /* adding an UNINIT method to obj?   */
-  if (methobj != TheNilObject && msgname->strCompare(CHAR_UNINIT)) {
-    this->hasUninit();                 /* yes, mark it as such              */
-  }
-  return OREF_NULL;
+        OrefSet(this, this->behaviour, (RexxBehaviour *)this->behaviour->copy());
+    }
+    /* now add this to the behaviour     */
+    this->behaviour->addMethod(msgname, methcopy);
+    /* adding an UNINIT method to obj?   */
+    if (methobj != TheNilObject && msgname->strCompare(CHAR_UNINIT))
+    {
+        this->hasUninit();                 /* yes, mark it as such              */
+    }
+    return OREF_NULL;
 }
 
 size_t RexxInternalObject::getObjectTypeNumber()

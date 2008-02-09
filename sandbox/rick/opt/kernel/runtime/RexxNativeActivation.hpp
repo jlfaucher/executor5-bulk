@@ -48,6 +48,7 @@
 class RexxNativeCode;
 class ActivityDispatcher;
 class CallbackDispatcher;
+class RexxNativeMethod;
 
 class RexxNativeActivation : public RexxActivationBase {
  public:
@@ -61,6 +62,8 @@ class RexxNativeActivation : public RexxActivationBase {
          RexxNativeActivation(RexxActivity *_activity);
   void live(size_t);
   void liveGeneral(int reason);
+  void run(RexxMethod *_method, RexxNativeMethod *_code, RexxObject  *_receiver,
+      RexxString  *_msgname, size_t _argcount, RexxObject **_arglist, ProtectedObject &resultObj);
   void run(RexxObject *, RexxString *, size_t, RexxObject **, ProtectedObject &);
   void run(ActivityDispatcher &dispatcher);
   void run(CallbackDispatcher &dispatcher);
@@ -86,7 +89,6 @@ class RexxNativeActivation : public RexxActivationBase {
   void   enableVariablepool();
   void   disableVariablepool();
   bool   trap (RexxString *, RexxDirectory *);
-  void   setObjNotify(RexxMessage *);
   void   resetNext();
   bool   fetchNext(RexxString **name, RexxObject **value);
   void   raiseCondition(RexxString *condition, RexxString *description, RexxObject *additional, RexxObject *result);
@@ -123,7 +125,6 @@ protected:
     RexxArray      *argArray;            /* optionally create argument array  */
     RexxObjectTable *savelist;           /* list of saved objects             */
     RexxObject     *firstSavedObject;    /* first saved object instance       */
-    RexxMessage    *objnotify;           /* an object to notify if excep occur*/
     RexxObject     *result;              /* result from RexxRaise call        */
                                          /* running object variable pool      */
     RexxVariableDictionary *objectVariables;

@@ -46,27 +46,17 @@
 #include "RexxCore.h"
 #include "StringClass.hpp"
 #include "DirectoryClass.hpp"
-#include "LibraryManager.hpp"
 #include "RexxNativeActivation.hpp"
 #include <ctype.h>
 
 
-RexxNativeCode::RexxNativeCode(RexxString *_name, RexxString *_package)
+RexxNativeCode::RexxNativeCode(RexxString *_name, RexxString *_package, RexxSource *_source)
 {
     // and this is the information needed to resolve this again after an
     // image restore
     OrefSet(this, this->package, _package);
     OrefSet(this, this->name, _name);
-}
-
-
-/**
- * Initialize a native code entry from its package information.
- */
-void RexxNativeCode::reinit()
-{
-    // go resolve this
-    entry = PackageManager::resolve(package, name);
+    OrefSet(this, this->source, _source);
 }
 
 
@@ -77,16 +67,36 @@ void RexxNativeCode::live(size_t liveMark)
 {
     memory_mark(this->package);
     memory_mark(this->name);
+    memory_mark(this->source);
 }
 
 
-void RexxNativeCode::liveGeneral(int reason)
+void RexxNativeCode::flatten(RexxEnvelope *envelope)
+/******************************************************************************/
+/* Function:  Flatten an object                                               */
+/******************************************************************************/
+{
+  setUpFlatten(RexxNativeMethod)
+   flatten_reference(newThis->package, envelope);
+   flatten_reference(newThis->name, envelope);
+   flatten_reference(newThis->source, envelope);
+  cleanUpFlatten
+}
+
+
+
+
+void RexxNativeMethod::liveGeneral(int reason)
 /******************************************************************************/
 /* Function:  Generalized object marking                                      */
 /******************************************************************************/
 {
-    memory_mark_general(this->package);
-    memory_mark_general(this->name);
+    // zero the entry point if saving the image
+    if (reason == SAVINGIMAGE)
+    {
+        entry = NULL;
+    }
+    RexxNativeCode(liveGeneral(reason);
 }
 
 
@@ -96,29 +106,61 @@ void RexxNativeMethod::flatten(RexxEnvelope *envelope)
 /******************************************************************************/
 {
   setUpFlatten(RexxNativeMethod)
-
-   flatten_reference(newThis->package, envelope);
-   flatten_reference(newThis->name, envelope);
-                                       /* Set entry to NUll for 2 reasons   */
-                                       /* 1st force branch to 0 is not      */
-                                       /*restored, 2 used to indicated if   */
-                                       /* the method has bee unflattened    */
    newThis->entry = NULL;
+   RexxNativeCode::flatten(envelope);
   cleanUpFlatten
 }
 
 
-/**
- * Lazy resolve a native method.  This will be done on the first call
- * to a method definition that's been saved and restored.  On
- * restore, we have a potential situation where we need to get
- * the package reloaded and restored before we can resolve the entry
- * point.
- */
-void RexxNativeMethod::resolve()
+void RexxNativeFunction::liveGeneral(int reason)
+/******************************************************************************/
+/* Function:  Generalized object marking                                      */
+/******************************************************************************/
 {
-    // have the package manager resolve this for us before we make a call
-    entry = PackageManager::resolveMethod(this, package, name);
+    // zero the entry point if saving the image
+    if (reason == SAVINGIMAGE)
+    {
+        entry = NULL;
+    }
+    RexxNativeCode(liveGeneral(reason);
+}
+
+
+void RexxNativeFunction::flatten(RexxEnvelope *envelope)
+/******************************************************************************/
+/* Function:  Flatten an object                                               */
+/******************************************************************************/
+{
+  setUpFlatten(RexxNativeMethod)
+   newThis->entry = NULL;
+   RexxNativeCode::flatten(envelope);
+  cleanUpFlatten
+}
+
+
+void RegisteredFunction::liveGeneral(int reason)
+/******************************************************************************/
+/* Function:  Generalized object marking                                      */
+/******************************************************************************/
+{
+    // zero the entry point if saving the image
+    if (reason == SAVINGIMAGE)
+    {
+        entry = NULL;
+    }
+    RexxNativeCode(liveGeneral(reason);
+}
+
+
+void RegisteredFunction::flatten(RexxEnvelope *envelope)
+/******************************************************************************/
+/* Function:  Flatten an object                                               */
+/******************************************************************************/
+{
+  setUpFlatten(RexxNativeMethod)
+   newThis->entry = NULL;
+   RexxNativeCode::flatten(envelope);
+  cleanUpFlatten
 }
 
 
@@ -140,7 +182,8 @@ void RexxNativeMethod::run(RexxActivity *activity, RexxMethod *method, RexxObjec
     // if this is NULL currently, we need to lazy resolve this entry
     if (entry == NULL)
     {
-        resolve();
+        // have the package manager resolve this for us before we make a call
+        entry = PackageManager::resolveMethod(package, name);
     }
 
     // create a new native activation
@@ -161,24 +204,6 @@ void * RexxNativeMethod::operator new(
 }
 
 
-void RexxNativeFunction::flatten(RexxEnvelope *envelope)
-/******************************************************************************/
-/* Function:  Flatten an object                                               */
-/******************************************************************************/
-{
-  setUpFlatten(RexxNativeFunction)
-
-   flatten_reference(newThis->package, envelope);
-   flatten_reference(newThis->name, envelope);
-                                       /* Set entry to NUll for 2 reasons   */
-                                       /* 1st force branch to 0 is not      */
-                                       /*restored, 2 used to indicated if   */
-                                       /* the method has bee unflattened    */
-   newThis->entry = NULL;
-  cleanUpFlatten
-}
-
-
 /**
  * Lazy resolve a native method.  This will be done on the first call
  * to a method definition that's been saved and restored.  On
@@ -188,8 +213,6 @@ void RexxNativeFunction::flatten(RexxEnvelope *envelope)
  */
 void RexxNativeFunction::resolve()
 {
-    // have the package manager resolve this for us before we make a call
-    entry = PackageManager::resolveFunction1(this, package, name);
 }
 
 
@@ -209,7 +232,8 @@ void RexxNativeFunction::call(RexxActivity *activity, RexxString *functionName, 
     // if this is NULL currently, we need to lazy resolve this entry
     if (entry == NULL)
     {
-        resolve();
+        // have the package manager resolve this for us before we make a call
+        entry = PackageManager::resolveFunction(package, name);
     }
 
     // create a new native activation
@@ -242,8 +266,12 @@ void * RexxNativeFunction::operator new(
  */
 void RegisteredFunction::call(RexxActivity *activity, RexxString *functionName, size_t count, RexxObject **argPtr, ProtectedObject &result)
 {
-    // Registered functions are always resolved at run time, so this does not
-    // need to be done in a lazy fashion.
+    // if this is NULL currently, we need to lazy resolve this entry
+    if (entry == NULL)
+    {
+        // have the package manager resolve this for us before we make a call
+        entry = PackageManager::resolveRegusteredFunction(package, name);
+    }
 
     // create a new native activation
     RexxNativeActivation *newNActa = new RexxNativeActivation(activity);

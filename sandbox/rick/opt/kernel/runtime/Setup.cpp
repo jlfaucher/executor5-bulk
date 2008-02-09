@@ -62,6 +62,7 @@
 #include "QueueClass.hpp"
 #include "SupplierClass.hpp"
 #include "MethodClass.hpp"
+#include "RoutineClass.hpp"
 #include "RexxEnvelope.hpp"
 #include "MessageClass.hpp"
 #include "StemClass.hpp"
@@ -236,10 +237,9 @@ void RexxMemory::createImage()
   TheKernel->makeProxiedObject();
   TheSystem->makeProxiedObject();
 
-  ThePublicRoutines = new_directory();
-
                                        /* RexxMethod                        */
   CLASS_CREATE(Method, "Method", RexxClass);
+  CLASS_CREATE(Routine, "Routine", RexxClass);
   CLASS_CREATE(Queue, "Queue", RexxClass);      /* RexxQueue                         */
   CLASS_CREATE(List, "List", RexxListClass);   /* RexxList                          */
   CLASS_CREATE(Stem, "Stem", RexxClass);       /* RexxStem                          */
@@ -259,10 +259,6 @@ void RexxMemory::createImage()
   TheCommonRetrievers->put((RexxObject *)new RexxParseVariable(OREF_RESULT, VARIABLE_RESULT), OREF_RESULT);
   memoryObject.enableOrefChecks();     /* enable setCheckOrefs...           */
 
-  RexxString *symb;                    /* symbolic name for added methods   */
-  RexxString *programName;             /* name of the image file            */
-  RexxMethod *meth;                    /* added method object               */
-  RexxDirectory *kernel_methods;       /* table of exported kernel_methods  */
 /******************************************************************************/
 /* The following Rexx classes that are exposed to the users are set up as    */
 /* subclassable classes.                                                     */
@@ -568,7 +564,7 @@ void RexxMemory::createImage()
   defineKernelMethod(CHAR_ISPROTECTED  ,TheMethodBehaviour, CPPM(RexxMethod::isProtectedRexx), 0);
   defineProtectedKernelMethod(CHAR_SETPROTECTED ,TheMethodBehaviour, CPPM(RexxMethod::setProtectedRexx), 0);
   defineProtectedKernelMethod(CHAR_SETSECURITYMANAGER ,TheMethodBehaviour, CPPM(RexxMethod::setSecurityManager), 1);
-  defineKernelMethod(CHAR_SOURCE       ,TheMethodBehaviour, CPPM(RexxMethod::source), 0);
+  defineKernelMethod(CHAR_SOURCE       ,TheMethodBehaviour, CPPM(BaseCode::source), 0);
                                        /* set the scope of the methods to   */
                                        /* this classes oref                 */
   TheMethodBehaviour->setMethodDictionaryScope(TheMethodClass);
@@ -576,6 +572,30 @@ void RexxMemory::createImage()
                                        /* Now call the class subclassable   */
                                        /* method                            */
   TheMethodClass->subClassable(true);
+
+  /***************************************************************************/
+  /*           ROUTINE                                                       */
+  /***************************************************************************/
+
+                                       /* Add the NEW methods to the        */
+                                       /* class behaviour                   */
+  defineKernelMethod(CHAR_NEW     , TheRoutineClassBehaviour, CPPM(RoutineClass::newRexx), A_COUNT);
+  defineKernelMethod(CHAR_NEWFILE , TheRoutineClassBehaviour, CPPM(RoutineClass::newFileRexx), 1);
+                                       /* set the scope of the methods to   */
+                                       /* this classes oref                 */
+  TheRoutineClassBehaviour->setMethodDictionaryScope(TheRoutineClass);
+
+                                       /* Add the instance methods to the   */
+                                       /* instance behaviour mdict          */
+  defineProtectedKernelMethod(CHAR_SETSECURITYMANAGER ,TheRoutineBehaviour, CPPM(RoutineClass::setSecurityManager), 1);
+  defineKernelMethod(CHAR_SOURCE       ,TheRoutineBehaviour, CPPM(BaseCode::source), 0);
+                                       /* set the scope of the methods to   */
+                                       /* this classes oref                 */
+  TheRoutineBehaviour->setMethodDictionaryScope(TheRoutineClass);
+
+                                       /* Now call the class subclassable   */
+                                       /* method                            */
+  TheRoutineClass->subClassable(true);
 
   /***************************************************************************/
   /*           QUEUE                                                         */
@@ -1184,8 +1204,6 @@ void RexxMemory::createImage()
   kernel_public(CHAR_WEAKREFERENCE    ,TheWeakReferenceClass  ,TheEnvironment);
   kernel_public(CHAR_TRUE             ,TheTrueObject   ,TheEnvironment);
 
-  kernel_public(CHAR_PUBLIC_ROUTINES  ,ThePublicRoutines, TheEnvironment);
-
   /* set up the kernel directory (MEMORY done elsewhere) */
   kernel_public(CHAR_INTEGER          ,TheIntegerClass     , TheKernel);
   kernel_public(CHAR_NUMBERSTRING     ,TheNumberStringClass, TheKernel);
@@ -1217,26 +1235,26 @@ void RexxMemory::createImage()
   /*  BaseClasses.ORX and ORYXJ.ORX.                                            */
   {
                                            /* create a kernel methods directory */
-      kernel_methods = new_directory();
+      RexxDirectory *kernel_methods = new_directory();
       ProtectedObject p1(kernel_methods);   // protect from GC
       kernel_methods->put(createKernelMethod(CPPM(RexxLocal::local), 0), getGlobalName(CHAR_LOCAL));
 
                                            /* create the BaseClasses method and run it*/
-      symb = getGlobalName(BASEIMAGELOAD);   /* get a name version of the string  */
+      RexxString *symb = getGlobalName(BASEIMAGELOAD);   /* get a name version of the string  */
                                            /* go resolve the program name       */
-      programName = ActivityManager::currentActivity->resolveProgramName(symb, OREF_NULL, OREF_NULL);
+      RexxString *programName = ActivityManager::currentActivity->resolveProgramName(symb, OREF_NULL, OREF_NULL);
       // create a new stack frame to run under
       ActivityManager::currentActivity->createNewActivationStack();
       try
       {
                                                /* create a method object out of this*/
-          meth = TheMethodClass->newFile(programName);
+          RoutineClass *loader = RoutineClass::newFile(programName);
 
 
           RexxObject *args = kernel_methods;   // temporary to avoid type-punning warnings
           ProtectedObject result;
                                                /* now call BaseClasses to finish the image*/
-          meth->runProgram(ActivityManager::currentActivity, OREF_PROGRAM, OREF_NULL, (RexxObject **)&args, 1, result);
+          loader->runProgram(ActivityManager::currentActivity, OREF_PROGRAM, OREF_NULL, (RexxObject **)&args, 1, result);
       }
       catch (ActivityException )
       {

@@ -1946,7 +1946,7 @@ void RexxActivation::unwindTrap(
 /******************************************************************************/
 {
                                        /* still an interpret level?         */
-  if (this->inInterpret())
+  if (this->isInterpret())
   {
                                        /* merge the traps                   */
     this->sender->mergeTraps(this->condition_queue, this->handler_queue);
@@ -1982,14 +1982,11 @@ void RexxActivation::interpret(
 /*            code within the current program context.                        */
 /******************************************************************************/
 {
-  RexxMethod     * newMethod;          /* new method to process             */
-  RexxActivation * newActivation;      /* new activation for call           */
-
   ActivityManager::currentActivity->checkStackSpace();       /* have enough stack space?          */
                                        /* translate the code                */
-  newMethod = this->code->interpret(codestring, this->current->getLineNumber());
+  RexxCode * newCode = this->code->interpret(codestring, this->current->getLineNumber());
                                        /* create a new activation           */
-  newActivation = ActivityManager::newActivation(this->activity, (RexxCode *)newMethod->getCode(), this, OREF_NULL, OREF_NULL, INTERPRET);
+  RexxActivation *newActivation = ActivityManager::newActivation(this->activity, newCode, this, OREF_NULL, OREF_NULL, INTERPRET);
   this->activity->pushStackFrame(newActivation); /* push on the activity stack        */
   ProtectedObject r;
                                        /* run the internal routine on the   */
@@ -2004,16 +2001,15 @@ void RexxActivation::debugInterpret(   /* interpret interactive debug input */
 /* Function:  Interpret a string created for interactive debug                */
 /******************************************************************************/
 {
-    RexxMethod     * newMethod;          /* new method to process             */
     RexxActivation * newActivation;      /* new activation for call           */
 
     this->debug_pause = true;            /* now in debug pause                */
     try
     {
         /* translate the code                */
-        newMethod = this->code->interpret(codestring, this->current->getLineNumber());
+        RexxCode *newCode = this->code->interpret(codestring, this->current->getLineNumber());
         /* create a new activation           */
-        newActivation = ActivityManager::newActivation(this->activity, (RexxCode *)newMethod->getCode(), this, OREF_NULL, OREF_NULL, DEBUGPAUSE);
+        RexxActivation *newActivation = ActivityManager::newActivation(this->activity, newCode, this, OREF_NULL, OREF_NULL, DEBUGPAUSE);
         this->activity->pushStackFrame(newActivation); /* push on the activity stack        */
         ProtectedObject r;
                                              /* run the internal routine on the   */
@@ -2093,14 +2089,14 @@ bool RexxActivation::callMacroSpaceFunction(RexxString * target, RexxObject **_a
             return false;                    /* didn't really find this           */
         }
         /* unflatten the method now          */
-        RexxMethod *routine = getMacroCode(target);
+        RexxCode *routine = getMacroCode(target);
         // not restoreable is a call failure
         if (routine == OREF_NULL)
         {
             return false;
         }
         /* run as a call                     */
-        routine->call(activity, (RexxObject *)this, target, _arguments, _argcount, calltype, OREF_NULL, EXTERNALCALL, _result);
+        routine->call(activity, target, _arguments, _argcount, calltype, OREF_NULL, EXTERNALCALL, _result);
         // merge (class) definitions from macro with current settings
         getSource()->mergeRequired(((RexxCode *)routine->getCode())->getSourceObject());
         return true;                       /* return success we found it flag   */
@@ -2130,7 +2126,7 @@ RexxObject *RexxActivation::externalCall(RexxString *target, size_t _argcount, R
 
 
     // Step 1:  Check for a ::ROUTINE definition in the local context
-    BaseCode *routine = this->settings.parent_code->resolveRoutine(target);
+    RoutineClass *routine = this->settings.parent_code->resolveRoutine(target);
     if (routine != OREF_NULL)
     {
         // call and return the result
@@ -2142,8 +2138,9 @@ RexxObject *RexxActivation::externalCall(RexxString *target, size_t _argcount, R
     {
         return(RexxObject *)resultObj;
     }
+
     // Step 3:  Check the global functions directory
-    routine = (BaseCode *)TheFunctionsDirectory->get(target);
+    routine = (RoutineClass *)TheFunctionsDirectory->get(target);
     if (routine != OREF_NULL)        /* not found yet?                    */
     {
         // call and return the result
@@ -2163,17 +2160,10 @@ RexxObject *RexxActivation::externalCall(RexxString *target, size_t _argcount, R
         return(RexxObject *)resultObj;
     }
 
-    // Step 6:  The globally published public routines
-    routine = (BaseCode *)ThePublicRoutines->entry(target);
     // if it's made it through all of these steps without finding anything, we
     // finally have a routine non found situation
-    if (routine == OREF_NULL)
-    {
-        reportException(Error_Routine_not_found_name, target);
-    }
-    // call the last option and return the result
-    routine->call(this->activity, target, _arguments, _argcount, calltype, OREF_NULL, EXTERNALCALL, resultObj);
-    return(RexxObject *)resultObj;
+    reportException(Error_Routine_not_found_name, target);
+    return OREF_NULL;     // prevent compile error
 }
 
 

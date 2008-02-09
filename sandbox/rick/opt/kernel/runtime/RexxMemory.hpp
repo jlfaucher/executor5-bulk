@@ -265,7 +265,6 @@ class RexxMemory : public RexxObject {
   RexxVariable *variableCache;         /* our cache of variable objects     */
 
   static RexxDirectory *environment;      // global environment
-  static RexxDirectory *publicRoutines;   // statically defined public routines
   static RexxDirectory *functionsDir;     // statically defined requires
   static RexxDirectory *commonRetrievers; // statically defined requires
   static RexxDirectory *kernel;           // the kernel directory
@@ -289,15 +288,13 @@ enum
     saveArray_GLOBAL_STRINGS,
     saveArray_CLASS,
     saveArray_PBEHAV,
-    saveArray_LIBRARIES,
+    saveArray_PACKAGES,
     saveArray_NULLA,
     saveArray_NULLPOINTER,
     saveArray_SYSTEM,
     saveArray_FUNCTIONS,
     saveArray_COMMON_RETRIEVERS,
-    saveArray_STATIC_REQ,
-    saveArray_PUBLIC_RTN,
-    saveArray_highest = saveArray_PUBLIC_RTN
+    saveArray_highest = saveArray_COMMON_RETRIEVERS
 };
 
 

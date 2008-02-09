@@ -103,7 +103,6 @@ void RexxNativeActivation::live(size_t liveMark)
   memory_mark(this->activation);
   memory_mark(this->msgname);
   memory_mark(this->savelist);
-  memory_mark(this->objnotify);
   memory_mark(this->result);
   memory_mark(this->nextstem);
   memory_mark(this->compoundelement);
@@ -133,7 +132,6 @@ void RexxNativeActivation::liveGeneral(int reason)
   memory_mark_general(this->activation);
   memory_mark_general(this->msgname);
   memory_mark_general(this->savelist);
-  memory_mark_general(this->objnotify);
   memory_mark_general(this->result);
   memory_mark_general(this->nextstem);
   memory_mark_general(this->compoundelement);
@@ -1847,36 +1845,8 @@ bool RexxNativeActivation::fetchNext(
 bool RexxNativeActivation::trap(
     RexxString    * condition,         /* name of the condition             */
     RexxDirectory * exception_object)  /* exception information             */
-/******************************************************************************/
-/*                                                                            */
-/*  Function: In almost all cases NativeActs don't care about conditions      */
-/*     however in the case of Message objects, they need to know about        */
-/*     conditions so cleanups can be done.  We know we are to notify a        */
-/*     message object by checking our objnotify field, if ther is anything    */
-/*     there, it will be a message object and we simple send a error message  */
-/*     to this object.                                                        */
-/*                                                                            */
-/******************************************************************************/
 {
-                                       /* is this a syntax condition?       */
-  if (condition->strCompare(CHAR_SYNTAX)) {
-                                       /* do we need to notify a message    */
-                                       /*obj?                               */
-    if (this->objnotify != OREF_NULL)
-                                       /* yes, send error message and       */
-                                       /* condition to the object           */
-      this->objnotify->error(exception_object);
-  }
   return false;                        /* this wasn't handled               */
-}
-
-void RexxNativeActivation::setObjNotify(
-    RexxMessage *notify)               /* message object to notify          */
-/******************************************************************************/
-/* Function:  Put a notification trap on syntax conditions on this activation.*/
-/******************************************************************************/
-{
-  this->objnotify = notify;            /* save the notification             */
 }
 
 

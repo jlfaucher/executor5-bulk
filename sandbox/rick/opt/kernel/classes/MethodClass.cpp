@@ -58,11 +58,12 @@
 #include "ProtectedObject.hpp"
 #include "BufferClass.hpp"
 #include "RexxInternalApis.h"
+#include "RoutineClass.hpp"
 #include <ctype.h>
 
 
 // singleton class instance
-RexxMethodClass *RexxMethod::classInstance = OREF_NULL;
+RexxClass *RexxMethod::classInstance = OREF_NULL;
 
 RexxMethod::RexxMethod(BaseCode *codeObj)
 /******************************************************************************/
@@ -138,42 +139,6 @@ void RexxMethod::run(
 }
 
 
-void RexxMethod::call(
-    RexxActivity *activity,            /* activity running under            */
-    RexxString *msgname,               /* message to be run                 */
-    RexxObject**argPtr,                /* arguments to the method           */
-    size_t      argcount,              /* the count of arguments            */
-    RexxString *calltype,              /* COMMAND/ROUTINE/FUNCTION          */
-    RexxString *environment,           /* initial command environment       */
-    int   context,                     /* type of context                   */
-    ProtectedObject &result)           // the method result
-/******************************************************************************/
-/* Function:  Call a method as a top level program or external function call  */
-/******************************************************************************/
-{
-    ProtectedObject p(this);           // belt-and-braces to make sure this is protected
-    // just forward this to the code object
-    code->call(activity, this, msgname, argPtr, argcount, calltype, environment, context, result);
-}
-
-
-void RexxMethod::runProgram(
-    RexxActivity *activity,
-    RexxString * calltype,             /* type of invocation                */
-    RexxString * environment,          /* initial address                   */
-    RexxObject **arguments,            /* array of arguments                */
-    size_t       argCount,             /* the number of arguments           */
-    ProtectedObject &result)           // the method result
-/****************************************************************************/
-/* Function:  Run a method as a program                                     */
-/****************************************************************************/
-{
-                                       /* ensure correct scope              */
-    RexxMethod *method = this->newScope((RexxClass *)TheNilObject);
-    method->call(activity, OREF_NULL, OREF_NONE, arguments, argCount, calltype, environment, PROGRAMCALL, result);
-}
-
-
 RexxMethod *RexxMethod::newScope(
     RexxClass  *_scope)                 /* new method scope                  */
 /******************************************************************************/
@@ -195,13 +160,6 @@ RexxMethod *RexxMethod::newScope(
   }
 }
 
-RexxArray  *RexxMethod::source()
-/******************************************************************************/
-/* Function:  Return an array of source strings that represent this method    */
-/******************************************************************************/
-{
-    return code->getSource();
-}
 
 RexxObject *RexxMethod::setSecurityManager(
     RexxObject *manager)               /* supplied security manager         */
@@ -347,85 +305,78 @@ RexxMethod *RexxMethod::newRexxMethod(
  *
  * @return The constructed method object.
  */
-RexxMethod *RexxMethod::newMethodObject(RexxString *pgmname, RexxObject *source, RexxObject *position, RexxMethod *parentScope)
+RexxMethod *RexxMethod::newMethodObject(RexxString *pgmname, RexxObject *source, RexxObject *position, RexxSource *parentSource)
 {
-  RexxSource *newSource;               /* created source object             */
-
-  // request this as an array.  If not convertable, then we'll use it as a string
-  RexxArray *newSourceArray = source->requestArray();
-                                       /* couldn't convert?                 */
-  if (newSourceArray == (RexxArray *)TheNilObject)
-  {
-                                       /* get the string representation     */
-    RexxString *sourceString = source->makeString();
-                                       /* got back .nil?                    */
-    if (sourceString == (RexxString *)TheNilObject)
+    // request this as an array.  If not convertable, then we'll use it as a string
+    RexxArray *newSourceArray = source->requestArray();
+    /* couldn't convert?                 */
+    if (newSourceArray == (RexxArray *)TheNilObject)
     {
-                                       /* raise an error                    */
-      reportException(Error_Incorrect_method_no_method, position);
+        /* get the string representation     */
+        RexxString *sourceString = source->makeString();
+        /* got back .nil?                    */
+        if (sourceString == (RexxString *)TheNilObject)
+        {
+            /* raise an error                    */
+            reportException(Error_Incorrect_method_no_method, position);
+        }
+        /* wrap an array around the value    */
+        newSourceArray = new_array(sourceString);
     }
-                                       /* wrap an array around the value    */
-    newSourceArray = new_array(sourceString);
-  }
-  else                                 /* have an array, make sure all      */
-  {
-                                       /* is it single dimensional?         */
-    if (newSourceArray->getDimension() != 1)
+    else                                 /* have an array, make sure all      */
     {
-                                       /* raise an error                    */
-      reportException(Error_Incorrect_method_noarray, position);
+        /* is it single dimensional?         */
+        if (newSourceArray->getDimension() != 1)
+        {
+            /* raise an error                    */
+            reportException(Error_Incorrect_method_noarray, position);
+        }
+        /*  element are strings.             */
+        /* Make a source array safe.         */
+        ProtectedObject p(newSourceArray);
+        /* Make sure all elements in array   */
+        for (size_t counter = 1; counter <= newSourceArray->size(); counter++)
+        {
+            /* Get element as string object      */
+            RexxString *sourceString = newSourceArray ->get(counter)->makeString();
+            /* Did it convert?                   */
+            if (sourceString == (RexxString *)TheNilObject)
+            {
+                /* and report the error.             */
+                reportException(Error_Incorrect_method_nostring_inarray, IntegerTwo);
+            }
+            else
+            {
+                /* itsa string add to source array   */
+                newSourceArray ->put(sourceString, counter);
+            }
+        }
     }
-                                       /*  element are strings.             */
-                                       /* Make a source array safe.         */
-    ProtectedObject p(newSourceArray);
-                                       /* Make sure all elements in array   */
-    for (size_t counter = 1; counter <= newSourceArray->size(); counter++)
+
+    /* create a source object            */
+    RexxSource *newSource = new RexxSource (pgmname, newSourceArray);
+
+    ProtectedObject p(newSource);
+    RexxMethod *result = RexxMethod::newRexxMethod(newSource, OREF_NULL);
+
+    // if we've been provided with a scope, use it
+    if (parentSource == OREF_NULL)
     {
-                                       /* Get element as string object      */
-      sourceString = newSourceArray ->get(counter)->makeString();
-                                       /* Did it convert?                   */
-      if (sourceString == (RexxString *)TheNilObject)
-      {
-                                       /* and report the error.             */
-        reportException(Error_Incorrect_method_nostring_inarray, IntegerTwo);
-      }
-      else
-      {
-                                       /* itsa string add to source array   */
-        newSourceArray ->put(sourceString, counter);
-      }
+        // see if we have an active context and use the current source as the basis for the lookup
+        RexxActivation *currentContext = ActivityManager::currentActivity->getCurrentRexxFrame();
+        if (currentContext != OREF_NULL)
+        {
+            parentSource = currentContext->getSource();
+        }
     }
-  }
 
-                                       /* create a source object            */
-  RexxSource *newSource = new RexxSource (pgmname, newSourceArray);
+    // if there is a parent source, then merge in the scope information
+    if (parentSource != OREF_NULL)
+    {
+        newSource->inheritSourceContext(parentSource);
+    }
 
-  ProtectedObject p(newSource);
-  Rexxmethod *result = RexxMethod::newRexxMethod(newSource, OREF_NULL);
-  RexxCode *resultCode = (RexxCode *)result->getCode();
-
-  // if we've been provided with a scope, use it
-  if (parentScope != OREF_NULL)
-  {
-      parentSource = parentScope->getSourceObject();
-  }
-  else
-  {
-      // see if we have an active context and use the current source as the basis for the lookup
-      RexxActivation *currentContext = ActivityManager::currentActivity->getCurrentRexxFrame();
-      if (currentContext != OREF_NULL)
-      {
-          parentSource = currentContext->getSource();
-      }
-  }
-
-  // if there is a parent source, then merge in the scope information
-  if (parentSource != OREF_NULL)
-  {
-      code->getSourceObject()->inheritSourceContext(parentSource);
-  }
-
-  return result;
+    return result;
 }
 
 
@@ -437,54 +388,59 @@ RexxMethod *RexxMethod::newRexx(
 /*            array                                                           */
 /******************************************************************************/
 {
-  RexxObject *pgmname;                 /* method name                       */
-  RexxObject *source;                  /* Array or string object            */
-  RexxMethod *newMethod;               /* newly created method object       */
-  RexxObject *option = OREF_NULL;
-  size_t initCount = 0;                /* count of arguments we pass along  */
+    RexxObject *pgmname;                 /* method name                       */
+    RexxObject *source;                  /* Array or string object            */
+    RexxMethod *newMethod;               /* newly created method object       */
+    RexxObject *option = OREF_NULL;
+    size_t initCount = 0;                /* count of arguments we pass along  */
 
-                                       /* break up the arguments            */
+                                         /* break up the arguments            */
 
-  process_new_args(init_args, argCount, &init_args, &initCount, 2, (RexxObject **)&pgmname, (RexxObject **)&source);
-                                       /* get the method name as a string   */
-  RexxString *nameString = REQUIRED_STRING(pgmname, ARG_ONE);
-  required_arg(source, TWO);           /* make sure we have the second too  */
+    process_new_args(init_args, argCount, &init_args, &initCount, 2, (RexxObject **)&pgmname, (RexxObject **)&source);
+    /* get the method name as a string   */
+    RexxString *nameString = REQUIRED_STRING(pgmname, ARG_ONE);
+    required_arg(source, TWO);           /* make sure we have the second too  */
 
-  RexxMethod *sourceContext = OREF_NULL;
-  // retrieve extra parameter if exists
-  if (initCount != 0)
-  {
-      process_new_args(init_args, initCount, &init_args, &initCount, 1, (RexxObject **)&option, NULL);
-      if (isOfClass(Method, option))
-      {
-          sourceContext = (RexxMethod *)option;
-      }
-      else
-      {
-          // this must be a string (or convertable) and have a specific value
-          option = option->requestString();
-          if (option == TheNilObject)
-          {
-              reportException(Error_Incorrect_method_argType, IntegerThree, "Method/String object");
-          }
-          // default given? set option to NULL (see code below)
-          if (!((RexxString *)option)->strICompare("PROGRAMSCOPE"))
-          {
-              reportException(Error_Incorrect_call_list, "NEW", IntegerThree, "\"PROGRAMSCOPE\", Method object", option);
-          }
-      }
-  }
-                                       /* go create a method                */
-  newMethod = RexxMethod::newMethodObject(nameString, source, IntegerTwo, sourceContext);
-  ProtectedObject p(newMethod);
-                                       /* Give new object its behaviour     */
-  newMethod->setBehaviour(((RexxClass)this)->getInstanceBehaviour());
-   if (this->hasUninitDefined()) {        /* does object have an UNINT method  */
-     newMethod->hasUninit();              /* Make sure everyone is notified.   */
-   }
-                                       /* now send an INIT message          */
-  newMethod->sendMessage(OREF_INIT, init_args, initCount);
-  return newMethod;                    /* return the new method             */
+    RexxSource *sourceContext = OREF_NULL;
+    // retrieve extra parameter if exists
+    if (initCount != 0)
+    {
+        process_new_args(init_args, initCount, &init_args, &initCount, 1, (RexxObject **)&option, NULL);
+        if (isOfClass(Method, option))
+        {
+            sourceContext = ((RexxMethod *)option)->getSourceObject();
+        }
+        else if (isOfClass(Routine, option))
+        {
+            sourceContext = ((RoutineClass *)option)->getSourceObject();
+        }
+        else
+        {
+            // this must be a string (or convertable) and have a specific value
+            option = option->requestString();
+            if (option == TheNilObject)
+            {
+                reportException(Error_Incorrect_method_argType, IntegerThree, "Method/String object");
+            }
+            // default given? set option to NULL (see code below)
+            if (!((RexxString *)option)->strICompare("PROGRAMSCOPE"))
+            {
+                reportException(Error_Incorrect_call_list, "NEW", IntegerThree, "\"PROGRAMSCOPE\", Method object", option);
+            }
+        }
+    }
+    /* go create a method                */
+    newMethod = RexxMethod::newMethodObject(nameString, source, IntegerTwo, sourceContext);
+    ProtectedObject p(newMethod);
+    /* Give new object its behaviour     */
+    newMethod->setBehaviour(((RexxClass *)this)->getInstanceBehaviour());
+    if (((RexxClass *)this)->hasUninitDefined())          /* does object have an UNINT method  */
+    {
+        newMethod->hasUninit();              /* Make sure everyone is notified.   */
+    }
+    /* now send an INIT message          */
+    newMethod->sendMessage(OREF_INIT, init_args, initCount);
+    return newMethod;                    /* return the new method             */
 }
 
 
@@ -503,7 +459,8 @@ RexxMethod *RexxMethod::newFileRexx(RexxString *filename)
   ProtectedObject p2(newMethod);
                                        /* Give new object its behaviour     */
   newMethod->setBehaviour(((RexxClass *)this)->getInstanceBehaviour());
-   if (this->hasUninitDefined()) {     /* does object have an UNINT method  */
+   if (((RexxClass *)this)->hasUninitDefined())    /* does object have an UNINT method  */
+   {
      newMethod->hasUninit();           /* Make sure everyone is notified.   */
    }
                                        /* now send an INIT message          */
@@ -531,71 +488,6 @@ RexxMethod *RexxMethod::newRexxBuffer(
   ProtectedObject p(newSource);
                                        /* now complete method creation      */
   return newRexxMethod(newSource, scope);
-}
-
-
-RexxMethod * RexxMethod::processInstore(PRXSTRING instore, RexxString * name )
-/******************************************************************************/
-/* Function:  Process instorage execution arguments                           */
-/******************************************************************************/
-{
-    // just a generic empty one indicating that we should check the macrospace?
-    if (instore[0].strptr == NULL && instore[1].strptr == NULL)
-    {
-        unsigned short temp;
-
-        /* see if this exists                */
-        if (!RexxQueryMacro(name->getStringData(), &temp))
-        {
-            RXSTRING buffer;                     /* instorage buffer                  */
-
-            MAKERXSTRING(buffer, NULL, 0);
-            /* get the image of function         */
-            RexxExecuteMacroFunction(name->getStringData(), &buffer);
-            /* unflatten the method now          */
-            RexxMethod *routine = SysRestoreProgramBuffer(&buffer, name);
-            // release the buffer memory
-            SysReleaseResultMemory(buffer.strptr);
-            return routine;
-        }
-        return OREF_NULL;         // not found
-    }
-    if (instore[1].strptr != NULL)       /* have an image                     */
-    {
-        /* go convert into a method          */
-        RexxMethod *method = SysRestoreProgramBuffer(&instore[1], name);
-        if (method != OREF_NULL)
-        {         /* did it unflatten successfully?    */
-            if (instore[0].strptr != NULL)   /* have source also?                 */
-            {
-                /* get a buffer object               */
-                RexxBuffer *source_buffer = new_buffer(instore[0].strlength);
-                /* copy source into the buffer       */
-                memcpy(source_buffer->address(), instore[0].strptr, instore[0].strlength);
-                /* reconnect this with the source    */
-                ((RexxCode *)method)->getSourceObject()->setBufferedSource(source_buffer);
-            }
-            return method;                   /* go return it                      */
-        }
-    }
-    if (instore[0].strptr != NULL)       /* have instorage source             */
-    {
-        /* get a buffer object               */
-        RexxBuffer *source_buffer = new_buffer(instore[0].strlength);
-        /* copy source into the buffer       */
-        memcpy(source_buffer->address(), instore[0].strptr, instore[0].strlength);
-
-        if (source_buffer->address()[0] == '#' && source_buffer->address()[1] == '!')
-        {
-            memcpy(source_buffer->address(), "--", 2);
-        }
-        /* translate this source             */
-        RexxMethod *method = newRexxBuffer(name, source_buffer, (RexxClass *)TheNilObject);
-        /* return this back in instore[1]    */
-        SysSaveProgramBuffer(&instore[1], method);
-        return method;                     /* return translated source          */
-    }
-    return OREF_NULL;                    /* processing failed                 */
 }
 
 
@@ -706,6 +598,18 @@ RexxArray *BaseCode::getSource()
 
 
 /**
+ * Non-virtual method for retrieving the source array.  This is needed
+ * for purposes of exporting as a Rexx method.
+ *
+ * @return An array of source line elements.
+ */
+RexxArray *BaseCode::source()
+{
+    return this->getSource();
+}
+
+
+/**
  * Set the security manager in the code source context.
  *
  * @param manager The new security manager.
@@ -724,10 +628,11 @@ RexxObject *BaseCode::setSecurityManager(RexxObject *manager)
 
 
 /**
- * Perform any needed resolution before calling a BaseCode
- * object.  The default resolution step is a no-op.
+ * Retrieve the source object associated with a code object.
+ *
+ * @return
  */
-void BaseCode::resolve()
+RexxSource *BaseCode::getSourceObject()
 {
-    // nothing to do by default
+    return OREF_NULL;
 }

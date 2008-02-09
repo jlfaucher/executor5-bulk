@@ -47,33 +47,58 @@
 #include "RexxCore.h"
 #include "Package.hpp"
 
+class BaseCode;
+class RoutineClass;
+class ProtectedObject;
+class RexxArray;
+class RexxActivity;
+class RexxNativeMethod;
+
 class PackageManager
 {
 public:
-    static void        live();
-    static void        liveGeneral();
+    static void live(size_t liveMark);
+    static void liveGeneral(int reason);
+
+    static void initialize();
+    static RexxArray *getImageData();
+    static void restore(RexxArray *imageArray);
     static Package    *getPackage(RexxString *name);
     static Package    *loadPackage(RexxString *name);
-    static PNATIVEMETHOD      resolveMethodEntry(RexxString *packageName, RexxString *methodName);
-    static RexxNativeCode    *resolveMethod(RexxString *packageName, RexxString *methodName);
-    static PNATIVEFUNCTION   *resolveFunction(RexxString *function, RexxString *package, RexxString *procedure);
+    static void        unload();
+    static RexxNativeMethod  *resolveMethod(RexxString *packageName, RexxString *methodName);
+    static RoutineClass *resolveFunction(RexxString *function, RexxString *packageName, RexxString *procedure);
+    static RoutineClass *resolveFunction(RexxString *function);
+    static RoutineClass *createRegisteredFunction(RexxString *function);
     static void        loadInternalPackage(RexxString *name, RexxPackageEntry *p);
     static void        createRootPackages();
-    static void        restoreRootPackages(PackageManager *master);
-    FunctionActivator *findFunction(RexxString *name);
-    void        addFunction(RexxString *name, FunctionActivator *func);
-    RexxObject *addRegisteredFunction(RexxString *name, RexxString *module, RexxString *proc);
-    RexxObject *dropRegisteredFunction(RexxString *name);
-    RexxObject *queryRegisteredFunction(RexxString *name);
-    void        unload();
+    static void        restoreRootPackages(RexxArray *);
+    static RexxObject *addRegisteredFunction(RexxString *name, RexxString *module, RexxString *proc);
+    static RexxObject *dropRegisteredFunction(RexxString *name);
+    static RexxObject *queryRegisteredFunction(RexxString *name);
+    static bool        callNativeFunction(RexxActivity *activity, RexxString *name,
+        RexxObject **arguments, size_t argcount, ProtectedObject &result);
 
-    static PackageManager *singleInstance;
+    static RoutineClass *getRequires(RexxActivity *activity, RexxString *shortName, RexxString *resolvedName, ProtectedObject &result);
+    static void          getMacroSpaceRequires(RexxActivity *activity, RexxString *name, ProtectedObject &result, RexxObject *securityManager);
+    static void          getRequiresFile(RexxActivity *activity, RexxString *name, ProtectedObject &result);
+    static void          runRequires(RexxActivity *activity, RexxString *name, RoutineClass *code);
 
 protected:
+    enum
+    {
+        IMAGE_PACKAGES = 1,
+        IMAGE_PACKAGE_FUNCTIONS,
+        IMAGE_REGISTERED_FUNCTIONS,
+        IMAGE_ARRAY_SIZE = IMAGE_REGISTERED_FUNCTIONS
+    };
+
+
     static RexxDirectory *packages;        // our loaded packages
     static RexxDirectory *packageFunctions; // table of functions loaded from packages
     static RexxDirectory *registeredFunctions;  // table of functions resolved by older registration mechanisms
-    static Package *rexxPackage;           // generated internal rexx package;
+
+    static RexxPackageEntry rexxPackage;    // internal generated REXX package
 };
 
 #endif

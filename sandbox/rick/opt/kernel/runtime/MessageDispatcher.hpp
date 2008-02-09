@@ -1,11 +1,12 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
+/* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
 /* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
 /* distribution. A copy is also available at the following address:           */
-/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
+/* http://www.oorexx.org/license.html                          */
 /*                                                                            */
 /* Redistribution and use in source and binary forms, with or                 */
 /* without modification, are permitted provided that the following            */
@@ -34,35 +35,28 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-/******************************************************************************/
-/* REXX Kernel                                                                */
-/*                                                                            */
-/* Manage system-specific aspects of an interpreter instance.                 */
-/*                                                                            */
-/******************************************************************************/
-#ifndef Included_SysInterpreterInstance_hpp
-#define Included_SysInterpreterinstance_hpp
 
-class SysInterpreterInstance
+
+#ifndef MessageDispatcher_included
+#define MessageDispatcher_included
+
+#include "ActivityDispatcher.hpp"
+
+class RexxMessage;
+
+class MessageDispatcher : public ActivityDispatcher
 {
 public:
-    void        live(size_t);
-    void        liveGeneral(int);
+    inline MessageDispatcher(RexxMessage *m) : ActivityDispatcher(OREF_NULL, OREF_NULL) { ; }
+    virtual ~RexxStartDispatcher() { ; }
 
-    RexxString *resolveProgramName(RexxString *_name, RexxString *_parentDir, RexxString *_parentExtension);
+    virtual void run();
+    virtual void handleError(wholenumber_t, RexxDirectory *);
 
 protected:
-    InterpreterInstance *instance;       // backlink to our instance container
-};
-
-
-class SysSearchPath
-{
-    SysSearchPath(const char *parent, const char *extension);
-    ~SysSearchPath();
-
-    const char *path;        // the constructed path
+    RexxMessage *message;         // the dispatchable message
 };
 
 
 #endif
+

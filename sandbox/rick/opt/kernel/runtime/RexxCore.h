@@ -186,6 +186,7 @@ EXTERNMEM RexxMemory  memoryObject;   /* memory object                     */
 #define TheListClass RexxList::classInstance
 #define TheMessageClass RexxMessage::classInstance
 #define TheMethodClass RexxMethod::classInstance
+#define TheRoutineClass RoutineClass::classInstance
 #define TheNumberStringClass RexxNumberString::classInstance
 #define TheObjectClass RexxObject::classInstance
 #define TheQueueClass RexxQueue::classInstance
@@ -200,7 +201,6 @@ EXTERNMEM RexxMemory  memoryObject;   /* memory object                     */
 #define TheWeakReferenceClass WeakReference::classInstance
 
 #define TheEnvironment RexxMemory::environment
-#define ThePublicRoutines RexxMemory::publicRoutines
 #define TheStaticRequires RexxMemory::staticRequires
 #define TheFunctionsDirectory RexxMemory::functionsDir
 #define TheCommonRetrievers RexxMemory::commonRetrievers

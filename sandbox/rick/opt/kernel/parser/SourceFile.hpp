@@ -58,6 +58,8 @@ class RexxInstructionIf;
 class RexxInstructionForward;
 class RexxExpressionMessage;
 class RexxCompoundVariable;
+class RoutineClass;
+class RexxCode;
 
                                        /* handy defines to easy coding      */
 #define new_instruction(name, type) this->sourceNewObject(sizeof(RexxInstruction##type), The##type##InstructionBehaviour, KEYWORD_##name)
@@ -142,7 +144,8 @@ class RexxSource : public RexxInternalObject {
   RexxObject *toss(RexxObject *);
   void        cleanup();
   void        mergeRequired(RexxSource *);
-  BaseCode   *resolveRoutine(RexxString *);
+  void        inheritSourceContext(RexxSource *source);
+  RoutineClass *resolveRoutine(RexxString *);
   RexxClass  *resolveClass(RexxString *, RexxActivation *);
   RexxString *resolveProgramName(RexxActivity *activity, RexxString *name);
   void        processInstall(RexxActivation *);

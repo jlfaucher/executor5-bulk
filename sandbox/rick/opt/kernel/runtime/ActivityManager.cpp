@@ -270,7 +270,6 @@ void ActivityManager::shutdown()
  * invocation).
  *
  * @param activity The activity we're running on.
- * @param method   The method object being invoked.
  * @param code     The code object associated with the method.
  * @param parent   The parent activation.  OREF_NULL is used if this is a top-level
  *                 call.
@@ -281,7 +280,7 @@ void ActivityManager::shutdown()
  *
  * @return The newly created activation.
  */
-RexxActivation *ActivityManager::newActivation(RexxActivity *activity, RexxMethod *method, RexxCode *code, RexxActivation *parent, RexxString *calltype, RexxString *environment, int context)
+RexxActivation *ActivityManager::newActivation(RexxActivity *activity, RexxCode *code, RexxActivation *parent, RexxString *calltype, RexxString *environment, int context)
 {
 
     if (activationCacheSize != 0)  /* have a cached entry?              */
@@ -291,7 +290,7 @@ RexxActivation *ActivityManager::newActivation(RexxActivity *activity, RexxMetho
         RexxActivation *resultActivation = (RexxActivation *)activations->stackTop();
         /* reactivate this                   */
         resultActivation->setHasReferences();
-        resultActivation = new (resultActivation) RexxActivation(activity, method, code, parent, calltype, environment, context);
+        resultActivation = new (resultActivation) RexxActivation(activity, code, parent, calltype, environment, context);
         activations->pop();          /* Remove reused activation from stac*/
         return resultActivation;
 
@@ -299,14 +298,14 @@ RexxActivation *ActivityManager::newActivation(RexxActivity *activity, RexxMetho
     else                                 /* need to create a new one          */
     {
         /* Create new Activation.            */
-        return new RexxActivation(activity, method, code, parent, calltype, environment, context);
+        return new RexxActivation(activity, code, parent, calltype, environment, context);
     }
 }
 
 
 /**
- * Create a new activation for CALLing a method (vs. a method
- * invocation).
+ * Create a new activation for a method invocation (vs. a
+ * program or routine call)
  *
  * @param activity The activity we're running on.
  * @param method   The method object being invoked.

@@ -166,6 +166,7 @@ public:
    void        liveGeneral(int reason);
    void        flatten(RexxEnvelope *);
    void        run();
+   void        run(RexxMessage *target);
    void        checkActivationStack();
    void        updateFrameMarkers();
    void        pushStackFrame(RexxActivationBase *new_activation);
@@ -304,6 +305,7 @@ public:
    void setExitHandler(int exitNum, REXXPFN e) { getExitHandler(exitNum).setEntryPoint(e); }
    void setExitHandler(int exitNum, const char *e) { getExitHandler(exitNum).resolve(e); }
    void setExitHandler(RXSYSEXIT &e) { getExitHandler(e.sysexit_code).resolve(e.sysexit_name); }
+   RexxString *resolveProgramName(RexxString *, RexxString *, RexxString *);
 
    // TODO:  This needs to be replaced by a system object.
 #ifdef THREADHANDLE
@@ -322,6 +324,7 @@ public:
    RexxActivationStack   frameStack;   /* our stack used for activation frames */
    RexxDirectory      *conditionobj;   /* condition object for killed activi*/
    RexxTable          *requiresTable;  /* Current ::REQUIRES being installed*/
+   RexxMessage        *dispatchMessage;  // a message object to run on this thread
 
 
    // the activation frame stack.  This stack is one RexxActivation or

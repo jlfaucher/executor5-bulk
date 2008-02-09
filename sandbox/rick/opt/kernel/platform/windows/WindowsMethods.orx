@@ -50,11 +50,7 @@ functions['ENDLOCAL']     = meths~function_endlocal
 functions['FILESPEC']     = meths~function_filespec
 functions['DIRECTORY']    = meths~function_directory
 functions['RXQUEUE']      = meths~function_rxqueue
-functions['RXFUNCADD']    = meths~function_rxfuncadd
-functions['RXFUNCDROP']   = meths~function_rxfuncdrop
-functions['RXFUNCQUERY']  = meths~function_rxfuncquery
 functions['RXMESSAGEBOX'] = meths~function_rxmessagebox
-functions['!QUEUEEXIT']   = meths~function_queueexit
 
                                        /* Return system specific methods  */
 return meths
@@ -63,7 +59,7 @@ return meths
 /*    F U N C T I O N    M E T H O D S      */
 /* **************************************** */
 
-::method function_rxqueue
+::routine function_rxqueue
   use arg keyword, queue_name
   parse upper var keyword keyword
   signal on syntax
@@ -101,16 +97,11 @@ return meths
 
 syntax: raise propagate
 
-::method function_queueexit     EXTERNAL 'REXX function_queueExit'
-::method function_rxfuncadd     EXTERNAL 'REXX sysRxfuncadd'
-::method function_rxfuncdrop    EXTERNAL 'REXX sysRxfuncdrop'
-::method function_rxfuncquery   EXTERNAL 'REXX sysRxfuncquery'
-
-::method function_beep          EXTERNAL 'REXX sysBeep'
-::method function_setlocal      EXTERNAL 'REXX sysSetLocal'
-::method function_endlocal      EXTERNAL 'REXX sysEndLocal'
-::method function_directory     EXTERNAL 'REXX sysDirectory'
-::method function_filespec      EXTERNAL 'REXX sysFilespec'
-::method function_rxmessagebox  EXTERNAL 'REXX sysMessageBox'
+::routine function_beep          EXTERNAL 'REXX sysBeep'
+::routine function_setlocal      EXTERNAL 'REXX sysSetLocal'
+::routine function_endlocal      EXTERNAL 'REXX sysEndLocal'
+::routine function_directory     EXTERNAL 'REXX sysDirectory'
+::routine function_filespec      EXTERNAL 'REXX sysFilespec'
+::routine function_rxmessagebox  EXTERNAL 'REXX sysMessageBox'
 
 

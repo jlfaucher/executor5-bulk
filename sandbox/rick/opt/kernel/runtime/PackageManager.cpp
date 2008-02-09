@@ -52,8 +52,6 @@
 RexxDirectory *PackageManager::packages = OREF_NULL;        // our loaded packages
 RexxDirectory *PackageManager::packageFunctions = OREF_NULL;     // table of functions loaded from packages
 RexxDirectory *PackageManager::registeredFunction = OREF_NULL;
-Package *PackageManager::rexxPackage= = OREF_NULL;           // generated internal rexx package;
-
 
 /**
  * Initialize the package manager global state.
@@ -63,6 +61,54 @@ void PackageManager::initialize()
     packages = new_directory();               // create the tables for the manager
     packageFunctions = new_directory();
     registeredFunctions = new_directory();
+}
+
+
+/**
+ * Return the information that needs to be saved in the saved
+ * image.
+ *
+ * @return An array of the items added to the saved image.
+ */
+RexxArray *PackageManager::getImageData()
+{
+
+    RexxArray *imageArray = new_array(IMAGE_ARRAY_SIZE);
+    imageArray->put(packages, IMAGE_PACKAGES);
+    imageArray->put(packageFunctions, IMAGE_PACKAGE_FUNCTIONS);
+    imageArray->put(registeredFunctions, IMAGE_REGISTERED_FUNCTIONS);
+
+    return imageArray;
+}
+
+
+/**
+ * Restore the saved image data.
+ *
+ * @param imageArray The array we placed in the save image originally.
+ */
+void PackageManager::restore(RexxArray *imageArray)
+{
+    // we use copies of these directories to avoid old-to-new image problems.
+    packages = (RexxDirectory *)imageArray->get(IMAGE_PACKAGES)->copy();
+    packageFunctions = (RexxDirectory *)imageArray->get(IMAGE_PACKAGE_FUNCTIONS)->copy();
+    registeredFunctions = (RexxDirectory *)imageArray->get(IMAGE_REGISTERED_FUNCTIONS)->copy();
+
+    for (HashLink i = packages->first(); packages->available(i); i = packages->next(i))
+    {
+        // get the next package
+        Package *package = (Package *)packages->value(i);
+        // not one of the internal packages, so reload.
+        if (!package->isInternal())
+        {
+            package->reload();
+        }
+        else
+        {
+            // the only internal package is the Rexx one
+            package->reload(rexxPackage);
+        }
+    }
 }
 
 
@@ -79,7 +125,7 @@ void PackageManager::live(size_t liveMark)
 /**
  * Generalized live marking.
  */
-void PackageManager::liveGeneral()
+void PackageManager::liveGeneral(int reason)
 {
     memory_mark_general(packages);
     memory_mark_general(packageFunctions);
@@ -181,36 +227,22 @@ RexxNativeMethod *PackageManager::resolveMethod(RexxString *packageName, RexxStr
  * @return A function activator for this function, if it can be
  *         resolved.
  */
-RegisteredFunction *PackageManager::resolveFunction(RexxString *function, RexxString *packageName, RexxString *procedure)
+RoutineClass *PackageManager::resolveFunction(RexxString *function, RexxString *packageName, RexxString *procedure)
 {
     // see if we have this one already
-    RegisteredFunction *function = registeredFunctions->at(function);
+    RoutineClass *func = (RoutineClass *)registeredFunctions->at(function);
 
     // if we have this, then we can return it directly.
-    if (function != OREF_NULL)
+    if (func != OREF_NULL)
     {
-        return function;
+        return func;
     }
 
     // go register this (unconditionally....at this point, we don't care if this fails)
     RexxRegisterFunctionDll(function->getStringData(), packageName->getStringData(), procedure->getStringData());
 
-    REXXPFN entry = NULL;
-
-    // now go resolve this entry pointer
-    RexxResolveFunction(function->getStringData(), *entry);
-
-    // this is a failure
-    if (entry == NULL)
-    {
-        return OREF_NULL;
-    }
-
-    // create a code handler and add to the cache
-    function = new RegisteredFunction((RexxFunctionHandler *)REXXPFN);
-    registeredFunctions->put(function, function);
-    // we got this
-    return function;
+    // resolve a registered entry, if we can and add it to the cache
+    return createRegisteredFunction(function);
 }
 
 
@@ -223,17 +255,41 @@ RegisteredFunction *PackageManager::resolveFunction(RexxString *function, RexxSt
  * @return A function activator for this function, if it can be
  *         resolved.
  */
-RegisteredFunction *PackageManager::resolveFunction(RexxString *function)
+RoutineClass *PackageManager::resolveFunction(RexxString *function)
 {
-    // see if we have this one already
-    RegisteredFunction *function = registeredFunctions->at(function);
+    // see if we have this one already as a package function
+    RoutineClass *func = (RoutineClass *)packageFunctions->at(func);
 
     // if we have this, then we can return it directly.
-    if (function != OREF_NULL)
+    if (func != OREF_NULL)
     {
-        return function;
+        return func;
     }
 
+    // see if we have this one already as a registered function
+    func = (RoutineClass *)registeredFunctions->at(func);
+
+    // if we have this, then we can return it directly.
+    if (func != OREF_NULL)
+    {
+        return func;
+    }
+
+    // resolve a registered entry, if we can and add it to the cache
+    return createRegisteredFunction(function);
+}
+
+
+/**
+ * Create a new registered function entry and add to the
+ * function cache.
+ *
+ * @param function
+ *
+ * @return
+ */
+RoutineClass *PackageManager::createRegisteredFunction(RexxString *function)
+{
     REXXPFN entry = NULL;
 
     // now go resolve this entry pointer
@@ -246,10 +302,10 @@ RegisteredFunction *PackageManager::resolveFunction(RexxString *function)
     }
 
     // create a code handler and add to the cache
-    function = new RegisteredFunction((RexxFunctionHandler *)REXXPFN);
-    registeredFunctions->put(function, function);
+    RexxFunction *func = new RoutineClass(new RegisteredFunction((RexxFunctionHandler *)REXXPFN));
+    registeredFunctions->put(func, function);
     // we got this
-    return function;
+    return func;
 }
 
 
@@ -290,7 +346,7 @@ void PackageManager::createRootPackages()
  *
  * @param master The master PackageManager saved in the image file.
  */
-void PackageManager::restoreRootPackages(RexxDirectory *savedPackages)
+void PackageManager::restoreRootPackages(RexxArray *savedPackages)
 {
     // get the references to the saved internal packages.
     rexxPackage = master->rexxPackage;
@@ -388,11 +444,8 @@ RexxObject *PackageManager::queryRegisteredFunction(RexxString *name)
  */
 void PackageManager::unload()
 {
-    HashLink i;
-    // traverse the package table, and force a refresh for any additional
-    // packages that got saved in the main image.  These will need to load
-    // additional DLLs.
-    for (i = packages->first(); packages->available(i); i = packages->next(i))
+    // traverse the package table, and force an unload for each library we've loaded up.
+    for (HashLink i = packages->first(); packages->available(i); i = packages->next(i))
     {
         // get the next package
         Package *package = (Package *)packages->value(i);
@@ -402,7 +455,6 @@ void PackageManager::unload()
             package->unload();
         }
     }
-
 }
 
 
@@ -443,7 +495,7 @@ bool PackageManager::callNativeFunction(RexxActivity *activity, RexxString *name
 }
 
 
-RexxCode *PackageManager::getRequires(RexxActivity *activity, RexxString *shortName, RexxString *resolvedName, ProtectedObject &result)
+RoutineClass *PackageManager::getRequires(RexxActivity *activity, RexxString *shortName, RexxString *resolvedName, ProtectedObject &result)
 {
     result = OREF_NULL;
 
@@ -572,7 +624,7 @@ void PackageManager::getRequiresFile(RexxActivity *activity, RexxString *name, P
 }
 
 
-void PackageManager::runRequires(RexxActivity *activity, RexxString *name, RexxCode *code)
+void PackageManager::runRequires(RexxActivity *activity, RexxString *name, RoutineClass *code)
 {
     ProtectedObject dummy;
 

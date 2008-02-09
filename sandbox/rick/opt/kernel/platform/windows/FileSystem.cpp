@@ -186,7 +186,7 @@ RexxString *SystemInterpreter::extractFile(RexxString *file)
  * @return A string version of the file name, if found.  Returns OREF_NULL if
  *         the program cannot be found.
  */
-RexxString *SysInterpreterInstance::resolveProgram(RexxString *_name, RexxString *_parentDir, RexxString *_parentExtension)
+RexxString *SysInterpreterInstance::resolveProgramName(RexxString *_name, RexxString *_parentDir, RexxString *_parentExtension)
 {
     char resolvedName[CCHMAXPATH + 2];    // finally resolved name
 

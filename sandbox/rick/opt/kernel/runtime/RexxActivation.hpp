@@ -182,7 +182,7 @@ RexxObject * activation_find  (void);
 
    inline RexxActivation(RESTORETYPE restoreType) { ; };
    RexxActivation(RexxActivity* _activity, RexxMethod * _method, RexxCode *_code);
-   RexxActivation(RexxActivity *_activity, RexxMethod *_method, RexxCode *_code, RexxActivation *_parent, RexxString *calltype, RexxString *env, int context);
+   RexxActivation(RexxActivity *_activity, RexxCode *_code, RexxActivation *_parent, RexxString *calltype, RexxString *env, int context);
    void init(RexxObject *, RexxObject *, RexxObject *, RexxObject *, RexxObject *, int);
    void live(size_t);
    void liveGeneral(int reason);
@@ -216,7 +216,7 @@ RexxObject * activation_find  (void);
    inline bool isProgram() { return activation_context == PROGRAMCALL; }
    inline bool isTopLevelCall() { return (activation_context & TOP_LEVEL_CALL) != 0; }
    inline bool isProgramLevelCall() { return (activation_context & PROGRAM_LEVEL_CALL) != 0; }
-   inline bool isNestedCall() { return (activation_context & INTERNAL_LEVEL_CALL) != 0; }
+   inline bool isInternalLevelCall() { return (activation_context & INTERNAL_LEVEL_CALL) != 0; }
    inline bool isProgramOrMethod() { return (activation_context & PROGRAM_OR_METHOD) != 0; }
 
    RexxObject *run(RexxObject *_receiver, RexxString *msgname, RexxObject **_arglist,
@@ -347,7 +347,6 @@ RexxObject * activation_find  (void);
    inline void              clearTraceSettings() { settings.flags &= ~trace_flags; settings.intermediate_trace = false; }
    inline bool              tracingResults() {return (this->settings.flags&trace_results) != 0; }
    inline RexxActivity    * getActivity() {return this->activity;};
-   inline RexxMethod      * getMethod() {return this->method;};
    inline RexxString      * getMessageName() {return this->settings.msgname;};
    inline RexxString      * getCallname() {return this->settings.msgname;};
    inline RexxInstruction * getCurrent() {return this->current;};
@@ -396,7 +395,7 @@ RexxObject * activation_find  (void);
    inline SecurityManager  *getSecurityManager() { return this->settings.securityManager; }
    inline bool              isTopLevel() { return (this->activation_context&TOP_LEVEL_CALL) != 0; }
    inline bool              isForwarded() { return (this->settings.flags&forwarded) != 0; }
-   inline bool              isGuarded() { return (this->settings.flags&guarded_method != 0; }
+   inline bool              isGuarded() { return (this->settings.flags&guarded_method) != 0; }
    inline bool              setGuarded() { return (this->settings.flags&guarded_method) != 0; }
 
    inline bool              isExternalTraceOn() { return (this->settings.flags&trace_on) != 0; }
@@ -660,6 +659,7 @@ RexxObject * activation_find  (void);
    ActivationSettings   settings;      /* inherited REXX settings           */
    RexxExpressionStack  stack;         /* current evaluation stack          */
    RexxCode            *code;          /* rexx method object                */
+   RexxClass           *scope;         // scope of any active method call
    RexxObject          *receiver;      /* target of a message invocation    */
    RexxActivity        *activity;      /* current running activation        */
    RexxActivation      *sender;        /* previous running activation       */

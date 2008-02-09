@@ -55,7 +55,6 @@
 #include "TableClass.hpp"
 #include "RexxActivation.hpp"
 #include "ActivityManager.hpp"
-#include "LibraryManager.hpp"
 #include "MessageClass.hpp"
 #include "MethodClass.hpp"
 #include "RelationClass.hpp"
@@ -65,6 +64,7 @@
 #include "WeakReferenceClass.hpp"
 #include "Interpreter.hpp"
 #include "SystemInterpreter.hpp"
+#include "PackageManager.hpp"
 
 // restore a class from its
 // associated primitive behaviour
@@ -86,7 +86,6 @@ RexxMemory memoryObject;
 
 RexxDirectory *RexxMemory::globalStrings = OREF_NULL;
 RexxDirectory *RexxMemory::environment = OREF_NULL;       // global environment
-RexxDirectory *RexxMemory::publicRoutines = OREF_NULL;    // statically defined public routines
 RexxDirectory *RexxMemory::functionsDir = OREF_NULL;      // statically defined requires
 RexxDirectory *RexxMemory::commonRetrievers = OREF_NULL;
 RexxDirectory *RexxMemory::kernel = OREF_NULL;
@@ -858,11 +857,10 @@ void RexxMemory::restoreImage()
   TheNullPointer   = (RexxPointer *)saveArray->get(saveArray_NULLPOINTER);
   TheClassClass  = (RexxClass *)saveArray->get(saveArray_CLASS);
   TheCommonRetrievers = (RexxDirectory *)saveArray->get(saveArray_COMMON_RETRIEVERS);
-  ThePublicRoutines   = (RexxDirectory *)saveArray->get(saveArray_PUBLIC_RTN);
 
   /* restore the global strings        */
   memoryObject.restoreStrings((RexxArray *)saveArray->get(saveArray_NAME_STRINGS));
-  LibraryManager::restore((RexxDirectory *)saveArray->get(saveArray_LIBRARIES));
+  PackageManager::restore((RexxArray *)saveArray->get(saveArray_PACKAGES));
 }
 
 
@@ -889,7 +887,7 @@ void RexxMemory::live(size_t liveMark)
   Interpreter::live(liveMark);
   SystemInterpreter::live(liveMark);
   ActivityManager::live(liveMark);
-  LibraryManager::live(liveMark);
+  PackageManager::live(liveMark);
 }
 
 void RexxMemory::liveGeneral(int reason)
@@ -911,7 +909,7 @@ void RexxMemory::liveGeneral(int reason)
   Interpreter::liveGeneral(reason);
   SystemInterpreter::liveGeneral(reason);
   ActivityManager::liveGeneral(reason);
-  LibraryManager::liveGeneral(reason);
+  PackageManager::liveGeneral(reason);
 }
 
 void RexxMemory::flatten(RexxEnvelope *env)
@@ -1624,12 +1622,11 @@ void RexxMemory::saveImage(void)
   saveArray->put((RexxObject *)TheNullArray,     saveArray_NULLA);
   saveArray->put((RexxObject *)TheNullPointer,   saveArray_NULLPOINTER);
   saveArray->put((RexxObject *)TheClassClass,    saveArray_CLASS);
-  saveArray->put((RexxObject *)LibraryManager::getLibraries(), saveArray_LIBRARIES);
+  saveArray->put((RexxObject *)PackageManager::getImageData(), saveArray_PACKAGES);
   saveArray->put((RexxObject *)TheSystem,       saveArray_SYSTEM);
   saveArray->put((RexxObject *)TheFunctionsDirectory,  saveArray_FUNCTIONS);
   saveArray->put((RexxObject *)TheCommonRetrievers,    saveArray_COMMON_RETRIEVERS);
   saveArray->put((RexxObject *)saveStrings(), saveArray_NAME_STRINGS);
-  saveArray->put((RexxObject *)ThePublicRoutines,       saveArray_PUBLIC_RTN);
 
                                        /* create the behaviour array        */
   primitive_behaviours= (RexxArray *)new_array(T_Last_Exported_Class + 1);
@@ -2202,7 +2199,7 @@ void RexxMemory::create()
     RexxClass::createClass();            /* get the CLASS class created       */
     RexxInteger::createClass();
     // initializer for native libraries
-    LibraryManager::init();
+    PackageManager::initialize();
     /* Now get our savestack and         */
     /*savetable                          */
     memoryObject.setUpMemoryTables(OREF_NULL);
@@ -2231,7 +2228,7 @@ void RexxMemory::restore()
     RESTORE_CLASS(Integer, RexxIntegerClass);
     RESTORE_CLASS(List, RexxListClass);
     RESTORE_CLASS(Message, RexxClass);
-    RESTORE_CLASS(Method, RexxMethodClass);
+    RESTORE_CLASS(Method, RexxClass);
     RESTORE_CLASS(NumberString, RexxNumberStringClass);
     RESTORE_CLASS(Queue, RexxClass);
     RESTORE_CLASS(Stem, RexxClass);
@@ -2263,7 +2260,6 @@ void RexxMemory::restore()
     // stream classes.  We need to get the external libraries reloaded before
     // that happens.
     Interpreter::init();
-    LibraryManager::reload();
     ActivityManager::init();             /* do activity restores              */
     memoryObject.enableOrefChecks();     /* enable setCheckOrefs...           */
 }

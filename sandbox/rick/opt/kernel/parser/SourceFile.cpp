@@ -78,7 +78,6 @@
 #include "CallInstruction.hpp"
 #include "StreamNative.h"
 #include "ProtectedObject.hpp"
-#include "LibraryManager.hpp"
 #include "CPPCode.hpp"
 
 #define HOLDSIZE         60            /* room for 60 temporaries           */

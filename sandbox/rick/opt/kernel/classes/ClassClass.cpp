@@ -578,7 +578,7 @@ RexxObject *RexxClass::defineMethod(
     else if (TheNilObject != method_object && !isOfClass(Method, method_object))
     {
         /* make one from a string            */
-        method_object = TheMethodClass->newRexxCode(method_name, method_object, IntegerTwo);
+        method_object = RexxMethod::newMethodObject(method_name, method_object, IntegerTwo, OREF_NULL);
     }
     if (TheNilObject != method_object)   /* if the method is not TheNilObject */
     {
@@ -960,7 +960,7 @@ RexxTable *RexxClass::methodDictionaryCreate(
             if (!isOfClass(Method, newMethod))   /* object                            */
             {
                 /* make it into a method object      */
-                newMethod = TheMethodClass->newRexxCode(method_name, newMethod, IntegerOne);
+                newMethod = RexxMethod::newMethodObject(method_name, newMethod, IntegerOne, OREF_NULL);
                 newMethod->setScope(scope);   /* and set the scope to the given    */
             }
             else

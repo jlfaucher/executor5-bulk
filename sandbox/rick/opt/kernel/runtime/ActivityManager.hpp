@@ -71,7 +71,7 @@ public:
     static void createLocks();
     static void closeLocks();
     static void init();
-    static RexxActivation *newActivation(RexxActivity *activity, RexxMethod *method, RexxCode *code, RexxActivation *parent, RexxString *calltype, RexxString *environment, int context);
+    static RexxActivation *newActivation(RexxActivity *activity, RexxCode *code, RexxActivation *parent, RexxString *calltype, RexxString *environment, int context);
     static RexxActivation *newActivation(RexxActivity *activity, RexxMethod *method, RexxCode *code);
     static void cacheActivation(RexxActivation *activation);
     static RexxActivity *newActivity(int priority);

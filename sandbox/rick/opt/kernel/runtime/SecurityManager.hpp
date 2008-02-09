@@ -45,6 +45,9 @@
 #define SecurityManager_Included
 
 #include "RexxCore.h"
+#include "ProtectedObject.hpp"
+
+class RexxDirectory;
 
 class SecurityManager : public RexxInternalObject
 {
@@ -59,8 +62,17 @@ public:
 
     void         live(size_t);
     void         liveGeneral(int reason);
+    RexxObject  *checkLocalAccess(RexxString *index);
+    RexxObject  *checkEnvironmentAccess(RexxString *index);
+    bool         checkProtectedMethod(RexxObject *target, RexxString *messageName, size_t count, RexxObject **arguments, ProtectedObject &result);
+    bool         checkFunctionCall(RexxString *functionName, size_t count, RexxObject **arguments, ProtectedObject &result);
+    bool         checkFunctionCall(RexxString *command, RexxString *env, RexxString **conditions, RexxObject **result);
+    RexxObject  *checkStreamAccess(RexxString *name);
+    RexxString  *checkReguiresAccess(RexxString *name, RexxObject *&securityManager);
+
 
 protected:
+    bool         callSecurityManager(RexxString *methodName, RexxDirectory *arguments);
 
     RexxObject *manager;       // the wrappered manager object
 };

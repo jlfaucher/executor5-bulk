@@ -98,9 +98,11 @@ public:
     void removeInactiveActivities();
     void haltAllActivities();
     void traceAllActivities(bool on);
+    inline RexxString *resolveProgramName(RexxString *name, RexxString *dir, RexxString *ext) { return sysInstance.resolveProgramName(name, dir, ext); }
 
 protected:
     InstanceContext      context;            // our externalizied instance context
+    SysInterpreterInstance sysInstance;      // our platform specific helper
 
     RexxActivity        *rootActivity;       // the initial activity
     SecurityManager     *securityManager;    // the security manager for our instance

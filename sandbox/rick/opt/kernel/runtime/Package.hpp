@@ -46,7 +46,6 @@
 
 #include "RexxCore.h"
 #include "SysLibrary.hpp"
-#include "oorexx.h"
 
 class PackageManager;
 
@@ -60,23 +59,21 @@ public:
     void *operator new(size_t);
     inline void  operator delete(void *) {;}
 
-    Package(RexxString *n, PackageManager *m, RexxPackageEntry *p);
+    Package(RexxString *n);
+    Package(RexxString *n, RexxPackageEntry *p);
     inline Package(RESTORETYPE restoreType) { ; };
 
-    void   live();
-    void   liveGeneral();
-    bool   load(PackageManager *manager);
+    void   live(size_t liveMark);
+    void   liveGeneral(int reason);
+    bool   load();
     void   unload();
     RexxPackageEntry *getPackageTable();
-    void   loadPackage(PackageManager *manager, ooRexxPackageEntry *p);
-    void   loadFunctions(PackageManager *manager, ooRexxFunctionEntry *table);
-    void   loadMethods(PackageManager *manager, ooRexxMethodEntry *table);
-    RexxNativeFunction *resolveFunction(RexxString *name, RexxString *procedure);
+    void   loadPackage(RexxPackageEntry *p);
+    void   loadFunctions(RexxFunctionEntry *table);
     RexxMethodEntry *locateMethodEntry(RexxString *name);
     RexxFunctionEntry *locateFunctionEntry(RexxString *name);
-    RexxNativeMethod *resolveMethod(RexxString *name);
+    BaseCode *resolveMethod(RexxString *name);
     void   refreshPackage();
-    void   refreshPackage(ooRexxPackageEntry *p);
     inline bool isLoaded() { return loaded; }
     inline bool isInternal() { return internal; }
     inline bool isPackage() { return ispackage; }

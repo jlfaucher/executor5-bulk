@@ -92,7 +92,7 @@ void CreateMethodDispatcher::run()
     RexxBuffer *source_buffer = new_buffer(programBuffer);
     ProtectedObject p(source_buffer);
                                           /* translate this source             */
-    translatedMethod = (REXXOBJECT)TheMethodClass->newRexxBuffer(OREF_NULLSTRING, source_buffer, (RexxClass *)TheNilObject);
+    translatedMethod = (REXXOBJECT)RexxMethod::newRexxBuffer(OREF_NULLSTRING, source_buffer, (RexxClass *)TheNilObject);
 
     RexxString *saveTarget = new_string(contextName);
     RexxDirectory *locked_objects = (RexxDirectory *)ActivityManager::localEnvironment->at(saveTarget);

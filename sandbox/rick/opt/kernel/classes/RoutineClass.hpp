@@ -44,46 +44,41 @@
 #ifndef Included_RoutineClass
 #define Included_RoutineClass
 
-#include "RexxMethod.hpp"
+#include "MethodClass.hpp"
 
- class RoutineClass : public RexxObject
- {
-  public:
-  void *operator new(size_t);
-  inline void *operator new(size_t size, void *ptr) { return ptr; };
-  RoutineClass(BaseCode *_code);
-  inline RoutineClass(RESTORETYPE restoreType) { ; };
+class RoutineClass : public BaseExecutable
+{
+public:
+    void *operator new(size_t);
+    inline void *operator new(size_t size, void *ptr) { return ptr; };
+    RoutineClass(BaseCode *_code);
+    inline RoutineClass(RESTORETYPE restoreType) { ; };
 
-  void execute(RexxObject *, RexxObject *);
-  void live(size_t);
-  void liveGeneral(int reason);
-  void flatten(RexxEnvelope*);
+    void execute(RexxObject *, RexxObject *);
+    void live(size_t);
+    void liveGeneral(int reason);
+    void flatten(RexxEnvelope*);
 
-  void          call(RexxActivity *,  RexxString *,  RexxObject **, size_t, RexxString *, RexxString *, int, ProtectedObject &);
-  void          call(RexxActivity *,  RexxString *,  RexxObject **, size_t, ProtectedObject &);
-  void          runProgram(RexxActivity *activity, RexxString * calltype, RexxString * environment, RexxObject **arguments, size_t argCount, ProtectedObject &result);
+    void          call(RexxActivity *,  RexxString *,  RexxObject **, size_t, RexxString *, RexxString *, int, ProtectedObject &);
+    void          call(RexxActivity *,  RexxString *,  RexxObject **, size_t, ProtectedObject &);
+    void          runProgram(RexxActivity *activity, RexxString * calltype, RexxString * environment, RexxObject **arguments, size_t argCount, ProtectedObject &result);
 
-  RexxArray   *source();
-  RexxSource  *getSourceObject();
-  RexxSmartBuffer *save();
-  RexxObject  *setSecurityManager(RexxObject *);
+    RexxSmartBuffer *save();
+    RexxObject  *setSecurityManager(RexxObject *);
 
-  static RoutineClass *newRexxMethod(RexxSource *, RexxClass  *);
-  static RoutineClass *newRexxCode(RexxString *, RexxObject *, RexxObject *, RexxSource *s);
-  static RoutineClass *newRexx(RexxObject **, size_t);
-  static RoutineClass *newRexxBuffer(RexxString *, RexxBuffer *, RexxClass  *);
-  static RoutineClass *restore(RexxBuffer *, char *);
-  static RoutineClass *newFile(RexxString *);
-  static RoutineClass *newFileRexx(RexxString *);
+    RoutineClass *newRexx(RexxObject **, size_t);
+    RoutineClass *newFileRexx(RexxString *);
 
-  inline BaseCode  *getCode()     { return this->code; }
-  static RoutineClass *processInstore(PRXSTRING instore, RexxString * name );
+    static RoutineClass *newRexxMethod(RexxSource *, RexxClass  *);
+    static RoutineClass *newRexxCode(RexxString *, RexxObject *, RexxObject *, RexxSource *s);
+    static RoutineClass *newRexxBuffer(RexxString *, RexxBuffer *, RexxClass  *);
+    static RoutineClass *restore(RexxBuffer *, char *);
+    static RoutineClass *newFile(RexxString *);
 
-  static RexxClass *classInstance;
+    static RoutineClass *processInstore(PRXSTRING instore, RexxString * name );
 
- protected:
-     BaseCode   *code;               // the backing code object
- };
+    static RexxClass *classInstance;
+};
 
 
 inline RoutineClass *new_routine(BaseCode *c)  { return new RoutineClass(c); }

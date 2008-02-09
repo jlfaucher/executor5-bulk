@@ -45,7 +45,7 @@
 #include "RexxCore.h"                    /* kernel definitions                */
 #include "RexxNativeAPI.h"
 
-RexxMethod1 (void, message_nstart, OSELF, self)
+RexxMethod1 (void, message_start, OSELF, self)
 /******************************************************************************/
 /* Arguments:  Nothing                                                        */
 /*                                                                            */
@@ -59,5 +59,5 @@ RexxMethod1 (void, message_nstart, OSELF, self)
 /* taken care of the complete setup.                                          */
 /******************************************************************************/
 {
-  ooRexxSend0(self,"SEND");
+    context->SendMessage0(self, "SEND");
 }

@@ -217,7 +217,6 @@ RexxPackageEntry *Package::getPackageTable()
  */
 void Package::loadPackage(RexxPackageEntry *p)
 {
-    ispackage = true;
     package = p;       //NB:  this is NOT an object, so OrefSet is not needed.
     // load the function table
     loadFunctions(package->functions);
@@ -343,7 +342,7 @@ ooRexxFunctionEntry *Package::locateFunctionEntry(RexxString *name)
  *
  * @return A RexxNativeCode object for this method, if located.
  */
-RexxNativeMethod *Package::resolveMethod(RexxString *name)
+BaseCode *Package::resolveMethod(RexxString *name)
 {
     // create our methods table if not yet created.
     if (methods == OREF_NULL)
@@ -352,15 +351,15 @@ RexxNativeMethod *Package::resolveMethod(RexxString *name)
     }
 
     // see if this is in the table yet.
-    RexxNativeMethod *code = (RexxNativeCode *)methods->at(name);
+    BaseCode *code = (BaseCode *)methods->at(name);
     if (code == OREF_NULL)
     {
         // find the package definition
-        ooRexxMethodEntry *entry = locateMethodEntry(name);
+        RexxMethodEntry *entry = locateMethodEntry(name);
         // if we found one with this name, create a native method out of it.
         if (entry != NULL)
         {
-            codei = new RexxNativeMethod(libraryName, name, (PNATIVEMETHOD)entry->entryPoint);
+            code = new RexxNativeMethod(libraryName, name, (PNATIVEMETHOD)entry->entryPoint);
             methods->put((RexxObject *)code, name);
             return code;
         }
@@ -372,18 +371,26 @@ RexxNativeMethod *Package::resolveMethod(RexxString *name)
 }
 
 
-
 /**
  * Refresh a non-internal package after an image restore.
- *
- * @param manager The package manager instance.
  */
-void Package::refreshPackage()
+void Package::reload()
 {
-    RexxPackageEntry *table = getPackageTable();
-    if (table == OREF_NULL)
+    package = getPackageTable();
+    if (package == OREF_NULL)
     {
         logic_error("Failure loading required base library");
     }
+}
+
+
+/**
+ * Refresh an internal package after an image restore.
+ *
+ * @param pack   The internal package entry.
+ */
+void Package::reload(RexxPackageEntry *pack)
+{
+    package = pack;
 }
 

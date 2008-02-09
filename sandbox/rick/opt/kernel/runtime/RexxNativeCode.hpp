@@ -52,10 +52,11 @@ class RexxNativeCode : public BaseCode
   public:
 
    inline RexxNativeCode() { }
-   RexxNativeCode(RexxString *, RexxString *);
+   RexxNativeCode(RexxString *, RexxString *, RexxSource *);
    void        live(size_t);
    void        liveGeneral(int reason);
-   virtual void call(RexxActivity *, RexxString *,  RexxObject **, size_t, ProtectedObject &) = 0;
+   void        flatten(RexxEnvelope *envelope);
+
    virtual RexxSource *getSourceObject();
 
 protected:
@@ -74,11 +75,10 @@ class RexxNativeMethod : public RexxNativeCode
    inline void  operator delete(void *, void *) { ; }
 
    inline RexxNativeMethod(RESTORETYPE restoreType) { ; };
-   RexxNativeMethod(RexxString *, RexxString *, PNATIVEMETHOD);
-   RexxNativeMethod(PNATIVEMETHOD);
+   RexxNativeMethod(RexxString *, RexxString *, RexxSource *, PNATIVEMETHOD);
 
+   void        liveGeneral(int reason);
    void        flatten(RexxEnvelope *envelope);
-   RexxObject *unflatten(RexxEnvelope *envelope);
 
    virtual void run(RexxActivity *activity, RexxMethod *method, RexxObject *receiver, RexxString *messageName,
        size_t count, RexxObject **argPtr, ProtectedObject &result);
@@ -93,7 +93,9 @@ class RexxFunction : public RexxNativeCode
   public:
 
    inline RexxFunction() { }
-   inline RexxFunction(RexxString *p, RexxString *n) : RexxNativeCode(p, n) { }
+   inline RexxFunction(RexxString *p, RexxString *n, RexxSource *s) : RexxNativeCode(p, n, s) { }
+
+   virtual void call(RexxActivity *, RexxString *,  RexxObject **, size_t, ProtectedObject &) = 0;
 };
 
 
@@ -106,10 +108,10 @@ class RexxNativeFunction : public RexxFunction
    inline void  operator delete(void *, void *) { ; }
 
    inline RexxNativeFunction(RESTORETYPE restoreType) { ; };
-   inline RexxNativeFunction(RexxString *p, RexxString *n, PNATIVEFUNCTION e) : RexxFunction(p, n), entry(e) { }
+   inline RexxNativeFunction(RexxString *p, RexxString *n, RexxSource *s, PNATIVEFUNCTION e) : RexxFunction(p, n, s), entry(e) { }
 
+   void        liveGeneral(int reason);
    void        flatten(RexxEnvelope *envelope);
-   RexxObject *unflatten(RexxEnvelope *envelope);
 
    virtual void call(RexxActivity *, RexxString *,  RexxObject **, size_t, ProtectedObject &);
 
@@ -126,9 +128,12 @@ class RegisteredFunction : public RexxFunction
    inline void  operator delete(void *) { ; }
    inline void  operator delete(void *, void *) { ; }
 
+   void        liveGeneral(int reason);
+   void        flatten(RexxEnvelope *envelope);
+
    inline RegisteredFunction(RESTORETYPE restoreType) { ; };
-   RegisteredFunction(RexxString *n, RexxFunctionHandler *e)  : RexxFunction(OREF_NULL, n), entry(e) { }
-   RegisteredFunction(RexxString *p, RexxString *n, RexxFunctionHandler *e)  : RexxFunction(p, n), entry(e) { }
+   RegisteredFunction(RexxString *p, RexxString *n, RexxFunctionHandler *e)  : RexxFunction(p, n, OREF_NULL), entry(e) { }
+   RegisteredFunction(RexxString *p, RexxString *n, RexxSource *s, RexxFunctionHandler *e)  : RexxFunction(p, n, s), entry(e) { }
 
    virtual void call(RexxActivity *, RexxString *,  RexxObject **, size_t, ProtectedObject &);
 

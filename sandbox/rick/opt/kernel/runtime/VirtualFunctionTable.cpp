@@ -72,6 +72,7 @@
 #include "PointerClass.hpp"
 #include "BufferClass.hpp"
 #include "WeakReferenceClass.hpp"
+#include "RoutineClass.hpp"
 #include "RexxBehaviour.hpp"
 #include "SourceFile.hpp"
 #include "RexxCode.hpp"
@@ -271,6 +272,12 @@ void RexxMemory::buildVirtualFunctionTable()
    objectPtr = new (objectPtr) RexxClass(RESTOREIMAGE);
    virtualFunctionTable[T_WeakReferenceClass] = *((void **)objectPtr);
    
+   objectPtr = new (objectPtr) RoutineClass(RESTOREIMAGE);
+   virtualFunctionTable[T_Routine] = *((void **)objectPtr);
+   
+   objectPtr = new (objectPtr) RexxClass(RESTOREIMAGE);
+   virtualFunctionTable[T_RoutineClass] = *((void **)objectPtr);
+   
    objectPtr = new (objectPtr) RexxNilObject(RESTOREIMAGE);
    virtualFunctionTable[T_NilObject] = *((void **)objectPtr);
    
@@ -283,8 +290,14 @@ void RexxMemory::buildVirtualFunctionTable()
    objectPtr = new (objectPtr) RexxCode(RESTOREIMAGE);
    virtualFunctionTable[T_RexxCode] = *((void **)objectPtr);
    
-   objectPtr = new (objectPtr) RexxNativeCode(RESTOREIMAGE);
-   virtualFunctionTable[T_NativeCode] = *((void **)objectPtr);
+   objectPtr = new (objectPtr) RexxNativeMethod(RESTOREIMAGE);
+   virtualFunctionTable[T_NativeMethod] = *((void **)objectPtr);
+   
+   objectPtr = new (objectPtr) RexxNativeFunction(RESTOREIMAGE);
+   virtualFunctionTable[T_NativeFunction] = *((void **)objectPtr);
+   
+   objectPtr = new (objectPtr) RegisteredFunction(RESTOREIMAGE);
+   virtualFunctionTable[T_RegisteredFunction] = *((void **)objectPtr);
    
    objectPtr = new (objectPtr) CPPCode(RESTOREIMAGE);
    virtualFunctionTable[T_CPPCode] = *((void **)objectPtr);

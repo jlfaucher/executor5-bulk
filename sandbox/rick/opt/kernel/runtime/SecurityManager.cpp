@@ -136,7 +136,7 @@ bool SecurityManager::callSecurityManager(RexxString *methodName, RexxDirectory 
  *
  * @return true if the security manager handled this call, false otherwise.
  */
-bool SecurityManager::checkProtectedMethod(RexxObject *target, RexxString *messageName, size_t count, RexxObject **arguments, ProtectedObjeect &result)
+bool SecurityManager::checkProtectedMethod(RexxObject *target, RexxString *messageName, size_t count, RexxObject **arguments, ProtectedObject &result)
 {
     // no method here
     if (manager == OREF_NULL)
@@ -171,7 +171,7 @@ bool SecurityManager::checkProtectedMethod(RexxObject *target, RexxString *messa
  *
  * @return true if the security manager handled this call, false otherwise.
  */
-bool SecurityManager::checkFunctionCall(RexxString *functionName, size_t count, RexxObject **arguments, ProtectedObjeect &result)
+bool SecurityManager::checkFunctionCall(RexxString *functionName, size_t count, RexxObject **arguments, ProtectedObject &result)
 {
     // no method here
     if (manager == OREF_NULL)

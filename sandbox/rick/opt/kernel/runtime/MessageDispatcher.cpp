@@ -1,11 +1,12 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
+/* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
 /* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
 /* distribution. A copy is also available at the following address:           */
-/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
+/* http://www.oorexx.org/license.html                          */
 /*                                                                            */
 /* Redistribution and use in source and binary forms, with or                 */
 /* without modification, are permitted provided that the following            */
@@ -34,35 +35,35 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-/******************************************************************************/
-/* REXX Kernel                                                                */
-/*                                                                            */
-/* Manage system-specific aspects of an interpreter instance.                 */
-/*                                                                            */
-/******************************************************************************/
-#ifndef Included_SysInterpreterInstance_hpp
-#define Included_SysInterpreterinstance_hpp
 
-class SysInterpreterInstance
+#include "RexxCore.h"
+#include "MessageDispatcher.hpp"
+#include "ProtectedObject.hpp"
+#include "MethodClass.hpp"
+
+
+/**
+ * Virtual method for handling invocation of a Message object on
+ * a new activity.
+ */
+void MessageDispatcher::run()
 {
-public:
-    void        live(size_t);
-    void        liveGeneral(int);
-
-    RexxString *resolveProgramName(RexxString *_name, RexxString *_parentDir, RexxString *_parentExtension);
-
-protected:
-    InterpreterInstance *instance;       // backlink to our instance container
-};
+    // must invoke the message object
+    message->sendMessage(OREF_SEND);
+}
 
 
-class SysSearchPath
+/**
+ * Default handler for any error conditions.  This just sets the
+ * condition information in the dispatch unit.
+ *
+ * @param c      The condition information for the error.
+ */
+void RexxStartDispatcher::handleError(wholenumber_t r, RexxDirectory *c)
 {
-    SysSearchPath(const char *parent, const char *extension);
-    ~SysSearchPath();
+    // use the base error handling and set our return code to the negated error code.
+    ActivityDispatcher::handleError(-r, c);
+    // tell the message object about the error
+    message->error(c);
+}
 
-    const char *path;        // the constructed path
-};
-
-
-#endif

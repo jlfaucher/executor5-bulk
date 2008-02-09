@@ -72,6 +72,7 @@
 #include "PointerClass.hpp"
 #include "InterpreterInstance.hpp"
 #include "ActivityDispatcher.hpp"
+#include "MessageDispatcher.hpp"
 
 const size_t ACT_STACK_SIZE = 20;
 
@@ -125,9 +126,19 @@ void RexxActivity::runThread()
             this->requestAccess();           /* now get the kernel lock           */
             this->activate();                // make sure this is marked as active
             activityLevel = getActivationLevel();
-                                             /* get the top activation            */
-            this->topStackFrame->dispatch(); /* go dispatch it                    */
 
+            // if we have a dispatch message set, send it the send message to kick everything off
+            if (dispatchMessage != OREF_NULL)
+            {
+                MessageDispatcher dispatcher(dispatchMessage);
+                run(dispatcher);
+            }
+            else
+            {
+
+                // this is a reply message start, just dispatch the Rexx code
+                this->topStackFrame->dispatch();
+            }
         }
         catch (ActivityException)    // we've had a termination event, raise an error
         {
@@ -146,6 +157,8 @@ void RexxActivity::runThread()
         memoryObject.runUninits();         /* run any needed UNINIT methods now */
 
         this->deactivate();                // no longer an active activity
+
+        dispatchMessage = OREF_NULL;       // we're done with the message object
 
         EVSET(this->runsem);               /* reset the run semaphore and the   */
         EVSET(this->guardsem);             /* guard semaphore                   */
@@ -1125,6 +1138,7 @@ void RexxActivity::live(size_t liveMark)
   memory_mark(this->requiresTable);
   memory_mark(this->nextWaitingActivity);
   memory_mark(this->waitingObject);
+  memory_mark(this->dispatchMessage);
 
   /* have the frame stack do its own marking. */
   frameStack.live(liveMark);
@@ -1149,6 +1163,7 @@ void RexxActivity::liveGeneral(int reason)
   memory_mark_general(this->requiresTable);
   memory_mark_general(this->nextWaitingActivity);
   memory_mark_general(this->waitingObject);
+  memory_mark_general(this->dispatchMessage);
 
   /* have the frame stack do its own marking. */
   frameStack.liveGeneral(reason);
@@ -1174,11 +1189,29 @@ void RexxActivity::flatten(RexxEnvelope* envelope)
   return;
 }
 
+
+
 void RexxActivity::run()
 /******************************************************************************/
 /* Function:  Release an activity to run                                      */
 /******************************************************************************/
 {
+  EVPOST(this->guardsem);              /* and the guard semaphore           */
+  EVPOST(this->runsem);                /* post the run semaphore            */
+  SysThreadYield();                    /* yield the thread                  */
+}
+
+
+
+/**
+ * Run a message object on a spawned thread.
+ *
+ * @param target The target message object.
+ */
+void RexxActivity::run(RexxMessage *target)
+{
+  dispatchMessage = target;
+
   EVPOST(this->guardsem);              /* and the guard semaphore           */
   EVPOST(this->runsem);                /* post the run semaphore            */
   SysThreadYield();                    /* yield the thread                  */
@@ -2862,3 +2895,17 @@ void RexxActivity::createExitContext(ExitContext *context, RexxNativeActivation 
 }
 
 
+/**
+ * Resolve a program using the activity context information.
+ *
+ * @param name   The name we're interested in.
+ * @param dir    A parent directory to use as part of the search.
+ * @param ext    Any parent extension name.
+ *
+ * @return The fully resolved file name, if it exists.  Returns OREF_NULL for
+ *         non-located files.
+ */
+RexxString *RexxActivity::resolveProgramName(RexxString *name, RexxString *dir, RexxString *ext)
+{
+    return instance->resolveProgramName(name, dir, ext);
+}

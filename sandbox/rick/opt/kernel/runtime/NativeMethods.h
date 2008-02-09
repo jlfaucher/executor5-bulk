@@ -44,6 +44,7 @@
 
 //NOTE:  This file gets included multiple times to define different tables, so
 // it does not have standard #ifndef multiple include protections.
+   INTERNAL_METHOD(message_nstart)
    INTERNAL_METHOD(alarm_startTimer)
    INTERNAL_METHOD(alarm_stopTimer)
    INTERNAL_METHOD(stream_init)
