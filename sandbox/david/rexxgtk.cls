@@ -235,6 +235,74 @@ return id
 
 
 /*============================================================================*/
+/* Class: GtkAdjustment                                                       */
+/*============================================================================*/
+
+::class GtkAdjustment public
+
+::method init
+expose pointer
+if arg() = 1 then do
+   use strict arg pointer
+   end
+else do
+   use strict arg value, upper, lower, step_inc, page_inc, page_size
+   pointer = GrxAdjustmentNew(value, upper, lower, step_inc, page_inc, page_size)
+   end
+return
+
+::method 'value='
+expose pointer
+use strict arg val
+call GrxAdjustmentSetValue pointer, val
+return
+
+::method set_value
+use strict arg val
+self~value = val
+return
+
+::method value
+expose pointer
+use strict arg
+return GrxAdjustmentGetValue(pointer)
+
+::method get_value
+return self~value
+
+::method clamp_page
+expose pointer
+use strict arg lower, upper
+call GrxAdjustmentClampPage pointer, lower, upper
+return
+
+::method signal_connect
+use strict arg event
+select
+   when event = 'changed' then call GrxAdjustmentConnectSignal self~pointer, event
+   when event = 'value-changed' then call GrxAdjustmentConnectSignal self~pointer, event
+   otherwise return .false  -- this class has no parents
+   end
+return .true
+
+::method signal_changed
+return
+
+::method signal_value_changed
+return
+
+
+
+
+
+
+
+
+
+
+
+
+/*============================================================================*/
 /* Class: GtkWidget                                                           */
 /*============================================================================*/
 

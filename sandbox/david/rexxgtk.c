@@ -171,6 +171,13 @@ APIRET APIENTRY GrxLoadFuncs(char * Name,
         "GrxGListItem",
         "GrxGListNext",
 
+        // Adjustment functions
+        "GrxAdjustmentNew",
+        "GrxAdjustmentGetValue",
+        "GrxAdjustmentSetValue",
+        "GrxAdjustmentClampPage",
+        "GrxAdjustmentConnectSignal",
+
         // Widget functions
         "GrxWidgetShow",
         "GrxWidgetShowAll",
