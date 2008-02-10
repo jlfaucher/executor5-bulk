@@ -133,7 +133,7 @@ void RestoreEnvironment( void * );
 /*                      the screen                                   */
 /*********************************************************************/
 
-RexxFunction2(CSTRING, sysBeep, wholenumber_t, Frequency, wholenumber_t, Duration)
+RexxRoutine2(CSTRING, sysBeep, wholenumber_t, Frequency, wholenumber_t, Duration)
 {
                                         /* console beep for Unix     */
   printf("\a");
@@ -151,7 +151,7 @@ RexxFunction2(CSTRING, sysBeep, wholenumber_t, Frequency, wholenumber_t, Duratio
 /*                                                                   */
 /*********************************************************************/
 
-RexxFunction1(RexxObjectPtr, sysSetLocal, OSELF, self)
+RexxRoutine1(RexxObjectPtr, sysSetLocal, OSELF, self)
 {
   REXXOBJECT     Current;              /* new save block                    */
 
@@ -180,7 +180,7 @@ RexxFunction1(RexxObjectPtr, sysSetLocal, OSELF, self)
 /*                                                                   */
 /*********************************************************************/
 
-RexxFunction0(RexxObjectPtr, sysEndLocal)
+RexxRoutine0(RexxObjectPtr, sysEndLocal)
 {
   REXXOBJECT     Current;              /* new save block                    */
 
@@ -290,7 +290,7 @@ char *resolve_tilde(const char *path)
 /****************************************************************************/
 /* sysDirectory                                                             */
 /****************************************************************************/
-RexxFunction1(RexxStringObject, sysDirectory, OPTIONAL_CSTRING, dir)
+RexxRoutine1(RexxStringObject, sysDirectory, OPTIONAL_CSTRING, dir)
 {
   RexxReturnCode rc;
   char  *rdir;                         /* resolved path */
@@ -318,7 +318,7 @@ RexxFunction1(RexxStringObject, sysDirectory, OPTIONAL_CSTRING, dir)
 /*****************************************************************************/
 /* sysFilespec                                                               */
 /*****************************************************************************/
-RexxFunction2(RexxStringObject, sysFilespec, CSTRING, option, CSTRING, name)
+RexxRoutine2(RexxStringObject, sysFilespec, CSTRING, option, CSTRING, name)
 {
   size_t nameLength = strlen(name);     /* get filename length               */
 

@@ -117,16 +117,20 @@ void InterpreterInstance::initialize(RexxActivity *activity, RexxOption *options
 {
     rootActivity = activity;
     allActivities = new_list();
+    searchExtensions = new_list();     // this will be filled in during options processing
     // this gets added to the entire active list.
     allActivities->append((RexxObject *)activity);
     globalReferences = new_object_table();
+    // create a default wrapper for this security manager
+    securityManager = new SecurityManager(OREF_NULL);
+
     processOptions(options);
+    // do system specific initialization
+    sysInstance.initialize(this, options);
 
     // associate the thread with this instance
     activity->setupAttachedActivity(this);
 
-    // create a default wrapper for this security manager
-    securityManager = new SecurityManager(OREF_NULL);
 }
 
 
@@ -507,28 +511,44 @@ bool InterpreterInstance::processOptions(RexxOption *options)
         // an initial address environment
         if (strcmp(options->optionName, INITIAL_ADDRESS_ENVIRONMENT) == 0)
         {
-            defaultAddress = new_string(options->extra.value.value_CSTRING);
+            defaultAddress = new_string(options->option.value.value_CSTRING);
         }
         // application data
         else if (strcmp(options->optionName, APPLICATION_DATA) == 0)
         {
             // this is filled in to the instance context vector
-            context.instanceContext.applicationData = options->extra.value.value_POINTER;
+            context.instanceContext.applicationData = options->option.value.value_POINTER;
         }
         // an additional search path
         else if (strcmp(options->optionName, EXTERNAL_CALL_PATH) == 0)
         {
-            searchPath = new_string(options->extra.value.value_CSTRING);
+            searchPath = new_string(options->option.value.value_CSTRING);
         }
         // additional extensions for processing
         else if (strcmp(options->optionName, EXTERNAL_CALL_EXTENSIONS) == 0)
         {
-            searchPath = new_string(options->extra.value.value_CSTRING);
+            const char *extStart = options->option.value.value_CSTRING;
+            const char *extEnd = extStart + strlen(extStart);
+
+            while (extStart < extEnd)
+            {
+                const char *delim = strchr(extStart, ',');
+                if (delim == NULL)
+                {
+                    delim = extEnd;
+                }
+                // make this into a string value and append
+                RexxString *ext = new_string(extStart, delim - extStart);
+                searchExtensions->append(ext);
+
+                // step past the delimiter and loop
+                extStart = delim + 1;
+            }
         }
         // an initial address environment
         else if (strcmp(options->optionName, REGISTERED_EXITS) == 0)
         {
-            RXSYSEXIT *handlers = (RXSYSEXIT *)options->extra.value.value_POINTER;
+            RXSYSEXIT *handlers = (RXSYSEXIT *)options->option.value.value_POINTER;
             // if we have handlers, initialize the array
             if (handlers != NULL)
             {
@@ -539,12 +559,11 @@ bool InterpreterInstance::processOptions(RexxOption *options)
                     setExitHandler(handlers[i]);
                 }
             }
-            return false;
         }
         // an initial address environment
         else if (strcmp(options->optionName, REGISTERED_EXITS) == 0)
         {
-            RexxContextExit *handlers = (RexxContextExit *)options->extra.value.value_POINTER;
+            RexxContextExit *handlers = (RexxContextExit *)options->option.value.value_POINTER;
             // if we have handlers, initialize the array
             if (handlers != NULL)
             {
@@ -555,7 +574,6 @@ bool InterpreterInstance::processOptions(RexxOption *options)
                     setExitHandler(handlers[i]);
                 }
             }
-            return false;
         }
         else
         {

@@ -55,40 +55,40 @@ typedef int socklen_t;
 /*------------------------------------------------------------------
  * declare external functions
  *------------------------------------------------------------------*/
-RexxFunctionHandler SockFunctionGateWay            ;
+RexxRoutineHandler SockFunctionGateWay            ;
 
 #if defined(WIN32) || defined(OPSYS_AIX) || defined(OPSYS_LINUX)
-RexxFunctionHandler SockLoadFuncs                  ;
+RexxRoutineHandler SockLoadFuncs                  ;
 #endif
 
-RexxFunctionHandler SockDropFuncs                  ;
-RexxFunctionHandler SockVersion                    ;
-RexxFunctionHandler SockDie                        ;
-RexxFunctionHandler SockException                  ;
-RexxFunctionHandler SockAccept                     ;
-RexxFunctionHandler SockBind                       ;
-RexxFunctionHandler SockClose                      ;
-RexxFunctionHandler SockConnect                    ;
-RexxFunctionHandler SockGetHostByAddr              ;
-RexxFunctionHandler SockGetHostByName              ;
-RexxFunctionHandler SockGetHostId                  ;
-RexxFunctionHandler SockGetPeerName                ;
-RexxFunctionHandler SockGetSockName                ;
-RexxFunctionHandler SockGetSockOpt                 ;
-RexxFunctionHandler SockInit                       ;
-RexxFunctionHandler SockIoctl                      ;
-RexxFunctionHandler SockListen                     ;
-RexxFunctionHandler SockPSock_Errno                ;
-RexxFunctionHandler SockRecv                       ;
-RexxFunctionHandler SockRecvFrom                   ;
-RexxFunctionHandler SockSelect                     ;
-RexxFunctionHandler SockSend                       ;
-RexxFunctionHandler SockSendTo                     ;
-RexxFunctionHandler SockSetSockOpt                 ;
-RexxFunctionHandler SockShutDown                   ;
-RexxFunctionHandler SockSock_Errno                 ;
-RexxFunctionHandler SockSocket                     ;
-RexxFunctionHandler SockSoClose                    ;
+RexxRoutineHandler SockDropFuncs                  ;
+RexxRoutineHandler SockVersion                    ;
+RexxRoutineHandler SockDie                        ;
+RexxRoutineHandler SockException                  ;
+RexxRoutineHandler SockAccept                     ;
+RexxRoutineHandler SockBind                       ;
+RexxRoutineHandler SockClose                      ;
+RexxRoutineHandler SockConnect                    ;
+RexxRoutineHandler SockGetHostByAddr              ;
+RexxRoutineHandler SockGetHostByName              ;
+RexxRoutineHandler SockGetHostId                  ;
+RexxRoutineHandler SockGetPeerName                ;
+RexxRoutineHandler SockGetSockName                ;
+RexxRoutineHandler SockGetSockOpt                 ;
+RexxRoutineHandler SockInit                       ;
+RexxRoutineHandler SockIoctl                      ;
+RexxRoutineHandler SockListen                     ;
+RexxRoutineHandler SockPSock_Errno                ;
+RexxRoutineHandler SockRecv                       ;
+RexxRoutineHandler SockRecvFrom                   ;
+RexxRoutineHandler SockSelect                     ;
+RexxRoutineHandler SockSend                       ;
+RexxRoutineHandler SockSendTo                     ;
+RexxRoutineHandler SockSetSockOpt                 ;
+RexxRoutineHandler SockShutDown                   ;
+RexxRoutineHandler SockSock_Errno                 ;
+RexxRoutineHandler SockSocket                     ;
+RexxRoutineHandler SockSoClose                    ;
 
 /*------------------------------------------------------------------
  * strip blanks from a line

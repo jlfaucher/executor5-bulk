@@ -112,7 +112,7 @@ void RexxNativeMethod::flatten(RexxEnvelope *envelope)
 }
 
 
-void RexxNativeFunction::liveGeneral(int reason)
+void RexxNativeRoutine::liveGeneral(int reason)
 /******************************************************************************/
 /* Function:  Generalized object marking                                      */
 /******************************************************************************/
@@ -126,7 +126,7 @@ void RexxNativeFunction::liveGeneral(int reason)
 }
 
 
-void RexxNativeFunction::flatten(RexxEnvelope *envelope)
+void RexxNativeRoutine::flatten(RexxEnvelope *envelope)
 /******************************************************************************/
 /* Function:  Flatten an object                                               */
 /******************************************************************************/
@@ -138,7 +138,7 @@ void RexxNativeFunction::flatten(RexxEnvelope *envelope)
 }
 
 
-void RegisteredFunction::liveGeneral(int reason)
+void RegisteredRoutine::liveGeneral(int reason)
 /******************************************************************************/
 /* Function:  Generalized object marking                                      */
 /******************************************************************************/
@@ -152,7 +152,7 @@ void RegisteredFunction::liveGeneral(int reason)
 }
 
 
-void RegisteredFunction::flatten(RexxEnvelope *envelope)
+void RegisteredRoutine::flatten(RexxEnvelope *envelope)
 /******************************************************************************/
 /* Function:  Flatten an object                                               */
 /******************************************************************************/
@@ -183,7 +183,7 @@ void RexxNativeMethod::run(RexxActivity *activity, RexxMethod *method, RexxObjec
     if (entry == NULL)
     {
         // have the package manager resolve this for us before we make a call
-        entry = PackageManager::resolveMethod(package, name);
+        entry = PackageManager::resolveMethodEntry(package, name);
     }
 
     // create a new native activation
@@ -211,7 +211,7 @@ void * RexxNativeMethod::operator new(
  * the package reloaded and restored before we can resolve the entry
  * point.
  */
-void RexxNativeFunction::resolve()
+void RexxNativeRoutine::resolve()
 {
 }
 
@@ -227,13 +227,13 @@ void RexxNativeFunction::resolve()
  * @param argPtr   The pointer to the arguments.
  * @param result   The protected object used to return the result.
  */
-void RexxNativeFunction::call(RexxActivity *activity, RexxString *functionName, size_t count, RexxObject **argPtr, ProtectedObject &result)
+void RexxNativeRoutine::call(RexxActivity *activity, RexxString *functionName, size_t count, RexxObject **argPtr, ProtectedObject &result)
 {
     // if this is NULL currently, we need to lazy resolve this entry
     if (entry == NULL)
     {
         // have the package manager resolve this for us before we make a call
-        entry = PackageManager::resolveFunction(package, name);
+        entry = PackageManager::resolveFunctionEntry(package, name);
     }
 
     // create a new native activation
@@ -244,7 +244,7 @@ void RexxNativeFunction::call(RexxActivity *activity, RexxString *functionName, 
 }
 
 
-void * RexxNativeFunction::operator new(
+void * RexxNativeRoutine::operator new(
      size_t      size)                 /* object size                       */
 /****************************************************************************/
 /* Function:  Create a new Native method                                    */
@@ -264,13 +264,13 @@ void * RexxNativeFunction::operator new(
  * @param argPtr   The pointer to the arguments.
  * @param result   The protected object used to return the result.
  */
-void RegisteredFunction::call(RexxActivity *activity, RexxString *functionName, size_t count, RexxObject **argPtr, ProtectedObject &result)
+void RegisteredRoutine::call(RexxActivity *activity, RexxString *functionName, size_t count, RexxObject **argPtr, ProtectedObject &result)
 {
     // if this is NULL currently, we need to lazy resolve this entry
     if (entry == NULL)
     {
         // have the package manager resolve this for us before we make a call
-        entry = PackageManager::resolveRegusteredFunction(package, name);
+        entry = PackageManager::resolveRegusteredFunctionEntry(package, name);
     }
 
     // create a new native activation
@@ -281,7 +281,7 @@ void RegisteredFunction::call(RexxActivity *activity, RexxString *functionName, 
 }
 
 
-void * RegisteredFunction::operator new(
+void * RegisteredRoutine::operator new(
      size_t      size)                 /* object size                       */
 /****************************************************************************/
 /* Function:  Create a new Native method                                    */

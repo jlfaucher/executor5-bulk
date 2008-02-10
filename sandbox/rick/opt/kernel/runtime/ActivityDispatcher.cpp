@@ -89,7 +89,7 @@ void ActivityDispatcher::handleError(RexxDirectory *c)
 void ActivityDispatcher::invoke()
 {
     // this creates a new instance to run under, with an active activity
-    InstanceBlock instance(exits, defaultEnvironment);
+    InstanceBlock instance(options);
 
     // go run the instance on the current activity
     instance.activity->run(*this);

@@ -719,7 +719,7 @@ int           *rc,                     /* return code from call      */
 PRXSTRING     sel,                     /* storage for returned data  */
 const char *  qnam )                   /* name of active queue       */
 {
-  RexxFunctionHandler *func_address;   /* address of external func   */
+  RexxRoutineHandler *func_address;   /* address of external func   */
   RexxReturnCode      lrc;                     /* local return code          */
 
   lrc = 0;

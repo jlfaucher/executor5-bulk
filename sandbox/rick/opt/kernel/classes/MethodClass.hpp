@@ -44,6 +44,8 @@
 #ifndef Included_RexxMethod
 #define Included_RexxMethod
 
+#include "RexxCore.h"
+
 class RexxSource;
 class RexxActivity;
 class RexxMethod;
@@ -64,13 +66,13 @@ public:
     virtual RexxArray *getSource();
     virtual RexxObject *setSecurityManager(RexxObject *manager);
     virtual RexxSource *getSourceObject();
-
-    RexxArray *source();
 };
                                        /* pointer to native method function */
 typedef uint16_t *(RexxEntry *PNATIVEMETHOD)(RexxMethodContext *, ValueDescriptor *);
                                        /* pointer to native function function*/
-typedef uint16_t *(RexxEntry *PNATIVEFUNCTION)(RexxCallContext *, ValueDescriptor *);
+typedef uint16_t *(RexxEntry *PNATIVEROUTINE)(RexxCallContext *, ValueDescriptor *);
+
+typedef unsigned int (RexxEntry *PREGISTEREDROUTINE)(const char *, size_t, PCONSTRXSTRING, const char *, PRXSTRING);
 
 class BaseExecutable : public RexxObject
 {
@@ -78,6 +80,8 @@ public:
     inline RexxSource *getSourceObject() { return code->getSourceObject(); };
     inline BaseCode   *getCode() { return code; }
     RexxArray  *getSource() { return code->getSource(); }
+
+    RexxArray *source();
 
 protected:
     BaseCode   *code;                   // the backing code object

@@ -54,6 +54,25 @@
 void SysInterpreterInstance::initialize(InterpreterInstance *i, RexxOptions *options)
 {
     instance = i;
+
+    // add our default search extension
+    addSearchExtension("REX");
+}
+
+
+/**
+ * Append a system default extension to the extension search order.
+ *
+ * @param name   The name to add.
+ */
+void SysInterpreterInstance::addSearchExtension(const char *name)
+{
+    // if the extension is not already in the extension list, add it
+    RexxString *ext = new_string(name);
+    if (instance.searchExtensions->hasItem(ext) == TheFalseItem)
+    {
+        instance.searchExtensions->append(ext);
+    }
 }
 
 

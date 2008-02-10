@@ -46,8 +46,10 @@
 
 #include "RexxCore.h"
 #include "SysLibrary.hpp"
+#include "RexxNativeCode.hpp"
 
 class PackageManager;
+class RexxNativeMethod;
 
 typedef RexxPackageEntry * (RexxEntry *PACKAGE_LOADER)();
 
@@ -69,11 +71,15 @@ public:
     void   unload();
     RexxPackageEntry *getPackageTable();
     void   loadPackage(RexxPackageEntry *p);
-    void   loadFunctions(RexxFunctionEntry *table);
+    void   loadFunctions(RexxRoutineEntry *table);
     RexxMethodEntry *locateMethodEntry(RexxString *name);
-    RexxFunctionEntry *locateFunctionEntry(RexxString *name);
-    BaseCode *resolveMethod(RexxString *name);
-    void   refreshPackage();
+    RexxRoutineEntry *locateFunctionEntry(RexxString *name);
+    RexxNativeMethod *resolveMethod(RexxString *name);
+    PNATIVEMETHOD resolveMethodEntry(RexxString *name);
+    PNATIVEROUTINE *resolveRoutineEntry(RexxString *name);
+    PREGISTEREDROUTINE *resolveRegisteredRoutineEntry(RexxString *name);
+    void   reload();
+    void   reload(RexxPackageEntry *pack);
     inline bool isLoaded() { return loaded; }
     inline bool isInternal() { return internal; }
     inline bool isPackage() { return ispackage; }

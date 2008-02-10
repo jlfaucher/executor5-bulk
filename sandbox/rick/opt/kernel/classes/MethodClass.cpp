@@ -598,18 +598,6 @@ RexxArray *BaseCode::getSource()
 
 
 /**
- * Non-virtual method for retrieving the source array.  This is needed
- * for purposes of exporting as a Rexx method.
- *
- * @return An array of source line elements.
- */
-RexxArray *BaseCode::source()
-{
-    return this->getSource();
-}
-
-
-/**
  * Set the security manager in the code source context.
  *
  * @param manager The new security manager.

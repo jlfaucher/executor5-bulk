@@ -293,11 +293,11 @@ void RexxMemory::buildVirtualFunctionTable()
    objectPtr = new (objectPtr) RexxNativeMethod(RESTOREIMAGE);
    virtualFunctionTable[T_NativeMethod] = *((void **)objectPtr);
    
-   objectPtr = new (objectPtr) RexxNativeFunction(RESTOREIMAGE);
-   virtualFunctionTable[T_NativeFunction] = *((void **)objectPtr);
+   objectPtr = new (objectPtr) RexxNativeRoutine(RESTOREIMAGE);
+   virtualFunctionTable[T_NativeRoutine] = *((void **)objectPtr);
    
-   objectPtr = new (objectPtr) RegisteredFunction(RESTOREIMAGE);
-   virtualFunctionTable[T_RegisteredFunction] = *((void **)objectPtr);
+   objectPtr = new (objectPtr) RegisteredRoutine(RESTOREIMAGE);
+   virtualFunctionTable[T_RegisteredRoutine] = *((void **)objectPtr);
    
    objectPtr = new (objectPtr) CPPCode(RESTOREIMAGE);
    virtualFunctionTable[T_CPPCode] = *((void **)objectPtr);

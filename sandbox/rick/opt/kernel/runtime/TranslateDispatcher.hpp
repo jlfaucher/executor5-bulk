@@ -45,7 +45,7 @@
 class TranslateDispatcher : public ActivityDispatcher
 {
 public:
-    inline TranslateDispatcher(PRXSYSEXIT e) : ActivityDispatcher(e, NULL) { ; }
+    inline TranslateDispatcher(RexxOption *o) : ActivityDispatcher(o) { ; }
     virtual ~TranslateDispatcher() { ; }
 
     virtual void run();

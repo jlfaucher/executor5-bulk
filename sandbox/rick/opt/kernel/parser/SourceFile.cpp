@@ -2797,7 +2797,7 @@ void RexxSource::routineDirective()
                 /* go check the next clause to make  */
                 this->checkDirective();      /* sure no code follows              */
                                              /* create a new native method        */
-                RexxNativeFunction *code = PackageManager::resolveFunction(package, entry);
+                RexxNativeRoutine *code = PackageManager::resolveFunction(package, entry);
                                                /* add to the routine directory      */
                 this->routines->setEntry(name, (RexxObject *)code);
                 if (Public == PUBLIC_SCOPE)    /* a public routine?                 */
@@ -2833,7 +2833,7 @@ void RexxSource::routineDirective()
                 /* go check the next clause to make  */
                 this->checkDirective();      /* sure no code follows              */
                                              /* create a new native method        */
-                BaseCode *code = PackageManager::resolveRegisteredFunction(library, entry);
+                BaseCode *code = PackageManager::resolveRegisteredRoutine(library, entry);
                                                /* add to the routine directory      */
                 this->routines->setEntry(name, (RexxObject *)code);
                 if (Public == PUBLIC_SCOPE)    /* a public routine?                 */

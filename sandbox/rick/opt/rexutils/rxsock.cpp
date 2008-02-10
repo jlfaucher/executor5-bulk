@@ -109,7 +109,7 @@
 typedef struct
 {
     const char *                   pszName;
-    RexxFunctionHandler  *pRxFunction;
+    RexxRoutineHandler  *pRxFunction;
 } RxSockFuncTableEntry;
 
 RxSockFuncTableEntry RxSockFuncTable[] =
@@ -843,7 +843,7 @@ RexxReturnCode REXXENTRY SockFunctionGateWay(const char *name, size_t argc, PCON
 {
     size_t                       i;
     RexxReturnCode                       ulRc;
-    RexxFunctionHandler         *pRxFunc;
+    RexxRoutineHandler         *pRxFunc;
 #ifdef WIN32
     WORD wVersionRequested;
     WSADATA wsaData;

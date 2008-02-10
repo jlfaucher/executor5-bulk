@@ -239,7 +239,7 @@ void Package::loadPackage(RexxPackageEntry *p)
  * @param manager The package manager we're associated with.
  * @param table   The package table describing this package.
  */
-void Package::loadFunctions(RexxFunctionEntry *table)
+void Package::loadFunctions(RexxRoutineEntry *table)
 {
     // no functions exported by this package?  Just return without
     // doing anything.
@@ -258,19 +258,19 @@ void Package::loadFunctions(RexxFunctionEntry *table)
         // tend to be uppercase.
         RexxString *target = new_upper_string(table->name)->upper();
 
-        RexxFunction *func = OREF_NULL;
+        RexxRoutine *func = OREF_NULL;
         if (table->style == FUNCTION_CLASSIC_STYLE)
         {
-            func = new RegisteredFunction(libraryName, table->name, (PREGISTEREDFUNCTION)table->entryPoint);
+            func = new RegisteredRoutine(libraryName, table->name, (PREGISTEREDROUTINE)table->entryPoint);
         }
         else
         {
-            func = new RexxNativeFunction(libraryName, table->name, (PNATIVEFUNCTION)table->entryPoint);
+            func = new RexxNativeRoutine(libraryName, table->name, (PNATIVEROUTINE)table->entryPoint);
         }
 
 
         // add this to the global function pool
-        PackageManager::addPackageFunction(target, func);
+        PackageManager::addPackageFunction(target, new_routine(func));
         // step to the next table entry
         table++;
     }
@@ -315,9 +315,9 @@ RexxMethodEntry *Package::locateMethodEntry(RexxString *name)
  * @return A pointer to the located function structure.  Returns NULL
  *         if the package doesn't exist.
  */
-ooRexxFunctionEntry *Package::locateFunctionEntry(RexxString *name)
+RexxRoutineEntry *Package::locateFunctionEntry(RexxString *name)
 {
-    RexxFunctionEntry *entry = package->functions;
+    RexxRoutineEntry *entry = package->functions;
 
     // scan the exported method table for the required method
     while (entry->style != 0)
@@ -342,7 +342,7 @@ ooRexxFunctionEntry *Package::locateFunctionEntry(RexxString *name)
  *
  * @return A RexxNativeCode object for this method, if located.
  */
-BaseCode *Package::resolveMethod(RexxString *name)
+RexxNativeMethod *Package::resolveMethod(RexxString *name)
 {
     // create our methods table if not yet created.
     if (methods == OREF_NULL)
@@ -351,7 +351,7 @@ BaseCode *Package::resolveMethod(RexxString *name)
     }
 
     // see if this is in the table yet.
-    BaseCode *code = (BaseCode *)methods->at(name);
+    RexxNativeMethod *code = (RexxNativeMethod *)methods->at(name);
     if (code == OREF_NULL)
     {
         // find the package definition
@@ -368,6 +368,81 @@ BaseCode *Package::resolveMethod(RexxString *name)
     }
     // had this cached already.
     return code;
+}
+
+
+/**
+ * Resolve an entry point for a package method entry (used on a
+ * restore or reflatten);
+ *
+ * @param name   Name of the target method.
+ *
+ * @return The target entry point.
+ */
+PNATIVEMETHOD Package::resolveMethodEntry(RexxString *name)
+{
+    // find the package definition
+    RexxMethodEntry *entry = locateMethodEntry(name);
+    // if no entry, something bad has gone wrong
+    if (entry == NULL)
+    {
+        reportException(Error_Execution_package_method, name, libraryName);
+    }
+    return (PNATIVEMETHOD)entry->entryPoint;
+}
+
+
+/**
+ * Resolve an entry point for a package function entry (used on
+ * a restore or reflatten);
+ *
+ * @param name   Name of the target function.
+ *
+ * @return The target entry point.
+ */
+PNATIVEROUTINE Package::resolveFunctionEntry(RexxString *name)
+{
+    // find the package definition
+    RexxMethodEntry *entry = locateFunctionEntry(name);
+    // if no entry, something bad has gone wrong
+    if (entry == NULL)
+    {
+        reportException(Error_Execution_package_routine, name, libraryName);
+    }
+
+    // style mismatch...this is incompatible
+    if (entry->style == FUNCTION_CLASSIC_STYLE)
+    {
+        reportException(Error_Execution_package_routine, name, libraryName);
+    }
+    return (PNATIVEROUTINE)entry->entryPoint;
+}
+
+
+/**
+ * Resolve an entry point for a package function entry (used on
+ * a restore or reflatten);
+ *
+ * @param name   Name of the target function.
+ *
+ * @return The target entry point.
+ */
+PREGISTEREDROUTINE Package::resolveRegisteredRoutineEntry(RexxString *name)
+{
+    // find the package definition
+    RexxMethodEntry *entry = locateFunctionEntry(name);
+    // if no entry, something bad has gone wrong
+    if (entry == NULL)
+    {
+        reportException(Error_Execution_package_routine, name, libraryName);
+    }
+
+    // style mismatch...this is incompatible
+    if (entry->style != FUNCTION_CLASSIC_STYLE)
+    {
+        reportException(Error_Execution_package_routine, name, libraryName);
+    }
+    return (PREGISTEREDROUTINE)entry->entryPoint;
 }
 
 

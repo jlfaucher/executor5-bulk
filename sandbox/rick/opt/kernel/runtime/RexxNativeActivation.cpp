@@ -1040,7 +1040,7 @@ void RexxNativeActivation::run(RexxMethod *_method, RexxNativeMethod *_code, Rex
  * @param list       The list of arguments.
  * @param result     A protected object to receive the function result.
  */
-void RexxNativeActivation::callNativeFunction(RexxNativeFunction *code, RexxString *functionName, size_t count,
+void RexxNativeActivation::callNativeFunction(RexxNativeRoutine *code, RexxString *functionName, size_t count,
     RexxObject **list, ProtectedObject &result)
 {
     // anchor the context stuff
@@ -1058,7 +1058,7 @@ void RexxNativeActivation::callNativeFunction(RexxNativeFunction *code, RexxStri
     context.threadContext.arguments = arguments;
 
     // get the entry point address of the target method
-    PNATIVEFUNCTION methp = code->getEntry();
+    PNATIVEROUTINE methp = code->getEntry();
 
     // retrieve the argument signatures and process them
     uint16_t *types = (*methp)((RexxCallContext *)&context, NULL);
@@ -1141,7 +1141,7 @@ void RexxNativeActivation::callNativeFunction(RexxNativeFunction *code, RexxStri
  * @param list       The list of arguments.
  * @param result     A protected object to receive the function result.
  */
-void RexxNativeActivation::callRegisteredFunction(RegisteredFunction *code, RexxString *functionName, size_t count,
+void RexxNativeActivation::callRegisteredRoutine(RegisteredRoutine *code, RexxString *functionName, size_t count,
     RexxObject **list, ProtectedObject &result)
 {
     // anchor the context stuff
@@ -1150,7 +1150,7 @@ void RexxNativeActivation::callRegisteredFunction(RegisteredFunction *code, Rexx
     argcount = count;
 
     // get the entry point address of the target method
-    RexxFunctionHandler *methp = code->getEntry();
+    RexxRoutineHandler *methp = code->getEntry();
 
     CONSTRXSTRING   arguments[MAX_NATIVE_ARGUMENTS];
     CONSTRXSTRING *argPtr = arguments;

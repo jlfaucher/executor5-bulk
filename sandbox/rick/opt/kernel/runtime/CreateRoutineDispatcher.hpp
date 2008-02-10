@@ -46,7 +46,7 @@
 class ConditionDispatcher : public ActivityDispatcher
 {
 public:
-    inline ConditionDispatcher(PRXSYSEXIT e, const char *env, RexxConditionData *cd) : ActivityDispatcher(e, env) { translatedCondition = cd; }
+    inline ConditionDispatcher(RexxOption *o, RexxConditionData *cd) : ActivityDispatcher(o) { translatedCondition = cd; }
     virtual ~ConditionDispatcher() { ; }
 
     virtual void handleError(wholenumber_t, RexxDirectory *);

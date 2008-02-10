@@ -69,9 +69,9 @@ public:
     RoutineClass *newRexx(RexxObject **, size_t);
     RoutineClass *newFileRexx(RexxString *);
 
-    static RoutineClass *newRexxMethod(RexxSource *, RexxClass  *);
-    static RoutineClass *newRexxCode(RexxString *, RexxObject *, RexxObject *, RexxSource *s);
-    static RoutineClass *newRexxBuffer(RexxString *, RexxBuffer *, RexxClass  *);
+    static RoutineClass *newRoutine(RexxSource *);
+    static RoutineClass *newRoutineObject(RexxString *, RexxObject *, RexxObject *, RexxSource *s);
+    static RoutineClass *newRexxBuffer(RexxString *, RexxBuffer *);
     static RoutineClass *restore(RexxBuffer *, char *);
     static RoutineClass *newFile(RexxString *);
 

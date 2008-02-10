@@ -100,10 +100,13 @@ void CreateRoutineDispatcher::run()
     // method pointer
     char buffer[32];
     sprintf(buffer, "0x%p", translatedRoutine);
-    locked_objects->put(translatedRoutine, new_string(buffer));
+    locked_objects->put((RexxObject *)translatedRoutine, new_string(buffer));
 }
 
 
+/**
+ * Run a routine for a RexxRunRoutine() API call.
+ */
 void RunRoutineDispatcher::run()
 {
     RexxArray *new_arglist = OREF_NULL;
@@ -125,9 +128,8 @@ void RunRoutineDispatcher::run()
         new_arglist = TheNullArray;
     }
 
-    RexxString *initial_address = new_string(defaultEnvironment);
-    /* protect from garbage collect      */
-    activation->saveObject(initial_address);
+    // get the default environment from the instance
+    RexxString *initial_address = activity->getInstance()->getDefaultEnvironment();
 
     // configure the method security manager
     if (securityManager != NULLOBJECT)

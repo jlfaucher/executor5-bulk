@@ -564,7 +564,7 @@ void RexxMemory::createImage()
   defineKernelMethod(CHAR_ISPROTECTED  ,TheMethodBehaviour, CPPM(RexxMethod::isProtectedRexx), 0);
   defineProtectedKernelMethod(CHAR_SETPROTECTED ,TheMethodBehaviour, CPPM(RexxMethod::setProtectedRexx), 0);
   defineProtectedKernelMethod(CHAR_SETSECURITYMANAGER ,TheMethodBehaviour, CPPM(RexxMethod::setSecurityManager), 1);
-  defineKernelMethod(CHAR_SOURCE       ,TheMethodBehaviour, CPPM(BaseCode::source), 0);
+  defineKernelMethod(CHAR_SOURCE       ,TheMethodBehaviour, CPPM(BaseExecutable::source), 0);
                                        /* set the scope of the methods to   */
                                        /* this classes oref                 */
   TheMethodBehaviour->setMethodDictionaryScope(TheMethodClass);
@@ -588,7 +588,7 @@ void RexxMemory::createImage()
                                        /* Add the instance methods to the   */
                                        /* instance behaviour mdict          */
   defineProtectedKernelMethod(CHAR_SETSECURITYMANAGER ,TheRoutineBehaviour, CPPM(RoutineClass::setSecurityManager), 1);
-  defineKernelMethod(CHAR_SOURCE       ,TheRoutineBehaviour, CPPM(BaseCode::source), 0);
+  defineKernelMethod(CHAR_SOURCE       ,TheRoutineBehaviour, CPPM(BaseExecutable::source), 0);
                                        /* set the scope of the methods to   */
                                        /* this classes oref                 */
   TheRoutineBehaviour->setMethodDictionaryScope(TheRoutineClass);

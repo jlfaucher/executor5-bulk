@@ -36,7 +36,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /******************************************************************************/
-/* REXX Kernel                                                  GlobalNames.h     */
+/* REXX Kernel                                              GlobalNames.h     */
 /*                                                                            */
 /* Definitions of all name objects created at startup time.  All these        */
 /* Name objects are addressible via OREF_ global names                        */
@@ -157,6 +157,7 @@
   GLOBAL_NAME(SAY, CHAR_SAY)
   GLOBAL_NAME(SCIENTIFIC, CHAR_SCIENTIFIC)
   GLOBAL_NAME(SCRIPT, CHAR_SCRIPT)
+  GLOBAL_NAME(SECURITYMANAGER, CHAR_SECURITYMANAGER)
   GLOBAL_NAME(SELF, CHAR_SELF)
   GLOBAL_NAME(SEND, CHAR_SEND)
   GLOBAL_NAME(SERVER, CHAR_SERVER)

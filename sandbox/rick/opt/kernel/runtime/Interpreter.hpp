@@ -87,8 +87,8 @@ public:
     static void startInterpreter(InterpreterStartupMode mode);
     static inline bool isTerminated() { return !active; }
     static inline bool isActive() { return active; }
-    static InterpreterInstance *createInterpreterInstance(PRXSYSEXIT exits, const char *defaultEnvironment);
-    static inline InterpreterInstance *createInterpreterInstance() { return createInterpreterInstance(NULL, NULL); }
+    static InterpreterInstance *createInterpreterInstance(RexxOption *options);
+    static inline InterpreterInstance *createInterpreterInstance() { return createInterpreterInstance(NULL); }
     static bool terminateInterpreterInstance(InterpreterInstance *instance);
 
     static inline bool hasTimeSliceElapsed()
@@ -170,7 +170,7 @@ class InstanceBlock
 {
 public:
     InstanceBlock();
-    InstanceBlock(PRXSYSEXIT exits, const char *defaultEnvironment);
+    InstanceBlock(RexxOption *options);
     ~InstanceBlock();
 
     RexxActivity         *activity;    // our current activity

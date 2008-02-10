@@ -104,7 +104,7 @@ typedef struct _RexxContextExit
 }  RexxContextExit;
 
 
-typedef struct _RexxFunctionEntry
+typedef struct _RexxRoutineEntry
 {
     int   style;                     // function call style
 	int   reserved1;                 // reserved for future use
@@ -112,7 +112,7 @@ typedef struct _RexxFunctionEntry
     void *entryPoint;                // resolved function entry point
 	int   reserved2;                 // reserved for future use
 	int   reserved3;                 // reserved for future use
-} RexxFunctionEntry;
+} RexxRoutineEntry;
 
 
 #define REXX_FUNCTION(s, n, e)	{ s, 0, #n, (void *)e, 0, 0 },
@@ -173,7 +173,7 @@ typedef struct _RexxPackageEntry
     const char  *packageVersion;   // package version #
     RexxPackageLoader loader;      // the package loader
     RexxPackageUnloader unloader;  // the package unloader
-    struct _RexxFunctionEntry *functions; // functions contained in this package
+    struct _RexxRoutineEntry *functions; // functions contained in this package
     struct _RexxMethodEntry *methods;   // methods contained in this package
 } RexxPackageEntry;
 
@@ -292,7 +292,7 @@ typedef struct
 typedef struct
 {
     const char *optionName;          // name of the option
-    ValueDescriptor extra;           // a value appropriate to the option
+    ValueDescriptor option;          // a value appropriate to the option
 } RexxOption;
 
 
@@ -2857,7 +2857,7 @@ __type(returnType) name##_impl(RexxMethodContext *context, __adcl(t1, n1), __adc
 
 // zero argument function call
 
-#define RexxFunction0(returnType, name) \
+#define RexxRoutine0(returnType, name) \
 /* forward reference definition for method */ \
 __type(returnType) name##_impl (RexxCallContext * context);  \
                                \
@@ -2880,7 +2880,7 @@ __type(returnType) name##_impl(RexxCallContext *context)
 
 
 // method with one argument
-#define RexxFunction1(returnType ,name, t1, n1) \
+#define RexxRoutine1(returnType ,name, t1, n1) \
 /* forward reference definition for method */ \
 __type(returnType) name##_impl (RexxCallContext * context, __adcl(t1, n1));  \
                                \
@@ -2903,7 +2903,7 @@ __type(returnType) name##_impl(RexxCallContext *context, __adcl(t1, n1))
 
 
 // method with two arguments
-#define RexxFunction2(returnType ,name, t1, n1, t2, n2) \
+#define RexxRoutine2(returnType ,name, t1, n1, t2, n2) \
 /* forward reference definition for method */ \
 __type(returnType) name##_impl (RexxCallContext * context, __adcl(t1, n1), __adcl(t2, n2));  \
                                \
@@ -2926,7 +2926,7 @@ __type(returnType) name##_impl(RexxCallContext *context, __adcl(t1, n1), __adcl(
 
 
 // method with three arguments
-#define RexxFunction3(returnType ,name, t1, n1, t2, n2, t3, n3) \
+#define RexxRoutine3(returnType ,name, t1, n1, t2, n2, t3, n3) \
 /* forward reference definition for method */ \
 __type(returnType) name##_impl (RexxCallContext * context, __adcl(t1, n1), __adcl(t2, n2), __adcl(t3, n3));  \
                                \
@@ -2949,7 +2949,7 @@ __type(returnType) name##_impl(RexxCallContext *context, __adcl(t1, n1), __adcl(
 
 
 // method with four arguments
-#define RexxFunction4(returnType ,name, t1, n1, t2, n2, t3, n3, t4, n4) \
+#define RexxRoutine4(returnType ,name, t1, n1, t2, n2, t3, n3, t4, n4) \
 /* forward reference definition for method */ \
 __type(returnType) name##_impl (RexxCallContext * context, __adcl(t1, n1), __adcl(t2, n2), __adcl(t3, n3), __adcl(t4, n4));  \
                                \
@@ -2972,7 +2972,7 @@ __type(returnType) name##_impl(RexxCallContext *context, __adcl(t1, n1), __adcl(
 
 
 // method with five arguments
-#define RexxFunction5(returnType ,name, t1, n1, t2, n2, t3, n3, t4, n4, t5, n5) \
+#define RexxRoutine5(returnType ,name, t1, n1, t2, n2, t3, n3, t4, n4, t5, n5) \
 /* forward reference definition for method */ \
 __type(returnType) name##_impl (RexxCallContext * context, __adcl(t1, n1), __adcl(t2, n2), __adcl(t3, n3), __adcl(t4, n4), __adcl(t5, n5));  \
                                \
@@ -2995,7 +2995,7 @@ __type(returnType) name##_impl(RexxCallContext *context, __adcl(t1, n1), __adcl(
 
 
 // method with six arguments
-#define RexxFunction6(returnType, name, t1, n1, t2, n2, t3, n3, t4, n4, t5, n5, t6, n6) \
+#define RexxRoutine6(returnType, name, t1, n1, t2, n2, t3, n3, t4, n4, t5, n5, t6, n6) \
 /* forward reference definition for method */ \
 __type(returnType) name##_impl (RexxCallContext * context, __adcl(t1, n1), __adcl(t2, n2), __adcl(t3, n3), __adcl(t4, n4), __adcl(t5, n5), __adcl(t6, n6));  \
                                \
@@ -3017,7 +3017,7 @@ __functionstub(name) \
 __type(returnType) name##_impl(RexxCallContext *context, __adcl(t1, n1), __adcl(t2, n2), __adcl(t3, n3), __adcl(t4, n4), __adcl(t5, n5), __adcl(t6, n6))
 
 // method with seven arguments
-#define RexxFunction7(returnType, name, t1, n1, t2, n2, t3, n3, t4, n4, t5, n5, t6, n6, t7, n7) \
+#define RexxRoutine7(returnType, name, t1, n1, t2, n2, t3, n3, t4, n4, t5, n5, t6, n6, t7, n7) \
 /* forward reference definition for method */ \
 __type(returnType) name##_impl (RexxCallContext * context, __adcl(t1, n1), __adcl(t2, n2), __adcl(t3, n3), __adcl(t4, n4), __adcl(t5, n5), __adcl(t6, n6), __adcl(t7, n7)); \
                                \
@@ -3040,7 +3040,7 @@ __type(returnType) name##_impl(RexxCallContext *context, __adcl(t1, n1), __adcl(
 
 
 // function with eight arguments
-#define RexxFunction8(returnType, name, t1, n1, t2, n2, t3, n3, t4, n4, t5, n5, t6, n6, t7, n7, t8, n8) \
+#define RexxRoutine8(returnType, name, t1, n1, t2, n2, t3, n3, t4, n4, t5, n5, t6, n6, t7, n7, t8, n8) \
 /* forward reference definition for method */ \
 __type(returnType) name##_impl (RexxCallContext * context, __adcl(t1, n1), __adcl(t2, n2), __adcl(t3, n3), __adcl(t4, n4), __adcl(t5, n5), __adcl(t6, n6), __adcl(t7, n7), __adcl(t8, n8));  \
                                \
@@ -3063,7 +3063,7 @@ __type(returnType) name##_impl(RexxCallContext *context, __adcl(t1, n1), __adcl(
 
 
 // function with nine arguments
-#define RexxFunction9(returnType, name, t1, n1, t2, n2, t3, n3, t4, n4, t5, n5, t6, n6, t7, n7, t8, n8, t9, n9) \
+#define RexxRoutine9(returnType, name, t1, n1, t2, n2, t3, n3, t4, n4, t5, n5, t6, n6, t7, n7, t8, n8, t9, n9) \
 /* forward reference definition for method */ \
 __type(returnType) name##_impl (RexxCallContext * context, __adcl(t1, n1), __adcl(t2, n2), __adcl(t3, n3), __adcl(t4, n4), __adcl(t5, n5), __adcl(t6, n6), __adcl(t7, n7), __adcl(t8, n8), __adcl(t9, n9));  \
                                \
@@ -3086,7 +3086,7 @@ __type(returnType) name##_impl(RexxCallContext *context, __adcl(t1, n1), __adcl(
 
 
 // function with ten arguments
-#define RexxFunction10(returnType, name, t1, n1, t2, n2, t3, n3, t4, n4, t5, n5, t6, n6, t7, n7, t8, n8, t9, n9, t10, n10) \
+#define RexxRoutine10(returnType, name, t1, n1, t2, n2, t3, n3, t4, n4, t5, n5, t6, n6, t7, n7, t8, n8, t9, n9, t10, n10) \
 /* forward reference definition for method */ \
 __type(returnType) name##_impl (RexxCallContext * context, __adcl(t1, n1), __adcl(t2, n2), __adcl(t3, n3), __adcl(t4, n4), __adcl(t5, n5), __adcl(t6, n6), __adcl(t7, n7), __adcl(t8, n8), __adcl(t9, n9), __adlc(t10, n10));  \
                                \

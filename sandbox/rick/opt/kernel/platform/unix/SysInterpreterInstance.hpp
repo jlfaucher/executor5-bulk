@@ -46,10 +46,15 @@
 class SysInterpreterInstance
 {
 public;
-    void        live(size_t);
-    void        liveGeneral(int);
+    void live(size_t);
+    void liveGeneral(int);
+
+    void initialize(InterpreterInstance *i, RexxOptions *options);
+    RexxString *resolveProgramName(RexxString *_name, RexxString *_parentDir, RexxString *_parentExtension);
 
 protected:
+    void addSearchExtension(const char *name);
+
     InterpreterInstance *instance;       // backlink to our instance container
 };
 

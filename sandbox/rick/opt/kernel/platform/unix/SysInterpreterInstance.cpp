@@ -53,14 +53,43 @@
 void SysInterpreterInstance::initialize(InterpreterInstance *i, RexxOptions *options)
 {
     instance = i;
+
+    // add our default search extension as both upper and lower case
+    addSearchExtension("REX");
+    addSearchExtension("rex");
 }
 
 
+/**
+ * Append a system default extension to the extension search order.
+ *
+ * @param name   The name to add.
+ */
+void SysInterpreterInstance::addSearchExtension(const char *name)
+{
+    // if the extension is not already in the extension list, add it
+    RexxString *ext = new_string(name);
+    if (instance.searchExtensions->hasItem(ext) == TheFalseItem)
+    {
+        instance.searchExtensions->append(ext);
+    }
+}
+
+
+
+/**
+ * Build a search path used for this resolution step.
+ *
+ * @param parentDir The location of the program calling us (can be null).
+ * @param extensionPath
+ *                  The system extension path (can be null).
+ */
 SysSearchPath::SysSearchPath(const char *parentDir, const char *extensionPath)
 {
     char temp[4];             // this is just a temp buffer to check component sizes
 
-    size_t pathSize = GetEnvironmentVariable("PATH", temp, sizeof(temp));
+    const char *sysPath = getenv("PATH");
+    size_t pathSize = strlen(sysPath);
     size_t parentSize = parentDir == NULL ? 0 : strlen(parentDir);
     size_t extensionSize = extensionPath == NULL ? 0 : strlen(extensionPath);
 
@@ -82,8 +111,8 @@ SysSearchPath::SysSearchPath(const char *parentDir, const char *extensionPath)
         strcat(path, extensionPath);
         strcat(path, ";");
     }
-
-    GetEnvironmentVariable("PATH", path + strlen(path), pathSize + 1);
+    // add on the path at the end
+    strcat(path, sysPath);
 }
 
 

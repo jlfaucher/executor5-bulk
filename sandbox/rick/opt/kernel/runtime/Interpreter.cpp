@@ -229,7 +229,7 @@ bool Interpreter::terminateInterpreter()
  *
  * @return The new interpreter instance.
  */
-InterpreterInstance *Interpreter::createInterpreterInstance(PRXSYSEXIT exits, const char *defaultEnvironment)
+InterpreterInstance *Interpreter::createInterpreterInstance(RexxOption *options)
 {
     // We need to ensure that the interpreter is initialized before we create an
     // interpreter instance.  There are some nasty recursion problems that can result,
@@ -260,7 +260,7 @@ InterpreterInstance *Interpreter::createInterpreterInstance(PRXSYSEXIT exits, co
     }
 
     // now that this is protected from garbage collection, go and initialize everything
-    instance->initialize(rootActivity, exits, defaultEnvironment);
+    instance->initialize(rootActivity, options);
     return instance;
 }
 
@@ -329,11 +329,11 @@ InstanceBlock::InstanceBlock()
  * is released and the instance is terminated upon leaving the
  * block.
  */
-InstanceBlock::InstanceBlock(PRXSYSEXIT exits, const char *defaultEnvironment)
+InstanceBlock::InstanceBlock(RexxOption *options)
 {
     // Get an instance.  This also gives the root activity of the instance
     // the kernel lock.
-    instance = Interpreter::createInterpreterInstance(exits, defaultEnvironment);
+    instance = Interpreter::createInterpreterInstance(options);
     activity = instance->getRootActivity();
 }
 

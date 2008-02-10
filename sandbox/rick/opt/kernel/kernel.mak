@@ -118,7 +118,7 @@ OKCOBJS=$(OKCOBJ1) $(OKCOBJ2) $(OKLOBJS)
 OKPOBJ1=$(OR_OUTDIR)\RexxEnvelope.$(OBJ) $(OR_OUTDIR)\ArrayClass.$(OBJ) $(OR_OUTDIR)\RexxMisc.$(OBJ)   \
         $(OR_OUTDIR)\ClassClass.$(OBJ) $(OR_OUTDIR)\DeadObject.$(OBJ) $(OR_OUTDIR)\PointerClass.$(OBJ) \
 	$(OR_OUTDIR)\WeakReferenceClass.$(OBJ)
-OKPOBJ2=$(OR_OUTDIR)\DirectoryClass.$(OBJ) $(OR_OUTDIR)\MethodClass.$(OBJ)
+OKPOBJ2=$(OR_OUTDIR)\DirectoryClass.$(OBJ) $(OR_OUTDIR)\MethodClass.$(OBJ)  $(OR_OUTDIR)\RoutineClass.$(OBJ)
 OKPOBJ3=$(OR_OUTDIR)\ListClass.$(OBJ)   $(OR_OUTDIR)\RexxMemory.$(OBJ) $(OR_OUTDIR)\MemorySegment.$(OBJ) \
          $(OR_OUTDIR)\MemoryStats.$(OBJ) $(OR_OUTDIR)\MessageClass.$(OBJ)    \
         $(OR_OUTDIR)\StemClass.$(OBJ)   $(OR_OUTDIR)\ObjectClass.$(OBJ) $(OR_OUTDIR)\RexxCompoundTail.$(OBJ) \
@@ -138,7 +138,8 @@ OKIOBJ2=$(OR_OUTDIR)\RexxHashTable.$(OBJ)  $(OR_OUTDIR)\RexxCode.$(OBJ) $(OR_OUT
 	$(OR_OUTDIR)\CPPCode.$(OBJ)
 OKIOBJ3=$(OR_OUTDIR)\RexxCollection.$(OBJ)   $(OR_OUTDIR)\RexxSmartBuffer.$(OBJ) $(OR_OUTDIR)\StackClass.$(OBJ)  \
         $(OR_OUTDIR)\RexxVariable.$(OBJ)    $(OR_OUTDIR)\RexxVariableDictionary.$(OBJ) $(OR_OUTDIR)\RexxDateTime.$(OBJ) \
-	$(OR_OUTDIR)\Numerics.$(OBJ)
+	$(OR_OUTDIR)\Numerics.$(OBJ) $(OR_OUTDIR)\CallContextStubs.$(OBJ) $(OR_OUTDIR)\InterpreterAPI.$(OBJ) \
+	$(OR_OUTDIR)\InterpreterInstanceStubs.$(OBJ) $(OR_OUTDIR)\MethodContextStubs.$(OBJ) $(OR_OUTDIR)\ThreadContextStubs.$(OBJ)
 
 OKPOBJS=$(OKPOBJ1) $(OKPOBJ2) $(OKPOBJ3) $(OKPOBJ4) $(OKPOBJ5)
 OKIOBJS=$(OKIOBJ1) $(OKIOBJ2) $(OKIOBJ3)
@@ -163,15 +164,11 @@ OKSOBJS=$(OR_OUTDIR)\StringClass.$(OBJ) $(OR_OUTDIR)\StringClassUtil.$(OBJ) $(OR
         $(OR_OUTDIR)\StringClassWord.$(OBJ) $(OR_OUTDIR)\StringClassMisc.$(OBJ) $(OR_OUTDIR)\StringClassBit.$(OBJ)    \
         $(OR_OUTDIR)\StringClassConversion.$(OBJ) $(OR_OUTDIR)\MutableBufferClass.$(OBJ) $(OR_OUTDIR)\StringUtil.$(OBJ)
 
-# in rexx
-# OKNOBJS contain C methods, therefore have different dependancy rules.....
-OKNOBJS=$(OR_OUTDIR)\NativeRoot.$(OBJ)
-
 SYSERR= $(OR_OUTDIR)\ErrorMessages.$(OBJ)
 
 # rexx
 ORYXKOBJ= $(OKCOBJS) $(OKAOBJS) $(OKPOBJS) $(OKIOBJS) $(OKSOBJS) $(OEPOBJS)\
-          $(OTPOBJS) $(SYSOBJS) $(OKNOBJS) $(SYSERR)
+          $(OTPOBJS) $(SYSOBJS) $(SYSERR)
 
 #    Windows Universal Thunk 32-bit stub
 #    16-bit side must be built with 16-bit compiler

@@ -318,7 +318,7 @@ RexxReturnCode REXXENTRY RexxCallFunction (
     const char *act_q)             /* Name of active data queue  */
 {
   RexxReturnCode rc = 1;
-  RexxFunctionHandler *func_address; /* addr for transfer to call  */
+  RexxRoutineHandler *func_address; /* addr for transfer to call  */
   void *plib = NULL;               /* Dll handle                 */
 
   if (!(rc=RegLoad(dname, NULL, REGFUNCTION, (REXXPFN *)&func_address, &plib)))

@@ -74,7 +74,7 @@ ooRexxMethodEntry rexx_methods[] =
 #define INTERNAL_NAMED_FUNCTION(name, entry) REXX_TYPED_FUNCTION(name, entry)
 
 // now build the actual entry list
-ooRexxFunctionEntry rexx_functions[] =
+ooRexxRoutineEntry rexx_functions[] =
 {
 #include "NativeFunctions.h"             // bring in the standard list,
 #include "SysNativeFunctions.h"          // plus any system extensions

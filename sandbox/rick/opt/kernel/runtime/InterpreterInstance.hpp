@@ -119,7 +119,7 @@ protected:
     RexxObjectTable     *globalReferences;   // our global reference table
     RexxString          *defaultAddress;     // the default address environment
     RexxString          *searchPath;         // additional Rexx search path
-    RexxString          *searchExtensions;   // extensions to search on for external calls
+    RexxList            *searchExtensions;   // extensions to search on for external calls
     void                *applicationData;    // application specific data
 
     bool terminating;                // shutdown indicator

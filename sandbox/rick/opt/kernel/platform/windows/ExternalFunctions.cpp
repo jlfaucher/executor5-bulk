@@ -109,7 +109,7 @@ void RestoreEnvironment( void * );
 /*                      specified duration (in milliseconds)         */
 /*********************************************************************/
 
-RexxFunction2(CSTRING, sysBeep, wholenumber_t, Frequency, wholenumber_t, Duration)
+RexxRoutine2(CSTRING, sysBeep, wholenumber_t, Frequency, wholenumber_t, Duration)
 {
                                        /* out of range?              */
   if (Frequency > MAX_FREQUENCY || Frequency < MIN_FREQUENCY || Duration > MAX_DURATION || Duration < MIN_DURATION)
@@ -133,7 +133,7 @@ RexxFunction2(CSTRING, sysBeep, wholenumber_t, Frequency, wholenumber_t, Duratio
 /*                                                                   */
 /*********************************************************************/
 
-RexxFunction0(RexxObjectPtr, sysSetLocal)
+RexxRoutine0(RexxObjectPtr, sysSetLocal)
 {
   return TheFalseObject;               /* return failure             */
 }
@@ -149,7 +149,7 @@ RexxFunction0(RexxObjectPtr, sysSetLocal)
 /*                                                                   */
 /*********************************************************************/
 
-RexxFunction0(RexxObjectPtr, sysEndLocal)
+RexxRoutine0(RexxObjectPtr, sysEndLocal)
 {
   return TheFalseObject;               /* return failure             */
 }
@@ -158,7 +158,7 @@ RexxFunction0(RexxObjectPtr, sysEndLocal)
 /********************************************************************************************/
 /* sysDirectory                                                                             */
 /********************************************************************************************/
-RexxFunction1(RexxStringObject, sysDirectory, OPTIONAL_CSTRING, dir)
+RexxRoutine1(RexxStringObject, sysDirectory, OPTIONAL_CSTRING, dir)
 {
   char buffer[CCHMAXPATH+1];  // retrofit by IH
   int rc = 0;
@@ -185,7 +185,7 @@ RexxFunction1(RexxStringObject, sysDirectory, OPTIONAL_CSTRING, dir)
 /********************************************************************************************/
 /* sysFilespec                                                                              */
 /********************************************************************************************/
-RexxFunction2(RexxStringObject, sysFilespec, CSTRING, option, CSTRING, name)
+RexxRoutine2(RexxStringObject, sysFilespec, CSTRING, option, CSTRING, name)
 {
   size_t nameLength;                   /* file name length                  */
   const char *scanPtr;                 /* scanning pointer                  */
@@ -397,7 +397,7 @@ void RestoreEnvironment(
 /*                      Icon   = The message box icon style.         */
 /*                                                                   */
 /*********************************************************************/
-RexxFunction4(int, sysMessageBox, CSTRING, text, OPTIONAL_CSTRING, title, OPTIONAL_CSTRING, button, OPTIONAL_CSTRING, icon)
+RexxRoutine4(int, sysMessageBox, CSTRING, text, OPTIONAL_CSTRING, title, OPTIONAL_CSTRING, button, OPTIONAL_CSTRING, icon)
 {
   ULONG       style;                   /* window style flags         */
   int         maxCnt;                  /* Max loop count             */

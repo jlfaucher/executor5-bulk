@@ -39,7 +39,7 @@
 #include "RexxCore.h"
 #include "MessageDispatcher.hpp"
 #include "ProtectedObject.hpp"
-#include "MethodClass.hpp"
+#include "MessageClass.hpp"
 
 
 /**
@@ -59,7 +59,7 @@ void MessageDispatcher::run()
  *
  * @param c      The condition information for the error.
  */
-void RexxStartDispatcher::handleError(wholenumber_t r, RexxDirectory *c)
+void MessageDispatcher::handleError(wholenumber_t r, RexxDirectory *c)
 {
     // use the base error handling and set our return code to the negated error code.
     ActivityDispatcher::handleError(-r, c);

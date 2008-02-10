@@ -69,13 +69,17 @@ public:
     static RexxNativeMethod  *resolveMethod(RexxString *packageName, RexxString *methodName);
     static RoutineClass *resolveFunction(RexxString *function, RexxString *packageName, RexxString *procedure);
     static RoutineClass *resolveFunction(RexxString *function);
-    static RoutineClass *createRegisteredFunction(RexxString *function);
+    static RoutineClass *createRegisteredRoutine(RexxString *function);
+    PNATIVEMETHOD resolveMethodEntry(RexxString *package, RexxString *name);
+    PNATIVEROUTINE *resolveRoutineEntry(RexxString *package, RexxString *name);
+    PREGISTEREDROUTINE *resolveRegisteredRoutineEntry(RexxString *package, RexxString *name);
+    static void        addPackageFunction(RexxString *name, RoutineClass *func);
     static void        loadInternalPackage(RexxString *name, RexxPackageEntry *p);
     static void        createRootPackages();
     static void        restoreRootPackages(RexxArray *);
-    static RexxObject *addRegisteredFunction(RexxString *name, RexxString *module, RexxString *proc);
-    static RexxObject *dropRegisteredFunction(RexxString *name);
-    static RexxObject *queryRegisteredFunction(RexxString *name);
+    static RexxObject *addRegisteredRoutine(RexxString *name, RexxString *module, RexxString *proc);
+    static RexxObject *dropRegisteredRoutine(RexxString *name);
+    static RexxObject *queryRegisteredRoutine(RexxString *name);
     static bool        callNativeFunction(RexxActivity *activity, RexxString *name,
         RexxObject **arguments, size_t argcount, ProtectedObject &result);
 
@@ -98,7 +102,7 @@ protected:
     static RexxDirectory *packageFunctions; // table of functions loaded from packages
     static RexxDirectory *registeredFunctions;  // table of functions resolved by older registration mechanisms
 
-    static RexxPackageEntry rexxPackage;    // internal generated REXX package
+    static RexxPackageEntry *rexxPackage;   // internal generated REXX package
 };
 
 #endif

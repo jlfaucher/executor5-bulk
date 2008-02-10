@@ -2544,7 +2544,7 @@ BUILTIN(RXFUNCADD)
   }
 
   // hand this off to the package manager.
-  return PackageManager::addRegisteredFunction(name, module, proc);
+  return PackageManager::addRegisteredRoutine(name, module, proc);
 }
 
 #define RXFUNCDROP_MIN 1
@@ -2559,7 +2559,7 @@ BUILTIN(RXFUNCDROP)
   RexxString *name = requiredString(RXFUNCDROP, name);
 
   // hand this off to the package manager.
-  return PackageManager::dropRegisteredFunction(name);
+  return PackageManager::dropRegisteredRoutine(name);
 }
 
 #define RXFUNCQUERY_MIN 1
@@ -2574,7 +2574,7 @@ BUILTIN(RXFUNCQUERY)
   RexxString *name = requiredString(RXFUNCQUERY, name);
 
   // hand this off to the package manager.
-  return PackageManager::dropRegisteredFunction(name);
+  return PackageManager::dropRegisteredRoutine(name);
 }
 
 

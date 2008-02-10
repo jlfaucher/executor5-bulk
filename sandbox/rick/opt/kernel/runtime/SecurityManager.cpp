@@ -43,7 +43,8 @@
 /******************************************************************************/
 
 #include "RexxCore.h"
-#include "SecurityManager.hpp":
+#include "SecurityManager.hpp"
+#include "DirectoryClass.hpp"
 
 
 /**
@@ -114,7 +115,7 @@ RexxObject *SecurityManager::checkEnvironmentAccess(RexxString *index)
 bool SecurityManager::callSecurityManager(RexxString *methodName, RexxDirectory *arguments)
 {
     // invoke the manager
-    RexxObject *resultObj = manager->sendMessage(methodName, _arguments);
+    RexxObject *resultObj = manager->sendMessage(methodName, arguments);
     if (resultObj == OREF_NULL)          /* no return result?                 */
     {
                                          /* need to raise an exception        */
@@ -223,7 +224,7 @@ bool SecurityManager::checkCommand(RexxString *command, RexxString *env, RexxStr
     {
         /* get the return code               */
         *result = securityArgs->fastAt(OREF_RC);
-        if (*rexult == OREF_NULL)     /* no return code provide?           */
+        if (*result == OREF_NULL)     /* no return code provide?           */
         {
             *result = IntegerZero;      /* use a zero return code            */
         }
@@ -294,9 +295,6 @@ RexxString *SecurityManager::checkReguiresAccess(RexxString *name, RexxObject *&
                                        /* add the program name              */
     securityArgs->put(name, OREF_NAME);
                                        /* did manager handle this?          */
-    if (this->callSecurityManager(OREF_REQUIRES, securityArgs))
-      fullname = (RexxString *)securityArgs->fastAt(OREF_NAME);
-    securityArgs->put(name, OREF_NAME);
     if (callSecurityManager(OREF_REQUIRES, securityArgs))
     {
         // retrieve any security manager that the security manager wants us to use for
@@ -307,9 +305,9 @@ RexxString *SecurityManager::checkReguiresAccess(RexxString *name, RexxObject *&
             securityManager = secObject;
         }
         // the name can be replaced by the security manager
-        return securityArgs->fastAt(OREF_NAME);
+        return (RexxString *)securityArgs->fastAt(OREF_NAME);
     }
-    // not handled
+    // not handled, return the name unchanged
     return name;
 }
 

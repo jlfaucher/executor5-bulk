@@ -118,7 +118,7 @@ void RoutineClass::call(
 {
     ProtectedObject p(this);           // belt-and-braces to make sure this is protected
     // just forward this to the code object
-    code->call(activity, this, msgname, argPtr, argcount, calltype, environment, context, result);
+    code->call(activity, msgname, argPtr, argcount, calltype, environment, context, result);
 }
 
 
@@ -133,18 +133,8 @@ void RoutineClass::runProgram(
 /* Function:  Run a method as a program                                     */
 /****************************************************************************/
 {
-                                       /* ensure correct scope              */
-    RexxMethod *method = this->newScope((RexxClass *)TheNilObject);
-    method->call(activity, OREF_NULL, OREF_NONE, arguments, argCount, calltype, environment, PROGRAMCALL, result);
-}
-
-
-RexxArray  *RoutineClass::source()
-/******************************************************************************/
-/* Function:  Return an array of source strings that represent this method    */
-/******************************************************************************/
-{
-    return code->getSource();
+    ProtectedObject p(this);           // belt-and-braces to make sure this is protected
+    code->call(activity, OREF_NONE, arguments, argCount, calltype, environment, PROGRAMCALL, result);
 }
 
 
@@ -192,92 +182,99 @@ void *RoutineClass::operator new (size_t size)
  *
  * @return A RoutineClass instance.
  */
-RoutineClass *RoutineClass::newRoutineRexx(RexxSource *source)
+RoutineClass *RoutineClass::newRoutine(RexxSource *source)
 {
-                                       /* create a new method object        */
-  RexxCode *newCode = source->generateCode();
-  if (scope != OREF_NULL)              /* given a scope too?                */
-  {
-      newMethod->setScope(scope);        /* set the scope                     */
-  }
-  return newMethod;                    /* return the new method object      */
+    // generate a new routine from the base source
+    return new_routine(source->generateCode());
 }
 
-RexxMethod *RexxMethod::newRoutineObject(RexxString *pgmname, RexxObject *source, RexxObject *position, RexxSource *parentSource)
+/**
+ * Construct a Routine using different forms of in-memory
+ * source file.
+ *
+ * @param pgmname  The name of the program.
+ * @param source   The program source.  This can be a string or an array of strings.
+ * @param position The argument position used for error reporting.
+ * @param parentSource
+ *                 A parent source context used to provide additional class and
+ *                 routine definitions.
+ *
+ * @return A constructed Routine object.
+ */
+RoutineClass *RoutineClass::newRoutineObject(RexxString *pgmname, RexxObject *source, RexxObject *position, RexxSource *parentSource)
 {
-  RexxSource *newSource;               /* created source object             */
-
-  // request this as an array.  If not convertable, then we'll use it as a string
-  RexxArray *newSourceArray = source->requestArray();
-                                       /* couldn't convert?                 */
-  if (newSourceArray == (RexxArray *)TheNilObject)
-  {
-                                       /* get the string representation     */
-    RexxString *sourceString = source->makeString();
-                                       /* got back .nil?                    */
-    if (sourceString == (RexxString *)TheNilObject)
+    // request this as an array.  If not convertable, then we'll use it as a string
+    RexxArray *newSourceArray = source->requestArray();
+    /* couldn't convert?                 */
+    if (newSourceArray == (RexxArray *)TheNilObject)
     {
-                                       /* raise an error                    */
-      reportException(Error_Incorrect_method_no_method, position);
+        /* get the string representation     */
+        RexxString *sourceString = source->makeString();
+        /* got back .nil?                    */
+        if (sourceString == (RexxString *)TheNilObject)
+        {
+            /* raise an error                    */
+            reportException(Error_Incorrect_method_no_method, position);
+        }
+        /* wrap an array around the value    */
+        newSourceArray = new_array(sourceString);
     }
-                                       /* wrap an array around the value    */
-    newSourceArray = new_array(sourceString);
-  }
-  else                                 /* have an array, make sure all      */
-  {
-                                       /* is it single dimensional?         */
-    if (newSourceArray->getDimension() != 1)
+    else                                 /* have an array, make sure all      */
     {
-                                       /* raise an error                    */
-      reportException(Error_Incorrect_method_noarray, position);
+        /* is it single dimensional?         */
+        if (newSourceArray->getDimension() != 1)
+        {
+            /* raise an error                    */
+            reportException(Error_Incorrect_method_noarray, position);
+        }
+        /*  element are strings.             */
+        /* Make a source array safe.         */
+        ProtectedObject p(newSourceArray);
+        /* Make sure all elements in array   */
+        for (size_t counter = 1; counter <= newSourceArray->size(); counter++)
+        {
+            /* Get element as string object      */
+            RexxString *sourceString = newSourceArray ->get(counter)->makeString();
+            /* Did it convert?                   */
+            if (sourceString == (RexxString *)TheNilObject)
+            {
+                /* and report the error.             */
+                reportException(Error_Incorrect_method_nostring_inarray, IntegerTwo);
+            }
+            else
+            {
+                /* itsa string add to source array   */
+                newSourceArray ->put(sourceString, counter);
+            }
+        }
     }
-                                       /*  element are strings.             */
-                                       /* Make a source array safe.         */
-    ProtectedObject p(newSourceArray);
-                                       /* Make sure all elements in array   */
-    for (size_t counter = 1; counter <= newSourceArray->size(); counter++)
+
+    /* create a source object            */
+    RexxSource *newSource = new RexxSource (pgmname, newSourceArray);
+
+    ProtectedObject p(newSource);
+    RoutineClass *result = newRoutine(newSource);
+
+    p = result;    // switch the protectiong
+
+    // if we've been provided with a scope, use it
+    if (parentSource == OREF_NULL)
     {
-                                       /* Get element as string object      */
-      sourceString = newSourceArray ->get(counter)->makeString();
-                                       /* Did it convert?                   */
-      if (sourceString == (RexxString *)TheNilObject)
-      {
-                                       /* and report the error.             */
-        reportException(Error_Incorrect_method_nostring_inarray, IntegerTwo);
-      }
-      else
-      {
-                                       /* itsa string add to source array   */
-        newSourceArray ->put(sourceString, counter);
-      }
+        // see if we have an active context and use the current source as the basis for the lookup
+        RexxActivation *currentContext = ActivityManager::currentActivity->getCurrentRexxFrame();
+        if (currentContext != OREF_NULL)
+        {
+            parentSource = currentContext->getSource();
+        }
     }
-  }
 
-                                       /* create a source object            */
-  RexxSource *newSource = new RexxSource (pgmname, newSourceArray);
+    // if there is a parent source, then merge in the scope information
+    if (parentSource != OREF_NULL)
+    {
+        result->getSourceObject()->inheritSourceContext(parentSource);
+    }
 
-  ProtectedObject p(newSource);
-  Rexxmethod *result = RexxMethod::newRexxRoutine(newSource);
-  RexxCode *resultCode = (RexxCode *)result->getCode();
-
-  // if we've been provided with a scope, use it
-  if (parentSource == OREF_NULL)
-  {
-      // see if we have an active context and use the current source as the basis for the lookup
-      RexxActivation *currentContext = ActivityManager::currentActivity->getCurrentRexxFrame();
-      if (currentContext != OREF_NULL)
-      {
-          parentSource = currentContext->getSource();
-      }
-  }
-
-  // if there is a parent source, then merge in the scope information
-  if (parentSource != OREF_NULL)
-  {
-      code->getSourceObject()->inheritSourceContext(parentSource);
-  }
-
-  return result;
+    return result;
 }
 
 
@@ -289,54 +286,58 @@ RoutineClass *RoutineClass::newRexx(
 /*            array                                                           */
 /******************************************************************************/
 {
-  RexxObject *pgmname;                 /* method name                       */
-  RexxObject *source;                  /* Array or string object            */
-  RexxObject *option = OREF_NULL;
-  size_t initCount = 0;                /* count of arguments we pass along  */
+    RexxObject *pgmname;                 /* method name                       */
+    RexxObject *source;                  /* Array or string object            */
+    RexxObject *option = OREF_NULL;
+    size_t initCount = 0;                /* count of arguments we pass along  */
 
-                                       /* break up the arguments            */
+                                         /* break up the arguments            */
 
-  process_new_args(init_args, argCount, &init_args, &initCount, 2, (RexxObject **)&pgmname, (RexxObject **)&source);
-                                       /* get the method name as a string   */
-  RexxString *nameString = REQUIRED_STRING(pgmname, ARG_ONE);
-  required_arg(source, TWO);           /* make sure we have the second too  */
+    process_new_args(init_args, argCount, &init_args, &initCount, 2, (RexxObject **)&pgmname, (RexxObject **)&source);
+    /* get the method name as a string   */
+    RexxString *nameString = REQUIRED_STRING(pgmname, ARG_ONE);
+    required_arg(source, TWO);           /* make sure we have the second too  */
 
-  RexxSource *sourceContext = OREF_NULL;
-  // retrieve extra parameter if exists
-  if (initCount != 0)
-  {
-      process_new_args(init_args, initCount, &init_args, &initCount, 1, (RexxObject **)&option, NULL);
-      if (isOfClass(Method, option))
-      {
-          sourceContext = (RexxMethod *)option->getSource();
-      }
-      else
-      {
-          // this must be a string (or convertable) and have a specific value
-          option = option->requestString();
-          if (option == TheNilObject)
-          {
-              reportException(Error_Incorrect_method_argType, IntegerThree, "Method/String object");
-          }
-          // default given? set option to NULL (see code below)
-          if (!((RexxString *)option)->strICompare("PROGRAMSCOPE"))
-          {
-              reportException(Error_Incorrect_call_list, "NEW", IntegerThree, "\"PROGRAMSCOPE\", Method object", option);
-          }
-      }
-  }
+    RexxSource *sourceContext = OREF_NULL;
+    // retrieve extra parameter if exists
+    if (initCount != 0)
+    {
+        process_new_args(init_args, initCount, &init_args, &initCount, 1, (RexxObject **)&option, NULL);
+        if (isOfClass(Method, option))
+        {
+            sourceContext = ((RexxMethod *)option)->getSourceObject();
+        }
+        if (isOfClass(Routine, option))
+        {
+            sourceContext = ((RoutineClass *)option)->getSourceObject();
+        }
+        else
+        {
+            // this must be a string (or convertable) and have a specific value
+            option = option->requestString();
+            if (option == TheNilObject)
+            {
+                reportException(Error_Incorrect_method_argType, IntegerThree, "Method/String object");
+            }
+            // default given? set option to NULL (see code below)
+            if (!((RexxString *)option)->strICompare("PROGRAMSCOPE"))
+            {
+                reportException(Error_Incorrect_call_list, "NEW", IntegerThree, "\"PROGRAMSCOPE\", Method object", option);
+            }
+        }
+    }
 
-  RexxRoutine *newMethod = newRoutineObject(nameString, source, IntegerTwo, sourceContext);
-  ProtectedObject p(newMethod);
-                                       /* Give new object its behaviour     */
-  newMethod->setBehaviour(((RexxClass *)this)->getInstanceBehaviour());
-  if (((RexxClass *)this)->hasUninitDefined())
-  {
-    newMethod->hasUninit();           /* Make sure everyone is notified.   */
-  }
-                                       /* now send an INIT message          */
-  newMethod->sendMessage(OREF_INIT, init_args, initCount);
-  return newMethod;                    /* return the new method             */
+    RoutineClass *newRoutine = newRoutineObject(nameString, source, IntegerTwo, sourceContext);
+    ProtectedObject p(newRoutine);
+    /* Give new object its behaviour     */
+    newRoutine->setBehaviour(((RexxClass *)this)->getInstanceBehaviour());
+    if (((RexxClass *)this)->hasUninitDefined())
+    {
+        newRoutine->hasUninit();         /* Make sure everyone is notified.   */
+    }
+    /* now send an INIT message          */
+    newRoutine->sendMessage(OREF_INIT, init_args, initCount);
+    return newRoutine;                   /* return the new method             */
 }
 
 
@@ -352,7 +353,7 @@ RoutineClass *RoutineClass::newFileRexx(
   RexxSource *source = RexxSource::classNewFile(filename);
   ProtectedObject p(source);
                                        /* finish up processing of this      */
-  RoutineClass * newMethod = newRoutine(source, (RexxClass *)TheNilObject);
+  RoutineClass * newMethod = newRoutine(source);
   ProtectedObject p2(newMethod);
                                        /* Give new object its behaviour     */
   newMethod->setBehaviour(((RexxClass *)this)->getInstanceBehaviour());
@@ -388,7 +389,7 @@ RoutineClass *RoutineClass::newRexxBuffer(
 }
 
 
-RexxRoutine * RoutineClass::processInstore(PRXSTRING instore, RexxString * name )
+RoutineClass *RoutineClass::processInstore(PRXSTRING instore, RexxString * name )
 /******************************************************************************/
 /* Function:  Process instorage execution arguments                           */
 /******************************************************************************/
@@ -427,7 +428,7 @@ RexxRoutine * RoutineClass::processInstore(PRXSTRING instore, RexxString * name 
                 /* copy source into the buffer       */
                 memcpy(source_buffer->address(), instore[0].strptr, instore[0].strlength);
                 /* reconnect this with the source    */
-                routin->getSourceObject()->setBufferedSource(source_buffer);
+                routine->getSourceObject()->setBufferedSource(source_buffer);
             }
             return routine;                  /* go return it                      */
         }
@@ -444,9 +445,9 @@ RexxRoutine * RoutineClass::processInstore(PRXSTRING instore, RexxString * name 
             memcpy(source_buffer->address(), "--", 2);
         }
         /* translate this source             */
-        RexxRoutine *routine = newRexxBuffer(name, source_buffer);
+        RoutineClass *routine = newRexxBuffer(name, source_buffer);
         /* return this back in instore[1]    */
-        SysSaveProgramBuffer(&instore[1], method);
+        SysSaveProgramBuffer(&instore[1], routine);
         return routine;                    /* return translated source          */
     }
     return OREF_NULL;                    /* processing failed                 */
@@ -473,7 +474,7 @@ RoutineClass *RoutineClass::restore(
 }
 
 
-RexxRoutine *RoutineClass::newFile(
+RoutineClass *RoutineClass::newFile(
     RexxString *filename)              /* name of the target file           */
 /******************************************************************************/
 /* Function:  Create a method from a fully resolved file name                 */

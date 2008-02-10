@@ -88,18 +88,18 @@ protected:
 };
 
 
-class RexxFunction : public RexxNativeCode
+class RexxRoutine : public RexxNativeCode
 {
   public:
 
-   inline RexxFunction() { }
-   inline RexxFunction(RexxString *p, RexxString *n, RexxSource *s) : RexxNativeCode(p, n, s) { }
+   inline RexxRoutine() { }
+   inline RexxRoutine(RexxString *p, RexxString *n, RexxSource *s) : RexxNativeCode(p, n, s) { }
 
    virtual void call(RexxActivity *, RexxString *,  RexxObject **, size_t, ProtectedObject &) = 0;
 };
 
 
-class RexxNativeFunction : public RexxFunction
+class RexxNativeRoutine : public RexxRoutine
 {
   public:
    inline void *operator new(size_t size, void *ptr) { return ptr; }
@@ -107,8 +107,8 @@ class RexxNativeFunction : public RexxFunction
    inline void  operator delete(void *) { ; }
    inline void  operator delete(void *, void *) { ; }
 
-   inline RexxNativeFunction(RESTORETYPE restoreType) { ; };
-   inline RexxNativeFunction(RexxString *p, RexxString *n, RexxSource *s, PNATIVEFUNCTION e) : RexxFunction(p, n, s), entry(e) { }
+   inline RexxNativeRoutine(RESTORETYPE restoreType) { ; };
+   inline RexxNativeRoutine(RexxString *p, RexxString *n, RexxSource *s, PNATIVEROUTINE e) : RexxRoutine(p, n, s), entry(e) { }
 
    void        liveGeneral(int reason);
    void        flatten(RexxEnvelope *envelope);
@@ -116,11 +116,11 @@ class RexxNativeFunction : public RexxFunction
    virtual void call(RexxActivity *, RexxString *,  RexxObject **, size_t, ProtectedObject &);
 
 protected:
-   PNATIVEFUNCTION entry;               // method entry point.
+   PNATIVEROUTINE entry;               // method entry point.
 };
 
 
-class RegisteredFunction : public RexxFunction
+class RegisteredRoutine : public RexxRoutine
 {
   public:
    inline void *operator new(size_t size, void *ptr) { return ptr; }
@@ -131,14 +131,14 @@ class RegisteredFunction : public RexxFunction
    void        liveGeneral(int reason);
    void        flatten(RexxEnvelope *envelope);
 
-   inline RegisteredFunction(RESTORETYPE restoreType) { ; };
-   RegisteredFunction(RexxString *p, RexxString *n, RexxFunctionHandler *e)  : RexxFunction(p, n, OREF_NULL), entry(e) { }
-   RegisteredFunction(RexxString *p, RexxString *n, RexxSource *s, RexxFunctionHandler *e)  : RexxFunction(p, n, s), entry(e) { }
+   inline RegisteredRoutine(RESTORETYPE restoreType) { ; };
+   RegisteredRoutine(RexxString *p, RexxString *n, RexxRoutineHandler *e)  : RexxRoutine(p, n, OREF_NULL), entry(e) { }
+   RegisteredRoutine(RexxString *p, RexxString *n, RexxSource *s, RexxRoutineHandler *e)  : RexxRoutine(p, n, s), entry(e) { }
 
    virtual void call(RexxActivity *, RexxString *,  RexxObject **, size_t, ProtectedObject &);
 
 protected:
-   RexxFunctionHandler *entry;          // method entry point.
+   RexxRoutineHandler *entry;          // method entry point.
 };
 
 #endif

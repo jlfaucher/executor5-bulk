@@ -47,11 +47,13 @@
 #include "Package.hpp"
 #include "Interpreter.hpp"
 #include "RexxNativeCode.hpp"
+#include "DirectoryClass.hpp"
+#include "ActivityManager.hpp"
 
 
 RexxDirectory *PackageManager::packages = OREF_NULL;        // our loaded packages
 RexxDirectory *PackageManager::packageFunctions = OREF_NULL;     // table of functions loaded from packages
-RexxDirectory *PackageManager::registeredFunction = OREF_NULL;
+RexxDirectory *PackageManager::registeredFunctions = OREF_NULL;
 
 /**
  * Initialize the package manager global state.
@@ -176,7 +178,7 @@ Package *PackageManager::loadPackage(RexxString *name)
         // add this to our package list.
         packages->put((RexxObject *)packages, name);
         // now force the package to load.
-        if (!package->load(this))
+        if (!package->load())
         {
              // unable to load the library, so remove this and return NULL.
              packages->remove(name);
@@ -242,7 +244,7 @@ RoutineClass *PackageManager::resolveFunction(RexxString *function, RexxString *
     RexxRegisterFunctionDll(function->getStringData(), packageName->getStringData(), procedure->getStringData());
 
     // resolve a registered entry, if we can and add it to the cache
-    return createRegisteredFunction(function);
+    return createRegisteredRoutine(function);
 }
 
 
@@ -276,7 +278,7 @@ RoutineClass *PackageManager::resolveFunction(RexxString *function)
     }
 
     // resolve a registered entry, if we can and add it to the cache
-    return createRegisteredFunction(function);
+    return createRegisteredRoutine(function);
 }
 
 
@@ -288,7 +290,7 @@ RoutineClass *PackageManager::resolveFunction(RexxString *function)
  *
  * @return
  */
-RoutineClass *PackageManager::createRegisteredFunction(RexxString *function)
+RoutineClass *PackageManager::createRegisteredRoutine(RexxString *function)
 {
     REXXPFN entry = NULL;
 
@@ -302,7 +304,7 @@ RoutineClass *PackageManager::createRegisteredFunction(RexxString *function)
     }
 
     // create a code handler and add to the cache
-    RexxFunction *func = new RoutineClass(new RegisteredFunction((RexxFunctionHandler *)REXXPFN));
+    RexxRoutine *func = new RoutineClass(new RegisteredRoutine((RexxRoutineHandler *)REXXPFN));
     registeredFunctions->put(func, function);
     // we got this
     return func;
@@ -361,6 +363,18 @@ void PackageManager::restoreRootPackages(RexxArray *savedPackages)
 
 
 /**
+ * Add a function to the package-defined functions table.
+ *
+ * @param name   The name of the function.
+ * @param func
+ */
+void PackageManager::addPackageFunction(RexxString *name, RoutineClass *func)
+{
+    packageFunctions->put(func, name);
+}
+
+
+/**
  * Process the basics of RxFuncAdd().  This will return true
  * if the function can be resolved and is callable, false
  * otherwise.  If the target function is not in a loadable
@@ -374,7 +388,7 @@ void PackageManager::restoreRootPackages(RexxArray *savedPackages)
  * @return True if the function registration worked and the function
  *         is callable.  False otherwise.
  */
-RexxObject *PackageManager::addRegisteredFunction(RexxString *name, RexxString *module, RexxString *proc)
+RexxObject *PackageManager::addRegisteredRoutine(RexxString *name, RexxString *module, RexxString *proc)
 {
     // make sure we're using uppercase name versions here.
     name = name->upper();
@@ -403,7 +417,7 @@ RexxObject *PackageManager::addRegisteredFunction(RexxString *name, RexxString *
  * @return True if this was deregistered from the global table, false
  *         otherwise.
  */
-RexxObject *PackageManager::dropRegisteredFunction(RexxString *name)
+RexxObject *PackageManager::dropRegisteredRoutine(RexxString *name)
 {
     // remove this from the local cache, then remove it from the global function
     // registration.
@@ -426,7 +440,7 @@ RexxObject *PackageManager::dropRegisteredFunction(RexxString *name)
  * @return True if the external function exists in our local tables or
  *         in the global registry.
  */
-RexxObject *PackageManager::queryRegisteredFunction(RexxString *name)
+RexxObject *PackageManager::queryRegisteredRoutine(RexxString *name)
 {
     // does this name exist in our table?
     if (findFunction(name) != OREF_NULL)
@@ -475,7 +489,7 @@ bool PackageManager::callNativeFunction(RexxActivity *activity, RexxString *name
     RexxObject **arguments, size_t argcount, ProtectedObject &result)
 {
     // package functions come first
-    RexxFunction *function = (RexxFunction *)packageFunctions->at(name);
+    RexxRoutine *function = (RexxRoutine *)packageFunctions->at(name);
     if (function != OREF_NULL)
     {
         function->call(activity, name, arguments, argcount, result);
@@ -637,4 +651,67 @@ void PackageManager::runRequires(RexxActivity *activity, RexxString *name, Routi
     code->call(activity, name, NULL, 0, dummy);
                                          /* No longer installing routine.     */
     this->activity->removeRunningRequires(name);
+}
+
+
+/**
+ * Resolve an entry point for a package method entry (used on a
+ * restore or reflatten);
+ *
+ * @param name   Name of the target method.
+ *
+ * @return The target entry point.
+ */
+PNATIVEMETHOD PackageManager::resolveMethodEntry(RexxString *package, RexxString *name)
+{
+    Package *package = loadPackage(package);
+
+    // if no entry, something bad has gone wrong
+    if (package == NULL)
+    {
+        reportException(Error_Execution_package_method, name, package);
+    }
+    return package->resolveMethodEntry(name);
+}
+
+
+/**
+ * Resolve an entry point for a package function entry (used on
+ * a restore or reflatten);
+ *
+ * @param name   Name of the target function.
+ *
+ * @return The target entry point.
+ */
+PNATIVEROUTINE PackageManager::resolveFunctionEntry(RexxString *package, RexxString *name)
+{
+    Package *package = loadPackage(package);
+
+    // if no entry, something bad has gone wrong
+    if (package == NULL)
+    {
+        reportException(Error_Execution_package_method, name, package);
+    }
+    return package->resolveFunctionEntry(name);
+}
+
+
+/**
+ * Resolve an entry point for a package function entry (used on
+ * a restore or reflatten);
+ *
+ * @param name   Name of the target function.
+ *
+ * @return The target entry point.
+ */
+PREGISTEREDROUTINE PackageManager::resolveRegisteredRoutineEntry(RexxString *package, RexxString *name)
+{
+    Package *package = loadPackage(package);
+
+    // if no entry, something bad has gone wrong
+    if (package == NULL)
+    {
+        reportException(Error_Execution_package_method, name, package);
+    }
+    return package->resolveRegisteredRoutineEntry(name);
 }
