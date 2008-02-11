@@ -80,6 +80,8 @@ class RexxNativeMethod : public RexxNativeCode
    void        liveGeneral(int reason);
    void        flatten(RexxEnvelope *envelope);
 
+   inline PNATIVEMETHOD getEntry() { return entry; }
+
    virtual void run(RexxActivity *activity, RexxMethod *method, RexxObject *receiver, RexxString *messageName,
        size_t count, RexxObject **argPtr, ProtectedObject &result);
 
@@ -113,6 +115,8 @@ class RexxNativeRoutine : public RexxRoutine
    void        liveGeneral(int reason);
    void        flatten(RexxEnvelope *envelope);
 
+   inline PNATIVEROUTINE getEntry() { return entry; }
+
    virtual void call(RexxActivity *, RexxString *,  RexxObject **, size_t, ProtectedObject &);
 
 protected:
@@ -132,10 +136,13 @@ class RegisteredRoutine : public RexxRoutine
    void        flatten(RexxEnvelope *envelope);
 
    inline RegisteredRoutine(RESTORETYPE restoreType) { ; };
+   RegisteredRoutine(RexxString *n, RexxRoutineHandler *e)  : RexxRoutine(OREF_NULL, n, OREF_NULL), entry(e) { }
    RegisteredRoutine(RexxString *p, RexxString *n, RexxRoutineHandler *e)  : RexxRoutine(p, n, OREF_NULL), entry(e) { }
    RegisteredRoutine(RexxString *p, RexxString *n, RexxSource *s, RexxRoutineHandler *e)  : RexxRoutine(p, n, s), entry(e) { }
 
    virtual void call(RexxActivity *, RexxString *,  RexxObject **, size_t, ProtectedObject &);
+
+   inline RexxRoutineHandler *getEntry() { return entry; }
 
 protected:
    RexxRoutineHandler *entry;          // method entry point.

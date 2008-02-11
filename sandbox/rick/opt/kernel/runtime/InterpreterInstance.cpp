@@ -45,6 +45,7 @@
 #include "SystemInterpreter.hpp"
 #include "ActivityManager.hpp"
 #include "RexxActivation.hpp"
+#include "PackageManager.hpp"
 
 /**
  * Create a new Package object instance.
@@ -84,7 +85,7 @@ void InterpreterInstance::live(size_t liveMark)
     memory_mark(rootActivity);
     memory_mark(allActivities);
     memory_mark(globalReferences);
-    memory_mark(defaultAddress);
+    memory_mark(defaultEnvironment);
     memory_mark(searchPath);
     memory_mark(searchExtensions);
 }
@@ -98,7 +99,7 @@ void InterpreterInstance::liveGeneral(int reason)
     memory_mark_general(rootActivity);
     memory_mark_general(allActivities);
     memory_mark_general(globalReferences);
-    memory_mark_general(defaultAddress);
+    memory_mark_general(defaultEnvironment);
     memory_mark_general(searchPath);
     memory_mark_general(searchExtensions);
 }
@@ -123,7 +124,8 @@ void InterpreterInstance::initialize(RexxActivity *activity, RexxOption *options
     globalReferences = new_object_table();
     // create a default wrapper for this security manager
     securityManager = new SecurityManager(OREF_NULL);
-
+    // set the default system address environment (can be overridden by options)
+    defaultEnvironment = SysInitialAddressName();
     processOptions(options);
     // do system specific initialization
     sysInstance.initialize(this, options);
@@ -511,7 +513,7 @@ bool InterpreterInstance::processOptions(RexxOption *options)
         // an initial address environment
         if (strcmp(options->optionName, INITIAL_ADDRESS_ENVIRONMENT) == 0)
         {
-            defaultAddress = new_string(options->option.value.value_CSTRING);
+            defaultEnvironment = new_string(options->option.value.value_CSTRING);
         }
         // application data
         else if (strcmp(options->optionName, APPLICATION_DATA) == 0)
@@ -545,7 +547,7 @@ bool InterpreterInstance::processOptions(RexxOption *options)
                 extStart = delim + 1;
             }
         }
-        // an initial address environment
+        // old-style registered exit
         else if (strcmp(options->optionName, REGISTERED_EXITS) == 0)
         {
             RXSYSEXIT *handlers = (RXSYSEXIT *)options->option.value.value_POINTER;
@@ -560,8 +562,8 @@ bool InterpreterInstance::processOptions(RexxOption *options)
                 }
             }
         }
-        // an initial address environment
-        else if (strcmp(options->optionName, REGISTERED_EXITS) == 0)
+        // new-style context exit
+        else if (strcmp(options->optionName, DIRECT_EXITS) == 0)
         {
             RexxContextExit *handlers = (RexxContextExit *)options->option.value.value_POINTER;
             // if we have handlers, initialize the array
@@ -574,6 +576,14 @@ bool InterpreterInstance::processOptions(RexxOption *options)
                     setExitHandler(handlers[i]);
                 }
             }
+        }
+        // a package to load at startup
+        else if (strcmp(options->optionName, LOAD_REQUIRED_PACKAGE) == 0)
+        {
+            RexxString *packageName = new_string(options->option.value.value_CSTRING);
+
+            // this must load ok in order for this to work
+            PackageManager::getPackage(packageName);
         }
         else
         {

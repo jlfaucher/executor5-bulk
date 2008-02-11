@@ -943,6 +943,68 @@ bool RexxNumberString::int64Value(int64_t *result, stringsize_t numDigits)
 }
 
 
+bool RexxNumberString::unsignedInt64Value(uint64_t *result, stringsize_t numDigits)
+/******************************************************************************/
+/* Function:  Convert a number string to a int64 value                        */
+/******************************************************************************/
+{
+    // set up the default values
+
+    bool carry = false;
+    wholenumber_t numberExp = this->exp;
+    stringsize_t numberLength = this->length;
+
+    // if the number is exactly zero, then this is easy
+    if (this->sign == 0)
+    {
+        *result = 0;
+        return true;
+    }
+
+    // is this easily within limits (very common)?
+    if (length <= numDigits && numberExp >= 0)
+    {
+        if (!createUnsignedInt64Value(number, length, false, numberExp, UINT64_MAX, *result))
+        {
+            return false;                   // too big to handle
+        }
+        return true;
+    }
+
+    // this number either has decimals, or needs to be truncated/rounded because of
+    // the conversion digits value.  We need to make adjustments.
+
+    if (!checkIntegerDigits(numDigits, numberLength, numberExp, carry))
+    {
+        return false;
+    }
+
+    // if because of this adjustment, the decimal point lies to the left
+    // of our first digit, then this value truncates to 0 (or 1, if a carry condition
+    // resulted).
+    if (-numberExp>= (wholenumber_t)numberLength)
+    {
+        // since we know a) this number is all decimals, and b) the
+        // remaining decimals are either all 0 or all 9s with a carry,
+        // this result is either 0 or 1.
+        *result = carry ? 1 : 0;
+        return true;
+    }
+
+    // we process different bits depending on whether this is a negative or positive
+    // exponent
+    if (numberExp < 0)
+    {
+        // now convert this into an unsigned value
+        return createUnsignedInt64Value(number, numberLength + numberExp, carry, 0, UINT64_MAX, *result);
+    }
+    else
+    {                             /* straight out number. just compute.*/
+        return createUnsignedInt64Value(number, numberLength, carry, numberExp, UINT64_MAX, *result);
+    }
+}
+
+
 bool  RexxNumberString::truthValue(
     int   errorcode )                  /* error to raise if not good        */
 /******************************************************************************/
@@ -1798,6 +1860,7 @@ void RexxNumberString::formatUnsignedNumber(size_t integer)
   }
 }
 
+
 void RexxNumberString::formatInt64(int64_t integer)
 /******************************************************************************/
 /* Function : Format the integer num into a numberstring.                     */
@@ -1817,6 +1880,40 @@ void RexxNumberString::formatInt64(int64_t integer)
             integer = -integer;              /* take the positive version         */
         }
 
+        // we convert this directly because A)  we need to post-process the numbers
+        // to make them zero based, and B) portable numeric-to-ascii routines
+        // don't really exist for the various 32/64 bit values.
+        char buffer[32];
+        int index = sizeof(buffer);
+
+        while (integer > 0)
+        {
+            // get the digit and reduce the size of the integer
+            int digit = (int)(integer % 10);
+            integer = integer / 10;
+            // store the digit
+            buffer[--index] = digit;
+        }
+
+        // copy into the buffer and set the length
+        this->length = sizeof(buffer) - index;
+        memcpy(this->number, buffer, this->length);
+    }
+}
+
+
+void RexxNumberString::formatUnsignedInt64(uint64_t integer)
+/******************************************************************************/
+/* Function : Format the integer num into a numberstring.                     */
+/******************************************************************************/
+{
+    if (integer == 0)
+    {                  /* is integer 0?                     */
+                       /* indicate this.                    */
+        this->setZero();
+    }
+    else
+    {                               /* number is non-zero                */
         // we convert this directly because A)  we need to post-process the numbers
         // to make them zero based, and B) portable numeric-to-ascii routines
         // don't really exist for the various 32/64 bit values.
@@ -2750,6 +2847,20 @@ RexxNumberString *RexxNumberStringClass::newInstance(int64_t integer)
     // systems, this requires 10 digits.  For 64-bit, we need 20 digits.
     newNumber = new (Numerics::ARGUMENT_DIGITS + 1) RexxNumberString (Numerics::ARGUMENT_DIGITS + 1);
     newNumber->formatInt64(integer);  /* format the integer                */
+    return newNumber;
+}
+
+
+RexxNumberString *RexxNumberStringClass::newInstance(uint64_t integer)
+/******************************************************************************/
+/* Function:  Create a NumberString object from a long value                  */
+/******************************************************************************/
+{
+    RexxNumberString *newNumber;
+    // this give us space for entire binary range of the number.  For 32-bit
+    // systems, this requires 10 digits.  For 64-bit, we need 20 digits.
+    newNumber = new (Numerics::ARGUMENT_DIGITS + 1) RexxNumberString (Numerics::ARGUMENT_DIGITS + 1);
+    newNumber->formatUnsignedInt64(integer);  /* format the integer                */
     return newNumber;
 }
 

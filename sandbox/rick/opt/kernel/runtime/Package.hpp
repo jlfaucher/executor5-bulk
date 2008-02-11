@@ -76,8 +76,8 @@ public:
     RexxRoutineEntry *locateFunctionEntry(RexxString *name);
     RexxNativeMethod *resolveMethod(RexxString *name);
     PNATIVEMETHOD resolveMethodEntry(RexxString *name);
-    PNATIVEROUTINE *resolveRoutineEntry(RexxString *name);
-    PREGISTEREDROUTINE *resolveRegisteredRoutineEntry(RexxString *name);
+    PNATIVEROUTINE resolveRoutineEntry(RexxString *name);
+    PREGISTEREDROUTINE resolveRegisteredRoutineEntry(RexxString *name);
     void   reload();
     void   reload(RexxPackageEntry *pack);
     inline bool isLoaded() { return loaded; }

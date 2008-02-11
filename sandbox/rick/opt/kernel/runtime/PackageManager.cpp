@@ -49,11 +49,18 @@
 #include "RexxNativeCode.hpp"
 #include "DirectoryClass.hpp"
 #include "ActivityManager.hpp"
+#include "RoutineClass.hpp"
+#include "RexxInternalApis.h"
+#include "ProtectedObject.hpp"
+#include "SecurityManager.hpp"
+#include "WeakReferenceClass.hpp"
+#include "RexxActivation.hpp"
 
 
 RexxDirectory *PackageManager::packages = OREF_NULL;        // our loaded packages
-RexxDirectory *PackageManager::packageFunctions = OREF_NULL;     // table of functions loaded from packages
-RexxDirectory *PackageManager::registeredFunctions = OREF_NULL;
+RexxDirectory *PackageManager::packageRoutines = OREF_NULL;     // table of functions loaded from packages
+RexxDirectory *PackageManager::registeredRoutines = OREF_NULL;
+RexxDirectory *PackageManager::loadedRequires = OREF_NULL;
 
 /**
  * Initialize the package manager global state.
@@ -61,8 +68,11 @@ RexxDirectory *PackageManager::registeredFunctions = OREF_NULL;
 void PackageManager::initialize()
 {
     packages = new_directory();               // create the tables for the manager
-    packageFunctions = new_directory();
-    registeredFunctions = new_directory();
+    packageRoutines = new_directory();
+    registeredRoutines = new_directory();
+    loadedRequires = new_directory();
+
+    loadPackage(OREF_REXXUTIL);               // load the rexxutil package automatically
 }
 
 
@@ -77,8 +87,8 @@ RexxArray *PackageManager::getImageData()
 
     RexxArray *imageArray = new_array(IMAGE_ARRAY_SIZE);
     imageArray->put(packages, IMAGE_PACKAGES);
-    imageArray->put(packageFunctions, IMAGE_PACKAGE_FUNCTIONS);
-    imageArray->put(registeredFunctions, IMAGE_REGISTERED_FUNCTIONS);
+    imageArray->put(packageRoutines, IMAGE_PACKAGE_ROUTINES);
+    imageArray->put(registeredRoutines, IMAGE_REGISTERED_ROUTINES);
 
     return imageArray;
 }
@@ -93,8 +103,8 @@ void PackageManager::restore(RexxArray *imageArray)
 {
     // we use copies of these directories to avoid old-to-new image problems.
     packages = (RexxDirectory *)imageArray->get(IMAGE_PACKAGES)->copy();
-    packageFunctions = (RexxDirectory *)imageArray->get(IMAGE_PACKAGE_FUNCTIONS)->copy();
-    registeredFunctions = (RexxDirectory *)imageArray->get(IMAGE_REGISTERED_FUNCTIONS)->copy();
+    packageRoutines = (RexxDirectory *)imageArray->get(IMAGE_PACKAGE_ROUTINES)->copy();
+    registeredRoutines = (RexxDirectory *)imageArray->get(IMAGE_REGISTERED_ROUTINES)->copy();
 
     for (HashLink i = packages->first(); packages->available(i); i = packages->next(i))
     {
@@ -120,8 +130,8 @@ void PackageManager::restore(RexxArray *imageArray)
 void PackageManager::live(size_t liveMark)
 {
     memory_mark(packages);
-    memory_mark(packageFunctions);
-    memory_mark(registeredFunctions);
+    memory_mark(packageRoutines);
+    memory_mark(registeredRoutines);
 }
 
 /**
@@ -130,8 +140,8 @@ void PackageManager::live(size_t liveMark)
 void PackageManager::liveGeneral(int reason)
 {
     memory_mark_general(packages);
-    memory_mark_general(packageFunctions);
-    memory_mark_general(registeredFunctions);
+    memory_mark_general(packageRoutines);
+    memory_mark_general(registeredRoutines);
 }
 
 
@@ -229,10 +239,10 @@ RexxNativeMethod *PackageManager::resolveMethod(RexxString *packageName, RexxStr
  * @return A function activator for this function, if it can be
  *         resolved.
  */
-RoutineClass *PackageManager::resolveFunction(RexxString *function, RexxString *packageName, RexxString *procedure)
+RoutineClass *PackageManager::resolveRoutine(RexxString *function, RexxString *packageName, RexxString *procedure)
 {
     // see if we have this one already
-    RoutineClass *func = (RoutineClass *)registeredFunctions->at(function);
+    RoutineClass *func = (RoutineClass *)registeredRoutines->at(function);
 
     // if we have this, then we can return it directly.
     if (func != OREF_NULL)
@@ -250,26 +260,17 @@ RoutineClass *PackageManager::resolveFunction(RexxString *function, RexxString *
 
 
 /**
- * Resolve a package function activator.
+ * Resolve a registered function.
  *
  * @param function  The function name.
  *
  * @return A function activator for this function, if it can be
  *         resolved.
  */
-RoutineClass *PackageManager::resolveFunction(RexxString *function)
+RoutineClass *PackageManager::resolveRoutine(RexxString *function)
 {
     // see if we have this one already as a package function
-    RoutineClass *func = (RoutineClass *)packageFunctions->at(func);
-
-    // if we have this, then we can return it directly.
-    if (func != OREF_NULL)
-    {
-        return func;
-    }
-
-    // see if we have this one already as a registered function
-    func = (RoutineClass *)registeredFunctions->at(func);
+    RoutineClass *func = getLoadedRoutine(function);
 
     // if we have this, then we can return it directly.
     if (func != OREF_NULL)
@@ -279,6 +280,31 @@ RoutineClass *PackageManager::resolveFunction(RexxString *function)
 
     // resolve a registered entry, if we can and add it to the cache
     return createRegisteredRoutine(function);
+}
+
+
+
+/**
+ * Locate an already loaded function.
+ *
+ * @param function  The function name.
+ *
+ * @return A function activator for this function, if it can be
+ *         resolved.
+ */
+RoutineClass *PackageManager::getLoadedRoutine(RexxString *function)
+{
+    // see if we have this one already as a package function
+    RoutineClass *func = (RoutineClass *)packageRoutines->at(function);
+
+    // if we have this, then we can return it directly.
+    if (func != OREF_NULL)
+    {
+        return func;
+    }
+
+    // see if we have this one already as a registered function
+    return (RoutineClass *)registeredRoutines->at(function);
 }
 
 
@@ -295,7 +321,7 @@ RoutineClass *PackageManager::createRegisteredRoutine(RexxString *function)
     REXXPFN entry = NULL;
 
     // now go resolve this entry pointer
-    RexxResolveFunction(function->getStringData(), *entry);
+    RexxResolveRoutine(function->getStringData(), &entry);
 
     // this is a failure
     if (entry == NULL)
@@ -304,8 +330,8 @@ RoutineClass *PackageManager::createRegisteredRoutine(RexxString *function)
     }
 
     // create a code handler and add to the cache
-    RexxRoutine *func = new RoutineClass(new RegisteredRoutine((RexxRoutineHandler *)REXXPFN));
-    registeredFunctions->put(func, function);
+    RoutineClass *func = new RoutineClass(new RegisteredRoutine(function, (RexxRoutineHandler *)entry));
+    registeredRoutines->put(func, function);
     // we got this
     return func;
 }
@@ -323,42 +349,9 @@ RoutineClass *PackageManager::createRegisteredRoutine(RexxString *function)
 void PackageManager::loadInternalPackage(RexxString *name, RexxPackageEntry *p)
 {
     // load up the package and add it to our cache
-    Package *package = new Package(name, this, p);
+    Package *package = new Package(name, p);
     // have we already loaded this package?
     packages->put(packages, name);
-}
-
-
-/**
- * Create the initial root image package entry for all packages
- * contained within the main Rexx DLL.
- */
-void PackageManager::createRootPackages()
-{
-    // create our initial packages and store them in the table.
-    rexxPackage = new Package(OREF_REXX, this, rexxPackageTable);
-    packages->put((RexxObject *)rexxPackage, OREF_REXX);
-}
-
-
-
-/**
- * Restore any entry point address in the packages saved in
- * the original base image.
- *
- * @param master The master PackageManager saved in the image file.
- */
-void PackageManager::restoreRootPackages(RexxArray *savedPackages)
-{
-    // get the references to the saved internal packages.
-    rexxPackage = master->rexxPackage;
-
-    // copy the saved directory caches in the package manager. We need a copy
-    // of these so we don't end up pushing a bunch of old-to-new references.
-    packages = (RexxDirectory *)savedPackages->copy();
-
-    // This is all we need to do.  The saved methods cleared out their entry points
-    // on a save and will do a lazy restore on first invocation.
 }
 
 
@@ -368,9 +361,9 @@ void PackageManager::restoreRootPackages(RexxArray *savedPackages)
  * @param name   The name of the function.
  * @param func
  */
-void PackageManager::addPackageFunction(RexxString *name, RoutineClass *func)
+void PackageManager::addPackageRoutine(RexxString *name, RoutineClass *func)
 {
-    packageFunctions->put(func, name);
+    packageRoutines->put(func, name);
 }
 
 
@@ -394,18 +387,27 @@ RexxObject *PackageManager::addRegisteredRoutine(RexxString *name, RexxString *m
     name = name->upper();
     ProtectedObject p1(name);
 
+    // see if we have this one already, either from a package or previously loaded
+    RoutineClass *func = getLoadedRoutine(name);
+
+    // if we have this, then we can return it directly.
+    if (func != OREF_NULL)
+    {
+        return func;
+    }
+
     // see if this package is resolveable/loadable.
     Package *package = loadPackage(module);
     if (package == OREF_NULL)
     {
         // See if this is resolvable in this context.  If we got it,
         // return True.
-        return package->resolveFunction(name) != OREF_NULL ? TheTrueObject : TheFalseObject;
+        return getLoadedRoutine(name) != OREF_NULL ? TheTrueObject : TheFalseObject;
     }
 
     // ok, this is not a converted new-style package.  Now try registering the function and
     // resolving it in this process.  This will also add this to the local cache
-    return resolveFunction(name, module, proc) != OREF_NULL ? TheTrueObject : TheFalseObject;
+    return resolveRoutine(name, module, proc) != OREF_NULL ? TheTrueObject : TheFalseObject;
 }
 
 
@@ -421,7 +423,7 @@ RexxObject *PackageManager::dropRegisteredRoutine(RexxString *name)
 {
     // remove this from the local cache, then remove it from the global function
     // registration.
-    registeredFunctions->remove(name);
+    registeredRoutines->remove(name);
 
     // just allow this to pass through to Rexxapi.  If this was truely registered
     // instead of loaded implicitly, this will remove the entry.  Otherwise, it will
@@ -443,7 +445,7 @@ RexxObject *PackageManager::dropRegisteredRoutine(RexxString *name)
 RexxObject *PackageManager::queryRegisteredRoutine(RexxString *name)
 {
     // does this name exist in our table?
-    if (findFunction(name) != OREF_NULL)
+    if (getLoadedRoutine(name) != OREF_NULL)
     {
         return TheTrueObject;
     }
@@ -485,19 +487,20 @@ void PackageManager::unload()
  * @return true if we located and successfully called this function.  false
  *         means the function is not located as a native function.
  */
-bool PackageManager::callNativeFunction(RexxActivity *activity, RexxString *name,
+bool PackageManager::callNativeRoutine(RexxActivity *activity, RexxString *name,
     RexxObject **arguments, size_t argcount, ProtectedObject &result)
 {
     // package functions come first
-    RexxRoutine *function = (RexxRoutine *)packageFunctions->at(name);
+    RoutineClass *function = (RoutineClass *)packageRoutines->at(name);
     if (function != OREF_NULL)
     {
         function->call(activity, name, arguments, argcount, result);
         return true;
     }
+
     // now check for registered functions.  This will either return a cached value,
     // or resolve a routine for the first time and return the cached value.
-    function = resolveFunction(name);
+    function = resolveRoutine(name);
     if (function != OREF_NULL)
     {
         function->call(activity, name, arguments, argcount, result);
@@ -509,6 +512,20 @@ bool PackageManager::callNativeFunction(RexxActivity *activity, RexxString *name
 }
 
 
+/**
+ * Retrieve a ::REQUIRES file.  This will cache the entries so
+ * that the same requires entry is returned for every request.
+ *
+ * @param activity  The current activity.
+ * @param shortName The short name of the package.
+ * @param resolvedName
+ *                  The fully resolved name of a potential package file.  The short
+ *                  name is used for checking in the MacroSpace, the long name
+ *                  is used for file searches.
+ * @param result    The return package routine.
+ *
+ * @return The package routine (also returned in the result protected object).
+ */
 RoutineClass *PackageManager::getRequires(RexxActivity *activity, RexxString *shortName, RexxString *resolvedName, ProtectedObject &result)
 {
     result = OREF_NULL;
@@ -516,10 +533,10 @@ RoutineClass *PackageManager::getRequires(RexxActivity *activity, RexxString *sh
     SecurityManager *manager = activity->getSecurityManager();
     RexxObject *securityManager = OREF_NULL;
 
-    name = manager->checkRequires(name, securityManager);
+    shortName = manager->checkRequiresAccess(shortName, securityManager);
     // no return means forbidden access to this name.  Just return
     // nothing
-    if (name == OREF_NULL)
+    if (shortName == OREF_NULL)
     {
         return OREF_NULL;
     }
@@ -527,17 +544,17 @@ RoutineClass *PackageManager::getRequires(RexxActivity *activity, RexxString *sh
     // first check this using the specified name.  Since we need to perform checks in the
     // macro space, it's possible this will be loaded under the simple name.  We'll need to check
     // table again using the fully resolved name afterward.
-    WeakReference *requiresRef = (WeakReference *)loadedRequires->get(name);
+    WeakReference *requiresRef = (WeakReference *)loadedRequires->get(shortName);
     if (requiresRef != OREF_NULL)
     {
-        RoutineClass *resolved = (RoutineClass)requiresRef->getValue();
+        RoutineClass *resolved = (RoutineClass *)requiresRef->get();
         if (resolved != OREF_NULL)
         {
             result = resolved;
             return resolved;
         }
         // this was garbage collected, remove it from the table
-        loadedRequires->remove(name);
+        loadedRequires->remove(shortName);
     }
 
     unsigned short macroPosition;    // a macrospace position marker
@@ -545,17 +562,17 @@ RoutineClass *PackageManager::getRequires(RexxActivity *activity, RexxString *sh
     // we need to look in the macrospace before we try checking for a file-based
     // requires.  The macrospace version uses the original name for all checks.  Once we
     // get to the file-based version, we switch to the full resolved name.
-    bool checkMacroSpace = RexxQueryMacro(name->getStringData(), &macroPosition) == 0;
+    bool checkMacroSpace = RexxQueryMacro(shortName->getStringData(), &macroPosition) == 0;
     if (checkMacroSpace && (macroPosition == RXMACRO_SEARCH_BEFORE))
     {
-        getMacroSpaceRequires(activity, name, result, securityManager);
+        getMacroSpaceRequires(activity, shortName, result, securityManager);
         return (RoutineClass *)(RexxObject *)result;
     }
 
     // it's possible we don't have a file version of this
     if (resolvedName != OREF_NULL)
     {
-        resolvedName = manager->checkRequires(resolvedName);
+        resolvedName = manager->checkRequiresAccess(resolvedName, securityManager);
         // no return means forbidden access to this name.  Just return
         // nothing
         if (resolvedName == OREF_NULL)
@@ -570,7 +587,7 @@ RoutineClass *PackageManager::getRequires(RexxActivity *activity, RexxString *sh
         requiresRef = (WeakReference *)loadedRequires->get(resolvedName);
         if (requiresRef != OREF_NULL)
         {
-            RexxCode *resolved = (RexxCode *)requiresRef->getValue();
+            RoutineClass *resolved = (RoutineClass *)requiresRef->get();
             if (resolved != OREF_NULL)
             {
                 result = resolved;
@@ -579,16 +596,14 @@ RoutineClass *PackageManager::getRequires(RexxActivity *activity, RexxString *sh
             // this was garbage collected, remove it from the table
             loadedRequires->remove(resolvedName);
         }
-        getRequiresFile(activity, resolvedName, result, securityManager);
-        return (RexxCode *)(RexxObject *)result;
+        getRequiresFile(activity, resolvedName, securityManager, result);
+        return (RoutineClass *)(RexxObject *)result;
     }
 
     // do the macrospace after checks
     if (checkMacroSpace)
     {
-        getMacroSpaceRequires(activity, name, result, securityManager);
-        return (RexxCode *)(RexxObject *)result;
-        return;
+        return getMacroSpaceRequires(activity, shortName, result, securityManager);
     }
 
     // nothing to return
@@ -596,6 +611,17 @@ RoutineClass *PackageManager::getRequires(RexxActivity *activity, RexxString *sh
 }
 
 
+/**
+ * Retrieve a ::REQUIRES file from the macrospace.
+ *
+ * @param activity The current activity.
+ * @param name     The target name.
+ * @param result   The returned Routine object for the package.
+ * @param securityManager
+ *                 A security manager to associated with the package.
+ *
+ * @return The located ::REQUIRES file.
+ */
 RoutineClass *PackageManager::getMacroSpaceRequires(RexxActivity *activity, RexxString *name, ProtectedObject &result, RexxObject *securityManager)
 {
     // make sure we're not stuck in a circular reference
@@ -615,16 +641,25 @@ RoutineClass *PackageManager::getMacroSpaceRequires(RexxActivity *activity, Rexx
 }
 
 
-RoutineClass *PackageManager::getRequiresFile(RexxActivity *activity, RexxString *name, ProtectedObject &result)
+/**
+ * Retrieve a file version of a ::REQUIRES file.
+ *
+ * @param activity The current activity.
+ * @param name     The fully resolved file name.
+ * @param result   The return routine object.
+ *
+ * @return The return Routine instance.
+ */
+RoutineClass *PackageManager::getRequiresFile(RexxActivity *activity, RexxString *name, RexxObject *securityManager, ProtectedObject &result)
 {
     // make sure we're not stuck in a circular reference
     activity->checkRequires(name);
     // try to load this from a previously compiled source file
-    RexxRoutine *code = SysRestoreProgram(name);
+    RoutineClass *code = SysRestoreProgram(name);
     if (code == OREF_NULL)             /* unable to restore?              */
     {
                                          /* go translate the image          */
-         code = new_routine(RexxSource::generateCodeFromFile(fullname));
+         code = new_routine(RexxSource::generateCodeFromFile(name));
          result = code;
          SysSaveProgram(name, code);     /* go save this method             */
     }
@@ -642,6 +677,13 @@ RoutineClass *PackageManager::getRequiresFile(RexxActivity *activity, RexxString
 }
 
 
+/**
+ * Do the initial run of a ::REQUIRES file.
+ *
+ * @param activity The current activity.
+ * @param name     The name of the requires file.
+ * @param code     The routine instance to run.
+ */
 void PackageManager::runRequires(RexxActivity *activity, RexxString *name, RoutineClass *code)
 {
     ProtectedObject dummy;
@@ -650,7 +692,7 @@ void PackageManager::runRequires(RexxActivity *activity, RexxString *name, Routi
     activity->addRunningRequires(name);
     code->call(activity, name, NULL, 0, dummy);
                                          /* No longer installing routine.     */
-    this->activity->removeRunningRequires(name);
+    activity->removeRunningRequires(name);
 }
 
 
@@ -662,14 +704,14 @@ void PackageManager::runRequires(RexxActivity *activity, RexxString *name, Routi
  *
  * @return The target entry point.
  */
-PNATIVEMETHOD PackageManager::resolveMethodEntry(RexxString *package, RexxString *name)
+PNATIVEMETHOD PackageManager::resolveMethodEntry(RexxString *packageName, RexxString *name)
 {
-    Package *package = loadPackage(package);
+    Package *package = loadPackage(packageName);
 
     // if no entry, something bad has gone wrong
     if (package == NULL)
     {
-        reportException(Error_Execution_package_method, name, package);
+        reportException(Error_Execution_package_method, name, packageName);
     }
     return package->resolveMethodEntry(name);
 }
@@ -683,16 +725,16 @@ PNATIVEMETHOD PackageManager::resolveMethodEntry(RexxString *package, RexxString
  *
  * @return The target entry point.
  */
-PNATIVEROUTINE PackageManager::resolveFunctionEntry(RexxString *package, RexxString *name)
+PNATIVEROUTINE PackageManager::resolveRoutineEntry(RexxString *packageName, RexxString *name)
 {
-    Package *package = loadPackage(package);
+    Package *package = loadPackage(packageName);
 
     // if no entry, something bad has gone wrong
     if (package == NULL)
     {
-        reportException(Error_Execution_package_method, name, package);
+        reportException(Error_Execution_package_method, name, packageName);
     }
-    return package->resolveFunctionEntry(name);
+    return package->resolveRoutineEntry(name);
 }
 
 
@@ -704,14 +746,33 @@ PNATIVEROUTINE PackageManager::resolveFunctionEntry(RexxString *package, RexxStr
  *
  * @return The target entry point.
  */
-PREGISTEREDROUTINE PackageManager::resolveRegisteredRoutineEntry(RexxString *package, RexxString *name)
+PREGISTEREDROUTINE PackageManager::resolveRegisteredRoutineEntry(RexxString *packageName, RexxString *name)
 {
-    Package *package = loadPackage(package);
-
-    // if no entry, something bad has gone wrong
-    if (package == NULL)
+    // if there's no package name, then this is stored in raw name form (I don't believe this should
+    // ever happen....but.
+    if (packageName == OREF_NULL)
     {
-        reportException(Error_Execution_package_method, name, package);
+        REXXPFN entry = NULL;
+
+        // now go resolve this entry pointer
+        RexxResolveRoutine(name->getStringData(), &entry);
+
+        // this is a failure
+        if (entry == NULL)
+        {
+            reportException(Error_Execution_package_routine, name);
+        }
+        return (PREGISTEREDROUTINE)entry;
     }
-    return package->resolveRegisteredRoutineEntry(name);
+    else
+    {
+        Package *package = loadPackage(packageName);
+
+        // if no entry, something bad has gone wrong
+        if (package == NULL)
+        {
+            reportException(Error_Execution_package_routine, name, packageName);
+        }
+        return package->resolveRegisteredRoutineEntry(name);
+    }
 }

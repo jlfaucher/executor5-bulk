@@ -55,7 +55,7 @@
 
 /* error subcodes and message numbers                                         */
 /*      message identifier ----------------------------------- message number */
-   
+
 #define Rexx_Error_Program_unreadable                           3000
 #define Rexx_Error_Program_unreadable_name                      3001
 #define Rexx_Error_Program_unreadable_notfound                  3901
@@ -512,5 +512,5 @@
 /* --            DO NOT CHANGE THIS FILE, ALL CHANGES WILL BE LOST!        -- */
 /* --            ==================================================        -- */
 /* -------------------------------------------------------------------------- */
-   
+
 

@@ -100,21 +100,6 @@ void Interpreter::processStartup()
     createLocks();
     ActivityManager::createLocks();
     RexxMemory::createLocks();
-
-    // This is unconditional...it will fail if already loaded.
-    if (RexxRegisterFunctionDll("SYSLOADFUNCS", "REXXUTIL", "SysLoadFuncs") == 0)
-    {
-        /* default return code buffer        */
-        char      default_return_buffer[DEFRXSTRING];
-        RXSTRING funcresult;
-        int functionrc;                      /* Return code from function         */
-
-        /* first registration?               */
-        /* set up an result RXSTRING         */
-        MAKERXSTRING(funcresult, default_return_buffer, sizeof(default_return_buffer));
-        /* call the function loader          */
-        RexxCallFunction("SYSLOADFUNCS", 0, (PCONSTRXSTRING)NULL, &functionrc, &funcresult, "");
-    }
 }
 
 void Interpreter::processShutdown()

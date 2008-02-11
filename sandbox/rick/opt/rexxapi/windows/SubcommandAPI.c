@@ -675,65 +675,33 @@ RexxQueryFunction(
   return (rc);                         /* and exit with return code  */
 }
 
-/*********************************************************************/
-/*                                                                   */
-/*  Function Name:   RexxCallFunction                                */
-/*                                                                   */
-/*  Description:     Execute the external function.                  */
-/*                                                                   */
-/*  Entry Point:     RexxCallFunction                                */
-/*                                                                   */
-/*  Parameter(s):    fn   - name of function to call                 */
-/*                   ac   - number of arguments                      */
-/*                   av   - argument array                           */
-/*                   rc   - storage for return code from call        */
-/*                   sel  - storage for returned data                */
-/*                   qnam - name of active queue                     */
-/*                                                                   */
-/*  Return Value:    OK | Function Not Found | Module not Found      */
-/*                                                                   */
-/*  Notes:                                                           */
-/*                                                                   */
-/*    If the external function resides in a DLL, RxFunctionCall()    */
-/*    tries to get the module handle for the DLL.  If the call to    */
-/*    DosQueryModuleHandle(), the routine which obtains handles to   */
-/*    DLLs, fails, the DLL that contains the function may not be     */
-/*    loaded into memory.  If this is true, RxFunctionCall()         */
-/*    calls DosLoadModule() to load the module into memory.          */
-/*                                                                   */
-/*    This is necessary because OS/2 keeps a reference count for     */
-/*    each DLL in memory.  It increments the reference count each    */
-/*    time DosLoadModule is called against a DLL, and decrements     */
-/*    the reference count each time DosFreeModule is called against  */
-/*    a DLL.  We must therefore avoid unnecessary calls to           */
-/*    DosLoadModule, for they make it difficult to free a DLL from   */
-/*    memory when we no longer need it.                              */
-/*                                                                   */
-/*********************************************************************/
-                                       /*                            */
-RexxReturnCode REXXENTRY RexxCallFunction(
-const char *  fn,                      /* name of function to call   */
-size_t        ac,                      /* number of arguments        */
-PCONSTRXSTRING av,                     /* argument array             */
-int           *rc,                     /* return code from call      */
-PRXSTRING     sel,                     /* storage for returned data  */
-const char *  qnam )                   /* name of active queue       */
-{
-  RexxRoutineHandler *func_address;   /* address of external func   */
-  RexxReturnCode      lrc;                     /* local return code          */
 
-  lrc = 0;
-                                       /* Load the handler           */
-  if (!(lrc=RegLoad(fn, NULL, REGFUNCTION, (REXXPFN *)&func_address)))
-  {
-      *rc =    (*func_address)(fn,/* send function name to call */
-                ac,                    /*   and argument count       */
-                av,                    /*   and argument array       */
-                qnam,                  /*   and the name of the queue*/
-                sel);                  /*   and place for ret data   */
-  }
-  return (lrc);                        /* and exit with return code  */
+/*********************************************************************/
+/*                                                                   */
+/*  Function Name:      RexxResolveRoutine                           */
+/*                                                                   */
+/*  Description:        find and call an external function           */
+/*                                                                   */
+/*  Entry Points:       sys_external(dname,argc,argv,result,type)    */
+/*                                                                   */
+/*  Inputs:             dname  - the name of the function to call    */
+/*                                                                   */
+/*  Notes:              External Function Search Order:              */
+/*                         - System Exit functions                   */
+/*                         - Macro Space Pre-Order functions         */
+/*                         - Available Function Table functions      */
+/*                         - External Same-Extension functions       */
+/*                         - External Default-Extension functions    */
+/*                         - Macro Space Post-Order functions        */
+/*                                                                   */
+/*  Outputs:            YES if function executed, NO if not          */
+/*                                                                   */
+/*********************************************************************/
+int REXXENTRY RexxResolveRoutine(const char *name, REXXPFN *handler)
+{
+    return RegLoad(name, NULL, REGFUNCTION, (REXXPFN *)&handler);
 }
+
 
 /*********************************************************************/
 /*                                                                   */

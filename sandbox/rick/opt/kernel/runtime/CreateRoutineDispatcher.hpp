@@ -61,7 +61,7 @@ protected:
 class CreateRoutineDispatcher : public ConditionDispatcher
 {
 public:
-    inline CreateRoutineDispatcher(RexxConditionData *cd) : ConditionDispatcher(NULL, NULL, cd) { ; }
+    inline CreateRoutineDispatcher(RexxConditionData *cd) : ConditionDispatcher(NULL, cd) { ; }
     virtual ~CreateRoutineDispatcher() { ; }
 
     virtual void run();
@@ -75,7 +75,7 @@ public:
 class RunRoutineDispatcher : public ConditionDispatcher
 {
 public:
-    inline RunRoutineDispatcher(PRXSYSEXIT e, RexxConditionData *cd) : ConditionDispatcher(e, NULL, cd) { ; }
+    inline RunRoutineDispatcher(RexxOption *o, RexxConditionData *cd) : ConditionDispatcher(o, cd) { ; }
     virtual ~RunRoutineDispatcher() { ; }
 
     virtual void run();

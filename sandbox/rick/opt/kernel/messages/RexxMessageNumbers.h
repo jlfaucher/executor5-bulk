@@ -603,6 +603,11 @@
 #define Error_Execution_package_msg                                  696
 #define Error_Execution_package_method_msg                           697
 #define Error_Execution_package_routine_msg                          698
+#define Error_Execution_native_routine_msg                           699
+#define Error_Incorrect_call_signature_msg                           700
+#define Error_Incorrect_method_signature_msg                         701
+#define Error_Incorrect_call_nostem_msg                              702
+#define Error_Incorrect_method_nostem_msg                            703
 
 
 #endif

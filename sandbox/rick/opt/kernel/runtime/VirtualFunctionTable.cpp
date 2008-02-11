@@ -141,6 +141,7 @@
 #include "Token.hpp"
 #include "DoBlock.hpp"
 #include "InterpreterInstance.hpp"
+#include "SecurityManager.hpp"
 
 
 void *RexxMemory::virtualFunctionTable[T_Last_Class_Type + 1] = {NULL};
@@ -505,6 +506,9 @@ void RexxMemory::buildVirtualFunctionTable()
    
    objectPtr = new (objectPtr) InterpreterInstance(RESTOREIMAGE);
    virtualFunctionTable[T_InterpreterInstance] = *((void **)objectPtr);
+   
+   objectPtr = new (objectPtr) SecurityManager(RESTOREIMAGE);
+   virtualFunctionTable[T_SecurityManager] = *((void **)objectPtr);
    
 };
 

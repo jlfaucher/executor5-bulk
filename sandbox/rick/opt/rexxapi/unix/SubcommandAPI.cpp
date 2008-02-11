@@ -286,17 +286,13 @@ RexxReturnCode REXXENTRY RexxRegisterSubcomExe(
 
 /*********************************************************************/
 /*                                                                   */
-/*  Function Name:      RexxCallFunction                             */
+/*  Function Name:      RexxResolveRoutine                           */
 /*                                                                   */
 /*  Description:        find and call an external function           */
 /*                                                                   */
 /*  Entry Points:       sys_external(dname,argc,argv,result,type)    */
 /*                                                                   */
 /*  Inputs:             dname  - the name of the function to call    */
-/*                      argc   - count of arguments                  */
-/*                      argv   - array of argument strings           */
-/*                      result - storage for result string from call */
-/*                      act_q  - name of active data queue           */
 /*                                                                   */
 /*  Notes:              External Function Search Order:              */
 /*                         - System Exit functions                   */
@@ -309,30 +305,11 @@ RexxReturnCode REXXENTRY RexxRegisterSubcomExe(
 /*  Outputs:            YES if function executed, NO if not          */
 /*                                                                   */
 /*********************************************************************/
-RexxReturnCode REXXENTRY RexxCallFunction (
-    const char * dname,            /* Name of function to call   */
-    size_t argc,                   /* Number of arguments        */
-    PCONSTRXSTRING argv,           /* Array of argument strings  */
-    int     *funcrc,               /* RC from function called    */
-    PRXSTRING result,              /* Storage for returned data  */
-    const char *act_q)             /* Name of active data queue  */
+int REXXENTRY RexxResolveRoutine(const char *name, REXXPFN *handler)
 {
-  RexxReturnCode rc = 1;
-  RexxRoutineHandler *func_address; /* addr for transfer to call  */
-  void *plib = NULL;               /* Dll handle                 */
-
-  if (!(rc=RegLoad(dname, NULL, REGFUNCTION, (REXXPFN *)&func_address, &plib)))
-  {
-                                       /* call                       */
-    *funcrc = (*func_address)(         /* unsigned char added        */
-                  dname,               /* send function name to call */
-                  argc,                /*   and argument count       */
-                  argv,                /*   and argument array       */
-                  act_q,               /*   and the name of the queue*/
-                  result);             /*   and place for ret data   */
-  }
-  return (rc);                         /* if ok, return success      */
-}                                      /* end of RexxCallFunction()  */
+    void *plib = NULL;
+    return RegLoad(name, NULL, REGFUNCTION, (REXXPFN *)&handler, &plib);
+}
 
 
 /*********************************************************************/

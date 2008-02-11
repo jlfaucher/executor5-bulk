@@ -333,6 +333,29 @@ inline RexxString * REQUIRED_STRING(RexxObject *object, size_t position)
 }
 
 
+#include "ActivityManager.hpp"
+
+/* The next routine is specifically for REQUESTing an ARRAY needed as a method*/
+/* argument.  This raises an error if the object cannot be converted to a     */
+/* single dimensional array item                                              */
+inline RexxArray * REQUIRED_ARRAY(RexxObject *object, size_t position)
+{
+  if (object == OREF_NULL)             /* missing argument?                 */
+  {
+      missing_argument(position);      /* raise an error                    */
+  }
+                                       /* force to array form               */
+  RexxArray *array = object->requestArray();
+                                       /* not an array?                     */
+  if (array == TheNilObject || array->getDimension() != 1)
+  {
+                                       /* raise an error                    */
+      reportException(Error_Execution_noarray, object);
+  }
+  return array;
+}
+
+
 /* The next macro is specifically for REQUESTing an ARRAY, since there are    */
 /* six primitive classes that can produce array equivalents.  It will trap on */
 /* OREF_NULL. */

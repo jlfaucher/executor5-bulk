@@ -7512,3 +7512,116 @@ LONG REXXENTRY SysIsFileTemporary(
   else
       RETVAL(0)                        /* False - Is not temporary   */
 }
+
+
+// now build the actual entry list
+RexxFunctionEntry rexxutil_functions[] =
+{
+    REXX_CLASSIC_FUNCTION(SysCls,                      SysCls),
+    REXX_CLASSIC_FUNCTION(SysCurpos,                   SysCurpos),
+    REXX_CLASSIC_FUNCTION(SysCurState,                 SysCurState),
+    REXX_CLASSIC_FUNCTION(SysDriveInfo,                SysDriveInfo),
+    REXX_CLASSIC_FUNCTION(SysDriveMap,                 SysDriveMap),
+    REXX_CLASSIC_FUNCTION(SysDropFuncs,                SysDropFuncs),
+    REXX_CLASSIC_FUNCTION(SysFileDelete,               SysFileDelete),
+    REXX_CLASSIC_FUNCTION(SysFileSearch,               SysFileSearch),
+    REXX_CLASSIC_FUNCTION(SysFileTree,                 SysFileTree),
+    REXX_CLASSIC_FUNCTION(SysGetKey,                   SysGetKey),
+    REXX_CLASSIC_FUNCTION(SysIni,                      SysIni),
+    REXX_CLASSIC_FUNCTION(SysLoadFuncs,                SysLoadFuncs),
+    REXX_CLASSIC_FUNCTION(SysMkDir,                    SysMkDir),
+    REXX_CLASSIC_FUNCTION(SysWinVer,                   SysWinVer),
+    REXX_CLASSIC_FUNCTION(SysVersion,                  SysVersion),
+    REXX_CLASSIC_FUNCTION(SysRmDir,                    SysRmDir),
+    REXX_CLASSIC_FUNCTION(SysSearchPath,               SysSearchPath),
+    REXX_CLASSIC_FUNCTION(SysSleep,                    SysSleep),
+    REXX_CLASSIC_FUNCTION(SysTempFileName,             SysTempFileName),
+    REXX_CLASSIC_FUNCTION(SysTextScreenRead,           SysTextScreenRead),
+    REXX_CLASSIC_FUNCTION(SysTextScreenSize,           SysTextScreenSize),
+    REXX_CLASSIC_FUNCTION(SysPi,                       SysPi),
+    REXX_CLASSIC_FUNCTION(SysSqrt,                     SysSqrt),
+    REXX_CLASSIC_FUNCTION(SysExp,                      SysExp),
+    REXX_CLASSIC_FUNCTION(SysLog,                      SysLog),
+    REXX_CLASSIC_FUNCTION(SysLog10,                    SysLog10),
+    REXX_CLASSIC_FUNCTION(SysSinh,                     SysSinh),
+    REXX_CLASSIC_FUNCTION(SysCosh,                     SysCosh),
+    REXX_CLASSIC_FUNCTION(SysTanh,                     SysTanh),
+    REXX_CLASSIC_FUNCTION(SysPower,                    SysPower),
+    REXX_CLASSIC_FUNCTION(SysSin,                      SysSin),
+    REXX_CLASSIC_FUNCTION(SysCos,                      SysCos),
+    REXX_CLASSIC_FUNCTION(SysTan,                      SysTan),
+    REXX_CLASSIC_FUNCTION(SysCotan,                    SysCotan),
+    REXX_CLASSIC_FUNCTION(SysArcSin,                   SysArcSin),
+    REXX_CLASSIC_FUNCTION(SysArcCos,                   SysArcCos),
+    REXX_CLASSIC_FUNCTION(SysArcTan,                   SysArcTan),
+    REXX_CLASSIC_FUNCTION(SysAddRexxMacro,             SysAddRexxMacro),
+    REXX_CLASSIC_FUNCTION(SysDropRexxMacro,            SysDropRexxMacro),
+    REXX_CLASSIC_FUNCTION(SysReorderRexxMacro,         SysReorderRexxMacro),
+    REXX_CLASSIC_FUNCTION(SysQueryRexxMacro,           SysQueryRexxMacro),
+    REXX_CLASSIC_FUNCTION(SysClearRexxMacroSpace,      SysClearRexxMacroSpace),
+    REXX_CLASSIC_FUNCTION(SysLoadRexxMacroSpace,       SysLoadRexxMacroSpace),
+    REXX_CLASSIC_FUNCTION(SysSaveRexxMacroSpace,       SysSaveRexxMacroSpace),
+    REXX_CLASSIC_FUNCTION(SysBootDrive,                SysBootDrive),
+    REXX_CLASSIC_FUNCTION(SysSystemDirectory,          SysSystemDirectory),
+    REXX_CLASSIC_FUNCTION(SysFileSystemType,           SysFileSystemType),
+    REXX_CLASSIC_FUNCTION(SysVolumeLabel,              SysVolumeLabel),
+    REXX_CLASSIC_FUNCTION(SysCreateMutexSem,           SysCreateMutexSem),
+    REXX_CLASSIC_FUNCTION(SysOpenMutexSem,             SysOpenMutexSem),
+    REXX_CLASSIC_FUNCTION(SysCloseMutexSem,            SysCloseMutexSem),
+    REXX_CLASSIC_FUNCTION(SysRequestMutexSem,          SysRequestMutexSem),
+    REXX_CLASSIC_FUNCTION(SysReleaseMutexSem,          SysReleaseMutexSem),
+    REXX_CLASSIC_FUNCTION(SysCreateEventSem,           SysCreateEventSem),
+    REXX_CLASSIC_FUNCTION(SysOpenEventSem,             SysOpenEventSem),
+    REXX_CLASSIC_FUNCTION(SysCloseEventSem,            SysCloseEventSem),
+    REXX_CLASSIC_FUNCTION(SysResetEventSem,            SysResetEventSem),
+    REXX_CLASSIC_FUNCTION(SysPostEventSem,             SysPostEventSem),
+    REXX_CLASSIC_FUNCTION(SysPulseEventSem,            SysPulseEventSem),
+    REXX_CLASSIC_FUNCTION(SysWaitEventSem,             SysWaitEventSem),
+    REXX_CLASSIC_FUNCTION(SysSetPriority,              SysSetPriority),
+    REXX_CLASSIC_FUNCTION(SysShutDownSystem,           SysShutDownSystem),
+    REXX_CLASSIC_FUNCTION(SysSwitchSession,            SysSwitchSession),
+    REXX_CLASSIC_FUNCTION(SysWaitNamedPipe,            SysWaitNamedPipe),
+    REXX_CLASSIC_FUNCTION(SysQueryProcess,             SysQueryProcess),
+    REXX_CLASSIC_FUNCTION(SysDumpVariables,            SysDumpVariables),
+    REXX_CLASSIC_FUNCTION(SysSetFileDateTime,          SysSetFileDateTime),
+    REXX_CLASSIC_FUNCTION(SysGetFileDateTime,          SysGetFileDateTime),
+    REXX_CLASSIC_FUNCTION(SysStemSort,                 SysStemSort),
+    REXX_CLASSIC_FUNCTION(SysStemDelete,               SysStemDelete),
+    REXX_CLASSIC_FUNCTION(SysStemInsert,               SysStemInsert),
+    REXX_CLASSIC_FUNCTION(SysStemCopy,                 SysStemCopy),
+    REXX_CLASSIC_FUNCTION(SysUtilVersion,              SysUtilVersion),
+    REXX_CLASSIC_FUNCTION(RxWinExec,                   RxWinExec),
+    REXX_CLASSIC_FUNCTION(SysWinEncryptFile,           SysWinEncryptFile),
+    REXX_CLASSIC_FUNCTION(SysWinDecryptFile,           SysWinDecryptFile),
+    REXX_CLASSIC_FUNCTION(SysGetErrortext,             SysGetErrortext),
+    REXX_CLASSIC_FUNCTION(SysFromUniCode,              SysFromUniCode),
+    REXX_CLASSIC_FUNCTION(SysToUniCode,                SysToUniCode),
+    REXX_CLASSIC_FUNCTION(SysWinGetPrinters,           SysWinGetPrinters),
+    REXX_CLASSIC_FUNCTION(SysWinGetDefaultPrinter,     SysWinGetDefaultPrinter),
+    REXX_CLASSIC_FUNCTION(SysWinSetDefaultPrinter,     SysWinSetDefaultPrinter),
+    REXX_CLASSIC_FUNCTION(SysFileCopy,                 SysFileCopy),
+    REXX_CLASSIC_FUNCTION(SysFileMove,                 SysFileMove),
+    REXX_CLASSIC_FUNCTION(SysIsFile,                   SysIsFile),
+    REXX_CLASSIC_FUNCTION(SysIsFileDirectory,          SysIsFileDirectory),
+    REXX_CLASSIC_FUNCTION(SysIsFileLink,               SysIsFileLink),
+    REXX_CLASSIC_FUNCTION(SysIsFileCompressed,         SysIsFileCompressed),
+    REXX_CLASSIC_FUNCTION(SysIsFileEncrypted,          SysIsFileEncrypted),
+    REXX_CLASSIC_FUNCTION(SysIsFileNotContentIndexed,  SysIsFileNotContentIndexed),
+    REXX_CLASSIC_FUNCTION(SysIsFileOffline,            SysIsFileOffline),
+    REXX_CLASSIC_FUNCTION(SysIsFileSparse,             SysIsFileSparse),
+    REXX_CLASSIC_FUNCTION(SysIsFileTemporary,          SysIsFileTemporary),
+};
+
+RexxPackageEntry rexxutil_package_entry =
+{
+    STANDARD_PACKAGE_HEADER
+    "REXXUTIL",                          // name of the package
+    "4.0",                               // package information
+    NULL,                                // no load/unload functions
+    NULL,
+    rexxutil_functions,                  // the exported functions
+    NULL                                 // no methods in this package
+};
+
+// package loading stub.
+OOREXX_GET_PACKAGE(rexxutil);

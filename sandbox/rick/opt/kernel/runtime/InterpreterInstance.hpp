@@ -66,7 +66,7 @@ public:
     void        live(size_t);
     void        liveGeneral(int);
 
-    RexxString *getDefaultAddress() { return defaultAddress; }
+    RexxString *getDefaultEnvironment() { return defaultEnvironment; }
     RexxActivity *getRootActivity() { return rootActivity; }
 
     InterpreterInstance(ExitHandler *handlers);
@@ -88,7 +88,6 @@ public:
     void activityDeactivated(RexxActivity *activity);
     void addGlobalReference(RexxObject *o);
     void removeGlobalReference(RexxObject *o);
-    inline RexxString *getDefaultCommandEnvironment() { return getDefaultAddress(); }
     bool poolActivity(RexxActivity *activity);
     ExitHandler &getExitHandler(int exitNum) {  return exits[exitNum - 1]; }
     void setExitHandler(int exitNum, REXXPFN e) { getExitHandler(exitNum).setEntryPoint(e); }
@@ -117,7 +116,7 @@ protected:
     RexxList            *attachedActivities; // our list of attached vs. spawned activities
     RexxList            *spawnedActivities;  // activities this instance has spawned off
     RexxObjectTable     *globalReferences;   // our global reference table
-    RexxString          *defaultAddress;     // the default address environment
+    RexxString          *defaultEnvironment; // the default address environment
     RexxString          *searchPath;         // additional Rexx search path
     RexxList            *searchExtensions;   // extensions to search on for external calls
     void                *applicationData;    // application specific data

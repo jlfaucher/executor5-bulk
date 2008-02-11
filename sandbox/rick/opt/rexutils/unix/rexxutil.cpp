@@ -6279,3 +6279,83 @@ RexxReturnCode REXXENTRY SysIsFileLink(
 #ifdef __cplusplus
 }
 #endif
+
+
+// now build the actual entry list
+RexxFunctionEntry rexxutil_functions[] =
+{
+    REXX_CLASSIC_FUNCTION(SysCreateMutexSem,      SysCreateMutexSem),
+    REXX_CLASSIC_FUNCTION(SysOpenMutexSem,        SysOpenMutexSem),
+    REXX_CLASSIC_FUNCTION(SysCloseMutexSem,       SysCloseMutexSem),
+    REXX_CLASSIC_FUNCTION(SysRequestMutexSem,     SysRequestMutexSem),
+    REXX_CLASSIC_FUNCTION(SysReleaseMutexSem,     SysReleaseMutexSem),
+    REXX_CLASSIC_FUNCTION(SysCreateEventSem,      SysCreateEventSem),
+    REXX_CLASSIC_FUNCTION(SysOpenEventSem,        SysOpenEventSem),
+    REXX_CLASSIC_FUNCTION(SysCloseEventSem,       SysCloseEventSem),
+    REXX_CLASSIC_FUNCTION(SysResetEventSem,       SysResetEventSem),
+    REXX_CLASSIC_FUNCTION(SysPostEventSem,        SysPostEventSem),
+    REXX_CLASSIC_FUNCTION(SysWaitEventSem,        SysWaitEventSem),
+    REXX_CLASSIC_FUNCTION(SysSetPriority,         SysSetPriority),
+    REXX_CLASSIC_FUNCTION(SysAddRexxMacro,        SysAddRexxMacro),
+    REXX_CLASSIC_FUNCTION(SysDropRexxMacro,       SysDropRexxMacro),
+    REXX_CLASSIC_FUNCTION(SysReorderRexxMacro,    SysReorderRexxMacro),
+    REXX_CLASSIC_FUNCTION(SysQueryRexxMacro,      SysQueryRexxMacro),
+    REXX_CLASSIC_FUNCTION(SysClearRexxMacroSpace, SysClearRexxMacroSpace),
+    REXX_CLASSIC_FUNCTION(SysLoadRexxMacroSpace,  SysLoadRexxMacroSpace),
+    REXX_CLASSIC_FUNCTION(SysSaveRexxMacroSpace,  SysSaveRexxMacroSpace),
+#if defined(AIX)
+    REXX_CLASSIC_FUNCTION(SysAddFuncPkg,          SysAddFuncPkg),
+    REXX_CLASSIC_FUNCTION(SysAddCmdPkg,           SysAddCmdPkg),
+    REXX_CLASSIC_FUNCTION(SysDropFuncPkg,         SysDropFuncPkg),
+    REXX_CLASSIC_FUNCTION(SysDropCmdPkg,          SysDropCmdPkg),
+    REXX_CLASSIC_FUNCTION(SysGetpid,              SysGetpid),
+#endif
+    REXX_CLASSIC_FUNCTION(SysFork,                SysFork),
+    REXX_CLASSIC_FUNCTION(SysWait,                SysWait),
+    REXX_CLASSIC_FUNCTION(SysCreatePipe,          SysCreatePipe),
+    REXX_CLASSIC_FUNCTION(SysCls,                 SysCls),
+    REXX_CLASSIC_FUNCTION(SysDropFuncs,           SysDropFuncs),
+    REXX_CLASSIC_FUNCTION(SysFileDelete,          SysFileDelete),
+    REXX_CLASSIC_FUNCTION(SysFileSearch,          SysFileSearch),
+    REXX_CLASSIC_FUNCTION(SysFileTree,            SysFileTree),
+    REXX_CLASSIC_FUNCTION(SysGetKey,              SysGetKey),
+    REXX_CLASSIC_FUNCTION(SysGetMessage,          SysGetMessage),
+    REXX_CLASSIC_FUNCTION(SysGetMessageX,         SysGetMessageX),
+    REXX_CLASSIC_FUNCTION(SysLoadFuncs,           SysLoadFuncs),
+    REXX_CLASSIC_FUNCTION(SysMkDir,               SysMkDir),
+#ifdef LINUX
+    REXX_CLASSIC_FUNCTION(SysLinVer,              SysLinVer),
+#endif
+    REXX_CLASSIC_FUNCTION(SysVersion,             SysVersion),
+    REXX_CLASSIC_FUNCTION(SysRmDir,               SysRmDir),
+    REXX_CLASSIC_FUNCTION(SysSearchPath,          SysSearchPath),
+    REXX_CLASSIC_FUNCTION(SysSleep,               SysSleep),
+    REXX_CLASSIC_FUNCTION(SysTempFileName,        SysTempFileName),
+    REXX_CLASSIC_FUNCTION(SysDumpVariables,       SysDumpVariables),
+    REXX_CLASSIC_FUNCTION(SysSetFileDateTime,     SysSetFileDateTime),
+    REXX_CLASSIC_FUNCTION(SysGetFileDateTime,     SysGetFileDateTime),
+    REXX_CLASSIC_FUNCTION(SysStemSort,            SysStemSort),
+    REXX_CLASSIC_FUNCTION(SysStemDelete,          SysStemDelete),
+    REXX_CLASSIC_FUNCTION(SysStemInsert,          SysStemInsert),
+    REXX_CLASSIC_FUNCTION(SysStemCopy,            SysStemCopy),
+    REXX_CLASSIC_FUNCTION(SysQueryProcess,        SysQueryProcess),
+    REXX_CLASSIC_FUNCTION(SysGetErrortext,        SysGetErrortext),
+    REXX_CLASSIC_FUNCTION(SysUtilVersion,         SysUtilVersion),
+    REXX_CLASSIC_FUNCTION(SysIsFile,              SysIsFile),
+    REXX_CLASSIC_FUNCTION(SysIsFileDirectory,     SysIsFileDirectory),
+    REXX_CLASSIC_FUNCTION(SysIsFileLink,          SysIsFileLink),
+};
+
+RexxPackageEntry rexxutil_package_entry =
+{
+    STANDARD_PACKAGE_HEADER
+    "REXXUTIL",                          // name of the package
+    "4.0",                               // package information
+    NULL,                                // no load/unload functions
+    NULL,
+    rexxutil_functions,                  // the exported functions
+    NULL                                 // no methods in this package
+};
+
+// package loading stub.
+OOREXX_GET_PACKAGE(rexxutil);

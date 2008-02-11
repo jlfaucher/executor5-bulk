@@ -108,7 +108,7 @@ void RexxNativeActivation::live(size_t liveMark)
   memory_mark(this->compoundelement);
   memory_mark(this->nextcurrent);
   memory_mark(this->objectVariables);
-  memory_mark(this->firstSavedObject);
+  memory_mark(this->conditionObj);
 
   /* We're hold a pointer back to our arguments directly where they */
   /* are created.  Since in some places, this argument list comes */
@@ -137,7 +137,7 @@ void RexxNativeActivation::liveGeneral(int reason)
   memory_mark_general(this->compoundelement);
   memory_mark_general(this->nextcurrent);
   memory_mark_general(this->objectVariables);
-  memory_mark_general(this->firstSavedObject);
+  memory_mark_general(this->conditionObj);
 
   /* We're hold a pointer back to our arguments directly where they */
   /* are created.  Since in some places, this argument list comes */
@@ -165,6 +165,7 @@ void RexxNativeActivation::reportSignatureError()
     }
 }
 
+
 void RexxNativeActivation::reportStemError(size_t position, RexxObject *object)
 /******************************************************************************/
 /* Function:  Report a method signature error                                 */
@@ -181,15 +182,19 @@ void RexxNativeActivation::reportStemError(size_t position, RexxObject *object)
 }
 
 
-void RexxNativeActivation::processArguments(
-    size_t       argcount,             /* argument count                    */
-    RexxObject **arglist,              /* method argument list              */
-    uint16_t    *argumentTypes,        // the type descriptor string
-    ValueDescriptor *descriptors,      // descriptors for the arguments
-    size_t       maximumArgumentCount) // our maximum argument count
-/******************************************************************************/
-/* Function:  Execute a REXX native method                                    */
-/******************************************************************************/
+/**
+ * Process the arguments for a typed function/method call.
+ *
+ * @param argcount The count of arguments.
+ * @param arglist  The original Rexx arguments.
+ * @param argumentTypes
+ *                 The type descriptor from the target.
+ * @param descriptors
+ *                 The maximum argument count for the target.
+ * @param maximumArgumentCount
+ */
+void RexxNativeActivation::processArguments(size_t argcount, RexxObject **arglist, uint16_t *argumentTypes,
+    ValueDescriptor *descriptors, size_t maximumArgumentCount)
 {
     size_t inputIndex = 0;            // no arguments used yet             */
     size_t outputIndex = 1;           // we start filling in from the second (first is return value)
@@ -228,7 +233,7 @@ void RexxNativeActivation::processArguments(
                     reportSignatureError();
                 }
                 // fill in the receiver object and mark it...
-                descriptors[outputIndex].value.value_RexxObjectPtr = this->u_receiver;
+                descriptors[outputIndex].value.value_RexxObjectPtr = this->receiver;
                 descriptors[outputIndex].flags = ARGUMENT_EXISTS | SPECIAL_ARGUMENT;
                 break;
             }
@@ -353,9 +358,9 @@ void RexxNativeActivation::processArguments(
                             break;
                         }
 
-                        case REXX_VALUE_RexxBoolean:       /* integer value                     */
+                        case REXX_VALUE_logical_t:         /* integer value                     */
                         {
-                            descriptors[outputIndex].value.value_RexxBoolean = (RexxBoolean)argument->truthValue(Error_Logical_value_method);
+                            descriptors[outputIndex].value.value_logical_t = argument->truthValue(Error_Logical_value_method);
                             break;
                         }
 
@@ -367,9 +372,9 @@ void RexxNativeActivation::processArguments(
                         }
 
                         // an unsigned string number value
-                        case REXX_VALUE_RexxUnsignedNumber:
+                        case REXX_VALUE_stringsize_t:
                         {
-                            descriptors[outputIndex].value.value_RexxUnsignedNumber = (stringsize_t)unsignedNumberValue(argument, inputIndex, Numerics::MAX_STRINGSIZE);
+                            descriptors[outputIndex].value.value_stringsize_t = (stringsize_t)unsignedNumberValue(argument, inputIndex, Numerics::MAX_STRINGSIZE);
                             break;
                         }
 
@@ -490,7 +495,7 @@ void RexxNativeActivation::processArguments(
                     // if this was not an option argument
                     if (!isOptional)
                     {
-                        missingArgument(inputIndex + 1);
+                        missing_argument(inputIndex + 1);
                     }
 
                     // this is a non-specified argument
@@ -507,16 +512,24 @@ void RexxNativeActivation::processArguments(
                         case REXX_VALUE_int16_t:        /* non-integer value                 */
                         case REXX_VALUE_int8_t:         /* non-integer value                 */
                         case REXX_VALUE_wholenumber_t:     /* non-existent long                 */
-                        case REXX_VALUE_RexxUnsignedNumber: /* non-existent long                 */
-                        case REXX_VALUE_RexxBoolean:    // this must be a boolean value
-                        case REXX_VALUE_double:         /* non-existent double               */
-                        case REXX_VALUE_float:          /* non-existent double               */
+                        case REXX_VALUE_stringsize_t:   /* non-existent long                 */
+                        case REXX_VALUE_logical_t:      // this must be a boolean value
                         case REXX_VALUE_size_t:         /* non-existent double               */
                         case REXX_VALUE_CSTRING:        /* missing character string          */
                         case REXX_VALUE_POINTER:
                         {
                             // set this as a 64-bit value to clear everything out
                             descriptors[outputIndex].value.value_int64_t = 0;
+                            break;
+                        }
+                        case REXX_VALUE_double:         /* non-existent double               */
+                        {
+                            descriptors[outputIndex].value.value_double = 0.0;
+                            break;
+                        }
+                        case REXX_VALUE_float:          /* non-existent double               */
+                        {
+                            descriptors[outputIndex].value.value_float = 0.0;
                             break;
                         }
                                                    /* still an error if not there       */
@@ -541,17 +554,21 @@ void RexxNativeActivation::processArguments(
     }
 }
 
-RexxObject *RexxNativeActivation::valueToObject(
-    ValueDescriptor *value)     // this is passed as a pointer so we dereference properly
-/******************************************************************************/
-/* Function:  Convert a return value into a Rexx object based on type sig.    */
-/******************************************************************************/
+
+/**
+ * Convert an API value descriptor into a Rexx object.
+ *
+ * @param value  The self-describing value descriptor.
+ *
+ * @return The described value converted to an appropriate Rexx object.
+ */
+RexxObject *RexxNativeActivation::valueToObject(ValueDescriptor *value)
 {
     switch (value->type)
     {
         case REXX_VALUE_RexxObjectPtr:          /* Object reference                  */
         {
-            return value->value.value_RexxObjectPtr; // just return the object value
+            return (RexxObject *)value->value.value_RexxObjectPtr; // just return the object value
         }
 
         case REXX_VALUE_int:                    /* integer value                     */
@@ -561,12 +578,12 @@ RexxObject *RexxNativeActivation::valueToObject(
 
         case REXX_VALUE_int8_t:                         /* integer value                     */
         {
-            return Numerics::toObject(value->value.value_int8_t);
+            return Numerics::toObject((wholenumber_t)value->value.value_int8_t);
         }
 
         case REXX_VALUE_int16_t:                        /* integer value                     */
         {
-            return Numerics::toObject(value->value.value_int16_t);
+            return Numerics::toObject((wholenumber_t)value->value.value_int16_t);
         }
 
         case REXX_VALUE_int32_t:                        /* integer value                     */
@@ -584,9 +601,39 @@ RexxObject *RexxNativeActivation::valueToObject(
             return Numerics::toObject((wholenumber_t)value->value.value_intptr_t);
         }
 
+        case REXX_VALUE_uint8_t:                         /* integer value                     */
+        {
+            return Numerics::toObject((stringsize_t)value->value.value_uint8_t);
+        }
+
+        case REXX_VALUE_uint16_t:                        /* integer value                     */
+        {
+            return Numerics::toObject((stringsize_t)value->value.value_uint16_t);
+        }
+
+        case REXX_VALUE_uint32_t:                        /* integer value                     */
+        {
+            return Numerics::toObject((wholenumber_t)value->value.value_uint32_t);
+        }
+
+        case REXX_VALUE_uint64_t:                        /* integer value                     */
+        {
+            return Numerics::toObject(value->value.value_uint64_t);
+        }
+
+        case REXX_VALUE_uintptr_t:                       /* integer value                     */
+        {
+            return Numerics::toObject((wholenumber_t)value->value.value_uintptr_t);
+        }
+
         case REXX_VALUE_size_t:                        /* integer value                     */
         {
             return Numerics::toObject((stringsize_t)value->value.value_size_t);
+        }
+
+        case REXX_VALUE_ssize_t:                        /* integer value                     */
+        {
+            return Numerics::toObject((wholenumber_t)value->value.value_size_t);
         }
 
         case REXX_VALUE_wholenumber_t:        /* long integer value                */
@@ -594,9 +641,9 @@ RexxObject *RexxNativeActivation::valueToObject(
             return Numerics::toObject((wholenumber_t)value->value.value_wholenumber_t);
         }
 
-        case REXX_VALUE_RexxUnsignedNumber:     /* long integer value                */
+        case REXX_VALUE_stringsize_t:     /* long integer value                */
         {
-            return Numerics::toObject((stringsize_t)value->value.value_RexxUnsignedNumber);
+            return Numerics::toObject((stringsize_t)value->value.value_stringsize_t);
         }
 
         case REXX_VALUE_double:                 /* double value                      */
@@ -611,7 +658,7 @@ RexxObject *RexxNativeActivation::valueToObject(
 
         case REXX_VALUE_CSTRING:                /* ASCII-Z string                    */
         {
-            char *string = value->value.value_CSTRING;
+            const char *string = value->value.value_CSTRING;
             // return return nothing if a null pointer is returned.
             if (string == NULL)
             {
@@ -744,10 +791,10 @@ bool RexxNativeActivation::objectToValue(RexxObject *o, ValueDescriptor *value)
             return success;
         }
 
-        case REXX_VALUE_RexxBoolean:       /* integer value                     */
+        case REXX_VALUE_logical_t:         /* integer value                     */
         {
             // this will raise an error, which we'll clear before return
-            value->value.value_RexxBoolean = (RexxBoolean)o->truthValue(Error_Logical_value_method);
+            value->value.value_logical_t = o->truthValue(Error_Logical_value_method);
             return true;
         }
 
@@ -761,26 +808,36 @@ bool RexxNativeActivation::objectToValue(RexxObject *o, ValueDescriptor *value)
             return success;
         }
 
+        // The Rexx whole number one is checked against the human digits limit
+        case REXX_VALUE_ssize_t:  /* ssize_t value                     */
+        {
+            wholenumber_t temp = 0;
+            // convert and copy                  */
+            bool success = Numerics::objectToWholeNumber(o, temp, SSIZE_MAX, SSIZE_MIN);
+            value->value.value_wholenumber_t = (wholenumber_t)temp;
+            return success;
+        }
+
         // an unsigned string number value
-        case REXX_VALUE_RexxUnsignedNumber:
+        case REXX_VALUE_stringsize_t:
         {
             stringsize_t temp = 0;
             // convert and copy                  */
             bool success = Numerics::objectToStringSize(o, temp, Numerics::MAX_STRINGSIZE);
-            value->value.value_RexxUnsignedNumber = (RexxUnsignedNumber)temp;
+            value->value.value_stringsize_t = temp;
             return success;
         }
 
         case REXX_VALUE_double:         /* double value                      */
         {
-            return o->doubleValue(&value->value.value_double);
+            return o->doubleValue(value->value.value_double);
         }
 
 
         case REXX_VALUE_float:          /* float value                      */
         {
             double temp = 0.0;
-            bool success = o->doubleValue(&temp);
+            bool success = o->doubleValue(temp);
             value->value.value_float = (float)temp;
             return success;
         }
@@ -884,30 +941,37 @@ bool RexxNativeActivation::objectToValue(RexxObject *o, ValueDescriptor *value)
     return false;
 }
 
-void RexxNativeActivation::createLocalReference(
-    RexxObject *objr)                  /* object to save                    */
-/******************************************************************************/
-/* Function:  Protect an object until the native activation terminates        */
-/******************************************************************************/
+
+/**
+ * Create a local reference for an object.  The protects the object
+ * from GC until the environment terminates.
+ *
+ * @param objr   The object to protect.
+ */
+void RexxNativeActivation::createLocalReference(RexxObject *objr)
 {
-  if (objr != OREF_NULL) {             /* have an object?                   */
-      // make sure we protect this from a GC triggered by this table creation.
-      ProtectedObject p1(objr);
-      if (this->savelist == OREF_NULL) /* second saved object?              */
-      {
-                                         /* create the save list now          */
-          this->savelist = new_object_table();
-      }
-                                       /* add to the save table             */
-      this->savelist->put(TheNilObject, objr);
-  }
+    // if we have a real object, then add to the list
+    if (objr != OREF_NULL)
+    {
+        // make sure we protect this from a GC triggered by this table creation.
+        ProtectedObject p1(objr);
+        if (this->savelist == OREF_NULL) /* second saved object?              */
+        {
+            /* create the save list now          */
+            this->savelist = new_list();
+        }
+        /* add to the save table             */
+        this->savelist->append(objr);
+    }
 }
 
-void RexxNativeActivation::removeLocalReference(
-    RexxObject *objr)                  /* object to save                    */
-/******************************************************************************/
-/* Function:  Protect an object until the native activation terminates        */
-/******************************************************************************/
+
+/**
+ * Remove an object from the local reference table.
+ *
+ * @param objr   The object to remove.
+ */
+void RexxNativeActivation::removeLocalReference(RexxObject *objr)
 {
     // if the reference is non-null
   if (objr != OREF_NULL)
@@ -915,7 +979,7 @@ void RexxNativeActivation::removeLocalReference(
       // make sure we have a savelist before trying to remove this
       if (savelist != OREF_NULL)
       {
-          savelist->remove(objr);
+          savelist->removeItem(objr);
       }
   }
 }
@@ -939,6 +1003,7 @@ void RexxNativeActivation::run(RexxMethod *_method, RexxNativeMethod *_code, Rex
     msgname = _msgname;
     arglist = _arglist;
     argcount = _argcount;
+    activationType = METHOD_ACTIVATION;      // this is for running a method
 
     ValueDescriptor arguments[MAX_NATIVE_ARGUMENTS];
 
@@ -950,7 +1015,7 @@ void RexxNativeActivation::run(RexxMethod *_method, RexxNativeMethod *_code, Rex
     context.threadContext.arguments = arguments;
 
     // get the entry point address of the target method
-    PNATIVEMETHOD methp = _code->getNativeEntry();
+    PNATIVEMETHOD methp = _code->getEntry();
 
     // retrieve the argument signatures and process them
     uint16_t *types = (*methp)((RexxMethodContext *)&context, NULL);
@@ -1041,12 +1106,13 @@ void RexxNativeActivation::run(RexxMethod *_method, RexxNativeMethod *_code, Rex
  * @param result     A protected object to receive the function result.
  */
 void RexxNativeActivation::callNativeFunction(RexxNativeRoutine *code, RexxString *functionName, size_t count,
-    RexxObject **list, ProtectedObject &result)
+    RexxObject **list, ProtectedObject &resultObj)
 {
     // anchor the context stuff
-    msgName = functionName;
+    msgname = functionName;
     arglist = list;
     argcount = count;
+    activationType = FUNCTION_ACTIVATION;      // this is for running a method
 
     ValueDescriptor arguments[MAX_NATIVE_ARGUMENTS];
 
@@ -1142,12 +1208,14 @@ void RexxNativeActivation::callNativeFunction(RexxNativeRoutine *code, RexxStrin
  * @param result     A protected object to receive the function result.
  */
 void RexxNativeActivation::callRegisteredRoutine(RegisteredRoutine *code, RexxString *functionName, size_t count,
-    RexxObject **list, ProtectedObject &result)
+    RexxObject **list, ProtectedObject &resultObj)
 {
     // anchor the context stuff
-    msgName = functionName;
+    msgname = functionName;
     arglist = list;
     argcount = count;
+
+    activationType = FUNCTION_ACTIVATION;      // this is for running a method
 
     // get the entry point address of the target method
     RexxRoutineHandler *methp = code->getEntry();
@@ -1162,15 +1230,15 @@ void RexxNativeActivation::callRegisteredRoutine(RegisteredRoutine *code, RexxSt
     {
         RexxBuffer *buffer = new_buffer(sizeof(CONSTRXSTRING) * count);
         // this keeps the buffer alive until the activation is popped.
-        saveObject(buffer);
-        argPtr = (CONSTRXSTRING *)buffer->getData();
+        createLocalReference(buffer);
+        argPtr = (CONSTRXSTRING *)buffer->address();
     }
 
     // all of the arguments now need to be converted to string arguments
     for (size_t argindex=0; argindex < count; argindex++)
     {
         /* get the next argument             */
-        RexxObject *argument = _arguments[argindex];
+        RexxObject *argument = list[argindex];
         if (argument != OREF_NULL)       /* have an argument?                 */
         {
             /* force to string form              */
@@ -1181,7 +1249,7 @@ void RexxNativeActivation::callRegisteredRoutine(RegisteredRoutine *code, RexxSt
             if (stringArgument != argument)
             {
                 // make sure this is protected
-                savedObject(stringArgument);
+                createLocalReference(stringArgument);
             }
             stringArgument->toRxstring(argPtr[argindex]);
         }
@@ -1197,22 +1265,19 @@ void RexxNativeActivation::callRegisteredRoutine(RegisteredRoutine *code, RexxSt
     const char *queuename = SysGetCurrentQueue()->getStringData();
     RXSTRING funcresult;
     int functionrc;                      /* Return code from function         */
+    /* default return code buffer        */
+    char default_return_buffer[DEFRXSTRING];
 
     /* make the RXSTRING result          */
     MAKERXSTRING(funcresult, default_return_buffer, sizeof(default_return_buffer));
-
-
 
     size_t activityLevel = this->activity->getActivationLevel();
     try
     {
         activity->releaseAccess();           /* force this to "safe" mode         */
         // now process the function call
-        functionrc = (*methp)(functionName->getStringData(), count, argPtr, queuename, funcresult);
+        functionrc = (*methp)(functionName->getStringData(), count, argPtr, queuename, &funcresult);
         activity->requestAccess();           /* now in unsafe mode again          */
-
-        // process the returned result
-        result = valueToObject(arguments);
     }
     catch (RexxActivation *)
     {
@@ -1297,6 +1362,7 @@ void RexxNativeActivation::callRegisteredRoutine(RegisteredRoutine *code, RexxSt
  */
 void RexxNativeActivation::run(ActivityDispatcher &dispatcher)
 {
+    activationType = DISPATCHER_ACTIVATION;  // this is for running a dispatcher
     size_t activityLevel = this->activity->getActivationLevel();
     // make the activation hookup
     dispatcher.setContext(activity, this);
@@ -1321,6 +1387,7 @@ void RexxNativeActivation::run(ActivityDispatcher &dispatcher)
  */
 void RexxNativeActivation::run(CallbackDispatcher &dispatcher)
 {
+    activationType = CALLBACK_ACTIVATION;    // we're handling a callback
     size_t activityLevel = this->activity->getActivationLevel();
     try
     {
@@ -1375,28 +1442,6 @@ void RexxNativeActivation::run(CallbackDispatcher &dispatcher)
 }
 
 
-RexxObject *RexxNativeActivation::saveObject(
-    RexxObject *objr)                  /* object to save                    */
-/******************************************************************************/
-/* Function:  Protect an object until the native activation terminates        */
-/******************************************************************************/
-{
-  if (objr != OREF_NULL) {             /* have an object?                   */
-                                       /* this the first object?            */
-    if (this->firstSavedObject == OREF_NULL)
-      this->firstSavedObject = objr;   /* save this reference here          */
-
-    else {
-      if (this->savelist == OREF_NULL) /* second saved object?              */
-                                       /* create the save list now          */
-        this->savelist = new_object_table();
-                                       /* add to the save table             */
-      this->savelist->put(TheNilObject, objr);
-    }
-  }
-  return objr;                         /* return this object                */
-}
-
 RexxVariableDictionary *RexxNativeActivation::methodVariables()
 /******************************************************************************/
 /* Function:  Retrieve the set of method variables                            */
@@ -1440,21 +1485,146 @@ bool RexxNativeActivation::isInteger(
     return object->numberValue(temp, this->digits());
 }
 
+/**
+ * Convert a value to a wholenumber value.
+ *
+ * @param o        The object to convert.
+ * @param position The argument position.
+ * @param maxValue The maximum value allowed in the range.
+ * @param minValue The minimum range value.
+ *
+ * @return The converted number.
+ */
+wholenumber_t RexxNativeActivation::wholeNumberValue(RexxObject *o, size_t position, wholenumber_t maxValue, wholenumber_t minValue)
+{
+    wholenumber_t temp;
+
+    // convert using the whole value range
+    if (!Numerics::objectToWholeNumber(o, temp, maxValue, minValue))
+    {
+        if (activationType == METHOD_ACTIVATION)
+        {
+            /* this is an error                  */
+            reportException(Error_Incorrect_method_whole, position + 1, o);
+        }
+        else
+        {
+            /* this is an error                  */
+            reportException(Error_Incorrect_call_whole, position + 1, o);
+        }
+    }
+    return temp;
+}
+
+
+
+/**
+ * Convert a value to a stringsize value.
+ *
+ * @param o        The object to convert.
+ * @param position The argument position.
+ * @param maxValue The maximum value allowed in the range.
+ *
+ * @return The converted number.
+ */
+stringsize_t RexxNativeActivation::unsignedNumberValue(RexxObject *o, size_t position, stringsize_t maxValue)
+{
+    stringsize_t temp;
+
+    // convert using the whole value range
+    if (!Numerics::objectToStringSize(o, temp, maxValue))
+    {
+        if (activationType == METHOD_ACTIVATION)
+        {
+            /* this is an error                  */
+            reportException(Error_Incorrect_method_whole, position + 1, o);
+        }
+        else
+        {
+            /* this is an error                  */
+            reportException(Error_Incorrect_call_whole, position + 1, o);
+        }
+    }
+    return temp;
+}
+
+
+/**
+ * Convert a value to an int64_t value
+ *
+ * @param o        The object to convert.
+ * @param position The argument position.
+ *
+ * @return The converted number.
+ */
+int64_t RexxNativeActivation::int64Value(RexxObject *o, size_t position)
+{
+    int64_t temp;
+
+    // convert using the whole value range
+    if (!Numerics::objectToInt64(o, temp))
+    {
+        if (activationType == METHOD_ACTIVATION)
+        {
+            /* this is an error                  */
+            reportException(Error_Incorrect_method_whole, position + 1, o);
+        }
+        else
+        {
+            /* this is an error                  */
+            reportException(Error_Incorrect_call_whole, position + 1, o);
+        }
+    }
+    return temp;
+}
+
+
+/**
+ * Convert a value to a  uint64_t value
+ *
+ * @param o        The object to convert.
+ * @param position The argument position.
+ *
+ * @return The converted number.
+ */
+uint64_t RexxNativeActivation::unsignedInt64Value(RexxObject *o, size_t position)
+{
+    uint64_t temp;
+
+    // convert using the whole value range
+    if (!Numerics::objectToUnsignedInt64(o, temp))
+    {
+        if (activationType == METHOD_INVOCATION)
+        {
+            /* this is an error                  */
+            reportException(Error_Incorrect_method_whole, position + 1, o);
+        }
+        else
+        {
+            /* this is an error                  */
+            reportException(Error_Incorrect_call_whole, position + 1, o);
+        }
+    }
+    return temp;
+}
+
+
 const char *RexxNativeActivation::cstring(
     RexxObject *object)                /* object to convert                 */
 /******************************************************************************/
 /* Function:  Return an object as a CSTRING                                   */
 /******************************************************************************/
 {
-  RexxString *string;                  /* object string value               */
-
-                                       /* force to a string value           */
-  string = (RexxString *)object->stringValue();
-  if (string != object)                /* different value?                  */
-                                       /* make it safe                      */
-    this->saveObject((RexxObject *)string);
-  return string->getStringData();           /* just point to the string data     */
+    /* force to a string value           */
+    RexxString *string = (RexxString *)object->stringValue();
+    if (string != object)                /* different value?                  */
+    {
+        /* make it safe                      */
+        createLocalReference(string);
+    }
+    return string->getStringData();           /* just point to the string data     */
 }
+
 
 double RexxNativeActivation::getDoubleValue(
     RexxObject *object)                /* object to convert                 */
@@ -1462,16 +1632,16 @@ double RexxNativeActivation::getDoubleValue(
 /* Function:  Convert an object to a double                                   */
 /******************************************************************************/
 {
-  double r;                            /* returned result                   */
-
-                                       /* convert and check result          */
-  if (!object->doubleValue(r))
-  {
-                                       /* conversion error                  */
-      reportException(Error_Execution_nodouble, object);
-  }
-  return r;                            /* return converted number           */
+    double r;                            /* returned result                   */
+                                         /* convert and check result          */
+    if (!object->doubleValue(r))
+    {
+        /* conversion error                  */
+        reportException(Error_Execution_nodouble, object);
+    }
+    return r;                            /* return converted number           */
 }
+
 
 bool RexxNativeActivation::isDouble(
     RexxObject *object)                /* object to check                   */
@@ -1491,15 +1661,18 @@ void *RexxNativeActivation::cself()
 /*            NULL is returned.                                               */
 /******************************************************************************/
 {
-  RexxInteger *C_self;                 /* accessed pointer object           */
-
-                                       /* retrieve from object dictionary   */
-  C_self = (RexxInteger *)this->methodVariables()->realValue(OREF_CSELF);
-  if (C_self != OREF_NULL)             /* got an item?                      */
-    return (void *)C_self->getValue(); /* return the pointer value          */
-  else
-    return NULL;                       /* no object available               */
+    /* retrieve from object dictionary   */
+    RexxPointer *C_self = (RexxPointer *)methodVariables()->realValue(OREF_CSELF);
+    if (C_self != OREF_NULL)             /* got an item?                      */
+    {
+        return C_self->pointer();        /* return the pointer value          */
+    }
+    else
+    {
+        return NULL;                     /* no object available               */
+    }
 }
+
 
 void *RexxNativeActivation::buffer()
 /******************************************************************************/
@@ -1507,14 +1680,16 @@ void *RexxNativeActivation::buffer()
 /*            If the variable CSELF does not exist, then NULL is returned.    */
 /******************************************************************************/
 {
-  RexxBuffer  *C_self;                 /* accessed pointer object           */
-
-                                       /* retrieve from object dictionary   */
-  C_self = (RexxBuffer *)this->methodVariables()->realValue(OREF_CSELF);
-  if (C_self != OREF_NULL)             /* got an item?                      */
-    return (void *)C_self->address();  /* return a pointer to the address   */
-  else
-    return NULL;                       /* no object available               */
+    /* retrieve from object dictionary   */
+    RexxBuffer *C_self = (RexxBuffer *)this->methodVariables()->realValue(OREF_CSELF);
+    if (C_self != OREF_NULL)             /* got an item?                      */
+    {
+        return(void *)C_self->address();  /* return a pointer to the address   */
+    }
+    else
+    {
+        return NULL;                       /* no object available               */
+    }
 }
 
 void *RexxNativeActivation::pointer(
@@ -1523,13 +1698,14 @@ void *RexxNativeActivation::pointer(
 /* Function:  Return as a pointer the value of an integer                     */
 /******************************************************************************/
 {
-    if (!isOfClass(Pointer, object))
+    if (!object->isInstanceOf(ThePointerClass))
     {
         return NULL;
     }
     // just unwrap thee pointer
     return ((RexxPointer *)object)->pointer();
 }
+
 
 RexxObject *RexxNativeActivation::dispatch()
 /******************************************************************************/
@@ -1541,6 +1717,7 @@ RexxObject *RexxNativeActivation::dispatch()
     return (RexxObject *)r;
 }
 
+
 void RexxNativeActivation::traceBack(
     RexxList *traceback_list)          /* list of traceback items           */
 /******************************************************************************/
@@ -1548,7 +1725,7 @@ void RexxNativeActivation::traceBack(
 /*            this is a no-op.                                                */
 /******************************************************************************/
 {
-  return;                              /* just return                       */
+    return;                              /* just return                       */
 }
 
 size_t RexxNativeActivation::digits()
@@ -1869,6 +2046,191 @@ void RexxNativeActivation::raiseCondition(RexxString *condition, RexxString *des
     // We only return here if no activation above us has trapped this.  If we do return, then
     // we terminate the call by throw this up the stack.
     throw this;
+}
+
+
+/**
+ * Return the method context arguments as an array.
+ *
+ * @return An array containing the method arguments.
+ */
+RexxArray *RexxNativeActivation::getArguments()
+{
+    // if we've not requested this before, convert the arguments to an
+    // array object.
+    if (argArray == OREF_NULL)
+    {
+        /* create the argument array */
+        argArray = new (argcount, arglist) RexxArray;
+        // make sure the array is anchored in our activation
+        createLocalReference(argArray);
+    }
+    return argArray;
+}
+
+/**
+ * Retrieve a specific argument from the method invocation context.
+ *
+ * @param index  The argument of interest.
+ *
+ * @return The object mapped to that argument.  Returns OREF_NULL for
+ *         omitted arguments.
+ */
+RexxObject *RexxNativeActivation::getArgument(size_t index)
+{
+    if (index < argcount)
+    {
+        return arglist[index];
+    }
+    return OREF_NULL;
+}
+
+/**
+ * Return the super class scope of the current method context.
+ *
+ * @return The superclass scope object.
+ */
+RexxObject *RexxNativeActivation::getSuper()
+{
+    return receiver->superScope(this->method->getScope());
+}
+
+/**
+ * Resolve an argument object into a stem object.  The argument
+ * object may already be a stem, or may the a variable name
+ * used to resolve a stem.
+ *
+ * @param s      The source object used for the resolution.
+ *
+ * @return A resolved stem object.  Returns a NULLOBJECT if there is
+ *         a resolution problem.
+ */
+RexxStem *RexxNativeActivation::resolveStemVariable(RexxObject *s)
+{
+    // is this a stem already?
+    if (isStem(s))
+    {
+        return (RexxStem *)s;
+    }
+
+    /* force to a string value           */
+    RexxString *temp = REQUIRED_STRING(s, 1);
+    // see if we can retrieve this stem
+    return (RexxStem *)getContextStem(temp);
+}
+
+
+RexxObject *RexxNativeActivation::getContextStem(RexxString *name)
+/******************************************************************************/
+/* Function:  retrieve a stem variable stem from the current context.         */
+/******************************************************************************/
+{
+    // if this is not a stem name, add it now
+    if (name->getChar(name->getLength() - 1) != '.')
+    {
+        name = name->concatWithCstring(".");
+    }
+
+    RexxVariableBase *retriever = activation->getVariableRetriever(name);
+    // if this didn't parse, it's an illegal name
+    // it must also resolve to a stem type...this could be a compound one
+    if (retriever == OREF_NULL || !isOfClass(StemVariable, retriever))
+    {
+        return OREF_NULL;
+    }
+    // get the variable value
+    return retriever->getValue(context);
+}
+
+
+/**
+ * Retrieve the value of a context variable via the API calls.
+ * Returns OREF_NULL if the variable does not exist.
+ *
+ * @param name   The variable name.
+ *
+ * @return The variable value, if any.
+ */
+RexxObject *RexxNativeActivation::getContextVariable(const char *name)
+{
+    RexxVariableBase *retriever = activation->getVariableRetriever(name);
+    // if this didn't parse, it's an illegal name
+    if (retriever == OREF_NULL)
+    {
+        return OREF_NULL;
+    }
+    this->resetNext();               // all next operations must be reset
+
+    // have a non-name retriever?
+    if (isString((RexxObject *)retriever))
+    {
+        // the value is the retriever
+        return (RexxObject *)retriever;
+    }
+    else
+    {
+        // get the variable value
+        return retriever->realValue(activation);
+    }
+}
+
+/**
+ * Set a context variable on behalf of an API call.
+ *
+ * @param name   The name of the variable.
+ * @param value  The variable value.
+ */
+void RexxNativeActivation::setContextVariable(const char *name, RexxObject *value)
+{
+    // get the REXX activation for the target context
+    RexxVariableBase *retriever = activation->getVariableRetriever(name);
+    // if this didn't parse, it's an illegal name
+    if (retriever == OREF_NULL || isString((RexxObject *)retriever))
+    {
+        return;
+    }
+    this->resetNext();               // all next operations must be reset
+
+    // do the assignment
+    retriever->set(context, value);
+}
+
+
+/**
+ * Drop a context variable for an API call.
+ *
+ * @param name   The target variable name.
+ */
+void RexxNativeActivation::dropContextVariable(const char *name)
+{
+    // get the REXX activation for the target context
+    RexxVariableBase *retriever = activation->getVariableRetriever(name);
+    // if this didn't parse, it's an illegal name
+    if (retriever == OREF_NULL || isString((RexxObject *)retriever))
+    {
+        return;
+    }
+    this->resetNext();               // all next operations must be reset
+
+    // perform the drop
+    retriever->drop(context);
+}
+
+void RexxNativeActivation::checkConditions()
+/******************************************************************************/
+/* Function:  check to see if a condition was raised on return from a call out*/
+/******************************************************************************/
+{
+    // if we have a stashed condition object, we need to raise this now
+    if (conditionObj != OREF_NULL)
+    {
+        // we're raising this in the previous stack frame.  If it doesn't exist,
+        // se just leave this in place so top-level callers can check this.
+        if (activaiton != OREF_NULL)
+        {
+            activity->reraiseException(conditionObj);
+        }
+    }
 }
 
 
@@ -2250,54 +2612,55 @@ int REXXENTRY REXX_STEMSORT(CSTRING stemname, int order, int type, size_t start,
 /******************************************************************************/
 {
     NativeContextBlock context;
-  size_t  position;                    /* scan position within compound name */
-  size_t  length;                      /* length of tail section            */
+    size_t  position;                    /* scan position within compound name */
+    size_t  length;                      /* length of tail section            */
 
-                                       /* if access is enabled              */
-  if (!context.self->getVpavailable()) {       /* access must be enabled for this to work */
-      return false;
-  }
+                                         /* if access is enabled              */
+    if (!context.self->getVpavailable())
+    {       /* access must be enabled for this to work */
+        return false;
+    }
 
-  // NB:  The braces here are to ensure the ProtectedObjects get released before the
-  // currentActivity gets zeroed out.
-  {
-      /* get the REXX activation */
-      RexxActivation *activation = context.self->getRexxContext();
+    // NB:  The braces here are to ensure the ProtectedObjects get released before the
+    // currentActivity gets zeroed out.
+    {
+        /* get the REXX activation */
+        RexxActivation *activation = context.self->getRexxContext();
 
-      /* get the stem name as a string */
-      RexxString *variable = new_string(stemname);
-      ProtectedObject p1(variable);
-      /* and get a retriever for this variable */
-      RexxStemVariable *retriever = (RexxStemVariable *)activation->getVariableRetriever(variable);
+        /* get the stem name as a string */
+        RexxString *variable = new_string(stemname);
+        ProtectedObject p1(variable);
+        /* and get a retriever for this variable */
+        RexxStemVariable *retriever = (RexxStemVariable *)activation->getVariableRetriever(variable);
 
-      /* this must be a stem variable in order for the sorting to work. */
+        /* this must be a stem variable in order for the sorting to work. */
 
-      if ( (!isOfClass(StemVariableTerm, retriever)) && (!isOfClass(CompoundVariableTerm, retriever)) )
-      {
-          return false;
-      }
-
-      RexxString *tail = OREF_NULLSTRING ;
-      ProtectedObject p2(tail);
-
-      if (isOfClass(CompoundVariableTerm, retriever))
-      {
-        length = variable->getLength();      /* get the string length             */
-        position = 0;                        /* start scanning at first character */
-                                           /* scan to the first period          */
-        while (variable->getChar(position) != '.')
+        if ( (!isOfClass(StemVariableTerm, retriever)) && (!isOfClass(CompoundVariableTerm, retriever)) )
         {
-          position++;                        /* step to the next character        */
-          length--;                          /* reduce the length also            */
+            return false;
         }
-        position++;                          /* step past previous period         */
-        length--;                            /* adjust the length                 */
-        tail = variable->extract(position, length);
-        tail = tail->upper();
-      }
 
-      return retriever->sort(activation, tail, order, type, start, end, firstcol, lastcol);
-  }
+        RexxString *tail = OREF_NULLSTRING ;
+        ProtectedObject p2(tail);
+
+        if (isOfClass(CompoundVariableTerm, retriever))
+        {
+            length = variable->getLength();      /* get the string length             */
+            position = 0;                        /* start scanning at first character */
+            /* scan to the first period          */
+            while (variable->getChar(position) != '.')
+            {
+                position++;                        /* step to the next character        */
+                length--;                          /* reduce the length also            */
+            }
+            position++;                          /* step past previous period         */
+            length--;                            /* adjust the length                 */
+            tail = variable->extract(position, length);
+            tail = tail->upper();
+        }
+
+        return retriever->sort(activation, tail, order, type, start, end, firstcol, lastcol);
+    }
 }
 
 void REXXENTRY REXX_GUARD_ON()

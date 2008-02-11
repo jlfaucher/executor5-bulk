@@ -68,7 +68,7 @@ public:
     bool         checkFunctionCall(RexxString *functionName, size_t count, RexxObject **arguments, ProtectedObject &result);
     bool         checkCommand(RexxString *command, RexxString *env, RexxString **conditions, RexxObject **result);
     RexxObject  *checkStreamAccess(RexxString *name);
-    RexxString  *checkReguiresAccess(RexxString *name, RexxObject *&securityManager);
+    RexxString  *checkRequiresAccess(RexxString *name, RexxObject *&securityManager);
 
 
 protected:

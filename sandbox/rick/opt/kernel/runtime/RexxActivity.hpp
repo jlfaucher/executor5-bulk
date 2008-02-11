@@ -266,6 +266,7 @@ public:
    inline void        addRunningRequires(RexxString *program) { this->requiresTable->stringAdd((RexxObject *)program, program);}
    inline void        removeRunningRequires(RexxObject *program) {this->requiresTable->remove(program);}
    inline void        resetRunningRequires() {this->requiresTable->reset();}
+   inline bool        checkRequires(RexxString *n) { return runningRequires(n) != OREF_NULL; }
    inline void        setNextWaitingActivity(RexxActivity *next) { this->nextWaitingActivity = next; }
    inline RexxActivity *getNextWaitingActivity() { return nextWaitingActivity; }
    inline void        waitKernel() { EVWAIT(this->runsem); }

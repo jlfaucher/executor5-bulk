@@ -281,7 +281,7 @@ RexxObject *SecurityManager::checkStreamAccess(RexxString *name)
  * @return The actual requires file name that should be loaded.  A
  *         return of OREF_NULL means access to this is not permitted.
  */
-RexxString *SecurityManager::checkReguiresAccess(RexxString *name, RexxObject *&securityManager)
+RexxString *SecurityManager::checkRequiresAccess(RexxString *name, RexxObject *&securityManager)
 {
     // just return the same name if no manager object set.
     if (manager == OREF_NULL)

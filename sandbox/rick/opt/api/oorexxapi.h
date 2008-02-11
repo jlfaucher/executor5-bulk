@@ -118,15 +118,8 @@ typedef struct _RexxRoutineEntry
 #define REXX_FUNCTION(s, n, e)	{ s, 0, #n, (void *)e, 0, 0 },
 
 #define REXX_TYPED_FUNCTION(n, e) REXX_FUNCTION(FUNCTION_TYPED_STYLE, n, e)
-#define REXX_OBJECT_FUNCTION(n, e) REXX_FUNCTION(FUNCTION_OBJECT_STYLE, n, e)
 #define REXX_CLASSIC_FUNCTION(n, e) REXX_FUNCTION(FUNCTION_CLASSIC_STYLE, n, e)
 #define REXX_LAST_FUNCTION()        { 0, 0, NULL, (void *)NULL, 0, 0 }
-
-#ifdef __cplusplus
-#define REXX_OBJECT_FUNCTION_PROTOTYPE extern "C" RexxReturnCode RexxEntry name(RexxCallContext *, wholenumber_t, RexxObjectPtr *, RexxObjectPtr *);
-#else
-#define REXX_OBJECT_FUNCTION_PROTOTYPE RexxReturnCode RexxEntry name(RexxCallContext *, wholenumber_t, RexxObjectPtr *, RexxObjectPtr *);
-#endif
 
 #ifdef __cplusplus
 #define REXX_CLASSIC_FUNCTION_PROTOTYPE extern "C" size_t RexxEntry name(const char *, size_t, CONSTRXSTRING *, const char *, RXSTRING *);
@@ -282,6 +275,9 @@ typedef struct
 #define EXTERNAL_CALL_PATH          "ExternalCallPath"
 // list of lookup extensions to search for on external calls
 #define EXTERNAL_CALL_EXTENSIONS    "ExternalCallPathExt"
+// a package that will be loaded during initialization
+// specified as a CSTRING name
+#define LOAD_REQUIRED_PACKAGE       "LoadRequiredPackage"
 // The set of exits to use.  These are old-style exits, using registered exit names.
 #define REGISTERED_EXITS            "RegisteredExits"
 // The set of exits to use.  These are new-style exits, using direct exit addresses and

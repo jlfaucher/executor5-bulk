@@ -41,6 +41,7 @@
 #include "ProtectedObject.hpp"
 #include "RoutineClass.hpp"
 #include "SystemInterpreter.hpp"
+#include "InterpreterInstance.hpp"
 
 
 /**
@@ -134,26 +135,7 @@ void RexxStartDispatcher::run()
         }
     }
 
-    RexxString *initial_address = OREF_INITIALADDRESS;
-
-    if (defaultEnvironment != NULL)                /* have an address override?         */
-    {
-        /* use the provided one              */
-        initial_address = new_string(defaultEnvironment);
-    }
-    else
-    {
-        /* check for a file extension        */
-        RexxString *file_extension = SystemInterpreter::extractExtension(fullname);
-        if (file_extension != OREF_NULL)      /* have a real one?                  */
-        {
-            /* use extension as the environment  */
-            initial_address = file_extension;
-        }
-    }
-    /* protect from garbage collect      */
-
-    savedObjects.add(initial_address);
+    RexxString *initial_address = activity->getInstance()->getDefaultEnvironment();
     /* actually need to run this?        */
     if (program != OREF_NULL)
     {

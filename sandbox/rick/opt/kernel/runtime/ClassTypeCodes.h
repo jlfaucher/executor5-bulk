@@ -180,10 +180,11 @@ typedef enum
     T_Token = 113,
     T_DoBlock = 114,
     T_InterpreterInstance = 115,
+    T_SecurityManager = 116,
 
-    T_Last_Transient_Class = 115,
-    T_Last_Primitive_Class = 115,
-    T_Last_Class_Type = 115,
+    T_Last_Transient_Class = 116,
+    T_Last_Primitive_Class = 116,
+    T_Last_Class_Type = 116,
     
 } ClassTypeCode;
 
