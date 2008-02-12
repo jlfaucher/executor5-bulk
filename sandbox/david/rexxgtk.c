@@ -329,6 +329,14 @@ APIRET APIENTRY GrxLoadFuncs(char * Name,
 //      "GrxScrolledWindowNew",
 //      "GrxScrolledWindowSetPolicy",
 
+        //Scrolled window functions
+        "GrxScrolledWindowNew",
+        "GrxScrolledWindowGetHAdjustment",
+        "GrxScrolledWindowGetVAdjustment",
+        "GrxScrolledWindowSetPolicy",
+        "GrxScrolledWindowAddWithViewport",
+        "GrxScrolledWindowConnectSignal",
+
         //Entry functions
         "GrxEntryNew",
         "GrxEntrySetMaxLength",

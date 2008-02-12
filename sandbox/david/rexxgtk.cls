@@ -292,16 +292,6 @@ return
 return
 
 
-
-
-
-
-
-
-
-
-
-
 /*============================================================================*/
 /* Class: GtkWidget                                                           */
 /*============================================================================*/
@@ -523,9 +513,9 @@ return
 use strict arg event
 select
    when event = 'add' then call GrxContainerConnectSignal self~pointer, event
-   when event = 'check_resize' then call GrxContainerConnectSignal self~pointer, event
+   when event = 'check-resize' then call GrxContainerConnectSignal self~pointer, event
    when event = 'removs' then call GrxContainerConnectSignal self~pointer, event
-   when event = 'set_focus_child' then call GrxContainerConnectSignal self~pointer, event
+   when event = 'set-focus-child' then call GrxContainerConnectSignal self~pointer, event
    otherwise return self~signal_connect:super(event)
    end
 return .true
@@ -725,6 +715,53 @@ return
 ::method signal_connect
 use strict arg event
 return self~signal_connect:super(event)
+
+
+/*============================================================================*/
+/* Class: GtkScrolledWindow                                                   */
+/*============================================================================*/
+
+::class GtkScrolledWindow public subclass GtkContainer
+
+::method init
+use strict arg hadj, vadj
+if hadj = .nil then hptr = 0
+else hptr = hadj~pointer
+if vadj = .nil then vptr = 0
+else vptr = vadj~pointer
+self~pointer = GrxScrolledWindowNew(hptr, vptr)
+return
+
+::method hadjustment
+return .GtkAdjustment~new(GrxScrolledWindowGetHAdjustment(self~pointer))
+
+::method get_hadjustment
+return self~hadjustment
+
+::method vadjustment
+return .GtkAdjustment~new(GrxScrolledWindowGetVAdjustment(self~pointer))
+
+::method get_vadjustment
+return self~vadjustment
+
+::method set_policy
+use strict arg hpolicy, vpolicy
+call GrxScrolledWindowSetPolicy self_pointer, hpolicy. vpolicy
+return
+
+::method add_with_viewport
+use strict arg child
+call GrxScrolledWindowAddWithViewport self~pointer, child~pointer
+return
+
+::method signal_connect
+use strict arg event
+select
+   when event = 'move-focus-out' then call GrxContainerConnectSignal self~pointer, event
+   when event = 'scroll-child' then call GrxContainerConnectSignal self~pointer, event
+   otherwise return self~signal_connect:super(event)
+   end
+return .true
 
 
 /*============================================================================*/
