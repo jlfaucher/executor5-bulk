@@ -108,9 +108,9 @@ static void signal_func_3(GtkWidget *window,
 /*              Vertical adjustment                                           */
 /*----------------------------------------------------------------------------*/
 
-APIRET APIENTRY GrxScrolledWindowtNew(const char * Name,
-                                      const size_t Argc, const RXSTRING Argv[],
-                                      const char * Queuename, PRXSTRING Retstr)
+APIRET APIENTRY GrxScrolledWindowNew(const char * Name,
+                                     const size_t Argc, const RXSTRING Argv[],
+                                     const char * Queuename, PRXSTRING Retstr)
 {
     GtkWidget     *myWidget;     
     GtkAdjustment *hadj, *vadj;

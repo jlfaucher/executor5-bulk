@@ -107,7 +107,7 @@ APIRET APIENTRY GrxWarning(const char * Name,
         return RXFUNC_BADCALL;
     }
 
-    g_warging(Argv[0].strptr);
+    g_warning(Argv[0].strptr);
 	
     /* Set up the REXX return code */
     *(Retstr->strptr) = '0';

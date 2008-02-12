@@ -251,6 +251,10 @@ else do
    end
 return
 
+::method pointer
+expose pointer
+return pointer
+
 ::method 'value='
 expose pointer
 use strict arg val
@@ -746,7 +750,7 @@ return self~vadjustment
 
 ::method set_policy
 use strict arg hpolicy, vpolicy
-call GrxScrolledWindowSetPolicy self_pointer, hpolicy. vpolicy
+call GrxScrolledWindowSetPolicy self~pointer, hpolicy, vpolicy
 return
 
 ::method add_with_viewport
@@ -762,6 +766,39 @@ select
    otherwise return self~signal_connect:super(event)
    end
 return .true
+
+::method signal_move_focus_out
+return
+
+::method signal_scroll_child
+return
+
+
+/*============================================================================*/
+/* Class: GtkViewport                                                         */
+/*============================================================================*/
+
+::class GtkViewport public subclass GtkContainer
+
+::method init
+use strict arg hadj, vadj
+if hadj = .nil then hptr = 0
+else hptr = hadj~pointer
+if vadj = .nil then vptr = 0
+else vptr = vadj~pointer
+self~pointer = GrxViewportNew(hptr, vptr)
+return
+
+::method signal_connect
+use strict arg event
+select
+   when event = 'set-scroll-adjustments' then call GrxContainerConnectSignal self~pointer, event
+   otherwise return self~signal_connect:super(event)
+   end
+return .true
+
+::method signal_set_scroll_adjustments
+return
 
 
 /*============================================================================*/
@@ -2511,25 +2548,6 @@ return self~signal_connect:super(event)
 use strict arg min, max, step
 self~pointer = GrxVScaleNewWithRange(min, max, step)
 return
-
-
-/*============================================================================*/
-/* Class: GtkAdjustment                                                       */
-/*============================================================================*/
-
-::class GtkAdjustment public
-
-::method init
-use strict arg self~value = 0. self~lower = 0, self~upper = 0,,
- self~step_inc = 0, self~page_inc = 0, self~page_size = 0
-return
-
-::attribute value
-::attribute lower
-::attribute upper
-::attribute step_inc
-::attribute page_inc
-::attribute page_size
 
 
 /*============================================================================*/

@@ -448,3 +448,78 @@ APIRET APIENTRY GrxContainerConnectSignal(const char * Name,
     return RXFUNC_OK;
 }
 
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxViewportNew                                     */
+/* Description: Create a new viewport                                         */
+/* Rexx Args:   Hadjustment                                                   */
+/*              Vadjustment                                                   */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxViewportNew(const char * Name,
+                               const size_t Argc, const RXSTRING Argv[],
+                               const char * Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+    GtkAdjustment *hadj, *vadj;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(2, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &hadj);
+    sscanf(Argv[1].strptr, "%p", &vadj);
+
+    myWidget = gtk_viewport_new(hadj, vadj);
+
+    /* Set up the REXX return code */
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%p", myWidget);
+    Retstr->strlength = strlen(Retstr->strptr);
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxViewportConnectSignal                           */
+/* Description: Connect a signal function to the Widget                       */
+/* Rexx Args:   Pointer to the widget                                         */
+/*              Signal name                                                   */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxViewportConnectSignal(const char * Name,
+                                         const size_t Argc, const RXSTRING Argv[],
+                                         const char * Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(2, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &myWidget);
+
+    if (GTK_IS_WIDGET(GTK_OBJECT(myWidget))) {
+        if (strcmp(Argv[1].strptr, "set-scroll-adjustments") == 0) {
+            g_signal_connect(G_OBJECT(myWidget), "set-scroll-adjustments",
+                             G_CALLBACK(signal_func_2), "signal_set_scroll_adjustments");
+        }
+        else {
+            return RXFUNC_BADCALL;
+        }
+    }
+    else {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Set up the REXX return code */
+    *(Retstr->strptr) = '0';
+    Retstr->strlength = 1;
+
+    return RXFUNC_OK;
+}
+
