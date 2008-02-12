@@ -60,7 +60,7 @@ RexxArrayObject RexxEntry GetMethodArguments(RexxMethodContext *c)
     return NULLOBJECT;
 }
 
-RexxObjectPtr RexxEntry GetMethodArgument(RexxMethodContext *c, RexxUnsignedNumber i)
+RexxObjectPtr RexxEntry GetMethodArgument(RexxMethodContext *c, stringsize_t i)
 {
     ApiContext context(c);
     try
@@ -86,12 +86,12 @@ RexxMethodObject RexxEntry GetCurrentMethod(RexxMethodContext *c)
     return NULL;
 }
 
-RexxStringPointer RexxEntry GetMessageName(RexxMethodContext *c)
+CSTRING RexxEntry GetMessageName(RexxMethodContext *c)
 {
     ApiContext context(c);
     try
     {
-        return (RexxStringPointer)context.context->getMessageName();
+        return (CSTRING)context.context->getMessageName();
     }
     catch (ActivityException)
     {
@@ -125,7 +125,7 @@ RexxClassObject RexxEntry GetSuper(RexxMethodContext *c)
     return NULLOBJECT;
 }
 
-void RexxEntry SetObjectVariable(RexxMethodContext *c, RexxStringPointer n, RexxObjectPtr v)
+void RexxEntry SetObjectVariable(RexxMethodContext *c, CSTRING n, RexxObjectPtr v)
 {
     ApiContext context(c);
     try
@@ -137,7 +137,7 @@ void RexxEntry SetObjectVariable(RexxMethodContext *c, RexxStringPointer n, Rexx
     }
 }
 
-RexxObjectPtr RexxEntry GetObjectVariable(RexxMethodContext *c, RexxStringPointer n)
+RexxObjectPtr RexxEntry GetObjectVariable(RexxMethodContext *c, CSTRING n)
 {
     ApiContext context(c);
     try
@@ -150,7 +150,7 @@ RexxObjectPtr RexxEntry GetObjectVariable(RexxMethodContext *c, RexxStringPointe
     return NULLOBJECT;
 }
 
-void RexxEntry DropObjectVariable(RexxMethodContext *c, RexxStringPointer n)
+void RexxEntry DropObjectVariable(RexxMethodContext *c, CSTRING n)
 {
     ApiContext context(c);
     try
@@ -162,7 +162,7 @@ void RexxEntry DropObjectVariable(RexxMethodContext *c, RexxStringPointer n)
     }
 }
 
-RexxObjectPtr RexxEntry SendSuperMessage(RexxMethodContext *c, RexxStringPointer n, RexxArrayObject a)
+RexxObjectPtr RexxEntry SendSuperMessage(RexxMethodContext *c, CSTRING n, RexxArrayObject a)
 {
     ApiContext context(c);
     try
@@ -181,7 +181,7 @@ RexxObjectPtr RexxEntry SendSuperMessage(RexxMethodContext *c, RexxStringPointer
     return NULLOBJECT;
 }
 
-RexxObjectPtr RexxEntry SendOverrideMessage(RexxMethodContext *c, RexxStringPointer n, RexxClassObject clazz, RexxArrayObject a)
+RexxObjectPtr RexxEntry SendOverrideMessage(RexxMethodContext *c, CSTRING n, RexxClassObject clazz, RexxArrayObject a)
 {
     ApiContext context(c);
     try
@@ -224,7 +224,7 @@ void RexxEntry SetGuardOff(RexxMethodContext *c)
     }
 }
 
-RexxClassObject RexxEntry FindContextClass(RexxMethodContext *c, RexxStringPointer n)
+RexxClassObject RexxEntry FindContextClass(RexxMethodContext *c, CSTRING n)
 {
     ApiContext context(c);
     try

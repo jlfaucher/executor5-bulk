@@ -63,7 +63,7 @@ RexxArrayObject RexxEntry GetCallArguments(RexxCallContext *c)
     return NULLOBJECT;
 }
 
-RexxObjectPtr RexxEntry GetCallArgument(RexxCallContext *c, RexxUnsignedNumber i)
+RexxObjectPtr RexxEntry GetCallArgument(RexxCallContext *c, stringsize_t i)
 {
     ApiContext context(c);
     try
@@ -76,24 +76,24 @@ RexxObjectPtr RexxEntry GetCallArgument(RexxCallContext *c, RexxUnsignedNumber i
     return NULLOBJECT;
 }
 
-void RexxEntry SetContextVariable(RexxCallContext *c, RexxStringPointer n, RexxObjectPtr v)
+void RexxEntry SetContextVariable(RexxCallContext *c, CSTRING n, RexxObjectPtr v)
 {
     ApiContext context(c);
     try
     {
-        context.context->setContextVariable((stringchar_t *)n, (RexxObject *)v);
+        context.context->setContextVariable((const char *)n, (RexxObject *)v);
     }
     catch (ActivityException)
     {
     }
 }
 
-RexxObjectPtr RexxEntry GetContextVariable(RexxCallContext *c, RexxStringPointer n)
+RexxObjectPtr RexxEntry GetContextVariable(RexxCallContext *c, CSTRING n)
 {
     ApiContext context(c);
     try
     {
-        return context.context->getContextVariable((stringchar_t *)n);
+        return context.context->getContextVariable((const char *)n);
     }
     catch (ActivityException)
     {
@@ -101,12 +101,12 @@ RexxObjectPtr RexxEntry GetContextVariable(RexxCallContext *c, RexxStringPointer
     return NULLOBJECT;
 }
 
-void RexxEntry DropContextVariable(RexxCallContext *c, RexxStringPointer n)
+void RexxEntry DropContextVariable(RexxCallContext *c, CSTRING n)
 {
     ApiContext context(c);
     try
     {
-        context.context->dropContextVariable((stringchar_t *)n);
+        context.context->dropContextVariable((const char *)n);
     }
     catch (ActivityException)
     {
@@ -155,24 +155,24 @@ void RexxEntry InvalidRoutine(RexxCallContext *c)
     }
 }
 
-void RexxEntry SetExitContextVariable(RexxExitContext *c, RexxStringPointer n, RexxObjectPtr v)
+void RexxEntry SetExitContextVariable(RexxExitContext *c, CSTRING n, RexxObjectPtr v)
 {
     ApiContext context(c);
     try
     {
-        context.context->setContextVariable((stringchar_t *)n, (RexxObject *)v);
+        context.context->setContextVariable((const char *)n, (RexxObject *)v);
     }
     catch (ActivityException)
     {
     }
 }
 
-RexxObjectPtr RexxEntry GetExitContextVariable(RexxExitContext *c, RexxStringPointer n)
+RexxObjectPtr RexxEntry GetExitContextVariable(RexxExitContext *c, CSTRING n)
 {
     ApiContext context(c);
     try
     {
-        return context.context->getContextVariable((stringchar_t *)n);
+        return context.context->getContextVariable((const char *)n);
     }
     catch (ActivityException)
     {
@@ -180,12 +180,12 @@ RexxObjectPtr RexxEntry GetExitContextVariable(RexxExitContext *c, RexxStringPoi
     return NULLOBJECT;
 }
 
-void RexxEntry DropExitContextVariable(RexxExitContext *c, RexxStringPointer n)
+void RexxEntry DropExitContextVariable(RexxExitContext *c, CSTRING n)
 {
     ApiContext context(c);
     try
     {
-        context.context->dropContextVariable((stringchar_t *)n);
+        context.context->dropContextVariable((const char *)n);
     }
     catch (ActivityException)
     {
@@ -230,7 +230,7 @@ wholenumber_t RexxEntry GetContextFuzz(RexxCallContext *c)
     return 0;
 
 }
-RexxBoolean RexxEntry GetContextForm(RexxCallContext *c)
+logical_t RexxEntry GetContextForm(RexxCallContext *c)
 {
     ApiContext context(c);
     try

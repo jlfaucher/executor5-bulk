@@ -43,7 +43,7 @@
 /******************************************************************************/
 /* activation_rxfuncadd - Method to support RXFUNCADD function                */
 /******************************************************************************/
-RexxRoutine3(RexxBoolean, sysRxfuncadd, CSTRING,name, CSTRING,module, OPTIONAL_CSTRING, proc)
+RexxRoutine3(logical_t, sysRxfuncadd, CSTRING,name, CSTRING,module, OPTIONAL_CSTRING, proc)
 {
     if (proc == NO_CSTRING)              /* no procedure given?               */
     {
@@ -57,7 +57,7 @@ RexxRoutine3(RexxBoolean, sysRxfuncadd, CSTRING,name, CSTRING,module, OPTIONAL_C
 /******************************************************************************/
 /* activation_rxfuncdrop - Method to support RXFUNCDROP function              */
 /******************************************************************************/
-RexxRoutine1(RexxBoolean, sysRxfuncdrop, CSTRING, name)
+RexxRoutine1(logical_t, sysRxfuncdrop, CSTRING, name)
 {
     /* try to drop the function          */
     return RexxDeregisterFunction(name) != 0;
@@ -67,7 +67,7 @@ RexxRoutine1(RexxBoolean, sysRxfuncdrop, CSTRING, name)
 /******************************************************************************/
 /* activation_rxfuncquery - Method to support RXFUNCQUERY function            */
 /******************************************************************************/
-RexxRoutine1(RexxBoolean, sysRxfuncquery, CSTRING,name)
+RexxRoutine1(logical_t, sysRxfuncquery, CSTRING,name)
 {
     // see if the function is there
     return RexxQueryFunction(name) != 0;

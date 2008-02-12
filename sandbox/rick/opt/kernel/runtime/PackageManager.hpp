@@ -71,9 +71,9 @@ public:
     static RoutineClass *resolveRoutine(RexxString *function);
     static RoutineClass *createRegisteredRoutine(RexxString *function);
     static RoutineClass *getLoadedRoutine(RexxString *function);
-    PNATIVEMETHOD resolveMethodEntry(RexxString *package, RexxString *name);
-    PNATIVEROUTINE resolveRoutineEntry(RexxString *package, RexxString *name);
-    PREGISTEREDROUTINE resolveRegisteredRoutineEntry(RexxString *package, RexxString *name);
+    static PNATIVEMETHOD resolveMethodEntry(RexxString *package, RexxString *name);
+    static PNATIVEROUTINE resolveRoutineEntry(RexxString *package, RexxString *name);
+    static PREGISTEREDROUTINE resolveRegisteredRoutineEntry(RexxString *package, RexxString *name);
     static void        addPackageRoutine(RexxString *name, RoutineClass *func);
     static void        loadInternalPackage(RexxString *name, RexxPackageEntry *p);
     static RexxObject *addRegisteredRoutine(RexxString *name, RexxString *module, RexxString *proc);

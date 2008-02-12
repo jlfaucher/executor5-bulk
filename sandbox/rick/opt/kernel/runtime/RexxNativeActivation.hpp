@@ -49,6 +49,8 @@ class RexxNativeCode;
 class ActivityDispatcher;
 class CallbackDispatcher;
 class RexxNativeMethod;
+class RexxNativeRoutine;
+class RegisteredRoutine;
 class RexxStem;
 
 #define MAX_NATIVE_ARGUMENTS 16
@@ -67,7 +69,7 @@ class RexxNativeActivation : public RexxActivationBase
   void live(size_t);
   void liveGeneral(int reason);
   void run(RexxMethod *_method, RexxNativeMethod *_code, RexxObject  *_receiver,
-      RexxString  *_msgname, size_t _argcount, RexxObject **_arglist, ProtectedObject &resultObj);
+      RexxString  *_msgname, RexxObject **_arglist, size_t _argcount, ProtectedObject &resultObj);
   void run(RexxObject *, RexxString *, size_t, RexxObject **, ProtectedObject &);
   void run(ActivityDispatcher &dispatcher);
   void run(CallbackDispatcher &dispatcher);
@@ -113,7 +115,9 @@ class RexxNativeActivation : public RexxActivationBase
   inline RexxStem   *nextStem()         {return this->nextstem;}
   RexxObject *getContextStem(RexxString *name);
   RexxObject *getContextVariable(const char *name);
+  void dropContextVariable(const char *name);
   void setContextVariable(const char *name, RexxObject *value);
+  void checkConditions();
   inline RexxVariableDictionary *nextCurrent()     {return this->nextcurrent;}
   inline RexxCompoundElement *compoundElement() {return this->compoundelement; }
   inline void        setNextVariable(size_t value)           {this->nextvariable = value;}
@@ -133,10 +137,10 @@ class RexxNativeActivation : public RexxActivationBase
   bool objectToValue(RexxObject *o, ValueDescriptor *value);
   void createLocalReference(RexxObject *objr);
   void removeLocalReference(RexxObject *objr);
-  void callNativeFunction(RexxNativeRoutine *code, RexxString *functionName, size_t count,
-      RexxObject **list, ProtectedObject &result);
-  void callRegisteredRoutine(RegisteredRoutine *code, RexxString *functionName, size_t count,
-      RexxObject **list, ProtectedObject &resultObj);
+  void callNativeRoutine(RoutineClass *routine, RexxNativeRoutine *code, RexxString *functionName,
+      RexxObject **list, size_t count, ProtectedObject &result);
+  void callRegisteredRoutine(RoutineClass *routine, RegisteredRoutine *code, RexxString *functionName,
+      RexxObject **list, size_t count, ProtectedObject &resultObj);
 
 protected:
 
@@ -151,6 +155,7 @@ protected:
 
     RexxActivity   *activity;            /* current activity                  */
     RexxMethod     *method;              /* Method to run                     */
+    RoutineClass   *routine;             /* Routine to run                    */
     RexxNativeCode *code;                // the code object controlling the target
     RexxObject     *receiver;            // the object receiving the message
     RexxString     *msgname;             /* name of the message running       */

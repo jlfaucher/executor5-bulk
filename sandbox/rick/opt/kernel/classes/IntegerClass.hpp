@@ -133,6 +133,8 @@ class RexxInteger : public RexxObject {
   RexxObject *evaluate(RexxActivation *, RexxExpressionStack *);
   RexxObject *getValue(RexxActivation *);
   RexxObject *getValue(RexxVariableDictionary *);
+  RexxObject *getRealValue(RexxActivation *);
+  RexxObject *getRealValue(RexxVariableDictionary *);
   RexxString *concat(RexxString *);
   RexxString *concatBlank(RexxString *);
   void        setString(RexxString *string);

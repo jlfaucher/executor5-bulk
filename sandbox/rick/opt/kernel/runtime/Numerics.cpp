@@ -305,7 +305,7 @@ bool Numerics::objectToUnsignedInt64(RexxObject *source, uint64_t &result)
     // is this an integer value (very common)
     if (isInteger(source))
     {
-        result = ((RexxInteger *)source)->stringsize();
+        result = ((RexxInteger *)source)->stringSize();
         return true;
     }
     else
@@ -319,7 +319,7 @@ bool Numerics::objectToUnsignedInt64(RexxObject *source, uint64_t &result)
         }
 
         // if not a valid whole number, reject this too
-        return nString->uint64Value(&result, DIGITS64);
+        return nString->unsignedInt64Value(&result, DIGITS64);
     }
 }
 

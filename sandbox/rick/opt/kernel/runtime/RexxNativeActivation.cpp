@@ -99,6 +99,7 @@ void RexxNativeActivation::live(size_t liveMark)
   memory_mark(this->argArray);
   memory_mark(this->receiver);
   memory_mark(this->method);
+  memory_mark(this->routine);
   memory_mark(this->activity);
   memory_mark(this->activation);
   memory_mark(this->msgname);
@@ -128,6 +129,7 @@ void RexxNativeActivation::liveGeneral(int reason)
   memory_mark_general(this->argArray);
   memory_mark_general(this->receiver);
   memory_mark_general(this->method);
+  memory_mark_general(this->routine);
   memory_mark_general(this->activity);
   memory_mark_general(this->activation);
   memory_mark_general(this->msgname);
@@ -995,7 +997,7 @@ void RexxNativeActivation::removeLocalReference(RexxObject *objr)
  * @param resultObj The returned result object.
  */
 void RexxNativeActivation::run(RexxMethod *_method, RexxNativeMethod *_code, RexxObject  *_receiver,
-    RexxString  *_msgname, size_t _argcount, RexxObject **_arglist, ProtectedObject &resultObj)
+    RexxString  *_msgname, RexxObject **_arglist, size_t _argcount, ProtectedObject &resultObj)
 {
     // anchor the relevant context information
     method = _method;
@@ -1100,15 +1102,19 @@ void RexxNativeActivation::run(RexxMethod *_method, RexxNativeMethod *_code, Rex
 /**
  * Process a native function call.
  *
- * @param entryPoint The target function entry point.
- * @param count      The number of arguments.
- * @param list       The list of arguments.
- * @param result     A protected object to receive the function result.
+ * @param routine   The routine we're executing (used for context resolution).
+ * @param code      The code object.
+ * @param functionName
+ *                  The name of the function.
+ * @param list      The list of arguments.
+ * @param count     The number of arguments.
+ * @param resultObj The return value.
  */
-void RexxNativeActivation::callNativeFunction(RexxNativeRoutine *code, RexxString *functionName, size_t count,
-    RexxObject **list, ProtectedObject &resultObj)
+void RexxNativeActivation::callNativeRoutine(RoutineClass *_routine, RexxNativeRoutine *code, RexxString *functionName,
+    RexxObject **list, size_t count, ProtectedObject &resultObj)
 {
     // anchor the context stuff
+    routine = routine;
     msgname = functionName;
     arglist = list;
     argcount = count;
@@ -1203,15 +1209,16 @@ void RexxNativeActivation::callNativeFunction(RexxNativeRoutine *code, RexxStrin
  * Process a native function call.
  *
  * @param entryPoint The target function entry point.
- * @param count      The number of arguments.
  * @param list       The list of arguments.
+ * @param count      The number of arguments.
  * @param result     A protected object to receive the function result.
  */
-void RexxNativeActivation::callRegisteredRoutine(RegisteredRoutine *code, RexxString *functionName, size_t count,
-    RexxObject **list, ProtectedObject &resultObj)
+void RexxNativeActivation::callRegisteredRoutine(RoutineClass *_routine, RegisteredRoutine *code, RexxString *functionName,
+    RexxObject **list, size_t count, ProtectedObject &resultObj)
 {
     // anchor the context stuff
     msgname = functionName;
+    routine = _routine;
     arglist = list;
     argcount = count;
 
@@ -1594,7 +1601,7 @@ uint64_t RexxNativeActivation::unsignedInt64Value(RexxObject *o, size_t position
     // convert using the whole value range
     if (!Numerics::objectToUnsignedInt64(o, temp))
     {
-        if (activationType == METHOD_INVOCATION)
+        if (activationType == METHOD_ACTIVATION)
         {
             /* this is an error                  */
             reportException(Error_Incorrect_method_whole, position + 1, o);
@@ -2134,12 +2141,12 @@ RexxObject *RexxNativeActivation::getContextStem(RexxString *name)
     RexxVariableBase *retriever = activation->getVariableRetriever(name);
     // if this didn't parse, it's an illegal name
     // it must also resolve to a stem type...this could be a compound one
-    if (retriever == OREF_NULL || !isOfClass(StemVariable, retriever))
+    if (retriever == OREF_NULL || !isOfClass(StemVariableTerm, retriever))
     {
         return OREF_NULL;
     }
     // get the variable value
-    return retriever->getValue(context);
+    return retriever->getValue(activation);
 }
 
 
@@ -2153,7 +2160,7 @@ RexxObject *RexxNativeActivation::getContextStem(RexxString *name)
  */
 RexxObject *RexxNativeActivation::getContextVariable(const char *name)
 {
-    RexxVariableBase *retriever = activation->getVariableRetriever(name);
+    RexxVariableBase *retriever = activation->getVariableRetriever(new_string(name));
     // if this didn't parse, it's an illegal name
     if (retriever == OREF_NULL)
     {
@@ -2170,7 +2177,7 @@ RexxObject *RexxNativeActivation::getContextVariable(const char *name)
     else
     {
         // get the variable value
-        return retriever->realValue(activation);
+        return retriever->getRealValue(activation);
     }
 }
 
@@ -2183,7 +2190,7 @@ RexxObject *RexxNativeActivation::getContextVariable(const char *name)
 void RexxNativeActivation::setContextVariable(const char *name, RexxObject *value)
 {
     // get the REXX activation for the target context
-    RexxVariableBase *retriever = activation->getVariableRetriever(name);
+    RexxVariableBase *retriever = activation->getVariableRetriever(new_string(name));
     // if this didn't parse, it's an illegal name
     if (retriever == OREF_NULL || isString((RexxObject *)retriever))
     {
@@ -2192,7 +2199,7 @@ void RexxNativeActivation::setContextVariable(const char *name, RexxObject *valu
     this->resetNext();               // all next operations must be reset
 
     // do the assignment
-    retriever->set(context, value);
+    retriever->set(activation, value);
 }
 
 
@@ -2204,7 +2211,7 @@ void RexxNativeActivation::setContextVariable(const char *name, RexxObject *valu
 void RexxNativeActivation::dropContextVariable(const char *name)
 {
     // get the REXX activation for the target context
-    RexxVariableBase *retriever = activation->getVariableRetriever(name);
+    RexxVariableBase *retriever = activation->getVariableRetriever(new_string(name));
     // if this didn't parse, it's an illegal name
     if (retriever == OREF_NULL || isString((RexxObject *)retriever))
     {
@@ -2213,7 +2220,7 @@ void RexxNativeActivation::dropContextVariable(const char *name)
     this->resetNext();               // all next operations must be reset
 
     // perform the drop
-    retriever->drop(context);
+    retriever->drop(activation);
 }
 
 void RexxNativeActivation::checkConditions()
@@ -2226,7 +2233,7 @@ void RexxNativeActivation::checkConditions()
     {
         // we're raising this in the previous stack frame.  If it doesn't exist,
         // se just leave this in place so top-level callers can check this.
-        if (activaiton != OREF_NULL)
+        if (activation != OREF_NULL)
         {
             activity->reraiseException(conditionObj);
         }

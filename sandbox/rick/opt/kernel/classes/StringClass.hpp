@@ -177,8 +177,10 @@ class RexxStringClass : public RexxClass {
    RexxObject *logicalOperation(RexxObject *, RexxObject *, unsigned int);
    RexxString *extract(size_t offset, size_t sublength) { return newString(this->getStringData() + offset, sublength); }
    RexxObject *evaluate(RexxActivation *, RexxExpressionStack *);
-   RexxObject *getValue(RexxActivation *context) {return this;}
-   RexxObject *getValue(RexxVariableDictionary *context) {return this;}
+   RexxObject *getValue(RexxActivation *);
+   RexxObject *getValue(RexxVariableDictionary *);
+   RexxObject *getRealValue(RexxActivation *);
+   RexxObject *getRealValue(RexxVariableDictionary *);
                                        /* the following methods are in    */
                                        /* OKBSUBS                         */
    RexxString  *center(RexxInteger *, RexxString *);

@@ -260,6 +260,8 @@ inline uintptr_t HASHOREF(RexxVirtualBase *r) { return ((uintptr_t)r) >> OREFSHI
      virtual RexxObject  *evaluate(RexxActivation *, RexxExpressionStack *) { return OREF_NULL; }
      virtual RexxObject  *getValue(RexxActivation *) { return OREF_NULL; }
      virtual RexxObject  *getValue(RexxVariableDictionary *) { return OREF_NULL; }
+     virtual RexxObject  *getRealValue(RexxActivation *) { return OREF_NULL; }
+     virtual RexxObject  *getRealValue(RexxVariableDictionary *) { return OREF_NULL; }
      virtual void         uninit() {;}
      virtual HashCode     hash()  { return getHashValue(); }
      virtual HashCode     getHashValue()  { return identityHash(); }

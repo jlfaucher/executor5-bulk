@@ -115,7 +115,7 @@ public:
 
     inline RexxObjectPtr ret(RexxObject *o)
     {
-        activity->createLocalReference(o);
+        context->createLocalReference(o);
         return (RexxObjectPtr)o;
     }
 

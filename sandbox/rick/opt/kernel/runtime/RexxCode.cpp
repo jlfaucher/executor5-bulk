@@ -77,6 +77,7 @@ RexxCode::RexxCode(
 
 void RexxCode::call(
     RexxActivity *activity,            /* activity running under            */
+    RoutineClass *routine,             // top level routine instance
     RexxString *msgname,               /* message to be run                 */
     RexxObject**argPtr,                /* arguments to the method           */
     size_t      argcount,              /* the count of arguments            */
@@ -91,7 +92,7 @@ void RexxCode::call(
     // check the stack space before proceeding
     activity->checkStackSpace();       /* have enough stack space?          */
                                        /* add to the activity stack         */
-    RexxActivation *newacta = ActivityManager::newActivation(activity, this, OREF_NULL, calltype, environment, context);
+    RexxActivation *newacta = ActivityManager::newActivation(activity, routine, this, OREF_NULL, calltype, environment, context);
     activity->pushStackFrame(newacta);
                 /* run the method and return result  */
     newacta->run(OREF_NULL, msgname, argPtr, argcount, OREF_NULL, result);
@@ -103,8 +104,8 @@ void RexxCode::run(
     RexxMethod *method,                // the method object getting invoked
     RexxObject *receiver,              /* object receiving the message      */
     RexxString *msgname,               /* message to be run                 */
-    size_t      argcount,              /* the count of arguments            */
     RexxObject**argPtr,                /* arguments to the method           */
+    size_t      argcount,              /* the count of arguments            */
     ProtectedObject &result)           // the method result
 /******************************************************************************/
 /* Function:  Call a method as a top level program or external function call  */

@@ -47,6 +47,9 @@
 #include "StringClass.hpp"
 #include "DirectoryClass.hpp"
 #include "RexxNativeActivation.hpp"
+#include "RexxNativeCode.hpp"
+#include "SourceFile.hpp"
+#include "PackageManager.hpp"
 #include <ctype.h>
 
 
@@ -96,7 +99,7 @@ void RexxNativeMethod::liveGeneral(int reason)
     {
         entry = NULL;
     }
-    RexxNativeCode(liveGeneral(reason);
+    RexxNativeCode::liveGeneral(reason);
 }
 
 
@@ -122,7 +125,7 @@ void RexxNativeRoutine::liveGeneral(int reason)
     {
         entry = NULL;
     }
-    RexxNativeCode(liveGeneral(reason);
+    RexxNativeCode::liveGeneral(reason);
 }
 
 
@@ -131,7 +134,7 @@ void RexxNativeRoutine::flatten(RexxEnvelope *envelope)
 /* Function:  Flatten an object                                               */
 /******************************************************************************/
 {
-  setUpFlatten(RexxNativeMethod)
+  setUpFlatten(RexxNativeRoutine)
    newThis->entry = NULL;
    RexxNativeCode::flatten(envelope);
   cleanUpFlatten
@@ -148,7 +151,7 @@ void RegisteredRoutine::liveGeneral(int reason)
     {
         entry = NULL;
     }
-    RexxNativeCode(liveGeneral(reason);
+    RexxNativeCode::liveGeneral(reason);
 }
 
 
@@ -157,7 +160,7 @@ void RegisteredRoutine::flatten(RexxEnvelope *envelope)
 /* Function:  Flatten an object                                               */
 /******************************************************************************/
 {
-  setUpFlatten(RexxNativeMethod)
+  setUpFlatten(RegisteredRoutine)
    newThis->entry = NULL;
    RexxNativeCode::flatten(envelope);
   cleanUpFlatten
@@ -177,7 +180,7 @@ void RegisteredRoutine::flatten(RexxEnvelope *envelope)
  * @param result   The protected object used to return the result.
  */
 void RexxNativeMethod::run(RexxActivity *activity, RexxMethod *method, RexxObject *receiver, RexxString *messageName,
-    size_t count, RexxObject **argPtr, ProtectedObject &result)
+    RexxObject **argPtr, size_t count, ProtectedObject &result)
 {
     // if this is NULL currently, we need to lazy resolve this entry
     if (entry == NULL)
@@ -187,10 +190,10 @@ void RexxNativeMethod::run(RexxActivity *activity, RexxMethod *method, RexxObjec
     }
 
     // create a new native activation
-    RexxNativeActivation *newNActa = new RexxNativeActivation(activity, method);
+    RexxNativeActivation *newNActa = new RexxNativeActivation(activity);
     activity->pushStackFrame(newNActa);   /* push it on the activity stack     */
                                        /* and go run it                     */
-    newNActa->run(this, receiver, messageName, count, argPtr, result);
+    newNActa->run(method, this, receiver, messageName, argPtr, count, result);
 }
 
 
@@ -205,19 +208,6 @@ void * RexxNativeMethod::operator new(
 
 
 /**
- * Lazy resolve a native method.  This will be done on the first call
- * to a method definition that's been saved and restored.  On
- * restore, we have a potential situation where we need to get
- * the package reloaded and restored before we can resolve the entry
- * point.
- */
-void RexxNativeRoutine::resolve()
-{
-}
-
-
-
-/**
  * Run a method call (vs a straight program call).
  *
  * @param activity The current activity.
@@ -227,20 +217,20 @@ void RexxNativeRoutine::resolve()
  * @param argPtr   The pointer to the arguments.
  * @param result   The protected object used to return the result.
  */
-void RexxNativeRoutine::call(RexxActivity *activity, RexxString *functionName, size_t count, RexxObject **argPtr, ProtectedObject &result)
+void RexxNativeRoutine::call(RexxActivity *activity, RoutineClass *routine, RexxString *functionName, RexxObject **argPtr, size_t count, ProtectedObject &result)
 {
     // if this is NULL currently, we need to lazy resolve this entry
     if (entry == NULL)
     {
         // have the package manager resolve this for us before we make a call
-        entry = PackageManager::resolveFunctionEntry(package, name);
+        entry = PackageManager::resolveRoutineEntry(package, name);
     }
 
     // create a new native activation
     RexxNativeActivation *newNActa = new RexxNativeActivation(activity);
     activity->pushStackFrame(newNActa);   /* push it on the activity stack     */
                                        /* and go run it                     */
-    newNActa->run(this, functionName, count, argPtr, result);
+    newNActa->callNativeRoutine(routine, this, functionName, argPtr, count, result);
 }
 
 
@@ -250,7 +240,7 @@ void * RexxNativeRoutine::operator new(
 /* Function:  Create a new Native method                                    */
 /****************************************************************************/
 {
-    return new_object(size, T_NativeFunction);  // Get new object
+    return new_object(size, T_NativeRoutine);  // Get new object
 }
 
 
@@ -264,20 +254,20 @@ void * RexxNativeRoutine::operator new(
  * @param argPtr   The pointer to the arguments.
  * @param result   The protected object used to return the result.
  */
-void RegisteredRoutine::call(RexxActivity *activity, RexxString *functionName, size_t count, RexxObject **argPtr, ProtectedObject &result)
+void RegisteredRoutine::call(RexxActivity *activity, RoutineClass *routine, RexxString *functionName, RexxObject **argPtr, size_t count, ProtectedObject &result)
 {
     // if this is NULL currently, we need to lazy resolve this entry
     if (entry == NULL)
     {
         // have the package manager resolve this for us before we make a call
-        entry = PackageManager::resolveRegusteredFunctionEntry(package, name);
+        entry = PackageManager::resolveRegisteredRoutineEntry(package, name);
     }
 
     // create a new native activation
     RexxNativeActivation *newNActa = new RexxNativeActivation(activity);
     activity->pushStackFrame(newNActa);   /* push it on the activity stack     */
                                        /* and go run it                     */
-    newNActa->run(this, functionName, count, argPtr, result);
+    newNActa->callRegisteredRoutine(routine, this, functionName, argPtr, count, result);
 }
 
 
@@ -287,5 +277,5 @@ void * RegisteredRoutine::operator new(
 /* Function:  Create a new Native method                                    */
 /****************************************************************************/
 {
-    return new_object(size, T_RegisterdFunction);  // Get new object
+    return new_object(size, T_RegisteredRoutine);  // Get new object
 }

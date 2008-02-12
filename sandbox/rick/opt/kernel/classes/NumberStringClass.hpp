@@ -148,8 +148,10 @@
     RexxString *formatInternal(size_t, size_t, size_t, size_t, RexxNumberString *, size_t, bool);
     RexxObject *operatorNot(RexxObject *);
     RexxObject *evaluate(RexxActivation *, RexxExpressionStack *);
-    RexxObject *getValue(RexxActivation *context){return this;}
-    RexxObject *getValue(RexxVariableDictionary *dictionary){return this;}
+    RexxObject *getValue(RexxActivation *context);
+    RexxObject *getValue(RexxVariableDictionary *dictionary);
+    RexxObject *getRealValue(RexxActivation *);
+    RexxObject *getRealValue(RexxVariableDictionary *);
     RexxObject *trunc(RexxObject *);
     RexxObject *truncInternal(size_t);
     RexxObject *unknown(RexxString *, RexxArray *);

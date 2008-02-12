@@ -119,7 +119,7 @@ void RunRoutineDispatcher::run()
         activity->run(callback);
 
         new_arglist = callback.argumentList;
-        activation->saveObject(new_arglist);
+        activation->createLocalReference(new_arglist);
     }
     // use dummy argument array
     else

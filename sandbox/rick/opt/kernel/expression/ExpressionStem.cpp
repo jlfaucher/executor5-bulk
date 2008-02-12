@@ -137,6 +137,34 @@ RexxObject  *RexxStemVariable::getValue(
   return context->getLocalStem(stem, index);
 }
 
+/**
+ * Retrieve the real value of a stem variable.  Stem variables
+ * will always be created on first reference, so there is no
+ * difference between getValue() and getRealValue().
+ *
+ * @param dictionary The source variable dictionary.
+ *
+ * @return The stem object representing this variable.
+ */
+RexxObject  *RexxStemVariable::getRealValue(RexxVariableDictionary *dictionary)
+{
+  return dictionary->getStem(this->stem);
+}
+
+/**
+ * Retrieve the real value of a stem variable.  Stem variables
+ * will always be created on first reference, so there is no
+ * difference between getValue() and getRealValue().
+ *
+ * @param context The current execution context.
+ *
+ * @return The stem object representing this variable.
+ */
+RexxObject  *RexxStemVariable::getRealValue(RexxActivation *context)
+{
+  return context->getLocalStem(stem, index);
+}
+
 void RexxStemVariable::set(
   RexxActivation *context,             /* current activation context        */
   RexxObject *value )                  /* new value to be assigned          */

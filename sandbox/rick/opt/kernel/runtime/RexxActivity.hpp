@@ -281,6 +281,7 @@ public:
    inline int  getPriority() { return priority; }
 
    inline RexxThreadContext *getThreadContext() { return &threadContext.threadContext; }
+   inline RexxNativeActivation *getApiContext() { return (RexxNativeActivation *)topStackFrame; }
 
    inline void allocateStackFrame(RexxExpressionStack *stack, size_t entries)
    {
@@ -377,5 +378,65 @@ public:
    static CallContextInterface callContextFunctions;
    static ExitContextInterface exitContextFunctions;
  };
+
+
+/**
+ * Convert an API context to into the top native activation
+ * context associated with the thread.
+ *
+ * @param c      The source API context.
+ *
+ * @return A Native activation context that is the anchor point for the
+ *         API activity.
+ */
+inline RexxNativeActivation *contextToActivation(RexxThreadContext *c)
+{
+    return contextToActivity(c)->getApiContext();
+}
+
+
+/**
+ * Convert an API context to into the top native activation
+ * context associated with the thread.
+ *
+ * @param c      The source API context.
+ *
+ * @return A Native activation context that is the anchor point for the
+ *         API activity.
+ */
+inline RexxNativeActivation *contextToActivation(RexxCallContext *c)
+{
+    return ((CallContext *)c)->context;
+}
+
+
+/**
+ * Convert an API context to into the top native activation
+ * context associated with the thread.
+ *
+ * @param c      The source API context.
+ *
+ * @return A Native activation context that is the anchor point for the
+ *         API activity.
+ */
+inline RexxNativeActivation *contextToActivation(RexxExitContext *c)
+{
+    return ((ExitContext *)c)->context;
+}
+
+
+/**
+ * Convert an API context to into the top native activation
+ * context associated with the thread.
+ *
+ * @param c      The source API context.
+ *
+ * @return A Native activation context that is the anchor point for the
+ *         API activity.
+ */
+inline RexxNativeActivation *contextToActivation(RexxMethodContext *c)
+{
+    return ((MethodContext *)c)->context;
+}
 
 #endif

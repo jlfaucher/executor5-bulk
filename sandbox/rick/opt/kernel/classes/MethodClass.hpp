@@ -61,8 +61,8 @@ class BaseCode : public RexxInternalObject
 {
 public:
     virtual void run(RexxActivity *, RexxMethod *, RexxObject *, RexxString *,  size_t, RexxObject **, ProtectedObject &);
-    virtual void call(RexxActivity *, RexxString *,  RexxObject **, size_t, RexxString *, RexxString *, int, ProtectedObject &);
-    virtual void call(RexxActivity *, RexxString *,  RexxObject **, size_t, ProtectedObject &);
+    virtual void call(RexxActivity *, RoutineClass *, RexxString *,  RexxObject **, size_t, RexxString *, RexxString *, int, ProtectedObject &);
+    virtual void call(RexxActivity *, RoutineClass *, RexxString *,  RexxObject **, size_t, ProtectedObject &);
     virtual RexxArray *getSource();
     virtual RexxObject *setSecurityManager(RexxObject *manager);
     virtual RexxSource *getSourceObject();

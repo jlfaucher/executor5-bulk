@@ -125,6 +125,7 @@ RexxActivation::RexxActivation(RexxActivity* _activity, RexxMethod * _method, Re
         setGuarded();
     }
     this->code = _code;                  /* get the REXX method object        */
+    this->method = _method;              // save the method link also
     this->settings.intermediate_trace = false;
     this->activation_context = METHODCALL;  // the context is a method call
                                          /* save the sender activation        */
@@ -161,12 +162,13 @@ RexxActivation::RexxActivation(RexxActivity* _activity, RexxMethod * _method, Re
 }
 
 
-RexxActivation::RexxActivation(RexxActivity *_activity, RexxCode *_code, RexxActivation *_parent,
+RexxActivation::RexxActivation(RexxActivity *_activity, RoutineClass *_routine, RexxCode *_code, RexxActivation *_parent,
     RexxString *calltype, RexxString *env, int context)
 {
     this->clearObject();                 /* start with a fresh object         */
     this->activity = _activity;          /* save the activity pointer         */
     this->code = _code;                  /* get the REXX method object        */
+    this->routine = _routine;            // need to save the target routine also
     if (context == DEBUGPAUSE)           /* actually a debug pause?           */
     {
         this->debug_pause = true;        /* set up for debugging intercepts   */
@@ -750,6 +752,8 @@ void RexxActivation::live(size_t liveMark)
   memory_mark(this->receiver);
   memory_mark(this->scope);
   memory_mark(this->code);
+  memory_mark(this->method);
+  memory_mark(this->routine);
   memory_mark(this->settings.securityManager);
   memory_mark(this->receiver);
   memory_mark(this->activity);
@@ -799,6 +803,8 @@ void RexxActivation::liveGeneral(int reason)
 {
   memory_mark_general(this->receiver);
   memory_mark_general(this->code);
+  memory_mark_general(this->method);
+  memory_mark_general(this->routine);
   memory_mark_general(this->settings.securityManager);
   memory_mark_general(this->receiver);
   memory_mark_general(this->activity);
@@ -1987,7 +1993,7 @@ void RexxActivation::interpret(
                                        /* translate the code                */
   RexxCode * newCode = this->code->interpret(codestring, this->current->getLineNumber());
                                        /* create a new activation           */
-  RexxActivation *newActivation = ActivityManager::newActivation(this->activity, newCode, this, OREF_NULL, OREF_NULL, INTERPRET);
+  RexxActivation *newActivation = ActivityManager::newActivation(this->activity, OREF_NULL, newCode, this, OREF_NULL, OREF_NULL, INTERPRET);
   this->activity->pushStackFrame(newActivation); /* push on the activity stack        */
   ProtectedObject r;
                                        /* run the internal routine on the   */
@@ -2008,7 +2014,7 @@ void RexxActivation::debugInterpret(   /* interpret interactive debug input */
         /* translate the code                */
         RexxCode *newCode = this->code->interpret(codestring, this->current->getLineNumber());
         /* create a new activation           */
-        RexxActivation *newActivation = ActivityManager::newActivation(this->activity, newCode, this, OREF_NULL, OREF_NULL, DEBUGPAUSE);
+        RexxActivation *newActivation = ActivityManager::newActivation(this->activity, OREF_NULL, newCode, this, OREF_NULL, OREF_NULL, DEBUGPAUSE);
         this->activity->pushStackFrame(newActivation); /* push on the activity stack        */
         ProtectedObject r;
                                              /* run the internal routine on the   */
@@ -2341,7 +2347,7 @@ RexxObject * RexxActivation::internalCall(
                                        /* initialize the SIGL variable      */
   this->setLocalVariable(OREF_SIGL, VARIABLE_SIGL, new_integer(lineNum));
                                        /* create a new activation           */
-  newActivation = ActivityManager::newActivation(this->activity,
+  newActivation = ActivityManager::newActivation(this->activity, OREF_NULL,
                  this->settings.parent_code, this, OREF_NULL, OREF_NULL, INTERNALCALL);
 
   this->activity->pushStackFrame(newActivation); /* push on the activity stack        */
@@ -2366,7 +2372,7 @@ RexxObject * RexxActivation::internalCallTrap(
                                        /* initialize the SIGL variable      */
   this->setLocalVariable(OREF_SIGL, VARIABLE_SIGL, new_integer(lineNum));
                                        /* create a new activation           */
-  newActivation = ActivityManager::newActivation(this->activity,
+  newActivation = ActivityManager::newActivation(this->activity, OREF_NULL,
                  this->settings.parent_code, this, OREF_NULL, OREF_NULL, INTERNALCALL);
                                        /* set the new condition object      */
   newActivation->setConditionObj(conditionObj);

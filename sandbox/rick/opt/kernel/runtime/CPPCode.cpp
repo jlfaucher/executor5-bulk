@@ -401,6 +401,7 @@ void AbstractCode::run(RexxActivity *activity, RexxMethod *method, RexxObject *r
 #include "QueueClass.hpp"
 #include "SupplierClass.hpp"
 #include "MethodClass.hpp"
+#include "RoutineClass.hpp"
 #include "RexxEnvelope.hpp"
 #include "MessageClass.hpp"
 #include "StemClass.hpp"
@@ -603,7 +604,7 @@ CPPM(RexxMessage::newRexx),
 
 CPPM(RexxMethod::setUnGuardedRexx),    /* Method methods                    */
 CPPM(RexxMethod::setGuardedRexx),
-CPPM(RexxMethod::source),
+CPPM(BaseExecutable::source),
 CPPM(RexxMethod::setPrivateRexx),
 CPPM(RexxMethod::setProtectedRexx),
 CPPM(RexxMethod::setSecurityManager),
@@ -611,8 +612,11 @@ CPPM(RexxMethod::isGuardedRexx),
 CPPM(RexxMethod::isPrivateRexx),
 CPPM(RexxMethod::isProtectedRexx),
 
-CPPM(RexxMethodClass::newFileRexx),
-CPPM(RexxMethodClass::newRexx),
+CPPM(RexxMethod::newFileRexx),
+CPPM(RexxMethod::newRexx),
+
+CPPM(RoutineClass::newFileRexx),
+CPPM(RoutineClass::newRexx),
 
 CPPM(RexxNumberString::formatRexx),    /* NumberString methods              */
 CPPM(RexxNumberString::trunc),

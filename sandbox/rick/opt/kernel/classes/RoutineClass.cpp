@@ -118,7 +118,7 @@ void RoutineClass::call(
 {
     ProtectedObject p(this);           // belt-and-braces to make sure this is protected
     // just forward this to the code object
-    code->call(activity, msgname, argPtr, argcount, calltype, environment, context, result);
+    code->call(activity, this, msgname, argPtr, argcount, calltype, environment, context, result);
 }
 
 
@@ -134,7 +134,7 @@ void RoutineClass::runProgram(
 /****************************************************************************/
 {
     ProtectedObject p(this);           // belt-and-braces to make sure this is protected
-    code->call(activity, OREF_NONE, arguments, argCount, calltype, environment, PROGRAMCALL, result);
+    code->call(activity, this, OREF_NONE, arguments, argCount, calltype, environment, PROGRAMCALL, result);
 }
 
 

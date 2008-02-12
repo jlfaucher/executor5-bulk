@@ -266,10 +266,11 @@ void ActivityManager::shutdown()
 
 
 /**
- * Create a new activation for CALLing a method (vs. a method
+ * Create a new activation for CALLing a routine (vs. a method
  * invocation).
  *
  * @param activity The activity we're running on.
+ * @param routine  The routine object we're calling.
  * @param code     The code object associated with the method.
  * @param parent   The parent activation.  OREF_NULL is used if this is a top-level
  *                 call.
@@ -280,7 +281,7 @@ void ActivityManager::shutdown()
  *
  * @return The newly created activation.
  */
-RexxActivation *ActivityManager::newActivation(RexxActivity *activity, RexxCode *code, RexxActivation *parent, RexxString *calltype, RexxString *environment, int context)
+RexxActivation *ActivityManager::newActivation(RexxActivity *activity, RoutineClass *routine, RexxCode *code, RexxActivation *parent, RexxString *calltype, RexxString *environment, int context)
 {
 
     if (activationCacheSize != 0)  /* have a cached entry?              */
@@ -290,7 +291,7 @@ RexxActivation *ActivityManager::newActivation(RexxActivity *activity, RexxCode 
         RexxActivation *resultActivation = (RexxActivation *)activations->stackTop();
         /* reactivate this                   */
         resultActivation->setHasReferences();
-        resultActivation = new (resultActivation) RexxActivation(activity, code, parent, calltype, environment, context);
+        resultActivation = new (resultActivation) RexxActivation(activity, routine, code, parent, calltype, environment, context);
         activations->pop();          /* Remove reused activation from stac*/
         return resultActivation;
 
@@ -298,7 +299,7 @@ RexxActivation *ActivityManager::newActivation(RexxActivity *activity, RexxCode 
     else                                 /* need to create a new one          */
     {
         /* Create new Activation.            */
-        return new RexxActivation(activity, code, parent, calltype, environment, context);
+        return new RexxActivation(activity, routine, code, parent, calltype, environment, context);
     }
 }
 
@@ -888,6 +889,6 @@ NativeContextBlock::~NativeContextBlock()
  */
 RexxObject *NativeContextBlock::protect(RexxObject *o)
 {
-    self->saveObject(o);
+    self->createLocalReference(o);
     return o;
 }

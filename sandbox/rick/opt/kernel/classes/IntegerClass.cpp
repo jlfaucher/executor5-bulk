@@ -1024,6 +1024,26 @@ RexxObject  *RexxInteger::getValue(
   return (RexxObject *)this;           /* just return this value            */
 }
 
+
+RexxObject  *RexxInteger::getRealValue(
+    RexxActivation *context)           /* current activation context        */
+/******************************************************************************/
+/* Function:  Polymorphic get_value function used with expression terms       */
+/******************************************************************************/
+{
+  return (RexxObject *)this;           /* just return this value            */
+}
+
+
+RexxObject  *RexxInteger::getRealValue(
+    RexxVariableDictionary *context)   /* current activation context        */
+/******************************************************************************/
+/* Function:  Polymorphic get_value function used with expression terms       */
+/******************************************************************************/
+{
+  return (RexxObject *)this;           /* just return this value            */
+}
+
 /* **************************************** */
 /*  Integer class methods begin here .....  */
 /* **************************************** */

@@ -181,8 +181,8 @@ RexxObject * activation_find  (void);
    inline void  operator delete(void *, void *) { ; }
 
    inline RexxActivation(RESTORETYPE restoreType) { ; };
-   RexxActivation(RexxActivity* _activity, RexxMethod * _method, RexxCode *_code);
-   RexxActivation(RexxActivity *_activity, RexxCode *_code, RexxActivation *_parent, RexxString *calltype, RexxString *env, int context);
+   RexxActivation(RexxActivity* _activity, RexxMethod *_method, RexxCode *_code);
+   RexxActivation(RexxActivity *_activity, RoutineClass *_routine, RexxCode *_code, RexxActivation *_parent, RexxString *calltype, RexxString *env, int context);
    void init(RexxObject *, RexxObject *, RexxObject *, RexxObject *, RexxObject *, int);
    void live(size_t);
    void liveGeneral(int reason);
@@ -661,6 +661,8 @@ RexxObject * activation_find  (void);
 
    ActivationSettings   settings;      /* inherited REXX settings           */
    RexxExpressionStack  stack;         /* current evaluation stack          */
+   RexxMethod          *method;        // for a method invocation
+   RoutineClass        *routine;       // for a routine invocation
    RexxCode            *code;          /* rexx method object                */
    RexxClass           *scope;         // scope of any active method call
    RexxObject          *receiver;      /* target of a message invocation    */

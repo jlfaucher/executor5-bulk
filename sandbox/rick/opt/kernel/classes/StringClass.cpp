@@ -1630,6 +1630,46 @@ void RexxString::copyToRxstring(RXSTRING &r)
 }
 
 
+RexxObject  *RexxString::getValue(
+    RexxActivation *context)           /* current activation context        */
+/******************************************************************************/
+/* Function:  Polymorphic get_value function used with expression terms       */
+/******************************************************************************/
+{
+  return (RexxObject *)this;           /* just return this value            */
+}
+
+
+RexxObject  *RexxString::getValue(
+    RexxVariableDictionary *context)   /* current activation context        */
+/******************************************************************************/
+/* Function:  Polymorphic get_value function used with expression terms       */
+/******************************************************************************/
+{
+  return (RexxObject *)this;           /* just return this value            */
+}
+
+
+RexxObject  *RexxString::getRealValue(
+    RexxActivation *context)           /* current activation context        */
+/******************************************************************************/
+/* Function:  Polymorphic get_value function used with expression terms       */
+/******************************************************************************/
+{
+  return (RexxObject *)this;           /* just return this value            */
+}
+
+
+RexxObject  *RexxString::getRealValue(
+    RexxVariableDictionary *context)   /* current activation context        */
+/******************************************************************************/
+/* Function:  Polymorphic get_value function used with expression terms       */
+/******************************************************************************/
+{
+  return (RexxObject *)this;           /* just return this value            */
+}
+
+
 RexxString *RexxString::newString(const char *string, size_t length)
 /******************************************************************************/
 /* Function:  Allocate (and initialize) a string object                       */

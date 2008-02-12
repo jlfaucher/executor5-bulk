@@ -54,7 +54,7 @@ void RexxEntry Terminate(RexxInstance  *c)
     context.instance->terminate();
 }
 
-RexxBoolean RexxEntry AttachThread(RexxInstance *c, RexxThreadContext **tc)
+logical_t RexxEntry AttachThread(RexxInstance *c, RexxThreadContext **tc)
 {
     InstanceApiContext context(c);
     return context.instance->attachThread(tc);
@@ -66,16 +66,16 @@ void RexxEntry Halt(RexxInstance *c)
     context.instance->halt();
 }
 
-void RexxEntry SetTrace(RexxInstance *c, RexxBoolean setting)
+void RexxEntry SetTrace(RexxInstance *c, logical_t setting)
 {
     InstanceApiContext context(c);
     context.instance->setTrace(setting != 0);
 }
 
 
-RexxBoolean RexxEntry CreateScriptContext(RexxInstance *c, RexxScriptContext **sc, RexxOption *o)
+logical_t RexxEntry CreateScriptContext(RexxInstance *c, RexxScriptContext **sc, RexxOption *o)
 {
-    return (RexxBoolean)false;
+    return (logical_t)false;
 }
 
 END_EXTERN_C()

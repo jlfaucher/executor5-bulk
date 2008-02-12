@@ -2720,6 +2720,46 @@ RexxString *RexxNumberString::d2xD2c(
   return Retval;                       /* return proper result              */
 }
 
+
+RexxObject  *RexxNumberString::getValue(
+    RexxActivation *context)           /* current activation context        */
+/******************************************************************************/
+/* Function:  Polymorphic get_value function used with expression terms       */
+/******************************************************************************/
+{
+  return (RexxObject *)this;           /* just return this value            */
+}
+
+
+RexxObject  *RexxNumberString::getValue(
+    RexxVariableDictionary *context)   /* current activation context        */
+/******************************************************************************/
+/* Function:  Polymorphic get_value function used with expression terms       */
+/******************************************************************************/
+{
+  return (RexxObject *)this;           /* just return this value            */
+}
+
+
+RexxObject  *RexxNumberString::getRealValue(
+    RexxActivation *context)           /* current activation context        */
+/******************************************************************************/
+/* Function:  Polymorphic get_value function used with expression terms       */
+/******************************************************************************/
+{
+  return (RexxObject *)this;           /* just return this value            */
+}
+
+
+RexxObject  *RexxNumberString::getRealValue(
+    RexxVariableDictionary *context)   /* current activation context        */
+/******************************************************************************/
+/* Function:  Polymorphic get_value function used with expression terms       */
+/******************************************************************************/
+{
+  return (RexxObject *)this;           /* just return this value            */
+}
+
 void  *RexxNumberString::operator new(size_t size, size_t length)
 /******************************************************************************/
 /* Function:  Create a new NumberString object                                */

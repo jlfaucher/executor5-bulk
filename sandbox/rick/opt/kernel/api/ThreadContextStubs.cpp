@@ -88,7 +88,7 @@ void RexxEntry HaltThread(RexxThreadContext *c)
 }
 
 
-void RexxEntry SetThreadTrace(RexxThreadContext *c, RexxBoolean setting)
+void RexxEntry SetThreadTrace(RexxThreadContext *c, logical_t setting)
 {
     ApiContext context(c);
     try
@@ -143,7 +143,7 @@ void RexxEntry ReleaseLocalReference(RexxThreadContext *c, RexxObjectPtr o)
 
 //NB:  The name "SendMessage" has a conflict with a Windows API, so this name differs from
 // the call vector version.
-RexxObjectPtr RexxEntry SendMessageArray(RexxThreadContext *c, RexxObjectPtr o, RexxStringPointer m, RexxArrayObject a)
+RexxObjectPtr RexxEntry SendMessageArray(RexxThreadContext *c, RexxObjectPtr o, CSTRING m, RexxArrayObject a)
 {
     ApiContext context(c);
     try
@@ -157,7 +157,7 @@ RexxObjectPtr RexxEntry SendMessageArray(RexxThreadContext *c, RexxObjectPtr o, 
 }
 
 
-RexxObjectPtr RexxEntry SendMessage0(RexxThreadContext *c, RexxObjectPtr o, RexxStringPointer m)
+RexxObjectPtr RexxEntry SendMessage0(RexxThreadContext *c, RexxObjectPtr o, CSTRING m)
 {
     ApiContext context(c);
     try
@@ -171,7 +171,7 @@ RexxObjectPtr RexxEntry SendMessage0(RexxThreadContext *c, RexxObjectPtr o, Rexx
 }
 
 
-RexxObjectPtr RexxEntry SendMessage1(RexxThreadContext *c, RexxObjectPtr o, RexxStringPointer m, RexxObjectPtr a1)
+RexxObjectPtr RexxEntry SendMessage1(RexxThreadContext *c, RexxObjectPtr o, CSTRING m, RexxObjectPtr a1)
 {
     ApiContext context(c);
     try
@@ -184,7 +184,7 @@ RexxObjectPtr RexxEntry SendMessage1(RexxThreadContext *c, RexxObjectPtr o, Rexx
     return NULLOBJECT;
 }
 
-RexxObjectPtr RexxEntry SendMessage2(RexxThreadContext *c, RexxObjectPtr o, RexxStringPointer m, RexxObjectPtr a1, RexxObjectPtr a2)
+RexxObjectPtr RexxEntry SendMessage2(RexxThreadContext *c, RexxObjectPtr o, CSTRING m, RexxObjectPtr a1, RexxObjectPtr a2)
 {
     ApiContext context(c);
     try
@@ -225,7 +225,7 @@ RexxDirectoryObject RexxEntry GetGlobalEnvironment(RexxThreadContext *c)
 }
 
 
-RexxBoolean RexxEntry IsSameType(RexxThreadContext *c, RexxObjectPtr o1, RexxObjectPtr o2)
+logical_t RexxEntry IsSameType(RexxThreadContext *c, RexxObjectPtr o1, RexxObjectPtr o2)
 {
     ApiContext context(c);
     try
@@ -239,7 +239,7 @@ RexxBoolean RexxEntry IsSameType(RexxThreadContext *c, RexxObjectPtr o1, RexxObj
 }
 
 
-RexxBoolean RexxEntry IsInstanceOf(RexxThreadContext *c, RexxObjectPtr o, RexxClassObject cl)
+logical_t RexxEntry IsInstanceOf(RexxThreadContext *c, RexxObjectPtr o, RexxClassObject cl)
 {
     ApiContext context(c);
     try
@@ -253,7 +253,7 @@ RexxBoolean RexxEntry IsInstanceOf(RexxThreadContext *c, RexxObjectPtr o, RexxCl
 }
 
 
-RexxClassObject RexxEntry FindClass(RexxThreadContext *c, RexxStringPointer n)
+RexxClassObject RexxEntry FindClass(RexxThreadContext *c, CSTRING n)
 {
     ApiContext context(c);
     try
@@ -270,7 +270,7 @@ RexxClassObject RexxEntry FindClass(RexxThreadContext *c, RexxStringPointer n)
 }
 
 
-RexxClassObject RexxEntry FindClassFromMethod(RexxThreadContext *c, RexxMethodObject m, RexxStringPointer n)
+RexxClassObject RexxEntry FindClassFromMethod(RexxThreadContext *c, RexxMethodObject m, CSTRING n)
 {
     ApiContext context(c);
     try
@@ -287,7 +287,7 @@ RexxClassObject RexxEntry FindClassFromMethod(RexxThreadContext *c, RexxMethodOb
 }
 
 
-RexxBoolean RexxEntry HasMethod(RexxThreadContext *c, RexxObjectPtr o, RexxStringPointer n)
+logical_t RexxEntry HasMethod(RexxThreadContext *c, RexxObjectPtr o, CSTRING n)
 {
     ApiContext context(c);
     try
@@ -303,7 +303,7 @@ RexxBoolean RexxEntry HasMethod(RexxThreadContext *c, RexxObjectPtr o, RexxStrin
 }
 
 
-RexxMethodObject RexxEntry NewMethod(RexxThreadContext *c, RexxStringPointer source, RexxUnsignedNumber length)
+RexxMethodObject RexxEntry NewMethod(RexxThreadContext *c, CSTRING source, stringsize_t length)
 {
     ApiContext context(c);
     try
@@ -386,7 +386,7 @@ RexxBufferObject RexxEntry SaveMethod(RexxThreadContext *c, RexxMethodObject m)
     return NULLOBJECT;
 }
 
-RexxMethodObject RexxEntry LoadMethod(RexxThreadContext *c, RexxStringPointer d, size_t l)
+RexxMethodObject RexxEntry LoadMethod(RexxThreadContext *c, CSTRING d, size_t l)
 {
     ApiContext context(c);
     try
@@ -455,7 +455,7 @@ RexxObjectPtr RexxEntry ValueToObject(RexxThreadContext *c, ValueDescriptor *d)
     return NULLOBJECT;
 }
 
-RexxBoolean RexxEntry ObjectToValue(RexxThreadContext *c, RexxObjectPtr o, ValueDescriptor *d)
+logical_t RexxEntry ObjectToValue(RexxThreadContext *c, RexxObjectPtr o, ValueDescriptor *d)
 {
     ApiContext context(c);
     try
@@ -471,7 +471,7 @@ RexxBoolean RexxEntry ObjectToValue(RexxThreadContext *c, RexxObjectPtr o, Value
     return FALSE;
 }
 
-RexxObjectPtr RexxEntry UnsignedNumberToObject(RexxThreadContext *c, RexxUnsignedNumber n)
+RexxObjectPtr RexxEntry UnsignedNumberToObject(RexxThreadContext *c, stringsize_t n)
 {
     ApiContext context(c);
     try
@@ -485,7 +485,7 @@ RexxObjectPtr RexxEntry UnsignedNumberToObject(RexxThreadContext *c, RexxUnsigne
 }
 
 
-RexxBoolean RexxEntry ObjectToNumber(RexxThreadContext *c, RexxObjectPtr o, wholenumber_t *n)
+logical_t RexxEntry ObjectToNumber(RexxThreadContext *c, RexxObjectPtr o, wholenumber_t *n)
 {
     ApiContext context(c);
     try
@@ -506,7 +506,7 @@ RexxBoolean RexxEntry ObjectToNumber(RexxThreadContext *c, RexxObjectPtr o, whol
 }
 
 
-RexxBoolean RexxEntry ObjectToUnsignedNumber(RexxThreadContext * c, RexxObjectPtr o, RexxUnsignedNumber * n)
+logical_t RexxEntry ObjectToUnsignedNumber(RexxThreadContext * c, RexxObjectPtr o, stringsize_t * n)
 {
     ApiContext context(c);
     try
@@ -515,7 +515,7 @@ RexxBoolean RexxEntry ObjectToUnsignedNumber(RexxThreadContext * c, RexxObjectPt
         // this uses the entire value range
         if (Numerics::objectToStringSize((RexxObject *)o, temp, SIZE_MAX))
         {
-            *n = (RexxUnsignedNumber)temp;
+            *n = (stringsize_t)temp;
             return true;
         }
         return false;
@@ -552,7 +552,7 @@ RexxObjectPtr RexxEntry UnsignedInt64ToObject(RexxThreadContext * c, uint64_t n)
     return NULLOBJECT;
 }
 
-RexxBoolean RexxEntry ObjectToInt64(RexxThreadContext *c, RexxObjectPtr o, int64_t * n)
+logical_t RexxEntry ObjectToInt64(RexxThreadContext *c, RexxObjectPtr o, int64_t * n)
 {
     ApiContext context(c);
     try
@@ -566,7 +566,7 @@ RexxBoolean RexxEntry ObjectToInt64(RexxThreadContext *c, RexxObjectPtr o, int64
     return 0;
 }
 
-RexxBoolean RexxEntry ObjectToUnsignedInt64(RexxThreadContext *c, RexxObjectPtr o, uint64_t *n)
+logical_t RexxEntry ObjectToUnsignedInt64(RexxThreadContext *c, RexxObjectPtr o, uint64_t *n)
 {
     ApiContext context(c);
     try
@@ -580,7 +580,7 @@ RexxBoolean RexxEntry ObjectToUnsignedInt64(RexxThreadContext *c, RexxObjectPtr 
     return 0;
 }
 
-RexxBoolean RexxEntry ObjectToUintptr(RexxThreadContext * c, RexxObjectPtr o, uintptr_t * n)
+logical_t RexxEntry ObjectToUintptr(RexxThreadContext * c, RexxObjectPtr o, uintptr_t * n)
 {
     ApiContext context(c);
     try
@@ -620,7 +620,7 @@ RexxObjectPtr RexxEntry DoubleToObjectWithPrecision(RexxThreadContext *c, double
     return NULLOBJECT;
 }
 
-RexxBoolean RexxEntry ObjectToDouble(RexxThreadContext *c, RexxObjectPtr o, double *n)
+logical_t RexxEntry ObjectToDouble(RexxThreadContext *c, RexxObjectPtr o, double *n)
 {
     ApiContext context(c);
     try
@@ -646,14 +646,14 @@ RexxStringObject RexxEntry ObjectToString(RexxThreadContext *c, RexxObjectPtr o)
     return NULLOBJECT;
 }
 
-RexxStringPointer RexxEntry ObjectToStringValue(RexxThreadContext *c, RexxObjectPtr o)
+CSTRING RexxEntry ObjectToStringValue(RexxThreadContext *c, RexxObjectPtr o)
 {
     ApiContext context(c);
     try
     {
         RexxString *temp = REQUEST_STRING(o);
         context.ret(temp);
-        return (RexxStringPointer)temp->getStringData();
+        return (CSTRING)temp->getStringData();
     }
     catch (ActivityException)
     {
@@ -661,7 +661,7 @@ RexxStringPointer RexxEntry ObjectToStringValue(RexxThreadContext *c, RexxObject
     return NULL;
 }
 
-size_t RexxEntry StringGet(RexxThreadContext *c, RexxStringObject s, size_t o, RexxStringPointer r, size_t l)
+size_t RexxEntry StringGet(RexxThreadContext *c, RexxStringObject s, size_t o, CSTRING r, size_t l)
 {
     ApiContext context(c);
     try
@@ -689,13 +689,13 @@ size_t RexxEntry StringLength(RexxThreadContext *c, RexxStringObject s)
     return 0;
 }
 
-RexxStringPointer RexxEntry StringData(RexxThreadContext *c, RexxStringObject s)
+CSTRING RexxEntry StringData(RexxThreadContext *c, RexxStringObject s)
 {
     ApiContext context(c);
     try
     {
         RexxString *temp = (RexxString *)s;
-        return (RexxStringPointer)temp->getStringData();
+        return (CSTRING)temp->getStringData();
     }
     catch (ActivityException)
     {
@@ -703,7 +703,7 @@ RexxStringPointer RexxEntry StringData(RexxThreadContext *c, RexxStringObject s)
     return NULL;
 }
 
-RexxStringObject RexxEntry NewString(RexxThreadContext *c, RexxStringPointer s, size_t l)
+RexxStringObject RexxEntry NewString(RexxThreadContext *c, CSTRING s, size_t l)
 {
     ApiContext context(c);
     try
@@ -716,7 +716,7 @@ RexxStringObject RexxEntry NewString(RexxThreadContext *c, RexxStringPointer s, 
     return NULLOBJECT;
 }
 
-RexxStringObject RexxEntry NewStringFromAsciiz(RexxThreadContext *c, RexxStringPointer s)
+RexxStringObject RexxEntry NewStringFromAsciiz(RexxThreadContext *c, CSTRING s)
 {
     ApiContext context(c);
     try
@@ -757,7 +757,7 @@ RexxStringObject RexxEntry StringLower(RexxThreadContext *c, RexxStringObject s)
     return NULLOBJECT;
 }
 
-RexxBoolean RexxEntry IsString(RexxThreadContext *c, RexxObjectPtr o)
+logical_t RexxEntry IsString(RexxThreadContext *c, RexxObjectPtr o)
 {
     ApiContext context(c);
     try
@@ -797,13 +797,13 @@ size_t  RexxEntry BufferStringLength(RexxThreadContext *c, RexxBufferStringObjec
     return 0;
 }
 
-RexxStringPointer RexxEntry BufferStringData(RexxThreadContext *c, RexxBufferStringObject s)
+CSTRING RexxEntry BufferStringData(RexxThreadContext *c, RexxBufferStringObject s)
 {
     ApiContext context(c);
     try
     {
         RexxString *temp = (RexxString *)s;
-        return (RexxStringPointer)temp->getStringData();
+        return (CSTRING)temp->getStringData();
     }
     catch (ActivityException)
     {
@@ -877,7 +877,7 @@ RexxTableObject RexxEntry NewTable(RexxThreadContext *c)
     return OREF_NULL;
 }
 
-RexxBoolean RexxEntry IsTable(RexxThreadContext *c, RexxObjectPtr o)
+logical_t RexxEntry IsTable(RexxThreadContext *c, RexxObjectPtr o)
 {
     ApiContext context(c);
     try
@@ -890,7 +890,7 @@ RexxBoolean RexxEntry IsTable(RexxThreadContext *c, RexxObjectPtr o)
     return FALSE;
 }
 
-void  RexxEntry DirectoryPut(RexxThreadContext *c, RexxDirectoryObject t, RexxObjectPtr o, RexxStringPointer i)
+void  RexxEntry DirectoryPut(RexxThreadContext *c, RexxDirectoryObject t, RexxObjectPtr o, CSTRING i)
 {
     ApiContext context(c);
     try
@@ -902,7 +902,7 @@ void  RexxEntry DirectoryPut(RexxThreadContext *c, RexxDirectoryObject t, RexxOb
     }
 }
 
-RexxObjectPtr RexxEntry DirectoryAt(RexxThreadContext *c, RexxDirectoryObject t, RexxStringPointer i)
+RexxObjectPtr RexxEntry DirectoryAt(RexxThreadContext *c, RexxDirectoryObject t, CSTRING i)
 {
     ApiContext context(c);
     try
@@ -915,7 +915,7 @@ RexxObjectPtr RexxEntry DirectoryAt(RexxThreadContext *c, RexxDirectoryObject t,
     return OREF_NULL;
 }
 
-RexxObjectPtr RexxEntry DirectoryRemove(RexxThreadContext *c, RexxDirectoryObject t, RexxStringPointer i)
+RexxObjectPtr RexxEntry DirectoryRemove(RexxThreadContext *c, RexxDirectoryObject t, CSTRING i)
 {
     ApiContext context(c);
     try
@@ -941,7 +941,7 @@ RexxDirectoryObject RexxEntry NewDirectory(RexxThreadContext *c)
     return OREF_NULL;
 }
 
-RexxBoolean RexxEntry IsDirectory(RexxThreadContext *c, RexxObjectPtr o)
+logical_t RexxEntry IsDirectory(RexxThreadContext *c, RexxObjectPtr o)
 {
     ApiContext context(c);
     try
@@ -954,7 +954,7 @@ RexxBoolean RexxEntry IsDirectory(RexxThreadContext *c, RexxObjectPtr o)
     return FALSE;
 }
 
-RexxObjectPtr RexxEntry ArrayAt(RexxThreadContext *c, RexxArrayObject a, RexxUnsignedNumber i)
+RexxObjectPtr RexxEntry ArrayAt(RexxThreadContext *c, RexxArrayObject a, stringsize_t i)
 {
     ApiContext context(c);
     try
@@ -967,7 +967,7 @@ RexxObjectPtr RexxEntry ArrayAt(RexxThreadContext *c, RexxArrayObject a, RexxUns
     return OREF_NULL;
 }
 
-RexxBoolean RexxEntry ArrayHasIndex(RexxThreadContext *c, RexxArrayObject a, RexxUnsignedNumber i)
+logical_t RexxEntry ArrayHasIndex(RexxThreadContext *c, RexxArrayObject a, stringsize_t i)
 {
     ApiContext context(c);
     try
@@ -980,7 +980,7 @@ RexxBoolean RexxEntry ArrayHasIndex(RexxThreadContext *c, RexxArrayObject a, Rex
     return FALSE;
 }
 
-void RexxEntry ArrayPut(RexxThreadContext *c, RexxArrayObject a, RexxObjectPtr o, RexxUnsignedNumber i)
+void RexxEntry ArrayPut(RexxThreadContext *c, RexxArrayObject a, RexxObjectPtr o, stringsize_t i)
 {
     ApiContext context(c);
     try
@@ -992,7 +992,7 @@ void RexxEntry ArrayPut(RexxThreadContext *c, RexxArrayObject a, RexxObjectPtr o
     }
 }
 
-RexxUnsignedNumber RexxEntry ArraySize(RexxThreadContext *c, RexxArrayObject a)
+stringsize_t RexxEntry ArraySize(RexxThreadContext *c, RexxArrayObject a)
 {
     ApiContext context(c);
     try
@@ -1018,7 +1018,7 @@ wholenumber_t RexxEntry ArrayDimension(RexxThreadContext *c, RexxArrayObject a)
     return 0;
 }
 
-RexxArrayObject RexxEntry NewArray(RexxThreadContext *c, RexxUnsignedNumber s)
+RexxArrayObject RexxEntry NewArray(RexxThreadContext *c, stringsize_t s)
 {
     ApiContext context(c);
     try
@@ -1058,7 +1058,7 @@ RexxArrayObject RexxEntry ArrayOfTwo(RexxThreadContext *c, RexxObjectPtr o1, Rex
 }
 
 
-RexxBoolean RexxEntry IsArray(RexxThreadContext *c, RexxObjectPtr o)
+logical_t RexxEntry IsArray(RexxThreadContext *c, RexxObjectPtr o)
 {
     ApiContext context(c);
     try
@@ -1071,12 +1071,12 @@ RexxBoolean RexxEntry IsArray(RexxThreadContext *c, RexxObjectPtr o)
     return FALSE;
 }
 
-RexxStringPointer RexxEntry BufferData(RexxThreadContext *c, RexxBufferObject b)
+CSTRING RexxEntry BufferData(RexxThreadContext *c, RexxBufferObject b)
 {
     ApiContext context(c);
     try
     {
-        return (RexxStringPointer)((RexxBuffer *)b)->address();
+        return (CSTRING)((RexxBuffer *)b)->address();
     }
     catch (ActivityException)
     {
@@ -1097,7 +1097,7 @@ wholenumber_t RexxEntry BufferLength(RexxThreadContext *c, RexxBufferObject b)
     return 0;
 }
 
-RexxBufferObject RexxEntry NewBuffer(RexxThreadContext *c, RexxUnsignedNumber l)
+RexxBufferObject RexxEntry NewBuffer(RexxThreadContext *c, stringsize_t l)
 {
     ApiContext context(c);
     try
@@ -1110,7 +1110,7 @@ RexxBufferObject RexxEntry NewBuffer(RexxThreadContext *c, RexxUnsignedNumber l)
     return NULLOBJECT;
 }
 
-RexxBoolean RexxEntry IsBuffer(RexxThreadContext *c, RexxObjectPtr o)
+logical_t RexxEntry IsBuffer(RexxThreadContext *c, RexxObjectPtr o)
 {
     ApiContext context(c);
     try
@@ -1149,7 +1149,7 @@ RexxIntegerObject RexxEntry NewInteger(RexxThreadContext *c, wholenumber_t n)
     return NULLOBJECT;
 }
 
-RexxBoolean RexxEntry IsInteger(RexxThreadContext *c, RexxObjectPtr o)
+logical_t RexxEntry IsInteger(RexxThreadContext *c, RexxObjectPtr o)
 {
     ApiContext context(c);
     try
@@ -1188,7 +1188,7 @@ RexxPointerObject RexxEntry NewPointer(RexxThreadContext *c, POINTER p)
     return NULLOBJECT;
 }
 
-RexxBoolean RexxEntry IsPointer(RexxThreadContext *c, RexxObjectPtr o)
+logical_t RexxEntry IsPointer(RexxThreadContext *c, RexxObjectPtr o)
 {
     ApiContext context(c);
     try
@@ -1227,7 +1227,7 @@ RexxObjectPtr RexxEntry SupplierIndex(RexxThreadContext *c, RexxSupplierObject o
     return NULLOBJECT;
 }
 
-RexxBoolean RexxEntry SupplierAvailable(RexxThreadContext *c, RexxSupplierObject o)
+logical_t RexxEntry SupplierAvailable(RexxThreadContext *c, RexxSupplierObject o)
 {
     ApiContext context(c);
     try
@@ -1265,7 +1265,7 @@ RexxSupplierObject RexxEntry NewSupplier(RexxThreadContext *c, RexxArrayObject v
     return NULLOBJECT;
 }
 
-void RexxEntry SetStemElement(RexxThreadContext *c, RexxStemObject s, RexxStringPointer n, RexxObjectPtr v)
+void RexxEntry SetStemElement(RexxThreadContext *c, RexxStemObject s, CSTRING n, RexxObjectPtr v)
 {
     ApiContext context(c);
     try
@@ -1277,7 +1277,7 @@ void RexxEntry SetStemElement(RexxThreadContext *c, RexxStemObject s, RexxString
     }
 }
 
-RexxObjectPtr RexxEntry GetStemElement(RexxThreadContext *c, RexxStemObject s, RexxStringPointer n)
+RexxObjectPtr RexxEntry GetStemElement(RexxThreadContext *c, RexxStemObject s, CSTRING n)
 {
     ApiContext context(c);
     try
@@ -1290,7 +1290,7 @@ RexxObjectPtr RexxEntry GetStemElement(RexxThreadContext *c, RexxStemObject s, R
     return NULLOBJECT;
 }
 
-void RexxEntry DropStemElement(RexxThreadContext *c, RexxStemObject s, RexxStringPointer n)
+void RexxEntry DropStemElement(RexxThreadContext *c, RexxStemObject s, CSTRING n)
 {
     ApiContext context(c);
     try
@@ -1302,7 +1302,7 @@ void RexxEntry DropStemElement(RexxThreadContext *c, RexxStemObject s, RexxStrin
     }
 }
 
-void RexxEntry SetStemArrayElement(RexxThreadContext *c, RexxStemObject s, RexxUnsignedNumber i, RexxObjectPtr v)
+void RexxEntry SetStemArrayElement(RexxThreadContext *c, RexxStemObject s, stringsize_t i, RexxObjectPtr v)
 {
     ApiContext context(c);
     try
@@ -1314,7 +1314,7 @@ void RexxEntry SetStemArrayElement(RexxThreadContext *c, RexxStemObject s, RexxU
     }
 }
 
-RexxObjectPtr RexxEntry GetStemArrayElement(RexxThreadContext *c, RexxStemObject s, RexxUnsignedNumber i)
+RexxObjectPtr RexxEntry GetStemArrayElement(RexxThreadContext *c, RexxStemObject s, stringsize_t i)
 {
     ApiContext context(c);
     try
@@ -1327,7 +1327,7 @@ RexxObjectPtr RexxEntry GetStemArrayElement(RexxThreadContext *c, RexxStemObject
     return NULLOBJECT;
 }
 
-void RexxEntry DropStemArrayElement(RexxThreadContext *c, RexxStemObject s, RexxUnsignedNumber i)
+void RexxEntry DropStemArrayElement(RexxThreadContext *c, RexxStemObject s, stringsize_t i)
 {
     ApiContext context(c);
     try
@@ -1365,7 +1365,7 @@ RexxObjectPtr RexxEntry GetStemValue(RexxThreadContext *c, RexxStemObject s)
     return NULLOBJECT;
 }
 
-RexxBoolean RexxEntry IsStem(RexxThreadContext *c, RexxObjectPtr o)
+logical_t RexxEntry IsStem(RexxThreadContext *c, RexxObjectPtr o)
 {
     ApiContext context(c);
     try
@@ -1378,7 +1378,7 @@ RexxBoolean RexxEntry IsStem(RexxThreadContext *c, RexxObjectPtr o)
     return FALSE;
 }
 
-void RexxEntry RaiseException0(RexxThreadContext *c, RexxUnsignedNumber n)
+void RexxEntry RaiseException0(RexxThreadContext *c, stringsize_t n)
 {
     ApiContext context(c);
     try
@@ -1390,7 +1390,7 @@ void RexxEntry RaiseException0(RexxThreadContext *c, RexxUnsignedNumber n)
     }
 }
 
-void RexxEntry RaiseException1(RexxThreadContext *c, RexxUnsignedNumber n, RexxObjectPtr o1)
+void RexxEntry RaiseException1(RexxThreadContext *c, stringsize_t n, RexxObjectPtr o1)
 {
     ApiContext context(c);
     try
@@ -1402,7 +1402,7 @@ void RexxEntry RaiseException1(RexxThreadContext *c, RexxUnsignedNumber n, RexxO
     }
 }
 
-void RexxEntry RaiseException2(RexxThreadContext *c, RexxUnsignedNumber n, RexxObjectPtr o1, RexxObjectPtr o2)
+void RexxEntry RaiseException2(RexxThreadContext *c, stringsize_t n, RexxObjectPtr o1, RexxObjectPtr o2)
 {
     ApiContext context(c);
     try
@@ -1414,7 +1414,7 @@ void RexxEntry RaiseException2(RexxThreadContext *c, RexxUnsignedNumber n, RexxO
     }
 }
 
-void RexxEntry RaiseExceptionArray(RexxThreadContext *c, RexxUnsignedNumber n, RexxArrayObject a)
+void RexxEntry RaiseExceptionArray(RexxThreadContext *c, stringsize_t n, RexxArrayObject a)
 {
     ApiContext context(c);
     try
@@ -1426,7 +1426,7 @@ void RexxEntry RaiseExceptionArray(RexxThreadContext *c, RexxUnsignedNumber n, R
     }
 }
 
-void RexxEntry RaiseCondition(RexxThreadContext *c, RexxStringPointer name, RexxStringPointer desc, RexxArrayObject add, RexxObjectPtr result)
+void RexxEntry RaiseCondition(RexxThreadContext *c, CSTRING name, CSTRING desc, RexxArrayObject add, RexxObjectPtr result)
 {
     ApiContext context(c);
     try
@@ -1439,7 +1439,7 @@ void RexxEntry RaiseCondition(RexxThreadContext *c, RexxStringPointer name, Rexx
     }
 }
 
-RexxBoolean RexxEntry CheckCondition(RexxThreadContext *c)
+logical_t RexxEntry CheckCondition(RexxThreadContext *c)
 {
     ApiContext context(c);
     try
