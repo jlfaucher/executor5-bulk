@@ -55,6 +55,7 @@
 
 class RexxInstructionCallBase;
 class ProtectedObject;
+class RexxSupplier;
 
 #define trace_debug         0x00000001 /* interactive trace mode flag       */
 #define trace_all           0x00000002 /* trace all instructions            */
@@ -437,7 +438,7 @@ RexxObject * activation_find  (void);
        return settings.local_variables.getDictionary();
    }
 
-   inline RexxArray *getAllLocalVariables()
+   inline RexxSupplier *getAllLocalVariables()
    {
        return getLocalVariables()->getAllVariables();
    }

@@ -139,14 +139,14 @@ int REXXENTRY RexxStart(
 {
     if (calltype == RXCOMMAND && argcount == 1 && arglist[0].strptr != NULL && StringUtil::caselessCompare(arglist[0].strptr, "//T", arglist[0].strlength) == 0)
     {
-        TranslateDispatcher arguments(exits);
+        TranslateDispatcher arguments;
         arguments.programName = programname;
         arguments.instore = instore;
         // this just translates and gives the error, potentially returning
         // the instore image
         arguments.outputName = NULL;
         // go run this program
-        arguments.invoke();
+        arguments.invoke(exits, envname);
 
         return (int)arguments.rc;      /* return the error code (negated)   */
     }
@@ -155,7 +155,7 @@ int REXXENTRY RexxStart(
     // this is the dispatcher that handles the actual
     // interpreter call.  This gets all of the RexxStart arguments, then
     // gets dispatched on the other side of the interpreter boundary
-    RexxStartDispatcher arguments(exits, envname);
+    RexxStartDispatcher arguments;
                                        /* copy all of the arguments into    */
                                        /* the info control block, which is  */
                                        /* passed across the kernel boundary */
@@ -170,7 +170,7 @@ int REXXENTRY RexxStart(
     arguments.result = result;
 
     // go run this program
-    arguments.invoke();
+    arguments.invoke(exits, envname);
     *retcode = arguments.retcode;
 
     return (int)arguments.rc;          /* return the error code (negated)   */
@@ -190,7 +190,7 @@ int REXXENTRY RexxStart(
  */
 RexxReturnCode REXXENTRY RexxTranslateProgram(const char *inFile, const char *outFile, PRXSYSEXIT exits)
 {
-    TranslateDispatcher arguments(exits);
+    TranslateDispatcher arguments;
     // this gets processed from disk, always.
     arguments.programName = inFile;
     arguments.instore = NULL;
@@ -198,7 +198,7 @@ RexxReturnCode REXXENTRY RexxTranslateProgram(const char *inFile, const char *ou
     // the instore image
     arguments.outputName = outFile;
     // go run this program
-    arguments.invoke();
+    arguments.invoke(exits, NULL);
 
     return (RexxReturnCode)arguments.rc;       /* return the error code (negated)   */
 }
@@ -294,12 +294,12 @@ RexxReturnCode REXXENTRY RexxCreateRoutine(const char *context, PCONSTRXSTRING s
 
     arguments.contextName = context;
     arguments.programBuffer = *sourceData;
-    arguments.translatedMethod = NULL;
+    arguments.translatedRoutine = NULL;
 
     // go perform the operation
     arguments.invoke();
     // fill in the return value
-    *pmethod = arguments.translatedMethod;
+    *proutine = arguments.translatedRoutine;
 
     return (RexxReturnCode)arguments.rc;    /* return the error code             */
 }
@@ -328,7 +328,7 @@ RexxReturnCode REXXENTRY RexxRunRoutine(const char * context, REXXOBJECT routine
   REXXOBJECT (REXXENTRY *callbackFunction)(void *), PRXSYSEXIT exit_list, REXXOBJECT *presult,
   REXXOBJECT securityManager, RexxConditionData *pRexxCondData)        /* returned condition data           */
 {
-    RunRoutineDispatcher arguments(exit_list, pRexxCondData);
+    RunRoutineDispatcher arguments(pRexxCondData);
 
     arguments.contextName = context;
     arguments.routine = routine;
@@ -337,7 +337,7 @@ RexxReturnCode REXXENTRY RexxRunRoutine(const char * context, REXXOBJECT routine
     arguments.securityManager = securityManager;
 
     // make the call
-    arguments.invoke();
+    arguments.invoke(exit_list, NULL);
     // fill in the return value
     *presult = arguments.result;
 
@@ -513,18 +513,8 @@ size_t REXXENTRY RexxGetCurrentPrecision()
  * @return RXAPI_OK if the instance was created, RXAPI_MEMFAIL for any
  *         creation errors.
  */
-RexxReturnCode RexxEntry RexxCreateInterpreter(RexxInstance **instance, RexxThreadContext **context, RexxExitCallback *exits, RexxOption *options)
+RexxReturnCode RexxEntry RexxCreateInterpreter(RexxInstance **instance, RexxThreadContext **context, RexxOption *options)
 {
-    ExitHandler handlers[RXNOOFEXITS + 1];   // our set of exit handlers
-    // do we have exits?  resolve these before creating the instance
-    if (exits != NULL)
-    {
-        for (int i = 0; exits[i].exit_code != RXENDLST; i++)
-        {
-            // resolve the entry point and call style information
-            handlers[exits[i].exit_code].setEntryPoint(exits[i].entry_point);
-        }
-    }
-    return RexxInterpreter::createInstance(instance, context, handlers, options) ? RXAPI_OK : RXAPI_MEMFAIL;
+    return Interpreter::createInstance(*instance, *context, options) ? RXAPI_OK : RXAPI_MEMFAIL;
 }
 

@@ -46,7 +46,7 @@
 class ConditionDispatcher : public ActivityDispatcher
 {
 public:
-    inline ConditionDispatcher(RexxOption *o, RexxConditionData *cd) : ActivityDispatcher(o) { translatedCondition = cd; }
+    inline ConditionDispatcher(RexxConditionData *cd) : ActivityDispatcher() { translatedCondition = cd; }
     virtual ~ConditionDispatcher() { ; }
 
     virtual void handleError(wholenumber_t, RexxDirectory *);
@@ -61,7 +61,7 @@ protected:
 class CreateRoutineDispatcher : public ConditionDispatcher
 {
 public:
-    inline CreateRoutineDispatcher(RexxConditionData *cd) : ConditionDispatcher(NULL, cd) { ; }
+    inline CreateRoutineDispatcher(RexxConditionData *cd) : ConditionDispatcher(cd) { ; }
     virtual ~CreateRoutineDispatcher() { ; }
 
     virtual void run();
@@ -75,7 +75,7 @@ public:
 class RunRoutineDispatcher : public ConditionDispatcher
 {
 public:
-    inline RunRoutineDispatcher(RexxOption *o, RexxConditionData *cd) : ConditionDispatcher(o, cd) { ; }
+    inline RunRoutineDispatcher(RexxConditionData *cd) : ConditionDispatcher(cd) { ; }
     virtual ~RunRoutineDispatcher() { ; }
 
     virtual void run();

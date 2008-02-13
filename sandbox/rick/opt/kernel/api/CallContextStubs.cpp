@@ -137,7 +137,7 @@ RexxStemObject RexxEntry ResolveStemVariable(RexxCallContext *c, RexxObjectPtr s
     {
         // this may throw an exception, so clear it out.  The null return is the
         // failure indication.
-        context.context->setConditionInfo(OREF_NULL);
+        context.context->clearException();
     }
     return NULLOBJECT;
 }
@@ -210,7 +210,7 @@ wholenumber_t RexxEntry GetContextDigits(RexxCallContext *c)
     ApiContext context(c);
     try
     {
-        return numberDigits();
+        return context.context->digits();
     }
     catch (ActivityException)
     {
@@ -222,7 +222,7 @@ wholenumber_t RexxEntry GetContextFuzz(RexxCallContext *c)
     ApiContext context(c);
     try
     {
-        return numberFuzz();
+        return context.context->fuzz();
     }
     catch (ActivityException)
     {
@@ -235,13 +235,14 @@ logical_t RexxEntry GetContextForm(RexxCallContext *c)
     ApiContext context(c);
     try
     {
-        return numberForm() ? TRUE : FALSE;
+        return context.context->form() ? TRUE : FALSE;
     }
     catch (ActivityException)
     {
     }
     return FALSE;
 }
+
 
 END_EXTERN_C()
 

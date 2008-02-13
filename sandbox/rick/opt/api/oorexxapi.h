@@ -47,6 +47,72 @@
 #include "rexx.h"
 #include "oorexxerrors.h"
 
+
+/******************************************************************************/
+/* Interface Datatypes (used in macro expansions)                             */
+/******************************************************************************/
+#define REXX_ARGUMENT_TERMINATOR  0
+#define REXX_VALUE_ARGLIST     2
+#define REXX_VALUE_NAME        3
+#define REXX_VALUE_SCOPE       4
+#define REXX_VALUE_BUFFER      5
+#define REXX_VALUE_CSELF       6
+#define REXX_VALUE_OSELF       7
+
+// each of the following types have an optional equivalent
+
+#define REXX_VALUE_RexxObjectPtr          11
+#define REXX_VALUE_int                    12
+#define REXX_VALUE_wholenumber_t          13
+#define REXX_VALUE_double                 14
+#define REXX_VALUE_CSTRING                15
+#define REXX_VALUE_POINTER                16
+#define REXX_VALUE_RexxStringObject       17
+#define REXX_VALUE_stringsize_t           18
+#define REXX_VALUE_float                  19
+#define REXX_VALUE_int8_t                 20
+#define REXX_VALUE_int16_t                21
+#define REXX_VALUE_int32_t                22
+#define REXX_VALUE_int64_t                23
+#define REXX_VALUE_uint8_t                24
+#define REXX_VALUE_uint16_t               25
+#define REXX_VALUE_uint32_t               26
+#define REXX_VALUE_size_t                 27
+#define REXX_VALUE_intptr_t               28
+#define REXX_VALUE_uintptr_t              29
+#define REXX_VALUE_logical_t              30
+#define REXX_VALUE_RexxArrayObject        31
+#define REXX_VALUE_RexxStemObject         32
+#define REXX_VALUE_uint64_t               33
+#define REXX_VALUE_ssize_t                34
+
+#define REXX_OPTIONAL_ARGUMENT                 0x8000
+
+#define REXX_VALUE_OPTIONAL_RexxObjectPtr         (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_RexxObjectPtr)
+#define REXX_VALUE_OPTIONAL_int                   (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_int)
+#define REXX_VALUE_OPTIONAL_wholenumber_t         (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_wholenumber_t)
+#define REXX_VALUE_OPTIONAL_double                (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_double)
+#define REXX_VALUE_OPTIONAL_CSTRING               (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_CSTRING)
+#define REXX_VALUE_OPTIONAL_POINTER               (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_POINTER)
+#define REXX_VALUE_OPTIONAL_RexxStringObject      (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_RexxStringObject)
+#define REXX_VALUE_OPTIONAL_stringsize_t          (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_stringsize_t)
+#define REXX_VALUE_OPTIONAL_float                 (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_float)
+#define REXX_VALUE_OPTIONAL_int8_t                (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_int8_t)
+#define REXX_VALUE_OPTIONAL_int16_t               (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_int16_t)
+#define REXX_VALUE_OPTIONAL_int32_t               (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_int32_t)
+#define REXX_VALUE_OPTIONAL_int64_t               (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_int64_t)
+#define REXX_VALUE_OPTIONAL_uint8_t               (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_uint8_t)
+#define REXX_VALUE_OPTIONAL_uint16_t              (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_uint16_t)
+#define REXX_VALUE_OPTIONAL_uint32_t              (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_uint32_t)
+#define REXX_VALUE_OPTIONAL_uint64_t              (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_uint32_t)
+#define REXX_VALUE_OPTIONAL_size_t                (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_size_t)
+#define REXX_VALUE_OPTIONAL_ssize_t               (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_ssize_t)
+#define REXX_VALUE_OPTIONAL_intptr_t              (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_intptr_t)
+#define REXX_VALUE_OPTIONAL_uintptr_t             (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_uintptr_t)
+#define REXX_VALUE_OPTIONAL_logical_t             (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_logical_t)
+#define REXX_VALUE_OPTIONAL_RexxArrayObject       (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_RexxArrayObject)
+#define REXX_VALUE_OPTIONAL_RexxStemObject        (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_RexxStemObject)
+
 BEGIN_EXTERN_C()
 
 // forward defininitions of the context structure types
@@ -172,20 +238,70 @@ typedef struct _RexxPackageEntry
 
 END_EXTERN_C()
 
-typedef void *RexxObjectPtr;          // reference to a REXX object
+#ifdef __cplusplus
 
-typedef RexxObjectPtr RexxStringObject;   // Rexx string object
-typedef RexxObjectPtr RexxBufferStringObject;   // Rexx string "under construction"
-typedef RexxObjectPtr RexxArrayObject;    // Rexx array object
-typedef RexxObjectPtr RexxPointerObject;  // Rexx pointer object
-typedef RexxObjectPtr RexxIntegerObject;  // Rexx integer wrapper object
-typedef RexxObjectPtr RexxClassObject;    // Rexx class object wrapper
-typedef RexxObjectPtr RexxMethodObject;   // Rexx method object wrapper
-typedef RexxObjectPtr RexxBufferObject;   // Rexx buffer object wrapper
-typedef RexxObjectPtr RexxDirectoryObject;// Rexx directory object wrapper
-typedef RexxObjectPtr RexxTableObject;    // Rexx table object wrapper
-typedef RexxObjectPtr RexxSupplierObject; // Rexx supplier object wrapper
-typedef RexxObjectPtr RexxStemObject;     // a Rexx stem object
+class _RexxObjectPtr {};
+class _RexxStringObject : public _RexxObjectPtr {};
+class _RexxBufferStringObject : public _RexxStringObject {};
+class _RexxArrayObject : public _RexxObjectPtr {};
+class _RexxBufferObject : public _RexxObjectPtr {};
+class _RexxIntegerObject : public _RexxObjectPtr {};
+class _RexxPointerObject : public _RexxObjectPtr {};
+class _RexxMethodObject : public _RexxObjectPtr {};
+class _RexxRoutineObject : public _RexxObjectPtr {};
+class _RexxClassObject : public _RexxObjectPtr {};
+class _RexxDirectoryObject : public _RexxObjectPtr {};
+class _RexxTableObject : public _RexxObjectPtr {};
+class _RexxSupplierObject : public _RexxObjectPtr {};
+class _RexxStemObject : public _RexxObjectPtr {};
+
+typedef _RexxObjectPtr *RexxObjectPtr;
+typedef _RexxStringObject *RexxStringObject;
+typedef _RexxBufferStringObject *RexxBufferStringObject;
+typedef _RexxArrayObject *RexxArrayObject;
+typedef _RexxBufferObject *RexxBufferObject;
+typedef _RexxIntegerObject *RexxIntegerObject;
+typedef _RexxPointerObject *RexxPointerObject;
+typedef _RexxMethodObject *RexxMethodObject;
+typedef _RexxRoutineObject *RexxRoutineObject;
+typedef _RexxClassObject *RexxClassObject;
+typedef _RexxDirectoryObject *RexxDirectoryObject;
+typedef _RexxTableObject *RexxTableObject;
+typedef _RexxSupplierObject *RexxSupplierObject;
+typedef _RexxStemObject *RexxStemObject;
+
+#else
+
+struct _RexxObjectPtr;
+struct _RexxStringObject;
+struct _RexxArrayObject;
+struct _RexxBufferObject;
+struct _RexxIntegerObject;
+struct _RexxPointerObject;
+struct _RexxMethodObject;
+struct _RexxRoutineObject;
+struct _RexxClassObject;
+struct _RexxDirectoryObject;
+struct _RexxTableObject;
+struct _RexxSupplierObject;
+struct _RexxStemObject;
+
+typedef _RexxObjectPtr *RexxObjectPtr;
+typedef _RexxStringObject *RexxStringObject;
+typedef _RexxBufferStringObject *RexxBufferStringObject;
+typedef _RexxArrayObject *RexxArrayObject;
+typedef _RexxBufferObject *RexxBufferObject;
+typedef _RexxIntegerObject *RexxIntegerObject;
+typedef _RexxPointerObject *RexxPointerObject;
+typedef _RexxMethodObject *RexxMethodObject;
+typedef _RexxRoutineObject *RexxRoutineObject;
+typedef _RexxClassObject *RexxClassObject;
+typedef _RexxDirectoryObject *RexxDirectoryObject;
+typedef _RexxTableObject *RexxTableObject;
+typedef _RexxSupplierObject *RexxSupplierObject;
+typedef _RexxStemObject *RexxStemObject;
+
+#endif
 
 // argument existence indicator
 #define ARGUMENT_EXISTS   0x01
@@ -257,14 +373,40 @@ typedef struct
         intptr_t              value_OPTIONAL_intptr_t;
         uintptr_t             value_OPTIONAL_uintptr_t;
         ssize_t               value_OPTIONAL_ssize_t;
+        size_t                value_OPTIONAL_size_t;
         RexxArrayObject       value_OPTIONAL_RexxArrayObject;
         RexxStemObject        value_OPTIONAL_RexxStemObject;
     } value;
 
     uint16_t type;            // type of the value
     uint16_t flags;           // argument flags
-} ValueDescriptor;
 
+
+// these methods are only available for C++ code
+#ifdef __cplusplus
+    inline operator RexxObjectPtr() { return value.value_RexxObjectPtr; }
+    inline void operator=(RexxObjectPtr o) { type = REXX_VALUE_RexxObjectPtr; value.value_RexxObjectPtr = o; }
+    inline operator RexxStringObject() { return value.value_RexxStringObject; }
+    inline void operator=(RexxStringObject o) { type = REXX_VALUE_RexxStringObject; value.value_RexxStringObject = o; }
+    inline operator RexxArrayObject() { return value.value_RexxArrayObject; }
+    inline void operator=(RexxArrayObject o) { type = REXX_VALUE_RexxArrayObject; value.value_RexxArrayObject = o; }
+    inline operator RexxStemObject() { return value.value_RexxStemObject; }
+    inline void operator=(RexxStemObject o) { type = REXX_VALUE_RexxStemObject; value.value_RexxStemObject = o; }
+    inline operator CSTRING() { return value.value_CSTRING; }
+    inline void operator=(CSTRING o) { type = REXX_VALUE_CSTRING; value.value_CSTRING = o; }
+    inline operator POINTER() { return value.value_POINTER; }
+    inline void operator=(POINTER o) { type = REXX_VALUE_POINTER; value.value_POINTER = o; }
+    inline operator int() { return value.value_int; }
+    inline void operator=(int o) { type = REXX_VALUE_int; value.value_int = o; }
+    inline operator wholenumber_t() { return value.value_wholenumber_t; }
+    inline void operator=(wholenumber_t o) { type = REXX_VALUE_wholenumber_t; value.value_wholenumber_t = o; }
+    inline operator stringsize_t() { return value.value_stringsize_t; }
+    inline void operator=(float o) { type = REXX_VALUE_float; value.value_float = o; }
+    inline operator float() { return value.value_float; }
+    inline operator double() { return value.value_double; }
+    inline void operator=(double o) { type = REXX_VALUE_double; value.value_double = o; }
+#endif
+} ValueDescriptor;
 
 
 // The initial address environment, passed as a CSTRING value.
@@ -2531,70 +2673,6 @@ struct RexxExitContext_
 RexxReturnCode RexxEntry RexxCreateInterpreter(RexxInstance **, RexxThreadContext **, RexxOption *);
 
 
-/******************************************************************************/
-/* Interface Datatypes (used in macro expansions)                             */
-/******************************************************************************/
-#define REXX_ARGUMENT_TERMINATOR  0
-#define REXX_VALUE_ARGLIST     2
-#define REXX_VALUE_NAME        3
-#define REXX_VALUE_SCOPE       4
-#define REXX_VALUE_BUFFER      5
-#define REXX_VALUE_CSELF       6
-#define REXX_VALUE_OSELF       7
-
-// each of the following types have an optional equivalent
-
-#define REXX_VALUE_RexxObjectPtr          11
-#define REXX_VALUE_int                    12
-#define REXX_VALUE_wholenumber_t          13
-#define REXX_VALUE_double                 14
-#define REXX_VALUE_CSTRING                15
-#define REXX_VALUE_POINTER                16
-#define REXX_VALUE_RexxStringObject       17
-#define REXX_VALUE_stringsize_t           18
-#define REXX_VALUE_float                  19
-#define REXX_VALUE_int8_t                 20
-#define REXX_VALUE_int16_t                21
-#define REXX_VALUE_int32_t                22
-#define REXX_VALUE_int64_t                23
-#define REXX_VALUE_uint8_t                24
-#define REXX_VALUE_uint16_t               25
-#define REXX_VALUE_uint32_t               26
-#define REXX_VALUE_size_t                 27
-#define REXX_VALUE_intptr_t               28
-#define REXX_VALUE_uintptr_t              29
-#define REXX_VALUE_logical_t              30
-#define REXX_VALUE_RexxArrayObject        31
-#define REXX_VALUE_RexxStemObject         32
-#define REXX_VALUE_uint64_t               33
-#define REXX_VALUE_ssize_t                34
-
-#define REXX_OPTIONAL_ARGUMENT                 0x8000
-
-#define REXX_VALUE_OPTIONAL_RexxObjectPtr         (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_RexxObjectPtr)
-#define REXX_VALUE_OPTIONAL_int                   (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_int)
-#define REXX_VALUE_OPTIONAL_wholenumber_t         (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_wholenumber_t)
-#define REXX_VALUE_OPTIONAL_double                (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_double)
-#define REXX_VALUE_OPTIONAL_CSTRING               (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_CSTRING)
-#define REXX_VALUE_OPTIONAL_POINTER               (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_POINTER)
-#define REXX_VALUE_OPTIONAL_RexxStringObject      (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_RexxStringObject)
-#define REXX_VALUE_OPTIONAL_stringsize_t          (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_stringsize_t)
-#define REXX_VALUE_OPTIONAL_float                 (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_float)
-#define REXX_VALUE_OPTIONAL_int8_t                (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_int8_t)
-#define REXX_VALUE_OPTIONAL_int16_t               (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_int16_t)
-#define REXX_VALUE_OPTIONAL_int32_t               (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_int32_t)
-#define REXX_VALUE_OPTIONAL_int64_t               (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_int64_t)
-#define REXX_VALUE_OPTIONAL_uint8_t               (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_uint8_t)
-#define REXX_VALUE_OPTIONAL_uint16_t              (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_uint16_t)
-#define REXX_VALUE_OPTIONAL_uint32_t              (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_uint32_t)
-#define REXX_VALUE_OPTIONAL_uint64_t              (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_uint32_t)
-#define REXX_VALUE_OPTIONAL_size_t                (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_size_t)
-#define REXX_VALUE_OPTIONAL_ssize_t               (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_ssize_t)
-#define REXX_VALUE_OPTIONAL_intptr_t              (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_intptr_t)
-#define REXX_VALUE_OPTIONAL_uintptr_t             (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_uintptr_t)
-#define REXX_VALUE_OPTIONAL_logical_t             (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_logical_t)
-#define REXX_VALUE_OPTIONAL_RexxArrayObject       (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_RexxArrayObject)
-#define REXX_VALUE_OPTIONAL_RexxStemObject        (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_RexxStemObject)
 
 
 #define ARGUMENT_TYPE_ARGLIST    RexxArrayObject
@@ -2677,6 +2755,18 @@ RexxReturnCode RexxEntry RexxCreateInterpreter(RexxInstance **, RexxThreadContex
 #else
 #define __cpp_method_proto(name) __methodstub(name);
 #endif
+
+
+// macro to simply the process of a setting a value descriptor
+#define SET_REXX_VALUE(v, t, val)    \
+{                               \
+    (v).type = REXX_VALUE##t;   \
+    (v).value.value_##t = (val);\
+}
+
+// macro to simplify getting a value from a value descriptor
+#define GET_REXX_VALUE(v, t) ((v).value.value_##t)
+
 
 #define REXX_METHOD_PROTOTYPE(name) __cpp_method_proto(name)
 

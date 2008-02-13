@@ -2223,6 +2223,15 @@ void RexxNativeActivation::dropContextVariable(const char *name)
     retriever->drop(activation);
 }
 
+
+RexxSupplier *RexxNativeActivation::getAllContextVariables()
+/******************************************************************************/
+/* Function:  Retriev a list of all variables in the current context.         */
+/******************************************************************************/
+{
+    return activation->getAllLocalVariables();
+}
+
 void RexxNativeActivation::checkConditions()
 /******************************************************************************/
 /* Function:  check to see if a condition was raised on return from a call out*/

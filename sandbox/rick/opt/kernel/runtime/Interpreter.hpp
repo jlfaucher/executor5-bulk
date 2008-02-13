@@ -83,6 +83,7 @@ public:
         MTXCL(resourceLock);
     }
 
+    static int createInstance(RexxInstance *&instance, RexxThreadContext *&threadContext, RexxOption *options);
     static bool terminateInterpreter();
     static void startInterpreter(InterpreterStartupMode mode);
     static inline bool isTerminated() { return !active; }
@@ -171,6 +172,7 @@ class InstanceBlock
 public:
     InstanceBlock();
     InstanceBlock(RexxOption *options);
+    InstanceBlock(PRXSYSEXIT exits, const char *env);
     ~InstanceBlock();
 
     RexxActivity         *activity;    // our current activity

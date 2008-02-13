@@ -36,7 +36,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /******************************************************************************/
-/* REXX Kernel                                   RexxVariableDictionary.c     */
+/* REXX Kernel                                   RexxVariableDictionary.cpp   */
 /*                                                                            */
 /* Primitive Variable Dictionary Class                                        */
 /*                                                                            */
@@ -54,6 +54,7 @@
 #include "ExpressionVariable.hpp"
 #include "ExpressionCompoundVariable.hpp"
 #include "ProtectedObject.hpp"
+#include "SupplierClass.hpp"
 
 
 RexxObject  *RexxVariableDictionary::copy()
@@ -389,6 +390,60 @@ void RexxVariableDictionary::liveGeneral(int reason)
   memory_mark_general(this->next);
   memory_mark_general(this->scope);
 }
+
+
+/**
+ * Get all of the variables in the local context.  This returns
+ * just the top-level variables (i.e., simple variables and stems).
+ *
+ * @return A supplier for iterating the variable sset.
+ */
+RexxSupplier *RexxVariableDictionary::getAllVariables()
+{
+    HashLink    i;                       /* loop counter                      */
+    RexxVariable *variable;              /* hash table value                  */
+    size_t count = 0;                    // the size of the supplier arrays
+
+                                         /* loop through the hash table       */
+    for (i = this->contents->first();
+         i < this->contents->totalSlotsSize();
+         i = this->contents->next(i))
+    {
+        // get the next variable from the dictionary
+        variable = (RexxVariable *)this->contents->value(i);
+        // if this variable has a value, bump the count
+        if (variable->getVariableValue() != OREF_NULL)
+        {
+            count ++;
+        }
+    }
+
+    RexxArray *names = new_array(count);
+    ProtectedObject p1(names);
+    RexxArray *values = new_array(count);
+    ProtectedObject p2(values);
+
+    count = 1;
+    // now loop again populating the supplier arrays
+    for (i = this->contents->first();
+         i < this->contents->totalSlotsSize();
+         i = this->contents->next(i))
+    {
+        // get the next variable from the dictionary
+        variable = (RexxVariable *)this->contents->value(i);
+        // if this variable has a value, bump the count
+        if (variable->getVariableValue() != OREF_NULL)
+        {
+            // only add the real values to the list
+            names->put(variable->getName(), count);
+            values->put(variable->getVariableValue(), count);
+            count++;
+        }
+    }
+
+    return new_supplier(values, names);
+}
+
 
 void RexxVariableDictionary::flatten(RexxEnvelope *envelope)
 /******************************************************************************/

@@ -49,6 +49,8 @@
 #include "StemClass.hpp"
 #include "RexxHashTable.hpp"
 
+class RexxSupplier;
+
 #define DEFAULT_OBJECT_DICTIONARY_SIZE 7
 
 class RexxVariableDictionary : public RexxInternalObject {
@@ -114,7 +116,7 @@ class RexxVariableDictionary : public RexxInternalObject {
       stem_table->setCompoundVariable(&resolved_tail, value);
     }
 
-  inline RexxArray *getAllVariables() { return contents->allItems(); }
+  RexxSupplier *getAllVariables();
   inline void remove(RexxString *n) { contents->remove(n); }
 
   RexxVariable *nextVariable(RexxNativeActivation *);

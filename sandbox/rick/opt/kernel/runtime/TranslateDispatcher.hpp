@@ -45,7 +45,7 @@
 class TranslateDispatcher : public ActivityDispatcher
 {
 public:
-    inline TranslateDispatcher(RexxOption *o) : ActivityDispatcher(o) { ; }
+    inline TranslateDispatcher() : ActivityDispatcher() { ; }
     virtual ~TranslateDispatcher() { ; }
 
     virtual void run();

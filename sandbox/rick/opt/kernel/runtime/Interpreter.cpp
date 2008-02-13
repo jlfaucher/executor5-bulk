@@ -204,6 +204,27 @@ bool Interpreter::terminateInterpreter()
 
 
 /**
+ * Create a new instance and return the instance context pointers
+ * and thread context pointer for the instance.
+ *
+ * @param instance The returned instance pointer.
+ * @param threadContext
+ *                 The returned thread context pointer.
+ * @param options  Options to apply to this interpreter instance.
+ *
+ * @return 0 if the instance was created ok.
+ */
+int Interpreter::createInstance(RexxInstance *&instance, RexxThreadContext *&threadContext, RexxOption *options)
+{
+    // create the instance
+    InterpreterInstance *newInstance = createInterpreterInstance(options);
+    instance = newInstance->getInstanceContext();
+    threadContext = newInstance->getRootThreadContext();
+    return 0;
+}
+
+
+/**
  * Create a new interpreter instance.  An interpreter instance
  * is an accessible set of threads that constitutes an interpreter
  * environment for the purposes API access.
@@ -319,6 +340,43 @@ InstanceBlock::InstanceBlock(RexxOption *options)
     // Get an instance.  This also gives the root activity of the instance
     // the kernel lock.
     instance = Interpreter::createInterpreterInstance(options);
+    activity = instance->getRootActivity();
+}
+
+
+/**
+ * Manage a context where a new interpreter instance is created
+ * for the purposes of acquiring an activity, and the activity
+ * is released and the instance is terminated upon leaving the
+ * block.
+ */
+InstanceBlock::InstanceBlock(PRXSYSEXIT exits, const char *env)
+{
+    size_t optionCount = 0;
+
+    RexxOption options[3];
+
+    // if we have exits specified, add this to the option set
+    if (exits != NULL)
+    {
+        options[optionCount].optionName = REGISTERED_EXITS;
+        options[optionCount].option = (void *)exits;
+        optionCount++;
+    }
+
+    if (env != NULL)
+    {
+        options[optionCount].optionName = INITIAL_ADDRESS_ENVIRONMENT;
+        options[optionCount].option = (CSTRING)env;
+        optionCount++;
+    }
+
+    // set the marker for the end of the options
+    options[optionCount].optionName = NULL;
+
+    // Get an instance.  This also gives the root activity of the instance
+    // the kernel lock.
+    instance = Interpreter::createInterpreterInstance(&options[0]);
     activity = instance->getRootActivity();
 }
 

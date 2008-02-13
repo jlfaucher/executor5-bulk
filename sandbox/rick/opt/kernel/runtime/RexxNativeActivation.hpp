@@ -52,6 +52,7 @@ class RexxNativeMethod;
 class RexxNativeRoutine;
 class RegisteredRoutine;
 class RexxStem;
+class RexxSupplier;
 
 #define MAX_NATIVE_ARGUMENTS 16
 
@@ -117,6 +118,10 @@ class RexxNativeActivation : public RexxActivationBase
   RexxObject *getContextVariable(const char *name);
   void dropContextVariable(const char *name);
   void setContextVariable(const char *name, RexxObject *value);
+  RexxSupplier *getAllContextVariables();
+  inline void setConditionInfo(RexxDirectory *info) { conditionObj = info; }
+  inline RexxDirectory *getConditionInfo() { return conditionObj; }
+  inline void clearException() { conditionObj = OREF_NULL; }
   void checkConditions();
   inline RexxVariableDictionary *nextCurrent()     {return this->nextcurrent;}
   inline RexxCompoundElement *compoundElement() {return this->compoundelement; }

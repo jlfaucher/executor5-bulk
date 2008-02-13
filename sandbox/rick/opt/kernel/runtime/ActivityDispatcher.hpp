@@ -47,14 +47,15 @@ class RexxNativeActivation;
 class ActivityDispatcher
 {
 public:
-    inline ActivityDispatcher() : options(NULL), activity(OREF_NULL), activation(OREF_NULL), conditionData(OREF_NULL), rc(0) { ; }
-    inline ActivityDispatcher(RexxOption *o)  : options(o), activity(OREF_NULL), activation(OREF_NULL), conditionData(OREF_NULL), rc(0)  { ; }
+    inline ActivityDispatcher() : activity(OREF_NULL), activation(OREF_NULL), conditionData(OREF_NULL), rc(0) { ; }
     virtual ~ActivityDispatcher() { ; }
 
     virtual void run();
     virtual void handleError(wholenumber_t, RexxDirectory *);
     virtual void handleError(RexxDirectory *);
     virtual void invoke();
+    virtual void invoke(RexxOption *);
+    virtual void invoke(PRXSYSEXIT exits, const char *env);
 
     inline void setContext(RexxActivity *act, RexxNativeActivation *a) { activity = act; activation = a; }
 
@@ -62,7 +63,6 @@ public:
 
 protected:
 
-    RexxOption *options;               //
     RexxActivity *activity;            // the activity we're running on
     RexxNativeActivation *activation;  // the native activation we're running under
     RexxDirectory *conditionData;      // any condition data posted due to an activity error

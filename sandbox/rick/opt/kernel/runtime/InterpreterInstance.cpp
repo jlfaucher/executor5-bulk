@@ -595,3 +595,15 @@ bool InterpreterInstance::processOptions(RexxOption *options)
     }
     return true;
 }
+
+
+/**
+ * Get the thread context vector for the root activity of the
+ * instance.
+ *
+ * @return The root RexxThreadContext environment;
+ */
+RexxThreadContext *InterpreterInstance::getRootThreadContext()
+{
+    return rootActivity->getThreadContext();
+}

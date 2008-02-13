@@ -45,7 +45,7 @@
 class RexxStartDispatcher : public ActivityDispatcher
 {
 public:
-    inline RexxStartDispatcher(RexxOption *o) : ActivityDispatcher(o) { ; }
+    inline RexxStartDispatcher() : ActivityDispatcher() { ; }
     virtual ~RexxStartDispatcher() { ; }
 
     virtual void run();

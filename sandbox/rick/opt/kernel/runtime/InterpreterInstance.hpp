@@ -100,6 +100,9 @@ public:
     inline RexxString *resolveProgramName(RexxString *name, RexxString *dir, RexxString *ext) { return sysInstance.resolveProgramName(name, dir, ext); }
     inline SecurityManager *getSecurityManager() { return securityManager; }
     void setSecurityManager(RexxObject *m);
+    RexxInstance *getInstanceContext() { return &context.instanceContext; }
+    RexxThreadContext *getRootThreadContext();
+
 
 protected:
 
