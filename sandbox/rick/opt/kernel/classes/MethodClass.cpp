@@ -65,6 +65,19 @@
 // singleton class instance
 RexxClass *RexxMethod::classInstance = OREF_NULL;
 
+/**
+ * Resolve a class in the context of an executable.
+ *
+ * @param className The name of the required class.
+ *
+ * @return The resolve class, or OREF_NULL if not found.
+ */
+RexxClass *BaseExecutable::resolveClass(RexxString *className)
+{
+    return code->resolveClass(className);
+}
+
+
 RexxMethod::RexxMethod(BaseCode *codeObj)
 /******************************************************************************/
 /* Function:  Initialize a method object                                      */
@@ -491,6 +504,28 @@ RexxMethod *RexxMethod::newRexxBuffer(
 }
 
 
+
+
+/**
+ * Create a method object from an in-store source.
+ *
+ * @param pgmname The program name (as an ASCII-Z string).
+ * @param source  The pointer to the program source.
+ * @param length  The length of the source.
+ *
+ * @return A translated Method object.
+ */
+RexxMethod *RexxMethod::newRexxBuffer(const char *pgmname, const char *source, size_t length)
+{
+                                         /* create a source object            */
+    RexxSource *newSource = RexxSource::classNewBuffered(new_string(pgmname), source, length);
+    // we need to protect this source object until parsing is complete
+    ProtectedObject p(newSource);
+                                         /* now complete method creation      */
+    return newRexxMethod(newSource);
+}
+
+
 RexxMethod *RexxMethod::restore(
     RexxBuffer *buffer,                /* buffer containing the method      */
     char *startPointer)                /* first character of the method     */
@@ -623,4 +658,27 @@ RexxObject *BaseCode::setSecurityManager(RexxObject *manager)
 RexxSource *BaseCode::getSourceObject()
 {
     return OREF_NULL;
+}
+
+
+/**
+ * Default class resolution...which only looks in the environment
+ * or .local.
+ *
+ * @param className The target class name.
+ *
+ * @return The resolved class object, or OREF_NULL if this is not known.
+ */
+RexxClass *BaseCode::resolveClass(RexxString *className)
+{
+    RexxString *internalName = className->upper();   /* upper case it                     */
+    /* send message to .local            */
+    RexxClass *classObject = (RexxClass *)(ActivityManager::localEnvironment->at(internalName));
+    if (classObject != OREF_NULL)
+    {
+        return classObject;
+    }
+
+    /* last chance, try the environment  */
+    return(RexxClass *)(TheEnvironment->at(internalName));
 }

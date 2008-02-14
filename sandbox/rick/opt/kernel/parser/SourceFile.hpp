@@ -97,7 +97,7 @@ class RexxSource : public RexxInternalObject {
   inline void  operator delete(void *, void *) { ; }
   RexxSource(RexxString *, RexxArray *);
   inline RexxSource(RESTORETYPE restoreType) { ; };
-  void        initBuffered(RexxObject *);
+  void        initBuffered(RexxBuffer *);
   void        initFile();
   void        extractNameInformation();
   bool        reconnect();
@@ -130,6 +130,7 @@ class RexxSource : public RexxInternalObject {
   RexxString *traceBack(SourceLocation &, size_t, bool);
   RexxString *extract(SourceLocation &);
   RexxArray  *extractSource(SourceLocation &);
+  RexxArray  *extractSource();
   void        startLocation(SourceLocation &);
   void        endLocation(SourceLocation &);
   bool        nextSpecial(unsigned int, SourceLocation &);
@@ -146,7 +147,7 @@ class RexxSource : public RexxInternalObject {
   void        mergeRequired(RexxSource *);
   void        inheritSourceContext(RexxSource *source);
   RoutineClass *resolveRoutine(RexxString *);
-  RexxClass  *resolveClass(RexxString *, RexxActivation *);
+  RexxClass  *resolveClass(RexxString *);
   RexxString *resolveProgramName(RexxActivity *activity, RexxString *name);
   void        processInstall(RexxActivation *);
   RexxCode   *translate(RexxDirectory *);
@@ -210,6 +211,7 @@ class RexxSource : public RexxInternalObject {
   void        errorToken(int, RexxToken *);
   void        blockError(RexxInstruction *);
   static RexxSource *classNewBuffered(RexxString *, RexxBuffer *);
+  static RexxSource *classNewBuffered(RexxString *, const char *, size_t length);
   static RexxSource *classNewFile(RexxString *);
   static RexxCode   *generateCodeFromFile(RexxString *);
   RexxObject *sourceNewObject(size_t, RexxBehaviour *, int);
@@ -323,7 +325,14 @@ class RexxSource : public RexxInternalObject {
       return characterTable[((unsigned int)ch) & 0xff];
   }
 
-
+  RexxDirectory *getInstalledClasses() { return installed_classes; }
+  RexxDirectory *getInstalledPublicClasses() { return installed_public_classes; }
+  RexxDirectory *getImportedClasses() { return merged_public_classes; }
+  RexxDirectory *getInstalledRoutines() { return routines; }
+  RexxDirectory *getInstalledPublicRoutines() { return public_routines; }
+  RexxDirectory *getImportedRoutines() { return merged_public_routines; }
+  RexxDirectory *getMethods() { return methods; }
+  RexxList      *getPackages() { return packages; }
 
 protected:
 
@@ -345,6 +354,8 @@ protected:
   size_t interpret_adjust;             /* INTERPRET adjustment              */
 
                                        /* start of directives section       */
+  RexxList      *loadedPackages;       // packages imported by this package
+  PackageClass  *package;              // our package wrapper
   RexxSource    *parentSource;         // a parent source context environment;
   RexxDirectory *routines;             /* routines found on directives      */
   RexxDirectory *public_routines;      /* PUBLIC routines directive routines*/

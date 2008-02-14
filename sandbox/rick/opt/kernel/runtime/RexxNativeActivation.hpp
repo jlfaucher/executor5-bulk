@@ -106,6 +106,7 @@ class RexxNativeActivation : public RexxActivationBase
   RexxObject *getArgument(size_t index);
   RexxObject *getSuper();
   RexxStem *resolveStemVariable(RexxObject *s);
+  RexxClass *resolveClass(RexxString *className);
 
   inline void   termination() { this->guardOff();}
 
@@ -118,6 +119,9 @@ class RexxNativeActivation : public RexxActivationBase
   RexxObject *getContextVariable(const char *name);
   void dropContextVariable(const char *name);
   void setContextVariable(const char *name, RexxObject *value);
+  RexxObject *getObjectVariable(const char *name);
+  void setObjectVariable(const char *name, RexxObject *value);
+  void dropObjectVariable(const char *name);
   RexxSupplier *getAllContextVariables();
   inline void setConditionInfo(RexxDirectory *info) { conditionObj = info; }
   inline RexxDirectory *getConditionInfo() { return conditionObj; }
@@ -129,6 +133,7 @@ class RexxNativeActivation : public RexxActivationBase
   inline void        setNextCurrent(RexxVariableDictionary *vdict)     {this->nextcurrent = vdict;}
   inline void        setNextStem(RexxStem *stemVar)     {this->nextstem = stemVar;}
   inline void        setCompoundElement(RexxCompoundElement *element)     {this->compoundelement = element;}
+  inline RexxObject *getSelf() { return receiver; }
   inline RexxActivity *getActivity() { return activity; }
   virtual bool isStackBase();
   virtual RexxActivation *getRexxContext();

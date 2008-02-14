@@ -87,6 +87,23 @@ void RexxNativeCode::flatten(RexxEnvelope *envelope)
 }
 
 
+/**
+ * Resolve a class in the context of this code object.
+ *
+ * @param className The name of the desired class.
+ *
+ * @return The returned class.
+ */
+RexxClass *RexxNativeCode::resolveClass(RexxString *className)
+{
+    // if there is a source object attached, have it resolve things.  Otherwise, go back to the default.
+    if (source != OREF_NULL)
+    {
+        return source->resolveClass(className);
+    }
+    return BaseCode::resolveClass(className);
+}
+
 
 
 void RexxNativeMethod::liveGeneral(int reason)

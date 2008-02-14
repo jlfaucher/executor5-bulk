@@ -36,37 +36,91 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /******************************************************************************/
-/* REXX Kernel                                         PackageDirective.hpp   */
+/* REXX Kernel                                         LibraryDirective.cpp   */
 /*                                                                            */
-/* Primitive Abstract Directive Class Definitions                             */
+/* Primitive Translator Abstract Directive Code                               */
 /*                                                                            */
 /******************************************************************************/
-#ifndef Included_PackageDirective
-#define Included_PackageDirective
+#include <stdlib.h>
+#include "RexxCore.h"
+#include "LibraryDirective.hpp"
+#include "Clause.hpp"
 
-#include "RexxDirective.hpp"
 
-class PackageDirective : public RexxDirective
+
+/**
+ * Construct a LibraryDirective.
+ *
+ * @param n      The name of the requires target.
+ * @param clause The source file clause containing the directive.
+ */
+LibraryDirective::LibraryDirective(RexxString *n, RexxClause *clause) : RexxDirective(clause, KEYWORD_PACKAGE)
 {
- public:
-           void *operator new(size_t);
-    inline void *operator new(size_t size, void *objectPtr) { return objectPtr; }
-    inline void  operator delete(void *) { }
-    inline void  operator delete(void *, void *) { }
+    name = n;
+}
 
-    PackageDirective(RexxString *, RexxClause *);
-    inline PackageDirective(RESTORETYPE restoreType) { ; };
+/**
+ * Normal garbage collecting live mark.
+ *
+ * @param liveMark The current live object mark.
+ */
+void LibraryDirective::live(size_t liveMark)
+{
+    memory_mark(this->nextInstruction);  // must be first one marked (though normally null)
+    memory_mark(this->name);
+}
 
-    void live(size_t);
-    void liveGeneral(int reason);
-    void flatten(RexxEnvelope *);
 
-    inline RexxString *getName() { return name; }
+/**
+ * The generalized object marking routine.
+ *
+ * @param reason The processing faze we're running the mark on.
+ */
+void LibraryDirective::liveGeneral(int reason)
+{
+    memory_mark_general(this->nextInstruction);  // must be first one marked (though normally null)
+    memory_mark_general(this->name);
+}
 
-protected:
-    RexxString *name;     // the name of the directive
-};
 
-#endif
+/**
+ * Flatten the directive instance.
+ *
+ * @param envelope The envelope we're flattening into.
+ */
+void LibraryDirective::flatten(RexxEnvelope *envelope)
+{
+    setUpFlatten(LibraryDirective)
 
+        flatten_reference(newThis->nextInstruction, envelope);
+        flatten_reference(newThis->name, envelope);
+
+    cleanUpFlatten
+}
+
+
+/**
+ * Allocate a new requires directive.
+ *
+ * @param size   The size of the object.
+ *
+ * @return The memory for the new object.
+ */
+void *LibraryDirective::operator new(size_t size)
+{
+    return new_object(size, T_LibraryDirective); /* Get new object                    */
+}
+
+
+/**
+ * Do install-time processing of the ::requires directive.  This
+ * will resolve the directive and merge all of the public information
+ * from the resolved file into this program context.
+ *
+ * @param activation The activation we're running under for the install.
+ */
+void LibraryDirective::install(RexxActivation *context)
+{
+    context->resolvePackage(name, this);
+}
 

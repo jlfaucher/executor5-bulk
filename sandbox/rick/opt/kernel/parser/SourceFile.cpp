@@ -104,7 +104,7 @@ typedef struct _LINE_DESCRIPTOR {
 #define line_delimiters "\r\n"         /* stream file line end characters   */
 
 void RexxSource::initBuffered(
-    RexxObject *source_buffer)         /* containing source buffer          */
+    RexxBuffer *source_buffer)         /* containing source buffer          */
 /******************************************************************************/
 /* Function:  Initialize a source object using the entire source as a         */
 /*            stream buffer                                                   */
@@ -484,7 +484,9 @@ void RexxSource::live(size_t liveMark)
   memory_mark(this->public_routines);
   memory_mark(this->class_dependencies);
   memory_mark(this->requires);
-  memory_mark(this->packages);
+  memory_mark(this->libraries);
+  memory_mark(this->loadedPackages);
+  memory_mark(this->package);
   memory_mark(this->nativeCode);
   memory_mark(this->classes);
   memory_mark(this->installed_public_classes);
@@ -512,7 +514,7 @@ void RexxSource::liveGeneral(int reason)
     OrefSet(this, this->requires, OREF_NULL);
     OrefSet(this, this->classes, OREF_NULL);
     OrefSet(this, this->routines, OREF_NULL);
-    OrefSet(this, this->packages, OREF_NULL);
+    OrefSet(this, this->libraries, OREF_NULL);
     OrefSet(this, this->nativeCode, OREF_NULL);
     OrefSet(this, this->installed_classes, OREF_NULL);
     OrefSet(this, this->installed_public_classes, OREF_NULL);
@@ -551,7 +553,9 @@ void RexxSource::liveGeneral(int reason)
   memory_mark_general(this->public_routines);
   memory_mark_general(this->class_dependencies);
   memory_mark_general(this->requires);
-  memory_mark_general(this->packages);
+  memory_mark_general(this->libraries);
+  memory_mark_general(this->loadedPackages);
+  memory_mark_general(this->package);
   memory_mark_general(this->nativeCode);
   memory_mark_general(this->classes);
   memory_mark_general(this->installed_public_classes);
@@ -607,7 +611,9 @@ void RexxSource::flatten (RexxEnvelope *envelope)
     flatten_reference(newThis->public_routines, envelope);
     flatten_reference(newThis->class_dependencies, envelope);
     flatten_reference(newThis->requires, envelope);
-    flatten_reference(newThis->packages, envelope);
+    flatten_reference(newThis->libraries, envelope);
+    flatten_reference(newThis->loadedPackages, envelope);
+    flatten_reference(newThis->package, envelope);
     flatten_reference(newThis->nativeCode, envelope);
     flatten_reference(newThis->classes, envelope);
     flatten_reference(newThis->installed_public_classes, envelope);
@@ -655,32 +661,42 @@ RexxString *RexxSource::get(
 /* Function:  Extract a give source line from the source program              */
 /******************************************************************************/
 {
-  LINE_DESCRIPTOR *descriptors;        /* line descriptors                  */
-  const char *buffer_start;            /* start of source buffer            */
+    LINE_DESCRIPTOR *descriptors;        /* line descriptors                  */
+    const char *buffer_start;            /* start of source buffer            */
 
-  if (_position > this->line_count)     /* beyond last line?                 */
-    return OREF_NULLSTRING;            /* just return a null string         */
-                                       /* working from an array?            */
-  if (this->sourceArray != OREF_NULL) {
-                                       /* return the array line             */
-    return (RexxString *)(this->sourceArray->get(_position));
-  }
-                                       /* buffered version?                 */
-  else if (this->sourceBuffer != OREF_NULL) {
-                                       /* get the descriptors pointer       */
-    descriptors = (LINE_DESCRIPTOR *)(this->sourceIndices->address());
-                                       /* source buffered in a string?      */
-    if (isOfClass(String, this->sourceBuffer))
-                                       /* point to the data part            */
-      buffer_start = ((RexxString *)(this->sourceBuffer))->getStringData();
+    if (_position > this->line_count)     /* beyond last line?                 */
+    {
+        return OREF_NULLSTRING;            /* just return a null string         */
+    }
+                                           /* working from an array?            */
+    if (this->sourceArray != OREF_NULL)
+    {
+        /* return the array line             */
+        return(RexxString *)(this->sourceArray->get(_position));
+    }
+    /* buffered version?                 */
+    else if (this->sourceBuffer != OREF_NULL)
+    {
+        /* get the descriptors pointer       */
+        descriptors = (LINE_DESCRIPTOR *)(this->sourceIndices->address());
+        /* source buffered in a string?      */
+        if (isOfClass(String, this->sourceBuffer))
+        {
+            /* point to the data part            */
+            buffer_start = ((RexxString *)(this->sourceBuffer))->getStringData();
+        }
+        else
+        {
+            /* point to the data part            */
+            buffer_start = this->sourceBuffer->address();
+        }
+        /* create a new string version       */
+        return new_string(buffer_start + descriptors[_position].position, descriptors[_position].length);
+    }
     else
-                                       /* point to the data part            */
-      buffer_start = this->sourceBuffer->address();
-                                       /* create a new string version       */
-    return new_string(buffer_start + descriptors[_position].position, descriptors[_position].length);
-  }
-  else
-    return OREF_NULLSTRING;            /* we have no line                   */
+    {
+        return OREF_NULLSTRING;            /* we have no line                   */
+    }
 }
 
 void RexxSource::nextClause()
@@ -798,39 +814,60 @@ RexxString *RexxSource::extract(
 /* Extrace a line from the source using the given location information        */
 /******************************************************************************/
 {
-  RexxString *line;                    /* returned source line              */
-  RexxString *source_line;             /* current extracting line           */
-  size_t  counter;                     /* line counter                      */
+    RexxString *line;                    /* returned source line              */
+    RexxString *source_line;             /* current extracting line           */
+    size_t  counter;                     /* line counter                      */
 
-                                       /* currently no source?              */
-  if ((this->sourceArray == OREF_NULL && this->sourceBuffer == OREF_NULL)) {
-    if (!this->reconnect())            /* unable to recover the source?     */
-      return OREF_NULLSTRING;          /* return a null array               */
-  }
-                                       /* is the location out of bounds?    */
-  if (location.getLineNumber() == 0 || location.getLineNumber() > this->line_count)
-    line = OREF_NULLSTRING;            /* just give back a null string      */
-                                       /* all on one line?                  */
-  else if (location.getLineNumber() >= location.getEndLine())
-                                       /* just extract the string           */
-    line = this->get(location.getLineNumber() - this->interpret_adjust)->extract(location.getOffset(),
-        location.getEndOffset() - location.getOffset());
-                                       /* multiple line clause              */
-  else {
-                                       /* get the source line               */
-    source_line = this->get(location.getLineNumber());
-                                       /* extract the first part            */
-    line = source_line->extract(location.getOffset(), source_line->getLength() - location.getOffset());
-                                       /* loop down to end line             */
-    for (counter = location.getLineNumber() + 1 - this->interpret_adjust; counter < location.getEndLine(); counter++) {
-                                       /* concatenate the next line on      */
-      line = line->concat(this->get(counter));
+                                         /* currently no source?              */
+    if ((this->sourceArray == OREF_NULL && this->sourceBuffer == OREF_NULL))
+    {
+        if (!this->reconnect())            /* unable to recover the source?     */
+            return OREF_NULLSTRING;          /* return a null array               */
     }
-                                       /* now add on the last part          */
-    line = line->concat(this->get(counter)->extract(0, location.getEndOffset()));
-  }
-  return line;                         /* return the extracted line         */
+    /* is the location out of bounds?    */
+    if (location.getLineNumber() == 0 || location.getLineNumber() > this->line_count)
+        line = OREF_NULLSTRING;            /* just give back a null string      */
+                                           /* all on one line?                  */
+    else if (location.getLineNumber() >= location.getEndLine())
+        /* just extract the string           */
+        line = this->get(location.getLineNumber() - this->interpret_adjust)->extract(location.getOffset(),
+                                                                                     location.getEndOffset() - location.getOffset());
+    /* multiple line clause              */
+    else
+    {
+        /* get the source line               */
+        source_line = this->get(location.getLineNumber());
+        /* extract the first part            */
+        line = source_line->extract(location.getOffset(), source_line->getLength() - location.getOffset());
+        /* loop down to end line             */
+        for (counter = location.getLineNumber() + 1 - this->interpret_adjust; counter < location.getEndLine(); counter++)
+        {
+            /* concatenate the next line on      */
+            line = line->concat(this->get(counter));
+        }
+        /* now add on the last part          */
+        line = line->concat(this->get(counter)->extract(0, location.getEndOffset()));
+    }
+    return line;                         /* return the extracted line         */
 }
+
+
+/**
+ * Extract all of the source from the package.
+ *
+ * @return An array of the source lines.
+ */
+RexxArray *RexxSource::extractSource()
+{
+    SourceLocation location;
+
+    location.setLineNumber(1);
+    location.setEndLine(0);
+
+    return extractSource(location);
+}
+
+
 
 RexxArray *RexxSource::extractSource(
     SourceLocation &location )         /* target retrieval structure        */
@@ -839,71 +876,85 @@ RexxArray *RexxSource::extractSource(
 /*            the created bounds for the method.                              */
 /******************************************************************************/
 {
-  RexxArray  *source;                  /* returned source array             */
-  RexxString *source_line;             /* current extracting line           */
-  size_t      counter;                 /* line counter                      */
-  size_t      i;                       /* loop counter                      */
-
-                                       /* currently no source?              */
-  if ((this->sourceArray == OREF_NULL && this->sourceBuffer == OREF_NULL)) {
-    if (!this->reconnect())            /* unable to recover the source?     */
-                                       /* return a null array               */
-      return (RexxArray *)TheNullArray->copy();
-  }
-                                       /* is the location out of bounds?    */
-  if (location.getLineNumber() == 0 || location.getLineNumber() - this->interpret_adjust > this->line_count)
-                                       /* just give back a null array       */
-    source = (RexxArray *)TheNullArray->copy();
-  else {
-    if (location.getEndLine() == 0) {  /* no ending line?                   */
-                                       /* use the last line                 */
-      location.setEnd(this->line_count, this->get(line_count)->getLength());
+                                         /* currently no source?              */
+    if ((this->sourceArray == OREF_NULL && this->sourceBuffer == OREF_NULL))
+    {
+        if (!this->reconnect())            /* unable to recover the source?     */
+        {
+            /* return a null array               */
+            return(RexxArray *)TheNullArray->copy();
+        }
     }
-                                       /* end at the line start?            */
-    else if (location.getEndOffset() == 0) {
-      // step back a line
-      location.setEndLine(location.getEndLine() - 1); /* step back a line                  */
-                                       /* end at the line end               */
-      location.setEndOffset(this->get(location.getEndLine())->getLength());
+    /* is the location out of bounds?    */
+    if (location.getLineNumber() == 0 || location.getLineNumber() - this->interpret_adjust > this->line_count)
+    {
+        /* just give back a null array       */
+        return (RexxArray *)TheNullArray->copy();
     }
-                                       /* get the result array              */
-    source = new_array(location.getEndLine() - location.getLineNumber() + 1);
-                                       /* all on one line?                  */
-    if (location.getLineNumber() == location.getEndLine()) {
-                                       /* get the line                      */
-      source_line = this->get(location.getLineNumber());
-                                       /* extract the line segment          */
-      source_line = source_line->extract(location.getOffset(), location.getEndOffset() - location.getOffset());
-      source->put(source_line, 1);     /* insert the trailing piece         */
-      return source;                   /* all done                          */
+    else
+    {
+        if (location.getEndLine() == 0)
+        {  /* no ending line?                   */
+           /* use the last line                 */
+            location.setEnd(this->line_count, this->get(line_count)->getLength());
+        }
+        /* end at the line start?            */
+        else if (location.getEndOffset() == 0)
+        {
+            // step back a line
+            location.setEndLine(location.getEndLine() - 1); /* step back a line                  */
+            /* end at the line end               */
+            location.setEndOffset(this->get(location.getEndLine())->getLength());
+        }
+        /* get the result array              */
+        RexxArray *source = new_array(location.getEndLine() - location.getLineNumber() + 1);
+        /* all on one line?                  */
+        if (location.getLineNumber() == location.getEndLine())
+        {
+            /* get the line                      */
+            RexxString *source_line = this->get(location.getLineNumber());
+            /* extract the line segment          */
+            source_line = source_line->extract(location.getOffset(), location.getEndOffset() - location.getOffset());
+            source->put(source_line, 1);     /* insert the trailing piece         */
+            return source;                   /* all done                          */
+        }
+        if (location.getOffset() == 0)     /* start on the first location?      */
+        {
+            /* copy over the entire line         */
+            source->put(this->get(location.getLineNumber()), 1);
+        }
+        else
+        {
+            /* get the line                      */
+            source_line = this->get(location.getLineNumber());
+            /* extract the end portion           */
+            source_line = source_line->extract(location.getOffset(), source_line->getLength() - location.getOffset());
+            source->put(source_line, 1);     /* insert the trailing piece         */
+        }
+        /* loop until the last line          */
+        for (counter = location.getLineNumber() + 1, i = 2; counter < location.getEndLine(); counter++, i++)
+        {
+            /* copy over the entire line         */
+            source->put(this->get(counter), i);
+        }
+        /* get the last line                 */
+        RexxString *source_line = this->get(location.getEndLine());
+        /* more than one line?               */
+        if (location.getEndLine() > location.getLineNumber())
+        {
+            /* need the entire line?             */
+            if (location.getEndOffset() >= source_line->getLength())
+            {
+                source->put(source_line, i);   /* just use it                       */
+            }
+            else
+            {
+                /* extract the tail part             */
+                source->put(source_line->extract(0, location.getEndOffset() - 1), i);
+            }
+        }
+        return source;
     }
-    if (location.getOffset() == 0)     /* start on the first location?      */
-                                       /* copy over the entire line         */
-      source->put(this->get(location.getLineNumber()), 1);
-    else {
-                                       /* get the line                      */
-      source_line = this->get(location.getLineNumber());
-                                       /* extract the end portion           */
-      source_line = source_line->extract(location.getOffset(), source_line->getLength() - location.getOffset());
-      source->put(source_line, 1);     /* insert the trailing piece         */
-    }
-                                       /* loop until the last line          */
-    for (counter = location.getLineNumber() + 1, i = 2; counter < location.getEndLine(); counter++, i++)
-                                       /* copy over the entire line         */
-      source->put(this->get(counter), i);
-                                       /* get the last line                 */
-    source_line = this->get(location.getEndLine());
-                                       /* more than one line?               */
-    if (location.getEndLine() > location.getLineNumber()) {
-                                       /* need the entire line?             */
-      if (location.getEndOffset() >= source_line->getLength())
-        source->put(source_line, i);   /* just use it                       */
-      else
-                                       /* extract the tail part             */
-        source->put(source_line->extract(0, location.getEndOffset() - 1), i);
-    }
-  }
-  return source;                       /* return the extracted lines        */
 }
 
 void RexxSource::globalSetup()
@@ -1406,16 +1457,16 @@ void RexxSource::processInstall(
 
   // native packages are processed first.  The requires might actually need
   // functons loaded by the packages
-  if (this->packages != OREF_NULL)
+  if (this->libraries != OREF_NULL)
   {
                                        /* classes and routines              */
-    size_t size = this->packages->size();     /* get the number to install         */
+    size_t size = this->libraries->size();     /* get the number to install         */
     // now loop through the requires items
     for (i = 1; i <= size; i++)
     {
         // and have it do the installs processing
-        PackageDirective *package = (PackageDirective *)(this->packages->get(i));
-        package->install(activation);
+        LibraryDirective *library = (LibraryDirective *)(this->libraries->get(i));
+        library->install(activation);
     }
   }
 
@@ -2891,16 +2942,16 @@ void RexxSource::requiresDirective()
 
 
 /**
- * Process a ::PACKAGE directive.
+ * Process a ::REQUIRES name LIBRARY directive.
  */
-void RexxSource::packageDirective()
+void RexxSource::libraryDirective()
 {
     RexxToken *token = nextReal();   /* get the next token                */
                                      /* not a symbol or a string          */
     if (token->classId != TOKEN_SYMBOL && token->classId != TOKEN_LITERAL)
     {
         /* report an error                   */
-        reportTokenError(Error_Symbol_or_string_package, token);
+        reportTokenError(Error_Symbol_or_string_library, token);
     }
     this->flags |= _install;         /* have information to install       */
     RexxString *name = token->value; /* get the requires name             */
@@ -2911,7 +2962,7 @@ void RexxSource::packageDirective()
         reportTokenError(Error_Invalid_subkeyword_package, token);
     }
     // add this to the package list
-    ((RexxList *)(this->packages))->addLast((RexxObject *)new PackageDirective(name, this->clause));
+    ((RexxList *)(this->libraries))->addLast((RexxObject *)new LibraryDirective(name, this->clause));
 }
 
 
@@ -5077,6 +5128,16 @@ RexxSource *RexxSource::classNewBuffered(
   ProtectedObject p1(newObject);
                                        /* process the buffering             */
   newObject->initBuffered((RexxObject *)source_buffer);
+  return newObject;                    /* return the new source object      */
+/*  */
+}
+
+RexxSource *RexxSource::classNewBuffered(RexxString *programname, const char *source, size_t length)
+{
+  RexxSource *newObject = new RexxSource (programname, OREF_NULL);
+  ProtectedObject p1(newObject);
+                                       /* process the buffering             */
+  newObject->initBuffered(new_buffer(source, length));
   return newObject;                    /* return the new source object      */
 }
 

@@ -36,9 +36,9 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /******************************************************************************/
-/* REXX Kernel                                               MethodClass.c    */
+/* REXX Kernel                                             RoutineClass.cpp   */
 /*                                                                            */
-/* Primitive Method Class                                                     */
+/* Primitive Routine Class                                                    */
 /*                                                                            */
 /******************************************************************************/
 #include <stdlib.h>
@@ -386,6 +386,26 @@ RoutineClass *RoutineClass::newRexxBuffer(
   ProtectedObject p(newSource);
                                        /* now complete method creation      */
   return newRoutine(newSource);
+}
+
+
+/**
+ * Create a routine object from an in-store source.
+ *
+ * @param pgmname The program name (as an ASCII-Z string).
+ * @param source  The pointer to the program source.
+ * @param length  The length of the source.
+ *
+ * @return A translated Routine object.
+ */
+RoutineClass *RoutineClass::newRexxBuffer(const char *pgmname, const char *source, size_t length)
+{
+                                         /* create a source object            */
+    RexxSource *newSource = RexxSource::classNewBuffered(new_string(pgmname), source, length);
+    // we need to protect this source object until parsing is complete
+    ProtectedObject p(newSource);
+                                         /* now complete method creation      */
+    return newRoutine(newSource);
 }
 
 

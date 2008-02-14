@@ -6,7 +6,7 @@
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
 /* distribution. A copy is also available at the following address:           */
-/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
+/* http://www.oorexx.org/license.html                          */
 /*                                                                            */
 /* Redistribution and use in source and binary forms, with or                 */
 /* without modification, are permitted provided that the following            */
@@ -36,57 +36,37 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /******************************************************************************/
-/* REXX API support                                                           */
+/* REXX Kernel                                         LibraryDirective.hpp   */
 /*                                                                            */
-/* Stub functions for all APIs accessed via the RexxInstance structure        */
+/* Primitive Abstract Directive Class Definitions                             */
 /*                                                                            */
 /******************************************************************************/
+#ifndef Included_LibraryDirective
+#define Included_LibraryDirective
 
-#include "RexxCore.h"
-#include "ContextApi.hpp"
-#include "InterpreterInstance.hpp"
+#include "RexxDirective.hpp"
 
-BEGIN_EXTERN_C()
-
-void RexxEntry Terminate(RexxInstance  *c)
+class LibraryDirective : public RexxDirective
 {
-    InstanceApiContext context(c);
-    context.instance->terminate();
-}
+ public:
+           void *operator new(size_t);
+    inline void *operator new(size_t size, void *objectPtr) { return objectPtr; }
+    inline void  operator delete(void *) { }
+    inline void  operator delete(void *, void *) { }
 
-logical_t RexxEntry AttachThread(RexxInstance *c, RexxThreadContext **tc)
-{
-    InstanceApiContext context(c);
-    return context.instance->attachThread(*tc);
-}
+    LibraryDirective(RexxString *, RexxClause *);
+    inline LibraryDirective(RESTORETYPE restoreType) { ; };
 
-void RexxEntry Halt(RexxInstance *c)
-{
-    InstanceApiContext context(c);
-    context.instance->haltAllActivities();
-}
+    void live(size_t);
+    void liveGeneral(int reason);
+    void flatten(RexxEnvelope *);
 
-void RexxEntry SetTrace(RexxInstance *c, logical_t setting)
-{
-    InstanceApiContext context(c);
-    context.instance->traceAllActivities(setting != 0);
-}
+    inline RexxString *getName() { return name; }
 
-
-logical_t RexxEntry CreateScriptContext(RexxInstance *c, RexxScriptContext **sc, RexxOption *o)
-{
-    return (logical_t)false;
-}
-
-END_EXTERN_C()
-
-
-RexxInstanceInterface InterpreterInstance::interfaceVector =
-{
-    INSTANCE_INTERFACE_VERSION,
-    Terminate,
-    AttachThread,
-    CreateScriptContext,
-    Halt,
-    SetTrace,
+protected:
+    RexxString *name;     // the name of the directive
 };
+
+#endif
+
+

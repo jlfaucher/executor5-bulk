@@ -36,91 +36,51 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /******************************************************************************/
-/* REXX Kernel                                         PackageDirective.cpp   */
 /*                                                                            */
-/* Primitive Translator Abstract Directive Code                               */
+/* Primitive Kernel Package class definitions                                 */
 /*                                                                            */
 /******************************************************************************/
-#include <stdlib.h>
-#include "RexxCore.h"
-#include "PackageDirective.hpp"
-#include "Clause.hpp"
+#ifndef Included_PackageClass
+#define Included_PackageClass
 
+class RexxSource;
 
-
-/**
- * Construct a PackageDirective.
- *
- * @param n      The name of the requires target.
- * @param clause The source file clause containing the directive.
- */
-PackageDirective::PackageDirective(RexxString *n, RexxClause *clause) : RexxDirective(clause, KEYWORD_PACKAGE)
+class RoutineClass : public RexxObject
 {
-    name = n;
-}
+public:
+    void *operator new(size_t);
+    inline void *operator new(size_t size, void *ptr) { return ptr; };
+    PackageClass(RexxSource *source);
+    inline PackageClass(RESTORETYPE restoreType) { ; };
 
-/**
- * Normal garbage collecting live mark.
- *
- * @param liveMark The current live object mark.
- */
-void PackageDirective::live(size_t liveMark)
-{
-    memory_mark(this->nextInstruction);  // must be first one marked (though normally null)
-    memory_mark(this->name);
-}
+    void live(size_t);
+    void liveGeneral(int reason);
+    void flatten(RexxEnvelope*);
 
+    static RexxClass *classInstance;
 
-/**
- * The generalized object marking routine.
- *
- * @param reason The processing faze we're running the mark on.
- */
-void PackageDirective::liveGeneral(int reason)
-{
-    memory_mark_general(this->nextInstruction);  // must be first one marked (though normally null)
-    memory_mark_general(this->name);
-}
+    RexxString *getName();
+    RexxArray *getSource();
+    RexxString *getSourceLine(size_t);
+    RexxString *getSourceLineRexx(RexxObject *);
 
+    RexxDirectory *getClasses();
+    RexxDirectory *getPublicClasses();
+    RexxDirectory *getImportedClasses();
+    RexxDirectory *getMethods();
+    RexxDirectory *getRoutines();
+    RexxDirectory *getPublicRoutines();
+    RexxDirectory *getImportedRoutines();
+    RexxArray *getImportedPackages();
 
-/**
- * Flatten the directive instance.
- *
- * @param envelope The envelope we're flattening into.
- */
-void PackageDirective::flatten(RexxEnvelope *envelope)
-{
-    setUpFlatten(PackageDirective)
-
-        flatten_reference(newThis->nextInstruction, envelope);
-        flatten_reference(newThis->name, envelope);
-
-    cleanUpFlatten
-}
+protected;
+    RexxSource *source;             // the wrappered source object
 
 
-/**
- * Allocate a new requires directive.
- *
- * @param size   The size of the object.
- *
- * @return The memory for the new object.
- */
-void *PackageDirective::operator new(size_t size)
-{
-    return new_object(size, T_PackageDirective); /* Get new object                    */
-}
+};
 
 
-/**
- * Do install-time processing of the ::requires directive.  This
- * will resolve the directive and merge all of the public information
- * from the resolved file into this program context.
- *
- * @param activation The activation we're running under for the install.
- */
-void PackageDirective::install(RexxActivation *context)
-{
-    context->resolvePackage(name, this);
-}
+inline PackageClass *new_package(RexxSource *s)  { return new PackageClass(s); }
+#endif
+
 

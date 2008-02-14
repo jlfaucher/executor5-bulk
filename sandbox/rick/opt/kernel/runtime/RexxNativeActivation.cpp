@@ -235,7 +235,7 @@ void RexxNativeActivation::processArguments(size_t argcount, RexxObject **arglis
                     reportSignatureError();
                 }
                 // fill in the receiver object and mark it...
-                descriptors[outputIndex].value.value_RexxObjectPtr = this->receiver;
+                descriptors[outputIndex].value.value_RexxObjectPtr = (RexxObjectPtr)this->receiver;
                 descriptors[outputIndex].flags = ARGUMENT_EXISTS | SPECIAL_ARGUMENT;
                 break;
             }
@@ -267,7 +267,7 @@ void RexxNativeActivation::processArguments(size_t argcount, RexxObject **arglis
             case REXX_VALUE_ARGLIST:              /* need the argument list            */
             {
                 descriptors[outputIndex].flags = ARGUMENT_EXISTS | SPECIAL_ARGUMENT;
-                descriptors[outputIndex].value.value_RexxArrayObject = getArguments();
+                descriptors[outputIndex].value.value_RexxArrayObject = (RexxArrayObject)getArguments();
                 // we've used this
                 usedArglist = true;
                 break;
@@ -295,7 +295,7 @@ void RexxNativeActivation::processArguments(size_t argcount, RexxObject **arglis
 
                         case REXX_VALUE_RexxObjectPtr:  /* arbitrary object reference        */
                         {
-                            descriptors[outputIndex].value.value_RexxObjectPtr = argument;
+                            descriptors[outputIndex].value.value_RexxObjectPtr = (RexxObjectPtr)argument;
                             break;
                         }
 
@@ -411,7 +411,7 @@ void RexxNativeActivation::processArguments(size_t argcount, RexxObject **arglis
                                 createLocalReference(temp);
                             }
                             /* set the result in                 */
-                            descriptors[outputIndex].value.value_RexxStringObject = temp;
+                            descriptors[outputIndex].value.value_RexxStringObject = (RexxStringObject)temp;
                             break;
 
                         }
@@ -428,7 +428,7 @@ void RexxNativeActivation::processArguments(size_t argcount, RexxObject **arglis
                                 createLocalReference(temp);
                             }
                             /* set the result in                 */
-                            descriptors[outputIndex].value.value_RexxArrayObject = temp;
+                            descriptors[outputIndex].value.value_RexxArrayObject = (RexxArrayObject)temp;
                             break;
 
                         }
@@ -447,7 +447,7 @@ void RexxNativeActivation::processArguments(size_t argcount, RexxObject **arglis
                             if (isStem(argument))
                             {
                                 /* set the result in                 */
-                                descriptors[outputIndex].value.value_RexxStemObject = argument;
+                                descriptors[outputIndex].value.value_RexxStemObject = (RexxStemObject)argument;
                                 break;
                             }
 
@@ -474,7 +474,7 @@ void RexxNativeActivation::processArguments(size_t argcount, RexxObject **arglis
                                 reportStemError(inputIndex, argument);
                             }
                             /* set the result in                 */
-                            descriptors[outputIndex].value.value_RexxStemObject = stem;
+                            descriptors[outputIndex].value.value_RexxStemObject = (RexxStemObject)stem;
                             break;
 
                         }
@@ -862,7 +862,7 @@ bool RexxNativeActivation::objectToValue(RexxObject *o, ValueDescriptor *value)
                 createLocalReference(temp);
             }
             /* set the result in                 */
-            value->value.value_RexxStringObject = temp;
+            value->value.value_RexxStringObject = (RexxStringObject)temp;
             return true;
 
         }
@@ -879,7 +879,7 @@ bool RexxNativeActivation::objectToValue(RexxObject *o, ValueDescriptor *value)
                 createLocalReference(temp);
             }
             /* set the result in                 */
-            value->value.value_RexxArrayObject = temp;
+            value->value.value_RexxArrayObject = (RexxArrayObject)temp;
             return true;
 
         }
@@ -898,7 +898,7 @@ bool RexxNativeActivation::objectToValue(RexxObject *o, ValueDescriptor *value)
             if (isStem(o))
             {
                 /* set the result in                 */
-                value->value.value_RexxStemObject = o;
+                value->value.value_RexxStemObject = (RexxStemObject)o;
                 return true;
             }
 
@@ -925,7 +925,7 @@ bool RexxNativeActivation::objectToValue(RexxObject *o, ValueDescriptor *value)
                 return false;
             }
             /* set the result in                 */
-            value->value.value_RexxStemObject = stem;
+            value->value.value_RexxStemObject = (RexxStemObject)stem;
             return true;
         }
 
@@ -2231,6 +2231,67 @@ RexxSupplier *RexxNativeActivation::getAllContextVariables()
 {
     return activation->getAllLocalVariables();
 }
+
+
+/**
+ * Get nn object variable in the current method scope.  Returns
+ * a NULL object reference if the variable does not exist.
+ *
+ * @param name   The variable name.
+ *
+ * @return The variable value or OREF_NULL if the variable does not
+ *         exist.
+ */
+RexxObject *RexxNativeActivation::getObjectVariable(const char *name)
+{
+    return methodVariables()->realValue(new_string(name));
+}
+
+/**
+ * The an object variable to a new value.
+ *
+ * @param name   The name of the variable.
+ * @param value  The new variable value.
+ */
+void RexxNativeActivation::setObjectVariable(const char *name, RexxObject *value)
+{
+    methodVariables()->set(new_string(name), value);
+}
+
+/**
+ * Drop an object variable in the current method scope.
+ *
+ * @param name   The name of the variable.
+ */
+void RexxNativeActivation::dropObjectVariable(const char *name)
+{
+    methodVariables()->drop(new_string(name));
+}
+
+
+/**
+ * Resolve a class in the context of the current execution context.
+ *
+ * @param className The target class name.
+ *
+ * @return The resolved class (if any).
+ */
+RexxClass *RexxNativeActivation::resolveClass(RexxString *className)
+{
+    if (method != OREF_NULL)
+    {
+        return method->resolveClass(className);
+    }
+
+    if (routine != OREF_NULL)
+    {
+        return routine->resolveClass(className);
+    }
+
+    return OREF_NULL;
+}
+
+
 
 void RexxNativeActivation::checkConditions()
 /******************************************************************************/

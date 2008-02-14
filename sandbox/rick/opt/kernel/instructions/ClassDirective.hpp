@@ -55,8 +55,8 @@ class ClassDirective : public RexxDirective
     inline void  operator delete(void *) { }
     inline void  operator delete(void *, void *) { }
 
-    PackageDirective(RexxString *, RexxClause *);
-    inline PackageDirective(RESTORETYPE restoreType) { ; };
+    ClassDirective(RexxString *, RexxClause *);
+    inline ClassDirective(RESTORETYPE restoreType) { ; };
 
     void live(size_t);
     void liveGeneral(int reason);

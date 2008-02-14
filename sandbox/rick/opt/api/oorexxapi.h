@@ -497,9 +497,11 @@ typedef struct
     logical_t        (RexxEntry *IsInstanceOf)(RexxThreadContext *, RexxObjectPtr, RexxClassObject);
     RexxClassObject  (RexxEntry *FindClass)(RexxThreadContext *, CSTRING);
     RexxClassObject  (RexxEntry *FindClassFromMethod)(RexxThreadContext *, RexxMethodObject, CSTRING);
+    RexxClassObject  (RexxEntry *FindClassFromRoutine)(RexxThreadContext *, RexxRoutineObject, CSTRING);
     logical_t        (RexxEntry *HasMethod)(RexxThreadContext *, RexxObjectPtr, CSTRING);
 
-    RexxMethodObject (RexxEntry *NewMethod)(RexxThreadContext *, CSTRING, size_t);
+    RexxMethodObject (RexxEntry *NewMethod)(RexxThreadContext *, CSTRING, CSTRING, size_t);
+    RexxRoutineObject (RexxEntry *NewRoutine)(RexxThreadContext *, CSTRING, CSTRING, size_t);
     RexxDirectoryObject (RexxEntry *GetMethodRoutines)(RexxThreadContext *, RexxMethodObject);
     RexxDirectoryObject (RexxEntry *GetMethodClasses)(RexxThreadContext *, RexxMethodObject);
     RexxDirectoryObject (RexxEntry *GetMethodMethods)(RexxThreadContext *, RexxMethodObject);
@@ -624,7 +626,7 @@ typedef struct
     CSTRING    (RexxEntry *GetMessageName)(RexxMethodContext *);
     RexxMethodObject (RexxEntry *GetMethod)(RexxMethodContext *);
     RexxObjectPtr    (RexxEntry *GetSelf)(RexxMethodContext *);
-    RexxObjectPtr    (RexxEntry *GetSuper)(RexxMethodContext *);
+    RexxClassObject  (RexxEntry *GetSuper)(RexxMethodContext *);
     void             (RexxEntry *SetObjectVariable)(RexxMethodContext *, CSTRING, RexxObjectPtr);
     RexxObjectPtr    (RexxEntry *GetObjectVariable)(RexxMethodContext *, CSTRING);
     void             (RexxEntry *DropObjectVariable)(RexxMethodContext *, CSTRING);
@@ -780,14 +782,23 @@ struct RexxThreadContext_
     {
         return functions->FindClassFromMethod(this, m, n);
     }
+    RexxClassObject FindClassFromRoutine(RexxRoutineObject m, CSTRING n)
+    {
+        return functions->FindClassFromRoutine(this, m, n);
+    }
     logical_t HasMethod(RexxObjectPtr o, CSTRING m)
     {
         return functions->HasMethod(this, o, m);
     }
 
-    RexxMethodObject NewMethod(CSTRING s, size_t n)
+    RexxMethodObject NewMethod(CSTRING n, CSTRING s, size_t l)
     {
-        return functions->NewMethod(this, s, n);
+        return functions->NewMethod(this, n, s, l);
+    }
+
+    RexxMethodObject NewRoutine(CSTRING n, CSTRING s, size_t l)
+    {
+        return functions->NewRoutine(this, n, s, l);
     }
     RexxDirectoryObject GetMethodRoutines(RexxMethodObject m)
     {
@@ -1242,6 +1253,10 @@ struct RexxMethodContext_
     {
         return threadContext->FindClassFromMethod(m, n);
     }
+    RexxClassObject FindClassFromRoutine(RexxRoutineObject m, CSTRING n)
+    {
+        return threadContext->FindClassFromRoutine(m, n);
+    }
     logical_t HasMethod(RexxObjectPtr o, CSTRING m)
     {
         return threadContext->HasMethod(o, m);
@@ -1250,6 +1265,16 @@ struct RexxMethodContext_
     RexxMethodObject NewMethod(CSTRING s, size_t n)
     {
         return threadContext->NewMethod(s, n);
+    }
+
+    RexxMethodObject NewMethod(CSTRING n, CSTRING s, size_t l)
+    {
+        return threadContext->NewMethod(n, s, l);
+    }
+
+    RexxRoutineObject NewRoutine(CSTRING n, CSTRING s, size_t l)
+    {
+        return threadContext->NewRoutine(n, s, l);
     }
     RexxDirectoryObject GetMethodRoutines(RexxMethodObject m)
     {
@@ -1652,7 +1677,7 @@ struct RexxMethodContext_
     {
         return functions->GetSelf(this);
     }
-    RexxObjectPtr GetSuper()
+    RexxClassObject GetSuper()
     {
         return functions->GetSuper(this);
     }
@@ -1756,6 +1781,10 @@ struct RexxCallContext_
     {
         return threadContext->FindClassFromMethod(m, n);
     }
+    RexxClassObject FindClassFromRoutine(RexxRoutineObject m, CSTRING n)
+    {
+        return threadContext->FindClassFromRoutine(m, n);
+    }
     logical_t HasMethod(RexxObjectPtr o, CSTRING m)
     {
         return threadContext->HasMethod(o, m);
@@ -1765,6 +1794,12 @@ struct RexxCallContext_
     {
         return threadContext->NewMethod(s, n);
     }
+
+    RexxRoutineObject NewRoutine(CSTRING n, CSTRING s, size_t l)
+    {
+        return threadContext->NewRoutine(n, s, l);
+    }
+
     RexxDirectoryObject GetMethodRoutines(RexxMethodObject m)
     {
         return threadContext->GetMethodRoutines(m);
@@ -2261,14 +2296,22 @@ struct RexxExitContext_
     {
         return threadContext->FindClassFromMethod(m, n);
     }
+    RexxClassObject FindClassFromRoutine(RexxRoutineObject m, CSTRING n)
+    {
+        return threadContext->FindClassFromRoutine(m, n);
+    }
     logical_t HasMethod(RexxObjectPtr o, CSTRING m)
     {
         return threadContext->HasMethod(o, m);
     }
 
-    RexxMethodObject NewMethod(CSTRING s, size_t n)
+    RexxMethodObject NewMethod(CSTRING n, CSTRING s, size_t l)
     {
-        return threadContext->NewMethod(s, n);
+        return threadContext->NewMethod(n, s, l);
+    }
+    RexxRoutineObject NewRoutine(CSTRING n, CSTRING s, size_t l)
+    {
+        return threadContext->NewRoutine(n, s, l);
     }
     RexxDirectoryObject GetMethodRoutines(RexxMethodObject m)
     {

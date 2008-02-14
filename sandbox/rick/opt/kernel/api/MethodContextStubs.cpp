@@ -44,6 +44,8 @@
 #include "RexxCore.h"
 #include "ContextApi.hpp"
 #include "RexxNativeActivation.hpp"
+#include "ProtectedObject.hpp"
+#include "MethodClass.hpp"
 
 BEGIN_EXTERN_C()
 
@@ -52,7 +54,7 @@ RexxArrayObject RexxEntry GetMethodArguments(RexxMethodContext *c)
     ApiContext context(c);
     try
     {
-        return context.context->getArguments();
+        return (RexxArrayObject)context.context->getArguments();
     }
     catch (ActivityException)
     {
@@ -65,7 +67,7 @@ RexxObjectPtr RexxEntry GetMethodArgument(RexxMethodContext *c, stringsize_t i)
     ApiContext context(c);
     try
     {
-        return context.context->getArgument(i);
+        return (RexxObjectPtr)context.context->getArgument(i);
     }
     catch (ActivityException)
     {
@@ -104,7 +106,7 @@ RexxObjectPtr RexxEntry GetSelf(RexxMethodContext *c)
     ApiContext context(c);
     try
     {
-        return context.context->getSelf();
+        return (RexxObjectPtr)context.context->getSelf();
     }
     catch (ActivityException)
     {
@@ -130,7 +132,7 @@ void RexxEntry SetObjectVariable(RexxMethodContext *c, CSTRING n, RexxObjectPtr 
     ApiContext context(c);
     try
     {
-        context.context->setObjectVariable((stringchar_t *)n, (RexxObject *)v);
+        context.context->setObjectVariable(n, (RexxObject *)v);
     }
     catch (ActivityException)
     {
@@ -142,7 +144,7 @@ RexxObjectPtr RexxEntry GetObjectVariable(RexxMethodContext *c, CSTRING n)
     ApiContext context(c);
     try
     {
-        return context.context->getObjectVariable((stringchar_t *)n);
+        return (RexxObjectPtr)context.context->getObjectVariable(n);
     }
     catch (ActivityException)
     {
@@ -155,7 +157,7 @@ void RexxEntry DropObjectVariable(RexxMethodContext *c, CSTRING n)
     ApiContext context(c);
     try
     {
-        context.context->dropObjectVariable((stringchar_t *)n);
+        context.context->dropObjectVariable(n);
     }
     catch (ActivityException)
     {
@@ -172,7 +174,7 @@ RexxObjectPtr RexxEntry SendSuperMessage(RexxMethodContext *c, CSTRING n, RexxAr
         RexxString *message = new_string(n);
         RexxArray *args = (RexxArray *)a;
         ProtectedObject result;
-        self->messageSend(context.activity, message, args->size(), args->data(), super, result);
+        self->messageSend(message, args->size(), args->data(), super, result);
         return context.ret((RexxObject *)result);
     }
     catch (ActivityException)
@@ -191,7 +193,7 @@ RexxObjectPtr RexxEntry SendOverrideMessage(RexxMethodContext *c, CSTRING n, Rex
         RexxString *message = new_string(n);
         RexxArray *args = (RexxArray *)a;
         ProtectedObject result;
-        self->messageSend(context.activity, message, args->size(), args->data(), super, result);
+        self->messageSend(message, args->size(), args->data(), super, result);
         return context.ret((RexxObject *)result);
     }
     catch (ActivityException)
@@ -231,7 +233,7 @@ RexxClassObject RexxEntry FindContextClass(RexxMethodContext *c, CSTRING n)
     {
         // convert the name to a string instance, and check the environments.
         RexxString *name = new_upper_string(n);
-        return (RexxClassObject)context.ret(context.context->getMethod()->resolveClass(context.activity, name));
+        return (RexxClassObject)context.ret(context.context->resolveClass(name));
     }
     catch (ActivityException)
     {

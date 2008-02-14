@@ -121,6 +121,7 @@ class RexxVariableDictionary : public RexxInternalObject {
 
   RexxVariable *nextVariable(RexxNativeActivation *);
   void         set(RexxString *, RexxObject *);
+  void         drop(RexxString *);
   void         reserve(RexxActivity *);
   void         release(RexxActivity *);
   bool         transfer(RexxActivity *);

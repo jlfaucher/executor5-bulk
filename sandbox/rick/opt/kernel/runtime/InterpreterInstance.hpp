@@ -78,6 +78,7 @@ public:
     void attachToProcess();
     RexxActivity *enterOnCurrentThread();
     RexxActivity *attachThread();
+    int attachThread(RexxThreadContext *&attachedContext);
     bool detachThread();
     RexxActivity *spawnActivity(RexxActivity *parent);
     void exitCurrentThread();

@@ -51,6 +51,7 @@ class RexxActivity;
 class RexxMethod;
 class ProtectedObject;
 class RexxArray;
+class RexxClass;
 
 
 /**
@@ -66,6 +67,7 @@ public:
     virtual RexxArray *getSource();
     virtual RexxObject *setSecurityManager(RexxObject *manager);
     virtual RexxSource *getSourceObject();
+    virtual RexxClass *resolveClass(RexxString *className);
 };
                                        /* pointer to native method function */
 typedef uint16_t *(RexxEntry *PNATIVEMETHOD)(RexxMethodContext *, ValueDescriptor *);
@@ -82,6 +84,7 @@ public:
     RexxArray  *getSource() { return code->getSource(); }
 
     RexxArray *source();
+    RexxClass *resolveClass(RexxString *className);
 
 protected:
     BaseCode   *code;                   // the backing code object
@@ -134,6 +137,7 @@ protected:
    static RexxMethod  *newRexxMethod(RexxSource *, RexxClass  *);
    static RexxMethod  *newMethodObject(RexxString *, RexxObject *, RexxObject *, RexxSource *a);
    static RexxMethod  *newRexxBuffer(RexxString *, RexxBuffer *, RexxClass  *);
+   static RexxMethod  *newRexxBuffer(const char *, const char *, size_t);
    static RexxMethod  *newEntry(PNATIVEMETHOD);
    static RexxMethod  *restore(RexxBuffer *, char *);
    static RexxMethod  *newFile(RexxString *);

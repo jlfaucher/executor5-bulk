@@ -148,6 +148,23 @@ void InterpreterInstance::setSecurityManager(RexxObject *m)
 
 
 /**
+ * Attach a thread to an interpreter instance, returning the
+ * activity thread context.
+ *
+ * @param attachedContext
+ *               The pointer for returning the thread context.
+ *
+ * @return 0 indicates success.
+ */
+int InterpreterInstance::attachThread(RexxThreadContext *&attachedContext)
+{
+    RexxActivity *activity = attachThread();
+    attachedContext = activity->getThreadContext();
+    return 0;
+}
+
+
+/**
  * Attach a thread to an interpreter instance.
  *
  * @return The attached activity.

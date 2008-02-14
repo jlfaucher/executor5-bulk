@@ -42,20 +42,22 @@
 /*                                                                            */
 /******************************************************************************/
 
-#include "oorexx.h"
+#include "RexxCore.h"
 #include "ContextApi.hpp"
 #include "RexxActivity.hpp"
 #include "StringClass.hpp"
 #include "IntegerClass.hpp"
-#include "RexxBuffer.hpp"
+#include "BufferClass.hpp"
 #include "SupplierClass.hpp"
 #include "ArrayClass.hpp"
 #include "DirectoryClass.hpp"
 #include "TableClass.hpp"
 #include "MethodClass.hpp"
 #include "Interpreter.hpp"
-#include "SysInterpreter.hpp"
+#include "InterpreterInstance.hpp"
+#include "SystemInterpreter.hpp"
 #include "PointerClass.hpp"
+#include "ActivityManager.hpp"
 
 BEGIN_EXTERN_C()
 
@@ -106,7 +108,7 @@ RexxObjectPtr RexxEntry RequestGlobalReference(RexxThreadContext *c, RexxObjectP
     ApiContext context(c);
     try
     {
-        context.activity->addGlobalReference((RexxObject *)o);
+        context.activity->getInstance()->addGlobalReference((RexxObject *)o);
         return o;
     }
     catch (ActivityException)
@@ -121,7 +123,7 @@ void RexxEntry ReleaseGlobalReference(RexxThreadContext *c, RexxObjectPtr o)
     ApiContext context(c);
     try
     {
-        context.activity->removeGlobalReference((RexxObject *)o);
+        context.activity->getInstance()->removeGlobalReference((RexxObject *)o);
     }
     catch (ActivityException)
     {
@@ -134,7 +136,7 @@ void RexxEntry ReleaseLocalReference(RexxThreadContext *c, RexxObjectPtr o)
     ApiContext context(c);
     try
     {
-        context.activity->removeLocalReference((RexxObject *)o);
+        context.context->removeLocalReference((RexxObject *)o);
     }
     catch (ActivityException)
     {
@@ -202,7 +204,7 @@ RexxDirectoryObject RexxEntry GetLocalEnvironment(RexxThreadContext *c)
     ApiContext context(c);
     try
     {
-        context.activity->getLocalEnvironment();
+        return (RexxDirectoryObject)ActivityManager::localEnvironment;
     }
     catch (ActivityException)
     {
@@ -215,7 +217,7 @@ RexxDirectoryObject RexxEntry GetGlobalEnvironment(RexxThreadContext *c)
     ApiContext context(c);
     try
     {
-        RexxInterpreter::theEnvironment;
+        return (RexxDirectoryObject)TheEnvironment;
     }
     catch (ActivityException)
     {
@@ -230,7 +232,7 @@ logical_t RexxEntry IsSameType(RexxThreadContext *c, RexxObjectPtr o1, RexxObjec
     ApiContext context(c);
     try
     {
-        return isSameType((RexxObject *)o1, (RexxObject *)o2);
+        return ((RexxObject *)o1)->isSameType((RexxObject *)o2);
     }
     catch (ActivityException)
     {
@@ -244,7 +246,7 @@ logical_t RexxEntry IsInstanceOf(RexxThreadContext *c, RexxObjectPtr o, RexxClas
     ApiContext context(c);
     try
     {
-        return ((RexxClass *)cl)->instanceOf((RexxObject *)o);
+        return ((RexxObject *)o)->isInstanceOf((RexxClass *)cl);
     }
     catch (ActivityException)
     {
@@ -260,7 +262,7 @@ RexxClassObject RexxEntry FindClass(RexxThreadContext *c, CSTRING n)
     {
         // convert the name to a string instance, and check the environments.
         RexxString *name = new_upper_string(n);
-        return (RexxClassObject)context.ret(context.activity->resolveClass(name));
+        return (RexxClassObject)context.ret(context.context->resolveClass(name));
 
     }
     catch (ActivityException)
@@ -277,7 +279,24 @@ RexxClassObject RexxEntry FindClassFromMethod(RexxThreadContext *c, RexxMethodOb
     {
         // convert the name to a string instance, and check the environments.
         RexxString *name = new_upper_string(n);
-        return (RexxClassObject)context.ret(((RexxMethod *)m)->resolveClass(context.activity, name));
+        return (RexxClassObject)context.ret(((RexxMethod *)m)->resolveClass(name));
+
+    }
+    catch (ActivityException)
+    {
+    }
+    return NULLOBJECT;
+}
+
+
+RexxClassObject RexxEntry FindClassFromRoutine(RexxThreadContext *c, RexxRoutineObject m, CSTRING n)
+{
+    ApiContext context(c);
+    try
+    {
+        // convert the name to a string instance, and check the environments.
+        RexxString *name = new_upper_string(n);
+        return (RexxClassObject)context.ret(((RoutineClass *)m)->resolveClass(name));
 
     }
     catch (ActivityException)
@@ -293,7 +312,7 @@ logical_t RexxEntry HasMethod(RexxThreadContext *c, RexxObjectPtr o, CSTRING n)
     try
     {
         // convert the name to a string instance, and check the environments.
-        return ((RexxObject *)o)->hasMethod((stringchar_t *)n);
+        return ((RexxObject *)o)->hasMethod(new_string(n));
 
     }
     catch (ActivityException)
@@ -303,13 +322,28 @@ logical_t RexxEntry HasMethod(RexxThreadContext *c, RexxObjectPtr o, CSTRING n)
 }
 
 
-RexxMethodObject RexxEntry NewMethod(RexxThreadContext *c, CSTRING source, stringsize_t length)
+RexxMethodObject RexxEntry NewMethod(RexxThreadContext *c, CSTRING name, CSTRING source, stringsize_t length)
 {
     ApiContext context(c);
     try
     {
         // convert the name to a string instance, and check the environments.
-        return (RexxMethodObject)context.ret(RexxMethod::newMethod((stringchar_t *)source, (stringsize_t)length));
+        return (RexxMethodObject)context.ret(RexxMethod::newRexxBuffer(name, source, length));
+    }
+    catch (ActivityException)
+    {
+    }
+    return NULLOBJECT;
+}
+
+
+RexxMethodObject RexxEntry NewRoutine(RexxThreadContext *c, CSTRING name, CSTRING source, stringsize_t length)
+{
+    ApiContext context(c);
+    try
+    {
+        // convert the name to a string instance, and check the environments.
+        return (RexxMethodObject)context.ret(RoutineClass::newRexxBuffer(name, source, length));
     }
     catch (ActivityException)
     {
@@ -391,7 +425,7 @@ RexxMethodObject RexxEntry LoadMethod(RexxThreadContext *c, CSTRING d, size_t l)
     ApiContext context(c);
     try
     {
-        RexxBuffer *buf = new_buffer((stringchar_t *)d, (size_t)l);
+        RexxBuffer *buf = new_buffer(d, (size_t)l);
         return (RexxMethodObject)context.ret(RexxMethod::restore(buf, buf->address()));
     }
     catch (ActivityException)
@@ -667,7 +701,7 @@ size_t RexxEntry StringGet(RexxThreadContext *c, RexxStringObject s, size_t o, C
     try
     {
         RexxString *temp = (RexxString *)s;
-        return temp->get(o, (stringchar_t *)r, l);
+        return temp->get(o, r, l);
     }
     catch (ActivityException)
     {
@@ -708,7 +742,7 @@ RexxStringObject RexxEntry NewString(RexxThreadContext *c, CSTRING s, size_t l)
     ApiContext context(c);
     try
     {
-        return (RexxStringObject)context.ret(new_string((stringchar_t *)s, (stringsize_t)l));
+        return (RexxStringObject)context.ret(new_string(s, (stringsize_t)l));
     }
     catch (ActivityException)
     {
@@ -1270,7 +1304,7 @@ void RexxEntry SetStemElement(RexxThreadContext *c, RexxStemObject s, CSTRING n,
     ApiContext context(c);
     try
     {
-        ((RexxStem *)s)->setElement((stringchar_t *)n, (RexxObject *)v);
+        ((RexxStem *)s)->setElement(n, (RexxObject *)v);
     }
     catch (ActivityException)
     {
@@ -1282,7 +1316,7 @@ RexxObjectPtr RexxEntry GetStemElement(RexxThreadContext *c, RexxStemObject s, C
     ApiContext context(c);
     try
     {
-        return context.ret(((RexxStem *)s)->getElement((stringchar_t *)n));
+        return context.ret(((RexxStem *)s)->getElement(n));
     }
     catch (ActivityException)
     {
@@ -1295,7 +1329,7 @@ void RexxEntry DropStemElement(RexxThreadContext *c, RexxStemObject s, CSTRING n
     ApiContext context(c);
     try
     {
-        ((RexxStem *)s)->dropElement((stringchar_t *)n);
+        ((RexxStem *)s)->dropElement(n);
     }
     catch (ActivityException)
     {
@@ -1514,6 +1548,7 @@ RexxThreadInterface RexxActivity::threadContextFunctions =
     IsInstanceOf,
     FindClass,
     FindClassFromMethod,
+    FindClassFromRoutine,
     HasMethod,
 
     NewMethod,

@@ -72,6 +72,7 @@ public:
     static RoutineClass *newRoutine(RexxSource *);
     static RoutineClass *newRoutineObject(RexxString *, RexxObject *, RexxObject *, RexxSource *s);
     static RoutineClass *newRexxBuffer(RexxString *, RexxBuffer *);
+    static RoutineClass *newRexxBuffer(const char *, const char *, size_t);
     static RoutineClass *restore(RexxBuffer *, char *);
     static RoutineClass *newFile(RexxString *);
 
