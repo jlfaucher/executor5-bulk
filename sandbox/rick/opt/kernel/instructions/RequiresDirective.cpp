@@ -57,7 +57,6 @@
 RequiresDirective::RequiresDirective(RexxString *n, RexxClause *clause) : RexxDirective(clause, KEYWORD_REQUIRES)
 {
     name = n;
-    resolvedTarget = OREF_NULL;    // this is resolved at install time
 }
 
 /**
@@ -69,7 +68,6 @@ void RequiresDirective::live(size_t liveMark)
 {
     memory_mark(this->nextInstruction);  // must be first one marked (though normally null)
     memory_mark(this->name);
-    memory_mark(this->resolvedTarget);
 }
 
 
@@ -82,7 +80,6 @@ void RequiresDirective::liveGeneral(int reason)
 {
     memory_mark_general(this->nextInstruction);  // must be first one marked (though normally null)
     memory_mark_general(this->name);
-    memory_mark_general(this->resolvedTarget);
 }
 
 
@@ -97,9 +94,6 @@ void RequiresDirective::flatten(RexxEnvelope *envelope)
 
         flatten_reference(newThis->nextInstruction, envelope);
         flatten_reference(newThis->name, envelope);
-        // We sever this connection when the method is flattened.
-        newThis->resolvedTarget = OREF_NULL;
-
     cleanUpFlatten
 }
 
@@ -124,7 +118,7 @@ void *RequiresDirective::operator new(size_t size)
  *
  * @param activation The activation we're running under for the install.
  */
-void RequiresDirective::install(RexxActivation *context)
+PackageClass *RequiresDirective::install(RexxActivation *context)
 {
-    OrefSet(this, this->resolvedTarget, context->processRequires(name, this));
+    return context->loadRequired(name, this);
 }

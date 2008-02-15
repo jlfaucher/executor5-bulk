@@ -41,8 +41,8 @@
 /* Primitive Rexx function/method package                                     */
 /*                                                                            */
 /******************************************************************************/
-#ifndef Package_Included
-#define Package_Included
+#ifndef LibraryPackage_Included
+#define LibraryPackage_Included
 
 #include "RexxCore.h"
 #include "SysLibrary.hpp"
@@ -53,7 +53,7 @@ class RexxNativeMethod;
 
 typedef RexxPackageEntry * (RexxEntry *PACKAGE_LOADER)();
 
-class Package : public RexxInternalObject
+class LibraryPackage : public RexxInternalObject
 {
 public:
     inline void *operator new(size_t, void *ptr) {return ptr;}
@@ -61,9 +61,9 @@ public:
     void *operator new(size_t);
     inline void  operator delete(void *) {;}
 
-    Package(RexxString *n);
-    Package(RexxString *n, RexxPackageEntry *p);
-    inline Package(RESTORETYPE restoreType) { ; };
+    LibraryPackage(RexxString *n);
+    LibraryPackage(RexxString *n, RexxPackageEntry *p);
+    inline LibraryPackage(RESTORETYPE restoreType) { ; };
 
     void   live(size_t liveMark);
     void   liveGeneral(int reason);
@@ -82,7 +82,6 @@ public:
     void   reload(RexxPackageEntry *pack);
     inline bool isLoaded() { return loaded; }
     inline bool isInternal() { return internal; }
-    inline bool isPackage() { return ispackage; }
 
 protected:
 
@@ -91,7 +90,6 @@ protected:
     RexxDirectory *functions;  // loaded functions
     RexxDirectory *methods;    // loaded functions
     SysLibrary  lib;           // the library management handle
-    bool        ispackage;     // this is a valid package vs. classic oldstyle
     bool        loaded;        // we've at least been able to load the library
     bool        internal;      // this is an internal package...no library load required.
 };

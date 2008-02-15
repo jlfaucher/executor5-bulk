@@ -73,6 +73,8 @@ public:
     RexxDirectory *getImportedRoutines();
     RexxArray *getImportedPackages();
 
+    inline RexxSource *getSourceObject() { return source; }
+
 protected;
     RexxSource *source;             // the wrappered source object
 

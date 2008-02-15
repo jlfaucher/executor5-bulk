@@ -141,43 +141,199 @@ RexxString *PackageClass::getSourceLineRexx(RexxObject *position)
 }
 
 
+/**
+ * Retrieve all classes defined by this package.
+ *
+ * @return A directory of all of the classes defined by this package.
+ */
 RexxDirectory *PackageClass::getClasses()
 {
-    return (RexxDirectory *)source->getInstalledClasses()->copy();
+    // we need to return a copy.  The source might necessarily have any of these,
+    // so we return an empty directory if it's not there.
+    RexxDirectory *classes = source->getInstalledClasses();
+    if (classes != OREF_NULL)
+    {
+        return (RexxDirectory *)classes->copy();
+    }
+    else
+    {
+        return new_directory();
+    }
 }
 
 
+/**
+ * Retrieve all public classes defined by this package.
+ *
+ * @return A directory of the public classes.
+ */
 RexxDirectory *PackageClass::getPublicClasses()
 {
-    return (RexxDirectory *)source->getInstalledPublicClasses()->copy();
+    // we need to return a copy.  The source might necessarily have any of these,
+    // so we return an empty directory if it's not there.
+    RexxDirectory *classes = source->getInstalledPublicClasses();
+    if (classes != OREF_NULL)
+    {
+        return (RexxDirectory *)classes->copy();
+    }
+    else
+    {
+        return new_directory();
+    }
 }
 
 
+/**
+ * Retrieve all of the classes imported into this package from
+ * other packages.
+ *
+ * @return A directory of the imported classes.
+ */
 RexxDirectory *PackageClass::getImportedClasses()
 {
-    return (RexxDirectory *)source->getImportedClasses()->copy();
+    // we need to return a copy.  The source might necessarily have any of these,
+    // so we return an empty directory if it's not there.
+    RexxDirectory *classes = source->getImportedClasses();
+    if (classes != OREF_NULL)
+    {
+        return (RexxDirectory *)classes->copy();
+    }
+    else
+    {
+        return new_directory();
+    }
 }
 
 
+/**
+ * Get a list of all routines defined by this package.
+ *
+ * @return A directory of the routines.
+ */
 RexxDirectory *PackageClass::getRoutines()
 {
-    return (RexxDirectory *)source->getInstalledRoutines()->copy();
+    // we need to return a copy.  The source might necessarily have any of these,
+    // so we return an empty directory if it's not there.
+    RexxDirectory *routines = source->getInstalledRoutines();
+    if (routines != OREF_NULL)
+    {
+        return (RexxDirectory *)routines->copy();
+    }
+    else
+    {
+        return new_directory();
+    }
 }
 
 
+/**
+ * Return a directory of the Public routines defined by this
+ * package.
+ *
+ * @return A directory holding the public routines.
+ */
 RexxDirectory *PackageClass::getPublicRoutines()
 {
-    return (RexxDirectory *)source->getInstalledPublicRoutines()->copy();
+    // we need to return a copy.  The source might necessarily have any of these,
+    // so we return an empty directory if it's not there.
+    RexxDirectory *routines = source->getInstalledPublicRoutines();
+    if (routines != OREF_NULL)
+    {
+        return (RexxDirectory *)routines->copy();
+    }
+    else
+    {
+        return new_directory();
+    }
 }
 
 
+/**
+ * Get the directory of routines that have been imported into
+ * to this package form other packages.
+ *
+ * @return A directory of the imported routines.
+ */
 RexxDirectory *PackageClass::getImportedRoutines()
 {
-    return (RexxDirectory *)source->getImportedRoutines()->copy();
+    // we need to return a copy.  The source might necessarily have any of these,
+    // so we return an empty directory if it's not there.
+    RexxDirectory *routines = source->getImportedRoutines();
+    if (routines != OREF_NULL)
+    {
+        return (RexxDirectory *)routines->copy();
+    }
+    else
+    {
+        return new_directory();
+    }
 }
 
 
+/**
+ * Get all of the unattached methods defined in this package.
+ *
+ * @return A directory of the unattached methods.
+ */
 RexxDirectory *PackageClass::getMethods()
 {
-    return (RexxDirectory *)source->getMethods()->copy();
+    // we need to return a copy.  The source might necessarily have any of these,
+    // so we return an empty directory if it's not there.
+    RexxDirectory *methods = source->getMethods();
+    if (methods != OREF_NULL)
+    {
+        return (RexxDirectory *)methods->copy();
+    }
+    else
+    {
+        return new_directory();
+    }
+}
+
+
+/**
+ * Get all of the packages that have been added to this package
+ * context.
+ *
+ * @return An array of the added packages.
+ */
+RexxArray *PackageClass::getPackages()
+{
+    return source->getPackages()->makearray();
+}
+
+
+/**
+ * Load a package in a source context.
+ *
+ * @param name   The target package name.
+ *
+ * @return The loaded package object.
+ */
+PackageClass *loadPackage(RexxString *name)
+{
+    // make sure we have a valid name and delegate to the source object
+    name = REQUIRED_STRING(name, IntegerOne);
+    return source->loadRequired(name);
+}
+
+
+/**
+ * Load a package in a source context.
+ *
+ * @param name   The target package name.
+ *
+ * @return The loaded package object.
+ */
+RexxObject *addPackage(PackageClass *package)
+{
+    // this is required
+    required_arg(package, ONE);
+
+    if (!package->isInstanceOf(ThePackageClass))
+    {
+        reportException(Error_Invalid_argument_noclass, "package", "Package");
+    }
+
+    source->addPackage(package);
 }

@@ -65,8 +65,6 @@ class RequiresDirective : public RexxDirective
 
 protected:
     RexxString *name;     // the name of the directive
-    RexxCode   *resolvedTarget;   // the anchor for the resolved package
-
 };
 
 #endif

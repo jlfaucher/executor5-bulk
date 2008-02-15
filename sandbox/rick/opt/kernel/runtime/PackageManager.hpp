@@ -45,7 +45,7 @@
 #define PackageManager_Included
 
 #include "RexxCore.h"
-#include "Package.hpp"
+#include "LibraryPackage.hpp"
 
 class BaseCode;
 class RoutineClass;
@@ -63,8 +63,8 @@ public:
     static void initialize();
     static RexxArray *getImageData();
     static void restore(RexxArray *imageArray);
-    static Package    *getPackage(RexxString *name);
-    static Package    *loadPackage(RexxString *name);
+    static LibraryPackage    *getPackage(RexxString *name);
+    static LibraryPackage    *loadPackage(RexxString *name);
     static void        unload();
     static RexxNativeMethod  *resolveMethod(RexxString *packageName, RexxString *methodName);
     static RoutineClass *resolveRoutine(RexxString *function, RexxString *packageName, RexxString *procedure);

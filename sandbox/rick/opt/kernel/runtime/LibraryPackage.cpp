@@ -38,27 +38,27 @@
 /******************************************************************************/
 /* REXX Kernel                                                                */
 /*                                                                            */
-/* Primitive Package management                                               */
+/* Primitive LibraryPackage management                                               */
 /*                                                                            */
 /******************************************************************************/
 
 #include "RexxCore.h"
-#include "Package.hpp"
+#include "LibraryPackage.hpp"
 #include "PackageManager.hpp"
 #include "Interpreter.hpp"
 #include "RexxNativeCode.hpp"
 
 
 /**
- * Create a new Package object instance.
+ * Create a new LibraryPackage object instance.
  *
  * @param size   Size of the object.
  *
  * @return Pointer to new object storage.
  */
-void *Package::operator new(size_t size)
+void *LibraryPackage::operator new(size_t size)
 {
-    return new_object(size, T_Package);
+    return new_object(size, T_LibraryPackage);
 }
 
 
@@ -68,7 +68,7 @@ void *Package::operator new(size_t size)
  * @param n      Name of the library associated with this package.  This is
  *               also the name used to load the library when requested.
  */
-Package::Package(RexxString *n)
+LibraryPackage::LibraryPackage(RexxString *n)
 {
     ClearObject(this);
     OrefSet(this, libraryName, n);
@@ -82,7 +82,7 @@ Package::Package(RexxString *n)
  * @param m      The package manager that orchestrates the loading operations.
  * @param p      The packag table attached to this package name.
  */
-Package::Package(RexxString *n, RexxPackageEntry *p)
+LibraryPackage::LibraryPackage(RexxString *n, RexxPackageEntry *p)
 {
     ClearObject(this);
     OrefSet(this, libraryName, n);
@@ -94,7 +94,7 @@ Package::Package(RexxString *n, RexxPackageEntry *p)
 /**
  * Normal live marking.
  */
-void Package::live(size_t liveMark)
+void LibraryPackage::live(size_t liveMark)
 {
     memory_mark(libraryName);
     memory_mark(functions);
@@ -104,7 +104,7 @@ void Package::live(size_t liveMark)
 /**
  * Generalized live marking.
  */
-void Package::liveGeneral()
+void LibraryPackage::liveGeneral()
 {
     memory_mark_general(libraryName);
     memory_mark_general(functions);
@@ -131,7 +131,7 @@ void Package::liveGeneral()
  *         context of operations that return an error result instead
  *         of an exception.
  */
-bool Package::load()
+bool LibraryPackage::load()
 {
     // try to load the package table.
     RexxPackageEntry *table = getPackageTable();
@@ -150,7 +150,7 @@ bool Package::load()
 /**
  * Unload a package library.
  */
-void Package::unload()
+void LibraryPackage::unload()
 {
     // the internal packages don't get unloaded
     if (!loaded)
@@ -177,7 +177,7 @@ void Package::unload()
  * @return A package table entry, if possible.  A load failure or
  *         no package loading functions returns NULL.
  */
-RexxPackageEntry *Package::getPackageTable()
+RexxPackageEntry *LibraryPackage::getPackageTable()
 {
     // first try to load the libary
     PACKAGE_LOADER loader;
@@ -215,7 +215,7 @@ RexxPackageEntry *Package::getPackageTable()
  * @param manager The package manager instance we're attached to.
  * @param p       The package table entry.
  */
-void Package::loadPackage(RexxPackageEntry *p)
+void LibraryPackage::loadPackage(RexxPackageEntry *p)
 {
     package = p;       //NB:  this is NOT an object, so OrefSet is not needed.
     // load the function table
@@ -239,7 +239,7 @@ void Package::loadPackage(RexxPackageEntry *p)
  * @param manager The package manager we're associated with.
  * @param table   The package table describing this package.
  */
-void Package::loadFunctions(RexxRoutineEntry *table)
+void LibraryPackage::loadFunctions(RexxRoutineEntry *table)
 {
     // no functions exported by this package?  Just return without
     // doing anything.
@@ -287,7 +287,7 @@ void Package::loadFunctions(RexxRoutineEntry *table)
  * @return The entry associated with the target entry, if it exists.
  *         NULL indicates a not found condition.
  */
-RexxMethodEntry *Package::locateMethodEntry(RexxString *name)
+RexxMethodEntry *LibraryPackage::locateMethodEntry(RexxString *name)
 {
     ooRexxMethodEntry *entry = package->methods;
 
@@ -315,7 +315,7 @@ RexxMethodEntry *Package::locateMethodEntry(RexxString *name)
  * @return A pointer to the located function structure.  Returns NULL
  *         if the package doesn't exist.
  */
-RexxRoutineEntry *Package::locateFunctionEntry(RexxString *name)
+RexxRoutineEntry *LibraryPackage::locateFunctionEntry(RexxString *name)
 {
     RexxRoutineEntry *entry = package->functions;
 
@@ -342,7 +342,7 @@ RexxRoutineEntry *Package::locateFunctionEntry(RexxString *name)
  *
  * @return A RexxNativeCode object for this method, if located.
  */
-RexxNativeMethod *Package::resolveMethod(RexxString *name)
+RexxNativeMethod *LibraryPackage::resolveMethod(RexxString *name)
 {
     // create our methods table if not yet created.
     if (methods == OREF_NULL)
@@ -379,14 +379,14 @@ RexxNativeMethod *Package::resolveMethod(RexxString *name)
  *
  * @return The target entry point.
  */
-PNATIVEMETHOD Package::resolveMethodEntry(RexxString *name)
+PNATIVEMETHOD LibraryPackage::resolveMethodEntry(RexxString *name)
 {
     // find the package definition
     RexxMethodEntry *entry = locateMethodEntry(name);
     // if no entry, something bad has gone wrong
     if (entry == NULL)
     {
-        reportException(Error_Execution_package_method, name, libraryName);
+        reportException(Error_Execution_library_method, name, libraryName);
     }
     return (PNATIVEMETHOD)entry->entryPoint;
 }
@@ -400,20 +400,20 @@ PNATIVEMETHOD Package::resolveMethodEntry(RexxString *name)
  *
  * @return The target entry point.
  */
-PNATIVEROUTINE Package::resolveFunctionEntry(RexxString *name)
+PNATIVEROUTINE LibraryPackage::resolveFunctionEntry(RexxString *name)
 {
     // find the package definition
     RexxMethodEntry *entry = locateFunctionEntry(name);
     // if no entry, something bad has gone wrong
     if (entry == NULL)
     {
-        reportException(Error_Execution_package_routine, name, libraryName);
+        reportException(Error_Execution_library_routine, name, libraryName);
     }
 
     // style mismatch...this is incompatible
     if (entry->style == FUNCTION_CLASSIC_STYLE)
     {
-        reportException(Error_Execution_package_routine, name, libraryName);
+        reportException(Error_Execution_library_routine, name, libraryName);
     }
     return (PNATIVEROUTINE)entry->entryPoint;
 }
@@ -427,20 +427,20 @@ PNATIVEROUTINE Package::resolveFunctionEntry(RexxString *name)
  *
  * @return The target entry point.
  */
-PREGISTEREDROUTINE Package::resolveRegisteredRoutineEntry(RexxString *name)
+PREGISTEREDROUTINE LibraryPackage::resolveRegisteredRoutineEntry(RexxString *name)
 {
     // find the package definition
     RexxMethodEntry *entry = locateFunctionEntry(name);
     // if no entry, something bad has gone wrong
     if (entry == NULL)
     {
-        reportException(Error_Execution_package_routine, name, libraryName);
+        reportException(Error_Execution_library_routine, name, libraryName);
     }
 
     // style mismatch...this is incompatible
     if (entry->style != FUNCTION_CLASSIC_STYLE)
     {
-        reportException(Error_Execution_package_routine, name, libraryName);
+        reportException(Error_Execution_library_routine, name, libraryName);
     }
     return (PREGISTEREDROUTINE)entry->entryPoint;
 }
@@ -449,7 +449,7 @@ PREGISTEREDROUTINE Package::resolveRegisteredRoutineEntry(RexxString *name)
 /**
  * Refresh a non-internal package after an image restore.
  */
-void Package::reload()
+void LibraryPackage::reload()
 {
     package = getPackageTable();
     if (package == OREF_NULL)
@@ -464,7 +464,7 @@ void Package::reload()
  *
  * @param pack   The internal package entry.
  */
-void Package::reload(RexxPackageEntry *pack)
+void LibraryPackage::reload(RexxPackageEntry *pack)
 {
     package = pack;
 }

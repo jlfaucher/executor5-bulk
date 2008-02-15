@@ -90,7 +90,7 @@ OTIOBJ7=$(OR_OUTDIR)\OptionsInstruction.$(OBJ) $(OR_OUTDIR)\OtherwiseInstruction
         $(OR_OUTDIR)\ProcedureInstruction.$(OBJ)
 
 OTIOBJ8=$(OR_OUTDIR)\QueueInstruction.$(OBJ) $(OR_OUTDIR)\RaiseInstruction.$(OBJ) $(OR_OUTDIR)\RexxDirective.$(OBJ) \
-	$(OR_OUTDIR)\RequiresDirective.$(OBJ) $(OR_OUTDIR)\PackageDirective.$(OBJ)  $(OR_OUTDIR)\ClassDirective.$(OBJ)
+	$(OR_OUTDIR)\RequiresDirective.$(OBJ) $(OR_OUTDIR)\LibraryDirective.$(OBJ)  $(OR_OUTDIR)\ClassDirective.$(OBJ)
 OTIOBJ9=$(OR_OUTDIR)\ReplyInstruction.$(OBJ) $(OR_OUTDIR)\ReturnInstruction.$(OBJ)   $(OR_OUTDIR)\SayInstruction.$(OBJ) \
         $(OR_OUTDIR)\SelectInstruction.$(OBJ)
 OTIOBJ10=$(OR_OUTDIR)\SignalInstruction.$(OBJ) $(OR_OUTDIR)\ThenInstruction.$(OBJ) $(OR_OUTDIR)\TraceInstruction.$(OBJ) \
@@ -118,7 +118,8 @@ OKCOBJS=$(OKCOBJ1) $(OKCOBJ2) $(OKLOBJS)
 OKPOBJ1=$(OR_OUTDIR)\RexxEnvelope.$(OBJ) $(OR_OUTDIR)\ArrayClass.$(OBJ) $(OR_OUTDIR)\RexxMisc.$(OBJ)   \
         $(OR_OUTDIR)\ClassClass.$(OBJ) $(OR_OUTDIR)\DeadObject.$(OBJ) $(OR_OUTDIR)\PointerClass.$(OBJ) \
 	$(OR_OUTDIR)\WeakReferenceClass.$(OBJ)
-OKPOBJ2=$(OR_OUTDIR)\DirectoryClass.$(OBJ) $(OR_OUTDIR)\MethodClass.$(OBJ)  $(OR_OUTDIR)\RoutineClass.$(OBJ)
+OKPOBJ2=$(OR_OUTDIR)\DirectoryClass.$(OBJ) $(OR_OUTDIR)\MethodClass.$(OBJ)  $(OR_OUTDIR)\RoutineClass.$(OBJ) \
+	 $(OR_OUTDIR)\PackageClass.$(OBJ)
 OKPOBJ3=$(OR_OUTDIR)\ListClass.$(OBJ)   $(OR_OUTDIR)\RexxMemory.$(OBJ) $(OR_OUTDIR)\MemorySegment.$(OBJ) \
          $(OR_OUTDIR)\MemoryStats.$(OBJ) $(OR_OUTDIR)\MessageClass.$(OBJ)    \
         $(OR_OUTDIR)\StemClass.$(OBJ)   $(OR_OUTDIR)\ObjectClass.$(OBJ) $(OR_OUTDIR)\RexxCompoundTail.$(OBJ) \
@@ -135,7 +136,7 @@ OKIOBJ1=$(OR_OUTDIR)\RexxActivation.$(OBJ) $(OR_OUTDIR)\RexxActivity.$(OBJ) $(OR
 	$(OR_OUTDIR)\MessageDispatcher.$(OBJ)
 OKIOBJ2=$(OR_OUTDIR)\RexxHashTable.$(OBJ)  $(OR_OUTDIR)\RexxCode.$(OBJ) $(OR_OUTDIR)\PackageManager.$(OBJ) \
         $(OR_OUTDIR)\RexxListTable.$(OBJ) $(OR_OUTDIR)\RexxNativeActivation.$(OBJ) $(OR_OUTDIR)\RexxNativeCode.$(OBJ) \
-	$(OR_OUTDIR)\CPPCode.$(OBJ)
+	$(OR_OUTDIR)\CPPCode.$(OBJ)  $(OR_OUTDIR)\LibraryPackage.$(OBJ)
 OKIOBJ3=$(OR_OUTDIR)\RexxCollection.$(OBJ)   $(OR_OUTDIR)\RexxSmartBuffer.$(OBJ) $(OR_OUTDIR)\StackClass.$(OBJ)  \
         $(OR_OUTDIR)\RexxVariable.$(OBJ)    $(OR_OUTDIR)\RexxVariableDictionary.$(OBJ) $(OR_OUTDIR)\RexxDateTime.$(OBJ) \
 	$(OR_OUTDIR)\Numerics.$(OBJ) $(OR_OUTDIR)\CallContextStubs.$(OBJ) $(OR_OUTDIR)\InterpreterAPI.$(OBJ) \

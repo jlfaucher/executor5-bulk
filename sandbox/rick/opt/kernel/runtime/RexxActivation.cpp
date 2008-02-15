@@ -2296,21 +2296,9 @@ RoutineClass *RexxActivation::loadRequired(RexxString *target, RexxInstruction *
 {
     // this will cause the correct location to be used for error reporting
     this->current = instruction;
-    // get a fully resolved name for this....we might locate this under either name
-    RexxString *fullName = resolveProgramName(target);
 
-    ProtectedObject p;
-    RoutineClass *requiresFile = PackageManager::getRequires(activity, target, fullName, p);
-
-    if (requiresFile == OREF_NULL)             /* couldn't create this?             */
-    {
-        /* report an error                   */
-        reportException(Error_Routine_not_found_requires, target);
-    }
-    /* now merge all of the info         */
-    this->settings.parent_code->mergeRequired(requiresFile->getSourceObject());
-
-    return requiresFile;
+    // the loading/merging is done by the source object
+    return getSourceObject()->loadRequired(target);
 }
 
 

@@ -44,7 +44,7 @@
 
 #include "RexxCore.h"
 #include "PackageManager.hpp"
-#include "Package.hpp"
+#include "LibraryPackage.hpp"
 #include "Interpreter.hpp"
 #include "RexxNativeCode.hpp"
 #include "DirectoryClass.hpp"
@@ -109,7 +109,7 @@ void PackageManager::restore(RexxArray *imageArray)
     for (HashLink i = packages->first(); packages->available(i); i = packages->next(i))
     {
         // get the next package
-        Package *package = (Package *)packages->value(i);
+        LibraryPackage *package = (LibraryPackage *)packages->value(i);
         // not one of the internal packages, so reload.
         if (!package->isInternal())
         {
@@ -154,15 +154,15 @@ void PackageManager::liveGeneral(int reason)
  * @return A resolved package...throws an exception if the package
  *         is not loadable.
  */
-Package *PackageManager::getPackage(RexxString *name)
+LibraryPackage *PackageManager::getPackage(RexxString *name)
 {
     // have we already loaded this package?
     // may need to bootstrap it up first.
-    Package *package = loadPackage(name);
+    LibraryPackage *package = loadPackage(name);
     if (package == NULL)
     {
         // this is an error
-        reportException(Error_Execution_package, name);
+        reportException(Error_Execution_library, name);
     }
     return package;
 }
@@ -170,21 +170,21 @@ Package *PackageManager::getPackage(RexxString *name)
 
 /**
  * Attempt to load a library without raising an error.  Returns
- * a Package object for the library if the load was successful.
+ * a LibraryPackage object for the library if the load was successful.
  *
  * @param name   The target library name.
  *
- * @return A Package object for the library, or OREF_NULL if was
+ * @return A LibraryPackage object for the library, or OREF_NULL if was
  *         not resolvable.
  */
-Package *PackageManager::loadPackage(RexxString *name)
+LibraryPackage *PackageManager::loadPackage(RexxString *name)
 {
     // have we already loaded this package?
     // may need to bootstrap it up first.
-    Package *package = (Package *)packages->at(name);
+    LibraryPackage *package = (LibraryPackage *)packages->at(name);
     if (package == NULL)
     {
-        package = new Package(name);
+        package = new LibraryPackage(name);
         // add this to our package list.
         packages->put((RexxObject *)packages, name);
         // now force the package to load.
@@ -214,7 +214,7 @@ RexxNativeMethod *PackageManager::resolveMethod(RexxString *packageName, RexxStr
 {
     // have we already loaded this package?
     // may need to bootstrap it up first.
-    Package *package = getPackage(packageName);
+    LibraryPackage *package = getPackage(packageName);
 
     // now see if this can be resolved.
     RexxNativeMethod *code = package->resolveMethod(methodName);
@@ -349,7 +349,7 @@ RoutineClass *PackageManager::createRegisteredRoutine(RexxString *function)
 void PackageManager::loadInternalPackage(RexxString *name, RexxPackageEntry *p)
 {
     // load up the package and add it to our cache
-    Package *package = new Package(name, p);
+    LibraryPackage *package = new LibraryPackage(name, p);
     // have we already loaded this package?
     packages->put(packages, name);
 }
@@ -397,7 +397,7 @@ RexxObject *PackageManager::addRegisteredRoutine(RexxString *name, RexxString *m
     }
 
     // see if this package is resolveable/loadable.
-    Package *package = loadPackage(module);
+    LibraryPackage *package = loadPackage(module);
     if (package == OREF_NULL)
     {
         // See if this is resolvable in this context.  If we got it,
@@ -464,7 +464,7 @@ void PackageManager::unload()
     for (HashLink i = packages->first(); packages->available(i); i = packages->next(i))
     {
         // get the next package
-        Package *package = (Package *)packages->value(i);
+        LibraryPackage *package = (LibraryPackage *)packages->value(i);
         // not one of the internal packages, so reload.
         if (!package->isInternal())
         {
@@ -706,12 +706,12 @@ void PackageManager::runRequires(RexxActivity *activity, RexxString *name, Routi
  */
 PNATIVEMETHOD PackageManager::resolveMethodEntry(RexxString *packageName, RexxString *name)
 {
-    Package *package = loadPackage(packageName);
+    LibraryPackage *package = loadPackage(packageName);
 
     // if no entry, something bad has gone wrong
     if (package == NULL)
     {
-        reportException(Error_Execution_package_method, name, packageName);
+        reportException(Error_Execution_library_method, name, packageName);
     }
     return package->resolveMethodEntry(name);
 }
@@ -727,12 +727,12 @@ PNATIVEMETHOD PackageManager::resolveMethodEntry(RexxString *packageName, RexxSt
  */
 PNATIVEROUTINE PackageManager::resolveRoutineEntry(RexxString *packageName, RexxString *name)
 {
-    Package *package = loadPackage(packageName);
+    LibraryPackage *package = loadPackage(packageName);
 
     // if no entry, something bad has gone wrong
     if (package == NULL)
     {
-        reportException(Error_Execution_package_method, name, packageName);
+        reportException(Error_Execution_library_method, name, packageName);
     }
     return package->resolveRoutineEntry(name);
 }
@@ -760,18 +760,18 @@ PREGISTEREDROUTINE PackageManager::resolveRegisteredRoutineEntry(RexxString *pac
         // this is a failure
         if (entry == NULL)
         {
-            reportException(Error_Execution_package_routine, name);
+            reportException(Error_Execution_library_routine, name);
         }
         return (PREGISTEREDROUTINE)entry;
     }
     else
     {
-        Package *package = loadPackage(packageName);
+        LibraryPackage *package = loadPackage(packageName);
 
         // if no entry, something bad has gone wrong
         if (package == NULL)
         {
-            reportException(Error_Execution_package_routine, name, packageName);
+            reportException(Error_Execution_library_routine, name, packageName);
         }
         return package->resolveRegisteredRoutineEntry(name);
     }

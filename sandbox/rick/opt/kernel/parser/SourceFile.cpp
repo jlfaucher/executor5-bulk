@@ -5465,3 +5465,71 @@ RexxObject *RexxSource::parseLogical(RexxToken *_first, int terminators)
                                        /* create a new function item        */
     return (RexxObject *)new (count) RexxExpressionLogical(this, count, this->subTerms);
 }
+
+
+/**
+ * Load a ::REQUIRES directive when the source file is first
+ * invoked.
+ *
+ * @param target The name of the ::REQUIRES
+ * @param instruction
+ *               The directive instruction being processed.
+ */
+PackageClass *RexxSource::loadRequired(RexxString *target)
+{
+    // get a fully resolved name for this....we might locate this under either name, but the
+    // fully resolved name is generated from this source file context.
+    RexxString *fullName = resolveProgramName(target);
+
+    ProtectedObject p;
+    PackageClass *requiresFile = PackageManager::getRequires(ActivityManager::currentActivity, target, fullName, p);
+
+    if (requiresFile == OREF_NULL)             /* couldn't create this?             */
+    {
+        /* report an error                   */
+        reportException(Error_Routine_not_found_requires, target);
+    }
+    // add this to the source context
+    addPackage(requiresFile);
+
+    return requiresFile;
+}
+
+
+/**
+ * Add a package to a source file context.  This allows new
+ * packages to be imported into a source.
+ *
+ * @param p
+ */
+void RexxSource::addPackage(PackageClass *p)
+{
+    // we only add a given package item once.
+    if (loadedPackages->hasItem(p) == TheTrueObject)
+    {
+        return;
+    }
+
+    // add this to the list and merge the information
+    loadedPackages->append(p);
+    // not merge all of the info from the imported package
+    mergeRequired(requiresFile->getSourceObject());
+}
+
+
+/**
+ * Retrieve the package wrapper associated with this source.
+ *
+ * @return The package instance that fronts for this source in Rexx code.
+ */
+PackageClass *RexxSource::getPackages()
+{
+    if (package == OREF_NULL)
+    {
+        OrefSet(this, this->package, new Package(this));
+    }
+    return package;
+}
+
+
+
