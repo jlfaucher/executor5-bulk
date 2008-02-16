@@ -60,6 +60,7 @@ class RexxExpressionMessage;
 class RexxCompoundVariable;
 class RoutineClass;
 class RexxCode;
+class PackageClass;
 
                                        /* handy defines to easy coding      */
 #define new_instruction(name, type) this->sourceNewObject(sizeof(RexxInstruction##type), The##type##InstructionBehaviour, KEYWORD_##name)
@@ -102,7 +103,7 @@ class RexxSource : public RexxInternalObject {
   void        extractNameInformation();
   bool        reconnect();
   void        setReconnect();
-  void        setBufferedSource(RexxBuffer *newSource) { this->initBuffered((RexxObject *)newSource); }
+  void        setBufferedSource(RexxBuffer *newSource) { this->initBuffered(newSource); }
   void        interpretLine(size_t);
   void        comment();
   void        needVariable(RexxToken *);
@@ -145,6 +146,9 @@ class RexxSource : public RexxInternalObject {
   RexxObject *toss(RexxObject *);
   void        cleanup();
   void        mergeRequired(RexxSource *);
+  PackageClass *loadRequired(RexxString *target);
+  void        addPackage(PackageClass *package);
+  PackageClass *getPackage();
   void        inheritSourceContext(RexxSource *source);
   RoutineClass *resolveRoutine(RexxString *);
   RexxClass  *resolveClass(RexxString *);
@@ -331,8 +335,8 @@ class RexxSource : public RexxInternalObject {
   RexxDirectory *getInstalledRoutines() { return routines; }
   RexxDirectory *getInstalledPublicRoutines() { return public_routines; }
   RexxDirectory *getImportedRoutines() { return merged_public_routines; }
-  RexxDirectory *getMethods() { return methods; }
-  RexxList      *getPackages() { return packages; }
+  RexxDirectory *getDefinedMethods() { return methods; }
+  RexxList      *getPackages() { return loadedPackages; }
 
 protected:
 

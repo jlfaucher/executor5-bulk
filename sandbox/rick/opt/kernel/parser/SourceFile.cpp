@@ -5522,7 +5522,7 @@ void RexxSource::addPackage(PackageClass *p)
  *
  * @return The package instance that fronts for this source in Rexx code.
  */
-PackageClass *RexxSource::getPackages()
+PackageClass *RexxSource::getPackage()
 {
     if (package == OREF_NULL)
     {

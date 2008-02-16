@@ -48,9 +48,10 @@
 
 class RexxClause;
 
-class RexxDirective : public RexxInternalObject
+class RexxDirective : public RexxInstruction
 {
 public:
+    inline RexxDirective() { }
     inline RexxDirective(RexxClause *clause, int type) : RexxInstruction(clause, type) { }
 };
 

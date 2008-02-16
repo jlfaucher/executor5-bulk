@@ -249,6 +249,7 @@ class _RexxIntegerObject : public _RexxObjectPtr {};
 class _RexxPointerObject : public _RexxObjectPtr {};
 class _RexxMethodObject : public _RexxObjectPtr {};
 class _RexxRoutineObject : public _RexxObjectPtr {};
+class _RexxPackageObject : public _RexxObjectPtr {};
 class _RexxClassObject : public _RexxObjectPtr {};
 class _RexxDirectoryObject : public _RexxObjectPtr {};
 class _RexxTableObject : public _RexxObjectPtr {};
@@ -264,6 +265,7 @@ typedef _RexxIntegerObject *RexxIntegerObject;
 typedef _RexxPointerObject *RexxPointerObject;
 typedef _RexxMethodObject *RexxMethodObject;
 typedef _RexxRoutineObject *RexxRoutineObject;
+typedef _RexxPackageObject *RexxPackageObject;
 typedef _RexxClassObject *RexxClassObject;
 typedef _RexxDirectoryObject *RexxDirectoryObject;
 typedef _RexxTableObject *RexxTableObject;
@@ -280,6 +282,7 @@ struct _RexxIntegerObject;
 struct _RexxPointerObject;
 struct _RexxMethodObject;
 struct _RexxRoutineObject;
+struct _RexxPackageObject;
 struct _RexxClassObject;
 struct _RexxDirectoryObject;
 struct _RexxTableObject;
@@ -295,6 +298,7 @@ typedef _RexxIntegerObject *RexxIntegerObject;
 typedef _RexxPointerObject *RexxPointerObject;
 typedef _RexxMethodObject *RexxMethodObject;
 typedef _RexxRoutineObject *RexxRoutineObject;
+typedef _RexxPackageObject *RexxPackageObject;
 typedef _RexxClassObject *RexxClassObject;
 typedef _RexxDirectoryObject *RexxDirectoryObject;
 typedef _RexxTableObject *RexxTableObject;
@@ -495,19 +499,21 @@ typedef struct
 
     logical_t        (RexxEntry *IsSameType)(RexxThreadContext *, RexxObjectPtr, RexxObjectPtr);
     logical_t        (RexxEntry *IsInstanceOf)(RexxThreadContext *, RexxObjectPtr, RexxClassObject);
-    RexxClassObject  (RexxEntry *FindClass)(RexxThreadContext *, CSTRING);
-    RexxClassObject  (RexxEntry *FindClassFromMethod)(RexxThreadContext *, RexxMethodObject, CSTRING);
-    RexxClassObject  (RexxEntry *FindClassFromRoutine)(RexxThreadContext *, RexxRoutineObject, CSTRING);
     logical_t        (RexxEntry *HasMethod)(RexxThreadContext *, RexxObjectPtr, CSTRING);
+
+    RexxPackageObject (RexxEntry *LoadPackage)(RexxThreadContext *, CSTRING d);
+    RexxPackageObject (RexxEntry *LoadPackageFromData)(RexxThreadContext *, CSTRING d, size_t l);
+    RexxClassObject  (RexxEntry *FindClass)(RexxThreadContext *, CSTRING);
+    RexxClassObject  (RexxEntry *FindPackageClass)(RexxThreadContext *, RexxPackageObject, CSTRING);
+    RexxDirectoryObject (RexxEntry *GetPackageRoutines)(RexxThreadContext *, RexxPackageObject);
+    RexxDirectoryObject (RexxEntry *GetPackageClasses)(RexxThreadContext *, RexxPackageObject);
+    RexxDirectoryObject (RexxEntry *GetPackageMethods)(RexxThreadContext *, RexxPackageObject);
+    RexxObjectPtr    (RexxEntry *CallRoutine)(RexxThreadContext *, RexxRoutineObject, RexxArrayObject);
+    RexxObjectPtr    (RexxEntry *CallProgram)(RexxThreadContext *, CSTRING, RexxArrayObject);
 
     RexxMethodObject (RexxEntry *NewMethod)(RexxThreadContext *, CSTRING, CSTRING, size_t);
     RexxRoutineObject (RexxEntry *NewRoutine)(RexxThreadContext *, CSTRING, CSTRING, size_t);
-    RexxDirectoryObject (RexxEntry *GetMethodRoutines)(RexxThreadContext *, RexxMethodObject);
-    RexxDirectoryObject (RexxEntry *GetMethodClasses)(RexxThreadContext *, RexxMethodObject);
-    RexxDirectoryObject (RexxEntry *GetMethodMethods)(RexxThreadContext *, RexxMethodObject);
-    RexxObjectPtr    (RexxEntry *CallMethod)(RexxThreadContext *, RexxMethodObject, RexxArrayObject);
-    RexxBufferObject (RexxEntry *SaveMethod)(RexxThreadContext *, RexxMethodObject);
-    RexxMethodObject (RexxEntry *LoadMethod)(RexxThreadContext *, CSTRING d, size_t l);
+    RexxBufferObject  (RexxEntry *SaveRoutine)(RexxThreadContext *, RexxRoutineObject);
 
     RexxObjectPtr    (RexxEntry *NewObject)(RexxThreadContext *);
     RexxObjectPtr    (RexxEntry *NumberToObject)(RexxThreadContext *, wholenumber_t);
@@ -778,53 +784,54 @@ struct RexxThreadContext_
     {
         return functions->FindClass(this, s);
     }
-    RexxClassObject FindClassFromMethod(RexxMethodObject m, CSTRING n)
+    RexxClassObject FindPackageClass(RexxPackageObject m, CSTRING n)
     {
-        return functions->FindClassFromMethod(this, m, n);
-    }
-    RexxClassObject FindClassFromRoutine(RexxRoutineObject m, CSTRING n)
-    {
-        return functions->FindClassFromRoutine(this, m, n);
+        return functions->FindPackageClass(this, m, n);
     }
     logical_t HasMethod(RexxObjectPtr o, CSTRING m)
     {
         return functions->HasMethod(this, o, m);
     }
-
     RexxMethodObject NewMethod(CSTRING n, CSTRING s, size_t l)
     {
         return functions->NewMethod(this, n, s, l);
     }
-
-    RexxMethodObject NewRoutine(CSTRING n, CSTRING s, size_t l)
+    RexxRoutineObject NewRoutine(CSTRING n, CSTRING s, size_t l)
     {
         return functions->NewRoutine(this, n, s, l);
     }
-    RexxDirectoryObject GetMethodRoutines(RexxMethodObject m)
+    RexxDirectoryObject GetPackageRoutines(RexxPackageObject m)
     {
-        return functions->GetMethodRoutines(this, m);
+        return functions->GetPackageRoutines(this, m);
     }
-    RexxDirectoryObject GetMethodClasses(RexxMethodObject m)
+    RexxDirectoryObject GetPackageClasses(RexxPackageObject m)
     {
-        return functions->GetMethodClasses(this, m);
+        return functions->GetPackageClasses(this, m);
     }
-    RexxDirectoryObject GetMethodMethods(RexxMethodObject m)
+    RexxDirectoryObject GetPackageMethods(RexxPackageObject m)
     {
-        return functions->GetMethodMethods(this, m);
+        return functions->GetPackageMethods(this, m);
     }
-    RexxObjectPtr CallMethod(RexxMethodObject m, RexxArrayObject a)
+    RexxObjectPtr CallRoutine(RexxRoutineObject m, RexxArrayObject a)
     {
-        return functions->CallMethod(this, m, a);
+        return functions->CallRoutine(this, m, a);
     }
-    RexxBufferObject SaveMethod(RexxMethodObject m)
+    RexxObjectPtr CallProgram(CSTRING n,RexxArrayObject a)
     {
-        return functions->SaveMethod(this, m);
+        return functions->CallProgram(this, n, a);
     }
-    RexxMethodObject LoadMethod(CSTRING d, size_t l)
+    RexxBufferObject SaveRoutine(RexxRoutineObject m)
     {
-        return functions->LoadMethod(this, d, l);
+        return functions->SaveRoutine(this, m);
     }
-
+    RexxPackageObject LoadPackage(CSTRING d)
+    {
+        return functions->LoadPackage(this, d);
+    }
+    RexxPackageObject LoadPackageFromData(CSTRING d, size_t l)
+    {
+        return functions->LoadPackageFromData(this, d, l);
+    }
     RexxObjectPtr NewObject()
     {
         return functions->NewObject(this);
@@ -1249,56 +1256,53 @@ struct RexxMethodContext_
     {
         return threadContext->FindClass(s);
     }
-    RexxClassObject FindClassFromMethod(RexxMethodObject m, CSTRING n)
+    RexxClassObject FindPackageClass(RexxPackageObject m, CSTRING n)
     {
-        return threadContext->FindClassFromMethod(m, n);
-    }
-    RexxClassObject FindClassFromRoutine(RexxRoutineObject m, CSTRING n)
-    {
-        return threadContext->FindClassFromRoutine(m, n);
+        return threadContext->FindPackageClass(m, n);
     }
     logical_t HasMethod(RexxObjectPtr o, CSTRING m)
     {
         return threadContext->HasMethod(o, m);
     }
-
-    RexxMethodObject NewMethod(CSTRING s, size_t n)
-    {
-        return threadContext->NewMethod(s, n);
-    }
-
     RexxMethodObject NewMethod(CSTRING n, CSTRING s, size_t l)
     {
         return threadContext->NewMethod(n, s, l);
     }
-
     RexxRoutineObject NewRoutine(CSTRING n, CSTRING s, size_t l)
     {
         return threadContext->NewRoutine(n, s, l);
     }
-    RexxDirectoryObject GetMethodRoutines(RexxMethodObject m)
+    RexxDirectoryObject GetPackageRoutines(RexxPackageObject m)
     {
-        return threadContext->GetMethodRoutines(m);
+        return threadContext->GetPackageRoutines(m);
     }
-    RexxDirectoryObject GetMethodClasses(RexxMethodObject m)
+    RexxDirectoryObject GetPackageClasses(RexxPackageObject m)
     {
-        return threadContext->GetMethodClasses(m);
+        return threadContext->GetPackageClasses(m);
     }
-    RexxDirectoryObject GetMethodMethods(RexxMethodObject m)
+    RexxDirectoryObject GetPackageMethods(RexxPackageObject m)
     {
-        return threadContext->GetMethodMethods(m);
+        return threadContext->GetPackageMethods(m);
     }
-    RexxObjectPtr CallMethod(RexxMethodObject m, RexxArrayObject a)
+    RexxObjectPtr CallRoutine(RexxRoutineObject m, RexxArrayObject a)
     {
-        return threadContext->CallMethod(m, a);
+        return threadContext->CallRoutine(m, a);
     }
-    RexxBufferObject SaveMethod(RexxMethodObject m)
+    RexxObjectPtr CallProgram(CSTRING n,RexxArrayObject a)
     {
-        return threadContext->SaveMethod(m);
+        return threadContext->CallProgram(n, a);
     }
-    RexxMethodObject LoadMethod(CSTRING d, size_t l)
+    RexxBufferObject SaveRoutine(RexxRoutineObject m)
     {
-        return threadContext->LoadMethod(d, l);
+        return threadContext->SaveRoutine(m);
+    }
+    RexxPackageObject LoadPackage(CSTRING d)
+    {
+        return threadContext->LoadPackage(d);
+    }
+    RexxPackageObject LoadPackageFromData(CSTRING d, size_t l)
+    {
+        return threadContext->LoadPackageFromData(d, l);
     }
 
     RexxObjectPtr NewObject()
@@ -1777,22 +1781,18 @@ struct RexxCallContext_
     {
         return threadContext->FindClass(s);
     }
-    RexxClassObject FindClassFromMethod(RexxMethodObject m, CSTRING n)
+    RexxClassObject FindPackageClass(RexxPackageObject m, CSTRING n)
     {
-        return threadContext->FindClassFromMethod(m, n);
-    }
-    RexxClassObject FindClassFromRoutine(RexxRoutineObject m, CSTRING n)
-    {
-        return threadContext->FindClassFromRoutine(m, n);
+        return threadContext->FindPackageClass(m, n);
     }
     logical_t HasMethod(RexxObjectPtr o, CSTRING m)
     {
         return threadContext->HasMethod(o, m);
     }
 
-    RexxMethodObject NewMethod(CSTRING s, size_t n)
+    RexxMethodObject NewMethod(CSTRING n, CSTRING s, size_t l)
     {
-        return threadContext->NewMethod(s, n);
+        return threadContext->NewMethod(n, s, l);
     }
 
     RexxRoutineObject NewRoutine(CSTRING n, CSTRING s, size_t l)
@@ -1800,31 +1800,38 @@ struct RexxCallContext_
         return threadContext->NewRoutine(n, s, l);
     }
 
-    RexxDirectoryObject GetMethodRoutines(RexxMethodObject m)
+    RexxDirectoryObject GetPackageRoutines(RexxPackageObject m)
     {
-        return threadContext->GetMethodRoutines(m);
+        return threadContext->GetPackageRoutines(m);
     }
-    RexxDirectoryObject GetMethodClasses(RexxMethodObject m)
+    RexxDirectoryObject GetPackageClasses(RexxPackageObject m)
     {
-        return threadContext->GetMethodClasses(m);
+        return threadContext->GetPackageClasses(m);
     }
-    RexxDirectoryObject GetMethodMethods(RexxMethodObject m)
+    RexxDirectoryObject GetPackageMethods(RexxPackageObject m)
     {
-        return threadContext->GetMethodMethods(m);
+        return threadContext->GetPackageMethods(m);
     }
-    RexxObjectPtr CallMethod(RexxMethodObject m, RexxArrayObject a)
+    RexxObjectPtr CallRoutine(RexxRoutineObject m, RexxArrayObject a)
     {
-        return threadContext->CallMethod(m, a);
+        return threadContext->CallRoutine(m, a);
     }
-    RexxBufferObject SaveMethod(RexxMethodObject m)
+    RexxObjectPtr CallProgram(CSTRING n,RexxArrayObject a)
     {
-        return threadContext->SaveMethod(m);
+        return threadContext->CallProgram(n, a);
     }
-    RexxMethodObject LoadMethod(CSTRING d, size_t l)
+    RexxBufferObject SaveRoutine(RexxRoutineObject m)
     {
-        return threadContext->LoadMethod(d, l);
+        return threadContext->SaveRoutine(m);
     }
-
+    RexxPackageObject LoadPackage(CSTRING d)
+    {
+        return threadContext->LoadPackage(d);
+    }
+    RexxPackageObject LoadPackageFromData(CSTRING d, size_t l)
+    {
+        return threadContext->LoadPackageFromData(d, l);
+    }
     RexxObjectPtr NewObject()
     {
         return threadContext->NewObject();
@@ -2292,13 +2299,9 @@ struct RexxExitContext_
     {
         return threadContext->FindClass(s);
     }
-    RexxClassObject FindClassFromMethod(RexxMethodObject m, CSTRING n)
+    RexxClassObject FindPackageClass(RexxPackageObject m, CSTRING n)
     {
-        return threadContext->FindClassFromMethod(m, n);
-    }
-    RexxClassObject FindClassFromRoutine(RexxRoutineObject m, CSTRING n)
-    {
-        return threadContext->FindClassFromRoutine(m, n);
+        return threadContext->FindPackageClass(m, n);
     }
     logical_t HasMethod(RexxObjectPtr o, CSTRING m)
     {
@@ -2313,31 +2316,38 @@ struct RexxExitContext_
     {
         return threadContext->NewRoutine(n, s, l);
     }
-    RexxDirectoryObject GetMethodRoutines(RexxMethodObject m)
+    RexxDirectoryObject GetPackageRoutines(RexxPackageObject m)
     {
-        return threadContext->GetMethodRoutines(m);
+        return threadContext->GetPackageRoutines(m);
     }
-    RexxDirectoryObject GetMethodClasses(RexxMethodObject m)
+    RexxDirectoryObject GetPackageClasses(RexxPackageObject m)
     {
-        return threadContext->GetMethodClasses(m);
+        return threadContext->GetPackageClasses(m);
     }
-    RexxDirectoryObject GetMethodMethods(RexxMethodObject m)
+    RexxDirectoryObject GetPackageMethods(RexxPackageObject m)
     {
-        return threadContext->GetMethodMethods(m);
+        return threadContext->GetPackageMethods(m);
     }
-    RexxObjectPtr CallMethod(RexxMethodObject m, RexxArrayObject a)
+    RexxObjectPtr CallRoutine(RexxRoutineObject m, RexxArrayObject a)
     {
-        return threadContext->CallMethod(m, a);
+        return threadContext->CallRoutine(m, a);
     }
-    RexxBufferObject SaveMethod(RexxMethodObject m)
+    RexxObjectPtr CallProgram(CSTRING n,RexxArrayObject a)
     {
-        return threadContext->SaveMethod(m);
+        return threadContext->CallProgram(n, a);
     }
-    RexxMethodObject LoadMethod(CSTRING d, size_t l)
+    RexxBufferObject SaveRoutine(RexxRoutineObject m)
     {
-        return threadContext->LoadMethod(d, l);
+        return threadContext->SaveRoutine(m);
     }
-
+    RexxPackageObject LoadPackage(CSTRING d)
+    {
+        return threadContext->LoadPackage(d);
+    }
+    RexxPackageObject LoadPackageFromData(CSTRING d, size_t l)
+    {
+        return threadContext->LoadPackageFromData(d, l);
+    }
     RexxObjectPtr NewObject()
     {
         return threadContext->NewObject();

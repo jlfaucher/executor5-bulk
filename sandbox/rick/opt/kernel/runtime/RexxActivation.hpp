@@ -330,6 +330,7 @@ RexxObject * activation_find  (void);
    RexxVariableBase *retriever(RexxString *);
    RexxVariableBase *directRetriever(RexxString *);
    RexxObject       *handleNovalueEvent(RexxString *name, RexxVariable *variable);
+   RexxSource       *getSourceObject();
 
    inline void              setCallType(RexxString *type) {this->settings.calltype = type; }
    inline void              pushBlock(RexxDoBlock *block) { block->setPrevious(this->dostack); this->dostack = block; }
@@ -341,7 +342,6 @@ RexxObject * activation_find  (void);
    inline void              addBlock()    { this->blockNest++; };
    inline bool              hasActiveBlocks() { return blockNest != 0; }
    inline bool              inMethod()  {return this->activation_context == METHODCALL; }
-   inline RexxSource *      getSource() {return this->settings.parent_code->getSourceObject(); };
    inline void              indent() {this->settings.traceindent++; };
    inline void              unindent() {this->settings.traceindent--; };
    inline void              setIndent(size_t v) {this->settings.traceindent=(v); };

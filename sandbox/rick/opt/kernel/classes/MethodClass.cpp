@@ -522,7 +522,7 @@ RexxMethod *RexxMethod::newRexxBuffer(const char *pgmname, const char *source, s
     // we need to protect this source object until parsing is complete
     ProtectedObject p(newSource);
                                          /* now complete method creation      */
-    return newRexxMethod(newSource);
+    return newRexxMethod(newSource, OREF_NULL);
 }
 
 

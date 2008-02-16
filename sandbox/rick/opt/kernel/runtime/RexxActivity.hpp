@@ -142,6 +142,7 @@ public:
    bool        raiseCondition(RexxString *, RexxObject *, RexxString *, RexxObject *, RexxObject *, RexxDirectory *);
    void        raiseException(wholenumber_t, SourceLocation *, RexxSource *, RexxString *, RexxArray *, RexxObject *);
    void        reportAnException(wholenumber_t, const char *);
+   void        reportAnException(wholenumber_t, const char *, const char *);
    void        reportAnException(wholenumber_t, RexxObject *, const char *);
    void        reportAnException(wholenumber_t, RexxObject *, wholenumber_t);
    void        reportAnException(wholenumber_t, const char *, RexxObject *);

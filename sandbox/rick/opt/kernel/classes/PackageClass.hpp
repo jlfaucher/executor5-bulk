@@ -45,7 +45,7 @@
 
 class RexxSource;
 
-class RoutineClass : public RexxObject
+class PackageClass : public RexxObject
 {
 public:
     void *operator new(size_t);
@@ -71,11 +71,13 @@ public:
     RexxDirectory *getRoutines();
     RexxDirectory *getPublicRoutines();
     RexxDirectory *getImportedRoutines();
-    RexxArray *getImportedPackages();
+    RexxArray     *getImportedPackages();
+    PackageClass  *loadPackage(RexxString *name);
+    RexxObject    *addPackage(PackageClass *package);
 
     inline RexxSource *getSourceObject() { return source; }
 
-protected;
+protected:
     RexxSource *source;             // the wrappered source object
 
 

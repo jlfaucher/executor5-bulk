@@ -539,9 +539,8 @@
 #define Error_Execution_no_concurrency                     98951
 #define Error_Execution_sparse_array                       98975
 #define Error_Execution_nostem                             98976
-#define Error_Execution_package                            98977
-#define Error_Execution_package_method                     98978
-#define Error_Execution_package_routine                    98979
+#define Error_Execution_library_method                     98978
+#define Error_Execution_library_routine                    98979
 #define Error_Execution_native_routine                     98980
 #define Error_Translation                                  99000
 #define Error_Translation_user_defined                     99900

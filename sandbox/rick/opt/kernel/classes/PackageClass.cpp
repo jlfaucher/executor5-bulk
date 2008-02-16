@@ -46,6 +46,8 @@
 #include "SourceFile.hpp"
 #include "DirectoryClass.hpp"
 #include "ProtectedObject.hpp"
+#include "PackageClass.hpp"
+#include "RexxBuiltinFunctions.h"
 
 
 // singleton class instance
@@ -109,7 +111,7 @@ RexxString *PackageClass::getName()
  */
 RexxArray *PackageClass::getSource()
 {
-    return source->extraceSource();
+    return source->extractSource();
 }
 
 
@@ -136,7 +138,7 @@ RexxString *PackageClass::getSourceLine(size_t n)
 RexxString *PackageClass::getSourceLineRexx(RexxObject *position)
 {
     // the starting position isn't optional
-    size_t b = get_position(position, ARG_ONE);
+    size_t n = get_position(position, ARG_ONE);
     return source->get(n);
 }
 
@@ -297,9 +299,9 @@ RexxDirectory *PackageClass::getMethods()
  *
  * @return An array of the added packages.
  */
-RexxArray *PackageClass::getPackages()
+RexxArray *PackageClass::getImportedPackages()
 {
-    return source->getPackages()->makearray();
+    return source->getPackages()->makeArray();
 }
 
 
@@ -310,10 +312,10 @@ RexxArray *PackageClass::getPackages()
  *
  * @return The loaded package object.
  */
-PackageClass *loadPackage(RexxString *name)
+PackageClass *PackageClass::loadPackage(RexxString *name)
 {
     // make sure we have a valid name and delegate to the source object
-    name = REQUIRED_STRING(name, IntegerOne);
+    name = REQUIRED_STRING(name, 1);
     return source->loadRequired(name);
 }
 
@@ -325,7 +327,7 @@ PackageClass *loadPackage(RexxString *name)
  *
  * @return The loaded package object.
  */
-RexxObject *addPackage(PackageClass *package)
+RexxObject *PackageClass::addPackage(PackageClass *package)
 {
     // this is required
     required_arg(package, ONE);
@@ -336,4 +338,6 @@ RexxObject *addPackage(PackageClass *package)
     }
 
     source->addPackage(package);
+
+    return this;
 }

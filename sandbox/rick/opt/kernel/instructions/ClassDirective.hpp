@@ -62,7 +62,7 @@ class ClassDirective : public RexxDirective
     void liveGeneral(int reason);
     void flatten(RexxEnvelope *);
 
-    inline RexxString *getName() { return name; }
+    inline RexxString *getName() { return publicName; }
 
 protected:
     RexxString *publicName;         // the published name of the class

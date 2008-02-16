@@ -600,9 +600,8 @@
 #define Error_Symbol_or_string_constant_msg                          693
 #define Error_Symbol_or_string_constant_value_msg                    694
 #define Error_Translation_duplicate_constant_msg                     695
-#define Error_Execution_package_msg                                  696
-#define Error_Execution_package_method_msg                           697
-#define Error_Execution_package_routine_msg                          698
+#define Error_Execution_library_method_msg                           697
+#define Error_Execution_library_routine_msg                          698
 #define Error_Execution_native_routine_msg                           699
 #define Error_Incorrect_call_signature_msg                           700
 #define Error_Incorrect_method_signature_msg                         701

@@ -95,7 +95,7 @@
  inline RexxBuffer *new_buffer(const char *data, size_t length)
  {
      RexxBuffer *b = new_buffer(length);
-     b->copyData(data, lenth);
+     b->copyData(0, data, length);
      return b;
  }
 

@@ -187,6 +187,11 @@ inline void reportException(wholenumber_t error, const char *a1)
     ActivityManager::currentActivity->reportAnException(error, a1);
 }
 
+inline void reportException(wholenumber_t error, const char *a1, const char *a2)
+{
+    ActivityManager::currentActivity->reportAnException(error, a1, a2);
+}
+
 inline void reportException(wholenumber_t error, const char *a1, wholenumber_t a2)
 {
     ActivityManager::currentActivity->reportAnException(error, a1, a2);
