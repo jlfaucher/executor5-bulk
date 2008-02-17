@@ -76,6 +76,8 @@ public:
     static RexxString *extractDirectory(RexxString *file);
     static RexxString *extractExtension(RexxString *file);
     static RexxString *extractFile(RexxString *file);
+    static RexxObject *popEnvironment(RexxActivation *context);
+    static RexxObject *pushEnvironment(RexxActivation *context);
 
 
 protected:

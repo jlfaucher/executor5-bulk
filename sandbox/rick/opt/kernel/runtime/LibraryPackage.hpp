@@ -47,6 +47,7 @@
 #include "RexxCore.h"
 #include "SysLibrary.hpp"
 #include "RexxNativeCode.hpp"
+#include "CallbackDispatcher.hpp"
 
 class PackageManager;
 class RexxNativeMethod;
@@ -71,9 +72,9 @@ public:
     void   unload();
     RexxPackageEntry *getPackageTable();
     void   loadPackage(RexxPackageEntry *p);
-    void   loadFunctions(RexxRoutineEntry *table);
+    void   loadRoutines(RexxRoutineEntry *table);
     RexxMethodEntry *locateMethodEntry(RexxString *name);
-    RexxRoutineEntry *locateFunctionEntry(RexxString *name);
+    RexxRoutineEntry *locateRoutineEntry(RexxString *name);
     RexxNativeMethod *resolveMethod(RexxString *name);
     PNATIVEMETHOD resolveMethodEntry(RexxString *name);
     PNATIVEROUTINE resolveRoutineEntry(RexxString *name);
@@ -87,11 +88,37 @@ protected:
 
     RexxPackageEntry *package;  // loaded package information
     RexxString *libraryName;   // the name of the library
-    RexxDirectory *functions;  // loaded functions
-    RexxDirectory *methods;    // loaded functions
+    RexxDirectory *routines;   // loaded routines
+    RexxDirectory *methods;    // loaded methods
     SysLibrary  lib;           // the library management handle
     bool        loaded;        // we've at least been able to load the library
     bool        internal;      // this is an internal package...no library load required.
+};
+
+
+class LibraryLoaderDispatcher : public CallbackDispatcher
+{
+public:
+    inline LibraryLoaderDispatcher(RexxPackageLoader l) : loader(l) { }
+    virtual ~LibraryLoaderDispatcher() { ; }
+
+    virtual void run();
+
+protected:
+    RexxPackageLoader loader;
+};
+
+
+class LibraryUnloaderDispatcher : public CallbackDispatcher
+{
+public:
+    inline LibraryUnloaderDispatcher(RexxPackageUnloader u) : unloader(u) { }
+    virtual ~LibraryUnloaderDispatcher() { ; }
+
+    virtual void run();
+
+protected:
+    RexxPackageUnloader unloader;
 };
 
 #endif

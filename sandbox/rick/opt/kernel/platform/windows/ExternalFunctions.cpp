@@ -122,38 +122,6 @@ RexxRoutine2(CSTRING, sysBeep, wholenumber_t, Frequency, wholenumber_t, Duration
   return "";                           /* always returns a null      */
 }
 
-/*********************************************************************/
-/*                                                                   */
-/*   Method Name : sysSetLocal                                       */
-/*                                                                   */
-/*   Descriptive Name:  SETLOCAL                                     */
-/*                                                                   */
-/*   Function:          Save all environment variables, drive and    */
-/*                      directory of current drive.                  */
-/*                                                                   */
-/*********************************************************************/
-
-RexxRoutine0(RexxObjectPtr, sysSetLocal)
-{
-  return TheFalseObject;               /* return failure             */
-}
-
-/*********************************************************************/
-/*                                                                   */
-/*   method Name:  sysEndLocal                                       */
-/*                                                                   */
-/*   Descriptive Name:  ENDLOCAL                                     */
-/*                                                                   */
-/*   Function:          restore all previous environment variables   */
-/*                      drive and current directory.                 */
-/*                                                                   */
-/*********************************************************************/
-
-RexxRoutine0(RexxObjectPtr, sysEndLocal)
-{
-  return TheFalseObject;               /* return failure             */
-}
-
 
 /********************************************************************************************/
 /* sysDirectory                                                                             */
@@ -496,3 +464,28 @@ RexxRoutine4(int, sysMessageBox, CSTRING, text, OPTIONAL_CSTRING, title, OPTIONA
                   style);              // Styles
 }
 
+
+
+/**
+ * Push a new environment for the SysSetLocal() BIF.
+ *
+ * @param context The current activation context.
+ *
+ * @return Returns TRUE if the environment was successfully pushed.
+ */
+RexxObject *SystemInterpreter::pushEnvironment(RexxActivation *context)
+{
+    return TheFalseObject;
+}
+
+/**
+ * Pop an environment for the SysEndLocal() BIF.
+ *
+ * @param context The current activation context.
+ *
+ * @return Always returns FALSE.  This is a NOP on Windows.
+ */
+RexxObject *SystemInterpreter::popEnvironment(RexxActivation *context)
+{
+    return TheFalseObject;             /* return failure value              */
+}

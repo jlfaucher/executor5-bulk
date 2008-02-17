@@ -38,10 +38,10 @@
 #ifndef Included_ActivityManager
 #define Included_ActivityManager
 
-class RexxActivity;
 class RexxObjectTable;
 class RexxStack;
 class RexxCode;
+
 
 class ActivityManager
 {

@@ -45,7 +45,6 @@
 #define Included_RexxVariableDictionary
 
 #include "RexxVariable.hpp"
-#include "RexxCompoundTail.hpp"
 #include "StemClass.hpp"
 #include "RexxHashTable.hpp"
 
@@ -105,17 +104,7 @@ class RexxVariableDictionary : public RexxInternalObject {
       return variable;                     /* return the stem                   */
     }
 
-  inline void setCompoundVariable(RexxString *stemName, RexxObject **tail, size_t tailCount, RexxObject *value)
-    {
-      RexxStem     *stem_table;            /* retrieved stem table              */
-                                           /* new tail for compound             */
-      RexxCompoundTail resolved_tail(this, tail, tailCount);
-
-      stem_table = getStem(stemName);      /* get the stem entry from this dictionary */
-                                           /* and set the value                 */
-      stem_table->setCompoundVariable(&resolved_tail, value);
-    }
-
+  void setCompoundVariable(RexxString *stemName, RexxObject **tail, size_t tailCount, RexxObject *value);
   RexxSupplier *getAllVariables();
   inline void remove(RexxString *n) { contents->remove(n); }
 

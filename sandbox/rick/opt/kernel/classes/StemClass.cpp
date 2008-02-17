@@ -36,7 +36,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /******************************************************************************/
-/* REXX Kernel                                               StemClass.c      */
+/* REXX Kernel                                               StemClass.cpp    */
 /*                                                                            */
 /* Primitive Stem variable class                                              */
 /*                                                                            */
@@ -44,15 +44,13 @@
 #include "RexxCore.h"
 #include "StringClass.hpp"
 #include "ArrayClass.hpp"
-#include "RexxActivity.hpp"
 #include "RexxActivation.hpp"
 #include "RexxNativeActivation.hpp"
 #include "RexxVariableDictionary.hpp"
 #include "RexxVariable.hpp"
-#include "StemClass.hpp"
 #include "SupplierClass.hpp"
-#include "ProtectedObject.hpp"
-#include <limits.h>
+#include "StemClass.hpp"
+#include "RexxCompoundTail.hpp"
 
 /* a pair of static variables used by the stem sort function. */
 /* Since the qsort library program doesn't allow sort parameter */
@@ -170,6 +168,18 @@ void RexxStem::dropValue()
   OrefSet(this, this->value, this->stemName);
   this->dropped = true;                /* no explict value any more         */
 }
+
+
+/**
+ * Retrieve the assigned stem value.
+ *
+ * @return The default stem value.
+ */
+RexxObject *RexxStem::getStemValue()
+{
+    return value;
+}
+
 
 RexxObject *RexxStem::unknown(
     RexxString *msgname,               /* unknown message name              */
@@ -1115,4 +1125,148 @@ bool RexxStem::sort(RexxString *prefix, int order, int type, size_t firstElement
     }
     /* make sure we discard the array before returning */
     return true;
+}
+
+
+
+
+/**
+ * Set a single stem variable object using a simple string
+ * value tail as a result of an api call.
+ *
+ * @param tail   The index of the target value.
+ * @param value  The new value to assign.
+ */
+void RexxStem::setElement(const char *tail, RexxObject *value)
+{
+    RexxCompoundTail resolved_tail(tail);
+    RexxVariable *variable = getCompoundVariable(&resolved_tail);
+    variable->set(value);                /* set the new value                 */
+}
+
+
+/**
+ * Set a single stem variable object using a simple string
+ * value tail as a result of an api call.
+ *
+ * @param tail   The index of the target value.
+ * @param value  The new value to assign.
+ */
+void RexxStem::setElement(size_t tail, RexxObject *value)
+{
+    RexxCompoundTail resolved_tail(tail);
+    RexxVariable *variable = getCompoundVariable(&resolved_tail);
+    variable->set(value);                /* set the new value                 */
+}
+
+
+/**
+ * Evaluate an array element for an API class.
+ *
+ * @param tail   The direct tail value.
+ *
+ * @return The object value.  If the stem element does not exist or
+ *         has been dropped, this returns OREF_NULL.
+ */
+RexxObject *RexxStem::getElement(size_t tail)
+{
+
+    RexxCompoundTail resolved_tail(tail);
+
+    return getElement(&resolved_tail);
+}
+
+/**
+ * Evaluate an array element for an API class.
+ *
+ * @param tail   The direct tail value.
+ *
+ * @return The object value.  If the stem element does not exist or
+ *         has been dropped, this returns OREF_NULL.
+ */
+RexxObject *RexxStem::getElement(const char *tail)
+{
+
+    RexxCompoundTail resolved_tail(tail);
+
+    return getElement(&resolved_tail);
+}
+
+/**
+ * Resolve a compound variable as a result of an api call.
+ *
+ * @param resolved_tail
+ *               The resolved tail value.
+ *
+ * @return The variable value.  Returns OREF_NULL if not assigned or
+ *         dropped.
+ */
+RexxObject *RexxStem::getElement(RexxCompoundTail *resolved_tail)
+{
+    // see if we have a variable...if we do, return its value (a dropped variable
+    // has a value of OREF_NULL).  If not found, return OREF_NULL;
+    RexxCompoundElement *variable = findCompoundVariable(resolved_tail);
+    if (variable != OREF_NULL)
+    {
+        return variable->getVariableValue();
+    }
+    return OREF_NULL;
+}
+
+
+/**
+ * Drop an array element for an API class.
+ *
+ * @param tail   The direct tail value.
+ */
+void RexxStem::dropElement(size_t tail)
+{
+
+    RexxCompoundTail resolved_tail(tail);
+
+    return dropElement(&resolved_tail);
+}
+
+/**
+ * Drop an array element for an API class.
+ *
+ * @param tail   The direct tail value.
+ */
+void RexxStem::dropElement(const char *tail)
+{
+
+    RexxCompoundTail resolved_tail(tail);
+
+    return dropElement(&resolved_tail);
+}
+
+
+/**
+ * Drop an element using a resolved tail value.
+ *
+ * @param resolved_tail
+ *               The target tail element.
+ */
+void RexxStem::dropElement(RexxCompoundTail *resolved_tail)
+{
+    // see if we have a variable...if we do, return its value (a dropped variable
+    // has a value of OREF_NULL).  If not found, return OREF_NULL;
+    RexxCompoundElement *variable = findCompoundVariable(resolved_tail);
+    if (variable != OREF_NULL)
+    {
+        variable->drop();
+    }
+}
+
+
+/**
+ * Create a full compound name from a constructed compound taile.
+ *
+ * @param tailPart The constructed tail element.
+ *
+ * @return The fully resolved string name of the element.
+ */
+RexxString *RexxStem::createCompoundName(RexxCompoundTail *tailPart)
+{
+    return tailPart->createCompoundName(stemName);
 }

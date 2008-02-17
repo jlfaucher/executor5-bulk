@@ -271,6 +271,7 @@ RexxObject * activation_find  (void);
    void              arguments(RexxObject *);
    void              traceValue(RexxObject *, int);
    void              traceCompoundValue(int prefix, RexxString *stem, RexxObject **tails, size_t tailCount, RexxObject * value);
+   void              traceCompoundValue(int prefix, RexxString *stem, RexxObject **tails, size_t tailCount, RexxCompoundTail *tailName);
    void              traceTaggedValue(int prefix, const char *tagPrefix, bool quoteTag, RexxString *tag, RexxObject * value);
    void              traceOperatorValue(int prefix, const char *tag, RexxObject *value);
    void              traceSourceString();
@@ -309,7 +310,7 @@ RexxObject * activation_find  (void);
    void              propagateExit(RexxObject *);
    void              setDefaultAddress(RexxString *);
    bool              internalMethod();
-   RoutineClass    * loadRequired(RexxString *, RexxInstruction *);
+   PackageClass    * loadRequired(RexxString *, RexxInstruction *);
    void              loadPackage(RexxString *target, RexxInstruction *instruction);
    RexxObject      * rexxVariable(RexxString *);
    void              pushEnvironment(RexxObject *);
@@ -381,7 +382,7 @@ RexxObject * activation_find  (void);
        { if (this->settings.intermediate_trace) { this->traceOperatorValue(TRACE_PREFIX_OPERATOR, n, v); } };
    inline void              tracePrefix(const char *n, RexxObject *v)
        { if (this->settings.intermediate_trace) { this->traceOperatorValue(TRACE_PREFIX_PREFIX, n, v); } };
-   inline void              traceCompoundName(RexxString *stemVar, RexxObject **tails, size_t tailCount, RexxCompoundTail *tail) { if (this->settings.intermediate_trace) this->traceCompoundValue(TRACE_PREFIX_COMPOUND, stemVar, tails, tailCount, tail->createCompoundName(stemVar)); };
+   inline void              traceCompoundName(RexxString *stemVar, RexxObject **tails, size_t tailCount, RexxCompoundTail *tail) { if (this->settings.intermediate_trace) this->traceCompoundValue(TRACE_PREFIX_COMPOUND, stemVar, tails, tailCount, tail); };
    inline void              traceCompoundName(RexxString *stemVar, RexxObject **tails, size_t tailCount, RexxString *tail) { if (this->settings.intermediate_trace) this->traceCompoundValue(TRACE_PREFIX_COMPOUND, stemVar, tails, tailCount, stemVar->concat(tail)); };
    inline void              traceCompound(RexxString *stemVar, RexxObject **tails, size_t tailCount, RexxObject *value) { if (this->settings.intermediate_trace) this->traceCompoundValue(TRACE_PREFIX_VARIABLE, stemVar, tails, tailCount, value); };
    inline void              traceResult(RexxObject * v) { if ((this->settings.flags&trace_results)) this->traceValue(v, TRACE_PREFIX_RESULT); };
@@ -511,98 +512,14 @@ RexxObject * activation_find  (void);
        variable->drop();
    }
 
-   inline RexxObject *evaluateLocalCompoundVariable(RexxString *stemName, size_t index, RexxObject **tail, size_t tailCount)
-   {
-     RexxStem     *stem_table;            /* retrieved stem table              */
-                                          /* new tail for compound             */
-     RexxCompoundTail resolved_tail(this, tail, tailCount);
-
-     stem_table = getLocalStem(stemName, index);   /* get the stem entry from this dictionary */
-     RexxObject *value = stem_table->evaluateCompoundVariableValue(this, &resolved_tail);
-                                          /* need to trace?                    */
-     if (tracingIntermediates()) {
-       traceCompoundName(stemName, tail, tailCount, &resolved_tail);
-                                          /* trace variable value              */
-       traceCompound(stemName, tail, tailCount, value);
-     }
-     return value;
-   }
-
-
-   inline RexxObject *getLocalCompoundVariableValue(RexxString *stemName, size_t index, RexxObject **tail, size_t tailCount)
-   {
-     RexxStem     *stem_table;            /* retrieved stem table              */
-                                          /* new tail for compound             */
-     RexxCompoundTail resolved_tail(this, tail, tailCount);
-
-     stem_table = getLocalStem(stemName, index);   /* get the stem entry from this dictionary */
-     return stem_table->getCompoundVariableValue(&resolved_tail);
-   }
-
-   inline RexxCompoundElement *getLocalCompoundVariable(RexxString *stemName, size_t index, RexxObject **tail, size_t tailCount)
-   {
-     RexxStem     *stem_table;            /* retrieved stem table              */
-                                          /* new tail for compound             */
-     RexxCompoundTail resolved_tail(this, tail, tailCount);
-
-     stem_table = getLocalStem(stemName, index);   /* get the stem entry from this dictionary */
-     return stem_table->getCompoundVariable(&resolved_tail);
-   }
-
-   inline RexxCompoundElement *exposeLocalCompoundVariable(RexxString *stemName, size_t index, RexxObject **tail, size_t tailCount)
-   {
-     RexxStem     *stem_table;            /* retrieved stem table              */
-                                          /* new tail for compound             */
-     RexxCompoundTail resolved_tail(this, tail, tailCount);
-
-     stem_table = getLocalStem(stemName, index);   /* get the stem entry from this dictionary */
-     return stem_table->exposeCompoundVariable(&resolved_tail);
-   }
-
-   inline bool localCompoundVariableExists(RexxString *stemName, size_t index, RexxObject **tail, size_t tailCount)
-   {
-     RexxStem     *stem_table;            /* retrieved stem table              */
-                                          /* new tail for compound             */
-     RexxCompoundTail resolved_tail(this, tail, tailCount);
-
-     stem_table = getLocalStem(stemName, index);   /* get the stem entry from this dictionary */
-     return stem_table->compoundVariableExists(&resolved_tail);
-   }
-
-   inline void assignLocalCompoundVariable(RexxString *stemName, size_t index, RexxObject **tail, size_t tailCount, RexxObject *value)
-   {
-     RexxStem     *stem_table;                 /* retrieved stem table              */
-                                               /* new tail for compound             */
-     RexxCompoundTail resolved_tail(this, tail, tailCount);
-
-     stem_table = getLocalStem(stemName, index);   /* get the stem entry from this dictionary */
-                                               /* and set the value                 */
-     stem_table->setCompoundVariable(&resolved_tail, value);
-     /* trace resolved compound name */
-     traceCompoundName(stemName, tail, tailCount, &resolved_tail);
-   }
-
-   inline void setLocalCompoundVariable(RexxString *stemName, size_t index, RexxObject **tail, size_t tailCount, RexxObject *value)
-   {
-     RexxStem     *stem_table;                 /* retrieved stem table              */
-                                               /* new tail for compound             */
-     RexxCompoundTail resolved_tail(this, tail, tailCount);
-
-     stem_table = getLocalStem(stemName, index);   /* get the stem entry from this dictionary */
-                                               /* and set the value                 */
-     stem_table->setCompoundVariable(&resolved_tail, value);
-   }
-
-   inline void dropLocalCompoundVariable(RexxString *stemName, size_t index, RexxObject **tail, size_t tailCount)
-   {
-     RexxStem     *stem_table;                 /* retrieved stem table              */
-                                               /* new tail for compound             */
-     RexxCompoundTail resolved_tail(this, tail, tailCount);
-
-     stem_table = getLocalStem(stemName, index);   /* get the stem entry from this dictionary */
-                                               /* and set the value                 */
-     stem_table->dropCompoundVariable(&resolved_tail);
-   }
+   RexxObject *evaluateLocalCompoundVariable(RexxString *stemName, size_t index, RexxObject **tail, size_t tailCount);
+   RexxObject *getLocalCompoundVariableValue(RexxString *stemName, size_t index, RexxObject **tail, size_t tailCount);
+   RexxCompoundElement *getLocalCompoundVariable(RexxString *stemName, size_t index, RexxObject **tail, size_t tailCount);
+   RexxCompoundElement *exposeLocalCompoundVariable(RexxString *stemName, size_t index, RexxObject **tail, size_t tailCount);
+   bool localCompoundVariableExists(RexxString *stemName, size_t index, RexxObject **tail, size_t tailCount);
+   void assignLocalCompoundVariable(RexxString *stemName, size_t index, RexxObject **tail, size_t tailCount, RexxObject *value);
+   void setLocalCompoundVariable(RexxString *stemName, size_t index, RexxObject **tail, size_t tailCount, RexxObject *value);
+   void dropLocalCompoundVariable(RexxString *stemName, size_t index, RexxObject **tail, size_t tailCount);
 
    inline bool novalueEnabled() { return settings.local_variables.getNovalue(); }
 

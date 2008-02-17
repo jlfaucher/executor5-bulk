@@ -341,3 +341,16 @@ RexxObject *PackageClass::addPackage(PackageClass *package)
 
     return this;
 }
+
+
+/**
+ * Resolve a class in the context of a package.
+ *
+ * @param name   The required class name.
+ *
+ * @return The resolved class object.
+ */
+RexxClass *PackageClass::resolveClass(RexxString *name)
+{
+    return source->resolveClass(name);
+}

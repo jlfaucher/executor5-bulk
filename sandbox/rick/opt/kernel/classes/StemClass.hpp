@@ -46,7 +46,6 @@
 
 #include "RexxCompoundElement.hpp"
 #include "RexxCompoundTable.hpp"
-#include "RexxCompoundTail.hpp"
 #include "ExpressionStem.hpp"
 
 #define SORT_CASESENSITIVE 0
@@ -56,6 +55,7 @@
 #define SORT_DECENDING 1
 
 class RexxSupplier;
+class RexxCompoundTail;
 
  class RexxStem : public RexxObject {
   friend class RexxCompoundTable;
@@ -88,6 +88,7 @@ class RexxSupplier;
   size_t        items();
 
   void        dropValue();
+  RexxObject *getStemValue();
   RexxObject *unknown (RexxString *, RexxArray *);
   RexxObject *bracket (RexxObject **, size_t);
   RexxObject *bracketEqual(RexxObject **, size_t);
@@ -121,8 +122,17 @@ class RexxSupplier;
   inline bool compoundVariableExists(RexxCompoundTail *resolved_tail) { return realCompoundVariableValue(resolved_tail) != OREF_NULL; }
   inline RexxString *getName() { return stemName; }
   inline RexxCompoundElement *first() { return tails.first(); }
-  inline RexxString *createCompoundName(RexxCompoundTail *tailPart) { return tailPart->createCompoundName(stemName); }
+         RexxString *createCompoundName(RexxCompoundTail *tailPart);
   inline void init() { tails.init(this); }
+
+  void setElement(const char *tail, RexxObject *value);
+  void setElement(size_t tail, RexxObject *value);
+  void dropElement(const char *tail);
+  void dropElement(size_t tail);
+  void dropElement(RexxCompoundTail *tail);
+  RexxObject *getElement(size_t tail);
+  RexxObject *getElement(const char *tail);
+  RexxObject *getElement(RexxCompoundTail *tail);
 
   static RexxClass *classInstance;
 

@@ -53,6 +53,8 @@ class ProtectedObject;
 class RexxArray;
 class RexxActivity;
 class RexxNativeMethod;
+class ProtectedObject;
+class PackageClass;
 
 class PackageManager
 {
@@ -82,10 +84,11 @@ public:
     static bool        callNativeRoutine(RexxActivity *activity, RexxString *name,
         RexxObject **arguments, size_t argcount, ProtectedObject &result);
 
-    static RoutineClass *getRequires(RexxActivity *activity, RexxString *shortName, RexxString *resolvedName, ProtectedObject &result);
-    static RoutineClass *getMacroSpaceRequires(RexxActivity *activity, RexxString *name, ProtectedObject &result, RexxObject *securityManager);
-    static RoutineClass *getRequiresFile(RexxActivity *activity, RexxString *name, RexxObject *securityManager, ProtectedObject &result);
+    static PackageClass *loadRequires(RexxActivity *activity, RexxString *shortName, RexxString *resolvedName, ProtectedObject &result);
+    static PackageClass *getMacroSpaceRequires(RexxActivity *activity, RexxString *name, ProtectedObject &result, RexxObject *securityManager);
+    static PackageClass *getRequiresFile(RexxActivity *activity, RexxString *name, RexxObject *securityManager, ProtectedObject &result);
     static void          runRequires(RexxActivity *activity, RexxString *name, RoutineClass *code);
+    static PackageClass *loadRequires(RexxActivity *activity, RexxString *name, const char *data, size_t length, ProtectedObject &result);
 
 protected:
     enum

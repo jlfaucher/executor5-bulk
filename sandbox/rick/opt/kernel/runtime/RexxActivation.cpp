@@ -75,6 +75,7 @@
 #include "Interpreter.hpp"
 #include "RexxInternalApis.h"
 #include "PackageManager.hpp"
+#include "RexxCompoundTail.hpp"
 
 /* max instructions without a yield */
 #define MAX_INSTRUCTIONS  100
@@ -620,7 +621,7 @@ void RexxActivation::setTrace(RexxString *setting)
     size_t newsetting;                   /* new trace setting                 */
     size_t debug;                        /* new debug setting                 */
 
-    getSource()->parseTraceSetting(setting, &newsetting, &debug);
+    getSourceObject()->parseTraceSetting(setting, &newsetting, &debug);
                                        /* now change the setting            */
     setTrace(newsetting, debug);
 }
@@ -1863,7 +1864,7 @@ bool RexxActivation::trap(             /* trap a condition                  */
             this->activity->callHaltClearExit(this);
         }
         /* get the handler info              */
-        handler = (RexxInstructionCallBase *)traphandler->get(1);
+        RexxInstructionCallBase *handler = (RexxInstructionCallBase *)traphandler->get(1);
         /* no condition queue yet?           */
         if (this->condition_queue == OREF_NULL)
         {
@@ -2155,7 +2156,7 @@ bool RexxActivation::callMacroSpaceFunction(RexxString * target, RexxObject **_a
         /* run as a call                     */
         routine->call(activity, target, _arguments, _argcount, calltype, OREF_NULL, EXTERNALCALL, _result);
         // merge (class) definitions from macro with current settings
-        getSource()->mergeRequired(routine->getSourceObject());
+        getSourceObject()->mergeRequired(routine->getSourceObject());
         return true;                       /* return success we found it flag   */
     }
     return false;                        /* nope, nothing to find here        */
@@ -2333,7 +2334,7 @@ RexxString *RexxActivation::resolveProgramName(RexxString *name)
  * @param instruction
  *               The directive instruction being processed.
  */
-RoutineClass *RexxActivation::loadRequired(RexxString *target, RexxInstruction *instruction)
+PackageClass *RexxActivation::loadRequired(RexxString *target, RexxInstruction *instruction)
 {
     // this will cause the correct location to be used for error reporting
     this->current = instruction;
@@ -2897,6 +2898,25 @@ void RexxActivation::traceOperatorValue(int prefix, const char *tag, RexxObject 
     dataOffset++;
                                        /* write out the line                */
     this->activity->traceOutput(this, buffer);
+}
+
+
+
+
+/**
+ * Trace a compound variable entry that's of the form 'tag =>
+ * "value"'.
+ *
+ * @param prefix    The trace prefix tag to use.
+ * @param stem      The stem name of the compound.
+ * @param tails     The array of tail elements (unresolved).
+ * @param tailCount The count of tail elements.
+ * @param value     The resolved tail element
+ */
+void RexxActivation::traceCompoundValue(int prefix, RexxString *stemName, RexxObject **tails, size_t tailCount,
+     RexxCompoundTail *tail)
+{
+    traceCompoundValue(TRACE_PREFIX_COMPOUND, stemName, tails, tailCount, tail->createCompoundName(stemName));
 }
 
 
@@ -3709,7 +3729,7 @@ RexxObject *buildCompoundVariable(
     if (direct == true)
     {
         /* extract the tail part             */
-        tail = variable_name->extract(position, length);
+        RexxString *tail = variable_name->extract(position, length);
         tails->push(tail);                 /* add to the tail piece list        */
     }
     else
@@ -3774,4 +3794,105 @@ RexxSource *RexxActivation::getSourceObject()
         // this should NEVER happen!
         return OREF_NULL;
     }
+}
+
+
+RexxObject *RexxActivation::evaluateLocalCompoundVariable(RexxString *stemName, size_t index, RexxObject **tail, size_t tailCount)
+{
+    RexxStem     *stem_table;            /* retrieved stem table              */
+                                         /* new tail for compound             */
+    RexxCompoundTail resolved_tail(this, tail, tailCount);
+
+    stem_table = getLocalStem(stemName, index);   /* get the stem entry from this dictionary */
+    RexxObject *value = stem_table->evaluateCompoundVariableValue(this, &resolved_tail);
+    /* need to trace?                    */
+    if (tracingIntermediates())
+    {
+        traceCompoundName(stemName, tail, tailCount, &resolved_tail);
+        /* trace variable value              */
+        traceCompound(stemName, tail, tailCount, value);
+    }
+    return value;
+}
+
+
+RexxObject *RexxActivation::getLocalCompoundVariableValue(RexxString *stemName, size_t index, RexxObject **tail, size_t tailCount)
+{
+    RexxStem     *stem_table;            /* retrieved stem table              */
+                                         /* new tail for compound             */
+    RexxCompoundTail resolved_tail(this, tail, tailCount);
+
+    stem_table = getLocalStem(stemName, index);   /* get the stem entry from this dictionary */
+    return stem_table->getCompoundVariableValue(&resolved_tail);
+}
+
+
+RexxCompoundElement *RexxActivation::getLocalCompoundVariable(RexxString *stemName, size_t index, RexxObject **tail, size_t tailCount)
+{
+    RexxStem     *stem_table;            /* retrieved stem table              */
+                                         /* new tail for compound             */
+    RexxCompoundTail resolved_tail(this, tail, tailCount);
+
+    stem_table = getLocalStem(stemName, index);   /* get the stem entry from this dictionary */
+    return stem_table->getCompoundVariable(&resolved_tail);
+}
+
+
+RexxCompoundElement *RexxActivation::exposeLocalCompoundVariable(RexxString *stemName, size_t index, RexxObject **tail, size_t tailCount)
+{
+    RexxStem     *stem_table;            /* retrieved stem table              */
+                                         /* new tail for compound             */
+    RexxCompoundTail resolved_tail(this, tail, tailCount);
+
+    stem_table = getLocalStem(stemName, index);   /* get the stem entry from this dictionary */
+    return stem_table->exposeCompoundVariable(&resolved_tail);
+}
+
+
+bool RexxActivation::localCompoundVariableExists(RexxString *stemName, size_t index, RexxObject **tail, size_t tailCount)
+{
+    RexxStem     *stem_table;            /* retrieved stem table              */
+                                         /* new tail for compound             */
+    RexxCompoundTail resolved_tail(this, tail, tailCount);
+
+    stem_table = getLocalStem(stemName, index);   /* get the stem entry from this dictionary */
+    return stem_table->compoundVariableExists(&resolved_tail);
+}
+
+
+void RexxActivation::assignLocalCompoundVariable(RexxString *stemName, size_t index, RexxObject **tail, size_t tailCount, RexxObject *value)
+{
+    RexxStem     *stem_table;                 /* retrieved stem table              */
+                                              /* new tail for compound             */
+    RexxCompoundTail resolved_tail(this, tail, tailCount);
+
+    stem_table = getLocalStem(stemName, index);   /* get the stem entry from this dictionary */
+    /* and set the value                 */
+    stem_table->setCompoundVariable(&resolved_tail, value);
+    /* trace resolved compound name */
+    traceCompoundName(stemName, tail, tailCount, &resolved_tail);
+}
+
+
+void RexxActivation::setLocalCompoundVariable(RexxString *stemName, size_t index, RexxObject **tail, size_t tailCount, RexxObject *value)
+{
+    RexxStem     *stem_table;                 /* retrieved stem table              */
+                                              /* new tail for compound             */
+    RexxCompoundTail resolved_tail(this, tail, tailCount);
+
+    stem_table = getLocalStem(stemName, index);   /* get the stem entry from this dictionary */
+    /* and set the value                 */
+    stem_table->setCompoundVariable(&resolved_tail, value);
+}
+
+
+void RexxActivation::dropLocalCompoundVariable(RexxString *stemName, size_t index, RexxObject **tail, size_t tailCount)
+{
+    RexxStem     *stem_table;                 /* retrieved stem table              */
+                                              /* new tail for compound             */
+    RexxCompoundTail resolved_tail(this, tail, tailCount);
+
+    stem_table = getLocalStem(stemName, index);   /* get the stem entry from this dictionary */
+    /* and set the value                 */
+    stem_table->dropCompoundVariable(&resolved_tail);
 }

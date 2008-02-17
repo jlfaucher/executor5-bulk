@@ -38,7 +38,7 @@
 /******************************************************************************/
 /* REXX Kernel                                                                */
 /*                                                                            */
-/* Primitive LibraryPackage management                                               */
+/* Primitive LibraryPackage management                                        */
 /*                                                                            */
 /******************************************************************************/
 
@@ -47,6 +47,8 @@
 #include "PackageManager.hpp"
 #include "Interpreter.hpp"
 #include "RexxNativeCode.hpp"
+#include "DirectoryClass.hpp"
+#include "RoutineClass.hpp"
 
 
 /**
@@ -70,7 +72,7 @@ void *LibraryPackage::operator new(size_t size)
  */
 LibraryPackage::LibraryPackage(RexxString *n)
 {
-    ClearObject(this);
+    this->clearObject();
     OrefSet(this, libraryName, n);
 }
 
@@ -84,7 +86,7 @@ LibraryPackage::LibraryPackage(RexxString *n)
  */
 LibraryPackage::LibraryPackage(RexxString *n, RexxPackageEntry *p)
 {
-    ClearObject(this);
+    this->clearObject();
     OrefSet(this, libraryName, n);
     // this is an internal package.
     internal = true;
@@ -97,17 +99,17 @@ LibraryPackage::LibraryPackage(RexxString *n, RexxPackageEntry *p)
 void LibraryPackage::live(size_t liveMark)
 {
     memory_mark(libraryName);
-    memory_mark(functions);
+    memory_mark(routines);
     memory_mark(methods);
 }
 
 /**
  * Generalized live marking.
  */
-void LibraryPackage::liveGeneral()
+void LibraryPackage::liveGeneral(int reason)
 {
     memory_mark_general(libraryName);
-    memory_mark_general(functions);
+    memory_mark_general(routines);
     memory_mark_general(methods);
 }
 
@@ -120,8 +122,8 @@ void LibraryPackage::liveGeneral()
  * the package exporter function, this is a classic library.
  *
  * If we do find a package exporter, then we can load all of
- * the functions immediately.  Method loads are deferred
- * until the first request.
+ * the routines immediately.  Method loads are deferred until
+ * the first request.
  *
  * @param manager The package manager we're attached to.
  *
@@ -159,12 +161,12 @@ void LibraryPackage::unload()
     }
 
     // call an unloader, if we have one.
-    if (unloader != NULL)
+    if (package->unloader != NULL)
     {
-        ActivityContext *context = currentActivity()->getActivityContext();
-        // unload the package
-        unloader(context);
-        currentActivity()->releaseActivityContext(context);
+        // go run the dispatcher call
+        LibraryUnloaderDispatcher dispatcher(package->unloader);
+
+        ActivityManager::currentActivity->run(dispatcher);
     }
     lib.unload();
 }
@@ -175,7 +177,7 @@ void LibraryPackage::unload()
  * a package entry from the library.
  *
  * @return A package table entry, if possible.  A load failure or
- *         no package loading functions returns NULL.
+ *         no package loading routines returns NULL.
  */
 RexxPackageEntry *LibraryPackage::getPackageTable()
 {
@@ -212,44 +214,42 @@ RexxPackageEntry *LibraryPackage::getPackageTable()
 /**
  * Load a package with a provided package definition.
  *
- * @param manager The package manager instance we're attached to.
  * @param p       The package table entry.
  */
 void LibraryPackage::loadPackage(RexxPackageEntry *p)
 {
     package = p;       //NB:  this is NOT an object, so OrefSet is not needed.
     // load the function table
-    loadFunctions(package->functions);
+    loadRoutines(package->routines);
 
     // call a loader, if we have one.
     if (p->loader != NULL)
     {
-        ActivityContext *context = currentActivity()->getActivityContext();
-        // load the package
-        p->loader((RexxThreadContext *)context);
-        currentActivity()->releaseActivityContext(context);
+        // go run the dispatcher call
+        LibraryLoaderDispatcher dispatcher(p->loader);
+
+        ActivityManager::currentActivity->run(dispatcher);
     }
 }
 
 
 /**
- * Load all of the functions in a package, registering them
- * with the package manager.
+ * Load all of the routines in a package, registering them with
+ * the package manager.
  *
- * @param manager The package manager we're associated with.
  * @param table   The package table describing this package.
  */
-void LibraryPackage::loadFunctions(RexxRoutineEntry *table)
+void LibraryPackage::loadRoutines(RexxRoutineEntry *table)
 {
-    // no functions exported by this package?  Just return without
+    // no routines exported by this package?  Just return without
     // doing anything.
     if (table == NULL)
     {
         return;
     }
 
-    // create a directory of loaded functions.
-    OrefSet(this, functions, new_directory());
+    // create a directory of loaded routines
+    OrefSet(this, routines, new_directory());
 
     while (table->style != 0)
     {
@@ -259,18 +259,17 @@ void LibraryPackage::loadFunctions(RexxRoutineEntry *table)
         RexxString *target = new_upper_string(table->name)->upper();
 
         RexxRoutine *func = OREF_NULL;
-        if (table->style == FUNCTION_CLASSIC_STYLE)
+        if (table->style == ROUTINE_CLASSIC_STYLE)
         {
-            func = new RegisteredRoutine(libraryName, table->name, (PREGISTEREDROUTINE)table->entryPoint);
+            func = new RegisteredRoutine(libraryName, new_string(table->name), (PREGISTEREDROUTINE)table->entryPoint);
         }
         else
         {
-            func = new RexxNativeRoutine(libraryName, table->name, (PNATIVEROUTINE)table->entryPoint);
+            func = new RexxNativeRoutine(libraryName, new_string(table->name), (PNATIVEROUTINE)table->entryPoint);
         }
 
-
         // add this to the global function pool
-        PackageManager::addPackageFunction(target, new_routine(func));
+        PackageManager::addPackageRoutine(target, new_routine(func));
         // step to the next table entry
         table++;
     }
@@ -289,7 +288,7 @@ void LibraryPackage::loadFunctions(RexxRoutineEntry *table)
  */
 RexxMethodEntry *LibraryPackage::locateMethodEntry(RexxString *name)
 {
-    ooRexxMethodEntry *entry = package->methods;
+    RexxMethodEntry *entry = package->methods;
 
     // scan the exported method table for the required method
     while (entry->style != 0)
@@ -315,16 +314,16 @@ RexxMethodEntry *LibraryPackage::locateMethodEntry(RexxString *name)
  * @return A pointer to the located function structure.  Returns NULL
  *         if the package doesn't exist.
  */
-RexxRoutineEntry *LibraryPackage::locateFunctionEntry(RexxString *name)
+RexxRoutineEntry *LibraryPackage::locateRoutineEntry(RexxString *name)
 {
-    RexxRoutineEntry *entry = package->functions;
+    RexxRoutineEntry *entry = package->routines;
 
     // scan the exported method table for the required method
     while (entry->style != 0)
     {
         // is this one a name match?  Make a method, add it to
         // the table, and return.
-        if (name->strICompare((stringchar_t *)entry->name))
+        if (name->strICompare(entry->name))
         {
             return entry;
         }
@@ -400,10 +399,10 @@ PNATIVEMETHOD LibraryPackage::resolveMethodEntry(RexxString *name)
  *
  * @return The target entry point.
  */
-PNATIVEROUTINE LibraryPackage::resolveFunctionEntry(RexxString *name)
+PNATIVEROUTINE LibraryPackage::resolveRoutineEntry(RexxString *name)
 {
     // find the package definition
-    RexxMethodEntry *entry = locateFunctionEntry(name);
+    RexxRoutineEntry *entry = locateRoutineEntry(name);
     // if no entry, something bad has gone wrong
     if (entry == NULL)
     {
@@ -411,7 +410,7 @@ PNATIVEROUTINE LibraryPackage::resolveFunctionEntry(RexxString *name)
     }
 
     // style mismatch...this is incompatible
-    if (entry->style == FUNCTION_CLASSIC_STYLE)
+    if (entry->style == ROUTINE_CLASSIC_STYLE)
     {
         reportException(Error_Execution_library_routine, name, libraryName);
     }
@@ -430,7 +429,7 @@ PNATIVEROUTINE LibraryPackage::resolveFunctionEntry(RexxString *name)
 PREGISTEREDROUTINE LibraryPackage::resolveRegisteredRoutineEntry(RexxString *name)
 {
     // find the package definition
-    RexxMethodEntry *entry = locateFunctionEntry(name);
+    RexxRoutineEntry *entry = locateRoutineEntry(name);
     // if no entry, something bad has gone wrong
     if (entry == NULL)
     {
@@ -438,7 +437,7 @@ PREGISTEREDROUTINE LibraryPackage::resolveRegisteredRoutineEntry(RexxString *nam
     }
 
     // style mismatch...this is incompatible
-    if (entry->style != FUNCTION_CLASSIC_STYLE)
+    if (entry->style != ROUTINE_CLASSIC_STYLE)
     {
         reportException(Error_Execution_library_routine, name, libraryName);
     }
@@ -469,3 +468,26 @@ void LibraryPackage::reload(RexxPackageEntry *pack)
     package = pack;
 }
 
+
+
+/**
+ * Process a callout to package loader function
+ */
+void LibraryLoaderDispatcher::run()
+{
+    RexxThreadContext *context = activity->getThreadContext();
+
+    loader(context);
+}
+
+
+
+/**
+ * Process a callout to package loader function
+ */
+void LibraryUnloaderDispatcher::run()
+{
+    RexxThreadContext *context = activity->getThreadContext();
+
+    unloader(context);
+}

@@ -144,6 +144,7 @@ class RexxNativeActivation : public RexxActivationBase
   void reportStemError(size_t position, RexxObject *object);
   void processArguments(size_t argcount, RexxObject **arglist, uint16_t *argumentTypes, ValueDescriptor *descriptors, size_t maximumArgumentCount);
   RexxObject *valueToObject(ValueDescriptor *value);
+  RexxArray *valuesToObject(ValueDescriptor *value, size_t count);
   bool objectToValue(RexxObject *o, ValueDescriptor *value);
   void createLocalReference(RexxObject *objr);
   void removeLocalReference(RexxObject *objr);

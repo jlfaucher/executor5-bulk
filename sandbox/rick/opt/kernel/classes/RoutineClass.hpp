@@ -62,8 +62,9 @@ public:
     void          call(RexxActivity *,  RexxString *,  RexxObject **, size_t, RexxString *, RexxString *, int, ProtectedObject &);
     void          call(RexxActivity *,  RexxString *,  RexxObject **, size_t, ProtectedObject &);
     void          runProgram(RexxActivity *activity, RexxString * calltype, RexxString * environment, RexxObject **arguments, size_t argCount, ProtectedObject &result);
+    void          runProgram(RexxActivity *activity, RexxObject **arguments, size_t argCount, ProtectedObject &result);
 
-    RexxSmartBuffer *save();
+    RexxBuffer *save();
     RexxObject  *setSecurityManager(RexxObject *);
 
     RoutineClass *newRexx(RexxObject **, size_t);
@@ -72,7 +73,7 @@ public:
     static RoutineClass *newRoutine(RexxSource *);
     static RoutineClass *newRoutineObject(RexxString *, RexxObject *, RexxObject *, RexxSource *s);
     static RoutineClass *newRexxBuffer(RexxString *, RexxBuffer *);
-    static RoutineClass *newRexxBuffer(const char *, const char *, size_t);
+    static RoutineClass *newRexxBuffer(RexxString *, const char *, size_t);
     static RoutineClass *restore(RexxBuffer *, char *);
     static RoutineClass *newFile(RexxString *);
 

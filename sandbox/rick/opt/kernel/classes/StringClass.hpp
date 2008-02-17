@@ -277,6 +277,7 @@ class RexxStringClass : public RexxClass {
 
    inline size_t  getLength() { return this->length; };
    inline void    setLength(size_t l) { this->length = l; };
+   inline void finish(stringsize_t l) { length = l; }
    inline const char *getStringData() { return this->stringData; };
    inline char *getWritableData() { return this->stringData; };
    inline void put(size_t s, const void *b, size_t l) { memcpy((this->stringData+s), b, l); };
@@ -418,6 +419,7 @@ class RexxStringClass : public RexxClass {
    static RexxString *rawString(size_t);
    static RexxString *newUpperString(const char *, stringsize_t);
    static RexxString *newString(double d);
+   static RexxString *newString(double d, size_t precision);
    static RexxString *newProxy(const char *);
    // NB:  newRexx() cannot be static and exported as an ooRexx method.
           RexxString *newRexx(RexxObject **, size_t);
@@ -477,6 +479,11 @@ inline RexxString *raw_string(stringsize_t l)
 inline RexxString *new_string(double d)
 {
     return RexxString::newString(d);
+}
+
+inline RexxString *new_string(double d, size_t p)
+{
+    return RexxString::newString(d, p);
 }
 
 

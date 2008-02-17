@@ -61,6 +61,7 @@
 #include "PointerClass.hpp"
 #include "ActivityDispatcher.hpp"
 #include "CallbackDispatcher.hpp"
+#include "Interpreter.hpp"
 
 #include <math.h>
 #include <limits.h>
@@ -558,6 +559,30 @@ void RexxNativeActivation::processArguments(size_t argcount, RexxObject **arglis
 
 
 /**
+ * Convert an collection of value descriptors into a Rexx array
+ * object.  This is useful for creating arrays of arguments for
+ * the various call APIs.
+ *
+ * @param value  The self-describing value descriptors.
+ * @param count  The number of descriptors in the list.
+ *
+ * @return The described value converted to an appropriate Rexx object.
+ */
+RexxArray *RexxNativeActivation::valuesToObject(ValueDescriptor *value, size_t count)
+{
+    RexxArray *result = new_array(count);
+    ProtectedObject p(result);
+
+    for (size_t i = 0; i < count; i++)
+    {
+        // convert each of the values in turn
+        result->put(valueToObject(value++), i);
+    }
+    return result;
+}
+
+
+/**
  * Convert an API value descriptor into a Rexx object.
  *
  * @param value  The self-describing value descriptor.
@@ -673,6 +698,13 @@ RexxObject *RexxNativeActivation::valueToObject(ValueDescriptor *value)
         {
             // just wrap the pointer in a pointer object
             return new_pointer(value->value.value_POINTER);
+        }
+
+        case 0:
+        {
+            // useful for creating argument lists.  This is an omitted value, so just return
+            // a null value
+            return OREF_NULL;
         }
 
         default:
@@ -2288,7 +2320,7 @@ RexxClass *RexxNativeActivation::resolveClass(RexxString *className)
         return routine->resolveClass(className);
     }
 
-    return OREF_NULL;
+    return Interpreter::resolveClass(className);
 }
 
 

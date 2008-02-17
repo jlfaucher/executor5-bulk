@@ -58,6 +58,7 @@
 #include "ProtectedObject.hpp"
 #include "BufferClass.hpp"
 #include "RexxInternalApis.h"
+#include "RexxSmartBuffer.hpp"
 #include <ctype.h>
 
 
@@ -138,6 +139,20 @@ void RoutineClass::runProgram(
 }
 
 
+void RoutineClass::runProgram(
+    RexxActivity *activity,
+    RexxObject **arguments,            /* array of arguments                */
+    size_t       argCount,             /* the number of arguments           */
+    ProtectedObject &result)           // the method result
+/****************************************************************************/
+/* Function:  Run a method as a program                                     */
+/****************************************************************************/
+{
+    ProtectedObject p(this);           // belt-and-braces to make sure this is protected
+    code->call(activity, this, OREF_NONE, arguments, argCount, OREF_NULL, OREF_NULL, PROGRAMCALL, result);
+}
+
+
 RexxObject *RoutineClass::setSecurityManager(
     RexxObject *manager)               /* supplied security manager         */
 /******************************************************************************/
@@ -148,7 +163,7 @@ RexxObject *RoutineClass::setSecurityManager(
 }
 
 
-RexxSmartBuffer *RoutineClass::save()
+RexxBuffer *RoutineClass::save()
 /******************************************************************************/
 /* Function: Flatten translated method into a buffer for storage into EA's etc*/
 /******************************************************************************/
@@ -160,7 +175,7 @@ RexxSmartBuffer *RoutineClass::save()
                                        /* now pack up the envelope for      */
                                        /* saving.                           */
   envelope->pack(this);
-  return envelope->getBuffer();        /* return the buffer                 */
+  return envelope->getBuffer()->getBuffer();  /* return the buffer                 */
 }
 
 void *RoutineClass::operator new (size_t size)
@@ -264,7 +279,7 @@ RoutineClass *RoutineClass::newRoutineObject(RexxString *pgmname, RexxObject *so
         RexxActivation *currentContext = ActivityManager::currentActivity->getCurrentRexxFrame();
         if (currentContext != OREF_NULL)
         {
-            parentSource = currentContext->getSource();
+            parentSource = currentContext->getSourceObject();
         }
     }
 
@@ -398,10 +413,10 @@ RoutineClass *RoutineClass::newRexxBuffer(
  *
  * @return A translated Routine object.
  */
-RoutineClass *RoutineClass::newRexxBuffer(const char *pgmname, const char *source, size_t length)
+RoutineClass *RoutineClass::newRexxBuffer(RexxString *pgmname, const char *source, size_t length)
 {
                                          /* create a source object            */
-    RexxSource *newSource = RexxSource::classNewBuffered(new_string(pgmname), source, length);
+    RexxSource *newSource = RexxSource::classNewBuffered(pgmname, source, length);
     // we need to protect this source object until parsing is complete
     ProtectedObject p(newSource);
                                          /* now complete method creation      */

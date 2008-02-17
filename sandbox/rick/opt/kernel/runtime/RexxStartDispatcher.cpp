@@ -188,3 +188,47 @@ void RexxStartDispatcher::handleError(wholenumber_t r, RexxDirectory *c)
     retcode = (short)rc;
 }
 
+
+
+/**
+ * Run a routine for a thread context API call.
+ */
+void CallRoutineDispatcher::run()
+{
+    if (arguments != OREF_NULL)
+    {
+        // we use a null string for the name when things are called directly
+        routine->call(activity, OREF_NULLSTRING, arguments->data(), arguments->size(), result);
+    }
+    else
+    {
+        // we use a null string for the name when things are called directly
+        routine->call(activity, OREF_NULLSTRING, NULL, 0, result);
+    }
+}
+
+
+
+/**
+ * Run a routine for a thread context API call.
+ */
+void CallProgramDispatcher::run()
+{
+    RexxString *name = new_string(program);
+
+    // get a routine from the file source first
+    RoutineClass *routine = RoutineClass::newFile(name);
+
+    ProtectedObject p(routine);
+
+    if (arguments != OREF_NULL)
+    {
+        // use the provided name for the call name
+        routine->runProgram(activity, arguments->data(), arguments->size(), result);
+    }
+    else
+    {
+        // we use a null string for the name when things are called directly
+        routine->runProgram(activity, NULL, 0, result);
+    }
+}

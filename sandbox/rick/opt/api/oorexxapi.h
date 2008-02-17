@@ -173,39 +173,41 @@ typedef struct _RexxContextExit
 typedef struct _RexxRoutineEntry
 {
     int   style;                     // function call style
-	int   reserved1;                 // reserved for future use
-	const char *name;                // name of the function
+    int   reserved1;                 // reserved for future use
+    const char *name;                // name of the function
     void *entryPoint;                // resolved function entry point
-	int   reserved2;                 // reserved for future use
-	int   reserved3;                 // reserved for future use
+    int   reserved2;                 // reserved for future use
+    int   reserved3;                 // reserved for future use
 } RexxRoutineEntry;
 
+#define ROUTINE_TYPED_STYLE 1
+#define ROUTINE_CLASSIC_STYLE 2
 
-#define REXX_FUNCTION(s, n, e)	{ s, 0, #n, (void *)e, 0, 0 },
+#define REXX_ROUTINE(s, n, e)   { s, 0, #n, (void *)e, 0, 0 },
 
-#define REXX_TYPED_FUNCTION(n, e) REXX_FUNCTION(FUNCTION_TYPED_STYLE, n, e)
-#define REXX_CLASSIC_FUNCTION(n, e) REXX_FUNCTION(FUNCTION_CLASSIC_STYLE, n, e)
-#define REXX_LAST_FUNCTION()        { 0, 0, NULL, (void *)NULL, 0, 0 }
+#define REXX_TYPED_ROUTINE(n, e) REXX_ROUTINE(ROUTINE_TYPED_STYLE, n, e)
+#define REXX_CLASSIC_ROUTINE(n, e) REXX_ROUTINE(ROUTINE_CLASSIC_STYLE, n, e)
+#define REXX_LAST_ROUTINE()        { 0, 0, NULL, (void *)NULL, 0, 0 }
 
 #ifdef __cplusplus
-#define REXX_CLASSIC_FUNCTION_PROTOTYPE extern "C" size_t RexxEntry name(const char *, size_t, CONSTRXSTRING *, const char *, RXSTRING *);
+#define REXX_CLASSIC_ROUTINE_PROTOTYPE extern "C" size_t RexxEntry name(const char *, size_t, CONSTRXSTRING *, const char *, RXSTRING *);
 #else
-#define REXX_CLASSIC_FUNCTION_PROTOTYPE size_t RexxEntry name(const char *, size_t, CONSTRXSTRING *, const char *, RXSTRING *);
+#define REXX_CLASSIC_ROUTINE_PROTOTYPE size_t RexxEntry name(const char *, size_t, CONSTRXSTRING *, const char *, RXSTRING *);
 #endif
 
 typedef struct _RexxMethodEntry
 {
     int   style;                     // function call style
-	int   reserved1;                 // reserved for future use
-	const char *name;                // name of the method
+    int   reserved1;                 // reserved for future use
+    const char *name;                // name of the method
     void *entryPoint;                // resolved function entry point
-	int   reserved2;                 // reserved for future use
-	int   reserved3;                 // reserved for future use
+    int   reserved2;                 // reserved for future use
+    int   reserved3;                 // reserved for future use
 } RexxMethodEntry;
 
 #define METHOD_TYPED_STYLE 1
 
-#define REXX_METHOD_ENTRY(n, e)	{ METHOD_TYPED_STYLE, 0, #n, (void *)e, 0, 0 },
+#define REXX_METHOD_ENTRY(n, e) { METHOD_TYPED_STYLE, 0, #n, (void *)e, 0, 0 },
 
 #define REXX_METHOD(n, e) REXX_METHOD_ENTRY(n, e)
 #define REXX_LAST_METHOD()  { 0, 0, NULL, (void *)NULL, 0, 0 }
@@ -217,7 +219,7 @@ typedef struct _RexxMethodEntry
 
 #define OOREXX_GET_PACKAGE(name) \
     BEGIN_EXTERN_C()\
-	RexxPackageEntry *RexxEntry RexxGetPackage(void) { return &name##_package_entry; }\
+    RexxPackageEntry *RexxEntry RexxGetPackage(void) { return &name##_package_entry; }\
     END_EXTERN_C()
 
 
@@ -232,7 +234,7 @@ typedef struct _RexxPackageEntry
     const char  *packageVersion;   // package version #
     RexxPackageLoader loader;      // the package loader
     RexxPackageUnloader unloader;  // the package unloader
-    struct _RexxRoutineEntry *functions; // functions contained in this package
+    struct _RexxRoutineEntry *routines; // routines contained in this package
     struct _RexxMethodEntry *methods;   // methods contained in this package
 } RexxPackageEntry;
 
@@ -502,7 +504,7 @@ typedef struct
     logical_t        (RexxEntry *HasMethod)(RexxThreadContext *, RexxObjectPtr, CSTRING);
 
     RexxPackageObject (RexxEntry *LoadPackage)(RexxThreadContext *, CSTRING d);
-    RexxPackageObject (RexxEntry *LoadPackageFromData)(RexxThreadContext *, CSTRING d, size_t l);
+    RexxPackageObject (RexxEntry *LoadPackageFromData)(RexxThreadContext *, CSTRING n, CSTRING d, size_t l);
     RexxClassObject  (RexxEntry *FindClass)(RexxThreadContext *, CSTRING);
     RexxClassObject  (RexxEntry *FindPackageClass)(RexxThreadContext *, RexxPackageObject, CSTRING);
     RexxDirectoryObject (RexxEntry *GetPackageRoutines)(RexxThreadContext *, RexxPackageObject);
@@ -519,6 +521,7 @@ typedef struct
     RexxObjectPtr    (RexxEntry *NumberToObject)(RexxThreadContext *, wholenumber_t);
     RexxObjectPtr    (RexxEntry *UintptrToObject)(RexxThreadContext *, uintptr_t);
     RexxObjectPtr    (RexxEntry *ValueToObject)(RexxThreadContext *, ValueDescriptor *);
+    RexxArrayObject  (RexxEntry *ValuesToObject)(RexxThreadContext *, ValueDescriptor *, size_t count);
     logical_t        (RexxEntry *ObjectToValue)(RexxThreadContext *, RexxObjectPtr, ValueDescriptor *);
     RexxObjectPtr    (RexxEntry *UnsignedNumberToObject)(RexxThreadContext *, stringsize_t);
     logical_t        (RexxEntry *ObjectToNumber)(RexxThreadContext *, RexxObjectPtr, wholenumber_t *);
@@ -529,12 +532,12 @@ typedef struct
     logical_t        (RexxEntry *ObjectToUnsignedInt64)(RexxThreadContext *, RexxObjectPtr, uint64_t *);
     logical_t        (RexxEntry *ObjectToUintptr)(RexxThreadContext *, RexxObjectPtr, uintptr_t *);
     RexxObjectPtr    (RexxEntry *DoubleToObject)(RexxThreadContext *, double);
-    RexxObjectPtr    (RexxEntry *DoubleToObjectWithPrecision)(RexxThreadContext *, double, wholenumber_t precision);
+    RexxObjectPtr    (RexxEntry *DoubleToObjectWithPrecision)(RexxThreadContext *, double, size_t precision);
     logical_t        (RexxEntry *ObjectToDouble)(RexxThreadContext *, RexxObjectPtr, double *);
 
     RexxStringObject  (RexxEntry *ObjectToString)(RexxThreadContext *, RexxObjectPtr);
     CSTRING (RexxEntry *ObjectToStringValue)(RexxThreadContext *, RexxObjectPtr);
-    size_t  (RexxEntry *StringGet)(RexxThreadContext *, RexxStringObject, size_t, CSTRING, size_t);
+    size_t  (RexxEntry *StringGet)(RexxThreadContext *, RexxStringObject, size_t, POINTER, size_t);
     size_t  (RexxEntry *StringLength)(RexxThreadContext *, RexxStringObject);
     CSTRING (RexxEntry *StringData)(RexxThreadContext *, RexxStringObject);
     RexxStringObject  (RexxEntry *NewString)(RexxThreadContext *, CSTRING, size_t);
@@ -571,7 +574,7 @@ typedef struct
     logical_t       (RexxEntry *IsArray)(RexxThreadContext *, RexxObjectPtr);
 
     CSTRING (RexxEntry *BufferData)(RexxThreadContext *, RexxBufferObject);
-    wholenumber_t        (RexxEntry *BufferLength)(RexxThreadContext *, RexxBufferObject);
+    size_t            (RexxEntry *BufferLength)(RexxThreadContext *, RexxBufferObject);
     RexxBufferObject  (RexxEntry *NewBuffer)(RexxThreadContext *, size_t);
     logical_t         (RexxEntry *IsBuffer)(RexxThreadContext *, RexxObjectPtr);
 
@@ -828,9 +831,9 @@ struct RexxThreadContext_
     {
         return functions->LoadPackage(this, d);
     }
-    RexxPackageObject LoadPackageFromData(CSTRING d, size_t l)
+    RexxPackageObject LoadPackageFromData(CSTRING n, CSTRING d, size_t l)
     {
-        return functions->LoadPackageFromData(this, d, l);
+        return functions->LoadPackageFromData(this, n, d, l);
     }
     RexxObjectPtr NewObject()
     {
@@ -880,7 +883,7 @@ struct RexxThreadContext_
     {
         return functions->DoubleToObject(this, d);
     }
-    RexxObjectPtr DoubleToObjectWithPrecision(double d, wholenumber_t precision)
+    RexxObjectPtr DoubleToObjectWithPrecision(double d, size_t precision)
     {
         return functions->DoubleToObjectWithPrecision(this, d, precision);
     }
@@ -891,6 +894,10 @@ struct RexxThreadContext_
     RexxObjectPtr ValueToObject(ValueDescriptor *v)
     {
         return functions->ValueToObject(this, v);
+    }
+    RexxArrayObject ValuesToObject(ValueDescriptor *v, size_t c)
+    {
+        return functions->ValuesToObject(this, v, c);
     }
     logical_t ObjectToValue(RexxObjectPtr o, ValueDescriptor *v)
     {
@@ -904,7 +911,7 @@ struct RexxThreadContext_
     {
         return functions->ObjectToStringValue(this, o);
     }
-    size_t StringGet(RexxStringObject o, size_t len1, CSTRING s, size_t len2)
+    size_t StringGet(RexxStringObject o, size_t len1, POINTER s, size_t len2)
     {
         return functions->StringGet(this, o, len1, s, len2);
     }
@@ -1041,7 +1048,7 @@ struct RexxThreadContext_
     {
         return functions->BufferData(this, bo);
     }
-    wholenumber_t BufferLength(RexxBufferObject bo)
+    size_t BufferLength(RexxBufferObject bo)
     {
         return functions->BufferLength(this, bo);
     }
@@ -1300,9 +1307,9 @@ struct RexxMethodContext_
     {
         return threadContext->LoadPackage(d);
     }
-    RexxPackageObject LoadPackageFromData(CSTRING d, size_t l)
+    RexxPackageObject LoadPackageFromData(CSTRING n, CSTRING d, size_t l)
     {
-        return threadContext->LoadPackageFromData(d, l);
+        return threadContext->LoadPackageFromData(n, d, l);
     }
 
     RexxObjectPtr NewObject()
@@ -1320,6 +1327,10 @@ struct RexxMethodContext_
     RexxObjectPtr ValueToObject(ValueDescriptor *v)
     {
         return threadContext->ValueToObject(v);
+    }
+    RexxArrayObject ValuesToObject(ValueDescriptor *v, size_t c)
+    {
+        return threadContext->ValuesToObject(v, c);
     }
     RexxObjectPtr UnsignedNumberToObject(size_t u)
     {
@@ -1357,7 +1368,7 @@ struct RexxMethodContext_
     {
         return threadContext->DoubleToObject(d);
     }
-    RexxObjectPtr DoubleToObjectWithPrecision(double d, wholenumber_t precision)
+    RexxObjectPtr DoubleToObjectWithPrecision(double d, size_t precision)
     {
         return threadContext->DoubleToObjectWithPrecision(d, precision);
     }
@@ -1374,7 +1385,7 @@ struct RexxMethodContext_
     {
         return threadContext->ObjectToStringValue(o);
     }
-    size_t  StringGet(RexxStringObject o, size_t n1, CSTRING s, size_t n2)
+    size_t  StringGet(RexxStringObject o, size_t n1, POINTER s, size_t n2)
     {
         return threadContext->StringGet(o, n1, s, n2);
     }
@@ -1510,7 +1521,7 @@ struct RexxMethodContext_
     {
         return threadContext->BufferData(bo);
     }
-    wholenumber_t BufferLength(RexxBufferObject bo)
+    size_t BufferLength(RexxBufferObject bo)
     {
         return threadContext->BufferLength(bo);
     }
@@ -1828,9 +1839,9 @@ struct RexxCallContext_
     {
         return threadContext->LoadPackage(d);
     }
-    RexxPackageObject LoadPackageFromData(CSTRING d, size_t l)
+    RexxPackageObject LoadPackageFromData(CSTRING n, CSTRING d, size_t l)
     {
-        return threadContext->LoadPackageFromData(d, l);
+        return threadContext->LoadPackageFromData(n, d, l);
     }
     RexxObjectPtr NewObject()
     {
@@ -1847,6 +1858,10 @@ struct RexxCallContext_
     RexxObjectPtr ValueToObject(ValueDescriptor *v)
     {
         return threadContext->ValueToObject(v);
+    }
+    RexxArrayObject ValuesToObject(ValueDescriptor *v, size_t c)
+    {
+        return threadContext->ValuesToObject(v, c);
     }
     RexxObjectPtr UnsignedNumberToObject(size_t u)
     {
@@ -1884,7 +1899,7 @@ struct RexxCallContext_
     {
         return threadContext->DoubleToObject(d);
     }
-    RexxObjectPtr DoubleToObjectWithPrecision(double d, wholenumber_t precision)
+    RexxObjectPtr DoubleToObjectWithPrecision(double d, size_t precision)
     {
         return threadContext->DoubleToObjectWithPrecision(d, precision);
     }
@@ -1901,7 +1916,7 @@ struct RexxCallContext_
     {
         return threadContext->ObjectToStringValue(o);
     }
-    size_t StringGet(RexxStringObject o, size_t n1, CSTRING s, size_t n2)
+    size_t StringGet(RexxStringObject o, size_t n1, POINTER s, size_t n2)
     {
         return threadContext->StringGet(o, n1, s, n2);
     }
@@ -2037,7 +2052,7 @@ struct RexxCallContext_
     {
         return threadContext->BufferData(bo);
     }
-    wholenumber_t BufferLength(RexxBufferObject bo)
+    size_t BufferLength(RexxBufferObject bo)
     {
         return threadContext->BufferLength(bo);
     }
@@ -2344,9 +2359,9 @@ struct RexxExitContext_
     {
         return threadContext->LoadPackage(d);
     }
-    RexxPackageObject LoadPackageFromData(CSTRING d, size_t l)
+    RexxPackageObject LoadPackageFromData(CSTRING n, CSTRING d, size_t l)
     {
-        return threadContext->LoadPackageFromData(d, l);
+        return threadContext->LoadPackageFromData(n, d, l);
     }
     RexxObjectPtr NewObject()
     {
@@ -2363,6 +2378,10 @@ struct RexxExitContext_
     RexxObjectPtr ValueToObject(ValueDescriptor *v)
     {
         return threadContext->ValueToObject(v);
+    }
+    RexxArrayObject ValuesToObject(ValueDescriptor *v, size_t c)
+    {
+        return threadContext->ValuesToObject(v, c);
     }
     RexxObjectPtr UnsignedNumberToObject(size_t u)
     {
@@ -2400,7 +2419,7 @@ struct RexxExitContext_
     {
         return threadContext->DoubleToObject(d);
     }
-    RexxObjectPtr DoubleToObjectWithPrecision(double d, wholenumber_t precision)
+    RexxObjectPtr DoubleToObjectWithPrecision(double d, size_t precision)
     {
         return threadContext->DoubleToObjectWithPrecision(d, precision);
     }
@@ -2417,7 +2436,7 @@ struct RexxExitContext_
     {
         return threadContext->ObjectToStringValue(o);
     }
-    size_t StringGet(RexxStringObject o, size_t n1, CSTRING s, size_t n2)
+    size_t StringGet(RexxStringObject o, size_t n1, POINTER s, size_t n2)
     {
         return threadContext->StringGet(o, n1, s, n2);
     }
@@ -2553,7 +2572,7 @@ struct RexxExitContext_
     {
         return threadContext->BufferData(bo);
     }
-    wholenumber_t BufferLength(RexxBufferObject bo)
+    size_t BufferLength(RexxBufferObject bo)
     {
         return threadContext->BufferLength(bo);
     }
@@ -2992,7 +3011,7 @@ __type(returnType) name##_impl(RexxMethodContext *context, __adcl(t1, n1), __adc
 #define __cpp_function_proto(name) __functionstub(name);
 #endif
 
-#define REXX_TYPED_FUNCTION_PROTOTYPE(name) __cpp_function_proto(name)
+#define REXX_TYPED_ROUTINE_PROTOTYPE(name) __cpp_function_proto(name)
 
 // zero argument function call
 

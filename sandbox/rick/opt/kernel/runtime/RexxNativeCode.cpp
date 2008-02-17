@@ -53,13 +53,14 @@
 #include <ctype.h>
 
 
-RexxNativeCode::RexxNativeCode(RexxString *_name, RexxString *_package, RexxSource *_source)
+RexxNativeCode::RexxNativeCode(RexxString *_name, RexxString *_package)
 {
     // and this is the information needed to resolve this again after an
     // image restore
     OrefSet(this, this->package, _package);
     OrefSet(this, this->name, _name);
-    OrefSet(this, this->source, _source);
+    // this will be set later, if available
+    OrefSet(this, this->source, OREF_NULL);
 }
 
 
@@ -102,6 +103,30 @@ RexxClass *RexxNativeCode::resolveClass(RexxString *className)
         return source->resolveClass(className);
     }
     return BaseCode::resolveClass(className);
+}
+
+
+/**
+ * Set a source object into a native code context.  If the
+ * object is already set, then this returns a copy of the code object.
+ *
+ * @param s      The new source object.
+ *
+ * @return Either the same object, or a new copy of the code object.
+ */
+BaseCode *RexxNativeCode::setSourceObject(RexxSource *s)
+{
+    if (source == OREF_NULL)
+    {
+        OrefSet(this, this->source, s);
+        return this;
+    }
+    else
+    {
+        RexxNativeCode *copy = (RexxNativeCode *)this->copy();
+        OrefSet(copy, copy->source, s);
+        return copy;
+    }
 }
 
 

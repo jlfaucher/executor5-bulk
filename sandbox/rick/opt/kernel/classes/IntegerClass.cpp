@@ -52,6 +52,7 @@
 #include "RexxActivity.hpp"
 #include "RexxBuiltinFunctions.h"
 #include "Numerics.hpp"
+#include "RexxCompoundTail.hpp"
 
 
 

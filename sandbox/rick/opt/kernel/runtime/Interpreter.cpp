@@ -391,3 +391,81 @@ InstanceBlock::~InstanceBlock()
     // terminate the instance
     instance->terminate();
 }
+
+
+/**
+ * Decode a condition directory into a easier to use
+ * structure form for a native code user.  This breaks
+ * the directory into its component pieces, including
+ * converting values into primitive form using just a single
+ * API call.
+ *
+ * @param conditionObj
+ *               A directory object containing the condition information.
+ * @param pRexxCondData
+ *               The condition data structure that is populated with the
+ *               condition information.
+ */
+void Interpreter::decodeConditionData(RexxDirectory *conditionObj, RexxCondition *condData)
+{
+    memset(condData, 0, sizeof(RexxCondition));
+    condData->code = message_number((RexxString *)conditionObj->at(OREF_CODE));
+
+    condData->rc = message_number((RexxString *)conditionObj->at(OREF_RC));
+    condData->conditionName = (RexxStringObject)conditionObj->at(OREF_CONDITION);
+
+    RexxObject *temp = conditionObj->at(OREF_NAME_MESSAGE);
+    if (temp != TheNilObject)
+    {
+        condData->message = (RexxStringObject)temp;
+    }
+
+    temp = conditionObj->at(OREF_ERRORTEXT);
+    if (temp != TheNilObject)
+    {
+        condData->errortext = (RexxStringObject)temp;
+    }
+
+    temp = conditionObj->at(OREF_DESCRIPTION);
+    if (temp != TheNilObject)
+    {
+        condData->description = (RexxStringObject)temp;
+    }
+
+    condData->position = ((RexxInteger *)(conditionObj->at(OREF_POSITION)))->wholeNumber();
+
+    temp = conditionObj->at(OREF_PROGRAM);
+    if (temp != TheNilObject)
+    {
+        condData->program = (RexxStringObject)temp;
+    }
+
+    temp = conditionObj->at(OREF_ADDITIONAL);
+    if (temp != TheNilObject)
+    {
+        condData->additional = (RexxArrayObject)temp;
+    }
+}
+
+
+/**
+ * Default class resolution processing done without benefit of
+ * a program context.
+ *
+ * @param className The class name.
+ *
+ * @return A resolved class object (if any).
+ */
+RexxClass *Interpreter::resolveClass(RexxString *className)
+{
+    RexxString *internalName = className->upper();   /* upper case it                     */
+    /* send message to .local            */
+    RexxClass *classObject = (RexxClass *)(ActivityManager::localEnvironment->at(internalName));
+    if (classObject != OREF_NULL)
+    {
+        return classObject;
+    }
+
+    /* last chance, try the environment  */
+    return(RexxClass *)(TheEnvironment->at(internalName));
+}

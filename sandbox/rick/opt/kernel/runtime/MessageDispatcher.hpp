@@ -47,7 +47,7 @@ class RexxMessage;
 class MessageDispatcher : public ActivityDispatcher
 {
 public:
-    inline MessageDispatcher(RexxMessage *m) : ActivityDispatcher(NULL), message(m) { ; }
+    inline MessageDispatcher(RexxMessage *m) : ActivityDispatcher(), message(m) { ; }
     virtual ~MessageDispatcher() { ; }
 
     virtual void run();

@@ -54,6 +54,7 @@
 #define CCHMAXPATH PATH_MAX+1
 
 class InterpreterInstance;
+class RexxActivation;
 
 class SystemInterpreter
 {
@@ -74,6 +75,10 @@ public:
     static RexxString *extractDirectory(RexxString *file);
     static RexxString *extractExtension(RexxString *file);
     static RexxString *extractFile(RexxString *file);
+    static RexxObject *popEnvironment(RexxActivation *context);
+    static RexxObject *pushEnvironment(RexxActivation *context);
+    static RexxObject *buildEnvlist();
+    static void restoreEnvironment(void *);
 };
 
 #endif

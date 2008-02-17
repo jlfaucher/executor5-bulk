@@ -295,6 +295,65 @@ RexxObject  *RexxArray::getRexx(RexxObject **arguments, size_t argCount)
   return _result;                      /* return the result                 */
 }
 
+
+/**
+ * Get an item from the array, with array size sensitivity.
+ *
+ * @param position The target position.
+ *
+ * @return The object at the array position.  Returns OREF_NULL if there
+ *         is not item at that position.
+ */
+RexxObject *RexxArray::getApi(size_t position)
+{
+    /* out of bounds?                    */
+    if (position > this->size())
+    {
+        return OREF_NULL;
+    }
+    return get(position);
+}
+
+
+/**
+ * Put an array item into an array on behalf of an API.  This will
+ * extend the array, if necessary, to accomodate the put.
+ *
+ * @param o        The inserted object.
+ * @param position The target position.
+ */
+void RexxArray::putApi(RexxObject *o, size_t position)
+{
+    /* out of bounds?                    */
+    if (position > this->size())
+    {
+        if (position >= MAX_FIXEDARRAY_SIZE)
+        {
+            reportException(Error_Incorrect_method_array_too_big);
+        }
+        this->extend(position - this->size());
+    }
+    put(o, position);
+}
+
+
+bool RexxArray::hasIndexApi(size_t index)
+/******************************************************************************/
+/* Function:  Determine if an element exist for a position                    */
+/******************************************************************************/
+{
+    /* in bounds and here?               */
+    if (index > 0 && index <= this->size() && *(this->data()+index-1) != OREF_NULL)
+    {
+        return true;                            /* this is true                      */
+    }
+    else
+    {
+        return false;                           /* nope, don't have it               */
+    }
+}
+
+
 RexxObject *RexxArray::remove(size_t _index)
 /******************************************************************************/
 /* Function:  Remove an item from the array                                   */

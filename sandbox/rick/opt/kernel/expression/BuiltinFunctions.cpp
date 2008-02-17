@@ -57,6 +57,8 @@
 #include "RexxDateTime.hpp"
 #include "Numerics.hpp"
 #include "ProtectedObject.hpp"
+#include "PackageManager.hpp"
+#include "SystemInterpreter.hpp"
 
 
 /* checks if pad is a single character string */
@@ -1838,7 +1840,7 @@ BUILTIN(SOURCELINE) {
   size_t size;                         /* size of source program            */
 
   fix_args(SOURCELINE);                /* check on required number of args  */
-  source = context->getSource();       /* get current source object         */
+  source = context->getSourceObject(); /* get current source object         */
   size = source->sourceSize();         /* get the program size              */
   if (argcount == 1) {                 /* asking for a specific line?       */
                                        /* get the line number               */
@@ -1890,7 +1892,6 @@ RexxObject *resolve_stream(            /* resolve a stream name             */
     RexxDirectory *streamTable;          /* current set of open streams       */
     RexxObject    *streamClass;          /* current stream class              */
     RexxString    *qualifiedName;        /* qualified file name               */
-    RexxDirectory *securityArgs;         /* security check arguments          */
 
     if (added) *added = false;           /* when caller requires stream table entry then initialize */
     streamTable = context->getStreams(); /* get the current stream set        */
@@ -2529,14 +2530,14 @@ BUILTIN(COUNTSTR) {
 
 BUILTIN(RXFUNCADD)
 {
-  fixArgs(RXFUNCADD);                 /* check on required number of args  */
+  fix_args(RXFUNCADD);                 /* check on required number of args  */
 
   // we require a name and module, but the
   // procedure is optional.  If not specified, we
   // use the function name directly.
-  RexxString *name = requiredString(RXFUNCADD, name);
-  RexxString *module = requiredString(RXFUNCADD, module);
-  RexxString proc = optionalString(RXFUNCADD, proc);
+  RexxString *name = required_string(RXFUNCADD, name);
+  RexxString *module = required_string(RXFUNCADD, module);
+  RexxString *proc = optional_string(RXFUNCADD, proc);
 
   if (proc == OREF_NULL)
   {
@@ -2553,10 +2554,10 @@ BUILTIN(RXFUNCADD)
 
 BUILTIN(RXFUNCDROP)
 {
-  fixArgs(RXFUNCDROP);                 /* check on required number of args  */
+  fix_args(RXFUNCDROP);                 /* check on required number of args  */
 
   // only a name is required.
-  RexxString *name = requiredString(RXFUNCDROP, name);
+  RexxString *name = required_string(RXFUNCDROP, name);
 
   // hand this off to the package manager.
   return PackageManager::dropRegisteredRoutine(name);
@@ -2568,10 +2569,10 @@ BUILTIN(RXFUNCDROP)
 
 BUILTIN(RXFUNCQUERY)
 {
-  fixArgs(RXFUNCQUERY);                 /* check on required number of args  */
+  fix_args(RXFUNCQUERY);                 /* check on required number of args  */
 
   // only a name is required.
-  RexxString *name = requiredString(RXFUNCQUERY, name);
+  RexxString *name = required_string(RXFUNCQUERY, name);
 
   // hand this off to the package manager.
   return PackageManager::dropRegisteredRoutine(name);
@@ -2587,12 +2588,12 @@ BUILTIN(RXFUNCQUERY)
 // requires quite a bit of internal access.
 BUILTIN(QUEUEEXIT)
 {
-  fixArgs(QUEUEEXIT);                   /* check on required number of args  */
+  fix_args(QUEUEEXIT);                   /* check on required number of args  */
 
   // only a name is required.
-  RexxString *name = requiredString(QUEUEEXIT, name);
+  RexxString *name = required_string(QUEUEEXIT, name);
                                        /* call the exit                     */
-  context->activity->callQueueNameExit(context, &name);
+  context->getActivity()->callQueueNameExit(context, name);
   // make sure we have real object to return
   if (name == OREF_NULL)
   {
@@ -2606,9 +2607,9 @@ BUILTIN(QUEUEEXIT)
 
 BUILTIN(SETLOCAL)
 {
-  checkArgs(SETLOCAL);              /* check on required number of args  */
+  check_args(SETLOCAL);              /* check on required number of args  */
   // the external environment implements this
-  return SysInterpreter::pushEnvironment(context);
+  return SystemInterpreter::pushEnvironment(context);
 }
 
 #define ENDLOCAL_MIN 0
@@ -2616,9 +2617,9 @@ BUILTIN(SETLOCAL)
 
 BUILTIN(ENDLOCAL)
 {
-  checkArgs(ENDLOCAL);              /* check on required number of args  */
+  check_args(ENDLOCAL);              /* check on required number of args  */
   // the external environment implements this
-  return SysInterpreter::popEnvironment(context);
+  return SystemInterpreter::popEnvironment(context);
 }
 
                                        /* the following builtin function    */

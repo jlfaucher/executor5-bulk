@@ -55,7 +55,7 @@ RexxArrayObject RexxEntry GetCallArguments(RexxCallContext *c)
     ApiContext context(c);
     try
     {
-        return context.context->getArguments();
+        return (RexxArrayObject)context.context->getArguments();
     }
     catch (ActivityException)
     {
@@ -68,7 +68,7 @@ RexxObjectPtr RexxEntry GetCallArgument(RexxCallContext *c, stringsize_t i)
     ApiContext context(c);
     try
     {
-        return context.context->getArgument(i);
+        return (RexxObjectPtr)context.context->getArgument(i);
     }
     catch (ActivityException)
     {
@@ -93,7 +93,7 @@ RexxObjectPtr RexxEntry GetContextVariable(RexxCallContext *c, CSTRING n)
     ApiContext context(c);
     try
     {
-        return context.context->getContextVariable((const char *)n);
+        return (RexxObjectPtr)context.context->getContextVariable((const char *)n);
     }
     catch (ActivityException)
     {
@@ -172,7 +172,7 @@ RexxObjectPtr RexxEntry GetExitContextVariable(RexxExitContext *c, CSTRING n)
     ApiContext context(c);
     try
     {
-        return context.context->getContextVariable((const char *)n);
+        return (RexxObjectPtr)context.context->getContextVariable((const char *)n);
     }
     catch (ActivityException)
     {

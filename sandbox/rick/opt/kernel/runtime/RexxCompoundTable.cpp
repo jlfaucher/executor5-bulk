@@ -44,6 +44,7 @@
 #include "RexxCore.h"
 #include "RexxCompoundTable.hpp"
 #include "RexxCompoundElement.hpp"
+#include "RexxCompoundTail.hpp"
 
 void RexxCompoundTable::init(
     RexxStem *parentStem)              /* the parent object we're embedded in */
@@ -304,4 +305,40 @@ void RexxCompoundTable::setRoot(
     // checker won't recognize our address as being a valid object because it's
     // embedded within another Rexx object.
     OrefSet(parent, parent->tails.root, newRoot);
+}
+
+
+RexxCompoundElement *RexxCompoundTable::findEntry(RexxCompoundTail *tail)
+/******************************************************************************/
+/* Function:  Search for a compound entry.  This version is optimized for     */
+/*            "find-but-don't create" usage.                                  */
+/******************************************************************************/
+{
+    int          rc;                   /* comparison result          */
+    RexxCompoundElement *anchor;       /* pointer to current block   */
+
+    anchor = root;                     /* get root block             */
+                                       /* loop through on left branch*/
+    while (anchor != NULL)
+    {
+        /* do the name comparison */
+        rc = tail->compare(anchor->getName());
+        if (rc > 0)
+        {                  /* left longer?               */
+                           /* take the right branch      */
+            anchor =  anchor->right;
+            continue;                   /* loop                       */
+        }
+        else if (rc < 0)
+        {            /* left shorter?              */
+                     /* the the left branch        */
+            anchor = anchor->left;
+            continue;                 /* loop                       */
+        }
+        else
+        {                        /* names match                */
+            return anchor;            /* return the anchor          */
+        }
+    }
+    return OREF_NULL;                  /* return var not found       */
 }

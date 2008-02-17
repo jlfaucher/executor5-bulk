@@ -82,11 +82,13 @@ public:
     static RexxObject *toObject(stringsize_t v);
     static RexxObject *toObject(int64_t v);
     static RexxObject *toObject(uint64_t v);
+    static RexxObject *ptrToObject(uintptr_t v);
 
     static bool objectToWholeNumber(RexxObject *o, wholenumber_t &result, wholenumber_t max, wholenumber_t min);
     static bool objectToStringSize(RexxObject *o, stringsize_t &result, stringsize_t max);
     static bool objectToInt64(RexxObject *o, int64_t &result);
     static bool objectToUnsignedInt64(RexxObject *o, uint64_t &result);
+    static bool objectToUintptr(RexxObject *source, uintptr_t &result);
 
     static stringsize_t formatWholeNumber(wholenumber_t integer, char *dest);
     static stringsize_t formatStringSize(stringsize_t integer, char *dest);

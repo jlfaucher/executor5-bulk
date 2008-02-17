@@ -79,6 +79,7 @@
 #include "StreamNative.h"
 #include "ProtectedObject.hpp"
 #include "CPPCode.hpp"
+#include "SystemInterpreter.hpp"
 
 #define HOLDSIZE         60            /* room for 60 temporaries           */
 
@@ -218,7 +219,7 @@ void RexxSource::initFile()
   memoryObject.removeSavedObject((RexxObject *)program_source);
 
                                        /* go process the buffer now         */
-  this->initBuffered((RexxObject *)this->sourceBuffer);
+  this->initBuffered(this->sourceBuffer);
 }
 
 

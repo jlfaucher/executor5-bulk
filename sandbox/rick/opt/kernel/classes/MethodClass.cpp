@@ -59,8 +59,7 @@
 #include "BufferClass.hpp"
 #include "RexxInternalApis.h"
 #include "RoutineClass.hpp"
-#include <ctype.h>
-
+#include "Interpreter.hpp"
 
 // singleton class instance
 RexxClass *RexxMethod::classInstance = OREF_NULL;
@@ -75,6 +74,54 @@ RexxClass *RexxMethod::classInstance = OREF_NULL;
 RexxClass *BaseExecutable::resolveClass(RexxString *className)
 {
     return code->resolveClass(className);
+}
+
+
+/**
+ * Set the source object into a routine or method executable.
+ * This is generally used to attach a source context to a
+ * native method or function defined on a source directive.  Since
+ * native functions can be referenced in multiple packages, but are
+ * managed in the package manager context, this may end up
+ * returning a copy of the executable.
+ *
+ * @param s      The new source.
+ *
+ * @return Either the same executable object, or a new copy with the
+ *         context set.
+ */
+BaseExecutable *BaseExecutable::setSourceObject(RexxSource *s)
+{
+    // set this into a source object context.  If we get a
+    // new object returned, we need to make a copy of the base
+    // executable object also
+    BaseCode *setCode = code->setSourceObject(s);
+    // we're cool if these are equal
+    if (setCode == code)
+    {
+        return this;
+    }
+    // make a copy of this executable, and set the new code into it.
+    BaseExecutable *newBase = (BaseExecutable *)this->copy();
+    OrefSet(newBase, newBase->code, setCode);
+    return newBase;
+}
+
+
+/**
+ * Retrieve the package from a base executable.
+ *
+ * @return The associated package object.  If there is no available package
+ *         object, this returns .nil.
+ */
+PackageClass *BaseExecutable::getPackage()
+{
+    PackageClass *package = code->getPackage();
+    if (package == OREF_NULL)
+    {
+        return (PackageClass *)TheNilObject;
+    }
+    return package;
 }
 
 
@@ -379,7 +426,7 @@ RexxMethod *RexxMethod::newMethodObject(RexxString *pgmname, RexxObject *source,
         RexxActivation *currentContext = ActivityManager::currentActivity->getCurrentRexxFrame();
         if (currentContext != OREF_NULL)
         {
-            parentSource = currentContext->getSource();
+            parentSource = currentContext->getSourceObject();
         }
     }
 
@@ -671,14 +718,42 @@ RexxSource *BaseCode::getSourceObject()
  */
 RexxClass *BaseCode::resolveClass(RexxString *className)
 {
-    RexxString *internalName = className->upper();   /* upper case it                     */
-    /* send message to .local            */
-    RexxClass *classObject = (RexxClass *)(ActivityManager::localEnvironment->at(internalName));
-    if (classObject != OREF_NULL)
+    // the interpreter class handles the default lookups
+    return Interpreter::resolveClass(className);
+}
+
+
+
+/**
+ * Set a source object into a code context.  The default
+ * implementation is just to return the same object without
+ * setting a source.  This is used mostly for attaching a source
+ * context to native code methods and routines defined on
+ * directives.
+ *
+ * @param s      The new source object.
+ *
+ * @return Either the same object, or a new copy of the code object.
+ */
+BaseCode *BaseCode::setSourceObject(RexxSource *s)
+{
+    return this;         // this is just a nop
+}
+
+
+/**
+ * Retrieve the package associated with a code object.  Returns
+ * OREF_NULL if this code object doesn't have a source.
+ *
+ * @return The associated package, or OREF_NULL.
+ */
+PackageClass *BaseCode::getPackage()
+{
+    RexxSource *source = getSourceObject();
+    if (source != OREF_NULL)
     {
-        return classObject;
+        return source->getPackage();
     }
 
-    /* last chance, try the environment  */
-    return(RexxClass *)(TheEnvironment->at(internalName));
+    return OREF_NULL;
 }

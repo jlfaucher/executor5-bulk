@@ -51,9 +51,10 @@
 #include "DirectoryClass.hpp"
 #include "RexxActivation.hpp"
 #include "RexxActivity.hpp"
-#include "RexxBuiltinFunctions.h"                          /* Gneral purpose BIF Header file       */
+#include "RexxBuiltinFunctions.h"
 #include "ProtectedObject.hpp"
 #include "StringUtil.hpp"
+#include "RexxCompoundTail.hpp"
 
 // singleton class instance
 RexxClass *RexxString::classInstance = OREF_NULL;
@@ -1804,6 +1805,38 @@ RexxString *RexxString::newString(double number)
                                        /* get double as a number string.    */
   return new_numberstring(number)->stringValue();
 }
+
+
+/**
+ * Convert a double value to a string using the provided
+ * precision.
+ *
+ * @param number    The number to convert.
+ * @param precision The precision requested for the result.
+ *
+ * @return A string value of the converted result.
+ */
+RexxString *RexxString::newString(double number, stringsize_t precision)
+{
+    if (number == 0)                     /* zero result?               */
+    {
+        return new_string("0");
+    }
+    else
+    {
+        char buffer[64];
+        // format as a string
+        gcvt(number, (int)precision, buffer);
+        size_t len = strlen(buffer);
+        // if the last character is a decimal, we remove that
+        if (buffer[len - 1] == '.')
+        {
+            len--;
+        }
+        return new_string(buffer);
+    }
+}
+
 
 RexxString *RexxString::newProxy(const char *string)
 /******************************************************************************/

@@ -112,8 +112,10 @@ typedef struct copyElelmentParm {
    RexxString  *primitiveMakeString();
 #endif
    RexxObject  *getRexx(RexxObject **, size_t);
+   RexxObject  *getApi(size_t pos);
    void         put(RexxObject * eref, size_t pos);
    RexxObject  *putRexx(RexxObject **, size_t);
+   void         putApi(RexxObject * eref, size_t pos);
    RexxObject  *remove(size_t);
    RexxObject  *removeRexx(RexxObject **, size_t);
    RexxObject  *append(RexxObject *);
@@ -132,6 +134,7 @@ typedef struct copyElelmentParm {
    RexxInteger *hasIndex(RexxObject *);
    bool         hasIndexNative(size_t);
    RexxObject  *hasIndexRexx(RexxObject **, size_t);
+   bool         hasIndexApi(size_t);
    size_t       numItems();
    RexxObject  *items();
    RexxObject  *dimension(RexxObject *);

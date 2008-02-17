@@ -41,6 +41,7 @@
 #define RexxStartDispatcher_included
 
 #include "ActivityDispatcher.hpp"
+#include "ProtectedObject.hpp"
 
 class RexxStartDispatcher : public ActivityDispatcher
 {
@@ -59,6 +60,40 @@ public:
     int        calltype;                 /* How the program is called         */
     short      retcode;                  /* Integer form of result            */
     PRXSTRING  result;                   /* Result returned from program      */
+};
+
+
+class CallRoutineDispatcher : public ActivityDispatcher
+{
+public:
+    inline CallRoutineDispatcher(RoutineClass *r, RexxArray *a) : ActivityDispatcher(), routine(r), arguments(a) { ; }
+    virtual ~CallRoutineDispatcher() { ; }
+
+    virtual void run();
+    virtual void handleError(wholenumber_t, RexxDirectory *);
+
+    ProtectedObject result;
+
+protected:
+    RoutineClass *routine;           // target routine
+    RexxArray    *arguments;         // the argument array (can be NULL)
+};
+
+
+class CallProgramDispatcher : public ActivityDispatcher
+{
+public:
+    inline CallProgramDispatcher(const char *p, RexxArray *a) : ActivityDispatcher(), program(p), arguments(a) { ; }
+    virtual ~CallProgramDispatcher() { ; }
+
+    virtual void run();
+    virtual void handleError(wholenumber_t, RexxDirectory *);
+
+    ProtectedObject result;
+
+protected:
+    const char   *program;           // target routine
+    RexxArray    *arguments;         // the argument array (can be NULL)
 };
 
 

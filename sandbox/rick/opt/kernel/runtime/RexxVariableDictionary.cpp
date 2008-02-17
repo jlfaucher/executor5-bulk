@@ -55,6 +55,7 @@
 #include "ExpressionCompoundVariable.hpp"
 #include "ProtectedObject.hpp"
 #include "SupplierClass.hpp"
+#include "RexxCompoundTail.hpp"
 
 
 RexxObject  *RexxVariableDictionary::copy()
@@ -519,4 +520,25 @@ RexxVariableDictionary *RexxVariableDictionary::newInstance(
   newObj = (RexxVariableDictionary *)new_hashCollection(hashTabSize, sizeof(RexxVariableDictionary), T_VariableDictionary);
   newObj->scope = scope;               /* fill in the scope */
   return newObj;                       /* return the new vdict              */
+}
+
+
+
+/**
+ * Set a compound variable in the dictionary.
+ *
+ * @param stemName  The name of the stem.
+ * @param tail      The tail elements.
+ * @param tailCount The count of tail elements.
+ * @param value     The value to set.
+ */
+void RexxVariableDictionary::setCompoundVariable(RexxString *stemName, RexxObject **tail, size_t tailCount, RexxObject *value)
+{
+    RexxStem     *stem_table;            /* retrieved stem table              */
+                                         /* new tail for compound             */
+    RexxCompoundTail resolved_tail(this, tail, tailCount);
+
+    stem_table = getStem(stemName);      /* get the stem entry from this dictionary */
+                                         /* and set the value                 */
+    stem_table->setCompoundVariable(&resolved_tail, value);
 }

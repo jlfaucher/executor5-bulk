@@ -52,13 +52,14 @@ class RexxNativeCode : public BaseCode
   public:
 
    inline RexxNativeCode() { }
-   RexxNativeCode(RexxString *, RexxString *, RexxSource *);
+   RexxNativeCode(RexxString *, RexxString *);
    void        live(size_t);
    void        liveGeneral(int reason);
    void        flatten(RexxEnvelope *envelope);
 
    virtual RexxSource *getSourceObject();
    virtual RexxClass *resolveClass(RexxString *className);
+   virtual BaseCode *setSourceObject(RexxSource *s);
 
 protected:
    RexxString *package;               // the package name
@@ -76,7 +77,7 @@ class RexxNativeMethod : public RexxNativeCode
    inline void  operator delete(void *, void *) { ; }
 
    inline RexxNativeMethod(RESTORETYPE restoreType) { ; };
-   RexxNativeMethod(RexxString *, RexxString *, RexxSource *, PNATIVEMETHOD);
+   RexxNativeMethod(RexxString *, RexxString *, PNATIVEMETHOD);
 
    void        liveGeneral(int reason);
    void        flatten(RexxEnvelope *envelope);
@@ -96,7 +97,7 @@ class RexxRoutine : public RexxNativeCode
   public:
 
    inline RexxRoutine() { }
-   inline RexxRoutine(RexxString *p, RexxString *n, RexxSource *s) : RexxNativeCode(p, n, s) { }
+   inline RexxRoutine(RexxString *p, RexxString *n) : RexxNativeCode(p, n) { }
 
    virtual void call(RexxActivity *, RoutineClass *, RexxString *, RexxObject **, size_t, ProtectedObject &) = 0;
 };
@@ -111,7 +112,7 @@ class RexxNativeRoutine : public RexxRoutine
    inline void  operator delete(void *, void *) { ; }
 
    inline RexxNativeRoutine(RESTORETYPE restoreType) { ; };
-   inline RexxNativeRoutine(RexxString *p, RexxString *n, RexxSource *s, PNATIVEROUTINE e) : RexxRoutine(p, n, s), entry(e) { }
+   inline RexxNativeRoutine(RexxString *p, RexxString *n, PNATIVEROUTINE e) : RexxRoutine(p, n), entry(e) { }
 
    void        liveGeneral(int reason);
    void        flatten(RexxEnvelope *envelope);
@@ -137,9 +138,8 @@ class RegisteredRoutine : public RexxRoutine
    void        flatten(RexxEnvelope *envelope);
 
    inline RegisteredRoutine(RESTORETYPE restoreType) { ; };
-   RegisteredRoutine(RexxString *n, RexxRoutineHandler *e)  : RexxRoutine(OREF_NULL, n, OREF_NULL), entry(e) { }
-   RegisteredRoutine(RexxString *p, RexxString *n, RexxRoutineHandler *e)  : RexxRoutine(p, n, OREF_NULL), entry(e) { }
-   RegisteredRoutine(RexxString *p, RexxString *n, RexxSource *s, RexxRoutineHandler *e)  : RexxRoutine(p, n, s), entry(e) { }
+   RegisteredRoutine(RexxString *n, RexxRoutineHandler *e)  : RexxRoutine(OREF_NULL, n), entry(e) { }
+   RegisteredRoutine(RexxString *p, RexxString *n, RexxRoutineHandler *e)  : RexxRoutine(p, n), entry(e) { }
 
    virtual void call(RexxActivity *, RoutineClass *, RexxString *, RexxObject **, size_t, ProtectedObject &);
 

@@ -55,6 +55,7 @@
 #include "SecurityManager.hpp"
 #include "WeakReferenceClass.hpp"
 #include "RexxActivation.hpp"
+#include "PackageClass.hpp"
 
 
 RexxDirectory *PackageManager::packages = OREF_NULL;        // our loaded packages
@@ -526,7 +527,7 @@ bool PackageManager::callNativeRoutine(RexxActivity *activity, RexxString *name,
  *
  * @return The package routine (also returned in the result protected object).
  */
-RoutineClass *PackageManager::getRequires(RexxActivity *activity, RexxString *shortName, RexxString *resolvedName, ProtectedObject &result)
+PackageClass *PackageManager::loadRequires(RexxActivity *activity, RexxString *shortName, RexxString *resolvedName, ProtectedObject &result)
 {
     result = OREF_NULL;
 
@@ -547,7 +548,7 @@ RoutineClass *PackageManager::getRequires(RexxActivity *activity, RexxString *sh
     WeakReference *requiresRef = (WeakReference *)loadedRequires->get(shortName);
     if (requiresRef != OREF_NULL)
     {
-        RoutineClass *resolved = (RoutineClass *)requiresRef->get();
+        PackageClass *resolved = (PackageClass *)requiresRef->get();
         if (resolved != OREF_NULL)
         {
             result = resolved;
@@ -565,8 +566,7 @@ RoutineClass *PackageManager::getRequires(RexxActivity *activity, RexxString *sh
     bool checkMacroSpace = RexxQueryMacro(shortName->getStringData(), &macroPosition) == 0;
     if (checkMacroSpace && (macroPosition == RXMACRO_SEARCH_BEFORE))
     {
-        getMacroSpaceRequires(activity, shortName, result, securityManager);
-        return (RoutineClass *)(RexxObject *)result;
+        return getMacroSpaceRequires(activity, shortName, result, securityManager);
     }
 
     // it's possible we don't have a file version of this
@@ -587,7 +587,7 @@ RoutineClass *PackageManager::getRequires(RexxActivity *activity, RexxString *sh
         requiresRef = (WeakReference *)loadedRequires->get(resolvedName);
         if (requiresRef != OREF_NULL)
         {
-            RoutineClass *resolved = (RoutineClass *)requiresRef->get();
+            PackageClass *resolved = (PackageClass *)requiresRef->get();
             if (resolved != OREF_NULL)
             {
                 result = resolved;
@@ -596,8 +596,7 @@ RoutineClass *PackageManager::getRequires(RexxActivity *activity, RexxString *sh
             // this was garbage collected, remove it from the table
             loadedRequires->remove(resolvedName);
         }
-        getRequiresFile(activity, resolvedName, securityManager, result);
-        return (RoutineClass *)(RexxObject *)result;
+        return getRequiresFile(activity, resolvedName, securityManager, result);
     }
 
     // do the macrospace after checks
@@ -622,22 +621,24 @@ RoutineClass *PackageManager::getRequires(RexxActivity *activity, RexxString *sh
  *
  * @return The located ::REQUIRES file.
  */
-RoutineClass *PackageManager::getMacroSpaceRequires(RexxActivity *activity, RexxString *name, ProtectedObject &result, RexxObject *securityManager)
+PackageClass *PackageManager::getMacroSpaceRequires(RexxActivity *activity, RexxString *name, ProtectedObject &result, RexxObject *securityManager)
 {
     // make sure we're not stuck in a circular reference
     activity->checkRequires(name);
     // unflatten the method and protect it
     RoutineClass *code = RexxActivation::getMacroCode(name);
-    result = code;
+    PackageClass *package = code->getPackage();
+    result = package;
 
     if (securityManager == OREF_NULL)
     {
         code->setSecurityManager(securityManager);
     }
     runRequires(activity, name, code);
-    WeakReference *ref = new WeakReference(code);
+
+    WeakReference *ref = new WeakReference(package);
     loadedRequires->put(ref, name);
-    return code;
+    return package;
 }
 
 
@@ -650,7 +651,7 @@ RoutineClass *PackageManager::getMacroSpaceRequires(RexxActivity *activity, Rexx
  *
  * @return The return Routine instance.
  */
-RoutineClass *PackageManager::getRequiresFile(RexxActivity *activity, RexxString *name, RexxObject *securityManager, ProtectedObject &result)
+PackageClass *PackageManager::getRequiresFile(RexxActivity *activity, RexxString *name, RexxObject *securityManager, ProtectedObject &result)
 {
     // make sure we're not stuck in a circular reference
     activity->checkRequires(name);
@@ -664,16 +665,60 @@ RoutineClass *PackageManager::getRequiresFile(RexxActivity *activity, RexxString
          SysSaveProgram(name, code);     /* go save this method             */
     }
 
-    result = code;
+    PackageClass *package = code->getPackage();
+    result = package;
     if (securityManager == OREF_NULL)
     {
         code->setSecurityManager(securityManager);
     }
 
     runRequires(activity, name, code);
-    WeakReference *ref = new WeakReference(code);
+
+    WeakReference *ref = new WeakReference(package);
     loadedRequires->put(ref, name);
-    return code;
+    return package;
+}
+
+
+/**
+ * Loade a requires file from an in-store source.  NOTE:  This
+ * is not cached like the other requires files
+ *
+ * @param activity The current activity.
+ * @param name     The fully resolved file name.
+ * @param result   The return routine object.
+ *
+ * @return The return Routine instance.
+ */
+PackageClass *PackageManager::loadRequires(RexxActivity *activity, RexxString *name, const char *data, size_t length, ProtectedObject &result)
+{
+
+    // first check this using the specified name.  Since we need to perform checks in the
+    // macro space, it's possible this will be loaded under the simple name.  We'll need to check
+    // table again using the fully resolved name afterward.
+    WeakReference *requiresRef = (WeakReference *)loadedRequires->get(name);
+    if (requiresRef != OREF_NULL)
+    {
+        PackageClass *resolved = (PackageClass *)requiresRef->get();
+        if (resolved != OREF_NULL)
+        {
+            result = resolved;
+            return resolved;
+        }
+        // this was garbage collected, remove it from the table
+        loadedRequires->remove(name);
+    }
+
+    RoutineClass *code = RoutineClass::newRexxBuffer(name, data, length);
+    PackageClass *package = code->getPackage();
+    result = package;
+
+    runRequires(activity, name, code);
+
+
+    WeakReference *ref = new WeakReference(package);
+    loadedRequires->put(ref, name);
+    return package;
 }
 
 

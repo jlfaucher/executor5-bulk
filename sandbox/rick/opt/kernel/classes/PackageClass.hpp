@@ -74,6 +74,7 @@ public:
     RexxArray     *getImportedPackages();
     PackageClass  *loadPackage(RexxString *name);
     RexxObject    *addPackage(PackageClass *package);
+    RexxClass     *resolveClass(RexxString *name);
 
     inline RexxSource *getSourceObject() { return source; }
 
