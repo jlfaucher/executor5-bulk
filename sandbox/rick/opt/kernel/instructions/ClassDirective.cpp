@@ -52,11 +52,13 @@
  * Construct a ClassDirective.
  *
  * @param n      The name of the requires target.
+ * @param p      The public name of the requires target.
  * @param clause The source file clause containing the directive.
  */
-ClassDirective::ClassDirective(RexxString *n, RexxClause *clause) : RexxDirective(clause, KEYWORD_CLASS)
+ClassDirective::ClassDirective(RexxString *n, RexxString *p, RexxClause *clause) : RexxDirective(clause, KEYWORD_CLASS)
 {
     name = n;
+    publicName = p;
 }
 
 /**
@@ -71,6 +73,7 @@ void ClassDirective::live(size_t liveMark)
     memory_mark(this->idName);
     memory_mark(this->metaclassName);
     memory_mark(this->subclassName);
+    memory_mark(this->dependencies);
 }
 
 
@@ -86,6 +89,7 @@ void ClassDirective::liveGeneral(int reason)
     memory_mark_general(this->idName);
     memory_mark_general(this->metaclassName);
     memory_mark_general(this->subclassName);
+    memory_mark_general(this->dependencies);
 }
 
 
@@ -103,6 +107,9 @@ void ClassDirective::flatten(RexxEnvelope *envelope)
         flatten_reference(newThis->idName, envelope);
         flatten_reference(newThis->metaclassName, envelope);
         flatten_reference(newThis->subclassName, envelope);
+        // by this time, we should be finished with this, and it should
+        // already be null.  Make sure this is the case.
+        newThis->dependencies = OREF_NULL;
 
     cleanUpFlatten
 }
@@ -196,3 +203,136 @@ void ClassDirective::install(RexxSource *source, RexxActivation *activation)
         classObject->defineMethods(instanceMethods);
     }
 }
+
+
+/**
+ * Check if a dependency this class has is based off of a
+ * class co-located in the same class package.
+ *
+ * @param name   The class name.
+ * @param class_directives
+ *               The global local classes list.
+ */
+void ClassDireective::checkDepdendency(RexxString *name, RexxDirectory *class_directives)
+{
+    if (name != OREF_NULL)
+    {
+        // if this is in  install?           */
+        if (class_dependencies->entry(name) != OREF_NULL)
+        {
+            if (dependencies == OREF_NULL)
+            {
+                OrefSet(this, this->dependencies, new_directory());
+            }
+            /* add to our pending list           */
+            dependencies->setEntry(name, name);
+        }
+    }
+}
+
+
+/**
+ * Check our class dependencies against the locally defined class
+ * list to develop a cross dependency list.
+ *
+ * @param class_directives
+ *               The global set of defined classes in this package.
+ */
+void ClassDirective::addDependencies(RexxDirectory *class_directives)
+{
+    // When the class was created, a dependency directory was added as a marker to
+    // prevent duplicate classes from getting created.  We now
+    RexxDirectory *dependencies = (RexxDirectory *)(class_dependencies->fastAt(publicName));
+
+    // now for each of our dependent classes, if this is defined locally, we
+    // an entry to our dependency list to aid the class ordering
+
+    checkDependency(metaClassName, class_directives);
+    checkDependency(subclassName, class_directives);
+    // process each inherits item the same way
+    if (inherits != OREF_NULL)
+    {
+        for (size_t i = 1; i <= inherits->size(); i++)
+        {
+            checkDependency((RexxString *)(inherits->get(i)));
+        }
+    }
+}
+
+
+/**
+ * Check if this class has any additional in-package dependencies.
+ *
+ * @return true if all in-package dependencies have been resolved already.
+ */
+bool ClassDirective::dependenciesResolved()
+{
+    return dependencies == OREF_NULL;
+}
+
+
+/**
+ * Remove a class from the dependency list.
+ *
+ * @param name   The name of the class that's next in the ordering.
+ */
+void ClassDirective::removeDependency(RexxString *name)
+{
+    // if we have a dependency list, remove this name from the
+    // list.  If this is our last dependency item, we can junk
+    // the list entirely.
+    if (dependencies != OREF_NULL)
+    {
+        dependencies->remove(name);
+        if (dependencies->items() == 0)
+        {
+            OrefSet(this, this->dependencies, OREF_NULL);
+        }
+    }
+}
+
+
+/**
+ * Add an inherits class to the class definition.
+ *
+ * @param name   The name of the inherited class.
+ */
+void ClassDirective::addInherits(RexxString *name)
+{
+    if (inheritsClasses == OREF_NULL)
+    {
+        OrefSet(this, this->inheritsClasses, new_list());
+    }
+    inheritsClasses->append(name);
+}
+
+
+/**
+ * Retrieve the class methods directory for this class.
+ *
+ * @return The class methods directory.
+ */
+RexxDirectory *ClassDirective::getClassMethods()
+{
+    if (classMethods == OREF_NULL)
+    {
+        OrefSet(this, this->classMethods, new_directory());
+    }
+    return classMethods;
+}
+
+
+/**
+ * Retrieve the instance methods directory for this class.
+ *
+ * @return The instance methods directory.
+ */
+RexxDirectory *ClassDirective::getClassMethods()
+{
+    if (instanceMethods == OREF_NULL)
+    {
+        OrefSet(this, this->instanceMethods, new_directory());
+    }
+    return instanceMethods;
+}
+

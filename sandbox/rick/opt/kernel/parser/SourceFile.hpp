@@ -61,6 +61,7 @@ class RexxCompoundVariable;
 class RoutineClass;
 class RexxCode;
 class PackageClass;
+class ClassDirective;
 
                                        /* handy defines to easy coding      */
 #define new_instruction(name, type) this->sourceNewObject(sizeof(RexxInstruction##type), The##type##InstructionBehaviour, KEYWORD_##name)
@@ -151,15 +152,19 @@ class RexxSource : public RexxInternalObject {
   PackageClass *getPackage();
   void        inheritSourceContext(RexxSource *source);
   RoutineClass *resolveRoutine(RexxString *);
+  RoutineClass *resolveLocalRoutine(RexxString *);
+  RoutineClass *resolvePublicRoutine(RexxString *);
   RexxClass  *resolveClass(RexxString *);
+  RexxClass  *resolveInstalledClass(RexxString *name);
+  RexxClass  *resolvePublicClass(RexxString *name);
   RexxString *resolveProgramName(RexxActivity *activity, RexxString *name);
   void        processInstall(RexxActivation *);
   RexxCode   *translate(RexxDirectory *);
   void        resolveDependencies();
-  void        completeClass();
   void        directive();
   void        routineDirective();
   void        requiresDirective();
+  void        libraryDirective(RexxString *name, RexxToken *token);
   void        methodDirective();
   void        classDirective();
   void        attributeDirective();
@@ -363,10 +368,9 @@ protected:
   RexxSource    *parentSource;         // a parent source context environment;
   RexxDirectory *routines;             /* routines found on directives      */
   RexxDirectory *public_routines;      /* PUBLIC routines directive routines*/
-  RexxArray     *packages;             // packages requiring loading
-  RexxArray     *requires;             /* requires directives               */
-  RexxArray     *classes;              /* classes found on directives       */
-  RexxArray     *nativeCode;           // native funtions/methods requiring resolution
+  RexxList      *libraries;            // packages requiring loading
+  RexxList      *requires;             /* requires directives               */
+  RexxList      *classes;              /* classes found on directives       */
                                        /* all public installed classes      */
   RexxDirectory *installed_public_classes;
   RexxDirectory *installed_classes;    /* entire list of installed classes  */
@@ -385,7 +389,7 @@ protected:
   RexxQueue       *subTerms;           /* stack for arguments lists, et al. */
   RexxQueue       *operators;          /* stack of expression terms         */
   RexxDirectory   *class_dependencies; /* dependencies between classes      */
-  RexxArray       *active_class;       /* currently active ::CLASS directive*/
+  ClassDirective  *active_class;       /* currently active ::CLASS directive*/
 
                                        /* start of block parsing section    */
 

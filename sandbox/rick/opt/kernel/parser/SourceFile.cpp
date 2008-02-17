@@ -80,6 +80,11 @@
 #include "ProtectedObject.hpp"
 #include "CPPCode.hpp"
 #include "SystemInterpreter.hpp"
+#include "PackageClass.hpp"
+#include "InterpreterInstance.hpp"
+#include "ClassDirective.hpp"
+#include "LibraryDirective.hpp"
+#include "RequiresDirective.hpp"
 
 #define HOLDSIZE         60            /* room for 60 temporaries           */
 
@@ -488,7 +493,6 @@ void RexxSource::live(size_t liveMark)
   memory_mark(this->libraries);
   memory_mark(this->loadedPackages);
   memory_mark(this->package);
-  memory_mark(this->nativeCode);
   memory_mark(this->classes);
   memory_mark(this->installed_public_classes);
   memory_mark(this->installed_classes);
@@ -516,7 +520,6 @@ void RexxSource::liveGeneral(int reason)
     OrefSet(this, this->classes, OREF_NULL);
     OrefSet(this, this->routines, OREF_NULL);
     OrefSet(this, this->libraries, OREF_NULL);
-    OrefSet(this, this->nativeCode, OREF_NULL);
     OrefSet(this, this->installed_classes, OREF_NULL);
     OrefSet(this, this->installed_public_classes, OREF_NULL);
     OrefSet(this, this->merged_public_classes, OREF_NULL);
@@ -557,7 +560,6 @@ void RexxSource::liveGeneral(int reason)
   memory_mark_general(this->libraries);
   memory_mark_general(this->loadedPackages);
   memory_mark_general(this->package);
-  memory_mark_general(this->nativeCode);
   memory_mark_general(this->classes);
   memory_mark_general(this->installed_public_classes);
   memory_mark_general(this->installed_classes);
@@ -615,7 +617,6 @@ void RexxSource::flatten (RexxEnvelope *envelope)
     flatten_reference(newThis->libraries, envelope);
     flatten_reference(newThis->loadedPackages, envelope);
     flatten_reference(newThis->package, envelope);
-    flatten_reference(newThis->nativeCode, envelope);
     flatten_reference(newThis->classes, envelope);
     flatten_reference(newThis->installed_public_classes, envelope);
     flatten_reference(newThis->installed_classes, envelope);
@@ -927,13 +928,15 @@ RexxArray *RexxSource::extractSource(
         else
         {
             /* get the line                      */
-            source_line = this->get(location.getLineNumber());
+            RexxString *source_line = this->get(location.getLineNumber());
             /* extract the end portion           */
             source_line = source_line->extract(location.getOffset(), source_line->getLength() - location.getOffset());
             source->put(source_line, 1);     /* insert the trailing piece         */
         }
+
+        size_t i;
         /* loop until the last line          */
-        for (counter = location.getLineNumber() + 1, i = 2; counter < location.getEndLine(); counter++, i++)
+        for (size_t counter = location.getLineNumber() + 1, i = 2; counter < location.getEndLine(); counter++, i++)
         {
             /* copy over the entire line         */
             source->put(this->get(counter), i);
@@ -1142,97 +1145,102 @@ void RexxSource::mergeRequired(RexxSource *source)
 /*            program into the full public information of this program.       */
 /******************************************************************************/
 {
-  // has the source already merged in some public routines?  pull those in first,
-  // so that the direct set will override
-  if (source_merge_public_routines != OREF_NULL)
-  {
-                                       /* first merged attempt?             */
-    if (this->merged_public_routines == OREF_NULL)
+    // has the source already merged in some public routines?  pull those in first,
+    // so that the direct set will override
+    if (source->merged_public_routines != OREF_NULL)
     {
-                                       /* get the directory                 */
-        OrefSet(this, this->merged_public_routines, new_directory());
+        /* first merged attempt?             */
+        if (this->merged_public_routines == OREF_NULL)
+        {
+            /* get the directory                 */
+            OrefSet(this, this->merged_public_routines, new_directory());
+        }
+        /* loop through the list of routines */
+        for (size_t i = source->merged_public_routines->first(); source->merged_public_routines->available(i); i = source->merged_public_routines->next(i))
+        {
+            /* copy the routine over             */
+            this->merged_public_routines->setEntry((RexxString *)source->merged_public_routines->index(i), source->merged_public_routines->value(i));
+        }
+
     }
-                                       /* loop through the list of routines */
-      for (size_t i = source->merged_public_routines->first(); source->merged_public_routines->available(i); i = source->merged_public_routines->next(i))
-      {
-                                       /* copy the routine over             */
-        this->merged_public_routines->setEntry((RexxString *)source->merged_public_routines->index(i), source->merged_public_routines->value(i));
-      }
 
-  }
-
-  // now process the direct set
-  if (source->public_routines != OREF_NULL)
-  {
-                                       /* first merged attempt?             */
-    if (this->merged_public_routines == OREF_NULL)
+    // now process the direct set
+    if (source->public_routines != OREF_NULL)
     {
-                                       /* get the directory                 */
-        OrefSet(this, this->merged_public_routines, new_directory());
+        /* first merged attempt?             */
+        if (this->merged_public_routines == OREF_NULL)
+        {
+            /* get the directory                 */
+            OrefSet(this, this->merged_public_routines, new_directory());
+        }
+        /* loop through the list of routines */
+        for (size_t i = source->public_routines->first(); source->public_routines->available(i); i = source->public_routines->next(i))
+        {
+            /* copy the routine over             */
+            this->merged_public_routines->setEntry((RexxString *)source->public_routines->index(i), source->public_routines->value(i));
+        }
     }
-                                       /* loop through the list of routines */
-      for (size_t i = source->public_routines->first(); source->public_routines->available(i); i = source->public_routines->next(i))
-      {
-                                       /* copy the routine over             */
-        this->merged_public_routines->setEntry((RexxString *)source->public_routines->index(i), source->public_routines->value(i));
-      }
-  }
 
 
-  // now do the same process for any of the class contexts
-  if (source->merged_public_classes != OREF_NULL)
-  {
-      if (this->merged_public_classes == OREF_NULL)
-      {
-                                         /* get the directory                 */
-        OrefSet(this, this->merged_public_classes, new_directory());
-      }
-                                       /* loop through the list of classes, */
-      for (i = source->merged_public_classes->first(); source->merged_public_classes->available(i); i = source->merged_public_classes->next(i))
-      {
-                                       /* copy the routine over             */
-        this->merged_public_classes->setEntry((RexxString *)source->merged_public_classes->index(i), source->merged_public_classes->value(i));
-      }
-  }
-
-  if (source->merged_public_classes != OREF_NULL)
-  {
-      if (this->merged_public_classes == OREF_NULL)
-      {
-                                         /* get the directory                 */
-        OrefSet(this, this->merged_public_classes, new_directory());
-      }
-                                       /* loop through the list of classes, */
-      for (i = source->installed_public_classes->first(); source->merged_public_classes->available(i); i = source->merged_public_classes->next(i))
-      {
-                                       /* copy the routine over             */
-        this->merged_public_classes->setEntry((RexxString *)source->merged_public_classes->index(i), source->merged_public_classes->value(i));
-      }
-  }
-
-                                       /* have classes also?                */
-  if (source->installed_public_classes != OREF_NULL || source->merged_public_classes != OREF_NULL) {
-                                       /* first merged attempt?             */
-    if (this->merged_public_classes == OREF_NULL)
-                                       /* get the directory                 */
-      OrefSet(this, this->merged_public_classes, new_directory());
-                                       /* do the merged classes first       */
-    if (source->merged_public_classes != OREF_NULL) {
-                                       /* loop through the list of classes, */
-      for (i = source->merged_public_classes->first(); source->merged_public_classes->available(i); i = source->merged_public_classes->next(i)) {
-                                       /* copy the routine over             */
-        this->merged_public_classes->setEntry((RexxString *)source->merged_public_classes->index(i), source->merged_public_classes->value(i));
-      }
+    // now do the same process for any of the class contexts
+    if (source->merged_public_classes != OREF_NULL)
+    {
+        if (this->merged_public_classes == OREF_NULL)
+        {
+            /* get the directory                 */
+            OrefSet(this, this->merged_public_classes, new_directory());
+        }
+        /* loop through the list of classes, */
+        for (size_t i = source->merged_public_classes->first(); source->merged_public_classes->available(i); i = source->merged_public_classes->next(i))
+        {
+            /* copy the routine over             */
+            this->merged_public_classes->setEntry((RexxString *)source->merged_public_classes->index(i), source->merged_public_classes->value(i));
+        }
     }
-                                       /* have public classes?              */
-    if (source->installed_public_classes != OREF_NULL) {
-                                       /* loop through the list of classes, */
-      for (i = source->installed_public_classes->first(); source->installed_public_classes->available(i); i = source->installed_public_classes->next(i)) {
-                                       /* copy the routine over             */
-        this->merged_public_classes->setEntry((RexxString *)source->installed_public_classes->index(i), source->installed_public_classes->value(i));
-      }
+
+    if (source->merged_public_classes != OREF_NULL)
+    {
+        if (this->merged_public_classes == OREF_NULL)
+        {
+            /* get the directory                 */
+            OrefSet(this, this->merged_public_classes, new_directory());
+        }
+        /* loop through the list of classes, */
+        for (size_t i = source->installed_public_classes->first(); source->merged_public_classes->available(i); i = source->merged_public_classes->next(i))
+        {
+            /* copy the routine over             */
+            this->merged_public_classes->setEntry((RexxString *)source->merged_public_classes->index(i), source->merged_public_classes->value(i));
+        }
     }
-  }
+
+    /* have classes also?                */
+    if (source->installed_public_classes != OREF_NULL || source->merged_public_classes != OREF_NULL)
+    {
+        /* first merged attempt?             */
+        if (this->merged_public_classes == OREF_NULL)
+            /* get the directory                 */
+            OrefSet(this, this->merged_public_classes, new_directory());
+        /* do the merged classes first       */
+        if (source->merged_public_classes != OREF_NULL)
+        {
+            /* loop through the list of classes, */
+            for (size_t i = source->merged_public_classes->first(); source->merged_public_classes->available(i); i = source->merged_public_classes->next(i))
+            {
+                /* copy the routine over             */
+                this->merged_public_classes->setEntry((RexxString *)source->merged_public_classes->index(i), source->merged_public_classes->value(i));
+            }
+        }
+        /* have public classes?              */
+        if (source->installed_public_classes != OREF_NULL)
+        {
+            /* loop through the list of classes, */
+            for (size_t i = source->installed_public_classes->first(); source->installed_public_classes->available(i); i = source->installed_public_classes->next(i))
+            {
+                /* copy the routine over             */
+                this->merged_public_classes->setEntry((RexxString *)source->installed_public_classes->index(i), source->installed_public_classes->value(i));
+            }
+        }
+    }
 }
 
 
@@ -1267,7 +1275,14 @@ RoutineClass *RexxSource::resolveLocalRoutine(RexxString *name)
 }
 
 
-RoutineClass *RoutineClass::resolvePublicRoutine(RexxString *name)
+/**
+ * Resolve a public routine in this source context
+ *
+ * @param name   The target name.
+ *
+ * @return A resolved Routine object, if found.
+ */
+RoutineClass *RexxSource::resolvePublicRoutine(RexxString *name)
 {
     // if we have one locally, then return it.
     if (this->merged_public_routines != OREF_NULL)
@@ -1301,14 +1316,14 @@ RoutineClass *RoutineClass::resolvePublicRoutine(RexxString *name)
  */
 RoutineClass *RexxSource::resolveRoutine(RexxString *routineName)
 {
-    BaseCode *routineObject = resolveLocalRoutine(routineName);
+    RoutineClass *routineObject = resolveLocalRoutine(routineName);
     if (routineObject != OREF_NULL)
     {
         return routineObject;
     }
 
     // now try for one pulled in from ::REQUIRES objects
-    return resolvePublicRoutine(name);
+    return resolvePublicRoutine(routineName);
 }
 
 
@@ -1325,7 +1340,7 @@ RoutineClass *RexxSource::resolveRoutine(RexxString *routineName)
  */
 RexxString *RexxSource::resolveProgramName(RexxActivity *activity, RexxString *name)
 {
-    return activity->resolveProgram(name, programDirectory, programExtension);
+    return activity->getInstance()->resolveProgramName(name, programDirectory, programExtension);
 }
 
 
@@ -1412,10 +1427,10 @@ RexxClass *RexxSource::resolveClass(RexxString *className)
     // give the security manager a go
     if (this->securityManager != OREF_NULL)
     {
-        classObject = securityManager->checkLocalAccess(internalName);
+        classObject = (RexxClass *)securityManager->checkLocalAccess(internalName);
         if (classObject != OREF_NULL)
         {
-            return classObject);
+            return classObject;
         }
     }
 
@@ -1423,16 +1438,16 @@ RexxClass *RexxSource::resolveClass(RexxString *className)
     classObject = (RexxClass *)(ActivityManager::localEnvironment->at(internalName));
     if (classObject != OREF_NULL)
     {
-        return classObject);
+        return classObject;
     }
 
     /* normal execution?                 */
     if (this->securityManager != OREF_NULL)
     {
-        classObject = securityManager->checkEnvironmentAccess(internalName);
+        classObject = (RexxClass *)securityManager->checkEnvironmentAccess(internalName);
         if (classObject != OREF_NULL)
         {
-            return classObject);
+            return classObject;
         }
     }
 
@@ -1449,156 +1464,58 @@ void RexxSource::processInstall(
 /*            processing all ::routines.                                      */
 /******************************************************************************/
 {
-                                       /* turn the install flag off         */
-                                       /* immediately, otherwise we may     */
-                                       /* run into a recursion problem      */
-                                       /* when class init methods are       */
-                                       /* processed                         */
-  this->flags &= ~_install;            /* we are now installed              */
+    /* turn the install flag off         */
+    /* immediately, otherwise we may     */
+    /* run into a recursion problem      */
+    /* when class init methods are       */
+    /* processed                         */
+    this->flags &= ~_install;            /* we are now installed              */
 
-  // native packages are processed first.  The requires might actually need
-  // functons loaded by the packages
-  if (this->libraries != OREF_NULL)
-  {
-                                       /* classes and routines              */
-    size_t size = this->libraries->size();     /* get the number to install         */
-    // now loop through the requires items
-    for (i = 1; i <= size; i++)
+    // native packages are processed first.  The requires might actually need
+    // functons loaded by the packages
+    if (this->libraries != OREF_NULL)
     {
-        // and have it do the installs processing
-        LibraryDirective *library = (LibraryDirective *)(this->libraries->get(i));
-        library->install(activation);
+        /* classes and routines              */
+        // now loop through the requires items
+        for (size_t i = libraries->firstIndex(); i != LIST_END; i = libraries->nextIndex(i))
+        {
+            // and have it do the installs processing
+            LibraryDirective *library = (LibraryDirective *)this->libraries->getValue(i);
+            library->install(activation);
+        }
     }
-  }
 
-  // native methods and routines are lazy resolved on first use, so we don't
-  // need to process them here.
+    // native methods and routines are lazy resolved on first use, so we don't
+    // need to process them here.
 
-  if (this->requires != OREF_NULL)     /* need to process ::requires?       */
-  {
-                                       /* classes and routines              */
-    size_t size = this->requires->size();     /* get the number to install         */
-    // now loop through the requires items
-    for (i = 1; i <= size; i++)
+    if (this->requires != OREF_NULL)     /* need to process ::requires?       */
     {
-        // and have it do the installs processing
-        RequiresDirective *requires = (RequiresDirective *)(this->requires->get(i));
-        requires->install(activation);
+        /* classes and routines              */
+        // now loop through the requires items
+        for (size_t i = requires->firstIndex(); i != LIST_END; i = requires->nextIndex(i))
+        {
+            // and have it do the installs processing.  This is a little roundabout, but
+            // we end up back in our own context while processing this, and the merge
+            // of the information happens then.
+            RequiresDirective *requires = (RequiresDirective *)this->requires->getValue(i);
+            requires->install(activation);
+        }
     }
-  }
 
-  if (this->classes != OREF_NULL)      /* have classes to process?          */
-  {
-                                       /* get an installed classes directory*/
-    OrefSet(this, this->installed_classes, new_directory());
-                                       /* and the public classes            */
-    OrefSet(this, this->installed_public_classes, new_directory());
-    size = this->classes->size();      /* get the number of classes         */
-    for (i = 1; i <= size; i++)        /* process each class                */
+    // and finally process classes
+    if (this->classes != OREF_NULL)
     {
-                                       /* get the class info                */
-      current_class = (RexxArray *)(this->classes->get(i));
-                                       /* get the public (uppercase) name   */
-      name = (RexxString *)(current_class->get(CLASS_PUBLIC_NAME));
-                                       /* get the public flag               */
-      Public = current_class->get(CLASS_PUBLIC);
-                                       /* get the mixingclass flag          */
-      mixin = current_class->get(CLASS_MIXINCLASS);
-                                       /* the metaclass                     */
-      metaclass_name = (RexxString *)(current_class->get(CLASS_METACLASS));
-                                       /* and subclass                      */
-      subclass_name = (RexxString *)(current_class->get(CLASS_SUBCLASS_NAME));
-                                       /* set the current line for errors   */
-      activation->setCurrent((RexxInstruction *)current_class->get(CLASS_DIRECTIVE));
-                                       /* get the class id                  */
-      class_id = (RexxString *)(current_class->get(CLASS_NAME));
-      if (metaclass_name == OREF_NULL) /* no metaclass?                     */
-      {
-          metaclass = OREF_NULL;         /* flag this                         */
-      }
-      else                             /* have a real metaclass             */
-      {
-                                       /* resolve the class                 */
-        metaclass = this->resolveClass(metaclass_name, activation);
-        if (metaclass == OREF_NULL)    /* nothing found?                    */
+        /* get an installed classes directory*/
+        OrefSet(this, this->installed_classes, new_directory());
+        /* and the public classes            */
+        OrefSet(this, this->installed_public_classes, new_directory());
+        for (size_t i = classes->firstIndex(); i != LIST_END; i = classes->nextIndex(i))
         {
-                                       /* not found in environment, error!  */
-          reportException(Error_Execution_nometaclass, metaclass_name);
+            /* get the class info                */
+            ClassDirective *current_class = (ClassDirective *)this->classes->getValue(i);
+            current_class->install(this, activation);
         }
-      }
-
-      if (subclass_name == OREF_NULL)  /* no subclass?                      */
-      {
-                                       /* flag this                         */
-        subclass = (RexxClass *)TheNilObject;
-      }
-      else                             /* have a real subclass              */
-      {
-                                       /* resolve the class                 */
-        subclass = this->resolveClass(subclass_name, activation);
-        if (subclass == OREF_NULL)     /* nothing found?                    */
-        {
-                                       /* not found in environment, error!  */
-          reportException(Error_Execution_noclass, subclass_name);
-        }
-      }
-                                       /* get the inherits information      */
-      inherits = (RexxArray *)(current_class->get(CLASS_INHERIT));
-                                       /* instance methods                  */
-      _instanceMethods = (RexxDirectory *)(current_class->get(CLASS_METHODS));
-                                       /* and class methods                 */
-      class_methods = (RexxDirectory *)(current_class->get(CLASS_CLASS_METHODS));
-      if (subclass == TheNilObject)  /* no subclass?                      */
-      {
-                                     /* use .object for the subclass      */
-        subclass = (RexxClass *)TheEnvironment->fastAt(OREF_OBJECTSYM);
-      }
-      if (metaclass == TheNilObject) /* no metaclass?                     */
-      {
-          metaclass = OREF_NULL;       /* just null out                     */
-      }
-      if (mixin != OREF_NULL)        /* this a mixin class?               */
-      {
-          classObject = (RexxClass *)(subclass->mixinclass(class_id, metaclass, (RexxTable *)class_methods));
-      }
-      else
-      {
-                                     /* doing a subclassing               */
-        classObject = (RexxClass *)(subclass->subclass(class_id, metaclass, (RexxTable *)class_methods));
-      }
-                                       /* add the class to the directory    */
-      this->installed_classes->put(classObject, name);
-      if (inherits != OREF_NULL)       /* have inherits to process?         */
-      {
-                                       /* establish remainder of inheritance*/
-        for (j = 1; j <= inherits->size(); j++)
-        {
-                                       /* get the next inherits name        */
-          subclass_name = (RexxString *)(inherits->get(j));
-                                       /* go resolve the entry              */
-          subclass = this->resolveClass(subclass_name, activation);
-          if (subclass == OREF_NULL)   /* not found?                        */
-          {
-                                       /* not found in environment, error!  */
-            reportException(Error_Execution_noclass, subclass_name);
-          }
-                                       /* do the actual inheritance         */
-          classObject->sendMessage(OREF_INHERIT, subclass);
-        }
-      }
-      if (_instanceMethods != OREF_NULL)/* have instance methods to add?     */
-      {
-                                       /* define them to the class object   */
-        classObject->defineMethods((RexxTable *)_instanceMethods);
-      }
-                                       /* make public if required           */
-      if (Public != OREF_NULL)         /* need to make this public?         */
-      {
-                                       /* add to public directory           */
-        this->installed_public_classes->setEntry(name, classObject);
-      }
     }
-  }
 }
 
 RexxCode *RexxSource::translate(
@@ -1609,7 +1526,7 @@ RexxCode *RexxSource::translate(
 {
     /* go translate the lead block       */
     RexxCode *newMethod = this->translateBlock(_labels);
-    this->saveObject(newMethod);         /* make this safe                    */
+    this->saveObject((RexxObject *)newMethod);  /* make this safe                    */
     if (!this->atEnd())                  /* have directives to process?       */
     {
         /* create the routines directory     */
@@ -1619,9 +1536,9 @@ RexxCode *RexxSource::translate(
         /* and a directory of dependencies   */
         OrefSet(this, this->class_dependencies, new_directory());
         /* create the requires directory     */
-        OrefSet(this, this->requires, (RexxArray *)new_list());
+        OrefSet(this, this->requires, new_list());
         /* create the classes list           */
-        OrefSet(this, this->classes, (RexxArray *)new_list());
+        OrefSet(this, this->classes, new_list());
         /* no active class definition        */
         OrefSet(this, this->active_class, OREF_NULL);
                                            /* translation stopped by a directive*/
@@ -1638,15 +1555,11 @@ RexxCode *RexxSource::translate(
         {
             this->directive();               /* process the directive             */
         }
-        /* have a class already active?      */
-        if (this->active_class != OREF_NULL)
-        {
-            this->completeClass();           /* finish off currently active one   */
-        }
         this->resolveDependencies();       /* go resolve class dependencies     */
     }
     return newMethod;                    /* return the method                 */
 }
+
 
 void RexxSource::resolveDependencies()
 /*********************************************************************/
@@ -1658,159 +1571,100 @@ void RexxSource::resolveDependencies()
 /*            order                                                  */
 /*********************************************************************/
 {
-  RexxArray     *class_order;          /* class ordering array              */
-  RexxArray     *current_class;        /* current class definition          */
-  RexxDirectory *dependencies;         /* dependencies list                 */
-  RexxString    *metaclass_name;       /* name of the metaclass             */
-  RexxString    *subclass_name;        /* name of the subclass              */
-  RexxArray     *inherits;             /* set of inherits                   */
-  RexxArray     *next_install;         /* next class to install             */
-  RexxString    *class_name;           /* name of the class                 */
-  RexxArray     *_classes;             /* array of classes                  */
-  size_t         size;                 /* count of classes                  */
-  size_t         i;                    /* loop counter                      */
-  size_t         j;                    /* loop counter                      */
-  size_t         next_class;           /* next class position               */
-
-                                       /* first convert class list to array */
-  _classes = ((RexxList *)(this->classes))->makeArray();
-                                       /* and cast off the list             */
-  OrefSet(this, this->classes, _classes);
-  size = _classes->size();              /* get the array size                */
-  if (size == 0)                       /* nothing to process?               */
-  {
-                                       /* clear out the classes list        */
-    OrefSet(this, this->classes, OREF_NULL);
-  }
-  else {                               /* have classes to process           */
-                                       /* now traverse the classes array,   */
-    for (i = 1; i <= size; i++) {      /* building up a dependencies list   */
-                                       /* get the next class                */
-      current_class = (RexxArray *)(_classes->get(i));
-                                       /* get the dependencies              */
-      dependencies = (RexxDirectory *)(this->class_dependencies->fastAt((RexxString *)current_class->get(CLASS_PUBLIC_NAME)));
-                                       /* get the subclassing info          */
-      metaclass_name = (RexxString *)(current_class->get(CLASS_METACLASS));
-      subclass_name = (RexxString *)(current_class->get(CLASS_SUBCLASS_NAME));
-      inherits = (RexxArray *)(current_class->get(CLASS_INHERIT));
-                                       /* have a metaclass?                 */
-      if (metaclass_name != OREF_NULL) {
-                                       /* in our list to install?           */
-        if (this->class_dependencies->entry(metaclass_name) != OREF_NULL)
-                                       /* add to our pending list           */
-          dependencies->setEntry(metaclass_name, metaclass_name);
-      }
-      if (subclass_name != OREF_NULL) {/* have a subclass?                  */
-                                       /* in our list to install?           */
-        if (this->class_dependencies->entry(subclass_name) != OREF_NULL)
-                                       /* add to our pending list           */
-          dependencies->setEntry(subclass_name, subclass_name);
-      }
-      if (inherits != OREF_NULL) {
-                                       /* process each inherits             */
-        for (j = 1; j <= inherits->size(); j++) {
-                                       /* get the next class name           */
-          subclass_name = (RexxString *)(inherits->get(j));
-                                       /* in our list to install?           */
-          if (this->class_dependencies->entry(subclass_name) != OREF_NULL)
-                                       /* add to our pending list           */
-            dependencies->setEntry(subclass_name, subclass_name);
-        }
-      }
+    // get our class list
+    if (classes->items() == 0)           /* nothing to process?               */
+    {
+        /* clear out the classes list        */
+        OrefSet(this, this->classes, OREF_NULL);
     }
-    class_order = new_array(size);     /* get the ordering array            */
+    else                                 /* have classes to process           */
+    {
+        // run through the class list having each directive set up its
+        // dependencies
+        for (size_t i = classes->firstIndex(); i != LIST_END; i = classes->nextIndex(i))
+        {
+            /* get the next class                */
+            ClassDirective *current_class = (ClassDirective *)(classes->getValue(i));
+            // have the class figure out it's in-package dependencies
+            current_class->addDependencies(class_dependencies);
+        }
+
+        RexxList *class_order = new_list();  // get a list for doing the order
+        ProtectedObject p(class_order);
 
 /* now we repeatedly scan the pending directory looking for a class         */
 /* with no in-program dependencies - it's an error if there isn't one       */
 /* as we build the classes we have to remove them (their names) from        */
 /* pending list and from the remaining dependencies                         */
-    next_class = 1;                    /* inserting at the beginning        */
-    while (next_class <= size) {       /* while still more to process       */
-      next_install = OREF_NULL;        /* nothing located yet               */
-      for (i = 1; i <= size; i++) {    /* loop through the list             */
-                                       /* get the next class                */
-        current_class = (RexxArray *)(_classes->get(i));
-        if (current_class == OREF_NULL)/* already processed?                */
-          continue;                    /* go do the next one                */
-                                       /* get the dependencies              */
-        dependencies = (RexxDirectory *)(this->class_dependencies->fastAt((RexxString *)current_class->get(CLASS_PUBLIC_NAME)));
-                                       /* no dependencies?                  */
-        if (dependencies->items() == 0) {
-          next_install = current_class;/* get the next one                  */
-          break;                       /* go process this one               */
+        while (classes->items() < 0)
+        {
+            // this is the next one we process
+            ClassDirective *next_install = OREF_NULL;
+            for (size_t i = classes->firstIndex(); i != LIST_END; i = classes->nextIndex(i))
+            {
+                 /* get the next class                */
+                ClassDirective *current_class = (ClassDirective *)(classes->getValue(i));
+                // if this class doesn't have any additional dependencies, pick it next.
+                if (current_class->dependenciesResolved())
+                {
+                    next_install = current_class;
+                    // add this to the class ordering
+                    class_order->append((RexxObject *)next_install);
+                    // remove this from the processing list
+                    classes->removeIndex(i);
+                }
+            }
+            if (next_install == OREF_NULL)   /* nothing located?                  */
+            {
+                /* raise an error                    */
+                syntaxError(Error_Execution_cyclic, this->programName);
+            }
+            RexxString *class_name = current_class->getName();
+
+            // now go through the pending list telling each of the remaining classes that
+            // they can remove this dependency from their list
+            for (size_t i _classes->firstIndex(); i != LIST_END; i = classes->nextIndex(i))
+            {    /* go remove the dependencies        */
+                 /* get a class                       */
+                ClassDirective *current_class = (ClassDirective *)(classes->getValue(i));
+                current_class->removeDependency(class_name);
+            }
         }
-      }
-      if (next_install == OREF_NULL)   /* nothing located?                  */
-                                       /* raise an error                    */
-        syntaxError(Error_Execution_cyclic, this->programName);
-                                       /* get the class name                */
-      class_name = (RexxString *)(current_class->get(CLASS_PUBLIC_NAME));
-      for (j = 1; j <= size; j++) {    /* go remove the dependencies        */
-                                       /* get a class                       */
-        current_class = (RexxArray *)(_classes->get(j));
-                                       /* not installed yet?                */
-        if (current_class != OREF_NULL) {
-                                       /* get the dependencies list         */
-          dependencies = (RexxDirectory *)(this->class_dependencies->fastAt((RexxString *)current_class->get(CLASS_PUBLIC_NAME)));
-                                       /* remove from the dependencies      */
-          dependencies->remove(class_name);
-        }
-      }
-                                       /* insert into the install order     */
-      class_order->put(next_install, next_class);
-      next_class++;                    /* and step the position             */
-      _classes->put(OREF_NULL, i);     /* remove the installed one          */
+
+        /* replace the original class list   */
+        OrefSet(this, this->classes, class_order);
+        /* don't need the dependencies now   */
+        OrefSet(this, this->class_dependencies, OREF_NULL);
     }
-                                       /* replace the original class list   */
-    OrefSet(this, this->classes, class_order);
-                                       /* don't need the dependencies now   */
-    OrefSet(this, this->class_dependencies, OREF_NULL);
-  }
-                                       /* convert requires list to an array */
-  OrefSet(this, this->requires, this->requires->makeArray());
-  if (this->requires->size() == 0)     /* nothing there?                    */
-                                       /* just clear it out                 */
-    OrefSet(this, this->requires, OREF_NULL);
-  if (this->routines->items() == 0)    /* no routines to process?           */
-                                       /* just clear it out also            */
-    OrefSet(this, this->routines, OREF_NULL);
-                                       /* now finally the public routines   */
-  if (this->public_routines->items() == 0)
-                                       /* just clear it out also            */
-    OrefSet(this, this->public_routines, OREF_NULL);
-  if (this->methods->items() == 0)     /* and also the methods directory    */
-                                       /* just clear it out also            */
-    OrefSet(this, this->methods, OREF_NULL);
+
+    if (this->requires->items() == 0)     /* nothing there?                    */
+    {
+        /* just clear it out                 */
+        OrefSet(this, this->requires, OREF_NULL);
+    }
+    if (this->libraries->items() == 0)     /* nothing there?                    */
+    {
+        /* just clear it out                 */
+        OrefSet(this, this->libraries, OREF_NULL);
+    }
+    if (this->routines->items() == 0)    /* no routines to process?           */
+    {
+        /* just clear it out also            */
+        OrefSet(this, this->routines, OREF_NULL);
+    }
+    /* now finally the public routines   */
+    if (this->public_routines->items() == 0)
+    {
+        /* just clear it out also            */
+        OrefSet(this, this->public_routines, OREF_NULL);
+    }
+    if (this->methods->items() == 0)     /* and also the methods directory    */
+    {
+        /* just clear it out also            */
+        OrefSet(this, this->methods, OREF_NULL);
+    }
 }
 
-void RexxSource::completeClass()
-/*********************************************************************/
-/* Function:  complete create of the active class definition         */
-/*********************************************************************/
-{
-  RexxArray     *inherits;             /* the inherits information          */
-  RexxDirectory *classMethods;         /* methods directory                 */
-
-                                       /* get the inherits list             */
-  inherits = (RexxArray *)(this->active_class->get(CLASS_INHERIT));
-  if (inherits != OREF_NULL) {         /* have an inherits list?            */
-                                       /* convert to an array               */
-    inherits = ((RexxList *)inherits)->makeArray();
-                                       /* replace the original list         */
-    this->active_class->put(inherits, CLASS_INHERIT);
-  }
-                                       /* get the class methods             */
-  classMethods = (RexxDirectory *)(this->active_class->get(CLASS_METHODS));
-  if (classMethods->items() == 0)      /* have any methods?                 */
-                                       /* through away the directory        */
-    this->active_class->put(OREF_NULL, CLASS_METHODS);
-                                       /* now repeat for class methods      */
-  classMethods = (RexxDirectory *)(this->active_class->get(CLASS_CLASS_METHODS));
-
-  if (classMethods->items() == 0)           /* have any methods?                 */
-                                       /* throw away the directory          */
-    this->active_class->put(OREF_NULL, CLASS_CLASS_METHODS);
-}
 
 #define DEFAULT_GUARD    0             /* using defualt guarding            */
 #define GUARDED_METHOD   1             /* method is a guarded one           */
@@ -1830,14 +1684,9 @@ void RexxSource::completeClass()
 void RexxSource::classDirective()
 {
     RexxToken    *token;                 /* current token under processing    */
-    /* have a class already active?      */
-    if (this->active_class != OREF_NULL)
-    {
-        this->completeClass();         /* go finish this up                 */
-    }
 
-    token = nextReal();              /* get the next token                */
-                                     /* not a symbol or a string          */
+    RexxToken *token = nextReal();       /* get the next token                */
+    /* not a symbol or a string          */
     if (!token->isSymbolOrLiteral())
     {
         /* report an error                   */
@@ -1853,23 +1702,15 @@ void RexxSource::classDirective()
         syntaxError(Error_Translation_duplicate_class);
     }
     /* create a dependencies list        */
-    this->class_dependencies->put(new_directory(), public_name);
     this->flags |= _install;         /* have information to install       */
-                                     /* create the class definition       */
-    OrefSet(this, this->active_class, new_array(CLASS_INFO_SIZE));
-    /* add this to the class table       */
-    ((RexxList *)(this->classes))->addLast(this->active_class);
-    /* add the name to the information   */
-    this->active_class->put(name, CLASS_NAME);
-    /* add the name to the information   */
-    this->active_class->put(public_name, CLASS_PUBLIC_NAME);
-    /* create the method table           */
-    this->active_class->put(new_directory(), CLASS_METHODS);
-    /* and the class method tabel        */
-    this->active_class->put(new_directory(), CLASS_CLASS_METHODS);
-    /* save the ::class location         */
-    this->active_class->put((RexxObject *)new RexxInstruction(this->clause, KEYWORD_CLASS), CLASS_DIRECTIVE);
-    int  Public = DEFAULT_ACCESS_SCOPE;          /* haven't seen the keyword yet      */
+
+    // create a class directive and add this to the dependency list
+    OrefSet(this, this->active_class, new ClassDirective(name, public_name, this->clause));
+    this->class_dependencies->put(active_class, public_name);
+    // and also add to the classes list
+    this->classes->append(this->active_class);
+
+    int  Public = DEFAULT_ACCESS_SCOPE;   /* haven't seen the keyword yet      */
     bool subclass = false;                /* no subclass keyword yet           */
     RexxString *metaclass = OREF_NULL;    /* no metaclass yet                  */
     for (;;)
@@ -1877,11 +1718,15 @@ void RexxSource::classDirective()
         token = nextReal();            /* get the next token                */
                                        /* reached the end?                  */
         if (token->isEndOfClause())
+        {
             break;                       /* get out of here                   */
+        }
                                          /* not a symbol token?               */
         else if (!token->isSymbol())
+        {
             /* report an error                   */
             syntaxError(Error_Invalid_subkeyword_class, token);
+        }
         else
         {                         /* have some sort of option keyword  */
                                   /* get the keyword type              */
@@ -1891,16 +1736,19 @@ void RexxSource::classDirective()
                     /* ::CLASS name METACLASS metaclass  */
                 case SUBDIRECTIVE_METACLASS:
                     /* already had a METACLASS?          */
-                    if (metaclass != OREF_NULL)
+                    if (active_class->getMetaClass() != OREF_NULL)
+                    {
                         syntaxError(Error_Invalid_subkeyword_class, token);
+                    }
                     token = nextReal();      /* get the next token                */
                                              /* not a symbol or a string          */
                     if (!token->isSymbolOrLiteral())
+                    {
                         /* report an error                   */
                         syntaxError(Error_Symbol_or_string_metaclass, token);
-                    metaclass = token->value;/* external name is token value      */
+                    }
                                              /* tag the active class              */
-                    this->active_class->put(metaclass, CLASS_METACLASS);
+                    this->active_class->setMetaClass(token->value);
                     break;
 
 
@@ -1925,53 +1773,59 @@ void RexxSource::classDirective()
                     break;
                     /* ::CLASS name SUBCLASS sclass      */
                 case SUBDIRECTIVE_SUBCLASS:
-                    if (subclass)            /* already had one of these?         */
+                    // If we have a subclass set already, this is an error
+                    if (active_class->getSubClass() != OREF_NULL)
+                    {
                                              /* duplicates are invalid            */
                         syntaxError(Error_Invalid_subkeyword_class, token);
-                    subclass = true;         /* turn on the seen flag             */
+                    }
                     token = nextReal();      /* get the next token                */
                                              /* not a symbol or a string          */
                     if (!token->isSymbolOrLiteral())
+                    {
                         /* report an error                   */
                         syntaxError(Error_Symbol_or_string_subclass);
+                    }
                     /* set the subclass information      */
-                    this->active_class->put(token->value, CLASS_SUBCLASS_NAME);
+                    this->active_class->setSubClass(token->value);
                     break;
                     /* ::CLASS name MIXINCLASS mclass    */
                 case SUBDIRECTIVE_MIXINCLASS:
-                    if (subclass)            /* already had one of these?         */
+                    // If we have a subclass set already, this is an error
+                    if (active_class->getSubClass() != OREF_NULL)
+                    {
                                              /* duplicates are invalid            */
                         syntaxError(Error_Invalid_subkeyword_class, token);
-                    subclass = true;         /* turn on the seen flag             */
+                    }
                     token = nextReal();      /* get the next token                */
                                              /* not a symbol or a string          */
                     if (!token->isSymbolOrLiteral())
+                    {
                         /* report an error                   */
                         syntaxError(Error_Symbol_or_string_mixinclass);
+                    }
                     /* set the subclass information      */
-                    this->active_class->put(token->value, CLASS_SUBCLASS_NAME);
-                    /* this a mixin?                     */
-                    if (type == SUBDIRECTIVE_MIXINCLASS)
-                        /* just set this as a public object  */
-                        this->active_class->put((RexxObject *)TheTrueObject, CLASS_MIXINCLASS);
+                    this->active_class->setMixinClass(token->value);
                     break;
                     /* ::CLASS name INHERIT iclasses     */
                 case SUBDIRECTIVE_INHERIT:
                     token = nextReal();      /* get the next token                */
                                              /* nothing after the keyword?        */
                     if (token->isEndOfClause())
+                    {
                         /* report an error                   */
                         syntaxError(Error_Symbol_or_string_inherit, token);
-                    /* add an inherits list              */
-                    this->active_class->put(new_list(), CLASS_INHERIT);
+                    }
                     while (!token->isEndOfClause())
                     {
                         /* not a symbol or a string          */
                         if (!token->isSymbolOrLiteral())
+                        {
                             /* report an error                   */
                             syntaxError(Error_Symbol_or_string_inherit, token);
+                        }
                         /* add to the inherit list           */
-                        ((RexxList *)(this->active_class->get(CLASS_INHERIT)))->addLast(token->value);
+                        this->active_class->addInherits(token->value);
                         token = nextReal();    /* step to the next token            */
                     }
                     previousToken();         /* step back a token                 */
@@ -2159,6 +2013,7 @@ void RexxSource::methodDirective()
         }
     }
 
+
     RexxDirectory *methodsDir;
     /* no previous ::CLASS directive?    */
     if (this->active_class == OREF_NULL)
@@ -2175,14 +2030,15 @@ void RexxSource::methodDirective()
         if (Class)                   /* class method?                     */
         {
                                      /* add to the class method list      */
-            methodsDir = ((RexxDirectory *)(this->active_class->get(CLASS_CLASS_METHODS)));
+            methodsDir = active_class->getClassMethods();
         }
         else
         {
             /* add to the method list            */
-            methodsDir = ((RexxDirectory *)(this->active_class->get(CLASS_METHODS)));
+            methodsDir = active_class->getInstanceMethods();
         }
     }
+
     /* duplicate method name?            */
     if (methodsDir->entry(internalname) != OREF_NULL)
     {
@@ -2438,12 +2294,12 @@ void RexxSource::attributeDirective()
         if (Class)                   /* class method?                     */
         {
                                      /* add to the class method list      */
-            methodsDir = ((RexxDirectory *)(this->active_class->get(CLASS_CLASS_METHODS)));
+            methodsDir = active_class->getClassMethods();
         }
         else
         {
             /* add to the method list            */
-            methodsDir = ((RexxDirectory *)(this->active_class->get(CLASS_METHODS)));
+            methodsDir = active_class->getInstanceMethods();
         }
     }
 
@@ -2575,8 +2431,8 @@ void RexxSource::constantDirective()
     else
     {
         // we add methods to both directories
-        classesDir = ((RexxDirectory *)(this->active_class->get(CLASS_CLASS_METHODS)));
-        methodsDir = ((RexxDirectory *)(this->active_class->get(CLASS_METHODS)));
+        classesDir = active_class->getClassMethods();
+        methodsDir = active_class->getInstanceMethods();
     }
     // create the method pair and quit.
     createConstantGetterMethod(classesDir, methodsDir, internalname, value);
@@ -2929,41 +2785,44 @@ void RexxSource::requiresDirective()
         /* report an error                   */
         syntaxError(Error_Symbol_or_string_requires, token);
     }
-    this->flags |= _install;         /* have information to install       */
     RexxString *name = token->value; /* get the requires name             */
     token = nextReal();              /* get the next token                */
     if (!token->isEndOfClause()) /* something appear after this?      */
     {
-                                     /* this is a syntax error            */
-        syntaxError(Error_Invalid_subkeyword_requires, token);
+        // this is potentially a library directive
+        libraryDirective(name, token);
     }
+    this->flags |= _install;         /* have information to install       */
     /* save the ::requires location      */
-    ((RexxList *)(this->requires))->addLast((RexxObject *)new RequiresDirective(name, this->clause));
+    this->requires->append((RexxObject *)new RequiresDirective(name, this->clause));
 }
 
 
 /**
  * Process a ::REQUIRES name LIBRARY directive.
  */
-void RexxSource::libraryDirective()
+void RexxSource::libraryDirective(RexxString *name, RexxToken *token)
 {
-    RexxToken *token = nextReal();   /* get the next token                */
-                                     /* not a symbol or a string          */
-    if (token->classId != TOKEN_SYMBOL && token->classId != TOKEN_LITERAL)
+    // we have an extra token on a ::REQUIRES directive.  The only thing accepted here
+    // is the token LIBRARY.
+    if (!token->isSymbol())
     {
-        /* report an error                   */
-        reportTokenError(Error_Symbol_or_string_library, token);
+        syntaxError(Error_Invalid_subkeyword_requires, token);
+    }
+                                   /* process each sub keyword          */
+    if (subDirective(token) != SUBDIRECTIVE_LIBRARY)
+    {
+        syntaxError(Error_Invalid_subkeyword_requires, token);
+    }
+    token = nextReal();              /* get the next token                */
+    if (!token->isEndOfClause()) /* something appear after this?      */
+    {
+        // nothing else allowed after this
+        syntaxError(Error_Invalid_subkeyword_requires, token);
     }
     this->flags |= _install;         /* have information to install       */
-    RexxString *name = token->value; /* get the requires name             */
-    token = nextReal();              /* get the next token                */
-    if (token->classId != TOKEN_EOC) /* something appear after this?      */
-    {
-                                     /* this is a syntax error            */
-        reportTokenError(Error_Invalid_subkeyword_package, token);
-    }
-    // add this to the package list
-    ((RexxList *)(this->libraries))->addLast((RexxObject *)new LibraryDirective(name, this->clause));
+    // add this to the library list
+    this->libraries->append((RexxObject *)new LibraryDirective(name, this->clause));
 }
 
 

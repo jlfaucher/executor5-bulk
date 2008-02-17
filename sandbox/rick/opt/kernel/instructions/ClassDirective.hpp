@@ -46,6 +46,8 @@
 
 #include "RexxDirective.hpp"
 
+class RexxDirectory;
+
 class ClassDirective : public RexxDirective
 {
  friend class RexxSource;
@@ -63,18 +65,32 @@ class ClassDirective : public RexxDirective
     void flatten(RexxEnvelope *);
 
     inline RexxString *getName() { return publicName; }
+    void install(RexxSource *source, RexxActivation *activation);
+
+    void addDependencies(RexxDirectory *class_directives);
+    void checkDepdendency(RexxString *name, RexxDirectory *class_directives);
+    bool dependenciesResolved();
+    void removeDependency(RexxString *name);
+
+    inline RexxString *getMetaClass() { return metaClassName; }
+    inline void setMetaClass(RexxString *m) { OrefSet(this, this->metaClassName, m); }
+    inline RexxString *getSubClass() { return subclassName; }
+    inline void setSubClass(RexxString *m) { OrefSet(this, this->subclassName, m); }
+    inline void setMixinClass(RexxString *m) { OrefSet(this, this->subclassName, m); mixinClass = true; }
+    inline void setPublic() { publicClass = true; }
+    void addInherits(RexxString *name);
 
 protected:
     RexxString *publicName;         // the published name of the class
     RexxString *idName;             // the internal ID name
     RexxString *metaClassName;      // name of the class meta class
     RexxString *subclassName;       // the class used for the subclassing operation.
-    RexxArray  *inheritsClasses;    // the names of inherited classes
-    RexxTable  *instanceMethods;    // the methods attached to this class
-    RexxTable  *classMethods;       // the set of class methods
+    RexxList   *inheritsClasses;    // the names of inherited classes
+    RexxDirectory *instanceMethods; // the methods attached to this class
+    RexxDirectory *classMethods;    // the set of class methods
     bool        publicClass;        // this is a public class
     bool        mixinClass;         // this is a mixin class
-
+    RexxDirectory *dependencies;    // in-package dependencies
 };
 
 #endif

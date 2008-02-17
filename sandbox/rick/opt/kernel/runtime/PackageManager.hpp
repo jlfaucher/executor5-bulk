@@ -65,8 +65,8 @@ public:
     static void initialize();
     static RexxArray *getImageData();
     static void restore(RexxArray *imageArray);
-    static LibraryPackage    *getPackage(RexxString *name);
-    static LibraryPackage    *loadPackage(RexxString *name);
+    static LibraryPackage    *getLibrary(RexxString *name);
+    static LibraryPackage    *loadLibrary(RexxString *name);
     static void        unload();
     static RexxNativeMethod  *resolveMethod(RexxString *packageName, RexxString *methodName);
     static RoutineClass *resolveRoutine(RexxString *function, RexxString *packageName, RexxString *procedure);

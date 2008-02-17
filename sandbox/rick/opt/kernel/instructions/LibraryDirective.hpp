@@ -62,6 +62,7 @@ class LibraryDirective : public RexxDirective
     void flatten(RexxEnvelope *);
 
     inline RexxString *getName() { return name; }
+    void install(RexxActivation *context);
 
 protected:
     RexxString *name;     // the name of the directive

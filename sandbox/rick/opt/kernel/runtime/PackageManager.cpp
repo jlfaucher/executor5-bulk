@@ -73,7 +73,7 @@ void PackageManager::initialize()
     registeredRoutines = new_directory();
     loadedRequires = new_directory();
 
-    loadPackage(OREF_REXXUTIL);               // load the rexxutil package automatically
+    loadLibrary(OREF_REXXUTIL);               // load the rexxutil package automatically
 }
 
 
@@ -155,11 +155,11 @@ void PackageManager::liveGeneral(int reason)
  * @return A resolved package...throws an exception if the package
  *         is not loadable.
  */
-LibraryPackage *PackageManager::getPackage(RexxString *name)
+LibraryPackage *PackageManager::getLibrary(RexxString *name)
 {
     // have we already loaded this package?
     // may need to bootstrap it up first.
-    LibraryPackage *package = loadPackage(name);
+    LibraryPackage *package = loadLibrary(name);
     if (package == NULL)
     {
         // this is an error
@@ -178,7 +178,7 @@ LibraryPackage *PackageManager::getPackage(RexxString *name)
  * @return A LibraryPackage object for the library, or OREF_NULL if was
  *         not resolvable.
  */
-LibraryPackage *PackageManager::loadPackage(RexxString *name)
+LibraryPackage *PackageManager::loadLibrary(RexxString *name)
 {
     // have we already loaded this package?
     // may need to bootstrap it up first.
@@ -215,7 +215,7 @@ RexxNativeMethod *PackageManager::resolveMethod(RexxString *packageName, RexxStr
 {
     // have we already loaded this package?
     // may need to bootstrap it up first.
-    LibraryPackage *package = getPackage(packageName);
+    LibraryPackage *package = getLibrary(packageName);
 
     // now see if this can be resolved.
     RexxNativeMethod *code = package->resolveMethod(methodName);
@@ -398,7 +398,7 @@ RexxObject *PackageManager::addRegisteredRoutine(RexxString *name, RexxString *m
     }
 
     // see if this package is resolveable/loadable.
-    LibraryPackage *package = loadPackage(module);
+    LibraryPackage *package = loadLibrary(module);
     if (package == OREF_NULL)
     {
         // See if this is resolvable in this context.  If we got it,
@@ -751,7 +751,7 @@ void PackageManager::runRequires(RexxActivity *activity, RexxString *name, Routi
  */
 PNATIVEMETHOD PackageManager::resolveMethodEntry(RexxString *packageName, RexxString *name)
 {
-    LibraryPackage *package = loadPackage(packageName);
+    LibraryPackage *package = loadLibrary(packageName);
 
     // if no entry, something bad has gone wrong
     if (package == NULL)
@@ -772,7 +772,7 @@ PNATIVEMETHOD PackageManager::resolveMethodEntry(RexxString *packageName, RexxSt
  */
 PNATIVEROUTINE PackageManager::resolveRoutineEntry(RexxString *packageName, RexxString *name)
 {
-    LibraryPackage *package = loadPackage(packageName);
+    LibraryPackage *package = loadLibrary(packageName);
 
     // if no entry, something bad has gone wrong
     if (package == NULL)
@@ -811,7 +811,7 @@ PREGISTEREDROUTINE PackageManager::resolveRegisteredRoutineEntry(RexxString *pac
     }
     else
     {
-        LibraryPackage *package = loadPackage(packageName);
+        LibraryPackage *package = loadLibrary(packageName);
 
         // if no entry, something bad has gone wrong
         if (package == NULL)

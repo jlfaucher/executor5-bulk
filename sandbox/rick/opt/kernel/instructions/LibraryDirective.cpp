@@ -121,6 +121,6 @@ void *LibraryDirective::operator new(size_t size)
  */
 void LibraryDirective::install(RexxActivation *context)
 {
-    context->resolvePackage(name, this);
+    context->loadLibrary(name, this);
 }
 

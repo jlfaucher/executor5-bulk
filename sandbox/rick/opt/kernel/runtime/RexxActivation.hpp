@@ -311,7 +311,7 @@ RexxObject * activation_find  (void);
    void              setDefaultAddress(RexxString *);
    bool              internalMethod();
    PackageClass    * loadRequired(RexxString *, RexxInstruction *);
-   void              loadPackage(RexxString *target, RexxInstruction *instruction);
+   void              loadLibrary(RexxString *target, RexxInstruction *instruction);
    RexxObject      * rexxVariable(RexxString *);
    void              pushEnvironment(RexxObject *);
    RexxObject      * popEnvironment();

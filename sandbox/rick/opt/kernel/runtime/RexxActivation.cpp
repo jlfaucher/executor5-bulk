@@ -2345,18 +2345,19 @@ PackageClass *RexxActivation::loadRequired(RexxString *target, RexxInstruction *
 
 
 /**
- * Load a package defined by a ::PACKAGE directive.
+ * Load a package defined by a ::REQUIRES name LIBRARY
+ * directive.
  *
  * @param target The name of the package.
  * @param instruction
- *               The ::PACKAGE directive being loaded.
+ *               The ::REQUIRES directive being loaded.
  */
-void RexxActivation::loadPackage(RexxString *target, RexxInstruction *instruction)
+void RexxActivation::loadLibrary(RexxString *target, RexxInstruction *instruction)
 {
     // this will cause the correct location to be used for error reporting
     this->current = instruction;
     // have the package manager resolve the package
-    PackageManager::getPackage(target);
+    PackageManager::getLibrary(target);
 }
 
 

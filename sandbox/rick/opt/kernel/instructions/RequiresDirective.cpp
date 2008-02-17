@@ -118,7 +118,7 @@ void *RequiresDirective::operator new(size_t size)
  *
  * @param activation The activation we're running under for the install.
  */
-PackageClass *RequiresDirective::install(RexxActivation *context)
+void RequiresDirective::install(RexxActivation *context)
 {
-    return context->loadRequired(name, this);
+    context->loadRequired(name, this);
 }
