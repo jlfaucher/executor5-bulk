@@ -286,6 +286,37 @@ RoutineClass *PackageManager::resolveRoutine(RexxString *function)
 
 
 /**
+ * Resolve a registered function.  This goes explicitly to a
+ * loaded package to resolve the name rather than relying
+ * on the global cache.  This will resolve to the same routine
+ * object as the global cache, but this prevents us from
+ * picking one a different one in case of a name conflict.
+ *
+ * @param packageName
+ *                 The package name.
+ * @param function The function name.
+ *
+ * @return A routine object for this function.
+ */
+RoutineClass *PackageManager::resolveRoutine(RexxString *packageName, RexxString *function)
+{
+    // have we already loaded this package?
+    // may need to bootstrap it up first.
+    LibraryPackage *package = getLibrary(packageName);
+
+    // now see if this can be resolved.
+    RoutineClass *routine = package->resolveRoutine(function);
+    // raise an exception if this entry point is not found.
+    if (routine == OREF_NULL)
+    {
+         reportException(Error_External_name_not_found_routine, function);
+    }
+    return routine;
+}
+
+
+
+/**
  * Locate an already loaded function.
  *
  * @param function  The function name.

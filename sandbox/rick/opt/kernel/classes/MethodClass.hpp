@@ -133,6 +133,7 @@ protected:
    inline void   setGuarded()      {this->methodFlags &= ~UNGUARDED_FLAG;};
    inline void   setPrivate()      {this->methodFlags |= (PRIVATE_FLAG | PROTECTED_FLAG);};
    inline void   setProtected()    {this->methodFlags |= PROTECTED_FLAG;};
+   inline void   setAttributes(bool _private, bool _protected, bool _guarded);
    inline RexxClass *getScope() {return this->scope;}
 
    inline BaseCode  *getCode()     { return this->code; }

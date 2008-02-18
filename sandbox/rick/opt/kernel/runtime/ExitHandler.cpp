@@ -86,7 +86,7 @@ int ExitHandler::call(RexxActivity *activity, RexxActivation *activation, int fu
 void ExitHandler::resolve(const char *name)
 {
     RexxResolveExit(name, &entryPoint);
-    type = REGISTERED;
+    type = REGISTERED_NAME;
 }
 
 
@@ -99,7 +99,7 @@ void ExitHandler::resolve(const char *name)
 void ExitHandler::resolve(RexxContextExitHandler *handler)
 {
     entryPoint = (REXXPFN)handler;
-    type = DIRECT;
+    type = (ExitType)DIRECT;
 }
 
 
@@ -125,7 +125,7 @@ void ContextExitHandlerDispatcher::run()
     ExitContext context;
 
     // build a context pointer to pass out
-    activity->createExitContext(context, this);
+    activity->createExitContext(context, activation);
 
-    rc = (int)(*exit_address)(&context, major, minor, (PEXIT)parms);
+    rc = (int)(*exit_address)(&context.threadContext, major, minor, (PEXIT)parms);
 }

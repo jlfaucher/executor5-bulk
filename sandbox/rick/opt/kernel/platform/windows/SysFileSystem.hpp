@@ -36,90 +36,42 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /******************************************************************************/
-/* REXX Kernel                                                                */
+/* REXX Kernel                                              SysThread.hpp     */
 /*                                                                            */
-/* Primitive Rexx function/method package                                     */
+/* System support for FileSystem operations.                                  */
 /*                                                                            */
 /******************************************************************************/
-#ifndef LibraryPackage_Included
-#define LibraryPackage_Included
 
-#include "RexxCore.h"
-#include "SysLibrary.hpp"
-#include "RexxNativeCode.hpp"
-#include "CallbackDispatcher.hpp"
+#ifndef Included_SysFileSystem
+#define Included_SysFileSystem
 
-class PackageManager;
-class RexxNativeMethod;
+#include "windows.h"
+#include <stdio.h>
 
-typedef RexxPackageEntry * (RexxEntry *PACKAGE_LOADER)();
-
-class LibraryPackage : public RexxInternalObject
+class SysFileSystem
 {
 public:
-    inline void *operator new(size_t, void *ptr) {return ptr;}
-    inline void  operator delete(void *, void *) {;}
-    void *operator new(size_t);
-    inline void  operator delete(void *) {;}
+    enum
+    {
+        MaximumPathLength = MAX_PATH,
+        MaximumFileNameLength = FILENAME_MAX,
+        MaximumFileNameBuffer = MAX_PATH + FILENAME_MAX
+    };
 
-    LibraryPackage(RexxString *n);
-    LibraryPackage(RexxString *n, RexxPackageEntry *p);
-    inline LibraryPackage(RESTORETYPE restoreType) { ; };
+    static int stdinHandle;
+    static int stdoutHandle;
+    static int stderrHandle;
 
-    void   live(size_t liveMark);
-    void   liveGeneral(int reason);
-    bool   load();
-    void   unload();
-    RexxPackageEntry *getPackageTable();
-    void   loadPackage(RexxPackageEntry *p);
-    void   loadRoutines(RexxRoutineEntry *table);
-    RexxMethodEntry *locateMethodEntry(RexxString *name);
-    RexxRoutineEntry *locateRoutineEntry(RexxString *name);
-    RexxNativeMethod *resolveMethod(RexxString *name);
-    RoutineClass *resolveRoutine(RexxString *name);
-    PNATIVEMETHOD resolveMethodEntry(RexxString *name);
-    PNATIVEROUTINE resolveRoutineEntry(RexxString *name);
-    PREGISTEREDROUTINE resolveRegisteredRoutineEntry(RexxString *name);
-    void   reload();
-    void   reload(RexxPackageEntry *pack);
-    inline bool isLoaded() { return loaded; }
-    inline bool isInternal() { return internal; }
+    static char EOF_Marker;
+    static char *EOL_Marker;          // the end-of-line marker
+    static char PathDelimiter;        // directory path delimiter
 
-protected:
-
-    RexxPackageEntry *package;  // loaded package information
-    RexxString *libraryName;   // the name of the library
-    RexxDirectory *routines;   // loaded routines
-    RexxDirectory *methods;    // loaded methods
-    SysLibrary  lib;           // the library management handle
-    bool        loaded;        // we've at least been able to load the library
-    bool        internal;      // this is an internal package...no library load required.
-};
-
-
-class LibraryLoaderDispatcher : public CallbackDispatcher
-{
-public:
-    inline LibraryLoaderDispatcher(RexxPackageLoader l) : loader(l) { }
-    virtual ~LibraryLoaderDispatcher() { ; }
-
-    virtual void run();
-
-protected:
-    RexxPackageLoader loader;
-};
-
-
-class LibraryUnloaderDispatcher : public CallbackDispatcher
-{
-public:
-    inline LibraryUnloaderDispatcher(RexxPackageUnloader u) : unloader(u) { }
-    virtual ~LibraryUnloaderDispatcher() { ; }
-
-    virtual void run();
-
-protected:
-    RexxPackageUnloader unloader;
+    static char *getTempFileName();
+    static bool  searchFileName(char * name, char *fullName);
+    static char *extractFileExtension(char *name);
+    static void  qualifyStreamName(char *unqualifiedName, char *qualifiedName, size_t bufferSize);
+    static bool  findFirstFile(char *name);
+    static bool  fileExists(char *name);
 };
 
 #endif

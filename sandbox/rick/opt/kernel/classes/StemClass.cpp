@@ -734,6 +734,41 @@ RexxObject *RexxStem::getCompoundVariableValue(
 }
 
 
+/**
+ * Evaluate the real value of a compound variable.  The real
+ * value is either its explicitly assigned value or a stem
+ * assigned value.  This returns OREF_NULL if neither is
+ * available.  This does not raise NOVALUE conditions.
+ *
+ * @param resolved_tail
+ *               The target tail value.
+ *
+ * @return The variable value, or OREF_NULL if the variable does not
+ *         have an explicit value.
+ */
+RexxObject *RexxStem::getCompoundVariableRealValue(RexxCompoundTail *resolved_tail)
+{
+    // first resolve the compound variable.
+    RexxVariable *variable = findCompoundVariable(resolved_tail);
+    // if the variable is not found, return the stem's default value if it has one.
+    // If there is no default value, return OREF_NULL.
+    if (variable == OREF_NULL)           /* variable does not exist?          */
+    {
+        if (!dropped)
+        {
+            return value;
+        }
+        return OREF_NULL;
+    }
+    else
+    {
+        // just return the variable value (which may be OREF_NULL if explicitly dropped)
+        return variable->getVariableValue();
+    }
+}
+
+
+
 RexxObject *RexxStem::realCompoundVariableValue(
      RexxCompoundTail *resolved_tail)   /* the search tail                   */
 /******************************************************************************/

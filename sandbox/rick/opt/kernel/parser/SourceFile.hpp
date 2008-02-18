@@ -169,10 +169,12 @@ class RexxSource : public RexxInternalObject {
   void        classDirective();
   void        attributeDirective();
   void        constantDirective();
-  void        createMethod(RexxDirectory *target, RexxString *name, bool privateMethod, bool protectedMethod, bool guardedMethod);
-  void        createAttributeGetterMethod(RexxDirectory *target, RexxString *name, RexxVariableBase *retriever, bool privateMethod, bool protectedMethod, bool guardedMethod);
-  void        createAttributeSetterMethod(RexxDirectory *target, RexxString *name, RexxVariableBase *retriever, bool privateMethod, bool protectedMethod, bool guardedMethod);
-  void        createConstantGetterMethod(RexxDirectory *classTarget, RexxDirectory *target, RexxString *name, RexxObject *value);
+  void        createMethod(RexxString *name, bool classMethod, bool privateMethod, bool protectedMethod, bool guardedMethod);
+  void        createAttributeGetterMethod(RexxString *name, RexxVariableBase *retriever, bool classMethod, bool privateMethod, bool protectedMethod, bool guardedMethod);
+  void        createAttributeSetterMethod(RexxString *name, RexxVariableBase *retriever, bool classMethod, bool privateMethod, bool protectedMethod, bool guardedMethod);
+  void        createConstantGetterMethod(RexxString *name, RexxObject *value);
+  void        checkDuplicateMethod(RexxString *name, bool classMethod);
+  void        addMethod(RexxString *name, RexxMethod *method, bool classMethod);
   void        flushControl(RexxInstruction *);
   RexxCode   *translateBlock(RexxDirectory *);
   RexxInstruction *instruction();
@@ -333,6 +335,8 @@ class RexxSource : public RexxInternalObject {
       // treated as negative numbers and returning bogus values.
       return characterTable[((unsigned int)ch) & 0xff];
   }
+
+  void addInstalledClass(RexxString *name, RexxClass *classObject, bool publicClass);
 
   RexxDirectory *getInstalledClasses() { return installed_classes; }
   RexxDirectory *getInstalledPublicClasses() { return installed_public_classes; }

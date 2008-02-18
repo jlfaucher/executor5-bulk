@@ -49,7 +49,8 @@
 #include "RexxNativeAPI.h"
 #include "ActivityManager.hpp"
 #include "ProtectedObject.hpp"
-#include "SysInterpreterInstance.hpp"
+#include "SystemInterpreter.hpp"
+#include "InterpreterInstance.hpp"
 #include <string.h>
 #include <io.h>
 #include <fcntl.h>
@@ -95,7 +96,7 @@ RexxString *SystemInterpreter::extractDirectory(RexxString *file)
         {
             // extract the directory information, including the final delimiter
             // and return as a string object.
-            return new_string(pathName, endPtr = pathName + 1);
+            return new_string(pathName, endPtr - pathName + 1);
         }
         endPtr--;
     }
@@ -219,10 +220,9 @@ RexxString *SysInterpreterInstance::resolveProgramName(RexxString *_name, RexxSt
     }
 
     // ok, now time to try each of the individual extensions along the way.
-    size_t count = searchExtensions->size();
-    for (size_t i = 1; i <= count; i++)
+    for (size_t i = instance->searchExtensions->firstIndex(); i != LIST_END; i = instance->searchExtensions->nextIndex(i))
     {
-        RexxString *ext = (RexxString *)searchExtensions->get(i);
+        RexxString *ext = (RexxString *)instance->searchExtensions->getValue(i);
 
         if (searchName(name, searchPath.path, ext->getStringData(), resolvedName))
         {
@@ -244,7 +244,7 @@ RexxString *SysInterpreterInstance::resolveProgramName(RexxString *_name, RexxSt
  */
 bool SysInterpreterInstance::hasExtension(const char *name)
 {
-    const char *endPtr = name + strlen(name) - 1
+    const char *endPtr = name + strlen(name) - 1;
 
     // scan backwards looking for a directory delimiter.  This name should
     // be fully qualified, so we don't have to deal with drive letters
@@ -287,7 +287,7 @@ bool SysInterpreterInstance::searchName(const char *name, const char *path, cons
 
     // construct the search name, potentially adding on an extension
     strncpy(tempName, name, sizeof(tempName));
-    if (extension != OREF)
+    if (extension != NULL)
     {
         strncat(tempName, extension, sizeof(tempName));
     }
@@ -302,7 +302,9 @@ bool SysInterpreterInstance::searchName(const char *name, const char *path, cons
     {
         return true;
     }
+    return false;
 }
+
 
 
 /**
@@ -362,9 +364,9 @@ bool SysInterpreterInstance::searchPath(const char *name, const char *path, cons
     unsigned int errorMode = SetErrorMode(SEM_FAILCRITICALERRORS);
 
     LPTSTR ppszFilePart=NULL;            // file name only in buffer
-    if (SearchPath((LPCTSTR)path, (LPCTSTR)name, (LPCTSTR)extension, CCHMAXPATH, (LPTSTR)resolvedlName, &ppszFilePart))
+    if (SearchPath((LPCTSTR)path, (LPCTSTR)name, (LPCTSTR)extension, CCHMAXPATH, (LPTSTR)resolvedName, &ppszFilePart))
     {
-        DWORD fileAttrib = GetFileAttributes((LPTSTR)fullName);
+        DWORD fileAttrib = GetFileAttributes((LPTSTR)resolvedName);
 
         // if this is a real file vs. a directory, make sure we return
         // the long name value in the correct casing
@@ -388,14 +390,11 @@ bool SysInterpreterInstance::searchPath(const char *name, const char *path, cons
  */
 void SysInterpreterInstance::getLongName(char *fullName, size_t size)
 {
-  DWORD           length;
-  WIN32_FIND_DATA findData;
-  HANDLE          hFind;
   char           *p;
 
-  if ( nSize >= CCHMAXPATH)
+  if (size >= CCHMAXPATH)
   {
-      DWORD length = GetLongPathName(fullName, fullName, size);
+      DWORD length = GetLongPathName(fullName, fullName, (DWORD)size);
 
       if ( 0 < length && length <= size )
       {
@@ -415,7 +414,6 @@ void SysInterpreterInstance::getLongName(char *fullName, size_t size)
   return;
 }
 
-// retrofit by IH
 void SysLoadImage(
   char **imageBuffer,                  /* returned start of the image       */
   size_t *imageSize )                  /* size of the image                 */

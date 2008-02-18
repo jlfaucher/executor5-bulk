@@ -268,6 +268,10 @@ void LibraryPackage::loadRoutines(RexxRoutineEntry *table)
             func = new RexxNativeRoutine(libraryName, new_string(table->name), (PNATIVEROUTINE)table->entryPoint);
         }
 
+        RoutineClass *routine = new_routine(func);
+        // add this to our local table
+        routines->put(routine, target);
+
         // add this to the global function pool
         PackageManager::addPackageRoutine(target, new_routine(func));
         // step to the next table entry
@@ -367,6 +371,20 @@ RexxNativeMethod *LibraryPackage::resolveMethod(RexxString *name)
     }
     // had this cached already.
     return code;
+}
+
+
+/**
+ * Get a Routine object for a method associated with a package.
+ *
+ * @param name   Name of the target method.
+ *
+ * @return A RexxNativeCode object for this method, if located.
+ */
+RoutineClass *LibraryPackage::resolveRoutine(RexxString *name)
+{
+    // we resolve all of these at load time, so this is either in the table, or it's not.
+    return (RoutineClass *)routines->at(name);
 }
 
 

@@ -117,6 +117,7 @@ class RexxVariableDictionary : public RexxInternalObject {
 
   RexxCompoundElement *getCompoundVariable(RexxString *stemName, RexxObject **tail, size_t tailCount);
   RexxObject  *getCompoundVariableValue(RexxString *stemName, RexxObject **tail, size_t tailCount);
+  RexxObject  *getCompoundVariableRealValue(RexxString *stem, RexxObject **tail, size_t tailCount);
 
   RexxObject  *realStemValue(RexxString *stemName);
 

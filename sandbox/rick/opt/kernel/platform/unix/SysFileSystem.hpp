@@ -6,7 +6,7 @@
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
 /* distribution. A copy is also available at the following address:           */
-/* http://www.oorexx.org/license.html                          */
+/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
 /*                                                                            */
 /* Redistribution and use in source and binary forms, with or                 */
 /* without modification, are permitted provided that the following            */
@@ -36,38 +36,65 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /******************************************************************************/
-/* REXX Kernel                                            RexxDirective.cpp   */
+/* REXX Kernel                                                                */
 /*                                                                            */
-/* Primitive Translator Abstract Directive Code                               */
+/* System support for FileSystem operations.                                  */
 /*                                                                            */
 /******************************************************************************/
+
+#ifndef Included_SysFileSystem
+#define Included_SysFileSystem
+
+#include <limits.h>
 #include <stdlib.h>
-#include "RexxCore.h"
-#include "RexxDirective.hpp"
-#include "Clause.hpp"
+#include <stdio.h>
 
-/**
- * Construct a new directive instruction.
- *
- * @param clause The clause this directive is derived from.  Used to obtain
- *               the location information.
- * @param type   The type of directive.
- */
-RexxDirective::RexxDirective(RexxClause *clause, int type)
+
+#if defined(PATH_MAX)
+# define MAXIMUM_PATH_LENGTH PATH_MAX + 1
+#elif defined(_POSIX_PATH_MAX)
+# define MAXIMUM_PATH_LENGTH _POSIX_PATH_MAX + 1
+#else
+# define MAXIMUM_PATH_LENGTH
+#endif
+
+#if defined(FILENAME_MAX)
+# define MAXIMUM_FILENAME_LENGTH FILENAME_MAX + 1
+#elif defined(_MAX_FNAME)
+# define MAXIMUM_FILENAME_LENGTH _MAX_FNAME + 1
+#elif defined(_POSIX_NAME_MAX)
+# define MAXIMUM_FILENAME_LENGTH _POSIX_NAME_MAX + 1
+#else
+# define MAXIMUM_FILENAME_LENGTH 256
+#endif
+
+#define NAME_BUFFER_LENGTH (MAXIMUM_PATH_LENGTH + MAXIMUM_FILENAME_LENGTH)
+
+class SysFileSystem
 {
-    this->clearObject();                 /* start out clean                   */
-                                         /* record the instruction type       */
-    this->instructionType = type;
-    if (clause != OREF_NULL)
-    {           /* have a clause object?             */
-                /* fill in default location info     */
-        instructionLocation = clause->getLocation();
-    }
-    else
+public:
+    enum
     {
-        // zero the location
-        instructionLocation.setStart(0, 0);
-    }
-}
+        MaximumPathLength = MAXIMUM_PATH_LENGTH,
+        MaximumFileNameLength = MAXIMUM_FILENAME_LENGTH,
+        MaximumFileNameBuffer = MAXIMUM_PATH_LENGTH + MAXIMUM_FILENAME_LENGTH
+    };
 
+    static const int stdinHandle;
+    static const int stdoutHandle;
+    static const int stderrHandle;
+
+    static const char EOF_Marker;
+    static const char *EOL_Marker;    // the end-of-line marker
+    static const char PathDelimiter;  // directory path delimiter
+
+    static char *getTempFileName();
+    static bool  searchFileName(char * name, char *fullName);
+    static char *extractFileExtension(char *name);
+    static void  qualifyStreamName(char *unqualifiedName, char *qualifiedName, size_t bufferSize);
+    static bool  findFirstFile(char *name);
+    static bool  fileExists(char *name);
+};
+
+#endif
 

@@ -70,6 +70,7 @@ public:
     static void        unload();
     static RexxNativeMethod  *resolveMethod(RexxString *packageName, RexxString *methodName);
     static RoutineClass *resolveRoutine(RexxString *function, RexxString *packageName, RexxString *procedure);
+    static RoutineClass *resolveRoutine(RexxString *packageName, RexxString *function);
     static RoutineClass *resolveRoutine(RexxString *function);
     static RoutineClass *createRegisteredRoutine(RexxString *function);
     static RoutineClass *getLoadedRoutine(RexxString *function);

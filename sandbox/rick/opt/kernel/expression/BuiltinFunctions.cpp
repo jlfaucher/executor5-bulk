@@ -1834,29 +1834,28 @@ BUILTIN(MIN) {
 #define SOURCELINE_n   1
 
 BUILTIN(SOURCELINE) {
-  size_t line_number;                  /* requested error number            */
-  RexxObject  *result;                 /* function result                   */
-  RexxSource  *source;                 /* current program source            */
-  size_t size;                         /* size of source program            */
-
-  fix_args(SOURCELINE);                /* check on required number of args  */
-  source = context->getSourceObject(); /* get current source object         */
-  size = source->sourceSize();         /* get the program size              */
-  if (argcount == 1) {                 /* asking for a specific line?       */
-                                       /* get the line number               */
-    line_number = required_integer(SOURCELINE, n)->getValue();
-                                       /* must be a positive integer        */
-    positive_integer((ssize_t)line_number, SOURCELINE, IntegerOne);
-    if (line_number > size)            /* larger than program source?       */
-                                       /* this is an error too?             */
-      reportException(Error_Incorrect_call_sourceline, line_number, size);
-                                       /* get the specific line             */
-    result = (RexxObject *)source->get(line_number);
-  }
-  else
-                                       /* just return the source size       */
-    result = (RexxObject *)new_integer(size);
-  return result;                       /* finished                          */
+    fix_args(SOURCELINE);                /* check on required number of args  */
+    RexxSource *source = context->getSourceObject(); /* get current source object         */
+    size_t size = source->sourceSize();  /* get the program size              */
+    if (argcount == 1)                   /* asking for a specific line?       */
+    {
+        /* get the line number               */
+        size_t line_number = required_integer(SOURCELINE, n)->getValue();
+        /* must be a positive integer        */
+        positive_integer((ssize_t)line_number, SOURCELINE, IntegerOne);
+        if (line_number > size)            /* larger than program source?       */
+        {
+            /* this is an error too?             */
+            reportException(Error_Incorrect_call_sourceline, line_number, size);
+        }
+        /* get the specific line             */
+        return (RexxObject *)source->get(line_number);
+    }
+    else
+    {
+        /* just return the source size       */
+        return (RexxObject *)new_integer(size);
+    }
 }
 
 #define TRACE_MIN 0

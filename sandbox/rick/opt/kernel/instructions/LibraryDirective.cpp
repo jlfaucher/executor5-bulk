@@ -45,7 +45,7 @@
 #include "RexxCore.h"
 #include "LibraryDirective.hpp"
 #include "Clause.hpp"
-
+#include "RexxActivation.hpp"
 
 
 /**
@@ -54,7 +54,7 @@
  * @param n      The name of the requires target.
  * @param clause The source file clause containing the directive.
  */
-LibraryDirective::LibraryDirective(RexxString *n, RexxClause *clause) : RexxDirective(clause, KEYWORD_PACKAGE)
+LibraryDirective::LibraryDirective(RexxString *n, RexxClause *clause) : RexxDirective(clause, KEYWORD_LIBRARY)
 {
     name = n;
 }

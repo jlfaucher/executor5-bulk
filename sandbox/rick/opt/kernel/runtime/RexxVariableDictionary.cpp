@@ -168,6 +168,32 @@ RexxObject *RexxVariableDictionary::getCompoundVariableValue(
 }
 
 
+/**
+ * Retrieve the "real" value of a compound variable.  This
+ * return OREF_NULL for any situation where the compound variable
+ * name would be returned.
+ *
+ * @param stem      The name of the stem.
+ * @param tail      The set of tails used for the lookup.
+ * @param tailCount The number of tail elements.
+ *
+ * @return Either the variable value, or OREF_NULL for unassigned
+ *         variables.
+ */
+RexxObject *RexxVariableDictionary::getCompoundVariableRealValue(RexxString *stem,
+     RexxObject **tail, size_t tailCount)
+{
+  RexxStem     *stem_table;            /* retrieved stem table              */
+                                       /* new tail for compound             */
+  RexxCompoundTail resolved_tail(this, tail, tailCount);
+
+  stem_table = getStem(stem);          /* get the stem entry from this dictionary */
+                                       /* get the value from the stem...we pass OREF_NULL */
+                                       /* for the dictionary to bypass NOVALUE handling */
+  return stem_table->getCompoundVariableRealValue(&resolved_tail);
+}
+
+
 RexxObject  *RexxVariableDictionary::realStemValue(
      RexxString *stemName)             /* name of stem for compound         */
 /******************************************************************************/

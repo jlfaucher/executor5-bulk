@@ -53,6 +53,7 @@
 #include "ExpressionVariable.hpp"
 #include "RexxVariable.hpp"
 #include "ProtectedObject.hpp"
+#include "RexxCompoundTail.hpp"
 
 RexxCompoundVariable::RexxCompoundVariable(
     RexxString * _stemName,            /* stem retriever                    */
@@ -239,7 +240,7 @@ RexxObject  *RexxCompoundVariable::getValue(
 RexxObject  *RexxCompoundVariable::getRealValue(RexxVariableDictionary *dictionary)
 {
                                        /* resolve the tail element          */
-  return dictionary->getCompoundVariableRealValue(stem, &tails[0], tailCount);
+  return dictionary->getCompoundVariableRealValue(stemName, &tails[0], tailCount);
 }
 
 
@@ -256,7 +257,7 @@ RexxObject  *RexxCompoundVariable::getRealValue(RexxVariableDictionary *dictiona
 RexxObject  *RexxCompoundVariable::getRealValue(RexxActivation *context)
 {
                                        /* resolve the tail element          */
-  return context->getLocalCompoundVariableRealValue(stem, index, &tails[0], tailCount);
+  return context->getLocalCompoundVariableRealValue(stemName, index, &tails[0], tailCount);
 }
 
 

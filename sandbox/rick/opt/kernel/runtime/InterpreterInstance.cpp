@@ -595,12 +595,12 @@ bool InterpreterInstance::processOptions(RexxOption *options)
             }
         }
         // a package to load at startup
-        else if (strcmp(options->optionName, LOAD_REQUIRED_PACKAGE) == 0)
+        else if (strcmp(options->optionName, LOAD_REQUIRED_LIBRARY) == 0)
         {
-            RexxString *packageName = new_string(options->option.value.value_CSTRING);
+            RexxString *libraryName = new_string(options->option.value.value_CSTRING);
 
             // this must load ok in order for this to work
-            PackageManager::getPackage(packageName);
+            PackageManager::getLibrary(libraryName);
         }
         else
         {

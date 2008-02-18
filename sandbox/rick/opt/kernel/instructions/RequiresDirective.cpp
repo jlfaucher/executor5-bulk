@@ -45,7 +45,7 @@
 #include "RexxCore.h"
 #include "RequiresDirective.hpp"
 #include "Clause.hpp"
-
+#include "RexxActivation.hpp"
 
 
 /**

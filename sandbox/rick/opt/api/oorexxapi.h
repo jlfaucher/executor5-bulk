@@ -423,9 +423,9 @@ typedef struct
 #define EXTERNAL_CALL_PATH          "ExternalCallPath"
 // list of lookup extensions to search for on external calls
 #define EXTERNAL_CALL_EXTENSIONS    "ExternalCallPathExt"
-// a package that will be loaded during initialization
+// a library that will be loaded during initialization
 // specified as a CSTRING name
-#define LOAD_REQUIRED_PACKAGE       "LoadRequiredPackage"
+#define LOAD_REQUIRED_LIBRARY       "LoadRequiredLibrary"
 // The set of exits to use.  These are old-style exits, using registered exit names.
 #define REGISTERED_EXITS            "RegisteredExits"
 // The set of exits to use.  These are new-style exits, using direct exit addresses and

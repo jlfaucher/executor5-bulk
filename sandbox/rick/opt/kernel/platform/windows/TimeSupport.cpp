@@ -201,8 +201,8 @@ RexxMethod2(int, alarm_startTimer,
     }
 
     /* set the state variables           */
-    context->SetObjectVariable("EVENTSEMHANDLE", context->NewPointer(semHandle));
-    context->SetObjectVariable("TIMERSTARTED", context->TrueObject());
+    context->SetObjectVariable("EVENTSEMHANDLE", context->NewPointer(SemHandle));
+    context->SetObjectVariable("TIMERSTARTED", context->True());
 
     if ( numdays > 0 )
     {
@@ -226,7 +226,7 @@ RexxMethod2(int, alarm_startTimer,
             /* Check if the alarm is canceled. */
             RexxObjectPtr cancelObj = context->GetObjectVariable("CANCELED");
 
-            if (cancelObj == context->TrueObject())
+            if (cancelObj == context->True())
             {
                 /* Alarm is canceled, delete timer, close semaphore, return. */
                 KillTimer(NULL, TimerHandle);
@@ -274,8 +274,7 @@ RexxMethod2(int, alarm_startTimer,
 /*   Arguments:         eventSemHandle - handle to event semaphore   */
 /*                      used to signal the timer should be canceled. */
 /*********************************************************************/
-RexxMethod1(void, alarm_stopTimer,
-            POINTER, eventSemHandle)
+RexxMethod1(int, alarm_stopTimer, POINTER, eventSemHandle)
 {
     /* Post the event semaphore to signal the alarm should be canceled. */
     if ( ! EVPOST((HANDLE)eventSemHandle) )

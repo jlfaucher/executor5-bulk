@@ -69,6 +69,7 @@
 #include "ProtectedObject.hpp"
 #include "PointerClass.hpp"
 #include "InterpreterInstance.hpp"
+#include "SupplierClass.hpp"
 
 #include <fcntl.h>
 #include <io.h>
@@ -93,12 +94,13 @@ void REXXENTRY WinGetVariables(void (REXXENTRY *f)(const char *, REXXOBJECT))
 {
     NativeContextBlock context;
 
-    RexxArray *result = context.self->getRexxContext()->getAllLocalVariables();
+    RexxSupplier *result = context.self->getRexxContext()->getAllLocalVariables();
 
-    for (size_t i=result->size(); i>0; i--)
+    while (result->available() == TheTrueObject)
     {
-        RexxVariable *variable = (RexxVariable *)result->get(i);
-        f(variable->getName()->getStringData(), (REXXOBJECT)variable->getResolvedValue());
+        RexxString *name = (RexxString *)result->index();
+        RexxObject *value = result->value();
+        f(name->getStringData(), (REXXOBJECT)value);
     }
 }
 

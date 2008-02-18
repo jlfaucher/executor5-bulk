@@ -105,6 +105,7 @@ class RexxCompoundTail;
   RexxObject *newRexx(RexxObject **, size_t);
   RexxObject *evaluateCompoundVariableValue(RexxActivation *context, RexxCompoundTail *resolved_tail);
   RexxObject *getCompoundVariableValue(RexxCompoundTail *resolved_tail);
+  RexxObject *getCompoundVariableRealValue(RexxCompoundTail *resolved_tail);
   RexxObject *realCompoundVariableValue(RexxCompoundTail *resolved_tail);
   RexxCompoundElement *getCompoundVariable(RexxCompoundTail *name);
   RexxCompoundElement *exposeCompoundVariable(RexxCompoundTail *name);

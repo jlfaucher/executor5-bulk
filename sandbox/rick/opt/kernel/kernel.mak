@@ -89,7 +89,7 @@ OTIOBJ6=$(OR_OUTDIR)\LeaveInstruction.$(OBJ) $(OR_OUTDIR)\MessageInstruction.$(O
 OTIOBJ7=$(OR_OUTDIR)\OptionsInstruction.$(OBJ) $(OR_OUTDIR)\OtherwiseInstruction.$(OBJ) $(OR_OUTDIR)\ParseInstruction.$(OBJ) \
         $(OR_OUTDIR)\ProcedureInstruction.$(OBJ)
 
-OTIOBJ8=$(OR_OUTDIR)\QueueInstruction.$(OBJ) $(OR_OUTDIR)\RaiseInstruction.$(OBJ) $(OR_OUTDIR)\RexxDirective.$(OBJ) \
+OTIOBJ8=$(OR_OUTDIR)\QueueInstruction.$(OBJ) $(OR_OUTDIR)\RaiseInstruction.$(OBJ) \
 	$(OR_OUTDIR)\RequiresDirective.$(OBJ) $(OR_OUTDIR)\LibraryDirective.$(OBJ)  $(OR_OUTDIR)\ClassDirective.$(OBJ)
 OTIOBJ9=$(OR_OUTDIR)\ReplyInstruction.$(OBJ) $(OR_OUTDIR)\ReturnInstruction.$(OBJ)   $(OR_OUTDIR)\SayInstruction.$(OBJ) \
         $(OR_OUTDIR)\SelectInstruction.$(OBJ)
@@ -146,11 +146,12 @@ OKPOBJS=$(OKPOBJ1) $(OKPOBJ2) $(OKPOBJ3) $(OKPOBJ4) $(OKPOBJ5)
 OKIOBJS=$(OKIOBJ1) $(OKIOBJ2) $(OKIOBJ3)
 #part of rexx
 
-SYSOBJ1=$(OR_OUTDIR)\TimeSupport.$(OBJ)  $(OR_OUTDIR)\RexxQueues.$(OBJ) \
+SYSOBJ1=$(OR_OUTDIR)\TimeSupport.$(OBJ)  \
         $(OR_OUTDIR)\FileSystem.$(OBJ)  $(OR_OUTDIR)\ValueFunction.$(OBJ) $(OR_OUTDIR)\UseridFunction.$(OBJ) $(OR_OUTDIR)\VariablePool.$(OBJ)
 
 SYSOBJ2=$(OR_OUTDIR)\ExternalFunctions.$(OBJ)  $(OR_OUTDIR)\RexxMain.$(OBJ)  $(OR_OUTDIR)\SystemCommands.$(OBJ)   \
-        $(OR_OUTDIR)\StreamNative.$(OBJ)   $(OR_OUTDIR)\StreamCommandParser.$(OBJ)    $(OR_OUTDIR)\StoredMetaData.$(OBJ)
+        $(OR_OUTDIR)\StreamNative.$(OBJ)   $(OR_OUTDIR)\StreamCommandParser.$(OBJ)    $(OR_OUTDIR)\StoredMetaData.$(OBJ) \
+	$(OR_OUTDIR)\SysFile.$(OBJ) $(OR_OUTDIR)\SysFileSystem.$(OBJ)
 
 SYSOBJ3=$(OR_OUTDIR)\MemorySupport.$(OBJ)   $(OR_OUTDIR)\MiscSystem.$(OBJ)  $(OR_OUTDIR)\SystemInitialization.$(OBJ)
 

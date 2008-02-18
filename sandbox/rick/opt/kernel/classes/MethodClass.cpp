@@ -306,6 +306,32 @@ RexxObject *RexxMethod::isProtectedRexx( )
     return isProtected() ? TheTrueObject : TheFalseObject;
 }
 
+
+/**
+ * Set the entire set of method attributes with one call.  Used
+ * during source compilation.
+ *
+ * @param _private   The private setting.
+ * @param _protected The protected setting.
+ * @param _guarded   The guarded setting.
+ */
+void RexxMethod::setAttributes(bool _private, bool _protected, bool _guarded)
+{
+    if (_private)
+    {
+        setPrivate();
+    }
+    if (_protected)
+    {
+        setProtected();
+    }
+    if (_guarded)
+    {
+        setGuarded();
+    }
+}
+
+
 RexxSmartBuffer *RexxMethod::saveMethod()
 /******************************************************************************/
 /* Function: Flatten translated method into a buffer for storage into EA's etc*/

@@ -85,6 +85,7 @@
 #include "ClassDirective.hpp"
 #include "LibraryDirective.hpp"
 #include "RequiresDirective.hpp"
+#include "PackageManager.hpp"
 
 #define HOLDSIZE         60            /* room for 60 temporaries           */
 
@@ -92,20 +93,6 @@ typedef struct _LINE_DESCRIPTOR {
   size_t position;                     /* position within the buffer        */
   size_t length;                       /* length of the line                */
 } LINE_DESCRIPTOR;                     /* line within a source buffer       */
-
-#define CLASS_NAME          1          /* location of class name information*/
-#define CLASS_PUBLIC_NAME   2          /* class public name (uppercase)     */
-#define CLASS_SUBCLASS_NAME 3          /* location of class subclass        */
-#define CLASS_METACLASS     4          /* location of class metaclass       */
-#define CLASS_INHERIT       5          /* class inheritance info            */
-#define CLASS_PUBLIC        6          /* class public info                 */
-#define CLASS_METHODS       7          /* classes instance methods          */
-#define CLASS_CLASS_METHODS 8          /* classes class methods             */
-#define CLASS_EXTERNAL_NAME 9          /* class external name               */
-#define CLASS_MIXINCLASS    10         /* class mixinclass flag             */
-#define CLASS_DIRECTIVE     11         /* class directive instruction       */
-                                       /* size of the class info array      */
-#define CLASS_INFO_SIZE CLASS_DIRECTIVE
 
 #define line_delimiters "\r\n"         /* stream file line end characters   */
 
@@ -934,9 +921,9 @@ RexxArray *RexxSource::extractSource(
             source->put(source_line, 1);     /* insert the trailing piece         */
         }
 
-        size_t i;
+        size_t i = 2;
         /* loop until the last line          */
-        for (size_t counter = location.getLineNumber() + 1, i = 2; counter < location.getEndLine(); counter++, i++)
+        for (size_t counter = location.getLineNumber() + 1; counter < location.getEndLine(); counter++, i++)
         {
             /* copy over the entire line         */
             source->put(this->get(counter), i);
@@ -1619,14 +1606,14 @@ void RexxSource::resolveDependencies()
                 /* raise an error                    */
                 syntaxError(Error_Execution_cyclic, this->programName);
             }
-            RexxString *class_name = current_class->getName();
+            RexxString *class_name = next_install->getName();
 
             // now go through the pending list telling each of the remaining classes that
             // they can remove this dependency from their list
-            for (size_t i _classes->firstIndex(); i != LIST_END; i = classes->nextIndex(i))
+            for (size_t i = classes->firstIndex(); i != LIST_END; i = classes->nextIndex(i))
             {    /* go remove the dependencies        */
                  /* get a class                       */
-                ClassDirective *current_class = (ClassDirective *)(classes->getValue(i));
+                ClassDirective *current_class = (ClassDirective *)classes->getValue(i);
                 current_class->removeDependency(class_name);
             }
         }
@@ -1683,8 +1670,6 @@ void RexxSource::resolveDependencies()
  */
 void RexxSource::classDirective()
 {
-    RexxToken    *token;                 /* current token under processing    */
-
     RexxToken *token = nextReal();       /* get the next token                */
     /* not a symbol or a string          */
     if (!token->isSymbolOrLiteral())
@@ -1706,9 +1691,9 @@ void RexxSource::classDirective()
 
     // create a class directive and add this to the dependency list
     OrefSet(this, this->active_class, new ClassDirective(name, public_name, this->clause));
-    this->class_dependencies->put(active_class, public_name);
+    this->class_dependencies->put((RexxObject *)active_class, public_name);
     // and also add to the classes list
-    this->classes->append(this->active_class);
+    this->classes->append((RexxObject *)this->active_class);
 
     int  Public = DEFAULT_ACCESS_SCOPE;   /* haven't seen the keyword yet      */
     bool subclass = false;                /* no subclass keyword yet           */
@@ -1760,7 +1745,7 @@ void RexxSource::classDirective()
                     }
                     Public = PUBLIC_SCOPE;   /* turn on the seen flag             */
                                              /* just set this as a public object  */
-                    this->active_class->put((RexxObject *)TheTrueObject, CLASS_PUBLIC);
+                    this->active_class->setPublic();
                     break;
 
                 case SUBDIRECTIVE_PRIVATE: /* ::CLASS name PUBLIC               */
@@ -1839,6 +1824,63 @@ void RexxSource::classDirective()
         }
     }
 }
+
+
+/**
+ * check for a duplicate method.
+ *
+ * @param name   The name to check.
+ * @param classMethod
+ *               Indicates whether this is a check for a CLASS or INSTANCE method.
+ */
+void RexxSource::checkDuplicateMethod(RexxString *name, bool classMethod)
+{
+    /* no previous ::CLASS directive?    */
+    if (this->active_class == OREF_NULL)
+    {
+        if (classMethod)             /* supposed to be a class method?    */
+        {
+                                     /* this is an error                  */
+            syntaxError(Error_Translation_missing_class);
+        }
+        /* duplicate method name?            */
+        if (this->methods->entry(name) != OREF_NULL)
+        {
+            /* this is an error                  */
+            syntaxError(Error_Translation_duplicate_method);
+        }
+    }
+    else
+    {                                /* add the method to the active class*/
+        if (active_class->checkDuplicateMethod(name, classMethod))
+        {
+            /* this is an error                  */
+            syntaxError(Error_Translation_duplicate_method);
+        }
+    }
+}
+
+
+/**
+ * Add a new method to this compilation.
+ *
+ * @param name   The directory name of the method.
+ * @param method The method object.
+ * @param classMethod
+ *               The class/instance method indicator.
+ */
+void RexxSource::addMethod(RexxString *name, RexxMethod *method, bool classMethod)
+{
+    if (this->active_class == OREF_NULL)
+    {
+        this->methods->setEntry(name, method);
+    }
+    else
+    {
+        active_class->addMethod(name, method, classMethod);
+    }
+}
+
 
 
 /**
@@ -2013,58 +2055,29 @@ void RexxSource::methodDirective()
         }
     }
 
+    // go check for a duplicate and validate the use of the CLASS modifier
+    checkDuplicateMethod(internalname, Class);
 
-    RexxDirectory *methodsDir;
-    /* no previous ::CLASS directive?    */
-    if (this->active_class == OREF_NULL)
-    {
-        if (Class)                   /* supposed to be a class method?    */
-        {
-                                     /* this is an error                  */
-            syntaxError(Error_Translation_missing_class);
-        }
-        methodsDir = this->methods;  /* adding to the global set          */
-    }
-    else
-    {                                /* add the method to the active class*/
-        if (Class)                   /* class method?                     */
-        {
-                                     /* add to the class method list      */
-            methodsDir = active_class->getClassMethods();
-        }
-        else
-        {
-            /* add to the method list            */
-            methodsDir = active_class->getInstanceMethods();
-        }
-    }
-
-    /* duplicate method name?            */
-    if (methodsDir->entry(internalname) != OREF_NULL)
-    {
-        /* this is an error                  */
-        syntaxError(Error_Translation_duplicate_method);
-    }
 
     RexxMethod *_method = OREF_NULL;
     // is this an attribute method?
     if (Attribute)
     {
+        // now get this as the setter method.
+        RexxString *setterName = commonString(internalname->concatWithCstring("="));
+        // need to check for duplicates on that too
+        checkDuplicateMethod(setterName, Class);
+
+                                       /* Go check the next clause to make  */
+        this->checkDirective();        /* sure that no code follows         */
+
         // now get a variable retriever to get the property
         RexxVariableBase *retriever = this->getRetriever(name);
 
         // create the method pair and quit.
-        createAttributeGetterMethod(methodsDir, internalname, retriever, Private == PRIVATE_SCOPE,
+        createAttributeGetterMethod(internalname, retriever, Class, Private == PRIVATE_SCOPE,
             Protected == PROTECTED_METHOD, guard == GUARDED_METHOD);
-        // now get this as the setter method.
-        internalname = commonString(internalname->concatWithCstring("="));
-        // make sure we don't have one of these define already.
-        if (methodsDir->entry(internalname) != OREF_NULL)
-        {
-            /* this is an error                  */
-            syntaxError(Error_Translation_duplicate_method);
-        }
-        createAttributeSetterMethod(methodsDir, internalname, retriever, Private == PRIVATE_SCOPE,
+        createAttributeSetterMethod(setterName, retriever, Class, Private == PRIVATE_SCOPE,
             Protected == PROTECTED_METHOD, guard == GUARDED_METHOD);
         return;
     }
@@ -2080,42 +2093,42 @@ void RexxSource::methodDirective()
     else if (externalname == OREF_NULL)
     {
         /* go do the next block of code      */
-        _method = this->translateBlock(OREF_NULL);
+        _method = new_method(this->translateBlock(OREF_NULL));
     }
     else
     {
                                 /* convert external into words       */
         RexxArray *words = this->words(externalname);
         /* not 'PACKAGE library [entry]' form? */
-        if (((RexxString *)(words->get(1)))->strCompare(CHAR_PACKAGE))
+        if (((RexxString *)(words->get(1)))->strCompare(CHAR_LIBRARY))
         {
-            RexxString *package;
+            RexxString *library;
             // the default entry point name is the internal name
             RexxString *entry = internalname;
 
             // full library with entry name version?
             if (words->size() == 3)
             {
-                package = (RexxString *)words->get(2);
+                library = (RexxString *)words->get(2);
                 entry = (RexxString *)words->get(3);
             }
             else if (words->size() == 2)
             {
-                package = (RexxString *)words->get(2);
+                library = (RexxString *)words->get(2);
             }
             else  // wrong number of tokens
             {
                                          /* this is an error                  */
-                reportError(Error_Translation_bad_external, externalname);
+                syntaxError(Error_Translation_bad_external, externalname);
             }
 
             /* go check the next clause to make  */
             this->checkDirective();      /* sure no code follows              */
                                          /* create a new native method        */
-            RexxNativeCode *nmethod = PackageManager::resolveMethod(package, entry);
+            RexxNativeCode *nmethod = PackageManager::resolveMethod(library, entry);
+            nmethod->setSourceObject(this);
             /* turn into a real method object    */
-            method = new RexxMethod(nmethod);
-            method->setSource(this);
+            _method = new RexxMethod(nmethod);
         }
         else
         {
@@ -2123,21 +2136,9 @@ void RexxSource::methodDirective()
             syntaxError(Error_Translation_bad_external, externalname);
         }
     }
-    if (Private == PRIVATE_SCOPE)                   /* is this a private method?         */
-    {
-        _method->setPrivate();        /* turn on the private attribute     */
-    }
-    if (Protected == PROTECTED_METHOD)   /* is this a protected method?       */
-    {
-        _method->setProtected();      /* turn on the protected attribute   */
-    }
-    if (guard == UNGUARDED_METHOD) /* is this unguarded?                */
-    {
-        _method->setUnGuarded();      /* turn on the unguarded attribute   */
-    }
-
-    /* add the method to the table       */
-    methodsDir->put(_method, internalname);
+    _method->setAttributes(Private == PRIVATE_SCOPE, Protected == PROTECTED_METHOD, guard == GUARDED_METHOD);
+    // add to the compilation
+    addMethod(internalname, _method, Class);
 }
 
 #define ATTRIBUTE_BOTH 0
@@ -2278,31 +2279,6 @@ void RexxSource::attributeDirective()
         }
     }
 
-    RexxDirectory *methodsDir;
-    // now figure out which dictionary we need to add the methods to.
-    if (this->active_class == OREF_NULL)
-    {
-        if (Class)                   /* supposed to be a class method?    */
-        {
-                                     /* this is an error                  */
-            syntaxError(Error_Translation_missing_class);
-        }
-        methodsDir = this->methods;  /* adding to the global set          */
-    }
-    else
-    {                                /* add the method to the active class*/
-        if (Class)                   /* class method?                     */
-        {
-                                     /* add to the class method list      */
-            methodsDir = active_class->getClassMethods();
-        }
-        else
-        {
-            /* add to the method list            */
-            methodsDir = active_class->getInstanceMethods();
-        }
-    }
-
     // both attributes same default properties?
 
     // now get a variable retriever to get the property (do this before checking the body
@@ -2313,24 +2289,18 @@ void RexxSource::attributeDirective()
     {
         case ATTRIBUTE_BOTH:
         {
-            // make sure we don't have one of these define already.
-            if (methodsDir->entry(internalname) != OREF_NULL)
-            {
-                /* this is an error                  */
-                syntaxError(Error_Translation_duplicate_attribute);
-            }
-            // create the method pair and quit.
-            createAttributeGetterMethod(methodsDir, internalname, retriever, Private == PRIVATE_SCOPE,
-                Protected == PROTECTED_METHOD, guard == GUARDED_METHOD);
+            checkDuplicateMethod(internalname, Class);
             // now get this as the setter method.
-            internalname = commonString(internalname->concatWithCstring("="));
-            // make sure we don't have one of these define already.
-            if (methodsDir->entry(internalname) != OREF_NULL)
-            {
-                /* this is an error                  */
-                syntaxError(Error_Translation_duplicate_attribute);
-            }
-            createAttributeSetterMethod(methodsDir, internalname, retriever, Private == PRIVATE_SCOPE,
+            RexxString *setterName = commonString(internalname->concatWithCstring("="));
+            checkDuplicateMethod(setterName, Class);
+
+            // no code can follow the automatically generated methods
+            this->checkDirective();
+
+            // create the method pair and quit.
+            createAttributeGetterMethod(internalname, retriever, Class, Private == PRIVATE_SCOPE,
+                Protected == PROTECTED_METHOD, guard == GUARDED_METHOD);
+            createAttributeSetterMethod(setterName, retriever, Class, Private == PRIVATE_SCOPE,
                 Protected == PROTECTED_METHOD, guard == GUARDED_METHOD);
             break;
 
@@ -2338,21 +2308,15 @@ void RexxSource::attributeDirective()
 
         case ATTRIBUTE_GET:       // just the getter method
         {
-            // make sure we don't have one of these define already.
-            if (methodsDir->entry(internalname) != OREF_NULL)
-            {
-                /* this is an error                  */
-                syntaxError(Error_Translation_duplicate_attribute);
-            }
-
+            checkDuplicateMethod(internalname, Class);
             if (hasBody())
             {
-                createMethod(methodsDir, internalname, Private == PRIVATE_SCOPE,
+                createMethod(internalname, Class, Private == PRIVATE_SCOPE,
                     Protected == PROTECTED_METHOD, guard == GUARDED_METHOD);
             }
             else
             {
-                createAttributeGetterMethod(methodsDir, internalname, retriever, Private == PRIVATE_SCOPE,
+                createAttributeGetterMethod(internalname, retriever, Class, Private == PRIVATE_SCOPE,
                     Protected == PROTECTED_METHOD, guard == GUARDED_METHOD);
             }
             break;
@@ -2361,21 +2325,16 @@ void RexxSource::attributeDirective()
         case ATTRIBUTE_SET:
         {
             // now get this as the setter method.
-            internalname = commonString(internalname->concatWithCstring("="));
-            // make sure we don't have one of these define already.
-            if (methodsDir->entry(internalname) != OREF_NULL)
-            {
-                /* this is an error                  */
-                syntaxError(Error_Translation_duplicate_attribute);
-            }
+            RexxString *setterName = commonString(internalname->concatWithCstring("="));
+            checkDuplicateMethod(setterName, Class);
             if (hasBody())        // just the getter method
             {
-                createMethod(methodsDir, internalname, Private == PRIVATE_SCOPE,
+                createMethod(setterName, Class, Private == PRIVATE_SCOPE,
                     Protected == PROTECTED_METHOD, guard == GUARDED_METHOD);
             }
             else
             {
-                createAttributeSetterMethod(methodsDir, internalname, retriever, Private == PRIVATE_SCOPE,
+                createAttributeSetterMethod(setterName, retriever, Class, Private == PRIVATE_SCOPE,
                     Protected == PROTECTED_METHOD, guard == GUARDED_METHOD);
             }
             break;
@@ -2419,31 +2378,28 @@ void RexxSource::constantDirective()
         /* report an error                   */
         syntaxError(Error_Invalid_data_constant_dir, token);
     }
+    // this directive does not allow a body
+    this->checkDirective();
 
-    RexxDirectory *methodsDir = OREF_NULL;
-    RexxDirectory *classesDir = OREF_NULL;
-    // now figure out which dictionary we need to add the methods to.
-    // if there's no active class, then we only define this in the methods dir
-    if (this->active_class == OREF_NULL)
+    // check for duplicates.  We only do the class duplicate check if there
+    // is an active class, otherwise we'll get a syntax error
+    checkDuplicateMethod(internalname, false);
+    if (this->active_class != OREF_NULL)
     {
-        methodsDir = this->methods;  /* adding to the global set          */
+        checkDuplicateMethod(internalname, true);
     }
-    else
-    {
-        // we add methods to both directories
-        classesDir = active_class->getClassMethods();
-        methodsDir = active_class->getInstanceMethods();
-    }
+
     // create the method pair and quit.
-    createConstantGetterMethod(classesDir, methodsDir, internalname, value);
+    createConstantGetterMethod(internalname, value);
 }
 
 
 /**
  * Create a Rexx method body.
  *
- * @param target The target method directory.
  * @param name   The name of the attribute.
+ * @param classMethod
+ *               Indicates whether we are creating a class or instance method.
  * @param privateMethod
  *               The method's private attribute.
  * @param protectedMethod
@@ -2451,73 +2407,48 @@ void RexxSource::constantDirective()
  * @param guardedMethod
  *               The method's guarded attribute.
  */
-void RexxSource::createMethod(RexxDirectory *target, RexxString *name,
+void RexxSource::createMethod(RexxString *name, bool classMethod,
     bool privateMethod, bool protectedMethod, bool guardedMethod)
 {
     // translate the method block
     RexxMethod *_method = new_method(translateBlock(OREF_NULL));
-
-    // set the method properties
-    if (privateMethod)
-    {
-        _method->setPrivate();
-    }
-    if (protectedMethod)
-    {
-        _method->setProtected();
-    }
-    if (guardedMethod)
-    {
-        _method->setUnGuarded();
-    }
-    // and finally add to the target method directory.
-    target->put(_method, name);
+    _method->setAttributes(privateMethod, protectedMethod, guardedMethod);
+    // go add the method to the accumulator
+    addMethod(name, _method, classMethod);
 }
 
 
 /**
  * Create an ATTRIBUTE "get" method.
  *
- * @param target The target method directory.
- * @param name   The name of the attribute.
+ * @param name      The name of the attribute.
+ * @param retriever
+ * @param classMethod
+ *                  Indicates we're adding a class or instance method.
  * @param privateMethod
- *               The method's private attribute.
+ *                  The method's private attribute.
  * @param protectedMethod
- *               The method's protected attribute.
+ *                  The method's protected attribute.
  * @param guardedMethod
- *               The method's guarded attribute.
+ *                  The method's guarded attribute.
  */
-void RexxSource::createAttributeGetterMethod(RexxDirectory *target, RexxString *name, RexxVariableBase *retriever,
-    bool privateMethod, bool protectedMethod, bool guardedMethod)
+void RexxSource::createAttributeGetterMethod(RexxString *name, RexxVariableBase *retriever,
+    bool classMethod, bool privateMethod, bool protectedMethod, bool guardedMethod)
 {
-    // no code can follow the automatically generated methods
-    this->checkDirective();
-
     // create the kernel method for the accessor
     RexxMethod *_method = new_method(new AttributeGetterCode(retriever));
-
-    if (privateMethod)
-    {
-        _method->setPrivate();
-    }
-    if (protectedMethod)
-    {
-        _method->setProtected();
-    }
-    if (guardedMethod)
-    {
-        _method->setUnGuarded();
-    }
-    // and finally add to the target method directory.
-    target->put(_method, name);
+    _method->setAttributes(privateMethod, protectedMethod, guardedMethod);
+    // add this to the target
+    addMethod(name, _method, classMethod);
 }
 
 
 /**
  * Create an ATTRIBUTE "set" method.
  *
- * @param target The target method directory.
  * @param name   The name of the attribute.
+ * @param classMethod
+ *                  Indicates we're adding a class or instance method.
  * @param privateMethod
  *               The method's private attribute.
  * @param protectedMethod
@@ -2525,29 +2456,14 @@ void RexxSource::createAttributeGetterMethod(RexxDirectory *target, RexxString *
  * @param guardedMethod
  *               The method's guarded attribute.
  */
-void RexxSource::createAttributeSetterMethod(RexxDirectory *target, RexxString *name, RexxVariableBase *retriever,
-    bool privateMethod, bool protectedMethod, bool guardedMethod)
+void RexxSource::createAttributeSetterMethod(RexxString *name, RexxVariableBase *retriever,
+    bool classMethod, bool privateMethod, bool protectedMethod, bool guardedMethod)
 {
-    // no code can follow the automatically generated methods
-    this->checkDirective();
-
     // create the kernel method for the accessor
     RexxMethod *_method = new_method(new AttributeSetterCode(retriever));
-
-    if (privateMethod)
-    {
-        _method->setPrivate();
-    }
-    if (protectedMethod)
-    {
-        _method->setProtected();
-    }
-    if (guardedMethod)
-    {
-        _method->setUnGuarded();
-    }
-    // and finally add to the target method directory.
-    target->put(_method, name);
+    _method->setAttributes(privateMethod, protectedMethod, guardedMethod);
+    // add this to the target
+    addMethod(name, _method, classMethod);
 }
 
 
@@ -2557,29 +2473,16 @@ void RexxSource::createAttributeSetterMethod(RexxDirectory *target, RexxString *
  * @param target The target method directory.
  * @param name   The name of the attribute.
  */
-void RexxSource::createConstantGetterMethod(RexxDirectory *classTarget, RexxDirectory *target, RexxString *name, RexxObject *value)
+void RexxSource::createConstantGetterMethod(RexxString *name, RexxObject *value)
 {
-    // no code can follow the automatically generated methods
-    this->checkDirective();
-    // make sure we don't have one of these define already.
-    if (target->entry(name) != OREF_NULL)
-    {
-        /* this is an error                  */
-        syntaxError(Error_Translation_duplicate_constant);
-    }
-
     ConstantGetterCode *code = new ConstantGetterCode(value);
-    // and finally add to both method directories.
-    target->put(new_method(code), name);
-    if (classTarget != OREF_NULL)
+    if (active_class == OREF_NULL)
     {
-        // make sure we don't have one of these define already.
-        if (classTarget->entry(name) != OREF_NULL)
-        {
-            /* this is an error                  */
-            syntaxError(Error_Translation_duplicate_constant);
-        }
-        classTarget->put(new_method(code), name);
+        addMethod(name, new_method(code), false);
+    }
+    else
+    {
+        active_class->addConstantMethod(name, new_method(code));
     }
 }
 
@@ -2680,21 +2583,21 @@ void RexxSource::routineDirective()
                                     /* convert external into words       */
             RexxArray *words = this->words(externalname);
             // ::ROUTINE foo EXTERNAL "PACKAGE libbar [foo]"
-            if (((RexxString *)(words->get(1)))->strCompare(CHAR_PACKAGE))
+            if (((RexxString *)(words->get(1)))->strCompare(CHAR_LIBRARY))
             {
-                RexxString *package;
+                RexxString *library;
                 // the default entry point name is the internal name
                 RexxString *entry = name;
 
                 // full library with entry name version?
                 if (words->size() == 3)
                 {
-                    package = (RexxString *)words->get(2);
+                    library = (RexxString *)words->get(2);
                     entry = (RexxString *)words->get(3);
                 }
                 else if (words->size() == 2)
                 {
-                    package = (RexxString *)words->get(2);
+                    library = (RexxString *)words->get(2);
                 }
                 else  // wrong number of tokens
                 {
@@ -2705,13 +2608,15 @@ void RexxSource::routineDirective()
                 /* go check the next clause to make  */
                 this->checkDirective();      /* sure no code follows              */
                                              /* create a new native method        */
-                RexxNativeRoutine *code = PackageManager::resolveFunction(package, entry);
+                RoutineClass *routine = PackageManager::resolveRoutine(library, entry);
+                // make sure this is attached to the source object for context information
+                routine->setSourceObject(this);
                                                /* add to the routine directory      */
-                this->routines->setEntry(name, (RexxObject *)code);
+                this->routines->setEntry(name, routine);
                 if (Public == PUBLIC_SCOPE)    /* a public routine?                 */
                 {
                                                /* add to the public directory too   */
-                    this->public_routines->setEntry(name, (RexxObject *)code);
+                    this->public_routines->setEntry(name, routine);
                 }
             }
 
@@ -2741,13 +2646,15 @@ void RexxSource::routineDirective()
                 /* go check the next clause to make  */
                 this->checkDirective();      /* sure no code follows              */
                                              /* create a new native method        */
-                BaseCode *code = PackageManager::resolveRegisteredRoutine(library, entry);
+                RoutineClass *routine = PackageManager::resolveRoutine(name, library, entry);
+                // make sure this is attached to the source object for context information
+                routine->setSourceObject(this);
                                                /* add to the routine directory      */
-                this->routines->setEntry(name, (RexxObject *)code);
+                this->routines->setEntry(name, routine);
                 if (Public == PUBLIC_SCOPE)    /* a public routine?                 */
                 {
                                                /* add to the public directory too   */
-                    this->public_routines->setEntry(name, (RexxObject *)code);
+                    this->public_routines->setEntry(name, routine);
                 }
             }
             else
@@ -2760,12 +2667,13 @@ void RexxSource::routineDirective()
         {
                                          /* go do the next block of code      */
           RexxCode *code = this->translateBlock(OREF_NULL);
+          RoutineClass *routine = new_routine(code);
                                          /* add to the routine directory      */
-          this->routines->setEntry(name, (RexxObject *)code);
+          this->routines->setEntry(name, routine);
           if (Public == PUBLIC_SCOPE)    /* a public routine?                 */
           {
                                          /* add to the public directory too   */
-              this->public_routines->setEntry(name, (RexxObject *)code);
+              this->public_routines->setEntry(name, routine);
 
           }
         }
@@ -2869,10 +2777,6 @@ void RexxSource::directive()
             break;
 
         case DIRECTIVE_CONSTANT:           /* ::CONSTANT directive              */
-            constantDirective();
-            break;
-
-        case DIRECTIVE_PACKAGE:            /* ::PACKAGE  directive              */
             constantDirective();
             break;
 
@@ -4987,7 +4891,7 @@ RexxSource *RexxSource::classNewBuffered(
   newObject = new RexxSource (programname, OREF_NULL);
   ProtectedObject p1(newObject);
                                        /* process the buffering             */
-  newObject->initBuffered((RexxObject *)source_buffer);
+  newObject->initBuffered(source_buffer);
   return newObject;                    /* return the new source object      */
 /*  */
 }
@@ -5339,10 +5243,10 @@ PackageClass *RexxSource::loadRequired(RexxString *target)
 {
     // get a fully resolved name for this....we might locate this under either name, but the
     // fully resolved name is generated from this source file context.
-    RexxString *fullName = resolveProgramName(target);
+    RexxString *fullName = resolveProgramName(ActivityManager::currentActivity, target);
 
     ProtectedObject p;
-    PackageClass *requiresFile = PackageManager::getRequires(ActivityManager::currentActivity, target, fullName, p);
+    PackageClass *requiresFile = PackageManager::loadRequires(ActivityManager::currentActivity, target, fullName, p);
 
     if (requiresFile == OREF_NULL)             /* couldn't create this?             */
     {
@@ -5373,7 +5277,7 @@ void RexxSource::addPackage(PackageClass *p)
     // add this to the list and merge the information
     loadedPackages->append(p);
     // not merge all of the info from the imported package
-    mergeRequired(requiresFile->getSourceObject());
+    mergeRequired(p->getSourceObject());
 }
 
 
@@ -5386,10 +5290,26 @@ PackageClass *RexxSource::getPackage()
 {
     if (package == OREF_NULL)
     {
-        OrefSet(this, this->package, new Package(this));
+        OrefSet(this, this->package, new PackageClass(this));
     }
     return package;
 }
 
 
-
+/**
+ * Add an installed class to this source package
+ *
+ * @param name   The class name
+ * @param classObject
+ *               The class object
+ * @param publicClass
+ *               Indicates whether this needs to be added to the public list as well.
+ */
+void RexxSource::addInstalledClass(RexxString *name, RexxClass *classObject, bool publicClass)
+{
+    installed_classes->setEntry(name, classObject);
+    if (publicClass)
+    {
+        installed_public_classes->setEntry(name, classObject);
+    }
+}
