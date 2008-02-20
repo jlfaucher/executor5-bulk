@@ -34,79 +34,52 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-use strict arg file
-parser = .FileParser~new(file)
-parser~parse
-say parser~tree
+body	{background-color:#F90;}
+pre {font-family:courier;}
+table.table_methods td {border-width: 0px 0px 1px 0px;
+	border-style: solid;
+	border-color:  black;
+	padding: 0px;
+	vertical-align: top;}
+table.table_methods {width:100%;}
 
-out = .stdout
-out = .stream~new("doc.html")~~command("open replace")
-out~say('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">')
-out~say('<html xmlns="http://www.w3.org/1999/xhtml"><head><title>')
-out~say(parser~tree~name)
-out~say('</title><link rel="stylesheet" type="text/css" href="style.css" title="Style"></head><body>')
-printFile(parser~tree,out)
-out~say('<h2>Required Files</h2>')
-do r over parser~tree~requires
-  out~say('<strong>'r~getFile~name'</strong><br>')
-  printFile(r~getFile,out)
-end
+div.rxsource_div {
+	display:none;
+	padding: 10px;
+	position:fixed;
+	left:10px;
+	top:10px;
+	height: 80%;
+	width: 80%;
+	background-color:white;
+	border: green 1px dotted;
+	overflow:auto;
+}
 
-out~say('</body></html>')
-::REQUIRES "rexxdoc.cls"
+span.span_source:hover {background-color: red;}
 
-::ROUTINE doc2string
-  use arg doc
-  if doc~class \= .string then do
-    accu = ""
-    do d over doc
-      if d~strip = "" then accu||='<br>'
-      else accu||=" "d
-    end
-    return accu'<br>'
-  end
-  else return doc'<br>'
+span.span_source:hover div.rxsource_div {
+	display:block;
+}
+pre.rxsource {
+	display:block;
+	position:relative;
+	max-height: 95%;
+	height: auto;
+	margin: 0px;
+	padding: 0px;
+	overflow:auto;
+}
 
-::ROUTINE printFile
-  use arg tree, out
-  out~say(doc2string(tree~doc))
-      out~say('<pre class="rxsource">')
-      do s over tree~source~source
-        if s = "" then iterate
-        out~say(s)
-      end
-      out~say("</pre>")
-  classes = tree~classes
-  out~say('<h1 class="classes">Classes</h1>')
-  do o over classes~makeArray~sort
-    out~say('<a href="#'o~name'" class="clsi" id="clsi_'o~name'">'o~name||"</a><br>")
-  end
-  do o over classes~makeArray~sort
-    out~say('<div id="cls_'o~name'"><a name="'o~name'"/><h2>'o~name"</h2>")
-    out~say(doc2string(o~doc))
-    out~say('<div class="methods" id="mth_'o~name'"><h3>Methods</h3>')
-    methods = classes[o]~methods
-    out~say('<table class="table_methods"><tr><td>name</td><td>Description</td></tr>')
-    do p over methods~makeArray~sort
-      out~say('<tr class="method" id="mth_'o~name'_'p~name'">')
-      out~say('  <td>'p~name"</td><td>")
-      out~say(doc2string(p~doc))
-      source = p~source~source
-      if source \= .nil , source~items > 0 then do
-        out~say('  <span class="span_source">Show source')
-        out~say('<div class="rxsource_div">')
-        out~say('Source for <strong>'o~name||'~'||p~name||'</strong>')
-        out~say('<pre class="rxsource">')
-        do s over source 
-          if s = "" then iterate
-          out~say(s)
-        end
-        out~say('</pre></div></span>')
-      end
-      out~say('  </td></tr>')
-    end
-    out~say('</table>')
-    -- methods, class
-    out~say('</div></div>')
-  end
-  return ''
+/*div.span_source:hover {
+	display: block;
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+	background-color: red;
+}
+*/
+/*pre.rxsource:hover {display:block;}*/
+/*.span_source:hover + .rxsource {display:block;}*/

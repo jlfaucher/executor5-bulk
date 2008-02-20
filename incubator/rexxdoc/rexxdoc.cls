@@ -1,3 +1,39 @@
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2008 Rexx Language Association. All rights reserved.         */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
 /* Rexx source code documentation system */
 /**
 * This is a set of classes to parse ooRexx source code and to extract
@@ -16,7 +52,7 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
 */
 ::METHOD defaultOptions CLASS
   expose defaultOptions
-  if var("defaultOptions") then return defaultOptions
+  if var("defaultOptions") then return defaultOptions~copy
 
   -- intialize the singleton variable with its default values
   defaultOptions = .directory~new
@@ -24,7 +60,7 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
   defaultOptions["EVALUATE.CONTINUATION"] = .true
   defaultOptions["WARN.AS.ERROR"] = .false
 
-  return defaultOptions
+  return defaultOptions~copy
 
 /** Initializer for the FileParser class. The first argument is the file name
 * followed by optional options and a parent tree. The parent tree is only used
@@ -47,7 +83,7 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
 ::METHOD Parse
   expose file state options tree source
   source = .SourceContainer~new
-  tree = .SourceFile~new(file, source, "", parent)
+  tree = .SourceFile~new(file, source, "", parent, self~ParseState)
   expectDefinition = .false
   fileStream = .stream~new(file)
   i = 0
@@ -277,9 +313,11 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
 
 ::CLASS Directive
 ::METHOD Init
-  expose parser
+  expose parser state
   use strict arg parser
+  state = parser~parseState~copy
 ::ATTRIBUTE parser Get
+::ATTRIBUTE State Get
 ::METHOD name Abstract
 ::METHOD parse Abstract
 ::METHOD getObject ABSTRACT
@@ -290,7 +328,7 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
   expose name attribute
   use strict arg line, source, rxdoc, target
   parse var line . name tokens
-  attribute = .SourceAttribute~new(name, source, rxdoc, target)
+  attribute = .SourceAttribute~new(name, source, rxdoc, target, self~state)
   has_getOrSet = .false
   has_guarded = .false
   has_protected = .false
@@ -368,7 +406,7 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
   expose name class
   use strict arg line, source, rxdoc, target = .nil
   name = line~word(2)
-  class = .sourceclass~new(name,source,rxdoc,target)
+  class = .SourceClass~new(name,source,rxdoc,target, self~state)
   has_metaclass = .false
   has_mixinsubclass = .false
   has_visibility = .false
@@ -430,7 +468,7 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
   parse var line . name value
   if name = "" then
     self~parser~parseState("Missing name for constant")
-  sourceConstant = .SourceConstant~new(name, source, doc, target)
+  sourceConstant = .SourceConstant~new(name, source, doc, target, self~state)
   sourceConstant~setValue(value)
   
 ::METHOD getObject
@@ -448,7 +486,7 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
   expose name method
   use strict arg line, source, rxdoc, target
   name = line~word(2)
-  method = .SourceMethod~new(name, source, rxdoc, target)
+  method = .SourceMethod~new(name, source, rxdoc, target, self~state)
   has_guarded = .false
   has_protected = .false
   has_private = .false
@@ -526,7 +564,7 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
   use strict arg line, source, rxdoc, parent
   parse var line '"'name'"'
   if name = "" then parse var line . name
-  sourceRequires = .SourceRequires~new(name, source, rxdoc, parent, self~parser~options)
+  sourceRequires = .SourceRequires~new(name, source, rxdoc, parent, self~parser~options, self~state)
 
 ::CLASS RoutineDirective SUBCLASS Directive
 ::ATTRIBUTE name Get
@@ -538,7 +576,7 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
   expose name sourceRoutine
   use strict arg line, source rxdoc, parent
   parse var line . name visibility
-  sourceRoutine = .SourceRoutine~new(name,source,rxdoc,parent)
+  sourceRoutine = .SourceRoutine~new(name,source,rxdoc,parent, self~state)
   if visibility \= "" then
     if visibility~caselessEquals("PRIVATE") then
       sourceRoutine~setPrivate
@@ -555,18 +593,24 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
 ::CLASS seeTag SUBCLASS TAg
 
 
-::CLASS SourceElement
+::CLASS SourceElement INHERIT Comparable
 ::METHOD INIT
-  expose name source doc parent
+  expose name source doc parent state
   doc = .nil
   parent = .nil
   source = .nil
-  use strict arg name source doc parent
+  use strict arg name source doc parent state
 
 ::ATTRIBUTE Name Get
 ::ATTRIBUTE Source Get
 ::ATTRIBUTE Doc
 ::ATTRIBUTE Parent Get
+::ATTRIBUTE State Get
+
+::METHOD CompareTo
+  expose name
+  use strict arg other
+  return name~compareTo(other~name)
 
 ::METHOD resolve ABSTRACT
 
