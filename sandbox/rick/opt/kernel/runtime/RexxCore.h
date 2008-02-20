@@ -366,12 +366,6 @@ inline RexxArray * REQUEST_ARRAY(RexxObject *obj) { return ((obj)->requestArray(
 inline RexxInteger * REQUEST_INTEGER(RexxObject *obj) { return ((obj)->requestInteger(Numerics::DEFAULT_DIGITS));}
 
 /******************************************************************************/
-/* Version number (okver.c)                                                   */
-/******************************************************************************/
-
-RexxString *version_number (void);
-
-/******************************************************************************/
 /* Typed method invocation macros                                             */
 /******************************************************************************/
 

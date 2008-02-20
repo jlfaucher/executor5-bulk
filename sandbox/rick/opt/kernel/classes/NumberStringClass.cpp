@@ -2643,10 +2643,10 @@ RexxString *RexxNumberString::d2xD2c(
   Target = new_buffer(BufferLength);   /* set up format buffer              */
   Scan = this->number;                 /* point to first digit              */
                                        /* set accumulator pointer           */
-  Accumulator = Target->address() + BufferLength - 2;
+  Accumulator = Target->getData() + BufferLength - 2;
   HighDigit = Accumulator - 1;         /* set initial high position         */
                                        /* clear the accumulator             */
-  memset(Target->address(), '\0', BufferLength);
+  memset(Target->getData(), '\0', BufferLength);
   while (TargetLength--) {             /* while more digits                 */
                                        /* add next digit                    */
     HighDigit = AddToBaseSixteen(*Scan++, Accumulator, HighDigit);

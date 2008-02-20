@@ -1270,7 +1270,7 @@ void RexxNativeActivation::callRegisteredRoutine(RoutineClass *_routine, Registe
         RexxBuffer *buffer = new_buffer(sizeof(CONSTRXSTRING) * count);
         // this keeps the buffer alive until the activation is popped.
         createLocalReference(buffer);
-        argPtr = (CONSTRXSTRING *)buffer->address();
+        argPtr = (CONSTRXSTRING *)buffer->getData();
     }
 
     // all of the arguments now need to be converted to string arguments
@@ -1723,7 +1723,7 @@ void *RexxNativeActivation::buffer()
     RexxBuffer *C_self = (RexxBuffer *)this->methodVariables()->realValue(OREF_CSELF);
     if (C_self != OREF_NULL)             /* got an item?                      */
     {
-        return(void *)C_self->address();  /* return a pointer to the address   */
+        return(void *)C_self->getData();  /* return a pointer to the address   */
     }
     else
     {

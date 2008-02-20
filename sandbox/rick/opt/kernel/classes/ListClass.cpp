@@ -120,7 +120,7 @@ size_t RexxList::getFree(void)
                                        /* allocate a larger table           */
     newLTable = new (this->size * 2) RexxListTable;
                                        /* copy over to the new buffer       */
-    memcpy(newLTable->address(), this->table->address(), TABLE_SIZE(this->size));
+    memcpy(newLTable->getData(), this->table->getData(), TABLE_SIZE(this->size));
                                        /* make this the new buffer          */
     OrefSet(this, this->table, newLTable);
                                        /* If either of the objects are in   */

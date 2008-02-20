@@ -6,7 +6,7 @@
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
 /* distribution. A copy is also available at the following address:           */
-/* http://www.oorexx.org/license.html                          */
+/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
 /*                                                                            */
 /* Redistribution and use in source and binary forms, with or                 */
 /* without modification, are permitted provided that the following            */
@@ -36,62 +36,20 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /******************************************************************************/
-/* REXX Kernel                                                  okmath.h      */
-/*                                                                            */
-/* REXX Math engine for NumberString Objects.                                 */
-/*                                                                            */
-/******************************************************************************/
 
+#ifndef Included_Utilities
+#define Included_Utilities
 
-#ifndef OEMATH
-#define OEMATH
-/* codes for arithmetic operation types */
-#define OT_PLUS               201
-#define OT_MINUS              202
-#define OT_MULTIPLY           203
-#define OT_DIVIDE             204
-#define OT_INT_DIVIDE         205
-#define OT_REMAINDER          206
-#define OT_POWER              207
-#define OT_MAX                208
-#define OT_MIN                209
+#include <sys/types.h>
 
-/* Function prototypes for NumberStringClass/StringClass */
-
-// TODO:  make all of these functions static methods on numberstring
-
-size_t HighBits(size_t number);
-void Subtract_Numbers( RexxNumberString *larger, const char *largerPtr, wholenumber_t aLargerExp,
-                       RexxNumberString *smaller, const char *smallerPtr, wholenumber_t aSmallerExp,
-                       RexxNumberString *result, char **resultPtr);
-                                            /* ************************************ */
-                                            /* Following functions are in oemath2.c */
-                                            /* ************************************ */
-char *AddMultiplier( char *, wholenumber_t, char *, int);
-char * SubtractDivisor(char *data1, size_t length1,
-                       char *data2, size_t length2,
-                       char *result, int Mult);
-char *MultiplyPower(char *leftPtr, RexxNumberStringBase *left,
-                     char *rightPtr, RexxNumberStringBase *right,
-                     char *OutPtr, size_t OutLen, size_t NumberDigits);
-char *DividePower(char *AccumPtr, RexxNumberStringBase *Accum, char *Output, size_t NumberDigits);
-char * AddToBaseSixteen(int, char *, char *);
-char * AddToBaseTen(int, char *, char *);
-char * MultiplyBaseSixteen(char *, char *);
-char * MultiplyBaseTen(char *, char *);
-
-#ifndef ORDCOMP
-#define ORDCOMP
-
-#define BYTE_SIZE              8                      /* Number of bits in a byte   */
-#define LONGBITS         (sizeof(size_t) * BYTE_SIZE) /* Number of bytes in size_t    */
-#define ROUND                  true                   /* Perform rounding           */
-#define NOROUND                false                  /* no Rounding                */
-
-                                       /* temporary buffer allocation       */
-#define buffer_alloc(s)  (new_buffer(s)->getData())
-/* define the digits limit for "fast path" processing */
-#define FASTDIGITS 35
+class Utilities
+{
+public:
+    static int stricmp(const char *opt1, const char *opt2);
+    static int memicmp(void *opt1, void *opt2, size_t len);
+    static void strupper(char *str);
+    static void strlower(char *str);
+};
 
 #endif
-#endif
+

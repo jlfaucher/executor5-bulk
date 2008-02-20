@@ -1218,7 +1218,7 @@ void RexxMemory::createImage()
   kernel_public(CHAR_ENVIRONMENT      ,TheEnvironment         ,TheKernel);
 
                                        /* set Oryx version                  */
-  kernel_public(CHAR_VERSION,version_number(),TheKernel);
+  kernel_public(CHAR_VERSION, Interpreter::getVersionNumber(), TheKernel);
                                        /* set the system name               */
   kernel_public(CHAR_NAME, SysName(), TheSystem);
                                        /* set the internal system name      */

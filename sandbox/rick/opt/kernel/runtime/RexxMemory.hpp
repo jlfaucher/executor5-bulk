@@ -137,7 +137,8 @@ class MemorySegmentPool : public MemorySegmentPoolHeader
 #include "MemoryStats.hpp"
 #include "MemorySegment.hpp"
 
-class RexxMemory : public RexxObject {
+class RexxMemory : public RexxInternalObject
+{
 #ifdef _DEBUG
   friend class RexxInstructionOptions;
 #endif

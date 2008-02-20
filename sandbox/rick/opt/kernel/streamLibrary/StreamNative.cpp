@@ -42,10 +42,10 @@
 /*                                                                            */
 /******************************************************************************/
 
-#include "oorexx.h"
+#include "oorexxapi.h"
 #include "StreamNative.hpp"
 #include "StreamCommandParser.h"
-#include "SysUtil.hpp"
+#include "Utilities.hpp"
 #include <io.h>
 #include <fcntl.h>
 #include <share.h>
@@ -462,11 +462,11 @@ void StreamInfo::close()
  *
  * @return The open condition string.
  */
-char *StreamInfo::openStd(char *options)
+const char *StreamInfo::openStd(const char *options)
 {
     // first check for the standard io streams
-   if (!SysUtil::stricmp(stream_name, "STDIN") ||
-       !SysUtil::stricmp(stream_name,"STDIN:"))
+   if (!Utilities::stricmp(stream_name, "STDIN") ||
+       !Utilities::stricmp(stream_name,"STDIN:"))
    {
        // indicate this is stdin
        fileInfo.setStdIn();
@@ -474,8 +474,8 @@ char *StreamInfo::openStd(char *options)
        read_only = 1;
    }
 
-   else if (!SysUtil::stricmp(stream_name,"STDOUT") ||
-            !SysUtil::stricmp(stream_name,"STDOUT:"))
+   else if (!Utilities::stricmp(stream_name,"STDOUT") ||
+            !Utilities::stricmp(stream_name,"STDOUT:"))
    {
        // indicate this is stdin
        fileInfo.setStdOut();
@@ -493,7 +493,7 @@ char *StreamInfo::openStd(char *options)
    // the resolved name is the same as the input name.
    strcpy(qualified_name, stream_name);
    // check to see if buffering is allowed.
-   if (options != NULL && !SysUtil::stricmp(options, "NOBUFFER"))
+   if (options != NULL && !Utilities::stricmp(options, "NOBUFFER"))
    {
        nobuffer = 1;
    }
@@ -521,7 +521,7 @@ char *StreamInfo::openStd(char *options)
  *
  * @return The stream state (READY/NOTREADY)
  */
-char *StreamInfo::handleOpen(char *options)
+const char *StreamInfo::handleOpen(const char *options)
 {
     int oflag = O_BINARY;                  // we always open in binary mode
 
@@ -892,7 +892,7 @@ void StreamInfo::resolveStreamName()
  * @param bytesWritten
  *               Actual number of bytes written to the stream.
  */
-void StreamInfo::writeBuffer(char *data, size_t length, size_t &bytesWritten)
+void StreamInfo::writeBuffer(const char *data, size_t length, size_t &bytesWritten)
 {
     if (!fileInfo.write(data, length, bytesWritten))
     {
@@ -916,7 +916,7 @@ void StreamInfo::writeBuffer(char *data, size_t length, size_t &bytesWritten)
  * @param bytesWritten
  *               Actual number of bytes written to the stream.
  */
-void StreamInfo::writeLine(char *data, size_t length, size_t &bytesWritten)
+void StreamInfo::writeLine(const char *data, size_t length, size_t &bytesWritten)
 {
     if (!fileInfo.putLine(data, length, bytesWritten))
     {
@@ -978,7 +978,7 @@ void StreamInfo::completeLine(size_t writeLength)
  *
  * @return The line residual count.
  */
-void StreamInfo::writeFixedLine(char *data, size_t length)
+void StreamInfo::writeFixedLine(const char *data, size_t length)
 {
     /* calculate the length needed       */
     size_t write_length = binaryRecordLength - (size_t)((charWritePosition % binaryRecordLength) - 1);
@@ -1230,7 +1230,7 @@ RexxStringObject StreamInfo::charin(bool setPosition, int64_t position, size_t r
     // is frequently used to read in entire files at one shot, this can be a
     // fairly significant savings.
     RexxBufferStringObject result = context->NewBufferString(read_length);
-    char *buffer = context->BufferStringData(result);
+    char *buffer = (char *)context->BufferStringData(result);
 
     // do the actual read
     size_t bytesRead;
@@ -1300,7 +1300,7 @@ size_t StreamInfo::charout(RexxStringObject data, bool setPosition, int64_t posi
 
     // get the string pointer and length info
     size_t length = context->StringLength(data);
-    char *stringData = (char *)context->StringData(data);
+    const char *stringData = context->StringData(data);
     // errors from here return the residual count, so set up the default
     // result based on the string size.
     defaultResult = context->NumberToObject(length);
@@ -1326,10 +1326,11 @@ size_t StreamInfo::charout(RexxStringObject data, bool setPosition, int64_t posi
     return 0;
 }
 
+
 RexxMethod3(size_t, stream_charout, CSELF, streamPtr, OPTIONAL_RexxStringObject, data, OPTIONAL_int64_t, position)
 {
     StreamInfo *stream_info = (StreamInfo *)streamPtr;
-    stream_info->setContext(context, context->FalseObject());
+    stream_info->setContext(context, context->False());
 
     try
     {
@@ -1386,7 +1387,7 @@ RexxStringObject StreamInfo::linein(bool setPosition, int64_t position, size_t c
         // is frequently used to read in entire files at one shot, this can be a
         // fairly significant savings.
         RexxBufferStringObject temp = context->NewBufferString(count);
-        char *buffer = context->BufferStringData(temp);
+        char *buffer = (char *)context->BufferStringData(temp);
 
         // do the actual read
         size_t bytesRead;
@@ -1647,7 +1648,7 @@ int StreamInfo::lineout(RexxStringObject data, bool setPosition, int64_t positio
     }
 
     // get the specifics
-    char *stringData = context->StringData(data);
+    const char *stringData = context->StringData(data);
     size_t length = context->StringLength(data);
 
     writeSetup();
@@ -1709,7 +1710,7 @@ RexxMethod3(int, stream_lineout, CSELF, streamPtr, OPTIONAL_RexxStringObject, st
 {
     StreamInfo *stream_info = (StreamInfo *)streamPtr;
     // we give a 1 residual count for all errors
-    stream_info->setContext(context, context->TrueObject());
+    stream_info->setContext(context, context->True());
 
     try
     {
@@ -1731,7 +1732,7 @@ RexxMethod3(int, stream_lineout, CSELF, streamPtr, OPTIONAL_RexxStringObject, st
  *
  * @return The character string success/failure indicator.
  */
-char *StreamInfo::streamClose()
+const char *StreamInfo::streamClose()
 {
     // not open, just return a "" value
     if (!isopen)
@@ -1774,7 +1775,7 @@ RexxMethod1(CSTRING, stream_close, CSELF, streamPtr)
  * @return "READY" if everything works.  If this fails, a notready
  *         condition is raised and an exception is thrown.
  */
-char *StreamInfo::streamFlush()
+const char *StreamInfo::streamFlush()
 {
     // try to flush
     if (!fileInfo.flush())
@@ -1819,7 +1820,7 @@ RexxMethod1(CSTRING, stream_flush, CSELF, streamPtr)
  *
  * @return The READY or NOTREADY strings.
  */
-char *StreamInfo::streamOpen(char *options)
+const char *StreamInfo::streamOpen(const char *options)
 {
     int oflag = O_BINARY;               // we always open binary mode
     int pmode = 0;                      /* and the protection mode           */
@@ -2170,7 +2171,7 @@ RexxMethod1(int, std_set, CSELF, streamPtr)
  *
  * @return The updated position.
  */
-int64_t StreamInfo::streamPosition(char *options)
+int64_t StreamInfo::streamPosition(const char *options)
 {
     int style = SEEK_SET;    // default style is forward.
     bool styleSet = false;
@@ -2578,7 +2579,7 @@ int64_t StreamInfo::queryLinePosition(int64_t current_position)
  *
  * @return The numeric position value as either a line or char position.
  */
-RexxObjectPtr StreamInfo::queryStreamPosition(char *options)
+RexxObjectPtr StreamInfo::queryStreamPosition(const char *options)
 {
     int position_flags = 0;           /* clear the parseParms.position_flags          */
 
@@ -2903,7 +2904,7 @@ int64_t StreamInfo::setLinePositions()
  *
  * @return The character string qualified name.
  */
-char *StreamInfo::getQualifiedName()
+const char *StreamInfo::getQualifiedName()
 {
     // resolve the stream name, if necesary, and return the fully qualified
     // name.
@@ -2930,7 +2931,7 @@ RexxMethod1(CSTRING, qualify, CSELF, streamPtr)
  *
  * @return The resolved stream name, or "" if not resolvable.
  */
-char *StreamInfo::streamExists()
+const char *StreamInfo::streamExists()
 {
     // opened with a provided handle?  We have no name.
     if (opened_as_handle)
@@ -3003,14 +3004,20 @@ RexxMethod1(uint64_t, query_handle, CSELF, streamPtr)
  * @return String value of the type.  Returns either "PERSISTENT",
  *         "TRANSIENT", or "UNKNOWN", if the stream is not open.
  */
-char *StreamInfo::getStreamType()
+const char *StreamInfo::getStreamType()
 {
     if (!isopen)       /* not open?                         */
-      return "UNKNOWN";                 /* don't know the type               */
+    {
+        return "UNKNOWN";                 /* don't know the type               */
+    }
     else if (transient)
-      return "TRANSIENT";               /* return the transient type         */
+    {
+        return "TRANSIENT";               /* return the transient type         */
+    }
     else
-      return "PERSISTENT";              /* this is a persistent stream       */
+    {
+        return "PERSISTENT";              /* this is a persistent stream       */
+    }
 }
 
 /********************************************************************************************/
@@ -3055,7 +3062,7 @@ int64_t StreamInfo::getStreamSize()
  * @return A character string time stamp for the stream.  Returns ""
  *         for streams where a time stamp is meaningless.
  */
-char *StreamInfo::getTimeStamp()
+const char *StreamInfo::getTimeStamp()
 {
     char *time;
     // if we're open, return the current fstat() information,
@@ -3103,7 +3110,7 @@ RexxMethod1(CSTRING, query_time, CSELF, streamPtr)
  *
  * @return A string token with the stream state.
  */
-char *StreamInfo::getState()
+const char *StreamInfo::getState()
 {
     switch (state)
     {        /* process the different states      */
@@ -3142,78 +3149,72 @@ RexxMethod1(CSTRING, stream_state, CSELF, streamPtr)
  */
 RexxStringObject StreamInfo::getDescription()
 {
-    char *result = "";
-    char work[50];
+    char work[100];
 
     switch (state) {        /* process the different states      */
 
         case StreamUnknown:                /* unknown stream status             */
-        result = "UNKNOWN:";
+        return context->NewStringFromAsciiz("UNKNOWN:");
         break;
 
         case StreamEof:                    /* had an end-of-file condition      */
-        result = "NOTREADY:EOF";
+        return context->NewStringFromAsciiz("NOTREADY:EOF");
         break;
 
         case StreamNotready:               /* had some sort of notready         */
         {
-            result = (char *)work;            /* use the work buffer               */
-            char *error = NULL;
+            const char *errorString = NULL;
 
-            if (stream_info->error != 0)
+            int errorInfo = fileInfo.errorInfo();
+
+            if (errorInfo != 0)
             {
-                error = strerror(stream_info->error);
+                errorString = strerror(errorInfo);
             }
 
-            if (error != NULL)
+            if (errorString != NULL)
             {
                                                  /* format the result string          */
-                sprintf(work, "NOTREADY:%d %s", stream_info->error, error);
+                sprintf(work, "NOTREADY:%d %s", errorInfo, errorString);
             }
             else
             {
                                                  /* format the result string          */
-                sprintf(work, "NOTREADY:%d", stream_info->error);
+                sprintf(work, "NOTREADY:%d", errorInfo);
 
             }
-            break;
-
+            return context->NewStringFromAsciiz(work);
         }
 
         case StreamError:                  /* had a stream error                */
         {
-            result = (char *)work;            /* use the work buffer               */
-            char *error = NULL;
+            const char *errorString = NULL;
+            int errorInfo = fileInfo.errorInfo();
 
-            if (stream_info->error != 0)
+            if (errorInfo != 0)
             {
-                error = strerror(stream_info->error);
+                errorString = strerror(errorInfo);
             }
 
-            if (error != NULL)
+            if (errorString != NULL)
             {
                                                  /* format the result string          */
-                sprintf(work, "ERROR:%d %s", stream_info->error, error);
+                sprintf(work, "ERROR:%d %s", errorInfo, errorString);
             }
             else
             {
                                                  /* format the result string          */
-                sprintf(work, "ERROR:%d", stream_info->error);
+                sprintf(work, "ERROR:%d", errorInfo);
 
             }
-            break;
-
+            return context->NewStringFromAsciiz(work);
         }
-        result = (char *)work;            /* use the work buffer               */
-                                         /* format the result string          */
-        sprintf(work, "ERROR:%d", fileInfo.errorInfo());
-        break;
 
         case StreamReady:                  /* stream is ready to roll           */
-        result = "READY:";
+        return context->NewStringFromAsciiz("READY:");
         break;
     }
-    return context->NewStringFromAsciiz(result);
+    return NULLOBJECT;
 }
 
 /********************************************************************************************/
@@ -3234,7 +3235,7 @@ RexxMethod1(RexxStringObject, stream_description, CSELF, streamPtr)
  * @param s         The Stream object this is attached to.
  * @param inputName The initial input name specified on the new call.
  */
-StreamInfo::StreamInfo(RexxObjectPtr s, char *inputName)
+StreamInfo::StreamInfo(RexxObjectPtr s, const char *inputName)
 {
    self = s;
 

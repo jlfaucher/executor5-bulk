@@ -548,7 +548,7 @@ typedef struct
 
     RexxBufferStringObject  (RexxEntry *NewBufferString)(RexxThreadContext *, size_t);
     size_t  (RexxEntry *BufferStringLength)(RexxThreadContext *, RexxBufferStringObject);
-    CSTRING (RexxEntry *BufferStringData)(RexxThreadContext *, RexxBufferStringObject);
+    POINTER (RexxEntry *BufferStringData)(RexxThreadContext *, RexxBufferStringObject);
     RexxStringObject  (RexxEntry *FinishBufferString)(RexxThreadContext *, RexxBufferStringObject, size_t);
 
     void             (RexxEntry *TablePut)(RexxThreadContext *, RexxTableObject, RexxObjectPtr, RexxObjectPtr);
@@ -954,7 +954,7 @@ struct RexxThreadContext_
         return functions->BufferStringLength(this, o);
     }
 
-    CSTRING BufferStringData(RexxBufferStringObject o)
+    POINTER BufferStringData(RexxBufferStringObject o)
     {
         return functions->BufferStringData(this, o);
     }
@@ -1428,7 +1428,7 @@ struct RexxMethodContext_
         return threadContext->BufferStringLength(o);
     }
 
-    CSTRING BufferStringData(RexxBufferStringObject o)
+    POINTER BufferStringData(RexxBufferStringObject o)
     {
         return threadContext->BufferStringData(o);
     }
@@ -1959,7 +1959,7 @@ struct RexxCallContext_
         return threadContext->BufferStringLength(o);
     }
 
-    CSTRING BufferStringData(RexxBufferStringObject o)
+    POINTER BufferStringData(RexxBufferStringObject o)
     {
         return threadContext->BufferStringData(o);
     }
@@ -2479,7 +2479,7 @@ struct RexxExitContext_
         return threadContext->BufferStringLength(o);
     }
 
-    CSTRING BufferStringData(RexxBufferStringObject o)
+    POINTER BufferStringData(RexxBufferStringObject o)
     {
         return threadContext->BufferStringData(o);
     }

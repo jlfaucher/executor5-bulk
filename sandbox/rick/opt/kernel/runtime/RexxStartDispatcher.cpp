@@ -115,14 +115,7 @@ void RexxStartDispatcher::run()
         }
         savedObjects.add(fullname);
                                            /* try to restore saved image        */
-        program = SysRestoreProgram(fullname);
-        if (program == OREF_NULL)          /* unable to restore?                */
-        {
-            /* go translate the image            */
-            program = RoutineClass::newFile(fullname);
-            savedObjects.add(program);
-            SysSaveProgram(fullname, program);/* go save this method               */
-        }
+        program = RoutineClass:fromFile(fullname);
     }
     else                                 /* have an instore program           */
     {

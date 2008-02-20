@@ -91,6 +91,7 @@ public:
     static InterpreterInstance *createInterpreterInstance(RexxOption *options);
     static inline InterpreterInstance *createInterpreterInstance() { return createInterpreterInstance(NULL); }
     static bool terminateInterpreterInstance(InterpreterInstance *instance);
+    static RexxString *getVersionNumber();
 
     static inline bool hasTimeSliceElapsed()
     {
@@ -102,6 +103,20 @@ public:
         }
         // not time to break
         return false;
+    }
+
+    static inline int wordSize()
+    {
+        return sizeof(void *) * 8;
+    }
+
+    static inline bool isBigEndian()
+    {
+        static  const  int mfcone=1;                 // constant 1
+        static  const  char *mfctop=(char *)&mfcone; // -> top byte
+        #define LITEND *mfctop             // named flag; 1=little-endian
+
+        return LITEND == 0;
     }
 
 
@@ -120,6 +135,7 @@ protected:
     static bool   timeSliceElapsed;  // indicates we've had a timer interrupt
     static RexxList *interpreterInstances;  // the set of interpreter instances
     static bool   active;            // indicates whether the interpreter is initialized
+    static RexxString *versionNumber;  // our version number information
 };
 
 

@@ -79,6 +79,7 @@ public:
     static RexxObject *pushEnvironment(RexxActivation *context);
     static RexxObject *buildEnvlist();
     static void restoreEnvironment(void *);
+    static RexxString *qualifyFileSystemName(RexxString *name);
 };
 
 #endif

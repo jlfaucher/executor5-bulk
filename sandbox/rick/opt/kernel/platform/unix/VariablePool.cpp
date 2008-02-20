@@ -69,6 +69,7 @@
 #include "RexxVariableDictionary.hpp"
 #include "ExpressionBaseVariable.hpp"
 #include "RexxNativeAPI.h"                           /* Get C-method declares, etc.    */
+#include "Interpreter.hpp"
 #include <stdlib.h>
 
 extern "C" {
@@ -316,7 +317,7 @@ int SysVariablePool(
                 if (IS_EQUAL(variable, "VERSION"))
                 {
                     /* copy the value                    */
-                    pshvblock->shvret |= copy_value(version_number(), &pshvblock->shvvalue, &pshvblock->shvvaluelen);
+                    pshvblock->shvret |= copy_value(Interpreter::getVersionNumber(), &pshvblock->shvvalue, &pshvblock->shvvaluelen);
                 }
                 /* want the the current queue?       */
                 else if (IS_EQUAL(variable, "QUENAME"))

@@ -83,6 +83,7 @@ void Interpreter::live(size_t liveMark)
 {
     memory_mark(interpreterInstances);
     memory_mark(localServer);
+    memory_mark(versionNumber);
 }
 
 void Interpreter::liveGeneral(int reason)
@@ -91,6 +92,7 @@ void Interpreter::liveGeneral(int reason)
   {
       memory_mark_general(interpreterInstances);
       memory_mark_general(localServer);
+      memory_mark_general(versionNumber);
   }
 }
 

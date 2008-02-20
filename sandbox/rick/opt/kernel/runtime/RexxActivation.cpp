@@ -1254,7 +1254,7 @@ void RexxActivation::termination()
     {
         /* Yes, then restore the environment */
         /*  to the ist on added.             */
-        RestoreEnvironment(((RexxBuffer *)this->environmentList->lastItem())->address());
+        RestoreEnvironment(((RexxBuffer *)this->environmentList->lastItem())->getData());
     }
     this->environmentList = OREF_NULL;   /* Clear out the env list            */
     this->closeStreams();                /* close any open streams            */
@@ -2255,15 +2255,8 @@ bool RexxActivation::callExternalRexx(
     if (filename != OREF_NULL)           /* found something?                  */
     {
         this->stack.push(filename);        /* protect the file name here        */
-                                           /* try to restore saved image        */
-        RoutineClass *routine = SysRestoreProgram(filename);
-        if (routine == OREF_NULL)          /* unable to restore?                */
-        {
-            /* go translate the image            */
-            routine = RoutineClass::newFile(filename);
-            /* go save this method               */
-            SysSaveProgram(filename, routine);
-        }
+        // try for a saved program or translate anew.
+        RoutineClass *routine = RoutineClass::fromFile(filename);
         this->stack.pop();                 /* remove the protected name         */
         if (routine == OREF_NULL)          /* Do we have a method???            */
         {
@@ -2301,7 +2294,7 @@ RoutineClass *RexxActivation::getMacroCode(RexxString *macroName)
     macroImage.strptr = NULL;
     if (RexxExecuteMacroFunction(macroName->getStringData(), &macroImage) == 0)
     {
-        macroRoutine = SysRestoreProgramBuffer(&macroImage, macroName);
+        macroRoutine = restore(&macroImage, macroName);
         // return the allocated buffer
         if (macroImage.strptr == NULL)
         {

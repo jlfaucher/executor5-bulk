@@ -35,63 +35,31 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-/******************************************************************************/
-/* REXX Kernel                                                  okmath.h      */
-/*                                                                            */
-/* REXX Math engine for NumberString Objects.                                 */
-/*                                                                            */
-/******************************************************************************/
+#ifndef ProgramMetaData_Included
+#define ProgramMetaData_Included
 
 
-#ifndef OEMATH
-#define OEMATH
-/* codes for arithmetic operation types */
-#define OT_PLUS               201
-#define OT_MINUS              202
-#define OT_MULTIPLY           203
-#define OT_DIVIDE             204
-#define OT_INT_DIVIDE         205
-#define OT_REMAINDER          206
-#define OT_POWER              207
-#define OT_MAX                208
-#define OT_MIN                209
+class ProgramMetaData
+{
+public:
+    ProgramMetaData(char *data, size_t length);
 
-/* Function prototypes for NumberStringClass/StringClass */
+protected:
+    enum
+    {
+        MAGICNUMBER = 11111;           // remains constant from release-to-release
+        METAVERSION = 40;              // gets updated when internal form changes
+    };
 
-// TODO:  make all of these functions static methods on numberstring
 
-size_t HighBits(size_t number);
-void Subtract_Numbers( RexxNumberString *larger, const char *largerPtr, wholenumber_t aLargerExp,
-                       RexxNumberString *smaller, const char *smallerPtr, wholenumber_t aSmallerExp,
-                       RexxNumberString *result, char **resultPtr);
-                                            /* ************************************ */
-                                            /* Following functions are in oemath2.c */
-                                            /* ************************************ */
-char *AddMultiplier( char *, wholenumber_t, char *, int);
-char * SubtractDivisor(char *data1, size_t length1,
-                       char *data2, size_t length2,
-                       char *result, int Mult);
-char *MultiplyPower(char *leftPtr, RexxNumberStringBase *left,
-                     char *rightPtr, RexxNumberStringBase *right,
-                     char *OutPtr, size_t OutLen, size_t NumberDigits);
-char *DividePower(char *AccumPtr, RexxNumberStringBase *Accum, char *Output, size_t NumberDigits);
-char * AddToBaseSixteen(int, char *, char *);
-char * AddToBaseTen(int, char *, char *);
-char * MultiplyBaseSixteen(char *, char *);
-char * MultiplyBaseTen(char *, char *);
+    char fileTag[16];                  // special header for file tagging
+    unsigned short magicNumber;        // special tag to indicate good meta data
+    unsigned short imageVersion;       // version identifier for validity
+    unsigned short wordSize;           // size of a word
+    unsigned short bigEndian;          // true if this is a big-endian platform
+    char           rexxVersion[40]     // Rexx version string info
+    size_t         imageSize;          // size of the image
+    char           imageData[4];       // the copied image data
+};
 
-#ifndef ORDCOMP
-#define ORDCOMP
-
-#define BYTE_SIZE              8                      /* Number of bits in a byte   */
-#define LONGBITS         (sizeof(size_t) * BYTE_SIZE) /* Number of bytes in size_t    */
-#define ROUND                  true                   /* Perform rounding           */
-#define NOROUND                false                  /* no Rounding                */
-
-                                       /* temporary buffer allocation       */
-#define buffer_alloc(s)  (new_buffer(s)->getData())
-/* define the digits limit for "fast path" processing */
-#define FASTDIGITS 35
-
-#endif
 #endif

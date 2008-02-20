@@ -89,7 +89,7 @@ public:
 
 #define LINE_TERMINATOR "\r\n"
 
-    bool open(char *name, int openFlags, int openMode, int shareMode);
+    bool open(const char *name, int openFlags, int openMode, int shareMode);
     bool open(int handle);
     void reset();
     void setStdIn();
@@ -111,8 +111,8 @@ public:
     bool getSize(int64_t &size);
     bool getSize(char *name, int64_t &size);
     bool getTimeStamp(char *&time);
-    bool getTimeStamp(char *name, char *&time);
-    bool putLine(char *buffer, size_t len, size_t &bytesWritten);
+    bool getTimeStamp(const char *name, char *&time);
+    bool putLine(const char *buffer, size_t len, size_t &bytesWritten);
     bool hasData();
     bool countLines(int64_t &count);
     bool countLines(int64_t start, int64_t end, int64_t &lastLine, int64_t &count);

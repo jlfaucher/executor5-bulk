@@ -78,6 +78,7 @@ public:
     static RexxString *extractFile(RexxString *file);
     static RexxObject *popEnvironment(RexxActivation *context);
     static RexxObject *pushEnvironment(RexxActivation *context);
+    static RexxString *qualifyFileSystemName(RexxString *name);
 
 
 protected:

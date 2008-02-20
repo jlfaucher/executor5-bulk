@@ -214,7 +214,7 @@ RexxObject *RexxMutableBuffer::copy()
                                            /* see the comments in ::newRexx()!! */
     newObj->data = new_buffer(bufferLength);
     newObj->dataLength = this->dataLength;
-    newObj->data->copyData(0, data->address(), bufferLength);
+    newObj->data->copyData(0, data->getData(), bufferLength);
 
     newObj->defaultSize = this->defaultSize;
     newObj->bufferLength = this->bufferLength;
@@ -238,7 +238,7 @@ void RexxMutableBuffer::ensureCapacity(size_t addedLength)
 
         RexxBuffer *newBuffer = new_buffer(bufferLength);
         // copy the data into the new buffer
-        newBuffer->copyData(0, data->address(), dataLength);
+        newBuffer->copyData(0, data->getData(), dataLength);
         // replace the old data buffer
         OrefSet(this, this->data, newBuffer);
     }
@@ -432,7 +432,7 @@ RexxObject *RexxMutableBuffer::setBufferSize(RexxInteger *size)
         RexxBuffer *newBuffer = new_buffer(newsize);
         // if we're shrinking this, it truncates.
         dataLength = Numerics::minVal(dataLength, newsize);
-        newBuffer->copyData(0, data->address(), dataLength);
+        newBuffer->copyData(0, data->getData(), dataLength);
         // replace the old buffer
         OrefSet(this, this->data, newBuffer);
         // and update the size....
@@ -447,7 +447,7 @@ RexxString *RexxMutableBuffer::makeString()
 /* Function:  Handle a REQUEST('STRING') request for a mutablebuffer object   */
 /******************************************************************************/
 {
-    return new_string(data->address(), dataLength);
+    return new_string(data->getData(), dataLength);
 }
 
 

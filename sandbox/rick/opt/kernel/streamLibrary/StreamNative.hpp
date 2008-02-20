@@ -80,7 +80,7 @@ public:
         StreamError         = 4,       // stream has had an error condition
     } StreamState;
 
-    StreamInfo(RexxObjectPtr s, char *inputName);
+    StreamInfo(RexxObjectPtr s, const char *inputName);
     inline void setContext(RexxMethodContext *c, RexxObjectPtr d)
     {
         context = c;
@@ -101,19 +101,19 @@ public:
     void  checkEof();
     void  checkStreamType();
     void  close();
-    char *openStd(char *options);
-    char *handleOpen(char *options);
+    const char *openStd(const char *options);
+    const char *handleOpen(const char *options);
     void  resetFields();
     void  implicitOpen(int type);
     void  readSetup();
     void  writeSetup();
     RexxStringObject readLine(char *buffer, size_t length, bool update_position);
     void resolveStreamName();
-    void writeBuffer(char *data, size_t length, size_t &bytesWritten);
-    void writeLine(char *data, size_t length, size_t &bytesWritten);
+    void writeBuffer(const char *data, size_t length, size_t &bytesWritten);
+    void writeLine(const char *data, size_t length, size_t &bytesWritten);
     void readBuffer(char *data, size_t length, size_t &bytesRead);
     void completeLine(size_t writeLength);
-    void writeFixedLine(char *data, size_t length);
+    void writeFixedLine(const char *data, size_t length);
     void setPosition(int64_t position, int64_t &newPosition);
     void setReadPosition(int64_t position);
     void setWritePosition(int64_t position);
@@ -129,28 +129,28 @@ public:
     int64_t lines(bool quick);
     int64_t chars();
     int lineout(RexxStringObject data, bool setPosition, int64_t position);
-    char *streamClose();
-    char *streamFlush();
-    char *streamOpen(char *options);
+    const char *streamClose();
+    const char *streamFlush();
+    const char *streamOpen(const char *options);
     void setHandle(int fh);
-    int64_t streamPosition(char *options);
+    int64_t streamPosition(const char *options);
     int64_t getLineSize();
     int64_t seekLinePosition(int64_t offset, int direction, int64_t &current_line, int64_t &current_position);
     int64_t setLinePosition(int64_t new_line, int64_t &current_line, int64_t &current_position);
     int64_t queryLinePosition(int64_t current_position);
-    RexxObjectPtr queryStreamPosition(char *options);
+    RexxObjectPtr queryStreamPosition(const char *options);
     int64_t getLineReadPosition();
     int64_t getLineWritePosition();
     int64_t readForwardByLine(int64_t offset, int64_t &current_line, int64_t &current_position);
     int64_t seekToVariableLine(int64_t offset, int64_t& current_line, int64_t &current_position);
     int64_t setLinePositions();
-    char *getQualifiedName();
-    char *streamExists();
+    const char *getQualifiedName();
+    const char *streamExists();
     int64_t queryHandle();
-    char *getStreamType();
+    const char *getStreamType();
     int64_t getStreamSize();
-    char *getTimeStamp();
-    char *getState();
+    const char *getTimeStamp();
+    const char *getState();
     RexxStringObject getDescription();
     int64_t countStreamLines(int64_t currentLinePosition, int64_t currentPosition);
     inline void setStandard() { stdstream = true; }

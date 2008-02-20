@@ -55,8 +55,8 @@
                                        /* buffer size                       */
 #define ENTRY_COUNT(n)        ((n)/sizeof(LISTENTRY))
                                        /* address of a given buffer entry   */
-#define ENTRY_POINTER(n)      (this->table->address() + n)
-#define ENTRY_INDEX(p)        (p - this->table->address())
+#define ENTRY_POINTER(n)      (this->table->getData() + n)
+#define ENTRY_INDEX(p)        (p - this->table->getData())
 #define LIST_END              ((size_t)-1) /* end of list marker                */
 #define NOT_ACTIVE            ((size_t)-2) /* free element marker               */
 

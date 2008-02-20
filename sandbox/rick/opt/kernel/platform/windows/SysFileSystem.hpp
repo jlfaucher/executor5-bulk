@@ -62,16 +62,15 @@ public:
     static int stdoutHandle;
     static int stderrHandle;
 
-    static char EOF_Marker;
-    static char *EOL_Marker;          // the end-of-line marker
-    static char PathDelimiter;        // directory path delimiter
+    static const char EOF_Marker;
+    static const char *EOL_Marker;          // the end-of-line marker
+    static const char PathDelimiter;        // directory path delimiter
 
     static char *getTempFileName();
-    static bool  searchFileName(char * name, char *fullName);
-    static char *extractFileExtension(char *name);
-    static void  qualifyStreamName(char *unqualifiedName, char *qualifiedName, size_t bufferSize);
-    static bool  findFirstFile(char *name);
-    static bool  fileExists(char *name);
+    static bool  searchFileName(const char * name, char *fullName);
+    static void  qualifyStreamName(const char *unqualifiedName, char *qualifiedName, size_t bufferSize);
+    static bool  findFirstFile(const char *name);
+    static bool  fileExists(const char *name);
 };
 
 #endif

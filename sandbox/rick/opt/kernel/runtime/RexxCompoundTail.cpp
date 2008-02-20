@@ -298,7 +298,7 @@ void RexxCompoundTail::expandCapacity(
     {
                                          /* expand the size of our existing buffer  */
         temp->expand(needed + ALLOCATION_PAD);
-        tail = temp->address();
+        tail = temp->getData();
         current = tail + length;
         remainder += needed + ALLOCATION_PAD;
     }
@@ -308,7 +308,7 @@ void RexxCompoundTail::expandCapacity(
         size_t newLength = length + needed + ALLOCATION_PAD;
         temp = (RexxBuffer *)new_buffer(newLength);
         p = temp;                  // this protects the buffer
-        tail = temp->address();
+        tail = temp->getData();
         current = tail + length;
         memcpy(tail, buffer, length);    /* make sure we copy the old data */
         remainder = newLength - length;  /* set the new remainder       */

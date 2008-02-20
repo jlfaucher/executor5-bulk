@@ -50,9 +50,9 @@ int SysFileSystem::stdinHandle = 0;
 int SysFileSystem::stdoutHandle = 1;
 int SysFileSystem::stderrHandle = 2;
 
-char SysFileSystem::EOF_Marker = 0x1a;    // the end-of-file marker
-char *SysFileSystem::EOL_Marker = "\r\n"; // the end-of-line marker
-char SysFileSystem::PathDelimiter = '\\'; // directory path delimiter
+const char SysFileSystem::EOF_Marker = 0x1a;    // the end-of-file marker
+const char *SysFileSystem::EOL_Marker = "\r\n"; // the end-of-line marker
+const char SysFileSystem::PathDelimiter = '\\'; // directory path delimiter
 
 /*********************************************************************/
 /*                                                                   */
@@ -64,88 +64,51 @@ char SysFileSystem::PathDelimiter = '\\'; // directory path delimiter
 /*********************************************************************/
 
 bool SysFileSystem::searchFileName(
-  char *     name,                     /* name of rexx proc to check        */
+  const char *     name,               /* name of rexx proc to check        */
   char *     fullName )                /* fully resolved name               */
 {
-  size_t nameLength;                   /* length of name                    */
+    size_t nameLength;                   /* length of name                    */
 
-  DWORD dwFileAttrib;                  // file attributes
-  LPTSTR ppszFilePart=NULL;            // file name only in buffer
-  UINT   errorMode;
+    DWORD dwFileAttrib;                  // file attributes
+    LPTSTR ppszFilePart=NULL;            // file name only in buffer
+    UINT   errorMode;
 
-  nameLength = strlen(name);           /* get length of incoming name       */
+    nameLength = strlen(name);           /* get length of incoming name       */
 
-                       /* if name is too small or big       */
-  if (nameLength < 1 || nameLength > MAX_PATH)
-    return false;                  /* then Not a rexx proc name         */
-                       /* now try for original name         */
-  errorMode = SetErrorMode(SEM_FAILCRITICALERRORS);
-  if (GetFullPathName(name, MAX_PATH, (LPTSTR)fullName, &ppszFilePart)) {
-                       /* make sure it really exists        */
-                       // make sure it's not a directory
-     if (-1 != (dwFileAttrib=GetFileAttributes((LPTSTR)fullName))
-    && (dwFileAttrib != FILE_ATTRIBUTE_DIRECTORY))
-     {
-                       /* got it!                           */
-       SetErrorMode(errorMode);
-       return true;
-     }
-  }
-                       /* try searching the path            */
-  if ( SearchPath(NULL,                // search default order
-          (LPCTSTR)name,       // @ of filename
-          NULL,                // @ of extension, no default
-          MAX_PATH,            // len of buffer
-          (LPTSTR)fullName,    // buffer for found
-          &ppszFilePart) )
-                       // make sure it's not a directory
-     if (-1 != (dwFileAttrib=GetFileAttributes((LPTSTR)fullName))
-    && (dwFileAttrib != FILE_ATTRIBUTE_DIRECTORY))
-     {
-                       /* got it!                           */
-       SetErrorMode(errorMode);
-       return true;
-     }
+    /* if name is too small or big       */
+    if (nameLength < 1 || nameLength > MAX_PATH)
+    {
+        return false;                  /* then Not a rexx proc name         */
+    }
+    /* now try for original name         */
+    errorMode = SetErrorMode(SEM_FAILCRITICALERRORS);
+    if (GetFullPathName(name, MAX_PATH, (LPTSTR)fullName, &ppszFilePart))
+    {
+        /* make sure it really exists        */
+        // make sure it's not a directory
+        if (-1 != (dwFileAttrib=GetFileAttributes((LPTSTR)fullName)) && (dwFileAttrib != FILE_ATTRIBUTE_DIRECTORY))
+        {
+            /* got it!                           */
+            SetErrorMode(errorMode);
+            return true;
+        }
+    }
+    /* try searching the path            */
+    if ( SearchPath(NULL, (LPCTSTR)name, NULL, MAX_PATH, (LPTSTR)fullName, &ppszFilePart) )
+    {
+        // make sure it's not a directory
+        if (-1 != (dwFileAttrib=GetFileAttributes((LPTSTR)fullName)) && (dwFileAttrib != FILE_ATTRIBUTE_DIRECTORY))
+        {
+            /* got it!                           */
+            SetErrorMode(errorMode);
+            return true;
+        }
+    }
 
-  SetErrorMode(errorMode);
-  return false;                    /* not found                         */
+    SetErrorMode(errorMode);
+    return false;                    /* not found                         */
 }
 
-/*********************************************************************/
-/*                                                                   */
-/* FUNCTION    : SysFileExtension                                    */
-/*                                                                   */
-/* DESCRIPTION : Looks for a file extension in given string. Returns */
-/*               the ext in PSZ form. If no file ext returns an      */
-/*               empty pointer.                                      */
-/*                                                                   */
-/*********************************************************************/
-
-char *SysFileSystem::extractFileExtension(
-  char     *name )                     /* file name                         */
-{
-  char     *scan;                      /* scanning pointer                  */
-  size_t    length;                    /* extension length                  */
-
-  scan = strrchr(name, '\\');          /* have a path?                      */
-  if (scan)                            /* find one?                         */
-    scan++;                            /* step over last backspace          */
-  else
-    scan = name;                       /* no path, use name                 */
-
-    /* Look for the last occurence of period in the name. If not            */
-    /* found OR if found and the chars after the last period are all        */
-    /* periods or spaces, then we do not have an extension.                 */
-
-  if ((!(scan = strrchr(scan, '.'))) || strspn(scan, ". ") == strlen(scan))
-    return NULL;                       /* just return a null                */
-
-  scan++;                              /* step over the period              */
-  length = strlen(scan);               /* calculate residual length         */
-  if (!length)                         /* if no residual length             */
-    return  NULL;                      /* so return null extension          */
-  return --scan;                       /* return extension position         */
-}
 
 /*********************************************************************/
 /*                                                                   */
@@ -161,7 +124,7 @@ char *SysFileSystem::getTempFileName()
 }
 
 void SysFileSystem::qualifyStreamName(
-  char *unqualifiedName,              // input name
+  const char *unqualifiedName,              // input name
   char *qualifiedName,                // the output name
   size_t bufferSize)                  // size of the output buffer
 /*******************************************************************/
@@ -209,8 +172,7 @@ void SysFileSystem::qualifyStreamName(
 }
 
 
-bool SysFileSystem::findFirstFile(
-    char *name)                     /* name of file with wildcards       */
+bool SysFileSystem::findFirstFile(const char *name)
 {
     HANDLE FindHandle;
     WIN32_FIND_DATA FindData;

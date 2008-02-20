@@ -74,7 +74,6 @@ void TranslateDispatcher::run()
         /* go translate the image            */
         program = RoutineClass::newFile(fullname);
         savedObjects.add(program);
-        SysSaveProgram(fullname, program);/* go save this method               */
     }
     else                                 /* have an instore program           */
     {
@@ -89,8 +88,8 @@ void TranslateDispatcher::run()
     }
     if (outputName != NULL)              /* want to save this to a file?      */
     {
-                                         /* go save this method               */
-        SysSaveTranslatedProgram(outputName, program);
+        /* go save this method               */
+        program->save(outputName);
     }
 }
 

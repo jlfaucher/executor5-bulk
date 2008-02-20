@@ -686,15 +686,9 @@ PackageClass *PackageManager::getRequiresFile(RexxActivity *activity, RexxString
 {
     // make sure we're not stuck in a circular reference
     activity->checkRequires(name);
-    // try to load this from a previously compiled source file
-    RoutineClass *code = SysRestoreProgram(name);
-    if (code == OREF_NULL)             /* unable to restore?              */
-    {
-                                         /* go translate the image          */
-         code = new_routine(RexxSource::generateCodeFromFile(name));
-         result = code;
-         SysSaveProgram(name, code);     /* go save this method             */
-    }
+    // try to load this from a previously compiled source file or
+    // translate it a new if not.
+    RoutineClass *code = RoutineClass::fromFile(name);
 
     PackageClass *package = code->getPackage();
     result = package;

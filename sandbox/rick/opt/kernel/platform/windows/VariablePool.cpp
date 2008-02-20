@@ -62,6 +62,7 @@
 #include "RexxVariableDictionary.hpp"
 #include "ExpressionBaseVariable.hpp"
 #include "RexxNativeAPI.h"                  /* Get C-method declares, etc.    */
+#include "Interpreter.hpp"
 
 RexxReturnCode REXXENTRY RexxStemSort(const char *stemname, int order, int type,
     size_t start, size_t end, size_t firstcol, size_t lastcol);
@@ -287,7 +288,7 @@ int   SysVariablePool(
                                        /* want the version string?          */
       if (IS_EQUAL(variable, "VERSION")) {
                                        /* copy the value                    */
-        pshvblock->shvret |= copy_value(version_number(), &pshvblock->shvvalue, &pshvblock->shvvaluelen);
+        pshvblock->shvret |= copy_value(Interpreter::getVersionNumber(), &pshvblock->shvvalue, &pshvblock->shvvaluelen);
       }
                                        /* want the the current queue?       */
       else if (IS_EQUAL(variable, "QUENAME")) {

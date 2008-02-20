@@ -1932,8 +1932,8 @@ RexxObject *resolve_stream(            /* resolve a stream name             */
     }
     else
     {
-        /* go get the qualified name         */
-        qualifiedName = (RexxString *)SysQualifyFileSystemName(name);
+                                       /* go get the qualified name         */
+        qualifiedName = (RexxString *)SystemInterpreter::qualifyFileSystemName(name);
         if (fullName)                      /* fullName requested?               */
         {
             *fullName = qualifiedName;       /* provide qualified name            */

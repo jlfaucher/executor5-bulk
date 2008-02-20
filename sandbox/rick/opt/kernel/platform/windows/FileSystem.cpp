@@ -51,6 +51,7 @@
 #include "ProtectedObject.hpp"
 #include "SystemInterpreter.hpp"
 #include "InterpreterInstance.hpp"
+#include "SysFileSystem.hpp"
 #include <string.h>
 #include <io.h>
 #include <fcntl.h>
@@ -58,20 +59,12 @@
 #define DEFEXT ".REX"
 #define TEMPEXT ".CMD"                 /* Alternate extension   */
 #define MAX_STDOUT_LENGTH     32767    /* max. amount of data to push to STDOUT @THU007A */ /* @HOL007M */
-#include "StreamNative.h"              /* include the stream information    */
 
 #define COMPILE_NEWAPIS_STUBS          /* Allows GetLongPathName to run on  */
 #define WANT_GETLONGPATHNAME_WRAPPER   /* NT and Windows 95                 */
 #include <NewAPIs.h>
 
 bool FindFirstFile(const char *Name);
-FILE * SysBinaryFilemode(FILE *, bool);
-int SysFFlush(FILE *);
-bool SysFileIsDevice(int fhandle);
-int  SysPeekKeyboard(void);
-int SysStat(const char * path, struct stat *buffer);
-bool SysFileIsPipe(STREAM_INFO * stream_info);
-
 
 /**
  * Extract directory information from a file name.
@@ -483,7 +476,7 @@ RexxBuffer *SysReadProgram(
       UnsafeBlock releaser;
 
                            /* read in a buffer of data   */
-      if (ReadFile(fileHandle, buffer->address(), (DWORD)buffersize, &bytesRead, NULL) == 0) {
+      if (ReadFile(fileHandle, buffer->getData(), (DWORD)buffersize, &bytesRead, NULL) == 0) {
         return OREF_NULL;                  /* return nothing                    */
       }
       CloseHandle(fileHandle);                /* close the file now         */
@@ -491,68 +484,22 @@ RexxBuffer *SysReadProgram(
   }
 }
 
-void SysQualifyStreamName(
-  STREAM_INFO *stream_info )           /* stream information block          */
-/*******************************************************************/
-/* Function:  Qualify a stream name for this system                */
-/*******************************************************************/
-{
-  LPTSTR  lpszLastNamePart;
-  unsigned int errorMode;
-                       /* already expanded?                 */
-  if (stream_info->full_name_parameter[0] != '\0')
-    return;                            /* nothing more to do                */
-                       /* copy the name to full area        */
-  strcpy(stream_info->full_name_parameter, stream_info->name_parameter);
 
-  size_t namelen = strlen(stream_info->full_name_parameter);
-                       /* name end in a colon?              */
-  if (stream_info->full_name_parameter[namelen - 1] == ':') {
-      // this could be the drive letter.  If so, make it the root of the current drive.
-      if (namelen == 2)
-      {
-          strcat(stream_info->full_name_parameter, "\\");
-      }
-      else
-      {
-          // potentially a device, we need to remove the colon.
-          stream_info->full_name_parameter[namelen - 1] = '\0';
-          return;                            /* all finished                      */
-
-      }
-  }
-
-  /* GetFullPathName doesn't work for COM? names without colon */
-  if (RUNNING_95)
-  {
-      if (!strnicmp(stream_info->full_name_parameter, "com",3)
-          && (stream_info->full_name_parameter[3] > '0') && (stream_info->full_name_parameter[3] <= '9'))
-          return;
-  }
-                       /* get the fully expanded name       */
-  errorMode = SetErrorMode(SEM_FAILCRITICALERRORS);
-  GetFullPathName(stream_info->full_name_parameter, sizeof(stream_info->full_name_parameter), stream_info->full_name_parameter, &lpszLastNamePart);
-  SetErrorMode(errorMode);
-}
-
-RexxString *SysQualifyFileSystemName(
+RexxString *SystemInterpreter::qualifyFileSystemName(
   RexxString * name)                   /* stream information block          */
 /*******************************************************************/
 /* Function:  Qualify a stream name for this system                */
 /*******************************************************************/
 {
-   STREAM_INFO stream_info;            /* stream information                */
+   char nameBuffer[SysFileSystem::MaximumFileNameBuffer];
 
                        /* clear out the block               */
-   memset(&stream_info, 0, sizeof(STREAM_INFO));
-                       /* initialize stream info structure  */
-   strncpy(stream_info.name_parameter, name->getStringData(), path_length+10);
-   strcpy(&stream_info.name_parameter[path_length+11], "\0");
-   SysQualifyStreamName(&stream_info); /* expand the full name              */
+   memset(nameBuffer, 0, sizeof(nameBuffer));
+   SysFileSystem::qualifyStreamName((char *)name->getStringData(), nameBuffer, sizeof(nameBuffer)); /* expand the full name              */
                        /* uppercase this                    */
-   strupr(stream_info.full_name_parameter);
+   strupr(nameBuffer);
                        /* get the qualified file name       */
-   return new_string(stream_info.full_name_parameter);
+   return new_string(nameBuffer);
 }
 
 
@@ -580,76 +527,6 @@ bool SearchFirstFile(
 }
 
 
-FILE * SysBinaryFilemode(FILE * sfh, bool fRead)
-{
-     _setmode( _fileno( sfh ), _O_BINARY );
-     return sfh;
-}
 
 
-bool SysFileIsDevice(int fhandle)
-{
-  if( _isatty( fhandle ) )
-     return true;
-   else
-     return false;
-}
 
-int SysPeekKeyboard(void)
-{
-   return (_kbhit() != 0) ? 1 : 0;
-}
-
-
-int SysStat(const char * path, struct stat *buffer)
-{
-   unsigned int errorMode;
-   int    retstat;
-
-   errorMode = SetErrorMode(SEM_FAILCRITICALERRORS);
-   retstat = stat(path, buffer);
-   SetErrorMode(errorMode);
-   return retstat;
-}
-
-
-bool SysFileIsPipe(STREAM_INFO * stream_info)
-{
-   struct _stat buf;
-
-   if (_fstat( stream_info->fh, &buf )) return false;
-   else
-       return (buf.st_mode & _S_IFIFO) != 0;
-}
-
-
-int  SysTellPosition(STREAM_INFO * stream_info)
-{
-    if (SysFileIsDevice(stream_info->fh) || SysFileIsPipe(stream_info)) return -1;
-    return ftell(stream_info->stream_file);
-}
-
-/* strem_info->stream_file -> sfile, tesul != length */
-size_t line_write_check(const char * buffer, size_t length, FILE * sfile)
-{
-   size_t result;
-   result = fwrite(buffer,1,length,sfile);
-   if ((result != length) && (ferror(sfile)) && (errno == ENOMEM))
-   {
-     size_t ulMod;
-     size_t ulTempValue;
-     const char *pTemp = buffer;
-     clearerr(sfile);  /* clear memory err, give a new chance */
-     ulTempValue  = length / MAX_STDOUT_LENGTH;
-     ulMod        = length % MAX_STDOUT_LENGTH;
-     while ((ulTempValue > 0) && (!ferror(sfile)))
-     {
-        result += fwrite(pTemp,1,MAX_STDOUT_LENGTH, sfile);
-        pTemp += MAX_STDOUT_LENGTH;
-        ulTempValue--;
-     }
-     if (!ferror(sfile))
-       result += fwrite(pTemp,1,ulMod, sfile);
-   }
-   return result;
-}

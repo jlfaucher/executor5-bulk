@@ -168,15 +168,73 @@ RexxBuffer *RoutineClass::save()
 /* Function: Flatten translated method into a buffer for storage into EA's etc*/
 /******************************************************************************/
 {
-  RexxEnvelope *envelope;              /* envelope for flattening           */
-                                       /* Get new envelope object           */
-  envelope = new RexxEnvelope;
-  ProtectedObject p(envelope);
-                                       /* now pack up the envelope for      */
-                                       /* saving.                           */
-  envelope->pack(this);
-  return envelope->getBuffer()->getBuffer();  /* return the buffer                 */
+                                         /* Get new envelope object           */
+    RexxEnvelope *envelope = new RexxEnvelope;
+    ProtectedObject p(envelope);
+                                         /* now pack up the envelope for      */
+                                         /* saving.                           */
+    return envelope->pack(this);
 }
+
+
+/**
+ * Save a routine into an externalized buffer form in an RXSTRING.
+ *
+ * @param outBuffer The target output RXSTRING.
+ */
+void RoutineClass::save(PRXSTRING outBuffer)
+{
+    ProtectedObject p(program);
+    RexxBuffer *methodBuffer = program->save();  /* flatten the method                */
+    // create a full buffer of the data, plus the information header.
+    ProgramMetaData *data = new (methodBuffer) ProgramMetaData(methodBuffer);
+    // we just hand this buffer of data right over...that's all, we're done.
+    outBuffer->strptr = (char *)data;
+    outBuffer->strLength = data->getdataSize();
+}
+
+
+/**
+ * Save a routine to a target file.
+ *
+ * @param filename The name of the file (fully resolved already).
+ */
+void RoutineClass::save(const char *filename)
+{
+    FILE         *Handle;                /* output file handle                */
+    FILE_CONTROL  Control;               /* control information               */
+    RexxBuffer   *MethodBuffer;          /* flattened method                  */
+    RexxSmartBuffer *FlatBuffer;         /* flattened smart buffer            */
+    char         *BufferAddress;         /* address of flattened method data  */
+    LONG          BufferLength;          /* length of the flattened method    */
+    RexxString   *Version;               /* REXX version string               */
+
+    FILE *handle = fopen(filename, "wb");/* open the output file              */
+    {
+        if (handle == NULL)                  /* get an open error?                */
+            /* got an error here                 */
+            reportException(Error_Program_unreadable_output_error, File);
+    }
+    ProtectedObject p(this);
+
+    // save to a flattened buffer
+    RexxBuffer *buffer = save();
+    ProtectedObject p2(buffer);
+
+    // create an image header
+    ProgramMetaData metaData(buffer->getLength());
+    {
+        UnsafeBlock releaser;
+
+        // write out the header information
+        metaData.write(handle);
+        /* and finally the flattened method  */
+        fwrite(buffer->getData(), 1, buffer->getLength(), handle);
+        fclose(handle);
+    }
+}
+
+
 
 void *RoutineClass::operator new (size_t size)
 /******************************************************************************/
@@ -424,6 +482,28 @@ RoutineClass *RoutineClass::newRexxBuffer(RexxString *pgmname, const char *sourc
 }
 
 
+/**
+ * Create a routine from a macrospace source.
+ *
+ * @param name   The name of the macrospace item.
+ *
+ * @return The inflatted macrospace routine.
+ */
+RoutineClass *RoutineClass::restoreFromMacroSpace(RexxString *name)
+{
+    RXSTRING buffer;                     /* instorage buffer                  */
+
+    MAKERXSTRING(buffer, NULL, 0);
+    /* get the image of function         */
+    RexxExecuteMacroFunction(name->getStringData(), &buffer);
+    /* unflatten the method now          */
+    RoutineClass *routine = restore(&buffer, name);
+    // release the buffer memory
+    SysReleaseResultMemory(buffer.strptr);
+    return routine;
+}
+
+
 RoutineClass *RoutineClass::processInstore(PRXSTRING instore, RexxString * name )
 /******************************************************************************/
 /* Function:  Process instorage execution arguments                           */
@@ -437,31 +517,20 @@ RoutineClass *RoutineClass::processInstore(PRXSTRING instore, RexxString * name 
         /* see if this exists                */
         if (!RexxQueryMacro(name->getStringData(), &temp))
         {
-            RXSTRING buffer;                     /* instorage buffer                  */
-
-            MAKERXSTRING(buffer, NULL, 0);
-            /* get the image of function         */
-            RexxExecuteMacroFunction(name->getStringData(), &buffer);
-            /* unflatten the method now          */
-            RoutineClass *routine = SysRestoreProgramBuffer(&buffer, name);
-            // release the buffer memory
-            SysReleaseResultMemory(buffer.strptr);
-            return routine;
+            return restoreFromMacroSpace(name);
         }
         return OREF_NULL;         // not found
     }
     if (instore[1].strptr != NULL)       /* have an image                     */
     {
         /* go convert into a method          */
-        RoutineClass *routine = SysRestoreProgramBuffer(&instore[1], name);
+        RoutineClass *routine = restore(&instore[1], name);
         if (routine != OREF_NULL)
         {         /* did it unflatten successfully?    */
             if (instore[0].strptr != NULL)   /* have source also?                 */
             {
                 /* get a buffer object               */
-                RexxBuffer *source_buffer = new_buffer(instore[0].strlength);
-                /* copy source into the buffer       */
-                memcpy(source_buffer->address(), instore[0].strptr, instore[0].strlength);
+                RexxBuffer *source_buffer = new_buffer(instore[0]);
                 /* reconnect this with the source    */
                 routine->getSourceObject()->setBufferedSource(source_buffer);
             }
@@ -471,18 +540,16 @@ RoutineClass *RoutineClass::processInstore(PRXSTRING instore, RexxString * name 
     if (instore[0].strptr != NULL)       /* have instorage source             */
     {
         /* get a buffer object               */
-        RexxBuffer *source_buffer = new_buffer(instore[0].strlength);
-        /* copy source into the buffer       */
-        memcpy(source_buffer->address(), instore[0].strptr, instore[0].strlength);
-
-        if (source_buffer->address()[0] == '#' && source_buffer->address()[1] == '!')
+        RexxBuffer *source_buffer = new_buffer(instore[0]);
+        if (source_buffer->getData()[0] == '#' && source_buffer->getData()[1] == '!')
         {
-            memcpy(source_buffer->address(), "--", 2);
+            memcpy(source_buffer->getData(), "--", 2);
         }
+
         /* translate this source             */
         RoutineClass *routine = newRexxBuffer(name, source_buffer);
         /* return this back in instore[1]    */
-        SysSaveProgramBuffer(&instore[1], routine);
+        routine->save(&instore[1]);
         return routine;                    /* return translated source          */
     }
     return OREF_NULL;                    /* processing failed                 */
@@ -506,6 +573,147 @@ RoutineClass *RoutineClass::restore(
                                        /* whose receiver is the actual      */
                                        /* method object we're restoring     */
   return (RoutineClass *)envelope->getReceiver();
+}
+
+
+/**
+ * Restore a program from a simple buffer.
+ *
+ * @param buffer The source buffer.
+ *
+ * @return The inflated Routine object, if valid.
+ */
+RoutineClass *RoutineClass::restore(RexxBuffer *buffer)
+{
+    return restore(buffer, buffer->getData());
+}
+
+
+/**
+ * Restore a routine object from a previously saved instore buffer.
+ *
+ * @param inData The input data (in RXSTRING form).
+ *
+ * @return The unflattened object.
+ */
+RoutineClass *RoutineClass::restore(RXSTRING *inData)
+{
+    char *data = inData->strptr;
+
+    // does this start with a hash-bang?  Need to scan forward to the first
+    // newline character
+    if (data[0] == '#' && data[1] == '!')
+    {
+        data = strnchr(data, inData->strlength, '\n');
+        if (data == OREF_NULL)
+        {
+            return OREF_NULL;
+        }
+        // step over the linend
+        data++;
+    }
+
+
+    ProgramMetaData *metaData = (ProgramMetaData *)data;
+    // make sure this is valid for interpreter
+    if (!metaData->validate())
+    {
+        return OREF_NULL;
+    }
+
+    return restore(metaData->extractBufferData());
+}
+
+
+/**
+ * Restore a routine object from a previously saved instore buffer.
+ *
+ * @param inData The input data (in RXSTRING form).
+ *
+ * @return The unflattened object.
+ */
+RoutineClass *RoutineClass::restore(RXSTRING *inData, RexxString *name)
+{
+    RoutineClass *routine = restore(inData);
+    if (routine != OREF_NULL)
+    {
+        routine->getSourceObject()->setProgramName(name);
+    }
+    return routine;
+}
+
+
+/**
+ * Restore a program from a saved program image.
+ *
+ * @param name   The name of the source file.
+ * @param handle The file handle for the file.
+ *
+ * @return If restorable, this unflattened routine object.
+ */
+RoutineClass *RoutineClass::restore(RexxString *name, FILE *handle)
+{
+    ProgramMetaData metaData;
+
+    // read and validate the image
+    RexxBuffer *buffer = metaData->read(handle);
+
+    // this returns wrong if there is a versioning mismatch.
+    if (buffer == OREF_NULL)
+    {
+        return OREF_NULL;
+    }
+
+    ProtectedObject p1(buffer);
+    /* "puff" this out usable form       */
+    RoutineClass *program = restore(buffer);
+    ProtectedObject p2(program);
+    // set the source program name to the file we read this from.  Important for
+    // future program lookups to have the fully resolved name.
+    program->getSourceObject()->setProgramName(name);
+    return program;                      /* return the unflattened method     */
+}
+
+
+/**
+ * Retrieve a routine object from a file.  This will first attempt
+ * to restore a previously translated image, then will try to
+ * translate the source if that fails.
+ *
+ * @param filename The target file name.
+ *
+ * @return A resulting Routine object, if possible.
+ */
+RoutineClass *RoutineClass::fromFile(RexxString *filename)
+{
+    RoutineClass *routine = restoreFromFile(filename);
+    if (routine != OREF_NULL)
+    {
+        return routine;
+    }
+
+    // process this from the source
+    return newFile(filename);
+}
+
+
+/**
+ * Try to restore a translated and saved program from an image.
+ *
+ * @param filename The target filename.
+ *
+ * @return The unflattened source image.
+ */
+RoutineClass *RoutineClass::restoreFromFile(RexxString *filename)
+{
+    FILE *handle = fopen(filename->getStringData(), "rb");
+    // the first failure is not finding the file at all
+    if (handle == NULL)
+    {
+        return OREF_NULL;
+    }
+    // try to read a translated program that was previously compiled.
+    return restore(filename, handle);
 }
 
 

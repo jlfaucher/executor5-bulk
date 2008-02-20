@@ -195,28 +195,6 @@ RexxString *SysGetCurrentQueue(void);  /* Get the current queue name        */
 void SysSetupProgram(RexxActivation *);/* System specific program setup     */
 #endif
 
-#ifndef SysRestoreProgram
-                                       /* Restore a program image           */
-RoutineClass *SysRestoreProgram(RexxString *);
-#endif
-
-#ifndef SysRestoreProgramBuffer
-RoutineClass *SysRestoreProgramBuffer(PRXSTRING, RexxString *);
-#endif
-
-#ifndef SysSaveProgram
-                                       /* Save a program image              */
-void SysSaveProgram(RexxString *, RoutineClass *);
-#endif
-
-#ifndef SysSaveProgramBuffer
-void SysSaveProgramBuffer(PRXSTRING , RoutineClass *);
-#endif
-
-#ifndef SysSaveTranslatedProgram
-void SysSaveTranslatedProgram(const char *, RoutineClass *);
-#endif
-
 #ifndef SysSourceString
                                        /* Create the source string          */
 RexxString *SysSourceString(RexxString *, RexxString *);
@@ -224,11 +202,6 @@ RexxString *SysSourceString(RexxString *, RexxString *);
 
 #ifndef SysInitialAddressName
 RexxString *SysInitialAddressName();   /* get the initial address name      */
-#endif
-
-#ifndef SysQualifyFileSystemName
-                                       /* Qualify a file name               */
-RexxString *SysQualifyFileSystemName(RexxString *);
 #endif
 
 #ifndef SysClauseBoundary
@@ -249,10 +222,6 @@ void SysLoadImage(char **, size_t *);    /* load the image file               */
 #ifndef SysTerminateThread
                                        /* thread being terminated           */
 void SysTerminateThread(thread_id_t threadid);
-#endif
-
-#ifndef SysIsThreadEqual
-#define SysIsThreadEqual(t1, t2) (((thread_id_t)(t1)) == ((thread_id_t)(t2)))
 #endif
 
 #ifndef SysInitializeThread

@@ -73,8 +73,6 @@
 #define DEFEXT  ".CMD"           /* leave default for AIX REXX programs too */
 #define DEFEXT1  ".cmd"
 
-FILE * SysBinaryFilemode(FILE *);
-
 
 /**
  * Extract directory information from a file name.
@@ -598,66 +596,27 @@ RexxBuffer *SysReadProgram(
   {
       UnsafeBlock releaser;
 
-      fread(buffer->address(), 1, buffersize, handle);
+      fread(buffer->getData(), 1, buffersize, handle);
       fclose(handle);                      /* close the file                    */
   }
   return buffer;                       /* return the program buffer         */
 }
 
-#include "StreamNative.h"              /* include the stream information    */
-
-void SysQualifyStreamName(
-  STREAM_INFO *stream_info )           /* stream information block          */
+RexxString *SystemInterpreter::qualifyFileSystemName(
+  RexxString * name)                   /* stream information block          */
 /*******************************************************************/
 /* Function:  Qualify a stream name for this system                */
 /*******************************************************************/
 {
-//  RexxString *something;               /* place to save RexxString from the */
-  const char *something;               /* place to save RexxString from the */
-                                       /* call to SearchFileName()          */
+   char nameBuffer[SysFileSystem::MaximumFileNameBuffer];
 
-                                       /* already expanded?                 */
-  if (stream_info->name_parameter[0] == '/')
-  {                                    /* nothing more to do                */
-                                       /* copy the name to full area        */
-     strcpy(stream_info->full_name_parameter, stream_info->name_parameter);
-                                       /* name end in a colon?              */
-     if (stream_info->full_name_parameter[strlen(stream_info->full_name_parameter)-1] == ':')
-                                       /* this is a special name...lop off  */
-                                       /* the colon...                      */
-       stream_info->full_name_parameter[strlen(stream_info->full_name_parameter)-1] = '\0';
-     return;                           /* all finished                      */
-  }
-                                       /* get Always the fully expanded name */
-//  something = SearchFileName(stream_info->name_parameter, 'A'); /* returns RexxString * */
-  something = SearchFileName(stream_info->name_parameter, 'A'); /* returns RexxString * */
-  if (something != NULL)
-  {                           // copy expanded name to stream_info structure
-    strncpy(stream_info->full_name_parameter, something, strlen(something));
-                              //  insert a null at end
-    stream_info->full_name_parameter[strlen(something)] = '\0';
-  }
-  return;
-}
-
-RexxString *SysQualifyFileSystemName(
-                        RexxString * name )  /* stream information block   */
-/*******************************************************************/
-/* Function:  Qualify a stream name for this system                */
-/*******************************************************************/
-{
-   STREAM_INFO stream_info;            /* stream information                */
-
-                                       /* clear out the block               */
-   memset(&stream_info, 0, sizeof(STREAM_INFO));
-
-                                       /* initialize stream info structure  */
-   strncpy(stream_info.name_parameter, name->getStringData(), path_length+10);
-   strcpy(&stream_info.name_parameter[path_length+11], "\0");
-   SysQualifyStreamName(&stream_info); /* expand the full name              */
-
-                                       /* get the qualified file name       */
-   return new_string(stream_info.full_name_parameter);
+                       /* clear out the block               */
+   memset(nameBuffer, 0, sizeof(nameBuffer));
+   SysFileSystem::qualifyStreamName(name->getStringData(), nameBuffer, sizeof(nameBuffer)); /* expand the full name              */
+                       /* uppercase this                    */
+   SysUtil::strupr(nameBuffer);
+                       /* get the qualified file name       */
+   return new_string(nameBuffer);
 }
 
 bool SearchFirstFile(
@@ -667,35 +626,6 @@ bool SearchFirstFile(
 }
 
 
-
-/* In POSIX systems(including the GNU system) there is no difference between */
-/* opening a file for binary or for text writing                             */
-
-FILE * SysBinaryFilemode(FILE * fh,bool fRead)
-{
-  return fh;                        /* dummy funcion !    */
-}
-
-bool SysFileIsDevice(int fhandle)
-{
-  if( isatty( fhandle ) )
-    return true;
-  else
-    return false;
-}
-
-int SysPeekKeyboard(void)
-{
-  struct stat info;                 /* file info buffer */
-  int rc;
-
-//fstat(0,&info);                   /* get the info              */
-  rc = fstat(STDIN_FILENO,&info);   /* get the info              */
-  if(info.st_size)
-    return (1);
-  else
-    return (0);
-}
 
 #if defined( FIONREAD )
 int SysPeekSTD(STREAM_INFO *stream_info)
@@ -725,30 +655,6 @@ int SysPeekSTD(STREAM_INFO *stream_info)
 }
 #endif
 
-int SysStat(const char * PathName, struct stat * Buffer)
-{
-  int rc;
-
-  rc = stat(PathName, Buffer);
-  return rc;
-}
-
-bool SysFileIsPipe(STREAM_INFO * stream_info)
-{
-   struct stat buf;
-
-   if (fstat(stream_info->fh, &buf ))
-     return false;
-   else
-     return (S_ISFIFO(buf.st_mode));
-}
-
-
-int SysTellPosition(STREAM_INFO * stream_info)
-{                                                 /* flags.std has been changed */
-   if (stream_info->flags.bstd || stream_info->fh == stdin_handle) return -1;
-    return ftell(stream_info->stream_file);
-}
 
 
 

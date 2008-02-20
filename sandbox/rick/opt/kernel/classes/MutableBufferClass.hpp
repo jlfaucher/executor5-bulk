@@ -91,7 +91,7 @@ class RexxMutableBufferClass : public RexxClass {
    RexxArray         *makearray(RexxString *div);
    RexxString        *makeString();
 
-   inline const char *getStringData() { return data->address(); }
+   inline const char *getStringData() { return data->getData(); }
    inline size_t      getLength()     { return dataLength; }
 
    static RexxClass *classInstance;

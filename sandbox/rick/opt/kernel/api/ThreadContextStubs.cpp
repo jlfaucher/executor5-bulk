@@ -870,13 +870,13 @@ size_t  RexxEntry BufferStringLength(RexxThreadContext *c, RexxBufferStringObjec
     return 0;
 }
 
-CSTRING RexxEntry BufferStringData(RexxThreadContext *c, RexxBufferStringObject s)
+POINTER RexxEntry BufferStringData(RexxThreadContext *c, RexxBufferStringObject s)
 {
     ApiContext context(c);
     try
     {
         RexxString *temp = (RexxString *)s;
-        return (CSTRING)temp->getStringData();
+        return (POINTER)temp->getWritableData();
     }
     catch (ActivityException)
     {
@@ -1149,7 +1149,7 @@ CSTRING RexxEntry BufferData(RexxThreadContext *c, RexxBufferObject b)
     ApiContext context(c);
     try
     {
-        return (CSTRING)((RexxBuffer *)b)->address();
+        return (CSTRING)((RexxBuffer *)b)->getData();
     }
     catch (ActivityException)
     {

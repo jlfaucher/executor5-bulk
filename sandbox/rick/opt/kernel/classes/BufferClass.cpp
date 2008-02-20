@@ -80,7 +80,7 @@ RexxBuffer *RexxBuffer::expand(
     newBuffer = new_buffer(this->getLength() * 2);
                                        /* have new buffer, so copy data from*/
                                        /* current buffer into new buffer.   */
-  memcpy(newBuffer->address(), this->data, this->getLength());
+  memcpy(newBuffer->getData(), this->data, this->getLength());
   return newBuffer;                    /* all done, return new buffer       */
 
 }
@@ -127,7 +127,7 @@ char *REXXENTRY REXX_BUFFER_ADDRESS(REXXOBJECT self)
 /******************************************************************************/
 /* NOTE:  This method does not reaquire kernel access                         */
 /******************************************************************************/
-  return this->address();              /* just return this directly         */
+  return this->getData();              /* just return this directly         */
 }
 
 size_t REXXENTRY REXX_BUFFER_LENGTH(REXXOBJECT self)

@@ -65,16 +65,27 @@ public:
     void          runProgram(RexxActivity *activity, RexxObject **arguments, size_t argCount, ProtectedObject &result);
 
     RexxBuffer *save();
+    void save(PRXSTRING outBuffer);
+    void save(const char *filename);
     RexxObject  *setSecurityManager(RexxObject *);
 
     RoutineClass *newRexx(RexxObject **, size_t);
     RoutineClass *newFileRexx(RexxString *);
 
+    static RoutineClass *restore(RexxBuffer *, char *);
+    static RoutineClass *restoreFromMacroSpace(RexxString *name);
+    static RoutineClass *restore(RexxBuffer *buffer);
+    static RoutineClass *restore(RXSTRING *inData);
+    static RoutineClass *restore(RXSTRING *inData, RexxString *name);
+    static RoutineClass *restore(RexxString *name, FILE *handle);
+    static RoutineClass *fromFile(RexxString *filename);
+    static RoutineClass *restoreFromFile(RexxString *filename);
+
     static RoutineClass *newRoutine(RexxSource *);
     static RoutineClass *newRoutineObject(RexxString *, RexxObject *, RexxObject *, RexxSource *s);
     static RoutineClass *newRexxBuffer(RexxString *, RexxBuffer *);
     static RoutineClass *newRexxBuffer(RexxString *, const char *, size_t);
-    static RoutineClass *restore(RexxBuffer *, char *);
+
     static RoutineClass *newFile(RexxString *);
 
     static RoutineClass *processInstore(PRXSTRING instore, RexxString * name );
