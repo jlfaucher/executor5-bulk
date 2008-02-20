@@ -34,27 +34,49 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
+/**
+* This is a sample front end for the rexxdoc pacakge. It is rather simple and
+* only prints a very basic list of classes and their methods. It includes the
+* source code of the parsed class. It creates a single file called doc.html.
+* Please stay away from using this in a production environment, this is
+* experimental software.
+* Usage: rexx frontend.rex rexxdoc.cls
+*/
+
 use strict arg file
 parser = .FileParser~new(file)
 parser~parse
-say parser~tree
 
 out = .stdout
+-- write to a file
 out = .stream~new("doc.html")~~command("open replace")
+-- write some header
 out~say('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">')
 out~say('<html xmlns="http://www.w3.org/1999/xhtml"><head><title>')
+-- the title is the root file name
 out~say(parser~tree~name)
+-- link the style sheet
 out~say('</title><link rel="stylesheet" type="text/css" href="style.css" title="Style"></head><body>')
+-- print the tree information
 printFile(parser~tree,out)
+
+-- print the required files
 out~say('<h2>Required Files</h2>')
 do r over parser~tree~requires
   out~say('<strong>'r~getFile~name'</strong><br>')
+  -- print their tree...
   printFile(r~getFile,out)
 end
-
+-- add some common ending
 out~say('</body></html>')
+
+
 ::REQUIRES "rexxdoc.cls"
 
+/**
+* This routine converts a given rxdoc object to an HTML string.
+* Line breakes are replaced by <br>
+*/
 ::ROUTINE doc2string
   use arg doc
   if doc~class \= .string then do
@@ -67,30 +89,42 @@ out~say('</body></html>')
   end
   else return doc'<br>'
 
+/**
+* Print a while file.
+*/
 ::ROUTINE printFile
   use arg tree, out
+  -- the file initialization code
   out~say(doc2string(tree~doc))
-      out~say('<pre class="rxsource">')
-      do s over tree~source~source
-        if s = "" then iterate
-        out~say(s)
-      end
-      out~say("</pre>")
+  -- this could be moved to some shared routine
+  out~say('<pre class="rxsource">')
+  do s over tree~source~source
+    if s = "" then iterate
+    out~say(s)
+  end
+  out~say("</pre>")
+
+  -- get a list of classes
   classes = tree~classes
+
+  -- print the link section
   out~say('<h1 class="classes">Classes</h1>')
   do o over classes~makeArray~sort
     out~say('<a href="#'o~name'" class="clsi" id="clsi_'o~name'">'o~name||"</a><br>")
   end
+  -- print details
   do o over classes~makeArray~sort
     out~say('<div id="cls_'o~name'"><a name="'o~name'"/><h2>'o~name"</h2>")
     out~say(doc2string(o~doc))
     out~say('<div class="methods" id="mth_'o~name'"><h3>Methods</h3>')
     methods = classes[o]~methods
     out~say('<table class="table_methods"><tr><td>name</td><td>Description</td></tr>')
+    -- print the methods
     do p over methods~makeArray~sort
       out~say('<tr class="method" id="mth_'o~name'_'p~name'">')
       out~say('  <td>'p~name"</td><td>")
       out~say(doc2string(p~doc))
+      -- print the source
       source = p~source~source
       if source \= .nil , source~items > 0 then do
         out~say('  <span class="span_source">Show source')
@@ -107,6 +141,7 @@ out~say('</body></html>')
     end
     out~say('</table>')
     -- methods, class
+    -- TODO: add support for floating methods, routines...
     out~say('</div></div>')
   end
   return ''
