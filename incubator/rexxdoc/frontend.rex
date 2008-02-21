@@ -46,13 +46,15 @@
 
 use strict arg file
 parser = .FileParser~new(file)
-parser~parse
+parser~parse(.stream~new(file)~arrayIn)
+
+
 
 out = .stdout
 -- write to a file
 out = .stream~new("doc.html")~~command("open replace")
 -- write some header
-out~say('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">')
+out~say('<?xml version="1.0" encoding="utf-8" ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">')
 out~say('<html xmlns="http://www.w3.org/1999/xhtml"><head><title>')
 -- the title is the root file name
 out~say(parser~tree~name)
@@ -75,14 +77,16 @@ out~say('</body></html>')
 ::REQUIRES "rexxdoc.cls"
 
 ::ROUTINE getMethodDetails
-  use arg method
-  mb = .mutableBuffer~new
-  if method~isAttribute then mb~append("Attribute ")
+  use strict arg method, mb = (.mutableBuffer~new)
+  if method~isInstanceOf(.SourceMethod) , ,
+    method~isAttribute then mb~append("Attribute ")
   if method~isUnguarded then mb~append("Unguarded ")
   if method~isClassMethod then mb~append("Class ")
   if method~isPrivate then mb~append("Private ")
   if method~isProtected then mb~append("Protected ")
-  if method~isAbstract then mb~append("Abstract ")
+  if method~isInstanceOf(.SourceMethod) , ,
+    method~isAbstract then mb~append("Abstract ")
+  
   if mb~length = 0 then mb~append("(default)")
   return mb~string
 
@@ -91,9 +95,8 @@ out~say('</body></html>')
 * Line breakes are replaced by <br/>
 */
 ::ROUTINE doc2string
-  use arg doc
+  use strict arg doc, accu = (.MutableBuffer~new)
   if doc~class \= .string then do
-    accu = .MutableBuffer~new
     lines = doc~makearray
     do i = 1 to lines~items
       d = lines[i]
@@ -101,9 +104,11 @@ out~say('</body></html>')
       else accu~append(" "d)
     end
     if accu~length > 0 then accu~append('<br/>')
-    return accu~string
   end
-  else return doc'<br/>'
+  else do
+    accu~append(doc'<br/>')
+  end
+  return accu~string
 
 ::ROUTINE replaceSpecials
   use arg string
@@ -111,6 +116,18 @@ out~say('</body></html>')
   string = string~changestr("<","&lt;")
   string = string~changestr(">","&gt;")
   return string
+
+::ROUTINE printCode
+  use strict arg source, mb = (.MutableBUffer~new)
+  mb~append('<pre class="rxsource">'||.EndOfLine)
+  do s over source
+    if s = "" then iterate
+    mb~append(replaceSpecials(s))
+    mb~append(.EndOfLine)
+  end
+  mb~append("</pre>")
+  return mb~string
+
 /**
 * Print a while file.
 */
@@ -118,14 +135,7 @@ out~say('</body></html>')
   use arg tree, out
   -- the file initialization code
   out~say(doc2string(tree~doc))
-  -- this could be moved to some shared routine
-  out~say('<pre class="rxsource">')
-  do s over tree~source~source
-    if s = "" then iterate
-    out~say(s)
-  end
-  out~say("</pre>")
-
+  out~say(printCode(tree~source~source))
   -- get a list of classes
   classes = tree~classes
 
@@ -165,50 +175,61 @@ out~say('</body></html>')
     constants = classes[o]~constants
     if constants~items > 0 then do
       out~say('<div class="constants" id="const_'o~name'"><h3>Constants</h3>')
-      out~say('<table class="table_constants"><tr><td>Name</td><td>Value</td></tr>')
+      out~say('<table class="srctable table_constants"><thead><tr><td>Name</td><td>Value</td><td>Description</td></tr></thead><tfoot><tr><td colspan="3"></td></tr></tfoot><tbody>')
       do constant over constants
-        out~say('<tr class="constant" id="const_'o~name'_'constant~name'"><td>'constant~name'</td><td>'constant~value'</td></tr>')
+        out~say('<tr class="constant" id="const_'o~name'_'constant~name'"><td>'constant~name'</td><td>'constant~value'</td><td>')
+        out~say(doc2string(constant~doc))
+        out~say('Modifiers: ')
+        out~say(getMethodDetails(constant))
+        out~say('</td></tr>')
       end
-      out~say('</table></div>')
+      out~say('</tbody></table></div>')
     end
     -- print the attributes
     attributes = classes[o]~attributes
     if attributes~items > 0 then do
       out~say('<div class="attributes" id="attr_'o~name'"><h3>Attributes</h3>')
-      out~say('<table class="table_attributes"><tr><td>Name</td><td>Access</td></tr>')
+      out~say('<table class="srctable table_attributes"><thead><tr><td>Name</td><td>Access</td><td>Description</td></tr></thead><tfoot><tr><td colspan="3"></td></tr></tfoot><tbody>')
       do attribute over attributes
-        out~say('<tr class="attribute" id="attr_'o~name'_'attribute~name'"><td>'attribute~name'</td><td>'attribute~getAccess'</td></tr>')
+        out~say('<tr class="attribute" id="attr_'o~name'_'attribute~name'"><td>'attribute~name'</td><td>'attribute~getAccess'</td><td>')
+        out~say(doc2string(attribute~doc))
+        out~say('Modifiers: ')
+        out~say(getMethodDetails(attribute))
+        out~say('</td></tr>')
       end
-      out~say('</table></div>')
+      out~say('</tbody></table></div>')
     end
     -- print the methods
-    out~say('<div class="methods" id="mth_'o~name'"><h3>Methods</h3>')
-    methods = classes[o]~methods
-    out~say('<table class="table_methods"><tr><td>name</td><td>Description</td></tr>')
-    do p over methods~makeArray~sort
-      out~say('<tr class="method" id="mth_'o~name'_'p~name'">')
-      out~say('  <td>'p~name"</td><td>")
-      out~say(replaceSpecials(doc2string(p~doc)))
-      out~say('Modifiers: ')
-      out~say(getMethodDetails(p))
-      -- print the source
-      source = p~source~source
-      if source \= .nil , source~items > 0 & \p~isAbstract then do
-        out~say('  <div class="span_source">Show source')
-        out~say('<div class="rxsource_div">')
-        out~say('Source for <strong>'o~name||'~'||p~name||'</strong>')
-        out~say('<pre class="rxsource">')
-        do s over source 
-          if s = "" then iterate
-          out~say(replaceSpecials(s))
+    methods = classes[o]~methods~makeArray~sort
+    if methods~items > 0 then do
+      out~say('<div class="methods" id="mth_'o~name'"><h3>Methods</h3>')
+      out~say('<table class="srctable table_methods"><thead><tr><td>Name</td><td>Description</td></tr></thead><tfoot><tr><td colspan="2"></td></tr></tfoot>')
+      out~say('<tbody>')
+      do p over methods
+        out~say('<tr class="method" id="mth_'o~name'_'p~name'">')
+        out~say('  <td>'p~name)
+        if .true then do
+          -- print the source
+          source = p~source~source
+          if source \= .nil , source~items > 0 & \p~isAbstract then do
+            out~say('<div class="span_source">Show source')
+            out~say('<div class="rxsource_div">')
+            out~say('Source for <strong>'o~name||'~'||p~name||'</strong>')
+            out~say(printCode(source))
+            out~say('</div></div>')
+          end
         end
-        out~say('</pre></div></div>')
+        out~say("</td><td>")
+        out~say(doc2string(p~doc))
+        out~say('Modifiers: ')
+        out~say(getMethodDetails(p))
+        out~say('  </td></tr>')
       end
-      out~say('  </td></tr>')
+      out~say('</tbody>')
+      out~say('</table></div>')
     end
-    out~say('</table>')
     -- methods, class
     -- TODO: add support for floating methods, routines...
-    out~say('</div></div>')
+    out~say('</div>')
   end
   return ''

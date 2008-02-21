@@ -44,13 +44,17 @@
 if .environment~FileParser = .nil then .environment~FileParser = .FileParser
 
 /** This is the main class for parsing rexx source files. It produces a parse
-* tree that can be used to create a visualisation of the source.
+* tree that can be used to create a visualisation of the source. It is used
+* both as the starting point to kick off the parsing process as well as for
+* parsing required files.
 */
 ::CLASS FileParser
 /** This method returns the default options. A parser can be created with
 * custom options, but they should be a modified copy of the default options.
+* @returns a copy of the default options.
 */
 ::METHOD defaultOptions CLASS
+/*                                                                            */
   expose defaultOptions
   if var("defaultOptions") then return defaultOptions~copy
 
@@ -83,16 +87,27 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
 */
 ::METHOD Parse
   expose file state options tree source parent
+  use strict arg lines
   source = .SourceContainer~new
   tree = .SourceFile~new(file, source, "", parent, self~ParseState)
   expectDefinition = .false
-  fileStream = .stream~new(file)
+
+--  -- !!! this needs to be modified!
+--  fileStream = .stream~new(file)
+
+--  lines = fileStream~arrayIn
+  -- line counter
   i = 0
+
+  -- not in append mode at the beginning
   append = .false
+  -- and nothing collected yet
   prefix = ""
-  do while fileStream~lines > 0
+
+  -- iterate over all lines in the input stream
+  do inLine over lines
     i+=1
-    line = prefix||fileStream~lineIn
+    line = prefix||inLine
     -- handle continuation chars
     lastChars = line~right(2)
     lastChar = lastChars~right(1)
@@ -118,8 +133,16 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
   -- this method is propagated through the whole tree
   if tree~parent = .nil then tree~resolve
 
+/** The main parsing tree. This method exposes the tree gerated by the parsing
+* process.
+*/
 ::ATTRIBUTE Tree Get
+/** The current parse state. It always stores the current parsing details like
+* line number and line content. It offers methods to print warnings and erros.
+*/
 ::ATTRIBUTE ParseState Get
+/** The options for this FileParser.
+*/
 ::ATTRIBUTE Options Get
 
 /** Get the current RXDOC and reset it
@@ -133,6 +156,12 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
 
 /** The main parsing method. It maintains a state for the current parsing
 * state. It creates parsers for source elements.
+* Possible states are:
+* UNDETERMINED: The current state is yet to be determined or there is nothing
+*     special on the line.
+* DIRECTIVE: Parsing a directive.
+* RXDOC: Collecting a documentation block.
+* PROCEDURE: A procedure has been found.
 */
 ::METHOD parseLine PRIVATE
   expose tree node state nextstate has accu rxdoc options source
@@ -826,7 +855,7 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
 ::METHOD setAttribute
   expose attribute; attribute = .true
 
-::CLASS SourceAttribute SUBCLASS SourceElement
+::CLASS SourceAttribute SUBCLASS SourceAbstractMethod
 ::METHOD Init
   expose access
   access = "SET/GET"
@@ -838,7 +867,7 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
   expose access; return access
 ::METHOD resolve
 
-::CLASS SourceConstant SUBCLASS SourceElement
+::CLASS SourceConstant SUBCLASS SourceAbstractMethod
 ::METHOD resolve
 ::METHOD setValue
   expose value; use strict arg value
@@ -872,7 +901,8 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
 ::METHOD resolve
   expose options sourceFile
   if options~follow.requires then do
-    sourceFile = .FileParser~new(self~name,options,self~parent)~~parse~tree
+    stream = .stream~new(self~name)
+    sourceFile = .FileParser~new(self~name,options,self~parent)~~parse(stream~arrayIn)~tree
     -- the fileParse does not do this automatically here
     sourceFile~resolve
   end

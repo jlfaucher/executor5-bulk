@@ -34,14 +34,36 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-body	{background-color:#FFF;}
-pre {font-family:courier;}
-table.table_methods td {border-width: 0px 0px 1px 0px;
+body {
+	background-color:#FFF;
+}
+pre {
+	font-family: monospace;
+}
+table.srctable thead td {
+	font-weight: bolder;
+}
+
+table.srctable tbody td {
+	border-width: 1px 0px 0px 0px;
 	border-style: solid;
 	border-color:  black;
 	padding: 0px;
-	vertical-align: top;}
-table.table_methods {width:100%;}
+	vertical-align: top;
+}
+
+table.srctable tbody td:first-child {
+	width: 20%;
+	font-weight: bold;
+	font-family: monospace;
+}
+table.srctable.table_attributes td:first-child + td {
+	width: 20%;
+}
+
+table.srctable {
+	width:100%;
+}
 
 div.rxsource_div {
 	display:none;
@@ -51,23 +73,29 @@ div.rxsource_div {
 	left:10px;
 	top:10px;
 	height: 80%;
-	width: 80%;
+	width: auto;
 	background-color:white;
 	border: green 3px dotted;
 	overflow:auto;
 }
 
-div.span_source {font-weight: bold; display: inline;}
-div.span_source:hover {background-color: red;}
+div.span_source {
+	font-weight: normal;
+	display: block;
+}
+div.span_source:hover {
+	background-color: red;
+}
 
 div.span_source:hover div.rxsource_div {
 	display:block;
 }
 pre.rxsource {
-	display:block;
-	position:relative;
+	display: block;
+	position: relative;
 	max-height: 95%;
 	height: auto;
+	min-width: 40em;
 	margin: 0px;
 	padding: 0px;
 	overflow:auto;
