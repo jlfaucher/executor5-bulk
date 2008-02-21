@@ -94,11 +94,12 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
     i+=1
     line = prefix||fileStream~lineIn
     -- handle continuation chars
-    lastChar = line~right(1)
+    lastChars = line~right(2)
+    lastChar = lastChars~right(1)
     -- check options if - and , at the end of line are to be evaluated
     if options~evaluate.continuation then
       -- only evaluate line continuation outside rxdoc sections
-      if state != "RXDOC" & lastChar = "," | lastChar = "-" then do 
+      if (\state~equals("RXDOC")) & lastChar~equals(",") | ((lastChar~equals("-")) & \ (lastChars~equals("--")))  then do 
         append = .true
         -- cut the last character
         prefix = line~left(line~length-1)||" "
@@ -155,6 +156,14 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
     when state = "DIRECTIVE" then do
       source = .SourceContainer~new
       line = line~right(line~length - 2)
+      -- try to remove comments from line
+      cstart =  line~pos(" --")
+      if cstart > 1 then line = line~left(cstart-1)
+      else do
+        cstart = line~pos("/*")
+        if cstart > 1 then line = line~left(cstart-1)
+      end
+
       directive = line~word(1)~upper
       parameters = line~delword(1)
       select
@@ -288,7 +297,7 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
 * @param message The error message.
 */
 ::METHOD Error
-  expose fileName line lineNumber
+  expose fileName line lineNumber options
   use arg message
   .stderr~say("E" fileName":"lineNUmber message)
   if options~error.printline then
