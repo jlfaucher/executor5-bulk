@@ -767,7 +767,7 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
 
 ::CLASS SourceAbstractMethod SUBCLASS SourceElement
 ::METHOD Init
-  expose guarded protected private
+  expose guarded protected private class abstract
   guarded = .true
   protected = .false
   private = .false
@@ -805,9 +805,15 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
   expose private; private = .false
 
 ::METHOD isClassMethod
-  expoes class; return class
+  expose class; return class
 ::METHOD setClassMethod
   expose class; class = .true
+
+::METHOD isAbstract
+  expose abstract; return abstract
+::METHOD setAbstract
+  expose abstract; abstract = .true
+
 
 ::CLASS SourceMethod SUBCLASS SourceAbstractMethod
 ::METHOD Init
@@ -819,11 +825,6 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
   expose attribute; return attribute
 ::METHOD setAttribute
   expose attribute; attribute = .true
-
-::METHOD isAbstract
-  expose abstract; return abstract
-::METHOD setAbstract
-  expose abstract; abstract = .true
 
 ::CLASS SourceAttribute SUBCLASS SourceElement
 ::METHOD Init
@@ -858,6 +859,7 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
   expose private; private = .false
 ::METHOD setPrivate
   expose private; private = .true
+
 ::CLASS SourceProcedure SUBCLASS SourceElement
 ::METHOD resolve
 

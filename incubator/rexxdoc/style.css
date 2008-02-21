@@ -34,7 +34,7 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-body	{background-color:#F90;}
+body	{background-color:#FFF;}
 pre {font-family:courier;}
 table.table_methods td {border-width: 0px 0px 1px 0px;
 	border-style: solid;
@@ -45,6 +45,7 @@ table.table_methods {width:100%;}
 
 div.rxsource_div {
 	display:none;
+	font-weight: normal;
 	padding: 10px;
 	position:fixed;
 	left:10px;
@@ -52,13 +53,14 @@ div.rxsource_div {
 	height: 80%;
 	width: 80%;
 	background-color:white;
-	border: green 1px dotted;
+	border: green 3px dotted;
 	overflow:auto;
 }
 
-span.span_source:hover {background-color: red;}
+div.span_source {font-weight: bold; display: inline;}
+div.span_source:hover {background-color: red;}
 
-span.span_source:hover div.rxsource_div {
+div.span_source:hover div.rxsource_div {
 	display:block;
 }
 pre.rxsource {
@@ -69,6 +71,7 @@ pre.rxsource {
 	margin: 0px;
 	padding: 0px;
 	overflow:auto;
+	background-color: #eee;
 }
 
 /*div.span_source:hover {

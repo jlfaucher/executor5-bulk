@@ -57,14 +57,14 @@ out~say('<html xmlns="http://www.w3.org/1999/xhtml"><head><title>')
 -- the title is the root file name
 out~say(parser~tree~name)
 -- link the style sheet
-out~say('</title><link rel="stylesheet" type="text/css" href="style.css" title="Style"></head><body>')
+out~say('</title><link rel="stylesheet" type="text/css" href="style.css" title="Style"/></head><body>')
 -- print the tree information
 printFile(parser~tree,out)
 
 -- print the required files
 out~say('<h2>Required Files</h2>')
 do r over parser~tree~requires
-  out~say('<strong>'r~getFile~name'</strong><br>')
+  out~say('<strong>'r~getFile~name'</strong><br/>')
   -- print their tree...
   printFile(r~getFile,out)
 end
@@ -74,22 +74,43 @@ out~say('</body></html>')
 
 ::REQUIRES "rexxdoc.cls"
 
+::ROUTINE getMethodDetails
+  use arg method
+  mb = .mutableBuffer~new
+  if method~isAttribute then mb~append("Attribute ")
+  if method~isUnguarded then mb~append("Unguarded ")
+  if method~isClassMethod then mb~append("Class ")
+  if method~isPrivate then mb~append("Private ")
+  if method~isProtected then mb~append("Protected ")
+  if method~isAbstract then mb~append("Abstract ")
+  if mb~length = 0 then mb~append("(default)")
+  return mb~string
+
 /**
 * This routine converts a given rxdoc object to an HTML string.
-* Line breakes are replaced by <br>
+* Line breakes are replaced by <br/>
 */
 ::ROUTINE doc2string
   use arg doc
   if doc~class \= .string then do
-    accu = ""
-    do d over doc
-      if d~strip = "" then accu||='<br>'
-      else accu||=" "d
+    accu = .MutableBuffer~new
+    lines = doc~makearray
+    do i = 1 to lines~items
+      d = lines[i]
+      if d~strip = "" then accu~append('<br/>')
+      else accu~append(" "d)
     end
-    return accu'<br>'
+    if accu~length > 0 then accu~append('<br/>')
+    return accu~string
   end
-  else return doc'<br>'
+  else return doc'<br/>'
 
+::ROUTINE replaceSpecials
+  use arg string
+  string = string~changestr("&","&amp;")
+  string = string~changestr("<","&lt;")
+  string = string~changestr(">","&gt;")
+  return string
 /**
 * Print a while file.
 */
@@ -111,12 +132,35 @@ out~say('</body></html>')
   -- print the link section
   out~say('<h1 class="classes">Classes</h1>')
   do o over classes~makeArray~sort
-    out~say('<a href="#'o~name'" class="clsi" id="clsi_'o~name'">'o~name||"</a><br>")
+    out~say('<a href="#cls_'o~name'" class="clsi" id="clsi_'o~name'">'o~name||"</a><br/>")
   end
   -- print details
   do o over classes~makeArray~sort
-    out~say('<div id="cls_'o~name'"><a name="'o~name'"/><h2>'o~name"</h2>")
+    out~say('<div id="cls_'o~name'"><h2>'o~name"</h2>")
     out~say(doc2string(o~doc))
+    subclass = o~subclass
+    if subclass~class = .string then
+      out~say('Super class: '||subclass)
+    else
+      out~say('Super class: <a href="#cls_'subclass~name'">'subclass~name'</a>')
+    metaclass = o~metaclass
+    if metaclass \= .nil then do
+      out~say('<br/>')
+      if metaclass~class = .string then
+        out~say('Meta class: '||metaclass)
+      else
+        out~say('Meta class: <a href="#cls_'metaclass~name'">'metaclass~name'</a>')
+    end
+    inherits = o~inherit
+    if inherits~items > 0 then do
+      out~say('<br/>')
+      do inherit over inherits
+        if inherit~class = .string then
+          out~say('Inherit class: '||inherit)
+        else
+          out~say('Inherit class: <a href="#cls_'inherit~name'">'inherit~name'</a>')
+      end
+    end
     -- print the constants
     constants = classes[o]~constants
     if constants~items > 0 then do
@@ -144,19 +188,21 @@ out~say('</body></html>')
     do p over methods~makeArray~sort
       out~say('<tr class="method" id="mth_'o~name'_'p~name'">')
       out~say('  <td>'p~name"</td><td>")
-      out~say(doc2string(p~doc))
+      out~say(replaceSpecials(doc2string(p~doc)))
+      out~say('Modifiers: ')
+      out~say(getMethodDetails(p))
       -- print the source
       source = p~source~source
-      if source \= .nil , source~items > 0 then do
-        out~say('  <span class="span_source">Show source')
+      if source \= .nil , source~items > 0 & \p~isAbstract then do
+        out~say('  <div class="span_source">Show source')
         out~say('<div class="rxsource_div">')
         out~say('Source for <strong>'o~name||'~'||p~name||'</strong>')
         out~say('<pre class="rxsource">')
         do s over source 
           if s = "" then iterate
-          out~say(s)
+          out~say(replaceSpecials(s))
         end
-        out~say('</pre></div></span>')
+        out~say('</pre></div></div>')
       end
       out~say('  </td></tr>')
     end
