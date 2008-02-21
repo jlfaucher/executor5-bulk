@@ -59,7 +59,8 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
   defaultOptions["FOLLOW.REQUIRES"] = .true
   defaultOptions["EVALUATE.CONTINUATION"] = .true
   defaultOptions["WARN.AS.ERROR"] = .false
-
+  defaultOptions["WARN.PRINTLINE"] = .true
+  defaultOptions["ERROR.PRINTLINE"] = .true
   return defaultOptions~copy
 
 /** Initializer for the FileParser class. The first argument is the file name
@@ -72,7 +73,7 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
 * @todo Allow working on in buffer source.
 */
 ::METHOD Init
-  expose file data tree has options parseState node
+  expose file data tree has options parseState node parent
   use strict arg file, options = (self~class~defaultOptions), parent = .nil
   parseState = .ParseState~new(file,options)
   has = .directory~new
@@ -81,7 +82,7 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
 /** Call this method to start parsing a file. 
 */
 ::METHOD Parse
-  expose file state options tree source
+  expose file state options tree source parent
   source = .SourceContainer~new
   tree = .SourceFile~new(file, source, "", parent, self~ParseState)
   expectDefinition = .false
@@ -159,18 +160,21 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
       select
         -- parse routines
         when directive = "ROUTINE" then do
-          rd = .RoutineDirective~new(self)~~parse(line,source,self~getResetRxDoc, tree)
+          rd = .RoutineDirective~new(self)~~parse(line,source,,
+            self~getResetRxDoc, tree)
           tree~routines~put(rd~getObject)
           node = .nil
         end
         when directive = "REQUIRES"  & has~ClassMethod = .nil then do
-          rd = .RequiresDirective~new(self)~~parse(line,source,self~getResetRxDoc, tree)
+          rd = .RequiresDirective~new(self)~~parse(line,source,,
+            self~getResetRxDoc, tree)
           tree~requires~put(rd~getObject)
         end
         -- parse ::CLASS
         when directive = "CLASS" then do
           has~ClassMethod = .true
-          cp = .ClassDirective~new(self)~~parse(line,source,self~getResetRxDoc,tree)
+          cp = .ClassDirective~new(self)~~parse(line,source,,
+            self~getResetRxDoc,tree)
           node = cp~getObject
           tree~classes~put(node)
         end
@@ -182,7 +186,8 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
             target = node
           else
             target = tree
-          mp = .MethodDirective~new(self)~~parse(line,source,self~getResetRxDoc,target)
+          mp = .MethodDirective~new(self)~~parse(line,source,,
+            self~getResetRxDoc,target)
           method = mp~getObject
           target~methods~put(method)
         end
@@ -193,15 +198,17 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
             target = node
           else
             target = tree
-          ad = .AttributeDirective~new(self)~~parse(line,source,self~getResetRxDoc,target)
+          ad = .AttributeDirective~new(self)~~parse(line,source,,
+            self~getResetRxDoc,target)
           attribute = ad~getObject
-          target~methods~put(attribute)
+          target~attributes~put(attribute)
         end
         -- parse ::CONSTANT
         when directive = "CONSTANT" then do
           if node = .nil then self~ParseState~error("Constant without class")
           else do
-            cd = .ConstantDirective~new(self)~~parse(line,source,self~getResetRxDoc,node)
+            cd = .ConstantDirective~new(self)~~parse(line,source,,
+              self~getResetRxDoc,node)
             constant= cd~getObject
             node~constants~put(constant)
           end
@@ -271,6 +278,8 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
   if options~warn.as.error then forward message "error"
   use arg message
   .stderr~say("W" fileName":"lineNUmber message)
+  if options~warn.printline then
+    .stderr~say(">>>"line)
 
 /** This method prints an error message. Additionally
 * it adds the file name and line number to the error. .stderr is used
@@ -282,6 +291,8 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
   expose fileName line lineNumber
   use arg message
   .stderr~say("E" fileName":"lineNUmber message)
+  if options~error.printline then
+    .stderr~say(">>>"line)
 
 /** A base class for rexx doc strings. This is not yet finished.
 */
@@ -577,6 +588,7 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
   use strict arg line, source rxdoc, parent
   parse var line . name visibility
   sourceRoutine = .SourceRoutine~new(name,source,rxdoc,parent, self~state)
+  visibility = visibility~strip
   if visibility \= "" then
     if visibility~caselessEquals("PRIVATE") then
       sourceRoutine~setPrivate
@@ -711,8 +723,8 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
   inherit = new_inherit
 
 ::ATTRIBUTE Methods Get
-::ATTRIBUTE attributes Get
-::ATTRIBUTE constants Get
+::ATTRIBUTE Attributes Get
+::ATTRIBUTE Constants Get
 
 ::ATTRIBUTE Metaclass
 ::ATTRIBUTE Subclass
@@ -813,7 +825,7 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
 ::METHOD setAccess
   expose access; use arg access  
 ::METHOD getAccess
-  expose access; use arg access
+  expose access; return access
 ::METHOD resolve
 
 ::CLASS SourceConstant SUBCLASS SourceElement

@@ -1,3 +1,4 @@
+#!/usr/bin/rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 2008 Rexx Language Association. All rights reserved.         */
@@ -116,10 +117,30 @@ out~say('</body></html>')
   do o over classes~makeArray~sort
     out~say('<div id="cls_'o~name'"><a name="'o~name'"/><h2>'o~name"</h2>")
     out~say(doc2string(o~doc))
+    -- print the constants
+    constants = classes[o]~constants
+    if constants~items > 0 then do
+      out~say('<div class="constants" id="const_'o~name'"><h3>Constants</h3>')
+      out~say('<table class="table_constants"><tr><td>Name</td><td>Value</td></tr>')
+      do constant over constants
+        out~say('<tr class="constant" id="const_'o~name'_'constant~name'"><td>'constant~name'</td><td>'constant~value'</td></tr>')
+      end
+      out~say('</table></div>')
+    end
+    -- print the attributes
+    attributes = classes[o]~attributes
+    if attributes~items > 0 then do
+      out~say('<div class="attributes" id="attr_'o~name'"><h3>Attributes</h3>')
+      out~say('<table class="table_attributes"><tr><td>Name</td><td>Access</td></tr>')
+      do attribute over attributes
+        out~say('<tr class="attribute" id="attr_'o~name'_'attribute~name'"><td>'attribute~name'</td><td>'attribute~getAccess'</td></tr>')
+      end
+      out~say('</table></div>')
+    end
+    -- print the methods
     out~say('<div class="methods" id="mth_'o~name'"><h3>Methods</h3>')
     methods = classes[o]~methods
     out~say('<table class="table_methods"><tr><td>name</td><td>Description</td></tr>')
-    -- print the methods
     do p over methods~makeArray~sort
       out~say('<tr class="method" id="mth_'o~name'_'p~name'">')
       out~say('  <td>'p~name"</td><td>")
