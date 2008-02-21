@@ -146,8 +146,6 @@ class RexxMemory : public RexxInternalObject
   inline RexxMemory();
   inline RexxMemory(RESTORETYPE restoreType) { ; };
 
-  inline void *operator new(size_t size, void *ptr) {return ptr; };
-
   inline operator RexxObject*() { return (RexxObject *)this; };
   inline RexxObject *operator=(DeadObject *d) { return (RexxObject *)this; };
 

@@ -42,7 +42,8 @@
 /*                                                                            */
 /******************************************************************************/
 
-#include "oorexx.h"
+#include "RexxCore.h"
+#include "PackageManager.hpp"
 
 
 #define INTERNAL_METHOD(name) REXX_METHOD_PROTOTYPE(name)
@@ -54,33 +55,33 @@
 #define INTERNAL_METHOD(name) REXX_METHOD(name, name)
 
 // now build the actual entry list
-ooRexxMethodEntry rexx_methods[] =
+RexxMethodEntry rexx_methods[] =
 {
 #include "NativeMethods.h"             // bring in the standard list,
 #include "SysNativeMethods.h"          // plus any system extensions
 };
 
 
-#define INTERNAL_FUNCTION(name) REXX_TYPED_FUNCTION_PROTOTYPE(name)
-#define INTERNAL_NAMED_FUNCTION(name, entry) REXX_TYPED_FUNCTION_PROTOTYPE(entry)
+#define INTERNAL_FUNCTION(name) REXX_TYPED_ROUTINE_PROTOTYPE(name)
+#define INTERNAL_NAMED_FUNCTION(name, entry) REXX_TYPED_ROUTINE_PROTOTYPE(entry)
 
 #include "NativeFunctions.h"             // bring in the standard list,
 #include "SysNativeFunctions.h"          // plus any system extensions
 
 #undef  INTERNAL_FUNCTION
-#define INTERNAL_FUNCTION(name) REXX_TYPED_FUNCTION(name, name)
+#define INTERNAL_FUNCTION(name) REXX_TYPED_ROUTINE(name, name)
 
 #undef  INTERNAL_NAMED_FUNCTION
-#define INTERNAL_NAMED_FUNCTION(name, entry) REXX_TYPED_FUNCTION(name, entry)
+#define INTERNAL_NAMED_FUNCTION(name, entry) REXX_TYPED_ROUTINE(name, entry)
 
 // now build the actual entry list
-ooRexxRoutineEntry rexx_functions[] =
+RexxRoutineEntry rexx_functions[] =
 {
 #include "NativeFunctions.h"             // bring in the standard list,
 #include "SysNativeFunctions.h"          // plus any system extensions
 };
 
-ooRexxPackageEntry rexx_package_entry =
+RexxPackageEntry rexx_package_entry =
 {
     STANDARD_PACKAGE_HEADER
     "REXX",                              // name of the package
@@ -91,20 +92,5 @@ ooRexxPackageEntry rexx_package_entry =
     rexx_methods                         // the exported methods
 };
 
-#undef INTERNAL_FUNCTION
-#undef INTERNAL_NAMED_FUNCTION
-#define INTERNAL_FUNCTION(name) REXX_TYPED_FUNCTION_PROTOTYPE(name)
-#define INTERNAL_NAMED_FUNCTION(name, entry) REXX_TYPED_FUNCTION_PROTOTYPE(entry)
-
-#include "CommonSysUtils.h"              // bring in the standard list,
-#include "PlatformSysUtils.h"            // plus any system extensions
-
-#undef INTERNAL_FUNCTION
-#undef INTERNAL_NAMED_FUNCTION
-#define INTERNAL_FUNCTION(name) REXX_TYPED_FUNCTION(name, name)
-#define INTERNAL_NAMED_FUNCTION(name, entry) REXX_TYPED_FUNCTION(name, entry)
-
-// and initialize the PackageManager pointers to these tables.
-#include "Package.hpp"
-
-RexxPackageEntry *PackageManager::rexxPackageTable = &rexx_package_entry;
+// and finally plug this in to the package manager.
+RexxPackageEntry *PackageManager::rexxPackage = &rexx_package_entry;

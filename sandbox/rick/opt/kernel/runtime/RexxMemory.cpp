@@ -592,7 +592,7 @@ void RexxMemory::markObjects()
 
   if (this->orphanCheck) {             /* debugging bad OREF's?             */
                                        /* yup, call debugging mark          */
-    this->killOrphans(this);
+    this->killOrphans((RexxObject *)this);
     // now process the weak reference queue...We check this before the
     // uninit list is processed so that the uninit list doesn't mark any of the
     // weakly referenced items.  We don't want an object placed on the uninit queue
@@ -602,7 +602,7 @@ void RexxMemory::markObjects()
     this->killOrphans(uninitTable);    /* the uninit table                  */
   } else {
                                        /* call normal,speedy,efficient mark */
-    this->markObjectsMain(this);
+    this->markObjectsMain((RexxObject *)this);
     // now process the weak reference queue...We check this before the
     // uninit list is processed so that the uninit list doesn't mark any of the
     // weakly referenced items.  We don't want an object placed on the uninit queue

@@ -125,6 +125,17 @@ PackageClass *BaseExecutable::getPackage()
 }
 
 
+/**
+ * Retrieve the source lines for a base executable
+ *
+ * @return An array of the source lines
+ */
+RexxArray *BaseExecutable::source()
+{
+    return code->getSource();
+}
+
+
 RexxMethod::RexxMethod(BaseCode *codeObj)
 /******************************************************************************/
 /* Function:  Initialize a method object                                      */

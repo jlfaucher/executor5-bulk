@@ -71,7 +71,6 @@ class RexxNativeActivation : public RexxActivationBase
   void liveGeneral(int reason);
   void run(RexxMethod *_method, RexxNativeMethod *_code, RexxObject  *_receiver,
       RexxString  *_msgname, RexxObject **_arglist, size_t _argcount, ProtectedObject &resultObj);
-  void run(RexxObject *, RexxString *, size_t, RexxObject **, ProtectedObject &);
   void run(ActivityDispatcher &dispatcher);
   void run(CallbackDispatcher &dispatcher);
   RexxVariableDictionary *methodVariables();
@@ -139,6 +138,8 @@ class RexxNativeActivation : public RexxActivationBase
   virtual RexxActivation *getRexxContext();
   virtual NumericSettings *getNumericSettings();
   virtual RexxObject *getReceiver();
+  virtual SecurityManager *getSecurityManager();
+  RexxSource *getSourceObject();
   inline void setStackBase() { stackBase = true; }
   void reportSignatureError();
   void reportStemError(size_t position, RexxObject *object);

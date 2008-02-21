@@ -42,6 +42,7 @@
 
 #include "RexxCore.h"
 #include "InterpreterInstance.hpp"
+#include "ListClass.hpp"
 
 
 /**
@@ -51,7 +52,7 @@
  * @param options The options used to initialize us.  We can add additional
  *                platform-specific options if we wish.
  */
-void SysInterpreterInstance::initialize(InterpreterInstance *i, RexxOptions *options)
+void SysInterpreterInstance::initialize(InterpreterInstance *i, RexxOption *options)
 {
     instance = i;
 
@@ -69,9 +70,9 @@ void SysInterpreterInstance::addSearchExtension(const char *name)
 {
     // if the extension is not already in the extension list, add it
     RexxString *ext = new_string(name);
-    if (instance.searchExtensions->hasItem(ext) == TheFalseItem)
+    if (instance->searchExtensions->hasItem(ext) == TheFalseObject)
     {
-        instance.searchExtensions->append(ext);
+        instance->searchExtensions->append(ext);
     }
 }
 
@@ -86,7 +87,7 @@ SysSearchPath::SysSearchPath(const char *parentDir, const char *extensionPath)
 
 
     // enough room for separators and a terminating null
-    char *path = SysAllocateResultMemory(pathSize + parentSize + extensionSize + 8);
+    char *path = (char *)SysAllocateResultMemory(pathSize + parentSize + extensionSize + 8);
     *path = '\0';     // add a null character so strcat can work
     if (parentDir != NULL)
     {
@@ -103,7 +104,7 @@ SysSearchPath::SysSearchPath(const char *parentDir, const char *extensionPath)
         strcat(path, ";");
     }
 
-    GetEnvironmentVariable("PATH", path + strlen(path), pathSize + 1);
+    GetEnvironmentVariable("PATH", path + strlen(path), (DWORD)pathSize + 1);
 }
 
 
@@ -112,5 +113,5 @@ SysSearchPath::SysSearchPath(const char *parentDir, const char *extensionPath)
  */
 SysSearchPath::~SysSearchPath()
 {
-    SysReleaseResultMemory(path);
+    SysReleaseResultMemory((void *)path);
 }

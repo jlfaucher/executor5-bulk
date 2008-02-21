@@ -105,7 +105,7 @@ public:
         return false;
     }
 
-    static inline int wordSize()
+    static inline int getWordSize()
     {
         return sizeof(void *) * 8;
     }

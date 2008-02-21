@@ -2207,7 +2207,7 @@ RexxObject *RexxActivation::externalCall(RexxString *target, size_t _argcount, R
     }
 
     // Step 4:  Perform all platform-specific searches
-    if (SysExternalFunction(this, this->activity, target, this->code->getProgramName(), _arguments, _argcount, calltype, resultObj))
+    if (SysExternalFunction(this, this->activity, target, _arguments, _argcount, calltype, resultObj))
     {
         return(RexxObject *)resultObj;
     }
@@ -2294,7 +2294,7 @@ RoutineClass *RexxActivation::getMacroCode(RexxString *macroName)
     macroImage.strptr = NULL;
     if (RexxExecuteMacroFunction(macroName->getStringData(), &macroImage) == 0)
     {
-        macroRoutine = restore(&macroImage, macroName);
+        macroRoutine = RoutineClass::restore(&macroImage, macroName);
         // return the allocated buffer
         if (macroImage.strptr == NULL)
         {

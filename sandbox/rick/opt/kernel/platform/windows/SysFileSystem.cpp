@@ -44,7 +44,6 @@
 
 #include "windows.h"
 #include "SysFileSystem.hpp"
-#include "SysProcess.hpp"
 
 int SysFileSystem::stdinHandle = 0;
 int SysFileSystem::stdoutHandle = 1;
@@ -131,44 +130,37 @@ void SysFileSystem::qualifyStreamName(
 /* Function:  Qualify a stream name for this system                */
 /*******************************************************************/
 {
-  LPTSTR  lpszLastNamePart;
-  UINT errorMode;
-                       /* already expanded?                 */
-  if (qualifiedName[0] != '\0')
-  {
-      return;                            /* nothing more to do                */
-  }
-                       /* copy the name to full area        */
-  strcpy(qualifiedName, unqualifiedName);
+    LPTSTR  lpszLastNamePart;
+    UINT errorMode;
+    /* already expanded?                 */
+    if (qualifiedName[0] != '\0')
+    {
+        return;                            /* nothing more to do                */
+    }
+    /* copy the name to full area        */
+    strcpy(qualifiedName, unqualifiedName);
 
-  size_t namelen = strlen(qualifiedName);
-                       /* name end in a colon?              */
-  if (qualifiedName[namelen - 1] == ':') {
-      // this could be the drive letter.  If so, make it the root of the current drive.
-      if (namelen == 2)
-      {
-          strcat(qualifiedName, "\\");
-      }
-      else
-      {
-          // potentially a device, we need to remove the colon.
-          qualifiedName[namelen - 1] = '\0';
-          return;                            /* all finished                      */
+    size_t namelen = strlen(qualifiedName);
+    /* name end in a colon?              */
+    if (qualifiedName[namelen - 1] == ':')
+    {
+        // this could be the drive letter.  If so, make it the root of the current drive.
+        if (namelen == 2)
+        {
+            strcat(qualifiedName, "\\");
+        }
+        else
+        {
+            // potentially a device, we need to remove the colon.
+            qualifiedName[namelen - 1] = '\0';
+            return;                            /* all finished                      */
 
-      }
-  }
-
-  /* GetFullPathName doesn't work for COM? names without colon */
-  if (SysProcess::running98())
-  {
-      if (!strnicmp(qualifiedName, "com", 3)
-          && (qualifiedName[3] > '0') && (qualifiedName[3] <= '9'))
-          return;
-  }
-                       /* get the fully expanded name       */
-  errorMode = SetErrorMode(SEM_FAILCRITICALERRORS);
-  GetFullPathName(qualifiedName, (DWORD)bufferSize, qualifiedName, &lpszLastNamePart);
-  SetErrorMode(errorMode);
+        }
+    }
+    /* get the fully expanded name       */
+    errorMode = SetErrorMode(SEM_FAILCRITICALERRORS);
+    GetFullPathName(qualifiedName, (DWORD)bufferSize, qualifiedName, &lpszLastNamePart);
+    SetErrorMode(errorMode);
 }
 
 
@@ -209,7 +201,7 @@ bool SysFileSystem::findFirstFile(const char *name)
  *
  * @return True if the file exists, false otherwise.
  */
-bool SysFileSystem::fileExists(char *name)
+bool SysFileSystem::fileExists(const char *name)
 {
     return findFirstFile(name);
 }

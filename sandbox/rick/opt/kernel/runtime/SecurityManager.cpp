@@ -47,6 +47,30 @@
 #include "DirectoryClass.hpp"
 
 
+void *SecurityManager::operator new (size_t size)
+{
+                                         /* get a new method object           */
+    return new_object(size, T_SecurityManager);
+}
+
+
+void SecurityManager::live(size_t liveMark)
+/******************************************************************************/
+/* Function:  Normal garbage collection live marking                          */
+/******************************************************************************/
+{
+    memory_mark(this->manager);
+}
+
+
+void SecurityManager::liveGeneral(int reason)
+/******************************************************************************/
+/* Function:  Generalized object marking                                      */
+/******************************************************************************/
+{
+    memory_mark_general(this->manager);
+}
+
 /**
  * Do a security manager check for access to the local environment.
  *

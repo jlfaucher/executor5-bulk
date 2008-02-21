@@ -75,6 +75,17 @@ void RexxNativeCode::live(size_t liveMark)
 }
 
 
+void RexxNativeCode::liveGeneral(int reason)
+/******************************************************************************/
+/* Function:  Normal garbage collection live marking                          */
+/******************************************************************************/
+{
+    memory_mark_general(this->package);
+    memory_mark_general(this->name);
+    memory_mark_general(this->source);
+}
+
+
 void RexxNativeCode::flatten(RexxEnvelope *envelope)
 /******************************************************************************/
 /* Function:  Flatten an object                                               */
@@ -129,6 +140,18 @@ BaseCode *RexxNativeCode::setSourceObject(RexxSource *s)
     }
 }
 
+
+/**
+ * Get the source object backing this code instance.  If created from
+ * a directive, this will be the source package containing the
+ * directive.
+ *
+ * @return The parent source instance.
+ */
+RexxSource *RexxNativeCode::getSourceObject()
+{
+    return source;
+}
 
 
 void RexxNativeMethod::liveGeneral(int reason)

@@ -47,9 +47,6 @@
 #include "RexxCore.h"                  /* global REXX declarations          */
 #include "StringClass.hpp"
 
-#include "oorexx.h"                    /* Include REXX header               */
-#include "InternalAPI.hpp"             /* Get private REXXAPI API's         */
-
 /********************************************************************************************/
 /* Rexx_query_queue                                                                         */
 /********************************************************************************************/

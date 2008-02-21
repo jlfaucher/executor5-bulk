@@ -111,12 +111,13 @@ void RexxSource::initBuffered(
 
     extractNameInformation();            // make sure we have name information to work with
                                          /* set the source buffer             */
-    OrefSet(this, this->sourceBuffer, (RexxBuffer *)source_buffer);
-    OrefSet(this, this->sourceIndices, (RexxBuffer *)new RexxSmartBuffer(1024));
+    OrefSet(this, this->sourceBuffer, source_buffer);
+    RexxSmartBuffer *indices = new RexxSmartBuffer(1024);
+    ProtectedObject p(indices);
     /* point to the data part            */
-    start = ((RexxBuffer *)this->sourceBuffer)->getData();
+    start = this->sourceBuffer->getData();
     /* get the buffer length             */
-    length = ((RexxBuffer *)this->sourceBuffer)->getLength();
+    length = this->sourceBuffer->getLength();
 
     // neutralize shell '#!...'
     if (start[0] == '#' && start[1] == '!')
@@ -127,7 +128,7 @@ void RexxSource::initBuffered(
     descriptor.position = 0;             /* fill in the "zeroth" position     */
     descriptor.length = 0;               /* and the length                    */
                                          /* add to the line list              */
-    (((RexxSmartBuffer *)(this->sourceIndices)))->copyData(&descriptor, sizeof(descriptor));
+    indices->copyData(&descriptor, sizeof(descriptor));
     this->line_count = 0;                /* start with zero lines             */
                                          /* look for an EOF mark              */
     scan = (const char *)memchr(start, ctrl_z, length);
@@ -181,10 +182,10 @@ void RexxSource::initBuffered(
             _current = scan;                 /* copy the scan pointer             */
         }
         /* add to the line list              */
-        (((RexxSmartBuffer *)(this->sourceIndices)))->copyData(&descriptor, sizeof(descriptor));
+        indices->copyData(&descriptor, sizeof(descriptor));
     }
     /* throw away the buffer "wrapper"   */
-    OrefSet(this, this->sourceIndices, (((RexxSmartBuffer *)(this->sourceIndices)))->buffer);
+    OrefSet(this, this->sourceIndices, indices->getBuffer());
     this->position(1, 0);                /* set position at the first line    */
 }
 

@@ -109,7 +109,7 @@ public:
     bool seek(int64_t offset, int direction, int64_t &position);
     bool getPosition(int64_t &position);
     bool getSize(int64_t &size);
-    bool getSize(char *name, int64_t &size);
+    bool getSize(const char *name, int64_t &size);
     bool getTimeStamp(char *&time);
     bool getTimeStamp(const char *name, char *&time);
     bool putLine(const char *buffer, size_t len, size_t &bytesWritten);

@@ -135,7 +135,7 @@ void SysReleaseResultMemory(void *);   /* release a result memory block     */
 
 #ifndef SysExternalFunction
                                        /* call an external function         */
-bool SysExternalFunction(RexxActivation *, RexxActivity *, RexxString *, RexxString *, RexxObject **, size_t, RexxString *, ProtectedObject &);
+bool SysExternalFunction(RexxActivation *, RexxActivity *, RexxString *, RexxObject **, size_t, RexxString *, ProtectedObject &);
 #endif
 
 #ifndef SysCommand

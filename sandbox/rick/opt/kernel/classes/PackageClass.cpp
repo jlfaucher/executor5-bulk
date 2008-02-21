@@ -54,6 +54,16 @@
 RexxClass *PackageClass::classInstance = OREF_NULL;
 
 
+void *PackageClass::operator new (size_t size)
+/******************************************************************************/
+/* Function:  create a new method instance                                    */
+/******************************************************************************/
+{
+                                         /* get a new method object           */
+    return new_object(size, T_Package);
+}
+
+
 PackageClass::PackageClass(RexxSource *s)
 /******************************************************************************/
 /* Function:  Initialize a method object                                      */

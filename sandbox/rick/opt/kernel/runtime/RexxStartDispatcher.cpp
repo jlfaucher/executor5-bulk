@@ -115,7 +115,7 @@ void RexxStartDispatcher::run()
         }
         savedObjects.add(fullname);
                                            /* try to restore saved image        */
-        program = RoutineClass:fromFile(fullname);
+        program = RoutineClass::fromFile(fullname);
     }
     else                                 /* have an instore program           */
     {

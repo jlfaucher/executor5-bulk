@@ -38,28 +38,47 @@
 
 
 #include "RexxCore.h"
-#include "ProgramMetaData.hpp:
-#include "RexxBuffer.hpp"
+#include "ProgramMetaData.hpp"
+#include "BufferClass.hpp"
 #include "Interpreter.hpp"
+#include <stdio.h>
+#include <io.h>
+#include <fcntl.h>
+
 
 const char * compiledHeader = "/**/@REXX";
 
+
+/**
+ * Allocate a combined metadata object with the flattened
+ * program data after it.
+ *
+ * @param size   The size of the object
+ * @param buff   The appended buffer.
+ *
+ * @return The storage allocated for the new instance.
+ */
 void *ProgramMetaData::operator new (size_t size, RexxBuffer *buff)
 {
     // allocate a new buffer for this
-    return SysAllocateResultMemory(buff->getLength() + size - sizeof(imageData));
+    return SysAllocateResultMemory(buff->getLength() + size - sizeof(char[4]));
 }
 
 
+/**
+ * Initialize the meta data directly from a buffer.
+ *
+ * @param image  The image buffer.
+ */
 ProgramMetaData::ProgramMetaData(RexxBuffer *image)
 {
     // add the leading header
     strcpy(fileTag, compiledHeader);
     // fill in the version specifics and the hardward architecture type
-    magicNumber = MAGIC;
+    magicNumber = MAGICNUMBER;
     imageVersion = METAVERSION;
     // this is the number of bits in a word
-    wordSize = Interpreter::wordSize();
+    wordSize = Interpreter::getWordSize();
     bigEndian = Interpreter::isBigEndian();
 
     RexxString *versionNumber = Interpreter::getVersionNumber();
@@ -67,17 +86,22 @@ ProgramMetaData::ProgramMetaData(RexxBuffer *image)
 
     // copy in the image information
     imageSize = image->getLength();
-    memcpy(imageData, image->getAddress(), imageSize);
+    memcpy(imageData, image->getData(), imageSize);
 }
 
 
+/**
+ * Initialize program metadata for a specific size image.
+ *
+ * @param size   The size of the program data.
+ */
 ProgramMetaData::ProgramMetaData(size_t size)
 {
     // fill in the version specifics and the hardward architecture type
-    magicNumber = MAGIC;
+    magicNumber = MAGICNUMBER;
     imageVersion = METAVERSION;
     // this is the number of bits in a word
-    wordSize = Interpreter::wordSize();
+    wordSize = Interpreter::getWordSize();
     bigEndian = Interpreter::isBigEndian();
 
     RexxString *versionNumber = Interpreter::getVersionNumber();
@@ -88,6 +112,9 @@ ProgramMetaData::ProgramMetaData(size_t size)
 }
 
 
+/**
+ * Initialized a default metadata descriptor.
+ */
 ProgramMetaData::ProgramMetaData()
 {
     // this is for the purposes of reading in...force everything to zero.
@@ -127,7 +154,7 @@ size_t ProgramMetaData::getHeaderSize()
  *
  * @return The extracted buffer object.
  */
-RexxMappedBuffer *ProgramMetaData::extractBufferData()
+RexxBuffer *ProgramMetaData::extractBufferData()
 {
     return new_buffer(imageData, imageSize);
 }
@@ -146,19 +173,34 @@ bool ProgramMetaData::validate()
     {
         return false;
     }
-    return (magicNumber == MAGIC) && (imageVersion == METAVERSION) && (wordSize == Interpreter::getWordSize()) &&
-        (bigEndian == Interpeter::isBigEndian());
+    return (magicNumber == MAGICNUMBER) && (imageVersion == METAVERSION) && (wordSize == Interpreter::getWordSize()) &&
+        ((bigEndian != 0) == Interpreter::isBigEndian());
 }
 
 
+/**
+ * Write the metadata to a file.
+ *
+ * @param handle  The handle of the output file.
+ * @param program The program buffer data (also written out).
+ */
 void ProgramMetaData::write(FILE *handle, RexxBuffer *program)
 {
     fwrite(this, 1, getHeaderSize(), handle);
     /* and finally the flattened method  */
-    fwrite(program->getData(), 1, program->>getLength(), handle);
+    fwrite(program->getData(), 1, program->getLength(), handle);
 }
 
 
+/**
+ * Read the program meta data and the image data from a file, with
+ * image validation.
+ *
+ * @param handle The input file handle.
+ *
+ * @return A RexxBuffer instance containing the program data, or OREF_NULL
+ *         if the file is not a valid image.
+ */
 RexxBuffer *ProgramMetaData::read(FILE *handle)
 {
     // now read the control info
@@ -193,7 +235,7 @@ RexxBuffer *ProgramMetaData::read(FILE *handle)
                 // validate all of the meta information
                 if (!validate())
                 {
-                    fclose(hyndle);                    /* close the file                    */
+                    fclose(handle);                    /* close the file                    */
                     return OREF_NULL;
                 }
             }

@@ -38,17 +38,30 @@
 #ifndef ProgramMetaData_Included
 #define ProgramMetaData_Included
 
+class RexxBuffer;
 
 class ProgramMetaData
 {
 public:
-    ProgramMetaData(char *data, size_t length);
+    void *operator new (size_t size, RexxBuffer *buff);
+    void operator delete (void *p, RexxBuffer *buff) { SysReleaseResultMemory(p); }
+
+    ProgramMetaData();
+    ProgramMetaData(RexxBuffer *);
+    ProgramMetaData(size_t size);
+
+    size_t getDataSize();
+    size_t getHeaderSize();
+    RexxBuffer *extractBufferData();
+    bool validate();
+    void write(FILE *handle, RexxBuffer *program);
+    RexxBuffer *read(FILE *handle);
 
 protected:
     enum
     {
-        MAGICNUMBER = 11111;           // remains constant from release-to-release
-        METAVERSION = 40;              // gets updated when internal form changes
+        MAGICNUMBER = 11111,           // remains constant from release-to-release
+        METAVERSION = 40               // gets updated when internal form changes
     };
 
 
@@ -57,7 +70,7 @@ protected:
     unsigned short imageVersion;       // version identifier for validity
     unsigned short wordSize;           // size of a word
     unsigned short bigEndian;          // true if this is a big-endian platform
-    char           rexxVersion[40]     // Rexx version string info
+    char           rexxVersion[40];    // Rexx version string info
     size_t         imageSize;          // size of the image
     char           imageData[4];       // the copied image data
 };

@@ -77,7 +77,7 @@ class RexxNativeMethod : public RexxNativeCode
    inline void  operator delete(void *, void *) { ; }
 
    inline RexxNativeMethod(RESTORETYPE restoreType) { ; };
-   RexxNativeMethod(RexxString *, RexxString *, PNATIVEMETHOD);
+   inline RexxNativeMethod(RexxString *p, RexxString *n, PNATIVEMETHOD e) : RexxNativeCode(p, n), entry(e) { }
 
    void        liveGeneral(int reason);
    void        flatten(RexxEnvelope *envelope);

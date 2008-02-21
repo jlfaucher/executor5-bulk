@@ -49,6 +49,7 @@ public:
     static int memicmp(void *opt1, void *opt2, size_t len);
     static void strupper(char *str);
     static void strlower(char *str);
+    static const char *strnchr(const char *, size_t n, char ch);
 };
 
 #endif

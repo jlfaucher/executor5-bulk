@@ -194,7 +194,9 @@ inline uintptr_t HASHOREF(RexxVirtualBase *r) { return ((uintptr_t)r) >> OREFSHI
 
      void * operator new(size_t, RexxClass *);
      void * operator new(size_t, RexxClass *, RexxObject **, size_t);
+     inline void *operator new(size_t size, void *ptr) {return ptr;}
      inline void   operator delete(void *) { ; }
+     inline void operator delete(void *p, void *ptr) { }
      inline RexxInternalObject() {;};
                                        /* Following constructor used to     */
                                        /*  reconstruct the Virtual          */
@@ -564,7 +566,7 @@ public:
     virtual bool trap(RexxString *, RexxDirectory *) {return false;};
     virtual void setObjNotify(RexxMessage *) {;};
     virtual void termination(){;};
-    virtual SecurityManager *getSecurityManager();
+    virtual SecurityManager *getSecurityManager() = 0;
     virtual bool isForwarded() { return false; }
     virtual bool isStackBase() { return false; }
     virtual RexxObject *getReceiver() { return OREF_NULL; }

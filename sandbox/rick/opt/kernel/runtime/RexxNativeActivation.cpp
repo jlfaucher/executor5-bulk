@@ -1752,7 +1752,7 @@ RexxObject *RexxNativeActivation::dispatch()
 /******************************************************************************/
 {
     ProtectedObject r;
-    this->run(receiver, msgname, argcount, arglist, r);  /* just do a method run              */
+    this->run(method, code, receiver, msgname, argcount, arglist, r);  /* just do a method run              */
     return (RexxObject *)r;
 }
 
@@ -1909,6 +1909,28 @@ RexxActivation *RexxNativeActivation::getRexxContext()
 RexxObject *RexxNativeActivation::getReceiver()
 {
     return receiver;
+}
+
+
+/**
+ * Get the security manager context
+ *
+ * @return The security manager, if there is one.
+ */
+SecurityManager *RexxNativeActivation::getSecurityManager()
+{
+    SecurityManager *manager = OREF_NULL;
+
+    RexxSource *s = getSourceObject();
+    if (s != OREF_NULL)
+    {
+        manager = s->getSecurityManager();
+    }
+    if (manager == OREF_NULL)
+    {
+        manager = activity->getSecurityManager();
+    }
+    return manager;
 }
 
 
@@ -2321,6 +2343,28 @@ RexxClass *RexxNativeActivation::resolveClass(RexxString *className)
     }
 
     return Interpreter::resolveClass(className);
+}
+
+
+/**
+ * Retrieve the source object for the current context, if there is one.
+ *
+ * @return The source object associated with any Method or Routine currently
+ *         being run.
+ */
+RexxSource *RexxNativeActivation::getSourceObject()
+{
+    if (method != OREF_NULL)
+    {
+        return method->getSourceObject();
+    }
+
+    if (routine != OREF_NULL)
+    {
+        return routine->getSourceObject();
+    }
+
+    return OREF_NULL;
 }
 
 

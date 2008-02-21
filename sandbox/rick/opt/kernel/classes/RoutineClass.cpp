@@ -59,6 +59,8 @@
 #include "BufferClass.hpp"
 #include "RexxInternalApis.h"
 #include "RexxSmartBuffer.hpp"
+#include "ProgramMetaData.hpp"
+#include "Utilities.hpp"
 #include <ctype.h>
 
 
@@ -101,6 +103,22 @@ void RoutineClass::flatten(RexxEnvelope *envelope)
    flatten_reference(newThis->code, envelope);
 
   cleanUpFlatten
+}
+
+
+void RoutineClass::call(
+    RexxActivity *activity,            /* activity running under            */
+    RexxString *msgname,               /* message to be run                 */
+    RexxObject**argPtr,                /* arguments to the method           */
+    size_t      argcount,              /* the count of arguments            */
+    ProtectedObject &result)           // the method result
+/******************************************************************************/
+/* Function:  Call a method as a top level program or external function call  */
+/******************************************************************************/
+{
+    ProtectedObject p(this);           // belt-and-braces to make sure this is protected
+    // just forward this to the code object
+    code->call(activity, this, msgname, argPtr, argcount, result);
 }
 
 
@@ -184,13 +202,13 @@ RexxBuffer *RoutineClass::save()
  */
 void RoutineClass::save(PRXSTRING outBuffer)
 {
-    ProtectedObject p(program);
-    RexxBuffer *methodBuffer = program->save();  /* flatten the method                */
+    ProtectedObject p(this);
+    RexxBuffer *methodBuffer = save();  /* flatten the routine               */
     // create a full buffer of the data, plus the information header.
     ProgramMetaData *data = new (methodBuffer) ProgramMetaData(methodBuffer);
     // we just hand this buffer of data right over...that's all, we're done.
     outBuffer->strptr = (char *)data;
-    outBuffer->strLength = data->getdataSize();
+    outBuffer->strlength = data->getDataSize();
 }
 
 
@@ -201,19 +219,11 @@ void RoutineClass::save(PRXSTRING outBuffer)
  */
 void RoutineClass::save(const char *filename)
 {
-    FILE         *Handle;                /* output file handle                */
-    FILE_CONTROL  Control;               /* control information               */
-    RexxBuffer   *MethodBuffer;          /* flattened method                  */
-    RexxSmartBuffer *FlatBuffer;         /* flattened smart buffer            */
-    char         *BufferAddress;         /* address of flattened method data  */
-    LONG          BufferLength;          /* length of the flattened method    */
-    RexxString   *Version;               /* REXX version string               */
-
     FILE *handle = fopen(filename, "wb");/* open the output file              */
     {
         if (handle == NULL)                  /* get an open error?                */
             /* got an error here                 */
-            reportException(Error_Program_unreadable_output_error, File);
+            reportException(Error_Program_unreadable_output_error, filename);
     }
     ProtectedObject p(this);
 
@@ -227,13 +237,10 @@ void RoutineClass::save(const char *filename)
         UnsafeBlock releaser;
 
         // write out the header information
-        metaData.write(handle);
-        /* and finally the flattened method  */
-        fwrite(buffer->getData(), 1, buffer->getLength(), handle);
+        metaData.write(handle, buffer);
         fclose(handle);
     }
 }
-
 
 
 void *RoutineClass::operator new (size_t size)
@@ -242,8 +249,7 @@ void *RoutineClass::operator new (size_t size)
 /******************************************************************************/
 {
                                          /* get a new method object           */
-    RexxObject *newObj = new_object(size, T_Routine);
-    return newObj;                       /* Initialize this new method        */
+    return new_object(size, T_Routine);
 }
 
 
@@ -598,13 +604,13 @@ RoutineClass *RoutineClass::restore(RexxBuffer *buffer)
  */
 RoutineClass *RoutineClass::restore(RXSTRING *inData)
 {
-    char *data = inData->strptr;
+    const char *data = inData->strptr;
 
     // does this start with a hash-bang?  Need to scan forward to the first
     // newline character
     if (data[0] == '#' && data[1] == '!')
     {
-        data = strnchr(data, inData->strlength, '\n');
+        data = Utilities::strnchr(data, inData->strlength, '\n');
         if (data == OREF_NULL)
         {
             return OREF_NULL;
@@ -656,7 +662,7 @@ RoutineClass *RoutineClass::restore(RexxString *name, FILE *handle)
     ProgramMetaData metaData;
 
     // read and validate the image
-    RexxBuffer *buffer = metaData->read(handle);
+    RexxBuffer *buffer = metaData.read(handle);
 
     // this returns wrong if there is a versioning mismatch.
     if (buffer == OREF_NULL)

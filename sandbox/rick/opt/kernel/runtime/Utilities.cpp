@@ -256,3 +256,26 @@ void Utilities::strlower(char *str)
 
     return;
 }
+
+
+/**
+ * Bounded strchr() function.
+ *
+ * @param data   The data pointer.
+ * @param n      The maximum length to scan.
+ * @param ch     The character of interest.
+ *
+ * @return The pointer to the located character, or NULL if it isn't found.
+ */
+const char *Utilities::strnchr(const char *data, size_t n, char ch)
+{
+    const char *endPtr = data + n;
+    while (data < endPtr && *data != '\0')
+    {
+        if (*data == ch)
+        {
+            return data;
+        }
+    }
+    return NULL;
+}

@@ -44,7 +44,6 @@
 
 #include "SysFile.hpp"
 #include "SysFileSystem.hpp"
-#include "SysProcess.hpp"
 #include <errno.h>
 #include <time.h>
 #include <conio.h>
@@ -71,43 +70,8 @@ bool SysFile::open(const char *name, int openFlags, int openMode, int shareMode)
     mode = openMode;
     share = shareMode;
 
-    // running on Win 95/98/SE/ME level system, the COM ports require special handling
-    if (SysProcess::running98())
-    {
-
-        // is the name COMn form?
-        if (!strnicmp(name, "COM", 3) && (name[3] > '0') && (name[3] <= '9'))
-        {
-            // we must turn off the create flag for com ports..
-            openFlags &=~RX_O_CREAT;      /* COM ports require OPEN_EXISTING... */
-            // the rest should open ok.
-            fileHandle = _sopen(name, openFlags, shareMode, openMode);
-            // if this opened ok.
-            if (fileHandle != -1)
-            {
-                DCB dcb;
-                HANDLE osf = (HANDLE)_get_osfhandle(fileHandle);
-                /* The following functions must be called, otherwise reading from COM port won't work */
-                /* Note that the dcb is not modified but still Get and Set must be called, otherwise ReadFile hangs */
-                if (osf != NULL)
-                {
-                    if (GetCommState(osf, &dcb))
-                    {
-                        SetCommState(osf, &dcb);
-                    }
-                }
-            }
-        }
-        else
-        {
-            fileHandle = _sopen(name, openFlags, shareMode, openMode);  /* allow sharing for normal files */
-        }
-    }
-    else
-    {
-        // we must open this with the NOINHERIT flag added
-        fileHandle = _sopen(name, openFlags|RX_O_NOINHERIT, shareMode, openMode);
-    }
+    // we must open this with the NOINHERIT flag added
+    fileHandle = _sopen(name, openFlags|RX_O_NOINHERIT, shareMode, openMode);
 
     // save a copy of the name
     filename = strdup(name);

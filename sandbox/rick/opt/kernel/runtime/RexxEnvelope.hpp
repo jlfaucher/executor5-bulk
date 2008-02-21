@@ -58,7 +58,7 @@ class RexxEnvelope : public RexxInternalObject
 {
   public:
    void *operator new(size_t);
-   inline void *operator new(size_t size, void *ptr) {return ptr;};
+   inline void *operator new(size_t size, void *ptr) {return ptr;}
    RexxEnvelope();
    inline RexxEnvelope(RESTORETYPE restoreType) { ; };
    void live(size_t);
