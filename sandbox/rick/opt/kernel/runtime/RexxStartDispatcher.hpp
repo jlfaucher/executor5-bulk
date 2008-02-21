@@ -70,7 +70,6 @@ public:
     virtual ~CallRoutineDispatcher() { ; }
 
     virtual void run();
-    virtual void handleError(wholenumber_t, RexxDirectory *);
 
     ProtectedObject result;
 
@@ -87,7 +86,6 @@ public:
     virtual ~CallProgramDispatcher() { ; }
 
     virtual void run();
-    virtual void handleError(wholenumber_t, RexxDirectory *);
 
     ProtectedObject result;
 
