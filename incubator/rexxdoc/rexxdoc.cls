@@ -843,9 +843,9 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
 ::CLASS SourceRequires SUBCLASS SourceElement
 ::METHOD Init
   expose options sourceFile
-  use strict arg name, source, rxdoc, target, options
+  use strict arg name, source, rxdoc, target, options, state
   sourceFile = .nil
-  forward class (super) array (name, source, rxdoc, target)
+  forward class (super) array (name, source, rxdoc, target, state)
 ::METHOD resolve
   expose options sourceFile
   if options~follow.requires then do
