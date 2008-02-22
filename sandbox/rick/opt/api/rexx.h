@@ -657,6 +657,8 @@ typedef RexxReturnCode (REXXENTRY *PFNREXXCLEARMACROSPACE)(void);
 /***    Queing Services                                                       */
 /*----------------------------------------------------------------------------*/
 
+#define MAX_QUEUE_NAME_LENGTH 250
+
 /***    RexxCreateQueue - Create an External Data Queue */
 
 RexxReturnCode REXXENTRY RexxCreateQueue (

@@ -1752,7 +1752,7 @@ RexxObject *RexxNativeActivation::dispatch()
 /******************************************************************************/
 {
     ProtectedObject r;
-    this->run(method, code, receiver, msgname, argcount, arglist, r);  /* just do a method run              */
+    this->run(method, (RexxNativeMethod *)code, receiver, msgname, arglist, argcount, r);  /* just do a method run              */
     return (RexxObject *)r;
 }
 

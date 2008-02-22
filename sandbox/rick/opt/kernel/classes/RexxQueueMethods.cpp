@@ -52,11 +52,10 @@
 /********************************************************************************************/
 RexxMethod0(size_t, rexx_query_queue)
 {
-   RexxStringObject queue_name;        /* current queue name                */
    size_t count = 0;                   /* count of lines                    */
 
                                        /* get the queue name                */
-   queue_name = context->GetObjectVariable("NAMED_QUEUE");
+   RexxObjectPtr queue_name = (RexxStringObject)context->GetObjectVariable("NAMED_QUEUE");
                                        /* query the queue                   */
    RexxQueryQueue(context->ObjectToStringValue(queue_name), &count);
 
@@ -88,7 +87,7 @@ RexxMethod0(RexxObjectPtr, rexx_pull_queue)
        }
        return result;
    }
-   return context->NilObject();        /* give back a failure               */
+   return context->Nil();              /* give back a failure               */
 }
 
 /********************************************************************************************/
@@ -96,9 +95,9 @@ RexxMethod0(RexxObjectPtr, rexx_pull_queue)
 /********************************************************************************************/
 RexxMethod0(RexxObjectPtr, rexx_linein_queue)
 {
-   RxString buf;                       /* pulled line buffer                */
    RexxReturnCode rc;                  /* pull return code                  */
    RexxObjectPtr queue_name;           /* current queue name                */
+   RXSTRING buf;
 
                                        /* get the queue name                */
    queue_name = context->GetObjectVariable("NAMED_QUEUE");
@@ -113,17 +112,17 @@ RexxMethod0(RexxObjectPtr, rexx_linein_queue)
        RexxObjectPtr result = context->NewString(buf.strptr, buf.strlength);
        if (buf.strptr != OREF_NULL)
        {
-           ooRexxFreeMemory(buf.strptr);
+           RexxFreeMemory(buf.strptr);
        }
        return result;
    }
-   return context->NilObject();        /* give back a failure               */
+   return context->Nil();        /* give back a failure               */
 }
 
 /********************************************************************************************/
 /* add a line to a rexx queue                                                               */
 /********************************************************************************************/
-RexxNumber rexx_add_queue(
+wholenumber_t rexx_add_queue(
   RexxMethodContext *context,          // the call context
   RexxStringObject  queue_line,        /* line to add                       */
   int         order )                  /* queuing order                     */
@@ -135,7 +134,7 @@ RexxNumber rexx_add_queue(
    if (queue_line == NULLOBJECT)       /* no line given?                    */
    {
        // just use a null string value
-       MAKERXSTRING(rx_string, buffer, 0);
+       MAKERXSTRING(rx_string, &buffer, 0);
    }
    else
    {
@@ -155,7 +154,7 @@ RexxNumber rexx_add_queue(
 /********************************************************************************************/
 /* Rexx_push_queue                                                                          */
 /********************************************************************************************/
-RexxMethod1(RexxNumber, rexx_push_queue,
+RexxMethod1(wholenumber_t, rexx_push_queue,
    OPTIONAL_RexxStringObject, queue_line)  /* line to queue                     */
 {
                                        /* push a line onto the queue        */
@@ -165,7 +164,7 @@ RexxMethod1(RexxNumber, rexx_push_queue,
 /********************************************************************************************/
 /* Rexx_queue_queue                                                                         */
 /********************************************************************************************/
-RexxMethod1(RexxNumber, rexx_queue_queue,
+RexxMethod1(wholenumber_t, rexx_queue_queue,
    OPTIONAL_RexxStringObject, queue_line)  /* line to queue                     */
 {
                                        /* queue a line onto the queue       */
@@ -202,19 +201,3 @@ RexxMethod1(wholenumber_t, rexx_delete_queue,
   return RexxDeleteQueue(queue_name);
 }
 
-
-
-/********************************************************************************************/
-/* function_queueExit                                                                       */
-/********************************************************************************************/
-RexxMethod1(REXXOBJECT, function_queueExit,
-  STRING, queue_name)                  /* the requested name                */
-{
-    NativeContextBlock context;
-
-    RexxString *temp = (RexxString *)queue_name;
-                                       /* call the exit                     */
-    RexxActivation *activation = ActivityManager::currentActivity->getCurrentRexxFrame();
-    context.activity->callQueueNameExit(activation, temp);
-    return context.protect(temp);          /* and just return the exit result   */
-}
