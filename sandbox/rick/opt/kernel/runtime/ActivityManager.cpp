@@ -176,6 +176,7 @@ void ActivityManager::addWaitingActivity(
             unlockKernel();
         }
         SysThreadYield();                  /* yield the thread                  */
+        SysRelinquish();                   /* now allow system stuff to run     */
         waitingAct->waitKernel();          /* and wait for permission           */
     }
     lockKernel();                        // get the kernel lock now
@@ -828,10 +829,8 @@ void ActivityManager::relinquish(RexxActivity *activity)
 {
     if (firstWaitingActivity != OREF_NULL)
     {
-                                         /* now join the line                 */
         addWaitingActivity(activity, true);
     }
-    SysRelinquish();                     /* now allow system stuff to run     */
 }
 
 

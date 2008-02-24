@@ -171,8 +171,11 @@ void RexxMemory::createImage()
 {
   RexxMemory::create();                /* create initial memory stuff       */
 
+  memoryObject.createStrings();        /* create all of the OREF_ strings   */
   Interpreter::init();                 // the interpreter subsystem first
   ActivityManager::init();             /* Initialize the activity managers  */
+  // initializer for native libraries
+  PackageManager::initialize();
   // Get an instance.  This also gives the root activity of the instance
   // the kernel lock.
   InterpreterInstance *instance = Interpreter::createInterpreterInstance();
@@ -189,7 +192,6 @@ void RexxMemory::createImage()
                                        /*object.                            */
   TheNilObject->makeProxiedObject();
 
-  memoryObject.createStrings();        /* create all of the OREF_ strings   */
                                        /* create string first               */
   CLASS_CREATE(String, "String", RexxStringClass);
   CLASS_CREATE(Object, "Object", RexxClass);

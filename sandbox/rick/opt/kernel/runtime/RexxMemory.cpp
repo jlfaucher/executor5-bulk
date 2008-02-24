@@ -2198,8 +2198,6 @@ void RexxMemory::create()
 {
     RexxClass::createClass();            /* get the CLASS class created       */
     RexxInteger::createClass();
-    // initializer for native libraries
-    PackageManager::initialize();
     /* Now get our savestack and         */
     /*savetable                          */
     memoryObject.setUpMemoryTables(OREF_NULL);

@@ -1338,6 +1338,27 @@ RexxSupplierObject RexxEntry NewSupplier(RexxThreadContext *c, RexxArrayObject v
     return NULLOBJECT;
 }
 
+RexxStemObject RexxEntry NewStem(RexxThreadContext *c, CSTRING name)
+{
+    ApiContext context(c);
+    try
+    {
+        if (name == NULL)
+        {
+            return (RexxStemObject)context.ret(new RexxStem(new_string(name)));
+        }
+        else
+        {
+            return (RexxStemObject)context.ret(new RexxStem(OREF_NULL));
+        }
+
+    }
+    catch (ActivityException)
+    {
+    }
+    return NULLOBJECT;
+}
+
 void RexxEntry SetStemElement(RexxThreadContext *c, RexxStemObject s, CSTRING n, RexxObjectPtr v)
 {
     ApiContext context(c);
@@ -1675,6 +1696,7 @@ RexxThreadInterface RexxActivity::threadContextFunctions =
     SupplierNext,
     NewSupplier,
 
+    NewStem,
     SetStemElement,
     GetStemElement,
     DropStemElement,

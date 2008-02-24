@@ -592,6 +592,7 @@ typedef struct
     void             (RexxEntry *SupplierNext)(RexxThreadContext *, RexxSupplierObject);
     RexxSupplierObject (RexxEntry *NewSupplier)(RexxThreadContext *, RexxArrayObject values, RexxArrayObject names);
 
+    RexxStemObject   (RexxEntry *NewStem)(RexxThreadContext *, CSTRING);
     void             (RexxEntry *SetStemElement)(RexxThreadContext *, RexxStemObject, CSTRING, RexxObjectPtr);
     RexxObjectPtr    (RexxEntry *GetStemElement)(RexxThreadContext *, RexxStemObject, CSTRING);
     void             (RexxEntry *DropStemElement)(RexxThreadContext *, RexxStemObject, CSTRING);
@@ -1108,6 +1109,10 @@ struct RexxThreadContext_
         return functions->NewSupplier(this, values, names);
     }
 
+    RexxStemObject NewStem(CSTRING n)
+    {
+        return functions->NewStem(this, n);
+    }
     void SetStemElement(RexxStemObject so, CSTRING s, RexxObjectPtr o)
     {
         functions->SetStemElement(this, so, s, o);
@@ -1581,6 +1586,10 @@ struct RexxMethodContext_
         return threadContext->NewSupplier(values, names);
     }
 
+    RexxStemObject NewStem(CSTRING n)
+    {
+        return threadContext->NewStem(n);
+    }
     void SetStemElement(RexxStemObject so, CSTRING s, RexxObjectPtr o)
     {
         threadContext->SetStemElement(so, s, o);
@@ -2112,6 +2121,10 @@ struct RexxCallContext_
         return threadContext->NewSupplier(values, names);
     }
 
+    RexxStemObject NewStem(CSTRING n)
+    {
+        return threadContext->NewStem(n);
+    }
     void SetStemElement(RexxStemObject so, CSTRING s, RexxObjectPtr o)
     {
         threadContext->SetStemElement(so, s, o);
@@ -2632,6 +2645,10 @@ struct RexxExitContext_
         return threadContext->NewSupplier(values, names);
     }
 
+    RexxStemObject NewStem(CSTRING n)
+    {
+        return threadContext->NewStem(n);
+    }
     void SetStemElement(RexxStemObject so, CSTRING s, RexxObjectPtr o)
     {
         threadContext->SetStemElement(so, s, o);
