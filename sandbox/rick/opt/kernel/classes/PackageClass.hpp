@@ -62,7 +62,9 @@ public:
     RexxString *getName();
     RexxArray *getSource();
     RexxString *getSourceLine(size_t);
+    RexxInteger *getSourceSize();
     RexxString *getSourceLineRexx(RexxObject *);
+    RexxObject  *setSecurityManager(RexxObject *);
 
     RexxDirectory *getClasses();
     RexxDirectory *getPublicClasses();
@@ -72,9 +74,16 @@ public:
     RexxDirectory *getPublicRoutines();
     RexxDirectory *getImportedRoutines();
     RexxArray     *getImportedPackages();
-    PackageClass  *loadPackage(RexxString *name);
+    PackageClass  *loadPackage(RexxString *name, RexxArray *source);
     RexxObject    *addPackage(PackageClass *package);
-    RexxClass     *resolveClass(RexxString *name);
+    RexxClass     *findClass(RexxString *name);
+    RoutineClass  *findRoutine(RexxString *name);
+    RexxObject    *addRoutine(RexxString *name, RoutineClass *routine);
+    RexxObject    *addPublicRoutine(RexxString *name, RoutineClass *routine);
+    RexxObject    *addClass(RexxString *name, RexxClass *clazz);
+    RexxObject    *addPublicClass(RexxString *name, RexxClass *clazz);
+
+    PackageClass  *newRexx(RexxString *name, RexxArray *source);
 
     inline RexxSource *getSourceObject() { return source; }
 

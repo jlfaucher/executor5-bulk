@@ -68,14 +68,100 @@
 RexxClass *RoutineClass::classInstance = OREF_NULL;
 
 
-RoutineClass::RoutineClass(BaseCode *codeObj)
-/******************************************************************************/
-/* Function:  Initialize a method object                                      */
-/******************************************************************************/
+/**
+ * Initialize a Routine object from a generated code object. Generally
+ * used for routines generated from ::ROUTINE directives.
+ *
+ * @param name    The routine name.
+ * @param codeObj The associated code object.
+ */
+RoutineClass::RoutineClass(RexxString *name, BaseCode *codeObj)
 {
     this->clearObject();                 /* start out fresh                   */
     OrefSet(this, this->code, codeObj);  /* store the code                    */
+    OrefSet(this, this->executableName, name);
 }
+
+
+/**
+ * Initialize a RoutineClass object from a file source.
+ *
+ * @param name   The routine name (and the resolved name of the file).
+ */
+RoutineClass::RoutineClass(RexxString *name)
+{
+    this->clearObject();                 /* start out fresh                   */
+    ProtectedObject p(this);             // protect during processing
+    OrefSet(this, this->executableName, name);
+    // get a source object to generat this from
+    RexxSource *source = new RexxSource(name);
+    ProtectedObject p2(source);
+    // generate our code object and make the file hook up.
+    RexxCode *codeObj = source->generateCode();
+    OrefSet(this, this->code, codeObj);
+}
+
+
+/**
+ * Initialize a Routine object using a buffered source.
+ *
+ * @param name   The name of the routine.
+ * @param source the source buffer.
+ */
+RoutineClass::RoutineClass(RexxString *name, RexxBuffer *s)
+{
+    this->clearObject();                 /* start out fresh                   */
+    ProtectedObject p(this);             // protect during processing
+    OrefSet(this, this->executableName, name);
+    // get a source object to generat this from
+    RexxSource *source = new RexxSource(name, s);
+    ProtectedObject p2(source);
+    // generate our code object and make the file hook up.
+    RexxCode *codeObj = source->generateCode();
+    OrefSet(this, this->code, codeObj);
+}
+
+
+/**
+ * Initialize a Routine object using directly provided source.
+ *
+ * @param name   The name of the routine.
+ * @param data   The source data buffer pointer.
+ * @param length the length of the source buffer.
+ */
+RoutineClass::RoutineClass(RexxString *name, const char *data, size_t length)
+{
+    this->clearObject();                 /* start out fresh                   */
+    ProtectedObject p(this);             // protect during processing
+    OrefSet(this, this->executableName, name);
+    // get a source object to generat this from
+    RexxSource *source = new RexxSource(name, data, length);
+    ProtectedObject p2(source);
+    // generate our code object and make the file hook up.
+    RexxCode *codeObj = source->generateCode();
+    OrefSet(this, this->code, codeObj);
+}
+
+
+/**
+ * Initialize a Routine object using an array source.
+ *
+ * @param name   The name of the routine.
+ * @param source the source buffer.
+ */
+RoutineClass::RoutineClass(RexxString *name, RexxArray *s)
+{
+    this->clearObject();                 /* start out fresh                   */
+    ProtectedObject p(this);             // protect during processing
+    OrefSet(this, this->executableName, name);
+    // get a source object to generat this from
+    RexxSource *source = new RexxSource(name, s);
+    ProtectedObject p2(source);
+    // generate our code object and make the file hook up.
+    RexxCode *codeObj = source->generateCode();
+    OrefSet(this, this->code, codeObj);
+}
+
 
 void RoutineClass::live(size_t liveMark)
 /******************************************************************************/
@@ -83,6 +169,8 @@ void RoutineClass::live(size_t liveMark)
 /******************************************************************************/
 {
     memory_mark(this->code);
+    memory_mark(this->executableName);
+    memory_mark(this->objectVariables);
 }
 
 void RoutineClass::liveGeneral(int reason)
@@ -91,6 +179,8 @@ void RoutineClass::liveGeneral(int reason)
 /******************************************************************************/
 {
     memory_mark_general(this->code);
+    memory_mark_general(this->executableName);
+    memory_mark_general(this->objectVariables);
 }
 
 void RoutineClass::flatten(RexxEnvelope *envelope)
@@ -101,6 +191,8 @@ void RoutineClass::flatten(RexxEnvelope *envelope)
   setUpFlatten(RoutineClass)
 
    flatten_reference(newThis->code, envelope);
+   flatten_reference(newThis->executableName, envelope);
+   flatten_reference(newThis->objectVariables, envelope);
 
   cleanUpFlatten
 }
@@ -139,6 +231,43 @@ void RoutineClass::call(
     // just forward this to the code object
     code->call(activity, this, msgname, argPtr, argcount, calltype, environment, context, result);
 }
+
+
+/**
+ * Call a routine object from Rexx-level code.
+ *
+ * @param args   The call arguments.
+ * @param count  The count of arguments.
+ *
+ * @return The call result (if any).
+ */
+RexxObject *RoutineClass::callRexx(RexxObject **args, size_t count)
+{
+    ProtectedObject result;
+
+    code->call(ActivityManager::currentActivity, this, executableName, args, count, result);
+    return (RexxObject *)result;
+}
+
+
+/**
+ * Call a routine object from Rexx-level code.
+ *
+ * @param args   The call arguments.
+ *
+ * @return The call result (if any).
+ */
+RexxObject *RoutineClass::callWithRexx(RexxArray *args)
+{
+    // this is required and must be an array
+    args = REQUIRED_ARRAY(args, 1);
+
+    ProtectedObject result;
+
+    code->call(ActivityManager::currentActivity, this, executableName, args->data(), args->size(), result);
+    return (RexxObject *)result;
+}
+
 
 
 void RoutineClass::runProgram(
@@ -254,20 +383,6 @@ void *RoutineClass::operator new (size_t size)
 
 
 /**
- * Create a new Routine object from a source object.  This
- * creates a top-level routine object.
- *
- * @param source The original source object.
- *
- * @return A RoutineClass instance.
- */
-RoutineClass *RoutineClass::newRoutine(RexxSource *source)
-{
-    // generate a new routine from the base source
-    return new_routine(source->generateCode());
-}
-
-/**
  * Construct a Routine using different forms of in-memory
  * source file.
  *
@@ -327,12 +442,9 @@ RoutineClass *RoutineClass::newRoutineObject(RexxString *pgmname, RexxObject *so
             }
         }
     }
-
-    /* create a source object            */
-    RexxSource *newSource = new RexxSource (pgmname, newSourceArray);
-
-    ProtectedObject p(newSource);
-    RoutineClass *result = newRoutine(newSource);
+    // create the routine
+    RoutineClass *result = new RoutineClass(pgmname, newSourceArray);
+    ProtectedObject p(result);
 
     p = result;    // switch the protectiong
 
@@ -354,6 +466,63 @@ RoutineClass *RoutineClass::newRoutineObject(RexxString *pgmname, RexxObject *so
     }
 
     return result;
+}
+
+
+/**
+ * Construct a Routine using different forms of in-memory
+ * source file.
+ *
+ * @param pgmname  The name of the program.
+ * @param source   The program source.  This can be a string or an array of strings.
+ * @param position The argument position used for error reporting.
+ * @param parentSource
+ *                 A parent source context used to provide additional class and
+ *                 routine definitions.
+ *
+ * @return A constructed Routine object.
+ */
+RoutineClass *RoutineClass::newRoutineObject(RexxString *pgmname, RexxArray *source, RexxObject *position)
+{
+    // request this as an array.  If not convertable, then we'll use it as a string
+    RexxArray *newSourceArray = source->requestArray();
+    /* couldn't convert?                 */
+    if (newSourceArray == (RexxArray *)TheNilObject)
+    {
+       /* raise an error                    */
+       reportException(Error_Incorrect_method_no_method, position);
+    }
+    else                                 /* have an array, make sure all      */
+    {
+        /* is it single dimensional?         */
+        if (newSourceArray->getDimension() != 1)
+        {
+            /* raise an error                    */
+            reportException(Error_Incorrect_method_noarray, position);
+        }
+        /*  element are strings.             */
+        /* Make a source array safe.         */
+        ProtectedObject p(newSourceArray);
+        /* Make sure all elements in array   */
+        for (size_t counter = 1; counter <= newSourceArray->size(); counter++)
+        {
+            /* Get element as string object      */
+            RexxString *sourceString = newSourceArray ->get(counter)->makeString();
+            /* Did it convert?                   */
+            if (sourceString == (RexxString *)TheNilObject)
+            {
+                /* and report the error.             */
+                reportException(Error_Incorrect_method_nostring_inarray, IntegerTwo);
+            }
+            else
+            {
+                /* itsa string add to source array   */
+                newSourceArray ->put(sourceString, counter);
+            }
+        }
+    }
+    // create the routine
+    return new RoutineClass(pgmname, newSourceArray);
 }
 
 
@@ -428,11 +597,8 @@ RoutineClass *RoutineClass::newFileRexx(
 {
                                        /* get the method name as a string   */
   filename = REQUIRED_STRING(filename, ARG_ONE);
-                                       /* create a source object            */
-  RexxSource *source = RexxSource::classNewFile(filename);
-  ProtectedObject p(source);
                                        /* finish up processing of this      */
-  RoutineClass * newMethod = newRoutine(source);
+  RoutineClass * newMethod = new RoutineClass(filename);
   ProtectedObject p2(newMethod);
                                        /* Give new object its behaviour     */
   newMethod->setBehaviour(((RexxClass *)this)->getInstanceBehaviour());
@@ -444,47 +610,6 @@ RoutineClass *RoutineClass::newFileRexx(
                                        /* now send an INIT message          */
   newMethod->sendMessage(OREF_INIT);
   return newMethod;
-}
-
-
-RoutineClass *RoutineClass::newRexxBuffer(
-      RexxString *pgmname,             /* file name to process              */
-      RexxBuffer *source)              /* String or buffer with source      */
-/******************************************************************************/
-/* Function:  Build a new method object from buffered REXX source             */
-/******************************************************************************/
-{
-  if (source == OREF_NULL)             /* didn't get source?                */
-  {
-                                       /* raise an error                    */
-    reportException(Error_Incorrect_method_noarg, IntegerTwo);
-  }
-                                       /* create a source object            */
-  RexxSource *newSource = (RexxSource *)RexxSource::classNewBuffered(pgmname, source);
-  // we need to protect this source object until parsing is complete
-  ProtectedObject p(newSource);
-                                       /* now complete method creation      */
-  return newRoutine(newSource);
-}
-
-
-/**
- * Create a routine object from an in-store source.
- *
- * @param pgmname The program name (as an ASCII-Z string).
- * @param source  The pointer to the program source.
- * @param length  The length of the source.
- *
- * @return A translated Routine object.
- */
-RoutineClass *RoutineClass::newRexxBuffer(RexxString *pgmname, const char *source, size_t length)
-{
-                                         /* create a source object            */
-    RexxSource *newSource = RexxSource::classNewBuffered(pgmname, source, length);
-    // we need to protect this source object until parsing is complete
-    ProtectedObject p(newSource);
-                                         /* now complete method creation      */
-    return newRoutine(newSource);
 }
 
 
@@ -553,7 +678,7 @@ RoutineClass *RoutineClass::processInstore(PRXSTRING instore, RexxString * name 
         }
 
         /* translate this source             */
-        RoutineClass *routine = newRexxBuffer(name, source_buffer);
+        RoutineClass *routine = new RoutineClass(name, source_buffer);
         /* return this back in instore[1]    */
         routine->save(&instore[1]);
         return routine;                    /* return translated source          */
@@ -682,6 +807,21 @@ RoutineClass *RoutineClass::restore(RexxString *name, FILE *handle)
 
 
 /**
+ * Set a security manager on a package.
+ *
+ * @param manager The security manager object.
+ *
+ * @return The security manager object.
+ */
+RexxObject *RoutineClass::setSecurityManager(
+    RexxObject *manager)               /* supplied security manager         */
+{
+    source->setSecurityManager(manager);
+    return TheTrueObject;
+}
+
+
+/**
  * Retrieve a routine object from a file.  This will first attempt
  * to restore a previously translated image, then will try to
  * translate the source if that fails.
@@ -699,7 +839,7 @@ RoutineClass *RoutineClass::fromFile(RexxString *filename)
     }
 
     // process this from the source
-    return newFile(filename);
+    return new RoutineClass(filename);
 }
 
 
@@ -723,16 +863,4 @@ RoutineClass *RoutineClass::restoreFromFile(RexxString *filename)
 }
 
 
-RoutineClass *RoutineClass::newFile(
-    RexxString *filename)              /* name of the target file           */
-/******************************************************************************/
-/* Function:  Create a method from a fully resolved file name                 */
-/******************************************************************************/
-{
-                                       /* create a source object            */
-  RexxSource *source = RexxSource::classNewFile(filename);
-  ProtectedObject p(source);
-                                       /* finish up processing of this      */
-  return newRoutine(source);
-}
 

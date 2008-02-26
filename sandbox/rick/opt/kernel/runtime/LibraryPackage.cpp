@@ -257,23 +257,24 @@ void LibraryPackage::loadRoutines(RexxRoutineEntry *table)
         // convert them to uppercase because "normal" Rexx function names
         // tend to be uppercase.
         RexxString *target = new_upper_string(table->name)->upper();
+        RexxString *routineName = new_string(table->name);
 
         RexxRoutine *func = OREF_NULL;
         if (table->style == ROUTINE_CLASSIC_STYLE)
         {
-            func = new RegisteredRoutine(libraryName, new_string(table->name), (PREGISTEREDROUTINE)table->entryPoint);
+            func = new RegisteredRoutine(libraryName, routineName, (PREGISTEREDROUTINE)table->entryPoint);
         }
         else
         {
-            func = new RexxNativeRoutine(libraryName, new_string(table->name), (PNATIVEROUTINE)table->entryPoint);
+            func = new RexxNativeRoutine(libraryName, routineName, (PNATIVEROUTINE)table->entryPoint);
         }
 
-        RoutineClass *routine = new_routine(func);
+        RoutineClass *routine = new_routine(name, func);
         // add this to our local table
         routines->put(routine, target);
 
         // add this to the global function pool
-        PackageManager::addPackageRoutine(target, new_routine(func));
+        PackageManager::addPackageRoutine(target, routine);
         // step to the next table entry
         table++;
     }

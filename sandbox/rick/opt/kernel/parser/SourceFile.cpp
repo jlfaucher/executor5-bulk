@@ -43,7 +43,6 @@
 /******************************************************************************/
 #include <ctype.h>
 #include <string.h>
-#define INCL_REXX_STREAM               /* bring in all stream defines       */
 #include "RexxCore.h"
 #include "StringClass.hpp"
 #include "ArrayClass.hpp"
@@ -95,6 +94,87 @@ typedef struct _LINE_DESCRIPTOR {
 
 #define line_delimiters "\r\n"         /* stream file line end characters   */
 #define ctrl_z 0x0a                    // the end of file marker
+
+
+/**
+ * Create a source object with source provided from an array.
+ *
+ * @param programname
+ *               The name of the program.
+ * @param source_array
+ *               The array of the source lines.
+ */
+RexxSource::RexxSource(RexxString *programname, RexxArray  *source_array)
+{
+    this->clearObject();                 /* start completely clean            */
+                                         /* fill in the name                  */
+    OrefSet(this, this->programName, programname);
+    /* fill in the source array          */
+    OrefSet(this, this->sourceArray, source_array);
+    /* fill in the source size           */
+    this->line_count = sourceArray->size();
+    this->position(1, 0);              /* set position at the first line    */
+}
+
+
+/**
+ * Create a source object with source provided from a buffer.
+ *
+ * @param programname
+ *               The name of the program.
+ * @param source_buffer
+ *               The source buffer holding the source data.
+ */
+RexxSource::RexxSource(RexxString *programname, RexxBuffer *source_buffer)
+{
+    this->clearObject();                 /* start completely clean            */
+                                         /* fill in the name                  */
+    OrefSet(this, this->programName, programname);
+    // we require a bit of protection while doing this
+    ProtectedObject p(this);
+    // initialize from the buffer data
+    initBuffered(source_buffer);
+}
+
+
+/**
+ * Create a source object with source provided from a a data buffer
+ * (not a buffer object).
+ *
+ * @param programname
+ *               The name of the program.
+ * @param data   The data buffer pointer.
+ * @param length the size of the source buffer.
+ */
+RexxSource::RexxSource(RexxString *programname, const char *data, size_t length)
+{
+    this->clearObject();                 /* start completely clean            */
+                                         /* fill in the name                  */
+    OrefSet(this, this->programName, programname);
+    // we require a bit of protection while doing this
+    ProtectedObject p(this);
+    // initialize from the buffer data
+    initBuffered(new_buffer(data, length));
+}
+
+
+/**
+ * Create a source object with source provided from a filo.
+ *
+ * @param programname
+ *               The name of the program (also the file name)
+ */
+RexxSource::RexxSource(RexxString *programname)
+{
+    this->clearObject();                 /* start completely clean            */
+                                         /* fill in the name                  */
+    OrefSet(this, this->programName, programname);
+    // we require a bit of protection while doing this
+    ProtectedObject p(this);
+    // read the file data and initialize.
+    initFile();
+}
+
 
 void RexxSource::initBuffered(
     RexxBuffer *source_buffer)         /* containing source buffer          */
@@ -2745,7 +2825,7 @@ void RexxSource::routineDirective()
         {
                                          /* go do the next block of code      */
           RexxCode *code = this->translateBlock(OREF_NULL);
-          RoutineClass *routine = new_routine(code);
+          RoutineClass *routine = new_routine(name, code);
                                          /* add to the routine directory      */
           this->routines->setEntry(name, routine);
           if (Public == PUBLIC_SCOPE)    /* a public routine?                 */
@@ -5115,47 +5195,6 @@ void *RexxSource::operator new (size_t size)
   return newObject;                    /* return the new object             */
 }
 
-RexxSource *RexxSource::classNewBuffered(
-    RexxString *programname,           /* name of the program               */
-    RexxBuffer *source_buffer )        /* buffer containing the source      */
-/******************************************************************************/
-/* Function:  Create a new source object, using buffered input                */
-/******************************************************************************/
-{
-  RexxSource *newObject;               /* newly created source object       */
-
-  ProtectedObject p(source_buffer);
-  newObject = new RexxSource (programname, OREF_NULL);
-  ProtectedObject p1(newObject);
-                                       /* process the buffering             */
-  newObject->initBuffered(source_buffer);
-  return newObject;                    /* return the new source object      */
-}
-
-RexxSource *RexxSource::classNewBuffered(RexxString *programname, const char *source, size_t length)
-{
-  RexxSource *newObject = new RexxSource (programname, OREF_NULL);
-  ProtectedObject p1(newObject);
-                                       /* process the buffering             */
-  newObject->initBuffered(new_buffer(source, length));
-  return newObject;                    /* return the new source object      */
-}
-
-RexxSource *RexxSource::classNewFile(
-    RexxString *programname )          /* program file name                 */
-/******************************************************************************/
-/* Function:  Create a source object from a file.                             */
-/******************************************************************************/
-{
-  RexxSource *newObject;               /* newly created source object       */
-
-                                       /* create a new source object        */
-  newObject = new RexxSource (programname, OREF_NULL);
-  ProtectedObject p(newObject);
-  newObject->initFile();               /* go process the file               */
-  return newObject;                    /* return the new object             */
-}
-
 
 /**
  * Generate a code object from a source file.
@@ -5167,13 +5206,11 @@ RexxSource *RexxSource::classNewFile(
  */
 RexxCode *RexxSource::generateCodeFromFile(RexxString *programname )
 {
-  RexxSource *newObject;               /* newly created source object       */
-
-                                       /* create a new source object        */
-  newObject = new RexxSource (programname, OREF_NULL);
-  ProtectedObject p(newObject);
-  newObject->initFile();               /* go process the file               */
-  return newObject->generateCode();    // generate a code object
+    // create a new source object from the file
+    RexxObject *newObject = new RexxSource(programname);
+    ProtectedObject p(newObject);
+    // now generate a code object from this file
+    return newObject->generateCode();
 }
 
 
@@ -5607,3 +5644,25 @@ void RexxSource::addInstalledClass(RexxString *name, RexxClass *classObject, boo
         installed_public_classes->setEntry(name, classObject);
     }
 }
+
+
+/**
+ * Add an installed routine to this source package
+ *
+ * @param name   The routine name
+ * @param classObject
+ *               The routine object
+ * @param publicClass
+ *               Indicates whether this needs to be added to the public list as well.
+ */
+void RexxSource::addInstalledClass(RexxString *name, RoutineClass *routinebject, bool publicRoutine)
+{
+    installed_routines->setEntry(name, routinedObject);
+    if (publicRoutine)
+    {
+        installed_public_routines->setEntry(name, routineObject);
+    }
+}
+
+
+

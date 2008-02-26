@@ -98,6 +98,9 @@ class RexxSource : public RexxInternalObject {
   inline void  operator delete(void *) { ; }
   inline void  operator delete(void *, void *) { ; }
   RexxSource(RexxString *, RexxArray *);
+  RexxSource(RexxString *programname, RexxBuffer *source_buffer);
+  RexxSource(RexxString *programname, const char *data, size_t length);
+  RexxSource(RexxString *programname);
   inline RexxSource(RESTORETYPE restoreType) { ; };
   void        initBuffered(RexxBuffer *);
   void        initFile();
@@ -221,9 +224,6 @@ class RexxSource : public RexxInternalObject {
   void        errorPosition(int, RexxToken *);
   void        errorToken(int, RexxToken *);
   void        blockError(RexxInstruction *);
-  static RexxSource *classNewBuffered(RexxString *, RexxBuffer *);
-  static RexxSource *classNewBuffered(RexxString *, const char *, size_t length);
-  static RexxSource *classNewFile(RexxString *);
   static RexxCode   *generateCodeFromFile(RexxString *);
   RexxObject *sourceNewObject(size_t, RexxBehaviour *, int);
   void        parseTraceSetting(RexxString *, size_t *, size_t *);
@@ -337,6 +337,7 @@ class RexxSource : public RexxInternalObject {
   }
 
   void addInstalledClass(RexxString *name, RexxClass *classObject, bool publicClass);
+  void addInstalledRoutine(RexxString *name, RoutineClass *routineObject, bool publicRoutine);
 
   RexxDirectory *getInstalledClasses() { return installed_classes; }
   RexxDirectory *getInstalledPublicClasses() { return installed_public_classes; }

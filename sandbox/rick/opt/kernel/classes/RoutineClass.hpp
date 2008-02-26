@@ -51,7 +51,11 @@ class RoutineClass : public BaseExecutable
 public:
     void *operator new(size_t);
     inline void *operator new(size_t size, void *ptr) { return ptr; };
-    RoutineClass(BaseCode *_code);
+    RoutineClass(RexxString *n, BaseCode *_code);
+    RoutineClass(RexxString *name);
+    RoutineClass(RexxString *name, RexxBuffer *source);
+    RoutineClass(RexxString *name, const char *data, size_t length);
+    RoutineClass(RexxString *name, RexxArray *source);
     inline RoutineClass(RESTORETYPE restoreType) { ; };
 
     void execute(RexxObject *, RexxObject *);
@@ -63,6 +67,9 @@ public:
     void          call(RexxActivity *,  RexxString *,  RexxObject **, size_t, ProtectedObject &);
     void          runProgram(RexxActivity *activity, RexxString * calltype, RexxString * environment, RexxObject **arguments, size_t argCount, ProtectedObject &result);
     void          runProgram(RexxActivity *activity, RexxObject **arguments, size_t argCount, ProtectedObject &result);
+
+    RexxObject   *callRexx(RexxObject **, size_t);
+    RexxObject   *callWithRexx(RexxArray *);
 
     RexxBuffer *save();
     void save(PRXSTRING outBuffer);
@@ -81,12 +88,8 @@ public:
     static RoutineClass *fromFile(RexxString *filename);
     static RoutineClass *restoreFromFile(RexxString *filename);
 
-    static RoutineClass *newRoutine(RexxSource *);
     static RoutineClass *newRoutineObject(RexxString *, RexxObject *, RexxObject *, RexxSource *s);
-    static RoutineClass *newRexxBuffer(RexxString *, RexxBuffer *);
-    static RoutineClass *newRexxBuffer(RexxString *, const char *, size_t);
-
-    static RoutineClass *newFile(RexxString *);
+    static RoutineClass *newRoutineObject(RexxString *, RexxArray *, RexxObject *);
 
     static RoutineClass *processInstore(PRXSTRING instore, RexxString * name );
 
@@ -94,6 +97,6 @@ public:
 };
 
 
-inline RoutineClass *new_routine(BaseCode *c)  { return new RoutineClass(c); }
+inline RoutineClass *new_routine(RexxString *n, BaseCode *c)  { return new RoutineClass(n, c); }
 #endif
 

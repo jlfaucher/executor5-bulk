@@ -118,25 +118,6 @@ int RexxSource::precedence(
   }
 }
 
-RexxSource::RexxSource(
-    RexxString *programname,           /* source program name               */
-    RexxArray  *source_array )         /* program source array              */
-/******************************************************************************/
-/* Function:  Initialize a source object                                      */
-/******************************************************************************/
-{
-  this->clearObject();                 /* start completely clean            */
-                                       /* fill in the name                  */
-  OrefSet(this, this->programName, programname);
-                                       /* fill in the source array          */
-  OrefSet(this, this->sourceArray, source_array);
-  if (this->sourceArray) {             /* have an array?                    */
-                                       /* fill in the source size           */
-    this->line_count = sourceArray->size();
-    this->position(1, 0);              /* set position at the first line    */
-  }
-}
-
 /*********************************************************************
 *  The following table detects alphanumeric characters and           *
 *  special characters that can be part of an REXX symbol.            *

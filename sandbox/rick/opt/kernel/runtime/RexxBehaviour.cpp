@@ -229,6 +229,24 @@ void RexxBehaviour::copyBehaviour(RexxBehaviour *source)
 }
 
 
+/**
+ * Define a native kernel method on this behaviour.
+ *
+ * @param name       The method name.
+ * @param entryPoint The method entry point
+ * @param arguments  The argument definition.
+ *
+ * @return The created method object.
+ */
+RexxMethod *RexxBehaviour::define(const char *name, PCPPM entryPoint, size_t arguments)
+{
+    RexxString *name = RexxMemory::getGlobalName(name);
+    RexxMethod *method = new RexxMethod(name, CPPCode::resolveExportedMethod(entryPoint, arguments));
+    define(name, method);
+    return method;
+}
+
+
 RexxObject *RexxBehaviour::define(
     RexxString *methodName,            /* name of the defined method        */
     RexxMethod *method)                /* method to add to the behaviour    */

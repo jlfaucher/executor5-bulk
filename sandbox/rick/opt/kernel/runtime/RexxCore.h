@@ -322,15 +322,18 @@ inline RexxString *REQUEST_STRING(RexxObject *object)
   return (isOfClass(String, object) ? (RexxString *)object : (object)->requestString());
 }
 
+
 /* The next routine is specifically for REQUESTing a STRING needed as a method*/
 /* argument.  This raises an error if the object cannot be converted to a     */
 /* string value.                                                              */
 inline RexxString * REQUIRED_STRING(RexxObject *object, size_t position)
 {
-  if (object == OREF_NULL)             /* missing argument?                 */
-    missing_argument(position);        /* raise an error                    */
-                                       /* force to a string value           */
-  return object->requiredString(position);
+    if (object == OREF_NULL)             /* missing argument?                 */
+    {
+        missing_argument(position);        /* raise an error                    */
+    }
+                                           /* force to a string value           */
+    return object->requiredString(position);
 }
 
 
@@ -341,19 +344,50 @@ inline RexxString * REQUIRED_STRING(RexxObject *object, size_t position)
 /* single dimensional array item                                              */
 inline RexxArray * REQUIRED_ARRAY(RexxObject *object, size_t position)
 {
-  if (object == OREF_NULL)             /* missing argument?                 */
-  {
-      missing_argument(position);      /* raise an error                    */
-  }
-                                       /* force to array form               */
-  RexxArray *array = object->requestArray();
-                                       /* not an array?                     */
-  if (array == TheNilObject || array->getDimension() != 1)
-  {
-                                       /* raise an error                    */
-      reportException(Error_Execution_noarray, object);
-  }
-  return array;
+    if (object == OREF_NULL)             /* missing argument?                 */
+    {
+        missing_argument(position);      /* raise an error                    */
+    }
+    /* force to array form               */
+    RexxArray *array = object->requestArray();
+    /* not an array?                     */
+    if (array == TheNilObject || array->getDimension() != 1)
+    {
+        /* raise an error                    */
+        reportException(Error_Execution_noarray, object);
+    }
+    return array;
+}
+
+
+/* The next routine is specifically for REQUESTing a STRING needed as a method*/
+/* argument.  This raises an error if the object cannot be converted to a     */
+/* string value.                                                              */
+inline RexxString * REQUIRED_STRING(RexxObject *object, const char *name)
+{
+    if (object == OREF_NULL)             /* missing argument?                 */
+    {
+        reportException(Error_Invalid_argument_noarg, name);
+    }
+                                           /* force to a string value           */
+    return object->requiredString(name);
+}
+
+
+/* The next routine is specifically for REQUESTing a STRING needed as a method*/
+/* argument.  This raises an error if the object cannot be converted to a     */
+/* string value.                                                              */
+inline void REQUIRED_INSTANCE(RexxObject *object, RexxClass *clazz, const char *name)
+{
+    if (object == OREF_NULL)             /* missing argument?                 */
+    {
+        reportException(Error_Invalid_argument_noarg, name);
+    }
+
+    if (!object->isInstanceOf(clazz))
+    {
+        reportException(Error_Invalid_argument_noclass, name, clazz->getId());
+    }
 }
 
 

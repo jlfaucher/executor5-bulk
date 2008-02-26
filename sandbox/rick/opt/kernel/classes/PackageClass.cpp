@@ -80,6 +80,7 @@ void PackageClass::live(size_t liveMark)
 /******************************************************************************/
 {
     memory_mark(this->source);
+    memory_mark(this->objectVariables);
 }
 
 void PackageClass::liveGeneral(int reason)
@@ -88,6 +89,7 @@ void PackageClass::liveGeneral(int reason)
 /******************************************************************************/
 {
     memory_mark_general(this->source);
+    memory_mark_general(this->objectVariables);
 }
 
 void PackageClass::flatten(RexxEnvelope *envelope)
@@ -98,6 +100,7 @@ void PackageClass::flatten(RexxEnvelope *envelope)
   setUpFlatten(PackageClass)
 
    flatten_reference(newThis->source, envelope);
+  flatten_reference(newThis->objectVariables, envelope);
 
   cleanUpFlatten
 }
@@ -150,6 +153,17 @@ RexxString *PackageClass::getSourceLineRexx(RexxObject *position)
     // the starting position isn't optional
     size_t n = get_position(position, ARG_ONE);
     return source->get(n);
+}
+
+
+/**
+ * Get the number of source lines in the package
+ *
+ * @return the count of lines
+ */
+RexxInteger *PackageClass::getSourceSize()
+{
+    return new_integer(source->sourceSize());
 }
 
 
@@ -354,6 +368,74 @@ RexxObject *PackageClass::addPackage(PackageClass *package)
 
 
 /**
+ * Add a routine to this package's private routine list.
+ *
+ * @param routine The routine to add.
+ *
+ * @return The target package object.
+ */
+RexxObject *PackageClass::addRoutine(RexxString *name, RoutineClass *routine)
+{
+    name = REQUIRED_STRING(name, "name");
+    REQUIRED_INSTANCE(routine, TheRoutineClass, "routine");
+
+    source->addInstalledRoutine(name, routine, false);
+    return this;
+}
+
+
+/**
+ * Add a routine to this package's public routine list.
+ *
+ * @param routine The routine to add.
+ *
+ * @return The target package object.
+ */
+RexxObject *PackageClass::addPublicRoutine(RoutineClass *routine)
+{
+    name = REQUIRED_STRING(name, "name");
+    REQUIRED_INSTANCE(routine, TheRoutineClass, "routine");
+
+    source->addInstalledRoutine(name, routine, true);
+    return this;
+}
+
+
+/**
+ * Add a class to this package's class list.
+ *
+ * @param clazz The class to add.
+ *
+ * @return The target package object.
+ */
+RexxObject *PackageClass::addClass(RexxClass *clazz)
+{
+    name = REQUIRED_STRING(name, "name");
+    REQUIRED_INSTANCE(clazz, TheClassClass, "class");
+
+    source->addInstalledClass(name, clazz, false);
+    return this;
+}
+
+
+/**
+ * Add a class to this package's public class list.
+ *
+ * @param clazz The class to add.
+ *
+ * @return The target package object.
+ */
+RexxObject *PackageClass::addPublicClass(RexxClass *clazz)
+{
+    name = REQUIRED_STRING(name, "name");
+    REQUIRED_INSTANCE(clazz, TheClassClass, "class");
+
+    source->addInstalledClass(name, clazz, true);
+    return this;
+}
+
+
+/**
  * Resolve a class in the context of a package.
  *
  * @param name   The required class name.
@@ -363,4 +445,49 @@ RexxObject *PackageClass::addPackage(PackageClass *package)
 RexxClass *PackageClass::resolveClass(RexxString *name)
 {
     return source->resolveClass(name);
+}
+
+
+PackageClass *PackageClass::newRexx(
+    RexxObject **init_args,            /* subclass init arguments           */
+    size_t       argCount)             /* number of arguments passed        */
+/******************************************************************************/
+/* Function:  Create a new packag from REXX code contained in a file or an    */
+/*            array                                                           */
+/******************************************************************************/
+{
+    RexxObject *pgmname;                 /* method name                       */
+    RexxObject *source;                  /* Array or string object            */
+    RexxObject *option = OREF_NULL;
+    size_t initCount = 0;                /* count of arguments we pass along  */
+
+                                         /* break up the arguments            */
+
+    process_new_args(init_args, argCount, &init_args, &initCount, 2, (RexxObject **)&pgmname, (RexxObject **)&source);
+
+    PackageClass *package = OREF_NULL;
+
+    /* get the package name as a string   */
+    RexxString *nameString = REQUIRED_STRING(pgmname, ARG_ONE);
+    if (source == OREF_NULL)
+    {
+        RexxString *resolvedName = ActivityManager::currentActivity->getInstance()->resolveProgramName(pgmname, OREF_NULL, OREF_NULL);
+        package = PackageManager::loadRequires(ActivityManager::currentActivity, pgmname, resolvedName, package);
+    }
+    else
+    {
+        RexxArray *sourceArray = REQUIRED_ARRAY(soource, IntegerTwo);
+        package = PackageManager::loadRequires(ActivityManager::currentActivity, pgmname, sourceArray, package);
+    }
+
+    ProtectedObject p(package);
+    /* Give new object its behaviour     */
+    newRoutine->setBehaviour(((RexxClass *)this)->getInstanceBehaviour());
+    if (((RexxClass *)this)->hasUninitDefined())
+    {
+        newRoutine->hasUninit();         /* Make sure everyone is notified.   */
+    }
+    /* now send an INIT message          */
+    newRoutine->sendMessage(OREF_INIT, init_args, initCount);
+    return newRoutine;                   /* return the new method             */
 }

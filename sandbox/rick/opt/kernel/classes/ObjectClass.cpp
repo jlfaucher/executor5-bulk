@@ -1130,6 +1130,7 @@ RexxString *RexxObject::requestStringNoNOSTRING()
   }
 }
 
+
 RexxString *RexxObject::requiredString(
     size_t position )                  /* required argument position        */
 /******************************************************************************/
@@ -1137,17 +1138,50 @@ RexxString *RexxObject::requiredString(
 /*            the object MUST have a string value.                            */
 /******************************************************************************/
 {
-  RexxObject *string_value;            /* converted object                  */
+    RexxObject *string_value;            /* converted object                  */
 
-  if (this->isBaseClass())             /* primitive object?                 */
-    string_value = this->makeString(); /* get the string representation     */
-  else                                 /* do a full request for this        */
-    string_value = this->sendMessage(OREF_REQUEST, OREF_STRINGSYM);
-                                       /* didn't convert?                   */
-  if (string_value == TheNilObject)
-                                       /* this is an error                  */
-    reportException(Error_Incorrect_method_nostring, position);
-  return (RexxString *)string_value;   /* return the converted form         */
+    if (this->isBaseClass())             /* primitive object?                 */
+    {
+        string_value = this->makeString(); /* get the string representation     */
+    }
+    else                                 /* do a full request for this        */
+    {
+        string_value = this->sendMessage(OREF_REQUEST, OREF_STRINGSYM);
+    }
+    /* didn't convert?                   */
+    if (string_value == TheNilObject)
+    {
+        /* this is an error                  */
+        reportException(Error_Incorrect_method_nostring, position);
+    }
+    return(RexxString *)string_value;   /* return the converted form         */
+}
+
+
+RexxString *RexxObject::requiredString(
+    const char *name)                  /* required argument position        */
+/******************************************************************************/
+/* Function:  Handle a string request for a REXX object in a context where    */
+/*            the object MUST have a string value.                            */
+/******************************************************************************/
+{
+    RexxObject *string_value;            /* converted object                  */
+
+    if (this->isBaseClass())             /* primitive object?                 */
+    {
+        string_value = this->makeString(); /* get the string representation     */
+    }
+    else                                 /* do a full request for this        */
+    {
+        string_value = this->sendMessage(OREF_REQUEST, OREF_STRINGSYM);
+    }
+    /* didn't convert?                   */
+    if (string_value == TheNilObject)
+    {
+        /* this is an error                  */
+        reportException(Error_Incorrect_argument_string, name);
+    }
+    return(RexxString *)string_value;   /* return the converted form         */
 }
 
 /**

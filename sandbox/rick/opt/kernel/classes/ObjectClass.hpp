@@ -391,6 +391,7 @@ class RexxObject : public RexxInternalObject {
      bool         requestUnsignedNumber(stringsize_t &, size_t);
      RexxArray   *requestArray();
      RexxString  *requiredString(size_t);
+     RexxString  *requiredString(const char *);
      RexxString  *requiredString();
      RexxInteger *requiredInteger(size_t, size_t);
      wholenumber_t requiredNumber(size_t position, size_t precision = Numerics::DEFAULT_DIGITS);

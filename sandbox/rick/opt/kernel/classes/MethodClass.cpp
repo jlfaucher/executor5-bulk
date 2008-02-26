@@ -60,6 +60,7 @@
 #include "RexxInternalApis.h"
 #include "RoutineClass.hpp"
 #include "Interpreter.hpp"
+#include "RexxCode.hpp"
 
 // singleton class instance
 RexxClass *RexxMethod::classInstance = OREF_NULL;
@@ -136,24 +137,115 @@ RexxArray *BaseExecutable::source()
 }
 
 
-RexxMethod::RexxMethod(BaseCode *codeObj)
-/******************************************************************************/
-/* Function:  Initialize a method object                                      */
-/******************************************************************************/
+
+/**
+ * Generate a method directly from a source object.
+ *
+ * @param source The source object.
+ */
+RexxMethod::RexxMethod(RexxString *name, RexxSource *source)
 {
     this->clearObject();                 /* start out fresh                   */
-    this->methodFlags = 0;               /* clear all of the flags            */
+    ProtectedObject p2(source);
+    OrefSet(this, this->executableName, name);
+    // generate our code object and make the file hook up.
+    RexxCode *codeObj = source->generateCode();
+    OrefSet(this, this->code, codeObj);
+}
+
+
+/**
+ * Initialize a Routine object from a generated code object. Generally
+ * used for routines generated from ::METHOD directives.
+ *
+ * @param name    The routine name.
+ * @param codeObj The associated code object.
+ */
+RexxMethod::RexxMethod(RexxString *name, BaseCode *codeObj)
+{
+    this->clearObject();                 /* start out fresh                   */
+    OrefSet(this, this->executableName, name);
     OrefSet(this, this->code, codeObj);  /* store the code                    */
 }
 
-RexxMethod::RexxMethod(RexxSource *source)
-/******************************************************************************/
-/* Function:  Initialize a method object                                      */
-/******************************************************************************/
+
+/**
+ * Initialize a RexxMethod object from a file source.
+ *
+ * @param name   The routine name (and the resolved name of the file).
+ */
+RexxMethod::RexxMethod(RexxString *name)
 {
     this->clearObject();                 /* start out fresh                   */
-    this->methodFlags = 0;               /* clear all of the flags            */
-    OrefSet(this, this->code, source->generateCode());  /* store the code                    */
+    ProtectedObject p(this);             // protect during processing
+    OrefSet(this, this->executableName, name);
+    // get a source object to generat this from
+    RexxSource *source = new RexxSource(name);
+    ProtectedObject p2(source);
+    // generate our code object and make the file hook up.
+    RexxCode *codeObj = source->generateCode();
+    OrefSet(this, this->code, codeObj);
+}
+
+
+/**
+ * Initialize a Routine object using a buffered source.
+ *
+ * @param name   The name of the routine.
+ * @param source the source buffer.
+ */
+RexxMethod::RexxMethod(RexxString *name, RexxBuffer *buf)
+{
+    this->clearObject();                 /* start out fresh                   */
+    ProtectedObject p(this);             // protect during processing
+    OrefSet(this, this->executableName, name);
+    // get a source object to generat this from
+    RexxSource *source = new RexxSource(name, buf);
+    ProtectedObject p2(source);
+    // generate our code object and make the file hook up.
+    RexxCode *codeObj = source->generateCode();
+    OrefSet(this, this->code, codeObj);
+}
+
+
+/**
+ * Initialize a Routine object using directly provided source.
+ *
+ * @param name   The name of the routine.
+ * @param data   The source data buffer pointer.
+ * @param length the length of the source buffer.
+ */
+RexxMethod::RexxMethod(RexxString *name, const char *data, size_t length)
+{
+    this->clearObject();                 /* start out fresh                   */
+    ProtectedObject p(this);             // protect during processing
+    OrefSet(this, this->executableName, name);
+    // get a source object to generat this from
+    RexxSource *source = new RexxSource(name, data, length);
+    ProtectedObject p2(source);
+    // generate our code object and make the file hook up.
+    RexxCode *codeObj = source->generateCode();
+    OrefSet(this, this->code, codeObj);
+}
+
+
+/**
+ * Initialize a Routine object using an array source.
+ *
+ * @param name   The name of the routine.
+ * @param source the source buffer.
+ */
+RexxMethod::RexxMethod(RexxString *name, RexxArray *s)
+{
+    this->clearObject();                 /* start out fresh                   */
+    ProtectedObject p(this);             // protect during processing
+    OrefSet(this, this->executableName, name);
+    // get a source object to generat this from
+    RexxSource *source = new RexxSource(name, s);
+    ProtectedObject p2(source);
+    // generate our code object and make the file hook up.
+    RexxCode *codeObj = source->generateCode();
+    OrefSet(this, this->code, codeObj);
 }
 
 void RexxMethod::live(size_t liveMark)
@@ -163,6 +255,7 @@ void RexxMethod::live(size_t liveMark)
 {
     memory_mark(this->scope);
     memory_mark(this->code);
+    memory_mark(this->executableName);
     memory_mark(this->objectVariables);
 }
 
@@ -173,6 +266,7 @@ void RexxMethod::liveGeneral(int reason)
 {
     memory_mark_general(this->scope);
     memory_mark_general(this->code);
+    memory_mark_general(this->executableName);
     memory_mark_general(this->objectVariables);
 }
 
@@ -185,6 +279,7 @@ void RexxMethod::flatten(RexxEnvelope *envelope)
 
    flatten_reference(newThis->scope, envelope);
    flatten_reference(newThis->code, envelope);
+   flatten_reference(newThis->executableName, envelope);
    flatten_reference(newThis->objectVariables, envelope);
 
   cleanUpFlatten
@@ -216,19 +311,20 @@ RexxMethod *RexxMethod::newScope(
 /* Function:  Create a new method with a given scope                          */
 /******************************************************************************/
 {
-  RexxMethod *newMethod;               /* the copied method                 */
-
-  if (this->scope == OREF_NULL) {      /* nothing set yet?                  */
-    OrefSet(this, this->scope, _scope); /* just set it directly              */
-    return this;                       /* and pass back unchanged           */
-  }
-  else {
-                                       /* copy the method                   */
-    newMethod= (RexxMethod *)this->copy();
-                                       /* give the method the new scope     */
-    OrefSet(newMethod, newMethod->scope, _scope);
-    return newMethod;                  /* and return it                     */
-  }
+    // if this doesn't have a scope yet, we can just override what's here
+    if (this->scope == OREF_NULL)
+    {
+        OrefSet(this, this->scope, _scope); /* just set it directly              */
+        return this;                       /* and pass back unchanged           */
+    }
+    else
+    {
+        /* copy the method                   */
+        RexxMethod *newMethod= (RexxMethod *)this->copy();
+        /* give the method the new scope     */
+        OrefSet(newMethod, newMethod->scope, _scope);
+        return newMethod;                  /* and return it                     */
+    }
 }
 
 
@@ -369,25 +465,6 @@ void *RexxMethod::operator new (size_t size)
 }
 
 
-RexxMethod *RexxMethod::newRexxMethod(
-    RexxSource *source,                /* source object for the method      */
-    RexxClass  *scope)                 /* scope to use                      */
-/******************************************************************************/
-/* Function:  Convert a new source object to a method with the given scope    */
-/******************************************************************************/
-{
-
-
-                                       /* create a new method object        */
-  RexxMethod *newMethod = new RexxMethod(source);
-  if (scope != OREF_NULL)              /* given a scope too?                */
-  {
-      newMethod->setScope(scope);        /* set the scope                     */
-  }
-  return newMethod;                    /* return the new method object      */
-}
-
-
 /**
  * Static method used for constructing new method objects in
  * various contexts (such as the define method on the Class class).
@@ -450,11 +527,7 @@ RexxMethod *RexxMethod::newMethodObject(RexxString *pgmname, RexxObject *source,
         }
     }
 
-    /* create a source object            */
-    RexxSource *newSource = new RexxSource (pgmname, newSourceArray);
-
-    ProtectedObject p(newSource);
-    RexxMethod *result = RexxMethod::newRexxMethod(newSource, OREF_NULL);
+    RexxMethod *result = new RexxMethod(pgmname, newSourceArray);
 
     // if we've been provided with a scope, use it
     if (parentSource == OREF_NULL)
@@ -470,7 +543,7 @@ RexxMethod *RexxMethod::newMethodObject(RexxString *pgmname, RexxObject *source,
     // if there is a parent source, then merge in the scope information
     if (parentSource != OREF_NULL)
     {
-        newSource->inheritSourceContext(parentSource);
+        result->getSourceObject()->inheritSourceContext(parentSource);
     }
 
     return result;
@@ -546,67 +619,21 @@ RexxMethod *RexxMethod::newFileRexx(RexxString *filename)
 /* Function:  Create a method from a fully resolved file name                 */
 /******************************************************************************/
 {
-                                       /* get the method name as a string   */
-  filename = REQUIRED_STRING(filename, ARG_ONE);
-                                       /* create a source object            */
-  RexxSource *source = RexxSource::classNewFile(filename);
-  ProtectedObject p(source);
-                                       /* finish up processing of this      */
-  RexxMethod * newMethod = newRexxMethod(source, (RexxClass *)TheNilObject);
-  ProtectedObject p2(newMethod);
-                                       /* Give new object its behaviour     */
-  newMethod->setBehaviour(((RexxClass *)this)->getInstanceBehaviour());
-   if (((RexxClass *)this)->hasUninitDefined())    /* does object have an UNINT method  */
-   {
-     newMethod->hasUninit();           /* Make sure everyone is notified.   */
-   }
-                                       /* now send an INIT message          */
-  newMethod->sendMessage(OREF_INIT);
-  return newMethod;
-}
-
-
-RexxMethod *RexxMethod::newRexxBuffer(
-      RexxString *pgmname,             /* file name to process              */
-      RexxBuffer *source,              /* String or buffer with source      */
-      RexxClass  *scope)               /* Scope for this method             */
-/******************************************************************************/
-/* Function:  Build a new method object from buffered REXX source             */
-/******************************************************************************/
-{
-  if (source == OREF_NULL)             /* didn't get source?                */
-  {
-                                       /* raise an error                    */
-      reportException(Error_Incorrect_method_noarg, IntegerTwo);
-  }
-                                       /* create a source object            */
-  RexxSource *newSource = RexxSource::classNewBuffered(pgmname, source);
-  // we need to protect this source object until parsing is complete
-  ProtectedObject p(newSource);
-                                       /* now complete method creation      */
-  return newRexxMethod(newSource, scope);
-}
-
-
-
-
-/**
- * Create a method object from an in-store source.
- *
- * @param pgmname The program name (as an ASCII-Z string).
- * @param source  The pointer to the program source.
- * @param length  The length of the source.
- *
- * @return A translated Method object.
- */
-RexxMethod *RexxMethod::newRexxBuffer(const char *pgmname, const char *source, size_t length)
-{
-                                         /* create a source object            */
-    RexxSource *newSource = RexxSource::classNewBuffered(new_string(pgmname), source, length);
-    // we need to protect this source object until parsing is complete
-    ProtectedObject p(newSource);
-                                         /* now complete method creation      */
-    return newRexxMethod(newSource, OREF_NULL);
+    /* get the method name as a string   */
+    filename = REQUIRED_STRING(filename, ARG_ONE);
+    /* create a source object            */
+    RexxMethod *newMethod = new RexxMethod(filename);
+    ProtectedObject p(newMethod);
+    newMethod->setScope((RexxClass *)TheNilObject);
+    /* Give new object its behaviour     */
+    newMethod->setBehaviour(((RexxClass *)this)->getInstanceBehaviour());
+    if (((RexxClass *)this)->hasUninitDefined())    /* does object have an UNINT method  */
+    {
+        newMethod->hasUninit();           /* Make sure everyone is notified.   */
+    }
+    /* now send an INIT message          */
+    newMethod->sendMessage(OREF_INIT);
+    return newMethod;
 }
 
 
@@ -628,21 +655,6 @@ RexxMethod *RexxMethod::restore(
                                        /* method object we're restoring     */
   return (RexxMethod *)envelope->getReceiver();
 }
-
-
-RexxMethod *RexxMethod::newFile(
-    RexxString *filename)              /* name of the target file           */
-/******************************************************************************/
-/* Function:  Create a method from a fully resolved file name                 */
-/******************************************************************************/
-{
-                                       /* create a source object            */
-  RexxSource *source = RexxSource::classNewFile(filename);
-  ProtectedObject p(source);
-                                       /* finish up processing of this      */
-  return newRexxMethod(source, (RexxClass *)TheNilObject);
-}
-
 
 
 /**

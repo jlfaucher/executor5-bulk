@@ -92,6 +92,7 @@ public:
     BaseExecutable *setSourceObject(RexxSource *s);
 
 protected:
+    RexxString *executableName;     // the created name of this routine
     BaseCode   *code;                   // the backing code object
 };
 
@@ -101,8 +102,12 @@ protected:
   public:
   void *operator new(size_t);
   inline void *operator new(size_t size, void *ptr) { return ptr; };
-  RexxMethod(BaseCode *_code);
-  RexxMethod(RexxSource *source);
+  RexxMethod(RexxString *name, BaseCode *_code);
+  RexxMethod(RexxString *name, RexxSource *source);
+  RexxMethod(RexxString *name);
+  RexxMethod(RexxString *name, RexxBuffer *source);
+  RexxMethod(RexxString *name, const char *data, size_t length);
+  RexxMethod(RexxString *name, RexxArray *source);
   inline RexxMethod(RESTORETYPE restoreType) { ; };
 
   void execute(RexxObject *, RexxObject *);
@@ -140,13 +145,8 @@ protected:
    RexxMethod  *newRexx(RexxObject **, size_t);
    RexxMethod  *newFileRexx(RexxString *);
 
-   static RexxMethod  *newRexxMethod(RexxSource *, RexxClass  *);
    static RexxMethod  *newMethodObject(RexxString *, RexxObject *, RexxObject *, RexxSource *a);
-   static RexxMethod  *newRexxBuffer(RexxString *, RexxBuffer *, RexxClass  *);
-   static RexxMethod  *newRexxBuffer(const char *, const char *, size_t);
-   static RexxMethod  *newEntry(PNATIVEMETHOD);
    static RexxMethod  *restore(RexxBuffer *, char *);
-   static RexxMethod  *newFile(RexxString *);
 
    static RexxClass *classInstance;
 
@@ -161,10 +161,5 @@ protected:
    size_t    methodFlags;              // method status flags
    RexxClass  *scope;                  /* pointer to the method scope       */
 };
-
-
-
-inline RexxMethod *new_method(BaseCode *c)  { return new RexxMethod(c); }
-
 
 #endif

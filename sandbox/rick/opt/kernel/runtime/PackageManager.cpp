@@ -573,20 +573,15 @@ PackageClass *PackageManager::loadRequires(RexxActivity *activity, RexxString *s
         return OREF_NULL;
     }
 
+
     // first check this using the specified name.  Since we need to perform checks in the
     // macro space, it's possible this will be loaded under the simple name.  We'll need to check
     // table again using the fully resolved name afterward.
-    WeakReference *requiresRef = (WeakReference *)loadedRequires->get(shortName);
-    if (requiresRef != OREF_NULL)
+
+    PackageClass *package = checkRequiresCache(shortName, result);
+    if (package != OREF_NULL)
     {
-        PackageClass *resolved = (PackageClass *)requiresRef->get();
-        if (resolved != OREF_NULL)
-        {
-            result = resolved;
-            return resolved;
-        }
-        // this was garbage collected, remove it from the table
-        loadedRequires->remove(shortName);
+        return package;
     }
 
     unsigned short macroPosition;    // a macrospace position marker
@@ -612,21 +607,14 @@ PackageClass *PackageManager::loadRequires(RexxActivity *activity, RexxString *s
         }
 
 
-        // first check this using the specified name.  Since we need to perform checks in the
-        // macro space, it's possible this will be loaded under the simple name.  We'll need to check
-        // table again using the fully resolved name afterward.
-        requiresRef = (WeakReference *)loadedRequires->get(resolvedName);
-        if (requiresRef != OREF_NULL)
+        // now check again using the longer name
+        package = checkRequiresCache(resolvedName, result);
+        if (package != OREF_NULL)
         {
-            PackageClass *resolved = (PackageClass *)requiresRef->get();
-            if (resolved != OREF_NULL)
-            {
-                result = resolved;
-                return resolved;
-            }
-            // this was garbage collected, remove it from the table
-            loadedRequires->remove(resolvedName);
+            return package;
         }
+
+        // load the file version of this.
         return getRequiresFile(activity, resolvedName, securityManager, result);
     }
 
@@ -717,7 +705,64 @@ PackageClass *PackageManager::getRequiresFile(RexxActivity *activity, RexxString
  */
 PackageClass *PackageManager::loadRequires(RexxActivity *activity, RexxString *name, const char *data, size_t length, ProtectedObject &result)
 {
+    // first check this using the specified name.
+    PackageClass *resolved = checkRequiresCache(name, result);
+    if (resolved != OREF_NULL)
+    {
+        return resolved;
+    }
 
+    RoutineClass *code = RoutineClass::newRexxBuffer(name, data, length);
+    PackageClass *package = code->getPackage();
+    result = package;
+
+    runRequires(activity, name, code);
+
+
+    WeakReference *ref = new WeakReference(package);
+    loadedRequires->put(ref, name);
+    return package;
+}
+
+
+/**
+ * Loade a requires file from an array source.  NOTE:  This is
+ * not cached like the other requires files
+ *
+ * @param activity The current activity.
+ * @param name     The fully resolved file name.
+ * @param result   The return routine object.
+ *
+ * @return The return Routine instance.
+ */
+PackageClass *PackageManager::loadRequires(RexxActivity *activity, RexxString *name, RexxArray *data, ProtectedObject &result)
+{
+    // first check this using the specified name.
+    PackageClass *resolved = checkRequiresCache(name, result);
+    if (resolved == OREF_NULL)
+    {
+        RoutineClass *code = RoutineClass::newRexxObject(name, data);
+        resolved = code->getPackage();
+        result = resolved;
+
+        runRequires(activity, name, code);
+
+        WeakReference *ref = new WeakReference(resolved);
+        loadedRequires->put(ref, name);
+    }
+    return resolved;
+}
+
+
+/**
+ * Check for a package already in the requires cache.
+ *
+ * @param name   The name of the target.
+ *
+ * @return The PackageClass instance, if any.
+ */
+PackageClass *checkRequiresCache(RexxString *name, ProtectedObject &result)
+{
     // first check this using the specified name.  Since we need to perform checks in the
     // macro space, it's possible this will be loaded under the simple name.  We'll need to check
     // table again using the fully resolved name afterward.
@@ -733,17 +778,7 @@ PackageClass *PackageManager::loadRequires(RexxActivity *activity, RexxString *n
         // this was garbage collected, remove it from the table
         loadedRequires->remove(name);
     }
-
-    RoutineClass *code = RoutineClass::newRexxBuffer(name, data, length);
-    PackageClass *package = code->getPackage();
-    result = package;
-
-    runRequires(activity, name, code);
-
-
-    WeakReference *ref = new WeakReference(package);
-    loadedRequires->put(ref, name);
-    return package;
+    return OREF_NULL;
 }
 
 

@@ -90,6 +90,7 @@ public:
     static PackageClass *getRequiresFile(RexxActivity *activity, RexxString *name, RexxObject *securityManager, ProtectedObject &result);
     static void          runRequires(RexxActivity *activity, RexxString *name, RoutineClass *code);
     static PackageClass *loadRequires(RexxActivity *activity, RexxString *name, const char *data, size_t length, ProtectedObject &result);
+    static PackageClass *loadRequires(RexxActivity *activity, RexxString *name, RexxArray *data, ProtectedObject &result);
 
 protected:
     enum
