@@ -269,7 +269,7 @@ void LibraryPackage::loadRoutines(RexxRoutineEntry *table)
             func = new RexxNativeRoutine(libraryName, routineName, (PNATIVEROUTINE)table->entryPoint);
         }
 
-        RoutineClass *routine = new_routine(name, func);
+        RoutineClass *routine = new_routine(routineName, func);
         // add this to our local table
         routines->put(routine, target);
 

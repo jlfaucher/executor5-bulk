@@ -69,6 +69,15 @@ RexxClass *RoutineClass::classInstance = OREF_NULL;
 
 
 /**
+ * Create initial class object at bootstrap time.
+ */
+void RoutineClass::createInstance()
+{
+    CLASS_CREATE(Routine, "Routine", RexxClass);
+}
+
+
+/**
  * Initialize a Routine object from a generated code object. Generally
  * used for routines generated from ::ROUTINE directives.
  *
@@ -803,21 +812,6 @@ RoutineClass *RoutineClass::restore(RexxString *name, FILE *handle)
     // future program lookups to have the fully resolved name.
     program->getSourceObject()->setProgramName(name);
     return program;                      /* return the unflattened method     */
-}
-
-
-/**
- * Set a security manager on a package.
- *
- * @param manager The security manager object.
- *
- * @return The security manager object.
- */
-RexxObject *RoutineClass::setSecurityManager(
-    RexxObject *manager)               /* supplied security manager         */
-{
-    source->setSecurityManager(manager);
-    return TheTrueObject;
 }
 
 

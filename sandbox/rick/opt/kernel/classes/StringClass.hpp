@@ -64,11 +64,6 @@
 #define  INITIAL_NAME_SIZE     10      /* first name table allocation       */
 #define  EXTENDED_NAME_SIZE    10      /* amount to extend table by         */
 
-class RexxStringClass : public RexxClass {
- public:
-   RexxStringClass(RESTORETYPE restoreType) { ; };
-   void *operator new(size_t size, void *ptr) {return ptr;};
-};
 
  class RexxString : public RexxObject {
   public:
@@ -424,6 +419,8 @@ class RexxStringClass : public RexxClass {
    // NB:  newRexx() cannot be static and exported as an ooRexx method.
           RexxString *newRexx(RexxObject **, size_t);
    static PCPPM operatorMethods[];
+
+   static void createInstance();
    static RexxClass *classInstance;
 
  protected:

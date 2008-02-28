@@ -362,7 +362,7 @@ RoutineClass *PackageManager::createRegisteredRoutine(RexxString *function)
     }
 
     // create a code handler and add to the cache
-    RoutineClass *func = new RoutineClass(new RegisteredRoutine(function, (RexxRoutineHandler *)entry));
+    RoutineClass *func = new RoutineClass(function, new RegisteredRoutine(function, (RexxRoutineHandler *)entry));
     registeredRoutines->put(func, function);
     // we got this
     return func;
@@ -712,7 +712,7 @@ PackageClass *PackageManager::loadRequires(RexxActivity *activity, RexxString *n
         return resolved;
     }
 
-    RoutineClass *code = RoutineClass::newRexxBuffer(name, data, length);
+    RoutineClass *code = new RoutineClass(name, data, length);
     PackageClass *package = code->getPackage();
     result = package;
 
@@ -741,7 +741,7 @@ PackageClass *PackageManager::loadRequires(RexxActivity *activity, RexxString *n
     PackageClass *resolved = checkRequiresCache(name, result);
     if (resolved == OREF_NULL)
     {
-        RoutineClass *code = RoutineClass::newRexxObject(name, data);
+        RoutineClass *code = new RoutineClass(name, data);
         resolved = code->getPackage();
         result = resolved;
 
@@ -761,7 +761,7 @@ PackageClass *PackageManager::loadRequires(RexxActivity *activity, RexxString *n
  *
  * @return The PackageClass instance, if any.
  */
-PackageClass *checkRequiresCache(RexxString *name, ProtectedObject &result)
+PackageClass *PackageManager::checkRequiresCache(RexxString *name, ProtectedObject &result)
 {
     // first check this using the specified name.  Since we need to perform checks in the
     // macro space, it's possible this will be loaded under the simple name.  We'll need to check

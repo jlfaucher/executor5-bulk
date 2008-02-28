@@ -58,7 +58,7 @@ class RexxNativeCode : public BaseCode
    void        flatten(RexxEnvelope *envelope);
 
    virtual RexxSource *getSourceObject();
-   virtual RexxClass *resolveClass(RexxString *className);
+   virtual RexxClass *findClass(RexxString *className);
    virtual BaseCode *setSourceObject(RexxSource *s);
 
 protected:

@@ -458,7 +458,7 @@ void Interpreter::decodeConditionData(RexxDirectory *conditionObj, RexxCondition
  *
  * @return A resolved class object (if any).
  */
-RexxClass *Interpreter::resolveClass(RexxString *className)
+RexxClass *Interpreter::findClass(RexxString *className)
 {
     RexxString *internalName = className->upper();   /* upper case it                     */
     /* send message to .local            */

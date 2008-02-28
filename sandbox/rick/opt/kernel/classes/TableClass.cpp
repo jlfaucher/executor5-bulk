@@ -51,6 +51,16 @@
 // singleton class instance
 RexxClass *RexxTable::classInstance = OREF_NULL;
 
+
+/**
+ * Create initial class object at bootstrap time.
+ */
+void RexxTable::createInstance()
+{
+    CLASS_CREATE(Table, "Table", RexxClass);
+}
+
+
 RexxObject *RexxTable::addOffset(
   size_t      _value,                   /* object to add                     */
   RexxObject *_index)                   /* added index                       */

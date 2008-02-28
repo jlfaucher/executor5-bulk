@@ -159,7 +159,7 @@ void ClassDirective::install(RexxSource *source, RexxActivation *activation)
     if (metaclassName != OREF_NULL)
     {
         /* resolve the class                 */
-        metaclass = source->resolveClass(metaclassName);
+        metaclass = source->findClass(metaclassName);
         if (metaclass == OREF_NULL)    /* nothing found?                    */
         {
             /* not found in environment, error!  */
@@ -170,7 +170,7 @@ void ClassDirective::install(RexxSource *source, RexxActivation *activation)
     if (subclassName != OREF_NULL)  /* no subclass?                      */
     {
         /* resolve the class                 */
-        subclass = source->resolveClass(subclassName);
+        subclass = source->findClass(subclassName);
         if (subclass == OREF_NULL)     /* nothing found?                    */
         {
             /* not found in environment, error!  */
@@ -201,7 +201,7 @@ void ClassDirective::install(RexxSource *source, RexxActivation *activation)
             /* get the next inherits name        */
             RexxString *inheritsName = (RexxString *)inheritsClasses->getValue(i);
             /* go resolve the entry              */
-            RexxClass *mixin = source->resolveClass(inheritsName);
+            RexxClass *mixin = source->findClass(inheritsName);
             if (mixin == OREF_NULL)   /* not found?                        */
             {
                 /* not found in environment, error!  */

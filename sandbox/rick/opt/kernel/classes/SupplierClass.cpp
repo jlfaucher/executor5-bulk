@@ -53,6 +53,15 @@
 RexxClass *RexxSupplier::classInstance = OREF_NULL;
 
 
+/**
+ * Create initial class object at bootstrap time.
+ */
+void RexxSupplier::createInstance()
+{
+    CLASS_CREATE(Supplier, "Supplier", RexxClass);
+}
+
+
 RexxSupplier::RexxSupplier(
   RexxArray  *_values,                 /* array of values                   */
   RexxArray  *_indexes )               /* array of indexes                  */

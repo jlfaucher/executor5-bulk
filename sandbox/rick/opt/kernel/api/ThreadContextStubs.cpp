@@ -316,7 +316,7 @@ RexxClassObject RexxEntry FindClass(RexxThreadContext *c, CSTRING n)
     {
         // convert the name to a string instance, and check the environments.
         RexxString *name = new_upper_string(n);
-        return (RexxClassObject)context.ret(context.context->resolveClass(name));
+        return (RexxClassObject)context.ret(context.context->findClass(name));
 
     }
     catch (ActivityException)
@@ -333,7 +333,7 @@ RexxClassObject RexxEntry FindClassFromPackage(RexxThreadContext *c, RexxPackage
     {
         // convert the name to a string instance, and check the environments.
         RexxString *name = new_upper_string(n);
-        return (RexxClassObject)context.ret(((PackageClass *)m)->resolveClass(name));
+        return (RexxClassObject)context.ret(((PackageClass *)m)->findClass(name));
 
     }
     catch (ActivityException)
@@ -421,7 +421,7 @@ RexxMethodObject RexxEntry NewMethod(RexxThreadContext *c, CSTRING name, CSTRING
     try
     {
         // convert the name to a string instance, and check the environments.
-        return (RexxMethodObject)context.ret(RexxMethod::newRexxBuffer(name, source, length));
+        return (RexxMethodObject)context.ret(new RexxMethod(new_string(name), source, length));
     }
     catch (ActivityException)
     {
@@ -436,7 +436,7 @@ RexxRoutineObject RexxEntry NewRoutine(RexxThreadContext *c, CSTRING name, CSTRI
     try
     {
         // convert the name to a string instance, and check the environments.
-        return (RexxRoutineObject)context.ret(RoutineClass::newRexxBuffer(new_string(name), source, length));
+        return (RexxRoutineObject)context.ret(new RoutineClass(new_string(name), source, length));
     }
     catch (ActivityException)
     {

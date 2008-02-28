@@ -57,6 +57,7 @@ public:
     void liveGeneral(int reason);
     void flatten(RexxEnvelope*);
 
+    static void createInstance();
     static RexxClass *classInstance;
 
     RexxString *getName();
@@ -83,7 +84,7 @@ public:
     RexxObject    *addClass(RexxString *name, RexxClass *clazz);
     RexxObject    *addPublicClass(RexxString *name, RexxClass *clazz);
 
-    PackageClass  *newRexx(RexxString *name, RexxArray *source);
+    PackageClass  *newRexx(RexxObject **init_args, size_t argCount);
 
     inline RexxSource *getSourceObject() { return source; }
 

@@ -148,7 +148,7 @@ class RexxInteger : public RexxObject {
   inline wholenumber_t decrementValue() {return --this->value;}
   inline RexxString *getStringrep() {return this->stringrep;}
 
-  static void createClass();
+  static void createInstance();
   static PCPPM operatorMethods[];
   static RexxIntegerClass *classInstance;
 

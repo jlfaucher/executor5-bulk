@@ -94,6 +94,7 @@ class RexxMutableBufferClass : public RexxClass {
    inline const char *getStringData() { return data->getData(); }
    inline size_t      getLength()     { return dataLength; }
 
+   static void createInstance();
    static RexxClass *classInstance;
 
  protected:

@@ -402,6 +402,7 @@ void AbstractCode::run(RexxActivity *activity, RexxMethod *method, RexxObject *r
 #include "SupplierClass.hpp"
 #include "MethodClass.hpp"
 #include "RoutineClass.hpp"
+#include "PackageClass.hpp"
 #include "RexxEnvelope.hpp"
 #include "MessageClass.hpp"
 #include "StemClass.hpp"
@@ -586,8 +587,8 @@ CPPM(RexxList::index),
 CPPM(RexxList::hasItem),
 CPPM(RexxList::removeItem),
 
-CPPM(RexxListClass::newRexx),
-CPPM(RexxListClass::classOf),
+CPPM(RexxList::newRexx),
+CPPM(RexxList::classOf),
 
 CPPM(RexxMessage::notify),             /* Message methods                   */
 CPPM(RexxMessage::result),
@@ -605,6 +606,7 @@ CPPM(RexxMessage::newRexx),
 CPPM(RexxMethod::setUnGuardedRexx),    /* Method methods                    */
 CPPM(RexxMethod::setGuardedRexx),
 CPPM(BaseExecutable::source),
+CPPM(BaseExecutable::getPackage),
 CPPM(RexxMethod::setPrivateRexx),
 CPPM(RexxMethod::setProtectedRexx),
 CPPM(RexxMethod::setSecurityManager),
@@ -615,8 +617,34 @@ CPPM(RexxMethod::isProtectedRexx),
 CPPM(RexxMethod::newFileRexx),
 CPPM(RexxMethod::newRexx),
 
+CPPM(RoutineClass::setSecurityManager),
+CPPM(RoutineClass::callRexx),
+CPPM(RoutineClass::callWithRexx),
+
 CPPM(RoutineClass::newFileRexx),
 CPPM(RoutineClass::newRexx),
+
+CPPM(PackageClass::setSecurityManager),
+CPPM(PackageClass::getSource),
+CPPM(PackageClass::getSourceLineRexx),
+CPPM(PackageClass::getSourceSize),
+CPPM(PackageClass::getClasses),
+CPPM(PackageClass::getPublicClasses),
+CPPM(PackageClass::getImportedClasses),
+CPPM(PackageClass::getMethods),
+CPPM(PackageClass::getRoutines),
+CPPM(PackageClass::getPublicRoutines),
+CPPM(PackageClass::getImportedPackages),
+CPPM(PackageClass::loadPackage),
+CPPM(PackageClass::addPackage),
+CPPM(PackageClass::findClass),
+CPPM(PackageClass::findRoutine),
+CPPM(PackageClass::addRoutine),
+CPPM(PackageClass::addPublicRoutine),
+CPPM(PackageClass::addClass),
+CPPM(PackageClass::addPublicClass),
+
+CPPM(PackageClass::newRexx),
 
 CPPM(RexxNumberString::formatRexx),    /* NumberString methods              */
 CPPM(RexxNumberString::trunc),

@@ -124,7 +124,7 @@ public:
     static inline void clearTimeSliceElapsed() { timeSliceElapsed = false; }
     static void haltAllActivities();
     static void decodeConditionData(RexxDirectory *conditionObj, RexxCondition *condData);
-    static RexxClass *resolveClass(RexxString *className);
+    static RexxClass *findClass(RexxString *className);
 
     static RexxObject *localServer;         // local environment initialization server
 

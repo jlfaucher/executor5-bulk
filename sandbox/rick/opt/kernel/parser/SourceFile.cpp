@@ -1397,7 +1397,7 @@ void RexxSource::mergeRequired(RexxSource *source)
  *
  * @return A resolved class object, if found.
  */
-RoutineClass *RexxSource::resolveLocalRoutine(RexxString *name)
+RoutineClass *RexxSource::findLocalRoutine(RexxString *name)
 {
     // if we have one locally, then return it.
     if (this->routines != OREF_NULL)
@@ -1413,7 +1413,7 @@ RoutineClass *RexxSource::resolveLocalRoutine(RexxString *name)
     // we might have a chained context, so check it also
     if (parentSource != OREF_NULL)
     {
-        return parentSource->resolveLocalRoutine(name);
+        return parentSource->findLocalRoutine(name);
     }
     // nope, no got one
     return OREF_NULL;
@@ -1427,7 +1427,7 @@ RoutineClass *RexxSource::resolveLocalRoutine(RexxString *name)
  *
  * @return A resolved Routine object, if found.
  */
-RoutineClass *RexxSource::resolvePublicRoutine(RexxString *name)
+RoutineClass *RexxSource::findPublicRoutine(RexxString *name)
 {
     // if we have one locally, then return it.
     if (this->merged_public_routines != OREF_NULL)
@@ -1443,7 +1443,7 @@ RoutineClass *RexxSource::resolvePublicRoutine(RexxString *name)
     // we might have a chained context, so check it also
     if (parentSource != OREF_NULL)
     {
-        return parentSource->resolvePublicRoutine(name);
+        return parentSource->findPublicRoutine(name);
     }
     // nope, no got one
     return OREF_NULL;
@@ -1459,16 +1459,16 @@ RoutineClass *RexxSource::resolvePublicRoutine(RexxString *name)
  * @return A RoutineClass instance if located.  Returns OREF_NULL if this
  *         is not known at this level.
  */
-RoutineClass *RexxSource::resolveRoutine(RexxString *routineName)
+RoutineClass *RexxSource::findRoutine(RexxString *routineName)
 {
-    RoutineClass *routineObject = resolveLocalRoutine(routineName);
+    RoutineClass *routineObject = findLocalRoutine(routineName);
     if (routineObject != OREF_NULL)
     {
         return routineObject;
     }
 
     // now try for one pulled in from ::REQUIRES objects
-    return resolvePublicRoutine(routineName);
+    return findPublicRoutine(routineName);
 }
 
 
@@ -1497,7 +1497,7 @@ RexxString *RexxSource::resolveProgramName(RexxActivity *activity, RexxString *n
  *
  * @return A resolved class object, if found.
  */
-RexxClass *RexxSource::resolveInstalledClass(RexxString *name)
+RexxClass *RexxSource::findInstalledClass(RexxString *name)
 {
     // if we have one locally, then return it.
     if (this->installed_classes != OREF_NULL)
@@ -1513,14 +1513,14 @@ RexxClass *RexxSource::resolveInstalledClass(RexxString *name)
     // we might have a chained context, so check it also
     if (parentSource != OREF_NULL)
     {
-        return parentSource->resolveInstalledClass(name);
+        return parentSource->findInstalledClass(name);
     }
     // nope, no got one
     return OREF_NULL;
 }
 
 
-RexxClass *RexxSource::resolvePublicClass(RexxString *name)
+RexxClass *RexxSource::findPublicClass(RexxString *name)
 {
     // if we have one locally, then return it.
     if (this->merged_public_classes != OREF_NULL)
@@ -1536,7 +1536,7 @@ RexxClass *RexxSource::resolvePublicClass(RexxString *name)
     // we might have a chained context, so check it also
     if (parentSource != OREF_NULL)
     {
-        return parentSource->resolvePublicClass(name);
+        return parentSource->findPublicClass(name);
     }
     // nope, no got one
     return OREF_NULL;
@@ -1551,18 +1551,18 @@ RexxClass *RexxSource::resolvePublicClass(RexxString *name)
  *
  * @return The resolved class object, if any.
  */
-RexxClass *RexxSource::resolveClass(RexxString *className)
+RexxClass *RexxSource::findClass(RexxString *className)
 {
     RexxString *internalName = className->upper();   /* upper case it                     */
     // check for a directly defined one in the source context chain
-    RexxClass *classObject = resolveInstalledClass(internalName);
+    RexxClass *classObject = findInstalledClass(internalName);
     // return if we got one
     if (classObject != OREF_NULL)
     {
         return classObject;
     }
     // now try for public classes we pulled in from other contexts
-    classObject = resolvePublicClass(internalName);
+    classObject = findPublicClass(internalName);
     // return if we got one
     if (classObject != OREF_NULL)
     {
@@ -2245,13 +2245,13 @@ void RexxSource::methodDirective()
                                        /* Go check the next clause to make  */
         this->checkDirective();        /* sure that no code follows         */
         // this uses a special code block
-        _method = new_method(new AbstractCode());
+        _method = new RexxMethod(name, new AbstractCode());
     }
     /* not an external method?           */
     else if (externalname == OREF_NULL)
     {
         /* go do the next block of code      */
-        _method = new_method(this->translateBlock(OREF_NULL));
+        _method = new RexxMethod(name, this->translateBlock(OREF_NULL));
     }
     else
     {
@@ -2286,7 +2286,7 @@ void RexxSource::methodDirective()
             RexxNativeCode *nmethod = PackageManager::resolveMethod(library, entry);
             nmethod->setSourceObject(this);
             /* turn into a real method object    */
-            _method = new RexxMethod(nmethod);
+            _method = new RexxMethod(name, nmethod);
         }
         else
         {
@@ -2569,7 +2569,7 @@ void RexxSource::createMethod(RexxString *name, bool classMethod,
     bool privateMethod, bool protectedMethod, bool guardedMethod)
 {
     // translate the method block
-    RexxMethod *_method = new_method(translateBlock(OREF_NULL));
+    RexxMethod *_method = new RexxMethod(name, translateBlock(OREF_NULL));
     _method->setAttributes(privateMethod, protectedMethod, guardedMethod);
     // go add the method to the accumulator
     addMethod(name, _method, classMethod);
@@ -2594,7 +2594,7 @@ void RexxSource::createAttributeGetterMethod(RexxString *name, RexxVariableBase 
     bool classMethod, bool privateMethod, bool protectedMethod, bool guardedMethod)
 {
     // create the kernel method for the accessor
-    RexxMethod *_method = new_method(new AttributeGetterCode(retriever));
+    RexxMethod *_method = new RexxMethod(name, new AttributeGetterCode(retriever));
     _method->setAttributes(privateMethod, protectedMethod, guardedMethod);
     // add this to the target
     addMethod(name, _method, classMethod);
@@ -2618,7 +2618,7 @@ void RexxSource::createAttributeSetterMethod(RexxString *name, RexxVariableBase 
     bool classMethod, bool privateMethod, bool protectedMethod, bool guardedMethod)
 {
     // create the kernel method for the accessor
-    RexxMethod *_method = new_method(new AttributeSetterCode(retriever));
+    RexxMethod *_method = new RexxMethod(name, new AttributeSetterCode(retriever));
     _method->setAttributes(privateMethod, protectedMethod, guardedMethod);
     // add this to the target
     addMethod(name, _method, classMethod);
@@ -2636,11 +2636,11 @@ void RexxSource::createConstantGetterMethod(RexxString *name, RexxObject *value)
     ConstantGetterCode *code = new ConstantGetterCode(value);
     if (active_class == OREF_NULL)
     {
-        addMethod(name, new_method(code), false);
+        addMethod(name, new RexxMethod(name, code), false);
     }
     else
     {
-        active_class->addConstantMethod(name, new_method(code));
+        active_class->addConstantMethod(name, new RexxMethod(name, code));
     }
 }
 
@@ -5207,7 +5207,7 @@ void *RexxSource::operator new (size_t size)
 RexxCode *RexxSource::generateCodeFromFile(RexxString *programname )
 {
     // create a new source object from the file
-    RexxObject *newObject = new RexxSource(programname);
+    RexxSource *newObject = new RexxSource(programname);
     ProtectedObject p(newObject);
     // now generate a code object from this file
     return newObject->generateCode();
@@ -5592,6 +5592,27 @@ PackageClass *RexxSource::loadRequired(RexxString *target)
 
 
 /**
+ * Load a ::REQUIRES directive from an provided source target
+ *
+ * @param target The name of the ::REQUIRES
+ */
+PackageClass *RexxSource::loadRequired(RexxString *target, RexxArray *s)
+{
+    ProtectedObject p;
+    PackageClass *requiresFile = PackageManager::loadRequires(ActivityManager::currentActivity, target, s, p);
+
+    if (requiresFile == OREF_NULL)             /* couldn't create this?             */
+    {
+        /* report an error                   */
+        reportException(Error_Routine_not_found_requires, target);
+    }
+    // add this to the source context
+    addPackage(requiresFile);
+    return requiresFile;
+}
+
+
+/**
  * Add a package to a source file context.  This allows new
  * packages to be imported into a source.
  *
@@ -5655,12 +5676,12 @@ void RexxSource::addInstalledClass(RexxString *name, RexxClass *classObject, boo
  * @param publicClass
  *               Indicates whether this needs to be added to the public list as well.
  */
-void RexxSource::addInstalledClass(RexxString *name, RoutineClass *routinebject, bool publicRoutine)
+void RexxSource::addInstalledRoutine(RexxString *name, RoutineClass *routineObject, bool publicRoutine)
 {
-    installed_routines->setEntry(name, routinedObject);
+    routines->setEntry(name, routineObject);
     if (publicRoutine)
     {
-        installed_public_routines->setEntry(name, routineObject);
+        public_routines->setEntry(name, routineObject);
     }
 }
 

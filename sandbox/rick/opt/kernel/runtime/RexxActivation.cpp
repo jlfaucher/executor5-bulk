@@ -938,47 +938,49 @@ void RexxActivation::iterate(
 /* Function:  Process a REXX ITERATE instruction                              */
 /******************************************************************************/
 {
-  RexxDoBlock       * doblock;         /* current DO block                  */
-  RexxBlockInstruction * loop;         /* actual loop instruction           */
+    RexxDoBlock *doblock = this->topBlock();          /* get the first stack item          */
 
-  doblock = this->topBlock();          /* get the first stack item          */
-
-  while (doblock != OREF_NULL) {       /* while still DO blocks to process  */
-    loop = doblock->getParent();       /* get the actual loop instruction   */
-    if (name == OREF_NULL)             // leaving the inner-most loop?
-    {
-        // we only recognize LOOP constructs for this.
-        if (loop->isLoop())
+    while (doblock != OREF_NULL)
+    {       /* while still DO blocks to process  */
+        RexxBlockInstruction *loop = doblock->getParent();       /* get the actual loop instruction   */
+        if (name == OREF_NULL)             // leaving the inner-most loop?
         {
-                                       /* reset the indentation             */
+            // we only recognize LOOP constructs for this.
+            if (loop->isLoop())
+            {
+                /* reset the indentation             */
+                this->setIndent(doblock->getIndent());
+                ((RexxInstructionDo *)loop)->reExecute(this, &this->stack, doblock);
+                return;                          /* we're finished                    */
+            }
+
+        }
+        // a named LEAVE can be either a labeled block or a loop.
+        else if (loop->isLabel(name))
+        {
+            if (!loop->isLoop())
+            {
+                reportException(Error_Invalid_leave_iterate_name, name);
+            }
+            /* reset the indentation             */
             this->setIndent(doblock->getIndent());
             ((RexxInstructionDo *)loop)->reExecute(this, &this->stack, doblock);
             return;                          /* we're finished                    */
         }
-
+        this->popBlock();                  /* cause termination cleanup         */
+        this->removeBlock();               /* remove the execution nest         */
+        doblock = this->topBlock();        /* get the new stack top             */
     }
-    // a named LEAVE can be either a labeled block or a loop.
-    else if (loop->isLabel(name))
+    if (name != OREF_NULL)               /* have a name?                      */
     {
-        if (!loop->isLoop())
-        {
-            reportException(Error_Invalid_leave_iterate_name, name);
-        }
-                                   /* reset the indentation             */
-        this->setIndent(doblock->getIndent());
-        ((RexxInstructionDo *)loop)->reExecute(this, &this->stack, doblock);
-        return;                          /* we're finished                    */
+        /* report exception with the name    */
+        reportException(Error_Invalid_leave_iteratevar, name);
     }
-    this->popBlock();                  /* cause termination cleanup         */
-    this->removeBlock();               /* remove the execution nest         */
-    doblock = this->topBlock();        /* get the new stack top             */
-  }
-  if (name != OREF_NULL)               /* have a name?                      */
-                                       /* report exception with the name    */
-    reportException(Error_Invalid_leave_iteratevar, name);
-  else
-                                       /* have a misplaced ITERATE          */
-    reportException(Error_Invalid_leave_iterate);
+    else
+    {
+        /* have a misplaced ITERATE          */
+        reportException(Error_Invalid_leave_iterate);
+    }
 }
 
 
@@ -1223,20 +1225,20 @@ void RexxActivation::implicitExit()
 /* Function:  Process a "fall of the end" exit condition                      */
 /******************************************************************************/
 {
-  /* at a main program level or completing an INTERPRET */
-  /* instruction? */
-  if (this->isTopLevelCall() || this->isInterpret())
-  {
-                                       /* real program call?                */
-      if (this->isProgramLevelCall())
-      {
-                                       /* run termination exit              */
-          this->activity->callTerminationExit(this);
-      }
-      this->execution_state = RETURNED;/* this is an EXIT for real          */
-      return;                          /* we're finished here               */
-  }
-  this->exitFrom(OREF_NULL);           /* we've had a nested exit, we need to process this more fully */
+    /* at a main program level or completing an INTERPRET */
+    /* instruction? */
+    if (this->isTopLevelCall() || this->isInterpret())
+    {
+        /* real program call?                */
+        if (this->isProgramLevelCall())
+        {
+            /* run termination exit              */
+            this->activity->callTerminationExit(this);
+        }
+        this->execution_state = RETURNED;/* this is an EXIT for real          */
+        return;                          /* we're finished here               */
+    }
+    this->exitFrom(OREF_NULL);           /* we've had a nested exit, we need to process this more fully */
 }
 #endif
 
@@ -2184,7 +2186,7 @@ RexxObject *RexxActivation::externalCall(RexxString *target, size_t _argcount, R
 
 
     // Step 1:  Check for a ::ROUTINE definition in the local context
-    RoutineClass *routine = this->settings.parent_code->resolveRoutine(target);
+    RoutineClass *routine = this->settings.parent_code->findRoutine(target);
     if (routine != OREF_NULL)
     {
         // call and return the result
@@ -2326,9 +2328,9 @@ RexxString *RexxActivation::resolveProgramName(RexxString *name)
  *
  * @return The resolved class, or OREF_NULL if not found.
  */
-RexxClass *RexxActivation::resolveClass(RexxString *name)
+RexxClass *RexxActivation::findClass(RexxString *name)
 {
-    return getSourceObject()->resolveClass(name);
+    return getSourceObject()->findClass(name);
 }
 
 

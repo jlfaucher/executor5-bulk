@@ -262,15 +262,15 @@ void RexxCompoundTail::buildTail(
 /* Function:  Construct a tail from a string and an index                     */
 /******************************************************************************/
 {
-  /* point directly to the value       */
-  if (tail->getStringData() != OREF_NULL)
-  {
-    tail->copyIntoTail(this);        /* add this to our tail              */
-  }
-  length = length + tail->getLength();
-  length = length + Numerics::formatWholeNumber(index, current);
-  current += length;
-  remainder -= length;
+    /* point directly to the value       */
+    if (tail->getStringData() != OREF_NULL)
+    {
+        tail->copyIntoTail(this);        /* add this to our tail              */
+    }
+    length = length + tail->getLength();
+    length = length + Numerics::formatWholeNumber(index, current);
+    current += length;
+    remainder -= length;
 }
 
 void RexxCompoundTail::buildTail(
@@ -279,10 +279,10 @@ void RexxCompoundTail::buildTail(
 /* Function:  Construct a tail from a single numeric index                    */
 /******************************************************************************/
 {
-  length = Numerics::formatWholeNumber(index, current);
-  length = strlen((char *)current);
-  current += length;
-  remainder -= length;
+    length = Numerics::formatWholeNumber(index, current);
+    length = strlen((char *)current);
+    current += length;
+    remainder -= length;
 }
 
 

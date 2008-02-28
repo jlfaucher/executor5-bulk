@@ -93,6 +93,9 @@ public:
     static PackageClass *loadRequires(RexxActivity *activity, RexxString *name, RexxArray *data, ProtectedObject &result);
 
 protected:
+
+    static PackageClass *checkRequiresCache(RexxString *name, ProtectedObject &result);
+
     enum
     {
         IMAGE_PACKAGES = 1,

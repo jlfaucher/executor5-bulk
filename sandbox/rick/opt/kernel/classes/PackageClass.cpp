@@ -48,10 +48,22 @@
 #include "ProtectedObject.hpp"
 #include "PackageClass.hpp"
 #include "RexxBuiltinFunctions.h"
+#include "RoutineClass.hpp"
+#include "InterpreterInstance.hpp"
+#include "PackageManager.hpp"
 
 
 // singleton class instance
 RexxClass *PackageClass::classInstance = OREF_NULL;
+
+
+/**
+ * Create initial class object at bootstrap time.
+ */
+void PackageClass::createInstance()
+{
+    CLASS_CREATE(Package, "Package", RexxClass);
+}
 
 
 void *PackageClass::operator new (size_t size)
@@ -333,14 +345,24 @@ RexxArray *PackageClass::getImportedPackages()
  * Load a package in a source context.
  *
  * @param name   The target package name.
+ * @param s      The optional source lines for the package, as an array.
  *
  * @return The loaded package object.
  */
-PackageClass *PackageClass::loadPackage(RexxString *name)
+PackageClass *PackageClass::loadPackage(RexxString *name, RexxArray *s)
 {
     // make sure we have a valid name and delegate to the source object
     name = REQUIRED_STRING(name, 1);
-    return source->loadRequired(name);
+    // if no source provided, this comes from a file
+    if (s == OREF_NULL)
+    {
+        return source->loadRequired(name);
+    }
+    else
+    {
+        s = REQUIRED_ARRAY(s, "source");
+        return source->loadRequired(name, s);
+    }
 }
 
 
@@ -353,16 +375,8 @@ PackageClass *PackageClass::loadPackage(RexxString *name)
  */
 RexxObject *PackageClass::addPackage(PackageClass *package)
 {
-    // this is required
-    required_arg(package, ONE);
-
-    if (!package->isInstanceOf(ThePackageClass))
-    {
-        reportException(Error_Invalid_argument_noclass, "package", "Package");
-    }
-
+    REQUIRED_INSTANCE(package, ThePackageClass, "package");
     source->addPackage(package);
-
     return this;
 }
 
@@ -378,7 +392,6 @@ RexxObject *PackageClass::addRoutine(RexxString *name, RoutineClass *routine)
 {
     name = REQUIRED_STRING(name, "name");
     REQUIRED_INSTANCE(routine, TheRoutineClass, "routine");
-
     source->addInstalledRoutine(name, routine, false);
     return this;
 }
@@ -391,11 +404,10 @@ RexxObject *PackageClass::addRoutine(RexxString *name, RoutineClass *routine)
  *
  * @return The target package object.
  */
-RexxObject *PackageClass::addPublicRoutine(RoutineClass *routine)
+RexxObject *PackageClass::addPublicRoutine(RexxString *name, RoutineClass *routine)
 {
     name = REQUIRED_STRING(name, "name");
     REQUIRED_INSTANCE(routine, TheRoutineClass, "routine");
-
     source->addInstalledRoutine(name, routine, true);
     return this;
 }
@@ -408,11 +420,10 @@ RexxObject *PackageClass::addPublicRoutine(RoutineClass *routine)
  *
  * @return The target package object.
  */
-RexxObject *PackageClass::addClass(RexxClass *clazz)
+RexxObject *PackageClass::addClass(RexxString *name, RexxClass *clazz)
 {
     name = REQUIRED_STRING(name, "name");
     REQUIRED_INSTANCE(clazz, TheClassClass, "class");
-
     source->addInstalledClass(name, clazz, false);
     return this;
 }
@@ -425,11 +436,10 @@ RexxObject *PackageClass::addClass(RexxClass *clazz)
  *
  * @return The target package object.
  */
-RexxObject *PackageClass::addPublicClass(RexxClass *clazz)
+RexxObject *PackageClass::addPublicClass(RexxString *name, RexxClass *clazz)
 {
     name = REQUIRED_STRING(name, "name");
     REQUIRED_INSTANCE(clazz, TheClassClass, "class");
-
     source->addInstalledClass(name, clazz, true);
     return this;
 }
@@ -442,9 +452,36 @@ RexxObject *PackageClass::addPublicClass(RexxClass *clazz)
  *
  * @return The resolved class object.
  */
-RexxClass *PackageClass::resolveClass(RexxString *name)
+RexxClass *PackageClass::findClass(RexxString *name)
 {
-    return source->resolveClass(name);
+    return source->findClass(name);
+}
+
+
+/**
+ * Resolve a routine in the context of a package.
+ *
+ * @param name   The required routine name.
+ *
+ * @return The resolved routine object.
+ */
+RoutineClass *PackageClass::findRoutine(RexxString *name)
+{
+    return source->findRoutine(name);
+}
+
+
+/**
+ * Set a security manager on a package.
+ *
+ * @param manager The security manager object.
+ *
+ * @return The security manager object.
+ */
+RexxObject *PackageClass::setSecurityManager(RexxObject *manager)
+{
+    source->setSecurityManager(manager);
+    return TheTrueObject;
 }
 
 
@@ -467,27 +504,28 @@ PackageClass *PackageClass::newRexx(
 
     PackageClass *package = OREF_NULL;
 
+    ProtectedObject p;
+
     /* get the package name as a string   */
-    RexxString *nameString = REQUIRED_STRING(pgmname, ARG_ONE);
+    RexxString *nameString = REQUIRED_STRING(pgmname, "name");
     if (source == OREF_NULL)
     {
-        RexxString *resolvedName = ActivityManager::currentActivity->getInstance()->resolveProgramName(pgmname, OREF_NULL, OREF_NULL);
-        package = PackageManager::loadRequires(ActivityManager::currentActivity, pgmname, resolvedName, package);
+        RexxString *resolvedName = ActivityManager::currentActivity->getInstance()->resolveProgramName(nameString, OREF_NULL, OREF_NULL);
+        package = PackageManager::loadRequires(ActivityManager::currentActivity, nameString, resolvedName, p);
     }
     else
     {
-        RexxArray *sourceArray = REQUIRED_ARRAY(soource, IntegerTwo);
-        package = PackageManager::loadRequires(ActivityManager::currentActivity, pgmname, sourceArray, package);
+        RexxArray *sourceArray = REQUIRED_ARRAY(source, "source");
+        package = PackageManager::loadRequires(ActivityManager::currentActivity, nameString, sourceArray, p);
     }
 
-    ProtectedObject p(package);
     /* Give new object its behaviour     */
-    newRoutine->setBehaviour(((RexxClass *)this)->getInstanceBehaviour());
+    package->setBehaviour(((RexxClass *)this)->getInstanceBehaviour());
     if (((RexxClass *)this)->hasUninitDefined())
     {
-        newRoutine->hasUninit();         /* Make sure everyone is notified.   */
+        package->hasUninit();         /* Make sure everyone is notified.   */
     }
     /* now send an INIT message          */
-    newRoutine->sendMessage(OREF_INIT, init_args, initCount);
-    return newRoutine;                   /* return the new method             */
+    package->sendMessage(OREF_INIT, init_args, initCount);
+    return package;                      /* return the new method             */
 }

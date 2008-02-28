@@ -1117,21 +1117,20 @@ void *RexxInteger::operator new(size_t size)
   return newObject;                    /* return the new object.            */
 }
 
-void RexxInteger::createClass()
+void RexxInteger::createInstance()
 /******************************************************************************/
 /* Function:  Create the integer class and set up the integer cache           */
 /******************************************************************************/
 {
-                                       /* Create the Integer class object   */
-                                       /*  its asubclass of the CLASS class,*/
-                                       /*  and needs to override the NEW    */
-                                       /*  method to provide caching        */
-                                       /*  support for integers.            */
-  CLASS_CREATE(Integer, "String", RexxIntegerClass);
-                                       /*  initialize our static array of   */
-                                       /*  cached integers                  */
-  new (TheIntegerClass) RexxIntegerClass();
-
+    /* Create the Integer class object   */
+    /*  its asubclass of the CLASS class,*/
+    /*  and needs to override the NEW    */
+    /*  method to provide caching        */
+    /*  support for integers.            */
+    CLASS_CREATE(Integer, "String", RexxIntegerClass);
+    /*  initialize our static array of   */
+    /*  cached integers                  */
+    new (TheIntegerClass) RexxIntegerClass();
 }
 
 

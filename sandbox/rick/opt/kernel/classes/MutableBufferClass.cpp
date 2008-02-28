@@ -56,6 +56,17 @@
 // singleton class instance
 RexxClass *RexxMutableBuffer::classInstance = OREF_NULL;
 
+
+
+/**
+ * Create initial class object at bootstrap time.
+ */
+void RexxMutableBuffer::createInstance()
+{
+    CLASS_CREATE(MutableBuffer, "MutableBuffer", RexxClass);
+}
+
+
 #define DEFAULT_BUFFER_LENGTH 256
 
 RexxMutableBuffer *RexxMutableBufferClass::newRexx(RexxObject **args, size_t argc)
@@ -63,47 +74,49 @@ RexxMutableBuffer *RexxMutableBufferClass::newRexx(RexxObject **args, size_t arg
 /* Function:  Allocate (and initialize) a string object                       */
 /******************************************************************************/
 {
-  RexxString        *string;
-  RexxMutableBuffer *newBuffer;         /* new mutable buffer object         */
-  size_t            bufferLength = DEFAULT_BUFFER_LENGTH;
-  size_t            defaultSize;
-  if (argc >= 1) {
-    if (args[0] != NULL) {
-                                        /* force argument to string value    */
-      string = (RexxString *)get_string(args[0], ARG_ONE);
-    }
-    else
+    RexxString        *string;
+    RexxMutableBuffer *newBuffer;         /* new mutable buffer object         */
+    size_t            bufferLength = DEFAULT_BUFFER_LENGTH;
+    size_t            defaultSize;
+    if (argc >= 1)
     {
-      string = OREF_NULLSTRING;           /* default to empty content          */
+        if (args[0] != NULL)
+        {
+            /* force argument to string value    */
+            string = (RexxString *)get_string(args[0], ARG_ONE);
+        }
+        else
+        {
+            string = OREF_NULLSTRING;           /* default to empty content          */
+        }
     }
-  }
-  else                                      /* minimum buffer size given?        */
-  {
-     string = OREF_NULLSTRING;
-  }
+    else                                      /* minimum buffer size given?        */
+    {
+        string = OREF_NULLSTRING;
+    }
 
-  if (argc >= 2)
-  {
-    bufferLength = optional_length(args[1], DEFAULT_BUFFER_LENGTH, ARG_TWO);
-  }
+    if (argc >= 2)
+    {
+        bufferLength = optional_length(args[1], DEFAULT_BUFFER_LENGTH, ARG_TWO);
+    }
 
-  defaultSize = bufferLength;           /* remember initial default size     */
+    defaultSize = bufferLength;           /* remember initial default size     */
 
-                                        /* input string longer than demanded */
-                                        /* minimum size? expand accordingly  */
-  if (string->getLength() > bufferLength)
-  {
-      bufferLength = string->getLength();
-  }
-  /* allocate the new object           */
-  newBuffer = new ((RexxClass *)this) RexxMutableBuffer(bufferLength, defaultSize);
-  newBuffer->dataLength = string->getLength();
-  /* copy the content                  */
-  newBuffer->data->copyData(0, string->getStringData(), string->getLength());
+                                          /* input string longer than demanded */
+                                          /* minimum size? expand accordingly  */
+    if (string->getLength() > bufferLength)
+    {
+        bufferLength = string->getLength();
+    }
+    /* allocate the new object           */
+    newBuffer = new ((RexxClass *)this) RexxMutableBuffer(bufferLength, defaultSize);
+    newBuffer->dataLength = string->getLength();
+    /* copy the content                  */
+    newBuffer->data->copyData(0, string->getStringData(), string->getLength());
 
-  ProtectedObject p(newBuffer);
-  newBuffer->sendMessage(OREF_INIT, args, argc > 2 ? argc - 2 : 0);
-  return newBuffer;
+    ProtectedObject p(newBuffer);
+    newBuffer->sendMessage(OREF_INIT, args, argc > 2 ? argc - 2 : 0);
+    return newBuffer;
 }
 
 

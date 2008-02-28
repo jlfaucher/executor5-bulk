@@ -87,6 +87,7 @@ class RexxObjectTable : public RexxTable {
    inline RexxArray    *allAt(RexxObject *key) {return this->contents->primitiveGetAll(key);}
    inline RexxObject * findSuperScope(RexxObject *v) { return this->contents->primitiveNextItem(v, TheNilObject); };
 
+   static void createInstance();
    static RexxObjectTable  *newInstance(size_t size);
 };
 

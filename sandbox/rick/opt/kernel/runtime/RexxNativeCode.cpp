@@ -106,14 +106,14 @@ void RexxNativeCode::flatten(RexxEnvelope *envelope)
  *
  * @return The returned class.
  */
-RexxClass *RexxNativeCode::resolveClass(RexxString *className)
+RexxClass *RexxNativeCode::findClass(RexxString *className)
 {
     // if there is a source object attached, have it resolve things.  Otherwise, go back to the default.
     if (source != OREF_NULL)
     {
-        return source->resolveClass(className);
+        return source->findClass(className);
     }
-    return BaseCode::resolveClass(className);
+    return BaseCode::findClass(className);
 }
 
 

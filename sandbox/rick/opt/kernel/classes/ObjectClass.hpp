@@ -521,6 +521,7 @@ class RexxObject : public RexxInternalObject {
    RexxVariableDictionary *objectVariables;   /* set of object variables           */
    static PCPPM operatorMethods[];
 
+   static void createInstance();
    static RexxClass *classInstance;
 };
 

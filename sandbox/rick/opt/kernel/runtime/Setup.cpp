@@ -133,14 +133,14 @@ void RexxMemory::createImage()
 {
   RexxMemory::create();                /* create initial memory stuff       */
 
-  memoryObject.createStrings();        /* create all of the OREF_ strings   */
   Interpreter::init();                 // the interpreter subsystem first
   ActivityManager::init();             /* Initialize the activity managers  */
-  // initializer for native libraries
-  PackageManager::initialize();
   // Get an instance.  This also gives the root activity of the instance
   // the kernel lock.
   InterpreterInstance *instance = Interpreter::createInterpreterInstance();
+  memoryObject.createStrings();        /* create all of the OREF_ strings   */
+  // initializer for native libraries
+  PackageManager::initialize();
 
                                        /* avoid that through caching        */
                                        /* TheTrueObject == IntegerOne etc.  */
@@ -155,10 +155,10 @@ void RexxMemory::createImage()
   TheNilObject->makeProxiedObject();
 
                                        /* create string first               */
-  CLASS_CREATE(String, "String", RexxStringClass);
-  CLASS_CREATE(Object, "Object", RexxClass);
-  CLASS_CREATE(Table, "Table", RexxClass);
-  CLASS_CREATE(Relation, "Relation", RexxClass);
+  RexxString::createInstance();
+  RexxObject::createInstance();
+  RexxTable::createInstance();
+  RexxRelation::createInstance();
 
   TheFunctionsDirectory = new_directory();
 
@@ -178,14 +178,14 @@ void RexxMemory::createImage()
 
                                        /* RexxNumberString                  */
   // NOTE:  The number string class lies about its identity
-  CLASS_CREATE(NumberString, "String", RexxNumberStringClass);
-  CLASS_CREATE(Array, "Array", RexxClass);  /* RexxArray                         */
-  TheNullArray = new_array((size_t)0); /* set up a null array               */
+  RexxNumberString::createInstance();
+  RexxArray;:createInstance();
 
   // The pointer class needs to be created early because other classes
   // use the instances to store information.
   RexxPointer::createInstance();
 
+  RexxDirectory::createInstance();
   CLASS_CREATE(Directory, "Directory", RexxClass);  /* RexxDirectory                     */
   TheEnvironment = new_directory();    /* create the environment directory  */
                                        /* setup OREF_ENV as the mark start  */
@@ -202,14 +202,16 @@ void RexxMemory::createImage()
   TheSystem->makeProxiedObject();
 
                                        /* RexxMethod                        */
-  CLASS_CREATE(Method, "Method", RexxClass);
-  CLASS_CREATE(Routine, "Routine", RexxClass);
-  CLASS_CREATE(Queue, "Queue", RexxClass);      /* RexxQueue                         */
-  CLASS_CREATE(List, "List", RexxListClass);   /* RexxList                          */
-  CLASS_CREATE(Stem, "Stem", RexxClass);       /* RexxStem                          */
-  CLASS_CREATE(Supplier, "Supplier", RexxClass);   /* RexxSupplier                      */
-  CLASS_CREATE(Message, "Message", RexxClass);    /* RexxMessage                       */
-  CLASS_CREATE(MutableBuffer, "MutableBuffer", RexxClass);
+  RexxMethod::createInstance();
+  RoutineClass::createInstance();
+  PackageClass::createInstance();
+  RexxQueue::createInstance();
+  RexxList::createInstance();
+  RexxStem::createInstance();
+  RexxSupplier::createInstance();
+  RexxMessage::createInstance();
+  RexxMutableBuffer::createInstance();
+
   RexxBuffer::createInstance();
   WeakReference::createInstance();
 
@@ -431,8 +433,8 @@ void RexxMemory::createImage()
   /***************************************************************************/
 
                                        /* add the class behaviour methods   */
-  defineKernelMethod(CHAR_NEW           , TheListClassBehaviour, CPPM(RexxListClass::newRexx), A_COUNT);
-  defineKernelMethod(CHAR_OF            , TheListClassBehaviour, CPPM(RexxListClass::classOf), A_COUNT);
+  defineKernelMethod(CHAR_NEW           , TheListClassBehaviour, CPPM(RexxList::newRexx), A_COUNT);
+  defineKernelMethod(CHAR_OF            , TheListClassBehaviour, CPPM(RexxList::classOf), A_COUNT);
 
                                        /* set the scope of the methods to   */
                                        /* this classes oref                 */

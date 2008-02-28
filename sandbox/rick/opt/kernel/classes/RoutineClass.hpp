@@ -93,6 +93,7 @@ public:
 
     static RoutineClass *processInstore(PRXSTRING instore, RexxString * name );
 
+    static void createInstance();
     static RexxClass *classInstance;
 };
 

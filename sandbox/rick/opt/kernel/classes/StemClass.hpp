@@ -135,6 +135,7 @@ class RexxCompoundTail;
   RexxObject *getElement(const char *tail);
   RexxObject *getElement(RexxCompoundTail *tail);
 
+  static void createInstance();
   static RexxClass *classInstance;
 
  protected:

@@ -126,6 +126,10 @@
    RexxObject   *append(RexxObject *);
    RexxArray    *weakReferenceArray();
 
+   RexxList     *newRexx(RexxObject **, size_t);
+   RexxList     *classOf(RexxObject **, size_t);
+
+   static void createInstance();
    static RexxClass *classInstance;
 
  protected:
@@ -137,12 +141,6 @@
    size_t size;                          /* element slots in the buffer       */
    size_t free;                          /* start of free element chain       */
  };
-
-class RexxListClass : public RexxClass {
- public:
-   RexxList     *newRexx(RexxObject **, size_t);
-   RexxList     *classOf(RexxObject **, size_t);
-};
 
 
 inline RexxList *new_list() { return new RexxList; }

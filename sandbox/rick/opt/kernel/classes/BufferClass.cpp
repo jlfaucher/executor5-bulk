@@ -66,22 +66,26 @@ RexxBuffer *RexxBuffer::expand(
 /* Function:  Create a larger buffer and copy existing data into it           */
 /******************************************************************************/
 {
-  RexxBuffer * newBuffer;              /* returned new buffer               */
+    RexxBuffer * newBuffer;              /* returned new buffer               */
 
-                                       /* we will either return a buffer    */
-                                       /* twice the size of the current     */
-                                       /* buffer, or this size of           */
-                                       /* current(this)buffer + requested   */
-                                       /* minimum length.                   */
-  if (length > this->getLength())      /* need more than double?            */
-                                       /* increase by the requested amount  */
-    newBuffer = new_buffer(this->getLength() + length);
-  else                                 /* just double the existing length   */
-    newBuffer = new_buffer(this->getLength() * 2);
-                                       /* have new buffer, so copy data from*/
-                                       /* current buffer into new buffer.   */
-  memcpy(newBuffer->getData(), this->data, this->getLength());
-  return newBuffer;                    /* all done, return new buffer       */
+                                         /* we will either return a buffer    */
+                                         /* twice the size of the current     */
+                                         /* buffer, or this size of           */
+                                         /* current(this)buffer + requested   */
+                                         /* minimum length.                   */
+    if (length > this->getLength())      /* need more than double?            */
+    {
+        /* increase by the requested amount  */
+        newBuffer = new_buffer(this->getLength() + length);
+    }
+    else                                 /* just double the existing length   */
+    {
+        newBuffer = new_buffer(this->getLength() * 2);
+    }
+    /* have new buffer, so copy data from*/
+    /* current buffer into new buffer.   */
+    memcpy(newBuffer->getData(), this->data, this->getLength());
+    return newBuffer;                    /* all done, return new buffer       */
 
 }
 
@@ -91,16 +95,16 @@ void *RexxBuffer::operator new(size_t size,
 /* Function:  Create a new buffer object                                      */
 /******************************************************************************/
 {
-  RexxBuffer *newBuffer;               /* new object                        */
+    RexxBuffer *newBuffer;               /* new object                        */
 
-                                       /* Get new object                    */
-  newBuffer = (RexxBuffer *) new_object(size + length - sizeof(char[4]));
-                                       /* Give new object its behaviour     */
-  newBuffer->setBehaviour(TheBufferBehaviour);
-                                       /* Initialize this new buffer        */
-  newBuffer->size = length;            /* set the length of the buffer      */
-  newBuffer->setHasNoReferences();     /* this has no references            */
-  return (void *)newBuffer;            /* return the new buffer             */
+                                         /* Get new object                    */
+    newBuffer = (RexxBuffer *) new_object(size + length - sizeof(char[4]));
+    /* Give new object its behaviour     */
+    newBuffer->setBehaviour(TheBufferBehaviour);
+    /* Initialize this new buffer        */
+    newBuffer->size = length;            /* set the length of the buffer      */
+    newBuffer->setHasNoReferences();     /* this has no references            */
+    return(void *)newBuffer;            /* return the new buffer             */
 }
 
 

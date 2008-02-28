@@ -57,6 +57,16 @@
 // singleton class instance
 RexxClass *RexxMessage::classInstance = OREF_NULL;
 
+
+/**
+ * Create initial class object at bootstrap time.
+ */
+void RexxMessage::createInstance()
+{
+    CLASS_CREATE(Message, "Message", RexxClass);
+}
+
+
 RexxMessage::RexxMessage(
     RexxObject *_target,                /* message target                    */
     RexxObject *_message,               /* message to issue                  */
@@ -95,17 +105,17 @@ void RexxMessage::live(size_t liveMark)
 /* Function:  Normal garbage collection live marking                          */
 /******************************************************************************/
 {
-  memory_mark(this->receiver);
-  memory_mark(this->target);
-  memory_mark(this->message);
-  memory_mark(this->startscope);
-  memory_mark(this->args);
-  memory_mark(this->resultObject);
-  memory_mark(this->interestedParties);
-  memory_mark(this->condition);
-  memory_mark(this->startActivity);
-  memory_mark(this->objectVariables);
-  memory_mark(this->waitingActivities);
+    memory_mark(this->receiver);
+    memory_mark(this->target);
+    memory_mark(this->message);
+    memory_mark(this->startscope);
+    memory_mark(this->args);
+    memory_mark(this->resultObject);
+    memory_mark(this->interestedParties);
+    memory_mark(this->condition);
+    memory_mark(this->startActivity);
+    memory_mark(this->objectVariables);
+    memory_mark(this->waitingActivities);
 }
 
 void RexxMessage::liveGeneral(int reason)
@@ -113,17 +123,17 @@ void RexxMessage::liveGeneral(int reason)
 /* Function:  Generalized object marking                                      */
 /******************************************************************************/
 {
-  memory_mark_general(this->receiver);
-  memory_mark_general(this->target);
-  memory_mark_general(this->message);
-  memory_mark_general(this->startscope);
-  memory_mark_general(this->args);
-  memory_mark_general(this->resultObject);
-  memory_mark_general(this->interestedParties);
-  memory_mark_general(this->condition);
-  memory_mark_general(this->startActivity);
-  memory_mark_general(this->objectVariables);
-  memory_mark_general(this->waitingActivities);
+    memory_mark_general(this->receiver);
+    memory_mark_general(this->target);
+    memory_mark_general(this->message);
+    memory_mark_general(this->startscope);
+    memory_mark_general(this->args);
+    memory_mark_general(this->resultObject);
+    memory_mark_general(this->interestedParties);
+    memory_mark_general(this->condition);
+    memory_mark_general(this->startActivity);
+    memory_mark_general(this->objectVariables);
+    memory_mark_general(this->waitingActivities);
 }
 
 void RexxMessage::flatten(RexxEnvelope *envelope)
@@ -381,11 +391,11 @@ void RexxMessage::error(
 /*   from SEND/START.                                                         */
 /******************************************************************************/
 {
-  this->setRaiseError();               /* indicate we had an error condition*/
-                                       /* save the condition object in case */
-                                       /*we want it.                        */
-  OrefSet(this, this->condition, _condition);
-  this->sendNotification();            /* do cleanup items.                 */
+    this->setRaiseError();               /* indicate we had an error condition*/
+                                         /* save the condition object in case */
+                                         /*we want it.                        */
+    OrefSet(this, this->condition, _condition);
+    this->sendNotification();            /* do cleanup items.                 */
 }
 
 RexxObject *RexxMessage::completed(void)
@@ -488,12 +498,10 @@ void *RexxMessage::operator new(size_t size)
 /* Function:  Construct a new message object                                  */
 /******************************************************************************/
 {
-  RexxObject *newMessage;              /* newly created message object      */
-
-  newMessage = new_object(size);       /* Get new object                    */
-                                       /* Give new object its behaviour     */
-  newMessage->setBehaviour(TheMessageBehaviour);
-  return newMessage;                   /* return the new message object     */
+    RexxObject *newMessage = new_object(size);       /* Get new object                    */
+    /* Give new object its behaviour     */
+    newMessage->setBehaviour(TheMessageBehaviour);
+    return newMessage;                   /* return the new message object     */
 }
 
 

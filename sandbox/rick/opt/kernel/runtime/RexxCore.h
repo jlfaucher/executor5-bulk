@@ -168,10 +168,7 @@ typedef builtin_func *pbuiltin;        /* pointer to a builtin function     */
 class RexxClass;
 class RexxDirectory;
 class RexxIntegerClass;
-class RexxListClass;
 class RexxArray;
-class RexxNumberStringClass;
-class RexxStringClass;
 class RexxMemory;
 
 // this one is special, and is truly global.
@@ -355,6 +352,25 @@ inline RexxArray * REQUIRED_ARRAY(RexxObject *object, size_t position)
     {
         /* raise an error                    */
         reportException(Error_Execution_noarray, object);
+    }
+    return array;
+}
+
+
+inline RexxArray * REQUIRED_ARRAY(RexxObject *object, const char *name)
+{
+    if (object == OREF_NULL)             /* missing argument?                 */
+    {
+        reportException(Error_Invalid_argument_noarg, name);
+    }
+
+    /* force to array form               */
+    RexxArray *array = object->requestArray();
+    /* not an array?                     */
+    if (array == TheNilObject || array->getDimension() != 1)
+    {
+        /* raise an error                    */
+        reportException(Error_Invalid_argument_noarray, name);
     }
     return array;
 }

@@ -65,6 +65,16 @@
 // singleton class instance
 RexxClass *RexxMethod::classInstance = OREF_NULL;
 
+
+/**
+ * Create initial class object at bootstrap time.
+ */
+void RexxMethod::createInstance()
+{
+    CLASS_CREATE(Method, "Method", RexxClass);
+}
+
+
 /**
  * Resolve a class in the context of an executable.
  *
@@ -72,9 +82,9 @@ RexxClass *RexxMethod::classInstance = OREF_NULL;
  *
  * @return The resolve class, or OREF_NULL if not found.
  */
-RexxClass *BaseExecutable::resolveClass(RexxString *className)
+RexxClass *BaseExecutable::findClass(RexxString *className)
 {
-    return code->resolveClass(className);
+    return code->findClass(className);
 }
 
 
@@ -765,10 +775,10 @@ RexxSource *BaseCode::getSourceObject()
  *
  * @return The resolved class object, or OREF_NULL if this is not known.
  */
-RexxClass *BaseCode::resolveClass(RexxString *className)
+RexxClass *BaseCode::findClass(RexxString *className)
 {
     // the interpreter class handles the default lookups
-    return Interpreter::resolveClass(className);
+    return Interpreter::findClass(className);
 }
 
 

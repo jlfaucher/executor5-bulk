@@ -230,13 +230,7 @@
                 }
 
     static PCPPM operatorMethods[];
-    static RexxClass *classInstance;
 
-    char  number[4];
- };
-
-class RexxNumberStringClass : public RexxClass {
- public:
     static RexxNumberString *newInstance(double);
     static RexxNumberString *newInstance(float);
     static RexxNumberString *newInstance(wholenumber_t);
@@ -245,43 +239,48 @@ class RexxNumberStringClass : public RexxClass {
     static RexxNumberString *newInstance(stringsize_t);
     static RexxNumberString *newInstance(const char *, stringsize_t);
 
+
+    static void createInstance();
+    static RexxClass *classInstance;
+
+    char  number[4];
 };
 
 void AdjustPrecision(RexxNumberString *, char *, int);
 
 inline RexxNumberString *new_numberstring(const char *s, stringsize_t l)
 {
-    return RexxNumberStringClass::newInstance(s, l);
+    return RexxNumberString::newInstance(s, l);
 }
 
 inline RexxNumberString *new_numberstring(wholenumber_t n)
 {
-    return RexxNumberStringClass::newInstance(n);
+    return RexxNumberString::newInstance(n);
 }
 
 inline RexxNumberString *new_numberstring(stringsize_t n)
 {
-    return RexxNumberStringClass::newInstance(n);
+    return RexxNumberString::newInstance(n);
 }
 
 inline RexxNumberString *new_numberstring(int64_t n)
 {
-    return RexxNumberStringClass::newInstance(n);
+    return RexxNumberString::newInstance(n);
 }
 
 inline RexxNumberString *new_numberstring(uint64_t n)
 {
-    return RexxNumberStringClass::newInstance(n);
+    return RexxNumberString::newInstance(n);
 }
 
 inline RexxNumberString *new_numberstring(double n)
 {
-    return RexxNumberStringClass::newInstance(n);
+    return RexxNumberString::newInstance(n);
 }
 
 inline RexxNumberString *new_numberstring(float n)
 {
-    return RexxNumberStringClass::newInstance((double)n);
+    return RexxNumberString::newInstance((double)n);
 }
 
 #endif

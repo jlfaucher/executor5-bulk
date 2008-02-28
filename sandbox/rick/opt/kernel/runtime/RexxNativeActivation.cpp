@@ -2330,19 +2330,19 @@ void RexxNativeActivation::dropObjectVariable(const char *name)
  *
  * @return The resolved class (if any).
  */
-RexxClass *RexxNativeActivation::resolveClass(RexxString *className)
+RexxClass *RexxNativeActivation::findClass(RexxString *className)
 {
     if (method != OREF_NULL)
     {
-        return method->resolveClass(className);
+        return method->findClass(className);
     }
 
     if (routine != OREF_NULL)
     {
-        return routine->resolveClass(className);
+        return routine->findClass(className);
     }
 
-    return Interpreter::resolveClass(className);
+    return Interpreter::findClass(className);
 }
 
 

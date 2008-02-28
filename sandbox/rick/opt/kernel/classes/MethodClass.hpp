@@ -68,7 +68,7 @@ public:
     virtual RexxArray *getSource();
     virtual RexxObject *setSecurityManager(RexxObject *manager);
     virtual RexxSource *getSourceObject();
-    virtual RexxClass *resolveClass(RexxString *className);
+    virtual RexxClass *findClass(RexxString *className);
     virtual BaseCode  *setSourceObject(RexxSource *s);
     virtual PackageClass *getPackage();
 };
@@ -88,7 +88,7 @@ public:
     PackageClass *getPackage();
 
     RexxArray *source();
-    RexxClass *resolveClass(RexxString *className);
+    RexxClass *findClass(RexxString *className);
     BaseExecutable *setSourceObject(RexxSource *s);
 
 protected:
@@ -148,6 +148,7 @@ protected:
    static RexxMethod  *newMethodObject(RexxString *, RexxObject *, RexxObject *, RexxSource *a);
    static RexxMethod  *restore(RexxBuffer *, char *);
 
+   static void createInstance();
    static RexxClass *classInstance;
 
  protected:

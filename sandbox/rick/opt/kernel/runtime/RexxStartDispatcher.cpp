@@ -210,7 +210,7 @@ void CallProgramDispatcher::run()
     RexxString *name = new_string(program);
 
     // get a routine from the file source first
-    RoutineClass *routine = RoutineClass::newFile(name);
+    RoutineClass *routine = new RoutineClass(name);
 
     ProtectedObject p(routine);
 

@@ -233,7 +233,7 @@ RexxClassObject RexxEntry FindContextClass(RexxMethodContext *c, CSTRING n)
     {
         // convert the name to a string instance, and check the environments.
         RexxString *name = new_upper_string(n);
-        return (RexxClassObject)context.ret(context.context->resolveClass(name));
+        return (RexxClassObject)context.ret(context.context->findClass(name));
     }
     catch (ActivityException)
     {

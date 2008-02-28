@@ -92,7 +92,7 @@ void CreateRoutineDispatcher::run()
     RexxBuffer *source_buffer = new_buffer(programBuffer);
     ProtectedObject p(source_buffer);
                                           /* translate this source             */
-    translatedRoutine = (REXXOBJECT)RoutineClass::newRexxBuffer(OREF_NULLSTRING, source_buffer);
+    translatedRoutine = (REXXOBJECT)new RoutineClass(OREF_NULLSTRING, source_buffer);
 
     RexxString *saveTarget = new_string(contextName);
     RexxDirectory *locked_objects = (RexxDirectory *)ActivityManager::localEnvironment->at(saveTarget);

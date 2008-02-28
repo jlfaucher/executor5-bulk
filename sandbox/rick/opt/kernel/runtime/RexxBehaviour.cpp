@@ -49,6 +49,7 @@
 #include "ArrayClass.hpp"
 #include "SupplierClass.hpp"
 #include "ProtectedObject.hpp"
+#include "CPPCode.hpp"
 
 
 RexxBehaviour::RexxBehaviour(
@@ -240,9 +241,9 @@ void RexxBehaviour::copyBehaviour(RexxBehaviour *source)
  */
 RexxMethod *RexxBehaviour::define(const char *name, PCPPM entryPoint, size_t arguments)
 {
-    RexxString *name = RexxMemory::getGlobalName(name);
-    RexxMethod *method = new RexxMethod(name, CPPCode::resolveExportedMethod(entryPoint, arguments));
-    define(name, method);
+    RexxString *n = RexxMemory::getGlobalName(name);
+    RexxMethod *method = new RexxMethod(n, CPPCode::resolveExportedMethod(entryPoint, arguments));
+    define(n, method);
     return method;
 }
 

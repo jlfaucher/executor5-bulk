@@ -391,17 +391,19 @@ void  RexxEnvelope::rehash()
 /* Function:  Rehash flattened tables                                         */
 /******************************************************************************/
 {
-  HashLink     i;                      /* loop index                        */
-  RexxTable    * index;                /* table to flatten                  */
+    HashLink     i;                      /* loop index                        */
+    RexxTable    * index;                /* table to flatten                  */
 
-  if (this->rehashtable != OREF_NULL) {/* tables to rehash here?            */
-                                       /* Before we run the method we need  */
-                                       /* to give the tables a chance to    */
-                                       /* rehash...                         */
-    for (i = this->rehashtable->first(); (index = (RexxTable *)this->rehashtable->index(i)) != OREF_NULL; i = this->rehashtable->next(i)) {
-      index->reHash();                 /* rehash the table                  */
+    if (this->rehashtable != OREF_NULL)
+    {/* tables to rehash here?            */
+     /* Before we run the method we need  */
+     /* to give the tables a chance to    */
+     /* rehash...                         */
+        for (i = this->rehashtable->first(); (index = (RexxTable *)this->rehashtable->index(i)) != OREF_NULL; i = this->rehashtable->next(i))
+        {
+            index->reHash();                 /* rehash the table                  */
+        }
     }
-  }
 }
 
 char *RexxEnvelope::bufferStart()
@@ -409,7 +411,7 @@ char *RexxEnvelope::bufferStart()
 /* Return the start of the envelope buffer                                    */
 /******************************************************************************/
 {
-  return this->buffer->getBuffer()->getData();
+    return this->buffer->getBuffer()->getData();
 }
 
 void  RexxEnvelope::associateObject(
@@ -430,22 +432,24 @@ void RexxEnvelope::addTable(
 /* Function:  Add an object to the rehash table for later processing          */
 /******************************************************************************/
 {
-                                       /*  the following table will be used */
-                                       /* by the table_unflatten method.    */
-                                       /*                                   */
-                                       /* Every table that gets unflattened */
-                                       /* place itself in this table.  Once */
-                                       /* every object has been unflattened */
-                                       /* we traverse this table and allow  */
-                                       /* the hashtables to re-hash their   */
-                                       /* since some hash value may have    */
-                                       /* change                            */
-  if (this->rehashtable == OREF_NULL)  /* first table added?                */
-                                       /* create the table now              */
-    OrefSet(this, this->rehashtable, new_object_table());
-                                       /* use put to make sure we only get  */
-                                       /* a single version of each table    */
-  this->rehashtable->put(TheNilObject, obj);
+    /*  the following table will be used */
+    /* by the table_unflatten method.    */
+    /*                                   */
+    /* Every table that gets unflattened */
+    /* place itself in this table.  Once */
+    /* every object has been unflattened */
+    /* we traverse this table and allow  */
+    /* the hashtables to re-hash their   */
+    /* since some hash value may have    */
+    /* change                            */
+    if (this->rehashtable == OREF_NULL)  /* first table added?                */
+    {
+        /* create the table now              */
+        OrefSet(this, this->rehashtable, new_object_table());
+    }
+    /* use put to make sure we only get  */
+    /* a single version of each table    */
+    this->rehashtable->put(TheNilObject, obj);
 }
 
 
@@ -454,12 +458,12 @@ void *RexxEnvelope::operator new(size_t size)
 /* Function:  Create a new translator object                                  */
 /******************************************************************************/
 {
-  RexxObject *newObject;               /* newly created object              */
+    RexxObject *newObject;               /* newly created object              */
 
-                                       /* Get new object                    */
-  newObject = new_object(sizeof(RexxEnvelope));
-                                       /* Give new object its behaviour     */
-  newObject->setBehaviour(TheEnvelopeBehaviour);
-  return newObject;                    /* return the new object             */
+    /* Get new object                    */
+    newObject = new_object(sizeof(RexxEnvelope));
+    /* Give new object its behaviour     */
+    newObject->setBehaviour(TheEnvelopeBehaviour);
+    return newObject;                    /* return the new object             */
 }
 
