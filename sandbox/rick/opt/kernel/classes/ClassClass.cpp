@@ -1534,7 +1534,7 @@ RexxClass  *RexxClass::newRexx(RexxObject **args, size_t argCount)
     return new_class;                    /* return the new class              */
 }
 
-void RexxClass::createClass()
+void RexxClass::createInstance()
 /******************************************************************************/
 /* Function:  Create the initial class object                                 */
 /******************************************************************************/

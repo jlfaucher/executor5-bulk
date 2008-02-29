@@ -53,6 +53,7 @@
 #include "NumberStringMath.hpp"
 #include "RexxBuiltinFunctions.h"                     /* Gneral purpose BIF Header file    */
 #include "Numerics.hpp"
+#include "StringUtil.hpp":
 
 
 
@@ -3053,12 +3054,12 @@ RexxString *RexxNumberString::d2xD2c(
     }
     if (type == true)                    /* need to pack?                     */
     {
-        Retval = PackHex(Scan, ResultSize);/* yes, pack to character            */
+        Retval = StringUtil::packHex(Scan, ResultSize);/* yes, pack to character            */
     }
     else
     {
         /* allocate result string            */
-        Retval = (RexxString *)new_string(Scan, ResultSize);
+        Retval = new_string(Scan, ResultSize);
     }
     return Retval;                       /* return proper result              */
 }

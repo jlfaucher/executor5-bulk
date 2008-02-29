@@ -179,7 +179,7 @@ void RexxMemory::createImage()
                                        /* RexxNumberString                  */
   // NOTE:  The number string class lies about its identity
   RexxNumberString::createInstance();
-  RexxArray;:createInstance();
+  RexxArray::createInstance();
 
   // The pointer class needs to be created early because other classes
   // use the instances to store information.

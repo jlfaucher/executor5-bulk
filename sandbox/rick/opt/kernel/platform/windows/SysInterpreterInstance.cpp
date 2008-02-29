@@ -87,7 +87,7 @@ SysSearchPath::SysSearchPath(const char *parentDir, const char *extensionPath)
 
 
     // enough room for separators and a terminating null
-    char *path = (char *)SysAllocateResultMemory(pathSize + parentSize + extensionSize + 8);
+    path = (char *)SysAllocateResultMemory(pathSize + parentSize + extensionSize + 8);
     *path = '\0';     // add a null character so strcat can work
     if (parentDir != NULL)
     {

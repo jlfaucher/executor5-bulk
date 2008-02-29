@@ -1189,7 +1189,7 @@ RexxList *RexxList::newRexx(
     RexxList *newList = new RexxList;
     /* Give new object its behaviour     */
     newList->setBehaviour(((RexxClass *)this)->getInstanceBehaviour());
-    if (((RexxList *)this)->hasUninitDefined())
+    if (((RexxClass *)this)->hasUninitDefined())
     {
         newList->hasUninit();
     }

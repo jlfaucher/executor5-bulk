@@ -2284,8 +2284,8 @@ void RexxMemory::create()
 /* Function:  Initial memory setup during image build                         */
 /******************************************************************************/
 {
-    RexxClass::createClass();            /* get the CLASS class created       */
-    RexxInteger::createClass();
+    RexxClass::createInstance();         /* get the CLASS class created       */
+    RexxInteger::createInstance();
     /* Now get our savestack and         */
     /*savetable                          */
     memoryObject.setUpMemoryTables(OREF_NULL);
