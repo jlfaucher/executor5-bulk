@@ -156,6 +156,10 @@ RexxActivation::RexxActivation(RexxActivity* _activity, RexxMethod * _method, Re
     this->random_seed = this->activity->getRandomSeed();
                                        /* copy the source security manager  */
     this->settings.securityManager = this->code->getSecurityManager();
+    if (this->settings.securityManager == OREF_NULL)
+    {
+        this->settings.securityManager = activity->getInstanceSecurityManager();
+    }
     // and the call type is METHOD
     this->settings.calltype = OREF_METHODNAME;
 }
@@ -227,6 +231,11 @@ RexxActivation::RexxActivation(RexxActivity *_activity, RoutineClass *_routine, 
         this->random_seed = this->activity->getRandomSeed();
         /* copy the source security manager  */
         this->settings.securityManager = this->code->getSecurityManager();
+        // but use the default if not set
+        if (this->settings.securityManager == OREF_NULL)
+        {
+            this->settings.securityManager = activity->getInstanceSecurityManager();
+        }
     }
 
     // if we have a default environment specified, apply the override.
@@ -3906,4 +3915,33 @@ void RexxActivation::dropLocalCompoundVariable(RexxString *stemName, size_t inde
     RexxStem *stem_table = getLocalStem(stemName, index);   /* get the stem entry from this dictionary */
     /* and set the value                 */
     stem_table->dropCompoundVariable(&resolved_tail);
+}
+
+
+/**
+ * Get the security manager in effect for a given context.
+ *
+ * @return The security manager defined for this activation
+ *         context.
+ */
+SecurityManager *RexxActivation::getSecurityManager()
+{
+    return this->settings.securityManager;
+}
+
+
+/**
+ * Get the security manager in used by this activation.
+ *
+ * @return Either the defined security manager or the instance-global security
+ *         manager.
+ */
+SecurityManager *RexxActivation::getEffectiveSecurityManager()
+{
+    SecurityManager *manager = this->settings.securityManager;
+    if (manager != OREF_NULL)
+    {
+        return manager;
+    }
+    return activity->getInstanceSecurityManager();
 }

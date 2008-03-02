@@ -100,7 +100,10 @@ RoutineClass::RoutineClass(RexxString *name, BaseCode *codeObj)
 RoutineClass::RoutineClass(RexxString *name)
 {
     this->clearObject();                 /* start out fresh                   */
-    ProtectedObject p(this);             // protect during processing
+    // we need to protect this object until the constructor completes.
+    // the code generation step will create lots of new objects, giving a
+    // pretty high probability that it will be collected.
+    ProtectedObject p(this);
     OrefSet(this, this->executableName, name);
     // get a source object to generat this from
     RexxSource *source = new RexxSource(name);
@@ -120,7 +123,10 @@ RoutineClass::RoutineClass(RexxString *name)
 RoutineClass::RoutineClass(RexxString *name, RexxBuffer *s)
 {
     this->clearObject();                 /* start out fresh                   */
-    ProtectedObject p(this);             // protect during processing
+    // we need to protect this object until the constructor completes.
+    // the code generation step will create lots of new objects, giving a
+    // pretty high probability that it will be collected.
+    ProtectedObject p(this);
     OrefSet(this, this->executableName, name);
     // get a source object to generat this from
     RexxSource *source = new RexxSource(name, s);
@@ -141,7 +147,10 @@ RoutineClass::RoutineClass(RexxString *name, RexxBuffer *s)
 RoutineClass::RoutineClass(RexxString *name, const char *data, size_t length)
 {
     this->clearObject();                 /* start out fresh                   */
-    ProtectedObject p(this);             // protect during processing
+    // we need to protect this object until the constructor completes.
+    // the code generation step will create lots of new objects, giving a
+    // pretty high probability that it will be collected.
+    ProtectedObject p(this);
     OrefSet(this, this->executableName, name);
     // get a source object to generat this from
     RexxSource *source = new RexxSource(name, data, length);
@@ -161,7 +170,10 @@ RoutineClass::RoutineClass(RexxString *name, const char *data, size_t length)
 RoutineClass::RoutineClass(RexxString *name, RexxArray *s)
 {
     this->clearObject();                 /* start out fresh                   */
-    ProtectedObject p(this);             // protect during processing
+    // we need to protect this object until the constructor completes.
+    // the code generation step will create lots of new objects, giving a
+    // pretty high probability that it will be collected.
+    ProtectedObject p(this);
     OrefSet(this, this->executableName, name);
     // get a source object to generat this from
     RexxSource *source = new RexxSource(name, s);
@@ -723,9 +735,33 @@ RoutineClass *RoutineClass::restore(
  *
  * @return The inflated Routine object, if valid.
  */
-RoutineClass *RoutineClass::restore(RexxBuffer *buffer)
+RoutineClass *RoutineClass::restore(RexxString *fileName, RexxBuffer *buffer)
 {
-    return restore(buffer, buffer->getData());
+    const char *data = buffer->getData();
+
+    // does this start with a hash-bang?  Need to scan forward to the first
+    // newline character
+    if (data[0] == '#' && data[1] == '!')
+    {
+        data = Utilities::strnchr(data, buffer->getLength(), '\n');
+        if (data == OREF_NULL)
+        {
+            return OREF_NULL;
+        }
+        // step over the linend
+        data++;
+    }
+
+    ProgramMetaData *metaData = (ProgramMetaData *)data;
+    // make sure this is valid for interpreter
+    if (!metaData->validate())
+    {
+        return OREF_NULL;
+    }
+    // this should be valid...try to restore.
+    RoutineClass *routine = restore(buffer, metaData->getImageData());
+    routine->getSourceObject()->setProgramName(fileName);
+    return routine;
 }
 
 
@@ -760,8 +796,10 @@ RoutineClass *RoutineClass::restore(RXSTRING *inData)
     {
         return OREF_NULL;
     }
-
-    return restore(metaData->extractBufferData());
+    RexxBuffer *bufferData = metaData->extractBufferData();
+    ProtectedObject p(bufferData);
+    // we're restoring from the beginning of this.
+    return restore(bufferData, bufferData->getData());
 }
 
 
@@ -784,38 +822,6 @@ RoutineClass *RoutineClass::restore(RXSTRING *inData, RexxString *name)
 
 
 /**
- * Restore a program from a saved program image.
- *
- * @param name   The name of the source file.
- * @param handle The file handle for the file.
- *
- * @return If restorable, this unflattened routine object.
- */
-RoutineClass *RoutineClass::restore(RexxString *name, FILE *handle)
-{
-    ProgramMetaData metaData;
-
-    // read and validate the image
-    RexxBuffer *buffer = metaData.read(handle);
-
-    // this returns wrong if there is a versioning mismatch.
-    if (buffer == OREF_NULL)
-    {
-        return OREF_NULL;
-    }
-
-    ProtectedObject p1(buffer);
-    /* "puff" this out usable form       */
-    RoutineClass *program = restore(buffer);
-    ProtectedObject p2(program);
-    // set the source program name to the file we read this from.  Important for
-    // future program lookups to have the fully resolved name.
-    program->getSourceObject()->setProgramName(name);
-    return program;                      /* return the unflattened method     */
-}
-
-
-/**
  * Retrieve a routine object from a file.  This will first attempt
  * to restore a previously translated image, then will try to
  * translate the source if that fails.
@@ -826,34 +832,23 @@ RoutineClass *RoutineClass::restore(RexxString *name, FILE *handle)
  */
 RoutineClass *RoutineClass::fromFile(RexxString *filename)
 {
-    RoutineClass *routine = restoreFromFile(filename);
+                                         /* load the program file             */
+    RexxBuffer *program_buffer = SysReadProgram(filename->getStringData());
+    if (program_buffer == OREF_NULL)     /* Program not found or read error?  */
+    {
+        /* report this                       */
+        reportException(Error_Program_unreadable_name, filename);
+    }
+
+    // try to restore a flattened program first
+    RoutineClass *routine = restore(filename, program_buffer);
     if (routine != OREF_NULL)
     {
         return routine;
     }
 
     // process this from the source
-    return new RoutineClass(filename);
-}
-
-
-/**
- * Try to restore a translated and saved program from an image.
- *
- * @param filename The target filename.
- *
- * @return The unflattened source image.
- */
-RoutineClass *RoutineClass::restoreFromFile(RexxString *filename)
-{
-    FILE *handle = fopen(filename->getStringData(), "rb");
-    // the first failure is not finding the file at all
-    if (handle == NULL)
-    {
-        return OREF_NULL;
-    }
-    // try to read a translated program that was previously compiled.
-    return restore(filename, handle);
+    return new RoutineClass(filename, program_buffer);
 }
 
 

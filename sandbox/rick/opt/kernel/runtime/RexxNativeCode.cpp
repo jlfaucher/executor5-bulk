@@ -154,6 +154,23 @@ RexxSource *RexxNativeCode::getSourceObject()
 }
 
 
+/**
+ * Get the security manager associated with native code.  Generally,
+ * only native methods and routines defined with directives
+ * will have an associated security manager.
+ *
+ * @return The source security manager.
+ */
+SecurityManager *RexxNativeCode::getSecurityManager()
+{
+    if (source != OREF_NULL)
+    {
+        return source->getSecurityManager();
+    }
+    return OREF_NULL;
+}
+
+
 void RexxNativeMethod::liveGeneral(int reason)
 /******************************************************************************/
 /* Function:  Generalized object marking                                      */

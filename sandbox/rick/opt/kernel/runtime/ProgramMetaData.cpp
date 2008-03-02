@@ -161,6 +161,17 @@ RexxBuffer *ProgramMetaData::extractBufferData()
 
 
 /**
+ * Return a pointer to the inline image data.
+ *
+ * @return The pointer to the image data following the metadata header.
+ */
+char *ProgramMetaData::getImageData()
+{
+    return imageData;
+}
+
+
+/**
  * Validate that this saved program image is valid for this
  * interpreter.
  *

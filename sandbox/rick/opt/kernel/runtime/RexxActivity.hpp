@@ -137,7 +137,7 @@ public:
 
 
    void runThread();
-   wholenumber_t error(size_t);
+   wholenumber_t error();
    wholenumber_t errorNumber(RexxDirectory *conditionObject);
    bool        raiseCondition(RexxString *, RexxObject *, RexxString *, RexxObject *, RexxObject *, RexxDirectory *);
    void        raiseException(wholenumber_t, SourceLocation *, RexxSource *, RexxString *, RexxArray *, RexxObject *);
@@ -253,7 +253,8 @@ public:
    inline RexxActivity *getNestedActivity() { return nestedActivity; }
    inline bool isAttached() { return attached; }
 
-   SecurityManager *getSecurityManager();
+   SecurityManager *getEffectiveSecurityManager();
+   SecurityManager *getInstanceSecurityManager();
    void inheritSettings(RexxActivity *parent);
    void exitCurrentThread();
    void run(ActivityDispatcher &target);

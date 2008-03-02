@@ -111,6 +111,7 @@ RexxObject *RexxHashTableCollection::makeProxy(RexxEnvelope *envelope)
     {
         logic_error("Don't know how to generate a proxy object for an object");
     }
+    return OREF_NULL;
 }
 
 

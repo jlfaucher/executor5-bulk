@@ -798,17 +798,12 @@ void RexxObject::processProtectedMethod(
 /*            method and raising a NOMETHOD condition                         */
 /******************************************************************************/
 {
-    /* get the top activation            */
-    RexxActivationBase *activation = ActivityManager::currentActivity->getTopStackFrame();
-    /* have an activation?               */
-    if (activation != OREF_NULL)
+    // get the current security manager
+    SecurityManager *manager = ActivityManager::currentActivity->getEffectiveSecurityManager();
+    // the security manager can replace provide a new result
+    if (manager->checkProtectedMethod(this, messageName, count, arguments, result))
     {
-        SecurityManager *manager = activation->getSecurityManager();
-        // the security manager can replace provide a new result
-        if (manager->checkProtectedMethod(this, messageName, count, arguments, result))
-        {
-            return;
-        }
+        return;
     }
     /* run the method                    */
     targetMethod->run(ActivityManager::currentActivity, this, messageName, count, arguments, result);

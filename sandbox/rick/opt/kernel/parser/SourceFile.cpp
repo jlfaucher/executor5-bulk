@@ -93,7 +93,7 @@ typedef struct _LINE_DESCRIPTOR {
 } LINE_DESCRIPTOR;                     /* line within a source buffer       */
 
 #define line_delimiters "\r\n"         /* stream file line end characters   */
-#define ctrl_z 0x0a                    // the end of file marker
+#define ctrl_z 0x1a                    // the end of file marker
 
 
 /**
@@ -275,7 +275,6 @@ void RexxSource::initFile()
 /* Function:  Initialize a source object, reading the source from a file      */
 /******************************************************************************/
 {
-    extractNameInformation();            // make sure we have name information to work with
                                          /* load the program file             */
     RexxBuffer *program_source = (RexxBuffer *)SysReadProgram(programName->getStringData());
     if (program_source == OREF_NULL)     /* Program not found or read error?  */
@@ -304,8 +303,6 @@ void RexxSource::initFile()
 
     /* save the returned buffer          */
     OrefSet(this, this->sourceBuffer, program_source);
-    memoryObject.removeSavedObject((RexxObject *)program_source);
-
     /* go process the buffer now         */
     this->initBuffered(this->sourceBuffer);
 }
@@ -326,6 +323,20 @@ void RexxSource::extractNameInformation()
     OrefSet(this, this->programDirectory, SystemInterpreter::extractDirectory(programName));
     OrefSet(this, this->programExtension, SystemInterpreter::extractExtension(programName));
     OrefSet(this, this->programFile, SystemInterpreter::extractFile(programName));
+}
+
+
+/**
+ * Set a program name for this source object.  Usually used after
+ * a program restore to update the restored routine object.  This
+ * will also update the extension and directory information.
+ *
+ * @param name   The new program name.
+ */
+void RexxSource::setProgramName(RexxString *name)
+{
+    OrefSet(this, this->programName, name);
+    extractNameInformation();
 }
 
 bool RexxSource::reconnect()
@@ -1177,13 +1188,14 @@ void RexxSource::checkDirective()
 /*            directive instructions.                                         */
 /******************************************************************************/
 {
-    RexxToken *token;                    /* first token of the clause         */
+                                       /* get the clause location           */
+    SourceLocation location = this->clause->getLocation();
 
     this->nextClause();                  /* get the next clause               */
     /* have a next clause?               */
     if (!(this->flags&no_clause))
     {
-        token = nextReal();                /* get the first token               */
+        RexxToken *token = nextReal();     /* get the first token               */
                                            /* not a directive start?            */
         if (token->classId != TOKEN_DCOLON)
         {
@@ -1193,6 +1205,10 @@ void RexxSource::checkDirective()
         firstToken();                      /* reset to the first token          */
         this->reclaimClause();             /* give back to the source object    */
     }
+    // this resets the current clause location so that any errors on the current
+    // clause detected after the clause check reports this on the correct line
+    // number
+    this->clause->setLocation(location);
 }
 
 
@@ -1682,6 +1698,8 @@ RexxCode *RexxSource::translate(
         OrefSet(this, this->class_dependencies, new_directory());
         /* create the requires directory     */
         OrefSet(this, this->requires, new_list());
+        // and a list of load libraries requiring loading.
+        OrefSet(this, this->libraries, new_list());
         /* create the classes list           */
         OrefSet(this, this->classes, new_list());
         /* no active class definition        */
@@ -1741,7 +1759,7 @@ void RexxSource::resolveDependencies()
 /* with no in-program dependencies - it's an error if there isn't one       */
 /* as we build the classes we have to remove them (their names) from        */
 /* pending list and from the remaining dependencies                         */
-        while (classes->items() < 0)
+        while (classes->items() > 0)
         {
             // this is the next one we process
             ClassDirective *next_install = OREF_NULL;
@@ -2250,8 +2268,17 @@ void RexxSource::methodDirective()
     /* not an external method?           */
     else if (externalname == OREF_NULL)
     {
+        // NOTE:  It is necessary to translate the block and protect the code
+        // before allocating the RexxMethod object.  The new operator allocates the
+        // the object first, then evaluates the constructor arguments after the allocation.
+        // Since the translateBlock() call will allocate a lot of new objects before returning,
+        // there's a high probability that the method object can get garbage collected before
+        // there is any opportunity to protect the object.
+        RexxCode *code = this->translateBlock(OREF_NULL);
+        this->saveObject((RexxObject *)code);
+
         /* go do the next block of code      */
-        _method = new RexxMethod(name, this->translateBlock(OREF_NULL));
+        _method = new RexxMethod(name, code);
     }
     else
     {
@@ -2284,6 +2311,11 @@ void RexxSource::methodDirective()
             this->checkDirective();      /* sure no code follows              */
                                          /* create a new native method        */
             RexxNativeCode *nmethod = PackageManager::resolveMethod(library, entry);
+            // raise an exception if this entry point is not found.
+            if (nmethod == OREF_NULL)
+            {
+                 syntaxError(Error_External_name_not_found_method, entry);
+            }
             nmethod->setSourceObject(this);
             /* turn into a real method object    */
             _method = new RexxMethod(name, nmethod);
@@ -2568,8 +2600,17 @@ void RexxSource::constantDirective()
 void RexxSource::createMethod(RexxString *name, bool classMethod,
     bool privateMethod, bool protectedMethod, bool guardedMethod)
 {
-    // translate the method block
-    RexxMethod *_method = new RexxMethod(name, translateBlock(OREF_NULL));
+    // NOTE:  It is necessary to translate the block and protect the code
+    // before allocating the RexxMethod object.  The new operator allocates the
+    // the object first, then evaluates the constructor arguments after the allocation.
+    // Since the translateBlock() call will allocate a lot of new objects before returning,
+    // there's a high probability that the method object can get garbage collected before
+    // there is any opportunity to protect the object.
+    RexxCode *code = this->translateBlock(OREF_NULL);
+    this->saveObject((RexxObject *)code);
+
+    /* go do the next block of code      */
+    RexxMethod *_method = new RexxMethod(name, code);
     _method->setAttributes(privateMethod, protectedMethod, guardedMethod);
     // go add the method to the accumulator
     addMethod(name, _method, classMethod);
@@ -2656,80 +2697,80 @@ void RexxSource::routineDirective()
                                      /* not a symbol or a string          */
     if (!token->isSymbolOrLiteral())
     {
-                                     /* report an error                   */
-      syntaxError(Error_Symbol_or_string_routine, token);
+        /* report an error                   */
+        syntaxError(Error_Symbol_or_string_routine, token);
     }
     RexxString *name = token->value; /* get the routine name              */
                                      /* does this already exist?          */
     if (this->routines->entry(name) != OREF_NULL)
     {
-                                     /* have an error here                */
-      syntaxError(Error_Translation_duplicate_routine);
+        /* have an error here                */
+        syntaxError(Error_Translation_duplicate_routine);
     }
     this->flags |= _install;         /* have information to install       */
     RexxString *externalname = OREF_NULL;        /* no external name yet              */
     int Public = DEFAULT_ACCESS_SCOPE;      /* not a public routine yet          */
     for (;;)                         /* now loop on the option keywords   */
     {
-      token = nextReal();            /* get the next token                */
-                                     /* reached the end?                  */
-      if (token->isEndOfClause())
-      {
-          break;                       /* get out of here                   */
-      }
-                                     /* not a symbol token?               */
-      else if (!token->isSymbol())
-      {
-                                     /* report an error                   */
-        syntaxError(Error_Invalid_subkeyword_routine, token);
-      }
-                                     /* process each sub keyword          */
-      switch (this->subDirective(token))
-      {
-                                     /* ::ROUTINE name EXTERNAL []*/
-        case SUBDIRECTIVE_EXTERNAL:
-                                     /* already had an external?          */
-          if (externalname != OREF_NULL)
-          {
-                                 /* duplicates are invalid            */
-        syntaxError(Error_Invalid_subkeyword_class, token);
-          }
-          token = nextReal();        /* get the next token                */
-                                   /* not a string?                     */
-          if (!token->isSymbolOrLiteral())
-          {
-              /* report an error                   */
-              syntaxError(Error_Symbol_or_string_requires, token);
-          }
-                               /* external name is token value      */
-          externalname = token->value;
-          break;
-                                     /* ::ROUTINE name PUBLIC             */
-        case SUBDIRECTIVE_PUBLIC:
-          if (Public != DEFAULT_ACCESS_SCOPE)   /* already had one of these?         */
-          {
-                                     /* duplicates are invalid            */
-              syntaxError(Error_Invalid_subkeyword_routine, token);
+        token = nextReal();            /* get the next token                */
+                                       /* reached the end?                  */
+        if (token->isEndOfClause())
+        {
+            break;                       /* get out of here                   */
+        }
+        /* not a symbol token?               */
+        else if (!token->isSymbol())
+        {
+            /* report an error                   */
+            syntaxError(Error_Invalid_subkeyword_routine, token);
+        }
+        /* process each sub keyword          */
+        switch (this->subDirective(token))
+        {
+            /* ::ROUTINE name EXTERNAL []*/
+            case SUBDIRECTIVE_EXTERNAL:
+                /* already had an external?          */
+                if (externalname != OREF_NULL)
+                {
+                    /* duplicates are invalid            */
+                    syntaxError(Error_Invalid_subkeyword_class, token);
+                }
+                token = nextReal();        /* get the next token                */
+                /* not a string?                     */
+                if (!token->isSymbolOrLiteral())
+                {
+                    /* report an error                   */
+                    syntaxError(Error_Symbol_or_string_requires, token);
+                }
+                /* external name is token value      */
+                externalname = token->value;
+                break;
+                /* ::ROUTINE name PUBLIC             */
+            case SUBDIRECTIVE_PUBLIC:
+                if (Public != DEFAULT_ACCESS_SCOPE)   /* already had one of these?         */
+                {
+                    /* duplicates are invalid            */
+                    syntaxError(Error_Invalid_subkeyword_routine, token);
 
-          }
-          Public = PUBLIC_SCOPE;     /* turn on the seen flag             */
-          break;
-                                     /* ::ROUTINE name PUBLIC             */
-        case SUBDIRECTIVE_PRIVATE:
-          if (Public != DEFAULT_ACCESS_SCOPE)   /* already had one of these?         */
-          {
-                                     /* duplicates are invalid            */
-              syntaxError(Error_Invalid_subkeyword_routine, token);
+                }
+                Public = PUBLIC_SCOPE;     /* turn on the seen flag             */
+                break;
+                /* ::ROUTINE name PUBLIC             */
+            case SUBDIRECTIVE_PRIVATE:
+                if (Public != DEFAULT_ACCESS_SCOPE)   /* already had one of these?         */
+                {
+                    /* duplicates are invalid            */
+                    syntaxError(Error_Invalid_subkeyword_routine, token);
 
-          }
-          Public = PRIVATE_SCOPE;    /* turn on the seen flag             */
-          break;
+                }
+                Public = PRIVATE_SCOPE;    /* turn on the seen flag             */
+                break;
 
-        default:                     /* invalid keyword                   */
-                                     /* this is an error                  */
-          syntaxError(Error_Invalid_subkeyword_routine, token);
-          break;
-      }
+            default:                     /* invalid keyword                   */
+                /* this is an error                  */
+                syntaxError(Error_Invalid_subkeyword_routine, token);
+                break;
+        }
     }
     {
         RexxCode *_method = OREF_NULL;
@@ -2738,7 +2779,7 @@ void RexxSource::routineDirective()
 
         if (externalname != OREF_NULL)   /* have an external routine?         */
         {
-                                    /* convert external into words       */
+            /* convert external into words       */
             RexxArray *words = this->words(externalname);
             // ::ROUTINE foo EXTERNAL "PACKAGE libbar [foo]"
             if (((RexxString *)(words->get(1)))->strCompare(CHAR_LIBRARY))
@@ -2759,7 +2800,7 @@ void RexxSource::routineDirective()
                 }
                 else  // wrong number of tokens
                 {
-                                             /* this is an error                  */
+                    /* this is an error                  */
                     syntaxError(Error_Translation_bad_external, externalname);
                 }
 
@@ -2767,13 +2808,18 @@ void RexxSource::routineDirective()
                 this->checkDirective();      /* sure no code follows              */
                                              /* create a new native method        */
                 RoutineClass *routine = PackageManager::resolveRoutine(library, entry);
+                // raise an exception if this entry point is not found.
+                if (routine == OREF_NULL)
+                {
+                     syntaxError(Error_External_name_not_found_routine, entry);
+                }
                 // make sure this is attached to the source object for context information
                 routine->setSourceObject(this);
-                                               /* add to the routine directory      */
+                /* add to the routine directory      */
                 this->routines->setEntry(name, routine);
                 if (Public == PUBLIC_SCOPE)    /* a public routine?                 */
                 {
-                                               /* add to the public directory too   */
+                    /* add to the public directory too   */
                     this->public_routines->setEntry(name, routine);
                 }
             }
@@ -2797,7 +2843,7 @@ void RexxSource::routineDirective()
                 }
                 else  // wrong number of tokens
                 {
-                                             /* this is an error                  */
+                    /* this is an error                  */
                     syntaxError(Error_Translation_bad_external, externalname);
                 }
 
@@ -2805,13 +2851,18 @@ void RexxSource::routineDirective()
                 this->checkDirective();      /* sure no code follows              */
                                              /* create a new native method        */
                 RoutineClass *routine = PackageManager::resolveRoutine(name, library, entry);
+                // raise an exception if this entry point is not found.
+                if (routine == OREF_NULL)
+                {
+                     syntaxError(Error_External_name_not_found_routine, entry);
+                }
                 // make sure this is attached to the source object for context information
                 routine->setSourceObject(this);
-                                               /* add to the routine directory      */
+                /* add to the routine directory      */
                 this->routines->setEntry(name, routine);
                 if (Public == PUBLIC_SCOPE)    /* a public routine?                 */
                 {
-                                               /* add to the public directory too   */
+                    /* add to the public directory too   */
                     this->public_routines->setEntry(name, routine);
                 }
             }
@@ -2823,17 +2874,23 @@ void RexxSource::routineDirective()
         }
         else
         {
-                                         /* go do the next block of code      */
-          RexxCode *code = this->translateBlock(OREF_NULL);
-          RoutineClass *routine = new_routine(name, code);
-                                         /* add to the routine directory      */
-          this->routines->setEntry(name, routine);
-          if (Public == PUBLIC_SCOPE)    /* a public routine?                 */
-          {
-                                         /* add to the public directory too   */
-              this->public_routines->setEntry(name, routine);
+            // NOTE:  It is necessary to translate the block and protect the code
+            // before allocating the RexxMethod object.  The new operator allocates the
+            // the object first, then evaluates the constructor arguments after the allocation.
+            // Since the translateBlock() call will allocate a lot of new objects before returning,
+            // there's a high probability that the method object can get garbage collected before
+            // there is any opportunity to protect the object.
+            RexxCode *code = this->translateBlock(OREF_NULL);
+            this->saveObject((RexxObject *)code);
+            RoutineClass *routine = new RoutineClass(name, code);
+            /* add to the routine directory      */
+            this->routines->setEntry(name, routine);
+            if (Public == PUBLIC_SCOPE)    /* a public routine?                 */
+            {
+                /* add to the public directory too   */
+                this->public_routines->setEntry(name, routine);
 
-          }
+            }
         }
         this->toss(name);                /* release the "Gary Cole" (GC) lock */
     }
@@ -3827,7 +3884,7 @@ void RexxSource::expose(
 /******************************************************************************/
 {
                                        /* add to the exposed variables list */
-  this->exposed_variables->put(name, name);
+    this->exposed_variables->put(name, name);
 }
 
 
@@ -5214,7 +5271,7 @@ RexxCode *RexxSource::generateCodeFromFile(RexxString *programname )
 }
 
 
-RexxObject *RexxSource::sourceNewObject(
+RexxInstruction *RexxSource::sourceNewObject(
     size_t        size,                /* Object size                       */
     RexxBehaviour *_behaviour,         /* Object's behaviour                */
     int            type )              /* Type of instruction               */
@@ -5222,15 +5279,13 @@ RexxObject *RexxSource::sourceNewObject(
 /* Function:  Create a "raw" translator instruction object                    */
 /******************************************************************************/
 {
-  RexxObject *newObject;               /* newly created object              */
-
-  newObject = new_object(size);        /* Get new object                    */
+  RexxObject *newObject = new_object(size);        /* Get new object                    */
   newObject->setBehaviour(_behaviour); /* Give new object its behaviour     */
                                        /* do common initialization          */
   new ((void *)newObject) RexxInstruction (this->clause, type);
                                        /* now protect this                  */
   OrefSet(this, this->currentInstruction, (RexxInstruction *)newObject);
-  return newObject;                    /* return the new object             */
+  return (RexxInstruction *)newObject; /* return the new object             */
 }
 
 void RexxSource::parseTraceSetting(

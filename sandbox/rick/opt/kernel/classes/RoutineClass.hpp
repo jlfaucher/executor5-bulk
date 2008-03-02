@@ -80,13 +80,12 @@ public:
     RoutineClass *newFileRexx(RexxString *);
 
     static RoutineClass *restore(RexxBuffer *, char *);
+    static RoutineClass *restore(RexxString *fileName, RexxBuffer *buffer);
     static RoutineClass *restoreFromMacroSpace(RexxString *name);
     static RoutineClass *restore(RexxBuffer *buffer);
     static RoutineClass *restore(RXSTRING *inData);
     static RoutineClass *restore(RXSTRING *inData, RexxString *name);
-    static RoutineClass *restore(RexxString *name, FILE *handle);
     static RoutineClass *fromFile(RexxString *filename);
-    static RoutineClass *restoreFromFile(RexxString *filename);
 
     static RoutineClass *newRoutineObject(RexxString *, RexxObject *, RexxObject *, RexxSource *s);
     static RoutineClass *newRoutineObject(RexxString *, RexxArray *, RexxObject *);
@@ -96,8 +95,5 @@ public:
     static void createInstance();
     static RexxClass *classInstance;
 };
-
-
-inline RoutineClass *new_routine(RexxString *n, BaseCode *c)  { return new RoutineClass(n, c); }
 #endif
 

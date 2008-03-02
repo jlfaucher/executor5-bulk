@@ -72,7 +72,8 @@ void PackageManager::initialize()
     packageRoutines = new_directory();
     registeredRoutines = new_directory();
     loadedRequires = new_directory();
-
+    // load the internal library first
+    loadInternalPackage(OREF_REXX, rexxPackage);
     loadLibrary(OREF_REXXUTIL);               // load the rexxutil package automatically
 }
 
@@ -90,6 +91,7 @@ RexxArray *PackageManager::getImageData()
     imageArray->put(packages, IMAGE_PACKAGES);
     imageArray->put(packageRoutines, IMAGE_PACKAGE_ROUTINES);
     imageArray->put(registeredRoutines, IMAGE_REGISTERED_ROUTINES);
+    imageArray->put(loadedRequires, IMAGE_REGISTERED_ROUTINES);
 
     return imageArray;
 }
@@ -106,6 +108,7 @@ void PackageManager::restore(RexxArray *imageArray)
     packages = (RexxDirectory *)imageArray->get(IMAGE_PACKAGES)->copy();
     packageRoutines = (RexxDirectory *)imageArray->get(IMAGE_PACKAGE_ROUTINES)->copy();
     registeredRoutines = (RexxDirectory *)imageArray->get(IMAGE_REGISTERED_ROUTINES)->copy();
+    loadedRequires = (RexxDirectory *)imageArray->get(IMAGE_REQUIRES)->copy();
 
     for (HashLink i = packages->first(); packages->available(i); i = packages->next(i))
     {
@@ -133,6 +136,7 @@ void PackageManager::live(size_t liveMark)
     memory_mark(packages);
     memory_mark(packageRoutines);
     memory_mark(registeredRoutines);
+    memory_mark(loadedRequires);
 }
 
 /**
@@ -143,6 +147,7 @@ void PackageManager::liveGeneral(int reason)
     memory_mark_general(packages);
     memory_mark_general(packageRoutines);
     memory_mark_general(registeredRoutines);
+    memory_mark_general(loadedRequires);
 }
 
 
@@ -187,7 +192,7 @@ LibraryPackage *PackageManager::loadLibrary(RexxString *name)
     {
         package = new LibraryPackage(name);
         // add this to our package list.
-        packages->put((RexxObject *)packages, name);
+        packages->put((RexxObject *)package, name);
         // now force the package to load.
         if (!package->load())
         {
@@ -218,13 +223,7 @@ RexxNativeMethod *PackageManager::resolveMethod(RexxString *packageName, RexxStr
     LibraryPackage *package = getLibrary(packageName);
 
     // now see if this can be resolved.
-    RexxNativeMethod *code = package->resolveMethod(methodName);
-    // raise an exception if this entry point is not found.
-    if (code == OREF_NULL)
-    {
-         reportException(Error_External_name_not_found_method, methodName);
-    }
-    return code;
+    return package->resolveMethod(methodName);
 }
 
 
@@ -305,13 +304,7 @@ RoutineClass *PackageManager::resolveRoutine(RexxString *packageName, RexxString
     LibraryPackage *package = getLibrary(packageName);
 
     // now see if this can be resolved.
-    RoutineClass *routine = package->resolveRoutine(function);
-    // raise an exception if this entry point is not found.
-    if (routine == OREF_NULL)
-    {
-         reportException(Error_External_name_not_found_routine, function);
-    }
-    return routine;
+    return package->resolveRoutine(function);
 }
 
 
@@ -383,7 +376,7 @@ void PackageManager::loadInternalPackage(RexxString *name, RexxPackageEntry *p)
     // load up the package and add it to our cache
     LibraryPackage *package = new LibraryPackage(name, p);
     // have we already loaded this package?
-    packages->put(packages, name);
+    packages->put((RexxObject *)package, name);
 }
 
 
@@ -562,7 +555,7 @@ PackageClass *PackageManager::loadRequires(RexxActivity *activity, RexxString *s
 {
     result = OREF_NULL;
 
-    SecurityManager *manager = activity->getSecurityManager();
+    SecurityManager *manager = activity->getEffectiveSecurityManager();
     RexxObject *securityManager = OREF_NULL;
 
     shortName = manager->checkRequiresAccess(shortName, securityManager);

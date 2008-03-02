@@ -59,6 +59,7 @@ RexxMethodEntry rexx_methods[] =
 {
 #include "NativeMethods.h"             // bring in the standard list,
 #include "SysNativeMethods.h"          // plus any system extensions
+    REXX_LAST_METHOD()
 };
 
 
@@ -79,6 +80,7 @@ RexxRoutineEntry rexx_functions[] =
 {
 #include "NativeFunctions.h"             // bring in the standard list,
 #include "SysNativeFunctions.h"          // plus any system extensions
+    REXX_LAST_ROUTINE()
 };
 
 RexxPackageEntry rexx_package_entry =

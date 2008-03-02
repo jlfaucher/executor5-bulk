@@ -60,6 +60,7 @@ class RexxNativeCode : public BaseCode
    virtual RexxSource *getSourceObject();
    virtual RexxClass *findClass(RexxString *className);
    virtual BaseCode *setSourceObject(RexxSource *s);
+   SecurityManager *getSecurityManager();
 
 protected:
    RexxString *package;               // the package name

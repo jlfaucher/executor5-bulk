@@ -397,7 +397,8 @@ RexxObject * activation_find  (void);
    inline void              pauseLabel() { if ((this->settings.flags&(trace_labels | trace_debug)) == (trace_labels | trace_debug)) this->debugPause(); };
    inline void              pauseCommand() { if ((this->settings.flags&(trace_commands | trace_debug)) == (trace_commands | trace_debug)) this->debugPause(); };
 
-   inline SecurityManager  *getSecurityManager() { return this->settings.securityManager; }
+          SecurityManager  *getSecurityManager();
+          SecurityManager  *getEffectiveSecurityManager();
    inline bool              isTopLevel() { return (this->activation_context&TOP_LEVEL_CALL) != 0; }
    inline bool              isForwarded() { return (this->settings.flags&forwarded) != 0; }
    inline bool              isGuarded() { return (this->settings.flags&guarded_method) != 0; }

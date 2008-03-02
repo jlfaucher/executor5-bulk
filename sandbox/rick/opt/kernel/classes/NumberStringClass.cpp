@@ -51,9 +51,9 @@
 #include "BufferClass.hpp"
 #include "RexxActivation.hpp"
 #include "NumberStringMath.hpp"
-#include "RexxBuiltinFunctions.h"                     /* Gneral purpose BIF Header file    */
+#include "RexxBuiltinFunctions.h"
 #include "Numerics.hpp"
-#include "StringUtil.hpp":
+#include "StringUtil.hpp"
 
 
 

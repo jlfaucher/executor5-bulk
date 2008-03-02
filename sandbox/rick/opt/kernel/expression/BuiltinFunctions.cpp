@@ -1947,7 +1947,7 @@ RexxObject *resolve_stream(            /* resolve a stream name             */
         stream = streamTable->at(qualifiedName);
         if (stream == OREF_NULL)           /* not open                          */
         {
-            SecurityManager *manager = context->getSecurityManager();
+            SecurityManager *manager = context->getEffectiveSecurityManager();
             stream = manager->checkStreamAccess(qualifiedName);
             if (stream != OREF_NULL)
             {

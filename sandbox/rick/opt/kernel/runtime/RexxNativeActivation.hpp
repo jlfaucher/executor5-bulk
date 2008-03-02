@@ -178,6 +178,7 @@ protected:
     RexxObject     *result;              /* result from RexxRaise call        */
     ActivationType  activationType;      // the type of activation
     RexxDirectory  *conditionObj;        // potential condition object
+    SecurityManager *securityManager;    // our active security manager
                                          /* running object variable pool      */
     RexxVariableDictionary *objectVariables;
     size_t          nextvariable;        /* next variable to retrieve         */

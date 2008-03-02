@@ -53,6 +53,7 @@ public:
     size_t getDataSize();
     size_t getHeaderSize();
     RexxBuffer *extractBufferData();
+    char *getImageData();
     bool validate();
     void write(FILE *handle, RexxBuffer *program);
     RexxBuffer *read(FILE *handle);

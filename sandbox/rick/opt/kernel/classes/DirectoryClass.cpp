@@ -604,7 +604,7 @@ RexxObject *RexxDirectory::atRexx(
     // is this the .local object?  We'll need to check with the security manager
     if ((RexxDirectory *)(ActivityManager::localEnvironment) == this)
     {
-        SecurityManager *manager = ActivityManager::currentActivity->getSecurityManager();
+        SecurityManager *manager = ActivityManager::currentActivity->getEffectiveSecurityManager();
         temp = manager->checkLocalAccess(_index);
         if (temp != OREF_NULL)
         {

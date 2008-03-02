@@ -89,20 +89,18 @@ RexxBuffer *RexxBuffer::expand(
 
 }
 
-void *RexxBuffer::operator new(size_t size,
-    size_t length)                     /* buffer length                     */
+void *RexxBuffer::operator new(size_t size, size_t _length)
 /******************************************************************************/
 /* Function:  Create a new buffer object                                      */
 /******************************************************************************/
 {
-    RexxBuffer *newBuffer;               /* new object                        */
-
                                          /* Get new object                    */
-    newBuffer = (RexxBuffer *) new_object(size + length - sizeof(char[4]));
+    RexxBuffer *newBuffer = (RexxBuffer *) new_object(size + _length - sizeof(char[4]));
     /* Give new object its behaviour     */
     newBuffer->setBehaviour(TheBufferBehaviour);
     /* Initialize this new buffer        */
-    newBuffer->size = length;            /* set the length of the buffer      */
+    newBuffer->size = _length;           /* set the length of the buffer      */
+    newBuffer->length = _length;         // by default, the data length and size are the same
     newBuffer->setHasNoReferences();     /* this has no references            */
     return(void *)newBuffer;            /* return the new buffer             */
 }

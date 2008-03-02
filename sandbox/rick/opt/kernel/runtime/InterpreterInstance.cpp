@@ -88,6 +88,7 @@ void InterpreterInstance::live(size_t liveMark)
     memory_mark(defaultEnvironment);
     memory_mark(searchPath);
     memory_mark(searchExtensions);
+    memory_mark(securityManager);
 }
 
 
@@ -102,6 +103,7 @@ void InterpreterInstance::liveGeneral(int reason)
     memory_mark_general(defaultEnvironment);
     memory_mark_general(searchPath);
     memory_mark_general(searchExtensions);
+    memory_mark_general(securityManager);
 }
 
 

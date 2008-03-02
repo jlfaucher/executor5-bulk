@@ -111,6 +111,7 @@ void RexxNativeActivation::live(size_t liveMark)
   memory_mark(this->nextcurrent);
   memory_mark(this->objectVariables);
   memory_mark(this->conditionObj);
+  memory_mark(this->securityManager);
 
   /* We're hold a pointer back to our arguments directly where they */
   /* are created.  Since in some places, this argument list comes */
@@ -141,6 +142,7 @@ void RexxNativeActivation::liveGeneral(int reason)
   memory_mark_general(this->nextcurrent);
   memory_mark_general(this->objectVariables);
   memory_mark_general(this->conditionObj);
+  memory_mark_general(this->securityManager);
 
   /* We're hold a pointer back to our arguments directly where they */
   /* are created.  Since in some places, this argument list comes */
@@ -1043,6 +1045,13 @@ void RexxNativeActivation::run(RexxMethod *_method, RexxNativeMethod *_code, Rex
 
     MethodContext context;               // the passed out method context
 
+    // sort out our active security manager
+    securityManager = _code->getSecurityManager();
+    if (securityManager == OREF_NULL)
+    {
+        securityManager = activity->getInstanceSecurityManager();
+    }
+
     // build a context pointer to pass out
     activity->createMethodContext(context, this);
 
@@ -1156,6 +1165,13 @@ void RexxNativeActivation::callNativeRoutine(RoutineClass *_routine, RexxNativeR
 
     CallContext context;               // the passed out method context
 
+    // sort out our active security manager
+    securityManager = code->getSecurityManager();
+    if (securityManager == OREF_NULL)
+    {
+        securityManager = activity->getInstanceSecurityManager();
+    }
+
     // build a context pointer to pass out
     activity->createCallContext(context, this);
 
@@ -1255,6 +1271,9 @@ void RexxNativeActivation::callRegisteredRoutine(RoutineClass *_routine, Registe
     argcount = count;
 
     activationType = FUNCTION_ACTIVATION;      // this is for running a method
+    // use the default security manager
+    securityManager = activity->getInstanceSecurityManager();
+
 
     // get the entry point address of the target method
     RexxRoutineHandler *methp = code->getEntry();
@@ -1403,6 +1422,9 @@ void RexxNativeActivation::run(ActivityDispatcher &dispatcher)
 {
     activationType = DISPATCHER_ACTIVATION;  // this is for running a dispatcher
     size_t activityLevel = this->activity->getActivationLevel();
+    // use the default security manager
+    securityManager = activity->getInstanceSecurityManager();
+
     // make the activation hookup
     dispatcher.setContext(activity, this);
     dispatcher.run();
@@ -1427,6 +1449,8 @@ void RexxNativeActivation::run(ActivityDispatcher &dispatcher)
 void RexxNativeActivation::run(CallbackDispatcher &dispatcher)
 {
     activationType = CALLBACK_ACTIVATION;    // we're handling a callback
+    // use the default security manager
+    securityManager = activity->getInstanceSecurityManager();
     size_t activityLevel = this->activity->getActivationLevel();
     try
     {
@@ -1924,13 +1948,9 @@ SecurityManager *RexxNativeActivation::getSecurityManager()
     RexxSource *s = getSourceObject();
     if (s != OREF_NULL)
     {
-        manager = s->getSecurityManager();
+        return s->getSecurityManager();
     }
-    if (manager == OREF_NULL)
-    {
-        manager = activity->getSecurityManager();
-    }
-    return manager;
+    return OREF_NULL;     // no security manager on this context.
 }
 
 

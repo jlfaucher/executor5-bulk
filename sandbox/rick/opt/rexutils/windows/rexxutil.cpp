@@ -7610,6 +7610,7 @@ RexxFunctionEntry rexxutil_functions[] =
     REXX_CLASSIC_FUNCTION(SysIsFileOffline,            SysIsFileOffline),
     REXX_CLASSIC_FUNCTION(SysIsFileSparse,             SysIsFileSparse),
     REXX_CLASSIC_FUNCTION(SysIsFileTemporary,          SysIsFileTemporary),
+    REXX_LAST_ROUTINE()
 };
 
 RexxPackageEntry rexxutil_package_entry =

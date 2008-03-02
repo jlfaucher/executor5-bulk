@@ -49,6 +49,7 @@
 #include "RexxNativeCode.hpp"
 #include "DirectoryClass.hpp"
 #include "RoutineClass.hpp"
+#include "ProtectedObject.hpp"
 
 
 /**
@@ -88,6 +89,7 @@ LibraryPackage::LibraryPackage(RexxString *n, RexxPackageEntry *p)
 {
     this->clearObject();
     OrefSet(this, libraryName, n);
+    ProtectedObject p2(this);
     // this is an internal package.
     internal = true;
     loadPackage(p);
@@ -269,7 +271,7 @@ void LibraryPackage::loadRoutines(RexxRoutineEntry *table)
             func = new RexxNativeRoutine(libraryName, routineName, (PNATIVEROUTINE)table->entryPoint);
         }
 
-        RoutineClass *routine = new_routine(routineName, func);
+        RoutineClass *routine = new RoutineClass(routineName, func);
         // add this to our local table
         routines->put(routine, target);
 

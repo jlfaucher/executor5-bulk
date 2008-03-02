@@ -148,7 +148,7 @@ void RexxActivity::runThread()
             {
                 this->requestAccess();
             }
-            this->error(0);
+            this->error();
         }
 
         // make sure we get restored to the same base activation level.
@@ -315,21 +315,18 @@ void RexxActivity::generateRandomNumberSeed()
 }
 
 
-wholenumber_t RexxActivity::error(size_t startDepth)
+wholenumber_t RexxActivity::error()
 /******************************************************************************/
 /* Function:  Force error termination on an activity, returning the resulting */
 /*            REXX error code.                                                */
 /******************************************************************************/
 {
-    while (stackFrameDepth > startDepth)     /* while still have activations      */
+    // unwind to a base activation
+    while (!topStackFrame->isStackBase())
     {
         // if we're not to the stack very base of the stack, terminate the frame
-        if (!topStackFrame->isStackBase())
-        {
-            /* force activation termination      */
-            this->topStackFrame->termination();
-        }
-        this->popStackFrame(false);        /* pop the activation off            */
+        this->topStackFrame->termination();
+        this->popStackFrame(false);
     }
 
     wholenumber_t rc = Error_Interpretation/1000;      /* set default return code           */
@@ -2025,7 +2022,7 @@ bool RexxActivity::callFunctionExit(
 /******************************************************************************/
 {
     // give the security manager the first pass
-    SecurityManager *manager = activation->getSecurityManager();
+    SecurityManager *manager = activation->getEffectiveSecurityManager();
     if (manager != OREF_NULL)
     {
         if (manager->checkFunctionCall(rname, argcount, arguments, funcresult))
@@ -2210,7 +2207,7 @@ bool RexxActivity::callCommandExit(
 /******************************************************************************/
 {
     // give the security manager the first pass
-    SecurityManager *manager = activation->getSecurityManager();
+    SecurityManager *manager = activation->getEffectiveSecurityManager();
     if (manager != OREF_NULL)
     {
         if (manager->checkCommand(cmdname, environment, conditions, cmdresult))
@@ -2549,17 +2546,36 @@ bool RexxActivity::callValueExit(
 /**
  * Retrieve the current security manager instance.
  *
- * @return
+ * @return the security manager instance in effect for the
+ *         activity.
  */
-SecurityManager *RexxActivity::getSecurityManager()
+SecurityManager *RexxActivity::getEffectiveSecurityManager()
 {
-    if (currentRexxFrame != OREF_NULL)
+    // get the security manager for the top stack frame. If there is none defined, default to
+    // ghe global security manager.
+    SecurityManager *manager = topStackFrame->getSecurityManager();
+
+    if (manager != OREF_NULL)
     {
-        return currentRexxFrame->getSecurityManager();
+        return manager;
     }
+
     // return the manager from the instance
     return instance->getSecurityManager();
 }
+
+
+/**
+ * Return the security manager in effect for this instance.
+ *
+ * @return The globally defined security manager.
+ */
+SecurityManager *RexxActivity::getInstanceSecurityManager()
+{
+    // return the manager from the instance
+    return instance->getSecurityManager();
+}
+
 
 
 void  RexxActivity::traceOutput(       /* write a line of trace information */
@@ -2806,7 +2822,7 @@ void RexxActivity::run(ActivityDispatcher &target)
       }
 
       // now do error processing
-      wholenumber_t rc = this->error(startDepth);      /* do error cleanup                  */
+      wholenumber_t rc = this->error();                /* do error cleanup                  */
       target.handleError(rc, conditionobj);
   }
 

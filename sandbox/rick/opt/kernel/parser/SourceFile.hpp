@@ -226,7 +226,7 @@ class RexxSource : public RexxInternalObject {
   void        errorToken(int, RexxToken *);
   void        blockError(RexxInstruction *);
   static RexxCode   *generateCodeFromFile(RexxString *);
-  RexxObject *sourceNewObject(size_t, RexxBehaviour *, int);
+  RexxInstruction *sourceNewObject(size_t, RexxBehaviour *, int);
   void        parseTraceSetting(RexxString *, size_t *, size_t *);
   size_t      processVariableList(int);
   RexxObject *parseConditional(int *, int);
@@ -241,7 +241,7 @@ class RexxSource : public RexxInternalObject {
   inline void        pushDo(RexxInstruction *i) { this->control->pushRexx((RexxObject *)i); }
   inline RexxInstruction *popDo() { return (RexxInstruction *)(this->control->pullRexx()); };
   inline RexxInstruction *topDo() { return (RexxInstruction *)(this->control->peek()); };
-  inline void        setProgramName(RexxString *name) { OrefSet(this, this->programName, name); };
+         void        setProgramName(RexxString *name);
   inline RexxString *getProgramName() { return this->programName; }
   inline RexxString *getProgramDirectory() { return this->programDirectory; }
   inline RexxString *getProgramExtension() { return this->programExtension; }
