@@ -43,7 +43,7 @@
 /******************************************************************************/
 
 
-INTERNAL_NAMED_FUNCTION(Beep, sysBeep)
-INTERNAL_NAMED_FUNCTION(Directory, sysDirectory)
-INTERNAL_NAMED_FUNCTION(Filespec, sysFilespec)
-INTERNAL_NAMED_FUNCTION(RxMessageBox, sysMessageBox)
+INTERNAL_ROUTINE(Beep, sysBeep)
+INTERNAL_ROUTINE(Directory, sysDirectory)
+INTERNAL_ROUTINE(Filespec, sysFilespec)
+INTERNAL_ROUTINE(RxMessageBox, sysMessageBox)

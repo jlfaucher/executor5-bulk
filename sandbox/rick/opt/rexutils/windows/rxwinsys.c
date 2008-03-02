@@ -37,7 +37,7 @@
 /*----------------------------------------------------------------------------*/
 
 #include <windows.h>
-#include "rexx.h"
+#include "oorexxapi.h"
 #include "APIUtil.h"
 #include <stdio.h>
 #include <string.h>
@@ -49,9 +49,6 @@
 #define MAX_TIME_DATE 128
 #define MAX_VARNAME   256
 
-
-#define WINSYSDLL "RXWINSYS.DLL"
-
 #define MSG_TIMEOUT  5000 // 5000ms
 #if (WINVER >= 0x0500)
 #define MSG_TIMEOUT_OPTS (SMTO_ABORTIFHUNG|SMTO_NORMAL|SMTO_NOTIMEOUTIFNOTHUNG)
@@ -59,17 +56,19 @@
 #define MSG_TIMEOUT_OPTS (SMTO_ABORTIFHUNG|SMTO_NORMAL)
 #endif
 
+
+/*********************************************************************/
+/* Numeric Return calls                                              */
+/*********************************************************************/
+
+#define  INVALID_ROUTINE 40            /* Raise Rexx error           */
+#define  VALID_ROUTINE    0            /* Successful completion      */
+
 VOID Little2BigEndian(BYTE *pbInt, INT iSize);
 
 
 LONG HandleArgError(PRXSTRING r, BOOL ToMuch)
 {
-//      no messagebox
-//      CHAR * text;
-//      HWND hW = NULL;
-//      if (ToMuch) text = "Too many arguments!";
-//      else text = "Not enough arguments!";
-//      MessageBox(hW,text,"Error",MB_OK | MB_ICONHAND);
       r->strlength = 2;
       r->strptr[0] = '4';
       r->strptr[1] = '0';
@@ -104,20 +103,27 @@ LONG HandleArgError(PRXSTRING r, BOOL ToMuch)
                 }
 
 
+#define RET_HANDLE(retvalue)  { \
+                   pointer2string(retstr, retvalue); \
+                   return 0; \
+                }
+
+
 #define ISHEX(value) \
    ((value[0] == '0') && (toupper(value[1]) == 'X'))
 
 
 #define GET_HKEY(argum, ghk) { \
-     if (strstr(argum,"MACHINE")) ghk = HKEY_LOCAL_MACHINE; else \
-     if (strstr(argum,"CLASSES")) ghk = HKEY_CLASSES_ROOT; else \
-     if (strstr(argum,"CURRENT_USER")) ghk = HKEY_CURRENT_USER; else \
-     if (strstr(argum,"USERS")) ghk = HKEY_USERS; else \
-     if (strstr(argum,"PERFORMANCE")) ghk = HKEY_PERFORMANCE_DATA; else \
-     if (strstr(argum,"CURRENT_CONFIG")) ghk = HKEY_CURRENT_CONFIG; else \
-     if (strstr(argum,"DYN_DATA")) ghk = HKEY_DYN_DATA; else \
-     if (ISHEX(argum)) ghk = (HKEY) strtoul(argum,'\0',16); else \
-     ghk = (HKEY) atol(argum); }
+     ghk = NULL; \
+     if (strcmp(argum,"MACHINE") == 0) ghk = HKEY_LOCAL_MACHINE; else \
+     if (strcmp(argum,"CLASSES") == 0) ghk = HKEY_CLASSES_ROOT; else \
+     if (strcmp(argum,"CURRENT_USER") == 0) ghk = HKEY_CURRENT_USER; else \
+     if (strcmp(argum,"USERS") == 0) ghk = HKEY_USERS; else \
+     if (strcmp(argum,"PERFORMANCE") == 0) ghk = HKEY_PERFORMANCE_DATA; else \
+     if (strcmp(argum,"CURRENT_CONFIG") == 0) ghk = HKEY_CURRENT_CONFIG; else \
+     if (strcmp(argum,"DYN_DATA") == 0) ghk = HKEY_DYN_DATA; else \
+     string2pointer(argum, &ghk); \
+}
 
 
 
@@ -171,6 +177,32 @@ LONG HandleArgError(PRXSTRING r, BOOL ToMuch)
 }
 
 
+/********************************************************************
+* Function:  string2pointer(string)                                 *
+*                                                                   *
+* Purpose:   Validates and converts an ASCII-Z string from string   *
+*            form to a pointer value.  Returns false if the number  *
+*            is not valid, true if the number was successfully      *
+*            converted.                                             *
+*                                                                   *
+* RC:        true - Good number converted                           *
+*            false - Invalid number supplied.                       *
+*********************************************************************/
+
+BOOL string2pointer(
+  const char *string,                  /* string to convert          */
+  void **pointer)                      /* converted number           */
+{
+  return sscanf(string, "0x%p", pointer) == 1;
+}
+
+
+void pointer2string(PRXSTRING result, void *pointer)
+{
+    sprintf(result->strptr, "0x%p", pointer);
+}
+
+
 BOOL IsRunningNT()
 {
     OSVERSIONINFO version_info={0};
@@ -182,7 +214,7 @@ BOOL IsRunningNT()
 }
 
 
-void firstarg(CHAR tar[STR_BUFFER], RXSTRING src)
+void firstarg(CHAR tar[STR_BUFFER], CONSTRXSTRING src)
 {
    register UINT i;
    for (i=0; ((i<src.strlength) && (i<STR_BUFFER-1));i++) tar[i] = toupper(src.strptr[i]);
@@ -190,79 +222,103 @@ void firstarg(CHAR tar[STR_BUFFER], RXSTRING src)
 }
 
 
-ULONG REXXENTRY WSRegistryKey(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
+size_t RexxEntry WSRegistryKey(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, PRXSTRING retstr)
 {
-   char farg[STR_BUFFER];
-   HKEY hk;
-   LONG rc;
+    char farg[STR_BUFFER];
+    HKEY hk;
+    LONG rc;
 
-   CHECKARG(2,5);
+    CHECKARG(2,5);
 
-   firstarg(farg, argv[0]);
+    firstarg(farg, argv[0]);
 
-   if (strstr(farg,"CREATE"))
-   {
-      HKEY hkResult;
+    if (strcmp(farg,"CREATE"))
+    {
+        HKEY hkResult;
 
-      if (RegCreateKey((HKEY)atoi(argv[1].strptr),    // handle of an open key
-             argv[2].strptr,    // address of name of subkey to open
-             &hkResult     // address of buffer for opened handle
-      ) == ERROR_SUCCESS) RETVAL((INT)hkResult) else RETC(0);
-   } else
-   if (strstr(farg,"OPEN"))
-   {
-      HKEY hkResult;
-      DWORD access=0;
+        string2pointer(argv[1].strptr, &hk);
+        if (RegCreateKey(hk, argv[2].strptr, &hkResult ) == ERROR_SUCCESS)
+        {
+            RET_HANDLE(hkResult);
+        }
+        else
+        {
+            RETC(0);
+        }
+    }
+    else if (strcmp(farg,"OPEN"))
+    {
+        HKEY hkResult;
+        DWORD access=0;
 
-      GET_HKEY(argv[1].strptr, hk);
+        GET_HKEY(argv[1].strptr, hk);
 
-      if (argc == 2) RETVAL((INT)hk);     /* return predefined handle */
+        if (argc == 2)
+        {
+            RET_HANDLE(hk);      // return the predefined handle
+        }
 
-      if ((argc < 4) || strstr(argv[3].strptr,"ALL")) access = KEY_ALL_ACCESS;
-      else {
-         if (strstr(argv[3].strptr,"WRITE")) access |= KEY_WRITE;
-         if (strstr(argv[3].strptr,"READ")) access |= KEY_READ;
-         if (strstr(argv[3].strptr,"QUERY")) access |= KEY_ENUMERATE_SUB_KEYS | KEY_QUERY_VALUE;
-         if (strstr(argv[3].strptr,"EXECUTE")) access |= KEY_EXECUTE;
-         if (strstr(argv[3].strptr,"NOTIFY")) access |= KEY_NOTIFY;
-         if (strstr(argv[3].strptr,"LINK")) access |= KEY_CREATE_LINK;
-      }
+        if ((argc < 4) || strcmp(argv[3].strptr,"ALL"))
+        {
+            access = KEY_ALL_ACCESS;
+        }
+        else
+        {
+            if (strstr(argv[3].strptr,"WRITE")) access |= KEY_WRITE;
+            if (strstr(argv[3].strptr,"READ")) access |= KEY_READ;
+            if (strstr(argv[3].strptr,"QUERY")) access |= KEY_ENUMERATE_SUB_KEYS | KEY_QUERY_VALUE;
+            if (strstr(argv[3].strptr,"EXECUTE")) access |= KEY_EXECUTE;
+            if (strstr(argv[3].strptr,"NOTIFY")) access |= KEY_NOTIFY;
+            if (strstr(argv[3].strptr,"LINK")) access |= KEY_CREATE_LINK;
+        }
 
-      if (RegOpenKeyEx(hk,    // handle of open key
-         argv[2].strptr, // address of name of subkey to open
-         0,
-         access,
-         &hkResult     // address of handle of open key
-      ) == ERROR_SUCCESS) RETVAL((INT)hkResult) else RETC(0)
-   } else
-   if (strstr(farg,"CLOSE"))
-   {
-      hk = (HKEY) atoi(argv[1].strptr);
+        if (RegOpenKeyEx(hk, argv[2].strptr, 0, access, &hkResult ) == ERROR_SUCCESS)
+        {
+            RET_HANDLE(hkResult);
+        }
+        else
+        {
+            RETC(0);
+        }
+    }
+    else if (strcmp(farg,"CLOSE"))
+    {
+        string2pointer(argv[1].strptr, &hk);
+        if (RegCloseKey(hk) == ERROR_SUCCESS)
+        {
+            RETC(0);
+        }
+        else
+        {
+            RETC(1);
+        }
+    }
+    else if (strcmp(farg,"DELETE"))
+    {
+        GET_HKEY(argv[1].strptr, hk);
 
-      if (RegCloseKey(hk) == ERROR_SUCCESS) RETC(0) else RETC(1)
-   } else
-   if (strstr(farg,"DELETE"))
-   {
-      GET_HKEY(argv[1].strptr, hk);
+        if ((rc = RegDeleteKey(hk, argv[2].strptr)) == ERROR_SUCCESS)
+        {
+            RETC(0);
+        }
+        else
+        {
+            RETVAL(rc);
+        }
+    }
+    else if (strcmp(farg,"QUERY"))
+    {
+        char Class[256];
+        DWORD retcode, cbClass, cSubKeys, cbMaxSubKeyLen,
+        cbMaxClassLen, cValues, cbMaxValueNameLen, cbMaxValueLen, cbSecurityDescriptor;
+        FILETIME ftLastWriteTime;
+        SYSTEMTIME stTime;
 
-      if ((rc = RegDeleteKey(hk, argv[2].strptr)) == ERROR_SUCCESS) RETC(0) else RETVAL(rc)
-   } else
-   if (strstr(farg,"QUERY"))
-   {
-      char Class[256];
-      DWORD retcode, cbClass, cSubKeys, cbMaxSubKeyLen,
-      cbMaxClassLen, cValues, cbMaxValueNameLen, cbMaxValueLen, cbSecurityDescriptor;
-      FILETIME ftLastWriteTime;
-      SYSTEMTIME stTime;
+        cbClass = 256;
 
-      cbClass = 256;
+        string2pointer(argv[1].strptr, &hk);
 
-      if ((retcode=RegQueryInfoKey ((HKEY) atoi(argv[1].strptr),    // handle of key to query
+        if ((retcode=RegQueryInfoKey(hk,                             // handle of key to query
              Class,    // address of buffer for class string
              &cbClass,    // address of size of class string buffer
              NULL,    // reserved
@@ -274,523 +330,641 @@ ULONG REXXENTRY WSRegistryKey(
              &cbMaxValueLen,    // address of buffer for longest value data length
              &cbSecurityDescriptor,    // address of buffer for security descriptor length
              &ftLastWriteTime     // address of buffer for last write time
-      )) == ERROR_SUCCESS)
-      {
-          if (FileTimeToSystemTime(&ftLastWriteTime,    // pointer to file time to convert
-                               &stTime))     // pointer to structure to receive system time
-              sprintf(retstr->strptr,"%s, %ld, %ld, %04d/%02d/%02d, %02d:%02d:%02d",
-                     Class, cSubKeys, cValues, stTime.wYear, stTime.wMonth, stTime.wDay,
-                     stTime.wHour, stTime.wMinute, stTime.wSecond);
-          else
-              sprintf(retstr->strptr,"%s, %ld, %ld",Class, cSubKeys, cValues);
+            )) == ERROR_SUCCESS)
+            {
+                if (FileTimeToSystemTime(&ftLastWriteTime, &stTime))
+                {
 
-          retstr->strlength = strlen(retstr->strptr);
-          return 0;
-      } else RETC(0);
-   } else
-   if (strstr(farg,"LIST"))
-   {
-      DWORD retcode, ndx=0;
-      char Name[256];
-      char sname[64];
-      SHVBLOCK shvb;
+                    sprintf(retstr->strptr,"%s, %ld, %ld, %04d/%02d/%02d, %02d:%02d:%02d",
+                            Class, cSubKeys, cValues, stTime.wYear, stTime.wMonth, stTime.wDay,
+                            stTime.wHour, stTime.wMinute, stTime.wSecond);
+                }
+                else
+                {
+                    sprintf(retstr->strptr,"%s, %ld, %ld",Class, cSubKeys, cValues);
+                }
 
-      GET_HKEY(argv[1].strptr, hk);
-      if (argv[2].strptr[argv[2].strlength-1] == '.') argv[2].strptr[argv[2].strlength-1] = '\0'; /* no trailing point */
-      do {
-         retcode = RegEnumKey(hk,    // handle of key to query
-                              ndx++,    // index of subkey to query
-                              Name,    // address of buffer for subkey name
-                              sizeof(Name));     // size of subkey buffer
-         if (retcode == ERROR_SUCCESS)
-         {
-             sprintf(sname,"%s.%d",argv[2].strptr,ndx);
-             SET_VARIABLE(sname, Name, 2);
-         } else if (retcode != ERROR_NO_MORE_ITEMS) RETC(1)
-      } while (retcode == ERROR_SUCCESS);
-      RETC(0)
-   } else
-   if (strstr(farg,"FLUSH"))
-   {
-      GET_HKEY(argv[1].strptr, hk);
+                retstr->strlength = strlen(retstr->strptr);
+                return 0;
+            }
+        else
+        {
+            RETC(0);
+        }
+    }
+    else if (strcmp(farg,"LIST"))
+    {
+        DWORD retcode, ndx=0;
+        char Name[256];
+        char sname[64];
+        SHVBLOCK shvb;
 
-      if (RegFlushKey(hk) == ERROR_SUCCESS) RETC(0) else RETC(1)
-   } else
-   {
-      // MessageBox(0,"Illegal registry key command!","Error",MB_OK | MB_ICONHAND | MB_SYSTEMMODAL);
-      RETC(1)
-   }
+        GET_HKEY(argv[1].strptr, hk);
+        do
+        {
+            retcode = RegEnumKey(hk,    // handle of key to query
+                                 ndx++,    // index of subkey to query
+                                 Name,    // address of buffer for subkey name
+                                 sizeof(Name));     // size of subkey buffer
+            if (retcode == ERROR_SUCCESS)
+            {
+                strcpy(sname, argv[2].strptr);
+                // make sure there is a period on the stem name
+                if (sname[argv[2].strlength - 1] != '.')
+                {
+                    strcat(sname, ".");
+                }
+                sprintf(sname + strlen(sname),"%d", ndx);
+                SET_VARIABLE(sname, Name, 2);
+            }
+            else if (retcode != ERROR_NO_MORE_ITEMS)
+            {
+                RETC(1);
+            }
+        } while (retcode == ERROR_SUCCESS);
+        RETC(0);
+    }
+    else if (strcmp(farg,"FLUSH"))
+    {
+        GET_HKEY(argv[1].strptr, hk);
+
+        if (RegFlushKey(hk) == ERROR_SUCCESS)
+        {
+            RETC(0);
+        }
+        else
+        {
+            RETC(1);
+        }
+    }
+    else
+    {
+        RETC(1);
+    }
 }
 
 
-ULONG REXXENTRY WSRegistryValue(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
+size_t RexxEntry WSRegistryValue(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, PRXSTRING retstr)
 {
-   char farg[STR_BUFFER];
-   HKEY hk;
-   LONG rc;
+    char farg[STR_BUFFER];
+    HKEY hk;
+    LONG rc;
 
-   CHECKARG(2,5);
+    CHECKARG(2,5);
 
-   firstarg(farg, argv[0]);
+    firstarg(farg, argv[0]);
 
-   if (strstr(farg,"SET"))
-   {
-      DWORD valType;
-      DWORD dwNumber;
-      DWORD dataLen;
-      const BYTE * data;
+    if (strcmp(farg,"SET"))
+    {
+        DWORD valType;
+        DWORD dwNumber;
+        DWORD dataLen;
+        const BYTE * data;
 
-      GET_HKEY(argv[1].strptr, hk);
+        GET_HKEY(argv[1].strptr, hk);
 
-      if (!strcmp(argv[4].strptr,"EXPAND")) valType = REG_EXPAND_SZ; else
-      if (!strcmp(argv[4].strptr,"MULTI")) valType = REG_MULTI_SZ; else
-      if (!strcmp(argv[4].strptr,"NUMBER")) valType = REG_DWORD; else
-      if (!strcmp(argv[4].strptr,"BINARY")) valType = REG_BINARY; else
-      if (!strcmp(argv[4].strptr,"LINK")) valType = REG_LINK; else
-      if (!strcmp(argv[4].strptr,"RESOURCELIST")) valType = REG_RESOURCE_LIST; else
-      if (!strcmp(argv[4].strptr,"RESOURCEDESC")) valType = REG_FULL_RESOURCE_DESCRIPTOR; else
-      if (!strcmp(argv[4].strptr,"RESOURCEREQS")) valType = REG_RESOURCE_REQUIREMENTS_LIST; else
-      if (!strcmp(argv[4].strptr,"BIGENDIAN")) valType = REG_DWORD_BIG_ENDIAN; else
-      if (!strcmp(argv[4].strptr,"NONE")) valType = REG_NONE; else
-      valType = REG_SZ;
+        if (!strcmp(argv[4].strptr,"EXPAND")) valType = REG_EXPAND_SZ;
+        else
+            if (!strcmp(argv[4].strptr,"MULTI")) valType = REG_MULTI_SZ;
+        else
+            if (!strcmp(argv[4].strptr,"NUMBER")) valType = REG_DWORD;
+        else
+            if (!strcmp(argv[4].strptr,"BINARY")) valType = REG_BINARY;
+        else
+            if (!strcmp(argv[4].strptr,"LINK")) valType = REG_LINK;
+        else
+            if (!strcmp(argv[4].strptr,"RESOURCELIST")) valType = REG_RESOURCE_LIST;
+        else
+            if (!strcmp(argv[4].strptr,"RESOURCEDESC")) valType = REG_FULL_RESOURCE_DESCRIPTOR;
+        else
+            if (!strcmp(argv[4].strptr,"RESOURCEREQS")) valType = REG_RESOURCE_REQUIREMENTS_LIST;
+        else
+            if (!strcmp(argv[4].strptr,"BIGENDIAN")) valType = REG_DWORD_BIG_ENDIAN;
+        else
+            if (!strcmp(argv[4].strptr,"NONE")) valType = REG_NONE;
+        else
+            valType = REG_SZ;
 
-      if ((valType == REG_DWORD) || (valType == REG_DWORD_BIG_ENDIAN))
-      {
-          dwNumber = atoi(argv[3].strptr);
+        if ((valType == REG_DWORD) || (valType == REG_DWORD_BIG_ENDIAN))
+        {
+            dwNumber = atoi(argv[3].strptr);
 
-          if (valType == REG_DWORD_BIG_ENDIAN)
-            Little2BigEndian((BYTE *) &dwNumber, sizeof(dwNumber));
+            if (valType == REG_DWORD_BIG_ENDIAN)
+            {
+                Little2BigEndian((BYTE *) &dwNumber, sizeof(dwNumber));
+            }
 
-          data = (const BYTE *) &dwNumber;
-          dataLen = sizeof(dwNumber);
-      }
-      else
-      {
-         data = (const BYTE *) argv[3].strptr;
-         switch (valType)
-         {
-           case REG_BINARY:
-           case REG_NONE:
-           case REG_LINK:
-           case REG_RESOURCE_LIST:
-           case REG_FULL_RESOURCE_DESCRIPTOR:
-           case REG_RESOURCE_REQUIREMENTS_LIST:
-             dataLen = argv[3].strlength;
-             break;
-
-           case REG_EXPAND_SZ:
-           case REG_MULTI_SZ:
-           case REG_SZ:
-             dataLen = argv[3].strlength+1;
-             break;
-         }
-      }
-
-      if (RegSetValueEx(hk,    // handle of key to set value for
-                        argv[2].strptr,    // address of value name to set
-                        0,    // reserved
-                        valType,    // flag for value type
-                        data,    // address of value data
-                        dataLen) == ERROR_SUCCESS) RETC(0) else RETC(1)
-
-   } else
-   if (strstr(farg,"QUERY"))
-   {
-      DWORD valType, cbData;
-      char * valData, *vType;
-      ULONG intsize;
-
-      cbData = sizeof(valData);
-
-      GET_HKEY(argv[1].strptr, hk);
-
-      if (RegQueryValueEx(hk,        // handle of key to query
-                          argv[2].strptr,    // address of name of value to query
-                          NULL,        // reserved
-                          &valType,    // address of buffer for value type
-                          NULL,        // NULL to get the size
-                          &cbData) == ERROR_SUCCESS) {        // address of data buffer size
-          valData = GlobalAlloc(GPTR, cbData);
-
-          if (!valData) RETERR
-
-          if (RegQueryValueEx(hk,    // handle of key to query
-                          argv[2].strptr,    // address of name of value to query
-                          NULL,    // reserved
-                          &valType,    // address of buffer for value type
-                          valData,    // address of data buffer
-                          &cbData) == ERROR_SUCCESS) {        // address of data buffer size
-
-              if ((GlobalFlags(retstr->strptr) != GMEM_INVALID_HANDLE) && !GetLastError())
-              {
-                  intsize = GlobalSize(retstr->strptr);
-              }
-              else intsize = STR_BUFFER;
-              if (intsize > retstr->strlength+1) intsize = retstr->strlength+1;
-              if (cbData+10 > intsize)
-              {
-                  if ((GlobalFlags(retstr->strptr) != GMEM_INVALID_HANDLE) && !GetLastError()) GlobalFree(retstr->strptr);
-                  retstr->strptr = GlobalAlloc(GMEM_FIXED, cbData + 10);
-              }
-
-              switch (valType) {
-                 case REG_MULTI_SZ:
-                    vType = "MULTI";
-                    sprintf(retstr->strptr,"%s, ",vType);
-                    memcpy(&retstr->strptr[strlen(retstr->strptr)], valData, cbData);
-                    break;
-                 case REG_DWORD:
-                    vType = "NUMBER";
-                    sprintf(retstr->strptr,"%s, %ld",vType, *(DWORD *)valData);
-                    break;
-                 case REG_BINARY:
-                    vType = "BINARY";
-                    sprintf(retstr->strptr,"%s, ",vType);
-                    memcpy(&retstr->strptr[strlen(retstr->strptr)], valData, cbData);
-                    break;
-                 case REG_NONE:
-                    vType = "NONE";
-                    sprintf(retstr->strptr,"%s, ",vType);
-                    memcpy(&retstr->strptr[strlen(retstr->strptr)], valData, cbData);
-                    break;
-                 case REG_SZ:
-                    vType = "NORMAL";
-                    sprintf(retstr->strptr,"%s, %s",vType, valData);
-                    break;
-                 case REG_EXPAND_SZ:
-                    vType = "EXPAND";
-                    sprintf(retstr->strptr,"%s, %s",vType, valData);
-                    break;
-                 case REG_RESOURCE_LIST:
-                    vType = "RESOURCELIST";
-                    sprintf(retstr->strptr,"%s, ",vType);
-                    memcpy(&retstr->strptr[strlen(retstr->strptr)], valData, cbData);
-                    break;
-                 case REG_FULL_RESOURCE_DESCRIPTOR:
-                    vType = "RESOURCEDESC";
-                    sprintf(retstr->strptr,"%s, ",vType);
-                    memcpy(&retstr->strptr[strlen(retstr->strptr)], valData, cbData);
-                    break;
-                 case REG_RESOURCE_REQUIREMENTS_LIST:
-                    vType = "RESOURCEREQS";
-                    sprintf(retstr->strptr,"%s, ",vType);
-                    memcpy(&retstr->strptr[strlen(retstr->strptr)], valData, cbData);
-                    break;
-                 case REG_LINK:
-                    vType = "LINK";
-                    sprintf(retstr->strptr,"%s, ",vType);
-                    memcpy(&retstr->strptr[strlen(retstr->strptr)], valData, cbData);
-                    break;
-                 case REG_DWORD_BIG_ENDIAN:
-                    {
-                      DWORD dwNumber;
-                      vType = "BIGENDIAN";
-                      dwNumber = * (DWORD *)valData;
-                      Little2BigEndian((BYTE *) &dwNumber, sizeof(dwNumber));
-                      sprintf(retstr->strptr,"%s, %ld",vType, dwNumber);
-                    }
-                    break;
-
-                 default:
-                    vType = "OTHER";
-                    sprintf(retstr->strptr,"%s,",vType);
-              }
-              if ((valType == REG_MULTI_SZ) ||
-                  (valType == REG_BINARY) ||
-                  (valType == REG_RESOURCE_LIST) ||
-                  (valType == REG_FULL_RESOURCE_DESCRIPTOR) ||
-                  (valType == REG_RESOURCE_REQUIREMENTS_LIST) ||
-                  (valType == REG_NONE))
-                  retstr->strlength = strlen(vType) + 2 + cbData;
-              else
-                  retstr->strlength = strlen(retstr->strptr);
-
-              GlobalFree(valData);
-
-              return 0;
-          } else RETC(0)
-          GlobalFree(valData);
-      } else RETC(0)
-   } else
-   if (strstr(farg,"LIST"))
-   {
-      DWORD retcode, ndx=0, valType, cbValue, cbData, initData = 1024;
-      char * valData, Name[256];
-      char sname[300];
-      SHVBLOCK shvb;
-
-      GET_HKEY(argv[1].strptr, hk);
-      if (argv[2].strptr[argv[2].strlength-1] == '.') argv[2].strptr[argv[2].strlength-1] = '\0'; /* no trailing point */
-
-      valData = GlobalAlloc(GPTR, initData);
-      if (!valData) RETERR
-
-      do {
-         cbData = initData;
-         cbValue = sizeof(Name);
-         retcode = RegEnumValue(hk,    // handle of key to query
-                              ndx++,    // index of subkey to query
-                              Name,    // address of buffer for subkey name
-                              &cbValue,
-                              NULL,    // reserved
-                              &valType,    // address of buffer for type code
-                              valData,    // address of buffer for value data
-                              &cbData);     // address for size of data buffer
-
-         if ((retcode == ERROR_MORE_DATA) && (cbData > initData))   /* we need more memory */
-         {
-            GlobalFree(valData);
-            initData = cbData;
-            valData = GlobalAlloc(GPTR, cbData);
-            if (!valData) RETERR
-            ndx--;                      /* try to get the previous one again */
-            cbValue = sizeof(Name);
-            retcode = RegEnumValue(hk,    // handle of key to query
-                              ndx++,    // index of subkey to query
-                              Name,    // address of buffer for subkey name
-                              &cbValue,
-                              NULL,    // reserved
-                              &valType,    // address of buffer for type code
-                              valData,    // address of buffer for value data
-                              &cbData);     // address for size of data buffer
-         }
-
-         if (retcode == ERROR_SUCCESS)
-         {
-             sprintf(sname,"%s.%d.Name",argv[2].strptr,ndx);
-             SET_VARIABLE(sname, Name, 2);
-             sprintf(sname,"%s.%d.Type",argv[2].strptr,ndx);
-             switch (valType) {
-                case REG_EXPAND_SZ:
-                   SET_VARIABLE(sname, "EXPAND", 2);
-                   break;
-                case REG_NONE:
-                   SET_VARIABLE(sname, "NONE", 2);
-                   break;
-                case REG_DWORD:
-                   SET_VARIABLE(sname, "NUMBER", 2);
-                   break;
-                case REG_MULTI_SZ:
-                   SET_VARIABLE(sname, "MULTI", 2);
-                   break;
+            data = (const BYTE *) &dwNumber;
+            dataLen = sizeof(dwNumber);
+        }
+        else
+        {
+            data = (const BYTE *) argv[3].strptr;
+            switch (valType)
+            {
                 case REG_BINARY:
-                   SET_VARIABLE(sname, "BINARY", 2);
-                   break;
-                case REG_SZ:
-                   SET_VARIABLE(sname, "NORMAL", 2);
-                   break;
-                case REG_RESOURCE_LIST:
-                   SET_VARIABLE(sname, "RESOURCELIST", 2);
-                   break;
-                case REG_FULL_RESOURCE_DESCRIPTOR:
-                   SET_VARIABLE(sname, "RESOURCEDESC", 2);
-                   break;
-                case REG_RESOURCE_REQUIREMENTS_LIST:
-                   SET_VARIABLE(sname, "RESOURCEREQS", 2);
-                   break;
+                case REG_NONE:
                 case REG_LINK:
-                   SET_VARIABLE(sname, "LINK", 2);
-                   break;
-                case REG_DWORD_BIG_ENDIAN:
-                   SET_VARIABLE(sname, "BIGENDIAN", 2);
-                   break;
-                default:
-                   SET_VARIABLE(sname, "OTHER", 2);
-             }
-             sprintf(sname,"%s.%d.Data",argv[2].strptr,ndx);
-             if ((valType == REG_MULTI_SZ) ||
-                 (valType == REG_BINARY) ||
-                 (valType == REG_LINK) ||
-                 (valType == REG_RESOURCE_LIST) ||
-                 (valType == REG_FULL_RESOURCE_DESCRIPTOR) ||
-                 (valType == REG_RESOURCE_REQUIREMENTS_LIST) ||
-                 (valType == REG_NONE))
-             {
-                 shvb.shvnext = NULL;
-                 shvb.shvname.strptr = sname;
-                 shvb.shvname.strlength = strlen(sname);
-                 shvb.shvnamelen = shvb.shvname.strlength;
-                 shvb.shvvalue.strptr = valData;
-                 shvb.shvvalue.strlength = cbData;
-                 shvb.shvvaluelen = cbData;
-                 shvb.shvcode = RXSHV_SYSET;
-                 shvb.shvret = 0;
-                 if (RexxVariablePool(&shvb) == RXSHV_BADN)
-                 {
-                     GlobalFree(valData);
-                     RETC(2)
-                 }
-             }
-             else
-             if ((valType == REG_EXPAND_SZ) ||
-                 (valType == REG_SZ))
-                SET_VARIABLE(sname, valData, 2)
-             else
-             if ((valType == REG_DWORD) || (valType == REG_DWORD_BIG_ENDIAN))
-             {
-                 char tmp[30];
-                 DWORD dwNumber;
+                case REG_RESOURCE_LIST:
+                case REG_FULL_RESOURCE_DESCRIPTOR:
+                case REG_RESOURCE_REQUIREMENTS_LIST:
+                    dataLen = (DWORD)argv[3].strlength;
+                    break;
 
-                 dwNumber = *(DWORD *) valData;
-                 if (valType == REG_DWORD_BIG_ENDIAN)
-                   Little2BigEndian((BYTE *)&dwNumber, sizeof(dwNumber));
-                 ltoa(dwNumber, tmp, 10);
-                 SET_VARIABLE(sname, tmp, 2)
-             }
-             else
-                 SET_VARIABLE(sname, "", 2);
-         }
-         else if (retcode != ERROR_NO_MORE_ITEMS)
-         {
-             GlobalFree(valData);
-             RETC(1)
-         }
-      } while (retcode == ERROR_SUCCESS);
-      GlobalFree(valData);
-      RETC(0)
-   } else
-   if (strstr(farg,"DELETE"))
-   {
-      GET_HKEY(argv[1].strptr, hk);
+                case REG_EXPAND_SZ:
+                case REG_MULTI_SZ:
+                case REG_SZ:
+                    dataLen = (DWORD)argv[3].strlength+1;
+                    break;
+            }
+        }
 
-      if ((rc = RegDeleteValue(hk, argv[2].strptr)) == ERROR_SUCCESS) RETC(0) else RETVAL(rc)
-   } else
-   {
-      // MessageBox(0,"Illegal registry value command!","Error",MB_OK | MB_ICONHAND | MB_SYSTEMMODAL);
-      RETC(1)
-   }
+        if (RegSetValueEx(hk, argv[2].strptr, 0, valType, data, dataLen) == ERROR_SUCCESS)
+        {
+            RETC(0);
+        }
+        else
+        {
+            RETC(1);
+        }
+
+    }
+    else if (strcmp(farg,"QUERY"))
+    {
+        DWORD valType, cbData;
+        char * valData, *vType;
+        ULONG intsize;
+
+        cbData = sizeof(valData);
+
+        GET_HKEY(argv[1].strptr, hk);
+
+        if (RegQueryValueEx(hk,        // handle of key to query
+                            argv[2].strptr,    // address of name of value to query
+                            NULL,        // reserved
+                            &valType,    // address of buffer for value type
+                            NULL,        // NULL to get the size
+                            &cbData) == ERROR_SUCCESS)
+        {        // address of data buffer size
+            valData = GlobalAlloc(GPTR, cbData);
+
+            if (!valData)
+            {
+                RETERR;
+            }
+
+            if (RegQueryValueEx(hk,    // handle of key to query
+                                argv[2].strptr,    // address of name of value to query
+                                NULL,    // reserved
+                                &valType,    // address of buffer for value type
+                                valData,    // address of data buffer
+                                &cbData) == ERROR_SUCCESS)
+            {        // address of data buffer size
+
+                if ((GlobalFlags(retstr->strptr) != GMEM_INVALID_HANDLE) && !GetLastError())
+                {
+                    intsize = (ULONG)GlobalSize(retstr->strptr);
+                }
+                else
+                {
+                    intsize = STR_BUFFER;
+                }
+                if (intsize > retstr->strlength+1)
+                {
+                    intsize = (ULONG)retstr->strlength+1;
+                }
+                if (cbData+10 > intsize)
+                {
+                    if ((GlobalFlags(retstr->strptr) != GMEM_INVALID_HANDLE) && !GetLastError())
+                    {
+                        GlobalFree(retstr->strptr);
+                    }
+                    retstr->strptr = GlobalAlloc(GMEM_FIXED, cbData + 10);
+                }
+
+                switch (valType)
+                {
+                    case REG_MULTI_SZ:
+                        vType = "MULTI";
+                        sprintf(retstr->strptr,"%s, ",vType);
+                        memcpy(&retstr->strptr[strlen(retstr->strptr)], valData, cbData);
+                        break;
+                    case REG_DWORD:
+                        vType = "NUMBER";
+                        sprintf(retstr->strptr,"%s, %ld",vType, *(DWORD *)valData);
+                        break;
+                    case REG_BINARY:
+                        vType = "BINARY";
+                        sprintf(retstr->strptr,"%s, ",vType);
+                        memcpy(&retstr->strptr[strlen(retstr->strptr)], valData, cbData);
+                        break;
+                    case REG_NONE:
+                        vType = "NONE";
+                        sprintf(retstr->strptr,"%s, ",vType);
+                        memcpy(&retstr->strptr[strlen(retstr->strptr)], valData, cbData);
+                        break;
+                    case REG_SZ:
+                        vType = "NORMAL";
+                        sprintf(retstr->strptr,"%s, %s",vType, valData);
+                        break;
+                    case REG_EXPAND_SZ:
+                        vType = "EXPAND";
+                        sprintf(retstr->strptr,"%s, %s",vType, valData);
+                        break;
+                    case REG_RESOURCE_LIST:
+                        vType = "RESOURCELIST";
+                        sprintf(retstr->strptr,"%s, ",vType);
+                        memcpy(&retstr->strptr[strlen(retstr->strptr)], valData, cbData);
+                        break;
+                    case REG_FULL_RESOURCE_DESCRIPTOR:
+                        vType = "RESOURCEDESC";
+                        sprintf(retstr->strptr,"%s, ",vType);
+                        memcpy(&retstr->strptr[strlen(retstr->strptr)], valData, cbData);
+                        break;
+                    case REG_RESOURCE_REQUIREMENTS_LIST:
+                        vType = "RESOURCEREQS";
+                        sprintf(retstr->strptr,"%s, ",vType);
+                        memcpy(&retstr->strptr[strlen(retstr->strptr)], valData, cbData);
+                        break;
+                    case REG_LINK:
+                        vType = "LINK";
+                        sprintf(retstr->strptr,"%s, ",vType);
+                        memcpy(&retstr->strptr[strlen(retstr->strptr)], valData, cbData);
+                        break;
+                    case REG_DWORD_BIG_ENDIAN:
+                        {
+                            DWORD dwNumber;
+                            vType = "BIGENDIAN";
+                            dwNumber = * (DWORD *)valData;
+                            Little2BigEndian((BYTE *) &dwNumber, sizeof(dwNumber));
+                            sprintf(retstr->strptr,"%s, %ld",vType, dwNumber);
+                        }
+                        break;
+
+                    default:
+                        vType = "OTHER";
+                        sprintf(retstr->strptr,"%s,",vType);
+                }
+                if ((valType == REG_MULTI_SZ) ||
+                    (valType == REG_BINARY) ||
+                    (valType == REG_RESOURCE_LIST) ||
+                    (valType == REG_FULL_RESOURCE_DESCRIPTOR) ||
+                    (valType == REG_RESOURCE_REQUIREMENTS_LIST) ||
+                    (valType == REG_NONE))
+                {
+                    retstr->strlength = strlen(vType) + 2 + cbData;
+                }
+                else
+                {
+                    retstr->strlength = strlen(retstr->strptr);
+                }
+
+                GlobalFree(valData);
+
+                return 0;
+            }
+            else
+            {
+                RETC(0);
+            }
+            GlobalFree(valData);
+        }
+        else
+        {
+            RETC(0);
+        }
+    }
+    else if (strcmp(farg,"LIST"))
+    {
+        DWORD retcode, ndx=0, valType, cbValue, cbData, initData = 1024;
+        char * valData, Name[256];
+        char sname[300];
+        SHVBLOCK shvb;
+
+        GET_HKEY(argv[1].strptr, hk);
+        valData = GlobalAlloc(GPTR, initData);
+        if (!valData) RETERR
+
+            do
+            {
+                cbData = initData;
+                cbValue = sizeof(Name);
+                retcode = RegEnumValue(hk,    // handle of key to query
+                                       ndx++,    // index of subkey to query
+                                       Name,    // address of buffer for subkey name
+                                       &cbValue,
+                                       NULL,    // reserved
+                                       &valType,    // address of buffer for type code
+                                       valData,    // address of buffer for value data
+                                       &cbData);     // address for size of data buffer
+
+                if ((retcode == ERROR_MORE_DATA) && (cbData > initData))   /* we need more memory */
+                {
+                    GlobalFree(valData);
+                    initData = cbData;
+                    valData = GlobalAlloc(GPTR, cbData);
+                    if (!valData) RETERR
+                        ndx--;                      /* try to get the previous one again */
+                    cbValue = sizeof(Name);
+                    retcode = RegEnumValue(hk,    // handle of key to query
+                                           ndx++,    // index of subkey to query
+                                           Name,    // address of buffer for subkey name
+                                           &cbValue,
+                                           NULL,    // reserved
+                                           &valType,    // address of buffer for type code
+                                           valData,    // address of buffer for value data
+                                           &cbData);     // address for size of data buffer
+                }
+
+                if (retcode == ERROR_SUCCESS)
+                {
+                    strcpy(sname, argv[2].strptr);
+                    // make sure there is a period on the stem name
+                    if (sname[argv[2].strlength - 1] != '.')
+                    {
+                        strcat(sname, ".");
+                    }
+                    sprintf(sname + strlen(sname),"%d", ndx);
+                    SET_VARIABLE(sname, Name, 2);
+                    strcpy(sname, argv[2].strptr);
+                    // make sure there is a period on the stem name
+                    if (sname[argv[2].strlength - 1] != '.')
+                    {
+                        strcat(sname, ".");
+                    }
+                    sprintf(sname + strlen(sname),"%d.Type", ndx);
+                    switch (valType)
+                    {
+                        case REG_EXPAND_SZ:
+                            SET_VARIABLE(sname, "EXPAND", 2);
+                            break;
+                        case REG_NONE:
+                            SET_VARIABLE(sname, "NONE", 2);
+                            break;
+                        case REG_DWORD:
+                            SET_VARIABLE(sname, "NUMBER", 2);
+                            break;
+                        case REG_MULTI_SZ:
+                            SET_VARIABLE(sname, "MULTI", 2);
+                            break;
+                        case REG_BINARY:
+                            SET_VARIABLE(sname, "BINARY", 2);
+                            break;
+                        case REG_SZ:
+                            SET_VARIABLE(sname, "NORMAL", 2);
+                            break;
+                        case REG_RESOURCE_LIST:
+                            SET_VARIABLE(sname, "RESOURCELIST", 2);
+                            break;
+                        case REG_FULL_RESOURCE_DESCRIPTOR:
+                            SET_VARIABLE(sname, "RESOURCEDESC", 2);
+                            break;
+                        case REG_RESOURCE_REQUIREMENTS_LIST:
+                            SET_VARIABLE(sname, "RESOURCEREQS", 2);
+                            break;
+                        case REG_LINK:
+                            SET_VARIABLE(sname, "LINK", 2);
+                            break;
+                        case REG_DWORD_BIG_ENDIAN:
+                            SET_VARIABLE(sname, "BIGENDIAN", 2);
+                            break;
+                        default:
+                            SET_VARIABLE(sname, "OTHER", 2);
+                    }
+                    strcpy(sname, argv[2].strptr);
+                    // make sure there is a period on the stem name
+                    if (sname[argv[2].strlength - 1] != '.')
+                    {
+                        strcat(sname, ".");
+                    }
+                    sprintf(sname + strlen(sname),"%d.Data", ndx);
+                    if ((valType == REG_MULTI_SZ) ||
+                        (valType == REG_BINARY) ||
+                        (valType == REG_LINK) ||
+                        (valType == REG_RESOURCE_LIST) ||
+                        (valType == REG_FULL_RESOURCE_DESCRIPTOR) ||
+                        (valType == REG_RESOURCE_REQUIREMENTS_LIST) ||
+                        (valType == REG_NONE))
+                    {
+                        shvb.shvnext = NULL;
+                        shvb.shvname.strptr = sname;
+                        shvb.shvname.strlength = strlen(sname);
+                        shvb.shvnamelen = shvb.shvname.strlength;
+                        shvb.shvvalue.strptr = valData;
+                        shvb.shvvalue.strlength = cbData;
+                        shvb.shvvaluelen = cbData;
+                        shvb.shvcode = RXSHV_SYSET;
+                        shvb.shvret = 0;
+                        if (RexxVariablePool(&shvb) == RXSHV_BADN)
+                        {
+                            GlobalFree(valData);
+                            RETC(2);
+                        }
+                    }
+                    else if ((valType == REG_EXPAND_SZ) || (valType == REG_SZ))
+                    {
+                        SET_VARIABLE(sname, valData, 2);
+                    }
+                    else if ((valType == REG_DWORD) || (valType == REG_DWORD_BIG_ENDIAN))
+                    {
+                        char tmp[30];
+                        DWORD dwNumber;
+
+                        dwNumber = *(DWORD *) valData;
+                        if (valType == REG_DWORD_BIG_ENDIAN)
+                        {
+                            Little2BigEndian((BYTE *)&dwNumber, sizeof(dwNumber));
+                        }
+                        ltoa(dwNumber, tmp, 10);
+                        SET_VARIABLE(sname, tmp, 2);
+                    }
+                    else
+                    {
+                        SET_VARIABLE(sname, "", 2);
+                    }
+                }
+                else if (retcode != ERROR_NO_MORE_ITEMS)
+                {
+                    GlobalFree(valData);
+                    RETC(1);
+                }
+            } while (retcode == ERROR_SUCCESS);
+        GlobalFree(valData);
+        RETC(0);
+    }
+    else if (strcmp(farg,"DELETE"))
+    {
+        GET_HKEY(argv[1].strptr, hk);
+
+        if ((rc = RegDeleteValue(hk, argv[2].strptr)) == ERROR_SUCCESS)
+        {
+            RETC(0);
+        }
+        else
+        {
+            RETVAL(rc);
+        }
+    }
+    else
+    {
+        RETC(1);
+    }
 }
 
 
-ULONG REXXENTRY WSRegistryFile(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
+size_t RexxEntry WSRegistryFile(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, PRXSTRING retstr)
 {
-   char farg[STR_BUFFER];
-   DWORD retc, rc;
-   HKEY hk;
-   HANDLE hToken;              /* handle to process token */
-   TOKEN_PRIVILEGES tkp;        /* ptr. to token structure */
+    char farg[STR_BUFFER];
+    DWORD retc, rc;
+    HKEY hk;
+    HANDLE hToken;              /* handle to process token */
+    TOKEN_PRIVILEGES tkp;        /* ptr. to token structure */
 
-   CHECKARG(2,5);
+    CHECKARG(2,5);
 
-   firstarg(farg, argv[0]);
+    firstarg(farg, argv[0]);
 
-   if (strstr(farg,"CONNECT"))
-   {
-      HKEY hkResult;
-      GET_HKEY(argv[1].strptr, hk);
+    if (strcmp(farg,"CONNECT"))
+    {
+        HKEY hkResult;
+        GET_HKEY(argv[1].strptr, hk);
 
-      if (RegConnectRegistry(argv[2].strptr, // address of name of remote computer
-                             hk,    // handle of open key
-                             &hkResult     // address of handle of open key
-      ) == ERROR_SUCCESS) RETVAL((INT)hkResult) else RETC(0)
-   } else
-   if (strstr(farg,"SAVE"))
-   {
+        if (RegConnectRegistry(argv[2].strptr, hk, &hkResult ) == ERROR_SUCCESS)
+        {
+            RET_HANDLE(hkResult);
+        }
+        else
+        {
+            RETC(0);
+        }
+    }
+    else if (strcmp(farg,"SAVE"))
+    {
+        /* set SE_BACKUP_NAME privilege.  */
 
-       if (IsRunningNT())
-       {
-           /* set SE_BACKUP_NAME privilege.  */
+        if (!OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &hToken))
+        {
+            RETVAL(GetLastError());
+        }
 
-           if (!OpenProcessToken(GetCurrentProcess(),
-                 TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &hToken))
-              RETVAL(GetLastError())
+        LookupPrivilegeValue(NULL, SE_BACKUP_NAME,&tkp.Privileges[0].Luid);
 
-           LookupPrivilegeValue(NULL, SE_BACKUP_NAME,&tkp.Privileges[0].Luid);
+        tkp.PrivilegeCount = 1;  /* one privilege to set    */
+        tkp.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
 
-           tkp.PrivilegeCount = 1;  /* one privilege to set    */
-           tkp.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
+        /* Set SE_BACKUP_NAME privilege for this process. */
 
-           /* Set SE_BACKUP_NAME privilege for this process. */
+        AdjustTokenPrivileges(hToken, FALSE, &tkp, 0,
+                              (PTOKEN_PRIVILEGES) NULL, 0);
 
-           AdjustTokenPrivileges(hToken, FALSE, &tkp, 0,
-                                 (PTOKEN_PRIVILEGES) NULL, 0);
+        if ((rc = GetLastError()) != ERROR_SUCCESS)
+        {
+            RETVAL(rc);
+        }
 
-           if ((rc = GetLastError()) != ERROR_SUCCESS)
-               RETVAL(rc)
-       }
+        GET_HKEY(argv[1].strptr, hk);
+        if ((retc = RegSaveKey(hk, argv[2].strptr, NULL)) == ERROR_SUCCESS)
+        {
+            RETC(0);
+        }
+        else
+        {
+            RETVAL(retc);
+        }
+    }
+    else if (strcmp(farg,"LOAD") || strcmp(farg,"RESTORE") || strcmp(farg,"REPLACE") || strcmp(farg,"UNLOAD"))
+    {
+        /* set SE_RESTORE_NAME privilege.  */
 
-       GET_HKEY(argv[1].strptr, hk);
-       if ((retc = RegSaveKey(hk,    // handle of open key
-                     argv[2].strptr,    // file name
-                     NULL)) == ERROR_SUCCESS) RETC(0) else RETVAL(retc)
-   } else
-   if (strstr(farg,"LOAD") || strstr(farg,"RESTORE") || strstr(farg,"REPLACE") || strstr(farg,"UNLOAD"))
-   {
+        if (!OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &hToken))
+        {
+            RETVAL(GetLastError())
+        }
 
-       if (IsRunningNT())
-       {
-           /* set SE_RESTORE_NAME privilege.  */
+        LookupPrivilegeValue(NULL, SE_RESTORE_NAME,&tkp.Privileges[0].Luid);
 
-           if (!OpenProcessToken(GetCurrentProcess(),
-                 TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &hToken))
-              RETVAL(GetLastError())
+        tkp.PrivilegeCount = 1;  /* one privilege to set    */
+        tkp.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
 
-           LookupPrivilegeValue(NULL, SE_RESTORE_NAME,&tkp.Privileges[0].Luid);
+        /* Set SE_BACKUP_NAME privilege for this process. */
 
-           tkp.PrivilegeCount = 1;  /* one privilege to set    */
-           tkp.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
+        AdjustTokenPrivileges(hToken, FALSE, &tkp, 0, (PTOKEN_PRIVILEGES) NULL, 0);
 
-           /* Set SE_BACKUP_NAME privilege for this process. */
+        if ((rc = GetLastError()) != ERROR_SUCCESS)
+        {
+            RETVAL(rc);
+        }
 
-           AdjustTokenPrivileges(hToken, FALSE, &tkp, 0,
-                                 (PTOKEN_PRIVILEGES) NULL, 0);
+        if (strcmp(farg,"UNLOAD"))
+        {
+            GET_HKEY(argv[1].strptr, hk);
+            if ((retc = RegUnLoadKey(hk, argv[2].strptr)) == ERROR_SUCCESS)
+            {
+                RETC(0);
+            }
+            else
+            {
+                RETVAL(retc);
+            }
+        }
+        else if (strcmp(farg,"LOAD"))
+        {
+            GET_HKEY(argv[1].strptr, hk);
+            if ((retc = RegLoadKey(hk, argv[2].strptr, argv[3].strptr)) == ERROR_SUCCESS)
+            {
+                RETC(0);
+            }
+            else
+            {
+                RETVAL(retc);
+            }
+        }
+        else if (strcmp(farg,"RESTORE"))
+        {
+            DWORD vola;
 
-           if ((rc = GetLastError()) != ERROR_SUCCESS)
-               RETVAL(rc)
-       }
+            GET_HKEY(argv[1].strptr, hk);
+            if (!strcmp(argv[3].strptr, "VOLATILE")) vola = REG_WHOLE_HIVE_VOLATILE;
+            else vola = 0;
 
-       if (strstr(farg,"UNLOAD"))
-       {
-          GET_HKEY(argv[1].strptr, hk);
-          if ((retc = RegUnLoadKey(hk,    // handle of open key
-                         argv[2].strptr)) == ERROR_SUCCESS) RETC(0) else RETVAL(retc) // address of name of subkey
-       } else
-       if (strstr(farg,"LOAD"))
-       {
-          GET_HKEY(argv[1].strptr, hk);
-          if ((retc = RegLoadKey(hk,    // handle of open key
-                         argv[2].strptr,    // address of name of subkey
-                         argv[3].strptr)) == ERROR_SUCCESS) RETC(0) else RETVAL(retc)     // address of filename for registry information
-       } else
-       if (strstr(farg,"RESTORE"))
-       {
-          DWORD vola;
+            if ((retc = RegRestoreKey(hk, argv[2].strptr, vola)) == ERROR_SUCCESS)
+            {
+                RETC(0);
+            }
+            else
+            {
+                RETVAL(retc);
+            }
+        }
+        else if (strcmp(farg,"REPLACE"))
+        {
+            const char * p;
+            GET_HKEY(argv[1].strptr, hk);
+            if (!strcmp(argv[2].strptr, "%NULL%"))
+            {
+                p = NULL;
+            }
+            else
+            {
+                p = argv[2].strptr;
+            }
 
-          GET_HKEY(argv[1].strptr, hk);
-          if (!strcmp(argv[3].strptr, "VOLATILE")) vola = REG_WHOLE_HIVE_VOLATILE; else vola = 0;
-
-          if ((retc = RegRestoreKey(hk,    // handle of open key
-                         argv[2].strptr,    // file name
-                         vola)) == ERROR_SUCCESS) RETC(0) else RETVAL(retc)     // address of filename for registry information
-       } else
-       if (strstr(farg,"REPLACE"))
-       {
-          char * p;
-          GET_HKEY(argv[1].strptr, hk);
-          if (!strcmp(argv[2].strptr, "%NULL%")) p = NULL; else p = argv[2].strptr;
-
-          if ((retc = RegReplaceKey(hk,    // handle of open key
-                            p,    // address of name of subkey
-                            argv[3].strptr, // address of filename for file with new data
-                            argv[4].strptr)) == ERROR_SUCCESS) RETC(0) else RETVAL(retc)     // address of filename for backup file
-       }
-       RETC(1)
-   }
-   else
-   {
-      // MessageBox(0,"Illegal registry file command!","Error",MB_OK | MB_ICONHAND | MB_SYSTEMMODAL);
-      RETC(1)
-   }
+            if ((retc = RegReplaceKey(hk, p, argv[3].strptr, argv[4].strptr)) == ERROR_SUCCESS)
+            {
+                RETC(0);
+            }
+            else
+            {
+                RETVAL(retc);
+            }
+        }
+        RETC(1);
+    }
+    else
+    {
+        // MessageBox(0,"Illegal registry file command!","Error",MB_OK | MB_ICONHAND | MB_SYSTEMMODAL);
+        RETC(1);
+    }
 }
 
 
@@ -868,7 +1042,7 @@ BOOL ProgmanCmd(LPSTR lpszCmd)
 
 
 
-BOOL AddPMGroup(LPSTR lpszGroup, LPSTR lpszPath)
+BOOL AddPMGroup(const char *lpszGroup, const char *lpszPath)
 {
     char buf[1024];
 
@@ -889,7 +1063,7 @@ BOOL AddPMGroup(LPSTR lpszGroup, LPSTR lpszPath)
     return ProgmanCmd(buf);
 }
 
-BOOL DeletePMGroup(LPSTR lpszGroup)
+BOOL DeletePMGroup(const char *lpszGroup)
 {
     char buf[512];
 
@@ -903,7 +1077,7 @@ BOOL DeletePMGroup(LPSTR lpszGroup)
     return ProgmanCmd(buf);
 }
 
-BOOL ShowPMGroup(LPSTR lpszGroup, WORD wCmd)
+BOOL ShowPMGroup(const char *lpszGroup, WORD wCmd)
 {
     char buf[512];
 
@@ -919,14 +1093,14 @@ BOOL ShowPMGroup(LPSTR lpszGroup, WORD wCmd)
 }
 
 
-BOOL AddPMItem(LPSTR lpszCmdLine,
-               LPSTR lpszCaption,
-               LPSTR lpszIconPath,
+BOOL AddPMItem(const char *lpszCmdLine,
+               const char *lpszCaption,
+               const char *lpszIconPath,
                WORD  wIconIndex,
-               LPSTR lpszDir,
+               const char *lpszDir,
                BOOL  bLast,
-               LPSTR lpszHotKey,
-               LPSTR lpszModifier,
+               const char *lpszHotKey,
+               const char *lpszModifier,
                BOOL  bMin)
 {
     char buf[2048];
@@ -963,7 +1137,7 @@ BOOL AddPMItem(LPSTR lpszCmdLine,
 }
 
 
-BOOL DeletePMItem(LPSTR lpszItem)
+BOOL DeletePMItem(const char *lpszItem)
 {
     char buf[512];
 
@@ -1145,127 +1319,135 @@ BOOL GetAllUserDesktopLocation ( LPBYTE szDesktopDir, LPDWORD  lpcbData )
 //             FALSE - Error
 //-----------------------------------------------------------------------------
 
-BOOL AddPMDesktopIcon(LPSTR lpszName,
-                      LPSTR lpszProgram,
-                      LPSTR lpszIcon,
+BOOL AddPMDesktopIcon(const char *lpszName,
+                      const char *lpszProgram,
+                      const char *lpszIcon,
                       int   iIconIndex,
-                      LPSTR lpszWorkDir,
-                      LPSTR lpszLocation,
-                      LPSTR lpszArguments,
+                      const char *lpszWorkDir,
+                      const char *lpszLocation,
+                      const char *lpszArguments,
                       int   iScKey,
                       int   iScModifier,
-                      LPSTR lpszRun )
+                      const char *lpszRun )
 {
-   HRESULT      hres;
-   IShellLink*  psl;
-   BOOL         bRc = TRUE;
-   int          iRun = SW_NORMAL;
+    HRESULT      hres;
+    IShellLink*  psl;
+    BOOL         bRc = TRUE;
+    int          iRun = SW_NORMAL;
 
-   CoInitialize(NULL);
+    CoInitialize(NULL);
 
-   // Get a pointer to the IShellLink interface.
-   hres = CoCreateInstance(&CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, &IID_IShellLink, &psl);
+    // Get a pointer to the IShellLink interface.
+    hres = CoCreateInstance(&CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, &IID_IShellLink, &psl);
 
-   if (SUCCEEDED(hres))
-   {
-      IPersistFile* ppf;
+    if (SUCCEEDED(hres))
+    {
+        IPersistFile* ppf;
 
-      // Set the path to the shortcut target
-      psl->lpVtbl->SetPath(psl, lpszProgram );
+        // Set the path to the shortcut target
+        psl->lpVtbl->SetPath(psl, lpszProgram );
 
-      // icon location. default of iIconIndex is 0, set in WINSYSTM.CLS
-      psl->lpVtbl->SetIconLocation(psl, lpszIcon, iIconIndex);
+        // icon location. default of iIconIndex is 0, set in WINSYSTM.CLS
+        psl->lpVtbl->SetIconLocation(psl, lpszIcon, iIconIndex);
 
-      // command-line arguments
-      psl->lpVtbl->SetArguments( psl, lpszArguments );
+        // command-line arguments
+        psl->lpVtbl->SetArguments( psl, lpszArguments );
 
-      //shortcut key, the conversion to hex is done in WINSYSTM.CLS
-      // modificationflag:
-      // The modifier flags can be a combination of the following values:
-      // HOTKEYF_SHIFT   = SHIFT key      0x01
-      // HOTKEYF_CONTROL = CTRL key       0x02
-      // HOTKEYF_ALT     = ALT key        0x04
-      // HOTKEYF_EXT     = Extended key   0x08
-      psl->lpVtbl->SetHotkey( psl, MAKEWORD( iScKey, iScModifier) );
+        //shortcut key, the conversion to hex is done in WINSYSTM.CLS
+        // modificationflag:
+        // The modifier flags can be a combination of the following values:
+        // HOTKEYF_SHIFT   = SHIFT key      0x01
+        // HOTKEYF_CONTROL = CTRL key       0x02
+        // HOTKEYF_ALT     = ALT key        0x04
+        // HOTKEYF_EXT     = Extended key   0x08
+        psl->lpVtbl->SetHotkey( psl, MAKEWORD( iScKey, iScModifier) );
 
-      // working directory
-      psl->lpVtbl->SetWorkingDirectory( psl, lpszWorkDir );
+        // working directory
+        psl->lpVtbl->SetWorkingDirectory( psl, lpszWorkDir );
 
-      // run in normal, maximized , minimized window, default is NORMAL, set in WINSYSTM.CLS
-      if ( !stricmp(lpszRun,"MAXIMIZED") )
-         iRun = SW_SHOWMAXIMIZED;
-      else
-      if ( !stricmp(lpszRun,"MINIMIZED") )
-      {
-         iRun = SW_SHOWMINNOACTIVE;
-      }
-
-      psl->lpVtbl->SetShowCmd( psl, iRun );
-
-      // Query IShellLink for the IPersistFile interface for saving the
-      // shortcut in persistent storage.
-      hres = psl->lpVtbl->QueryInterface(psl, &IID_IPersistFile, &ppf);
-
-      if (SUCCEEDED(hres))
-      {
-         WCHAR wsz[MAX_PATH];
-         CHAR  szShortCutName[MAX_PATH];
-         CHAR  szDesktopDir[MAX_PATH];
-         DWORD dwSize = MAX_PATH;
-
-        // If strlen(lpszLocation is < 6, then lpszName contains a full qualified filename
-        if (strlen(lpszLocation)>5)
+        // run in normal, maximized , minimized window, default is NORMAL, set in WINSYSTM.CLS
+        if ( !stricmp(lpszRun,"MAXIMIZED") )
         {
-           // if icon should only be created on the desktop of current user
-           // get current user
-           if (!stricmp(lpszLocation,"PERSONAL"))
-           {
-             bRc = GetCurrentUserDesktopLocation ( szDesktopDir , &dwSize ) ;
-           }
-           else
-           {  // Location is COMMON
-             bRc = GetAllUserDesktopLocation ( szDesktopDir , &dwSize ) ;
-           }
-
-           if ( bRc)
-           {
-             //.lnk must be added to identify the file as a shortcut
-             sprintf( szShortCutName, "%s\\%s.lnk", szDesktopDir, lpszName);
-           }
-        }
-        else   /* empty specifier so it's a link */
-        {
-          sprintf( szShortCutName, "%s.lnk", lpszName); /* lpszName contains a full qualified filename */
-        }
-
-        // Continueonly, if bRC is TRUE
-        if ( bRc )
-        {
-
-          // Ensure that the string is Unicode.
-          MultiByteToWideChar(CP_ACP, 0, szShortCutName, -1, wsz, MAX_PATH);
-
-          // Save the link by calling IPersistFile::Save.
-          hres = ppf->lpVtbl->Save(ppf, wsz, TRUE);
-          if (!SUCCEEDED(hres))
-            bRc = FALSE;
-
-          ppf->lpVtbl->Release(ppf);
+            iRun = SW_SHOWMAXIMIZED;
         }
         else
-          bRc = FALSE;
+            if ( !stricmp(lpszRun,"MINIMIZED") )
+        {
+            iRun = SW_SHOWMINNOACTIVE;
+        }
 
-      }
-      else
+        psl->lpVtbl->SetShowCmd( psl, iRun );
+
+        // Query IShellLink for the IPersistFile interface for saving the
+        // shortcut in persistent storage.
+        hres = psl->lpVtbl->QueryInterface(psl, &IID_IPersistFile, &ppf);
+
+        if (SUCCEEDED(hres))
+        {
+            WCHAR wsz[MAX_PATH];
+            CHAR  szShortCutName[MAX_PATH];
+            CHAR  szDesktopDir[MAX_PATH];
+            DWORD dwSize = MAX_PATH;
+
+            // If strlen(lpszLocation is < 6, then lpszName contains a full qualified filename
+            if (strlen(lpszLocation)>5)
+            {
+                // if icon should only be created on the desktop of current user
+                // get current user
+                if (!stricmp(lpszLocation,"PERSONAL"))
+                {
+                    bRc = GetCurrentUserDesktopLocation ( szDesktopDir , &dwSize ) ;
+                }
+                else
+                {  // Location is COMMON
+                    bRc = GetAllUserDesktopLocation ( szDesktopDir , &dwSize ) ;
+                }
+
+                if ( bRc)
+                {
+                    //.lnk must be added to identify the file as a shortcut
+                    sprintf( szShortCutName, "%s\\%s.lnk", szDesktopDir, lpszName);
+                }
+            }
+            else   /* empty specifier so it's a link */
+            {
+                sprintf( szShortCutName, "%s.lnk", lpszName); /* lpszName contains a full qualified filename */
+            }
+
+            // Continueonly, if bRC is TRUE
+            if ( bRc )
+            {
+
+                // Ensure that the string is Unicode.
+                MultiByteToWideChar(CP_ACP, 0, szShortCutName, -1, wsz, MAX_PATH);
+
+                // Save the link by calling IPersistFile::Save.
+                hres = ppf->lpVtbl->Save(ppf, wsz, TRUE);
+                if (!SUCCEEDED(hres))
+                {
+                    bRc = FALSE;
+                }
+                ppf->lpVtbl->Release(ppf);
+            }
+            else
+            {
+                bRc = FALSE;
+            }
+        }
+        else
+        {
+            bRc = FALSE;
+        }
+
+        psl->lpVtbl->Release(psl);
+
+    }
+    else
+    {
         bRc = FALSE;
+    }
 
-      psl->lpVtbl->Release(psl);
-
-   }
-   else
-      bRc = FALSE;
-
-   return bRc;
+    return bRc;
 }
 
 //-----------------------------------------------------------------------------
@@ -1286,174 +1468,131 @@ BOOL AddPMDesktopIcon(LPSTR lpszName,
 //         this hould be handeled by DeleteFile. So if an error occured during this
 //         function, file nit found is returned
 //-----------------------------------------------------------------------------
-INT DelPMDesktopIcon( LPSTR lpszName,
-                      LPSTR lpszLocation)
+INT DelPMDesktopIcon( const char *lpszName, const char *lpszLocation)
 {
-   CHAR  szDesktopDir[MAX_PATH];
-   CHAR  szShortCutName[MAX_PATH];
-   DWORD dwSize = MAX_PATH;
+    CHAR  szDesktopDir[MAX_PATH];
+    CHAR  szShortCutName[MAX_PATH];
+    DWORD dwSize = MAX_PATH;
 
-   // get the location (directory) of the shortcut file in dependency of
-   // the specified location
-   if (!stricmp(lpszLocation,"PERSONAL"))
-   {
-      GetCurrentUserDesktopLocation ( szDesktopDir , &dwSize );
-   }
-   else
-   {  // Location is COMMON
-      GetAllUserDesktopLocation ( szDesktopDir , &dwSize );
-   }
+    // get the location (directory) of the shortcut file in dependency of
+    // the specified location
+    if (!stricmp(lpszLocation,"PERSONAL"))
+    {
+        GetCurrentUserDesktopLocation ( szDesktopDir , &dwSize );
+    }
+    else
+    {  // Location is COMMON
+        GetAllUserDesktopLocation ( szDesktopDir , &dwSize );
+    }
 
-   //.lnk must be added to identify the file as a shortcut
-   sprintf( szShortCutName, "%s\\%s.lnk", szDesktopDir, lpszName);
+    //.lnk must be added to identify the file as a shortcut
+    sprintf( szShortCutName, "%s\\%s.lnk", szDesktopDir, lpszName);
 
-   if (!DeleteFile(szShortCutName))
-     return GetLastError();
-   else
-     return 0;
+    if (!DeleteFile(szShortCutName))
+    {
+        return GetLastError();
+    }
+    else
+    {
+        return 0;
+    }
 }
 
-ULONG REXXENTRY WSProgManager(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
+size_t RexxEntry WSProgManager(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, PRXSTRING retstr)
 {
-   char farg[STR_BUFFER];
-   CHECKARG(2,11);
+    char farg[STR_BUFFER];
+    CHECKARG(2,11);
 
-   firstarg(farg, argv[0]);
+    firstarg(farg, argv[0]);
 
-   if (strstr(farg,"ADDGROUP"))
-   {
-      RETC(!AddPMGroup(argv[1].strptr, argv[2].strptr))
-   } else
-   if (strstr(farg,"DELGROUP"))
-   {
-      RETC(!DeletePMGroup(argv[1].strptr))
-   } else
-   if (strstr(farg,"SHOWGROUP"))
-   {
-      INT stype;
-      if (strstr(argv[2].strptr,"MAX")) stype = 3;
-      else if (strstr(argv[2].strptr,"MIN")) stype = 2;
-      else stype = 1;
+    if (strcmp(farg,"ADDGROUP"))
+    {
+        RETC(!AddPMGroup(argv[1].strptr, argv[2].strptr));
+    }
+    else if (strcmp(farg,"DELGROUP"))
+    {
+        RETC(!DeletePMGroup(argv[1].strptr));
+    }
+    else if (strcmp(farg,"SHOWGROUP"))
+    {
+        INT stype;
+        if (strcmp(argv[2].strptr,"MAX"))
+        {
+            stype = 3;
+        }
+        else if (strcmp(argv[2].strptr,"MIN"))
+        {
+            stype = 2;
+        }
+        else
+        {
+            stype = 1;
+        }
 
-      RETC(!ShowPMGroup(argv[1].strptr, (WORD)stype))
-   } else
-   if (strstr(farg,"ADDITEM"))
-   {
-      if (argc > 7)
-        RETC(!AddPMItem(argv[1].strptr, argv[2].strptr, argv[3].strptr, (WORD)atoi(argv[4].strptr), argv[5].strptr,\
-              (BOOL)atoi(argv[6].strptr), argv[7].strptr, argv[8].strptr, (BOOL)atoi(argv[9].strptr)))
-      else
-        RETC(!AddPMItem(argv[1].strptr, argv[2].strptr, argv[3].strptr, (WORD)atoi(argv[4].strptr), argv[5].strptr,\
-             (BOOL)atoi(argv[6].strptr), "", "", 0))
+        RETC(!ShowPMGroup(argv[1].strptr, (WORD)stype));
+    }
+    else if (strcmp(farg,"ADDITEM"))
+    {
+        if (argc > 7)
+        {
 
-   } else
-   if (strstr(farg,"DELITEM"))
-   {
-      RETC(!DeletePMItem(argv[1].strptr))
-   } else
-   if (strstr(farg,"LEAVE"))
-   {
-      if (!strcmp(argv[1].strptr,"SAVE"))
-         RETC(!LeavePM(TRUE))
-      else
-         RETC(!LeavePM(FALSE))
-   } else
-      if (strstr(farg,"ADDDESKTOPICON"))
-      {
-         RETC(!AddPMDesktopIcon( argv[1].strptr, argv[2].strptr, argv[3].strptr, atoi(argv[4].strptr),
-                                           argv[5].strptr, argv[6].strptr, argv[7].strptr, atoi(argv[8].strptr),
-                                           atoi(argv[9].strptr), argv[10].strptr ))
-      } else
-      if (strstr(farg,"DELDESKTOPICON"))
-      {
-         CHECKARG(3,3);
-         RETVAL(DelPMDesktopIcon( argv[1].strptr, argv[2].strptr))
-      }
-      else
-      {
-         //  MessageBox(0,"Illegal program manager command!","Error",MB_OK | MB_ICONHAND | MB_SYSTEMMODAL);
-         RETC(0)
-      }
+            RETC(!AddPMItem(argv[1].strptr, argv[2].strptr, argv[3].strptr, (WORD)atoi(argv[4].strptr), argv[5].strptr,\
+                            (BOOL)atoi(argv[6].strptr), argv[7].strptr, argv[8].strptr, (BOOL)atoi(argv[9].strptr)));
+        }
+        else
+        {
+            RETC(!AddPMItem(argv[1].strptr, argv[2].strptr, argv[3].strptr, (WORD)atoi(argv[4].strptr), argv[5].strptr,\
+                            (BOOL)atoi(argv[6].strptr), "", "", 0));
+        }
+
+    }
+    else if (strcmp(farg,"DELITEM"))
+    {
+        RETC(!DeletePMItem(argv[1].strptr));
+    }
+    else if (strcmp(farg,"LEAVE"))
+    {
+        if (!strcmp(argv[1].strptr,"SAVE"))
+        {
+            RETC(!LeavePM(TRUE));
+        }
+        else
+        {
+            RETC(!LeavePM(FALSE));
+        }
+    }
+    else if (strcmp(farg,"ADDDESKTOPICON"))
+    {
+        RETC(!AddPMDesktopIcon( argv[1].strptr, argv[2].strptr, argv[3].strptr, atoi(argv[4].strptr),
+                                argv[5].strptr, argv[6].strptr, argv[7].strptr, atoi(argv[8].strptr),
+                                atoi(argv[9].strptr), argv[10].strptr ));
+    }
+    else if (strcmp(farg,"DELDESKTOPICON"))
+    {
+        CHECKARG(3,3);
+        RETVAL(DelPMDesktopIcon( argv[1].strptr, argv[2].strptr));
+    }
+    else
+    {
+        RETC(0);
+    }
 }
 
 
-#define WSFTS 9
-CHAR * WindowsSystemFuncTab[WSFTS] = {\
-                     "WSRegistryKey", \
-                     "WSRegistryValue", \
-                     "WSRegistryFile", \
-                     "WSProgManager", \
-                     "WSEventLog", \
-                     "WSCtrlWindow",
-                     "WSCtrlSend",
-                     "WSCtrlMenu",
-                     "WSClipboard"
-                     };
-
-
-ULONG REXXENTRY RemoveWinSysFuncs(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
-
+size_t RexxEntry RemoveWinSysFuncs(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, PRXSTRING retstr)
 {
-   INT rc, i;
-   BOOL err = FALSE;
-
-   for (i=0;i<WSFTS;i++)
-   {
-      rc = RexxDeregisterFunction(WindowsSystemFuncTab[i]);
-      if (rc) err = TRUE;
-   }
-   rc = RexxDeregisterFunction("RemoveWinSysFuncs");
-   if (rc) err = TRUE;
-   rc = RexxDeregisterFunction("InstWinSysFuncs");
-   if (rc) err = TRUE;
-   if (!err)
-      RETC(0)
-   else
-      RETC(1)
-
+    // this is a NOP now
+    retstr->strlength = 0;               /* set return value           */
+    return VALID_ROUTINE;
 }
 
 
 
-ULONG REXXENTRY InstWinSysFuncs(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
-
+size_t RexxEntry InstWinSysFuncs(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, PRXSTRING retstr)
 {
-   INT rc, i;
-   BOOL err = FALSE;
-   retstr->strlength = 1;
-
-   rc = RexxRegisterFunctionDll(
-     "RemoveWinSysFuncs",
-     WINSYSDLL,
-     "RemoveWinSysFuncs");
-
-   if (rc) err = TRUE;
-
-   for (i=0;i<WSFTS;i++)
-   {
-      rc = RexxRegisterFunctionDll(WindowsSystemFuncTab[i],WINSYSDLL,WindowsSystemFuncTab[i]);
-      if (rc) err = TRUE;
-   }
-
-   if (err)
-      RETC(1)
-   else
-      RETC(0)
+    // this is a NOP now
+    retstr->strlength = 0;               /* set return value           */
+    return VALID_ROUTINE;
 }
 
 
@@ -1606,7 +1745,7 @@ BOOL SearchMessage(char * chFileNames, DWORD dwMessageID, char ** pchInsertArray
 //       pMessage     - (out)formatted message
 //
 //-----------------------------------------------------------------------------
-void BuildMessage(PEVENTLOGRECORD pEvLogRecord , char * pchSource, char ** pMessage )
+void BuildMessage(PEVENTLOGRECORD pEvLogRecord , const char * pchSource, char ** pMessage )
 {
    char * pchString = (char*)0;      //pointer to replacement string within event log record
    int    iStringLen = 0;            //accumulation of the string length
@@ -1664,12 +1803,12 @@ void BuildMessage(PEVENTLOGRECORD pEvLogRecord , char * pchSource, char ** pMess
             *pchInsertArray[i] ='\0';
          }
          //accumulate sum of string length
-         iStringLen += strlen(pchInsertArray[i])+1;
+         iStringLen += (int)strlen(pchInsertArray[i])+1;
       }
       else
       {
          //the replacement strings contains NO placeholder for parameters, use them as is
-         iStringLen += strlen(pchString)+1;
+         iStringLen += (int)strlen(pchString)+1;
          pchInsertArray[i] = LocalAlloc(LMEM_FIXED,strlen(pchString)+1);
          strcpy(pchInsertArray[i],pchString);
       }
@@ -1739,7 +1878,7 @@ char * GetUser(PEVENTLOGRECORD pEvLogRecord)
    SID   *psid;                           //points to security structure withi event log record
    char * pchUserId=0;                    //returned userid, from heap, chDefUserId in any error case
                                           //or when no userid available
-   ULONG sizeId=0;                        //0 to get the size of the uder id
+   DWORD  sizeId=0;                        //0 to get the size of the uder id
    char   chDefUserId[] = "N/A";          //default userid
    int    rc;
    SID_NAME_USE strDummy;                 //dummies needed for call to ...
@@ -1764,8 +1903,7 @@ char * GetUser(PEVENTLOGRECORD pEvLogRecord)
       {
          if (GetLastError() == ERROR_INSUFFICIENT_BUFFER) //expected because sizes are set to 0
          {
-            rc = max(sizeId,strlen(chDefUserId)+1);
-            pchUserId = GlobalAlloc(GMEM_FIXED|GMEM_ZEROINIT, max(sizeId,strlen(chDefUserId)+1));
+            pchUserId = GlobalAlloc(GMEM_FIXED|GMEM_ZEROINIT, max(sizeId,(DWORD)strlen(chDefUserId)+1));
             pchDummy = GlobalAlloc(GMEM_FIXED|GMEM_ZEROINIT, sizeDummy);
             //now get it ...
             rc = LookupAccountSid(NULL,                    // address of string for system name
@@ -1881,732 +2019,872 @@ void GetEvData(PEVENTLOGRECORD pEvLogRecord, char ** pchData)
 //
 //-----------------------------------------------------------------------------
 
-ULONG REXXENTRY WSEventLog(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
+size_t RexxEntry WSEventLog(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, PRXSTRING retstr)
 {
-      HANDLE hEventLog=0;                  //handle of event log
-   char * pchServer = (char *)0;        //server name, must be NULL if local
-   char * pchSource = (char *)0;        //source from input, or default
-   char * pchBackupFileName = (char *)0;//name of the backup file name for CLEAR
-   char   chDefSource[] = {"Application"}; //default source if no input
-   char   varName[MAX_VARNAME];         //name of stem variable
-   ULONG  stemLen;                      //length of stem vaiable
-   char   access;                       //what to do with the log
-   DWORD  dwReadFlags;                  //read flags
-   LONG   rc = 0;                       //return code
-   LONG   rcGetLastError = 0;           //rc from GetLastError
-   DWORD  bufSize = 1024;               //initial size for event log buffer
-   ULONG  start,num;                    //start Record number and number of of event log record to read
-   DWORD numEvRecords;                  //number of all record within a event log
-   SHVBLOCK shvb;                       //shared variable block
+    HANDLE hEventLog=0;                  //handle of event log
+    const char * pchServer = NULL;       //server name, must be NULL if local
+    const char * pchSource = NULL;       //source from input, or default
+    const char * pchBackupFileName = NULL;     //name of the backup file name for CLEAR
+    char   chDefSource[] = {"Application"}; //default source if no input
+    char   varName[MAX_VARNAME];         //name of stem variable
+    size_t stemLen;                      //length of stem vaiable
+    char   access;                       //what to do with the log
+    DWORD  dwReadFlags;                  //read flags
+    LONG   rc = 0;                       //return code
+    LONG   rcGetLastError = 0;           //rc from GetLastError
+    DWORD  bufSize = 1024;               //initial size for event log buffer
+    ULONG  start,num;                    //start Record number and number of of event log record to read
+    DWORD numEvRecords;                  //number of all record within a event log
+    SHVBLOCK shvb;                       //shared variable block
 
 
 
-   //check parameter access(required); GET_ACESSS returns when invcalid access
-   if (argc >= 1 && argv[0].strlength != 0)
-   {
-      GET_ACCESS(argv[0].strptr,access )
-      // in case of write, a variable number of arguments (strings at the end) are possible
-      if ( access != 'W' )
-         CHECKARG(1,14); //minimum of one and maximum of 14 parameters allowed
-   }
-   else
-      RETERR
+    //check parameter access(required); GET_ACESSS returns when invcalid access
+    if (argc >= 1 && argv[0].strlength != 0)
+    {
+        GET_ACCESS(argv[0].strptr,access);
+        // in case of write, a variable number of arguments (strings at the end) are possible
+        if ( access != 'W' )
+        {
+            CHECKARG(1,14); //minimum of one and maximum of 14 parameters allowed
+        }
+    }
+    else
+    {
+        RETERR;
+    }
 
-   if (access == 'R') //read access
-   {
-      dwReadFlags = EVENTLOG_FORWARDS_READ; //default
-      //check parameter options
-      if (argv[1].strlength != 0)
+    if (access == 'R') //read access
+    {
+        dwReadFlags = EVENTLOG_FORWARDS_READ; //default
+        //check parameter options
+        if (argv[1].strlength != 0)
         {
             if (stricmp(argv[1].strptr,"FORWARDS"))
-         {
+            {
                 if (!stricmp(argv[1].strptr,"BACKWARDS"))
+                {
                     dwReadFlags = EVENTLOG_BACKWARDS_READ;
+                }
                 else
-                    RETERR
-         }
-      }
+                {
+                    RETERR;
+                }
+            }
+        }
 
-      //preset defaults for start record and number of records to read
-      start = 1;
-      num   = 0xffffffff;
-      bufSize = 64 * bufSize; //assume that when complete log should be read (64K)
+        //preset defaults for start record and number of records to read
+        start = 1;
+        num   = 0xffffffff;
+        bufSize = 64 * bufSize; //assume that when complete log should be read (64K)
 
-      //check parameter start and num
-      if (argc >= 7 )
-      {
-         if (argc >= 8 )
-         {
-            //start and num are available
-            if ( (argv[6].strlength != 0) && (argv[7].strlength != 0) )
+        //check parameter start and num
+        if (argc >= 7 )
+        {
+            if (argc >= 8 )
             {
-               //start and num contains values
-               dwReadFlags |= EVENTLOG_SEEK_READ;
-               start = atoi(argv[6].strptr);
-               num   = atoi(argv[7].strptr);
-               bufSize = num * bufSize;
+                //start and num are available
+                if ( (argv[6].strlength != 0) && (argv[7].strlength != 0) )
+                {
+                    //start and num contains values
+                    dwReadFlags |= EVENTLOG_SEEK_READ;
+                    start = atoi(argv[6].strptr);
+                    num   = atoi(argv[7].strptr);
+                    bufSize = num * bufSize;
+                }
+                else
+                {
+                    dwReadFlags |= EVENTLOG_SEQUENTIAL_READ;
+                }
+            }
+            else //only start available, num is then required
+            {
+                RETERR;
+            }
+        }
+        else
+        {
+            dwReadFlags |= EVENTLOG_SEQUENTIAL_READ;
+        }
+
+        //check parameter hEventLog (initialized with 0 means that event log will be opened)
+        if ( argc >= 3 )
+        {
+            if (argv[2].strlength != 0)
+            {
+                string2pointer(argv[2].strptr, &hEventLog);
+            }
+        }
+
+        //check parameter stem, add dot if necesssary
+        if (argc >= 4 )
+        {
+            if ( RXVALIDSTRING(argv[3]) )
+            {
+                strcpy(varName, argv[3].strptr);
+                memupper(varName, strlen(varName));
+                stemLen = argv[3].strlength;
+                if (varName[stemLen-1] != '.')
+                {
+                    varName[stemLen++] = '.';
+                }
             }
             else
-               dwReadFlags |= EVENTLOG_SEQUENTIAL_READ;
-         }
-         else //only start available, num is then required
-            RETERR
-      }
-      else
-         dwReadFlags |= EVENTLOG_SEQUENTIAL_READ;
+            {
+                RETERR;
+            }
+        }
+    }
+    //check parameter server
+    //if no server, use local machine, 0 pointer required !
+    if ( argc >= 5 )
+    {
+        if (argv[4].strlength != 0)
+        {
+            pchServer = argv[4].strptr;
+        }
+    }
 
-      //check parameter hEventLog (initialized with 0 means that event log will be opened)
-      if ( argc >= 3 )
-          if (argv[2].strlength != 0) hEventLog = (HANDLE)atol(argv[2].strptr);
+    //check parameter source, if empty use default source "Application"
+    if ( (argc >= 6) &&  (argv[5].strlength != 0) )
+    {
+        pchSource = argv[5].strptr;
+    }
+    else
+    {
+        pchSource = chDefSource;
+    }
 
-      //check parameter stem, add dot if necesssary
-      if (argc >= 4 )
-      {
-         if ( RXVALIDSTRING(argv[3]) )
-         {
-            strcpy(varName, argv[3].strptr);
-            memupper(varName, strlen(varName));
-            stemLen = argv[3].strlength;
-            if (varName[stemLen-1] != '.')
-            varName[stemLen++] = '.';
-         }
-         else
-            RETERR
-      }
-   }
-   //check parameter server
-   //if no server, use local machine, 0 pointer required !
-   if ( argc >= 5 )
-      if (argv[4].strlength != 0) pchServer = argv[4].strptr;
-
-   //check parameter source, if empty use default source "Application"
-   if ( (argc >= 6) &&  (argv[5].strlength != 0) )
-      pchSource = argv[5].strptr;
-   else
-      pchSource = chDefSource;
-
-   //open
-   if (access == 'O')
-   {
-      if ( (hEventLog = OpenEventLog(pchServer,pchSource) ) != 0 )
-         RETVAL((INT)hEventLog)
-      else RETC(0)
-   }
-   //close
-   if (access == 'C')
-   {
-      if (argc >= 3 )
-      {
-         if (argv[2].strlength != 0)
-            hEventLog = (HANDLE)atol(argv[2].strptr);
-         else
-            RETERR
-         if (CloseEventLog(hEventLog))
-            RETC(0)
-         else
-            RETC(1)
-      }
-      else
-        RETERR
-   }
-   //NUM or CLEAR (and backup)
-   if (access == 'N' || access == 'L')
-   {
-      //check parameter hEventLog (initialized with 0 means that event log must be opened)
-      if ( argc >= 3 )
-          if (argv[2].strlength != 0) hEventLog = (HANDLE)atol(argv[2].strptr);
-
-       if (access == 'L')
-       {
-         //check parameter BackupFileName
-         //if no BackupFileName, no backup, 0 pointer required !, pchBackupFileName is initialized with NULL)
-         if ( argc >= 9 )
-            if (argv[8].strlength != 0) pchBackupFileName = argv[8].strptr;
-       }
-
-      //no handle as input, so the event log must be opened
-      if (hEventLog == 0)
-      {
-         if ( (hEventLog = OpenEventLog(pchServer,pchSource)) == 0 )
-            RETVAL(GetLastError())
-         else
-         {
-            if (access == 'N')
-               rc = GetNumberOfEventLogRecords(hEventLog,&numEvRecords);
+    //open
+    if (access == 'O')
+    {
+        if ( (hEventLog = OpenEventLog(pchServer,pchSource) ) != 0 )
+        {
+            RET_HANDLE(hEventLog);
+        }
+        else
+        {
+            RETC(0);
+        }
+    }
+    //close
+    if (access == 'C')
+    {
+        if (argc >= 3 )
+        {
+            if (argv[2].strlength != 0)
+            {
+                string2pointer(argv[2].strptr, &hEventLog);
+            }
             else
-               rc = ClearEventLog(hEventLog,pchBackupFileName);
+            {
+                RETERR;
+            }
+            if (CloseEventLog(hEventLog))
+            {
+                RETC(0);
+            }
+            else
+            {
+                RETC(1);
+            }
+        }
+        else
+        {
+            RETERR;
+        }
+    }
+    //NUM or CLEAR (and backup)
+    if (access == 'N' || access == 'L')
+    {
+        //check parameter hEventLog (initialized with 0 means that event log must be opened)
+        if ( argc >= 3 )
+        {
+            if (argv[2].strlength != 0)
+            {
+                string2pointer(argv[2].strptr, &hEventLog);
+            }
+        }
 
+        if (access == 'L')
+        {
+            //check parameter BackupFileName
+            //if no BackupFileName, no backup, 0 pointer required !, pchBackupFileName is initialized with NULL)
+            if ( argc >= 9 )
+            {
+                if (argv[8].strlength != 0)
+                {
+                    pchBackupFileName = argv[8].strptr;
+                }
+            }
+        }
+
+        //no handle as input, so the event log must be opened
+        if (hEventLog == 0)
+        {
+            if ( (hEventLog = OpenEventLog(pchServer,pchSource)) == 0 )
+            {
+                RETVAL(GetLastError());
+            }
+            else
+            {
+                if (access == 'N')
+                {
+                    rc = GetNumberOfEventLogRecords(hEventLog,&numEvRecords);
+                }
+                else
+                {
+                    rc = ClearEventLog(hEventLog,pchBackupFileName);
+                }
+
+                CloseEventLog(hEventLog);
+
+                if (access == 'N')
+                {
+                    if (rc)
+                    {
+                        RETVAL((INT)numEvRecords);
+                    }
+                    else
+                    {
+                        RETC(0)
+                    }
+                }
+                else
+                {
+                    if (rc)
+                    {
+                        RETC(0);
+                    }
+                    else
+                    {
+                        RETVAL(GetLastError());
+                    }
+                }
+            }
+        }
+        else
+        {
+            if (access == 'N')
+            {
+                if ( GetNumberOfEventLogRecords(hEventLog,&numEvRecords) )
+                {
+                    RETVAL((INT)numEvRecords);
+                }
+                else
+                {
+                    RETC(0);
+                }
+            }
+            else
+            {
+                rc = ClearEventLog(hEventLog,pchBackupFileName);
+                if (rc)
+                {
+                    RETC(0);
+                }
+                else
+                {
+                    RETVAL(GetLastError());
+                }
+            }
+        }
+    }
+
+    if (access == 'W')
+    {
+        WORD     wEventType       = 1;
+        WORD     wEventCategory   = 0;
+        DWORD    dwEventId        = 0;
+        LPVOID   lpData           = (void *)0;
+        DWORD    dwDataSize       = 0;
+        WORD     wNumStrings      = 0;
+        const char *lpStrings[100];
+
+        //check and prepare event log data
+
+        // check the event type (initialized to 1 = default)
+        // EVENTLOG_SUCCESS                   0X0000
+        // EVENTLOG_ERROR_TYPE                0x0001
+        // EVENTLOG_WARNING_TYPE              0x0002
+        // EVENTLOG_INFORMATION_TYPE         0x0004
+        // EVENTLOG_AUDIT_SUCCESS            0x0008
+        // EVENTLOG_AUDIT_FAILURE           0x0010
+        if ( argc >= 10 && argv[9].strlength != 0 )
+        {
+            wEventType = atoi(argv[9].strptr);
+        }
+        // check the event category (initialized to 0 = default)
+        if ( argc >= 11 && argv[10].strlength != 0 )
+        {
+            wEventCategory = atoi(argv[10].strptr);
+        }
+        // check the event id (initialized to 0 = default)
+        if ( argc >= 12 && argv[11].strlength != 0 )
+        {
+            dwEventId = atoi(argv[11].strptr);
+        }
+        // check the event data (initialized to NULL = default)
+        if ( argc >= 13 && argv[12].strlength != 0 )
+        {
+            lpData = GlobalAlloc(GMEM_FIXED|GMEM_ZEROINIT,argv[12].strlength+1);
+            sprintf(lpData, "%s", argv[12].strptr);
+            dwDataSize = (DWORD)argv[12].strlength;
+        }
+        // check the event strings (initialized to NULL = default)
+        if ( argc >= 14 && argv[13].strlength != 0 )
+        {
+            int   j=0;
+            ULONG i;
+            for ( i = 13; i < argc; i++ )
+            {
+                //count the number of strings and create the string array
+                wNumStrings++;
+                lpStrings[j] = argv[i].strptr;
+                j++;
+            }
+        }
+        //register the event source
+        if ( (hEventLog = RegisterEventSource( pchServer, pchSource)) == NULL )
+        {
+            rcGetLastError = GetLastError();
+        }
+
+        if ( !rcGetLastError )
+        {
+            //write the log
+            if ( ReportEvent( hEventLog, wEventType, wEventCategory, dwEventId, NULL, wNumStrings, dwDataSize, lpStrings, lpData) == NULL )
+            {
+                rcGetLastError = GetLastError();
+            }
+
+            //deregister the event source
+            DeregisterEventSource( hEventLog);
+
+            //free buffer for data
+            if ( lpData != NULL )
+            {
+                GlobalFree(lpData);
+            }
+        }
+
+        if ( rcGetLastError )
+        {
+            RETVAL(rcGetLastError);
+        }
+        else
+        {
+            RETC(0);
+        }
+    }
+
+    //read
+    if (access == 'R')
+    {
+        PEVENTLOGRECORD pEvLogRecord;        //pointer to one event record
+        PVOID  pBuffer = 0;                  //buffer for event records
+        DWORD  pnBytesRead;                  //returned from ReadEventlog
+        DWORD  pnMinNumberOfBytesNeeded;     //returned from ReadEventlog if not all read
+        char * pchEventSource  = (char *)0;  //source from event log record
+        char * pchComputerName = (char *)0;  //computer name of event
+        char * pchMessage=0;                 //text of detail string
+        char * pchData=0;                    //data of event log record
+        char   time[MAX_TIME_DATE];          //converted time of event
+        char   date[MAX_TIME_DATE];          //converted date of event
+        struct tm * DateTime;                //converted from elapsed seconds
+        char * pchStrBuf = (char *)0;        //temp buffer for event string
+        DWORD  bufferPos=0;                  //position within the eventlog buffer
+        BOOL   cont = 1;                     //continue flag for while loop
+        char   evType[5][12]={"Error","Warning","Information","Success","Failure"}; //event type strings
+        int    evTypeIndex;
+        char * pchUser;
+        ULONG  count;                        //number of event log records retuned in stem
+
+        //no handle as input, so the event log must be opened
+        if (hEventLog == 0)
+        {
+            if ( (hEventLog = OpenEventLog(pchServer,pchSource)) == 0 )
+            {
+                RETVAL(GetLastError());
+            }
+        }
+
+        GetNumberOfEventLogRecords(hEventLog,&numEvRecords);
+        if (start > numEvRecords)
+        {
+            RETC(1);
+        }
+
+        pBuffer = GlobalAlloc(GMEM_FIXED|GMEM_ZEROINIT, bufSize);
+        count = 0;
+
+        while (cont)
+        {
+            while ( (rc = ReadEventLog(hEventLog, dwReadFlags, start, pBuffer, bufSize, &pnBytesRead, &pnMinNumberOfBytesNeeded) ) && (count < num) )
+            {
+                pEvLogRecord = pBuffer;
+                bufferPos = 0;
+
+                while ( (bufferPos < pnBytesRead) && (count < num) )
+                {
+                    if (dwReadFlags & EVENTLOG_FORWARDS_READ)
+                    {
+                        start = pEvLogRecord->RecordNumber+1;
+                    }
+                    else
+                    {
+                        start = pEvLogRecord->RecordNumber-1;
+                    }
+                    count++; //count number of events
+
+                    //get index to event type string
+                    GET_TYPE_INDEX(pEvLogRecord->EventType, evTypeIndex);
+
+                    //get time and date
+                    //DateTime = localtime(&pEvLogRecord->TimeGenerated);   // convert to local time
+                    DateTime = localtime((const time_t *)&pEvLogRecord->TimeWritten);   // convert to local time
+                    strftime(date, MAX_TIME_DATE,"%x", DateTime);
+                    strftime(time, MAX_TIME_DATE,"%X", DateTime);
+
+                    pchEventSource  = (char*)pEvLogRecord + sizeof(EVENTLOGRECORD);
+                    pchComputerName = pchEventSource + strlen(pchEventSource)+1;
+
+                    pchUser = GetUser(pEvLogRecord);
+
+                    BuildMessage(pEvLogRecord,pchSource,&pchMessage);
+
+                    GetEvData(pEvLogRecord,&pchData);
+
+                    pchStrBuf = GlobalAlloc(GMEM_FIXED,
+                                            strlen(evType[evTypeIndex])+1+
+                                            strlen(date)+1+
+                                            strlen(time)+1+
+                                            strlen(pchEventSource)+3+
+                                            12+
+                                            strlen(pchUser)+1+
+                                            strlen(pchComputerName)+1+
+                                            strlen(pchMessage)+3+
+                                            strlen(pchData)+3+10);
+
+                    //Type Date Time Source Id User Computer Details
+                    sprintf( pchStrBuf,
+                             "%s %s %s '%s' %u %s %s '%s' '%s'",
+                             evType[evTypeIndex],
+                             date,
+                             time,
+                             pchEventSource,
+                             LOWORD(pEvLogRecord->EventID),
+                             pchUser,
+                             pchComputerName,
+                             pchMessage,
+                             pchData);
+
+                    GlobalFree(pchMessage);
+                    GlobalFree(pchData);
+                    pchMessage = 0;
+                    GlobalFree(pchUser);
+
+                    //write record to to stem
+                    ltoa(count, varName+stemLen, 10);
+
+                    shvb.shvnext            = NULL;
+                    shvb.shvname.strptr     = varName;
+                    shvb.shvname.strlength  = strlen(varName);
+                    shvb.shvvalue.strptr    = pchStrBuf;
+                    shvb.shvvalue.strlength = strlen(pchStrBuf);
+                    shvb.shvnamelen         = shvb.shvname.strlength;
+                    shvb.shvvaluelen        = shvb.shvvalue.strlength;
+                    shvb.shvcode            = RXSHV_SET;
+                    shvb.shvret             = 0;
+                    rc = RexxVariablePool(&shvb);
+                    GlobalFree(pchStrBuf);
+                    if (rc == RXSHV_BADN)
+                    {
+                        if (pBuffer) GlobalFree(pBuffer);
+                        return 2;
+                    }
+                    bufferPos += pEvLogRecord->Length;
+
+                    //position to next event record
+                    pEvLogRecord = (PEVENTLOGRECORD)(((char*)pEvLogRecord) + pEvLogRecord->Length);
+                }
+                memset(pBuffer,0,bufSize);
+            }
+            rc = GetLastError();
+            // if buffer is to small, reallocate it, pnMinNumberOfBytesNeeded is returned from ReadEventLog
+
+            if ( (count == num) || (start > numEvRecords) || (start < 1) )
+            {
+                cont = 0;
+            }
+            else
+            {
+                if (rc == ERROR_INSUFFICIENT_BUFFER)
+                {
+                    bufSize += pnMinNumberOfBytesNeeded;
+                    pBuffer = GlobalReAlloc(pBuffer,bufSize,GMEM_FIXED|GMEM_ZEROINIT);
+                }
+                else
+                {
+                    cont = 0; //stop reading, reached end or error (except ERROR_INSUFFICIENT_BUFFER)
+                }
+            }
+        }//while (cont)
+
+        //close event log only if it was not opened before (imnplicit open during read)
+        if ( atoi(argv[2].strptr) == 0 )
+        {
             CloseEventLog(hEventLog);
+        }
 
-            if (access == 'N')
-            {
-               if (rc) RETVAL((INT)numEvRecords)
-               else RETC(0)
-            }
-            else
-            {
-               if (rc) RETC(0)
-               else RETVAL(GetLastError())
-            }
-         }
-      }
-      else
-      {
-         if (access == 'N')
-         {
-            if ( GetNumberOfEventLogRecords(hEventLog,&numEvRecords) )
-                  RETVAL((INT)numEvRecords)
-            else RETC(0)
-         }
-         else
-         {
-             rc = ClearEventLog(hEventLog,pchBackupFileName);
-             if (rc) RETC(0)
-             else RETVAL(GetLastError())
-         }
-      }
-   }
+        if (pBuffer) GlobalFree(pBuffer);
 
-   if (access == 'W')
-   {
-      WORD     wEventType       = 1;
-      WORD     wEventCategory   = 0;
-      DWORD    dwEventId        = 0;
-      LPVOID   lpData           = (void *)0;
-      DWORD    dwDataSize       = 0;
-      WORD     wNumStrings      = 0;
-      char      *lpStrings[100];
-      //LPCTSTR  * lpStrings[100];
+        if ( rc == ERROR_HANDLE_EOF || count == num || (start > numEvRecords) || (start < 1) ) //all OK complete log read, also true for an empty log
+        {
+            char   strBuffer[8];                 //string for number of records read
 
-      //check and prepare event log data
-
-      // check the event type (initialized to 1 = default)
-      // EVENTLOG_SUCCESS                   0X0000
-      // EVENTLOG_ERROR_TYPE                0x0001
-      // EVENTLOG_WARNING_TYPE              0x0002
-      // EVENTLOG_INFORMATION_TYPE         0x0004
-      // EVENTLOG_AUDIT_SUCCESS            0x0008
-      // EVENTLOG_AUDIT_FAILURE           0x0010
-      if ( argc >= 10 && argv[9].strlength != 0 )
-         wEventType = atoi(argv[9].strptr);
-      // check the event category (initialized to 0 = default)
-      if ( argc >= 11 && argv[10].strlength != 0 )
-         wEventCategory = atoi(argv[10].strptr);
-      // check the event id (initialized to 0 = default)
-      if ( argc >= 12 && argv[11].strlength != 0 )
-         dwEventId = atoi(argv[11].strptr);
-      // check the event data (initialized to NULL = default)
-      if ( argc >= 13 && argv[12].strlength != 0 )
-      {
-         lpData = GlobalAlloc(GMEM_FIXED|GMEM_ZEROINIT,argv[12].strlength+1);
-         sprintf(lpData, "%s", argv[12].strptr);
-         dwDataSize = argv[12].strlength;
-      }
-      // check the event strings (initialized to NULL = default)
-      if ( argc >= 14 && argv[13].strlength != 0 )
-      {
-         int   j=0;
-         ULONG i;
-         for ( i = 13; i < argc; i++ )
-         {
-            //count the number of strings and create the string array
-            wNumStrings++;
-            lpStrings[j] = argv[i].strptr;
-            j++;
-         }
-      }
-      //register the event source
-      if ( (hEventLog = RegisterEventSource( pchServer, pchSource)) == NULL )
-         rcGetLastError = GetLastError();
-
-      if ( !rcGetLastError )
-      {
-         //write the log
-         if ( ReportEvent( hEventLog,
-                           wEventType,
-                           wEventCategory,
-                           dwEventId,
-                           NULL,
-                           wNumStrings,
-                           dwDataSize,
-                           lpStrings,
-                           lpData) == NULL ) rcGetLastError = GetLastError();
-
-         //deregister the event source
-         DeregisterEventSource( hEventLog);
-
-         //free buffer for data
-         if ( lpData != (void*)0 ) GlobalFree(lpData);
-      }
-
-      if ( rcGetLastError )
-         RETVAL(rcGetLastError)
-      else
-         RETC(0)
-   }
-
-   //read
-   if (access == 'R')
-   {
-      PEVENTLOGRECORD pEvLogRecord;        //pointer to one event record
-      PVOID  pBuffer = 0;                  //buffer for event records
-       DWORD  pnBytesRead;                  //returned from ReadEventlog
-       DWORD  pnMinNumberOfBytesNeeded;     //returned from ReadEventlog if not all read
-      char * pchEventSource  = (char *)0;  //source from event log record
-      char * pchComputerName = (char *)0;  //computer name of event
-      char * pchMessage=0;                 //text of detail string
-      char * pchData=0;                    //data of event log record
-      char   time[MAX_TIME_DATE];          //converted time of event
-      char   date[MAX_TIME_DATE];          //converted date of event
-      struct tm * DateTime;                //converted from elapsed seconds
-      char * pchStrBuf = (char *)0;        //temp buffer for event string
-      DWORD  bufferPos=0;                  //position within the eventlog buffer
-      BOOL   cont = 1;                     //continue flag for while loop
-      char   evType[5][12]={"Error","Warning","Information","Success","Failure"}; //event type strings
-      int    evTypeIndex;
-      char * pchUser;
-      ULONG  count;                        //number of event log records retuned in stem
-
-      //no handle as input, so the event log must be opened
-      if (hEventLog == 0)
-      {
-         if ( (hEventLog = OpenEventLog(pchServer,pchSource)) == 0 )
-         {
-            RETVAL(GetLastError())
-         }
-      }
-
-      GetNumberOfEventLogRecords(hEventLog,&numEvRecords);
-      if (start > numEvRecords) RETC(1)
-
-      pBuffer = GlobalAlloc(GMEM_FIXED|GMEM_ZEROINIT, bufSize);
-      count = 0;
-
-      while (cont)
-      {
-          while ( (rc = ReadEventLog(hEventLog,
-                          dwReadFlags,
-                              start,
-                               pBuffer,
-                               bufSize,
-                               &pnBytesRead,
-                               &pnMinNumberOfBytesNeeded) ) && (count < num) )
-          {
-            pEvLogRecord = pBuffer;
-            bufferPos = 0;
-
-            while ( (bufferPos < pnBytesRead) && (count < num) )
-            {
-               if (dwReadFlags & EVENTLOG_FORWARDS_READ)
-                  start = pEvLogRecord->RecordNumber+1;
-               else
-                  start = pEvLogRecord->RecordNumber-1;
-               count++; //count number of events
-
-               //get index to event type string
-               GET_TYPE_INDEX(pEvLogRecord->EventType, evTypeIndex)
-
-               //get time and date
-               //DateTime = localtime(&pEvLogRecord->TimeGenerated);   // convert to local time
-               DateTime = localtime((const time_t *)&pEvLogRecord->TimeWritten);   // convert to local time
-               strftime(date, MAX_TIME_DATE,"%x", DateTime);
-               strftime(time, MAX_TIME_DATE,"%X", DateTime);
-
-               pchEventSource  = (char*)pEvLogRecord + sizeof(EVENTLOGRECORD);
-               pchComputerName = pchEventSource + strlen(pchEventSource)+1;
-
-               pchUser = GetUser(pEvLogRecord);
-
-               BuildMessage(pEvLogRecord,pchSource,&pchMessage);
-
-               GetEvData(pEvLogRecord,&pchData);
-
-               pchStrBuf = GlobalAlloc(GMEM_FIXED,
-                                       strlen(evType[evTypeIndex])+1+
-                                       strlen(date)+1+
-                                       strlen(time)+1+
-                                       strlen(pchEventSource)+3+
-                                       12+
-                                       strlen(pchUser)+1+
-                                       strlen(pchComputerName)+1+
-                                       strlen(pchMessage)+3+
-                                       strlen(pchData)+3+10);
-
-               //Type Date Time Source Id User Computer Details
-               sprintf( pchStrBuf,
-                        "%s %s %s '%s' %u %s %s '%s' '%s'",
-                        evType[evTypeIndex],
-                        date,
-                        time,
-                        pchEventSource,
-                        LOWORD(pEvLogRecord->EventID),
-                        pchUser,
-                        pchComputerName,
-                        pchMessage,
-                        pchData);
-
-               GlobalFree(pchMessage);
-               GlobalFree(pchData);
-               pchMessage = 0;
-               GlobalFree(pchUser);
-
-               //write record to to stem
-               ltoa(count, varName+stemLen, 10);
-
-               shvb.shvnext            = NULL;
-               shvb.shvname.strptr     = varName;
-               shvb.shvname.strlength  = strlen(varName);
-               shvb.shvvalue.strptr    = pchStrBuf;
-               shvb.shvvalue.strlength = strlen(pchStrBuf);
-               shvb.shvnamelen         = shvb.shvname.strlength;
-               shvb.shvvaluelen        = shvb.shvvalue.strlength;
-               shvb.shvcode            = RXSHV_SET;
-               shvb.shvret             = 0;
-               rc = RexxVariablePool(&shvb);
-               GlobalFree(pchStrBuf);
-               if (rc == RXSHV_BADN)
-               {
-                  if (pBuffer) GlobalFree(pBuffer);
-                  return 2;
-               }
-               bufferPos += pEvLogRecord->Length;
-
-               //position to next event record
-               pEvLogRecord = (PEVENTLOGRECORD)(((char*)pEvLogRecord) + pEvLogRecord->Length);
-            }
-            memset(pBuffer,0,bufSize);
-         }
-         rc = GetLastError();
-         // if buffer is to small, reallocate it, pnMinNumberOfBytesNeeded is returned from ReadEventLog
-
-         if ( (count == num) || (start > numEvRecords) || (start < 1) )
-            cont = 0;
-         else
-         {
-            if (rc == ERROR_INSUFFICIENT_BUFFER)
-            {
-               bufSize += pnMinNumberOfBytesNeeded;
-               pBuffer = GlobalReAlloc(pBuffer,bufSize,GMEM_FIXED|GMEM_ZEROINIT);
-            }
-            else
-               cont = 0; //stop reading, reached end or error (except ERROR_INSUFFICIENT_BUFFER)
-         }
-      }//while (cont)
-
-      //close event log only if it was not opened before (imnplicit open during read)
-      if ( atoi(argv[2].strptr) == 0 )
-         CloseEventLog(hEventLog);
-
-      if (pBuffer) GlobalFree(pBuffer);
-
-       if ( rc == ERROR_HANDLE_EOF || count == num || (start > numEvRecords) || (start < 1) ) //all OK complete log read, also true for an empty log
-      {
-         char   strBuffer[8];                 //string for number of records read
-
-         itoa(0, varName+stemLen, 10);
-         itoa(count, strBuffer, 10);
-         SET_VARIABLE(varName, strBuffer, 2);
-         RETC(0)
-      }
-      else
-         RETVAL(rc)
-   }
-   RETERR
+            itoa(0, varName+stemLen, 10);
+            itoa(count, strBuffer, 10);
+            SET_VARIABLE(varName, strBuffer, 2);
+            RETC(0)
+        }
+        else
+        {
+            RETVAL(rc);
+        }
+    }
+    RETERR;
 }
 
-
-
-
-
-
-
-ULONG REXXENTRY WSCtrlWindow(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
+size_t RexxEntry WSCtrlWindow(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, PRXSTRING retstr)
 {
-   HWND    hW;
-   char   *tmp_ptr;
-   DWORD   dwResult;
-   LRESULT lResult;
+    HWND    hW;
+    HWND thW;
+    char   *tmp_ptr;
+    DWORD   dwResult;
+    LRESULT lResult;
 
-   CHECKARG(1,10);
+    CHECKARG(1,10);
 
-   if (!strcmp(argv[0].strptr,"FIND"))
-   {
-       CHECKARG(2,2);
-       hW = FindWindow(NULL, argv[1].strptr);
-       ltoa((ULONG)hW, retstr->strptr, 10);
-       retstr->strlength = strlen(retstr->strptr);
-       return 0;
+    if (!strcmp(argv[0].strptr,"FIND"))
+    {
+        CHECKARG(2,2);
+        hW = FindWindow(NULL, argv[1].strptr);
+        RET_HANDLE(hW);
+    }
+    else if (!strcmp(argv[0].strptr,"FINDCHILD"))
+    {
+        CHECKARG(3,3);
+        string2pointer(argv[1].strptr, &thW);
 
-   }
-   else if (!strcmp(argv[0].strptr,"FINDCHILD"))
-   {
-       CHECKARG(3,3);
-       hW = FindWindowEx((HWND)atol(argv[1].strptr), NULL, NULL, argv[2].strptr);
-       ltoa((ULONG)hW, retstr->strptr, 10);
-       retstr->strlength = strlen(retstr->strptr);
-       return 0;
-   }
-   else if (!strcmp(argv[0].strptr,"SETFG"))
-   {
-       CHECKARG(2,2);
-       hW =  GetForegroundWindow();
-       if (hW == (HWND)atol(argv[1].strptr)) RETVAL((ULONG)hW)
-       SetForegroundWindow((HWND)atol(argv[1].strptr));
-       RETVAL((ULONG) hW)  /* return the handle of the window that had the focus before */
-   }
-   else if (!strcmp(argv[0].strptr,"GETFG"))
-   {
-       RETVAL((ULONG) GetForegroundWindow())
-   }
-   else if (!strcmp(argv[0].strptr,"TITLE"))
-   {
-       CHECKARG(2,3);
-       hW = (HWND) atol(argv[1].strptr);
-       if (hW)
-       {
-          if (argc ==3) RETC(!SetWindowText(hW, argv[2].strptr))
-          else
-          {
-            // GetWindowText do not work for controls from other processes and for listboxes
-            // Now using WM_GETTEXT which works for all controls.
-            // The return string was limitted to 255 characters, now it's unlimited.
-            // retstr->strlength = GetWindowText(hW, retstr->strptr, 255);
+        hW = FindWindowEx(thW, NULL, NULL, argv[2].strptr);
+        RET_HANDLE(hW);
+    }
+    else if (!strcmp(argv[0].strptr,"SETFG"))
+    {
+        CHECKARG(2,2);
+        hW =  GetForegroundWindow();
+        string2pointer(argv[1].strptr, &thW);
 
-            // at first get the text length to determine if the default lenght (255)of strptr would be exceeded.
-            lResult = SendMessageTimeout(hW, WM_GETTEXTLENGTH ,0, 0, MSG_TIMEOUT_OPTS, MSG_TIMEOUT, &dwResult);
-            // time out or error?
-            if (lResult == 0) {
-              // an error, but we return an empty string
-              retstr->strlength = 0;
-              return 0;
-            }
-            else {
-              retstr->strlength = dwResult;
-            }
-            if ( retstr->strlength > (RXAUTOBUFLEN - 1)  )
+        if (hW != thw)
+        {
+            SetForegroundWindow(thW);
+        }
+        RET_HANDLE(hW);
+    }
+    else if (!strcmp(argv[0].strptr,"GETFG"))
+    {
+        RET_HANDLE(GetForegroundWindow())
+    }
+    else if (!strcmp(argv[0].strptr,"TITLE"))
+    {
+        CHECKARG(2,3);
+        string2pointer(argv[1].strptr, &hW);
+        if (hW != NULL)
+        {
+            if (argc ==3)
             {
-              // text larger than 255, allocate a new one
-              // the original REXX retstr->strptr must not be released! REXX keeps track of this
-              tmp_ptr = GlobalAlloc(GMEM_FIXED|GMEM_ZEROINIT, retstr->strlength + 1);
-              if (!tmp_ptr) RETERR
-              retstr->strptr = tmp_ptr;
+                RETC(!SetWindowText(hW, argv[2].strptr));
             }
-            // now get the text
-            lResult = SendMessageTimeout(hW, WM_GETTEXT, retstr->strlength + 1, (LPARAM)retstr->strptr,
-                                                   MSG_TIMEOUT_OPTS, MSG_TIMEOUT, &dwResult);
-            // time out or error?
-            if (lResult == 0) {
-              // an error, but we return an empty string
-              retstr->strlength = 0;
-              return 0;
-            }
-            else {
-              retstr->strlength = dwResult;
-            }
-
-            // if still no text found, the control may be a listbox, for which LB_GETTEXT must be used
-            if ( retstr->strlength == 0 )
+            else
             {
-              // at first get the selected item
-              int curSel;
-              lResult = SendMessageTimeout(hW, LB_GETCURSEL, 0, 0, MSG_TIMEOUT_OPTS, MSG_TIMEOUT, &dwResult);
-              // time out or error?
-              if (lResult == 0) {
-                // an error, but we return an empty string
-                retstr->strlength = 0;
-                return 0;
-              }
-              else {
-                curSel = (int) dwResult;
-              }
-              if (curSel != LB_ERR)
-              {
-                // get the text length and allocate a new strptr if needed
-                lResult = SendMessageTimeout(hW, LB_GETTEXTLEN, curSel, 0, MSG_TIMEOUT_OPTS, MSG_TIMEOUT, &dwResult);
+                // GetWindowText do not work for controls from other processes and for listboxes
+                // Now using WM_GETTEXT which works for all controls.
+                // The return string was limitted to 255 characters, now it's unlimited.
+                // retstr->strlength = GetWindowText(hW, retstr->strptr, 255);
+
+                // at first get the text length to determine if the default lenght (255)of strptr would be exceeded.
+                lResult = SendMessageTimeout(hW, WM_GETTEXTLENGTH ,0, 0, MSG_TIMEOUT_OPTS, MSG_TIMEOUT, &dwResult);
                 // time out or error?
-                if (lResult == 0) {
-                  // an error, but we return an empty string
-                  retstr->strlength = 0;
-                  return 0;
+                if (lResult == 0)
+                {
+                    // an error, but we return an empty string
+                    retstr->strlength = 0;
+                    return 0;
                 }
-                else {
-                  retstr->strlength = dwResult;
+                else
+                {
+                    retstr->strlength = dwResult;
                 }
-
                 if ( retstr->strlength > (RXAUTOBUFLEN - 1)  )
                 {
-                  tmp_ptr = GlobalAlloc(GMEM_FIXED|GMEM_ZEROINIT, retstr->strlength + 1);
-                  if (!tmp_ptr) RETERR
-                  retstr->strptr = tmp_ptr;
+                    // text larger than 255, allocate a new one
+                    // the original REXX retstr->strptr must not be released! REXX keeps track of this
+                    tmp_ptr = GlobalAlloc(GMEM_FIXED|GMEM_ZEROINIT, retstr->strlength + 1);
+                    if (!tmp_ptr)
+                    {
+                        RETERR
+                    }
+                    retstr->strptr = tmp_ptr;
                 }
-                lResult = SendMessageTimeout(hW, LB_GETTEXT, curSel, (LPARAM)retstr->strptr, MSG_TIMEOUT_OPTS, MSG_TIMEOUT, &dwResult);
+                // now get the text
+                lResult = SendMessageTimeout(hW, WM_GETTEXT, retstr->strlength + 1, (LPARAM)retstr->strptr,
+                                             MSG_TIMEOUT_OPTS, MSG_TIMEOUT, &dwResult);
                 // time out or error?
-                if (lResult == 0) {
-                  // an error, but we return an empty string
-                  retstr->strlength = 0;
-                  return 0;
+                if (lResult == 0)
+                {
+                    // an error, but we return an empty string
+                    retstr->strlength = 0;
+                    return 0;
                 }
-                else {
-                  retstr->strlength = dwResult;
+                else
+                {
+                    retstr->strlength = dwResult;
                 }
-              }
+
+                // if still no text found, the control may be a listbox, for which LB_GETTEXT must be used
+                if ( retstr->strlength == 0 )
+                {
+                    // at first get the selected item
+                    int curSel;
+                    lResult = SendMessageTimeout(hW, LB_GETCURSEL, 0, 0, MSG_TIMEOUT_OPTS, MSG_TIMEOUT, &dwResult);
+                    // time out or error?
+                    if (lResult == 0)
+                    {
+                        // an error, but we return an empty string
+                        retstr->strlength = 0;
+                        return 0;
+                    }
+                    else
+                    {
+                        curSel = (int) dwResult;
+                    }
+                    if (curSel != LB_ERR)
+                    {
+                        // get the text length and allocate a new strptr if needed
+                        lResult = SendMessageTimeout(hW, LB_GETTEXTLEN, curSel, 0, MSG_TIMEOUT_OPTS, MSG_TIMEOUT, &dwResult);
+                        // time out or error?
+                        if (lResult == 0)
+                        {
+                            // an error, but we return an empty string
+                            retstr->strlength = 0;
+                            return 0;
+                        }
+                        else
+                        {
+                            retstr->strlength = dwResult;
+                        }
+
+                        if ( retstr->strlength > (RXAUTOBUFLEN - 1)  )
+                        {
+                            tmp_ptr = GlobalAlloc(GMEM_FIXED|GMEM_ZEROINIT, retstr->strlength + 1);
+                            if (!tmp_ptr)
+                            {
+                                RETERR
+                            }
+                            retstr->strptr = tmp_ptr;
+                        }
+                        lResult = SendMessageTimeout(hW, LB_GETTEXT, curSel, (LPARAM)retstr->strptr, MSG_TIMEOUT_OPTS, MSG_TIMEOUT, &dwResult);
+                        // time out or error?
+                        if (lResult == 0)
+                        {
+                            // an error, but we return an empty string
+                            retstr->strlength = 0;
+                            return 0;
+                        }
+                        else
+                        {
+                            retstr->strlength = dwResult;
+                        }
+                    }
+                }
             }
-          }
-          return 0;
-       }
-       else
-       {
-          if (argc ==3) RETC(!SetConsoleTitle(argv[2].strptr))
-          else retstr->strlength = GetConsoleTitle(retstr->strptr, 255);
-          return 0;
-       }
-   }
-   else if (!strcmp(argv[0].strptr,"CLASS"))
-   {
-       CHECKARG(2,2);
-       hW = (HWND) atol(argv[1].strptr);
-       if (hW)
-       {
-          retstr->strlength = GetClassName(hW, retstr->strptr, 255);
-          return 0;
-       }
-   }
+            return 0;
+        }
+        else
+        {
+            if (argc ==3)
+            {
+                RETC(!SetConsoleTitle(argv[2].strptr))
+            }
+            else
+            {
+                retstr->strlength = GetConsoleTitle(retstr->strptr, 255);
+            }
+            return 0;
+        }
+    }
+    else if (!strcmp(argv[0].strptr,"CLASS"))
+    {
+        CHECKARG(2,2);
+        string2pointer(argv[1].strptr, &hW);
+        hW = (HWND) atol(argv[1].strptr);
+        {
+            retstr->strlength = GetClassName(hW, retstr->strptr, 255);
+            return 0;
+        }
+    }
 
-   else if (!strcmp(argv[0].strptr,"SHOW"))
-   {
-       CHECKARG(3,3);
-       hW = (HWND) atol(argv[1].strptr);
-       if (hW)
-       {
-           INT sw;
-           if (!strcmp(argv[2].strptr,"HIDE")) sw = SW_HIDE; else
-           if (!strcmp(argv[2].strptr,"MAX")) sw = SW_SHOWMAXIMIZED; else
-           if (!strcmp(argv[2].strptr,"MIN")) sw = SW_MINIMIZE; else
-           if (!strcmp(argv[2].strptr,"RESTORE")) sw = SW_RESTORE;
-           else sw = SW_SHOW;
-           RETC(ShowWindow(hW, sw))
-       }
-   }
-   else if (!strcmp(argv[0].strptr,"HNDL"))
-   {
-       CHECKARG(3,3);
-       hW = (HWND) atol(argv[1].strptr);
-       if (hW)
-       {
-           INT gw;
+    else if (!strcmp(argv[0].strptr,"SHOW"))
+    {
+        CHECKARG(3,3);
+        string2pointer(argv[1].strptr, &hW);
+        if (hW)
+        {
+            INT sw;
+            if (!strcmp(argv[2].strptr,"HIDE")) sw = SW_HIDE;
+            else
+                if (!strcmp(argv[2].strptr,"MAX")) sw = SW_SHOWMAXIMIZED;
+            else
+                if (!strcmp(argv[2].strptr,"MIN")) sw = SW_MINIMIZE;
+            else
+                if (!strcmp(argv[2].strptr,"RESTORE")) sw = SW_RESTORE;
+            else sw = SW_SHOW;
+            RETC(ShowWindow(hW, sw))
+        }
+    }
+    else if (!strcmp(argv[0].strptr,"HNDL"))
+    {
+        CHECKARG(3,3);
+        string2pointer(argv[1].strptr, &hW);
+        if (hW)
+        {
+            INT gw;
 
-           if (!strcmp(argv[2].strptr,"NEXT")) gw = GW_HWNDNEXT; else
-           if (!strcmp(argv[2].strptr,"PREV")) gw = GW_HWNDPREV; else
-           if (!strcmp(argv[2].strptr,"FIRSTCHILD")) gw = GW_CHILD; else
-           if (!strcmp(argv[2].strptr,"FIRST")) gw = GW_HWNDFIRST; else
-           if (!strcmp(argv[2].strptr,"LAST")) gw = GW_HWNDLAST; else
-           if (!strcmp(argv[2].strptr,"OWNER")) gw = GW_OWNER; else RETC(1)
-           RETVAL((ULONG)GetWindow(hW, gw))
-       }
-       else RETC(0)
-   }
-   else if (!strcmp(argv[0].strptr,"ID"))
-   {
-       CHECKARG(2,2);
+            if (!strcmp(argv[2].strptr,"NEXT")) gw = GW_HWNDNEXT;
+            else if (!strcmp(argv[2].strptr,"PREV")) gw = GW_HWNDPREV;
+            else if (!strcmp(argv[2].strptr,"FIRSTCHILD")) gw = GW_CHILD;
+            else if (!strcmp(argv[2].strptr,"FIRST")) gw = GW_HWNDFIRST;
+            else if (!strcmp(argv[2].strptr,"LAST")) gw = GW_HWNDLAST;
+            else if (!strcmp(argv[2].strptr,"OWNER")) gw = GW_OWNER;
+            else RETC(1);
+            RET_HANDLE(GetWindow(hW, gw));
+        }
+        else
+        {
+            RETC(0)
+        }
+    }
+    else if (!strcmp(argv[0].strptr,"ID"))
+    {
+        CHECKARG(2,2);
 
-       hW = (HWND) atol(argv[1].strptr);
-       RETVAL(GetDlgCtrlID(hW))
-   }
-   else if (!strcmp(argv[0].strptr,"ATPOS"))
-   {
-       POINT pt;
-       CHECKARG(3,4);
-       pt.x = atol(argv[1].strptr);
-       pt.y = atol(argv[2].strptr);
+        string2pointer(argv[1].strptr, &hW);
+        RETVAL(GetDlgCtrlID(hW))
+    }
+    else if (!strcmp(argv[0].strptr,"ATPOS"))
+    {
+        POINT pt;
+        CHECKARG(3,4);
+        pt.x = atol(argv[1].strptr);
+        pt.y = atol(argv[2].strptr);
 
-       if (argc == 4) hW = (HWND) atol(argv[3].strptr); else hW = 0;
-       if (hW) RETVAL((ULONG)ChildWindowFromPointEx(hW, pt, CWP_ALL))
-       else RETVAL((ULONG)WindowFromPoint(pt))
-   }
-   else if (!strcmp(argv[0].strptr,"RECT"))
-   {
-       RECT r;
-       CHECKARG(2,2);
-       retstr->strlength = 0;
-       hW = (HWND) atol(argv[1].strptr);
-       if (hW && GetWindowRect(hW, &r))
-       {
-           sprintf(retstr->strptr,"%d,%d,%d,%d",r.left, r.top, r.right, r.bottom);
-           retstr->strlength = strlen(retstr->strptr);
-       }
-       return 0;
-   }
-   else if (!strcmp(argv[0].strptr,"GETSTATE"))
-   {
-       CHECKARG(2,2);
-       retstr->strlength = 0;
-       hW = (HWND) atol(argv[1].strptr);
-       if (hW)
-       {
-           retstr->strptr[0] = '\0';
-           if (!IsWindow(hW)) strcpy(retstr->strptr, "Illegal Handle");
-           else {
-               if (IsWindowEnabled(hW)) strcat(retstr->strptr, "Enabled ");
-               else strcat(retstr->strptr, "Disabled ");
-               if (IsWindowVisible(hW)) strcat(retstr->strptr, "Visible ");
-               else strcat(retstr->strptr, "Invisible ");
-               if (IsZoomed(hW)) strcat(retstr->strptr, "Zoomed ");
-               else if (IsIconic(hW)) strcat(retstr->strptr, "Minimized ");
-               if (GetForegroundWindow() == hW) strcat(retstr->strptr, "Foreground ");
-           }
-           retstr->strlength = strlen(retstr->strptr);
-       }
-       return 0;
-   }
-   else if (!strcmp(argv[0].strptr,"ENABLE"))
-   {
-       CHECKARG(3,3);
-       hW = (HWND) atol(argv[1].strptr);
-       if (hW) RETC(EnableWindow(hW, atoi(argv[2].strptr)))
-   }
-   else if (!strcmp(argv[0].strptr,"MOVE"))
-   {
-       CHECKARG(4,4);
-       hW = (HWND) atol(argv[1].strptr);
-       if (hW)
-       {
-           RECT r;
-           if (!GetWindowRect(hW, &r)) RETC(1);
-           RETC(!MoveWindow(hW, atol(argv[2].strptr), atol(argv[3].strptr), r.right - r.left, r.bottom-r.top, TRUE))
-       }
-   }
-   else if (!strcmp(argv[0].strptr,"SIZE"))
-   {
-       CHECKARG(4,4);
-       hW = (HWND) atol(argv[1].strptr);
-       if (hW)
-       {
-           RECT r;
-           if (!GetWindowRect(hW, &r)) RETC(1);
-           RETC(!SetWindowPos(hW, NULL, r.left, r.top,  atol(argv[2].strptr), atol(argv[3].strptr), SWP_NOMOVE | SWP_NOZORDER))
-       }
-   }
-   RETC(1)  /* in this case 0 is an error */
+        if (argc == 4)
+        {
+            string2pointer(argv[3].strptr, &hW);
+        }
+        else
+        {
+            hW = 0;
+        }
+        if (hW)
+        {
+            RET_HANDLE(hildWindowFromPointEx(hW, pt, CWP_ALL));
+        }
+        else
+        {
+            RET_HANDLE(WindowFromPoint(pt));
+        }
+    }
+    else if (!strcmp(argv[0].strptr,"RECT"))
+    {
+        RECT r;
+        CHECKARG(2,2);
+        retstr->strlength = 0;
+        string2pointer(argv[1].strptr, &hW);
+        if (hW && GetWindowRect(hW, &r))
+        {
+            sprintf(retstr->strptr,"%d,%d,%d,%d",r.left, r.top, r.right, r.bottom);
+            retstr->strlength = strlen(retstr->strptr);
+        }
+        return 0;
+    }
+    else if (!strcmp(argv[0].strptr,"GETSTATE"))
+    {
+        CHECKARG(2,2);
+        retstr->strlength = 0;
+        string2pointer(argv[1].strptr, &hW);
+        if (hW)
+        {
+            retstr->strptr[0] = '\0';
+            if (!IsWindow(hW)) strcpy(retstr->strptr, "Illegal Handle");
+            else
+            {
+                if (IsWindowEnabled(hW)) strcat(retstr->strptr, "Enabled ");
+                else strcat(retstr->strptr, "Disabled ");
+                if (IsWindowVisible(hW)) strcat(retstr->strptr, "Visible ");
+                else strcat(retstr->strptr, "Invisible ");
+                if (IsZoomed(hW)) strcat(retstr->strptr, "Zoomed ");
+                else if (IsIconic(hW)) strcat(retstr->strptr, "Minimized ");
+                if (GetForegroundWindow() == hW) strcat(retstr->strptr, "Foreground ");
+            }
+            retstr->strlength = strlen(retstr->strptr);
+        }
+        return 0;
+    }
+    else if (!strcmp(argv[0].strptr,"ENABLE"))
+    {
+        CHECKARG(3,3);
+        string2pointer(argv[1].strptr, &hW);
+        if (hW)
+        {
+            RETC(EnableWindow(hW, atoi(argv[2].strptr)));
+        }
+    }
+    else if (!strcmp(argv[0].strptr,"MOVE"))
+    {
+        CHECKARG(4,4);
+        string2pointer(argv[1].strptr, &hW);
+        if (hW)
+        {
+            RECT r;
+            if (!GetWindowRect(hW, &r))
+            {
+                RETC(1);
+            }
+            RETC(!MoveWindow(hW, atol(argv[2].strptr), atol(argv[3].strptr), r.right - r.left, r.bottom-r.top, TRUE))
+        }
+    }
+    else if (!strcmp(argv[0].strptr,"SIZE"))
+    {
+        CHECKARG(4,4);
+        string2pointer(argv[1].strptr, &hW);
+        if (hW)
+        {
+            RECT r;
+            if (!GetWindowRect(hW, &r))
+            {
+                RETC(1);
+            }
+            RETC(!SetWindowPos(hW, NULL, r.left, r.top,  atol(argv[2].strptr), atol(argv[3].strptr), SWP_NOMOVE | SWP_NOZORDER))
+        }
+    }
+    RETC(1); /* in this case 0 is an error */
 }
 
 
 
-ULONG REXXENTRY WSCtrlSend(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
+size_t RexxEntry WSCtrlSend(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, PRXSTRING retstr)
 {
    HWND hW,HwndFgWin;
 
@@ -2655,8 +2933,7 @@ ULONG REXXENTRY WSCtrlSend(
              else
                itoa(PostMessage(hW,WM_KEYDOWN, k,l), retstr->strptr, 10);
           }
-          else
-            if (argv[3].strptr[0] == 'U')
+          else if (argv[3].strptr[0] == 'U')
             {
               HwndFgWin = GetForegroundWindow();
               if ( hW == HwndFgWin )
@@ -2751,7 +3028,9 @@ ULONG REXXENTRY WSCtrlSend(
            RETVAL(lResult)
        }
        else
-           RETVAL(dwResult)
+           {
+            RETVAL(dwResult)
+           }
    }
    else if (!strcmp(argv[0].strptr,"MAP"))
    {
@@ -2764,166 +3043,208 @@ ULONG REXXENTRY WSCtrlSend(
 
 
 
-ULONG REXXENTRY WSCtrlMenu(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
+size_t RexxEntry WSCtrlMenu(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, PRXSTRING retstr)
 {
-   CHECKARG(1,10);
+    CHECKARG(1,10);
 
-   if (!strcmp(argv[0].strptr,"GET"))
-   {
-       CHECKARG(2,2);
+    if (!strcmp(argv[0].strptr,"GET"))
+    {
+        CHECKARG(2,2);
 
-       RETVAL((ULONG)GetMenu((HWND)atol(argv[1].strptr)))
-   }
-   else if (!strcmp(argv[0].strptr,"SYS"))
-   {
-       CHECKARG(2,2);
+        RETVAL((ULONG)GetMenu((HWND)atol(argv[1].strptr)))
+    }
+    else if (!strcmp(argv[0].strptr,"SYS"))
+    {
+        CHECKARG(2,2);
 
-       RETVAL((ULONG)GetSystemMenu((HWND)atol(argv[1].strptr), FALSE))
-   }
-   else if (!strcmp(argv[0].strptr,"SUB"))
-   {
-       CHECKARG(3,3);
+        RETVAL((ULONG)GetSystemMenu((HWND)atol(argv[1].strptr), FALSE))
+    }
+    else if (!strcmp(argv[0].strptr,"SUB"))
+    {
+        CHECKARG(3,3);
 
-       RETVAL((ULONG)GetSubMenu((HMENU)atol(argv[1].strptr), atoi(argv[2].strptr)))
-   }
-   else if (!strcmp(argv[0].strptr,"ID"))
-   {
-       CHECKARG(3,3);
+        RETVAL((ULONG)GetSubMenu((HMENU)atol(argv[1].strptr), atoi(argv[2].strptr)))
+    }
+    else if (!strcmp(argv[0].strptr,"ID"))
+    {
+        CHECKARG(3,3);
 
-       RETVAL(GetMenuItemID((HMENU)atol(argv[1].strptr), atoi(argv[2].strptr)))
-   }
-   else if (!strcmp(argv[0].strptr,"CNT"))
-   {
-       CHECKARG(2,2);
+        RETVAL(GetMenuItemID((HMENU)atol(argv[1].strptr), atoi(argv[2].strptr)))
+    }
+    else if (!strcmp(argv[0].strptr,"CNT"))
+    {
+        CHECKARG(2,2);
 
-       RETVAL(GetMenuItemCount((HMENU)atol(argv[1].strptr)))
-   }
-   else if (!strcmp(argv[0].strptr,"TEXT"))
-   {
-       HMENU hM;
-       UINT flag;
-       CHECKARG(4,4);
+        RETVAL(GetMenuItemCount((HMENU)atol(argv[1].strptr)))
+    }
+    else if (!strcmp(argv[0].strptr,"TEXT"))
+    {
+        HMENU hM;
+        UINT flag;
+        CHECKARG(4,4);
 
-       hM= (HMENU)atol(argv[1].strptr);
-       if (!hM) RETC(0)
-       if (argv[3].strptr[0] == 'C') flag = MF_BYCOMMAND; else flag = MF_BYPOSITION;
+        hM= (HMENU)atol(argv[1].strptr);
+        if (!hM)
+        {
+            RETC(0);
+        }
+        if (argv[3].strptr[0] == 'C')
+        {
+            flag = MF_BYCOMMAND;
+        }
+        else
+        {
+            flag = MF_BYPOSITION;
+        }
 
-       retstr->strlength = GetMenuString(hM, atol(argv[2].strptr), retstr->strptr, 255, flag);
-       return 0;
-   }
-   else if (!strcmp(argv[0].strptr,"STATE"))
-   {
-       CHECKARG(2,2);
+        retstr->strlength = GetMenuString(hM, atol(argv[2].strptr), retstr->strptr, 255, flag);
+        return 0;
+    }
+    else if (!strcmp(argv[0].strptr,"STATE"))
+    {
+        CHECKARG(2,2);
 
-       RETVAL(IsMenu((HMENU)atol(argv[1].strptr)))
-   }
+        RETVAL(IsMenu((HMENU)atol(argv[1].strptr)))
+    }
 
-   RETC(1)  /* in this case 0 is an error */
+    RETC(1)  /* in this case 0 is an error */
 }
 
 
 
-LONG REXXENTRY WSClipboard(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
-
+size_t RexxEntry WSClipboard(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, PRXSTRING retstr)
 {
-   BOOL ret = FALSE;
+    BOOL ret = FALSE;
 
-   CHECKARG(1,2);
+    CHECKARG(1,2);
 
-   if (!strcmp(argv[0].strptr, "COPY"))
-   {
-       HGLOBAL hmem;
-       char * membase;
+    if (!strcmp(argv[0].strptr, "COPY"))
+    {
+        HGLOBAL hmem;
+        char * membase;
 
-       CHECKARG(2,2);
-       hmem = GlobalAlloc(GMEM_MOVEABLE | GMEM_DDESHARE, argv[1].strlength + 1);
-       membase = (char *) GlobalLock(hmem);
+        CHECKARG(2,2);
+        hmem = GlobalAlloc(GMEM_MOVEABLE | GMEM_DDESHARE, argv[1].strlength + 1);
+        membase = (char *) GlobalLock(hmem);
 
-       if (membase)
-       {
-           memcpy(membase, argv[1].strptr, argv[1].strlength + 1);
-           if (OpenClipboard(NULL) && EmptyClipboard())
+        if (membase)
+        {
+            memcpy(membase, argv[1].strptr, argv[1].strlength + 1);
+            if (OpenClipboard(NULL) && EmptyClipboard())
+            {
                 ret = (BOOL)SetClipboardData(CF_TEXT, hmem);
-           GlobalUnlock(membase);
-           CloseClipboard();
-       }
-       RETC(!ret)
-   }
-   else
-   if (!strcmp(argv[0].strptr, "PASTE"))
-   {
-       HGLOBAL hmem;
-       char * membase;
-       if (IsClipboardFormatAvailable(CF_TEXT) && OpenClipboard(NULL))
-       {
-           hmem = GetClipboardData(CF_TEXT);
-           membase = (char *) GlobalLock(hmem);
-           if (membase)
-           {
-               ULONG s = GlobalSize(hmem);
-               if (s>255) {
-                   void * p = GlobalAlloc(GMEM_FIXED, s);
-                   if (!p)
-                   {
-                       CloseClipboard();
-                       return -1;
-                   }
-                   retstr->strptr = p;
-               }
-               s = strlen(membase);
-               memcpy(retstr->strptr, membase, s+1);
-               retstr->strlength = s;
-               GlobalUnlock(membase);
-               CloseClipboard();
-               return 0;
-           } else CloseClipboard();
-       }
-       retstr->strlength = 0;
-       return 0;
-   }
-   else
-   if (!strcmp(argv[0].strptr, "EMPTY"))
-   {
-       if (IsClipboardFormatAvailable(CF_TEXT))
-       {
-           BOOL ret;
-           if (!OpenClipboard(NULL)) RETC(1)
-           ret = !EmptyClipboard();
-           CloseClipboard();
-           RETC(ret)
-       }
-       RETC(0)
-   }
-   else
-   if (!strcmp(argv[0].strptr, "AVAIL"))
-   {
-       RETC(IsClipboardFormatAvailable(CF_TEXT))
-   }
-   else RETVAL(-1)
+            }
+            GlobalUnlock(membase);
+            CloseClipboard();
+        }
+        RETC(!ret)
+    }
+    else if (!strcmp(argv[0].strptr, "PASTE"))
+    {
+        HGLOBAL hmem;
+        char * membase;
+        if (IsClipboardFormatAvailable(CF_TEXT) && OpenClipboard(NULL))
+        {
+            hmem = GetClipboardData(CF_TEXT);
+            membase = (char *) GlobalLock(hmem);
+            if (membase)
+            {
+                ULONG s = GlobalSize(hmem);
+                if (s>255)
+                {
+                    void * p = GlobalAlloc(GMEM_FIXED, s);
+                    if (!p)
+                    {
+                        CloseClipboard();
+                        return -1;
+                    }
+                    retstr->strptr = p;
+                }
+                s = strlen(membase);
+                memcpy(retstr->strptr, membase, s+1);
+                retstr->strlength = s;
+                GlobalUnlock(membase);
+                CloseClipboard();
+                return 0;
+            }
+            else
+            {
+                CloseClipboard();
+            }
+        }
+        retstr->strlength = 0;
+        return 0;
+    }
+    else if (!strcmp(argv[0].strptr, "EMPTY"))
+    {
+        if (IsClipboardFormatAvailable(CF_TEXT))
+        {
+            BOOL ret;
+            if (!OpenClipboard(NULL))
+            {
+                RETC(1)
+            }
+            ret = !EmptyClipboard();
+            CloseClipboard();
+            RETC(ret)
+        }
+        RETC(0)
+    }
+    else if (!strcmp(argv[0].strptr, "AVAIL"))
+    {
+        RETC(IsClipboardFormatAvailable(CF_TEXT))
+    }
+    else
+    {
+        RETVAL(-1)
+    }
 }
 
 
 VOID Little2BigEndian(BYTE *pbInt, INT iSize)
 {
-  /* convert any integer number from little endian to big endian or vice versa */
-  BYTE  bTemp[32];
-  INT   i;
+    /* convert any integer number from little endian to big endian or vice versa */
+    BYTE  bTemp[32];
+    INT   i;
 
-  if (iSize <= 32)
-  {
-    for (i = 0; i < iSize; i++)
-      bTemp[i] = pbInt[iSize - i - 1];
+    if (iSize <= 32)
+    {
+        for (i = 0; i < iSize; i++)
+        {
+            bTemp[i] = pbInt[iSize - i - 1];
+        }
 
-    memcpy(pbInt, bTemp, iSize);
-  } /* endif */
+        memcpy(pbInt, bTemp, iSize);
+    }
 }
+
+
+// now build the actual entry list
+RexxFunctionEntry rxwinsys_functions[] =
+{
+    REXX_CLASSIC_FUNCTION(InstWinSysFuncs,  InstWinSysFuncs),
+    REXX_CLASSIC_FUNCTION(RemoveWinSysFuncs,RemoveWinSysFuncs),
+    REXX_CLASSIC_FUNCTION(WSRegistryKey,    WSRegistryKey),
+    REXX_CLASSIC_FUNCTION(WSRegistryValue,  WSRegistryValue),
+    REXX_CLASSIC_FUNCTION(WSRegistryFile,   WSRegistryFile),
+    REXX_CLASSIC_FUNCTION(WSProgManager,    WSProgManager),
+    REXX_CLASSIC_FUNCTION(WSEventLog,       WSEventLog),
+    REXX_CLASSIC_FUNCTION(WSCtrlWindow,     WSCtrlWindow),
+    REXX_CLASSIC_FUNCTION(WSCtrlSend,       WSCtrlSend),
+    REXX_CLASSIC_FUNCTION(WSCtrlMenu,       WSCtrlMenu),
+    REXX_CLASSIC_FUNCTION(WSClipboard,      WSClipboard),
+};
+
+RexxPackageEntry rxwinsys_package_entry =
+{
+    STANDARD_PACKAGE_HEADER
+    "REXXUTIL",                          // name of the package
+    "4.0",                               // package information
+    NULL,                                // no load/unload functions
+    NULL,
+    rxwinsys_functions,                  // the exported functions
+    NULL                                 // no methods in this package
+};
+
+// package loading stub.
+OOREXX_GET_PACKAGE(rxwinsys);

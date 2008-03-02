@@ -4788,20 +4788,20 @@ REXX_METHOD_PROTOTYPE(OLEVariant_Init)
 
 // now build the actual entry list
 RexxMethodEntry oleobject_methods[] = {
-    REXX_METHOD( OLEObject_Init        , OLEObject_Init     )
-    REXX_METHOD( OLEObject_Uninit      , OLEObject_Uninit   )
-    REXX_METHOD( OLEObject_Unknown     , OLEObject_Unknown  )
-    REXX_METHOD( OLEObject_Request     , OLEObject_Request  )
-    REXX_METHOD( OLEObject_GetVar      , OLEObject_GetVar   )
-    REXX_METHOD( OLEObject_GetConst    , OLEObject_GetConst )
-    REXX_METHOD( OLEObject_GetKnownMethods  , OLEObject_GetKnownMethods )
-    REXX_METHOD( OLEObject_GetKnownMethods_Class  , OLEObject_GetKnownMethods_Class )
-    REXX_METHOD( OLEObject_GetKnownEvents  , OLEObject_GetKnownEvents )
-    REXX_METHOD( OLEObject_GetObject_Class , OLEObject_GetObject_Class )
-    REXX_METHOD( OLEVariant_ParamFlagsEquals, OLEVariant_ParamFlagsEquals )
-    REXX_METHOD( OLEVariant_VarTypeEquals, OLEVariant_VarTypeEquals )
-    REXX_METHOD( OLEVariant_VarValueEquals, OLEVariant_VarValueEquals )
-    REXX_METHOD( OLEVariant_Init, OLEVariant_Init )
+    REXX_METHOD( OLEObject_Init        , OLEObject_Init     ),
+    REXX_METHOD( OLEObject_Uninit      , OLEObject_Uninit   ),
+    REXX_METHOD( OLEObject_Unknown     , OLEObject_Unknown  ),
+    REXX_METHOD( OLEObject_Request     , OLEObject_Request  ),
+    REXX_METHOD( OLEObject_GetVar      , OLEObject_GetVar   ),
+    REXX_METHOD( OLEObject_GetConst    , OLEObject_GetConst ),
+    REXX_METHOD( OLEObject_GetKnownMethods  , OLEObject_GetKnownMethods ),
+    REXX_METHOD( OLEObject_GetKnownMethods_Class  , OLEObject_GetKnownMethods_Class ),
+    REXX_METHOD( OLEObject_GetKnownEvents  , OLEObject_GetKnownEvents ),
+    REXX_METHOD( OLEObject_GetObject_Class , OLEObject_GetObject_Class ),
+    REXX_METHOD( OLEVariant_ParamFlagsEquals, OLEVariant_ParamFlagsEquals ),
+    REXX_METHOD( OLEVariant_VarTypeEquals, OLEVariant_VarTypeEquals ),
+    REXX_METHOD( OLEVariant_VarValueEquals, OLEVariant_VarValueEquals ),
+    REXX_METHOD( OLEVariant_Init, OLEVariant_Init ),
     REXX_LAST_METHOD()
 };
 

@@ -183,7 +183,7 @@ typedef struct _RexxRoutineEntry
 #define ROUTINE_TYPED_STYLE 1
 #define ROUTINE_CLASSIC_STYLE 2
 
-#define REXX_ROUTINE(s, n, e)   { s, 0, #n, (void *)e, 0, 0 },
+#define REXX_ROUTINE(s, n, e)   { s, 0, #n, (void *)e, 0, 0 }
 
 #define REXX_TYPED_ROUTINE(n, e) REXX_ROUTINE(ROUTINE_TYPED_STYLE, n, e)
 #define REXX_CLASSIC_ROUTINE(n, e) REXX_ROUTINE(ROUTINE_CLASSIC_STYLE, n, e)
@@ -207,7 +207,7 @@ typedef struct _RexxMethodEntry
 
 #define METHOD_TYPED_STYLE 1
 
-#define REXX_METHOD_ENTRY(n, e) { METHOD_TYPED_STYLE, 0, #n, (void *)e, 0, 0 },
+#define REXX_METHOD_ENTRY(n, e) { METHOD_TYPED_STYLE, 0, #n, (void *)e, 0, 0 }
 
 #define REXX_METHOD(n, e) REXX_METHOD_ENTRY(n, e)
 #define REXX_LAST_METHOD()  { 0, 0, NULL, (void *)NULL, 0, 0 }
@@ -291,21 +291,21 @@ struct _RexxTableObject;
 struct _RexxSupplierObject;
 struct _RexxStemObject;
 
-typedef _RexxObjectPtr *RexxObjectPtr;
-typedef _RexxStringObject *RexxStringObject;
-typedef _RexxBufferStringObject *RexxBufferStringObject;
-typedef _RexxArrayObject *RexxArrayObject;
-typedef _RexxBufferObject *RexxBufferObject;
-typedef _RexxIntegerObject *RexxIntegerObject;
-typedef _RexxPointerObject *RexxPointerObject;
-typedef _RexxMethodObject *RexxMethodObject;
-typedef _RexxRoutineObject *RexxRoutineObject;
-typedef _RexxPackageObject *RexxPackageObject;
-typedef _RexxClassObject *RexxClassObject;
-typedef _RexxDirectoryObject *RexxDirectoryObject;
-typedef _RexxTableObject *RexxTableObject;
-typedef _RexxSupplierObject *RexxSupplierObject;
-typedef _RexxStemObject *RexxStemObject;
+typedef struct _RexxObjectPtr *RexxObjectPtr;
+typedef struct _RexxStringObject *RexxStringObject;
+typedef struct _RexxBufferStringObject *RexxBufferStringObject;
+typedef struct _RexxArrayObject *RexxArrayObject;
+typedef struct _RexxBufferObject *RexxBufferObject;
+typedef struct _RexxIntegerObject *RexxIntegerObject;
+typedef struct _RexxPointerObject *RexxPointerObject;
+typedef struct _RexxMethodObject *RexxMethodObject;
+typedef struct _RexxRoutineObject *RexxRoutineObject;
+typedef struct _RexxPackageObject *RexxPackageObject;
+typedef struct _RexxClassObject *RexxClassObject;
+typedef struct _RexxDirectoryObject *RexxDirectoryObject;
+typedef struct _RexxTableObject *RexxTableObject;
+typedef struct _RexxSupplierObject *RexxSupplierObject;
+typedef struct _RexxStemObject *RexxStemObject;
 
 #endif
 

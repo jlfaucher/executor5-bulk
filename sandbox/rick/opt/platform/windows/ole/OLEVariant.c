@@ -284,7 +284,6 @@ static RexxObjectPtr stringToFlags(RexxMethodContext *context, RexxObjectPtr rxS
     RexxObjectPtr  rxResult = NULL;  // Return null if invalid.
     CHAR       *pszRxStr;
     CHAR       *ptr;
-    CHAR        szBuffer[4];      // Largest possible value is 0x7F == 127
     int         tmp, count, i;
     int         val = 0;
 

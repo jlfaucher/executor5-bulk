@@ -52,7 +52,7 @@
 #include "SysNativeMethods.h"          // plus any system extensions
 
 #undef  INTERNAL_METHOD
-#define INTERNAL_METHOD(name) REXX_METHOD(name, name)
+#define INTERNAL_METHOD(name) REXX_METHOD(name, name),
 
 // now build the actual entry list
 RexxMethodEntry rexx_methods[] =
@@ -63,20 +63,16 @@ RexxMethodEntry rexx_methods[] =
 };
 
 
-#define INTERNAL_FUNCTION(name) REXX_TYPED_ROUTINE_PROTOTYPE(name)
-#define INTERNAL_NAMED_FUNCTION(name, entry) REXX_TYPED_ROUTINE_PROTOTYPE(entry)
+#define INTERNAL_ROUTINE(name, entry) REXX_TYPED_ROUTINE_PROTOTYPE(entry)
 
 #include "NativeFunctions.h"             // bring in the standard list,
 #include "SysNativeFunctions.h"          // plus any system extensions
 
-#undef  INTERNAL_FUNCTION
-#define INTERNAL_FUNCTION(name) REXX_TYPED_ROUTINE(name, name)
-
-#undef  INTERNAL_NAMED_FUNCTION
-#define INTERNAL_NAMED_FUNCTION(name, entry) REXX_TYPED_ROUTINE(name, entry)
+#undef  INTERNAL_ROUTINE
+#define INTERNAL_ROUTINE(name, entry) REXX_TYPED_ROUTINE(name, entry),
 
 // now build the actual entry list
-RexxRoutineEntry rexx_functions[] =
+RexxRoutineEntry rexx_routines[] =
 {
 #include "NativeFunctions.h"             // bring in the standard list,
 #include "SysNativeFunctions.h"          // plus any system extensions
@@ -90,7 +86,7 @@ RexxPackageEntry rexx_package_entry =
     "4.0",                               // package information
     NULL,                                // no load/unload functions
     NULL,
-    rexx_functions,                      // the exported functions
+    rexx_routines,                       // the exported routines
     rexx_methods                         // the exported methods
 };
 

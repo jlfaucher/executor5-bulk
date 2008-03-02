@@ -1200,6 +1200,8 @@ void RexxMemory::createImage()
   kernel_public(CHAR_LIST             ,TheListClass    ,TheEnvironment);
   kernel_public(CHAR_MESSAGE          ,TheMessageClass ,TheEnvironment);
   kernel_public(CHAR_METHOD           ,TheMethodClass  ,TheEnvironment);
+  kernel_public(CHAR_ROUTINE          ,TheRoutineClass ,TheEnvironment);
+  kernel_public(CHAR_PACKAGE          ,ThePackageClass ,TheEnvironment);
   kernel_public(CHAR_NIL              ,TheNilObject    ,TheEnvironment);
   kernel_public(CHAR_OBJECT           ,TheObjectClass  ,TheEnvironment);
   kernel_public(CHAR_QUEUE            ,TheQueueClass   ,TheEnvironment);

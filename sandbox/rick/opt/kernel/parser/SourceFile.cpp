@@ -1317,7 +1317,7 @@ void RexxSource::mergeRequired(RexxSource *source)
             OrefSet(this, this->merged_public_routines, new_directory());
         }
         /* loop through the list of routines */
-        for (size_t i = source->merged_public_routines->first(); source->merged_public_routines->available(i); i = source->merged_public_routines->next(i))
+        for (HashLink i = source->merged_public_routines->first(); source->merged_public_routines->available(i); i = source->merged_public_routines->next(i))
         {
             /* copy the routine over             */
             this->merged_public_routines->setEntry((RexxString *)source->merged_public_routines->index(i), source->merged_public_routines->value(i));
@@ -1335,7 +1335,7 @@ void RexxSource::mergeRequired(RexxSource *source)
             OrefSet(this, this->merged_public_routines, new_directory());
         }
         /* loop through the list of routines */
-        for (size_t i = source->public_routines->first(); source->public_routines->available(i); i = source->public_routines->next(i))
+        for (HashLink i = source->public_routines->first(); source->public_routines->available(i); i = source->public_routines->next(i))
         {
             /* copy the routine over             */
             this->merged_public_routines->setEntry((RexxString *)source->public_routines->index(i), source->public_routines->value(i));
@@ -1352,14 +1352,16 @@ void RexxSource::mergeRequired(RexxSource *source)
             OrefSet(this, this->merged_public_classes, new_directory());
         }
         /* loop through the list of classes, */
-        for (size_t i = source->merged_public_classes->first(); source->merged_public_classes->available(i); i = source->merged_public_classes->next(i))
+        for (HashLink i = source->merged_public_classes->first(); source->merged_public_classes->available(i); i = source->merged_public_classes->next(i))
         {
             /* copy the routine over             */
             this->merged_public_classes->setEntry((RexxString *)source->merged_public_classes->index(i), source->merged_public_classes->value(i));
         }
     }
 
-    if (source->merged_public_classes != OREF_NULL)
+    // the installed ones are processed second as they will overwrite the imported one, which
+    // is the behaviour we want
+    if (source->installed_public_classes != OREF_NULL)
     {
         if (this->merged_public_classes == OREF_NULL)
         {
@@ -1367,39 +1369,10 @@ void RexxSource::mergeRequired(RexxSource *source)
             OrefSet(this, this->merged_public_classes, new_directory());
         }
         /* loop through the list of classes, */
-        for (size_t i = source->installed_public_classes->first(); source->merged_public_classes->available(i); i = source->merged_public_classes->next(i))
+        for (HashLink i = source->installed_public_classes->first(); source->installed_public_classes->available(i); i = source->installed_public_classes->next(i))
         {
             /* copy the routine over             */
-            this->merged_public_classes->setEntry((RexxString *)source->merged_public_classes->index(i), source->merged_public_classes->value(i));
-        }
-    }
-
-    /* have classes also?                */
-    if (source->installed_public_classes != OREF_NULL || source->merged_public_classes != OREF_NULL)
-    {
-        /* first merged attempt?             */
-        if (this->merged_public_classes == OREF_NULL)
-            /* get the directory                 */
-            OrefSet(this, this->merged_public_classes, new_directory());
-        /* do the merged classes first       */
-        if (source->merged_public_classes != OREF_NULL)
-        {
-            /* loop through the list of classes, */
-            for (size_t i = source->merged_public_classes->first(); source->merged_public_classes->available(i); i = source->merged_public_classes->next(i))
-            {
-                /* copy the routine over             */
-                this->merged_public_classes->setEntry((RexxString *)source->merged_public_classes->index(i), source->merged_public_classes->value(i));
-            }
-        }
-        /* have public classes?              */
-        if (source->installed_public_classes != OREF_NULL)
-        {
-            /* loop through the list of classes, */
-            for (size_t i = source->installed_public_classes->first(); source->installed_public_classes->available(i); i = source->installed_public_classes->next(i))
-            {
-                /* copy the routine over             */
-                this->merged_public_classes->setEntry((RexxString *)source->installed_public_classes->index(i), source->installed_public_classes->value(i));
-            }
+            this->merged_public_classes->setEntry((RexxString *)source->installed_public_classes->index(i), source->installed_public_classes->value(i));
         }
     }
 }
