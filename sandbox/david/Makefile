@@ -71,8 +71,7 @@ OBJECTS = rexxgtk.o \
 	grxadjustment.o \
 	grxscrolledwindow.o \
 	grxtextview.o \
-	grxtextbuffer.o \
-	grxpango.o
+	grxtextbuffer.o
 
 
 # Build the shared library
@@ -164,9 +163,6 @@ grxtextview.o: grxtextview.c rexxgtk.h
 
 grxtextbuffer.o: grxtextbuffer.c rexxgtk.h
 	gcc -c $(GRXCFLAGS) grxtextbuffer.c
-
-grxpango.o: grxpango.c rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxpango.c
 
 
 

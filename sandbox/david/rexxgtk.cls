@@ -3203,32 +3203,6 @@ call GrxFileFilterAddPattern pointer, pattern
 return
 
 
-/*============================================================================*/
-/* Class: Pango                                                               */
-/*============================================================================*/
-
-::class Pango public
-
-::method init
-expose pointer
-use strict arg
-pointer = GrxPangoFontDescriptionNew()
-return
-
-
-/*============================================================================*/
-/* Class: PangoFromString                                                     */
-/*============================================================================*/
-
-::class PangoFromString public subclass Pango
-
-::method init
-expose pointer
-use strict arg desc
-pointer = GrxPangoFontDescriptionFromString(desc)
-return
-
-
 
 
 

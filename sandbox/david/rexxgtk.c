@@ -457,10 +457,6 @@ APIRET APIENTRY GrxLoadFuncs(char * Name,
         "GrxEventBoxSetVisibleWindow",
         "GrxEventBoxGetVisibleWindow",
 
-        // Pango functions
-        "GrxPangoFontDescriptionNew",
-        "GrxPangoFontDescriptionFromString",
-
     };
 
     int f;
