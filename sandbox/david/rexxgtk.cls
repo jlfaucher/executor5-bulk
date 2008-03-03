@@ -95,6 +95,8 @@ call GrxMainIteration
 old_queue = RxQueue('Set', .local['GTK_Queue'])
 do while queued() > 0
    pull pointer msg args
+-- FIXME! remove the comment from this section of code before releasing
+-- remove the following statement before the final release!
    say pointer msg args
    widget = .local['GTK_Database']~at(pointer)
    if widget <> .nil then do
@@ -2677,6 +2679,205 @@ return
 
 
 /*============================================================================*/
+/* Class: GtkTextView                                                         */
+/*============================================================================*/
+
+::class GtkTextView public subclass GtkContainer
+
+::method init
+self~pointer = GrxTextViewNew()
+return
+
+::method buffer
+use strict arg
+ptr = GrxTextViewGetBuffer(self~pointer)
+return .GtkTextBuffer~new(ptr)
+
+::method get_buffer
+use strict arg
+return self~buffer
+
+::method wrap_mode
+use strict arg
+return GrxTextViewGetWrapMode(self~pointer)
+
+::method get_wrap_mode
+use strict arg
+return self~wrap_mode
+
+::method 'wrap_mode='
+use strict arg mode
+call GrxTextViewSetWrapMode self~pointer, upper(mode)
+return
+
+::method set_wrap_mode
+use strict arg self~wrap_mode
+return
+
+::method justification
+use strict arg
+return GrxTextViewGetJustification(self~pointer)
+
+::method get_justification
+use strict arg
+return self~justification
+
+::method 'justification='
+use strict arg just
+call GrxTextViewSetJustification self~pointer, upper(just)
+return
+
+::method set_justification
+use strict arg self~justification
+return
+
+::method editable
+use strict arg
+return GrxTextViewGetEditable(self~pointer)
+
+::method get_editable
+use strict arg
+return self~editable
+
+::method 'editable='
+use strict arg flag
+call GrxTextViewSetEditable self~pointer, flag
+return
+
+::method set_editable
+use strict arg self~editable
+return
+
+::method cursor_visible
+use strict arg
+return GrxTextViewGetCursorVisible(self~pointer)
+
+::method get_cursor_visible
+use strict arg
+return self~cursor_visible
+
+::method 'cursor_visible='
+use strict arg flag
+call GrxTextViewSetCursorVisible self~pointer, flag
+return
+
+::method set_cursor_visible
+use strict arg self~cursor_visible
+return
+
+::method pixels_above_lines
+use strict arg
+return GrxTextViewGetPixelsAboveLines(self~pointer)
+
+::method get_pixels_above_lines
+use strict arg
+return self~pixels_above_lines
+
+::method 'pixels_above_lines='
+use strict arg flag
+call GrxTextViewSetPixelsAboveLines self~pointer, flag
+return
+
+::method set_pixels_above_lines
+use strict arg self~pixels_above_lines
+return
+
+::method pixels_below_lines
+use strict arg
+return GrxTextViewGetPixelsBelowLines(self~pointer)
+
+::method get_pixels_below_lines
+use strict arg
+return self~pixels_below_lines
+
+::method 'pixels_below_lines='
+use strict arg flag
+call GrxTextViewSetPixelsBelowLines self~pointer, flag
+return
+
+::method set_pixels_below_lines
+use strict arg self~pixels_below_lines
+return
+
+::method pixels_inside_wrap
+use strict arg
+return GrxTextViewGetPixelsInsideWrap(self~pointer)
+
+::method get_pixels_inside_wrap
+use strict arg
+return self~pixels_inside_wrap
+
+::method 'pixels_inside_wrap='
+use strict arg flag
+call GrxTextViewSetPixelsInsideWrap self~pointer, flag
+return
+
+::method set_pixels_inside_wrap
+use strict arg self~pixels_inside_wrap
+return
+
+::method left_margin
+use strict arg
+return GrxTextViewGetLeftMargin(self~pointer)
+
+::method get_left_margin
+use strict arg
+return self~left_margin
+
+::method 'left_margin='
+use strict arg flag
+call GrxTextViewSetLeftMargin self~pointer, flag
+return
+
+::method set_left_margin
+use strict arg self~left_margin
+return
+
+::method right_margin
+use strict arg
+return GrxTextViewGetRightMargin(self~pointer)
+
+::method get_right_margin
+use strict arg
+return self~right_margin
+
+::method 'right_margin='
+use strict arg flag
+call GrxTextViewSetRightMargin self~pointer, flag
+return
+
+::method set_right_margin
+use strict arg self~right_margin
+return
+
+
+/*============================================================================*/
+/* Class: GtkTextBuffer                                                       */
+/*============================================================================*/
+
+::class GtkTextBuffer public
+
+::method init
+expose pointer
+if arg() = 1 then use strict arg pointer
+else do
+   use strict arg
+   pointer = GrxTextBufferNew()  -- Fix this!
+   end
+return
+
+::method 'text='
+expose pointer
+use strict arg text
+ptr = GrxTextBufferSetText(pointer, text)
+return
+
+::method set_text
+use strict arg self~text
+return
+
+
+/*============================================================================*/
 /*============================================================================*/
 /*============================================================================*/
 /* These are classes and routines specific to Glib.                           */
@@ -2999,6 +3200,32 @@ return
 expose pointer
 use strict arg pattern
 call GrxFileFilterAddPattern pointer, pattern
+return
+
+
+/*============================================================================*/
+/* Class: Pango                                                               */
+/*============================================================================*/
+
+::class Pango public
+
+::method init
+expose pointer
+use strict arg
+pointer = GrxPangoFontDescriptionNew()
+return
+
+
+/*============================================================================*/
+/* Class: PangoFromString                                                     */
+/*============================================================================*/
+
+::class PangoFromString public subclass Pango
+
+::method init
+expose pointer
+use strict arg desc
+pointer = GrxPangoFontDescriptionFromString(desc)
 return
 
 

@@ -121,7 +121,10 @@ OBJECTS = rexxgtk.obj \
 	grxassistant.obj \
 	grxprogressbar.obj \
 	grxadjustment.obj \
-	grxscrolledwindow.obj
+	grxscrolledwindow.obj \
+	grxtextview.obj \
+	grxtextbuffer.obj \
+	grxpango.obj
 
 # Build the DLL
 rexxgtk.dll: $(OBJECTS) rexxgtk.def
@@ -205,6 +208,15 @@ grxadjustment.obj: grxadjustment.c rexxgtk.h
 
 grxscrolledwindow.obj: grxscrolledwindow.c rexxgtk.h
 	cl -c $(GRXCFLAGS) grxscrolledwindow.c
+
+grxtextview.obj: grxtextview.c rexxgtk.h
+	cl -c $(GRXCFLAGS) grxtextview.c
+
+grxtextbuffer.obj: grxtextbuffer.c rexxgtk.h
+	cl -c $(GRXCFLAGS) grxtextbuffer.c
+
+grxpango.obj: grxpango.c rexxgtk.h
+	cl -c $(GRXCFLAGS) grxpango.c
 
 
 clean:

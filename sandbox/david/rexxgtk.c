@@ -323,14 +323,33 @@ APIRET APIENTRY GrxLoadFuncs(char * Name,
         "GrxHandleBoxConnectSignal",
         "GrxViewportNew",
         "GrxViewportConnectSignal",
-//      "GrxTextViewNew",
-//      "GrxTextViewSetText",
-//      "GrxTextViewGetText",
-//      "GrxTextViewSetEditable",
-//      "GrxTextViewSetWrapMode",
-//      "GrxFrameNew",
-//      "GrxScrolledWindowNew",
-//      "GrxScrolledWindowSetPolicy",
+
+        //TextView functions
+        "GrxTextViewNew",
+        "GrxTextViewGetBuffer",
+        "GrxTextViewSetWrapMode",
+        "GrxTextViewGetWrapMode",
+        "GrxTextViewSetJustification",
+        "GrxTextViewGetJustification",
+        "GrxTextViewSetEditable",
+        "GrxTextViewGetEditable",
+        "GrxTextViewSetCursorVisible",
+        "GrxTextViewGetCorsoeVisible",
+        "GrxTextViewSetPixelsAboveLines",
+        "GrxTextViewGetPixelsAboveLines",
+        "GrxTextViewSetPixelsBelowLines",
+        "GrxTextViewGetPixelsBelowLines",
+        "GrxTextViewSetPixelsInsideWrap",
+        "GrxTextViewGetPixelsInsideWrap",
+        "GrxTextViewSetLeftMargin",
+        "GrxTextViewGetLeftMargin",
+        "GrxTextViewSetRightMargin",
+        "GrxTextViewGetRightMargin",
+        "GrxTextViewConnectSignal",
+
+        //TextBuffer functions
+        "GrxTextBufferNew",
+        "GrxTextBufferSetText",
 
         //Scrolled window functions
         "GrxScrolledWindowNew",
@@ -437,6 +456,10 @@ APIRET APIENTRY GrxLoadFuncs(char * Name,
         "GrxEventBoxGetAboveChild",
         "GrxEventBoxSetVisibleWindow",
         "GrxEventBoxGetVisibleWindow",
+
+        // Pango functions
+        "GrxPangoFontDescriptionNew",
+        "GrxPangoFontDescriptionFromString",
 
     };
 
