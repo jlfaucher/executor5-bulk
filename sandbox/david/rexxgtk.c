@@ -350,6 +350,9 @@ APIRET APIENTRY GrxLoadFuncs(char * Name,
         //TextBuffer functions
         "GrxTextBufferNew",
         "GrxTextBufferSetText",
+        "GrxTextBufferGetText",
+        "GrxTextBufferInsertText",
+        "GrxTextBufferConnectSignal",
 
         //Scrolled window functions
         "GrxScrolledWindowNew",

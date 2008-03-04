@@ -2876,6 +2876,36 @@ return
 use strict arg self~text
 return
 
+::method text
+expose pointer
+use strict arg
+return GrxTextBufferGetText(pointer)
+
+::method get_text
+use strict arg
+return self~text
+
+::method insert_text
+expose pointer
+use strict arg text
+call GrxTextBufferInsertText pointer, text
+return
+
+::method signal_connect
+use strict arg event
+select
+   when event = 'apply_tag' then call GrxTextBufferConnectSignal self~pointer, event
+   when event = 'begin_user_action' then call GrxTextBufferConnectSignal self~pointer, event
+   otherwise return self~signal_connect:super(event)
+   end
+return .true
+
+::method signal_apply_tag
+return
+
+::method signal_begin_user_action
+return
+
 
 /*============================================================================*/
 /*============================================================================*/

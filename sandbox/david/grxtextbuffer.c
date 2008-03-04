@@ -159,6 +159,75 @@ APIRET APIENTRY GrxTextBufferSetText(const char * Name,
 
 
 /*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxTextBufferInsertText                            */
+/* Description: Insert text at the current mark                               */
+/* Rexx Args:   Pointer to the buffer                                         */
+/*              Text                                                          */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxTextBufferInsertText(const char * Name,
+                                      const size_t Argc, const RXSTRING Argv[],
+                                      const char * Queuename, PRXSTRING Retstr)
+{
+    GtkTextBuffer       *myBuffer;
+    GtkTextMark         *mark;
+    GtkTextIter         iter;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(2, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    sscanf(Argv[0].strptr, "%p", &myBuffer);
+
+    mark = gtk_text_buffer_get_insert(myBuffer);
+    gtk_text_buffer_get_iter_at_mark(myBuffer, &iter, mark);
+    gtk_text_buffer_insert(myBuffer, &iter, Argv[1].strptr, -1);
+
+    /* Set up the REXX return code */
+    *(Retstr->strptr) = '0';
+    Retstr->strlength = 1;
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxTextBufferGetText                               */
+/* Description: Get text at the current mark                                  */
+/* Rexx Args:   Pointer to the buffer                                         */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxTextBufferGetText(const char * Name,
+                                     const size_t Argc, const RXSTRING Argv[],
+                                     const char * Queuename, PRXSTRING Retstr)
+{
+    GtkTextBuffer       *myBuffer;
+    GtkTextIter         start, end;
+    gchar               *text;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(1, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    sscanf(Argv[0].strptr, "%p", &myBuffer);
+
+    gtk_text_buffer_get_selection_bounds(myBuffer, &start, &end);
+    text = gtk_text_buffer_get_text(myBuffer, &start, &end, FALSE);
+
+    /* Set up the REXX return code */
+    if (strlen(text) > RXAUTOBUFLEN - 1) {
+        Retstr->strptr = RexxAllocateMemory(strlen(text) + 1);
+    }
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%s", text);
+    Retstr->strlength = strlen(Retstr->strptr);
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
 /* Rexx External Function: GrxTextBufferonnectSignal                          */
 /* Description: Connect a signal function to the Widget                       */
 /* Rexx Args:   Pointer to the widget                                         */
