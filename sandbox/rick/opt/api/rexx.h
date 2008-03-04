@@ -295,7 +295,7 @@ typedef RexxReturnCode (REXXENTRY *PFNREXXVARIABLEPOOL)(PSHVBLOCK);
 
 /* This typedef simplifies coding of an External Function.           */
 
-typedef unsigned int REXXENTRY RexxRoutineHandler(const char *,
+typedef size_t REXXENTRY RexxRoutineHandler(const char *,
                                   size_t,
                                   PCONSTRXSTRING,
                                   const char *,

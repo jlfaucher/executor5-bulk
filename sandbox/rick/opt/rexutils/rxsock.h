@@ -40,7 +40,7 @@
 /*                 sockets utility function package                        */
 /***************************************************************************/
 
-#include "rexx.h"
+#include "oorexxapi.h"
 
 /*------------------------------------------------------------------
  * typedef for struct
@@ -55,11 +55,6 @@ typedef int socklen_t;
 /*------------------------------------------------------------------
  * declare external functions
  *------------------------------------------------------------------*/
-RexxRoutineHandler SockFunctionGateWay            ;
-
-#if defined(WIN32) || defined(OPSYS_AIX) || defined(OPSYS_LINUX)
-RexxRoutineHandler SockLoadFuncs                  ;
-#endif
 
 RexxRoutineHandler SockDropFuncs                  ;
 RexxRoutineHandler SockVersion                    ;
@@ -167,4 +162,9 @@ void SetH_Errno(void);
  * string compare ignore upper and lower case
  *------------------------------------------------------------------*/
 int stricmp(const char *op1, const char *op2 );
+
+
+bool string2socket(RXSTRING *string, SOCKET *socket);
+void socket2string(PRXSTRING result, SOCKET socket);
+{
 #endif
