@@ -42,11 +42,9 @@
 /*                                                                            */
 /******************************************************************************/
 
-#define  INCL_REXX_STREAM
 #include "RexxCore.h"
 #include "StringClass.hpp"
 #include "BufferClass.hpp"
-#include "RexxNativeAPI.h"
 #include "ActivityManager.hpp"
 #include "ProtectedObject.hpp"
 #include "SystemInterpreter.hpp"

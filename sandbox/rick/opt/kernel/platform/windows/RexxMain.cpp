@@ -61,7 +61,6 @@
 #include "DirectoryClass.hpp"
 #include "RexxVariableDictionary.hpp"
 #include "IntegerClass.hpp"
-#include "RexxNativeAPI.h"                      /* REXX interface/native method code */
 #include "APIServiceTables.h"
 #include "RexxInternalApis.h"          /* Get private REXXAPI API's         */
 #include "RexxAPIManager.h"

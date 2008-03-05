@@ -49,9 +49,6 @@
 /******************************************************************************/
 #include <stdlib.h>
 #include <ctype.h>
-#if defined(OPSYS_SUN)
-#include <sched.h>
-#endif
 #include "RexxCore.h"
 #include "StringClass.hpp"
 #include "StackClass.hpp"
@@ -73,6 +70,7 @@
 #include "InterpreterInstance.hpp"
 #include "ActivityDispatcher.hpp"
 #include "MessageDispatcher.hpp"
+#include "Interpreter.hpp"
 
 const size_t ACT_STACK_SIZE = 20;
 
@@ -2046,7 +2044,7 @@ bool RexxActivity::callFunctionExit(
         exit_parm.rxfnc_name = rname->getStringData();
 
         /* Get current active queue name     */
-        RexxString *stdqueue = SysGetCurrentQueue();
+        RexxString *stdqueue = Interpreter::getCurrentQueue();
         /* fill in the name                  */
         exit_parm.rxfnc_que = stdqueue->getStringData();
         /* and the length                    */

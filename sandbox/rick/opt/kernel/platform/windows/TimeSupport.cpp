@@ -38,7 +38,6 @@
 
 #include "RexxCore.h"
 #include "IntegerClass.hpp"
-#include "RexxNativeAPI.h"
 #include "RexxDateTime.hpp"
 #include "Interpreter.hpp"
 #include "SystemInterpreter.hpp"

@@ -62,11 +62,6 @@ class ProtectedObject;
 void SysGetCurrentTime(RexxDateTime *);/* get the current time              */
 #endif
 
-#ifndef SysVariablePool
-                                       /* process external vpool requests   */
-extern int SysVariablePool(RexxNativeActivation *, void *, bool);
-#endif
-
 #ifndef SysRelinquish
 void SysRelinquish(void);              /* allow the system to run           */
 #endif
@@ -185,10 +180,6 @@ RexxString *SysMessageHeader(wholenumber_t);    /* get the header for an error m
 
 #ifndef SysReadProgram
 RexxBuffer *SysReadProgram (const char *); /* read a program into storage       */
-#endif
-
-#ifndef SysGetCurrentQueue
-RexxString *SysGetCurrentQueue(void);  /* Get the current queue name        */
 #endif
 
 #ifndef SysSetupProgram

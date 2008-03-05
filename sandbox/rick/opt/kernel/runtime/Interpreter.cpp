@@ -471,3 +471,21 @@ RexxClass *Interpreter::findClass(RexxString *className)
     /* last chance, try the environment  */
     return(RexxClass *)(TheEnvironment->at(internalName));
 }
+
+
+/**
+ * Return the current queue name.
+ *
+ * @return The name of the current queue.
+ */
+RexxString *Interpreter::getCurrentQueue()
+{
+    RexxObject *queue = ActivityManager::localEnvironment->at(OREF_REXXQUEUE);
+
+    if (queue == OREF_NULL)              /* no queue?                         */
+    {
+        return OREF_SESSION;             // the session queue is the default
+    }
+    // get the current name from the queue object.
+    return(RexxString *)queue->sendMessage(OREF_GET);
+}

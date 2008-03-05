@@ -50,8 +50,7 @@
 #include <dispex.h>
 #include <agtctl_i.c> /* include to get the ID of ControlAgent events */
 
-#include "rexx.h"
-#include "RexxNativeAPI.h"                        // REXX native interface
+#include "oorexxapi.h"
 #include "events.h"
 
 extern VOID ORexxOleFree(PVOID ptr);

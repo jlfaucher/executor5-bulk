@@ -46,7 +46,6 @@
 #include "TableClass.hpp"
 #include "RexxActivity.hpp"
 #include "ActivityManager.hpp"
-#include "RexxNativeAPI.h"
 
 // singleton class instance
 RexxClass *RexxTable::classInstance = OREF_NULL;
@@ -254,40 +253,4 @@ RexxObject *RexxObjectTable::add(
     return OREF_NULL;                    /* always return nothing             */
 }
 
-#define this ((RexxTable *)self)
-
-/* ========================================================================== */
-/* ===                                                                    === */
-/* ========================================================================== */
-
-
-REXXOBJECT REXXENTRY REXX_TABLE_ADD(REXXOBJECT self, REXXOBJECT object, REXXOBJECT index)
-/******************************************************************************/
-/* Function:  External interface to the nativeact object method               */
-/******************************************************************************/
-{
-    NativeContextBlock context;
-                                       /* just forward and return           */
-    return context.protect(this->add((RexxObject *)object, (RexxObject *)index));
-}
-
-REXXOBJECT REXXENTRY REXX_TABLE_REMOVE(REXXOBJECT self, REXXOBJECT index)
-/******************************************************************************/
-/* Function:  External interface to the nativeact object method               */
-/******************************************************************************/
-{
-    NativeContextBlock context;
-                                       /* just forward and return           */
-    return context.protect(this->remove((RexxObject *)index));
-}
-
-REXXOBJECT REXXENTRY REXX_TABLE_GET(REXXOBJECT self, REXXOBJECT index)
-/******************************************************************************/
-/* Function:  External interface to the nativeact object method               */
-/******************************************************************************/
-{
-    NativeContextBlock context;
-                                       /* just forward and return           */
-    return context.protect(this->get((RexxObject *)index));
-}
 

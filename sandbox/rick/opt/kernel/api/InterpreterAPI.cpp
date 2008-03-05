@@ -52,7 +52,6 @@
 #include "RexxActivity.hpp"
 #include "ActivityManager.hpp"
 #include "MethodClass.hpp"
-#include "RexxNativeAPI.h"
 #include "StackClass.hpp"
 #include "Interpreter.hpp"
 #include "TranslateDispatcher.hpp"
@@ -85,7 +84,7 @@ int REXXENTRY RexxInitialize ()
     return true;
 }
 
-int REXXENTRY RexxQuery ()
+int REXXENTRY RexxQuery()
 /******************************************************************************/
 /* Function:  Determine if the REXX interpreter is initialized and active     */
 /******************************************************************************/
@@ -518,3 +517,37 @@ RexxReturnCode RexxEntry RexxCreateInterpreter(RexxInstance **instance, RexxThre
     return Interpreter::createInstance(*instance, *context, options) ? RXAPI_OK : RXAPI_MEMFAIL;
 }
 
+/**
+ * Main entry point for processing variable pool requests
+ *
+ * @param pshvblock The shaved variable block chain for the request.
+ *
+ * @return The composite request return code.
+ */
+RexxReturnCode RexxEntry RexxVariablePool(PSHVBLOCK pshvblock)
+{
+    NativeContextBlock context;
+    // the variable pool interface handles its own try/catches.
+    return context.self->variablePoolInterface(pshvblock);
+}
+
+/**
+ * Process a stemsort call for the rexxutil SysStemSort function.
+ *
+ * @param stemname The name of the stem.
+ * @param order    The sort order.
+ * @param type     The type of sort (case sensitivity).
+ * @param start    The starting element number.
+ * @param end      The end element number.
+ * @param firstcol The first sort column.
+ * @param lastcol  The last sort column.
+ *
+ * @return The sort return code result.
+ */
+RexxReturnCode RexxEntry RexxStemSort(const char *stemname, int order, int type,
+    size_t start, size_t end, size_t firstcol, size_t lastcol)
+{
+    NativeContextBlock context;
+    // the variable pool interface handles its own try/catches.
+    return context.self->stemSort(stemname, order, type, start, end, firstcol, lastcol);
+}

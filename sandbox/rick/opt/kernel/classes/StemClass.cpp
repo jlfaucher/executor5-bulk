@@ -1020,204 +1020,6 @@ RexxSupplier *RexxStem::supplier()
 }
 
 
-// TODO:  qsort has some portability problems.  Replace with custom version
-
-/******************************************************************************/
-/* Function:  Below are a series of comparison routines used by the qsort()   */
-/*            library function when sorting stems.                            */
-/******************************************************************************/
-int SysCall compare_asc_i(const void *arg1, const void *arg2)
-{
-    RexxString *rxArg1 = *((RexxString **)arg1);
-    RexxString *rxArg2 = *((RexxString **)arg2);
-
-    return rxArg1->sortCaselessCompare(rxArg2);
-}
-
-int SysCall compare_asc_i_cols(const void *arg1, const void *arg2)
-{
-    RexxString *rxArg1 = *((RexxString **)arg1);
-    RexxString *rxArg2 = *((RexxString **)arg2);
-
-    return rxArg1->sortCaselessCompare(rxArg2, sortStartCol, sortCompLength);
-}
-
-int SysCall compare_asc(const void *arg1, const void *arg2)
-{
-    RexxString *rxArg1 = *((RexxString **)arg1);
-    RexxString *rxArg2 = *((RexxString **)arg2);
-
-    return rxArg1->sortCompare(rxArg2);
-}
-
-int SysCall compare_asc_cols(const void *arg1, const void *arg2)
-{
-    RexxString *rxArg1 = *((RexxString **)arg1);
-    RexxString *rxArg2 = *((RexxString **)arg2);
-
-    return rxArg1->sortCompare(rxArg2, sortStartCol, sortCompLength);
-}
-
-int SysCall compare_desc(const void *arg1, const void *arg2)
-{
-    RexxString *rxArg1 = *((RexxString **)arg1);
-    RexxString *rxArg2 = *((RexxString **)arg2);
-
-    return -rxArg1->sortCompare(rxArg2);
-}
-
-int SysCall compare_desc_cols(const void *arg1, const void *arg2)
-{
-    RexxString *rxArg1 = *((RexxString **)arg1);
-    RexxString *rxArg2 = *((RexxString **)arg2);
-
-    return -rxArg1->sortCompare(rxArg2, sortStartCol, sortCompLength);
-}
-
-int SysCall compare_desc_i(const void *arg1, const void *arg2)
-{
-    RexxString *rxArg1 = *((RexxString **)arg1);
-    RexxString *rxArg2 = *((RexxString **)arg2);
-
-    return -rxArg1->sortCaselessCompare(rxArg2);
-}
-
-int SysCall compare_desc_i_cols(const void *arg1, const void *arg2)
-{
-    RexxString *rxArg1 = *((RexxString **)arg1);
-    RexxString *rxArg2 = *((RexxString **)arg2);
-
-    return -rxArg1->sortCaselessCompare(rxArg2, sortStartCol, sortCompLength);
-}
-
-
-bool RexxStem::sort(RexxString *prefix, int order, int type, size_t firstElement, size_t last, size_t firstcol, size_t lastcol)
-/******************************************************************************/
-/* Function:  Sort elements of a stem variable as if it was an array.  This   */
-/*            routine assumes that element ".0" of the stem contains a size   */
-/*            value for the array portion of the elements, and that tail      */
-/*            indices ".start" to ".end", inclusive all exist in the tail.    */
-/*            Sorting will be performed on the string values of all elements, */
-/*            and in the final result, all values will be replaced by the     */
-/*            string values.                                                  */
-/******************************************************************************/
-{
-    RexxCompoundTail stem_size(prefix, (size_t)0);
-    RexxCompoundElement *size_element = findCompoundVariable(&stem_size);
-    if (size_element == OREF_NULL)
-    {
-        return false;
-    }
-    RexxObject *size_value = size_element->getVariableValue();
-    if (size_value == OREF_NULL)
-    {
-        return false;
-    }
-    /* get the integer value of this.  It must be a valid numeric */
-    /* value. */
-    stringsize_t count;
-    if (!size_value->unsignedNumberValue(count))
-    {
-        return false;
-    }
-    if (count == 0)         // if the count is zero, sorting is easy!
-    {
-        return true;
-    }
-
-    /* if this is not specified, sort to the end */
-    if (last == SIZE_MAX)
-    {
-        last = count;
-    }
-
-    /* verify we're fully within the bounds */
-    if (firstElement > count || last > count)
-    {
-        return false;
-    }
-    size_t bounds = last - firstElement + 1;
-
-    /* get an array item and protect it.  We need to have space for both the variable anchors, and the variable values. */
-    RexxArray *array = new_array(bounds * 2);
-    ProtectedObject p(array);
-
-    size_t i;
-    size_t j;
-    for (j = 1, i = firstElement; i <= last; i++, j++)
-    {
-        RexxCompoundTail nextStem(prefix, (size_t)i);
-        RexxCompoundElement *next_element = findCompoundVariable(&nextStem);
-
-        if (next_element == OREF_NULL)
-        {
-            return false;
-        }
-
-        RexxObject *nextValue = next_element->getVariableValue();
-        if (nextValue == OREF_NULL)
-        {
-            return false;
-        }
-        /* force this to a string value. */
-        nextValue = REQUEST_STRING(nextValue);
-        /* now anchor both in the sorting array */
-        array->put((RexxObject *)next_element, j);
-        array->put(nextValue, j + bounds);
-    }
-
-    char *aData = (char *)array->data(bounds + 1);
-
-    if ((firstcol == 0) && (lastcol == SIZE_MAX))
-    {
-        /* no special columns to check */
-        switch (type)
-        {
-
-            case SORT_CASESENSITIVE:
-                qsort(aData, bounds, sizeof(RexxObject *),
-                      order == SORT_ASCENDING ? compare_asc : compare_desc);
-                break;
-            case SORT_CASEIGNORE:
-                qsort(aData, bounds, sizeof(RexxObject *),
-                      order == SORT_ASCENDING ? compare_asc_i : compare_desc_i);
-                break;
-        }
-    }
-    else
-    {
-        /* set columns to sort */
-        sortStartCol = firstcol;
-        sortCompLength = lastcol - firstcol + 1;
-
-        switch (type)
-        {
-            case SORT_CASESENSITIVE:
-                qsort(aData, bounds, sizeof(RexxObject *),
-                      order == SORT_ASCENDING ? compare_asc_cols : compare_desc_cols);
-                break;
-            case SORT_CASEIGNORE:
-                qsort(aData, bounds, sizeof(RexxObject *),
-                      order == SORT_ASCENDING ? compare_asc_i_cols : compare_desc_i_cols);
-                break;
-        }
-    }
-
-    /* The values have now been sorted.  We now need to set each */
-    /* each variable back to its new value. */
-    for (i = 1; i <= bounds; i++)
-    {
-        RexxCompoundElement *element = (RexxCompoundElement *)array->get(i);
-        RexxObject *v = array->get(i + bounds);
-        element->set(v);
-    }
-    /* make sure we discard the array before returning */
-    return true;
-}
-
-
-
-
 /**
  * Set a single stem variable object using a simple string
  * value tail as a result of an api call.
@@ -1357,4 +1159,236 @@ void RexxStem::dropElement(RexxCompoundTail *resolved_tail)
 RexxString *RexxStem::createCompoundName(RexxCompoundTail *tailPart)
 {
     return tailPart->createCompoundName(stemName);
+}
+
+
+/******************************************************************************/
+/* Function:  Below are a series of comparison routines used by the qsort()   */
+/*            library function when sorting stems.                            */
+/******************************************************************************/
+int compare_asc_i(SortData *sd, RexxString *arg1, RexxString *arg2)
+{
+    return arg1->sortCaselessCompare(arg2);
+}
+
+int compare_asc_i_cols(SortData *sd, RexxString *arg1, RexxString *arg2)
+{
+    return arg1->sortCaselessCompare(arg2, sd->startColumn, sd->columnLength);
+}
+
+int compare_asc(SortData *sd, RexxString *arg1, RexxString *arg2)
+{
+    return arg1->sortCompare(arg2);
+}
+
+int compare_asc_cols(SortData *sd, RexxString *arg1, RexxString *arg2)
+{
+    return arg1->sortCompare(arg2, sd->startColumn, sd->columnLength);
+}
+
+int compare_desc(SortData *sd, RexxString *arg1, RexxString *arg2)
+{
+    return -arg1->sortCompare(arg2);
+}
+
+int compare_desc_cols(SortData *sd, RexxString *arg1, RexxString *arg2)
+{
+    return -arg1->sortCompare(arg2, sd->startColumn, sd->columnLength);
+}
+
+int compare_desc_i(SortData *sd, RexxString *arg1, RexxString *arg2)
+{
+    return -arg1->sortCaselessCompare(arg2);
+}
+
+int compare_desc_i_cols(SortData *sd, RexxString *arg1, RexxString *arg2)
+{
+    return -arg1->sortCaselessCompare(arg2, sd->startColumn, sd->columnLength);
+}
+
+
+void RexxStem::quickSort(SortData *sd, int (*comparator)(SortData *, RexxString *, RexxString *), RexxString **strings, size_t left, size_t right)
+{
+    size_t old_left = left;
+    size_t old_right = right;
+
+    RexxString *pivot = strings[left];     // get the pivot value
+
+    // now find the new partitioning
+    while (left < right)
+    {
+        // fix the right end
+        while (comparator(sd, strings[right], pivot) >= 0 && (left < right))
+        {
+            right--;
+        }
+        // did we find a mismatch while testing?  then pull things in from the left too
+        if (left != right)
+        {
+            // swap these and pull the left in
+            strings[left] = strings[right];
+            left++;
+        }
+        // now compare from the left
+        while (comparator(sd, strings[left], pivot) <= 0 && (left < right))
+        {
+            left++;
+        }
+        // still not done?
+        if (left != right)
+        {
+            // swap these two and continue
+            strings[right] = strings[left];
+            right--;
+        }
+    }
+
+    // store the pivot value in the current left position
+    strings[left] = pivot;
+    // this is the new pivot point
+    size_t pivotPoint = left;
+    // restore the old end points
+    left = old_left;
+    right = old_right;
+    // something to the left of the pivot?
+    if (left < pivotPoint)
+    {
+        // sort the left partition
+        quickSort(sd, comparator, strings, left, pivotPoint - 1);
+    }
+    // and also the right partition if we have one
+    if (right > pivotPoint)
+    {
+        quickSort(sd, comparator, strings, pivotPoint + 1, right);
+    }
+}
+
+
+bool RexxStem::sort(RexxString *prefix, int order, int type, size_t first, size_t last, size_t firstcol, size_t lastcol)
+/******************************************************************************/
+/* Function:  Sort elements of a stem variable as if it was an array.  This   */
+/*            routine assumes that element ".0" of the stem contains a size   */
+/*            value for the array portion of the elements, and that tail      */
+/*            indices ".start" to ".end", inclusive all exist in the tail.    */
+/*            Sorting will be performed on the string values of all elements, */
+/*            and in the final result, all values will be replaced by the     */
+/*            string values.                                                  */
+/******************************************************************************/
+{
+    SortData sd;
+
+    sd.startColumn = 0;
+    sd.columnLength = 0;
+
+    RexxCompoundTail stem_size(prefix, (size_t)0);
+    RexxCompoundElement *size_element = findCompoundVariable(&stem_size);
+    if (size_element == OREF_NULL) {
+        return false;
+    }
+    RexxObject *size_value = size_element->getVariableValue();
+    if (size_value == OREF_NULL) {
+        return false;
+    }
+
+    stringsize_t count;
+    /* get the integer value of this.  It must be a valid numeric */
+    /* value. */
+    if (!size_value->unsignedNumberValue(count, Numerics::DEFAULT_DIGITS))
+    {
+        return false;
+    }
+    if (count == 0)         // if the count is zero, sorting is easy!
+    {
+        return true;
+    }
+
+    /* if this is not specified, sort to the end */
+    if (last == SIZE_MAX)
+    {
+        last = count;
+    }
+
+    /* verify we're fully within the bounds */
+    if (first > count || last > count) {
+        return false;
+    }
+    size_t bounds = last - first + 1;
+
+    /* get an array item and protect it.  We need to have space for both the variable anchors, and the variable values. */
+    RexxArray *array = new_array(bounds * 2);
+    ProtectedObject p1(array);
+
+    size_t i;
+    size_t j;
+    for (j = 1, i = first; i <= last; i++, j++)
+    {
+        RexxCompoundTail nextStem(prefix, (size_t)i);
+        RexxCompoundElement *next_element = findCompoundVariable(&nextStem);
+
+        if (next_element == OREF_NULL) {
+            return false;
+        }
+
+        RexxObject *nextValue = next_element->getVariableValue();
+        if (nextValue == OREF_NULL) {
+            return false;
+        }
+        /* force this to a string value. */
+        nextValue = REQUEST_STRING(nextValue);
+        /* now anchor both in the sorting array */
+        array->put((RexxObject *)next_element, j);
+        array->put(nextValue, j + bounds);
+    }
+
+    RexxString **aData = (RexxString **)array->data(bounds + 1);
+
+    {
+        // we're releasing kernel access during the process.  The sort is being
+        // done on a locally allocated array, so this will not be accessed by another thread.
+        // All the rest of the operations are thread safe.
+        UnsafeBlock block;
+
+        if ((firstcol == 0) && (lastcol == SIZE_MAX)) {
+          /* no special columns to check */
+          switch (type) {
+
+              case SORT_CASESENSITIVE:
+                  quickSort(&sd, order == SORT_ASCENDING ? compare_asc : compare_desc,
+                      aData, 0, bounds - 1);
+                  break;
+              case SORT_CASEIGNORE:
+                  quickSort(&sd, order == SORT_ASCENDING ? compare_asc_i : compare_desc_i,
+                    aData, 0, bounds - 1);
+                break;
+          }
+        }
+        else
+        {
+          /* set columns to sort */
+          sd.startColumn = firstcol;
+          sd.columnLength = lastcol - firstcol + 1;
+
+          switch (type)
+          {
+            case SORT_CASESENSITIVE:
+                quickSort(&sd, order == SORT_ASCENDING ? compare_asc_cols : compare_desc_cols,
+                    aData, 0, bounds - 1);
+                break;
+            case SORT_CASEIGNORE:
+                quickSort(&sd, order == SORT_ASCENDING ? compare_asc_i_cols : compare_desc_i_cols,
+                    aData, 0, bounds - 1);
+                break;
+          }
+        }
+    }
+
+
+    /* The values have now been sorted.  We now need to set each */
+    /* each variable back to its new value. */
+    for (i = 1; i <= bounds; i++) {
+        RexxCompoundElement *element = (RexxCompoundElement *)array->get(i);
+        RexxObject *value = array->get(i + bounds);
+        element->set(value);
+    }
+    return true;
 }

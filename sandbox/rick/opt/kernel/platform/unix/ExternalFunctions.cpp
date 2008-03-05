@@ -140,63 +140,6 @@ RexxRoutine2(CSTRING, sysBeep, wholenumber_t, Frequency, wholenumber_t, Duration
   return "";                            /* always returns a null     */
 }
 
-/*********************************************************************/
-/*                                                                   */
-/*   Method Name : sysSetLocal                                       */
-/*                                                                   */
-/*   Descriptive Name:  SETLOCAL                                     */
-/*                                                                   */
-/*   Function:          Save all environment variables, drive and    */
-/*                      directory of current drive.                  */
-/*                                                                   */
-/*********************************************************************/
-
-RexxRoutine1(RexxObjectPtr, sysSetLocal, OSELF, self)
-{
-  REXXOBJECT     Current;              /* new save block                    */
-
-  RexxObjectPtr Current = BuildEnvlist(context);  /* build the new save block          */
-  if (NULLOBJECT == Current)           /* if unsuccessful return zero       */
-  {
-      return context->False();
-  }
-  else
-  {
-                                       /* Have Native Actiovation           */
-    REXX_PUSH_ENVIRONMENT(Current);    /*  update environemnt list          */
-    return context->True();
-  }
-}
-
-
-/*********************************************************************/
-/*                                                                   */
-/*   method Name:  sysEndLocal                                       */
-/*                                                                   */
-/*   Descriptive Name:  ENDLOCAL                                     */
-/*                                                                   */
-/*   Function:          restore all previous environment variables   */
-/*                      drive and current directory.                 */
-/*                                                                   */
-/*********************************************************************/
-
-RexxRoutine0(RexxObjectPtr, sysEndLocal)
-{
-  REXXOBJECT     Current;              /* new save block                    */
-
-                                       /* retrieve top environment          */
-  REXXOBJECT Current =  REXX_POP_ENVIRONMENT();   /*  block, if ixisted.               */
-  if (context->NilObject() == Current)         /* nothing saved?                    */
-  {
-      return context->False();           /* return failure value              */
-  }
-  else {
-                                       /* restore everything                */
-    RestoreEnvironment(context->BufferAddress());
-    return context->True();            /* this worked ok                    */
-  }
-}
-
 
 /********************************************************************
 * Function:  resolve_tilde(path)                                    *

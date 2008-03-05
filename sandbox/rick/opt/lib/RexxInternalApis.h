@@ -48,6 +48,7 @@ extern "C" {
 
 int REXXENTRY RexxResolveExit(const char *, REXXPFN *);
 int REXXENTRY RexxResolveRoutine(const char *, REXXPFN *);
+int REXXENTRY RexxQuery();
 
 RexxReturnCode REXXENTRY RexxExecuteMacroFunction (const char *, PRXSTRING );
 

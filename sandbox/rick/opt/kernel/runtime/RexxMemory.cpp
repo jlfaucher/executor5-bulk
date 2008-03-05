@@ -2347,6 +2347,7 @@ void RexxMemory::restore()
     // that happens.
     Interpreter::init();
     ActivityManager::init();             /* do activity restores              */
+    PackageManager::restore();           // finish restoration of the packages.
     memoryObject.enableOrefChecks();     /* enable setCheckOrefs...           */
 }
 

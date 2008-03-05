@@ -415,6 +415,7 @@ ERROR_MESSAGE Message_table[] = {      /* table of major and minor errors   */
       MINOR(Error_Invalid_argument_list)
       MINOR(Error_Invalid_argument_general)
       MINOR(Error_Invalid_argument_format)
+      MINOR(Error_Invalid_argument_pointer)
   MAJOR(Error_Variable_expected)
       MINOR(Error_Variable_expected_USE)
       MINOR(Error_Variable_expected_PARSE)

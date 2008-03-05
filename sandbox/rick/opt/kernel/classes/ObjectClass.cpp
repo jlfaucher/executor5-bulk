@@ -2364,15 +2364,3 @@ PCPPM RexxObject::operatorMethods[] =
    (PCPPM)&RexxObject::operator_not,
 };
 
-
-#include "RexxNativeAPI.h"
-
-REXXOBJECT REXXENTRY REXX_OBJECT_NEW(REXXOBJECT self)
-/******************************************************************************/
-/* Function:  External interface to the nativeact object method               */
-/******************************************************************************/
-{
-    NativeContextBlock context;
-                                       /* just forward and return         */
-    return context.protect(new ((RexxClass *)self) RexxObject);
-}

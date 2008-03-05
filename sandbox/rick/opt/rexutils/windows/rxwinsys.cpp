@@ -58,6 +58,29 @@
 
 
 /*********************************************************************/
+/*                                                                   */
+/*   Subroutine Name:   memupper                                     */
+/*                                                                   */
+/*   Descriptive Name:  uppercase a memory location                  */
+/*                                                                   */
+/*   Entry Point:       memupper                                     */
+/*                                                                   */
+/*   Input:             memory to upper case                         */
+/*                      length of memory location                    */
+/*                                                                   */
+/*********************************************************************/
+
+void  memupper(
+  char    *location,                   /* location to uppercase      */
+  size_t   length)                     /* length to uppercase        */
+{
+  for (; length--; location++)         /* loop for entire string     */
+                                       /* uppercase in place         */
+    *location = toupper(*location);
+}
+
+
+/*********************************************************************/
 /* Numeric Return calls                                              */
 /*********************************************************************/
 
@@ -122,9 +145,11 @@ LONG HandleArgError(PRXSTRING r, BOOL ToMuch)
      if (strcmp(argum,"PERFORMANCE") == 0) ghk = HKEY_PERFORMANCE_DATA; else \
      if (strcmp(argum,"CURRENT_CONFIG") == 0) ghk = HKEY_CURRENT_CONFIG; else \
      if (strcmp(argum,"DYN_DATA") == 0) ghk = HKEY_DYN_DATA; else \
-     string2pointer(argum, &ghk); \
+     string2pointer(argum, (void **)&ghk); \
 }
 
+
+#define GET_HANDLE(argum, ghk) string2pointer(argum, (void **)&(ghk))
 
 
 #define SET_VARIABLE(varname, data, retc) {\
@@ -200,6 +225,7 @@ BOOL string2pointer(
 void pointer2string(PRXSTRING result, void *pointer)
 {
     sprintf(result->strptr, "0x%p", pointer);
+    result->strlength = strlen(result->strptr);
 }
 
 
@@ -236,7 +262,7 @@ size_t RexxEntry WSRegistryKey(const char *funcname, size_t argc, CONSTRXSTRING 
     {
         HKEY hkResult;
 
-        string2pointer(argv[1].strptr, &hk);
+        GET_HANDLE(argv[1].strptr, hk);
         if (RegCreateKey(hk, argv[2].strptr, &hkResult ) == ERROR_SUCCESS)
         {
             RET_HANDLE(hkResult);
@@ -283,7 +309,7 @@ size_t RexxEntry WSRegistryKey(const char *funcname, size_t argc, CONSTRXSTRING 
     }
     else if (strcmp(farg,"CLOSE"))
     {
-        string2pointer(argv[1].strptr, &hk);
+        GET_HANDLE(argv[1].strptr, hk);
         if (RegCloseKey(hk) == ERROR_SUCCESS)
         {
             RETC(0);
@@ -316,7 +342,7 @@ size_t RexxEntry WSRegistryKey(const char *funcname, size_t argc, CONSTRXSTRING 
 
         cbClass = 256;
 
-        string2pointer(argv[1].strptr, &hk);
+        GET_HANDLE(argv[1].strptr, hk);
 
         if ((retcode=RegQueryInfoKey(hk,                             // handle of key to query
              Class,    // address of buffer for class string
@@ -506,7 +532,7 @@ size_t RexxEntry WSRegistryValue(const char *funcname, size_t argc, CONSTRXSTRIN
                             NULL,        // NULL to get the size
                             &cbData) == ERROR_SUCCESS)
         {        // address of data buffer size
-            valData = GlobalAlloc(GPTR, cbData);
+            valData = (char *)GlobalAlloc(GPTR, cbData);
 
             if (!valData)
             {
@@ -517,7 +543,7 @@ size_t RexxEntry WSRegistryValue(const char *funcname, size_t argc, CONSTRXSTRIN
                                 argv[2].strptr,    // address of name of value to query
                                 NULL,    // reserved
                                 &valType,    // address of buffer for value type
-                                valData,    // address of data buffer
+                                (LPBYTE)valData,    // address of data buffer
                                 &cbData) == ERROR_SUCCESS)
             {        // address of data buffer size
 
@@ -539,7 +565,7 @@ size_t RexxEntry WSRegistryValue(const char *funcname, size_t argc, CONSTRXSTRIN
                     {
                         GlobalFree(retstr->strptr);
                     }
-                    retstr->strptr = GlobalAlloc(GMEM_FIXED, cbData + 10);
+                    retstr->strptr = (char *)GlobalAlloc(GMEM_FIXED, cbData + 10);
                 }
 
                 switch (valType)
@@ -642,7 +668,7 @@ size_t RexxEntry WSRegistryValue(const char *funcname, size_t argc, CONSTRXSTRIN
         SHVBLOCK shvb;
 
         GET_HKEY(argv[1].strptr, hk);
-        valData = GlobalAlloc(GPTR, initData);
+        valData = (char *)GlobalAlloc(GPTR, initData);
         if (!valData) RETERR
 
             do
@@ -655,14 +681,14 @@ size_t RexxEntry WSRegistryValue(const char *funcname, size_t argc, CONSTRXSTRIN
                                        &cbValue,
                                        NULL,    // reserved
                                        &valType,    // address of buffer for type code
-                                       valData,    // address of buffer for value data
+                                       (LPBYTE)valData,    // address of buffer for value data
                                        &cbData);     // address for size of data buffer
 
                 if ((retcode == ERROR_MORE_DATA) && (cbData > initData))   /* we need more memory */
                 {
                     GlobalFree(valData);
                     initData = cbData;
-                    valData = GlobalAlloc(GPTR, cbData);
+                    valData = (char *)GlobalAlloc(GPTR, cbData);
                     if (!valData) RETERR
                         ndx--;                      /* try to get the previous one again */
                     cbValue = sizeof(Name);
@@ -672,7 +698,7 @@ size_t RexxEntry WSRegistryValue(const char *funcname, size_t argc, CONSTRXSTRIN
                                            &cbValue,
                                            NULL,    // reserved
                                            &valType,    // address of buffer for type code
-                                           valData,    // address of buffer for value data
+                                           (LPBYTE)valData,    // address of buffer for value data
                                            &cbData);     // address for size of data buffer
                 }
 
@@ -1016,7 +1042,7 @@ BOOL ProgmanCmd(LPSTR lpszCmd)
 
 
     hExecData = DdeCreateDataHandle(dwDDEInst,
-                                    lpszCmd,
+                                    (LPBYTE)lpszCmd,
                                     lstrlen(lpszCmd)+1,
                                     0,
                                     NULL,
@@ -1024,7 +1050,7 @@ BOOL ProgmanCmd(LPSTR lpszCmd)
                                     0);
 
 
-    exRes = DdeClientTransaction((void *)hExecData,
+    exRes = DdeClientTransaction((LPBYTE)hExecData,
                          (DWORD)-1,
                          hConv,
                          NULL,
@@ -1338,20 +1364,20 @@ BOOL AddPMDesktopIcon(const char *lpszName,
     CoInitialize(NULL);
 
     // Get a pointer to the IShellLink interface.
-    hres = CoCreateInstance(&CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, &IID_IShellLink, &psl);
+    hres = CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, IID_IShellLink, (LPVOID *)&psl);
 
     if (SUCCEEDED(hres))
     {
         IPersistFile* ppf;
 
         // Set the path to the shortcut target
-        psl->lpVtbl->SetPath(psl, lpszProgram );
+        psl->SetPath(lpszProgram );
 
         // icon location. default of iIconIndex is 0, set in WINSYSTM.CLS
-        psl->lpVtbl->SetIconLocation(psl, lpszIcon, iIconIndex);
+        psl->SetIconLocation(lpszIcon, iIconIndex);
 
         // command-line arguments
-        psl->lpVtbl->SetArguments( psl, lpszArguments );
+        psl->SetArguments(lpszArguments );
 
         //shortcut key, the conversion to hex is done in WINSYSTM.CLS
         // modificationflag:
@@ -1360,27 +1386,26 @@ BOOL AddPMDesktopIcon(const char *lpszName,
         // HOTKEYF_CONTROL = CTRL key       0x02
         // HOTKEYF_ALT     = ALT key        0x04
         // HOTKEYF_EXT     = Extended key   0x08
-        psl->lpVtbl->SetHotkey( psl, MAKEWORD( iScKey, iScModifier) );
+        psl->SetHotkey(MAKEWORD( iScKey, iScModifier) );
 
         // working directory
-        psl->lpVtbl->SetWorkingDirectory( psl, lpszWorkDir );
+        psl->SetWorkingDirectory(lpszWorkDir );
 
         // run in normal, maximized , minimized window, default is NORMAL, set in WINSYSTM.CLS
         if ( !stricmp(lpszRun,"MAXIMIZED") )
         {
             iRun = SW_SHOWMAXIMIZED;
         }
-        else
-            if ( !stricmp(lpszRun,"MINIMIZED") )
+        else if ( !stricmp(lpszRun,"MINIMIZED") )
         {
             iRun = SW_SHOWMINNOACTIVE;
         }
 
-        psl->lpVtbl->SetShowCmd( psl, iRun );
+        psl->SetShowCmd(iRun );
 
         // Query IShellLink for the IPersistFile interface for saving the
         // shortcut in persistent storage.
-        hres = psl->lpVtbl->QueryInterface(psl, &IID_IPersistFile, &ppf);
+        hres = psl->QueryInterface(IID_IPersistFile, (void **)&ppf);
 
         if (SUCCEEDED(hres))
         {
@@ -1396,11 +1421,11 @@ BOOL AddPMDesktopIcon(const char *lpszName,
                 // get current user
                 if (!stricmp(lpszLocation,"PERSONAL"))
                 {
-                    bRc = GetCurrentUserDesktopLocation ( szDesktopDir , &dwSize ) ;
+                    bRc = GetCurrentUserDesktopLocation ( (LPBYTE)szDesktopDir , &dwSize ) ;
                 }
                 else
                 {  // Location is COMMON
-                    bRc = GetAllUserDesktopLocation ( szDesktopDir , &dwSize ) ;
+                    bRc = GetAllUserDesktopLocation ( (LPBYTE)szDesktopDir , &dwSize ) ;
                 }
 
                 if ( bRc)
@@ -1422,12 +1447,12 @@ BOOL AddPMDesktopIcon(const char *lpszName,
                 MultiByteToWideChar(CP_ACP, 0, szShortCutName, -1, wsz, MAX_PATH);
 
                 // Save the link by calling IPersistFile::Save.
-                hres = ppf->lpVtbl->Save(ppf, wsz, TRUE);
+                hres = ppf->Save(wsz, TRUE);
                 if (!SUCCEEDED(hres))
                 {
                     bRc = FALSE;
                 }
-                ppf->lpVtbl->Release(ppf);
+                ppf->Release();
             }
             else
             {
@@ -1439,7 +1464,7 @@ BOOL AddPMDesktopIcon(const char *lpszName,
             bRc = FALSE;
         }
 
-        psl->lpVtbl->Release(psl);
+        psl->Release();
 
     }
     else
@@ -1478,11 +1503,11 @@ INT DelPMDesktopIcon( const char *lpszName, const char *lpszLocation)
     // the specified location
     if (!stricmp(lpszLocation,"PERSONAL"))
     {
-        GetCurrentUserDesktopLocation ( szDesktopDir , &dwSize );
+        GetCurrentUserDesktopLocation ( (LPBYTE)szDesktopDir , &dwSize );
     }
     else
     {  // Location is COMMON
-        GetAllUserDesktopLocation ( szDesktopDir , &dwSize );
+        GetAllUserDesktopLocation ( (LPBYTE)szDesktopDir , &dwSize );
     }
 
     //.lnk must be added to identify the file as a shortcut
@@ -1631,7 +1656,7 @@ void GetEvPaMessageFile(char * pMessageFile, char * pchSource,char * pchSourceNa
    chMessageFile[0] ='\0';         //initialize return
 
    //build the complete key --> first part + second part from input + third part from input
-   pchKey = GlobalAlloc(GMEM_FIXED|GMEM_ZEROINIT, strlen(chKey) + strlen(pchSource) + 1 + strlen(pchSourceName) +1);
+   pchKey = (char *)GlobalAlloc(GMEM_FIXED|GMEM_ZEROINIT, strlen(chKey) + strlen(pchSource) + 1 + strlen(pchSourceName) +1);
    sprintf(pchKey, "%s%s\\%s", chKey, pchSource, pchSourceName);
 
    if ( (rc = RegOpenKeyEx(HKEY_LOCAL_MACHINE,
@@ -1648,13 +1673,13 @@ void GetEvPaMessageFile(char * pMessageFile, char * pchSource,char * pchSourceNa
                            &dataSize)) == ERROR_SUCCESS )// .. returned here
       {
          //no error getting the size of message file name, allocate buffer and get the value
-         valData = GlobalAlloc(GMEM_FIXED|GMEM_ZEROINIT, dataSize);
+         valData = (char *)GlobalAlloc(GMEM_FIXED|GMEM_ZEROINIT, dataSize);
 
          if ( (rc = RegQueryValueEx(hKey,                   // handle of key to query
-                              pMessageFile,                // address of name of value to query
+                              pMessageFile,                 // address of name of value to query
                               NULL,                         // reserved
-                              &valType,                   // address of buffer for value type
-                              valData,                      // address of buffer for value data
+                              &valType,                     // address of buffer for value type
+                              (LPBYTE)valData,              // address of buffer for value data
                               &dataSize)) == ERROR_SUCCESS )
          {
             ExpandEnvironmentStrings(valData,chMessageFile,MAX_PATH);
@@ -1694,7 +1719,7 @@ BOOL SearchMessage(char * chFileNames, DWORD dwMessageID, char ** pchInsertArray
 
    if (chFileNames[0] != '\0')
    {
-      pBuffer = GlobalAlloc(GMEM_FIXED|GMEM_ZEROINIT, strlen(chFileNames)+1);
+      pBuffer = (char *)GlobalAlloc(GMEM_FIXED|GMEM_ZEROINIT, strlen(chFileNames)+1);
       strcpy(pBuffer,chFileNames);
       pTemp = pBuffer;
 
@@ -1773,7 +1798,7 @@ void BuildMessage(PEVENTLOGRECORD pEvLogRecord , const char * pchSource, char **
       {
          //the replacement strings contains placeholder for parameters
          //get name of parameter message file from registry
-         GetEvPaMessageFile("ParameterMessageFile",pchSource,(char *)pEvLogRecord + sizeof(EVENTLOGRECORD),chMessageFile);
+            GetEvPaMessageFile("ParameterMessageFile", const_cast<char *>(pchSource), (char *)pEvLogRecord + sizeof(EVENTLOGRECORD),chMessageFile);
 
          //load strings from the parameter message file
          if ( (hInstance = LoadLibrary(chMessageFile)) != 0 )
@@ -1790,7 +1815,7 @@ void BuildMessage(PEVENTLOGRECORD pEvLogRecord , const char * pchSource, char **
             if (rc == 0) //error getting strings
             {
                //use empty string
-               pchInsertArray[i] = LocalAlloc(LMEM_FIXED,1);
+               pchInsertArray[i] = (char *)LocalAlloc(LMEM_FIXED,1);
                *pchInsertArray[i] ='\0';
             }
             FreeLibrary(hInstance);
@@ -1799,7 +1824,7 @@ void BuildMessage(PEVENTLOGRECORD pEvLogRecord , const char * pchSource, char **
          else
          {
             //parameter message file could not be loaded, use empty string
-            pchInsertArray[i] = LocalAlloc(LMEM_FIXED,1);
+            pchInsertArray[i] = (char *)LocalAlloc(LMEM_FIXED,1);
             *pchInsertArray[i] ='\0';
          }
          //accumulate sum of string length
@@ -1809,7 +1834,7 @@ void BuildMessage(PEVENTLOGRECORD pEvLogRecord , const char * pchSource, char **
       {
          //the replacement strings contains NO placeholder for parameters, use them as is
          iStringLen += (int)strlen(pchString)+1;
-         pchInsertArray[i] = LocalAlloc(LMEM_FIXED,strlen(pchString)+1);
+         pchInsertArray[i] = (char *)LocalAlloc(LMEM_FIXED,strlen(pchString)+1);
          strcpy(pchInsertArray[i],pchString);
       }
       //point to next replacement string within log record
@@ -1817,7 +1842,7 @@ void BuildMessage(PEVENTLOGRECORD pEvLogRecord , const char * pchSource, char **
    }
 
    //get name of event log  message file from registry
-   GetEvPaMessageFile("EventMessageFile",pchSource,(char *)pEvLogRecord + sizeof(EVENTLOGRECORD),chMessageFile);
+    GetEvPaMessageFile("EventMessageFile",const_cast<char *>(pchSource),(char *)pEvLogRecord + sizeof(EVENTLOGRECORD),chMessageFile);
 
    //Search the message in the all event message files
    rc = SearchMessage(chMessageFile,pEvLogRecord->EventID,pchInsertArray,&lpMsgBuf);
@@ -1827,7 +1852,7 @@ void BuildMessage(PEVENTLOGRECORD pEvLogRecord , const char * pchSource, char **
       //use replacement strings for the message if available
       if (pEvLogRecord->NumStrings)
       {
-         *pMessage = GlobalAlloc(GMEM_FIXED|GMEM_ZEROINIT, iStringLen+1);
+         *pMessage = (char *)GlobalAlloc(GMEM_FIXED|GMEM_ZEROINIT, iStringLen+1);
 
          for (i=0;i < pEvLogRecord->NumStrings;i++)
          {
@@ -1837,15 +1862,15 @@ void BuildMessage(PEVENTLOGRECORD pEvLogRecord , const char * pchSource, char **
       }
       else //return empty string
       {
-         *pMessage    = GlobalAlloc(GMEM_FIXED|GMEM_ZEROINIT, 1);
+         *pMessage    = (char *)GlobalAlloc(GMEM_FIXED|GMEM_ZEROINIT, 1);
          *pMessage[0] = '\0';
       }
    }
    else
    {
       //message formatted return it
-      *pMessage = GlobalAlloc(GMEM_FIXED|GMEM_ZEROINIT, strlen((char*)lpMsgBuf) + 1);
-      strcpy(*pMessage,lpMsgBuf);
+      *pMessage = (char *)GlobalAlloc(GMEM_FIXED|GMEM_ZEROINIT, strlen((char*)lpMsgBuf) + 1);
+      strcpy(*pMessage, (const char *)lpMsgBuf);
       //lpMsgBuf must be given free with LocalFree
       LocalFree(lpMsgBuf);
    }
@@ -1903,8 +1928,8 @@ char * GetUser(PEVENTLOGRECORD pEvLogRecord)
       {
          if (GetLastError() == ERROR_INSUFFICIENT_BUFFER) //expected because sizes are set to 0
          {
-            pchUserId = GlobalAlloc(GMEM_FIXED|GMEM_ZEROINIT, max(sizeId,(DWORD)strlen(chDefUserId)+1));
-            pchDummy = GlobalAlloc(GMEM_FIXED|GMEM_ZEROINIT, sizeDummy);
+            pchUserId = (char *)GlobalAlloc(GMEM_FIXED|GMEM_ZEROINIT, max(sizeId,(DWORD)strlen(chDefUserId)+1));
+            pchDummy = (char *)GlobalAlloc(GMEM_FIXED|GMEM_ZEROINIT, sizeDummy);
             //now get it ...
             rc = LookupAccountSid(NULL,                    // address of string for system name
                                   psid,                    // address of security identifier
@@ -1923,7 +1948,7 @@ char * GetUser(PEVENTLOGRECORD pEvLogRecord)
    //if not already set return default
    if (pchUserId == (char*)0)
    {
-      pchUserId = GlobalAlloc(GMEM_FIXED|GMEM_ZEROINIT, strlen(chDefUserId)+1);
+      pchUserId = (char *)GlobalAlloc(GMEM_FIXED|GMEM_ZEROINIT, strlen(chDefUserId)+1);
       strcpy(pchUserId,chDefUserId);
    }
    return pchUserId;
@@ -1945,13 +1970,13 @@ char * GetUser(PEVENTLOGRECORD pEvLogRecord)
 //-----------------------------------------------------------------------------
 void GetEvData(PEVENTLOGRECORD pEvLogRecord, char ** pchData)
 {
-    unsigned char * puchAct;
+    char * puchAct;
     char            pTemp[3];
     DWORD           i;
 
     if (pEvLogRecord->DataLength != 0)
     {
-       *pchData = GlobalAlloc(GMEM_FIXED|GMEM_ZEROINIT,(pEvLogRecord->DataLength + 1) * 2);
+       *pchData = (char *)GlobalAlloc(GMEM_FIXED|GMEM_ZEROINIT,(pEvLogRecord->DataLength + 1) * 2);
 
        puchAct =  (char*)pEvLogRecord + pEvLogRecord->DataOffset;
 
@@ -1963,7 +1988,9 @@ void GetEvData(PEVENTLOGRECORD pEvLogRecord, char ** pchData)
        }
     }
     else
-      *pchData    = GlobalAlloc(GMEM_FIXED|GMEM_ZEROINIT, 1);
+    {
+        *pchData = (char *)GlobalAlloc(GMEM_FIXED|GMEM_ZEROINIT, 1);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -2112,7 +2139,7 @@ size_t RexxEntry WSEventLog(const char *funcname, size_t argc, CONSTRXSTRING arg
         {
             if (argv[2].strlength != 0)
             {
-                string2pointer(argv[2].strptr, &hEventLog);
+                GET_HANDLE(argv[2].strptr, hEventLog);
             }
         }
 
@@ -2174,7 +2201,7 @@ size_t RexxEntry WSEventLog(const char *funcname, size_t argc, CONSTRXSTRING arg
         {
             if (argv[2].strlength != 0)
             {
-                string2pointer(argv[2].strptr, &hEventLog);
+                GET_HANDLE(argv[2].strptr, hEventLog);
             }
             else
             {
@@ -2202,7 +2229,7 @@ size_t RexxEntry WSEventLog(const char *funcname, size_t argc, CONSTRXSTRING arg
         {
             if (argv[2].strlength != 0)
             {
-                string2pointer(argv[2].strptr, &hEventLog);
+                GET_HANDLE(argv[2].strptr, hEventLog);
             }
         }
 
@@ -2296,7 +2323,7 @@ size_t RexxEntry WSEventLog(const char *funcname, size_t argc, CONSTRXSTRING arg
         WORD     wEventType       = 1;
         WORD     wEventCategory   = 0;
         DWORD    dwEventId        = 0;
-        LPVOID   lpData           = (void *)0;
+        char    *lpData           = NULL;
         DWORD    dwDataSize       = 0;
         WORD     wNumStrings      = 0;
         const char *lpStrings[100];
@@ -2327,7 +2354,7 @@ size_t RexxEntry WSEventLog(const char *funcname, size_t argc, CONSTRXSTRING arg
         // check the event data (initialized to NULL = default)
         if ( argc >= 13 && argv[12].strlength != 0 )
         {
-            lpData = GlobalAlloc(GMEM_FIXED|GMEM_ZEROINIT,argv[12].strlength+1);
+            lpData = (char *)GlobalAlloc(GMEM_FIXED|GMEM_ZEROINIT,argv[12].strlength+1);
             sprintf(lpData, "%s", argv[12].strptr);
             dwDataSize = (DWORD)argv[12].strlength;
         }
@@ -2422,7 +2449,7 @@ size_t RexxEntry WSEventLog(const char *funcname, size_t argc, CONSTRXSTRING arg
         {
             while ( (rc = ReadEventLog(hEventLog, dwReadFlags, start, pBuffer, bufSize, &pnBytesRead, &pnMinNumberOfBytesNeeded) ) && (count < num) )
             {
-                pEvLogRecord = pBuffer;
+                pEvLogRecord = (PEVENTLOGRECORD)pBuffer;
                 bufferPos = 0;
 
                 while ( (bufferPos < pnBytesRead) && (count < num) )
@@ -2455,7 +2482,7 @@ size_t RexxEntry WSEventLog(const char *funcname, size_t argc, CONSTRXSTRING arg
 
                     GetEvData(pEvLogRecord,&pchData);
 
-                    pchStrBuf = GlobalAlloc(GMEM_FIXED,
+                    pchStrBuf = (char *)GlobalAlloc(GMEM_FIXED,
                                             strlen(evType[evTypeIndex])+1+
                                             strlen(date)+1+
                                             strlen(time)+1+
@@ -2575,7 +2602,7 @@ size_t RexxEntry WSCtrlWindow(const char *funcname, size_t argc, CONSTRXSTRING a
     else if (!strcmp(argv[0].strptr,"FINDCHILD"))
     {
         CHECKARG(3,3);
-        string2pointer(argv[1].strptr, &thW);
+        GET_HANDLE(argv[1].strptr, thW);
 
         hW = FindWindowEx(thW, NULL, NULL, argv[2].strptr);
         RET_HANDLE(hW);
@@ -2584,9 +2611,9 @@ size_t RexxEntry WSCtrlWindow(const char *funcname, size_t argc, CONSTRXSTRING a
     {
         CHECKARG(2,2);
         hW =  GetForegroundWindow();
-        string2pointer(argv[1].strptr, &thW);
+        GET_HANDLE(argv[1].strptr, thW);
 
-        if (hW != thw)
+        if (hW != thW)
         {
             SetForegroundWindow(thW);
         }
@@ -2599,7 +2626,7 @@ size_t RexxEntry WSCtrlWindow(const char *funcname, size_t argc, CONSTRXSTRING a
     else if (!strcmp(argv[0].strptr,"TITLE"))
     {
         CHECKARG(2,3);
-        string2pointer(argv[1].strptr, &hW);
+        GET_HANDLE(argv[1].strptr, hW);
         if (hW != NULL)
         {
             if (argc ==3)
@@ -2630,7 +2657,7 @@ size_t RexxEntry WSCtrlWindow(const char *funcname, size_t argc, CONSTRXSTRING a
                 {
                     // text larger than 255, allocate a new one
                     // the original REXX retstr->strptr must not be released! REXX keeps track of this
-                    tmp_ptr = GlobalAlloc(GMEM_FIXED|GMEM_ZEROINIT, retstr->strlength + 1);
+                    tmp_ptr = (char *)GlobalAlloc(GMEM_FIXED|GMEM_ZEROINIT, retstr->strlength + 1);
                     if (!tmp_ptr)
                     {
                         RETERR
@@ -2687,7 +2714,7 @@ size_t RexxEntry WSCtrlWindow(const char *funcname, size_t argc, CONSTRXSTRING a
 
                         if ( retstr->strlength > (RXAUTOBUFLEN - 1)  )
                         {
-                            tmp_ptr = GlobalAlloc(GMEM_FIXED|GMEM_ZEROINIT, retstr->strlength + 1);
+                            tmp_ptr = (char *)GlobalAlloc(GMEM_FIXED|GMEM_ZEROINIT, retstr->strlength + 1);
                             if (!tmp_ptr)
                             {
                                 RETERR
@@ -2727,8 +2754,7 @@ size_t RexxEntry WSCtrlWindow(const char *funcname, size_t argc, CONSTRXSTRING a
     else if (!strcmp(argv[0].strptr,"CLASS"))
     {
         CHECKARG(2,2);
-        string2pointer(argv[1].strptr, &hW);
-        hW = (HWND) atol(argv[1].strptr);
+        GET_HANDLE(argv[1].strptr, hW);
         {
             retstr->strlength = GetClassName(hW, retstr->strptr, 255);
             return 0;
@@ -2738,7 +2764,7 @@ size_t RexxEntry WSCtrlWindow(const char *funcname, size_t argc, CONSTRXSTRING a
     else if (!strcmp(argv[0].strptr,"SHOW"))
     {
         CHECKARG(3,3);
-        string2pointer(argv[1].strptr, &hW);
+        GET_HANDLE(argv[1].strptr, hW);
         if (hW)
         {
             INT sw;
@@ -2756,7 +2782,7 @@ size_t RexxEntry WSCtrlWindow(const char *funcname, size_t argc, CONSTRXSTRING a
     else if (!strcmp(argv[0].strptr,"HNDL"))
     {
         CHECKARG(3,3);
-        string2pointer(argv[1].strptr, &hW);
+        GET_HANDLE(argv[1].strptr, hW);
         if (hW)
         {
             INT gw;
@@ -2779,7 +2805,7 @@ size_t RexxEntry WSCtrlWindow(const char *funcname, size_t argc, CONSTRXSTRING a
     {
         CHECKARG(2,2);
 
-        string2pointer(argv[1].strptr, &hW);
+        GET_HANDLE(argv[1].strptr, hW);
         RETVAL(GetDlgCtrlID(hW))
     }
     else if (!strcmp(argv[0].strptr,"ATPOS"))
@@ -2791,7 +2817,7 @@ size_t RexxEntry WSCtrlWindow(const char *funcname, size_t argc, CONSTRXSTRING a
 
         if (argc == 4)
         {
-            string2pointer(argv[3].strptr, &hW);
+            GET_HANDLE(argv[3].strptr, hW);
         }
         else
         {
@@ -2799,7 +2825,7 @@ size_t RexxEntry WSCtrlWindow(const char *funcname, size_t argc, CONSTRXSTRING a
         }
         if (hW)
         {
-            RET_HANDLE(hildWindowFromPointEx(hW, pt, CWP_ALL));
+            RET_HANDLE(ChildWindowFromPointEx(hW, pt, CWP_ALL));
         }
         else
         {
@@ -2811,7 +2837,7 @@ size_t RexxEntry WSCtrlWindow(const char *funcname, size_t argc, CONSTRXSTRING a
         RECT r;
         CHECKARG(2,2);
         retstr->strlength = 0;
-        string2pointer(argv[1].strptr, &hW);
+        GET_HANDLE(argv[1].strptr, hW);
         if (hW && GetWindowRect(hW, &r))
         {
             sprintf(retstr->strptr,"%d,%d,%d,%d",r.left, r.top, r.right, r.bottom);
@@ -2823,7 +2849,7 @@ size_t RexxEntry WSCtrlWindow(const char *funcname, size_t argc, CONSTRXSTRING a
     {
         CHECKARG(2,2);
         retstr->strlength = 0;
-        string2pointer(argv[1].strptr, &hW);
+        GET_HANDLE(argv[1].strptr, hW);
         if (hW)
         {
             retstr->strptr[0] = '\0';
@@ -2845,7 +2871,7 @@ size_t RexxEntry WSCtrlWindow(const char *funcname, size_t argc, CONSTRXSTRING a
     else if (!strcmp(argv[0].strptr,"ENABLE"))
     {
         CHECKARG(3,3);
-        string2pointer(argv[1].strptr, &hW);
+        GET_HANDLE(argv[1].strptr, hW);
         if (hW)
         {
             RETC(EnableWindow(hW, atoi(argv[2].strptr)));
@@ -2854,7 +2880,7 @@ size_t RexxEntry WSCtrlWindow(const char *funcname, size_t argc, CONSTRXSTRING a
     else if (!strcmp(argv[0].strptr,"MOVE"))
     {
         CHECKARG(4,4);
-        string2pointer(argv[1].strptr, &hW);
+        GET_HANDLE(argv[1].strptr, hW);
         if (hW)
         {
             RECT r;
@@ -2868,7 +2894,7 @@ size_t RexxEntry WSCtrlWindow(const char *funcname, size_t argc, CONSTRXSTRING a
     else if (!strcmp(argv[0].strptr,"SIZE"))
     {
         CHECKARG(4,4);
-        string2pointer(argv[1].strptr, &hW);
+        GET_HANDLE(argv[1].strptr, hW);
         if (hW)
         {
             RECT r;
@@ -2886,159 +2912,196 @@ size_t RexxEntry WSCtrlWindow(const char *funcname, size_t argc, CONSTRXSTRING a
 
 size_t RexxEntry WSCtrlSend(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, PRXSTRING retstr)
 {
-   HWND hW,HwndFgWin;
+    HWND hW,HwndFgWin;
 
-   CHECKARG(1,10);
+    CHECKARG(1,10);
 
-   if (!strcmp(argv[0].strptr,"KEY"))
-   {
-       CHECKARG(4,5);
+    if (!strcmp(argv[0].strptr,"KEY"))
+    {
+        CHECKARG(4,5);
+        GET_HANDLE(argv[1].strptr, hW);
+        if (hW)
+        {
+            WPARAM k;
+            LPARAM l;
 
-       hW = (HWND)atol(argv[1].strptr);
-       if (hW)
-       {
-          WPARAM k;
-          LPARAM l;
-
-          k = (WPARAM)atoi(argv[2].strptr);
-          if (argc == 5) l = strtol(argv[4].strptr,'\0',16); else l = 0;
-
-          /* Combination of keys (e.g. SHIFT END) and function keys (e.g. F1) dont worked                 */
-          /* The reson is, that the WM_KEWUP/Doen message cannot handle this !                            */
-          /* To get the function keys working, WM_KEYDOWN/UP can be used, but the message MUST be posted! */
-          /* To get key combination working the keybd_event function must be use. But .....               */
-          /* The window must be in the Foreground and The handle must be associated:                      */
-          /* To get these working, the REXX code must be lok like:                                        */
-          /* EditHandle = npe~Handle                                                                      */
-          /* npe~ToForeground                                                                             */
-          /* npe~AssocWindow(np~Handle)                                                                   */
-          /* npe~SendKeyDown("SHIFT")                                                                     */
-          /* npe~SendKeyDown("HOME")                                                                      */
-          /* npe~SendKeyUp("SHIFT")                                                                       */
-          /* npe~SendKeyUp("HOME")                                                                        */
-
-          if (argv[3].strptr[0] == 'D')
-          {
-            HwndFgWin = GetForegroundWindow();
-            if ( hW == HwndFgWin)
-             {
-               if (l != 0)
-                 keybd_event((BYTE)k,0,KEYEVENTF_EXTENDEDKEY,0);
-               else
-                 keybd_event((BYTE)k,0,0,0);
-
-               retstr->strptr[0] = '1';
-               retstr->strptr[1] = '\0';
-             }
-             else
-               itoa(PostMessage(hW,WM_KEYDOWN, k,l), retstr->strptr, 10);
-          }
-          else if (argv[3].strptr[0] == 'U')
+            k = (WPARAM)atoi(argv[2].strptr);
+            if (argc == 5)
             {
-              HwndFgWin = GetForegroundWindow();
-              if ( hW == HwndFgWin )
-              {
-                if (l == 1)
-                  keybd_event((BYTE)k,0,KEYEVENTF_KEYUP | KEYEVENTF_EXTENDEDKEY,0);
-                else
-                  keybd_event((BYTE)k,0,KEYEVENTF_KEYUP,0);
-
-                retstr->strptr[0] = '1';
-                retstr->strptr[1] = '\0';
-              }
-              else
-              {
-                itoa(PostMessage(hW,WM_KEYUP, k, l | 0xC0000000), retstr->strptr, 10);
-                retstr->strptr[0] = '1';
-                retstr->strptr[1] = '\0';
-              }
+                l = strtol(argv[4].strptr,'\0',16);
             }
             else
-              /* WM_CHAR don't works for ALT key combinations                             */
-              /* WM_SYSKEYDOWN and hW,WM_SYSKEYUP must used                               */
-              if ( l != 0 )
-              {
+            {
+                l = 0;
+            }
+
+            /* Combination of keys (e.g. SHIFT END) and function keys (e.g. F1) dont worked                 */
+            /* The reson is, that the WM_KEWUP/Doen message cannot handle this !                            */
+            /* To get the function keys working, WM_KEYDOWN/UP can be used, but the message MUST be posted! */
+            /* To get key combination working the keybd_event function must be use. But .....               */
+            /* The window must be in the Foreground and The handle must be associated:                      */
+            /* To get these working, the REXX code must be lok like:                                        */
+            /* EditHandle = npe~Handle                                                                      */
+            /* npe~ToForeground                                                                             */
+            /* npe~AssocWindow(np~Handle)                                                                   */
+            /* npe~SendKeyDown("SHIFT")                                                                     */
+            /* npe~SendKeyDown("HOME")                                                                      */
+            /* npe~SendKeyUp("SHIFT")                                                                       */
+            /* npe~SendKeyUp("HOME")                                                                        */
+
+            if (argv[3].strptr[0] == 'D')
+            {
+                HwndFgWin = GetForegroundWindow();
+                if ( hW == HwndFgWin)
+                {
+                    if (l != 0)
+                    {
+                        keybd_event((BYTE)k,0,KEYEVENTF_EXTENDEDKEY,0);
+                    }
+                    else
+                    {
+                        keybd_event((BYTE)k,0,0,0);
+                    }
+
+                    retstr->strptr[0] = '1';
+                    retstr->strptr[1] = '\0';
+                }
+                else
+                {
+                    itoa(PostMessage(hW,WM_KEYDOWN, k,l), retstr->strptr, 10);
+                }
+            }
+            else if (argv[3].strptr[0] == 'U')
+            {
+                HwndFgWin = GetForegroundWindow();
+                if ( hW == HwndFgWin )
+                {
+                    if (l == 1)
+                    {
+                        keybd_event((BYTE)k,0,KEYEVENTF_KEYUP | KEYEVENTF_EXTENDEDKEY,0);
+                    }
+                    else
+                    {
+                        keybd_event((BYTE)k,0,KEYEVENTF_KEYUP,0);
+                    }
+
+                    retstr->strptr[0] = '1';
+                    retstr->strptr[1] = '\0';
+                }
+                else
+                {
+                    itoa(PostMessage(hW,WM_KEYUP, k, l | 0xC0000000), retstr->strptr, 10);
+                    retstr->strptr[0] = '1';
+                    retstr->strptr[1] = '\0';
+                }
+            }
+            /* WM_CHAR don't works for ALT key combinations                             */
+            /* WM_SYSKEYDOWN and hW,WM_SYSKEYUP must used                               */
+            else if ( l != 0 )
+            {
                 itoa(PostMessage(hW,WM_SYSKEYDOWN, k,l), retstr->strptr, 10);
                 itoa(PostMessage(hW,WM_SYSKEYUP, k,l), retstr->strptr, 10);
-              }
-              else
+            }
+            else
+            {
                 itoa(SendNotifyMessage(hW,WM_CHAR, k,l), retstr->strptr, 10);
+            }
             retstr->strlength = strlen(retstr->strptr);
-          return 0;
-       }
-   }
-   else if (!strcmp(argv[0].strptr,"MSG"))
-   {
-       ULONG n[4];
-       INT i;
+            return 0;
+        }
+    }
+    else if (!strcmp(argv[0].strptr,"MSG"))
+    {
+        ULONG n[4];
+        INT i;
 
-       CHECKARG(5,6);
+        CHECKARG(5,6);
 
-       for ( i = 0; i < 4; i++ )
-       {
-           if ( ISHEX(argv[i+1].strptr) )
-               n[i] = strtol(argv[i+1].strptr,'\0',16);
-           else
-               n[i] = atol(argv[i+1].strptr);
-       }
-
-       /* The 6th arg can, optionally, be used as an extra qualifier.  Currently
-        * only used in one case.
-        */
-       if ( argc > 5 && argv[5].strptr[0] == 'E' )
-           n[3] = (ULONG)"Environment";
-
-       if ( SendNotifyMessage((HWND)n[0], n[1], (WPARAM)n[2], (LPARAM)n[3]) )
-           RETVAL(0)
-       else
-           RETVAL(GetLastError())
-   }
-   else if ( ! strcmp(argv[0].strptr,"TO") )  /* Send message Time Out */
-   {
-       DWORD dwResult;
-       LRESULT lResult;
-       ULONG n[5];
-       INT i;
-
-       CHECKARG(6,7);
-
-       for ( i = 0; i < 5; i++ )
-       {
-           if (ISHEX(argv[i+1].strptr))
+        for ( i = 0; i < 4; i++ )
+        {
+            if ( ISHEX(argv[i+1].strptr) )
+            {
                 n[i] = strtol(argv[i+1].strptr,'\0',16);
-           else
+            }
+            else
+            {
                 n[i] = atol(argv[i+1].strptr);
-       }
+            }
+        }
 
-       /* The 7th arg can, optionally, be used as an extra qualifier.  Currently
-        * only used in one case.
-        */
-       if ( argc > 6 && argv[6].strptr[0] == 'E' )
-           n[3] = (ULONG)"Environment";
+        /* The 6th arg can, optionally, be used as an extra qualifier.  Currently
+         * only used in one case.
+         */
+        if ( argc > 5 && argv[5].strptr[0] == 'E' )
+        {
+            n[3] = (ULONG)"Environment";
+        }
 
-       lResult = SendMessageTimeout((HWND)n[0], n[1], (WPARAM)n[2], (LPARAM)n[3],
-                                    MSG_TIMEOUT_OPTS, n[4], &dwResult);
-       if ( ! lResult )
-       {
-           DWORD err = GetLastError();
-           if ( err == 0 )
-               lResult = -1;          /* This is a timeout. */
-           else
-               lResult = -(INT)err;   /* Some other system error. */
-           RETVAL(lResult)
-       }
-       else
-           {
-            RETVAL(dwResult)
-           }
-   }
-   else if (!strcmp(argv[0].strptr,"MAP"))
-   {
-       CHECKARG(2,2);
-       RETVAL(MapVirtualKey((UINT)atoi(argv[1].strptr), 2))
-   }
+        if ( SendNotifyMessage((HWND)n[0], n[1], (WPARAM)n[2], (LPARAM)n[3]) )
+        {
+            RETVAL(0)
+        }
+        else
+        {
+            RETVAL(GetLastError())
+        }
+    }
+    else if ( ! strcmp(argv[0].strptr,"TO") )  /* Send message Time Out */
+    {
+        DWORD dwResult;
+        LRESULT lResult;
+        ULONG n[5];
+        INT i;
 
-   RETC(1)  /* in this case 0 is an error */
+        CHECKARG(6,7);
+
+        for ( i = 0; i < 5; i++ )
+        {
+            if (ISHEX(argv[i+1].strptr))
+            {
+                n[i] = strtol(argv[i+1].strptr,'\0',16);
+            }
+            else
+            {
+                n[i] = atol(argv[i+1].strptr);
+            }
+        }
+
+        /* The 7th arg can, optionally, be used as an extra qualifier.  Currently
+         * only used in one case.
+         */
+        if ( argc > 6 && argv[6].strptr[0] == 'E' )
+        {
+            n[3] = (ULONG)"Environment";
+        }
+
+        lResult = SendMessageTimeout((HWND)n[0], n[1], (WPARAM)n[2], (LPARAM)n[3],
+                                     MSG_TIMEOUT_OPTS, n[4], &dwResult);
+        if ( ! lResult )
+        {
+            DWORD err = GetLastError();
+            if ( err == 0 )
+            {
+                lResult = -1;          /* This is a timeout. */
+            }
+            else
+            {
+                lResult = -(INT)err;   /* Some other system error. */
+            }
+            RETVAL(lResult);
+        }
+        else
+        {
+            RETVAL(dwResult);
+        }
+    }
+    else if (!strcmp(argv[0].strptr,"MAP"))
+    {
+        CHECKARG(2,2);
+        RETVAL(MapVirtualKey((UINT)atoi(argv[1].strptr), 2));
+    }
+
+    RETC(1);  /* in this case 0 is an error */
 }
 
 
@@ -3050,32 +3113,42 @@ size_t RexxEntry WSCtrlMenu(const char *funcname, size_t argc, CONSTRXSTRING arg
     if (!strcmp(argv[0].strptr,"GET"))
     {
         CHECKARG(2,2);
+        HWND hMenu;
+        GET_HANDLE(argv[1].strptr, hMenu);
 
-        RETVAL((ULONG)GetMenu((HWND)atol(argv[1].strptr)))
+        RET_HANDLE(GetMenu(hMenu));
     }
     else if (!strcmp(argv[0].strptr,"SYS"))
     {
         CHECKARG(2,2);
+        HWND hMenu;
+        GET_HANDLE(argv[1].strptr, hMenu);
 
-        RETVAL((ULONG)GetSystemMenu((HWND)atol(argv[1].strptr), FALSE))
+        RET_HANDLE(GetSystemMenu(hMenu, FALSE));
     }
     else if (!strcmp(argv[0].strptr,"SUB"))
     {
         CHECKARG(3,3);
+        HMENU hMenu;
+        GET_HANDLE(argv[1].strptr, hMenu);
 
-        RETVAL((ULONG)GetSubMenu((HMENU)atol(argv[1].strptr), atoi(argv[2].strptr)))
+        RET_HANDLE(GetSubMenu(hMenu, atoi(argv[2].strptr)));
     }
     else if (!strcmp(argv[0].strptr,"ID"))
     {
         CHECKARG(3,3);
+        HMENU hMenu;
+        GET_HANDLE(argv[1].strptr, hMenu);
 
-        RETVAL(GetMenuItemID((HMENU)atol(argv[1].strptr), atoi(argv[2].strptr)))
+        RETVAL(GetMenuItemID(hMenu, atoi(argv[2].strptr)));
     }
     else if (!strcmp(argv[0].strptr,"CNT"))
     {
         CHECKARG(2,2);
+        HMENU hMenu;
+        GET_HANDLE(argv[1].strptr, hMenu);
 
-        RETVAL(GetMenuItemCount((HMENU)atol(argv[1].strptr)))
+        RETVAL(GetMenuItemCount(hMenu));
     }
     else if (!strcmp(argv[0].strptr,"TEXT"))
     {
@@ -3083,7 +3156,7 @@ size_t RexxEntry WSCtrlMenu(const char *funcname, size_t argc, CONSTRXSTRING arg
         UINT flag;
         CHECKARG(4,4);
 
-        hM= (HMENU)atol(argv[1].strptr);
+        GET_HANDLE(argv[1].strptr, hM);
         if (!hM)
         {
             RETC(0);
@@ -3104,7 +3177,9 @@ size_t RexxEntry WSCtrlMenu(const char *funcname, size_t argc, CONSTRXSTRING arg
     {
         CHECKARG(2,2);
 
-        RETVAL(IsMenu((HMENU)atol(argv[1].strptr)))
+        HMENU hMenu;
+        GET_HANDLE(argv[1].strptr, hMenu);
+        RETVAL(IsMenu(hMenu));
     }
 
     RETC(1)  /* in this case 0 is an error */
@@ -3124,7 +3199,7 @@ size_t RexxEntry WSClipboard(const char *funcname, size_t argc, CONSTRXSTRING ar
         char * membase;
 
         CHECKARG(2,2);
-        hmem = GlobalAlloc(GMEM_MOVEABLE | GMEM_DDESHARE, argv[1].strlength + 1);
+        hmem = (char *)GlobalAlloc(GMEM_MOVEABLE | GMEM_DDESHARE, argv[1].strlength + 1);
         membase = (char *) GlobalLock(hmem);
 
         if (membase)
@@ -3132,7 +3207,7 @@ size_t RexxEntry WSClipboard(const char *funcname, size_t argc, CONSTRXSTRING ar
             memcpy(membase, argv[1].strptr, argv[1].strlength + 1);
             if (OpenClipboard(NULL) && EmptyClipboard())
             {
-                ret = (BOOL)SetClipboardData(CF_TEXT, hmem);
+                ret = SetClipboardData(CF_TEXT, hmem) != NULL;
             }
             GlobalUnlock(membase);
             CloseClipboard();
@@ -3149,16 +3224,15 @@ size_t RexxEntry WSClipboard(const char *funcname, size_t argc, CONSTRXSTRING ar
             membase = (char *) GlobalLock(hmem);
             if (membase)
             {
-                ULONG s = GlobalSize(hmem);
+                size_t s = GlobalSize(hmem);
                 if (s>255)
                 {
-                    void * p = GlobalAlloc(GMEM_FIXED, s);
-                    if (!p)
+                    retstr->strptr = (char *)GlobalAlloc(GMEM_FIXED, s);
+                    if (retstr->strptr == NULL)
                     {
                         CloseClipboard();
                         return -1;
                     }
-                    retstr->strptr = p;
                 }
                 s = strlen(membase);
                 memcpy(retstr->strptr, membase, s+1);
@@ -3220,25 +3294,26 @@ VOID Little2BigEndian(BYTE *pbInt, INT iSize)
 
 
 // now build the actual entry list
-RexxFunctionEntry rxwinsys_functions[] =
+RexxRoutineEntry rxwinsys_functions[] =
 {
-    REXX_CLASSIC_FUNCTION(InstWinSysFuncs,  InstWinSysFuncs),
-    REXX_CLASSIC_FUNCTION(RemoveWinSysFuncs,RemoveWinSysFuncs),
-    REXX_CLASSIC_FUNCTION(WSRegistryKey,    WSRegistryKey),
-    REXX_CLASSIC_FUNCTION(WSRegistryValue,  WSRegistryValue),
-    REXX_CLASSIC_FUNCTION(WSRegistryFile,   WSRegistryFile),
-    REXX_CLASSIC_FUNCTION(WSProgManager,    WSProgManager),
-    REXX_CLASSIC_FUNCTION(WSEventLog,       WSEventLog),
-    REXX_CLASSIC_FUNCTION(WSCtrlWindow,     WSCtrlWindow),
-    REXX_CLASSIC_FUNCTION(WSCtrlSend,       WSCtrlSend),
-    REXX_CLASSIC_FUNCTION(WSCtrlMenu,       WSCtrlMenu),
-    REXX_CLASSIC_FUNCTION(WSClipboard,      WSClipboard),
+    REXX_CLASSIC_ROUTINE(InstWinSysFuncs,  InstWinSysFuncs),
+    REXX_CLASSIC_ROUTINE(RemoveWinSysFuncs,RemoveWinSysFuncs),
+    REXX_CLASSIC_ROUTINE(WSRegistryKey,    WSRegistryKey),
+    REXX_CLASSIC_ROUTINE(WSRegistryValue,  WSRegistryValue),
+    REXX_CLASSIC_ROUTINE(WSRegistryFile,   WSRegistryFile),
+    REXX_CLASSIC_ROUTINE(WSProgManager,    WSProgManager),
+    REXX_CLASSIC_ROUTINE(WSEventLog,       WSEventLog),
+    REXX_CLASSIC_ROUTINE(WSCtrlWindow,     WSCtrlWindow),
+    REXX_CLASSIC_ROUTINE(WSCtrlSend,       WSCtrlSend),
+    REXX_CLASSIC_ROUTINE(WSCtrlMenu,       WSCtrlMenu),
+    REXX_CLASSIC_ROUTINE(WSClipboard,      WSClipboard),
+    REXX_LAST_ROUTINE()
 };
 
 RexxPackageEntry rxwinsys_package_entry =
 {
     STANDARD_PACKAGE_HEADER
-    "REXXUTIL",                          // name of the package
+    "RXWINSYS",                          // name of the package
     "4.0",                               // package information
     NULL,                                // no load/unload functions
     NULL,

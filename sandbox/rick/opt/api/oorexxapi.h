@@ -85,6 +85,7 @@
 #define REXX_VALUE_RexxStemObject         32
 #define REXX_VALUE_uint64_t               33
 #define REXX_VALUE_ssize_t                34
+#define REXX_VALUE_POINTERSTRING          35
 
 #define REXX_OPTIONAL_ARGUMENT                 0x8000
 
@@ -112,6 +113,7 @@
 #define REXX_VALUE_OPTIONAL_logical_t             (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_logical_t)
 #define REXX_VALUE_OPTIONAL_RexxArrayObject       (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_RexxArrayObject)
 #define REXX_VALUE_OPTIONAL_RexxStemObject        (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_RexxStemObject)
+#define REXX_VALUE_OPTIONAL_POINTERSTRING         (REXX_OPTIONAL_ARGUMENT | REXX_VALUE_POINTERSTRING)
 
 BEGIN_EXTERN_C()
 
@@ -353,6 +355,7 @@ typedef struct
         ssize_t               value_ssize_t;
         RexxArrayObject       value_RexxArrayObject;
         RexxStemObject        value_RexxStemObject;
+        POINTER               value_POINTERSTRING;
 
         // following just duplicate the non-optional variations...
         // it was difficult (if not impossible) to get the
@@ -382,6 +385,7 @@ typedef struct
         size_t                value_OPTIONAL_size_t;
         RexxArrayObject       value_OPTIONAL_RexxArrayObject;
         RexxStemObject        value_OPTIONAL_RexxStemObject;
+        POINTER               value_OPTIONAL_POINTERSTRING;
     } value;
 
     uint16_t type;            // type of the value
@@ -2797,6 +2801,7 @@ RexxReturnCode RexxEntry RexxCreateInterpreter(RexxInstance **, RexxThreadContex
 #define ARGUMENT_TYPE_logical_t             logical_t
 #define ARGUMENT_TYPE_RexxArrayObject       RexxArrayObject
 #define ARGUMENT_TYPE_RexxStemObject        RexxStemObject
+#define ARGUMENT_TYPE_POINTERSTRING         POINTER
 
 #define ARGUMENT_TYPE_OPTIONAL_RexxObjectPtr         RexxObjectPtr
 #define ARGUMENT_TYPE_OPTIONAL_int                   int
@@ -2822,6 +2827,7 @@ RexxReturnCode RexxEntry RexxCreateInterpreter(RexxInstance **, RexxThreadContex
 #define ARGUMENT_TYPE_OPTIONAL_logical_t             logical_t
 #define ARGUMENT_TYPE_OPTIONAL_RexxArrayObject       RexxArrayObject
 #define ARGUMENT_TYPE_OPTIONAL_RexxStemObject        RexxStemObject
+#define ARGUMENT_TYPE_OPTIONAL_POINTERSTRING         POINTER
 
 #define ARGUMENT_TYPE(t) ((t) & ~REXX_OPTIONAL_ARGUMENT)
 #define IS_OPTIONAL_ARGUMENT(t) (((t) & REXX_OPTIONAL_ARGUMENT) != 0)

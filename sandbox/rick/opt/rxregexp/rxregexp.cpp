@@ -151,7 +151,7 @@ RexxMethod2(int,                          // Return type
     int         i;
 
     pszString = context->StringData(string);
-    strlength = context->stringLength(string);
+    strlength = context->StringLength(string);
     int matchPosition = 0;
 
     /* only check when input > 0 */
@@ -204,7 +204,8 @@ RexxMethodEntry rxregexp_methods[] =
     REXX_METHOD(RegExp_Uninit,  RegExp_Uninit),
     REXX_METHOD(RegExp_Parse,   RegExp_Parse),
     REXX_METHOD(RegExp_Pos,     RegExp_Pos),
-    REXX_LAST_METHOD();
+    REXX_METHOD(RegExp_Match,   RegExp_Match),
+    REXX_LAST_METHOD()
 };
 
 
@@ -215,8 +216,8 @@ RexxPackageEntry rxregexp_package_entry =
     "4.0",                               // package information
     NULL,                                // no load/unload functions
     NULL,
-    regexp_methods,                      // the exported functions
-    NULL                                 // no methods in this package
+    NULL,                                // no functions in this package
+    rxregexp_methods                     // the exported methods
 };
 
 // package loading stub.

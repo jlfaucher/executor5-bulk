@@ -1173,27 +1173,3 @@ PCPPM RexxInteger::operatorMethods[] =
    (PCPPM)&RexxInteger::operatorNot,
 };
 
-
-#include "RexxNativeAPI.h"
-
-wholenumber_t REXXENTRY REXX_INTEGER_VALUE(REXXOBJECT self)
-/******************************************************************************/
-/* Function:  External interface to the object method                         */
-/******************************************************************************/
-{
-/******************************************************************************/
-/* NOTE:  This method does not reaquire kernel access                         */
-/******************************************************************************/
-                                       /* forward the method                */
-  return ((RexxInteger *)self)->getValue();
-}
-
-REXXOBJECT REXXENTRY REXX_INTEGER_NEW(wholenumber_t value)
-/******************************************************************************/
-/* Function:  External interface to the nativeact object method               */
-/******************************************************************************/
-{
-    NativeContextBlock context;
-                                       /* just forward and return           */
-    return context.protect(new_integer(value));
-}

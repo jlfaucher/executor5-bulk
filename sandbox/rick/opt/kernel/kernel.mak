@@ -147,7 +147,7 @@ OKIOBJS=$(OKIOBJ1) $(OKIOBJ2) $(OKIOBJ3)
 #part of rexx
 
 SYSOBJ1=$(OR_OUTDIR)\TimeSupport.$(OBJ)  \
-        $(OR_OUTDIR)\FileSystem.$(OBJ)  $(OR_OUTDIR)\ValueFunction.$(OBJ) $(OR_OUTDIR)\UseridFunction.$(OBJ) $(OR_OUTDIR)\VariablePool.$(OBJ)
+        $(OR_OUTDIR)\FileSystem.$(OBJ)  $(OR_OUTDIR)\ValueFunction.$(OBJ) $(OR_OUTDIR)\UseridFunction.$(OBJ)
 
 SYSOBJ2=$(OR_OUTDIR)\ExternalFunctions.$(OBJ)  $(OR_OUTDIR)\RexxMain.$(OBJ)  $(OR_OUTDIR)\SystemCommands.$(OBJ)   \
         $(OR_OUTDIR)\StreamNative.$(OBJ)   $(OR_OUTDIR)\StreamCommandParser.$(OBJ)    $(OR_OUTDIR)\ProgramMetaData.$(OBJ) \

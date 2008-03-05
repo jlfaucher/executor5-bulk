@@ -65,6 +65,7 @@ public:
     static void initialize();
     static RexxArray *getImageData();
     static void restore(RexxArray *imageArray);
+    static void restore();
     static LibraryPackage    *getLibrary(RexxString *name);
     static LibraryPackage    *loadLibrary(RexxString *name);
     static void        unload();

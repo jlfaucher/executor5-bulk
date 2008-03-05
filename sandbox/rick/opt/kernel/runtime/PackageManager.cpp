@@ -104,11 +104,25 @@ RexxArray *PackageManager::getImageData()
  */
 void PackageManager::restore(RexxArray *imageArray)
 {
+    // The memory manager is not initialized yet, so we just store the references
+    // at this point.  A little later, we'll replace these with copies.
+    packages = (RexxDirectory *)imageArray->get(IMAGE_PACKAGES);
+    packageRoutines = (RexxDirectory *)imageArray->get(IMAGE_PACKAGE_ROUTINES);
+    registeredRoutines = (RexxDirectory *)imageArray->get(IMAGE_REGISTERED_ROUTINES);
+    loadedRequires = (RexxDirectory *)imageArray->get(IMAGE_REQUIRES);
+}
+
+
+/**
+ * Restore the saved image data to operational status
+ */
+void PackageManager::restore()
+{
     // we use copies of these directories to avoid old-to-new image problems.
-    packages = (RexxDirectory *)imageArray->get(IMAGE_PACKAGES)->copy();
-    packageRoutines = (RexxDirectory *)imageArray->get(IMAGE_PACKAGE_ROUTINES)->copy();
-    registeredRoutines = (RexxDirectory *)imageArray->get(IMAGE_REGISTERED_ROUTINES)->copy();
-    loadedRequires = (RexxDirectory *)imageArray->get(IMAGE_REQUIRES)->copy();
+    packages = (RexxDirectory *)packages->copy();
+    packageRoutines = (RexxDirectory *)packageRoutines->copy();
+    registeredRoutines = (RexxDirectory *)registeredRoutines->copy();
+    loadedRequires = (RexxDirectory *)loadedRequires->copy();
 
     for (HashLink i = packages->first(); packages->available(i); i = packages->next(i))
     {

@@ -36,7 +36,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /******************************************************************************/
-/* REXX Kernel                                      RexxNativeActivation.c    */
+/* REXX Kernel                                      RexxNativeActivation.cpp  */
 /*                                                                            */
 /* Primitive Native Activation Class                                          */
 /*                                                                            */
@@ -57,7 +57,6 @@
 #include "RexxInstruction.hpp"
 #include "ExpressionBaseVariable.hpp"
 #include "ProtectedObject.hpp"
-#include "RexxNativeAPI.h"                      /* bring in the native code defines  */
 #include "PointerClass.hpp"
 #include "ActivityDispatcher.hpp"
 #include "CallbackDispatcher.hpp"
@@ -488,6 +487,12 @@ void RexxNativeActivation::processArguments(size_t argcount, RexxObject **arglis
                             break;
                         }
 
+                        case REXX_VALUE_POINTERSTRING:
+                        {
+                            descriptors[outputIndex].value.value_POINTERSTRING = this->pointerString(argument, inputIndex);
+                            break;
+                        }
+
                         default:                   /* something messed up               */
                         {
                             reportSignatureError();
@@ -522,6 +527,7 @@ void RexxNativeActivation::processArguments(size_t argcount, RexxObject **arglis
                         case REXX_VALUE_size_t:         /* non-existent double               */
                         case REXX_VALUE_CSTRING:        /* missing character string          */
                         case REXX_VALUE_POINTER:
+                        case REXX_VALUE_POINTERSTRING:
                         {
                             // set this as a 64-bit value to clear everything out
                             descriptors[outputIndex].value.value_int64_t = 0;
@@ -700,6 +706,14 @@ RexxObject *RexxNativeActivation::valueToObject(ValueDescriptor *value)
         {
             // just wrap the pointer in a pointer object
             return new_pointer(value->value.value_POINTER);
+        }
+
+        case REXX_VALUE_POINTERSTRING:
+        {
+            // format this into a chracter string
+            char buffer[32];
+            sprintf(buffer, "0x%p", value->value.value_POINTER);
+            return new_string(buffer);
         }
 
         case 0:
@@ -966,6 +980,21 @@ bool RexxNativeActivation::objectToValue(RexxObject *o, ValueDescriptor *value)
         case REXX_VALUE_POINTER:
         {
             value->value.value_POINTER = this->pointer(o);
+            return true;
+        }
+
+        case REXX_VALUE_POINTERSTRING:
+        {
+            /* force to a string value           */
+            RexxString *string = o->stringValue();
+
+            void *pointer;
+            if (sscanf(string->getStringData(), "0x%p", &pointer) != 1)
+            {
+                return false;
+            }
+
+            value->value.value_POINTER = pointer;
             return true;
         }
 
@@ -1320,7 +1349,7 @@ void RexxNativeActivation::callRegisteredRoutine(RoutineClass *_routine, Registe
         }
     }
     /* get the current queue name        */
-    const char *queuename = SysGetCurrentQueue()->getStringData();
+    const char *queuename = Interpreter::getCurrentQueue()->getStringData();
     RXSTRING funcresult;
     int functionrc;                      /* Return code from function         */
     /* default return code buffer        */
@@ -1565,7 +1594,7 @@ wholenumber_t RexxNativeActivation::wholeNumberValue(RexxObject *o, size_t posit
     // convert using the whole value range
     if (!Numerics::objectToWholeNumber(o, temp, maxValue, minValue))
     {
-        if (activationType == METHOD_ACTIVATION)
+       if (activationType == METHOD_ACTIVATION)
         {
             /* this is an error                  */
             reportException(Error_Incorrect_method_whole, position + 1, o);
@@ -1689,6 +1718,28 @@ const char *RexxNativeActivation::cstring(
 }
 
 
+/**
+ * Convert a string in the format 0xnnnnnnnnn into a pointer value.
+ *
+ * @param object The object to convert.
+ *
+ * @return The pointer value.
+ */
+void *RexxNativeActivation::pointerString(RexxObject *object, size_t position)
+{
+    /* force to a string value           */
+    RexxString *string = (RexxString *)object->stringValue();
+
+    void *pointer;
+    if (sscanf(string->getStringData(), "0x%p", &pointer) != 1)
+    {
+        reportException(Error_Invalid_argument_pointer, position + 1, string);
+    }
+
+    return pointer;
+}
+
+
 double RexxNativeActivation::getDoubleValue(
     RexxObject *object)                /* object to convert                 */
 /******************************************************************************/
@@ -1754,6 +1805,7 @@ void *RexxNativeActivation::buffer()
         return NULL;                       /* no object available               */
     }
 }
+
 
 void *RexxNativeActivation::pointer(
     RexxObject *object)                /* object to convert                 */
@@ -2422,154 +2474,6 @@ void * RexxNativeActivation::operator new(size_t size)
   return newObject;                    /* return the new object             */
 }
 
-REXXOBJECT REXXENTRY REXX_MSGNAME()
-/******************************************************************************/
-/* Function:  External interface to the nativeact object method               */
-/******************************************************************************/
-{
-    NativeContextBlock context;
-    return context.protect(context.self->getMessageName());
-}
-
-
-REXXOBJECT REXXENTRY REXX_RECEIVER()
-/******************************************************************************/
-/* Function:  External interface to the nativeact object method               */
-/******************************************************************************/
-{
-    NativeContextBlock context;
-    return context.protect(context.self->getReceiver());
-}
-
-wholenumber_t REXXENTRY REXX_INTEGER(REXXOBJECT object)
-/******************************************************************************/
-/* Function:  External interface to the nativeact object method               */
-/******************************************************************************/
-{
-    NativeContextBlock context;
-                                       /* just forward and return           */
-    wholenumber_t result = 0;
-
-    ((RexxObject *)object)->numberValue(result, context.self->digits());
-    return result;                       /* return converted value            */
-}
-
-size_t REXXENTRY REXX_UNSIGNED_INTEGER(REXXOBJECT object)
-/******************************************************************************/
-/* Function:  External interface to the nativeact object method               */
-/******************************************************************************/
-{
-    NativeContextBlock context;
-    stringsize_t result = 0;           /* returned result                   */
-
-                                       /* First convert to numberstring     */
-    ((RexxObject *)object)->unsignedNumberValue(result, context.self->digits());
-    return result;                     /* return converted value            */
-}
-
-bool REXXENTRY REXX_ISINTEGER(REXXOBJECT object)
-/******************************************************************************/
-/* Function:  External interface to the nativeact object method               */
-/******************************************************************************/
-{
-    NativeContextBlock context;
-                                       /* just forward and return           */
-    return context.self->isInteger((RexxObject *)object);
-}
-
-bool REXXENTRY REXX_ISSTRING(REXXOBJECT object)
-/******************************************************************************/
-/* Function:  External interface to the nativeact object method               */
-/******************************************************************************/
-{
-    NativeContextBlock context;
-    return ((RexxObject *)object)->getObjectType() == TheStringBehaviour;
-}
-
-CSTRING REXXENTRY REXX_STRING(REXXOBJECT object)
-/******************************************************************************/
-/* Function:  External interface to the nativeact object method               */
-/******************************************************************************/
-{
-    NativeContextBlock context;
-    return context.self->cstring((RexxObject *)object);
-}
-
-
-bool REXXENTRY REXX_ISINSTANCE(REXXOBJECT object, REXXOBJECT classObject)
-/******************************************************************************/
-/* Function:  Object ISA test                                                 */
-/******************************************************************************/
-{
-    NativeContextBlock context;
-    return ((RexxObject *)object)->isInstanceOf((RexxClass *)classObject);
-
-}
-
-
-double REXXENTRY REXX_DOUBLE(REXXOBJECT object)
-/******************************************************************************/
-/* Function:  External interface to the nativeact object method               */
-/******************************************************************************/
-{
-    NativeContextBlock context;
-    return context.self->getDoubleValue((RexxObject *)object);
-}
-
-bool REXXENTRY REXX_ISDOUBLE(REXXOBJECT object)
-/******************************************************************************/
-/* Function:  External interface to the nativeact object method               */
-/******************************************************************************/
-{
-    NativeContextBlock context;
-                                       /* just forward and return           */
-    return context.self->isDouble((RexxObject *)object);
-}
-
-REXXOBJECT REXXENTRY REXX_SEND(REXXOBJECT receiver, CSTRING msgname, REXXOBJECT arguments)
-/******************************************************************************/
-/* Function:  Issue a full scale send_message from native code                */
-/******************************************************************************/
-{
-    NativeContextBlock context;
-    return context.protect(((RexxObject *)receiver)->sendMessage((RexxString *)new_string(msgname), (RexxArray *)arguments));
-}
-
-REXXOBJECT REXXENTRY REXX_SUPER(CSTRING msgname, REXXOBJECT arguments)
-/******************************************************************************/
-/* Function:  Forward a message to a super class from native code             */
-/******************************************************************************/
-{
-    NativeContextBlock context;
-    RexxObject     *argarray[10];        /* C array of arguments              */
-    RexxArray      *args = (RexxArray *)arguments;
-    size_t          i;                   /* loop counter                      */
-
-    size_t count = args->size();         /* get the argument count            */
-    for (i = 1; i <= count; i++)         /* loop through the array            */
-    {
-                                         /* copying each OREF                 */
-        argarray[i-1] = args->get(i);
-    }
-    ProtectedObject result;
-                                       /* now send the message              */
-    context.self->getReceiver()->messageSend((RexxString *)new_string(msgname), count, argarray, context.self->getReceiver()->superScope(context.self->getMethod()->getScope()), result);
-                                       /* now send the message              */
-    return context.protect((RexxObject *)result);
-}
-
-REXXOBJECT REXXENTRY REXX_SETVAR(CSTRING name, REXXOBJECT value)
-/******************************************************************************/
-/* Function:  Set the value of an object variable                             */
-/******************************************************************************/
-{
-    NativeContextBlock context;
-    RexxVariableDictionary *dictionary = context.self->methodVariables();/* get the method variables          */
-    RexxString *variableName = new_string(name);    /* get a string version of this      */
-                                       /* do the assignment                 */
-    dictionary->set(variableName, (RexxObject *)value);
-    return OREF_NULL;
-}
 
 /*******************************************************1***/
 /* return the names of all public routines in the current */
@@ -2611,194 +2515,433 @@ REXXOBJECT REXXENTRY REXX_GETFUNCTIONNAMES(char *** names, size_t* num)
     return OREF_NULL;              /* return nothing                    */
 }
 
-REXXOBJECT REXXENTRY REXX_GETVAR(CSTRING name)
-/******************************************************************************/
-/* Function:  Retrieve the value of an object variable                        */
-/******************************************************************************/
-{
-    NativeContextBlock context;
 
-    RexxVariableDictionary *dictionary = context.self->methodVariables();/* get the method variables          */
-    RexxString *variableName = new_string(name);    /* get a string version of this      */
-                                       /* go get the variable               */
-    // NB:  We don't call protect because this object is already anchored in the variable pool.
-    return dictionary->realValue(variableName);
-}
-
-void REXXENTRY REXX_EXCEPT(int errorcode, REXXOBJECT value)
-/******************************************************************************/
-/* Function:  Raise an exception on behalf of native code                     */
-/******************************************************************************/
+/**
+ * Handle a request chain for the variable pool interface API.
+ *
+ * @param pshvblock The shared variable block for the request.
+ *
+ * @return The composit return code for the chain of requests.
+ */
+RexxReturnCode RexxNativeActivation::variablePoolInterface(PSHVBLOCK pshvblock)
 {
-    NativeContextBlock context;
-    if (value == OREF_NULL)              /* just a NULL value?                */
+    // this is not allowed asynchronously
+    if (!getVpavailable())
     {
-        reportException(errorcode);        /* no substitution parameters        */
+        return RXSHV_NOAVL;
     }
-    else                                 /* use the substitution form         */
+
+    RexxReturnCode retcode = 0;          /* initialize composite rc           */
+
+    try
     {
-        reportException(errorcode, (RexxArray *)value);
+        while (pshvblock)
+        {                   /* while more request blocks         */
+            variablePoolRequest(pshvblock);
+            retcode |= pshvblock->shvret;        /* accumulate the return code        */
+            pshvblock = pshvblock->shvnext;      /* step to the next block            */
+        }
+        return retcode;                       /* return composite return code      */
+
+    }
+    // intercept any termination failures
+    catch (ActivityException)
+    {
+        /* set failure in current            */
+        pshvblock->shvret |= (uint8_t)RXSHV_MEMFL;
+        retcode |= pshvblock->shvret;       /* OR with the composite             */
+        return retcode;                     /* stop processing requests now      */
     }
 }
 
-void REXXENTRY REXX_EXCEPT1(int errorcode, REXXOBJECT value1)
-/******************************************************************************/
-/* Function:  Raise an exception on behalf of native code                     */
-/******************************************************************************/
+
+/**
+ * Get a variable retriever for the target variable.
+ *
+ * @param pshvblock The variable pool request block.
+ * @param symbolic  The symbolic vs. direct indicator.
+ *
+ * @return A variable retriever for the variable.  Returns OREF_NULL
+ *         if the variable is not resolvable from the name.
+ */
+RexxVariableBase *RexxNativeActivation::variablePoolGetVariable(PSHVBLOCK pshvblock, bool symbolic)
 {
-    NativeContextBlock context;
-    reportException(errorcode, (RexxObject *)value1);
-}
-
-void REXXENTRY REXX_EXCEPT2(int errorcode, REXXOBJECT value1, REXXOBJECT value2)
-/******************************************************************************/
-/* Function:  Raise an exception on behalf of native code                     */
-/******************************************************************************/
-{
-    NativeContextBlock context;
-    reportException(errorcode, (RexxObject *)value1, (RexxObject *)value2);
-}
-
-
-void REXXENTRY REXX_RAISE(CSTRING condition, REXXOBJECT description, REXXOBJECT additional, REXXOBJECT result)
-/******************************************************************************/
-/* Function:  Raise a condition on behalf of native code                      */
-/******************************************************************************/
-{
-    NativeContextBlock context;
-                                       /* go raise the condition            */
-    context.self->raiseCondition(new_string(condition), (RexxString *)description, (RexxObject *)additional, (RexxObject *)result);
-}
-
-
-REXXOBJECT REXXENTRY REXX_CONDITION(REXXOBJECT condition, REXXOBJECT description, REXXOBJECT additional)
-/******************************************************************************/
-/* Function:  Raise a condition on behalf of native code                      */
-/******************************************************************************/
-{
-    NativeContextBlock context;
-                                       /* pass on and raise the condition   */
-    return (context.activity->raiseCondition((RexxString *)condition, OREF_NULL, (RexxString *)description, (RexxObject *)additional, OREF_NULL, OREF_NULL)) ? TheTrueObject : TheFalseObject;
-}
-
-
-int REXXENTRY REXX_VARIABLEPOOL(void *pshvblock)
-/******************************************************************************/
-/* Function:  If variable pool is enabled, return result from SysVariablePool */
-/*             method, otherwise return RXSHV_NOAVL.                          */
-/******************************************************************************/
-{
-    NativeContextBlock context;
-                                       /* if access is enabled              */
-    if (context.self->getVpavailable())
+    /* no name given?                    */
+    if (pshvblock->shvname.strptr==NULL)
     {
-                                       /* go process the requests           */
-        return SysVariablePool(context.self, pshvblock, true);
-
+        pshvblock->shvret|=RXSHV_BADN;   /* this is bad                       */
     }
     else
     {
-                                       /* call VP only allowing shv_exit    */
-        return SysVariablePool(context.self, pshvblock, false);
+        /* get the variable as a string      */
+        RexxString *variable = new_string(pshvblock->shvname);
+        RexxVariableBase *retriever = OREF_NULL;
+        /* symbolic access?                  */
+        if (symbolic)
+        {
+            /* get a symbolic retriever          */
+            retriever = activation->getVariableRetriever(variable);
+        }
+        else                             /* need a direct retriever           */
+        {
+            retriever = activation->getDirectVariableRetriever(variable);
+        }
+        if (retriever == OREF_NULL)      /* have a bad name?                  */
+        {
+            pshvblock->shvret|=RXSHV_BADN; /* this is bad                       */
+        }
+        else
+        {
+            resetNext();             /* reset any next operations         */
+            return retriever;
+        }
+    }
+    return OREF_NULL;
+}
+
+/**
+ * Perform a variable pool fetch operation.
+ *
+ * @param pshvblock The operation shared variable block.
+ */
+void RexxNativeActivation::variablePoolFetchVariable(PSHVBLOCK pshvblock)
+{
+    RexxVariableBase *retriever = variablePoolGetVariable(pshvblock, pshvblock->shvcode == RXSHV_SYFET);
+    RexxObject *value = OREF_NULL;
+    if (retriever != OREF_NULL)
+    {
+        /* have a non-name retriever?        */
+        if (isString((RexxObject *)retriever))
+        {
+            /* the value is the retriever        */
+            value = (RexxObject *)retriever;
+        }
+        else
+        {
+                                           /* have a non-name retriever         */
+                                           /* and a new variable?               */
+            if (!retriever->exists(activation))
+            {
+                /* flag this in the block            */
+                pshvblock->shvret |= RXSHV_NEWV;
+            }
+            /* get the variable value            */
+            value = retriever->getValue(activation);
+        }
+
+        /* copy the value                    */
+        pshvblock->shvret |= copyValue(value, &pshvblock->shvvalue, (size_t *)&pshvblock->shvvaluelen);
     }
 }
 
 
-void REXXENTRY REXX_PUSH_ENVIRONMENT(REXXOBJECT environment)
-/******************************************************************************/
-/* Function:  External interface to the nativeact object method               */
-/******************************************************************************/
+/**
+ * Perform a variable pool set operation.
+ *
+ * @param pshvblock The operation shared variable block.
+ */
+void RexxNativeActivation::variablePoolSetVariable(PSHVBLOCK pshvblock)
 {
-    NativeContextBlock context;
-                                       /* pick up current activation        */
-    RexxActivation *activation = (RexxActivation *)context.self->getRexxContext();
-    activation->pushEnvironment((RexxObject *)environment);
+    RexxVariableBase *retriever = variablePoolGetVariable(pshvblock, pshvblock->shvcode == RXSHV_SYFET);
+    if (retriever != OREF_NULL)
+    {
+        /* have a non-name retriever?        */
+        if (isString((RexxObject *)retriever))
+        {
+            /* this is bad                       */
+            pshvblock->shvret = RXSHV_BADN;
+        }
+        else
+        {
+                                           /* have a non-name retriever         */
+                                           /* and a new variable?               */
+            if (!retriever->exists(activation))
+            {
+                /* flag this in the block            */
+                pshvblock->shvret |= RXSHV_NEWV;
+            }
+            /* do the assignment                 */
+            retriever->set(activation, new_string(pshvblock->shvvalue));
+        }
+    }
 }
 
 
-REXXOBJECT REXXENTRY REXX_POP_ENVIRONMENT()
-/******************************************************************************/
-/* Function:  External interface to the nativeact object method               */
-/******************************************************************************/
+/**
+ * Perform a variable pool drop operation.
+ *
+ * @param pshvblock The operation shared variable block.
+ */
+void RexxNativeActivation::variablePoolDropVariable(PSHVBLOCK pshvblock)
 {
-    NativeContextBlock context;
-                                       /* pick up current activation        */
-    RexxActivation *activation = (RexxActivation *)context.self->getRexxContext();
-    return context.protect(activation->popEnvironment());
+    RexxVariableBase *retriever = variablePoolGetVariable(pshvblock, pshvblock->shvcode == RXSHV_SYFET);
+    if (retriever != OREF_NULL)
+    {
+        /* have a non-name retriever?        */
+        if (isString((RexxObject *)retriever))
+        {
+            /* this is bad                       */
+            pshvblock->shvret = RXSHV_BADN;
+        }
+        else
+        {
+                                           /* have a non-name retriever         */
+                                           /* and a new variable?               */
+            if (!retriever->exists(activation))
+            {
+                /* flag this in the block            */
+                pshvblock->shvret |= RXSHV_NEWV;
+            }
+            /* perform the drop                  */
+            retriever->drop(activation);
+        }
+    }
 }
 
 
-bool REXXENTRY REXX_ISDIRECTORY(REXXOBJECT object)
-/******************************************************************************/
-/* Function:  Validate that an object is a directory                          */
-/******************************************************************************/
+/**
+ * Perform a variable pool fetch next operation.
+ *
+ * @param pshvblock The operation shared variable block.
+ */
+void RexxNativeActivation::variablePoolNextVariable(PSHVBLOCK pshvblock)
 {
-                                       /* do the validation                 */
-  return object != NULL && isOfClass(Directory, (RexxObject *)object);
+    RexxString *name;
+    RexxObject *value;
+    /* get the next variable             */
+    if (!this->fetchNext(&name, &value))
+    {
+        pshvblock->shvret |= RXSHV_LVAR; /* flag as such                      */
+    }
+    else
+    {                             /* need to copy the name and value   */
+                                  /* copy the name                     */
+        pshvblock->shvret |= copyValue(name, &pshvblock->shvname, &pshvblock->shvnamelen);
+        /* copy the value                    */
+        pshvblock->shvret |= copyValue(value, &pshvblock->shvvalue, &pshvblock->shvvaluelen);
+    }
 }
 
 
-REXXOBJECT REXXENTRY REXX_NIL()
-/******************************************************************************/
-/* Function:  Return REXX .nil object to native code                          */
-/******************************************************************************/
+/**
+ * Perform a variable pool fetch private operation.
+ *
+ * @param pshvblock The operation shared variable block.
+ */
+void RexxNativeActivation::variablePoolFetchPrivate(PSHVBLOCK pshvblock)
 {
-  return TheNilObject;                 /* just return the object            */
+    /* and VP is enabled                 */
+    /* private block should always be enabled */
+    /* no name given?                    */
+    if (pshvblock->shvname.strptr==NULL)
+    {
+        pshvblock->shvret|=RXSHV_BADN;   /* this is bad                       */
+    }
+    else
+    {
+        /* get the variable as a string      */
+        const char *variable = pshvblock->shvname.strptr;
+        /* want the version string?          */
+        if (strcmp(variable, "VERSION") == 0)
+        {
+            /* copy the value                    */
+            pshvblock->shvret |= copyValue(Interpreter::getVersionNumber(), &pshvblock->shvvalue, &pshvblock->shvvaluelen);
+        }
+        /* want the the current queue?       */
+        else if (strcmp(variable, "QUENAME") == 0)
+        {
+            /* copy the value                    */
+            pshvblock->shvret |= copyValue(Interpreter::getCurrentQueue(), &pshvblock->shvvalue, &pshvblock->shvvaluelen);
+        }
+        /* want the version string?          */
+        else if (strcmp(variable, "SOURCE") == 0)
+        {
+            /* retrieve the source string        */
+            RexxString *value = activation->sourceString();
+            /* copy the value                    */
+            pshvblock->shvret |= copyValue(value, &pshvblock->shvvalue, &pshvblock->shvvaluelen);
+        }
+        /* want the parameter count?         */
+        else if (strcmp(variable, "PARM") == 0)
+        {
+            RexxInteger *value = new_integer(activation->getProgramArgumentCount());
+            /* copy the value                    */
+            pshvblock->shvret |= copyValue(value, &pshvblock->shvvalue, &pshvblock->shvvaluelen);
+        }
+        /* some other parm form              */
+        else if (!memcmp(variable, "PARM.", sizeof("PARM.") - 1))
+        {
+            wholenumber_t value_position;
+            /* extract the numeric piece         */
+            RexxString *tail = new_string(variable + strlen("PARM."));
+            /* get the binary value              */
+            /* not a good number?                */
+            if (!tail->numberValue(value_position) || value_position <= 0)
+            {
+                /* this is a bad name                */
+                pshvblock->shvret|=RXSHV_BADN;
+            }
+            else
+            {
+                /* get the arcgument from the parent activation */
+                RexxObject *value = activation->getProgramArgument(value_position);
+                if (value == OREF_NULL)
+                {    /* doesn't exist?                    */
+                    value = OREF_NULLSTRING; /* return a null string              */
+                }
+                /* copy the value                    */
+                pshvblock->shvret |= copyValue(value, &pshvblock->shvvalue, (size_t *)&pshvblock->shvvaluelen);
+            }
+        }
+        else
+        {
+            pshvblock->shvret|=RXSHV_BADN; /* this is a bad name                */
+        }
+    }
 }
 
-REXXOBJECT REXXENTRY REXX_TRUE()
-/******************************************************************************/
-/* Function:  Return REXX TRUE object to native code                          */
-/******************************************************************************/
+
+/**
+ * Process a single variable pool request.
+ *
+ * @param pshvblock The request block for this request.
+ */
+void RexxNativeActivation::variablePoolRequest(PSHVBLOCK pshvblock)
 {
-  return TheTrueObject;                /* just return the object            */
+    pshvblock->shvret = 0;               /* set the block return code         */
+
+    switch (pshvblock->shvcode)
+    {
+        case RXSHV_FETCH:
+        case RXSHV_SYFET:
+        {
+            variablePoolFetchVariable(pshvblock);
+            break;
+        }
+        case RXSHV_SET:
+        case RXSHV_SYSET:
+        {
+            variablePoolSetVariable(pshvblock);
+            break;
+        }
+        case RXSHV_DROPV:
+        case RXSHV_SYDRO:
+        {
+            variablePoolDropVariable(pshvblock);
+            break;
+        }
+        case RXSHV_NEXTV:
+        {
+            variablePoolNextVariable(pshvblock);
+            break;
+        }
+        case RXSHV_PRIV:
+        {
+            variablePoolFetchPrivate(pshvblock);
+            break;
+        }
+        default:
+        {
+            pshvblock->shvret |= RXSHV_BADF;   /* bad function                      */
+            break;
+        }
+    }
 }
 
-REXXOBJECT REXXENTRY REXX_FALSE()
-/******************************************************************************/
-/* Function:  Return REXX FALSE object to native code                         */
-/******************************************************************************/
+
+/**
+ * Copy a value for a variable pool request, with checks for
+ * truncation.
+ *
+ * @param value    The value to copy.
+ * @param rxstring The target RXSTRING.
+ * @param length   The max length we can copy.
+ *
+ * @return A return code to be included in the composite return value.
+ */
+RexxReturnCode RexxNativeActivation::copyValue(RexxObject * value, CONSTRXSTRING *rxstring, size_t *length)
 {
-  return TheFalseObject;               /* just return the object            */
+    RXSTRING temp;
+
+    temp.strptr = const_cast<char *>(rxstring->strptr);
+    temp.strlength = rxstring->strlength;
+
+    RexxReturnCode rc = copyValue(value, &temp, length);
+
+    rxstring->strptr = temp.strptr;
+    rxstring->strlength = temp.strlength;
+    return rc;
 }
 
-REXXOBJECT REXXENTRY REXX_LOCAL()
-/******************************************************************************/
-/* Function:  Return REXX .local object to native code                        */
-/******************************************************************************/
+
+/**
+ * Copy a value for a variable pool request, with checks for
+ * truncation.
+ *
+ * @param value    The value to copy.
+ * @param rxstring The target RXSTRING.
+ * @param length   The max length we can copy.
+ *
+ * @return A return code to be included in the composite return value.
+ */
+RexxReturnCode RexxNativeActivation::copyValue(RexxObject * value, RXSTRING *rxstring, size_t *length)
 {
-  return ActivityManager::localEnvironment;  /* just return the local environment */
+    RexxString * stringValue;           /* converted object value            */
+    stringsize_t string_length;         /* length of the string              */
+    uint32_t     rc;                    /* return code                       */
+
+    rc = 0;                             /* default to success                */
+                                        /* get the string value              */
+    stringValue = value->stringValue();
+    string_length = stringValue->getLength();/* get the string length             */
+    // caller allowing use to allocate this?
+    if (rxstring->strptr == NULL)
+    {
+        rxstring->strptr = (char *)SysAllocateResultMemory(string_length + 1);
+        if (rxstring->strptr == NULL)
+        {
+            return RXSHV_MEMFL;                  /* couldn't allocate, return flag */
+        }
+        rxstring->strlength = string_length;
+    }
+    /* buffer too short?              */
+    if (string_length > rxstring->strlength)
+    {
+        rc = RXSHV_TRUNC;                      /* set truncated return code      */
+                                               /* copy the short piece           */
+        memcpy(rxstring->strptr, stringValue->getStringData(), rxstring->strlength);
+    }
+    else
+    {
+        /* copy entire string             */
+        memcpy(rxstring->strptr, stringValue->getStringData(), string_length);
+        /* room for a null?               */
+        if (rxstring->strlength > string_length)
+        {
+            /* yes, add one                   */
+            rxstring->strptr[string_length] = '\0';
+        }
+        rxstring->strlength = string_length;   /* string length doesn't include terminating 0 */
+    }
+    *length = string_length;                 /* return actual string length    */
+    return rc;                               /* give back the return code      */
 }
 
-REXXOBJECT REXXENTRY REXX_ENVIRONMENT()
-/******************************************************************************/
-/* Function:  Return REXX .environment object to native code                  */
-/******************************************************************************/
-{
-  return TheEnvironment;               /* just return the object            */
-}
-
-int REXXENTRY REXX_STEMSORT(CSTRING stemname, int order, int type, size_t start, size_t end, size_t firstcol, size_t lastcol)
+int RexxNativeActivation::stemSort(const char *stemname, int order, int type, size_t start, size_t end, size_t firstcol, size_t lastcol)
 /******************************************************************************/
 /* Function:  Perform a sort on stem data.  If everything works correctly,    */
 /*             this returns zero, otherwise an appropriate error value.       */
 /******************************************************************************/
 {
-    NativeContextBlock context;
     size_t  position;                    /* scan position within compound name */
     size_t  length;                      /* length of tail section            */
 
                                          /* if access is enabled              */
-    if (!context.self->getVpavailable())
-    {       /* access must be enabled for this to work */
-        return false;
-    }
-
     // NB:  The braces here are to ensure the ProtectedObjects get released before the
     // currentActivity gets zeroed out.
     {
         /* get the REXX activation */
-        RexxActivation *activation = context.self->getRexxContext();
+        RexxActivation *activation = getRexxContext();
 
         /* get the stem name as a string */
         RexxString *variable = new_string(stemname);
@@ -2836,20 +2979,6 @@ int REXXENTRY REXX_STEMSORT(CSTRING stemname, int order, int type, size_t start,
     }
 }
 
-void REXXENTRY REXX_GUARD_ON()
-/******************************************************************************/
-/* Function:  External interface to implement method guarding                 */
-/******************************************************************************/
-{
-    NativeContextBlock context;
-    context.self->guardOn();             /* turn on the guard                 */
-}
 
-void REXXENTRY REXX_GUARD_OFF()
-/******************************************************************************/
-/* Function:  External interface to implement method guarding                 */
-/******************************************************************************/
-{
-    NativeContextBlock context;
-    context.self->guardOff();            /* turn off the guard                 */
-}
+
+

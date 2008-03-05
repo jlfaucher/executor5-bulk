@@ -607,6 +607,7 @@
 #define Error_Incorrect_method_signature_msg                         701
 #define Error_Incorrect_call_nostem_msg                              702
 #define Error_Incorrect_method_nostem_msg                            703
+#define Error_Invalid_argument_pointer_msg                           704
 
 
 #endif

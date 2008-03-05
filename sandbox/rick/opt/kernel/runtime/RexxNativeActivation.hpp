@@ -85,6 +85,7 @@ class RexxNativeActivation : public RexxActivationBase
   void  *cself();
   void  *buffer();
   void  *pointer(RexxObject *);
+  void  *pointerString(RexxObject *object, size_t position);
   RexxObject *dispatch();
   void   traceBack(RexxList *);
   size_t digits();
@@ -153,6 +154,18 @@ class RexxNativeActivation : public RexxActivationBase
       RexxObject **list, size_t count, ProtectedObject &result);
   void callRegisteredRoutine(RoutineClass *routine, RegisteredRoutine *code, RexxString *functionName,
       RexxObject **list, size_t count, ProtectedObject &resultObj);
+
+  RexxReturnCode variablePoolInterface(PSHVBLOCK requests);
+  RexxVariableBase *variablePoolGetVariable(PSHVBLOCK pshvblock, bool symbolic);
+  void variablePoolFetchVariable(PSHVBLOCK pshvblock);
+  void variablePoolSetVariable(PSHVBLOCK pshvblock);
+  void variablePoolDropVariable(PSHVBLOCK pshvblock);
+  void variablePoolNextVariable(PSHVBLOCK pshvblock);
+  void variablePoolFetchPrivate(PSHVBLOCK pshvblock);
+  void variablePoolRequest(PSHVBLOCK pshvblock);
+  RexxReturnCode copyValue(RexxObject * value, RXSTRING *rxstring, size_t *length);
+  RexxReturnCode copyValue(RexxObject * value, CONSTRXSTRING *rxstring, size_t *length);
+  int stemSort(const char *stemname, int order, int type, size_t start, size_t end, size_t firstcol, size_t lastcol);
 
 protected:
 

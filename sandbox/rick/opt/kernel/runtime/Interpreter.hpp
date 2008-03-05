@@ -125,6 +125,7 @@ public:
     static void haltAllActivities();
     static void decodeConditionData(RexxDirectory *conditionObj, RexxCondition *condData);
     static RexxClass *findClass(RexxString *className);
+    static RexxString *getCurrentQueue();
 
     static RexxObject *localServer;         // local environment initialization server
 
