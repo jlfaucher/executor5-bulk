@@ -50,7 +50,7 @@ extern HWND ScrollingButton = NULL;
 extern HWND RedrawScrollingButton = NULL;
 HANDLE TimerEvent = NULL;
 ULONG TimerCount = 0;
-ULONG Timer = 0;
+ULONG_PTR Timer = 0;
 
 #define GETWEIGHT(opts, weight) \
       if (strstr(opts, "THIN")) weight = FW_THIN; else \
@@ -65,7 +65,7 @@ ULONG Timer = 0;
 
 
 
-void DrawFontToDC(HDC hDC, INT x, INT y, CHAR * text, INT size, CHAR * opts, CHAR * fontn, INT fgColor, INT bkColor)
+void DrawFontToDC(HDC hDC, INT x, INT y, const char * text, INT size, const char * opts, const char * fontn, INT fgColor, INT bkColor)
 {
    HFONT hFont, oldF;
    INT weight, oldMode=0;
@@ -73,17 +73,17 @@ void DrawFontToDC(HDC hDC, INT x, INT y, CHAR * text, INT size, CHAR * opts, CHA
 
    GETWEIGHT(opts, weight)
 
-   hFont = CreateFont(size, size, 0, 0, weight, (BOOL)strstr(opts, "ITALIC"), (BOOL)strstr(opts, "UNDERLINE"),
-               (BOOL)strstr(opts, "STRIKEOUT"), DEFAULT_CHARSET, OUT_TT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, FF_DONTCARE, fontn);
+   hFont = CreateFont(size, size, 0, 0, weight, strstr(opts, "ITALIC") != 0, strstr(opts, "UNDERLINE") != 0,
+               strstr(opts, "STRIKEOUT") != 0, DEFAULT_CHARSET, OUT_TT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, FF_DONTCARE, fontn);
 
-   oldF = SelectObject(hDC, hFont);
+   oldF = (HFONT)SelectObject(hDC, hFont);
    if (strstr(opts, "TRANSPARENT")) oldMode = SetBkMode(hDC, TRANSPARENT);
    else if (strstr(opts, "OPAQUE")) oldMode = SetBkMode(hDC, OPAQUE);
    if (fgColor != -1) oldFg = SetTextColor(hDC, PALETTEINDEX(fgColor));
    if (bkColor != -1) oldBk = SetBkColor(hDC, PALETTEINDEX(bkColor));
 
 
-   TextOut(hDC, x, y, text, strlen(text));
+   TextOut(hDC, x, y, text, (int)strlen(text));
    SelectObject(hDC, oldF);
    DeleteObject(hFont);
    if (oldMode) SetBkMode(hDC, oldMode);
@@ -92,7 +92,7 @@ void DrawFontToDC(HDC hDC, INT x, INT y, CHAR * text, INT size, CHAR * opts, CHA
 }
 
 
-size_t RexxEntry WriteText(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
+size_t RexxEntry WriteText(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
    HWND w;
    HDC hDC;
@@ -100,7 +100,7 @@ size_t RexxEntry WriteText(const char *funcname, size_t argc, CONSTRXSTRING argv
    if (argc >= 7)
    {
        INT bkC = -1, fgC = -1;
-       w = (HWND)atol(argv[0].strptr);
+       w = GET_HWND(argv[0]);
 
        if (strstr(argv[6].strptr, "CLIENT"))
            hDC = GetDC(w);
@@ -122,9 +122,11 @@ size_t RexxEntry WriteText(const char *funcname, size_t argc, CONSTRXSTRING argv
    {
        CHECKARG(4);
 
-       if (NULL != (hDC = (HDC)atol(argv[0].strptr)))
+       hDC = (HDC)GET_HANDLE(argv[0]);
+
+       if (NULL != hDC)
        {
-          TextOut(hDC, atoi(argv[1].strptr), atoi(argv[2].strptr), argv[3].strptr, argv[3].strlength);
+          TextOut(hDC, atoi(argv[1].strptr), atoi(argv[2].strptr), argv[3].strptr, (int)argv[3].strlength);
           RETC(0)
        }
    }
@@ -144,173 +146,185 @@ VOID CALLBACK ScrollTimerProc(
 
 
 
-size_t RexxEntry ScrollText(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
+size_t RexxEntry ScrollText(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
-   INT disply;
-   PCHAR opts;
-   INT size;
-   PCHAR text;
-   INT col;
+    INT disply;
+    const char *opts;
+    INT size;
+    const char *text;
+    INT col;
 
-   CHAR * tp;
-   HWND w;
-   HDC hDC;
-   HFONT hFont, oldF;
-   HPEN hpen, oP;
-   HBRUSH oB, hbr;
-   RECT r, rs, rclip;
-   SIZE s, sone;
-   INT i, rc, sl, step, j, disp, weight;
-   UINT sleep;
-   DEF_ADM;
+    const char * tp;
+    HWND w;
+    HDC hDC;
+    HFONT hFont, oldF;
+    HPEN hpen, oP;
+    HBRUSH oB, hbr;
+    RECT r, rs, rclip;
+    SIZE s, sone;
+    INT i, rc, sl, step, j, disp, weight;
+    UINT sleep;
+    DEF_ADM;
 
-   CHECKARG(10);
+    CHECKARG(10);
 
-   GET_ADM;
+    GET_ADM;
 
-   if (!dlgAdm) RETERR
+    if (!dlgAdm) RETERR
 
-   text = argv[2].strptr;
-   size = atoi(argv[4].strptr);
-   opts = argv[5].strptr;
-   disply = atoi(argv[6].strptr);
-   col = atoi(argv[9].strptr);
+        text = argv[2].strptr;
+    size = atoi(argv[4].strptr);
+    opts = argv[5].strptr;
+    disply = atoi(argv[6].strptr);
+    col = atoi(argv[9].strptr);
 
-   w = (HWND)atol(argv[1].strptr);
-   step = atoi(argv[7].strptr);
-   tp = text;
+    w = GET_HWND(argv[1]);
+    step = atoi(argv[7].strptr);
+    tp = text;
 
-   if (NULL != (hDC = GetWindowDC(w)))
-   {
-      GetWindowRect(w, &r);
+    if (NULL != (hDC = GetWindowDC(w)))
+    {
+        GetWindowRect(w, &r);
 
-      GETWEIGHT(opts, weight)
+        GETWEIGHT(opts, weight)
 
-      hFont = CreateFont(size, size, 0, 0, weight, (BOOL)strstr(opts, "ITALIC"), (BOOL)strstr(opts, "UNDERLINE"),
-                 (BOOL)strstr(opts, "STRIKEOUT"), DEFAULT_CHARSET, OUT_TT_PRECIS, CLIP_DEFAULT_PRECIS, DRAFT_QUALITY, FF_DONTCARE, argv[3].strptr);
+        hFont = CreateFont(size, size, 0, 0, weight, strstr(opts, "ITALIC") != NULL, strstr(opts, "UNDERLINE") != NULL,
+                           strstr(opts, "STRIKEOUT") != NULL, DEFAULT_CHARSET, OUT_TT_PRECIS, CLIP_DEFAULT_PRECIS, DRAFT_QUALITY, FF_DONTCARE, argv[3].strptr);
 
-      oldF = SelectObject(hDC, hFont);
-      if (dlgAdm && dlgAdm->Use3DControls)
-      {
-         hpen = CreatePen(PS_SOLID, 1, GetSysColor(COLOR_BTNFACE));
-         hbr = CreateSolidBrush(GetSysColor(COLOR_BTNFACE));
-         SetBkColor(hDC, GetSysColor(COLOR_BTNFACE));
-         oP = SelectObject(hDC, hpen);
-         oB = SelectObject(hDC, hbr);
-      } else
-         oP = SelectObject(hDC, GetStockObject(WHITE_PEN));
+        oldF = (HFONT)SelectObject(hDC, hFont);
+        if (dlgAdm && dlgAdm->Use3DControls)
+        {
+            hpen = CreatePen(PS_SOLID, 1, GetSysColor(COLOR_BTNFACE));
+            hbr = CreateSolidBrush(GetSysColor(COLOR_BTNFACE));
+            SetBkColor(hDC, GetSysColor(COLOR_BTNFACE));
+            oP = (HPEN)SelectObject(hDC, hpen);
+            oB = (HBRUSH)SelectObject(hDC, hbr);
+        }
+        else
+        {
+            oP = (HPEN)SelectObject(hDC, GetStockObject(WHITE_PEN));
+        }
 
-      if (col > 0) SetTextColor(hDC, PALETTEINDEX(col));
-      sl = strlen(text);
-      rc = GetTextExtentPoint32(hDC, text, sl, &s);
+        if (col > 0) SetTextColor(hDC, PALETTEINDEX(col));
+        sl = (int)strlen(text);
+        rc = GetTextExtentPoint32(hDC, text, sl, &s);
 
-      r.right = r.right - r.left;
-      r.bottom = r.bottom - r.top + disply;
-      r.top = disply;
-      r.left = 0;
+        r.right = r.right - r.left;
+        r.bottom = r.bottom - r.top + disply;
+        r.top = disply;
+        r.left = 0;
 
-      j = 0;
-      disp = 0;
-      rc = GetTextExtentPoint32(hDC, tp, 1, &sone);
-      rclip= r;
-      rs.top = r.top;
-      rs.bottom = r.top+s.cy+2;
-      rs.right = r.right;
-      rs.left = r.right;
+        j = 0;
+        disp = 0;
+        rc = GetTextExtentPoint32(hDC, tp, 1, &sone);
+        rclip= r;
+        rs.top = r.top;
+        rs.bottom = r.top+s.cy+2;
+        rs.right = r.right;
+        rs.left = r.right;
 
-      sleep = atoi(argv[8].strptr);
-      if (sleep)
-      {
-          if (!TimerEvent)
-          {
-              TimerEvent = CreateEvent(NULL, TRUE, TRUE, NULL);
-              Timer = SetTimer(NULL,GetCurrentThreadId(), sleep, ScrollTimerProc);
-              TimerCount++;
-          }
-          else TimerCount++;
-      }
-      else Timer = 0;
+        sleep = atoi(argv[8].strptr);
+        if (sleep)
+        {
+            if (!TimerEvent)
+            {
+                TimerEvent = CreateEvent(NULL, TRUE, TRUE, NULL);
+                Timer = SetTimer(NULL,GetCurrentThreadId(), sleep, ScrollTimerProc);
+                TimerCount++;
+            }
+            else TimerCount++;
+        }
+        else Timer = 0;
 
-      ScrollingButton = w;
-      for (i=step; i<=r.right+s.cx; i+=step)
-      {
-         if (i>=s.cx+step)
-            Rectangle(hDC, r.right-i+s.cx, r.top, r.right -i+s.cx+step+step, r.top + s.cy + 2);
+        ScrollingButton = w;
+        for (i=step; i<=r.right+s.cx; i+=step)
+        {
+            if (i>=s.cx+step)
+            {
+                Rectangle(hDC, r.right-i+s.cx, r.top, r.right -i+s.cx+step+step, r.top + s.cy + 2);
+            }
 
-         if (j<sl)
-         {
-             if (RedrawScrollingButton == w)
-                 rc = TextOut(hDC, r.right - i, r.top, text, sl);
-             else rc = TextOut(hDC, r.right - i+disp, r.top, tp, 1);
-         }
-         if ((j<sl) && (!rc)) break;
+            if (j<sl)
+            {
+                if (RedrawScrollingButton == w)
+                {
+                    rc = TextOut(hDC, r.right - i, r.top, text, sl);
+                }
+                else
+                {
+                    rc = TextOut(hDC, r.right - i+disp, r.top, tp, 1);
+                }
+            }
+            if ((j<sl) && (!rc)) break;
 
-         RedrawScrollingButton = NULL;
+            RedrawScrollingButton = NULL;
 
-         if (i-disp>sone.cx)
-         {
-            tp++;
-            j++;
-            disp += sone.cx;
-            rc = GetTextExtentPoint32(hDC, tp, 1, &sone);
-         }
+            if (i-disp>sone.cx)
+            {
+                tp++;
+                j++;
+                disp += sone.cx;
+                rc = GetTextExtentPoint32(hDC, tp, 1, &sone);
+            }
 
-         rs.left -= step;
-         rc = 0;
+            rs.left -= step;
+            rc = 0;
 
-         if (dlgAdm->StopScroll == (WPARAM) w)
-         {
-            dlgAdm->StopScroll = 0;
-            break;
-         }
+            if (dlgAdm->StopScroll == (WPARAM) w)
+            {
+                dlgAdm->StopScroll = 0;
+                break;
+            }
 
-         if (!ScrollDC(hDC, -step, 0, &rs, &rclip, NULL, NULL)) break;
+            if (!ScrollDC(hDC, -step, 0, &rs, &rclip, NULL, NULL)) break;
 
-         if (Timer)
-         {
-             WaitForSingleObject(TimerEvent, (DWORD)((double)sleep*1.5));
-             ResetEvent(TimerEvent);
-         }
+            if (Timer)
+            {
+                WaitForSingleObject(TimerEvent, (DWORD)((double)sleep*1.5));
+                ResetEvent(TimerEvent);
+            }
 
-      }
+        }
 
-      if (Timer)
-      {
-         if (TimerCount == 1)
-         {
-             KillTimer(NULL, Timer);
-             if (TimerEvent) CloseHandle(TimerEvent);
-             TimerEvent = NULL;
-             TimerCount = 0;
-             Timer = 0;
-         } else TimerCount--;
-      }
+        if (Timer)
+        {
+            if (TimerCount == 1)
+            {
+                KillTimer(NULL, Timer);
+                if (TimerEvent) CloseHandle(TimerEvent);
+                TimerEvent = NULL;
+                TimerCount = 0;
+                Timer = 0;
+            }
+            else TimerCount--;
+        }
 
-      ScrollingButton = NULL;
+        ScrollingButton = NULL;
 
-      if (!dlgAdm || (!IsWindow(dlgAdm->TheDlg))) RETC(1)
+        if (!dlgAdm || (!IsWindow(dlgAdm->TheDlg)))
+        {
+            RETC(1);
+        }
+        Rectangle(hDC, r.left, r.top, r.right, r.bottom);
+        SelectObject(hDC, oldF);
+        SelectObject(hDC, oP);
+        if (dlgAdm->Use3DControls)
+        {
+            SelectObject(hDC, oB);
+            DeleteObject(hpen);
+            DeleteObject(hbr);
+        }
 
-      Rectangle(hDC, r.left, r.top, r.right, r.bottom);
-
-      SelectObject(hDC, oldF);
-      SelectObject(hDC, oP);
-      if (dlgAdm->Use3DControls)
-      {
-         SelectObject(hDC, oB);
-         DeleteObject(hpen);
-         DeleteObject(hbr);
-      }
-
-      DeleteObject(hFont);
-      ReleaseDC(w, hDC);
-      RETC(0)
-   }
-   RETC(1)
+        DeleteObject(hFont);
+        ReleaseDC(w, hDC);
+        RETC(0);
+    }
+    RETC(1);
 }
 
 
 
-size_t RexxEntry HandleFont(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
+size_t RexxEntry HandleFont(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
    CHECKARGL(3);
 
@@ -322,34 +336,31 @@ size_t RexxEntry HandleFont(const char *funcname, size_t argc, CONSTRXSTRING arg
 
        GETWEIGHT(argv[3].strptr, weight)
 
-       hFont = CreateFont(atoi(argv[2].strptr), atoi(argv[4].strptr), 0, 0, weight, (BOOL)strstr(argv[3].strptr, "ITALIC"), (BOOL)strstr(argv[3].strptr, "UNDERLINE"),
-                   (BOOL)strstr(argv[3].strptr, "STRIKEOUT"), DEFAULT_CHARSET, OUT_TT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, FF_DONTCARE, argv[1].strptr);
+       hFont = CreateFont(atoi(argv[2].strptr), atoi(argv[4].strptr), 0, 0, weight, strstr(argv[3].strptr, "ITALIC") != NULL, strstr(argv[3].strptr, "UNDERLINE") != NULL,
+                   strstr(argv[3].strptr, "STRIKEOUT") != NULL, DEFAULT_CHARSET, OUT_TT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, FF_DONTCARE, argv[1].strptr);
 
        if (hFont)
        {
-           ultoa((ULONG)hFont, retstr->strptr, 10);
-           retstr->strlength = strlen(retstr->strptr);
-           return 0;
+           RETHANDLE(hFont);
        }
-       RETC(0)
+       RETC(0);
    }
-   else
-   if (!strcmp(argv[0].strptr, "SIZE"))
+   else if (!strcmp(argv[0].strptr, "SIZE"))
    {
        HDC hDC;
        SIZE s;
 
-       hDC = (HDC)atol(argv[1].strptr);
+       hDC = (HDC)GET_HANDLE(argv[1]);
        if (hDC)
        {
-         if (GetTextExtentPoint32(hDC, argv[2].strptr, argv[2].strlength, &s))
+         if (GetTextExtentPoint32(hDC, argv[2].strptr, (int)argv[2].strlength, &s))
          {
              sprintf(retstr->strptr, "%ld %ld", s.cx, s.cy);
              retstr->strlength = strlen(retstr->strptr);
              return 0;
          }
        }
-       RETC(0)
+       RETC(0);
    }
-   RETC(1)
+   RETC(1);
 }

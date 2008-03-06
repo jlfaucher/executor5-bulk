@@ -44,7 +44,7 @@
 #include <limits.h>
 
 
-size_t RexxEntry HandleScrollBar(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
+size_t RexxEntry HandleScrollBar(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
    HWND w;
 
@@ -55,7 +55,7 @@ size_t RexxEntry HandleScrollBar(const char *funcname, size_t argc, CONSTRXSTRIN
        DOUBLE ret=-LONG_MAX+1;
        CHECKARG(5);
 
-       w = (HWND)atol(argv[1].strptr);
+       w = GET_HWND(argv[1]);
        ret = atof(argv[2].strptr);
        if (ret < LONG_MIN) ret = 1-LONG_MAX;
 
@@ -67,9 +67,9 @@ size_t RexxEntry HandleScrollBar(const char *funcname, size_t argc, CONSTRXSTRIN
     else
     if (!strcmp(argv[0].strptr, "GR"))
     {
-       LONG min, max;
+       INT min, max;
 
-       w = (HWND)atol(argv[1].strptr);
+       w = GET_HWND(argv[1]);
        if (GetScrollRange(w, SB_CTL, &min, &max))
        {
           sprintf(retstr->strptr, "%ld %ld", min, max);
@@ -87,7 +87,7 @@ size_t RexxEntry HandleScrollBar(const char *funcname, size_t argc, CONSTRXSTRIN
     {
        CHECKARG(4);
 
-       w = (HWND)atol(argv[1].strptr);
+       w = GET_HWND(argv[1]);
        if (SetScrollPos(w, SB_CTL, atol(argv[2].strptr), IsYes(argv[3].strptr)))
           RETC(0)
        else
@@ -98,7 +98,7 @@ size_t RexxEntry HandleScrollBar(const char *funcname, size_t argc, CONSTRXSTRIN
     {
        LONG pos;
 
-       w = (HWND)atol(argv[1].strptr);
+       w = GET_HWND(argv[1]);
        pos = GetScrollPos(w, SB_CTL);
        sprintf(retstr->strptr, "%ld", pos);
        retstr->strlength = strlen(retstr->strptr);

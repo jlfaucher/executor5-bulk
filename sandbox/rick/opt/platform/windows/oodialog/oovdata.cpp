@@ -94,47 +94,53 @@ BOOL MyCheckRadioButton(DIALOGADMIN * aDlg, HWND hW, ULONG id, ULONG value)
 
 void GetMultiListBoxSelections(HWND hW, ULONG id, char * data)
 {
-   INT sel[1500], i, j;
-   CHAR buffer[NR_BUFFER];
+    INT sel[1500];
+    CHAR buffer[NR_BUFFER];
+    LRESULT i;
 
-   /* 1500 elements should not be a problem because data is 8 KB (1500 * approx. 5 Byte < 8 KB) */
-   i = SendDlgItemMessage(hW, id, LB_GETSELITEMS, 1500, (LPARAM)sel);
-   data[0] = '\0';
-   if (i == LB_ERR) return;
-   for (j=0; j<i; j++)
-   {
-      strcat(data, itoa(sel[j]+1, buffer, 10));
-      strcat(data, " ");
-   }
+    /* 1500 elements should not be a problem because data is 8 KB (1500 * approx. 5 Byte < 8 KB) */
+    i = SendDlgItemMessage(hW, id, LB_GETSELITEMS, 1500, (LPARAM)sel);
+    data[0] = '\0';
+    if (i == LB_ERR)
+    {
+        return;
+    }
+    for (LRESULT j=0; j < i; j++)
+    {
+        strcat(data, itoa(sel[j]+1, buffer, 10));
+        strcat(data, " ");
+    }
 }
 
 
-BOOL SetMultiListBoxSelections(HWND hW, ULONG id, char * data)
+BOOL SetMultiListBoxSelections(HWND hW, ULONG id, const char * data)
 {
-   INT i, j;
-   CHAR buffer[NR_BUFFER];
-   CHAR * p;
+    CHAR buffer[NR_BUFFER];
+    const char * p;
 
-   p = data;
+    p = data;
 
-   i = SendDlgItemMessage(hW, id, LB_GETCOUNT, (WPARAM) 0, (LPARAM) 0);
-   for (j=0; j<i; j++)
-      SendDlgItemMessage(hW, id, LB_SETSEL, (WPARAM) FALSE, (LPARAM) j);
+    LRESULT i = SendDlgItemMessage(hW, id, LB_GETCOUNT, (WPARAM) 0, (LPARAM) 0);
+    for (LRESULT j=0; j<i; j++)
+    {
+        SendDlgItemMessage(hW, id, LB_SETSEL, (WPARAM) FALSE, (LPARAM) j);
+    }
 
-   i = 0;
-   while ((p) && (*p))
-   {
-      buffer[0] = '\0';
-      j = 0;
-      while (p && (j<NR_BUFFER) && (*p != ' ') && (*p != '\0')) buffer[j++] = *p++;
-      buffer[j] = '\0';
-      if (atoi(buffer) > 0) {
-         i = SendDlgItemMessage(hW, id, LB_SETSEL, TRUE, (LPARAM)atoi(buffer)-1);
-         if (i == LB_ERR) return FALSE;
-      }
-      if (*p) p++;
-   }
-   return TRUE;
+    i = 0;
+    while ((p) && (*p))
+    {
+        buffer[0] = '\0';
+        size_t j = 0;
+        while (p && (j<NR_BUFFER) && (*p != ' ') && (*p != '\0')) buffer[j++] = *p++;
+        buffer[j] = '\0';
+        if (atoi(buffer) > 0)
+        {
+            i = SendDlgItemMessage(hW, id, LB_SETSEL, TRUE, (LPARAM)atoi(buffer)-1);
+            if (i == LB_ERR) return FALSE;
+        }
+        if (*p) p++;
+    }
+    return TRUE;
 }
 
 
@@ -142,30 +148,33 @@ BOOL SetMultiListBoxSelections(HWND hW, ULONG id, char * data)
 
 #define GETLBDATA(ldat, item, quit) \
                 {\
-                   i = SendDlgItemMessage(hW, item, LB_GETCURSEL, 0, 0); \
+                   i = (int)SendDlgItemMessage(hW, item, LB_GETCURSEL, 0, 0); \
                    if ((i!=LB_ERR) && (SendDlgItemMessage(hW, item, LB_GETTEXTLEN, i, 0) < DATA_BUFFER))    \
                    {                                                                                                                                 \
-                       i = SendDlgItemMessage(hW, item, LB_GETTEXT, i, (LPARAM)ldat); \
+                       i = (int)SendDlgItemMessage(hW, item, LB_GETTEXT, i, (LPARAM)ldat); \
                        if (i!=LB_ERR)                                                                                                         \
                        {                                                                                                                              \
-                          if (quit) RETC(0)                                                                                                               \
+                          if (quit) RETC(0);                                                                                                                \
                        }                                                                                                                              \
                    }                                                                                                                                         \
                 }
 
 #define SETLBDATA(ldat, item, quit) \
                 {\
-                   i = SendDlgItemMessage(hW, item, LB_FINDSTRING, 0, (LPARAM)ldat); \
+                   i = (int)SendDlgItemMessage(hW, item, LB_FINDSTRING, 0, (LPARAM)ldat); \
                    if (i!=LB_ERR)                                                                                                    \
                    {                                                                                                                                  \
-                      i = SendDlgItemMessage(hW, item, LB_SETCURSEL, i, 0);            \
+                      i = (int)SendDlgItemMessage(hW, item, LB_SETCURSEL, i, 0);            \
                       if (i!=LB_ERR)                                                                                               \
                       {                                                                                                                            \
-                         if (quit) RETC(0)                                                                                             \
-                      } else                                                                                                                               \
-                      i = SendDlgItemMessage(hW, item, LB_SETCURSEL, 0, 0);     \
+                         if (quit) RETC(0);                                                                                             \
+                      } \
+                      else                                                                                                                               \
+                      { \
+                          i = (int)SendDlgItemMessage(hW, item, LB_SETCURSEL, 0, 0);     \
+                      }  \
                     }                                                                                                                                   \
-                    else i = SendDlgItemMessage(hW, item, LB_SETCURSEL, 0, 0);     \
+                    else i = (int)SendDlgItemMessage(hW, item, LB_SETCURSEL, 0, 0);     \
                  }
 
 
@@ -174,10 +183,10 @@ BOOL SetMultiListBoxSelections(HWND hW, ULONG id, char * data)
 
 #define GETCBDATA(ldat, item, quit) \
                 {\
-                   i = SendDlgItemMessage(hW, item, CB_GETCURSEL, 0, 0); \
+                   i = (int)SendDlgItemMessage(hW, item, CB_GETCURSEL, 0, 0); \
                    if ((i!=LB_ERR) && (SendDlgItemMessage(hW, item, CB_GETLBTEXTLEN, i, 0) < DATA_BUFFER)) \
                    {                                                                                                                                 \
-                       i = SendDlgItemMessage(hW, item, CB_GETLBTEXT, i, (LPARAM)ldat); \
+                       i = (int)SendDlgItemMessage(hW, item, CB_GETLBTEXT, i, (LPARAM)ldat); \
                        if (i!=LB_ERR)                                                                                                         \
                        {                                                                                                                              \
                           if (quit) RETC(0)                                                                                                               \
@@ -188,17 +197,17 @@ BOOL SetMultiListBoxSelections(HWND hW, ULONG id, char * data)
 
 #define SETCBDATA(ldat, item, quit) \
                 {\
-                   i = SendDlgItemMessage(hW, item, CB_FINDSTRING, 0, (LPARAM)ldat); \
+                   i = (int)SendDlgItemMessage(hW, item, CB_FINDSTRING, 0, (LPARAM)ldat); \
                    if (i!=LB_ERR)                                                                                                    \
                    {                                                                                                                                  \
-                      i = SendDlgItemMessage(hW, item, CB_SETCURSEL, i, 0);            \
+                      i = (int)SendDlgItemMessage(hW, item, CB_SETCURSEL, i, 0);            \
                       if (i!=LB_ERR)                                                                                               \
                       {                                                                                                                            \
                          if (quit) RETC(0)                                                                                             \
                       } else                                                                                                                               \
-                      i = SendDlgItemMessage(hW, item, CB_SETCURSEL, 0, 0);     \
+                      i = (int)SendDlgItemMessage(hW, item, CB_SETCURSEL, 0, 0);     \
                     }                                                                                                                                   \
-                    else i = SendDlgItemMessage(hW, item, CB_SETCURSEL, 0, 0);     \
+                    else i = (int)SendDlgItemMessage(hW, item, CB_SETCURSEL, 0, 0);     \
                  }
 
 
@@ -217,7 +226,7 @@ BOOL GetTreeData(HWND hW, char * ldat, INT item)
    return FALSE;
 }
 
-BOOL SetTreeData(HWND hW, char * ldat, INT item)
+BOOL SetTreeData(HWND hW, const char * ldat, INT item)
 {
    TV_ITEM tvi;
    CHAR data[DATA_BUFFER];
@@ -262,7 +271,7 @@ BOOL GetListData(HWND hW, char * ldat, INT item)
    LONG it = -1, cnt, j;
    CHAR buffer[NR_BUFFER];
    HWND iW = GetDlgItem(hW, item);
-   INT len = 0;
+   size_t len = 0;
 
    ldat[0] = '\0';
    cnt  = ListView_GetSelectedCount(iW);
@@ -283,14 +292,13 @@ BOOL GetListData(HWND hW, char * ldat, INT item)
 }
 
 
-BOOL SetListData(HWND hW, char * ldat, INT item)
+BOOL SetListData(HWND hW, const char * ldat, INT item)
 {
    INT i, j;
    CHAR buffer[NR_BUFFER];
-   CHAR * p;
    HWND iW = GetDlgItem(hW, item);
 
-   p = ldat;
+   const char *p = ldat;
 
    i = ListView_GetItemCount(iW);
    for (j=0; j<i; j++)
@@ -312,12 +320,12 @@ BOOL SetListData(HWND hW, char * ldat, INT item)
 
 BOOL GetSliderData(HWND hW, char * ldat, INT item)
 {
-   ltoa(SendMessage(GetDlgItem(hW, item), TBM_GETPOS, 0,0), ldat, 10);
+   ltoa((long)SendMessage(GetDlgItem(hW, item), TBM_GETPOS, 0,0), ldat, 10);
    return TRUE;
 }
 
 
-BOOL SetSliderData(HWND hW, char * ldat, INT item)
+BOOL SetSliderData(HWND hW, const char * ldat, INT item)
 {
    SendMessage(GetDlgItem(hW, item), TBM_SETPOS, TRUE, atol(ldat));
    return TRUE;
@@ -340,7 +348,7 @@ BOOL GetTabCtrlData(HWND hW, char * ldat, INT item)
 }
 
 
-BOOL SetTabCtrlData(HWND hW, char * ldat, INT item)
+BOOL SetTabCtrlData(HWND hW, const char * ldat, INT item)
 {
    TC_ITEM tab;
    LONG cnt, i = 0;
@@ -363,12 +371,12 @@ BOOL SetTabCtrlData(HWND hW, char * ldat, INT item)
 }
 
 
-size_t RexxEntry GetItemData(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
+size_t RexxEntry GetItemData(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 
 {
    CHAR data[DATA_BUFFER];
    HWND hW;
-   INT i,id,k, len = 0;
+   INT i,id,k;
    DEF_ADM;
 
    CHECKARGL(2);
@@ -377,7 +385,7 @@ size_t RexxEntry GetItemData(const char *funcname, size_t argc, CONSTRXSTRING ar
    if (!dlgAdm) RETERR
 
    if (argc > 2)
-      hW = (HWND) atol(argv[2].strptr);
+      hW = GET_HWND(argv[2]);
    else
       hW = dlgAdm->TheDlg;
 
@@ -400,10 +408,10 @@ size_t RexxEntry GetItemData(const char *funcname, size_t argc, CONSTRXSTRING ar
           /* DATA_BUFFER was used to get the text which is a */
           /* hardcoded limit. Now get the text lenght and allocate */
           LPTSTR lpBuffer;
-          len = SendDlgItemMessage(hW,id,WM_GETTEXTLENGTH,0,0)+1;
-          lpBuffer = GlobalAlloc(GMEM_FIXED, len);
+          size_t len = (size_t)SendDlgItemMessage(hW,id,WM_GETTEXTLENGTH,0,0)+1;
+          lpBuffer = (LPTSTR)GlobalAlloc(GMEM_FIXED, len);
           if (!lpBuffer) return 1;
-          len = GetDlgItemText(hW, id, lpBuffer, len);
+          len = GetDlgItemText(hW, id, lpBuffer, (int)len);
           retstr->strptr = lpBuffer;
           strcpy(retstr->strptr, lpBuffer);
           retstr->strlength = len;
@@ -443,11 +451,11 @@ size_t RexxEntry GetItemData(const char *funcname, size_t argc, CONSTRXSTRING ar
                else data[0] = '\0';
    }
 
-   len = strlen(data);
+   size_t len = strlen(data);
    if (len > 255)
    {
        CHAR * p;
-       p = GlobalAlloc(GMEM_FIXED, len + 1);
+       p = (char *)GlobalAlloc(GMEM_FIXED, len + 1);
        if (!p) return 1;
        retstr->strptr = p;
        strcpy(retstr->strptr, data);
@@ -463,85 +471,119 @@ size_t RexxEntry GetItemData(const char *funcname, size_t argc, CONSTRXSTRING ar
 
 
 
-size_t RexxEntry SetItemData(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
+size_t RexxEntry SetItemData(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 
 {
-   PCHAR data;
-   HWND hW;
-   INT i, k, id;
+    HWND hW;
+    INT i, k, id;
 
-   DEF_ADM;
+    DEF_ADM;
 
-   CHECKARGL(3);
+    CHECKARGL(3);
 
-   GET_ADM;
-   if (!dlgAdm) RETERR
+    GET_ADM;
+    if (!dlgAdm)
+    {
+        RETERR;
+    }
 
-   if (argc > 3)
-      hW = (HWND) atol(argv[3].strptr);
-   else
-      hW = dlgAdm->TheDlg;
+    if (argc > 3)
+    {
+        hW = GET_HWND(argv[3]);
+    }
+    else
+    {
+        hW = dlgAdm->TheDlg;
+    }
 
-   id = atoi(argv[1].strptr);
+    id = atoi(argv[1].strptr);
 
-   k = 0;
-   if (argc > 4)
-      k = atoi(argv[4].strptr);
-   else
-   {
-      SEARCHDATA(dlgAdm, i, id)
-      if (VALIDDATA(dlgAdm, i, id)) k = dlgAdm->DataTab[i].typ;
-   }
+    k = 0;
+    if (argc > 4)
+    {
+        k = atoi(argv[4].strptr);
+    }
+    else
+    {
+        SEARCHDATA(dlgAdm, i, id)
+        if (VALIDDATA(dlgAdm, i, id))
+        {
+            k = dlgAdm->DataTab[i].typ;
+        }
+    }
 
-   data = argv[2].strptr;
-   switch (k)
-   {
-      case 0:
-         if (SetDlgItemText(hW, id, data))
-            RETC(0)
-         else
-            RETC(1)
-         break;
-      case 1:
-         if (CheckDlgButton(hW, id, atoi(data)))
-            RETC(0)
-         else
-            RETC(1)
-         break;
-      case 2:
-         if (MyCheckRadioButton(dlgAdm, hW, id, atoi(data)))
-            RETC(0)
-         else
-            RETC(1)
-          break;
-      case 3:
-         SETLBDATA(data, id, TRUE)
-         RETC(0)
-      case 4:
-       if (SetMultiListBoxSelections(hW, id, data))
-            RETC(0)
-         else
-            RETC(1)
-      case 5:
-         SETCBDATA(data, id, TRUE)
-         RETC(0)
-      case 6:
-         RETC(!SetTreeData(hW, data, id))
-      case 7:
-         RETC(!SetListData(hW, data, id))
-      case 8:
-         RETC(!SetSliderData(hW, data, id))
-      case 9:
-         RETC(!SetTabCtrlData(hW, data, id))
-      default: if (SetItemDataExternal) return (*SetItemDataExternal)(dlgAdm, hW, id, k, data);
-               else RETC(1)
-   }
+    const char *data = argv[2].strptr;
+    switch (k)
+    {
+        case 0:
+            if (SetDlgItemText(hW, id, data))
+            {
+                RETC(0);
+            }
+            else
+            {
+                RETC(1);
+            }
+            break;
+        case 1:
+            if (CheckDlgButton(hW, id, atoi(data)))
+            {
+                RETC(0);
+            }
+            else
+            {
+                RETC(1);
+            }
+            break;
+        case 2:
+            if (MyCheckRadioButton(dlgAdm, hW, id, atoi(data)))
+            {
+                RETC(0);
+            }
+            else
+            {
+                RETC(1);
+            }
+            break;
+        case 3:
+            SETLBDATA(data, id, TRUE)
+            RETC(0);
+        case 4:
+            if (SetMultiListBoxSelections(hW, id, data))
+            {
+                RETC(0);
+            }
+            else
+            {
+                RETC(1);
+            }
+        case 5:
+            SETCBDATA(data, id, TRUE)
+            RETC(0);
+        case 6:
+            RETC(!SetTreeData(hW, data, id))
+        case 7:
+            RETC(!SetListData(hW, data, id))
+        case 8:
+            RETC(!SetSliderData(hW, data, id))
+        case 9:
+            RETC(!SetTabCtrlData(hW, data, id))
+        default:
+            if (SetItemDataExternal)
+            {
+                return(*SetItemDataExternal)(dlgAdm, hW, id, k, data);
+            }
+            else
+            {
+                RETC(1);
+            }
+    }
 }
 
 
 
 
-size_t RexxEntry SetStemData(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
+size_t RexxEntry SetStemData(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
    INT i,j, c, rc;
    CHAR data[DATA_BUFFER];
@@ -588,52 +630,57 @@ size_t RexxEntry SetStemData(const char *funcname, size_t argc, CONSTRXSTRING ar
             hW = dlgAdm->ChildDlg[dlgAdm->DataTab[j].category];
 
             if (dlgAdm->DataTab[j].typ == 0)
-               SetDlgItemText(hW, dlgAdm->DataTab[j].id, data);
-            else
-            if (dlgAdm->DataTab[j].typ == 1)
-               CheckDlgButton(hW, dlgAdm->DataTab[j].id, atoi(data));
-            else
-            if (dlgAdm->DataTab[j].typ == 2)
-               MyCheckRadioButton(dlgAdm, hW, dlgAdm->DataTab[j].id, atoi(data)) ;
-            else
-            if (dlgAdm->DataTab[j].typ == 3)
+            {
+                SetDlgItemText(hW, dlgAdm->DataTab[j].id, data);
+            }
+            else if (dlgAdm->DataTab[j].typ == 1)
+            {
+                CheckDlgButton(hW, dlgAdm->DataTab[j].id, atoi(data));
+            }
+            else if (dlgAdm->DataTab[j].typ == 2)
+            {
+                MyCheckRadioButton(dlgAdm, hW, dlgAdm->DataTab[j].id, atoi(data)) ;
+            }
+            else if (dlgAdm->DataTab[j].typ == 3)
             {
                SETLBDATA(data, dlgAdm->DataTab[j].id, FALSE)
-            } else
-            if (dlgAdm->DataTab[j].typ == 4)
+            }
+            else if (dlgAdm->DataTab[j].typ == 4)
             {
                SetMultiListBoxSelections(hW, dlgAdm->DataTab[j].id, data);
-            } else
-            if (dlgAdm->DataTab[j].typ == 5)
+            }
+            else if (dlgAdm->DataTab[j].typ == 5)
             {
                SETCBDATA(data, dlgAdm->DataTab[j].id, FALSE)
-            } else
-            if (dlgAdm->DataTab[j].typ == 6)
+            }
+            else if (dlgAdm->DataTab[j].typ == 6)
             {
                SetTreeData(hW, data, dlgAdm->DataTab[j].id);
-            } else
-            if (dlgAdm->DataTab[j].typ == 7)
+            }
+            else if (dlgAdm->DataTab[j].typ == 7)
             {
                SetListData(hW, data, dlgAdm->DataTab[j].id);
-            } else
-            if (dlgAdm->DataTab[j].typ == 8)
+            }
+            else if (dlgAdm->DataTab[j].typ == 8)
             {
                SetSliderData(hW, data, dlgAdm->DataTab[j].id);
-            } else
-            if (dlgAdm->DataTab[j].typ == 9)
+            }
+            else if (dlgAdm->DataTab[j].typ == 9)
             {
                SetTabCtrlData(hW, data, dlgAdm->DataTab[j].id);
-            } else
-            if (SetStemDataExternal) (*SetStemDataExternal)(dlgAdm, hW, dlgAdm->DataTab[j].id, dlgAdm->DataTab[j].typ, data);
-
+            }
+            else if (SetStemDataExternal)
+            {
+                (*SetStemDataExternal)(dlgAdm, hW, dlgAdm->DataTab[j].id, dlgAdm->DataTab[j].typ, data);
+            }
           }
    }
-   RETC(0)
+   RETC(0);
 }
 
 
 
-size_t RexxEntry GetStemData(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
+size_t RexxEntry GetStemData(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
    INT i,j, c;
    CHAR data[DATA_BUFFER];
@@ -724,7 +771,7 @@ size_t RexxEntry GetStemData(const char *funcname, size_t argc, CONSTRXSTRING ar
 }
 
 
-size_t RexxEntry DataTable(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
+size_t RexxEntry DataTable(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
    DEF_ADM;
 
@@ -737,7 +784,7 @@ size_t RexxEntry DataTable(const char *funcname, size_t argc, CONSTRXSTRING argv
        CHECKARGL(4);
        if (!dlgAdm->DataTab)
        {
-          dlgAdm->DataTab = LocalAlloc(LPTR, sizeof(DATATABLEENTRY) * MAX_DT_ENTRIES);
+          dlgAdm->DataTab = (DATATABLEENTRY *)LocalAlloc(LPTR, sizeof(DATATABLEENTRY) * MAX_DT_ENTRIES);
           if (!dlgAdm->DataTab)
           {
              MessageBox(0,"No memory available","Error",MB_OK | MB_ICONHAND);
@@ -815,7 +862,7 @@ BOOL DataAutodetection(DIALOGADMIN * aDlg)
     parent = aDlg->TheDlg;
     current = parent;
     next = GetTopWindow(current);
-    while ((next) && ((HWND)GetWindowLong(next, GWL_HWNDPARENT) == parent))
+    while ((next) && ((HWND)GetWindowLongPtr(next, GWL_HWNDPARENT) == parent))
     {
        current = next;
 
@@ -867,7 +914,7 @@ BOOL DataAutodetection(DIALOGADMIN * aDlg)
        {
           if (!aDlg->DataTab)
           {
-              aDlg->DataTab = LocalAlloc(LPTR, sizeof(DATATABLEENTRY) * MAX_DT_ENTRIES);
+              aDlg->DataTab = (DATATABLEENTRY *)LocalAlloc(LPTR, sizeof(DATATABLEENTRY) * MAX_DT_ENTRIES);
               if (!aDlg->DataTab)
               {
                    MessageBox(0,"No memory available","Error",MB_OK | MB_ICONHAND);

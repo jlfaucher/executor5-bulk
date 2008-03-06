@@ -45,12 +45,12 @@
 #include "oovutil.h"
 
 
-extern LPBITMAPINFO LoadDIB(LPSTR szFile);
+extern LPBITMAPINFO LoadDIB(const char *szFile);
 WORD NumDIBColorEntries(LPBITMAPINFO lpBmpInfo);
 HPALETTE CreateDIBPalette(LPBITMAPINFO lpBmpInfo);
 void SetSysPalColors(HPALETTE hPal);
 HPALETTE CopyPalette(HPALETTE hSrcPal);
-extern BOOL AddTheMessage(DIALOGADMIN *, ULONG, ULONG, WPARAM, WPARAM, LPARAM, LPARAM, RXSTRING, ULONG);
+extern BOOL AddTheMessage(DIALOGADMIN *, ULONG, ULONG, ULONG, ULONG, ULONG, ULONG, CONSTRXSTRING, ULONG);
 extern BOOL DrawButton(DIALOGADMIN *,INT id);
 extern LRESULT PaletteMessage(DIALOGADMIN * addr, HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 extern HWND ScrollingButton;
@@ -92,11 +92,11 @@ void DrawBmpBackground(DIALOGADMIN * addr, INT id, HDC hDC, RECT * itRect, RECT 
            if (addr->BkgBrush) hbr = addr->BkgBrush; else hbr = Ctl3dCtlColorEx(WM_CTLCOLORDLG, wParam, lParam);
         else
 #endif
-           if (addr->BkgBrush) hbr = addr->BkgBrush; else hbr = GetStockObject(WHITE_BRUSH);
+           if (addr->BkgBrush) hbr = addr->BkgBrush; else hbr = (HBRUSH)GetStockObject(WHITE_BRUSH);
     }
 
-    oP = SelectObject(hDC, hpen);
-    oB = SelectObject(hDC, hbr);
+    oP = (HPEN)SelectObject(hDC, hpen);
+    oB = (HBRUSH)SelectObject(hDC, hbr);
 
     /* the bitmap covers nothing */
     if ((rightdiv == itRect->right - itRect->left) || (bottomdiv == itRect->bottom - itRect->top))
@@ -259,12 +259,12 @@ BOOL DrawBitmapButton(DIALOGADMIN * addr, HWND hDlg, WPARAM wParam, LPARAM lPara
 
              if (addr->BmpTab[i].Frame)
           {
-            rc = FrameRect(dis->hDC, (LPRECT)&dis->rcItem, GetStockObject(BLACK_BRUSH));
+            rc = FrameRect(dis->hDC, (LPRECT)&dis->rcItem, (HBRUSH)GetStockObject(BLACK_BRUSH));
             /* draw 3D effect */
             if (((dis->itemState & ODS_SELECTED) == ODS_SELECTED) && !(dis->itemState & ODS_DISABLED))
             {
                nP = CreatePen(PS_SOLID, 2, RGB(120,120,120));
-               oP = SelectObject(dis->hDC, nP);
+               oP = (HPEN)SelectObject(dis->hDC, nP);
                MoveToEx(dis->hDC, dis->rcItem.left+2, dis->rcItem.top+2, &lp);
                LineTo(dis->hDC, dis->rcItem.right-2, dis->rcItem.top+2);
                MoveToEx(dis->hDC, dis->rcItem.left+2, dis->rcItem.bottom-2, &lp);
@@ -279,7 +279,7 @@ BOOL DrawBitmapButton(DIALOGADMIN * addr, HWND hDlg, WPARAM wParam, LPARAM lPara
             {
                /* white line */
                 nP = CreatePen(PS_SOLID, 2, RGB(240,240,240));
-               oP = SelectObject(dis->hDC, nP);
+               oP = (HPEN)SelectObject(dis->hDC, nP);
                MoveToEx(dis->hDC, dis->rcItem.left+2, dis->rcItem.top+2, &lp);
                LineTo(dis->hDC, dis->rcItem.right-2, dis->rcItem.top+2);
                MoveToEx(dis->hDC, dis->rcItem.left+2, dis->rcItem.bottom-2, &lp);
@@ -292,7 +292,7 @@ BOOL DrawBitmapButton(DIALOGADMIN * addr, HWND hDlg, WPARAM wParam, LPARAM lPara
 
                /* grey line */
                nP = CreatePen(PS_SOLID, 2, RGB(120,120,120));
-               oP = SelectObject(dis->hDC, nP);
+               oP = (HPEN)SelectObject(dis->hDC, nP);
                if (IsNT)
                      MoveToEx(dis->hDC, dis->rcItem.right-2, dis->rcItem.top+2, &lp);
                else
@@ -309,7 +309,7 @@ BOOL DrawBitmapButton(DIALOGADMIN * addr, HWND hDlg, WPARAM wParam, LPARAM lPara
                && !(dis->itemState & ODS_SELECTED))
             {
                nP = CreatePen(PS_DOT, 1, RGB(0,0,0));
-               oP = SelectObject(dis->hDC, nP);
+               oP = (HPEN)SelectObject(dis->hDC, nP);
                MoveToEx(dis->hDC, dis->rcItem.left+4, dis->rcItem.top+4, &lp);
                LineTo(dis->hDC, dis->rcItem.right-4, dis->rcItem.top+4);
                LineTo(dis->hDC, dis->rcItem.right-4, dis->rcItem.bottom-4);
@@ -395,7 +395,7 @@ BOOL DrawBackgroundBmp(DIALOGADMIN * addr, HWND hDlg, WPARAM wParam, LPARAM lPar
 #define ASSIGNBMP(slot, field, bnr) \
       if (inmem) \
       { \
-         dlgAdm->BmpTab[slot].field = (void *) atoi(buffer[bnr]); \
+         dlgAdm->BmpTab[slot].field = (HBITMAP)string2pointer(buffer[bnr]); \
          dlgAdm->BmpTab[slot].Loaded = 2; \
       } \
       else \
@@ -404,14 +404,14 @@ BOOL DrawBackgroundBmp(DIALOGADMIN * addr, HWND hDlg, WPARAM wParam, LPARAM lPar
       else \
       { \
          dlgAdm->BmpTab[slot].Loaded  = 1; \
-         dlgAdm->BmpTab[slot].field  = LoadDIB(buffer[bnr]); \
+         dlgAdm->BmpTab[slot].field  = (HBITMAP)LoadDIB(buffer[bnr]); \
       }
 
 
 
 /* handle the bitmap buttons that are stored in the bitmap table */
 
-size_t RexxEntry BmpButton(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
+size_t RexxEntry BmpButton(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
    DEF_ADM;
 
@@ -423,8 +423,8 @@ size_t RexxEntry BmpButton(const char *funcname, size_t argc, CONSTRXSTRING argv
    if (argv[1].strptr[0] == 'C')     /* change a bitmap button */
    {
        register INT i, id;
-       PCHAR buffer[5];
-       PCHAR optb;
+       const char * buffer[5];
+       const char *optb;
        BOOL inmem = FALSE;
 
        CHECKARGL(4);
@@ -484,7 +484,7 @@ size_t RexxEntry BmpButton(const char *funcname, size_t argc, CONSTRXSTRING argv
           if (strstr(optb, "USEPAL"))
           {
              if (dlgAdm->ColorPalette) DeleteObject(dlgAdm->ColorPalette);
-             dlgAdm->ColorPalette = CreateDIBPalette(dlgAdm->BmpTab[i].bitmapID);
+             dlgAdm->ColorPalette = CreateDIBPalette((LPBITMAPINFO)dlgAdm->BmpTab[i].bitmapID);
              SetSysPalColors(dlgAdm->ColorPalette);
           }
 
@@ -516,7 +516,7 @@ size_t RexxEntry BmpButton(const char *funcname, size_t argc, CONSTRXSTRING argv
 
            if (hBmp)
            {
-              hW = (HWND)atol(argv[2].strptr);
+              hW = (HWND)GET_HWND(argv[2]);
               x = atoi(argv[4].strptr);
               y = atoi(argv[5].strptr);
               xs = atoi(argv[6].strptr);
@@ -599,7 +599,7 @@ size_t RexxEntry BmpButton(const char *funcname, size_t argc, CONSTRXSTRING argv
    else
    if (argv[1].strptr[0] == 'A')     /* add a bitmap button */
    {
-       PCHAR buffer[5];
+       const char *buffer[5];
        BOOL frame = FALSE;
        BOOL inmem = FALSE;
        BOOL strch = FALSE;
@@ -607,7 +607,7 @@ size_t RexxEntry BmpButton(const char *funcname, size_t argc, CONSTRXSTRING argv
        CHECKARGL(4);
        if (!dlgAdm->BmpTab)
        {
-          dlgAdm->BmpTab = LocalAlloc(LMEM_FIXED, sizeof(BITMAPTABLEENTRY) * MAX_BT_ENTRIES);
+          dlgAdm->BmpTab = (BITMAPTABLEENTRY *)LocalAlloc(LMEM_FIXED, sizeof(BITMAPTABLEENTRY) * MAX_BT_ENTRIES);
           if (!dlgAdm->BmpTab)
           {
              MessageBox(0,"No memory available","Error",MB_OK | MB_ICONHAND);
@@ -653,7 +653,7 @@ size_t RexxEntry BmpButton(const char *funcname, size_t argc, CONSTRXSTRING argv
           if ((argc > 8) && (strstr(argv[8].strptr, "USEPAL")))
           {
              if (dlgAdm->ColorPalette) DeleteObject(dlgAdm->ColorPalette);
-             dlgAdm->ColorPalette = CreateDIBPalette(dlgAdm->BmpTab[dlgAdm->BT_size].bitmapID);
+             dlgAdm->ColorPalette = CreateDIBPalette((LPBITMAPINFO)dlgAdm->BmpTab[dlgAdm->BT_size].bitmapID);
              SetSysPalColors(dlgAdm->ColorPalette);
           }
 
@@ -709,7 +709,7 @@ size_t RexxEntry BmpButton(const char *funcname, size_t argc, CONSTRXSTRING argv
 
 
 
-size_t RexxEntry LoadRemoveBitmap(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
+size_t RexxEntry LoadRemoveBitmap(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
    HBITMAP hBmp;
    void * p;
@@ -721,7 +721,7 @@ size_t RexxEntry LoadRemoveBitmap(const char *funcname, size_t argc, CONSTRXSTRI
 
    if (strstr(argv[2].strptr, "REMOVE"))
    {
-      p = (void *) atol(argv[1].strptr);
+      p = (void *)GET_POINTER(argv[1]);
       if (p)
       {
           LocalFree(p);
@@ -730,21 +730,21 @@ size_t RexxEntry LoadRemoveBitmap(const char *funcname, size_t argc, CONSTRXSTRI
    }
    else
    {
-      hBmp = LoadDIB(argv[1].strptr);
+      hBmp = (HBITMAP)LoadDIB(argv[1].strptr);
       if (strstr(argv[2].strptr, "USEPAL") && dlgAdm)
       {
          if (dlgAdm->ColorPalette) DeleteObject(dlgAdm->ColorPalette);
-         dlgAdm->ColorPalette = CreateDIBPalette(hBmp);
+         dlgAdm->ColorPalette = CreateDIBPalette((LPBITMAPINFO)hBmp);
          SetSysPalColors(dlgAdm->ColorPalette);
       }
-      RETVAL((ULONG) hBmp);
+      RETHANDLE(hBmp);
    }
    RETC(0)
 }
 
 
 
-size_t RexxEntry ScrollTheWindow(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
+size_t RexxEntry ScrollTheWindow(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
    HWND w;
    RECT r, rs;
@@ -760,7 +760,7 @@ size_t RexxEntry ScrollTheWindow(const char *funcname, size_t argc, CONSTRXSTRIN
    GET_ADM;
    if (!dlgAdm) RETERR
 
-   w = (HWND)atol(argv[1].strptr);
+   w = (HWND)GET_HWND(argv[1]);
 
    x=atoi(argv[2].strptr);
    y=atoi(argv[3].strptr);
@@ -793,11 +793,11 @@ size_t RexxEntry ScrollTheWindow(const char *funcname, size_t argc, CONSTRXSTRIN
           }
           else
           {
-             if (dlgAdm->BkgBrush) hbr = dlgAdm->BkgBrush; else hbr = GetStockObject(WHITE_BRUSH);
-             hpen = GetStockObject(WHITE_PEN);
+             if (dlgAdm->BkgBrush) hbr = dlgAdm->BkgBrush; else hbr = (HBRUSH)GetStockObject(WHITE_BRUSH);
+             hpen = (HPEN)GetStockObject(WHITE_PEN);
           }
-          oP = SelectObject(hDC, hpen);
-          oB = SelectObject(hDC, hbr);
+          oP = (HPEN)SelectObject(hDC, hpen);
+          oB = (HBRUSH)SelectObject(hDC, hbr);
 
           if (x>0)
              Rectangle(hDC, rs.left, rs.top, rs.left + x, rs.bottom);
@@ -877,7 +877,7 @@ WORD NumDIBColorEntries(LPBITMAPINFO lpBmpInfo)
 }
 
 
-LPBITMAPINFO LoadDIB(LPSTR szFile)
+LPBITMAPINFO LoadDIB(const char *szFile)
 {
     int fd;
     OFSTRUCT os;

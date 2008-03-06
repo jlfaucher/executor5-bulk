@@ -43,21 +43,21 @@
 #include "oovutil.h"
 
 
-void rxstrlcpy(CHAR * tar, RXSTRING src)
+void rxstrlcpy(CHAR * tar, CONSTRXSTRING &src)
 {
    register UINT i;
    for (i=0; (i<src.strlength) && (i<STR_BUFFER-1);i++) tar[i] = src.strptr[i];
    tar[i] = '\0';
 }
 
-void rxdatacpy(CHAR * tar, RXSTRING src)
+void rxdatacpy(CHAR * tar, RXSTRING &src)
 {
    register UINT i;
    for (i=0; (i<src.strlength) && (i<DATA_BUFFER-1);i++) tar[i] = src.strptr[i];
    tar[i] = '\0';
 }
 
-BOOL IsYes(CHAR * s)
+bool IsYes(const char * s)
 {
    if (!strlen(s)) return FALSE;
 
@@ -65,12 +65,12 @@ BOOL IsYes(CHAR * s)
 }
 
 /* Slightly stricter than IsYes and not currently exported. */
-BOOL IsNo(CHAR * s)
+bool IsNo(const char * s)
 {
    return ( s && (*s == 'N' || *s == 'n') );
 }
 
-size_t RexxEntry InfoMessage(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
+size_t RexxEntry InfoMessage(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
    HWND hW;
 
@@ -82,7 +82,7 @@ size_t RexxEntry InfoMessage(const char *funcname, size_t argc, CONSTRXSTRING ar
 }
 
 
-size_t RexxEntry ErrorMessage(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
+size_t RexxEntry ErrorMessage(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
    HWND hW;
 
@@ -93,7 +93,7 @@ size_t RexxEntry ErrorMessage(const char *funcname, size_t argc, CONSTRXSTRING a
    RETC(0)
 }
 
-size_t RexxEntry YesNoMessage(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
+size_t RexxEntry YesNoMessage(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
    HWND hW;
    UINT uType = MB_YESNO | MB_ICONQUESTION | MB_SETFOREGROUND | MB_TASKMODAL;
@@ -110,7 +110,7 @@ size_t RexxEntry YesNoMessage(const char *funcname, size_t argc, CONSTRXSTRING a
          CHAR szText[] = "YesNoMessage argument 2 must be one of [Yes, No]; "
                          "found \"%s\"";
 
-         pszMsg = LocalAlloc(LPTR, sizeof(szText) + 1 + argv[1].strlength);
+         pszMsg = (PSZ)LocalAlloc(LPTR, sizeof(szText) + 1 + argv[1].strlength);
          if ( ! pszMsg )
             RETERR;
          sprintf(pszMsg, szText, argv[1].strptr);
@@ -131,7 +131,7 @@ size_t RexxEntry YesNoMessage(const char *funcname, size_t argc, CONSTRXSTRING a
 }
 
 
-size_t RexxEntry BinaryAnd(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
+size_t RexxEntry BinaryAnd(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
    ULONG n, m;
 

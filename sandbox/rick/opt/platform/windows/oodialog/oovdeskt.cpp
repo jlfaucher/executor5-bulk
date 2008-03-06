@@ -43,18 +43,16 @@
 #include "oovutil.h"
 
 
-size_t RexxEntry FindTheWindow(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
+size_t RexxEntry FindTheWindow(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
-   ULONG hW;
+   HWND hW;
 
    CHECKARG(1);
 
-   hW = (ULONG) FindWindow(NULL, argv[0].strptr);
+   hW = FindWindow(NULL, argv[0].strptr);
    if (hW)
    {
-      ltoa(hW, retstr->strptr, 10);
-      retstr->strlength = strlen(retstr->strptr);
-      return 0;
+       RETHANDLE(hW);
    }
    RETC(0)  /* in this case 0 is an error */
 }
@@ -67,26 +65,25 @@ size_t RexxEntry FindTheWindow(const char *funcname, size_t argc, CONSTRXSTRING 
  * @param hDlg    Handle to the dialog of interest.
  * @param retstr  Rexx string to return the result in.
  */
-static void getCurrentFocus( HWND hDlg, PRXSTRING *retstr )
+static void getCurrentFocus( HWND hDlg, RXSTRING *retstr )
 {
-   ULONG hW = (ULONG)SendMessage(hDlg, WM_USER_GETFOCUS, 0,0);
-   ltoa(hW, retstr->strptr, 10);
-   retstr->strlength = strlen(retstr->strptr);
+   HWND hW = (HWND)SendMessage(hDlg, WM_USER_GETFOCUS, 0,0);
+   pointer2string(retstr, (void *)hW);
 }
 
-size_t RexxEntry Wnd_Desktop(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
+size_t RexxEntry Wnd_Desktop(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
-   ULONG hW;
+   HWND  hW;
 
    CHECKARGL(1);
 
    if (!strcmp(argv[0].strptr,"TXT"))      /* get the window text/title */
    {
        CHECKARG(2);
-       hW = atol(argv[1].strptr);
+       hW = GET_HWND(argv[1].strptr);
        if (hW)
        {
-           retstr->strlength = GetWindowText((HWND)hW, retstr->strptr, 255);
+           retstr->strlength = GetWindowText(hW, retstr->strptr, 255);
            return 0;
        }
        retstr->strlength = 0;
@@ -98,19 +95,19 @@ size_t RexxEntry Wnd_Desktop(const char *funcname, size_t argc, CONSTRXSTRING ar
        ULONG st;
 
        CHECKARG(3);
-       hW = atol(argv[1].strptr);
+       hW = GET_HWND(argv[1].strptr);
 
        if (atoi(argv[2].strptr))
        {
-          if (IsWindowEnabled((HWND) hW))
+          if (IsWindowEnabled(hW))
               st = 0;
-          else st = EnableWindow((HWND) hW, TRUE);
+          else st = EnableWindow(hW, TRUE);
        }
        else
        {
-          if (!IsWindowEnabled((HWND) hW))
+          if (!IsWindowEnabled(hW))
              st = 0;
-          else st = EnableWindow((HWND) hW, FALSE);
+          else st = EnableWindow(hW, FALSE);
        }
        RETVAL(st)
    }
@@ -119,7 +116,8 @@ size_t RexxEntry Wnd_Desktop(const char *funcname, size_t argc, CONSTRXSTRING ar
    {
        CHECKARG(3);
 
-       RETC(!SetWindowText((HWND)atol(argv[1].strptr), argv[2].strptr))
+       hW = GET_HWND(argv[1].strptr);
+       RETC(!SetWindowText(hW, argv[2].strptr))
    }
    else
    if (!strcmp(argv[0].strptr,"SETFOC"))
@@ -129,7 +127,7 @@ size_t RexxEntry Wnd_Desktop(const char *funcname, size_t argc, CONSTRXSTRING ar
        HWND hDlg, hNextFocus;
        CHECKARGL(3);
 
-       hDlg = (HWND)atol(argv[1].strptr);
+       hDlg = GET_HWND(argv[1].strptr);
        if ( ! IsWindow(hDlg) )
           RETVAL(-1)
 
@@ -144,7 +142,7 @@ size_t RexxEntry Wnd_Desktop(const char *funcname, size_t argc, CONSTRXSTRING ar
        switch ( qualifier )
        {
           case 'F' :  /* set window to Foreground like Wnd_Desktop("TOP"..) but returns hwnd of previous control */
-             hNextFocus = (HWND)atol(argv[2].strptr);
+             hNextFocus = GET_HWND(argv[2]);
              if ( ! IsWindow(hNextFocus) )
                 RETVAL(-1)
              result = SetForegroundWindow(hNextFocus);
@@ -160,7 +158,7 @@ size_t RexxEntry Wnd_Desktop(const char *funcname, size_t argc, CONSTRXSTRING ar
 
           case 'C' :  /* set focus on specified Control */
           default  :
-             hNextFocus = (HWND)atol(argv[2].strptr);
+              hNextFocus = GET_HWND(argv[2]);
              if ( ! IsWindow(hNextFocus) )
                 RETVAL(-1)
              result = SendMessage(hDlg, WM_NEXTDLGCTL, (WPARAM)hNextFocus, TRUE);
@@ -176,25 +174,28 @@ size_t RexxEntry Wnd_Desktop(const char *funcname, size_t argc, CONSTRXSTRING ar
    {
        CHECKARG(2);
 
+       hW = GET_HWND(argv[1]);
+
        /* return the handle of the window control that has the focus */
-       getCurrentFocus((HWND)atol(argv[1].strptr), retstr);
+       getCurrentFocus(hW, retstr);
        return 0;
    }
    else
    if (!strcmp(argv[0].strptr,"TOP"))       /* put window to the foreground */
    {
        CHECKARG(2);
-       hW = (ULONG) GetForegroundWindow();
-       if (hW == (ULONG)atol(argv[1].strptr)) RETVAL(hW)
-       if ( SetForegroundWindow((HWND)atol(argv[1].strptr)) )
-           RETVAL(hW)  /* return the handle of the window that had the focus before */
+       hW = GetForegroundWindow();
+       HWND hTarget = GET_HWND(argv[1]);
+       if (hW == hTarget) RETHANDLE(hW)
+       if ( SetForegroundWindow(hTarget) )
+           RETHANDLE(hW)  /* return the handle of the window that had the focus before */
        else
            RETVAL(0)   /* indicate failure */
    }
    else
    if (!strcmp(argv[0].strptr,"FG"))       /* get foreground window */
    {
-       RETVAL((ULONG) GetForegroundWindow())
+       RETHANDLE(GetForegroundWindow())
    }
    else
    if (!strcmp(argv[0].strptr,"RECT"))     /* get the window pos and size */  /* same as WindoRect("Get",hw) but in plain */
@@ -203,10 +204,10 @@ size_t RexxEntry Wnd_Desktop(const char *funcname, size_t argc, CONSTRXSTRING ar
        CHECKARG(2);
        retstr->strlength = 0;
 
-       hW = atol(argv[1].strptr);
+       hW = GET_HWND(argv[1]);
        if (hW)
        {
-          if (!GetWindowRect((HWND)hW, &r)) return 0;
+          if (!GetWindowRect(hW, &r)) return 0;
           sprintf(retstr->strptr, "%d %d %d %d", r.left, r.top, r.right, r.bottom);
           retstr->strlength = strlen(retstr->strptr);
        }
@@ -216,10 +217,10 @@ size_t RexxEntry Wnd_Desktop(const char *funcname, size_t argc, CONSTRXSTRING ar
    if (!strcmp(argv[0].strptr,"ID"))     /* get the window id */
    {
        CHECKARG(2);
-       hW = atol(argv[1].strptr);
+       hW = GET_HWND(argv[1]);
        if (hW)
        {
-          RETVAL((ULONG)GetWindowLong((HWND)hW, GWL_ID))
+          RETVAL((ULONG)GetWindowLong(hW, GWL_ID))
        }
        RETC(0);
    }
@@ -227,16 +228,17 @@ size_t RexxEntry Wnd_Desktop(const char *funcname, size_t argc, CONSTRXSTRING ar
    if (!strcmp(argv[0].strptr,"CAP"))     /* get/set/release the mouse capture */
    {   /* capture must be handled by window thread, therefore sendmessage is used */
        CHECKARG(3);
+       hW = GET_HWND(argv[1]);
        if (argv[2].strptr[0] == 'G')
-           RETVAL((ULONG)SendMessage((HWND)atol(argv[1].strptr), WM_USER_GETSETCAPTURE, 0,0))
+           RETVAL((ULONG)SendMessage(hW, WM_USER_GETSETCAPTURE, 0,0))
        else
        if (argv[2].strptr[0] == 'R')
-           RETC(!SendMessage((HWND)atol(argv[1].strptr), WM_USER_GETSETCAPTURE, 2,0))
+           RETC(!SendMessage(hW, WM_USER_GETSETCAPTURE, 2,0))
        else {
-           hW = atol(argv[2].strptr);
+           hW = GET_HWND(argv[2]);
            if (hW)
            {
-              RETVAL(SendMessage((HWND)atol(argv[1].strptr), WM_USER_GETSETCAPTURE, 1,hW))
+              RETVAL((long)SendMessage(hW, WM_USER_GETSETCAPTURE, 1, (LPARAM)hW))
            }
            RETC(0)
        }
@@ -260,28 +262,28 @@ size_t RexxEntry Wnd_Desktop(const char *funcname, size_t argc, CONSTRXSTRING ar
        else
        if (argc == 4)
        {
-           hW = atol(argv[1].strptr);
+           hW = GET_HWND(argv[1]);
            if (argv[2].strptr[0] == 'S')
            {
                LONG res;
                HCURSOR oC, hC;
                res = atoi(argv[3].strptr);
                hC = LoadCursor(NULL, MAKEINTRESOURCE(res));
-               oC = (HCURSOR)SetClassLong((HWND)hW, GCL_HCURSOR, (LONG)hC);
+               oC = (HCURSOR)SetClassLongPtr(hW, GCL_HCURSOR, (LONG_PTR)hC);
                SetCursor(hC);
-               RETVAL((ULONG)oC)
+               RETHANDLE(oC)
            }
            else if (argv[2].strptr[0] == 'R')
            {
-               HCURSOR hC = (HCURSOR)atol(argv[3].strptr);
+               HCURSOR hC = (HCURSOR)GET_HANDLE(argv[3]);
                if (hC) {
-                   SetClassLong((HWND)hW, GCL_HCURSOR, (LONG)hC);
-                   RETVAL((ULONG)SetCursor(hC))
+                   SetClassLongPtr(hW, GCL_HCURSOR, (LONG_PTR)hC);
+                   RETHANDLE(SetCursor(hC))
                }
                else
                {
-                   SetClassLong((HWND)hW, GCL_HCURSOR, (LONG)LoadCursor(NULL, IDC_ARROW));
-                   RETVAL((ULONG)SetCursor(LoadCursor(NULL, IDC_ARROW)))
+                   SetClassLongPtr(hW, GCL_HCURSOR, (LONG_PTR)LoadCursor(NULL, IDC_ARROW));
+                   RETHANDLE(SetCursor(LoadCursor(NULL, IDC_ARROW)))
                }
            }
        }
@@ -291,7 +293,7 @@ size_t RexxEntry Wnd_Desktop(const char *funcname, size_t argc, CONSTRXSTRING ar
    if (!strcmp(argv[0].strptr,"KSTAT"))     /* key state and mouse buttons*/
    {    /* keystate must be handled by window thread, therefore sendmessage is used */
        CHECKARG(3);
-       hW = atol(argv[1].strptr);
+       hW = GET_HWND(argv[1]);
        if (hW)
        {
            LONG k = atoi(argv[2].strptr);
@@ -300,7 +302,7 @@ size_t RexxEntry Wnd_Desktop(const char *funcname, size_t argc, CONSTRXSTRING ar
                if (k == 1) k = 2;
                else if (k==2) k = 1;
            }
-           RETVAL((ULONG)SendMessage((HWND)hW, WM_USER_GETKEYSTATE, k,0))
+           RETVAL((ULONG)SendMessage(hW, WM_USER_GETKEYSTATE, k,0))
        }
        RETC(0)
    }
@@ -308,7 +310,7 @@ size_t RexxEntry Wnd_Desktop(const char *funcname, size_t argc, CONSTRXSTRING ar
    if (!strcmp(argv[0].strptr,"COORD"))     /* screen to client and  vice versa */
    {
        CHECKARG(5);
-       hW = atol(argv[1].strptr);
+       hW = GET_HWND(argv[1]);
        retstr->strptr[0] = '\0';
        retstr->strlength = 0;
        if (hW)
@@ -318,9 +320,9 @@ size_t RexxEntry Wnd_Desktop(const char *funcname, size_t argc, CONSTRXSTRING ar
            pt.x = atol(argv[2].strptr);
            pt.y = atol(argv[3].strptr);
            if (!stricmp(argv[4].strptr, "S2C"))
-               ret = ScreenToClient((HWND)hW, &pt);
+               ret = ScreenToClient(hW, &pt);
            else
-               ret = ClientToScreen((HWND)hW, &pt);
+               ret = ClientToScreen(hW, &pt);
            if (ret)
            {
                retstr->strlength = sprintf(retstr->strptr, "%ld %ld", pt.x, pt.y);
@@ -333,9 +335,7 @@ size_t RexxEntry Wnd_Desktop(const char *funcname, size_t argc, CONSTRXSTRING ar
 }
 
 
-
-
-size_t RexxEntry WndShow_Pos(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
+size_t RexxEntry WndShow_Pos(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
    RECT r;
    ULONG st;
@@ -347,10 +347,10 @@ size_t RexxEntry WndShow_Pos(const char *funcname, size_t argc, CONSTRXSTRING ar
 
    if (argv[0].strptr[0]=='S')          /* show, update, redraw a window */
    {
-       w = (HWND)atol(argv[1].strptr);
+       w = GET_HWND(argv[1]);
        if (argc == 4)
        {
-           dlgAdm = (DIALOGADMIN*)atol(argv[3].strptr);
+           dlgAdm = (DIALOGADMIN*)GET_POINTER(argv[3]);
            dlgAdm->AktChild = w;
        }
 
@@ -405,6 +405,7 @@ size_t RexxEntry WndShow_Pos(const char *funcname, size_t argc, CONSTRXSTRING ar
    else
    if (argv[0].strptr[0]=='P')        /* move or resize a window */
    {
+       w = GET_HWND(argv[1]);
        LONG ibuffer[5], opts;
        register int i;
 
@@ -424,7 +425,7 @@ size_t RexxEntry WndShow_Pos(const char *funcname, size_t argc, CONSTRXSTRING ar
        }
 
        RETC(!SetWindowPos(
-        (HWND)ibuffer[0],    // window handle
+        w,                   // window handle
         0,  // for z-order (ignored)
         ibuffer[1],    // x
         ibuffer[2],    // y
@@ -439,13 +440,13 @@ size_t RexxEntry WndShow_Pos(const char *funcname, size_t argc, CONSTRXSTRING ar
        CHECKARGL(3);
        if (argc == 3)
        {
-           w = (HWND)atol(argv[1].strptr);
+           w = GET_HWND(argv[1]);
            RETVAL(GetScrollPos(w, atoi(argv[2].strptr)))  /* SB_HORZ = 0, SB_VERT = 1 */
        }
        else
        if (argc == 5)
        {
-           w = (HWND)atol(argv[1].strptr);
+           w = GET_HWND(argv[1]);
            RETVAL(SetScrollPos(w, atoi(argv[2].strptr), atoi(argv[3].strptr), IsYes(argv[4].strptr)))  /* SB_HORZ = 0, SB_VERT = 1 */
        }
        RETERR
@@ -454,7 +455,7 @@ size_t RexxEntry WndShow_Pos(const char *funcname, size_t argc, CONSTRXSTRING ar
    if (argv[0].strptr[0] == 'M')   /* scroll window contents */
    {
        CHECKARG(4);
-       w = (HWND)atol(argv[1].strptr);
+       w = GET_HWND(argv[1]);
        RETC(!ScrollWindow(w, atol(argv[2].strptr), atol(argv[3].strptr), NULL, NULL))  /* x, y */
    }
    RETERR

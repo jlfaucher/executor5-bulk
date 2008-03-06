@@ -72,7 +72,7 @@ CHAR * GetDlgMessage(DIALOGADMIN * addressedTo, CHAR * buffer, BOOL remove)
    if (addressedTo->pMessageQueue)
    {
        CHAR * QPtr = addressedTo->pMessageQueue;
-       l = strlen(QPtr);
+       l = (int)strlen(QPtr);
        if (!l && !PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE) && remove) Sleep(1);   /* don't sleep for just a Peek */
 
        /* copy up to ; */
@@ -134,7 +134,7 @@ BOOL SearchMessageTable(ULONG message, WPARAM param, LPARAM lparam, DIALOGADMIN 
             char msgstr[512];
             CHAR tmp[20];
             PCHAR np = NULL;
-            ULONG item;
+            HANDLE item;
 
                 /* do we have a notification where we have to extract some information ? */
             if (message == WM_NOTIFY)
@@ -173,7 +173,8 @@ BOOL SearchMessageTable(ULONG message, WPARAM param, LPARAM lparam, DIALOGADMIN 
 
                         if ( (m[i].tag & TAG_STATECHANGED) && (pLV->uChanged == LVIF_STATE) )
                         {
-                            item = pLV->iItem;
+
+                            item = (HANDLE)pLV->iItem;
                             param = pLV->hdr.idFrom;
 
                             if ( (m[i].tag & TAG_CHECKBOXCHANGED) && (pLV->uNewState & LVIS_STATEIMAGEMASK) )
@@ -207,14 +208,14 @@ BOOL SearchMessageTable(ULONG message, WPARAM param, LPARAM lparam, DIALOGADMIN 
                             else if ( MatchSelect(m[i].tag, pLV) )
                             {
                                 np = (pLV->uNewState & LVIS_SELECTED) ? "SELECTED" : "UNSELECTED";
-                                _snprintf(msgstr, 511, "%s(%u,%u,\"%s\")", m[i].rexxProgram, param, item, np);
+                                _snprintf(msgstr, 511, "%s(%u,%p,\"%s\")", m[i].rexxProgram, param, item, np);
                                 AddDialogMessage((char *)msgstr, addressedTo->pMessageQueue);
                                 continue;
                             }
                             else if ( MatchFocus(m[i].tag, pLV) )
                             {
                                 np = (pLV->uNewState & LVIS_FOCUSED) ? "FOCUSED" : "UNFOCUSED";
-                                _snprintf(msgstr, 511, "%s(%u,%u,\"%s\")", m[i].rexxProgram, param, item, np);
+                                _snprintf(msgstr, 511, "%s(%u,%p,\"%s\")", m[i].rexxProgram, param, item, np);
                                 AddDialogMessage((char *)msgstr, addressedTo->pMessageQueue);
                                 continue;
                             }
@@ -232,17 +233,17 @@ BOOL SearchMessageTable(ULONG message, WPARAM param, LPARAM lparam, DIALOGADMIN 
                 else if ((code == TVN_ENDLABELEDIT) && ((TV_DISPINFO *)lparam)->item.pszText)
                 {
                     np = ((TV_DISPINFO *)lparam)->item.pszText;
-                    item = (ULONG)((TV_DISPINFO *)lparam)->item.hItem;
+                    item = (HANDLE)((TV_DISPINFO *)lparam)->item.hItem;
                 }
                 else if ((code == LVN_ENDLABELEDIT) && ((LV_DISPINFO *)lparam)->item.pszText)
                 {
                     np = ((LV_DISPINFO *)lparam)->item.pszText;
-                    item = ((LV_DISPINFO *)lparam)->item.iItem;
+                    item = (HANDLE)((LV_DISPINFO *)lparam)->item.iItem;
                 }
                 /* do we have a tree expand/collapse? */
                 else if ((code == TVN_ITEMEXPANDED) || (code == TVN_ITEMEXPANDING))
                 {
-                    item = (ULONG)((NM_TREEVIEW *)lparam)->itemNew.hItem;
+                    item = ((NM_TREEVIEW *)lparam)->itemNew.hItem;
                     if (((NM_TREEVIEW *)lparam)->itemNew.state & TVIS_EXPANDED) np = "EXPANDED";
                     else np = "COLLAPSED";
                 }
@@ -254,7 +255,7 @@ BOOL SearchMessageTable(ULONG message, WPARAM param, LPARAM lparam, DIALOGADMIN 
                 /* do we have a list drag and drop? */
                 else if ((code == LVN_BEGINDRAG) || (code == LVN_BEGINRDRAG))
                 {
-                    item = (ULONG)((NM_LISTVIEW *)lparam)->iItem;
+                    item = (HANDLE)((NM_LISTVIEW *)lparam)->iItem;
                     param = ((NMHDR *)lparam)->idFrom;
                     sprintf(tmp, "%d %d", ((NM_LISTVIEW *)lparam)->ptAction.x, ((NM_LISTVIEW *)lparam)->ptAction.y);
                     np = tmp;
@@ -262,7 +263,7 @@ BOOL SearchMessageTable(ULONG message, WPARAM param, LPARAM lparam, DIALOGADMIN 
                 /* do we have a tree drag and drop? */
                 else if ((code == TVN_BEGINDRAG) || (code == TVN_BEGINRDRAG))
                 {
-                    item = (ULONG)((NM_TREEVIEW *)lparam)->itemNew.hItem;
+                    item = ((NM_TREEVIEW *)lparam)->itemNew.hItem;
                     param = ((NMHDR *)lparam)->idFrom;
                     sprintf(tmp, "%d %d", ((NM_TREEVIEW *)lparam)->ptDrag.x, ((NM_TREEVIEW *)lparam)->ptDrag.y);
                     np = tmp;
@@ -297,7 +298,7 @@ BOOL SearchMessageTable(ULONG message, WPARAM param, LPARAM lparam, DIALOGADMIN 
             }
 
             if (np)
-                _snprintf(msgstr, 511, "%s(%u,%u,\"%s\")", m[i].rexxProgram, param, item, np);
+                _snprintf(msgstr, 511, "%s(%u,%p,\"%s\")", m[i].rexxProgram, param, item, np);
             else
                 sprintf(msgstr, "%s(%u,%u)", m[i].rexxProgram, param, lparam);
             AddDialogMessage((char *)msgstr, addressedTo->pMessageQueue);
@@ -310,7 +311,7 @@ BOOL SearchMessageTable(ULONG message, WPARAM param, LPARAM lparam, DIALOGADMIN 
 }
 
 
-BOOL AddTheMessage(DIALOGADMIN * aDlg, ULONG message, ULONG filt1, ULONG param, ULONG filt2, ULONG lparam, ULONG filt3, RXSTRING prog, ULONG ulTag)
+BOOL AddTheMessage(DIALOGADMIN * aDlg, ULONG message, ULONG filt1, ULONG param, ULONG filt2, ULONG lparam, ULONG filt3, CONSTRXSTRING prog, ULONG ulTag)
 {
    if (!prog.strlength) return 0;
    if (!(message | param | lparam))
@@ -320,7 +321,7 @@ BOOL AddTheMessage(DIALOGADMIN * aDlg, ULONG message, ULONG filt1, ULONG param, 
    }
    if (!aDlg->MsgTab)
    {
-      aDlg->MsgTab = LocalAlloc(LPTR, sizeof(MESSAGETABLEENTRY) * MAX_MT_ENTRIES);
+      aDlg->MsgTab = (MESSAGETABLEENTRY *)LocalAlloc(LPTR, sizeof(MESSAGETABLEENTRY) * MAX_MT_ENTRIES);
       if (!aDlg->MsgTab)
       {
           MessageBox(0,"No memory available","Error",MB_OK | MB_ICONHAND);
@@ -339,7 +340,7 @@ BOOL AddTheMessage(DIALOGADMIN * aDlg, ULONG message, ULONG filt1, ULONG param, 
       aDlg->MsgTab[aDlg->MT_size].lParam = lparam;
       aDlg->MsgTab[aDlg->MT_size].filterL = filt3;
       aDlg->MsgTab[aDlg->MT_size].tag = ulTag;
-      aDlg->MsgTab[aDlg->MT_size].rexxProgram = LocalAlloc(LMEM_FIXED, prog.strlength+1);
+      aDlg->MsgTab[aDlg->MT_size].rexxProgram = (PCHAR)LocalAlloc(LMEM_FIXED, prog.strlength+1);
       if (aDlg->MsgTab[aDlg->MT_size].rexxProgram) rxstrlcpy(aDlg->MsgTab[aDlg->MT_size].rexxProgram, prog);
       aDlg->MT_size ++;
       return 1;
@@ -356,7 +357,7 @@ BOOL AddTheMessage(DIALOGADMIN * aDlg, ULONG message, ULONG filt1, ULONG param, 
 
 #define NARG 7
 
-size_t RexxEntry AddUserMessage(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
+size_t RexxEntry AddUserMessage(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
    ULONG n[NARG];
    INT i;
@@ -391,7 +392,7 @@ size_t RexxEntry AddUserMessage(const char *funcname, size_t argc, CONSTRXSTRING
 
 
 
-size_t RexxEntry SendWinMsg(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
+size_t RexxEntry SendWinMsg(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
     LONG i;
     ULONG n[5];
@@ -401,23 +402,27 @@ size_t RexxEntry SendWinMsg(const char *funcname, size_t argc, CONSTRXSTRING arg
     {
         CHECKARG(6);
 
-        for (i=0; i<5; i++)
+        HWND hWnd = GET_HWND(argv[0]);
+
+        for (i=1; i<5; i++)
         {
            if (ISHEX(argv[i+1].strptr))
                n[i] = strtol(argv[i+1].strptr,'\0',16);
            else
                n[i] = atol(argv[i+1].strptr);
         }
-        ltoa(SendDlgItemMessage((HWND)n[0], n[1], n[2], (WPARAM)n[3], (LPARAM)n[4]), retstr->strptr, 10);
+        ltoa((long)SendDlgItemMessage((HWND)hWnd, n[1], n[2], (WPARAM)n[3], (LPARAM)n[4]), retstr->strptr, 10);
         retstr->strlength = strlen(retstr->strptr);
         return 0;
     }
-    else
-    if (!strcmp(argv[0].strptr,"PTR"))
+    else if (!strcmp(argv[0].strptr,"PTR"))
     {
-        LONG ret, lP, lBuffer;
+        LONG ret, lBuffer;
+        LPARAM lP;
 
         CHECKARG(6);
+
+        HWND hWnd = GET_HWND(argv[0]);
 
         for (i=0; i<4; i++)
         {
@@ -427,24 +432,21 @@ size_t RexxEntry SendWinMsg(const char *funcname, size_t argc, CONSTRXSTRING arg
                n[i] = atol(argv[i+1].strptr);
         }
         if (ISHEX(argv[5].strptr)) lP = (LPARAM) strtol(argv[5].strptr,'\0',16);
-        else
-        if (argv[5].strptr[0] == 'T') lP = (LPARAM) &argv[5].strptr[1];
-        else
-        if (argv[5].strptr[0] == 'L')  /* e.g. used to set tab stops for edit control */
+        else if (argv[5].strptr[0] == 'T') lP = (LPARAM) &argv[5].strptr[1];
+        else if (argv[5].strptr[0] == 'L')  /* e.g. used to set tab stops for edit control */
         {
             lBuffer = atol(&argv[5].strptr[1]);
-            lP = (LONG)&lBuffer;
+            lP = (LPARAM)&lBuffer;
         }
-        else
-        if (argv[5].strptr[0] == 'G')     /* buffered get e.g. to get a text line of an edit control */
+        else if (argv[5].strptr[0] == 'G')     /* buffered get e.g. to get a text line of an edit control */
         {
             ULONG len = atoi(&argv[5].strptr[1]);
             if (len > retstr->strlength) {
-                lP = (LONG)GlobalAlloc(GMEM_FIXED, len+1);
+                lP = (LPARAM)GlobalAlloc(GMEM_FIXED, len+1);
                 if (!lP) return GetLastError();
-                retstr->strptr = (PCHAR)lP;
+                retstr->strptr = (char *)lP;
             }
-            else lP = (LONG)retstr->strptr;
+            else lP = (LPARAM)retstr->strptr;
             memcpy(retstr->strptr, (char *)&len, sizeof(INT));  /* set the buffer size at the beginning of the buffer */
         }
         else
@@ -455,22 +457,22 @@ size_t RexxEntry SendWinMsg(const char *funcname, size_t argc, CONSTRXSTRING arg
         {
           // at first check if it is an multiple selection lb
           LONG style;
-          style = GetWindowLong(GetDlgItem( (HWND)n[0], n[1] ), GWL_STYLE);
+          style = GetWindowLongPtr(GetDlgItem( hWnd, n[1] ), GWL_STYLE);
 
           if ( style & LBS_MULTIPLESEL )
             if ( argv[5].strptr[0] == 'D' )
               // deselect item in muliple selection lb
-              ret = SendDlgItemMessage((HWND)n[0], n[1], LB_SETSEL, 0, (LPARAM)n[3]);
+              ret = (LONG)SendDlgItemMessage(hWnd, n[1], LB_SETSEL, 0, (LPARAM)n[3]);
             else
               // select item in muliple selection lb
-              ret = SendDlgItemMessage((HWND)n[0], n[1], LB_SETSEL, 1, (LPARAM)n[3]);
+              ret = (LONG)SendDlgItemMessage(hWnd, n[1], LB_SETSEL, 1, (LPARAM)n[3]);
           else
             // select item in single selection lb
-            ret = SendDlgItemMessage((HWND)n[0], n[1], n[2], (WPARAM)n[3], lP);
+            ret = (LONG)SendDlgItemMessage(hWnd, n[1], n[2], (WPARAM)n[3], lP);
         }
         else
 
-          ret = SendDlgItemMessage((HWND)n[0], n[1], n[2], (WPARAM)n[3], lP);
+          ret = (LONG)SendDlgItemMessage(hWnd, n[1], n[2], (WPARAM)n[3], lP);
 
        if (argv[5].strptr[0] != 'G')
        {
@@ -484,6 +486,7 @@ size_t RexxEntry SendWinMsg(const char *funcname, size_t argc, CONSTRXSTRING arg
     else
     if (!strcmp(argv[0].strptr,"ANY"))
     {
+       HWND hWnd = GET_HWND(argv[0]);
        for (i=0; i<4; i++)
        {
           if (ISHEX(argv[i+1].strptr))
@@ -492,7 +495,7 @@ size_t RexxEntry SendWinMsg(const char *funcname, size_t argc, CONSTRXSTRING arg
               n[i] = strtoul(argv[i+1].strptr,'\0',10);
        }
 
-       ltoa(SendMessage((HWND)n[0], n[1], (WPARAM)n[2], (LPARAM)n[3]), retstr->strptr, 10);
+       ltoa((long)SendMessage(hWnd, n[1], (WPARAM)n[2], (LPARAM)n[3]), retstr->strptr, 10);
        retstr->strlength = strlen(retstr->strptr);
        return 0;
     }
@@ -501,7 +504,7 @@ size_t RexxEntry SendWinMsg(const char *funcname, size_t argc, CONSTRXSTRING arg
 
 
 
-size_t RexxEntry GetDlgMsg(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
+size_t RexxEntry GetDlgMsg(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
    BOOL remove = TRUE;
    HWND hDlg = NULL;
@@ -530,19 +533,21 @@ size_t RexxEntry GetDlgMsg(const char *funcname, size_t argc, CONSTRXSTRING argv
 }
 
 
-size_t RexxEntry SetLBTabStops(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
+size_t RexxEntry SetLBTabStops(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
    ULONG i;
    INT tabs[20];
 
    CHECKARGL(3);
 
+   HWND hWnd = GET_HWND(argv[0]);
+
    for (i=0; (i<argc-2) && (i < 20) ; i++)
    {
       tabs[i] = atoi(argv[i+2].strptr);
    }
 
-   i = SendDlgItemMessage((HWND)atol(argv[0].strptr), atoi(argv[1].strptr), LB_SETTABSTOPS, (WPARAM)(argc-2), (LPARAM)tabs);
+   i = (ULONG)SendDlgItemMessage(hWnd, atoi(argv[1].strptr), LB_SETTABSTOPS, (WPARAM)(argc-2), (LPARAM)tabs);
    RETC(!i)
 }
 

@@ -50,13 +50,13 @@
 
 #define FILENAME_BUFFER_LEN 65535
 
-extern LONG SetRexxStem(CHAR * name, INT id, char * secname, CHAR * data);
+extern LONG SetRexxStem(const char * name, INT id, const char * secname, const char * data);
 WORD NumDIBColorEntries(LPBITMAPINFO lpBmpInfo);
-extern LPBITMAPINFO LoadDIB(LPSTR szFile);
-extern LONG EvaluateListStyle(CHAR * styledesc);
+extern LPBITMAPINFO LoadDIB(const char *szFile);
+extern LONG EvaluateListStyle(const char * styledesc);
 extern BOOL AddDialogMessage(CHAR *, CHAR *);
-extern LONG setKeyPressData(KEYPRESSDATA *, RXSTRING, RXSTRING, PCHAR);
-extern UINT seekKeyPressMethod(KEYPRESSDATA *, PCHAR);
+extern LONG setKeyPressData(KEYPRESSDATA *, CONSTRXSTRING, CONSTRXSTRING, const char *);
+extern UINT seekKeyPressMethod(KEYPRESSDATA *, const char *);
 extern void removeKeyPressMethod(KEYPRESSDATA *, UINT);
 extern void processKeyPress(KEYPRESSDATA *, WPARAM, LPARAM, PCHAR);
 extern void freeKeyPressData(KEYPRESSDATA *);
@@ -66,7 +66,7 @@ static ULONG SetStyle(HWND, LONG, PRXSTRING);
 static void freeSubclassData(SUBCLASSDATA *);
 static BOOL removeKeyPressSubclass(SUBCLASSDATA *, HWND, INT);
 
-size_t RexxEntry PlaySoundFile(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
+size_t RexxEntry PlaySoundFile(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
    UINT opts;
 
@@ -84,7 +84,7 @@ size_t RexxEntry PlaySoundFile(const char *funcname, size_t argc, CONSTRXSTRING 
 }
 
 
-size_t RexxEntry PlaySoundFileInLoop(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
+size_t RexxEntry PlaySoundFileInLoop(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
    UINT opts;
 
@@ -99,7 +99,7 @@ size_t RexxEntry PlaySoundFileInLoop(const char *funcname, size_t argc, CONSTRXS
 }
 
 
-size_t RexxEntry StopSoundFile(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
+size_t RexxEntry StopSoundFile(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
    UINT opts;
 
@@ -112,7 +112,11 @@ size_t RexxEntry StopSoundFile(const char *funcname, size_t argc, CONSTRXSTRING 
 }
 
 
-size_t RexxEntry OFNSetForegroundHookProc(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
+size_t RexxEntry OFNSetForegroundHookProc(
+    HWND hdlg,    // handle to child dialog window
+    UINT uiMsg,    // message identifier
+    WPARAM wParam,    // message parameter
+    LPARAM lParam)    // message parameter
 {
     if (uiMsg == WM_INITDIALOG)
     {
@@ -124,7 +128,7 @@ size_t RexxEntry OFNSetForegroundHookProc(const char *funcname, size_t argc, CON
 }
 
 
-BOOL OpenFileDlg( BOOL load, PCHAR szFile, PCHAR szInitialDir, PCHAR szFilter, HWND hw, PCHAR title, PCHAR DefExt, BOOL multi, CHAR chSepChar) /* @DOE005M */
+BOOL OpenFileDlg( BOOL load, PCHAR szFile, const char *szInitialDir, const char *szFilter, HWND hw, const char *title, const char *DefExt, BOOL multi, CHAR chSepChar) /* @DOE005M */
 {
    OPENFILENAME OpenFileName;
    BOOL         fRc;
@@ -184,22 +188,22 @@ BOOL OpenFileDlg( BOOL load, PCHAR szFile, PCHAR szInitialDir, PCHAR szFilter, H
 
 #define VALIDARG(argn) (argc >= argn) && argv[argn-1].strptr && argv[argn-1].strptr[0]
 
-size_t RexxEntry GetFileNameWindow(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
+size_t RexxEntry GetFileNameWindow(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
     BOOL    fSuccess;
-    CHAR *  title;
-    PCHAR   defext = "TXT";
+    const char *  title;
+    const char *defext = "TXT";
     BOOL    load = TRUE;
     BOOL    multi = FALSE;
     HWND    hWnd;
-    PCHAR   szFilter = "Text Files (*.TXT)\0*.TXT\0All Files (*.*)\0*.*\0";
+    const char *szFilter = "Text Files (*.TXT)\0*.TXT\0All Files (*.*)\0*.*\0";
     PCHAR   pszFiles = NULL;
     PCHAR   pszInitialDir = NULL;
     CHAR    chSepChar = ' ';  /* default separation character  /              */
                               /* allow to change separation character to      */
                               /* handle filenames with blank character        */
 
-    pszFiles = GlobalAlloc(GMEM_FIXED | GMEM_ZEROINIT, FILENAME_BUFFER_LEN);
+    pszFiles = (char *)GlobalAlloc(GMEM_FIXED | GMEM_ZEROINIT, FILENAME_BUFFER_LEN);
     if (!pszFiles)
         RETERR
 
@@ -207,7 +211,7 @@ size_t RexxEntry GetFileNameWindow(const char *funcname, size_t argc, CONSTRXSTR
     {
         if ( argv[0].strptr[argv[0].strlength - 1] == '\\' )
         {
-            pszInitialDir = LocalAlloc(LPTR, _MAX_PATH);
+            pszInitialDir = (char *)LocalAlloc(LPTR, _MAX_PATH);
             if ( !pszInitialDir )
               RETERR
             rxstrlcpy(pszInitialDir, argv[0]);
@@ -217,7 +221,7 @@ size_t RexxEntry GetFileNameWindow(const char *funcname, size_t argc, CONSTRXSTR
           rxstrlcpy(pszFiles, argv[0]);
         }
     }
-    if (VALIDARG(2)) hWnd = (HWND) atol(argv[1].strptr); else hWnd = NULL;
+    if (VALIDARG(2)) hWnd = GET_HWND(argv[1]); else hWnd = NULL;
     if (VALIDARG(3)) szFilter= argv[2].strptr;
     if (VALIDARG(4)) load = (argv[3].strptr[0] != '0');
     if (VALIDARG(5)) title = argv[4].strptr;
@@ -251,7 +255,7 @@ size_t RexxEntry GetFileNameWindow(const char *funcname, size_t argc, CONSTRXSTR
 }
 
 
-size_t RexxEntry PlaySnd(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
+size_t RexxEntry PlaySnd(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
    UINT opts;
    DEF_ADM;
@@ -274,7 +278,7 @@ size_t RexxEntry PlaySnd(const char *funcname, size_t argc, CONSTRXSTRING argv[]
 }
 
 
-size_t RexxEntry SleepMS(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
+size_t RexxEntry SleepMS(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
    CHECKARG(1);
 
@@ -283,16 +287,16 @@ size_t RexxEntry SleepMS(const char *funcname, size_t argc, CONSTRXSTRING argv[]
 }
 
 
-size_t RexxEntry WinTimer(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
+size_t RexxEntry WinTimer(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
-   UINT timer;
+   UINT_PTR timer;
    MSG msg;
 
    CHECKARG(2);
    if (!stricmp(argv[0].strptr, "START"))
    {
         timer = SetTimer(NULL, 1001, atoi(argv[1].strptr), NULL);
-        RETVAL(timer)
+        RETPTR(timer)
    } else
    if (!stricmp(argv[0].strptr, "STOP"))
    {
@@ -311,7 +315,7 @@ size_t RexxEntry WinTimer(const char *funcname, size_t argc, CONSTRXSTRING argv[
 
 
 
-HIMAGELIST CreateImageList(INT start, HWND h, RXSTRING argv[], ULONG argc)
+HIMAGELIST CreateImageList(INT start, HWND h, CONSTRXSTRING *argv, size_t argc)
 {
    HBITMAP hBmp = NULL;
    HIMAGELIST iL;
@@ -319,7 +323,7 @@ HIMAGELIST CreateImageList(INT start, HWND h, RXSTRING argv[], ULONG argc)
    BITMAP bmpInfo;
 
    if (atol(argv[start].strptr) > 0)
-       hBmp = (HBITMAP)atol(argv[start].strptr);
+       hBmp = (HBITMAP)GET_HANDLE(argv[start]);
    else {
        LPBITMAPINFO lpBit = LoadDIB(argv[start].strptr);
        if (lpBit)
@@ -384,7 +388,7 @@ long FAR PASCAL CatchReturnSubProc(HWND hWnd, WORD wMessage,WORD wParam,LONG lPa
     {
         case WM_GETDLGCODE:
             return (DLGC_WANTALLKEYS |
-                    CallWindowProc(lpOldEditProc, hWnd, wMessage,
+                    (long)CallWindowProc(lpOldEditProc, hWnd, wMessage,
                                    wParam, lParam));
 
         case WM_CHAR:
@@ -392,10 +396,10 @@ long FAR PASCAL CatchReturnSubProc(HWND hWnd, WORD wMessage,WORD wParam,LONG lPa
             if ((wParam == VK_RETURN) || (wParam == VK_ESCAPE))
                 return 0;
             else
-                return (CallWindowProc(lpOldEditProc, hWnd,wMessage, wParam, lParam));
+                return (long)(CallWindowProc(lpOldEditProc, hWnd,wMessage, wParam, lParam));
 
         default:
-            return (CallWindowProc(lpOldEditProc, hWnd, wMessage,
+            return (long)(CallWindowProc(lpOldEditProc, hWnd, wMessage,
                                       wParam, lParam));
             break;
 
@@ -475,19 +479,19 @@ static void freeSubclassData(SUBCLASSDATA * pData)
  */
 static BOOL removeKeyPressSubclass(SUBCLASSDATA *pData, HWND hDlg, INT id)
 {
-    BOOL success = SendMessage(hDlg, WM_USER_SUBCLASS_REMOVE, (WPARAM)&KeyPressSubclassProc, (LPARAM)id);
+    BOOL success = SendMessage(hDlg, WM_USER_SUBCLASS_REMOVE, (WPARAM)&KeyPressSubclassProc, (LPARAM)id) != 0;
     if ( success ) freeSubclassData(pData);
     return success;
 }
 
 
-size_t RexxEntry HandleTreeCtrl(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
+size_t RexxEntry HandleTreeCtrl(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
    HWND h;
 
    CHECKARGL(2);
 
-   h = (HWND) atol(argv[1].strptr);
+   h = GET_HWND(argv[1]);
    if (!h) RETERR;
 
    if (!strcmp(argv[0].strptr, "INS"))
@@ -496,9 +500,9 @@ size_t RexxEntry HandleTreeCtrl(const char *funcname, size_t argc, CONSTRXSTRING
        TV_ITEM * tvi = &ins.item;
 
        CHECKARG(9);
-       ins.hParent = (HTREEITEM)atol(argv[2].strptr);
+       ins.hParent = (HTREEITEM)GET_HANDLE(argv[2]);
        if (!ins.hParent && !strcmp(argv[2].strptr,"ROOT")) ins.hParent = TVI_ROOT;
-       ins.hInsertAfter = (HTREEITEM)atol(argv[3].strptr);
+       ins.hInsertAfter = (HTREEITEM)GET_HANDLE(argv[3]);
        if (!ins.hInsertAfter)
        {
            if (!strcmp(argv[3].strptr,"FIRST")) ins.hInsertAfter = TVI_FIRST;
@@ -508,8 +512,8 @@ size_t RexxEntry HandleTreeCtrl(const char *funcname, size_t argc, CONSTRXSTRING
 
        tvi->mask = TVIF_TEXT;
 
-       tvi->pszText = argv[4].strptr;
-       tvi->cchTextMax = argv[4].strlength;
+       tvi->pszText = (LPSTR)argv[4].strptr;
+       tvi->cchTextMax = (int)argv[4].strlength;
 
        tvi->iImage = atoi(argv[5].strptr);
        if (tvi->iImage >= 0) tvi->mask |= TVIF_IMAGE;
@@ -528,7 +532,7 @@ size_t RexxEntry HandleTreeCtrl(const char *funcname, size_t argc, CONSTRXSTRING
        tvi->iSelectedImage = atoi(argv[8].strptr);
        if (tvi->iSelectedImage > -1) tvi->mask |= TVIF_SELECTEDIMAGE;
 
-       RETVAL((LONG)TreeView_InsertItem(h, &ins));
+       RETHANDLE(TreeView_InsertItem(h, &ins));
    }
    else
    if (!strcmp(argv[0].strptr, "DEL"))
@@ -536,7 +540,7 @@ size_t RexxEntry HandleTreeCtrl(const char *funcname, size_t argc, CONSTRXSTRING
        HTREEITEM hItem;
 
        CHECKARG(3);
-       hItem = (HTREEITEM)atol(argv[2].strptr);
+       hItem = (HTREEITEM)GET_HANDLE(argv[2]);
        if (!hItem && !strcmp(argv[2].strptr,"ROOT"))
           RETC(!TreeView_DeleteAllItems(h))
        else if (hItem)
@@ -553,15 +557,15 @@ size_t RexxEntry HandleTreeCtrl(const char *funcname, size_t argc, CONSTRXSTRING
 
        CHECKARG(8);
 
-       tvi.hItem = (HTREEITEM)atol(argv[2].strptr);
+       tvi.hItem = (HTREEITEM)GET_HANDLE(argv[2]);
 
        // tvi.mask = TVIF_HANDLE;
        tvi.mask = 0;
 
        if (argv[3].strlength)
        {
-           tvi.pszText = argv[3].strptr;
-           tvi.cchTextMax = argv[3].strlength;
+           tvi.pszText = (LPSTR)argv[3].strptr;
+           tvi.cchTextMax = (int)argv[3].strlength;
            tvi.mask |= TVIF_TEXT;
        }
 
@@ -601,7 +605,7 @@ size_t RexxEntry HandleTreeCtrl(const char *funcname, size_t argc, CONSTRXSTRING
 
        CHECKARG(4);
 
-       tvi.hItem = (HTREEITEM)atol(argv[2].strptr);
+       tvi.hItem = (HTREEITEM)GET_HANDLE(argv[2]);
        tvi.mask = TVIF_HANDLE | TVIF_TEXT | TVIF_STATE | TVIF_IMAGE | TVIF_CHILDREN | TVIF_SELECTEDIMAGE;
        tvi.pszText = data;
        tvi.cchTextMax = 255;
@@ -636,7 +640,7 @@ size_t RexxEntry HandleTreeCtrl(const char *funcname, size_t argc, CONSTRXSTRING
 
        CHECKARG(4);
 
-       hItem = (HTREEITEM)atol(argv[2].strptr);
+       hItem = (HTREEITEM)GET_HANDLE(argv[2]);
 
        if (!strcmp(argv[3].strptr,"CARET")) flag = TVGN_CARET;
        else if (!strcmp(argv[3].strptr,"CHILD")) flag = TVGN_CHILD;
@@ -648,7 +652,7 @@ size_t RexxEntry HandleTreeCtrl(const char *funcname, size_t argc, CONSTRXSTRING
        else if (!strcmp(argv[3].strptr,"PREVIOUS")) flag = TVGN_PREVIOUS;
        else if (!strcmp(argv[3].strptr,"PREVIOUSVISIBLE")) flag = TVGN_PREVIOUSVISIBLE;
        else if (!strcmp(argv[3].strptr,"ROOT")) flag = TVGN_ROOT;
-       RETVAL((LONG)TreeView_GetNextItem(h, hItem, flag))
+       RETHANDLE(TreeView_GetNextItem(h, hItem, flag))
    }
    else
    if (!strcmp(argv[0].strptr, "CNT"))
@@ -668,7 +672,7 @@ size_t RexxEntry HandleTreeCtrl(const char *funcname, size_t argc, CONSTRXSTRING
 
        CHECKARG(4);
 
-       hItem = (HTREEITEM)atol(argv[2].strptr);
+       hItem = (HTREEITEM)GET_HANDLE(argv[2]);
 
        if (!strcmp(argv[3].strptr,"DROP")) flag = TVGN_DROPHILITE;
        else if (!strcmp(argv[3].strptr,"FIRSTVIS")) flag = TVGN_FIRSTVISIBLE;
@@ -682,7 +686,7 @@ size_t RexxEntry HandleTreeCtrl(const char *funcname, size_t argc, CONSTRXSTRING
 
        CHECKARG(4);
 
-       hItem = (HTREEITEM)atol(argv[2].strptr);
+       hItem = (HTREEITEM)GET_HANDLE(argv[2]);
 
        if (!strcmp(argv[3].strptr,"EXPAND")) flag = TVE_EXPAND;
        else if (!strcmp(argv[3].strptr,"TOGGLE")) flag = TVE_TOGGLE;
@@ -699,7 +703,7 @@ size_t RexxEntry HandleTreeCtrl(const char *funcname, size_t argc, CONSTRXSTRING
 
        CHECKARG(3);
 
-       hItem = (HTREEITEM)atol(argv[2].strptr);
+       hItem = (HTREEITEM)GET_HANDLE(argv[2]);
 
        RETC(!TreeView_EnsureVisible(h, hItem))
    }
@@ -721,7 +725,8 @@ size_t RexxEntry HandleTreeCtrl(const char *funcname, size_t argc, CONSTRXSTRING
    {
        CHECKARG(3);
 
-       RETVAL((LONG)TreeView_EditLabel(h, (HTREEITEM)atol(argv[2].strptr)))
+       HTREEITEM hItem = (HTREEITEM)GET_HANDLE(argv[2]);
+       RETHANDLE(TreeView_EditLabel(h, (HTREEITEM)hItem));
    }
    else
    if (!strcmp(argv[0].strptr, "EEDIT"))
@@ -735,7 +740,8 @@ size_t RexxEntry HandleTreeCtrl(const char *funcname, size_t argc, CONSTRXSTRING
    {
        CHECKARG(4);
 
-       RETC(!TreeView_SortChildren(h, (HTREEITEM)atol(argv[2].strptr), IsYes(argv[3].strptr)))
+       HTREEITEM hItem = (HTREEITEM)GET_HANDLE(argv[2]);
+       RETC(!TreeView_SortChildren(h, (HTREEITEM)hItem, IsYes(argv[3].strptr)))
    }
    else
    if (!strcmp(argv[0].strptr, "SETIMG"))
@@ -745,7 +751,7 @@ size_t RexxEntry HandleTreeCtrl(const char *funcname, size_t argc, CONSTRXSTRING
        CHECKARG(5);
        iL = CreateImageList(2, h, argv, argc);
 
-       if (iL) RETVAL((LONG)TreeView_SetImageList(h, iL, TVSIL_NORMAL))
+       if (iL) RETHANDLE(TreeView_SetImageList(h, iL, TVSIL_NORMAL))
        else RETC(0)
    }
    else
@@ -765,9 +771,9 @@ size_t RexxEntry HandleTreeCtrl(const char *funcname, size_t argc, CONSTRXSTRING
        HWND ew = TreeView_GetEditControl(h);
        if (ew)
        {
-           WNDPROC oldProc = (WNDPROC)SetWindowLong(ew, GWL_WNDPROC, (LONG)CatchReturnSubProc);
+           WNDPROC oldProc = (WNDPROC)SetWindowLongPtr(ew, GWL_WNDPROC, (LONG_PTR)CatchReturnSubProc);
            if (oldProc != (WNDPROC)CatchReturnSubProc) lpOldEditProc = oldProc;
-           RETVAL((LONG)oldProc)
+           RETPTR(oldProc)
        }
        else RETC(0)
    }
@@ -777,7 +783,7 @@ size_t RexxEntry HandleTreeCtrl(const char *funcname, size_t argc, CONSTRXSTRING
        HWND ew = TreeView_GetEditControl(h);
        if (ew)
        {
-           SetWindowLong(ew, GWL_WNDPROC, (LONG)lpOldEditProc);
+           SetWindowLongPtr(ew, GWL_WNDPROC, (LONG_PTR)lpOldEditProc);
            RETC(0)
        }
        RETVAL(-1)
@@ -794,7 +800,7 @@ size_t RexxEntry HandleTreeCtrl(const char *funcname, size_t argc, CONSTRXSTRING
        hItem = TreeView_HitTest(h, &hti);
        if (hItem)
        {
-           ltoa((LONG)hItem, retstr->strptr, 10); /* removed compiler warning */
+           pointer2string(retstr, (void *)hItem);
            if (hti.flags & TVHT_ABOVE) strcat(retstr->strptr, " ABOVE");
            if (hti.flags & TVHT_BELOW) strcat(retstr->strptr, " BELOW");
            if (hti.flags & TVHT_NOWHERE) strcat(retstr->strptr, " NOWHERE");
@@ -827,7 +833,7 @@ size_t RexxEntry HandleTreeCtrl(const char *funcname, size_t argc, CONSTRXSTRING
  *
  *         The function itself always returns 0.
  */
-static ULONG SetStyle(HWND hwnd, LONG lStyle, PRXSTRING *retstr)
+static ULONG SetStyle(HWND hwnd, LONG lStyle, RXSTRING *retstr)
 {
     LONG lErr;
 
@@ -858,7 +864,7 @@ static ULONG SetStyle(HWND hwnd, LONG lStyle, PRXSTRING *retstr)
  * Take an edit control's window flags and construct a Rexx string that
  * represents the control's style.
  */
-ULONG EditStyleToString(LONG lStyle, PRXSTRING *retstr)
+ULONG EditStyleToString(LONG lStyle, RXSTRING *retstr)
 {
     if ( lStyle & WS_VISIBLE ) strcpy(retstr->strptr, "VISIBLE");
     else strcpy(retstr->strptr, "HIDDEN");
@@ -899,7 +905,7 @@ ULONG EditStyleToString(LONG lStyle, PRXSTRING *retstr)
  * Note that this is meant to only deal with the styles that can be changed
  * after the control is created through SetWindowLong.
  */
-LONG ParseEditStyle(CHAR * style)
+LONG ParseEditStyle(const char * style)
 {
     LONG lStyle = 0;
 
@@ -927,7 +933,7 @@ LONG ParseEditStyle(CHAR * style)
  * than other window styles.  This function is used only to parse those extended
  * styles.  The normal list-view styles are parsed using EvaluateListStyle.
  */
-DWORD ParseExtendedListStyle(CHAR * style)
+DWORD ParseExtendedListStyle(const char * style)
 {
     DWORD dwStyle = 0;
 
@@ -966,7 +972,7 @@ DWORD ParseExtendedListStyle(CHAR * style)
 /**
  * Produce a string representation of a List-View's extended styles.
  */
-DWORD ListExtendedStyleToString(HWND hList, PRXSTRING *retstr)
+DWORD ListExtendedStyleToString(HWND hList, RXSTRING *retstr)
 {
     DWORD dwStyle = ListView_GetExtendedListViewStyle(hList);
     retstr->strptr[0] = '\0';
@@ -1029,7 +1035,7 @@ DWORD ListExtendedStyleToString(HWND hList, PRXSTRING *retstr)
  *     1 the Windows API call failed
  *  >  1 dependent on the function, usually a returned value not a return code
  */
-size_t RexxEntry HandleControlEx(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
+size_t RexxEntry HandleControlEx(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
     HWND hDlg;
     HWND hCtrl;
@@ -1038,7 +1044,7 @@ size_t RexxEntry HandleControlEx(const char *funcname, size_t argc, CONSTRXSTRIN
     /* Minimum of 4 args. */
     CHECKARGL(4);
 
-    hDlg = (HWND)atol(argv[0].strptr);
+    hDlg = GET_HWND(argv[0]);
     if ( hDlg == 0 || ! IsWindow(hDlg) ) RETVAL(-2)
 
     id = atoi(argv[1].strptr);
@@ -1267,7 +1273,7 @@ size_t RexxEntry HandleControlEx(const char *funcname, size_t argc, CONSTRXSTRIN
 
         if ( argv[3].strptr[0] == 'Q' )           /* Query if already sub-classed */
         {
-            BOOL success = GetWindowSubclass(hCtrl, KeyPressSubclassProc, id, &(DWORD_PTR)pData);
+            BOOL success = GetWindowSubclass(hCtrl, KeyPressSubclassProc, id, (DWORD_PTR *)&pData);
             if ( ! success ) RETVAL(0)
             if ( argc == 4 ) RETVAL(1)
 
@@ -1281,11 +1287,11 @@ size_t RexxEntry HandleControlEx(const char *funcname, size_t argc, CONSTRXSTRIN
             SUBCLASSDATA *pData = NULL;
             DIALOGADMIN  *dlgAdm;
             LONG ret = 0;
-            BOOL success = GetWindowSubclass(hCtrl, KeyPressSubclassProc, id, &(DWORD_PTR)pData);
+            BOOL success = GetWindowSubclass(hCtrl, KeyPressSubclassProc, id, (DWORD_PTR *)&pData);
 
             CHECKARGL(7);
 
-            dlgAdm = (DIALOGADMIN *)atol(argv[4].strptr);
+            dlgAdm = (DIALOGADMIN *)GET_POINTER(argv[4]);
             if ( ! dlgAdm )  RETVAL(-3)
 
             if ( argv[5].strlength == 0 || argv[6].strlength == 0 ) return -1;
@@ -1306,10 +1312,10 @@ size_t RexxEntry HandleControlEx(const char *funcname, size_t argc, CONSTRXSTRIN
             }
             else
             {
-                pData = LocalAlloc(LPTR, sizeof(SUBCLASSDATA));
+                pData = (SUBCLASSDATA *)LocalAlloc(LPTR, sizeof(SUBCLASSDATA));
                 if ( ! pData ) RETVAL(-5)
 
-                pData->pKeyPressData = LocalAlloc(LPTR, sizeof(KEYPRESSDATA));
+                pData->pKeyPressData = (KEYPRESSDATA *)LocalAlloc(LPTR, sizeof(KEYPRESSDATA));
                 if ( ! pData->pKeyPressData )
                 {
                     LocalFree(pData);
@@ -1338,7 +1344,7 @@ size_t RexxEntry HandleControlEx(const char *funcname, size_t argc, CONSTRXSTRIN
         else if ( argv[3].strptr[0] == 'R' )      /* Remove the subclass */
         {
             SUBCLASSDATA * pData = NULL;
-            BOOL success = GetWindowSubclass(hCtrl, KeyPressSubclassProc, id, &(DWORD_PTR)pData);
+            BOOL success = GetWindowSubclass(hCtrl, KeyPressSubclassProc, id, (DWORD_PTR *)&pData);
 
             /* If success, the subclass is still installed, otherwise the
              * subclass has already been removed, (or never existed.)
@@ -1365,7 +1371,7 @@ size_t RexxEntry HandleControlEx(const char *funcname, size_t argc, CONSTRXSTRIN
                 if ( SendMessage(hDlg, WM_USER_SUBCLASS_REMOVE, (WPARAM)KeyPressSubclassProc, (LPARAM)id) )
                 {
                     removeKeyPressMethod(pData->pKeyPressData, index);
-                    success = SendMessage(hDlg, WM_USER_SUBCLASS, (WPARAM)KeyPressSubclassProc, (LPARAM)pData);
+                    success = SendMessage(hDlg, WM_USER_SUBCLASS, (WPARAM)KeyPressSubclassProc, (LPARAM)pData) != 0;
                 }
                 RETVAL(! success)
             }
@@ -1404,14 +1410,14 @@ size_t RexxEntry HandleControlEx(const char *funcname, size_t argc, CONSTRXSTRIN
  *     1 the Windows API call failed
  *  >  1 dependent on the function, usually a returned value not a return code
  */
-size_t RexxEntry HandleListCtrlEx(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
+size_t RexxEntry HandleListCtrlEx(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
     HWND hList;
 
     /* Minimum of 3 args. */
     CHECKARGL(3);
 
-    hList = (HWND) atol(argv[0].strptr);
+    hList = GET_HWND(argv[0]);
     if ( hList == 0 || ! IsWindow(hList) ) RETVAL(-1);
 
     /* M - window message related function */
@@ -1523,13 +1529,13 @@ size_t RexxEntry HandleListCtrlEx(const char *funcname, size_t argc, CONSTRXSTRI
 }
 
 
-size_t RexxEntry HandleListCtrl(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
+size_t RexxEntry HandleListCtrl(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
    HWND h;
 
    CHECKARGL(3);
 
-   h = (HWND) atol(argv[2].strptr);
+   h = GET_HWND(argv[2]);
    if (!h) RETERR;
 
    if (argv[0].strptr[0] == 'I')
@@ -1545,8 +1551,8 @@ size_t RexxEntry HandleListCtrl(const char *funcname, size_t argc, CONSTRXSTRING
            lvi.iItem = atoi(argv[3].strptr);
            lvi.iSubItem = 0;
 
-           lvi.pszText = argv[4].strptr;
-           lvi.cchTextMax = argv[4].strlength;
+           lvi.pszText = (LPSTR)argv[4].strptr;
+           lvi.cchTextMax = (int)argv[4].strlength;
 
            lvi.iImage = atoi(argv[5].strptr);
            if (lvi.iImage >= 0) lvi.mask |= LVIF_IMAGE;
@@ -1565,8 +1571,8 @@ size_t RexxEntry HandleListCtrl(const char *funcname, size_t argc, CONSTRXSTRING
            lvi.iItem = atoi(argv[3].strptr);
            lvi.iSubItem = atoi(argv[4].strptr);
 
-           lvi.pszText = argv[5].strptr;
-           lvi.cchTextMax = argv[5].strlength;
+           lvi.pszText = (LPSTR)argv[5].strptr;
+           lvi.cchTextMax = (int)argv[5].strlength;
 
            if (!strcmp(argv[6].strptr,"TXT"))
            {
@@ -1617,7 +1623,7 @@ size_t RexxEntry HandleListCtrl(const char *funcname, size_t argc, CONSTRXSTRING
            {
                INT len;
                lvi.pszText = retstr->strptr;
-               len = SendMessage(h, LVM_GETITEMTEXT, lvi.iItem, (LPARAM)&lvi);
+               len = (int)SendMessage(h, LVM_GETITEMTEXT, lvi.iItem, (LPARAM)&lvi);
                retstr->strlength = len;
                return 0;
            }
@@ -1700,7 +1706,7 @@ size_t RexxEntry HandleListCtrl(const char *funcname, size_t argc, CONSTRXSTRING
            if (!strcmp(argv[6].strptr,"SMALL")) ilt = LVSIL_SMALL;
            else ilt = LVSIL_NORMAL;
 
-           if (iL) RETVAL((LONG)ListView_SetImageList(h, iL, ilt))
+           if (iL) RETHANDLE(ListView_SetImageList(h, iL, ilt))
            else RETC(0)
        }
        else
@@ -1754,7 +1760,7 @@ size_t RexxEntry HandleListCtrl(const char *funcname, size_t argc, CONSTRXSTRING
        {
            CHECKARG(4);
 
-           RETVAL((LONG)ListView_EditLabel(h, atol(argv[3].strptr)))
+           RETHANDLE(ListView_EditLabel(h, atol(argv[3].strptr)))
        }
        else
        if (!strcmp(argv[1].strptr, "SUBCL_EDIT"))
@@ -1762,9 +1768,9 @@ size_t RexxEntry HandleListCtrl(const char *funcname, size_t argc, CONSTRXSTRING
            HWND ew = ListView_GetEditControl(h);
            if (ew)
            {
-               WNDPROC oldProc = (WNDPROC)SetWindowLong(ew, GWL_WNDPROC, (LONG)CatchReturnSubProc);
+               WNDPROC oldProc = (WNDPROC)SetWindowLongPtr(ew, GWL_WNDPROC, (LONG_PTR)CatchReturnSubProc);
                if (oldProc != (WNDPROC)CatchReturnSubProc) lpOldEditProc = oldProc;
-               RETVAL((LONG)oldProc)
+               RETPTR(oldProc)
            }
            else RETC(0)
        }
@@ -1774,7 +1780,7 @@ size_t RexxEntry HandleListCtrl(const char *funcname, size_t argc, CONSTRXSTRING
            HWND ew = ListView_GetEditControl(h);
            if (ew)
            {
-               SetWindowLong(ew, GWL_WNDPROC, (LONG)lpOldEditProc);
+               SetWindowLongPtr(ew, GWL_WNDPROC, (LONG_PTR)lpOldEditProc);
                RETC(0)
            }
            RETVAL(-1)
@@ -1935,8 +1941,8 @@ size_t RexxEntry HandleListCtrl(const char *funcname, size_t argc, CONSTRXSTRING
 
            lvi.iSubItem = atoi(argv[3].strptr);
 
-           lvi.pszText = argv[4].strptr;
-           lvi.cchTextMax = argv[4].strlength;
+           lvi.pszText = (LPSTR)argv[4].strptr;
+           lvi.cchTextMax = (int)argv[4].strlength;
 
            lvi.cx = atoi(argv[5].strptr);
            if (lvi.cx >= 0) lvi.mask |= LVCF_WIDTH;
@@ -1959,8 +1965,8 @@ size_t RexxEntry HandleListCtrl(const char *funcname, size_t argc, CONSTRXSTRING
 
            nr = atoi(argv[3].strptr);
 
-           lvi.pszText = argv[4].strptr;
-           lvi.cchTextMax = argv[4].strlength;
+           lvi.pszText = (LPSTR)argv[4].strptr;
+           lvi.cchTextMax = (int)argv[4].strlength;
            if (lvi.cchTextMax) lvi.mask |= LVCF_TEXT;
 
            lvi.cx = atoi(argv[5].strptr);
@@ -2038,44 +2044,44 @@ size_t RexxEntry HandleListCtrl(const char *funcname, size_t argc, CONSTRXSTRING
 
 
 
-size_t RexxEntry HandleOtherNewCtrls(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
+size_t RexxEntry HandleOtherNewCtrls(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
    HWND h;
 
    CHECKARGL(3);
 
-   h = (HWND) atol(argv[2].strptr);
+   h = GET_HWND(argv[2]);
    if (!h) RETERR;
 
    if (!strcmp(argv[0].strptr, "PROGRESS"))
    {
        if (!strcmp(argv[1].strptr, "STEP"))
        {
-           RETVAL(SendMessage(h, PBM_STEPIT, 0, 0))
+           RETVAL((long)SendMessage(h, PBM_STEPIT, 0, 0))
        }
        else
        if (!strcmp(argv[1].strptr, "POS"))
        {
            CHECKARG(4);
-           RETVAL(SendMessage(h, PBM_SETPOS, atoi(argv[3].strptr), 0))
+           RETVAL((long)SendMessage(h, PBM_SETPOS, atoi(argv[3].strptr), 0))
        }
        else
        if (!strcmp(argv[1].strptr, "SETSTEP"))
        {
            CHECKARG(4);
-           RETVAL(SendMessage(h, PBM_SETSTEP, atoi(argv[3].strptr), 0))
+           RETVAL((long)SendMessage(h, PBM_SETSTEP, atoi(argv[3].strptr), 0))
        }
        else
        if (!strcmp(argv[1].strptr, "DELTA"))
        {
            CHECKARG(4);
-           RETVAL(SendMessage(h, PBM_DELTAPOS, atoi(argv[3].strptr), 0))
+           RETVAL((long)SendMessage(h, PBM_DELTAPOS, atoi(argv[3].strptr), 0))
        }
        else
        if (!strcmp(argv[1].strptr, "RANGE"))
        {
            CHECKARG(5);
-           RETVAL(SendMessage(h, PBM_SETRANGE, 0, MAKELPARAM(atoi(argv[3].strptr), atoi(argv[4].strptr))))
+           RETVAL((long)SendMessage(h, PBM_SETRANGE, 0, MAKELPARAM(atoi(argv[3].strptr), atoi(argv[4].strptr))))
        }
    }
    else
@@ -2085,7 +2091,7 @@ size_t RexxEntry HandleOtherNewCtrls(const char *funcname, size_t argc, CONSTRXS
        {
            CHECKARGL(4);
            if (argc == 4)
-               RETVAL(SendMessage(h, TBM_GETPOS, 0, 0))
+               RETVAL((long)SendMessage(h, TBM_GETPOS, 0, 0))
            else
                SendMessage(h, TBM_SETPOS, IsYes(argv[4].strptr), atol(argv[3].strptr));
        }
@@ -2120,12 +2126,12 @@ size_t RexxEntry HandleOtherNewCtrls(const char *funcname, size_t argc, CONSTRXS
            else if (argv[3].strptr[0] == 'N')
            {
                CHECKARG(4);
-               RETVAL(SendMessage(h, TBM_GETNUMTICS, 0, 0))
+               RETVAL((long)SendMessage(h, TBM_GETNUMTICS, 0, 0))
            }
            else if (argv[3].strptr[0] == 'G')
            {
                CHECKARG(5);
-               RETVAL(SendMessage(h, TBM_GETTIC, atoi(argv[4].strptr), 0))
+               RETVAL((long)SendMessage(h, TBM_GETTIC, atoi(argv[4].strptr), 0))
            }
            else if (argv[3].strptr[0] == 'S')
            {
@@ -2144,16 +2150,16 @@ size_t RexxEntry HandleOtherNewCtrls(const char *funcname, size_t argc, CONSTRXS
        {
            CHECKARG(4);
            if (argv[3].strptr[0] == 'L')
-               RETVAL(SendMessage(h, TBM_GETLINESIZE, 0, 0))
-           else RETVAL(SendMessage(h, TBM_GETPAGESIZE, 0, 0));
+               RETVAL((long)SendMessage(h, TBM_GETLINESIZE, 0, 0))
+           else RETVAL((long)SendMessage(h, TBM_GETPAGESIZE, 0, 0));
        }
        else
        if (!strcmp(argv[1].strptr, "SETSTEPS"))
        {
            CHECKARG(5);
            if (argv[3].strptr[0] == 'L')
-               RETVAL(SendMessage(h, TBM_SETLINESIZE, 0, atol(argv[4].strptr)))
-           else RETVAL(SendMessage(h, TBM_SETPAGESIZE, 0, atol(argv[4].strptr)));
+               RETVAL((long)SendMessage(h, TBM_SETLINESIZE, 0, atol(argv[4].strptr)))
+           else RETVAL((long)SendMessage(h, TBM_SETPAGESIZE, 0, atol(argv[4].strptr)));
        }
        else
        if (!strcmp(argv[1].strptr, "SETSEL"))
@@ -2192,8 +2198,8 @@ size_t RexxEntry HandleOtherNewCtrls(const char *funcname, size_t argc, CONSTRXS
            item = atoi(argv[3].strptr);
            tab.mask = TCIF_TEXT;
 
-           tab.pszText = argv[4].strptr;
-           tab.cchTextMax = argv[4].strlength;
+           tab.pszText = (LPSTR)argv[4].strptr;
+           tab.cchTextMax = (int)argv[4].strlength;
 
            tab.iImage = atoi(argv[5].strptr);
            if (tab.iImage >= 0) tab.mask |= TCIF_IMAGE;
@@ -2215,8 +2221,8 @@ size_t RexxEntry HandleOtherNewCtrls(const char *funcname, size_t argc, CONSTRXS
            item = atoi(argv[3].strptr);
 
            if (strlen(argv[4].strptr)) tab.mask = TCIF_TEXT; else tab.mask = 0;
-           tab.pszText = argv[4].strptr;
-           tab.cchTextMax = argv[4].strlength;
+           tab.pszText = (LPSTR)argv[4].strptr;
+           tab.cchTextMax = (int)argv[4].strlength;
 
            tab.iImage = atoi(argv[5].strptr);
            if (tab.iImage >= 0) tab.mask |= TCIF_IMAGE;
@@ -2247,7 +2253,7 @@ size_t RexxEntry HandleOtherNewCtrls(const char *funcname, size_t argc, CONSTRXS
                SetRexxStem(argv[4].strptr, -1, "!Text", tab.pszText);
                itoa(tab.iImage, data, 10);
                SetRexxStem(argv[4].strptr, -1, "!Image", data);
-               itoa(tab.lParam, data, 10);
+               itoa((int)tab.lParam, data, 10);
                SetRexxStem(argv[4].strptr, -1, "!Param", data);
                RETC(0)
            }
@@ -2339,7 +2345,7 @@ size_t RexxEntry HandleOtherNewCtrls(const char *funcname, size_t argc, CONSTRXS
 
            CHECKARG(6);
            iL = CreateImageList(3, h, argv, argc);
-           if (iL) RETVAL((LONG)TabCtrl_SetImageList(h, iL))
+           if (iL) RETHANDLE(TabCtrl_SetImageList(h, iL))
            else RETC(0)
        }
        else

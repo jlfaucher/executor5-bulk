@@ -42,12 +42,9 @@
 #include <mmsystem.h>
 #include <shlwapi.h>
 #include <commctrl.h>
-#include <rexx.h>
+#include "oorexxapi.h"
 #include <stdio.h>
 #include <dlgs.h>
-#ifdef __CTL3D
-#include <ctl3d.h>
-#endif
 /* set the noglob... so global variables wont be defined twice */
 #define NOGLOBALVARIABLES 1
 #include "oovutil.h"
@@ -72,21 +69,21 @@ extern LRESULT PaletteMessage(DIALOGADMIN * addr, HWND hWnd, UINT msg, WPARAM wP
 extern BOOL AddDialogMessage(CHAR * msg, CHAR * Qptr);
 extern BOOL IsNT = TRUE;
 extern LONG HandleError(PRXSTRING r, CHAR * text);
-extern LONG SetRexxStem(CHAR * name, INT id, char * secname, CHAR * data);
+extern LONG SetRexxStem(const char * name, INT id, const char * secname, const char * data);
 extern BOOL GetDialogIcons(DIALOGADMIN *, INT, BOOL, PHANDLE, PHANDLE);
 extern HICON GetIconForID(DIALOGADMIN *, UINT, BOOL, int, int);
 extern BOOL InitForCommonControls(void);
 
 /* Shared functions for keyboard hooks and key press subclassing */
-extern LONG setKeyPressData(KEYPRESSDATA *, RXSTRING, RXSTRING, PCHAR);
+extern LONG setKeyPressData(KEYPRESSDATA *, CONSTRXSTRING, CONSTRXSTRING, const char *);
 extern void processKeyPress(KEYPRESSDATA *, WPARAM, LPARAM, PCHAR);
 extern void freeKeyPressData(KEYPRESSDATA *);
-extern UINT seekKeyPressMethod(KEYPRESSDATA *, PCHAR);
+extern UINT seekKeyPressMethod(KEYPRESSDATA *, const char *);
 extern void removeKeyPressMethod(KEYPRESSDATA *, UINT);
 
 /* Local functions */
 INT DelDialog(DIALOGADMIN * aDlg);
-static LONG installKBHook(DIALOGADMIN *, HWND, RXSTRING, RXSTRING, PCHAR);
+static LONG installKBHook(DIALOGADMIN *, HWND, CONSTRXSTRING, CONSTRXSTRING, const char *);
 static LONG setKBHook(DIALOGADMIN *, HWND);
 static void removeKBHook(DIALOGADMIN *);
 static BOOL parseKeyToken(PCHAR, PUINT, PUINT);
@@ -96,7 +93,7 @@ static BOOL parseKeyToken(PCHAR, PUINT, PUINT);
 
 class LoopThreadArgs
 {
-    public;
+public:
     const char *resourceId;
     DIALOGADMIN *dlgAdmin;
     const char *autoDetect;
@@ -116,18 +113,17 @@ class LoopThreadArgs
 *            false - Invalid number supplied.                       *
 *********************************************************************/
 
-void *string2pointer(CONSTRXSTRING *string)
+void *string2pointer(const char *string)
 {
     void *pointer = 0;
-    sscanf(string->strptr, "0x%p", pointer);
+    sscanf(string, "0x%p", pointer);
     return pointer;
 }
 
 
-void pointer2string(PRXSTRING result, void *pointer)
+void pointer2string(char *result, void *pointer)
 {
-    sprintf(result->strptr, "0x%p", pointer);
-    result->strlength = strlen(result->strptr);
+    sprintf(result, "0x%p", pointer);
 }
 
 
@@ -318,7 +314,7 @@ LRESULT CALLBACK RexxDlgProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
 
 
 /* prepare dialog management table for a new dialog entry */
-size_t RexxEntry HandleDialogAdmin(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
+size_t RexxEntry HandleDialogAdmin(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
     DIALOGADMIN * current;
     DEF_ADM;
@@ -338,10 +334,7 @@ size_t RexxEntry HandleDialogAdmin(const char *funcname, size_t argc, CONSTRXSTR
         {
             DelDialog(dlgAdm);
         }
-        if (dlgAdm->pMessageQueue)
-        {
-            LocalFree((void *)dlgAdm->pMessageQueue);
-        }
+        safeLocalFree(dlgAdm->pMessageQueue);
         LocalFree(dlgAdm);
     }
     else   /* we have to do a new dialog admin allocation */
@@ -378,44 +371,37 @@ size_t RexxEntry HandleDialogAdmin(const char *funcname, size_t argc, CONSTRXSTR
 
 
 /* install DLL, control program and 3D controls */
-BOOL InstallNecessaryStuff(DIALOGADMIN* dlgAdm, RXSTRING ar[], INT argc)
+BOOL InstallNecessaryStuff(DIALOGADMIN* dlgAdm, CONSTRXSTRING ar[], size_t argc)
 {
-   PCHAR Library;
+    const char *Library;
 
-   if (dlgAdm->previous) ((DIALOGADMIN*)dlgAdm->previous)->OnTheTop = FALSE;
-   topDlg = dlgAdm;
-   Library = ar[0].strptr;
+    if (dlgAdm->previous) ((DIALOGADMIN*)dlgAdm->previous)->OnTheTop = FALSE;
+    topDlg = dlgAdm;
+    Library = ar[0].strptr;
 
-   if (Library[0] != '0')
-   {
-      dlgAdm->TheInstance = LoadLibrary(Library);
-      if (!dlgAdm->TheInstance)
-      {
-         CHAR msg[256];
-         sprintf(msg, "Failed to load Dynamic Link Library (resource DLL.)\n"
-                      "  File name:\t\t\t%s\n"
-                      "  Windows System Error Code:\t%d\n", Library, GetLastError());
-         MessageBox(0, msg, "ooDialog DLL Load Error", MB_OK | MB_ICONHAND | MB_SYSTEMMODAL);
-         return FALSE;
-      }
-   } else
-      dlgAdm->TheInstance = MyInstance;
-
-   if (argc >= 4)
-   {
-      dlgAdm->Use3DControls = FALSE;
-      if (IsYes(ar[3].strptr))
-      {
-#ifdef __CTL3D
-        if (Ctl3dRegister(dlgAdm->TheInstance))
+    if (Library[0] != '0')
+    {
+        dlgAdm->TheInstance = LoadLibrary(Library);
+        if (!dlgAdm->TheInstance)
         {
-           Ctl3dAutoSubclass(dlgAdm->TheInstance);
-           dlgAdm->Use3DControls = TRUE;
+            CHAR msg[256];
+            sprintf(msg, "Failed to load Dynamic Link Library (resource DLL.)\n"
+                    "  File name:\t\t\t%s\n"
+                    "  Windows System Error Code:\t%d\n", Library, GetLastError());
+            MessageBox(0, msg, "ooDialog DLL Load Error", MB_OK | MB_ICONHAND | MB_SYSTEMMODAL);
+            return FALSE;
         }
-#endif
-      }
-   }
-   return TRUE;
+    }
+    else
+    {
+        dlgAdm->TheInstance = MyInstance;
+    }
+
+    if (argc >= 4)
+    {
+        dlgAdm->Use3DControls = FALSE;
+    }
+    return TRUE;
 }
 
 
@@ -423,40 +409,40 @@ BOOL InstallNecessaryStuff(DIALOGADMIN* dlgAdm, RXSTRING ar[], INT argc)
 /* end a dialog and remove installed components */
 INT DelDialog(DIALOGADMIN * aDlg)
 {
-   DIALOGADMIN * current;
-   INT ret, i;
-   BOOL wasFGW;
-   HICON hIconBig = NULL;
-   HICON hIconSmall = NULL;
+    DIALOGADMIN * current;
+    INT ret, i;
+    BOOL wasFGW;
+    HICON hIconBig = NULL;
+    HICON hIconSmall = NULL;
 
-   EnterCriticalSection(&crit_sec);
-   wasFGW = (aDlg->TheDlg == GetForegroundWindow());
+    EnterCriticalSection(&crit_sec);
+    wasFGW = (aDlg->TheDlg == GetForegroundWindow());
 
-   ret = aDlg->LeaveDialog;
+    ret = aDlg->LeaveDialog;
 
-   /* add this message, so HandleMessages in DIALOG.CMD knows that finsihed shall be set */
-   AddDialogMessage((char *) MSG_TERMINATE, aDlg->pMessageQueue);
+    /* add this message, so HandleMessages in DIALOG.CMD knows that finsihed shall be set */
+    AddDialogMessage((char *) MSG_TERMINATE, aDlg->pMessageQueue);
 
-   if (!aDlg->LeaveDialog) aDlg->LeaveDialog = 3;    /* signal to exit */
+    if (!aDlg->LeaveDialog) aDlg->LeaveDialog = 3;    /* signal to exit */
 
-   /* the entry must be removed before the last message is sent so the GetMessage loop can quit */
-   if (aDlg->TableEntry == StoredDialogs-1)
-       DialogTab[aDlg->TableEntry] = NULL;
-   else
-   {
-       DialogTab[aDlg->TableEntry] = DialogTab[StoredDialogs-1];  /* move last entry to deleted one */
-       DialogTab[aDlg->TableEntry]->TableEntry = aDlg->TableEntry;
-       DialogTab[StoredDialogs-1] = NULL;              /* and delete last entry */
-   }
-   StoredDialogs--;
+    /* the entry must be removed before the last message is sent so the GetMessage loop can quit */
+    if (aDlg->TableEntry == StoredDialogs-1)
+        DialogTab[aDlg->TableEntry] = NULL;
+    else
+    {
+        DialogTab[aDlg->TableEntry] = DialogTab[StoredDialogs-1];  /* move last entry to deleted one */
+        DialogTab[aDlg->TableEntry]->TableEntry = aDlg->TableEntry;
+        DialogTab[StoredDialogs-1] = NULL;              /* and delete last entry */
+    }
+    StoredDialogs--;
 
-   PostMessage(aDlg->TheDlg, WM_QUIT, 0, 0);      /* to exit GetMessage */
+    PostMessage(aDlg->TheDlg, WM_QUIT, 0, 0);      /* to exit GetMessage */
 
-   if (aDlg->TheDlg) DestroyWindow(aDlg->TheDlg);      /* docu states "must not use EndDialog for non-modal dialogs" */
-   if (aDlg->menu) DestroyMenu(aDlg->menu);
+    if (aDlg->TheDlg) DestroyWindow(aDlg->TheDlg);      /* docu states "must not use EndDialog for non-modal dialogs" */
+    if (aDlg->menu) DestroyMenu(aDlg->menu);
 
 #ifdef __CTL3D
-   if ((!StoredDialogs) && (aDlg->Use3DControls)) Ctl3dUnregister(aDlg->TheInstance);
+    if ((!StoredDialogs) && (aDlg->Use3DControls)) Ctl3dUnregister(aDlg->TheInstance);
 #endif
 
     /* Swap back the saved icons. If not shared, the icon was loaded from a file
@@ -469,15 +455,19 @@ INT DelDialog(DIALOGADMIN * aDlg)
      */
     if ( aDlg->DidChangeIcon )
     {
-        hIconBig = (HICON)SetClassLong(aDlg->TheDlg, GCL_HICON, (LONG)aDlg->SysMenuIcon);
+        hIconBig = (HICON)SetClassLongPtr(aDlg->TheDlg, GCL_HICON, (LONG_PTR)aDlg->SysMenuIcon);
         if ( aDlg->TitleBarIcon )
-            hIconSmall = (HICON)SetClassLong(aDlg->TheDlg, GCL_HICONSM, (LONG)aDlg->TitleBarIcon);
+        {
+            hIconSmall = (HICON)SetClassLongPtr(aDlg->TheDlg, GCL_HICONSM, (LONG_PTR)aDlg->TitleBarIcon);
+        }
 
         if ( ! aDlg->SharedIcon )
         {
             DestroyIcon(hIconBig);
             if ( ! hIconSmall )
-                hIconSmall = (HICON)GetClassLong(aDlg->TheDlg, GCL_HICONSM);
+            {
+                hIconSmall = (HICON)GetClassLongPtr(aDlg->TheDlg, GCL_HICONSM);
+            }
         }
         else
         {
@@ -485,92 +475,114 @@ INT DelDialog(DIALOGADMIN * aDlg)
         }
     }
 
-   if ((aDlg->TheInstance) && (aDlg->TheInstance != MyInstance)) FreeLibrary(aDlg->TheInstance);
-   current = (DIALOGADMIN *)aDlg->previous;
+    if ((aDlg->TheInstance) && (aDlg->TheInstance != MyInstance))
+    {
+        FreeLibrary(aDlg->TheInstance);
+    }
+    current = (DIALOGADMIN *)aDlg->previous;
 
-   /* delete data, message and bitmap table of the dialog */
-   if (aDlg->MsgTab)
-   {
-       for (i=0;i<aDlg->MT_size;i++)
-       {
-           if (aDlg->MsgTab[i].rexxProgram) LocalFree(aDlg->MsgTab[i].rexxProgram);
-       }
-       LocalFree(aDlg->MsgTab);
-       aDlg->MT_size = 0;
-   }
-   if (aDlg->DataTab) LocalFree(aDlg->DataTab);
-   aDlg->DT_size = 0;
+    /* delete data, message and bitmap table of the dialog */
+    if (aDlg->MsgTab)
+    {
+        for (i=0;i<aDlg->MT_size;i++)
+        {
+            safeLocalFree(aDlg->MsgTab[i].rexxProgram);
+        }
+        LocalFree(aDlg->MsgTab);
+        aDlg->MT_size = 0;
+    }
+    safeLocalFree(aDlg->DataTab);
+    aDlg->DT_size = 0;
 
-   /* delete color brushs */
-   if (aDlg->ColorTab)
-   {
-       for (i=0;i<aDlg->CT_size;i++)
-           if (aDlg->ColorTab[i].ColorBrush) DeleteObject((HBRUSH)aDlg->ColorTab[i].ColorBrush);
-       LocalFree(aDlg->ColorTab);
-       aDlg->CT_size = 0;
-   }
+    /* delete color brushs */
+    if (aDlg->ColorTab)
+    {
+        for (i=0;i<aDlg->CT_size;i++)
+        {
+            safeDeleteObject(aDlg->ColorTab[i].ColorBrush);
+        }
+        LocalFree(aDlg->ColorTab);
+        aDlg->CT_size = 0;
+    }
 
-   /* delete bitmaps */
-   if (aDlg->BmpTab)
-   {
-      for (i=0;i<aDlg->BT_size;i++)
-         if ((aDlg->BmpTab[i].Loaded & 0x1011) == 1)           /* otherwise stretched bitmap files are not freed */
-         {
-            if (aDlg->BmpTab[i].bitmapID) LocalFree((void *)aDlg->BmpTab[i].bitmapID);
-            if (aDlg->BmpTab[i].bmpFocusID) LocalFree((void *)aDlg->BmpTab[i].bmpFocusID);
-            if (aDlg->BmpTab[i].bmpSelectID) LocalFree((void *)aDlg->BmpTab[i].bmpSelectID);
-            if (aDlg->BmpTab[i].bmpDisableID) LocalFree((void *)aDlg->BmpTab[i].bmpDisableID);
-         }
-         else if (aDlg->BmpTab[i].Loaded == 0)
-         {
-            if (aDlg->BmpTab[i].bitmapID) DeleteObject((HBITMAP)aDlg->BmpTab[i].bitmapID);
-            if (aDlg->BmpTab[i].bmpFocusID) DeleteObject((HBITMAP)aDlg->BmpTab[i].bmpFocusID);
-            if (aDlg->BmpTab[i].bmpSelectID) DeleteObject((HBITMAP)aDlg->BmpTab[i].bmpSelectID);
-            if (aDlg->BmpTab[i].bmpDisableID) DeleteObject((HBITMAP)aDlg->BmpTab[i].bmpDisableID);
-         }
+    /* delete bitmaps */
+    if (aDlg->BmpTab)
+    {
+        for (i=0;i<aDlg->BT_size;i++)
+        {
+            if ((aDlg->BmpTab[i].Loaded & 0x1011) == 1)           /* otherwise stretched bitmap files are not freed */
+            {
+                safeLocalFree((void *)aDlg->BmpTab[i].bitmapID);
+                safeLocalFree((void *)aDlg->BmpTab[i].bmpFocusID);
+                safeLocalFree((void *)aDlg->BmpTab[i].bmpSelectID);
+                safeLocalFree((void *)aDlg->BmpTab[i].bmpDisableID);
+            }
+            else if (aDlg->BmpTab[i].Loaded == 0)
+            {
+                safeDeleteObject((HBITMAP)aDlg->BmpTab[i].bitmapID);
+                safeDeleteObject((HBITMAP)aDlg->BmpTab[i].bmpFocusID);
+                safeDeleteObject((HBITMAP)aDlg->BmpTab[i].bmpSelectID);
+                safeDeleteObject((HBITMAP)aDlg->BmpTab[i].bmpDisableID);
+            }
+        }
 
-      LocalFree(aDlg->BmpTab);
-      if (aDlg->ColorPalette) DeleteObject(aDlg->ColorPalette);
-      aDlg->BT_size = 0;
-   }
+        LocalFree(aDlg->BmpTab);
+        safeDeleteObject(aDlg->ColorPalette);
+        aDlg->BT_size = 0;
+    }
 
-   /* delete the icon resource table */
-   if (aDlg->IconTab)
-   {
-       for ( i = 0; i < aDlg->IT_size; i++ )
-       {
-           if ( aDlg->IconTab[i].fileName )
-               LocalFree(aDlg->IconTab[i].fileName);
-       }
-       LocalFree(aDlg->IconTab);
-       aDlg->IT_size = 0;
-   }
+    /* delete the icon resource table */
+    if (aDlg->IconTab)
+    {
+        for ( i = 0; i < aDlg->IT_size; i++ )
+        {
+            safeLocalFree(aDlg->IconTab[i].fileName);
+        }
+        LocalFree(aDlg->IconTab);
+        aDlg->IT_size = 0;
+    }
 
-   /* Unhook a hook if it is installed */
-   if ( aDlg->hHook ) removeKBHook(aDlg);
+    /* Unhook a hook if it is installed */
+    if ( aDlg->hHook )
+    {
+        removeKBHook(aDlg);
+    }
 
-       /* The message queue and the admin block are freed in HandleDialogAdmin called from HandleMessages */
+    /* The message queue and the admin block are freed in HandleDialogAdmin called from HandleMessages */
 
-   if (!StoredDialogs) topDlg = NULL; else topDlg = current;
-   if (topDlg)
-   {
-       if (DialogInAdminTable(topDlg))
-       {
-           if (!IsWindowEnabled(topDlg->TheDlg))
-               EnableWindow(topDlg->TheDlg, TRUE);
-           if (wasFGW)
-           {
-               SetForegroundWindow(topDlg->TheDlg);
-               topDlg->OnTheTop = TRUE;
-           }
-       }
-       else topDlg = NULL;
-   }
-   LeaveCriticalSection(&crit_sec);
-   if ( hIconSmall )
-       DestroyIcon(hIconSmall);
-
-   return ret;
+    if (!StoredDialogs)
+    {
+        topDlg = NULL;
+    }
+    else
+    {
+        topDlg = current;
+    }
+    if (topDlg)
+    {
+        if (DialogInAdminTable(topDlg))
+        {
+            if (!IsWindowEnabled(topDlg->TheDlg))
+            {
+                EnableWindow(topDlg->TheDlg, TRUE);
+            }
+            if (wasFGW)
+            {
+                SetForegroundWindow(topDlg->TheDlg);
+                topDlg->OnTheTop = TRUE;
+            }
+        }
+        else
+        {
+            topDlg = NULL;
+        }
+    }
+    LeaveCriticalSection(&crit_sec);
+    if ( hIconSmall )
+    {
+        DestroyIcon(hIconSmall);
+    }
+    return ret;
 }
 
 
@@ -583,7 +595,7 @@ DWORD WINAPI WindowLoopThread(void *arg)
     BOOL * release;
     ULONG ret;
 
-    LoopThreadArgs *args = (LoopThreadArgs *)args;
+    LoopThreadArgs *args = (LoopThreadArgs *)arg;
 
 
     Dlg = args->dlgAdmin;        /*  thread local admin pointer from StartDialog */
@@ -638,7 +650,7 @@ DWORD WINAPI WindowLoopThread(void *arg)
 }
 
 
-size_t RexxEntry GetDialogFactor(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
+size_t RexxEntry GetDialogFactor(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
    ULONG u;
    double x,y;
@@ -660,7 +672,7 @@ size_t RexxEntry GetDialogFactor(const char *funcname, size_t argc, CONSTRXSTRIN
 
 
 /* create an asynchronous dialog */
-size_t RexxEntry StartDialog(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
+size_t RexxEntry StartDialog(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
     ULONG thID;
     BOOL Release = FALSE;
@@ -718,10 +730,10 @@ size_t RexxEntry StartDialog(const char *funcname, size_t argc, CONSTRXSTRING ar
             /* modal flag = yes ? */
             if (dlgAdm->previous && !IsYes(argv[6].strptr) && IsWindowEnabled(((DIALOGADMIN *)dlgAdm->previous)->TheDlg)) EnableWindow(((DIALOGADMIN *)dlgAdm->previous)->TheDlg, FALSE);
 
-            if ( GetDialogIcons(dlgAdm, atoi(argv[5].strptr), FALSE, &hBig, &hSmall) )
+            if ( GetDialogIcons(dlgAdm, atoi(argv[5].strptr), FALSE, (PHANDLE)&hBig, (PHANDLE)&hSmall) )
             {
-                dlgAdm->SysMenuIcon = (HICON)SetClassLong(dlgAdm->TheDlg, GCL_HICON, (LONG)hBig);
-                dlgAdm->TitleBarIcon = (HICON)SetClassLong(dlgAdm->TheDlg, GCL_HICONSM, (LONG)hSmall);
+                dlgAdm->SysMenuIcon = (HICON)SetClassLongPtr(dlgAdm->TheDlg, GCL_HICON, (LONG_PTR)hBig);
+                dlgAdm->TitleBarIcon = (HICON)SetClassLongPtr(dlgAdm->TheDlg, GCL_HICONSM, (LONG_PTR)hSmall);
                 dlgAdm->DidChangeIcon = TRUE;
 
                 SendMessage(dlgAdm->TheDlg, WM_SETICON, ICON_SMALL, (LPARAM)hSmall);
@@ -816,7 +828,7 @@ BOOL GetDialogIcons(DIALOGADMIN *dlgAdm, INT id, BOOL fromFile, PHANDLE phBig, P
         {
             if ( fromFile )
             {
-                DestroyIcon(*phBig);
+                DestroyIcon((HICON)*phBig);
             }
             *phBig = NULL;
         }
@@ -888,7 +900,7 @@ HICON GetIconForID(DIALOGADMIN *dlgAdm, UINT id, BOOL fromFile, int cx, int cy)
         loadFlags = LR_SHARED;
     }
 
-    return LoadImage(hInst, pName, IMAGE_ICON, cx, cy, loadFlags);
+    return (HICON)LoadImage(hInst, pName, IMAGE_ICON, cx, cy, loadFlags);
 }
 
 
@@ -908,7 +920,7 @@ HICON GetIconForID(DIALOGADMIN *dlgAdm, UINT id, BOOL fromFile, int cx, int cy)
  *  Nothing to generalize as of yet ...
  *
  */
-size_t RexxEntry WinAPI32Func(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
+size_t RexxEntry WinAPI32Func(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
     /* There has to be at least 2 args. */
     CHECKARGL(2);
@@ -921,7 +933,7 @@ size_t RexxEntry WinAPI32Func(const char *funcname, size_t argc, CONSTRXSTRING a
 
             CHECKARGL(4);
 
-            hWnd = (HWND)atol(argv[3].strptr);
+            hWnd = GET_HWND(argv[3]);
             if ( hWnd == 0 || ! IsWindow(hWnd) ) RETERR
 
             if ( argv[2].strptr[0] == 'E' )          /* Enabled */
@@ -948,7 +960,7 @@ size_t RexxEntry WinAPI32Func(const char *funcname, size_t argc, CONSTRXSTRING a
 
             CHECKARGL(3);
 
-            hWnd = (HWND)atol(argv[2].strptr);
+            hWnd = GET_HWND(argv[2]);
             if ( hWnd == 0 || ! IsWindow(hWnd) ) RETVAL(-1)
 
             SetLastError(0);
@@ -966,7 +978,7 @@ size_t RexxEntry WinAPI32Func(const char *funcname, size_t argc, CONSTRXSTRING a
 
         CHECKARGL(3)
 
-        dlgAdm = (DIALOGADMIN *)atol(argv[2].strptr);
+        dlgAdm = (DIALOGADMIN *)GET_POINTER(argv[2]);
         if ( !dlgAdm ) RETVAL(-4)
 
         if ( argv[1].strptr[0] == 'Q' )          /* Query if keyboard hook is installed */
@@ -984,7 +996,7 @@ size_t RexxEntry WinAPI32Func(const char *funcname, size_t argc, CONSTRXSTRING a
 
             CHECKARGL(6)
 
-            hDlg = (HWND)atol(argv[3].strptr);
+            hDlg = GET_HWND(argv[3]);
             if ( hDlg == 0 || ! IsWindow(hDlg) ) RETVAL(-4)
 
             if ( argv[4].strlength == 0 || argv[5].strlength == 0 ) RETVAL(-1)
@@ -1029,7 +1041,7 @@ size_t RexxEntry WinAPI32Func(const char *funcname, size_t argc, CONSTRXSTRING a
 
                     CHECKARGL(5)
 
-                    hDlg = (HWND)atol(argv[3].strptr);
+                    hDlg = GET_HWND(argv[3]);
                     if ( hDlg == 0 || ! IsWindow(hDlg) ) RETVAL(-4)
 
                     index = seekKeyPressMethod(dlgAdm->pKeyPressData, argv[4].strptr);
@@ -1213,9 +1225,9 @@ void processKeyPress(KEYPRESSDATA *pKeyData, WPARAM wParam, LPARAM lParam, PCHAR
 static LONG installKBHook(
     DIALOGADMIN *dlgAdm,
     HWND hDlg,
-    RXSTRING method,
-    RXSTRING keys,
-    PCHAR filter )
+    CONSTRXSTRING method,
+    CONSTRXSTRING keys,
+    const char *filter )
 {
     KEYPRESSDATA *pData;
     LONG        ret = 0;
@@ -1317,8 +1329,8 @@ void freeKeyPressData(KEYPRESSDATA *pData)
     {
         for ( i = 1; i <= MAX_KEYPRESS_METHODS; i++ )
         {
-            if ( pData->pMethods[i] ) LocalFree((void *)pData->pMethods[i]);
-            if ( pData->pFilters[i] ) LocalFree((void *)pData->pFilters[i]);
+            safeLocalFree((void *)pData->pMethods[i]);
+            safeLocalFree((void *)pData->pFilters[i]);
         }
         LocalFree((void *)pData);
     }
@@ -1329,7 +1341,7 @@ void freeKeyPressData(KEYPRESSDATA *pData)
  * is found, otherwise the index into the table for the method.
  *
  */
-UINT seekKeyPressMethod(KEYPRESSDATA *pData, PCHAR method)
+UINT seekKeyPressMethod(KEYPRESSDATA *pData, const char *method)
 {
     UINT i;
     UINT index = 0;
@@ -1359,7 +1371,7 @@ UINT seekKeyPressMethod(KEYPRESSDATA *pData, PCHAR method)
  * method, it is protected by a critical section.
  *
  */
-LONG setKeyPressData(KEYPRESSDATA *pData, RXSTRING method, RXSTRING keys, PCHAR filter)
+LONG setKeyPressData(KEYPRESSDATA *pData, CONSTRXSTRING method, CONSTRXSTRING keys, const char *filter)
 {
 
     PSZ        token, str;
@@ -1379,12 +1391,12 @@ LONG setKeyPressData(KEYPRESSDATA *pData, RXSTRING method, RXSTRING keys, PCHAR 
      */
     if ( method.strlength > CCH_METHOD_NAME ) return -1;
 
-    pMethod = LocalAlloc(LPTR, method.strlength + 1);
+    pMethod = (PCHAR)LocalAlloc(LPTR, method.strlength + 1);
     if ( ! pMethod ) return -5;
 
     if ( filter )
     {
-        pFilter = LocalAlloc(LPTR, sizeof(KEYFILTER));
+        pFilter = (KEYFILTER *)LocalAlloc(LPTR, sizeof(KEYFILTER));
         if ( ! pFilter )
         {
             free(pMethod);
@@ -1597,165 +1609,223 @@ _declspec(dllexport) LONG __cdecl OODialogCleanup(BOOL Process)
 }
 
 
-size_t RexxEntry HandleDlg(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
+size_t RexxEntry HandleDlg(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
-   DEF_ADM;
+    DEF_ADM;
 
-   CHECKARGL(1);
+    CHECKARGL(1);
 
-   if (!strcmp(argv[0].strptr, "ACTIVE"))   /* see if the dialog is still in the dialog management table */
-   {
-       CHECKARG(2);
-       SEEK_DLGADM_TABLE((HWND)atol(argv[1].strptr), dlgAdm);
+    if (!strcmp(argv[0].strptr, "ACTIVE"))   /* see if the dialog is still in the dialog management table */
+    {
+        CHECKARG(2);
+        SEEK_DLGADM_TABLE(GET_HWND(argv[1]), dlgAdm);
 
-       if (dlgAdm)    /* it's alive */
-           RETC(1)
-       else
-          RETC(0)
-   }
-   else
-   if (!strcmp(argv[0].strptr, "HNDL"))   /* Get the dialog handle */
-   {
-       if (argc==2)
-       {
-           dlgAdm = (DIALOGADMIN*) atol(argv[1].strptr);
-           if (!dlgAdm) RETERR
-           RETVAL((ULONG)dlgAdm->TheDlg)
-       }
-       else {
-           if (topDlg && topDlg->TheDlg)
-               RETVAL((ULONG)topDlg->TheDlg)
-           else
-               RETC(0)
-       }
-   }
-   else
-   if (!strcmp(argv[0].strptr, "ITEM"))   /* Get the handle to a dialog item */
-   {
-       HWND hW, hD;
+        if (dlgAdm)    /* it's alive */
+        {
+            RETC(1);
+        }
+        else
+        {
+            RETC(0);
+        }
+    }
+    else if (!strcmp(argv[0].strptr, "HNDL"))   /* Get the dialog handle */
+    {
+        if (argc==2)
+        {
+            dlgAdm = (DIALOGADMIN*)GET_POINTER(argv[1]);
+            if (!dlgAdm)
+            {
+                RETERR;
+            }
+            RETHANDLE(dlgAdm->TheDlg);
+        }
+        else
+        {
+            if (topDlg && topDlg->TheDlg)
+            {
+                RETHANDLE(topDlg->TheDlg);
+            }
+            else
+            {
+                RETC(0);
+            }
+        }
+    }
+    else if (!strcmp(argv[0].strptr, "ITEM"))   /* Get the handle to a dialog item */
+    {
+        HWND hW, hD;
 
-       CHECKARGL(2);
+        CHECKARGL(2);
 
-       if (argc > 2)
-       {
-          hD = (HWND) atol(argv[2].strptr);
-       } else hD = topDlg->TheDlg;
+        if (argc > 2)
+        {
+            hD = GET_HWND(argv[2]);
+        }
+        else
+        {
+            hD = topDlg->TheDlg;
+        }
 
-       hW = GetDlgItem(hD, atoi(argv[1].strptr));
+        hW = GetDlgItem(hD, atoi(argv[1].strptr));
 
-       if (hW)
-          RETVAL((ULONG)hW)
-       else
-          RETC(0)
-   }
-   else
-   if (!strcmp(argv[0].strptr, "STOP"))   /* Stop a dialog */
-   {
-       HWND h;
+        if (hW)
+        {
+            RETHANDLE(hW);
+        }
+        else
+        {
+            RETC(0);
+        }
+    }
+    else if (!strcmp(argv[0].strptr, "STOP"))   /* Stop a dialog */
+    {
+        HWND h = NULL;
 
-       if (argc>1)
-          h=(HWND) atol(argv[1].strptr);
-       else h=NULL;
+        if (argc>1)
+        {
+            h= GET_HWND(argv[1]);
+        }
 
-       if (h)
-       {
-           SEEK_DLGADM_TABLE(h, dlgAdm);
-           if (dlgAdm) RETVAL(DelDialog(dlgAdm))
-           else RETVAL(-1)
-       }
-       else if (!h && topDlg)
-           RETVAL(DelDialog(topDlg))        /* remove the top most */
-       else
-           RETVAL(-1)
-   }
-   RETC(0); /* DOE002A */
-
+        if (h)
+        {
+            SEEK_DLGADM_TABLE(h, dlgAdm);
+            if (dlgAdm)
+            {
+                RETVAL(DelDialog(dlgAdm));
+            }
+            else
+            {
+                RETVAL(-1);
+            }
+        }
+        else if (!h && topDlg)
+        {
+            RETVAL(DelDialog(topDlg));       /* remove the top most */
+        }
+        else
+        {
+            RETVAL(-1);
+        }
+    }
+    RETC(0);
 }
 
 
-size_t RexxEntry DialogMenu(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
+size_t RexxEntry DialogMenu(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
-   HWND hWnd;
-   DEF_ADM;
+    HWND hWnd;
+    DEF_ADM;
 
-   CHECKARGL(3);
+    CHECKARGL(3);
 
-   if (!strcmp(argv[0].strptr, "ASSOC"))   /* Associates a menu with a dialog */
-   {
-       hWnd = (HWND)atol(argv[1].strptr);
+    if (!strcmp(argv[0].strptr, "ASSOC"))   /* Associates a menu with a dialog */
+    {
+        hWnd = GET_HWND(argv[1]);
 
-       if (hWnd)
-       {
-          SEEK_DLGADM_TABLE(hWnd, dlgAdm);
-          if (dlgAdm)
-          {
-              dlgAdm->menu = LoadMenu(dlgAdm->TheInstance, MAKEINTRESOURCE(atoi(argv[2].strptr)));
-              if (dlgAdm->menu)
-              {
-                  SetMenu(hWnd, dlgAdm->menu);
-                  RETC(0)
-              }
-          }
-       }
-       RETC(1)
-   }
-   else
-   {
-       DWORD opt;
-       DEF_ADM;
-       dlgAdm = (DIALOGADMIN *)atol(argv[1].strptr);
-       if (!dlgAdm) RETERR
-       if (!dlgAdm->menu) RETC(1)
+        if (hWnd)
+        {
+            SEEK_DLGADM_TABLE(hWnd, dlgAdm);
+            if (dlgAdm)
+            {
+                dlgAdm->menu = LoadMenu(dlgAdm->TheInstance, MAKEINTRESOURCE(atoi(argv[2].strptr)));
+                if (dlgAdm->menu)
+                {
+                    SetMenu(hWnd, dlgAdm->menu);
+                    RETC(0);
+                }
+            }
+        }
+        RETC(1);
+    }
+    else
+    {
+        DWORD opt;
+        DEF_ADM;
+        dlgAdm = (DIALOGADMIN *)GET_POINTER(argv[1]);
+        if (!dlgAdm)
+        {
+            RETERR;
+        }
+        if (!dlgAdm->menu)
+        {
+            RETC(1);
+        }
 
-       if (!strcmp(argv[0].strptr, "SETMI"))   /* set state of menu item */
-       {
-           CHECKARGL(4);
-           if (argc == 4)
-           {
-               if (!strcmp(argv[3].strptr, "ENABLE")) opt = MF_ENABLED; else
-               if (!strcmp(argv[3].strptr, "DISABLE")) opt = MF_DISABLED; else
-               if (!strcmp(argv[3].strptr, "GRAY")) opt = MF_GRAYED; else
-               {
-                   if (!strcmp(argv[3].strptr, "CHECK")) opt = MF_CHECKED; else
-                   if (!strcmp(argv[3].strptr, "UNCHECK")) opt = MF_UNCHECKED; else RETC(1)
-                   if (CheckMenuItem(dlgAdm->menu, atoi(argv[2].strptr), MF_BYCOMMAND | opt) == 0xFFFFFFFF)
-                       RETC(1) else RETC(0)
-               }
-               if (EnableMenuItem(dlgAdm->menu, atoi(argv[2].strptr), MF_BYCOMMAND | opt) == 0xFFFFFFFF)
-                  RETC(1) else RETC(0)
-           }
-           else
-           if (argc == 5)
-           {
-                                                     /* start of group       end                selected item */
-               if (!CheckMenuRadioItem(dlgAdm->menu, atoi(argv[2].strptr), atoi(argv[3].strptr), atoi(argv[4].strptr), MF_BYCOMMAND))
-                  RETC(1) else RETC(0)
+        if (!strcmp(argv[0].strptr, "SETMI"))   /* set state of menu item */
+        {
+            CHECKARGL(4);
+            if (argc == 4)
+            {
+                if (!strcmp(argv[3].strptr, "ENABLE")) opt = MF_ENABLED;
+                else if (!strcmp(argv[3].strptr, "DISABLE")) opt = MF_DISABLED;
+                else if (!strcmp(argv[3].strptr, "GRAY")) opt = MF_GRAYED;
+                else
+                {
+                    if (!strcmp(argv[3].strptr, "CHECK")) opt = MF_CHECKED;
+                    else if (!strcmp(argv[3].strptr, "UNCHECK")) opt = MF_UNCHECKED;
+                    else
+                    {
+                        RETC(1)
+                    }
+                    if (CheckMenuItem(dlgAdm->menu, atoi(argv[2].strptr), MF_BYCOMMAND | opt) == 0xFFFFFFFF)
+                    {
+                        RETC(1);
+                    }
+                    else
+                    {
+                        RETC(0);
+                    }
+                }
+                if (EnableMenuItem(dlgAdm->menu, atoi(argv[2].strptr), MF_BYCOMMAND | opt) == 0xFFFFFFFF)
+                {
+                    RETC(1);
+                }
+                else
+                {
+                    RETC(0);
+                }
+            }
+            else if (argc == 5)
+            {
+                /* start of group       end                selected item */
+                if (!CheckMenuRadioItem(dlgAdm->menu, atoi(argv[2].strptr), atoi(argv[3].strptr), atoi(argv[4].strptr), MF_BYCOMMAND))
+                {
+                    RETC(1);
+                }
+                else
+                {
+                    RETC(0);
+                }
 
-           } else RETC(1)
-       }
-       else
-       if (!strcmp(argv[0].strptr, "GETMI"))    /* get state of menu item */
-       {
-           UINT state;
-           retstr->strptr[0] = '\0';
-           state = GetMenuState(dlgAdm->menu, atoi(argv[2].strptr), MF_BYCOMMAND);
-           if (state == 0xFFFFFFFF) RETC(1);
-           if (state & MF_CHECKED) strcat(retstr->strptr, "CHECKED ");
-           if (state & MF_DISABLED) strcat(retstr->strptr, "DISABLED ");
-           if (state & MF_GRAYED) strcat(retstr->strptr, "GRAYED ");
-           if (state & MF_HILITE) strcat(retstr->strptr, "HIGHLIGHTED ");
-           retstr->strlength = strlen(retstr->strptr);
-           return 0;
-       }
-       RETERR
-   }
+            }
+            else
+            {
+                RETC(1);
+            }
+        }
+        else if (!strcmp(argv[0].strptr, "GETMI"))    /* get state of menu item */
+        {
+            UINT state;
+            retstr->strptr[0] = '\0';
+            state = GetMenuState(dlgAdm->menu, atoi(argv[2].strptr), MF_BYCOMMAND);
+            if (state == 0xFFFFFFFF) RETC(1);
+            if (state & MF_CHECKED) strcat(retstr->strptr, "CHECKED ");
+            if (state & MF_DISABLED) strcat(retstr->strptr, "DISABLED ");
+            if (state & MF_GRAYED) strcat(retstr->strptr, "GRAYED ");
+            if (state & MF_HILITE) strcat(retstr->strptr, "HIGHLIGHTED ");
+            retstr->strlength = strlen(retstr->strptr);
+            return 0;
+        }
+        RETERR;
+    }
 }
 
 
 
 /* dump out the dialog admin table(s) */
 
-LONG SetRexxStem(CHAR * name, INT id, char * secname, CHAR * data)
+LONG SetRexxStem(const char * name, INT id, const char * secname, const char * data)
 {
    SHVBLOCK shvb;
    CHAR buffer[72];
@@ -1773,14 +1843,15 @@ LONG SetRexxStem(CHAR * name, INT id, char * secname, CHAR * data)
    shvb.shvname.strptr = buffer;
    shvb.shvname.strlength = strlen(buffer);
    shvb.shvnamelen = shvb.shvname.strlength;
-   shvb.shvvalue.strptr = data;
+   shvb.shvvalue.strptr = const_cast<char *>(data);
    shvb.shvvalue.strlength = strlen(data);
    shvb.shvvaluelen = strlen(data);
    shvb.shvcode = RXSHV_SYSET;
    shvb.shvret = 0;
    if (RexxVariablePool(&shvb) == RXSHV_BADN) {
-       sprintf(data, "Variable %s could not be declared", buffer);
-       MessageBox(0,data,"Error",MB_OK | MB_ICONHAND);
+       char messageBuffer[265];
+       sprintf(messageBuffer, "Variable %s could not be declared", buffer);
+       MessageBox(0,messageBuffer,"Error",MB_OK | MB_ICONHAND);
        return FALSE;
    }
    return TRUE;
@@ -1788,7 +1859,7 @@ LONG SetRexxStem(CHAR * name, INT id, char * secname, CHAR * data)
 
 
 
-size_t RexxEntry DumpAdmin(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
+size_t RexxEntry DumpAdmin(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
    CHAR data[256];
    /* SHVBLOCK shvb; */
@@ -1802,82 +1873,82 @@ size_t RexxEntry DumpAdmin(const char *funcname, size_t argc, CONSTRXSTRING argv
    strcpy(name, argv[0].strptr); /* stem name */
    if (argc == 2)
    {
-       dlgAdm = (DIALOGADMIN *)atol(argv[1].strptr);
+       dlgAdm = (DIALOGADMIN *)GET_POINTER(argv[1]);
        if (!dlgAdm) RETVAL(-1)
 
        strcpy(name, argv[0].strptr); /* stem name */
        itoa(dlgAdm->TableEntry, data, 10);
-       if (!SetRexxStem(name, -1, "Slot", data)) RETERR
-       itoa((LONG)dlgAdm->TheThread, data, 16);
-       if (!SetRexxStem(name, -1, "hThread", data)) RETERR
-       itoa((LONG)dlgAdm->TheDlg, data, 16);
-       if (!SetRexxStem(name, -1, "hDialog", data)) RETERR
-       itoa((LONG)dlgAdm->menu, data, 16);
-       if (!SetRexxStem(name, -1, "hMenu", data)) RETERR
-       itoa((LONG)dlgAdm->BkgBrush, data, 16);
-       if (!SetRexxStem(name, -1, "BkgBrush", data)) RETERR
-       itoa((LONG)dlgAdm->BkgBitmap, data, 16);
-       if (!SetRexxStem(name, -1, "BkgBitmap", data)) RETERR
+       if (!SetRexxStem(name, -1, "Slot", data)) { RETERR; }
+       pointer2string(data, dlgAdm->TheThread);
+       if (!SetRexxStem(name, -1, "hThread", data))  { RETERR; }
+       pointer2string(data, dlgAdm->TheDlg);
+       if (!SetRexxStem(name, -1, "hDialog", data))  { RETERR; }
+       pointer2string(data, dlgAdm->menu);
+       if (!SetRexxStem(name, -1, "hMenu", data))  { RETERR; }
+       pointer2string(data, dlgAdm->BkgBrush);
+       if (!SetRexxStem(name, -1, "BkgBrush", data))  { RETERR; }
+       pointer2string(data, dlgAdm->BkgBitmap);
+       if (!SetRexxStem(name, -1, "BkgBitmap", data))  { RETERR; }
        itoa(dlgAdm->OnTheTop, data, 10);
-       if (!SetRexxStem(name, -1, "TopMost", data)) RETERR
-       itoa((LONG)dlgAdm->AktChild, data, 16);
-       if (!SetRexxStem(name, -1, "CurrentChild", data)) RETERR
-       itoa((LONG)dlgAdm->TheInstance, data, 16);
-       if (!SetRexxStem(name, -1, "DLL", data)) RETERR
-       if (!SetRexxStem(name, -1, "Queue", dlgAdm->pMessageQueue)) RETERR
+       if (!SetRexxStem(name, -1, "TopMost", data))  { RETERR; }
+       pointer2string(data, dlgAdm->AktChild);
+       if (!SetRexxStem(name, -1, "CurrentChild", data))  { RETERR; }
+       pointer2string(data, dlgAdm->TheInstance);
+       if (!SetRexxStem(name, -1, "DLL", data))  { RETERR; }
+       if (!SetRexxStem(name, -1, "Queue", dlgAdm->pMessageQueue))  { RETERR; }
        itoa(dlgAdm->BT_size, data, 10);
-       if (!SetRexxStem(name, -1, "BmpButtons", data)) RETERR
+       if (!SetRexxStem(name, -1, "BmpButtons", data))  { RETERR; }
        sprintf(buffer, "%s.%s", argv[0].strptr, "BmpTab");
        for (i=0; i<dlgAdm->BT_size; i++)
        {
            itoa(dlgAdm->BmpTab[i].buttonID, data, (dlgAdm->BmpTab[i].Loaded ? 16: 10));
-           if (!SetRexxStem(buffer, i+1, "ID", data)) RETERR
+           if (!SetRexxStem(buffer, i+1, "ID", data))  { RETERR; }
            itoa((LONG)dlgAdm->BmpTab[i].bitmapID, data, (dlgAdm->BmpTab[i].Loaded ? 16: 10));
-           if (!SetRexxStem(buffer, i+1, "Normal", data)) RETERR
+           if (!SetRexxStem(buffer, i+1, "Normal", data))  { RETERR; }
            itoa((LONG)dlgAdm->BmpTab[i].bmpFocusID, data, (dlgAdm->BmpTab[i].Loaded ? 16: 10));
-           if (!SetRexxStem(buffer, i+1, "Focused", data)) RETERR
+           if (!SetRexxStem(buffer, i+1, "Focused", data))  { RETERR; }
            itoa((LONG)dlgAdm->BmpTab[i].bmpSelectID, data, (dlgAdm->BmpTab[i].Loaded ? 16: 10));
-           if (!SetRexxStem(buffer, i+1, "Selected", data)) RETERR
+           if (!SetRexxStem(buffer, i+1, "Selected", data))  { RETERR; }
            itoa((LONG)dlgAdm->BmpTab[i].bmpDisableID, data, (dlgAdm->BmpTab[i].Loaded ? 16: 10));
-           if (!SetRexxStem(buffer, i+1, "Disabled", data)) RETERR
+           if (!SetRexxStem(buffer, i+1, "Disabled", data))  { RETERR; }
        }
        itoa(dlgAdm->MT_size, data, 10);
-       if (!SetRexxStem(name, -1, "Messages", data)) RETERR
+       if (!SetRexxStem(name, -1, "Messages", data))  { RETERR; }
        sprintf(buffer, "%s.%s", argv[0].strptr, "MsgTab");
        for (i=0; i<dlgAdm->MT_size; i++)
        {
-           itoa((LONG)dlgAdm->MsgTab[i].msg, data, 16);
-           if (!SetRexxStem(buffer, i+1, "msg", data)) RETERR
-           itoa((LONG)dlgAdm->MsgTab[i].wParam, data, 16);
-           if (!SetRexxStem(buffer, i+1, "param1", data)) RETERR
-           itoa((LONG)dlgAdm->MsgTab[i].lParam, data, 16);
-           if (!SetRexxStem(buffer, i+1, "param2", data)) RETERR
+           pointer2string(data, (void *)dlgAdm->MsgTab[i].msg);
+           if (!SetRexxStem(buffer, i+1, "msg", data))  { RETERR; }
+           pointer2string(data, (void *)dlgAdm->MsgTab[i].wParam);
+           if (!SetRexxStem(buffer, i+1, "param1", data))  { RETERR; }
+           pointer2string(data, (void *)dlgAdm->MsgTab[i].lParam);
+           if (!SetRexxStem(buffer, i+1, "param2", data))  { RETERR; }
            strcpy(data, dlgAdm->MsgTab[i].rexxProgram);
-           if (!SetRexxStem(buffer, i+1, "method", data)) RETERR
+           if (!SetRexxStem(buffer, i+1, "method", data))  { RETERR; }
        }
        itoa(dlgAdm->DT_size, data, 10);
-       if (!SetRexxStem(name, -1, "DataItems", data)) RETERR
+       if (!SetRexxStem(name, -1, "DataItems", data))  { RETERR; }
        sprintf(buffer, "%s.%s", argv[0].strptr, "DataTab");
        for (i=0; i<dlgAdm->DT_size; i++)
        {
            itoa(dlgAdm->DataTab[i].id, data, 10);
-           if (!SetRexxStem(buffer, i+1, "ID", data)) RETERR
+           if (!SetRexxStem(buffer, i+1, "ID", data))  { RETERR; }
            itoa(dlgAdm->DataTab[i].typ, data, 10);
-           if (!SetRexxStem(buffer, i+1, "type", data)) RETERR
+           if (!SetRexxStem(buffer, i+1, "type", data))  { RETERR; }
            itoa(dlgAdm->DataTab[i].category, data, 10);
-           if (!SetRexxStem(buffer, i+1, "category", data)) RETERR
+           if (!SetRexxStem(buffer, i+1, "category", data))  { RETERR; }
        }
        itoa(dlgAdm->CT_size, data, 10);
-       if (!SetRexxStem(name, -1, "ColorItems", data)) RETERR
+       if (!SetRexxStem(name, -1, "ColorItems", data))  { RETERR; }
        sprintf(buffer, "%s.%s", argv[0].strptr, "ColorTab");
        for (i=0; i<dlgAdm->CT_size; i++)
        {
            itoa(dlgAdm->ColorTab[i].itemID, data, 10);
-           if (!SetRexxStem(buffer, i+1, "ID", data)) RETERR
+           if (!SetRexxStem(buffer, i+1, "ID", data))  { RETERR; }
            itoa(dlgAdm->ColorTab[i].ColorBk, data, 10);
-           if (!SetRexxStem(buffer, i+1, "Background", data)) RETERR
+           if (!SetRexxStem(buffer, i+1, "Background", data))  { RETERR; }
            itoa(dlgAdm->ColorTab[i].ColorFG, data, 10);
-           if (!SetRexxStem(buffer, i+1, "Foreground", data)) RETERR
+           if (!SetRexxStem(buffer, i+1, "Foreground", data)) { RETERR; }
        }
    }
 
@@ -1888,41 +1959,41 @@ size_t RexxEntry DumpAdmin(const char *funcname, size_t argc, CONSTRXSTRING argv
            if (DialogTab[i] != NULL)
            {
                cnt++;
-               itoa((LONG)DialogTab[i], data, 10);
-               if (!SetRexxStem(name, cnt, "AdmBlock", data)) RETERR
+               pointer2string(data, DialogTab[i]);
+               if (!SetRexxStem(name, cnt, "AdmBlock", data)) { RETERR; }
                itoa(DialogTab[i]->TableEntry, data, 10);
-               if (!SetRexxStem(name, cnt, "Slot", data)) RETERR
-               itoa((LONG)DialogTab[i]->TheThread, data, 16);
-               if (!SetRexxStem(name, cnt, "hThread", data)) RETERR
-               itoa((LONG)DialogTab[i]->TheDlg, data, 16);
-               if (!SetRexxStem(name, cnt, "hDialog", data)) RETERR
-               itoa((LONG)DialogTab[i]->menu, data, 16);
-               if (!SetRexxStem(name, cnt, "hMenu", data)) RETERR
-               itoa((LONG)DialogTab[i]->BkgBrush, data, 16);
-               if (!SetRexxStem(name, cnt, "BkgBrush", data)) RETERR
-               itoa((LONG)DialogTab[i]->BkgBitmap, data, 16);
-               if (!SetRexxStem(name, cnt, "BkgBitmap", data)) RETERR
+               if (!SetRexxStem(name, cnt, "Slot", data)) { RETERR; }
+               pointer2string(data, DialogTab[i]->TheThread);
+               if (!SetRexxStem(name, cnt, "hThread", data)) { RETERR; }
+               pointer2string(data, DialogTab[i]->TheDlg);
+               if (!SetRexxStem(name, cnt, "hDialog", data)) { RETERR; }
+               pointer2string(data, DialogTab[i]->menu);
+               if (!SetRexxStem(name, cnt, "hMenu", data)) { RETERR; }
+               pointer2string(data, DialogTab[i]->BkgBrush);
+               if (!SetRexxStem(name, cnt, "BkgBrush", data)) { RETERR; }
+               pointer2string(data, DialogTab[i]->BkgBitmap);
+               if (!SetRexxStem(name, cnt, "BkgBitmap", data)) { RETERR; }
                itoa(DialogTab[i]->OnTheTop, data, 10);
-               if (!SetRexxStem(name, cnt, "TopMost", data)) RETERR
-               itoa((LONG)DialogTab[i]->AktChild, data, 16);
-               if (!SetRexxStem(name, cnt, "CurrentChild", data)) RETERR
-               itoa((LONG)DialogTab[i]->TheInstance, data, 16);
-               if (!SetRexxStem(name, cnt, "DLL", data)) RETERR
-               if (!SetRexxStem(name, cnt, "Queue", DialogTab[i]->pMessageQueue)) RETERR
+               if (!SetRexxStem(name, cnt, "TopMost", data)) { RETERR; }
+               pointer2string(data, DialogTab[i]->AktChild);
+               if (!SetRexxStem(name, cnt, "CurrentChild", data)) { RETERR; }
+               pointer2string(data, DialogTab[i]->TheInstance);
+               if (!SetRexxStem(name, cnt, "DLL", data)) { RETERR; }
+               if (!SetRexxStem(name, cnt, "Queue", DialogTab[i]->pMessageQueue)) { RETERR; }
                itoa(DialogTab[i]->BT_size, data, 10);
-               if (!SetRexxStem(name, cnt, "BmpButtons", data)) RETERR
+               if (!SetRexxStem(name, cnt, "BmpButtons", data)) { RETERR; }
                itoa(DialogTab[i]->MT_size, data, 10);
-               if (!SetRexxStem(name, cnt, "Messages", data)) RETERR
+               if (!SetRexxStem(name, cnt, "Messages", data)) { RETERR; }
                itoa(DialogTab[i]->DT_size, data, 10);
-               if (!SetRexxStem(name, cnt, "DataItems", data)) RETERR
+               if (!SetRexxStem(name, cnt, "DataItems", data)) { RETERR; }
                itoa(DialogTab[i]->CT_size, data, 10);
-               if (!SetRexxStem(name, cnt, "ColorItems", data)) RETERR
+               if (!SetRexxStem(name, cnt, "ColorItems", data)) { RETERR; }
            }
        }
        itoa(cnt, data, 10);
-       if (!SetRexxStem(name, 0, NULL, data)) RETERR  /* Set number of dialog tables */
+       if (!SetRexxStem(name, 0, NULL, data)) { RETERR; }  /* Set number of dialog tables */
    }
-   RETC(0)
+   RETC(0);
 }
 
 
@@ -1932,10 +2003,10 @@ size_t RexxEntry DumpAdmin(const char *funcname, size_t argc, CONSTRXSTRING argv
 
 ****************************************************************************************************/
 
-size_t RexxEntry RemoveMMFuncs(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
+size_t RexxEntry RemoveMMFuncs(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
     // this is a nop
-    RETC(0)
+    RETC(0);
 }
 
 /**
@@ -2018,7 +2089,7 @@ BOOL InitForCommonControls(void)
 }
 
 
-size_t RexxEntry InstMMFuncs(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
+size_t RexxEntry InstMMFuncs(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
     // this is a nop
    RETVAL(DLLVER)   /* ok, so we return the DLL version */
@@ -2026,7 +2097,7 @@ size_t RexxEntry InstMMFuncs(const char *funcname, size_t argc, CONSTRXSTRING ar
 
 
 
-size_t RexxEntry RemoveExtendedMMFuncs(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
+size_t RexxEntry RemoveExtendedMMFuncs(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
     // this is a nop
     RETC(0)
@@ -2034,7 +2105,7 @@ size_t RexxEntry RemoveExtendedMMFuncs(const char *funcname, size_t argc, CONSTR
 
 
 
-size_t RexxEntry InstExtendedMMFuncs(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
+size_t RexxEntry InstExtendedMMFuncs(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
     // this is a nop
     RETC(0)
@@ -2042,7 +2113,7 @@ size_t RexxEntry InstExtendedMMFuncs(const char *funcname, size_t argc, CONSTRXS
 
 
 
-size_t RexxEntry RemoveUserMMFuncs(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
+size_t RexxEntry RemoveUserMMFuncs(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
     // this is a nop
     RETC(0)
@@ -2050,7 +2121,7 @@ size_t RexxEntry RemoveUserMMFuncs(const char *funcname, size_t argc, CONSTRXSTR
 
 
 
-size_t RexxEntry InstUserMMFuncs(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
+size_t RexxEntry InstUserMMFuncs(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
     // this is a nop
     RETC(0)
@@ -2086,6 +2157,63 @@ BOOL REXXENTRY DllMain(
 #ifdef __cplusplus
 }
 #endif
+
+
+REXX_CLASSIC_ROUTINE_PROTOTYPE(GetDlgMsg);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(SendWinMsg);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(HandleDlg);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(AddUserMessage);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(GetFileNameWindow);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(DataTable);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(HandleDialogAdmin);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(SetItemData);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(SetStemData);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(GetItemData);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(GetStemData);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(Wnd_Desktop);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(WndShow_Pos);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(WinAPI32Func);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(InfoMessage);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(ErrorMessage);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(YesNoMessage);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(FindTheWindow);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(StartDialog);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(WindowRect);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(GetStdTextSize);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(SetLBTabStops);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(BinaryAnd);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(GetScreenSize);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(GetSysMetrics);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(GetDialogFactor);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(SleepMS);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(PlaySoundFile);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(PlaySoundFileInLoop);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(StopSoundFile);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(HandleScrollBar);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(BmpButton);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(DCDraw);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(DrawGetSet);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(ScrollText);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(ScrollTheWindow);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(HandleDC_Obj);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(SetBackground);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(LoadRemoveBitmap);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(WriteText);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(HandleTreeCtrl);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(HandleListCtrl);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(HandleListCtrlEx);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(HandleControlEx);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(HandleOtherNewCtrls);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(DialogMenu);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(WinTimer);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(HandleFont);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(DumpAdmin);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(UsrAddControl);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(UsrCreateDialog);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(UsrDefineDialog);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(UsrMenu);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(UsrAddNewCtrl);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(UsrAddResource);
 
 
 // now build the actual entry list
@@ -2125,7 +2253,6 @@ RexxRoutineEntry oodialog_functions[] =
     REXX_CLASSIC_ROUTINE(BmpButton,            BmpButton),
     REXX_CLASSIC_ROUTINE(DCDraw,               DCDraw),
     REXX_CLASSIC_ROUTINE(DrawGetSet,           DrawGetSet),
-    REXX_CLASSIC_ROUTINE(DrawTheBitmap,        DrawTheBitmap),
     REXX_CLASSIC_ROUTINE(ScrollText,           ScrollText),
     REXX_CLASSIC_ROUTINE(ScrollTheWindow,      ScrollTheWindow),
     REXX_CLASSIC_ROUTINE(HandleDC_Obj,         HandleDC_Obj),

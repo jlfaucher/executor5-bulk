@@ -45,7 +45,7 @@
 #include "oovutil.h"
 
 
-extern LPBITMAPINFO LoadDIB(LPSTR szFile);
+extern LPBITMAPINFO LoadDIB(const char *szFile);
 
 
 BOOL DrawButton(DIALOGADMIN * aDlg, INT id)
@@ -58,7 +58,7 @@ BOOL DrawButton(DIALOGADMIN * aDlg, INT id)
    dis.CtlType = ODT_BUTTON;
    dis.CtlID = id;
    dis.itemAction = ODA_DRAWENTIRE;
-   dis.itemState = SendDlgItemMessage(aDlg->TheDlg, dis.CtlID, BM_GETSTATE, 0, 0);
+   dis.itemState = (UINT)SendDlgItemMessage(aDlg->TheDlg, dis.CtlID, BM_GETSTATE, 0, 0);
    hW = GetDlgItem(aDlg->TheDlg, dis.CtlID);
    dis.hDC = GetWindowDC(hW);
    dis.hwndItem = hW;
@@ -69,7 +69,7 @@ BOOL DrawButton(DIALOGADMIN * aDlg, INT id)
    r.left = 0;
    dis.rcItem = r;
    dis.itemData = 0;
-   rc = SendMessage(aDlg->TheDlg, WM_DRAWITEM, (WPARAM)dis.CtlID, (LPARAM)&dis);
+   rc = SendMessage(aDlg->TheDlg, WM_DRAWITEM, (WPARAM)dis.CtlID, (LPARAM)&dis) != 0;
    ReleaseDC(hW, dis.hDC);
    return rc;
 }
@@ -78,7 +78,7 @@ BOOL DrawButton(DIALOGADMIN * aDlg, INT id)
 
 /* Get information about window rectangle, redraw and clear a rectangle */
 
-size_t RexxEntry WindowRect(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
+size_t RexxEntry WindowRect(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
    HWND w;
    RECT r;
@@ -95,10 +95,10 @@ size_t RexxEntry WindowRect(const char *funcname, size_t argc, CONSTRXSTRING arg
        DEF_ADM;
 
        CHECKARGL(3);
-       dlgAdm = (DIALOGADMIN *)atol(argv[1].strptr);
+       dlgAdm = (DIALOGADMIN *)GET_POINTER(argv[1]);
        if (!dlgAdm) RETERR
 
-       w = (HWND)atol(argv[2].strptr);
+       w = GET_HWND(argv[2]);
 
        if ((hDC=GetWindowDC(w)))
        {
@@ -122,11 +122,11 @@ size_t RexxEntry WindowRect(const char *funcname, size_t argc, CONSTRXSTRING arg
            }
            else
            {
-              hbr = GetStockObject(WHITE_BRUSH);
-              hpen = GetStockObject(WHITE_PEN);
+              hbr = (HBRUSH)GetStockObject(WHITE_BRUSH);
+              hpen = (HPEN)GetStockObject(WHITE_PEN);
            }
-           oP = SelectObject(hDC, hpen);
-           oB = SelectObject(hDC, hbr);
+           oP = (HPEN)SelectObject(hDC, hpen);
+           oB = (HBRUSH)SelectObject(hDC, hbr);
            Rectangle(hDC, rect[0], rect[1], rect[2], rect[3]);
            SelectObject(hDC, oB);
            SelectObject(hDC, oP);
@@ -144,9 +144,9 @@ size_t RexxEntry WindowRect(const char *funcname, size_t argc, CONSTRXSTRING arg
    else
    if (!strcmp(argv[0].strptr,"RDW"))          /* redraw a rectangle */
    {
-       PCHAR erasebgr= "";
+       const char *erasebgr= "";
 
-       w = (HWND)atol(argv[1].strptr);
+       w = GET_HWND(argv[1]);
 
        if (argc == 7)                          /* coordinates are specified */
        {
@@ -160,7 +160,9 @@ size_t RexxEntry WindowRect(const char *funcname, size_t argc, CONSTRXSTRING arg
        {
            GetClientRect(w, &r);               /* no coordinates, so get coordinates */
            if (argc == 3)
+           {
                erasebgr = argv[2].strptr;
+           }
        }
 
        if (InvalidateRect(w, &r, IsYes(erasebgr)))
@@ -173,7 +175,7 @@ size_t RexxEntry WindowRect(const char *funcname, size_t argc, CONSTRXSTRING arg
    else
    if (!strcmp(argv[0].strptr,"GET"))         /* get the window/client rectangle */
    {
-       w = (HWND)atol(argv[1].strptr);
+       w = GET_HWND(argv[1]);
 
        if (w)
        {
@@ -202,7 +204,7 @@ size_t RexxEntry WindowRect(const char *funcname, size_t argc, CONSTRXSTRING arg
        DEF_ADM;
 
        CHECKARGL(3);
-       dlgAdm = (DIALOGADMIN *)atol(argv[1].strptr);
+       dlgAdm = (DIALOGADMIN *)GET_POINTER(argv[1]);
        if (!dlgAdm) RETERR
 
        if (DrawButton(dlgAdm, atoi(argv[2].strptr)))
@@ -218,7 +220,7 @@ size_t RexxEntry WindowRect(const char *funcname, size_t argc, CONSTRXSTRING arg
 
 /* Get and free a device, create pen and brush objects (no font), assign and delete graphic objects */
 
-size_t RexxEntry HandleCD_Obj(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
+size_t RexxEntry HandleDC_Obj(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
    HDC hDC;
    HWND w;
@@ -227,17 +229,18 @@ size_t RexxEntry HandleCD_Obj(const char *funcname, size_t argc, CONSTRXSTRING a
 
    if (argv[0].strptr[0] == 'G')      /* Get a window dc */
    {
-       w = (HWND)atol(argv[1].strptr);
+       w = GET_HWND(argv[1]);
        hDC = GetWindowDC(w);
-       RETVAL((ULONG)hDC)
+       RETHANDLE(hDC)
    }
    else
    if (argv[0].strptr[0] == 'F')      /* Free a DC */
    {
        CHECKARG(3);
 
-       w = (HWND)atol(argv[1].strptr);
-       if (ReleaseDC(w, (HDC)atol(argv[2].strptr)))
+       w = GET_HWND(argv[1]);
+       hDC = (HDC)GET_HANDLE(argv[2]);
+       if (ReleaseDC(w, hDC))
           RETC(0)
        else
           RETC(1)
@@ -247,12 +250,15 @@ size_t RexxEntry HandleCD_Obj(const char *funcname, size_t argc, CONSTRXSTRING a
    {
 
        CHECKARG(3);
-       RETVAL((ULONG)SelectObject((HDC)atol(argv[1].strptr), (HGDIOBJ)atol(argv[2].strptr)))
+       hDC = (HDC)GET_HANDLE(argv[1]);
+       HGDIOBJ obj = (HGDIOBJ)GET_HANDLE(argv[2]);
+       RETHANDLE(SelectObject(hDC, obj));
    }
    else
    if (argv[0].strptr[0] == 'D')      /* delete a graphic object (pen, brush, font) */
    {
-       RETC(!DeleteObject((HGDIOBJ)strtoul(argv[1].strptr,'\0',10)));
+       HGDIOBJ obj = (HGDIOBJ)GET_HANDLE(argv[2]);
+       RETC(!DeleteObject(obj));
    }
    else
    if (argv[0].strptr[0] == 'P')      /* Create a pen */
@@ -270,7 +276,7 @@ size_t RexxEntry HandleCD_Obj(const char *funcname, size_t argc, CONSTRXSTRING a
        style = PS_SOLID;
 
        hP = CreatePen(style, atoi(argv[1].strptr), PALETTEINDEX(atoi(argv[3].strptr)));
-       RETVAL((ULONG)hP)
+       RETHANDLE(hP);
    }
    else
    if (argv[0].strptr[0] == 'B')     /* create a brush */
@@ -285,7 +291,7 @@ size_t RexxEntry HandleCD_Obj(const char *funcname, size_t argc, CONSTRXSTRING a
           if ((lbmp = atol(argv[3].strptr)) != 0 )         /* we have a resource id */
           {
              DEF_ADM;
-             dlgAdm = (DIALOGADMIN *)atol(argv[1].strptr);
+             dlgAdm = (DIALOGADMIN *)GET_POINTER(argv[1]);
              if (!dlgAdm) RETC(0)
 
              hBmp = LoadBitmap(dlgAdm->TheInstance, MAKEINTRESOURCE(lbmp));
@@ -319,7 +325,7 @@ size_t RexxEntry HandleCD_Obj(const char *funcname, size_t argc, CONSTRXSTRING a
           hB = CreateSolidBrush(PALETTEINDEX(atoi(argv[1].strptr)));
        else hB = (HBRUSH)GetStockObject(HOLLOW_BRUSH);
 
-       RETVAL((ULONG)hB)
+       RETHANDLE(hB)
    }
    RETERR
 }
@@ -329,19 +335,22 @@ size_t RexxEntry HandleCD_Obj(const char *funcname, size_t argc, CONSTRXSTRING a
 /* handle all the drawing like SetPixel, LineTo,.... */
 
 
-size_t RexxEntry DCDraw(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
+size_t RexxEntry DCDraw(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
    CHECKARGL(4);
 
    if (argv[0].strptr[0] == 'L')      /* Draw a line */
    {
-       RETC(!LineTo((HDC)atol(argv[1].strptr), atoi(argv[2].strptr), atoi(argv[3].strptr)))
+       HDC hDC = (HDC)GET_HANDLE(argv[1]);
+
+       RETC(!LineTo(hDC, atoi(argv[2].strptr), atoi(argv[3].strptr)))
    }
    else
    if ((argv[0].strptr[0] == 'P') && (argv[0].strptr[1] == 'T'))    /* Draw a pixel */
    {
        CHECKARG(5);
-       RETC(!SetPixel((HDC)atol(argv[1].strptr), atoi(argv[2].strptr), atoi(argv[3].strptr),
+       HDC hDC = (HDC)GET_HANDLE(argv[1]);
+       RETC(!SetPixel(hDC, atoi(argv[2].strptr), atoi(argv[3].strptr),
             PALETTEINDEX(atoi(argv[4].strptr))))
    }
    else
@@ -351,9 +360,11 @@ size_t RexxEntry DCDraw(const char *funcname, size_t argc, CONSTRXSTRING argv[],
        register INT i;
        CHECKARG(6);
 
+       HDC hDC = (HDC)GET_HANDLE(argv[1]);
+
        for (i=0;i<4;i++) rect[i] = atoi(argv[i+2].strptr);
 
-       RETC(!Rectangle((HDC)atol(argv[1].strptr), rect[0], rect[1], rect[2], rect[3]))
+       RETC(!Rectangle(hDC, rect[0], rect[1], rect[2], rect[3]))
    }
    else
    if (!strcmp(argv[0].strptr,"ARC"))         /* Draw an arc */
@@ -362,9 +373,11 @@ size_t RexxEntry DCDraw(const char *funcname, size_t argc, CONSTRXSTRING argv[],
        register INT i;
        CHECKARG(10);
 
+       HDC hDC = (HDC)GET_HANDLE(argv[1]);
+
        for (i=0;i<8;i++) rect[i] = atoi(argv[i+2].strptr);
                                             /* left   top     right    bottom  */
-       RETC(!Arc((HDC)atol(argv[1].strptr), rect[0], rect[1], rect[2], rect[3],
+       RETC(!Arc(hDC, rect[0], rect[1], rect[2], rect[3],
                                 /* start x  start y  end x    end y  */
                                    rect[4], rect[5], rect[6], rect[7]))
    }
@@ -372,8 +385,9 @@ size_t RexxEntry DCDraw(const char *funcname, size_t argc, CONSTRXSTRING argv[],
    if (!strcmp(argv[0].strptr,"ANG"))         /* Draw an  angle arc */
    {
        CHECKARG(7);
+       HDC hDC = (HDC)GET_HANDLE(argv[1]);
                                                     /* x                 y                   radius         */
-       RETC(!AngleArc((HDC)atol(argv[1].strptr), atoi(argv[2].strptr), atoi(argv[3].strptr), atoi(argv[4].strptr),
+       RETC(!AngleArc(hDC, atoi(argv[2].strptr), atoi(argv[3].strptr), atoi(argv[4].strptr),
                               /* start angle                sweep angle*/
                         (float)atof(argv[5].strptr), (float)atof(argv[6].strptr)))
    }
@@ -385,9 +399,11 @@ size_t RexxEntry DCDraw(const char *funcname, size_t argc, CONSTRXSTRING argv[],
 
        CHECKARG(10);
 
+       HDC hDC = (HDC)GET_HANDLE(argv[1]);
+
        for (i=0;i<8;i++) rect[i] = atoi(argv[i+2].strptr);
 
-       RETC(!Pie((HDC)atol(argv[1].strptr),
+       RETC(!Pie(hDC,
         rect[0],    // x-coord. of bounding rectangle's upper-left corner
         rect[1],    // y-coord. of bounding rectangle's upper-left corner
         rect[2],    // x-coord. of bounding rectangle's lower-right corner
@@ -403,18 +419,18 @@ size_t RexxEntry DCDraw(const char *funcname, size_t argc, CONSTRXSTRING argv[],
    {
        CHECKARG(5);
 
-       RETC(!FloodFill((HDC)atol(argv[1].strptr), atoi(argv[2].strptr), atoi(argv[3].strptr),
+       HDC hDC = (HDC)GET_HANDLE(argv[1]);
+       RETC(!FloodFill(hDC, atoi(argv[2].strptr), atoi(argv[3].strptr),
                         PALETTEINDEX(atoi(argv[4].strptr))));
    }
    else
    if (!strcmp(argv[0].strptr,"DIM"))      /* Dim a bitmap */
    {
-       HDC hdc;
        int a, i, j, x, y, diff, diffx, stepx, stepy, steps, sx, sy;
 
        CHECKARG(7);
 
-       hdc = (HDC)atol(argv[1].strptr);
+       HDC hDC = (HDC)GET_HANDLE(argv[1]);
        sx = atoi(argv[2].strptr);
        sy = atoi(argv[3].strptr);
        steps = atoi(argv[6].strptr);
@@ -426,7 +442,7 @@ size_t RexxEntry DCDraw(const char *funcname, size_t argc, CONSTRXSTRING argv[],
        for (a = 0; a < steps; a++)
           for (y = a*stepy, i = 0; i < sy / steps; y+=diff, i++)
              for (x = a*stepx, j = 0; j < sx / steps; x+=diffx, j++)
-                 Rectangle(hdc, x-a*stepx, y-a*stepy, x+stepx+1, y+stepy+1);
+                 Rectangle(hDC, x-a*stepx, y-a*stepy, x+stepx+1, y+stepy+1);
        RETC(0)
    }
    RETERR
@@ -435,7 +451,7 @@ size_t RexxEntry DCDraw(const char *funcname, size_t argc, CONSTRXSTRING argv[],
 
 /* Prepares a DC for drawing (like MoveToEx) and gets info from a DC (like GetPixel) */
 
-size_t RexxEntry DrawGetSet(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
+size_t RexxEntry DrawGetSet(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
    CHECKARGL(2);
 
@@ -444,7 +460,9 @@ size_t RexxEntry DrawGetSet(const char *funcname, size_t argc, CONSTRXSTRING arg
        POINT pnt;
        CHECKARG(4);
 
-       if (MoveToEx((HDC)atol(argv[1].strptr), atoi(argv[2].strptr), atoi(argv[3].strptr), &pnt))
+       HDC hDC = (HDC)GET_HANDLE(argv[1]);
+
+       if (MoveToEx(hDC, atoi(argv[2].strptr), atoi(argv[3].strptr), &pnt))
        {
            sprintf(retstr->strptr, "%d %d", pnt.x, pnt.y);
            retstr->strlength = strlen(retstr->strptr);
@@ -456,15 +474,14 @@ size_t RexxEntry DrawGetSet(const char *funcname, size_t argc, CONSTRXSTRING arg
    if ((argv[0].strptr[0] == 'G') && (argv[0].strptr[1] == 'P'))       /* "GPT" Get the pixel color */
    {
        CHECKARG(4);
-       RETVAL(GetPixel((HDC)atol(argv[1].strptr), atoi(argv[2].strptr), atoi(argv[3].strptr)))
+       HDC hDC = (HDC)GET_HANDLE(argv[1]);
+       RETVAL(GetPixel(hDC, atoi(argv[2].strptr), atoi(argv[3].strptr)))
    }
    else
    if (!strcmp(argv[0].strptr, "COL"))
    {
-       HDC hDC;
-
        CHECKARG(3);
-       hDC = (HDC)atol(argv[1].strptr);
+       HDC hDC = (HDC)GET_HANDLE(argv[1]);
        if (hDC)
        {
           SetTextColor(hDC, PALETTEINDEX(atoi(argv[2].strptr)));
@@ -477,21 +494,24 @@ size_t RexxEntry DrawGetSet(const char *funcname, size_t argc, CONSTRXSTRING arg
    {
        INT bkmode;
        CHECKARG(3);
+       HDC hDC = (HDC)GET_HANDLE(argv[1]);
        if (!strcmp(argv[2].strptr, "TRANSPARENT")) bkmode = TRANSPARENT; else bkmode = OPAQUE;
-       RETVAL(SetBkMode((HDC)atol(argv[1].strptr), bkmode))
+       RETVAL(SetBkMode(hDC, bkmode))
    }
    else
    if (!strcmp(argv[0].strptr,"GAD"))          /* Get arc direction */
    {
-       RETVAL((GetArcDirection((HDC)atol(argv[1].strptr)) == AD_CLOCKWISE))
+       HDC hDC = (HDC)GET_HANDLE(argv[1]);
+       RETVAL((GetArcDirection(hDC) == AD_CLOCKWISE))
    }
    else
    if (!strcmp(argv[0].strptr,"SAD"))          /* Set arc direction */
    {
        INT i;
        CHECKARG(3);
+       HDC hDC = (HDC)GET_HANDLE(argv[1]);
        if (atoi(argv[2].strptr)) i = AD_CLOCKWISE; else i = AD_COUNTERCLOCKWISE;
-       RETVAL(SetArcDirection((HDC)atol(argv[1].strptr), i))
+       RETVAL(SetArcDirection(hDC, i))
    }
    RETERR
 }
@@ -500,7 +520,7 @@ size_t RexxEntry DrawGetSet(const char *funcname, size_t argc, CONSTRXSTRING arg
 
 /* Set the background of the dialog or the color of dialog items */
 
-size_t RexxEntry SetBackground(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
+size_t RexxEntry SetBackground(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
    DEF_ADM;
    HBRUSH hbrush = NULL;
@@ -513,19 +533,19 @@ size_t RexxEntry SetBackground(const char *funcname, size_t argc, CONSTRXSTRING 
 
    if (!strcmp(argv[1].strptr,"BMP"))              /* Set the background bitmap (drawn by the windows procedure) */
    {
-       dlgAdm->BkgBitmap = (HBITMAP) atol(argv[2].strptr);
+       dlgAdm->BkgBitmap = (HBITMAP)GET_HANDLE(argv[2]);
    }
    else
    if (!strcmp(argv[1].strptr,"BRU"))              /* Set the background brush */
    {
-       dlgAdm->BkgBrush = (HBRUSH) atol(argv[2].strptr);
+       dlgAdm->BkgBrush = (HBRUSH)GET_HANDLE(argv[2]);
    }
    else
    if (!strcmp(argv[1].strptr,"COL"))             /* Set the color of dialog items (stored in a table) */
    {
        if (!dlgAdm->ColorTab)
        {
-           dlgAdm->ColorTab = LocalAlloc(LMEM_FIXED, sizeof(COLORTABLEENTRY) * MAX_CT_ENTRIES);
+           dlgAdm->ColorTab = (COLORTABLEENTRY *)LocalAlloc(LMEM_FIXED, sizeof(COLORTABLEENTRY) * MAX_CT_ENTRIES);
            if (!dlgAdm->ColorTab)
            {
                MessageBox(0,"No memory available","Error",MB_OK | MB_ICONHAND);
