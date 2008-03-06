@@ -49,6 +49,9 @@ parser = .FileParser~new(file)
 parser~parse(.stream~new(file)~arrayIn)
 
 
+options = .Directory~new
+options~include.source = .false
+options~hide.private = .true
 
 out = .stdout
 -- write to a file
@@ -61,7 +64,7 @@ out~say(parser~tree~name)
 -- link the style sheet
 out~say('</title><link rel="stylesheet" type="text/css" href="style.css" title="Style"/></head><body>')
 -- print the tree information
-printFile(parser~tree,out)
+printFile(parser~tree,out,options)
 
 -- print the required files
 out~say('<h2>Required Files</h2>')
@@ -98,10 +101,15 @@ out~say('</body></html>')
   use strict arg doc, accu = (.MutableBuffer~new)
   if doc~class \= .string then do
     lines = doc~makearray
+    empty = .true
     do i = 1 to lines~items
       d = lines[i]
-      if d~strip = "" then accu~append('<br/>')
-      else accu~append(" "d)
+      stripped = d~strip
+      if empty , stripped = '' then iterate
+      empty = .false
+      if stripped = "" then accu~append('<br/>')
+      else if i > 1 then accu~append(" "d)
+        else accu~append(d)
     end
     if accu~length > 0 then accu~append('<br/>')
   end
@@ -128,22 +136,62 @@ out~say('</body></html>')
   mb~append("</pre>")
   return mb~string
 
+::ROUTINE getSubClasses
+  use arg tree, class
+  subclasses = .array~new
+  do o over tree~classes
+    if o~subclass = class then subclasses[subClasses~items+1] = o
+  end
+  return subClasses~sort
+
+
+::ROUTINE printClassHierarchy
+  use arg tree, mb = (.MutableBuffer~new('<div class="hierarchy">')), known = (.Set~new), indent = 0
+  classes = tree~classes~makearray~sort
+  do cls over classes
+    if cls~subclass~class = .string then do
+      known~put(cls)
+      mb~append('&nbsp;'~copies(indent)||'<a href="#cls_'cls~name'" class="clsh" id="clsh_'cls~name'">'cls~name||"</a><br/>")
+      call printClassHierarchyInt tree, cls, mb, known, indent + 4 
+    end
+  end
+  do cls over classes~difference(known)
+    .stderr~say('Class' cls~name 'not included in hierarchy!')
+  end
+  mb~append('</div>')
+  return mb~string
+
+::ROUTINE printClassHierarchyInt
+  use arg tree, object, mb, known, indent
+  do cls over getSubClasses(tree, object)
+    known~put(cls)
+    mb~append('&nbsp;'~copies(indent)||'&rarr;'||'<a href="#cls_'cls~name'" class="clsh" id="clsh_'cls~name'">'cls~name||"</a><br/>")
+    call printClassHierarchyInt tree, cls, mb, known, indent + 4 
+  end
+
+
 /**
-* Print a while file.
+* Print a whole file.
 */
 ::ROUTINE printFile
-  use arg tree, out
+  use arg tree, out, options = (.Directory~new)
   -- the file initialization code
   out~say(doc2string(tree~doc))
-  out~say(printCode(tree~source~source))
+  if options~include.source = .true then
+    out~say(printCode(tree~source~source))
   -- get a list of classes
   classes = tree~classes
 
   -- print the link section
   out~say('<h1 class="classes">Classes</h1>')
-  do o over classes~makeArray~sort
-    out~say('<a href="#cls_'o~name'" class="clsi" id="clsi_'o~name'">'o~name||"</a><br/>")
-  end
+--  do o over classes~makeArray~sort
+--    out~say('<a href="#cls_'o~name'" class="clsi" id="clsi_'o~name'">'o~name||"</a><br/>")
+--  end
+
+  -- print the class tree
+
+  out~say(printClassHierarchy(tree))
+
   -- print details
   do o over classes~makeArray~sort
     out~say('<div id="cls_'o~name'"><h2>'o~name"</h2>")
@@ -169,6 +217,17 @@ out~say('</body></html>')
           out~say('Inherit class: '||inherit)
         else
           out~say('Inherit class: <a href="#cls_'inherit~name'">'inherit~name'</a>')
+      end
+    end
+    subClasses = getSubClasses(tree,o)
+    if subClasses~items > 0 then do
+      subClasses = subClasses~sort
+      num = subClasses~items
+      out~say('Direct sub classes: ')
+      do i = 1 to num
+        cls = subClasses[i]
+        out~charout('<a href="#cls_'cls~name'">'cls~name'</a>')
+          if i < num then out~say(', ')
       end
     end
     -- print the constants
@@ -206,9 +265,10 @@ out~say('</body></html>')
       out~say('<table class="srctable table_methods"><thead><tr><td>Name</td><td>Description</td></tr></thead><tfoot><tr><td colspan="2"></td></tr></tfoot>')
       out~say('<tbody>')
       do p over methods
+        if options~hide.private = .true , p~isPrivate then iterate
         out~say('<tr class="method" id="mth_'o~name'_'p~name'">')
         out~say('  <td>'p~name)
-        if .true then do
+        if options~include.source = .true then do
           -- print the source
           source = p~source~source
           if source \= .nil , source~items > 0 & \p~isAbstract then do

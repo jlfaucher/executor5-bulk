@@ -1,4 +1,4 @@
-#!/opt/ooRexx/bin/rexx
+#!/usr/bin/rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
