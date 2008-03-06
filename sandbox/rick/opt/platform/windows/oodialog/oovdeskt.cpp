@@ -43,12 +43,7 @@
 #include "oovutil.h"
 
 
-ULONG REXXENTRY FindTheWindow(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
+size_t RexxEntry FindTheWindow(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 {
    ULONG hW;
 
@@ -72,20 +67,14 @@ ULONG REXXENTRY FindTheWindow(
  * @param hDlg    Handle to the dialog of interest.
  * @param retstr  Rexx string to return the result in.
  */
-static void getCurrentFocus( HWND hDlg, PRXSTRING retstr )
+static void getCurrentFocus( HWND hDlg, PRXSTRING *retstr )
 {
    ULONG hW = (ULONG)SendMessage(hDlg, WM_USER_GETFOCUS, 0,0);
    ltoa(hW, retstr->strptr, 10);
    retstr->strlength = strlen(retstr->strptr);
 }
 
-ULONG REXXENTRY Wnd_Desktop(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
-
+size_t RexxEntry Wnd_Desktop(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 {
    ULONG hW;
 
@@ -346,13 +335,7 @@ ULONG REXXENTRY Wnd_Desktop(
 
 
 
-ULONG REXXENTRY WndShow_Pos(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
-
+size_t RexxEntry WndShow_Pos(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 {
    RECT r;
    ULONG st;

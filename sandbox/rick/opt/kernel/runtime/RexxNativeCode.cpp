@@ -53,7 +53,7 @@
 #include <ctype.h>
 
 
-RexxNativeCode::RexxNativeCode(RexxString *_name, RexxString *_package)
+RexxNativeCode::RexxNativeCode(RexxString *_package, RexxString *_name)
 {
     // and this is the information needed to resolve this again after an
     // image restore

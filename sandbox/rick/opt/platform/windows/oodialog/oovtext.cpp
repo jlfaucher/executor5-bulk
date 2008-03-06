@@ -92,12 +92,7 @@ void DrawFontToDC(HDC hDC, INT x, INT y, CHAR * text, INT size, CHAR * opts, CHA
 }
 
 
-ULONG REXXENTRY WriteText(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
+size_t RexxEntry WriteText(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 {
    HWND w;
    HDC hDC;
@@ -149,12 +144,7 @@ VOID CALLBACK ScrollTimerProc(
 
 
 
-ULONG REXXENTRY ScrollText(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
+size_t RexxEntry ScrollText(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 {
    INT disply;
    PCHAR opts;
@@ -320,12 +310,7 @@ ULONG REXXENTRY ScrollText(
 
 
 
-ULONG REXXENTRY HandleFont(
-  PUCHAR funcname,
-      ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
+size_t RexxEntry HandleFont(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 {
    CHECKARGL(3);
 

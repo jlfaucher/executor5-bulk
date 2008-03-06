@@ -356,13 +356,7 @@ BOOL AddTheMessage(DIALOGADMIN * aDlg, ULONG message, ULONG filt1, ULONG param, 
 
 #define NARG 7
 
-ULONG REXXENTRY AddUserMessage(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
-
+size_t RexxEntry AddUserMessage(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 {
    ULONG n[NARG];
    INT i;
@@ -397,12 +391,7 @@ ULONG REXXENTRY AddUserMessage(
 
 
 
-ULONG REXXENTRY SendWinMsg(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
+size_t RexxEntry SendWinMsg(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 {
     LONG i;
     ULONG n[5];
@@ -512,13 +501,7 @@ ULONG REXXENTRY SendWinMsg(
 
 
 
-ULONG REXXENTRY GetDlgMsg(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
-
+size_t RexxEntry GetDlgMsg(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 {
    BOOL remove = TRUE;
    HWND hDlg = NULL;
@@ -547,13 +530,7 @@ ULONG REXXENTRY GetDlgMsg(
 }
 
 
-ULONG REXXENTRY SetLBTabStops(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
-
+size_t RexxEntry SetLBTabStops(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 {
    ULONG i;
    INT tabs[20];

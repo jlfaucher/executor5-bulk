@@ -94,6 +94,43 @@ static BOOL parseKeyToken(PCHAR, PUINT, PUINT);
 #define COMCTL_ERR_TITLE    "ooDialog - Windows Common Controls Error"
 #define GENERIC_ERR_TITLE   "ooDialog - Error"
 
+class LoopThreadArgs
+{
+    public;
+    const char *resourceId;
+    DIALOGADMIN *dlgAdmin;
+    const char *autoDetect;
+    BOOL *release;           // used for a return value
+};
+
+
+/********************************************************************
+* Function:  string2pointer(string)                                 *
+*                                                                   *
+* Purpose:   Validates and converts an ASCII-Z string from string   *
+*            form to a pointer value.  Returns false if the number  *
+*            is not valid, true if the number was successfully      *
+*            converted.                                             *
+*                                                                   *
+* RC:        true - Good number converted                           *
+*            false - Invalid number supplied.                       *
+*********************************************************************/
+
+void *string2pointer(CONSTRXSTRING *string)
+{
+    void *pointer = 0;
+    sscanf(string->strptr, "0x%p", pointer);
+    return pointer;
+}
+
+
+void pointer2string(PRXSTRING result, void *pointer)
+{
+    sprintf(result->strptr, "0x%p", pointer);
+    result->strlength = strlen(result->strptr);
+}
+
+
 LONG HandleError(PRXSTRING r, CHAR * text)
 {
       HWND hW = NULL;
@@ -226,7 +263,7 @@ LRESULT CALLBACK RexxDlgProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
                 return FALSE;
 
              case WM_USER_CREATECHILD:
-                hW = CreateDialogIndirectParam(MyInstance, (DLGTEMPLATE *) lParam, (HWND) wParam, RexxDlgProc, addressedTo->Use3DControls); /* pass 3D flag to WM_INITDIALOG */
+                hW = CreateDialogIndirectParam(MyInstance, (DLGTEMPLATE *) lParam, (HWND) wParam, (DLGPROC)RexxDlgProc, addressedTo->Use3DControls); /* pass 3D flag to WM_INITDIALOG */
                 ReplyMessage((LRESULT) hW);
                 return (LRESULT) hW;
              case WM_USER_INTERRUPTSCROLL:
@@ -281,56 +318,61 @@ LRESULT CALLBACK RexxDlgProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
 
 
 /* prepare dialog management table for a new dialog entry */
-ULONG REXXENTRY HandleDialogAdmin(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
+size_t RexxEntry HandleDialogAdmin(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 {
-   DIALOGADMIN * current;
-   DEF_ADM;
+    DIALOGADMIN * current;
+    DEF_ADM;
 
-   EnterCriticalSection(&crit_sec);
+    EnterCriticalSection(&crit_sec);
 
-   if (argc == 1)  /* we have to do a dialog admin cleanup */
-   {
-       GET_ADM;
-       if (!dlgAdm)
-       {
+    if (argc == 1)  /* we have to do a dialog admin cleanup */
+    {
+        GET_ADM;
+        if (!dlgAdm)
+        {
             LeaveCriticalSection(&crit_sec);
-            RETVAL(-1)
-       }
+            RETVAL(-1);
+        }
 
-       if (DialogInAdminTable(dlgAdm)) DelDialog(dlgAdm);
-       if (dlgAdm->pMessageQueue) LocalFree((void *)dlgAdm->pMessageQueue);
-       LocalFree(dlgAdm);
-   }
-   else   /* we have to do a new dialog admin allocation */
-   {
-       if (StoredDialogs<MAXDIALOGS)
-       {
-          current = (DIALOGADMIN *) LocalAlloc(LPTR, sizeof(DIALOGADMIN));
-          if (current) current->pMessageQueue = LocalAlloc(LPTR, MAXLENQUEUE);
-          if (!current || !current->pMessageQueue)
-          {
-             MessageBox(0,"Out of system resources","Error",MB_OK | MB_ICONHAND | MB_SYSTEMMODAL);
-             LeaveCriticalSection(&crit_sec);
-             RETC(0)
-          }
-          current->previous = topDlg;
-          current->TableEntry = StoredDialogs;
-          StoredDialogs++;
-          DialogTab[current->TableEntry] = current;
-          LeaveCriticalSection(&crit_sec);
-          RETVAL((ULONG)current)
-       } else
-       {
-          MessageBox(0,"To many aktive Dialogs","Error",MB_OK | MB_ICONHAND | MB_SYSTEMMODAL);
-       }
-   }
-   LeaveCriticalSection(&crit_sec);
-   RETC(0)
+        if (DialogInAdminTable(dlgAdm))
+        {
+            DelDialog(dlgAdm);
+        }
+        if (dlgAdm->pMessageQueue)
+        {
+            LocalFree((void *)dlgAdm->pMessageQueue);
+        }
+        LocalFree(dlgAdm);
+    }
+    else   /* we have to do a new dialog admin allocation */
+    {
+        if (StoredDialogs<MAXDIALOGS)
+        {
+            current = (DIALOGADMIN *) LocalAlloc(LPTR, sizeof(DIALOGADMIN));
+            if (current)
+            {
+                current->pMessageQueue = (char *)LocalAlloc(LPTR, MAXLENQUEUE);
+            }
+            if (!current || !current->pMessageQueue)
+            {
+                MessageBox(0,"Out of system resources","Error",MB_OK | MB_ICONHAND | MB_SYSTEMMODAL);
+                LeaveCriticalSection(&crit_sec);
+                RETC(0);
+            }
+            current->previous = topDlg;
+            current->TableEntry = StoredDialogs;
+            StoredDialogs++;
+            DialogTab[current->TableEntry] = current;
+            LeaveCriticalSection(&crit_sec);
+            RETPTR(current)
+        }
+        else
+        {
+            MessageBox(0,"To many aktive Dialogs","Error",MB_OK | MB_ICONHAND | MB_SYSTEMMODAL);
+        }
+    }
+    LeaveCriticalSection(&crit_sec);
+    RETC(0);
 }
 
 
@@ -533,57 +575,70 @@ INT DelDialog(DIALOGADMIN * aDlg)
 
 
 /* create an asynchronous dialog and run asynchronous message loop */
-DWORD WINAPI WindowLoopThread(LONG * arg)
+DWORD WINAPI WindowLoopThread(void *arg)
 {
-   MSG msg;
-   CHAR buffer[NR_BUFFER];
-   DIALOGADMIN * Dlg;
-   BOOL * release;
-   ULONG ret;
+    MSG msg;
+    CHAR buffer[NR_BUFFER];
+    DIALOGADMIN * Dlg;
+    BOOL * release;
+    ULONG ret;
 
-   Dlg = (DIALOGADMIN*)arg[1];  /*  thread local admin pointer from StartDialog */
-   Dlg->TheDlg = CreateDialogParam( Dlg->TheInstance, MAKEINTRESOURCE(atoi((CHAR *) arg[0])), 0, (DLGPROC) RexxDlgProc, Dlg->Use3DControls);  /* pass 3D flag to WM_INITDIALOG */
-   Dlg->ChildDlg[0] = Dlg->TheDlg;
+    LoopThreadArgs *args = (LoopThreadArgs *)args;
 
-   release = (BOOL *)arg[3];  /* the Release flag is stored as the 4th argument */
-   if (Dlg->TheDlg)
-   {
-      if (arg[2]) rxstrlcpy(buffer, * ((PRXSTRING) arg[2]));
-      else strcpy(buffer, "0");
 
-      if (IsYes(buffer))
-         if (!DataAutodetection(Dlg))
-         {
-            Dlg->TheThread = NULL;
-            return 0;
-         };
+    Dlg = args->dlgAdmin;        /*  thread local admin pointer from StartDialog */
+    Dlg->TheDlg = CreateDialogParam( Dlg->TheInstance, MAKEINTRESOURCE(atoi(args->resourceId)), 0, (DLGPROC) RexxDlgProc, Dlg->Use3DControls);  /* pass 3D flag to WM_INITDIALOG */
+    Dlg->ChildDlg[0] = Dlg->TheDlg;
 
-      *release = TRUE;  /* Release wait in StartDialog  */
-      do
-      {
-         if (GetMessage(&msg,NULL, 0,0)) {
-           if (!IsDialogMessage (Dlg->TheDlg, &msg))
-               DispatchMessage(&msg);
-         }
-      } while (Dlg && DialogInAdminTable(Dlg) && !Dlg->LeaveDialog);
-   } else *release = TRUE;
-   EnterCriticalSection(&crit_sec);
-   if (DialogInAdminTable(Dlg))
-   {
-       ret = DelDialog(Dlg);
-       Dlg->TheThread = NULL;
-   }
-   LeaveCriticalSection(&crit_sec);
-   return ret;
+    release = args->release;   /* the Release flag is stored as the 4th argument */
+    if (Dlg->TheDlg)
+    {
+        if (args->autoDetect)
+        {
+            strcpy(buffer, args->autoDetect);
+        }
+        else
+        {
+            strcpy(buffer, "0");
+        }
+
+        if (IsYes(buffer))
+        {
+            if (!DataAutodetection(Dlg))
+            {
+                Dlg->TheThread = NULL;
+                return 0;
+            };
+        }
+
+        *release = TRUE;  /* Release wait in StartDialog  */
+        do
+        {
+            if (GetMessage(&msg,NULL, 0,0))
+            {
+                if (!IsDialogMessage (Dlg->TheDlg, &msg))
+                {
+                    DispatchMessage(&msg);
+                }
+            }
+        } while (Dlg && DialogInAdminTable(Dlg) && !Dlg->LeaveDialog);
+    }
+    else
+    {
+        *release = TRUE;
+    }
+    EnterCriticalSection(&crit_sec);
+    if (DialogInAdminTable(Dlg))
+    {
+        ret = DelDialog(Dlg);
+        Dlg->TheThread = NULL;
+    }
+    LeaveCriticalSection(&crit_sec);
+    return ret;
 }
 
 
-ULONG REXXENTRY GetDialogFactor(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
+size_t RexxEntry GetDialogFactor(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 {
    ULONG u;
    double x,y;
@@ -605,78 +660,86 @@ ULONG REXXENTRY GetDialogFactor(
 
 
 /* create an asynchronous dialog */
-ULONG REXXENTRY StartDialog(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
+size_t RexxEntry StartDialog(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 {
-   LONG argList[4];
-   ULONG thID;
-   BOOL Release = FALSE;
-   DEF_ADM;
+    ULONG thID;
+    BOOL Release = FALSE;
+    DEF_ADM;
 
-   CHECKARG(7);
-   GET_ADM;
-   if (!dlgAdm) RETERR;
+    CHECKARG(7);
+    GET_ADM;
+    if (!dlgAdm)
+    {
+        RETERR;
+    }
 
-   if ( ! ComCtl32Version && ! InitForCommonControls() )
-       RETC(0)
+    if ( ! ComCtl32Version && ! InitForCommonControls() )
+    {
+        RETC(0);
+    }
 
-   EnterCriticalSection(&crit_sec);
-   if (!InstallNecessaryStuff(dlgAdm, &argv[1], argc-1))
-   {
-      if (dlgAdm)
-      {
-          DelDialog(dlgAdm);
-          if (dlgAdm->pMessageQueue) LocalFree((void *)dlgAdm->pMessageQueue);
-          LocalFree(dlgAdm);
-      }
-      LeaveCriticalSection(&crit_sec);
-      RETC(0)
-   }
+    EnterCriticalSection(&crit_sec);
+    if (!InstallNecessaryStuff(dlgAdm, &argv[1], argc-1))
+    {
+        if (dlgAdm)
+        {
+            DelDialog(dlgAdm);
+            if (dlgAdm->pMessageQueue) LocalFree((void *)dlgAdm->pMessageQueue);
+            LocalFree(dlgAdm);
+        }
+        LeaveCriticalSection(&crit_sec);
+        RETC(0)
+    }
 
-   argList[0] = (LONG) argv[2].strptr;  /* dialog resource id */
-   argList[1] = (LONG) dlgAdm;
-   argList[2] = (LONG) &argv[3];  /* auto detection? */
-   argList[3] = (LONG) &Release;  /* pass along pointer so that variable can be modified */
+    LoopThreadArgs threadArgs;
+    threadArgs.resourceId = argv[2].strptr;
+    threadArgs.dlgAdmin = dlgAdm;
+    threadArgs.autoDetect = argv[3].strptr;
+    threadArgs.release = &Release;
 
-   dlgAdm->TheThread = CreateThread(NULL, 2000, WindowLoopThread, argList, 0, &thID);
+    dlgAdm->TheThread = CreateThread(NULL, 2000, WindowLoopThread, &threadArgs, 0, &thID);
 
-   while ((!Release) && (dlgAdm->TheThread)) {Sleep(1);};  /* wait for dialog start */
-   LeaveCriticalSection(&crit_sec);
+    while ((!Release) && (dlgAdm->TheThread))
+    {
+        Sleep(1);
+    };  /* wait for dialog start */
+    LeaveCriticalSection(&crit_sec);
 
-   if (dlgAdm)
-   {
-       if (dlgAdm->TheDlg)
-       {
-          HICON hBig = NULL;
-          HICON hSmall = NULL;
+    if (dlgAdm)
+    {
+        if (dlgAdm->TheDlg)
+        {
+            HICON hBig = NULL;
+            HICON hSmall = NULL;
 
-          SetThreadPriority(dlgAdm->TheThread, THREAD_PRIORITY_ABOVE_NORMAL);   /* for a faster drawing */
-          dlgAdm->OnTheTop = TRUE;
-          dlgAdm->threadID = thID;
-                                  /* modal flag = yes ? */
-          if (dlgAdm->previous && !IsYes(argv[6].strptr) && IsWindowEnabled(((DIALOGADMIN *)dlgAdm->previous)->TheDlg)) EnableWindow(((DIALOGADMIN *)dlgAdm->previous)->TheDlg, FALSE);
+            SetThreadPriority(dlgAdm->TheThread, THREAD_PRIORITY_ABOVE_NORMAL);   /* for a faster drawing */
+            dlgAdm->OnTheTop = TRUE;
+            dlgAdm->threadID = thID;
+            /* modal flag = yes ? */
+            if (dlgAdm->previous && !IsYes(argv[6].strptr) && IsWindowEnabled(((DIALOGADMIN *)dlgAdm->previous)->TheDlg)) EnableWindow(((DIALOGADMIN *)dlgAdm->previous)->TheDlg, FALSE);
 
-          if ( GetDialogIcons(dlgAdm, atoi(argv[5].strptr), FALSE, &hBig, &hSmall) )
-          {
-              dlgAdm->SysMenuIcon = (HICON)SetClassLong(dlgAdm->TheDlg, GCL_HICON, (LONG)hBig);
-              dlgAdm->TitleBarIcon = (HICON)SetClassLong(dlgAdm->TheDlg, GCL_HICONSM, (LONG)hSmall);
-              dlgAdm->DidChangeIcon = TRUE;
+            if ( GetDialogIcons(dlgAdm, atoi(argv[5].strptr), FALSE, &hBig, &hSmall) )
+            {
+                dlgAdm->SysMenuIcon = (HICON)SetClassLong(dlgAdm->TheDlg, GCL_HICON, (LONG)hBig);
+                dlgAdm->TitleBarIcon = (HICON)SetClassLong(dlgAdm->TheDlg, GCL_HICONSM, (LONG)hSmall);
+                dlgAdm->DidChangeIcon = TRUE;
 
-              SendMessage(dlgAdm->TheDlg, WM_SETICON, ICON_SMALL, (LPARAM)hSmall);
-          }
+                SendMessage(dlgAdm->TheDlg, WM_SETICON, ICON_SMALL, (LPARAM)hSmall);
+            }
 
-          RETVAL((ULONG)dlgAdm->TheDlg)
-       }
-       dlgAdm->OnTheTop = FALSE;
-       if (dlgAdm->previous) ((DIALOGADMIN *)(dlgAdm->previous))->OnTheTop = TRUE;
-       if ((dlgAdm->previous) && !IsWindowEnabled(((DIALOGADMIN *)dlgAdm->previous)->TheDlg))
-          EnableWindow(((DIALOGADMIN *)dlgAdm->previous)->TheDlg, TRUE);
-   }
-   RETC(0)
+            RETPTR(dlgAdm->TheDlg);
+        }
+        dlgAdm->OnTheTop = FALSE;
+        if (dlgAdm->previous)
+        {
+            ((DIALOGADMIN *)(dlgAdm->previous))->OnTheTop = TRUE;
+        }
+        if ((dlgAdm->previous) && !IsWindowEnabled(((DIALOGADMIN *)dlgAdm->previous)->TheDlg))
+        {
+            EnableWindow(((DIALOGADMIN *)dlgAdm->previous)->TheDlg, TRUE);
+        }
+    }
+    RETC(0);
 }
 
 
@@ -709,14 +772,20 @@ BOOL GetDialogIcons(DIALOGADMIN *dlgAdm, INT id, BOOL fromFile, PHANDLE phBig, P
     int cx, cy;
 
     if ( phBig == NULL || phSmall == NULL )
+    {
         return FALSE;
+    }
 
     if ( id < 1 )
+    {
         id = IDI_DLG_DEFAULT;
+    }
 
     /* If one of the reserved IDs, fromFile has to be false. */
     if ( id <= IDI_DLG_MAX_ID )
+    {
         fromFile = FALSE;
+    }
 
     cx = GetSystemMetrics(SM_CXICON);
     cy = GetSystemMetrics(SM_CYICON);
@@ -746,13 +815,17 @@ BOOL GetDialogIcons(DIALOGADMIN *dlgAdm, INT id, BOOL fromFile, PHANDLE phBig, P
         if ( ! *phSmall )
         {
             if ( fromFile )
+            {
                 DestroyIcon(*phBig);
+            }
             *phBig = NULL;
         }
     }
 
     if ( ! *phBig )
+    {
         return FALSE;
+    }
 
     dlgAdm->SharedIcon = !fromFile;
     return TRUE;
@@ -835,12 +908,7 @@ HICON GetIconForID(DIALOGADMIN *dlgAdm, UINT id, BOOL fromFile, int cx, int cy)
  *  Nothing to generalize as of yet ...
  *
  */
-ULONG REXXENTRY WinAPI32Func(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
+size_t RexxEntry WinAPI32Func(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 {
     /* There has to be at least 2 args. */
     CHECKARGL(2);
@@ -1529,12 +1597,7 @@ _declspec(dllexport) LONG __cdecl OODialogCleanup(BOOL Process)
 }
 
 
-ULONG REXXENTRY HandleDlg(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
+size_t RexxEntry HandleDlg(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 {
    DEF_ADM;
 
@@ -1610,17 +1673,7 @@ ULONG REXXENTRY HandleDlg(
 }
 
 
-
-
-
-
-ULONG REXXENTRY DialogMenu(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
-
+size_t RexxEntry DialogMenu(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 {
    HWND hWnd;
    DEF_ADM;
@@ -1735,14 +1788,7 @@ LONG SetRexxStem(CHAR * name, INT id, char * secname, CHAR * data)
 
 
 
-
-ULONG REXXENTRY DumpAdmin(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
-
+size_t RexxEntry DumpAdmin(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 {
    CHAR data[256];
    /* SHVBLOCK shvb; */
@@ -1886,105 +1932,10 @@ ULONG REXXENTRY DumpAdmin(
 
 ****************************************************************************************************/
 
-#define FTS 31
-CHAR * FuncTab[FTS] = {\
-                     "GetDlgMsg", \
-                     "SendWinMsg", \
-                     "HandleDlg",\
-                     "AddUserMessage", \
-                     "GetFileNameWindow",\
-                     "DataTable", \
-                     "HandleDialogAdmin", \
-                     "SetItemData",\
-                     "SetStemData",\
-                     "GetItemData",    \
-                     "GetStemData",    \
-                     "Wnd_Desktop", \
-                     "WndShow_Pos", \
-                     "WinAPI32Func", \
-                     "InfoMessage", \
-                     "ErrorMessage", \
-                     "YesNoMessage", \
-                     "FindTheWindow", \
-                     "StartDialog",\
-                     "WindowRect", \
-                     "GetStdTextSize", \
-                     "SetLBTabStops", \
-                     "BinaryAnd", \
-                     "GetScreenSize", \
-                     "GetSysMetrics", \
-                     "GetDialogFactor", \
-                     "SleepMS", \
-                     "PlaySoundFile", \
-                     "PlaySoundFileInLoop",\
-                     "StopSoundFile",\
-                     "HandleScrollBar" \
-                     };
-
-#define SFTS 19
-CHAR * SpecialFuncTab[SFTS] = {\
-                     "BmpButton", \
-                     "DCDraw", \
-                     "DrawGetSet", \
-                     "DrawTheBitmap", \
-                     "ScrollText", \
-                     "ScrollTheWindow", \
-                     "HandleDC_Obj", \
-                     "SetBackground", \
-                     "LoadRemoveBitmap", \
-                     "WriteText", \
-                     "HandleTreeCtrl", \
-                     "HandleListCtrl", \
-                     "HandleListCtrlEx", \
-                     "HandleControlEx", \
-                     "HandleOtherNewCtrls", \
-                     "DialogMenu", \
-                     "WinTimer", \
-                     "HandleFont", \
-                     "DumpAdmin" \
-                     };
-
-
-#define UFTS 6
-CHAR * UserFuncTab[UFTS] = {\
-                     "UsrAddControl", \
-                     "UsrCreateDialog", \
-                     "UsrDefineDialog", \
-                     "UsrMenu", \
-                     "UsrAddNewCtrl", \
-                     "UsrAddResource", \
-                     };
-
-
-ULONG REXXENTRY RemoveMMFuncs(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
-
+size_t RexxEntry RemoveMMFuncs(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 {
-   INT rc, i;
-   BOOL err = FALSE;
-
-   /* don't remove if there's still an dialog active */
-   if (StoredDialogs) RETC(1)
-
-   for (i=0;i<FTS;i++)
-   {
-      rc = RexxDeregisterFunction(FuncTab[i]);
-      if (rc) err = TRUE;
-   }
-   rc = RexxDeregisterFunction("RemoveMMFuncs");
-   if (rc) err = TRUE;
-   rc = RexxDeregisterFunction("InstMMFuncs");
-   if (rc) err = TRUE;
-
-   if (!err)
-      RETC(0)
-   else
-      RETC(1)
-
+    // this is a nop
+    RETC(0)
 }
 
 /**
@@ -2067,177 +2018,42 @@ BOOL InitForCommonControls(void)
 }
 
 
-ULONG REXXENTRY InstMMFuncs(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
-
+size_t RexxEntry InstMMFuncs(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 {
-   INT rc, i;
-   BOOL err = FALSE;
-   retstr->strlength = 1;
-
-   /* If the common controls are not initialized, don't load. */
-   if ( ! ComCtl32Version && ! InitForCommonControls() )
-      RETC(1)
-
-   rc = RexxRegisterFunctionDll(
-     "RemoveMMFuncs",
-     VISDLL,
-     "RemoveMMFuncs");
-   if ((rc != RXFUNC_OK) && (rc != RXFUNC_DEFINED)) err = TRUE;
-
-   for (i=0;i<FTS;i++)
-   {
-      rc = RexxRegisterFunctionDll(FuncTab[i],VISDLL,FuncTab[i]);
-      if ((rc != RXFUNC_OK) && (rc != RXFUNC_DEFINED)) err = TRUE;
-   }
-
-   if (err)
-      RETC(1)       /* not ok then return 1 so that old CLS files won't run  */
-
+    // this is a nop
    RETVAL(DLLVER)   /* ok, so we return the DLL version */
 }
 
 
 
-ULONG REXXENTRY RemoveExtendedMMFuncs(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
-
+size_t RexxEntry RemoveExtendedMMFuncs(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 {
-   INT rc, i;
-   BOOL err = FALSE;
-
-   if (StoredDialogs) RETC(1)
-
-   for (i=0;i<SFTS;i++)
-   {
-      rc = RexxDeregisterFunction(SpecialFuncTab[i]);
-      if (rc) err = TRUE;
-   }
-   rc = RexxDeregisterFunction("RemoveExtendedMMFuncs");
-   if (rc) err = TRUE;
-   rc = RexxDeregisterFunction("InstExtendedMMFuncs");
-   if (rc) err = TRUE;
-
-   if (!err)
-      RETC(0)    /* OK */
-   else
-      RETC(1)
+    // this is a nop
+    RETC(0)
 }
 
 
 
-
-ULONG REXXENTRY InstExtendedMMFuncs(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
-
+size_t RexxEntry InstExtendedMMFuncs(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 {
-   INT rc, i;
-   BOOL err = FALSE;
-   retstr->strlength = 1;
-
-   /* If the common controls are not initialized, don't load. */
-   if ( ! ComCtl32Version && ! InitForCommonControls() )
-      RETC(1)
-
-   rc = RexxRegisterFunctionDll(
-     "RemoveExtendedMMFuncs",
-     VISDLL,
-     "RemoveExtendedMMFuncs");
-
-   if ((rc != RXFUNC_OK) && (rc != RXFUNC_DEFINED)) err = TRUE;
-
-   for (i=0;i<SFTS;i++)
-   {
-      rc = RexxRegisterFunctionDll(SpecialFuncTab[i],VISDLL,SpecialFuncTab[i]);
-      if ((rc != RXFUNC_OK) && (rc != RXFUNC_DEFINED)) err = TRUE;
-   }
-
-   if (err)
-      RETC(1)
-   else
-      RETC(0)    /* OK */
+    // this is a nop
+    RETC(0)
 }
 
 
 
-ULONG REXXENTRY RemoveUserMMFuncs(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
-
+size_t RexxEntry RemoveUserMMFuncs(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 {
-   INT rc, i;
-   BOOL err = FALSE;
-
-   /* don't remove if there's still an dialog active */
-   if (StoredDialogs) RETC(1)
-
-   for (i=0;i<UFTS;i++)
-   {
-      rc = RexxDeregisterFunction(UserFuncTab[i]);
-      if (rc) err = TRUE;
-   }
-   rc = RexxDeregisterFunction("RemoveUserMMFuncs");
-   if (rc) err = TRUE;
-   rc = RexxDeregisterFunction("InstUserMMFuncs");
-   if (rc) err = TRUE;
-
-   if (!err)
-      RETC(0)
-   else
-      RETC(1)
-
+    // this is a nop
+    RETC(0)
 }
 
 
 
-ULONG REXXENTRY InstUserMMFuncs(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
-
+size_t RexxEntry InstUserMMFuncs(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 {
-   INT rc, i;
-   BOOL err = FALSE;
-   retstr->strlength = 1;
-
-   /* If the common controls are not initialized, don't load. */
-   if ( ! ComCtl32Version && ! InitForCommonControls() )
-      RETC(1)
-
-   rc = RexxRegisterFunctionDll(
-     "RemoveUserMMFuncs",
-     VISDLL,
-     "RemoveUserMMFuncs");
-
-   if ((rc != RXFUNC_OK) && (rc != RXFUNC_DEFINED)) err = TRUE;
-
-   for (i=0;i<UFTS;i++)
-   {
-      rc = RexxRegisterFunctionDll(UserFuncTab[i],VISDLL,UserFuncTab[i]);
-      if ((rc != RXFUNC_OK) && (rc != RXFUNC_DEFINED)) err = TRUE;
-   }
-
-   if (err)
-      RETC(1)
-   else
-      RETC(0)
+    // this is a nop
+    RETC(0)
 }
 
 
@@ -2270,3 +2086,80 @@ BOOL REXXENTRY DllMain(
 #ifdef __cplusplus
 }
 #endif
+
+
+// now build the actual entry list
+RexxRoutineEntry oodialog_functions[] =
+{
+    REXX_CLASSIC_ROUTINE(GetDlgMsg,            GetDlgMsg),
+    REXX_CLASSIC_ROUTINE(SendWinMsg,           SendWinMsg),
+    REXX_CLASSIC_ROUTINE(HandleDlg,            HandleDlg),
+    REXX_CLASSIC_ROUTINE(AddUserMessage,       AddUserMessage),
+    REXX_CLASSIC_ROUTINE(GetFileNameWindow,    GetFileNameWindow),
+    REXX_CLASSIC_ROUTINE(DataTable,            DataTable),
+    REXX_CLASSIC_ROUTINE(HandleDialogAdmin,    HandleDialogAdmin),
+    REXX_CLASSIC_ROUTINE(SetItemData,          SetItemData),
+    REXX_CLASSIC_ROUTINE(SetStemData,          SetStemData),
+    REXX_CLASSIC_ROUTINE(GetItemData,          GetItemData),
+    REXX_CLASSIC_ROUTINE(GetStemData,          GetStemData),
+    REXX_CLASSIC_ROUTINE(Wnd_Desktop,          Wnd_Desktop),
+    REXX_CLASSIC_ROUTINE(WndShow_Pos,          WndShow_Pos),
+    REXX_CLASSIC_ROUTINE(WinAPI32Func,         WinAPI32Func),
+    REXX_CLASSIC_ROUTINE(InfoMessage,          InfoMessage),
+    REXX_CLASSIC_ROUTINE(ErrorMessage,         ErrorMessage),
+    REXX_CLASSIC_ROUTINE(YesNoMessage,         YesNoMessage),
+    REXX_CLASSIC_ROUTINE(FindTheWindow,        FindTheWindow),
+    REXX_CLASSIC_ROUTINE(StartDialog,          StartDialog),
+    REXX_CLASSIC_ROUTINE(WindowRect,           WindowRect),
+    REXX_CLASSIC_ROUTINE(GetStdTextSize,       GetStdTextSize),
+    REXX_CLASSIC_ROUTINE(SetLBTabStops,        SetLBTabStops),
+    REXX_CLASSIC_ROUTINE(BinaryAnd,            BinaryAnd),
+    REXX_CLASSIC_ROUTINE(GetScreenSize,        GetScreenSize),
+    REXX_CLASSIC_ROUTINE(GetSysMetrics,        GetSysMetrics),
+    REXX_CLASSIC_ROUTINE(GetDialogFactor,      GetDialogFactor),
+    REXX_CLASSIC_ROUTINE(SleepMS,              SleepMS),
+    REXX_CLASSIC_ROUTINE(PlaySoundFile,        PlaySoundFile),
+    REXX_CLASSIC_ROUTINE(PlaySoundFileInLoop,  PlaySoundFileInLoop),
+    REXX_CLASSIC_ROUTINE(StopSoundFile,        StopSoundFile),
+    REXX_CLASSIC_ROUTINE(HandleScrollBar,      HandleScrollBar),
+    REXX_CLASSIC_ROUTINE(BmpButton,            BmpButton),
+    REXX_CLASSIC_ROUTINE(DCDraw,               DCDraw),
+    REXX_CLASSIC_ROUTINE(DrawGetSet,           DrawGetSet),
+    REXX_CLASSIC_ROUTINE(DrawTheBitmap,        DrawTheBitmap),
+    REXX_CLASSIC_ROUTINE(ScrollText,           ScrollText),
+    REXX_CLASSIC_ROUTINE(ScrollTheWindow,      ScrollTheWindow),
+    REXX_CLASSIC_ROUTINE(HandleDC_Obj,         HandleDC_Obj),
+    REXX_CLASSIC_ROUTINE(SetBackground,        SetBackground),
+    REXX_CLASSIC_ROUTINE(LoadRemoveBitmap,     LoadRemoveBitmap),
+    REXX_CLASSIC_ROUTINE(WriteText,            WriteText),
+    REXX_CLASSIC_ROUTINE(HandleTreeCtrl,       HandleTreeCtrl),
+    REXX_CLASSIC_ROUTINE(HandleListCtrl,       HandleListCtrl),
+    REXX_CLASSIC_ROUTINE(HandleListCtrlEx,     HandleListCtrlEx),
+    REXX_CLASSIC_ROUTINE(HandleControlEx,      HandleControlEx),
+    REXX_CLASSIC_ROUTINE(HandleOtherNewCtrls,  HandleOtherNewCtrls),
+    REXX_CLASSIC_ROUTINE(DialogMenu,           DialogMenu),
+    REXX_CLASSIC_ROUTINE(WinTimer,             WinTimer),
+    REXX_CLASSIC_ROUTINE(HandleFont,           HandleFont),
+    REXX_CLASSIC_ROUTINE(DumpAdmin,            DumpAdmin),
+    REXX_CLASSIC_ROUTINE(UsrAddControl,        UsrAddControl),
+    REXX_CLASSIC_ROUTINE(UsrCreateDialog,      UsrCreateDialog),
+    REXX_CLASSIC_ROUTINE(UsrDefineDialog,      UsrDefineDialog),
+    REXX_CLASSIC_ROUTINE(UsrMenu,              UsrMenu),
+    REXX_CLASSIC_ROUTINE(UsrAddNewCtrl,        UsrAddNewCtrl),
+    REXX_CLASSIC_ROUTINE(UsrAddResource,       UsrAddResource),
+    REXX_LAST_ROUTINE()
+};
+
+RexxPackageEntry oodialog_package_entry =
+{
+    STANDARD_PACKAGE_HEADER
+    "OODIALOG",                          // name of the package
+    "4.0",                               // package information
+    NULL,                                // no load/unload functions
+    NULL,
+    oodialog_functions,                  // the exported functions
+    NULL                                 // no methods in this package
+};
+
+// package loading stub.
+OOREXX_GET_PACKAGE(oodialog);

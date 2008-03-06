@@ -1129,12 +1129,12 @@ RexxObject *RexxActivation::forward(
         if (superClass == OREF_NULL)       /* no override?                      */
         {
             /* issue the message and return      */
-            target->messageSend(message, _argcount, _arguments, r);
+            target->messageSend(message, _arguments, _argcount, r);
         }
         else
         {
             /* issue the message with override   */
-            target->messageSend(message, _argcount, _arguments, superClass, r);
+            target->messageSend(message, _arguments, _argcount, superClass, r);
         }
         return(RexxObject *)r;
     }
@@ -1159,12 +1159,12 @@ RexxObject *RexxActivation::forward(
         if (superClass == OREF_NULL)       /* no over ride?                     */
         {
             /* issue the simple message          */
-            target->messageSend(message, _argcount, _arguments, r);
+            target->messageSend(message, _arguments, _argcount, r);
         }
         else
         {
             /* use the full override             */
-            target->messageSend(message, _argcount, _arguments, superClass, r);
+            target->messageSend(message, _arguments, _argcount, superClass, r);
         }
         this->result = (RexxObject *)r;    /* save the result value             */
                                            /* already had a reply issued?       */

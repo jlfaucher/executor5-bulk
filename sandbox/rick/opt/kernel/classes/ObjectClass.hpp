@@ -416,16 +416,16 @@ class RexxObject : public RexxInternalObject {
      RexxObject  *pmdict();
      RexxObject  *run(RexxObject **, size_t);
 
-     void         messageSend(RexxString *, size_t, RexxObject **, ProtectedObject &);
-     void         messageSend(RexxString *, size_t, RexxObject **, RexxObject *, ProtectedObject &);
+     void         messageSend(RexxString *, RexxObject **, size_t, ProtectedObject &);
+     void         messageSend(RexxString *, RexxObject **, size_t, RexxObject *, ProtectedObject &);
      RexxMethod  *checkPrivate(RexxMethod *);
-     void         processUnknown(RexxString *, size_t, RexxObject **, ProtectedObject &);
-     void         processProtectedMethod(RexxString *, RexxMethod *, size_t, RexxObject **, ProtectedObject &);
+     void         processUnknown(RexxString *, RexxObject **, size_t, ProtectedObject &);
+     void         processProtectedMethod(RexxString *, RexxMethod *, RexxObject **, size_t, ProtectedObject &);
      void         sendMessage(RexxString *, RexxArray *, ProtectedObject &);
      inline void  sendMessage(RexxString *message, ProtectedObject &result) { this->messageSend(message, 0, OREF_NULL, result); };
-     inline void  sendMessage(RexxString *message, RexxObject **args, size_t argCount, ProtectedObject &result) { this->messageSend(message, argCount, args, result); };
+     inline void  sendMessage(RexxString *message, RexxObject **args, size_t argCount, ProtectedObject &result) { this->messageSend(message, args, argCount, result); };
      inline void  sendMessage(RexxString *message, RexxObject *argument1, ProtectedObject &result)
-         { this->messageSend(message, 1, &argument1, result); }
+         { this->messageSend(message, &argument1, 1, result); }
      void         sendMessage(RexxString *, RexxObject *, RexxObject *, ProtectedObject &);
      void         sendMessage(RexxString *, RexxObject *, RexxObject *, RexxObject *, ProtectedObject &);
      void         sendMessage(RexxString *, RexxObject *, RexxObject *, RexxObject *, RexxObject *, ProtectedObject &);

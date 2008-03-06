@@ -292,7 +292,7 @@ void RexxNativeActivation::processArguments(size_t argcount, RexxObject **arglis
                     // all of these arguments exist
                     descriptors[outputIndex].flags = ARGUMENT_EXISTS;
                     RexxObject *argument = arglist[inputIndex];    /* get the next argument             */
-                    switch (*currentType)
+                    switch (type)
                     {               /* process this type                 */
 
                         case REXX_VALUE_RexxObjectPtr:  /* arbitrary object reference        */

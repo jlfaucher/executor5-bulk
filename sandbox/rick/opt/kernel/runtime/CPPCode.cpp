@@ -101,12 +101,12 @@ RexxObject *CPPCode::unflatten(RexxEnvelope *envelope)
  * @param receiver The receiver object.
  * @param messageName
  *                 The name used to invoke the message.
- * @param count    The argument count.
  * @param argPtr   The actual arguments.
+ * @param count    The argument count.
  * @param result   The returned result.
  */
 void CPPCode::run(RexxActivity *activity, RexxMethod *method, RexxObject *receiver, RexxString *messageName,
-    size_t count, RexxObject **argPtr, ProtectedObject &result)
+    RexxObject **argPtr, size_t count, ProtectedObject &result)
 {
     PCPPM methodEntry = this->cppEntry;  /* get the entry point               */
                                        /* expecting an array?               */

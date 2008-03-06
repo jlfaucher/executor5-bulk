@@ -174,7 +174,7 @@ RexxObjectPtr RexxEntry SendSuperMessage(RexxMethodContext *c, CSTRING n, RexxAr
         RexxString *message = new_string(n);
         RexxArray *args = (RexxArray *)a;
         ProtectedObject result;
-        self->messageSend(message, args->size(), args->data(), super, result);
+        self->messageSend(message, args->data(), args->size(), super, result);
         return context.ret((RexxObject *)result);
     }
     catch (ActivityException)
@@ -193,7 +193,7 @@ RexxObjectPtr RexxEntry SendOverrideMessage(RexxMethodContext *c, CSTRING n, Rex
         RexxString *message = new_string(n);
         RexxArray *args = (RexxArray *)a;
         ProtectedObject result;
-        self->messageSend(message, args->size(), args->data(), super, result);
+        self->messageSend(message, args->data(), args->size(), super, result);
         return context.ret((RexxObject *)result);
     }
     catch (ActivityException)

@@ -70,13 +70,7 @@ BOOL IsNo(CHAR * s)
    return ( s && (*s == 'N' || *s == 'n') );
 }
 
-ULONG REXXENTRY InfoMessage(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
-
+size_t RexxEntry InfoMessage(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 {
    HWND hW;
 
@@ -88,13 +82,7 @@ ULONG REXXENTRY InfoMessage(
 }
 
 
-ULONG REXXENTRY ErrorMessage(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
-
+size_t RexxEntry ErrorMessage(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 {
    HWND hW;
 
@@ -105,12 +93,7 @@ ULONG REXXENTRY ErrorMessage(
    RETC(0)
 }
 
-ULONG REXXENTRY YesNoMessage(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
+size_t RexxEntry YesNoMessage(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 {
    HWND hW;
    UINT uType = MB_YESNO | MB_ICONQUESTION | MB_SETFOREGROUND | MB_TASKMODAL;
@@ -148,14 +131,7 @@ ULONG REXXENTRY YesNoMessage(
 }
 
 
-
-ULONG REXXENTRY BinaryAnd(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
-
+size_t RexxEntry BinaryAnd(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 {
    ULONG n, m;
 

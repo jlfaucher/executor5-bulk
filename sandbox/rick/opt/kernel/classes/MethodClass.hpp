@@ -62,7 +62,7 @@ class PackageClass;
 class BaseCode : public RexxInternalObject
 {
 public:
-    virtual void run(RexxActivity *, RexxMethod *, RexxObject *, RexxString *,  size_t, RexxObject **, ProtectedObject &);
+    virtual void run(RexxActivity *, RexxMethod *, RexxObject *, RexxString *,  RexxObject **, size_t, ProtectedObject &);
     virtual void call(RexxActivity *, RoutineClass *, RexxString *,  RexxObject **, size_t, RexxString *, RexxString *, int, ProtectedObject &);
     virtual void call(RexxActivity *, RoutineClass *, RexxString *,  RexxObject **, size_t, ProtectedObject &);
     virtual RexxArray *getSource();
@@ -115,7 +115,7 @@ protected:
   void liveGeneral(int reason);
   void flatten(RexxEnvelope*);
 
-  void          run(RexxActivity *,  RexxObject *, RexxString *,  size_t, RexxObject **, ProtectedObject &);
+  void         run(RexxActivity *,  RexxObject *, RexxString *,  RexxObject **, size_t, ProtectedObject &);
   RexxMethod  *newScope(RexxClass  *);
   void         setScope(RexxClass  *);
   RexxSmartBuffer  *saveMethod();

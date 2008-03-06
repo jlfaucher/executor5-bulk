@@ -316,8 +316,8 @@ void RexxMethod::run(
     RexxActivity *activity,            /* activity running under            */
     RexxObject *receiver,              /* object receiving the message      */
     RexxString *msgname,               /* message to be run                 */
-    size_t count,                      /* count of arguments                */
     RexxObject **argPtr,               /* arguments to the method           */
+    size_t count,                      /* count of arguments                */
     ProtectedObject &result)           // the returned result
 /******************************************************************************/
 /* Function:  Run a method on an object                                       */
@@ -327,7 +327,7 @@ void RexxMethod::run(
     // save this as the most recently executed method
     ActivityManager::currentActivity->setLastMethod(msgname, this);
     // just forward this to the code object
-    code->run(activity, this, receiver, msgname, count, argPtr, result);
+    code->run(activity, this, receiver, msgname, argPtr, count, result);
 }
 
 
@@ -694,7 +694,7 @@ RexxMethod *RexxMethod::restore(
  * @param arguments The argument pointer.
  * @param result    The returned result.
  */
-void BaseCode::run(RexxActivity *activity, RexxMethod *method, RexxObject *receiver, RexxString *msgname, size_t argCount, RexxObject **arguments, ProtectedObject &result)
+void BaseCode::run(RexxActivity *activity, RexxMethod *method, RexxObject *receiver, RexxString *msgname, RexxObject **arguments, size_t argCount, ProtectedObject &result)
 {
     // The subcasses decide which of run and call are allowed
     reportException(Error_Interpretation);

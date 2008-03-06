@@ -411,12 +411,7 @@ BOOL DrawBackgroundBmp(DIALOGADMIN * addr, HWND hDlg, WPARAM wParam, LPARAM lPar
 
 /* handle the bitmap buttons that are stored in the bitmap table */
 
-ULONG REXXENTRY BmpButton(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
+size_t RexxEntry BmpButton(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 {
    DEF_ADM;
 
@@ -714,12 +709,7 @@ ULONG REXXENTRY BmpButton(
 
 
 
-ULONG REXXENTRY LoadRemoveBitmap(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
+size_t RexxEntry LoadRemoveBitmap(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 {
    HBITMAP hBmp;
    void * p;
@@ -754,12 +744,7 @@ ULONG REXXENTRY LoadRemoveBitmap(
 
 
 
-ULONG REXXENTRY ScrollTheWindow(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
+size_t RexxEntry ScrollTheWindow(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 {
    HWND w;
    RECT r, rs;

@@ -57,7 +57,7 @@ public:
     void liveGeneral(int reason);
     RexxObject *unflatten(RexxEnvelope *envelope);
 
-    void run(RexxActivity *, RexxMethod *, RexxObject *, RexxString *,  size_t, RexxObject **, ProtectedObject &);
+    void run(RexxActivity *, RexxMethod *, RexxObject *, RexxString *, RexxObject **, size_t, ProtectedObject &);
 
     static CPPCode *resolveExportedMethod(PCPPM targetMethod, size_t argcount);
     // The table of exported methods.

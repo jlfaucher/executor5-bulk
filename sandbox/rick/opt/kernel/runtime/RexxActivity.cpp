@@ -208,6 +208,21 @@ void RexxActivity::exitCurrentThread()
     releaseAccess();
 }
 
+/**
+ * Enter the current thread for an API call.
+ */
+void RexxActivity::enterCurrentThread()
+{
+    /* Activity already existed for this */
+    /* get kernel semophore in activity  */
+    requestAccess();
+    activate();        // let the activity know it's in use, potentially nested
+    // belt-and-braces.  Make sure the current activity is explicitly set to
+    // this activity before leaving.
+    ActivityManager::currentActivity = this;
+
+}
+
 
 void *RexxActivity::operator new(size_t size)
 /******************************************************************************/
@@ -1495,6 +1510,11 @@ void RexxActivity::addToInstance(InterpreterInstance *interpreter)
 {
     // we're associated with this instance
     instance = interpreter;
+    // create a thread context that we can hand out when needed.
+    threadContext.threadContext.instance = instance->getInstanceContext();
+    threadContext.threadContext.functions = &threadContextFunctions;
+    threadContext.owningActivity = this;
+
     // copy all of the system exits
     for (int i = 0; i < LAST_EXIT; i++)
     {

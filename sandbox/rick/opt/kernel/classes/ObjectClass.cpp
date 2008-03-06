@@ -623,7 +623,7 @@ void RexxObject::sendMessage(
 /* Function:  Issue a using a set of arguments already in an array item       */
 /******************************************************************************/
 {
-    this->messageSend(message, arguments->size(), arguments->data(), result);
+    this->messageSend(message, arguments->data(), arguments->size(), result);
 }
 
 void RexxObject::sendMessage(
@@ -640,7 +640,7 @@ void RexxObject::sendMessage(
   arguments[0] = argument1;            /* set each argument                 */
   arguments[1] = argument2;
                                        /* just pass on to message send      */
-  this->messageSend(message, 2, arguments, result);
+  this->messageSend(message, arguments, 2, result);
 }
 
 void RexxObject::sendMessage(
@@ -659,7 +659,7 @@ void RexxObject::sendMessage(
   arguments[1] = argument2;
   arguments[2] = argument3;
                                        /* just pass on to message send      */
-  this->messageSend(message, 3, arguments, result);
+  this->messageSend(message, arguments, 3, result);
 }
 
 void RexxObject::sendMessage(
@@ -680,7 +680,7 @@ void RexxObject::sendMessage(
   arguments[2] = argument3;
   arguments[3] = argument4;
                                        /* just pass on to message send      */
-  this->messageSend(message, 4, arguments, result);
+  this->messageSend(message, arguments, 4, result);
 }
 
 void RexxObject::sendMessage(
@@ -703,13 +703,13 @@ void RexxObject::sendMessage(
   arguments[3] = argument4;
   arguments[4] = argument5;
                                        /* just pass on to message send      */
-  this->messageSend(message, 5, arguments, result);
+  this->messageSend(message, arguments, 5, result);
 }
 
 void RexxObject::messageSend(
     RexxString      *msgname,          /* name of the message to process    */
-    size_t           count,            /* count of arguments                */
     RexxObject     **arguments,        /* array of arguments                */
+    size_t           count,            /* count of arguments                */
     ProtectedObject &result)           // returned result
 /******************************************************************************/
 /* Function:    send a message (with message lookup) to an object.            */
@@ -731,26 +731,26 @@ void RexxObject::messageSend(
         if (method_save != OREF_NULL && method_save->isProtected())
         {
             /* really a protected method         */
-            this->processProtectedMethod(msgname, method_save, count, arguments, result);
+            this->processProtectedMethod(msgname, method_save, arguments, count, result);
             return;
         }
     }
     /* have a method                     */
     if (method_save != OREF_NULL)
     {
-        method_save->run(ActivityManager::currentActivity, this, msgname, count, arguments, result);
+        method_save->run(ActivityManager::currentActivity, this, msgname, arguments, count, result);
     }
     else
     {
         /* go process an unknown method      */
-        this->processUnknown(msgname, count, arguments, result);
+        this->processUnknown(msgname, arguments, count, result);
     }
 }
 
 void RexxObject::messageSend(
     RexxString      *msgname,          /* name of the message to process    */
-    size_t           count,            /* count of arguments                */
     RexxObject     **arguments,        /* array of arguments                */
+    size_t           count,            /* count of arguments                */
     RexxObject      *startscope,       /* starting superclass scope         */
     ProtectedObject &result)           // returned result
 /******************************************************************************/
@@ -770,7 +770,7 @@ void RexxObject::messageSend(
         /* go validate a private method      */
         else                               /* really a protected method         */
         {
-            this->processProtectedMethod(msgname, method_save, count, arguments, result);
+            this->processProtectedMethod(msgname, method_save, arguments, count, result);
             return;
         }
     }
@@ -778,20 +778,20 @@ void RexxObject::messageSend(
     if (method_save != OREF_NULL)
     {
         /* run the method                    */
-        method_save->run(ActivityManager::currentActivity, this, msgname, count, arguments, result);
+        method_save->run(ActivityManager::currentActivity, this, msgname, arguments, count, result);
     }
     else
     {
         /* go process an unknown method      */
-        this->processUnknown(msgname, count, arguments, result);
+        this->processUnknown(msgname, arguments, count, result);
     }
 }
 
 void RexxObject::processProtectedMethod(
     RexxString   * messageName,        /* message to issue                  */
     RexxMethod   * targetMethod,       // the method to run
-    size_t         count,              /* count of arguments                */
     RexxObject  ** arguments,          /* actual message arguments          */
+    size_t         count,              /* count of arguments                */
     ProtectedObject &result)           // returned result
 /******************************************************************************/
 /* Function:  Process an unknown message, uncluding looking for an UNKNOWN    */
@@ -806,13 +806,13 @@ void RexxObject::processProtectedMethod(
         return;
     }
     /* run the method                    */
-    targetMethod->run(ActivityManager::currentActivity, this, messageName, count, arguments, result);
+    targetMethod->run(ActivityManager::currentActivity, this, messageName, arguments, count, result);
 }
 
 void RexxObject::processUnknown(
     RexxString   * messageName,        /* message to issue                  */
-    size_t         count,              /* count of arguments                */
     RexxObject  ** arguments,          /* actual message arguments          */
+    size_t         count,              /* count of arguments                */
     ProtectedObject &result)           // returned result
 /******************************************************************************/
 /* Function:  Process an unknown message, uncluding looking for an UNKNOWN    */
@@ -841,7 +841,7 @@ void RexxObject::processUnknown(
                                          /* second argument is array of       */
     unknown_arguments[1] = argumentArray;/* arguments for the original call   */
                                          /* run the unknown method            */
-    method_save->run(ActivityManager::currentActivity, this, OREF_UNKNOWN, 2, unknown_arguments, result);
+    method_save->run(ActivityManager::currentActivity, this, OREF_UNKNOWN, unknown_arguments, 2, result);
 }
 
 RexxMethod * RexxObject::methodLookup(
@@ -1791,7 +1791,7 @@ RexxObject  *RexxObject::run(
     }
     ProtectedObject result;
     /* now just run the method....       */
-    methobj->run(ActivityManager::currentActivity, this, OREF_NONE, argcount, argumentPtr, result);
+    methobj->run(ActivityManager::currentActivity, this, OREF_NONE, argumentPtr, argcount, result);
     return (RexxObject *)result;
 }
 
@@ -2105,7 +2105,7 @@ RexxObject *RexxInternalObject::clone()
 {\
   ProtectedObject result;              /* returned result                   */\
                                        /* do a real message send            */\
-  this->messageSend(OREF_##message, 1, &operand, result);                      \
+  this->messageSend(OREF_##message, &operand, 1, result);                      \
   if (result == OREF_NULL)             /* in an expression and need a result*/ \
                                        /* need to raise an exception        */ \
     reportException(Error_No_result_object_message, OREF_##message); \
@@ -2118,7 +2118,7 @@ RexxObject *RexxInternalObject::clone()
 {\
   ProtectedObject result;              /* returned result                   */\
                                        /* do a real message send            */\
-  this->messageSend(OREF_##message, operand == OREF_NULL ? 0 : 1, &operand, result); \
+  this->messageSend(OREF_##message, &operand, operand == OREF_NULL ? 0 : 1, result); \
   if (result == OREF_NULL)             /* in an expression and need a result*/ \
                                        /* need to raise an exception        */ \
     reportException(Error_No_result_object_message, OREF_##message); \

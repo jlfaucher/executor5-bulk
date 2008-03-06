@@ -645,21 +645,24 @@ void StreamInfo::resetFields()
     fileInfo.reset();
     stream_line_size = 0;
     binaryRecordLength = 0;
-    read_only = 0;
-    write_only = 0;
-    read_write = 1;  /* try for read/write                */
-    stdstream = 0;
-    append = 0;
+    read_only = false;
+    write_only = false;
+    read_write = true;  /* try for read/write                */
+    stdstream = false;
+    append = false;
+    opened_as_handle = false;
     charReadPosition = 1;
     charWritePosition = 1;
     lineReadPosition = 1;
     lineWritePosition = 1;
     lineReadCharPosition = 1;
     lineWriteCharPosition = 1;
-    nobuffer = 0;
-    last_op_was_read = 1;
+    nobuffer = false;
+    last_op_was_read = true;
     transient = false;
     record_based = false;
+    isopen = false;
+    defaultResult = NULL;
 }
 
 
@@ -3237,14 +3240,13 @@ RexxMethod1(RexxStringObject, stream_description, CSELF, streamPtr)
  */
 StreamInfo::StreamInfo(RexxObjectPtr s, const char *inputName)
 {
-   self = s;
+    self = s;
 
-   // initialize the default values
-   resetFields();
-   strncpy(stream_name, inputName, SysFileSystem::MaximumPathLength);
-   // this stream is in an unknown state now.
-   state = StreamUnknown;
-
+    // initialize the default values
+    resetFields();
+    strncpy(stream_name, inputName, SysFileSystem::MaximumPathLength);
+    // this stream is in an unknown state now.
+    state = StreamUnknown;
 }
 
 /********************************************************************************************/

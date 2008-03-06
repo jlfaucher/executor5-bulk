@@ -808,13 +808,8 @@ RexxActivity *ActivityManager::getActivity()
         // this is an error....not sure how to handle this.
         return OREF_NULL;
     }
-                                       /* Activity already existed for this */
-                                       /* get kernel semophore in activity  */
-    activityObject->requestAccess();
-    activityObject->activate();        // let the activity know it's in use, potentially nested
-    // belt-and-braces.  Make sure the current activity is explicitly set to
-    // this activity before leaving.
-    currentActivity = activityObject;
+    // go acquire the kernel lock and take care of nesting
+    activityObject->enterCurrentThread();
     return activityObject;             // Return the activity for thread
 }
 

@@ -256,6 +256,7 @@ public:
    SecurityManager *getEffectiveSecurityManager();
    SecurityManager *getInstanceSecurityManager();
    void inheritSettings(RexxActivity *parent);
+   void enterCurrentThread();
    void exitCurrentThread();
    void run(ActivityDispatcher &target);
    void run(CallbackDispatcher &target);

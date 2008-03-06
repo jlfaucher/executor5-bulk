@@ -292,11 +292,11 @@ RexxObject *RexxMessage::send(RexxObject *_receiver)
     if (this->startscope != TheNilObject)/* have a starting scope?            */
     {
         /* send it with an override          */
-        this->receiver->messageSend(this->message, this->args->size(), (RexxObject **)this->args->data(), this->startscope, p);
+        this->receiver->messageSend(this->message, (RexxObject **)this->args->data(), this->args->size(), this->startscope, p);
     }
     else                                 /* no over ride                      */
     {
-        this->receiver->messageSend(this->message, this->args->size(), (RexxObject **)this->args->data(), p);
+        this->receiver->messageSend(this->message, (RexxObject **)this->args->data(), this->args->size(), p);
     }
     this->resultObject = (RexxObject *)p;
     this->setResultReturned();           /* Indicate we have a result.        */

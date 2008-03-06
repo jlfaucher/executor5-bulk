@@ -581,7 +581,7 @@ RexxObject *RexxDirectory::at(
             RexxObject *arg = _index;
             ProtectedObject v;
             /* run it                            */
-            this->unknown_method->run(ActivityManager::currentActivity, this, OREF_UNKNOWN, 1, (RexxObject **)&arg, v);
+            this->unknown_method->run(ActivityManager::currentActivity, this, OREF_UNKNOWN, (RexxObject **)&arg, 1, v);
             return(RexxObject *)v;
         }
     }

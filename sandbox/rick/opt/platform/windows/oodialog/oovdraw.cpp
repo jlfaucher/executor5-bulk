@@ -78,12 +78,7 @@ BOOL DrawButton(DIALOGADMIN * aDlg, INT id)
 
 /* Get information about window rectangle, redraw and clear a rectangle */
 
-ULONG REXXENTRY WindowRect(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
+size_t RexxEntry WindowRect(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 {
    HWND w;
    RECT r;
@@ -223,12 +218,7 @@ ULONG REXXENTRY WindowRect(
 
 /* Get and free a device, create pen and brush objects (no font), assign and delete graphic objects */
 
-ULONG REXXENTRY HandleDC_Obj(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
+size_t RexxEntry HandleCD_Obj(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 {
    HDC hDC;
    HWND w;
@@ -339,12 +329,7 @@ ULONG REXXENTRY HandleDC_Obj(
 /* handle all the drawing like SetPixel, LineTo,.... */
 
 
-ULONG REXXENTRY DCDraw(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
+size_t RexxEntry DCDraw(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 {
    CHECKARGL(4);
 
@@ -450,12 +435,7 @@ ULONG REXXENTRY DCDraw(
 
 /* Prepares a DC for drawing (like MoveToEx) and gets info from a DC (like GetPixel) */
 
-ULONG REXXENTRY DrawGetSet(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
+size_t RexxEntry DrawGetSet(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 {
    CHECKARGL(2);
 
@@ -520,12 +500,7 @@ ULONG REXXENTRY DrawGetSet(
 
 /* Set the background of the dialog or the color of dialog items */
 
-ULONG REXXENTRY SetBackground(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
+size_t RexxEntry SetBackground(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 {
    DEF_ADM;
    HBRUSH hbrush = NULL;

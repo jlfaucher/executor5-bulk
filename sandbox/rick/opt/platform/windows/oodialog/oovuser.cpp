@@ -100,12 +100,7 @@ int nCopyAnsiToWideChar (LPWORD lpWCStr, LPSTR lpAnsiIn)
 
 
 
-ULONG REXXENTRY GetStdTextSize(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
+size_t RexxEntry GetStdTextSize(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 {
    HDC hDC;
    SIZE s;
@@ -174,12 +169,7 @@ ULONG REXXENTRY GetStdTextSize(
 }
 
 
-ULONG REXXENTRY GetScreenSize(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
+size_t RexxEntry GetScreenSize(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 {
    ULONG sx, sy;
    ULONG bux, buy;
@@ -196,12 +186,7 @@ ULONG REXXENTRY GetScreenSize(
 }
 
 
-ULONG REXXENTRY GetSysMetrics(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
+size_t RexxEntry GetSysMetrics(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 {
     ULONG uVal;
 
@@ -294,12 +279,7 @@ void UCreateDlg(WORD ** ppTemplate, WORD **p, INT NrItems, INT x, INT y, INT cx,
 
 
 
-ULONG REXXENTRY UsrDefineDialog(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
+size_t RexxEntry UsrDefineDialog(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 {
 
    INT buffer[5];
@@ -398,12 +378,7 @@ DWORD WINAPI WindowUsrLoopThread(LONG * arg)
 
 
 
-ULONG REXXENTRY UsrCreateDialog(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
+size_t RexxEntry UsrCreateDialog(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 {
    LONG argList[4];
    DLGTEMPLATE * p;
@@ -614,15 +589,7 @@ void UAddNamedControl(WORD **p, CHAR * className, INT id, INT x, INT y, INT cx, 
 }
 
 
-
-
-
-ULONG REXXENTRY UsrAddControl(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
+size_t RexxEntry UsrAddControl(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 {
    INT buffer[6];
    ULONG lStyle;
@@ -908,12 +875,7 @@ LONG EvaluateListStyle(CHAR * styledesc)
 /* Store a resource in a resource table.  Currently this is only icon resources,
  * but this function could be expanded to include other resources.
  */
-ULONG REXXENTRY UsrAddResource(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
+size_t RexxEntry UsrAddResource(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 {
     DIALOGADMIN * dlgAdm = NULL;
     ULONG iconID;
@@ -984,12 +946,7 @@ ULONG REXXENTRY UsrAddResource(
     RETC(0)
 }
 
-ULONG REXXENTRY UsrAddNewCtrl(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
+size_t RexxEntry UsrAddNewCtrl(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 {
    INT buffer[6];
    ULONG lStyle;
@@ -1183,12 +1140,7 @@ BOOL IsNestedDialogMessage(
 
 
 
-ULONG REXXENTRY UsrMenu(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
+size_t RexxEntry UsrMenu(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 {
    INT i;
    WORD *p, *pTemplate;

@@ -66,13 +66,7 @@ static ULONG SetStyle(HWND, LONG, PRXSTRING);
 static void freeSubclassData(SUBCLASSDATA *);
 static BOOL removeKeyPressSubclass(SUBCLASSDATA *, HWND, INT);
 
-ULONG REXXENTRY PlaySoundFile(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
-
+size_t RexxEntry PlaySoundFile(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 {
    UINT opts;
 
@@ -90,13 +84,7 @@ ULONG REXXENTRY PlaySoundFile(
 }
 
 
-ULONG REXXENTRY PlaySoundFileInLoop(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
-
+size_t RexxEntry PlaySoundFileInLoop(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 {
    UINT opts;
 
@@ -111,13 +99,7 @@ ULONG REXXENTRY PlaySoundFileInLoop(
 }
 
 
-ULONG REXXENTRY StopSoundFile(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
-
+size_t RexxEntry StopSoundFile(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 {
    UINT opts;
 
@@ -130,12 +112,7 @@ ULONG REXXENTRY StopSoundFile(
 }
 
 
-UINT REXXENTRY OFNSetForegroundHookProc(
-    HWND hdlg,    // handle to child dialog window
-    UINT uiMsg,    // message identifier
-    WPARAM wParam,    // message parameter
-    LPARAM lParam     // message parameter
-)
+size_t RexxEntry OFNSetForegroundHookProc(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 {
     if (uiMsg == WM_INITDIALOG)
     {
@@ -207,13 +184,7 @@ BOOL OpenFileDlg( BOOL load, PCHAR szFile, PCHAR szInitialDir, PCHAR szFilter, H
 
 #define VALIDARG(argn) (argc >= argn) && argv[argn-1].strptr && argv[argn-1].strptr[0]
 
-ULONG REXXENTRY GetFileNameWindow(
-    PUCHAR funcname,
-    ULONG argc,
-    RXSTRING argv[],
-    PUCHAR qname,
-    PRXSTRING retstr )
-
+size_t RexxEntry GetFileNameWindow(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 {
     BOOL    fSuccess;
     CHAR *  title;
@@ -280,13 +251,7 @@ ULONG REXXENTRY GetFileNameWindow(
 }
 
 
-ULONG REXXENTRY PlaySnd(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
-
+size_t RexxEntry PlaySnd(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 {
    UINT opts;
    DEF_ADM;
@@ -309,13 +274,7 @@ ULONG REXXENTRY PlaySnd(
 }
 
 
-ULONG REXXENTRY SleepMS(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
-
+size_t RexxEntry SleepMS(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 {
    CHECKARG(1);
 
@@ -324,13 +283,7 @@ ULONG REXXENTRY SleepMS(
 }
 
 
-ULONG REXXENTRY WinTimer(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
-
+size_t RexxEntry WinTimer(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 {
    UINT timer;
    MSG msg;
@@ -528,12 +481,7 @@ static BOOL removeKeyPressSubclass(SUBCLASSDATA *pData, HWND hDlg, INT id)
 }
 
 
-ULONG REXXENTRY HandleTreeCtrl(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
+size_t RexxEntry HandleTreeCtrl(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 {
    HWND h;
 
@@ -879,7 +827,7 @@ ULONG REXXENTRY HandleTreeCtrl(
  *
  *         The function itself always returns 0.
  */
-static ULONG SetStyle(HWND hwnd, LONG lStyle, PRXSTRING retstr)
+static ULONG SetStyle(HWND hwnd, LONG lStyle, PRXSTRING *retstr)
 {
     LONG lErr;
 
@@ -910,7 +858,7 @@ static ULONG SetStyle(HWND hwnd, LONG lStyle, PRXSTRING retstr)
  * Take an edit control's window flags and construct a Rexx string that
  * represents the control's style.
  */
-ULONG EditStyleToString(LONG lStyle, PRXSTRING retstr)
+ULONG EditStyleToString(LONG lStyle, PRXSTRING *retstr)
 {
     if ( lStyle & WS_VISIBLE ) strcpy(retstr->strptr, "VISIBLE");
     else strcpy(retstr->strptr, "HIDDEN");
@@ -1018,7 +966,7 @@ DWORD ParseExtendedListStyle(CHAR * style)
 /**
  * Produce a string representation of a List-View's extended styles.
  */
-DWORD ListExtendedStyleToString(HWND hList, PRXSTRING retstr)
+DWORD ListExtendedStyleToString(HWND hList, PRXSTRING *retstr)
 {
     DWORD dwStyle = ListView_GetExtendedListViewStyle(hList);
     retstr->strptr[0] = '\0';
@@ -1081,12 +1029,7 @@ DWORD ListExtendedStyleToString(HWND hList, PRXSTRING retstr)
  *     1 the Windows API call failed
  *  >  1 dependent on the function, usually a returned value not a return code
  */
-ULONG REXXENTRY HandleControlEx(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
+size_t RexxEntry HandleControlEx(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 {
     HWND hDlg;
     HWND hCtrl;
@@ -1461,12 +1404,7 @@ ULONG REXXENTRY HandleControlEx(
  *     1 the Windows API call failed
  *  >  1 dependent on the function, usually a returned value not a return code
  */
-ULONG REXXENTRY HandleListCtrlEx(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
+size_t RexxEntry HandleListCtrlEx(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 {
     HWND hList;
 
@@ -1585,12 +1523,7 @@ ULONG REXXENTRY HandleListCtrlEx(
 }
 
 
-ULONG REXXENTRY HandleListCtrl(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
+size_t RexxEntry HandleListCtrl(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 {
    HWND h;
 
@@ -2105,12 +2038,7 @@ ULONG REXXENTRY HandleListCtrl(
 
 
 
-ULONG REXXENTRY HandleOtherNewCtrls(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
+size_t RexxEntry HandleOtherNewCtrls(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 {
    HWND h;
 

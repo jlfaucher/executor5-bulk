@@ -75,7 +75,7 @@
 class SysFile
 {
 public:
-    inline SysFile() : fileHandle(-1) {;}
+    SysFile();
 
     enum
     {

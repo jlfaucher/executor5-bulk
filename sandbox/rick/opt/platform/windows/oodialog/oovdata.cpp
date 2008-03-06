@@ -363,12 +363,7 @@ BOOL SetTabCtrlData(HWND hW, char * ldat, INT item)
 }
 
 
-ULONG REXXENTRY GetItemData(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
+size_t RexxEntry GetItemData(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 
 {
    CHAR data[DATA_BUFFER];
@@ -468,12 +463,7 @@ ULONG REXXENTRY GetItemData(
 
 
 
-ULONG REXXENTRY SetItemData(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
+size_t RexxEntry SetItemData(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 
 {
    PCHAR data;
@@ -551,13 +541,7 @@ ULONG REXXENTRY SetItemData(
 
 
 
-ULONG REXXENTRY SetStemData(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
-
+size_t RexxEntry SetStemData(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 {
    INT i,j, c, rc;
    CHAR data[DATA_BUFFER];
@@ -649,13 +633,7 @@ ULONG REXXENTRY SetStemData(
 
 
 
-ULONG REXXENTRY GetStemData(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
-
+size_t RexxEntry GetStemData(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 {
    INT i,j, c;
    CHAR data[DATA_BUFFER];
@@ -746,12 +724,7 @@ ULONG REXXENTRY GetStemData(
 }
 
 
-ULONG REXXENTRY DataTable(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
+size_t RexxEntry DataTable(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 {
    DEF_ADM;
 

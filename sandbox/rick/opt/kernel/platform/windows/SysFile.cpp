@@ -48,6 +48,33 @@
 #include <time.h>
 #include <conio.h>
 
+/**
+ * Default constructor for a SysFile object.
+ */
+SysFile::SysFile()
+{
+    fileHandle = -1;
+    errInfo = 0;
+    openedHandle = false;
+    flags = 0;
+    mode = 0;
+    share = 0;
+    filename = NULL;
+    buffered = true;
+    transient = false;
+    device = false;
+    writeable = false;
+    readable = false;
+    isTTY = false;
+    buffer = NULL;
+    bufferSize = 0;
+    bufferPosition = 0;
+    bufferedInput = 0;
+    append = true;
+    filePointer = 0;
+    ungetchar = 0;
+}
+
 
 /**
  * Opens a file.  This opens the file for both lowlevel I/O

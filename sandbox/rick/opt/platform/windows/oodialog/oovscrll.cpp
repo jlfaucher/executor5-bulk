@@ -44,12 +44,7 @@
 #include <limits.h>
 
 
-ULONG REXXENTRY HandleScrollBar(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
+size_t RexxEntry HandleScrollBar(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, RXSTRING *retstr)
 {
    HWND w;
 

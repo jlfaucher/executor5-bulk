@@ -150,6 +150,12 @@ extern DWORD ComCtl32Version;
                    return 0; \
                 }
 
+
+#define RETPTR(retvalue)  { \
+                   pointer2string(retstr, (void *)retvalue); \
+                   return 0; \
+                }
+
 /* macros for searching and checking the bitmap table */
 #define SEARCHBMP(addr, ndx, id) \
    {                     \
@@ -226,8 +232,11 @@ extern DWORD ComCtl32Version;
        while ((i<StoredDialogs) && (DialogTab[i]->TheDlg != hDlg) && (DialogTab[i]->AktChild != hDlg)) i++; \
        if (i<StoredDialogs) addressedTo = DialogTab[i]; else addressedTo = NULL;   } \
 
+void *string2pointer(CONSTRXSTRING *string);
+void pointer2string(PRXSTRING result, void *pointer);
+
 #define DEF_ADM     DIALOGADMIN * dlgAdm = NULL
-#define GET_ADM     dlgAdm = (DIALOGADMIN *)atol(argv[0].strptr)
+#define GET_ADM     dlgAdm = (DIALOGADMIN *)string2pointer(&argv[0])
 
 /* structures to manage the dialogs */
 typedef struct {

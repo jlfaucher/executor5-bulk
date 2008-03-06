@@ -65,7 +65,8 @@ public:
     {
         activity = contextToActivity(c);
         context = activity->getApiContext();
-        activity->activate();
+        // go acquire the kernel lock and take care of nesting
+        activity->enterCurrentThread();
     }
 
     /**
@@ -77,7 +78,8 @@ public:
     {
         activity = contextToActivity(c);
         context = contextToActivation(c);
-        activity->activate();
+        // go acquire the kernel lock and take care of nesting
+        activity->enterCurrentThread();
     }
 
     /**
@@ -89,7 +91,8 @@ public:
     {
         activity = contextToActivity(c);
         context = contextToActivation(c);
-        activity->activate();
+        // go acquire the kernel lock and take care of nesting
+        activity->enterCurrentThread();
     }
 
     /**
@@ -101,7 +104,8 @@ public:
     {
         activity = contextToActivity(c);
         context = contextToActivation(c);
-        activity->activate();
+        // go acquire the kernel lock and take care of nesting
+        activity->enterCurrentThread();
     }
 
     /**
@@ -110,7 +114,7 @@ public:
      */
     inline ~ApiContext()
     {
-        activity->deactivate();
+        activity->exitCurrentThread();
     }
 
     inline RexxObjectPtr ret(RexxObject *o)

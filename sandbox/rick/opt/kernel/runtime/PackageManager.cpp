@@ -91,7 +91,7 @@ RexxArray *PackageManager::getImageData()
     imageArray->put(packages, IMAGE_PACKAGES);
     imageArray->put(packageRoutines, IMAGE_PACKAGE_ROUTINES);
     imageArray->put(registeredRoutines, IMAGE_REGISTERED_ROUTINES);
-    imageArray->put(loadedRequires, IMAGE_REGISTERED_ROUTINES);
+    imageArray->put(loadedRequires, IMAGE_REQUIRES);
 
     return imageArray;
 }

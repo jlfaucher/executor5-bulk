@@ -52,7 +52,7 @@ class RexxNativeCode : public BaseCode
   public:
 
    inline RexxNativeCode() { }
-   RexxNativeCode(RexxString *, RexxString *);
+   RexxNativeCode(RexxString *p, RexxString *n);
    void        live(size_t);
    void        liveGeneral(int reason);
    void        flatten(RexxEnvelope *envelope);
