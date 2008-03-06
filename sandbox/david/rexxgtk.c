@@ -352,6 +352,9 @@ APIRET APIENTRY GrxLoadFuncs(char * Name,
         "GrxTextBufferSetText",
         "GrxTextBufferGetText",
         "GrxTextBufferInsertText",
+        "GrxTextBufferCutClipboard",
+        "GrxTextBufferCopyClipboard",
+        "GrxTextBufferPasteClipboard",
         "GrxTextBufferConnectSignal",
 
         //Scrolled window functions
@@ -452,6 +455,9 @@ APIRET APIENTRY GrxLoadFuncs(char * Name,
         "GrxFileFilterNew",
         "GrxFileFilterSetName",
         "GrxFileFilterAddPattern",
+
+        // Clipboard
+        "GrxClipboardGet",
 
         // Event box functions (not used)
         "GrxEventBoxNew",

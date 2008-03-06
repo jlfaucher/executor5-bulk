@@ -228,6 +228,107 @@ APIRET APIENTRY GrxTextBufferGetText(const char * Name,
 
 
 /*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxTextBufferCutClipboard                          */
+/* Description: Cut text to the clipboard                                     */
+/* Rexx Args:   Pointer to the buffer                                         */
+/*              Clipboard                                                     */
+/*              Editable flag                                                 */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxTextBufferCutClipboard(const char * Name,
+                                       const size_t Argc, const RXSTRING Argv[],
+                                       const char * Queuename, PRXSTRING Retstr)
+{
+    GtkTextBuffer       *myBuffer;
+    GtkClipboard        *cb;
+    gboolean            flag; 
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(3, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    sscanf(Argv[0].strptr, "%p", &myBuffer);
+    sscanf(Argv[1].strptr, "%p", &cb);
+    sscanf(Argv[2].strptr, "%p", &flag);
+
+    gtk_text_buffer_cut_clipboard(myBuffer, cb, flag);
+
+    /* Set up the REXX return code */
+    *(Retstr->strptr) = '0';
+    Retstr->strlength = 1;
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxTextBufferCopyClipboard                         */
+/* Description: Copy text to the clipboard                                    */
+/* Rexx Args:   Pointer to the buffer                                         */
+/*              Clipboard                                                     */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxTextBufferCopyClipboard(const char * Name,
+                                       const size_t Argc, const RXSTRING Argv[],
+                                       const char * Queuename, PRXSTRING Retstr)
+{
+    GtkTextBuffer       *myBuffer;
+    GtkClipboard        *cb;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(2, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    sscanf(Argv[0].strptr, "%p", &myBuffer);
+    sscanf(Argv[1].strptr, "%p", &cb);
+
+    gtk_text_buffer_copy_clipboard(myBuffer, cb);
+
+    /* Set up the REXX return code */
+    *(Retstr->strptr) = '0';
+    Retstr->strlength = 1;
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxTextBufferPasteClipboard                        */
+/* Description: Paste text from the clipboard                                 */
+/* Rexx Args:   Pointer to the buffer                                         */
+/*              Clipboard                                                     */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxTextBufferPasteClipboard(const char * Name,
+                                       const size_t Argc, const RXSTRING Argv[],
+                                       const char * Queuename, PRXSTRING Retstr)
+{
+    GtkTextBuffer       *myBuffer;
+    GtkClipboard        *cb;
+    gboolean            flag; 
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(3, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    sscanf(Argv[0].strptr, "%p", &myBuffer);
+    sscanf(Argv[1].strptr, "%p", &cb);
+    sscanf(Argv[2].strptr, "%p", &flag);
+
+    gtk_text_buffer_paste_clipboard(myBuffer, cb, NULL, flag);
+
+    /* Set up the REXX return code */
+    *(Retstr->strptr) = '0';
+    Retstr->strlength = 1;
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
 /* Rexx External Function: GrxTextBufferonnectSignal                          */
 /* Description: Connect a signal function to the Widget                       */
 /* Rexx Args:   Pointer to the widget                                         */

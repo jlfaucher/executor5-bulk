@@ -2891,6 +2891,24 @@ use strict arg text
 call GrxTextBufferInsertText pointer, text
 return
 
+::method cut_clipboard
+expose pointer
+use strict arg cb, flag
+call GrxTextBufferCutClipboard pointer, cb~pointer, flag
+return
+
+::method copy_clipboard
+expose pointer
+use strict arg cb
+call GrxTextBufferCopyClipboard pointer, cb~pointer
+return
+
+::method paste_clipboard
+expose pointer
+use strict arg cb, flag
+call GrxTextBufferPasteClipboard pointer, cb~pointer, flag
+return
+
 ::method signal_connect
 use strict arg event
 select
@@ -3231,6 +3249,27 @@ expose pointer
 use strict arg pattern
 call GrxFileFilterAddPattern pointer, pattern
 return
+
+
+/*============================================================================*/
+/* Class: GtkClipboard                                                        */
+/*============================================================================*/
+
+::class GtkClipboard public
+
+::method get class
+use strict arg selection
+return self~new(selection)
+
+::method init
+expose pointer
+use strict arg selection
+pointer = GrxClipboardGet(selection)
+return
+
+::method pointer
+expose pointer
+return pointer
 
 
 
