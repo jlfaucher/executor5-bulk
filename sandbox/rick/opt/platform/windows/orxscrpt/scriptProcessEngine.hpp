@@ -35,23 +35,23 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-/* convert REXX code to be included into C/C++ source */
-parse arg in " " out " " variable
+#ifndef ScriptProcessEngine_Included
+#define ScriptProcessEngine_Included
 
-input = .stream~new(in)
-input~open("READ")
-output = .stream~new(out)
-output~open("WRITE REPLACE")
+#include "oorexxapi.h"
 
-output~lineout('// warning! this file is generated!')
-output~lineout('// modify the source' in 'ONLY!')
-output~lineout('OLECHAR' variable'[]=')
-do input~lines
-  line = input~linein
-  line = line~changestr('\','\\')
-  line = line~changestr('"','\"')
-  output~lineout('L"'line'\n"')
-end
-output~lineout('L" ";')
-input~close
-output~close
+class Index;
+
+class ScriptProcessEngine
+{
+public:
+
+protected:
+    static CRITICAL_SECTION engineSection;     // critical section used for interlocks
+    static HANDLE engineMutex;                 // our process synchronization semaphore
+    static DWORD  engineThreadLocal;           // the slot allocated for registering engine instances with threads
+    static Index  *thread2EngineList;          // Our thread2Engine mapping list
+    static RexxInstance *intpreter;            // the Rexx interpreter instance
+};
+
+#endif

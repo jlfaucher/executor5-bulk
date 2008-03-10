@@ -56,7 +56,7 @@ RexxArrayObject RexxEntry GetMethodArguments(RexxMethodContext *c)
     {
         return (RexxArrayObject)context.context->getArguments();
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return NULLOBJECT;
@@ -69,7 +69,7 @@ RexxObjectPtr RexxEntry GetMethodArgument(RexxMethodContext *c, stringsize_t i)
     {
         return (RexxObjectPtr)context.context->getArgument(i);
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return NULLOBJECT;
@@ -80,9 +80,9 @@ RexxMethodObject RexxEntry GetCurrentMethod(RexxMethodContext *c)
     ApiContext context(c);
     try
     {
-        return (RexxMethodObject)context.context->getMethod();
+        return (RexxMethodObject)context.context->getExecutable();
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return NULL;
@@ -95,7 +95,7 @@ CSTRING RexxEntry GetMessageName(RexxMethodContext *c)
     {
         return (CSTRING)context.context->getMessageName();
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return NULL;
@@ -108,7 +108,7 @@ RexxObjectPtr RexxEntry GetSelf(RexxMethodContext *c)
     {
         return (RexxObjectPtr)context.context->getSelf();
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return NULLOBJECT;
@@ -121,7 +121,7 @@ RexxClassObject RexxEntry GetSuper(RexxMethodContext *c)
     {
         return (RexxClassObject)context.context->getSuper();
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return NULLOBJECT;
@@ -134,7 +134,7 @@ void RexxEntry SetObjectVariable(RexxMethodContext *c, CSTRING n, RexxObjectPtr 
     {
         context.context->setObjectVariable(n, (RexxObject *)v);
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
 }
@@ -146,7 +146,7 @@ RexxObjectPtr RexxEntry GetObjectVariable(RexxMethodContext *c, CSTRING n)
     {
         return (RexxObjectPtr)context.context->getObjectVariable(n);
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return NULLOBJECT;
@@ -159,7 +159,7 @@ void RexxEntry DropObjectVariable(RexxMethodContext *c, CSTRING n)
     {
         context.context->dropObjectVariable(n);
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
 }
@@ -177,7 +177,7 @@ RexxObjectPtr RexxEntry SendSuperMessage(RexxMethodContext *c, CSTRING n, RexxAr
         self->messageSend(message, args->data(), args->size(), super, result);
         return context.ret((RexxObject *)result);
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return NULLOBJECT;
@@ -196,7 +196,7 @@ RexxObjectPtr RexxEntry SendOverrideMessage(RexxMethodContext *c, CSTRING n, Rex
         self->messageSend(message, args->data(), args->size(), super, result);
         return context.ret((RexxObject *)result);
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return NULLOBJECT;
@@ -209,7 +209,7 @@ void RexxEntry SetGuardOn(RexxMethodContext *c)
     {
         context.context->guardOn();
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
 }
@@ -221,7 +221,7 @@ void RexxEntry SetGuardOff(RexxMethodContext *c)
     {
         context.context->guardOff();
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
 }
@@ -235,7 +235,7 @@ RexxClassObject RexxEntry FindContextClass(RexxMethodContext *c, CSTRING n)
         RexxString *name = new_upper_string(n);
         return (RexxClassObject)context.ret(context.context->findClass(name));
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return NULLOBJECT;

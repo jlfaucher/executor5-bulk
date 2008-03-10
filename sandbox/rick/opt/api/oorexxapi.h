@@ -508,13 +508,19 @@ typedef struct
     RexxClassObject  (RexxEntry *FindClass)(RexxThreadContext *, CSTRING);
     RexxClassObject  (RexxEntry *FindPackageClass)(RexxThreadContext *, RexxPackageObject, CSTRING);
     RexxDirectoryObject (RexxEntry *GetPackageRoutines)(RexxThreadContext *, RexxPackageObject);
-    RexxDirectoryObject (RexxEntry *GetPackageClasses)(RexxThreadContext *, RexxPackageObject);
+    RexxDirectoryObject (RexxEntry *GetPackagePublicRoutines)(RexxThreadContext *, RexxPackageObject);
+    RexxDirectoryObject (RexxEntry *GetPackagePublicClasses)(RexxThreadContext *, RexxPackageObject);
     RexxDirectoryObject (RexxEntry *GetPackageMethods)(RexxThreadContext *, RexxPackageObject);
     RexxObjectPtr    (RexxEntry *CallRoutine)(RexxThreadContext *, RexxRoutineObject, RexxArrayObject);
     RexxObjectPtr    (RexxEntry *CallProgram)(RexxThreadContext *, CSTRING, RexxArrayObject);
 
     RexxMethodObject (RexxEntry *NewMethod)(RexxThreadContext *, CSTRING, CSTRING, size_t);
     RexxRoutineObject (RexxEntry *NewRoutine)(RexxThreadContext *, CSTRING, CSTRING, size_t);
+    logical_t         (RexxEntry *IsRoutine)(RexxThreadContext *, RexxObjectPtr);
+    logical_t         (RexxEntry *IsMethod)(RexxThreadContext *, RexxObjectPtr);
+    RexxPackageObject (RexxEntry *GetRoutinePackage)(RexxThreadContext *, RexxRoutineObject);
+    RexxPackageObject (RexxEntry *GetMethodPackage)(RexxThreadContext *, RexxMethodObject);
+
     RexxBufferObject  (RexxEntry *SaveRoutine)(RexxThreadContext *, RexxRoutineObject);
 
     RexxObjectPtr    (RexxEntry *NewObject)(RexxThreadContext *);
@@ -655,14 +661,15 @@ typedef struct
 
     RexxArrayObject  (RexxEntry *GetArguments)(RexxCallContext *);
     RexxObjectPtr    (RexxEntry *GetArgument)(RexxCallContext *, size_t);
+    RexxRoutineObject (RexxEntry *GetRoutine)(RexxCallContext *);
     void             (RexxEntry *SetContextVariable)(RexxCallContext *, CSTRING, RexxObjectPtr);
     RexxObjectPtr    (RexxEntry *GetContextVariable)(RexxCallContext *, CSTRING);
     void             (RexxEntry *DropContextVariable)(RexxCallContext *, CSTRING);
     RexxSupplierObject (RexxEntry *GetAllContextVariables)(RexxCallContext *);
     RexxStemObject   (RexxEntry *ResolveStemVariable)(RexxCallContext *, RexxObjectPtr);
     void             (RexxEntry *InvalidRoutine)(RexxCallContext *);
-    wholenumber_t       (RexxEntry *GetContextDigits)(RexxCallContext *);
-    wholenumber_t       (RexxEntry *GetContextFuzz)(RexxCallContext *);
+    wholenumber_t    (RexxEntry *GetContextDigits)(RexxCallContext *);
+    wholenumber_t    (RexxEntry *GetContextFuzz)(RexxCallContext *);
     logical_t        (RexxEntry *GetContextForm)(RexxCallContext *);
 } CallContextInterface;
 
@@ -675,6 +682,8 @@ typedef struct
     RexxObjectPtr    (RexxEntry *GetContextVariable)(RexxExitContext *, CSTRING);
     void             (RexxEntry *DropContextVariable)(RexxExitContext *, CSTRING);
     RexxSupplierObject (RexxEntry *GetAllContextVariables)(RexxExitContext *);
+    RexxObjectPtr    (RexxEntry *GetExitContext)(RexxExitContext *);
+    RexxPackageObject  (RexxEntry *GetExitContextPackage)(RexxExitContext *);
 } ExitContextInterface;
 
 END_EXTERN_C()
@@ -804,13 +813,39 @@ struct RexxThreadContext_
     {
         return functions->NewRoutine(this, n, s, l);
     }
+    logical_t IsRoutine(RexxObjectPtr o)
+    {
+        return functions->IsRoutine(this, o);
+    }
+    logical_t IsMethod(RexxObjectPtr o)
+    {
+        return functions->IsMethod(this, o);
+    }
+    RexxPackageObject GetRoutinePackage(RexxRoutineObject o)
+    {
+        return functions->GetRoutinePackage(this, o);
+    }
+    RexxPackageObject GetMethodPackage(RexxMethodObject o)
+    {
+        return functions->GetMethodPackage(this, o);
+    }
+
+
     RexxDirectoryObject GetPackageRoutines(RexxPackageObject m)
     {
         return functions->GetPackageRoutines(this, m);
     }
+    RexxDirectoryObject GetPackagePublicRoutines(RexxPackageObject m)
+    {
+        return functions->GetPackagePublicRoutines(this, m);
+    }
     RexxDirectoryObject GetPackageClasses(RexxPackageObject m)
     {
         return functions->GetPackageClasses(this, m);
+    }
+    RexxDirectoryObject GetPackagePublicClasses(RexxPackageObject m)
+    {
+        return functions->GetPackagePublicClasses(this, m);
     }
     RexxDirectoryObject GetPackageMethods(RexxPackageObject m)
     {
@@ -1284,13 +1319,38 @@ struct RexxMethodContext_
     {
         return threadContext->NewRoutine(n, s, l);
     }
+    logical_t IsRoutine(RexxObjectPtr o)
+    {
+        return threadContext->IsRoutine(o);
+    }
+    logical_t IsMethod(RexxObjectPtr o)
+    {
+        return threadContext->IsMethod(o);
+    }
+    RexxPackageObject GetRoutinePackage(RexxRoutineObject o)
+    {
+        return threadContext->GetRoutinePackage(o);
+    }
+    RexxPackageObject GetMethodPackage(RexxMethodObject o)
+    {
+        return threadContext->GetMethodPackage(o);
+    }
+
     RexxDirectoryObject GetPackageRoutines(RexxPackageObject m)
     {
         return threadContext->GetPackageRoutines(m);
     }
+    RexxDirectoryObject GetPackagePublicRoutines(RexxPackageObject m)
+    {
+        return threadContext->GetPackagePublicRoutines(m);
+    }
     RexxDirectoryObject GetPackageClasses(RexxPackageObject m)
     {
         return threadContext->GetPackageClasses(m);
+    }
+    RexxDirectoryObject GetPackagePublicClasses(RexxPackageObject m)
+    {
+        return threadContext->GetPackagePublicClasses(m);
     }
     RexxDirectoryObject GetPackageMethods(RexxPackageObject m)
     {
@@ -1819,14 +1879,38 @@ struct RexxCallContext_
     {
         return threadContext->NewRoutine(n, s, l);
     }
+    logical_t IsRoutine(RexxObjectPtr o)
+    {
+        return threadContext->IsRoutine(o);
+    }
+    logical_t IsMethod(RexxObjectPtr o)
+    {
+        return threadContext->IsMethod(o);
+    }
+    RexxPackageObject GetRoutinePackage(RexxRoutineObject o)
+    {
+        return threadContext->GetRoutinePackage(o);
+    }
+    RexxPackageObject GetMethodPackage(RexxMethodObject o)
+    {
+        return threadContext->GetMethodPackage(o);
+    }
 
     RexxDirectoryObject GetPackageRoutines(RexxPackageObject m)
     {
         return threadContext->GetPackageRoutines(m);
     }
+    RexxDirectoryObject GetPackagePublicRoutines(RexxPackageObject m)
+    {
+        return threadContext->GetPackagePublicRoutines(m);
+    }
     RexxDirectoryObject GetPackageClasses(RexxPackageObject m)
     {
         return threadContext->GetPackageClasses(m);
+    }
+    RexxDirectoryObject GetPackagePublicClasses(RexxPackageObject m)
+    {
+        return threadContext->GetPackagePublicClasses(m);
     }
     RexxDirectoryObject GetPackageMethods(RexxPackageObject m)
     {
@@ -2224,6 +2308,10 @@ struct RexxCallContext_
     {
         return functions->GetArgument(this, n);
     }
+    RexxRoutineObject GetRoutine()
+    {
+        return functions->GetRoutine(this);
+    }
     void SetContextVariable(CSTRING s, RexxObjectPtr o)
     {
         functions->SetContextVariable(this, s, o);
@@ -2344,13 +2432,38 @@ struct RexxExitContext_
     {
         return threadContext->NewRoutine(n, s, l);
     }
+    logical_t IsRoutine(RexxObjectPtr o)
+    {
+        return threadContext->IsRoutine(o);
+    }
+    logical_t IsMethod(RexxObjectPtr o)
+    {
+        return threadContext->IsMethod(o);
+    }
+    RexxPackageObject GetRoutinePackage(RexxRoutineObject o)
+    {
+        return threadContext->GetRoutinePackage(o);
+    }
+    RexxPackageObject GetMethodPackage(RexxMethodObject o)
+    {
+        return threadContext->GetMethodPackage(o);
+    }
+
     RexxDirectoryObject GetPackageRoutines(RexxPackageObject m)
     {
         return threadContext->GetPackageRoutines(m);
     }
+    RexxDirectoryObject GetPackagePublicRoutines(RexxPackageObject m)
+    {
+        return threadContext->GetPackagePublicRoutines(m);
+    }
     RexxDirectoryObject GetPackageClasses(RexxPackageObject m)
     {
         return threadContext->GetPackageClasses(m);
+    }
+    RexxDirectoryObject GetPackagePublicClasses(RexxPackageObject m)
+    {
+        return threadContext->GetPackagePublicClasses(m);
     }
     RexxDirectoryObject GetPackageMethods(RexxPackageObject m)
     {
@@ -2755,6 +2868,15 @@ struct RexxExitContext_
     {
         return functions->GetAllContextVariables(this);
     }
+    RexxObjectPtr GetExitContext()
+    {
+        return functions->GetExitContext(this);
+    }
+    RexxPackageObject GetExitContextPackage()
+    {
+        return functions->GetExitContextPackage(this);
+    }
+
 #endif
 };
 

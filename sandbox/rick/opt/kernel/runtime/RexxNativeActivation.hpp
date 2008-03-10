@@ -111,7 +111,6 @@ class RexxNativeActivation : public RexxActivationBase
   inline void   termination() { this->guardOff();}
 
   inline char        getVpavailable()   {return this->vpavailable;}
-  inline RexxMethod *getMethod()        {return this->method;}
   inline RexxString *getMessageName()   {return this->msgname;}
   inline size_t      nextVariable()     {return this->nextvariable;}
   inline RexxStem   *nextStem()         {return this->nextstem;}
@@ -137,6 +136,8 @@ class RexxNativeActivation : public RexxActivationBase
   inline RexxActivity *getActivity() { return activity; }
   virtual bool isStackBase();
   virtual RexxActivation *getRexxContext();
+  BaseExecutable *getRexxContextExecutable();
+  virtual RexxActivation *findRexxContext();
   virtual NumericSettings *getNumericSettings();
   virtual RexxObject *getReceiver();
   virtual SecurityManager *getSecurityManager();
@@ -179,8 +180,6 @@ protected:
     } ActivationType;
 
     RexxActivity   *activity;            /* current activity                  */
-    RexxMethod     *method;              /* Method to run                     */
-    RoutineClass   *routine;             /* Routine to run                    */
     RexxNativeCode *code;                // the code object controlling the target
     RexxObject     *receiver;            // the object receiving the message
     RexxString     *msgname;             /* name of the message running       */
@@ -202,5 +201,6 @@ protected:
     bool            vpavailable;         /* Variable pool access flag         */
     int             object_scope;        /* reserve/release state of variables*/
     bool            stackBase;           // this is a stack base marker
+    bool            reraising;           // we're reraising an exception, don't trap
 };
 #endif

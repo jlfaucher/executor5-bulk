@@ -96,30 +96,30 @@ void RexxNativeActivation::live(size_t liveMark)
 /* Function:  Normal garbage collection live marking                          */
 /******************************************************************************/
 {
-  memory_mark(this->argArray);
-  memory_mark(this->receiver);
-  memory_mark(this->method);
-  memory_mark(this->routine);
-  memory_mark(this->activity);
-  memory_mark(this->activation);
-  memory_mark(this->msgname);
-  memory_mark(this->savelist);
-  memory_mark(this->result);
-  memory_mark(this->nextstem);
-  memory_mark(this->compoundelement);
-  memory_mark(this->nextcurrent);
-  memory_mark(this->objectVariables);
-  memory_mark(this->conditionObj);
-  memory_mark(this->securityManager);
+    memory_mark(this->previous);
+    memory_mark(this->executable);
+    memory_mark(this->argArray);
+    memory_mark(this->receiver);
+    memory_mark(this->activity);
+    memory_mark(this->activation);
+    memory_mark(this->msgname);
+    memory_mark(this->savelist);
+    memory_mark(this->result);
+    memory_mark(this->nextstem);
+    memory_mark(this->compoundelement);
+    memory_mark(this->nextcurrent);
+    memory_mark(this->objectVariables);
+    memory_mark(this->conditionObj);
+    memory_mark(this->securityManager);
 
-  /* We're hold a pointer back to our arguments directly where they */
-  /* are created.  Since in some places, this argument list comes */
-  /* from the C stack, we need to handle the marker ourselves. */
-  size_t i;
-  for (i = 0; i < argcount; i++)
-  {
-      memory_mark(arglist[i]);
-  }
+    /* We're hold a pointer back to our arguments directly where they */
+    /* are created.  Since in some places, this argument list comes */
+    /* from the C stack, we need to handle the marker ourselves. */
+    size_t i;
+    for (i = 0; i < argcount; i++)
+    {
+        memory_mark(arglist[i]);
+    }
 }
 
 void RexxNativeActivation::liveGeneral(int reason)
@@ -127,30 +127,30 @@ void RexxNativeActivation::liveGeneral(int reason)
 /* Function:  Generalized object marking                                      */
 /******************************************************************************/
 {
-  memory_mark_general(this->argArray);
-  memory_mark_general(this->receiver);
-  memory_mark_general(this->method);
-  memory_mark_general(this->routine);
-  memory_mark_general(this->activity);
-  memory_mark_general(this->activation);
-  memory_mark_general(this->msgname);
-  memory_mark_general(this->savelist);
-  memory_mark_general(this->result);
-  memory_mark_general(this->nextstem);
-  memory_mark_general(this->compoundelement);
-  memory_mark_general(this->nextcurrent);
-  memory_mark_general(this->objectVariables);
-  memory_mark_general(this->conditionObj);
-  memory_mark_general(this->securityManager);
+    memory_mark_general(this->previous);
+    memory_mark_general(this->executable);
+    memory_mark_general(this->argArray);
+    memory_mark_general(this->receiver);
+    memory_mark_general(this->activity);
+    memory_mark_general(this->activation);
+    memory_mark_general(this->msgname);
+    memory_mark_general(this->savelist);
+    memory_mark_general(this->result);
+    memory_mark_general(this->nextstem);
+    memory_mark_general(this->compoundelement);
+    memory_mark_general(this->nextcurrent);
+    memory_mark_general(this->objectVariables);
+    memory_mark_general(this->conditionObj);
+    memory_mark_general(this->securityManager);
 
-  /* We're hold a pointer back to our arguments directly where they */
-  /* are created.  Since in some places, this argument list comes */
-  /* from the C stack, we need to handle the marker ourselves. */
-  size_t i;
-  for (i = 0; i < argcount; i++)
-  {
-      memory_mark_general(arglist[i]);
-  }
+    /* We're hold a pointer back to our arguments directly where they */
+    /* are created.  Since in some places, this argument list comes */
+    /* from the C stack, we need to handle the marker ourselves. */
+    size_t i;
+    for (i = 0; i < argcount; i++)
+    {
+        memory_mark_general(arglist[i]);
+    }
 }
 
 
@@ -1063,7 +1063,7 @@ void RexxNativeActivation::run(RexxMethod *_method, RexxNativeMethod *_code, Rex
     RexxString  *_msgname, RexxObject **_arglist, size_t _argcount, ProtectedObject &resultObj)
 {
     // anchor the relevant context information
-    method = _method;
+    executable = _method;
     receiver = _receiver;
     msgname = _msgname;
     arglist = _arglist;
@@ -1104,56 +1104,22 @@ void RexxNativeActivation::run(RexxMethod *_method, RexxNativeMethod *_code, Rex
         // process the returned result
         result = valueToObject(arguments);
     }
-    catch (RexxActivation *)
-    {
-        // if we're not the current kernel holder when things return, make sure we
-        // get the lock before we continue
-        if (ActivityManager::currentActivity != activity)
-        {
-            activity->requestAccess();
-        }
-
-        // it's possible that we can get terminated by a throw during condition processing.
-        // we intercept this here, perform any cleanup we need to perform, then let the
-        // condition trap propagate.
-        this->guardOff();                  /* release any variable locks        */
-        this->argcount = 0;                /* make sure we don't try to mark any arguments */
-        // the lock holder gets here by longjmp from a kernel reentry.  We need to
-        // make sure the activation count gets reset, else we'll accumulate bogus
-        // nesting levels that will make it look like this activity is still in use
-        // when in fact we're done with it.
-        this->activity->restoreActivationLevel(activityLevel);
-        // IMPORTANT NOTE:  We don't pop our activation off the stack.  This will be
-        // handled by the catcher.  Attempting to pop the stack when an error or condition has
-        // occurred can munge the activation stack, resulting bad stuff.
-        this->setHasNoReferences();        /* mark this as not having references in case we get marked */
-        // now rethrow the trapped condition so that real target can handle this.
-        throw;
-    }
     catch (RexxNativeActivation *)
     {
-        // if we're not the current kernel holder when things return, make sure we
-        // get the lock before we continue
-        if (ActivityManager::currentActivity != activity)
-        {
-            activity->requestAccess();
-        }
-        this->guardOff();                  /* release any variable locks        */
-        this->argcount = 0;                /* make sure we don't try to mark any arguments */
-        // the lock holder gets here by longjmp from a kernel reentry.  We need to
-        // make sure the activation count gets reset, else we'll accumulate bogus
-        // nesting levels that will make it look like this activity is still in use
-        // when in fact we're done with it.
-        this->activity->restoreActivationLevel(activityLevel);
-        this->activity->popStackFrame(this);   /* pop this from the activity        */
-        this->setHasNoReferences();        /* mark this as not having references in case we get marked */
-        // set the return value and get outta here
-        resultObj = this->result;
-        return;
     }
 
-    // belt and braces...this restores the activity level to whatever
-    // level we had when we made the callout.
+    // if we're not the current kernel holder when things return, make sure we
+    // get the lock before we continue
+    if (ActivityManager::currentActivity != activity)
+    {
+        activity->requestAccess();
+    }
+    this->guardOff();                  /* release any variable locks        */
+    this->argcount = 0;                /* make sure we don't try to mark any arguments */
+    // the lock holder gets here by longjmp from a kernel reentry.  We need to
+    // make sure the activation count gets reset, else we'll accumulate bogus
+    // nesting levels that will make it look like this activity is still in use
+    // when in fact we're done with it.
     this->activity->restoreActivationLevel(activityLevel);
 
     /* give up reference to receiver so that it can be garbage collected */
@@ -1161,9 +1127,10 @@ void RexxNativeActivation::run(RexxMethod *_method, RexxNativeMethod *_code, Rex
 
     // set the return value and get outta here
     resultObj = this->result;
-    // Use protected object to pass back the result
-    this->guardOff();                    /* release any variable locks        */
     this->argcount = 0;                  /* make sure we don't try to mark any arguments */
+
+    checkConditions();                   // see if we have conditions to raise now
+
     this->activity->popStackFrame(this); /* pop this from the activity        */
     this->setHasNoReferences();          /* mark this as not having references in case we get marked */
 }
@@ -1184,7 +1151,7 @@ void RexxNativeActivation::callNativeRoutine(RoutineClass *_routine, RexxNativeR
     RexxObject **list, size_t count, ProtectedObject &resultObj)
 {
     // anchor the context stuff
-    routine = routine;
+    executable = _routine;
     msgname = functionName;
     arglist = list;
     argcount = count;
@@ -1224,49 +1191,16 @@ void RexxNativeActivation::callNativeRoutine(RoutineClass *_routine, RexxNativeR
         // process the returned result
         result = valueToObject(arguments);
     }
-    catch (RexxActivation *)
-    {
-        // if we're not the current kernel holder when things return, make sure we
-        // get the lock before we continue
-        if (ActivityManager::currentActivity != activity)
-        {
-            activity->requestAccess();
-        }
-
-        this->argcount = 0;                /* make sure we don't try to mark any arguments */
-        // the lock holder gets here by longjmp from a kernel reentry.  We need to
-        // make sure the activation count gets reset, else we'll accumulate bogus
-        // nesting levels that will make it look like this activity is still in use
-        // when in fact we're done with it.
-        this->activity->restoreActivationLevel(activityLevel);
-        // IMPORTANT NOTE:  We don't pop our activation off the stack.  This will be
-        // handled by the catcher.  Attempting to pop the stack when an error or condition has
-        // occurred can munge the activation stack, resulting bad stuff.
-        this->setHasNoReferences();        /* mark this as not having references in case we get marked */
-        // now rethrow the trapped condition so that real target can handle this.
-        throw;
-    }
     catch (RexxNativeActivation *)
     {
-        // if we're not the current kernel holder when things return, make sure we
-        // get the lock before we continue
-        if (ActivityManager::currentActivity != activity)
-        {
-            activity->requestAccess();
-        }
-        this->argcount = 0;                /* make sure we don't try to mark any arguments */
-        // the lock holder gets here by longjmp from a kernel reentry.  We need to
-        // make sure the activation count gets reset, else we'll accumulate bogus
-        // nesting levels that will make it look like this activity is still in use
-        // when in fact we're done with it.
-        this->activity->restoreActivationLevel(activityLevel);
-        this->activity->popStackFrame(this);   /* pop this from the activity        */
-        this->setHasNoReferences();        /* mark this as not having references in case we get marked */
-        // set the return value and get outta here
-        resultObj = this->result;
-        return;
     }
 
+    // if we're not the current kernel holder when things return, make sure we
+    // get the lock before we continue
+    if (ActivityManager::currentActivity != activity)
+    {
+        activity->requestAccess();
+    }
     // belt and braces...this restores the activity level to whatever
     // level we had when we made the callout.
     this->activity->restoreActivationLevel(activityLevel);
@@ -1277,6 +1211,8 @@ void RexxNativeActivation::callNativeRoutine(RoutineClass *_routine, RexxNativeR
     // set the return value and get outta here
     resultObj = this->result;
     this->argcount = 0;                  /* make sure we don't try to mark any arguments */
+
+    checkConditions();                   // see if we have conditions to raise now
     this->activity->popStackFrame(this); /* pop this from the activity        */
     this->setHasNoReferences();          /* mark this as not having references in case we get marked */
 }
@@ -1295,7 +1231,7 @@ void RexxNativeActivation::callRegisteredRoutine(RoutineClass *_routine, Registe
 {
     // anchor the context stuff
     msgname = functionName;
-    routine = _routine;
+    executable = _routine;
     arglist = list;
     argcount = count;
 
@@ -1456,11 +1392,33 @@ void RexxNativeActivation::run(ActivityDispatcher &dispatcher)
 
     // make the activation hookup
     dispatcher.setContext(activity, this);
-    dispatcher.run();
+    try
+    {
+        // we run this under a callback trap so that the exceptions get processed.
+        dispatcher.run();
+    }
+    catch (ActivityException)
+    {
+    }
+    catch (RexxNativeActivation *)
+    {
+    }
+
+    // if we're not the current kernel holder when things return, make sure we
+    // get the lock before we continue
+    if (ActivityManager::currentActivity != activity)
+    {
+        activity->requestAccess();
+    }
 
     // belt and braces...this restores the activity level to whatever
     // level we had when we made the callout.
     this->activity->restoreActivationLevel(activityLevel);
+    if (conditionObj != OREF_NULL)
+    {
+        // pass the condition information on to the dispatch unig
+        dispatcher.handleError(conditionObj);
+    }
 
     this->activity->popStackFrame(this); /* pop this from the activity        */
     this->setHasNoReferences();          /* mark this as not having references in case we get marked */
@@ -1492,45 +1450,48 @@ void RexxNativeActivation::run(CallbackDispatcher &dispatcher)
     }
     catch (ActivityException)
     {
-        // if we're not the current kernel holder when things return, make sure we
-        // get the lock before we continue
-        if (ActivityManager::currentActivity != activity)
-        {
-            activity->requestAccess();
-        }
-        // pass the condition information on to the dispatch unig
-        dispatcher.handleError(activity->getCurrentCondition());
-        return;
-    }
-    catch (RexxActivation *)
-    {
-        // if we're not the current kernel holder when things return, make sure we
-        // get the lock before we continue
-        if (ActivityManager::currentActivity != activity)
-        {
-            activity->requestAccess();
-        }
-
-        this->activity->restoreActivationLevel(activityLevel);
-        // IMPORTANT NOTE:  We don't pop our activation off the stack.  This will be
-        // handled by the catcher.  Attempting to pop the stack when an error or condition has
-        // occurred can munge the activation stack, resulting bad stuff.
-        this->setHasNoReferences();        /* mark this as not having references in case we get marked */
-        // now rethrow the trapped condition so that real target can handle this.
-        throw;
     }
     catch (RexxNativeActivation *)
     {
-        // if we're not the current kernel holder when things return, make sure we
-        // get the lock before we continue
-        if (ActivityManager::currentActivity != activity)
-        {
-            activity->requestAccess();
-        }
-        this->activity->restoreActivationLevel(activityLevel);
-        return;
+    }
+    // if we're not the current kernel holder when things return, make sure we
+    // get the lock before we continue
+    if (ActivityManager::currentActivity != activity)
+    {
+        activity->requestAccess();
+    }
+
+    // belt and braces...this restores the activity level to whatever
+    // level we had when we made the callout.
+    this->activity->restoreActivationLevel(activityLevel);
+    // make sure we handle the error notifications
+    if (conditionObj != OREF_NULL)
+    {
+        // pass the condition information on to the dispatch unig
+        dispatcher.handleError(conditionObj);
     }
     return;                             /* and finished                      */
+}
+
+
+/**
+ * Check to see if there are deferred syntax errors that need
+ * to be raised on return from a native activation.
+ */
+void RexxNativeActivation::checkConditions()
+{
+    // if we have a stashed condition object, we need to raise this now
+    if (conditionObj != OREF_NULL)
+    {
+        // we're raising this in the previous stack frame.  If we're actually the
+        // base of the stack, there's nothing left to handle this.
+        if (!isStackBase())
+        {
+            // this prevents us from trying to trap this again
+            reraising = true;
+            activity->reraiseException(conditionObj);
+        }
+    }
 }
 
 
@@ -1550,11 +1511,12 @@ RexxVariableDictionary *RexxNativeActivation::methodVariables()
         }
         else
         {
+            RexxMethod *method = (RexxMethod *)executable;
             /* must be wanting the ovd set of    */
             /*variables                          */
-            this->objectVariables = (RexxVariableDictionary *)this->receiver->getObjectVariables(this->method->getScope());
+            this->objectVariables = this->receiver->getObjectVariables(method->getScope());
             /* guarded method?                   */
-            if (this->object_scope == SCOPE_RELEASED && this->method->isGuarded())
+            if (this->object_scope == SCOPE_RELEASED && method->isGuarded())
             {
                 /* reserve the variable scope        */
                 this->objectVariables->reserve(this->activity);
@@ -1828,7 +1790,7 @@ RexxObject *RexxNativeActivation::dispatch()
 /******************************************************************************/
 {
     ProtectedObject r;
-    this->run(method, (RexxNativeMethod *)code, receiver, msgname, arglist, argcount, r);  /* just do a method run              */
+    this->run((RexxMethod *)executable, (RexxNativeMethod *)code, receiver, msgname, arglist, argcount, r);  /* just do a method run              */
     return (RexxObject *)r;
 }
 
@@ -1977,6 +1939,49 @@ RexxActivation *RexxNativeActivation::getRexxContext()
 
 
 /**
+ * Return the Rexx executable context that is our immediate
+ * caller. Depending on the
+ * context, this could be null.
+ *
+ * @return The parent Rexx context.
+ */
+BaseExecutable *RexxNativeActivation::getRexxContextExecutable()
+{
+    // since this should only be used for exit calls, in theory, we always
+    // have one of these.
+    if (activation != OREF_NULL)
+    {
+        return activation->getExecutable();
+    }
+    return OREF_NULL;
+}
+
+
+/**
+ * Return the Rexx context this operates under.  Depending on the
+ * context, this could be null.
+ *
+ * @return The parent Rexx context.
+ */
+RexxActivation *RexxNativeActivation::findRexxContext()
+{
+    // if this is attached to a Rexx context, we can stop here
+    if (activation != OREF_NULL)
+    {
+        return activation;
+    }
+    // otherwise, have our predecessor see if it can figure this out.  It's likely
+    // that is the one we need.
+    if (previous != OREF_NULL)
+    {
+        return previous->findRexxContext();
+    }
+    // at the base of the stack, no context.
+    return OREF_NULL;
+}
+
+
+/**
  * Get the message receiver
  *
  * @return The message receiver.  Returns OREF_NULL if this is not
@@ -2036,7 +2041,7 @@ void RexxNativeActivation::guardOn()
     if (this->objectVariables == OREF_NULL)
     {
         /* grab the object variables associated with this object */
-        this->objectVariables = this->receiver->getObjectVariables(this->method->getScope());
+        this->objectVariables = this->receiver->getObjectVariables(((RexxMethod *)executable)->getScope());
     }
     /* not currently holding the lock? */
     if (this->object_scope == SCOPE_RELEASED)
@@ -2152,11 +2157,36 @@ bool RexxNativeActivation::fetchNext(
 }
 
 
-bool RexxNativeActivation::trap(
-    RexxString    * condition,         /* name of the condition             */
-    RexxDirectory * exception_object)  /* exception information             */
+
+/**
+ * Trap a condition at this level of the activation stack.
+ *
+ * @param condition The name of the condition.
+ * @param exception_object
+ *                  The exception object containing the specifics of the condition.
+ *
+ * @return false if this activation takes a pass on the condition.  Does not
+ *         return at all if the condition is handled.
+ */
+bool RexxNativeActivation::trap(RexxString *condition, RexxDirectory * exception_object)
 {
-  return false;                        /* this wasn't handled               */
+    // There are two possibilities here.  We're either seeing this because of a
+    // propagating syntax condition.  for this case, we trap this and hold it.
+    // The other possibility is a condition being raised by an API callback.  That should
+    // be the only situation where we see any other condition type.  We also trap that
+    // one so it can be raised in the caller's context.
+
+    // we end up seeing this a second time if we're raising the exception on
+    // return from an external call or method.
+    if (!reraising)
+    {
+        // record this in case any callers want to know about it.
+        setConditionInfo(exception_object);
+        // this will unwind back to the calling level, with the
+        // exception information recorded.
+        throw this;
+    }
+    return false;                        /* this wasn't handled               */
 }
 
 
@@ -2225,7 +2255,7 @@ RexxObject *RexxNativeActivation::getArgument(size_t index)
  */
 RexxObject *RexxNativeActivation::getSuper()
 {
-    return receiver->superScope(this->method->getScope());
+    return receiver->superScope(((RexxMethod *)executable)->getScope());
 }
 
 /**
@@ -2404,16 +2434,11 @@ void RexxNativeActivation::dropObjectVariable(const char *name)
  */
 RexxClass *RexxNativeActivation::findClass(RexxString *className)
 {
-    if (method != OREF_NULL)
+    // if we have an executable context, use that as the context.
+    if (executable != OREF_NULL)
     {
-        return method->findClass(className);
+        return executable->findClass(className);
     }
-
-    if (routine != OREF_NULL)
-    {
-        return routine->findClass(className);
-    }
-
     return Interpreter::findClass(className);
 }
 
@@ -2426,36 +2451,11 @@ RexxClass *RexxNativeActivation::findClass(RexxString *className)
  */
 RexxSource *RexxNativeActivation::getSourceObject()
 {
-    if (method != OREF_NULL)
+    if (executable != OREF_NULL)
     {
-        return method->getSourceObject();
+        return executable->getSourceObject();
     }
-
-    if (routine != OREF_NULL)
-    {
-        return routine->getSourceObject();
-    }
-
     return OREF_NULL;
-}
-
-
-
-void RexxNativeActivation::checkConditions()
-/******************************************************************************/
-/* Function:  check to see if a condition was raised on return from a call out*/
-/******************************************************************************/
-{
-    // if we have a stashed condition object, we need to raise this now
-    if (conditionObj != OREF_NULL)
-    {
-        // we're raising this in the previous stack frame.  If it doesn't exist,
-        // se just leave this in place so top-level callers can check this.
-        if (activation != OREF_NULL)
-        {
-            activity->reraiseException(conditionObj);
-        }
-    }
 }
 
 

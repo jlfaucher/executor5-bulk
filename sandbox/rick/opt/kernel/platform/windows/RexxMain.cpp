@@ -85,42 +85,6 @@ bool HandleException = true;           /* Global switch for Exception Handling *
 
 extern "C" {
 
-// this function can be used to retrieve the value of "top level" variables
-// on exit (RXTER). for each variable name that is found a call to the passed-in
-// function is made [a pair ((char*) varname,(RexxObject*) varvalue)].
-// please note that this does not work for multi-threaded environments!
-void REXXENTRY WinGetVariables(void (REXXENTRY *f)(const char *, REXXOBJECT))
-{
-    NativeContextBlock context;
-
-    RexxSupplier *result = context.self->getRexxContext()->getAllLocalVariables();
-
-    while (result->available() == TheTrueObject)
-    {
-        RexxString *name = (RexxString *)result->index();
-        RexxObject *value = result->value();
-        f(name->getStringData(), (REXXOBJECT)value);
-    }
-}
-
-void REXXENTRY WinEnterKernel()
-{
-    // Get an instance.  This also gives the root activity of the instance
-    // the kernel lock.
-    InterpreterInstance *instance = Interpreter::createInterpreterInstance();
-}
-
-void REXXENTRY WinLeaveKernel()
-{
-    RexxActivity *activity = ActivityManager::currentActivity;
-    InterpreterInstance *instance = activity->getInstance();
-
-    activity->exitCurrentThread();
-    // terminate the instance
-    instance->terminate();
-}
-
-
 BOOL REXXENTRY RexxSetProcessMessages(BOOL onoff)
 {
    bool old;

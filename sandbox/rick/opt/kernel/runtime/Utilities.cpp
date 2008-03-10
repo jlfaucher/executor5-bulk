@@ -276,6 +276,7 @@ const char *Utilities::strnchr(const char *data, size_t n, char ch)
         {
             return data;
         }
+        data++;
     }
     return NULL;
 }

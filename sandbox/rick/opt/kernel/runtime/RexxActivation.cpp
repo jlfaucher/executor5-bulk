@@ -124,7 +124,7 @@ RexxActivation::RexxActivation(RexxActivity* _activity, RexxMethod * _method, Re
         setGuarded();
     }
     this->code = _code;                  /* get the REXX method object        */
-    this->method = _method;              // save the method link also
+    this->executable = _method;          // save this as the base executable
     this->settings.intermediate_trace = false;
     this->activation_context = METHODCALL;  // the context is a method call
                                          /* save the sender activation        */
@@ -171,7 +171,7 @@ RexxActivation::RexxActivation(RexxActivity *_activity, RoutineClass *_routine, 
     this->clearObject();                 /* start with a fresh object         */
     this->activity = _activity;          /* save the activity pointer         */
     this->code = _code;                  /* get the REXX method object        */
-    this->routine = _routine;            // need to save the target routine also
+    this->executable = _routine;         // save this as the base executable
     if (context == DEBUGPAUSE)           /* actually a debug pause?           */
     {
         this->debug_pause = true;        /* set up for debugging intercepts   */
@@ -771,51 +771,50 @@ void RexxActivation::live(size_t liveMark)
 /* Function:  Normal garbage collection live marking                          */
 /******************************************************************************/
 {
-  memory_mark(this->receiver);
-  memory_mark(this->scope);
-  memory_mark(this->code);
-  memory_mark(this->method);
-  memory_mark(this->routine);
-  memory_mark(this->settings.securityManager);
-  memory_mark(this->receiver);
-  memory_mark(this->activity);
-  memory_mark(this->sender);
-  memory_mark(this->dostack);
-  /* the stack and the local variables handle their own marking. */
-  this->stack.live(liveMark);
-  this->settings.local_variables.live(liveMark);
-  memory_mark(this->current);
-  memory_mark(this->next);
-  memory_mark(this->result);
-  memory_mark(this->trapinfo);
-  memory_mark(this->objnotify);
-  memory_mark(this->environmentList);
-  memory_mark(this->handler_queue);
-  memory_mark(this->condition_queue);
-  memory_mark(this->settings.traps);
-  memory_mark(this->settings.conditionObj);
-  memory_mark(this->settings.parent_code);
-  memory_mark(this->settings.current_env);
-  memory_mark(this->settings.alternate_env);
-  memory_mark(this->settings.msgname);
-  memory_mark(this->settings.object_variables);
-  memory_mark(this->settings.calltype);
-  memory_mark(this->settings.streams);
-  memory_mark(this->settings.halt_description);
+    memory_mark(this->previous);
+    memory_mark(this->executable);
+    memory_mark(this->scope);
+    memory_mark(this->code);
+    memory_mark(this->settings.securityManager);
+    memory_mark(this->receiver);
+    memory_mark(this->activity);
+    memory_mark(this->sender);
+    memory_mark(this->dostack);
+    /* the stack and the local variables handle their own marking. */
+    this->stack.live(liveMark);
+    this->settings.local_variables.live(liveMark);
+    memory_mark(this->current);
+    memory_mark(this->next);
+    memory_mark(this->result);
+    memory_mark(this->trapinfo);
+    memory_mark(this->objnotify);
+    memory_mark(this->environmentList);
+    memory_mark(this->handler_queue);
+    memory_mark(this->condition_queue);
+    memory_mark(this->settings.traps);
+    memory_mark(this->settings.conditionObj);
+    memory_mark(this->settings.parent_code);
+    memory_mark(this->settings.current_env);
+    memory_mark(this->settings.alternate_env);
+    memory_mark(this->settings.msgname);
+    memory_mark(this->settings.object_variables);
+    memory_mark(this->settings.calltype);
+    memory_mark(this->settings.streams);
+    memory_mark(this->settings.halt_description);
 
-  /* We're hold a pointer back to our arguments directly where they */
-  /* are created.  Since in some places, this argument list comes */
-  /* from the C stack, we need to handle the marker ourselves. */
-  size_t i;
-  for (i = 0; i < argcount; i++)
-  {
-      memory_mark(arglist[i]);
-  }
+    /* We're hold a pointer back to our arguments directly where they */
+    /* are created.  Since in some places, this argument list comes */
+    /* from the C stack, we need to handle the marker ourselves. */
+    size_t i;
+    for (i = 0; i < argcount; i++)
+    {
+        memory_mark(arglist[i]);
+    }
 
-  for (i = 0; i < settings.parent_argcount; i++)
-  {
-      memory_mark(settings.parent_arglist[i]);
-  }
+    for (i = 0; i < settings.parent_argcount; i++)
+    {
+        memory_mark(settings.parent_arglist[i]);
+    }
 }
 
 void RexxActivation::liveGeneral(int reason)
@@ -823,64 +822,51 @@ void RexxActivation::liveGeneral(int reason)
 /* Function:  Generalized object marking                                      */
 /******************************************************************************/
 {
-  memory_mark_general(this->receiver);
-  memory_mark_general(this->code);
-  memory_mark_general(this->method);
-  memory_mark_general(this->routine);
-  memory_mark_general(this->settings.securityManager);
-  memory_mark_general(this->receiver);
-  memory_mark_general(this->activity);
-  memory_mark_general(this->sender);
-  memory_mark_general(this->dostack);
-  /* the stack and the local variables handle their own marking. */
-  this->stack.liveGeneral(reason);
-  this->settings.local_variables.liveGeneral(reason);
-  memory_mark_general(this->current);
-  memory_mark_general(this->next);
-  memory_mark_general(this->result);
-  memory_mark_general(this->trapinfo);
-  memory_mark_general(this->objnotify);
-  memory_mark_general(this->environmentList);
-  memory_mark_general(this->handler_queue);
-  memory_mark_general(this->condition_queue);
-  memory_mark_general(this->settings.traps);
-  memory_mark_general(this->settings.conditionObj);
-  memory_mark_general(this->settings.parent_code);
-  memory_mark_general(this->settings.current_env);
-  memory_mark_general(this->settings.alternate_env);
-  memory_mark_general(this->settings.msgname);
-  memory_mark_general(this->settings.object_variables);
-  memory_mark_general(this->settings.calltype);
-  memory_mark_general(this->settings.streams);
-  memory_mark_general(this->settings.halt_description);
+    memory_mark_general(this->previous);
+    memory_mark_general(this->executable);
+    memory_mark_general(this->code);
+    memory_mark_general(this->settings.securityManager);
+    memory_mark_general(this->receiver);
+    memory_mark_general(this->activity);
+    memory_mark_general(this->sender);
+    memory_mark_general(this->dostack);
+    /* the stack and the local variables handle their own marking. */
+    this->stack.liveGeneral(reason);
+    this->settings.local_variables.liveGeneral(reason);
+    memory_mark_general(this->current);
+    memory_mark_general(this->next);
+    memory_mark_general(this->result);
+    memory_mark_general(this->trapinfo);
+    memory_mark_general(this->objnotify);
+    memory_mark_general(this->environmentList);
+    memory_mark_general(this->handler_queue);
+    memory_mark_general(this->condition_queue);
+    memory_mark_general(this->settings.traps);
+    memory_mark_general(this->settings.conditionObj);
+    memory_mark_general(this->settings.parent_code);
+    memory_mark_general(this->settings.current_env);
+    memory_mark_general(this->settings.alternate_env);
+    memory_mark_general(this->settings.msgname);
+    memory_mark_general(this->settings.object_variables);
+    memory_mark_general(this->settings.calltype);
+    memory_mark_general(this->settings.streams);
+    memory_mark_general(this->settings.halt_description);
 
-  /* We're hold a pointer back to our arguments directly where they */
-  /* are created.  Since in some places, this argument list comes */
-  /* from the C stack, we need to handle the marker ourselves. */
-  size_t i;
-  for (i = 0; i < argcount; i++)
-  {
-      memory_mark_general(arglist[i]);
-  }
+    /* We're hold a pointer back to our arguments directly where they */
+    /* are created.  Since in some places, this argument list comes */
+    /* from the C stack, we need to handle the marker ourselves. */
+    size_t i;
+    for (i = 0; i < argcount; i++)
+    {
+        memory_mark_general(arglist[i]);
+    }
 
-  for (i = 0; i < settings.parent_argcount; i++)
-  {
-      memory_mark_general(settings.parent_arglist[i]);
-  }
+    for (i = 0; i < settings.parent_argcount; i++)
+    {
+        memory_mark_general(settings.parent_arglist[i]);
+    }
 }
 
-void RexxActivation::flatten(RexxEnvelope *envelope)
-/******************************************************************************/
-/* Function:  Flatten an object                                               */
-/******************************************************************************/
-{
-                                       /* Activations don't get moved,      */
-                                       /*  we just return OREF_NULL. we may */
-                                       /*  create a special proxy for this  */
-                                       /*  to re-establish an activation on */
-                                       /*  system.                          */
-  return;
-}
 
 void RexxActivation::reply(
      RexxObject * resultObj)           /* returned REPLY result             */
@@ -1715,6 +1701,29 @@ RexxActivation *RexxActivation::getRexxContext()
 
 
 /**
+ * Return the Rexx context this operates under.  Depending on the
+ * context, this could be null.
+ *
+ * @return The parent Rexx context.
+ */
+RexxActivation *RexxActivation::findRexxContext()
+{
+    return this;          // I am my own grampa...I mean Rexx context.
+}
+
+
+/**
+ * Indicate whether this activation is a Rexx context or not.
+ *
+ * @return true if this is a Rexx context, false otherwise.
+ */
+bool RexxActivation::isRexxContext()
+{
+    return true;
+}
+
+
+/**
  * Get the numeric settings for the current context.
  *
  * @return The new numeric settings.
@@ -1805,7 +1814,7 @@ bool RexxActivation::trap(             /* trap a condition                  */
     {/* in the act of forwarding?         */
         RexxActivation *activation = this->sender;         /* get the sender activation         */
                                            /* have a predecessor?               */
-        while (activation != (RexxActivation *)TheNilObject)
+        while (activation != OREF_NULL)
         {
             if (!activation->isForwarded())  /* non forwarded?                    */
             {
@@ -3799,19 +3808,12 @@ RexxObject *buildCompoundVariable(
  */
 RexxSource *RexxActivation::getSourceObject()
 {
-    if (routine != OREF_NULL)
+    if (executable != OREF_NULL)
     {
-        return routine->getSourceObject();
+        return executable->getSourceObject();
     }
-    else if (method != OREF_NULL)
-    {
-        return method->getSourceObject();
-    }
-    else
-    {
-        // this should NEVER happen!
-        return OREF_NULL;
-    }
+    // this should NEVER happen!
+    return OREF_NULL;
 }
 
 

@@ -71,6 +71,7 @@
 #include "ActivityDispatcher.hpp"
 #include "MessageDispatcher.hpp"
 #include "Interpreter.hpp"
+#include "PackageClass.hpp"
 
 const size_t ACT_STACK_SIZE = 20;
 
@@ -657,6 +658,7 @@ void RexxActivity::reportAnException(
   this->reportAnException(errcode, new_integer(a1), a2);
 }
 
+
 void RexxActivity::raiseException(
     wholenumber_t  errcode,            /* REXX error code                   */
     SourceLocation *location,          /* location information              */
@@ -677,17 +679,6 @@ void RexxActivity::raiseException(
 /*  save it, and add newlly built objects to exobj as we go.                  */
 /******************************************************************************/
 {
-    RexxList        *traceback;          /* traceback list                    */
-    RexxInteger     *position;           /* exception source line             */
-    RexxString      *programname;        /* current program name              */
-    RexxInteger     *rc;                 /* integer return code               */
-    RexxString      *code;               /* error code in decimal form        */
-    RexxString      *errortext;          /* primary error message             */
-    RexxString      *message;            /* secondary error message           */
-    wholenumber_t    primary;            /* primary message code              */
-    char             work[10];           /* temp buffer for formatting        */
-    size_t           newVal;
-
     // during error processing, we need to request the string value of message
     // substitution objects.  It is possible that the string process will also
     // cause a syntax error, resulting in a recursion loop.  We snip that off here,
@@ -706,92 +697,156 @@ void RexxActivity::raiseException(
         // grab the new current frame
         activation = this->getCurrentRexxFrame();
     }
-    primary = (errcode / 1000) * 1000;   /* get the primary message number    */
-                                         /* format the number (string) into   */
-                                         /*  work buffer.                     */
-    sprintf(work,"%d.%1d", errcode/1000, errcode - primary);
-    code = new_string(work);            /* get the formatted code            */
-    newVal = primary/1000;
-    rc = new_integer(newVal);            /* get the primary message number    */
-                                         /* get the primary message text      */
-    errortext = SysMessageText(primary);
-    if (errortext == OREF_NULL)          /* no corresponding message          */
+
+    this->conditionobj = createExceptionObject(errcode, activation, location, source, description, additional, result);
+
+    /* process as common condition       */
+    if (!this->raiseCondition(OREF_SYNTAX, OREF_NULL, OREF_NULL, OREF_NULL, OREF_NULL, conditionobj))
     {
-        /* this is an error                  */
-        reportException(Error_Execution_error_condition, code);
-    }
-    if (primary != errcode)              /* have a secondary message to issue?*/
-    {
-        /* retrieve the secondary message    */
-        message = SysMessageText(errcode);
-        if (message == OREF_NULL)          /* no corresponding message          */
+        // get the traceback list so we can append to it was we unwind
+        RexxList *traceback = (RexxList *)conditionobj->get(OREF_TRACEBACK);
+        /* fill in the propagation status    */
+        conditionobj->put(TheTrueObject, OREF_PROPAGATED);
+        // if we have an Rexx context to work with, unwind to that point, but adding the traceback
+        if (activation != OREF_NULL)
         {
-            /* this is an error                  */
-            reportException(Error_Execution_error_condition, code);
+            // unwind the frame to this point
+            unwindToFrame(activation);
+            if (activation->getIndent() > MAX_TRACEBACK_LIST)
+            {
+                // get the traceback list so we can append to it was we unwind
+                RexxList *traceback = (RexxList *)conditionobj->get(OREF_TRACEBACK);
+                traceback->addLast(new_string("     >...<"));
+            }
+            popStackFrame(activation);     // remove it from the stack
         }
+        this->raisePropagate(conditionobj);  /* pass on down the chain            */
     }
-    else
-    {
-        /* don't give a secondary message    */
-        message = (RexxString *)TheNilObject;
-    }
+}
+
+
+RexxDirectory *RexxActivity::createExceptionObject(
+    wholenumber_t  errcode,            /* REXX error code                   */
+    RexxActivation *activation,        // the activation context
+    SourceLocation *location,          /* location information              */
+    RexxSource    *source,             /* source file to process            */
+    RexxString    *description,        /* descriptive information           */
+    RexxArray     *additional,         /* substitution information          */
+    RexxObject    *result )            /* result information                */
+/******************************************************************************/
+/* This routine is used for SYNTAX conditions only.                           */
+/*                                                                            */
+/* The inserts are passed as objects because that happens to be more          */
+/* convenient for the calling code in the two cases where this facility       */
+/* is used.                                                                   */
+/*                                                                            */
+/* NOTE: The building of the excepption obejct (EXOBJ)  has been re-arranged  */
+/*  so that a garbage collection in the middle of building traceBack/etc      */
+/*  doesn't clean up the newly built objects.  SO we create exobj early on    */
+/*  save it, and add newlly built objects to exobj as we go.                  */
+/******************************************************************************/
+{
 
     /* All error detection done. we can  */
     /*  build and save exobj now.        */
     /* get an exception directory        */
     RexxDirectory *exobj = (RexxDirectory *)new_directory();
-    this->conditionobj = exobj;          /* save this in the activity         */
-    exobj->put(rc, OREF_RC);             /* add the return code               */
-                                         /* fill in the decimal error code    */
-    exobj->put(code, OREF_CODE);
-    exobj->put(errortext, OREF_ERRORTEXT);
-    exobj->put(message, OREF_NAME_MESSAGE);
+    // this is the anchor for anything else
+    ProtectedObject p(exobj);
 
-    if (additional == OREF_NULL)         /* no description given?             */
+    wholenumber_t primary = (errcode / 1000) * 1000;   /* get the primary message number    */
+
+    char work[32];
+                                         /* format the number (string) into   */
+                                         /*  work buffer.                     */
+    sprintf(work,"%d.%1d", errcode/1000, errcode - primary);
+    RexxString *code = new_string(work); /* get the formatted code            */
+    exobj->put(code, OREF_CODE);
+
+    wholenumber_t newVal = primary/1000;
+    RexxInteger *rc = new_integer(newVal); /* get the primary message number    */
+    exobj->put(rc, OREF_RC);             /* add the return code               */
+                                         /* get the primary message text      */
+    RexxString *errortext = SysMessageText(primary);
+    if (errortext == OREF_NULL)          /* no corresponding message          */
+    {
+        /* this is an error                  */
+        reportException(Error_Execution_error_condition, code);
+    }
+    exobj->put(errortext, OREF_ERRORTEXT);
+
+    if (primary != errcode)              /* have a secondary message to issue?*/
+    {
+        /* retrieve the secondary message    */
+        RexxString *message = SysMessageText(errcode);
+        if (message == OREF_NULL)          /* no corresponding message          */
+        {
+            /* this is an error                  */
+            reportException(Error_Execution_error_condition, code);
+        }
+        /* do required substitutions         */
+        message = this->messageSubstitution(message, additional);
+        /* replace the original message text */
+        exobj->put(message, OREF_NAME_MESSAGE);
+    }
+    else
+    {
+        /* don't give a secondary message    */
+                                         /* fill in the decimal error code    */
+        exobj->put(TheNilObject, OREF_NAME_MESSAGE);
+    }
+
+    // handle the message substitution values (raw form)
+    if (additional == OREF_NULL)
     {
         /* use a zero size array             */
-        additional = (RexxArray *)TheNullArray->copy();
+        additional = new_array((size_t)0);
     }
+    // add this in
+    exobj->put(additional, OREF_ADDITIONAL);
+
+    // the description string (rare for exceptions)
     if (description == OREF_NULL)        /* no description?                   */
     {
-        description = OREF_NULLSTRING;     /* use a null string                 */
+        // use an explicit null string
+        exobj->put(OREF_NULLSTRING, OREF_DESCRIPTION);
+    }
+    else
+    {
+        exobj->put(description, OREF_DESCRIPTION);
     }
 
-    exobj->put(description, OREF_DESCRIPTION);
-    exobj->put(additional, OREF_ADDITIONAL);
-    if (source != OREF_NULL)
-    {
-        exobj->put((RexxObject *)source, OREF_SOURCENAME);
-    }
     if (result != OREF_NULL)
     {
         exobj->put(result, OREF_RESULT);
     }
 
-    traceback = OREF_NULL;               /* no traceback info                 */
+    // now the source name and result values, if given
+    if (source == OREF_NULL && activation != OREF_NULL)
+    {
+        // get the source object from the activation if we haven't been handed an explicit one
+        source = activation->getSourceObject();
+    }
 
     if (location != NULL)                /* have clause information available?*/
     {
         /* add the line number information   */
-        position = new_integer(location->getLineNumber());
+        exobj->put(new_integer(location->getLineNumber()), OREF_POSITION);
     }
     /* have an activation?               */
     else if (activation != OREF_NULL)
     {
         /* get the activation position       */
-        newVal = activation->currentLine();
-        position = new_integer(newVal);
+        exobj->put(new_integer(activation->currentLine()), OREF_POSITION);
     }
-    else
-    {
-        position = OREF_NULL;              /* no position information available */
-    }
-    exobj->put(position, OREF_POSITION); /* add position to exobj.            */
 
-    traceback = new_list();              /* create a traceback list           */
+    RexxList *traceback = new_list();    /* create a traceback list           */
                                          /* add to the exception object       */
     exobj->put(traceback, OREF_TRACEBACK);
-    if (source != OREF_NULL)             /* have source for this?             */
+    // if location information is given, this is a parsing error, so we
+    // need to extract the traceback information for that now because there
+    // is no activation on the stack that represents that process.
+    if (location != NULL)
     {
         /* extract and add clause in error   */
         traceback->addLast(source->traceBack(*location, 0, false));
@@ -803,50 +858,23 @@ void RexxActivity::raiseException(
     }
     if (source != OREF_NULL)             /* have source for this?             */
     {
-        programname = source->getProgramName(); /* extract program name              */
-    }
-    /* have predecessors?                */
-    else if (activation != OREF_NULL)
-    {
-        /* extract program name from activa. */
-        programname = activation->getProgramName();
+        exobj->put(source->getProgramName(), OREF_PROGRAM);
+        exobj->put(source->getPackage(), OREF_PACKAGE);
     }
     else
     {
-        programname = OREF_NULLSTRING;     /* have no program name              */
+        // if not available, then this is explicitly a NULLSTRINg.
+        exobj->put(OREF_NULLSTRING, OREF_PROGRAM);
     }
-    exobj->put(programname, OREF_PROGRAM);
+
+    // the condition name is alway SYNTAX
     exobj->put(OREF_SYNTAX, OREF_CONDITION);
     /* fill in the propagation status    */
     exobj->put(TheFalseObject, OREF_PROPAGATED);
 
-    if (message != TheNilObject)         /* have a secondary message?         */
-    {
-        /* do required substitutions         */
-        message = this->messageSubstitution(message, additional);
-        /* replace the original message text */
-        exobj->put(message, OREF_NAME_MESSAGE);
-    }
-    /* process as common condition       */
-    if (!this->raiseCondition(OREF_SYNTAX, OREF_NULL, OREF_NULL, OREF_NULL, OREF_NULL, exobj))
-    {
-        /* fill in the propagation status    */
-        exobj->put(TheTrueObject, OREF_PROPAGATED);
-        // if we have an Rexx context to work with, unwind to that point, but adding the traceback
-        if (activation != OREF_NULL)
-        {
-            // unwind the frame to this point
-            unwindToFrame(activation);
-            if (activation->getIndent() > MAX_TRACEBACK_LIST)
-            {
-                traceback->addLast(new_string("     >...<"));
-            }
-            popStackFrame(activation);     // remove it from the stack
-        }
-
-        this->raisePropagate(exobj);       /* pass on down the chain            */
-    }
+    return exobj;
 }
+
 
 RexxString *RexxActivity::messageSubstitution(
     RexxString *message,               /* REXX error message                */
@@ -928,24 +956,28 @@ RexxString *RexxActivity::messageSubstitution(
   return newmessage;                   /* return the message                */
 }
 
-void RexxActivity::reraiseException(
-    RexxDirectory *exobj )             /* previously created exception obj. */
-/******************************************************************************/
-/* Function:  Propagate a syntax condition and trapping to earlier levels     */
-/******************************************************************************/
+/**
+ * Reraise an exception object in a prior context.
+ *
+ * @param exobj  The exception object with the syntax information.
+ */
+void RexxActivity::reraiseException(RexxDirectory *exobj)
 {
     RexxActivation *activation = this->getCurrentRexxFrame();/* get the current activation        */
     /* have a target activation?         */
     if (activation != OREF_NULL)
     {
+        RexxSource *source = activation->getSourceObject();
         // set the position and program name
         exobj->put(new_integer(activation->currentLine()), OREF_POSITION);
-        exobj->put(activation->getProgramName(), OREF_PROGRAM);
+        exobj->put(source->getProgramName(), OREF_PROGRAM);
+        exobj->put(source->getPackage(), OREF_PACKAGE);
     }
     else
     {
         exobj->remove(OREF_POSITION);      /* remove the position               */
         exobj->remove(OREF_PROGRAM);       /* remove the program name           */
+        exobj->remove(OREF_PACKAGE);       /* remove the program name           */
     }
 
     RexxObject *errorcode = exobj->at(OREF_CODE);    /* get the error code                */
@@ -1277,7 +1309,7 @@ void RexxActivity::updateFrameMarkers()
     // the markers appropriately
     topStackFrame = (RexxActivationBase *)activations->getTop();
 
-    // if we're not creating a new frame set, linke up the new frame with its predecessor
+    // if we're not creating a new frame set, link up the new frame with its predecessor
     if (!topStackFrame->isStackBase())
     {
         topStackFrame->setPreviousStackFrame(previousFrame);
@@ -1285,7 +1317,7 @@ void RexxActivity::updateFrameMarkers()
 
     // the new activation is the new top and there may or may not be
     // a rexx context to deal with
-    currentRexxFrame = topStackFrame->getRexxContext(); ;
+    currentRexxFrame = topStackFrame->findRexxContext(); ;
 
     // update the numeric settings
     numericSettings = topStackFrame->getNumericSettings();

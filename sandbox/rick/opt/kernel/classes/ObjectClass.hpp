@@ -62,6 +62,7 @@
   class RexxMessage;
   class ProtectedObject;
   class SecurityManager;
+  class BaseExecutable;
 
 
   enum
@@ -562,6 +563,7 @@ public:
     virtual bool form() {return Numerics::DEFAULT_FORM;};
     virtual NumericSettings *getNumericSettings() { return Numerics::getDefaultSettings(); }
     virtual RexxActivation *getRexxContext() { return OREF_NULL; }
+    virtual RexxActivation *findRexxContext() { return OREF_NULL; }
     virtual void setDigits(size_t) {;};
     virtual void setFuzz(size_t) {;};
     virtual void setForm(bool) {;}
@@ -571,12 +573,15 @@ public:
     virtual SecurityManager *getSecurityManager() = 0;
     virtual bool isForwarded() { return false; }
     virtual bool isStackBase() { return false; }
+    virtual bool isRexxContext() { return false; }
     virtual RexxObject *getReceiver() { return OREF_NULL; }
     inline void setPreviousStackFrame(RexxActivationBase *p) { previous = p; }
     inline RexxActivationBase *getPreviousStackFrame() { return previous; }
+    inline BaseExecutable *getExecutable() { return executable; }
 
 protected:
     RexxActivationBase *previous;
+    BaseExecutable     *executable;
 
 };
 #endif

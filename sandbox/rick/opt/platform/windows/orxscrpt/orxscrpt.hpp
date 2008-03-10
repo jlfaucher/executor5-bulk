@@ -64,7 +64,7 @@ typedef struct REXX_CODE_BLOCK_Struct {
   OLECHAR    *Name;          //  Item Name (or NULL) this is associated with.  (WhoKnows() may eventually need this, and the flags.)
   DWORD       Flags;         //  Received at the same time as the source.
   ULONG       StartingLN;    //  Line number the code started on.
-  REXXOBJECT  Code;          //  Pointer to the tokenized code block.
+  RexxObjectPtr  Code;          //  Pointer to the tokenized code block.
   } RCB, *PRCB;
 
 
@@ -254,12 +254,13 @@ class OrxScript : public LLLContent,
 
 
   /****** NON-INTERFACE PUBLIC METHODS ******/
-  void __stdcall insertVariable(const char *name, REXXOBJECT value);
+  void __stdcall insertVariable(RexxThreadContext *, const char *name, RexxObjectPtr value);
   char* getEngineName() { return EngineName; }
-  REXXOBJECT  getSecurityManager() { return securityManager.Code; }
-  REXXOBJECT  getSecurityObject() { return securityObject; }
+  RexxObjectPtr  getSecurityManager() { return securityManager.Code; }
+  RexxObjectPtr  getSecurityObject() { return securityObject; }
   DWORD getSafetyOptions() { return dwSafetyOptions; }
   OrxNamedItem* getNamedItems() { return NamedItemList; }
+  FILE *getLogFile() { return logfile; }
 
   IActiveScriptSite* getScriptSitePtr() { return pActiveScriptSite; }
   VARIANT *GetExternalProperty(const char *PropName) {
@@ -319,7 +320,7 @@ STDMETHODIMP LocalParseProcedureText(
     /* [in]  */ OLECHAR    *Name,
     /* [in]  */ DWORD       Flags,
     /* [in]  */ ULONG       StartingLN,
-    /* [in]  */ REXXOBJECT  Code,
+    /* [in]  */ RexxObjectPtr  Code,
     /* [out] */ PRCB       *CodeBlock);
 
 
@@ -338,7 +339,7 @@ STDMETHODIMP LocalParseProcedureText(
     int                iEngineCount;               // Our Creation number.
     DWORD              dwSafetyOptions;            // Flags for Internet Explorer to allow scripts to execute.
     RCB                securityManager;            // REXX code for security manager
-    REXXOBJECT         securityObject;             // Object produced by running the Security Manager Code.
+    RexxObjectPtr         securityObject;             // Object produced by running the Security Manager Code.
     OrxDispID          DispID;                     // The head of the chain of DispIDs that we support.
     OrxNamedItem      *NamedItemList;              // The head of the chain of NamedItems.
     VariantLList       PropertyList;               // The head of the chain of potential Properties.

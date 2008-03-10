@@ -72,7 +72,7 @@ void RexxEntry DetachThread(RexxThreadContext *c)
     {
         context.activity->detachInstance();
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
 }
@@ -88,7 +88,7 @@ void RexxEntry HaltThread(RexxThreadContext *c)
     {
         context.activity->halt(OREF_NULL);
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
 }
@@ -101,7 +101,7 @@ void RexxEntry SetThreadTrace(RexxThreadContext *c, logical_t setting)
     {
         context.activity->setTrace(setting == TRUE);
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
 }
@@ -115,7 +115,7 @@ RexxObjectPtr RexxEntry RequestGlobalReference(RexxThreadContext *c, RexxObjectP
         context.activity->getInstance()->addGlobalReference((RexxObject *)o);
         return o;
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return NULLOBJECT;
@@ -129,7 +129,7 @@ void RexxEntry ReleaseGlobalReference(RexxThreadContext *c, RexxObjectPtr o)
     {
         context.activity->getInstance()->removeGlobalReference((RexxObject *)o);
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
 }
@@ -142,7 +142,7 @@ void RexxEntry ReleaseLocalReference(RexxThreadContext *c, RexxObjectPtr o)
     {
         context.context->removeLocalReference((RexxObject *)o);
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
 }
@@ -156,7 +156,7 @@ RexxObjectPtr RexxEntry SendMessageArray(RexxThreadContext *c, RexxObjectPtr o, 
     {
         return context.ret(((RexxObject *)o)->sendMessage(new_upper_string(m), (RexxArray *)a));
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return NULLOBJECT;
@@ -170,7 +170,7 @@ RexxObjectPtr RexxEntry SendMessage0(RexxThreadContext *c, RexxObjectPtr o, CSTR
     {
         return context.ret(((RexxObject *)o)->sendMessage(new_upper_string(m)));
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return NULLOBJECT;
@@ -184,7 +184,7 @@ RexxObjectPtr RexxEntry SendMessage1(RexxThreadContext *c, RexxObjectPtr o, CSTR
     {
         return context.ret(((RexxObject *)o)->sendMessage(new_upper_string(m), (RexxObject *)a1));
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return NULLOBJECT;
@@ -197,7 +197,7 @@ RexxObjectPtr RexxEntry SendMessage2(RexxThreadContext *c, RexxObjectPtr o, CSTR
     {
         return context.ret(((RexxObject *)o)->sendMessage(new_upper_string(m), (RexxObject *)a1, (RexxObject *)a2));
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return NULLOBJECT;
@@ -210,7 +210,7 @@ RexxDirectoryObject RexxEntry GetLocalEnvironment(RexxThreadContext *c)
     {
         return (RexxDirectoryObject)ActivityManager::localEnvironment;
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return NULLOBJECT;
@@ -223,7 +223,7 @@ RexxDirectoryObject RexxEntry GetGlobalEnvironment(RexxThreadContext *c)
     {
         return (RexxDirectoryObject)TheEnvironment;
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
 
     }
@@ -238,7 +238,7 @@ logical_t RexxEntry IsSameType(RexxThreadContext *c, RexxObjectPtr o1, RexxObjec
     {
         return ((RexxObject *)o1)->isSameType((RexxObject *)o2);
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return 0;
@@ -252,7 +252,7 @@ logical_t RexxEntry IsInstanceOf(RexxThreadContext *c, RexxObjectPtr o, RexxClas
     {
         return ((RexxObject *)o)->isInstanceOf((RexxClass *)cl);
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return 0;
@@ -268,7 +268,7 @@ logical_t RexxEntry HasMethod(RexxThreadContext *c, RexxObjectPtr o, CSTRING n)
         return ((RexxObject *)o)->hasMethod(new_string(n)) == TheTrueObject;
 
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return 0;
@@ -287,7 +287,7 @@ RexxPackageObject RexxEntry LoadPackage(RexxThreadContext *c, CSTRING n)
         // convert the name to a string instance, and check the environments.
         return (RexxPackageObject)context.ret(PackageManager::loadRequires(context.activity, name, resolvedName, package));
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return NULLOBJECT;
@@ -302,7 +302,7 @@ RexxPackageObject RexxEntry LoadPackageFromData(RexxThreadContext *c, CSTRING n,
         ProtectedObject package;
         return (RexxPackageObject)PackageManager::loadRequires(context.activity, new_string(n), d, l, package);
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return NULLOBJECT;
@@ -319,7 +319,7 @@ RexxClassObject RexxEntry FindClass(RexxThreadContext *c, CSTRING n)
         return (RexxClassObject)context.ret(context.context->findClass(name));
 
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return NULLOBJECT;
@@ -336,7 +336,7 @@ RexxClassObject RexxEntry FindClassFromPackage(RexxThreadContext *c, RexxPackage
         return (RexxClassObject)context.ret(((PackageClass *)m)->findClass(name));
 
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return NULLOBJECT;
@@ -350,7 +350,21 @@ RexxDirectoryObject RexxEntry GetPackageRoutines(RexxThreadContext *c, RexxPacka
     {
         return (RexxDirectoryObject)context.ret(((PackageClass *)m)->getRoutines());
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
+    {
+    }
+    return NULLOBJECT;
+}
+
+
+RexxDirectoryObject RexxEntry GetPackagePublicRoutines(RexxThreadContext *c, RexxPackageObject m)
+{
+    ApiContext context(c);
+    try
+    {
+        return (RexxDirectoryObject)context.ret(((PackageClass *)m)->getPublicRoutines());
+    }
+    catch (RexxNativeActivation *)
     {
     }
     return NULLOBJECT;
@@ -361,9 +375,22 @@ RexxDirectoryObject RexxEntry GetPackageClasses(RexxThreadContext *c, RexxPackag
     ApiContext context(c);
     try
     {
-        return (RexxDirectoryObject)context.ret(((PackageClass *)m)->getMethods());
+        return (RexxDirectoryObject)context.ret(((PackageClass *)m)->getClasses());
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
+    {
+    }
+    return NULLOBJECT;
+}
+
+RexxDirectoryObject RexxEntry GetPackagePublicClasses(RexxThreadContext *c, RexxPackageObject m)
+{
+    ApiContext context(c);
+    try
+    {
+        return (RexxDirectoryObject)context.ret(((PackageClass *)m)->getPublicClasses());
+    }
+    catch (RexxNativeActivation *)
     {
     }
     return NULLOBJECT;
@@ -376,7 +403,7 @@ RexxDirectoryObject RexxEntry GetPackageMethods(RexxThreadContext *c, RexxPackag
     {
         return (RexxDirectoryObject)context.ret(((PackageClass *)m)->getClasses());
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return NULLOBJECT;
@@ -392,7 +419,7 @@ RexxObjectPtr RexxEntry CallRoutine(RexxThreadContext *c, RexxRoutineObject r, R
         context.activity->run(dispatcher);
         return (RexxObjectPtr)dispatcher.result;
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return NULLOBJECT;
@@ -408,7 +435,7 @@ RexxObjectPtr RexxEntry CallProgram(RexxThreadContext *c, const char * p, RexxAr
         context.activity->run(dispatcher);
         return (RexxObjectPtr)dispatcher.result;
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return NULLOBJECT;
@@ -423,7 +450,7 @@ RexxMethodObject RexxEntry NewMethod(RexxThreadContext *c, CSTRING name, CSTRING
         // convert the name to a string instance, and check the environments.
         return (RexxMethodObject)context.ret(new RexxMethod(new_string(name), source, length));
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return NULLOBJECT;
@@ -438,11 +465,72 @@ RexxRoutineObject RexxEntry NewRoutine(RexxThreadContext *c, CSTRING name, CSTRI
         // convert the name to a string instance, and check the environments.
         return (RexxRoutineObject)context.ret(new RoutineClass(new_string(name), source, length));
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return NULLOBJECT;
 }
+
+
+logical_t RexxEntry isRoutine(RexxThreadContext *c, RexxObjectPtr o)
+{
+    ApiContext context(c);
+    try
+    {
+        // convert the name to a string instance, and check the environments.
+        return (logical_t)((RexxObject *)o)->isInstanceOf(TheRoutineClass);
+    }
+    catch (RexxNativeActivation *)
+    {
+    }
+    return false;
+}
+
+
+logical_t RexxEntry isMethod(RexxThreadContext *c, RexxObjectPtr o)
+{
+    ApiContext context(c);
+    try
+    {
+        // convert the name to a string instance, and check the environments.
+        return (logical_t)((RexxObject *)o)->isInstanceOf(TheMethodClass);
+    }
+    catch (RexxNativeActivation *)
+    {
+    }
+    return false;
+}
+
+
+RexxPackageObject RexxEntry GetRoutinePackage(RexxRoutineObject o)
+{
+    ApiContext context(c);
+    try
+    {
+        // convert the name to a string instance, and check the environments.
+        return (RexxPackageObject)((RoutineClass *)o)->getPackage();
+    }
+    catch (RexxNativeActivation *)
+    {
+    }
+    return false;
+}
+
+
+RexxPackageObject RexxEntry GetMethodPackage(RexxMethodObject o)
+{
+    ApiContext context(c);
+    try
+    {
+        // convert the name to a string instance, and check the environments.
+        return (RexxPackageObject)((RexxMethod *)o)->getPackage();
+    }
+    catch (RexxNativeActivation *)
+    {
+    }
+    return false;
+}
+
 
 
 RexxBufferObject RexxEntry SaveRoutine(RexxThreadContext *c, RexxRoutineObject m)
@@ -452,7 +540,7 @@ RexxBufferObject RexxEntry SaveRoutine(RexxThreadContext *c, RexxRoutineObject m
     {
         return (RexxBufferObject)context.ret(((RoutineClass *)m)->save());
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return NULLOBJECT;
@@ -465,7 +553,7 @@ RexxObjectPtr RexxEntry NewObject(RexxThreadContext *c)
     {
         return context.ret(new (TheObjectClass) RexxObject());
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return NULLOBJECT;
@@ -478,7 +566,7 @@ RexxObjectPtr RexxEntry NumberToObject(RexxThreadContext *c, wholenumber_t n)
     {
         return context.ret(Numerics::toObject((wholenumber_t)n));
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return NULLOBJECT;
@@ -491,7 +579,7 @@ RexxObjectPtr RexxEntry UintptrToObject(RexxThreadContext *c, uintptr_t n)
     {
         return context.ret(Numerics::ptrToObject(n));
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return NULLOBJECT;
@@ -505,7 +593,7 @@ RexxObjectPtr RexxEntry ValueToObject(RexxThreadContext *c, ValueDescriptor *d)
     {
         return (RexxObjectPtr)context.ret(context.context->valueToObject(d));
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
         context.context->setConditionInfo(OREF_NULL);
     }
@@ -520,7 +608,7 @@ RexxArrayObject RexxEntry ValuesToObject(RexxThreadContext *c, ValueDescriptor *
     {
         return (RexxArrayObject)context.ret(context.context->valuesToObject(d, count));
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
         context.context->setConditionInfo(OREF_NULL);
     }
@@ -535,7 +623,7 @@ logical_t RexxEntry ObjectToValue(RexxThreadContext *c, RexxObjectPtr o, ValueDe
     {
         return context.context->objectToValue((RexxObject *)o, d);
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
         // some conversion failures result in an exception...cancel that, and
         // just return FALSE;
@@ -551,7 +639,7 @@ RexxObjectPtr RexxEntry UnsignedNumberToObject(RexxThreadContext *c, stringsize_
     {
         return context.ret(Numerics::toObject((stringsize_t)n));
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return NULLOBJECT;
@@ -572,7 +660,7 @@ logical_t RexxEntry ObjectToNumber(RexxThreadContext *c, RexxObjectPtr o, wholen
         }
         return false;
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return 0;
@@ -593,7 +681,7 @@ logical_t RexxEntry ObjectToUnsignedNumber(RexxThreadContext * c, RexxObjectPtr 
         }
         return false;
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return 0;
@@ -606,7 +694,7 @@ RexxObjectPtr RexxEntry Int64ToObject(RexxThreadContext *c, int64_t n)
     {
         return context.ret(Numerics::toObject(n));
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return NULLOBJECT;
@@ -619,7 +707,7 @@ RexxObjectPtr RexxEntry UnsignedInt64ToObject(RexxThreadContext * c, uint64_t n)
     {
         return context.ret(Numerics::toObject(n));
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return NULLOBJECT;
@@ -633,7 +721,7 @@ logical_t RexxEntry ObjectToInt64(RexxThreadContext *c, RexxObjectPtr o, int64_t
         // this uses the entire value range
         return Numerics::objectToInt64((RexxObject *)o, *n);
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return 0;
@@ -647,7 +735,7 @@ logical_t RexxEntry ObjectToUnsignedInt64(RexxThreadContext *c, RexxObjectPtr o,
         // this uses the entire value range
         return Numerics::objectToUnsignedInt64((RexxObject *)o, *n);
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return 0;
@@ -661,7 +749,7 @@ logical_t RexxEntry ObjectToUintptr(RexxThreadContext * c, RexxObjectPtr o, uint
         // this uses the entire value range
         return Numerics::objectToUintptr((RexxObject *)o, *n);
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return 0;
@@ -674,7 +762,7 @@ RexxObjectPtr RexxEntry DoubleToObject(RexxThreadContext *c, double n)
     {
         return context.ret(new_numberstring(n));
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return NULLOBJECT;
@@ -687,7 +775,7 @@ RexxObjectPtr RexxEntry DoubleToObjectWithPrecision(RexxThreadContext *c, double
     {
         return context.ret(new_string(n, precision));
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return NULLOBJECT;
@@ -700,7 +788,7 @@ logical_t RexxEntry ObjectToDouble(RexxThreadContext *c, RexxObjectPtr o, double
     {
         return ((RexxObject *)o)->doubleValue(*n);
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return 0;
@@ -713,7 +801,7 @@ RexxStringObject RexxEntry ObjectToString(RexxThreadContext *c, RexxObjectPtr o)
     {
         return (RexxStringObject)context.ret(REQUEST_STRING((RexxObject *)o));
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return NULLOBJECT;
@@ -728,7 +816,7 @@ CSTRING RexxEntry ObjectToStringValue(RexxThreadContext *c, RexxObjectPtr o)
         context.ret(temp);
         return (CSTRING)temp->getStringData();
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return NULL;
@@ -742,7 +830,7 @@ size_t RexxEntry StringGet(RexxThreadContext *c, RexxStringObject s, size_t o, P
         RexxString *temp = (RexxString *)s;
         return temp->get(o, (char *)r, l);
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return 0;
@@ -756,7 +844,7 @@ size_t RexxEntry StringLength(RexxThreadContext *c, RexxStringObject s)
         RexxString *temp = (RexxString *)s;
         return temp->getLength();
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return 0;
@@ -770,7 +858,7 @@ CSTRING RexxEntry StringData(RexxThreadContext *c, RexxStringObject s)
         RexxString *temp = (RexxString *)s;
         return (CSTRING)temp->getStringData();
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return NULL;
@@ -783,7 +871,7 @@ RexxStringObject RexxEntry NewString(RexxThreadContext *c, CSTRING s, size_t l)
     {
         return (RexxStringObject)context.ret(new_string(s, (stringsize_t)l));
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return NULLOBJECT;
@@ -796,7 +884,7 @@ RexxStringObject RexxEntry NewStringFromAsciiz(RexxThreadContext *c, CSTRING s)
     {
         return (RexxStringObject)context.ret(new_string((char *)s));
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return NULLOBJECT;
@@ -810,7 +898,7 @@ RexxStringObject RexxEntry StringUpper(RexxThreadContext *c, RexxStringObject s)
         RexxString *temp = (RexxString *)s;
         return (RexxStringObject)context.ret(temp->upper());
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return NULLOBJECT;
@@ -824,7 +912,7 @@ RexxStringObject RexxEntry StringLower(RexxThreadContext *c, RexxStringObject s)
         RexxString *temp = (RexxString *)s;
         return (RexxStringObject)context.ret(temp->lower());
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return NULLOBJECT;
@@ -837,7 +925,7 @@ logical_t RexxEntry IsString(RexxThreadContext *c, RexxObjectPtr o)
     {
         return isString((RexxObject *)o);
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return 0;
@@ -850,7 +938,7 @@ RexxBufferStringObject RexxEntry NewBufferString(RexxThreadContext * c, size_t l
     {
         return (RexxBufferStringObject)context.ret(raw_string((stringsize_t)l));
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return NULLOBJECT;
@@ -864,7 +952,7 @@ size_t  RexxEntry BufferStringLength(RexxThreadContext *c, RexxBufferStringObjec
         RexxString *temp = (RexxString *)s;
         return temp->getLength();
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return 0;
@@ -878,7 +966,7 @@ POINTER RexxEntry BufferStringData(RexxThreadContext *c, RexxBufferStringObject 
         RexxString *temp = (RexxString *)s;
         return (POINTER)temp->getWritableData();
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return NULL;
@@ -893,7 +981,7 @@ RexxStringObject RexxEntry FinishBufferString(RexxThreadContext *c, RexxBufferSt
         temp->finish(l);
         return s;
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return NULL;
@@ -906,7 +994,7 @@ void  RexxEntry TablePut(RexxThreadContext *c, RexxTableObject t, RexxObjectPtr 
     {
         ((RexxTable *)t)->put((RexxObject *)o, (RexxObject *)i);
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
 }
@@ -918,7 +1006,7 @@ RexxObjectPtr RexxEntry TableGet(RexxThreadContext *c, RexxTableObject t, RexxOb
     {
         return context.ret(((RexxTable *)t)->get((RexxObject *)i));
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return OREF_NULL;
@@ -931,7 +1019,7 @@ RexxObjectPtr RexxEntry TableRemove(RexxThreadContext *c, RexxTableObject t, Rex
     {
         return context.ret(((RexxTable *)t)->remove((RexxObject *)i));
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return OREF_NULL;
@@ -944,7 +1032,7 @@ RexxTableObject RexxEntry NewTable(RexxThreadContext *c)
     {
         return (RexxTableObject)context.ret(new_table());
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return OREF_NULL;
@@ -957,7 +1045,7 @@ logical_t RexxEntry IsTable(RexxThreadContext *c, RexxObjectPtr o)
     {
         return isOfClass(Table, (RexxObject *)o);
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return FALSE;
@@ -970,7 +1058,7 @@ void  RexxEntry DirectoryPut(RexxThreadContext *c, RexxDirectoryObject t, RexxOb
     {
         ((RexxDirectory *)t)->put((RexxObject *)o, new_string(i));
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
 }
@@ -982,7 +1070,7 @@ RexxObjectPtr RexxEntry DirectoryAt(RexxThreadContext *c, RexxDirectoryObject t,
     {
         return context.ret(((RexxDirectory *)t)->at(new_string(i)));
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return OREF_NULL;
@@ -995,7 +1083,7 @@ RexxObjectPtr RexxEntry DirectoryRemove(RexxThreadContext *c, RexxDirectoryObjec
     {
         return context.ret(((RexxDirectory *)t)->remove(new_string(i)));
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return OREF_NULL;
@@ -1008,7 +1096,7 @@ RexxDirectoryObject RexxEntry NewDirectory(RexxThreadContext *c)
     {
         return (RexxDirectoryObject)context.ret(new_table());
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return OREF_NULL;
@@ -1021,7 +1109,7 @@ logical_t RexxEntry IsDirectory(RexxThreadContext *c, RexxObjectPtr o)
     {
         return isOfClass(Directory, (RexxObject *)o);
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return FALSE;
@@ -1034,7 +1122,7 @@ RexxObjectPtr RexxEntry ArrayAt(RexxThreadContext *c, RexxArrayObject a, size_t 
     {
         return (RexxObjectPtr)context.ret(((RexxArray *)a)->getApi(i));
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return OREF_NULL;
@@ -1047,7 +1135,7 @@ logical_t RexxEntry ArrayHasIndex(RexxThreadContext *c, RexxArrayObject a, size_
     {
         return ((RexxArray *)a)->hasIndexApi(i);
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return FALSE;
@@ -1060,7 +1148,7 @@ void RexxEntry ArrayPut(RexxThreadContext *c, RexxArrayObject a, RexxObjectPtr o
     {
         ((RexxArray *)a)->putApi((RexxObject *)o, i);
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
 }
@@ -1072,7 +1160,7 @@ size_t RexxEntry ArraySize(RexxThreadContext *c, RexxArrayObject a)
     {
         return ((RexxArray *)a)->size();
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return 0;
@@ -1085,7 +1173,7 @@ wholenumber_t RexxEntry ArrayDimension(RexxThreadContext *c, RexxArrayObject a)
     {
         return ((RexxArray *)a)->getDimension();
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return 0;
@@ -1098,7 +1186,7 @@ RexxArrayObject RexxEntry NewArray(RexxThreadContext *c, size_t s)
     {
         return (RexxArrayObject)context.ret(new_array(s));
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return NULLOBJECT;
@@ -1111,7 +1199,7 @@ RexxArrayObject RexxEntry ArrayOfOne(RexxThreadContext *c, RexxObjectPtr o)
     {
         return (RexxArrayObject)context.ret(new_array((RexxObject *)o));
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return NULLOBJECT;
@@ -1124,7 +1212,7 @@ RexxArrayObject RexxEntry ArrayOfTwo(RexxThreadContext *c, RexxObjectPtr o1, Rex
     {
         return (RexxArrayObject)context.ret(new_array((RexxObject *)o1, (RexxObject *)o2));
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return NULLOBJECT;
@@ -1138,7 +1226,7 @@ logical_t RexxEntry IsArray(RexxThreadContext *c, RexxObjectPtr o)
     {
         return isArray((RexxObject *)o);
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return FALSE;
@@ -1151,7 +1239,7 @@ CSTRING RexxEntry BufferData(RexxThreadContext *c, RexxBufferObject b)
     {
         return (CSTRING)((RexxBuffer *)b)->getData();
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return NULL;
@@ -1164,7 +1252,7 @@ size_t RexxEntry BufferLength(RexxThreadContext *c, RexxBufferObject b)
     {
         return ((RexxBuffer *)b)->getLength();
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return 0;
@@ -1177,7 +1265,7 @@ RexxBufferObject RexxEntry NewBuffer(RexxThreadContext *c, size_t l)
     {
         return (RexxBufferObject)context.ret((RexxObject *)new_buffer(l));
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return NULLOBJECT;
@@ -1190,7 +1278,7 @@ logical_t RexxEntry IsBuffer(RexxThreadContext *c, RexxObjectPtr o)
     {
         return isOfClass(Buffer, (RexxObject *)o);
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return FALSE;
@@ -1203,7 +1291,7 @@ wholenumber_t RexxEntry IntegerValue(RexxThreadContext *c, RexxIntegerObject o)
     {
         return ((RexxInteger *)o)->wholeNumber();
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return 0;
@@ -1216,7 +1304,7 @@ RexxIntegerObject RexxEntry NewInteger(RexxThreadContext *c, wholenumber_t n)
     {
         return (RexxIntegerObject)context.ret(new_integer(n));
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return NULLOBJECT;
@@ -1229,7 +1317,7 @@ logical_t RexxEntry IsInteger(RexxThreadContext *c, RexxObjectPtr o)
     {
         return isInteger((RexxObject *)o);
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return FALSE;
@@ -1242,7 +1330,7 @@ POINTER RexxEntry PointerValue(RexxThreadContext *c, RexxPointerObject o)
     {
         return (POINTER)((RexxPointer *)o)->pointer();
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return NULL;
@@ -1255,7 +1343,7 @@ RexxPointerObject RexxEntry NewPointer(RexxThreadContext *c, POINTER p)
     {
         return (RexxPointerObject)context.ret(new_pointer(p));
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return NULLOBJECT;
@@ -1268,7 +1356,7 @@ logical_t RexxEntry IsPointer(RexxThreadContext *c, RexxObjectPtr o)
     {
         return isOfClass(Pointer, (RexxObject *)o);
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return FALSE;
@@ -1281,7 +1369,7 @@ RexxObjectPtr RexxEntry SupplierValue(RexxThreadContext *c, RexxSupplierObject o
     {
         return context.ret(((RexxSupplier *)o)->value());
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return NULLOBJECT;
@@ -1294,7 +1382,7 @@ RexxObjectPtr RexxEntry SupplierIndex(RexxThreadContext *c, RexxSupplierObject o
     {
         return context.ret(((RexxSupplier *)o)->index());
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return NULLOBJECT;
@@ -1307,7 +1395,7 @@ logical_t RexxEntry SupplierAvailable(RexxThreadContext *c, RexxSupplierObject o
     {
         return ((RexxSupplier *)o)->available() == TheTrueObject;
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return FALSE;
@@ -1320,7 +1408,7 @@ void RexxEntry SupplierNext(RexxThreadContext *c, RexxSupplierObject o)
     {
         ((RexxSupplier *)o)->next();
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
 }
@@ -1332,7 +1420,7 @@ RexxSupplierObject RexxEntry NewSupplier(RexxThreadContext *c, RexxArrayObject v
     {
         return (RexxSupplierObject)context.ret(new_supplier((RexxArray *)values, (RexxArray *)names));
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return NULLOBJECT;
@@ -1353,7 +1441,7 @@ RexxStemObject RexxEntry NewStem(RexxThreadContext *c, CSTRING name)
         }
 
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return NULLOBJECT;
@@ -1366,7 +1454,7 @@ void RexxEntry SetStemElement(RexxThreadContext *c, RexxStemObject s, CSTRING n,
     {
         ((RexxStem *)s)->setElement(n, (RexxObject *)v);
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
 }
@@ -1378,7 +1466,7 @@ RexxObjectPtr RexxEntry GetStemElement(RexxThreadContext *c, RexxStemObject s, C
     {
         return context.ret(((RexxStem *)s)->getElement(n));
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return NULLOBJECT;
@@ -1391,7 +1479,7 @@ void RexxEntry DropStemElement(RexxThreadContext *c, RexxStemObject s, CSTRING n
     {
         ((RexxStem *)s)->dropElement(n);
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
 }
@@ -1403,7 +1491,7 @@ void RexxEntry SetStemArrayElement(RexxThreadContext *c, RexxStemObject s, size_
     {
         ((RexxStem *)s)->setElement((size_t )i, (RexxObject *)v);
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
 }
@@ -1415,7 +1503,7 @@ RexxObjectPtr RexxEntry GetStemArrayElement(RexxThreadContext *c, RexxStemObject
     {
         return context.ret(((RexxStem *)s)->getElement((size_t)i));
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return NULLOBJECT;
@@ -1428,7 +1516,7 @@ void RexxEntry DropStemArrayElement(RexxThreadContext *c, RexxStemObject s, size
     {
         ((RexxStem *)s)->dropElement((size_t)i);
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
 }
@@ -1440,7 +1528,7 @@ RexxSupplierObject RexxEntry GetAllStemElements(RexxThreadContext *c, RexxStemOb
     {
         return (RexxSupplierObject)context.ret(((RexxStem *)s)->supplier());
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return NULLOBJECT;
@@ -1453,7 +1541,7 @@ RexxObjectPtr RexxEntry GetStemValue(RexxThreadContext *c, RexxStemObject s)
     {
         return context.ret(((RexxStem *)s)->getStemValue());
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return NULLOBJECT;
@@ -1466,7 +1554,7 @@ logical_t RexxEntry IsStem(RexxThreadContext *c, RexxObjectPtr o)
     {
         return isOfClass(Stem, (RexxObject *)o);
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return FALSE;
@@ -1479,7 +1567,7 @@ void RexxEntry RaiseException0(RexxThreadContext *c, size_t n)
     {
         reportException((wholenumber_t)n);
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
 }
@@ -1491,7 +1579,7 @@ void RexxEntry RaiseException1(RexxThreadContext *c, size_t n, RexxObjectPtr o1)
     {
         reportException((wholenumber_t)n, (RexxObject *)o1);
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
 }
@@ -1503,7 +1591,7 @@ void RexxEntry RaiseException2(RexxThreadContext *c, size_t n, RexxObjectPtr o1,
     {
         reportException((wholenumber_t)n, (RexxObject *)o1, (RexxObject *)o2);
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
 }
@@ -1515,7 +1603,7 @@ void RexxEntry RaiseExceptionArray(RexxThreadContext *c, size_t n, RexxArrayObje
     {
         reportException((wholenumber_t)n, (RexxArray *)a);
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
 }
@@ -1528,7 +1616,7 @@ void RexxEntry RaiseCondition(RexxThreadContext *c, CSTRING name, CSTRING desc, 
         context.activity->raiseCondition(new_upper_string(name), OREF_NULL, new_string(desc),
             (RexxArray *)add, (RexxObject *)result, OREF_NULL);
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
 }
@@ -1540,7 +1628,7 @@ logical_t RexxEntry CheckCondition(RexxThreadContext *c)
     {
         return context.context->getConditionInfo() != OREF_NULL;
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return FALSE;
@@ -1553,7 +1641,7 @@ RexxDirectoryObject RexxEntry GetConditionInfo(RexxThreadContext *c)
     {
         return (RexxDirectoryObject)context.context->getConditionInfo();
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
     return OREF_NULL;
@@ -1567,7 +1655,7 @@ void RexxEntry DecodeConditionInfo(RexxThreadContext *c, RexxDirectoryObject d, 
     {
         Interpreter::decodeConditionData((RexxDirectory *)d, cd);
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
 }
@@ -1579,7 +1667,7 @@ void RexxEntry ClearCondition(RexxThreadContext *c)
     {
         context.context->setConditionInfo(OREF_NULL);
     }
-    catch (ActivityException)
+    catch (RexxNativeActivation *)
     {
     }
 }
@@ -1612,13 +1700,19 @@ RexxThreadInterface RexxActivity::threadContextFunctions =
     FindClass,
     FindClassFromPackage,
     GetPackageRoutines,
+    GetPackagePublicRoutines,
     GetPackageClasses,
+    GetPackagePublicClasses,
     GetPackageMethods,
     CallRoutine,
     CallProgram,
 
     NewMethod,
     NewRoutine,
+    IsRoutine,
+    IsMethod,
+    GetRoutinePackage,
+    GetMethodPackage,
     SaveRoutine,
 
     NewObject,

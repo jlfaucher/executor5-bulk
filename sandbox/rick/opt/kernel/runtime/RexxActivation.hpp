@@ -172,8 +172,6 @@ class ActivationSettings
 
 RexxObject *buildCompoundVariable(RexxString * variable_name, bool direct);
 
-RexxObject * activation_find  (void);
-
  class RexxActivation : public RexxActivationBase {
   public:
    void *operator new(size_t);
@@ -187,7 +185,6 @@ RexxObject * activation_find  (void);
    void init(RexxObject *, RexxObject *, RexxObject *, RexxObject *, RexxObject *, int);
    void live(size_t);
    void liveGeneral(int reason);
-   void flatten(RexxEnvelope *);
    RexxObject      * dispatch();
    void              traceBack(RexxList *);
    size_t            digits();
@@ -368,7 +365,9 @@ RexxObject * activation_find  (void);
 
    virtual NumericSettings *getNumericSettings();
    virtual RexxActivation  *getRexxContext();
+   virtual RexxActivation  *findRexxContext();
    virtual RexxObject      *getReceiver();
+   virtual bool             isRexxContext();
 
    inline void              traceIntermediate(RexxObject * v, int p) { if (this->settings.intermediate_trace) this->traceValue(v, p); };
    inline void              traceVariable(RexxString *n, RexxObject *v)
@@ -582,8 +581,6 @@ RexxObject * activation_find  (void);
 
    ActivationSettings   settings;      /* inherited REXX settings           */
    RexxExpressionStack  stack;         /* current evaluation stack          */
-   RexxMethod          *method;        // for a method invocation
-   RoutineClass        *routine;       // for a routine invocation
    RexxCode            *code;          /* rexx method object                */
    RexxClass           *scope;         // scope of any active method call
    RexxObject          *receiver;      /* target of a message invocation    */
