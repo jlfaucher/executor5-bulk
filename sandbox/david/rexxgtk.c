@@ -355,6 +355,8 @@ APIRET APIENTRY GrxLoadFuncs(char * Name,
         "GrxTextBufferCutClipboard",
         "GrxTextBufferCopyClipboard",
         "GrxTextBufferPasteClipboard",
+        "GrxTextBufferForwardSearch",
+        "GrxTextBufferForwardSearchNext",
         "GrxTextBufferConnectSignal",
 
         //Scrolled window functions

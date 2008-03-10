@@ -329,6 +329,99 @@ APIRET APIENTRY GrxTextBufferPasteClipboard(const char * Name,
 
 
 /*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxTextBufferForwardSearch                         */
+/* Description: Search the buffer                                             */
+/* Rexx Args:   Pointer to the buffer                                         */
+/*              Search Text                                                   */
+/*              Start search flag                                             */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxTextBufferForwardSearch(const char * Name,
+                                       const size_t Argc, const RXSTRING Argv[],
+                                       const char * Queuename, PRXSTRING Retstr)
+{
+    GtkTextBuffer       *myBuffer;
+    gboolean            flag, found;
+    GtkTextIter         start, begin, end, *retiter;
+    GtkTextMark         *mark;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(3, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    sscanf(Argv[0].strptr, "%p", &myBuffer);
+    sscanf(Argv[2].strptr, "%p", &flag);
+
+    if (flag) {
+        /* start search from the start of the buffer */
+        gtk_text_buffer_get_start_iter(myBuffer, &start);
+    }
+    else {
+        /* start search from the current position */
+        mark = gtk_text_buffer_get_insert(myBuffer);
+        gtk_text_buffer_get_iter_at_mark(myBuffer, &start, mark);
+    }
+    found = gtk_text_iter_forward_search(&start, Argv[1].strptr,
+                                         GTK_TEXT_SEARCH_TEXT_ONLY , &begin,
+                                         &end, NULL);
+
+    /* Set up the REXX return code */
+    if (found) {
+        retiter = gtk_text_iter_copy(&begin);
+        g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%p", retiter);
+    }
+    else {
+        *(Retstr->strptr) = '\0';
+    }
+    Retstr->strlength = strlen(Retstr->strptr);
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxTextBufferForwardSearchNext                     */
+/* Description: Search the buffer                                             */
+/* Rexx Args:   Search Text                                                   */
+/*              Pointer to Iter                                               */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxTextBufferForwardSearchNext(const char * Name,
+                                       const size_t Argc, const RXSTRING Argv[],
+                                       const char * Queuename, PRXSTRING Retstr)
+{
+    gboolean            found;
+    GtkTextIter         *start, begin, end, *retiter;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(2, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    sscanf(Argv[1].strptr, "%p", &start);
+
+    gtk_text_iter_forward_char(start);
+    found = gtk_text_iter_forward_search(start, Argv[0].strptr,
+                                         GTK_TEXT_SEARCH_TEXT_ONLY , &begin,
+                                         &end, NULL);
+    gtk_text_iter_free(start);
+
+    /* Set up the REXX return code */
+    if (found) {
+        retiter = gtk_text_iter_copy(&begin);
+        g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%p", retiter);
+    }
+    else {
+        *(Retstr->strptr) = '\0';
+    }
+    Retstr->strlength = strlen(Retstr->strptr);
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
 /* Rexx External Function: GrxTextBufferonnectSignal                          */
 /* Description: Connect a signal function to the Widget                       */
 /* Rexx Args:   Pointer to the widget                                         */

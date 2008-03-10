@@ -2909,6 +2909,15 @@ use strict arg cb, flag
 call GrxTextBufferPasteClipboard pointer, cb~pointer, flag
 return
 
+::method forward_search
+expose pointer
+use strict arg text, flag
+return GrxTextBufferForwardSearch(pointer, text, flag)
+
+::method forward_search_next
+use strict arg text, iter
+return GrxTextBufferForwardSearchNext(text, iter)
+
 ::method signal_connect
 use strict arg event
 select
