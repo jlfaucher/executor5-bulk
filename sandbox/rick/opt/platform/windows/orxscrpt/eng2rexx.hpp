@@ -45,19 +45,10 @@
 #include "OrxScrptError.hpp"
 class OrxScript;
 
-extern HANDLE mutex;
-extern Index *thread2EngineList;
-
 int RexxEntry RexxNovalueHandler(RexxExitContext *, int ExitNumber, int Subfunction, PEXIT parmblock);
 int RexxEntry RexxValueExtension(RexxExitContext *, int ExitNumber, int Subfunction, PEXIT parmblock);
-int RexxEntry RexxCatchExit(RexxExitContext *, int ExitNumber, int Subfunction, PEXIT parmblock);
 int RexxEntry RexxCatchExternalFunc(RexxExitContext *, int ExitNumber, int Subfunction, PEXIT parmblock);
 int __stdcall scriptSecurity(CLSID,IUnknown*);
-RexxObjectPtr Create_securityObject(OrxScript *, FILE *);
-void __stdcall parseText(void*);
-void __stdcall createCode(void*);
-
-void runMethod(RexxThreadContext *context, OrxScript *pEngine, RCB *RexxCode, RexxArrayObject args, RexxObjectPtr &targetResult, RexxConditionData &condData);
 
 
 // these three come from orexxole.c

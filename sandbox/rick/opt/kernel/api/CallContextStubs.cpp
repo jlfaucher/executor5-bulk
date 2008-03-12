@@ -47,6 +47,8 @@
 #include "RexxNativeActivation.hpp"
 #include "SupplierClass.hpp"
 #include "Interpreter.hpp"
+#include "MethodClass.hpp"
+#include "PackageClass.hpp"
 
 BEGIN_EXTERN_C()
 
@@ -238,7 +240,7 @@ RexxPackageObject RexxEntry GetExitContextPackage(RexxExitContext *c)
     ApiContext context(c);
     try
     {
-        return (RexxObjectPtr)context.ret(context.context->getRexxContextExecutable()->getPackage());
+        return (RexxPackageObject)context.ret(context.context->getRexxContextExecutable()->getPackage());
     }
     catch (RexxNativeActivation *)
     {

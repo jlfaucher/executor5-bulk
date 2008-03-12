@@ -39,10 +39,10 @@
 CRITICAL_SECTION ScriptProcessEngine::engineSection = { 0 };
 HANDLE ScriptProcessEngine::engineMutex = 0; ;
 DWORD  ScriptProcessEngine::engineThreadLocal = 0;
-Index  *ScriptProcessEngine::thread2EngineList = NULL;
 RexxInstance *ScriptProcessEngine::interpreter = NULL;
 LooseLinkedList *ScriptProcessEngine::engineChain = NULL;
 FILE *ScriptProcessEngine::logfile = NULL;
+RexxClassObject ScriptProcessEngine::securityManager = NULLOBJECT;
 
 
 void ScriptProcessEngine::initialize()
@@ -61,15 +61,12 @@ void ScriptProcessEngine::initialize()
     // get a slot to use for anchoring engines on a thread local basis
     engineThreadLocal = TlsAlloc();
 
-    // list to associate engines with the threads it owns
-    thread2EngineList = new Index;
-
     engineMutex = CreateMutex(NULL,false,NULL); // we're in deep trouble if this is zero after the call!
 
     RexxOption options[2];
 
     RexxContextExit exits[] = {
-        { RexxCatchExit, RXTER},
+        { RexxRetrieveVariables, RXTER},
         { RexxCatchExternalFunc, RXEXF},
         { RexxNovalueHandler, RXNOVAL},
         { RexxValueExtension, RXVALUE},
@@ -83,6 +80,9 @@ void ScriptProcessEngine::initialize()
 
     // create our interpreter instance
     RexxCreateInterpreter(&interpreter, &context, options);
+
+    RexxPackageObject package = context->LoadPackage('orxscript.cls');
+    securityManager = context->ResolveFindPackageClass(package, "ENGINESECURITY");
 
     FPRINTF2(logfile,"DllMain ATTACH - complete\n");
 }
@@ -108,7 +108,6 @@ void ScriptProcessEngine::terminate()
     // free the thread local for this
     TlsFree(engineThreadLocal);
 
-    delete thread2EngineList;
     // remove critical section
     DeleteCriticalSection(&EngineSection);
 

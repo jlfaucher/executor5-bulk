@@ -35,9 +35,9 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-#define  DLLFUNCS_CPP
 #include "dllfuncs.hpp"
 #include "eng2rexx.hpp"
+#include "scriptProcessEngine.hpp"
 
                                             // thread that the REXX code is running in
 

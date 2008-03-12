@@ -199,11 +199,6 @@ OrxScript::OrxScript() : ulRefCount(1),
     // create a unique engine name (for REXX directory entries of methods)
     sprintf(EngineName,"RXEngine%06d",::iEngineCount);
 
-    // this is a directory that will be kept in the process local environment
-    // to "anchor" our methods into REXX memory and to protect it against GC
-    FPRINTF(logfile,"doing RexxCreateScriptContext(%s)\n",EngineName);
-
-    RexxCreateScriptContext(EngineName);
     InterlockedIncrement((long *)&ulDllLocks);     //  Make sure the DLL does not go away before we do.
 
     // create code block that will be used to obtain a security manager
@@ -268,8 +263,6 @@ OrxScript::~OrxScript()
     delete RexxFunctions;
     delete RexxCodeList;
 
-    // i'm not 100% sure it is needed, but it can't hurt anyway...
-    RexxDestroyScriptContext(EngineName);
     InterlockedDecrement((long *)&ulDllLocks);
 
     FPRINTF2(logfile,"~OrxScript()  for engine(%d) complete\n",iEngineCount);
@@ -1399,13 +1392,10 @@ STDMETHODIMP OrxScript::ParseScriptText(LPCOLESTR  pStrCode,
                                         EXCEPINFO *pExcepInfo)
 {
     HRESULT hResult = S_OK;
-    RexxObjectPtr method=NULL;
     HANDLE     execution;
-    LPVOID     arguments[8];
     DISPID     lDispID;
     UINT       dummy;
     RexxObjectPtr resultDummy;
-    RexxConditionData cd;
     int        result;
     int        i;
     LinkedList tempNames;
@@ -1424,171 +1414,121 @@ STDMETHODIMP OrxScript::ParseScriptText(LPCOLESTR  pStrCode,
     FPRINTF2(logfile,"%s\n",FlagMeaning('H',dwFlags,ScriptText));
     FPRINTF3(logfile,">>>>>>> START OF CODE next line:\n%S\n<<<<<<<END OF CODE\n",pStrCode);
 
-    arguments[0] = (LPVOID) pStrCode;
-    arguments[1] = (LPVOID) &tempNames;
-    arguments[2] = (LPVOID) &result;
+    CreateCodeData createArgs;
+    RexxConditionData cd;
+
+    // fill in the args for calling the interpreter to handle all of this
+    createArgs.engine = this;
+    createArgs.strCode = pStrCode;
+    createArgs.routine = NULLOBJECT;
+    createArgs.condData = &cd;
 
     EnterCriticalSection(&EngineSection);
     pActiveScriptSite->OnEnterScript();
-    FPRINTF2(logfile,"parseText() - find out names\n");
-    // now find out the function names (runs in a different thread)
-    execution = (HANDLE) _beginthreadex(NULL, 0, (unsigned int (__stdcall *) (void*) ) parseText, (LPVOID) arguments, 0, &dummy);
-    // could not start thread?  This is the only check after parseText().  If there are
-    // other problems, the createCode() will find them again, and its diagnostic capabilites
-    // are stronger.  It will build the OrxScriptError object.
+
+    FPRINTF2(logfile,"create method\n");
+
+        // now create the method (runs in a different thread)
+    HANDLE execution = (HANDLE)_beginthreadex(NULL, 0, (unsigned int (__stdcall *) (void*) ) createCode, (LPVOID) createArgs, 0, &dummy);
+    // could not start thread?
     if (execution == 0)
     {
         hResult = E_FAIL;
-        FPRINTF2(logfile,"parseText() failed to start a new thread. HRESULT %08x \n",execution);
     }
     else
     {
         WaitForSingleObject(execution, INFINITE);
         CloseHandle(execution);
-        // we get the result back from the other thread...
-        if (result != 0)
+    }
+    cd.position += ulStartingLineNumber;
+    //    The following code HAS to be after the _endthreadex(), or
+    //  bad things will happen.  None of the COM calls that result
+    //  from the following function calls will work.
+    if (cd.rc)
+    {
+        // an error occured: init excep info
+        ErrObj = new OrxScriptError(logfile, &cd, &ErrObj_Exists);
+        hResult = pActiveScriptSite->OnScriptError((IActiveScriptError*) ErrObj);
+        // init to empty again....
+        if (ErrObj_Exists)
         {
-            hResult = E_FAIL;
+            ErrObj->UDRelease();
         }
     }
-    if (hResult != E_FAIL)
+    else
     {
-        FPRINTF2(logfile,"create method\n");
-
-        // create method to store with the names we found
-        // no names found => this just goes to the list
-        // where all "immediate" code is stored...
-        arguments[0] = (LPVOID) pStrCode;
-        arguments[1] = (LPVOID) this;
-        arguments[2] = (LPVOID) &method;
-        arguments[3] = (LPVOID) &cd;
-        FPRINTF2(logfile,"ParseScriptText - Sending %p \n",&method);
-
-
-        // method.strptr = NULL;
-        // method.strlength = 0;
-
-        // adjust line number count: -1 line for the 'interpret' statement & possibly one line for a 'newline' after script tag
-        if (pStrCode[0] == 0x000a || pStrCode[0] == 0x000d)
+        RexxThreadContext *context = ScriptProcessEngine::getThreadContext();
+        do
         {
-            ulStartingLineNumber-=2;
-        }
-        else
-        {
-            ulStartingLineNumber--;
-        }
-
-        // now create the method (runs in a different thread)
-        execution = (HANDLE) _beginthreadex(NULL, 0, (unsigned int (__stdcall *) (void*) ) createCode, (LPVOID) arguments, 0, &dummy);
-        // could not start thread?
-        if (execution == 0)
-        {
-            hResult = E_FAIL;
-        }
-        else
-        {
-            WaitForSingleObject(execution, INFINITE);
-            CloseHandle(execution);
-        }
-        cd.position += ulStartingLineNumber;
-        //    The following code HAS to be after the _endthreadex(), or
-        //  bad things will happen.  None of the COM calls that result
-        //  from the following function calls will work.
-        if (cd.rc)
-        {
-            // an error occured: init excep info
-            ErrObj = new OrxScriptError(logfile,&cd,&ErrObj_Exists);
-            hResult = pActiveScriptSite->OnScriptError((IActiveScriptError*) ErrObj);
+            //store in global list that will be used
+            //in DTOR when leaving engine
+            hResult = BuildRCB(RCB::ParseScript, NULL, dwFlags, ulStartingLineNumber, createArgs.routine, &CodeBlock);
             if (FAILED(hResult))
             {
+                break;
             }
-            // init to empty again....
-            if (ErrObj_Exists)
-            {
-                ErrObj->UDRelease();
-            }
-        }
-        else
-        {
+            FPRINTF2(logfile,"The Rexx Routine %p is now in the CodeBlock %p \n", createArgs.routine, CodeBlock);
+            // now retrieve all of the public routines defined in this code block and add this to our external
+            // table of available routines.
 
-            do
-            {
-                //store in global list that will be used
-                //in DTOR when leaving engine
-                hResult = BuildRCB(RCB::ParseScript,NULL,dwFlags,ulStartingLineNumber,method,&CodeBlock);
-                if (FAILED(hResult))
-                {
-                    break;
-                }
-                FPRINTF2(logfile,"The Rexx Method %p is now in the CodeBlock %p \n",method,CodeBlock);
-                // go through all entries of the names list
-                // and put the names associated with the appropriate
-                // rexx code block into the rexx functions list
-                i = 0;
-                while ( item = tempNames.FindItem(i++) )
-                {
-                    RexxFunctions->AddItem(item->GetName(),LinkedList::Beginning,(void*) CodeBlock);
-                    C2W(lName,item->GetName(),strlen(item->GetName())+1);
-                    hResult = DispID.AddDispID(lName,dwFlags,DID::Function,CodeBlock,&lDispID);
-                    FPRINTF2(logfile,"associating method %s with rexx block %p, DispID %d %08x\n",item->GetName(),CodeBlock,(int) lDispID,lDispID);
+            RexxPackageObject package = context->GetRoutinePackage(createArgs.routine);
+            RexxDirectoryObject routines = context->GetPackagePublicRoutines(package);
+            RexxSupplierObject supplier = (RexxSupplierObject)context->SendMessage0(routines, "SUPPLIER");
 
-                    if (FAILED(hResult))
-                    {
-                        break;
-                    }
-                }
+            i = 0;
+            while (context->SupplierAvailable(supplier))
+            {
+                PRCB  functionBlock = NULL;
+                RexxStringObject name = (RexxStringObject)context->SupplierIndex(supplier);
+                RexxRoutineObject routine = (RexxRoutineObject)context->SupplierValue(supplier);
+                const char *functionName = context->StringData(name);
+
+                hResult = BuildRCB(RCB::ParseScript, NULL, dwFlags, ulStartingLineNumber, routine, &functionBlock);
                 if (FAILED(hResult))
                 {
                     break;
                 }
 
-                i = 0;
-                FPRINTF2(logfile,"RexxFunctions of this engine now knows these functions:\n");
-                item = RexxFunctions->FindItem(0);
-                FPRINTF2(logfile,"item %p \n",item);
-                while ( item = RexxFunctions->FindItem(i++) )
-                {
-                    FPRINTF2(logfile,"%d %s\n",i,item->GetName());
-                }
-                if (i == 1)
-                {
-                    FPRINTF2(logfile,"There are no known functions\n");
-                }
-                FPRINTF2(logfile,"These are all the known functions\n");
+                RexxFunctions->AddItem(functionName, LinkedList::Beginning, (void*)functionBlock);
 
-                // what to do with the script text we have:
-                if (engineState == SCRIPTSTATE_INITIALIZED || engineState == SCRIPTSTATE_UNINITIALIZED)
+                C2W(lName, functionName, strlen(functionName) + 1);
+                hResult = DispID.AddDispID(lName,dwFlags, DID::Function, functionBlock, &lDispID);
+                FPRINTF2(logfile,"associating method %s with rexx block %p, DispID %d %08x\n", functionName, functionBlock, (int)lDispID, lDispID);
+
+                if (FAILED(hResult))
                 {
-                    //store with stack to exec when connecting...
-                    RexxExecStack->AddItem(NULL,LinkedList::Beginning,(void*) CodeBlock);
-                    FPRINTF2(logfile,"storing method %p for later execution\n",CodeBlock);
+                    break;
                 }
-                else
+            }
+            if (FAILED(hResult))
+            {
+                break;
+            }
+
+            // what to do with the script text we have:
+            if (engineState == SCRIPTSTATE_INITIALIZED || engineState == SCRIPTSTATE_UNINITIALIZED)
+            {
+                //store with stack to exec when connecting...
+                RexxExecStack->AddItem(NULL, LinkedList::Beginning, (void*)CodeBlock);
+                FPRINTF2(logfile,"storing method %p for later execution\n", CodeBlock);
+            }
+            else
+            {
+                //we are STARTED or CONNECTED: run right away...
+
+                this->enableVariableCapture = true;
+                runMethod(context, this, CodeBlock, NULL, resultDummy, cd);
+                this->enableVariableCapture = false;
+                //  Do not need to check the ConditionData here.  That was done for us by runMethod().
+                if (cd.rc)
                 {
-                    RexxThreadContext *context = ScriptProcessEngine::getThreadContext();
-
-                    //we are STARTED or CONNECTED: run right away...
-                    arguments[0] = (LPVOID) this;
-                    arguments[1] = (LPVOID) CodeBlock;
-                    arguments[2] = (LPVOID) NULL;  // no COM args
-                    arguments[3] = (LPVOID) NULL;  // no REXX args
-                    arguments[4] = (LPVOID) &resultDummy;  // result
-                    arguments[5] = (LPVOID) &cd;   // condition data
-                    arguments[6] = (void*) /*true*/false;   // end thread
-                    arguments[7] = (void*) true;  // store known variables after execution of immediate code
-
-                    runMethod(context, this, CodeBlock, NULL, resultDummy, cd);
-                    //  Do not need to check the ConditionData here.  That was done for us by runMethod().
-                    if (cd.rc)
-                    {
-                        FPRINTF2(logfile,"ParseScriptText - immediate code execution produced an error! (rc = %d)\n",cd.rc);
-                    }
-                    // make sure we dispose of this
-                    context->DetachThread();
+                    FPRINTF2(logfile,"ParseScriptText - immediate code execution produced an error! (rc = %d)\n",cd.rc);
                 }
+            }
 
-            }  while (0==1);
-        }
+        }  while (0==1);
+        // make sure we dispose of this
+        context->DetachThread();
     }
     pActiveScriptSite->OnLeaveScript();
     LeaveCriticalSection(&EngineSection);
@@ -1766,7 +1706,7 @@ STDMETHODIMP OrxScript::SetInterfaceSafetyOptions(REFIID iid, DWORD dwOptionSetM
         hResult = E_NOINTERFACE;
     }
 
-    securityObject = Create_securityObject(this,logfile);
+    securityObject = createSecurityObject();
 
     FPRINTF2(logfile,"OrxScript::SetInterfaceSafetyOptions() - Leaving HRESULT %08x\n",hResult);
     return hResult;

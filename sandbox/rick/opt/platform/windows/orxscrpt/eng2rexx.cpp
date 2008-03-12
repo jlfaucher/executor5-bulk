@@ -74,53 +74,13 @@ struct CONFIRMSAFETY
 static const GUID GUID_CUSTOM_CONFIRMOBJECTSAFETY = { 0x10200490, 0xfa38, 0x11d0, { 0xac, 0xe, 0x0, 0xa0, 0xc9, 0xf, 0xff, 0xc0 } };
 
 
-/* Exit handler to find out the names of any functions in currently parsed script */
-int RexxEntry RexxCatchExit(RexxExitContext *, int ExitNumber, int Subfunction, PEXIT parmblock)
-{
-    char **names;
-    size_t iCount;
-    RexxObjectPtr rxString = NULL;
-    LinkedList *myList = NULL;
-
-    // get LISTOFNAMES, containing a pointer to the list that will
-    // store all names we find out here...
-    RexxPointerObject nameList = (RexxPointerObject)context->GetContextVariable("LISTOFNAMES");
-    if ( nameList != NULLOBJECT)
-    {
-        myList = context->PointerValue(nameList);
-    }
-
-    if (myList)
-    {
-        RexxPackageObject package;
-
-        RexxPackageObject package = context->GetExitContextPackage();
-        // TODO:  This can be handled without the exit now
-        RexxDirectoryObject routines = context->GetPackagePublicRoutines(package);
-
-        RexxSupplierObject supplier = (RexxSupplierObject)context->SendMessage0(routines, "SUPPLIER");
-
-        // now iterate through the directory, saving the list of routines (and the names).
-        while (context->SupplierAvailable(supplier))
-        {
-            RexxStringObject name = (RexxStringObject)context->SupplierIndex(supplier);
-            RexxRoutineObject routine = (RexxRoutineObject)context->SupplierValue(supplier);
-            context->RequestGlobalReference((RexxObjectPtr)routine);
-            myList->AddItem(context->StringData(name), LinkedList::Beginning, routine);
-        }
-    }
-
-    // always return with NOT_HANDLED...
-    return RXEXIT_NOT_HANDLED;
-}
-
-
 /* Exit handler to find out the values of variables of "immediate code" */
 int RexxEntry RexxRetrieveVariables(RexxExitContext *, int ExitNumber, int Subfunction, PEXIT parmblock)
 {
     OrxScript *engine = ScriptProcessEngine::findEngineForThread();
 
-    if (engine)
+    // if we're capturing variable values on exit, grab the entire set now
+    if (engine && enginethis->enableVariableCapture)
     {
         // request all of the context variables
         RexxSupplierObject supplier = context->GetAllContextVariables();
@@ -700,203 +660,73 @@ int RexxEntry RexxNovalueHandler(RexxExitContext *, int ExitNumber, int Subfunct
     return result != NULLOBJECT ? RXEXIT_HANDLED : RXEXIT_NOT_HANDLED;
 }
 
-/* here we "parse" the text and retrieve the names of all */
-/* (public) routines mentioned in there.                  */
-/* the name retrieval is done with the exit handler that  */
-/* will call back into the engine to add the names...     */
-/* parameters: 0 - script text in wide charachters (in)   */
-/*             1 - pointer to script engine (in)          */
-/*             2 - return code (out)                      */
-// this is running in a thread of its own...
-void __stdcall parseText(void *arguments)
+
+void OrxScript::convertTextToCode(LPCOLESTR strCode, RexxRoutineObject *routine, RexxConditionData *condData)
 {
-    // get the info that was passed to us
-    LPCOLESTR   pStrCode = ((LPCOLESTR*) arguments)[0]; // script text
-    LinkedList *pList = ((LinkedList**) arguments)[1];  // pointer to list for names
-    int        *result = ((int**) arguments)[2];
+    // get an interpreter instance context for us to use
+    RexxThreadContext *context = ScriptProcessEngine::getThreadContext();
+    condData->rc = 0;            // clear the return code for return
 
-    // "normal" local variables
-    RXSTRING instore[2];
-    RXSYSEXIT exit_list[9];
-    RXSTRING  rexxretval;
-    RexxReturnCode    rc;
-    SHORT     rexxrc = 0;
+    size_t scriptSize = scslen(pStrCode);
 
-    char funcHandler[128];
-    char *script = NULL;
+    // we need to convert this script into ascii characters before converting
+    char *script = (char *) malloc(sizeof(char) * (1 + scriptSize));
+    sprintf(script,"%S",pStrCode);
 
-#if defined(DEBUGC)+defined(DEBUGZ)
-    static int parsecount = 0;
-    char fname[64];
-    FILE *logfile;
-
-    sprintf(fname,"c:\\temp\\parsetext%d.log",++parsecount);
-    logfile = fopen(fname,"wb");
-#endif
-    // build "our" version of the script text that does "nothing"...
-    sprintf(funcHandler,"LISTOFNAMES='%p'; exit;",pList);
-    script = (char*) malloc(sizeof(char)*(1+wcslen(pStrCode)+strlen(funcHandler)));
-    sprintf(script,"%s%S",funcHandler,pStrCode);
-
-    // by setting the strlength of the output RXSTRING to zero, we
-    // force the interpreter to allocate memory and return it to us
-    rexxretval.strptr = NULL;
-    rexxretval.strlength = 0;
-
-    // provide script in instore mode, we will simply discard the
-    // resulting image...
-    MAKERXSTRING(instore[0], script, strlen(script));
-    instore[1].strptr = NULL;
-    instore[1].strlength = 0;
-
-
-    // initialize exit list
-    exit_list[0].sysexit_name = "RexxCatchExit";
-    exit_list[0].sysexit_code = RXTER;
-    exit_list[1].sysexit_name = "RexxNovalueHandler";
-    exit_list[1].sysexit_code = RXVAR;
-    exit_list[2].sysexit_name = "RexxValueExtension";
-    exit_list[2].sysexit_code = RXVAL;
-    exit_list[3].sysexit_code = RXENDLST;
-    FPRINTF(logfile,"RexxStart()\n");
-    // run this
-    rc = RexxStart(0,                     // no arguments
-                   NULL,                  // the argument pointer
-                   "Rexx/ParseText",      // name of script
-                   instore,               // instore parameters
-                   NULL,                  // command environment name
-                   RXSUBROUTINE,          // invoke as COMMAND
-                   exit_list,             // exit list (catch exit only)
-                   &rexxrc,               // rexx result code
-                   &rexxretval);          // rexx program result
-    FPRINTF2(logfile,"done with RexxStart (RC = %d)\n",rexxrc);
-    *result = (int) rexxrc;
-
-    // we do not need any return value...
-    if (rexxretval.strptr)
+    RexxRoutineObject *routine = context->NewRoutine(getEngineName(), script, scriptSize);
+    // convert this into a routine
+    if (context->checkException())
     {
-        GlobalFree(rexxretval.strptr);
-    }
-
-    // we throw away the image, we need a special one anyway...
-    if (instore[1].strptr)
-    {
-        GlobalFree(instore[1].strptr);
+        // if we had an exception, then get the decoded exception information and
+        RexxDirectoryObject cond = context->GetConditionInfo();
+        context->DecodeConditionInfo(cond, condData);
+        context->ClearException();
     }
 
     free(script);
-
-    FPRINTF(logfile,"parseText ends\n");
-#if defined(DEBUGC)+defined(DEBUGZ)
-    fclose(logfile);
-#endif
-
-    _endthreadex(0);
+    contexxt->DetachThread();
 }
 
-/* this creates a (flattened) method from the source    */
-/* that is passed to us.                                */
-/* a "handler" is prepended to allow for execution of   */
-/* the immediate code (once) and calls for functions    */
-/* inside this method (many times). this is done with   */
-/* an interpret statement.                              */
-/* parameters: 0 - script text in wide charachters (in) */
-/*             1 - pointer to script engine (in)        */
-/*             2 - pointer to RXSTRING for result image */
-/*                 (out)                                */
+
 void __stdcall createCode(void *arguments)
 {
-    // get the info that was passed to us
-    LPCOLESTR  pStrCode = ((LPCOLESTR*) arguments)[0]; // script text
-    OrxScript *pEngine = ((OrxScript**) arguments)[1]; // pointer to engine
-    RexxObjectPtr *pImage = ((RexxObjectPtr **) arguments)[2];   // result object (a string containing the image)
-    RexxConditionData *condData = ((RexxConditionData**) arguments)[3]; // condition info
+    CreateCodeData * args = (CreateCodeData *)arguments;
 
-    // "normal" local variables
-    char        funcHandler[128];
-    char       *script = NULL;
-    CONSTRXSTRING source;
-    RexxReturnCode      rc;
-
-
-#if defined(DEBUGC)+defined(DEBUGZ)
-    static int codecount = 0;
-    char fname[64];
-    FILE *logfile;
-
-    sprintf(fname,"c:\\temp\\createcode%d.log",++codecount);
-    logfile = fopen(fname,"wb");
-#endif
-    FPRINTF(logfile,"createCode() started\n");
-    FPRINTF(logfile,"code:\n%S\n",pStrCode);
-
-    // build "our" version of the script text that does allows us "dispatch" function
-    // calls and to run "immediate" code
-    sprintf(funcHandler,"if arg(1) \\='' then interpret arg(1)\n");
-    script = (char*) malloc(sizeof(char)*(1+wcslen(pStrCode)+strlen(funcHandler)));
-    sprintf(script,"%s%S",funcHandler,pStrCode);
-
-    MAKERXSTRING(source,script,strlen(script));
-
-    condData->rc = 0;  // clear to ok
-    rc = RexxCreateRoutine(pEngine->getEngineName(),&source,pImage,condData);
-    if (condData->rc == 0)
-    {
-        FPRINTF2(logfile,"RexxCreateRoutine success\n");
-    }
-    else
-    {
-        FPRINTF2(logfile,"RexxCreateRoutine with %s failed: %s\n",script,condData->errortext.strptr);
-    }
-
-    free(script);
-
-    FPRINTF(logfile,"stored in RXSTRING at %p\ncreateCode ends\n",pImage);
-#if defined(DEBUGC)+defined(DEBUGZ)
-    fclose(logfile);
-#endif
-
+    args->engine->convertTextToCode(args->strCode, &args->routine, args->condData);
+    // and explicitly terminate
     _endthreadex(0);
 }
 
 
-
-RexxObjectPtr Create_securityObject(OrxScript  *pEngine,
-                                  FILE       *logfile)
+RexxObjectPtr OrxScript::createSecurityObject()
 {
     RexxObjectPtr securityObject = NULL;
     FPRINTF2(logfile,"Create_securityObject - start Engine %p \n",pEngine);
 
 
     /* create an instance of a security manager object */
-    if (pEngine->getSafetyOptions())
+    if (getSafetyOptions())
     {
-        DISPPARAMS dp;
-        VARIANT temp;
-        OLECHAR invokeString[32];
-        char args[32];
         RexxConditionData condData; // condition info
-        OrxScriptError *ErrObj;
         bool        ErrObj_Exists;
-        APIRET      rc;
         HRESULT     hResult=S_OK;
 
+        RexxThreadContext *ScriptProcessEngine::getThreadContext();
 
         memset((void*) &condData,0,sizeof(RexxConditionData));
-        sprintf(args,"FLAGS=%d",pEngine->getSafetyOptions());
-        C2W(invokeString,args,32);
-        VariantInit(&temp);
-        V_VT(&temp) = VT_BSTR;
-        V_BSTR(&temp) = SysAllocString(invokeString);
-        dp.cArgs = 1;
-        dp.cNamedArgs = 0;
-        dp.rgdispidNamedArgs = NULL;
-        dp.rgvarg = &temp;
-        FPRINTF2(logfile,"Create_securityObject - About to use SecurityManager %p\n",pEngine->getSecurityManager());
-        rc = RexxRunRoutine(pEngine->getEngineName(),pEngine->getSecurityManager(),&dp,DispParms2RexxArray,NULL,&securityObject,NULL,&condData);
-        VariantClear(&temp);
-        if (condData.rc)
+
+        RexxObjectPtr flags = context->NumberToObject(getSafetyOptions());
+
+        FPRINTF2(logfile,"Create_securityObject - About to use SecurityManager %p\n", getSecurityManager());
+
+        securityObject = context->SendMessage1(ScriptProcessEngine::getSecurityManagerClass(), "NEW", flags);
+
+        if (context->CheckCondition())
         {
+            // if we had an exception, then get the decoded exception information and
+            RexxDirectoryObject cond = context->GetConditionInfo();
+            context->DecodeConditionInfo(cond, &condData);
+            context->ClearException();
             // an error occured: init excep info
             ErrObj = new OrxScriptError(logfile,&condData,&ErrObj_Exists);
 
@@ -914,14 +744,12 @@ RexxObjectPtr Create_securityObject(OrxScript  *pEngine,
         }
         else
         {
+            // protect from GC
+            context->RequestGlobalReference(securityObject);
             FPRINTF2(logfile,"Create_securityObject - Success created secturityObject: %p.\n",securityObject);
         }
+        context->DetachThread();
     }
-    else
-    {
-        securityObject = NULL;
-    }
-
     return securityObject;
 }
 
@@ -977,7 +805,7 @@ void runMethod(RexxThreadContext *context, OrxScript *pEngine, RCB *RexxCode, Re
     {
         // make sure this is protected for a bit
         context->RequestGlobalReference(targetResult);
-        FPRINTF2(logfile,"RexxRunRoutine success. Returned object: %p.\n", targetResult);
+        FPRINTF2(logfile,"Rexx call success. Returned object: %p.\n", targetResult);
     }
 
     // remove engine from thread list

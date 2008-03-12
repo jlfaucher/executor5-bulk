@@ -50,7 +50,6 @@ protected:
     static CRITICAL_SECTION engineSection;     // critical section used for interlocks
     static HANDLE engineMutex;                 // our process synchronization semaphore
     static DWORD  engineThreadLocal;           // the slot allocated for registering engine instances with threads
-    static Index  *thread2EngineList;          // Our thread2Engine mapping list
     static RexxInstance *intpreter;            // the Rexx interpreter instance
 };
 

@@ -56,18 +56,6 @@ void REXXENTRY RexxCreateInterpreterImage();
 
 size_t REXXENTRY RexxGetCurrentPrecision();
 
-void REXXENTRY RexxCreateScriptContext(const char *contextName);
-
-void REXXENTRY RexxDestroyScriptContext(const char *contextName);
-
-int REXXENTRY RexxReleaseScriptReference(const char *contextName, REXXOBJECT obj);
-
-RexxReturnCode REXXENTRY RexxCreateRoutine(const char *context, PCONSTRXSTRING sourceData, REXXOBJECT *proutine, RexxConditionData *pRexxCondData);
-
-RexxReturnCode REXXENTRY RexxRunRoutine(const char * context, REXXOBJECT routine, void * callbackArgs,
-  REXXOBJECT (REXXENTRY *callbackFunction)(void *), PRXSYSEXIT exit_list, REXXOBJECT *presult,
-  REXXOBJECT securityManager, RexxConditionData *pRexxCondData);
-
 RexxReturnCode REXXENTRY RexxLoadSubcom(const char *, const char *);
 
 /***    RexxCallSubcom - Execute a command in an environment */

@@ -64,8 +64,18 @@ typedef struct REXX_CODE_BLOCK_Struct {
   OLECHAR    *Name;          //  Item Name (or NULL) this is associated with.  (WhoKnows() may eventually need this, and the flags.)
   DWORD       Flags;         //  Received at the same time as the source.
   ULONG       StartingLN;    //  Line number the code started on.
-  RexxObjectPtr  Code;          //  Pointer to the tokenized code block.
+  RexxRoutineObject  Code;   //  Pointer to the executable object.
   } RCB, *PRCB;
+
+
+class CreateCodeData
+{
+public:
+    OrxScript *engine;      // the hosting script engine
+    LPCOLESTR  strCode;     // the code string
+    RexxRoutineObject routine;  // the create routine
+    RexxConditionData *condData;  // returned condition data
+};
 
 
 // class definition
@@ -254,7 +264,7 @@ class OrxScript : public LLLContent,
 
 
   /****** NON-INTERFACE PUBLIC METHODS ******/
-  void __stdcall insertVariable(RexxThreadContext *, const char *name, RexxObjectPtr value);
+  void insertVariable(RexxThreadContext *, const char *name, RexxObjectPtr value);
   char* getEngineName() { return EngineName; }
   RexxObjectPtr  getSecurityManager() { return securityManager.Code; }
   RexxObjectPtr  getSecurityObject() { return securityObject; }
@@ -275,6 +285,8 @@ class OrxScript : public LLLContent,
     if (result) return result->GetContent();
     return NULL;
   }
+
+  void runMethod(RexxThreadContext *context, RCB *RexxCode, RexxArrayObject args, RexxObjectPtr &targetResult, RexxConditionData &condData);
 
   inline IInternetHostSecurityManager* getIESecurityManager() { return pIESecurityManager; }
   inline BOOL checkObjectCreation() { return fCheckObjectCreation; }

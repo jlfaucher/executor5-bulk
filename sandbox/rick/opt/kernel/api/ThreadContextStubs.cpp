@@ -472,7 +472,7 @@ RexxRoutineObject RexxEntry NewRoutine(RexxThreadContext *c, CSTRING name, CSTRI
 }
 
 
-logical_t RexxEntry isRoutine(RexxThreadContext *c, RexxObjectPtr o)
+logical_t RexxEntry IsRoutine(RexxThreadContext *c, RexxObjectPtr o)
 {
     ApiContext context(c);
     try
@@ -487,7 +487,7 @@ logical_t RexxEntry isRoutine(RexxThreadContext *c, RexxObjectPtr o)
 }
 
 
-logical_t RexxEntry isMethod(RexxThreadContext *c, RexxObjectPtr o)
+logical_t RexxEntry IsMethod(RexxThreadContext *c, RexxObjectPtr o)
 {
     ApiContext context(c);
     try
@@ -502,7 +502,7 @@ logical_t RexxEntry isMethod(RexxThreadContext *c, RexxObjectPtr o)
 }
 
 
-RexxPackageObject RexxEntry GetRoutinePackage(RexxRoutineObject o)
+RexxPackageObject RexxEntry GetRoutinePackage(RexxThreadContext *c, RexxRoutineObject o)
 {
     ApiContext context(c);
     try
@@ -517,7 +517,7 @@ RexxPackageObject RexxEntry GetRoutinePackage(RexxRoutineObject o)
 }
 
 
-RexxPackageObject RexxEntry GetMethodPackage(RexxMethodObject o)
+RexxPackageObject RexxEntry GetMethodPackage(RexxThreadContext *c, RexxMethodObject o)
 {
     ApiContext context(c);
     try

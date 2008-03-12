@@ -2475,47 +2475,6 @@ void * RexxNativeActivation::operator new(size_t size)
 }
 
 
-/*******************************************************1***/
-/* return the names of all public routines in the current */
-/* activation context. *the caller* must free the memory! */
-/**********************************************************/
-REXXOBJECT REXXENTRY REXX_GETFUNCTIONNAMES(char *** names, size_t* num)
-{
-    NativeContextBlock context;
-    RexxArray              * funcArray;
-    RexxString             * name;
-    size_t                   i;
-    size_t                   j;
-
-    /* pick up current activation        */
-
-    /* get the current activation        */
-    RexxActivation *activation = context.self->getRexxContext();
-
-    *num = 0;
-    RexxDirectory *routines = activation->getPublicRoutines();
-
-    if (routines != OREF_NULL)
-    {
-        funcArray = routines->makeArray();
-        if (funcArray != OREF_NULL)
-        {
-            *num = j = funcArray->numItems();
-            *names = (char**) SysAllocateExternalMemory(sizeof(char*)*j);
-            for (i=0; i < j; i++)
-            {
-                name = ((RexxString*) funcArray->get(i+1));
-                (*names)[i] = (char*) SysAllocateExternalMemory(1+sizeof(char)*name->getLength());
-                memcpy((*names)[i], name->getStringData(), name->getLength());
-                (*names)[i][name->getLength()] = 0; // zero-terminate
-            }
-        }
-    }
-
-    return OREF_NULL;              /* return nothing                    */
-}
-
-
 /**
  * Handle a request chain for the variable pool interface API.
  *

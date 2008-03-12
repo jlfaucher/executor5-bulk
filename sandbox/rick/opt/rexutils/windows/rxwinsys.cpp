@@ -3012,11 +3012,12 @@ size_t RexxEntry WSCtrlSend(const char *funcname, size_t argc, CONSTRXSTRING arg
     }
     else if (!strcmp(argv[0].strptr,"MSG"))
     {
-        ULONG n[4];
+        WPARAM n[4];
         INT i;
 
         CHECKARG(5,6);
 
+        GET_HANDLE(argv[1].strptr, hW);
         for ( i = 0; i < 4; i++ )
         {
             if ( ISHEX(argv[i+1].strptr) )
@@ -3034,10 +3035,10 @@ size_t RexxEntry WSCtrlSend(const char *funcname, size_t argc, CONSTRXSTRING arg
          */
         if ( argc > 5 && argv[5].strptr[0] == 'E' )
         {
-            n[3] = (ULONG)"Environment";
+            n[3] = (WPARAM)"Environment";
         }
 
-        if ( SendNotifyMessage((HWND)n[0], n[1], (WPARAM)n[2], (LPARAM)n[3]) )
+        if ( SendNotifyMessage(hW, n[1], (WPARAM)n[2], (LPARAM)n[3]) )
         {
             RETVAL(0)
         }
@@ -3050,11 +3051,12 @@ size_t RexxEntry WSCtrlSend(const char *funcname, size_t argc, CONSTRXSTRING arg
     {
         DWORD dwResult;
         LRESULT lResult;
-        ULONG n[5];
+        WPARAM n[5];
         INT i;
 
         CHECKARG(6,7);
 
+        GET_HANDLE(argv[1].strptr, hW);
         for ( i = 0; i < 5; i++ )
         {
             if (ISHEX(argv[i+1].strptr))
@@ -3072,10 +3074,10 @@ size_t RexxEntry WSCtrlSend(const char *funcname, size_t argc, CONSTRXSTRING arg
          */
         if ( argc > 6 && argv[6].strptr[0] == 'E' )
         {
-            n[3] = (ULONG)"Environment";
+            n[3] = (WPARAM)"Environment";
         }
 
-        lResult = SendMessageTimeout((HWND)n[0], n[1], (WPARAM)n[2], (LPARAM)n[3],
+        lResult = SendMessageTimeout(hW, n[1], (WPARAM)n[2], (LPARAM)n[3],
                                      MSG_TIMEOUT_OPTS, n[4], &dwResult);
         if ( ! lResult )
         {
