@@ -65,7 +65,6 @@ OBJECTS = rexxgtk.o \
 	grximage.o \
 	grxdialog.o \
 	grxglib.o \
-	grxconstants.o \
 	grxassistant.o \
 	grxprogressbar.o \
 	grxadjustment.o \
@@ -143,9 +142,6 @@ grxdialog.o: grxdialog.c rexxgtk.h
 
 grxglib.o: grxglib.c rexxgtk.h
 	gcc -c $(GRXCFLAGS) grxglib.c
-
-grxconstants.o: grxconstants.c rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxconstants.c
 
 grxassistant.o: grxassistant.c rexxgtk.h
 	gcc -c $(GRXCFLAGS) grxassistant.c

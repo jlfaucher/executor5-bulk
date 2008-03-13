@@ -142,8 +142,6 @@ APIRET APIENTRY GrxLoadFuncs(char * Name,
         "GrxEventsPending",
         "GrxMain",
         "GrxMainIteration",
-        "GrxValue2ConstantString",
-        "GrxConstantString2Value",
 
         // RexxGTK specific functions
         "GrxSetRexxQueueName",
