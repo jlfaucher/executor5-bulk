@@ -94,38 +94,6 @@ static void signal_func_2(GtkWidget *window,
 }
 
 
-static gint str2resp(const char * str)
-{
-    gint resptype;
-
-    if (!strcmp(str, "GTK_RESPONSE_NONE"))
-        return GTK_RESPONSE_NONE;
-    else if (!strcmp(str, "GTK_RESPONSE_REJECT"))
-        return GTK_RESPONSE_REJECT;
-    else if (!strcmp(str, "GTK_RESPONSE_ACCEPT"))
-        return GTK_RESPONSE_ACCEPT;
-    else if (!strcmp(str, "GTK_RESPONSE_DELETE_EVENT"))
-        return GTK_RESPONSE_DELETE_EVENT;
-    else if (!strcmp(str, "GTK_RESPONSE_OK"))
-        return GTK_RESPONSE_OK;
-    else if (!strcmp(str, "GTK_RESPONSE_CANCEL"))
-        return GTK_RESPONSE_CANCEL;
-    else if (!strcmp(str, "GTK_RESPONSE_CLOSE"))
-        return GTK_RESPONSE_CLOSE;
-    else if (!strcmp(str, "GTK_RESPONSE_YES"))
-        return GTK_RESPONSE_YES;
-    else if (!strcmp(str, "GTK_RESPONSE_NO"))
-        return GTK_RESPONSE_NO;
-    else if (!strcmp(str, "GTK_RESPONSE_APPLY"))
-        return GTK_RESPONSE_APPLY;
-    else if (!strcmp(str, "GTK_RESPONSE_HELP"))
-        return GTK_RESPONSE_HELP;
-    else
-        sscanf(str, "%d", &resptype);
-    return resptype;
-}
-
-
 /*============================================================================*/
 /* Public Functions                                                           */
 /*============================================================================*/
@@ -188,15 +156,8 @@ APIRET APIENTRY GrxDialogNewWithButtons(const char * Name,
 
     /* Initialize function parameters */
     sscanf(Argv[1].strptr, "%p", &myParent);
-    if (!strcmp(Argv[2].strptr, "GTK_DIALOG_MODAL"))
-        flags = GTK_DIALOG_MODAL;
-    else if (!strcmp(Argv[2].strptr, "GTK_DIALOG_DESTROY_WITH_PARENT"))
-        flags = GTK_DIALOG_DESTROY_WITH_PARENT;
-    else if (!strcmp(Argv[2].strptr, "GTK_DIALOG_NO_SEPARATOR"))
-        flags = GTK_DIALOG_NO_SEPARATOR;
-    else
-        sscanf(Argv[2].strptr, "%d", &flags);
-    resptype = str2resp(Argv[4].strptr);
+    sscanf(Argv[2].strptr, "%d", &flags);
+    sscanf(Argv[4].strptr, "%d", &resptype);
 
     myWidget = gtk_dialog_new_with_buttons(Argv[0].strptr,
                                            GTK_WINDOW(myParent),
@@ -209,7 +170,7 @@ APIRET APIENTRY GrxDialogNewWithButtons(const char * Name,
     while (i + 1 < Argc) {
         if (!RXVALIDSTRING(Argv[i]) || !RXVALIDSTRING(Argv[i + 1]))
             return RXFUNC_BADCALL;
-        resptype = str2resp(Argv[i + 1].strptr);
+        sscanf(Argv[i + 1].strptr, "%d", &resptype);
         gtk_dialog_add_button(GTK_DIALOG(myWidget), Argv[i].strptr, resptype);
         i += 2;
     }
@@ -243,7 +204,7 @@ APIRET APIENTRY GrxDialogAddButton(const char * Name,
 
     /* Initialize function parameters */
     sscanf(Argv[0].strptr, "%p", &myWidget);
-    resptype = str2resp(Argv[2].strptr);
+    sscanf(Argv[2].strptr, "%d", &resptype);
 
     // add the button
     gtk_dialog_add_button(GTK_DIALOG(myWidget), Argv[1].strptr, resptype);
@@ -309,7 +270,7 @@ APIRET APIENTRY GrxDialogSetDefaultResponse(const char * Name,
 
     /* Initialize function parameters */
     sscanf(Argv[0].strptr, "%p", &myWidget);
-    resptype = str2resp(Argv[1].strptr);
+    sscanf(Argv[1].strptr, "%d", &resptype);
 
     // add the button
     gtk_dialog_set_default_response(GTK_DIALOG(myWidget), resptype);
@@ -437,40 +398,9 @@ APIRET APIENTRY GrxMessageDialogNew(const char * Name,
 
     /* Initialize function parameters */
     sscanf(Argv[0].strptr, "%p", &parentWindow);
-    if (!strcmp(Argv[1].strptr, "GTK_DIALOG_MODAL"))
-        flags = GTK_DIALOG_MODAL;
-    else if (!strcmp(Argv[1].strptr, "GTK_DIALOG_DESTROY_WITH_PARENT"))
-        flags = GTK_DIALOG_DESTROY_WITH_PARENT;
-    else if (!strcmp(Argv[1].strptr, "GTK_DIALOG_NO_SEPARATOR"))
-        flags = GTK_DIALOG_NO_SEPARATOR;
-    else
-        sscanf(Argv[1].strptr, "%d", &flags);
-    if (!strcmp(Argv[2].strptr, "GTK_MESSAGE_INFO"))
-        type = GTK_MESSAGE_INFO;
-    else if (!strcmp(Argv[2].strptr, "GTK_MESSAGE_WARNING"))
-        type = GTK_MESSAGE_WARNING;
-    else if (!strcmp(Argv[2].strptr, "GTK_MESSAGE_QUESTION"))
-        type = GTK_MESSAGE_QUESTION;
-    else if (!strcmp(Argv[2].strptr, "GTK_MESSAGE_ERROR"))
-        type = GTK_MESSAGE_ERROR;
-    else if (!strcmp(Argv[2].strptr, "GTK_MESSAGE_OTHER"))
-        type = GTK_MESSAGE_OTHER;
-    else
-        sscanf(Argv[2].strptr, "%d", &type);
-    if (!strcmp(Argv[3].strptr, "GTK_BUTTONS_NONE"))
-        btype = GTK_BUTTONS_NONE;
-    else if (!strcmp(Argv[3].strptr, "GTK_BUTTONS_OK"))
-        btype = GTK_BUTTONS_OK;
-    else if (!strcmp(Argv[3].strptr, "GTK_BUTTONS_CLOSE"))
-        btype = GTK_BUTTONS_CLOSE;
-    else if (!strcmp(Argv[3].strptr, "GTK_BUTTONS_CANCEL"))
-        btype = GTK_BUTTONS_CANCEL;
-    else if (!strcmp(Argv[3].strptr, "GTK_BUTTONS_YES_NO"))
-        btype = GTK_BUTTONS_YES_NO;
-    else if (!strcmp(Argv[3].strptr, "GTK_BUTTONS_OK_CANCEL"))
-        btype = GTK_BUTTONS_OK_CANCEL;
-    else
-        sscanf(Argv[3].strptr, "%d", &btype);
+    sscanf(Argv[1].strptr, "%d", &flags);
+    sscanf(Argv[2].strptr, "%d", &type);
+    sscanf(Argv[3].strptr, "%d", &btype);
 
     myWidget = gtk_message_dialog_new(parentWindow, flags,
                                       type, btype, Argv[4].strptr);
@@ -508,17 +438,8 @@ APIRET APIENTRY GrxFileChooserDialogNew(const char * Name,
 
     /* Initialize function parameters */
     sscanf(Argv[1].strptr, "%p", &parentWindow);
-    if (!strcmp(Argv[2].strptr, "GTK_FILE_CHOOSER_ACTION_OPEN"))
-        action = GTK_FILE_CHOOSER_ACTION_OPEN;
-    else if (!strcmp(Argv[2].strptr, "GTK_FILE_CHOOSER_ACTION_SAVE"))
-        action = GTK_FILE_CHOOSER_ACTION_SAVE;
-    else if (!strcmp(Argv[2].strptr, "GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER"))
-        action = GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER;
-    else if (!strcmp(Argv[2].strptr, "GTK_FILE_CHOOSER_ACTION_CREATE_FOLDER"))
-        action = GTK_FILE_CHOOSER_ACTION_CREATE_FOLDER;
-    else
-        sscanf(Argv[2].strptr, "%d", &action);
-    resptype = str2resp(Argv[4].strptr);
+    sscanf(Argv[2].strptr, "%d", &action);
+    sscanf(Argv[4].strptr, "%d", &resptype);
 
     myWidget = gtk_file_chooser_dialog_new(Argv[0].strptr, parentWindow,
                                            action, Argv[3].strptr,

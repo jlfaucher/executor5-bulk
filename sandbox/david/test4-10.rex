@@ -75,7 +75,6 @@ filter2~add_pattern('*')
 
 chooser2~add_filter(filter1)
 chooser2~add_filter(filter2)
-say 'got here'
 
 vbox = .GtkVBox~new(.false, 5)
 vbox~pack_start_defaults(chooser1)

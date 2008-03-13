@@ -120,7 +120,6 @@ self~show_all()
 
 ::method signal_response
 use strict arg response
-say 'response =' response
 response = Value2String('GTKRESPONSETYPE', response)
 select
    when response = 'GTK_RESPONSE_HELP' then do

@@ -435,6 +435,7 @@ APIRET APIENTRY GrxTextBufferCreateTag(const char * Name,
 {
     GtkTextBuffer *myWidget;     
     gchar         *prop;
+    size_t        i;
 
     /* Check for valid arguments */
     if (Argc < 3) {
@@ -448,13 +449,9 @@ APIRET APIENTRY GrxTextBufferCreateTag(const char * Name,
     sscanf(Argv[0].strptr, "%p", &myWidget);
 
     gtk_text_buffer_create_tag(myWidget, Argv[1].strptr, Argv[2].strptr, NULL);
-    for (size_t i = 2; i < Argc; i++) {
-        g_object_set(G_OBJECT(myWidget), Argv[1].strptr, Argv[i].strptr, NULL
+    for (i = 2; i < Argc; i++) {
+        g_object_set(G_OBJECT(myWidget), Argv[1].strptr, Argv[i].strptr, NULL);
     }
-
-
-    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(myWidget),
-                                   hpolicy, vpolicy);
 
     /* Set up the REXX return code */
     *(Retstr->strptr) = '0';

@@ -591,12 +591,7 @@ APIRET APIENTRY GrxEntryConnectSignal(const char * Name,
 /*----------------------------------------------------------------------------*/
 /* Rexx External Function: GrxSpinButtonNew                                   */
 /* Description: Create a new spin button.                                     */
-/* Rexx Args:   value                                                         */
-/*              lower                                                         */
-/*              upper                                                         */
-/*              step increment                                                */
-/*              page_increment                                                */
-/*              page size                                                     */
+/* Rexx Args:   Pointer to adjustment                                         */
 /*              climb rate                                                    */
 /*              digits                                                        */
 /*----------------------------------------------------------------------------*/
@@ -607,27 +602,19 @@ APIRET APIENTRY GrxSpinButtonNew(const char * Name,
 {
     GtkWidget *myWidget;
     GtkAdjustment *adj;
-    gdouble lower, upper, value, step_increment, page_increment, page_size;
     gdouble climb_rate;
     guint digits;
 
     /* Check for valid arguments */
-    if (GrxCheckArgs(8, Argc, Argv)) {
+    if (GrxCheckArgs(3, Argc, Argv)) {
         return RXFUNC_BADCALL;
     }
 
     /* Initialize function parameters */
-    sscanf(Argv[0].strptr, "%lf", &value);
-    sscanf(Argv[1].strptr, "%lf", &lower);
-    sscanf(Argv[2].strptr, "%lf", &upper);
-    sscanf(Argv[3].strptr, "%lf", &step_increment);
-    sscanf(Argv[4].strptr, "%lf", &page_increment);
-    sscanf(Argv[5].strptr, "%lf", &page_size);
-    sscanf(Argv[6].strptr, "%lf", &climb_rate);
-    sscanf(Argv[7].strptr, "%u", &digits);
+    sscanf(Argv[0].strptr, "%p", &adj);
+    sscanf(Argv[1].strptr, "%lf", &climb_rate);
+    sscanf(Argv[2].strptr, "%u", &digits);
 
-    adj = (GtkAdjustment *) gtk_adjustment_new(value, lower, upper, step_increment,
-                                               page_increment, page_size);
     myWidget = gtk_spin_button_new(adj, climb_rate, digits);
 //    g_free(adj);
 

@@ -95,9 +95,6 @@ call GrxMainIteration
 old_queue = RxQueue('Set', .local['GTK_Queue'])
 do while queued() > 0
    pull pointer msg args
--- FIXME! remove the comment from this section of code before releasing
--- remove the following statement before the final release!
-   say pointer msg args
    widget = .local['GTK_Database']~at(pointer)
    if widget <> .nil then do
       widget~run_method(msg, args)
@@ -232,6 +229,40 @@ select
    when id = 'GTK_STOCK_ZOOM_FIT' then return 'gtk-zoom-fit'
    when id = 'GTK_STOCK_ZOOM_IN' then return 'gtk-zoom-in'
    when id = 'GTK_STOCK_ZOOM_OUT' then return 'gtk-zoom-out'
+   -- GtkDialogFlags
+   when id = 'GTK_DIALOG_MODAL' then return 2**0
+   when id = 'GTK_DIALOG_DESTROY_WITH_PARENT' then return 2**1
+   when id = 'GTK_DIALOG_NO_SEPARATOR' then return 2**2
+   -- GtkResponseType
+   when id = 'GTK_RESPONSE_NONE' then return -1
+   when id = 'GTK_RESPONSE_REJECT' then return -2
+   when id = 'GTK_RESPONSE_ACCEPT' then return -3
+   when id = 'GTK_RESPONSE_DELETE_EVENT' then return -4
+   when id = 'GTK_RESPONSE_OK' then return -5
+   when id = 'GTK_RESPONSE_CANCEL' then return -6
+   when id = 'GTK_RESPONSE_CLOSE' then return -7
+   when id = 'GTK_RESPONSE_YES' then return -8
+   when id = 'GTK_RESPONSE_NO' then return -9
+   when id = 'GTK_RESPONSE_APPLY' then return -10
+   when id = 'GTK_RESPONSE_HELP' then return -11
+   -- GtkMessageType
+   when id = 'GTK_MESSAGE_INFO' then return 0
+   when id = 'GTK_MESSAGE_WARNING' then return 1
+   when id = 'GTK_MESSAGE_QUESTION' then return 2
+   when id = 'GTK_MESSAGE_ERROR' then return 3
+   when id = 'GTK_MESSAGE_OTHER' then return 4
+   -- GtkFileCoooserAction
+   when id = 'GTK_FILE_CHOOSER_ACTION_OPEN' then return 0
+   when id = 'GTK_FILE_CHOOSER_ACTION_SAVE' then return 1
+   when id = 'GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER' then return 2
+   when id = 'GTK_FILE_CHOOSER_ACTION_CREATE_FOLDER' then return 3
+   -- GtkButtonType
+   when id = 'GTK_BUTTONS_NONE' then return 0
+   when id = 'GTK_BUTTONS_OK' then return 1
+   when id = 'GTK_BUTTONS_CLOSE' then return 2
+   when id = 'GTK_BUTTONS_CANCEL' then return 3
+   when id = 'GTK_BUTTONS_YES_NO' then return 4
+   when id = 'GTK_BUTTONS_OK_CANCEL' then return 5
    otherwise nop
    end
 return id
@@ -910,7 +941,7 @@ return
 
 ::method 'default_response='
 use strict arg resp
-call GrxDialogSetDefaultResponse self~pointer, resp
+call GrxDialogSetDefaultResponse self~pointer, GTK_Constant(resp)
 return
 
 ::method set_default_response
@@ -954,7 +985,9 @@ return
 use strict arg title, parent, type, button_text, button_resp
 if parent = .nil then ptr = 0
 else ptr = parent~pointer
-ptrs = GrxDialogNewWithButtons(title, ptr, type, GTK_Constant(button_text), button_resp)
+ptrs = GrxDialogNewWithButtons(title, ptr, GTK_Constant(type),,
+                               GTK_Constant(button_text),,
+                               GTK_Constant(button_resp))
 parse var ptrs self~pointer self~vbox .
 return
 
@@ -969,7 +1002,8 @@ return
 use strict arg parent, flags, type, button, text
 if parent = .nil then ptr = '0'
 else ptr = parent~pointer
-ptrs = GrxMessageDialogNew(ptr, flags, type, button, text)
+ptrs = GrxMessageDialogNew(ptr, GTK_Constant(flags), GTK_Constant(type),,
+                           GTK_Constant(button), text)
 parse var ptrs self~pointer self~vbox .
 return
 
@@ -1160,7 +1194,8 @@ return
 use strict arg title, parent, action, btext, bresp
 if parent = .nil then ptr = 0
 else ptr = parent~pointer
-self~pointer = GrxFileChooserDialogNew(title, ptr, action, GTK_Constant(btext), bresp)
+self~pointer = GrxFileChooserDialogNew(title, ptr, GTK_Constant(action),,
+                                       GTK_Constant(btext), GTK_Constant(bresp))
 self~vbox = .nil
 return
 
@@ -2570,8 +2605,7 @@ return
 
 ::method init
 use strict arg adj, climb_rate, digits
-self~pointer = GrxSpinButtonNew(adj~value, adj~lower, adj~upper, adj~step_inc,,
- adj~page_inc, adj~page_size, climb_rate, digits)
+self~pointer = GrxSpinButtonNew(adj~pointer, climb_rate, digits)
 return
 
 ::method signal_connect
