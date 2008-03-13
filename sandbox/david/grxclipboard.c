@@ -82,16 +82,9 @@ APIRET APIENTRY GrxClipboardGet(const char * Name,
     }
 
     /* Initialize function parameters */
-    if(strcmp(Argv[0].strptr,"GDK_SELECTION_CLIPBOARD") == 0)
-        selection = GDK_SELECTION_CLIPBOARD;
-    else if(strcmp(Argv[0].strptr,"GDK_SELECTION_PRIMARY") == 0)
-        selection = GDK_SELECTION_PRIMARY;
-    else if(strcmp(Argv[0].strptr,"GDK_NONE") == 0)
-        selection = GDK_NONE;
-    else 
-        sscanf(Argv[0].strptr, "%d", &selection);
+    sscanf(Argv[0].strptr, "%d", &selection);
 
-    myWidget = gtk_clipboard_get(selection);
+    myWidget = gtk_clipboard_get(_GDK_MAKE_ATOM(selection));
 
     /* Set up the REXX return code */
     g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%p", myWidget);

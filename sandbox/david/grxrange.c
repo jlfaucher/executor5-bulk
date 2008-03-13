@@ -202,16 +202,7 @@ APIRET APIENTRY GrxScaleSetValuePos(const char * Name,
 
     /* Initialize function parameters */
     sscanf(Argv[0].strptr, "%p", &myWidget);
-    if(strcmp(Argv[1].strptr,"GTK_POS_LEFT") == 0)
-        type = GTK_POS_LEFT;
-    else if(strcmp(Argv[1].strptr,"GTK_POS_RIGHT") == 0)
-        type = GTK_POS_RIGHT;
-    else if(strcmp(Argv[1].strptr,"GTK_POS_TOP") == 0)
-        type = GTK_POS_TOP;
-    else if(strcmp(Argv[1].strptr,"GTK_POS_BOTTOM") == 0)
-        type = GTK_POS_BOTTOM;
-    else
-        sscanf(Argv[1].strptr, "%d", &type);
+    sscanf(Argv[1].strptr, "%d", &type);
 
     gtk_scale_set_value_pos(GTK_SCALE(myWidget), type);
 

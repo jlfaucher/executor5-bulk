@@ -133,24 +133,10 @@ APIRET APIENTRY GrxTableAttach(const char * Name,
     sscanf(Argv[3].strptr, "%d", &right);
     sscanf(Argv[4].strptr, "%d", &top);
     sscanf(Argv[5].strptr, "%d", &bottom);
-    if(strcmp(Argv[6].strptr,"GTK_EXPAND") == 0)
-        xoptions = GTK_EXPAND;
-    else if(strcmp(Argv[6].strptr,"GTK_SHRINK") == 0)
-        xoptions = GTK_SHRINK;
-    else if(strcmp(Argv[6].strptr,"GTK_FILL") == 0)
-        xoptions = GTK_FILL;
-    else 
-        sscanf(Argv[6].strptr, "%d", &xoptions);
-    if(strcmp(Argv[7].strptr,"GTK_EXPAND") == 0)
-        yoptions = GTK_EXPAND;
-    else if(strcmp(Argv[7].strptr,"GTK_SHRINK") == 0)
-        yoptions = GTK_SHRINK;
-    else if(strcmp(Argv[7].strptr,"GTK_FILL") == 0)
-        yoptions = GTK_FILL;
-    else 
-        sscanf(Argv[7].strptr, "%d", &yoptions);
+    sscanf(Argv[6].strptr, "%d", &xoptions);
+    sscanf(Argv[7].strptr, "%d", &yoptions);
     sscanf(Argv[8].strptr, "%d", &xpad);
-    sscanf(Argv[8].strptr, "%d", &ypad);
+    sscanf(Argv[9].strptr, "%d", &ypad);
 
     if (GTK_IS_WIDGET(GTK_OBJECT(tableWidget))) {
         gtk_table_attach(GTK_TABLE(tableWidget), myWidget, left, right, top,

@@ -218,22 +218,8 @@ APIRET APIENTRY GrxScrolledWindowSetPolicy(const char * Name,
 
     /* Initialize function parameters */
     sscanf(Argv[0].strptr, "%p", &myWidget);
-    if(strcmp(Argv[1].strptr,"GTK_PLOICY_ALWAYS") == 0)
-        hpolicy = GTK_POLICY_ALWAYS;
-    else if(strcmp(Argv[1].strptr,"GTK_POLICY_AUTOMATIC") == 0)
-        hpolicy = GTK_POLICY_AUTOMATIC;
-    else if(strcmp(Argv[1].strptr,"GTK_POLICY_NEVER") == 0)
-        hpolicy = GTK_POLICY_NEVER;
-    else
-        sscanf(Argv[1].strptr, "%d", &hpolicy);
-    if(strcmp(Argv[2].strptr,"GTK_PLOICY_ALWAYS") == 0)
-        vpolicy = GTK_POLICY_ALWAYS;
-    else if(strcmp(Argv[2].strptr,"GTK_POLICY_AUTOMATIC") == 0)
-        vpolicy = GTK_POLICY_AUTOMATIC;
-    else if(strcmp(Argv[2].strptr,"GTK_POLICY_NEVER") == 0)
-        vpolicy = GTK_POLICY_NEVER;
-    else
-        sscanf(Argv[2].strptr, "%d", &vpolicy);
+    sscanf(Argv[1].strptr, "%d", &hpolicy);
+    sscanf(Argv[2].strptr, "%d", &vpolicy);
 
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(myWidget),
                                    hpolicy, vpolicy);

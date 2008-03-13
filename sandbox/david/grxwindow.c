@@ -116,12 +116,7 @@ APIRET APIENTRY GrxWindowNew(const char * Name,
         return RXFUNC_BADCALL;
     }
 
-    if(strcmp(Argv[0].strptr,"GTK_WINDOW_TOPLEVEL") == 0)
-        type = GTK_WINDOW_TOPLEVEL;
-    else if(strcmp(Argv[0].strptr,"GTK_WINDOW_POPUP") == 0)
-        type = GTK_WINDOW_POPUP;
-    else 
-        sscanf(Argv[0].strptr, "%d", &type);
+    sscanf(Argv[0].strptr, "%d", &type);
 
     myWidget = gtk_window_new(type);
 

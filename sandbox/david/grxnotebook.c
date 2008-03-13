@@ -560,21 +560,7 @@ APIRET APIENTRY GrxNotebookSetTabPos(const char * Name,
 
     /* Initialize function parameters */
     sscanf(Argv[0].strptr, "%p", &myNotebook);
-    if (!strcmp(Argv[1].strptr, "GTK_POS_LEFT")) {
-        pos = GTK_POS_LEFT;
-    }
-    else if (!strcmp(Argv[1].strptr, "GTK_POS_RIGHT")) {
-        pos = GTK_POS_RIGHT;
-    }
-    else if (!strcmp(Argv[1].strptr, "GTK_POS_TOP")) {
-        pos = GTK_POS_TOP;
-    }
-    else if (!strcmp(Argv[1].strptr, "GTK_POS_BOTTOM")) {
-        pos = GTK_POS_BOTTOM;
-    }
-    else {
-        sscanf(Argv[1].strptr, "%d", &pos);
-    }
+    sscanf(Argv[1].strptr, "%d", &pos);
 
     if (GTK_IS_NOTEBOOK(GTK_OBJECT(myNotebook))) {
         gtk_notebook_set_tab_pos(GTK_NOTEBOOK(myNotebook), pos);

@@ -143,24 +143,7 @@ APIRET APIENTRY GrxImageSetFromStock(const char * Name,
 
     /* Initialize function parameters */
     sscanf(Argv[0].strptr, "%p", &myWidget);
-    if (!strcmp(Argv[2].strptr, "GTK_ICON_SIZE_INVALID"))
-        size = GTK_ICON_SIZE_INVALID;
-    else if (!strcmp(Argv[2].strptr, "GTK_ICON_SIZE_INVALID"))
-        size = GTK_ICON_SIZE_INVALID;
-    else if (!strcmp(Argv[2].strptr, "GTK_ICON_SIZE_MENU"))
-        size = GTK_ICON_SIZE_MENU;
-    else if (!strcmp(Argv[2].strptr, "GTK_ICON_SIZE_SMALL_TOOLBAR"))
-        size = GTK_ICON_SIZE_SMALL_TOOLBAR;
-    else if (!strcmp(Argv[2].strptr, "GTK_ICON_SIZE_LARGE_TOOLBAR"))
-        size = GTK_ICON_SIZE_LARGE_TOOLBAR;
-    else if (!strcmp(Argv[2].strptr, "GTK_ICON_SIZE_BUTTON"))
-        size = GTK_ICON_SIZE_BUTTON;
-    else if (!strcmp(Argv[2].strptr, "GTK_ICON_SIZE_DND"))
-        size = GTK_ICON_SIZE_DND;
-    else if (!strcmp(Argv[2].strptr, "GTK_ICON_SIZE_DIALOG"))
-        size = GTK_ICON_SIZE_DIALOG;
-    else
-        sscanf(Argv[2].strptr, "%d", &size);
+    sscanf(Argv[2].strptr, "%d", &size);
 
     gtk_image_set_from_stock(GTK_IMAGE(myWidget), Argv[1].strptr, size);
 
@@ -194,24 +177,7 @@ APIRET APIENTRY GrxImageSetFromIconName(const char * Name,
 
     /* Initialize function parameters */
     sscanf(Argv[0].strptr, "%p", &myWidget);
-    if (!strcmp(Argv[2].strptr, "GTK_ICON_SIZE_INVALID"))
-        size = GTK_ICON_SIZE_INVALID;
-    else if (!strcmp(Argv[2].strptr, "GTK_ICON_SIZE_INVALID"))
-        size = GTK_ICON_SIZE_INVALID;
-    else if (!strcmp(Argv[2].strptr, "GTK_ICON_SIZE_MENU"))
-        size = GTK_ICON_SIZE_MENU;
-    else if (!strcmp(Argv[2].strptr, "GTK_ICON_SIZE_SMALL_TOOLBAR"))
-        size = GTK_ICON_SIZE_SMALL_TOOLBAR;
-    else if (!strcmp(Argv[2].strptr, "GTK_ICON_SIZE_LARGE_TOOLBAR"))
-        size = GTK_ICON_SIZE_LARGE_TOOLBAR;
-    else if (!strcmp(Argv[2].strptr, "GTK_ICON_SIZE_BUTTON"))
-        size = GTK_ICON_SIZE_BUTTON;
-    else if (!strcmp(Argv[2].strptr, "GTK_ICON_SIZE_DND"))
-        size = GTK_ICON_SIZE_DND;
-    else if (!strcmp(Argv[2].strptr, "GTK_ICON_SIZE_DIALOG"))
-        size = GTK_ICON_SIZE_DIALOG;
-    else
-        sscanf(Argv[2].strptr, "%d", &size);
+    sscanf(Argv[2].strptr, "%d", &size);
 
     gtk_image_set_from_icon_name(GTK_IMAGE(myWidget), Argv[1].strptr, size);
 

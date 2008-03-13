@@ -177,16 +177,7 @@ APIRET APIENTRY GrxTextViewSetWrapMode(const char * Name,
 
     /* Initialize function parameters */
     sscanf(Argv[0].strptr, "%p", &myWidget);
-    if(strcmp(Argv[1].strptr,"GTK_WRAP_NONE") == 0)
-        wrap = GTK_WRAP_NONE;
-    else if(strcmp(Argv[1].strptr,"GTK_WRAP_CHAR") == 0)
-        wrap = GTK_WRAP_CHAR;
-    else if(strcmp(Argv[1].strptr,"GTK_WRAP_WORD") == 0)
-        wrap = GTK_WRAP_WORD;
-    else if(strcmp(Argv[1].strptr,"GTK_WRAP_WORD_CHAR") == 0)
-        wrap = GTK_WRAP_WORD_CHAR;
-    else
-        sscanf(Argv[1].strptr, "%d", &wrap);
+    sscanf(Argv[1].strptr, "%d", &wrap);
 
     gtk_text_view_set_wrap_mode(myWidget, wrap);
 
@@ -250,16 +241,7 @@ APIRET APIENTRY GrxTextViewSetJustification(const char * Name,
 
     /* Initialize function parameters */
     sscanf(Argv[0].strptr, "%p", &myWidget);
-    if(strcmp(Argv[1].strptr,"GTK_JUSTIFY_LEFT") == 0)
-        just = GTK_JUSTIFY_LEFT;
-    else if(strcmp(Argv[1].strptr,"GTK_JUSTIFY_RIGHT") == 0)
-        just = GTK_JUSTIFY_RIGHT;
-    else if(strcmp(Argv[1].strptr,"GTK_JUSTIFY_CENTER") == 0)
-        just = GTK_JUSTIFY_CENTER;
-    else if(strcmp(Argv[1].strptr,"GTK_JUSTIFY_FILL") == 0)
-        just = GTK_JUSTIFY_FILL;
-    else
-        sscanf(Argv[1].strptr, "%d", &just);
+    sscanf(Argv[1].strptr, "%d", &just);
 
     gtk_text_view_set_justification(myWidget, just);
 

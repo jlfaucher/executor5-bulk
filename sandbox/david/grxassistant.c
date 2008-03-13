@@ -358,18 +358,7 @@ APIRET APIENTRY GrxAssistantSetPageType(const char * Name,
     /* Initialize function parameters */
     sscanf(Argv[0].strptr, "%p", &myWidget);
     sscanf(Argv[1].strptr, "%p", &page);
-    if(strcmp(Argv[2].strptr,"GTK_ASSISTANT_PAGE_CONTENT") == 0)
-        type = GTK_ASSISTANT_PAGE_CONTENT;
-    else if(strcmp(Argv[2].strptr,"GTK_ASSISTANT_PAGE_INTRO") == 0)
-        type = GTK_ASSISTANT_PAGE_INTRO;
-    else if(strcmp(Argv[2].strptr,"GTK_ASSISTANT_PAGE_CONFIRM") == 0)
-        type = GTK_ASSISTANT_PAGE_CONFIRM;
-    else if(strcmp(Argv[2].strptr,"GTK_ASSISTANT_PAGE_SUMMARY") == 0)
-        type = GTK_ASSISTANT_PAGE_SUMMARY;
-    else if(strcmp(Argv[2].strptr,"GTK_ASSISTANT_PAGE_PROGRESS") == 0)
-        type = GTK_ASSISTANT_PAGE_PROGRESS;
-    else 
-        sscanf(Argv[2].strptr, "%d", &type);
+    sscanf(Argv[2].strptr, "%d", &type);
 
     if (GTK_IS_WIDGET(GTK_OBJECT(myWidget))) {
         gtk_assistant_set_page_type(GTK_ASSISTANT(myWidget), page, type);

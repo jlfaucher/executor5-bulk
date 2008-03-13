@@ -202,21 +202,7 @@ APIRET APIENTRY GrxLabelSetJustify(const char * Name,
 
     /* Initialize function parameters */
     sscanf(Argv[0].strptr, "%p", &myWidget);
-    if (strcmp(Argv[1].strptr, "GTK_JUSTIFY_LEFT") == 0) {
-        jtype = GTK_JUSTIFY_LEFT;
-    }
-    else if (strcmp(Argv[1].strptr, "GTK_JUSTIFY_RIGHT") == 0) {
-        jtype = GTK_JUSTIFY_RIGHT;
-    }
-    else if (strcmp(Argv[1].strptr, "GTK_JUSTIFY_CENTER") == 0) {
-        jtype = GTK_JUSTIFY_CENTER;
-    }
-    else if (strcmp(Argv[1].strptr, "GTK_JUSTIFY_FILL") == 0) {
-        jtype = GTK_JUSTIFY_FILL;
-    }
-    else {
-        sscanf(Argv[1].strptr, "%d", &jtype);
-    }
+    sscanf(Argv[1].strptr, "%d", &jtype);
 
     if (GTK_IS_WIDGET(GTK_OBJECT(myWidget))) {
         gtk_label_set_justify(GTK_LABEL(myWidget), jtype); 

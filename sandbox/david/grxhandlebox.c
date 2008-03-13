@@ -129,18 +129,7 @@ APIRET APIENTRY GrxHandleBoxSetShadowType(const char * Name,
 
     /* Initialize function parameters */
     sscanf(Argv[0].strptr, "%p", &myWidget);
-    if(strcmp(Argv[1].strptr,"GTK_SHADOW_NONE") == 0)
-        type = GTK_SHADOW_NONE;
-    else if(strcmp(Argv[1].strptr,"GTK_SHADOW_IN") == 0)
-        type = GTK_SHADOW_IN;
-    else if(strcmp(Argv[1].strptr,"GTK_SHADOW_OUT") == 0)
-        type = GTK_SHADOW_OUT;
-    else if(strcmp(Argv[1].strptr,"GTK_SHADOW_ETCHED_IN") == 0)
-        type = GTK_SHADOW_ETCHED_IN;
-    else if(strcmp(Argv[1].strptr,"GTK_SHADOW_ETCHED_OUT") == 0)
-        type = GTK_SHADOW_ETCHED_OUT;
-    else 
-        sscanf(Argv[1].strptr, "%d", &type);
+    sscanf(Argv[1].strptr, "%d", &type);
 
     if (GTK_IS_WIDGET(GTK_OBJECT(myWidget))) {
         gtk_handle_box_set_shadow_type(GTK_HANDLE_BOX(myWidget), type);
@@ -175,16 +164,7 @@ APIRET APIENTRY GrxHandleBoxSetHandlePosition(const char * Name,
 
     /* Initialize function parameters */
     sscanf(Argv[0].strptr, "%p", &myWidget);
-    if(strcmp(Argv[1].strptr,"GTK_POS_LEFT") == 0)
-        type = GTK_POS_LEFT;
-    else if(strcmp(Argv[1].strptr,"GTK_POS_RIGHT") == 0)
-        type = GTK_POS_RIGHT;
-    else if(strcmp(Argv[1].strptr,"GTK_POS_TOP") == 0)
-        type = GTK_POS_TOP;
-    else if(strcmp(Argv[1].strptr,"GTK_POS_BOTTOM") == 0)
-        type = GTK_POS_BOTTOM;
-    else 
-        sscanf(Argv[1].strptr, "%d", &type);
+    sscanf(Argv[1].strptr, "%d", &type);
 
     if (GTK_IS_WIDGET(GTK_OBJECT(myWidget))) {
         gtk_handle_box_set_handle_position(GTK_HANDLE_BOX(myWidget), type);
@@ -219,16 +199,7 @@ APIRET APIENTRY GrxHandleBoxSetSnapEdge(const char * Name,
 
     /* Initialize function parameters */
     sscanf(Argv[0].strptr, "%p", &myWidget);
-    if(strcmp(Argv[1].strptr,"GTK_POS_LEFT") == 0)
-        type = GTK_POS_LEFT;
-    else if(strcmp(Argv[1].strptr,"GTK_POS_RIGHT") == 0)
-        type = GTK_POS_RIGHT;
-    else if(strcmp(Argv[1].strptr,"GTK_POS_TOP") == 0)
-        type = GTK_POS_TOP;
-    else if(strcmp(Argv[1].strptr,"GTK_POS_BOTTOM") == 0)
-        type = GTK_POS_BOTTOM;
-    else 
-        sscanf(Argv[1].strptr, "%d", &type);
+    sscanf(Argv[1].strptr, "%d", &type);
 
     if (GTK_IS_WIDGET(GTK_OBJECT(myWidget))) {
         gtk_handle_box_set_snap_edge(GTK_HANDLE_BOX(myWidget), type);

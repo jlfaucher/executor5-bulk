@@ -230,14 +230,7 @@ APIRET APIENTRY GrxButtonSetRelief(const char * Name,
 
     /* Initialize function parameters */
     sscanf(Argv[0].strptr, "%p", &myWidget);
-    if(strcmp(Argv[1].strptr,"GTK_RELIEF_NORMAL") == 0)
-        style = GTK_RELIEF_NORMAL;
-    else if(strcmp(Argv[1].strptr,"GTK_RELIEF_HALF") == 0)
-        style = GTK_RELIEF_HALF;
-    else if(strcmp(Argv[1].strptr,"GTK_RELIEF_NONE") == 0)
-        style = GTK_RELIEF_NONE;
-    else
-        sscanf(Argv[1].strptr, "%d", &style);
+    sscanf(Argv[1].strptr, "%d", &style);
 
     gtk_button_set_relief(GTK_BUTTON(myWidget), style);
 
@@ -848,16 +841,7 @@ APIRET APIENTRY GrxFileChooserButtonNew(const char * Name,
     }
 
     /* Initialize function parameters */
-    if(strcmp(Argv[1].strptr,"GTK_FILE_CHOOSER_ACTION_OPEN") == 0)
-        action = GTK_FILE_CHOOSER_ACTION_OPEN;
-    else if(strcmp(Argv[1].strptr,"GTK_FILE_CHOOSER_ACTION_SAVE") == 0)
-        action = GTK_FILE_CHOOSER_ACTION_SAVE;
-    else if(strcmp(Argv[1].strptr,"GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER") == 0)
-        action = GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER;
-    else if(strcmp(Argv[1].strptr,"GTK_FILE_CHOOSER_ACTION_CREATE_FOLDER") == 0)
-        action = GTK_FILE_CHOOSER_ACTION_CREATE_FOLDER;
-    else
-        sscanf(Argv[1].strptr, "%d", &action);
+    sscanf(Argv[1].strptr, "%d", &action);
 
     myWidget = gtk_file_chooser_button_new(Argv[0].strptr, action);
 

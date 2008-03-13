@@ -263,7 +263,67 @@ select
    when id = 'GTK_BUTTONS_CANCEL' then return 3
    when id = 'GTK_BUTTONS_YES_NO' then return 4
    when id = 'GTK_BUTTONS_OK_CANCEL' then return 5
+   -- GtkAssistancePageType
+   when id = 'GTK_ASSISTANT_PAGE_CONTENT' then return 0
+   when id = 'GTK_ASSISTANT_PAGE_INTRO' then return 1
+   when id = 'GTK_ASSISTANT_PAGE_CONFIRM' then return 2
+   when id = 'GTK_ASSISTANT_PAGE_SUMMARY' then return 3
+   when id = 'GTK_ASSISTANT_PAGE_PROGRESS' then return 4
+   -- GtkReliefType
+   when id = 'GTK_RELIEF_NORMAL' then return 0
+   when id = 'GTK_RELIEF_HALF' then return 1
+   when id = 'GTK_RELIEF_NONO' then return 2
    otherwise nop
+   -- GtkAtom
+   when id = 'GTK_SELECTION_PRIMARY' then return 1
+   when id = 'GTK_SELECTION_SECONDARY' then return 2
+   when id = 'GTK_SELECTION_CLIPBOARD' then return 69
+   -- GtkShadow
+   when id = 'GTK_SHADOW_NONE' then return 0
+   when id = 'GTK_SHADOW_IN' then return 1
+   when id = 'GTK_SHADOW_OUT' then return 2
+   when id = 'GTK_SHADOW_ETCHED_IN' then return 3
+   when id = 'GTK_SHADOW_ETCHED_OUT' then return 4
+   -- GtkPositionType
+   when id = 'GTK_POS_LEFT' then return 0
+   when id = 'GTK_POS_RIGHT' then return 1
+   when id = 'GTK_POS_TOP' then return 2
+   when id = 'GTK_POS_BOTTOM' then return 3
+   -- GtkIconSize
+   when id = 'GTK_ICON_SIZE_INVALID' then return 0
+   when id = 'GTK_ICON_SIZE_MENU' then return 1
+   when id = 'GTK_ICON_SIZE_SMALL_TOOLBAR' then return 2
+   when id = 'GTK_ICON_SIZE_LARGE_TOOLBAR' then return 3
+   when id = 'GTK_ICON_SIZE_BUTTON' then return 4
+   when id = 'GTK_ICON_SIZE_DND' then return 5
+   when id = 'GTK_ICON_SIZE_DIALOG' then return 6
+   -- GtkJustification
+   when id = 'GTK_JUSTIFY_LEFT' then return 0
+   when id = 'GTK_JUSTIFY_RIGHT' then return 1
+   when id = 'GTK_JUSTIFY_CENTER' then return 2
+   when id = 'GTK_JUSTIFY_FILL' then return 3
+   -- GtkPolicyType
+   when id = 'GTK_POLICY_ALWAYS' then return 0
+   when id = 'GTK_POLICY_AUTOMATIC' then return 1
+   when id = 'GTK_POLICY_NEVER' then return 2
+   -- GtkAttachOptions
+   when id = 'GTK_EXPAND' then return 2**0
+   when id = 'GTK_SHRINK' then return 2**1
+   when id = 'GTK_FILL' then return 2**2
+   -- GtkWrapMode
+   when id = 'GTK_WRAP_NONE' then return 0
+   when id = 'GTK_WRAP_CHAR' then return 1
+   when id = 'GTK_WRAP_WORD' then return 2
+   when id = 'GTK_WRAP_WORD_CHAR' then return 3
+   -- GtkStateType
+   when id = 'GTK_STATE_NORMAL' then return 0
+   when id = 'GTK_STATE_ACTIVE' then return 1
+   when id = 'GTK_STATE_PRELIGHT' then return 2
+   when id = 'GTK_STATE_SELECTED' then return 3
+   when id = 'GTK_STATE_INSENSITIVE' then return 4
+   -- GtkWindowType
+   when id = 'GTK_WINDOW_TOPLEVEL' then return 0
+   when id = 'GTK_WINDOW_POPUP' then return 1
    end
 return id
 
@@ -481,12 +541,12 @@ return
 
 ::method modify_fg
 use strict arg state, color
-call GrxWidgetModifyFG self~pointer, state, color
+call GrxWidgetModifyFG self~pointer, GTK_Constant(state), color
 return
 
 ::method modify_bg
 use strict arg state, color
-call GrxWidgetModifyBG self~pointer, state, color
+call GrxWidgetModifyBG self~pointer, GTK_Constant(state), color
 return
 
 ::method run_method
@@ -793,7 +853,7 @@ return self~vadjustment
 
 ::method set_policy
 use strict arg hpolicy, vpolicy
-call GrxScrolledWindowSetPolicy self~pointer, hpolicy, vpolicy
+call GrxScrolledWindowSetPolicy self~pointer, GTK_Constant(hpolicy), GTK_Constant(vpolicy)
 return
 
 ::method add_with_viewport
@@ -852,7 +912,7 @@ return
 
 ::method init
 use strict arg type
-self~pointer = GrxWindowNew(type)
+self~pointer = GrxWindowNew(GTK_Constant(type))
 return
 
 ::method uninit
@@ -1243,7 +1303,7 @@ return GrxAssistantInsertPage(self~pointer, widget~pointer, num)
 
 ::method set_page_type
 use strict arg widget, type
-call GrxAssistantSetPageType self~pointer, widget~pointer, type
+call GrxAssistantSetPageType self~pointer, widget~pointer, GTK_Constant(type)
 return
 
 ::method set_page_title
@@ -1320,7 +1380,7 @@ return justify
 -- set the label text justification
 expose justify
 use strict arg justify
-call GrxLabelSetJustify self~pointer, translate(justify)
+call GrxLabelSetJustify self~pointer, Gtk_Constant(justify)
 return
 
 ::method set_justify
@@ -1400,7 +1460,7 @@ return
 ::method 'relief='
 -- set the button relief style
 use strict arg relief
-call GrxButtonSetRelief self~pointer, relief
+call GrxButtonSetRelief self~pointer, GTK_Constant(relief)
 return
 
 ::method set_relief
@@ -1799,7 +1859,7 @@ return
 
 ::method init
 use strict arg title, action
-self~pointer = GrxFileChooserButtonNew(title, action)
+self~pointer = GrxFileChooserButtonNew(title, GTK_Constant(action))
 return
 
 ::method signal_connect
@@ -1871,7 +1931,7 @@ return
 ::method attach
 use strict arg widget, left, right, top, bottom, xopt, yopt, xpad, ypad
 call GrxTableAttach self~pointer, widget~pointer, left, right, top, bottom,,
-                    xopt, yopt, xpad, ypad
+                    GTK_Constant(xopt), GTK_Constant(yopt), xpad, ypad
 return
 
 ::method attach_defaults
@@ -2165,7 +2225,7 @@ return
 
 ::method 'shadow_type='
 use strict arg type
-call GrxHandleBoxSetShadowType self~pointer, type
+call GrxHandleBoxSetShadowType self~pointer, GTK_Constant(type)
 return
 
 ::method set_shadow_type
@@ -2174,7 +2234,7 @@ return
 
 ::method 'handle_position='
 use strict arg type
-call GrxHandleBoxSetHandlePosition self~pointer, type
+call GrxHandleBoxSetHandlePosition self~pointer, GTK_Constant(type)
 return
 
 ::method set_handle_position
@@ -2183,7 +2243,7 @@ return
 
 ::method 'snap_edge='
 use strict arg type
-call GrxHandleBoxSetSnapEdge self~pointer, type
+call GrxHandleBoxSetSnapEdge self~pointer, GTK_Constant(type)
 return
 
 ::method set_snap_edge
@@ -2291,7 +2351,7 @@ return
 ::method 'tab_pos='
 -- set the display position of the tabs
 use strict arg position
-call GrxNotebookSetTabPos self~pointer, position~translate()
+call GrxNotebookSetTabPos self~pointer, GTK_Constant(position)
 return
 
 ::method set_tab_pos
@@ -2525,7 +2585,7 @@ return self~digits
 
 ::method 'value_pos='
 use strict arg pos
-call GrxScaleSetValuePos self~pointer, pos
+call GrxScaleSetValuePos self~pointer, GTK_Constant(pos)
 return
 
 ::method set_value_pos
@@ -2646,12 +2706,12 @@ return
 
 ::method set_from_stock
 use strict arg stockname, size
-call GrxImageSetFromStock self~pointer, stockname, size
+call GrxImageSetFromStock self~pointer, GTK_Constant(stockname), GTK_Constant(size)
 return
 
 ::method set_from_icon_name
 use strict arg iconname, size
-call GrxImageSetFromIconName self~pointer, iconname, size
+call GrxImageSetFromIconName self~pointer, GTK_Constant(iconname), GTK_Constant(size)
 return
 
 
@@ -2751,7 +2811,7 @@ return self~wrap_mode
 
 ::method 'wrap_mode='
 use strict arg mode
-call GrxTextViewSetWrapMode self~pointer, upper(mode)
+call GrxTextViewSetWrapMode self~pointer, GTK_Constant(mode)
 return
 
 ::method set_wrap_mode
@@ -2768,7 +2828,7 @@ return self~justification
 
 ::method 'justification='
 use strict arg just
-call GrxTextViewSetJustification self~pointer, upper(just)
+call GrxTextViewSetJustification self~pointer, GTK_Constant(just)
 return
 
 ::method set_justification
@@ -3317,7 +3377,7 @@ return self~new(selection)
 ::method init
 expose pointer
 use strict arg selection
-pointer = GrxClipboardGet(selection)
+pointer = GrxClipboardGet(GTK_Constant(selection))
 return
 
 ::method pointer
