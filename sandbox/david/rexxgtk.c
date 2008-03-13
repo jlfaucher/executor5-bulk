@@ -192,10 +192,12 @@ APIRET APIENTRY GrxLoadFuncs(char * Name,
         "GrxWidgetGetName",
         "GrxWidgetSetName",
         "GrxWidgetSetSensitive",
-        "GrxWidgetConnectSignal",
         "GrxWidgetGetTopLevel",
         "GrxWidgetModifyBG",
         "GrxWidgetModifyFG",
+        "GrxWidgetSetData",
+        "GrxWidgetGetData",
+        "GrxWidgetConnectSignal",
 
         // Window functions
         "GrxWindowNew",

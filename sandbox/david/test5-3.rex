@@ -46,8 +46,8 @@
 
 dialog = .GtkDialog_With_Buttons~new('Edit User Information', .nil,,
                                    'GTK_DIALOG_MODAL',,
-                                   StockID('GTK_STOCK_OK'), 'GTK_RESPONSE_OK')
-dialog~add_button(StockID('GTK_STOCK_CANCEL'), 'GTK_RESPONSE_CANCEL')
+                                   'GTK_STOCK_OK', 'GTK_RESPONSE_OK')
+dialog~add_button('GTK_STOCK_CANCEL', 'GTK_RESPONSE_CANCEL')
 dialog~set_default_response("GTK_RESPONSE_OK")
 
 lbl1 = .GtkLabel~new('User Name')

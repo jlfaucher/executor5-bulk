@@ -78,8 +78,8 @@ return
 ::method signal_clicked
 dialog = .GtkFileChooserDialog~new('Save File As ...', self~user_data,,
                                    'GTK_FILE_CHOOSER_ACTION_SAVE',,
-                                   StockID('GTK_STOCK_CANCEL'), 'GTK_RESPONSE_CANCEL')
-dialog~add_button(StockID('GTK_STOCK_SAVE'), 'GTK_RESPONSE_ACCEPT')
+                                   'GTK_STOCK_CANCEL', 'GTK_RESPONSE_CANCEL')
+dialog~add_button('GTK_STOCK_SAVE', 'GTK_RESPONSE_ACCEPT')
 
 retc = dialog~dialog_run()
 if retc = 'GTK_RESPONSE_ACCEPT' then do

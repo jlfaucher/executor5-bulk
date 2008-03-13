@@ -51,9 +51,9 @@ window~border_width = 10
 
 textview = .GtkTextView~new()
 
-cut = .MyCut~new(StockID(GTK_STOCK_CUT))
-copy = .MyCopy~new(StockID(GTK_STOCK_COPY))
-paste = .MyPaste~new(StockID(GTK_STOCK_PASTE))
+cut = .MyCut~new(GTK_STOCK_CUT)
+copy = .MyCopy~new(GTK_STOCK_COPY)
+paste = .MyPaste~new(GTK_STOCK_PASTE)
 
 cut~user_data = textview
 copy~user_data = textview

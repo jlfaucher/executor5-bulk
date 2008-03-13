@@ -126,111 +126,112 @@ return GrxValue2ConstantString(upper(group), num)
 
 
 /*============================================================================*/
-/* Routine: StockID                                                           */
+/* Routine: GTK_Constant                                                      */
 /*============================================================================*/
 
-::routine StockID public
+::routine GTK_Constant public
 use strict arg id
-sid = upper(id)
+id = upper(id)
 select
-   when sid = 'GTK_STOCK_ABOUT' then return 'gtk-about'
-   when sid = 'GTK_STOCK_ADD' then return 'gtk-add'
-   when sid = 'GTK_STOCK_APPLY' then return 'gtk-apply'
-   when sid = 'GTK_STOCK_BOLD' then return 'gtk-bold'
-   when sid = 'GTK_STOCK_CANCEL' then return 'gtk-cancel'
-   when sid = 'GTK_STOCK_CDROM' then return 'gtk-cdrom'
-   when sid = 'GTK_STOCK_CLEAR' then return 'gtk-clear'
-   when sid = 'GTK_STOCK_CLOSE' then return 'gtk-close'
-   when sid = 'GTK_STOCK_COLOR_PICKER' then return 'gtk-color-picker'
-   when sid = 'GTK_STOCK_CONVERT' then return 'gtk-comvert'
-   when sid = 'GTK_STOCK_CONNECT' then return 'gtk-connect'
-   when sid = 'GTK_STOCK_COPY' then return 'gtk-copy'
-   when sid = 'GTK_STOCK_CUT' then return 'gtk-cut'
-   when sid = 'GTK_STOCK_DELETE' then return 'gtk-delete'
-   when sid = 'GTK_STOCK_DIALOG_ERROR' then return 'gtk-dialog-error'
-   when sid = 'GTK_STOCK_DIALOG_INFO' then return 'gtk-dialog-info'
-   when sid = 'GTK_STOCK_DIALOG_QUESTION' then return 'gtk-dialog-question'
-   when sid = 'GTK_STOCK_DIALOG_WARNING' then return 'gtk-dialog-warning'
-   when sid = 'GTK_STOCK_DIRECTORY' then return 'gtk-directry'
-   when sid = 'GTK_STOCK_DISCARD' then return 'gtk-discard'
-   when sid = 'GTK_STOCK_DISCONNECT' then return 'gtk-disconnect'
-   when sid = 'GTK_STOCK_DND' then return 'gtk-dnd'
-   when sid = 'GTK_STOCK_DND_MULTIPLE' then return 'gtk-dnd-multiple'
-   when sid = 'GTK_STOCK_EDIT' then return 'gtk-edit'
-   when sid = 'GTK_STOCK_EXECUTE' then return 'gtk-execute'
-   when sid = 'GTK_STOCK_FILE' then return 'gtk-file'
-   when sid = 'GTK_STOCK_FIND' then return 'gtk-find'
-   when sid = 'GTK_STOCK_FIND_AND_REPLACE' then return 'gtk-find-and-replace'
-   when sid = 'GTK_STOCK_FLOPPY' then return 'gtk-floppy'
-   when sid = 'GTK_STOCK_FULLSCREEN' then return 'gtk-fullscreen'
-   when sid = 'GTK_STOCK_GOTO_BOTTOM' then return 'gtk-goto-bottom'
-   when sid = 'GTK_STOCK_GOTO_FIRST' then return 'gtk-goto-first'
-   when sid = 'GTK_STOCK_GOTO_LAST' then return 'gtk-goto-last'
-   when sid = 'GTK_STOCK_GOTO_TOP' then return 'gtk-goto-top'
-   when sid = 'GTK_STOCK_GO_BACK' then return 'gtk-go-back'
-   when sid = 'GTK_STOCK_GO_DOWN' then return 'gtk-go-down'
-   when sid = 'GTK_STOCK_GO_FORWARD' then return 'gtk-go-forward'
-   when sid = 'GTK_STOCK_GO_UP' then return 'gtk-go-up'
-   when sid = 'GTK_STOCK_HARDDISK' then return 'gtk-harddisk'
-   when sid = 'GTK_STOCK_HELP' then return 'gtk-help'
-   when sid = 'GTK_STOCK_HOME' then return 'gtk-home'
-   when sid = 'GTK_STOCK_INDENT' then return 'gtk-indent'
-   when sid = 'GTK_STOCK_INDEX' then return 'gtk-index'
-   when sid = 'GTK_STOCK_INFO' then return 'gtk-info'
-   when sid = 'GTK_STOCK_ITALIC' then return 'gtk-italic'
-   when sid = 'GTK_STOCK_JUMP_TO' then return 'gtk-jump-to'
-   when sid = 'GTK_STOCK_JUSTIFY_CENTER' then return 'gtk-justify-center'
-   when sid = 'GTK_STOCK_JUSTIFY_FILL' then return 'gtk-justify-fill'
-   when sid = 'GTK_STOCK_JUSTIFY_LEFT' then return 'gtk-justify-left'
-   when sid = 'GTK_STOCK_JUSTIFY_RIGHT' then return 'gtk-justify-right'
-   when sid = 'GTK_STOCK_LEAVE_FULLSCREEN' then return 'gtk-leave-fullscreen'
-   when sid = 'GTK_STOCK_MEDIA_FORWARD' then return 'gtk-media-forward'
-   when sid = 'GTK_STOCK_MEDIA_NEXT' then return 'gtk-media-nect'
-   when sid = 'GTK_STOCK_MEDIA_PAUSE' then return 'gtk-media-pause'
-   when sid = 'GTK_STOCK_MEDIA_PLAY' then return 'gtk-media-play'
-   when sid = 'GTK_STOCK_MEDIA_PREVIOUS' then return 'gtk-media-previous'
-   when sid = 'GTK_STOCK_MEDIA_RECORD' then return 'gtk-media-record'
-   when sid = 'GTK_STOCK_MEDIA_REWIND' then return 'gtk-media-rewind'
-   when sid = 'GTK_STOCK_MEDIA_STOP' then return 'gtk-media-stop'
-   when sid = 'GTK_STOCK_MISSING_IMAGE' then return 'gtk-missing-image'
-   when sid = 'GTK_STOCK_NETWORK' then return 'gtk-network'
-   when sid = 'GTK_STOCK_NEW' then return 'gtk-new'
-   when sid = 'GTK_STOCK_NO' then return 'gtk-no'
-   when sid = 'GTK_STOCK_OK' then return 'gtk-ok'
-   when sid = 'GTK_STOCK_OPEN' then return 'gtk-open'
-   when sid = 'GTK_STOCK_OREINTATION_LANDSCAPE' then return 'gtk-orientation-landscape'
-   when sid = 'GTK_STOCK_OREINTATION_PORTRAIT' then return 'gtk-orientation-portrait'
-   when sid = 'GTK_STOCK_OREINTATION_REVERSE_LANDSCAPE' then return 'gtk-orientation-reverse-landscape'
-   when sid = 'GTK_STOCK_OREINTATION_REVERSE_LANDSCAPE' then return 'gtk-orientation-reverse-portrait'
-   when sid = 'GTK_STOCK_PASTE' then return 'gtk-paste'
-   when sid = 'GTK_STOCK_PREFERENCES' then return 'gtk-preferences'
-   when sid = 'GTK_STOCK_PRINT' then return 'gtk-print'
-   when sid = 'GTK_STOCK_PRINT_PREVIEW' then return 'gtk-print-preview'
-   when sid = 'GTK_STOCK_PROPERTIES' then return 'gtk-properties'
-   when sid = 'GTK_STOCK_QUIT' then return 'gtk-quit'
-   when sid = 'GTK_STOCK_REDO' then return 'gtk-redo'
-   when sid = 'GTK_STOCK_REFRESH' then return 'gtk-refresh'
-   when sid = 'GTK_STOCK_REMOVE' then return 'gtk-remove'
-   when sid = 'GTK_STOCK_REVERT_TO_SAVED' then return 'gtk-revert-to-saved'
-   when sid = 'GTK_STOCK_SAVE' then return 'gtk-save'
-   when sid = 'GTK_STOCK_SAVE_AS' then return 'gtk-save-as'
-   when sid = 'GTK_STOCK_SELECT_ALL' then return 'gtk-select-all'
-   when sid = 'GTK_STOCK_SELECT_COLOR' then return 'gtk-select-color'
-   when sid = 'GTK_STOCK_SELECT_FONT' then return 'gtk-select-font'
-   when sid = 'GTK_STOCK_SORT_ASCENDING' then return 'gtk-sort-ascending'
-   when sid = 'GTK_STOCK_SORT_DESCENDING' then return 'gtk-sort-descending'
-   when sid = 'GTK_STOCK_SPELL_CHECK' then return 'gtk-spell-check'
-   when sid = 'GTK_STOCK_STOP' then return 'gtk-stop'
-   when sid = 'GTK_STOCK_STRIKETHROUGH' then return 'gtk-strikethrough'
-   when sid = 'GTK_STOCK_UNDELETE' then return 'gtk-undelete'
-   when sid = 'GTK_STOCK_UNDERLINE' then return 'gtk-underline'
-   when sid = 'GTK_STOCK_UNDO' then return 'gtk-undo'
-   when sid = 'GTK_STOCK_UNINDENT' then return 'gtk-unindent'
-   when sid = 'GTK_STOCK_YES' then return 'gtk-yes'
-   when sid = 'GTK_STOCK_ZOOM_100' then return 'gtk-zoom-100'
-   when sid = 'GTK_STOCK_ZOOM_FIT' then return 'gtk-zoom-fit'
-   when sid = 'GTK_STOCK_ZOOM_IN' then return 'gtk-zoom-in'
-   when sid = 'GTK_STOCK_ZOOM_OUT' then return 'gtk-zoom-out'
+   -- GTK stock string defines
+   when id = 'GTK_STOCK_ABOUT' then return 'gtk-about'
+   when id = 'GTK_STOCK_ADD' then return 'gtk-add'
+   when id = 'GTK_STOCK_APPLY' then return 'gtk-apply'
+   when id = 'GTK_STOCK_BOLD' then return 'gtk-bold'
+   when id = 'GTK_STOCK_CANCEL' then return 'gtk-cancel'
+   when id = 'GTK_STOCK_CDROM' then return 'gtk-cdrom'
+   when id = 'GTK_STOCK_CLEAR' then return 'gtk-clear'
+   when id = 'GTK_STOCK_CLOSE' then return 'gtk-close'
+   when id = 'GTK_STOCK_COLOR_PICKER' then return 'gtk-color-picker'
+   when id = 'GTK_STOCK_CONVERT' then return 'gtk-comvert'
+   when id = 'GTK_STOCK_CONNECT' then return 'gtk-connect'
+   when id = 'GTK_STOCK_COPY' then return 'gtk-copy'
+   when id = 'GTK_STOCK_CUT' then return 'gtk-cut'
+   when id = 'GTK_STOCK_DELETE' then return 'gtk-delete'
+   when id = 'GTK_STOCK_DIALOG_ERROR' then return 'gtk-dialog-error'
+   when id = 'GTK_STOCK_DIALOG_INFO' then return 'gtk-dialog-info'
+   when id = 'GTK_STOCK_DIALOG_QUESTION' then return 'gtk-dialog-question'
+   when id = 'GTK_STOCK_DIALOG_WARNING' then return 'gtk-dialog-warning'
+   when id = 'GTK_STOCK_DIRECTORY' then return 'gtk-directry'
+   when id = 'GTK_STOCK_DISCARD' then return 'gtk-discard'
+   when id = 'GTK_STOCK_DISCONNECT' then return 'gtk-disconnect'
+   when id = 'GTK_STOCK_DND' then return 'gtk-dnd'
+   when id = 'GTK_STOCK_DND_MULTIPLE' then return 'gtk-dnd-multiple'
+   when id = 'GTK_STOCK_EDIT' then return 'gtk-edit'
+   when id = 'GTK_STOCK_EXECUTE' then return 'gtk-execute'
+   when id = 'GTK_STOCK_FILE' then return 'gtk-file'
+   when id = 'GTK_STOCK_FIND' then return 'gtk-find'
+   when id = 'GTK_STOCK_FIND_AND_REPLACE' then return 'gtk-find-and-replace'
+   when id = 'GTK_STOCK_FLOPPY' then return 'gtk-floppy'
+   when id = 'GTK_STOCK_FULLSCREEN' then return 'gtk-fullscreen'
+   when id = 'GTK_STOCK_GOTO_BOTTOM' then return 'gtk-goto-bottom'
+   when id = 'GTK_STOCK_GOTO_FIRST' then return 'gtk-goto-first'
+   when id = 'GTK_STOCK_GOTO_LAST' then return 'gtk-goto-last'
+   when id = 'GTK_STOCK_GOTO_TOP' then return 'gtk-goto-top'
+   when id = 'GTK_STOCK_GO_BACK' then return 'gtk-go-back'
+   when id = 'GTK_STOCK_GO_DOWN' then return 'gtk-go-down'
+   when id = 'GTK_STOCK_GO_FORWARD' then return 'gtk-go-forward'
+   when id = 'GTK_STOCK_GO_UP' then return 'gtk-go-up'
+   when id = 'GTK_STOCK_HARDDISK' then return 'gtk-harddisk'
+   when id = 'GTK_STOCK_HELP' then return 'gtk-help'
+   when id = 'GTK_STOCK_HOME' then return 'gtk-home'
+   when id = 'GTK_STOCK_INDENT' then return 'gtk-indent'
+   when id = 'GTK_STOCK_INDEX' then return 'gtk-index'
+   when id = 'GTK_STOCK_INFO' then return 'gtk-info'
+   when id = 'GTK_STOCK_ITALIC' then return 'gtk-italic'
+   when id = 'GTK_STOCK_JUMP_TO' then return 'gtk-jump-to'
+   when id = 'GTK_STOCK_JUSTIFY_CENTER' then return 'gtk-justify-center'
+   when id = 'GTK_STOCK_JUSTIFY_FILL' then return 'gtk-justify-fill'
+   when id = 'GTK_STOCK_JUSTIFY_LEFT' then return 'gtk-justify-left'
+   when id = 'GTK_STOCK_JUSTIFY_RIGHT' then return 'gtk-justify-right'
+   when id = 'GTK_STOCK_LEAVE_FULLSCREEN' then return 'gtk-leave-fullscreen'
+   when id = 'GTK_STOCK_MEDIA_FORWARD' then return 'gtk-media-forward'
+   when id = 'GTK_STOCK_MEDIA_NEXT' then return 'gtk-media-nect'
+   when id = 'GTK_STOCK_MEDIA_PAUSE' then return 'gtk-media-pause'
+   when id = 'GTK_STOCK_MEDIA_PLAY' then return 'gtk-media-play'
+   when id = 'GTK_STOCK_MEDIA_PREVIOUS' then return 'gtk-media-previous'
+   when id = 'GTK_STOCK_MEDIA_RECORD' then return 'gtk-media-record'
+   when id = 'GTK_STOCK_MEDIA_REWIND' then return 'gtk-media-rewind'
+   when id = 'GTK_STOCK_MEDIA_STOP' then return 'gtk-media-stop'
+   when id = 'GTK_STOCK_MISSING_IMAGE' then return 'gtk-missing-image'
+   when id = 'GTK_STOCK_NETWORK' then return 'gtk-network'
+   when id = 'GTK_STOCK_NEW' then return 'gtk-new'
+   when id = 'GTK_STOCK_NO' then return 'gtk-no'
+   when id = 'GTK_STOCK_OK' then return 'gtk-ok'
+   when id = 'GTK_STOCK_OPEN' then return 'gtk-open'
+   when id = 'GTK_STOCK_OREINTATION_LANDSCAPE' then return 'gtk-orientation-landscape'
+   when id = 'GTK_STOCK_OREINTATION_PORTRAIT' then return 'gtk-orientation-portrait'
+   when id = 'GTK_STOCK_OREINTATION_REVERSE_LANDSCAPE' then return 'gtk-orientation-reverse-landscape'
+   when id = 'GTK_STOCK_OREINTATION_REVERSE_LANDSCAPE' then return 'gtk-orientation-reverse-portrait'
+   when id = 'GTK_STOCK_PASTE' then return 'gtk-paste'
+   when id = 'GTK_STOCK_PREFERENCES' then return 'gtk-preferences'
+   when id = 'GTK_STOCK_PRINT' then return 'gtk-print'
+   when id = 'GTK_STOCK_PRINT_PREVIEW' then return 'gtk-print-preview'
+   when id = 'GTK_STOCK_PROPERTIES' then return 'gtk-properties'
+   when id = 'GTK_STOCK_QUIT' then return 'gtk-quit'
+   when id = 'GTK_STOCK_REDO' then return 'gtk-redo'
+   when id = 'GTK_STOCK_REFRESH' then return 'gtk-refresh'
+   when id = 'GTK_STOCK_REMOVE' then return 'gtk-remove'
+   when id = 'GTK_STOCK_REVERT_TO_SAVED' then return 'gtk-revert-to-saved'
+   when id = 'GTK_STOCK_SAVE' then return 'gtk-save'
+   when id = 'GTK_STOCK_SAVE_AS' then return 'gtk-save-as'
+   when id = 'GTK_STOCK_SELECT_ALL' then return 'gtk-select-all'
+   when id = 'GTK_STOCK_SELECT_COLOR' then return 'gtk-select-color'
+   when id = 'GTK_STOCK_SELECT_FONT' then return 'gtk-select-font'
+   when id = 'GTK_STOCK_SORT_ASCENDING' then return 'gtk-sort-ascending'
+   when id = 'GTK_STOCK_SORT_DESCENDING' then return 'gtk-sort-descending'
+   when id = 'GTK_STOCK_SPELL_CHECK' then return 'gtk-spell-check'
+   when id = 'GTK_STOCK_STOP' then return 'gtk-stop'
+   when id = 'GTK_STOCK_STRIKETHROUGH' then return 'gtk-strikethrough'
+   when id = 'GTK_STOCK_UNDELETE' then return 'gtk-undelete'
+   when id = 'GTK_STOCK_UNDERLINE' then return 'gtk-underline'
+   when id = 'GTK_STOCK_UNDO' then return 'gtk-undo'
+   when id = 'GTK_STOCK_UNINDENT' then return 'gtk-unindent'
+   when id = 'GTK_STOCK_YES' then return 'gtk-yes'
+   when id = 'GTK_STOCK_ZOOM_100' then return 'gtk-zoom-100'
+   when id = 'GTK_STOCK_ZOOM_FIT' then return 'gtk-zoom-fit'
+   when id = 'GTK_STOCK_ZOOM_IN' then return 'gtk-zoom-in'
+   when id = 'GTK_STOCK_ZOOM_OUT' then return 'gtk-zoom-out'
    otherwise nop
    end
 return id
@@ -464,6 +465,15 @@ if meth_inst <> .nil then do
    self~run(meth_inst, 'I', methargs)
    end
 return
+
+::method set_data
+use strict arg name, data
+call GrxWidgetSetData self~pointer, name, data
+return
+
+::method get_data
+use strict arg name
+return GrxWidgetGetData(self~pointer, name)
 
 ::attribute user_data
 -- This attribute is not a part of the GTK system. It has been added to
@@ -909,7 +919,7 @@ return
 
 ::method add_button
 use strict arg text, resp
-call GrxDialogAddButton self~pointer, text, resp
+call GrxDialogAddButton self~pointer, GTK_Constant(text), resp
 return
 
 ::method dialog_run
@@ -944,7 +954,7 @@ return
 use strict arg title, parent, type, button_text, button_resp
 if parent = .nil then ptr = 0
 else ptr = parent~pointer
-ptrs = GrxDialogNewWithButtons(title, ptr, type, button_text, button_resp)
+ptrs = GrxDialogNewWithButtons(title, ptr, type, GTK_Constant(button_text), button_resp)
 parse var ptrs self~pointer self~vbox .
 return
 
@@ -1150,7 +1160,7 @@ return
 use strict arg title, parent, action, btext, bresp
 if parent = .nil then ptr = 0
 else ptr = parent~pointer
-self~pointer = GrxFileChooserDialogNew(title, ptr, action, btext, bresp)
+self~pointer = GrxFileChooserDialogNew(title, ptr, action, GTK_Constant(btext), bresp)
 self~vbox = .nil
 return
 
@@ -1423,7 +1433,7 @@ return
 
 ::method init
 use strict arg stockid
-self~pointer = GrxButtonNewFromStock(stockid)
+self~pointer = GrxButtonNewFromStock(GTK_Constant(stockid))
 if self~pointer = 0 then do
    raise syntax 93.900 array ('A button with the spcified stockid was not found.')
    end
@@ -2631,8 +2641,8 @@ return
 
 ::method init
 self~init:super()
-use strict arg stockname, size
-self~set_from_stock(stockname, size)
+use strict arg stockid, size
+self~set_from_stock(GTK_Constant(stockid), size)
 return
 
 

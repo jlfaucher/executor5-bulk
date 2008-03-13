@@ -54,7 +54,7 @@ window~signal_connect("destroy")
 window~border_width = 10
 window~set_size_request(250, 100)
 
-button = .MyButton~new(StockID(GTK_STOCK_CLOSE))
+button = .MyButton~new(GTK_STOCK_CLOSE)
 
 button~signal_connect("clicked")
 

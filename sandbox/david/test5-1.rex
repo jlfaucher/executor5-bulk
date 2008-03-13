@@ -76,11 +76,11 @@ return
 ::method signal_clicked
 dialog = .GtkDialog_With_Buttons~new('Information', self~user_data,,
                                      'GTK_DIALOG_MODAL',,
-                                     StockID('GTK_STOCK_OK'), 'GTK_RESPONSE_OK')
+                                     'GTK_STOCK_OK', 'GTK_RESPONSE_OK')
 dialog~set_has_separator(.false)
 
 label= .GtkLabel~new('The button was clicked!')
-image = .GtkImage_From_Stock~new(StockID('GTK_STOCK_DIALOG_INFO'), 'GTK_ICON_SIZE_DIALOG')
+image = .GtkImage_From_Stock~new('GTK_STOCK_DIALOG_INFO', 'GTK_ICON_SIZE_DIALOG')
 
 hbox = .GtkHBox~new(.false, 5)
 hbox~set_border_width(10)

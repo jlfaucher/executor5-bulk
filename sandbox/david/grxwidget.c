@@ -652,6 +652,80 @@ APIRET APIENTRY GrxWidgetModifyFG(const char * Name,
 
 
 /*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxWidgetSetData                                   */
+/* Description: Set an association for the widget                             */
+/* Rexx Args:   Pointer to the widget                                         */
+/*              Association name                                              */
+/*              Association data                                              */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxWidgetSetDate(const char * Name,
+                                 const size_t Argc, const RXSTRING Argv[],
+                                 const char * Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(3, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &myWidget);
+
+    if (GTK_IS_WIDGET(GTK_OBJECT(myWidget))) {
+        // Note: The memory allocated from strdup is never recovered and
+        // thus causes a memory leak.
+        g_object_set_data(G_OBJECT(myWidget), Argv[1].strptr,
+                                   strdup(Argv[2].strptr));
+    }
+
+    /* Set up the REXX return code */
+    *(Retstr->strptr) = '0';
+    Retstr->strlength = 1;
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxWidgetGetData                                   */
+/* Description: Get an association for the widget                             */
+/* Rexx Args:   Pointer to the widget                                         */
+/*              Association name                                              */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxWidgetGetDate(const char * Name,
+                                 const size_t Argc, const RXSTRING Argv[],
+                                 const char * Queuename, PRXSTRING Retstr)
+{
+    GtkWidget *myWidget;
+    gchar     *text;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(2, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &myWidget);
+
+    if (GTK_IS_WIDGET(GTK_OBJECT(myWidget))) {
+        text = (gchar *)g_object_get_data(G_OBJECT(myWidget), Argv[1].strptr);
+    }
+
+    /* Set up the REXX return code */
+    if (strlen(text) > RXAUTOBUFLEN - 1) {
+        Retstr->strptr = RexxAllocateMemory(strlen(text) + 1);
+    }
+    g_snprintf(Retstr->strptr, RXAUTOBUFLEN, "%s", text);
+    Retstr->strlength = strlen(Retstr->strptr);
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
 /* Rexx External Function: GrxWidgetConnectSignal                             */
 /* Description: Connect a signal function to the Widget                       */
 /* Rexx Args:   Pointer to the widget                                         */

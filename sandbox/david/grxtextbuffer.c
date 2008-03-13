@@ -422,6 +422,49 @@ APIRET APIENTRY GrxTextBufferForwardSearchNext(const char * Name,
 
 
 /*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxTextBufferCreateTag                             */
+/* Description: Create a tag for the buffer                                   */
+/* Rexx Args:   Pointer to the text buffer                                    */
+/*          :   Tag name                                                      */
+/*          :   Property name                                                 */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxTextBufferCreateTag(const char * Name,
+                                       const size_t Argc, const RXSTRING Argv[],
+                                       const char * Queuename, PRXSTRING Retstr)
+{
+    GtkTextBuffer *myWidget;     
+    gchar         *prop;
+
+    /* Check for valid arguments */
+    if (Argc < 3) {
+        return RXFUNC_BADCALL;
+    }
+    if (GrxCheckArgs(3, 3, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &myWidget);
+
+    gtk_text_buffer_create_tag(myWidget, Argv[1].strptr, Argv[2].strptr, NULL);
+    for (size_t i = 2; i < Argc; i++) {
+        g_object_set(G_OBJECT(myWidget), Argv[1].strptr, Argv[i].strptr, NULL
+    }
+
+
+    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(myWidget),
+                                   hpolicy, vpolicy);
+
+    /* Set up the REXX return code */
+    *(Retstr->strptr) = '0';
+    Retstr->strlength = 1;
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
 /* Rexx External Function: GrxTextBufferonnectSignal                          */
 /* Description: Connect a signal function to the Widget                       */
 /* Rexx Args:   Pointer to the widget                                         */

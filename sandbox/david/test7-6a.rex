@@ -54,7 +54,7 @@ window~border_width = 10
 textview = .GtkTextView~new()
 entry = .GtkEntry~new()
 entry~text = 'Search for ...'
-find = .MyButton~new(StockID(GTK_STOCK_FIND))
+find = .MyButton~new(GTK_STOCK_FIND)
 
 find~user_data = .array~new()
 find~user_data[1] = entry
