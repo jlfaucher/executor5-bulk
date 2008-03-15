@@ -5985,7 +5985,7 @@ attached to the system.
 </para>
 
 <section id="mthGetSelf"><title>GetSelf</title>
-<indexterm><primary>Get</primary></indexterm>
+<indexterm><primary>GetSelf</primary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aBaseDialog~GetSelf----------------------------------------><
@@ -6000,14 +6000,13 @@ particular Windows object. Handles are used within some of the methods to work
 on a specific Windows object.
 </para>
 <note><title><emphasis role="bold">Note</emphasis></title><para>
-Prior to ooRexx 3.2.0, and all the way back through the original IBM
-documentation, the <computeroutput>GetSelf</computeroutput> method was not
-documented.  And, the <link linkend="h000086">Get</link> method was documented
-as through it was the <computeroutput>GetSelf</computeroutput> method.  This
-most likely has caused confusion.  The <computeroutput>Get</computeroutput>
-method returns the handle to the most recently created dialog.  In an
-application with more than one dialog this may not be the same as the Windows
-dialog associated with the instance object the programmer is working with.
+Prior to ooRexx 3.2.0, the <computeroutput>GetSelf</computeroutput> method was
+not documented.  The <link linkend="h000086">Get</link> method was documented as
+if it were the <computeroutput>GetSelf</computeroutput> method. The
+<computeroutput>Get</computeroutput> method returns the handle to the most
+recently created dialog.  In an application with more than one dialog this may
+not be the same as the Windows dialog associated with the instance object the
+programmer is working with.
 </para></note>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
