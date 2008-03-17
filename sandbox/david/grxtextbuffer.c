@@ -422,36 +422,135 @@ APIRET APIENTRY GrxTextBufferForwardSearchNext(const char * Name,
 
 
 /*----------------------------------------------------------------------------*/
-/* Rexx External Function: GrxTextBufferCreateTag                             */
+/* Rexx External Function: GrxTextBufferCreateTagInt                          */
 /* Description: Create a tag for the buffer                                   */
 /* Rexx Args:   Pointer to the text buffer                                    */
 /*          :   Tag name                                                      */
 /*          :   Property name                                                 */
+/*          :   Property value                                                */
 /*----------------------------------------------------------------------------*/
 
-APIRET APIENTRY GrxTextBufferCreateTag(const char * Name,
+APIRET APIENTRY GrxTextBufferCreateTagInt(const char * Name,
                                        const size_t Argc, const RXSTRING Argv[],
                                        const char * Queuename, PRXSTRING Retstr)
 {
     GtkTextBuffer *myWidget;     
     gchar         *prop;
-    size_t        i;
+    gint           propvalue;
 
     /* Check for valid arguments */
-    if (Argc < 3) {
+    if (Argc < 4) {
         return RXFUNC_BADCALL;
     }
-    if (GrxCheckArgs(3, 3, Argv)) {
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &myWidget);
+    sscanf(Argv[3].strptr, "%d", &propvalue);
+
+    gtk_text_buffer_create_tag(myWidget, Argv[1].strptr, Argv[2].strptr,
+                               propvalue, NULL);
+
+    /* Set up the REXX return code */
+    *(Retstr->strptr) = '0';
+    Retstr->strlength = 1;
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxTextBufferCreateTagFloat                        */
+/* Description: Create a tag for the buffer                                   */
+/* Rexx Args:   Pointer to the text buffer                                    */
+/*          :   Tag name                                                      */
+/*          :   Property name                                                 */
+/*          :   Property value                                                */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxTextBufferCreateTagFloat(const char * Name,
+                                       const size_t Argc, const RXSTRING Argv[],
+                                       const char * Queuename, PRXSTRING Retstr)
+{
+    GtkTextBuffer *myWidget;     
+    gchar         *prop;
+    double        propvalue;
+
+    /* Check for valid arguments */
+    if (Argc < 4) {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &myWidget);
+    sscanf(Argv[3].strptr, "%lf", &propvalue);
+
+    gtk_text_buffer_create_tag(myWidget, Argv[1].strptr, Argv[2].strptr,
+                               propvalue, NULL);
+
+    /* Set up the REXX return code */
+    *(Retstr->strptr) = '0';
+    Retstr->strlength = 1;
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxTextBufferApplyTagByName                        */
+/* Description: Apply a tag to the current selection                          */
+/* Rexx Args:   Pointer to the text buffer                                    */
+/*          :   Tag name                                                      */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxTextBufferApplyTagByName(const char * Name,
+                                       const size_t Argc, const RXSTRING Argv[],
+                                       const char * Queuename, PRXSTRING Retstr)
+{
+    GtkTextBuffer *myWidget;     
+    GtkTextIter   start, end;
+
+    /* Check for valid arguments */
+    if (Argc < 2) {
         return RXFUNC_BADCALL;
     }
 
     /* Initialize function parameters */
     sscanf(Argv[0].strptr, "%p", &myWidget);
 
-    gtk_text_buffer_create_tag(myWidget, Argv[1].strptr, Argv[2].strptr, NULL);
-    for (i = 2; i < Argc; i++) {
-        g_object_set(G_OBJECT(myWidget), Argv[1].strptr, Argv[i].strptr, NULL);
+    gtk_text_buffer_get_selection_bounds(myWidget, &start, &end);
+    gtk_text_buffer_apply_tag_by_name(myWidget, Argv[1].strptr, &start, &end);
+
+    /* Set up the REXX return code */
+    *(Retstr->strptr) = '0';
+    Retstr->strlength = 1;
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxTextBufferRemoveAllTagse                        */
+/* Description: Remove all tags from the current selection                    */
+/* Rexx Args:   Pointer to the text buffer                                    */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxTextBufferRemoveAllTags(const char * Name,
+                                       const size_t Argc, const RXSTRING Argv[],
+                                       const char * Queuename, PRXSTRING Retstr)
+{
+    GtkTextBuffer *myWidget;     
+    GtkTextIter   start, end;
+
+    /* Check for valid arguments */
+    if (Argc < 1) {
+        return RXFUNC_BADCALL;
     }
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &myWidget);
+
+    gtk_text_buffer_get_selection_bounds(myWidget, &start, &end);
+    gtk_text_buffer_remove_all_tags(myWidget, &start, &end);
 
     /* Set up the REXX return code */
     *(Retstr->strptr) = '0';

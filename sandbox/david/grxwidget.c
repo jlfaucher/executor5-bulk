@@ -637,7 +637,7 @@ APIRET APIENTRY GrxWidgetModifyFG(const char * Name,
 /*              Association data                                              */
 /*----------------------------------------------------------------------------*/
 
-APIRET APIENTRY GrxWidgetSetDate(const char * Name,
+APIRET APIENTRY GrxWidgetSetData(const char * Name,
                                  const size_t Argc, const RXSTRING Argv[],
                                  const char * Queuename, PRXSTRING Retstr)
 {
@@ -673,7 +673,7 @@ APIRET APIENTRY GrxWidgetSetDate(const char * Name,
 /*              Association name                                              */
 /*----------------------------------------------------------------------------*/
 
-APIRET APIENTRY GrxWidgetGetDate(const char * Name,
+APIRET APIENTRY GrxWidgetGetData(const char * Name,
                                  const size_t Argc, const RXSTRING Argv[],
                                  const char * Queuename, PRXSTRING Retstr)
 {

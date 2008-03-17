@@ -112,6 +112,38 @@ return
 use strict arg id
 id = upper(id)
 select
+   -- GtkWindowType
+   when id = 'GTK_WINDOW_TOPLEVEL' then return 0
+   when id = 'GTK_WINDOW_POPUP' then return 1
+   -- GtkButtonType
+   when id = 'GTK_BUTTONS_NONE' then return 0
+   when id = 'GTK_BUTTONS_OK' then return 1
+   when id = 'GTK_BUTTONS_CLOSE' then return 2
+   when id = 'GTK_BUTTONS_CANCEL' then return 3
+   when id = 'GTK_BUTTONS_YES_NO' then return 4
+   when id = 'GTK_BUTTONS_OK_CANCEL' then return 5
+   -- GtkDialogFlags
+   when id = 'GTK_DIALOG_MODAL' then return 2**0
+   when id = 'GTK_DIALOG_DESTROY_WITH_PARENT' then return 2**1
+   when id = 'GTK_DIALOG_NO_SEPARATOR' then return 2**2
+   -- GtkResponseType
+   when id = 'GTK_RESPONSE_NONE' then return -1
+   when id = 'GTK_RESPONSE_REJECT' then return -2
+   when id = 'GTK_RESPONSE_ACCEPT' then return -3
+   when id = 'GTK_RESPONSE_DELETE_EVENT' then return -4
+   when id = 'GTK_RESPONSE_OK' then return -5
+   when id = 'GTK_RESPONSE_CANCEL' then return -6
+   when id = 'GTK_RESPONSE_CLOSE' then return -7
+   when id = 'GTK_RESPONSE_YES' then return -8
+   when id = 'GTK_RESPONSE_NO' then return -9
+   when id = 'GTK_RESPONSE_APPLY' then return -10
+   when id = 'GTK_RESPONSE_HELP' then return -11
+   -- GtkMessageType
+   when id = 'GTK_MESSAGE_INFO' then return 0
+   when id = 'GTK_MESSAGE_WARNING' then return 1
+   when id = 'GTK_MESSAGE_QUESTION' then return 2
+   when id = 'GTK_MESSAGE_ERROR' then return 3
+   when id = 'GTK_MESSAGE_OTHER' then return 4
    -- GTK stock string defines
    when id = 'GTK_STOCK_ABOUT' then return 'gtk-about'
    when id = 'GTK_STOCK_ADD' then return 'gtk-add'
@@ -211,40 +243,11 @@ select
    when id = 'GTK_STOCK_ZOOM_FIT' then return 'gtk-zoom-fit'
    when id = 'GTK_STOCK_ZOOM_IN' then return 'gtk-zoom-in'
    when id = 'GTK_STOCK_ZOOM_OUT' then return 'gtk-zoom-out'
-   -- GtkDialogFlags
-   when id = 'GTK_DIALOG_MODAL' then return 2**0
-   when id = 'GTK_DIALOG_DESTROY_WITH_PARENT' then return 2**1
-   when id = 'GTK_DIALOG_NO_SEPARATOR' then return 2**2
-   -- GtkResponseType
-   when id = 'GTK_RESPONSE_NONE' then return -1
-   when id = 'GTK_RESPONSE_REJECT' then return -2
-   when id = 'GTK_RESPONSE_ACCEPT' then return -3
-   when id = 'GTK_RESPONSE_DELETE_EVENT' then return -4
-   when id = 'GTK_RESPONSE_OK' then return -5
-   when id = 'GTK_RESPONSE_CANCEL' then return -6
-   when id = 'GTK_RESPONSE_CLOSE' then return -7
-   when id = 'GTK_RESPONSE_YES' then return -8
-   when id = 'GTK_RESPONSE_NO' then return -9
-   when id = 'GTK_RESPONSE_APPLY' then return -10
-   when id = 'GTK_RESPONSE_HELP' then return -11
-   -- GtkMessageType
-   when id = 'GTK_MESSAGE_INFO' then return 0
-   when id = 'GTK_MESSAGE_WARNING' then return 1
-   when id = 'GTK_MESSAGE_QUESTION' then return 2
-   when id = 'GTK_MESSAGE_ERROR' then return 3
-   when id = 'GTK_MESSAGE_OTHER' then return 4
    -- GtkFileCoooserAction
    when id = 'GTK_FILE_CHOOSER_ACTION_OPEN' then return 0
    when id = 'GTK_FILE_CHOOSER_ACTION_SAVE' then return 1
    when id = 'GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER' then return 2
    when id = 'GTK_FILE_CHOOSER_ACTION_CREATE_FOLDER' then return 3
-   -- GtkButtonType
-   when id = 'GTK_BUTTONS_NONE' then return 0
-   when id = 'GTK_BUTTONS_OK' then return 1
-   when id = 'GTK_BUTTONS_CLOSE' then return 2
-   when id = 'GTK_BUTTONS_CANCEL' then return 3
-   when id = 'GTK_BUTTONS_YES_NO' then return 4
-   when id = 'GTK_BUTTONS_OK_CANCEL' then return 5
    -- GtkAssistancePageType
    when id = 'GTK_ASSISTANT_PAGE_CONTENT' then return 0
    when id = 'GTK_ASSISTANT_PAGE_INTRO' then return 1
@@ -255,7 +258,6 @@ select
    when id = 'GTK_RELIEF_NORMAL' then return 0
    when id = 'GTK_RELIEF_HALF' then return 1
    when id = 'GTK_RELIEF_NONO' then return 2
-   otherwise nop
    -- GtkAtom
    when id = 'GTK_SELECTION_PRIMARY' then return 1
    when id = 'GTK_SELECTION_SECONDARY' then return 2
@@ -303,9 +305,34 @@ select
    when id = 'GTK_STATE_PRELIGHT' then return 2
    when id = 'GTK_STATE_SELECTED' then return 3
    when id = 'GTK_STATE_INSENSITIVE' then return 4
-   -- GtkWindowType
-   when id = 'GTK_WINDOW_TOPLEVEL' then return 0
-   when id = 'GTK_WINDOW_POPUP' then return 1
+   -- Pango scale factors
+   when id = 'PANGO_SCALE_XX_SMALL' then return 0.5787037037037
+   when id = 'PANGO_SCALE_X_SMALL' then return 0.6444444444444
+   when id = 'PANGO_SCALE_SMALL' then return 0.8333333333333
+   when id = 'PANGO_SCALE_MEDIUM' then return 1.0
+   when id = 'PANGO_SCALE_LARGE' then return 1.2
+   when id = 'PANGO_SCALE_X_LARGE' then return 1.4399999999999
+   when id = 'PANGO_SCALE_XX_LARGE' then return 1.728
+   -- PangoWeight
+   when id = 'PANGO_WEIGHT_ULTRALIGHT' then return 200
+   when id = 'PANGO_WEIGHT_LIGHT' then return 300
+   when id = 'PANGO_WEIGHT_NORMAL' then return 400
+   when id = 'PANGO_WEIGHT_SEMIBOLD' then return 600
+   when id = 'PANGO_WEIGHT_BOLD' then return 700
+   when id = 'PANGO_WEIGHT_ULTRABOLD' then return 800
+   when id = 'PANGO_WEIGHT_HEAVY' then return 900
+   -- PangoStyle
+   when id = 'PANGO_STYLE_NORMAL' then return 0
+   when id = 'PANGO_STYLE_OBLIQUE' then return 1
+   when id = 'PANGO_STYLE_ITALIC' then return 2
+   -- PangoUnderline
+   when id = 'PANGO_UNDERLINE_NONE' then return 0
+   when id = 'PANGO_UNDERLINE_SINGLE' then return 1
+   when id = 'PANGO_UNDERLINE_DOUBLE' then return 2
+   when id = 'PANGO_UNDERLINE_LOW' then return 3
+   when id = 'PANGO_UNDERLINE_ERROR' then return 4
+   -- Just return the id
+   otherwise nop
    end
 return id
 
@@ -1946,6 +1973,75 @@ return self~signal_connect:super(event)
 
 
 /*============================================================================*/
+/* Class: GtkComboBox                                                         */
+/*============================================================================*/
+
+::class GtkComboBox public subclass GtkWidget
+
+::method new_text class
+use strict arg
+return
+
+::method init
+use strict arg
+self~pointer = GrxComboBoxNew()
+return
+
+::method append_text
+use strict arg text
+call GrxComboBoxAppendText self~pointer, text
+return
+
+::method get_active_text
+use strict arg
+return GrxComboBoxGetActiveText(self~pointer)
+
+::method get_active
+use strict arg
+return GrxComboBoxGetActive(self~pointer)
+
+::method set_active
+use strict arg i
+call GrxComboBoxGetActiveText self~pointer, i
+return
+
+::method signal_connect
+use strict arg event
+select
+   when event = 'changed' then call GrxComboBoxConnectSignal self~pointer, event
+   when event = 'move_active' then call GrxComboBoxConnectSignal self~pointer, event
+   when event = 'popdown' then call GrxComboBoxConnectSignal self~pointer, event
+   when event = 'popup' then call GrxComboBoxConnectSignal self~pointer, event
+   otherwise return self~signal_connect:super(event)
+   end
+return .true
+
+::method signal_changed
+return
+
+::method signal_move_active
+return
+
+::method signal_popdown
+return
+
+::method signal_popup
+return
+
+
+/*============================================================================*/
+/* Class: GtkComboBox_Text                                                    */
+/*============================================================================*/
+
+::class GtkComboBox_Text public subclass GtkComboBox
+
+::method init
+use strict arg
+self~pointer = GrxComboBoxNewText()
+return
+
+
+/*============================================================================*/
 /* Class: GtkEntry                                                            */
 /*============================================================================*/
 
@@ -2995,6 +3091,18 @@ use strict arg cb, flag
 call GrxTextBufferPasteClipboard pointer, cb~pointer, flag
 return
 
+::method create_tag_int
+expose pointer
+use strict arg tagname, propname, val
+call GrxTextBufferCreateTagInt pointer, tagname, propname, GTK_Constant(val)
+return
+
+::method create_tag_float
+expose pointer
+use strict arg tagname, propname, val
+call GrxTextBufferCreateTagFloat pointer, tagname, propname, GTK_Constant(val)
+return
+
 ::method forward_search
 expose pointer
 use strict arg text, flag
@@ -3003,6 +3111,18 @@ return GrxTextBufferForwardSearch(pointer, text, flag)
 ::method forward_search_next
 use strict arg text, iter
 return GrxTextBufferForwardSearchNext(text, iter)
+
+::method apply_tag_by_name
+expose pointer
+use strict arg name
+call GrxTextBufferApplyTagByName pointer, name
+return
+
+::method remove_all_tags
+expose pointer
+use strict arg
+call GrxTextBufferRemoveAllTags pointer
+return
 
 ::method signal_connect
 use strict arg event

@@ -357,6 +357,10 @@ APIRET APIENTRY GrxLoadFuncs(char * Name,
         "GrxTextBufferPasteClipboard",
         "GrxTextBufferForwardSearch",
         "GrxTextBufferForwardSearchNext",
+        "GrxTextBufferCreateTagInt",
+        "GrxTextBufferCreateTagFloat",
+        "GrxTextBufferApplyTagByName",
+        "GrxTextBufferRemoveAllTags",
         "GrxTextBufferConnectSignal",
 
         //Scrolled window functions
@@ -422,6 +426,15 @@ APIRET APIENTRY GrxLoadFuncs(char * Name,
         "GrxNotebookPopupDisable",
         "GrxNotebookGetCurrentPage",
         "GrxNotebookSetCurrentPage",
+
+        // Combo box functions
+        "GrxComboBoxNew",
+        "GrxComboBoxNewText",
+        "GrxComboBoxAppendText",
+        "GrxComboBoxGetActiveText",
+        "GrxComboBoxSetActive",
+        "GrxComboBoxGetActive",
+        "GrxComboBoxConnectSignal",
 
         // Range, Scale, and Slider functions
         "GrxRangeConnectSignal",
