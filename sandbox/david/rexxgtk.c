@@ -361,6 +361,7 @@ APIRET APIENTRY GrxLoadFuncs(char * Name,
         "GrxTextBufferCreateTagFloat",
         "GrxTextBufferApplyTagByName",
         "GrxTextBufferRemoveAllTags",
+        "GrxTextBufferInsertImage",
         "GrxTextBufferConnectSignal",
 
         //Scrolled window functions

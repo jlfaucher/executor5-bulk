@@ -529,7 +529,7 @@ APIRET APIENTRY GrxTextBufferApplyTagByName(const char * Name,
 
 
 /*----------------------------------------------------------------------------*/
-/* Rexx External Function: GrxTextBufferRemoveAllTagse                        */
+/* Rexx External Function: GrxTextBufferRemoveAllTags                         */
 /* Description: Remove all tags from the current selection                    */
 /* Rexx Args:   Pointer to the text buffer                                    */
 /*----------------------------------------------------------------------------*/
@@ -551,6 +551,47 @@ APIRET APIENTRY GrxTextBufferRemoveAllTags(const char * Name,
 
     gtk_text_buffer_get_selection_bounds(myWidget, &start, &end);
     gtk_text_buffer_remove_all_tags(myWidget, &start, &end);
+
+    /* Set up the REXX return code */
+    *(Retstr->strptr) = '0';
+    Retstr->strlength = 1;
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxTextBufferInsertImage                           */
+/* Description: Insert a pixbuf into the text buffer                          */
+/* Rexx Args:   Pointer to the text buffer                                    */
+/*              Pointer to the image                                          */
+/*              Line number                                                   */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxTextBufferInsertImage(const char * Name,
+                                       const size_t Argc, const RXSTRING Argv[],
+                                       const char * Queuename, PRXSTRING Retstr)
+{
+    GtkTextBuffer *myWidget;     
+    GtkTextIter   line;
+    GdkPixbuf     *pixbuf;
+    GtkImage      *img;
+    gint          linenum;
+
+    /* Check for valid arguments */
+    if (Argc < 3) {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &myWidget);
+    sscanf(Argv[1].strptr, "%p", &img);
+    sscanf(Argv[2].strptr, "%d", &linenum);
+
+    printf("image = %p\n", img);
+    pixbuf = gtk_image_get_pixbuf(img);
+    gtk_text_buffer_get_iter_at_line(myWidget, &line, linenum);
+    gtk_text_buffer_insert_pixbuf(myWidget, &line, pixbuf);
 
     /* Set up the REXX return code */
     *(Retstr->strptr) = '0';
