@@ -50,8 +50,11 @@ CRITICAL_SECTION stop = { 0 };
 #ifndef SCRIPTDEBUG
 
 //  The invCount is only in this module.  There should be only one of these per method.
-int __cdecl _FPRINTF(FILE *Stream, const char *Format,...) {
-    int RetCode=0;
+void _FPRINTF(FILE *Stream, const char *Format,...) {
+    if (Stream == NULL)
+    {
+        return;
+    }
 
     if (invCount == 0)
     {
@@ -75,16 +78,13 @@ int __cdecl _FPRINTF(FILE *Stream, const char *Format,...) {
     va_end(marker);
     fflush(Stream);
     LeaveCriticalSection(&stop);
-    return RetCode;
 
 }
 
-int __cdecl _FPRINTF2(FILE *Stream, const char *Format, ...) {
-    int RetCode=0;
-
-    if (!Stream)
+void _FPRINTF2(FILE *Stream, const char *Format, ...) {
+    if (Stream == NULL)
     {
-        return 0;
+        return;
     }
     va_list marker;
     for (int i=0; i<HeaderLength; ++i) fprintf(Stream," ");
@@ -92,7 +92,6 @@ int __cdecl _FPRINTF2(FILE *Stream, const char *Format, ...) {
     RetCode = vfprintf(Stream,Format,marker);
     va_end(marker);
     fflush(Stream);
-    return RetCode;
 }
 
 
@@ -102,11 +101,11 @@ int __cdecl _FPRINTF2(FILE *Stream, const char *Format, ...) {
  *
  *
  *****************************************************************************/
-int __cdecl FPRINTF3(FILE *Stream, const char *Format, ...) {
-    int RetCode=0;
-
-    if (!Stream)
-        return 0;
+void FPRINTF3(FILE *Stream, const char *Format, ...) {
+    if (Stream == NULL)
+    {
+        return;
+    }
     va_list marker;
     va_start(marker,Format);
     RetCode = vfprintf(Stream,Format,marker);
@@ -565,7 +564,7 @@ void PrntDispParams(FILE *Stream, DISPPARAMS *Params)
              Params->cArgs,Params->cNamedArgs);
     if (Params->cNamedArgs > 0 && Params->rgdispidNamedArgs == NULL)
     {
-        FPRINTF2(Stream,"Huston, we have a problem. cNamedArgs > 0, but no pointer.\n");
+        FPRINTF2(Stream,"Houston, we have a problem. cNamedArgs > 0, but no pointer.\n");
         lNACount = 0;
     }
     else

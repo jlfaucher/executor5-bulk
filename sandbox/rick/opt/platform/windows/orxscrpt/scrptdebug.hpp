@@ -96,13 +96,13 @@ typedef struct FLAGLISTstruct {
                                                (int)(cb))
 
 #ifdef SCRIPTDEBUG
-void __cdecl FPRINTF(FILE *Stream, const char *Format,...);
-void __cdecl FPRINTF2(FILE *Stream, const char *Format, ...);
-void __cdecl FPRINTF3(FILE *Stream, const char *Format, ...);
+void FPRINTF(FILE *Stream, const char *Format,...);
+void FPRINTF2(FILE *Stream, const char *Format, ...);
+void FPRINTF3(FILE *Stream, const char *Format, ...);
 #else
-inline void __cdecl FPRINTF(FILE *Stream, const char *Format,...) { }
-inline void __cdecl FPRINTF2(FILE *Stream, const char *Format, ...) { }
-inline void __cdecl FPRINTF3(FILE *Stream, const char *Format, ...) { }
+inline void FPRINTF(FILE *Stream, const char *Format,...) { }
+inline void FPRINTF2(FILE *Stream, const char *Format, ...) { }
+inline void FPRINTF3(FILE *Stream, const char *Format, ...) { }
 #endif
 
 /****************************************************************************

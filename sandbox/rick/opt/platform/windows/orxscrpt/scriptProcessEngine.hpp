@@ -46,6 +46,9 @@ class ScriptProcessEngine
 {
 public:
 
+    static void initialize();
+    static void terminate();
+
 protected:
     static CRITICAL_SECTION engineSection;     // critical section used for interlocks
     static HANDLE engineMutex;                 // our process synchronization semaphore

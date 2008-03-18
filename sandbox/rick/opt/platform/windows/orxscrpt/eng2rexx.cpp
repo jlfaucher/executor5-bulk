@@ -661,6 +661,64 @@ int RexxEntry RexxNovalueHandler(RexxExitContext *, int ExitNumber, int Subfunct
 }
 
 
+void __stdcall createCode(void *arguments)
+{
+    CreateCodeData * args = (CreateCodeData *)arguments;
+
+    args->engine->convertTextToCode(args->strCode, &args->routine, args->condData);
+    // and explicitly terminate
+    _endthreadex(0);
+}
+
+
+int OrxScript::createRoutine(LPCOLESTR strCode, ULONG startingLineNumber, RexxRoutineObject &routine)
+{
+    CreateCodeData createArgs;
+    RexxConditionData cd;
+    cd.rc = 0;
+
+    // fill in the args for calling the interpreter to handle all of this
+    createArgs.engine = this;
+    createArgs.strCode = strCode;
+    createArgs.routine = NULLOBJECT;
+    createArgs.condData = &cd;
+
+    EnterCriticalSection(&EngineSection);
+    pActiveScriptSite->OnEnterScript();
+
+    FPRINTF2(logfile,"create method\n");
+
+        // now create the method (runs in a different thread)
+    HANDLE execution = (HANDLE)_beginthreadex(NULL, 0, (unsigned int (__stdcall *) (void*) ) createCode, (LPVOID) createArgs, 0, &dummy);
+    // could not start thread?
+    if (execution == 0)
+    {
+        return -1;
+    }
+    else
+    {
+        WaitForSingleObject(execution, INFINITE);
+        CloseHandle(execution);
+    }
+    cd.position += startingLineNumber;
+    //    The following code HAS to be after the _endthreadex(), or
+    //  bad things will happen.  None of the COM calls that result
+    //  from the following function calls will work.
+    if (cd.rc != 0)
+    {
+        // an error occured: init excep info
+        ErrObj = new OrxScriptError(logfile, &cd, &ErrObj_Exists);
+        hResult = pActiveScriptSite->OnScriptError((IActiveScriptError*) ErrObj);
+        // init to empty again....
+        if (ErrObj_Exists)
+        {
+            ErrObj->UDRelease();
+        }
+    }
+    return cd.rc;
+}
+
+
 void OrxScript::convertTextToCode(LPCOLESTR strCode, RexxRoutineObject *routine, RexxConditionData *condData)
 {
     // get an interpreter instance context for us to use
@@ -685,16 +743,6 @@ void OrxScript::convertTextToCode(LPCOLESTR strCode, RexxRoutineObject *routine,
 
     free(script);
     contexxt->DetachThread();
-}
-
-
-void __stdcall createCode(void *arguments)
-{
-    CreateCodeData * args = (CreateCodeData *)arguments;
-
-    args->engine->convertTextToCode(args->strCode, &args->routine, args->condData);
-    // and explicitly terminate
-    _endthreadex(0);
 }
 
 

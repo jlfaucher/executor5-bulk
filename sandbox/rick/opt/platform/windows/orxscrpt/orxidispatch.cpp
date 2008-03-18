@@ -162,23 +162,6 @@ FL DispExInvokDispID[] = {        // H - orizontal flags
   };
 
 
-/*
-DISPID_Name    -800
-DISPID_Delete    -801
-DISPID_Object    -802
-DISPID_Parent    -803
-
-from OAIDL.H
-DISPID_UNKNOWN  ( -1 )
-DISPID_VALUE    ( 0 )
-DISPID_PROPERTYPUT      ( -3 )
-DISPID_NEWENUM  ( -4 )
-DISPID_EVALUATE ( -5 )
-DISPID_CONSTRUCTOR      ( -6 )
-DISPID_DESTRUCTOR       ( -7 )
-DISPID_COLLECT  ( -8 )
-*/
-
 FL MSDispIDs[] = {        // V - ertical flags
   {DISPID_UNKNOWN,"IUnknown pointer"},
   {DISPID_VALUE,"Activate default value or property"},
@@ -311,7 +294,10 @@ STDMETHODIMP OrxScript::Invoke(DISPID pDispID, REFIID riid, LCID plcid,
 
     //  check parameters
     //  According to the Doc, this should always be IID_NULL.
-    if (riid != IID_NULL) return E_INVALIDARG;
+    if (riid != IID_NULL)
+    {
+        return E_INVALIDARG;
+    }
 
     return CommonInvoke(pDispID, plcid, pFlags, pDispParams, pVarResult, pExcepInfo);
 }
@@ -782,34 +768,6 @@ STDMETHODIMP OrxScript::Invoke(DISPID pDispID, REFIID riid, LCID plcid,
 }
 
 
-
-RexxArrayObject OrxScript::dispParms2RexxArray(RexxThreadContext *context, DISPPARAMS *dp)
-{
-    //   Thanks to the wonderful way that Windows passes variants,
-    // this routine must reverse the args....
-    if (dp)
-    {
-        int j = dp->cArgs;
-        RexxArrayObject result = context->NewArray(j);
-        for (int i = 0; i < j; i++)
-        {
-            RexxObjectPtr temp = Variant2Rexx(context, &dp->rgvarg[j-i-1]);
-            context->ArrayPut(result, temp, i+1);
-        }
-        return result;
-    }
-    // no arguments? set in default empty string
-    else
-    {
-        RexxArrayObject result = context->NewArray(1);
-        context->ArrayPut(result, context->NullString(), 1);
-        return result;
-    }
-}
-
-
-
-
 /******************************************************************************
 *                 InvokeMethod
 *
@@ -826,7 +784,6 @@ RexxArrayObject OrxScript::dispParms2RexxArray(RexxThreadContext *context, DISPP
     HRESULT       RetCode=S_OK;
     OLECHAR       invokeString[4096],*Invocation = invokeString;
     char          lName[251],tInvokeString[4096],*FInvokeString,*Temp=NULL,NameList[MAX_PATH],*tNL;
-    char          *CallType,Function=')',Procedure='\0';
     LPVOID        arguments[8];
     RexxConditionData cd;
     DISPPARAMS    dp;
@@ -882,21 +839,6 @@ RexxArrayObject OrxScript::dispParms2RexxArray(RexxThreadContext *context, DISPP
                 FPRINTF2(logfile,"InvokeMethod()  Processing a function (METHOD in MS parlance), ParseScriptText flags were %s. \n",
                          FlagMeaning('H',pDIDData->Flags,ScriptText));
                 FPRINTF2(logfile,"RexxCodeBlock is %p. Running it:\n",pDIDData->RexxCode);
-                // The %.250S says to convert the wide char string to native char, up to a
-                // maximum of 250 characters (the Rexx limit on the size of a variable name.
-                // I apologize that this is hard coded here.  The only alternative is to build
-                // the string pattern at run time using defined constant.
-                sprintf(lName,"%.250S",pDIDData->Name);
-                if (pbResults)
-                {
-                    CallType = &Function;
-                }
-                else
-                {
-                    CallType = &Procedure;
-                }
-                RetCode = BuildRXCallString(&lName[0], *CallType, ArgCount, tNL, &FInvokeString,&ISMaxLen);
-                FPRINTF2(logfile,"InvokeString \"%s\" \n",FInvokeString);
                 break;
 
                 //  At the moment the two types of events are seperated out because the interpretation
@@ -917,11 +859,6 @@ RexxArrayObject OrxScript::dispParms2RexxArray(RexxThreadContext *context, DISPP
             case DID::LPPEvent:
                 FPRINTF2(logfile,"InvokeMethod()  Processing a LocalParseProcedure EVENT\n");
                 FPRINTF2(logfile,"RexxCodeBlock is %p. Running it:\n",pDIDData->RexxCode);
-
-                CallType = &Function;
-                sprintf(lName,"%.250S",pDIDData->Name);
-                RetCode = BuildRXCallString(&lName[0], *CallType, ArgCount, tNL, &FInvokeString,&ISMaxLen);
-                FPRINTF2(logfile,"New InvokeString \"%s\" \n",FInvokeString);
                 break;
 
             case DID::PPEvent :
@@ -938,46 +875,6 @@ RexxArrayObject OrxScript::dispParms2RexxArray(RexxThreadContext *context, DISPP
      */
     if (SUCCEEDED(RetCode))
     {
-        // Now convert it to wide characters.
-        ISMaxLen = (int)strlen(FInvokeString)+1;
-        //   >>> ??? <<< Code for the case where this has no invocation string.
-        if (ISMaxLen > 1)
-        {
-            if (ISMaxLen > (sizeof(invokeString)/sizeof(OLECHAR)))
-            {
-                Invocation = new OLECHAR[ISMaxLen];
-            }
-            else
-            {
-                Invocation = &(invokeString[0]);
-            }
-            C2W(Invocation,FInvokeString,ISMaxLen);
-
-            FCmd = new VARIANTARG[ArgCount + 1];
-
-
-            dp.cNamedArgs = 0;
-            dp.cArgs = ArgCount + 1;
-            dp.rgvarg = FCmd;
-            dp.rgdispidNamedArgs = NULL;
-
-            //  This is where things get a bit messy.  Variants are passed in reverse
-            // order.  Therefore, the parm that we generated must be put on at the end.
-            // First, copy the non-named args that the Host gave us.
-            if (ArgCount > 0) memcpy(&FCmd[0],&(pArgs->rgvarg[pArgs->cNamedArgs]),sizeof(VARIANTARG)*(ArgCount));
-            //  Then tack on the command to invoke Rexx at the end.
-            VariantInit(&FCmd[ArgCount]);
-            V_VT(&FCmd[ArgCount]) = VT_BSTR;
-            V_BSTR(&FCmd[ArgCount]) = SysAllocString(Invocation);
-        }
-        else
-        {
-            dp.cNamedArgs = 0;
-            dp.cArgs = 0;
-            dp.rgvarg = NULL;
-            dp.rgdispidNamedArgs = NULL;
-        }
-
         if (pbResults != NULL)
         {
             mResult = pbResults;
@@ -1011,29 +908,12 @@ RexxArrayObject OrxScript::dispParms2RexxArray(RexxThreadContext *context, DISPP
             VariantClear(&FCmd[ArgCount]);  // freestring
             delete FCmd;
         }
-        if (FInvokeString != tInvokeString)
-        {
-            delete FInvokeString;
-        }
-        if (FInvokeString != Temp && Temp != tInvokeString)
-        {
-            delete Temp;
-        }
         if (tNL != NameList)
         {
             delete tNL;
         }
-        if (Invocation != invokeString)
-        {
-            delete Invocation;
-        }
 
-        if (cd.rc)
-        {
-            RetCode = E_FAIL;
-            FPRINTF2(logfile,"execution produced an error! (rc = %d)\n",cd.rc);
-        }
-        else
+        if (cd.rc == 0)
         {
             FPRINTF2(logfile,"done running RCB %p\n",pDIDData->RexxCode);
             //  If the call was made as a Return ???(), and it did not actually return

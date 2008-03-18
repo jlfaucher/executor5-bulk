@@ -161,22 +161,22 @@ STDMETHODIMP OrxClassFactory::QueryInterface(REFIID riid, void** ppvObj)
     char    cIID[100],TrulyUnknown[]="??????";
 
     StringFromGUID2(riid,(LPOLESTR)cIID,sizeof(cIID)/2);
-    FPRINTF(::DLLlogfile,"OrxClassFactory::QueryInterface %S\r\n",cIID);
+    FPRINTF(StreamProcessEngine::logfile,"OrxClassFactory::QueryInterface %S\r\n",cIID);
     if (ppvObj == 0)
     {
-        FPRINTF2(::DLLlogfile,"OrxClassFactory::QueryInterface Bad Return Pointer\n");
+        FPRINTF2(StreamProcessEngine::logfile,"OrxClassFactory::QueryInterface Bad Return Pointer\n");
         return E_POINTER;
     }
     *ppvObj = NULL;
 
     if (riid == IID_IUnknown)
     {
-        FPRINTF2(::DLLlogfile,"OrxClassFactory::QueryInterface IID_IUnknown\n");
+        FPRINTF2(StreamProcessEngine::logfile,"OrxClassFactory::QueryInterface IID_IUnknown\n");
         *ppvObj = (IUnknown *) this;
     }
     else if (riid == IID_IClassFactory)
     {
-        FPRINTF2(::DLLlogfile,"OrxClassFactory::QueryInterface IID_IClassFactory\n");
+        FPRINTF2(StreamProcessEngine::logfile,"OrxClassFactory::QueryInterface IID_IClassFactory\n");
         *ppvObj = (IClassFactory *) this;
     }
 
@@ -187,7 +187,7 @@ STDMETHODIMP OrxClassFactory::QueryInterface(REFIID riid, void** ppvObj)
         {
             IIDName = &TrulyUnknown[0];
         }
-        FPRINTF2(::DLLlogfile,"OrxClassFactory::QueryInterface Unsupported Interface (%s)\n",IIDName);
+        FPRINTF2(StreamProcessEngine::logfile,"OrxClassFactory::QueryInterface Unsupported Interface (%s)\n",IIDName);
         if (IIDName != &TrulyUnknown[0])
         {
             free(IIDName);
@@ -204,7 +204,7 @@ STDMETHODIMP OrxClassFactory::QueryInterface(REFIID riid, void** ppvObj)
 
 STDMETHODIMP_(ULONG) OrxClassFactory::AddRef(void)
 {
-    FPRINTF(::DLLlogfile,"OrxClassFactory::AddRef: ulRefCounter=%d (before incr.)\r\n", ulRefCounter);
+    FPRINTF(StreamProcessEngine::logfile,"OrxClassFactory::AddRef: ulRefCounter=%d (before incr.)\r\n", ulRefCounter);
     return ++ulRefCounter;
 }
 
@@ -213,7 +213,7 @@ STDMETHODIMP_(ULONG) OrxClassFactory::Release(void)
 {
     ULONG ulTempRefCounter;
 
-    FPRINTF(::DLLlogfile,"OrxClassFactory::Release\r\n");
+    FPRINTF(StreamProcessEngine::logfile,"OrxClassFactory::Release\r\n");
     ulTempRefCounter = --ulRefCounter;
 
     if (ulRefCounter == 0)
@@ -221,14 +221,14 @@ STDMETHODIMP_(ULONG) OrxClassFactory::Release(void)
         delete this;
     }
 
-    FPRINTF2(::DLLlogfile,"ulRefCounter=%d\r\n", ulTempRefCounter);
+    FPRINTF2(StreamProcessEngine::logfile,"ulRefCounter=%d\r\n", ulTempRefCounter);
     return ulTempRefCounter;
 }
 
 
 STDMETHODIMP OrxClassFactory::LockServer(BOOL fLock)
 {
-    FPRINTF(::DLLlogfile,"OrxClassFactory::LockServer: fLock=%d\n", fLock);
+    FPRINTF(StreamProcessEngine::logfile,"OrxClassFactory::LockServer: fLock=%d\n", fLock);
     if (fLock)
     {
         InterlockedIncrement((long *)&ulDllLocks); //++ulDllLocks;
@@ -238,7 +238,7 @@ STDMETHODIMP OrxClassFactory::LockServer(BOOL fLock)
         InterlockedDecrement((long *)&ulDllLocks);  //--ulDllLocks;
     }
 
-    FPRINTF2(::DLLlogfile,"ulDllLocks=%d\r\n", ulDllLocks);
+    FPRINTF2(StreamProcessEngine::logfile,"ulDllLocks=%d\r\n", ulDllLocks);
     return NOERROR;
 }
 
@@ -254,7 +254,7 @@ STDMETHODIMP OrxClassFactory::RegisterServer()
     char      szDllPath[REGPATHMAX];
     ULONG     ulDllPathLen;
 
-    FPRINTF(::DLLlogfile,"OrxClassFactory::RegisterServer\r\n");
+    FPRINTF(StreamProcessEngine::logfile,"OrxClassFactory::RegisterServer\r\n");
 
     /* Make a clean start */
     UnregisterServer();
@@ -422,7 +422,7 @@ STDMETHODIMP OrxClassFactory::UnregisterServer()
     HKEY     hkSub;
     HRESULT  hr = S_OK;
 
-    FPRINTF(::DLLlogfile,"OrxClassFactory::UnregisterServer\r\n");
+    FPRINTF(StreamProcessEngine::logfile,"OrxClassFactory::UnregisterServer\r\n");
 
     /* UnRegister ourselves from the category */
     UnRegisterCLSIDInCategory(guidCLASSID, CATID_ActiveScript);
@@ -431,20 +431,20 @@ STDMETHODIMP OrxClassFactory::UnregisterServer()
     /* delete server info */
     if (RegOpenKey(HKEY_CLASSES_ROOT, szLANGNAME, &hk) != ERROR_SUCCESS)
     {
-        FPRINTF(::DLLlogfile,"  FAIL: RegOpenKey HKCR\\%s\n",szLANGNAME);
+        FPRINTF(StreamProcessEngine::logfile,"  FAIL: RegOpenKey HKCR\\%s\n",szLANGNAME);
         hr = ResultFromScode(E_FAIL);
     }
     else
     {
         if (RegDeleteKey(hk, "CLSID") != ERROR_SUCCESS)
         {
-            FPRINTF(::DLLlogfile,"  FAIL: RegDeleteKey %s\\CLSID\n",szLANGNAME);
+            FPRINTF(StreamProcessEngine::logfile,"  FAIL: RegDeleteKey %s\\CLSID\n",szLANGNAME);
             hr = ResultFromScode(E_FAIL);
         }
 
         if (RegDeleteKey(hk, "OLEScript") != ERROR_SUCCESS)
         {
-            FPRINTF(::DLLlogfile,"  FAIL: RegDeleteKey %s\\OLEScript\n",szLANGNAME);
+            FPRINTF(StreamProcessEngine::logfile,"  FAIL: RegDeleteKey %s\\OLEScript\n",szLANGNAME);
             hr = ResultFromScode (E_FAIL);
         }
 
@@ -452,7 +452,7 @@ STDMETHODIMP OrxClassFactory::UnregisterServer()
 
         if (RegDeleteKey(HKEY_CLASSES_ROOT, szLANGNAME) != ERROR_SUCCESS)
         {
-            FPRINTF(::DLLlogfile,"  FAIL: RegDeleteKey HKCR\\%s\n",szLANGNAME);
+            FPRINTF(StreamProcessEngine::logfile,"  FAIL: RegDeleteKey HKCR\\%s\n",szLANGNAME);
             hr = ResultFromScode(E_FAIL);
         }
     }
@@ -462,20 +462,20 @@ STDMETHODIMP OrxClassFactory::UnregisterServer()
     {
         if (RegOpenKey(HKEY_CLASSES_ROOT, szALTERNATELANGNAME, &hk) != ERROR_SUCCESS)
         {
-            FPRINTF(::DLLlogfile,"  FAIL: RegOpenKey HKCR\\%s\n", szALTERNATELANGNAME);
+            FPRINTF(StreamProcessEngine::logfile,"  FAIL: RegOpenKey HKCR\\%s\n", szALTERNATELANGNAME);
             hr = ResultFromScode(E_FAIL);
         }
         else
         {
             if (RegDeleteKey(hk, "CLSID") != ERROR_SUCCESS)
             {
-                FPRINTF(::DLLlogfile,"  FAIL: RegDeleteKey %s\\CLSID\n",szALTERNATELANGNAME);
+                FPRINTF(StreamProcessEngine::logfile,"  FAIL: RegDeleteKey %s\\CLSID\n",szALTERNATELANGNAME);
                 hr = ResultFromScode(E_FAIL);
             }
 
             if (RegDeleteKey(hk, "OLEScript") != ERROR_SUCCESS)
             {
-                FPRINTF(::DLLlogfile,"  FAIL: RegDeleteKey %s\\OLEScript\n",szALTERNATELANGNAME);
+                FPRINTF(StreamProcessEngine::logfile,"  FAIL: RegDeleteKey %s\\OLEScript\n",szALTERNATELANGNAME);
                 hr = ResultFromScode(E_FAIL);
             }
 
@@ -483,7 +483,7 @@ STDMETHODIMP OrxClassFactory::UnregisterServer()
 
             if (RegDeleteKey(HKEY_CLASSES_ROOT, szALTERNATELANGNAME) != ERROR_SUCCESS)
             {
-                FPRINTF(::DLLlogfile,"  FAIL: RegDeleteKey %s\n",szALTERNATELANGNAME);
+                FPRINTF(StreamProcessEngine::logfile,"  FAIL: RegDeleteKey %s\n",szALTERNATELANGNAME);
                 hr = ResultFromScode(E_FAIL);
             }
         }
@@ -492,39 +492,39 @@ STDMETHODIMP OrxClassFactory::UnregisterServer()
     /* delete entries for CLSID */
     if (RegCreateKey(HKEY_CLASSES_ROOT, "CLSID", &hk) != ERROR_SUCCESS)
     {
-        FPRINTF(::DLLlogfile,"  FAIL: RegCreateKey HKCR\\CLSID\n");
+        FPRINTF(StreamProcessEngine::logfile,"  FAIL: RegCreateKey HKCR\\CLSID\n");
         hr = ResultFromScode(E_FAIL);
     }
     else
     {
         if (RegOpenKey(hk, szCLASSID, &hkSub) != ERROR_SUCCESS)
         {
-            FPRINTF(::DLLlogfile,"  FAIL: RegOpenKey %s\n",szCLASSID);
+            FPRINTF(StreamProcessEngine::logfile,"  FAIL: RegOpenKey %s\n",szCLASSID);
             hr = ResultFromScode(E_FAIL);
         }
         else
         {
             if (RegDeleteKey(hkSub, "ProgID") != ERROR_SUCCESS)
             {
-                FPRINTF(::DLLlogfile,"  FAIL: RegDeleteKey %s\\ProgID\n",szCLASSID);
+                FPRINTF(StreamProcessEngine::logfile,"  FAIL: RegDeleteKey %s\\ProgID\n",szCLASSID);
                 hr = ResultFromScode(E_FAIL);
             }
 
             if (RegDeleteKey(hkSub, "OLEScript") != ERROR_SUCCESS)
             {
-                FPRINTF(::DLLlogfile,"  FAIL: RegDeleteKey %s\\OLEScript\n",szCLASSID);
+                FPRINTF(StreamProcessEngine::logfile,"  FAIL: RegDeleteKey %s\\OLEScript\n",szCLASSID);
                 hr = ResultFromScode(E_FAIL);
             }
 
             if (RegDeleteKey(hkSub, "Implemented Categories") != ERROR_SUCCESS)
             {
-                FPRINTF(::DLLlogfile,"  FAIL: RegDeleteKey %s\\Implemented Categories\n",szCLASSID);
+                FPRINTF(StreamProcessEngine::logfile,"  FAIL: RegDeleteKey %s\\Implemented Categories\n",szCLASSID);
                 hr = ResultFromScode(E_FAIL);
             }
 
             if (RegDeleteKey(hkSub, szSERVERKEY) != ERROR_SUCCESS)
             {
-                FPRINTF(::DLLlogfile,"  FAIL: RegDeleteKey %s\n",szSERVERKEY);
+                FPRINTF(StreamProcessEngine::logfile,"  FAIL: RegDeleteKey %s\n",szSERVERKEY);
                 hr = ResultFromScode(E_FAIL);
             }
 
@@ -533,7 +533,7 @@ STDMETHODIMP OrxClassFactory::UnregisterServer()
 
         if (RegDeleteKey(hk, szCLASSID) != ERROR_SUCCESS)
         {
-            FPRINTF(::DLLlogfile,"  FAIL: RegDeleteKey %s\n",szCLASSID);
+            FPRINTF(StreamProcessEngine::logfile,"  FAIL: RegDeleteKey %s\n",szCLASSID);
             hr = ResultFromScode(E_FAIL);
         }
 
@@ -545,7 +545,7 @@ STDMETHODIMP OrxClassFactory::UnregisterServer()
         /* delete extension */
         if (RegDeleteKey(HKEY_CLASSES_ROOT, szEXTENSION) != ERROR_SUCCESS)
         {
-            FPRINTF(::DLLlogfile,"  FAIL: RegDeleteKey %s\n",szEXTENSION);
+            FPRINTF(StreamProcessEngine::logfile,"  FAIL: RegDeleteKey %s\n",szEXTENSION);
             hr = ResultFromScode(E_FAIL);
         }
     }
@@ -554,7 +554,7 @@ STDMETHODIMP OrxClassFactory::UnregisterServer()
     {
         if (RegOpenKey(HKEY_CLASSES_ROOT, szLANGFILE, &hk) != ERROR_SUCCESS)
         {
-            FPRINTF(::DLLlogfile,"  FAIL: RegOpenKey HKCR\\%s\n",szLANGFILE);
+            FPRINTF(StreamProcessEngine::logfile,"  FAIL: RegOpenKey HKCR\\%s\n",szLANGFILE);
             hr = ResultFromScode(E_FAIL);
         }
         else
@@ -562,19 +562,19 @@ STDMETHODIMP OrxClassFactory::UnregisterServer()
             deleteSubKeys(hk);
             if (RegDeleteKey(hk, "ScriptEngine") != ERROR_SUCCESS)
             {
-                FPRINTF(::DLLlogfile,"  FAIL: RegDeleteKey %s\\ScriptEngine\n",szLANGFILE);
+                FPRINTF(StreamProcessEngine::logfile,"  FAIL: RegDeleteKey %s\\ScriptEngine\n",szLANGFILE);
                 hr = ResultFromScode(E_FAIL);
             }
             if (RegDeleteKey(hk, "DefaultIcon") != ERROR_SUCCESS)
             {
-                FPRINTF(::DLLlogfile,"  FAIL: RegDeleteKey %s\\DefaultIcon\n",szLANGFILE);
+                FPRINTF(StreamProcessEngine::logfile,"  FAIL: RegDeleteKey %s\\DefaultIcon\n",szLANGFILE);
                 hr = ResultFromScode(E_FAIL);
             }
             RegCloseKey(hk);
         }
         if (RegDeleteKey(HKEY_CLASSES_ROOT, szLANGFILE) != ERROR_SUCCESS)
         {
-            FPRINTF(::DLLlogfile,"  FAIL: RegDeleteKey HKCR\\%s\n",szLANGFILE);
+            FPRINTF(StreamProcessEngine::logfile,"  FAIL: RegDeleteKey HKCR\\%s\n",szLANGFILE);
             hr = ResultFromScode(E_FAIL);
         }
     }

@@ -169,58 +169,47 @@ OrxScript::OrxScript() : ulRefCount(1),
                          dwBaseThread(GetCurrentThreadId())
 {
     HANDLE execution;
-    LPVOID arguments[4];               // for createCode
-    unsigned int dummy;
-    RexxConditionData cd;
-
     EnterCriticalSection(&EngineSection);
+
+    engineId = ScriptProcessEngine::getEngineId();
+    logfile= NULL;
 #if SCRIPTDEBUG
     char   filename[MAX_PATH];
-    sprintf(filename,"c:\\temp\\engine%d.log",++::iEngineCount);
-    iEngineCount = ::iEngineCount;
+    sprintf(filename,"c:\\temp\\engine%d.log",engineId);
     logfile = fopen(filename,"w");
     if (!logfile)
     {
         logfile = stderr;
     }
     CurrentObj_logfile = logfile;
-#else
-    logfile= NULL;
-    (::iEngineCount)++;
 #endif
-    FPRINTF(logfile,"created script engine (%d) %p\n",::iEngineCount,this);
-    FPRINTF2(DLLlogfile,"created script engine(%d) %p\n",::iEngineCount,this);
+    FPRINTF(logfile,"created script engine (%d) %p\n", engineId, this);
+    FPRINTF2(ScriptProcessEngine::logfile, "created script engine(%d) %p\n", engineId, this);
     Events = new OrxEvent(this,logfile);
     NamedItemList = new OrxNamedItem(this,logfile);
     RexxCodeList = new LinkedList();
     RexxFunctions = new Index();
     RexxExecStack = new Index();
 
-    // create a unique engine name (for REXX directory entries of methods)
-    sprintf(EngineName,"RXEngine%06d",::iEngineCount);
-
     InterlockedIncrement((long *)&ulDllLocks);     //  Make sure the DLL does not go away before we do.
 
     // create code block that will be used to obtain a security manager
-    memset((void*) &this->securityManager,0,sizeof(RCB));
-    this->securityManager.EntrySource = RCB::Engine;
-    arguments[0] = (LPVOID) ::szSecurityCode;
-    arguments[1] = (LPVOID) this;
-    arguments[2] = (LPVOID) &(this->securityManager.Code);
-    arguments[3] = (LPVOID) &cd;
-    cd.rc = 0;
+    memset((void*)  &this->securityManager, 0, wezsizeof(RCB));
+
+
     // now create the method (runs in a different thread)
-    execution = (HANDLE) _beginthreadex(NULL, 0, (unsigned int (__stdcall *) (void*) ) createCode, (LPVOID) arguments, 0, &dummy);
+    execution = (HANDLE) _beginthreadex(NULL, 0, (unsigned int (__stdcall *) (void*) )createSecurityManager, (LPVOID) this, 0, &dummy);
     if (execution)
     {
         WaitForSingleObject(execution, INFINITE);
         CloseHandle(execution);
     }
-    else cd.rc = -1;
-    FPRINTF2(logfile,"RCB generation of security manager: CodeBlock %p rc = %d\n",this->securityManager.Code,cd.rc);
-    FPRINTF2(logfile,"done with CTOR for %s\n",EngineName);
+
+    FPRINTF2(logfile,"RCB generation of security manager: CodeBlock %p rc = %d\n",this->securityManager.Code, cd.rc);
+    FPRINTF2(logfile,"done with CTOR for %d\n", engineId);
     LeaveCriticalSection(&EngineSection);
 }
+
 
 // DTOR
 OrxScript::~OrxScript()
@@ -265,11 +254,11 @@ OrxScript::~OrxScript()
 
     InterlockedDecrement((long *)&ulDllLocks);
 
-    FPRINTF2(logfile,"~OrxScript()  for engine(%d) complete\n",iEngineCount);
-#if SCRIPTDEBUG
-    if (logfile != stderr) fclose(logfile);  // for debugging
-    logfile = NULL;
-#endif
+    FPRINTF2(logfile,"~OrxScript()  for engine(%d) complete\n", engineId);
+    if (logfile != stderr) {
+        fclose(logfile);  // for debugging
+        logfile = NULL;
+    }
     LeaveCriticalSection(&EngineSection);
 }
 
@@ -294,10 +283,8 @@ STDMETHODIMP OrxScript::QueryInterface(REFIID riid, void **ppvObj)
     char    *IIDName,TrulyUnknown[]="??????";
 
 
-#if defined(DEBUGC)+defined(DEBUGZ)
     FPRINTF2(logfile,"\n");
     StringFromGUID2(riid, cIID, sizeof(cIID));
-#endif
 
     FPRINTF(logfile, "OrxScript::QueryInterface (ppvObj = %p \n",ppvObj);
     FPRINTF2(logfile,"riid = %S \n",cIID);
@@ -1014,7 +1001,6 @@ STDMETHODIMP OrxScript::AddScriptlet(LPCOLESTR  pStrDefaultName,
     OLECHAR    NewName[MAX_PATH];
     DISPID     EventSinkDispID;            // The numeric value this automates under.
 
-    LPVOID     arguments[4];               // for createCode
     RexxObjectPtr method=NULL;
     HANDLE     execution;
     UINT       dummy;
@@ -1052,63 +1038,14 @@ STDMETHODIMP OrxScript::AddScriptlet(LPCOLESTR  pStrDefaultName,
     wcscat(NewName,L"~");
     wcscat(NewName,pStrEventName);
 
-    // adjust line number count: -1 line for the 'interpret' statement & possibly one line for a 'newline' after script tag
-    if (pStrCode[0] == 0x000a || pStrCode[0] == 0x000d)
-    {
-        ulStartingLineNumber-=2;
-    }
-    else
-    {
-        ulStartingLineNumber--;
-    }
-
     //Tell the system what we are calling ourself.
     //This matches the name that we store with the DispID,
     //however, we must remember to insure the global flag is
     //set before returning this the DispID in GetIDsOfNames().
     *pBstrName = SysAllocString(NewName);
 
-    arguments[0] = (LPVOID) pStrCode;
-    arguments[1] = (LPVOID) this;
-    arguments[2] = (LPVOID) &method;
-    arguments[3] = (LPVOID) &cd;
-
-    // method.strptr = NULL;
-    // method.strlength = 0;
-
-    // now create the method (runs in a different thread)
-    execution = (HANDLE) _beginthreadex(NULL, 0, (unsigned int (__stdcall *) (void*) ) createCode, (LPVOID) arguments, 0, &dummy);
-    // could not start thread?
-    if (execution == 0)
-    {
-        RetCode = E_FAIL;
-    }
-    else
-    {
-        WaitForSingleObject(execution, INFINITE);
-        CloseHandle(execution);
-    }
-    cd.position += ulStartingLineNumber;
-    //    The following code HAS to be after the _endthreadex(), or
-    //  bad things will happen.  None of the COM calls that result
-    //  from the following function calls will work.
-    FPRINTF2(logfile,"after createcode for AddScriptlet code %p rc %d\n",method,cd.rc);
-    if (cd.rc)
-    {
-        // an error occured: init excep info
-        ErrObj = new OrxScriptError(logfile,&cd,&ErrObj_Exists);
-        RetCode = pActiveScriptSite->OnScriptError((IActiveScriptError*) ErrObj);
-        if (FAILED(RetCode))
-        {
-        }
-        // init to empty again....
-        if (ErrObj_Exists)
-        {
-            ErrObj->UDRelease();
-        }
-        RetCode = E_FAIL; // serious error, could not generate code block
-    }
-    else
+    // convert to an executable entity.  The creatRoutine() method also handles any error conditions.
+    if (createRoutine(pStrCode, ulStartingLineNumber, routine) == 0)
     {
         RetCode = BuildRCB(RCB::AddScriptlet,NewName,dwFlags,ulStartingLineNumber,method,&CodeBlock);
         if (SUCCEEDED(RetCode))
@@ -1202,7 +1139,6 @@ STDMETHODIMP OrxScript::ParseProcedureText(
     OLECHAR    NewName[MAX_PATH];
     DISPID     EventSinkDispID;            // The numeric value this automates under.
 
-    LPVOID     arguments[4];               // for createCode
     RexxObjectPtr method=NULL;
     HANDLE     execution;
     UINT       dummy;
@@ -1232,63 +1168,10 @@ STDMETHODIMP OrxScript::ParseProcedureText(
     // Generate a name for this event.
     _snwprintf(NewName, sizeof(NewName), L"#Event-E%03d", ++EventCount);
 
-    // adjust line number count: -1 line for the 'interpret' statement & possibly one line for a 'newline' after script tag
-    if (Code[0] == 0x000a || Code[0] == 0x000d)
+    // convert to an executable entity.  The creatRoutine() method also handles any error conditions.
+    if (createRoutine(pStrCode, ulStartingLineNumber, routine) == 0)
     {
-        StartingLineNumber-=2;
-    }
-    else
-    {
-        StartingLineNumber--;
-    }
-    //  ParseProcedure text tells us the StartingLineNumber is more than it is.  Adjust for that.
-    StartingLineNumber--;
-
-    arguments[0] = (LPVOID) Code;
-    arguments[1] = (LPVOID) this;
-    arguments[2] = (LPVOID) &method;
-    arguments[3] = (LPVOID) &cd;
-
-    // method.strptr = NULL;
-    // method.strlength = 0;
-
-    // now create the method (runs in a different thread)
-    execution = (HANDLE) _beginthreadex(NULL, 0, (unsigned int (__stdcall *) (void*) ) createCode, (LPVOID) arguments, 0, &dummy);
-    // could not start thread?
-    if (execution == 0)
-    {
-        RetCode = E_FAIL;
-    }
-    else
-    {
-        WaitForSingleObject(execution, INFINITE);
-        CloseHandle(execution);
-    }
-    cd.position += StartingLineNumber;
-    //    The following code HAS to be after the _endthreadex(), or
-    //  bad things will happen.  None of the COM calls that result
-    //  from the following function calls will work.
-    if (cd.rc)
-    {
-        // an error occured: init excep info
-        ErrObj = new OrxScriptError(logfile,&cd,&ErrObj_Exists);
-        RetCode = pActiveScriptSite->OnScriptError((IActiveScriptError*) ErrObj);
-        if (FAILED(RetCode))
-        {
-        }
-        // init to empty again....
-        if (ErrObj_Exists)
-        {
-            ErrObj->UDRelease();
-        }
-        // >>> ??? <<<  We should evaluate cd.rc before making this determination.
-        RetCode = E_FAIL; // serious error, could not generate code block
-        FPRINTF2(logfile,"Failed creating code for ParseProcedureText\n");
-    }
-    //  Who knows, we might have a bad cd.rc, but still get some code.
-    else
-    {
-        RetCode = BuildRCB(RCB::ParseProcedure,NewName,Flags,StartingLineNumber,method,&CodeBlock);
+        RetCode = BuildRCB(RCB::ParseProcedure, NewName, Flags, StartingLineNumber, routine, &CodeBlock);
         if (SUCCEEDED(RetCode))
         {
             FPRINTF2(logfile,"successfully created codeblock %p for ParseProcedureText\n",CodeBlock);
@@ -1414,49 +1297,12 @@ STDMETHODIMP OrxScript::ParseScriptText(LPCOLESTR  pStrCode,
     FPRINTF2(logfile,"%s\n",FlagMeaning('H',dwFlags,ScriptText));
     FPRINTF3(logfile,">>>>>>> START OF CODE next line:\n%S\n<<<<<<<END OF CODE\n",pStrCode);
 
-    CreateCodeData createArgs;
-    RexxConditionData cd;
+    RexxRoutineObject routine;
 
-    // fill in the args for calling the interpreter to handle all of this
-    createArgs.engine = this;
-    createArgs.strCode = pStrCode;
-    createArgs.routine = NULLOBJECT;
-    createArgs.condData = &cd;
-
-    EnterCriticalSection(&EngineSection);
-    pActiveScriptSite->OnEnterScript();
-
-    FPRINTF2(logfile,"create method\n");
-
-        // now create the method (runs in a different thread)
-    HANDLE execution = (HANDLE)_beginthreadex(NULL, 0, (unsigned int (__stdcall *) (void*) ) createCode, (LPVOID) createArgs, 0, &dummy);
-    // could not start thread?
-    if (execution == 0)
+    // convert to an executable entity.  The creatRoutine() method also handles any error conditions.
+    if (createRoutine(pStrCode, ulStartingLineNumber, routine)
     {
-        hResult = E_FAIL;
-    }
-    else
-    {
-        WaitForSingleObject(execution, INFINITE);
-        CloseHandle(execution);
-    }
-    cd.position += ulStartingLineNumber;
-    //    The following code HAS to be after the _endthreadex(), or
-    //  bad things will happen.  None of the COM calls that result
-    //  from the following function calls will work.
-    if (cd.rc)
-    {
-        // an error occured: init excep info
-        ErrObj = new OrxScriptError(logfile, &cd, &ErrObj_Exists);
-        hResult = pActiveScriptSite->OnScriptError((IActiveScriptError*) ErrObj);
-        // init to empty again....
-        if (ErrObj_Exists)
-        {
-            ErrObj->UDRelease();
-        }
-    }
-    else
-    {
+        // now get an Rexx instance for this thread
         RexxThreadContext *context = ScriptProcessEngine::getThreadContext();
         do
         {

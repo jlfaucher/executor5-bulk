@@ -48,8 +48,6 @@
 #include "OrxDispID.hpp"
 #include "OrxEvents.hpp"
 #include "OrxScrptError.hpp"
-static int iEngineCount = 0;
-
 
 // defines & macros
 #define STD_THREADID 1    // script engine will only have one thread - and this is it (number)!
@@ -265,7 +263,6 @@ class OrxScript : public LLLContent,
 
   /****** NON-INTERFACE PUBLIC METHODS ******/
   void insertVariable(RexxThreadContext *, const char *name, RexxObjectPtr value);
-  char* getEngineName() { return EngineName; }
   RexxObjectPtr  getSecurityManager() { return securityManager.Code; }
   RexxObjectPtr  getSecurityObject() { return securityObject; }
   DWORD getSafetyOptions() { return dwSafetyOptions; }
@@ -346,9 +343,8 @@ STDMETHODIMP LocalParseProcedureText(
     IActiveScriptSite *pActiveScriptSite;          // the active script site
     IInternetHostSecurityManager *pIESecurityManager; // Internet Explorer security manager (*not* REXX's!)
     DWORD              dwBaseThread;               // the base thread of the engine
-    char               EngineName[16];             // name of engine (for REXX)
     FILE              *logfile;                    // Our private log file
-    int                iEngineCount;               // Our Creation number.
+    int                engineId;                   // Our Creation number.
     DWORD              dwSafetyOptions;            // Flags for Internet Explorer to allow scripts to execute.
     RCB                securityManager;            // REXX code for security manager
     RexxObjectPtr         securityObject;             // Object produced by running the Security Manager Code.
