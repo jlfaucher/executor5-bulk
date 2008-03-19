@@ -733,6 +733,48 @@ APIRET APIENTRY GrxTextViewGetRightMargin(const char * Name,
 
 
 /*----------------------------------------------------------------------------*/
+/* Rexx External Function: GrxTextViewAddChildAtOffset                        */
+/* Description: Add a child widget to the buffer of the text view widget      */
+/* Rexx Args:   Pointer to the text view widget                               */
+/*              Pointer to the child widget                                   */
+/*              Offset into the text buffer                                   */
+/*----------------------------------------------------------------------------*/
+
+APIRET APIENTRY GrxTextViewAddChildAtOffset(const char * Name,
+                                       const size_t Argc, const RXSTRING Argv[],
+                                       const char * Queuename, PRXSTRING Retstr)
+{
+    GtkTextView      *myWidget;
+    GtkTextBuffer    *myBuffer;
+    GtkTextIter      iter;
+    GtkWidget        *myChild;
+    GtkTextChildAnchor *anchor;
+    gint             offset;
+
+    /* Check for valid arguments */
+    if (GrxCheckArgs(3, Argc, Argv)) {
+        return RXFUNC_BADCALL;
+    }
+
+    /* Initialize function parameters */
+    sscanf(Argv[0].strptr, "%p", &myWidget);
+    sscanf(Argv[1].strptr, "%p", &myChild);
+    sscanf(Argv[2].strptr, "%d", &offset);
+
+    myBuffer = gtk_text_view_get_buffer(myWidget);
+    gtk_text_buffer_get_iter_at_offset(myBuffer, &iter, offset);
+    anchor = gtk_text_buffer_create_child_anchor(myBuffer, &iter);
+    gtk_text_view_add_child_at_anchor(myWidget, myChild, anchor);
+
+    /* Set up the REXX return code */
+    *(Retstr->strptr) = '0';
+    Retstr->strlength = 1;
+
+    return RXFUNC_OK;
+}
+
+
+/*----------------------------------------------------------------------------*/
 /* Rexx External Function: GrxTextViewConnectSignal                           */
 /* Description: Connect a signal function to the Widget                       */
 /* Rexx Args:   Pointer to the widget                                         */

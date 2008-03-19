@@ -3033,6 +3033,11 @@ return
 use strict arg self~right_margin
 return
 
+::method add_child_at_offset
+use strict arg child, offset
+call GrxTextViewAddChildAtOffset self~pointer, child~pointer, offset
+return
+
 
 /*============================================================================*/
 /* Class: GtkTextBuffer                                                       */

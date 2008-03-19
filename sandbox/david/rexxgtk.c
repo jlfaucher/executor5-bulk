@@ -345,6 +345,7 @@ APIRET APIENTRY GrxLoadFuncs(char * Name,
         "GrxTextViewGetLeftMargin",
         "GrxTextViewSetRightMargin",
         "GrxTextViewGetRightMargin",
+        "GrxTextViewAddChildAtOffset",
         "GrxTextViewConnectSignal",
 
         //TextBuffer functions
