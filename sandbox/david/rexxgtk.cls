@@ -331,6 +331,28 @@ select
    when tid = 'PANGO_UNDERLINE_DOUBLE' then return 2
    when tid = 'PANGO_UNDERLINE_LOW' then return 3
    when tid = 'PANGO_UNDERLINE_ERROR' then return 4
+   -- Fundamental GTypes
+   when tid = 'G_TYPE_INVALID' then return 0
+   when tid = 'G_TYPE_NONE' then return 1
+   when tid = 'G_TYPE_INTERFACE' then return 2
+   when tid = 'G_TYPE_CHAR' then return 3
+   when tid = 'G_TYPE_UCHAR' then return 4
+   when tid = 'G_TYPE_BOOLEAN' then return 5
+   when tid = 'G_TYPE_INT' then return 6
+   when tid = 'G_TYPE_UINT' then return 7
+   when tid = 'G_TYPE_LONG' then return 8
+   when tid = 'G_TYPE_ULONG' then return 9
+   when tid = 'G_TYPE_INT64' then return 10
+   when tid = 'G_TYPE_UINT64' then return 11
+   when tid = 'G_TYPE_ENUM' then return 12
+   when tid = 'G_TYPE_FLAGS' then return 13
+   when tid = 'G_TYPE_FLOAT' then return 14
+   when tid = 'G_TYPE_DOUBLE' then return 15
+   when tid = 'G_TYPE_STRING' then return 16
+   when tid = 'G_TYPE_POINTER' then return 17
+   when tid = 'G_TYPE_BOXED' then return 18
+   when tid = 'G_TYPE_PARAM' then return 19
+   when tid = 'G_TYPE_OBJECT' then return 20
    -- Just return the id
    otherwise nop
    end
@@ -3499,8 +3521,26 @@ expose pointer
 return pointer
 
 
+/*============================================================================*/
+/* Class: GtkListStore                                                        */
+/*============================================================================*/
 
+::class GtkListStore public
 
+::method init
+expose pointer
+if arg() = 0 then raise syntax 93.901 array ('at least 1')
+func = 'pointer = GrxListStoreNew('GTK_Constant(arg(1))
+do i = 2 to arg()
+   func = func', 'GTK_Constant(arg(i))
+   end
+func = func')'
+interpret func
+return
+
+::method pointer
+expose pointer
+return pointer
 
 
 
