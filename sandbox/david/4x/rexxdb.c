@@ -67,19 +67,6 @@ typedef struct _dbentry {
 /* Functions                                                                  */
 /*----------------------------------------------------------------------------*/
 
-static int custom_compare2(
-    gconstpointer a,
-    gconstpointer b) {
-
-    dbentry *aa = a;
-    dbentry *bb = b;
-    if (aa->obj != bb->obj) {
-        return -1;
-    }
-    return 0;
-}
-
-
 static int custom_compare1(
     gconstpointer a,
     gconstpointer b) {
@@ -92,6 +79,17 @@ static int custom_compare1(
     return 0;
 }
 
+static int custom_compare2(
+    gconstpointer a,
+    gconstpointer b) {
+
+    dbentry *aa = a;
+    dbentry *bb = b;
+    if (aa->object != bb->object) {
+        return -1;
+    }
+    return 0;
+}
 
 int GrxDBAdd(
     const RexxObjectPtr rxobj,       // the object to be added
@@ -102,7 +100,6 @@ int GrxDBAdd(
     newentry->widget = widget;
     rxgtkdb = g_list_prepend(rxgtkdb, newentry);
 }
-
 
 int GrxDBRemoveObject(
     const GtkWidget *widget) {       // the widget pointer
@@ -123,7 +120,7 @@ int GrxDBRemoveWidget(
     const RexxObjectPtr obj) {       // the Rexx object pointer
 
     dbentry searchentry;
-    searchentry.widget = widget;
+    searchentry.object = obj;
     dbentry *entry = g_list_find_custom(rxgtkdb, &searchentry, custom_compare2);
     if (dbentry != NULL) {
         rxgtkdb = g_list_remove(rxgtkdb, dbentry);
