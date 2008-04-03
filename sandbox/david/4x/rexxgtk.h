@@ -62,12 +62,9 @@ extern char * rexxgtk_argv[];
 extern int rexxgtk_argc;
 
 typedef struct _cbcb {
-    RexxInstance  *instance;
-    char          *signal_name;
+    RexxInstance  *instance;    // Rexx instance
+    char          *signal_name; // ame of the Rexx method
 } cbcb;
-
-
-
 
 
 /*----------------------------------------------------------------------------*/
@@ -77,7 +74,9 @@ typedef struct _cbcb {
 int GrxDBAdd(
     const RexxObjectPtr rxobj,       // the object to be added
     const GtkWidget *widget);        // the widget pointer
-int GrxDBRemove(
+int GrxDBRemoveWidget(
+    const RexxObjectPtr *obj);       // the widget pointer
+int GrxDBRemoveObject(
     const GtkWidget *widget);        // the widget pointer
 RexxObjectPtr GrxDBFindObject(
     const GtkWidget *widget);        // the widget pointer

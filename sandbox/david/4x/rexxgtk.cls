@@ -39,10 +39,6 @@
 /*----------------------------------------------------------------------------*/
 
 
--- Create the Rexx queue we will use for callbacks
-.local['!GTK_Queue'] = RxQueue('Create', 'GTKQUEUE23')
-call GrxSetRexxQueueName .local['!GTK_Queue']
-
 -- Create and initialize the GTK quit flag
 .local['!GTK_Quit'] = .false
 
@@ -82,15 +78,6 @@ return GrxEventsPending()
 
 ::routine gtk_main_iteration public
 call GrxMainIteration
-old_queue = RxQueue('Set', .local['!GTK_Queue'])
-do while queued() > 0
-   pull pointer msg args
-   widget = .local['!GTK_Database']~at(pointer)
-   if widget <> .nil then do
-      widget~run_method(msg, args)
-      end
-   end
-call RxQueue 'Set', old_queue
 return
 
 
@@ -357,6 +344,8 @@ return id
 
 ::method uninit
 -- don't destroy widgets by default!
+-- but do remove it from the DB
+call GrxRemoveWidget self
 return
 
 ::method pointer

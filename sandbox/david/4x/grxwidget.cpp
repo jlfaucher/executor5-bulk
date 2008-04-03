@@ -1038,6 +1038,7 @@ RexxMethod1(bool,                      // Return type
         cblock->signal_name = "signal_destroy";
         g_signal_connect(G_OBJECT(myWidget), "destroy",
                          G_CALLBACK(signal_func_0), cblock);
+        GrxDBRemoveObject(myWidget);
     }
     else {
         return FALSE;
