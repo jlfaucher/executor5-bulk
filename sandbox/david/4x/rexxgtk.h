@@ -61,7 +61,13 @@
 extern char * rexxgtk_argv[];
 extern int rexxgtk_argc;
 
-extern GrxConstants GrxResponseType[];
+typedef struct _cbcb {
+    RexxInstance  *instance;
+    char          *signal_name;
+} cbcb;
+
+
+
 
 
 /*----------------------------------------------------------------------------*/

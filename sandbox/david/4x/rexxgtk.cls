@@ -43,9 +43,6 @@
 .local['!GTK_Queue'] = RxQueue('Create', 'GTKQUEUE23')
 call GrxSetRexxQueueName .local['!GTK_Queue']
 
--- Create the widget database
-.local['!GTK_Database'] = .directory~new()
-
 -- Create and initialize the GTK quit flag
 .local['!GTK_Quit'] = .false
 

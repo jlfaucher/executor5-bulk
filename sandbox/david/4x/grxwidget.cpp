@@ -58,20 +58,15 @@
 /* Private Functions                                                          */
 /*============================================================================*/
 
-static void signal_func_1(GtkWidget *widget,
+static void signal_func_0(GtkWidget *widget,
                           gpointer data)
 {
-    char buffer[256];
-    RXSTRING entry;
+    RexxInstance      *instance = ((cbcb *)data)->instance;
+    RexxThreadContext *context;
 
-    // set up the queue entry data
-    g_snprintf(buffer, sizeof(buffer), "%p %s", widget, data);
-    entry.strptr = buffer;
-    entry.strlength = strlen(buffer);
-
-    // insert the signal event here
-    RexxAddQueue(GrxGetRexxQueueName(), &entry, RXQUEUE_FIFO);
-
+    instance->AttachThread(&context);
+    context->SendMessage0(GrxDBFindObject(widget), ((cbcb *)data)->signal_name);
+    context->DetachThread();
     return;
 }
 
@@ -1035,10 +1030,14 @@ RexxMethod1(bool,                      // Return type
 {
     RexxObjectPtr rxptr = context->GetObjectVariable("!POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
+    cbcb *cblock;
 
     if (strcmp(name, "destroy") == 0) {
+        cblock = (cbcb *)malloc(sizeof(cbcb));
+        cblock->instance = context->instance;
+        cblock->signal_name = "signal_destroy";
         g_signal_connect(G_OBJECT(myWidget), "destroy",
-                         G_CALLBACK(signal_func_1), "signal_destroy");
+                         G_CALLBACK(signal_func_0), cblock);
     }
     else {
         return FALSE;
