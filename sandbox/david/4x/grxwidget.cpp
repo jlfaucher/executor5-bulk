@@ -1022,9 +1022,9 @@ RexxMethod0(int.                       // Return type
  *
  * @param name    The signal name
  *
- * @return        Boolean
+ * @return        Zero
  */
-RexxMethod1(bool,                      // Return type
+RexxMethod1(int,                       // Return type
             GrxWidgetSignalConnect,    // Object_method name
             CSTRING, name)             // Signal name
 {
@@ -1041,9 +1041,9 @@ RexxMethod1(bool,                      // Return type
         GrxDBRemoveObject(myWidget);
     }
     else {
-        return FALSE;
+        return 0;
     }
 
-        return TRUE;
+    return 0;
 }
 
