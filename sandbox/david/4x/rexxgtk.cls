@@ -571,3 +571,29 @@ use strict arg event
 return self~signal_connect:super(event)
 
 
+/*============================================================================*/
+/* Class: GtkWindow                                                           */
+/*============================================================================*/
+
+::class GtkWindow public subclass GtkContainer
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxWindowNew"
+::METHOD 'title=' EXTERNAL "LIBRARY rexxgtk GrxWindowSetTitle"
+::METHOD set_title EXTERNAL "LIBRARY rexxgtk GrxWindowSetTitle"
+::METHOD 'modal=' EXTERNAL "LIBRARY rexxgtk GrxWindowSetModal"
+::METHOD set_modal EXTERNAL "LIBRARY rexxgtk GrxWindowSetModal"
+::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxWindowSignalConnect"
+
+::method signal_activate_default
+return
+
+::method signal_activate_focus
+return
+
+::method signal_keys_changed
+return
+
+::method signal_set_focus
+return
+
+

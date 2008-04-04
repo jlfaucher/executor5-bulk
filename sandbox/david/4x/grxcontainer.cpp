@@ -379,8 +379,8 @@ RexxMethod1(int,                       // Return type
  */
 RexxMethod1(int,                       // Return type
             GrxViewportNew,            // Object_method name
-            int, rxhadj,               // Horizontal adjustment object
-            int, rxvadj,               // Vertical adjustment object
+            RexxObjectPtr, rxhadj,     // Horizontal adjustment object
+            RexxObjectPtr, rxvadk)     // Vertical adjustment object
 {
     RexxObjectPtr hadjptr = context->functions->GetObjectVariable(rxhadjptr, "!POINTER");
     GtkAdjustmet *hadj = (GtkAdjustment *)context->PointerValue(hadjptr);
