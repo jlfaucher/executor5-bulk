@@ -444,3 +444,130 @@ return
 return
 
 
+/*============================================================================*/
+/* Class: GtkContainer                                                        */
+/* Note:  This is strictly a base class. It should never be instantiated on   */
+/*        its own. You should instantiate one of its subclasses instead.      */
+/*============================================================================*/
+
+::class GtkContainer public subclass GtkWidget
+
+::method init
+raise syntax 93.964 array ('A GtkContainer class cannot be instantiated.')
+return
+
+::METHOD add EXTERNAL "LIBRARY rexxgtk GrxContainerAdd"
+::METHOD remove EXTERNAL "LIBRARY rexxgtk GrxContainerRemove"
+::METHOD set_border_width EXTERNAL "LIBRARY rexxgtk GrxContainerSetBorderWidth"
+::METHOD 'border_width=' EXTERNAL "LIBRARY rexxgtk GrxContainerSetBorderWidth"
+::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxContainerSignalConnect"
+
+::method signal_add
+return
+
+::method signal_check_resize
+return
+
+::method signal_remove
+return
+
+::method signal_set_focus_child
+return
+
+
+/*============================================================================*/
+/* Class: GtkBox                                                              */
+/* Note:  This is strictly a base class. It should never be instantiated on   */
+/*        its own. You should instantiate one of its subclasses instead.      */
+/*============================================================================*/
+
+::class GtkBox public subclass GtkContainer
+
+::method init
+raise syntax 93.964 array ('A GtkBox class cannot be instantiated.')
+return
+
+::METHOD pack_end EXTERNAL "LIBRARY rexxgtk GrxBoxPackEnd"
+
+::method pack_end_defaults
+-- insert an object into the box with default attributes
+use strict arg mywidget
+self~pack_end(myWidget, .true, .true, 0)
+return
+
+::METHOD pack_start EXTERNAL "LIBRARY rexxgtk GrxBoxPackEnd"
+
+::method pack_start_defaults
+-- insert an object into the box with default attributes
+use strict arg mywidget
+self~pack_start(mywidget, .true, .true, 0)
+return
+
+::method signal_connect
+use strict arg event
+return self~signal_connect:super(event)
+
+
+/*============================================================================*/
+/* Class: GtkHBox                                                             */
+/*============================================================================*/
+
+::class GtkHBox public subclass GtkBox
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxHBoxNew"
+
+::method signal_connect
+use strict arg event
+return self~signal_connect:super(event)
+
+
+/*============================================================================*/
+/* Class: GtkHBox_From_Pointer                                                */
+/*============================================================================*/
+
+::class GtkHBox_From_Pointer private subclass GtkHBox
+
+::method init
+expose !pointer
+use strict arg !pointer
+return
+
+
+/*============================================================================*/
+/* Class: GtkVBox                                                             */
+/*============================================================================*/
+
+::class GtkVBox public subclass GtkBox
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxVBoxNew"
+
+::method signal_connect
+use strict arg event
+return self~signal_connect:super(event)
+
+
+/*============================================================================*/
+/* Class: GtkVBox_From_Pointer                                                */
+/*============================================================================*/
+
+::class GtkVBox_From_Pointer private subclass GtkVBox
+
+::method init
+expose !pointer
+use strict arg !pointer
+return
+
+
+/*============================================================================*/
+/* Class: GtkAlignment                                                        */
+/*============================================================================*/
+
+::class GtkAlignment public subclass GtkContainer
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxAlignmentNew"
+
+::method signal_connect
+use strict arg event
+return self~signal_connect:super(event)
+
+
