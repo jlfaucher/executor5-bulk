@@ -572,6 +572,54 @@ return self~signal_connect:super(event)
 
 
 /*============================================================================*/
+/* Class: GtkPaned                                                            */
+/* Note:  This is strictly a base class. It should never be instantiated on   */
+/*        its own. You should instantiate one of its subclasses instead.      */
+/*============================================================================*/
+
+::class GtkPaned public subclass GtkContainer
+
+::method init
+raise syntax 93.964 array ('A GtkPaned class cannot be instantiated.')
+return
+
+::METHOD add1 EXTERNAL "LIBRARY rexxgtk GrxPanedAdd1"
+::METHOD add2 EXTERNAL "LIBRARY rexxgtk GrxPanedAdd2"
+::METHOD pack1 EXTERNAL "LIBRARY rexxgtk GrxPanedPack1"
+::METHOD pack2 EXTERNAL "LIBRARY rexxgtk GrxPanedPack2"
+
+::method signal_connect
+use strict arg event
+return self~signal_connect:super(event)
+
+
+/*============================================================================*/
+/* Class: GtkHPaned                                                           */
+/*============================================================================*/
+
+::class GtkHPaned public subclass GtkPaned
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxHPanedNew"
+
+::method signal_connect
+use strict arg event
+return self~signal_connect:super(event)
+
+
+/*============================================================================*/
+/* Class: GtkVPaned                                                           */
+/*============================================================================*/
+
+::class GtkVPaned public subclass GtkPaned
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxVPanedNew"
+
+::method signal_connect
+use strict arg event
+return self~signal_connect:super(event)
+
+
+/*============================================================================*/
 /* Class: GtkWindow                                                           */
 /*============================================================================*/
 
