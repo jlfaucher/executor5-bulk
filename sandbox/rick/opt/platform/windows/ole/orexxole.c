@@ -2776,7 +2776,7 @@ RexxMethod1(int,                          // Return type
         OLEInit();
 
     /* If there is an event handler, release it */
-    RexxPointerObject RxPointer = (RexxPointerObject)context->GetObjectVariable("!EVENTHANDLER");
+    RexxPointerObject RxPointer = (RexxPointerObject)context->\("!EVENTHANDLER");
     if ( RxPointer != NULLOBJECT)
     {
         pEventHandler = (OLEObjectEvent *)context->PointerValue(RxPointer);
