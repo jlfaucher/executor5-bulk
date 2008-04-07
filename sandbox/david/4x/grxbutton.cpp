@@ -151,7 +151,7 @@ RexxMethod0(RexxObjectPtr,             // Return type
     RexxObjectPtr rxptr = context->GetObjectVariable("!POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
 
-    return context->NewString(gtk_button_get_label(GTK_BUTTON(myWidget)));
+    return context->NewStringFromAsciiz(gtk_button_get_label(GTK_BUTTON(myWidget)));
 }
 
 /*
@@ -523,7 +523,7 @@ RexxMethod0(RexxObjectPtr,             // Return type
 
     /* Set up the REXX return code */
     g_snprintf(colorstr, sizeof(colorstr), "#%04X%04X%04X", color.red, color.green, color.blue);
-    return context->NewString(colorstr);
+    return context->NewStringFromAsciiz(colorstr);
 }
 
 /*
@@ -631,7 +631,7 @@ RexxMethod0(int,                       // Return type
     const gchar * font;
 
     font = gtk_font_button_get_font_name(GTK_FONT_BUTTON(myWidget));
-    return context->NewString(font);
+    return context->NewStringFromAsciiz(font);
 }
 
 
