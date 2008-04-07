@@ -413,7 +413,6 @@ RexxMethod1(int,                       // Return type
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     cbcb *cblock;
 
-
     if (strcmp(Argv[1].strptr, "set-scroll-adjustments") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->instance;

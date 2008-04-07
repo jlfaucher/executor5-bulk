@@ -644,4 +644,280 @@ return
 ::method signal_set_focus
 return
 
+/*============================================================================*/
+/* Class: GtkButton                                                           */
+/*============================================================================*/
+
+::class GtkButton public subclass GtkContainer
+
+::METHOD init_p private EXTERNAL "LIBRARY rexxgtk GrxButtonNew"
+
+::method init
+use strict arg self~label = ''
+self~init_p
+return
+
+::METHOD label EXTERNAL "LIBRARY rexxgtk GrxButtonGetLabel"
+::METHOD get_label EXTERNAL "LIBRARY rexxgtk GrxButtonGetLabel"
+::METHOD 'label=' EXTERNAL "LIBRARY rexxgtk GrxButtonSetLabel"
+::METHOD set_label EXTERNAL "LIBRARY rexxgtk GrxButtonSetLabel"
+::METHOD set_use_underline EXTERNAL "LIBRARY rexxgtk GrxButtonUseUnderline"
+::METHOD 'relief=' EXTERNAL "LIBRARY rexxgtk GrxButtonSetRelief"
+::METHOD set_relief EXTERNAL "LIBRARY rexxgtk GrxButtonSetRelief"
+::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxButtonSignalConnect"
+
+::method signal_pressed
+return
+
+::method signal_released
+return
+
+::method signal_clicked
+return
+
+::method signal_enter
+return
+
+::method signal_leave
+return
+
+/*============================================================================*/
+/* Class: GtkButton_With_Mnemonic                                             */
+/*============================================================================*/
+
+::class GtkButton_With_Mnemonic public subclass GtkButton
+
+::method init
+self~init:super
+use arg label = ''
+self~use_underline = .true
+self~label = label
+return
+
+/*============================================================================*/
+/* Class: GtkButton_From_Stock                                                */
+/*============================================================================*/
+
+::class GtkButton_From_Stock public subclass GtkButton
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxButtonNewFromStock"
+
+
+/*============================================================================*/
+/* Class: GtkToggleButton                                                      */
+/*============================================================================*/
+
+::class GtkToggleButton public subclass GtkButton
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxToggleButtonNew"
+::METHOD mode EXTERNAL "LIBRARY rexxgtk GrxToggleButtonGetMode"
+::METHOD get_mode EXTERNAL "LIBRARY rexxgtk GrxToggleButtonGetMode"
+::METHOD set_mode EXTERNAL "LIBRARY rexxgtk GrxToggleButtonSetMode"
+::METHOD 'mode=' EXTERNAL "LIBRARY rexxgtk GrxToggleButtonSetMode"
+::METHOD active EXTERNAL "LIBRARY rexxgtk GrxToggleButtonGetActive"
+::METHOD get_active EXTERNAL "LIBRARY rexxgtk GrxToggleButtonGetActive"
+::METHOD active EXTERNAL "LIBRARY rexxgtk GrxToggleButtonSetActive"
+::METHOD 'active=' EXTERNAL "LIBRARY rexxgtk GrxToggleButtonSetActive"
+::METHOD inconsistent EXTERNAL "LIBRARY rexxgtk GrxToggleButtonGetInconsistent"
+::METHOD get_inconsistent EXTERNAL "LIBRARY rexxgtk GrxToggleButtonGetInconsistent"
+::METHOD set_inconsistent EXTERNAL "LIBRARY rexxgtk GrxToggleButtonSetInconsistent"
+::METHOD 'inconsistent=' EXTERNAL "LIBRARY rexxgtk GrxToggleButtonSetInconsistent"
+::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxToggleButtonSignalConnect"
+
+::method signal_toggled
+return
+
+/*============================================================================*/
+/* Class: GtkToggleButton_With_Mnemonic                                       */
+/*============================================================================*/
+
+::class GtkToggleButton_With_Mnemonic public subclass GtkToggleButton
+
+::method init
+self~init:super
+use arg label = ''
+self~use_underline = .true
+self~label = label
+return
+
+/*============================================================================*/
+/* Class: GtkToggleButton_With_Label                                          */
+/*============================================================================*/
+
+::class GtkToggleButton_With_Label public subclass GtkToggleButton
+
+::method init
+self~init:super
+use arg label = ''
+self~label = label
+return
+
+
+/*============================================================================*/
+/* Class: GtkCheckbutton                                                      */
+/*============================================================================*/
+
+::class GtkCheckbutton public subclass GtkToggleButton
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxCheckButtonNew"
+
+::method signal_connect
+use strict arg event
+return self~signal_connect:super(event)
+
+/*============================================================================*/
+/* Class: GtkCheckButton_With_Mnemonic                                        */
+/*============================================================================*/
+
+::class GtkCheckButton_With_Mnemonic public subclass GtkCheckButton
+
+::method init
+self~init:super
+use arg label = ''
+self~use_underline = .true
+self~label = label
+return
+
+/*============================================================================*/
+/* Class: GtkCheckButton_With_Label                                           */
+/*============================================================================*/
+
+::class GtkCheckButton_With_Label public subclass GtkCheckButton
+
+::method init
+self~init:super
+use arg label = ''
+self~label = label
+return
+
+
+/*============================================================================*/
+/* Class: GtkRadioButton                                                      */
+/*============================================================================*/
+
+::class GtkRadioButton public subclass GtkCheckbutton
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxRadioButtonNew"
+::METHOD group EXTERNAL "LIBRARY rexxgtk GrxRadioButtonGetGroup"
+::METHOD get_group EXTERNAL "LIBRARY rexxgtk GrxRadioButtonGetGroup"
+::METHOD set_group EXTERNAL "LIBRARY rexxgtk GrxRadioButtonSetGroup"
+::METHOD 'group=' EXTERNAL "LIBRARY rexxgtk GrxRadioButtonSetGroup"
+::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxRadioButtonSignalConnect"
+
+::method signal_group_changed
+return
+
+/*============================================================================*/
+/* Class: GtkRadioButton_With_Mnemonic                                        */
+/*============================================================================*/
+
+::class GtkRadioButton_With_Mnemonic public subclass GtkRadioButton
+
+::method init
+use arg group, label = ''
+self~init:super(group)
+self~use_underline = .true
+self~label = label
+return
+
+/*============================================================================*/
+/* Class: GtkRadioButton_With_Label                                           */
+/*============================================================================*/
+
+::class GtkRadioButton_With_Label public subclass GtkRadioButton
+
+::method init
+use arg group, label = ''
+self~init:super(group)
+self~label = label
+return
+
+/*============================================================================*/
+/* Class: GtkRadioButton_From_Widget                                          */
+/*============================================================================*/
+
+::class GtkRadioButton_From_Widget public subclass GtkRadioButton
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxRadioButtonFromWidget"
+
+/*============================================================================*/
+/* Class: GtkRadioButton_From_Widget_With_Label                               */
+/*============================================================================*/
+
+::class GtkRadioButton_From_Widget_With_Label public subclass GtkRadioButton_From_Widget
+
+::method init
+use arg widget, label
+self~init:super(widget)
+self~label = label
+return
+
+/*============================================================================*/
+/* Class: GtkRadioButton_From_Widget_With_Mnemonic                            */
+/*============================================================================*/
+
+::class GtkRadioButton_From_Widget_With_Mnemonic public subclass GtkRadioButton_From_Widget
+
+::method init
+use arg widget, label
+self~init:super(widget)
+self~use_underline = .true
+self~label = label
+return
+
+
+/*============================================================================*/
+/* Class: GtkColorButton                                                      */
+/*============================================================================*/
+
+::class GtkColorButton public subclass GtkButton
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxColorButtonNew"
+::METHOD 'title=' EXTERNAL "LIBRARY rexxgtk GrxColorButtonSetTitle"
+::METHOD set_title EXTERNAL "LIBRARY rexxgtk GrxColorButtonSetTitle"
+::METHOD color EXTERNAL "LIBRARY rexxgtk GrxColorButtonGetColor"
+::METHOD get_color EXTERNAL "LIBRARY rexxgtk GrxColorButtonGetColor"
+::METHOD set_color EXTERNAL "LIBRARY rexxgtk GrxColorButtonSetColor"
+::METHOD 'color=' EXTERNAL "LIBRARY rexxgtk GrxColorButtonSetColor"
+::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxColorButtonSetColor"
+
+::method signal_color_set
+return
+
+
+/*============================================================================*/
+/* Class: GtkFileChooserButton                                                */
+/*============================================================================*/
+
+::class GtkFileChooserButton public subclass GtkHBox inherit GtkFileChooser
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxFileChooserButtonNew"
+::METHOD signal_connect_p private EXTERNAL "LIBRARY rexxgtk GrxFileChooserButtonSignalConnect"
+
+use strict arg event
+-- first try the GtkFileChooser class hiearchy first
+if self~signal_connect:.GtkFileChooser(event) = 0 then return
+-- now try the standard hiearchy
+self~signal_connect_p
+
+::method signal_file_set
+return
+
+
+/*============================================================================*/
+/* Class: GtkFontButton                                                       */
+/*============================================================================*/
+
+::class GtkFontButton public subclass GtkButton
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxFontButtonNew"
+::METHOD 'title=' EXTERNAL "LIBRARY rexxgtk GrxFontButtonSetTitle"
+::METHOD set_title EXTERNAL "LIBRARY rexxgtk GrxFontButtonSetTitle"
+::METHOD font_name EXTERNAL "LIBRARY rexxgtk GrxFontButtonGetFontName"
+::METHOD get_font_name EXTERNAL "LIBRARY rexxgtk GrxFontButtonGetFontName"
+::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxFontButtonSignalConnect"
+
+::method signal_font_set
+return
+
 
