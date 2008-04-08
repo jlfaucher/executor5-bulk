@@ -62,7 +62,7 @@ static void signal_func_0(GtkWidget *window,
 {
     cbcb *cblock = (cbcb *)data;
 
-    cblock->context->SendMessage0(GrxDBFindObject(widget), ((cbcb *)data)->signal_name);
+    cblock->context->SendMessage0(GrxDBFindObject(window), ((cbcb *)data)->signal_name);
     return;
 }
 
@@ -72,7 +72,7 @@ static void signal_func_1(GtkWidget *window,
 {
     cbcb *cblock = (cbcb *)data;
 
-    cblock->context->SendMessage1(GrxDBFindObject(widget), ((cbcb *)data)->signal_name,
+    cblock->context->SendMessage1(GrxDBFindObject(window), ((cbcb *)data)->signal_name,
                                   GrxDBFindObject(widget));
     return;
 }
@@ -97,7 +97,7 @@ RexxMethod1(int,                       // Return type
 {
     GtkWidget       *myWidget;
 
-    myWidget = gtk_window_new(type);
+    myWidget = gtk_window_new((GtkWindowType)type);
     context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
     // add the widget to the db
     GrxDBAdd(context->GetSelf(), myWidget);
@@ -106,24 +106,19 @@ RexxMethod1(int,                       // Return type
 }
 
 /**
- * Method:  set_title
+ * Method:  get_title
  *
- * Set the title for a window.
+ * Get the title for a window.
  *
- * @param title   The title
- *
- * @return        Zero.
+ * @return        Title string
  */
-RexxMethod1(int,                       // Return type
-            GrxWindowSetTitle,         // Object_method name
-            CSTRING, title)            // Window title
+RexxMethod0(CSTRING,                   // Return type
+            GrxWindowGetTitle)         // Object_method name
 {
     RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
 
-    gtk_window_set_title(GTK_WINDOW(myWidget), title);
-
-    return 0;
+    return gtk_window_get_title(GTK_WINDOW(myWidget));
 }
 
 /**
@@ -137,9 +132,9 @@ RexxMethod1(int,                       // Return type
  */
 RexxMethod1(int,                       // Return type
             GrxWindowSetTitle,         // Object_method name
-            bool, modal)               // Window modal flag
+            logical_t, modal)          // Window modal flag
 {
-    RexxObjectPtr rxptr = context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
 
     gtk_window_set_modal(GTK_WINDOW(myWidget), modal);
@@ -164,28 +159,28 @@ RexxMethod1(int,                       // Return type
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     cbcb *cblock;
 
-    if (strcmp(Argv[1].strptr, "activate_default") == 0) {
+    if (strcmp(name, "activate_default") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->context = context->threadContext;
         cblock->signal_name = "signal_set_scroll_adjustments";
         g_signal_connect(G_OBJECT(myWidget), "set-scroll-adjustments",
                          G_CALLBACK(signal_func_0), cblock);
     }
-    else if (strcmp(Argv[1].strptr, "activate_focus") == 0) {
+    else if (strcmp(name, "activate_focus") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->context = context->threadContext;
         cblock->signal_name = "signal_activate_focus";
         g_signal_connect(G_OBJECT(myWidget), "activate-focus",
                          G_CALLBACK(signal_func_0), cblock);
     }
-    else if (strcmp(Argv[1].strptr, "keys_changed") == 0) {
+    else if (strcmp(name, "keys_changed") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->context = context->threadContext;
         cblock->signal_name = "signal_keys_changed";
         g_signal_connect(G_OBJECT(myWidget), "keys-changed",
                          G_CALLBACK(signal_func_0), cblock);
     }
-    else if (strcmp(Argv[1].strptr, "set_focus") == 0) {
+    else if (strcmp(name, "set_focus") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->context = context->threadContext;
         cblock->signal_name = "signal_set_focus";

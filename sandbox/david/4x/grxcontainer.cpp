@@ -62,7 +62,7 @@ static void signal_func_0(GtkWidget *window,
 {
     cbcb *cblock = (cbcb *)data;
 
-    cblock->context->SendMessage0(GrxDBFindObject(widget), ((cbcb *)data)->signal_name);
+    cblock->context->SendMessage0(GrxDBFindObject(window), ((cbcb *)data)->signal_name);
     return;
 }
 
@@ -72,7 +72,7 @@ static void signal_func_1(GtkWidget *window,
 {
     cbcb *cblock = (cbcb *)data;
 
-    cblock->context->SendMessage1(GrxDBFindObject(widget), ((cbcb *)data)->signal_name,
+    cblock->context->SendMessage1(GrxDBFindObject(window), ((cbcb *)data)->signal_name,
                                   GrxDBFindObject(widget));
     return;
 }
@@ -93,11 +93,11 @@ static void signal_func_1(GtkWidget *window,
  */
 RexxMethod1(int,                       // Return type
             GrxContainerAdd,           // Object_method name
-            RexxObjectPtr, rxremptr)   // Object to add
+            RexxObjectPtr, rxaddptr)   // Object to add
 {
     RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-    RexxObjectPtr addtptr = context->functions->GetObjectVariable(rxaddptr, "!POINTER");
+    RexxPointerObject addptr = (RexxPointerObject)context->SendMessage0(rxaddptr, "POINTER");
     GtkWidget *addWidget = (GtkWidget *)context->PointerValue(addptr);
 
     gtk_container_add(GTK_CONTAINER(myWidget), addWidget); 
@@ -120,7 +120,7 @@ RexxMethod1(int,                       // Return type
 {
     RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-    RexxObjectPtr remtptr = context->functions->GetObjectVariable(rxremptr, "!POINTER");
+    RexxPointerObject remptr = (RexxPointerObject)context->SendMessage0(rxremptr, "POINTER");
     GtkWidget *remWidget = (GtkWidget *)context->PointerValue(remptr);
 
     gtk_container_remove(GTK_CONTAINER(myWidget), remWidget); 
@@ -167,16 +167,16 @@ RexxMethod1(int,                       // Return type
 RexxMethod4(int,                       // Return type
             GrxBoxPackStart,           // Object_method name
             RexxObjectPtr, rxpackptr,  // Widget to pack
-            bool, expand,              // Expand boolean
-            bool, fill,                // Fill boolean
-            unsigned int, padding)     // Padding amount
+            logical_t, expand,         // Expand boolean
+            logical_t, fill,           // Fill boolean
+            int, padding)              // Padding amount
 {
     RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-    RexxObjectPtr packptr = context->functions->GetObjectVariable(rxpackptr, "!POINTER");
+    RexxPointerObject packptr = (RexxPointerObject)context->SendMessage0(rxpackptr, "POINTER");
     GtkWidget *packWidget = (GtkWidget *)context->PointerValue(packptr);
 
-    gtk_box_pack_start(GTK_BOX(myWidget), packWidget, expand, fill, padding); 
+    gtk_box_pack_start(GTK_BOX(myWidget), packWidget, expand, fill, (unsigned int)padding); 
 
     return 0;
 }
@@ -199,19 +199,16 @@ RexxMethod4(int,                       // Return type
 RexxMethod4(int,                       // Return type
             GrxBoxPackEnd,             // Object_method name
             RexxObjectPtr, rxpackptr,  // Widget to pack
-            bool, expand,              // Expand boolean
-            bool, fill,                // Fill boolean
-            unsigned int, padding)     // Padding amount
-APIRET APIENTRY GrxBoxPackEnd(const char * Name,
-                              const size_t Argc, const RXSTRING Argv[],
-                              const char * Queuename, PRXSTRING Retstr)
+            logical_t, expand,         // Expand boolean
+            logical_t, fill,           // Fill boolean
+            int, padding)              // Padding amount
 {
     RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-    RexxObjectPtr packptr = context->functions->GetObjectVariable(rxpackptr, "!POINTER");
+    RexxPointerObject packptr = (RexxPointerObject)context->SendMessage0(rxpackptr, "POINTER");
     GtkWidget *packWidget = (GtkWidget *)context->PointerValue(packptr);
 
-    gtk_box_pack_end(GTK_BOX(myWidget), packWidget, expand, fill, padding); 
+    gtk_box_pack_end(GTK_BOX(myWidget), packWidget, expand, fill, (unsigned int)padding); 
 
     return 0;
 }
@@ -229,7 +226,7 @@ APIRET APIENTRY GrxBoxPackEnd(const char * Name,
  */
 RexxMethod2(int,                       // Return type
             GrxVBoxNew,                // Object_method name
-            bool, homogeneous,         // Homogeneous boolean
+            logical_t, homogeneous,    // Homogeneous boolean
             int, spacing)              // Spacing amount
 {
     GtkWidget *myWidget;
@@ -256,11 +253,8 @@ RexxMethod2(int,                       // Return type
  */
 RexxMethod2(int,                       // Return type
             GrxHBoxNew,                // Object_method name
-            bool, homogeneous,         // Homogeneous boolean
+            logical_t, homogeneous,    // Homogeneous boolean
             int, spacing)              // Spacing amount
-APIRET APIENTRY GrxHBoxNew(const char * Name,
-                           const size_t Argc, const RXSTRING Argv[],
-                           const char * Queuename, PRXSTRING Retstr)
 {
     GtkWidget *myWidget;
 
@@ -321,28 +315,28 @@ RexxMethod1(int,                       // Return type
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     cbcb *cblock;
 
-    if (strcmp(Argv[1].strptr, "add") == 0) {
+    if (strcmp(name, "add") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->context = context->threadContext;
         cblock->signal_name = "signal_add";
         g_signal_connect(G_OBJECT(myWidget), "add",
                          G_CALLBACK(signal_func_1), cblock);
     }
-    else if (strcmp(Argv[1].strptr, "check-resize") == 0) {
+    else if (strcmp(name, "check-resize") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->context = context->threadContext;
         cblock->signal_name = "signal_check_resize";
         g_signal_connect(G_OBJECT(myWidget), "check-resize",
                          G_CALLBACK(signal_func_0), cblock);
     }
-    else if (strcmp(Argv[1].strptr, "remove") == 0) {
+    else if (strcmp(name, "remove") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->context = context->threadContext;
         cblock->signal_name = "signal_remove";
         g_signal_connect(G_OBJECT(myWidget), "remove",
                          G_CALLBACK(signal_func_1), cblock);
     }
-    else if (strcmp(Argv[1].strptr, "set-focus-child") == 0) {
+    else if (strcmp(name, "set-focus-child") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->context = context->threadContext;
         cblock->signal_name = "signal_set_focus_child";
@@ -371,15 +365,15 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero.
  */
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxViewportNew,            // Object_method name
             RexxObjectPtr, rxhadj,     // Horizontal adjustment object
-            RexxObjectPtr, rxvadk)     // Vertical adjustment object
+            RexxObjectPtr, rxvadj)     // Vertical adjustment object
 {
-    RexxObjectPtr hadjptr = context->functions->GetObjectVariable(rxhadjptr, "!POINTER");
-    GtkAdjustmet *hadj = (GtkAdjustment *)context->PointerValue(hadjptr);
-    RexxObjectPtr vadjptr = context->functions->GetObjectVariable(rxvadjptr, "!POINTER");
-    GtkAdjustmet *vadj = (GtkAdjustment *)context->PointerValue(vadjptr);
+    RexxPointerObject hadjptr = (RexxPointerObject)context->SendMessage0(rxhadj, "POINTER");
+    GtkAdjustment *hadj = (GtkAdjustment *)context->PointerValue(hadjptr);
+    RexxPointerObject vadjptr = (RexxPointerObject)context->SendMessage0(rxvadj, "POINTER");
+    GtkAdjustment *vadj = (GtkAdjustment *)context->PointerValue(vadjptr);
     GtkWidget *myWidget;
 
     myWidget = gtk_viewport_new(hadj, vadj);
@@ -407,7 +401,7 @@ RexxMethod1(int,                       // Return type
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     cbcb *cblock;
 
-    if (strcmp(Argv[1].strptr, "set-scroll-adjustments") == 0) {
+    if (strcmp(name, "set-scroll-adjustments") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->context = context->threadContext;
         cblock->signal_name = "signal_set_scroll_adjustments";

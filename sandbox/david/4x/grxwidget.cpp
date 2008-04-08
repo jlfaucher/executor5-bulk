@@ -458,8 +458,7 @@ RexxMethod1(int,                       // Return type
 {
     RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-    RexxObjectPtr tparentptr = context->functions->GetObjectVariable(parent, "!POINTER");
-    RexxPointerObject parentptr = (RexxPointerObject)tparentptr;
+    RexxPointerObject parentptr = (RexxPointerObject)context->SendMessage0(parent, "POINTER");
     GtkWidget *parentWidget = (GtkWidget *)context->PointerValue(parentptr);
 
     gtk_widget_reparent(myWidget, parentWidget);
@@ -516,8 +515,8 @@ RexxMethod1(int,                       // Return type
 {
     RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-    RexxPointerObject parentptr = (RexxPointerObject)context->functions->GetObjectVariable(parent, "!POINTER");
-    GtkWidget *parentWidget = (GtkWidget *)context->PointerValue(parentptr);
+    RexxPointerObject parentptr = (RexxPointerObject)context->SendMessage0(parent, "POINTER");
+    GdkWindow *parentWidget = (GdkWindow *)context->PointerValue(parentptr);
 
     gtk_widget_set_parent_window(myWidget, parentWidget);
 
@@ -593,7 +592,7 @@ RexxMethod1(logical_t,                 // Return type
 {
     RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-    RexxPointerObject ancestorptr = (RexxPointerObject)context->functions->GetObjectVariable(ancestor, "!POINTER");
+    RexxPointerObject ancestorptr = (RexxPointerObject)context->SendMessage0(ancestor, "POINTER");
     GtkWidget *ancestorWidget = (GtkWidget *)context->PointerValue(ancestorptr);
 
     return gtk_widget_is_ancestor(myWidget, ancestorWidget);
@@ -766,9 +765,9 @@ RexxMethod2(logical_t,                 // Return type
 {
     RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-    RexxPointerObject hptr = (RexxPointerObject)context->functions->GetObjectVariable(hadj, "!POINTER");
+    RexxPointerObject hptr = (RexxPointerObject)context->SendMessage0(hadj, "POINTER");
     GtkAdjustment *hWidget = (GtkAdjustment *)context->PointerValue(hptr);
-    RexxPointerObject vptr = (RexxPointerObject)context->functions->GetObjectVariable(vadj, "!POINTER");
+    RexxPointerObject vptr = (RexxPointerObject)context->SendMessage0(vadj, "POINTER");
     GtkAdjustment *vWidget = (GtkAdjustment *)context->PointerValue(vptr);
 
     return (logical_t)gtk_widget_set_scroll_adjustments(myWidget, hWidget, vWidget);

@@ -77,7 +77,7 @@ RexxMethod1(int,                       // Return type
 {
     RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-    RexxObjectPtr addptr = context->functions->GetObjectVariable(rxaddptr, "!POINTER");
+    RexxPointerObject addptr = (RexxPointerObject)context->SendMessage0(rxaddptr, "POINTER");
     GtkWidget *addWidget = (GtkWidget *)context->PointerValue(addptr);
 
     gtk_paned_add1(GTK_PANED(myWidget), addWidget); 
@@ -100,7 +100,7 @@ RexxMethod1(int,                       // Return type
 {
     RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-    RexxObjectPtr addptr = context->functions->GetObjectVariable(rxaddptr, "!POINTER");
+    RexxPointerObject addptr = (RexxPointerObject)context->SendMessage0(rxaddptr, "POINTER");
     GtkWidget *addWidget = (GtkWidget *)context->PointerValue(addptr);
 
     gtk_paned_add2(GTK_PANED(myWidget), addWidget); 
@@ -120,12 +120,12 @@ RexxMethod1(int,                       // Return type
 RexxMethod3(int,                       // Return type
             GrxPanedPack1,             // Object_method name
             RexxObjectPtr, rxpackptr,  // Widget to add
-            bool, resize,              // Resize flag
-            bool, shrink)              // Shrink flag
+            logical_t, resize,         // Resize flag
+            logical_t, shrink)         // Shrink flag
 {
     RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-    RexxObjectPtr packptr = context->functions->GetObjectVariable(rxpackptr, "!POINTER");
+    RexxPointerObject packptr = (RexxPointerObject)context->SendMessage0(rxpackptr, "POINTER");
     GtkWidget *packWidget = (GtkWidget *)context->PointerValue(packptr);
 
     gtk_paned_pack1(GTK_PANED(myWidget), packWidget, resize, shrink); 
@@ -145,12 +145,12 @@ RexxMethod3(int,                       // Return type
 RexxMethod3(int,                       // Return type
             GrxPanedPack2,             // Object_method name
             RexxObjectPtr, rxpackptr,  // Widget to add
-            bool, resize,              // Resize flag
-            bool, shrink)              // Shrink flag
+            logical_t, resize,         // Resize flag
+            logical_t, shrink)         // Shrink flag
 {
     RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-    RexxObjectPtr packptr = context->functions->GetObjectVariable(rxpackptr, "!POINTER");
+    RexxPointerObject packptr = (RexxPointerObject)context->SendMessage0(rxpackptr, "POINTER");
     GtkWidget *packWidget = (GtkWidget *)context->PointerValue(packptr);
 
     gtk_paned_pack2(GTK_PANED(myWidget), packWidget, resize, shrink); 
