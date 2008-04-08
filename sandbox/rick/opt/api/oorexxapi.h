@@ -402,8 +402,6 @@ typedef struct
     inline void operator=(CSTRING o) { type = REXX_VALUE_CSTRING; value.value_CSTRING = o; }
     inline operator POINTER() { return value.value_POINTER; }
     inline void operator=(POINTER o) { type = REXX_VALUE_POINTER; value.value_POINTER = o; }
-    inline operator int() { return value.value_int; }
-    inline void operator=(int o) { type = REXX_VALUE_int; value.value_int = o; }
     inline operator wholenumber_t() { return value.value_wholenumber_t; }
     inline void operator=(wholenumber_t o) { type = REXX_VALUE_wholenumber_t; value.value_wholenumber_t = o; }
     inline operator stringsize_t() { return value.value_stringsize_t; }
