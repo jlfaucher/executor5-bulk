@@ -60,12 +60,9 @@
 static void signal_func_0(GtkWidget *widget,
                           gpointer data)
 {
-    RexxInstance      *instance = ((cbcb *)data)->instance;
-    RexxThreadContext *context;
+    cbcb *cblock = (cbcb *)data;
 
-    instance->AttachThread(&context);
-    context->SendMessage0(GrxDBFindObject(widget), ((cbcb *)data)->signal_name);
-    context->DetachThread();
+    cblock->context->SendMessage0(GrxDBFindObject(widget), ((cbcb *)data)->signal_name);
     return;
 }
 
@@ -130,7 +127,7 @@ RexxMethod1(int,                       // Return type
             GrxButtonSetLable,         // Object_method name
             CSTRING, text)             // Button type
 {
-    RexxObjectPtr rxptr = context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
 
     gtk_button_set_label(GTK_BUTTON(myWidget), text);
@@ -148,7 +145,7 @@ RexxMethod1(int,                       // Return type
 RexxMethod0(RexxObjectPtr,             // Return type
             GrxButtonGetLabel)         // Object_method name
 {
-    RexxObjectPtr rxptr = context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
 
     return context->NewStringFromAsciiz(gtk_button_get_label(GTK_BUTTON(myWidget)));
@@ -167,7 +164,7 @@ RexxMethod1(int,                       // Return type
             GrxButtonSetRelief,       // Object_method name
             int, relief)               // Button relief style
 {
-    RexxObjectPtr rxptr = context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
 
     gtk_button_set_relief(GTK_BUTTON(myWidget), relief);
@@ -188,7 +185,7 @@ RexxMethod1(int,                       // Return type
             GrxButtonSetUnderline,     // Object_method name
             bool, flag)                // Button underline flag
 {
-    RexxObjectPtr rxptr = context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
 
     gtk_button_set_use_underline(GTK_BUTTON(myWidget), flag);
@@ -226,7 +223,7 @@ RexxMethod0(int,                       // Return type
 RexxMethod0(bool,                      // Return type
             GrxToggleButtonGetMode)    // Object_method name
 {
-    RexxObjectPtr rxptr = context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
 
     return gtk_toggle_button_get_mode(GTK_TOGGLE_BUTTON(myWidget));
@@ -245,7 +242,7 @@ RexxMethod1(int,                       // Return type
             GrxToggleButtonSetMode,    // Object_method name
             bool, mode)                // Button mode flag
 {
-    RexxObjectPtr rxptr = context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
 
     gtk_toggle_button_set_mode(GTK_TOGGLE_BUTTON(myWidget), mode);
@@ -263,7 +260,7 @@ RexxMethod1(int,                       // Return type
 RexxMethod0(bool,                      // Return type
             GrxToggleButtonGetActive)  // Object_method name
 {
-    RexxObjectPtr rxptr = context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
 
     return gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(myWidget));
@@ -282,7 +279,7 @@ RexxMethod1(int,                       // Return type
             GrxToggleButtonSetActive,  // Object_method name
             bool, state)               // Button state flag
 {
-    RexxObjectPtr rxptr = context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
 
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(myWidget), state);
@@ -300,7 +297,7 @@ RexxMethod1(int,                       // Return type
 RexxMethod0(bool,                      // Return type
             GrxToggleButtonGetInconsistent) // Object_method name
 {
-    RexxObjectPtr rxptr = context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
 
     return gtk_toggle_button_get_inconsistent(GTK_TOGGLE_BUTTON(myWidget));
@@ -319,7 +316,7 @@ RexxMethod1(int,                       // Return type
             GrxToggleButtonSetInconsistent, // Object_method name
             bool, state)               // Button state flag
 {
-    RexxObjectPtr rxptr = context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
 
     gtk_toggle_button_set_inconsistent(GTK_TOGGLE_BUTTON(myWidget), state);
@@ -420,7 +417,7 @@ RexxMethod1(int,                       // Return type
 RexxMethod0(RexxObjectPtr,             // Return type
             GrxRadioButtonGetGroup)    // Object_method name
 {
-    RexxObjectPtr rxptr = context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     GSList *head = NULL;
 
@@ -441,7 +438,7 @@ RexxMethod1(int,                       // Return type
             GrxRadioButtonSetGroup,    // Object_method name
             RexxObjectPtr, rxlisttptr) // GList pointer
 {
-    RexxObjectPtr rxptr = context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     RexxObjectPtr listtptr = context->functions->GetObjectVariable(rxlistptr, "!POINTER");
     GList *head = (GList *)context->PointerValue(listptr);
@@ -494,7 +491,7 @@ RexxMethod1(int,                       // Return type
             GrxColorButtonSetTitle,    // Object_method name
             CSTRING, title)            // Color string
 {
-    RexxObjectPtr rxptr = context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
 
     gtk_color_button_set_title(GTK_COLOR_BUTTON(myWidget), title);
@@ -514,7 +511,7 @@ RexxMethod1(int,                       // Return type
 RexxMethod0(RexxObjectPtr,             // Return type
             GrxColorButtonGetColor)    // Object_method name
 {
-    RexxObjectPtr rxptr = context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     GdkColor color;
     char colorstr[64];
@@ -539,7 +536,7 @@ RexxMethod1(int,                       // Return type
             GrxColorButtonSetColor,    // Object_method name
             CSTRING, colorstr)         // Color string
 {
-    RexxObjectPtr rxptr = context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     GdkColor color;
 
@@ -608,7 +605,7 @@ RexxMethod1(int,                       // Return type
             GrxFontButtonSetTitle,     // Object_method name
             CSTRING, title)            // Title string
 {
-    RexxObjectPtr rxptr = context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
 
     gtk_font_button_set_title(GTK_FONT_BUTTON(myWidget), title);
@@ -626,7 +623,7 @@ RexxMethod1(int,                       // Return type
 RexxMethod0(int,                       // Return type
             GrxFontButtonGetFontName)  // Object_method name
 {
-    RexxObjectPtr rxptr = context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     const gchar * font;
 
@@ -648,41 +645,41 @@ RexxMethod1(int,                       // Return type
             GrxButtonSignalConnect,    // Object_method name
             CSTRING, name)             // Signal name
 {
-    RexxObjectPtr rxptr = context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     cbcb *cblock;
 
     if (strcmp(Argv[1].strptr, "pressed") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
-        cblock->instance = context->instance;
+        cblock->context = context->threadContext;
         cblock->signal_name = "signal_pressed";
         g_signal_connect(G_OBJECT(myWidget), "pressed",
                          G_CALLBACK(signal_func_0), cblock);
     }
     else if (strcmp(Argv[1].strptr, "released") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
-        cblock->instance = context->instance;
+        cblock->context = context->threadContext;
         cblock->signal_name = "signal_released";
         g_signal_connect(G_OBJECT(myWidget), "released",
                          G_CALLBACK(signal_func_0), cblock);
     }
     else if (strcmp(Argv[1].strptr, "clicked") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
-        cblock->instance = context->instance;
+        cblock->context = context->threadContext;
         cblock->signal_name = "signal_clicked";
         g_signal_connect(G_OBJECT(myWidget), "clicked",
                          G_CALLBACK(signal_func_0), cblock);
     }
     else if (strcmp(Argv[1].strptr, "enter") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
-        cblock->instance = context->instance;
+        cblock->context = context->threadContext;
         cblock->signal_name = "signal_enter";
         g_signal_connect(G_OBJECT(myWidget), "enter",
                          G_CALLBACK(signal_func_0), cblock);
     }
     else if (strcmp(Argv[1].strptr, "leave") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
-        cblock->instance = context->instance;
+        cblock->context = context->threadContext;
         cblock->signal_name = "signal_leave";
         g_signal_connect(G_OBJECT(myWidget), "leave",
                          G_CALLBACK(signal_func_0), cblock);
@@ -708,13 +705,13 @@ RexxMethod1(int,                       // Return type
             GrxToggleButtonSignalConnect, // Object_method name
             CSTRING, name)             // Signal name
 {
-    RexxObjectPtr rxptr = context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     cbcb *cblock;
 
     if (strcmp(Argv[1].strptr, "toggled") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
-        cblock->instance = context->instance;
+        cblock->context = context->threadContext;
         cblock->signal_name = "signal_toggked";
         g_signal_connect(G_OBJECT(myWidget), "toggled",
                          G_CALLBACK(signal_func_0), cblock);
@@ -740,13 +737,13 @@ RexxMethod1(int,                       // Return type
             GrxRadioButtonSignalConnect, // Object_method name
             CSTRING, name)             // Signal name
 {
-    RexxObjectPtr rxptr = context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     cbcb *cblock;
 
     if (strcmp(Argv[1].strptr, "group_changed") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
-        cblock->instance = context->instance;
+        cblock->context = context->threadContext;
         cblock->signal_name = "signal_group_changed";
         g_signal_connect(G_OBJECT(myWidget), "group-changed",
                          G_CALLBACK(signal_func_0), cblock);
@@ -772,13 +769,13 @@ RexxMethod1(int,                       // Return type
             GrxColorButtonSignalConnect, // Object_method name
             CSTRING, name)             // Signal name
 {
-    RexxObjectPtr rxptr = context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     cbcb *cblock;
 
     if (strcmp(Argv[1].strptr, "color_set") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
-        cblock->instance = context->instance;
+        cblock->context = context->threadContext;
         cblock->signal_name = "signal_color_set";
         g_signal_connect(G_OBJECT(myWidget), "color-set",
                          G_CALLBACK(signal_func_0), cblock");
@@ -804,13 +801,13 @@ RexxMethod1(int,                       // Return type
             GrxFileChooserButtonSignalConnect, // Object_method name
             CSTRING, name)             // Signal name
 {
-    RexxObjectPtr rxptr = context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     cbcb *cblock;
 
     if (strcmp(Argv[1].strptr, "file_set") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
-        cblock->instance = context->instance;
+        cblock->context = context->threadContext;
         cblock->signal_name = "signal_file_set";
         g_signal_connect(G_OBJECT(myWidget), "file-set",
                          G_CALLBACK(signal_func_0), cblock);
@@ -836,13 +833,13 @@ RexxMethod1(int,                       // Return type
             GrxFontButtonSignalConnect, // Object_method name
             CSTRING, name)             // Signal name
 {
-    RexxObjectPtr rxptr = context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     cbcb *cblock;
 
     if (strcmp(Argv[1].strptr, "font_set") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
-        cblock->instance = context->instance;
+        cblock->context = context->threadContext;
         cblock->signal_name = "signal_font_set";
         g_signal_connect(G_OBJECT(myWidget), "font-set",
                          G_CALLBACK(signal_func_0), cblock);

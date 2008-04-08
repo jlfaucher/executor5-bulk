@@ -60,12 +60,9 @@
 static void signal_func_0(GtkWidget *window,
                           gpointer data)
 {
-    RexxInstance      *instance = ((cbcb *)data)->instance;
-    RexxThreadContext *context;
+    cbcb *cblock = (cbcb *)data;
 
-    instance->AttachThread(&context);
-    context->SendMessage0(GrxDBFindObject(widget), ((cbcb *)data)->signal_name);
-    context->DetachThread();
+    cblock->context->SendMessage0(GrxDBFindObject(widget), ((cbcb *)data)->signal_name);
     return;
 }
 
@@ -73,13 +70,10 @@ static void signal_func_1(GtkWidget *window,
                           GtkWidget *widget,
                           gpointer data)
 {
-    RexxInstance      *instance = ((cbcb *)data)->instance;
-    RexxThreadContext *context;
+    cbcb *cblock = (cbcb *)data;
 
-    instance->AttachThread(&context);
-    context->SendMessage1(GrxDBFindObject(widget), ((cbcb *)data)->signal_name,
-                          GrxDBFindObject(widget));
-    context->DetachThread();
+    cblock->context->SendMessage1(GrxDBFindObject(widget), ((cbcb *)data)->signal_name,
+                                  GrxDBFindObject(widget));
     return;
 }
 
@@ -124,7 +118,7 @@ RexxMethod1(int,                       // Return type
             GrxWindowSetTitle,         // Object_method name
             CSTRING, title)            // Window title
 {
-    RexxObjectPtr rxptr = context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
 
     gtk_window_set_title(GTK_WINDOW(myWidget), title);
@@ -166,34 +160,34 @@ RexxMethod1(int,                       // Return type
             GrxWindowSignalConnect,    // Object_method name
             CSTRING, name)             // Signal name
 {
-    RexxObjectPtr rxptr = context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     cbcb *cblock;
 
     if (strcmp(Argv[1].strptr, "activate_default") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
-        cblock->instance = context->instance;
+        cblock->context = context->threadContext;
         cblock->signal_name = "signal_set_scroll_adjustments";
         g_signal_connect(G_OBJECT(myWidget), "set-scroll-adjustments",
                          G_CALLBACK(signal_func_0), cblock);
     }
     else if (strcmp(Argv[1].strptr, "activate_focus") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
-        cblock->instance = context->instance;
+        cblock->context = context->threadContext;
         cblock->signal_name = "signal_activate_focus";
         g_signal_connect(G_OBJECT(myWidget), "activate-focus",
                          G_CALLBACK(signal_func_0), cblock);
     }
     else if (strcmp(Argv[1].strptr, "keys_changed") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
-        cblock->instance = context->instance;
+        cblock->context = context->threadContext;
         cblock->signal_name = "signal_keys_changed";
         g_signal_connect(G_OBJECT(myWidget), "keys-changed",
                          G_CALLBACK(signal_func_0), cblock);
     }
     else if (strcmp(Argv[1].strptr, "set_focus") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
-        cblock->instance = context->instance;
+        cblock->context = context->threadContext;
         cblock->signal_name = "signal_set_focus";
         g_signal_connect(G_OBJECT(myWidget), "set-focus",
                          G_CALLBACK(signal_func_1), cblock);

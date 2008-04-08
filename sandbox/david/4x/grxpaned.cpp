@@ -75,7 +75,7 @@ RexxMethod1(int,                       // Return type
             GrxPanedAdd1,              // Object_method name
             RexxObjectPtr, rxaddptr)   // Widget to add
 {
-    RexxObjectPtr rxptr = context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     RexxObjectPtr addptr = context->functions->GetObjectVariable(rxaddptr, "!POINTER");
     GtkWidget *addWidget = (GtkWidget *)context->PointerValue(addptr);
@@ -98,7 +98,7 @@ RexxMethod1(int,                       // Return type
             GrxPanedAdd2,              // Object_method name
             RexxObjectPtr, rxaddptr)   // Widget to add
 {
-    RexxObjectPtr rxptr = context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     RexxObjectPtr addptr = context->functions->GetObjectVariable(rxaddptr, "!POINTER");
     GtkWidget *addWidget = (GtkWidget *)context->PointerValue(addptr);
@@ -123,7 +123,7 @@ RexxMethod3(int,                       // Return type
             bool, resize,              // Resize flag
             bool, shrink)              // Shrink flag
 {
-    RexxObjectPtr rxptr = context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     RexxObjectPtr packptr = context->functions->GetObjectVariable(rxpackptr, "!POINTER");
     GtkWidget *packWidget = (GtkWidget *)context->PointerValue(packptr);
@@ -148,7 +148,7 @@ RexxMethod3(int,                       // Return type
             bool, resize,              // Resize flag
             bool, shrink)              // Shrink flag
 {
-    RexxObjectPtr rxptr = context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     RexxObjectPtr packptr = context->functions->GetObjectVariable(rxpackptr, "!POINTER");
     GtkWidget *packWidget = (GtkWidget *)context->PointerValue(packptr);

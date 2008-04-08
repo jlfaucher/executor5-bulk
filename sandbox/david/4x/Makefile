@@ -90,14 +90,14 @@ rexxgtk.o: rexxgtk.cpp rexxgtk.h
 rexxdb.o: rexxdb.c rexxgtk.h
 	gcc -c $(GRXCFLAGS) rexxdb.c
 
-grxwidget.o: grxwidget.c rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxwidget.c
+grxwidget.o: grxwidget.cpp rexxgtk.h
+	gcc -c $(GRXCFLAGS) grxwidget.cpp
 
-grxwindow.o: grxwindow.c rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxwindow.c
+grxwindow.o: grxwindow.cpp rexxgtk.h
+	gcc -c $(GRXCFLAGS) grxwindow.cpp
 
-grxcontainer.o: grxcontainer.c rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxcontainer.c
+grxcontainer.o: grxcontainer.cpp rexxgtk.h
+	gcc -c $(GRXCFLAGS) grxcontainer.cpp
 
 grxqueue.o: grxqueue.c rexxgtk.h
 	gcc -c $(GRXCFLAGS) grxqueue.c
@@ -105,11 +105,11 @@ grxqueue.o: grxqueue.c rexxgtk.h
 grxlabel.o: grxlabel.c rexxgtk.h
 	gcc -c $(GRXCFLAGS) grxlabel.c
 
-grxbutton.o: grxbutton.c rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxbutton.c
+grxbutton.o: grxbutton.cpp rexxgtk.h
+	gcc -c $(GRXCFLAGS) grxbutton.cpp
 
-grxpaned.o: grxpaned.c rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxpaned.c
+grxpaned.o: grxpaned.cpp rexxgtk.h
+	gcc -c $(GRXCFLAGS) grxpaned.cpp
 
 grxtable.o: grxtable.c rexxgtk.h
 	gcc -c $(GRXCFLAGS) grxtable.c

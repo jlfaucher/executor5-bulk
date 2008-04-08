@@ -412,7 +412,6 @@ return
 ::METHOD direction EXTERNAL "LIBRARY rexxgtk GrxWidgetGetDirection'
 ::METHOD get_default_direction EXTERNAL "LIBRARY rexxgtk GrxWidgetGetDefaultDirection'
 ::METHOD default_direction EXTERNAL "LIBRARY rexxgtk GrxWidgetGetDefaultDirection'
-::METHOD modify_cursor EXTERNAL "LIBRARY rexxgtk GrxWidgetModifyCursor"
 ::METHOD queue_draw_area EXTERNAL "LIBRARY rexxgtk GrxWidgetQueueDrawArea"
 ::METHOD reset_shapes EXTERNAL "LIBRARY rexxgtk GrxWidgetResetShapes"
 ::METHOD set_scroll_adjustments EXTERNAL "LIBRARY rexxgtk GrxWidgetSetScrollAdjustments"
@@ -424,15 +423,6 @@ return
 ::METHOD parent EXTERNAL "LIBRARY rexxgtk GrxWidgetGetParent"
 ::METHOD get_root_window EXTERNAL "LIBRARY rexxgtk GrxWidgetGetRootWindow"
 ::METHOD root_window EXTERNAL "LIBRARY rexxgtk GrxWidgetGetRootWindow"
-::METHOD error_bell EXTERNAL "LIBRARY rexxgtk GrxWidgetErrorBell"
-::METHOD get_tooltip_markup EXTERNAL "LIBRARY rexxgtk GrxWidgetGetTooltipMarkup"
-::METHOD tooltip_markup EXTERNAL "LIBRARY rexxgtk GrxWidgetGetTooltipMarkup"
-::METHOD set_tooltip_markup EXTERNAL "LIBRARY rexxgtk GrxWidgetSetTooltipMarkup"
-::METHOD 'tooltip_markup=' EXTERNAL "LIBRARY rexxgtk GrxWidgetSetTooltipMarkup"
-::METHOD get_tooltip_text EXTERNAL "LIBRARY rexxgtk GrxWidgetGetTooltipText"
-::METHOD tooltip_text EXTERNAL "LIBRARY rexxgtk GrxWidgetGetTooltipText"
-::METHOD set_tooltip_text EXTERNAL "LIBRARY rexxgtk GrxWidgetSetTooltipText"
-::METHOD 'tooltip_text=' EXTERNAL "LIBRARY rexxgtk GrxWidgetSetTooltipText"
 ::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxWidgetSignalConnect"
 
 --

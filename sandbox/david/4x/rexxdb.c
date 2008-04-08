@@ -58,8 +58,8 @@
 static GList *rxgtkdb = NULL;
 
 typedef struct _dbentry {
-    RexxObjectPtr object;
-    GtkWidget     *widget;
+    RexxObjectPtr       object;
+    const GtkWidget     *widget;
 } dbentry;
 
 
@@ -71,8 +71,8 @@ static int custom_compare1(
     gconstpointer a,
     gconstpointer b) {
 
-    dbentry *aa = a;
-    dbentry *bb = b;
+    dbentry *aa = (dbentry *)a;
+    dbentry *bb = (dbentry *)b;
     if (aa->widget != bb->widget) {
         return -1;
     }
@@ -83,8 +83,8 @@ static int custom_compare2(
     gconstpointer a,
     gconstpointer b) {
 
-    dbentry *aa = a;
-    dbentry *bb = b;
+    dbentry *aa = (dbentry *)a;
+    dbentry *bb = (dbentry *)b;
     if (aa->object != bb->object) {
         return -1;
     }
@@ -103,13 +103,13 @@ int GrxDBAdd(
 
 int GrxDBRemoveObject(
     const GtkWidget *widget) {       // the widget pointer
-
     dbentry searchentry;
+
     searchentry.widget = widget;
-    dbentry *entry = g_list_find_custom(rxgtkdb, &searchentry, custom_compare1);
-    if (dbentry != NULL) {
-        rxgtkdb = g_list_remove(rxgtkdb, dbentry);
-        free(dbentry);
+    GList *entry = g_list_find_custom(rxgtkdb, &searchentry, custom_compare1);
+    if (entry != NULL) {
+        free(entry->data);
+        rxgtkdb = g_list_remove(rxgtkdb, entry);
         return 0;
     }
     return 1;
@@ -118,13 +118,13 @@ int GrxDBRemoveObject(
 
 int GrxDBRemoveWidget(
     const RexxObjectPtr obj) {       // the Rexx object pointer
-
     dbentry searchentry;
+
     searchentry.object = obj;
-    dbentry *entry = g_list_find_custom(rxgtkdb, &searchentry, custom_compare2);
-    if (dbentry != NULL) {
-        rxgtkdb = g_list_remove(rxgtkdb, dbentry);
-        free(dbentry);
+    GList *entry = g_list_find_custom(rxgtkdb, &searchentry, custom_compare2);
+    if (entry != NULL) {
+        rxgtkdb = g_list_remove(rxgtkdb, entry);
+        free(entry->data);
         return 0;
     }
     return 1;
@@ -133,12 +133,14 @@ int GrxDBRemoveWidget(
 
 RexxObjectPtr GrxDBFindObject(
     const GtkWidget *widget) {       // the widget pointer
-
     dbentry searchentry;
+    dbentry *fentry;
+
     searchentry.widget = widget;
-    dbentry *entry = g_list_find_custom(rxgtkdb, &searchentry, custom_compare);
-    if (dbentry != NULL) {
-        return dbentry->rxobj;
+    GList *entry = g_list_find_custom(rxgtkdb, &searchentry, custom_compare1);
+    if (entry != NULL) {
+        fentry = (dbentry *)entry->data;
+        return fentry->object;
     }
     return NULL;
 }
