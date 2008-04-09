@@ -71,16 +71,6 @@ typedef struct _cbcb {
 /* Function Prototypes                                                        */
 /*----------------------------------------------------------------------------*/
 
-int GrxDBAdd(
-    const RexxObjectPtr rxobj,       // the object to be added
-    const GtkWidget *widget);        // the widget pointer
-int GrxDBRemoveWidget(
-    const RexxObjectPtr obj);        // the widget pointer
-int GrxDBRemoveObject(
-    const GtkWidget *widget);        // the widget pointer
-RexxObjectPtr GrxDBFindObject(
-    const GtkWidget *widget);        // the widget pointer
-
 REXX_METHOD_PROTOTYPE(GrxWidgetNew)
 REXX_METHOD_PROTOTYPE(GrxWidgetUninit)
 REXX_METHOD_PROTOTYPE(GrxWidgetShow)

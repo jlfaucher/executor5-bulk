@@ -61,8 +61,9 @@ static void signal_func_0(GtkWidget *widget,
                           gpointer data)
 {
     cbcb *cblock = (cbcb *)data;
+    RexxObjectPtr rxobj = (RexxObjectPtr)g_object_get_data(G_OBJECT(widget), "OORXOBJECT");
 
-    cblock->context->SendMessage0(GrxDBFindObject(widget), ((cbcb *)data)->signal_name);
+    cblock->context->SendMessage0(rxobj, ((cbcb *)data)->signal_name);
     return;
 }
 
@@ -85,8 +86,7 @@ RexxMethod0(int,                       // Return type
 
     myWidget = gtk_button_new();
     context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
-    // add the widget to the db
-    GrxDBAdd(context->GetSelf(), myWidget);
+    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", context->GetSelf());
 
     return 0;
 }
@@ -108,8 +108,7 @@ RexxMethod1(int,                       // Return type
 
     myWidget = gtk_button_new_from_stock(type);
     context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
-    // add the widget to the db
-    GrxDBAdd(context->GetSelf(), myWidget);
+    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", context->GetSelf());
 
     return 0;
 }
@@ -207,8 +206,7 @@ RexxMethod0(int,                       // Return type
 
     myWidget = gtk_toggle_button_new();
     context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
-    // add the widget to the db
-    GrxDBAdd(context->GetSelf(), myWidget);
+    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", context->GetSelf());
 
     return 0;
 }
@@ -346,8 +344,7 @@ RexxMethod1(int,                       // Return type
         myWidget = gtk_check_button_new();
     }
     context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
-    // add the widget to the db
-    GrxDBAdd(context->GetSelf(), myWidget);
+    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", context->GetSelf());
 
     return 0;
 }
@@ -377,8 +374,7 @@ RexxMethod2(int,                       // Return type
         gtk_button_set_label(GTK_BUTTON(myWidget), text);
     }
     context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
-    // add the widget to the db
-    GrxDBAdd(context->GetSelf(), myWidget);
+    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", context->GetSelf());
 
     return 0;
 }
@@ -402,8 +398,7 @@ RexxMethod1(int,                       // Return type
 
     myWidget = gtk_radio_button_new_from_widget(GTK_RADIO_BUTTON(srcWidget));
     context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
-    // add the widget to the db
-    GrxDBAdd(context->GetSelf(), myWidget);
+    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", context->GetSelf());
 
     return 0;
 }
@@ -423,7 +418,7 @@ RexxMethod0(RexxObjectPtr,             // Return type
     GSList *head = NULL;
 
     head = gtk_radio_button_get_group(GTK_RADIO_BUTTON(myWidget));
-    return GrxDBFindObject((GtkWidget *)head);
+    return (RexxObjectPtr)g_object_get_data(G_OBJECT(myWidget), "OORXOBJECT");
 }
 
 /*
@@ -473,8 +468,7 @@ RexxMethod1(int,                       // Return type
         myWidget = gtk_color_button_new_with_color(&color);
     }
     context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
-    // add the widget to the db
-    GrxDBAdd(context->GetSelf(), myWidget);
+    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", context->GetSelf());
 
     return 0;
 }
@@ -567,8 +561,7 @@ RexxMethod2(int,                       // Return type
 
     myWidget = gtk_file_chooser_button_new(title, (GtkFileChooserAction)action);
     context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
-    // add the widget to the db
-    GrxDBAdd(context->GetSelf(), myWidget);
+    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", context->GetSelf());
 
     return 0;
 }
@@ -587,8 +580,7 @@ RexxMethod0(int,                       // Return type
 
     myWidget = gtk_font_button_new();
     context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
-    // add the widget to the db
-    GrxDBAdd(context->GetSelf(), myWidget);
+    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", context->GetSelf());
 
     return 0;
 }

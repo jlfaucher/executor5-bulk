@@ -47,7 +47,6 @@ GRXCFLAGS = `pkg-config --cflags gtk+-2.0 gdk-2.0 glib-2.0 gthread-2.0` \
 	-I/home/dashley/ad/svn/sandbox/rick/opt/api \
 	-I/home/dashley/ad/svn/sandbox/rick/opt/api/platform/unix
 OBJECTS = rexxgtk.o \
-        rexxdb.o \
         grxwidget.o \
 	grxwindow.o \
 	grxcontainer.o \
@@ -86,9 +85,6 @@ librexxgtk.so: $(OBJECTS)
 # Build the objects
 rexxgtk.o: rexxgtk.cpp rexxgtk.h
 	gcc -c $(GRXCFLAGS) rexxgtk.cpp
-
-rexxdb.o: rexxdb.c rexxgtk.h
-	gcc -c $(GRXCFLAGS) rexxdb.c
 
 grxwidget.o: grxwidget.cpp rexxgtk.h
 	gcc -c $(GRXCFLAGS) grxwidget.cpp

@@ -341,7 +341,6 @@ return id
 ::class GtkWidget public
 
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxWidgetNew"
-::METHOD uninit EXTERNAL "LIBRARY rexxgtk GrxWidgetUninit"
 
 ::method pointer private
 -- return the pointer object to the widget

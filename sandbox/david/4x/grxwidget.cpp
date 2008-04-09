@@ -62,8 +62,9 @@ static void signal_func_0(GtkWidget *widget,
                           gpointer data)
 {
     cbcb *cblock = (cbcb *)data;
+    RexxObjectPtr rxobj = (RexxObjectPtr)g_object_get_data(G_OBJECT(widget), "OORXOBJECT");
 
-    cblock->context->SendMessage0(GrxDBFindObject(widget), ((cbcb *)data)->signal_name);
+    cblock->context->SendMessage0(rxobj, ((cbcb *)data)->signal_name);
     return;
 }
 
@@ -85,27 +86,7 @@ RexxMethod0(int,                       // Return type
     GtkWidget *myWidget = NULL;
 
     context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
-    context->SetObjectVariable("!ACCESS_OBJ", context->NewPointer(myWidget));
-    // add the widget to the db
-    GrxDBAdd(context->GetSelf(), myWidget);
-    return 0;
-}
-
-/**
- * Method:  uninit
- *
- * Destroy the widget.
- *
- * @return        Zero.
- */
-RexxMethod0(int,                       // Return type
-            GrxWidgetUninit)           // Object_method name
-{
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-
-    GrxDBRemoveObject(myWidget);
-
+//    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", context->GetSelf);
     return 0;
 }
 
@@ -219,9 +200,6 @@ RexxMethod0(int,                       // Return type
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
 
     gtk_widget_destroy(myWidget);
-    rxptr = NULL;
-    context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
-    GrxDBRemoveObject(myWidget);
 
     return 0;
 }
@@ -560,7 +538,7 @@ RexxMethod0(RexxObjectPtr,             // Return type
     if (parent == NULL) {
         return context->Nil(); 
     }
-    parentptr = GrxDBFindObject(myWidget);
+    parentptr = (RexxObjectPtr)g_object_get_data(G_OBJECT(myWidget), "OORXOBJECT");
     if (parentptr == NULL) {
         return context->Nil(); 
     }
@@ -587,7 +565,7 @@ RexxMethod0(RexxObjectPtr,             // Return type
     if (parentWidget == NULL) {
         return context->Nil(); 
     }
-    parentptr = GrxDBFindObject(parentWidget);
+    parentptr = (RexxObjectPtr)g_object_get_data(G_OBJECT(myWidget), "OORXOBJECT");
     if (parentptr == NULL) {
         return context->Nil(); 
     }
@@ -638,7 +616,7 @@ RexxMethod1(RexxObjectPtr,             // Return type
     if (ancestor == NULL) {
         return context->Nil(); 
     }
-    ancestorptr = GrxDBFindObject(ancestor);
+    ancestorptr = (RexxObjectPtr)g_object_get_data(G_OBJECT(myWidget), "OORXOBJECT");
     if (ancestorptr == NULL) {
         return context->Nil(); 
     }
@@ -829,7 +807,7 @@ RexxMethod0(RexxObjectPtr,             // Return type
     if (atk == NULL) {
         return context->Nil(); 
     }
-    atkptr = GrxDBFindObject((GtkWidget *)atk);
+    atkptr = (RexxObjectPtr)g_object_get_data(G_OBJECT(myWidget), "OORXOBJECT");
     if (atkptr == NULL) {
         return context->Nil(); 
     }
@@ -872,7 +850,7 @@ RexxMethod0(RexxObjectPtr,             // Return type
     if (root == NULL) {
         return context->Nil(); 
     }
-    rootptr = GrxDBFindObject(root);
+    rootptr = (RexxObjectPtr)g_object_get_data(G_OBJECT(myWidget), "OORXOBJECT");
     if (rootptr == NULL) {
         return context->Nil(); 
     }
@@ -903,7 +881,6 @@ RexxMethod1(int,                       // Return type
         cblock->signal_name = "signal_destroy";
         g_signal_connect(G_OBJECT(myWidget), "destroy",
                          G_CALLBACK(signal_func_0), cblock);
-        GrxDBRemoveObject(myWidget);
     }
     else {
         return 0;

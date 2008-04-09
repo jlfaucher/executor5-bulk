@@ -61,8 +61,9 @@ static void signal_func_0(GtkWidget *window,
                           gpointer data)
 {
     cbcb *cblock = (cbcb *)data;
+    RexxObjectPtr rxobj = (RexxObjectPtr)g_object_get_data(G_OBJECT(window), "OORXOBJECT");
 
-    cblock->context->SendMessage0(GrxDBFindObject(window), ((cbcb *)data)->signal_name);
+    cblock->context->SendMessage0(rxobj, ((cbcb *)data)->signal_name);
     return;
 }
 
@@ -71,9 +72,10 @@ static void signal_func_1(GtkWidget *window,
                           gpointer data)
 {
     cbcb *cblock = (cbcb *)data;
+    RexxObjectPtr rxobj = (RexxObjectPtr)g_object_get_data(G_OBJECT(window), "OORXOBJECT");
+    RexxObjectPtr rxwidget = (RexxObjectPtr)g_object_get_data(G_OBJECT(widget), "OORXOBJECT");
 
-    cblock->context->SendMessage1(GrxDBFindObject(window), ((cbcb *)data)->signal_name,
-                                  GrxDBFindObject(widget));
+    cblock->context->SendMessage1(rxobj, ((cbcb *)data)->signal_name, rxwidget);
     return;
 }
 
@@ -234,8 +236,7 @@ RexxMethod2(int,                       // Return type
 
     myWidget = gtk_vbox_new(homogeneous, spacing);
     context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
-    // add the widget to the db
-    GrxDBAdd(context->GetSelf(), myWidget);
+    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", context->GetSelf());
 
     return 0;
 }
@@ -260,8 +261,7 @@ RexxMethod2(int,                       // Return type
 
     myWidget = gtk_hbox_new(homogeneous, spacing);
     context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
-    // add the widget to the db
-    GrxDBAdd(context->GetSelf(), myWidget);
+    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", context->GetSelf());
 
     return 0;
 }
@@ -292,8 +292,7 @@ RexxMethod4(int,                       // Return type
 
     myWidget = gtk_alignment_new(xalign, yalign, xscale, yscale);
     context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
-    // add the widget to the db
-    GrxDBAdd(context->GetSelf(), myWidget);
+    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", context->GetSelf());
 
     return 0;
 }
@@ -378,8 +377,7 @@ RexxMethod2(int,                       // Return type
 
     myWidget = gtk_viewport_new(hadj, vadj);
     context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
-    // add the widget to the db
-    GrxDBAdd(context->GetSelf(), myWidget);
+    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", context->GetSelf());
 
     return 0;
 }
