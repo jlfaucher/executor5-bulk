@@ -636,7 +636,7 @@ RexxMethod0(CSTRING,                   // Return type
  *
  * @return        Zero
  */
-RexxMethod1(int,                       // Return type
+RexxMethod1(RexxObjectPtr,             // Return type
             GrxButtonSignalConnect,    // Object_method name
             CSTRING, name)             // Signal name
 {
@@ -650,6 +650,7 @@ RexxMethod1(int,                       // Return type
         cblock->signal_name = "signal_pressed";
         g_signal_connect(G_OBJECT(myWidget), "pressed",
                          G_CALLBACK(signal_func_0), cblock);
+        return context->True();
     }
     else if (strcmp(name, "released") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
@@ -657,6 +658,7 @@ RexxMethod1(int,                       // Return type
         cblock->signal_name = "signal_released";
         g_signal_connect(G_OBJECT(myWidget), "released",
                          G_CALLBACK(signal_func_0), cblock);
+        return context->True();
     }
     else if (strcmp(name, "clicked") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
@@ -664,6 +666,7 @@ RexxMethod1(int,                       // Return type
         cblock->signal_name = "signal_clicked";
         g_signal_connect(G_OBJECT(myWidget), "clicked",
                          G_CALLBACK(signal_func_0), cblock);
+        return context->True();
     }
     else if (strcmp(name, "enter") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
@@ -671,6 +674,7 @@ RexxMethod1(int,                       // Return type
         cblock->signal_name = "signal_enter";
         g_signal_connect(G_OBJECT(myWidget), "enter",
                          G_CALLBACK(signal_func_0), cblock);
+        return context->True();
     }
     else if (strcmp(name, "leave") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
@@ -678,13 +682,14 @@ RexxMethod1(int,                       // Return type
         cblock->signal_name = "signal_leave";
         g_signal_connect(G_OBJECT(myWidget), "leave",
                          G_CALLBACK(signal_func_0), cblock);
+        return context->True();
     }
     else {
         RexxObjectPtr parent = context->GetSuper();
-        context->SendMessage0(parent, name);
+        return context->SendMessage0(parent, name);
     }
 
-    return 0;
+    return context->False();
 }
 
 /**
@@ -696,7 +701,7 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero
  */
-RexxMethod1(int,                       // Return type
+RexxMethod1(RexxObjectPtr,             // Return type
             GrxToggleButtonSignalConnect, // Object_method name
             CSTRING, name)             // Signal name
 {
@@ -710,13 +715,14 @@ RexxMethod1(int,                       // Return type
         cblock->signal_name = "signal_toggked";
         g_signal_connect(G_OBJECT(myWidget), "toggled",
                          G_CALLBACK(signal_func_0), cblock);
+        return context->True();
     }
     else {
         RexxObjectPtr parent = context->GetSuper();
-        context->SendMessage0(parent, name);
+        return context->SendMessage0(parent, name);
     }
 
-    return 0;
+    return context->False();
 }
 
 /**
@@ -728,7 +734,7 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero
  */
-RexxMethod1(int,                       // Return type
+RexxMethod1(RexxObjectPtr,             // Return type
             GrxRadioButtonSignalConnect, // Object_method name
             CSTRING, name)             // Signal name
 {
@@ -742,13 +748,14 @@ RexxMethod1(int,                       // Return type
         cblock->signal_name = "signal_group_changed";
         g_signal_connect(G_OBJECT(myWidget), "group-changed",
                          G_CALLBACK(signal_func_0), cblock);
+        return context->True();
     }
     else {
         RexxObjectPtr parent = context->GetSuper();
-        context->SendMessage0(parent, name);
+        return context->SendMessage0(parent, name);
     }
 
-    return 0;
+    return context->False();
 }
 
 /**
@@ -760,7 +767,7 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero
  */
-RexxMethod1(int,                       // Return type
+RexxMethod1(RexxObjectPtr,             // Return type
             GrxColorButtonSignalConnect, // Object_method name
             CSTRING, name)             // Signal name
 {
@@ -774,13 +781,14 @@ RexxMethod1(int,                       // Return type
         cblock->signal_name = "signal_color_set";
         g_signal_connect(G_OBJECT(myWidget), "color-set",
                          G_CALLBACK(signal_func_0), cblock);
+        return context->True();
     }
     else {
         RexxObjectPtr parent = context->GetSuper();
-        context->SendMessage0(parent, name);
+        return context->SendMessage0(parent, name);
     }
 
-    return 0;
+    return context->False();
 }
 
 /**
@@ -792,7 +800,7 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero
  */
-RexxMethod1(int,                       // Return type
+RexxMethod1(RexxObjectPtr,             // Return type
             GrxFileChooserButtonSignalConnect, // Object_method name
             CSTRING, name)             // Signal name
 {
@@ -806,13 +814,14 @@ RexxMethod1(int,                       // Return type
         cblock->signal_name = "signal_file_set";
         g_signal_connect(G_OBJECT(myWidget), "file-set",
                          G_CALLBACK(signal_func_0), cblock);
+        return context->True();
     }
     else {
         RexxObjectPtr parent = context->GetSuper();
-        context->SendMessage0(parent, name);
+        return context->SendMessage0(parent, name);
     }
 
-    return 0;
+    return context->False();
 }
 
 /**
@@ -824,7 +833,7 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero
  */
-RexxMethod1(int,                       // Return type
+RexxMethod1(RexxObjectPtr,             // Return type
             GrxFontButtonSignalConnect, // Object_method name
             CSTRING, name)             // Signal name
 {
@@ -838,12 +847,13 @@ RexxMethod1(int,                       // Return type
         cblock->signal_name = "signal_font_set";
         g_signal_connect(G_OBJECT(myWidget), "font-set",
                          G_CALLBACK(signal_func_0), cblock);
+        return context->True();
     }
     else {
         RexxObjectPtr parent = context->GetSuper();
-        context->SendMessage0(parent, name);
+        return context->SendMessage0(parent, name);
     }
 
-    return 0;
+    return context->False();
 }
 

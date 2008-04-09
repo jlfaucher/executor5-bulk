@@ -312,7 +312,7 @@ RexxMethod4(int,                       // Return type
  *
  * @return        Zero
  */
-RexxMethod1(int,                       // Return type
+RexxMethod1(RexxObjectPtr,             // Return type
             GrxContainerSignalConnect, // Object_method name
             CSTRING, name)             // Signal name
 {
@@ -326,6 +326,7 @@ RexxMethod1(int,                       // Return type
         cblock->signal_name = "signal_add";
         g_signal_connect(G_OBJECT(myWidget), "add",
                          G_CALLBACK(signal_func_1), cblock);
+        return context->True();
     }
     else if (strcmp(name, "check-resize") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
@@ -333,6 +334,7 @@ RexxMethod1(int,                       // Return type
         cblock->signal_name = "signal_check_resize";
         g_signal_connect(G_OBJECT(myWidget), "check-resize",
                          G_CALLBACK(signal_func_0), cblock);
+        return context->True();
     }
     else if (strcmp(name, "remove") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
@@ -340,6 +342,7 @@ RexxMethod1(int,                       // Return type
         cblock->signal_name = "signal_remove";
         g_signal_connect(G_OBJECT(myWidget), "remove",
                          G_CALLBACK(signal_func_1), cblock);
+        return context->True();
     }
     else if (strcmp(name, "set-focus-child") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
@@ -347,13 +350,14 @@ RexxMethod1(int,                       // Return type
         cblock->signal_name = "signal_set_focus_child";
         g_signal_connect(G_OBJECT(myWidget), "set-focus-child",
                          G_CALLBACK(signal_func_1), cblock);
+        return context->True();
     }
     else {
         RexxObjectPtr parent = context->GetSuper();
-        context->SendMessage0(parent, name);
+        return context->SendMessage0(parent, name);
     }
 
-    return 0;
+    return context->False();
 }
 
 
@@ -397,7 +401,7 @@ RexxMethod2(int,                       // Return type
  *
  * @return        Zero
  */
-RexxMethod1(int,                       // Return type
+RexxMethod1(RexxObjectPtr,             // Return type
             GrxViewportSignalConnect,  // Object_method name
             CSTRING, name)             // Signal name
 {
@@ -411,11 +415,12 @@ RexxMethod1(int,                       // Return type
         cblock->signal_name = "signal_set_scroll_adjustments";
         g_signal_connect(G_OBJECT(myWidget), "set-scroll-adjustments",
                          G_CALLBACK(signal_func_1), cblock);
+        return context->True();
     }
     else {
         RexxObjectPtr parent = context->GetSuper();
-        context->SendMessage0(parent, name);
+        return context->SendMessage0(parent, name);
     }
 
-    return 0;
+    return context->False();
 }

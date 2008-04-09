@@ -870,7 +870,7 @@ RexxMethod0(RexxObjectPtr,             // Return type
  *
  * @return        Zero
  */
-RexxMethod1(int,                       // Return type
+RexxMethod1(RexxObjectPtr,             // Return type
             GrxWidgetSignalConnect,    // Object_method name
             CSTRING, name)             // Signal name
 {
@@ -884,11 +884,12 @@ RexxMethod1(int,                       // Return type
         cblock->signal_name = "signal_destroy";
         g_signal_connect(G_OBJECT(myWidget), "destroy",
                          G_CALLBACK(signal_func_0), cblock);
+        return context->True();
     }
     else {
-        return 0;
+        return context->False();
     }
 
-    return 0;
+    return context->False();
 }
 

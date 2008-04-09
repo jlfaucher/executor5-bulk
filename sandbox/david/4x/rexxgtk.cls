@@ -39,19 +39,12 @@
 /*----------------------------------------------------------------------------*/
 
 
--- Create and initialize the GTK quit flag
-.local['!GTK_Quit'] = .false
-
-
 /*============================================================================*/
 /* Routine: gtk_main                                                          */
 /*============================================================================*/
 
 ::routine gtk_main public
-do while .local['!GTK_Quit'] = .false
-   call gtk_main_iteration
-   end
-.local['!GTK_Quit'] = .false  -- we need this for recursive calls to this function
+call gtk_main_iteration
 return
 
 
@@ -60,7 +53,7 @@ return
 /*============================================================================*/
 
 ::routine gtk_main_quit public
-.local['!GTK_Quit'] = .true
+call GrxMainQuit
 return
 
 
@@ -407,10 +400,8 @@ return !pointer
 ::METHOD root_window EXTERNAL "LIBRARY rexxgtk GrxWidgetGetRootWindow"
 ::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxWidgetSignalConnect"
 
---
 -- The following are the methods that can be connected to signals. By default
 -- they do nothing.
---
 
 ::method signal_destroy
 return
@@ -432,6 +423,9 @@ return
 ::METHOD set_border_width EXTERNAL "LIBRARY rexxgtk GrxContainerSetBorderWidth"
 ::METHOD 'border_width=' EXTERNAL "LIBRARY rexxgtk GrxContainerSetBorderWidth"
 ::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxContainerSignalConnect"
+
+-- The following are the methods that can be connected to signals. By default
+-- they do nothing.
 
 ::method signal_add
 return
@@ -546,13 +540,15 @@ return self~signal_connect:super(event)
 ::class GtkPaned public subclass GtkContainer
 
 ::method init
-raise syntax 93.964 array ('A GtkPaned class cannot be instantiated.')
 return
 
 ::METHOD add1 EXTERNAL "LIBRARY rexxgtk GrxPanedAdd1"
 ::METHOD add2 EXTERNAL "LIBRARY rexxgtk GrxPanedAdd2"
 ::METHOD pack1 EXTERNAL "LIBRARY rexxgtk GrxPanedPack1"
 ::METHOD pack2 EXTERNAL "LIBRARY rexxgtk GrxPanedPack2"
+
+-- The following are the methods that can be connected to signals. By default
+-- they do nothing.
 
 ::method signal_connect
 use strict arg event
@@ -598,6 +594,9 @@ return self~signal_connect:super(event)
 ::METHOD set_modal EXTERNAL "LIBRARY rexxgtk GrxWindowSetModal"
 ::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxWindowSignalConnect"
 
+-- The following are the methods that can be connected to signals. By default
+-- they do nothing.
+
 ::method signal_activate_default
 return
 
@@ -631,6 +630,9 @@ return
 ::METHOD 'relief=' EXTERNAL "LIBRARY rexxgtk GrxButtonSetRelief"
 ::METHOD set_relief EXTERNAL "LIBRARY rexxgtk GrxButtonSetRelief"
 ::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxButtonSignalConnect"
+
+-- The following are the methods that can be connected to signals. By default
+-- they do nothing.
 
 ::method signal_pressed
 return
@@ -770,6 +772,9 @@ return
 ::METHOD 'group=' EXTERNAL "LIBRARY rexxgtk GrxRadioButtonSetGroup"
 ::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxRadioButtonSignalConnect"
 
+-- The following are the methods that can be connected to signals. By default
+-- they do nothing.
+
 ::method signal_group_changed
 return
 
@@ -847,6 +852,9 @@ return
 ::METHOD 'color=' EXTERNAL "LIBRARY rexxgtk GrxColorButtonSetColor"
 ::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxColorButtonSetColor"
 
+-- The following are the methods that can be connected to signals. By default
+-- they do nothing.
+
 ::method signal_color_set
 return
 
@@ -860,11 +868,15 @@ return
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxFileChooserButtonNew"
 ::METHOD signal_connect_p private EXTERNAL "LIBRARY rexxgtk GrxFileChooserButtonSignalConnect"
 
+::METHOD signal_connect
 use strict arg event
 -- first try the GtkFileChooser class hiearchy first
-if self~signal_connect:.GtkFileChooser(event) = 0 then return
+if self~signal_connect:.GtkFileChooser(event) = .true then return .true
 -- now try the standard hiearchy
-self~signal_connect_p
+return self~signal_connect_p
+
+-- The following are the methods that can be connected to signals. By default
+-- they do nothing.
 
 ::method signal_file_set
 return
@@ -882,6 +894,9 @@ return
 ::METHOD font_name EXTERNAL "LIBRARY rexxgtk GrxFontButtonGetFontName"
 ::METHOD get_font_name EXTERNAL "LIBRARY rexxgtk GrxFontButtonGetFontName"
 ::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxFontButtonSignalConnect"
+
+-- The following are the methods that can be connected to signals. By default
+-- they do nothing.
 
 ::method signal_font_set
 return

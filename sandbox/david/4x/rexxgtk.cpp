@@ -170,6 +170,20 @@ RexxRoutine0(int, GrxMain)
 }
 
 /**
+ * Function:  GrxMainQuit
+ *
+ * Exits the GTK main loop.
+ *
+ * @return        Zero.
+ */
+RexxRoutine0(int, GrxMainQuit)
+{
+
+    gtk_main_quit();
+    return 0;
+}
+
+/**
  * Function:  GrxMainIteration
  *
  * Executes one iteration of the GTK main loop.
@@ -189,6 +203,7 @@ RexxRoutineEntry gtkobject_routines[] = {
     REXX_TYPED_ROUTINE(GrxVersion, GrxVersion),
     REXX_TYPED_ROUTINE(GrxEventsPending, GrxEventsPending),
     REXX_TYPED_ROUTINE(GrxMain, GrxMain),
+    REXX_TYPED_ROUTINE(GrxMainQuit, GrxMainQuit),
     REXX_TYPED_ROUTINE(GrxMainIteration, GrxMainIteration),
     REXX_LAST_ROUTINE()
 };
