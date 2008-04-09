@@ -92,6 +92,24 @@ RexxMethod0(int,                       // Return type
 }
 
 /**
+ * Method:  uninit
+ *
+ * Destroy the widget.
+ *
+ * @return        Zero.
+ */
+RexxMethod0(int,                       // Return type
+            GrxWidgetUninit)           // Object_method name
+{
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
+
+    GrxDBRemoveObject(myWidget);
+
+    return 0;
+}
+
+/**
  * Method:  show
  *
  * Show the widget.
@@ -327,7 +345,7 @@ RexxMethod1(int,                       // Return type
 }
 
 /**
- * Method:  modifyFG
+ * Method:  modifyBG
  *
  * Modify the forground color of the widget.
  *
@@ -354,7 +372,7 @@ RexxMethod2(int,                       // Return type
 }
 
 /**
- * Method:  modifyBG
+ * Method:  modifyFG
  *
  * Modify the background color of the widget.
  *

@@ -341,30 +341,13 @@ return id
 ::class GtkWidget public
 
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxWidgetNew"
+::METHOD uninit EXTERNAL "LIBRARY rexxgtk GrxWidgetUninit"
 
-::method uninit
--- don't destroy widgets by default!
--- but do remove it from the DB
-call GrxRemoveWidget self
-return
-
-::method pointer
+::method pointer private
 -- return the pointer object to the widget
 expose !pointer
 use strict arg
 return !pointer
-
-::method 'pointer=' private
-expose !pointer
-use strict arg !pointer
-
-::method run_method
-use strict arg meth, methargs = ''
-meth_inst = self~instanceMethod(meth)
-if meth_inst <> .nil then do
-   self~run(meth_inst, 'I', methargs)
-   end
-return
 
 ::attribute user_data
 -- This attribute is not a part of the GTK system. It has been added to

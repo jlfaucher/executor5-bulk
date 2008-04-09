@@ -124,7 +124,7 @@ RexxMethod1(int,                       // Return type
  * @return        Zero.
  */
 RexxMethod1(int,                       // Return type
-            GrxButtonSetLable,         // Object_method name
+            GrxButtonSetLabel,         // Object_method name
             CSTRING, text)             // Button type
 {
     RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
