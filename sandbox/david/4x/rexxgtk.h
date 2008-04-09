@@ -62,8 +62,8 @@ extern char * rexxgtk_argv[];
 extern int rexxgtk_argc;
 
 typedef struct _cbcb {
-    RexxThreadContext *context;      // Rexx instance
-    char          *signal_name;      // ame of the Rexx method
+    RexxInstance  *instance;         // Rexx instance
+    char          *signal_name;      // Name of the ooRexx method
 } cbcb;
 
 

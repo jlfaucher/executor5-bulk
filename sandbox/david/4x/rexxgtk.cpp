@@ -54,6 +54,11 @@ int rexxgtk_argc = 1;
 /* Local Definitions                                                          */
 /*----------------------------------------------------------------------------*/
 
+#define VERSTRING(major,minor,rel) #major "." #minor "." #rel
+
+
+
+
 #if defined WIN32
 BOOL WINAPI DllMain(HANDLE hinst, DWORD dwcallpurpose, LPVOID lpvResvd);
 #else
@@ -133,10 +138,8 @@ int _fini(void)
  */
 RexxRoutine0(RexxObjectPtr, GrxVersion)
 {
-    char buffer[256];
 
-    g_snprintf(buffer, RXAUTOBUFLEN, "%d.%d.%d", VMAJOR, VMINOR, VREL);
-    return context->NewStringFromAsciiz(buffer);
+    return context->NewStringFromAsciiz(VERSTRING(VMAJOR,VMINOR,VREL));
 }
 
 /**
@@ -292,7 +295,8 @@ RexxMethodEntry gtkobject_methods[] = {
 RexxPackageEntry gtkobject_package_entry = {
     STANDARD_PACKAGE_HEADER
     "RexxGTK",                           // name of the package
-    "0.1",                               // package information
+//    "0.1",                               // package information
+    VERSTRING(VMAJOR,VMINOR,VREL),       // package information
     NULL,                                // no load/unload functions
     NULL,
     gtkobject_routines,                  // the exported routines

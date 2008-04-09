@@ -62,8 +62,11 @@ static void signal_func_0(GtkWidget *widget,
 {
     cbcb *cblock = (cbcb *)data;
     RexxObjectPtr rxobj = (RexxObjectPtr)g_object_get_data(G_OBJECT(widget), "OORXOBJECT");
+    RexxThreadContext *context;
 
-    cblock->context->SendMessage0(rxobj, ((cbcb *)data)->signal_name);
+    cblock->instance->AttachThread(&context);
+    context->SendMessage0(rxobj, ((cbcb *)data)->signal_name);
+    context->DetachThread();
     return;
 }
 
@@ -643,35 +646,35 @@ RexxMethod1(int,                       // Return type
 
     if (strcmp(name, "pressed") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
-        cblock->context = context->threadContext;
+        cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_pressed";
         g_signal_connect(G_OBJECT(myWidget), "pressed",
                          G_CALLBACK(signal_func_0), cblock);
     }
     else if (strcmp(name, "released") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
-        cblock->context = context->threadContext;
+        cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_released";
         g_signal_connect(G_OBJECT(myWidget), "released",
                          G_CALLBACK(signal_func_0), cblock);
     }
     else if (strcmp(name, "clicked") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
-        cblock->context = context->threadContext;
+        cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_clicked";
         g_signal_connect(G_OBJECT(myWidget), "clicked",
                          G_CALLBACK(signal_func_0), cblock);
     }
     else if (strcmp(name, "enter") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
-        cblock->context = context->threadContext;
+        cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_enter";
         g_signal_connect(G_OBJECT(myWidget), "enter",
                          G_CALLBACK(signal_func_0), cblock);
     }
     else if (strcmp(name, "leave") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
-        cblock->context = context->threadContext;
+        cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_leave";
         g_signal_connect(G_OBJECT(myWidget), "leave",
                          G_CALLBACK(signal_func_0), cblock);
@@ -703,7 +706,7 @@ RexxMethod1(int,                       // Return type
 
     if (strcmp(name, "toggled") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
-        cblock->context = context->threadContext;
+        cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_toggked";
         g_signal_connect(G_OBJECT(myWidget), "toggled",
                          G_CALLBACK(signal_func_0), cblock);
@@ -735,7 +738,7 @@ RexxMethod1(int,                       // Return type
 
     if (strcmp(name, "group_changed") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
-        cblock->context = context->threadContext;
+        cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_group_changed";
         g_signal_connect(G_OBJECT(myWidget), "group-changed",
                          G_CALLBACK(signal_func_0), cblock);
@@ -767,7 +770,7 @@ RexxMethod1(int,                       // Return type
 
     if (strcmp(name, "color_set") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
-        cblock->context = context->threadContext;
+        cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_color_set";
         g_signal_connect(G_OBJECT(myWidget), "color-set",
                          G_CALLBACK(signal_func_0), cblock);
@@ -799,7 +802,7 @@ RexxMethod1(int,                       // Return type
 
     if (strcmp(name, "file_set") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
-        cblock->context = context->threadContext;
+        cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_file_set";
         g_signal_connect(G_OBJECT(myWidget), "file-set",
                          G_CALLBACK(signal_func_0), cblock);
@@ -831,7 +834,7 @@ RexxMethod1(int,                       // Return type
 
     if (strcmp(name, "font_set") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
-        cblock->context = context->threadContext;
+        cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_font_set";
         g_signal_connect(G_OBJECT(myWidget), "font-set",
                          G_CALLBACK(signal_func_0), cblock);

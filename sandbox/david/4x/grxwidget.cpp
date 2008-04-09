@@ -63,8 +63,11 @@ static void signal_func_0(GtkWidget *widget,
 {
     cbcb *cblock = (cbcb *)data;
     RexxObjectPtr rxobj = (RexxObjectPtr)g_object_get_data(G_OBJECT(widget), "OORXOBJECT");
+    RexxThreadContext *context;
 
-    cblock->context->SendMessage0(rxobj, ((cbcb *)data)->signal_name);
+    cblock->instance->AttachThread(&context);
+    context->SendMessage0(rxobj, ((cbcb *)data)->signal_name);
+    context->DetachThread();
     return;
 }
 
@@ -877,7 +880,7 @@ RexxMethod1(int,                       // Return type
 
     if (strcmp(name, "destroy") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
-        cblock->context = context->threadContext;
+        cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_destroy";
         g_signal_connect(G_OBJECT(myWidget), "destroy",
                          G_CALLBACK(signal_func_0), cblock);

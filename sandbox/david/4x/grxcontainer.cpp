@@ -62,8 +62,11 @@ static void signal_func_0(GtkWidget *window,
 {
     cbcb *cblock = (cbcb *)data;
     RexxObjectPtr rxobj = (RexxObjectPtr)g_object_get_data(G_OBJECT(window), "OORXOBJECT");
+    RexxThreadContext *context;
 
-    cblock->context->SendMessage0(rxobj, ((cbcb *)data)->signal_name);
+    cblock->instance->AttachThread(&context);
+    context->SendMessage0(rxobj, ((cbcb *)data)->signal_name);
+    context->DetachThread();
     return;
 }
 
@@ -74,8 +77,11 @@ static void signal_func_1(GtkWidget *window,
     cbcb *cblock = (cbcb *)data;
     RexxObjectPtr rxobj = (RexxObjectPtr)g_object_get_data(G_OBJECT(window), "OORXOBJECT");
     RexxObjectPtr rxwidget = (RexxObjectPtr)g_object_get_data(G_OBJECT(widget), "OORXOBJECT");
+    RexxThreadContext *context;
 
-    cblock->context->SendMessage1(rxobj, ((cbcb *)data)->signal_name, rxwidget);
+    cblock->instance->AttachThread(&context);
+    context->SendMessage1(rxobj, ((cbcb *)data)->signal_name, rxwidget);
+    context->DetachThread();
     return;
 }
 
@@ -316,28 +322,28 @@ RexxMethod1(int,                       // Return type
 
     if (strcmp(name, "add") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
-        cblock->context = context->threadContext;
+        cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_add";
         g_signal_connect(G_OBJECT(myWidget), "add",
                          G_CALLBACK(signal_func_1), cblock);
     }
     else if (strcmp(name, "check-resize") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
-        cblock->context = context->threadContext;
+        cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_check_resize";
         g_signal_connect(G_OBJECT(myWidget), "check-resize",
                          G_CALLBACK(signal_func_0), cblock);
     }
     else if (strcmp(name, "remove") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
-        cblock->context = context->threadContext;
+        cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_remove";
         g_signal_connect(G_OBJECT(myWidget), "remove",
                          G_CALLBACK(signal_func_1), cblock);
     }
     else if (strcmp(name, "set-focus-child") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
-        cblock->context = context->threadContext;
+        cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_set_focus_child";
         g_signal_connect(G_OBJECT(myWidget), "set-focus-child",
                          G_CALLBACK(signal_func_1), cblock);
@@ -401,7 +407,7 @@ RexxMethod1(int,                       // Return type
 
     if (strcmp(name, "set-scroll-adjustments") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
-        cblock->context = context->threadContext;
+        cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_set_scroll_adjustments";
         g_signal_connect(G_OBJECT(myWidget), "set-scroll-adjustments",
                          G_CALLBACK(signal_func_1), cblock);

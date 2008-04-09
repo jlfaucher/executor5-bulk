@@ -342,15 +342,15 @@ return id
 
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxWidgetNew"
 
-::method pointer private
--- return the pointer object to the widget
+-- This method should only be invoked by the C++ code. That is the only place
+-- where it is actually useful.
+::method pointer
 expose !pointer
-use strict arg
 return !pointer
 
-::attribute user_data
 -- This attribute is not a part of the GTK system. It has been added to
 -- support callbacks or any other use the user may have.
+::attribute user_data
 
 ::METHOD destroy EXTERNAL "LIBRARY rexxgtk GrxWidgetDestroy"
 ::METHOD font EXTERNAL "LIBRARY rexxgtk GrxWidgetGetFont"
@@ -425,7 +425,6 @@ return
 ::class GtkContainer public subclass GtkWidget
 
 ::method init
-raise syntax 93.964 array ('A GtkContainer class cannot be instantiated.')
 return
 
 ::METHOD add EXTERNAL "LIBRARY rexxgtk GrxContainerAdd"
@@ -456,7 +455,6 @@ return
 ::class GtkBox public subclass GtkContainer
 
 ::method init
-raise syntax 93.964 array ('A GtkBox class cannot be instantiated.')
 return
 
 ::METHOD pack_end EXTERNAL "LIBRARY rexxgtk GrxBoxPackEnd"
@@ -500,8 +498,6 @@ return self~signal_connect:super(event)
 ::class GtkHBox_From_Pointer private subclass GtkHBox
 
 ::method init
-expose !pointer
-use strict arg !pointer
 return
 
 
@@ -525,8 +521,6 @@ return self~signal_connect:super(event)
 ::class GtkVBox_From_Pointer private subclass GtkVBox
 
 ::method init
-expose !pointer
-use strict arg !pointer
 return
 
 
