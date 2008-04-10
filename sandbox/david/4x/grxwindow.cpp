@@ -99,15 +99,16 @@ static void signal_func_1(GtkWidget *window,
  *
  * @return        Zero.
  */
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxWindowNew,              // Object_method name
+            OSELF, self,               // Self
             int, type)                 // Window type
 {
     GtkWidget       *myWidget;
 
     myWidget = gtk_window_new((GtkWindowType)type);
     context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
-    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", context->GetSelf());
+    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
 }

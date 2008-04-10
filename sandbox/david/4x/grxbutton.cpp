@@ -82,14 +82,15 @@ static void signal_func_0(GtkWidget *widget,
  *
  * @return        Zero.
  */
-RexxMethod0(int,                       // Return type
-            GrxButtonNew)              // Object_method name
+RexxMethod1(int,                       // Return type
+            GrxButtonNew,              // Object_method name
+            OSELF, self)               // Self
 {
     GtkWidget *myWidget;
 
     myWidget = gtk_button_new();
     context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
-    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", context->GetSelf());
+    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
 }
@@ -103,15 +104,16 @@ RexxMethod0(int,                       // Return type
  *
  * @return        Zero.
  */
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxButtonNewFromStock,     // Object_method name
+            OSELF, self,               // Self
             CSTRING, type)             // Button type
 {
     GtkWidget *myWidget;
 
     myWidget = gtk_button_new_from_stock(type);
     context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
-    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", context->GetSelf());
+    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
 }
@@ -202,14 +204,15 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero.
  */                      
-RexxMethod0(int,                       // Return type
-            GrxToggleButtonNew)        // Object_method name
+RexxMethod1(int,                       // Return type
+            GrxToggleButtonNew,        // Object_method name
+            OSELF, self)               // Self
 {
     GtkWidget *myWidget;
 
     myWidget = gtk_toggle_button_new();
     context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
-    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", context->GetSelf());
+    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
 }
@@ -334,8 +337,9 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero.
  */
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxCheckButtonNew,         // Object_method name
+            OSELF, self,               // Self
             OPTIONAL_CSTRING, text)    // Button text
 {
     GtkWidget *myWidget;
@@ -347,7 +351,7 @@ RexxMethod1(int,                       // Return type
         myWidget = gtk_check_button_new();
     }
     context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
-    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", context->GetSelf());
+    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
 }
@@ -363,8 +367,9 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero.
  */
-RexxMethod2(int,                       // Return type
+RexxMethod3(int,                       // Return type
             GrxRadioButtonNew,         // Object_method name
+            OSELF, self,               // Self
             RexxObjectPtr, rxlistptr,  // GList object
             OPTIONAL_CSTRING, text)    // Button text
 {
@@ -377,7 +382,7 @@ RexxMethod2(int,                       // Return type
         gtk_button_set_label(GTK_BUTTON(myWidget), text);
     }
     context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
-    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", context->GetSelf());
+    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
 }
@@ -391,8 +396,9 @@ RexxMethod2(int,                       // Return type
  *
  * @return        Zero.
  */
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                        // Return type
             GrxRadioButtonNewFromWidget, // Object_method name
+            OSELF, self,                // Self
             RexxObjectPtr, rxwidgetptr) // Widget pointer
 {
     RexxPointerObject widgetptr = (RexxPointerObject)context->SendMessage0(rxwidgetptr, "POINTER");
@@ -401,7 +407,7 @@ RexxMethod1(int,                       // Return type
 
     myWidget = gtk_radio_button_new_from_widget(GTK_RADIO_BUTTON(srcWidget));
     context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
-    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", context->GetSelf());
+    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
 }
@@ -456,8 +462,9 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero.
  */
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxColorButtonNew,         // Object_method name
+            OSELF, self,               // Self
             OPTIONAL_CSTRING, colorstr)// Color string
 {
     GtkWidget *myWidget;
@@ -471,7 +478,7 @@ RexxMethod1(int,                       // Return type
         myWidget = gtk_color_button_new_with_color(&color);
     }
     context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
-    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", context->GetSelf());
+    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
 }
@@ -555,8 +562,9 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero.
  */
-RexxMethod2(int,                       // Return type
+RexxMethod3(int,                       // Return type
             GrxFileChooserButtonNew,   // Object_method name
+            OSELF, self,               // Self
             CSTRING, title,            // Title string
             int, action)               // Title action
 {
@@ -564,7 +572,7 @@ RexxMethod2(int,                       // Return type
 
     myWidget = gtk_file_chooser_button_new(title, (GtkFileChooserAction)action);
     context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
-    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", context->GetSelf());
+    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
 }
@@ -576,14 +584,15 @@ RexxMethod2(int,                       // Return type
  *
  * @return        Zero.
  */
-RexxMethod0(int,                       // Return type
-            GrxFontButton)             // Object_method name
+RexxMethod1(int,                       // Return type
+            GrxFontButton,             // Object_method name
+            OSELF, self)               // Self
 {
     GtkWidget *myWidget;
 
     myWidget = gtk_font_button_new();
     context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
-    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", context->GetSelf());
+    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
 }

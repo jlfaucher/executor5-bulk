@@ -232,8 +232,9 @@ RexxMethod4(int,                       // Return type
  *
  * @return        Zero.
  */
-RexxMethod2(int,                       // Return type
+RexxMethod3(int,                       // Return type
             GrxVBoxNew,                // Object_method name
+            OSELF, self,               // Self
             logical_t, homogeneous,    // Homogeneous boolean
             int, spacing)              // Spacing amount
 {
@@ -242,7 +243,7 @@ RexxMethod2(int,                       // Return type
 
     myWidget = gtk_vbox_new(homogeneous, spacing);
     context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
-    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", context->GetSelf());
+    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
 }
@@ -258,8 +259,9 @@ RexxMethod2(int,                       // Return type
  *
  * @return        Zero.
  */
-RexxMethod2(int,                       // Return type
+RexxMethod3(int,                       // Return type
             GrxHBoxNew,                // Object_method name
+            OSELF, self,               // Self
             logical_t, homogeneous,    // Homogeneous boolean
             int, spacing)              // Spacing amount
 {
@@ -267,7 +269,7 @@ RexxMethod2(int,                       // Return type
 
     myWidget = gtk_hbox_new(homogeneous, spacing);
     context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
-    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", context->GetSelf());
+    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
 }
@@ -287,8 +289,9 @@ RexxMethod2(int,                       // Return type
  *
  * @return        Zero.
  */
-RexxMethod4(int,                       // Return type
+RexxMethod5(int,                       // Return type
             GrxAlignmentNew,           // Object_method name
+            OSELF, self,               // Self
             float, xalign,             // X alignment
             float, yalign,             // Y alignment
             float, xscale,             // Y scale
@@ -298,7 +301,7 @@ RexxMethod4(int,                       // Return type
 
     myWidget = gtk_alignment_new(xalign, yalign, xscale, yscale);
     context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
-    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", context->GetSelf());
+    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
 }
@@ -374,8 +377,9 @@ RexxMethod1(RexxObjectPtr,             // Return type
  *
  * @return        Zero.
  */
-RexxMethod2(int,                       // Return type
+RexxMethod3(int,                       // Return type
             GrxViewportNew,            // Object_method name
+            OSELF, self,               // Self
             RexxObjectPtr, rxhadj,     // Horizontal adjustment object
             RexxObjectPtr, rxvadj)     // Vertical adjustment object
 {
@@ -387,7 +391,7 @@ RexxMethod2(int,                       // Return type
 
     myWidget = gtk_viewport_new(hadj, vadj);
     context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
-    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", context->GetSelf());
+    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
 }

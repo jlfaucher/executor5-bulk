@@ -75,8 +75,9 @@
  *
  * @return        Zero.
  */
-RexxMethod3(int,                       // Return type
+RexxMethod4(int,                       // Return type
             GrxTableNew,               // Object_method name
+            OSELF, self,               // Self
             int, rows,                 // Table rows
             int, cols,                 // Table columns
             logical_t, homogeneous)    // Homogeneous boolean
@@ -86,7 +87,7 @@ RexxMethod3(int,                       // Return type
     myWidget = gtk_table_new(rows, cols, homogeneous);
 	
     context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
-    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", context->GetSelf());
+    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
 }
@@ -126,7 +127,7 @@ RexxMethod9(int,                       // Return type
             int, xoptions,             // X options        
             int, yoptions,             // Y options
             int, xpad,                 // X padding
-            int, ypad)                 // Ypadding
+            int, ypad)                 // Y padding
 {
     RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
     GtkWidget *tableWidget = (GtkWidget *)context->PointerValue(rxptr);

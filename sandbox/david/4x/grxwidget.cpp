@@ -89,7 +89,7 @@ RexxMethod0(int,                       // Return type
     GtkWidget *myWidget = NULL;
 
     context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
-//    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", context->GetSelf);
+    // This is an abstract class so no actual widget is created
     return 0;
 }
 
