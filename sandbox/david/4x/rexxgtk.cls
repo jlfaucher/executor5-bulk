@@ -926,3 +926,44 @@ use strict arg event
 return self~signal_connect:super(event)
 
 
+/*============================================================================*/
+/* Class: GtkComboBox                                                         */
+/*============================================================================*/
+
+::class GtkComboBox public subclass GtkWidget
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxComboBoxNew"
+::METHOD append_text EXTERNAL "LIBRARY rexxgtk GrxComboBoxAppendText"
+::METHOD get_active_text EXTERNAL "LIBRARY rexxgtk GrxComboBoxGetActiveText"
+::METHOD active_text EXTERNAL "LIBRARY rexxgtk GrxComboBoxGetActiveText"
+::METHOD get_active EXTERNAL "LIBRARY rexxgtk GrxComboBoxGetActive"
+::METHOD active EXTERNAL "LIBRARY rexxgtk GrxComboBoxGetActive"
+::METHOD set_active EXTERNAL "LIBRARY rexxgtk GrxComboBoxSetActive"
+::METHOD 'active=' EXTERNAL "LIBRARY rexxgtk GrxComboBoxSetActive"
+::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxComboBoxSignalConnect"
+
+-- The following are the methods that can be connected to signals. By default
+-- they do nothing.
+
+::method signal_changed
+return
+
+::method signal_move_active
+return
+
+::method signal_popdown
+return
+
+::method signal_popup
+return
+
+
+/*============================================================================*/
+/* Class: GtkComboBox_Text                                                    */
+/*============================================================================*/
+
+::class GtkComboBox_Text public subclass GtkComboBox
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxComboBoxNewText"
+
+

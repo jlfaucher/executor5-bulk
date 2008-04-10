@@ -307,6 +307,12 @@ RexxMethodEntry gtkobject_methods[] = {
     REXX_METHOD(GrxTableAttach, GrxTableAttach),
     REXX_METHOD(GrxTableSetRowSpacings, GrxTableSetRowSpacings),
     REXX_METHOD(GrxTableSetColSpacings, GrxTableSetColSpacings),
+    REXX_METHOD(GrxComboBoxNew, GrxComboBoxNew),
+    REXX_METHOD(GrxComboBoxNewText, GrxComboBoxNewText),
+    REXX_METHOD(GrxComboBoxAppendText, GrxComboBoxAppendText),
+    REXX_METHOD(GrxComboBoxGetActive, GrxComboBoxGetActive),
+    REXX_METHOD(GrxComboBoxSetActive, GrxComboBoxSetActive),
+    REXX_METHOD(GrxComboBoxSignalConnect, GrxComboBoxSignalConnect),
     REXX_LAST_METHOD()
 };
 

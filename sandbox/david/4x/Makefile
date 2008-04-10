@@ -52,7 +52,8 @@ OBJECTS = rexxgtk.o \
 	grxcontainer.o \
 	grxbutton.o \
 	grxpaned.o \
-	grxtable.o
+	grxtable.o \
+        grxcombobox.o
 #	grxqueue.o \
 #	grxlabel.o \
 #       grxentry.o \
@@ -74,7 +75,6 @@ OBJECTS = rexxgtk.o \
 #       grxtextview.o \
 #       grxtextbuffer.o \
 #       grxclipboard.o \
-#       grxcombobox.o
 
 
 # Build the shared library
@@ -167,8 +167,8 @@ grxtextbuffer.o: grxtextbuffer.c rexxgtk.h
 grxclipboard.o: grxclipboard.c rexxgtk.h
 	gcc -c $(GRXCFLAGS) grxclipboard.c
 
-grxcombobox.o: grxcombobox.c rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxcombobox.c
+grxcombobox.o: grxcombobox.cpp rexxgtk.h
+	gcc -c $(GRXCFLAGS) grxcombobox.cpp
 
 
 
