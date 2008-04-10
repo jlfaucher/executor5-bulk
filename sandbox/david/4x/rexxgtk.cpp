@@ -303,6 +303,10 @@ RexxMethodEntry gtkobject_methods[] = {
     REXX_METHOD(GrxFontButtonSetTitle, GrxFontButtonSetTitle),
     REXX_METHOD(GrxFontButtonGetFontName, GrxFontButtonGetFontName),
     REXX_METHOD(GrxFontButtonSignalConnect, GrxFontButtonSignalConnect),
+    REXX_METHOD(GrxTableNew, GrxTableNew),
+    REXX_METHOD(GrxTableAttach, GrxTableAttach),
+    REXX_METHOD(GrxTableSetRowSpacings, GrxTableSetRowSpacings),
+    REXX_METHOD(GrxTableSetColSpacings, GrxTableSetColSpacings),
     REXX_LAST_METHOD()
 };
 

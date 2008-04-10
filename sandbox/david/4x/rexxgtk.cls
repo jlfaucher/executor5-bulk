@@ -902,3 +902,27 @@ return
 return
 
 
+/*============================================================================*/
+/* Class: GtkTable                                                            */
+/*============================================================================*/
+
+::class GtkTable public subclass GtkContainer
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxTableNew"
+::METHOD attach EXTERNAL "LIBRARY rexxgtk GrxTableAttach"
+
+::method attach_defaults
+use strict arg widget, left, right, top, bottom
+self~attach(widget, left, right, top, bottom,5, 5, 0, 0)
+return
+
+::METHOD 'row_spacings=' EXTERNAL "LIBRARY rexxgtk GrxTableSetRowSpacings"
+::METHOD set_row_spacings EXTERNAL "LIBRARY rexxgtk GrxTableSetRowSpacings"
+::METHOD 'col_spacings=' EXTERNAL "LIBRARY rexxgtk GrxTableSetColSpacings"
+::METHOD set_col_spacings EXTERNAL "LIBRARY rexxgtk GrxTableSetColSpacings"
+
+::method signal_connect
+use strict arg event
+return self~signal_connect:super(event)
+
+
