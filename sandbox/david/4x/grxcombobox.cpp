@@ -57,7 +57,7 @@
 /* Private Functions                                                          */
 /*============================================================================*/
 
-static void signal_func_1(GtkWidget *window,
+static void signal_func_0(GtkWidget *window,
                           gpointer data)
 {
     cbcb *cblock = (cbcb *)data;
@@ -71,7 +71,7 @@ static void signal_func_1(GtkWidget *window,
 }
 
 
-static void signal_func_2(GtkWidget *window,
+static void signal_func_1(GtkWidget *window,
                           GtkScrollType arg1,
                           gpointer data)
 {
@@ -228,7 +228,7 @@ RexxMethod1(RexxObjectPtr,             // Return type
             cblock->instance = context->threadContext->instance;
             cblock->signal_name = "signal_changed";
             g_signal_connect(G_OBJECT(myWidget), "changed",
-                             G_CALLBACK(signal_func_1), cblock);
+                             G_CALLBACK(signal_func_0), cblock);
             return context->True();
         }
         else if (strcmp(name, "move_active") == 0) {
@@ -236,7 +236,7 @@ RexxMethod1(RexxObjectPtr,             // Return type
             cblock->instance = context->threadContext->instance;
             cblock->signal_name = "signal_move_active";
             g_signal_connect(G_OBJECT(myWidget), "move-active",
-                             G_CALLBACK(signal_func_2), cblock);
+                             G_CALLBACK(signal_func_1), cblock);
             return context->True();
         }
         else if (strcmp(name, "popdown") == 0) {
@@ -244,7 +244,7 @@ RexxMethod1(RexxObjectPtr,             // Return type
             cblock->instance = context->threadContext->instance;
             cblock->signal_name = "signal_popdown";
             g_signal_connect(G_OBJECT(myWidget), "popdown",
-                             G_CALLBACK(signal_func_1), cblock);
+                             G_CALLBACK(signal_func_0), cblock);
             return context->True();
         }
         else if (strcmp(name, "popup") == 0) {
@@ -252,7 +252,7 @@ RexxMethod1(RexxObjectPtr,             // Return type
             cblock->instance = context->threadContext->instance;
             cblock->signal_name = "signal_popup";
             g_signal_connect(G_OBJECT(myWidget), "popup",
-                             G_CALLBACK(signal_func_1), cblock);
+                             G_CALLBACK(signal_func_0), cblock);
             return context->True();
         }
         else {

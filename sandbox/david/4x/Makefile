@@ -53,10 +53,10 @@ OBJECTS = rexxgtk.o \
 	grxbutton.o \
 	grxpaned.o \
 	grxtable.o \
-        grxcombobox.o
+        grxcombobox.o \
+        grxentry.o
 #	grxqueue.o \
 #	grxlabel.o \
-#       grxentry.o \
 #       grxfixed.o \
 #       grxexpander.o \
 #       grxhandlebox.o \
@@ -110,8 +110,8 @@ grxpaned.o: grxpaned.cpp rexxgtk.h
 grxtable.o: grxtable.cpp rexxgtk.h
 	gcc -c $(GRXCFLAGS) grxtable.cpp
 
-grxentry.o: grxentry.c rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxentry.c
+grxentry.o: grxentry.cpp rexxgtk.h
+	gcc -c $(GRXCFLAGS) grxentry.cpp
 
 grxfixed.o: grxfixed.c rexxgtk.h
 	gcc -c $(GRXCFLAGS) grxfixed.c

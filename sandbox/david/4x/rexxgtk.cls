@@ -967,3 +967,89 @@ return
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxComboBoxNewText"
 
 
+/*============================================================================*/
+/* Class: GtkEntry                                                            */
+/*============================================================================*/
+
+::class GtkEntry public subclass GtkWidget
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxEntryNew"
+::METHOD max_length EXTERNAL "LIBRARY rexxgtk GrxEntryGetMaxLength"
+::METHOD get_max_length EXTERNAL "LIBRARY rexxgtk GrxEntryGetMaxLength"
+::METHOD set_max_length EXTERNAL "LIBRARY rexxgtk GrxEntrySetMaxLength"
+::METHOD 'max_length=' EXTERNAL "LIBRARY rexxgtk GrxEntrySetMaxLength"
+::METHOD set_width_chars EXTERNAL "LIBRARY rexxgtk GrxEntrySetWidthChars"
+::METHOD 'width_chars=' EXTERNAL "LIBRARY rexxgtk GrxEntrySetWidthChars"
+::METHOD text EXTERNAL "LIBRARY rexxgtk GrxEntryGetText"
+::METHOD get_text EXTERNAL "LIBRARY rexxgtk GrxEntryGetText"
+::METHOD set_text EXTERNAL "LIBRARY rexxgtk GrxEntrySetText"
+::METHOD 'text=' EXTERNAL "LIBRARY rexxgtk GrxEntrySetText"
+::METHOD visibility EXTERNAL "LIBRARY rexxgtk GrxEntryGetVisibility"
+::METHOD get_visibility EXTERNAL "LIBRARY rexxgtk GrxEntryGetVisibility"
+::METHOD set_visibility EXTERNAL "LIBRARY rexxgtk GrxEntrySetVisibility"
+::METHOD 'visibility=' EXTERNAL "LIBRARY rexxgtk GrxEntrySetVisibility"
+::METHOD invisile_char EXTERNAL "LIBRARY rexxgtk GrxEntryGetInvisibleChar"
+::METHOD get_invisile_char EXTERNAL "LIBRARY rexxgtk GrxEntryGetInvisibleChar"
+::METHOD set_invisile_char EXTERNAL "LIBRARY rexxgtk GrxEntrySetInvisibleChar"
+::METHOD 'invisile_char=' EXTERNAL "LIBRARY rexxgtk GrxEntrySetInvisibleChar"
+::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxEntrySignalConnect"
+
+-- The following are the methods that can be connected to signals. By default
+-- they do nothing.
+
+::method signal_activate
+return
+
+::method signal_backspace
+return
+
+::method signal_changed
+return
+
+::method signal_copy_clipboard
+return
+
+::method signal_cut_clipboard
+return
+
+::method signal_delete_from_cursor
+return
+
+::method signal_insert_at_cursor
+return
+
+::method signal_move_cursor
+return
+
+::method signal_paste_clipboard
+return
+
+::method signal_populate_popup
+return
+
+::method signal_toggle_overwrite
+return
+
+
+/*============================================================================*/
+/* Class: GtkSpinButton                                                       */
+/*============================================================================*/
+
+::class GtkSpinButton public subclass GtkEntry
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxSpinButtonNew"
+::METHOD sifnal_connect EXTERNAL "LIBRARY rexxgtk GrxSpinButtonSignalConnect"
+
+-- The following are the methods that can be connected to signals. By default
+-- they do nothing.
+
+::method signal_change_value
+return
+
+::method signal_value_changed
+return
+
+::method signal_wrapped
+return
+
+
