@@ -251,6 +251,28 @@ RexxMethod3(int,                       // Return type
 /**
  * Method:  init
  *
+ * Create a new VBox from a pointer.
+ *
+ * @param ptr     The VBoc pointer
+ *
+ * @return        Zero.
+ */
+RexxMethod2(int,                       // Return type
+            GrxVBoxNewFromPointer,     // Object_method name
+            OSELF, self,               // Self
+            RexxObjectPtr, ptr)        // The pointer
+{
+    RexxPointerObject vboxptr = (RexxPointerObject)context->SendMessage0(ptr, "POINTER");
+
+    context->SetObjectVariable("!POINTER", vboxptr);
+    g_object_set_data(G_OBJECT(ptr), "OORXOBJECT", self);
+
+    return 0;
+}
+
+/**
+ * Method:  init
+ *
  * Create a new HBox.
  *
  * @param homog   The homogeneous boolean
@@ -355,12 +377,8 @@ RexxMethod1(RexxObjectPtr,             // Return type
                          G_CALLBACK(signal_func_1), cblock);
         return context->True();
     }
-    else {
-        RexxObjectPtr parent = context->GetSuper();
-        return context->SendMessage0(parent, name);
-    }
-
-    return context->False();
+    RexxObjectPtr parent = context->GetSuper();
+    return context->SendMessage0(parent, name);
 }
 
 
@@ -421,10 +439,6 @@ RexxMethod1(RexxObjectPtr,             // Return type
                          G_CALLBACK(signal_func_1), cblock);
         return context->True();
     }
-    else {
-        RexxObjectPtr parent = context->GetSuper();
-        return context->SendMessage0(parent, name);
-    }
-
-    return context->False();
+    RexxObjectPtr parent = context->GetSuper();
+    return context->SendMessage0(parent, name);
 }

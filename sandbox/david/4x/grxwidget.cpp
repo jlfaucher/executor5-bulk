@@ -886,10 +886,6 @@ RexxMethod1(RexxObjectPtr,             // Return type
                          G_CALLBACK(signal_func_0), cblock);
         return context->True();
     }
-    else {
-        return context->False();
-    }
-
     return context->False();
 }
 

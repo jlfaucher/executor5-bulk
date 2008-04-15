@@ -199,11 +199,7 @@ RexxMethod1(RexxObjectPtr,             // Return type
                          G_CALLBACK(signal_func_1), cblock);
         return context->True();
     }
-    else {
-        RexxObjectPtr parent = context->GetSuper();
-        return context->SendMessage0(parent, name);
-    }
-
-    return context->False();
+    RexxObjectPtr parent = context->GetSuper();
+    return context->SendMessage0(parent, name);
 }
 

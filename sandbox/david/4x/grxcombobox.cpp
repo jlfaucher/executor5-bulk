@@ -260,11 +260,7 @@ RexxMethod1(RexxObjectPtr,             // Return type
             return context->SendMessage0(parent, name);
         }
     }
-    else {
-        RexxObjectPtr parent = context->GetSuper();
-        return context->SendMessage0(parent, name);
-    }
-
-    return context->False();
+    RexxObjectPtr parent = context->GetSuper();
+    return context->SendMessage0(parent, name);
 }
 

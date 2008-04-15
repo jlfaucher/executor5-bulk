@@ -54,7 +54,8 @@ OBJECTS = rexxgtk.o \
 	grxpaned.o \
 	grxtable.o \
         grxcombobox.o \
-        grxentry.o
+        grxentry.o \
+        grxdialog.o
 #	grxqueue.o \
 #	grxlabel.o \
 #       grxfixed.o \
@@ -66,7 +67,6 @@ OBJECTS = rexxgtk.o \
 #       grxinterfaces.o \
 #       grxfilefilter.o \
 #       grximage.o \
-#       grxdialog.o \
 #       grxglib.o \
 #       grxassistant.o \
 #       grxprogressbar.o \
@@ -140,8 +140,8 @@ grxfilefilter.o: grxfilefilter.c rexxgtk.h
 grximage.o: grximage.c rexxgtk.h
 	gcc -c $(GRXCFLAGS) grximage.c
 
-grxdialog.o: grxdialog.c rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxdialog.c
+grxdialog.o: grxdialog.cpp rexxgtk.h
+	gcc -c $(GRXCFLAGS) grxdialog.cpp
 
 grxglib.o: grxglib.c rexxgtk.h
 	gcc -c $(GRXCFLAGS) grxglib.c

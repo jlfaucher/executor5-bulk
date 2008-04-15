@@ -144,7 +144,7 @@ static void signal_func_3(GtkWidget *window,
     RexxArrayObject arr;
 
     cblock->instance->AttachThread(&context);
-    arr = context->NewArray(3);
+    arr = context->NewArray(1);
     RexxObjectPtr rxstep = context->NumberToObject((wholenumber_t)step);;
     context->ArrayPut(arr, rxstep, 1);
     RexxObjectPtr rxarg2 = context->NumberToObject((wholenumber_t)arg2);;
@@ -458,12 +458,8 @@ RexxMethod1(RexxObjectPtr,             // Return type
                          G_CALLBACK(signal_func_0), cblock);
         return context->True();
     }
-    else {
-        RexxObjectPtr parent = context->GetSuper();
-        return context->SendMessage0(parent, name);
-    }
-
-    return context->False();
+    RexxObjectPtr parent = context->GetSuper();
+    return context->SendMessage0(parent, name);
 }
 
 /*
@@ -568,11 +564,7 @@ RexxMethod1(RexxObjectPtr,             // Return type
                          G_CALLBACK(signal_func_0), cblock);
         return context->True();
     }
-    else {
-        RexxObjectPtr parent = context->GetSuper();
-        return context->SendMessage0(parent, name);
-    }
-
-    return context->False();
+    RexxObjectPtr parent = context->GetSuper();
+    return context->SendMessage0(parent, name);
 }
 

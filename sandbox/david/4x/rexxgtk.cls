@@ -76,6 +76,8 @@ return
 
 /*============================================================================*/
 /* Class: GTK                                                                 */
+/* Note: This class should never be instatiated. It is here just provided     */
+/*       a container for a host of GTK constants.                             */
 /*============================================================================*/
 
 ::class gtk public
@@ -321,14 +323,12 @@ return
 ::constant G_TYPE_BOXED class 18
 ::constant G_TYPE_PARAM class 19
 ::constant G_TYPE_OBJECT class 20
-   -- Just return the id
-   otherwise nop
-   end
-return id
 
 
 /*============================================================================*/
 /* Class: GtkWidget                                                           */
+/* Note:  This is strictly an abstract class. It should never be instantiated */
+/*        on its own. You should instantiate one of its subclasses instead.   */
 /*============================================================================*/
 
 ::class GtkWidget public
@@ -409,8 +409,8 @@ return
 
 /*============================================================================*/
 /* Class: GtkContainer                                                        */
-/* Note:  This is strictly a base class. It should never be instantiated on   */
-/*        its own. You should instantiate one of its subclasses instead.      */
+/* Note:  This is strictly an abstract class. It should never be instantiated */
+/*        on its own. You should instantiate one of its subclasses instead.   */
 /*============================================================================*/
 
 ::class GtkContainer public subclass GtkWidget
@@ -442,8 +442,8 @@ return
 
 /*============================================================================*/
 /* Class: GtkBox                                                              */
-/* Note:  This is strictly a base class. It should never be instantiated on   */
-/*        its own. You should instantiate one of its subclasses instead.      */
+/* Note:  This is strictly an abstract class. It should never be instantiated */
+/*        on its own. You should instantiate one of its subclasses instead.   */
 /*============================================================================*/
 
 ::class GtkBox public subclass GtkContainer
@@ -514,7 +514,7 @@ return self~signal_connect:super(event)
 
 ::class GtkVBox_From_Pointer private subclass GtkVBox
 
-::method init
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxVBoxNewFromPointer"
 return
 
 
@@ -533,8 +533,8 @@ return self~signal_connect:super(event)
 
 /*============================================================================*/
 /* Class: GtkPaned                                                            */
-/* Note:  This is strictly a base class. It should never be instantiated on   */
-/*        its own. You should instantiate one of its subclasses instead.      */
+/* Note:  This is strictly an abstract class. It should never be instantiated */
+/*        on its own. You should instantiate one of its subclasses instead.   */
 /*============================================================================*/
 
 ::class GtkPaned public subclass GtkContainer
@@ -1051,5 +1051,120 @@ return
 
 ::method signal_wrapped
 return
+
+
+/*============================================================================*/
+/* Class: GtkDialog                                                           */
+/*============================================================================*/
+
+::class GtkDialog public subclass GtkWindow
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxDialogNew"
+
+::method vbox
+expose vbox
+return vbox
+
+::METHOD 'has_separator=' EXTERNAL "LIBRARY rexxgtk GrxDialogSetHasSeparator"
+::METHOD set_has_separator EXTERNAL "LIBRARY rexxgtk GrxDialogSetHasSeparator"
+::METHOD 'default_response=' EXTERNAL "LIBRARY rexxgtk GrxDialogSetDefaultResponse"
+::METHOD set_default_response EXTERNAL "LIBRARY rexxgtk GrxDialogSetDefaultResponse"
+::METHOD add_button EXTERNAL "LIBRARY rexxgtk GrxDialogAddButton"
+-- Note: the name of this method cannot be 'run' as that would override the
+-- private 'run' instance method of the ooRexx Object class.
+::METHOD dialog_run EXTERNAL "LIBRARY rexxgtk GrxDialogRun"
+::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxDialogSignalConnect"
+
+-- The following are the methods that can be connected to signals. By default
+-- they do nothing.
+
+::method signal_close
+return
+
+::method signal_response
+return
+
+
+/*============================================================================*/
+/* Class: GtkDialog_With_Buttons                                              */
+/*============================================================================*/
+
+::class GtkDialog_With_Buttons public subclass GtkDialog
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxDialogNewWithButtons"
+
+
+/*============================================================================*/
+/* Class: GtkMessageDialog                                                    */
+/*============================================================================*/
+
+::class GtkMessageDialog public subclass GtkDialog
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxMessageDialogNew"
+
+
+/*============================================================================*/
+/* Class: GtkColorSelectionDialog                                             */
+/*============================================================================*/
+
+::class GtkColorSelectionDialog public subclass GtkDialog
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxColorSelectionDialogNew"
+::METHOD color EXTERNAL "LIBRARY rexxgtk GrxColorSelectionDialogGetColor"
+::METHOD get_color EXTERNAL "LIBRARY rexxgtk GrxColorSelectionDialogGetColor"
+
+
+/*============================================================================*/
+/* Class: GtkFontSelectionDialog                                              */
+/*============================================================================*/
+
+::class GtkFontSelectionDialog public subclass GtkDialog
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxFontSelectionDialogNew"
+::METHOD 'font_name=' EXTERNAL "LIBRARY rexxgtk GrxFontSelectionDialogSetFontName"
+::METHOD set_font_name EXTERNAL "LIBRARY rexxgtk GrxFontSelectionDialogSetFontName"
+::METHOD font_name EXTERNAL "LIBRARY rexxgtk GrxFontSelectionDialogGetFontName"
+::METHOD get_font_name EXTERNAL "LIBRARY rexxgtk GrxFontSelectionDialogGetFontName"
+::METHOD 'preview_text=' EXTERNAL "LIBRARY rexxgtk GrxFontSelectionDialogSetPreviewText"
+::METHOD set_preview_text EXTERNAL "LIBRARY rexxgtk GrxFontSelectionDialogSetPreviewText"
+
+
+/*============================================================================*/
+/* Class: GtkAboutDialog                                                      */
+/*============================================================================*/
+
+::class GtkAboutDialog public subclass GtkDialog
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxAboutDialogNew"
+::METHOD 'program_name=' EXTERNAL "LIBRARY rexxgtk GrxAboutDialogSetProgramName"
+::METHOD set_program_name EXTERNAL "LIBRARY rexxgtk GrxAboutDialogSetProgramName"
+::METHOD 'version=' EXTERNAL "LIBRARY rexxgtk GrxAboutDialogSetVersion"
+::METHOD set_version EXTERNAL "LIBRARY rexxgtk GrxAboutDialogSetVersion"
+::METHOD 'copyright=' EXTERNAL "LIBRARY rexxgtk GrxAboutDialogSetCopyright"
+::METHOD set_copyright EXTERNAL "LIBRARY rexxgtk GrxAboutDialogSetCopyright"
+::METHOD 'comments=' EXTERNAL "LIBRARY rexxgtk GrxAboutDialogSetComments"
+::METHOD set_comments EXTERNAL "LIBRARY rexxgtk GrxAboutDialogSetComments"
+::METHOD 'license=' EXTERNAL "LIBRARY rexxgtk GrxAboutDialogSetLicense"
+::METHOD set_license EXTERNAL "LIBRARY rexxgtk GrxAboutDialogSetLicense"
+::METHOD 'wrap_license=' EXTERNAL "LIBRARY rexxgtk GrxAboutDialogSetWrapLicense"
+::METHOD set_wrap_license EXTERNAL "LIBRARY rexxgtk GrxAboutDialogSetWrapLicense"
+::METHOD 'website=' EXTERNAL "LIBRARY rexxgtk GrxAboutDialogSetWebsite"
+::METHOD set_website EXTERNAL "LIBRARY rexxgtk GrxAboutDialogSetWebsite"
+::METHOD 'website_label=' EXTERNAL "LIBRARY rexxgtk GrxAboutDialogSetWebsiteLabel"
+::METHOD set_website_label EXTERNAL "LIBRARY rexxgtk GrxAboutDialogSetWebsiteLabel"
+::METHOD set_authors EXTERNAL "LIBRARY rexxgtk GrxAboutDialogSetAuthors"
+::METHOD set_artists EXTERNAL "LIBRARY rexxgtk GrxAboutDialogSetArtists"
+::METHOD set_documentors EXTERNAL "LIBRARY rexxgtk GrxAboutDialogSetDocumentors"
+::METHOD 'logo=' EXTERNAL "LIBRARY rexxgtk GrxAboutDialogSetLogo"
+::METHOD set_logo EXTERNAL "LIBRARY rexxgtk GrxAboutDialogSetLogo"
+
+
+/*============================================================================*/
+/* Class: GtkFileChooserDialog                                                */
+/*============================================================================*/
+
+::class GtkFileChooserDialog public subclass GtkDialog inherit GtkFileChooser
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxFileChooserDialogNew"
 
 
