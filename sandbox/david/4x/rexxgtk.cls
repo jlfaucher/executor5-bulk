@@ -1174,76 +1174,25 @@ return
 
 ::class GtkAssistant public subclass GtkWindow
 
-::method init
-use strict arg
-self~pointer = GrxAssistantNew()
-return
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxAssistantNew"
+::METHOD set_current_page EXTERNAL "LIBRARY rexxgtk GrxAssistantSetCurrentPage"
+::METHOD 'current_page=' EXTERNAL "LIBRARY rexxgtk GrxAssistantSetCurrentPage"
+::METHOD get_current_page EXTERNAL "LIBRARY rexxgtk GrxAssistantGetCurrentPage"
+::METHOD current_page EXTERNAL "LIBRARY rexxgtk GrxAssistantGetCurrentPage"
+::METHOD get_nth_page EXTERNAL "LIBRARY rexxgtk GrxAssistantGetNthPage"
+::METHOD nth_page EXTERNAL "LIBRARY rexxgtk GrxAssistantGetNthPage"
+::METHOD prepend_page EXTERNAL "LIBRARY rexxgtk GrxAssistantPrependPage"
+::METHOD append_page EXTERNAL "LIBRARY rexxgtk GrxAssistantAppendPage"
+::METHOD insert_page EXTERNAL "LIBRARY rexxgtk GrxAssistantInsertPage"
+::METHOD set_page_type EXTERNAL "LIBRARY rexxgtk GrxAssistantSetPageType"
+::METHOD set_page_complete EXTERNAL "LIBRARY rexxgtk GrxAssistantSetPageComplete"
+::METHOD set_page_complete EXTERNAL "LIBRARY rexxgtk GrxAssistantSetPageComplete"
+::METHOD set_page_header_image EXTERNAL "LIBRARY rexxgtk GrxAssistantSetPageHeaderImage"
+::METHOD set_page_side_image EXTERNAL "LIBRARY rexxgtk GrxAssistantSetPageSideImage"
+::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxAssistantSignalConnect"
 
-::method set_current_page
-use strict arg widget, num
-call GrxAssistantSetCurrentPage self~pointer, widget~pointer, num
-return
-
-::method current_page
-use strict arg
-return GrxAssistantGetCurrentPage(self~pointer)
-
-::method get_current_page
-use strict arg
-return self~current_page()
-
-::method get_nth_page
-use strict arg num
-ptr =  GrxAssistantGetNthPage(self~pointer, num)
-return .local['GTK_Database']~at(ptr~upper())
-
-::method prepend_page
-use strict arg widget
-return GrxAssistantPrependPage(self~pointer, widget~pointer)
-
-::method append_page
-use strict arg widget
-return GrxAssistantAppendPage(self~pointer, widget~pointer)
-
-::method insert_page
-use strict arg widget, num
-return GrxAssistantInsertPage(self~pointer, widget~pointer, num)
-
-::method set_page_type
-use strict arg widget, type
-call GrxAssistantSetPageType self~pointer, widget~pointer, GTK_Constant(type)
-return
-
-::method set_page_title
-use strict arg widget, title
-call GrxAssistantSetPageTitle self~pointer, widget~pointer, title
-return
-
-::method set_page_complete
-use strict arg widget, flag
-call GrxAssistantSetPageComplete self~pointer, widget~pointer, flag
-return
-
-::method set_page_header_image
-use strict arg widget, image
-call GrxAssistantSetPageHeaderImage self~pointer, widget~pointer, image
-return
-
-::method set_page_side_image
-use strict arg widget, image
-call GrxAssistantSetPageSideImage self~pointer, widget~pointer, image
-return
-
-::method signal_connect
-use strict arg event
-select
-   when event = 'apply' then call GrxAssistantConnectSignal self~pointer, event
-   when event = 'cancel' then call GrxAssistantConnectSignal self~pointer, event
-   when event = 'close' then call GrxAssistantConnectSignal self~pointer, event
-   when event = 'prepare' then call GrxAssistantConnectSignal self~pointer, event
-   otherwise return self~signal_connect:super(event)
-   end
-return .true
+-- The following are the methods that can be connected to signals. By default
+-- they do nothing.
 
 ::method signal_apply
 return
@@ -1255,6 +1204,36 @@ return
 return
 
 ::method signal_prepare
+return
+
+
+/*============================================================================*/
+/* Class: GtkLabel                                                            */
+/*============================================================================*/
+
+::class GtkLabel public subclass GtkWidget
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxLabelNew"
+::METHOD get_justify EXTERNAL "LIBRARY rexxgtk GrxLabelGetJustify"
+::METHOD justify EXTERNAL "LIBRARY rexxgtk GrxLabelGetJustify"
+::METHOD 'justify=' EXTERNAL "LIBRARY rexxgtk GrxLabelSetJustify"
+::METHOD set_justify EXTERNAL "LIBRARY rexxgtk GrxLabelSetJustify"
+::METHOD set_text EXTERNAL "LIBRARY rexxgtk GrxLabelSetText"
+::METHOD 'text=' EXTERNAL "LIBRARY rexxgtk GrxLabelSetText"
+::METHOD set_selectable EXTERNAL "LIBRARY rexxgtk GrxLabelSetSelectable"
+::METHOD 'selectable=' EXTERNAL "LIBRARY rexxgtk GrxLabelSetSelectable"
+::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxLabelSignalConnect"
+
+-- The following are the methods that can be connected to signals. By default
+-- they do nothing.
+
+::method signal_copy_clipboard
+return
+
+::method signal_copy_move_cursor
+return
+
+::method signal_copy_populate_popup
 return
 
 

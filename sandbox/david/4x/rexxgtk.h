@@ -228,6 +228,12 @@ REXX_METHOD_PROTOTYPE(GrxAssistantSetPageComplete)
 REXX_METHOD_PROTOTYPE(GrxAssistantSetPageHeaderImage)
 REXX_METHOD_PROTOTYPE(GrxAssistantSetPageSideImage)
 REXX_METHOD_PROTOTYPE(GrxAssistantSignalConnect)
+REXX_METHOD_PROTOTYPE(GrxLabelNew)
+REXX_METHOD_PROTOTYPE(GrxLabelSetText)
+REXX_METHOD_PROTOTYPE(GrxLabelSetJustify)
+REXX_METHOD_PROTOTYPE(GrxLabelGetJustify)
+REXX_METHOD_PROTOTYPE(GrxLabelSetSelectable)
+REXX_METHOD_PROTOTYPE(GrxLabelSignalConnect)
  
  #endif /* REXXGTK_H */
  

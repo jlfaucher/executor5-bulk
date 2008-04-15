@@ -368,6 +368,12 @@ RexxMethodEntry gtkobject_methods[] = {
     REXX_METHOD(GrxAssistantSetPageHeaderImage, GrxAssistantSetPageHeaderImage),
     REXX_METHOD(GrxAssistantSetPageSideImage, GrxAssistantSetPageSideImage),
     REXX_METHOD(GrxAssistantSignalConnect, GrxAssistantSignalConnect),
+    REXX_METHOD(GrxLabelNew, GrxLabelNew),
+    REXX_METHOD(GrxLabelSetText, GrxLabelSetText),
+    REXX_METHOD(GrxLabelSetJustify, GrxLabelSetJustify),
+    REXX_METHOD(GrxLabelGetJustify, GrxLabelGetJustify),
+    REXX_METHOD(GrxLabelSetSelectable, GrxLabelSetSelectable),
+    REXX_METHOD(GrxLabelSignalConnect, GrxLabelSignalConnect),
     REXX_LAST_METHOD()
 };
 
