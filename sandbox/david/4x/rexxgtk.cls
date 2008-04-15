@@ -1168,3 +1168,93 @@ return
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxFileChooserDialogNew"
 
 
+/*============================================================================*/
+/* Class: GtkAssistant                                                        */
+/*============================================================================*/
+
+::class GtkAssistant public subclass GtkWindow
+
+::method init
+use strict arg
+self~pointer = GrxAssistantNew()
+return
+
+::method set_current_page
+use strict arg widget, num
+call GrxAssistantSetCurrentPage self~pointer, widget~pointer, num
+return
+
+::method current_page
+use strict arg
+return GrxAssistantGetCurrentPage(self~pointer)
+
+::method get_current_page
+use strict arg
+return self~current_page()
+
+::method get_nth_page
+use strict arg num
+ptr =  GrxAssistantGetNthPage(self~pointer, num)
+return .local['GTK_Database']~at(ptr~upper())
+
+::method prepend_page
+use strict arg widget
+return GrxAssistantPrependPage(self~pointer, widget~pointer)
+
+::method append_page
+use strict arg widget
+return GrxAssistantAppendPage(self~pointer, widget~pointer)
+
+::method insert_page
+use strict arg widget, num
+return GrxAssistantInsertPage(self~pointer, widget~pointer, num)
+
+::method set_page_type
+use strict arg widget, type
+call GrxAssistantSetPageType self~pointer, widget~pointer, GTK_Constant(type)
+return
+
+::method set_page_title
+use strict arg widget, title
+call GrxAssistantSetPageTitle self~pointer, widget~pointer, title
+return
+
+::method set_page_complete
+use strict arg widget, flag
+call GrxAssistantSetPageComplete self~pointer, widget~pointer, flag
+return
+
+::method set_page_header_image
+use strict arg widget, image
+call GrxAssistantSetPageHeaderImage self~pointer, widget~pointer, image
+return
+
+::method set_page_side_image
+use strict arg widget, image
+call GrxAssistantSetPageSideImage self~pointer, widget~pointer, image
+return
+
+::method signal_connect
+use strict arg event
+select
+   when event = 'apply' then call GrxAssistantConnectSignal self~pointer, event
+   when event = 'cancel' then call GrxAssistantConnectSignal self~pointer, event
+   when event = 'close' then call GrxAssistantConnectSignal self~pointer, event
+   when event = 'prepare' then call GrxAssistantConnectSignal self~pointer, event
+   otherwise return self~signal_connect:super(event)
+   end
+return .true
+
+::method signal_apply
+return
+
+::method signal_cancel
+return
+
+::method signal_close
+return
+
+::method signal_prepare
+return
+
+

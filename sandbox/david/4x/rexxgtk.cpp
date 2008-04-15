@@ -355,6 +355,19 @@ RexxMethodEntry gtkobject_methods[] = {
     REXX_METHOD(GrxSpinButtonNew, GrxSpinButtonNew),
     REXX_METHOD(GrxSpinButtonNewWithRange, GrxSpinButtonNewWithRange),
     REXX_METHOD(GrxSpinButtonSignalConnect, GrxSpinButtonSignalConnect),
+    REXX_METHOD(GrxAssistantNew, GrxAssistantNew),
+    REXX_METHOD(GrxAssistantSetCurrentPage, GrxAssistantSetCurrentPage),
+    REXX_METHOD(GrxAssistantGetCurrentPage, GrxAssistantGetCurrentPage),
+    REXX_METHOD(GrxAssistantGetNthPage, GrxAssistantGetNthPage),
+    REXX_METHOD(GrxAssistantPrependPage, GrxAssistantPrependPage),
+    REXX_METHOD(GrxAssistantAppendPage, GrxAssistantAppendPage),
+    REXX_METHOD(GrxAssistantInsertPage, GrxAssistantInsertPage),
+    REXX_METHOD(GrxAssistantSetPageType, GrxAssistantSetPageType),
+    REXX_METHOD(GrxAssistantSetPageTitle, GrxAssistantSetPageTitle),
+    REXX_METHOD(GrxAssistantSetPageComplete, GrxAssistantSetPageComplete),
+    REXX_METHOD(GrxAssistantSetPageHeaderImage, GrxAssistantSetPageHeaderImage),
+    REXX_METHOD(GrxAssistantSetPageSideImage, GrxAssistantSetPageSideImage),
+    REXX_METHOD(GrxAssistantSignalConnect, GrxAssistantSignalConnect),
     REXX_LAST_METHOD()
 };
 
