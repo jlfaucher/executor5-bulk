@@ -374,6 +374,9 @@ RexxMethodEntry gtkobject_methods[] = {
     REXX_METHOD(GrxLabelGetJustify, GrxLabelGetJustify),
     REXX_METHOD(GrxLabelSetSelectable, GrxLabelSetSelectable),
     REXX_METHOD(GrxLabelSignalConnect, GrxLabelSignalConnect),
+    REXX_METHOD(GrxFixedNew, GrxFixedNew),
+    REXX_METHOD(GrxFixedPut, GrxFixedPut),
+    REXX_METHOD(GrxFixedMove, GrxFixedMove),
     REXX_LAST_METHOD()
 };
 

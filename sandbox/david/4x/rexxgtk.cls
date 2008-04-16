@@ -1237,3 +1237,18 @@ return
 return
 
 
+/*============================================================================*/
+/* Class: GtkFixed                                                            */
+/*============================================================================*/
+
+::class GtkFixed public subclass GtkContainer
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxFixedNew"
+::METHOD put EXTERNAL "LIBRARY rexxgtk GrxFixedPut"
+::METHOD move EXTERNAL "LIBRARY rexxgtk GrxFixedMove"
+
+::method signal_connect
+use strict arg event
+return self~signal_connect:super(event)
+
+
