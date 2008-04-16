@@ -63,9 +63,9 @@ OBJECTS = rexxgtk.o \
         grxhandlebox.o \
         grxnotebook.o \
         grxrange.o \
+        grximage.o \
 #       grxinterfaces.o \
 #       grxfilefilter.o \
-#       grximage.o \
 #       grxglib.o \
 #       grxprogressbar.o \
 #       grxadjustment.o \
@@ -129,8 +129,8 @@ grxinterfaces.o: grxinterfaces.c rexxgtk.h
 grxfilefilter.o: grxfilefilter.c rexxgtk.h
 	gcc -c $(GRXCFLAGS) grxfilefilter.c
 
-grximage.o: grximage.c rexxgtk.h
-	gcc -c $(GRXCFLAGS) grximage.c
+grximage.o: grximage.cpp rexxgtk.h
+	gcc -c $(GRXCFLAGS) grximage.cpp
 
 grxdialog.o: grxdialog.cpp rexxgtk.h
 	gcc -c $(GRXCFLAGS) grxdialog.cpp

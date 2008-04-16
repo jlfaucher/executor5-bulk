@@ -1469,3 +1469,54 @@ return self~signal_connect:super(event)
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxVScaleNewWithRange"
 
 
+/*============================================================================*/
+/* Class: GtkImage                                                            */
+/*============================================================================*/
+
+::class GtkImage public subclass GtkWidget
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxImageNew"
+::METHOD set_from_file EXTERNAL "LIBRARY rexxgtk GrxImageSetFromFile"
+::METHOD set_from_stock EXTERNAL "LIBRARY rexxgtk GrxImageSetFromStock"
+::METHOD set_from_icon_name EXTERNAL "LIBRARY rexxgtk GrxImageSetFromIconName"
+
+
+/*============================================================================*/
+/* Class: GtkImage_From_File                                                  */
+/*============================================================================*/
+
+::class GtkImage_From_File public subclass GtkImage
+
+::method init
+self~init:super()
+use strict arg filename
+self~set_from_file(filename)
+return
+
+
+/*============================================================================*/
+/* Class: GtkImage_From_Stock                                                 */
+/*============================================================================*/
+
+::class GtkImage_From_Stock public subclass GtkImage
+
+::method init
+self~init:super()
+use strict arg stockid, size
+self~set_from_stock(stockid, size)
+return
+
+
+/*============================================================================*/
+/* Class: GtkImage_From_Icon_Name                                             */
+/*============================================================================*/
+
+::class GtkImage_From_Icon_Name public subclass GtkImage
+
+::method init
+self~init:super()
+use strict arg iconname, size
+self~set_from_icon_name(iconname, size)
+return
+
+

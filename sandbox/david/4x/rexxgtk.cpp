@@ -417,6 +417,10 @@ RexxMethodEntry gtkobject_methods[] = {
     REXX_METHOD(GrxVScaleNew, GrxVScaleNew),
     REXX_METHOD(GrxVScaleNewWithRange, GrxVScaleNewWithRange),
     REXX_METHOD(GrxRangeSignalConnect, GrxRangeSignalConnect),
+    REXX_METHOD(GrxImageNew, GrxImageNew),
+    REXX_METHOD(GrxImageSetFromFile, GrxImageSetFromFile),
+    REXX_METHOD(GrxImageSetFromStock, GrxImageSetFromStock),
+    REXX_METHOD(GrxImageSetFromIconName, GrxImageSetFromIconName),
     REXX_LAST_METHOD()
 };
 
