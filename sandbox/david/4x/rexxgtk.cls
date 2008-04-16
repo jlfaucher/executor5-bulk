@@ -1384,3 +1384,88 @@ return
 return
 
 
+/*============================================================================*/
+/* Class: GtkRange                                                            */
+/* Note:  This is strictly a base class. It should never be instantiated on   */
+/*        its own. You should instantiate one of its subclasses instead.      */
+/*============================================================================*/
+
+::class GtkRange public subclass GtkWidget
+
+::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxRangeSignalConnect"
+
+-- The following are the methods that can be connected to signals. By default
+-- they do nothing.
+
+::method signal_adjust_bounds
+return
+
+::method signal_move_slider
+return
+
+::method signal_value_changed
+return
+
+
+/*============================================================================*/
+/* Class: GtkScale                                                            */
+/* Note:  This is strictly a base class. It should never be instantiated on   */
+/*        its own. You should instantiate one of its subclasses instead.      */
+/*============================================================================*/
+
+::class GtkScale public subclass GtkRange
+
+::METHOD set_digits EXTERNAL "LIBRARY rexxgtk GrxScaleSetDigits"
+::METHOD 'digits=' EXTERNAL "LIBRARY rexxgtk GrxScaleSetDigits"
+::METHOD get_digits EXTERNAL "LIBRARY rexxgtk GrxScaleGetDigits"
+::METHOD digits EXTERNAL "LIBRARY rexxgtk GrxScaleGetDigits"
+::METHOD set_value_pos EXTERNAL "LIBRARY rexxgtk GrxScaleSetValuePos"
+::METHOD 'value_pos=' EXTERNAL "LIBRARY rexxgtk GrxScaleSetValuePos"
+::METHOD get_value_pos EXTERNAL "LIBRARY rexxgtk GrxScaleGetValuePos"
+::METHOD value_pos EXTERNAL "LIBRARY rexxgtk GrxScaleGetValuePos"
+
+::method signal_connect
+use strict arg event
+return self~signal_connect:super(event)
+
+
+/*============================================================================*/
+/* Class: GtkHScale                                                           */
+/*============================================================================*/
+
+::class GtkHScale public subclass GtkScale
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxHScaleNew"
+
+
+/*============================================================================*/
+/* Class: GtkHScale_With_Range                                                */
+/*============================================================================*/
+
+::class GtkHScale_With_Range public subclass GtkHScale
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxHScaleNewWithRange"
+
+
+/*============================================================================*/
+/* Class: GtkVScale                                                           */
+/*============================================================================*/
+
+::class GtkVScale public subclass GtkScale
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxVScaleNew"
+
+::method signal_connect
+use strict arg event
+return self~signal_connect:super(event)
+
+
+/*============================================================================*/
+/* Class: GtkVScale_With_Range                                                */
+/*============================================================================*/
+
+::class GtkVScale_With_Range public subclass GtkVScale
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxVScaleNewWithRange"
+
+

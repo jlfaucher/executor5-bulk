@@ -408,6 +408,15 @@ RexxMethodEntry gtkobject_methods[] = {
     REXX_METHOD(GrxNotebookGetCurrentPage, GrxNotebookGetCurrentPage),
     REXX_METHOD(GrxNotebookSetCurrentPage, GrxNotebookSetCurrentPage),
     REXX_METHOD(GrxNotebookSignalConnect, GrxNotebookSignalConnect),
+    REXX_METHOD(GrxScaleSetDigits, GrxScaleSetDigits),
+    REXX_METHOD(GrxScaleGetDigits, GrxScaleGetDigits),
+    REXX_METHOD(GrxScaleSetValuePos, GrxScaleSetValuePos),
+    REXX_METHOD(GrxScaleGetValuePos, GrxScaleGetValuePos),
+    REXX_METHOD(GrxHScaleNew, GrxHScaleNew),
+    REXX_METHOD(GrxHScaleNewWithRange, GrxHScaleNewWithRange),
+    REXX_METHOD(GrxVScaleNew, GrxVScaleNew),
+    REXX_METHOD(GrxVScaleNewWithRange, GrxVScaleNewWithRange),
+    REXX_METHOD(GrxRangeSignalConnect, GrxRangeSignalConnect),
     REXX_LAST_METHOD()
 };
 
