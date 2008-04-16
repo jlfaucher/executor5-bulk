@@ -1278,3 +1278,59 @@ return self~signal_connect:super(event)
 return
 
 
+/*============================================================================*/
+/* Class: GtkExpander_With_Mnemonic                                           */
+/*============================================================================*/
+
+::class GtkExpander_With_Mnemonic public subclass GtkExpander
+
+::method init
+use arg label = ''
+self~init:super(label)
+self~use_underline = .true
+return
+
+
+/*============================================================================*/
+/* Class: GtkHandleBox                                                        */
+/*============================================================================*/
+
+::class GtkHandleBox public subclass GtkContainer
+
+::method init
+use strict arg
+self~pointer = GrxHandleBoxNew()
+return
+
+::method 'shadow_type='
+use strict arg type
+call GrxHandleBoxSetShadowType self~pointer, GTK_Constant(type)
+return
+
+::method set_shadow_type
+use strict arg self~shadow_type
+return
+
+::method 'handle_position='
+use strict arg type
+call GrxHandleBoxSetHandlePosition self~pointer, GTK_Constant(type)
+return
+
+::method set_handle_position
+use strict arg self~handle_position
+return
+
+::method 'snap_edge='
+use strict arg type
+call GrxHandleBoxSetSnapEdge self~pointer, GTK_Constant(type)
+return
+
+::method set_snap_edge
+use strict arg self~snap_edge
+return
+
+::method signal_connect
+use strict arg event
+return self~signal_connect:super(event)
+
+

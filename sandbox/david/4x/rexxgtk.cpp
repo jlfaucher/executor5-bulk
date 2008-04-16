@@ -384,6 +384,11 @@ RexxMethodEntry gtkobject_methods[] = {
     REXX_METHOD(GrxExpanderSetUseUnderline, GrxExpanderSetUseUnderline),
     REXX_METHOD(GrxExpanderSetSpacing, GrxExpanderSetSpacing),
     REXX_METHOD(GrxExpanderSignalConnect, GrxExpanderSignalConnect),
+    REXX_METHOD(GrxHandleBoxNew, GrxHandleBoxNew),
+    REXX_METHOD(GrxHandleBoxSetShadowType, GrxHandleBoxSetShadowType),
+    REXX_METHOD(GrxHandleBoxSetPosition, GrxHandleBoxSetPosition),
+    REXX_METHOD(GrxHandleBoxSetSnapEdge, GrxHandleBoxSetSnapEdge),
+    REXX_METHOD(GrxHandleBoxSignalConnect, GrxHandleBoxSignalConnect),
     REXX_LAST_METHOD()
 };
 

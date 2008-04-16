@@ -244,6 +244,11 @@ REXX_METHOD_PROTOTYPE(GrxExpanderGetLabel)
 REXX_METHOD_PROTOTYPE(GrxExpanderSetUseUnderline)
 REXX_METHOD_PROTOTYPE(GrxExpanderSetSpacing)
 REXX_METHOD_PROTOTYPE(GrxExpanderSignalConnect)
+REXX_METHOD_PROTOTYPE(GrxHandleBoxNew)
+REXX_METHOD_PROTOTYPE(GrxHandleBoxSetShadowType)
+REXX_METHOD_PROTOTYPE(GrxHandleBoxSetPosition)
+REXX_METHOD_PROTOTYPE(GrxHandleBoxSetSnapEdge)
+REXX_METHOD_PROTOTYPE(GrxHandleBoxSignalConnect)
  
  #endif /* REXXGTK_H */
  

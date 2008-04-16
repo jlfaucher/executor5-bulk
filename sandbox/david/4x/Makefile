@@ -60,8 +60,7 @@ OBJECTS = rexxgtk.o \
 	grxlabel.o \
         grxfixed.o \
         grxexpander.o \
-#	grxqueue.o \
-#       grxhandlebox.o \
+        grxhandlebox.o \
 #       grxnotebook.o \
 #       grxeventbox.o \
 #       grxrange.o \
@@ -95,9 +94,6 @@ grxwindow.o: grxwindow.cpp rexxgtk.h
 grxcontainer.o: grxcontainer.cpp rexxgtk.h
 	gcc -c $(GRXCFLAGS) grxcontainer.cpp
 
-grxqueue.o: grxqueue.c rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxqueue.c
-
 grxlabel.o: grxlabel.cpp rexxgtk.h
 	gcc -c $(GRXCFLAGS) grxlabel.cpp
 
@@ -119,8 +115,8 @@ grxfixed.o: grxfixed.cpp rexxgtk.h
 grxexpander.o: grxexpander.cpp rexxgtk.h
 	gcc -c $(GRXCFLAGS) grxexpander.cpp
 
-grxhandlebox.o: grxhandlebox.c rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxhandlebox.c
+grxhandlebox.o: grxhandlebox.cpp rexxgtk.h
+	gcc -c $(GRXCFLAGS) grxhandlebox.cpp
 
 grxnotebook.o: grxnotebook.c rexxgtk.h
 	gcc -c $(GRXCFLAGS) grxnotebook.c
