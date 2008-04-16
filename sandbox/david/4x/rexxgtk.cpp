@@ -377,6 +377,13 @@ RexxMethodEntry gtkobject_methods[] = {
     REXX_METHOD(GrxFixedNew, GrxFixedNew),
     REXX_METHOD(GrxFixedPut, GrxFixedPut),
     REXX_METHOD(GrxFixedMove, GrxFixedMove),
+    REXX_METHOD(GrxExpanderNew, GrxExpanderNew),
+    REXX_METHOD(GrxExpanderSetExpanded, GrxExpanderSetExpanded),
+    REXX_METHOD(GrxExpanderSetLabel, GrxExpanderSetLabel),
+    REXX_METHOD(GrxExpanderGetLabel, GrxExpanderGetLabel),
+    REXX_METHOD(GrxExpanderSetUseUnderline, GrxExpanderSetUseUnderline),
+    REXX_METHOD(GrxExpanderSetSpacing, GrxExpanderSetSpacing),
+    REXX_METHOD(GrxExpanderSignalConnect, GrxExpanderSignalConnect),
     REXX_LAST_METHOD()
 };
 

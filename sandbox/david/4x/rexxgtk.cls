@@ -1252,3 +1252,29 @@ use strict arg event
 return self~signal_connect:super(event)
 
 
+/*============================================================================*/
+/* Class: GtkExpander                                                         */
+/*============================================================================*/
+
+::class GtkExpander public subclass GtkContainer
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxExpanderNew"
+::METHOD set_expanded EXTERNAL "LIBRARY rexxgtk GrxExpanderSetExpanded"
+::METHOD 'expanded=' EXTERNAL "LIBRARY rexxgtk GrxExpanderSetExpanded"
+::METHOD label EXTERNAL "LIBRARY rexxgtk GrxExpanderGetLabel"
+::METHOD get_label EXTERNAL "LIBRARY rexxgtk GrxExpanderGetLabel"
+::METHOD set_label EXTERNAL "LIBRARY rexxgtk GrxExpanderSetLabel"
+::METHOD 'label=' EXTERNAL "LIBRARY rexxgtk GrxExpanderSetLabel"
+::METHOD set_use_underline EXTERNAL "LIBRARY rexxgtk GrxExpanderSetUseUnderline"
+::METHOD 'use_underline=' EXTERNAL "LIBRARY rexxgtk GrxExpanderSetUseUnderline"
+::METHOD set_spacing EXTERNAL "LIBRARY rexxgtk GrxExpanderSetSpacing"
+::METHOD 'spacing=' EXTERNAL "LIBRARY rexxgtk GrxExpanderSetSpacing"
+::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxExpanderSignalSpacing"
+
+-- The following are the methods that can be connected to signals. By default
+-- they do nothing.
+
+::method signal_activate
+return
+
+
