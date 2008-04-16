@@ -1297,40 +1297,90 @@ return
 
 ::class GtkHandleBox public subclass GtkContainer
 
-::method init
-use strict arg
-self~pointer = GrxHandleBoxNew()
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxHandleBoxNew"
+::METHOD set_shadow_type EXTERNAL "LIBRARY rexxgtk GrxHandleBoxSetShadowType"
+::METHOD 'shadow_type=' EXTERNAL "LIBRARY rexxgtk GrxHandleBoxSetShadowType"
+::METHOD set_position EXTERNAL "LIBRARY rexxgtk GrxHandleBoxSetPosition"
+::METHOD 'position=' EXTERNAL "LIBRARY rexxgtk GrxHandleBoxSetPosition"
+::METHOD set_snap_edge EXTERNAL "LIBRARY rexxgtk GrxHandleBoxSetSnapEdge"
+::METHOD 'snap_edge=' EXTERNAL "LIBRARY rexxgtk GrxHandleBoxSetSnapEdge"
+::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxHandleBoxSignalConnect"
+
+-- The following are the methods that can be connected to signals. By default
+-- they do nothing.
+
+::method signal_child_attached
 return
 
-::method 'shadow_type='
-use strict arg type
-call GrxHandleBoxSetShadowType self~pointer, GTK_Constant(type)
+::method signal_child_detached
 return
 
-::method set_shadow_type
-use strict arg self~shadow_type
+
+/*============================================================================*/
+/* Class: GtkNotebook                                                         */
+/*============================================================================*/
+
+::class GtkNotebook public subclass GtkContainer
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxNotebookNew"
+::METHOD append_page EXTERNAL "LIBRARY rexxgtk GrxNotebookAppendPage"
+::METHOD prepend_page EXTERNAL "LIBRARY rexxgtk GrxNotebookPrependPage"
+::METHOD insert_page EXTERNAL "LIBRARY rexxgtk GrxNotebookInsertPage"
+::METHOD append_page_menu EXTERNAL "LIBRARY rexxgtk GrxNotebookAppendPageMenu"
+::METHOD prepend_page_menu EXTERNAL "LIBRARY rexxgtk GrxNotebookPrependPageMenu"
+::METHOD insert_page_menu EXTERNAL "LIBRARY rexxgtk GrxNotebookInsertPageMenu"
+::METHOD remove_page EXTERNAL "LIBRARY rexxgtk GrxNotebookRemovePage"
+::METHOD set_show_border EXTERNAL "LIBRARY rexxgtk GrxNotebookSetShowBorder"
+::METHOD 'show_border=' EXTERNAL "LIBRARY rexxgtk GrxNotebookSetShowBorder"
+::METHOD set_show_tabs EXTERNAL "LIBRARY rexxgtk GrxNotebookSetShowTabs"
+::METHOD 'show_tabs=' EXTERNAL "LIBRARY rexxgtk GrxNotebookSetShowTabs"
+::METHOD set_tab_pos EXTERNAL "LIBRARY rexxgtk GrxNotebookSetTabPos"
+::METHOD 'tab_pos=' EXTERNAL "LIBRARY rexxgtk GrxNotebookSetTabPos"
+::METHOD set_homogeneous_tabs EXTERNAL "LIBRARY rexxgtk GrxNotebookSetHomogeneousTabs"
+::METHOD 'homogeneous_tabs=' EXTERNAL "LIBRARY rexxgtk GrxNotebookSetHomogeneousTabs"
+::METHOD set_tab_border EXTERNAL "LIBRARY rexxgtk GrxNotebookSetTabBorder"
+::METHOD 'tab_border=' EXTERNAL "LIBRARY rexxgtk GrxNotebookSetTabBorder"
+::METHOD set_scrollable EXTERNAL "LIBRARY rexxgtk GrxNotebookSetScrollable"
+::METHOD 'scrollable=' EXTERNAL "LIBRARY rexxgtk GrxNotebookSetScrollable"
+::METHOD popup_enable EXTERNAL "LIBRARY rexxgtk GrxNotebookPopupEnable"
+::METHOD popup_disable EXTERNAL "LIBRARY rexxgtk GrxNotebookPopupDisable"
+::METHOD set_current_page EXTERNAL "LIBRARY rexxgtk GrxNotebookSetCurrentPage"
+::METHOD 'current_page=' EXTERNAL "LIBRARY rexxgtk GrxNotebookSetCurrentPage"
+::METHOD get_current_page EXTERNAL "LIBRARY rexxgtk GrxNotebookGetCurrentPage"
+::METHOD current_page EXTERNAL "LIBRARY rexxgtk GrxNotebookGetCurrentPage"
+::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxNotebookSignalConnect"
+
+-- The following are the methods that can be connected to signals. By default
+-- they do nothing.
+
+::method signal_change_current_page
 return
 
-::method 'handle_position='
-use strict arg type
-call GrxHandleBoxSetHandlePosition self~pointer, GTK_Constant(type)
+::method signal_create_window
 return
 
-::method set_handle_position
-use strict arg self~handle_position
+::method signal_focus_tab
 return
 
-::method 'snap_edge='
-use strict arg type
-call GrxHandleBoxSetSnapEdge self~pointer, GTK_Constant(type)
+::method signal_move_focus_out
 return
 
-::method set_snap_edge
-use strict arg self~snap_edge
+::method signal_page_added
 return
 
-::method signal_connect
-use strict arg event
-return self~signal_connect:super(event)
+::method signal_page_removed
+return
+
+::method signal_page_reordered
+return
+
+::method signal_reorder_tab
+return
+
+::method signal_select_tab
+return
+
+::method signal_switch_page
+return
 
 
