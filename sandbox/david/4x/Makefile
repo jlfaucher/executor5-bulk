@@ -64,10 +64,10 @@ OBJECTS = rexxgtk.o \
         grxnotebook.o \
         grxrange.o \
         grximage.o \
+        grxprogressbar.o \
 #       grxinterfaces.o \
 #       grxfilefilter.o \
 #       grxglib.o \
-#       grxprogressbar.o \
 #       grxadjustment.o \
 #       grxscrolledwindow.o \
 #       grxtextview.o \
@@ -141,8 +141,8 @@ grxglib.o: grxglib.c rexxgtk.h
 grxassistant.o: grxassistant.cpp rexxgtk.h
 	gcc -c $(GRXCFLAGS) grxassistant.cpp
 
-grxprogressbar.o: grxprogressbar.c rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxprogressbar.c
+grxprogressbar.o: grxprogressbar.cpp rexxgtk.h
+	gcc -c $(GRXCFLAGS) grxprogressbar.cpp
 
 grxadjustment.o: grxadjustment.c rexxgtk.h
 	gcc -c $(GRXCFLAGS) grxadjustment.c

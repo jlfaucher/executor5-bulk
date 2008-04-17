@@ -1520,3 +1520,16 @@ self~set_from_icon_name(iconname, size)
 return
 
 
+/*============================================================================*/
+/* Class: GtkProgressBar                                                      */
+/*============================================================================*/
+
+::class GtkProgressBar public subclass GtkWidget
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxProgressBarNew"
+::METHOD set_text EXTERNAL "LIBRARY rexxgtk GrxProgressBarSetText"
+::METHOD 'text=' EXTERNAL "LIBRARY rexxgtk GrxProgressBarSetText"
+::METHOD set_fraction EXTERNAL "LIBRARY rexxgtk GrxProgressBarSetFraction"
+::METHOD 'fraction=' EXTERNAL "LIBRARY rexxgtk GrxProgressBarSetFraction"
+
+

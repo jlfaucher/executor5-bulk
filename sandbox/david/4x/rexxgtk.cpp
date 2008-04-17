@@ -421,6 +421,9 @@ RexxMethodEntry gtkobject_methods[] = {
     REXX_METHOD(GrxImageSetFromFile, GrxImageSetFromFile),
     REXX_METHOD(GrxImageSetFromStock, GrxImageSetFromStock),
     REXX_METHOD(GrxImageSetFromIconName, GrxImageSetFromIconName),
+    REXX_METHOD(GrxProgressBarNew, GrxProgressBarNew),
+    REXX_METHOD(GrxProgressBarSetFraction, GrxProgressBarSetFraction),
+    REXX_METHOD(GrxProgressBarSetText, GrxProgressBarSetText),
     REXX_LAST_METHOD()
 };
 
