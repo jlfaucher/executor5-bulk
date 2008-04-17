@@ -1533,3 +1533,100 @@ return
 ::METHOD 'fraction=' EXTERNAL "LIBRARY rexxgtk GrxProgressBarSetFraction"
 
 
+/*============================================================================*/
+/* Class: GtkTextView                                                         */
+/*============================================================================*/
+
+::class GtkTextView public subclass GtkContainer
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxTextViewNew"
+::METHOD get_buffer EXTERNAL "LIBRARY rexxgtk GrxTextViewGetBuffer"
+::METHOD buffer EXTERNAL "LIBRARY rexxgtk GrxTextViewGetBuffer"
+::METHOD get_wrap_mode EXTERNAL "LIBRARY rexxgtk GrxTextViewGetWrapMode"
+::METHOD wrap_mode EXTERNAL "LIBRARY rexxgtk GrxTextViewGetWrapMode"
+::METHOD 'wrap_mode=' EXTERNAL "LIBRARY rexxgtk GrxTextViewSetWrapMode"
+::METHOD set_wrap_mode EXTERNAL "LIBRARY rexxgtk GrxTextViewSetWrapMode"
+::METHOD get_justification EXTERNAL "LIBRARY rexxgtk GrxTextViewGetJustification"
+::METHOD justification EXTERNAL "LIBRARY rexxgtk GrxTextViewGetJustification"
+::METHOD set_justification EXTERNAL "LIBRARY rexxgtk GrxTextViewSetJustification"
+::METHOD 'justification=' EXTERNAL "LIBRARY rexxgtk GrxTextViewSetJustification"
+::METHOD get_editable EXTERNAL "LIBRARY rexxgtk GrxTextViewGetEditable"
+::METHOD editable EXTERNAL "LIBRARY rexxgtk GrxTextViewGetEditable"
+::METHOD set_editable EXTERNAL "LIBRARY rexxgtk GrxTextViewSetEditable"
+::METHOD 'editable=' EXTERNAL "LIBRARY rexxgtk GrxTextViewSetEditable"
+::METHOD get_cursor_visible EXTERNAL "LIBRARY rexxgtk GrxTextViewGetCursorVisible"
+::METHOD cursor_visible EXTERNAL "LIBRARY rexxgtk GrxTextViewGetCursorVisible"
+::METHOD set_cursor_visible EXTERNAL "LIBRARY rexxgtk GrxTextViewSetCursorVisible"
+::METHOD 'cursor_visible=' EXTERNAL "LIBRARY rexxgtk GrxTextViewSetCursorVisible"
+::METHOD get_pixels_above_lines EXTERNAL "LIBRARY rexxgtk GrxTextViewGetPixelsAboveLines"
+::METHOD pixels_above_lines EXTERNAL "LIBRARY rexxgtk GrxTextViewGetPixelsAboveLines"
+::METHOD set_pixels_above_lines EXTERNAL "LIBRARY rexxgtk GrxTextViewSetPixelsAboveLines"
+::METHOD 'pixels_above_lines=' EXTERNAL "LIBRARY rexxgtk GrxTextViewSetPixelsAboveLines"
+::METHOD get_pixels_below_lines EXTERNAL "LIBRARY rexxgtk GrxTextViewGetPixelsBelowLines"
+::METHOD pixels_below_lines EXTERNAL "LIBRARY rexxgtk GrxTextViewGetPixelsBelowLines"
+::METHOD set_pixels_below_lines EXTERNAL "LIBRARY rexxgtk GrxTextViewSetPixelsBelowLines"
+::METHOD 'pixels_below_lines=' EXTERNAL "LIBRARY rexxgtk GrxTextViewSetPixelsBelowLines"
+::METHOD get_pixels_inside_wrap EXTERNAL "LIBRARY rexxgtk GrxTextViewGetPixelsInsideWrap"
+::METHOD pixels_inside_wrap EXTERNAL "LIBRARY rexxgtk GrxTextViewGetPixelsInsideWrap"
+::METHOD set_pixels_inside_wrap EXTERNAL "LIBRARY rexxgtk GrxTextViewSetPixelsInsideWrap"
+::METHOD 'pixels_inside_wrap=' EXTERNAL "LIBRARY rexxgtk GrxTextViewSetPixelsInsideWrap"
+::METHOD get_left_margin EXTERNAL "LIBRARY rexxgtk GrxTextViewGetLeftMargin"
+::METHOD left_margin EXTERNAL "LIBRARY rexxgtk GrxTextViewGeLeftMargin"
+::METHOD set_left_margin EXTERNAL "LIBRARY rexxgtk GrxTextViewSetLeftMargin"
+::METHOD 'left_margin=' EXTERNAL "LIBRARY rexxgtk GrxTextViewSetLeftMargin"
+::METHOD get_right_margin EXTERNAL "LIBRARY rexxgtk GrxTextViewGetRightMargin"
+::METHOD right_margin EXTERNAL "LIBRARY rexxgtk GrxTextViewGeRightMargin"
+::METHOD set_right_margin EXTERNAL "LIBRARY rexxgtk GrxTextViewSetRightMargin"
+::METHOD 'right_margin=' EXTERNAL "LIBRARY rexxgtk GrxTextViewSetRightMargin"
+::METHOD add_child_at_offset EXTERNAL "LIBRARY rexxgtk GrxTextViewAddChildAtOffset"
+::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxTextViewSignalConnect"
+
+-- The following are the methods that can be connected to signals. By default
+-- they do nothing.
+
+::method signal_backspace
+return
+
+::method signal_copy_clipboard
+return
+
+::method signal_cut_clipboard
+return
+
+::method signal_delete_from_cursor
+return
+
+::method signal_insert_at_cursor
+return
+
+::method signal_move_cursor
+return
+
+::method signal_move_viewport
+return
+
+::method signal_page_horizontally
+return
+
+::method signal_paste_clipboard
+return
+
+::method signal_populate_popup
+return
+
+::method signal_select_all
+return
+
+::method signal_set_anchor
+return
+
+::method signal_set_scroll_adjustments
+return
+
+::method signal_toggle_cursor_visible
+return
+
+::method signal_toggle_overwrite
+return
+
+

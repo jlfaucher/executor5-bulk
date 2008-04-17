@@ -411,7 +411,7 @@ RexxMethod1(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_prepare";
-        g_signal_connect(G_OBJECT(myWidget), "prepareset-focus",
+        g_signal_connect(G_OBJECT(myWidget), "prepare",
                          G_CALLBACK(signal_func_1), cblock);
         return context->True();
     }

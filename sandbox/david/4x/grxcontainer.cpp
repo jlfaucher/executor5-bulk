@@ -353,7 +353,7 @@ RexxMethod1(RexxObjectPtr,             // Return type
                          G_CALLBACK(signal_func_1), cblock);
         return context->True();
     }
-    else if (strcmp(name, "check-resize") == 0) {
+    else if (strcmp(name, "check_resize") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_check_resize";
@@ -369,7 +369,7 @@ RexxMethod1(RexxObjectPtr,             // Return type
                          G_CALLBACK(signal_func_1), cblock);
         return context->True();
     }
-    else if (strcmp(name, "set-focus-child") == 0) {
+    else if (strcmp(name, "set_focus_child") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_set_focus_child";
@@ -431,7 +431,7 @@ RexxMethod1(RexxObjectPtr,             // Return type
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     cbcb *cblock;
 
-    if (strcmp(name, "set-scroll-adjustments") == 0) {
+    if (strcmp(name, "set_scroll_adjustments") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_set_scroll_adjustments";
