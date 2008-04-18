@@ -1670,3 +1670,155 @@ return
 return
 
 
+/*============================================================================*/
+/*============================================================================*/
+/*============================================================================*/
+/* These are classes and routines specific to Glib.                           */
+/*============================================================================*/
+/*============================================================================*/
+/*============================================================================*/
+
+
+/*============================================================================*/
+/* Routine: g_message                                                         */
+/*============================================================================*/
+
+::routine g_message public
+use strict arg msg
+call GrxMessage(msg)
+return
+
+
+/*============================================================================*/
+/* Routine: g_warning                                                         */
+/*============================================================================*/
+
+::routine g_warning public
+use strict arg msg
+call GrxWarning(msg)
+return
+
+
+/*============================================================================*/
+/* Routine: g_critical                                                        */
+/*============================================================================*/
+
+::routine g_critical public
+use strict arg msg
+call GrxCritical(msg)
+return
+
+
+/*============================================================================*/
+/* Routine: g_Error                                                           */
+/*============================================================================*/
+
+::routine g_error public
+use strict arg msg
+call GrxError(msg)
+return
+
+
+/*============================================================================*/
+/* Routine: g_debug                                                           */
+/*============================================================================*/
+
+::routine g_debug public
+use strict arg msg
+call GrxDebug(msg)
+return
+
+
+/*============================================================================*/
+/* Routine: g_get_user_name                                                   */
+/*============================================================================*/
+
+::routine g_get_user_name public
+use strict arg
+return GrxGetUserName()
+
+
+/*============================================================================*/
+/* Routine: g_get_real_name                                                   */
+/*============================================================================*/
+
+::routine g_get_real_name public
+use strict arg
+return GrxGetRealName()
+
+
+/*============================================================================*/
+/* Routine: g_get_home_dir                                                    */
+/*============================================================================*/
+
+::routine g_get_home_dir public
+use strict arg
+return GrxGetHomeDir()
+
+
+/*============================================================================*/
+/* Routine: g_get_host_name                                                   */
+/*============================================================================*/
+
+::routine g_get_host_name public
+use strict arg
+return GrxGetHostName()
+
+
+/*============================================================================*/
+/* Class: GSList                                                              */
+/*============================================================================*/
+
+::class GSList public
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxGSListNew"
+::METHOD uninit EXTERNAL "LIBRARY rexxgtk GrxGSListUninit"
+::METHOD append EXTERNAL "LIBRARY rexxgtk GrxGSListAppend"
+::METHOD head EXTERNAL "LIBRARY rexxgtk GrxGSListFirst"
+::METHOD item EXTERNAL "LIBRARY rexxgtk GrxGSListItem"
+::METHOD next EXTERNAL "LIBRARY rexxgtk GrxGSListNext"
+::METHOD insert EXTERNAL "LIBRARY rexxgtk GrxGSListInsert"
+::METHOD prepend EXTERNAL "LIBRARY rexxgtk GrxGSListPrepend"
+
+::method toArray
+-- convert the list to an array
+use strict arg
+ptr = self~head
+list = .Array~new()
+if ptr = .Nil then return list
+do while ptr <> .Nil
+   list~append(GrxGSListItem(ptr))
+   ptr = GrxGSListNext(ptr)
+   end
+return list
+
+
+
+/*============================================================================*/
+/* Class: GList                                                               */
+/*============================================================================*/
+
+::class GList public subclass object
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxGListNew"
+::METHOD uninit EXTERNAL "LIBRARY rexxgtk GrxGListUninit"
+::METHOD append EXTERNAL "LIBRARY rexxgtk GrxGListAppend"
+::METHOD head EXTERNAL "LIBRARY rexxgtk GrxGListFirst"
+::METHOD item EXTERNAL "LIBRARY rexxgtk GrxGListItem"
+::METHOD next EXTERNAL "LIBRARY rexxgtk GrxGListNext"
+::METHOD insert EXTERNAL "LIBRARY rexxgtk GrxGListInsert"
+::METHOD prepend EXTERNAL "LIBRARY rexxgtk GrxGListPrepend"
+
+::method toArray
+-- convert the list to an array
+use strict arg
+ptr = self~head
+list = .Array~new()
+if ptr = .Nil then return list
+do while ptr <> .Nil
+   list~append(GrxGSListItem(ptr))
+   ptr = GrxGListNext(ptr)
+   end
+return list
+
+

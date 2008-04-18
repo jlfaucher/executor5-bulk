@@ -197,6 +197,157 @@ RexxRoutine0(int, GrxMainIteration)
     return 0;
 }
 
+/**
+ * Routine: GrxMessage
+ *
+ * Log a message.
+ *
+ * @param msg     The message
+ *
+ * @return        Zero.
+ */
+RexxRoutine1(int,                      // Return type
+             GrxMessage,               // Routine name
+             CSTRING, msg)             // Message
+{
+
+    g_message(msg);
+	
+    return 0;
+}
+
+/**
+ * Routine: GrxWarning
+ *
+ * Log a warning message.
+ *
+ * @param msg     The message
+ *
+ * @return        Zero.
+ */
+RexxRoutine1(int,                      // Return type
+             GrxWarning,               // Routine name
+             CSTRING, msg)             // Message
+{
+
+    g_warning(msg);
+	
+    return 0;
+}
+
+/**
+ * Routine: GrxCritical
+ *
+ * Log a critical message.
+ *
+ * @param msg     The message
+ *
+ * @return        Zero.
+ */
+RexxRoutine1(int,                      // Return type
+             GrxCritical,              // Routine name
+             CSTRING, msg)             // Message
+{
+
+    g_critical(msg);
+	
+    return 0;
+}
+
+/**
+ * Routine: GrxError
+ *
+ * Log an error message.
+ *
+ * @param msg     The message
+ *
+ * @return        Zero.
+ */
+RexxRoutine1(int,                      // Return type
+             GrxError,                 // Routine name
+             CSTRING, msg)             // Message
+{
+
+    g_error(msg);
+	
+    return 0;
+}
+
+/**
+ * Routine: GrxDebug
+ *
+ * Log a debug message.
+ *
+ * @param msg     The message
+ *
+ * @return        Zero.
+ */
+RexxRoutine1(int,                      // Return type
+             GrxDebug,                 // Routine name
+             CSTRING, msg)             // Message
+{
+
+    g_debug(msg);
+	
+    return 0;
+}
+
+/**
+ * Routine: GrxGetUserName
+ *
+ * Get the current user name.
+ *
+ * @return        User name
+ */
+RexxRoutine0(CSTRING,                  // Return type
+             GrxGetUserName)           // Routine name
+{
+
+    return g_get_user_name();
+}
+
+/**
+ * Routine: GrxGetRealName
+ *
+ * Get the current real name.
+ *
+ * @return        Real name
+ */
+RexxRoutine0(CSTRING,                  // Return type
+             GrxGetRealName)           // Routine name
+{
+
+    return g_get_real_name();
+}
+
+/**
+ * Routine: GrxGetHomeDir
+ *
+ * Get the user's home directory.
+ *
+ * @return        Home directory
+ */
+RexxRoutine0(CSTRING,                  // Return type
+             GrxGetHomeDir)            // Routine name
+{
+
+    return g_get_home_dir();
+}
+
+/**
+ * Routine: GrxGetHostName
+ *
+ * Get the machine host name.
+ *
+ * @return        Host name
+ */
+RexxRoutine0(CSTRING,                  // Return type
+             GrxGetHostName)           // Routine name
+{
+
+    return g_get_host_name();
+}
+
 
 // build the actual entry list
 RexxRoutineEntry gtkobject_routines[] = {
@@ -205,6 +356,15 @@ RexxRoutineEntry gtkobject_routines[] = {
     REXX_TYPED_ROUTINE(GrxMain, GrxMain),
     REXX_TYPED_ROUTINE(GrxMainQuit, GrxMainQuit),
     REXX_TYPED_ROUTINE(GrxMainIteration, GrxMainIteration),
+    REXX_TYPED_ROUTINE(GrxMessage, GrxMessage),
+    REXX_TYPED_ROUTINE(GrxWarning, GrxWarning),
+    REXX_TYPED_ROUTINE(GrxCritical, GrxCritical),
+    REXX_TYPED_ROUTINE(GrxError, GrxError),
+    REXX_TYPED_ROUTINE(GrxDebug, GrxDebug),
+    REXX_TYPED_ROUTINE(GrxGetUserName, GrxGetUserName),
+    REXX_TYPED_ROUTINE(GrxGetRealName, GrxGetRealName),
+    REXX_TYPED_ROUTINE(GrxGetHomeDir, GrxGetHomeDir),
+    REXX_TYPED_ROUTINE(GrxGetHostName, GrxGetHostName),
     REXX_LAST_ROUTINE()
 };
 
@@ -461,6 +621,22 @@ RexxMethodEntry gtkobject_methods[] = {
     REXX_METHOD(GrxTextBufferRemoveAllTags, GrxTextBufferRemoveAllTags),
     REXX_METHOD(GrxTextBufferInsertImage, GrxTextBufferInsertImage),
     REXX_METHOD(GrxTextBufferSignalConnect, GrxTextBufferSignalConnect),
+    REXX_METHOD(GrxGSListNew, GrxGSListNew),
+    REXX_METHOD(GrxGSListUninit, GrxGSListUninit),
+    REXX_METHOD(GrxGSListAppend, GrxGSListAppend),
+    REXX_METHOD(GrxGSListPrepend, GrxGSListPrepend),
+    REXX_METHOD(GrxGSListInsert, GrxGSListInsert),
+    REXX_METHOD(GrxGSListItem, GrxGSListItem),
+    REXX_METHOD(GrxGSListFirst, GrxGSListFirst),
+    REXX_METHOD(GrxGSListNext, GrxGSListNext),
+    REXX_METHOD(GrxGListNew, GrxGListNew),
+    REXX_METHOD(GrxGListUninit, GrxGListUninit),
+    REXX_METHOD(GrxGListAppend, GrxGListAppend),
+    REXX_METHOD(GrxGListPrepend, GrxGListPrepend),
+    REXX_METHOD(GrxGListInsert, GrxGListInsert),
+    REXX_METHOD(GrxGListItem, GrxGListItem),
+    REXX_METHOD(GrxGListFirst, GrxGListFirst),
+    REXX_METHOD(GrxGListNext, GrxGListNext),
     REXX_LAST_METHOD()
 };
 
