@@ -446,6 +446,21 @@ RexxMethodEntry gtkobject_methods[] = {
     REXX_METHOD(GrxTextViewGetRightMargin, GrxTextViewGetRightMargin),
     REXX_METHOD(GrxTextViewAddChildAtOffset, GrxTextViewAddChildAtOffset),
     REXX_METHOD(GrxTextViewSignalConnect, GrxTextViewSignalConnect),
+    REXX_METHOD(GrxTextBufferNew, GrxTextBufferNew),
+    REXX_METHOD(GrxTextBufferSetText, GrxTextBufferSetText),
+    REXX_METHOD(GrxTextBufferInsertText, GrxTextBufferInsertText),
+    REXX_METHOD(GrxTextBufferGetText, GrxTextBufferGetText),
+    REXX_METHOD(GrxTextBufferCutClipboard, GrxTextBufferCutClipboard),
+    REXX_METHOD(GrxTextBufferCopyClipboard, GrxTextBufferCopyClipboard),
+    REXX_METHOD(GrxTextBufferPasteClipboard, GrxTextBufferPasteClipboard),
+    REXX_METHOD(GrxTextBufferForwardSearch, GrxTextBufferForwardSearch),
+    REXX_METHOD(GrxTextBufferForwardSearchNext, GrxTextBufferForwardSearchNext),
+    REXX_METHOD(GrxTextBufferCreateTagInt, GrxTextBufferCreateTagInt),
+    REXX_METHOD(GrxTextBufferCreateTagFloat, GrxTextBufferCreateTagFloat),
+    REXX_METHOD(GrxTextBufferApplyTagByName, GrxTextBufferApplyTagByName),
+    REXX_METHOD(GrxTextBufferRemoveAllTags, GrxTextBufferRemoveAllTags),
+    REXX_METHOD(GrxTextBufferInsertImage, GrxTextBufferInsertImage),
+    REXX_METHOD(GrxTextBufferSignalConnect, GrxTextBufferSignalConnect),
     REXX_LAST_METHOD()
 };
 

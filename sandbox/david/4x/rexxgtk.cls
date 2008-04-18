@@ -1630,3 +1630,43 @@ return
 return
 
 
+/*============================================================================*/
+/* Class: GtkTextBuffer                                                       */
+/*============================================================================*/
+
+::class GtkTextBuffer public
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxTextBufferNew"
+::METHOD set_text EXTERNAL "LIBRARY rexxgtk GrxTextBufferSetText"
+::METHOD 'text=' EXTERNAL "LIBRARY rexxgtk GrxTextBufferSetText"
+::METHOD get_text EXTERNAL "LIBRARY rexxgtk GrxTextBufferGetText"
+::METHOD text EXTERNAL "LIBRARY rexxgtk GrxTextBufferGetText"
+::METHOD insert_text EXTERNAL "LIBRARY rexxgtk GrxTextBufferInsertText"
+::METHOD cut_clipboard EXTERNAL "LIBRARY rexxgtk GrxTextBufferCutClipboard"
+::METHOD copy_clipboard EXTERNAL "LIBRARY rexxgtk GrxTextBufferCopyClipboard"
+::METHOD paste_clipboard EXTERNAL "LIBRARY rexxgtk GrxTextBufferPasteClipboard"
+::METHOD create_tag_int EXTERNAL "LIBRARY rexxgtk GrxTextBufferCreateTagInt"
+::METHOD create_tag_float EXTERNAL "LIBRARY rexxgtk GrxTextBufferCreateTagFloat"
+::METHOD forward_search EXTERNAL "LIBRARY rexxgtk GrxTextBufferForwardSearch"
+::METHOD forward_search_next EXTERNAL "LIBRARY rexxgtk GrxTextBufferForwardSearchNext"
+::METHOD apply_tag_by_name EXTERNAL "LIBRARY rexxgtk GrxTextBufferApplyTagByName"
+::METHOD remove_all_tags EXTERNAL "LIBRARY rexxgtk GrxTextBufferRemoveAllTags"
+::METHOD insert_image EXTERNAL "LIBRARY rexxgtk GrxTextBufferInsertImage"
+::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxTextBufferSignalConnect"
+
+-- The following are the methods that can be connected to signals. By default
+-- they do nothing.
+
+::method signal_begin_user_action
+return
+
+::method signal_changed
+return
+
+::method signal_end_user_action
+return
+
+::method signal_modified_changed
+return
+
+

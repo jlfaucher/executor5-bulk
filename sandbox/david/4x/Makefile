@@ -66,12 +66,12 @@ OBJECTS = rexxgtk.o \
         grximage.o \
         grxprogressbar.o \
         grxtextview.o \
+        grxtextbuffer.o \
 #       grxinterfaces.o \
 #       grxfilefilter.o \
 #       grxglib.o \
 #       grxadjustment.o \
 #       grxscrolledwindow.o \
-#       grxtextbuffer.o \
 #       grxclipboard.o \
 
 
@@ -153,8 +153,8 @@ grxscrolledwindow.o: grxscrolledwindow.c rexxgtk.h
 grxtextview.o: grxtextview.cpp rexxgtk.h
 	gcc -c $(GRXCFLAGS) grxtextview.cpp
 
-grxtextbuffer.o: grxtextbuffer.c rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxtextbuffer.c
+grxtextbuffer.o: grxtextbuffer.cpp rexxgtk.h
+	gcc -c $(GRXCFLAGS) grxtextbuffer.cpp
 
 grxclipboard.o: grxclipboard.c rexxgtk.h
 	gcc -c $(GRXCFLAGS) grxclipboard.c
