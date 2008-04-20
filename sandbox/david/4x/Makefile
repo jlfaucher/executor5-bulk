@@ -68,11 +68,10 @@ OBJECTS = rexxgtk.o \
         grxtextview.o \
         grxtextbuffer.o \
         grxglib.o \
-#       grxinterfaces.o \
-#       grxfilefilter.o \
-#       grxadjustment.o \
-#       grxscrolledwindow.o \
-#       grxclipboard.o \
+        grxinterfaces.o \
+        grxclipboard.o \
+        grxadjustment.o \
+        grxscrolledwindow.o
 
 
 # Build the shared library
@@ -123,11 +122,8 @@ grxnotebook.o: grxnotebook.cpp rexxgtk.h
 grxrange.o: grxrange.cpp rexxgtk.h
 	gcc -c $(GRXCFLAGS) grxrange.cpp
 
-grxinterfaces.o: grxinterfaces.c rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxinterfaces.c
-
-grxfilefilter.o: grxfilefilter.c rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxfilefilter.c
+grxinterfaces.o: grxinterfaces.cpp rexxgtk.h
+	gcc -c $(GRXCFLAGS) grxinterfaces.cpp
 
 grximage.o: grximage.cpp rexxgtk.h
 	gcc -c $(GRXCFLAGS) grximage.cpp
@@ -144,11 +140,11 @@ grxassistant.o: grxassistant.cpp rexxgtk.h
 grxprogressbar.o: grxprogressbar.cpp rexxgtk.h
 	gcc -c $(GRXCFLAGS) grxprogressbar.cpp
 
-grxadjustment.o: grxadjustment.c rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxadjustment.c
+grxadjustment.o: grxadjustment.cpp rexxgtk.h
+	gcc -c $(GRXCFLAGS) grxadjustment.cpp
 
-grxscrolledwindow.o: grxscrolledwindow.c rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxscrolledwindow.c
+grxscrolledwindow.o: grxscrolledwindow.cpp rexxgtk.h
+	gcc -c $(GRXCFLAGS) grxscrolledwindow.cpp
 
 grxtextview.o: grxtextview.cpp rexxgtk.h
 	gcc -c $(GRXCFLAGS) grxtextview.cpp
@@ -156,8 +152,8 @@ grxtextview.o: grxtextview.cpp rexxgtk.h
 grxtextbuffer.o: grxtextbuffer.cpp rexxgtk.h
 	gcc -c $(GRXCFLAGS) grxtextbuffer.cpp
 
-grxclipboard.o: grxclipboard.c rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxclipboard.c
+grxclipboard.o: grxclipboard.cpp rexxgtk.h
+	gcc -c $(GRXCFLAGS) grxclipboard.cpp
 
 grxcombobox.o: grxcombobox.cpp rexxgtk.h
 	gcc -c $(GRXCFLAGS) grxcombobox.cpp

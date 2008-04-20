@@ -609,6 +609,58 @@ return
 ::method signal_set_focus
 return
 
+
+/*============================================================================*/
+/* Class: GtkScrolledWindow                                                   */
+/*============================================================================*/
+
+::class GtkScrolledWindow public subclass GtkContainer
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxScrolledWindowNew"
+::METHOD hadjustment EXTERNAL "LIBRARY rexxgtk GrxScrolledWindowGetHAdjustment"
+::METHOD get_hadjustment EXTERNAL "LIBRARY rexxgtk GrxScrolledWindowGetHAdjustment"
+::METHOD vadjustment EXTERNAL "LIBRARY rexxgtk GrxScrolledWindowGetVAdjustment"
+::METHOD get_vadjustment EXTERNAL "LIBRARY rexxgtk GrxScrolledWindowGetVAdjustment"
+::METHOD set_policy EXTERNAL "LIBRARY rexxgtk GrxScrolledWindowSetPolicy"
+::METHOD add_with_viewport EXTERNAL "LIBRARY rexxgtk GrxScrolledWindowAddWithViewport"
+::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxScrolledWindowSignalConnect"
+
+-- The following are the methods that can be connected to signals. By default
+-- they do nothing.
+
+::method signal_move_focus_out
+return
+
+::method signal_scroll_child
+return
+
+
+/*============================================================================*/
+/* Class: GtkViewport                                                         */
+/*============================================================================*/
+
+::class GtkViewport public subclass GtkContainer
+
+::method init
+use strict arg hadj, vadj
+if hadj = .nil then hptr = 0
+else hptr = hadj~pointer
+if vadj = .nil then vptr = 0
+else vptr = vadj~pointer
+self~pointer = GrxViewportNew(hptr, vptr)
+return
+
+::method signal_connect
+use strict arg event
+select
+   when event = 'set-scroll-adjustments' then call GrxContainerConnectSignal self~pointer, event
+   otherwise return self~signal_connect:super(event)
+   end
+return .true
+
+::method signal_set_scroll_adjustments
+return
+
 /*============================================================================*/
 /* Class: GtkButton                                                           */
 /*============================================================================*/
@@ -1671,6 +1723,35 @@ return
 
 
 /*============================================================================*/
+/* Class: GtkAdjustment                                                       */
+/*============================================================================*/
+
+::class GtkAdjustment public
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxAdjustmentNew"
+
+::method pointer
+expose !pointer
+return !pointer
+
+::METHOD set_value EXTERNAL "LIBRARY rexxgtk GrxAdjustmentSetValue"
+::METHOD 'value=' EXTERNAL "LIBRARY rexxgtk GrxAdjustmentSetValue"
+::METHOD get_value EXTERNAL "LIBRARY rexxgtk GrxAdjustmentGetValue"
+::METHOD value EXTERNAL "LIBRARY rexxgtk GrxAdjustmentGetValue"
+::METHOD clamp_page EXTERNAL "LIBRARY rexxgtk GrxAdjustmentClampPage"
+::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxAdjustmentSignalConnect"
+
+-- The following are the methods that can be connected to signals. By default
+-- they do nothing.
+
+::method signal_changed
+return
+
+::method signal_value_changed
+return
+
+
+/*============================================================================*/
 /*============================================================================*/
 /*============================================================================*/
 /* These are classes and routines specific to Glib.                           */
@@ -1820,5 +1901,102 @@ do while ptr <> .Nil
    ptr = GrxGListNext(ptr)
    end
 return list
+
+
+/*============================================================================*/
+/*============================================================================*/
+/*============================================================================*/
+/* These are helper classes. Most of these just provide interfaces for other  */
+/* classes to use. Some are just standalone classes.                          */
+/*============================================================================*/
+/*============================================================================*/
+/*============================================================================*/
+
+
+/*============================================================================*/
+/* Class: GtkFileChooser                                                      */
+/* Note:  This is strictly a mixin class. It should never be instantiated on  */
+/*        its own. You should instantiate one of its subclasses instead.      */
+/*============================================================================*/
+
+::class GtkFileChooser public mixinclass Object
+
+::METHOD set_current_folder EXTERNAL "LIBRARY rexxgtk GrxFileChooserSetCurrentFolder"
+::METHOD 'current_folder=' EXTERNAL "LIBRARY rexxgtk GrxFileChooserSetCurrentFolder"
+::METHOD add_filter EXTERNAL "LIBRARY rexxgtk GrxFileChooserAddFilter"
+::METHOD get_filename EXTERNAL "LIBRARY rexxgtk GrxFileChooserGetFilename"
+::METHOD filename EXTERNAL "LIBRARY rexxgtk GrxFileChooserGetFilename"
+::METHOD filenames EXTERNAL "LIBRARY rexxgtk GrxFileChooserGetFilenames"
+::METHOD get_filenames EXTERNAL "LIBRARY rexxgtk GrxFileChooserGetFilenames"
+::METHOD set_select_multiple EXTERNAL "LIBRARY rexxgtk GrxFileChooserSetSelectMultiple"
+::METHOD 'select_multiple=' EXTERNAL "LIBRARY rexxgtk GrxFileChooserSetSelectMultiple"
+::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxFileChooserSignalConnect"
+
+-- The following are the methods that can be connected to signals. By default
+-- they do nothing.
+
+::method signal_current_folder_changed
+return
+
+::method signal_file_activated
+return
+
+::method signal_selection_changed
+return
+
+::method signal_update_preview
+return
+
+
+/*============================================================================*/
+/* Class: GtkFileFilter                                                       */
+/*============================================================================*/
+
+::class GtkFileFilter public
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxFileFilterNew"
+
+::method pointer
+expose !pointer
+return !pointer
+
+::METHOD set_name EXTERNAL "LIBRARY rexxgtk GrxFileFilterSetName"
+::METHOD 'name=' EXTERNAL "LIBRARY rexxgtk GrxFileFilterSetName"
+::METHOD add_pattern EXTERNAL "LIBRARY rexxgtk GrxFileFilterAddPattern"
+
+
+/*============================================================================*/
+/* Class: GtkClipboard                                                        */
+/*============================================================================*/
+
+::class GtkClipboard public
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxClipboardNew"
+
+::method pointer
+expose !pointer
+return !pointer
+
+
+/*============================================================================*/
+/* Class: GtkListStore                                                        */
+/*============================================================================*/
+
+::class GtkListStore public
+
+::method init
+expose pointer
+if arg() = 0 then raise syntax 93.901 array ('at least 1')
+func = 'pointer = GrxListStoreNew('GTK_Constant(arg(1))
+do i = 2 to arg()
+   func = func', 'GTK_Constant(arg(i))
+   end
+func = func')'
+interpret func
+return
+
+::method pointer
+expose !pointer
+return !pointer
 
 

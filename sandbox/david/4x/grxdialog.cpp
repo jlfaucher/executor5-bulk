@@ -169,8 +169,13 @@ RexxMethod9(int,                       // Return type
     context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", context->GetSelf());
     vbox = GTK_DIALOG(myWidget)->vbox;
-    // TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    // Set the vbox attribute here!
+    RexxObjectPtr rxvbox = (RexxObjectPtr)g_object_get_data(G_OBJECT(vbox), "OORXOBJECT");
+    if (rxvbox == NULL) {
+        // no Rexx Object found so create the Rexx Object
+        // TODO: Need to create the class method NEWFROMPOINTER
+        RexxClassObject cobj = context->FindClass("GtkVBox");
+        rxvbox = context->SendMessage1(cobj, "NEWFROMPOINTER", context->NewPointer(vbox));
+    }
 
     return 0;
 }
