@@ -87,11 +87,11 @@ buffer~create_tag_int('italic', 'style', .gtk~PANGO_STYLE_ITALIC)
 buffer~create_tag_int('strike', 'strikethrough', .true)
 buffer~create_tag_int('underline', 'underline', .gtk~PANGO_UNDERLINE_SINGLE)
 
-bold = .myFormatButton~new(.gtk~GTK_STOCK_BOLD)
-italic = .myFormatButton~new(.gtk~GTK_STOCK_ITALIC)
-underline = .myFormatButton~new(.gtk~GTK_STOCK_UNDERLINE)
-strike = .myFormatButton~new(.gtk~GTK_STOCK_STRIKETHROUGH)
-clear = .myClearButton~new(.gtk~GTK_STOCK_CLEAR)
+bold = .myFormatButton~newFromStock(.gtk~GTK_STOCK_BOLD)
+italic = .myFormatButton~newFromStock(.gtk~GTK_STOCK_ITALIC)
+underline = .myFormatButton~newFromStock(.gtk~GTK_STOCK_UNDERLINE)
+strike = .myFormatButton~newFromStock(.gtk~GTK_STOCK_STRIKETHROUGH)
+clear = .myClearButton~newFromStock(.gtk~GTK_STOCK_CLEAR)
 scale = .myComboBox~new()
 
 do ts over text_scales
@@ -160,7 +160,7 @@ call gtk_main_quit
 return
 
 
-::class myFormatButton subclass GtkButton_From_Stock
+::class myFormatButton subclass GtkButton
 
 ::method signal_clicked
 tagname = self~get_data('tag')
@@ -181,7 +181,7 @@ self~set_active(-1)
 return
 
 
-::class myClearButton subclass GtkButton_From_Stock
+::class myClearButton subclass GtkButton
 
 ::method signal_clicked
 self~user_data~remove_all_tags()

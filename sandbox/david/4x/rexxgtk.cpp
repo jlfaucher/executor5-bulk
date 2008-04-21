@@ -434,7 +434,7 @@ RexxMethodEntry gtkobject_methods[] = {
     REXX_METHOD(GrxVPanedNew, GrxVPanedNew),
     REXX_METHOD(GrxHPanedNew, GrxHPanedNew),
     REXX_METHOD(GrxButtonNew, GrxButtonNew),
-    REXX_METHOD(GrxButtonNewFromStock, GrxButtonNewFromStock),
+    REXX_METHOD(GrxButtonSetUseStock, GrxButtonSetUseStock),
     REXX_METHOD(GrxButtonSetLabel, GrxButtonSetLabel),
     REXX_METHOD(GrxButtonGetLabel, GrxButtonGetLabel),
     REXX_METHOD(GrxButtonSetRelief, GrxButtonSetRelief),

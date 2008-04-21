@@ -96,24 +96,20 @@ RexxMethod1(int,                       // Return type
 }
 
 /*
- * Method:  init
+ * Method:  set_use_stock
  *
- * Create a push button from stock.
- *
- * @param type    The button type.
+ * Indicate the label is a stock item.
  *
  * @return        Zero.
  */
-RexxMethod2(int,                       // Return type
-            GrxButtonNewFromStock,     // Object_method name
-            OSELF, self,               // Self
-            CSTRING, type)             // Button type
+RexxMethod1(int,                       // Return type
+            GrxButtonSetUseStock,      // Object_method name
+            logical_t, flag)           // Label is stock item flag
 {
-    GtkWidget *myWidget;
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    GtkButton *myWidget = (GtkButton *)context->PointerValue(rxptr);
 
-    myWidget = gtk_button_new_from_stock(type);
-    context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
-    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
+    gtk_button_set_use_stock(myWidget, flag);
 
     return 0;
 }

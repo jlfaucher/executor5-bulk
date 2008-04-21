@@ -58,7 +58,7 @@ check1~user_data = check2
 check2~set_sensitive(.false)
 check1~signal_connect("toggled")
 
-close = .MyButton~new(.gtk~GTK_STOCK_CLOSE)
+close = .MyButton~newFromStock(.gtk~GTK_STOCK_CLOSE)
 close~signal_connect("clicked")
 
 vbox = .GtkVBox~new(.false, 5)
@@ -81,7 +81,7 @@ return
 call gtk_main_quit
 return
 
-::class MyButton subclass GtkButton_From_Stock
+::class MyButton subclass GtkButton
 
 ::method signal_clicked
 widgetpointer = upper(GrxWidgetGetTopLevel(self~pointer))

@@ -50,7 +50,7 @@ window~signal_connect("destroy")
 window~set_border_width(10)
 window~set_size_request(250, 100)
 
-button = .MyButton~new(.gtk~GTK_STOCK_CLOSE)
+button = .MyButton~newFromStock(.gtk~GTK_STOCK_CLOSE)
 
 button~signal_connect("clicked")
 
@@ -69,7 +69,7 @@ return
 call gtk_main_quit
 return
 
-::class MyButton subclass GtkButton_From_Stock
+::class MyButton subclass GtkButton
 
 ::method signal_clicked
 widget = self~toplevel()

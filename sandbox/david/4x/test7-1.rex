@@ -63,10 +63,10 @@ table2~set_col_spacings(5)
 
 do i = 1 to 10
    do j = 1 to 10
-      buttons1[i, j] = .GtkButton_from_stock~new('GTK_STOCK_CLOSE')
-      buttons2[i, j] = .GtkButton_from_stock~new('GTK_STOCK_CLOSE')
-      buttons1[i, j]~set_relief('GTK_RELIEF_NONE')
-      buttons2[i, j]~set_relief('GTK_RELIEF_NONE')
+      buttons1[i, j] = .GtkButton~newFromStock(.gtk~GTK_STOCK_CLOSE)
+      buttons2[i, j] = .GtkButton~newFromStock(.gtk~GTK_STOCK_CLOSE)
+      buttons1[i, j]~set_relief(.gtk~GTK_RELIEF_NONE)
+      buttons2[i, j]~set_relief(.gtk~GTK_RELIEF_NONE)
       table1~attach_defaults(buttons1[i, j], i, i + 1, j, j +1)
       table2~attach_defaults(buttons2[i, j], i, i + 1, j, j +1)
       end

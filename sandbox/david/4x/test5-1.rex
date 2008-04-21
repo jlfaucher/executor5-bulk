@@ -80,7 +80,7 @@ dialog = .GtkDialog_With_Buttons~new('Information', self~user_data,,
 dialog~set_has_separator(.false)
 
 label= .GtkLabel~new('The button was clicked!')
-image = .GtkImage_From_Stock~new(.gtk~GTK_STOCK_DIALOG_INFO, .gtk~GTK_ICON_SIZE_DIALOG)
+image = .GtkImage~newFromStock(.gtk~GTK_STOCK_DIALOG_INFO, .gtk~GTK_ICON_SIZE_DIALOG)
 
 hbox = .GtkHBox~new(.false, 5)
 hbox~set_border_width(10)

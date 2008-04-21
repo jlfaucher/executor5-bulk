@@ -49,7 +49,7 @@ window~set_title('Dialogs')
 window~signal_connect("destroy")
 window~set_border_width(10)
 
-button = .MyButton~new('_Click Me')
+button = .MyButton~newWithMnemonic('_Click Me')
 
 -- save data for the callback
 button~user_data = window
@@ -71,7 +71,7 @@ return
 call gtk_main_quit
 return
 
-::class MyButton subclass GtkButton_With_Mnemonic
+::class MyButton subclass GtkButton
 
 ::method signal_clicked
 dialog = .myDialog~new('Information', self~user_data,,
@@ -80,7 +80,7 @@ dialog = .myDialog~new('Information', self~user_data,,
 dialog~set_has_separator(.false)
 
 label= .GtkLabel~new('The button was clicked!')
-image = .GtkImage_From_Stock~new(.gtk~GTK_STOCK_DIALOG_INFO, .gtk~GTK_ICON_SIZE_DIALOG)
+image = .GtkImage~newFromStock(.gtk~GTK_STOCK_DIALOG_INFO, .gtk~GTK_ICON_SIZE_DIALOG)
 
 hbox = .GtkHBox~new(.false, 5)
 hbox~set_border_width(10)

@@ -658,6 +658,12 @@ return
 
 ::class GtkButton public subclass GtkContainer
 
+::method newWithLabel class
+use arg label = ''
+button = self~new()
+button~label = label
+return button
+
 ::method newWithMnemonic class
 use arg label = ''
 button = self~new()
@@ -665,10 +671,11 @@ button~label = label
 button~use_underline = .true
 return button
 
-::method newWithLabel class
+::method newFromStock class
 use arg label = ''
 button = self~new()
 button~label = label
+button~set_use_stock = .true
 return button
 
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxButtonNew"
@@ -679,6 +686,7 @@ return button
 ::METHOD set_use_underline EXTERNAL "LIBRARY rexxgtk GrxButtonUseUnderline"
 ::METHOD 'relief=' EXTERNAL "LIBRARY rexxgtk GrxButtonSetRelief"
 ::METHOD set_relief EXTERNAL "LIBRARY rexxgtk GrxButtonSetRelief"
+::METHOD set_use_stock EXTERNAL "LIBRARY rexxgtk GrxButtonSetUseStock"
 ::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxButtonSignalConnect"
 
 -- The following are the methods that can be connected to signals. By default
@@ -698,14 +706,6 @@ return
 
 ::method signal_leave
 return
-
-/*============================================================================*/
-/* Class: GtkButton_From_Stock                                                */
-/*============================================================================*/
-
-::class GtkButton_From_Stock public subclass GtkButton
-
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxButtonNewFromStock"
 
 
 /*============================================================================*/
@@ -1490,49 +1490,28 @@ return self~signal_connect:super(event)
 
 ::class GtkImage public subclass GtkWidget
 
+::method newFromFile class
+use strict arg filename
+img = self~new()
+img~set_from_file(filename)
+return img
+
+::method newFromStock class
+use strict arg stockid, size
+img = self~new()
+img~set_from_stock(stockid, size)
+return img
+
+::method newFromIconName class
+use strict arg iconname, size
+img = self~new()
+img~set_from_icon_name(iconname, size)
+return img
+
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxImageNew"
 ::METHOD set_from_file EXTERNAL "LIBRARY rexxgtk GrxImageSetFromFile"
 ::METHOD set_from_stock EXTERNAL "LIBRARY rexxgtk GrxImageSetFromStock"
 ::METHOD set_from_icon_name EXTERNAL "LIBRARY rexxgtk GrxImageSetFromIconName"
-
-
-/*============================================================================*/
-/* Class: GtkImage_From_File                                                  */
-/*============================================================================*/
-
-::class GtkImage_From_File public subclass GtkImage
-
-::method init
-self~init:super()
-use strict arg filename
-self~set_from_file(filename)
-return
-
-
-/*============================================================================*/
-/* Class: GtkImage_From_Stock                                                 */
-/*============================================================================*/
-
-::class GtkImage_From_Stock public subclass GtkImage
-
-::method init
-self~init:super()
-use strict arg stockid, size
-self~set_from_stock(stockid, size)
-return
-
-
-/*============================================================================*/
-/* Class: GtkImage_From_Icon_Name                                             */
-/*============================================================================*/
-
-::class GtkImage_From_Icon_Name public subclass GtkImage
-
-::method init
-self~init:super()
-use strict arg iconname, size
-self~set_from_icon_name(iconname, size)
-return
 
 
 /*============================================================================*/
