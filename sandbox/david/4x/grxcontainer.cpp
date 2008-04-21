@@ -429,9 +429,7 @@ RexxMethod1(RexxObjectPtr,             // Return type
 /**
  * Method:  init
  *
- * Create a new Alignment.
- *
- * @param xalign  The X alignment
+ * Create a new viewport.
  *
  * @param hadj    The horizontal adjustment
  *

@@ -663,22 +663,11 @@ return
 
 ::class GtkViewport public subclass GtkContainer
 
-::method init
-use strict arg hadj, vadj
-if hadj = .nil then hptr = 0
-else hptr = hadj~pointer
-if vadj = .nil then vptr = 0
-else vptr = vadj~pointer
-self~pointer = GrxViewportNew(hptr, vptr)
-return
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxViewportNew"
+::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxViewportSignalConnect"
 
-::method signal_connect
-use strict arg event
-select
-   when event = 'set-scroll-adjustments' then call GrxContainerConnectSignal self~pointer, event
-   otherwise return self~signal_connect:super(event)
-   end
-return .true
+-- The following are the methods that can be connected to signals. By default
+-- they do nothing.
 
 ::method signal_set_scroll_adjustments
 return
@@ -2017,28 +2006,6 @@ return !pointer
 ::class GtkClipboard public
 
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxClipboardNew"
-
-::method pointer
-expose !pointer
-return !pointer
-
-
-/*============================================================================*/
-/* Class: GtkListStore                                                        */
-/*============================================================================*/
-
-::class GtkListStore public
-
-::method init
-expose pointer
-if arg() = 0 then raise syntax 93.901 array ('at least 1')
-func = 'pointer = GrxListStoreNew('GTK_Constant(arg(1))
-do i = 2 to arg()
-   func = func', 'GTK_Constant(arg(i))
-   end
-func = func')'
-interpret func
-return
 
 ::method pointer
 expose !pointer
