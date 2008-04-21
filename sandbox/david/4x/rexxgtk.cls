@@ -497,16 +497,6 @@ return self~signal_connect:super(event)
 
 
 /*============================================================================*/
-/* Class: GtkHBox_From_Pointer                                                */
-/*============================================================================*/
-
-::class GtkHBox_From_Pointer private subclass GtkHBox
-
-::method init
-return
-
-
-/*============================================================================*/
 /* Class: GtkVBox                                                             */
 /*============================================================================*/
 
@@ -528,16 +518,6 @@ return
 ::method signal_connect
 use strict arg event
 return self~signal_connect:super(event)
-
-
-/*============================================================================*/
-/* Class: GtkVBox_From_Pointer                                                */
-/*============================================================================*/
-
-::class GtkVBox_From_Pointer private subclass GtkVBox
-
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxVBoxNewFromPointer"
-return
 
 
 /*============================================================================*/
@@ -678,13 +658,7 @@ return
 
 ::class GtkButton public subclass GtkContainer
 
-::METHOD init_p private EXTERNAL "LIBRARY rexxgtk GrxButtonNew"
-
-::method init
-use strict arg self~label = ''
-self~init_p
-return
-
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxButtonNew"
 ::METHOD label EXTERNAL "LIBRARY rexxgtk GrxButtonGetLabel"
 ::METHOD get_label EXTERNAL "LIBRARY rexxgtk GrxButtonGetLabel"
 ::METHOD 'label=' EXTERNAL "LIBRARY rexxgtk GrxButtonSetLabel"
@@ -721,8 +695,8 @@ return
 ::method init
 self~init:super
 use arg label = ''
-self~use_underline = .true
 self~label = label
+self~use_underline = .true
 return
 
 /*============================================================================*/
