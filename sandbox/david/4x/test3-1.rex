@@ -55,7 +55,7 @@ window~signal_connect("destroy")
 vbox = .GtkVBox~new()
 
 do i = 1 to names~items()
-   button = .myButton~new(names[i])
+   button = .myButton~newWithMnemonic(names[i])
    vbox~pack_start_defaults(button)
    button~signal_connect("clicked")
    end
@@ -76,7 +76,7 @@ return
 call gtk_main_quit
 return
 
-::class myButton subclass GtkButton_With_Mnemonic
+::class myButton subclass GtkButton
 
 ::method signal_clicked
 widget = self~get_toplevel()

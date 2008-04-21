@@ -51,7 +51,7 @@ window~set_size_request(200, 100)
 
 window~signal_connect("destroy")
 
-button = .MyButton~new('_Close')
+button = .MyButton~newWithMnemonic('_Close')
 
 button~signal_connect("clicked")
 
@@ -72,7 +72,7 @@ return
 call gtk_main_quit
 return
 
-::class MyButton subclass GtkButton_With_Mnemonic
+::class MyButton subclass GtkButton
 
 ::method signal_clicked
 widget = self~get_toplevel()

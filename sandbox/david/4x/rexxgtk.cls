@@ -714,6 +714,19 @@ return
 
 ::class GtkToggleButton public subclass GtkButton
 
+::method newWithLabel class
+use arg label = ''
+button = self~new()
+button~label = label
+return button
+
+::method newWithMnemonic class
+use arg label = ''
+button = self~new()
+button~label = label
+button~use_underline = .true
+return button
+
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxToggleButtonNew"
 ::METHOD mode EXTERNAL "LIBRARY rexxgtk GrxToggleButtonGetMode"
 ::METHOD get_mode EXTERNAL "LIBRARY rexxgtk GrxToggleButtonGetMode"
@@ -730,31 +743,6 @@ return
 ::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxToggleButtonSignalConnect"
 
 ::method signal_toggled
-return
-
-/*============================================================================*/
-/* Class: GtkToggleButton_With_Mnemonic                                       */
-/*============================================================================*/
-
-::class GtkToggleButton_With_Mnemonic public subclass GtkToggleButton
-
-::method init
-self~init:super
-use arg label = ''
-self~use_underline = .true
-self~label = label
-return
-
-/*============================================================================*/
-/* Class: GtkToggleButton_With_Label                                          */
-/*============================================================================*/
-
-::class GtkToggleButton_With_Label public subclass GtkToggleButton
-
-::method init
-self~init:super
-use arg label = ''
-self~label = label
 return
 
 

@@ -57,7 +57,7 @@ window~set_size_request(200, -1)
 vbox = .GtkVBox~new()
 
 do i = 1 to names~items()
-   button = .MyButton~new(names[i])
+   button = .MyButton~newWithMnemonic(names[i])
    vbox~pack_end(button, .false, .false, 5)
    button~signal_connect("clicked")
    end
@@ -79,7 +79,7 @@ return
 call gtk_main_quit
 return
 
-::class myButton subclass GtkButton_With_Mnemonic
+::class myButton subclass GtkButton
 
 ::method signal_clicked
 widget = self~get_toplevel()

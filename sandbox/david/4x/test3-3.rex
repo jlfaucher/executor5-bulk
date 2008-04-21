@@ -54,8 +54,8 @@ window~set_border_width(10)
 window~set_size_request(225, 150)
 
 hpaned = .GtkHPaned~new()
-button1 = .MyButton~new('Resize')
-button2 = .MyButton~new('Me!')
+button1 = .MyButton~newWithMnemonic('Resize')
+button2 = .MyButton~newWithMnemonic('Me!')
 
 button1~signal_connect("clicked")
 button2~signal_connect("clicked")
@@ -80,7 +80,7 @@ return
 call gtk_main_quit
 return
 
-::class myButton subclass GtkButton_With_Mnemonic
+::class myButton subclass GtkButton
 
 ::method signal_clicked
 widget = self~get_toplevel()

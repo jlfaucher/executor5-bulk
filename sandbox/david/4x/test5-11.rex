@@ -61,7 +61,7 @@ page[1]~widget = .GtkLabel~new('This is an example of a GtkAssistant. By' || '0A
                                'clicking the forward button, you can continue' || '0A'x ||,
                                'to the next section')
 page[2]~widget = .GtkHBox~new(.false, 5)
-page[3]~widget = .MyCheckButton~new('Click Me To Continue')
+page[3]~widget = .MyCheckButton~newWithLabel('Click Me To Continue')
 page[4]~widget = .GtkAlignment~new(0.5, 0.5, 0.0, 0.0)
 page[5]~widget = .GtkLabel~new('Text has been entered in the label and the' || '0A'x ||,
                                'combo box is clicked. If you are done, then' || '0A'x ||,
@@ -72,7 +72,7 @@ entry = .myEntry~new()
 page[2]~widget~pack_start(label, .false, .false, 5)
 page[2]~widget~pack_start(entry, .false, .false, 5)
 
-button = .myButton~new('Click me!')
+button = .myButton~newWithLabel('Click me!')
 progress = .GtkProgressBar~new()
 hbox = .GtkHBox~new(.false, 5)
 hbox~pack_start(progress, .true, .false, 5)
@@ -135,7 +135,7 @@ page = self~user_data~get_nth_page(num)
 self~user_data~~set_page_complete(page, length(text))
 return
 
-::class myButton subclass GtkButton_With_Label
+::class myButton subclass GtkButton
 
 ::method signal_clicked
 percent = 0
@@ -156,7 +156,7 @@ do while percent <= 100
 assistant~set_page_complete(page, .true)
 return
 
-::class myCheckButton subclass GtkCheckButton_With_Label
+::class myCheckButton subclass GtkCheckButton
 
 ::method signal_toggled
 active = self~get_active()
