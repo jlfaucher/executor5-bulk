@@ -217,10 +217,9 @@ RexxMethod0(RexxObjectPtr,             // Return type
     return (RexxObjectPtr)g_object_get_data(G_OBJECT(myBuffer), "OORXOBJECT");
     RexxObjectPtr txtbuf = (RexxObjectPtr)g_object_get_data(G_OBJECT(myBuffer), "OORXOBJECT");
     if (txtbuf == NULL) {
-        // no Rexx Object found so create the Rexx Object
-        // TODO: Need to create the class method NEWFROMPOINTER
+        // no Rexx Object found so create it
         RexxClassObject cobj = context->FindClass("GtkTextBuffer");
-        txtbuf = context->SendMessage1(cobj, "NEWFROMPOINTER", context->NewPointer(myBuffer));
+        txtbuf = context->SendMessage1(cobj, "NEW", context->NewPointer(myBuffer));
     }
     return txtbuf;
 }

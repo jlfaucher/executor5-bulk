@@ -478,7 +478,18 @@ return self~signal_connect:super(event)
 
 ::class GtkHBox public subclass GtkBox
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxHBoxNew"
+::method init
+if arg() = 1 then do
+   use strict arg ptr
+   self~init_1args(ptr)
+   return
+   end
+use strict arg homog, spacing
+self~init_2args(homog, spacing)
+return
+
+::METHOD init_1args private EXTERNAL "LIBRARY rexxgtk GrxHBoxNewFromPtr"
+::METHOD init_2args private EXTERNAL "LIBRARY rexxgtk GrxHBoxNew"
 
 ::method signal_connect
 use strict arg event
@@ -501,7 +512,18 @@ return
 
 ::class GtkVBox public subclass GtkBox
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxVBoxNew"
+::method init
+if arg() = 1 then do
+   use strict arg ptr
+   self~init_1args(ptr)
+   return
+   end
+use strict arg homog, spacing
+self~init_2args(homog, spacing)
+return
+
+::METHOD init_1args private EXTERNAL "LIBRARY rexxgtk GrxVBoxNewFromPtr"
+::METHOD init_2args private EXTERNAL "LIBRARY rexxgtk GrxVBoxNew"
 
 ::method signal_connect
 use strict arg event
@@ -1688,6 +1710,18 @@ return
 
 ::class GtkTextBuffer public
 
+::method init
+if arg() = 1 then do
+   use strict arg ptr
+   self~init_1args(ptr)
+   return
+   end
+self~init_0args()
+return
+
+::METHOD init_1args private EXTERNAL "LIBRARY rexxgtk GrxTextBufferNewFromPtr"
+::METHOD init_0args private EXTERNAL "LIBRARY rexxgtk GrxTextBufferNew"
+
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxTextBufferNew"
 ::METHOD set_text EXTERNAL "LIBRARY rexxgtk GrxTextBufferSetText"
 ::METHOD 'text=' EXTERNAL "LIBRARY rexxgtk GrxTextBufferSetText"
@@ -1728,7 +1762,18 @@ return
 
 ::class GtkAdjustment public
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxAdjustmentNew"
+::method init
+if arg() = 1 then do
+   use strict arg ptr
+   self~init_1args(ptr)
+   return
+   end
+use strict arg value, upper, lower, step, page, pagesz
+self~init_6args(value, upper, lower, step, page, pagesz)
+return
+
+::METHOD init_1args private EXTERNAL "LIBRARY rexxgtk GrxAdjustmentNew"
+::METHOD init_6args private EXTERNAL "LIBRARY rexxgtk GrxAdjustmentNewFromPtr"
 
 ::method pointer
 expose !pointer

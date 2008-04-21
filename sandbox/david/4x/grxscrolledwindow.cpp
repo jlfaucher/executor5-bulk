@@ -154,10 +154,9 @@ RexxMethod0(RexxObjectPtr,             // Return type
     adj = gtk_scrolled_window_get_hadjustment(myWidget);
     RexxObjectPtr rxhadj = (RexxObjectPtr)g_object_get_data(G_OBJECT(adj), "OORXOBJECT");
     if (rxhadj == NULL) {
-        // no Rexx Oject found so create the Rexx Object
-        // TODO: Need to create the class method NEWFROMPOINTER
+        // no Rexx Oject found so create it
         RexxClassObject cobj = context->FindClass("GtkAdjustment");
-        rxhadj = context->SendMessage1(cobj, "NEWFROMPOINTER", context->NewPointer(adj));
+        rxhadj = context->SendMessage1(cobj, "NEW", context->NewPointer(adj));
     }
     return rxhadj;
 }
@@ -179,10 +178,9 @@ RexxMethod0(RexxObjectPtr,             // Return type
     adj = gtk_scrolled_window_get_vadjustment(myWidget);
     RexxObjectPtr rxvadj = (RexxObjectPtr)g_object_get_data(G_OBJECT(adj), "OORXOBJECT");
     if (rxvadj == NULL) {
-        // no Rexx Object found so create the Rexx Object
-        // TODO: Need to create the class method NEWFROMPOINTER
+        // no Rexx Object found so create it
         RexxClassObject cobj = context->FindClass("GtkAdjustment");
-        rxvadj = context->SendMessage1(cobj, "NEWFROMPOINTER", context->NewPointer(adj));
+        rxvadj = context->SendMessage1(cobj, "NEW", context->NewPointer(adj));
     }
     return rxvadj;
 }

@@ -76,7 +76,7 @@ static void signal_func_0(GtkWidget *window,
 /*============================================================================*/
 
 /*
- * Method:  init
+ * Method:  init (6 args)
  *
  * Create an adjustment.
  *
@@ -108,6 +108,28 @@ RexxMethod7(int,                       // Return type
 
     adj = (GtkAdjustment *)gtk_adjustment_new(value, upper, lower, step,
                                               page, pagesz);
+    context->SetObjectVariable("!POINTER", context->NewPointer(adj));
+    g_object_set_data(G_OBJECT(adj), "OORXOBJECT", self);
+
+    return 0;
+}
+
+/*
+ * Method:  init (1 arg)
+ *
+ * Create an adjustment fro an existing widget.
+ *
+ * @param rxptr   The adjustment pointer
+ *
+ * @return        Zero.
+ */
+RexxMethod2(int,                       // Return type
+            GrxAdjustmentNewFromPtr,   // Object_method name
+            OSELF, self,               // Self
+            RexxObjectPtr, rxptr)      // Widget pointer
+{
+    GtkAdjustment *adj = (GtkAdjustment *)context->PointerValue((RexxPointerObject)rxptr);
+
     context->SetObjectVariable("!POINTER", context->NewPointer(adj));
     g_object_set_data(G_OBJECT(adj), "OORXOBJECT", self);
 

@@ -80,20 +80,37 @@ static void signal_func_0(GtkWidget *window,
  *
  * Create an textbuffer.
  *
- * @param tagtable A tag table object.
+ * @return        Zero.
+ */
+RexxMethod1(int,                       // Return type
+            GrxTextBufferNew,          // Object_method name
+            OSELF, self)               // Self
+{
+    GtkTextBuffer       *myBuffer;
+
+    myBuffer = gtk_text_buffer_new(NULL);
+    context->SetObjectVariable("!POINTER", context->NewPointer(myBuffer));
+    g_object_set_data(G_OBJECT(myBuffer), "OORXOBJECT", self);
+
+    return 0;
+}
+
+/*
+ * Method:  init
+ *
+ * Create an textbuffer.
+ *
+ * @param rxptr   The widget pointer
  *
  * @return        Zero.
  */
 RexxMethod2(int,                       // Return type
-            GrxTextBufferNew,          // Object_method name
+            GrxTextBufferNewFromPtr,   // Object_method name
             OSELF, self,               // Self
-            RexxObjectPtr, tagtable)   // Tagtable object
+            RexxObjectPtr, rxptr)
 {
-    RexxPointerObject rxttable = (RexxPointerObject)context->SendMessage0(tagtable, "POINTER");
-    GtkTextTagTable *myTable = (GtkTextTagTable *)context->PointerValue(rxttable);
-    GtkTextBuffer       *myBuffer;
+    GtkTextBuffer *myBuffer = (GtkTextBuffer *)context->PointerValue((RexxPointerObject)rxptr);
 
-    myBuffer = gtk_text_buffer_new(myTable);
     context->SetObjectVariable("!POINTER", context->NewPointer(myBuffer));
     g_object_set_data(G_OBJECT(myBuffer), "OORXOBJECT", self);
 

@@ -222,13 +222,13 @@ RexxMethod4(int,                       // Return type
 }
 
 /**
- * Method:  init
+ * Method:  init (2 args)
  *
  * Create a new VBox.
  *
  * @param homog   The homogeneous boolean
  *
- * @param spacing The spacing amoint
+ * @param spacing The spacing amount
  *
  * @return        Zero.
  */
@@ -249,9 +249,31 @@ RexxMethod3(int,                       // Return type
 }
 
 /**
+ * Method:  init (1 arg)
+ *
+ * Create a new VBox.
+ *
+ * @param rxptr   The vbox widget pointer
+ *
+ * @return        Zero.
+ */
+RexxMethod2(int,                       // Return type
+            GrxVBoxNewFromPtr,         // Object_method name
+            OSELF, self,               // Self
+            RexxObjectPtr, rxptr)      // Homogeneous boolean
+{
+    GtkVBox *vbox = (GtkVBox *)context->PointerValue((RexxPointerObject)rxptr);
+
+    context->SetObjectVariable("!POINTER", context->NewPointer(vbox));
+    g_object_set_data(G_OBJECT(vbox), "OORXOBJECT", self);
+
+    return 0;
+}
+
+/**
  * Method:  init
  *
- * Create a new VBox from a pointer.
+ * Create a new HBox from a pointer.
  *
  * @param ptr     The VBoc pointer
  *
@@ -277,7 +299,7 @@ RexxMethod2(int,                       // Return type
  *
  * @param homog   The homogeneous boolean
  *
- * @param spacing The spacing amoint
+ * @param spacing The spacing amount
  *
  * @return        Zero.
  */
@@ -292,6 +314,28 @@ RexxMethod3(int,                       // Return type
     myWidget = gtk_hbox_new(homogeneous, spacing);
     context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
+
+    return 0;
+}
+
+/**
+ * Method:  init (1 arg)
+ *
+ * Create a new HBox.
+ *
+ * @param rxptr   The hbox widget pointer
+ *
+ * @return        Zero.
+ */
+RexxMethod2(int,                       // Return type
+            GrxHBoxNewFromPtr,         // Object_method name
+            OSELF, self,               // Self
+            RexxObjectPtr, rxptr)      // Homogeneous boolean
+{
+    GtkVBox *hbox = (GtkVBox *)context->PointerValue((RexxPointerObject)rxptr);
+
+    context->SetObjectVariable("!POINTER", context->NewPointer(hbox));
+    g_object_set_data(G_OBJECT(hbox), "OORXOBJECT", self);
 
     return 0;
 }
