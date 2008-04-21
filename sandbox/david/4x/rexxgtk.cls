@@ -658,6 +658,19 @@ return
 
 ::class GtkButton public subclass GtkContainer
 
+::method newWithMnemonic class
+use arg label = ''
+button = self~new()
+button~label = label
+button~use_underline = .true
+return button
+
+::method newWithLabel class
+use arg label = ''
+button = self~new()
+button~label = label
+return button
+
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxButtonNew"
 ::METHOD label EXTERNAL "LIBRARY rexxgtk GrxButtonGetLabel"
 ::METHOD get_label EXTERNAL "LIBRARY rexxgtk GrxButtonGetLabel"
@@ -684,19 +697,6 @@ return
 return
 
 ::method signal_leave
-return
-
-/*============================================================================*/
-/* Class: GtkButton_With_Mnemonic                                             */
-/*============================================================================*/
-
-::class GtkButton_With_Mnemonic public subclass GtkButton
-
-::method init
-self~init:super
-use arg label = ''
-self~label = label
-self~use_underline = .true
 return
 
 /*============================================================================*/
@@ -764,36 +764,26 @@ return
 
 ::class GtkCheckbutton public subclass GtkToggleButton
 
+::method newWithLabel class
+self~init:super
+use arg label = ''
+check = self~new()
+check~label = label
+return check
+
+::method newWithMnemonic class
+self~init:super
+use arg label = ''
+check = self~new()
+check~label = label
+check~use_underline = .true
+return check
+
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxCheckButtonNew"
 
 ::method signal_connect
 use strict arg event
 return self~signal_connect:super(event)
-
-/*============================================================================*/
-/* Class: GtkCheckButton_With_Mnemonic                                        */
-/*============================================================================*/
-
-::class GtkCheckButton_With_Mnemonic public subclass GtkCheckButton
-
-::method init
-self~init:super
-use arg label = ''
-self~use_underline = .true
-self~label = label
-return
-
-/*============================================================================*/
-/* Class: GtkCheckButton_With_Label                                           */
-/*============================================================================*/
-
-::class GtkCheckButton_With_Label public subclass GtkCheckButton
-
-::method init
-self~init:super
-use arg label = ''
-self~label = label
-return
 
 
 /*============================================================================*/
@@ -801,6 +791,19 @@ return
 /*============================================================================*/
 
 ::class GtkRadioButton public subclass GtkCheckbutton
+
+::method newWithLabel class
+use arg group, label = ''
+button = self~new(group)
+button~label = label
+return
+
+::method newWithMnemonic class
+use arg group, label = ''
+button = self~new(group)
+button~label = label
+button~use_underline = .true
+return
 
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxRadioButtonNew"
 ::METHOD group EXTERNAL "LIBRARY rexxgtk GrxRadioButtonGetGroup"
@@ -813,31 +816,6 @@ return
 -- they do nothing.
 
 ::method signal_group_changed
-return
-
-/*============================================================================*/
-/* Class: GtkRadioButton_With_Mnemonic                                        */
-/*============================================================================*/
-
-::class GtkRadioButton_With_Mnemonic public subclass GtkRadioButton
-
-::method init
-use arg group, label = ''
-self~init:super(group)
-self~use_underline = .true
-self~label = label
-return
-
-/*============================================================================*/
-/* Class: GtkRadioButton_With_Label                                           */
-/*============================================================================*/
-
-::class GtkRadioButton_With_Label public subclass GtkRadioButton
-
-::method init
-use arg group, label = ''
-self~init:super(group)
-self~label = label
 return
 
 /*============================================================================*/
