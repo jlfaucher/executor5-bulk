@@ -793,6 +793,21 @@ button~label = label
 button~use_underline = .true
 return
 
+::METHOD newFromWidget class EXTERNAL "LIBRARY rexxgtk GrxRadioButtonFromWidget"
+
+::method newFromWidgetWithLabel class
+use arg group, label = ''
+button = self~newFromWidget(group)
+button~label = label
+return
+
+::method newFromWidgetWithMnemonic class
+use arg group, label = ''
+button = self~newFromWidget(group)
+button~label = label
+button~use_underline = .true
+return
+
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxRadioButtonNew"
 ::METHOD group EXTERNAL "LIBRARY rexxgtk GrxRadioButtonGetGroup"
 ::METHOD get_group EXTERNAL "LIBRARY rexxgtk GrxRadioButtonGetGroup"
@@ -804,39 +819,6 @@ return
 -- they do nothing.
 
 ::method signal_group_changed
-return
-
-/*============================================================================*/
-/* Class: GtkRadioButton_From_Widget                                          */
-/*============================================================================*/
-
-::class GtkRadioButton_From_Widget public subclass GtkRadioButton
-
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxRadioButtonFromWidget"
-
-/*============================================================================*/
-/* Class: GtkRadioButton_From_Widget_With_Label                               */
-/*============================================================================*/
-
-::class GtkRadioButton_From_Widget_With_Label public subclass GtkRadioButton_From_Widget
-
-::method init
-use arg widget, label
-self~init:super(widget)
-self~label = label
-return
-
-/*============================================================================*/
-/* Class: GtkRadioButton_From_Widget_With_Mnemonic                            */
-/*============================================================================*/
-
-::class GtkRadioButton_From_Widget_With_Mnemonic public subclass GtkRadioButton_From_Widget
-
-::method init
-use arg widget, label
-self~init:super(widget)
-self~use_underline = .true
-self~label = label
 return
 
 
@@ -1261,6 +1243,12 @@ return self~signal_connect:super(event)
 
 ::class GtkExpander public subclass GtkContainer
 
+::method newWithMnemonic class
+use arg label = ''
+exp = self~new(label)
+exp~use_underline = .true
+return exp
+
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxExpanderNew"
 ::METHOD set_expanded EXTERNAL "LIBRARY rexxgtk GrxExpanderSetExpanded"
 ::METHOD 'expanded=' EXTERNAL "LIBRARY rexxgtk GrxExpanderSetExpanded"
@@ -1278,19 +1266,6 @@ return self~signal_connect:super(event)
 -- they do nothing.
 
 ::method signal_activate
-return
-
-
-/*============================================================================*/
-/* Class: GtkExpander_With_Mnemonic                                           */
-/*============================================================================*/
-
-::class GtkExpander_With_Mnemonic public subclass GtkExpander
-
-::method init
-use arg label = ''
-self~init:super(label)
-self~use_underline = .true
 return
 
 
@@ -1438,16 +1413,9 @@ return self~signal_connect:super(event)
 
 ::class GtkHScale public subclass GtkScale
 
+::METHOD newWithRange class EXTERNAL "LIBRARY rexxgtk GrxHScaleNewWithRange"
+
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxHScaleNew"
-
-
-/*============================================================================*/
-/* Class: GtkHScale_With_Range                                                */
-/*============================================================================*/
-
-::class GtkHScale_With_Range public subclass GtkHScale
-
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxHScaleNewWithRange"
 
 
 /*============================================================================*/
@@ -1456,20 +1424,13 @@ return self~signal_connect:super(event)
 
 ::class GtkVScale public subclass GtkScale
 
+::METHOD newWithRange class EXTERNAL "LIBRARY rexxgtk GrxVScaleNewWithRange"
+
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxVScaleNew"
 
 ::method signal_connect
 use strict arg event
 return self~signal_connect:super(event)
-
-
-/*============================================================================*/
-/* Class: GtkVScale_With_Range                                                */
-/*============================================================================*/
-
-::class GtkVScale_With_Range public subclass GtkVScale
-
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxVScaleNewWithRange"
 
 
 /*============================================================================*/
