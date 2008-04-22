@@ -793,17 +793,21 @@ button~label = label
 button~use_underline = .true
 return
 
-::METHOD newFromWidget class EXTERNAL "LIBRARY rexxgtk GrxRadioButtonFromWidget"
-
-::method newFromWidgetWithLabel class
+::method newFromPtr class
 use arg group, label = ''
-button = self~newFromWidget(group)
+button = .GtkRadioButton_FromWidget~new(group)
 button~label = label
 return
 
-::method newFromWidgetWithMnemonic class
+::method newFromPtrWithLabel class
 use arg group, label = ''
-button = self~newFromWidget(group)
+button = .GtkRadioButton_FromWidget~new(group)
+button~label = label
+return
+
+::method newFromPtrWithMnemonic class
+use arg group, label = ''
+button = .GtkRadioButton_FromWidget~new(group)
 button~label = label
 button~use_underline = .true
 return
@@ -820,6 +824,10 @@ return
 
 ::method signal_group_changed
 return
+
+::class GtkRadioButton_FromWidget public subclass GtkRadioButton
+
+::METHOD init class EXTERNAL "LIBRARY rexxgtk GrxRadioButtonFromWidget"
 
 
 /*============================================================================*/
