@@ -166,7 +166,7 @@ return recipients
 
 ::method strmtransact private
 expose strmsock cmdresponse response smtperrno
-use arg cmd, respcode
+use strict arg cmd, respcode
 cmdresponse[cmdresponse~items + 1] = cmd
 retc = strmsock~lineout(cmd)
 if retc = 1 then return .true
@@ -199,6 +199,7 @@ return .true
 
 ::method auth_login private
 expose authid rhost password
+use strict arg
 retc = self~strmtransact('AUTH LOGIN', '3')
 if retc = .true then do
    self~debugsay('Error: AUTH LOGIN command to' rhost 'failed.')

@@ -72,7 +72,7 @@
 /*----------------------------------------------------------------------------*/
 
 ::method cmd private
-use arg cmd, key, flags, exptime, data
+use strict arg cmd, key, flags, exptime, data
 if data~length = 0 then return .true
 self~s~lineout(cmd key flags exptime data~length)
 self~s~charout(data || '0D0A'x)
@@ -87,7 +87,7 @@ return self~status
 /*----------------------------------------------------------------------------*/
 
 
-::method status attribute
+::attribute status
 
 
 /*----------------------------------------------------------------------------*/
@@ -96,9 +96,7 @@ return self~status
 /*----------------------------------------------------------------------------*/
 
 ::method init
-if arg() < 2 then raise syntax 93.901 array (2)
-if arg() > 2 then raise syntax 93.902 array (2)
-use arg hostname, port
+use strict arg hostname, port
 self~s = .socket~new(hostname, port)
 if self~s = -1 then self~status = 'OPEN FAILED'
 else self~status = ''
@@ -111,9 +109,7 @@ return
 /*----------------------------------------------------------------------------*/
 
 ::method get
-if arg() < 1 then raise syntax 93.901 array (1)
-if arg() > 1 then raise syntax 93.902 array (1)
-use arg key
+use strict arg key
 parse var key key . -- make sure we only use one key
 self~status = ''
 self~s~lineout('get' key)
@@ -134,11 +130,7 @@ return data
 /*----------------------------------------------------------------------------*/
 
 ::method set
-if arg() < 4 then raise syntax 93.901 array (4)
-if arg() > 4 then raise syntax 93.902 array (4)
-use arg key, flags, exptime, data
-if flags = 'FLAGS' then flags = 0
-if exptime = 'EXPTIME' then exptime = 0
+use strict arg key, flags = 0, exptime = 0, data
 return self~cmd('set', key, flags, exptime, data)
 
 
@@ -148,11 +140,7 @@ return self~cmd('set', key, flags, exptime, data)
 /*----------------------------------------------------------------------------*/
 
 ::method add
-if arg() < 4 then raise syntax 93.901 array (4)
-if arg() > 4 then raise syntax 93.902 array (4)
-use arg key, flags, exptime, data
-if flags = 'FLAGS' then flags = 0
-if exptime = 'EXPTIME' then exptime = 0
+use strict arg key, flags = 0, exptime = 0, data
 return self~cmd('add', key, flags, exptime, data)
 
 
@@ -162,11 +150,7 @@ return self~cmd('add', key, flags, exptime, data)
 /*----------------------------------------------------------------------------*/
 
 ::method replace
-if arg() < 4 then raise syntax 93.901 array (4)
-if arg() > 4 then raise syntax 93.902 array (4)
-use arg key, flags, exptime, data
-if flags = 'FLAGS' then flags = 0
-if exptime = 'EXPTIME' then exptime = 0
+use strict arg key, flags = 0, exptime = 0, data
 return self~cmd('replace', key, flags, exptime, data)
 
 
@@ -176,9 +160,7 @@ return self~cmd('replace', key, flags, exptime, data)
 /*----------------------------------------------------------------------------*/
 
 ::method delete
-if arg() < 1 then raise syntax 93.901 array (1)
-if arg() > 1 then raise syntax 93.902 array (1)
-use arg key
+use strict arg key
 exptime = 0
 self~s~lineout('delete' key '0')
 self~status = self~s~linein()
@@ -191,7 +173,7 @@ return self~status
 /*----------------------------------------------------------------------------*/
 
 ::method version
-if arg() > 0 then raise syntax 93.902 array (0)
+use strict arg
 self~s~lineout('version')
 self~status = self~s~linein()
 return self~status
@@ -203,7 +185,7 @@ return self~status
 /*----------------------------------------------------------------------------*/
 
 ::method close
-if arg() > 0 then raise syntax 93.902 array (0)
+use strict arg
 self~s~lineout('quit')
 self~s~close()
 return

@@ -81,9 +81,8 @@
 
 ::method init
 expose mimever type encoding id description disposition content
+use strict arg type = 'text/plain'
 mimever = '1.0'
-if arg() > 0 then use strict arg type
-else type = 'text/plain'
 encoding = ''
 id = ''
 description = ''
