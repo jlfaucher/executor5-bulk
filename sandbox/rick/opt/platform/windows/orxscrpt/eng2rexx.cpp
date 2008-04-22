@@ -470,7 +470,7 @@ int RexxEntry RexxValueExtension(RexxExitContext *context, int ExitNumber, int S
                             // This property is part of a Typelib.
                             TYPEATTR *pTypeAttr;
                             VARDESC  *pVarDesc;
-                            BOOL      found = false;
+                            bool      found = false;
 
 
                             if (newvalue)
@@ -719,10 +719,32 @@ int OrxScript::createRoutine(LPCOLESTR strCode, ULONG startingLineNumber, RexxRo
 }
 
 
-void OrxScript::convertTextToCode(LPCOLESTR strCode, RexxRoutineObject *routine, RexxConditionData *condData)
+void OrxScript::rexxError(RexxConditionData *condData)
 {
-    // get an interpreter instance context for us to use
-    RexxThreadContext *context = ScriptProcessEngine::getThreadContext();
+    BOOL errObj_Exists;
+    // an error occured: init excep info
+    OrxScriptError *errObj = new OrxScriptError(logfile, condData, &errObj_Exists);
+    pActiveScriptSite->OnScriptError((IActiveScriptError*) errObj);
+    // init to empty again....
+    if (errObj_Exists)
+    {
+        errObj->UDRelease();
+    }
+}
+
+/**
+ * Convert a fragment of ooRexx script code into an
+ * executable routine.
+ *
+ * @param context  The instance thread context.
+ * @param strCode  The raw string code to convert.
+ * @param locationOffset
+ *                 The line offset for the script starting location.
+ * @param routine  The created routine.
+ * @param condData The condition data for any errors.
+ */
+void OrxScript::convertTextToCode(RexxThreadContext *context, LPCOLESTR strCode, int locationOffset, RexxRoutineObject &routine, RexxConditionData *condData)
+{
     condData->rc = 0;            // clear the return code for return
 
     size_t scriptSize = scslen(pStrCode);
@@ -731,18 +753,90 @@ void OrxScript::convertTextToCode(LPCOLESTR strCode, RexxRoutineObject *routine,
     char *script = (char *) malloc(sizeof(char) * (1 + scriptSize));
     sprintf(script,"%S",pStrCode);
 
-    RexxRoutineObject *routine = context->NewRoutine(getEngineName(), script, scriptSize);
+    routine = context->NewRoutine(getEngineName(), script, scriptSize);
+    free(script);
     // convert this into a routine
     if (context->checkException())
     {
         // if we had an exception, then get the decoded exception information and
         RexxDirectoryObject cond = context->GetConditionInfo();
         context->DecodeConditionInfo(cond, condData);
+        // adjust this for the position within the script file context.
+        condData->position += locationOffset;
         context->ClearException();
     }
+}
 
-    free(script);
-    contexxt->DetachThread();
+
+void OrxScript::processScriptFragment(RexxThreadContext *context, int locationOffset, RexxRoutineObject routine, PRBC &codeBlock, RexxCondition *condData)
+{
+    //store in global list that will be used
+    //in DTOR when leaving engine
+    hResult = BuildRCB(RCB::ParseScript, NULL, dwFlags, locationOffset, coutine, &codeBlock);
+    if (FAILED(hResult))
+    {
+        break;
+    }
+    FPRINTF2(logfile,"The Rexx Routine %p is now in the CodeBlock %p \n", routine, codeBlock);
+    // now retrieve all of the public routines defined in this code block and add this to our external
+    // table of available routines.
+
+    RexxPackageObject package = context->GetRoutinePackage(routine);
+    RexxDirectoryObject routines = context->GetPackagePublicRoutines(package);
+    RexxSupplierObject supplier = (RexxSupplierObject)context->SendMessage0(routines, "SUPPLIER");
+
+    int i = 0;
+    while (context->SupplierAvailable(supplier))
+    {
+        PRCB  functionBlock = NULL;
+        RexxStringObject name = (RexxStringObject)context->SupplierIndex(supplier);
+        RexxRoutineObject routine = (RexxRoutineObject)context->SupplierValue(supplier);
+        const char *functionName = context->StringData(name);
+
+        hResult = BuildRCB(RCB::ParseScript, NULL, dwFlags, locationOffset, routine, &functionBlock);
+        if (FAILED(hResult))
+        {
+            return;
+        }
+
+        RexxFunctions->AddItem(functionName, LinkedList::Beginning, (void*)functionBlock);
+
+        C2W(lName, functionName, strlen(functionName) + 1);
+        hResult = DispID.AddDispID(lName,dwFlags, DID::Function, functionBlock, &lDispID);
+        FPRINTF2(logfile,"associating method %s with rexx block %p, DispID %d %08x\n", functionName, functionBlock, (int)lDispID, lDispID);
+
+        if (FAILED(hResult))
+        {
+            break;
+        }
+    }
+
+}
+
+
+void OrxScript::queueOrExecuteFragment(RexxThreadContext *context, PRCB codeBlock, RexxConditionData *condData)
+
+    // what to do with the script text we have:
+    if (engineState == SCRIPTSTATE_INITIALIZED || engineState == SCRIPTSTATE_UNINITIALIZED)
+    {
+        //store with stack to exec when connecting...
+        RexxExecStack->AddItem(NULL, LinkedList::Beginning, (void*)codeBlock);
+        FPRINTF2(logfile,"storing method %p for later execution\n", codeBlock);
+    }
+    else
+    {
+        //we are STARTED or CONNECTED: run right away...
+
+        RexxObjectPtr resultDummy;
+        this->enableVariableCapture = true;
+        runMethod(context, this, codeBlock, NULL, resultDummy, condData);
+        this->enableVariableCapture = false;
+        //  Do not need to check the ConditionData here.  That was done for us by runMethod().
+        if (cd.rc)
+        {
+            FPRINTF2(logfile,"ParseScriptText - immediate code execution produced an error! (rc = %d)\n",cd.rc);
+        }
+    }
 }
 
 
@@ -759,7 +853,7 @@ RexxObjectPtr OrxScript::createSecurityObject()
         bool        ErrObj_Exists;
         HRESULT     hResult=S_OK;
 
-        RexxThreadContext *ScriptProcessEngine::getThreadContext();
+        RexxThreadContext *context = ScriptProcessEngine::getThreadContext();
 
         memset((void*) &condData,0,sizeof(RexxConditionData));
 
@@ -813,7 +907,7 @@ RexxObjectPtr OrxScript::createSecurityObject()
 /*             5 - ConditionData pointer       */
 /*             6 - end thread?                 */
 /*             7 - get variables?              */
-void runMethod(RexxThreadContext *context, OrxScript *pEngine, RCB *RexxCode, RexxArrayObject args, RexxObjectPtr &targetResult, RexxConditionData &condData)
+void OrxScript::runMethod(RexxThreadContext *context, RCB *RexxCode, RexxArrayObject args, RexxObjectPtr &targetResult, RexxConditionData &condData)
 {
     bool       fGetVariables = (((int*)arguments)[7] != 0); // get variables from immediate code?
 

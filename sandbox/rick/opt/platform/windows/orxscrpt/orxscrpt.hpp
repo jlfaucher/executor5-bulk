@@ -284,10 +284,11 @@ class OrxScript : public LLLContent,
   }
 
   void runMethod(RexxThreadContext *context, RCB *RexxCode, RexxArrayObject args, RexxObjectPtr &targetResult, RexxConditionData &condData);
+  int createRoutine(LPCOLESTR strCode, ULONG startingLineNumber, RexxRoutineObject &routine);
 
   inline IInternetHostSecurityManager* getIESecurityManager() { return pIESecurityManager; }
-  inline BOOL checkObjectCreation() { return fCheckObjectCreation; }
-  inline void setObjectCreation(bool f) { fCheckObjectCreation = f; }
+  inline bool checkObjectCreation() { return checkObjectCreation; }
+  inline void setObjectCreation(bool f) { checkObjectCreation = f; }
 
   STDMETHODIMP GetSourceIDispatch(LPCOLESTR   ItemName,
                                   LPCOLESTR   SubItemName,
@@ -334,9 +335,10 @@ STDMETHODIMP LocalParseProcedureText(
 
 
     ULONG              ulRefCount;                 // reference count
-    BOOL               fCheckObjectCreation;       // turn off IE security manager checking on special occasions
-    BOOL               fInitNew;                   // true if IPersistInitStream::Load, IPersistInitStream::InitNew or IActiveScriptParse::InitNew have been called
-    BOOL               fIsConnected;               // to change between CONNECTED/DISCONNECTED without having to really
+    bool               checkObjectCreation;       // turn off IE security manager checking on special occasions
+    bool               enableVariableCapture;      // enables variable capture in termination exit
+    bool               initNew;                   // true if IPersistInitStream::Load, IPersistInitStream::InitNew or IActiveScriptParse::InitNew have been called
+    bool               isConnected;               // to change between CONNECTED/DISCONNECTED without having to really
                                                    // unhook from event source...
     SCRIPTSTATE        engineState;                // state of script engine
     SCRIPTTHREADSTATE  threadState;                // state of thread (just one supported)
@@ -347,7 +349,7 @@ STDMETHODIMP LocalParseProcedureText(
     int                engineId;                   // Our Creation number.
     DWORD              dwSafetyOptions;            // Flags for Internet Explorer to allow scripts to execute.
     RCB                securityManager;            // REXX code for security manager
-    RexxObjectPtr         securityObject;             // Object produced by running the Security Manager Code.
+    RexxObjectPtr      securityObject;             // Object produced by running the Security Manager Code.
     OrxDispID          DispID;                     // The head of the chain of DispIDs that we support.
     OrxNamedItem      *NamedItemList;              // The head of the chain of NamedItems.
     VariantLList       PropertyList;               // The head of the chain of potential Properties.

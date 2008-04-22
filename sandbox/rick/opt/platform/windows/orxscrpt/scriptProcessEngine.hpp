@@ -48,12 +48,17 @@ public:
 
     static void initialize();
     static void terminate();
+    static int getEngineId();
+    static RexxThreadContext *getThreadContext();
+
+    static FILE *logfile;
 
 protected:
     static CRITICAL_SECTION engineSection;     // critical section used for interlocks
     static HANDLE engineMutex;                 // our process synchronization semaphore
     static DWORD  engineThreadLocal;           // the slot allocated for registering engine instances with threads
-    static RexxInstance *intpreter;            // the Rexx interpreter instance
+    static RexxInstance *interpreter;          // the Rexx interpreter instance
+    static int engineCounter;                  // the counter of allocated script engines
 };
 
 #endif
