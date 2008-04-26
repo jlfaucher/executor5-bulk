@@ -141,7 +141,7 @@ is frequently used so the SET attribute method can perform new value validation.
 ::attribute size set
   expose size     /* establish direct access to object variable (attribute) */
   use arg value   /* retrieve argument                                      */
-  if datatype(size, "Whole") = .false | size &lt; 0  then
+  if datatype(value, "Whole") = .false | value &lt; 0  then
     raise syntax 93.906 array ("size", value)
   size=value
 </programlisting>
