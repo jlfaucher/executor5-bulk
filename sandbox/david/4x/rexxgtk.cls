@@ -83,246 +83,246 @@ return
 ::class gtk public
 
    -- GtkWindowType
-::constant GTK_WINDOW_TOPLEVEL class 0
-::constant GTK_WINDOW_POPUP class 1
+::constant GTK_WINDOW_TOPLEVEL 0
+::constant GTK_WINDOW_POPUP 1
    -- GtkButtonType
-::constant GTK_BUTTONS_NONE class 0
-::constant GTK_BUTTONS_OK class 1
-::constant GTK_BUTTONS_CLOSE class 2
-::constant GTK_BUTTONS_CANCEL class 3
-::constant GTK_BUTTONS_YES_NO class 4
-::constant GTK_BUTTONS_OK_CANCEL class 5
+::constant GTK_BUTTONS_NONE 0
+::constant GTK_BUTTONS_OK 1
+::constant GTK_BUTTONS_CLOSE 2
+::constant GTK_BUTTONS_CANCEL 3
+::constant GTK_BUTTONS_YES_NO 4
+::constant GTK_BUTTONS_OK_CANCEL 5
    -- GtkDialogFlags
-::constant GTK_DIALOG_MODAL class 0
-::constant GTK_DIALOG_DESTROY_WITH_PARENT class 1
-::constant GTK_DIALOG_NO_SEPARATOR class 2
+::constant GTK_DIALOG_MODAL 0
+::constant GTK_DIALOG_DESTROY_WITH_PARENT 1
+::constant GTK_DIALOG_NO_SEPARATOR 2
    -- GtkResponseType
-::constant GTK_RESPONSE_NONE class -1
-::constant GTK_RESPONSE_REJECT class -2
-::constant GTK_RESPONSE_ACCEPT class -3
-::constant GTK_RESPONSE_DELETE_EVENT class -4
-::constant GTK_RESPONSE_OK class -5
-::constant GTK_RESPONSE_CANCEL class -6
-::constant GTK_RESPONSE_CLOSE class -7
-::constant GTK_RESPONSE_YES class -8
-::constant GTK_RESPONSE_NO class -9
-::constant GTK_RESPONSE_APPLY class -10
-::constant GTK_RESPONSE_HELP class -11
+::constant GTK_RESPONSE_NONE '-1'
+::constant GTK_RESPONSE_REJECT '-2'
+::constant GTK_RESPONSE_ACCEPT '-3'
+::constant GTK_RESPONSE_DELETE_EVENT '-4'
+::constant GTK_RESPONSE_OK '-5'
+::constant GTK_RESPONSE_CANCEL '-6'
+::constant GTK_RESPONSE_CLOSE '-7'
+::constant GTK_RESPONSE_YES '-8'
+::constant GTK_RESPONSE_NO '-9'
+::constant GTK_RESPONSE_APPLY '-10'
+::constant GTK_RESPONSE_HELP '-11'
    -- GtkMessageType
-::constant GTK_MESSAGE_INFO class 0
-::constant GTK_MESSAGE_WARNING class 1
-::constant GTK_MESSAGE_QUESTION class 2
-::constant GTK_MESSAGE_ERROR class 3
-::constant GTK_MESSAGE_OTHER class 4
+::constant GTK_MESSAGE_INFO 0
+::constant GTK_MESSAGE_WARNING 1
+::constant GTK_MESSAGE_QUESTION 2
+::constant GTK_MESSAGE_ERROR 3
+::constant GTK_MESSAGE_OTHER 4
    -- GTK stock string defines
-::constant GTK_STOCK_ABOUT class 'gtk-about'
-::constant GTK_STOCK_ADD class 'gtk-add'
-::constant GTK_STOCK_APPLY class 'gtk-apply'
-::constant GTK_STOCK_BOLD class 'gtk-bold'
-::constant GTK_STOCK_CANCEL class 'gtk-cancel'
-::constant GTK_STOCK_CDROM class 'gtk-cdrom'
-::constant GTK_STOCK_CLEAR class 'gtk-clear'
-::constant GTK_STOCK_CLOSE class 'gtk-close'
-::constant GTK_STOCK_COLOR_PICKER class 'gtk-color-picker'
-::constant GTK_STOCK_CONVERT class 'gtk-comvert'
-::constant GTK_STOCK_CONNECT class 'gtk-connect'
-::constant GTK_STOCK_COPY class 'gtk-copy'
-::constant GTK_STOCK_CUT class 'gtk-cut'
-::constant GTK_STOCK_DELETE class 'gtk-delete'
-::constant GTK_STOCK_DIALOG_ERROR class 'gtk-dialog-error'
-::constant GTK_STOCK_DIALOG_INFO class 'gtk-dialog-info'
-::constant GTK_STOCK_DIALOG_QUESTION class 'gtk-dialog-question'
-::constant GTK_STOCK_DIALOG_WARNING class 'gtk-dialog-warning'
-::constant GTK_STOCK_DIRECTORY class 'gtk-directry'
-::constant GTK_STOCK_DISCARD class 'gtk-discard'
-::constant GTK_STOCK_DISCONNECT class 'gtk-disconnect'
-::constant GTK_STOCK_DND class 'gtk-dnd'
-::constant GTK_STOCK_DND_MULTIPLE class 'gtk-dnd-multiple'
-::constant GTK_STOCK_EDIT class 'gtk-edit'
-::constant GTK_STOCK_EXECUTE class 'gtk-execute'
-::constant GTK_STOCK_FILE class 'gtk-file'
-::constant GTK_STOCK_FIND class 'gtk-find'
-::constant GTK_STOCK_FIND_AND_REPLACE class 'gtk-find-and-replace'
-::constant GTK_STOCK_FLOPPY class 'gtk-floppy'
-::constant GTK_STOCK_FULLSCREEN class 'gtk-fullscreen'
-::constant GTK_STOCK_GOTO_BOTTOM class 'gtk-goto-bottom'
-::constant GTK_STOCK_GOTO_FIRST class 'gtk-goto-first'
-::constant GTK_STOCK_GOTO_LAST class 'gtk-goto-last'
-::constant GTK_STOCK_GOTO_TOP class 'gtk-goto-top'
-::constant GTK_STOCK_GO_BACK class 'gtk-go-back'
-::constant GTK_STOCK_GO_DOWN class 'gtk-go-down'
-::constant GTK_STOCK_GO_FORWARD class 'gtk-go-forward'
-::constant GTK_STOCK_GO_UP class 'gtk-go-up'
-::constant GTK_STOCK_HARDDISK class 'gtk-harddisk'
-::constant GTK_STOCK_HELP class 'gtk-help'
-::constant GTK_STOCK_HOME class 'gtk-home'
-::constant GTK_STOCK_INDENT class 'gtk-indent'
-::constant GTK_STOCK_INDEX class 'gtk-index'
-::constant GTK_STOCK_INFO class 'gtk-info'
-::constant GTK_STOCK_ITALIC class 'gtk-italic'
-::constant GTK_STOCK_JUMP_TO class 'gtk-jump-to'
-::constant GTK_STOCK_JUSTIFY_CENTER class 'gtk-justify-center'
-::constant GTK_STOCK_JUSTIFY_FILL class 'gtk-justify-fill'
-::constant GTK_STOCK_JUSTIFY_LEFT class 'gtk-justify-left'
-::constant GTK_STOCK_JUSTIFY_RIGHT class 'gtk-justify-right'
-::constant GTK_STOCK_LEAVE_FULLSCREEN class 'gtk-leave-fullscreen'
-::constant GTK_STOCK_MEDIA_FORWARD class 'gtk-media-forward'
-::constant GTK_STOCK_MEDIA_NEXT class 'gtk-media-nect'
-::constant GTK_STOCK_MEDIA_PAUSE class 'gtk-media-pause'
-::constant GTK_STOCK_MEDIA_PLAY class 'gtk-media-play'
-::constant GTK_STOCK_MEDIA_PREVIOUS class 'gtk-media-previous'
-::constant GTK_STOCK_MEDIA_RECORD class 'gtk-media-record'
-::constant GTK_STOCK_MEDIA_REWIND class 'gtk-media-rewind'
-::constant GTK_STOCK_MEDIA_STOP class 'gtk-media-stop'
-::constant GTK_STOCK_MISSING_IMAGE class 'gtk-missing-image'
-::constant GTK_STOCK_NETWORK class 'gtk-network'
-::constant GTK_STOCK_NEW class 'gtk-new'
-::constant GTK_STOCK_NO class 'gtk-no'
-::constant GTK_STOCK_OK class 'gtk-ok'
-::constant GTK_STOCK_OPEN class 'gtk-open'
-::constant GTK_STOCK_OREINTATION_LANDSCAPE class 'gtk-orientation-landscape'
-::constant GTK_STOCK_OREINTATION_PORTRAIT class 'gtk-orientation-portrait'
-::constant GTK_STOCK_OREINTATION_REVERSE_LANDSCAPE class 'gtk-orientation-reverse-landscape'
-::constant GTK_STOCK_OREINTATION_REVERSE_LANDSCAPE class 'gtk-orientation-reverse-portrait'
-::constant GTK_STOCK_PASTE class 'gtk-paste'
-::constant GTK_STOCK_PREFERENCES class 'gtk-preferences'
-::constant GTK_STOCK_PRINT class 'gtk-print'
-::constant GTK_STOCK_PRINT_PREVIEW class 'gtk-print-preview'
-::constant GTK_STOCK_PROPERTIES class 'gtk-properties'
-::constant GTK_STOCK_QUIT class 'gtk-quit'
-::constant GTK_STOCK_REDO class 'gtk-redo'
-::constant GTK_STOCK_REFRESH class 'gtk-refresh'
-::constant GTK_STOCK_REMOVE class 'gtk-remove'
-::constant GTK_STOCK_REVERT_TO_SAVED class 'gtk-revert-to-saved'
-::constant GTK_STOCK_SAVE class 'gtk-save'
-::constant GTK_STOCK_SAVE_AS class 'gtk-save-as'
-::constant GTK_STOCK_SELECT_ALL class 'gtk-select-all'
-::constant GTK_STOCK_SELECT_COLOR class 'gtk-select-color'
-::constant GTK_STOCK_SELECT_FONT class 'gtk-select-font'
-::constant GTK_STOCK_SORT_ASCENDING class 'gtk-sort-ascending'
-::constant GTK_STOCK_SORT_DESCENDING class 'gtk-sort-descending'
-::constant GTK_STOCK_SPELL_CHECK class 'gtk-spell-check'
-::constant GTK_STOCK_STOP class 'gtk-stop'
-::constant GTK_STOCK_STRIKETHROUGH class 'gtk-strikethrough'
-::constant GTK_STOCK_UNDELETE class 'gtk-undelete'
-::constant GTK_STOCK_UNDERLINE class 'gtk-underline'
-::constant GTK_STOCK_UNDO class 'gtk-undo'
-::constant GTK_STOCK_UNINDENT class 'gtk-unindent'
-::constant GTK_STOCK_YES class 'gtk-yes'
-::constant GTK_STOCK_ZOOM_100 class 'gtk-zoom-100'
-::constant GTK_STOCK_ZOOM_FIT class 'gtk-zoom-fit'
-::constant GTK_STOCK_ZOOM_IN class 'gtk-zoom-in'
-::constant GTK_STOCK_ZOOM_OUT class 'gtk-zoom-out'
+::constant GTK_STOCK_ABOUT 'gtk-about'
+::constant GTK_STOCK_ADD 'gtk-add'
+::constant GTK_STOCK_APPLY 'gtk-apply'
+::constant GTK_STOCK_BOLD 'gtk-bold'
+::constant GTK_STOCK_CANCEL 'gtk-cancel'
+::constant GTK_STOCK_CDROM 'gtk-cdrom'
+::constant GTK_STOCK_CLEAR 'gtk-clear'
+::constant GTK_STOCK_CLOSE 'gtk-close'
+::constant GTK_STOCK_COLOR_PICKER 'gtk-color-picker'
+::constant GTK_STOCK_CONVERT 'gtk-comvert'
+::constant GTK_STOCK_CONNECT 'gtk-connect'
+::constant GTK_STOCK_COPY 'gtk-copy'
+::constant GTK_STOCK_CUT 'gtk-cut'
+::constant GTK_STOCK_DELETE 'gtk-delete'
+::constant GTK_STOCK_DIALOG_ERROR 'gtk-dialog-error'
+::constant GTK_STOCK_DIALOG_INFO 'gtk-dialog-info'
+::constant GTK_STOCK_DIALOG_QUESTION 'gtk-dialog-question'
+::constant GTK_STOCK_DIALOG_WARNING 'gtk-dialog-warning'
+::constant GTK_STOCK_DIRECTORY 'gtk-directry'
+::constant GTK_STOCK_DISCARD 'gtk-discard'
+::constant GTK_STOCK_DISCONNECT 'gtk-disconnect'
+::constant GTK_STOCK_DND 'gtk-dnd'
+::constant GTK_STOCK_DND_MULTIPLE 'gtk-dnd-multiple'
+::constant GTK_STOCK_EDIT 'gtk-edit'
+::constant GTK_STOCK_EXECUTE 'gtk-execute'
+::constant GTK_STOCK_FILE 'gtk-file'
+::constant GTK_STOCK_FIND 'gtk-find'
+::constant GTK_STOCK_FIND_AND_REPLACE 'gtk-find-and-replace'
+::constant GTK_STOCK_FLOPPY 'gtk-floppy'
+::constant GTK_STOCK_FULLSCREEN 'gtk-fullscreen'
+::constant GTK_STOCK_GOTO_BOTTOM 'gtk-goto-bottom'
+::constant GTK_STOCK_GOTO_FIRST 'gtk-goto-first'
+::constant GTK_STOCK_GOTO_LAST 'gtk-goto-last'
+::constant GTK_STOCK_GOTO_TOP 'gtk-goto-top'
+::constant GTK_STOCK_GO_BACK 'gtk-go-back'
+::constant GTK_STOCK_GO_DOWN 'gtk-go-down'
+::constant GTK_STOCK_GO_FORWARD 'gtk-go-forward'
+::constant GTK_STOCK_GO_UP 'gtk-go-up'
+::constant GTK_STOCK_HARDDISK 'gtk-harddisk'
+::constant GTK_STOCK_HELP 'gtk-help'
+::constant GTK_STOCK_HOME 'gtk-home'
+::constant GTK_STOCK_INDENT 'gtk-indent'
+::constant GTK_STOCK_INDEX 'gtk-index'
+::constant GTK_STOCK_INFO 'gtk-info'
+::constant GTK_STOCK_ITALIC 'gtk-italic'
+::constant GTK_STOCK_JUMP_TO 'gtk-jump-to'
+::constant GTK_STOCK_JUSTIFY_CENTER 'gtk-justify-center'
+::constant GTK_STOCK_JUSTIFY_FILL 'gtk-justify-fill'
+::constant GTK_STOCK_JUSTIFY_LEFT 'gtk-justify-left'
+::constant GTK_STOCK_JUSTIFY_RIGHT 'gtk-justify-right'
+::constant GTK_STOCK_LEAVE_FULLSCREEN 'gtk-leave-fullscreen'
+::constant GTK_STOCK_MEDIA_FORWARD 'gtk-media-forward'
+::constant GTK_STOCK_MEDIA_NEXT 'gtk-media-nect'
+::constant GTK_STOCK_MEDIA_PAUSE 'gtk-media-pause'
+::constant GTK_STOCK_MEDIA_PLAY 'gtk-media-play'
+::constant GTK_STOCK_MEDIA_PREVIOUS 'gtk-media-previous'
+::constant GTK_STOCK_MEDIA_RECORD 'gtk-media-record'
+::constant GTK_STOCK_MEDIA_REWIND 'gtk-media-rewind'
+::constant GTK_STOCK_MEDIA_STOP 'gtk-media-stop'
+::constant GTK_STOCK_MISSING_IMAGE 'gtk-missing-image'
+::constant GTK_STOCK_NETWORK 'gtk-network'
+::constant GTK_STOCK_NEW 'gtk-new'
+::constant GTK_STOCK_NO 'gtk-no'
+::constant GTK_STOCK_OK 'gtk-ok'
+::constant GTK_STOCK_OPEN 'gtk-open'
+::constant GTK_STOCK_OREINTATION_LANDSCAPE 'gtk-orientation-landscape'
+::constant GTK_STOCK_OREINTATION_PORTRAIT 'gtk-orientation-portrait'
+::constant GTK_STOCK_OREINTATION_REVERSE_LANDSCAPE 'gtk-orientation-reverse-landscape'
+::constant GTK_STOCK_OREINTATION_REVERSE_LANDSCAPE 'gtk-orientation-reverse-portrait'
+::constant GTK_STOCK_PASTE 'gtk-paste'
+::constant GTK_STOCK_PREFERENCES 'gtk-preferences'
+::constant GTK_STOCK_PRINT 'gtk-print'
+::constant GTK_STOCK_PRINT_PREVIEW 'gtk-print-preview'
+::constant GTK_STOCK_PROPERTIES 'gtk-properties'
+::constant GTK_STOCK_QUIT 'gtk-quit'
+::constant GTK_STOCK_REDO 'gtk-redo'
+::constant GTK_STOCK_REFRESH 'gtk-refresh'
+::constant GTK_STOCK_REMOVE 'gtk-remove'
+::constant GTK_STOCK_REVERT_TO_SAVED 'gtk-revert-to-saved'
+::constant GTK_STOCK_SAVE 'gtk-save'
+::constant GTK_STOCK_SAVE_AS 'gtk-save-as'
+::constant GTK_STOCK_SELECT_ALL 'gtk-select-all'
+::constant GTK_STOCK_SELECT_COLOR 'gtk-select-color'
+::constant GTK_STOCK_SELECT_FONT 'gtk-select-font'
+::constant GTK_STOCK_SORT_ASCENDING 'gtk-sort-ascending'
+::constant GTK_STOCK_SORT_DESCENDING 'gtk-sort-descending'
+::constant GTK_STOCK_SPELL_CHECK 'gtk-spell-check'
+::constant GTK_STOCK_STOP 'gtk-stop'
+::constant GTK_STOCK_STRIKETHROUGH 'gtk-strikethrough'
+::constant GTK_STOCK_UNDELETE 'gtk-undelete'
+::constant GTK_STOCK_UNDERLINE 'gtk-underline'
+::constant GTK_STOCK_UNDO 'gtk-undo'
+::constant GTK_STOCK_UNINDENT 'gtk-unindent'
+::constant GTK_STOCK_YES 'gtk-yes'
+::constant GTK_STOCK_ZOOM_100 'gtk-zoom-100'
+::constant GTK_STOCK_ZOOM_FIT 'gtk-zoom-fit'
+::constant GTK_STOCK_ZOOM_IN 'gtk-zoom-in'
+::constant GTK_STOCK_ZOOM_OUT 'gtk-zoom-out'
    -- GtkFileCoooserAction
-::constant GTK_FILE_CHOOSER_ACTION_OPEN class 0
-::constant GTK_FILE_CHOOSER_ACTION_SAVE class 1
-::constant GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER class 2
-::constant GTK_FILE_CHOOSER_ACTION_CREATE_FOLDER class 3
+::constant GTK_FILE_CHOOSER_ACTION_OPEN 0
+::constant GTK_FILE_CHOOSER_ACTION_SAVE 1
+::constant GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER 2
+::constant GTK_FILE_CHOOSER_ACTION_CREATE_FOLDER 3
    -- GtkAssistancePageType
-::constant GTK_ASSISTANT_PAGE_CONTENT class 0
-::constant GTK_ASSISTANT_PAGE_INTRO class 1
-::constant GTK_ASSISTANT_PAGE_CONFIRM class 2
-::constant GTK_ASSISTANT_PAGE_SUMMARY class 3
-::constant GTK_ASSISTANT_PAGE_PROGRESS class 4
+::constant GTK_ASSISTANT_PAGE_CONTENT 0
+::constant GTK_ASSISTANT_PAGE_INTRO 1
+::constant GTK_ASSISTANT_PAGE_CONFIRM 2
+::constant GTK_ASSISTANT_PAGE_SUMMARY 3
+::constant GTK_ASSISTANT_PAGE_PROGRESS 4
    -- GtkReliefType
-::constant GTK_RELIEF_NORMAL class 0
-::constant GTK_RELIEF_HALF class 1
-::constant GTK_RELIEF_NONO class 2
+::constant GTK_RELIEF_NORMAL 0
+::constant GTK_RELIEF_HALF 1
+::constant GTK_RELIEF_NONO 2
    -- GtkAtom
-::constant GTK_SELECTION_PRIMARY class 1
-::constant GTK_SELECTION_SECONDARY class 2
-::constant GTK_SELECTION_CLIPBOARD class 69
+::constant GTK_SELECTION_PRIMARY 1
+::constant GTK_SELECTION_SECONDARY 2
+::constant GTK_SELECTION_CLIPBOARD 69
    -- GtkShadow
-::constant GTK_SHADOW_NONE class 0
-::constant GTK_SHADOW_IN class 1
-::constant GTK_SHADOW_OUT class 2
-::constant GTK_SHADOW_ETCHED_IN class 3
-::constant GTK_SHADOW_ETCHED_OUT class 4
+::constant GTK_SHADOW_NONE 0
+::constant GTK_SHADOW_IN 1
+::constant GTK_SHADOW_OUT 2
+::constant GTK_SHADOW_ETCHED_IN 3
+::constant GTK_SHADOW_ETCHED_OUT 4
    -- GtkPositionType
-::constant GTK_POS_LEFT class 0
-::constant GTK_POS_RIGHT class 1
-::constant GTK_POS_TOP class 2
-::constant GTK_POS_BOTTOM class 3
+::constant GTK_POS_LEFT 0
+::constant GTK_POS_RIGHT 1
+::constant GTK_POS_TOP 2
+::constant GTK_POS_BOTTOM 3
    -- GtkIconSize
-::constant GTK_ICON_SIZE_INVALID class 0
-::constant GTK_ICON_SIZE_MENU class 1
-::constant GTK_ICON_SIZE_SMALL_TOOLBAR class 2
-::constant GTK_ICON_SIZE_LARGE_TOOLBAR class 3
-::constant GTK_ICON_SIZE_BUTTON class 4
-::constant GTK_ICON_SIZE_DND class 5
-::constant GTK_ICON_SIZE_DIALOG class 6
+::constant GTK_ICON_SIZE_INVALID 0
+::constant GTK_ICON_SIZE_MENU 1
+::constant GTK_ICON_SIZE_SMALL_TOOLBAR 2
+::constant GTK_ICON_SIZE_LARGE_TOOLBAR 3
+::constant GTK_ICON_SIZE_BUTTON 4
+::constant GTK_ICON_SIZE_DND 5
+::constant GTK_ICON_SIZE_DIALOG 6
    -- GtkJustification
-::constant GTK_JUSTIFY_LEFT class 0
-::constant GTK_JUSTIFY_RIGHT class 1
-::constant GTK_JUSTIFY_CENTER class 2
-::constant GTK_JUSTIFY_FILL class 3
+::constant GTK_JUSTIFY_LEFT 0
+::constant GTK_JUSTIFY_RIGHT 1
+::constant GTK_JUSTIFY_CENTER 2
+::constant GTK_JUSTIFY_FILL 3
    -- GtkPolicyType
-::constant GTK_POLICY_ALWAYS class 0
-::constant GTK_POLICY_AUTOMATIC class 1
-::constant GTK_POLICY_NEVER class 2
+::constant GTK_POLICY_ALWAYS 0
+::constant GTK_POLICY_AUTOMATIC 1
+::constant GTK_POLICY_NEVER 2
    -- GtkAttachOptions
-::constant GTK_EXPAND class 0
-::constant GTK_SHRINK class 1
-::constant GTK_FILL class 2
+::constant GTK_EXPAND 0
+::constant GTK_SHRINK 1
+::constant GTK_FILL 2
    -- GtkWrapMode
-::constant GTK_WRAP_NONE class 0
-::constant GTK_WRAP_CHAR class 1
-::constant GTK_WRAP_WORD class 2
-::constant GTK_WRAP_WORD_CHAR class 3
+::constant GTK_WRAP_NONE 0
+::constant GTK_WRAP_CHAR 1
+::constant GTK_WRAP_WORD 2
+::constant GTK_WRAP_WORD_CHAR 3
    -- GtkStateType
-::constant GTK_STATE_NORMAL class 0
-::constant GTK_STATE_ACTIVE class 1
-::constant GTK_STATE_PRELIGHT class 2
-::constant GTK_STATE_SELECTED class 3
-::constant GTK_STATE_INSENSITIVE class 4
+::constant GTK_STATE_NORMAL 0
+::constant GTK_STATE_ACTIVE 1
+::constant GTK_STATE_PRELIGHT 2
+::constant GTK_STATE_SELECTED 3
+::constant GTK_STATE_INSENSITIVE 4
    -- Pango scale factors
-::constant PANGO_SCALE_XX_SMALL class 0.5787037037037
-::constant PANGO_SCALE_X_SMALL class 0.6444444444444
-::constant PANGO_SCALE_SMALL class 0.8333333333333
-::constant PANGO_SCALE_MEDIUM class 1.0
-::constant PANGO_SCALE_LARGE class 1.2
-::constant PANGO_SCALE_X_LARGE class 1.4399999999999
-::constant PANGO_SCALE_XX_LARGE class 1.728
+::constant PANGO_SCALE_XX_SMALL 0.5787037037037
+::constant PANGO_SCALE_X_SMALL 0.6444444444444
+::constant PANGO_SCALE_SMALL 0.8333333333333
+::constant PANGO_SCALE_MEDIUM 1.0
+::constant PANGO_SCALE_LARGE 1.2
+::constant PANGO_SCALE_X_LARGE 1.4399999999999
+::constant PANGO_SCALE_XX_LARGE 1.728
    -- PangoWeight
-::constant PANGO_WEIGHT_ULTRALIGHT class 200
-::constant PANGO_WEIGHT_LIGHT class 300
-::constant PANGO_WEIGHT_NORMAL class 400
-::constant PANGO_WEIGHT_SEMIBOLD class 600
-::constant PANGO_WEIGHT_BOLD class 700
-::constant PANGO_WEIGHT_ULTRABOLD class 800
-::constant PANGO_WEIGHT_HEAVY class 900
+::constant PANGO_WEIGHT_ULTRALIGHT 200
+::constant PANGO_WEIGHT_LIGHT 300
+::constant PANGO_WEIGHT_NORMAL 400
+::constant PANGO_WEIGHT_SEMIBOLD 600
+::constant PANGO_WEIGHT_BOLD 700
+::constant PANGO_WEIGHT_ULTRABOLD 800
+::constant PANGO_WEIGHT_HEAVY 900
    -- PangoStyle
-::constant PANGO_STYLE_NORMAL class 0
-::constant PANGO_STYLE_OBLIQUE class 1
-::constant PANGO_STYLE_ITALIC class 2
+::constant PANGO_STYLE_NORMAL 0
+::constant PANGO_STYLE_OBLIQUE 1
+::constant PANGO_STYLE_ITALIC 2
    -- PangoUnderline
-::constant PANGO_UNDERLINE_NONE class 0
-::constant PANGO_UNDERLINE_SINGLE class 1
-::constant PANGO_UNDERLINE_DOUBLE class 2
-::constant PANGO_UNDERLINE_LOW class 3
-::constant PANGO_UNDERLINE_ERROR class 4
+::constant PANGO_UNDERLINE_NONE 0
+::constant PANGO_UNDERLINE_SINGLE 1
+::constant PANGO_UNDERLINE_DOUBLE 2
+::constant PANGO_UNDERLINE_LOW 3
+::constant PANGO_UNDERLINE_ERROR 4
    -- Fundamental GTypes
-::constant G_TYPE_INVALID class 0
-::constant G_TYPE_NONE class 1
-::constant G_TYPE_INTERFACE class 2
-::constant G_TYPE_CHAR class 3
-::constant G_TYPE_UCHAR class 4
-::constant G_TYPE_BOOLEAN class 5
-::constant G_TYPE_INT class 6
-::constant G_TYPE_UINT class 7
-::constant G_TYPE_LONG class 8
-::constant G_TYPE_ULONG class 9
-::constant G_TYPE_INT64 class 10
-::constant G_TYPE_UINT64 class 11
-::constant G_TYPE_ENUM class 12
-::constant G_TYPE_FLAGS class 13
-::constant G_TYPE_FLOAT class 14
-::constant G_TYPE_DOUBLE class 15
-::constant G_TYPE_STRING class 16
-::constant G_TYPE_POINTER class 17
-::constant G_TYPE_BOXED class 18
-::constant G_TYPE_PARAM class 19
-::constant G_TYPE_OBJECT class 20
+::constant G_TYPE_INVALID 0
+::constant G_TYPE_NONE 1
+::constant G_TYPE_INTERFACE 2
+::constant G_TYPE_CHAR 3
+::constant G_TYPE_UCHAR 4
+::constant G_TYPE_BOOLEAN 5
+::constant G_TYPE_INT 6
+::constant G_TYPE_UINT 7
+::constant G_TYPE_LONG 8
+::constant G_TYPE_ULONG 9
+::constant G_TYPE_INT64 10
+::constant G_TYPE_UINT64 11
+::constant G_TYPE_ENUM 12
+::constant G_TYPE_FLAGS 13
+::constant G_TYPE_FLOAT 14
+::constant G_TYPE_DOUBLE 15
+::constant G_TYPE_STRING 16
+::constant G_TYPE_POINTER 17
+::constant G_TYPE_BOXED 18
+::constant G_TYPE_PARAM 19
+::constant G_TYPE_OBJECT 20
 
 
 /*============================================================================*/
