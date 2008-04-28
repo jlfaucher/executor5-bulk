@@ -131,7 +131,7 @@ use strict arg start = 0, len = 1
 if len < 0 then raise syntax 93.906 array (2, len)
 if state = 'NOTREADY' then raise notready array('Socket') return ''
 do while rcvbuf~length < len
-   rcvbuf~append(s~read())
+   rcvbuf~append(self~read())
    if rcvbuf~length = 0 then do
       state = 'NOTREADY'
       description = s~errno
