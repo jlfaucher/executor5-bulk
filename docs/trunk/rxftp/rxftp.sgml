@@ -1364,12 +1364,36 @@ None.
 <para>The following sections describe the additional method attributes available
 in the RxFtp class.
 <itemizedlist>
+<listitem><para>BufSize          </para></listitem>
 <listitem><para>CmdResponse      </para></listitem>
 <listitem><para>CR_Remove        </para></listitem>
 <listitem><para>Debug            </para></listitem>
 <listitem><para>FtpErrno         </para></listitem>
 <listitem><para>Response         </para></listitem>
 </itemizedlist></para>
+
+<section id="bufsize"><title>BufSize</title>
+<indexterm><primary>BufSize</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>BufSize</secondary></indexterm>
+<indexterm><primary>send/recv buffer</primary></indexterm>
+<indexterm><primary>buffer, send/recv</primary></indexterm>
+<para>The BufSize method attribute contains the size of the buffer used  
+by RxFtp methods.  The default is 4096 and you can change this to any
+positive integer value.
+</para>
+<para>Increasing this value may speed your FTP transactions, but making it too large may slow them down.
+Experimentation may be called for.
+</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<para>The following will display the BufSize and reset it to 8192.</para>
+<programlisting>
+<![CDATA[
+say myftpobj~bufSize
+myftpobj~bufSize = 8192
+]]>
+</programlisting>
+</section>
 
 <section id="cmdresponse"><title>CmdResponse</title>
 <indexterm><primary>CmdResponse</primary></indexterm>
