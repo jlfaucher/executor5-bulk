@@ -326,9 +326,10 @@ RexxMethod4(int,                       // Return type
  *
  * @return        Zero
  */
-RexxMethod1(RexxObjectPtr,             // Return type
+RexxMethod2(RexxObjectPtr,             // Return type
             GrxRangeSignalConnect,     // Object_method name
-            CSTRING, name)             // Signal name
+            CSTRING, name,             // Signal name
+            ARGLIST, args)             // The whole argument list as an array
 {
     RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
@@ -358,7 +359,6 @@ RexxMethod1(RexxObjectPtr,             // Return type
                          G_CALLBACK(signal_func_0), cblock);
         return context->True();
     }
-    RexxObjectPtr parent = context->GetSuper();
-    return context->SendMessage0(parent, name);
+    return context->SendSuperMessage("signal_connect", args);
 }
 

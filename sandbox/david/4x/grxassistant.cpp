@@ -350,10 +350,11 @@ RexxMethod2(int,                       // Return type
  *
  * @return        Zero
  */
-RexxMethod2(int,                       // Return type
+RexxMethod3(int,                       // Return type
             GrxAssistantSetPageSideImage, // Object_method name
             RexxObjectPtr, page,       // Page
-            CSTRING, filename)         // Image file name
+            CSTRING, filename,         // Image file name
+            ARGLIST, args)             // The whole argument list as an array
 {
     RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
     GtkAssistant *myWidget = (GtkAssistant *)context->PointerValue(rxptr);
@@ -375,9 +376,10 @@ RexxMethod2(int,                       // Return type
  *
  * @return        Zero
  */
-RexxMethod1(RexxObjectPtr,             // Return type
+RexxMethod2(RexxObjectPtr,             // Return type
             GrxAssistantSignalConnect, // Object_method name
-            CSTRING, name)             // Signal name
+            CSTRING, name,             // Signal name
+            ARGLIST, args)             // The whole argument list as an array
 {
     RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
@@ -415,7 +417,6 @@ RexxMethod1(RexxObjectPtr,             // Return type
                          G_CALLBACK(signal_func_1), cblock);
         return context->True();
     }
-    RexxObjectPtr parent = context->GetSuper();
-    return context->SendMessage0(parent, name);
+    return context->SendSuperMessage("signal_connect", args);
 }
 

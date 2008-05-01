@@ -206,9 +206,10 @@ RexxMethod2(int,                       // Return type
  *
  * @return        Zero
  */
-RexxMethod1(RexxObjectPtr,             // Return type
+RexxMethod2(RexxObjectPtr,             // Return type
             GrxAdjustmentSignalConnect, // Object_method name
-            CSTRING, name)             // Signal name
+            CSTRING, name,             // Signal name
+            ARGLIST, args)             // The whole argument list as an array
 {
     RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
