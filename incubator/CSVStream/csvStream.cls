@@ -1,7 +1,6 @@
 /* ========================================================================= */
 /* csvStream ooRexx stream subclass for CSV file handling                    */
-/* sahananda               windhorse:evolution                 November 2006 */
-/* Version 1.06                                                December 2007 */
+/* Version 1.07                                                   April 2008 */
 /*                                                                           */
 /* Amendments                                                                */
 /* 1.01   Dec06 SN Headers inserted by close method / general tidy up        *//*{1.01}*/
@@ -10,7 +9,8 @@
 /* 1.03 29Dec06 SN Cope with no parm passed to CSVLineOut                    *//*{1.03}*/
 /* 1.04 05Jan07 SN Accept STEM data with headers & fix firstcolumn bug       *//*{1.04}*/
 /* 1.05 07Dec07 SN performance enhancements                                  *//*{1.05}*/
-/* 1.06 21Dec07 SN 3.2 has .endOfLine const so drop discovery process        *//*{1.06}*/
+/* 1.06 21Dec07 SN As ooRexx 3.2 has lineend constant - remove discovery     *//*{1.06}*/
+/* 1.07 21Apr08 SN provide stripoption for CSVLineIn                         *//*{1.07}*/
 /*                                                                           */
 /* ========================================================================= */
 
@@ -54,17 +54,25 @@
 ::class CsvStream subclass Stream Public
 /* ========================================================================= */
 /* ------------------------------------------------------------------------- */
-::method FileHasHeaders     Attribute private -- copy of headersExist parm
-::method headers            Attribute         -- csvStreamHeader Object
-::method originalRawHeaders Attribute private -- for comparison
-::method headerLineAbsent   Attribute private -- headersexist but absent
-::method OpenArgs           Attribute private -- args to open method
-::method values             Attribute         -- table for headered i/o
-::method rawText            Attribute         -- copy of last line read
-::method skipHeaders        Attribute         -- switch can be set before open
-::method lineEnd            Attribute      -- string used for line terminations
-::method Delimiter          Attribute         -- seperates CSV fields          /*{1.02}*/
-::method Qualifier          Attribute         -- Surrounds literals            /*{1.02}*/
+::Attribute FileHasHeaders        private -- copy of headersExist parm
+::Attribute headers                       -- csvStreamHeader Object
+::Attribute originalRawHeaders    private -- for comparison
+::Attribute headerLineAbsent      private -- headersexist but absent
+::Attribute OpenArgs              private -- args to open method
+::Attribute values                        -- table for headered i/o
+::Attribute rawText                       -- copy of last line read
+::Attribute skipHeaders                   -- switch can be set before open
+::Attribute lineEnd                       -- string used for line terminations
+::Attribute Delimiter                     -- separates CSV fields              /*{1.02}*/
+::Attribute Qualifier                     -- Surrounds literals                /*{1.02}*/
+::Attribute StripOption get               -- optional stripping on lineIn      /*{1.07}*/
+::Attribute StripOption set                                                    /*{1.07}*/
+   expose stripOption                                                          /*{1.07}*/
+   use arg stripOption                                                         /*{1.07}*/
+                                                                               /*{1.07}*/
+   if \stripOption~caselessmatchChar(1,'LTB N')                                /*{1.07}*/
+   then raise syntax 40.904 array ("stripOption", 1, 'L,T,B, ,N', stripOption) /*{1.07}*/
+::Attribute StripChar                                                          /*{1.07}*/
 /* ------------------------------------------------------------------------- */
 ::method Init
 /* ------------------------------------------------------------------------- */
@@ -80,6 +88,8 @@ self~headerLineAbsent   = .false
 self~delimiter          = ','     /* seperates fields in a CSV file          *//*{1.02}*/
 self~qualifier          = '"'     /* surrounds literal fields                *//*{1.02}*/
 self~openArgs           = .nil                                                 /*{1.05}*/
+self~stripOption        = 'N'                                                  /*{1.07}*/
+self~stripChar          = ' '                                                  /*{1.07}*/
 
 self~init:super(parms)                        /* let stream class initialise */
 
@@ -189,6 +199,10 @@ do until (inLiteral  = .false) ,
 
                /* '"' are represented in text as '""' */
                fieldText = fieldText~changeStr(blipBlip,blip)                  /*{1.02}*/
+
+               /* N (for normal or none) means do not strip */                 /*{1.07}*/
+               if \self~stripOption~caselessMatchChar(1,'N')                   /*{1.07}*/
+               then fieldtext = fieldtext~strip(self~stripOption,self~stripChar) /*{1.07}*/
 
                csvFields[fieldNo] = fieldText
                fieldNo            = fieldNo + 1
