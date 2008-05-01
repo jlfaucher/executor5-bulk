@@ -668,98 +668,30 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  set_authors
  *
  * Set the about program authors.
  *
- * @param author1 The author
- *
- * @param author2 The author
- *
- * @param author3 The author
- *
- * @param author4 The author
- *
- * @param author5 The author
- *
- * @param author6 The author
- *
- * @param author7 The author
- *
- * @param author8 The author
- *
- * @param author9 The author
+ * @param args    The array of authors
  *
  * @return        Zero.
- */
-RexxMethod9(int,                       // Return type
+ **/
+RexxMethod1(int,                       // Return type
             GrxAboutDialogSetAuthors,  // Object_method name
-            CSTRING, author1,          // Program author
-            OPTIONAL_CSTRING, author2, // Program author
-            OPTIONAL_CSTRING, author3, // Program author
-            OPTIONAL_CSTRING, author4, // Program author
-            OPTIONAL_CSTRING, author5, // Program author
-            OPTIONAL_CSTRING, author6, // Program author
-            OPTIONAL_CSTRING, author7, // Program author
-            OPTIONAL_CSTRING, author8, // Program author
-            OPTIONAL_CSTRING, author9) // Program author
+            ARGLIST, args)             // Array of authors
 {
     RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-    const gchar *authors[10];
+    size_t members = context->ArraySize(args);
+    const gchar *names[members];
 
-    authors[9] = NULL;
-    if (author9 != NULL) {
-        authors[8] = author9;
+    if (members) {
+        for (int i = 0; i < members; i++) {
+            names[i] = context->StringData((RexxStringObject)context->ArrayAt(args, i));
+        }
+        gtk_about_dialog_set_authors(GTK_ABOUT_DIALOG(myWidget), names);
     }
-    else {
-        authors[8] = NULL;
-    }
-    if (author8 != NULL) {
-        authors[7] = author8;
-    }
-    else {
-        authors[7] = NULL;
-    }
-    if (author7 != NULL) {
-        authors[6] = author7;
-    }
-    else {
-        authors[6] = NULL;
-    }
-    if (author6 != NULL) {
-        authors[5] = author6;
-    }
-    else {
-        authors[5] = NULL;
-    }
-    if (author5 != NULL) {
-        authors[4] = author5;
-    }
-    else {
-        authors[4] = NULL;
-    }
-    if (author4 != NULL) {
-        authors[3] = author4;
-    }
-    else {
-        authors[3] = NULL;
-    }
-    if (author3 != NULL) {
-        authors[2] = author3;
-    }
-    else {
-        authors[2] = NULL;
-    }
-    if (author2 != NULL) {
-        authors[1] = author2;
-    }
-    else {
-        authors[1] = NULL;
-    }
-    authors[0] = author1;
-    gtk_about_dialog_set_authors(GTK_ABOUT_DIALOG(myWidget), authors);
 
     return 0;
 }
@@ -769,93 +701,25 @@ RexxMethod9(int,                       // Return type
  *
  * Set the about program artists.
  *
- * @param artist1 The artist
- *
- * @param artist2 The artist
- *
- * @param artist3 The artist
- *
- * @param artist4 The artist
- *
- * @param artist5 The artist
- *
- * @param artist6 The artist
- *
- * @param artist7 The artist
- *
- * @param artist8 The artist
- *
- * @param artist9 The artist
+ * @param args    The array of artists
  *
  * @return        Zero.
  */
-RexxMethod9(int,                       // Return type
+RexxMethod1(int,                       // Return type
             GrxAboutDialogSetArtists,  // Object_method name
-            CSTRING, artist1,          // Program artist
-            OPTIONAL_CSTRING, artist2, // Program artist
-            OPTIONAL_CSTRING, artist3, // Program artist
-            OPTIONAL_CSTRING, artist4, // Program artist
-            OPTIONAL_CSTRING, artist5, // Program artist
-            OPTIONAL_CSTRING, artist6, // Program artist
-            OPTIONAL_CSTRING, artist7, // Program artist
-            OPTIONAL_CSTRING, artist8, // Program artist
-            OPTIONAL_CSTRING, artist9) // Program artist
+            ARGLIST, args)             // Array of authors
 {
     RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-    const gchar *artists[10];
+    size_t members = context->ArraySize(args);
+    const gchar *names[members];
 
-    artists[9] = NULL;
-    if (artist9 != NULL) {
-        artists[8] = artist9;
+    if (members) {
+        for (int i = 0; i < members; i++) {
+            names[i] = context->StringData((RexxStringObject)context->ArrayAt(args, i));
+        }
+        gtk_about_dialog_set_artists(GTK_ABOUT_DIALOG(myWidget), names);
     }
-    else {
-        artists[8] = NULL;
-    }
-    if (artist8 != NULL) {
-        artists[7] = artist8;
-    }
-    else {
-        artists[7] = NULL;
-    }
-    if (artist7 != NULL) {
-        artists[6] = artist7;
-    }
-    else {
-        artists[6] = NULL;
-    }
-    if (artist6 != NULL) {
-        artists[5] = artist6;
-    }
-    else {
-        artists[5] = NULL;
-    }
-    if (artist5 != NULL) {
-        artists[4] = artist5;
-    }
-    else {
-        artists[4] = NULL;
-    }
-    if (artist4 != NULL) {
-        artists[3] = artist4;
-    }
-    else {
-        artists[3] = NULL;
-    }
-    if (artist3 != NULL) {
-        artists[2] = artist3;
-    }
-    else {
-        artists[2] = NULL;
-    }
-    if (artist2 != NULL) {
-        artists[1] = artist2;
-    }
-    else {
-        artists[1] = NULL;
-    }
-    artists[0] = artist1;
-    gtk_about_dialog_set_artists(GTK_ABOUT_DIALOG(myWidget), artists);
 
     return 0;
 }
@@ -863,95 +727,27 @@ RexxMethod9(int,                       // Return type
 /*
  * Method:  set_documentors
  *
+ * Set the about program documentors.
+ *
  * Set the about program artists.
- *
- * @param author1 The author
- *
- * @param author2 The author
- *
- * @param author3 The author
- *
- * @param author4 The author
- *
- * @param author5 The author
- *
- * @param author6 The author
- *
- * @param author7 The author
- *
- * @param author8 The author
- *
- * @param author9 The author
  *
  * @return        Zero.
  */
-RexxMethod9(int,                       // Return type
+RexxMethod1(int,                       // Return type
             GrxAboutDialogSetDocumentors, // Object_method name
-            CSTRING, author1,          // Program artist
-            OPTIONAL_CSTRING, author2, // Program author
-            OPTIONAL_CSTRING, author3, // Program author
-            OPTIONAL_CSTRING, author4, // Program author
-            OPTIONAL_CSTRING, author5, // Program author
-            OPTIONAL_CSTRING, author6, // Program author
-            OPTIONAL_CSTRING, author7, // Program author
-            OPTIONAL_CSTRING, author8, // Program author
-            OPTIONAL_CSTRING, author9) // Program author
+            ARGLIST, args)             // Array of authors
 {
     RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-    const gchar *authors[10];
+    size_t members = context->ArraySize(args);
+    const gchar *names[members];
 
-    authors[9] = NULL;
-    if (author9 != NULL) {
-        authors[8] = author9;
+    if (members) {
+        for (int i = 0; i < members; i++) {
+            names[i] = context->StringData((RexxStringObject)context->ArrayAt(args, i));
+        }
+        gtk_about_dialog_set_documenters(GTK_ABOUT_DIALOG(myWidget), names);
     }
-    else {
-        authors[8] = NULL;
-    }
-    if (author8 != NULL) {
-        authors[7] = author8;
-    }
-    else {
-        authors[7] = NULL;
-    }
-    if (author7 != NULL) {
-        authors[6] = author7;
-    }
-    else {
-        authors[6] = NULL;
-    }
-    if (author6 != NULL) {
-        authors[5] = author6;
-    }
-    else {
-        authors[5] = NULL;
-    }
-    if (author5 != NULL) {
-        authors[4] = author5;
-    }
-    else {
-        authors[4] = NULL;
-    }
-    if (author4 != NULL) {
-        authors[3] = author4;
-    }
-    else {
-        authors[3] = NULL;
-    }
-    if (author3 != NULL) {
-        authors[2] = author3;
-    }
-    else {
-        authors[2] = NULL;
-    }
-    if (author2 != NULL) {
-        authors[1] = author2;
-    }
-    else {
-        authors[1] = NULL;
-    }
-    authors[0] = author1;
-    gtk_about_dialog_set_documenters(GTK_ABOUT_DIALOG(myWidget), authors);
 
     return 0;
 }
