@@ -1391,17 +1391,51 @@ Log&quot; is used.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
+<varlistenty><term>Return value:</term>
+<listitem><para>The method returns:
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The open succeeded.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>The open failed.
+</para></listitem></varlistentry>
+</variablelist></para></listitem>
+</varlistenty>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example opens the Application log on the local
-machine:</para>
+<listitem><para>The following two code snippets are equivalent.  They both open
+the Application log on the local machine if they succeed:
+</para>
 <programlisting>
+event_log1 = .WindowsEventLog~new
 rc = event_log1~open
+if rc == 1 then do
+  say 'Failed to open the event log'
+  ...
+end
+
+event_log = .WindowsEventLog~new
 rc = event_log~open(,"Application")
+if rc == 1 then do
+  say 'Failed to open the event log'
+  ...
+end
 </programlisting>
-<para>The following example
-opens the System log on SERVER01:</para>
+<para>The following example opens the System log on SERVER01:</para>
 <programlisting>
+
+event_log = .WindowsEventLog~new
 rc = event_log~open("\\SERVER01","System")
+if rc == 0 then do
+  -- Do something with the event log
+  ...
+  event_log~close
+  ...
+end
+else do
+  -- Handle the error in some way
+  ...
+end
 </programlisting>
 </listitem></varlistentry>
 </variablelist>
@@ -1441,10 +1475,11 @@ rc = event_log~open("\\SERVER01","System")
 ]]>
 </programlisting>
 
-<para>Reads event log records. If the event log was not opened with the OPEN
-method, the event log specified by the <emphasis role="italic">server</emphasis>
-and <emphasis role="italic">source</emphasis> is
-opened and closed after processing.</para>
+<para>Reads an event log and returns an array containing the event records. If
+the event log was not opened with the OPEN method, the event log specified by
+the <emphasis role="italic">server</emphasis> and emphasis
+role="italic">source</emphasis> is opened and closed after processing.
+</para>
 <variablelist>
 <varlistentry><term>Arguments:</term>
 <listitem><para>The arguments are:
@@ -1497,9 +1532,9 @@ if evl~InitCode \= 0 then exit
 
 say " reading complete System log forwards without opening it before "
 
-events = evl~read("FORWARDS", ,"System")
+records = evl~read("FORWARDS", ,"System")
 
-if events \= .nil then
+if records \= .nil then
   call DisplayRecords
 else
   say "==> Error reading complete System event log"
@@ -1510,11 +1545,11 @@ exit 0   /* leave program */
 
 DisplayRecords:
 
-say evl~Events~items "records read"
+say records~items "records read"
 
-do i=1 to evl~Events~items
+do i=1 to records~items
   say "============================================================="
-  temp = evl~Events[i]
+  temp = records[i]
   parse var temp type date time "&apos;" sourcename"&apos;" id,
   userid computer "&apos;" string "&apos;" "&apos;" data "&apos;"
   say "Type	: "type
@@ -1559,7 +1594,7 @@ return
 ]]>
 </programlisting>
 
-<para>Reads event log records. If the event log was not opened with the Open
+<para>Writes event log records. If the event log was not opened with the Open
 method, the event log specified by the <emphasis role="italic">server</emphasis>
 and <emphasis role="italic">source</emphasis> is
 opened and closed after processing.</para>
