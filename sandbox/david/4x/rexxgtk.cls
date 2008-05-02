@@ -1674,6 +1674,21 @@ return
 
 
 /*============================================================================*/
+/* Class: GtkListStore                                                        */
+/*============================================================================*/
+
+::class GtkListStore public
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxListStoreNew"
+::METHOD append EXTERNAL "LIBRARY rexxgtk GrxListStoreAppend"
+::METHOD set EXTERNAL "LIBRARY rexxgtk GrxListStoreSetValue"
+
+::method pointer
+expose !pointer
+return !pointer
+
+
+/*============================================================================*/
 /*============================================================================*/
 /*============================================================================*/
 /* These are classes and routines specific to Glib.                           */
