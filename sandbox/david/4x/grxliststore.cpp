@@ -124,17 +124,23 @@ RexxMethod0(RexxObjectPtr,             // Return type
  *
  * @return        Zero
  **/
-RexxMethod3(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxListStoreSetValue,      // Object_method name
             RexxObjectPtr, rxiter,     // Row iterator
-            int, colnum,               // Column number
-            CSTRING, val)              // Column value
+            ARGLIST, args)             // Argument array
 {
     RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
     GtkListStore *lstore = (GtkListStore *)context->PointerValue(rxptr);
     GtkTreeIter *iter = (GtkTreeIter *)context->PointerValue((RexxPointerObject)rxiter);
+    size_t members = context->ArraySize(args);
+    int i, col;
+    const char *val;
 
-    gtk_list_store_set_value(lstore, iter, colnum, (GValue *)val);
+    for (i = 3; i <= members; i += 2) {
+        context->ObjectToNumber(context->ArrayAt(args, i), &col);
+        val = context->StringData((RexxStringObject)context->ArrayAt(args, i - 1));
+        gtk_list_store_set_value(lstore, iter, col, (GValue *)val);
+    }
 
     return 0;
 }
