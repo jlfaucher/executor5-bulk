@@ -75,13 +75,13 @@ static void signal_func_0(GtkWidget *widget,
 /* Public Functions                                                           */
 /*============================================================================*/
 
-/*
+/**
  * Method:  init
  *
  * Create a push button.
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxButtonNew,              // Object_method name
             OSELF, self)               // Self
@@ -95,13 +95,13 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  set_use_stock
  *
  * Indicate the label is a stock item.
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxButtonSetUseStock,      // Object_method name
             logical_t, flag)           // Label is stock item flag
@@ -114,7 +114,7 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  set_label
  *
  * Set the button label.
@@ -122,7 +122,7 @@ RexxMethod1(int,                       // Return type
  * @param type    The label text.
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxButtonSetLabel,         // Object_method name
             CSTRING, text)             // Button type
@@ -135,13 +135,13 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  get_label
  *
  * Get the button label.
  *
  * @return        Label text.
- */
+ **/
 RexxMethod0(RexxObjectPtr,             // Return type
             GrxButtonGetLabel)         // Object_method name
 {
@@ -151,7 +151,7 @@ RexxMethod0(RexxObjectPtr,             // Return type
     return context->NewStringFromAsciiz(gtk_button_get_label(GTK_BUTTON(myWidget)));
 }
 
-/*
+/**
  * Method:  set_relief
  *
  * Set the button relief.
@@ -159,7 +159,7 @@ RexxMethod0(RexxObjectPtr,             // Return type
  * @param relief  The button relief style.
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxButtonSetRelief,       // Object_method name
             int, relief)               // Button relief style
@@ -172,7 +172,7 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  use_underline
  *
  * Set the button underline flag.
@@ -180,7 +180,7 @@ RexxMethod1(int,                       // Return type
  * @param flag    The button underline flag.
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxButtonSetUnderline,     // Object_method name
             logical_t, flag)           // Button underline flag
@@ -193,13 +193,13 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  init
  *
  * Create a toggle button.
  *
  * @return        Zero.
- */                      
+ **/                      
 RexxMethod1(int,                       // Return type
             GrxToggleButtonNew,        // Object_method name
             OSELF, self)               // Self
@@ -213,13 +213,13 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  get_mode
  *
  * Get the display mode of the button.
  *
  * @return        Mode.
- */
+ **/
 RexxMethod0(logical_t,                 // Return type
             GrxToggleButtonGetMode)    // Object_method name
 {
@@ -229,7 +229,7 @@ RexxMethod0(logical_t,                 // Return type
     return gtk_toggle_button_get_mode(GTK_TOGGLE_BUTTON(myWidget));
 }
 
-/*
+/**
  * Method:  set_mode
  *
  * Set the display mode of the button.
@@ -237,7 +237,7 @@ RexxMethod0(logical_t,                 // Return type
  * @param mode    The button mode.
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxToggleButtonSetMode,    // Object_method name
             logical_t, mode)           // Button mode flag
@@ -250,13 +250,13 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  get_active
  *
  * Get the active state.
  *
  * @return        Boolean.
- */
+ **/
 RexxMethod0(logical_t,                 // Return type
             GrxToggleButtonGetActive)  // Object_method name
 {
@@ -266,7 +266,7 @@ RexxMethod0(logical_t,                 // Return type
     return gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(myWidget));
 }
 
-/*
+/**
  * Method:  set_active
  *
  * Set the active state of the button.
@@ -274,7 +274,7 @@ RexxMethod0(logical_t,                 // Return type
  * @param mode    The button state.
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxToggleButtonSetActive,  // Object_method name
             logical_t, state)          // Button state flag
@@ -287,13 +287,13 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  get_inconsistent
  *
  * Get the inconsistent state.
  *
  * @return        Boolean.
- */
+ **/
 RexxMethod0(logical_t,                 // Return type
             GrxToggleButtonGetInconsistent) // Object_method name
 {
@@ -303,7 +303,7 @@ RexxMethod0(logical_t,                 // Return type
     return gtk_toggle_button_get_inconsistent(GTK_TOGGLE_BUTTON(myWidget));
 }
 
-/*
+/**
  * Method:  set_inconsistent
  *
  * Set the inconsistent state of the button.
@@ -311,7 +311,7 @@ RexxMethod0(logical_t,                 // Return type
  * @param mode    The button state.
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxToggleButtonSetInconsistent, // Object_method name
             logical_t, state)         // Button state flag
@@ -324,7 +324,7 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  init
  *
  * Create a check button.
@@ -332,7 +332,7 @@ RexxMethod1(int,                       // Return type
  * @param mode    The label for the button.
  *
  * @return        Zero.
- */
+ **/
 RexxMethod2(int,                       // Return type
             GrxCheckButtonNew,         // Object_method name
             OSELF, self,               // Self
@@ -352,7 +352,7 @@ RexxMethod2(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  init
  *
  * Create a radio button.
@@ -362,7 +362,7 @@ RexxMethod2(int,                       // Return type
  * @param label   The label for the button (optional).
  *
  * @return        Zero.
- */
+ **/
 RexxMethod3(int,                       // Return type
             GrxRadioButtonNew,         // Object_method name
             OSELF, self,               // Self
@@ -383,7 +383,7 @@ RexxMethod3(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  init
  *
  * Create a radio button from a pointer.
@@ -391,7 +391,7 @@ RexxMethod3(int,                       // Return type
  * @param group   The widget pointer.
  *
  * @return        Zero.
- */
+ **/
 RexxMethod2(int,                        // Return type
             GrxRadioButtonNewFromWidget, // Object_method name
             OSELF, self,                // Self
@@ -408,13 +408,13 @@ RexxMethod2(int,                        // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  get_group
  *
  * Get the radio button group.
  *
  * @return        GList group.
- */
+ **/
 RexxMethod0(RexxObjectPtr,             // Return type
             GrxRadioButtonGetGroup)    // Object_method name
 {
@@ -426,7 +426,7 @@ RexxMethod0(RexxObjectPtr,             // Return type
     return (RexxObjectPtr)g_object_get_data(G_OBJECT(myWidget), "OORXOBJECT");
 }
 
-/*
+/**
  * Method:  set_group
  *
  * Set the radio button group.
@@ -434,7 +434,7 @@ RexxMethod0(RexxObjectPtr,             // Return type
  * @param group   The group pointer.
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxRadioButtonSetGroup,    // Object_method name
             RexxObjectPtr, rxlistptr)  // GList pointer
@@ -449,7 +449,7 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  init
  *
  * Create a color button.
@@ -457,7 +457,7 @@ RexxMethod1(int,                       // Return type
  * @param colorstr Color string
  *
  * @return        Zero.
- */
+ **/
 RexxMethod2(int,                       // Return type
             GrxColorButtonNew,         // Object_method name
             OSELF, self,               // Self
@@ -479,7 +479,7 @@ RexxMethod2(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  set_title
  *
  * Set the color button title.
@@ -487,7 +487,7 @@ RexxMethod2(int,                       // Return type
  * @param title   Color string
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxColorButtonSetTitle,    // Object_method name
             CSTRING, title)            // Color string
@@ -500,7 +500,7 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  get_color
  *
  * Get the color button color.
@@ -508,7 +508,7 @@ RexxMethod1(int,                       // Return type
  * @param title   Color string
  *
  * @return        Color string
- */
+ **/
 RexxMethod0(RexxObjectPtr,             // Return type
             GrxColorButtonGetColor)    // Object_method name
 {
@@ -524,7 +524,7 @@ RexxMethod0(RexxObjectPtr,             // Return type
     return context->NewStringFromAsciiz(colorstr);
 }
 
-/*
+/**
  * Method:  Set_color
  *
  * Set the color button color.
@@ -532,7 +532,7 @@ RexxMethod0(RexxObjectPtr,             // Return type
  * @param title   Color string
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxColorButtonSetColor,    // Object_method name
             CSTRING, colorstr)         // Color string
@@ -547,7 +547,7 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  init
  *
  * Create a file chooser button.
@@ -557,7 +557,7 @@ RexxMethod1(int,                       // Return type
  * @param action  Button action.
  *
  * @return        Zero.
- */
+ **/
 RexxMethod3(int,                       // Return type
             GrxFileChooserButtonNew,   // Object_method name
             OSELF, self,               // Self
@@ -573,13 +573,13 @@ RexxMethod3(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  init
  *
  * Create a font button.
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxFontButton,             // Object_method name
             OSELF, self)               // Self
@@ -593,7 +593,7 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  set_title
  *
  * Set the font button title.
@@ -601,7 +601,7 @@ RexxMethod1(int,                       // Return type
  * @param title   Button title
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxFontButtonSetTitle,     // Object_method name
             CSTRING, title)            // Title string
@@ -614,13 +614,13 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  get_font_name
  *
  * Get the font chosen by the user.
  *
  * @return        Font string
- */
+ **/
 RexxMethod0(CSTRING,                   // Return type
             GrxFontButtonGetFontName)  // Object_method name
 {
@@ -640,7 +640,7 @@ RexxMethod0(CSTRING,                   // Return type
  * @param name    The signal name
  *
  * @return        Zero
- */
+ **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxButtonSignalConnect,    // Object_method name
             CSTRING, name,             // Signal name
@@ -701,7 +701,7 @@ RexxMethod2(RexxObjectPtr,             // Return type
  * @param name    The signal name
  *
  * @return        Zero
- */
+ **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxToggleButtonSignalConnect, // Object_method name
             CSTRING, name,             // Signal name
@@ -730,7 +730,7 @@ RexxMethod2(RexxObjectPtr,             // Return type
  * @param name    The signal name
  *
  * @return        Zero
- */
+ **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxRadioButtonSignalConnect, // Object_method name
             CSTRING, name,             // Signal name
@@ -759,7 +759,7 @@ RexxMethod2(RexxObjectPtr,             // Return type
  * @param name    The signal name
  *
  * @return        Zero
- */
+ **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxColorButtonSignalConnect, // Object_method name
             CSTRING, name,             // Signal name
@@ -788,7 +788,7 @@ RexxMethod2(RexxObjectPtr,             // Return type
  * @param name    The signal name
  *
  * @return        Zero
- */
+ **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxFileChooserButtonSignalConnect, // Object_method name
             CSTRING, name,             // Signal name
@@ -817,7 +817,7 @@ RexxMethod2(RexxObjectPtr,             // Return type
  * @param name    The signal name
  *
  * @return        Zero
- */
+ **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxFontButtonSignalConnect, // Object_method name
             CSTRING, name,             // Signal name

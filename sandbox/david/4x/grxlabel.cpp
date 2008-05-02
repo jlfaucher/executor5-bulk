@@ -114,7 +114,7 @@ static void signal_func_2(GtkWidget *window,
 /* Public Functions                                                           */
 /*============================================================================*/
 
-/*
+/**
  * Method:  init
  *
  * Create an label.
@@ -122,7 +122,7 @@ static void signal_func_2(GtkWidget *window,
  * @param text    The text of the label (optional).
  *
  * @return        Zero.
- */
+ **/
 RexxMethod2(int,                       // Return type
             GrxLabelNew,               // Object_method name
             OSELF, self,               // Self
@@ -140,7 +140,7 @@ RexxMethod2(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  set_text
  *
  * Set the text of the label.
@@ -148,7 +148,7 @@ RexxMethod2(int,                       // Return type
  * @param text    The text of the label.
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxLabelSetText,           // Object_method name
             CSTRING, text)             // Label text
@@ -161,7 +161,7 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  set_justify
  *
  * Set the label justification
@@ -169,7 +169,7 @@ RexxMethod1(int,                       // Return type
  * @param jtype   The justification type
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxLabelSetJustify,        // Object_method name
             int, jtype)                // Justification type
@@ -195,13 +195,13 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  get_justify
  *
  * get the label justification
  *
  * @return        Justification type
- */
+ **/
 RexxMethod0(int,                       // Return type
             GrxLabelGetJustify)        // Object_method name
 {
@@ -211,7 +211,7 @@ RexxMethod0(int,                       // Return type
     return (int)gtk_label_get_justify(myWidget);
 }
 
-/*
+/**
  * Method:  set_selectable
  *
  * Set the label selectable flag.
@@ -219,7 +219,7 @@ RexxMethod0(int,                       // Return type
  * @param flag    The selectable boolean
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxLabelSetSelectable,     // Object_method name
             logical_t, flag)           // Selectable boolean
@@ -240,7 +240,7 @@ RexxMethod1(int,                       // Return type
  * @param name    The signal name
  *
  * @return        Zero
- */
+ **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxLabelSignalConnect,     // Object_method name
             CSTRING, name,             // Signal name

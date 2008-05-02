@@ -75,7 +75,7 @@ static void signal_func_0(GtkWidget *window,
 /* Public Methods                                                             */
 /*============================================================================*/
 
-/*
+/**
  * Method:  set_current_folder
  *
  * Set the current folder.
@@ -83,7 +83,7 @@ static void signal_func_0(GtkWidget *window,
  * @param pagenum The page number
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxFileChooserSetCurrentFolder, // Object_method name
             CSTRING, dir)              // Directory
@@ -96,7 +96,7 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  set_select_multiple
  *
  * Set the multiple selection flag.
@@ -104,7 +104,7 @@ RexxMethod1(int,                       // Return type
  * @param flag    The boolean flag
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxFileChooserSetSelectMultiple, // Object_method name
             logical_t, flag)           // Flag boolean
@@ -117,7 +117,7 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  add_filter
  *
  * Add a file filter.
@@ -125,7 +125,7 @@ RexxMethod1(int,                       // Return type
  * @param rxfilter The filter object
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxFileChooserAddFilter,   // Object_method name
             RexxObjectPtr, rxfilter)   // Filter object
@@ -140,13 +140,13 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  get_filename
  *
  * Get the filename.
  *
  * @return        Filename
- */
+ **/
 RexxMethod0(CSTRING,                   // Return type
             GrxFileChooserGetFilename) // Object_method name
 {
@@ -156,13 +156,13 @@ RexxMethod0(CSTRING,                   // Return type
     return gtk_file_chooser_get_filename(myWidget);
 }
 
-/*
+/**
  * Method:  get_filenames
  *
  * Get the filenames.
  *
  * @return        Array of filenames
- */
+ **/
 RexxMethod0(RexxObjectPtr,             // Return type
             GrxFileChooserGetFilenames) // Object_method name
 {
@@ -189,7 +189,7 @@ RexxMethod0(RexxObjectPtr,             // Return type
  * @param name    The signal name
  *
  * @return        Zero
- */
+ **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxFileChooserSignalConnect, // Object_method name
             CSTRING, name,             // Signal name
@@ -234,13 +234,13 @@ RexxMethod2(RexxObjectPtr,             // Return type
     return context->False();
 }
 
-/*
+/**
  * Method:  init
  *
  * Create a new file filter.
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxFileFilterNew,          // Object_method name
             OSELF, self)               // Self
@@ -262,7 +262,7 @@ RexxMethod1(int,                       // Return type
  * @param name    The filter name
  *
  * @return        Zero
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxFileFilterSetName,      // Object_method name
             CSTRING, name)             // Filter name
@@ -283,7 +283,7 @@ RexxMethod1(int,                       // Return type
  * @param pattern The pattern
  *
  * @return        Zero
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxFileFilterAddPattern,   // Object_method name
             CSTRING, pattern)          // Filter pattern

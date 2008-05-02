@@ -75,7 +75,7 @@ static void signal_func_0(GtkWidget *window,
 /* Public Functions                                                           */
 /*============================================================================*/
 
-/*
+/**
  * Method:  init (6 args)
  *
  * Create an adjustment.
@@ -93,7 +93,7 @@ static void signal_func_0(GtkWidget *window,
  * @param pagesz  The page size
  *
  * @return        Zero.
- */
+ **/
 RexxMethod7(int,                       // Return type
             GrxAdjustmentNew,          // Object_method name
             OSELF, self,               // Self
@@ -114,7 +114,7 @@ RexxMethod7(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  init (1 arg)
  *
  * Create an adjustment fro an existing widget.
@@ -122,7 +122,7 @@ RexxMethod7(int,                       // Return type
  * @param rxptr   The adjustment pointer
  *
  * @return        Zero.
- */
+ **/
 RexxMethod2(int,                       // Return type
             GrxAdjustmentNewFromPtr,   // Object_method name
             OSELF, self,               // Self
@@ -136,13 +136,13 @@ RexxMethod2(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  get_value
  *
  * Get the current value.
  *
  * @return        Value
- */
+ **/
 RexxMethod0(double,                    // Return type
             GrxAdjustmentGetValue)     // Object_method name
 {
@@ -152,7 +152,7 @@ RexxMethod0(double,                    // Return type
     return gtk_adjustment_get_value(adj);
 }
 
-/*
+/**
  * Method:  set_value
  *
  * Set the current value.
@@ -160,7 +160,7 @@ RexxMethod0(double,                    // Return type
  * @param value   The new value
  *
  * @return        Zero
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxAdjustmentSetValue,     // Object_method name
             double, value)             // New value
@@ -173,7 +173,7 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  clamp_page
  *
  * Clamp the page.
@@ -183,7 +183,7 @@ RexxMethod1(int,                       // Return type
  * @param upper   The upper limit
  *
  * @return        Zero
- */
+ **/
 RexxMethod2(int,                       // Return type
             GrxAdjustmentClampPage,    // Object_method name
             double, lower,             // Lower limit
@@ -205,7 +205,7 @@ RexxMethod2(int,                       // Return type
  * @param name    The signal name
  *
  * @return        Zero
- */
+ **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxAdjustmentSignalConnect, // Object_method name
             CSTRING, name,             // Signal name

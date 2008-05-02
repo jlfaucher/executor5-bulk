@@ -90,13 +90,13 @@ static void signal_func_1(GtkWidget *window,
 /* Public Functions                                                           */
 /*============================================================================*/
 
-/*
+/**
  * Method:  init
  *
  * Create an assistant.
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxAssistantNew,           // Object_method name
             OSELF, self)               // Self
@@ -110,7 +110,7 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  set_current_page
  *
  * Set the assistant current page number.
@@ -118,7 +118,7 @@ RexxMethod1(int,                       // Return type
  * @param pagenum The page number
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxAssistantSetCurrentPage, // Object_method name
             int, pagenum)              // Page number
@@ -131,13 +131,13 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  get_current_page
  *
  * Get the assistant current page number.
  *
  * @return        Page number
- */
+ **/
 RexxMethod0(int,                       // Return type
             GrxAssistantGetCurrentPage) // Object_method name
 {
@@ -147,7 +147,7 @@ RexxMethod0(int,                       // Return type
     return gtk_assistant_get_current_page(myWidget);
 }
 
-/*
+/**
  * Method:  get_nth_page
  *
  * Get the assistant nth page.
@@ -155,7 +155,7 @@ RexxMethod0(int,                       // Return type
  * @param pagenum The page number
  *
  * @return        Page
- */
+ **/
 RexxMethod1(RexxObjectPtr,             // Return type
             GrxAssistantGetNthPage,    // Object_method name
             int, pagenum)              // Page number
@@ -168,7 +168,7 @@ RexxMethod1(RexxObjectPtr,             // Return type
     return (RexxObjectPtr)g_object_get_data(G_OBJECT(pageWidget), "OORXOBJECT");
 }
 
-/*
+/**
  * Method:  prepend_page
  *
  * Prepend a page to the assistant.
@@ -176,7 +176,7 @@ RexxMethod1(RexxObjectPtr,             // Return type
  * @param page    The page
  *
  * @return        Page number
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxAssistantPrependPage,   // Object_method name
             RexxObjectPtr, page)       // Page
@@ -189,7 +189,7 @@ RexxMethod1(int,                       // Return type
     return gtk_assistant_prepend_page(myWidget, pageWidget);
 }
 
-/*
+/**
  * Method:  append_page
  *
  * Append a page to the assistant.
@@ -197,7 +197,7 @@ RexxMethod1(int,                       // Return type
  * @param page    The page
  *
  * @return        Page number
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxAssistantAppendPage,    // Object_method name
             RexxObjectPtr, page)       // Page
@@ -210,7 +210,7 @@ RexxMethod1(int,                       // Return type
     return gtk_assistant_append_page(myWidget, pageWidget);
 }
 
-/*
+/**
  * Method:  insert_page
  *
  * Insert a page to the assistant.
@@ -220,7 +220,7 @@ RexxMethod1(int,                       // Return type
  * @param pagenum The page number
  *
  * @return        Page number
- */
+ **/
 RexxMethod2(int,                       // Return type
             GrxAssistantInsertPage,    // Object_method name
             RexxObjectPtr, page,       // Page
@@ -234,7 +234,7 @@ RexxMethod2(int,                       // Return type
     return gtk_assistant_insert_page(myWidget, pageWidget, pagenum - 1);
 }
 
-/*
+/**
  * Method:  set_page_type
  *
  * Set the assistant page type.
@@ -244,7 +244,7 @@ RexxMethod2(int,                       // Return type
  * @param pagenum The page number
  *
  * @return        Zero
- */
+ **/
 RexxMethod2(int,                       // Return type
             GrxAssistantSetPageType,   // Object_method name
             RexxObjectPtr, page,       // Page
@@ -260,7 +260,7 @@ RexxMethod2(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  set_page_title
  *
  * Set the assistant page title.
@@ -270,7 +270,7 @@ RexxMethod2(int,                       // Return type
  * @param title   The page title 
  *
  * @return        Zero
- */
+ **/
 RexxMethod2(int,                       // Return type
             GrxAssistantSetPageTitle,  // Object_method name
             RexxObjectPtr, page,       // Page
@@ -286,7 +286,7 @@ RexxMethod2(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  set_page_complete
  *
  * Set the assistant page complete.
@@ -296,7 +296,7 @@ RexxMethod2(int,                       // Return type
  * @param flag    The page complete flag
  *
  * @return        Zero
- */
+ **/
 RexxMethod2(int,                       // Return type
             GrxAssistantSetPageComplete, // Object_method name
             RexxObjectPtr, page,       // Page
@@ -312,7 +312,7 @@ RexxMethod2(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  set_page_header_image
  *
  * Set the assistant page header image.
@@ -322,7 +322,7 @@ RexxMethod2(int,                       // Return type
  * @param filename The image file name
  *
  * @return        Zero
- */
+ **/
 RexxMethod2(int,                       // Return type
             GrxAssistantSetPageHeaderImage, // Object_method name
             RexxObjectPtr, page,       // Page
@@ -339,7 +339,7 @@ RexxMethod2(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  set_page_side_image
  *
  * Set the assistant page side image.
@@ -349,7 +349,7 @@ RexxMethod2(int,                       // Return type
  * @param filename The image file name
  *
  * @return        Zero
- */
+ **/
 RexxMethod3(int,                       // Return type
             GrxAssistantSetPageSideImage, // Object_method name
             RexxObjectPtr, page,       // Page
@@ -375,7 +375,7 @@ RexxMethod3(int,                       // Return type
  * @param name    The signal name
  *
  * @return        Zero
- */
+ **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxAssistantSignalConnect, // Object_method name
             CSTRING, name,             // Signal name

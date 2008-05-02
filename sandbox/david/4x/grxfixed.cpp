@@ -83,7 +83,7 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  put
  *
  * Attach a widget to the fixed.
@@ -95,7 +95,7 @@ RexxMethod1(int,                       // Return type
  * @param ypos    The Y position
  *
  * @return        Zero.
- */
+ **/
 RexxMethod3(int,                       // Return type
             GrxFixedPut,               // Object_method name
             RexxObjectPtr, rxwidget,   // Page number
@@ -112,7 +112,7 @@ RexxMethod3(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  move
  *
  * Move a widget in the fixed.
@@ -124,7 +124,7 @@ RexxMethod3(int,                       // Return type
  * @param ypos    The Y position
  *
  * @return        Zero.
- */
+ **/
 RexxMethod3(int,                       // Return type
             GrxFixedMove,              // Object_method name
             RexxObjectPtr, rxwidget,   // Page number

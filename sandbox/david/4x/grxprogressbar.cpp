@@ -61,13 +61,13 @@
 /* Public Functions                                                           */
 /*============================================================================*/
 
-/*
+/**
  * Method:  init
  *
  * Create an progress bar.
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxProgressbarNew,         // Object_method name
             OSELF, self)               // Self
@@ -81,7 +81,7 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  set_fraction
  *
  * Set the portion on 'fill'.
@@ -89,7 +89,7 @@ RexxMethod1(int,                       // Return type
  * @param fraction Fraction
  *
  * @return        Zero
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxProgressBarSetFraction, // Object_method name
             double, fraction)          // Fraction
@@ -102,7 +102,7 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  set_text
  *
  * Set the test of the progress bar.
@@ -110,7 +110,7 @@ RexxMethod1(int,                       // Return type
  * @param text    Text
  *
  * @return        Zero
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxProgressBarSetText,     // Object_method name
             CSTRING, text)             // Text

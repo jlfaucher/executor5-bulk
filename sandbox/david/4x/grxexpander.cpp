@@ -75,7 +75,7 @@ static void signal_func_0(GtkWidget *window,
 /* Public Functions                                                           */
 /*============================================================================*/
 
-/*
+/**
  * Method:  init
  *
  * Create an assistant.
@@ -83,7 +83,7 @@ static void signal_func_0(GtkWidget *window,
  * @param label   The expander label
  *
  * @return        Zero.
- */
+ **/
 RexxMethod2(int,                       // Return type
             GrxExpanderNew,            // Object_method name
             OSELF, self,               // Self
@@ -98,7 +98,7 @@ RexxMethod2(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  set_expanded
  *
  * Set the expander state.
@@ -106,7 +106,7 @@ RexxMethod2(int,                       // Return type
  * @param state   The expander state flag
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxExpanderSetExpanded,    // Object_method name
             logical_t, state)          // Expander state
@@ -119,7 +119,7 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  set_label
  *
  * Set the expander label.
@@ -127,7 +127,7 @@ RexxMethod1(int,                       // Return type
  * @param label   The expander label
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxExpanderSetLabel,       // Object_method name
             CSTRING, label)            // Expander label
@@ -140,13 +140,13 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  get_label
  *
  * Get the expander label.
  *
  * @return        Label
- */
+ **/
 RexxMethod0(CSTRING,                   // Return type
             GrxExpanderGetLabel)       // Object_method name
 {
@@ -156,7 +156,7 @@ RexxMethod0(CSTRING,                   // Return type
     return gtk_expander_get_label(myWidget);
 }
 
-/*
+/**
  * Method:  use_underline
  *
  * Set the expander underline.
@@ -164,7 +164,7 @@ RexxMethod0(CSTRING,                   // Return type
  * @param flag    The expander underline flag
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxExpanderSetUnderline,   // Object_method name
             logical_t, flag)           // Expander underline boolean
@@ -177,7 +177,7 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  use_spacing
  *
  * Set the expander spacing.
@@ -185,7 +185,7 @@ RexxMethod1(int,                       // Return type
  * @param spacing The expander spacing amount
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxExpanderSetSpacing,     // Object_method name
             int, spacing)              // Expander spacing amount
@@ -206,7 +206,7 @@ RexxMethod1(int,                       // Return type
  * @param name    The signal name
  *
  * @return        Zero
- */
+ **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxExpanderSignalConnect,  // Object_method name
             CSTRING, name,             // Signal name

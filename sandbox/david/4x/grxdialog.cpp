@@ -111,7 +111,7 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  init
  *
  * Create a dialog with buttons.
@@ -122,49 +122,32 @@ RexxMethod1(int,                       // Return type
  *
  * @param flags   The flags
  *
- * @param btext1  The button text
+ * @param btext1  The id or text (repeating)
  *
- * @param bid1    The response id 
- *
- * @param btext2  The button text
- *
- * @param bid2    The response id 
- *
- * @param btext3  The button text
- *
- * @param bid3    The response id 
+ * @param bid1    The response id (repeating)
  *
  * @return        Zero.
- */
-RexxMethod9(int,                       // Return type
+ **/
+RexxMethod4(int,                       // Return type
             GrxDialogNewWithButtons,   // Object_method name
             CSTRING, title,            // Dialog title
             RexxObjectPtr, parent,     // Parent window
             int, flags,                // Dialog flags
-            CSTRING, btext1,           // Button text 
-            int, bid1,                 // Response id 
-            OPTIONAL_CSTRING, btext2,  // Button text 
-            OPTIONAL_int, bid2,        // Response id 
-            OPTIONAL_CSTRING, btext3,  // Button text 
-            OPTIONAL_int, bid3)        // Response id 
+            ARGLIST, args)             // Array of buttons and responses
 {
     RexxPointerObject parentptr = (RexxPointerObject)context->SendMessage0(parent, "POINTER");
     GtkWindow *myParent = (GtkWindow *)context->PointerValue(parentptr);
     GtkWidget *myWidget, *vbox;
+    const gchar *bid;
+    int rid;
+    size_t members = context->ArraySize(args);
 
-    if (btext3 != NULL) {
-        myWidget = gtk_dialog_new_with_buttons(title, myParent, (GtkDialogFlags)flags,
-                                               btext1, bid1, btext2, bid2,
-                                               btext3, bid3, NULL);
-    }
-    else if (btext2 != NULL) {
-        myWidget = gtk_dialog_new_with_buttons(title, myParent, (GtkDialogFlags)flags,
-                                               btext1, bid1, btext2, bid2,
-                                               NULL);
-    }
-    else {
-        myWidget = gtk_dialog_new_with_buttons(title, myParent, (GtkDialogFlags)flags,
-                                               btext1, bid1, NULL);
+    myWidget = gtk_dialog_new_with_buttons(title, myParent,
+                                           (GtkDialogFlags)flags, NULL);
+    for (int i = 5; i <= members; i += 2) {
+        bid = context->StringData((RexxStringObject)context->ArrayAt(args, i - 1));
+        context->ObjectToNumber(context->ArrayAt(args, i), &rid);
+        gtk_dialog_add_button(GTK_DIALOG(myWidget), bid, rid);
     }
     context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", context->GetSelf());
@@ -179,7 +162,7 @@ RexxMethod9(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  add_button
  *
  * Add buttons to a dialog.
@@ -189,7 +172,7 @@ RexxMethod9(int,                       // Return type
  * @param bid1    The response id 
  *
  * @return        Zero.
- */
+ **/
 RexxMethod2(int,                       // Return type
             GrxDialogAddButton,        // Object_method name
             CSTRING, btext,            // Button text 
@@ -203,7 +186,7 @@ RexxMethod2(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  set_has_separator
  *
  * Add/remove the button separator.
@@ -211,7 +194,7 @@ RexxMethod2(int,                       // Return type
  * @param flag    The separator flag.
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxDialogSetHasSeparator,  // Object_method name
             logical_t, flag)           // Separator boolean
@@ -224,7 +207,7 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  set_default_response
  *
  * Set the default response id.    
@@ -232,7 +215,7 @@ RexxMethod1(int,                       // Return type
  * @param rid     Response id
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxDialogSetDefaultResponse, // Object_method name
             int, rid)                  // Response id
@@ -245,13 +228,13 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  dialog_run
  *
  * Run a dialog.
  *
  * @return        Response id
- */
+ **/
 RexxMethod0(int,                       // Return type
             GrxDialogRun)              // Object_method name
 {
@@ -272,7 +255,7 @@ RexxMethod0(int,                       // Return type
  * @param name    The signal name
  *
  * @return        Zero
- */
+ **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxDialogSignalConnect,    // Object_method name
             CSTRING, name,             // Signal name
@@ -301,7 +284,7 @@ RexxMethod2(RexxObjectPtr,             // Return type
     return context->SendSuperMessage("signal_connect", args);
 }
 
-/*
+/**
  * Method:  init
  *
  * Create a message dialog.
@@ -317,7 +300,7 @@ RexxMethod2(RexxObjectPtr,             // Return type
  * @param text    The message text
  *
  * @return        Zero.
- */
+ **/
 RexxMethod5(int,                       // Return type
             GrxMessageDialogNew,       // Object_method name
             RexxObjectPtr, parent,     // Parent window
@@ -341,7 +324,7 @@ RexxMethod5(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  init
  *
  * Create a file chooser dialog.
@@ -352,44 +335,32 @@ RexxMethod5(int,                       // Return type
  *
  * @param type    The message type
  *
- * @param bset    The button set  
+ * @param bset    The button id or text (repeating)
  *
- * @param text    The message text
+ * @param rid     The response id (repeating)
  *
  * @return        Zero.
- */
-RexxMethod9(int,                       // Return type
+ **/
+RexxMethod4(int,                       // Return type
             GrxFileChooserDialogNew,   // Object_method name
             CSTRING, title,            // Title
             RexxObjectPtr, parent,     // Parent window
             int, action,               // Dialog action type
-            CSTRING, sid1,             // Stock button id
-            int, rid1,                 // Response idt
-            OPTIONAL_CSTRING, sid2,    // Stock button id
-            OPTIONAL_int, rid2,        // Response idt
-            OPTIONAL_CSTRING, sid3,    // Stock button id
-            OPTIONAL_int, rid3)        // Response idt
+            ARGLIST, args)             // Array of buttons and responses
 {
     RexxPointerObject parentptr = (RexxPointerObject)context->SendMessage0(parent, "POINTER");
     GtkWindow *myParent = (GtkWindow *)context->PointerValue(parentptr);
     GtkWidget *myWidget;
-    gint resptype;
+    const gchar *bid;
+    int rid;
+    size_t members = context->ArraySize(args);
 
-    if (sid3 != NULL) {
-        myWidget = gtk_file_chooser_dialog_new(title, myParent,
-                                               (GtkFileChooserAction)action,
-                                               sid1, rid1, sid2, rid2, sid3, rid3,
-                                               NULL);
-    }
-    else if (sid2 != NULL) {
-        myWidget = gtk_file_chooser_dialog_new(title, myParent,
-                                               (GtkFileChooserAction)action,
-                                               sid1, rid1, sid2, rid2, NULL);
-    }
-    else {
-        myWidget = gtk_file_chooser_dialog_new(title, myParent,
-                                               (GtkFileChooserAction)action,
-                                               sid1, rid1, NULL);
+    myWidget = gtk_file_chooser_dialog_new(title, myParent,
+                                           (GtkFileChooserAction)action, NULL);
+    for (int i = 5; i <= members; i += 2) {
+        bid = context->StringData((RexxStringObject)context->ArrayAt(args, i - 1));
+        context->ObjectToNumber(context->ArrayAt(args, i), &rid);
+        gtk_dialog_add_button(GTK_DIALOG(myWidget), bid, rid);
     }
     context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", context->GetSelf());
@@ -397,15 +368,17 @@ RexxMethod9(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  init
+ *
+ * Create a font selection dialog.
  *
  * @param title   The dialog title
  *
  * Create a font selection dialog.
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxFontSelectionDialogNew, // Object_method name
             CSTRING, title)            // Dialog title
@@ -419,7 +392,7 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  set_font_name
  *
  * Set the font in the dialog.
@@ -427,7 +400,7 @@ RexxMethod1(int,                       // Return type
  * @param name    The font name
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxFontSelectionDialogSetFontName, // Object_method name
             CSTRING, name)             // Font name
@@ -441,13 +414,13 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  get_font_name
  *
  * Get the selected font name in the dialog.
  *
  * @return        Font name
- */
+ **/
 RexxMethod0(CSTRING,                   // Return type
             GrxFontSelectionDialogGetFontName) // Object_method name
 {
@@ -458,7 +431,7 @@ RexxMethod0(CSTRING,                   // Return type
     return gtk_font_selection_dialog_get_font_name(GTK_FONT_SELECTION_DIALOG(myWidget));
 }
 
-/*
+/**
  * Method:  set_preview_text
  *
  * Set the preview text in the dialog.
@@ -466,7 +439,7 @@ RexxMethod0(CSTRING,                   // Return type
  * @param text    The preview text
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxFontSelectionDialogSetPreviewText, // Object_method name
             CSTRING, text)             // Preview text
@@ -481,13 +454,13 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  init
  *
  * Create an about dialog.
  *
  * @return        Zero.
- */
+ **/
 RexxMethod0(int,                       // Return type
             GrxAboutDialogNew)         // Object_method name
 {
@@ -500,7 +473,7 @@ RexxMethod0(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  set_name
  *
  * Set the about program name.
@@ -508,7 +481,7 @@ RexxMethod0(int,                       // Return type
  * @param text    The program name
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxAboutDialogSetName,     // Object_method name
             CSTRING, name)             // Program name
@@ -521,7 +494,7 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  set_version
  *
  * Set the about program version.
@@ -529,7 +502,7 @@ RexxMethod1(int,                       // Return type
  * @param text    The program version
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxAboutDialogSetVersion,  // Object_method name
             CSTRING, version)          // Program version
@@ -542,7 +515,7 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  set_copyright
  *
  * Set the about program copyright notice.
@@ -550,7 +523,7 @@ RexxMethod1(int,                       // Return type
  * @param text    The copyright notice
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxAboutDialogSetCopyright, // Object_method name
             CSTRING, copyright)        // Program copyright text
@@ -563,7 +536,7 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  set_comments
  *
  * Set the about program comments.
@@ -571,7 +544,7 @@ RexxMethod1(int,                       // Return type
  * @param text    The comments
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxAboutDialogSetComments, // Object_method name
             CSTRING, comments)         // Program comments
@@ -584,7 +557,7 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  set_license
  *
  * Set the about program comments.
@@ -592,7 +565,7 @@ RexxMethod1(int,                       // Return type
  * @param text    The comments
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxAboutDialogSetLicense,  // Object_method name
             CSTRING, license)          // Program license
@@ -605,7 +578,7 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  set_wrap_license
  *
  * Set the boolean license wrap flag.
@@ -613,7 +586,7 @@ RexxMethod1(int,                       // Return type
  * @param flag    The wrap flag
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxAboutDialogSetWrapLicense, // Object_method name
             logical_t, flag)           // Wrap boolean
@@ -626,7 +599,7 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  set_website
  *
  * Set the about program website.
@@ -634,7 +607,7 @@ RexxMethod1(int,                       // Return type
  * @param text    The website URL
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxAboutDialogSetWebsite,  // Object_method name
             CSTRING, website)          // Program website
@@ -647,7 +620,7 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  set_website_label
  *
  * Set the about program website label.
@@ -655,7 +628,7 @@ RexxMethod1(int,                       // Return type
  * @param text    The website label
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxAboutDialogSetWebsiteLabel, // Object_method name
             CSTRING, label)            // Program website label
@@ -688,7 +661,7 @@ RexxMethod1(int,                       // Return type
 
     if (members) {
         for (int i = 0; i < members; i++) {
-            names[i] = context->StringData((RexxStringObject)context->ArrayAt(args, i));
+            names[i] = context->StringData((RexxStringObject)context->ArrayAt(args, i + 1));
         }
         gtk_about_dialog_set_authors(GTK_ABOUT_DIALOG(myWidget), names);
     }
@@ -696,7 +669,7 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  set_artists
  *
  * Set the about program artists.
@@ -704,7 +677,7 @@ RexxMethod1(int,                       // Return type
  * @param args    The array of artists
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxAboutDialogSetArtists,  // Object_method name
             ARGLIST, args)             // Array of authors
@@ -716,7 +689,7 @@ RexxMethod1(int,                       // Return type
 
     if (members) {
         for (int i = 0; i < members; i++) {
-            names[i] = context->StringData((RexxStringObject)context->ArrayAt(args, i));
+            names[i] = context->StringData((RexxStringObject)context->ArrayAt(args, i + 1));
         }
         gtk_about_dialog_set_artists(GTK_ABOUT_DIALOG(myWidget), names);
     }
@@ -724,7 +697,7 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  set_documentors
  *
  * Set the about program documentors.
@@ -732,7 +705,7 @@ RexxMethod1(int,                       // Return type
  * Set the about program artists.
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxAboutDialogSetDocumentors, // Object_method name
             ARGLIST, args)             // Array of authors
@@ -744,7 +717,7 @@ RexxMethod1(int,                       // Return type
 
     if (members) {
         for (int i = 0; i < members; i++) {
-            names[i] = context->StringData((RexxStringObject)context->ArrayAt(args, i));
+            names[i] = context->StringData((RexxStringObject)context->ArrayAt(args, i + 1));
         }
         gtk_about_dialog_set_documenters(GTK_ABOUT_DIALOG(myWidget), names);
     }
@@ -752,7 +725,7 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  set_logo
  *
  * Set the about program logo.
@@ -760,7 +733,7 @@ RexxMethod1(int,                       // Return type
  * @param logo    The logo filename
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxAboutDialogSetLogo,     // Object_method name
             CSTRING, logofile)         // Program logo filename
@@ -775,7 +748,7 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  init
  *
  * Create a color selection dialog
@@ -783,7 +756,7 @@ RexxMethod1(int,                       // Return type
  * @param title   The dialog title
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxColorSelectionDialogNew, // Object_method name
             CSTRING, title)            // Dialog title
@@ -801,13 +774,13 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  get_color
  *
  * Get the selected color.
  *
  * @return        Color
- */
+ **/
 RexxMethod0(RexxObjectPtr,             // Return type
             GrxColorSelectionDialogGetColor) // Object_method name
 {

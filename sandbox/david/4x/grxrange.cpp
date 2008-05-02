@@ -105,7 +105,7 @@ static void signal_func_1a(GtkWidget *window,
 /* Public Functions                                                           */
 /*============================================================================*/
 
-/*
+/**
  * Method:  set_digits
  *
  * Set the scale digits.
@@ -113,7 +113,7 @@ static void signal_func_1a(GtkWidget *window,
  * @param digits  The number of digits
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxScaleSetDigits,         // Object_method name
             int, digits)               // Digits
@@ -126,13 +126,13 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  get_digits
  *
  * Get the scale digits.
  *
  * @return        Digits
- */
+ **/
 RexxMethod0(int,                       // Return type
             GrxScaleGetDigits)         // Object_method name
 {
@@ -142,7 +142,7 @@ RexxMethod0(int,                       // Return type
     return gtk_scale_get_digits(myWidget);
 }
 
-/*
+/**
  * Method:  set_value_pos
  *
  * Set the scale value position type.
@@ -150,7 +150,7 @@ RexxMethod0(int,                       // Return type
  * @param values  The value
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxScaleSetValuePos,       // Object_method name
             int, type)                 // Position type
@@ -163,13 +163,13 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  get_value_pos
  *
  * Get the scale value position type.
  *
  * @return        Zero.
- */
+ **/
 RexxMethod0(int,                       // Return type
             GrxScaleGetValuePos)       // Object_method name
 {
@@ -179,7 +179,7 @@ RexxMethod0(int,                       // Return type
     return gtk_scale_get_value_pos(myWidget);
 }
 
-/*
+/**
  * Method:  init
  *
  * Create a new HScale.
@@ -197,7 +197,7 @@ RexxMethod0(int,                       // Return type
  * @param pagesz  The page size
  *
  * @return        Zero.
- */
+ **/
 RexxMethod7(int,                       // Return type
             GrxHScaleNew,              // Object_method name
             OSELF, self,               // Self
@@ -219,7 +219,7 @@ RexxMethod7(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  init
  *
  * Create a new HScale with a range.
@@ -231,7 +231,7 @@ RexxMethod7(int,                       // Return type
  * @param step    The step increment
  *
  * @return        Zero.
- */
+ **/
 RexxMethod4(int,                       // Return type
             GrxHScaleNewWithRange,     // Object_method name
             OSELF, self,               // Self
@@ -248,7 +248,7 @@ RexxMethod4(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  init
  *
  * Create a new VScale.
@@ -266,7 +266,7 @@ RexxMethod4(int,                       // Return type
  * @param pagesz  The page size
  *
  * @return        Zero.
- */
+ **/
 RexxMethod7(int,                       // Return type
             GrxVScaleNew,              // Object_method name
             OSELF, self,               // Self
@@ -288,7 +288,7 @@ RexxMethod7(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  init
  *
  * Create a new HScale with a range.
@@ -300,7 +300,7 @@ RexxMethod7(int,                       // Return type
  * @param step    The step increment
  *
  * @return        Zero.
- */
+ **/
 RexxMethod4(int,                       // Return type
             GrxVScaleNewWithRange,     // Object_method name
             OSELF, self,               // Self
@@ -325,7 +325,7 @@ RexxMethod4(int,                       // Return type
  * @param name    The signal name
  *
  * @return        Zero
- */
+ **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxRangeSignalConnect,     // Object_method name
             CSTRING, name,             // Signal name

@@ -177,13 +177,13 @@ static void signal_func_3(GtkWidget *window,
 /* Public Functions                                                           */
 /*============================================================================*/
 
-/*
+/**
  * Method:  init
  *
  * Create an textview.
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxTextViewNew,            // Object_method name
             OSELF, self)               // Self
@@ -197,13 +197,13 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  get_buffer
  *
  * Get the associated text buffer.
  *
  * @return        Text buffer object
- */
+ **/
 RexxMethod0(RexxObjectPtr,             // Return type
             GrxTextViewGetBuffer)      // Object_method name
 {
@@ -224,7 +224,7 @@ RexxMethod0(RexxObjectPtr,             // Return type
     return txtbuf;
 }
 
-/*
+/**
  * Method:  set_wrap_mode
  *
  * Set the wrap mode.
@@ -232,7 +232,7 @@ RexxMethod0(RexxObjectPtr,             // Return type
  * @param mode    The wrap mode
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxTextViewSetWrapMode,    // Object_method name
             int, mode)                 // Wrap mode
@@ -245,13 +245,13 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  get_wrap_mode
  *
  * Get the wrap mode.
  *
  * @return        Wrap mode
- */
+ **/
 RexxMethod0(int,                       // Return type
             GrxTextViewGetWrapMode)    // Object_method name
 {
@@ -261,7 +261,7 @@ RexxMethod0(int,                       // Return type
     return (int)gtk_text_view_get_wrap_mode(myWidget);
 }
 
-/*
+/**
  * Method:  set_justification
  *
  * Set the justification.
@@ -269,7 +269,7 @@ RexxMethod0(int,                       // Return type
  * @param just    The justification
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxTextViewSetJustification, // Object_method name
             int, just)                 // Justification
@@ -282,13 +282,13 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  get_justification.
  *
  * Get the justification.
  *
  * @return        Wrap mode
- */
+ **/
 RexxMethod0(int,                       // Return type
             GrxTextViewGetJustification) // Object_method name
 {
@@ -298,7 +298,7 @@ RexxMethod0(int,                       // Return type
     return (int)gtk_text_view_get_justification(myWidget);
 }
 
-/*
+/**
  * Method:  set_editable
  *
  * Set editable.
@@ -306,7 +306,7 @@ RexxMethod0(int,                       // Return type
  * @param flag    The editable boolean
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxTextViewSetEditable,    // Object_method name
             logical_t, flag)           // Editable boolean
@@ -319,13 +319,13 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  get_editable
  *
  * Get the editable boolean.
  *
  * @return        Editable boolean
- */
+ **/
 RexxMethod0(logical_t,                 // Return type
             GrxTextViewGetEditable)    // Object_method name
 {
@@ -335,7 +335,7 @@ RexxMethod0(logical_t,                 // Return type
     return gtk_text_view_get_editable(myWidget);
 }
 
-/*
+/**
  * Method:  set_cursor_visible
  *
  * Set the visibility of the cursor.
@@ -343,7 +343,7 @@ RexxMethod0(logical_t,                 // Return type
  * @param flag    The cursor visible boolean
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxTextViewSetCursorVisible, // Object_method name
             logical_t, flag)           // Cursor visible boolean
@@ -356,13 +356,13 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  get_cursor_visible
  *
  * Get the cursor visibility boolean.
  *
  * @return        Visible boolean
- */
+ **/
 RexxMethod0(logical_t,                 // Return type
             GrxTextViewGetCursorVisible) // Object_method name
 {
@@ -372,7 +372,7 @@ RexxMethod0(logical_t,                 // Return type
     return gtk_text_view_get_cursor_visible(myWidget);
 }
 
-/*
+/**
  * Method:  set_pixels_above_lines
  *
  * Set the number of pixels above lines.
@@ -380,7 +380,7 @@ RexxMethod0(logical_t,                 // Return type
  * @param pixels  The number of pixels
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxTextViewSetPixelsAboveLines, // Object_method name
             int, pixels)               // Number of pixels
@@ -393,13 +393,13 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  get_pixels_above_lines
  *
  * Get the number of pixels above lines.
  *
  * @return        Number of pixels
- */
+ **/
 RexxMethod0(int,                       // Return type
             GrxTextViewGetPixelsAboveLines) // Object_method name
 {
@@ -409,7 +409,7 @@ RexxMethod0(int,                       // Return type
     return gtk_text_view_get_pixels_above_lines(myWidget);
 }
 
-/*
+/**
  * Method:  set_pixels_below_lines
  *
  * Set the number of pixels below lines.
@@ -417,7 +417,7 @@ RexxMethod0(int,                       // Return type
  * @param pixels  The number of pixels
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxTextViewSetPixelsBelowLines, // Object_method name
             int, pixels)               // Number of pixels
@@ -430,13 +430,13 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  get_pixels_below_lines
  *
  * Get the number of pixels below lines.
  *
  * @return        Number of pixels
- */
+ **/
 RexxMethod0(int,                       // Return type
             GrxTextViewGetPixelsBelowLines) // Object_method name
 {
@@ -446,7 +446,7 @@ RexxMethod0(int,                       // Return type
     return gtk_text_view_get_pixels_below_lines(myWidget);
 }
 
-/*
+/**
  * Method:  set_pixels_inside_wrap
  *
  * Set the number of pixels inside wrap.
@@ -454,7 +454,7 @@ RexxMethod0(int,                       // Return type
  * @param pixels  The number of pixels
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxTextViewSetPixelsInsideWrap, // Object_method name
             int, pixels)               // Number of pixels
@@ -467,13 +467,13 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  get_pixels_inside_wrap
  *
  * Get the number of pixels inside wrap.
  *
  * @return        Number of pixels
- */
+ **/
 RexxMethod0(int,                       // Return type
             GrxTextViewGetPixelsInsideWrap) // Object_method name
 {
@@ -483,7 +483,7 @@ RexxMethod0(int,                       // Return type
     return gtk_text_view_get_pixels_inside_wrap(myWidget);
 }
 
-/*
+/**
  * Method:  set_left_margin
  *
  * Set the number of pixels for the left margin.
@@ -491,7 +491,7 @@ RexxMethod0(int,                       // Return type
  * @param pixels  The number of pixels
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxTextViewSetLeftMargin,  // Object_method name
             int, pixels)               // Number of pixels
@@ -504,13 +504,13 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  get_left_margin
  *
  * Get the number of pixels for the left margin.
  *
  * @return        Left margin
- */
+ **/
 RexxMethod0(int,                       // Return type
             GrxTextViewGetLeftMargin)  // Object_method name
 {
@@ -520,7 +520,7 @@ RexxMethod0(int,                       // Return type
     return gtk_text_view_get_left_margin(myWidget);
 }
 
-/*
+/**
  * Method:  set_right_margin
  *
  * Set the number of pixels for the right margin.
@@ -528,7 +528,7 @@ RexxMethod0(int,                       // Return type
  * @param pixels  The number of pixels
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxTextViewSetRightMargin, // Object_method name
             int, pixels)               // Number of pixels
@@ -541,13 +541,13 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  get_right_margin
  *
  * Get the number of pixels for the right margin.
  *
  * @return        Right margin
- */
+ **/
 RexxMethod0(int,                       // Return type
             GrxTextViewGetRightMargin) // Object_method name
 {
@@ -557,7 +557,7 @@ RexxMethod0(int,                       // Return type
     return gtk_text_view_get_right_margin(myWidget);
 }
 
-/*
+/**
  * Method:  add_child_at_offset
  *
  * Add a child widget at the specified offset.
@@ -567,7 +567,7 @@ RexxMethod0(int,                       // Return type
  * @param offset  The offset
  *
  * @return        Zero.
- */
+ **/
 RexxMethod2(int,                       // Return type
             GrxTextViewAddChildAtOffset, // Object_method name
             RexxObjectPtr, rxchild,    // Child widget
@@ -598,7 +598,7 @@ RexxMethod2(int,                       // Return type
  * @param name    The signal name
  *
  * @return        Zero
- */
+ **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxTextViewSignalConnect,  // Object_method name
             CSTRING, name,             // Signal name

@@ -62,7 +62,7 @@
 /* Public Functions                                                           */
 /*============================================================================*/
 
-/*
+/**
  * Method:  init
  *
  * Create a table.
@@ -74,7 +74,7 @@
  * @param homog   Table homegeneous boolean
  *
  * @return        Zero.
- */
+ **/
 RexxMethod4(int,                       // Return type
             GrxTableNew,               // Object_method name
             OSELF, self,               // Self
@@ -92,7 +92,7 @@ RexxMethod4(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  attach
  *
  * Attach a widget to a table.
@@ -116,7 +116,7 @@ RexxMethod4(int,                       // Return type
  * @param ypad    Y padding
  *
  * @return        Zero.
- */
+ **/
 RexxMethod9(int,                       // Return type
             GrxTableAttach,            // Object_method name
             RexxObjectPtr, rxWidget,   // Widget to be added
@@ -141,7 +141,7 @@ RexxMethod9(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  set_row_spacings
  *
  * Set the table row spacing.
@@ -149,7 +149,7 @@ RexxMethod9(int,                       // Return type
  * @param spacing Row spacing
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxTableSetRowSpacings,    // Object_method name
             int, spacing)              // Row spacing
@@ -162,7 +162,7 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  set_col_spacings
  *
  * Set the table column spacing.
@@ -170,7 +170,7 @@ RexxMethod1(int,                       // Return type
  * @param spacing Column spacing
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxTableSetColSpacings,    // Object_method name
             int, spacing)              // Column spacing

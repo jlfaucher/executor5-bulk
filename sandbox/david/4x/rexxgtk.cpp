@@ -148,7 +148,7 @@ RexxRoutine0(RexxObjectPtr, GrxVersion)
  * Return a boolean 1 if there are pending events.
  *
  * @return        1 or zero.
- */
+ **/
 RexxRoutine0(int, GrxEventsPending)
 {
 
@@ -161,7 +161,7 @@ RexxRoutine0(int, GrxEventsPending)
  * Executes the GTK main loop.
  *
  * @return        Zero.
- */
+ **/
 RexxRoutine0(int, GrxMain)
 {
 
@@ -175,7 +175,7 @@ RexxRoutine0(int, GrxMain)
  * Exits the GTK main loop.
  *
  * @return        Zero.
- */
+ **/
 RexxRoutine0(int, GrxMainQuit)
 {
 
@@ -189,7 +189,7 @@ RexxRoutine0(int, GrxMainQuit)
  * Executes one iteration of the GTK main loop.
  *
  * @return        Zero.
- */
+ **/
 RexxRoutine0(int, GrxMainIteration)
 {
 
@@ -205,7 +205,7 @@ RexxRoutine0(int, GrxMainIteration)
  * @param msg     The message
  *
  * @return        Zero.
- */
+ **/
 RexxRoutine1(int,                      // Return type
              GrxMessage,               // Routine name
              CSTRING, msg)             // Message
@@ -224,7 +224,7 @@ RexxRoutine1(int,                      // Return type
  * @param msg     The message
  *
  * @return        Zero.
- */
+ **/
 RexxRoutine1(int,                      // Return type
              GrxWarning,               // Routine name
              CSTRING, msg)             // Message
@@ -243,7 +243,7 @@ RexxRoutine1(int,                      // Return type
  * @param msg     The message
  *
  * @return        Zero.
- */
+ **/
 RexxRoutine1(int,                      // Return type
              GrxCritical,              // Routine name
              CSTRING, msg)             // Message
@@ -262,7 +262,7 @@ RexxRoutine1(int,                      // Return type
  * @param msg     The message
  *
  * @return        Zero.
- */
+ **/
 RexxRoutine1(int,                      // Return type
              GrxError,                 // Routine name
              CSTRING, msg)             // Message
@@ -281,7 +281,7 @@ RexxRoutine1(int,                      // Return type
  * @param msg     The message
  *
  * @return        Zero.
- */
+ **/
 RexxRoutine1(int,                      // Return type
              GrxDebug,                 // Routine name
              CSTRING, msg)             // Message
@@ -298,7 +298,7 @@ RexxRoutine1(int,                      // Return type
  * Get the current user name.
  *
  * @return        User name
- */
+ **/
 RexxRoutine0(CSTRING,                  // Return type
              GrxGetUserName)           // Routine name
 {
@@ -312,7 +312,7 @@ RexxRoutine0(CSTRING,                  // Return type
  * Get the current real name.
  *
  * @return        Real name
- */
+ **/
 RexxRoutine0(CSTRING,                  // Return type
              GrxGetRealName)           // Routine name
 {
@@ -326,7 +326,7 @@ RexxRoutine0(CSTRING,                  // Return type
  * Get the user's home directory.
  *
  * @return        Home directory
- */
+ **/
 RexxRoutine0(CSTRING,                  // Return type
              GrxGetHomeDir)            // Routine name
 {
@@ -340,7 +340,7 @@ RexxRoutine0(CSTRING,                  // Return type
  * Get the machine host name.
  *
  * @return        Host name
- */
+ **/
 RexxRoutine0(CSTRING,                  // Return type
              GrxGetHostName)           // Routine name
 {
@@ -662,6 +662,9 @@ RexxMethodEntry gtkobject_methods[] = {
     REXX_METHOD(GrxScrolledWindowSetPolicy, GrxScrolledWindowSetPolicy),
     REXX_METHOD(GrxScrolledWindowAddWithViewport, GrxScrolledWindowAddWithViewport),
     REXX_METHOD(GrxScrolledWindowSignalConnect, GrxScrolledWindowSignalConnect),
+    REXX_METHOD(GrxListStoreNew, GrxListStoreNew),
+    REXX_METHOD(GrxListStoreAppend, GrxListStoreAppend),
+    REXX_METHOD(GrxListStoreSetValue, GrxListStoreSetValue),
     REXX_LAST_METHOD()
 };
 

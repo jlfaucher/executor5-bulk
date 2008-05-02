@@ -62,13 +62,13 @@
 /* Public Functions                                                           */
 /*============================================================================*/
 
-/*
+/**
  * Method:  init
  *
  * Create an image.
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxImageNew,               // Object_method name
             OSELF, self)               // Self
@@ -82,7 +82,7 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  set_from_file
  *
  * Set the image from a file.
@@ -90,7 +90,7 @@ RexxMethod1(int,                       // Return type
  * @param filename The file path/name
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxImageSetFromFile,       // Object_method name
             CSTRING, filename)         // File name/path
@@ -103,7 +103,7 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  set_from_stock
  *
  * Set the image from a stock image.
@@ -113,7 +113,7 @@ RexxMethod1(int,                       // Return type
  * @param size    The icon size
  *
  * @return        Zero.
- */
+ **/
 RexxMethod2(int,                       // Return type
             GrxImageSetFromStock,      // Object_method name
             CSTRING, stockname,        // Stock name
@@ -127,7 +127,7 @@ RexxMethod2(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  set_from_icon_name
  *
  * Set the image from an icon.
@@ -137,7 +137,7 @@ RexxMethod2(int,                       // Return type
  * @param size    The icon size
  *
  * @return        Zero.
- */
+ **/
 RexxMethod2(int,                       // Return type
             GrxImageSetFromIconName,   // Object_method name
             CSTRING, iconname,         // Icon name

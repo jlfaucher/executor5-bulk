@@ -82,7 +82,7 @@ static void signal_func_0(GtkWidget *widget,
  * Initialize the widget instance.
  *
  * @return        Zero.
- */
+ **/
 RexxMethod0(int,                       // Return type
             GrxWidgetNew)              // Object_method name
 {
@@ -99,7 +99,7 @@ RexxMethod0(int,                       // Return type
  * Show the widget.
  *
  * @return        Zero.
- */
+ **/
 RexxMethod0(int,                       // Return type
             GrxWidgetShow)             // Object_method name
 {
@@ -117,7 +117,7 @@ RexxMethod0(int,                       // Return type
  * Show the widget and all child widgets.
  *
  * @return        Zero.
- */
+ **/
 RexxMethod0(int,                       // Return type
             GrxWidgetShowAll)          // Object_method name
 {
@@ -135,7 +135,7 @@ RexxMethod0(int,                       // Return type
  * Hide the widget and all child widgets.
  *
  * @return        Zero.
- */
+ **/
 RexxMethod0(int,                       // Return type
             GrxWidgetHide)             // Object_method name
 {
@@ -153,7 +153,7 @@ RexxMethod0(int,                       // Return type
  * Hide the widget and all child widgets.
  *
  * @return        Zero.
- */
+ **/
 RexxMethod0(int,                       // Return type
             GrxWidgetHideAll)          // Object_method name
 {
@@ -175,7 +175,7 @@ RexxMethod0(int,                       // Return type
  * @param height  The new height of the widget
  *
  * @return        Zero.
- */
+ **/
 RexxMethod2(int,                       // Return type
             GrxWidgetSetSizeRequest,   // Object_method name
             int, width,                // width of the widget
@@ -195,7 +195,7 @@ RexxMethod2(int,                       // Return type
  * Destroy the widget.
  *
  * @return        Zero.
- */
+ **/
 RexxMethod0(int,                       // Return type
             GrxWidgetDestroy)          // Object_method name
 {
@@ -213,7 +213,7 @@ RexxMethod0(int,                       // Return type
  * Set the focus to the widget.
  *
  * @return        Zero.
- */
+ **/
 RexxMethod0(int,                       // Return type
             GrxWidgetGrabFocus)        // Object_method name
 {
@@ -233,7 +233,7 @@ RexxMethod0(int,                       // Return type
  * @param font    The new font for the widget.
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxWidgetSetFont,          // Object_method name
             CSTRING, fontname)         // Font name
@@ -255,7 +255,7 @@ RexxMethod1(int,                       // Return type
  * Get the font of the widget.
  *
  * @return        A string with the font name.
- */
+ **/
 RexxMethod0(CSTRING,                   // Return type
             GrxWidgetGetFont)          // Object_method name
 {
@@ -273,7 +273,7 @@ RexxMethod0(CSTRING,                   // Return type
  * Get the name of the widget.
  *
  * @return        A string with the name.
- */
+ **/
 RexxMethod0(CSTRING,                   // Return type
             GrxWidgetGetName)          // Object_method name
 {
@@ -291,7 +291,7 @@ RexxMethod0(CSTRING,                   // Return type
  * @param name    The new name for the widget.
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxWidgetSetName,          // Object_method name
             CSTRING, name)             // New name
@@ -312,7 +312,7 @@ RexxMethod1(int,                       // Return type
  * @param flag    1 or 0.
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxWidgetSetSensitive,     // Object_method name
             int, flag)                 // Sensitive flag
@@ -336,7 +336,7 @@ RexxMethod1(int,                       // Return type
  * @param color   A sting representing the color
  *
  * @return        Zero.
- */
+ **/
 RexxMethod2(int,                       // Return type
             GrxWidgetModifyBG,         // Object_method name
             int, type,                 // State
@@ -363,7 +363,7 @@ RexxMethod2(int,                       // Return type
  * @param color   A sting representing the color
  *
  * @return        Zero.
- */
+ **/
 RexxMethod2(int,                       // Return type
             GrxWidgetModifyFG,         // Object_method name
             int, type,                 // State
@@ -389,7 +389,7 @@ RexxMethod2(int,                       // Return type
  * @param value   The value of the object.
  *
  * @return        Zero.
- */
+ **/
 RexxMethod2(int,                       // Return type
             GrxWidgetSetData,          // Object_method name
             CSTRING, name,             // Association name
@@ -413,7 +413,7 @@ RexxMethod2(int,                       // Return type
  * @param name    The name of the object.
  *
  * @return        The value of the object.
- */
+ **/
 RexxMethod1(CSTRING,                   // Return type
             GrxWidgetGetData,          // Object_method name
             CSTRING, name)             // Association name
@@ -430,7 +430,7 @@ RexxMethod1(CSTRING,                   // Return type
  * Activate the widget.
  *
  * @return        Zero.
- */
+ **/
 RexxMethod0(int,                       // Return type
             GrxWidgetActivate)         // Object_method name
 {
@@ -450,7 +450,7 @@ RexxMethod0(int,                       // Return type
  * @param parent  The new parent widget.
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxWidgetReparent,         // Object_method name
             RexxObjectPtr, parent)     // New parent widget
@@ -471,7 +471,7 @@ RexxMethod1(int,                       // Return type
  * Determine if the widget has the focus.
  *
  * @return        1 (if it has the focus) or zero.
- */
+ **/
 RexxMethod0(logical_t,                 // Return type
             GrxWidgetIsFocus)          // Object_method name
 {
@@ -487,7 +487,7 @@ RexxMethod0(logical_t,                 // Return type
  * Cause the widget to become the default.
  *
  * @return        Zero.
- */
+ **/
 RexxMethod0(int,                       // Return type
             GrxWidgetGrabDefault)      // Object_method name
 {
@@ -507,7 +507,7 @@ RexxMethod0(int,                       // Return type
  * @param parent  The new parent widget.
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxWidgetSetParentWindow,  // Object_method name
             RexxObjectPtr, parent)     // New parent widget
@@ -528,7 +528,7 @@ RexxMethod1(int,                       // Return type
  * Get the parent window.
  *
  * @return        The parent window object.
- */
+ **/
 RexxMethod0(RexxObjectPtr,             // Return type
             GrxWidgetGetParentWindow)  // Object_method name
 {
@@ -555,7 +555,7 @@ RexxMethod0(RexxObjectPtr,             // Return type
  * Get the top level window.
  *
  * @return        The top level window object.
- */
+ **/
 RexxMethod0(RexxObjectPtr,             // Return type
             GrxWidgetGetToplevel)      // Object_method name
 {
@@ -584,7 +584,7 @@ RexxMethod0(RexxObjectPtr,             // Return type
  * @param ancestor The ancestor widget.
  *
  * @return        1 or zero.
- */
+ **/
 RexxMethod1(logical_t,                 // Return type
             GrxWidgetIsAncestor,       // Object_method name
             RexxObjectPtr, ancestor)   // Ancestor widget
@@ -605,7 +605,7 @@ RexxMethod1(logical_t,                 // Return type
  * @param type    The widget type.
  *
  * @return        The ancestor object or .Nil.
- */
+ **/
 RexxMethod1(RexxObjectPtr,             // Return type
             GrxWidgetGetAncestor,      // Object_method name
             int, type)                 // Ancestor type
@@ -635,7 +635,7 @@ RexxMethod1(RexxObjectPtr,             // Return type
  * @param dir     The reading direction.
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxWidgetSetDirection,     // Object_method name
             int, dir)                  // Direction
@@ -654,7 +654,7 @@ RexxMethod1(int,                       // Return type
  * Get the reading direction for the text of the widget.
  *
  * @return        A number representing the reading direction.
- */
+ **/
 RexxMethod0(int,                       // Return type
             GrxWidgetGetDirection)     // Object_method name
 {
@@ -672,7 +672,7 @@ RexxMethod0(int,                       // Return type
  * @param dir     The reading direction.
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxWidgetSetDefaultDirection, // Object_method name
             int, dir)                  // Direction
@@ -689,7 +689,7 @@ RexxMethod1(int,                       // Return type
  * Get the default reading direction for the text of the widget.
  *
  * @return        A number representing the reading direction.
- */
+ **/
 RexxMethod0(int,                       // Return type
             GrxWidgetGetDefaultDirection) // Object_method name
 {
@@ -711,7 +711,7 @@ RexxMethod0(int,                       // Return type
  * @param height  The height of the area
  *
  * @return        Zero.
- */
+ **/
 RexxMethod4(int,                       // Return type
             GrxWidgetQueueDrawArea,    // Object_method name
             int, x,                    // X coordinate  
@@ -733,7 +733,7 @@ RexxMethod4(int,                       // Return type
  * Reset the widget shapes.
  *
  * @return        Zero.
- */
+ **/
 RexxMethod0(int,                       // Return type
             GrxWidgetResetShapes)      // Object_method name
 {
@@ -756,7 +756,7 @@ RexxMethod0(int,                       // Return type
  * @param vadj    The vertical adjustment
  *
  * @return        Boolean.
- */
+ **/
 RexxMethod2(logical_t,                 // Return type
             GrxWidgetSetScrollAdjustments, // Object_method name
             RexxObjectPtr, hadj,       // Horizontal Adjustment  
@@ -780,7 +780,7 @@ RexxMethod2(logical_t,                 // Return type
  * @param flag    1 = activate, 0 = deactivate
  *
  * @return        Boolean.
- */
+ **/
 RexxMethod1(logical_t,                 // Return type
             GrxWidgetMnemonicActivate, // Object_method name
             logical_t, flag)           // Group cycling flag
@@ -797,7 +797,7 @@ RexxMethod1(logical_t,                 // Return type
  * Get the widget accessible object.
  *
  * @return        Accessible object
- */
+ **/
 RexxMethod0(RexxObjectPtr,             // Return type
             GrxWidgetGetAccessible)    // Object_method name
 {
@@ -824,7 +824,7 @@ RexxMethod0(RexxObjectPtr,             // Return type
  * Determine if a widgets children are visible.
  *
  * @return        Boolean
- */
+ **/
 RexxMethod0(logical_t,                 // Return type
             GrxWidgetGetChildVisible)  // Object_method name
 {
@@ -840,7 +840,7 @@ RexxMethod0(logical_t,                 // Return type
  * Return the parent widget.
  *
  * @return        Parent widget object
- */
+ **/
 RexxMethod0(RexxObjectPtr,             // Return type
             GrxWidgetGetParent)        // Object_method name
 {
@@ -869,7 +869,7 @@ RexxMethod0(RexxObjectPtr,             // Return type
  * @param name    The signal name
  *
  * @return        Zero
- */
+ **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxWidgetSignalConnect,    // Object_method name
             CSTRING, name,             // Signal name

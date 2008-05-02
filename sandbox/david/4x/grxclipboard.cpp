@@ -62,13 +62,13 @@
 /* Public Functions                                                           */
 /*============================================================================*/
 
-/*
+/**
  * Method:  init
  *
  * Create a clipboard.
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxClipboardNew,           // Object_method name
             OSELF, self)               // Self

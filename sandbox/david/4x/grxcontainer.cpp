@@ -98,7 +98,7 @@ static void signal_func_1(GtkWidget *window,
  * @param add     The widget to add.
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxContainerAdd,           // Object_method name
             RexxObjectPtr, rxaddptr)   // Object to add
@@ -121,7 +121,7 @@ RexxMethod1(int,                       // Return type
  * @param remove  The widget to remove.
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxContainerRemove,        // Object_method name
             RexxObjectPtr, rxremptr)   // Object to add
@@ -144,7 +144,7 @@ RexxMethod1(int,                       // Return type
  * @param width   The width of the border
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxContainerSetBorderWidth,// Object_method name
             int, width)                // Border widthd
@@ -171,7 +171,7 @@ RexxMethod1(int,                       // Return type
  * @param pad     Padding amount.
  *
  * @return        Zero.
- */
+ **/
 RexxMethod4(int,                       // Return type
             GrxBoxPackStart,           // Object_method name
             RexxObjectPtr, rxpackptr,  // Widget to pack
@@ -203,7 +203,7 @@ RexxMethod4(int,                       // Return type
  * @param pad     Padding amount.
  *
  * @return        Zero.
- */
+ **/
 RexxMethod4(int,                       // Return type
             GrxBoxPackEnd,             // Object_method name
             RexxObjectPtr, rxpackptr,  // Widget to pack
@@ -231,7 +231,7 @@ RexxMethod4(int,                       // Return type
  * @param spacing The spacing amount
  *
  * @return        Zero.
- */
+ **/
 RexxMethod3(int,                       // Return type
             GrxVBoxNew,                // Object_method name
             OSELF, self,               // Self
@@ -256,7 +256,7 @@ RexxMethod3(int,                       // Return type
  * @param rxptr   The vbox widget pointer
  *
  * @return        Zero.
- */
+ **/
 RexxMethod2(int,                       // Return type
             GrxVBoxNewFromPtr,         // Object_method name
             OSELF, self,               // Self
@@ -278,7 +278,7 @@ RexxMethod2(int,                       // Return type
  * @param ptr     The VBoc pointer
  *
  * @return        Zero.
- */
+ **/
 RexxMethod2(int,                       // Return type
             GrxVBoxNewFromPointer,     // Object_method name
             OSELF, self,               // Self
@@ -302,7 +302,7 @@ RexxMethod2(int,                       // Return type
  * @param spacing The spacing amount
  *
  * @return        Zero.
- */
+ **/
 RexxMethod3(int,                       // Return type
             GrxHBoxNew,                // Object_method name
             OSELF, self,               // Self
@@ -326,7 +326,7 @@ RexxMethod3(int,                       // Return type
  * @param rxptr   The hbox widget pointer
  *
  * @return        Zero.
- */
+ **/
 RexxMethod2(int,                       // Return type
             GrxHBoxNewFromPtr,         // Object_method name
             OSELF, self,               // Self
@@ -354,7 +354,7 @@ RexxMethod2(int,                       // Return type
  * @param yscale  The x scale
  *
  * @return        Zero.
- */
+ **/
 RexxMethod5(int,                       // Return type
             GrxAlignmentNew,           // Object_method name
             OSELF, self,               // Self
@@ -380,7 +380,7 @@ RexxMethod5(int,                       // Return type
  * @param name    The signal name
  *
  * @return        Zero
- */
+ **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxContainerSignalConnect, // Object_method name
             CSTRING, name,             // Signal name
@@ -436,7 +436,7 @@ RexxMethod2(RexxObjectPtr,             // Return type
  * @param vadj    The vertical adjustment
  *
  * @return        Zero.
- */
+ **/
 RexxMethod3(int,                       // Return type
             GrxViewportNew,            // Object_method name
             OSELF, self,               // Self
@@ -464,7 +464,7 @@ RexxMethod3(int,                       // Return type
  * @param name    The signal name
  *
  * @return        Zero
- */
+ **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxViewportSignalConnect,  // Object_method name
             CSTRING, name,             // Signal name

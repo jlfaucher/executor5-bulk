@@ -77,13 +77,13 @@ static void signal_func_1(GtkWidget *window,
 /* Public Functions                                                           */
 /*============================================================================*/
 
-/*
+/**
  * Method:  init
  *
  * Create an handle box.
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxHandleBoxNew,           // Object_method name
             OSELF, self)               // Self
@@ -97,7 +97,7 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  set_shadow_type
  *
  * Set the handle box shadow type.
@@ -105,7 +105,7 @@ RexxMethod1(int,                       // Return type
  * @param type    The shadow type
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxHandleBoxSetShadowType, // Object_method name
             int, type)                 // Shadow type
@@ -118,7 +118,7 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  set_position
  *
  * Set the handle box position type.
@@ -126,7 +126,7 @@ RexxMethod1(int,                       // Return type
  * @param type    The position type
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxHandleBoxSetPosition,   // Object_method name
             int, type)                 // Position type
@@ -139,7 +139,7 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  set_snap_edge
  *
  * Set the handle box snap edge type.
@@ -147,7 +147,7 @@ RexxMethod1(int,                       // Return type
  * @param type    The snap edge type
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxHandleBoxSetSnapEdge,   // Object_method name
             int, type)                 // Snap edge type
@@ -168,7 +168,7 @@ RexxMethod1(int,                       // Return type
  * @param name    The signal name
  *
  * @return        Zero
- */
+ **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxHandleBoxSignalConnect, // Object_method name
             CSTRING, name,             // Signal name

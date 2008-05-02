@@ -161,13 +161,13 @@ static void signal_func_3(GtkWidget *window,
 /* Public Functions                                                           */
 /*============================================================================*/
 
-/*
+/**
  * Method:  init
  *
  * Create an entry box.
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxEntryNew,               // Object_method name
             OSELF, self)               // Self
@@ -181,7 +181,7 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  set_max_length
  *
  * Set the maximum length of text in the entry box.
@@ -189,7 +189,7 @@ RexxMethod1(int,                       // Return type
  * @param maxlen  The max length.
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxEntrySetMaxLength,      // Object_method name
             int, maxlen)               // Max text length
@@ -202,13 +202,13 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  get_max_length
  *
  * Get the maximum length of text in the entry box.
  *
  * @return        Max length
- */
+ **/
 RexxMethod0(int,                       // Return type
             GrxEntryGetMaxLength)      // Object_method name
 {
@@ -219,7 +219,7 @@ RexxMethod0(int,                       // Return type
     return gtk_entry_get_max_length(myWidget); 
 }
 
-/*
+/**
  * Method:  set_text
  *
  * Set the text in the entry box.
@@ -227,7 +227,7 @@ RexxMethod0(int,                       // Return type
  * @param text    The text
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxEntrySetText,           // Object_method name
             CSTRING, text)             // The text to set
@@ -240,13 +240,13 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  get_text
  *
  * Get the text in the entry box.
  *
  * @return        Text
- */
+ **/
 RexxMethod0(CSTRING,                   // Return type
             GrxEntryGetText)           // Object_method name
 {
@@ -256,7 +256,7 @@ RexxMethod0(CSTRING,                   // Return type
     return gtk_entry_get_text(myWidget); 
 }
 
-/*
+/**
  * Method:  set_width_chars
  *
  * Set the width (in characters) of the entry box.
@@ -264,7 +264,7 @@ RexxMethod0(CSTRING,                   // Return type
  * @param width   The width
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxEntrySetWidthChars,     // Object_method name
             int, width)                // The width
@@ -277,13 +277,13 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  get_visibility
  *
  * Get the text visibility flag. 
  *
  * @return        Flag
- */
+ **/
 RexxMethod0(logical_t,                 // Return type
             GrxEntryGetVisibility)     // Object_method name
 {
@@ -293,7 +293,7 @@ RexxMethod0(logical_t,                 // Return type
     return gtk_entry_get_visibility(myWidget); 
 }
 
-/*
+/**
  * Method:  set_visibility
  *
  * Set the visibility of the text in the entry box.
@@ -301,7 +301,7 @@ RexxMethod0(logical_t,                 // Return type
  * @param flag    The visibility boolean
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxEntrySetVisibility,     // Object_method name
             logical_t, flag)           // The flag
@@ -314,13 +314,13 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  get_invisible_char
  *
  * Get the text invisible char. 
  *
  * @return        Flag
- */
+ **/
 RexxMethod0(RexxObjectPtr,             // Return type
             GrxEntryGetInvisibleChar)  // Object_method name
 {
@@ -332,7 +332,7 @@ RexxMethod0(RexxObjectPtr,             // Return type
     return context->NewStringFromAsciiz(retc);
 }
 
-/*
+/**
  * Method:  set_invisibile_char
  *
  * Set the invisible character.
@@ -340,7 +340,7 @@ RexxMethod0(RexxObjectPtr,             // Return type
  * @param ichar   The invisible character
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxEntrySetInvisibleChar,  // Object_method name
             CSTRING, ichar)            // The character
@@ -361,7 +361,7 @@ RexxMethod1(int,                       // Return type
  * @param name    The signal name
  *
  * @return        Zero
- */
+ **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxEntrySignalConnect,     // Object_method name
             CSTRING, name,             // Signal name
@@ -462,7 +462,7 @@ RexxMethod2(RexxObjectPtr,             // Return type
     return context->SendSuperMessage("signal_connect", args);
 }
 
-/*
+/**
  * Method:  init
  *
  * Create a new spin button.
@@ -474,7 +474,7 @@ RexxMethod2(RexxObjectPtr,             // Return type
  * @param digits  The digits
  *
  * @return        Zero.
- */
+ **/
 RexxMethod4(int,                       // Return type
             GrxSpinButtonNew,          // Object_method name
             OSELF, self,               // Self
@@ -494,7 +494,7 @@ RexxMethod4(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  init
  *
  * Create a new spin button.
@@ -506,7 +506,7 @@ RexxMethod4(int,                       // Return type
  * @param step    The step increment
  *
  * @return        Zero.
- */
+ **/
 RexxMethod4(int,                       // Return type
             GrxSpinButtonNewWithRange, // Object_method name
             OSELF, self,               // Self
@@ -531,7 +531,7 @@ RexxMethod4(int,                       // Return type
  * @param name    The signal name
  *
  * @return        Zero
- */
+ **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxSpinButtonSignalConnect, // Object_method name
             CSTRING, name,             // Signal name

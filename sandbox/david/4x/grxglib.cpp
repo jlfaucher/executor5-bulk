@@ -63,7 +63,7 @@
  * Create a new GSList.
  *
  * @return        Zero
- */
+ **/
 RexxMethod0(int,                       // Return type
             GrxGSListNew)              // Routine name
 {
@@ -78,7 +78,7 @@ RexxMethod0(int,                       // Return type
  * Destroy a new GSList.
  *
  * @return        Zero
- */
+ **/
 RexxMethod0(int,                       // Return type
             GrxGSListUninit)           // Routine name
 {
@@ -98,7 +98,7 @@ RexxMethod0(int,                       // Return type
  * @param item    The item string
  *
  * @return        Zero
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxGSListAppend,           // Routine name
             CSTRING, item)             // Item to append
@@ -120,7 +120,7 @@ RexxMethod1(int,                       // Return type
  * @param item    The item string
  *
  * @return        Zero
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxGSListPrepend,          // Routine name
             CSTRING, item)             // Item to append
@@ -144,7 +144,7 @@ RexxMethod1(int,                       // Return type
  * @param pos     The position (1-based)
  *
  * @return        Zero
- */
+ **/
 RexxMethod2(int,                       // Return type
             GrxGSListInsert,           // Routine name
             CSTRING, item,             // Item to append
@@ -167,7 +167,7 @@ RexxMethod2(int,                       // Return type
  * @param item    Pointer to the item
  *
  * @return        Zero
- */
+ **/
 RexxMethod1(RexxObjectPtr,             // Return type
             GrxGSListItem,             // Routine name
             RexxObjectPtr, rxptr)      // Pointer to the item
@@ -183,7 +183,7 @@ RexxMethod1(RexxObjectPtr,             // Return type
  * Get the first list item.
  *
  * @return        Zero
- */
+ **/
 RexxMethod0(RexxObjectPtr,             // Return type
             GrxGSListFirst)            // Routine name
 {
@@ -202,7 +202,7 @@ RexxMethod0(RexxObjectPtr,             // Return type
  * Get the next list item.
  *
  * @return        Zero
- */
+ **/
 RexxMethod1(RexxObjectPtr,             // Return type
             GrxGSListNext,             // Routine name
             RexxObjectPtr, rxptr)      // Routine name
@@ -222,7 +222,7 @@ RexxMethod1(RexxObjectPtr,             // Return type
  * Create a new GList.
  *
  * @return        Zero
- */
+ **/
 RexxMethod0(int,                       // Return type
             GrxGListNew)               // Routine name
 {
@@ -237,7 +237,7 @@ RexxMethod0(int,                       // Return type
  * Destroy a GList.
  *
  * @return        Zero
- */
+ **/
 RexxMethod0(int,                       // Return type
             GrxGListUninit)            // Routine name
 {
@@ -257,7 +257,7 @@ RexxMethod0(int,                       // Return type
  * @param item    The item string
  *
  * @return        Zero
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxGListAppend,            // Routine name
             CSTRING, item)             // Item to append
@@ -279,7 +279,7 @@ RexxMethod1(int,                       // Return type
  * @param item    The item string
  *
  * @return        Zero
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxGListPrepend,           // Routine name
             CSTRING, item)             // Item to append
@@ -303,7 +303,7 @@ RexxMethod1(int,                       // Return type
  * @param pos     The position (1-based)
  *
  * @return        Zero
- */
+ **/
 RexxMethod2(int,                       // Return type
             GrxGListInsert,            // Routine name
             CSTRING, item,             // Item to append
@@ -326,7 +326,7 @@ RexxMethod2(int,                       // Return type
  * @param item    Pointer to the item
  *
  * @return        Zero
- */
+ **/
 RexxMethod1(RexxObjectPtr,             // Return type
             GrxGListItem,              // Routine name
             RexxObjectPtr, rxptr)      // Pointer to the item
@@ -343,7 +343,7 @@ RexxMethod1(RexxObjectPtr,             // Return type
  * Get the first list item.
  *
  * @return        Zero
- */
+ **/
 RexxMethod0(RexxObjectPtr,             // Return type
             GrxGListFirst)             // Routine name
 {
@@ -362,7 +362,7 @@ RexxMethod0(RexxObjectPtr,             // Return type
  * Get the next list item.
  *
  * @return        Zero
- */
+ **/
 RexxMethod1(RexxObjectPtr,             // Return type
             GrxGListNext,              // Routine name
             RexxObjectPtr, rxptr)      // Routine name

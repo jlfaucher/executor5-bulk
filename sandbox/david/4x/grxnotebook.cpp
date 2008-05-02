@@ -150,13 +150,13 @@ static void signal_func_3(GtkWidget *window,
 /* Public Functions                                                           */
 /*============================================================================*/
 
-/*
+/**
  * Method:  init
  *
  * Create a notebook.
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxNotebookNew,            // Object_method name
             OSELF, self)               // Self
@@ -170,7 +170,7 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  append_page
  *
  * Append a page to the notebook.
@@ -180,7 +180,7 @@ RexxMethod1(int,                       // Return type
  * @param label   The notebook tab label
  *
  * @return        Zero.
- */
+ **/
 RexxMethod2(int,                       // Return type
             GrxNotebookAppendPage,     // Object_method name
             RexxObjectPtr, rxcontainer, // The container
@@ -198,7 +198,7 @@ RexxMethod2(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  prepend_page
  *
  * Append a page to the notebook.
@@ -208,7 +208,7 @@ RexxMethod2(int,                       // Return type
  * @param label   The notebook tab label
  *
  * @return        Zero.
- */
+ **/
 RexxMethod2(int,                       // Return type
             GrxNotebookPrependPage,    // Object_method name
             RexxObjectPtr, rxcontainer, // The container
@@ -226,7 +226,7 @@ RexxMethod2(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  insert_page
  *
  * Insert a page to the notebook.
@@ -238,7 +238,7 @@ RexxMethod2(int,                       // Return type
  * @param pos     The position of the page
  *
  * @return        Zero.
- */
+ **/
 RexxMethod3(int,                       // Return type
             GrxNotebookInsertPage,     // Object_method name
             RexxObjectPtr, rxcontainer, // The container
@@ -257,7 +257,7 @@ RexxMethod3(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  append_page_menu
  *
  * Append a page with a popup menu to the notebook.
@@ -269,7 +269,7 @@ RexxMethod3(int,                       // Return type
  * @param menu    The menu
  *
  * @return        Zero.
- */
+ **/
 RexxMethod3(int,                       // Return type
             GrxNotebookAppendPageMenu, // Object_method name
             RexxObjectPtr, rxcontainer, // The container
@@ -290,7 +290,7 @@ RexxMethod3(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  prepend_page_menu
  *
  * Prepend a page with a popup menu to the notebook.
@@ -302,7 +302,7 @@ RexxMethod3(int,                       // Return type
  * @param menu    The menu
  *
  * @return        Zero.
- */
+ **/
 RexxMethod3(int,                       // Return type
             GrxNotebookPrependPageMenu, // Object_method name
             RexxObjectPtr, rxcontainer, // The container
@@ -323,7 +323,7 @@ RexxMethod3(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  insert_page_menu
  *
  * Insert a page with a popup menu to the notebook.
@@ -337,7 +337,7 @@ RexxMethod3(int,                       // Return type
  * @param pos     The position
  *
  * @return        Zero.
- */
+ **/
 RexxMethod4(int,                       // Return type
             GrxNotebookInsertPageMenu, // Object_method name
             RexxObjectPtr, rxcontainer, // The container
@@ -359,7 +359,7 @@ RexxMethod4(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  remove_page
  *
  * Remove a page from the notebook.
@@ -367,7 +367,7 @@ RexxMethod4(int,                       // Return type
  * @param pos     The position
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxNotebookRemovePage,     // Object_method name
             int, pos)                  // The position
@@ -380,7 +380,7 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  set_show_border
  *
  * Toggle the display of the border.
@@ -388,7 +388,7 @@ RexxMethod1(int,                       // Return type
  * @param toggle  The border display boolean
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxNotebookSetShowBorder,  // Object_method name
             logical_t, toggle)         // The border display boolean
@@ -401,7 +401,7 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  set_show_tabs
  *
  * Toggle the display of the tabs.
@@ -409,7 +409,7 @@ RexxMethod1(int,                       // Return type
  * @param toggle  The tab display boolean
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxNotebookSetShowTabs,    // Object_method name
             logical_t, toggle)         // The tabs display boolean
@@ -422,7 +422,7 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  set_tab_pos
  *
  * Toggle the display position of the tabs.
@@ -430,7 +430,7 @@ RexxMethod1(int,                       // Return type
  * @param pos     The tab display position
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxNotebookSetTabPos,      // Object_method name
             int, pos)                  // The tab position
@@ -443,7 +443,7 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  set_homegeneous_tabs
  *
  * Toggle the display position of homogemeous tabs.
@@ -451,7 +451,7 @@ RexxMethod1(int,                       // Return type
  * @param toggle  The homogeneous boolean
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxNotebookSetHomogeneousTabs, // Object_method name
             logical_t, toggle)         // The homogeneous boolean
@@ -464,7 +464,7 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  set_tab_border
  *
  * Set the width of tab borders.
@@ -472,7 +472,7 @@ RexxMethod1(int,                       // Return type
  * @param widthe  The tab border width
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxNotebookSetTabBorder,   // Object_method name
             int, width)                // The tab border width
@@ -485,7 +485,7 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  set_scrollable
  *
  * Set tabs as scrollable.
@@ -493,7 +493,7 @@ RexxMethod1(int,                       // Return type
  * @param toggle  The scrollable boolean
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxNotebookSetScrollable,  // Object_method name
             logical_t, toggle)         // The scrollable boolean
@@ -506,13 +506,13 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  popup_enable
  *
  * Enable popups.
  *
  * @return        Zero.
- */
+ **/
 RexxMethod0(int,                       // Return type
             GrxNotebookPopupEnable)    // Object_method name
 {
@@ -524,13 +524,13 @@ RexxMethod0(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  popup_disable
  *
  * Disable popups.
  *
  * @return        Zero.
- */
+ **/
 RexxMethod0(int,                       // Return type
             GrxNotebookPopupDisable)   // Object_method name
 {
@@ -542,13 +542,13 @@ RexxMethod0(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  get_current_page
  *
  * Disable popups.
  *
  * @return        Page number
- */
+ **/
 RexxMethod0(int,                       // Return type
             GrxNotebookGetCurrentPage) // Object_method name
 {
@@ -558,7 +558,7 @@ RexxMethod0(int,                       // Return type
     return gtk_notebook_get_current_page(myWidget);
 }
 
-/*
+/**
  * Method:  set_current_page
  *
  * Set the current page.
@@ -566,7 +566,7 @@ RexxMethod0(int,                       // Return type
  * @param page    The page number
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxNotebookSetCurrentPage, // Object_method name
             int, page)                 // The page number
@@ -587,7 +587,7 @@ RexxMethod1(int,                       // Return type
  * @param name    The signal name
  *
  * @return        Zero
- */
+ **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxNotebookSignalConnect,  // Object_method name
             CSTRING, name,             // Signal name

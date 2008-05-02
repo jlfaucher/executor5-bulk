@@ -95,7 +95,7 @@ static void signal_func_2(GtkWidget *window,
 /* Public Functions                                                           */
 /*============================================================================*/
 
-/*
+/**
  * Method:  init
  *
  * Create a scrolled window.
@@ -105,7 +105,7 @@ static void signal_func_2(GtkWidget *window,
  * @param rxvadj  The vertical adjustment object
  *
  * @return        Zero.
- */
+ **/
 RexxMethod3(int,                       // Return type
             GrxScrolledWindowNew,      // Object_method name
             OSELF, self,               // Self
@@ -137,13 +137,13 @@ RexxMethod3(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  get_hadjustment
  *
  * Get the horizontal adjustment.
  *
  * @return        Horizontal adjustment object
- */
+ **/
 RexxMethod0(RexxObjectPtr,             // Return type
             GrxScrollWindowGetHAdjustment) // Object_method name
 {
@@ -161,13 +161,13 @@ RexxMethod0(RexxObjectPtr,             // Return type
     return rxhadj;
 }
 
-/*
+/**
  * Method:  get_vadjustment
  *
  * Get the vertical adjustment.
  *
  * @return        Vertical adjustment object
- */
+ **/
 RexxMethod0(RexxObjectPtr,             // Return type
             GrxScrollWindowGetVAdjustment) // Object_method name
 {
@@ -185,7 +185,7 @@ RexxMethod0(RexxObjectPtr,             // Return type
     return rxvadj;
 }
 
-/*
+/**
  * Method:  set_policy
  *
  * Set the adjustment policy
@@ -195,7 +195,7 @@ RexxMethod0(RexxObjectPtr,             // Return type
  * @param vpolicy The vertical policy
  *
  * @return        Zero
- */
+ **/
 RexxMethod2(int,                       // Return type
             GrxScrollWindowSetPolicy,  // Object_method name
             int, hpolicy,              // Horizontal policy
@@ -209,7 +209,7 @@ RexxMethod2(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  add_with_viewport
  *
  * Add a child without native scrolling support.
@@ -217,7 +217,7 @@ RexxMethod2(int,                       // Return type
  * @param rxchild The child widget
  *
  * @return        Zero
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxScrollWindowAddWithViewport, // Object_method name
             RexxObjectPtr, rxchild)    // Child widget
@@ -240,7 +240,7 @@ RexxMethod1(int,                       // Return type
  * @param name    The signal name
  *
  * @return        Zero
- */
+ **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxScrolledWindowSignalConnect, // Object_method name
             CSTRING, name,             // Signal name

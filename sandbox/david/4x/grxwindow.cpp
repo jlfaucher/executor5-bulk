@@ -98,7 +98,7 @@ static void signal_func_1(GtkWidget *window,
  * @param type    The window type.
  *
  * @return        Zero.
- */
+ **/
 RexxMethod2(int,                       // Return type
             GrxWindowNew,              // Object_method name
             OSELF, self,               // Self
@@ -119,7 +119,7 @@ RexxMethod2(int,                       // Return type
  * Get the title for a window.
  *
  * @return        Title string
- */
+ **/
 RexxMethod0(CSTRING,                   // Return type
             GrxWindowGetTitle)         // Object_method name
 {
@@ -137,7 +137,7 @@ RexxMethod0(CSTRING,                   // Return type
  * @param modal   The modal flag
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxWindowSetTitle,         // Object_method name
             logical_t, modal)          // Window modal flag
@@ -158,7 +158,7 @@ RexxMethod1(int,                       // Return type
  * @param name    The signal name
  *
  * @return        Zero.
- */
+ **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxWindowSignalConnect,    // Object_method name
             CSTRING, name,             // Signal name

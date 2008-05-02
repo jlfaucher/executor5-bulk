@@ -362,6 +362,9 @@ REXX_METHOD_PROTOTYPE(GrxScrolledWindowGetVAdjustment)
 REXX_METHOD_PROTOTYPE(GrxScrolledWindowSetPolicy)
 REXX_METHOD_PROTOTYPE(GrxScrolledWindowAddWithViewport)
 REXX_METHOD_PROTOTYPE(GrxScrolledWindowSignalConnect)
+REXX_METHOD_PROTOTYPE(GrxListStoreNew)
+REXX_METHOD_PROTOTYPE(GrxListStoreAppend)
+REXX_METHOD_PROTOTYPE(GrxListStoreSetValue)
  
  #endif /* REXXGTK_H */
  

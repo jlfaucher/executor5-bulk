@@ -63,137 +63,78 @@
 /*============================================================================*/
 
 /**
- * Method:  add1
+ * Method:  init
  *
- * Add a widget to a paned.
+ * Create an adjustment.
  *
- * @param addWidget The widget to add.
+ * @param type1   The type
  *
- * @return        Zero
+ * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
-            GrxPanedAdd1,              // Object_method name
-            RexxObjectPtr, rxaddptr)   // Widget to add
+RexxMethod2(int,                       // Return type
+            GrxListStoretNew,          // Object_method name
+            OSELF, self,               // Self
+            ARGLIST, args)             // Array of column types
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-    RexxPointerObject addptr = (RexxPointerObject)context->SendMessage0(rxaddptr, "POINTER");
-    GtkWidget *addWidget = (GtkWidget *)context->PointerValue(addptr);
+    GtkListStore    *lstore;  
+    size_t members = context->ArraySize(args);
+    gint *types[members];
 
-    gtk_paned_add1(GTK_PANED(myWidget), addWidget); 
+    if (members) {
+        for (int i = 0; i < members; i++) {
+            context->ObjectToNumber(context->ArrayAt(args, i), types[i]);
+        }
+        lstore = (GtkListStore *)gtk_list_store_newv(members, (GType *)types);
+    }
+    context->SetObjectVariable("!POINTER", context->NewPointer(lstore));
+    g_object_set_data(G_OBJECT(lstore), "OORXOBJECT", self);
 
     return 0;
 }
 
 /**
- * Method:  add2
+ * Method:  append
  *
- * Add a widget to a paned.
+ * Append a new row
  *
- * @param addWidget The widget to add.
- *
- * @return        Zero
+ * @return        Row iterator
  **/
-RexxMethod1(int,                       // Return type
-            GrxPanedAdd2,              // Object_method name
-            RexxObjectPtr, rxaddptr)   // Widget to add
+RexxMethod0(RexxObjectPtr,             // Return type
+            GrxListStoreAppend)        // Object_method name
 {
     RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-    RexxPointerObject addptr = (RexxPointerObject)context->SendMessage0(rxaddptr, "POINTER");
-    GtkWidget *addWidget = (GtkWidget *)context->PointerValue(addptr);
+    GtkListStore *lstore = (GtkListStore *)context->PointerValue(rxptr);
+    GtkTreeIter *iter = (GtkTreeIter *)malloc(sizeof(GtkTreeIter));
 
-    gtk_paned_add2(GTK_PANED(myWidget), addWidget); 
+    gtk_list_store_append(lstore, iter);
 
-    return 0;
+    return (RexxObjectPtr)context->NewPointer(iter);
 }
 
 /**
- * Method:  pack1
+ * Method:  set_value
  *
- * Pack a widget to a paned.
+ * Set the value in a column.
  *
- * @param addWidget The widget to add.
+ * @param iter    The iterator
+ *
+ * @param colnum  The column number
+ *
+ * @param val     The value
  *
  * @return        Zero
  **/
 RexxMethod3(int,                       // Return type
-            GrxPanedPack1,             // Object_method name
-            RexxObjectPtr, rxpackptr,  // Widget to add
-            logical_t, resize,         // Resize flag
-            logical_t, shrink)         // Shrink flag
+            GrxListStoreSetValue,      // Object_method name
+            RexxObjectPtr, rxiter,     // Row iterator
+            int, colnum,               // Column number
+            CSTRING, val)              // Column value
 {
     RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-    RexxPointerObject packptr = (RexxPointerObject)context->SendMessage0(rxpackptr, "POINTER");
-    GtkWidget *packWidget = (GtkWidget *)context->PointerValue(packptr);
+    GtkListStore *lstore = (GtkListStore *)context->PointerValue(rxptr);
+    GtkTreeIter *iter = (GtkTreeIter *)context->PointerValue((RexxPointerObject)rxiter);
 
-    gtk_paned_pack1(GTK_PANED(myWidget), packWidget, resize, shrink); 
-
-    return 0;
-}
-
-/**
- * Method:  pack2
- *
- * Pack a widget to a paned.
- *
- * @param addWidget The widget to add.
- *
- * @return        Zero
- **/
-RexxMethod3(int,                       // Return type
-            GrxPanedPack2,             // Object_method name
-            RexxObjectPtr, rxpackptr,  // Widget to add
-            logical_t, resize,         // Resize flag
-            logical_t, shrink)         // Shrink flag
-{
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-    RexxPointerObject packptr = (RexxPointerObject)context->SendMessage0(rxpackptr, "POINTER");
-    GtkWidget *packWidget = (GtkWidget *)context->PointerValue(packptr);
-
-    gtk_paned_pack2(GTK_PANED(myWidget), packWidget, resize, shrink); 
-
-    return 0;
-}
-
-/**
- * Method:  init
- *
- * Initialize a VPand object.
- *
- * @return        Zero
- **/
-RexxMethod1(int,                       // Return type
-            GrxVPanedNew,              // Object_method name
-            OSELF, self)               // Self
-{
-    GtkWidget *myWidget;
-
-    myWidget = gtk_vpaned_new();
-    context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
-    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
-
-    return 0;
-}
-
-/**
- * Method:  init
- *
- * Initialize a HPand object.
- *
- * @return        Zero
- **/
-RexxMethod1(int,                       // Return type
-            GrxHPanedNew,              // Object_method name
-            OSELF, self)               // Self
-{
-    GtkWidget *myWidget;
-
-    myWidget = gtk_hpaned_new();
-    context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
-    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
+    gtk_list_store_set_value(lstore, iter, colnum, (GValue *)val);
 
     return 0;
 }

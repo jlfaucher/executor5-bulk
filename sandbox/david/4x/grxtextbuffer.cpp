@@ -75,13 +75,13 @@ static void signal_func_0(GtkWidget *window,
 /* Public Functions                                                           */
 /*============================================================================*/
 
-/*
+/**
  * Method:  init
  *
  * Create an textbuffer.
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxTextBufferNew,          // Object_method name
             OSELF, self)               // Self
@@ -95,7 +95,7 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  init
  *
  * Create an textbuffer.
@@ -103,7 +103,7 @@ RexxMethod1(int,                       // Return type
  * @param rxptr   The widget pointer
  *
  * @return        Zero.
- */
+ **/
 RexxMethod2(int,                       // Return type
             GrxTextBufferNewFromPtr,   // Object_method name
             OSELF, self,               // Self
@@ -117,7 +117,7 @@ RexxMethod2(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  set_text
  *
  * Set the textbuffer text.
@@ -125,7 +125,7 @@ RexxMethod2(int,                       // Return type
  * @param text    The text
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxTextBufferSetText,      // Object_method name
             CSTRING, text)             // Tagtable object
@@ -138,7 +138,7 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  insert_text
  *
  * Insert the text in the textbuffer.
@@ -146,7 +146,7 @@ RexxMethod1(int,                       // Return type
  * @param text    The text
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxTextBufferInsertText,   // Object_method name
             CSTRING, text)             // Tagtable object
@@ -163,13 +163,13 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  get_text
  *
  * Get the text in the textbuffer.
  *
  * @return        The text
- */
+ **/
 RexxMethod0(CSTRING,                   // Return type
             GrxTextBufferGetText)      // Object_method name
 {
@@ -181,7 +181,7 @@ RexxMethod0(CSTRING,                   // Return type
     return gtk_text_buffer_get_text(myBuffer, &start, &end, FALSE);
 }
 
-/*
+/**
  * Method:  cut_clipboard
  *
  * Cut the marked text to the clipboard.
@@ -189,7 +189,7 @@ RexxMethod0(CSTRING,                   // Return type
  * @param flag    The editable flag
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxTextBufferCutClipboard, // Object_method name
             logical_t, flag)           // Editable flag
@@ -203,13 +203,13 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  copy_clipboard
  *
  * Copy the marked text to the clipboard.
  *
  * @return        Zero.
- */
+ **/
 RexxMethod0(int,                       // Return type
             GrxTextBufferCopyClipboard) // Object_method name
 {
@@ -222,7 +222,7 @@ RexxMethod0(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  paste_clipboard
  *
  * Paste the text in the clipboard to the buffer.
@@ -230,7 +230,7 @@ RexxMethod0(int,                       // Return type
  * @param flag    The editable flag
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxTextBufferPasteClipboard, // Object_method name
             logical_t, flag)           // Editable flag
@@ -244,7 +244,7 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  forward_search
  *
  * Start a search in the forward direction.
@@ -254,7 +254,7 @@ RexxMethod1(int,                       // Return type
  * @param text    The start position, 1 = start of buffer, 0 = current position
  *
  * @return        The iter object or Nil
- */
+ **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxTextBufferForwardSearch, // Object_method name
             CSTRING, text,             // Search text
@@ -283,7 +283,7 @@ RexxMethod2(RexxObjectPtr,             // Return type
     return context->Nil();
 }
 
-/*
+/**
  * Method:  forward_search_next
  *
  * Continue a search in the forward direction.
@@ -293,7 +293,7 @@ RexxMethod2(RexxObjectPtr,             // Return type
  * @param text    The start position, 1 = start of buffer, 0 = current position
  *
  * @return        The iter object or Nil
- */
+ **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxTextBufferForwardSearchNext, // Object_method name
             CSTRING, text,             // Search text
@@ -314,7 +314,7 @@ RexxMethod2(RexxObjectPtr,             // Return type
     return context->Nil();
 }
 
-/*
+/**
  * Method:  create_tag_int
  *
  * Create an integer tag for the buffer.
@@ -326,7 +326,7 @@ RexxMethod2(RexxObjectPtr,             // Return type
  * @param pvalue  Property value
  *
  * @return        Zero
- */
+ **/
 RexxMethod3(int,                       // Return type
             GrxTextBufferCreateTagInt, // Object_method name
             CSTRING, name,             // Tag name
@@ -341,7 +341,7 @@ RexxMethod3(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  create_tag_float
  *
  * Create a float tag for the buffer.
@@ -353,7 +353,7 @@ RexxMethod3(int,                       // Return type
  * @param pvalue  Property value
  *
  * @return        Zero
- */
+ **/
 RexxMethod3(int,                       // Return type
             GrxTextBufferCreateTagFloat, // Object_method name
             CSTRING, name,             // Tag name
@@ -368,7 +368,7 @@ RexxMethod3(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  apply_tag_by_name
  *
  * Apply a tag to the current selection.
@@ -376,7 +376,7 @@ RexxMethod3(int,                       // Return type
  * @param name    Tag name
  *
  * @return        Zero
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxTextBufferApplyTagByName, // Object_method name
             CSTRING, name)             // Tag name
@@ -391,13 +391,13 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  remove_all_tags
  *
  * Remove all tags.
  *
  * @return        Zero
- */
+ **/
 RexxMethod0(int,                       // Return type
             GrxTextBufferRemoveAllTags) // Object_method name
 {
@@ -449,7 +449,7 @@ RexxMethod2(int,                       // Return type
  * @param name    The signal name
  *
  * @return        Zero
- */
+ **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxTextBufferSignalConnect, // Object_method name
             CSTRING, name,             // Signal name

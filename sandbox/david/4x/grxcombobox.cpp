@@ -91,13 +91,13 @@ static void signal_func_1(GtkWidget *window,
 /* Public Functions                                                           */
 /*============================================================================*/
 
-/*
+/**
  * Method:  init
  *
  * Create a combobox.
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxComboBoxNew,            // Object_method name
             OSELF, self)               // Self
@@ -111,13 +111,13 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  init
  *
  * Create a combobox.
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxComboBoxNewText,        // Object_method name
             OSELF, self)               // Self
@@ -131,7 +131,7 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  append_text
  *
  * Append text to a combobox.
@@ -139,7 +139,7 @@ RexxMethod1(int,                       // Return type
  * @param text    The text to append
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxComboBoxAppendText,     // Object_method name
             CSTRING, text)             // Text to append
@@ -152,13 +152,13 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  get_active_text
  *
  * Get the active text.
  *
  * @return        Text.
- */
+ **/
 RexxMethod0(CSTRING,                   // Return type
             GrxComboBoxGetActiveText)  // Object_method name
 {
@@ -168,7 +168,7 @@ RexxMethod0(CSTRING,                   // Return type
     return gtk_combo_box_get_active_text(myWidget);
 }
 
-/*
+/**
  * Method:  set_active
  *
  * Set the active entry.
@@ -176,7 +176,7 @@ RexxMethod0(CSTRING,                   // Return type
  * @param active  The entry to set active.
  *
  * @return        Zero.
- */
+ **/
 RexxMethod1(int,                       // Return type
             GrxComboBoxSetActive,      // Object_method name
             int, active)               // Entry number
@@ -189,13 +189,13 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
-/*
+/**
  * Method:  get_active
  *
  * Get the active entry.
  *
  * @return        Entry number
- */
+ **/
 RexxMethod0(int,                       // Return type
             GrxComboBoxGetActive)      // Object_method name
 {
@@ -213,7 +213,7 @@ RexxMethod0(int,                       // Return type
  * @param name    The signal name
  *
  * @return        Zero
- */
+ **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxComboBoxSignalConnect,  // Object_method name
             CSTRING, name,             // Image file name
