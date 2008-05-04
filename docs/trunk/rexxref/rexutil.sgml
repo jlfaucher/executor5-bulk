@@ -212,7 +212,7 @@ platforms on which they are available.</para>
 <entry></entry>
 </row>
 <row>
-<entry><link linkend="utlSysisfiledirector">SysIsFileDirector</link>y</entry><entry>YES</entry><entry>YES</entry>
+<entry><link linkend="utlSysisfiledirectory">SysIsFileDirectory</link>y</entry><entry>YES</entry><entry>YES</entry>
 <entry></entry>
 </row>
 <row>
@@ -284,7 +284,7 @@ platforms on which they are available.</para>
 <entry></entry>
 </row>
 <row>
-<entry><link linkend=">sysrequestmutexsem">SysRequestMutexSem</link></entry><entry>YES</entry><entry>YES</entry>
+<entry><link linkend="utlSysrequestmutexsem">SysRequestMutexSem</link></entry><entry>YES</entry><entry>YES</entry>
 <entry></entry>
 </row>
 <row>
@@ -316,7 +316,7 @@ platforms on which they are available.</para>
 <entry></entry>
 </row>
 <row>
-<entry><link linkend=">sysstemcopy">SysStemCopy</link></entry><entry>YES</entry><entry>YES</entry>
+<entry><link linkend="utlSysstemcopy">SysStemCopy</link></entry><entry>YES</entry><entry>YES</entry>
 <entry></entry>
 </row>
 <row>
@@ -360,7 +360,7 @@ platforms on which they are available.</para>
 <entry></entry>
 </row>
 <row>
-<entry><link linkend=">sysvolumelable">SysVolumeLable</link></entry><entry>YES</entry><entry>NO</entry>
+<entry><link linkend="utlSysvolumelable">SysVolumeLable</link></entry><entry>YES</entry><entry>NO</entry>
 <entry></entry>
 </row>
 <row>
@@ -626,7 +626,7 @@ confusion between a legitimate error code and a PID.</para>
 </section>
 
 
-<section id="utlSysaddmacro"><title>SysAddRexxMacro</title>
+<section id="utlSysaddrexxmacro"><title>SysAddRexxMacro</title>
 <indexterm><primary>SysAddRexxMacro</primary></indexterm>
 <indexterm><primary>rexxutil functions</primary>
 <secondary>SysAddRexxMacro</secondary></indexterm>
@@ -3565,7 +3565,8 @@ to the end of the filename and a path may be prepended to the beginning of the
 returned string.</para></note>
 </section>
 
-<section id="utlSytextscreenread"><title>SysTextScreenRead (Windows only)</title>
+<section id="utlSystextscreenread"><title>SysTextScreenRead (Windows
+only)</title>
 <indexterm><primary>SysTextScreenRead</primary></indexterm>
 <indexterm><primary>rexxutil functions</primary>
 <secondary>SysTextScreenRead</secondary></indexterm>
@@ -3613,7 +3614,8 @@ line = SysTextScreenRead(2, 0, 80)
 </programlisting>
 </section>
 
-<section id="utlSytextscreensize"><title>SysTextScreenSize (Windows only)</title>
+<section id="utlSystextscreensize"><title>SysTextScreenSize (Windows
+only)</title>
 <indexterm><primary>SysTextScreenSize</primary></indexterm>
 <indexterm><primary>rexxutil functions</primary>
 <secondary>SysTextScreenSize</secondary></indexterm>
@@ -3641,7 +3643,7 @@ say "Rows="row", Columns="col
 </programlisting>
 </section>
 
-<section id="utlSytounicode"><title>SysToUnicode (Windows only)</title>
+<section id="utlSystounicode"><title>SysToUnicode (Windows only)</title>
 <indexterm><primary>SysToUnicode</primary></indexterm>
 <indexterm><primary>rexxutil functions</primary>
 <secondary>SysToUnicode</secondary></indexterm>
@@ -3754,7 +3756,7 @@ page.</para></listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="utlSyutilversion"><title>SysUtilVersion</title>
+<section id="utlSysutilversion"><title>SysUtilVersion</title>
 <indexterm><primary>SysUtilVersion</primary></indexterm>
 <indexterm><primary>rexxutil functions</primary>
 <secondary>SysUtilVersion</secondary></indexterm>
@@ -3786,7 +3788,7 @@ If RxFuncQuery("SysSetFileDateTime") = 1 Then
 </programlisting>
 </section>
 
-<section id="utlSyversion"><title>SysVersion</title>
+<section id="utlSysversion"><title>SysVersion</title>
 <indexterm><primary>SysVersion</primary></indexterm>
 <indexterm><primary>rexxutil functions</primary>
 <secondary>SysVersion</secondary></indexterm>
@@ -3815,7 +3817,46 @@ used to replace the operating-system-specific functions SysOS2Ver(),
 SysWinVer(), and SysLinVer().</para></note>
 </section>
 
-<section id="utlSywait"><title>SysWait (AIX only)</title>
+<section id="utlSysvolumelable"><title>SysVolumeLable (Windows only)</title>
+<indexterm><primary>SysVolumeLable</primary></indexterm>
+<indexterm><primary>rexxutil functions</primary>
+<secondary>SysVolumeLable</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SysVolumeLable(--+-------------+--)------------------------------><
+                    +-driveLetter-+
+]]>
+</programlisting>
+
+<para>Returns the volume lable for the specified drive.</para>
+<para><emphasis role="bold">Parameter:</emphasis></para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">driveLetter</emphasis></term>
+<listitem><para>A drive letter in the form &apos;X:&apos;.  If the drive letter
+is omitted than the current drive is used.
+</para></listitem></varlistentry>
+</variablelist>
+<para><emphasis role="bold">Return codes:</emphasis></para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>Encryption was successful.
+</para></listitem></varlistentry>
+<varlistentry><term>2</term>
+<listitem><para>File not found.
+</para></listitem></varlistentry>
+<varlistentry><term>4</term>
+<listitem><para>Cannot open file.
+</para></listitem></varlistentry>
+<varlistentry><term>5</term>
+<listitem><para>Access denied.
+</para></listitem></varlistentry>
+<varlistentry><term>82</term>
+<listitem><para>Cannot encrypt.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="utlSyswait"><title>SysWait (AIX only)</title>
 <indexterm><primary>SysWait</primary></indexterm>
 <indexterm><primary>rexxutil functions</primary>
 <secondary>SysWait</secondary></indexterm>
@@ -3830,7 +3871,7 @@ SysWinVer(), and SysLinVer().</para></note>
 <para>The exit code from the child process.</para>
 </section>
 
-<section id="utlSywaiteventsem"><title>SysWaitEventSem</title>
+<section id="utlSyswaiteventsem"><title>SysWaitEventSem</title>
 <indexterm><primary>SysWaitEventSem</primary></indexterm>
 <indexterm><primary>rexxutil functions</primary>
 <secondary>SysWaitEventSem</secondary></indexterm>
@@ -3867,7 +3908,7 @@ default <emphasis role="italic">timeout</emphasis> is an infinite wait.
 </variablelist>
 </section>
 
-<section id="utlSywaitnamedpipe"><title>SysWaitNamedPipe (Windows only)</title>
+<section id="utlSyswaitnamedpipe"><title>SysWaitNamedPipe (Windows only)</title>
 <indexterm><primary>SysWaitNamedPipe</primary></indexterm>
 <indexterm><primary>rexxutil functions</primary>
 <secondary>SysWaitNamedPipe</secondary></indexterm>
@@ -3895,7 +3936,8 @@ the pipe is no longer busy, you can use a value of -1.
 </variablelist>
 </section>
 
-<section id="utlSywindecryptfile"><title>SysWinDecryptFile (Windows only)</title>
+<section id="utlSyswindecryptfile"><title>SysWinDecryptFile (Windows
+only)</title>
 <indexterm><primary>SysWinDecryptFile</primary></indexterm>
 <indexterm><primary>rexxutil functions</primary>
 <secondary>SysWinDecryptFile</secondary></indexterm>
@@ -3932,7 +3974,8 @@ the pipe is no longer busy, you can use a value of -1.
 </variablelist>
 </section>
 
-<section id="utlSywinencryptfile"><title>SysWinEncryptFile (Windows only)</title>
+<section id="utlSyswinencryptfile"><title>SysWinEncryptFile (Windows
+only)</title>
 <indexterm><primary>SysWinEncryptFile</primary></indexterm>
 <indexterm><primary>rexxutil functions</primary>
 <secondary>SysWinEncryptFile</secondary></indexterm>
@@ -3969,7 +4012,8 @@ the pipe is no longer busy, you can use a value of -1.
 </variablelist>
 </section>
 
-<section id="utlSywingetdefaultprinter"><title>SysWinGetDefaultPrinter (Windows only)</title>
+<section id="utlSyswingetdefaultprinter"><title>SysWinGetDefaultPrinter (Windows
+only)</title>
 <indexterm><primary>SysWinGetDefaultPrinter</primary></indexterm>
 <indexterm><primary>rexxutil functions</primary>
 <secondary>SysWinGetDefaultPrinter</secondary></indexterm>
@@ -3983,7 +4027,8 @@ the pipe is no longer busy, you can use a value of -1.
 "Printername,Drivername,Portname".</para>
 </section>
 
-<section id="utlSywingetprinters"><title>SysWinGetPrinters (Windows only)</title>
+<section id="utlSyswingetprinters"><title>SysWinGetPrinters (Windows
+only)</title>
 <indexterm><primary>SysWinGetPrinters</primary></indexterm>
 <indexterm><primary>rexxutil functions</primary>
 <secondary>SysWinGetPrinters</secondary></indexterm>
@@ -4015,7 +4060,8 @@ the pipe is no longer busy, you can use a value of -1.
 </variablelist>
 </section>
 
-<section id="utlSywinsetdefaultprinter"><title>SysWinSetDefaultPrinter (Windows only)</title>
+<section id="utlSyswinsetdefaultprinter"><title>SysWinSetDefaultPrinter (Windows
+only)</title>
 <indexterm><primary>SysWinSetDefaultPrinter</primary></indexterm>
 <indexterm><primary>rexxutil functions</primary>
 <secondary>SysWinSetDefaultPrinter</secondary></indexterm>
@@ -4088,7 +4134,7 @@ exit
 </programlisting>
 </section>
 
-<section id="utlSywinver"><title>SysWinVer Windows only)</title>
+<section id="utlSyswinver"><title>SysWinVer Windows only)</title>
 <indexterm><primary>SysWinVer</primary></indexterm>
 <indexterm><primary>rexxutil functions</primary>
 <secondary>SysWinVer</secondary></indexterm>
