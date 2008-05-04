@@ -551,22 +551,35 @@ box. This argument must only be specified for category dialogs.
 not exist.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example removes all entries of combo box AREAS and adds
-several new entries. Entry &quot;City&quot; will be preselected. Object &quot;di&quot;
-is connected to combo box AREAS.
+<listitem><para>The following example comes from a fictious accounting program.
+In one of the dialogs for the program, when the user selects a specific city,
+say San Diego, the zip code combo box is populated with the valid zip codes for
+that city.  In the program, <link linkend="symbolicid">symbolic ID</link>s have
+been used for the controls.  The valid zip codes are passed into the method as
+an array.
 <programlisting>
 <![CDATA[
-::class MyDlgClass subclass UserDialog inherit AdvancedControls
+::class "BillingDlg" subclass RcDialog inherit AdvancedControls MessageExtensions
 
-::method UpdateList
-  di = self~GetComboBox("AREAS")
-  if di == .Nil then return 0
-  di~DeleteAll
-  di~Add("Town")
-  di~Add("City")
-  di~Add("Green")
-  di~Add("Forest")
-  di~Select("City")
+...
+
+::method setZipCodes
+  use strict arg codes
+
+  combo = self~getComboBox(IDC_COMBO_ZIP)
+  if combo == .Nil then return .false
+
+  lowest = 99999
+  combo~deleteAll
+  do zipCode over codes
+    combo~add(zipCode)
+    if zipCode < lowest then do
+      lowest = zipCode
+    end
+  end
+  combo~select(lowest)
+  return .true
+
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
