@@ -73,7 +73,9 @@ OBJECTS = rexxgtk.o \
         grxadjustment.o \
         grxscrolledwindow.o \
 	grxliststore.o \
-	grxeventbox.o
+	grxeventbox.o \
+	grxmenu.o \
+	grxmenuitem.o
 
 
 # Build the shared library
@@ -165,6 +167,12 @@ grxliststore.o: grxliststore.cpp rexxgtk.h
 
 grxeventbox.o: grxeventbox.cpp rexxgtk.h
 	gcc -c $(GRXCFLAGS) grxeventbox.cpp
+
+grxmenu.o: grxmenu.cpp rexxgtk.h
+	gcc -c $(GRXCFLAGS) grxmenu.cpp
+
+grxmenuitem.o: grxmenuitem.cpp rexxgtk.h
+	gcc -c $(GRXCFLAGS) grxmenuitem.cpp
 
 
 

@@ -370,6 +370,11 @@ REXX_METHOD_PROTOTYPE(GrxEventBoxSetAboveChild)
 REXX_METHOD_PROTOTYPE(GrxEventBoxGetAboveChild)
 REXX_METHOD_PROTOTYPE(GrxEventBoxSetVisibleWindow)
 REXX_METHOD_PROTOTYPE(GrxEventBoxGetVisibleWindow)
+REXX_METHOD_PROTOTYPE(GrxMenuNew)
+REXX_METHOD_PROTOTYPE(GrxMenuSignalConnect)
+REXX_METHOD_PROTOTYPE(GrxMenuItemNew)
+REXX_METHOD_PROTOTYPE(GrxMenuItemSignalConnect)
+REXX_METHOD_PROTOTYPE(GrxSeparatorMenuItemNew)
  
  #endif /* REXXGTK_H */
  

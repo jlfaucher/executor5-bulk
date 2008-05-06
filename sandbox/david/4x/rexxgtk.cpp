@@ -670,6 +670,11 @@ RexxMethodEntry gtkobject_methods[] = {
     REXX_METHOD(GrxEventBoxGetAboveChild, GrxEventBoxGetAboveChild),
     REXX_METHOD(GrxEventBoxSetVisibleWindow, GrxEventBoxSetVisibleWindow),
     REXX_METHOD(GrxEventBoxGetVisibleWindow, GrxEventBoxGetVisibleWindow),
+    REXX_METHOD(GrxMenuNew, GrxMenuNew),
+    REXX_METHOD(GrxMenuSignalConnect, GrxMenuSignalConnect),
+    REXX_METHOD(GrxMenuItemNew, GrxMenuItemNew),
+    REXX_METHOD(GrxMenuItemSignalConnect, GrxMenuItemSignalConnect),
+    REXX_METHOD(GrxSeparatorMenuItemNew, GrxSeparatorMenuItemNew),
     REXX_LAST_METHOD()
 };
 

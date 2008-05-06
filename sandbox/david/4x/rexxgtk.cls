@@ -1760,6 +1760,50 @@ return !pointer
 
 
 /*============================================================================*/
+/* Class: GtkMenu                                                             */
+/*============================================================================*/
+
+::class GtkMenu public subclass GtkContainer
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxMenuNew"
+::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxMenuSignalConnect"
+
+::method signal_move_scroll
+return
+
+
+/*============================================================================*/
+/* Class: GtkMenuItem                                                         */
+/*============================================================================*/
+
+::class GtkMenuItem public subclass GtkContainer
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxMenuItemNew"
+::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxMenuItemSignalConnect"
+
+::method signal_activate
+return
+
+::method signal_activate_item
+return
+
+::method signal_toggle_size_allocate
+return
+
+::method signal_toggle_size_request
+return
+
+
+/*============================================================================*/
+/* Class: GtkMenuItem                                                         */
+/*============================================================================*/
+
+::class GtkSeparatorMenuItem public subclass GtkMenuItem
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxSeparatorMenuItemNew"
+
+
+/*============================================================================*/
 /*============================================================================*/
 /*============================================================================*/
 /* These are classes and routines specific to Glib.                           */
