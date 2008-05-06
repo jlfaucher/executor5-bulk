@@ -666,6 +666,14 @@ RexxMethod2(RexxObjectPtr,             // Return type
                          G_CALLBACK(signal_func_0), cblock);
         return context->True();
     }
+    else if (strcmp(name, "activate") == 0) {
+        cblock = (cbcb *)malloc(sizeof(cbcb));
+        cblock->instance = context->threadContext->instance;
+        cblock->signal_name = "signal_activate";
+        g_signal_connect(G_OBJECT(myWidget), "activate",
+                         G_CALLBACK(signal_func_0), cblock);
+        return context->True();
+    }
     else if (strcmp(name, "clicked") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;

@@ -100,6 +100,23 @@ static void signal_func_1a(GtkWidget *window,
     return;
 }
 
+static void signal_func_2(GtkWidget *window,
+                          GtkScrollType arg1,
+                          gdouble arg2,
+                          gpointer data)
+{
+    cbcb *cblock = (cbcb *)data;
+    RexxObjectPtr rxobj = (RexxObjectPtr)g_object_get_data(G_OBJECT(window), "OORXOBJECT");
+    RexxThreadContext *context;
+
+    cblock->instance->AttachThread(&context);
+    RexxObjectPtr arg1type = context->NumberToObject((wholenumber_t)arg1);;
+    RexxObjectPtr arg2type = context->DoubleToObject(arg2);;
+    context->SendMessage2(rxobj, ((cbcb *)data)->signal_name, arg1type, arg2type);
+    context->DetachThread();
+    return;
+}
+
 
 /*============================================================================*/
 /* Public Functions                                                           */
@@ -354,9 +371,17 @@ RexxMethod2(RexxObjectPtr,             // Return type
     else if (strcmp(name, "value_changed") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
-        cblock->signal_name = "signal_value_Changed";
+        cblock->signal_name = "signal_value_changed";
         g_signal_connect(G_OBJECT(myWidget), "value-changed",
                          G_CALLBACK(signal_func_0), cblock);
+        return context->True();
+    }
+    else if (strcmp(name, "change_value") == 0) {
+        cblock = (cbcb *)malloc(sizeof(cbcb));
+        cblock->instance = context->threadContext->instance;
+        cblock->signal_name = "signal_change_value";
+        g_signal_connect(G_OBJECT(myWidget), "change-value",
+                         G_CALLBACK(signal_func_2), cblock);
         return context->True();
     }
     return context->SendSuperMessage("signal_connect", args);
