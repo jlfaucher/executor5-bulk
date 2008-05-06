@@ -406,6 +406,60 @@ return !pointer
 ::method signal_destroy
 return
 
+::method signal_unrealize
+return
+
+::method signal_unmap
+return
+
+::method signal_state_changed
+return
+
+::method signal_show
+return
+
+::method signal_realize
+return
+
+::method signal_popup_menu
+return
+
+::method signal_parent_set
+return
+
+::method signal_move_focus
+return
+
+::method signal_mnemonic_activate
+return
+
+::method signal_map
+return
+
+::method signal_keynav_failed
+return
+
+::method signal_hiearchy_changed
+return
+
+::method signal_hide
+return
+
+::method signal_grab_notify
+return
+
+::method signal_grab_focus
+return
+
+::method signal_focus
+return
+
+::method signal_composited_changed
+return
+
+::method signal_accel_closures_changed
+return
+
 
 /*============================================================================*/
 /* Class: GtkContainer                                                        */

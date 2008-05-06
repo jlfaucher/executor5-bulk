@@ -71,6 +71,51 @@ static void signal_func_0(GtkWidget *widget,
     return;
 }
 
+static void signal_func_1(GtkWidget *window,
+                          GtkStateType arg1,
+                          gpointer data)
+{
+    cbcb *cblock = (cbcb *)data;
+    RexxObjectPtr rxobj = (RexxObjectPtr)g_object_get_data(G_OBJECT(window), "OORXOBJECT");
+    RexxThreadContext *context;
+
+    cblock->instance->AttachThread(&context);
+    RexxObjectPtr arg1type = context->NumberToObject((wholenumber_t)arg1);;
+    context->SendMessage1(rxobj, ((cbcb *)data)->signal_name, arg1type);
+    context->DetachThread();
+    return;
+}
+
+static void signal_func_1a(GtkWidget *window,
+                           GtkObject *widget,
+                           gpointer data)
+{
+    cbcb *cblock = (cbcb *)data;
+    RexxObjectPtr rxobj = (RexxObjectPtr)g_object_get_data(G_OBJECT(window), "OORXOBJECT");
+    RexxObjectPtr rxwidget = (RexxObjectPtr)g_object_get_data(G_OBJECT(widget), "OORXOBJECT");
+    RexxThreadContext *context;
+
+    cblock->instance->AttachThread(&context);
+    context->SendMessage1(rxobj, ((cbcb *)data)->signal_name, rxwidget);
+    context->DetachThread();
+    return;
+}
+
+static void signal_func_1b(GtkWidget *window,
+                           gboolean arg1,
+                           gpointer data)
+{
+    cbcb *cblock = (cbcb *)data;
+    RexxObjectPtr rxobj = (RexxObjectPtr)g_object_get_data(G_OBJECT(window), "OORXOBJECT");
+    RexxThreadContext *context;
+
+    cblock->instance->AttachThread(&context);
+    RexxObjectPtr arg1type = context->NumberToObject((wholenumber_t)arg1);;
+    context->SendMessage1(rxobj, ((cbcb *)data)->signal_name, arg1type);
+    context->DetachThread();
+    return;
+}
+
 
 /*============================================================================*/
 /* Public Methods                                                             */
@@ -885,6 +930,150 @@ RexxMethod2(RexxObjectPtr,             // Return type
         cblock->signal_name = "signal_destroy";
         g_signal_connect(G_OBJECT(myWidget), "destroy",
                          G_CALLBACK(signal_func_0), cblock);
+        return context->True();
+    }
+    else if (strcmp(name, "unrealize") == 0) {
+        cblock = (cbcb *)malloc(sizeof(cbcb));
+        cblock->instance = context->threadContext->instance;
+        cblock->signal_name = "signal_unrealize";
+        g_signal_connect(G_OBJECT(myWidget), "unrealize",
+                         G_CALLBACK(signal_func_0), cblock);
+        return context->True();
+    }
+    else if (strcmp(name, "unmap") == 0) {
+        cblock = (cbcb *)malloc(sizeof(cbcb));
+        cblock->instance = context->threadContext->instance;
+        cblock->signal_name = "signal_unmap";
+        g_signal_connect(G_OBJECT(myWidget), "unmap",
+                         G_CALLBACK(signal_func_0), cblock);
+        return context->True();
+    }
+    else if (strcmp(name, "show") == 0) {
+        cblock = (cbcb *)malloc(sizeof(cbcb));
+        cblock->instance = context->threadContext->instance;
+        cblock->signal_name = "signal_show";
+        g_signal_connect(G_OBJECT(myWidget), "show",
+                         G_CALLBACK(signal_func_0), cblock);
+        return context->True();
+    }
+    else if (strcmp(name, "realize") == 0) {
+        cblock = (cbcb *)malloc(sizeof(cbcb));
+        cblock->instance = context->threadContext->instance;
+        cblock->signal_name = "signal_realize";
+        g_signal_connect(G_OBJECT(myWidget), "realize",
+                         G_CALLBACK(signal_func_0), cblock);
+        return context->True();
+    }
+    else if (strcmp(name, "popup_menu") == 0) {
+        cblock = (cbcb *)malloc(sizeof(cbcb));
+        cblock->instance = context->threadContext->instance;
+        cblock->signal_name = "signal_popup_menu";
+        g_signal_connect(G_OBJECT(myWidget), "popup-menu",
+                         G_CALLBACK(signal_func_0), cblock);
+        return context->True();
+    }
+    else if (strcmp(name, "map") == 0) {
+        cblock = (cbcb *)malloc(sizeof(cbcb));
+        cblock->instance = context->threadContext->instance;
+        cblock->signal_name = "signal_map";
+        g_signal_connect(G_OBJECT(myWidget), "map",
+                         G_CALLBACK(signal_func_0), cblock);
+        return context->True();
+    }
+    else if (strcmp(name, "hide") == 0) {
+        cblock = (cbcb *)malloc(sizeof(cbcb));
+        cblock->instance = context->threadContext->instance;
+        cblock->signal_name = "signal_hide";
+        g_signal_connect(G_OBJECT(myWidget), "hide",
+                         G_CALLBACK(signal_func_0), cblock);
+        return context->True();
+    }
+    else if (strcmp(name, "grab_focus") == 0) {
+        cblock = (cbcb *)malloc(sizeof(cbcb));
+        cblock->instance = context->threadContext->instance;
+        cblock->signal_name = "signal_grab_focus";
+        g_signal_connect(G_OBJECT(myWidget), "grab-focus",
+                         G_CALLBACK(signal_func_0), cblock);
+        return context->True();
+    }
+    else if (strcmp(name, "accel_closures_changed") == 0) {
+        cblock = (cbcb *)malloc(sizeof(cbcb));
+        cblock->instance = context->threadContext->instance;
+        cblock->signal_name = "signal_accel_closures_changed";
+        g_signal_connect(G_OBJECT(myWidget), "accel-closures-changed",
+                         G_CALLBACK(signal_func_0), cblock);
+        return context->True();
+    }
+    else if (strcmp(name, "composited_changed") == 0) {
+        cblock = (cbcb *)malloc(sizeof(cbcb));
+        cblock->instance = context->threadContext->instance;
+        cblock->signal_name = "signal_composited_changed";
+        g_signal_connect(G_OBJECT(myWidget), "composited-changed",
+                         G_CALLBACK(signal_func_0), cblock);
+        return context->True();
+    }
+    else if (strcmp(name, "state_changed") == 0) {
+        cblock = (cbcb *)malloc(sizeof(cbcb));
+        cblock->instance = context->threadContext->instance;
+        cblock->signal_name = "signal_state_changed";
+        g_signal_connect(G_OBJECT(myWidget), "state-changed",
+                         G_CALLBACK(signal_func_1), cblock);
+        return context->True();
+    }
+    else if (strcmp(name, "keynav_failed") == 0) {
+        cblock = (cbcb *)malloc(sizeof(cbcb));
+        cblock->instance = context->threadContext->instance;
+        cblock->signal_name = "signal_keynav_failed";
+        g_signal_connect(G_OBJECT(myWidget), "keynav-failed",
+                         G_CALLBACK(signal_func_1), cblock);
+        return context->True();
+    }
+    else if (strcmp(name, "move_focus") == 0) {
+        cblock = (cbcb *)malloc(sizeof(cbcb));
+        cblock->instance = context->threadContext->instance;
+        cblock->signal_name = "signal_move_focus";
+        g_signal_connect(G_OBJECT(myWidget), "move-focus",
+                         G_CALLBACK(signal_func_1), cblock);
+        return context->True();
+    }
+    else if (strcmp(name, "focus") == 0) {
+        cblock = (cbcb *)malloc(sizeof(cbcb));
+        cblock->instance = context->threadContext->instance;
+        cblock->signal_name = "signal_focus";
+        g_signal_connect(G_OBJECT(myWidget), "focus",
+                         G_CALLBACK(signal_func_1), cblock);
+        return context->True();
+    }
+    else if (strcmp(name, "parent_set") == 0) {
+        cblock = (cbcb *)malloc(sizeof(cbcb));
+        cblock->instance = context->threadContext->instance;
+        cblock->signal_name = "signal_parent_set";
+        g_signal_connect(G_OBJECT(myWidget), "parent-set",
+                         G_CALLBACK(signal_func_1a), cblock);
+        return context->True();
+    }
+    else if (strcmp(name, "hiearchy_changed") == 0) {
+        cblock = (cbcb *)malloc(sizeof(cbcb));
+        cblock->instance = context->threadContext->instance;
+        cblock->signal_name = "signal_hiearchy_changed";
+        g_signal_connect(G_OBJECT(myWidget), "hiearchy_changed",
+                         G_CALLBACK(signal_func_1a), cblock);
+        return context->True();
+    }
+    else if (strcmp(name, "mnemonic_activate") == 0) {
+        cblock = (cbcb *)malloc(sizeof(cbcb));
+        cblock->instance = context->threadContext->instance;
+        cblock->signal_name = "signal_mnemonic_activate";
+        g_signal_connect(G_OBJECT(myWidget), "mnemonic-activate",
+                         G_CALLBACK(signal_func_1b), cblock);
+        return context->True();
+    }
+    else if (strcmp(name, "grab_notify") == 0) {
+        cblock = (cbcb *)malloc(sizeof(cbcb));
+        cblock->instance = context->threadContext->instance;
+        cblock->signal_name = "signal_grab_notify";
+        g_signal_connect(G_OBJECT(myWidget), "grab_notify",
+                         G_CALLBACK(signal_func_1b), cblock);
         return context->True();
     }
     return context->False();
