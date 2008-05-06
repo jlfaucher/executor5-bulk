@@ -365,6 +365,11 @@ REXX_METHOD_PROTOTYPE(GrxScrolledWindowSignalConnect)
 REXX_METHOD_PROTOTYPE(GrxListStoreNew)
 REXX_METHOD_PROTOTYPE(GrxListStoreAppend)
 REXX_METHOD_PROTOTYPE(GrxListStoreSetValue)
+REXX_METHOD_PROTOTYPE(GrxEventBoxNew)
+REXX_METHOD_PROTOTYPE(GrxEventBoxSetAboveChild)
+REXX_METHOD_PROTOTYPE(GrxEventBoxGetAboveChild)
+REXX_METHOD_PROTOTYPE(GrxEventBoxSetVisibleWindow)
+REXX_METHOD_PROTOTYPE(GrxEventBoxGetVisibleWindow)
  
  #endif /* REXXGTK_H */
  

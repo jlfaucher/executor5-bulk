@@ -638,6 +638,23 @@ return self~signal_connect:super(event)
 
 
 /*============================================================================*/
+/* Class: GtkEventBox                                                         */
+/*============================================================================*/
+
+::class GtkEventBox public subclass GtkContainer
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxEventBoxNew"
+::METHOD set_above_child EXTERNAL "LIBRARY rexxgtk GrxEventBoxSetAboveChild"
+::METHOD 'above_child=' EXTERNAL "LIBRARY rexxgtk GrxEventBoxSetAboveChild"
+::METHOD get_above_child EXTERNAL "LIBRARY rexxgtk GrxEventBoxGetAboveChild"
+::METHOD above_child EXTERNAL "LIBRARY rexxgtk GrxEventBoxGetAboveChild"
+::METHOD set_visible_window EXTERNAL "LIBRARY rexxgtk GrxEventBoxSetVisibleWindow"
+::METHOD 'visible_window=' EXTERNAL "LIBRARY rexxgtk GrxEventBoxSetVisibleWindow"
+::METHOD get_visible_window EXTERNAL "LIBRARY rexxgtk GrxEventBoxGetVisibleWindow"
+::METHOD visible_window EXTERNAL "LIBRARY rexxgtk GrxEventBoxGetVisibleWindow"
+
+
+/*============================================================================*/
 /* Class: GtkWindow                                                           */
 /*============================================================================*/
 

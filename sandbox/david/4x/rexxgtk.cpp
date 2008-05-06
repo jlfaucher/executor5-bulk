@@ -665,6 +665,11 @@ RexxMethodEntry gtkobject_methods[] = {
     REXX_METHOD(GrxListStoreNew, GrxListStoreNew),
     REXX_METHOD(GrxListStoreAppend, GrxListStoreAppend),
     REXX_METHOD(GrxListStoreSetValue, GrxListStoreSetValue),
+    REXX_METHOD(GrxEventBoxNew, GrxEventBoxNew),
+    REXX_METHOD(GrxEventBoxSetAboveChild, GrxEventBoxSetAboveChild),
+    REXX_METHOD(GrxEventBoxGetAboveChild, GrxEventBoxGetAboveChild),
+    REXX_METHOD(GrxEventBoxSetVisibleWindow, GrxEventBoxSetVisibleWindow),
+    REXX_METHOD(GrxEventBoxGetVisibleWindow, GrxEventBoxGetVisibleWindow),
     REXX_LAST_METHOD()
 };
 
