@@ -74,6 +74,7 @@ OBJECTS = rexxgtk.o \
         grxscrolledwindow.o \
 	grxliststore.o \
 	grxeventbox.o \
+	grxmenushell.o \
 	grxmenu.o \
 	grxmenuitem.o
 
@@ -167,6 +168,9 @@ grxliststore.o: grxliststore.cpp rexxgtk.h
 
 grxeventbox.o: grxeventbox.cpp rexxgtk.h
 	gcc -c $(GRXCFLAGS) grxeventbox.cpp
+
+grxmenushell.o: grxmenushell.cpp rexxgtk.h
+	gcc -c $(GRXCFLAGS) grxmenushell.cpp
 
 grxmenu.o: grxmenu.cpp rexxgtk.h
 	gcc -c $(GRXCFLAGS) grxmenu.cpp

@@ -375,6 +375,8 @@ REXX_METHOD_PROTOTYPE(GrxMenuSignalConnect)
 REXX_METHOD_PROTOTYPE(GrxMenuItemNew)
 REXX_METHOD_PROTOTYPE(GrxMenuItemSignalConnect)
 REXX_METHOD_PROTOTYPE(GrxSeparatorMenuItemNew)
+REXX_METHOD_PROTOTYPE(GrxMenuShellAppend)
+REXX_METHOD_PROTOTYPE(GrxMenuShellSignalConnect)
  
  #endif /* REXXGTK_H */
  

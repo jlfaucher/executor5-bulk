@@ -1760,13 +1760,52 @@ return !pointer
 
 
 /*============================================================================*/
+/* Class: GtkMenuShell                                                        */
+/* Note:  This is strictly a base class. It should never be instantiated on   */
+/*        its own. You should instantiate one of its subclasses instead.      */
+/*============================================================================*/
+
+::class GtkMenuShell public subclass GtkContainer
+
+::METHOD append EXTERNAL "LIBRARY rexxgtk GrxMenuShellAppend"
+::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxMenuShellSignalConnect"
+
+-- The following are the methods that can be connected to signals. By default
+-- they do nothing.
+
+::method signal_activate_current
+return
+
+::method signal_cancel
+return
+
+::method signal_cycle_focus
+return
+
+::method signal_deactivate
+return
+
+::method signal_move_current
+return
+
+::method signal_move_selected
+return
+
+::method signal_selection_done
+return
+
+
+/*============================================================================*/
 /* Class: GtkMenu                                                             */
 /*============================================================================*/
 
-::class GtkMenu public subclass GtkContainer
+::class GtkMenu public subclass GtkmenuShell
 
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxMenuNew"
 ::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxMenuSignalConnect"
+
+-- The following are the methods that can be connected to signals. By default
+-- they do nothing.
 
 ::method signal_move_scroll
 return
@@ -1780,6 +1819,9 @@ return
 
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxMenuItemNew"
 ::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxMenuItemSignalConnect"
+
+-- The following are the methods that can be connected to signals. By default
+-- they do nothing.
 
 ::method signal_activate
 return
