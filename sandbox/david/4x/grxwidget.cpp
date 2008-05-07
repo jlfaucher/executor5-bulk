@@ -907,6 +907,33 @@ RexxMethod0(RexxObjectPtr,             // Return type
 }
 
 /**
+ * Method:  get_menus
+ *
+ * Get the list if menus attached to a widget.
+ *
+ * @return        Array of menu objects
+ **/
+RexxMethod0(RexxObjectPtr,              // Return type
+            GrxWidgetGetMenus)          // Object_method name
+{
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
+    RexxObjectPtr entry;
+
+    GList *list = gtk_menu_get_for_attach_widget(myWidget);
+    RexxArrayObject arr = context->NewArray(g_list_length(list));
+    list = g_list_first(list);
+    int i = 0;
+    while (list != NULL) {
+        i++;
+        entry = (RexxObjectPtr)g_object_get_data(G_OBJECT(list->data), "OORXOBJECT");
+        context->ArrayPut(arr, entry, i);
+        list = g_list_next(list);
+    }
+    return (RexxObjectPtr)arr;
+}
+
+/**
  * Method:  signal_connect
  *
  * Connect a signal to an ooRexx method.

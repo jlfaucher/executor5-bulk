@@ -398,6 +398,7 @@ return !pointer
 ::METHOD parent EXTERNAL "LIBRARY rexxgtk GrxWidgetGetParent"
 ::METHOD get_root_window EXTERNAL "LIBRARY rexxgtk GrxWidgetGetRootWindow"
 ::METHOD root_window EXTERNAL "LIBRARY rexxgtk GrxWidgetGetRootWindow"
+::METHOD get_menus EXTERNAL "LIBRARY rexxgtk GrxWidgetGetMenus"
 ::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxWidgetSignalConnect"
 
 -- The following are the methods that can be connected to signals. By default
@@ -1812,6 +1813,23 @@ return
 ::class GtkMenu public subclass GtkmenuShell
 
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxMenuNew"
+::METHOD reorder_child EXTERNAL "LIBRARY rexxgtk GrxMenuReorderChild"
+::METHOD attach EXTERNAL "LIBRARY rexxgtk GrxMenuAttach"
+::METHOD popup EXTERNAL "LIBRARY rexxgtk GrxMenuPopup"
+::METHOD set_accel_group EXTERNAL "LIBRARY rexxgtk GrxMenuSetAccelGroup"
+::METHOD get_accel_group EXTERNAL "LIBRARY rexxgtk GrxMenuGetAccelGroup"
+::METHOD set_accel_path EXTERNAL "LIBRARY rexxgtk GrxMenuSetAccelPath"
+::METHOD set_title EXTERNAL "LIBRARY rexxgtk GrxMenuSetTitle"
+::METHOD get_title EXTERNAL "LIBRARY rexxgtk GrxMenuGetTitle"
+::METHOD set_tearoff_state EXTERNAL "LIBRARY rexxgtk GrxMenuSetTearoffState"
+::METHOD get_tearoff_state EXTERNAL "LIBRARY rexxgtk GrxMenuGetTearoffState"
+::METHOD popdown EXTERNAL "LIBRARY rexxgtk GrxMenuPopdown"
+::METHOD reposition EXTERNAL "LIBRARY rexxgtk GrxMenuReposition"
+::METHOD set_active EXTERNAL "LIBRARY rexxgtk GrxMenuSetActive"
+::METHOD get_active EXTERNAL "LIBRARY rexxgtk GrxMenuGetActive"
+::METHOD attach_to_widget EXTERNAL "LIBRARY rexxgtk GrxMenuAttachToWidget"
+::METHOD detach EXTERNAL "LIBRARY rexxgtk GrxMenuDetach"
+::METHOD get_attach_widget EXTERNAL "LIBRARY rexxgtk GrxMenuGetAttachWidget"
 ::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxMenuSignalConnect"
 
 -- The following are the methods that can be connected to signals. By default
