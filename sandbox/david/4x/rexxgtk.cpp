@@ -702,6 +702,13 @@ RexxMethodEntry gtkobject_methods[] = {
     REXX_METHOD(GrxMenuGetAttachWidget, GrxMenuGetAttachWidget),
     REXX_METHOD(GrxMenuSignalConnect, GrxMenuSignalConnect),
     REXX_METHOD(GrxMenuItemNew, GrxMenuItemNew),
+    REXX_METHOD(GrxMenuItemSetRightJustified, GrxMenuItemSetRightJustified),
+    REXX_METHOD(GrxMenuItemGetRightJustified, GrxMenuItemGetRightJustified),
+    REXX_METHOD(GrxMenuItemSetSubmenu, GrxMenuItemSetSubmenu),
+    REXX_METHOD(GrxMenuItemRemoveSubmenu, GrxMenuItemRemoveSubmenu),
+    REXX_METHOD(GrxMenuItemSetAccelPath, GrxMenuItemSetAccelPath),
+    REXX_METHOD(GrxMenuItemSelect, GrxMenuItemSelect),
+    REXX_METHOD(GrxMenuItemDeselect, GrxMenuItemDeselect),
     REXX_METHOD(GrxMenuItemSignalConnect, GrxMenuItemSignalConnect),
     REXX_METHOD(GrxSeparatorMenuItemNew, GrxSeparatorMenuItemNew),
     REXX_LAST_METHOD()

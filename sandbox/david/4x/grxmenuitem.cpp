@@ -123,6 +123,141 @@ RexxMethod3(int,                       // Return type
 }
 
 /**
+ * Method:  set_right_justified
+ *
+ * Set the right justification flag.
+ *
+ * @param state   The right justification state
+ *
+ * @return        Zero
+ **/
+RexxMethod1(int,                       // Return type
+            GrxMenuItemSetRightJustified, // Object_method name
+            logical_t, state)          // The state boolean
+{
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    GtkMenuItem *myWidget = (GtkMenuItem *)context->PointerValue(rxptr);
+
+    gtk_menu_item_set_right_justified(myWidget, state);
+
+    return 0;
+}
+
+/**
+ * Method:  get_right_justified
+ *
+ * Get the right justification flag.
+ *
+ * @return        Zero
+ **/
+RexxMethod0(logical_t,                 // Return type
+            GrxMenuItemGetRightJustified) // Object_method name
+{
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    GtkMenuItem *myWidget = (GtkMenuItem *)context->PointerValue(rxptr);
+
+    return gtk_menu_item_get_right_justified(myWidget);
+}
+
+/**
+ * Method:  set_submenu
+ *
+ * Set a submenu.
+ *
+ * @param subm    The submenu
+ *
+ * @return        Zero
+ **/
+RexxMethod1(int,                       // Return type
+            GrxMenuItemSetSubmenu,     // Object_method name
+            RexxObjectPtr, subm)       // The submenu
+{
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    GtkMenuItem *myWidget = (GtkMenuItem *)context->PointerValue(rxptr);
+    RexxPointerObject submptr = (RexxPointerObject)context->SendMessage0(subm, "POINTER");
+    GtkWidget *subWidget = (GtkWidget *)context->PointerValue(submptr);
+
+    gtk_menu_item_set_submenu(myWidget, subWidget);
+
+    return 0;
+}
+
+/**
+ * Method:  remove_submenu
+ *
+ * Remove a submenu.
+ *
+ * @return        Zero
+ **/
+RexxMethod0(int,                       // Return type
+            GrxMenuItemRemoveSubmenu)  // Object_method name
+{
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    GtkMenuItem *myWidget = (GtkMenuItem *)context->PointerValue(rxptr);
+
+    gtk_menu_item_remove_submenu(myWidget);
+
+    return 0;
+}
+
+/**
+ * Method:  set_accel_path
+ *
+ * Set the accelerator path.
+ *
+ * @param path    The accel path
+ *
+ * @return        Zero
+ **/
+RexxMethod1(int,                       // Return type
+            GrxMenuItemSetAccelPath,   // Object_method name
+            CSTRING, path)             // The accel path
+{
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    GtkMenuItem *myWidget = (GtkMenuItem *)context->PointerValue(rxptr);
+
+    gtk_menu_item_set_accel_path(myWidget, path);
+
+    return 0;
+}
+
+/**
+ * Method:  select
+ *
+ * Select the menu item.
+ *
+ * @return        Zero
+ **/
+RexxMethod0(int,                       // Return type
+            GrxMenuItemSelect)         // Object_method name
+{
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    GtkMenuItem *myWidget = (GtkMenuItem *)context->PointerValue(rxptr);
+
+    gtk_menu_item_select(myWidget);
+
+    return 0;
+}
+
+/**
+ * Method:  deselect
+ *
+ * Deselect the menu item.
+ *
+ * @return        Zero
+ **/
+RexxMethod0(int,                       // Return type
+            GrxMenuItemDeselect)       // Object_method name
+{
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    GtkMenuItem *myWidget = (GtkMenuItem *)context->PointerValue(rxptr);
+
+    gtk_menu_item_deselect(myWidget);
+
+    return 0;
+}
+
+/**
  * Method:  signal_connect
  *
  * Connect a signal to an ooRexx method.

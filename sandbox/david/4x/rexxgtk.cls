@@ -1854,6 +1854,13 @@ use arg label
 return self~new(label, .true)
 
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxMenuItemNew"
+::METHOD set_right _justified EXTERNAL "LIBRARY rexxgtk GrxMenuItemSetRightJustified"
+::METHOD get_right _justified EXTERNAL "LIBRARY rexxgtk GrxMenuItemGetRightJustified"
+::METHOD set_submenu EXTERNAL "LIBRARY rexxgtk GrxMenuItemSetSubmenu"
+::METHOD remove_submenu EXTERNAL "LIBRARY rexxgtk GrxMenuItemRemoveSubmenu"
+::METHOD set_accel_path EXTERNAL "LIBRARY rexxgtk GrxMenuItemSetAccelPath"
+::METHOD select EXTERNAL "LIBRARY rexxgtk GrxMenuItemSelect"
+::METHOD deselect EXTERNAL "LIBRARY rexxgtk GrxMenuItemDeselect"
 ::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxMenuItemSignalConnect"
 
 -- The following are the methods that can be connected to signals. By default
