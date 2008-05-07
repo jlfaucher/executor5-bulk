@@ -676,6 +676,15 @@ RexxMethodEntry gtkobject_methods[] = {
     REXX_METHOD(GrxMenuItemSignalConnect, GrxMenuItemSignalConnect),
     REXX_METHOD(GrxSeparatorMenuItemNew, GrxSeparatorMenuItemNew),
     REXX_METHOD(GrxMenuShellAppend, GrxMenuShellAppend),
+    REXX_METHOD(GrxMenuShellPrepend, GrxMenuShellPrepend),
+    REXX_METHOD(GrxMenuShellInsert, GrxMenuShellInsert),
+    REXX_METHOD(GrxMenuShellSelectItem, GrxMenuShellSelectItem),
+    REXX_METHOD(GrxMenuShellSelectFirst, GrxMenuShellSelectFirst),
+    REXX_METHOD(GrxMenuShellDeselect, GrxMenuShellDeselect),
+    REXX_METHOD(GrxMenuShellActivateItem, GrxMenuShellActivateItem),
+    REXX_METHOD(GrxMenuShellCancel, GrxMenuShellCancel),
+    REXX_METHOD(GrxMenuShellSetTakeFocus, GrxMenuShellSetTakeFocus),
+    REXX_METHOD(GrxMenuShellGetTakeFocus, GrxMenuShellGetTakeFocus),
     REXX_METHOD(GrxMenuShellSignalConnect, GrxMenuShellSignalConnect),
     REXX_LAST_METHOD()
 };

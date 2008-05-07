@@ -147,6 +147,216 @@ RexxMethod1(int,                       // Return type
 }
 
 /**
+ * Method:  prepend
+ *
+ * Prepend a widget to a menu.
+ *
+ * @param child   The child widget.
+ *
+ * @return        Zero
+ **/
+RexxMethod1(int,                       // Return type
+            GrxMenuShellPrepend,       // Object_method name
+            RexxObjectPtr, child)      // The child widget
+{
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    GtkMenuShell *myWidget = (GtkMenuShell *)context->PointerValue(rxptr);
+    RexxPointerObject childptr = (RexxPointerObject)context->SendMessage0(child, "POINTER");
+    GtkWidget *childWidget = (GtkWidget *)context->PointerValue(childptr);
+
+    gtk_menu_shell_prepend(myWidget, childWidget);
+
+    return 0;
+}
+
+/**
+ * Method:  insert
+ *
+ * Insert a widget to a menu.
+ *
+ * @param child   The child widget.
+ *
+ * @param pos     Position
+ *
+ * @return        Zero
+ **/
+RexxMethod2(int,                       // Return type
+            GrxMenuShellInsert,        // Object_method name
+            RexxObjectPtr, child,      // The child widget
+            int, pos)                  // Position
+{
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    GtkMenuShell *myWidget = (GtkMenuShell *)context->PointerValue(rxptr);
+    RexxPointerObject childptr = (RexxPointerObject)context->SendMessage0(child, "POINTER");
+    GtkWidget *childWidget = (GtkWidget *)context->PointerValue(childptr);
+
+    gtk_menu_shell_insert(myWidget, childWidget, pos);
+
+    return 0;
+}
+
+/**
+ * Method:  deactivate
+ *
+ * Deactivate the menu.
+ *
+ * @return        Zero
+ **/
+RexxMethod0(int,                       // Return type
+            GrxMenuShellDeactivate)    // Object_method name
+{
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    GtkMenuShell *myWidget = (GtkMenuShell *)context->PointerValue(rxptr);
+
+    gtk_menu_shell_deactivate(myWidget);
+
+    return 0;
+}
+
+/**
+ * Method:  select_item
+ *
+ * Select a menu item.
+ *
+ * @param child   The child menu item
+ *
+ * @return        Zero
+ **/
+RexxMethod1(int,                       // Return type
+            GrxMenuShellSelectItem,    // Object_method name
+            RexxObjectPtr, child)      // The child widget
+{
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    GtkMenuShell *myWidget = (GtkMenuShell *)context->PointerValue(rxptr);
+    RexxPointerObject childptr = (RexxPointerObject)context->SendMessage0(child, "POINTER");
+    GtkWidget *childWidget = (GtkWidget *)context->PointerValue(childptr);
+
+    gtk_menu_shell_select_item(myWidget, childWidget);
+
+    return 0;
+}
+
+/**
+ * Method:  select_first
+ *
+ * Select a menu item first.
+ *
+ * @param ss      Search sensitive flag
+ *
+ * @return        Zero
+ **/
+RexxMethod1(int,                       // Return type
+            GrxMenuShellSelectFirst,   // Object_method name
+            logical_t, ss)             // The search sensitive flag
+{
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    GtkMenuShell *myWidget = (GtkMenuShell *)context->PointerValue(rxptr);
+
+    gtk_menu_shell_select_first(myWidget, ss);
+
+    return 0;
+}
+
+/**
+ * Method:  deselect
+ *
+ * Deselect the menu.
+ *
+ * @return        Zero
+ **/
+RexxMethod0(int,                       // Return type
+            GrxMenuShellDeselect)      // Object_method name
+{
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    GtkMenuShell *myWidget = (GtkMenuShell *)context->PointerValue(rxptr);
+
+    gtk_menu_shell_deselect(myWidget);
+
+    return 0;
+}
+
+/**
+ * Method:  activate_item
+ *
+ * Activate a menu item.
+ *
+ * @param child   The child widget.
+ *
+ * @param force   Force deactivate flag
+ *
+ * @return        Zero
+ **/
+RexxMethod2(int,                       // Return type
+            GrxMenuShellActivateItem,  // Object_method name
+            RexxObjectPtr, child,      // The child widget
+            logical_t, force)          // Force deactivate flag
+{
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    GtkMenuShell *myWidget = (GtkMenuShell *)context->PointerValue(rxptr);
+    RexxPointerObject childptr = (RexxPointerObject)context->SendMessage0(child, "POINTER");
+    GtkWidget *childWidget = (GtkWidget *)context->PointerValue(childptr);
+
+    gtk_menu_shell_activate_item(myWidget, childWidget, force);
+
+    return 0;
+}
+
+/**
+ * Method:  cancel
+ *
+ * Cancel the menu selection.
+ *
+ * @return        Zero
+ **/
+RexxMethod0(int,                       // Return type
+            GrxMenuShellCancel)        // Object_method name
+{
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    GtkMenuShell *myWidget = (GtkMenuShell *)context->PointerValue(rxptr);
+
+    gtk_menu_shell_cancel(myWidget);
+
+    return 0;
+}
+
+/**
+ * Method:  set_take_focus
+ *
+ * Set or take the focus..
+ *
+ * @param take    Take focus flag
+ *
+ * @return        Zero
+ **/
+RexxMethod1(int,                       // Return type
+            GrxMenuShellSetTakeFocus,  // Object_method name
+            logical_t, focus)          // The focus flag
+{
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    GtkMenuShell *myWidget = (GtkMenuShell *)context->PointerValue(rxptr);
+
+    gtk_menu_shell_set_take_focus(myWidget, focus);
+
+    return 0;
+}
+
+/**
+ * Method:  get_take_focus
+ *
+ * Get the focus..
+ *
+ * @return        Focus boolean
+ **/
+RexxMethod0(logical_t,                 // Return type
+            GrxMenuShellGetTakeFocus)  // Object_method name
+{
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    GtkMenuShell *myWidget = (GtkMenuShell *)context->PointerValue(rxptr);
+
+    return gtk_menu_shell_get_take_focus(myWidget);
+}
+
+/**
  * Method:  signal_connect
  *
  * Connect a signal to an ooRexx method.

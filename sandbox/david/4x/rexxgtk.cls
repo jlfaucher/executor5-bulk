@@ -1768,6 +1768,16 @@ return !pointer
 ::class GtkMenuShell public subclass GtkContainer
 
 ::METHOD append EXTERNAL "LIBRARY rexxgtk GrxMenuShellAppend"
+::METHOD prepend EXTERNAL "LIBRARY rexxgtk GrxMenuShellPrepend"
+::METHOD insert EXTERNAL "LIBRARY rexxgtk GrxMenuShellInsert"
+::METHOD deactivate EXTERNAL "LIBRARY rexxgtk GrxMenuShellDeactivate"
+::METHOD select_item EXTERNAL "LIBRARY rexxgtk GrxMenuShellSelectItem"
+::METHOD select_first EXTERNAL "LIBRARY rexxgtk GrxMenuShellSelectFirst"
+::METHOD deselect EXTERNAL "LIBRARY rexxgtk GrxMenuShellDeselect"
+::METHOD activate_item EXTERNAL "LIBRARY rexxgtk GrxMenuShellActivateItem"
+::METHOD cancel EXTERNAL "LIBRARY rexxgtk GrxMenuShellCancel"
+::METHOD set_take_focus EXTERNAL "LIBRARY rexxgtk GrxMenuShellSetTakeFocus"
+::METHOD get_take_focus EXTERNAL "LIBRARY rexxgtk GrxMenuShellGetTakeFocus"
 ::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxMenuShellSignalConnect"
 
 -- The following are the methods that can be connected to signals. By default
@@ -1789,7 +1799,7 @@ return
 return
 
 ::method signal_move_selected
-return
+return .false
 
 ::method signal_selection_done
 return
@@ -1816,6 +1826,14 @@ return
 /*============================================================================*/
 
 ::class GtkMenuItem public subclass GtkContainer
+
+::method new_with_label class
+use arg label
+return self~new(label, .false)
+
+::method new_with_mnemonic class
+use arg label
+return self~new(label, .true)
 
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxMenuItemNew"
 ::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxMenuItemSignalConnect"
