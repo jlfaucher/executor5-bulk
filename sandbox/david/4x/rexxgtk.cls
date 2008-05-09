@@ -323,6 +323,348 @@ return
 ::constant G_TYPE_BOXED 18
 ::constant G_TYPE_PARAM 19
 ::constant G_TYPE_OBJECT 20
+   -- GdkEventType
+::constant GDK_NOTHING '-1'
+::constant GDK_DELETE 0
+::constant GDK_DESTROY 1
+::constant GDK_EXPOSE 2
+::constant GDK_MOTION_NOTIFY 3
+::constant GDK_BUTTON_PRESS 4
+::constant GDK_2BUTTON_PRESS 5
+::constant GDK_3BUTTON_PRESS 6
+::constant GDK_BUTTON_RELEASE 7
+::constant GDK_KEY_PRESS 8
+::constant GDK_KEY_RELEASE 9
+::constant GDK_ENTER_NOTIFY 10
+::constant GDK_LEAVE_NOTIFY 11
+::constant GDK_FOCUS_CHANGE 12
+::constant GDK_CONFIGURE 13
+::constant GDK_MAP 14
+::constant GDK_UNMAP 15
+::constant GDK_PROPERTY_NOTIFY 16
+::constant GDK_SELECTION_CLEAR 17
+::constant GDK_SELECTION_REQUEST 18
+::constant GDK_SELECTION_NOTIFY 19
+::constant GDK_PROXIMITY_IN 20
+::constant GDK_PROXIMITY_OUT 21
+::constant GDK_DRAG_ENTER  22
+::constant GDK_DRAG_LEAVE 23
+::constant GDK_DRAG_MOTION 24
+::constant GDK_DRAG_STATUS 25
+::constant GDK_DROP_START 26
+::constant GDK_DROP_FINISHED 27
+::constant GDK_CLIENT_EVENT 28
+::constant GDK_VISIBILITY_NOTIFY 29
+::constant GDK_NO_EXPOSE 30
+::constant GDK_SCROLL 31
+::constant GDK_WINDOW_STATE 32
+::constant GDK_SETTING 33
+::constant GDK_OWNER_CHANGE 34
+::constant GDK_GRAB_BROKEN 35
+   -- GdkScrollDirection
+::constant GDK_SCROLL_UP 0
+::constant GDK_SCROLL_DOWN 1
+::constant GDK_SCROLL_LEFT 2
+::constant GDK_SCROLL_RIGHT 3
+   -- GdkVisibilityState
+::constant GDK_VISIBILITY_UNOBSCURED 0
+::constant GDK_VISIBILITY_PARTIAL 1
+::constant GDK_VISIBILITY_FULLY_OBSCURED 2
+   -- GdkCrossingMode
+::constant GDK_CROSSING_NORMAL 0
+::constant GDK_CROSSING_GRAB 1
+::constant GDK_CROSSING_UNGRAB 2
+   -- GdkNotifyType
+::constant GDK_NOTIFY_ANCESTOR 0
+::constant GDK_NOTIFY_VIRTUAL 1
+::constant GDK_NOTIFY_INFERIOR 2
+::constant GDK_NOTIFY_NONLINEAR 3
+::constant GDK_NOTIFY_NONLINEAR_VIRTUAL 4
+::constant GDK_NOTIFY_UNKNOWN 5
+   -- GdkPropertyState
+::constant GDK_PROPERTY_NEW_VALUE 0
+::constant GDK_PROPERTY_DEKETE 1
+   -- GdkWindowState
+::constant GDK_WINDOW_STATE_WITHDRAWN 1
+::constant GDK_WINDOW_STATE_ICONIFIED 2
+::constant GDK_WINDOW_STATE_MAXIMIZED 4
+::constant GDK_WINDOW_STATE_STICKY 8
+::constant GDK_WINDOW_STATE_FULLSCREEN 16
+::constant GDK_WINDOW_STATE_ABOVE 32
+::constant GDK_WINDOW_STATE_BELOW 64
+   -- GdkSettingAction
+::constant GDK_SETTING_ACTION_NEW 0
+::constant GDK_SETTING_ACTION_CHANGED 1
+::constant GDK_SETTING_ACTION_DELETED 2
+   -- GdkOwnerChange
+::constant GDK_OWNER_CHANGE_NEW_OWNER 0
+::constant GDK_OWNER_CHANGE_DESTROY 1
+::constant GDK_OWNER_CHANGE_CLOSE 2
+
+
+/*============================================================================*/
+/* Class: GdkEvent                                                            */
+/*============================================================================*/
+
+::class GdkEvent public
+
+::ATTRIBUTE type
+
+
+/*============================================================================*/
+/* Class: GdkEventAny                                                         */
+/*============================================================================*/
+
+::class GdkEventAny public subclass GdkEvent
+
+::ATTRIBUTE window
+::ATTRIBUTE send_event
+
+
+/*============================================================================*/
+/* Class: GdkEventKey                                                         */
+/*============================================================================*/
+
+::class GdkEventKey public subclass GdkEventAny
+
+::ATTRIBUTE time
+::ATTRIBUTE state
+::ATTRIBUTE keyval
+::ATTRIBUTE length
+::ATTRIBUTE string
+::ATTRIBUTE hardware_keycode
+::ATTRIBUTE group
+::ATTRIBUTE is_modifier
+
+
+/*============================================================================*/
+/* Class: GdkEventButton                                                      */
+/*============================================================================*/
+
+::class GdkEventButton public subclass GdkEventAny
+
+::ATTRIBUTE time
+::ATTRIBUTE x
+::ATTRIBUTE y
+::ATTRIBUTE axes
+::ATTRIBUTE state
+::ATTRIBUTE button
+::ATTRIBUTE device
+::ATTRIBUTE x_root
+::ATTRIBUTE y_root
+
+
+/*============================================================================*/
+/* Class: GdkEventScroll                                                      */
+/*============================================================================*/
+
+::class GdkEventScroll public subclass GdkEventAny
+
+::ATTRIBUTE time
+::ATTRIBUTE x
+::ATTRIBUTE y
+::ATTRIBUTE state
+::ATTRIBUTE direction
+::ATTRIBUTE device
+::ATTRIBUTE x_root
+::ATTRIBUTE y_root
+
+
+/*============================================================================*/
+/* Class: GdkEventMotion                                                      */
+/*============================================================================*/
+
+::class GdkEventMotion public subclass GdkEventAny
+
+::ATTRIBUTE time
+::ATTRIBUTE x
+::ATTRIBUTE y
+::ATTRIBUTE axes
+::ATTRIBUTE state
+::ATTRIBUTE is_hint
+::ATTRIBUTE device
+::ATTRIBUTE x_root
+::ATTRIBUTE y_root
+
+
+/*============================================================================*/
+/* Class: GdkEventExpose                                                      */
+/*============================================================================*/
+
+::class GdkEventExpose public subclass GdkEventAny
+
+::ATTRIBUTE area
+::ATTRIBUTE region
+::ATTRIBUTE count
+
+
+/*============================================================================*/
+/* Class: GdkEventVisibility                                                  */
+/*============================================================================*/
+
+::class GdkEventVisibility public subclass GdkEventAny
+
+::ATTRIBUTE state
+
+
+/*============================================================================*/
+/* Class: GdkEventCrossing                                                    */
+/*============================================================================*/
+
+::class GdkEventCrossing public subclass GdkEventAny
+
+::ATTRIBUTE subwindow
+::ATTRIBUTE time
+::ATTRIBUTE x
+::ATTRIBUTE y
+::ATTRIBUTE x_root
+::ATTRIBUTE y_root
+::ATTRIBUTE mode
+::ATTRIBUTE detail
+::ATTRIBUTE focus
+::ATTRIBUTE state
+
+
+/*============================================================================*/
+/* Class: GdkEventFocus                                                       */
+/*============================================================================*/
+
+::class GdkEventFocus public subclass GdkEventAny
+
+::ATTRIBUTE in
+
+
+/*============================================================================*/
+/* Class: GdkEventConfigure                                                   */
+/*============================================================================*/
+
+::class GdkEventConfigure public subclass GdkEventAny
+
+::ATTRIBUTE x
+::ATTRIBUTE y
+::ATTRIBUTE width
+::ATTRIBUTE height
+
+
+/*============================================================================*/
+/* Class: GdkEventProperty                                                    */
+/*============================================================================*/
+
+::class GdkEventProperty public subclass GdkEventAny
+
+::ATTRIBUTE atom
+::ATTRIBUTE time
+::ATTRIBUTE state
+
+
+/*============================================================================*/
+/* Class: GdkEventSelection                                                   */
+/*============================================================================*/
+
+::class GdkEventSelection public subclass GdkEventAny
+
+::ATTRIBUTE selection
+::ATTRIBUTE target
+::ATTRIBUTE property
+::ATTRIBUTE time
+::ATTRIBUTE requestor
+
+
+/*============================================================================*/
+/* Class: GdkEventDND                                                         */
+/*============================================================================*/
+
+::class GdkEventDND public subclass GdkEventAny
+
+::ATTRIBUTE context
+::ATTRIBUTE time
+::ATTRIBUTE property
+::ATTRIBUTE x_root
+::ATTRIBUTE y_root
+
+
+/*============================================================================*/
+/* Class: GdkEventProximity                                                   */
+/*============================================================================*/
+
+::class GdkEventProximity public subclass GdkEventAny
+
+::ATTRIBUTE time
+::ATTRIBUTE device
+
+
+/*============================================================================*/
+/* Class: GdkEventClient                                                      */
+/*============================================================================*/
+
+::class GdkEventClient public subclass GdkEventAny
+
+::ATTRIBUTE message_type
+::ATTRIBUTE data_format
+::ATTRIBUTE data
+
+
+/*============================================================================*/
+/* Class: GdkEventNoExpose                                                    */
+/*============================================================================*/
+
+::class GdkEventNoExpose public subclass GdkEventAny
+
+
+/*============================================================================*/
+/* Class: GdkEventWindowState                                                 */
+/*============================================================================*/
+
+::class GdkEventWindowState public subclass GdkEventAny
+
+::ATTRIBUTE changed_mask
+::ATTRIBUTE new_window_state
+
+
+/*============================================================================*/
+/* Class: GdkEventSetting                                                     */
+/*============================================================================*/
+
+::class GdkEventSetting public subclass GdkEventAny
+
+::ATTRIBUTE action
+::ATTRIBUTE name
+
+
+/*============================================================================*/
+/* Class: GdkEventOwnerChange                                                 */
+/*============================================================================*/
+
+::class GdkEventOwnerChange public subclass GdkEventAny
+
+::ATTRIBUTE owner
+::ATTRIBUTE reason
+::ATTRIBUTE selection
+::ATTRIBUTE time
+::ATTRIBUTE selection_time
+
+
+/*============================================================================*/
+/* Class: GdkEventGrabBroken                                                  */
+/*============================================================================*/
+
+::class GdkEventGrabBroken public subclass GdkEventAny
+
+::ATTRIBUTE keyboard
+::ATTRIBUTE implicit
+::ATTRIBUTE grab_window
+
+
+/*============================================================================*/
+/* Class: GdkRectangle                                                        */
+/*============================================================================*/
+
+::class GdkRectangle public
+
+::ATTRIBUTE x
+::ATTRIBUTE y
+::ATTRIBUTE width
+::ATTRIBUTE height
 
 
 /*============================================================================*/
@@ -399,6 +741,8 @@ return !pointer
 ::METHOD get_root_window EXTERNAL "LIBRARY rexxgtk GrxWidgetGetRootWindow"
 ::METHOD root_window EXTERNAL "LIBRARY rexxgtk GrxWidgetGetRootWindow"
 ::METHOD get_menus EXTERNAL "LIBRARY rexxgtk GrxWidgetGetMenus"
+::METHOD set_events EXTERNAL "LIBRARY rexxgtk GrxWidgetSetEvents"
+::METHOD 'events=' EXTERNAL "LIBRARY rexxgtk GrxWidgetSetEvents"
 ::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxWidgetSignalConnect"
 
 -- The following are the methods that can be connected to signals. By default
@@ -460,6 +804,87 @@ return
 
 ::method signal_accel_closures_changed
 return
+
+::method signal_button_press_event
+return .false
+
+::method signal_button_release_event
+return .false
+
+::method signal_client_event
+return .false
+
+::method signal_configure_event
+return .false
+
+::method signal_delete_event
+return .false
+
+::method signal_destroy_event
+return .false
+
+::method signal_enter_notify_event
+return .false
+
+::method signal_event
+return .false
+
+::method signal_event_after
+return .false
+
+::method signal_expose_event
+return .false
+
+::method signal_focus_in_event
+return .false
+
+::method signal_focus_out_event
+return .false
+
+::method signal_grab_broken_event
+return .false
+
+::method signal_key_press_event
+return .false
+
+::method signal_key_release_event
+return .false
+
+::method signal_leave_notify_event
+return .false
+
+::method signal_map_event
+return .false
+
+::method signal_motion_notify_event
+return .false
+
+::method signal_no_expose_event
+return .false
+
+::method signal_property_notify_event
+return .false
+
+::method signal_proximity_in_event
+return .false
+
+::method signal_proximity_out_event
+return .false
+
+::method signal_scroll_event
+return .false
+
+::method signal_selection_clear_event
+return .false
+
+::method signal_selection_notify_event
+return .false
+
+::method signal_selection_request_event
+return .false
+
+::method signal_visibility_notify_event
+return .false
 
 
 /*============================================================================*/

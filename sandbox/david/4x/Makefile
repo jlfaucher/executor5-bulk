@@ -76,7 +76,8 @@ OBJECTS = rexxgtk.o \
 	grxeventbox.o \
 	grxmenushell.o \
 	grxmenu.o \
-	grxmenuitem.o
+	grxmenuitem.o \
+	grxevents.o
 
 
 # Build the shared library
@@ -177,6 +178,9 @@ grxmenu.o: grxmenu.cpp rexxgtk.h
 
 grxmenuitem.o: grxmenuitem.cpp rexxgtk.h
 	gcc -c $(GRXCFLAGS) grxmenuitem.cpp
+
+grxevents.o: grxevents.cpp rexxgtk.h
+	gcc -c $(GRXCFLAGS) grxevents.cpp
 
 
 

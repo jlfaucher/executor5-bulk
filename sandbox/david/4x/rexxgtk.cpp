@@ -410,6 +410,7 @@ RexxMethodEntry gtkobject_methods[] = {
     REXX_METHOD(GrxWidgetGetChildVisible, GrxWidgetGetChildVisible),
     REXX_METHOD(GrxWidgetGetParent, GrxWidgetGetParent),
     REXX_METHOD(GrxWidgetGetMenus, GrxWidgetGetMenus),
+    REXX_METHOD(GrxWidgetSetEvents, GrxWidgetSetEvents),
     REXX_METHOD(GrxWidgetSignalConnect, GrxWidgetSignalConnect),
     REXX_METHOD(GrxWindowNew, GrxWindowNew),
     REXX_METHOD(GrxWindowGetTitle, GrxWindowGetTitle),

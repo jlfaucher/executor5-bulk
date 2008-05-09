@@ -934,6 +934,25 @@ RexxMethod0(RexxObjectPtr,              // Return type
 }
 
 /**
+ * Method:  set_events
+ *
+ * Set the event mask.
+ *
+ * @return        Zero
+ **/
+RexxMethod1(int,                        // Return type
+            GrxWidgetSetEvents,         // Object_method name
+            int, events)                // Event mask
+{
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
+
+    gtk_widget_set_events(myWidget, events);
+
+    return 0;
+}
+
+/**
  * Method:  signal_connect
  *
  * Connect a signal to an ooRexx method.
@@ -1101,6 +1120,230 @@ RexxMethod2(RexxObjectPtr,             // Return type
         cblock->signal_name = "signal_grab_notify";
         g_signal_connect(G_OBJECT(myWidget), "grab_notify",
                          G_CALLBACK(signal_func_1b), cblock);
+        return context->True();
+    }
+    else if (strcmp(name, "button_press_event") == 0) {
+        cblock = (cbcb *)malloc(sizeof(cbcb));
+        cblock->instance = context->threadContext->instance;
+        cblock->signal_name = "signal_button_press_event";
+        g_signal_connect(G_OBJECT(myWidget), "button-press-event",
+                         G_CALLBACK(signal_GdkEventButton), cblock);
+        return context->True();
+    }
+    else if (strcmp(name, "button_release_event") == 0) {
+        cblock = (cbcb *)malloc(sizeof(cbcb));
+        cblock->instance = context->threadContext->instance;
+        cblock->signal_name = "signal_button_release_event";
+        g_signal_connect(G_OBJECT(myWidget), "button-release-event",
+                         G_CALLBACK(signal_GdkEventButton), cblock);
+        return context->True();
+    }
+    else if (strcmp(name, "client_event") == 0) {
+        cblock = (cbcb *)malloc(sizeof(cbcb));
+        cblock->instance = context->threadContext->instance;
+        cblock->signal_name = "signal_client_event";
+        g_signal_connect(G_OBJECT(myWidget), "client-event",
+                         G_CALLBACK(signal_GdkEventClient), cblock);
+        return context->True();
+    }
+    else if (strcmp(name, "configure_event") == 0) {
+        cblock = (cbcb *)malloc(sizeof(cbcb));
+        cblock->instance = context->threadContext->instance;
+        cblock->signal_name = "signal_configure_event";
+        g_signal_connect(G_OBJECT(myWidget), "configure-event",
+                         G_CALLBACK(signal_GdkEventConfigure), cblock);
+        return context->True();
+    }
+    else if (strcmp(name, "delete_event") == 0) {
+        cblock = (cbcb *)malloc(sizeof(cbcb));
+        cblock->instance = context->threadContext->instance;
+        cblock->signal_name = "signal_delete_event";
+        g_signal_connect(G_OBJECT(myWidget), "delete-event",
+                         G_CALLBACK(signal_GdkEvent), cblock);
+        return context->True();
+    }
+    else if (strcmp(name, "destroy_event") == 0) {
+        cblock = (cbcb *)malloc(sizeof(cbcb));
+        cblock->instance = context->threadContext->instance;
+        cblock->signal_name = "signal_destroy_event";
+        g_signal_connect(G_OBJECT(myWidget), "destroy-event",
+                         G_CALLBACK(signal_GdkEvent), cblock);
+        return context->True();
+    }
+    else if (strcmp(name, "enter_notify_event") == 0) {
+        cblock = (cbcb *)malloc(sizeof(cbcb));
+        cblock->instance = context->threadContext->instance;
+        cblock->signal_name = "signal_enter_notify_event";
+        g_signal_connect(G_OBJECT(myWidget), "enter-notify-event",
+                         G_CALLBACK(signal_GdkEventCrossing), cblock);
+        return context->True();
+    }
+    else if (strcmp(name, "event") == 0) {
+        cblock = (cbcb *)malloc(sizeof(cbcb));
+        cblock->instance = context->threadContext->instance;
+        cblock->signal_name = "signal_event";
+        g_signal_connect(G_OBJECT(myWidget), "event",
+                         G_CALLBACK(signal_GdkEvent), cblock);
+        return context->True();
+    }
+    else if (strcmp(name, "event_after") == 0) {
+        cblock = (cbcb *)malloc(sizeof(cbcb));
+        cblock->instance = context->threadContext->instance;
+        cblock->signal_name = "signal_event_after";
+        g_signal_connect(G_OBJECT(myWidget), "event-after",
+                         G_CALLBACK(signal_GdkEvent), cblock);
+        return context->True();
+    }
+    else if (strcmp(name, "expose_event") == 0) {
+        cblock = (cbcb *)malloc(sizeof(cbcb));
+        cblock->instance = context->threadContext->instance;
+        cblock->signal_name = "signal_expose_event";
+        g_signal_connect(G_OBJECT(myWidget), "expose-event",
+                         G_CALLBACK(signal_GdkEventExpose), cblock);
+        return context->True();
+    }
+    else if (strcmp(name, "focus_in_event") == 0) {
+        cblock = (cbcb *)malloc(sizeof(cbcb));
+        cblock->instance = context->threadContext->instance;
+        cblock->signal_name = "signal_focus_in_event";
+        g_signal_connect(G_OBJECT(myWidget), "focus-in-event",
+                         G_CALLBACK(signal_GdkEventFocus), cblock);
+        return context->True();
+    }
+    else if (strcmp(name, "focus_out_event") == 0) {
+        cblock = (cbcb *)malloc(sizeof(cbcb));
+        cblock->instance = context->threadContext->instance;
+        cblock->signal_name = "signal_focus_out_event";
+        g_signal_connect(G_OBJECT(myWidget), "focus-out-event",
+                         G_CALLBACK(signal_GdkEventFocus), cblock);
+        return context->True();
+    }
+    else if (strcmp(name, "grab_broken_event") == 0) {
+        cblock = (cbcb *)malloc(sizeof(cbcb));
+        cblock->instance = context->threadContext->instance;
+        cblock->signal_name = "signal_grab_broken_event";
+        g_signal_connect(G_OBJECT(myWidget), "grab-broken-event",
+                         G_CALLBACK(signal_GdkEventGrabBroken), cblock);
+        return context->True();
+    }
+    else if (strcmp(name, "key_press_event") == 0) {
+        cblock = (cbcb *)malloc(sizeof(cbcb));
+        cblock->instance = context->threadContext->instance;
+        cblock->signal_name = "signal_key_press_event";
+        g_signal_connect(G_OBJECT(myWidget), "key-press-event",
+                         G_CALLBACK(signal_GdkEventKey), cblock);
+        return context->True();
+    }
+    else if (strcmp(name, "key_release_event") == 0) {
+        cblock = (cbcb *)malloc(sizeof(cbcb));
+        cblock->instance = context->threadContext->instance;
+        cblock->signal_name = "signal_key_release_event";
+        g_signal_connect(G_OBJECT(myWidget), "key-release-event",
+                         G_CALLBACK(signal_GdkEventKey), cblock);
+        return context->True();
+    }
+    else if (strcmp(name, "leave_notify_event") == 0) {
+        cblock = (cbcb *)malloc(sizeof(cbcb));
+        cblock->instance = context->threadContext->instance;
+        cblock->signal_name = "signal_leave_notify_event";
+        g_signal_connect(G_OBJECT(myWidget), "leave-notify-event",
+                         G_CALLBACK(signal_GdkEventCrossing), cblock);
+        return context->True();
+    }
+    else if (strcmp(name, "map_event") == 0) {
+        cblock = (cbcb *)malloc(sizeof(cbcb));
+        cblock->instance = context->threadContext->instance;
+        cblock->signal_name = "signal_map_event";
+        g_signal_connect(G_OBJECT(myWidget), "map-event",
+                         G_CALLBACK(signal_GdkEvent), cblock);
+        return context->True();
+    }
+    else if (strcmp(name, "motion_notify_event") == 0) {
+        cblock = (cbcb *)malloc(sizeof(cbcb));
+        cblock->instance = context->threadContext->instance;
+        cblock->signal_name = "signal_motion_notify_event";
+        g_signal_connect(G_OBJECT(myWidget), "motion-notify-event",
+                         G_CALLBACK(signal_GdkEventMotion), cblock);
+        return context->True();
+    }
+    else if (strcmp(name, "no_expose_event") == 0) {
+        cblock = (cbcb *)malloc(sizeof(cbcb));
+        cblock->instance = context->threadContext->instance;
+        cblock->signal_name = "signal_no_expose_event";
+        g_signal_connect(G_OBJECT(myWidget), "no-expose-event",
+                         G_CALLBACK(signal_GdkEventNoExpose), cblock);
+        return context->True();
+    }
+    else if (strcmp(name, "property_notify_event") == 0) {
+        cblock = (cbcb *)malloc(sizeof(cbcb));
+        cblock->instance = context->threadContext->instance;
+        cblock->signal_name = "signal_property_notify_event";
+        g_signal_connect(G_OBJECT(myWidget), "property-notify-event",
+                         G_CALLBACK(signal_GdkEventProperty), cblock);
+        return context->True();
+    }
+    else if (strcmp(name, "proximity_in_event") == 0) {
+        cblock = (cbcb *)malloc(sizeof(cbcb));
+        cblock->instance = context->threadContext->instance;
+        cblock->signal_name = "signal_proximity_in_event";
+        g_signal_connect(G_OBJECT(myWidget), "proximity-in-event",
+                         G_CALLBACK(signal_GdkEventProximity), cblock);
+        return context->True();
+    }
+    else if (strcmp(name, "proximity_out_event") == 0) {
+        cblock = (cbcb *)malloc(sizeof(cbcb));
+        cblock->instance = context->threadContext->instance;
+        cblock->signal_name = "signal_proximity_out_event";
+        g_signal_connect(G_OBJECT(myWidget), "proximity-out-event",
+                         G_CALLBACK(signal_GdkEventProximity), cblock);
+        return context->True();
+    }
+    else if (strcmp(name, "scroll_event") == 0) {
+        cblock = (cbcb *)malloc(sizeof(cbcb));
+        cblock->instance = context->threadContext->instance;
+        cblock->signal_name = "signal_scroll_event";
+        g_signal_connect(G_OBJECT(myWidget), "scroll-event",
+                         G_CALLBACK(signal_GdkEventScroll), cblock);
+        return context->True();
+    }
+    else if (strcmp(name, "selection_clear_event") == 0) {
+        cblock = (cbcb *)malloc(sizeof(cbcb));
+        cblock->instance = context->threadContext->instance;
+        cblock->signal_name = "signal_selection_clear_event";
+        g_signal_connect(G_OBJECT(myWidget), "selection-clear-event",
+                         G_CALLBACK(signal_GdkEventSelection), cblock);
+        return context->True();
+    }
+    else if (strcmp(name, "selection_notify_event") == 0) {
+        cblock = (cbcb *)malloc(sizeof(cbcb));
+        cblock->instance = context->threadContext->instance;
+        cblock->signal_name = "signal_selection_notify_event";
+        g_signal_connect(G_OBJECT(myWidget), "selection-notify-event",
+                         G_CALLBACK(signal_GdkEventSelection), cblock);
+        return context->True();
+    }
+    else if (strcmp(name, "selection_request_event") == 0) {
+        cblock = (cbcb *)malloc(sizeof(cbcb));
+        cblock->instance = context->threadContext->instance;
+        cblock->signal_name = "signal_selection_request_event";
+        g_signal_connect(G_OBJECT(myWidget), "selection-request-event",
+                         G_CALLBACK(signal_GdkEventSelection), cblock);
+        return context->True();
+    }
+    else if (strcmp(name, "visibility_notify_event") == 0) {
+        cblock = (cbcb *)malloc(sizeof(cbcb));
+        cblock->instance = context->threadContext->instance;
+        cblock->signal_name = "signal_visibility_notify_event";
+        g_signal_connect(G_OBJECT(myWidget), "visibility-notify-event",
+                         G_CALLBACK(signal_GdkEventVisibility), cblock);
+        return context->True();
+    }
+    else if (strcmp(name, "window_state_event") == 0) {
+        cblock = (cbcb *)malloc(sizeof(cbcb));
+        cblock->instance = context->threadContext->instance;
+        cblock->signal_name = "signal_window_state_event";
+        g_signal_connect(G_OBJECT(myWidget), "window-state-event",
+                         G_CALLBACK(signal_GdkEventWindowState), cblock);
         return context->True();
     }
     return context->False();

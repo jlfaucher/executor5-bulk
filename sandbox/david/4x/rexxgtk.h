@@ -71,6 +71,72 @@ typedef struct _cbcb {
 /* Function Prototypes                                                        */
 /*----------------------------------------------------------------------------*/
 
+gboolean signal_GdkEvent(GtkWidget *window,
+                   GdkEvent *event,
+                   gpointer data);
+gboolean signal_GdkEventKey(GtkWidget *window,
+                   GdkEventKey *event,
+                   gpointer data);
+gboolean signal_GdkEventButton(GtkWidget *window,
+                   GdkEventButton *event,
+                   gpointer data);
+gboolean signal_GdkEventScroll(GtkWidget *window,
+                   GdkEventScroll *event,
+                   gpointer data);
+gboolean signal_GdkEventMotion(GtkWidget *window,
+                   GdkEventMotion *event,
+                   gpointer data);
+gboolean signal_GdkEventExpose(GtkWidget *window,
+                   GdkEventExpose *event,
+                   gpointer data);
+gboolean signal_GdkEventVisibility(GtkWidget *window,
+                   GdkEventVisibility *event,
+                   gpointer data);
+gboolean signal_GdkEventCrossing(GtkWidget *window,
+                   GdkEventCrossing *event,
+                   gpointer data);
+gboolean signal_GdkEventFocus(GtkWidget *window,
+                   GdkEventFocus *event,
+                   gpointer data);
+gboolean signal_GdkEventConfigure(GtkWidget *window,
+                   GdkEventConfigure *event,
+                   gpointer data);
+gboolean signal_GdkEventProperty(GtkWidget *window,
+                   GdkEventProperty *event,
+                   gpointer data);
+gboolean signal_GdkEventSelection(GtkWidget *window,
+                   GdkEventSelection *event,
+                   gpointer data);
+gboolean signal_GdkEventDND(GtkWidget *window,
+                   GdkEventDND *event,
+                   gpointer data);
+gboolean signal_GdkEventProximity(GtkWidget *window,
+                   GdkEventProximity *event,
+                   gpointer data);
+gboolean signal_GdkEventClient(GtkWidget *window,
+                   GdkEventClient *event,
+                   gpointer data);
+gboolean signal_GdkEventNoExpose(GtkWidget *window,
+                   GdkEventNoExpose *event,
+                   gpointer data);
+gboolean signal_GdkEventWindowState(GtkWidget *window,
+                   GdkEventWindowState *event,
+                   gpointer data);
+gboolean signal_GdkEventSetting(GtkWidget *window,
+                   GdkEventSetting *event,
+                   gpointer data);
+gboolean signal_GdkEventOwnerChange(GtkWidget *window,
+                   GdkEventOwnerChange *event,
+                   gpointer data);
+gboolean signal_GdkEventGrabBroken(GtkWidget *window,
+                   GdkEventGrabBroken *event,
+                   gpointer data);
+
+
+/*----------------------------------------------------------------------------*/
+/* Method Prototypes                                                          */
+/*----------------------------------------------------------------------------*/
+
 REXX_METHOD_PROTOTYPE(GrxWidgetNew)
 REXX_METHOD_PROTOTYPE(GrxWidgetUninit)
 REXX_METHOD_PROTOTYPE(GrxWidgetShow)
@@ -110,6 +176,7 @@ REXX_METHOD_PROTOTYPE(GrxWidgetGetAccessible)
 REXX_METHOD_PROTOTYPE(GrxWidgetGetChildVisible)
 REXX_METHOD_PROTOTYPE(GrxWidgetGetParent)
 REXX_METHOD_PROTOTYPE(GrxWidgetGetMenus)
+REXX_METHOD_PROTOTYPE(GrxWidgetSetEvents)
 REXX_METHOD_PROTOTYPE(GrxWidgetSignalConnect)
 REXX_METHOD_PROTOTYPE(GrxWindowNew)
 REXX_METHOD_PROTOTYPE(GrxWindowGetTitle)
