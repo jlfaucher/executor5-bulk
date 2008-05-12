@@ -167,7 +167,7 @@ return prgRet
         end
         escName = escName || tmp
 
-        ret = issueCmd('rpm -q ooRexx | grep' escName, cmdOut)
+        ret = issueCmd('rpm -q ooRexx --list | grep' escName, cmdOut)
         if cmdOut~items == 1 then retObj = cmdOut[1]
         leave FINDSAMPLE
       end
@@ -352,7 +352,7 @@ return ret
 ::routine  execRexxPrgWithArgs public
   use strict arg prgName, params, output
 
-  cmd = 'rexx' prgName params
+  cmd = 'rexx' .TestUtil~enQuote(prgName) params
   prgRet = issueCmd(cmd, output)
 
 return prgRet
@@ -416,3 +416,78 @@ return execRexxPrgWithArgs(prgName, "", output)
 return fullName
 -- End indirectRequire()
 
+
+/* createOleObject( id ) - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+
+  Creates an .OLEObject instance, a proxy for the specified COM object.  This
+  routine is used to trap the REXX error that happens when the proxied COM
+  object can not be created.
+
+  Input:
+    id          REQUIRED
+      The string used to create the COM object.  I.e., the ProgID or CLSID.
+
+    withEvents  OPTIONAL
+      If true, create the OLE object with events, otherwise without events.  The
+      default is false.
+
+    beVerbose   OPTIONAL
+      If true and the OleObject is not created, the error message is displayed.
+      If false, the default, the message is not displayed.
+
+      Use this option for test case development only.  Tests run for an
+      automated test should not produce output.
+
+  Returns:
+    An instance of .OLEObject on success, .nil on failure.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::routine  createOleObject public
+  use strict arg id, withEvents = .false, beVerbose = .false
+
+  if \ isBoolean(withEvents) then
+    raise syntax 88.900 array ("withEvents must be set to true or false; found:" withEvents)
+
+  if \ isBoolean(beVerbose) then
+    raise syntax 88.900 array ("beVerbose must be set to true or false; found:" beVerbose)
+
+  signal on syntax name returnNil
+
+  if withEvents then oleObject = .OLEObject~new(id, "WITHEVENTS")
+  else oleObject = .OLEObject~new(id, "NOEVENTS")
+
+  return oleObject
+
+returnNil:
+  if beVerbose then do
+    cObj = condition("O")
+    say "Error" rc":    " errortext(rc)
+    say "Code " cObj~code":" cObj~message
+  end
+
+  return .nil
+-- End createOleObject( id, verbose )
+
+
+/** testForOleObject()
+ * Provides a quick check to see if there would be a problem creating an
+ * OLEObject on the current system.  (For example if the OLE Automation
+ * application is not installed.)
+ *
+ * @param id  REQUIRED
+ *   The string used to create the OLE Automation object.  I.e., the ProgID or
+ *   CLSID.
+ *
+ * @return  Returns 0 if there are no problems, otherwise the syntax error
+ *          code produced by the failure to create the OLE Automation object.
+ */
+::routine testForOleObject public
+  use strict arg id
+
+  signal on syntax name returnCode
+
+  oleObject = .OLEObject~new(id, "NOEVENTS")
+  drop oleObject
+  return 0
+
+returnCode:
+  return condition('O')~code

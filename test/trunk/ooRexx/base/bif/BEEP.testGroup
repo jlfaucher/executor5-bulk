@@ -74,31 +74,66 @@ return testResult
    retc = beep(262 /* middle C */, 1)  /* 1/1000 second or standard beep */
    self~assertSame('', retc)
 
+-- Duration and frequency are ignored on *nix
 ::method "test_2"
-  self~expectSyntax(40)
-  retc = beep()
+  if .ooRexxUnit.OSName == "WINDOWS" then do
+    self~expectSyntax(40)
+    retc = beep()
+  end
+  else do
+    retc = beep()
+   self~assertSame('', retc)
+  end
 
+-- Duration and frequency are ignored on *nix
 ::method "test_3"
-  self~expectSyntax(40)
-  retc = beep( , 1)
+  if .ooRexxUnit.OSName == "WINDOWS" then do
+    self~expectSyntax(40)
+    retc = beep( , 1)
+  end
+  else do
+    retc = beep( , 1)
+    self~assertSame('', retc)
+  end
 
+-- Duration and frequency are ignored on *nix
 ::method "test_4"
-  self~expectSyntax(40)
-  retc = beep(38, )
+  if .ooRexxUnit.OSName == "WINDOWS" then do
+    self~expectSyntax(40)
+    retc = beep(38, )
+  end
+  else do
+    retc = beep(38, )
+    self~assertSame('', retc)
+  end
 
 ::method "test_5"
   retc = beep(37, 1)
   self~assertSame("", retc)
 
+-- Duration and frequency are ignored on *nix
 ::method "test_6"
-  self~expectSyntax(40)
-  retc = beep(36, 1)
+  if .ooRexxUnit.OSName == "WINDOWS" then do
+    self~expectSyntax(40)
+    retc = beep(36, 1)
+  end
+  else do
+    retc = beep(36, 1)
+    self~assertSame('', retc)
+  end
 
 ::method "test_7"
   retc = beep(32767, 1)
   self~assertSame("", retc)
 
+-- Duration and frequency are ignored on *nix
 ::method "test_8"
-  self~expectSyntax(40)
-  retc = beep(32768, 1)
+  if .ooRexxUnit.OSName == "WINDOWS" then do
+    self~expectSyntax(40)
+    retc = beep(32768, 1)
+  end
+  else do
+    retc = beep(32768, 1)
+    self~assertSame('', retc)
+  end
 

@@ -1011,7 +1011,8 @@ return a
   ::attribute currentTypes set private
 
   -- The operating system this group is executing on.
-  ::attribute machineOS private
+  ::attribute machineOS get
+  ::attribute machineOS set private
 
   -- A set containing all the possible OSes that ooRexx will run on.  This set
   -- is intended to be immutable.  If / when ooRexx is compilable on additional

@@ -1,4 +1,8 @@
 #!/usr/bin/rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 2007 - 2008 Rexx Language Association. All rights reserved.  */
@@ -35,77 +39,75 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
+ /**
+  * This is an example of how to structure an OLEObject test case.  Because not
+  * all systems will have an OLE Automation application installed, the idea is
+  * to check in the prologue and make sure the OLEObject can be created.  If it
+  * can not be created, then the test group is marked as having no executable
+  * tests.
+  */
   parse source . . s
 
-  -- 1.) Create a test group.  You need a file path name to create a test group.
   group = .TestGroup~new(s)
+  group~add(.NotesTestCases)
+  group~restrictOS("WINDOWS")
 
-  -- 2.) Add some tests to the test group.  The simplest thing is to add a
-  -- TestCase class object.  This class object will be the TestCase class you
-  -- define in this file.
-  group~add(.Simplest.testGroup)
+  -- If we are on Windows test for the OLE Automation object.  By testing that
+  -- the current OS is Windows, we don't over-ride the OS restriction reason
+  -- with an OLE Object not found reason.  That way, on another OS, say Linux,
+  -- when the test group is skipped the reason will be because the OS is not
+  -- correct, rather than the reason being the OLE application is not found.
+  -- On Linux, that reason could be slightly confusing to a user who knows
+  -- little about OLE Automation.
+  if group~machineOS == "WINDOWS" then do
+    code = testForOleObject('Notes.NotesSession')
+    if code <> 0 then
+      group~markNoTests("This is an OLE / Notes test but the Notes OLEObject can not be created. Code:" code)
+  end
 
-  -- 3.) Ask the test group if this is an automated test.  If it is, just return
-  -- the test group object.
   if group~isAutomatedTest then return group
 
-  -- 4.) It is not an automated test, so exeucte the test now and print out
-  -- the results
+  testResult = group~suite~execute~~print
 
-  -- 4a.) Ask the test group to give us a test suite containing all the
-  -- executable tests that the group has.
-  suite = group~suite
-
-  -- 4b.) Tell the test suite to exeucte its tests and return to us the test
-  -- result.
-  testResult = suite~execute
-
-  -- 4c.) Tell the test result to print out the results using its default
-  -- formatter.
-  testResult~print
-
-  -- 5.) Return the test result.  No use is made of this at this time, but it
-  -- is possible that a use could be made of it in the future.
 return testResult
 -- End of entry point.
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
-  Directives, Classes, or Routines.  You must require the ooTest framework file
+  Directives, Classes, or Routines.
+  The OLE helper functions, testForOleObject() and createOleObject() are in the
+  FileUtils framework file.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::requires 'ooTest.frm'
+::requires 'FileUtils.cls'
 
-/* class: Simplest.testGroup - - - - - - - - - - - - - - - - - - - - - - - - -*\
-     The test case class must subclass ooTestCase.
+/* class: NotesTestCases - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+     Most systems will not have Notes installed and this test group will be
+     skipped.  So there are only a few real test cases.  How to write the actual
+     test cases for OLEObject is left as an exercise for the reader.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::class "Simplest.testGroup" public subclass ooTestCase
+::class "NotesTestCases" public subclass ooTestCase
 
-  -- The ooTestCase class has a class attribute, ooTestType.  This is used to
-  -- help select subsets of the tests to run in an automated test.  The default
-  -- test type is UNIT and so for most TestCase classes you do not need to do
-  -- anything.
-  --
-  -- Here we over-ride the class to init to assign a different test type to this
-  -- test case class.  Note, you must initialize the superclass before you
-  -- change the test type - or the super class will just change it back to the
-  -- default
-  ::method init class
-    forward class (super) continue
+  ::method test_GoodCreation
 
-    self~ooTestType = self~FRAMEWORK_EXAMPLE_TEST
+    notes = createOleObject("Notes.NotesSession")
+    self~assertNotNull(notes)
 
-  -- Now you just need to write your test case methods.  By convention, you need
-  -- to start each method with: 'test'  This is what allows the test cases to
-  -- be gathered together automaticially.
-  ::method test_YYY
-    a = 4
-    b = 3
-    c = a + b
-    self~assertTrue(c == 7)
+  ::method  test_UserName
 
-  ::method  test_XXX
-    a = 'dog'
-    b = 'DOG'
-    c = a~upper
-    self~assertSame(b, c)
+    -- Get the logged in user name.
+    output = .array~new
+    cmd = "set USERNAME"
+    ret = issueCmd(cmd, output)
 
--- End of class: Simplest.testGroup
+    -- Always assert that necessary things are as expected.
+    self~assertSame(0, ret)
+    self~assertSame(1, output~items)
+    parse value output[1] with envVar "=" user
+
+    notes = createOleObject("Notes.NotesSession")
+    self~assertNotNull(notes)
+
+    notesUser = notes~UserName
+    self~assertSame(user, notesUser)
+
+-- End of class: NotesTestCases
