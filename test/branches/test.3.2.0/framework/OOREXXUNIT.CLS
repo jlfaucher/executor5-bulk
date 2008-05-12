@@ -1087,7 +1087,9 @@ return str
     return
   end
 
-  self~fail(self~makeFailure(expected, actual, msg, "asserNottEquals"))
+  expected = '[\=' self~formatObjectInfo(expected)']'
+  actual   = '[  ' self~formatObjectInfo(actual)']'
+  self~fail(self~makeFailure(expected, actual, msg, "asserNotEquals"))
 
 
 ::method assertNull
@@ -1127,6 +1129,8 @@ return str
   use strict arg expected, actual, msg = ""
 
   if (expected == actual) then do
+    expected = '[\==' self~formatObjectInfo(expected)']'
+    actual   = '[   ' self~formatObjectInfo(actual)']'
     self~fail(self~makeFailure(expected, actual, msg, "assertNotSame"))
   end
 
