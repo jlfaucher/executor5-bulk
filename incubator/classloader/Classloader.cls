@@ -19,12 +19,12 @@
 -- Don't load this package several times
 if .Local~Package \= .nil then return
 
--- enable or disable tracing
+-- enable or disable tracing, either 0 or 1
 .local~CLtrace = 0
 
 -- the path seperator - select the correct one for your OS
 .local~PathSeperator = '\'
---.local~PathSeperator = '/'
+.local~PathSeperator = '/'
 
 -- the file extension for package files
 .local~FileExtension = ".rex"
@@ -36,9 +36,12 @@ if .Local~Package \= .nil then return
 rootBackEnd = .MergeBackEnd~new
 backEnds = rootBackEnd~getBackEnds
 -- a list of back ends
+-- WARNING: Due to a bug in ooRexx trunk it is impossible to use queues.
+-- As the file backends rely heavily on these they are non functional...
+
 --backEnds~append(.TarBackEnd~new("archive.tar.gz","root"||.pathSeperator))
-backEnds~append(.ZipBackEnd~new("archive.zip","root"||.pathSeperator))
---backEnds~append(.FileBackEnd~new("root"))
+--backEnds~append(.ZipBackEnd~new("archive.zip","root"||.pathSeperator))
+backEnds~append(.FileBackEnd~new("root"))
 
 -- publish the root element under .package
 .Local~Package=.PackageElement~new("Base",,,rootBackEnd)
@@ -219,10 +222,10 @@ backEnds~append(.ZipBackEnd~new("archive.zip","root"||.pathSeperator))
   -- iterate over all back ends
   do backEnd over backEnds
     -- call the active back end
-    element = backEnd~getElement(name, element)
+    celement = backEnd~getElement(name, element)
     -- found an element, then return it
-    if element \= .nil then
-      return element
+    if celement \= .nil then
+      return celement
   end
   -- disable trapping of PackageNotFound
   call off user PackageNotFound
@@ -460,12 +463,14 @@ backEnds~append(.ZipBackEnd~new("archive.zip","root"||.pathSeperator))
 
 ::METHOD callArchiver PRIVATE
   use strict arg path
-  c = "tar --wildcards -tf" self~getArchive '"'path'"|rxqueue'
-  c
+  command = "tar --wildcards -tf" self~getArchive '"'path'"|rxqueue'
+  if .local~CLtrace then say command
+  command
 
 ::METHOD loadFile PRIVATE
   use strict arg fileName
   command = "tar -C ".temp" --ignore-case --anchored -xf" self~getArchive filename "|rxqueue"
+  if .local~CLtrace then say command
   command "|rxqueue"
   lines = .array~new
   do while .stdque~queued > 0
@@ -481,11 +486,14 @@ backEnds~append(.ZipBackEnd~new("archive.zip","root"||.pathSeperator))
 
 ::METHOD callArchiver PRIVATE
   use strict arg path
-  "unzip -Z -1" self~getArchive '"'path'"|rxqueue'
+  command = "unzip -Z -1" self~getArchive '"'path'"|rxqueue'
+  if .local~CLtrace then say command
+  command
 
 ::METHOD loadFile PRIVATE
   use strict arg fileName
   command = "unzip -qq -c" self~getArchive filename
+  if .local~CLtrace then Say "Executing" command
   command "|rxqueue"
   lines = .array~new
   do while .stdque~queued > 0
