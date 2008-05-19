@@ -50,7 +50,7 @@ parser~parse(.stream~new(file)~arrayIn)
 
 
 options = .Directory~new
-options~include.source = .false
+options~include.source = .true
 options~hide.private = .true
 
 out = .stdout
@@ -65,13 +65,14 @@ out~say(parser~tree~name)
 out~say('</title><link rel="stylesheet" type="text/css" href="style.css" title="Style"/></head><body>')
 -- print the tree information
 printFile(parser~tree,out,options)
-
--- print the required files
-out~say('<h2>Required Files</h2>')
-do r over parser~tree~requires
-  out~say('<strong>'r~getFile~name'</strong><br/>')
-  -- print their tree...
-  printFile(r~getFile,out)
+if parser~tree~requires~items > 0 then do
+  -- print the required files
+  out~say('<h2>Required Files</h2>')
+  do r over parser~tree~requires
+    out~say('<strong>'r~getFile~name'</strong><br/>')
+    -- print their tree...
+    printFile(r~getFile,out)
+  end
 end
 -- add some common ending
 out~say('</body></html>')
@@ -221,6 +222,7 @@ out~say('</body></html>')
     end
     subClasses = getSubClasses(tree,o)
     if subClasses~items > 0 then do
+      out~say("<br/>")
       subClasses = subClasses~sort
       num = subClasses~items
       out~say('Direct sub classes: ')
