@@ -1,105 +1,112 @@
-  /*----------------------------------------------------------------------------*/
-  /*                                                                            */
-  /* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
-  /*                                                                            */
-  /* This program and the accompanying materials are made available under       */
-  /* the terms of the Common Public License v1.0 which accompanies this         */
-  /* distribution. A copy is also available at the following address:           */
-  /* http://www.oorexx.org/license.html                                         */
-  /*                                                                            */
-  /* Redistribution and use in source and binary forms, with or                 */
-  /* without modification, are permitted provided that the following            */
-  /* conditions are met:                                                        */
-  /*                                                                            */
-  /* Redistributions of source code must retain the above copyright             */
-  /* notice, this list of conditions and the following disclaimer.              */
-  /* Redistributions in binary form must reproduce the above copyright          */
-  /* notice, this list of conditions and the following disclaimer in            */
-  /* the documentation and/or other materials provided with the distribution.   */
-  /*                                                                            */
-  /* Neither the name of Rexx Language Association nor the names                */
-  /* of its contributors may be used to endorse or promote products             */
-  /* derived from this software without specific prior written permission.      */
-  /*                                                                            */
-  /* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
-  /* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
-  /* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
-  /* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
-  /* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
-  /* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
-  /* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
-  /* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
-  /* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
-  /* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
-  /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
-  /*                                                                            */
-  /*----------------------------------------------------------------------------*/
-  /** Serializable Package
-  */
-  if .environment~hasIndex("SERIALIZABLE") then return
-  .environment~Serializable = .Serializable
-  .environment~SerializeFunctions = .SerializeFunctions
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+-- Version: 1.9
+/** <h1>Serializable Package</h1>
+* This pacakge offers the classes needed to serialize rexx objects.
+*/
+if .environment~hasIndex("SERIALIZABLE") then return
+.environment~Serializable = .Serializable
+.environment~SerializeFunctions = .SerializeFunctions
 
 
-  /* Register default handlers */
-  .SerializeFunctions~setHandler(.SerializeMethod~new)
-  .SerializeFunctions~setHandler(.SerializeMutableBuffer~new)
-  .SerializeFunctions~setHandler(.SerializeNil~new)
-  .SerializeFunctions~setHandler(.SerializeRelation~new)
-  .SerializeFunctions~setHandler(.SerializeTable~new)
-  .SerializeFunctions~setHandler(.SerializeStem~new)
-  .SerializeFunctions~setHandler(.SerializeDirectory~new)
-  .SerializeFunctions~setHandler(.SerializeArray~new)
-  .SerializeFunctions~setHandler(.SerializeBag~new)
-  .SerializeFunctions~setHandler(.SerializeList~new)
-  .SerializeFunctions~setHandler(.SerializeQueue~new)
-  .SerializeFunctions~setHandler(.SerializeCircularQueue~new)
+/* Register default handlers */
+.SerializeFunctions~setHandler(.SerializeMethod~new)
+.SerializeFunctions~setHandler(.SerializeMutableBuffer~new)
+.SerializeFunctions~setHandler(.SerializeNil~new)
+.SerializeFunctions~setHandler(.SerializeRelation~new)
+.SerializeFunctions~setHandler(.SerializeTable~new)
+.SerializeFunctions~setHandler(.SerializeStem~new)
+.SerializeFunctions~setHandler(.SerializeDirectory~new)
+.SerializeFunctions~setHandler(.SerializeArray~new)
+.SerializeFunctions~setHandler(.SerializeBag~new)
+.SerializeFunctions~setHandler(.SerializeList~new)
+.SerializeFunctions~setHandler(.SerializeQueue~new)
+.SerializeFunctions~setHandler(.SerializeCircularQueue~new)
 
 /** This class is the one indicating that an object can be serialized. A class
 * has to inherit from Serializable if it needs serializing.
-* ::CLASS SomeClass MIXINCLASS Serializable
+* 
+* <code>::CLASS SomeClass MIXINCLASS Serializable</code>
 *
-*  On Top if this is implements the default behaviour for the Read- and
-*  WriteObject methods. It assumes there is an public attribute called
-*  PersistentData that stores the relevant data. In case this method is not
-*  implemented an error is raised.
+* On Top if this is implements the default behaviour for the Read- and
+* WriteObject methods. It assumes there is an public attribute called
+* PersistentData that stores the relevant data. In case this method is not
+* implemented an error is raised.
 */
-  ::CLASS Serializable MIXINCLASS Object
+::CLASS Serializable MIXINCLASS Object
 
-  ::METHOD Init CLASS
-  /* Register sub classes */
-  -- at this point .Serializable is not yet created, thus we use the string
-    if self~id \= "SERIALIZABLE" then
-      .SerializeFunctions~setHandler(.SerializeSerializable~new(self))
-    forward class (super)
+/** This method is called for each sub class the rexx interpreter finds.
+* It registers the the class with the serialization handlers to allow serialization
+* and deserialization.
+*/
+::METHOD Init CLASS
+/* Register sub classes */
+-- at this point .Serializable is not yet created, thus we use the string
+  if self~id \= "SERIALIZABLE" then
+    .SerializeFunctions~serializableClasses[self~id] = self
+  forward class (super)
 
-  -- Initalization for sub classes, tries to set PersistentData and raises an
-  -- error if it fails
-  ::METHOD Init
-    use arg data
-    signal on nomethod
-    self~PersistentData = data
-    return self
+-- Initalization for sub classes, tries to set PersistentData and raises an
+-- error if it fails
+::METHOD Init
+  use arg data
+  signal on nomethod
+  self~PersistentData = data
+  return self
 
-    nomethod: raise syntax 97.001 array(self, "PersistentData")
+  nomethod: raise syntax 97.001 array(self, "PersistentData")
 
-  -- Method to store object persistently. Has to return its data. Default
-  -- implementation tries to access PersistentData.
-  ::METHOD WriteObject
-    signal on nomethod
-    return self~PersistentData
+-- Method to store object persistently. Has to return its data. Default
+-- implementation tries to access PersistentData.
+::METHOD WriteObject
+  signal on nomethod
+  return self~PersistentData
 
-    nomethod: raise syntax 97.001 array(self, "PersistentData")
+  nomethod: raise syntax 97.001 array(self, "PersistentData")
 
-  -- Method to recreate an object. Creates an instance of self and forwards the
-  -- data to New.
-  ::METHOD ReadObject CLASS
-    use arg Data
-    signal on syntax
-    Instance = self~New(Data)
-    return Instance
+-- Method to recreate an object. Creates an instance of self and forwards the
+-- data to New.
+::METHOD ReadObject CLASS
+  use arg Data
+  signal on syntax
+  Instance = self~New(Data)
+  return Instance
 
-    syntax: raise propagate
+  syntax: raise propagate
 
 /** This class offers the base functionality to serialize and deserialize data.
 * It manages data handlers for managing a specific data type and offers a public
@@ -116,14 +123,16 @@
 * data structure should cause no problem.
 ******************************************************************************/
 ::CLASS SerializeFunctions PUBLIC
+::ATTRIBUTE serializableClasses GET CLASS
 
 ::METHOD Init CLASS
 /** initailize containers for handler classes
 */
-  expose name type ClassType
+  expose name type ClassType serializableClasses
   -- These are containers for data handlers
-  name = .directory~new
-  ClassType = .table~new
+  name = .Directory~new
+  ClassType = .Table~new
+  serializableClasses = .Directory~new
   forward class (super)
 
 ::METHOD SetHandler CLASS
@@ -217,7 +226,7 @@
 ::METHOD FromSerializedData
   expose Name ObjectIndex CurrentPos SerialObjects
   use arg pos
-  -- check if there is somethig in the cache for the index
+  -- check if there is something in the cache for the index
   if ObjectIndex~HasIndex(pos) then
     return ObjectIndex[pos]
   -- store the current position for FromSerializedDataPut
@@ -225,6 +234,12 @@
   parse value SerialObjects[pos] with type arguments
   if Type = "S" then
     Object = Arguments~decodeBase64
+  else if Type = "OBJECT" then do
+    parse var arguments className reference
+    data = self~fromSerializedData(reference)
+    class = self~class~serializableClasses[self~fromSerializedData(className)]
+    Object = Class~readObject(data)
+  end
   else do
     -- there must be a class associated with type
     Handler = Name[Type]
@@ -280,6 +295,12 @@
       Buffer~append(" ")
       Handler~Serialize(self, Buffer, Object)
     end
+    else if object~isinstanceOf(.Serializable) then do
+      Buffer~append("OBJECT ")
+      Buffer~append(self~toSerializableData(Object~class~id))
+      Buffer~append(" ")
+      Buffer~append(self~ToSerializableData(Object~WriteObject))
+    end
     -- the nil handler can not match by class
     else if Object = .nil then
       Buffer~append("NIL")
@@ -306,7 +327,7 @@ Say "       Object: total: "stat.2.1 "unique:" stat.2.2
 * Strings are stored in the variable StringIndex, other objects in ObjectIndex.
 * The reason for this is that there are situations where an object gets returnd
 * where a string is needed, expecially when they both have the same string value.
-* To avoid this stings have their own table, whereas other objects are stored
+* To avoid this strings have their own table, whereas other objects are stored
 * via their identity hash value in a directory.
 */
 ::METHOD ToSerializableData
@@ -355,42 +376,37 @@ Say "       Object: total: "stat.2.1 "unique:" stat.2.2
 * <li>Calls to Init MUST be forwarded, otherwise a handler will not register.</li>
 * </ul>
 */
-
 ::CLASS SerializeHandler PUBLIC -- SUBCLASS Class
+/** This method returns the name of the serialized object. The name is used to
+* differenciate between different kind of objects on the stream. Note that not
+* two equal names are allowed. Names may also contain no spaces.
+*/
 ::METHOD Name ABSTRACT
+/** This method serializes an object. It accepts the caller, the buffer, and
+* the object to deserialize. The buffer stores the serial data itself. To
+* serialize other objects and to get their serial ID use
+* <code>Caller~ToSerializableData(object~someData)</code>. This method
+* returns the id that can be used to deserialize the object again.
+*/
 ::METHOD Serialize ABSTRACT
+/** The deserialization method does the opposit to the serialization method:
+* It uses a buffer to recreate an object. The object ID that the buffer
+* stores can be turned into
+* an object by calling the method <code>Caller~FromSerializedData(ID)</code>.
+* The method has to return the new object.
+*/
 ::METHOD DeSerialize ABSTRACT
 
 /** Classes implementing the CheckType method can be matched
-* by class directly.
-*/
+* by class directly.*/
 ::CLASS CheckType MIXINCLASS Object
+/** This method retuns the class the handler can serialize.
+*/
 ::METHOD CheckType ABSTRACT
 
 /******************************************************************************
   Here follow the handler classes
 ******************************************************************************/
--- Special handler for serializing .Serializable subclasses. Object is created
--- by .Serializable class method Init.
-::CLASS SerializeSerializable SUBCLASS SerializeHandler INHERIT CheckType
-::METHOD Init
-  expose myclass
-  use arg myclass
-::METHOD CheckType
-  expose myclass
-  return myclass
-::METHOD Name
-  expose myclass
-  return myclass~id
-::METHOD Serialize
-  expose myclass
-  use strict arg Caller, Buffer, Object
-  Buffer~append(Caller~ToSerializableData(Object~WriteObject))
-::METHOD DeSerialize
-  expose myclass
-  use strict arg Caller, arguments
-  return myclass~ReadObject(Caller~FromSerializedData(arguments))
-
 ::CLASS SerializeMethod SUBCLASS SerializeHandler INHERIT CheckType
 ::METHOD Name
   return "METHOD"

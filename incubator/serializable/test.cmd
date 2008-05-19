@@ -264,8 +264,13 @@ return
   else do
     d = .array~new
     offset = self~elements
+    toggle = .true
     do i = 1 to self~Elements
-      d[i] = i + offset
+      if toggle then
+        d[i] = i + offset
+      else
+        d[i] = .Test2~new
+      toggle = \ toggle
     end
   end
   self~PersistentData = d
@@ -329,8 +334,13 @@ return
       say indent".Relation"
       do i over object
         str = indent || i~string || ": "
+        first = .true
         do j over object~allat(i)
-          str = str||","||j~string
+          if first then
+            first = .false
+          else
+            str = str||","
+          str||=j~string
         end
         say str
       end
@@ -343,13 +353,14 @@ return
       end
     end
     when objectclass = .string then say indent".String:" object
+
     when objectclass = .mutablebuffer then say indent".MutableBuffer:("object~GetBufferSize")" object~string
+
     when object = .nil then say indent".Nil"
+
     when object~IsInstanceOf(.Serializable) then do
-       say indent||objectclass~string
-      if object~HasMethod("PersistentData") then
-        if object~PersistentData != "PERSISTENTDATA" then
-          self~ShowDataRecursor(object~PersistentData,level+1)
+      say indent||"Object of "||objectclass~id
+      self~showDataRecursor(object~writeObject,level+1)
     end
     when object~isInstanceOf(.Method) then do
       mod = " "
@@ -361,7 +372,7 @@ return
 
     end
     otherwise
-      say indent||objectclass~string
+      say indent||objectclass~id
   end
 
 ::CLASS Test2 MIXINCLASS Serializable
