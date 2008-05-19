@@ -1,4 +1,4 @@
-#LyX 1.5.2 created this file. For more info see http://www.lyx.org/
+#LyX 1.5.4 created this file. For more info see http://www.lyx.org/
 \lyxformat 276
 \begin_document
 \begin_header
@@ -38,6 +38,7 @@
 \paperpagestyle default
 \tracking_changes false
 \output_changes false
+\author "" 
 \author "" 
 \end_header
 
@@ -119,7 +120,7 @@ This documentation describes the Object Rexx IRC classes.
  applications.
  But it is more than a simple reference: The documentation tries to give
  a very new view on the IRC protocol.
- With this new view many things can be achived that were impssible before.
+ With this new view many things can be achieved that were impossible before.
 \end_layout
 
 \begin_layout Standard
@@ -142,7 +143,7 @@ orx-irc stands for Object Rexx and IRC.
 
 \begin_layout Standard
 When looking at the projects it is located between the TCP/IP network access
- and the rexx interpreter at one side and the final application on the other
+ and the Rexx interpreter at one side and the final application on the other
  side.
  It is intended to offer an easy to use and flexible interface for the IRC
  protocol.
@@ -328,7 +329,7 @@ status collapsed
 \begin_inset Caption
 
 \begin_layout Standard
-System context diagramm
+System context diagram
 \end_layout
 
 \end_inset
@@ -408,15 +409,15 @@ Architecture
 \end_layout
 
 \begin_layout Standard
-The class is splitted into two main parts.
+The class is split into two main parts.
 \end_layout
 
 \begin_layout Standard
 The first one is the interface to the socket.
  All communication is send over it.
- This parts includes the conversion of message objects to strings and vise
- versa.
- It implements the sytax of the protocol.
+ This parts includes the conversion of message objects to strings and back
+ again.
+ It implements the syntax of the protocol.
  All other parts of the class rely in this part.
 \end_layout
 
@@ -433,9 +434,9 @@ The second part is tied into the IRC class.
 Messages pass through three stages during their life.
  First the are send to the MessageHandler object of the IRC class.
  This is a programmable class that does the low level handling of messages,
- maily the numeric ones.
- When there has been a IRC function call registerd this is the place where
- the replies are cought and the function call is returned with the collected
+ mainly the numeric ones.
+ When there has been a IRC function call registered this is the place where
+ the replies are caught and the function call is returned with the collected
  result.
  Also some mode messages that don't come with the normal MODE IRC message
  are converted into real msgmode messages here.
@@ -443,14 +444,14 @@ Messages pass through three stages during their life.
 
 \begin_layout Standard
 After that the messages get forwarded to their receiver class.
- Here all the connection hadling is done.
+ Here all the connection handling is done.
  Textual messages are forwarded to the receiver (which should be the own
  client in the end), join and part messages cause the channels to update
- their userlist and so on.
+ their user list and so on.
 \end_layout
 
 \begin_layout Standard
-The third stage has no influence on the `grammar' of the protocol anymore.
+The third stage has no influence on the `grammar of the protocol anymore.
  This is the place where a client would install own methods too hook messages.
 \end_layout
 
@@ -461,7 +462,7 @@ The first and third stage are quite similar in their architecture.
 status collapsed
 
 \begin_layout Standard
-This section needs to be enhaced, if possible with some nice diagrams!
+This section needs to be enhanced, if possible with some nice diagrams!
 \end_layout
 
 \end_inset
@@ -518,8 +519,8 @@ symbol{46}
 
 \end_inset
 
-cls files contain the class definitons, but this is more a sematical differencia
-tion.
+cls files contain the class definitions, but this is more a semantically
+ differentiation.
  The combine.cmd combines all these files to one single class file.
  This file is the one a client requires.
  In the out directory there should be a sample client, in the doc directory
@@ -531,15 +532,15 @@ Compiling the irc.cls file
 \end_layout
 
 \begin_layout Standard
-The irc.cls file is a file that containes all classes.
+The irc.cls file is a file that contains all classes.
  The reason for this is to offer a single file with reduced size by leaving
  away the comments and indent and to make it more portable.
 \end_layout
 
 \begin_layout Standard
 The application that combines the files is called combine.cmd and is included
- with the project's sourcecode.
- It is a very basic pre processor (make can't properly handle rexx code)
+ with the project's source code.
+ It is a very basic preprocessor (make can't properly handle Rexx code)
  that merges the files while removing comments and additional spaces.
 \end_layout
 
@@ -590,7 +591,7 @@ To include the class in an application the following line needs to be added
 \end_layout
 
 \begin_layout Standard
-This statements tells the rexx interpreter to load the contents of the file
+This statements tells the Rexx interpreter to load the contents of the file
  and make them accessible for the program requiring them.
 \end_layout
 
@@ -606,8 +607,8 @@ Concept
 \end_layout
 
 \begin_layout Standard
-This section describes the general conecept.
- This should help understanding where which kind of enhancememnts are possible.
+This section describes the general concept.
+ This should help understanding where which kind of enhancements are possible.
 \end_layout
 
 \begin_layout Standard
@@ -652,11 +653,11 @@ Level structure
 \begin_layout Standard
 The way messages are treated internally can be seen as different processing
  levels.
- The lowest level is the socket connetion itself, passing the message translatio
-n and ending in an event passed on the client.
- Each level has a different purpose, some can be customised, others are
+ The lowest level is the socket connection itself, passing the message translati
+on and ending in an event passed on the client.
+ Each level has a different purpose, some can be customized, others are
  basic parts that don't need to be customized.
- It would even be riskful for the stability to allow changes there.
+ It would even be riskily for the stability to allow changes there.
 \end_layout
 
 \begin_layout Paragraph
@@ -703,7 +704,7 @@ The message now enters the Event method of the IRC class.
 \end_layout
 
 \begin_layout Standard
-First the message is passed to a customisable object, the MessageHandler
+First the message is passed to a customizable object, the MessageHandler
  object.
  This object is a subclass of the ClientEventSuper class.
  
@@ -711,7 +712,7 @@ First the message is passed to a customisable object, the MessageHandler
 
 \begin_layout Standard
 The MessageHandler object has a lot of method defined already.
- These methods are mainly for returning results to hook'ed events.
+ These methods are mainly for returning results to hooked events.
 \end_layout
 
 \begin_layout Paragraph
@@ -721,7 +722,7 @@ Level 3 --- Passing the message to their receiver object
 \begin_layout Standard
 Messages like join, part and quit messages need to be tracked to know the
  current status of the connection.
- In order to achive this messages get forwarded to their receiver object.
+ In order to achieve this messages get forwarded to their receiver object.
  This takes place in the channel and user class and in the Event method
  of the IRC class in case the message was not directed at a channel or a
  user.
@@ -739,16 +740,16 @@ The final event is forwarded to the ClientEvent event handler object of
 
 \begin_layout Standard
 At two levels the functionality can be altered.
- The functionalitiy of level 2 is necessary for the reliability of the whole
+ The functionality of level 2 is necessary for the reliability of the whole
  system.
  Only methods that need to be placed there should be placed there.
- Where something gowes wrong in this level there is only a low chance that
+ Where something goes wrong in this level there is only a low chance that
  the connection will not suffer from it.
 \end_layout
 
 \begin_layout Standard
 Events that don't need to influence a message object or the scripting functional
-itiy have to be placed in the ClientEvent object.
+ity have to be placed in the ClientEvent object.
  See chapter\InsetSpace ~
 
 \begin_inset LatexCommand ref
@@ -838,7 +839,7 @@ local directory with the name of the method called.
 status collapsed
 
 \begin_layout Standard
-Execution continues when a runned method returned 1.
+Execution continues when method returns 1.
 \end_layout
 
 \end_inset
@@ -856,7 +857,7 @@ status collapsed
 \begin_inset Caption
 
 \begin_layout Standard
-.ClientEvent: Unknown method lookup
+.ClientEvent: Unknown method look up
 \end_layout
 
 \end_inset
@@ -931,15 +932,15 @@ SuperEvent
 \begin_layout Standard
 This is the ClientEvent's and MessageHandler's super class.
  Although they belong together they have been split up to avoid custom functions
- from interfering with the class' variable pool.
+ from interfering with the class's variable pool.
  As the custom methods are executed in the ClientEvent's scope the variables
  of the SuperEvent class cannot be touched.
 \end_layout
 
 \begin_layout Standard
 The class offers two different ways of working, the stack and flat mode.
- When running in stack mode a new method is prepended to the methods defined
- for a name.
+ When running in stack mode a new method added in front of the methods defined
+ for that name.
  Only the top method on the stack is called.
  If the method is removed the following one will be called from then on.
  The flat mode is more simple: there is only one method for each name.
@@ -967,7 +968,7 @@ EventSetMode(mode)
 \begin_layout Standard
 Accepts a string starting with stack or flat.
  Sets the working mode to either stack or flat mode.
- See the class' description for an explanation.
+ See the class's description for an explanation.
  When switching from stack to flat mode all methods associated with a name
  are dropped, expect the currently active one.
 \end_layout
@@ -1009,7 +1010,7 @@ If the second argument is an object different to a string or a method it
 \begin_layout Standard
 All methods have to return a value.
  To indicate that processing should continue a method has to return 1.
- In case a method does not return a value execution can not contine.
+ In case a method does not return a value execution can not continue.
 \end_layout
 
 \begin_layout Paragraph
@@ -1182,7 +1183,7 @@ Connect
 \end_layout
 
 \begin_layout LyX-Code
-Connect(host,server password,nick,username,description)
+Connect(host,server password,nick,user name,description)
 \end_layout
 
 \begin_layout Standard
@@ -2112,9 +2113,9 @@ LNSocket means something like `Line Socket'.
 \backslash
 r
 \backslash
-n) is received from the server the class calles the method `available' of
+n) is received from the server the class calls the method `available of
  the object.
- When the connection breaks it calles the `disconnect' method.
+ When the connection breaks it calls the `disconnect method.
  At the moment the main loop that waits for data is located in this class.
  It is true that locating it in the IRC class would be better, it is on
  my to-do list!
@@ -2128,7 +2129,7 @@ Host class
 The host class is able to parse URLs up to a certain level [(0--9)+(:(0--9)*)].
  In case the part in front of the colon is not an IP address it assumes
  that it's a host name and tries to look it up.
- The result is strored in the public attributes IP and PORT.
+ The result is stored in the public attributes IP and PORT.
 \end_layout
 
 \begin_layout Subsection
@@ -2192,7 +2193,7 @@ This chapter covers how incoming messages are handled.
 status collapsed
 
 \begin_layout Standard
-Switching on the debug mode helps understanding the messages' flow!
+Switching on the debug mode helps understanding the message's flow!
 \end_layout
 
 \end_inset
@@ -2204,8 +2205,8 @@ Switching on the debug mode helps understanding the messages' flow!
 First a line is read by the socket interface object.
  As the main loop is placed inside the socket object the client is notified
  about every new line as soon as it arrives.
- The instance of the LNSocket class calls the method `Available' of the
- client with the line as argument.
+ The instance of the LNSocket class calls the method `Available of the client
+ with the line as argument.
  This line is in raw IRC format.
  Basically there are two main classes of messages: numeric and non-numeric
  messages.
@@ -2232,7 +2233,7 @@ Most messages can be used in both directions from the server and back to
  The problem that some messages will cause the server to return a number
  of numeric messages is covered later.
  In order to be able to convert a message object to a string that is conform
- to the IRC protocol the message objectes need to implement a method called
+ to the IRC protocol the message objects need to implement a method called
  IRCString.
  This method just returns the string.
 \end_layout
@@ -2268,7 +2269,7 @@ Quit message --- msgquit
 \begin_layout Standard
 If a user quits from IRC a quit message is passed to all users that shared
  a channel with the quitting user.
- It announces that the user is not online anymore.
+ It announces that the user is not on-line anymore.
  The quit message has a string attribute that can contain some more information
  about the reason for quitting.
  This is only an informative string.
@@ -2331,7 +2332,7 @@ All messages arriving from the IRC server pass through the MessageHandler
 \end_layout
 
 \begin_layout Standard
-These messages check if a command call has beeen registered and insert missing
+These messages check if a command call has been registered and insert missing
  information if necessary.
  In case all information has been gathered the command call is returned.
 \end_layout
@@ -2379,7 +2380,7 @@ An IRC command consists of a call and a result.
 The MessageHandler class implements methods for the numeric replies and
  for the IRC command calls.
  When a method is called that implements an IRC command the method creates
- aresult object for the command.
+ a result object for the command.
  The result object is stored in the MessageHandler.
 \end_layout
 
@@ -2447,7 +2448,7 @@ Using the Command object.
 \end_layout
 
 \begin_layout Description
-UNGUARDED Unguarded is needed as asynchroneous access to the client object
+UNGUARDED Unguarded is needed as asynchronous access to the client object
  is needed.
 \end_layout
 
@@ -2478,8 +2479,8 @@ Each IRC class instance has an attribute named Command.
 \end_layout
 
 \begin_layout Standard
-The result of the command is stored in the message's attribute 'Result'
- in most cases.
+The result of the command is stored in the message's attribute Result in
+ most cases.
  Depending on the type it will either be a simple string or an array with
  strings.
  Some commands already return fully parsed information.
@@ -2494,7 +2495,7 @@ Commands need threads to work.
  The calling thread is suspended while the IRC client waits for the information
  returned.
  To avoid locks the calling method must be unguarded and is required to
- 'reply' the main thread to the IRC client.
+ reply the main thread to the IRC client.
  Otherwise the execution of the IRC client blocks until the method returns.
  The command returns after a timeout
 \begin_inset Foot
@@ -2606,7 +2607,7 @@ The previous example registered a method for the OnSay event.
  The method does not return 1 thus the search for previously defined methods
  is not continued.
  At the time the event is created all the work maintaining the integrity
- of the class has been finished, the functionalitiy of the method is not
+ of the class has been finished, the functionality of the method is not
  critical for the connection.
 \end_layout
 
@@ -2614,7 +2615,7 @@ The previous example registered a method for the OnSay event.
 Methods can be defined either with a source string or a method object.
  It is better to define a method object as the translation of the source
  could cause errors and slows the program down.
- It is also possible to extract a method objet from an object or a class
+ It is also possible to extract a method object from an object or a class
  using the Method or Methods methods the Class class implements.
 \end_layout
 
@@ -2751,7 +2752,7 @@ Getting support
 \end_layout
 
 \begin_layout Standard
-As this is a projet has been created during free time it is very hard to
+As this is a project has been created during free time it is very hard to
  offer a wide range of support.
  Nonetheless it is possible to contact the author via email and IRC.
  Try moritz@antiguru.de, or connect to irc.netlabs.org and join channel #netlabs.
