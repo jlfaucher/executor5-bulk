@@ -953,6 +953,100 @@ RexxMethod1(int,                        // Return type
 }
 
 /**
+ * Method:  add_accelerator
+ *
+ * Add an accelerator to the widget
+ *
+ * @param signame The accel signal name
+ *
+ * @param accelgrp The accelerator group
+ *
+ * @param key     The accel key binding 
+ *
+ * @param mods    The accel modifiers
+ *
+ * @param flags   The accel flags
+ *
+ * @return        Zero.
+ **/
+RexxMethod5(int,                       // Return type
+            GrxWidgetAddAccelerator,   // Object_method name
+            CSTRING, signame,          // Accelerator signal name
+            RexxObjectPtr, accelgrp,   // Accelerator group
+            int, key,                  // Accelerator key
+            int, mods,                 // Accelerator modifiers
+            int, flags)                // Accelerator flags
+{
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
+    RexxPointerObject grpptr = (RexxPointerObject)context->SendMessage0(accelgrp, "POINTER");
+    GtkAccelGroup *grpWidget = (GtkAccelGroup *)context->PointerValue(grpptr);
+
+    gtk_widget_add_accelerator(myWidget, signame, grpWidget, key, 
+                               (GdkModifierType)mods, (GtkAccelFlags)flags);
+
+    return 0;
+}
+
+/**
+ * Method:  remove_accelerator
+ *
+ * Remove an accelerator from the widget
+ *
+ * @param accelgrp The accelerator group
+ *
+ * @param key     The accel key binding 
+ *
+ * @param mods    The accel modifiers
+ *
+ * @return        Zero.
+ **/
+RexxMethod3(int,                       // Return type
+            GrxWidgetRemoveAccelerator, // Object_method name
+            RexxObjectPtr, accelgrp,   // Accelerator group
+            int, key,                  // Accelerator key
+            int, mods)                 // Accelerator modifiers
+{
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
+    RexxPointerObject grpptr = (RexxPointerObject)context->SendMessage0(accelgrp, "POINTER");
+    GtkAccelGroup *grpWidget = (GtkAccelGroup *)context->PointerValue(grpptr);
+
+    gtk_widget_remove_accelerator(myWidget, grpWidget, key, 
+                                  (GdkModifierType)mods);
+
+    return 0;
+}
+
+/**
+ * Method:  set_accel_path
+ *
+ * Set the path for an accelerator.
+ *
+ * @param accelgrp The accelerator group
+ *
+ * @param key     The accel key binding 
+ *
+ * @param mods    The accel modifiers
+ *
+ * @return        Zero.
+ **/
+RexxMethod2(int,                       // Return type
+            GrxWidgetSetAccelPath,     // Object_method name
+            CSTRING, path,             // Accelerator path
+            RexxObjectPtr, accelgrp)   // Accelerator group
+{
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
+    RexxPointerObject grpptr = (RexxPointerObject)context->SendMessage0(accelgrp, "POINTER");
+    GtkAccelGroup *grpWidget = (GtkAccelGroup *)context->PointerValue(grpptr);
+
+    gtk_widget_set_accel_path(myWidget, path, grpWidget);
+
+    return 0;
+}
+
+/**
  * Method:  signal_connect
  *
  * Connect a signal to an ooRexx method.
