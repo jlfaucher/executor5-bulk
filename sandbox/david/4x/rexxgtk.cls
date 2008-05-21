@@ -2340,6 +2340,25 @@ return
 
 
 /*============================================================================*/
+/* Class: GtkAccelGroup                                                       */
+/*============================================================================*/
+
+::class GtkAccelGroup public
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxAccelGroupNew"
+::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxAccelGroupSignalConnect"
+
+-- The following are the methods that can be connected to signals. By default
+-- they do nothing.
+
+::method signal_accel_activate
+return .false
+
+::method signal_accel_changed
+return
+
+
+/*============================================================================*/
 /*============================================================================*/
 /*============================================================================*/
 /* These are classes and routines specific to Glib.                           */

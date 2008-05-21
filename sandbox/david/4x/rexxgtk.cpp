@@ -715,6 +715,7 @@ RexxMethodEntry gtkobject_methods[] = {
     REXX_METHOD(GrxMenuItemDeselect, GrxMenuItemDeselect),
     REXX_METHOD(GrxMenuItemSignalConnect, GrxMenuItemSignalConnect),
     REXX_METHOD(GrxSeparatorMenuItemNew, GrxSeparatorMenuItemNew),
+    REXX_METHOD(GrxAccelGroupNew, GrxAccelGroupNew),
     REXX_LAST_METHOD()
 };
 

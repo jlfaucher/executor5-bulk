@@ -482,6 +482,7 @@ REXX_METHOD_PROTOTYPE(GrxMenuItemSelect)
 REXX_METHOD_PROTOTYPE(GrxMenuItemDeselect)
 REXX_METHOD_PROTOTYPE(GrxMenuItemSignalConnect)
 REXX_METHOD_PROTOTYPE(GrxSeparatorMenuItemNew)
+REXX_METHOD_PROTOTYPE(GrxAccelGroupNew)
  
  #endif /* REXXGTK_H */
  
