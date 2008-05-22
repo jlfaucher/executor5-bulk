@@ -151,6 +151,29 @@ RexxMethod1(int,                       // Return type
 }
 
 /**
+ * Method:  add_accel_group
+ *
+ * Add an accelerator group to the window,
+ *
+ * @param group   The accel group.
+ *
+ * @return        Zero.
+ **/
+RexxMethod1(int,                        // Return type
+            GrxWindowAddAccelGroup,     // Object_method name
+            RexxObjectPtr, accelgrp)    // Accelerator group
+{
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    GtkWindow *myWidget = (GtkWindow *)context->PointerValue(rxptr);
+    RexxPointerObject accelgrpptr = (RexxPointerObject)context->SendMessage0(accelgrp, "POINTER");
+    GtkAccelGroup *accelgrpWidget = (GtkAccelGroup *)context->PointerValue(accelgrpptr);
+
+    gtk_window_add_accel_group(myWidget, accelgrpWidget);
+
+    return 0;
+}
+
+/**
  * Method:  signal_connect
  *
  * Connect a signal to an ooRexx method.

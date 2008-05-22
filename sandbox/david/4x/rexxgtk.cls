@@ -1117,6 +1117,7 @@ return self~signal_connect:super(event)
 ::METHOD set_title EXTERNAL "LIBRARY rexxgtk GrxWindowSetTitle"
 ::METHOD 'modal=' EXTERNAL "LIBRARY rexxgtk GrxWindowSetModal"
 ::METHOD set_modal EXTERNAL "LIBRARY rexxgtk GrxWindowSetModal"
+::METHOD add_accel_group EXTERNAL "LIBRARY rexxgtk GrxWindowAddAccelGroup"
 ::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxWindowSignalConnect"
 
 -- The following are the methods that can be connected to signals. By default
