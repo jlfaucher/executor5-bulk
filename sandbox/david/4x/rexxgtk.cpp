@@ -717,6 +717,14 @@ RexxMethodEntry gtkobject_methods[] = {
     REXX_METHOD(GrxMenuItemSignalConnect, GrxMenuItemSignalConnect),
     REXX_METHOD(GrxSeparatorMenuItemNew, GrxSeparatorMenuItemNew),
     REXX_METHOD(GrxAccelGroupNew, GrxAccelGroupNew),
+    REXX_METHOD(GrxStatusbarNew, GrxStatusbarNew),
+    REXX_METHOD(GrxStatusbarGetContextId, GrxStatusbarGetContextId),
+    REXX_METHOD(GrxStatusbarPush, GrxStatusbarPush),
+    REXX_METHOD(GrxStatusbarPop, GrxStatusbarPop),
+    REXX_METHOD(GrxStatusbarRemove, GrxStatusbarRemove),
+    REXX_METHOD(GrxStatusbarSetHasResizeGrip, GrxStatusbarSetHasResizeGrip),
+    REXX_METHOD(GrxStatusbarGetHasResizeGrip, GrxStatusbarGetHasResizeGrip),
+    REXX_METHOD(GrxStatusbarSignalConnect, GrxStatusbarSignalConnect),
     REXX_LAST_METHOD()
 };
 

@@ -484,6 +484,14 @@ REXX_METHOD_PROTOTYPE(GrxMenuItemDeselect)
 REXX_METHOD_PROTOTYPE(GrxMenuItemSignalConnect)
 REXX_METHOD_PROTOTYPE(GrxSeparatorMenuItemNew)
 REXX_METHOD_PROTOTYPE(GrxAccelGroupNew)
+REXX_METHOD_PROTOTYPE(GrxStatusbarNew)
+REXX_METHOD_PROTOTYPE(GrxStatusbarGetContextId)
+REXX_METHOD_PROTOTYPE(GrxStatusbarPush)
+REXX_METHOD_PROTOTYPE(GrxStatusbarPop)
+REXX_METHOD_PROTOTYPE(GrxStatusbarRemove)
+REXX_METHOD_PROTOTYPE(GrxStatusbarSetHasResizeGrip)
+REXX_METHOD_PROTOTYPE(GrxStatusbarGetHasResizeGrip)
+REXX_METHOD_PROTOTYPE(GrxStatusbarSignalConnect)
  
  #endif /* REXXGTK_H */
  

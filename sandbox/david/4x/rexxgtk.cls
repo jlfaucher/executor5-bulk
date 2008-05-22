@@ -2360,6 +2360,31 @@ return
 
 
 /*============================================================================*/
+/* Class: GtkStatusbar                                                        */
+/*============================================================================*/
+
+::class GtkStatusbar public subclass GtkHBox
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxStatusbarNew"
+::METHOD get_context_id EXTERNAL "LIBRARY rexxgtk GrxStatusbarGetContextId"
+::METHOD push EXTERNAL "LIBRARY rexxgtk GrxStatusbarPush"
+::METHOD pop EXTERNAL "LIBRARY rexxgtk GrxStatusbarPop"
+::METHOD remove EXTERNAL "LIBRARY rexxgtk GrxStatusbarRemove"
+::METHOD set_has_resize_grip EXTERNAL "LIBRARY rexxgtk GrxStatusbarSetHasResizeGrip"
+::METHOD get_has_resize_grip EXTERNAL "LIBRARY rexxgtk GrxStatusbarGetHasResizeGrip"
+::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxStatusbarSignalConnect"
+
+-- The following are the methods that can be connected to signals. By default
+-- they do nothing.
+
+::method signal_text_popped
+return
+
+::method signal_text_pushed
+return
+
+
+/*============================================================================*/
 /*============================================================================*/
 /*============================================================================*/
 /* These are classes and routines specific to Glib.                           */
