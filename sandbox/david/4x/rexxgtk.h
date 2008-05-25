@@ -492,6 +492,18 @@ REXX_METHOD_PROTOTYPE(GrxStatusbarRemove)
 REXX_METHOD_PROTOTYPE(GrxStatusbarSetHasResizeGrip)
 REXX_METHOD_PROTOTYPE(GrxStatusbarGetHasResizeGrip)
 REXX_METHOD_PROTOTYPE(GrxStatusbarSignalConnect)
+REXX_METHOD_PROTOTYPE(GrxMenuBarNew)
+REXX_METHOD_PROTOTYPE(GrxMenuBarAppend)
+REXX_METHOD_PROTOTYPE(GrxMenuBarPrepend)
+REXX_METHOD_PROTOTYPE(GrxMenuBarInsert)
+REXX_METHOD_PROTOTYPE(GrxMenuBarSetPackDirection)
+REXX_METHOD_PROTOTYPE(GrxMenuBarGetPackDirection)
+REXX_METHOD_PROTOTYPE(GrxMenuBarSetChildPackDirection)
+REXX_METHOD_PROTOTYPE(GrxMenuBarGetChildPackDirection)
+REXX_METHOD_PROTOTYPE(GrxImageMenuItemNew)
+REXX_METHOD_PROTOTYPE(GrxImageMenuItemNewFromStock)
+REXX_METHOD_PROTOTYPE(GrxImageMenuItemNewWithLabel)
+REXX_METHOD_PROTOTYPE(GrxImageMenuItemNewWithMnemonic)
  
  #endif /* REXXGTK_H */
  

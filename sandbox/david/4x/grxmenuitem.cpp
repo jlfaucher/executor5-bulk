@@ -330,3 +330,97 @@ RexxMethod1(int,                       // Return type
     return 0;
 }
 
+/**
+ * Method:  init
+ *
+ * Create an image menu item.
+ *
+ * @return        Zero.
+ **/
+RexxMethod1(int,                       // Return type
+            GrxImageMenuItemNew,       // Object_method name
+            OSELF, self)               // Self
+{
+    GtkWidget *myWidget;
+
+    myWidget = gtk_image_menu_item_new();
+    context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
+    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
+
+    return 0;
+}
+
+/**
+ * Method:  init
+ *
+ * Create an image menu item.
+ *
+ * @param stockid The stock id string
+ *
+ * @param accelgrp The accelerator group
+ *
+ * @return        Zero.
+ **/
+RexxMethod3(int,                       // Return type
+            GrxImageMenuItemNewFromStock, // Object_method name
+            OSELF, self,               // Self
+            CSTRING, stockid,          // Stock id string
+            RexxObjectPtr, accelgrp)   // Self
+{
+    GtkWidget *myWidget;
+    RexxPointerObject accelgrpptr = (RexxPointerObject)context->SendMessage0(accelgrp, "POINTER");
+    GtkAccelGroup *accelgrpWidget = (GtkAccelGroup *)context->PointerValue(accelgrpptr);
+
+    myWidget = gtk_image_menu_item_new_from_stock(stockid, accelgrpWidget);
+    context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
+    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
+
+    return 0;
+}
+
+/**
+ * Method:  init
+ *
+ * Create an image menu item.
+ *
+ * @param text    The label text
+ *
+ * @return        Zero.
+ **/
+RexxMethod2(int,                       // Return type
+            GrxImageMenuItemNewWithLabel, // Object_method name
+            OSELF, self,               // Self
+            CSTRING, text)             // label string
+{
+    GtkWidget *myWidget;
+
+    myWidget = gtk_image_menu_item_new_with_label(text);
+    context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
+    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
+
+    return 0;
+}
+
+/**
+ * Method:  init
+ *
+ * Create an image menu item.
+ *
+ * @param text    The label text
+ *
+ * @return        Zero.
+ **/
+RexxMethod2(int,                       // Return type
+            GrxImageMenuItemNewWithMnemonic, // Object_method name
+            OSELF, self,               // Self
+            CSTRING, text)             // label string
+{
+    GtkWidget *myWidget;
+
+    myWidget = gtk_image_menu_item_new_with_mnemonic(text);
+    context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
+    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
+
+    return 0;
+}
+

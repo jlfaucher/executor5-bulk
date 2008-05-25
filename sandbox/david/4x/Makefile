@@ -77,6 +77,7 @@ OBJECTS = rexxgtk.o \
 	grxmenushell.o \
 	grxmenu.o \
 	grxmenuitem.o \
+	grxmenubar.o \
 	grxevents.o \
 	grxaccelgroup.o \
 	grxstatusbar.o
@@ -180,6 +181,9 @@ grxmenu.o: grxmenu.cpp rexxgtk.h
 
 grxmenuitem.o: grxmenuitem.cpp rexxgtk.h
 	gcc -c $(GRXCFLAGS) grxmenuitem.cpp
+
+grxmenubar.o: grxmenubar.cpp rexxgtk.h
+	gcc -c $(GRXCFLAGS) grxmenubar.cpp
 
 grxevents.o: grxevents.cpp rexxgtk.h
 	gcc -c $(GRXCFLAGS) grxevents.cpp

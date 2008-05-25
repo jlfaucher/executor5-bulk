@@ -2332,7 +2332,48 @@ return
 
 
 /*============================================================================*/
-/* Class: GtkMenuItem                                                         */
+/* Class: GtkImageMenuItem                                                    */
+/*============================================================================*/
+
+::class GtkImageMenuItem public subclass GtkMenuItem
+
+::method new_from_stock class
+use strict arg id, accelgrp
+return self~new_from_stock_p id, accelgrp
+
+::method new_with label class
+use strict arg label
+return self~new_with_label_p label
+
+::method new_with_mnemonic class
+use strict arg label
+return self~new_with_mnemonic_p label
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxImageMenuItemNew"
+
+::METHOD new_from_stock_p private EXTERNAL "LIBRARY rexxgtk GrxImageMenuItemNewFromStock"
+::METHOD new_with_label_p private EXTERNAL "LIBRARY rexxgtk GrxImageMenuItemNewWithLabel"
+::METHOD new_with_mnemonic_p private EXTERNAL "LIBRARY rexxgtk GrxImageMenuItemNewWithMnemonic"
+
+
+/*============================================================================*/
+/* Class: GtkMenuBar                                                          */
+/*============================================================================*/
+
+::class GtkMenuBar public subclass GtkMenuShell
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxMenuBarNew"
+::METHOD append EXTERNAL "LIBRARY rexxgtk GrxMenuBarAppend"
+::METHOD prepend EXTERNAL "LIBRARY rexxgtk GrxMenuBarPrepend"
+::METHOD insert EXTERNAL "LIBRARY rexxgtk GrxMenuBarInsert"
+::METHOD set_pack_direction EXTERNAL "LIBRARY rexxgtk GrxMenuBarSetPackDirection"
+::METHOD get_pack_direction EXTERNAL "LIBRARY rexxgtk GrxMenuBarGetPackDirection"
+::METHOD set_child_pack_direction EXTERNAL "LIBRARY rexxgtk GrxMenuBarSetChildPackDirection"
+::METHOD get_child_pack_direction EXTERNAL "LIBRARY rexxgtk GrxMenuBarGetChildPackDirection"
+
+
+/*============================================================================*/
+/* Class: GtkSeparatorMenuItem                                                     */
 /*============================================================================*/
 
 ::class GtkSeparatorMenuItem public subclass GtkMenuItem
