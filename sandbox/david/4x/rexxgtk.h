@@ -63,7 +63,7 @@ extern int rexxgtk_argc;
 
 typedef struct _cbcb {
     RexxInstance  *instance;         // Rexx instance
-    char          *signal_name;      // Name of the ooRexx method
+    const char    *signal_name;      // Name of the ooRexx method
 } cbcb;
 
 
@@ -504,6 +504,41 @@ REXX_METHOD_PROTOTYPE(GrxImageMenuItemNew)
 REXX_METHOD_PROTOTYPE(GrxImageMenuItemNewFromStock)
 REXX_METHOD_PROTOTYPE(GrxImageMenuItemNewWithLabel)
 REXX_METHOD_PROTOTYPE(GrxImageMenuItemNewWithMnemonic)
+REXX_METHOD_PROTOTYPE(GrxToolbarNew)
+REXX_METHOD_PROTOTYPE(GrxToolbarInsert)
+REXX_METHOD_PROTOTYPE(GrxToolbarGetItemIndex)
+REXX_METHOD_PROTOTYPE(GrxToolbarGetNItems)
+REXX_METHOD_PROTOTYPE(GrxToolbarGetNthItem)
+REXX_METHOD_PROTOTYPE(GrxToolbarGetDropIndex)
+REXX_METHOD_PROTOTYPE(GrxToolbarSetDropHighlightItem)
+REXX_METHOD_PROTOTYPE(GrxToolbarSetShowArrow)
+REXX_METHOD_PROTOTYPE(GrxToolbarSetOrientation)
+REXX_METHOD_PROTOTYPE(GrxToolbarSetTooltips)
+REXX_METHOD_PROTOTYPE(GrxToolbarUnsetIconSize)
+REXX_METHOD_PROTOTYPE(GrxToolbarGetShowArrow)
+REXX_METHOD_PROTOTYPE(GrxToolbarGetOrientation)
+REXX_METHOD_PROTOTYPE(GrxToolbarGetStyle)
+REXX_METHOD_PROTOTYPE(GrxToolbarGetIconSize)
+REXX_METHOD_PROTOTYPE(GrxToolbarGetTooltips)
+REXX_METHOD_PROTOTYPE(GrxToolbarGetReliefStyle)
+REXX_METHOD_PROTOTYPE(GrxToolbarAppendItem)
+REXX_METHOD_PROTOTYPE(GrxToolbarPrependItem)
+REXX_METHOD_PROTOTYPE(GrxToolbarInsertItem)
+REXX_METHOD_PROTOTYPE(GrxToolbarAppendSpace)
+REXX_METHOD_PROTOTYPE(GrxToolbarPrependSpace)
+REXX_METHOD_PROTOTYPE(GrxToolbarInsertSpace)
+REXX_METHOD_PROTOTYPE(GrxToolbarAppendElement)
+REXX_METHOD_PROTOTYPE(GrxToolbarPrependElement)
+REXX_METHOD_PROTOTYPE(GrxToolbarInsertElement)
+REXX_METHOD_PROTOTYPE(GrxToolbarAppendWidget)
+REXX_METHOD_PROTOTYPE(GrxToolbarPrependWidget)
+REXX_METHOD_PROTOTYPE(GrxToolbarInsertWidget)
+REXX_METHOD_PROTOTYPE(GrxToolbarSetStyle)
+REXX_METHOD_PROTOTYPE(GrxToolbarInsertStock)
+REXX_METHOD_PROTOTYPE(GrxToolbarSetIconSize)
+REXX_METHOD_PROTOTYPE(GrxToolbarRemoveSpace)
+REXX_METHOD_PROTOTYPE(GrxToolbarUnsetStyle)
+REXX_METHOD_PROTOTYPE(GrxToolbarSignalConnect)
  
  #endif /* REXXGTK_H */
  

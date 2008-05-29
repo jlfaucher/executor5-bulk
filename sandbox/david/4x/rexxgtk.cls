@@ -224,10 +224,10 @@ return
 ::constant GTK_ASSISTANT_PAGE_CONFIRM 2
 ::constant GTK_ASSISTANT_PAGE_SUMMARY 3
 ::constant GTK_ASSISTANT_PAGE_PROGRESS 4
-   -- GtkReliefType
+   -- GtkReliefStyle
 ::constant GTK_RELIEF_NORMAL 0
 ::constant GTK_RELIEF_HALF 1
-::constant GTK_RELIEF_NONO 2
+::constant GTK_RELIEF_NONE 2
    -- GtkAtom
 ::constant GTK_SELECTION_PRIMARY 1
 ::constant GTK_SELECTION_SECONDARY 2
@@ -275,6 +275,28 @@ return
 ::constant GTK_STATE_PRELIGHT 2
 ::constant GTK_STATE_SELECTED 3
 ::constant GTK_STATE_INSENSITIVE 4
+   -- GtkPachDirection
+::constant GTK_PACK_DIRECTION_LTR 0
+::constant GTK_PACK_DIRECTION_RTL 1
+::constant GTK_PACK_DIRECTION_TTB 2
+::constant GTK_PACK_DIRECTION_BTT 3
+   -- GtkOrientation
+::constant GTK_ORIENTATION_HORIZONTAL 0
+::constant GTK_ORIENTATION_VERTICAL 1
+   -- GtkToolbarStyle
+::constant GTK_TOOLBAR_ICONS 0
+::constant GTK_TOOLBAR_TEXT 1
+::constant GTK_TOOLBAR_BOTH 2
+::constant GTK_TOOLBAR_BOTH_HORIZ 3
+   -- GtkToolbarChildType
+::constant GTK_TOOLBAR_CHILD_SPACE 0
+::constant GTK_TOOLBAR_CHILD_BUTTON 1
+::constant GTK_TOOLBAR_CHILD_TOGGLEBUTTON 2
+::constant GTK_TOOLBAR_CHILD_RADIOBUTTON 3
+::constant GTK_TOOLBAR_CHILD_WIDGET 4
+   -- GtkToolbarSpaceStyle
+::constant GTK_TOOLBAR_SPACE_EMPTY 0
+::constant GTK_TOOLBAR_SPACE_LINE 1
    -- Pango scale factors
 ::constant PANGO_SCALE_XX_SMALL 0.5787037037037
 ::constant PANGO_SCALE_X_SMALL 0.6444444444444
@@ -2370,6 +2392,63 @@ return self~new_with_mnemonic_p label
 ::METHOD get_pack_direction EXTERNAL "LIBRARY rexxgtk GrxMenuBarGetPackDirection"
 ::METHOD set_child_pack_direction EXTERNAL "LIBRARY rexxgtk GrxMenuBarSetChildPackDirection"
 ::METHOD get_child_pack_direction EXTERNAL "LIBRARY rexxgtk GrxMenuBarGetChildPackDirection"
+
+
+/*============================================================================*/
+/* Class: GtkToolbarm                                                         */
+/*============================================================================*/
+
+::class GtkToolbar public subclass GtkContainer
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxToolbarNew"
+::METHOD insert EXTERNAL "LIBRARY rexxgtk GrxToolbarInsert"
+::METHOD get_item_index EXTERNAL "LIBRARY rexxgtk GrxToolbarGetItemIndex"
+::METHOD get_n_items EXTERNAL "LIBRARY rexxgtk GrxToolbarGetNItems"
+::METHOD get_nth_item EXTERNAL "LIBRARY rexxgtk GrxToolbarGetNthItem"
+::METHOD get_drop_index EXTERNAL "LIBRARY rexxgtk GrxToolbarGetDropIndex"
+::METHOD set_drop_highlight_item EXTERNAL "LIBRARY rexxgtk GrxToolbarSetDropHighlightItem"
+::METHOD set_show_arrow EXTERNAL "LIBRARY rexxgtk GrxToolbarSetShowArrow"
+::METHOD set_orientation EXTERNAL "LIBRARY rexxgtk GrxToolbarSetOrientation"
+::METHOD set_tooltips EXTERNAL "LIBRARY rexxgtk GrxToolbarSetTooltips"
+::METHOD set_icon_size EXTERNAL "LIBRARY rexxgtk GrxToolbarSetIconSize"
+::METHOD get_show_arrow EXTERNAL "LIBRARY rexxgtk GrxToolbarGetShowArrow"
+::METHOD get_orientation EXTERNAL "LIBRARY rexxgtk GrxToolbarGetOrientation"
+::METHOD get_style EXTERNAL "LIBRARY rexxgtk GrxToolbarGetStyle"
+::METHOD get_icon_size EXTERNAL "LIBRARY rexxgtk GrxToolbarGetIconSize"
+::METHOD get_tooltips EXTERNAL "LIBRARY rexxgtk GrxToolbarGetTooltips"
+::METHOD append_item EXTERNAL "LIBRARY rexxgtk GrxToolbarAppendItem"
+::METHOD prepend_item EXTERNAL "LIBRARY rexxgtk GrxToolbarPrependItem"
+::METHOD insert_item EXTERNAL "LIBRARY rexxgtk GrxToolbarInsertItem"
+::METHOD append_space EXTERNAL "LIBRARY rexxgtk GrxToolbarAppendSpace"
+::METHOD prepend_space EXTERNAL "LIBRARY rexxgtk GrxToolbarPrependSpace"
+::METHOD insert_space EXTERNAL "LIBRARY rexxgtk GrxToolbarInsertSpace"
+::METHOD append_element EXTERNAL "LIBRARY rexxgtk GrxToolbarAppendElement"
+::METHOD prepend_element EXTERNAL "LIBRARY rexxgtk GrxToolbarPrependElement"
+::METHOD insert_element EXTERNAL "LIBRARY rexxgtk GrxToolbarInsertElement"
+::METHOD append_widget EXTERNAL "LIBRARY rexxgtk GrxToolbarAppendWidget"
+::METHOD prepend_widget EXTERNAL "LIBRARY rexxgtk GrxToolbarPrependWidget"
+::METHOD insert_widget EXTERNAL "LIBRARY rexxgtk GrxToolbarInsertWidget"
+::METHOD set_style EXTERNAL "LIBRARY rexxgtk GrxToolbarSetStyle"
+::METHOD insert_stock EXTERNAL "LIBRARY rexxgtk GrxToolbarInsertStock"
+::METHOD set_icon_size EXTERNAL "LIBRARY rexxgtk GrxToolbarSetIconSize"
+::METHOD remove_space EXTERNAL "LIBRARY rexxgtk GrxToolbarRemoveSpace"
+::METHOD unset_style EXTERNAL "LIBRARY rexxgtk GrxToolbarUnsetStyle"
+::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxToolbarSignalConnect"
+
+-- The following are the methods that can be connected to signals. By default
+-- they do nothing.
+
+::method focus_home_or_end
+return .false
+
+::method signal_orientation_changed
+return
+
+::method signal_popup_context_menu
+return .false
+
+::method signal_style_changed
+return
 
 
 /*============================================================================*/
