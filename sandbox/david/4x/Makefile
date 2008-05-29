@@ -81,7 +81,8 @@ OBJECTS = rexxgtk.o \
 	grxevents.o \
 	grxaccelgroup.o \
 	grxstatusbar.o \
-	grxtoolbar.o
+	grxtoolbar.o \
+	grxtoolitem.o
 
 
 # Build the shared library
@@ -197,6 +198,9 @@ grxstatusbar.o: grxstatusbar.cpp rexxgtk.h
 
 grxtoolbar.o: grxtoolbar.cpp rexxgtk.h
 	gcc -c $(GRXCFLAGS) grxtoolbar.cpp
+
+grxtoolitem.o: grxtoolitem.cpp rexxgtk.h
+	gcc -c $(GRXCFLAGS) grxtoolitem.cpp
 
 
 

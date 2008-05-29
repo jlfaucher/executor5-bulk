@@ -2395,7 +2395,7 @@ return self~new_with_mnemonic_p label
 
 
 /*============================================================================*/
-/* Class: GtkToolbarm                                                         */
+/* Class: GtkToolbar                                                          */
 /*============================================================================*/
 
 ::class GtkToolbar public subclass GtkContainer
@@ -2438,7 +2438,7 @@ return self~new_with_mnemonic_p label
 -- The following are the methods that can be connected to signals. By default
 -- they do nothing.
 
-::method focus_home_or_end
+::method signal_focus_home_or_end
 return .false
 
 ::method signal_orientation_changed
@@ -2448,6 +2448,49 @@ return
 return .false
 
 ::method signal_style_changed
+return
+
+
+/*============================================================================*/
+/* Class: GtkToolItem                                                         */
+/*============================================================================*/
+
+::class GtkToolItem public subclass GtkContainer
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxToolItemNew"
+::METHOD set_homogeneous EXTERNAL "LIBRARY rexxgtk GrxToolItemSetHomogeneous"
+::METHOD get_homogeneous EXTERNAL "LIBRARY rexxgtk GrxToolItemGetHomogeneous"
+::METHOD set_expand EXTERNAL "LIBRARY rexxgtk GrxToolItemSetExpand"
+::METHOD get_expand EXTERNAL "LIBRARY rexxgtk GrxToolItemGetExpand"
+::METHOD set_tooltip EXTERNAL "LIBRARY rexxgtk GrxToolItemSetTooltip"
+::METHOD set_use_drag_window EXTERNAL "LIBRARY rexxgtk GrxToolItemSetUseDragWindow"
+::METHOD get_use_drag_window EXTERNAL "LIBRARY rexxgtk GrxToolItemGetUseDragWindow"
+::METHOD set_visible_horizontal EXTERNAL "LIBRARY rexxgtk GrxToolItemSetVisibleHorizontal"
+::METHOD get_visible_horizontal EXTERNAL "LIBRARY rexxgtk GrxToolItemGetVisibleHorizontal"
+::METHOD set_visible_vertical EXTERNAL "LIBRARY rexxgtk GrxToolItemSetVisibleVertical"
+::METHOD get_visible_vertical EXTERNAL "LIBRARY rexxgtk GrxToolItemGetVisibleVertical"
+::METHOD set_is_important EXTERNAL "LIBRARY rexxgtk GrxToolItemSetIsImportant"
+::METHOD get_is_important EXTERNAL "LIBRARY rexxgtk GrxToolItemGetIsImportant"
+::METHOD get_icon_size EXTERNAL "LIBRARY rexxgtk GrxToolItemGetIconSize"
+::METHOD get_orientation EXTERNAL "LIBRARY rexxgtk GrxToolItemGetOrientation"
+::METHOD get_toolbar_style EXTERNAL "LIBRARY rexxgtk GrxToolItemGetToolbarStyle"
+::METHOD get_relief_style EXTERNAL "LIBRARY rexxgtk GrxToolItemGetReliefStyle"
+::METHOD retrieve_proxy_menu_item EXTERNAL "LIBRARY rexxgtk GrxToolItemRetrieveProxyMenuItem"
+::METHOD get_proxy_menu_item EXTERNAL "LIBRARY rexxgtk GrxToolItemGetProxyMenuItem"
+::METHOD set_proxy_menu_item EXTERNAL "LIBRARY rexxgtk GrxToolItemSetProxyMenuItem"
+::METHOD rebuild_menu EXTERNAL "LIBRARY rexxgtk GrxToolItemRebuildMenu"
+::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxToolItemSignalConnect"
+
+-- The following are the methods that can be connected to signals. By default
+-- they do nothing.
+
+::method signal_create_menu_proxy
+return .false
+
+::method signal_set_tooltip
+return .false
+
+::method signal_toolbar_reconfigured
 return
 
 
