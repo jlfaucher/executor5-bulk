@@ -1,0 +1,121 @@
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2008 Rexx Language Association. All rights reserved.         */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+#include <windows.h>
+#include <commctrl.h>
+#include "resource.h"
+
+IDD_STATS DIALOGEX 0,0,515,294
+STYLE DS_3DLOOK | DS_MODALFRAME | DS_SETFONT | DS_FIXEDSYS | WS_VISIBLE | WS_BORDER | WS_CAPTION | WS_DLGFRAME | WS_POPUP | WS_SYSMENU
+CAPTION "Total Application Times"
+FONT 8,"MS Shell Dlg 2",400,0,1
+BEGIN
+    CONTROL         "",IDC_LIST_STATS,WC_LISTVIEW,WS_TABSTOP | WS_BORDER | LVS_ALIGNLEFT | LVS_REPORT,7,6,501,216
+    GROUPBOX        "Sort By",IDC_GB_SORTBY,7,228,127,59,WS_GROUP
+    AUTORADIOBUTTON "Start Time",IDC_RB_START,14,246,45,10,WS_TABSTOP
+    AUTORADIOBUTTON "Duration",IDC_RB_DURATION,14,266,40,10
+    AUTORADIOBUTTON "Window Handle",IDC_RB_HWND,66,246,61,10,BS_NOTIFY
+    AUTORADIOBUTTON "Window Title",IDC_RB_TITLE,66,266,61,10,BS_NOTIFY
+    GROUPBOX        "Order",IDC_GB_ORDER,144,228,74,59,WS_GROUP
+    AUTORADIOBUTTON "Ascending",IDC_RB_ASCENDING,156,246,56,10,WS_TABSTOP | BS_NOTIFY
+    AUTORADIOBUTTON "Descending",IDC_RB_DESCENDING,156,266,55,10,BS_NOTIFY
+    PUSHBUTTON      "Save",IDC_PB_SAVE,229,231,50,14
+    PUSHBUTTON      "Refresh",IDC_PB_REFRESH,229,252,50,14
+    PUSHBUTTON      "Print",IDC_PB_PRINT,229,273,50,14
+    GROUPBOX        "Save To File Name",IDC_GB_SAVETO,288,228,149,59
+    AUTOCHECKBOX    "Prompt For File Name",IDC_CHECK_NEW,298,240,107,10,BS_NOTIFY
+    LTEXT           "Curent Name:",IDC_TXT_DESC,298,254,69,8
+    LTEXT           "PlaceHolder",IDC_TXT_FILE,298,270,109,8,SS_PATHELLIPSIS
+    DEFPUSHBUTTON   "Done",IDOK,458,273,50,14
+END
+
+IDD_ACTIVATED DIALOGEX 3600,3600,489,223
+STYLE DS_3DLOOK | DS_MODALFRAME | DS_SETFONT | DS_FIXEDSYS | WS_BORDER | WS_CAPTION | WS_DLGFRAME | WS_GROUP | WS_MAXIMIZEBOX | WS_POPUP | WS_SYSMENU | WS_TABSTOP
+CAPTION "Activated Windows"
+FONT 8,"MS Shell Dlg 2",400,0,1
+BEGIN
+    CONTROL         "",IDC_LIST,WC_LISTVIEW,WS_TABSTOP | WS_BORDER | LVS_ALIGNLEFT | LVS_REPORT,7,31,475,161
+    PUSHBUTTON      "Report",IDC_PB_REPORT,7,202,50,14
+    PUSHBUTTON      "Hide",IDC_PB_HIDE,366,202,50,14
+    DEFPUSHBUTTON   "Close",IDOK,432,202,50,14
+    PUSHBUTTON      "Preferences",IDC_PB_PREFERENCES,69,202,50,14
+    LTEXT           "Started Monitoring Wiindows:",IDC_STARTED_DESC,7,15,433,8
+END
+
+IDD_PREFERENCES DIALOGEX 0,0,337,262
+STYLE DS_3DLOOK | DS_CENTER | DS_MODALFRAME | DS_SETFONT | DS_FIXEDSYS | WS_BORDER | WS_CAPTION | WS_DLGFRAME | WS_POPUP | WS_SYSMENU
+CAPTION "Preferences"
+FONT 8,"MS Shell Dlg 2",400,0,1
+BEGIN
+    GROUPBOX        "Set Default Values for the Monitor Windows Application",IDC_GB_OPTIONS,7,7,323,229,WS_GROUP
+    GROUPBOX        "Monitor Window",IDC_GB_MONITOR,14,22,309,87,WS_GROUP
+    AUTOCHECKBOX    "Monitor Is Hidden",IDC_CHECK_HIDE,25,34,77,10
+    AUTOCHECKBOX    "Rotate Log",IDC_CHECK_ROTATE,25,48,65,10,WS_GROUP
+    AUTOCHECKBOX    "Log In Application Folder",IDC_CHECK_LOG_IN_FOLDER,25,63,97,10
+    GROUPBOX        "Window Logging",IDC_GB_LOG_WHEN,153,29,161,45,WS_GROUP
+    AUTORADIOBUTTON "Continously",IDC_RB_CONTINOUS,163,40,69,10,WS_TABSTOP
+    AUTORADIOBUTTON "Only On Save Command",IDC_RB_ONSAVE,163,56,89,10
+    AUTORADIOBUTTON "Append",IDC_RB_APPEND,260,40,38,10,WS_GROUP | WS_TABSTOP
+    AUTORADIOBUTTON "Overwrite",IDC_RB_OVERWRITE,260,56,49,10
+    LTEXT           "Log Folder:",IDC_FOLDER_TXT,25,81,47,8
+    EDITTEXT        IDC_FOLDER_EDIT,25,93,153,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "...",IDC_PB_FOLDER_BROWSE,182,93,17,14
+    LTEXT           "Log Name:",IDC_LOG_TXT,218,81,47,8
+    EDITTEXT        IDC_LOG_EDIT,218,93,77,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "...",IDC_PB_LOG_BROWSE,298,93,17,14
+    GROUPBOX        "Report Options",IDC_GB_REPORT,15,118,309,107,BS_NOTIFY
+    GROUPBOX        "Sort",IDC_GB_SORT_R,25,131,290,45,WS_GROUP
+    AUTORADIOBUTTON "Start Time",IDC_RB_START_R,36,142,51,10,WS_GROUP | WS_TABSTOP
+    AUTORADIOBUTTON "Duration",IDC_RB_DURATION_R,36,158,51,10
+    AUTORADIOBUTTON "Window Title",IDC_RB_TITLE_R,109,143,51,10
+    AUTORADIOBUTTON "Window Handle",IDC_RB_HWND_R,109,159,67,10
+    AUTORADIOBUTTON "Ascending",IDC_RB_ASCENDING_R,193,143,51,10,WS_GROUP | WS_TABSTOP
+    AUTORADIOBUTTON "Descending",IDC_RB_DESCENDING_R,193,159,67,10
+    AUTOCHECKBOX    "Log In Application Folder",IDC_CHECK_LOG_IN_FOLDER_R,26,184,92,10
+    AUTOCHECKBOX    "Rotate Log",IDC_CHECK_ROTATE_R,122,184,51,10
+    AUTOCHECKBOX    "Append To Log",IDC_CHECK_APPEND_R,174,184,64,10
+    AUTOCHECKBOX    "Always Prompt for Log Name",IDC_CHECK_PROMPT_R,243,181,64,16,BS_LEFT | BS_MULTILINE
+    LTEXT           "Log Folder:",IDC_FOLDER_TXT_R,26,196,47,8
+    EDITTEXT        IDC_FOLDER_EDIT_R,26,208,153,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "...",IDC_PB_FOLDER_BROWSE_R,183,208,17,14
+    LTEXT           "Log Name:",IDC_LOG_TXT_R,219,196,47,8
+    EDITTEXT        IDC_LOG_EDIT_R,219,208,77,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "...",IDC_PB_LOG_BROWSE_R,299,208,17,14
+    PUSHBUTTON      "Cancel",IDCANCEL,160,241,50,14
+    PUSHBUTTON      "Apply",IDC_PB_APPLY,219,241,50,14
+    DEFPUSHBUTTON   "OK",IDOK,280,241,50,14
+END
