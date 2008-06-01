@@ -131,7 +131,7 @@ ULONG APIENTRY StopSoundFile(
 }
 
 
-UINT APIENTRY OFNSetForegroundHookProc(
+UINT_PTR CALLBACK  OFNSetForegroundHookProc(
     HWND hdlg,    // handle to child dialog window
     UINT uiMsg,    // message identifier
     WPARAM wParam,    // message parameter
@@ -1050,6 +1050,19 @@ DWORD ListExtendedStyleToString(HWND hList, PRXSTRING retstr)
 }
 
 /**
+ * Determine if a window belongs to the specified window class.
+ */
+static BOOL checkWindowClass(HWND hwnd, TCHAR *pClass)
+{
+    TCHAR buf[64];
+
+    if ( ! RealGetWindowClass(hwnd, buf, sizeof(buf)) || strcmp(buf, pClass) )
+        return FALSE;
+    return TRUE;
+}
+
+
+/**
  * Extended Common Control functionality.  This function implements capabilities
  * for the common controls that were not available at the time of the original
  * IBM ooDialog, or were available but not put into ooDialog.
@@ -1108,8 +1121,60 @@ ULONG APIENTRY HandleControlEx(
     /* Determine the control, or other function.  The single first letter is
      * checked.
      */
-    if ( argv[2].strptr[0] == 'E' )      /* Edit control function */
+    if ( argv[2].strptr[0] == 'E' )      /* Edit control function (or also static) */
     {
+        if ( strcmp(argv[3].strptr, "TXT") == 0 )       /* Set or get the control's text. */
+        {
+            /* The same function is used to set / get the text for an edit
+             * control or for a static control.
+             */
+            if ( ! (checkWindowClass(hCtrl, WC_EDIT) || checkWindowClass(hCtrl, WC_STATIC)) )
+                RETVAL(-1)
+
+            if ( argc > 4 )
+            {
+                if ( SetWindowText(hCtrl, argv[4].strptr) == 0 )
+                    RETVAL(-(LONG)GetLastError())
+                else
+                    RETVAL(0)
+            }
+            else
+            {
+                ULONG count = (ULONG)GetWindowTextLength(hCtrl);
+
+                if ( count == 0 )
+                {
+                    retstr->strptr[0] = '\0';
+                    retstr->strlength = 0;
+                }
+                else
+                {
+                    if ( ++count > RXAUTOBUFLEN )
+                    {
+                        PVOID p = GlobalAlloc(GMEM_FIXED, count);
+                        if ( ! p )
+                        {
+                            RETVAL(-(LONG)GetLastError())
+                        }
+
+                        retstr->strptr = (PCHAR)p;
+                    }
+                    count = GetWindowText(hCtrl, (LPTSTR)retstr->strptr, count);
+
+                    retstr->strlength = count;
+                    if ( count == 0 )
+                    {
+                        retstr->strptr[0] = '\0';
+                    }
+                }
+            }
+            return 0;
+        }
+
+        /* The remaining functions are for an edit control only */
+        if ( ! checkWindowClass(hCtrl, WC_EDIT) )
+            RETVAL(-1)
+
         if ( !strcmp(argv[3].strptr, "MSG") ) /* Send an edit message (EM_*) */
         {
             CHECKARGL(5);
@@ -1192,37 +1257,78 @@ ULONG APIENTRY HandleControlEx(
             }
             else RETERR
         }
-        if ( !strcmp(argv[3].strptr, "TXT") )         /* Set or get the edit control's text. */
+        else RETERR
+    }
+    else if ( argv[2].strptr[0] == 'B' ) /* Button control function */
+    {
+        /* Ensure this is a Button control */
+        if ( ! checkWindowClass(hCtrl, WC_BUTTON) )
+            RETVAL(-1)
+
+        if ( !strcmp(argv[3].strptr, "DEF") )        /* Change the default push button */
         {
-            if ( argc > 4 )
-            {
-                if ( SetWindowText(hCtrl, argv[4].strptr) == 0 )
-                    RETVAL(0)
-                else
-                    RETVAL(-(LONG)GetLastError())
-            }
-            else
-            {
-                ULONG count = (ULONG)GetWindowTextLength(hCtrl);
+            LRESULT result;
+            HWND    hOldDef = 0;
 
-                if ( count == 0 )
-                {
-                    retstr->strptr[0] = '\0';
-                    retstr->strlength = 0;
-                }
-                else
-                {
-                    if ( ++count > retstr->strlength )
-                    {
-                        PVOID p = GlobalAlloc(GMEM_FIXED, count);
-                        if ( ! p ) return GetLastError();
-
-                        retstr->strptr = (PCHAR)p;
-                    }
-                    count = GetWindowText(hCtrl, (LPTSTR)retstr->strptr, count);
-                    retstr->strlength = strlen(retstr->strptr);
-                }
+            /* Determine if a button is currently the default. */
+            result = SendMessage(hDlg, DM_GETDEFID, 0, 0);
+            if ( HIWORD(result) == DC_HASDEFID )
+            {
+                /* If the new default button is the same as existing, just return. */
+                if ( LOWORD(result) == id )
+                    RETC(0)
+                hOldDef = (HWND)GetDlgItem(hDlg, LOWORD(result));
             }
+
+            /* These SendMessage() functions always return the same value, so
+             * zero is always returned to ooRexx.  Changing the default push
+             * button does not remove the default appearance from the old
+             * default button.  For the old default button, the style needs to
+             * be explicitly changed.
+             */
+            SendMessage(hDlg, DM_SETDEFID, (WPARAM)id, 0);
+            if ( hOldDef )
+                SendMessage(hOldDef, BM_SETSTYLE, (WPARAM)BS_PUSHBUTTON, (LPARAM)TRUE);
+
+            RETC(0)
+        }
+        else if ( !strcmp(argv[3].strptr, "TYPE") )  /* Button Type */
+        {
+            LONG type;
+            PCHAR p;
+
+            type = GetWindowLong(hCtrl, GWL_STYLE) & BS_TYPEMASK;
+
+            switch ( type )
+            {
+                case BS_PUSHBUTTON : p = "PushButton";
+                    break;
+                case BS_PUSHBOX : p = "PushBox";
+                    break;
+                case BS_DEFPUSHBUTTON : p = "DefPushButton";
+                    break;
+                case BS_CHECKBOX : p = "CheckBox";
+                    break;
+                case BS_AUTOCHECKBOX : p = "AutoCheckBox";
+                    break;
+                case BS_3STATE : p = "3State";
+                    break;
+                case BS_AUTO3STATE : p = "Auto3State";
+                    break;
+                case BS_RADIOBUTTON : p = "RadioButton";
+                    break;
+                case BS_AUTORADIOBUTTON : p = "AutoRadioButton";
+                    break;
+                case BS_GROUPBOX : p = "GroupBox";
+                    break;
+                case BS_USERBUTTON :
+                case BS_OWNERDRAW : p = "OwnerDrawn";
+                    break;
+                default : p = "Unknown";
+                    break;
+            }
+            strcpy(retstr->strptr, p);
+            retstr->strlength = strlen(retstr->strptr);
             return 0;
         }
         else RETERR
@@ -1423,9 +1529,61 @@ ULONG APIENTRY HandleControlEx(
             RETVAL(-2)  /* Subclass procedure is not installed. */
         }
     }
+    else if ( argv[2].strptr[0] == 'F' )    /* Font */
+    {
+        if ( strcmp(argv[3].strptr, "GET" ) == 0)
+        {
+            HFONT   hFont = (HFONT)SendMessage(hCtrl, WM_GETFONT, 0, 0);
+            ultoa((ULONG)hFont, retstr->strptr, 10);
+            retstr->strlength = strlen(retstr->strptr);
+            return 0;
+        }
+        else RETERR
+    }
+    else if ( argv[2].strptr[0] == 'M' )    /* MapDialogRect */
+    {
+        RECT pixel;
+        RECT dtu;
+        double factorX, factorX2, factorY, factorY2;
+
+        CHECKARG(7)
+
+        pixel.left   = atol(argv[3].strptr);
+        pixel.top    = atol(argv[4].strptr);
+        pixel.right  = atol(argv[5].strptr);
+        pixel.bottom = atol(argv[6].strptr);
+
+        dtu.left   = pixel.left;
+        dtu.top    = pixel.top;
+        dtu.right  = pixel.right;
+        dtu.bottom = pixel.bottom;
+
+        if ( MapDialogRect(hDlg, &pixel) )
+        {
+            factorX  = (float)pixel.left / (float)dtu.left;
+            factorY  = (float)pixel.top  / (float)dtu.top;
+            factorX2 = (float)pixel.right / (float)dtu.right;
+            factorY2 = (float)pixel.bottom  / (float)dtu.bottom;
+
+            sprintf(retstr->strptr, "%d %d %d %d %5.3f %5.3f lower right %5.3f %5.3f",
+                    pixel.left, pixel.top, pixel.right, pixel.bottom, factorX, factorY, factorX2, factorY2);
+            retstr->strlength = strlen(retstr->strptr);
+            return 0;
+        }
+        else
+        {
+            RETVAL(GetLastError())
+        }
+    }
+
     RETERR
 }
 
+
+static int getLVColumnCount(HWND hList)
+{
+    return Header_GetItemCount(ListView_GetHeader(hList));
+}
 
 /**
  * Extended List-View control functionality.  Implements capabilities not
@@ -1572,11 +1730,105 @@ ULONG APIENTRY HandleListCtrlEx(
              */
             RETVAL(1);  // Return 1 (failed) until this is implemented.
         }
+        else if ( strcmp(argv[2].strptr, "ORDER") == 0 )  /* Set, get column Order */
+        {
+            int count;
+            int *order;
+
+            /* i is used temporarily to check for too large a column count.  We
+             * want the column order string to fit in the return string without
+             * overflow and without having to allocate a larger string.  This
+             * gives at least 81 columns if RXAUTOBUFLEN remains at 256, maybe
+             * more if it is increased in the future.  In no case, be larger
+             * than 99.  This seems to be an adequate number of columns.
+             */
+            int i = ((RXAUTOBUFLEN - 1) / 3) < 100 ? ((RXAUTOBUFLEN - 1) / 3) : 99;
+
+            count = getLVColumnCount(hList);
+            if ( count < 2 || count > i )
+            {
+                RETC(1)  /* Failed */
+            }
+
+            order = malloc(count * sizeof(int));
+            if ( order == NULL )
+            {
+                RETVAL(-(LONG)GetLastError())
+            }
+
+            if ( argc == 3 )
+            {
+                char buf[4];
+
+                if ( ListView_GetColumnOrderArray(hList, count, order) == 0 )
+                {
+                    count = 1;  /* Failed, will be picked up below. */
+                }
+                else
+                {
+                    retstr->strptr[0] = '\0';
+                    for ( i = 0; i < count; i++, order++ )
+                    {
+                        strcat(retstr->strptr, ltoa(*order, buf, 10));
+                        strcat(retstr->strptr, " ");
+                    }
+
+                    retstr->strlength = strlen(retstr->strptr);
+                }
+            }
+            else if ( argc == 4 )
+            {
+                char *token;
+                char *str = _strdup(argv[3].strptr);
+
+                i = 0;
+                token = strtok(str, " ");
+                while( token != NULL && i++ < count )
+                {
+                    *order++ = atoi(token);
+                    token = strtok(NULL, " ");
+                }
+                free(str);
+
+                if ( ListView_SetColumnOrderArray(hList, count, order) == 0 )
+                {
+                    count = 1;  /* Failed, will be picked up below. */
+                }
+                else
+                {
+                    count = 0;  /* Success. */
+                }
+
+            }
+            else
+            {
+                count = -3;     /* Error with argument. */
+            }
+
+            free(order);
+            if ( count < 2 )
+            {
+                RETVAL(count)
+            }
+            else
+            {
+                /* The return string is already set, just return 0. */
+                return 0;
+            }
+        }
+        else RETERR;
+    }
+    /* G - Get something function */
+    else if ( argv[1].strptr[0] == 'G' )
+    {
+        if ( !strcmp(argv[2].strptr, "COLCOUNT") )  /* Get List-view column count. */
+        {
+            RETVAL(getLVColumnCount(hList));
+        }
         else RETERR;
     }
     RETERR;
 }
-
 
 ULONG APIENTRY HandleListCtrl(
   PUCHAR funcname,
@@ -2057,10 +2309,20 @@ ULONG APIENTRY HandleListCtrl(
                SetRexxStem(argv[4].strptr, -1, "!Column", data);
                itoa(lvi.cx, data, 10);
                SetRexxStem(argv[4].strptr, -1, "!Width", data);
+
                data[0] = '\0';
-               if (lvi.fmt == LVCFMT_CENTER) strcpy(data, "CENTER");
-               else if (lvi.fmt == LVCFMT_RIGHT) strcpy(data, "RIGHT");
-               else strcpy(data, "LEFT");
+               if ( (LVCFMT_JUSTIFYMASK & lvi.fmt) == LVCFMT_CENTER )
+               {
+                   strcpy(data, "CENTER");
+               }
+               else if ( (LVCFMT_JUSTIFYMASK & lvi.fmt) == LVCFMT_RIGHT )
+               {
+                   strcpy(data, "RIGHT");
+               }
+               else
+               {
+                   strcpy(data, "LEFT");
+               }
                SetRexxStem(argv[4].strptr, -1, "!Align", data);
                RETC(0)
            }
@@ -2141,6 +2403,37 @@ ULONG APIENTRY HandleOtherNewCtrls(
        {
            CHECKARG(5);
            RETVAL(SendMessage(h, PBM_SETRANGE, 0, MAKELPARAM(atoi(argv[3].strptr), atoi(argv[4].strptr))))
+       }
+       else
+       if (!strcmp(argv[1].strptr, "MARQUEE"))
+       {
+           /* Requires XP Common Controls version 6.0 */
+           if ( ComCtl32Version < COMCTL32_6_0 ) RETVAL(-4)
+
+           CHECKARG(5);
+           if (SendMessage(h, PBS_MARQUEE, (BOOL)atoi(argv[3].strptr), atoi(argv[4].strptr)))
+               RETVAL(1)
+           else
+               RETVAL(0)
+       }
+       else
+       if (!strcmp(argv[1].strptr, "BAR"))
+       {
+           COLORREF rgb;
+
+           if ( argc == 4 && ISHEX(argv[3].strptr) )
+           {
+               rgb = (COLORREF)strtoul(argv[3].strptr,'\0',16);
+           }
+           else if ( argc == 6)
+           {
+               rgb = RGB((BYTE)atoi(argv[3].strptr), (BYTE)atoi(argv[4].strptr), (BYTE)atoi(argv[5].strptr));
+           }
+           else
+           {
+               RETVAL(-1)
+           }
+           RETVAL(SendMessage(h, PBM_SETBARCOLOR, 0, rgb))
        }
    }
    else
@@ -2476,3 +2769,393 @@ ULONG APIENTRY HandleOtherNewCtrls(
    }
    RETC(0)
 }
+
+int dateTimeOperation(HWND hCtrl, char *buffer, size_t length, size_t type)
+{
+    SYSTEMTIME sysTime = {0};
+    int ret = 1;
+
+    switch ( type )
+    {
+        case DTO_GETDTP :
+            switch ( DateTime_GetSystemtime(hCtrl, &sysTime) )
+            {
+                case GDT_VALID:
+                    _snprintf(buffer, length,
+                              "%d:%02d:%02d.%d %d %d %d %d",
+                              sysTime.wHour, sysTime.wMinute, sysTime.wSecond, sysTime.wMilliseconds,
+                              sysTime.wDay, sysTime.wMonth, sysTime.wYear, sysTime.wDayOfWeek);
+
+                    ret = strlen(buffer);
+                    break;
+
+                case GDT_NONE:
+                    buffer[0] = '0';
+                    buffer[1] = '\0';
+                    break;
+
+                case GDT_ERROR:
+                default :
+                    /* Failed */
+                    buffer[0] = '1';
+                    buffer[1] = '\0';
+                    break;
+            }
+            break;
+
+        case DTO_SETDTP :
+        {
+            int hr, min, sec, ms, dy, mn, yr;
+            ret = sscanf(buffer, "%d:%02d:%02d.%d %d %d %d", &hr, &min, &sec, &ms, &dy, &mn, &yr);
+
+            if ( ret == 8 )
+            {
+                sysTime.wHour = hr;
+                sysTime.wMinute = min;
+                sysTime.wSecond = sec;
+                sysTime.wMilliseconds = ms;
+                sysTime.wDay = dy;
+                sysTime.wMonth = mn;
+                sysTime.wYear = yr;
+
+                if ( DateTime_SetSystemtime(hCtrl, GDT_VALID, &sysTime) == 0 )
+                {
+                    /* Failed */
+                    ret = 1;
+                }
+                else
+                {
+                    /* Good */
+                    ret = 0;
+                }
+            }
+            else
+            {
+                ret = -3;
+            }
+        } break;
+
+        case DTO_GETMONTH :
+            if ( MonthCal_GetCurSel(hCtrl, &sysTime) == 0 )
+            {
+                /* Failed */
+                buffer[0] = '1';
+                buffer[1] = '\0';
+            }
+            else
+            {
+                _snprintf(buffer, length, "%d %d %d %d", sysTime.wDay,
+                          sysTime.wMonth, sysTime.wYear, sysTime.wDayOfWeek);
+                ret = strlen(buffer);
+            }
+            break;
+
+        case DTO_SETMONTH :
+        {
+            int dy, mn, yr;
+            ret = sscanf(buffer, "%d %d %d", &dy, &mn, &yr);
+            if ( ret == 3 )
+            {
+                sysTime.wDay = dy;
+                sysTime.wMonth = mn;
+                sysTime.wYear = yr;
+                if ( MonthCal_SetCurSel(hCtrl, &sysTime) == 0 )
+                {
+                    /* Failed */
+                    ret = 1;
+                }
+                else
+                {
+                    /* Good */
+                    ret = 0;
+                }
+            }
+            else
+            {
+                ret = -3;
+            }
+        } break;
+
+        default :
+            /* Shouldn't happen, just set an error code. */
+            buffer[0] = '1';
+            buffer[1] = '\0';
+            break;
+    }
+    return ret;
+}
+
+/**
+ * Implements the interface to the Month Calendar control.
+ *
+ * The parameters sent from ooRexx as an array of RXString:
+ *
+ * argv[0]  Window handle of the month calendar control.
+ *
+ * argv[1]  Major designator:  G for get, etc..  Only the first letter of
+ *          the string is tested and it must be capitalized.
+ *
+ * argv[2]  Minor designator:  COL for get color, etc..  The whole capitalized
+ *          substring is used.
+ *
+ * argv[3]  Dependent on function.
+ *
+ * Return to ooRexx, in general:
+ *  < -5 a negated system error code
+ *    -5 not implemented yet
+ *    -4 unsupported ComCtl32 Version
+ *    -3 problem with an argument
+ *    -2 operation not supported by this month calendar control
+ *    -1 problem with the month calendar control id or handle
+ *     0 the Windows API call succeeds
+ *     1 the Windows API call failed
+ *  >  1 dependent on the function, usually a returned value not a return code
+ */
+ULONG APIENTRY HandleMonthCalendar(
+  PUCHAR funcname,
+  ULONG argc,
+  RXSTRING argv[],
+  PUCHAR qname,
+  PRXSTRING retstr )
+{
+    HWND       hwnd;
+    SYSTEMTIME sysTime = {0};
+
+    /* Minimum of 2 args. */
+    CHECKARGL(2);
+
+    hwnd = (HWND)atol(argv[0].strptr);
+    if ( hwnd == 0 || ! IsWindow(hwnd) ) RETVAL(-1);
+
+    /* G - 'get' something function */
+    if ( argv[1].strptr[0] == 'G' )
+    {
+        if ( !strcmp(argv[2].strptr, "COL") )          /* GetColor()  */
+        {
+            RETC(0)
+        }
+        else if ( !strcmp(argv[2].strptr, "CUR") )     /* GetCurSel()  */
+        {
+            retstr->strlength = dateTimeOperation(hwnd, retstr->strptr, RXAUTOBUFLEN, DTO_GETMONTH);
+            return 0;
+        }
+        else if ( !strcmp(argv[2].strptr, "FIR") )     /* GetFirstDayOfWeek() */
+        {
+            RETC(0)
+        }
+        else if ( !strcmp(argv[2].strptr, "MSEL") )    /* GetMaxSelCount() */
+        {
+            RETC(0)
+        }
+        else if ( !strcmp(argv[2].strptr, "MTOD") )     /* GetMaxTodayWidth() */
+        {
+            RETC(0)
+        }
+        else if ( !strcmp(argv[2].strptr, "MIN") )     /* GetMinReqRect () */
+        {
+            RETC(0)
+        }
+        else if ( !strcmp(argv[2].strptr, "MDEL") )     /* GetMonthDelta() */
+        {
+            RETC(0)
+        }
+        else if ( !strcmp(argv[2].strptr, "MRAN") )     /* GetMonthRange() */
+        {
+            RETC(0)
+        }
+        else if ( !strcmp(argv[2].strptr, "RAN") )     /* GetRange() */
+        {
+            RETC(0)
+        }
+        else if ( !strcmp(argv[2].strptr, "SEL") )     /* GetSelRange() */
+        {
+            RETC(0)
+        }
+        else if ( !strcmp(argv[2].strptr, "TOD") )     /* GetToday() */
+        {
+            RETC(0)
+        }
+        else if ( !strcmp(argv[2].strptr, "UNI") )     /* GetUnicodeFormat() */
+        {
+            RETC(MonthCal_GetUnicodeFormat(hwnd) ? 1 : 0)
+        }
+        else RETERR;
+    }
+    else if ( argv[1].strptr[0] == 'S' )
+    {
+        if ( !strcmp(argv[2].strptr, "COL") )          /* SetColor()  */
+        {
+            RETC(0)
+        }
+        else if ( !strcmp(argv[2].strptr, "CUR") )     /* SetCurSel()  */
+        {
+            CHECKARG(4)
+
+            /* buffer length is not used for the 'SET' operations. */
+            RETVAL(dateTimeOperation(hwnd, argv[3].strptr, 0, DTO_SETMONTH));
+        }
+        else if ( !strcmp(argv[2].strptr, "FIR") )     /* SetFirstDayOfWeek() */
+        {
+            RETC(0)
+        }
+        else if ( !strcmp(argv[2].strptr, "MSEL") )    /* SetMaxSelCount() */
+        {
+            RETC(0)
+        }
+        else if ( !strcmp(argv[2].strptr, "MTOD") )    /* SetMaxTodayWidth() */
+        {
+            RETC(0)
+        }
+        else if ( !strcmp(argv[2].strptr, "MIN") )     /* SetMinReqRect () */
+        {
+            RETC(0)
+        }
+        else if ( !strcmp(argv[2].strptr, "MDEL") )    /* SetMonthDelta() */
+        {
+            RETC(0)
+        }
+        else if ( !strcmp(argv[2].strptr, "MRAN") )    /* SetMonthRange() */
+        {
+            RETC(0)
+        }
+        else if ( !strcmp(argv[2].strptr, "RAN") )     /* SetRange() */
+        {
+            RETC(0)
+        }
+        else if ( !strcmp(argv[2].strptr, "SEL") )     /* SetSelRange() */
+        {
+            RETC(0)
+        }
+        else if ( !strcmp(argv[2].strptr, "TOD") )     /* SetToday() */
+        {
+            RETC(0)
+        }
+        else if ( !strcmp(argv[2].strptr, "UNI") )     /* SetUnicodeFormat() */
+        {
+            RETC(0)
+        }
+        else RETERR;
+    }
+    else if ( argv[1].strptr[0] == 'H' )               /* HitTest() */
+    {
+        RETC(0)
+    }
+
+    RETERR;
+}
+
+
+/**
+ * Implements the interface to the Date and Time Picker control.
+ *
+ * The parameters sent from ooRexx as an array of RXString:
+ *
+ * argv[0]  Window handle of the date and time picker control.
+ *
+ * argv[1]  Major designator:  G for get, etc..  Only the first letter of
+ *          the string is tested and it must be capitalized.
+ *
+ * argv[2]  Minor designator:  STYLE for (extended) list style, etc..  The whole
+ *          capitalized word is used.
+ *
+ * argv[3]  Dependent on function.
+ *
+ * Return to ooRexx, in general:
+ *  < -5 a negated system error code
+ *    -5 not implemented yet
+ *    -4 unsupported ComCtl32 Version
+ *    -3 problem with an argument
+ *    -2 operation not supported by this month calendar control
+ *    -1 problem with the month calendar control id or handle
+ *     0 the Windows API call succeeds
+ *     1 the Windows API call failed
+ *  >  1 dependent on the function, usually a returned value not a return code
+ */
+ULONG APIENTRY HandleDateTimePicker(
+  PUCHAR funcname,
+  ULONG argc,
+  RXSTRING argv[],
+  PUCHAR qname,
+  PRXSTRING retstr )
+{
+    HWND       hwnd;
+    SYSTEMTIME sysTime = {0};
+
+    /* Minimum of 3 args. */
+    CHECKARGL(3);
+
+    hwnd = (HWND)atol(argv[0].strptr);
+    if ( hwnd == 0 || ! IsWindow(hwnd) ) RETVAL(-1);
+
+    /* G - 'get' something function */
+    if ( argv[1].strptr[0] == 'G' )
+    {
+        if ( !strcmp(argv[2].strptr, "CAL") )          /* GetMonthCal()  */
+        {
+            RETC(0)
+        }
+        else if ( !strcmp(argv[2].strptr, "COL") )     /* GetMonthCalColor()  */
+        {
+            RETC(0)
+        }
+        else if ( !strcmp(argv[2].strptr, "FON") )     /* GetMonthCalFont() */
+        {
+            RETC(0)
+        }
+        else if ( !strcmp(argv[2].strptr, "RAN") )    /* GetRange() */
+        {
+            RETC(0)
+        }
+        else if ( !strcmp(argv[2].strptr, "SYS") )    /* GetSystemtime() */
+        {
+            retstr->strlength = dateTimeOperation(hwnd, retstr->strptr, RXAUTOBUFLEN, DTO_GETDTP);
+            return 0;
+        }
+        else
+        {
+            RETERR;
+        }
+    }
+    else if ( argv[1].strptr[0] == 'S' )
+    {
+        if ( !strcmp(argv[2].strptr, "FOR") )          /* SetFormat()  */
+        {
+            RETC(0)
+        }
+        else if ( !strcmp(argv[2].strptr, "COL") )     /* SetMonthCalColor()  */
+        {
+            RETC(0)
+        }
+        else if ( !strcmp(argv[2].strptr, "FON") )     /* SetMonthCalFont() */
+        {
+            RETC(0)
+        }
+        else if ( !strcmp(argv[2].strptr, "RAN") )    /* SetRange() */
+        {
+            RETC(0)
+        }
+        else if ( !strcmp(argv[2].strptr, "SYS") )    /* SetSystemtime() */
+        {
+            if ( argc < 4 )
+            {
+                /* Set the DTP control to "no date" and clear its check box. */
+                if ( DateTime_SetSystemtime(hwnd, GDT_NONE, &sysTime) == 0 )
+                {
+                    /* Failed */
+                    RETC(1)
+                }
+                RETC(0)
+            }
+            else
+            {
+                /* Buffer length is not used for the 'SET' operations. */
+                RETVAL(dateTimeOperation(hwnd, argv[3].strptr, 0, DTO_SETDTP));
+            }
+        }
+        else RETERR;
+    }
+
+    RETERR;
+}
+
+

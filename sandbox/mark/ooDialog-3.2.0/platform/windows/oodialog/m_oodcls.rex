@@ -40,9 +40,9 @@ if arg() = 0 then outdir = value("OR_OUTDIR","","ENVIRONMENT")
 parse source . . progname
 inpdir = left(progname, progname~lastpos("\"))
 p = time('R')
-say '----------------------------------------------------------------'
-say 'OOdialog build started                  ' time() 'on' date()
-say '----------------------------------------------------------------'
+-- say '----------------------------------------------------------------'
+-- say 'OOdialog build started                  ' time() 'on' date()
+-- say '----------------------------------------------------------------'
 outname = .array~new(3)
 outname[1] = "OODPLAIN"
 outname[2] = "OODIALOG"
@@ -51,19 +51,24 @@ UtilName = "OODUTILS.CLS"
 .Local["UtilName"] = UtilName
 Arrax = .Array~new(3)
 ArrClasses = .Array~new(3)
-Arrax[1] = .CheckArray~of("PLBDLG.CLS","DYNDLG.CLS","PLUDLG.CLS","STDDLG.CLS")
-Arrax[2] = .CheckArray~of("DLGEXT.CLS","BASEDLG.CLS","RESDLG.CLS","USERDLG.CLS", "RCDIALOG.CLS", "CATDLG.CLS", "ANIBUTTN.CLS", "DLGAREA.CLS")
-Arrax[3] = .CheckArray~of("ADVCTRL.CLS","STDEXT.CLS","MSGEXT.CLS", "PROPSHT.CLS")
+Arrax[1] = .CheckArray~of("PLBDLG.CLS", "DYNDLG.CLS", "PLUDLG.CLS", "STDDLG.CLS")
 
-ArrClasses[1] = .Array~of("PLAINBASEDIALOG","PLAINUSERDIALOG","DYNAMICDIALOG","TIMEDMESSAGE", "INPUTBOX",,
-                               "PASSWORDBOX", "INTEGERBOX","MULTIINPUTBOX", "LISTCHOICE",,
-                               "MULTILISTCHOICE", "CHECKLIST","SINGLESELECTION","WINDOWBASE")
+Arrax[2] = .CheckArray~of("DLGEXT.CLS", "BASEDLG.CLS", "RESDLG.CLS", "USERDLG.CLS", "RCDIALOG.CLS", "MENU.CLS", -
+                          "CATDLG.CLS", "ANIBUTTN.CLS", "DLGAREA.CLS")
 
-ArrClasses[2] = .Array~of("BASEDIALOG","DIALOGEXTENSIONS","WINDOWEXTENSIONS","RESDIALOG","USERDIALOG","RCDIALOG","CATEGORYDIALOG","ANIMATEDBUTTON")
-ArrClasses[3] = .Array~of("ADVANCEDCONTROLS","DIALOGCONTROL","TREECONTROL","LISTCONTROL","PROGRESSBAR","SLIDERCONTROL",,
-                          "TABCONTROL", "STATICCONTROL", "EDITCONTROL", "BUTTONCONTROL", "RADIOBUTTON", "CHECKBOX", "LISTBOX",,
-                          "COMBOBOX", "SCROLLBAR", "MESSAGEEXTENSIONS", "PROPERTYSHEET", "STATEINDICATOR","PROGRESSINDICATOR")
+Arrax[3] = .CheckArray~of("ADVCTRL.CLS", "STDEXT.CLS", "MSGEXT.CLS", "PROPSHT.CLS")
 
+ArrClasses[1] = .Array~of("PLAINBASEDIALOG", "PLAINUSERDIALOG", "DYNAMICDIALOG", "TIMEDMESSAGE", "INPUTBOX", -
+                          "RESOURCEUTILS", "PASSWORDBOX", "INTEGERBOX", "MULTIINPUTBOX", "LISTCHOICE", -
+                          "MULTILISTCHOICE", "CHECKLIST", "SINGLESELECTION", "WINDOWBASE")
+
+ArrClasses[2] = .Array~of("BASEDIALOG", "DIALOGEXTENSIONS", "WINDOWEXTENSIONS", "RESDIALOG", "USERDIALOG", "RCDIALOG", -
+                          "MENU", "MENUBAR", "POPUPMENU", "BINARYMENUBAR", "USERMENUBAR", "SCRIPTMENUBAR", "MENUTEMPLATE", -
+                          "CATEGORYDIALOG", "ANIMATEDBUTTON")
+
+ArrClasses[3] = .Array~of("ADVANCEDCONTROLS", "DIALOGCONTROL", "TREECONTROL", "LISTCONTROL", "PROGRESSBAR", "SLIDERCONTROL", -
+                          "TABCONTROL", "STATICCONTROL", "EDITCONTROL", "BUTTONCONTROL", "RADIOBUTTON", "CHECKBOX", "LISTBOX", -
+                          "COMBOBOX", "SCROLLBAR", "MESSAGEEXTENSIONS", "PROPERTYSHEET", "STATEINDICATOR", "PROGRESSINDICATOR")
 
 i = 0
 do j over Arrax
@@ -106,10 +111,10 @@ do j over Arrax
 end
 
 
-say '----------------------------------------------------------------'
-say 'Build ended after: ' time('E') 'sec  ' ' at:' time() 'on' date()
-say '----------------------------------------------------------------'
-say
+-- say '----------------------------------------------------------------'
+-- say 'Build ended after: ' time('E') 'sec  ' ' at:' time() 'on' date()
+-- say '----------------------------------------------------------------'
+-- say
 
 exit
 

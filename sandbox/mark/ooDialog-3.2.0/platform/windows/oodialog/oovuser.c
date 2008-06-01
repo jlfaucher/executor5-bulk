@@ -36,6 +36,10 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
+#define NTDDI_VERSION   NTDDI_WINXPSP2
+#define _WIN32_WINNT    0x0501
+#define WINVER          0x0501
+
 #include <windows.h>
 #define INCL_REXXSAA
 #include <rexx.h>
@@ -54,7 +58,7 @@ extern BOOL DataAutodetection(DIALOGADMIN * aDlg);
 extern INT DelDialog(DIALOGADMIN * aDlg);
 extern CRITICAL_SECTION crit_sec;
 extern BOOL DialogInAdminTable(DIALOGADMIN * Dlg);
-extern BOOL GetDialogIcons(DIALOGADMIN *, INT, BOOL, PHANDLE, PHANDLE);
+extern BOOL GetDialogIcons(DIALOGADMIN *, INT, UINT, PHANDLE, PHANDLE);
 extern BOOL InitForCommonControls(void);
 
 //#define USE_DS_CONTROL
@@ -74,15 +78,15 @@ BOOL IsNestedDialogMessage(
 ****************************************************************************************************/
 
 
-LPWORD lpwAlign ( LPWORD lpIn)
+LPWORD lpwAlign (LPWORD lpIn)
 {
   ULONG ul;
 
-  ul = (ULONG) lpIn;
+  ul = (ULONG)lpIn;
   ul +=3;
   ul >>=2;
   ul <<=2;
-  return (LPWORD) ul;
+  return (LPWORD)ul;
 }
 
 
@@ -498,7 +502,7 @@ ULONG APIENTRY UsrCreateDialog(
                  HICON hBig = NULL;
                  HICON hSmall = NULL;
 
-                 if ( GetDialogIcons(dlgAdm, atoi(argv[7].strptr), TRUE, &hBig, &hSmall) )
+                 if ( GetDialogIcons(dlgAdm, atoi(argv[7].strptr), ICON_FILE, &hBig, &hSmall) )
                  {
                     dlgAdm->SysMenuIcon = (HICON)SetClassLong(dlgAdm->TheDlg, GCL_HICON, (LONG)hBig);
                     dlgAdm->TitleBarIcon = (HICON)SetClassLong(dlgAdm->TheDlg, GCL_HICONSM, (LONG)hSmall);
@@ -837,7 +841,14 @@ ULONG APIENTRY UsrAddControl(
        if (buffer[6] == 2) lStyle |= SS_BLACKRECT; else
        if (buffer[6] == 3) lStyle |= SS_WHITEFRAME; else
        if (buffer[6] == 4) lStyle |= SS_GRAYFRAME; else
-       lStyle |= SS_BLACKFRAME;
+       if (buffer[6] == 5) lStyle  |= SS_BLACKFRAME ; else
+       if (buffer[6] == 6) lStyle  |= SS_ETCHEDFRAME ; else
+       if (buffer[6] == 7) lStyle  |= SS_ETCHEDHORZ ; else
+       lStyle |= SS_ETCHEDVERT;
+
+       if (strstr(argv[7].strptr,"NOTIFY")) lStyle |= SS_NOTIFY;
+       if (strstr(argv[7].strptr,"SUNKEN")) lStyle |= SS_SUNKEN;
+
        if (!strstr(argv[7].strptr,"HIDDEN")) lStyle |= WS_VISIBLE;
        if (strstr(argv[7].strptr,"GROUP")) lStyle |= WS_GROUP;
        if (strstr(argv[7].strptr,"DISABLED")) lStyle |= WS_DISABLED;
@@ -846,6 +857,37 @@ ULONG APIENTRY UsrAddControl(
 
        /*                     id    x           y          cx         cy  */
        UAddControl(&p, 0x0082, i, buffer[1], buffer[2], buffer[3], buffer[4], NULL, lStyle);
+   }
+   else
+   if (!strcmp(argv[0].strptr,"IMG"))
+   {
+       CHECKARGL(8);
+
+       for (i=0;i<6;i++) buffer[i] = atoi(argv[i+1].strptr);
+
+       p = (WORD *)buffer[0];
+
+       lStyle = WS_CHILD;
+       if (strstr(argv[7].strptr,"METAFILE")) lStyle |= SS_ENHMETAFILE; else
+       if (strstr(argv[7].strptr,"BITMAP")) lStyle |= SS_BITMAP; else
+       if (strstr(argv[7].strptr,"ICON")) lStyle |= SS_ICON;
+
+       if (strstr(argv[7].strptr,"NOTIFY")) lStyle |= SS_NOTIFY;
+       if (strstr(argv[7].strptr,"CENTERIMAGE")) lStyle |= SS_CENTERIMAGE;
+       if (strstr(argv[7].strptr,"RIGHTJUST")) lStyle |= SS_RIGHTJUST;
+       if (strstr(argv[7].strptr,"SUNKEN")) lStyle |= SS_SUNKEN;
+
+       if (strstr(argv[7].strptr,"SIZECONTROL")) lStyle |= SS_REALSIZECONTROL; else
+       if (strstr(argv[7].strptr,"SIZEIMAGE")) lStyle |= SS_REALSIZEIMAGE;
+
+       if (!strstr(argv[7].strptr,"HIDDEN")) lStyle |= WS_VISIBLE;
+       if (strstr(argv[7].strptr,"GROUP")) lStyle |= WS_GROUP;
+       if (strstr(argv[7].strptr,"DISABLED")) lStyle |= WS_DISABLED;
+       if (strstr(argv[7].strptr,"BORDER")) lStyle |= WS_BORDER;
+       if (strstr(argv[7].strptr,"TAB")) lStyle |= WS_TABSTOP;
+
+       /*                      id           x          y          cx         cy       text  */
+       UAddControl(&p, 0x0082, buffer[1], buffer[2], buffer[3], buffer[4], buffer[5], "", lStyle);
    }
    else
    if (!strcmp(argv[0].strptr,"SB"))
@@ -1024,27 +1066,27 @@ ULONG APIENTRY UsrAddNewCtrl(
        UAddNamedControl(&p, WC_TREEVIEW, buffer[1], buffer[2], buffer[3], buffer[4], buffer[5], NULL, lStyle);
        RETVAL((LONG)p)
    }
-   else
-   if (!strcmp(argv[0].strptr,"LIST"))
+   else if (!strcmp(argv[0].strptr,"LIST"))
    {
        lStyle |= EvaluateListStyle(argv[7].strptr);
         /*                                   id       x          y            cx        cy  */
        UAddNamedControl(&p, WC_LISTVIEW, buffer[1], buffer[2], buffer[3], buffer[4], buffer[5], NULL, lStyle);
        RETVAL((LONG)p)
    }
-   else
-   if (!strcmp(argv[0].strptr,"PROGRESS"))
+   else if (!strcmp(argv[0].strptr,"PROGRESS"))
    {
        if (strstr(argv[7].strptr,"BORDER")) lStyle |= WS_BORDER;
        if (strstr(argv[7].strptr,"TAB")) lStyle |= WS_TABSTOP;
        if (strstr(argv[7].strptr,"VERTICAL")) lStyle |= PBS_VERTICAL;
        if (strstr(argv[7].strptr,"SMOOTH")) lStyle |= PBS_SMOOTH;
+
+       if (strstr(argv[7].strptr,"MARQUEE") && ComCtl32Version >= COMCTL32_6_0) lStyle |= PBS_MARQUEE;
+
         /*                                     id       x          y            cx        cy  */
        UAddNamedControl(&p, PROGRESS_CLASS, buffer[1], buffer[2], buffer[3], buffer[4], buffer[5], NULL, lStyle);
        RETVAL((LONG)p)
    }
-   else
-   if (!strcmp(argv[0].strptr,"SLIDER"))
+   else if (!strcmp(argv[0].strptr,"SLIDER"))
    {
        if (strstr(argv[7].strptr,"BORDER")) lStyle |= WS_BORDER;
        if (!strstr(argv[7].strptr,"NOTAB")) lStyle |= WS_TABSTOP;
@@ -1062,8 +1104,7 @@ ULONG APIENTRY UsrAddNewCtrl(
        UAddNamedControl(&p, TRACKBAR_CLASS, buffer[1], buffer[2], buffer[3], buffer[4], buffer[5], NULL, lStyle);
        RETVAL((LONG)p)
    }
-   else
-   if (!strcmp(argv[0].strptr,"TAB"))
+   else if (!strcmp(argv[0].strptr,"TAB"))
    {
         if (strstr(argv[7].strptr,"BORDER")) lStyle |= WS_BORDER;
         if (!strstr(argv[7].strptr,"NOTAB")) lStyle |= WS_TABSTOP;
@@ -1081,6 +1122,54 @@ ULONG APIENTRY UsrAddNewCtrl(
 
         /*                                   id       x          y            cx        cy  */
         UAddNamedControl(&p, WC_TABCONTROL, buffer[1], buffer[2], buffer[3], buffer[4], buffer[5], NULL, lStyle);
+        RETVAL((LONG)p)
+   }
+   else if (!strcmp(argv[0].strptr,"DTP"))  /* Date and Time Picker control */
+   {
+        if (strstr(argv[7].strptr, "BORDER")) lStyle |= WS_BORDER;
+        if (!strstr(argv[7].strptr, "NOTAB")) lStyle |= WS_TABSTOP;
+        if (strstr(argv[7].strptr, "PARSE"))  lStyle |= DTS_APPCANPARSE;
+        if (strstr(argv[7].strptr, "RIGHT"))  lStyle |= DTS_RIGHTALIGN;
+        if (strstr(argv[7].strptr, "NONE"))   lStyle |= DTS_SHOWNONE;
+        if (strstr(argv[7].strptr, "UPDOWN")) lStyle |= DTS_UPDOWN;
+
+        if (strstr(argv[7].strptr, "LONG"))
+        {
+            lStyle |= DTS_LONGDATEFORMAT;
+        }
+        else if (strstr(argv[7].strptr, "SHORT"))
+        {
+            lStyle |= DTS_SHORTDATEFORMAT;
+        }
+        else if (strstr(argv[7].strptr, "CENTURY") && (ComCtl32Version >= COMCTL32_5_8))
+        {
+            lStyle |= DTS_SHORTDATECENTURYFORMAT;
+        }
+        else if (strstr(argv[7].strptr, "TIME"))
+        {
+            lStyle |= DTS_TIMEFORMAT;
+        }
+        else
+        {
+            lStyle |= DTS_TIMEFORMAT;
+        }
+
+        /*                                       id         x          y            cx        cy  */
+        UAddNamedControl(&p, DATETIMEPICK_CLASS, buffer[1], buffer[2], buffer[3], buffer[4], buffer[5], NULL, lStyle);
+        RETVAL((LONG)p)
+   }
+   else if (!strcmp(argv[0].strptr,"MONTH"))  /* Month Calendar control */
+   {
+        if (strstr(argv[7].strptr, "BORDER"))      lStyle |= WS_BORDER;
+        if (!strstr(argv[7].strptr, "NOTAB"))      lStyle |= WS_TABSTOP;
+        if (strstr(argv[7].strptr, "DAYSTATE"))    lStyle |= MCS_DAYSTATE;
+        if (strstr(argv[7].strptr, "MULTI"))       lStyle |= MCS_MULTISELECT;
+        if (strstr(argv[7].strptr, "NOTODAY"))     lStyle |= MCS_NOTODAY;
+        if (strstr(argv[7].strptr, "NOCIRCLE"))    lStyle |= MCS_NOTODAYCIRCLE;
+        if (strstr(argv[7].strptr, "WEEKNUMBERS")) lStyle |= MCS_WEEKNUMBERS;
+
+        /*                                   id         x          y            cx        cy  */
+        UAddNamedControl(&p, MONTHCAL_CLASS, buffer[1], buffer[2], buffer[3], buffer[4], buffer[5], NULL, lStyle);
         RETVAL((LONG)p)
    }
 
@@ -1181,187 +1270,3 @@ BOOL IsNestedDialogMessage(
    else return IsDialogMessage(dlgAdm->TheDlg, lpmsg);
 }
 #endif
-
-
-
-ULONG APIENTRY UsrMenu(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
-{
-   INT i;
-   WORD *p, *pTemplate;
-   HANDLE hMem;
-
-   CHECKARGL(1);
-
-   if (!strcmp(argv[0].strptr,"INIT"))
-   {
-       if (argc == 2)
-       {
-          i = atoi(argv[1].strptr);
-       } else i = 100;
-
-       hMem = GlobalAlloc(GMEM_MOVEABLE | GMEM_ZEROINIT, (i+1)*128);
-
-       pTemplate = p = (PWORD) GlobalLock(hMem);
-
-       if (!p) RETC(1)
-       /* writing menu header */
-    #if EXTENDED_MENU
-       *p = 1;    /* for extended menu */
-       p++;
-       *p = 0;
-       offsetptr = p;
-       p++;
-       *p = 0;   /* DWORD helpid */
-       p++;
-       *p = 0;
-       p++;
-       p = lpwAlign (p);
-       *offsetptr = (ULONG)p - (ULONG)offsetptr - sizeof(WORD);
-    #else
-       *p = 0;    /* for normal menu */
-       p++;
-       *p = 0;
-       p++;
-    #endif
-
-       sprintf(retstr->strptr, "%ld %ld %ld", hMem, pTemplate, p);
-       retstr->strlength = strlen(retstr->strptr);
-       return 0;
-   }
-   else
-   if (!strcmp(argv[0].strptr,"ADD"))
-   {
-       ULONG lStyle = MFS_ENABLED | MFS_UNCHECKED;
-       ULONG lType = MFT_STRING;
-       WORD lResInfo = 0;
-       int nchar;
-
-       CHECKARG(5);
-
-       p = (WORD *) atol(argv[1].strptr);
-       if (!p) RETC(1)
-
-#if EXTENDED_MENU
-       if (strstr(argv[4].strptr, "CHECK")) lStyle |= MFS_CHECKED;
-       if (strstr(argv[4].strptr, "GRAY")) lStyle |= MFS_GRAYED;
-       if (strstr(argv[4].strptr, "DISABLE")) lStyle |= MFS_DISABLED;
-       if (strstr(argv[4].strptr, "HILITE")) lStyle |= MFS_HILITE;
-
-       if (strstr(argv[4].strptr, "POPUP")) lResInfo |= 0x01;
-       if (strstr(argv[4].strptr, "END")) lResInfo |= 0x80;
-
-       if (strstr(argv[4].strptr, "SEPARATOR")) lType = MFT_SEPARATOR;
-       if (strstr(argv[4].strptr, "RIGHT")) lType |= MFT_RIGHTJUSTIFY;
-       if (strstr(argv[4].strptr, "RADIO")) lType |= MFT_RADIOCHECK;
-
-       This is not finsihed!
-
-       dp = p;
-       *dp = lType;
-       dp++;
-       *dp = lStyle;
-       dp++;
-       p = dp;
-       *p = atoi(argv[2].strptr);     /* menu id */
-       p++;
-       *p = lResInfo;
-       p++;
-
-       /* copy the name of the item */
-       if (strlen(argv[3].strptr) > 96)
-       {
-           *p = 0;
-           p++;
-       }
-       else
-       {
-           nchar = nCopyAnsiToWideChar (p, TEXT(argv[3].strptr));
-           p += nchar;
-       }
-       p = lpwAlign (p);
-       if (lResInfo == 0x01)
-       {
-           *p = 0;
-           p++;
-           *p = 0;
-           p++;
-           p = lpwAlign (p);
-       }
-#else
-       if (strstr(argv[4].strptr, "CHECKED")) lStyle |= MF_CHECKED;
-       if (strstr(argv[4].strptr, "GRAYED")) lStyle |= MF_GRAYED;
-       if (strstr(argv[4].strptr, "DISABLED")) lStyle |= MF_DISABLED;
-       if (strstr(argv[4].strptr, "POPUP")) lStyle |= MF_POPUP;
-       if (strstr(argv[4].strptr, "END")) lStyle |= MF_END;
-       if (strstr(argv[4].strptr, "SEPARATOR")) lStyle |= MF_SEPARATOR;
-
-
-       *p = (WORD)lStyle;
-       p++;
-
-       if (!(lStyle & MF_POPUP))
-       {
-           *p = atoi(argv[2].strptr);     /* menu id */
-           p++;
-       }
-
-       /* copy the name of the item */
-       if (strlen(argv[3].strptr) > 96)
-       {
-           *p = 0;
-           p++;
-       }
-       else
-       {
-           nchar = nCopyAnsiToWideChar (p, TEXT(argv[3].strptr));
-           p += nchar;
-       }
-#endif
-       RETVAL((LONG)p)
-   }
-   else
-   if (!strcmp(argv[0].strptr,"SET"))
-   {
-       HWND hWnd;
-       PVOID *p;
-       DEF_ADM;
-
-       CHECKARG(4);
-
-       hWnd = (HWND)atol(argv[1].strptr);
-
-       if (hWnd)
-       {
-          SEEK_DLGADM_TABLE(hWnd, dlgAdm);
-          if (!dlgAdm) RETC(1)
-
-          hMem = (HANDLE) atol(argv[2].strptr);
-          p = (PVOID *) atol(argv[3].strptr);
-
-          if (p)
-          {
-              INT rc;
-              dlgAdm->menu = LoadMenuIndirect(p);
-              rc = GetLastError();
-
-              if (dlgAdm->menu)
-                  SetMenu(hWnd, dlgAdm->menu);
-
-              /* free the memory allocated for template */
-              GlobalUnlock(hMem);
-              GlobalFree(hMem);
-              if (!dlgAdm->menu)
-                  RETVAL(rc)
-              RETC(0)
-          }
-       }
-       RETC(1)
-   }
-   RETC(0)
-}
-

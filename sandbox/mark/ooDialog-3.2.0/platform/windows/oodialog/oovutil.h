@@ -64,6 +64,7 @@
 #define WM_USER_SUBCLASS            WM_USER + 0x0606
 #define WM_USER_SUBCLASS_REMOVE     WM_USER + 0x0607
 #define WM_USER_HOOK                WM_USER + 0x0608
+#define WM_USER_CONTEXT_MENU        WM_USER + 0x0609
 
 #define VISDLL "OODIALOG.DLL"
 #define DLLVER 2130
@@ -71,6 +72,23 @@
 #define MSG_TERMINATE "1DLGDELETED1"
 
 extern LONG HandleError(PRXSTRING r, CHAR * text);
+
+/* Flags for the get icon functions.  Indicates the source of the icon. */
+#define ICON_FILE                 0x00000001
+#define ICON_OODIALOG             0x00000002
+#define ICON_DLL                  0x00000004
+#define ICON_SYSTEM               0x00000008
+
+/* The resource IDs of the System Icons.  The raw numeric numbers are used
+ * so that they can be passed into functions that use MAKEINTRESOURCE() on the
+ * supplied ID.
+ */
+#define IDICON_APPLICATION     32512
+#define IDICON_HAND            32513
+#define IDICON_QUESTION        32514
+#define IDICON_EXCLAMATION     32515
+#define IDICON_ASTERISK        32516
+#define IDICON_WINLOGO         32517
 
 /* Defines for the different possible versions of comctl32.dll up to Windows
  * XP SP2. These DWORD "packed version" numbers are calculated using the
@@ -100,17 +118,30 @@ extern DWORD ComCtl32Version;
  */
 #define TAG_DIALOG                0x00000001
 #define TAG_HELP                  0x00000100
+#define TAG_CONTEXTMENU           0x00000200
+#define TAG_MENUCOMMAND           0x00000400
 
 #define TAG_TREEVIEW              0x00000006
 #define TAG_LISTVIEW              0x00000007
 #define TAG_TRACKBAR              0x00000008
 #define TAG_TAB                   0x00000009
+
 #define TAG_CTRLMASK              0x000000FF
+#define TAG_FLAGMASK              0x00FFFF00
 
 #define TAG_STATECHANGED          0x00000100
 #define TAG_CHECKBOXCHANGED       0x00000200
 #define TAG_SELECTCHANGED         0x00000400
 #define TAG_FOCUSCHANGED          0x00000800
+
+/**
+ * Date Time Operation type IDs for get / set system time.  These are operations
+ * used for the DateTimePicker and MonthCalendar controls.
+ */
+#define DTO_SETDTP                0x01
+#define DTO_GETDTP                0x02
+#define DTO_SETMONTH              0x03
+#define DTO_GETMONTH              0x04
 
 /* macros to check the number of arguments */
 #define CHECKARG(argexpct) { \
@@ -259,7 +290,6 @@ typedef struct {
    SHORT displacey;
 } BITMAPTABLEENTRY;
 
-
 typedef struct {
    ULONG itemID;
    INT ColorBk;
@@ -271,6 +301,15 @@ typedef struct {
    ULONG iconID;
    PCHAR fileName;
 } ICONTABLEENTRY;
+
+typedef struct {
+    HMENU       hMenu;
+    HWND        hWnd;
+    UINT        flags;
+    POINT       point;
+    LPTPMPARAMS lptpm;
+} TRACKPOP, *PTRACKPOP;
+
 
 /* Stuff for key press subclassing and keyboard hooks */
 #define MAX_KEYPRESS_METHODS  63
@@ -376,7 +415,6 @@ typedef struct
    HBRUSH BkgBrush;
    HBITMAP BkgBitmap;
    HPALETTE ColorPalette;
-   HMENU menu;
    HICON SysMenuIcon;
    HICON TitleBarIcon;
    BOOL  SharedIcon;
