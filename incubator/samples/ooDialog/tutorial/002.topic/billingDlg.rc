@@ -1,0 +1,71 @@
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2008 Rexx Language Association. All rights reserved.         */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+#include "billingDlg.h"
+#include "Windows.h"
+
+
+LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
+IDI_DLG_ICON       ICON           "billingDlg.ico"
+
+
+LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
+IDD_DLG_COMBOBOX DIALOGEX 50, 50, 373, 143
+STYLE DS_SHELLFONT | WS_BORDER | WS_CAPTION | WS_DLGFRAME | WS_POPUP | WS_SYSMENU
+CAPTION "New Account - Billing Information"
+FONT 8, "MS Shell Dlg", 0, 0, 0
+BEGIN
+    CTEXT           "Billing Address", IDC_STATIC_TITLE, 16, 13, 97, 14, NOT WS_GROUP | SS_CENTERIMAGE
+    GROUPBOX        "Select County", IDC_GB_COUNTY, 17, 32, 100, 70
+    AUTORADIOBUTTON "San Diego County", IDC_RB_SANDIEGO, 31, 49, 70, 10, WS_TABSTOP | BS_LEFT
+    AUTORADIOBUTTON "Orange County", IDC_RB_ORANGE, 31, 66, 70, 10 BS_LEFT
+    AUTORADIOBUTTON "Imperial County", IDC_RB_IMPERIAL, 31, 84, 70, 10, BS_LEFT
+    RTEXT           "Account Name:", IDC_STATIC_ACCOUNT, 119, 13, 53, 14, NOT WS_GROUP | SS_CENTERIMAGE
+    LTEXT           "Home Depot", IDC_STATIC_CUSTOMER, 177, 13, 139, 14, NOT WS_GROUP | SS_CENTERIMAGE
+    RTEXT           "Address 1:", IDC_STATIC_ADDRESS1, 132, 34, 40, 14, NOT WS_GROUP | SS_CENTERIMAGE
+    EDITTEXT        IDC_EDIT_ADDR1, 177, 34, 186, 14, ES_AUTOHSCROLL
+    RTEXT           "Address 2:", IDC_STATIC_ADDRESS2, 132, 56, 40, 14, NOT WS_GROUP | SS_CENTERIMAGE
+    EDITTEXT        IDC_EDIT_ADDR2, 177, 56, 186, 14, ES_AUTOHSCROLL
+    LTEXT           "City:", IDC_STATIC_CITY, 177, 77, 25, 13, NOT WS_GROUP | SS_CENTERIMAGE
+    COMBOBOX        IDC_COMBO_CITY, 177, 91, 70, 13, WS_TABSTOP | WS_VSCROLL | WS_TABSTOP | CBS_DROPDOWN | CBS_SORT
+    LTEXT           "State:", IDC_STATIC_STATE, 258, 77, 19, 13, NOT WS_GROUP | SS_CENTERIMAGE
+    COMBOBOX        IDC_COMBO_STATE, 258, 91, 54, 13, WS_TABSTOP | WS_VSCROLL | WS_TABSTOP | CBS_DROPDOWN | CBS_SORT
+    LTEXT           "Zip Code:", IDC_STATIC_ZIP, 324, 77, 33, 13, NOT WS_GROUP | SS_CENTERIMAGE
+    COMBOBOX        IDC_COMBO_ZIP, 324, 91, 39, 13, WS_TABSTOP | WS_VSCROLL | WS_TABSTOP | CBS_DROPDOWN | CBS_SORT
+    DEFPUSHBUTTON   "Cancel", IDCANCEL, 231, 119, 60, 14, BS_CENTER | BS_VCENTER
+    DEFPUSHBUTTON   "OK", IDOK, 303, 119, 60, 14, BS_CENTER | BS_VCENTER
+END
