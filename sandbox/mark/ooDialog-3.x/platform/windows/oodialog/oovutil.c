@@ -73,8 +73,8 @@ extern BOOL AddDialogMessage(CHAR * msg, CHAR * Qptr);
 extern BOOL IsNT = TRUE;
 extern LONG HandleError(PRXSTRING r, CHAR * text);
 extern LONG SetRexxStem(CHAR * name, INT id, char * secname, CHAR * data);
-extern BOOL GetDialogIcons(DIALOGADMIN *, INT, BOOL, PHANDLE, PHANDLE);
-extern HICON GetIconForID(DIALOGADMIN *, UINT, BOOL, int, int);
+extern BOOL GetDialogIcons(DIALOGADMIN *, INT, UINT, PHANDLE, PHANDLE);
+extern HICON GetIconForID(DIALOGADMIN *, UINT, UINT, int, int);
 extern BOOL InitForCommonControls(void);
 
 /* Shared functions for keyboard hooks and key press subclassing */
@@ -263,6 +263,23 @@ LRESULT CALLBACK RexxDlgProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
              case WM_USER_HOOK:
                  ReplyMessage((LRESULT)SetWindowsHookEx(WH_KEYBOARD, (HOOKPROC)wParam, NULL, GetCurrentThreadId()));
                  return (TRUE);
+
+              case WM_USER_CONTEXT_MENU:
+              {
+                  PTRACKPOP ptp = (PTRACKPOP)wParam;
+                  int cmd;
+
+                  SetLastError(0);
+                  cmd = (int)TrackPopupMenuEx(ptp->hMenu, ptp->flags, ptp->point.x, ptp->point.y,
+                                              ptp->hWnd, ptp->lptpm);
+
+                  if ( (! (ptp->flags & TPM_RETURNCMD)) && (cmd == 0) )
+                  {
+                      cmd = -(int)GetLastError();
+                  }
+                  ReplyMessage((LRESULT)cmd);
+                  return (TRUE);
+              }
           }
        }
    }
@@ -411,7 +428,6 @@ INT DelDialog(DIALOGADMIN * aDlg)
    PostMessage(aDlg->TheDlg, WM_QUIT, 0, 0);      /* to exit GetMessage */
 
    if (aDlg->TheDlg) DestroyWindow(aDlg->TheDlg);      /* docu states "must not use EndDialog for non-modal dialogs" */
-   if (aDlg->menu) DestroyMenu(aDlg->menu);
 
 #ifdef __CTL3D
    if ((!StoredDialogs) && (aDlg->Use3DControls)) Ctl3dUnregister(aDlg->TheInstance);
@@ -660,7 +676,7 @@ ULONG REXXENTRY StartDialog(
                                   /* modal flag = yes ? */
           if (dlgAdm->previous && !IsYes(argv[6].strptr) && IsWindowEnabled(((DIALOGADMIN *)dlgAdm->previous)->TheDlg)) EnableWindow(((DIALOGADMIN *)dlgAdm->previous)->TheDlg, FALSE);
 
-          if ( GetDialogIcons(dlgAdm, atoi(argv[5].strptr), FALSE, &hBig, &hSmall) )
+          if ( GetDialogIcons(dlgAdm, atoi(argv[5].strptr), ICON_DLL, &hBig, &hSmall) )
           {
               dlgAdm->SysMenuIcon = (HICON)SetClassLong(dlgAdm->TheDlg, GCL_HICON, (LONG)hBig);
               dlgAdm->TitleBarIcon = (HICON)SetClassLong(dlgAdm->TheDlg, GCL_HICONSM, (LONG)hSmall);
@@ -694,7 +710,7 @@ ULONG REXXENTRY StartDialog(
  *
  * @param dlgAdm    Pointer to the dialog administration block.
  * @param id        Numerical resource ID.
- * @param fromFile  Flag indicating whether the icon is located in a DLL or to
+ * @param iconSrc   Flag indicating whether the icon is located in a DLL or to
  *                  be loaded from a file.
  * @param phBig     In/Out Pointer to an icon handle.  If the function succeeds,
  *                  on return will contian the handle to a regular size icon.
@@ -704,7 +720,7 @@ ULONG REXXENTRY StartDialog(
  * @return True if the icons were loaded and the returned handles are valid,
  *         otherwise false.
  */
-BOOL GetDialogIcons(DIALOGADMIN *dlgAdm, INT id, BOOL fromFile, PHANDLE phBig, PHANDLE phSmall)
+BOOL GetDialogIcons(DIALOGADMIN *dlgAdm, INT id, UINT iconSrc, PHANDLE phBig, PHANDLE phSmall)
 {
     int cx, cy;
 
@@ -714,21 +730,21 @@ BOOL GetDialogIcons(DIALOGADMIN *dlgAdm, INT id, BOOL fromFile, PHANDLE phBig, P
     if ( id < 1 )
         id = IDI_DLG_DEFAULT;
 
-    /* If one of the reserved IDs, fromFile has to be false. */
+    /* If one of the reserved IDs, iconSrc has to be ooDialog. */
     if ( id <= IDI_DLG_MAX_ID )
-        fromFile = FALSE;
+        iconSrc = ICON_OODIALOG;
 
     cx = GetSystemMetrics(SM_CXICON);
     cy = GetSystemMetrics(SM_CYICON);
 
-    *phBig = GetIconForID(dlgAdm, id, fromFile, cx, cy);
+    *phBig = GetIconForID(dlgAdm, id, iconSrc, cx, cy);
 
     /* If that didn't get the big icon, try to get the default icon. */
     if ( ! *phBig && id != IDI_DLG_DEFAULT )
     {
         id = IDI_DLG_DEFAULT;
-        fromFile = FALSE;
-        *phBig = GetIconForID(dlgAdm, id, fromFile, cx, cy);
+        iconSrc = ICON_OODIALOG;
+        *phBig = GetIconForID(dlgAdm, id, iconSrc, cx, cy);
     }
 
     /* If still no big icon, don't bother trying for the small icon. */
@@ -736,7 +752,7 @@ BOOL GetDialogIcons(DIALOGADMIN *dlgAdm, INT id, BOOL fromFile, PHANDLE phBig, P
     {
         cx = GetSystemMetrics(SM_CXSMICON);
         cy = GetSystemMetrics(SM_CYSMICON);
-        *phSmall = GetIconForID(dlgAdm, id, fromFile, cx, cy);
+        *phSmall = GetIconForID(dlgAdm, id, iconSrc, cx, cy);
 
         /* Very unlikely that the big icon was obtained and failed to get the
          * small icon.  But, if so, fail completely.  If the big icon came from
@@ -745,7 +761,7 @@ BOOL GetDialogIcons(DIALOGADMIN *dlgAdm, INT id, BOOL fromFile, PHANDLE phBig, P
          */
         if ( ! *phSmall )
         {
-            if ( fromFile )
+            if ( iconSrc & ICON_FILE )
                 DestroyIcon(*phBig);
             *phBig = NULL;
         }
@@ -754,7 +770,7 @@ BOOL GetDialogIcons(DIALOGADMIN *dlgAdm, INT id, BOOL fromFile, PHANDLE phBig, P
     if ( ! *phBig )
         return FALSE;
 
-    dlgAdm->SharedIcon = !fromFile;
+    dlgAdm->SharedIcon = iconSrc != ICON_FILE;
     return TRUE;
 }
 
@@ -763,25 +779,25 @@ BOOL GetDialogIcons(DIALOGADMIN *dlgAdm, INT id, BOOL fromFile, PHANDLE phBig, P
  * Loads and returns the handle to an icon for the specified ID, of the
  * specified size.
  *
- * The icons can come from the user resource DLL, a user defined dialog, or the
- * OODialog DLL.  IDs for the icons bound to the OODialog.dll are reserved.
+ * The icons can come from the user resource DLL, a user defined dialog, the
+ * OODialog DLL, the System.  IDs for the icons bound to the OODialog.dll are
+ * reserved.
  *
  * @param dlgAdm    Pointer to the dialog administration block.
  * @param id        Numerical resource ID.
- * @param fromFile  Flag indicating whether the icon is located in a DLL or to
- *                  be loaded from a file.
+ * @param iconSrc   Flag indicating the source of the icon.
  * @param cx        The desired width of the icon.
  * @param cy        The desired height of the icon.
  *
  * @return The handle to the loaded icon on success, or null on failure.
  */
-HICON GetIconForID(DIALOGADMIN *dlgAdm, UINT id, BOOL fromFile, int cx, int cy)
+HICON GetIconForID(DIALOGADMIN *dlgAdm, UINT id, UINT iconSrc, int cx, int cy)
 {
     HINSTANCE hInst = NULL;
     LPCTSTR   pName = NULL;
     UINT      loadFlags = 0;
 
-    if ( fromFile )
+    if ( iconSrc & ICON_FILE )
     {
         /* Load the icon from a file, file name should be in the icon table. */
         INT i;
@@ -800,17 +816,24 @@ HICON GetIconForID(DIALOGADMIN *dlgAdm, UINT id, BOOL fromFile, int cx, int cy)
 
         loadFlags = LR_LOADFROMFILE;
     }
-    else if ( id <= IDI_DLG_MAX_ID )
+    else if ( iconSrc & ICON_OODIALOG )
     {
         /* Load the icon from the resources in oodialog.dll. */
         hInst = MyInstance;
         pName = MAKEINTRESOURCE(id);
         loadFlags = LR_SHARED;
     }
-    else
+    else if ( iconSrc & ICON_DLL )
     {
         /* Load the icon from the user's resource DLL. */
         hInst = dlgAdm->TheInstance;
+        pName = MAKEINTRESOURCE(id);
+        loadFlags = LR_SHARED;
+    }
+    else
+    {
+        /* Load one of the System icons. */
+        hInst = NULL;
         pName = MAKEINTRESOURCE(id);
         loadFlags = LR_SHARED;
     }
@@ -847,7 +870,7 @@ ULONG REXXENTRY WinAPI32Func(
 
     if ( argv[0].strptr[0] == 'G' )         /* Get something                  */
     {
-        if ( !strcmp(argv[1].strptr, "WNDSTATE") )   /* get Window state      */
+        if ( !strcmp(argv[1].strptr, "WNDSTATE") )      /* get Window state      */
         {
             HWND hWnd;
 
@@ -873,7 +896,7 @@ ULONG REXXENTRY WinAPI32Func(
                 RETVAL((BOOL)IsIconic(hWnd));
             }
         }
-        else if ( !strcmp(argv[1].strptr, "ID") )    /* get dialog control ID */
+        else if ( !strcmp(argv[1].strptr, "ID") )       /* get dialog control ID */
         {
             HWND hWnd;
             INT  id;
@@ -986,6 +1009,70 @@ ULONG REXXENTRY WinAPI32Func(
             }
             RETVAL(ret)
         }
+    }
+    else if ( argv[0].strptr[0] == 'I'  )   /* work with Icons */
+    {
+        HICON hIcon;
+        UINT  id;
+
+        CHECKARGL(3);
+
+        if ( argv[1].strptr[0] == 'S' )          /* System icon */
+        {
+            id = IDICON_WINLOGO;
+            if ( !strcmp(argv[2].strptr, "APPLICATION") ) id = IDICON_APPLICATION;
+            else if ( !strcmp(argv[2].strptr, "HAND") ) id = IDICON_HAND;
+            else if ( !strcmp(argv[2].strptr, "QUESTION") ) id = IDICON_QUESTION;
+            else if ( !strcmp(argv[2].strptr, "EXCLAMATION") ) id = IDICON_EXCLAMATION;
+            else if ( !strcmp(argv[2].strptr, "ASTERISK") ) id = IDICON_ASTERISK;
+            else if ( !strcmp(argv[2].strptr, "WINLOGO") ) id = IDICON_WINLOGO;
+
+            SetLastError(0);
+            hIcon = GetIconForID(NULL, id, ICON_SYSTEM, 0, 0);
+            if ( ! hIcon )
+                RETVAL(-(INT)GetLastError())
+        }
+        else if ( argv[1].strptr[0] == 'N' )     /* Numeric resource ID */
+        {
+            DIALOGADMIN *dlgAdm = NULL;
+            int cx, cy;
+            UINT flag = ICON_FILE;
+
+            CHECKARGL(7)
+
+            dlgAdm = (DIALOGADMIN *)atol(argv[2].strptr);
+            if ( !dlgAdm ) RETVAL(-2)
+
+            id = (UINT)atoi(argv[3].strptr);
+            if ( id < 1 ) RETVAL(-1)
+
+            cx = atoi(argv[4].strptr);
+            cy = atoi(argv[5].strptr);
+            if ( argv[6].strptr[0] == 'D' )
+                flag = ICON_DLL;
+
+            SetLastError(0);
+            hIcon = GetIconForID(dlgAdm, id, flag, cx, cy);
+            if ( ! hIcon )
+                RETVAL(-(INT)GetLastError())
+        }
+        else if ( argv[1].strptr[0] == 'F' )     /* load directly from File */
+        {
+            CHECKARGL(5)
+
+            hIcon = LoadImage(NULL, argv[2].strptr, IMAGE_ICON, atoi(argv[3].strptr),
+                              atoi(argv[4].strptr), LR_LOADFROMFILE);
+            if ( ! hIcon )
+                RETVAL(-(INT)GetLastError())
+        }
+        else
+        {
+            RETERR
+        }
+
+        ultoa((ULONG)hIcon, retstr->strptr, 10);
+        retstr->strlength = strlen(retstr->strptr);
+        return 0;
     }
 
     RETERR
@@ -1610,96 +1697,6 @@ ULONG REXXENTRY HandleDlg(
 }
 
 
-
-
-
-
-ULONG REXXENTRY DialogMenu(
-  PUCHAR funcname,
-  ULONG argc,
-  RXSTRING argv[],
-  PUCHAR qname,
-  PRXSTRING retstr )
-
-{
-   HWND hWnd;
-   DEF_ADM;
-
-   CHECKARGL(3);
-
-   if (!strcmp(argv[0].strptr, "ASSOC"))   /* Associates a menu with a dialog */
-   {
-       hWnd = (HWND)atol(argv[1].strptr);
-
-       if (hWnd)
-       {
-          SEEK_DLGADM_TABLE(hWnd, dlgAdm);
-          if (dlgAdm)
-          {
-              dlgAdm->menu = LoadMenu(dlgAdm->TheInstance, MAKEINTRESOURCE(atoi(argv[2].strptr)));
-              if (dlgAdm->menu)
-              {
-                  SetMenu(hWnd, dlgAdm->menu);
-                  RETC(0)
-              }
-          }
-       }
-       RETC(1)
-   }
-   else
-   {
-       DWORD opt;
-       DEF_ADM;
-       dlgAdm = (DIALOGADMIN *)atol(argv[1].strptr);
-       if (!dlgAdm) RETERR
-       if (!dlgAdm->menu) RETC(1)
-
-       if (!strcmp(argv[0].strptr, "SETMI"))   /* set state of menu item */
-       {
-           CHECKARGL(4);
-           if (argc == 4)
-           {
-               if (!strcmp(argv[3].strptr, "ENABLE")) opt = MF_ENABLED; else
-               if (!strcmp(argv[3].strptr, "DISABLE")) opt = MF_DISABLED; else
-               if (!strcmp(argv[3].strptr, "GRAY")) opt = MF_GRAYED; else
-               {
-                   if (!strcmp(argv[3].strptr, "CHECK")) opt = MF_CHECKED; else
-                   if (!strcmp(argv[3].strptr, "UNCHECK")) opt = MF_UNCHECKED; else RETC(1)
-                   if (CheckMenuItem(dlgAdm->menu, atoi(argv[2].strptr), MF_BYCOMMAND | opt) == 0xFFFFFFFF)
-                       RETC(1) else RETC(0)
-               }
-               if (EnableMenuItem(dlgAdm->menu, atoi(argv[2].strptr), MF_BYCOMMAND | opt) == 0xFFFFFFFF)
-                  RETC(1) else RETC(0)
-           }
-           else
-           if (argc == 5)
-           {
-                                                     /* start of group       end                selected item */
-               if (!CheckMenuRadioItem(dlgAdm->menu, atoi(argv[2].strptr), atoi(argv[3].strptr), atoi(argv[4].strptr), MF_BYCOMMAND))
-                  RETC(1) else RETC(0)
-
-           } else RETC(1)
-       }
-       else
-       if (!strcmp(argv[0].strptr, "GETMI"))    /* get state of menu item */
-       {
-           UINT state;
-           retstr->strptr[0] = '\0';
-           state = GetMenuState(dlgAdm->menu, atoi(argv[2].strptr), MF_BYCOMMAND);
-           if (state == 0xFFFFFFFF) RETC(1);
-           if (state & MF_CHECKED) strcat(retstr->strptr, "CHECKED ");
-           if (state & MF_DISABLED) strcat(retstr->strptr, "DISABLED ");
-           if (state & MF_GRAYED) strcat(retstr->strptr, "GRAYED ");
-           if (state & MF_HILITE) strcat(retstr->strptr, "HIGHLIGHTED ");
-           retstr->strlength = strlen(retstr->strptr);
-           return 0;
-       }
-       RETERR
-   }
-}
-
-
-
 /* dump out the dialog admin table(s) */
 
 LONG SetRexxStem(CHAR * name, INT id, char * secname, CHAR * data)
@@ -1766,8 +1763,6 @@ ULONG REXXENTRY DumpAdmin(
        if (!SetRexxStem(name, -1, "hThread", data)) RETERR
        itoa((LONG)dlgAdm->TheDlg, data, 16);
        if (!SetRexxStem(name, -1, "hDialog", data)) RETERR
-       itoa((LONG)dlgAdm->menu, data, 16);
-       if (!SetRexxStem(name, -1, "hMenu", data)) RETERR
        itoa((LONG)dlgAdm->BkgBrush, data, 16);
        if (!SetRexxStem(name, -1, "BkgBrush", data)) RETERR
        itoa((LONG)dlgAdm->BkgBitmap, data, 16);
@@ -1850,8 +1845,6 @@ ULONG REXXENTRY DumpAdmin(
                if (!SetRexxStem(name, cnt, "hThread", data)) RETERR
                itoa((LONG)DialogTab[i]->TheDlg, data, 16);
                if (!SetRexxStem(name, cnt, "hDialog", data)) RETERR
-               itoa((LONG)DialogTab[i]->menu, data, 16);
-               if (!SetRexxStem(name, cnt, "hMenu", data)) RETERR
                itoa((LONG)DialogTab[i]->BkgBrush, data, 16);
                if (!SetRexxStem(name, cnt, "BkgBrush", data)) RETERR
                itoa((LONG)DialogTab[i]->BkgBitmap, data, 16);
@@ -1921,7 +1914,7 @@ CHAR * FuncTab[FTS] = {\
                      "HandleScrollBar" \
                      };
 
-#define SFTS 19
+#define SFTS 28
 CHAR * SpecialFuncTab[SFTS] = {\
                      "BmpButton", \
                      "DCDraw", \
@@ -1938,19 +1931,27 @@ CHAR * SpecialFuncTab[SFTS] = {\
                      "HandleListCtrlEx", \
                      "HandleControlEx", \
                      "HandleOtherNewCtrls", \
-                     "DialogMenu", \
+                     "HandleMonthCalendar", \
+                     "HandleDateTimePicker", \
+                     "WinMenu", \
+                     "InsertMII", \
+                     "SetMII", \
+                     "GetMII", \
+                     "SetMI", \
+                     "GetMI", \
+                     "TrackPopup", \
+                     "MemMenu", \
                      "WinTimer", \
                      "HandleFont", \
                      "DumpAdmin" \
                      };
 
 
-#define UFTS 6
+#define UFTS 5
 CHAR * UserFuncTab[UFTS] = {\
                      "UsrAddControl", \
                      "UsrCreateDialog", \
                      "UsrDefineDialog", \
-                     "UsrMenu", \
                      "UsrAddNewCtrl", \
                      "UsrAddResource", \
                      };
@@ -2049,7 +2050,7 @@ BOOL InitForCommonControls(void)
         INITCOMMONCONTROLSEX ctrlex;
 
         ctrlex.dwSize = sizeof(ctrlex);
-        ctrlex.dwICC = ICC_WIN95_CLASSES;
+        ctrlex.dwICC = ICC_WIN95_CLASSES | ICC_STANDARD_CLASSES;
         if ( ! InitCommonControlsEx(&ctrlex) )
         {
             CHAR msg[128];
