@@ -2504,6 +2504,34 @@ return
 
 
 /*============================================================================*/
+/* Class: GtkToolButton                                                       */
+/*============================================================================*/
+
+::class GtkToolButton public subclass GtkToolItem
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxToolButtonNew"
+::METHOD get_label EXTERNAL "LIBRARY rexxgtk GrxToolButtonGetLabel"
+::METHOD set_label EXTERNAL "LIBRARY rexxgtk GrxToolButtonSetLabel"
+::METHOD get_use_underline EXTERNAL "LIBRARY rexxgtk GrxToolButtonGetUseUnderline"
+::METHOD set_use_underline EXTERNAL "LIBRARY rexxgtk GrxToolButtonSetUseUnderline"
+::METHOD get_stock_id EXTERNAL "LIBRARY rexxgtk GrxToolButtonGetStockId"
+::METHOD set_stock_id EXTERNAL "LIBRARY rexxgtk GrxToolButtonSetStockId"
+::METHOD get_icon_name EXTERNAL "LIBRARY rexxgtk GrxToolButtonGetIconName"
+::METHOD set_icon_name EXTERNAL "LIBRARY rexxgtk GrxToolButtonSetIconName"
+::METHOD get_icon_widget EXTERNAL "LIBRARY rexxgtk GrxToolButtonGetIconWidget"
+::METHOD set_icon_widget EXTERNAL "LIBRARY rexxgtk GrxToolButtonSetIconWidget"
+::METHOD get_label_widget EXTERNAL "LIBRARY rexxgtk GrxToolButtonGetLabelWidget"
+::METHOD set_label_widget EXTERNAL "LIBRARY rexxgtk GrxToolButtonSetLabelWidget"
+::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxToolButtonSignalConnect"
+
+-- The following are the methods that can be connected to signals. By default
+-- they do nothing.
+
+::method signal_clicked
+return
+
+
+/*============================================================================*/
 /* Class: GtkAccelGroup                                                       */
 /*============================================================================*/
 

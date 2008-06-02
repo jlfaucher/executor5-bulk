@@ -794,6 +794,21 @@ RexxMethodEntry gtkobject_methods[] = {
     REXX_METHOD(GrxToolItemGetProxyMenuItem, GrxToolItemGetProxyMenuItem),
     REXX_METHOD(GrxToolItemRebuildMenu, GrxToolItemRebuildMenu),
     REXX_METHOD(GrxToolItemSignalConnect, GrxToolItemSignalConnect),
+    REXX_METHOD(GrxToolButtonNew, GrxToolButtonNew),
+    REXX_METHOD(GrxToolButtonNewFromStock, GrxToolButtonNewFromStock),
+    REXX_METHOD(GrxToolButtonSetLabel, GrxToolButtonSetLabel),
+    REXX_METHOD(GrxToolButtonGetLabel, GrxToolButtonGetLabel),
+    REXX_METHOD(GrxToolButtonSetUseUnderline, GrxToolButtonSetUseUnderline),
+    REXX_METHOD(GrxToolButtonGetUseUnderline, GrxToolButtonGetUseUnderline),
+    REXX_METHOD(GrxToolButtonSetStockId, GrxToolButtonSetStockId),
+    REXX_METHOD(GrxToolButtonGetStockId, GrxToolButtonGetStockId),
+    REXX_METHOD(GrxToolButtonSetIconName, GrxToolButtonSetIconName),
+    REXX_METHOD(GrxToolButtonGetIconName, GrxToolButtonGetIconName),
+    REXX_METHOD(GrxToolButtonSetIconWidget, GrxToolButtonSetIconWidget),
+    REXX_METHOD(GrxToolButtonGetIconWidget, GrxToolButtonGetIconWidget),
+    REXX_METHOD(GrxToolButtonSetLabelWidget, GrxToolButtonSetLabelWidget),
+    REXX_METHOD(GrxToolButtonGetLabelWidget, GrxToolButtonGetLabelWidget),
+    REXX_METHOD(GrxToolButtonSignalConnect, GrxToolButtonSignalConnect),
     REXX_LAST_METHOD()
 };
 
