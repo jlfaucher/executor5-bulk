@@ -795,7 +795,6 @@ RexxMethodEntry gtkobject_methods[] = {
     REXX_METHOD(GrxToolItemRebuildMenu, GrxToolItemRebuildMenu),
     REXX_METHOD(GrxToolItemSignalConnect, GrxToolItemSignalConnect),
     REXX_METHOD(GrxToolButtonNew, GrxToolButtonNew),
-    REXX_METHOD(GrxToolButtonNewFromStock, GrxToolButtonNewFromStock),
     REXX_METHOD(GrxToolButtonSetLabel, GrxToolButtonSetLabel),
     REXX_METHOD(GrxToolButtonGetLabel, GrxToolButtonGetLabel),
     REXX_METHOD(GrxToolButtonSetUseUnderline, GrxToolButtonSetUseUnderline),
@@ -809,6 +808,9 @@ RexxMethodEntry gtkobject_methods[] = {
     REXX_METHOD(GrxToolButtonSetLabelWidget, GrxToolButtonSetLabelWidget),
     REXX_METHOD(GrxToolButtonGetLabelWidget, GrxToolButtonGetLabelWidget),
     REXX_METHOD(GrxToolButtonSignalConnect, GrxToolButtonSignalConnect),
+    REXX_METHOD(GrxSeparatorToolItemNew, GrxSeparatorToolItemNew),
+    REXX_METHOD(GrxSeparatorToolItemSetDraw, GrxSeparatorToolItemSetDraw),
+    REXX_METHOD(GrxSeparatorToolItemGetDraw, GrxSeparatorToolItemGetDraw),
     REXX_LAST_METHOD()
 };
 

@@ -2509,6 +2509,12 @@ return
 
 ::class GtkToolButton public subclass GtkToolItem
 
+::METHOD new_from_stock class
+use strict arg id
+obj = .GtkToolButton~new(.nil, .nil)
+obj~set_stock_id(id)
+return obj
+
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxToolButtonNew"
 ::METHOD get_label EXTERNAL "LIBRARY rexxgtk GrxToolButtonGetLabel"
 ::METHOD set_label EXTERNAL "LIBRARY rexxgtk GrxToolButtonSetLabel"
@@ -2529,6 +2535,17 @@ return
 
 ::method signal_clicked
 return
+
+
+/*============================================================================*/
+/* Class: GtkToolButton                                                       */
+/*============================================================================*/
+
+::class GtkSeparatorToolItem public subclass GtkToolItem
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxSeparatorToolItemNew"
+::METHOD set_draw EXTERNAL "LIBRARY rexxgtk GrxSeparatorToolItemSetDraw"
+::METHOD get_draw EXTERNAL "LIBRARY rexxgtk GrxSeparatorToolItemGetDraw"
 
 
 /*============================================================================*/

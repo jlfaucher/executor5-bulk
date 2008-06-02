@@ -103,30 +103,6 @@ RexxMethod3(int,                       // Return type
 }
 
 /**
- * Method:  init
- *
- * Create an tool button from stock.
- *
- * @param id      The stockid
- *
- * @return        Zero.
- **/
-RexxMethod2(int,                       // Return type
-            GrxToolButtonNewFronStock, // Object_method name
-            OSELF, self,               // Self
-            CSTRING, id)               // Button label text
-{
-    GtkToolItem *toolitem;
-
-    toolitem = gtk_tool_button_new_from_stock(id);
-
-    context->SetObjectVariable("!POINTER", context->NewPointer(toolitem));
-    g_object_set_data(G_OBJECT(toolitem), "OORXOBJECT", self);
-
-    return 0;
-}
-
-/**
  * Method:  set_label
  *
  * Sets the button label.
@@ -381,5 +357,63 @@ RexxMethod2(RexxObjectPtr,             // Return type
         return context->True();
     }
     return context->False();
+}
+
+/**
+ * Method:  init
+ *
+ * Create an tool button separator.
+ *
+ * @return        Zero.
+ **/
+RexxMethod1(int,                       // Return type
+            GrxSeparatorToolItemNew,   // Object_method name
+            OSELF, self)               // Self
+{
+    GtkToolItem *toolitem;
+
+    toolitem = gtk_separator_tool_item_new();
+
+    context->SetObjectVariable("!POINTER", context->NewPointer(toolitem));
+    g_object_set_data(G_OBJECT(toolitem), "OORXOBJECT", self);
+
+    return 0;
+}
+
+/**
+ * Method:  set_draw
+ *
+ * Sets the fraw flag.
+ *
+ * @param flag    The draw boolean
+ *
+ * @return        Zero.
+ **/
+RexxMethod1(int,                       // Return type
+            GrxSeparatorToolItemSetDraw, // Object_method name
+            logical_t, flag)           // The draw boolean
+{
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    GtkSeparatorToolItem *myWidget = (GtkSeparatorToolItem *)context->PointerValue(rxptr);
+
+    gtk_separator_tool_item_set_draw(myWidget, flag);
+
+    return 0;
+}
+
+/**
+ * Method:  get_draw
+ *
+ * Gets the draw flag.
+ *
+ * @return        Draw boolean
+ **/
+RexxMethod0(logical_t,                 // Return type
+            GrxSeparatorToolItemGetDraw) // Object_method name
+{
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    GtkSeparatorToolItem *myWidget = (GtkSeparatorToolItem *)context->PointerValue(rxptr);
+
+    return gtk_separator_tool_item_get_draw(myWidget);
 }
 

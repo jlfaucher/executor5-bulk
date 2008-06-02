@@ -562,7 +562,6 @@ REXX_METHOD_PROTOTYPE(GrxToolItemGetProxyMenuItem)
 REXX_METHOD_PROTOTYPE(GrxToolItemRebuildMenu)
 REXX_METHOD_PROTOTYPE(GrxToolItemSignalConnect)
 REXX_METHOD_PROTOTYPE(GrxToolButtonNew)
-REXX_METHOD_PROTOTYPE(GrxToolButtonNewFromStock)
 REXX_METHOD_PROTOTYPE(GrxToolButtonSetLabel)
 REXX_METHOD_PROTOTYPE(GrxToolButtonGetLabel)
 REXX_METHOD_PROTOTYPE(GrxToolButtonSetUseUnderline)
@@ -576,6 +575,9 @@ REXX_METHOD_PROTOTYPE(GrxToolButtonGetIconWidget)
 REXX_METHOD_PROTOTYPE(GrxToolButtonSetLabelWidget)
 REXX_METHOD_PROTOTYPE(GrxToolButtonGetLabelWidget)
 REXX_METHOD_PROTOTYPE(GrxToolButtonSignalConnect)
+REXX_METHOD_PROTOTYPE(GrxSeparatorToolItemNew)
+REXX_METHOD_PROTOTYPE(GrxSeparatorToolItemSetDraw)
+REXX_METHOD_PROTOTYPE(GrxSeparatorToolItemGetDraw)
  
  #endif /* REXXGTK_H */
  
