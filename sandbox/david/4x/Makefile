@@ -83,7 +83,8 @@ OBJECTS = rexxgtk.o \
 	grxstatusbar.o \
 	grxtoolbar.o \
 	grxtoolitem.o \
-	grxtoolbutton.o
+	grxtoolbutton.o \
+	grxmenutoolbutton.o
 
 
 # Build the shared library
@@ -203,8 +204,11 @@ grxtoolbar.o: grxtoolbar.cpp rexxgtk.h
 grxtoolitem.o: grxtoolitem.cpp rexxgtk.h
 	gcc -c $(GRXCFLAGS) grxtoolitem.cpp
 
-grxtoolitem.o: grxtoolbutton.cpp rexxgtk.h
+grxtoolbutton.o: grxtoolbutton.cpp rexxgtk.h
 	gcc -c $(GRXCFLAGS) grxtoolbutton.cpp
+
+grxmenutoolbutton.o: grxmenutoolbutton.cpp rexxgtk.h
+	gcc -c $(GRXCFLAGS) grxmenutoolbutton.cpp
 
 
 

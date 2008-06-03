@@ -811,6 +811,11 @@ RexxMethodEntry gtkobject_methods[] = {
     REXX_METHOD(GrxSeparatorToolItemNew, GrxSeparatorToolItemNew),
     REXX_METHOD(GrxSeparatorToolItemSetDraw, GrxSeparatorToolItemSetDraw),
     REXX_METHOD(GrxSeparatorToolItemGetDraw, GrxSeparatorToolItemGetDraw),
+    REXX_METHOD(GrxMenuToolButtonNew, GrxMenuToolButtonNew),
+    REXX_METHOD(GrxMenuToolButtonSetMenu, GrxMenuToolButtonSetMenu),
+    REXX_METHOD(GrxMenuToolButtonGetMenu, GrxMenuToolButtonGetMenu),
+    REXX_METHOD(GrxMenuToolButtonSetArrowTooltip, GrxMenuToolButtonSetArrowTooltip),
+    REXX_METHOD(GrxMenuToolButtonSignalConnect, GrxMenuToolButtonSignalConnect),
     REXX_LAST_METHOD()
 };
 

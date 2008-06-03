@@ -2538,6 +2538,31 @@ return
 
 
 /*============================================================================*/
+/* Class: GtkMenuToolButton                                                   */
+/*============================================================================*/
+
+::class GtkMenuToolButton public subclass GtkToolButton
+
+::METHOD new_from_stock class
+use strict arg id
+obj = .GtkMenuToolButton~new(.nil, .nil)
+obj~set_stock_id(id)
+return obj
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxMenuToolButtonNew"
+::METHOD get_menu EXTERNAL "LIBRARY rexxgtk GrxMenuToolButtonGetMenu"
+::METHOD set_menu EXTERNAL "LIBRARY rexxgtk GrxMenuToolButtonSetMenu"
+::METHOD set_arrow_tooltip EXTERNAL "LIBRARY rexxgtk GrxMenuToolButtonSetArrowTooltip"
+::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxMenuToolButtonSignalConnect"
+
+-- The following are the methods that can be connected to signals. By default
+-- they do nothing.
+
+::method signal_show_menu
+return
+
+
+/*============================================================================*/
 /* Class: GtkToolButton                                                       */
 /*============================================================================*/
 

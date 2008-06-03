@@ -578,6 +578,11 @@ REXX_METHOD_PROTOTYPE(GrxToolButtonSignalConnect)
 REXX_METHOD_PROTOTYPE(GrxSeparatorToolItemNew)
 REXX_METHOD_PROTOTYPE(GrxSeparatorToolItemSetDraw)
 REXX_METHOD_PROTOTYPE(GrxSeparatorToolItemGetDraw)
+REXX_METHOD_PROTOTYPE(GrxMenuToolButtonNew)
+REXX_METHOD_PROTOTYPE(GrxMenuToolButtonSetMenu)
+REXX_METHOD_PROTOTYPE(GrxMenuToolButtonGetMenu)
+REXX_METHOD_PROTOTYPE(GrxMenuToolButtonSetArrowTooltip)
+REXX_METHOD_PROTOTYPE(GrxMenuToolButtonSignalConnect)
  
  #endif /* REXXGTK_H */
  

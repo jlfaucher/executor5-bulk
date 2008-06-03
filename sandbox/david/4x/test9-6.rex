@@ -74,25 +74,25 @@ return
 ::class myCut subclass .GtkToolItem
 
 :method signal_clicked
-entry~cut_clipboard()
+self~user_data~cut_clipboard()
 return
 
 ::class myCopy subclass .GtkToolItem
 
 :method signal_clicked
-entry~copy_clipboard()
+self~user_data~copy_clipboard()
 return
 
 ::class myPaste subclass .GtkToolItem
 
 :method signal_clicked
-entry~paste_clipboard()
+self~user_data~paste_clipboard()
 return
 
 ::class mySelectall subclass .GtkToolItem
 
 :method signal_clicked
-entry~select_region(self~user_data, 0, -1)
+self~user_data~select_region(self~user_data, 0, -1)
 return
 
 ::routine create_toolbar
@@ -112,6 +112,12 @@ toolbar~insert(copy, 1)
 toolbar~insert(paste, 2)
 toolbar~insert(separator, 3)
 toolbar~insert(selectall, 4)
+
+-- save user data for the callbacks
+cut~user_data = entry
+copy~user_data = entry
+paste~user_data = entry
+selectall~user_data = entry
 
 cut~signal_connect('clicked')
 copy~signal_connect('clicked')
