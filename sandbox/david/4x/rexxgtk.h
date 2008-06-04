@@ -583,6 +583,8 @@ REXX_METHOD_PROTOTYPE(GrxMenuToolButtonSetMenu)
 REXX_METHOD_PROTOTYPE(GrxMenuToolButtonGetMenu)
 REXX_METHOD_PROTOTYPE(GrxMenuToolButtonSetArrowTooltip)
 REXX_METHOD_PROTOTYPE(GrxMenuToolButtonSignalConnect)
+REXX_METHOD_PROTOTYPE(GrxCellRendererTextNew)
+REXX_METHOD_PROTOTYPE(GrxCellRendererTextSignalConnect)
  
  #endif /* REXXGTK_H */
  

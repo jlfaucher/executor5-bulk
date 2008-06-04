@@ -2618,6 +2618,27 @@ return
 
 
 /*============================================================================*/
+/* Class: GtkCellRendererText                                                 */
+/*============================================================================*/
+
+::class GtkCellRendererText public
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxCellRendererTextNew"
+
+::method pointer
+expose !pointer
+return !pointer
+
+::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxCellRendererTextSignalConnect"
+
+-- The following are the methods that can be connected to signals. By default
+-- they do nothing.
+
+::method signal_edited
+return
+
+
+/*============================================================================*/
 /*============================================================================*/
 /*============================================================================*/
 /* These are classes and routines specific to Glib.                           */

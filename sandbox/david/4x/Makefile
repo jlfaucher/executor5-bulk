@@ -84,7 +84,8 @@ OBJECTS = rexxgtk.o \
 	grxtoolbar.o \
 	grxtoolitem.o \
 	grxtoolbutton.o \
-	grxmenutoolbutton.o
+	grxmenutoolbutton.o \
+	grxcellrenderer.o
 
 
 # Build the shared library
@@ -209,6 +210,9 @@ grxtoolbutton.o: grxtoolbutton.cpp rexxgtk.h
 
 grxmenutoolbutton.o: grxmenutoolbutton.cpp rexxgtk.h
 	gcc -c $(GRXCFLAGS) grxmenutoolbutton.cpp
+
+grxcellrenderer.o: grxcellrenderer.cpp rexxgtk.h
+	gcc -c $(GRXCFLAGS) grxcellrenderer.cpp
 
 
 

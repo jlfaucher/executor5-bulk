@@ -816,6 +816,8 @@ RexxMethodEntry gtkobject_methods[] = {
     REXX_METHOD(GrxMenuToolButtonGetMenu, GrxMenuToolButtonGetMenu),
     REXX_METHOD(GrxMenuToolButtonSetArrowTooltip, GrxMenuToolButtonSetArrowTooltip),
     REXX_METHOD(GrxMenuToolButtonSignalConnect, GrxMenuToolButtonSignalConnect),
+    REXX_METHOD(GrxCellRendererTextNew, GrxCellRendererTextNew),
+    REXX_METHOD(GrxCellRendererTextSignalConnect, GrxCellRendererTextSignalConnect),
     REXX_LAST_METHOD()
 };
 
