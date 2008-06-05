@@ -2563,7 +2563,7 @@ return
 
 
 /*============================================================================*/
-/* Class: GtkToolButton                                                       */
+/* Class: GtkSeparatorToolButton                                              */
 /*============================================================================*/
 
 ::class GtkSeparatorToolItem public subclass GtkToolItem
@@ -2734,6 +2734,101 @@ return
 ::class GtkCellRendererSpin public subclass GtkCellRendererText
 
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxCellRendererSpinNew"
+
+
+/*============================================================================*/
+/* Class: GtkTreeView                                                         */
+/*============================================================================*/
+
+::class GtkTreeView public subclass GtkContainer
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxTreeViewNew"
+::METHOD append_column EXTERNAL "LIBRARY rexxgtk GrxTreeViewAppendColumn"
+::METHOD insert_column EXTERNAL "LIBRARY rexxgtk GrxTreeViewInsertColumn"
+::METHOD remove_column EXTERNAL "LIBRARY rexxgtk GrxTreeViewRemoveColumn"
+::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxTreeViewSignalConnect"
+
+-- The following are the methods that can be connected to signals. By default
+-- they do nothing.
+
+::method signal_columns_changed
+return
+
+::method signal_cursor_changed
+return
+
+::method signal_expand_collapse_cursor_row
+return .false
+
+::method signal_move_cursor
+return .false
+
+::method signal_row_activated
+return
+
+::method signal_row_collapsed
+return
+
+::method signal_row_expanded
+return
+
+::method signal_select_all
+return .false
+
+::method signal_select_cursor_parent
+return .false
+
+::method signal_select_cursor_row
+return .false
+
+::method signal_set_scroll_adjustments
+return
+
+::method signal_start_interactive_search
+return .false
+
+::method signal_test_collapse_row
+return .false
+
+::method signal_test_expand_row
+return .false
+
+::method signal_toggle_cursor_row
+return .false
+
+::method signal_unselect_all
+return .false
+
+
+/*============================================================================*/
+/* Class: GtkTreeViewColumn                                                   */
+/*============================================================================*/
+
+::class GtkTreeViewColumn public
+
+::METHOD new_with_attributes class
+use arg title, renderer
+obj = .GtkTreeViewColumn~new()
+obj~set_title(title)
+obj~pack_start(renderer, .false)
+do i = 3 to arg() by 2
+   obj~set_attribute(renderer, arg(i), arg(i + 1))
+   end
+return obj
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxTreeViewColumnNew"
+::METHOD set_title EXTERNAL "LIBRARY rexxgtk GrxTreeViewColumnSetTitle"
+::METHOD get_title EXTERNAL "LIBRARY rexxgtk GrxTreeViewColumnGetTitle"
+::METHOD pack_start EXTERNAL "LIBRARY rexxgtk GrxTreeViewColumnPackStart"
+::METHOD pack_end EXTERNAL "LIBRARY rexxgtk GrxTreeViewColumnPackEnd"
+::METHOD set_attribute EXTERNAL "LIBRARY rexxgtk GrxTreeViewColumnSetAttribute"
+::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxTreeViewColumnSignalConnect"
+
+-- The following are the methods that can be connected to signals. By default
+-- they do nothing.
+
+::method signal_clicked
+return
 
 
 /*============================================================================*/

@@ -570,6 +570,6 @@ RexxMethod2(RexxObjectPtr,             // Return type
                          G_CALLBACK(signal_func_0a), cblock);
         return context->True();
     }
-    return context->False();
+    return context->SendSuperMessage("signal_connect", args);
 }
 

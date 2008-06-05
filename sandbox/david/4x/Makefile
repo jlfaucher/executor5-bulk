@@ -85,7 +85,9 @@ OBJECTS = rexxgtk.o \
 	grxtoolitem.o \
 	grxtoolbutton.o \
 	grxmenutoolbutton.o \
-	grxcellrenderer.o
+	grxcellrenderer.o \
+	grxtreeview.o \
+	grxtreeviewcolumn.o
 
 
 # Build the shared library
@@ -213,6 +215,12 @@ grxmenutoolbutton.o: grxmenutoolbutton.cpp rexxgtk.h
 
 grxcellrenderer.o: grxcellrenderer.cpp rexxgtk.h
 	gcc -c $(GRXCFLAGS) grxcellrenderer.cpp
+
+grxtreeview.o: grxtreeview.cpp rexxgtk.h
+	gcc -c $(GRXCFLAGS) grxtreeview.cpp
+
+grxtreeviewcolumn.o: grxtreeviewcolumn.cpp rexxgtk.h
+	gcc -c $(GRXCFLAGS) grxtreeviewcolumn.cpp
 
 
 

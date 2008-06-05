@@ -356,7 +356,7 @@ RexxMethod2(RexxObjectPtr,             // Return type
                          G_CALLBACK(signal_func_0), cblock);
         return context->True();
     }
-    return context->False();
+    return context->SendSuperMessage("signal_connect", args);
 }
 
 /**
@@ -383,7 +383,7 @@ RexxMethod1(int,                       // Return type
 /**
  * Method:  set_draw
  *
- * Sets the fraw flag.
+ * Sets the draw flag.
  *
  * @param flag    The draw boolean
  *

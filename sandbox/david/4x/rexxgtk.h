@@ -600,6 +600,18 @@ REXX_METHOD_PROTOTYPE(GrxCellRendererAccelSignalConnect)
 REXX_METHOD_PROTOTYPE(GrxCellRendererComboNew)
 REXX_METHOD_PROTOTYPE(GrxCellRendererComboSignalConnect)
 REXX_METHOD_PROTOTYPE(GrxCellRendererSpinNew)
+REXX_METHOD_PROTOTYPE(GrxTreeViewNew)
+REXX_METHOD_PROTOTYPE(GrxTreeViewAppendColumn)
+REXX_METHOD_PROTOTYPE(GrxTreeViewInsertColumn)
+REXX_METHOD_PROTOTYPE(GrxTreeViewRemoveColumn)
+REXX_METHOD_PROTOTYPE(GrxTreeViewSignalConnect)
+REXX_METHOD_PROTOTYPE(GrxTreeViewColumnNew)
+REXX_METHOD_PROTOTYPE(GrxTreeViewColumnSetTitle)
+REXX_METHOD_PROTOTYPE(GrxTreeViewColumnGetTitle)
+REXX_METHOD_PROTOTYPE(GrxTreeViewColumnPackStart)
+REXX_METHOD_PROTOTYPE(GrxTreeViewColumnPackEnd)
+REXX_METHOD_PROTOTYPE(GrxTreeViewColumnSetAttribute)
+REXX_METHOD_PROTOTYPE(GrxTreeViewColumnSignalConnect)
  
  #endif /* REXXGTK_H */
  

@@ -833,6 +833,18 @@ RexxMethodEntry gtkobject_methods[] = {
     REXX_METHOD(GrxCellRendererComboNew, GrxCellRendererComboNew),
     REXX_METHOD(GrxCellRendererComboSignalConnect, GrxCellRendererComboSignalConnect),
     REXX_METHOD(GrxCellRendererSpinNew, GrxCellRendererSpinNew),
+    REXX_METHOD(GrxTreeViewNew, GrxTreeViewNew),
+    REXX_METHOD(GrxTreeViewAppendColumn, GrxTreeViewAppendColumn),
+    REXX_METHOD(GrxTreeViewInsertColumn, GrxTreeViewInsertColumn),
+    REXX_METHOD(GrxTreeViewRemoveColumn, GrxTreeViewRemoveColumn),
+    REXX_METHOD(GrxTreeViewSignalConnect, GrxTreeViewSignalConnect),
+    REXX_METHOD(GrxTreeViewColumnNew, GrxTreeViewColumnNew),
+    REXX_METHOD(GrxTreeViewColumnSetTitle, GrxTreeViewColumnSetTitle),
+    REXX_METHOD(GrxTreeViewColumnGetTitle, GrxTreeViewColumnGetTitle),
+    REXX_METHOD(GrxTreeViewColumnPackStart, GrxTreeViewColumnPackStart),
+    REXX_METHOD(GrxTreeViewColumnPackEnd, GrxTreeViewColumnPackEnd),
+    REXX_METHOD(GrxTreeViewColumnSetAttribute, GrxTreeViewColumnSetAttribute),
+    REXX_METHOD(GrxTreeViewColumnSignalConnect, GrxTreeViewColumnSignalConnect),
     REXX_LAST_METHOD()
 };
 

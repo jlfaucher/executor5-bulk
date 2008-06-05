@@ -57,11 +57,11 @@
 /* Private Functions                                                          */
 /*============================================================================*/
 
-static void signal_func_0(GtkWidget *toolitem,
+static void signal_func_0(GtkWidget *treeviewcol,
                           gpointer data)
 {
     cbcb *cblock = (cbcb *)data;
-    RexxObjectPtr rxobj = (RexxObjectPtr)g_object_get_data(G_OBJECT(toolitem), "OORXOBJECT");
+    RexxObjectPtr rxobj = (RexxObjectPtr)g_object_get_data(G_OBJECT(treeviewcol), "OORXOBJECT");
     RexxThreadContext *context;
 
     cblock->instance->AttachThread(&context);
@@ -78,95 +78,130 @@ static void signal_func_0(GtkWidget *toolitem,
 /**
  * Method:  init
  *
- * Create an tool button.
- *
- * @param label   The button label
- *
- * @return        Zero.
- **/
-RexxMethod3(int,                       // Return type
-            GrxMenuToolButtonNew,      // Object_method name
-            OSELF, self,               // Self
-            RexxObjectPtr, icon,       // Icon widget
-            CSTRING, label)            // Button label text
-{
-    RexxPointerObject widgetptr = (RexxPointerObject)context->SendMessage0(icon, "POINTER");
-    GtkWidget *iconWidget = (GtkWidget *)context->PointerValue(widgetptr);
-    GtkToolItem *toolitem;
-
-    toolitem = gtk_menu_tool_button_new(iconWidget, label);
-
-    context->SetObjectVariable("!POINTER", context->NewPointer(toolitem));
-    g_object_set_data(G_OBJECT(toolitem), "OORXOBJECT", self);
-
-    return 0;
-}
-
-/**
- * Method:  set_menu
- *
- * Sets the menu.
- *
- * @param menu    The menu
+ * Create an tree view column.
  *
  * @return        Zero.
  **/
 RexxMethod1(int,                       // Return type
-            GrxToolButtonSetMenu,      // Object_method name
-            RexxObjectPtr, rxobj)      // The icon widget
+            GrxTreeViewColumnNew,      // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
-    GtkMenuToolButton *myWidget = (GtkMenuToolButton *)context->PointerValue(rxptr);
-    RexxPointerObject widgetptr = (RexxPointerObject)context->SendMessage0(rxobj, "POINTER");
-    GtkWidget *menuWidget = (GtkWidget *)context->PointerValue(widgetptr);
+    GtkTreeViewColumn *treeviewcol;
 
-    gtk_menu_tool_button_set_menu(myWidget, menuWidget);
+    treeviewcol = gtk_tree_view_column_new();
+
+    context->SetObjectVariable("!POINTER", context->NewPointer(treeviewcol));
+    g_object_set_data(G_OBJECT(treeviewcol), "OORXOBJECT", self);
 
     return 0;
 }
 
 /**
- * Method:  get_menu
+ * Method:  set_title
  *
- * Gets the menu.
+ * Set the title of a tree view column.
  *
- * @return        Icon widget
+ * @param title   The title
+ *
+ * @return        Zero.
  **/
-RexxMethod0(RexxObjectPtr,             // Return type
-            GrxMenuToolButtonGetMenu)  // Object_method name
+RexxMethod1(int,                       // Return type
+            GrxTreeViewColumnSetTitle, // Object_method name
+            CSTRING, title)            // Title
 {
     RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
-    GtkMenuToolButton *myWidget = (GtkMenuToolButton *)context->PointerValue(rxptr);
+    GtkTreeViewColumn *myWidget = (GtkTreeViewColumn *)context->PointerValue(rxptr);
 
-    GtkWidget *menuWidget = gtk_menu_tool_button_get_menu(myWidget);
-    return (RexxObjectPtr)g_object_get_data(G_OBJECT(menuWidget), "OORXOBJECT");
+    gtk_tree_view_column_set_title(myWidget, title);
+
+    return 0;
 }
 
 /**
- * Method:  set_arrow_tooltip
+ * Method:  get_title
  *
- * Sets the arrow tooltip.
+ * Get the title of a tree view column.
  *
- * @param tt      The tooltip
+ * @return        Zero.
+ **/
+RexxMethod0(CSTRING,                   // Return type
+            GrxTreeViewColumnGetTitle) // Object_method name
+{
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    GtkTreeViewColumn *myWidget = (GtkTreeViewColumn *)context->PointerValue(rxptr);
+
+    return gtk_tree_view_column_get_title(myWidget);
+}
+
+/**
+ * Method:  pack_start
  *
- * @param text    The tooltip text
+ * Pack the tree view column.
  *
- * @param ptext   The tooltip private text
+ * @param flag    The expand boolean
+ *
+ * @return        Zero.
+ **/
+RexxMethod2(int,                       // Return type
+            GrxTreeViewColumnPackStart, // Object_method name
+            RexxObjectPtr, rxobj,      // Renderer
+            logical_t, flag)           // Expand boolean
+{
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    GtkTreeViewColumn *myWidget = (GtkTreeViewColumn *)context->PointerValue(rxptr);
+    RexxPointerObject renptr = (RexxPointerObject)context->SendMessage0(rxobj, "POINTER");
+    GtkCellRenderer *renWidget = (GtkCellRenderer *)context->PointerValue(renptr);
+
+    gtk_tree_view_column_pack_start(myWidget, renWidget, flag);
+
+    return 0;
+}
+
+/**
+ * Method:  pack_end
+ *
+ * Pack the tree view column.
+ *
+ * @param flag    The expand boolean
+ *
+ * @return        Zero.
+ **/
+RexxMethod2(int,                       // Return type
+            GrxTreeViewColumnPackEnd, // Object_method name
+            RexxObjectPtr, rxobj,      // Renderer
+            logical_t, flag)           // Expand boolean
+{
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    GtkTreeViewColumn *myWidget = (GtkTreeViewColumn *)context->PointerValue(rxptr);
+    RexxPointerObject renptr = (RexxPointerObject)context->SendMessage0(rxobj, "POINTER");
+    GtkCellRenderer *renWidget = (GtkCellRenderer *)context->PointerValue(renptr);
+
+    gtk_tree_view_column_pack_end(myWidget, renWidget, flag);
+
+    return 0;
+}
+
+/**
+ * Method:  set_attribute
+ *
+ * Set an attribute of a tree view column.
+ *
+ * @param flag    The expand boolean
  *
  * @return        Zero.
  **/
 RexxMethod3(int,                       // Return type
-            GrxToolButtonSetArrowTooltip, // Object_method name
-            RexxObjectPtr, rxobj,      // The tooltip
-            CSTRING, text,             // The tooltip text
-            CSTRING, ptext)            // The tooltip private text
+            GrxTreeViewColumnSetAttribute, // Object_method name
+            RexxObjectPtr, rxobj,      // Renderer
+            CSTRING, attr,             // Attribute
+            int, col)                  // Column
 {
     RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
-    GtkMenuToolButton *myWidget = (GtkMenuToolButton *)context->PointerValue(rxptr);
-    RexxPointerObject widgetptr = (RexxPointerObject)context->SendMessage0(rxobj, "POINTER");
-    GtkTooltips *ttWidget = (GtkTooltips *)context->PointerValue(widgetptr);
+    GtkTreeViewColumn *myWidget = (GtkTreeViewColumn *)context->PointerValue(rxptr);
+    RexxPointerObject renptr = (RexxPointerObject)context->SendMessage0(rxobj, "POINTER");
+    GtkCellRenderer *renWidget = (GtkCellRenderer *)context->PointerValue(renptr);
 
-    gtk_menu_tool_button_set_arrow_tooltip(myWidget, ttWidget, text, ptext);
+    gtk_tree_view_column_set_attributes(myWidget, renWidget, attr, col, NULL);
 
     return 0;
 }
@@ -181,7 +216,7 @@ RexxMethod3(int,                       // Return type
  * @return        Zero
  **/
 RexxMethod2(RexxObjectPtr,             // Return type
-            GrxMenuToolButtonSignalConnect, // Object_method name
+            GrxTreeViewColumnSignalConnect, // Object_method name
             CSTRING, name,             // Signal name
             ARGLIST, args)             // The whole argument list as an array
 {
@@ -189,14 +224,14 @@ RexxMethod2(RexxObjectPtr,             // Return type
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     cbcb *cblock;
 
-    if (strcmp(name, "show_menu") == 0) {
+    if (strcmp(name, "columns_clicked") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
-        cblock->signal_name = "signal_show_menu";
-        g_signal_connect(G_OBJECT(myWidget), "show-menu",
+        cblock->signal_name = "signal_clicked";
+        g_signal_connect(G_OBJECT(myWidget), "clicked",
                          G_CALLBACK(signal_func_0), cblock);
         return context->True();
     }
-    return context->SendSuperMessage("signal_connect", args);
+    return context->False();
 }
 
