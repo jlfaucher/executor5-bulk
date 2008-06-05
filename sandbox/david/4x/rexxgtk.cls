@@ -2817,6 +2817,11 @@ do i = 3 to arg() by 2
 return obj
 
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxTreeViewColumnNew"
+
+::method pointer
+expose !pointer
+return !pointer
+
 ::METHOD set_title EXTERNAL "LIBRARY rexxgtk GrxTreeViewColumnSetTitle"
 ::METHOD get_title EXTERNAL "LIBRARY rexxgtk GrxTreeViewColumnGetTitle"
 ::METHOD pack_start EXTERNAL "LIBRARY rexxgtk GrxTreeViewColumnPackStart"
