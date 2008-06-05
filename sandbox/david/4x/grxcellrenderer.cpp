@@ -57,6 +57,34 @@
 /* Private Functions                                                          */
 /*============================================================================*/
 
+static void signal_func_0(GtkCellRenderer *renderer,
+                          gpointer data)
+{
+    cbcb *cblock = (cbcb *)data;
+    RexxObjectPtr rxobj = (RexxObjectPtr)g_object_get_data(G_OBJECT(renderer), "OORXOBJECT");
+    RexxThreadContext *context;
+
+    cblock->instance->AttachThread(&context);
+    context->SendMessage0(rxobj, ((cbcb *)data)->signal_name);
+    context->DetachThread();
+    return;
+}
+
+static void signal_func_1(GtkCellRenderer *renderer,
+                          gchar *arg1,
+                          gpointer data)
+{
+    cbcb *cblock = (cbcb *)data;
+    RexxObjectPtr rxobj = (RexxObjectPtr)g_object_get_data(G_OBJECT(renderer), "OORXOBJECT");
+    RexxThreadContext *context;
+
+    cblock->instance->AttachThread(&context);
+    RexxObjectPtr tempobj1 = context->NewStringFromAsciiz(arg1);;
+    context->SendMessage1(rxobj, ((cbcb *)data)->signal_name, tempobj1);
+    context->DetachThread();
+    return;
+}
+
 static void signal_func_2(GtkCellRenderer *renderer,
                           gchar *arg1,
                           gchar *arg2,
@@ -65,12 +93,54 @@ static void signal_func_2(GtkCellRenderer *renderer,
     cbcb *cblock = (cbcb *)data;
     RexxObjectPtr rxobj = (RexxObjectPtr)g_object_get_data(G_OBJECT(renderer), "OORXOBJECT");
     RexxThreadContext *context;
-    gboolean retc;
 
     cblock->instance->AttachThread(&context);
     RexxObjectPtr tempobj1 = context->NewStringFromAsciiz(arg2);;
     RexxObjectPtr tempobj2 = context->NewStringFromAsciiz(arg2);;
     context->SendMessage2(rxobj, ((cbcb *)data)->signal_name, tempobj1, tempobj2);
+    context->DetachThread();
+    return;
+}
+
+static void signal_func_2a(GtkCellRenderer *renderer,
+                           GtkCellEditable *arg1,
+                           gchar *arg2,
+                           gpointer data)
+{
+    cbcb *cblock = (cbcb *)data;
+    RexxObjectPtr rxobj = (RexxObjectPtr)g_object_get_data(G_OBJECT(renderer), "OORXOBJECT");
+    RexxThreadContext *context;
+
+    cblock->instance->AttachThread(&context);
+    RexxObjectPtr tempobj1 = (RexxObjectPtr)g_object_get_data(G_OBJECT(arg1), "OORXOBJECT");
+    RexxObjectPtr tempobj2 = context->NewStringFromAsciiz(arg2);;
+    context->SendMessage2(rxobj, ((cbcb *)data)->signal_name, tempobj1, tempobj2);
+    context->DetachThread();
+    return;
+}
+
+static void signal_func_4(GtkCellRenderer *renderer,
+                          gchar *arg1,
+                          gint arg2,
+                          gint arg3,
+                          guint arg4,
+                          gpointer data)
+{
+    cbcb *cblock = (cbcb *)data;
+    RexxObjectPtr rxobj = (RexxObjectPtr)g_object_get_data(G_OBJECT(renderer), "OORXOBJECT");
+    RexxThreadContext *context;
+
+    cblock->instance->AttachThread(&context);
+    RexxArrayObject arr = context->NewArray(1);
+    RexxObjectPtr tempobj = context->NewStringFromAsciiz(arg1);
+    context->ArrayPut(arr, tempobj, 1);
+    tempobj = context->NumberToObject((wholenumber_t)arg2);;
+    context->ArrayPut(arr, tempobj, 2);
+    tempobj = context->NumberToObject((wholenumber_t)arg3);;
+    context->ArrayPut(arr, tempobj, 3);
+    tempobj = context->UnsignedNumberToObject((size_t)arg4);;
+    context->ArrayPut(arr, tempobj, 4);
+    context->SendMessage(rxobj, ((cbcb *)data)->signal_name, arr);
     context->DetachThread();
     return;
 }
@@ -81,13 +151,70 @@ static void signal_func_2(GtkCellRenderer *renderer,
 /*============================================================================*/
 
 /**
+ * Method:  set_fixed_size
+ *
+ * Sets a fixed size for the renderer object.
+ *
+ * @param width   The width
+ *
+ * @param height  The height
+ *
+ * @return        Zero
+ **/
+RexxMethod2(int,                       // Return type
+            GrxCellRendererSetFixedSize, // Object_method name
+            int, width,                // Width
+            int, height)               // Height
+{
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    GtkCellRenderer *myWidget = (GtkCellRenderer *)context->PointerValue(rxptr);
+
+    gtk_cell_renderer_set_fixed_size(myWidget, width, height);
+
+    return 0;
+}
+
+/**
+ * Method:  signal_connect
+ *
+ * Connect a signal to an ooRexx method.
+ *
+ * @param name    The signal name
+ *
+ * @return        Zero
+ **/
+RexxMethod2(RexxObjectPtr,             // Return type
+            GrxCellRendererSignalConnect, // Object_method name
+            CSTRING, name,             // Signal name
+            ARGLIST, args)             // The whole argument list as an array
+{
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
+    cbcb *cblock;
+
+    if (strcmp(name, "editing_canceled") == 0) {
+        cblock = (cbcb *)malloc(sizeof(cbcb));
+        cblock->instance = context->threadContext->instance;
+        cblock->signal_name = "signal_editing_canceled";
+        g_signal_connect(G_OBJECT(myWidget), "editing-canceled",
+                         G_CALLBACK(signal_func_0), cblock);
+        return context->True();
+    }
+    else if (strcmp(name, "editing_started") == 0) {
+        cblock = (cbcb *)malloc(sizeof(cbcb));
+        cblock->instance = context->threadContext->instance;
+        cblock->signal_name = "signal_editing_started";
+        g_signal_connect(G_OBJECT(myWidget), "editing-started",
+                         G_CALLBACK(signal_func_2a), cblock);
+        return context->True();
+    }
+    return context->False();
+}
+
+/**
  * Method:  init
  *
- * Create a renderer object.
- *
- * @param child   The child item
- *
- * @param pos     The position
+ * Create a cell renderer text object.
  *
  * @return        Zero
  **/
@@ -130,6 +257,275 @@ RexxMethod2(RexxObjectPtr,             // Return type
                          G_CALLBACK(signal_func_2), cblock);
         return context->True();
     }
-    return context->False();
+    return context->SendSuperMessage("signal_connect", args);
+}
+
+/**
+ * Method:  init
+ *
+ * Create a cell renderer pixbuf object.
+ *
+ * @return        Zero
+ **/
+RexxMethod1(int,                       // Return type
+            GrxCellRendererPixbufNew,  // Object_method name
+            OSELF, self)               // Self
+{
+    GtkCellRenderer *myRenderer;
+
+    myRenderer = gtk_cell_renderer_pixbuf_new();
+    context->SetObjectVariable("!POINTER", context->NewPointer(myRenderer));
+    g_object_set_data(G_OBJECT(myRenderer), "OORXOBJECT", self);
+
+    return 0;
+}
+
+/**
+ * Method:  init
+ *
+ * Create a cell renderer progress object.
+ *
+ * @return        Zero
+ **/
+RexxMethod1(int,                       // Return type
+            GrxCellRendererProgressNew, // Object_method name
+            OSELF, self)               // Self
+{
+    GtkCellRenderer *myRenderer;
+
+    myRenderer = gtk_cell_renderer_progress_new();
+    context->SetObjectVariable("!POINTER", context->NewPointer(myRenderer));
+    g_object_set_data(G_OBJECT(myRenderer), "OORXOBJECT", self);
+
+    return 0;
+}
+
+/**
+ * Method:  init
+ *
+ * Create a cell renderer toggle object.
+ *
+ * @return        Zero
+ **/
+RexxMethod1(int,                       // Return type
+            GrxCellRendererToggleNew,  // Object_method name
+            OSELF, self)               // Self
+{
+    GtkCellRenderer *myRenderer;
+
+    myRenderer = gtk_cell_renderer_toggle_new();
+    context->SetObjectVariable("!POINTER", context->NewPointer(myRenderer));
+    g_object_set_data(G_OBJECT(myRenderer), "OORXOBJECT", self);
+
+    return 0;
+}
+
+/**
+ * Method:  set_radio
+ *
+ * Make the toggle a radio button.
+ *
+ * @param flag    The radio boolean
+ *
+ * @return        Zero
+ **/
+RexxMethod1(int,                       // Return type
+            GrxCellRendererToggleSetRadio, // Object_method name
+            logical_t, flag)           // Radio boolean
+{
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    GtkCellRendererToggle *myWidget = (GtkCellRendererToggle *)context->PointerValue(rxptr);
+
+    gtk_cell_renderer_toggle_set_radio(myWidget, flag);
+
+    return 0;
+}
+
+/**
+ * Method:  get_radio
+ *
+ * Get the toggle a radio button.
+ *
+ * @return        Boolean flag
+ **/
+RexxMethod0(int,                       // Return type
+            GrxCellRendererToggleGetRadio) // Object_method name
+{
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    GtkCellRendererToggle *myWidget = (GtkCellRendererToggle *)context->PointerValue(rxptr);
+
+    return gtk_cell_renderer_toggle_get_radio(myWidget);
+}
+
+/**
+ * Method:  set_active
+ *
+ * Make the toggle active.
+ *
+ * @param flag    The active boolean
+ *
+ * @return        Zero
+ **/
+RexxMethod1(int,                       // Return type
+            GrxCellRendererToggleSetActive, // Object_method name
+            logical_t, flag)           // Radio boolean
+{
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    GtkCellRendererToggle *myWidget = (GtkCellRendererToggle *)context->PointerValue(rxptr);
+
+    gtk_cell_renderer_toggle_set_active(myWidget, flag);
+
+    return 0;
+}
+
+/**
+ * Method:  get_active
+ *
+ * Get the toggle active boolean.
+ *
+ * @return        Boolean flag
+ **/
+RexxMethod0(int,                       // Return type
+            GrxCellRendererToggleGetActive) // Object_method name
+{
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    GtkCellRendererToggle *myWidget = (GtkCellRendererToggle *)context->PointerValue(rxptr);
+
+    return gtk_cell_renderer_toggle_get_active(myWidget);
+}
+
+/**
+ * Method:  signal_connect
+ *
+ * Connect a signal to an ooRexx method.
+ *
+ * @param name    The signal name
+ *
+ * @return        Zero
+ **/
+RexxMethod2(RexxObjectPtr,             // Return type
+            GrxCellRendererToggleSignalConnect, // Object_method name
+            CSTRING, name,             // Signal name
+            ARGLIST, args)             // The whole argument list as an array
+{
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
+    cbcb *cblock;
+
+    if (strcmp(name, "toggled") == 0) {
+        cblock = (cbcb *)malloc(sizeof(cbcb));
+        cblock->instance = context->threadContext->instance;
+        cblock->signal_name = "signal_toggled";
+        g_signal_connect(G_OBJECT(myWidget), "toggled",
+                         G_CALLBACK(signal_func_1), cblock);
+        return context->True();
+    }
+    return context->SendSuperMessage("signal_connect", args);
+}
+
+/**
+ * Method:  init
+ *
+ * Create a cell renderer accel object.
+ *
+ * @return        Zero
+ **/
+RexxMethod1(int,                       // Return type
+            GrxCellRendererAccelNew,   // Object_method name
+            OSELF, self)               // Self
+{
+    GtkCellRenderer *myRenderer;
+
+    myRenderer = gtk_cell_renderer_accel_new();
+    context->SetObjectVariable("!POINTER", context->NewPointer(myRenderer));
+    g_object_set_data(G_OBJECT(myRenderer), "OORXOBJECT", self);
+
+    return 0;
+}
+
+/**
+ * Method:  signal_connect
+ *
+ * Connect a signal to an ooRexx method.
+ *
+ * @param name    The signal name
+ *
+ * @return        Zero
+ **/
+RexxMethod2(RexxObjectPtr,             // Return type
+            GrxCellRendererAccelSignalConnect, // Object_method name
+            CSTRING, name,             // Signal name
+            ARGLIST, args)             // The whole argument list as an array
+{
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
+    cbcb *cblock;
+
+    if (strcmp(name, "accel_cleared") == 0) {
+        cblock = (cbcb *)malloc(sizeof(cbcb));
+        cblock->instance = context->threadContext->instance;
+        cblock->signal_name = "signal_accel_cleared";
+        g_signal_connect(G_OBJECT(myWidget), "accel-cleared",
+                         G_CALLBACK(signal_func_1), cblock);
+        return context->True();
+    }
+    else if (strcmp(name, "accel_edited") == 0) {
+        cblock = (cbcb *)malloc(sizeof(cbcb));
+        cblock->instance = context->threadContext->instance;
+        cblock->signal_name = "signal_accel_edited";
+        g_signal_connect(G_OBJECT(myWidget), "accel-edited",
+                         G_CALLBACK(signal_func_4), cblock);
+        return context->True();
+    }
+    return context->SendSuperMessage("signal_connect", args);
+}
+
+/**
+ * Method:  init
+ *
+ * Create a cell renderer combo object.
+ *
+ * @return        Zero
+ **/
+RexxMethod1(int,                       // Return type
+            GrxCellRendererComboNew,   // Object_method name
+            OSELF, self)               // Self
+{
+    GtkCellRenderer *myRenderer;
+
+    myRenderer = gtk_cell_renderer_combo_new();
+    context->SetObjectVariable("!POINTER", context->NewPointer(myRenderer));
+    g_object_set_data(G_OBJECT(myRenderer), "OORXOBJECT", self);
+
+    return 0;
+}
+
+/**
+ * Method:  signal_connect
+ *
+ * Connect a signal to an ooRexx method.
+ *
+ * @param name    The signal name
+ *
+ * @return        Zero
+ **/
+RexxMethod2(RexxObjectPtr,             // Return type
+            GrxCellRendererComboSignalConnect, // Object_method name
+            CSTRING, name,             // Signal name
+            ARGLIST, args)             // The whole argument list as an array
+{
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
+    cbcb *cblock;
+
+    if (strcmp(name, "changed") == 0) {
+        cblock = (cbcb *)malloc(sizeof(cbcb));
+        cblock->instance = context->threadContext->instance;
+        cblock->signal_name = "signal_changed";
+        g_signal_connect(G_OBJECT(myWidget), "changed",
+                         G_CALLBACK(signal_func_2a), cblock);
+        return context->True();
+    }
+    return context->SendSuperMessage("signal_connect", args);
 }
 

@@ -2618,17 +2618,33 @@ return
 
 
 /*============================================================================*/
+/* Class: GtkCellRenderer                                                     */
+/* Note:  This is strictly a base class. It should never be instantiated on   */
+/*        its own. You should instantiate one of its subclasses instead.      */
+/*============================================================================*/
+
+::class GtkCellRenderer public
+
+::METHOD set_fixed_size EXTERNAL "LIBRARY rexxgtk GrxCellRendererSetFixedSize"
+::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxCellRendererSignalConnect"
+
+-- The following are the methods that can be connected to signals. By default
+-- they do nothing.
+
+::method signal_editing_canceled
+return
+
+::method signal_editing_started
+return
+
+
+/*============================================================================*/
 /* Class: GtkCellRendererText                                                 */
 /*============================================================================*/
 
-::class GtkCellRendererText public
+::class GtkCellRendererText public subclass GtkCellRenderer
 
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxCellRendererTextNew"
-
-::method pointer
-expose !pointer
-return !pointer
-
 ::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxCellRendererTextSignalConnect"
 
 -- The following are the methods that can be connected to signals. By default
@@ -2636,6 +2652,88 @@ return !pointer
 
 ::method signal_edited
 return
+
+
+/*============================================================================*/
+/* Class: GtkCellRendererPixbuf                                               */
+/*============================================================================*/
+
+::class GtkCellRendererPixbuf public subclass GtkCellRenderer
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxCellRendererPixbufNew"
+
+
+/*============================================================================*/
+/* Class: GtkCellRendererProgress                                             */
+/*============================================================================*/
+
+::class GtkCellRendererProgress public subclass GtkCellRenderer
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxCellRendererProgressNew"
+
+
+/*============================================================================*/
+/* Class: GtkCellRendererToggle                                               */
+/*============================================================================*/
+
+::class GtkCellRendererToggle public subclass GtkCellRenderer
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxCellRendererToggleNew"
+::METHOD set_radio EXTERNAL "LIBRARY rexxgtk GrxCellRendererToggleSetRadio"
+::METHOD get_radio EXTERNAL "LIBRARY rexxgtk GrxCellRendererToggleGetRadio"
+::METHOD set_active EXTERNAL "LIBRARY rexxgtk GrxCellRendererToggleSetActive"
+::METHOD get_active EXTERNAL "LIBRARY rexxgtk GrxCellRendererToggleGetActive"
+::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxCellRendererToggleSignalConnect"
+
+-- The following are the methods that can be connected to signals. By default
+-- they do nothing.
+
+::method signal_toggled
+return
+
+
+/*============================================================================*/
+/* Class: GtkCellRendererAccel                                                */
+/*============================================================================*/
+
+::class GtkCellRendererAccel public subclass GtkCellRendererText
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxCellRendererAccelNew"
+::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxCellRendererAccelSignalConnect"
+
+-- The following are the methods that can be connected to signals. By default
+-- they do nothing.
+
+::method signal_accel_cleared
+return
+
+::method signal_accel_edited
+return
+
+
+/*============================================================================*/
+/* Class: GtkCellRendererCombo                                                */
+/*============================================================================*/
+
+::class GtkCellRendererCombo public subclass GtkCellRendererText
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxCellRendererComboNew"
+::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxCellRendererComboSignalConnect"
+
+-- The following are the methods that can be connected to signals. By default
+-- they do nothing.
+
+::method signal_accel_changed
+return
+
+
+/*============================================================================*/
+/* Class: GtkCellRendererSpin                                                 */
+/*============================================================================*/
+
+::class GtkCellRendererSpin public subclass GtkCellRendererText
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxCellRendererSpinNew"
 
 
 /*============================================================================*/

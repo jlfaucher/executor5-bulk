@@ -816,8 +816,23 @@ RexxMethodEntry gtkobject_methods[] = {
     REXX_METHOD(GrxMenuToolButtonGetMenu, GrxMenuToolButtonGetMenu),
     REXX_METHOD(GrxMenuToolButtonSetArrowTooltip, GrxMenuToolButtonSetArrowTooltip),
     REXX_METHOD(GrxMenuToolButtonSignalConnect, GrxMenuToolButtonSignalConnect),
+    REXX_METHOD(GrxCellRendererSetFixedSize, GrxCellRendererSetFixedSize),
+    REXX_METHOD(GrxCellRendererSignalConnect, GrxCellRendererSignalConnect),
     REXX_METHOD(GrxCellRendererTextNew, GrxCellRendererTextNew),
     REXX_METHOD(GrxCellRendererTextSignalConnect, GrxCellRendererTextSignalConnect),
+    REXX_METHOD(GrxCellRendererPixbufNew, GrxCellRendererPixbufNew),
+    REXX_METHOD(GrxCellRendererProgressNew, GrxCellRendererProgressNew),
+    REXX_METHOD(GrxCellRendererToggleNew, GrxCellRendererToggleNew),
+    REXX_METHOD(GrxCellRendererToggleSetRadio, GrxCellRendererToggleSetRadio),
+    REXX_METHOD(GrxCellRendererToggleGetRadio, GrxCellRendererToggleGetRadio),
+    REXX_METHOD(GrxCellRendererToggleSetActive, GrxCellRendererToggleSetActive),
+    REXX_METHOD(GrxCellRendererToggleGetActive, GrxCellRendererToggleGetActive),
+    REXX_METHOD(GrxCellRendererToggleSignalConnect, GrxCellRendererToggleSignalConnect),
+    REXX_METHOD(GrxCellRendererAccelNew, GrxCellRendererAccelNew),
+    REXX_METHOD(GrxCellRendererAccelSignalConnect, GrxCellRendererAccelSignalConnect),
+    REXX_METHOD(GrxCellRendererComboNew, GrxCellRendererComboNew),
+    REXX_METHOD(GrxCellRendererComboSignalConnect, GrxCellRendererComboSignalConnect),
+    REXX_METHOD(GrxCellRendererSpinNew, GrxCellRendererSpinNew),
     REXX_LAST_METHOD()
 };
 

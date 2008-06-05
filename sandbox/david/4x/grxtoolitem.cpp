@@ -100,9 +100,9 @@ static gboolean signal_func_3(GtkToolbar *toolitem,
     RexxArrayObject arr = context->NewArray(1);
     RexxObjectPtr tempobj = (RexxObjectPtr)g_object_get_data(G_OBJECT(arg1), "OORXOBJECT");
     context->ArrayPut(arr, tempobj, 1);
-    tempobj = context->NewStringFromAsciiz(arg2);;
+    tempobj = context->NewStringFromAsciiz(arg2);
     context->ArrayPut(arr, tempobj, 2);
-    tempobj = context->NewStringFromAsciiz(arg3);;
+    tempobj = context->NewStringFromAsciiz(arg3);
     context->ArrayPut(arr, tempobj, 2);
     tempobj = context->SendMessage(rxobj, ((cbcb *)data)->signal_name, arr);
     context->ObjectToNumber(tempobj, &retc);
