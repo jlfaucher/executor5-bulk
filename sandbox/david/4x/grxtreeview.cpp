@@ -292,6 +292,29 @@ RexxMethod2(int,                       // Return type
 }
 
 /**
+ * Method:  set_model
+ *
+ * Set the model for the tree.
+ *
+ * @param model   The model object
+ *
+ * @return        Zero.
+ **/
+RexxMethod1(int,                       // Return type
+            GrxTreeViewSetModel,       // Object_method name
+            RexxObjectPtr, model)      // Column object
+{
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    GtkTreeView *myWidget = (GtkTreeView *)context->PointerValue(rxptr);
+    RexxPointerObject objptr = (RexxPointerObject)context->SendMessage0(model, "POINTER");
+    GtkTreeModel *modelWidget = (GtkTreeModel *)context->PointerValue(objptr);
+
+    gtk_tree_view_set_model(myWidget, modelWidget);
+
+    return 0;
+}
+
+/**
  * Method:  signal_connect
  *
  * Connect a signal to an ooRexx method.

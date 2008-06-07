@@ -837,6 +837,7 @@ RexxMethodEntry gtkobject_methods[] = {
     REXX_METHOD(GrxTreeViewAppendColumn, GrxTreeViewAppendColumn),
     REXX_METHOD(GrxTreeViewInsertColumn, GrxTreeViewInsertColumn),
     REXX_METHOD(GrxTreeViewRemoveColumn, GrxTreeViewRemoveColumn),
+    REXX_METHOD(GrxTreeViewSetModel, GrxTreeViewSetModel),
     REXX_METHOD(GrxTreeViewSignalConnect, GrxTreeViewSignalConnect),
     REXX_METHOD(GrxTreeViewColumnNew, GrxTreeViewColumnNew),
     REXX_METHOD(GrxTreeViewColumnSetTitle, GrxTreeViewColumnSetTitle),

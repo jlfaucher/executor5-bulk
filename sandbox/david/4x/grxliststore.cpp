@@ -136,7 +136,7 @@ RexxMethod2(int,                       // Return type
     int i, col;
     const char *val;
 
-    for (i = 3; i <= members; i += 2) {
+    for (i = 2; i <= members; i += 2) {
         context->ObjectToNumber(context->ArrayAt(args, i), &col);
         val = context->StringData((RexxStringObject)context->ArrayAt(args, i - 1));
         gtk_list_store_set_value(lstore, iter, col, (GValue *)val);
