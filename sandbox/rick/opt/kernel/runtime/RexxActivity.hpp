@@ -321,6 +321,8 @@ public:
    HANDLE   hThread;                   /* handle to thread                  */
 #endif
 
+   static void initializeThreadContext();
+
  protected:
 
    ExitHandler &getExitHandler(int exitNum) {  return nestedInfo.sysexits[exitNum - 1]; }

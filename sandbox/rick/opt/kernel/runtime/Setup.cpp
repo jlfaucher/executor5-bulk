@@ -1238,6 +1238,8 @@ void RexxMemory::createImage()
   kernel_public(CHAR_INTERNALNAME, SysINTName(), TheSystem);
                                        /* and the system version info       */
   kernel_public(CHAR_VERSION,SysVersion(),TheSystem);
+  // initialize our thread vector for external calls.
+  RexxActivity::initializeThreadContext();
 
 /******************************************************************************/
 /*      Complete the image build process, calling BaseClasses to establish    */

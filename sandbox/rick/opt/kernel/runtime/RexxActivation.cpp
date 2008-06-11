@@ -165,13 +165,24 @@ RexxActivation::RexxActivation(RexxActivity* _activity, RexxMethod * _method, Re
 }
 
 
-RexxActivation::RexxActivation(RexxActivity *_activity, RoutineClass *_routine, RexxCode *_code, RexxActivation *_parent,
-    RexxString *calltype, RexxString *env, int context)
+/**
+ * Create a new Rexx activation for an internal level call.
+ * An internal level call is an internal call, a call trap,
+ * an Interpret statement, or a debug pause execution.
+ *
+ * @param _activity The current activity.
+ * @param _parent   The parent activation.
+ * @param _code     The code to be executed.  For interpret and debug pauses, this
+ *                  is a new code object.  For call activations, this is the
+ *                  parent code object.
+ * @param context   The type of call being made.
+ */
+RexxActivation::RexxActivation(RexxActivity *_activity, RexxActivation *_parent, RexxCode *_code, int context)
 {
     this->clearObject();                 /* start with a fresh object         */
     this->activity = _activity;          /* save the activity pointer         */
     this->code = _code;                  /* get the REXX method object        */
-    this->executable = _routine;         // save this as the base executable
+
     if (context == DEBUGPAUSE)           /* actually a debug pause?           */
     {
         this->debug_pause = true;        /* set up for debugging intercepts   */
@@ -196,46 +207,83 @@ RexxActivation::RexxActivation(RexxActivity *_activity, RoutineClass *_routine, 
     // to reproducable random sequences even though no specific seed was given!
     // see feat. 900 for example program.
     adjustRandomSeed();
-    if (context&INTERNAL_LEVEL_CALL)     /* internal call or interpret?       */
+    /* inherit parents settings          */
+    _parent->putSettings(this->settings);
+    if (context == INTERNALCALL)       /* internal call?                    */
     {
-        /* inherit parents settings          */
-        _parent->putSettings(this->settings);
-        if (context == INTERNALCALL)       /* internal call?                    */
-        {
-            /* force a new copy of the traps     */
-            /* table to be created whenever it   */
-            /* is changed                        */
-            this->settings.flags &= ~traps_copied;
-            this->settings.flags &= ~reply_issued; /* this is a new activation that can use its own return */
-            /* invalidate the timestamp          */
-            this->settings.timestamp.valid = false;
-        }
-        /* this is a nested call until we issue a procedure */
-        settings.local_variables.setNested();
+        /* force a new copy of the traps     */
+        /* table to be created whenever it   */
+        /* is changed                        */
+        this->settings.flags &= ~traps_copied;
+        this->settings.flags &= ~reply_issued; /* this is a new activation that can use its own return */
+        /* invalidate the timestamp          */
+        this->settings.timestamp.valid = false;
     }
-    else                                 /* external method activation        */
-    {
-        /* get initial settings template     */
-        this->settings = activationSettingsTemplate;
-        /* save the source also              */
-        this->settings.parent_code = this->code;
+    /* this is a nested call until we issue a procedure */
+    settings.local_variables.setNested();
+    // get the executable from the parent.
+    this->executable = _parent->getExecutable();
+}
 
-        /* allocate a frame for the local variables from activity stack */
-        settings.local_variables.init(this, code->getLocalVariableSize());
-        this->activity->allocateLocalVariableFrame(&settings.local_variables);
-        /* set the initial and initial       */
-        /* alternate address settings        */
-        this->settings.current_env = SysInitialAddressName();
-        this->settings.alternate_env = this->settings.current_env;
-        /* get initial random seed value     */
-        this->random_seed = this->activity->getRandomSeed();
-        /* copy the source security manager  */
-        this->settings.securityManager = this->code->getSecurityManager();
-        // but use the default if not set
-        if (this->settings.securityManager == OREF_NULL)
-        {
-            this->settings.securityManager = activity->getInstanceSecurityManager();
-        }
+
+/**
+ * Create a top-level activation of Rexx code.  This will
+ * either a toplevel program or an external call.
+ *
+ * @param _activity The current thread we're running on.
+ * @param _routine  The routine to invoke.
+ * @param _code     The code object to be executed.
+ * @param calltype  Type type of call being made (function or subroutine)
+ * @param env       The default address environment
+ * @param context   The type of call context.
+ */
+RexxActivation::RexxActivation(RexxActivity *_activity, RoutineClass *_routine, RexxCode *_code,
+    RexxString *calltype, RexxString *env, int context)
+{
+    this->clearObject();                 /* start with a fresh object         */
+    this->activity = _activity;          /* save the activity pointer         */
+    this->code = _code;                  /* get the REXX method object        */
+    this->executable = _routine;         // save this as the base executable
+
+    this->activation_context = context;  /* save the context                  */
+    this->settings.intermediate_trace = false;
+    /* save the sender activation        */
+    this->sender = _activity->getCurrentRexxFrame();
+    this->execution_state = ACTIVE;      /* we are now in active execution    */
+    this->object_scope = SCOPE_RELEASED; /* scope not reserved yet            */
+    /* create a new evaluation stack.  This must be done before a */
+    /* local variable frame is created. */
+    this->setHasNoReferences();          /* during allocateStack..            */
+                                         /* a live marking can happen without */
+                                         /* a properly set up stack (::live() */
+                                         /* is called). Setting the NoRefBit  */
+                                         /* when creating the stack avoids it.*/
+    _activity->allocateStackFrame(&stack, code->getMaxStackSize());
+    this->setHasReferences();
+    // the random seed is copied from the calling activity, this led
+    // to reproducable random sequences even though no specific seed was given!
+    // see feat. 900 for example program.
+    adjustRandomSeed();
+    /* get initial settings template     */
+    this->settings = activationSettingsTemplate;
+    /* save the source also              */
+    this->settings.parent_code = this->code;
+
+    /* allocate a frame for the local variables from activity stack */
+    settings.local_variables.init(this, code->getLocalVariableSize());
+    this->activity->allocateLocalVariableFrame(&settings.local_variables);
+    /* set the initial and initial       */
+    /* alternate address settings        */
+    this->settings.current_env = SysInitialAddressName();
+    this->settings.alternate_env = this->settings.current_env;
+    /* get initial random seed value     */
+    this->random_seed = this->activity->getRandomSeed();
+    /* copy the source security manager  */
+    this->settings.securityManager = this->code->getSecurityManager();
+    // but use the default if not set
+    if (this->settings.securityManager == OREF_NULL)
+    {
+        this->settings.securityManager = activity->getInstanceSecurityManager();
     }
 
     // if we have a default environment specified, apply the override.
@@ -2044,8 +2092,7 @@ RexxActivation * RexxActivation::senderActivation()
     return(RexxActivation *)_sender;    /* return that activation            */
 }
 
-void RexxActivation::interpret(
-                              RexxString * codestring)          /* string to interpret               */
+void RexxActivation::interpret(RexxString * codestring)
 /******************************************************************************/
 /* Function:  Translate and interpret a string of data as a piece of REXX     */
 /*            code within the current program context.                        */
@@ -2055,7 +2102,7 @@ void RexxActivation::interpret(
     /* translate the code                */
     RexxCode * newCode = this->code->interpret(codestring, this->current->getLineNumber());
     /* create a new activation           */
-    RexxActivation *newActivation = ActivityManager::newActivation(this->activity, OREF_NULL, newCode, this, OREF_NULL, OREF_NULL, INTERPRET);
+    RexxActivation *newActivation = ActivityManager::newActivation(this->activity, this, newCode, INTERPRET);
     this->activity->pushStackFrame(newActivation); /* push on the activity stack        */
     ProtectedObject r;
     /* run the internal routine on the   */
@@ -2076,7 +2123,7 @@ void RexxActivation::debugInterpret(   /* interpret interactive debug input */
         /* translate the code                */
         RexxCode *newCode = this->code->interpret(codestring, this->current->getLineNumber());
         /* create a new activation           */
-        RexxActivation *newActivation = ActivityManager::newActivation(this->activity, OREF_NULL, newCode, this, OREF_NULL, OREF_NULL, DEBUGPAUSE);
+        RexxActivation *newActivation = ActivityManager::newActivation(this->activity, this, newCode, DEBUGPAUSE);
         this->activity->pushStackFrame(newActivation); /* push on the activity stack        */
         ProtectedObject r;
                                              /* run the internal routine on the   */
@@ -2404,8 +2451,7 @@ RexxObject * RexxActivation::internalCall(
     /* initialize the SIGL variable      */
     this->setLocalVariable(OREF_SIGL, VARIABLE_SIGL, new_integer(lineNum));
     /* create a new activation           */
-    newActivation = ActivityManager::newActivation(this->activity, OREF_NULL,
-                                                   this->settings.parent_code, this, OREF_NULL, OREF_NULL, INTERNALCALL);
+    newActivation = ActivityManager::newActivation(this->activity, this, this->settings.parent_code, INTERNALCALL);
 
     this->activity->pushStackFrame(newActivation); /* push on the activity stack        */
     /* run the internal routine on the   */
@@ -2427,8 +2473,7 @@ RexxObject * RexxActivation::internalCallTrap(
     /* initialize the SIGL variable      */
     this->setLocalVariable(OREF_SIGL, VARIABLE_SIGL, new_integer(lineNum));
     /* create a new activation           */
-    RexxActivation *newActivation = ActivityManager::newActivation(this->activity, OREF_NULL,
-        this->settings.parent_code, this, OREF_NULL, OREF_NULL, INTERNALCALL);
+    RexxActivation *newActivation = ActivityManager::newActivation(this->activity, this, this->settings.parent_code, INTERNALCALL);
     /* set the new condition object      */
     newActivation->setConditionObj(conditionObj);
     this->activity->pushStackFrame(newActivation); /* push on the activity stack        */

@@ -880,6 +880,8 @@ void RexxMemory::restoreImage()
 
     /* restore the global strings        */
     memoryObject.restoreStrings((RexxArray *)saveArray->get(saveArray_NAME_STRINGS));
+    // make sure we have a working thread context
+    RexxActivity::initializeThreadContext();
     PackageManager::restore((RexxArray *)saveArray->get(saveArray_PACKAGES));
 }
 

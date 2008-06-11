@@ -2950,7 +2950,7 @@ RexxReturnCode RexxEntry RexxCreateInterpreter(RexxInstance **, RexxThreadContex
 #define IS_OPTIONAL_ARGUMENT(t) (((t) & REXX_OPTIONAL_ARGUMENT) != 0)
 
 
-#define argumentExists(i) ((context->arguments[i].flags | ARGUMENT_EXISTS) != 0)
+#define argumentExists(i) ((context->arguments[i].flags & ARGUMENT_EXISTS) != 0)
 #define argumentOmitted(i) (!argumentExists(i))
 
 

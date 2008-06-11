@@ -267,14 +267,12 @@ void ActivityManager::shutdown()
 
 
 /**
- * Create a new activation for CALLing a routine (vs. a method
- * invocation).
+ * Create a new activation for a toplevel activation using a
+ * routine (vs. a method invocation).
  *
  * @param activity The activity we're running on.
  * @param routine  The routine object we're calling.
  * @param code     The code object associated with the method.
- * @param parent   The parent activation.  OREF_NULL is used if this is a top-level
- *                 call.
  * @param calltype The type of call being made.
  * @param environment
  *                 The initial address environment.
@@ -282,7 +280,7 @@ void ActivityManager::shutdown()
  *
  * @return The newly created activation.
  */
-RexxActivation *ActivityManager::newActivation(RexxActivity *activity, RoutineClass *routine, RexxCode *code, RexxActivation *parent, RexxString *calltype, RexxString *environment, int context)
+RexxActivation *ActivityManager::newActivation(RexxActivity *activity, RoutineClass *routine, RexxCode *code, RexxString *calltype, RexxString *environment, int context)
 {
 
     if (activationCacheSize != 0)  /* have a cached entry?              */
@@ -292,7 +290,7 @@ RexxActivation *ActivityManager::newActivation(RexxActivity *activity, RoutineCl
         RexxActivation *resultActivation = (RexxActivation *)activations->stackTop();
         /* reactivate this                   */
         resultActivation->setHasReferences();
-        resultActivation = new (resultActivation) RexxActivation(activity, routine, code, parent, calltype, environment, context);
+        resultActivation = new (resultActivation) RexxActivation(activity, routine, code, calltype, environment, context);
         activations->pop();          /* Remove reused activation from stac*/
         return resultActivation;
 
@@ -300,7 +298,42 @@ RexxActivation *ActivityManager::newActivation(RexxActivity *activity, RoutineCl
     else                                 /* need to create a new one          */
     {
         /* Create new Activation.            */
-        return new RexxActivation(activity, routine, code, parent, calltype, environment, context);
+        return new RexxActivation(activity, routine, code, calltype, environment, context);
+    }
+}
+
+
+/**
+ * Create a new activation for an internal level call
+ * (internal call or interpreted execution).
+ *
+ * @param activity The activity we're running on.
+ * @param parent   The parent activation.  OREF_NULL is used if this is a top-level
+ *                 call.
+ * @param code     The code object associated with the method.
+ * @param context  The context of the invocation.
+ *
+ * @return The newly created activation.
+ */
+RexxActivation *ActivityManager::newActivation(RexxActivity *activity, RexxActivation *parent, RexxCode *code, int context)
+{
+
+    if (activationCacheSize != 0)  /* have a cached entry?              */
+    {
+        activationCacheSize--;       /* remove an entry from the count    */
+                                           /* get the top cached entry          */
+        RexxActivation *resultActivation = (RexxActivation *)activations->stackTop();
+        /* reactivate this                   */
+        resultActivation->setHasReferences();
+        resultActivation = new (resultActivation) RexxActivation(activity, parent, code, context);
+        activations->pop();          /* Remove reused activation from stac*/
+        return resultActivation;
+
+    }
+    else                                 /* need to create a new one          */
+    {
+        /* Create new Activation.            */
+        return new RexxActivation(activity, parent, code, context);
     }
 }
 

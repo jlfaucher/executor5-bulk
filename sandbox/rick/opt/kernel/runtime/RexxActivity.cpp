@@ -775,6 +775,15 @@ RexxDirectory *RexxActivity::createExceptionObject(
     }
     exobj->put(errortext, OREF_ERRORTEXT);
 
+    // handle the message substitution values (raw form)
+    if (additional == OREF_NULL)
+    {
+        /* use a zero size array             */
+        additional = new_array((size_t)0);
+    }
+    // add this in
+    exobj->put(additional, OREF_ADDITIONAL);
+
     if (primary != errcode)              /* have a secondary message to issue?*/
     {
         /* retrieve the secondary message    */
@@ -795,15 +804,6 @@ RexxDirectory *RexxActivity::createExceptionObject(
                                          /* fill in the decimal error code    */
         exobj->put(TheNilObject, OREF_NAME_MESSAGE);
     }
-
-    // handle the message substitution values (raw form)
-    if (additional == OREF_NULL)
-    {
-        /* use a zero size array             */
-        additional = new_array((size_t)0);
-    }
-    // add this in
-    exobj->put(additional, OREF_ADDITIONAL);
 
     // the description string (rare for exceptions)
     if (description == OREF_NULL)        /* no description?                   */
@@ -1554,6 +1554,19 @@ void RexxActivity::addToInstance(InterpreterInstance *interpreter)
     }
     // set the appropriate exit interlocks
     queryTrcHlt();
+}
+
+
+/**
+ * Complete initialization of the thread context function
+ * vector by filling in the constant objects.
+ */
+void RexxActivity::initializeThreadContext()
+{
+    threadContextFunctions.RexxNil = (RexxObjectPtr)TheNilObject;
+    threadContextFunctions.RexxTrue = (RexxObjectPtr)TheTrueObject;
+    threadContextFunctions.RexxFalse = (RexxObjectPtr)TheFalseObject;
+    threadContextFunctions.RexxNullString = (RexxStringObject)OREF_NULLSTRING;
 }
 
 

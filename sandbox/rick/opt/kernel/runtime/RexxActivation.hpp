@@ -181,8 +181,9 @@ RexxObject *buildCompoundVariable(RexxString * variable_name, bool direct);
 
    inline RexxActivation(RESTORETYPE restoreType) { ; };
    RexxActivation(RexxActivity* _activity, RexxMethod *_method, RexxCode *_code);
-   RexxActivation(RexxActivity *_activity, RoutineClass *_routine, RexxCode *_code, RexxActivation *_parent, RexxString *calltype, RexxString *env, int context);
-   void init(RexxObject *, RexxObject *, RexxObject *, RexxObject *, RexxObject *, int);
+   RexxActivation(RexxActivity *_activity, RoutineClass *_routine, RexxCode *_code, RexxString *calltype, RexxString *env, int context);
+   RexxActivation(RexxActivity *_activity, RexxActivation *_parent, RexxCode *_code, int context);
+
    void live(size_t);
    void liveGeneral(int reason);
    RexxObject      * dispatch();
