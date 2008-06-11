@@ -107,6 +107,25 @@ BOOL isOutParam( REXXOBJECT , POLEFUNCINFO, size_t);
 VOID handleVariantClear( VARIANT *, REXXOBJECT  );
 __inline BOOL okayToClear( REXXOBJECT  );
 static void formatDispatchException(EXCEPINFO *, char *);
+void sendOutArgBackToRexx(REXXOBJECT, VARIANT *);
+bool getClassInfo(IDispatch *, ITypeInfo **);
+bool getConnectionPointContainer(IDispatch *, IConnectionPointContainer **);
+bool eventTypeInfoFromCoClass(ITypeInfo *, ITypeInfo **);
+bool getClassInfoFromCLSID(ITypeInfo *, CLSID *, ITypeInfo **);
+bool addEventHandler(REXXOBJECT, bool, IDispatch *, POLECLASSINFO, ITypeInfo *, CLSID *);
+inline bool haveEventHandler(void);
+inline bool connectedToEvents(void);
+void GUIDFromTypeInfo(ITypeInfo *pTypeInfo, GUID *guid);
+bool getClassInfoFromTypeInfo(ITypeInfo *p, ITypeInfo **);
+bool isImplementedInterface(ITypeInfo *, GUID *);
+bool getEventTypeInfo(IDispatch *, ITypeInfo *, CLSID *, ITypeInfo **);
+bool createEventHandler(ITypeInfo *, REXXOBJECT, POLECLASSINFO, OLEObjectEvent **);
+bool connectEventHandler(IConnectionPointContainer *, OLEObjectEvent *);
+void releaseEventHandler(void);
+void disconnectEventHandler(void);
+void getClsIDFromString(const char *, CLSID *);
+bool maybeCreateEventHandler(OLEObjectEvent **, IConnectionPointContainer **, REXXOBJECT);
+bool isConnectableObject(IDispatch *);
 
 int (__stdcall *creationCallback)(CLSID, IUnknown*) = NULL;
 void setCreationCallback(int (__stdcall *f)(CLSID, IUnknown*))
@@ -115,65 +134,20 @@ void setCreationCallback(int (__stdcall *f)(CLSID, IUnknown*))
 }
 
 
-/**
- * Retrieve the type and class information from an object.
- *
- * @param pClsInfo  The return class information.
- * @param pTypeInfo The returned type information.
- */
-void getClassInfo(POLECLASSINFO *pClsInfo, ITypeInfo **pTypeInfo)
-{
-    // first try to obtain the class info
-    REXXOBJECT value = REXX_GETVAR("!CLSID");
-    if (value != NULLOBJECT)
-    {
-      *pClsInfo = psFindClassInfo(string_data(value), NULL);
-      // if we have class info, we can retrieve the type info
-      if (*pClsInfo != NULL)
-      {
-          *pTypeInfo = (*pClsInfo)->pTypeInfo;
-      }
-    }
-    else
-    {
-      // No CLSID, try the type info pointer
-      value = REXX_GETVAR("!ITYPEINFO");
-      if ( value != NULLOBJECT)
-      {
-          *pTypeInfo = (ITypeInfo *)pointer_value(value);
-          // and hopefully from the type info, we can get the class info
-          if (*pTypeInfo != NULL)
-          {
-              *pClsInfo = psFindClassInfo(NULL, *pTypeInfo);
-          }
-      }
-    }
-}
-
-
-/**
- * Retrieve the dispatch information for an object.
- *
- * @param pDispatch The returned IDispatch pointer
- */
-void getDispatchInfo(IDispatch **pDispatch)
-{
-    /* Get the IDispatch pointer for the OLE object we represent. */
-    REXXOBJECT value = REXX_GETVAR("!IDISPATCH");
-    if ( value != NULLOBJECT )
-    {
-        *pDispatch = (IDispatch *)pointer_value(value);
-    }
-    // we must have this
-    if (*pDispatch == NULL)
-    {
-        rexx_exception(Error_Interpretation_initialization);
-    }
-}
-
 //******************************************************************************
 // debugging functions implementation
 //******************************************************************************
+
+// Function to print out the string representation of a GUID.
+void dbgPrintGUID( IID *pGUID )
+{
+  OLECHAR     oleBuffer[100];
+
+  StringFromGUID2( *pGUID, oleBuffer, sizeof(oleBuffer) );
+
+  wprintf( L"%s\n", oleBuffer );
+}
+
 
 PSZ pszDbgInvkind(INVOKEKIND invkind)
 {
@@ -613,6 +587,82 @@ BOOL REXXENTRY DllMain(HANDLE hModule,
   return TRUE;
 }
 
+
+/**
+ * Retrieve the stored class information and / or the ITypeInfo pointer for this
+ * object.
+ *
+ * @param pClsInfo  The returned class information.
+ * @param pTypeInfo The returned type information.
+ */
+void getCachedClassInfo(POLECLASSINFO *pClsInfo, ITypeInfo **pTypeInfo)
+{
+    // first try the lookup using CLSID
+    REXXOBJECT value = REXX_GETVAR("!CLSID");
+    if (value != NULLOBJECT)
+    {
+      *pClsInfo = psFindClassInfo(string_data(value), NULL);
+      // if we have class info, we can retrieve the type info
+      if (*pClsInfo != NULL)
+      {
+          *pTypeInfo = (*pClsInfo)->pTypeInfo;
+      }
+    }
+    else
+    {
+      // No CLSID, try using the type info pointer for the lookup
+      value = REXX_GETVAR("!ITYPEINFO");
+      if ( value != NULLOBJECT)
+      {
+          *pTypeInfo = (ITypeInfo *)pointer_value(value);
+          // and hopefully from the type info, we can get the class info
+          if (*pTypeInfo != NULL)
+          {
+              *pClsInfo = psFindClassInfo(NULL, *pTypeInfo);
+          }
+      }
+    }
+}
+
+/**
+ * Retrieve the dispatch pointer for an object.
+ *
+ * @param pDispatch The returned IDispatch pointer
+ */
+void getDispatchPtr(IDispatch **pDispatch)
+{
+    /* Get the IDispatch pointer for the OLE object we represent. */
+    REXXOBJECT value = REXX_GETVAR("!IDISPATCH");
+    if ( value != NULLOBJECT )
+    {
+        *pDispatch = (IDispatch *)pointer_value(value);
+    }
+    // we must have this
+    if (*pDispatch == NULL)
+    {
+        rexx_exception(Error_Interpretation_initialization);
+    }
+}
+
+/**
+ * Retrieve the event hanlder pointer for this object, if there is one.
+ *
+ * @param ppHandler The returned OLEObjectEvent pointer.  This is set to null if
+ *                  there is no event handler, or some other unanticipated error
+ *                  occurs.
+ */
+void getEventHandlerPtr(OLEObjectEvent **ppHandler)
+{
+    REXXOBJECT ptr = REXX_GETVAR("!EVENTHANDLER");
+    if ( ptr != NULLOBJECT )
+    {
+        *ppHandler = (OLEObjectEvent *)pointer_value(ptr);
+    }
+    else
+    {
+        *ppHandler = NULL;
+    }
+}
 
 void OLEInit()
 {
@@ -2163,70 +2213,6 @@ POLEFUNCINFO2 GetEventInfo(ITypeInfo *pTypeInfo, REXXOBJECT self, POLECLASSINFO 
   return pEventList;
 }
 
-/* this retrieves the event type information from the coclass entry */
-BOOL GetEventTypeInfo(ITypeInfo *pTypeInfo, CLSID *clsID, ITypeInfo **ppTypeInfoEvents, IID *pIID)
-{
-  ITypeLib *pTypeLib = NULL;
-  TYPEATTR *pTypeAttr = NULL;
-  ITypeInfo *pCoClass = NULL;
-  TYPEKIND kind;
-  OLEObjectEvent *pEventHandler = NULL;
-  unsigned int index;
-  unsigned int icnt, icnt2;
-  int implFlags=0;
-  BOOL fFound = false;
-  HRESULT hResult;
-
-  /* first, get the type library from the type information of this OLE object */
-  hResult = pTypeInfo->GetContainingTypeLib(&pTypeLib,&index);
-  if (hResult == S_OK) {
-    index = pTypeLib->GetTypeInfoCount();
-
-    icnt=0;
-    /* look at each entry... */
-    while (icnt<index && !fFound) {
-      hResult = pTypeLib->GetTypeInfoType(icnt,&kind);
-      /* ...and check if it is a coclass */
-      if (hResult == S_OK && kind == TKIND_COCLASS) {
-        hResult = pTypeLib->GetTypeInfo(icnt,&pCoClass);
-        if (hResult == S_OK) {
-          hResult = pCoClass->GetTypeAttr(&pTypeAttr);
-          /* yes... does it describe this object? */
-          if (hResult == S_OK && IsEqualCLSID(*clsID,pTypeAttr->guid) ) {
-            /* yes... look for the [default, source] entry */
-            for (icnt2=0;icnt2<pTypeAttr->cImplTypes;icnt2++) {
-              hResult = pCoClass->GetImplTypeFlags(icnt2,&implFlags);
-              if (FAILED(hResult)) continue;
-              if ((implFlags & IMPLTYPEFLAG_FDEFAULT) &&
-                  (implFlags & IMPLTYPEFLAG_FSOURCE)) {
-                HREFTYPE hRefType = NULL;
-                /* found it, get the type information & the IID */
-                pCoClass->GetRefTypeOfImplType(icnt2,&hRefType);
-                hResult = pCoClass->GetRefTypeInfo(hRefType,ppTypeInfoEvents);
-                if (hResult == S_OK) {
-                  TYPEATTR *pTempTypeAttr = NULL;
-                  if ((*ppTypeInfoEvents)->GetTypeAttr(&pTempTypeAttr) == S_OK) {
-                    memcpy(pIID,&(pTempTypeAttr->guid),sizeof(CLSID));
-                    (*ppTypeInfoEvents)->ReleaseTypeAttr(pTempTypeAttr);
-                  }
-
-                  fFound = true;
-                }
-                break;
-              }
-            }
-            pCoClass->ReleaseTypeAttr(pTypeAttr);
-          }
-          pCoClass->Release();
-        }
-      }
-      icnt++;
-    }
-    pTypeLib->Release();
-  }
-  return fFound;
-}
-
 //******************************************************************************
 // Method:  OLEObject_Init
 //
@@ -2266,10 +2252,6 @@ RexxMethod4(REXXOBJECT,                // Return type
   IUnknown   *pUnknown = NULL;
   IDispatch  *pDispatch = NULL;
   ITypeInfo  *pTypeInfo = NULL;
-  IProvideClassInfo *pProvideClassInfo = NULL;
-  IConnectionPointContainer *pConnectionPointContainer = NULL;  // for event handling
-  DWORD       dwCookie = 0;                                     // for event handling
-  POLEFUNCINFO2 pEventList = NULL;                              // list with all "handleable" events
   unsigned int  iTypeInfoCount;
   POLECLASSINFO pClsInfo = NULL;
 #ifdef DEBUG_TESTING
@@ -2395,6 +2377,7 @@ RexxMethod4(REXXOBJECT,                // Return type
       {
         pDispatch->AddRef();
         hResult = S_OK;
+
 #ifdef DEBUG_TESTING
         gotIDispatch = true;
         {
@@ -2468,6 +2451,7 @@ RexxMethod4(REXXOBJECT,                // Return type
     hResult = pClsInfo->pTypeInfo->GetTypeAttr(&pTypeAttr);
     if (SUCCEEDED(hResult)) {
       memcpy((void*) &clsID, (void*) &(pTypeAttr->guid), sizeof(CLSID));
+      dbgPrintGUID(&(pTypeAttr->guid));
       pClsInfo->pTypeInfo->ReleaseTypeAttr(pTypeAttr);
     }
   }
@@ -2484,62 +2468,24 @@ RexxMethod4(REXXOBJECT,                // Return type
     rexx_exception1(Error_System_service_service, ooRexxString(errmsg));
   }
 #endif
-  // if pTypeInfo is not set (happens when an instance of the class was already created),
-  // get it: needed for event handling!
-  if (!pTypeInfo && pClsInfo) pTypeInfo = pClsInfo->pTypeInfo;
 
-  // event handling:  only connect the events if this is explicitly desired.
-  // Note: ooRexx does not, at this time, support events if the ITypeInfo
-  // interface pointer could not be obtained.  However, it should be able to
-  // support events with a redesign.
+  /* pTypeInfo may not be set.  It happens when this object is created from a
+   * CLSID or PROGID and an OLEObject instance has already been created for this
+   * COM class.  It needs to be set for the event handling check.
+   */
+  if ( pTypeInfo == NULL && pClsInfo != NULL)
+  {
+      pTypeInfo = pClsInfo->pTypeInfo;
+  }
+
+  /* Event handling:  Only create the event object if the use asks for it.  The
+   * user has to explicitly specify the second events arg.
+   */
   if (eventString != NULL && pTypeInfo != NULL)
   {
-    bool connect = false;
-
-    if (!strcmpi(eventString,"WITHEVENTS")) connect = true;
-    /* if (!strcmpi(string_data(eventString),"WITHEVENTS")) */ {
-      // is there a connection point container? yes: events are supported
-      hResult = pDispatch->QueryInterface(IID_IConnectionPointContainer, (LPVOID*)&pConnectionPointContainer);
-      if (hResult == S_OK) {
-        OLEObjectEvent *pEventHandler = NULL;
-        IConnectionPoint *pConnectionPoint = NULL;
-        ITypeInfo *pTempTypeInfo = NULL;
-        IID theIID;
-
-        if (GetEventTypeInfo(pTypeInfo,&clsID,&pTempTypeInfo,&theIID) == (BOOL) true)
-          hResult = pConnectionPointContainer->FindConnectionPoint(theIID,&pConnectionPoint);
-        else hResult = -1;  // simulate failure
-
-        if (hResult == S_OK) {
-          /* get names, dispids & parameters of the interfaces functions */
-          pEventList = GetEventInfo(pTempTypeInfo,self,pClsInfo);
-          pTempTypeInfo->Release();
-
-          if (pEventList) {
-            pEventHandler = new OLEObjectEvent(pEventList,self,theIID);
-
-            if (connect) {
-              hResult = pConnectionPoint->Advise((IUnknown*) pEventHandler, &dwCookie);
-              if (hResult == S_OK) {
-                REXX_SETVAR("!EVENTHANDLER", ooRexxPointer(pEventHandler));
-                REXX_SETVAR("!EVENTHANDLERCOOKIE", ooRexxInteger(dwCookie));
-                REXX_SETVAR("!CONNECTIONPOINT", ooRexxPointer(pConnectionPoint));
-              } else {
-                pConnectionPoint->Release();
-                pEventHandler->Release();
-              }
-            } else {
-              // just "fake" a connection
-              REXX_SETVAR("!EVENTHANDLER", ooRexxPointer(pEventHandler));
-              pConnectionPoint->Release();
-            }
-          } /* end if event list */
-        } /* end if connectionpoint */
-
-        pConnectionPointContainer->Release();
-      } /* end if cp container exists */
-    } /* end if event string == "WITHEVENTS" */
-  } /* end if event string != null */
+      bool connect = (strcmpi(eventString,"WITHEVENTS") == 0) ? true : false;
+      addEventHandler(self, connect, pDispatch, pClsInfo, pTypeInfo, &clsID);
+  }
 
   return ooRexxNil;
 }
@@ -2568,44 +2514,18 @@ RexxMethod1(REXXOBJECT,                // Return type
             OLEObject_Uninit,          // Object_method name
             OSELF, self)               // Pointer to self
 {
-    REXXOBJECT        RxString;
     IDispatch        *pDispatch = NULL;
     ITypeInfo        *pTypeInfo = NULL;
     POLECLASSINFO     pClsInfo = NULL;
-    OLEObjectEvent   *pEventHandler = NULL;  // event handling
-    IConnectionPoint *pConnectionPoint = NULL; // event handling
-    DWORD             dwCookie = 0;  // event handling
 
     if ( !fInitialized )
         OLEInit();
 
-    /* If there is an event handler, release it */
-    RxString = REXX_GETVAR("!EVENTHANDLER");
-    if ( RxString != NULLOBJECT)
-    {
-        pEventHandler = (OLEObjectEvent *)pointer_value(RxString);
-        RxString = REXX_GETVAR("!CONNECTIONPOINT");
-        if ( RxString != NULLOBJECT)
-        {
-            pConnectionPoint = (IConnectionPoint *)pointer_value(RxString);
-            if ( pConnectionPoint )
-            {
-                RxString = REXX_GETVAR("!EVENTHANDLERCOOKIE");
-                if ( RxString != NULLOBJECT)
-                {
-                    dwCookie = (DWORD)integer_value(RxString);
-                }
-                pConnectionPoint->Unadvise(dwCookie);   // remove connection
-                pConnectionPoint->Release();            // free cp
-            }
-
-        }
-
-        if ( pEventHandler != NULL )
-        {
-            pEventHandler->Release();        // terminate event handler
-        }
-    }
+  /* Check for event handler & release if needed. */
+  if ( haveEventHandler() )
+  {
+      releaseEventHandler();
+  }
 
     /** Get the IDispatch pointer for the OLE object.  If the OLE / COM object
      *  could not be created in init() there will be no dispatch pointer, but
@@ -2628,7 +2548,7 @@ RexxMethod1(REXXOBJECT,                // Return type
          *  variable. It is important that the Release be called on that
          *  pointer, and only on that pointer.
          */
-        getClassInfo(&pClsInfo, &pTypeInfo);
+        getCachedClassInfo(&pClsInfo, &pTypeInfo);
 
         value = REXX_GETVAR("!TYPEINFO");
         if ( value != NULLOBJECT )
@@ -2995,8 +2915,8 @@ RexxMethod3(REXXOBJECT,                // Return type
   else
     iArgCount = 0;
 
-  getDispatchInfo(&pDispatch);
-  getClassInfo(&pClsInfo, &pTypeInfo);
+  getDispatchPtr(&pDispatch);
+  getCachedClassInfo(&pClsInfo, &pTypeInfo);
 
   pszFunction = pszStringDupe(string_data(msgName));
   if (!pszFunction)
@@ -3183,28 +3103,11 @@ RexxMethod3(REXXOBJECT,                // Return type
   {
     arrItem = array_at(msgArgs, i + 1);
 
-    /* was this an out parameter? */
+    /* Was this an out parameter? */
     if ( isOutParam(arrItem, pFuncInfo, i) )
     {
-      /* yes, then change the REXX object to a new state */
-      REXXOBJECT   outObject;
-      REXXOBJECT   outArray= REXX_GETVAR("!OUTARRAY");
-      int         index=1;
-
-      if (outArray == ooRexxNil)
-      {
-        outArray = ooRexxArray(1);
-        REXX_SETVAR("!OUTARRAY",outArray);
-      }
-      else {
-        index = (int)REXX_INTEGER_VALUE(ooRexxSend0(outArray, "LAST"));
-        index++; // next entry
-      }
-      outObject = Variant2Rexx(&(dp.rgvarg[dp.cArgs-i-1]));
-      ooRexxSend2(outArray,"PUT",outObject,ooRexxInteger(index));
-
-      if ( fIsOleVariant(arrItem) )
-        ooRexxSend1(arrItem, "!VARVALUE_=", outObject);
+      /* Yes, return the parameter to ooRexx. */
+      sendOutArgBackToRexx(arrItem, &(dp.rgvarg[dp.cArgs-i-1]));
 
       // if the call changed an out parameter, we have to clear the original variant that
       // was overwritten
@@ -3286,6 +3189,29 @@ RexxMethod3(REXXOBJECT,                // Return type
 
   return ResultObj;
 }
+
+void sendOutArgBackToRexx(REXXOBJECT arrItem, VARIANT *pVariant)
+{
+    REXXOBJECT outObject;
+    REXXOBJECT outArray = REXX_GETVAR("!OUTARRAY");
+    int        index = 1;
+
+    if (outArray == ooRexxNil) {
+      outArray = ooRexxArray(1);
+      REXX_SETVAR("!OUTARRAY", outArray);
+    }
+    else {
+      index = (int)REXX_INTEGER_VALUE(ooRexxSend0(outArray, "LAST"));
+      index++; // next entry
+    }
+
+    outObject = Variant2Rexx(pVariant);
+    ooRexxSend2(outArray, "PUT", outObject, ooRexxInteger(index));
+
+    if ( fIsOleVariant(arrItem) )
+      ooRexxSend1(arrItem, "!VARVALUE_=", outObject);
+}
+
 
 /**
  * Determine if the user wants to override OLEObject's automatic conversion of
@@ -3621,8 +3547,8 @@ RexxMethod2(REXXOBJECT,                // Return type
     if ( !fInitialized )
         OLEInit();
 
-    getDispatchInfo(&pDispatch);
-    getClassInfo(&pClsInfo, &pTypeInfo);
+    getDispatchPtr(&pDispatch);
+    getCachedClassInfo(&pClsInfo, &pTypeInfo);
 
     if (stricmp(classID, "ARRAY") == 0)
     {
@@ -3863,7 +3789,7 @@ RexxMethod2(REXXOBJECT,                // Return type
   /** Try to retrieve the internal class info through either the !CLSID  or
    *  !TYPEINFO variables.
    */
-  getClassInfo(&pClsInfo, &pTypeInfo);
+  getCachedClassInfo(&pClsInfo, &pTypeInfo);
 
   if ( pClsInfo && constName)
   {
@@ -4090,7 +4016,7 @@ RexxMethod1(REXXOBJECT,                // Return type
   if ( !fInitialized )
     OLEInit();
 
-  getDispatchInfo(&pDispatch);
+  getDispatchPtr(&pDispatch);
 
   hResult = pDispatch->GetTypeInfoCount(&iTypeInfoCount);
   // check if type information is available
@@ -4337,28 +4263,38 @@ RexxMethod1(REXXOBJECT,                // Return type
             OLEObject_GetKnownEvents,  // Object_method name
             OSELF, self)               // Pointer to self
 {
-  REXXOBJECT      RxString;
-  REXXOBJECT      RxResult = ooRexxNil;
-  INT             iCount = 0;
-  INT             j;
-  CHAR            pszInfoBuffer[2048];
-  CHAR            pszSmall[128];
-  OLEObjectEvent *pEventHandler = NULL;
-  POLEFUNCINFO2   pEventList = NULL;
-  unsigned short  wFlags = 0;
+    REXXOBJECT      RxResult = ooRexxNil;
+    INT             iCount = 0;
+    INT             j;
+    CHAR            pszInfoBuffer[2048];
+    CHAR            pszSmall[128];
+    OLEObjectEvent *pEventHandler = NULL;
+    POLEFUNCINFO2   pEventList = NULL;
+    unsigned short  wFlags = 0;
 
-  if ( !fInitialized )
-    OLEInit();
+    if ( !fInitialized )
+        OLEInit();
 
-  /* See if we have the event object that contains the list */
-  RxString = REXX_GETVAR("!EVENTHANDLER");
-  if ( RxString != NULLOBJECT )
-  {
-    pEventHandler = (OLEObjectEvent *)pointer_value(RxString);
-    if (pEventHandler)
+    if ( haveEventHandler() )
     {
-      pEventList = pEventHandler->getEventList();
-      if (pEventList) {
+        getEventHandlerPtr(&pEventHandler);
+    }
+    else
+    {
+        IConnectionPointContainer *pContainer = NULL;
+
+        if ( maybeCreateEventHandler(&pEventHandler, &pContainer, self) )
+        {
+            /* This is not needed. */
+            pContainer->Release();
+        }
+    }
+
+    if ( pEventHandler != NULL )
+    {
+        pEventList = pEventHandler->getEventList();
+        if ( pEventList )
+        {
         // create a Stem that will contain all info
         RxResult = ooRexxSend0(ooRexxSend0(ooRexxEnvironment,"STEM"),"NEW");
 
@@ -4405,9 +4341,101 @@ RexxMethod1(REXXOBJECT,                // Return type
         ooRexxSend2(RxResult,"[]=",ooRexxInteger(iCount),ooRexxString("0"));
       }
     }
-  }
 
-  return RxResult;
+    return RxResult;
+}
+
+
+RexxMethod0(REXXOBJECT, OLEObject_isConnected)
+{
+
+    if ( connectedToEvents() )
+    {
+        return ooRexxTrue;
+    }
+    return ooRexxFalse;
+}
+
+RexxMethod0(REXXOBJECT, OLEObject_isConnectable)
+{
+    IDispatch *pDispatch = NULL;
+
+    /* See if we already have an event handler object.  If we do then this
+     * object is connectable for sure.
+     */
+    if ( haveEventHandler() )
+    {
+        return ooRexxTrue;
+    }
+
+    /* Get the IDispatch pointer for this object and see if the COM object we
+     *  are proxying for is a connectable object.
+     */
+    getDispatchPtr(&pDispatch);
+
+    if ( isConnectableObject(pDispatch) )
+    {
+        return ooRexxTrue;
+    }
+    return ooRexxFalse;
+}
+
+RexxMethod1(REXXOBJECT, OLEObject_connectEvents, OSELF, self)
+{
+    IConnectionPointContainer *pContainer = NULL;
+    IDispatch                 *pDispatch = NULL;
+    OLEObjectEvent            *pEventHandler = NULL;
+    bool                       connected = false;
+
+    if ( connectedToEvents() )
+    {
+        return ooRexxTrue;
+    }
+
+    if ( haveEventHandler() )
+    {
+        getEventHandlerPtr(&pEventHandler);
+        getDispatchPtr(&pDispatch);
+        getConnectionPointContainer(pDispatch, &pContainer);
+    }
+    else
+    {
+        maybeCreateEventHandler(&pEventHandler, &pContainer, self);
+    }
+
+    if ( pEventHandler != NULL && pContainer != NULL )
+    {
+        connected = connectEventHandler(pContainer, pEventHandler);
+        pContainer->Release();
+    }
+
+    if ( connected )
+    {
+        return ooRexxTrue;
+    }
+    return ooRexxFalse;
+}
+
+
+RexxMethod0(REXXOBJECT, OLEObject_disconnectEvents)
+{
+    if ( connectedToEvents() )
+    {
+        disconnectEventHandler();
+        return ooRexxInteger(0);
+    }
+    return ooRexxInteger(-1);
+}
+
+
+RexxMethod0(REXXOBJECT, OLEObject_removeEventHandler)
+{
+    if ( haveEventHandler() )
+    {
+        releaseEventHandler();
+        return ooRexxInteger(0);
+    }
+    return ooRexxInteger(-1);
 }
 
 
@@ -4509,3 +4537,725 @@ RexxMethod3(REXXOBJECT,                // Return type
 
   return ResultObj;
 }
+
+/**
+ * If the COM object this object represents is a connectable object, then create
+ * an OLEObjectEvent handler and save it in this object's instance variables.
+ *
+ * @param self        Pointer to this ooRexx object.
+ * @param connect     Connect or not connect the handler after creation.
+ * @param pDispatch   IDispatch pointer for this COM object.
+ * @param pClsInfo    Possible cached class info for this COM object's CoClass.
+ * @param pTypeInfo   ITypeInfo pointer for this COM object, must not be null.
+ * @param pClsID      Possible CLSID for this COM object's CoClass.
+ *
+ * @return True if the event handler object is instantiated, otherwise false.
+ */
+bool addEventHandler(REXXOBJECT self, bool connect, IDispatch *pDispatch, POLECLASSINFO pClsInfo,
+                     ITypeInfo *pTypeInfo, CLSID *pClsID)
+{
+    IConnectionPointContainer *pConnectionPointContainer = NULL;
+    bool created = false;
+
+    /* If there is a connection point container interface, then this object is a
+     * connectable object, otherwise it is not connectable and we just skip it.
+     */
+    if ( getConnectionPointContainer(pDispatch, &pConnectionPointContainer) )
+    {
+        OLEObjectEvent   *pEventHandler = NULL;
+        ITypeInfo        *pEventTypeInfo = NULL;
+
+        getEventTypeInfo(pDispatch, pTypeInfo, pClsID, &pEventTypeInfo);
+
+        if ( pEventTypeInfo != NULL )
+        {
+            created = createEventHandler(pEventTypeInfo, self, pClsInfo, &pEventHandler);
+            if ( created && connect )
+            {
+                connectEventHandler(pConnectionPointContainer, pEventHandler);
+            }
+
+            pEventTypeInfo->Release();
+        }
+        pConnectionPointContainer->Release();
+    }
+    return created;
+}
+
+/**
+ * Given the type information for an outgoing (event) interface, instantiate an
+ * OLEObjectEvent object that will handle invocations on that interface.
+ *
+ * @param pEventTypeInfo   [in]  Type information for the event interface.
+ * @param self             [in]  Pointer to this ooRexx object.
+ * @param pClsInfo         [in]  Cached class information for a CoClass.
+ * @param ppEventHandler   [out] Returned instantiated OLEObjectEvent.
+ *
+ * @return True if the OLEObject is instantiated, otherwise false.  Provided
+ *         that pEventTypeInfo is correct, failure is very unlikely.
+ */
+bool createEventHandler(ITypeInfo *pEventTypeInfo, REXXOBJECT self, POLECLASSINFO pClsInfo,
+                        OLEObjectEvent **ppEventHandler)
+{
+    POLEFUNCINFO2 pEventList = NULL;
+    bool          success = false;
+    IID           theIID;
+
+    GUIDFromTypeInfo(pEventTypeInfo, &theIID);
+
+    /* Get the names, dispids, and parameters of the event interface's
+     * functions.
+     */
+    pEventList = GetEventInfo(pEventTypeInfo, self, pClsInfo);
+
+    if ( pEventList )
+    {
+        *ppEventHandler = new OLEObjectEvent(pEventList, self, theIID);
+        success = true;
+
+        REXX_SETVAR("!EVENTHANDLER", ooRexxPointer(*ppEventHandler));
+    }
+    return success;
+}
+
+/**
+ * Connect an OLEObjectEvent (the sink) to the connectable COM object.
+ *
+ * @param pContainer     [in]  The connection point container interface of the
+ *                       connectable COM object.
+ * @param pEventHandler  [in]  The OLEObjectEvent to connect.
+ *
+ * @return Return true if connected, otherwise false.
+ *
+ * Note:  The caller is responsible for releasing the IConnectionPointContainer
+ * pointer.
+ */
+bool connectEventHandler(IConnectionPointContainer *pContainer, OLEObjectEvent *pEventHandler)
+{
+    IConnectionPoint *pConnectionPoint = NULL;
+    HRESULT           hResult;
+    DWORD             dwCookie = 0;
+
+    hResult = pContainer->FindConnectionPoint(pEventHandler->getIntefaceID(), &pConnectionPoint);
+    if ( hResult == S_OK )
+    {
+        hResult = pConnectionPoint->Advise((IUnknown*) pEventHandler, &dwCookie);
+        if ( hResult == S_OK )
+        {
+            REXX_SETVAR("!EVENTHANDLERCOOKIE", ooRexxInteger(dwCookie));
+            REXX_SETVAR("!CONNECTIONPOINT", ooRexxPointer(pConnectionPoint));
+        }
+        else
+        {
+            pConnectionPoint->Release();
+        }
+    }
+    return (hResult == S_OK);
+}
+
+/**
+ * Get the IConnectionPointContainer interace for a connectable object, if the
+ * object is connectable.
+ *
+ * @param pDispatch    [in]  The IDispatch interface of the object.
+ * @param ppContainer  [out] The connection point container interface is
+ *                     returned here.
+ *
+ * @return True on success, the interface was obtained, otherwise false.
+ */
+bool getConnectionPointContainer(IDispatch *pDispatch, IConnectionPointContainer **ppContainer)
+{
+    HRESULT hResult;
+
+    hResult = pDispatch->QueryInterface(IID_IConnectionPointContainer, (LPVOID*)ppContainer);
+    if ( SUCCEEDED(hResult) )
+    {
+        return true;
+    }
+    return false;
+}
+
+/**
+ * Return true if the object is a connectable object, i.e. if it has outgoing
+ * interfaces.
+ *
+ * @param pDispatch  [in] The IDispatch interface of the object.
+ *
+ * @return True if the object is connectable, otherwise false.
+ */
+bool isConnectableObject(IDispatch *pDispatch)
+{
+    HRESULT hResult;
+    IConnectionPointContainer *pContainer = NULL;
+
+    hResult = pDispatch->QueryInterface(IID_IConnectionPointContainer, (LPVOID*)&pContainer);
+    if ( SUCCEEDED(hResult) && pContainer )
+    {
+        pContainer->Release();
+        return true;
+    }
+    return false;
+}
+
+/**
+ * Get the type information for an event interface, i.e. an outgoing or source
+ * interface.
+ *
+ * @param pDispatch        [in]  Dispatch interface of an object.
+ * @param pTypeInfo        [in]  Type information of an interface or CoClass.
+ * @param pClsID           [in]  Possible CLSID of a CoClass.
+ * @param ppEventTypeInfo  [out] On success the event type information is
+ *                         returned here.
+ *
+ * @return True on success, otherwise false.  *ppEventTypeInfo is set to null on
+ *         failure.
+ *
+ * Three methods are used to try and find the event type information.  The are
+ * tried in order from easiest to hardest.
+ *
+ * 1.) A connectable object should implement one of the IProvideClassInfo
+ * interfaces. The interface is queried for the CoClass that implements the
+ * event interface.
+ *
+ * 2.) If the connectable object does not implement the IProvideClassInfo
+ * interface, but the CLSID of the CoClass that implements the event interface
+ * is known, the the CLSID can be used to get the CoClass from the containing
+ * type library.
+ *
+ * 3.) Finally, if none of the above methods are successful, a brute force
+ * search of the type libarary is used to locate the CoClass that implements the
+ * event interface.  Once the CoClass is found, each of the interfaces it
+ * implements is looked at to find the [default source] interface.  This should
+ * always succeed, provided the input is valid.
+ *
+ * Note:  Some objects that implement IProvideClassInfo implement it
+ * incorrectly, for example Microsoft Outlook.  Outlook returns the type
+ * information of the dispatch interface rather than that of the CoClass.
+ * Because of this, an extra step is taken to verify that the event type
+ * information can actually be obtained when the object implements
+ * IProvideClassInfo.
+ */
+bool getEventTypeInfo(IDispatch *pDispatch, ITypeInfo *pTypeInfo, CLSID *pClsID,
+                      ITypeInfo **ppEventTypeInfo)
+{
+    ITypeInfo *pCoClassTypeInfo = NULL;
+    ITypeInfo *pSourceTypeInfo = NULL;
+
+    if ( getClassInfo(pDispatch, &pCoClassTypeInfo) )
+    {
+        eventTypeInfoFromCoClass(pCoClassTypeInfo, &pSourceTypeInfo);
+    }
+
+    if ( pSourceTypeInfo == NULL )
+    {
+        /* The easy way did not work.  Use the CLSID if we have it, otherwise
+         * try searching the entire containing type library.
+         */
+        if ( ! IsEqualCLSID(*pClsID, CLSID_NULL) )
+        {
+            getClassInfoFromCLSID(pTypeInfo, pClsID, &pCoClassTypeInfo);
+        }
+        else
+        {
+            getClassInfoFromTypeInfo(pTypeInfo, &pCoClassTypeInfo);
+        }
+
+        if ( pCoClassTypeInfo != NULL )
+        {
+            eventTypeInfoFromCoClass(pCoClassTypeInfo, &pSourceTypeInfo);
+        }
+    }
+
+    if ( pCoClassTypeInfo != NULL )
+    {
+        pCoClassTypeInfo->Release();
+    }
+
+    *ppEventTypeInfo = pSourceTypeInfo;
+    return (pSourceTypeInfo != NULL);
+}
+
+/**
+ * Retrieve the type information for the connectable CoClass from one of the
+ * IProvideClassInfo interfaces if possible.
+ *
+ * @param pDispatch          [in]  Dispatch interface to query for the
+ *                           IProvideClassInfo interface.
+ * @param ppCoClassTypeInfo  [out] If the connectable object implements
+ *                           IProvideClassInfo, the CoClass type iformation is
+ *                           returned here.
+ *
+ * @return Returns true if the CoClass type information is obtained, otherwise
+ *         false.  On failure *ppCoClassTypeInfo is set to null.
+ */
+bool getClassInfo(IDispatch *pDispatch, ITypeInfo **ppCoClassTypeInfo)
+{
+    HRESULT             hResult;
+    IProvideClassInfo  *pProvideClassInfo  = NULL;
+    IProvideClassInfo2 *pProvideClassInfo2 = NULL;
+    ITypeInfo          *pTypeInfo = NULL;
+    bool                success = false;
+
+    hResult = pDispatch->QueryInterface(IID_IProvideClassInfo2, (LPVOID*)&pProvideClassInfo2);
+    if ( SUCCEEDED(hResult) && pProvideClassInfo2 )
+    {
+        hResult = pProvideClassInfo2->GetClassInfo(&pTypeInfo);
+        if ( SUCCEEDED(hResult) && pTypeInfo )
+        {
+            success = true;
+            *ppCoClassTypeInfo = pTypeInfo;
+        }
+        pProvideClassInfo2->Release();
+    }
+
+    if ( ! success )
+    {
+        hResult = pDispatch->QueryInterface(IID_IProvideClassInfo, (LPVOID*)&pProvideClassInfo);
+        if (hResult == S_OK && pProvideClassInfo )
+        {
+            hResult = pProvideClassInfo->GetClassInfo(&pTypeInfo);
+            if ( SUCCEEDED(hResult) && pTypeInfo )
+            {
+                success = TRUE;
+                *ppCoClassTypeInfo = pTypeInfo;
+            }
+            pProvideClassInfo->Release();
+        }
+    }
+
+    if ( ! success )
+    {
+        *ppCoClassTypeInfo = NULL;
+    }
+    return success;
+}
+
+/**
+ * Retrieve the type information for a CoClass using its CLSID.
+ *
+ * @param pTypeInfo           [in]  Type information of an interface or other
+ *                            object in a type library.
+ * @param pClsID              [in]  The CLSID of the CoClass
+ * @param ppCoClassTypeInfo   [out] Returned CoClass type information.
+ *
+ * @return True on success, otherwise false.  On failure *ppCoClassTypeInfo is
+ *         set to null.
+ *
+ * The specified type information (pTypeInfo) is used to obtain the containing
+ * type library of the object.  The type library is then queried directly for
+ * the type information of the object that matches the CLSID.
+ *
+ * Care should be used to ensure that pClsID points to a CLSID of a CoClass.
+ * This function will return the type information for other objects in the type
+ * library using the object's GUID. CLSIDs and GUIDs are interchangeable.  A
+ * CLSID is the GUID of a CoClass.
+ */
+bool getClassInfoFromCLSID(ITypeInfo *pTypeInfo, CLSID *pClsID, ITypeInfo **ppCoClassTypeInfo)
+{
+    ITypeLib     *pTypeLib = NULL;
+    ITypeInfo    *pCoClass = NULL;
+    unsigned int  index;
+    bool          found = false;
+    HRESULT       hResult;
+
+    hResult = pTypeInfo->GetContainingTypeLib(&pTypeLib, &index);
+    if ( hResult == S_OK )
+    {
+        hResult = pTypeLib->GetTypeInfoOfGuid(*pClsID, &pCoClass);
+        if ( hResult == S_OK )
+        {
+            found = true;
+            *ppCoClassTypeInfo = pCoClass;
+        }
+        pTypeLib->Release();
+    }
+
+    if ( ! found )
+    {
+        *ppCoClassTypeInfo = NULL;
+    }
+    return found;
+}
+
+
+/**
+ * Search for the CoClass that implements the interface with the specified type
+ * info, and return that CoClasse's type info.
+ *
+ * @param pInterfaceTypeInfo [in]  Type info of an implemented interface.
+ * @param ppCoClassTypeInfo  [out] Return the type info of the CoClass that
+ *                           implements the input interface.
+ *
+ * @return True on success, otherwise false.  *pCoClassTypeInfo is set to null
+ *         on failure.
+ *
+ * The algorithm works this way:  Find the containing type library of the
+ * specified interface.  Look through the entire library, and, for each CoClass
+ * in the library determine if the CoClass implements the specified interface.
+ * If it does, return the type info of that CoClass.
+ */
+bool getClassInfoFromTypeInfo(ITypeInfo *pInterfaceTypeInfo, ITypeInfo **ppCoClassTypeInfo)
+{
+    ITypeLib   *pTypeLib = NULL;
+    TYPEATTR   *pTypeAttr = NULL;
+    ITypeInfo  *pTypeInfo = NULL;
+    TYPEKIND    kind;
+    HRESULT     hResult;
+    GUID        guid;
+    UINT        count, i = 0;
+    bool        found = false;
+
+    /* Get the GUID for the interface we know. */
+    GUIDFromTypeInfo(pInterfaceTypeInfo, &guid);
+
+    hResult = pInterfaceTypeInfo->GetContainingTypeLib(&pTypeLib, &count);
+    if ( hResult == S_OK )
+    {
+        count = pTypeLib->GetTypeInfoCount();
+        while ( i++ < count && ! found )
+        {
+            hResult = pTypeLib->GetTypeInfoType(i, &kind);
+            if ( hResult == S_OK && kind == TKIND_COCLASS )
+            {
+                /* This is a CoClass type info.  See if this class has
+                 * implemented an interface whose GUID matches the one of the
+                 * type info passed to us.
+                 */
+                hResult = pTypeLib->GetTypeInfo(i, &pTypeInfo);
+                if ( hResult == S_OK )
+                {
+                    if ( isImplementedInterface(pTypeInfo, &guid) )
+                    {
+                        /* A match, this is the CoClass type info we want. */
+                        found = true;
+                        *ppCoClassTypeInfo = pTypeInfo;
+                    }
+                    else
+                    {
+                        pTypeInfo->Release();
+                    }
+                }
+            }
+        }
+        pTypeLib->Release();
+    }
+
+    if ( ! found )
+    {
+        *ppCoClassTypeInfo = NULL;
+    }
+    return found;
+}
+
+/**
+ * Determines if a CoClass has implemented an interface with the specified GUID.
+ *
+ * @param pCoClass  [in] The CoClass to search.
+ * @param guid      [in] The GUID to search for.
+ *
+ * @return True if the CoClass has an implemented interface with the specified
+ *         GUID, otherwise false.
+ */
+bool isImplementedInterface(ITypeInfo *pCoClass, GUID *guid)
+{
+    TYPEATTR  *pTypeAttr = NULL;
+    ITypeInfo *pTypeInfo = NULL;
+    HREFTYPE   hRefType = NULL;
+    unsigned int i;
+    int flags = 0;
+    bool match = false;
+    HRESULT hResult;
+
+    hResult = pCoClass->GetTypeAttr(&pTypeAttr);
+    if ( hResult == S_OK )
+    {
+        for ( i = 0; i < pTypeAttr->cImplTypes && (! match); i++ )
+        {
+            pCoClass->GetRefTypeOfImplType(i, &hRefType);
+            hResult = pCoClass->GetRefTypeInfo(hRefType, &pTypeInfo);
+            if ( SUCCEEDED(hResult) )
+            {
+                TYPEATTR *pTempTypeAttr = NULL;
+                hResult = pTypeInfo->GetTypeAttr(&pTempTypeAttr);
+                if ( hResult == S_OK )
+                {
+                    if ( InlineIsEqualGUID(*guid, pTempTypeAttr->guid) )
+                    {
+                        match = true;
+                    }
+                    pTypeInfo->ReleaseTypeAttr(pTempTypeAttr);
+                }
+                pTypeInfo->Release();
+            }
+        }
+        pCoClass->ReleaseTypeAttr(pTypeAttr);
+    }
+    return match;
+}
+
+/**
+ * Search for and return the event type information from the implemented
+ * interfaces of the specified CoClass.
+ *
+ * @param pCoClass          [in]  The CoClass to search.
+ * @param ppTypeInfoEvents  [out] If found, the event type information is
+ *                          returned here.
+ *
+ * @return True on success, otherwise false. *ppTypeInfoEvetns is set to null on
+ *         failure.
+ */
+bool eventTypeInfoFromCoClass(ITypeInfo *pCoClass, ITypeInfo **ppTypeInfoEvents)
+{
+    TYPEATTR  *pTypeAttr = NULL;
+    ITypeInfo *pTypeInfo = NULL;
+    unsigned int i;
+    int flags = 0;
+    bool found = false;
+    HRESULT hResult;
+
+    hResult = pCoClass->GetTypeAttr(&pTypeAttr);
+
+    if ( hResult == S_OK )
+    {
+        /* Look for the [default, source] entry */
+        for ( i = 0; i < pTypeAttr->cImplTypes; i++ )
+        {
+            hResult = pCoClass->GetImplTypeFlags(i, &flags);
+            if ( SUCCEEDED(hResult) && (flags & IMPLTYPEFLAG_FDEFAULT) && (flags & IMPLTYPEFLAG_FSOURCE) )
+            {
+                HREFTYPE hRefType = NULL;
+
+                /* Found the default source (the outgoing) interface.  Get the
+                 * type information.
+                 */
+                pCoClass->GetRefTypeOfImplType(i, &hRefType);
+                hResult = pCoClass->GetRefTypeInfo(hRefType, &pTypeInfo);
+                if ( SUCCEEDED(hResult) )
+                {
+                    found = true;
+                    *ppTypeInfoEvents = pTypeInfo;
+                }
+                break;
+            }
+        }
+        pCoClass->ReleaseTypeAttr(pTypeAttr);
+    }
+
+    if ( ! found )
+    {
+        *ppTypeInfoEvents = NULL;
+    }
+    return found;
+}
+
+/**
+ * Converts a string representation of a CLSID into a CLSID.
+ *
+ * @param str    [in]  The string to convert.
+ * @param clsID  [out] The CLSID is returned here.
+ *
+ * On error, clsID is set to the CLSID_NULL.
+ */
+void getClsIDFromString(const char * str, CLSID *clsID)
+{
+    LPOLESTR lpUniBuffer = NULL;
+
+    lpUniBuffer = lpAnsiToUnicode(str, strlen(str) + 1);
+
+    if (lpUniBuffer)
+    {
+        CLSIDFromString(lpUniBuffer, clsID);
+        ORexxOleFree( lpUniBuffer );
+    }
+    else
+    {
+        memcpy((void*)clsID, (void*)&CLSID_NULL, sizeof(CLSID));
+    }
+}
+
+/**
+ * Gets the GUID of an object from its type information.
+ *
+ * @param pTypeInfo  [in]  Type information of the object.
+ * @param guid       [out] The GUID is returned here.
+ *
+ * On error, guid is set to the GUID_NULL.
+ */
+void GUIDFromTypeInfo(ITypeInfo *pTypeInfo, GUID *guid)
+{
+    TYPEATTR     *pTypeAttr;
+    HRESULT      hResult = E_UNEXPECTED;
+
+    if ( pTypeInfo != NULL )
+    {
+        hResult = pTypeInfo->GetTypeAttr(&pTypeAttr);
+    }
+
+    if ( SUCCEEDED(hResult) )
+    {
+      memcpy((void*)guid, (void*)&(pTypeAttr->guid), sizeof(GUID));
+      pTypeInfo->ReleaseTypeAttr(pTypeAttr);
+    }
+    else
+    {
+        memcpy((void*)guid, (void*)&GUID_NULL, sizeof(GUID));
+    }
+}
+
+/**
+ * Will try to instantiate an OLEObjectEvent handler object, if the COM object
+ * this ooRexx object represents is a connectable object.
+ *
+ * @param ppHandler    [out] If instantiated, the OLEObjectEvent is returned
+ *                     here.
+ * @param ppContainer  [out] If the OLEObjectEvent is instantiated, the
+ *                     IConnectionPointContainer for this COM object is returned
+ *                     here.
+ * @param self         [in]  Pointer to this ooRexx object.
+ *
+ * @return True if the OLEObjectEvent handler is instantiated, otherwise false.
+ *         On failure, *ppHandler and *ppContainer are set to null.
+ *
+ * Note: It is possible for an event method to have the same name as an
+ * IDispatch invocation method.  This gives rise to this scenario:  The user
+ * adds an ooRexx event method to the OLEObject with that name. The user tries
+ * to invoke the IDispatch method.  But, it will no longer get forwarded to the
+ * unknown() method.  Instead the event method is invoked.  To prevent this,
+ * when the event method names are discovered, they are compared against the
+ * known IDispatch method names.  If there is a match, then the event method has
+ * OLEEvent_ prepended to the event method name.
+ *
+ * If it weren't for this, we would not necessarily need to get the pTypeInfo
+ * and pClsInfo pointers.  It is possible that this COM object implements the
+ * IProvideClassInfo interface and a connection could be made without the type
+ * info for the COM object.
+ *
+ */
+bool maybeCreateEventHandler(OLEObjectEvent **ppHandler, IConnectionPointContainer **ppContainer,
+                             REXXOBJECT self)
+{
+    REXXOBJECT      value;
+    IDispatch      *pDispatch = NULL;
+    ITypeInfo      *pTypeInfo = NULL;
+    ITypeInfo      *pEventTypeInfo = NULL;
+    POLECLASSINFO   pClsInfo = NULL;
+    CLSID           clsID = {0};
+    bool            created = false;
+
+    *ppContainer = NULL;  /* Insurance. */
+
+    getDispatchPtr(&pDispatch);
+
+    if ( getConnectionPointContainer(pDispatch, ppContainer) )
+    {
+        getCachedClassInfo(&pClsInfo, &pTypeInfo);
+
+        value = REXX_GETVAR("!CLSID");
+        if (value != NULLOBJECT)
+        {
+            getClsIDFromString(string_data(value), &clsID);
+        }
+
+        if ( pClsInfo != NULL )
+        {
+            getEventTypeInfo(pDispatch, pTypeInfo, &clsID, &pEventTypeInfo);
+
+            if ( pEventTypeInfo != NULL )
+            {
+                createEventHandler(pEventTypeInfo, self, pClsInfo, ppHandler);
+                pEventTypeInfo->Release();
+                created = true;
+            }
+        }
+    }
+
+    if ( ! created )
+    {
+        if ( *ppContainer != NULL )
+        {
+            (*ppContainer)->Release();
+            *ppContainer = NULL;
+        }
+        *ppHandler = NULL;
+    }
+    return created;
+}
+
+/**
+ * Checks for an instantiated OLEObjectEvent that is attached to this instance
+ * of an OLEObject.
+ *
+ * @return True if an OLEObjectEvent instance exists, otherwise false.
+ */
+inline bool haveEventHandler(void)
+{
+    return (REXX_GETVAR("!EVENTHANDLER") != NULLOBJECT);
+}
+
+/**
+ * By definition, this object is connected to events if it has: the event
+ * handler, the connection point, and the cookie.
+ *
+ * @return True if connected as an event sink to an event source, otherwise
+ *         false.
+ */
+inline bool connectedToEvents(void)
+{
+    return (haveEventHandler() &&
+            (REXX_GETVAR("!EVENTHANDLERCOOKIE") != NULLOBJECT) &&
+            (REXX_GETVAR("!CONNECTIONPOINT") != NULLOBJECT));
+}
+
+/**
+ * If present, the event handler is released and removed from this object's
+ * instance variables.  If the event handler is currently connected, the
+ * connection is closed and the connection instance variables are also removed.
+ */
+void releaseEventHandler(void)
+{
+    OLEObjectEvent *pEventHandler = NULL;
+
+    if ( connectedToEvents() )
+    {
+        disconnectEventHandler();
+    }
+
+    getEventHandlerPtr(&pEventHandler);
+    if (pEventHandler != NULL)
+    {
+        pEventHandler->Release();
+        REXX_SETVAR("!EVENTHANDLER", NULLOBJECT);
+    }
+}
+
+/**
+ * If the event handler is currently connected to the connectable COM object,
+ * the connection is closed, the connection point in released, and the
+ * connection variables are removed from this object's instance variables.
+ */
+void disconnectEventHandler(void)
+{
+    IConnectionPoint *pConnectionPoint = NULL;
+    DWORD             dwCookie = 0;
+
+    REXXOBJECT ptr = REXX_GETVAR("!CONNECTIONPOINT");
+    if ( ptr != NULLOBJECT )
+    {
+        pConnectionPoint = (IConnectionPoint *)pointer_value(ptr);
+
+        REXXOBJECT cookie = REXX_GETVAR("!EVENTHANDLERCOOKIE");
+        if ( cookie != NULLOBJECT )
+        {
+            dwCookie = (DWORD)integer_value(cookie);
+        }
+
+        if (pConnectionPoint != NULL) {
+          pConnectionPoint->Unadvise(dwCookie);   // remove connection
+          pConnectionPoint->Release();            // free cp
+        }
+
+        REXX_SETVAR("!CONNECTIONPOINT", NULLOBJECT);
+        REXX_SETVAR("!EVENTHANDLERCOOKIE", NULLOBJECT);
+    }
+}
+

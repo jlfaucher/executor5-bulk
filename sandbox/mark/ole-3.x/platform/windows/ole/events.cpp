@@ -174,7 +174,10 @@ STDMETHODIMP OLEObjectEvent::Invoke(DISPID dispIdMember, REFIID riid, LCID lcid,
   HRESULT      hResult = S_OK; //DISP_E_MEMBERNOTFOUND;   // default return value
   POLEFUNCINFO2 pList = pEventList;
   BOOL         fFound = false;
-//  fprintf(stderr,"OLEObjectEvent::Invoke %08x PID %08x TID %08x\n",dispIdMember,GetCurrentProcessId(),GetCurrentThreadId());
+
+  /* This debug print out is very handy at times.
+  printf("OLEObjectEvent::Invoke 0x%08x PID 0x%08x TID 0x%08x\n", dispIdMember,
+         GetCurrentProcessId(), GetCurrentThreadId()); */
 
   // is this a method ?
   if (wFlags & DISPATCH_METHOD) {
@@ -188,7 +191,9 @@ STDMETHODIMP OLEObjectEvent::Invoke(DISPID dispIdMember, REFIID riid, LCID lcid,
       REXXOBJECT  rxArray;
       int         i;
       int         j;
-      //fprintf(stderr,"%08x %s\n",dispIdMember,pList->pszFuncName);
+
+      /* This debug print out is very handy at times.
+      printf("0x%08x %s self=%p\n", dispIdMember, pList->pszFuncName, self); */
 
       // does argument count match? does object have method?
       if ( (pList->iParmCount == (int) pDispParams->cArgs) &&
