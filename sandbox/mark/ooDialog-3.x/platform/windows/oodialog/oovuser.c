@@ -867,7 +867,6 @@ ULONG REXXENTRY UsrAddControl(
        p = (WORD *)buffer[0];
 
        lStyle = WS_CHILD;
-       printf("UsrAddControl opts: %s\n", argv[7].strptr);
        if (strstr(argv[7].strptr,"METAFILE")) lStyle |= SS_ENHMETAFILE; else
        if (strstr(argv[7].strptr,"BITMAP")) lStyle |= SS_BITMAP; else
        if (strstr(argv[7].strptr,"ICON")) lStyle |= SS_ICON;
@@ -885,7 +884,6 @@ ULONG REXXENTRY UsrAddControl(
        if (strstr(argv[7].strptr,"DISABLED")) lStyle |= WS_DISABLED;
        if (strstr(argv[7].strptr,"BORDER")) lStyle |= WS_BORDER;
        if (strstr(argv[7].strptr,"TAB")) lStyle |= WS_TABSTOP;
-       printf("UsrAddControl style: %x\n", lStyle);
 
        /*                      id           x          y          cx         cy       text  */
        UAddControl(&p, 0x0082, buffer[1], buffer[2], buffer[3], buffer[4], buffer[5], "", lStyle);
