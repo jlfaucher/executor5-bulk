@@ -2837,6 +2837,21 @@ return
 
 
 /*============================================================================*/
+/* Class: GtkTreeStore                                                        */
+/*============================================================================*/
+
+::class GtkTreeStore public
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxTreeStoreNew"
+::METHOD append EXTERNAL "LIBRARY rexxgtk GrxTreeStoreAppend"
+::METHOD set EXTERNAL "LIBRARY rexxgtk GrxTreeStoreSetValue"
+
+::method pointer
+expose !pointer
+return !pointer
+
+
+/*============================================================================*/
 /*============================================================================*/
 /*============================================================================*/
 /* These are classes and routines specific to Glib.                           */

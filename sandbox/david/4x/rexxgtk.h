@@ -613,6 +613,9 @@ REXX_METHOD_PROTOTYPE(GrxTreeViewColumnPackStart)
 REXX_METHOD_PROTOTYPE(GrxTreeViewColumnPackEnd)
 REXX_METHOD_PROTOTYPE(GrxTreeViewColumnSetAttribute)
 REXX_METHOD_PROTOTYPE(GrxTreeViewColumnSignalConnect)
+REXX_METHOD_PROTOTYPE(GrxTreeStoreNew)
+REXX_METHOD_PROTOTYPE(GrxTreeStoreAppend)
+REXX_METHOD_PROTOTYPE(GrxTreeStoreSetValue)
  
  #endif /* REXXGTK_H */
  
