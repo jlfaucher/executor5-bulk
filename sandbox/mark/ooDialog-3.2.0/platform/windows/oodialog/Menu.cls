@@ -952,8 +952,10 @@
    do while found = 0 & fl > 0
       do while n = 0 & fl > 0
          s = f~linein; fl = fl - 1
-         /* premission: #define only at the top of the RC and separated by a tab or a blank */
-         /* need this here as well because menu resource could be in separate file */
+         /* Add any sybmolic IDs defined in the file to the ConstDir.  Only
+          * check for #define at the top of the file.  We check for symbolic IDS
+          * here because menu resources could be defined in a separate file.
+          */
          if s~wordpos("#define") > 0 then do
             s = s~translate(" ", "9"x)
             parse var s "#define " symb iid
@@ -1030,28 +1032,21 @@
               j = j +1
             end
 
-            if rcarray[j]~wordpos("END") > 0 | rcarray[j]~pos("}") > 0 then
-               opt = opt || "END"
-
+            if rcarray[j]~wordpos("END") > 0 | rcarray[j]~pos("}") > 0 then opt = opt || " END"
             self~addPopup(name, , opt)
          end
 
          when s~wordpos("SEPARATOR") > 0 then do
             parse var s type sep opt
-            if rcarray[i+1]~wordpos("END") > 0 | rcarray[i+1]~pos("}") > 0 then
-               opt = opt || " END"
-
+            if rcarray[i+1]~wordpos("END") > 0 | rcarray[i+1]~pos("}") > 0 then opt = opt || " END"
             self~addSeparator( , opt)
          end
 
          when s~wordpos("MENUITEM") > 0 then do
             parse var s type '"'name'"'    "," id "," opt
             if rcarray[i+1]~wordpos("END") > 0 | rcarray[i+1]~pos("}") > 0 then opt = opt || " END"
-            if connect then do
-               amper = name~pos('&')
-               if amper > 0 then name = name~delstr(amper, 1)
-               self~addItem(name, id, opt, name~space(0))
-            end
+            if connect then
+               self~addItem(name, id, opt, name~changeStr('&', "")~space(0))
             else
                self~addItem(name, id, opt)
          end
