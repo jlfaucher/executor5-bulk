@@ -396,6 +396,7 @@ return obj
 ::method removeFileSpec   class external "LIBRARY SHELLUTILS Path_removeFileSpec"
 ::method exists           class external "LIBRARY SHELLUTILS Path_exists"
 ::method isDirectory      class external "LIBRARY SHELLUTILS Path_isDirectory"
+::method isDirectoryEmpty class external "LIBRARY SHELLUTILS Path_isDirectoryEmpty"
 ::method isRoot           class external "LIBRARY SHELLUTILS Path_isRoot"
 ::method isFull           class external "LIBRARY SHELLUTILS Path_isFull"
 ::method isNetworkPath    class external "LIBRARY SHELLUTILS Path_isNetworkPath"

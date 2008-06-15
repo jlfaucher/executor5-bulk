@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2008 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2008-2008 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -57,10 +57,10 @@
 #pragma warning( push )
 #pragma warning( disable : 4291 4996 4267 4311 4312 )
 
-#include "RexxCore.h"
+#include <RexxCore.h>
 #include <RexxNativeAPI.h>
-#include "ObjectClass.hpp"
-#include "StringClass.hpp"
+#include <ObjectClass.hpp>
+#include <StringClass.hpp>
 
 #pragma warning( pop )
 
@@ -74,7 +74,7 @@
 // Map strings representing constant defines to their int values.  For
 // translating things like "CSIDL_DRIVES" from the user to the proper API value.
 using namespace std;
-typedef map<string, int, less<string>> String2Int;
+typedef map<string, int, less<string> > String2Int;
 String2Int *ConstantsMap = 0;
 
 
@@ -2406,6 +2406,10 @@ RexxMethod1(REXXOBJECT, Path_isUNCServerShare, STRING, rxPath)
 }
 
 
+/** Path::getShortPath
+ *
+ *  Given a long path name, converts and returns its short path name.
+ */
 RexxMethod1(REXXOBJECT, Path_getShortPath, STRING, rxPath)
 {
     char *buffer = checkGetPathArg(rxPath);
@@ -2424,6 +2428,10 @@ RexxMethod1(REXXOBJECT, Path_getShortPath, STRING, rxPath)
 }
 
 
+/** Path::getLongPath
+ *
+ *  Given a short path name, converts and returns its long path name.
+ */
 RexxMethod1(REXXOBJECT, Path_getLongPath, STRING, rxPath)
 {
     char *buffer = checkGetPathArg(rxPath);

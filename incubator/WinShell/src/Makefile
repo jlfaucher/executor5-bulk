@@ -68,14 +68,14 @@ LIBS = user32.lib $(REXX_HOME)\api\rexx.lib $(REXX_HOME)\api\rexxapi.lib
 
 SHELL_LIBS = $(LIBS) shell32.lib ole32.lib shlwapi.lib comctl32.lib
 
-INCLUDES = -I$(REXX_HOME)\api -I$(SRC_ROOT)\lib -I$(SRC_ROOT)\platform\windows \
- -I$(SRC_KERNEL)\runtime -I$(SRC_KERNEL)\platform\windows -I$(SRC_KERNEL)\messages \
- -I$(SRC_KERNEL)\classes -I$(SRC_KERNEL)\expression
+INCLUDES = /I$(REXX_HOME)\api /I$(SRC_ROOT)\lib /I$(SRC_ROOT)\platform\windows \
+ /I$(SRC_KERNEL)\runtime /I$(SRC_KERNEL)\platform\windows /I$(SRC_KERNEL)\messages \
+ /I$(SRC_KERNEL)\classes /I$(SRC_KERNEL)\expression
 
 !IF "$(VCPP8)" == "1"
 CFLAGS_COMMON = /nologo /c /EHsc /MT /W3 /Wp64
 !ELSE
-CFLAGS_COMMON = /nologo /c /GX /MT /W3 /Wp64
+CFLAGS_COMMON = /nologo /c /GX /MT /W3
 !ENDIF
 
 CFLAGS_DEFINES = /DWIN32 /D_CRT_SECURE_NO_DEPRECATE

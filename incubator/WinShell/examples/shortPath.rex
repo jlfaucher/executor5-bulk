@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2008 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2008-2008 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -50,7 +50,7 @@
   say 'Long from short:' long
   say
 
-  path  = "..\examples\short.path.data\activatedHook.dll"
+  path  = "..\examples\short.path.data\activatedHook.file"
   short = .Path~getShortPath(path)
   long  = .Path~getLongPath(short)
   say 'Path name:      ' path
