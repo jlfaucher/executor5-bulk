@@ -78,8 +78,8 @@ RexxMethod2(int,                       // Return type
 {
     GtkTreeStore    *tstore;  
     size_t members = context->ArraySize(args);
-    gint *types[members];
 
+    gint **types = (gint **)malloc(sizeof(int) * members);
     if (members) {
         for (int i = 0; i < members; i++) {
             context->ObjectToNumber(context->ArrayAt(args, i), types[i]);
@@ -88,6 +88,7 @@ RexxMethod2(int,                       // Return type
     }
     context->SetObjectVariable("!POINTER", context->NewPointer(tstore));
     g_object_set_data(G_OBJECT(tstore), "OORXOBJECT", self);
+    context->SetObjectVariable("!COLTYPES", context->NewPointer(types));
 
     return 0;
 }
@@ -130,14 +131,62 @@ RexxMethod2(int,                       // Return type
     RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
     GtkTreeStore *tstore = (GtkTreeStore *)context->PointerValue(rxptr);
     GtkTreeIter *iter = (GtkTreeIter *)context->PointerValue((RexxPointerObject)rxiter);
+    rxptr = (RexxPointerObject)context->GetObjectVariable("!COLTYPES");
+    gint **types = (gint **)context->PointerValue(rxptr);
     size_t members = context->ArraySize(args);
-    int i, col;
-    const char *name;
+    int i, col, ival;
+    unsigned int uival;
+    long long ival64;
+    unsigned long long uival64;
+    float fval;
+    double dval;
+    const char *val;
 
     for (i = 2; i <= members; i += 2) {
         context->ObjectToNumber(context->ArrayAt(args, i), &col);
-        name = context->StringData((RexxStringObject)context->ArrayAt(args, i + 1));
-        gtk_tree_store_set_value(tstore, iter, col, (GValue *)name);
+        switch (*types[col]) {
+        case G_TYPE_POINTER:
+        case G_TYPE_STRING:
+        case G_TYPE_OBJECT:
+            val = context->StringData((RexxStringObject)context->ArrayAt(args, i - 1));
+            gtk_tree_store_set_value(tstore, iter, col, (GValue *)val);
+            break;
+        case G_TYPE_INT:
+        case G_TYPE_BOOLEAN:
+        case G_TYPE_LONG:
+        case G_TYPE_ENUM:
+        case G_TYPE_FLAGS:
+            context->ObjectToNumber((RexxStringObject)context->ArrayAt(args, i - 1), &ival);
+            gtk_tree_store_set_value(tstore, iter, col, (GValue *)&ival);
+            break;
+        case G_TYPE_UINT:
+        case G_TYPE_ULONG:
+            context->ObjectToUnsignedNumber((RexxStringObject)context->ArrayAt(args, i - 1), &uival);
+            gtk_tree_store_set_value(tstore, iter, col, (GValue *)&uival);
+            break;
+        case G_TYPE_INT64:
+            context->ObjectToInt64((RexxStringObject)context->ArrayAt(args, i - 1), &ival64);
+            gtk_tree_store_set_value(tstore, iter, col, (GValue *)&ival64);
+            break;
+        case G_TYPE_UINT64:
+            context->ObjectToUnsignedInt64((RexxStringObject)context->ArrayAt(args, i - 1), &uival64);
+            gtk_tree_store_set_value(tstore, iter, col, (GValue *)&uival64);
+            break;
+        case G_TYPE_DOUBLE:
+            context->ObjectToDouble((RexxStringObject)context->ArrayAt(args, i - 1), &dval);
+            gtk_tree_store_set_value(tstore, iter, col, (GValue *)&dval);
+            break;
+        case G_TYPE_CHAR:
+            context->ObjectToNumber((RexxStringObject)context->ArrayAt(args, i - 1), &ival);
+            gtk_tree_store_set_value(tstore, iter, col, (GValue *)&ival);
+            break;
+        case G_TYPE_UCHAR:
+            context->ObjectToUnsignedNumber((RexxStringObject)context->ArrayAt(args, i - 1), &uival);
+            gtk_tree_store_set_value(tstore, iter, col, (GValue *)&uival);
+            break;
+        default:
+            break;
+        }
     }
 
     return 0;
