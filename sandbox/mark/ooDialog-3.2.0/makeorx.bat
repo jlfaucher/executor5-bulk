@@ -49,6 +49,13 @@ set CPU=ix86
 REM Check that we have at least the first option
 IF %1x == x GOTO HELP
 
+REM By default the build output is redirected to to a log file.  To turn this
+REM redirection off, set the environment variable NO_BUILD_LOG to any value.
+REM
+REM If there is not a NO_BUILD_LOG environment variable, redirect output to a
+REM log file.  Otherwise do not redirect.
+if %NO_BUILD_LOG%x == x (set USELOGFILE=1) else (set USELOGFILE=0)
+
 REM Check for the 'package' option
 if %2x == x (
   SET DOPACKAGE=0
@@ -98,6 +105,11 @@ ECHO.
 ECHO makeorx NODEBUG PACKAGE C:\myDocs
 ECHO.
 ECHO are equivalent commands.
+ECHO.
+ECHO By default all output is redirected to a log file.  To turn this off,
+ECHO set the environment variable NO_BUILD_LOG to any value.  I.e.,
+ECHO.
+ECHO set NO_BUILD_LOG=1
 GOTO ENV_VARS_CLEANUP
 
 :HELP_SRC_DRV
@@ -207,6 +219,7 @@ SET SRCDIR=
 SET BINDIR=
 SET MISSING_DOC=
 SET SVN_REV=
+SET USELOGFILE=
 
 GOTO END
 
@@ -312,7 +325,7 @@ REM - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 :GENERATE_VERSION_FILE
 
 REM  First parse oorexx.ver to get the existing version numbers.
-for /F "eol=# delims== tokens=1,2*" %%i in (oorexx.ver) do (
+for /F "eol=# delims== tokens=1,2,3*" %%i in (oorexx.ver) do (
  if %%i == ORX_MAJOR set MAJOR_NUM=%%j
  if %%i == ORX_MINOR set MINOR_NUM=%%j
  if %%i == ORX_MOD_LVL set LVL_NUM=%%j
@@ -333,35 +346,35 @@ if %SVN_REV%x == x (
 
 REM Now write out oorexx.ver.incl
 if exist oorexx.ver.incl del /F /Q oorexx.ver.incl
-for /F "delims== tokens=1,2*" %%i in (oorexx.ver) do (
+for /F "delims== tokens=1,2,3*" %%i in (oorexx.ver) do (
  if %%i == ORX_BLD_LVL (
-   echo %%i=%SVN_REV% >> oorexx.ver.incl
+   echo %%i=%SVN_REV%>> oorexx.ver.incl
    set BLD_NUM=%SVN_REV%
  ) else (
    if %%i == ORX_VER_STR (
-     echo %%i="%MAJOR_NUM%.%MINOR_NUM%.%LVL_NUM%.%SVN_REV%" >> oorexx.ver.incl
+     echo %%i="%MAJOR_NUM%.%MINOR_NUM%.%LVL_NUM%.%SVN_REV%">> oorexx.ver.incl
    ) else (
      if %%jx == x (
-       echo %%i >> oorexx.ver.incl
+       echo %%i>> oorexx.ver.incl
      ) else (
-       echo %%i=%%j >> oorexx.ver.incl
+       echo %%i=%%j>> oorexx.ver.incl
      )
    )
  )
 )
-echo SVN_REVSION=%SVN_REV% >> oorexx.ver.incl
+echo SVN_REVSION=%SVN_REV%>> oorexx.ver.incl
 goto CHECK_BUILD_TYPE
 
 :NOSVN
 if exist oorexx.ver.incl (
-   for /F "eol=# delims== tokens=1,2*" %%i in (oorexx.ver.incl) do (
+   for /F "eol=# delims== tokens=1,2,3*" %%i in (oorexx.ver.incl) do (
     if %%i == ORX_BLD_LVL set BLD_NUM=%%j
     if %%i == SVN_REVISION set SVN_REV=%%j
    )
 ) else (
   copy oorexx.ver oorexx.ver.incl 1>nul 2>&1
   set SVN_REV=%BLD_NUM%
-  echo SVN_REVSION=%SVN_REV% >> oorexx.ver.incl
+  echo SVN_REVSION=%SVN_REV%>> oorexx.ver.incl
 )
 
 goto CHECK_BUILD_TYPE
