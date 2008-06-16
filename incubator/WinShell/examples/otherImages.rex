@@ -58,6 +58,7 @@
   self~noAutoDetection
 
 ::method defineDialog
+  expose vIconNames
 
   -- Do not use SHAREIMAGES and this way the List-view will destroy the current
   -- image list when it is destroyed.
@@ -71,6 +72,9 @@
   self~connectButtonNotify(IDC_RB_VICONS, "CLICKED", onVIconsClick)
   self~connectButtonNotify(IDC_RB_SHELL32, "CLICKED", onShell32Click)
 
+  vIconNames = .array~of("3D", "Fabrick", "Froggy", "Hipmatise", "Nightfall", -
+                         "Sharky", "The Thing", "Woola", "Ygy", "Torpedo")
+
 ::method initDialog
   expose list shell
 
@@ -81,8 +85,7 @@
   self~onVIconsClick
 
 ::method onVIconsClick
-  expose list
-  say 'onVIconsClick()'
+  expose list vIconNames
 
   imageList = self~getImageList("vIcons.dll")
   if imageList == .nil then return
@@ -94,7 +97,7 @@
   list~deleteAll
 
   do i = 0 to (count - 1)
-    list~add(i, i)
+    list~add(vIconNames[i+1], i)
   end
 
 ::method onShell32Click
@@ -134,7 +137,6 @@
 
   iconDll = .Path~searchAndQualify(file)
   icons = shell~extractDefaultIcons(iconDll)
-  say 'got icons:' icons
 
   if icons \== .nil then do
     largeIcons = icons[1]
