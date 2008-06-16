@@ -559,7 +559,7 @@ RexxObject *buildCompoundVariable(RexxString * variable_name, bool direct);
        /* the caller. */
        if (isInternalLevelCall() && settings.local_variables.isNested())
        {
-           sender->setLocalVariableDictionary(settings.local_variables.getNestedDictionary());
+           parent->setLocalVariableDictionary(settings.local_variables.getNestedDictionary());
        }
        else
        {
@@ -586,7 +586,7 @@ RexxObject *buildCompoundVariable(RexxString * variable_name, bool direct);
    RexxClass           *scope;         // scope of any active method call
    RexxObject          *receiver;      /* target of a message invocation    */
    RexxActivity        *activity;      /* current running activation        */
-   RexxActivation      *sender;        /* previous running activation       */
+   RexxActivation      *parent;        // previous running activation for internal call/interpret
    RexxObject         **arglist;       /* activity argument list            */
    size_t               argcount;      /* the count of arguments            */
    RexxDoBlock         *dostack;       /* stack of DO loops                 */

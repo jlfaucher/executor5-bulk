@@ -72,19 +72,20 @@ SysFile::SysFile()
     mode = 0;
     share = 0;
     filename = NULL;
-    buffered = true;
+    buffered = false;
     transient = false;
     device = false;
     writeable = false;
     readable = false;
     isTTY = false;
     buffer = NULL;
-    bufferSize = 0;
+    bufferSize = DEFAULT_BUFFER_SIZE;
     bufferPosition = 0;
     bufferedInput = 0;
     append = true;
     filePointer = 0;
     ungetchar = 0;
+    writeBuffer = false;     // no pending write operations
 }
 
 /**
@@ -109,7 +110,7 @@ bool SysFile::open(char *name, int openFlags, int openMode, int shareMode)
     ungetchar = 0xFF;            // 0xFF indicates no char
 
     // is this append mode?
-    if (flags & RX_O_APPEND)
+    if ((flags & RX_O_APPEND) != 0)
     {
         // mark this true, and position at the end
         append = true;
@@ -423,7 +424,7 @@ bool SysFile::write(const char *data, size_t len, size_t &bytesWritten)
         if (!transient)
         {
             // opened in append mode?
-            if (flags & O_APPEND)
+            if ((flags & O_APPEND) != 0)
             {
                 // seek to the end of the file, return if there is an error
                 if (lseek(fileHandle, 0, SEEK_END) < 0)
@@ -539,6 +540,7 @@ bool SysFile::gets(char *mybuffer, size_t bufferLen, size_t &bytesRead)
                 i--;
                 buffer[i] = '\n';
             }
+            i++;   // we need to step the position so that the null terminator doesn't overwrite
             break;
         }
     }
@@ -548,7 +550,7 @@ bool SysFile::gets(char *mybuffer, size_t bufferLen, size_t &bytesRead)
     // this is the length minus the terminating null
     bytesRead = i;
     // return an error state, but not EOF status.
-    return error();
+    return !error();
 }
 
 /**
@@ -856,7 +858,7 @@ bool SysFile::getSize(int64_t &size)
         if (fstat(fileHandle, &fileInfo) == 0)
         {
             // regular file?  return the defined size
-            if (fileInfo.st_mode & S_IFREG)
+            if ((fileInfo.st_mode & S_IFREG) != 0)
             {
                 size = fileInfo.st_size;
             }
@@ -885,7 +887,7 @@ bool SysFile::getSize(char *name, int64_t &size)
     if (stat(name, &fileInfo) == 0)
     {
         // regular file?  return the defined size
-        if (fileInfo.st_mode & S_IFREG)
+        if ((fileInfo.st_mode & S_IFREG) != 0)
         {
             size = fileInfo.st_size;
         }
@@ -918,7 +920,7 @@ bool SysFile::getTimeStamp(char *&time)
         if (fstat(fileHandle, &fileInfo) == 0)
         {
             // regular file?  return the defined size
-            if (fileInfo.st_mode & S_IFREG)
+            if ((fileInfo.st_mode & S_IFREG) != 0)
             {
                 time = ctime(&fileInfo.st_mtime);
             }
@@ -943,7 +945,7 @@ bool SysFile::getTimeStamp(char *name, char *&time)
     if (stat(name, &fileInfo) == 0)
     {
         // regular file?  return the defined size
-        if (fileInfo.st_mode & S_IFREG)
+        if ((fileInfo.st_mode & S_IFREG) != 0)
         {
             time = ctime(&fileInfo.st_mtime);
         }
@@ -975,18 +977,18 @@ void SysFile::getStreamTypeInfo()
     if (fstat(fileHandle, &fileInfo) == 0)
     {
         // regular file?  return the defined size
-        if ((fileInfo.st_mode & S_IFREG) == 0)
+        if ((fileInfo.st_mode & S_IFREG) != 0)
         {
             device = true;
             transient = true;
         }
 
-        if ((fileInfo.st_mode & S_IWRITE) == 0)
+        if ((fileInfo.st_mode & S_IWRITE) != 0)
         {
             writeable = true;
         }
 
-        if ((fileInfo.st_mode & S_IREAD) == 0)
+        if ((fileInfo.st_mode & S_IREAD) != 0)
         {
             readable = true;
         }
@@ -1004,6 +1006,7 @@ void SysFile::setStdIn()
     openedHandle = false;
     ungetchar = 0xFF;            // -1 indicates no char
     getStreamTypeInfo();
+    setBuffering(false, 0);
 }
 
 /**
@@ -1017,6 +1020,7 @@ void SysFile::setStdOut()
     openedHandle = false;
     ungetchar = 0xFF;            // -1 indicates no char
     getStreamTypeInfo();
+    setBuffering(false, 0);
 }
 
 /**
@@ -1030,6 +1034,7 @@ void SysFile::setStdErr()
     openedHandle = false;
     ungetchar = 0xFF;            // -1 indicates no char
     getStreamTypeInfo();
+    setBuffering(false, 0);
 }
 
 

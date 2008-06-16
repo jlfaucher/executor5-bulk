@@ -601,7 +601,10 @@ RexxObject *RexxNativeActivation::valueToObject(ValueDescriptor *value)
 {
     switch (value->type)
     {
-        case REXX_VALUE_RexxObjectPtr:          /* Object reference                  */
+        case REXX_VALUE_RexxObjectPtr:          // object reference.  All object types get
+        case REXX_VALUE_RexxStringObject:       // returned as a Rexx object
+        case REXX_VALUE_RexxArrayObject:
+        case REXX_VALUE_RexxStemObject:
         {
             return (RexxObject *)value->value.value_RexxObjectPtr; // just return the object value
         }
@@ -1125,11 +1128,12 @@ void RexxNativeActivation::run(RexxMethod *_method, RexxNativeMethod *_code, Rex
     /* give up reference to receiver so that it can be garbage collected */
     this->receiver = OREF_NULL;
 
+    checkConditions();                   // see if we have conditions to raise now
+
     // set the return value and get outta here
     resultObj = this->result;
     this->argcount = 0;                  /* make sure we don't try to mark any arguments */
 
-    checkConditions();                   // see if we have conditions to raise now
 
     this->activity->popStackFrame(this); /* pop this from the activity        */
     this->setHasNoReferences();          /* mark this as not having references in case we get marked */
@@ -1208,11 +1212,12 @@ void RexxNativeActivation::callNativeRoutine(RoutineClass *_routine, RexxNativeR
     /* give up reference to receiver so that it can be garbage collected */
     this->receiver = OREF_NULL;
 
-    // set the return value and get outta here
+    checkConditions();                   // see if we have conditions to raise now
+
+    // set the return value and get outta here.
     resultObj = this->result;
     this->argcount = 0;                  /* make sure we don't try to mark any arguments */
 
-    checkConditions();                   // see if we have conditions to raise now
     this->activity->popStackFrame(this); /* pop this from the activity        */
     this->setHasNoReferences();          /* mark this as not having references in case we get marked */
 }
@@ -1487,9 +1492,35 @@ void RexxNativeActivation::checkConditions()
         // base of the stack, there's nothing left to handle this.
         if (!isStackBase())
         {
-            // this prevents us from trying to trap this again
-            reraising = true;
-            activity->reraiseException(conditionObj);
+            /* get the original condition name   */
+            RexxString *condition = (RexxString *)conditionObj->at(OREF_CONDITION);
+
+            /* fatal SYNTAX error?               */
+            if (condition->strCompare(CHAR_SYNTAX))
+            {
+                // this prevents us from trying to trap this again
+                reraising = true;
+                                                 /* go propagate the condition        */
+                activity->reraiseException(conditionObj);
+            }
+            else
+            {                               /* normal condition trapping         */
+                                            /* get the sender object (if any)    */
+                // find a predecessor Rexx activation
+                RexxActivationBase *_sender = this->getPreviousStackFrame();
+                /* do we have a sender that is       */
+                /* trapping this condition?          */
+                /* do we have a sender?              */
+
+                if (_sender != OREF_NULL)
+                {
+                    /* "tickle them" with this           */
+                    _sender->trap(condition, conditionObj);
+                }
+                // if the trap is not handled, then we return directly.  The return
+                // value (if any) is stored in the condition object
+                result = conditionObj->at(OREF_RESULT);
+            }
         }
     }
 }

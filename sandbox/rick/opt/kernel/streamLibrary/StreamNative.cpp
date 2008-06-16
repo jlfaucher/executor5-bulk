@@ -490,8 +490,6 @@ const char *StreamInfo::openStd(const char *options)
        append = 1;
    }
 
-   // the resolved name is the same as the input name.
-   strcpy(qualified_name, stream_name);
    // check to see if buffering is allowed.
    if (options != NULL && !Utilities::stricmp(options, "NOBUFFER"))
    {
@@ -501,6 +499,9 @@ const char *StreamInfo::openStd(const char *options)
    {
        nobuffer = 0;  /* buffering is used                 */
    }
+
+   // the resolved name is the same as the input name.
+   strcpy(qualified_name, stream_name);
    // we're open, and ready
    isopen = true;
 
@@ -508,6 +509,19 @@ const char *StreamInfo::openStd(const char *options)
 
    // and also record the transient nature of this
    transient = fileInfo.isTransient();
+
+   // don't buffer if this is a transient stream or we've explicitly requested no buffering.
+   // in either case, make sure the initial buffer has been allocated.
+   if (transient || nobuffer)
+   {
+       // we do not buffer buffer file
+       fileInfo.setBuffering(false, 0);
+   }
+   else
+   {
+       // we buffer file
+       fileInfo.setBuffering(true, 0);
+   }
    // this was successful.
    return "READY:";
 }

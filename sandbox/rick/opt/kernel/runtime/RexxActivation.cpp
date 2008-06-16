@@ -127,8 +127,7 @@ RexxActivation::RexxActivation(RexxActivity* _activity, RexxMethod * _method, Re
     this->executable = _method;          // save this as the base executable
     this->settings.intermediate_trace = false;
     this->activation_context = METHODCALL;  // the context is a method call
-                                         /* save the sender activation        */
-    this->sender = _activity->getCurrentRexxFrame();
+    this->parent = OREF_NULL;            // we don't have a parent stack frame when invoked as a method
     this->execution_state = ACTIVE;      /* we are now in active execution    */
     this->object_scope = SCOPE_RELEASED; /* scope not reserved yet            */
     /* create a new evaluation stack.  This must be done before a */
@@ -190,8 +189,8 @@ RexxActivation::RexxActivation(RexxActivity *_activity, RexxActivation *_parent,
     }
     this->activation_context = context;  /* save the context                  */
     this->settings.intermediate_trace = false;
-    /* save the sender activation        */
-    this->sender = _activity->getCurrentRexxFrame();
+    // the sender is our parent activity
+    this->parent = _parent;
     this->execution_state = ACTIVE;      /* we are now in active execution    */
     this->object_scope = SCOPE_RELEASED; /* scope not reserved yet            */
     /* create a new evaluation stack.  This must be done before a */
@@ -247,8 +246,7 @@ RexxActivation::RexxActivation(RexxActivity *_activity, RoutineClass *_routine, 
 
     this->activation_context = context;  /* save the context                  */
     this->settings.intermediate_trace = false;
-    /* save the sender activation        */
-    this->sender = _activity->getCurrentRexxFrame();
+    this->parent = OREF_NULL;            // there's no parent for a top level call
     this->execution_state = ACTIVE;      /* we are now in active execution    */
     this->object_scope = SCOPE_RELEASED; /* scope not reserved yet            */
     /* create a new evaluation stack.  This must be done before a */
@@ -470,17 +468,17 @@ RexxObject * RexxActivation::run(RexxObject *_receiver, RexxString *msgname, Rex
                 if (this->isInterpret())
                 {
                     /* save the nested setting */
-                    bool nested = this->sender->settings.local_variables.isNested();
+                    bool nested = this->parent->settings.local_variables.isNested();
                     /* propagate parent's settings back  */
-                    this->sender->getSettings(this->settings);
+                    this->parent->getSettings(this->settings);
                     if (!nested)
                     {
                         /* if our calling variable context was not nested, we */
                         /* need to clear it. */
-                        this->sender->settings.local_variables.clearNested();
+                        this->parent->settings.local_variables.clearNested();
                     }
                     /* merge any pending conditions      */
-                    this->sender->mergeTraps(this->condition_queue, this->handler_queue);
+                    this->parent->mergeTraps(this->condition_queue, this->handler_queue);
                 }
                 resultObj = this->result;  /* save the result                   */
                 this->activity->popStackFrame(false);   /* now pop the current activity      */
@@ -532,8 +530,6 @@ RexxObject * RexxActivation::run(RexxObject *_receiver, RexxString *msgname, Rex
                         this->settings.flags |= transfer_failed;
                     }
                 }
-                /* we're now the top activation      */
-                this->sender = OREF_NULL;
                 this->activity->run();             /* continue running the new activity */
                 oldActivity->yieldControl();       /* give other activity a chance to go*/
             }
@@ -826,7 +822,7 @@ void RexxActivation::live(size_t liveMark)
     memory_mark(this->settings.securityManager);
     memory_mark(this->receiver);
     memory_mark(this->activity);
-    memory_mark(this->sender);
+    memory_mark(this->parent);
     memory_mark(this->dostack);
     /* the stack and the local variables handle their own marking. */
     this->stack.live(liveMark);
@@ -876,7 +872,7 @@ void RexxActivation::liveGeneral(int reason)
     memory_mark_general(this->settings.securityManager);
     memory_mark_general(this->receiver);
     memory_mark_general(this->activity);
-    memory_mark_general(this->sender);
+    memory_mark_general(this->parent);
     memory_mark_general(this->dostack);
     /* the stack and the local variables handle their own marking. */
     this->stack.liveGeneral(reason);
@@ -953,8 +949,8 @@ void RexxActivation::returnFrom(
     {
         this->execution_state = RETURNED;  /* this is a returned state          */
         this->next = OREF_NULL;            /* turn off execution engine         */
-                                           /* cause a return in the sender      */
-        this->sender->returnFrom(resultObj); /* activity                          */
+                                           /* cause a return in the parent      */
+        this->parent->returnFrom(resultObj); /* activity                          */
     }
     else
     {
@@ -1111,7 +1107,7 @@ void RexxActivation::procedureExpose(
     /* now expose each individual variable */
     for (size_t i = 0; i < count; i++)
     {
-        variables[i]->procedureExpose(this, sender, &stack);
+        variables[i]->procedureExpose(this, parent, &stack);
     }
 }
 
@@ -1384,7 +1380,7 @@ RexxActivation * RexxActivation::external()
     /* along                             */
     if (this->isInternalLevelCall())
     {
-        return this->sender->external();   /* get our sender method             */
+        return this->parent->external();   /* get our sender method             */
     }
     else
     {
@@ -1414,7 +1410,7 @@ void RexxActivation::raiseExit(
     }
 
     /* reached the top level?            */
-    if (this->sender == OREF_NULL)
+    if (this->parent == OREF_NULL)
     {
         this->exitFrom(resultObj);         /* turn into an exit instruction     */
     }
@@ -1430,7 +1426,7 @@ void RexxActivation::raiseExit(
         this->termination();               /* remove guarded status on object   */
         this->activity->popStackFrame(false); /* pop ourselves off active list     */
         /* propogate the condition backward  */
-        this->sender->raiseExit(condition, rc, description, additional, resultObj, conditionobj);
+        this->parent->raiseExit(condition, rc, description, additional, resultObj, conditionobj);
     }
 }
 
@@ -1446,7 +1442,6 @@ void RexxActivation::raise(
 /* Function:  Raise a give REXX condition                                     */
 /******************************************************************************/
 {
-    RexxActivation *_sender;              /* "invoker" of current activation   */
     bool            propagated;          /* propagated syntax condition       */
 
                                          /* propagating an existing condition?*/
@@ -1511,16 +1506,14 @@ void RexxActivation::raise(
     {                               /* normal condition trapping         */
                                     /* get the sender object (if any)    */
         // find a predecessor Rexx activation
-        _sender = this->senderActivation();
+        RexxActivation *_sender = this->senderActivation();
         /* do we have a sender that is       */
         /* trapping this condition?          */
         /* do we have a sender?              */
-
-        //TODO:  This is likely all screwed up.
         if (_sender != OREF_NULL)
         {
             /* "tickle them" with this           */
-            this->sender->trap(condition, conditionobj);
+            _sender->trap(condition, conditionobj);
         }
         this->returnFrom(resultObj);       /* process the return part           */
         throw this;                        /* unwind and process the termination*/
@@ -1568,7 +1561,7 @@ RexxDirectory *RexxActivation::getStreams()
         {
             /* alway's use caller's for internal */
             /* call, external call or interpret  */
-            this->settings.streams = this->sender->getStreams();
+            this->settings.streams = this->parent->getStreams();
         }
     }
     return this->settings.streams;       /* return the stream table           */
@@ -1586,7 +1579,7 @@ void RexxActivation::signalTo(
     {
         this->execution_state = RETURNED;  /* signal interpret termination      */
         this->next = OREF_NULL;            /* turn off execution engine         */
-        this->sender->signalTo(target);    /* propogate the signal backward     */
+        this->parent->signalTo(target);    /* propogate the signal backward     */
     }
     else
     {
@@ -1860,16 +1853,16 @@ bool RexxActivation::trap(             /* trap a condition                  */
 {
     if (this->settings.flags&forwarded)
     {/* in the act of forwarding?         */
-        RexxActivation *activation = this->sender;         /* get the sender activation         */
+        RexxActivationBase *activation = this->getPreviousStackFrame(); /* get the sender activation         */
                                            /* have a predecessor?               */
-        while (activation != OREF_NULL)
+        while (activation != OREF_NULL && isOfClass(Activation, activation))
         {
             if (!activation->isForwarded())  /* non forwarded?                    */
             {
                                              /* pretend he is we                  */
                 return activation->trap(condition, exception_object);
             }
-            activation = activation->sender; /* step to the next one              */
+            activation = activation->getPreviousStackFrame(); /* step to the next one              */
         }
         return false;                      /* not really here, can't handle     */
     }
@@ -1960,15 +1953,15 @@ bool RexxActivation::trap(             /* trap a condition                  */
         if (handler->isType(KEYWORD_SIGNAL))
         {
             /* not an Interpret instruction?     */
-            if (this->isInterpret())
+            if (!this->isInterpret())
             {
                 throw this;                    /* unwind and process the trap       */
             }
             else
             {                           /* unwind interpret activations      */
                                         /* merge the traps                   */
-                this->sender->mergeTraps(this->condition_queue, this->handler_queue);
-                this->sender->unwindTrap(this);/* go unwind this                    */
+                this->parent->mergeTraps(this->condition_queue, this->handler_queue);
+                this->parent->unwindTrap(this);/* go unwind this                    */
             }
         }
         else
@@ -2054,8 +2047,7 @@ void RexxActivation::mergeTraps(
 }
 
 
-void RexxActivation::unwindTrap(
-                               RexxActivation * child )           /* child interpret activation        */
+void RexxActivation::unwindTrap(RexxActivation * child )
 /******************************************************************************/
 /* Function:  Unwind a chain of interpret activations to process a SIGNAL ON  */
 /*            or PROPAGATE condition trap.  This ensures that the SIGNAL      */
@@ -2066,8 +2058,8 @@ void RexxActivation::unwindTrap(
     if (this->isInterpret())
     {
         /* merge the traps                   */
-        this->sender->mergeTraps(this->condition_queue, this->handler_queue);
-        this->sender->unwindTrap(child);   /* unwind another level              */
+        this->parent->mergeTraps(this->condition_queue, this->handler_queue);
+        this->parent->unwindTrap(child);   /* unwind another level              */
     }
     else                                 /* reached the "parent" level        */
     {
@@ -2077,15 +2069,16 @@ void RexxActivation::unwindTrap(
     }
 }
 
+
 RexxActivation * RexxActivation::senderActivation()
 /******************************************************************************/
 /* Function:  Retrieve the activation that activated this activation (whew)   */
 /******************************************************************************/
 {
     /* get the sender from the activity  */
-    RexxActivationBase *_sender = this->sender;
+    RexxActivationBase *_sender = this->getPreviousStackFrame();
     /* spin down to non-native activation*/
-    while (_sender != OREF_NULL && isOfClass(NativeActivation,sender))
+    while (_sender != OREF_NULL && isOfClass(NativeActivation, _sender))
     {
         _sender = _sender->getPreviousStackFrame();
     }
@@ -2176,7 +2169,7 @@ RexxObject * RexxActivation::rexxVariable(   /* retrieve a program entry        
         // the context that calls the interpret.
         if (this->isInterpret())
         {
-            return sender->rexxVariable(name);
+            return parent->rexxVariable(name);
         }
         else
         {
@@ -2606,7 +2599,7 @@ size_t RexxActivation::getRandomSeed(
     if (this->isInternalLevelCall())
     {
         /* forward along                     */
-        return this->sender->getRandomSeed(seed);
+        return this->parent->getRandomSeed(seed);
     }
     /* have a seed supplied?             */
     if (seed != OREF_NULL)
@@ -3557,7 +3550,7 @@ void RexxActivation::pushEnvironment(
     else                                 /* nope, process up the chain.         */
     {
         /* Yes, forward on the message.        */
-        this->sender->pushEnvironment(environment);
+        this->parent->pushEnvironment(environment);
     }
 }
 
@@ -3585,7 +3578,7 @@ RexxObject * RexxActivation::popEnvironment()
     else
     {                               /* nope, pass on up the chain.         */
                                     /* Yes, forward on the message.        */
-        return this->sender->popEnvironment();
+        return this->parent->popEnvironment();
     }
 }
 
