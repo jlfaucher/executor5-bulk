@@ -661,7 +661,7 @@ void StreamInfo::resetFields()
     binaryRecordLength = 0;
     read_only = false;
     write_only = false;
-    read_write = true;  /* try for read/write                */
+    read_write = false;
     stdstream = false;
     append = false;
     opened_as_handle = false;

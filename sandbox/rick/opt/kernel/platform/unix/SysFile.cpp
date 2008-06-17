@@ -120,6 +120,8 @@ bool SysFile::open(char *name, int openFlags, int openMode, int shareMode)
     // set eof flag
     fileeof = false;
 
+    // set the default buffer size (and allocate the buffer)
+    setBuffering(true, 0);
     getStreamTypeInfo();
     return true;
 }
@@ -139,6 +141,8 @@ bool SysFile::open(int handle)
     openedHandle = false;
     fileHandle = handle;
     ungetchar = 0xFF;            // 0xFF indicates no char
+    // set the default buffer size (and allocate the buffer)
+    setBuffering(true, 0);
     getStreamTypeInfo();
     return true;
 }

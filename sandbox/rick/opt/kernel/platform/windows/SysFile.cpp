@@ -114,6 +114,8 @@ bool SysFile::open(const char *name, int openFlags, int openMode, int shareMode)
     }
 
     getStreamTypeInfo();
+    // set the default buffer size (and allocate the buffer)
+    setBuffering(true, 0);
     return true;
 }
 
@@ -133,6 +135,8 @@ bool SysFile::open(int handle)
     fileHandle = handle;
     ungetchar = -1;            // -1 indicates no char
     getStreamTypeInfo();
+    // set the default buffer size (and allocate the buffer)
+    setBuffering(true, 0);
     return true;
 }
 
