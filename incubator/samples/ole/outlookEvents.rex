@@ -102,8 +102,10 @@ use arg cmdLine
   if \ srchStrings~isA(.array) then
     return srchStrings
 
-  say "Creating Outlook OLEObject object."
   outLook = createOutlookObject()
+  say "Created the Outlook Application OLEObject object."
+  say "  Outlook version:" outLook~version
+  say
 
   if outLook == .nil then return 99
 
@@ -508,7 +510,6 @@ returnNil:
   nameSpace = outLook~getNameSpace('MAPI')
   folders = nameSpace~folders
   do i = 1 to folders~count
-    say folders~item(i)~name
     if folders~item(i)~name~caselessPos("Mailbox") <> 0 then do
       theParentFolder = folders~item(i)
       leave
@@ -599,26 +600,45 @@ returnNil:
   folders = theParentFolder~folders
 
   if folders~isConnectable then do
-    say "The Folders collection supports events"
     do 3; say; end
-    j = printEvents(folders, "Folders collection")
+    say "The Folders Collection supports events"
+    j = printEvents(folders, "Folders Collection")
     do 3; say; end
 
-    producer = .MethodProducer~new
+    if outLook~version \== "11.0.0.8206" then do
+      producer = .MethodProducer~new
 
-    -- Add the folderAdd() event method to our OLEObject and then connect events
-    -- to that object.  See the .MethodProducer class in this file for details
-    -- on how to implement event methods to be used with addEventMethod().
+      -- Add the folderAdd() event method to our OLEObject and then connect events
+      -- to that object.  See the .MethodProducer class in this file for details
+      -- on how to implement event methods to be used with addEventMethod().
 
-                        --  Method name   Method object
-    folders~addEventMethod("folderAdd",   producer~getFolderAddEvent)
-    folders~connectEvents
+                          --  Method name   Method object
+      folders~addEventMethod("folderAdd",   producer~getFolderAddEvent)
+      folders~connectEvents
 
-    .local~folderAddEventIsDone = .false
-    newFolder = folders~add(name, folderType)
+      .local~folderAddEventIsDone = .false
+      newFolder = folders~add(name, folderType)
 
-    do while \ .folderAddEventIsDone
-      j = SysSleep(1)
+      do while \ .folderAddEventIsDone
+        j = SysSleep(1)
+      end
+    end
+    else do
+      -- Outlook version 11.0.0.8206 always hangs for me if I connect events
+      -- and implement the folderAdd event.  Other versions of Outlook work fine
+      -- with the above code.  So, if it is version 11.0.0.8206, just skip
+      -- connecting the event.
+      --
+      -- However, if this program hangs for you when executing the above code,
+      -- change:
+      --
+      --   if outLook~version \== "11.0.0.8206" then do
+      --
+      -- to:
+      --
+      --   if outLook~version == "0.0.0.0" then do
+      --
+      newFolder = folders~add(name, folderType)
     end
   end
   else do
