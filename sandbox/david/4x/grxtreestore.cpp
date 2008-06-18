@@ -98,16 +98,20 @@ RexxMethod2(int,                       // Return type
  *
  * Append a new row
  *
+ * @param args    The parent object iter
+ *
  * @return        Row iterator
  **/
-RexxMethod0(RexxObjectPtr,             // Return type
-            GrxTreeStoreAppend)        // Object_method name
+RexxMethod1(RexxObjectPtr,             // Return type
+            GrxTreeStoreAppend,        // Object_method name
+            RexxObjectPtr, parent)     // Parent object
 {
     RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
     GtkTreeStore *tstore = (GtkTreeStore *)context->PointerValue(rxptr);
+    GtkTreeIter *piter = (GtkTreeIter *)context->PointerValue((RexxPointerObject)parent);
     GtkTreeIter *iter = (GtkTreeIter *)malloc(sizeof(GtkTreeIter));
 
-    gtk_tree_store_append(tstore, iter, NULL);
+    gtk_tree_store_append(tstore, iter, piter);
 
     return (RexxObjectPtr)context->NewPointer(iter);
 }

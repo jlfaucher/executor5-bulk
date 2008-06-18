@@ -2746,6 +2746,8 @@ return
 ::METHOD append_column EXTERNAL "LIBRARY rexxgtk GrxTreeViewAppendColumn"
 ::METHOD insert_column EXTERNAL "LIBRARY rexxgtk GrxTreeViewInsertColumn"
 ::METHOD remove_column EXTERNAL "LIBRARY rexxgtk GrxTreeViewRemoveColumn"
+::METHOD set_model EXTERNAL "LIBRARY rexxgtk GrxTreeViewSetModel"
+::METHOD expand_all EXTERNAL "LIBRARY rexxgtk GrxTreeViewExpandAll"
 ::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxTreeViewSignalConnect"
 
 -- The following are the methods that can be connected to signals. By default

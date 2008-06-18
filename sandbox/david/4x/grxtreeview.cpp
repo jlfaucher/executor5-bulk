@@ -315,6 +315,24 @@ RexxMethod1(int,                       // Return type
 }
 
 /**
+ * Method:  expand_all
+ *
+ * Expand all levels of the tree.
+ *
+ * @return        Zero.
+ **/
+RexxMethod0(int,                       // Return type
+            GrxTreeViewExpandAll)      // Object_method name
+{
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    GtkTreeView *myWidget = (GtkTreeView *)context->PointerValue(rxptr);
+
+    gtk_tree_view_expand_all(myWidget);
+
+    return 0;
+}
+
+/**
  * Method:  signal_connect
  *
  * Connect a signal to an ooRexx method.
