@@ -260,7 +260,7 @@ bool SysFile::flush()
  * @param len        The requested number of bytes to read.
  * @param bytesRead  The actual number of bytes read.
  *
- * @return True if or or more bytes are read into buf, otherwise false.
+ * @return True if one or more bytes are read into buf, otherwise false.
  */
 bool SysFile::read(char *buf, size_t len, size_t &bytesRead)
 {

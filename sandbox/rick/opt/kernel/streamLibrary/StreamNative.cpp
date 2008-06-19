@@ -667,6 +667,8 @@ void StreamInfo::resetFields()
     lineReadCharPosition = 1;
     lineWriteCharPosition = 1;
     nobuffer = false;
+    bufferAddress = NULL;
+    bufferLength = 0;
     last_op_was_read = true;
     transient = false;
     record_based = false;
