@@ -379,11 +379,6 @@ void StreamInfo::checkEof()
     {
         eof();
     }
-    else
-    {
-        // must be an error, so raise that using the file error information
-        notreadyError();
-    }
 }
 
 
@@ -1021,7 +1016,6 @@ void StreamInfo::writeFixedLine(const char *data, size_t length)
  */
 void StreamInfo::setPosition(int64_t position, int64_t &newPosition)
 {
-    position--;      // convert to system position type
     // seek to the target position, if possible.  The request position
     // is a 1-based character number.  We need to convert this into
     // a zero-based one before moving.

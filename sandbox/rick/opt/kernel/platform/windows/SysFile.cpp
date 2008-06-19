@@ -246,6 +246,8 @@ bool SysFile::flush()
             // update the real output position
             filePointer += written;
             // and invalidate the buffer
+            bufferPosition = 0;
+            bufferedInput = 0;
         }
     }
     return true;
@@ -971,8 +973,8 @@ void SysFile::getStreamTypeInfo()
     struct _stati64 fileInfo;
     if (_fstati64(fileHandle, &fileInfo) == 0)
     {
-        // regular file?  return the defined size
-        if ((fileInfo.st_mode & _S_IFREG) != 0)
+        //  character device?  set those characteristics
+        if ((fileInfo.st_mode & _S_IFCHR) != 0)
         {
             device = true;
             transient = true;
