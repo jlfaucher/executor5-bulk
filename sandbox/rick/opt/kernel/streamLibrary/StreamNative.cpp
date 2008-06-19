@@ -1182,6 +1182,7 @@ RexxStringObject StreamInfo::readVariableLine()
         // hit end of file reading this?  This will be the entire line then
         if (fileInfo.atEof())
         {
+            lineReadIncrement();
             return context->NewString(bufferAddress, currentLength + bytesRead);
         }
 
@@ -1190,11 +1191,30 @@ RexxStringObject StreamInfo::readVariableLine()
         // single lf characters.
         if (buffer[bytesRead - 1] == '\n')
         {
+            lineReadIncrement();
             return context->NewString(buffer, currentLength + bytesRead - 1);
         }
         currentLength += bytesRead;
         buffer = extendBuffer(bufferSize);
     }
+}
+
+/**
+ * Increments the read positions, including the line-orientated positions, after
+ * a single line has been read. Assumes one line has actually been read.
+ */
+void StreamInfo::lineReadIncrement()
+{
+    if ( !fileInfo.getPosition(charReadPosition) )
+    {
+        notreadyError();
+    }
+    // Keep this 1-based.
+    charReadPosition++;
+
+    lineReadPosition++;
+    lineReadCharPosition = charReadPosition;
+    last_op_was_read = true;
 }
 
 /**
