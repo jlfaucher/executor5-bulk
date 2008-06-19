@@ -128,6 +128,7 @@ public:
     inline int  errorInfo() { return errInfo; }
     inline void clearErrors() { errInfo = 0; }
     inline bool atEof() { return eof(fileHandle) == 1; }
+    inline bool hasBufferedInput() { return buffered && (bufferedInput > bufferPosition); }
     inline int  getHandle() { return fileHandle; }
 
 protected:
