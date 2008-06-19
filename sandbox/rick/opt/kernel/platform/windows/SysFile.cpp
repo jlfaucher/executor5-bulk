@@ -253,12 +253,23 @@ bool SysFile::flush()
     return true;
 }
 
+/**
+ * Read bytes from the stream.
+ *
+ * @param buf        The buffer to read into.
+ * @param len        The requested number of bytes to read.
+ * @param bytesRead  The actual number of bytes read.
+ *
+ * @return True if or or more bytes are read into buf, otherwise false.
+ */
 bool SysFile::read(char *buf, size_t len, size_t &bytesRead)
 {
+    // set bytesRead to 0 to be sure we can tell if we are returning any bytes.
+    bytesRead = 0;
+
     // asking for nothing?  this is pretty easy
     if (len == 0)
     {
-        bytesRead = 0;
         return true;
     }
 
@@ -273,7 +284,7 @@ bool SysFile::read(char *buf, size_t len, size_t &bytesRead)
         len--;
         ungetchar = -1;
         // were we only looking for one character (very common in cases where
-        // we've had a char pushed back
+        // we've had a char pushed back)
         if (len == 0)
         {
             return true;
@@ -305,7 +316,7 @@ bool SysFile::read(char *buf, size_t len, size_t &bytesRead)
                     // not get anything?
                     if (_eof(fileHandle))
                     {
-                        return true;
+                        return bytesRead > 0 ? true : false;
                     }
                     else
                     {
@@ -341,7 +352,8 @@ bool SysFile::read(char *buf, size_t len, size_t &bytesRead)
             // not get anything?
             if (_eof(fileHandle))
             {
-                return true;
+                // could have had an ungetchar
+                return bytesRead > 0 ? true : false;
             }
             else
             {
