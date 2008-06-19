@@ -253,17 +253,30 @@ bool SysFile::flush()
             // update the real output position
             filePointer += written;
             // and invalidate the buffer
+            bufferPosition = 0;
+            bufferedInput = 0;
         }
     }
     return true;
 }
 
+/**
+ * Read bytes from the stream.
+ *
+ * @param buf        The buffer to read into.
+ * @param len        The requested number of bytes to read.
+ * @param bytesRead  The actual number of bytes read.
+ *
+ * @return True if or or more bytes are read into buf, otherwise false.
+ */
 bool SysFile::read(char *buf, size_t len, size_t &bytesRead)
 {
+    // set bytesRead to 0 to be sure we can tell if we are returning any bytes.
+    bytesRead = 0;
+
     // asking for nothing?  this is pretty easy
     if (len == 0)
     {
-        bytesRead = 0;
         return true;
     }
 
@@ -278,7 +291,7 @@ bool SysFile::read(char *buf, size_t len, size_t &bytesRead)
         len--;
         ungetchar = 0xFF;
         // were we only looking for one character (very common in cases where
-        // we've had a char pushed back
+        // we've had a char pushed back)
         if (len == 0)
         {
             return true;
@@ -311,7 +324,7 @@ bool SysFile::read(char *buf, size_t len, size_t &bytesRead)
                     if (blockRead == 0)
                     {
                         fileeof = true;
-                        return true;
+                        return bytesRead > 0 ? true : false;
                     }
                     else
                     {
@@ -348,7 +361,8 @@ bool SysFile::read(char *buf, size_t len, size_t &bytesRead)
             if (blockRead == 0)
             {
                 fileeof = true;
-                return true;
+                // could have had an ungetchar
+                return bytesRead > 0 ? true : false;
             }
             else
             {
@@ -980,8 +994,8 @@ void SysFile::getStreamTypeInfo()
     struct stat fileInfo;
     if (fstat(fileHandle, &fileInfo) == 0)
     {
-        // regular file?  return the defined size
-        if ((fileInfo.st_mode & S_IFREG) != 0)
+        //  character device?  set those characteristics
+        if ((fileInfo.st_mode & S_IFCHR) != 0)
         {
             device = true;
             transient = true;
