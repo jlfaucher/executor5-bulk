@@ -1180,7 +1180,7 @@ RexxStringObject StreamInfo::readVariableLine()
         }
 
         // hit end of file reading this?  This will be the entire line then
-        if (fileInfo.atEof())
+        if (fileInfo.atEof() && !fileInfo.hasBufferedInput())
         {
             lineReadIncrement();
             return context->NewString(bufferAddress, currentLength + bytesRead);
