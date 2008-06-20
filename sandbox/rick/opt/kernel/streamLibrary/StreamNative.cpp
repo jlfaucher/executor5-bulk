@@ -1922,13 +1922,13 @@ const char *StreamInfo::streamOpen(const char *options)
         };
         ParseAction OpenActionappend[] = {
             ParseAction(MEB, read_only),
-            ParseAction(MEB, read_write),
-            ParseAction(SetBool, write_only, true),
+            ParseAction(ME, oflag, O_TRUNC),
             ParseAction(SetBool, append, true),
             ParseAction(BitOr, oflag, O_APPEND),
             ParseAction()
         };
         ParseAction OpenActionreplace[] = {
+            ParseAction(ME, oflag, O_APPEND),
             ParseAction(BitOr, oflag, O_TRUNC),
             ParseAction()
         };
@@ -2019,6 +2019,19 @@ const char *StreamInfo::streamOpen(const char *options)
             raiseException(Rexx_Error_Incorrect_method);
         }
     }
+    else
+    {
+        // No options, set the defaults.
+        read_write = true;
+        append = true;
+        oflag |= RDWR_CREAT | O_APPEND;
+        pmode |= IREAD_IWRITE;
+
+        // TODO: note that the docs say the default shared mode is SHARED.  But,
+        // the code on entry sets the default to not shared.  Need to either fix
+        // the docs or the code.
+    }
+
 
     resolveStreamName();                /* get the fully qualified name      */
 
@@ -2031,12 +2044,19 @@ const char *StreamInfo::streamOpen(const char *options)
         raiseException(Rexx_Error_Incorrect_method);
     }
 
-    /* read/write/both/append not        */
-    /* specified default both            */
+    // If read/write/both/append not specified, the default is BOTH APPEND.
+    // (According to the current doc.)
     if (!(oflag & (O_WRONLY | RDWR_CREAT )) && !read_only)
     {
         oflag |= O_RDWR | RDWR_CREAT;    /* set this up for read/write mode   */
         pmode = IREAD_IWRITE;            /* save the pmode info               */
+        read_write = true;
+
+        if (!(oflag & (O_TRUNC | O_APPEND)))
+        {
+            oflag |= O_APPEND;
+            append = true;
+        }
     }
 
     if (read_only)
