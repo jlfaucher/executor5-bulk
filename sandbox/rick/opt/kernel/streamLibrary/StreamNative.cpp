@@ -367,17 +367,23 @@ void StreamInfo::eof()
 }
 
 /**
- * Check for an eof condition, and raise the appropriate not
- * ready condition if it is true.
+ * Raise the appropriate not ready condition, checking first for an eof
+ * condition.
  *
  * @param result     A result object to be passed with the Notready condition.
  */
 void StreamInfo::checkEof()
 {
-      // if this is an eof condition, raise that not ready
-    if (fileInfo.atEof() && !fileInfo.hasBufferedInput())
+      // if this is an eof condition, raise the eof not ready
+    if (fileInfo.atEof())
     {
         eof();
+    }
+    else
+    {
+        // must be an error, so raise the error not ready using the file error
+        // information
+        notreadyError();
     }
 }
 
@@ -1016,11 +1022,12 @@ void StreamInfo::writeFixedLine(const char *data, size_t length)
  */
 void StreamInfo::setPosition(int64_t position, int64_t &newPosition)
 {
-    // seek to the target position, if possible.  The request position
+    // Seek to the target position, if possible.  The request position
     // is a 1-based character number.  We need to convert this into
     // a zero-based one before moving.
-    if (fileInfo.seek(position - 1, SEEK_SET, newPosition))
+    if (!fileInfo.seek(position - 1, SEEK_SET, newPosition))
     {
+        // Failed, raise a not ready condition.
         checkEof();
     }
     // convert the target position back to 1-based.
