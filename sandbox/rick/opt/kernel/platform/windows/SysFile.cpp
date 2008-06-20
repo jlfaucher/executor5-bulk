@@ -100,6 +100,11 @@ bool SysFile::open(const char *name, int openFlags, int openMode, int shareMode)
 
     // we must open this with the NOINHERIT flag added
     fileHandle = _sopen(name, openFlags|RX_O_NOINHERIT, shareMode, openMode);
+    if ( fileHandle == -1 )
+    {
+        errInfo = errno;
+        return false;
+    }
 
     // save a copy of the name
     filename = strdup(name);

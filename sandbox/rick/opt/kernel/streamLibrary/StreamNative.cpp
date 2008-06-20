@@ -375,7 +375,7 @@ void StreamInfo::eof()
 void StreamInfo::checkEof()
 {
       // if this is an eof condition, raise that not ready
-    if (fileInfo.atEof())
+    if (fileInfo.atEof() && !fileInfo.hasBufferedInput())
     {
         eof();
     }
@@ -472,16 +472,16 @@ const char *StreamInfo::openStd(const char *options)
    else if (!Utilities::stricmp(stream_name,"STDOUT") ||
             !Utilities::stricmp(stream_name,"STDOUT:"))
    {
-       // indicate this is stdin
+       // indicate this is stdout
        fileInfo.setStdOut();
        // stdout can only be appended to.
        append = 1;
    }
    else                                /* must be standard error            */
    {
-       // indicate this is stdin
+       // indicate this is stderr
        fileInfo.setStdErr();
-       // stdout can only be appended to.
+       // stderr can only be appended to.
        append = 1;
    }
 
@@ -667,8 +667,6 @@ void StreamInfo::resetFields()
     lineReadCharPosition = 1;
     lineWriteCharPosition = 1;
     nobuffer = false;
-    bufferAddress = NULL;
-    bufferLength = 0;
     last_op_was_read = true;
     transient = false;
     record_based = false;
@@ -3276,6 +3274,10 @@ RexxMethod1(RexxStringObject, stream_description, CSELF, streamPtr)
 StreamInfo::StreamInfo(RexxObjectPtr s, const char *inputName)
 {
     self = s;
+
+    // buffer needs to be allocated
+    bufferAddress = NULL;
+    bufferLength = 0;
 
     // initialize the default values
     resetFields();

@@ -84,7 +84,7 @@ do j over Arrax
     if i = 1 then call ProcessUtils
     else NewFile~lineout('::requires "'outname[i-1]'.CLS"')
     do file over j
-       say inpdir || file
+       say (inpdir || file)
        ReadFile = .stream~new(inpdir || File)
        ReadFile~open("READ")
        do while ReadFile~lines() > 0
