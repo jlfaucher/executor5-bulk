@@ -2282,6 +2282,7 @@ RexxObject *RexxObject::hasMethodRexx(
 /* Function:  Exported access to an object virtual function                   */
 /******************************************************************************/
 {
+  message = REQUIRED_STRING(message, ARG_ONE)->upper();
   return this->hasMethod(message);     /* forward to the virtual function   */
 }
 

@@ -585,6 +585,7 @@ Function DoFileAssociationDetails
   WriteRegStr HKCR "REXXScript\shell\open\command" "" '"$INSTDIR\rexx.exe" "%1" %*'
   WriteRegStr HKCR "REXXScript\shell\edit" "" "Edit"
   WriteRegStr HKCR "REXXScript\shell\edit\command" "" 'notepad.exe "%1"'
+  WriteRegStr HKCR "REXXScript\shellex\DropHandler" "" "{60254CA5-953B-11CF-8C96-00AA00B8708C}"
   System::Call 'Shell32::SHChangeNotify(i ${SHCNE_ASSOCCHANGED}, i ${SHCNF_IDLIST}, i 0, i 0)'
   Return
 FunctionEnd
@@ -617,8 +618,9 @@ FunctionEnd
 
 Section "Uninstall"
 
+;;;; temporarily comment out orxscrpt stuff while it is disabled in the build.
   ; orxscrpt.dll needs to be degistered
-  !insertmacro UnInstallLib REGDLL NOTSHARED REBOOT_PROTECTED "$INSTDIR\orxscrpt.dll"
+;;  !insertmacro UnInstallLib REGDLL NOTSHARED REBOOT_PROTECTED "$INSTDIR\orxscrpt.dll"
   ;
   ; Stop rxapi.exe (again!) the de-registration process starts rxapi.exe GRRRR!!!
   KillProcDLL::KillProc "rxapi.exe"
