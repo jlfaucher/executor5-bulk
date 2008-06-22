@@ -327,7 +327,7 @@ bool SysInterpreterInstance::checkCurrentFile(const char *name, char *resolvedNa
 
         // if this is a real file vs. a directory, make sure we return
         // the long name value in the correct casing
-        if (fileAttrib != FILE_ATTRIBUTE_DIRECTORY)
+        if (fileAttrib != INVALID_FILE_ATTRIBUTES && fileAttrib != FILE_ATTRIBUTE_DIRECTORY)
         {
             getLongName(resolvedName, CCHMAXPATH);
             SetErrorMode(errorMode);
