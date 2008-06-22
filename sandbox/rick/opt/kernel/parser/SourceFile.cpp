@@ -5648,10 +5648,17 @@ PackageClass *RexxSource::loadRequired(RexxString *target, RexxArray *s)
  */
 void RexxSource::addPackage(PackageClass *p)
 {
-    // we only add a given package item once.
-    if (loadedPackages->hasItem(p) == TheTrueObject)
+    // we only create this on the first use
+    if (loadedPackages == OREF_NULL)
     {
-        return;
+        loadedPackages = new_list();
+    }
+    else {
+        // we only add a given package item once.
+        if (loadedPackages->hasItem(p) == TheTrueObject)
+        {
+            return;
+        }
     }
 
     // add this to the list and merge the information

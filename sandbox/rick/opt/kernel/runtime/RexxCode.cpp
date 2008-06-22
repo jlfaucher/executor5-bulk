@@ -75,6 +75,23 @@ RexxCode::RexxCode(
 }
 
 
+/**
+ * Process a detached ::requires type call.
+ *
+ * @param activity The current activity,
+ * @param routine  The routine object we're executing.
+ * @param msgname  The name this was invoked under.
+ * @param argPtr   The pointer to the call arguments,
+ * @param argcount The count of arguments,
+ * @param result   The returned result.
+ */
+void RexxCode::call(RexxActivity *activity, RoutineClass *routine, RexxString *msgname, RexxObject**argPtr, size_t argcount, ProtectedObject &result)
+{
+    // just forward to the more general method
+    this->call(activity, routine, msgname, argPtr, argcount, OREF_NULL, OREF_NULL, EXTERNALCALL, result);
+}
+
+
 void RexxCode::call(
     RexxActivity *activity,            /* activity running under            */
     RoutineClass *routine,             // top level routine instance
