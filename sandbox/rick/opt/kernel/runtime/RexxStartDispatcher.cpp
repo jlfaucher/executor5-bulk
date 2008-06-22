@@ -42,6 +42,7 @@
 #include "RoutineClass.hpp"
 #include "SystemInterpreter.hpp"
 #include "InterpreterInstance.hpp"
+#include "RexxNativeActivation.hpp"
 
 
 /**
@@ -179,6 +180,8 @@ void RexxStartDispatcher::handleError(wholenumber_t r, RexxDirectory *c)
     // use the base error handling and set our return code to the negated error code.
     ActivityDispatcher::handleError(-r, c);
     retcode = (short)rc;
+    // process the error to display the error message.
+    activity->error(activation);
 }
 
 

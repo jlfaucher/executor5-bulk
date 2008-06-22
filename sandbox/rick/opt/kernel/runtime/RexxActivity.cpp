@@ -356,6 +356,33 @@ wholenumber_t RexxActivity::error()
 }
 
 
+wholenumber_t RexxActivity::error(RexxActivationBase *activation)
+/******************************************************************************/
+/* Function:  Force error termination on an activity, returning the resulting */
+/*            REXX error code.                                                */
+/******************************************************************************/
+{
+    // unwind to a base activation
+    while (topStackFrame != activation)
+    {
+        // if we're not to the stack very base of the stack, terminate the frame
+        this->topStackFrame->termination();
+        this->popStackFrame(false);
+    }
+
+    wholenumber_t rc = Error_Interpretation/1000;      /* set default return code           */
+    /* did we get a condtion object?     */
+    if (this->conditionobj != OREF_NULL)
+    {
+        /* force it to display               */
+        this->display(this->conditionobj);
+        // try to convert.  Leaves unchanged if not value
+        this->conditionobj->at(OREF_RC)->numberValue(rc);
+    }
+    return rc;                           /* return the error code             */
+}
+
+
 /**
  * Extract an error number from a syntax condition object.
  *
@@ -688,14 +715,24 @@ void RexxActivity::raiseException(
         throw RecursiveStringError;
     }
 
+    RexxActivationBase *topFrame = this->getTopStackFrame();
+
     RexxActivation *activation = this->getCurrentRexxFrame(); /* get the current activation        */
-    // unwind the stack until we find
-    while (activation != OREF_NULL && activation->isForwarded())
+    // if we're raised within a real Rexx context, we need to deal with forwarded
+    // frames
+    if (topFrame == activation)
     {
-        // termainte and remove this stack frame
-        popStackFrame(activation);
-        // grab the new current frame
-        activation = this->getCurrentRexxFrame();
+        // unwind the stack until we find
+        while (activation != OREF_NULL && activation->isForwarded())
+        {
+            // terminate and remove this stack frame
+            popStackFrame(activation);
+            // grab the new current frame
+            activation = this->getCurrentRexxFrame();
+        }
+    }
+    else {
+        activation = NULL;      // raised from a native context, don't add to stack trace
     }
 
     this->conditionobj = createExceptionObject(errcode, activation, location, source, description, additional, result);
