@@ -225,12 +225,12 @@ void AttributeGetterCode::flatten(RexxEnvelope *envelope)
  * @param receiver The receiver object.
  * @param messageName
  *                 The name of the message used to invoke the method.
- * @param count    The argument count.
  * @param argPtr   The pointer to the arguments.
+ * @param count    The argument count.
  * @param result   The returned result.
  */
 void AttributeGetterCode::run(RexxActivity *activity, RexxMethod *method, RexxObject *receiver, RexxString *messageName,
-    size_t count, RexxObject **argPtr, ProtectedObject &result)
+    RexxObject **argPtr, size_t count, ProtectedObject &result)
 {
     // validate the number of arguments
     if (count > 0)
@@ -263,12 +263,12 @@ void *AttributeSetterCode::operator new(size_t size)
  * @param receiver The receiver object.
  * @param messageName
  *                 The name of the message used to invoke the method.
- * @param count    The argument count.
  * @param argPtr   The pointer to the arguments.
+ * @param count    The argument count.
  * @param result   The returned result.
  */
 void AttributeSetterCode::run(RexxActivity *activity, RexxMethod *method, RexxObject *receiver, RexxString *messageName,
-    size_t count, RexxObject **argPtr, ProtectedObject &result)
+    RexxObject **argPtr, size_t count, ProtectedObject &result)
 {
     // validate the number of arguments
     if (count > 1)
@@ -336,12 +336,12 @@ void ConstantGetterCode::flatten(RexxEnvelope *envelope)
  * @param receiver The receiver object.
  * @param messageName
  *                 The name of the message used to invoke the method.
- * @param count    The argument count.
  * @param argPtr   The pointer to the arguments.
+ * @param count    The argument count.
  * @param result   The returned result.
  */
 void ConstantGetterCode::run(RexxActivity *activity, RexxMethod *method, RexxObject *receiver, RexxString *messageName,
-    size_t count, RexxObject **argPtr, ProtectedObject &result)
+    RexxObject **argPtr, size_t count, ProtectedObject &result)
 {
     // validate the number of arguments
     if (count > 0)
@@ -374,12 +374,12 @@ void *AbstractCode::operator new(size_t size)
  * @param receiver The receiver object.
  * @param messageName
  *                 The name of the message used to invoke the method.
- * @param count    The argument count.
  * @param argPtr   The pointer to the arguments.
+ * @param count    The argument count.
  * @param result   The returned result.
  */
 void AbstractCode::run(RexxActivity *activity, RexxMethod *method, RexxObject *receiver, RexxString *messageName,
-    size_t count, RexxObject **argPtr, ProtectedObject &result)
+    RexxObject **argPtr, size_t count, ProtectedObject &result)
 {
     reportException(Error_Incorrect_method_abstract, messageName);
 }
