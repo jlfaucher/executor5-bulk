@@ -185,8 +185,9 @@ RexxString *SysInterpreterInstance::resolveProgramName(RexxString *_name, RexxSt
     const char *name = _name->getStringData();
     const char *parentDir = _parentDir == OREF_NULL ? NULL : _parentDir->getStringData();
     const char *parentExtension = _parentExtension == OREF_NULL ? NULL : _parentExtension->getStringData();
+    const char *pathExtension = instance->searchPath == OREF_NULL ? NULL : instance->searchPath->getStringData();
 
-    SysSearchPath searchPath(parentDir, parentExtension);
+    SysSearchPath searchPath(parentDir, pathExtension);
 
 
     // if the file already has an extension, this dramatically reduces the number
