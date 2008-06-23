@@ -92,6 +92,8 @@ static LONG installKBHook(DIALOGADMIN *, HWND, RXSTRING, RXSTRING, PCHAR);
 static LONG setKBHook(DIALOGADMIN *, HWND);
 static void removeKBHook(DIALOGADMIN *);
 static BOOL parseKeyToken(PCHAR, PUINT, PUINT);
+static int getKeyPressMethodIndex(KEYPRESSDATA *, RXSTRING);
+static LONG createKeyPressFilter(PCHAR, KEYFILTER *);
 
 #define COMCTL_ERR_TITLE    "ooDialog - Windows Common Controls Error"
 #define GENERIC_ERR_TITLE   "ooDialog - Error"
@@ -1382,92 +1384,48 @@ UINT seekKeyPressMethod(KEYPRESSDATA *pData, PCHAR method)
  */
 LONG setKeyPressData(KEYPRESSDATA *pData, RXSTRING method, RXSTRING keys, PCHAR filter)
 {
-
     PSZ        token, str;
-    PCHAR      pMethod;
     KEYFILTER *pFilter = NULL;
-    UINT       firstKey, lastKey, index;
+    UINT       firstKey, lastKey;
+    int        index;
     LONG       ret = 0;
 
-    /* If we are out room, or a duplicate method name, return */
+    /* If we are out room, return. */
     if ( pData->usedMethods >= (MAX_KEYPRESS_METHODS) ) return -6;
-    if ( seekKeyPressMethod(pData, method.strptr) ) return -7;
 
-    /* There has to be a limit on the length of a method name.  The size of the
-     * message being sent to AddDialogMessage() is set at 256 (for the key press
-     * event.)  Because of the arg string being sent to the method, this leaves
-     * less than that for the method name.
+    /* If there is a filter specified, set that up first.  Then, if there is an
+     * error, we don't have to back out the addition of a method to the method
+     * table.
      */
-    if ( method.strlength > CCH_METHOD_NAME ) return -1;
-
-    pMethod = LocalAlloc(LPTR, method.strlength + 1);
-    if ( ! pMethod ) return -5;
-
     if ( filter )
     {
-        pFilter = LocalAlloc(LPTR, sizeof(KEYFILTER));
-        if ( ! pFilter )
+        ret = createKeyPressFilter(filter, pFilter);
+        if ( ret < 0 )
         {
-            free(pMethod);
-            return -5;
-        }
-    }
-    rxstrlcpy(pMethod, method);
-
-    if ( pFilter )
-    {
-        if ( strstr(filter, "NONE" ) )
-        {
-            pFilter->none = TRUE;
-        }
-        else
-        {
-            if ( strstr(filter, "AND") ) pFilter->and = TRUE;
-            if ( strstr(filter, "SHIFT") ) pFilter->shift = TRUE;
-            if ( strstr(filter, "CONTROL") ) pFilter->control = TRUE;
-            if ( strstr(filter, "ALT") ) pFilter->alt = TRUE;
-        }
-
-        /* Some combinations are not filters.  Do not add more to the hook or
-         * subclass procedure than needed.
-         */
-        if ( ((! pFilter->and) && pFilter->shift && pFilter->control && pFilter->alt) ||
-             (pFilter->and && ! pFilter->shift && ! pFilter->control && ! pFilter->alt) )
-        {
-            free(pFilter);
-            pFilter = NULL;
-            ret = -1;
+            return ret;
         }
     }
 
-    /* Get the index of where to put the method.  If the next free queue is not
-     * empty, pull the index from the queue, otherwise we are still adding
-     * methods sequentially.
-     */
-    if ( pData->topOfQ )
+    index = getKeyPressMethodIndex(pData, method);
+    if ( index < 0 )
     {
-        index = pData->nextFreeQ[0];
-        memmove(pData->nextFreeQ, pData->nextFreeQ + 1, (pData->topOfQ - 1) * sizeof(UINT));
-        pData->topOfQ--;
+        if ( pFilter )
+        {
+            LocalFree(pFilter);
+        }
+        return index;
     }
-    else
-    {
-        index = pData->usedMethods + 1;
-    }
-    pData->pMethods[index] = pMethod;
-    pData->usedMethods++;
 
     if ( pFilter )
     {
         pData->pFilters[index] = pFilter;
     }
 
-    str = _strdup(keys.strptr);
-
     /* If there is an error parsing a token, the return is set to -1 to
      * indicate there was some error.  However, the good tokens are still used.
      * Thus, there may be some methods that are connected and some that are not.
      */
+    str = _strdup(keys.strptr);
     token = strtok(str, ",");
     while( token != NULL )
     {
@@ -1497,6 +1455,102 @@ LONG setKeyPressData(KEYPRESSDATA *pData, RXSTRING method, RXSTRING keys, PCHAR 
     return ret;
 }
 
+/**
+ * Gets the index for a key press method from the method name table.  If the
+ * method name does not already exist in the table, then a string is allocated
+ * for its name and the method name table is updated.
+ *
+ * @param pData    [in]   Pointer to the key press data block
+ * @param method   [in]   A rexx string with the method name.
+ *
+ * @return The index for the method in the method name table on success,
+ *         otherwise a negative error code.
+ */
+static int getKeyPressMethodIndex(KEYPRESSDATA *pData, RXSTRING method)
+{
+    PCHAR pMethod = NULL;
+
+    /* If the method name already exists in the table, just return its index. */
+    int index = seekKeyPressMethod(pData, method.strptr);
+    if ( index > 0 )
+    {
+        return index;
+    }
+
+    /* There has to be a limit on the length of a method name.  The size of the
+     * message being sent to AddDialogMessage() is set at 256 (for the key press
+     * event.)  Because of the arg string being sent to the method, this leaves
+     * less than that for the method name.
+     */
+    if ( method.strlength > CCH_METHOD_NAME ) return -1;
+
+    pMethod = LocalAlloc(LPTR, method.strlength + 1);
+    if ( ! pMethod ) return -5;
+
+    rxstrlcpy(pMethod, method);
+
+    /* Get the index of where to put the method.  If the next free queue is not
+     * empty, pull the index from the queue, otherwise we are still adding
+     * methods sequentially.
+     */
+    if ( pData->topOfQ )
+    {
+        index = pData->nextFreeQ[0];
+        memmove(pData->nextFreeQ, pData->nextFreeQ + 1, (pData->topOfQ - 1) * sizeof(UINT));
+        pData->topOfQ--;
+    }
+    else
+    {
+        index = pData->usedMethods + 1;
+    }
+    pData->pMethods[index] = pMethod;
+    pData->usedMethods++;
+
+    return index;
+}
+
+/**
+ * Create a key press filter block.
+ *
+ * @param filter
+ * @param pFilter
+ *
+ * @return 0 on success, less than 0 on failure.
+ */
+static LONG createKeyPressFilter(PCHAR filter, KEYFILTER *pFilter)
+{
+    LONG ret = 0;
+
+    pFilter = LocalAlloc(LPTR, sizeof(KEYFILTER));
+    if ( ! pFilter )
+    {
+        return -5;
+    }
+
+    if ( strstr(filter, "NONE" ) )
+    {
+        pFilter->none = TRUE;
+    }
+    else
+    {
+        if ( strstr(filter, "AND") ) pFilter->and = TRUE;
+        if ( strstr(filter, "SHIFT") ) pFilter->shift = TRUE;
+        if ( strstr(filter, "CONTROL") ) pFilter->control = TRUE;
+        if ( strstr(filter, "ALT") ) pFilter->alt = TRUE;
+    }
+
+    /* Some combinations are not filters.  Do not add more to the hook or
+     * subclass procedure than needed.
+     */
+    if ( ((! pFilter->and) && pFilter->shift && pFilter->control && pFilter->alt) ||
+         (pFilter->and && ! pFilter->shift && ! pFilter->control && ! pFilter->alt) )
+    {
+        LocalFree(pFilter);
+        pFilter = NULL;
+        ret = -1;
+    }
+    return ret;
+}
 
 /**
  * Parses a key token which could be: a keyword, a single number, or a number
