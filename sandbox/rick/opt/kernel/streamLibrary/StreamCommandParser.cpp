@@ -231,7 +231,7 @@ int ParseAction::applyAction(TokenDefinition *def, StreamToken &token, void *use
             /* use the c-lib memcpy function     */
         case SetItem:
             // just directly set the item
-            *bool_output = bool_value;
+            *int_output = int_value;
             return 0;
         case SetBool:
             // just directly set the item
