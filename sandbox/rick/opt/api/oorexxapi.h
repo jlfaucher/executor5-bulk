@@ -3285,7 +3285,7 @@ __functionstub(name) \
     if (arguments != NULL) /* if no arguments passed, this a signature request */ \
     {                                                                             \
         /* forward to the method implementation */                                \
-        __ret(returnType, name##_impl(context, __arg(1, t1), __arg(1, t2)));      \
+        __ret(returnType, name##_impl(context, __arg(1, t1), __arg(2, t2)));      \
     }                                                                             \
     return name##_types;     /* return the type signature */                      \
 } \
