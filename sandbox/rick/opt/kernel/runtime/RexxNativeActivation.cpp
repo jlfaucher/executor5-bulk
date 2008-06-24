@@ -1097,6 +1097,7 @@ void RexxNativeActivation::run(RexxMethod *_method, RexxNativeMethod *_code, Rex
     processArguments(argcount, arglist, types, arguments, MAX_NATIVE_ARGUMENTS);
 
     size_t activityLevel = this->activity->getActivationLevel();
+    trapErrors = true;                       // we trap errors from here
     try
     {
         activity->releaseAccess();           /* force this to "safe" mode         */
@@ -1117,6 +1118,7 @@ void RexxNativeActivation::run(RexxMethod *_method, RexxNativeMethod *_code, Rex
     {
         activity->requestAccess();
     }
+    trapErrors = false;                // no more error trapping
     this->guardOff();                  /* release any variable locks        */
     this->argcount = 0;                /* make sure we don't try to mark any arguments */
     // the lock holder gets here by longjmp from a kernel reentry.  We need to
@@ -1160,6 +1162,7 @@ void RexxNativeActivation::callNativeRoutine(RoutineClass *_routine, RexxNativeR
     arglist = list;
     argcount = count;
     activationType = FUNCTION_ACTIVATION;      // this is for running a method
+    accessCallerContext();                   // we need this to access the caller's context
 
     ValueDescriptor arguments[MAX_NATIVE_ARGUMENTS];
 
@@ -1185,6 +1188,7 @@ void RexxNativeActivation::callNativeRoutine(RoutineClass *_routine, RexxNativeR
     processArguments(argcount, arglist, types, arguments, MAX_NATIVE_ARGUMENTS);
 
     size_t activityLevel = this->activity->getActivationLevel();
+    trapErrors = true;                       // we trap error conditions now
     try
     {
         activity->releaseAccess();           /* force this to "safe" mode         */
@@ -1205,6 +1209,8 @@ void RexxNativeActivation::callNativeRoutine(RoutineClass *_routine, RexxNativeR
     {
         activity->requestAccess();
     }
+
+    trapErrors = false;        // no more error trapping
     // belt and braces...this restores the activity level to whatever
     // level we had when we made the callout.
     this->activity->restoreActivationLevel(activityLevel);
@@ -1239,6 +1245,7 @@ void RexxNativeActivation::callRegisteredRoutine(RoutineClass *_routine, Registe
     executable = _routine;
     arglist = list;
     argcount = count;
+    accessCallerContext();                   // we need this to access the caller's context
 
     activationType = FUNCTION_ACTIVATION;      // this is for running a method
     // use the default security manager
@@ -1300,8 +1307,11 @@ void RexxNativeActivation::callRegisteredRoutine(RoutineClass *_routine, Registe
     MAKERXSTRING(funcresult, default_return_buffer, sizeof(default_return_buffer));
 
     size_t activityLevel = this->activity->getActivationLevel();
+
+    trapErrors = true;                       // trap errors from here
     try
     {
+        enableVariablepool();                // enable the variable pool interface here
         activity->releaseAccess();           /* force this to "safe" mode         */
         // now process the function call
         functionrc = (*methp)(functionName->getStringData(), count, argPtr, queuename, &funcresult);
@@ -1349,6 +1359,9 @@ void RexxNativeActivation::callRegisteredRoutine(RoutineClass *_routine, Registe
         resultObj = this->result;
         return;
     }
+
+    trapErrors = false;                   // no more error trapping
+    disableVariablepool();                // disable the variable pool from here
 
     // belt and braces...this restores the activity level to whatever
     // level we had when we made the callout.
@@ -1444,6 +1457,7 @@ void RexxNativeActivation::run(CallbackDispatcher &dispatcher)
     // use the default security manager
     securityManager = activity->getInstanceSecurityManager();
     size_t activityLevel = this->activity->getActivationLevel();
+    trapErrors = true;               // trap errors on
     try
     {
         // make the activation hookup
@@ -1466,6 +1480,8 @@ void RexxNativeActivation::run(CallbackDispatcher &dispatcher)
         activity->requestAccess();
     }
 
+    trapErrors = false;          // back to normal mode for error trapping
+
     // belt and braces...this restores the activity level to whatever
     // level we had when we made the callout.
     this->activity->restoreActivationLevel(activityLevel);
@@ -1476,6 +1492,16 @@ void RexxNativeActivation::run(CallbackDispatcher &dispatcher)
         dispatcher.handleError(conditionObj);
     }
     return;                             /* and finished                      */
+}
+
+
+/**
+ * Establish the caller's context for native activations
+ * that require access to the caller's context.
+ */
+void RexxNativeActivation::accessCallerContext()
+{
+    activation = (RexxActivation *)getPreviousStackFrame();
 }
 
 
@@ -1499,7 +1525,7 @@ void RexxNativeActivation::checkConditions()
             if (condition->strCompare(CHAR_SYNTAX))
             {
                 // this prevents us from trying to trap this again
-                reraising = true;
+                trapErrors = false;
                                                  /* go propagate the condition        */
                 activity->reraiseException(conditionObj);
             }
@@ -2209,7 +2235,7 @@ bool RexxNativeActivation::trap(RexxString *condition, RexxDirectory * exception
 
     // we end up seeing this a second time if we're raising the exception on
     // return from an external call or method.
-    if (!reraising)
+    if (trapErrors)
     {
         // record this in case any callers want to know about it.
         setConditionInfo(exception_object);

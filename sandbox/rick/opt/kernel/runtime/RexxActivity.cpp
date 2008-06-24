@@ -2887,56 +2887,54 @@ void  RexxActivity::terminatePoolActivity()
  */
 void RexxActivity::run(ActivityDispatcher &target)
 {
-  SYSEXCEPTIONBLOCK exreg;             /* system specific exception info    */
-  size_t  startDepth;                  /* starting depth of activation stack*/
-  NestedActivityState saveInfo;        /* saved activity info               */
+    SYSEXCEPTIONBLOCK exreg;             /* system specific exception info    */
+    size_t  startDepth;                  /* starting depth of activation stack*/
+    NestedActivityState saveInfo;        /* saved activity info               */
 
-                                       /* make sure we have the stack base  */
-  this->nestedInfo.stackptr = SysGetThreadStackBase(TOTAL_STACK_SIZE);
-  this->generateRandomNumberSeed();    /* get a fresh random seed           */
-                                       /* Push marker onto stack so we know */
-  this->createNewActivationStack();    /* what level we entered.            */
-  startDepth = stackFrameDepth;        /* Remember activation stack depth   */
+                                         /* make sure we have the stack base  */
+    this->nestedInfo.stackptr = SysGetThreadStackBase(TOTAL_STACK_SIZE);
+    this->generateRandomNumberSeed();    /* get a fresh random seed           */
+                                         /* Push marker onto stack so we know */
+    this->createNewActivationStack();    /* what level we entered.            */
+    startDepth = stackFrameDepth;        /* Remember activation stack depth   */
 
-  SysRegisterSignals(&exreg);          /* register our signal handlers      */
+    SysRegisterSignals(&exreg);          /* register our signal handlers      */
 
-  // save the actitivation level in case there's an error unwind for an unhandled
-  // exception;
-  size_t activityLevel = getActivationLevel();
-  // create a new native activation
-  RexxNativeActivation *newNActa = new RexxNativeActivation(this);
-  pushStackFrame(newNActa);            /* push it on the activity stack     */
+    // save the actitivation level in case there's an error unwind for an unhandled
+    // exception;
+    size_t activityLevel = getActivationLevel();
+    // create a new native activation
+    RexxNativeActivation *newNActa = new RexxNativeActivation(this);
+    pushStackFrame(newNActa);            /* push it on the activity stack     */
 
-  try
-  {
-      // go run the target under the new activation
-      newNActa->run(target);
-  }
-  catch (ActivityException)
-  {
-      // if we're not the current kernel holder when things return, make sure we
-      // get the lock before we continue
-      if (ActivityManager::currentActivity != this)
-      {
-          requestAccess();
-      }
+    try
+    {
+        // go run the target under the new activation
+        newNActa->run(target);
+    }
+    catch (ActivityException)
+    {
+        // if we're not the current kernel holder when things return, make sure we
+        // get the lock before we continue
+        if (ActivityManager::currentActivity != this)
+        {
+            requestAccess();
+        }
 
-      // now do error processing
-      wholenumber_t rc = this->error();                /* do error cleanup                  */
-      target.handleError(rc, conditionobj);
-  }
+        // now do error processing
+        wholenumber_t rc = this->error();                /* do error cleanup                  */
+        target.handleError(rc, conditionobj);
+    }
 
-  // make sure we get restored to the same base activation level.
-  restoreActivationLevel(activityLevel);
-  // give uninit objects a chance to run
-  memoryObject.runUninits();
-  this->restoreNestedInfo(saveInfo);   /* now restore to previous nesting   */
-  SysDeregisterSignals(&exreg);        /* deregister the signal handlers    */
-  // unwind to the same stack depth as the start, removing all new entries
-  unwindToDepth(startDepth);
+    // make sure we get restored to the same base activation level.
+    restoreActivationLevel(activityLevel);
+    // give uninit objects a chance to run
+    memoryObject.runUninits();
+    this->restoreNestedInfo(saveInfo);   /* now restore to previous nesting   */
+    SysDeregisterSignals(&exreg);        /* deregister the signal handlers    */
+    // unwind to the same stack depth as the start, removing all new entries
+    unwindToDepth(startDepth);
 }
-
-
 
 
 /**

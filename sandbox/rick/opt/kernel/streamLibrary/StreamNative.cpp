@@ -1217,6 +1217,12 @@ RexxStringObject StreamInfo::readVariableLine()
  */
 void StreamInfo::lineReadIncrement()
 {
+    // transient streams don't have moveable positions
+    if (transient)
+    {
+        return;
+    }
+
     if ( !fileInfo.getPosition(charReadPosition) )
     {
         notreadyError();

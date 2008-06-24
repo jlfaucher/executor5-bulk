@@ -110,6 +110,7 @@ class RexxNativeActivation : public RexxActivationBase
 
   inline void   termination() { this->guardOff();}
 
+  void   accessCallerContext();
   inline char        getVpavailable()   {return this->vpavailable;}
   inline RexxString *getMessageName()   {return this->msgname;}
   inline size_t      nextVariable()     {return this->nextvariable;}
@@ -201,6 +202,6 @@ protected:
     bool            vpavailable;         /* Variable pool access flag         */
     int             object_scope;        /* reserve/release state of variables*/
     bool            stackBase;           // this is a stack base marker
-    bool            reraising;           // we're reraising an exception, don't trap
+    bool            trapErrors;          // we're trapping errors from external callers
 };
 #endif
