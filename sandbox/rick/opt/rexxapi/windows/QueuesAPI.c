@@ -1217,9 +1217,12 @@ RexxReturnCode REXXENTRY RexxPullQueue(
                item->size);
                              /* set the proper length      */
      data_buf->strlength = item->size;
-     memcpy((PUCHAR)dt,      // set the systemtime info    */
-            (PUCHAR)&item->addtime,
-            sizeof(SYSTEMTIME));
+     if (dt != NULL)
+     {
+         memcpy((PUCHAR)dt,      // set the systemtime info    */
+                (PUCHAR)&item->addtime,
+                sizeof(SYSTEMTIME));
+     }
                             /* get rid if the queue item  */
   } else {                   /* give up memory directly    */
      if (item->size) {        /* if not a null string       */
@@ -1234,10 +1237,13 @@ RexxReturnCode REXXENTRY RexxPullQueue(
      } else                   /* set a non-null pointer     */
          data_buf->strptr=NULL;    /* was (PUCHAR)1 before but trapped in SysReleaseResultMemory */
                                /* set the length             */
-     memcpy((PUCHAR)dt,       // set the systemtime info    */
-            (PUCHAR)&item->addtime,
-            sizeof(SYSTEMTIME));
-     data_buf->strlength =item->size;
+     if (dt != NULL)
+     {
+         memcpy((PUCHAR)dt,       // set the systemtime info    */
+                (PUCHAR)&item->addtime,
+                sizeof(SYSTEMTIME));
+     }
+     data_buf->strlength = item->size;
   }
   APICLEANUP_QUEUE();
   return (rc);                         /* return with return code    */

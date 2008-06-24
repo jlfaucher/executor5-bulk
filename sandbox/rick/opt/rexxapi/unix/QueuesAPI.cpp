@@ -1077,9 +1077,12 @@ RexxReturnCode REXXENTRY RexxPullQueue(
                  QIDATA(item)->size);
                                        /* set the proper length      */
         data_buf->strlength = QIDATA(item)->size;
-        memcpy((char *)dt,    /* set the datetime info      */
-               (char *)&(QIDATA(item)->addtime),
-               sizeof(REXXDATETIME));
+        if (dt != NULL)
+        {
+            memcpy((char *)dt,    /* set the datetime info      */
+                   (char *)&(QIDATA(item)->addtime),
+                   sizeof(REXXDATETIME));
+        }
         release_queue_item(item, sessionflag, current);      /* get rid if the queue item  */
       }
       else {                           /* give up memory directly    */
@@ -1099,9 +1102,12 @@ RexxReturnCode REXXENTRY RexxPullQueue(
                                        /* set the length             */
         data_buf->strlength =QIDATA(item)->size;
 
-        memcpy((char *)dt,    /* set the datetime info      */
-               (const char *)&(QIDATA(item)->addtime),
-               sizeof(REXXDATETIME));
+        if (dt != NULL)
+        {
+            memcpy((char *)dt,    /* set the datetime info      */
+                   (const char *)&(QIDATA(item)->addtime),
+                   sizeof(REXXDATETIME));
+        }
         release_queue_item(item, sessionflag, current);      /* free up the queue item     */
       }
     }
