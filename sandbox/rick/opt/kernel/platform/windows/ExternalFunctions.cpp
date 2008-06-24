@@ -269,7 +269,7 @@ RexxRoutine2(RexxStringObject, sysFilespec, CSTRING, option, CSTRING, name)
       context->InvalidRoutine();       // this is an error
       return NULLOBJECT;
   }
-  return NULLOBJECT;                   /* return extracted part             */
+  return context->NullString();        // nothing found, return the empty string
 }
 
 
