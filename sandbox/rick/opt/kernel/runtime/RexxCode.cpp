@@ -88,7 +88,7 @@ RexxCode::RexxCode(
 void RexxCode::call(RexxActivity *activity, RoutineClass *routine, RexxString *msgname, RexxObject**argPtr, size_t argcount, ProtectedObject &result)
 {
     // just forward to the more general method
-    this->call(activity, routine, msgname, argPtr, argcount, OREF_NULL, OREF_NULL, EXTERNALCALL, result);
+    this->call(activity, routine, msgname, argPtr, argcount, OREF_SUBROUTINE, OREF_NULL, EXTERNALCALL, result);
 }
 
 
