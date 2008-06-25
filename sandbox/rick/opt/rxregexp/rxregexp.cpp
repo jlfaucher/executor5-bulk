@@ -77,7 +77,7 @@ RexxMethod2(int,                          // Return type
     }
 
     // this will be passed back into us on calls
-    context->SetObjectVariable("CSLEF", context->NewPointer(pAutomaton));
+    context->SetObjectVariable("CSELF", context->NewPointer(pAutomaton));
     return 0;
 }
 
