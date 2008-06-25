@@ -1410,6 +1410,7 @@ void RexxNativeActivation::run(ActivityDispatcher &dispatcher)
 
     // make the activation hookup
     dispatcher.setContext(activity, this);
+    trapErrors = true;                       // we trap errors from here
     try
     {
         // we run this under a callback trap so that the exceptions get processed.
@@ -1421,6 +1422,7 @@ void RexxNativeActivation::run(ActivityDispatcher &dispatcher)
     catch (RexxNativeActivation *)
     {
     }
+    trapErrors = false;                      // disable the error trapping
 
     // if we're not the current kernel holder when things return, make sure we
     // get the lock before we continue
