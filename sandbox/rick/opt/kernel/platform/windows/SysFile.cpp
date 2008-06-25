@@ -106,6 +106,9 @@ bool SysFile::open(const char *name, int openFlags, int openMode, int shareMode)
         return false;
     }
 
+    // we did open this handle
+    openedHandle = true;
+
     // save a copy of the name
     filename = strdup(name);
     ungetchar = -1;            // -1 indicates no char

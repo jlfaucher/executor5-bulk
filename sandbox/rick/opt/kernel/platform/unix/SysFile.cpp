@@ -105,6 +105,9 @@ bool SysFile::open(char *name, int openFlags, int openMode, int shareMode)
     // we must open this with the NOINHERIT flag added
     fileHandle = ::open(name, openFlags, (mode_t)openMode);
 
+    // mark that we opened this handle
+    openedHandle = true;
+
     // save a copy of the name
     filename = strdup(name);
     ungetchar = 0xFF;            // 0xFF indicates no char
