@@ -75,7 +75,6 @@
 #include "PackageManager.hpp"
 #include "SystemInterpreter.hpp"
 
-#define DEFEXT "REX"                        /* Default OS/2 REXX program ext  */
 #define DIRLEN        256                   /* length of a directory          */
 
 #define  MAX_FREQUENCY 32767

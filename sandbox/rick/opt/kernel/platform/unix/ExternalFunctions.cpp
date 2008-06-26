@@ -102,8 +102,6 @@
 #define SYSENV          "bash"               /* Default AIX  cmd environment   */
 #endif
 
-
-#define DEFEXT          ".CMD"              /* Default OS/2 REXX program ext  */
 #define DRVNUM          0x40                /* drive number subtractor        */
 #define DIRLEN          256                 /* length of a directory          */
 #define FULLSEG         65536L              /* ^4K constant                   */

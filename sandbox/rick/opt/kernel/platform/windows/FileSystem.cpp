@@ -54,8 +54,6 @@
 #include <io.h>
 #include <fcntl.h>
 #include <conio.h>
-#define DEFEXT ".REX"
-#define TEMPEXT ".CMD"                 /* Alternate extension   */
 #define MAX_STDOUT_LENGTH     32767    /* max. amount of data to push to STDOUT @THU007A */ /* @HOL007M */
 
 #define COMPILE_NEWAPIS_STUBS          /* Allows GetLongPathName to run on  */

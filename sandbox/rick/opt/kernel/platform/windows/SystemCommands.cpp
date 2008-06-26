@@ -61,7 +61,6 @@
 #define CMDBUFSIZENT 8092              /* Max size of executable cmd     */
 #define CMDDEFNAME32S "COMMAND.COM"    /* Default Win 95   cmd handler   */
 #define CMDDEFNAMENT "CMD.EXE"         /* Default Win NT   cmd handler   */
-#define DEFEXT "REX"                   /* Default Win  REXX program ext  */
 #define UNKNOWN_COMMAND 1              /* unknown command return code    */
 #include "direct.h"
 

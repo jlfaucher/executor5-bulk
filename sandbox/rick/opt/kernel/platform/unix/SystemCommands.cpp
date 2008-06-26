@@ -82,7 +82,6 @@
 #define CMDDEFNAME "/bin/bash"              /* Bourne Again Shell is default */
 #endif
 
-#define DEFEXT "CMD"                        /* Default REXX program ext       */
 #define UNKNOWN_COMMAND 127                 /* unknown command return code    */
 
 #define SYSENV "command"                    /* Default cmd environment        */

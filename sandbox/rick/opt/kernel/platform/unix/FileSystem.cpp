@@ -70,8 +70,6 @@
 #endif
 
 #define CCHMAXPATH PATH_MAX+1
-#define DEFEXT  ".CMD"           /* leave default for AIX REXX programs too */
-#define DEFEXT1  ".cmd"
 
 
 /**
