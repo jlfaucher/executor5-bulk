@@ -177,7 +177,7 @@ class RexxSource : public RexxInternalObject {
   void        createAttributeGetterMethod(RexxString *name, RexxVariableBase *retriever, bool classMethod, bool privateMethod, bool protectedMethod, bool guardedMethod);
   void        createAttributeSetterMethod(RexxString *name, RexxVariableBase *retriever, bool classMethod, bool privateMethod, bool protectedMethod, bool guardedMethod);
   void        createConstantGetterMethod(RexxString *name, RexxObject *value);
-  void        checkDuplicateMethod(RexxString *name, bool classMethod);
+  void        checkDuplicateMethod(RexxString *name, bool classMethod, int errorMsg);
   void        addMethod(RexxString *name, RexxMethod *method, bool classMethod);
   void        flushControl(RexxInstruction *);
   RexxCode   *translateBlock(RexxDirectory *);

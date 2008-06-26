@@ -1981,8 +1981,10 @@ void RexxSource::classDirective()
  * @param name   The name to check.
  * @param classMethod
  *               Indicates whether this is a check for a CLASS or INSTANCE method.
+ * @param errorMsg
+ *               The error code to use if there is a duplicate.
  */
-void RexxSource::checkDuplicateMethod(RexxString *name, bool classMethod)
+void RexxSource::checkDuplicateMethod(RexxString *name, bool classMethod, int errorMsg)
 {
     /* no previous ::CLASS directive?    */
     if (this->active_class == OREF_NULL)
@@ -1996,7 +1998,7 @@ void RexxSource::checkDuplicateMethod(RexxString *name, bool classMethod)
         if (this->methods->entry(name) != OREF_NULL)
         {
             /* this is an error                  */
-            syntaxError(Error_Translation_duplicate_method);
+            syntaxError(errorMsg);
         }
     }
     else
@@ -2004,7 +2006,7 @@ void RexxSource::checkDuplicateMethod(RexxString *name, bool classMethod)
         if (active_class->checkDuplicateMethod(name, classMethod))
         {
             /* this is an error                  */
-            syntaxError(Error_Translation_duplicate_method);
+            syntaxError(errorMsg);
         }
     }
 }
@@ -2205,7 +2207,7 @@ void RexxSource::methodDirective()
     }
 
     // go check for a duplicate and validate the use of the CLASS modifier
-    checkDuplicateMethod(internalname, Class);
+    checkDuplicateMethod(internalname, Class, Error_Translation_duplicate_method);
 
 
     RexxMethod *_method = OREF_NULL;
@@ -2215,7 +2217,7 @@ void RexxSource::methodDirective()
         // now get this as the setter method.
         RexxString *setterName = commonString(internalname->concatWithCstring("="));
         // need to check for duplicates on that too
-        checkDuplicateMethod(setterName, Class);
+        checkDuplicateMethod(setterName, Class, Error_Translation_duplicate_method);
 
                                        /* Go check the next clause to make  */
         this->checkDirective();        /* sure that no code follows         */
@@ -2452,10 +2454,10 @@ void RexxSource::attributeDirective()
     {
         case ATTRIBUTE_BOTH:
         {
-            checkDuplicateMethod(internalname, Class);
+            checkDuplicateMethod(internalname, Class, Error_Translation_duplicate_attribute);
             // now get this as the setter method.
             RexxString *setterName = commonString(internalname->concatWithCstring("="));
-            checkDuplicateMethod(setterName, Class);
+            checkDuplicateMethod(setterName, Class, Error_Translation_duplicate_attribute);
 
             // no code can follow the automatically generated methods
             this->checkDirective();
@@ -2471,7 +2473,7 @@ void RexxSource::attributeDirective()
 
         case ATTRIBUTE_GET:       // just the getter method
         {
-            checkDuplicateMethod(internalname, Class);
+            checkDuplicateMethod(internalname, Class, Error_Translation_duplicate_attribute);
             if (hasBody())
             {
                 createMethod(internalname, Class, Private == PRIVATE_SCOPE,
@@ -2489,7 +2491,7 @@ void RexxSource::attributeDirective()
         {
             // now get this as the setter method.
             RexxString *setterName = commonString(internalname->concatWithCstring("="));
-            checkDuplicateMethod(setterName, Class);
+            checkDuplicateMethod(setterName, Class, Error_Translation_duplicate_attribute);
             if (hasBody())        // just the getter method
             {
                 createMethod(setterName, Class, Private == PRIVATE_SCOPE,
@@ -2546,10 +2548,10 @@ void RexxSource::constantDirective()
 
     // check for duplicates.  We only do the class duplicate check if there
     // is an active class, otherwise we'll get a syntax error
-    checkDuplicateMethod(internalname, false);
+    checkDuplicateMethod(internalname, false, Error_Translation_duplicate_constant);
     if (this->active_class != OREF_NULL)
     {
-        checkDuplicateMethod(internalname, true);
+        checkDuplicateMethod(internalname, true, Error_Translation_duplicate_constant);
     }
 
     // create the method pair and quit.
