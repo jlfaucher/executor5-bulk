@@ -230,6 +230,12 @@ RexxString *SysInterpreterInstance::resolveProgram(RexxString *_name, RexxString
         }
     }
 
+    // The file may purposefully have no extension.
+    if (searchName(name, searchPath.path, NULL, resolvedName))
+    {
+        return new_string(resolvedName);
+    }
+
     return OREF_NULL;
 }
 

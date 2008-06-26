@@ -199,13 +199,6 @@ RexxString *SysInterpreterInstance::resolveProgramName(RexxString *_name, RexxSt
         return OREF_NULL;
     }
 
-    // The file may purposefully have no extension.  Whether this search should
-    // come here, or last is debatable.
-    if (searchName(name, searchPath.path, NULL, resolvedName))
-    {
-        return new_string(resolvedName);
-    }
-
     // if we have a parent extension provided, use that in preference to any default searches
     if (parentExtension != NULL)
     {
@@ -225,6 +218,12 @@ RexxString *SysInterpreterInstance::resolveProgramName(RexxString *_name, RexxSt
         {
             return new_string(resolvedName);
         }
+    }
+
+    // The file may purposefully have no extension.
+    if (searchName(name, searchPath.path, NULL, resolvedName))
+    {
+        return new_string(resolvedName);
     }
 
     return OREF_NULL;
