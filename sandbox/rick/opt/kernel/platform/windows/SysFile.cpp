@@ -516,17 +516,23 @@ bool SysFile::puts(const char *data, size_t &len)
  */
 bool SysFile::putLine(const char *buffer, size_t len, size_t &bytesWritten)
 {
-    if (write(buffer, len, bytesWritten))
+    // this could be a null line...don't try to write zero bytes
+    if (len > 0)
     {
-        size_t termlen;
-        if (puts(LINE_TERMINATOR, termlen))
+        if (!write(buffer, len, bytesWritten))
         {
-            bytesWritten += termlen;
-            return true;
+            return false;
         }
+    }
+    size_t termlen;
+    if (puts(LINE_TERMINATOR, termlen))
+    {
+        bytesWritten += termlen;
+        return true;
     }
     return false;
 }
+
 
 bool SysFile::gets(char *buffer, size_t bufferLen, size_t &bytesRead)
 {
