@@ -57,7 +57,7 @@ void SysInterpreterInstance::initialize(InterpreterInstance *i, RexxOption *opti
     instance = i;
 
     // add our default search extension
-    addSearchExtension("REX");
+    addSearchExtension(".REX");
 }
 
 

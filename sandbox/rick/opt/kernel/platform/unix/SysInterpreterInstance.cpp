@@ -55,8 +55,8 @@ void SysInterpreterInstance::initialize(InterpreterInstance *i, RexxOptions *opt
     instance = i;
 
     // add our default search extension as both upper and lower case
-    addSearchExtension("REX");
-    addSearchExtension("rex");
+    addSearchExtension(".REX");
+    addSearchExtension(".rex");
 }
 
 
