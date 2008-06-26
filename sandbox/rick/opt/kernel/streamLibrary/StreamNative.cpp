@@ -765,8 +765,13 @@ void StreamInfo::implicitOpen(int type)
 
             char   char_buffer;
             size_t bytesRead;
-            // read the last character of the buffer
-            readBuffer(&char_buffer, 1, bytesRead);
+            // read the last character of the buffer.
+            // we don't call readBuffer() for this because it
+            // moves the read pointer
+            if (!fileInfo.read(&char_buffer, 1, bytesRead))
+            {
+                notreadyError();
+            }
 
             // if the last character is not a ctrl_z, we need to
             // step past it.
