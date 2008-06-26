@@ -199,6 +199,13 @@ RexxString *SysInterpreterInstance::resolveProgramName(RexxString *_name, RexxSt
         return OREF_NULL;
     }
 
+    // The file may purposefully have no extension.  Whether this search should
+    // come here, or last is debatable.
+    if (searchName(name, searchPath.path, NULL, resolvedName))
+    {
+        return new_string(resolvedName);
+    }
+
     // if we have a parent extension provided, use that in preference to any default searches
     if (parentExtension != NULL)
     {
@@ -288,6 +295,7 @@ bool SysInterpreterInstance::searchName(const char *name, const char *path, cons
         return true;
     }
 
+    *resolvedName = '\0';
     if (searchPath(name, path, extension, resolvedName))
     {
         return true;
@@ -360,7 +368,7 @@ bool SysInterpreterInstance::searchPath(const char *name, const char *path, cons
 
         // if this is a real file vs. a directory, make sure we return
         // the long name value in the correct casing
-        if (fileAttrib != FILE_ATTRIBUTE_DIRECTORY)
+        if (fileAttrib != INVALID_FILE_ATTRIBUTES && fileAttrib != FILE_ATTRIBUTE_DIRECTORY)
         {
             getLongName(resolvedName, CCHMAXPATH);
             SetErrorMode(errorMode);
