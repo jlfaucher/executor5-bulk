@@ -1339,19 +1339,9 @@ void RexxActivity::checkActivationStack()
  */
 void RexxActivity::updateFrameMarkers()
 {
-    // save the old top frame
-    RexxActivationBase *previousFrame = topStackFrame;
-
-    // we've popped off a legit entry.  Get the new top entry and adjust
+    // we have a new top entry...get this from the stack and adjust
     // the markers appropriately
     topStackFrame = (RexxActivationBase *)activations->getTop();
-
-    // if we're not creating a new frame set, link up the new frame with its predecessor
-    if (!topStackFrame->isStackBase())
-    {
-        topStackFrame->setPreviousStackFrame(previousFrame);
-    }
-
     // the new activation is the new top and there may or may not be
     // a rexx context to deal with
     currentRexxFrame = topStackFrame->findRexxContext(); ;
@@ -1379,6 +1369,11 @@ void RexxActivity::pushStackFrame(RexxActivationBase *new_activation)
     activations->push((RexxObject *)new_activation);
     stackFrameDepth++;
     // update the frame information.
+    // if we're not creating a new frame set, link up the new frame with its predecessor
+    if (!new_activation->isStackBase())
+    {
+        new_activation->setPreviousStackFrame(topStackFrame);
+    }
     updateFrameMarkers();
 }
 
