@@ -866,8 +866,9 @@ RexxStringObject StreamInfo::readLine(char *buffer, size_t length, bool update_p
 
     if (!fileInfo.read(buffer, length, bytesRead))
     {
-        notreadyError();
+        checkEof();
     }
+
     if (bytesRead == 0)                 /* work ok?                          */
     {
         // must be an eof condition
@@ -1193,7 +1194,7 @@ RexxStringObject StreamInfo::readVariableLine()
         size_t bytesRead = 0;
         if (!fileInfo.gets(readPosition, bufferSize - currentLength, bytesRead))
         {
-            notreadyError();
+            checkEof();
         }
 
         // Check for new line character first.  If we are at eof and the last

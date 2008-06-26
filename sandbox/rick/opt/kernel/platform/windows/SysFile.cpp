@@ -377,8 +377,23 @@ bool SysFile::read(char *buf, size_t len, size_t &bytesRead)
 }
 
 
+/**
+ * write data to the stream
+ *
+ * @param data   The data buffer to write.
+ * @param len    The length to write
+ * @param bytesWritten
+ *               The number bytes actually written (return value).
+ *
+ * @return true if the write succeeded, false for any errors.
+ */
 bool SysFile::write(const char *data, size_t len, size_t &bytesWritten)
 {
+    // writing zero bytes is a NOP
+    if (len == 0)
+    {
+        return true;
+    }
     // are we buffering?
     if (buffered)
     {
@@ -566,6 +581,12 @@ bool SysFile::gets(char *buffer, size_t bufferLen, size_t &bytesRead)
             i++;   // we need to step the position so that the null terminator doesn't overwrite
             break;
         }
+    }
+
+    // if there is no data read at all, this is an eof failure;
+    if (i == 0)
+    {
+        return false;
     }
 
     // null terminate, set the length, and return
