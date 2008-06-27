@@ -706,10 +706,12 @@ void StreamInfo::implicitOpen(int type)
     // reset everything to the default.
     resetFields();
 
-    resolveStreamName();                /* get the fully qualified name      */
+    // get the fully qualified name
+    resolveStreamName();
 
-                                        /* first try for read/write          */
-    if (type == operation_nocreate)     /* open file without create          */
+    // first try for read/write and open file without create if specified
+    read_write = true;
+    if (type == operation_nocreate)
     {
         open(O_RDWR | O_BINARY, IREAD_IWRITE, SH_DENYRW);
     }
@@ -717,43 +719,42 @@ void StreamInfo::implicitOpen(int type)
     {
         open(RDWR_CREAT | O_BINARY, IREAD_IWRITE, SH_DENYRW);
     }
-    /* if there was an open error and    */
-    /*  we have the info to try again -  */
-    /*  doit                             */
+
+    // if there was an open error and we have the info to try again - doit
     if (!fileInfo.isOpen())
     {
-        read_write = 0;/* turn off the read/write flag      */
+        // turn off the read/write flag and try opening as write only or read
+        // only, depending on the type specified.
+        read_write = false;
         if (type == operation_write)
-        {    /* this a write operation?           */
-             /* try opening again                 */
-            open(O_RDWR | O_BINARY, IREAD_IWRITE, SH_DENYRW);
-            /* turn on the write only flag       */
-            write_only = 1;
+        {
+            // In Windows, all files are readable. Therefore S_IWRITE is
+            // equivalent to S_IREAD | S_IWRITE.
+            open(O_WRONLY | O_BINARY, IREAD_IWRITE, SH_DENYRW);
+            write_only = true;
         }
         else
-        {                            /* read operation                    */
-                                     /* try opening again                 */
+        {
             open(O_RDONLY | O_BINARY, S_IREAD, SH_DENYRW);
-            /* turn on the read only flag        */
-            read_only = 1;
+            read_only = true;
         }
-        /* if there was an error             */
+
+        // if there still was an error, raise notready condition
         if (!fileInfo.isOpen())
         {
+            // if no result given, format the error return
             if (defaultResult == NULLOBJECT)
-            {     /* no result given?                  */
+            {
                 char work[30];
-                /* format the error return           */
                 sprintf(work, "ERROR:%d", errno);
-                defaultResult = context->NewStringFromAsciiz(work);   /* go raise a notready condition     */
+                defaultResult = context->NewStringFromAsciiz(work);
             }
-            /* go raise a notready condition     */
             notreadyError();
             return;
         }
     }
 
-    /* persistent writeable stream?      */
+    // persistent writeable stream?
     if (!fileInfo.isTransient() && !read_only)
     {
         // if the stream already exists, so we need to
@@ -783,14 +784,16 @@ void StreamInfo::implicitOpen(int type)
                 setPosition(charWritePosition, charWritePosition);
             }
         }
-        /* set default line positioning      */
+        // set default line positioning
         lineWritePosition = 0;
         lineWriteCharPosition = 0;
     }
     // ready to go
     isopen = true;
     state = StreamReady;
-    checkStreamType();               /* go process the stream type        */
+
+    // go process the stream type
+    checkStreamType();
 }
 
 /**
