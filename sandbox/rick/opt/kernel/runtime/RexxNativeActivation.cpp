@@ -175,14 +175,7 @@ void RexxNativeActivation::reportStemError(size_t position, RexxObject *object)
 /* Function:  Report a method signature error                                 */
 /******************************************************************************/
 {
-    if (activationType == METHOD_ACTIVATION)
-    {
-        reportException(Error_Incorrect_method_nostem, position + 1, object);
-    }
-    else
-    {
-        reportException(Error_Incorrect_call_nostem, position + 1, object);
-    }
+     reportException(Error_Invalid_argument_nostem, position + 1, object);
 }
 
 
@@ -384,14 +377,14 @@ void RexxNativeActivation::processArguments(size_t argcount, RexxObject **arglis
 
                         case REXX_VALUE_double:         /* double value                      */
                         {
-                            descriptors[outputIndex].value.value_double = this->getDoubleValue(argument);
+                            descriptors[outputIndex].value.value_double = this->getDoubleValue(argument, inputIndex);
                             break;
                         }
 
 
                         case REXX_VALUE_float:          /* float value                      */
                         {
-                            descriptors[outputIndex].value.value_float = (float)this->getDoubleValue(argument);
+                            descriptors[outputIndex].value.value_float = (float)this->getDoubleValue(argument, inputIndex);
                             break;
                         }
 
@@ -505,7 +498,8 @@ void RexxNativeActivation::processArguments(size_t argcount, RexxObject **arglis
                     // if this was not an option argument
                     if (!isOptional)
                     {
-                        missing_argument(inputIndex + 1);
+                                       /* just raise the error              */
+                        reportException(Error_Invalid_argument_noarg, inputIndex + 1);
                     }
 
                     // this is a non-specified argument
@@ -561,7 +555,7 @@ void RexxNativeActivation::processArguments(size_t argcount, RexxObject **arglis
     if (inputIndex < argcount && !usedArglist)    /* extra, unwanted arguments?        */
     {
                                          /* got too many                      */
-        reportException(Error_Incorrect_method_maxarg, inputIndex);
+        reportException(Error_Invalid_argument_maxarg, inputIndex);
     }
 }
 
@@ -1615,16 +1609,7 @@ wholenumber_t RexxNativeActivation::wholeNumberValue(RexxObject *o, size_t posit
     // convert using the whole value range
     if (!Numerics::objectToWholeNumber(o, temp, maxValue, minValue))
     {
-       if (activationType == METHOD_ACTIVATION)
-        {
-            /* this is an error                  */
-            reportException(Error_Incorrect_method_whole, position + 1, o);
-        }
-        else
-        {
-            /* this is an error                  */
-            reportException(Error_Incorrect_call_whole, position + 1, o);
-        }
+        reportException(Error_Invalid_argument_whole, position + 1, o);
     }
     return temp;
 }
@@ -1647,16 +1632,7 @@ stringsize_t RexxNativeActivation::unsignedNumberValue(RexxObject *o, size_t pos
     // convert using the whole value range
     if (!Numerics::objectToStringSize(o, temp, maxValue))
     {
-        if (activationType == METHOD_ACTIVATION)
-        {
-            /* this is an error                  */
-            reportException(Error_Incorrect_method_whole, position + 1, o);
-        }
-        else
-        {
-            /* this is an error                  */
-            reportException(Error_Incorrect_call_whole, position + 1, o);
-        }
+        reportException(Error_Invalid_argument_whole, position + 1, o);
     }
     return temp;
 }
@@ -1677,16 +1653,7 @@ int64_t RexxNativeActivation::int64Value(RexxObject *o, size_t position)
     // convert using the whole value range
     if (!Numerics::objectToInt64(o, temp))
     {
-        if (activationType == METHOD_ACTIVATION)
-        {
-            /* this is an error                  */
-            reportException(Error_Incorrect_method_whole, position + 1, o);
-        }
-        else
-        {
-            /* this is an error                  */
-            reportException(Error_Incorrect_call_whole, position + 1, o);
-        }
+        reportException(Error_Invalid_argument_whole, position + 1, o);
     }
     return temp;
 }
@@ -1707,16 +1674,7 @@ uint64_t RexxNativeActivation::unsignedInt64Value(RexxObject *o, size_t position
     // convert using the whole value range
     if (!Numerics::objectToUnsignedInt64(o, temp))
     {
-        if (activationType == METHOD_ACTIVATION)
-        {
-            /* this is an error                  */
-            reportException(Error_Incorrect_method_whole, position + 1, o);
-        }
-        else
-        {
-            /* this is an error                  */
-            reportException(Error_Incorrect_call_whole, position + 1, o);
-        }
+        reportException(Error_Invalid_argument_whole, position + 1, o);
     }
     return temp;
 }
@@ -1761,8 +1719,7 @@ void *RexxNativeActivation::pointerString(RexxObject *object, size_t position)
 }
 
 
-double RexxNativeActivation::getDoubleValue(
-    RexxObject *object)                /* object to convert                 */
+double RexxNativeActivation::getDoubleValue(RexxObject *object, size_t position)
 /******************************************************************************/
 /* Function:  Convert an object to a double                                   */
 /******************************************************************************/
@@ -1772,7 +1729,7 @@ double RexxNativeActivation::getDoubleValue(
     if (!object->doubleValue(r))
     {
         /* conversion error                  */
-        reportException(Error_Execution_nodouble, object);
+        reportException(Error_Invalid_argument_double, position + 1, object);
     }
     return r;                            /* return converted number           */
 }

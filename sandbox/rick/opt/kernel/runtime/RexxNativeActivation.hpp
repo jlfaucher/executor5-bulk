@@ -80,7 +80,7 @@ class RexxNativeActivation : public RexxActivationBase
   int64_t int64Value(RexxObject *o, size_t position);
   uint64_t unsignedInt64Value(RexxObject *o, size_t position);
   const char *cstring(RexxObject *);
-  double getDoubleValue(RexxObject *);
+  double getDoubleValue(RexxObject *, size_t position);
   bool   isDouble(RexxObject *);
   void  *cself();
   void  *buffer();

@@ -608,6 +608,9 @@
 #define Error_Incorrect_call_nostem_msg                              702
 #define Error_Incorrect_method_nostem_msg                            703
 #define Error_Invalid_argument_pointer_msg                           704
+#define Error_Invalid_argument_nostem_msg                            705
+#define Error_Invalid_argument_double_msg                            706
+#define Error_Invalid_argument_maxarg_msg                            707
 
 
 #endif
