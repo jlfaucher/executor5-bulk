@@ -2808,10 +2808,10 @@ RexxMethod1(int,                          // Return type
      *  uninit() will still run for the ooRexx object. The instance counter
      *  still needs to be reduced by 1 for this case.
      */
-    REXXOBJECT value = REXX_GETVAR("!IDISPATCH");
+    RexxObjectPtr value = context->GetObjectVariable("!IDISPATCH");
     if ( value != NULLOBJECT )
     {
-        pDispatch = (IDispatch *)pointer_value(value);
+        pDispatch = (IDispatch *)context->PointerValue((RexxPointerObject)value);
     }
     if ( pDispatch != NULL )
     {
@@ -2824,12 +2824,12 @@ RexxMethod1(int,                          // Return type
          *  variable. It is important that the Release be called on that
          *  pointer, and only on that pointer.
          */
-        getClassInfo(&pClsInfo, &pTypeInfo);
+        getClassInfo(context, &pClsInfo, &pTypeInfo);
 
-        value = REXX_GETVAR("!TYPEINFO");
+        value = context->GetObjectVariable("!TYPEINFO");
         if ( value != NULLOBJECT )
         {
-            pTypeInfo = (ITypeInfo *)pointer_value(value);
+            pTypeInfo = (ITypeInfo *)context->PointerValue((RexxPointerObject)value);
             if (pTypeInfo != NULL)
             {
                 pTypeInfo->Release();
