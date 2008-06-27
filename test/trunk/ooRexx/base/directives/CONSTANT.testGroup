@@ -241,7 +241,13 @@ return testResult
  */
 ::class "ConstantSyntaxErrs" public subclass ooTestCase
 
-  -- A temporary measure.
+  -- A, maybe, temporary measure.  Currently the test framework only allows
+  -- adding more than one test case object to a test group when the test types
+  -- of the test case objects are different.  The rationale being that different
+  -- test types would be in separate test group files.  In the future that
+  -- restriction may be changed, or this class may be moved to a separate file.
+  -- In the mean time, a work around is to make this class a different test case
+  -- type.
   ::method init class
     forward class (super) continue
     self~ooTestType = self~UNIT_LONG_TEST
@@ -249,6 +255,8 @@ return testResult
   ::attribute functionFileName
 
   ::method setUp
+    use arg testResult
+
      file = .ooRexxUnit.dir || .ooRexxUnit.directory.separator || 'testConstant.rex'
 
      src = .array~new()
