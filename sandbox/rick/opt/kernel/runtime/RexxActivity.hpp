@@ -86,7 +86,15 @@ enum TracePrefixes {
     TRACE_PREFIX_COMPOUND ,
     TRACE_PREFIX_MESSAGE  ,
     TRACE_PREFIX_ARGUMENT ,
+    TRACE_PREFIX_ASSIGNMENT,
 };
+
+
+// marker used for tagged traces to separate tag from the value
+#define VALUE_MARKER " => "
+// marker used for tagged traces to separate tag from the value
+#define ASSIGNMENT_MARKER " <= "
+
 
 #define MAX_TRACEBACK_LIST 80      /* 40 messages are displayed */
 #define MAX_TRACEBACK_INDENT 20    /* 10 messages are indented */
@@ -101,19 +109,6 @@ typedef enum
 
 // used only internally, can be moved to a differnet value, if the using code is adapted accordingly
 #define LAST_EXIT (RXNOOFEXITS - 1)    /* top bound of the exits            */
-
-                                       /* information must be saved and     */
-                                       /* restored on nested entries to the */
-                                       /* interpreter that use the same     */
-                                       /* activity                          */
-class NestedActivityState
-{
-public:
-   char       *stackptr;               /* pointer to base of C stack        */
-   bool        clauseExitUsed;         /* halt/trace sys exit not set ==> 1 */
-   size_t      randomSeed;             /* random number seed                */
-   ExitHandler sysexits[LAST_EXIT];    /* Array to hold system exits        */
-};
 
                                        /* NOTE:  The following object       */
                                        /* definitions are only included in  */
@@ -207,7 +202,7 @@ public:
    thread_id_t threadIdMethod();
    bool isThread(thread_id_t id) { return threadid == id; }
    void setShvVal(RexxString *);
-   inline bool isClauseExitUsed() { return this->nestedInfo.clauseExitUsed; }
+   inline bool isClauseExitUsed() { return clauseExitUsed; }
    void queryTrcHlt();
    bool callExit(RexxActivation * activation, const char *exitName, int function, int subfunction, void *exitbuffer);
    void callInitializationExit(RexxActivation *);
@@ -276,10 +271,8 @@ public:
    inline RexxActivity *getNextWaitingActivity() { return nextWaitingActivity; }
    inline void        waitKernel() { EVWAIT(this->runsem); }
    inline void        clearWait()  { EVSET(this->runsem); }
-   inline size_t      getRandomSeed() { return nestedInfo.randomSeed; }
-   inline void setRandomSeed(size_t seed) { this->nestedInfo.randomSeed = seed; };
-   inline void saveNestedInfo(NestedActivityState &saveInfo) { saveInfo = nestedInfo; }
-   inline void restoreNestedInfo(NestedActivityState &saveInfo) { nestedInfo = saveInfo; }
+   inline size_t      getRandomSeed() { return randomSeed; }
+   inline void setRandomSeed(size_t seed) { randomSeed = seed; };
    inline RexxString *getLastMessageName() { return lastMessageName; }
    inline RexxMethod *getLastMethod() { return lastMethod; }
    inline void setLastMethod(RexxString *n, RexxMethod *m) { lastMessageName = n; lastMethod = m; }
@@ -326,7 +319,7 @@ public:
 
  protected:
 
-   ExitHandler &getExitHandler(int exitNum) {  return nestedInfo.sysexits[exitNum - 1]; }
+   ExitHandler &getExitHandler(int exitNum) {  return sysexits[exitNum - 1]; }
    bool isExitEnabled(int exitNum) { return getExitHandler(exitNum).isEnabled(); }
 
 
@@ -373,7 +366,10 @@ public:
    bool     attached;                  // this is attached to an instance (vs. created directly)
    SEV      guardsem;                  /* guard expression semaphore        */
    size_t   nestedCount;               /* extent of the nesting             */
-   NestedActivityState nestedInfo;     /* info saved and restored on calls  */
+   char       *stackBase;              /* pointer to base of C stack        */
+   bool        clauseExitUsed;         /* halt/trace sys exit not set ==> 1 */
+   size_t      randomSeed;             /* random number seed                */
+   ExitHandler sysexits[LAST_EXIT];    /* Array to hold system exits        */
    ProtectedObject *protectedObjects;  // list of stack-based object protectors
    RexxString *lastMessageName;        // class called message
    RexxMethod *lastMethod;             // last called method

@@ -1487,7 +1487,7 @@ RexxInteger *RexxObject::hasMethod(RexxString *msgname)
 /******************************************************************************/
 {
                                        /* check the behaviour for the method*/
-  return (this->behaviour->methodObject(msgname) != OREF_NULL) ? TheTrueObject : TheFalseObject;
+  return (this->behaviour->methodLookup(msgname) != OREF_NULL) ? TheTrueObject : TheFalseObject;
 }
 
 RexxClass   *RexxObject::classObject()
@@ -2186,9 +2186,9 @@ void *RexxObject::operator new(size_t size, RexxClass *classObject, RexxObject *
 /******************************************************************************/
 {
     /* create a new object               */
-    RexxObject *newObject = new (classObject) RexxObject;
+    ProtectedObject newObject = new (classObject) RexxObject;
     /* now drive the user INIT           */
-    newObject->sendMessage(OREF_INIT, args, argCount);
+    ((RexxObject *)newObject)->sendMessage(OREF_INIT, args, argCount);
     return(RexxObject *)newObject;      /* and returnthe new object          */
 }
 

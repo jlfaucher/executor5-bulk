@@ -291,8 +291,6 @@ union semun {
 extern REXXAPIDATA  *apidata;          /* Global state data          */
 extern thread_id_t opencnt[][2];       /* open count array for sems  */
 extern char *resolve_tilde(const char *);
-extern bool rexxutil_call;             /* internal call flag         */
-extern RexxMutex rexxutil_call_sem;
 
 #define INVALID_ROUTINE 40
 #define  MAX_DIGITS     9
@@ -416,8 +414,6 @@ extern RexxMutex rexxutil_call_sem;
 static RexxMutex SysGetKeySemaphore;
 /* original terminal settings                                                 */
 struct termios in_orig;                /* original settings (important!!)     */
-
-extern void SysInitialize(void);
 
 
 /*********************************************************************/
@@ -1528,7 +1524,6 @@ bool string2int(
 void restore_terminal(int signal){
 
   stty(STDIN_FILENO,&in_orig);          /* restore the terminal settings        */
-  SysInitialize();                      /* restore all signal handler           */
   raise(signal);                        /* propagate signal                     */
 }
 
@@ -1599,7 +1594,6 @@ sigaction(SIGPIPE, &new_action, NULL); /* exitClear on broken pipe            */
 
   restore_tty(&in_orig);                /* for standard I/O behavior          */
   close(ttyfd);                         /* close the terminal                 */
-  SysInitialize();                      /* restore all signal handlers        */
   return 0;                             /* everything is fine                 */
 }
 
@@ -1778,12 +1772,8 @@ size_t RexxEntry SysAddRexxMacro(const char *name, size_t numargs, CONSTRXSTRING
     else                               /* parm given was bad         */
       return INVALID_ROUTINE;          /* raise an error             */
   }
-  rexxutil_call_sem.request();
-  rexxutil_call = true;                /* no RexxInitialize !        */
                                        /* try to add the macro       */
   rc = RexxAddMacro(args[0].strptr, args[1].strptr, position);
-  if(rc)
-    rexxutil_call_sem.release();
   sprintf(retstr->strptr, "%d", rc);   /* format the return code     */
   retstr->strlength = strlen(retstr->strptr);
   return VALID_ROUTINE;                /* good completion            */

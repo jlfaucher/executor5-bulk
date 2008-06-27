@@ -2722,6 +2722,7 @@ static const char * trace_prefix_table[] = {  /* table of trace prefixes        
   ">C>",                               /* TRACE_PREFIX_COMPOUND             */
   ">M>",                               /* TRACE_PREFIX_MESSAGE              */
   ">A>",                               /* TRACE_PREFIX_ARGUMENT             */
+  ">=>",                               /* TRACE_PREFIX_ASSIGNMENT           */
 };
 
                                        /* extra space required to format a  */
@@ -2740,8 +2741,6 @@ static const char * trace_prefix_table[] = {  /* table of trace prefixes        
 #define PREFIX_OFFSET (LINENUMBER + 1) /* location of the prefix field      */
 #define PREFIX_LENGTH 3                /* length of the prefix flag         */
 #define INDENT_SPACING 2               /* spaces per indentation amount     */
-// marker used for tagged traces to separate tag from the value
-#define VALUE_MARKER " => "
 // over head for adding quotes
 #define QUOTES_OVERHEAD 2
 
@@ -2800,7 +2799,7 @@ void RexxActivation::traceValue(       /* trace an intermediate value       */
  * @param value     The associated trace value.
  */
 void RexxActivation::traceTaggedValue(int prefix, const char *tagPrefix, bool quoteTag,
-     RexxString *tag, RexxObject * value)
+     RexxString *tag, const char *marker, RexxObject * value)
 {
     // the trace settings would normally require us to trace this, but there are conditions
     // where we just skip doing this anyway.
@@ -2821,7 +2820,7 @@ void RexxActivation::traceTaggedValue(int prefix, const char *tagPrefix, bool qu
     // now calculate the length of the traced string
     stringsize_t outLength = tag->getLength() + stringVal->getLength();
     // these are fixed overheads
-    outLength += TRACE_OVERHEAD + strlen(VALUE_MARKER);
+    outLength += TRACE_OVERHEAD + strlen(marker);
     // now the indent spacing
     outLength += this->settings.traceindent * INDENT_SPACING;
     // now other conditionals
@@ -2866,8 +2865,8 @@ void RexxActivation::traceTaggedValue(int prefix, const char *tagPrefix, bool qu
     }
 
     // now add the data marker
-    buffer->put(dataOffset, VALUE_MARKER, strlen(VALUE_MARKER));
-    dataOffset += strlen(VALUE_MARKER);
+    buffer->put(dataOffset, marker, strlen(marker));
+    dataOffset += strlen(marker);
 
     // the leading quote around the value
     buffer->putChar(dataOffset, '\"');
@@ -2966,8 +2965,6 @@ void RexxActivation::traceOperatorValue(int prefix, const char *tag, RexxObject 
 }
 
 
-
-
 /**
  * Trace a compound variable entry that's of the form 'tag =>
  * "value"'.
@@ -2981,7 +2978,7 @@ void RexxActivation::traceOperatorValue(int prefix, const char *tag, RexxObject 
 void RexxActivation::traceCompoundValue(int prefix, RexxString *stemName, RexxObject **tails, size_t tailCount,
      RexxCompoundTail *tail)
 {
-    traceCompoundValue(TRACE_PREFIX_COMPOUND, stemName, tails, tailCount, tail->createCompoundName(stemName));
+    traceCompoundValue(TRACE_PREFIX_COMPOUND, stemName, tails, tailCount, VALUE_MARKER, tail->createCompoundName(stemName));
 }
 
 
@@ -2995,7 +2992,7 @@ void RexxActivation::traceCompoundValue(int prefix, RexxString *stemName, RexxOb
  * @param tailCount The count of tail elements.
  * @param value     The associated trace value.
  */
-void RexxActivation::traceCompoundValue(int prefix, RexxString *stemName, RexxObject **tails, size_t tailCount,
+void RexxActivation::traceCompoundValue(int prefix, RexxString *stemName, RexxObject **tails, size_t tailCount, const char *marker,
      RexxObject * value)
 {
     // the trace settings would normally require us to trace this, but there are conditions
@@ -3027,7 +3024,7 @@ void RexxActivation::traceCompoundValue(int prefix, RexxString *stemName, RexxOb
     outLength += tailCount - 1;
 
     // these are fixed overheads
-    outLength += TRACE_OVERHEAD + strlen(VALUE_MARKER);
+    outLength += TRACE_OVERHEAD + strlen(marker);
     // now the indent spacing
     outLength += this->settings.traceindent * INDENT_SPACING;
 
@@ -3051,8 +3048,8 @@ void RexxActivation::traceCompoundValue(int prefix, RexxString *stemName, RexxOb
     dataOffset += tail.getLength();
 
     // now add the data marker
-    buffer->put(dataOffset, VALUE_MARKER, strlen(VALUE_MARKER));
-    dataOffset += strlen(VALUE_MARKER);
+    buffer->put(dataOffset, marker, strlen(marker));
+    dataOffset += strlen(marker);
 
     // the leading quote around the value
     buffer->putChar(dataOffset, '\"');
@@ -3646,7 +3643,13 @@ RexxVariableBase  *RexxActivation::getVariableRetriever(
 
             // Dot variables retrieve from the environment
         case STRING_LITERAL:
-            return(RexxVariableBase *)new RexxDotVariable(variable->extract(1, variable->getLength() - 1));
+            // this is only a dot variable if it begins with a period
+            if (variable->getChar(0) == '.')
+            {
+                return (RexxVariableBase *)new RexxDotVariable(variable->extract(1, variable->getLength() - 1));
+            }
+            // this is a literal symbol not beginning with a period
+            return (RexxVariableBase *)variable;
 
             /* if it is a stem                   */
         case STRING_STEM:
@@ -3932,7 +3935,12 @@ void RexxActivation::assignLocalCompoundVariable(RexxString *stemName, size_t in
     /* and set the value                 */
     stem_table->setCompoundVariable(&resolved_tail, value);
     /* trace resolved compound name */
-    traceCompoundName(stemName, tail, tailCount, &resolved_tail);
+    if (tracingIntermediates())
+    {
+        traceCompoundName(stemName, tail, tailCount, &resolved_tail);
+        /* trace variable value              */
+        traceCompoundAssignment(stemName, tail, tailCount, value);
+    }
 }
 
 

@@ -1017,7 +1017,7 @@ void RexxNativeActivation::createLocalReference(RexxObject *objr)
     {
         // make sure we protect this from a GC triggered by this table creation.
         ProtectedObject p1(objr);
-        if (this->savelist == OREF_NULL) /* second saved object?              */
+        if (this->savelist == OREF_NULL)     /* first saved object?               */
         {
             /* create the save list now          */
             this->savelist = new_list();
