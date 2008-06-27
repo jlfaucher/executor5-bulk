@@ -2382,12 +2382,12 @@ BOOL GetEventTypeInfo(ITypeInfo *pTypeInfo, CLSID *clsID, ITypeInfo **ppTypeInfo
 //     will increase the reference count to the OLE object by calling AddRef().
 //
 //******************************************************************************
-RexxMethod4(int,                          // Return type
-            OLEObject_Init,            // Object_method name
-            OSELF, self,               // Pointer to self
-            CSTRING,    pszArg,        // Class specifier for new object
-            CSTRING,    eventString,   // keyword to active event handling
-            RexxObjectPtr, getObjectFlag) // Try a GetActiveObject
+RexxMethod4(int,                             // Return type
+            OLEObject_Init,                  // Object_method name
+            OSELF, self,                     // Pointer to self
+            CSTRING, pszArg,                 // Class specifier for new object
+            OPTIONAL_CSTRING, eventString,   // keyword to active event handling
+            OPTIONAL_RexxObjectPtr, getObjectFlag) // Try a GetActiveObject
 {
     CLSID       clsID;
     HRESULT     hResult;
@@ -3547,7 +3547,7 @@ BOOL checkForOverride(RexxThreadContext *context, VARIANT *pVariant, RexxObjectP
     // needed for instance of tests
     RexxClassObject variantClass = context->FindClass("OLEVARIANT");
 
-    if (context->IsInstanceOf(RxObject, variantClass))
+    if ( ! context->IsInstanceOf(RxObject, variantClass) )
     {
         *pRxObject = RxObject;
         *pDestVt   = DestVt;
