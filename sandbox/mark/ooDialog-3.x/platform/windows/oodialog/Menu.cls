@@ -264,7 +264,7 @@
 
 /** deleteSubMenu()
  * Removes the submenu from this menu and frees the hMenu.  To be able to reuse
- * the the submenu use the removeSubMenu() method.
+ * the submenu use the removeSubMenu() method.
  */
 ::method deleteSubMenu
   use strict arg id, byPosition = .false
