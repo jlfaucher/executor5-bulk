@@ -101,7 +101,7 @@ return testResult
   name = addToFile(src, self~functionFileName)
 
   ret = 'testRequires'()
-  self~assertSame(ret, 2)
+  self~assertSame(2, ret)
 
 ::method  test_requires_library_ext
   self~assertNotSame("", self~functionFileName, "Must be able to create source file")
@@ -125,12 +125,12 @@ return testResult
   -- This is used to ensure this test fails on an OS other than Windows or
   -- Linux.  I'm not sure what the library extension is on other OSes.  When
   -- this fails, the person investigating should add the untested OS.
-  self~assertNotSame(os, "untested")
+  self~assertNotSame("untested", os)
 
   name = addToFile(src, self~functionFileName)
 
   ret = 'testRequires'()
-  self~assertSame(ret, 2)
+  self~assertSame(2, ret)
 
 ::method test_requires_library_case_mixed
   self~assertNotSame("", self~functionFileName, "Must be able to create source file")
@@ -141,7 +141,7 @@ return testResult
   name = addToFile(src, self~functionFileName)
 
   ret = 'testRequires'()
-  self~assertSame(ret, 2)
+  self~assertSame(2, ret)
 
 ::method test_requires_library_case_lower
   self~assertNotSame("", self~functionFileName, "Must be able to create source file")
@@ -152,7 +152,7 @@ return testResult
   name = addToFile(src, self~functionFileName)
 
   ret = 'testRequires'()
-  self~assertSame(ret, 2)
+  self~assertSame(2, ret)
 
 ::method  test_requires_library_syntax1
   self~assertNotSame("", self~functionFileName, "Must be able to create source file")
