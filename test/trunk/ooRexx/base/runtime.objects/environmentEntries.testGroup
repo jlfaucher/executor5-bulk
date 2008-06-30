@@ -75,6 +75,7 @@ return testResult
 ::class "environmentEntries.testGroup" subclass ooTestCase public
 
 ::method "test_line_entry"
+     self~assertTrue(.line~isA(.string), "for datatype to work, object must be a string object")
      self~assertTrue(.line~datatype("Whole"), "subTest # 1: is [.LINE] a wholeNumber?")
 
    tmpLine = .line + 2  -- Test that .line is reasonably correct.
@@ -87,7 +88,7 @@ return testResult
    -- Here tmpLine is hard coded for an absolute test.  It lines are added or
    -- or removed above this, the test will fail.  Then the hard coded value
    -- must be adjusted.
-   tmpLine = 94
+   tmpLine = 95
    --
    --
    --
@@ -155,7 +156,6 @@ return testResult
         "ROUTINE"                      -
         "SET"                          -
         "SETCOLLECTION"                -
-        "STATIC_REQUIRES"              -
         "STEM"                         -
         "STREAM"                       -
         "STREAMSUPPLIER"               -
