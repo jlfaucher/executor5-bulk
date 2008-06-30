@@ -111,6 +111,7 @@ return group
     .local~cp = .WindowsClipBoard~new
     expected = 'a WindowsClipboard'
     self~assertEquals(expected, .cp)
+    self~assertTrue(.cp~isA(.WindowsClipBoard))
 
 ::method 'test_02empty'
     expected = 0
@@ -144,8 +145,20 @@ return group
     cb1 = .WindowsClipboard~new
     cb2 = .WindowsClipboard~new
 
+    self~assertTrue(cb1~isA(.WindowsClipBoard))
+    self~assertTrue(cb2~isA(.WindowsClipBoard))
+
+    -- Place text on the clipboard.
     cb1~copy("This is only a test")
+
+    -- Assert that data is available
+    self~assertTrue(cb1~isDataAvailable)
+    self~assertTrue(cb2~isDataAvailable)
+
+    -- Pull the data off the clipboard...
     text = cb2~paste
+
+    -- ... and assert that it is the same as what was put on their.
     self~assertEquals("This is only a test", text, 'Text retrieved from clipboard should equal text put on clipboard')
 
 ::method 'test_08cleanUp'
