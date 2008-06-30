@@ -1061,6 +1061,7 @@ return str
 ::method assertCount
   return self~fAssertions     -- count assertions, ooRexxUnit only
 
+
 /** assertEquals()
  * Checks if two objects are equal, or, if not, checks that the two objects are
  * equal collection objects.
@@ -1132,6 +1133,39 @@ return str
     expected = '[\==' self~formatObjectInfo(expected)']'
     actual   = '[   ' self~formatObjectInfo(actual)']'
     self~fail(self~makeFailure(expected, actual, msg, "assertNotSame"))
+  end
+
+  -- Assertion holds.
+  self~fAssertions += 1
+
+
+/** assertEitherOr()
+ * Exclusive or, either arg 1 is true or arg 2 is true, but not both.
+ */
+::method assertEitherOr
+  use strict arg truthOne, truthTwo, msg = ""
+
+  if \ self~exclusiveOr(truthOne, truthTwo) then do
+    expected = '[ one .true and one .false ]'
+    actual   = '['self~formatObjectInfo(truthOne) self~formatObjectInfo(truthTwo)']'
+    self~fail(self~makeFailure(expected, actual, msg, "assertEitherOr"))
+  end
+
+  -- Assertion holds.
+  self~fAssertions += 1
+
+
+/** assertOneOrAnother()
+ * Exclusive or for objects.  The actual object is expected to equal either one
+ * object, or another object, but not both.
+ */
+::method assertOneOrAnother
+  use strict arg one, other, actual, msg = ""
+
+  if \ self~exclusiveOrObject(one, other, actual) then do
+    expected = '['self~formatObjectInfo(one) 'or' self~formatObjectInfo(other)']'
+    actual   = self~formatObjectInfo(actual)
+    self~fail(self~makeFailure(expected, actual, msg, "assertOneOrAnother"))
   end
 
   -- Assertion holds.
@@ -1294,6 +1328,25 @@ return str
   use arg o, hint = ""
 
   return pp(hint || ppp(o~string)", identityHash=".TestUtil~enQuote(o~identityHash))
+
+
+::method exclusiveOr private
+  use strict arg t1, t2
+
+  if \ t1~isA(.string) | \ t2~isA(.string) then return .false
+  if \ t1~datatype('O') | \ t2~datatype('O') then return .false
+
+  -- t1 and t2 are both logicals, for exclusive or they must be different
+  -- logicals.
+  return (t1 \== t2)
+
+
+::method exclusiveOrObject private
+  use strict arg one, other, actual
+
+  if one == actual, other == actual then return .false
+  if one \== actual, other \== actual then return .false
+  return .true
 
 
 
