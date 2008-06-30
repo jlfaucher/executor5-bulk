@@ -116,6 +116,7 @@ return testResult
         "ALARM"                        -
         "ARRAY"                        -
         "BAG"                          -
+        "BUFFER"                       -
         "CASELESSCOLUMNCOMPARATOR"     -
         "CASELESSCOMPARATOR"           -
         "CASELESSDESCENDINGCOMPARATOR" -
@@ -145,11 +146,13 @@ return testResult
         "OBJECT"                       -
         "ORDEREDCOLLECTION"            -
         "OUTPUTSTREAM"                 -
+        "PACKAGE"                      -
+        "POINTER"                      -
         "PROPERTIES"                   -
-        "PUBLIC_ROUTINES"              -
         "QUEUE"                        -
         "RELATION"                     -
         "REXXQUEUE"                    -
+        "ROUTINE"                      -
         "SET"                          -
         "SETCOLLECTION"                -
         "STATIC_REQUIRES"              -
@@ -161,7 +164,8 @@ return testResult
         "SYSTEM"                       -
         "TABLE"                        -
         "TIMESPAN"                     -
-        "TRUE"
+        "TRUE"                         -
+        "WEAKREFERENCE"
 
   do i=1 to words(entries)
      w=word(entries,i)        -- extract word
@@ -174,6 +178,7 @@ return testResult
         "ALARM"                        -
         "ARRAY"                        -
         "BAG"                          -
+        "BUFFER"                       -
         "CASELESSCOLUMNCOMPARATOR"     -
         "CASELESSCOMPARATOR"           -
         "CASELESSDESCENDINGCOMPARATOR" -
@@ -197,10 +202,13 @@ return testResult
         "OBJECT"                       -
         "ORDEREDCOLLECTION"            -
         "OUTPUTSTREAM"                 -
+        "PACKAGE"                      -
+        "POINTER"                      -
         "PROPERTIES"                   -
         "QUEUE"                        -
         "RELATION"                     -
         "REXXQUEUE"                    -
+        "ROUTINE"                      -
         "SET"                          -
         "SETCOLLECTION"                -
         "STEM"                         -
@@ -209,6 +217,7 @@ return testResult
         "STRING"                       -
         "SUPPLIER"                     -
         "TABLE"                        -
+        "WEAKREFERENCE"
 
   if .ooRexxUnit.OSName="WINDOWS" then    -- add Windows-specific entries
   do
