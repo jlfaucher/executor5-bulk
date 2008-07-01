@@ -1,4 +1,4 @@
-                        ooRexxUnit 3.2.0 Snapshot 01
+                        ooRexxUnit 3.2.0 Snapshot 02
                         ============================
 
 ooRexxUnit is an ooRexx implementation of junit, originally designed and
@@ -10,13 +10,13 @@ ooRexxUnit is a testing framework that can be used by anyone to test their
 ooRexx programs.  In addition, the ooRexxUnit framework is used by the
 ooRexx project team to test the ooRexx interpreter.
 
-ooRexxUnit 3.2.0 Snapshot 01 is a package released by the ooRexx team that
+ooRexxUnit 3.2.0 Snapshot 02 is a package released by the ooRexx team that
 contains both the testing framework and the set of tests used in testing the
 ooRexx interpreter at the 3.2.0 level.  As the version name implies, it is a
-snapshot of ooRexxUnit at this point in time. (November 27, 2007 svn
-revision level 1328.)  This package contains all the currently available
-test units written to test the 3.2.0 interpreter.  These test units are an
-excellent source of techniques for using ooRexxUnit.
+snapshot of ooRexxUnit at this point in time.  (June 30 2008 svn revision
+level: 2627.) This package contains all the currently available test groups
+written to test the 3.2.0 interpreter.  These test groups are an excellent
+source of techniques for using ooRexxUnit.
 
 The ooRexxUnit framework takes advantage of new features introduced into the
 interpreter.  A ooRexxUnit 3.2.0 version of the framework is guaranteed to
@@ -28,7 +28,7 @@ The primary purpose of releasing this snapshot version of ooRexxUnit is to
 encourage individuals and organizations to contribute test cases for the
 3.2.0 interpreter.
 
-Writing test units to test the interpreter requires nothing other than an
+Writing test groups to test the interpreter requires nothing other than an
 installed 3.2.0 interpreter and this framework package.  If an individual
 has limited knowledge of ooRexx programming, then writing test cases will be
 a excellent way to learn the language.
@@ -65,14 +65,18 @@ ooRexxUnit.3.2.0
    |          |
    |          *-----<subdirectories>
    |
-   *------*tests
+   *------*misc
+   |         |
+   |         *-----<subdirectories>
+   |
+   *------*ooRexx
              |
              *-----<subdirectories>
 
 The framework directory and subdirectories contain additional documentation
 and examples.
 
-The tests directory and subdirectories contain tests implemented using the
-ooRexxUnit framework, primarily tests used in testing the ooRexx
-interpreter.
+The ooRexx directory and subdirectories contain tests implemented using the
+ooTest framework, a framework that sits on top of the ooRexxUnit framework.
+This directory contains the tests used in testing the ooRexx interpreter.
 
