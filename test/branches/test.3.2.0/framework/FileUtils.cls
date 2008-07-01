@@ -153,33 +153,19 @@ return prgRet
     end
 
     when currentOS == "LINUX" then do
-      -- See if ooRexx is installed from a rpm
-      cmdOut = .array~new
-      ret = issueCmd('rpm -q ooRexx', cmdOut)
-      if ret == 0 then do
-        cmdOut~empty
-        -- Escape the dot(s) in the name (surely there is only 1, but ...)
-        escName = ""
-        tmp = name
-        do which tmp~pos('.') <> 0
-          parse var tmp front '.' tmp
-          escName = escName || front || '\.'
-        end
-        escName = escName || tmp
+      -- See if ooRexx is installed from a some type of package manager.
+      retObj = sampleFromPackageInstall(name)
 
-        ret = issueCmd('rpm -q ooRexx --list | grep' escName, cmdOut)
-        if cmdOut~items == 1 then retObj = cmdOut[1]
-        leave FINDSAMPLE
-      end
+      if retObj \== .nil then leave FINDSAMPLE
 
-      -- See if it is a user install in /opt
+      -- Not found, see if it is a user install in /opt
       if SysIsFileDirectory("/opt/ooRexx") then do
         j = SysFileTree("/opt/ooRexx/share/ooRexx/" || name, f., 'FOS')
         if j == 0, f.0 == 1 then retObj = f.1
         leave FINDSAMPLE
       end
 
-      -- See if we can get a build directory
+      -- Not found, see if we can get a build directory
       currentWorkingDirectory = directory()
       buildRoot = findBuildRoot(currentOS)
 
@@ -204,6 +190,79 @@ return prgRet
 
 return retObj
 -- End locateSample()
+
+/** sampleFromPackageInstall()
+ * A private helper function locate a sample program on a Linux system where
+ * ooRexx has been installed by a package managing system.  Currently only works
+ * for rpm and debian (dpkg.)
+ *
+ * returns .nil if not found.
+ */
+::routine sampleFromPackageInstall
+  use strict arg name
+
+  -- First decide if rpm or dpkg is on the system.
+  cmdOut = .array~new
+  ret = issueCmd('which rpm', cmdOut)
+  haveRPM = (ret == 0)
+
+  cmdOut~empty
+  ret = issueCmd('which dpkg', cmdOut)
+  haveDPKG = (ret == 0)
+
+  if \ haveRPM, \ haveDPKG then return .nil
+
+  if haveRPM then sample = checkRpmForSample(name, cmdOut~empty)
+  if sample \== .nil then return sample
+
+  if haveDPKG then return checkDpkgForSample(name, cmdOut~empty)
+
+::routine checkRpmForSample
+  use strict arg name, cmdOut
+
+  sample = .nil
+  ret = issueCmd('rpm -q ooRexx', cmdOut)
+
+  if ret == 0 then do
+    cmdOut~empty
+
+    -- Escape the dot(s) in the sample program name
+    escName = escapeDots(name)
+
+    ret = issueCmd('rpm -q ooRexx --list | grep' escName, cmdOut)
+    if cmdOut~items == 1 then sample = cmdOut[1]
+  end
+  return sample
+
+::routine checkDpkgForSample
+  use strict arg name, cmdOut
+
+  sample = .nil
+  ret = issueCmd('dpkg -s oorexx', cmdOut)
+
+  if ret == 0 then do
+    cmdOut~empty
+
+    -- Escape the dot(s) in the sample program name
+    escName = escapeDots(name)
+
+    ret = issueCmd('dpkg -L oorexx | grep' escName, cmdOut)
+    if cmdOut~items == 1 then sample = cmdOut[1]
+  end
+  return sample
+
+::routine escapeDots
+  use strict arg name
+
+  escName = ""
+  tmp = name
+  do which tmp~pos('.') <> 0
+    parse var tmp front '.' tmp
+    escName = escName || front || '\.'
+  end
+
+  return escName || tmp
+
 
 /** findBuildRoot()  A private helper function. */
 ::routine findBuildRoot
