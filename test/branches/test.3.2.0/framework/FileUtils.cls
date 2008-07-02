@@ -201,30 +201,33 @@ return retObj
 ::routine sampleFromPackageInstall
   use strict arg name
 
+  sample = .nil
+
   -- First decide if rpm or dpkg is on the system.
   cmdOut = .array~new
   ret = issueCmd('which rpm', cmdOut)
   haveRPM = (ret == 0)
 
-  cmdOut~empty
+  cmdOut = .array~new
   ret = issueCmd('which dpkg', cmdOut)
   haveDPKG = (ret == 0)
 
   if \ haveRPM, \ haveDPKG then return .nil
 
-  if haveRPM then sample = checkRpmForSample(name, cmdOut~empty)
+  if haveRPM then sample = checkRpmForSample(name)
   if sample \== .nil then return sample
 
-  if haveDPKG then return checkDpkgForSample(name, cmdOut~empty)
+  if haveDPKG then return checkDpkgForSample(name)
 
 ::routine checkRpmForSample
-  use strict arg name, cmdOut
+  use strict arg name
 
   sample = .nil
+  cmdOut = .array~new
   ret = issueCmd('rpm -q ooRexx', cmdOut)
 
   if ret == 0 then do
-    cmdOut~empty
+    cmdOut = .array~new
 
     -- Escape the dot(s) in the sample program name
     escName = escapeDots(name)
@@ -235,13 +238,14 @@ return retObj
   return sample
 
 ::routine checkDpkgForSample
-  use strict arg name, cmdOut
+  use strict arg name
 
   sample = .nil
+  cmdOut = .array~new
   ret = issueCmd('dpkg -s oorexx', cmdOut)
 
   if ret == 0 then do
-    cmdOut~empty
+    cmdOut = .array~new
 
     -- Escape the dot(s) in the sample program name
     escName = escapeDots(name)
