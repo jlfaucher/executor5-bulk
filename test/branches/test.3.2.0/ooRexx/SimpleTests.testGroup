@@ -1,4 +1,8 @@
 #!/usr/bin/rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 2007 - 2008 Rexx Language Association. All rights reserved.  */
@@ -35,12 +39,10 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-
-  -- See the Simplest.testGroup file for comment on this first section.
-
   parse source . . s
+
   group = .TestGroup~new(s)
-  group~add(.SimpleSetup)
+  group~add(.SimpleTests.testGroup)
 
   if group~isAutomatedTest then return group
 
@@ -49,80 +51,38 @@
 return testResult
 -- End of entry point.
 
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+  Directives, Classes, or Routines.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::requires 'ooTest.frm'
 
-/* class: SimpleSetup- - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
-
+/* class: SimpleTests.testGroup- - - - - - - - - - - - - - - - - - - - - - - -*\
+    This test case class just does some very simple tests.  It's main purpose
+    is to provide an easy to run, short, test group to run when the interpreter
+    is crashing very early in the execution of the test suite.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::class "SimpleSetup" public subclass ooTestCase
+::class "SimpleTests.testGroup" public subclass ooTestCase
 
-  ::method init class
-    forward class (super) continue
-    self~ooTestType = self~FRAMEWORK_EXAMPLE_TEST
-  -- End init() class
+  ::method test_true_is_true
+    self~assertTrue(.true)
 
-  -- The TestCase class has a setUp() and tearDown() method.  (This of course
-  -- means that all subclasses of TestCase inherit a setUp() and tearDown()
-  -- method.)
-  --
-  -- Prior to executing each test case method, the test framework invokes the
-  -- setUp() method and after each test case has been executed the framework
-  -- invokes the tearDonw() method.
-  --
-  -- In the TestCase class these methods are defined with NOP, so nothing is
-  -- actually done.
-  --
-  -- Here we over-ride these methods to do some set up and tear down before and
-  -- after each test.
-  --
-  -- Note that the usage here is a little contrived.  The reality is that a set
-  -- up and tear down before each test case method is usually not needed.  But,
-  -- it could be useful for cases where the set up was repetive, you only need
-  -- to write the code once.
-  ::method setUp
+  ::method  test_strings_are_same
+    self~assertSame('dog', 'dog')
 
-    if \ .local~hasEntry(outArray) then do
-      .local~outArray = .array~new
-      .local~outQueue = .queue~new
-    end
+  ::method test_addition
 
-    do i = 1 to 50
-      .outArray[i] = i
-      .outQueue~queue(i)
-    end
+    n1 = 5
+    n2 = 7
+    self~assertTrue(n1 + n2 == 12)
+    self~assertFalse(n1 + n2 == 13)
 
-    -- If you want to execute this test and see the setUp() invocation
-    -- un-comment the following:
-    -- say 'In SimpleWithSomeSetup.testGroup::setUp()'
+  ::method test_strings
+    str1 = "Dog"
+    str2 = "Cat"
 
-  ::method tearDown
-    -- There really is nothing to do here.  You could just empty the objects in
-    -- set up.  The tear down should just be skipped.  But, for the purpose of
-    -- example we have this.
-    .outArray~empty
-    .outQueue~empty
+    self~assertNotSame(str1, str2)
 
-    -- If you want to execute this test and see the tearDown() invocation
-    -- un-comment the following:
-    -- say 'In SimpleWithSomeSetup.testGroup::tearDown()'
+    str3 = "Dog"
+    self~assertSame(str1, str3)
 
-  -- Now our test methods
-  ::method test_YYY
-    a = .outArray[6]
-    b = .outQueue[6]
-    self~assertTrue(a == b)
-
-  ::method  test_XXX
-    a = .outArray[18]
-    do 3
-      .outQueue~pull
-    end
-    b = .outQueue[18]
-    self~assertNotSame(a, b)
-
-  ::method test_ZZZ
-    do i = 1 to .outArray~items
-      self~assertSame(.outArray[i], .outQueue[i])
-    end
-
--- End of class: SimpleSetup
+-- End of class: SimpleTests.testGroup

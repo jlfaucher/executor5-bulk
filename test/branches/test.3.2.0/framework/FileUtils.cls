@@ -130,12 +130,16 @@ return prgRet
   currentOS = .ooRexxUnit.OSName
   home = value("REXX_HOME", , 'ENVIRONMENT')
 
-  select label FINDSAMPLE
-    when home \== "" then do
-      j = SysFileTree(home || sl || 'samples' || sl || name, f., 'FOS')
-      if j == 0, f.0 == 1 then retObj = f.1
-    end
+  -- It is possible that a developer has REXX_HOME set (left over from an
+  -- install) but currently has nothing there.  If home is set, but no sample is
+  -- found, then try the other methods.
 
+  if home \== "" then do
+    j = SysFileTree(home || sl || 'samples' || sl || name, f., 'FOS')
+    if j == 0, f.0 == 1 then return f.1
+  end
+
+  select label FINDSAMPLE
     when currentOS == "WINDOWS" then do
       currentWorkingDirectory = directory()
       buildRoot = findBuildRoot(currentOS)

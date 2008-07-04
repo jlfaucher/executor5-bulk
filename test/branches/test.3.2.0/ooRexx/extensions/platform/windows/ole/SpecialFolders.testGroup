@@ -715,8 +715,34 @@ NOTE:   If the user has changed the name of a "special folder" the following lin
 
 ::method 'testAllUserTemplates'
     objShell = .oleObject~new('Shell.Application')
+    sp = '2d'~x2d
+    objFolder = objShell~nameSpace(sp)
+    objFolderItem = objFolder~self
+    self~assertSame(objFolderItem~string,objFolder~Self)
+    self~assertNotNull(objFolderItem)
+    self~assertNotNull(objFolderItem~name)
+    self~assertNotNull(objFolderItem~path)
+    self~assertTrue(objFolderItem~name~caselessPos('templates') > 0)
+    objCollection = objFolder~items
+    ctr = 0
+    do objItem over objCollection
+        ctr += 1
+    end
+    self~assertEquals(ctr,objCollection~count)
+
+::method 'testSharedDocuments'
+    objShell = .oleObject~new('Shell.Application')
     sp = '2e'~x2d
     objFolder = objShell~nameSpace(sp)
+
+    -- Not all systems seem to have the All Users Shared Documents folder.
+    -- Assert that we either get an OLEObject, or .nil
+    self~assertEitherOr(objFolder~isA(.oleObject), objFolder == .nil,     -
+                       "objFolder is either an oleObject or .nil")
+
+    -- If objFolder is .nil then return.
+    if objFolder == .nil then return
+
     objFolderItem = objFolder~self
     self~assertSame(objFolderItem~string,objFolder~Self)
     self~assertNotNull(objFolderItem)
