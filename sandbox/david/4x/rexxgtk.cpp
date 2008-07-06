@@ -46,7 +46,7 @@
 /* Global variables                                                           */
 /*----------------------------------------------------------------------------*/
 
-char * rexxgtk_argv[] = {"gtxrxdlg", "\0"};
+char * rexxgtk_argv[] = {"rexxgtk", "\0"};
 int rexxgtk_argc = 1;
 
 
@@ -107,7 +107,6 @@ int _init(void)
     gdk_threads_init();
     gtk_set_locale ();
     gtk_init (&rexxgtk_argc, &argv);
-//    grxInitEventQueue();
 
     return rc;
 }

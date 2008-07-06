@@ -44,8 +44,8 @@ GRXLFLAGS = `pkg-config --libs gtk+-2.0 gdk-2.0 glib-2.0 gthread-2.0` \
 GRXCFLAGS = `pkg-config --cflags gtk+-2.0 gdk-2.0 glib-2.0 gthread-2.0` \
         -fPIC -DVMAJOR=$(VMAJOR) \
         -DVMINOR=$(VMINOR) -DVREL=$(VREL) \
-	-I/home/dashley/ad/svn/sandbox/rick/opt/api \
-	-I/home/dashley/ad/svn/sandbox/rick/opt/api/platform/unix
+	-I/home/dashley/ad/svn/oorexx/interpreter-3.x/trunk/api \
+	-I/home/dashley/ad/svn/oorexx/interpreter-3.x/trunk/api/platform/unix
 OBJECTS = rexxgtk.o \
         grxwidget.o \
 	grxwindow.o \

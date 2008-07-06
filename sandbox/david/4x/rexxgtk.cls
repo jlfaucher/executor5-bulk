@@ -76,8 +76,8 @@ return
 
 /*============================================================================*/
 /* Class: GTK                                                                 */
-/* Note: This class should never be instatiated. It is here just provided     */
-/*       a container for a host of GTK constants.                             */
+/* Note: This class should never be instatiated. It is here just as a         */
+/*       container for a host of GTK constants.                               */
 /*============================================================================*/
 
 ::class gtk public
@@ -1409,7 +1409,7 @@ return
 
 ::METHOD signal_connect
 use strict arg event
--- first try the GtkFileChooser class hiearchy first
+-- first try the inherited GtkFileChooser class hiearchy first
 if self~signal_connect:.GtkFileChooser(event) = .true then return .true
 -- now try the standard hiearchy
 return self~signal_connect_p
@@ -2195,8 +2195,8 @@ use strict arg value, upper, lower, step, page, pagesz
 self~init_6args(value, upper, lower, step, page, pagesz)
 return
 
-::METHOD init_1args private EXTERNAL "LIBRARY rexxgtk GrxAdjustmentNew"
-::METHOD init_6args private EXTERNAL "LIBRARY rexxgtk GrxAdjustmentNewFromPtr"
+::METHOD init_1args private EXTERNAL "LIBRARY rexxgtk GrxAdjustmentNewFromPtr"
+::METHOD init_6args private EXTERNAL "LIBRARY rexxgtk GrxAdjustmentNew"
 
 ::method pointer
 expose !pointer
