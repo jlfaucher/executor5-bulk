@@ -1378,7 +1378,7 @@ in the RxFtp class.
 <secondary>BufSize</secondary></indexterm>
 <indexterm><primary>send/recv buffer</primary></indexterm>
 <indexterm><primary>buffer, send/recv</primary></indexterm>
-<para>The BufSize method attribute contains the size of the buffer used  
+<para>The BufSize method attribute contains the size of the buffer used
 by RxFtp methods.  The default is 4096 and you can change this to any
 positive integer value.
 </para>
@@ -1565,7 +1565,9 @@ myftp = .rxftp~new()
 
 /* Start tracing FTP commands and logging of replies */
 retc = myftp~FtpTrace()
-retc = myftp~FtpTraceLog( trclog, "1")
+
+/* Trace log file will be replaced, not appended to. */
+retc = myftp~FtpTraceLog(trclog, "R")
 If retc = 0 then Say " Replies will be written to log file: "trclog"."
 Else Say " No writing to log file: "trclog" possible."
 
