@@ -798,7 +798,7 @@ alias~empty()
 address = ''
 addr~empty()
 -- make sure we have a hostname to use
-if self~name = '' or arg() > 0 then use strict arg self~name
+if self~name = '' | arg() > 0 then use strict arg self~name
 -- get the information and set our attributes
 if name~verify('0123456789.') = 0 then ,
  retc = SockGetHostByAddr(name, 'hostinfo.!')
@@ -839,7 +839,7 @@ name = ''
 alias = .array~new()
 address = ''
 addr = .array~new()
-use arg strict name
+use strict arg name
 self~getInfo()
 return
 
