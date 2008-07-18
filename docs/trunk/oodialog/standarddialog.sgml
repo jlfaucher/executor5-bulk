@@ -1651,6 +1651,20 @@ C:\WINNT#file with blank.ext#fileWithNoBlank.TXT
 dialog. Open File dialogs with multiple selection return path file1 file2 file3
 ... when the user selects multiple files.
 </para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Notes:</emphasis></term>
+<listitem><para>If the user changes directory with the File Open or File Save
+dialog, then the current directory of the ooRexx program will be changed.  This
+is the behavior of the underlying Windows dialog, which is designed to work that
+way.  The ooDialog programmer should be aware of this behavior and insert code
+to change the directory back if that is needed.  For example:
+<programlisting>
+<![CDATA[
+curdir = directory()
+file = FileNameDialog('*.pdf',,"Adobe PDF Files"'0'x"*.pdf"'0'x)
+call directory curdir
+]]>
+</programlisting>
+</para></listitem></varlistentry>
 </variablelist>
 </section>
 
