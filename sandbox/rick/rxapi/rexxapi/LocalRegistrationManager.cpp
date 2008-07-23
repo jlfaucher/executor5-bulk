@@ -43,164 +43,175 @@
 #include "ClientMessage.hpp"
 
 
-ServiceReturn LocalRegistrationManager::registerCallback(RegistrationType type, char *name, char *module,
-    char *proc, uint32_t *userData, void *userPointer, size_t drop, int legacyStyle)
+/**
+ * Register a DLL-based callback type.
+ *
+ * @param type     The type of callback being registered
+ * @param name     The name of the callback (unique within the type)
+ * @param module   The name of the library containing the callback.
+ * @param proc     The name of the callback entry point within the library.
+ * @param userData Pointer to userdata saved with the registered callback.
+ * @param drop     The drop authority.
+ *
+ * @return The return code for the registration.
+ */
+ServiceReturn LocalRegistrationManager::registerCallback(RegistrationType type, const char *name,
+    const char *module, const char *proc, const char *userData, bool drop)
+{
+    // first parameter for these calls is ALWAYS the type, second is always the name
+    ClientMessage message(RegistrationManager, REGISTER_LIBRARY, type, name);
+
+    // we have a secondary data area to send
+    ServiceRegistrationData regData(module, proc, drop, userdata);
+    message.setMessageData(regData, sizeof(ServiceRegistrationData));
+
+    message.send();
+    return message.result;
+}
+
+/**
+ * Register an in-process callback handler.
+ *
+ * @param type       The type of handler.
+ * @param name       The name of the handler.
+ * @param entryPoint The callback entry point.
+ * @param userData   The optional userdata pointer.
+ *
+ * @return The message return code.
+ */
+ServiceReturn LocalRegistrationManager::registerCallback(RegistrationType type, const char *name, RexxCallback entryPoint,
+    const char *userData)
 {
     // first parameter for these calls is ALWAYS the type
-    ClientMessage message(RegistrationManager, REGISTER_LIBRARY, type);
+    ClientMessage message(RegistrationManager, REGISTER_ENTRYPOINT, type, name);
 
-    // the environment name always goes into name argument buffer
-    strcpy(message.nameArg, name);
-
-    ServiceRegistrationData regData;
+    // and fill in the secondary data area
+    ServiceRegistrationData regData(entryPoint, userData);
     message.setMessageData((char *)&regData, sizeof(ServiceRegistrationData));
 
-    strcpy(regData.moduleName, module);
-    strcpy(regData.procedureName, proc);
-    regData.dropAuthority = drop == 0 ? DROP_ANY : OWNER_ONLY;
-    regData.userPointer = userPointer;
-    regData.legacyStyle = legacyStyle;
-    // we have two bits of user data to copy
-    if (userData != NULL)
+    message.send();
+    return message.result;
+}
+
+
+/**
+ * Drop a registered callback.
+ *
+ * @param type   The type of callback to process.
+ * @param name   The name of the callback.
+ * @param module An optional library qualifier
+ *
+ * @return The operation return code.
+ */
+ServiceReturn LocalRegistrationManager::dropCallback(RegistrationType type, const char *name, const char *module)
+{
+    // this is a different operation depending on whether we have a module specified
+    if (module != NULL)
     {
-        regData.userData[0] = userData[0];
-        regData.userData[1] = userData[1];
+        // first parameter for these calls is ALWAYS the type
+        ClientMessage message(RegistrationManager, REGISTER_DROP_LIBRARY, type, name);
+        // we have extra data to send
+        ServiceRegistrationData regData(module);
+        message.setMessageData((char *)&regData, sizeof(ServiceRegistrationData));
+
+        message.send();
+        return message.result;
     }
     else
     {
-        regData.userData[0] = 0;
-        regData.userData[1] = 0;
+        // first parameter for these calls is ALWAYS the type
+        ClientMessage message(RegistrationManager, REGISTER_DROP, type, name);
+        message.send();
+        return message.result;
     }
+}
+
+
+/**
+ * Perform an existance query for a callback
+ *
+ * @param type   The type of callback to check.
+ * @param name   The callback name.
+ *
+ * @return The query return code.
+ */
+ServiceReturn LocalRegistrationManager::queryCallback(RegistrationType type, const char *name)
+{
+    // first parameter for these calls is ALWAYS the type
+    ClientMessage message(RegistrationManager, REGISTER_QUERY, type, name);
 
     message.send();
     return message.result;
 }
 
-ServiceReturn LocalRegistrationManager::registerCallback(RegistrationType type, char *name, RexxCallback entryPoint,
-    uint32_t *userData, void *userPointer, int legacyStyle)
+/**
+ * Perform a callback query, retrieving the userdata
+ * provided when the callback was registered.
+ *
+ * @param type     The registration type.
+ * @param name     The name of the callback,
+ * @param module   The optional target library.
+ * @param userData The pointer for the returned userdata.
+ *
+ * @return The service return code.
+ */
+ServiceReturn LocalRegistrationManager::queryCallback(RegistrationType type, const char *name, const char *module,
+    char *userData)
 {
-    // first parameter for these calls is ALWAYS the type
-    ClientMessage message(RegistrationManager, REGISTER_ENTRYPOINT, type);
-
-    // the environment name always goes into name argument buffer
-    strcpy(message.nameArg, name);
-    ServiceRegistrationData regData;
-    message.setMessageData((char *)&regData, sizeof(ServiceRegistrationData));
-
-    regData.userPointer = userPointer;
-    regData.entryPoint = (uintptr_t)entryPoint;
-    regData.dropAuthority = OWNER_ONLY;
-    regData.legacyStyle = legacyStyle;
-    // we have two bits of user data to copy
-    if (userData != NULL)
+    if (module != NULL)
     {
-        regData.userData[0] = userData[0];
-        regData.userData[1] = userData[1];
+        // first parameter for these calls is ALWAYS the type
+        ClientMessage message(RegistrationManager, REGISTER_QUERY_LIBRARY, type, name);
+        ServiceRegistrationData regData(module);
+
+        message.setMessageData((char *)&regData, sizeof(ServiceRegistrationData));
+
+        message.send();
+        // if this was there, copy the user information back
+        if (message.result == CALLBACK_EXISTS)
+        {
+            ServiceRegistrationData *retData = (ServiceRegistrationData *)message.getMessageData();
+
+            retData->retrieveUserData(userData);
+        }
+        return message.result;
     }
     else
     {
-        regData.userData[0] = 0;
-        regData.userData[1] = 0;
-    }
-    message.send();
-    return message.result;
-}
-
-
-ServiceReturn LocalRegistrationManager::dropCallback(RegistrationType type, char *name, char *module)
-{
-    // first parameter for these calls is ALWAYS the type
-    ClientMessage message(RegistrationManager, REGISTER_DROP, type);
-
-    // the environment name always goes into name argument buffer
-    strcpy(message.nameArg, name);
-    ServiceRegistrationData regData;
-
-    // requesting by explicit library name
-    if (module != NULL)
-    {
-        // we need to change the operation and copy one additional parameter
-        message.operation = REGISTER_DROP_LIBRARY;
-        strcpy(regData.moduleName, module);
-        message.setMessageData((char *)&regData, sizeof(ServiceRegistrationData));
-    }
-
-    message.send();
-    return message.result;
-}
-
-//TODO:  Double check the clearing of passed buffers on returns to avoid memory leaks.
-ServiceReturn LocalRegistrationManager::queryCallback(RegistrationType type, char *name)
-{
-    // first parameter for these calls is ALWAYS the type
-    ClientMessage message(RegistrationManager, REGISTER_QUERY, type);
-
-    // the environment name always goes into name argument buffer
-    strcpy(message.nameArg, name);
-
-    message.send();
-    return message.result;
-}
-
-ServiceReturn LocalRegistrationManager::queryCallback(RegistrationType type, char *name, char *module,
-    uint32_t *userData, void **userPointer)
-{
-    // first parameter for these calls is ALWAYS the type
-    ClientMessage message(RegistrationManager, REGISTER_QUERY, type);
-    ServiceRegistrationData regData;
-
-    // the environment name always goes into name argument buffer
-    strcpy(message.nameArg, name);
-
-    // requesting by explicit library name
-    if (module != NULL)
-    {
-        // we need to change the operation and copy one additional parameter
-        message.operation = REGISTER_QUERY_LIBRARY;
-        strcpy(regData.moduleName, module);
-        message.setMessageData((char *)&regData, sizeof(ServiceRegistrationData));
-    }
-
-    message.send();
-    // if this was there, copy the user information back
-    if (message.result == CALLBACK_EXISTS)
-    {
-        ServiceRegistrationData *retData = (ServiceRegistrationData *)message.getMessageData();
-
-        if (userData != NULL)
+        // first parameter for these calls is ALWAYS the type
+        ClientMessage message(RegistrationManager, REGISTER_QUERY, type, name);
+        message.send();
+        // if this was there, copy the user information back
+        if (message.result == CALLBACK_EXISTS)
         {
-            userData[0] = retData->userData[0];
-            userData[1] = retData->userData[1];
-        }
-        if (userPointer != NULL)
-        {
-            *userPointer = retData->userPointer;
-        }
-        // make sure we free the returned value.
-        ooRexxFreeMemory(retData);
-    }
+            ServiceRegistrationData *retData = (ServiceRegistrationData *)message.getMessageData();
 
-    return message.result;
+            retData->retrieveUserData(userData);
+        }
+        return message.result;
+    }
 }
 
-void LocalRegistrationManager::resolveCallback(RegistrationType type, char *name, char *module,
-    RexxCallback &entryPoint, int &legacyStyle)
+/**
+ * Resolve a registered callback entry point.
+ *
+ * @param type       The registration type
+ * @param name       The name of the callback.
+ * @param module     An optional library qualifier.
+ * @param entryPoint Pointer for returning the entry point address.
+ */
+void LocalRegistrationManager::resolveCallback(RegistrationType type, const char *name, const char *module,
+    RexxCallback &entryPoint)
 {
     entryPoint = NULL;                 // assume failure
 
     // first parameter for these calls is ALWAYS the type
-    ClientMessage message(RegistrationManager, REGISTER_LOAD_LIBRARY, type);
-    ServiceRegistrationData regData;
+    ClientMessage message(RegistrationManager, REGISTER_LOAD_LIBRARY, type, name);
+    ServiceRegistrationData regData(module);
     message.setMessageData((char *)&regData, sizeof(ServiceRegistrationData));
 
     // the environment name always goes into name argument buffer
-    strcpy(message.nameArg, name);
-    // module is optional, so make sure we have something to copy.
-    if (module == NULL)
-    {
-        strcpy(module,"");
-    }
-    strcpy(regData.moduleName, module);
+    strcpy(message.nameArg, module == NULL ? "" : module);
 
     message.send();
 
@@ -221,13 +232,18 @@ void LocalRegistrationManager::resolveCallback(RegistrationType type, char *name
         {
             entryPoint = (RexxCallback)retData->entryPoint;
         }
-        legacyStyle = retData->legacyStyle;
-        // make sure we free the returned value.
-        ooRexxFreeMemory(retData);
     }
 }
 
 
+/**
+ * Convert an exception returned from the service into a
+ * return code.
+ *
+ * @param e      The service exception.
+ *
+ * @return The mapped return code.
+ */
 RexxReturnCode LocalRegistrationManager::processServiceException(ServiceException *e)
 {
     switch (e->getErrorCode())
