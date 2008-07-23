@@ -50,20 +50,19 @@ class LocalRegistrationManager : public LocalAPISubsystem
 {
 public:
 
-    ServiceReturn registerCallback(RegistrationType type, char *name, char *module,
-        char *proc, uint32_t *userData, void *userPointer, size_t drop, int legacyStyle);
+    ServiceReturn registerCallback(RegistrationType type, const char *name, const char *module,
+        const char *proc, const char *userData, bool drop);
 
-    ServiceReturn registerCallback(RegistrationType type, char *name, RexxCallback entryPoint,
-        uint32_t *userData, void *userPointer, int legacyStyle);
+    ServiceReturn registerCallback(RegistrationType type, const char *name, RexxCallback entryPoint,
+        const char *userData);
 
-    ServiceReturn dropCallback(RegistrationType type, char *name, char *module);
+    ServiceReturn dropCallback(RegistrationType type, const char *name, const char *module);
 
-    ServiceReturn queryCallback(RegistrationType type, char *name);
+    ServiceReturn queryCallback(RegistrationType type, const char *name);
 
-    ServiceReturn queryCallback(RegistrationType type, char *name, char *module,
-        uint32_t *userData, void **userPointer);
+    ServiceReturn queryCallback(RegistrationType type, const char *name, const char *module, char *userData);
 
-    void resolveCallback(RegistrationType type, char *name, char *module, RexxCallback &entryPoint, int &legacyStyle);
+    void resolveCallback(RegistrationType type, const char *name, const char *module, RexxCallback &entryPoint);
     virtual RexxReturnCode processServiceException(ServiceException *e);
 };
 

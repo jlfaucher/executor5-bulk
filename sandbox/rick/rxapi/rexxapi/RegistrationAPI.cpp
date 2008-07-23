@@ -117,27 +117,14 @@ RexxReturnCode RexxEntry RexxRegisterSubcomDll(
 /*                                                                   */
 /*********************************************************************/
 
-RexxReturnCode RexxEntry ooRexxRegisterSubcom(
-  RexxStringPointer envName,                  // Subcom name
-  RexxCallback      entryPoint,               // callback address
-  RexxUserData      userArea,                 // User data
-  RexxNumber        style)                    // style of the callback
-{
-    return _ooRexxRegisterSubcom(envName, entryPoint, userArea, NULL, style);
-}
-
-
-RexxReturnCode RexxEntry _ooRexxRegisterSubcom(
-  RexxStringPointer envName,                  // Subcom name
-  RexxCallback      entryPoint,               // callback address
-  RexxUserData      userArea,                 // User data
-  uint32_t          *oldUserArea,             // legacy user data
-  RexxNumber        style)                    // legacy call style
+RexxReturnCode RexxEntry RexxRegisterSubcom(
+    const char *    envName,                  // Subcom name
+    RexxCallback    entryPoint,               // callback address
+    const char *    userArea)                 // User data
 {
     ENTER_REXX_API(RegistrationManager)
     {
-        lam->registrationManager.registerCallback(SubcomAPI,
-            envName, entryPoint, oldUserArea, userArea, style);
+        lam->registrationManager.registerCallback(SubcomAPI, envName, entryPoint, userArea);
     }
     EXIT_REXX_API();
 }
@@ -159,9 +146,9 @@ RexxReturnCode RexxEntry _ooRexxRegisterSubcom(
 /*                                                                   */
 /*********************************************************************/
 
-RexxReturnCode RexxEntry ooRexxDeregisterSubcom(
-  RexxStringPointer name,                            /* Environment Name           */
-  RexxStringPointer moduleName )                     /* Associated library name    */
+RexxReturnCode RexxEntry RexxDeregisterSubcom(
+    const char *    name,                            /* Environment Name           */
+    const char *    moduleName )                     /* Associated library name    */
 {
     ENTER_REXX_API(RegistrationManager)
     {
@@ -193,27 +180,18 @@ RexxReturnCode RexxEntry ooRexxDeregisterSubcom(
 /*                                                                   */
 /*********************************************************************/
 
-RexxReturnCode RexxEntry ooRexxQuerySubcom(
-  RexxStringPointer   name,            /* Environment Name           */
-  RexxStringPointer   module,          /* Associated library name    */
-  RexxUnsignedNumber *flags,           /* existence information      */
-  RexxUserData       *userWord)        /* data from registration     */
+RexxReturnCode RexxEntry RexxQuerySubcom(
+  const char         *name,            /* Environment Name           */
+  const char         *module,          /* Associated library name    */
+  unsigned short     *flags,           /* existence information      */
+  char               *userWord)        /* data from registration     */
 {
-    return _ooRexxQuerySubcom(name, module, flags, userWord, NULL);
-}
-
-
-RexxReturnCode RexxEntry _ooRexxQuerySubcom(
-  RexxStringPointer   name,            // Environment Name
-  RexxStringPointer   module,          // Associated Name (of DLL)
-  RexxUnsignedNumber *flags,           // existence information
-  RexxUserData       *userWord,        // data from registration
-  uint32_t           *oldUserArea)     // legacy user data
-{
+    *flags = 0;
     ENTER_REXX_API(RegistrationManager)
     {
-        if (lam->registrationManager.queryCallback(SubcomAPI, name, module, oldUserArea, userWord) == CALLBACK_EXISTS)
+        if (lam->registrationManager.queryCallback(SubcomAPI, name, module, userWord) == CALLBACK_EXISTS)
         {
+            *flags = 1;
             return RXSUBCOM_OK;
         }
         else
@@ -242,16 +220,14 @@ RexxReturnCode RexxEntry _ooRexxQuerySubcom(
 /*                                                                   */
 /*********************************************************************/
 
-RexxReturnCode RexxEntry ooRexxResolveSubcom(
-  RexxStringPointer name,              // Exit name.
-  RexxCallback     *entryPoint,        // the entry point of the exit
-  RexxNumber       *legacyStyle)       // the type of call
+RexxReturnCode RexxEntry RexxResolveSubcom(
+  const char       *name,              // Exit name.
+  RexxCallback     *entryPoint)        // the entry point of the exit
 {
     ENTER_REXX_API(RegistrationManager)
     {
         int legacy;
-        lam->registrationManager.resolveCallback(SubcomAPI, name, NULL, *entryPoint, legacy);
-        *legacyStyle = (RexxNumber)legacy;
+        lam->registrationManager.resolveCallback(SubcomAPI, name, NULL, *entryPoint);
     }
     EXIT_REXX_API();
 }
@@ -276,30 +252,16 @@ RexxReturnCode RexxEntry ooRexxResolveSubcom(
 /*                                                                   */
 /*********************************************************************/
 
-RexxReturnCode RexxEntry ooRexxRegisterLibraryExit(
-  RexxStringPointer  envName,                  // Exit name
-  RexxStringPointer  moduleName,               // Name of DLL
-  RexxStringPointer  procedureName,            // DLL routine name
-  RexxUserData       userArea,                 // User data
-  RexxUnsignedNumber dropAuthority,            // Drop Authority
-  RexxNumber         style)                    // the exit call style
-{
-    return _ooRexxRegisterLibraryExit(envName, moduleName, procedureName, userArea, NULL, dropAuthority, style);
-}
-
-RexxReturnCode RexxEntry _ooRexxRegisterLibraryExit(
-  RexxStringPointer  envName,                  /* Exit name                  */
-  RexxStringPointer  moduleName,               /* Name of DLL                */
-  RexxStringPointer  procedureName,            /* DLL routine name           */
-  RexxUserData       userArea,                 /* User data                  */
-  uint32_t          *oldUserArea,              // legacy user data
-  RexxUnsignedNumber dropAuthority,            /* Drop Authority             */
-  RexxNumber         legacyStyle)              // old-style calls
+RexxReturnCode RexxEntry RexxRegisterLibraryExit(
+    const char *     envName,                  // Exit name
+    const char *     moduleName,               // Name of DLL
+    const char *     procedureName,            // DLL routine name
+    const char *     userArea,                 // User data
+    size_t           dropAuthority)            // Drop Authority
 {
     ENTER_REXX_API(RegistrationManager)
     {
-        lam->registrationManager.registerCallback(ExitAPI,
-            envName, moduleName, procedureName, oldUserArea, userArea, dropAuthority == RXSUBCOM_NONDROP, legacyStyle);
+        lam->registrationManager.registerCallback(ExitAPI, envName, moduleName, procedureName, userArea, dropAuthority == RXSUBCOM_NONDROP);
     }
     EXIT_REXX_API();
 }
@@ -321,27 +283,14 @@ RexxReturnCode RexxEntry _ooRexxRegisterLibraryExit(
 /*                                                                   */
 /*********************************************************************/
 
-RexxReturnCode RexxEntry ooRexxRegisterExit(
-  RexxStringPointer envName,           /* exit name                  */
-  RexxCallback  entryPoint,            /* Entry point address        */
-  RexxUserData *userArea,              /* User data                  */
-  RexxNumber    style)                 // the exit call style
-{
-    return _ooRexxRegisterExit(envName, entryPoint, userArea, NULL, style);
-}
-
-
-RexxReturnCode RexxEntry _ooRexxRegisterExit(
-  RexxStringPointer envName,           /* exit name                  */
-  RexxCallback  entryPoint,            /* Entry point address        */
-  RexxUserData *userArea,              /* User data                  */
-  uint32_t     *oldUserArea,           // legacy user data
-  RexxNumber legacyStyle)         // indicates the call style of the exit
+RexxReturnCode RexxEntry   RexxRegisterExit(
+  const char *      envName,           /* exit name                  */
+  RexxCallback      entryPoint,        /* Entry point address        */
+  const char *      userArea)          /* User data                  */
 {
     ENTER_REXX_API(RegistrationManager)
     {
-        lam->registrationManager.registerCallback(ExitAPI,
-            envName, entryPoint, oldUserArea, userArea, legacyStyle);
+        lam->registrationManager.registerCallback(ExitAPI, envName, entryPoint, userArea);
     }
     EXIT_REXX_API();
 }
@@ -363,9 +312,9 @@ RexxReturnCode RexxEntry _ooRexxRegisterExit(
 /*                                                                   */
 /*********************************************************************/
 
-RexxReturnCode RexxEntry ooRexxDeregisterExit(
-  RexxStringPointer name,                          /* Environment Name           */
-  RexxStringPointer moduleName)                    /* Associated library name    */
+RexxReturnCode RexxEntry RexxDeregisterExit(
+    const char *    name,                          /* Environment Name           */
+    const char *    moduleName)                    /* Associated library name    */
 {
     ENTER_REXX_API(RegistrationManager)
     {
@@ -397,32 +346,22 @@ RexxReturnCode RexxEntry ooRexxDeregisterExit(
 /*                                                                   */
 /*********************************************************************/
 
-RexxReturnCode RexxEntry ooRexxQueryExit(
-  RexxStringPointer name,              /* Environment Name           */
-  RexxStringPointer module,            /* Associated Name (of DLL)   */
-  RexxUnsignedNumber *exist,           /* existence information      */
-  RexxUserData       *userword)        /* data from registration     */
+RexxReturnCode RexxEntry RexxQueryExit(
+  const char *      name,              /* Environment Name           */
+  const char *      module,            /* Associated Name (of DLL)   */
+  size_t             *exist,           /* existence information      */
+  char               *userword)        /* data from registration     */
 {
-    return _ooRexxQueryExit(name, module, exist, userword, NULL);
-}
-
-RexxReturnCode RexxEntry _ooRexxQueryExit(
-  RexxStringPointer name,              /* Environment Name           */
-  RexxStringPointer module,            /* Associated Name (of DLL)   */
-  RexxUnsignedNumber *exist,           /* existence information      */
-  RexxUserData       *userword,        /* data from registration     */
-  uint32_t     *oldUserArea)           // legacy user data
-{
+    *exist = 0;
     ENTER_REXX_API(RegistrationManager)
     {
-        if (lam->registrationManager.queryCallback(ExitAPI, name, module, oldUserArea, userword) == CALLBACK_EXISTS)
+        if (lam->registrationManager.queryCallback(ExitAPI, name, module, userword) == CALLBACK_EXISTS)
         {
             *exist = 1;
             return RXSUBCOM_OK;
         }
         else
         {
-            *exist = 0;
             return RXSUBCOM_NOTREG;
         }
     }
@@ -447,16 +386,14 @@ RexxReturnCode RexxEntry _ooRexxQueryExit(
 /*                                                                   */
 /*********************************************************************/
 
-RexxReturnCode RexxEntry ooRexxResolveExit(
-  RexxStringPointer name,              // Exit name.
-  RexxCallback     *entryPoint,        // the entry point of the exit
-  RexxNumber       *legacyStyle)       // the type of call
+RexxReturnCode RexxEntry RexxResolveExit(
+  const char *      name,              // Exit name.
+  RexxCallback     *entryPoint)        // the entry point of the exit
 {
     ENTER_REXX_API(RegistrationManager)
     {
         int legacy;
-        lam->registrationManager.resolveCallback(ExitAPI, name, NULL, *entryPoint, legacy);
-        *legacyStyle = (RexxNumber)legacy;
+        lam->registrationManager.resolveCallback(ExitAPI, name, NULL, *entryPoint);
     }
     EXIT_REXX_API();
 }
@@ -478,16 +415,14 @@ RexxReturnCode RexxEntry ooRexxResolveExit(
 /*                                                                   */
 /*********************************************************************/
 
-RexxReturnCode RexxEntry ooRexxRegisterLibraryFunction(
-  RexxStringPointer name,                 // Subcom name
-  RexxStringPointer moduleName,           // Name of library
-  RexxStringPointer procedureName,        // library routine name
-  RexxNumber    style)                    // the function call style
+RexxReturnCode RexxEntry RexxRegisterLibraryFunction(
+  const char *      name,                 // Subcom name
+  const char *      moduleName,           // Name of library
+  const char *      procedureName)        // library routine name
 {
     ENTER_REXX_API(RegistrationManager)
     {
-        lam->registrationManager.registerCallback(FunctionAPI,
-            name, moduleName, procedureName, NULL, NULL, 0, style);
+        lam->registrationManager.registerCallback(FunctionAPI, name, moduleName, procedureName, NULL, true);
     }
     EXIT_REXX_API();
 }
@@ -509,15 +444,13 @@ RexxReturnCode RexxEntry ooRexxRegisterLibraryFunction(
 /*                                                                   */
 /*********************************************************************/
 
-RexxReturnCode RexxEntry ooRexxRegisterFunction(
-  RexxStringPointer name,                 // Function name
-  RexxCallback  entryPoint,               // Entry point address
-  RexxNumber    style)                    // the function call style
+RexxReturnCode RexxEntry RexxRegisterFunction(
+  const char *      name,                 // Function name
+  RexxCallback  entryPoint)               // Entry point address
 {
     ENTER_REXX_API(RegistrationManager)
     {
-        lam->registrationManager.registerCallback(FunctionAPI,
-            name, entryPoint, NULL, NULL, style);
+        lam->registrationManager.registerCallback(FunctionAPI, name, entryPoint, NULL);
     }
     EXIT_REXX_API();
 }
@@ -537,8 +470,8 @@ RexxReturnCode RexxEntry ooRexxRegisterFunction(
 /*                                                                   */
 /*********************************************************************/
 
-RexxReturnCode RexxEntry ooRexxDeregisterFunction(
-  RexxStringPointer name)                   /* Function Name           */
+RexxReturnCode RexxEntry RexxDeregisterFunction(
+    const char *    name)                   /* Function Name           */
 {
     ENTER_REXX_API(RegistrationManager)
     {
@@ -564,12 +497,12 @@ RexxReturnCode RexxEntry ooRexxDeregisterFunction(
 /*                                                                   */
 /*********************************************************************/
 
-RexxReturnCode RexxEntry ooRexxQueryFunction(
-  RexxStringPointer name)                 /* Function Name           */
+RexxReturnCode RexxEntry RexxQueryFunction(
+    const char *    name)                 /* Function Name           */
 {
     ENTER_REXX_API(RegistrationManager)
     {
-        if (lam->registrationManager.queryCallback(FunctionAPI, name, NULL, NULL, NULL) == CALLBACK_EXISTS)
+        if (lam->registrationManager.queryCallback(FunctionAPI, name, NULL, NULL) == CALLBACK_EXISTS)
         {
             return RXSUBCOM_OK;
         }
@@ -582,81 +515,16 @@ RexxReturnCode RexxEntry ooRexxQueryFunction(
 }
 
 
-RexxReturnCode RexxEntry ooRexxResolveFunction(
-  RexxStringPointer name,              // Function name
-  RexxStringPointer library,           // Qualifying library name (optional)
-  RexxCallback     *entryPoint,        // the entry point of the exit
-  RexxNumber       *legacyStyle)       // the type of call
+RexxReturnCode RexxEntry   RexxResolveFunction(
+    const char *    name,              // Function name
+    const char *    library,           // Qualifying library name (optional)
+    RexxCallback   *entryPoint)        // the entry point of the exit
 {
     ENTER_REXX_API(RegistrationManager)
     {
-        int legacy;
-        lam->registrationManager.resolveCallback(FunctionAPI, name, library, *entryPoint, legacy);
-        *legacyStyle = (RexxNumber)legacy;
+        lam->registrationManager.resolveCallback(FunctionAPI, name, library, *entryPoint);
     }
     EXIT_REXX_API();
-}
-
-
-/* try to shutdown the RXAPI.EXE */
-/* request from toronto */
-
-RexxReturnCode RexxEntry ooRexxShutDownAPI(void)
-{
-    ENTER_REXX_API(APIManager)
-    {
-        lam->shutdown();
-    }
-    EXIT_REXX_API();
-}
-
-
-
-/*********************************************************************/
-/*                                                                   */
-/*  Function Name:   RexxAllocateMemory                              */
-/*                                                                   */
-/*  Description:     Operating system independant function to        */
-/*                   allocate memory. The function is a wrapper      */
-/*                   for appropriate operating system memory         */
-/*                   allocation function.                            */
-/*                                                                   */
-/*                                                                   */
-/*  Entry Point:     RexxAllocateMemory                              */
-/*                                                                   */
-/*  Parameter(s):    Specifies the number of bytes to allocate       */
-/*                                                                   */
-/*  Return Value:    Pointer to the allocated memory                 */
-/*                   NULL if the function fails                      */
-/*                                                                   */
-/*********************************************************************/
-void * RexxEntry ooRexxAllocateMemory(RexxStringLength size)
-{
-    return SysLocalAPIManager::allocateMemory((size_t)size);
-}
-
-/*********************************************************************/
-/*                                                                   */
-/*  Function Name:   RexxFreeMemory                                  */
-/*                                                                   */
-/*  Description:     Operating system independant function to        */
-/*                   free memory. The function is a wrapper          */
-/*                   for appropriate operating system memory         */
-/*                   allocation function.                            */
-/*                                                                   */
-/*                                                                   */
-/*  Entry Point:     RexxFreeMemory                                  */
-/*                                                                   */
-/*  Parameter(s):    Pointer to the memory allocated with            */
-/*                   RexxAllocateMemory                              */
-/*                                                                   */
-/*  Return Value:    always returns 0                                */
-/*                                                                   */
-/*********************************************************************/
-RexxReturnCode RexxEntry ooRexxFreeMemory(void *pMem)
-{
-    SysLocalAPIManager::releaseMemory(pMem);
-    return 0;
 }
 
 

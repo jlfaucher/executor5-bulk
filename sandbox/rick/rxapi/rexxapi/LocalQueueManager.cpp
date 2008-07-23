@@ -47,9 +47,9 @@
 #include <ctype.h>
 
 
-void LocalQueueManager::validateQueueName(char *username)
+void LocalQueueManager::validateQueueName(const char *username)
 {
-   char       *valptr;                 /* Used to validate name.     */
+   const char       *valptr;           /* Used to validate name.     */
    char        ch;
    size_t      namelen;                /* Length of the user's name. */
 

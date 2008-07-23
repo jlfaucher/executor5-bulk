@@ -62,8 +62,8 @@
 
 RexxReturnCode RexxEntry RexxAddMacro(
   const char *name,                 /* name of macro function     */
-  RexxStringPointer file,           /* name of file               */
-  RexxUnsignedNumber pos )          /* search order pos request   */
+  const char *file,                 /* name of file               */
+  size_t pos)                       /* search order pos request   */
 {
     ENTER_REXX_API(MacroSpaceManager)
     {
@@ -87,8 +87,8 @@ RexxReturnCode RexxEntry RexxAddMacro(
 /*                                                                   */
 /*********************************************************************/
 
-RexxReturnCode RexxEntry ooRexxDropMacro(
-  RexxStringPointer name)                          /* name of macro to delete    */
+RexxReturnCode RexxEntry RexxDropMacro(
+    const char *name)                              /* name of macro to delete    */
 {
     ENTER_REXX_API(MacroSpaceManager)
     {
@@ -110,7 +110,7 @@ RexxReturnCode RexxEntry ooRexxDropMacro(
 /*                                                                   */
 /*********************************************************************/
 
-RexxReturnCode RexxEntry ooRexxClearMacroSpace(void)
+RexxReturnCode RexxEntry RexxClearMacroSpace()
 {
     ENTER_REXX_API(MacroSpaceManager)
     {
@@ -141,10 +141,10 @@ RexxReturnCode RexxEntry ooRexxClearMacroSpace(void)
 /*  Output:             return code                                  */
 /*                                                                   */
 /*********************************************************************/
-RexxReturnCode RexxEntry ooRexxSaveMacroSpace(
-  RexxUnsignedNumber count,                     /* count of arguments         */
-  RexxStringPointer *names,                     /* argument list              */
-  RexxStringPointer targetFile)                 /* file name                  */
+RexxReturnCode RexxEntry RexxSaveMacroSpace(
+    size_t           count,                     /* count of arguments         */
+    const char *     names,                     /* argument list              */
+    const char *    targetFile)                 /* file name                  */
 {
     ENTER_REXX_API(MacroSpaceManager)
     {
@@ -178,10 +178,10 @@ RexxReturnCode RexxEntry ooRexxSaveMacroSpace(
 /*  Output:             return code                                  */
 /*                                                                   */
 /*********************************************************************/
-RexxReturnCode RexxEntry ooRexxLoadMacroSpace(
-  RexxUnsignedNumber   count,                      // argument count
-  RexxStringPointer   *names,                      // list of argument strings
-  RexxStringPointer    macroFile)                  // file name to load functs
+RexxReturnCode RexxEntry RexxLoadMacroSpace(
+    size_t             count,                      // argument count
+    const char       **names,                      // list of argument strings
+    const char        *macroFile)                  // file name to load functs
 {
     ENTER_REXX_API(MacroSpaceManager)
     {
@@ -214,9 +214,9 @@ RexxReturnCode RexxEntry ooRexxLoadMacroSpace(
 /*                                                                   */
 /*********************************************************************/
 
-RexxReturnCode RexxEntry ooRexxQueryMacro(
-  RexxStringPointer name,                /* name to search for         */
-  RexxUnsignedNumber *pos)               /* pointer for return of pos  */
+RexxReturnCode RexxEntry RexxQueryMacro(
+    const char     *name,                /* name to search for         */
+    size_t         *pos)                 /* pointer for return of pos  */
 {
     ENTER_REXX_API(MacroSpaceManager)
     {
@@ -241,9 +241,9 @@ RexxReturnCode RexxEntry ooRexxQueryMacro(
 /*                                                                   */
 /*********************************************************************/
 
-RexxReturnCode RexxEntry ooRexxReorderMacro(
-  RexxStringPointer  name,              /* name of function to change */
-  RexxUnsignedNumber pos )              /* new position for function  */
+RexxReturnCode RexxEntry RexxReorderMacro(
+    const char *name,                   /* name of function to change */
+    size_t pos)                         /* new position for function  */
 {
     ENTER_REXX_API(MacroSpaceManager)
     {
@@ -269,9 +269,9 @@ RexxReturnCode RexxEntry ooRexxReorderMacro(
 /*                                                                   */
 /*********************************************************************/
 
-RexxReturnCode RexxEntry ooRexxResolveMacroFunction(
-  RexxStringPointer  name,             /* name of func to find       */
-  RxString *p)                         /* storage for image return   */
+RexxReturnCode RexxEntry RexxResolveMacroFunction(
+    const char *     name,             /* name of func to find       */
+    RXSTRING *p)                       /* storage for image return   */
 {
     ENTER_REXX_API(MacroSpaceManager)
     {
