@@ -47,41 +47,49 @@
 #include <ctype.h>
 
 
+/**
+ * Validate a queue name
+ *
+ * @param username The name to validate.
+ */
 void LocalQueueManager::validateQueueName(const char *username)
 {
-   const char       *valptr;           /* Used to validate name.     */
-   char        ch;
-   size_t      namelen;                /* Length of the user's name. */
+    if (username == NULL)               /* NULL is OK.                */
+    {
+        return;
+    }
+    // "SESSION" is a reserved name, reject this in this context
+    if (SysUtil::stricmp(username, "SESSION") == 0)
+    {
+        throw new ServiceException(INVALID_QUEUE_NAME, username);
+    }
 
-   if (username == NULL)               /* NULL is OK.                */
-   {
-       return;
-   }
-   // "SESSION" is a reserved name, reject this in this context
-   if (SysUtil::stricmp(username, "SESSION") == 0)
-   {
-       throw new ServiceException(INVALID_QUEUE_NAME, username);
-   }
-
-   namelen = strlen(username);
-   if (namelen > 0 && namelen < MAX_QUEUE_NAME_LENGTH)
-   {
-       valptr = username;                /* point to name              */
-       while((ch = *(valptr++))) {       /* While have not reached end */
-           ch = toupper(ch);               /* convert to upper case      */
-           if (!isalpha(ch) && !isdigit(ch) && ch != ch_PERIOD &&
-               ch != ch_QUESTION_MARK && ch != ch_EXCLAMATION && ch != ch_UNDERSCORE)
-           {
-               throw new ServiceException(INVALID_QUEUE_NAME, username);
-           }
-       }
-   }
-   else
-   {
-       throw new ServiceException(INVALID_QUEUE_NAME, username);
-   }
+    size_t namelen = strlen(username);
+    if (namelen > 0 && namelen < MAX_QUEUE_NAME_LENGTH)
+    {
+        const char *valptr = username;      /* point to name              */
+        while ((ch = *(valptr++)))
+        {         /* While have not reached end */
+            char ch = toupper(ch);               /* convert to upper case      */
+            if (!isalpha(ch) && !isdigit(ch) && ch != ch_PERIOD &&
+                ch != ch_QUESTION_MARK && ch != ch_EXCLAMATION && ch != ch_UNDERSCORE)
+            {
+                throw new ServiceException(INVALID_QUEUE_NAME, username);
+            }
+        }
+    }
+    else
+    {
+        throw new ServiceException(INVALID_QUEUE_NAME, username);
+    }
 }
 
+
+/**
+ * Initialize the local (client) queue manager instance.
+ *
+ * @param a      The local API manager instance.
+ */
 void LocalQueueManager::initializeLocal(LocalAPIManager *a)
 {
     localManager = a;
@@ -90,6 +98,10 @@ void LocalQueueManager::initializeLocal(LocalAPIManager *a)
     sessionQueue = initializeSessionQueue(a->getSession());
 }
 
+
+/**
+ * Handle process termination.
+ */
 void LocalQueueManager::terminateProcess()
 {
     // if we have a session queue
@@ -102,6 +114,13 @@ void LocalQueueManager::terminateProcess()
 }
 
 
+/**
+ * Create the session queue for this process.
+ *
+ * @param session
+ *
+ * @return
+ */
 QueueHandle LocalQueueManager::initializeSessionQueue(SessionID session)
 {
     // first check to see if we have an env variable set...if we do we
