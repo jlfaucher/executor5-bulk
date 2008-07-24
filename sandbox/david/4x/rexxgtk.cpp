@@ -855,8 +855,8 @@ RexxMethodEntry gtkobject_methods[] = {
 
 RexxPackageEntry gtkobject_package_entry = {
     STANDARD_PACKAGE_HEADER
+    REXX_INTERPRETER_4_0_0,              // anything after 4.0.0 will work
     "RexxGTK",                           // name of the package
-//    "0.1",                               // package information
     VERSTRING(VMAJOR,VMINOR,VREL),       // package information
     NULL,                                // no load/unload functions
     NULL,
