@@ -197,7 +197,7 @@ void DataQueue::pull(ServiceMessage &message)
 }
 
 // locate a named data queue
-DataQueue *QueueTable::locate(char *name)
+DataQueue *QueueTable::locate(const char *name)
 {
     DataQueue *current = queues;    // start the search
     DataQueue *previous = NULL;     // no previous one
@@ -243,7 +243,7 @@ DataQueue *QueueTable::locate(SessionID id)
 
 
 // locate and remove a named data queue
-DataQueue *QueueTable::remove(char *name)
+DataQueue *QueueTable::remove(const char *name)
 {
     DataQueue *current = queues;    // start the search
     DataQueue *previous = NULL;     // no previous one

@@ -318,6 +318,16 @@ public:
 
     inline char *getMessageData() { return messageData; }
     inline size_t getMessageDataLength() { return messageDataLength; }
+
+    inline void transferMessageData(RXSTRING &data)
+    {
+        MAKERXSTRING(data, messageData, messageDataLength);
+        // we've given up ownership of this data, so clear out the
+        // pointers so we don't try to free
+        messageData = NULL;
+        messageDataLength = 0;
+    }
+
     inline void setMessageData(const char *data, size_t length)
     {
         freeMessageData();    // make sure any existing data is cleared.

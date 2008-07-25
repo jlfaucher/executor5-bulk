@@ -55,26 +55,26 @@ public:
 
     typedef uintptr_t QueueHandle;
 
-    inline bool isSessionQueue(char *name)
+    inline bool isSessionQueue(const char *name)
     {
         return name == NULL || SysUtil::stricmp(name, "SESSION") == 0;
     }
 
-    void validateQueueName(char *username);
+    void validateQueueName(const char *username);
     void initializeLocal(LocalAPIManager *a);
     virtual void terminateProcess();
     QueueHandle initializeSessionQueue(SessionID s);
     QueueHandle createSessionQueue(SessionID session);
-    bool createNamedQueue(char *name, size_t size, char *createdName);
+    bool createNamedQueue(const char *name, size_t size, char *createdName);
     void deleteSessionQueue();
-    void deleteNamedQueue(char * name);
+    void deleteNamedQueue(const char * name);
     void clearSessionQueue();
-    void clearNamedQueue(char * name);
+    void clearNamedQueue(const char * name);
     size_t getSessionQueueCount();
-    size_t getQueueCount(char *name);
-    void addToNamedQueue(char *name, ManagedRxstring &data, uintptr_t lifoFifo);
-    void addToSessionQueue(ManagedRxstring &data, uintptr_t lifoFifo);
-    void pullFromQueue(char *name, RxString &data, uintptr_t waitFlag, RexxTimeStamp *timeStamp);
+    size_t getQueueCount(const char *name);
+    void addToNamedQueue(const char *name, CONSTRXSTRING &data, size_t lifoFifo);
+    void addToSessionQueue(COINSTRXSTRING &data, size_t lifoFifo);
+    void pullFromQueue(const char *name, RXSTRING &data, size_t waitFlag, REXXDATETIME *timeStamp);
     void nestSessionQueue(QueueHandle q);
     virtual RexxReturnCode processServiceException(ServiceException *e);
 

@@ -41,7 +41,14 @@
 #include "ServiceException.hpp"
 
 
-RegistrationData::RegistrationData(char *n, char *m, ServiceRegistrationData *regData)
+/**
+ * Create registration data for a library registration item.
+ *
+ * @param n       The callback name.
+ * @param m       The callback library.
+ * @param regData The additional registration data sent with the message.
+ */
+RegistrationData::RegistrationData(const char *n, const char *m, ServiceRegistrationData *regData)
 {
     name = dupString(n);
     moduleName = dupString(m);
@@ -51,7 +58,14 @@ RegistrationData::RegistrationData(char *n, char *m, ServiceRegistrationData *re
     userData[1] = regData->userData[1];
 }
 
-RegistrationData::RegistrationData(char *n, SessionID s, ServiceRegistrationData *regData)
+/**
+ * Register an inprocess item.
+ *
+ * @param n       The name of the callback.
+ * @param s       The session id.
+ * @param regData The service registration data.
+ */
+RegistrationData::RegistrationData(const char *n, SessionID s, ServiceRegistrationData *regData)
 {
     name = dupString(n);
     owner = s;
@@ -61,6 +75,9 @@ RegistrationData::RegistrationData(char *n, SessionID s, ServiceRegistrationData
     entryPoint = regData->entryPoint;
 }
 
+/**
+ * Destructor for a registration data item.
+ */
 RegistrationData::~RegistrationData()
 {
     delete [] name;
@@ -77,6 +94,12 @@ RegistrationData::~RegistrationData()
 }
 
 
+/**
+ * Copy the registration information into a message
+ * data item to be returned to the client.
+ *
+ * @param regData The returned registration data.
+ */
 void RegistrationData::getRegistrationData(ServiceRegistrationData &regData)
 {
     if (moduleName != NULL)
@@ -94,6 +117,11 @@ void RegistrationData::getRegistrationData(ServiceRegistrationData &regData)
     regData.dropAuthority = dropAuthority;
 }
 
+/**
+ * Add an additional reference to a session.
+ *
+ * @param s      The session id to add.
+ */
 void RegistrationData::addSessionReference(SessionID s)
 {
     SessionCookie *cookie = findSessionReference(s);
@@ -110,6 +138,11 @@ void RegistrationData::addSessionReference(SessionID s)
     }
 }
 
+/**
+ * Decrement a session reference count.
+ *
+ * @param s      The session identifier.
+ */
 void RegistrationData::removeSessionReference(SessionID s)
 {
     SessionCookie *cookie = findSessionReference(s);
@@ -123,6 +156,14 @@ void RegistrationData::removeSessionReference(SessionID s)
     }
 }
 
+/**
+ * Locate a session reference cound.
+ *
+ * @param s      The target session identifier.
+ *
+ * @return The session cookie associated with the session, or NULL
+ *         if the session has not been tracked yet.
+ */
 SessionCookie *RegistrationData::findSessionReference(SessionID s)
 {
     SessionCookie *cookie = references;
@@ -136,6 +177,11 @@ SessionCookie *RegistrationData::findSessionReference(SessionID s)
     return NULL;
 }
 
+/**
+ * Remove a session reference cookie from the chain.
+ *
+ * @param s      The cookit to remove.
+ */
 void RegistrationData::removeSessionReference(SessionCookie *s)
 {
     if (s == references)
@@ -150,6 +196,8 @@ void RegistrationData::removeSessionReference(SessionCookie *s)
             if (current->next == s)
             {
                 current->next = s->next;
+                // delete the cookie
+                delete s;
                 break;
             }
         }
@@ -168,8 +216,8 @@ void RegistrationTable::registerLibraryCallback(ServiceMessage &message)
 {
     ServiceRegistrationData *regData = (ServiceRegistrationData *)message.getMessageData();
     // get the argument names
-    char *name = message.nameArg;
-    char *module = regData->moduleName;
+    const char *name = message.nameArg;
+    const char *module = regData->moduleName;
 
     RegistrationData *callback = locate(name, module);
     // update the reference counts to make sure drops don't
@@ -199,6 +247,7 @@ void RegistrationTable::registerLibraryCallback(ServiceMessage &message)
     // make sure the data message buffer is not passed back.
     message.freeMessageData();
 }
+
 
 // Add an exe registration item to the table.
 // Message arguments have the following meanings:
@@ -435,7 +484,7 @@ void RegistrationTable::dropCallback(ServiceMessage &message)
 }
 
 // search for a name-only registration
-RegistrationData *RegistrationTable::locate(RegistrationData *anchor, char *name)
+RegistrationData *RegistrationTable::locate(RegistrationData *anchor, const char *name)
 {
     RegistrationData *current = anchor;
     RegistrationData *previous = NULL;
@@ -483,7 +532,7 @@ void RegistrationTable::remove(RegistrationData **anchor, RegistrationData *bloc
 }
 
 // search for a library-type registration
-RegistrationData *RegistrationTable::locate(char *name, char *module)
+RegistrationData *RegistrationTable::locate(const char *name, const char *module)
 {
     RegistrationData *current = firstLibrary;
     RegistrationData *previous = NULL;
@@ -504,7 +553,7 @@ RegistrationData *RegistrationTable::locate(char *name, char *module)
 }
 
 // search for a library-type registration
-RegistrationData *RegistrationTable::locate(char *name)
+RegistrationData *RegistrationTable::locate(const char *name)
 {
     RegistrationData *callback = locate(firstLibrary, name);
     if (callback == NULL)
@@ -515,7 +564,7 @@ RegistrationData *RegistrationTable::locate(char *name)
 }
 
 // search for a local type registration
-RegistrationData *RegistrationTable::locate(char *name, SessionID session)
+RegistrationData *RegistrationTable::locate(const char *name, SessionID session)
 {
     RegistrationData *current = firstEntryPoint;
     RegistrationData *previous = NULL;

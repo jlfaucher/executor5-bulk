@@ -46,6 +46,9 @@
 #include <stdio.h>
 
 
+/**
+ * Destructor to force the macro space file to close.
+ */
 MacroSpaceFile::~MacroSpaceFile()
 {
     // we're being terminated with the file still open...delete, and
@@ -63,11 +66,20 @@ MacroSpaceFile::~MacroSpaceFile()
     }
 }
 
+/**
+ * Explicitly close the macro space file.
+ */
 void MacroSpaceFile::close()
 {
     fileInst->close();
 }
 
+
+/**
+ * Open a macrospace file for loading.
+ *
+ * @return The count of macros in the file.
+ */
 size_t MacroSpaceFile::openForLoading()
 {
     MacroSpaceFileHeader header;
@@ -100,6 +112,14 @@ size_t MacroSpaceFile::openForLoading()
     return header.count;                 // we have a size, return it.
 }
 
+
+/**
+ * Retrieve the next macro from the macrospace file.
+ *
+ * @param name   The returned macro name.
+ * @param image  The macro image information.
+ * @param order  The macro ordering information.
+ */
 void MacroSpaceFile::nextMacro(char *name, ManagedRxstring &image, size_t &order)
 {
     setFilePosition(descriptorBase);
@@ -114,6 +134,16 @@ void MacroSpaceFile::nextMacro(char *name, ManagedRxstring &image, size_t &order
     read(image, desc.imageSize);
 }
 
+
+/**
+ * Step to the next macro, reading the information if it
+ * is in the target list.
+ *
+ * @param names  The table of names.
+ * @param name   The returned name, if read.
+ * @param image  The macro image (if read).
+ * @param order  The macro order information.
+ */
 void MacroSpaceFile::nextMacro(NameTable names, char *name, ManagedRxstring &image, size_t &order)
 {
     setFilePosition(descriptorBase);
@@ -140,6 +170,12 @@ void MacroSpaceFile::nextMacro(NameTable names, char *name, ManagedRxstring &ima
     }
 }
 
+
+/**
+ * Explicitly set the file postion.
+ *
+ * @param p      The new file position.
+ */
 void MacroSpaceFile::setFilePosition(int p)
 {
     int64_t position;
@@ -150,6 +186,12 @@ void MacroSpaceFile::setFilePosition(int p)
 }
 
 
+/**
+ * Create a macro space file with an initial header table
+ * for the indicated number of macros.
+ *
+ * @param count  The number of macros to store in the file.
+ */
 void MacroSpaceFile::create(size_t count)
 {
     bool opened;
@@ -167,13 +209,27 @@ void MacroSpaceFile::create(size_t count)
     write(&header, sizeof(header));
 }
 
-void MacroSpaceFile::writeMacroDescriptor(char *name, int size, size_t order)
+/**
+ * Write a macro descriptor out to the file.
+ *
+ * @param name   The name of the macro to write.
+ * @param size   The size of the macro being written.
+ * @param order  The macro order information.
+ */
+void MacroSpaceFile::writeMacroDescriptor(const char *name, int size, size_t order)
 {
     MacroSpaceDescriptor desc(name, size, order);
 
     write(&desc, sizeof(desc));
 }
 
+
+/**
+ * Write a buffer of data to the macro file.
+ *
+ * @param data   The data buffer pointer.
+ * @param length The length to write.
+ */
 void MacroSpaceFile::write(const void *data, int length)
 {
     size_t bytesWritten;
@@ -184,6 +240,13 @@ void MacroSpaceFile::write(const void *data, int length)
     }
 }
 
+
+/**
+ * Read a buffer of data from the macrospace file.
+ *
+ * @param data   The target data buffer.
+ * @param length The size to read.
+ */
 void MacroSpaceFile::read(void *data, int length)
 {
     size_t bytesRead;
@@ -194,6 +257,13 @@ void MacroSpaceFile::read(void *data, int length)
     }
 }
 
+
+/**
+ * Read a buffer of data into a managed RXSTRING structure.
+ *
+ * @param data   The target RXSTRING
+ * @param length The length to read.
+ */
 void MacroSpaceFile::read(ManagedRxstring &data, int length)
 {
     data.ensureCapacity(length);
@@ -201,7 +271,13 @@ void MacroSpaceFile::read(ManagedRxstring &data, int length)
     data.strlength = length;
 }
 
-void LocalMacroSpaceManager::loadMacroSpace(char *target)
+
+/**
+ * Load a macrospace file into our space.
+ *
+ * @param target The target file name.
+ */
+void LocalMacroSpaceManager::loadMacroSpace(const char *target)
 {
     // now open and read the file header
     MacroSpaceFile file(target);
@@ -220,6 +296,8 @@ void LocalMacroSpaceManager::loadMacroSpace(char *target)
         ClientMessage message(MacroSpaceManager, ADD_MACRO, macroName);
         message.parameter1 = image.strlength;
         message.parameter2 = order;
+        // attach the queue item to the message.
+        message.setMessageData(image.strptr, image.strlength);
 
         // request the next one.
         message.send();
@@ -227,7 +305,16 @@ void LocalMacroSpaceManager::loadMacroSpace(char *target)
     file.close();
 }
 
-void LocalMacroSpaceManager::loadMacroSpace(char *target, char **nameList, size_t nameCount)
+
+/**
+ * Load a macrospace file, using just the subset of names
+ * in the file.
+ *
+ * @param target    The target macrospace file.
+ * @param nameList  The list of names to load.
+ * @param nameCount The number of items to load.
+ */
+void LocalMacroSpaceManager::loadMacroSpace(const char *target, const char **nameList, size_t nameCount)
 {
     NameTable names(nameList, nameCount);
 
@@ -249,6 +336,9 @@ void LocalMacroSpaceManager::loadMacroSpace(char *target, char **nameList, size_
         message.parameter1 = image.strlength;
         message.parameter2 = order;
 
+        // attach the queue item to the message.
+        message.setMessageData(image.strptr, image.strlength);
+
         // request the next one.
         message.send();
     }
@@ -256,7 +346,12 @@ void LocalMacroSpaceManager::loadMacroSpace(char *target, char **nameList, size_
 }
 
 
-void LocalMacroSpaceManager::saveMacroSpace(char *target)
+/**
+ * Save the currently loaded macros into a file.
+ *
+ * @param target The target file name.
+ */
+void LocalMacroSpaceManager::saveMacroSpace(const char *target)
 {
     ClientMessage message(MacroSpaceManager, ITERATE_MACRO_DESCRIPTORS);
 
@@ -304,16 +399,30 @@ void LocalMacroSpaceManager::saveMacroSpace(char *target)
 }
 
 
-void LocalMacroSpaceManager::getMacro(char *target, RxString *image)
+/**
+ * Retrieve a macro from the daemon server.
+ *
+ * @param target The target macro name.
+ * @param image  The returned image data.
+ */
+void LocalMacroSpaceManager::getMacro(const char *target, RXSTRING &image)
 {
     ClientMessage message(MacroSpaceManager, GET_MACRO_IMAGE, target);
 
     // request, then receive the image data
     message.send();
-    MakeRxString(*image, message.getMessageData(), message.getMessageDataLength());
+    message.transferMessageData(image);
 }
 
-void LocalMacroSpaceManager::saveMacroSpace(char *target, char **names, size_t count)
+/**
+ * Save the currently loaded macrospace using a subset of the
+ * loaded macros.
+ *
+ * @param target The file target.
+ * @param names  The list of names.
+ * @param count  The number of names in the list.
+ */
+void LocalMacroSpaceManager::saveMacroSpace(const char *target, const char **names, size_t count)
 {
     // now open and write the file header
     MacroSpaceFile file(target);
@@ -343,33 +452,66 @@ void LocalMacroSpaceManager::saveMacroSpace(char *target, char **names, size_t c
     file.close();
 }
 
+
+/**
+ * Clear all macros from the macro space.
+ */
 void LocalMacroSpaceManager::clearMacroSpace()
 {
     ClientMessage message(MacroSpaceManager, CLEAR_MACRO_SPACE);
     message.send();
 }
 
-void LocalMacroSpaceManager::removeMacro(char *name)
+
+/**
+ * Remove a macro from the macrospace.
+ *
+ * @param name   The name of the macro to remove.
+ */
+void LocalMacroSpaceManager::removeMacro(const char *name)
 {
     ClientMessage message(MacroSpaceManager, REMOVE_MACRO, name);
     message.send();
 }
 
-void LocalMacroSpaceManager::queryMacro(char *name, size_t *pos)
+
+/**
+ * Check the macro space for a give item, returning
+ * the order information.
+ *
+ * @param name   The name to check.
+ * @param pos
+ */
+void LocalMacroSpaceManager::queryMacro(const char *name, size_t *pos)
 {
     ClientMessage message(MacroSpaceManager, QUERY_MACRO, name);
     message.send();
     *pos = message.parameter1;
 }
 
-void LocalMacroSpaceManager::reorderMacro(char *name, size_t pos)
+
+/**
+ * Change the search order for a macro item.
+ *
+ * @param name   The name of the target macro.
+ * @param pos    The new search order.
+ */
+void LocalMacroSpaceManager::reorderMacro(const char *name, size_t pos)
 {
     ClientMessage message(MacroSpaceManager, REORDER_MACRO, name);
     message.parameter1 = pos;
     message.send();
 }
 
-void LocalMacroSpaceManager::addMacroFromFile(char *name, char *sourceFile, size_t position)
+
+/**
+ * Load a macro from a file and store into the macrospace.
+ *
+ * @param name       The name of the macro.
+ * @param sourceFile The target source file.
+ * @param position   The macro search position.
+ */
+void LocalMacroSpaceManager::addMacroFromFile(const char *name, const char *sourceFile, size_t position)
 {
     ManagedRxstring imageData;
 
@@ -378,7 +520,15 @@ void LocalMacroSpaceManager::addMacroFromFile(char *name, char *sourceFile, size
     addMacro(name, imageData, position);
 }
 
-void LocalMacroSpaceManager::addMacro(char *name, ManagedRxstring &imageData, size_t position)
+
+/**
+ * Add a macro from image data into the macrospace.
+ *
+ * @param name      The name of the macro.
+ * @param imageData The source image data
+ * @param position  The search order position.
+ */
+void LocalMacroSpaceManager::addMacro(const char *name, ManagedRxstring &imageData, size_t position)
 {
     ClientMessage message(MacroSpaceManager, ADD_MACRO, name);
     message.setMessageData(imageData.strptr, imageData.strlength);
@@ -392,7 +542,14 @@ void LocalMacroSpaceManager::addMacro(char *name, ManagedRxstring &imageData, si
     message.send();
 }
 
-void LocalMacroSpaceManager::translateRexxProgram(char *sourceFile, ManagedRxstring &imageData)
+
+/**
+ * Translate a source file into a Rexx program.
+ *
+ * @param sourceFile The source file name.
+ * @param imageData  The returned image data.
+ */
+void LocalMacroSpaceManager::translateRexxProgram(const char *sourceFile, ManagedRxstring &imageData)
 {
     bool opened;
 
@@ -419,7 +576,7 @@ void LocalMacroSpaceManager::translateRexxProgram(char *sourceFile, ManagedRxstr
             throw new ServiceException(MACRO_TRANSLATION_ERROR, "Unable to compile Rexx program");
         }
 
-        void *proc = lib.getProcedure("ooRexxTranslateSource");
+        void *proc = lib.getProcedure("RexxTranslateSource");
         if (proc == NULL)
         {
             throw new ServiceException(MACRO_TRANSLATION_ERROR, "Unable to compile Rexx program");
@@ -443,6 +600,14 @@ void LocalMacroSpaceManager::translateRexxProgram(char *sourceFile, ManagedRxstr
     }
 }
 
+/**
+ * Read a buffer of data from a file and return in a
+ * ManagedRxString.
+ *
+ * @param fileInst The source file.
+ * @param target   The rxstring used to return the file data.
+ * @param size     The size to read.
+ */
 void LocalMacroSpaceManager::readRxstringFromFile(SysFile * fileInst, ManagedRxstring &target, size_t size)
 {
     size_t bytesRead;
@@ -461,6 +626,14 @@ void LocalMacroSpaceManager::readRxstringFromFile(SysFile * fileInst, ManagedRxs
 }
 
 
+/**
+ * Translate a service exception into the appropriate
+ * API return code.
+ *
+ * @param e      The returned exception.
+ *
+ * @return The return code corresponding to the exception information.
+ */
 RexxReturnCode LocalMacroSpaceManager::processServiceException(ServiceException *e)
 {
     switch (e->getErrorCode())

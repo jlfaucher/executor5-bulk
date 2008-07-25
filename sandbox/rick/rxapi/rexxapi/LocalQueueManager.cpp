@@ -140,6 +140,13 @@ QueueHandle LocalQueueManager::initializeSessionQueue(SessionID session)
     return mysessionQueue;
 }
 
+/**
+ * Create a new session queue
+ *
+ * @param session The session identifier
+ *
+ * @return The handle of the session queue.
+ */
 QueueHandle LocalQueueManager::createSessionQueue(SessionID session)
 {
     ClientMessage message(QueueManager, CREATE_SESSION_QUEUE, session);
@@ -148,26 +155,45 @@ QueueHandle LocalQueueManager::createSessionQueue(SessionID session)
     return (QueueHandle)message.parameter1;
 }
 
-bool LocalQueueManager::createNamedQueue(char *name, size_t size, char *createdName)
+
+/**
+ * Create a named queue
+ *
+ * @param name   The requested queue name.
+ * @param size   The size of the buffer for the returned name.
+ * @param createdName
+ *               The buffer for the returned name.
+ *
+ * @return true if the requested name already exists and a new name
+ *         was provided.
+ */
+bool LocalQueueManager::createNamedQueue(const char *name, size_t size, char *createdName)
 {
     validateQueueName(name);            // make sure this is a valid name
 
     ClientMessage message(QueueManager, CREATE_NAMED_QUEUE, name);
 
-    strcpy(message.nameArg, name);
     message.send();
     strncpy(createdName, message.nameArg, size);
     // return the dup name indicator
     return message.result == DUPLICATE_QUEUE_NAME;
 }
 
+/**
+ * Delete the current session queue.
+ */
 void LocalQueueManager::deleteSessionQueue()
 {
     ClientMessage message(QueueManager, DELETE_SESSION_QUEUE, sessionQueue);
     message.send();
 }
 
-void LocalQueueManager::deleteNamedQueue(char *name)
+/**
+ * Delete a named queue.
+ *
+ * @param name   The name of the queue.
+ */
+void LocalQueueManager::deleteNamedQueue(const char *name)
 {
     validateQueueName(name);            // make sure this is a valid name
 
@@ -175,6 +201,11 @@ void LocalQueueManager::deleteNamedQueue(char *name)
     message.send();
 }
 
+/**
+ * Get the count of lines in the session queue.
+ *
+ * @return The queue line count.
+ */
 size_t LocalQueueManager::getSessionQueueCount()
 {
     ClientMessage message(QueueManager, GET_SESSION_QUEUE_COUNT, sessionQueue);
@@ -184,7 +215,14 @@ size_t LocalQueueManager::getSessionQueueCount()
     return (size_t)message.parameter1;
 }
 
-size_t LocalQueueManager::getQueueCount(char *name)
+/**
+ * Get a queue count from a named queue.
+ *
+ * @param name   The queue name.
+ *
+ * @return The count of items in the queue.
+ */
+size_t LocalQueueManager::getQueueCount(const char *name)
 {
     validateQueueName(name);            // make sure this is a valid name
 
@@ -195,6 +233,9 @@ size_t LocalQueueManager::getQueueCount(char *name)
     return (size_t)message.parameter1;
 }
 
+/**
+ * Remove all items from the session queue.
+ */
 void LocalQueueManager::clearSessionQueue()
 {
     ClientMessage message(QueueManager, CLEAR_SESSION_QUEUE, sessionQueue);
@@ -202,7 +243,12 @@ void LocalQueueManager::clearSessionQueue()
     message.send();
 }
 
-void LocalQueueManager::clearNamedQueue(char *name)
+/**
+ * Remove all items from a named queue.
+ *
+ * @param name   The queue name.
+ */
+void LocalQueueManager::clearNamedQueue(const char *name)
 {
     validateQueueName(name);            // make sure this is a valid name
 
@@ -212,7 +258,14 @@ void LocalQueueManager::clearNamedQueue(char *name)
 }
 
 
-void LocalQueueManager::addToNamedQueue(char *name, ManagedRxstring &data, uintptr_t lifoFifo)
+/**
+ * Add an item to a named queue.
+ *
+ * @param name     The name of the queue.
+ * @param data     The data to add
+ * @param lifoFifo The lifo/fifo order flag.
+ */
+void LocalQueueManager::addToNamedQueue(const char *name, ManagedRxstring &data, size_t lifoFifo)
 {
     ClientMessage message(QueueManager, ADD_TO_NAMED_QUEUE, name);
                                            // set the additional arguments
@@ -225,7 +278,13 @@ void LocalQueueManager::addToNamedQueue(char *name, ManagedRxstring &data, uintp
 }
 
 
-void LocalQueueManager::addToSessionQueue(ManagedRxstring &data, uintptr_t lifoFifo)
+/**
+ * Add an item to the session queue.
+ *
+ * @param data     The data to add.
+ * @param lifoFifo The lifo/fifo flag.
+ */
+void LocalQueueManager::addToSessionQueue(CONSTRXSTRING &data, size_t lifoFifo)
 {
     ClientMessage message(QueueManager, ADD_TO_SESSION_QUEUE);
 
@@ -233,13 +292,14 @@ void LocalQueueManager::addToSessionQueue(ManagedRxstring &data, uintptr_t lifoF
     message.parameter1 = data.strlength;
     message.parameter2 = lifoFifo;     // make sure we have the add order
     message.parameter3 = sessionQueue; // set the session handle next
+
     // attach the queue item to the message.
     message.setMessageData(data.strptr, data.strlength);
-
     message.send();
 }
 
-void LocalQueueManager::pullFromQueue(char *name, RxString &data, uintptr_t waitFlag, RexxTimeStamp *timeStamp)
+
+void LocalQueueManager::pullFromQueue(const char *name, RXSTRING &data, size_t waitFlag, RexxTimeStamp *timeStamp)
 {
     ClientMessage message(QueueManager, PULL_FROM_NAMED_QUEUE);
     // set up for either name or session queue read
@@ -254,9 +314,15 @@ void LocalQueueManager::pullFromQueue(char *name, RxString &data, uintptr_t wait
     }
     message.parameter1 = waitFlag != 0 ? QUEUE_WAIT_FOR_DATA : QUEUE_NO_WAIT;
     message.send();
-    MakeRxString(data, message.getMessageData(), message.getMessageDataLength());
+    MAKERXSTRING(data, message.getMessageData(), message.getMessageDataLength());
 }
 
+/**
+ * Bump the usage count of a session queue when it is
+ * inherited from a parent process.
+ *
+ * @param q      The handle of the session queue.
+ */
 void LocalQueueManager::nestSessionQueue(QueueHandle q)
 {
     ClientMessage message(QueueManager, NEST_SESSION_QUEUE, sessionQueue);
@@ -264,6 +330,14 @@ void LocalQueueManager::nestSessionQueue(QueueHandle q)
 }
 
 
+/**
+ * Process an exception returned from the server and
+ * map it into an API return code.
+ *
+ * @param e      The exception from the server.
+ *
+ * @return The mapped return code.
+ */
 RexxReturnCode LocalQueueManager::processServiceException(ServiceException *e)
 {
     switch (e->getErrorCode())
