@@ -48,7 +48,7 @@ class APIServer;
 class QueueItem
 {
 public:
-    QueueItem(char *data, size_t s)
+    QueueItem(const char *data, size_t s)
     {
         // allocate new memory and copy from the transfer buffer
         elementData = new char[s];
@@ -86,7 +86,7 @@ public:
     QueueItem *next;             // next item in the queue
     char      *elementData;      // the element data
     size_t     size;             // size of the element data
-    RexxTimeStamp addTime;       // time the element was added
+    REXXDATETIME  addTime;       // time the element was added
 };
 
 class DataQueue
@@ -102,14 +102,14 @@ public:
         references = 1;      // session queues always have one ref
     }
 
-    DataQueue(char *name)
+    DataQueue(const char *name)
     {
         setName(name);
     }
 
     ~DataQueue();
 
-    inline void setName(char *name)
+    inline void setName(const char *name)
     {
         queueName = new char[strlen(name) + 1];
         strcpy(queueName, name);
@@ -166,7 +166,7 @@ public:
     SysSemaphore waitSem;        // used to signal wait for item
     QueueItem *firstItem;        // first queue item
     QueueItem *lastItem;         // last queue item
-    char *queueName;             // pointer to queue name
+    const char *queueName;       // pointer to queue name
     SessionID  session;          // session of queue
 };
 
@@ -176,11 +176,11 @@ class QueueTable
 public:
 
     // locate a named data queue
-    DataQueue *locate(char *name);
+    DataQueue *locate(const char *name);
     // locate a named data queue
     DataQueue *locate(SessionID id);
     // locate and remove a named data queue
-    DataQueue *remove(char *name);
+    DataQueue *remove(const char *name);
     // locate a named data queue
     DataQueue *remove(SessionID id);
     void remove(DataQueue *q);

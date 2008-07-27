@@ -44,9 +44,9 @@
 class MacroItem
 {
 public:
-    MacroItem(char *n, char *, size_t l, size_t p);
+    MacroItem(const char *n, const char *, size_t l, size_t p);
 
-    void update(char *, size_t l, size_t p);
+    void update(const char *, size_t l, size_t p);
     ~MacroItem()
     {
         delete [] name;             // release the name and
@@ -54,8 +54,8 @@ public:
     }
 
     MacroItem *next;                   // next macro in chain
-    char *     name;                   // the macro space name
-    char *     imageBuffer;            // the image data
+    const char *name;                  // the macro space name
+    const char *imageBuffer;           // the image data
     size_t     imageSize;              // size of the image data
     size_t     searchPosition;         // the saved position
 };
@@ -68,9 +68,9 @@ public:
 
     void clear();
     // locate a named data queue
-    MacroItem *locate(char *name);
+    MacroItem *locate(const char *name);
     // locate and remove a named data queue
-    MacroItem *remove(char *name);
+    MacroItem *remove(const char *name);
 
     inline void reorder(MacroItem *current, MacroItem *previous)
     {

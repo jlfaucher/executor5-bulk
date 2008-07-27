@@ -64,13 +64,13 @@ public:
 class RegistrationData
 {
 public:
-    RegistrationData(char * n, char * m, ServiceRegistrationData *regData);
-    RegistrationData(char * n, SessionID s, ServiceRegistrationData *regData);
+    RegistrationData(const char * n, const char * m, ServiceRegistrationData *regData);
+    RegistrationData(const char * n, SessionID s, ServiceRegistrationData *regData);
     ~RegistrationData();
 
-    inline bool matches(char *n, char *m) { return SysUtil::stricmp(name, n) == 0 && SysUtil::stricmp(moduleName, m) == 0; }
-    inline bool matches(char *n, SessionID s) { return s == owner && SysUtil::stricmp(name, n) == 0; }
-    inline bool matches(char *n) { return SysUtil::stricmp(name, n) == 0; }
+    inline bool matches(const char *n, const char *m) { return SysUtil::stricmp(name, n) == 0 && SysUtil::stricmp(moduleName, m) == 0; }
+    inline bool matches(const char *n, SessionID s) { return s == owner && SysUtil::stricmp(name, n) == 0; }
+    inline bool matches(const char *n) { return SysUtil::stricmp(name, n) == 0; }
     inline bool hasReferences() { return references != 0; }
     inline bool isLibrary() { return moduleName != NULL; }
     inline bool isEntryPoint() { return moduleName == NULL; }
@@ -82,17 +82,17 @@ public:
     void removeSessionReference(SessionCookie *s);
 
     RegistrationData *next;            // next block in the chaing
-    char   *name;                      // the registered name
-    char   *moduleName;                // module name for object (optional)
-    char   *procedureName;             // procedure name (optional)
+    const char *name;                  // the registered name
+    const char *moduleName;            // module name for object (optional)
+    const char *procedureName;         // procedure name (optional)
     uint32_t userData[2];              // user area information
     uintptr_t entryPoint;              // target entry point
     int     callType;                  // indicates the style of interface
-//    HANDLE  moduleHandle;              // dynalink module handle
     size_t  dropAuthority;             // Permission to drop
     SessionID owner;                   // Pid of Registrant
     SessionCookie *references;         // references to this registration from other processes
 };
+
 
 class RegistrationTable
 {
@@ -104,10 +104,10 @@ public:
     void dropCallback(ServiceMessage &message);
     void dropLibraryCallback(ServiceMessage &message);
     void updateCallback(ServiceMessage &message);
-    RegistrationData *locate(RegistrationData *anchor, char *name);
-    RegistrationData *locate(char *name, char *module);
-    RegistrationData *locate(char *name);
-    RegistrationData *locate(char *name, SessionID session);
+    RegistrationData *locate(RegistrationData *anchor, const char *name);
+    RegistrationData *locate(const char *name, const char *module);
+    RegistrationData *locate(const char *name);
+    RegistrationData *locate(const char *name, SessionID session);
     void remove(RegistrationData **anchor, RegistrationData *block);
     void reorderBlocks(RegistrationData *& anchor, RegistrationData *current, RegistrationData *previous);
     void freeProcessEntries(SessionID session);

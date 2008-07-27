@@ -662,11 +662,11 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
     if (version_info.dwPlatformId != VER_PLATFORM_WIN32_WINDOWS)
     {
-      // Test Commandline for parameters
-      if ( !ParseStandardArgs( lpCmdLine ) )
-      {
-          exit (0) ;                 // Stop RXAPI
-      }
+        // Test Commandline for parameters
+        if ( !ParseStandardArgs( lpCmdLine ) )
+        {
+            exit (0) ;                 // Stop RXAPI
+        }
     }
 
     // Main portion is moved to RUN() function, since it is global

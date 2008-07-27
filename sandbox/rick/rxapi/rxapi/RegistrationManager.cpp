@@ -259,7 +259,7 @@ void RegistrationTable::registerCallback(ServiceMessage &message)
 {
     ServiceRegistrationData *regData = (ServiceRegistrationData *)message.getMessageData();
     // get the argument name
-    char *name = message.nameArg;
+    const char *name = message.nameArg;
 
     // now locate an exe registration.
     RegistrationData *callback = locate(name, message.session);
@@ -300,7 +300,7 @@ void RegistrationTable::queryCallback(ServiceMessage &message)
 {
     ServiceRegistrationData *regData = (ServiceRegistrationData *)message.allocateMessageData(sizeof(ServiceRegistrationData));
     // get the argument name (local copy only)
-    char *name = message.nameArg;
+    const char *name = message.nameArg;
 
     // now check the exe version first.
     RegistrationData *callback = locate(name, message.session);
@@ -334,8 +334,8 @@ void RegistrationTable::queryLibraryCallback(ServiceMessage &message)
     // reuse this buffer to send the information back.
     ServiceRegistrationData *regData = (ServiceRegistrationData *)message.getMessageData();
     // get the argument name (local copy only)
-    char *name = message.nameArg;
-    char *module = regData->moduleName;
+    const char *name = message.nameArg;
+    const char *module = regData->moduleName;
 
     // now check a library version first.
     RegistrationData *callback = locate(name, module);
@@ -362,8 +362,8 @@ void RegistrationTable::updateCallback(ServiceMessage &message)
 {
     ServiceRegistrationData *regData = (ServiceRegistrationData *)message.getMessageData();
     // get the argument name (local copy only)
-    char *name = message.nameArg;
-    char *module = regData->moduleName;
+    const char *name = message.nameArg;
+    const char *module = regData->moduleName;
 
     // now check a library version first.
     RegistrationData *callback = locate(name, module);
@@ -391,7 +391,7 @@ void RegistrationTable::updateCallback(ServiceMessage &message)
 void RegistrationTable::dropLibraryCallback(ServiceMessage &message)
 {
     // get the argument name (local copy only)
-    char *name = message.nameArg;
+    const char *name = message.nameArg;
 
     // now check a library version first.
     RegistrationData *callback = locate(name);
@@ -435,7 +435,7 @@ void RegistrationTable::dropLibraryCallback(ServiceMessage &message)
 void RegistrationTable::dropCallback(ServiceMessage &message)
 {
     // get the argument name (local copy only)
-    char *name = message.nameArg;
+    const char *name = message.nameArg;
 
     // now check the exe version first.
     RegistrationData *callback = locate(name, message.session);
@@ -483,7 +483,14 @@ void RegistrationTable::dropCallback(ServiceMessage &message)
     }
 }
 
-// search for a name-only registration
+/**
+ * search for a name-only registration
+ *
+ * @param anchor The chain anchor.
+ * @param name   The target callback name.
+ *
+ * @return The callback descriptor or NULL if the item is not found.
+ */
 RegistrationData *RegistrationTable::locate(RegistrationData *anchor, const char *name)
 {
     RegistrationData *current = anchor;
@@ -502,7 +509,13 @@ RegistrationData *RegistrationTable::locate(RegistrationData *anchor, const char
     return NULL;
 }
 
-// search for a name-only registration
+/**
+ * search for a name-only registration and remove it from
+ * the chain.
+ *
+ * @param anchor The chain anchor position.
+ * @param block  The block to locate.
+ */
 void RegistrationTable::remove(RegistrationData **anchor, RegistrationData *block)
 {
     RegistrationData *current = *anchor;
@@ -531,7 +544,15 @@ void RegistrationTable::remove(RegistrationData **anchor, RegistrationData *bloc
     }
 }
 
-// search for a library-type registration
+/**
+ * search for a library-type registration, qualified by
+ * name and library.
+ *
+ * @param name   The callback name.
+ * @param module The target module.
+ *
+ * @return The descriptor for the item, or NULL if not found.
+ */
 RegistrationData *RegistrationTable::locate(const char *name, const char *module)
 {
     RegistrationData *current = firstLibrary;
@@ -552,7 +573,14 @@ RegistrationData *RegistrationTable::locate(const char *name, const char *module
     return NULL;
 }
 
-// search for a library-type registration
+/**
+ * search for a library-type registration
+ *
+ * @param name   The target name.
+ *
+ * @return The descriptor for the callback, or NULL if it doesn't
+ *         exist.
+ */
 RegistrationData *RegistrationTable::locate(const char *name)
 {
     RegistrationData *callback = locate(firstLibrary, name);
@@ -563,7 +591,15 @@ RegistrationData *RegistrationTable::locate(const char *name)
     return callback;
 }
 
-// search for a local type registration
+/**
+ * search for a local type registration
+ *
+ * @param name    The target registration name.
+ * @param session The session identifier.
+ *
+ * @return The registration data for the item, or NULL if not
+ *         found.
+ */
 RegistrationData *RegistrationTable::locate(const char *name, SessionID session)
 {
     RegistrationData *current = firstEntryPoint;
@@ -584,6 +620,17 @@ RegistrationData *RegistrationTable::locate(const char *name, SessionID session)
     return NULL;
 }
 
+
+/**
+ * Reorder the registration blocks so that we put the
+ * most recently referenced registrations at the front
+ * of the queue.
+ *
+ * @param anchor   The chain anchor.
+ * @param current  The block we're reordering.
+ * @param previous The previous block in the chain (can be NULL if this
+ *                 item is already at the head of the chain).
+ */
 void RegistrationTable::reorderBlocks(RegistrationData *& anchor, RegistrationData *current, RegistrationData *previous)
 {
     if (previous != NULL)            // if we have a predecessor
@@ -596,7 +643,11 @@ void RegistrationTable::reorderBlocks(RegistrationData *& anchor, RegistrationDa
 }
 
 
-// It will remove all the registration entries for a specific process
+/**
+ * It will remove all the registration entries for a specific process
+ *
+ * @param session The session identifier.
+ */
 void RegistrationTable::freeProcessEntries(SessionID session)
 {
     RegistrationData *current = firstEntryPoint;
@@ -629,7 +680,11 @@ void RegistrationTable::freeProcessEntries(SessionID session)
 
 
 
-// It will remove all the registration entries for a specific process
+/**
+ * It will remove all the registration entries for a specific process
+ *
+ * @param session The session identifier.
+ */
 void ServerRegistrationManager::freeProcessRegistrations(SessionID session)
 {
     // delete all of the entries associated with this process.
@@ -639,6 +694,12 @@ void ServerRegistrationManager::freeProcessRegistrations(SessionID session)
 }
 
 
+/**
+ * Dispatch a registration operation to the appropriate
+ * subsystem handler.
+ *
+ * @param message The inbound message.
+ */
 void ServerRegistrationManager::dispatch(ServiceMessage &message)
 {
     RegistrationTable *table = NULL;
@@ -659,6 +720,8 @@ void ServerRegistrationManager::dispatch(ServiceMessage &message)
     }
 
 
+    // now that we have the appropriate subsystem targetted, dispatch the
+    // real operation.
     switch (message.operation)
     {
         // registration manager operations
@@ -693,6 +756,13 @@ void ServerRegistrationManager::dispatch(ServiceMessage &message)
     }
 }
 
+
+/**
+ * Perform any cleanup of process-specific resources
+ * when the process terminates.
+ *
+ * @param session The session id of the session going away.
+ */
 void ServerRegistrationManager::cleanupProcessResources(SessionID session)
 {
     // just free up any registrations associated with this

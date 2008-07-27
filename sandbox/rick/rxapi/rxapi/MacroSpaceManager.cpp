@@ -39,7 +39,15 @@
 #include "MacroSpaceManager.hpp"
 #include "SysUtil.hpp"
 
-MacroItem::MacroItem(char *n, char *data, size_t l, size_t p)
+/**
+ * Create a macro item entry.
+ *
+ * @param n      The name of the macro.
+ * @param data   The image data for the macro.
+ * @param l      The size of the image data.
+ * @param p      The search position.
+ */
+MacroItem::MacroItem(const char *n, const char *data, size_t l, size_t p)
 {
     name = dupString(n);
     imageBuffer = data;
@@ -47,7 +55,14 @@ MacroItem::MacroItem(char *n, char *data, size_t l, size_t p)
     searchPosition = p;
 }
 
-void MacroItem::update(char *data, size_t l, size_t p)
+/**
+ * Update the image data for a macro item.
+ *
+ * @param data   The new image data.
+ * @param l      The length of the new data.
+ * @param p      The position data.
+ */
+void MacroItem::update(const char *data, size_t l, size_t p)
 {
     delete imageBuffer;
     imageBuffer = data;
@@ -55,6 +70,10 @@ void MacroItem::update(char *data, size_t l, size_t p)
     searchPosition = p;
 }
 
+
+/**
+ * Clear the macro table.
+ */
 void MacroTable::clear()
 {
     iterator = NULL;         // this invalidates any iterator we may have
@@ -67,13 +86,20 @@ void MacroTable::clear()
     }
 }
 
-// locate a named data queue
+
+/**
+ * locate a named macro item.
+ *
+ * @param name   The required macro item.
+ *
+ * @return The located macro item entry.
+ */
 MacroItem *MacroTable::locate(char *name)
 {
     MacroItem *current = macros;    // start the search
     MacroItem *previous = NULL;     // no previous one
 
-    while (current != NULL)              /* while more queues          */
+    while (current != NULL)              /* while more macros          */
     {
         // find the one we want?
         if (SysUtil::stricmp(name, current->name) == 0)
@@ -88,13 +114,19 @@ MacroItem *MacroTable::locate(char *name)
     return NULL;
 }
 
-// locate and remove a named data queue
-MacroItem *MacroTable::remove(char *name)
+/**
+ * locate and remove a named macro space
+ *
+ * @param name   The name of the target macro.
+ *
+ * @return The removed table item, or NULL if this is not found.
+ */
+MacroItem *MacroTable::remove(const char *name)
 {
     MacroItem *current = macros;    // start the search
     MacroItem *previous = NULL;     // no previous one
 
-    while (current != NULL)              /* while more queues          */
+    while (current != NULL)              /* while more macros          */
     {
         iterator = NULL;         // this invalidates any iterator we may have
         // find the one we want?
@@ -123,11 +155,11 @@ void ServerMacroSpaceManager::addMacro(ServiceMessage &message)
     // already exists?
     if (item == NULL)
     {
-        item = new MacroItem(message.nameArg, (char *)message.getMessageData(), message.getMessageDataLength(), message.parameter2);
+        item = new MacroItem(message.nameArg, message.getMessageData(), message.getMessageDataLength(), message.parameter2);
     }
     else
     {
-        item->update((char *)message.getMessageData(), message.getMessageDataLength(), message.parameter2);
+        item->update(message.getMessageData(), message.getMessageDataLength(), message.parameter2);
     }
     // we're keeping the storage here, so detach it from the message.
     message.clearMessageData();
@@ -193,7 +225,7 @@ void ServerMacroSpaceManager::reorderMacro(ServiceMessage &message)
     // already exists?
     if (item != NULL)
     {
-        item->searchPosition = (ServiceReturn)message.parameter1;
+        item->searchPosition = message.parameter1;
         message.setResult(MACRO_ORDER_CHANGED);
     }
     else
@@ -324,6 +356,11 @@ void ServerMacroSpaceManager::getImage(ServiceMessage &message)
 }
 
 
+/**
+ * Dispatch an inbound operation to this service manager.
+ *
+ * @param message The message to process.
+ */
 void ServerMacroSpaceManager::dispatch(ServiceMessage &message)
 {
     switch (message.operation)

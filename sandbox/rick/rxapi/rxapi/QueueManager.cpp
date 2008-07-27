@@ -43,6 +43,9 @@
 #include "stdio.h"
 #include "SysUtil.hpp"
 
+/**
+ * Set the update time for a macro item.
+ */
 void QueueItem::setTime()
 {
     time_t timer = time(NULL);
@@ -57,6 +60,9 @@ void QueueItem::setTime()
     addTime.weekday        = time->tm_wday;
 }
 
+/**
+ * Perform cleanup for a delete data queue.
+ */
 DataQueue::~DataQueue()
 {
     waitSem.close();     // make sure our semaphore cleans up if we've used it.
@@ -81,9 +87,14 @@ void DataQueue::clear()
     firstItem = NULL;
 }
 
+/**
+ * Process a queue add operation.
+ *
+ * @param message The service message for the add operation.
+ */
 void DataQueue::add(ServiceMessage &message)
 {
-    char *queueData = (char *)message.getMessageData();
+    const char *queueData = message.getMessageData();
     size_t itemLength = (size_t)message.parameter1;
     size_t order = (size_t)message.parameter2;
     // detach the message data from the message so the controller
@@ -101,6 +112,12 @@ void DataQueue::add(ServiceMessage &message)
     message.setResult(QUEUE_ITEM_ADDED);
 }
 
+
+/**
+ * Add an item to a queue in LIFO order.
+ *
+ * @param item   The item to add.
+ */
 void DataQueue::addLifo(QueueItem *item)
 {
     item->next = firstItem;
@@ -110,9 +127,15 @@ void DataQueue::addLifo(QueueItem *item)
         lastItem = item;
     }
     itemCount++;
+    // make sure we notify any waiters that something has arrived.
     checkWaiters();
 }
 
+/**
+ * Add an item to the queue in FIFO order.
+ *
+ * @param item   The item to add.
+ */
 void DataQueue::addFifo(QueueItem *item)
 {
     if (lastItem == NULL)
@@ -126,9 +149,17 @@ void DataQueue::addFifo(QueueItem *item)
         lastItem = item;
     }
     itemCount++;
+    // make sure we notify any waiters that something has arrived.
     checkWaiters();
 }
 
+
+/**
+ * Pull the first item off the queue.
+ *
+ * @return The QueueItem at the head of the queue, or NULL if the
+ *         queue is empty.
+ */
 QueueItem *DataQueue::getFirst()
 {
     QueueItem *item = firstItem;
@@ -163,10 +194,12 @@ bool DataQueue::pullData(ServiceMessage &message)
         // make sure we pass the total length back
         message.parameter1 = item->size;
         // copy the time stamp into the now-unused name buffer
-        memcpy(message.nameArg, &item->addTime, sizeof(RexxTimeStamp));
+        memcpy(message.nameArg, &item->addTime, sizeof(REXXDATETIME));
         // the message will delete the queue data once it has been sent
         // back to the client.
         message.setMessageData(item->elementData, item->size);
+        // we've taken the data from the item, so clear it out before we delete.
+        item.clearData();
         // we're done with this, let it go.
         delete item;
         message.setResult(QUEUE_ITEM_PULLED);
@@ -176,6 +209,12 @@ bool DataQueue::pullData(ServiceMessage &message)
     return false;
 }
 
+
+/**
+ * Pull an item from the front of the queue.
+ *
+ * @param message The message from the client.
+ */
 void DataQueue::pull(ServiceMessage &message)
 {
     // try to pull an item off the queue.
@@ -191,12 +230,18 @@ void DataQueue::pull(ServiceMessage &message)
         else
         {
             message.setResult(QUEUE_EMPTY);    // nada
-
         }
     }
 }
 
-// locate a named data queue
+/**
+ * locate a named data queue
+ *
+ * @param name   The target data queue name.
+ *
+ * @return The DataQueue descriptor, or NULL if it does not
+ *         exist.
+ */
 DataQueue *QueueTable::locate(const char *name)
 {
     DataQueue *current = queues;    // start the search
@@ -218,7 +263,14 @@ DataQueue *QueueTable::locate(const char *name)
     return NULL;
 }
 
-// locate a named data queue
+/**
+ * locate a named data queue
+ *
+ * @param id     The session ID of the queue.
+ *
+ * @return The DataQueue for the session, which will be created
+ *         if needed.
+ */
 DataQueue *QueueTable::locate(SessionID id)
 {
     DataQueue *current = queues;    // start the search
@@ -242,7 +294,13 @@ DataQueue *QueueTable::locate(SessionID id)
 }
 
 
-// locate and remove a named data queue
+/**
+ * locate and remove a named data queue
+ *
+ * @param name   The queue name.
+ *
+ * @return The DataQueue matching the name, or NULL if it doesn't exist.
+ */
 DataQueue *QueueTable::remove(const char *name)
 {
     DataQueue *current = queues;    // start the search
@@ -264,7 +322,11 @@ DataQueue *QueueTable::remove(const char *name)
 }
 
 
-// locate and remove a specific data queue
+/**
+ * locate and remove a specific data queue
+ *
+ * @param q      The queue to remove.
+ */
 void QueueTable::remove(DataQueue *q)
 {
     DataQueue *current = queues;    // start the search
@@ -283,7 +345,13 @@ void QueueTable::remove(DataQueue *q)
     }
 }
 
-// locate a named data queue
+/**
+ * locate a session data queue
+ *
+ * @param id     The session identifier of the queue to remove.
+ *
+ * @return The removed queue.
+ */
 DataQueue *QueueTable::remove(SessionID id)
 {
     DataQueue *current = queues;    // start the search
@@ -306,7 +374,12 @@ DataQueue *QueueTable::remove(SessionID id)
     return current;
 }
 
-// locate a named data queue
+
+/**
+ * add a named data queue to our list.
+ *
+ * @param queue  The new queue to add.
+ */
 void QueueTable::add(DataQueue *queue)
 {
     queue->next = queues;
@@ -322,8 +395,8 @@ void QueueTable::add(DataQueue *queue)
 // parameter3 -- handle of the session queue
 void ServerQueueManager::addToSessionQueue(ServiceMessage &message)
 {
+    // We can go directly to the referenced queue.
     DataQueue *queue = (DataQueue *)message.parameter3;
-
     queue->add(message);
 }
 
@@ -359,7 +432,6 @@ void ServerQueueManager::addToNamedQueue(ServiceMessage &message)
 void ServerQueueManager::pullFromSessionQueue(ServiceMessage &message)
 {
     DataQueue *queue = (DataQueue *)message.parameter3;
-
     queue->pull(message);
 }
 
@@ -414,6 +486,11 @@ void ServerQueueManager::createSessionQueue(ServiceMessage &message)
     message.setResult(QUEUE_CREATED);
 }
 
+/**
+ * Create a queue with a unique name.
+ *
+ * @param message The inbound service message.
+ */
 void ServerQueueManager::createUniqueQueue(ServiceMessage &message)
 {
     DataQueue *queue = new DataQueue();   // get an anonymous queue
@@ -421,6 +498,7 @@ void ServerQueueManager::createUniqueQueue(ServiceMessage &message)
     uintptr_t tag = (uintptr_t)queue;
     for (;;)                   // we need to loop until we get a unique one.
     {
+        // message parameter1 is the session identifier.
         sprintf(message.nameArg, "S%pQ%p", (void *)message.parameter1, (void *)tag);
         if (namedQueues.locate(message.nameArg) == 0)
         {
@@ -428,7 +506,7 @@ void ServerQueueManager::createUniqueQueue(ServiceMessage &message)
             namedQueues.add(queue);
             return;
         }
-      tag++;                   // try a new number
+        tag++;                   // try a new number
     }
 }
 
@@ -631,6 +709,11 @@ void ServerQueueManager::clearNamedQueue(ServiceMessage &message)
 }
 
 
+/**
+ * Dispatch a queue manager message to the appropriate action.
+ *
+ * @param message The inbound message from the client.
+ */
 void ServerQueueManager::dispatch(ServiceMessage &message)
 {
     switch (message.operation)
