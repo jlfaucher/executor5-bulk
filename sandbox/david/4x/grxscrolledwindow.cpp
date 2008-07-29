@@ -145,7 +145,7 @@ RexxMethod3(int,                       // Return type
  * @return        Horizontal adjustment object
  **/
 RexxMethod0(RexxObjectPtr,             // Return type
-            GrxScrollWindowGetHAdjustment) // Object_method name
+            GrxScrolledWindowGetHAdjustment) // Object_method name
 {
     RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
     GtkScrolledWindow *myWidget = (GtkScrolledWindow *)context->PointerValue(rxptr);
@@ -169,7 +169,7 @@ RexxMethod0(RexxObjectPtr,             // Return type
  * @return        Vertical adjustment object
  **/
 RexxMethod0(RexxObjectPtr,             // Return type
-            GrxScrollWindowGetVAdjustment) // Object_method name
+            GrxScrolledWindowGetVAdjustment) // Object_method name
 {
     RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
     GtkScrolledWindow *myWidget = (GtkScrolledWindow *)context->PointerValue(rxptr);
@@ -197,7 +197,7 @@ RexxMethod0(RexxObjectPtr,             // Return type
  * @return        Zero
  **/
 RexxMethod2(int,                       // Return type
-            GrxScrollWindowSetPolicy,  // Object_method name
+            GrxScrolledWindowSetPolicy, // Object_method name
             int, hpolicy,              // Horizontal policy
             int, vpolicy)              // Vertical policy
 {
@@ -219,7 +219,7 @@ RexxMethod2(int,                       // Return type
  * @return        Zero
  **/
 RexxMethod1(int,                       // Return type
-            GrxScrollWindowAddWithViewport, // Object_method name
+            GrxScrolledWindowAddWithViewport, // Object_method name
             RexxObjectPtr, rxchild)    // Child widget
 {
     RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");

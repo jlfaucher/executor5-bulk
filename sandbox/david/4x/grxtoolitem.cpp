@@ -146,7 +146,7 @@ RexxMethod1(int,                       // Return type
  * @return        Zero
  **/
 RexxMethod1(int,                       // Return type
-            GrxToolItemSetHomogemeous, // Object_method name
+            GrxToolItemSetHomogeneous, // Object_method name
             logical_t, homo)           // Homogeneous boolean
 {
     RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
@@ -165,7 +165,7 @@ RexxMethod1(int,                       // Return type
  * @return        Homogeneous boolean
  **/
 RexxMethod0(logical_t,                 // Return type
-            GrxToolItemGetHomogemeous) // Object_method name
+            GrxToolItemGetHomogeneous) // Object_method name
 {
     RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
     GtkToolItem *myWidget = (GtkToolItem *)context->PointerValue(rxptr);
@@ -202,7 +202,7 @@ RexxMethod1(int,                       // Return type
  * @return        Expand boolean
  **/
 RexxMethod0(logical_t,                 // Return type
-            GrxToolItemGetExoand)      // Object_method name
+            GrxToolItemGetExpand)      // Object_method name
 {
     RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
     GtkToolItem *myWidget = (GtkToolItem *)context->PointerValue(rxptr);
@@ -459,7 +459,7 @@ RexxMethod0(int,                       // Return type
  * @return        Iteme
  **/
 RexxMethod0(RexxObjectPtr,             // Return type
-            GrxToolItemRetriveProxyMenuItem) // Object_method name
+            GrxToolItemRetrieveProxyMenuItem) // Object_method name
 {
     RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
     GtkToolItem *myWidget = (GtkToolItem *)context->PointerValue(rxptr);

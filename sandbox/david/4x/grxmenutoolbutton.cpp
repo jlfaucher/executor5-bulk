@@ -112,7 +112,7 @@ RexxMethod3(int,                       // Return type
  * @return        Zero.
  **/
 RexxMethod1(int,                       // Return type
-            GrxToolButtonSetMenu,      // Object_method name
+            GrxMenuToolButtonSetMenu,  // Object_method name
             RexxObjectPtr, rxobj)      // The icon widget
 {
     RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
@@ -140,35 +140,6 @@ RexxMethod0(RexxObjectPtr,             // Return type
 
     GtkWidget *menuWidget = gtk_menu_tool_button_get_menu(myWidget);
     return (RexxObjectPtr)g_object_get_data(G_OBJECT(menuWidget), "OORXOBJECT");
-}
-
-/**
- * Method:  set_arrow_tooltip
- *
- * Sets the arrow tooltip.
- *
- * @param tt      The tooltip
- *
- * @param text    The tooltip text
- *
- * @param ptext   The tooltip private text
- *
- * @return        Zero.
- **/
-RexxMethod3(int,                       // Return type
-            GrxToolButtonSetArrowTooltip, // Object_method name
-            RexxObjectPtr, rxobj,      // The tooltip
-            CSTRING, text,             // The tooltip text
-            CSTRING, ptext)            // The tooltip private text
-{
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
-    GtkMenuToolButton *myWidget = (GtkMenuToolButton *)context->PointerValue(rxptr);
-    RexxPointerObject widgetptr = (RexxPointerObject)context->SendMessage0(rxobj, "POINTER");
-    GtkTooltips *ttWidget = (GtkTooltips *)context->PointerValue(widgetptr);
-
-    gtk_menu_tool_button_set_arrow_tooltip(myWidget, ttWidget, text, ptext);
-
-    return 0;
 }
 
 /**

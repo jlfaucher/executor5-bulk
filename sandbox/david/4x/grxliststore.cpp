@@ -72,7 +72,7 @@
  * @return        Zero.
  **/
 RexxMethod2(int,                       // Return type
-            GrxListStoretNew,          // Object_method name
+            GrxListStoreNew,           // Object_method name
             OSELF, self,               // Self
             ARGLIST, args)             // Array of column types
 {

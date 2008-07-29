@@ -740,7 +740,7 @@ return !pointer
 ::METHOD grab_focus EXTERNAL "LIBRARY rexxgtk GrxWidgetGrabFocus"
 ::METHOD hide EXTERNAL "LIBRARY rexxgtk GrxWidgetHide"
 ::METHOD hide_all EXTERNAL "LIBRARY rexxgtk GrxWidgetHideAll"
-::METHOD set_size_request EXTERNAL "LIBRARY rexxgtk GrxWidgetSetSize"
+::METHOD set_size_request EXTERNAL "LIBRARY rexxgtk GrxWidgetSetSizeRequest"
 ::METHOD show EXTERNAL "LIBRARY rexxgtk GrxWidgetShow"
 ::METHOD show_all EXTERNAL "LIBRARY rexxgtk GrxWidgetShowAll"
 ::METHOD name EXTERNAL "LIBRARY rexxgtk GrxWidgetGetName"
@@ -755,24 +755,24 @@ return !pointer
 ::METHOD set_data EXTERNAL "LIBRARY rexxgtk GrxWidgetSetData"
 ::METHOD data EXTERNAL "LIBRARY rexxgtk GrxWidgetGetData"
 ::METHOD get_data EXTERNAL "LIBRARY rexxgtk GrxWidgetGetData"
-::METHOD activate EXTERNAL "LIBRARY rexxgtk GrxWidgetActivate'
-::METHOD reparent EXTERNAL "LIBRARY rexxgtk GrxWidgetReparent'
-::METHOD is_focus EXTERNAL "LIBRARY rexxgtk GrxWidgetIsFocus'
-::METHOD grab_default EXTERNAL "LIBRARY rexxgtk GrxWidgetGrabDefault'
-::METHOD set_parent_window EXTERNAL "LIBRARY rexxgtk GrxWidgetSetParentWindow'
-::METHOD get_parent_window EXTERNAL "LIBRARY rexxgtk GrxWidgetGetParentWindow'
-::METHOD parent_window EXTERNAL "LIBRARY rexxgtk GrxWidgetGetParentWindow'
-::METHOD get_toplevel EXTERNAL "LIBRARY rexxgtk GrxWidgetGetToplevel'
-::METHOD toplevel EXTERNAL "LIBRARY rexxgtk GrxWidgetGetToplevel'
-::METHOD get_ancestor EXTERNAL "LIBRARY rexxgtk GrxWidgetGetAncestor'
-::METHOD ancestor EXTERNAL "LIBRARY rexxgtk GrxWidgetGetAncestor'
-::METHOD is_ancestor EXTERNAL "LIBRARY rexxgtk GrxWidgetIsAncestor'
-::METHOD 'direction=' EXTERNAL "LIBRARY rexxgtk GrxWidgetSetDirection'
-::METHOD set_direction EXTERNAL "LIBRARY rexxgtk GrxWidgetSetDirection'
-::METHOD get_direction EXTERNAL "LIBRARY rexxgtk GrxWidgetGetDirection'
-::METHOD direction EXTERNAL "LIBRARY rexxgtk GrxWidgetGetDirection'
-::METHOD get_default_direction EXTERNAL "LIBRARY rexxgtk GrxWidgetGetDefaultDirection'
-::METHOD default_direction EXTERNAL "LIBRARY rexxgtk GrxWidgetGetDefaultDirection'
+::METHOD activate EXTERNAL "LIBRARY rexxgtk GrxWidgetActivate"
+::METHOD reparent EXTERNAL "LIBRARY rexxgtk GrxWidgetReparent"
+::METHOD is_focus EXTERNAL "LIBRARY rexxgtk GrxWidgetIsFocus"
+::METHOD grab_default EXTERNAL "LIBRARY rexxgtk GrxWidgetGrabDefault"
+::METHOD set_parent_window EXTERNAL "LIBRARY rexxgtk GrxWidgetSetParentWindow"
+::METHOD get_parent_window EXTERNAL "LIBRARY rexxgtk GrxWidgetGetParentWindow"
+::METHOD parent_window EXTERNAL "LIBRARY rexxgtk GrxWidgetGetParentWindow"
+::METHOD get_toplevel EXTERNAL "LIBRARY rexxgtk GrxWidgetGetToplevel"
+::METHOD toplevel EXTERNAL "LIBRARY rexxgtk GrxWidgetGetToplevel"
+::METHOD get_ancestor EXTERNAL "LIBRARY rexxgtk GrxWidgetGetAncestor"
+::METHOD ancestor EXTERNAL "LIBRARY rexxgtk GrxWidgetGetAncestor"
+::METHOD is_ancestor EXTERNAL "LIBRARY rexxgtk GrxWidgetIsAncestor"
+::METHOD 'direction=' EXTERNAL "LIBRARY rexxgtk GrxWidgetSetDirection"
+::METHOD set_direction EXTERNAL "LIBRARY rexxgtk GrxWidgetSetDirection"
+::METHOD get_direction EXTERNAL "LIBRARY rexxgtk GrxWidgetGetDirection"
+::METHOD direction EXTERNAL "LIBRARY rexxgtk GrxWidgetGetDirection"
+::METHOD get_default_direction EXTERNAL "LIBRARY rexxgtk GrxWidgetGetDefaultDirection"
+::METHOD default_direction EXTERNAL "LIBRARY rexxgtk GrxWidgetGetDefaultDirection"
 ::METHOD queue_draw_area EXTERNAL "LIBRARY rexxgtk GrxWidgetQueueDrawArea"
 ::METHOD reset_shapes EXTERNAL "LIBRARY rexxgtk GrxWidgetResetShapes"
 ::METHOD set_scroll_adjustments EXTERNAL "LIBRARY rexxgtk GrxWidgetSetScrollAdjustments"
@@ -782,8 +782,6 @@ return !pointer
 ::METHOD child_visible EXTERNAL "LIBRARY rexxgtk GrxWidgetGetChildVisible"
 ::METHOD get_parent EXTERNAL "LIBRARY rexxgtk GrxWidgetGetParent"
 ::METHOD parent EXTERNAL "LIBRARY rexxgtk GrxWidgetGetParent"
-::METHOD get_root_window EXTERNAL "LIBRARY rexxgtk GrxWidgetGetRootWindow"
-::METHOD root_window EXTERNAL "LIBRARY rexxgtk GrxWidgetGetRootWindow"
 ::METHOD get_menus EXTERNAL "LIBRARY rexxgtk GrxWidgetGetMenus"
 ::METHOD add_accelerator EXTERNAL "LIBRARY rexxgtk GrxWidgetAddAccelerator"
 ::METHOD remove_accelerator EXTERNAL "LIBRARY rexxgtk GrxWidgetRemoveAccelerator"
@@ -1136,8 +1134,8 @@ return self~signal_connect:super(event)
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxWindowNew"
 ::METHOD 'title=' EXTERNAL "LIBRARY rexxgtk GrxWindowSetTitle"
 ::METHOD set_title EXTERNAL "LIBRARY rexxgtk GrxWindowSetTitle"
-::METHOD 'modal=' EXTERNAL "LIBRARY rexxgtk GrxWindowSetModal"
-::METHOD set_modal EXTERNAL "LIBRARY rexxgtk GrxWindowSetModal"
+-- ::METHOD 'modal=' EXTERNAL "LIBRARY rexxgtk GrxWindowSetModal"
+-- ::METHOD set_modal EXTERNAL "LIBRARY rexxgtk GrxWindowSetModal"
 ::METHOD add_accel_group EXTERNAL "LIBRARY rexxgtk GrxWindowAddAccelGroup"
 ::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxWindowSignalConnect"
 
@@ -1279,7 +1277,6 @@ return button
 ::METHOD 'mode=' EXTERNAL "LIBRARY rexxgtk GrxToggleButtonSetMode"
 ::METHOD active EXTERNAL "LIBRARY rexxgtk GrxToggleButtonGetActive"
 ::METHOD get_active EXTERNAL "LIBRARY rexxgtk GrxToggleButtonGetActive"
-::METHOD active EXTERNAL "LIBRARY rexxgtk GrxToggleButtonSetActive"
 ::METHOD 'active=' EXTERNAL "LIBRARY rexxgtk GrxToggleButtonSetActive"
 ::METHOD inconsistent EXTERNAL "LIBRARY rexxgtk GrxToggleButtonGetInconsistent"
 ::METHOD get_inconsistent EXTERNAL "LIBRARY rexxgtk GrxToggleButtonGetInconsistent"
@@ -1370,9 +1367,9 @@ return
 ::method signal_group_changed
 return
 
-::class GtkRadioButton_FromWidget public subclass GtkRadioButton
+-- ::class GtkRadioButton_FromWidget public subclass GtkRadioButton
 
-::METHOD init class EXTERNAL "LIBRARY rexxgtk GrxRadioButtonFromWidget"
+-- ::METHOD init class EXTERNAL "LIBRARY rexxgtk GrxRadioButtonNewFromWidget"
 
 
 /*============================================================================*/
@@ -1674,8 +1671,6 @@ return
 ::class GtkAboutDialog public subclass GtkDialog
 
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxAboutDialogNew"
-::METHOD 'program_name=' EXTERNAL "LIBRARY rexxgtk GrxAboutDialogSetProgramName"
-::METHOD set_program_name EXTERNAL "LIBRARY rexxgtk GrxAboutDialogSetProgramName"
 ::METHOD 'version=' EXTERNAL "LIBRARY rexxgtk GrxAboutDialogSetVersion"
 ::METHOD set_version EXTERNAL "LIBRARY rexxgtk GrxAboutDialogSetVersion"
 ::METHOD 'copyright=' EXTERNAL "LIBRARY rexxgtk GrxAboutDialogSetCopyright"
@@ -1723,7 +1718,6 @@ return
 ::METHOD append_page EXTERNAL "LIBRARY rexxgtk GrxAssistantAppendPage"
 ::METHOD insert_page EXTERNAL "LIBRARY rexxgtk GrxAssistantInsertPage"
 ::METHOD set_page_type EXTERNAL "LIBRARY rexxgtk GrxAssistantSetPageType"
-::METHOD set_page_complete EXTERNAL "LIBRARY rexxgtk GrxAssistantSetPageComplete"
 ::METHOD set_page_complete EXTERNAL "LIBRARY rexxgtk GrxAssistantSetPageComplete"
 ::METHOD set_page_header_image EXTERNAL "LIBRARY rexxgtk GrxAssistantSetPageHeaderImage"
 ::METHOD set_page_side_image EXTERNAL "LIBRARY rexxgtk GrxAssistantSetPageSideImage"
@@ -1813,7 +1807,7 @@ return exp
 ::METHOD 'use_underline=' EXTERNAL "LIBRARY rexxgtk GrxExpanderSetUseUnderline"
 ::METHOD set_spacing EXTERNAL "LIBRARY rexxgtk GrxExpanderSetSpacing"
 ::METHOD 'spacing=' EXTERNAL "LIBRARY rexxgtk GrxExpanderSetSpacing"
-::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxExpanderSignalSpacing"
+::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxExpanderSignalConnect"
 
 -- The following are the methods that can be connected to signals. By default
 -- they do nothing.
@@ -2067,11 +2061,11 @@ return img
 ::METHOD set_pixels_inside_wrap EXTERNAL "LIBRARY rexxgtk GrxTextViewSetPixelsInsideWrap"
 ::METHOD 'pixels_inside_wrap=' EXTERNAL "LIBRARY rexxgtk GrxTextViewSetPixelsInsideWrap"
 ::METHOD get_left_margin EXTERNAL "LIBRARY rexxgtk GrxTextViewGetLeftMargin"
-::METHOD left_margin EXTERNAL "LIBRARY rexxgtk GrxTextViewGeLeftMargin"
+::METHOD left_margin EXTERNAL "LIBRARY rexxgtk GrxTextViewGetLeftMargin"
 ::METHOD set_left_margin EXTERNAL "LIBRARY rexxgtk GrxTextViewSetLeftMargin"
 ::METHOD 'left_margin=' EXTERNAL "LIBRARY rexxgtk GrxTextViewSetLeftMargin"
 ::METHOD get_right_margin EXTERNAL "LIBRARY rexxgtk GrxTextViewGetRightMargin"
-::METHOD right_margin EXTERNAL "LIBRARY rexxgtk GrxTextViewGeRightMargin"
+::METHOD right_margin EXTERNAL "LIBRARY rexxgtk GrxTextViewGetRightMargin"
 ::METHOD set_right_margin EXTERNAL "LIBRARY rexxgtk GrxTextViewSetRightMargin"
 ::METHOD 'right_margin=' EXTERNAL "LIBRARY rexxgtk GrxTextViewSetRightMargin"
 ::METHOD add_child_at_offset EXTERNAL "LIBRARY rexxgtk GrxTextViewAddChildAtOffset"
@@ -2144,7 +2138,6 @@ return
 ::METHOD init_1args private EXTERNAL "LIBRARY rexxgtk GrxTextBufferNewFromPtr"
 ::METHOD init_0args private EXTERNAL "LIBRARY rexxgtk GrxTextBufferNew"
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxTextBufferNew"
 ::METHOD set_text EXTERNAL "LIBRARY rexxgtk GrxTextBufferSetText"
 ::METHOD 'text=' EXTERNAL "LIBRARY rexxgtk GrxTextBufferSetText"
 ::METHOD get_text EXTERNAL "LIBRARY rexxgtk GrxTextBufferGetText"
@@ -2327,8 +2320,8 @@ use arg label
 return self~new(label, .true)
 
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxMenuItemNew"
-::METHOD set_right _justified EXTERNAL "LIBRARY rexxgtk GrxMenuItemSetRightJustified"
-::METHOD get_right _justified EXTERNAL "LIBRARY rexxgtk GrxMenuItemGetRightJustified"
+::METHOD set_right_justified EXTERNAL "LIBRARY rexxgtk GrxMenuItemSetRightJustified"
+::METHOD get_right_justified EXTERNAL "LIBRARY rexxgtk GrxMenuItemGetRightJustified"
 ::METHOD set_submenu EXTERNAL "LIBRARY rexxgtk GrxMenuItemSetSubmenu"
 ::METHOD remove_submenu EXTERNAL "LIBRARY rexxgtk GrxMenuItemRemoveSubmenu"
 ::METHOD set_accel_path EXTERNAL "LIBRARY rexxgtk GrxMenuItemSetAccelPath"
@@ -2360,15 +2353,15 @@ return
 
 ::method new_from_stock class
 use strict arg id, accelgrp
-return self~new_from_stock_p id, accelgrp
+return self~new_from_stock_p(id, accelgrp)
 
-::method new_with label class
+::method new_with_label class
 use strict arg label
-return self~new_with_label_p label
+return self~new_with_label_p(label)
 
 ::method new_with_mnemonic class
 use strict arg label
-return self~new_with_mnemonic_p label
+return self~new_with_mnemonic_p(label)
 
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxImageMenuItemNew"
 
@@ -2429,7 +2422,6 @@ return self~new_with_mnemonic_p label
 ::METHOD insert_widget EXTERNAL "LIBRARY rexxgtk GrxToolbarInsertWidget"
 ::METHOD set_style EXTERNAL "LIBRARY rexxgtk GrxToolbarSetStyle"
 ::METHOD insert_stock EXTERNAL "LIBRARY rexxgtk GrxToolbarInsertStock"
-::METHOD set_icon_size EXTERNAL "LIBRARY rexxgtk GrxToolbarSetIconSize"
 ::METHOD remove_space EXTERNAL "LIBRARY rexxgtk GrxToolbarRemoveSpace"
 ::METHOD unset_style EXTERNAL "LIBRARY rexxgtk GrxToolbarUnsetStyle"
 ::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxToolbarSignalConnect"
@@ -2551,7 +2543,6 @@ return obj
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxMenuToolButtonNew"
 ::METHOD get_menu EXTERNAL "LIBRARY rexxgtk GrxMenuToolButtonGetMenu"
 ::METHOD set_menu EXTERNAL "LIBRARY rexxgtk GrxMenuToolButtonSetMenu"
-::METHOD set_arrow_tooltip EXTERNAL "LIBRARY rexxgtk GrxMenuToolButtonSetArrowTooltip"
 ::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxMenuToolButtonSignalConnect"
 
 -- The following are the methods that can be connected to signals. By default
@@ -2724,15 +2715,6 @@ return
 
 ::method signal_accel_changed
 return
-
-
-/*============================================================================*/
-/* Class: GtkCellRendererSpin                                                 */
-/*============================================================================*/
-
-::class GtkCellRendererSpin public subclass GtkCellRendererText
-
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxCellRendererSpinNew"
 
 
 /*============================================================================*/

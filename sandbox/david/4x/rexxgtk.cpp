@@ -56,9 +56,6 @@ int rexxgtk_argc = 1;
 
 #define VERSTRING(major,minor,rel) #major "." #minor "." #rel
 
-
-
-
 #if defined WIN32
 BOOL WINAPI DllMain(HANDLE hinst, DWORD dwcallpurpose, LPVOID lpvResvd);
 #else
@@ -371,7 +368,7 @@ RexxRoutineEntry gtkobject_routines[] = {
 // build the actual entry list
 RexxMethodEntry gtkobject_methods[] = {
     REXX_METHOD(GrxWidgetNew, GrxWidgetNew),
-    REXX_METHOD(GrxWidgetUninit, GrxWidgetUninit),
+//    REXX_METHOD(GrxWidgetUninit, GrxWidgetUninit),
     REXX_METHOD(GrxWidgetShow, GrxWidgetShow),
     REXX_METHOD(GrxWidgetShowAll, GrxWidgetShowAll),
     REXX_METHOD(GrxWidgetHide, GrxWidgetHide),
@@ -422,9 +419,9 @@ RexxMethodEntry gtkobject_methods[] = {
     REXX_METHOD(GrxContainerAdd, GrxContainerAdd),
     REXX_METHOD(GrxContainerRemove, GrxContainerRemove),
     REXX_METHOD(GrxContainerSetBorderWidth, GrxContainerSetBorderWidth),
-    REXX_METHOD(GrxContainerPackStart, GrxContainerPackStart),
-    REXX_METHOD(GrxContainerPackEnd, GrxContainerPackEnd),
     REXX_METHOD(GrxContainerSignalConnect, GrxContainerSignalConnect),
+    REXX_METHOD(GrxBoxPackStart, GrxBoxPackStart),
+    REXX_METHOD(GrxBoxPackEnd, GrxBoxPackEnd),
     REXX_METHOD(GrxVBoxNew, GrxVBoxNew),
     REXX_METHOD(GrxVBoxNewFromPtr, GrxVBoxNewFromPtr),
     REXX_METHOD(GrxHBoxNew, GrxHBoxNew),
@@ -443,7 +440,7 @@ RexxMethodEntry gtkobject_methods[] = {
     REXX_METHOD(GrxButtonSetLabel, GrxButtonSetLabel),
     REXX_METHOD(GrxButtonGetLabel, GrxButtonGetLabel),
     REXX_METHOD(GrxButtonSetRelief, GrxButtonSetRelief),
-    REXX_METHOD(GrxButtonSetUnderline, GrxButtonSetUnderline),
+    REXX_METHOD(GrxButtonUseUnderline, GrxButtonUseUnderline),
     REXX_METHOD(GrxButtonSignalConnect, GrxButtonSignalConnect),
     REXX_METHOD(GrxToggleButtonNew, GrxToggleButtonNew),
     REXX_METHOD(GrxToggleButtonGetMode, GrxToggleButtonGetMode),
@@ -479,6 +476,7 @@ RexxMethodEntry gtkobject_methods[] = {
     REXX_METHOD(GrxComboBoxAppendText, GrxComboBoxAppendText),
     REXX_METHOD(GrxComboBoxGetActive, GrxComboBoxGetActive),
     REXX_METHOD(GrxComboBoxSetActive, GrxComboBoxSetActive),
+    REXX_METHOD(GrxComboBoxGetActiveText, GrxComboBoxGetActiveText),
     REXX_METHOD(GrxComboBoxSignalConnect, GrxComboBoxSignalConnect),
     REXX_METHOD(GrxDialogNew, GrxDialogNew),
     REXX_METHOD(GrxDialogNewWithButtons, GrxDialogNewWithButtons),
@@ -678,6 +676,7 @@ RexxMethodEntry gtkobject_methods[] = {
     REXX_METHOD(GrxMenuShellAppend, GrxMenuShellAppend),
     REXX_METHOD(GrxMenuShellPrepend, GrxMenuShellPrepend),
     REXX_METHOD(GrxMenuShellInsert, GrxMenuShellInsert),
+    REXX_METHOD(GrxMenuShellDeactivate, GrxMenuShellDeactivate),
     REXX_METHOD(GrxMenuShellSelectItem, GrxMenuShellSelectItem),
     REXX_METHOD(GrxMenuShellSelectFirst, GrxMenuShellSelectFirst),
     REXX_METHOD(GrxMenuShellDeselect, GrxMenuShellDeselect),
@@ -728,6 +727,7 @@ RexxMethodEntry gtkobject_methods[] = {
     REXX_METHOD(GrxMenuBarGetChildPackDirection, GrxMenuBarGetChildPackDirection),
     REXX_METHOD(GrxSeparatorMenuItemNew, GrxSeparatorMenuItemNew),
     REXX_METHOD(GrxAccelGroupNew, GrxAccelGroupNew),
+    REXX_METHOD(GrxAccelGroupSignalConnect, GrxAccelGroupSignalConnect),
     REXX_METHOD(GrxStatusbarNew, GrxStatusbarNew),
     REXX_METHOD(GrxStatusbarGetContextId, GrxStatusbarGetContextId),
     REXX_METHOD(GrxStatusbarPush, GrxStatusbarPush),
@@ -791,6 +791,7 @@ RexxMethodEntry gtkobject_methods[] = {
     REXX_METHOD(GrxToolItemGetReliefStyle, GrxToolItemGetReliefStyle),
     REXX_METHOD(GrxToolItemRetrieveProxyMenuItem, GrxToolItemRetrieveProxyMenuItem),
     REXX_METHOD(GrxToolItemGetProxyMenuItem, GrxToolItemGetProxyMenuItem),
+    REXX_METHOD(GrxToolItemSetProxyMenuItem, GrxToolItemSetProxyMenuItem),
     REXX_METHOD(GrxToolItemRebuildMenu, GrxToolItemRebuildMenu),
     REXX_METHOD(GrxToolItemSignalConnect, GrxToolItemSignalConnect),
     REXX_METHOD(GrxToolButtonNew, GrxToolButtonNew),
@@ -813,7 +814,6 @@ RexxMethodEntry gtkobject_methods[] = {
     REXX_METHOD(GrxMenuToolButtonNew, GrxMenuToolButtonNew),
     REXX_METHOD(GrxMenuToolButtonSetMenu, GrxMenuToolButtonSetMenu),
     REXX_METHOD(GrxMenuToolButtonGetMenu, GrxMenuToolButtonGetMenu),
-    REXX_METHOD(GrxMenuToolButtonSetArrowTooltip, GrxMenuToolButtonSetArrowTooltip),
     REXX_METHOD(GrxMenuToolButtonSignalConnect, GrxMenuToolButtonSignalConnect),
     REXX_METHOD(GrxCellRendererSetFixedSize, GrxCellRendererSetFixedSize),
     REXX_METHOD(GrxCellRendererSignalConnect, GrxCellRendererSignalConnect),
@@ -831,7 +831,6 @@ RexxMethodEntry gtkobject_methods[] = {
     REXX_METHOD(GrxCellRendererAccelSignalConnect, GrxCellRendererAccelSignalConnect),
     REXX_METHOD(GrxCellRendererComboNew, GrxCellRendererComboNew),
     REXX_METHOD(GrxCellRendererComboSignalConnect, GrxCellRendererComboSignalConnect),
-    REXX_METHOD(GrxCellRendererSpinNew, GrxCellRendererSpinNew),
     REXX_METHOD(GrxTreeViewNew, GrxTreeViewNew),
     REXX_METHOD(GrxTreeViewAppendColumn, GrxTreeViewAppendColumn),
     REXX_METHOD(GrxTreeViewInsertColumn, GrxTreeViewInsertColumn),

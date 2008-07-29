@@ -69,7 +69,7 @@
  * @return        Zero.
  **/
 RexxMethod1(int,                       // Return type
-            GrxProgressbarNew,         // Object_method name
+            GrxProgressBarNew,         // Object_method name
             OSELF, self)               // Self
 {
     GtkWidget       *myWidget;

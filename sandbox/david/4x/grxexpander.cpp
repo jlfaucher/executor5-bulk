@@ -166,7 +166,7 @@ RexxMethod0(CSTRING,                   // Return type
  * @return        Zero.
  **/
 RexxMethod1(int,                       // Return type
-            GrxExpanderSetUnderline,   // Object_method name
+            GrxExpanderSetUseUnderline, // Object_method name
             logical_t, flag)           // Expander underline boolean
 {
     RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");

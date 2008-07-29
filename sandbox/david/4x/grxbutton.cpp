@@ -182,7 +182,7 @@ RexxMethod1(int,                       // Return type
  * @return        Zero.
  **/
 RexxMethod1(int,                       // Return type
-            GrxButtonSetUnderline,     // Object_method name
+            GrxButtonUseUnderline,     // Object_method name
             logical_t, flag)           // Button underline flag
 {
     RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
@@ -581,7 +581,7 @@ RexxMethod3(int,                       // Return type
  * @return        Zero.
  **/
 RexxMethod1(int,                       // Return type
-            GrxFontButton,             // Object_method name
+            GrxFontButtonNew,          // Object_method name
             OSELF, self)               // Self
 {
     GtkWidget *myWidget;

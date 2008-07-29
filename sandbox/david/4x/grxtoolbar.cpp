@@ -481,7 +481,7 @@ RexxMethod0(int,                       // Return type
  * @return        Style
  **/
 RexxMethod5(RexxObjectPtr,             // Return type
-            GrxToolbarAppenItem,       // Object_method name
+            GrxToolbarAppendItem,      // Object_method name
             CSTRING, text,             // Button text
             CSTRING, ttext,            // Tooltips text
             CSTRING, tptext,           // Tooltips private text
@@ -663,7 +663,7 @@ RexxMethod1(int,                       // Return type
  * @return        Style
  **/
 RexxMethod7(RexxObjectPtr,             // Return type
-            GrxToolbarAppenElement,    // Object_method name
+            GrxToolbarAppendElement,   // Object_method name
             int, type,                 // Child type
             RexxObjectPtr, elem,       // Widget element
             CSTRING, text,             // Button text
