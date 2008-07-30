@@ -44,6 +44,7 @@
 -- Foundations of GTK+ Development
 -- by Andrew Krause
 
+call gtk_init
 window = .myMainWindow~new(.gtk~GTK_WINDOW_TOPLEVEL)
 window~set_title( 'Hello World')
 window~set_border_width(10)
@@ -52,7 +53,7 @@ window~set_size_request(200, 100)
 window~signal_connect("destroy")
 -- events cannot be overridden so there is no connect to a delete_event
 
-label= .GtkLabel~new('Hellow World')
+label= .GtkLabel~new('Hello World')
 label~set_selectable(.true)
 
 window~add(label)
@@ -68,6 +69,7 @@ return
 ::class myMainWindow subclass GtkWindow
 
 ::method signal_destroy
+say 'Got here!'
 call gtk_main_quit
 return
 

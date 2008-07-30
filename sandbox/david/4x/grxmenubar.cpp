@@ -76,7 +76,7 @@ RexxMethod1(int,                       // Return type
     GtkWidget *myWidget;
 
     myWidget = gtk_menu_bar_new();
-    context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
+    context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
@@ -91,11 +91,12 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxMenuBarAppend,          // Object_method name
-            RexxObjectPtr, child)      // The child menu
+            RexxObjectPtr, child,      // The child menu
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkMenuBar *myWidget = (GtkMenuBar *)context->PointerValue(rxptr);
     RexxPointerObject childptr = (RexxPointerObject)context->SendMessage0(child, "POINTER");
     GtkWidget *childWidget = (GtkWidget *)context->PointerValue(childptr);
@@ -114,11 +115,12 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxMenuBarPrepend,         // Object_method name
-            RexxObjectPtr, child)      // The child menu
+            RexxObjectPtr, child,      // The child menu
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkMenuBar *myWidget = (GtkMenuBar *)context->PointerValue(rxptr);
     RexxPointerObject childptr = (RexxPointerObject)context->SendMessage0(child, "POINTER");
     GtkWidget *childWidget = (GtkWidget *)context->PointerValue(childptr);
@@ -139,12 +141,13 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod2(int,                       // Return type
+RexxMethod3(int,                       // Return type
             GrxMenuBarInsert,          // Object_method name
             RexxObjectPtr, child,      // The child menu
-            int, pos)                  // Position
+            int, pos,                  // Position
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkMenuBar *myWidget = (GtkMenuBar *)context->PointerValue(rxptr);
     RexxPointerObject childptr = (RexxPointerObject)context->SendMessage0(child, "POINTER");
     GtkWidget *childWidget = (GtkWidget *)context->PointerValue(childptr);
@@ -163,11 +166,12 @@ RexxMethod2(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxMenuBarSetPackDirection, // Object_method name
-            int, dir)                  // Position
+            int, dir,                  // Position
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkMenuBar *myWidget = (GtkMenuBar *)context->PointerValue(rxptr);
 
     gtk_menu_bar_set_pack_direction(myWidget, (GtkPackDirection)dir);
@@ -182,10 +186,11 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Direction
  **/
-RexxMethod0(int,                       // Return type
-            GrxMenuBarGetPackDirection) // Object_method name
+RexxMethod1(int,                       // Return type
+            GrxMenuBarGetPackDirection, // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkMenuBar *myWidget = (GtkMenuBar *)context->PointerValue(rxptr);
 
     return gtk_menu_bar_get_pack_direction(myWidget);
@@ -202,11 +207,12 @@ RexxMethod0(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxMenuBarSetChildPackDirection, // Object_method name
-            int, dir)                  // Position
+            int, dir,                  // Position
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkMenuBar *myWidget = (GtkMenuBar *)context->PointerValue(rxptr);
 
     gtk_menu_bar_set_child_pack_direction(myWidget, (GtkPackDirection)dir);
@@ -221,10 +227,11 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Direction
  **/
-RexxMethod0(int,                       // Return type
-            GrxMenuBarGetChildPackDirection) // Object_method name
+RexxMethod1(int,                       // Return type
+            GrxMenuBarGetChildPackDirection, // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkMenuBar *myWidget = (GtkMenuBar *)context->PointerValue(rxptr);
 
     return gtk_menu_bar_get_child_pack_direction(myWidget);

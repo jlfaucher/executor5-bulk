@@ -105,7 +105,7 @@ RexxMethod1(int,                       // Return type
     GtkWidget *myWidget;
 
     myWidget = gtk_combo_box_new();
-    context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
+    context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
@@ -125,7 +125,7 @@ RexxMethod1(int,                       // Return type
     GtkWidget *myWidget;
 
     myWidget = gtk_combo_box_new_text();
-    context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
+    context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
@@ -140,11 +140,12 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxComboBoxAppendText,     // Object_method name
-            CSTRING, text)             // Text to append
+            CSTRING, text,             // Text to append
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkComboBox *myWidget = (GtkComboBox *)context->PointerValue(rxptr);
 
     gtk_combo_box_append_text(myWidget, text);
@@ -159,10 +160,11 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Text.
  **/
-RexxMethod0(CSTRING,                   // Return type
-            GrxComboBoxGetActiveText)  // Object_method name
+RexxMethod1(CSTRING,                   // Return type
+            GrxComboBoxGetActiveText,  // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkComboBox *myWidget = (GtkComboBox *)context->PointerValue(rxptr);
 
     return gtk_combo_box_get_active_text(myWidget);
@@ -177,11 +179,12 @@ RexxMethod0(CSTRING,                   // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxComboBoxSetActive,      // Object_method name
-            int, active)               // Entry number
+            int, active,               // Entry number
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkComboBox *myWidget = (GtkComboBox *)context->PointerValue(rxptr);
 
     gtk_combo_box_set_active(myWidget, active);
@@ -196,10 +199,11 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Entry number
  **/
-RexxMethod0(int,                       // Return type
-            GrxComboBoxGetActive)      // Object_method name
+RexxMethod1(int,                       // Return type
+            GrxComboBoxGetActive,      // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkComboBox *myWidget = (GtkComboBox *)context->PointerValue(rxptr);
 
     return gtk_combo_box_get_active(myWidget);
@@ -214,12 +218,13 @@ RexxMethod0(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod2(RexxObjectPtr,             // Return type
+RexxMethod3(RexxObjectPtr,             // Return type
             GrxComboBoxSignalConnect,  // Object_method name
             CSTRING, name,             // Image file name
-            ARGLIST, args)             // The whole argument list as an array
+            ARGLIST, args,             // The whole argument list as an array
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     cbcb *cblock;
 

@@ -131,7 +131,7 @@ RexxMethod3(int,                       // Return type
     }
 
     myWidget = gtk_scrolled_window_new(hadj, vadj);
-    context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
+    context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
@@ -144,10 +144,11 @@ RexxMethod3(int,                       // Return type
  *
  * @return        Horizontal adjustment object
  **/
-RexxMethod0(RexxObjectPtr,             // Return type
-            GrxScrolledWindowGetHAdjustment) // Object_method name
+RexxMethod1(RexxObjectPtr,             // Return type
+            GrxScrolledWindowGetHAdjustment, // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkScrolledWindow *myWidget = (GtkScrolledWindow *)context->PointerValue(rxptr);
     GtkAdjustment   *adj;     
 
@@ -168,10 +169,11 @@ RexxMethod0(RexxObjectPtr,             // Return type
  *
  * @return        Vertical adjustment object
  **/
-RexxMethod0(RexxObjectPtr,             // Return type
-            GrxScrolledWindowGetVAdjustment) // Object_method name
+RexxMethod1(RexxObjectPtr,             // Return type
+            GrxScrolledWindowGetVAdjustment, // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkScrolledWindow *myWidget = (GtkScrolledWindow *)context->PointerValue(rxptr);
     GtkAdjustment   *adj;     
 
@@ -196,12 +198,13 @@ RexxMethod0(RexxObjectPtr,             // Return type
  *
  * @return        Zero
  **/
-RexxMethod2(int,                       // Return type
+RexxMethod3(int,                       // Return type
             GrxScrolledWindowSetPolicy, // Object_method name
             int, hpolicy,              // Horizontal policy
-            int, vpolicy)              // Vertical policy
+            int, vpolicy,              // Vertical policy
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkScrolledWindow *myWidget = (GtkScrolledWindow *)context->PointerValue(rxptr);
 
     gtk_scrolled_window_set_policy(myWidget, (GtkPolicyType)hpolicy, (GtkPolicyType)vpolicy);
@@ -218,11 +221,12 @@ RexxMethod2(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxScrolledWindowAddWithViewport, // Object_method name
-            RexxObjectPtr, rxchild)    // Child widget
+            RexxObjectPtr, rxchild,    // Child widget
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkScrolledWindow *myWidget = (GtkScrolledWindow *)context->PointerValue(rxptr);
     RexxPointerObject childptr = (RexxPointerObject)context->SendMessage0(rxchild, "POINTER");
     GtkWidget *myChild = (GtkWidget *)context->PointerValue(childptr);
@@ -241,12 +245,13 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod2(RexxObjectPtr,             // Return type
+RexxMethod3(RexxObjectPtr,             // Return type
             GrxScrolledWindowSignalConnect, // Object_method name
             CSTRING, name,             // Signal name
-            ARGLIST, args)             // The whole argument list as an array
+            ARGLIST, args,             // The whole argument list as an array
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     cbcb *cblock;
 

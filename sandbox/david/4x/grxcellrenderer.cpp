@@ -161,12 +161,13 @@ static void signal_func_4(GtkCellRenderer *renderer,
  *
  * @return        Zero
  **/
-RexxMethod2(int,                       // Return type
+RexxMethod3(int,                       // Return type
             GrxCellRendererSetFixedSize, // Object_method name
             int, width,                // Width
-            int, height)               // Height
+            int, height,               // Height
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkCellRenderer *myWidget = (GtkCellRenderer *)context->PointerValue(rxptr);
 
     gtk_cell_renderer_set_fixed_size(myWidget, width, height);
@@ -183,12 +184,13 @@ RexxMethod2(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod2(RexxObjectPtr,             // Return type
+RexxMethod3(RexxObjectPtr,             // Return type
             GrxCellRendererSignalConnect, // Object_method name
             CSTRING, name,             // Signal name
-            ARGLIST, args)             // The whole argument list as an array
+            ARGLIST, args,             // The whole argument list as an array
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     cbcb *cblock;
 
@@ -225,7 +227,7 @@ RexxMethod1(int,                       // Return type
     GtkCellRenderer *myRenderer;
 
     myRenderer = gtk_cell_renderer_text_new();
-    context->SetObjectVariable("!POINTER", context->NewPointer(myRenderer));
+    context->SendMessage1(self, "POINTER=", context->NewPointer(myRenderer));
     g_object_set_data(G_OBJECT(myRenderer), "OORXOBJECT", self);
 
     return 0;
@@ -240,12 +242,13 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod2(RexxObjectPtr,             // Return type
+RexxMethod3(RexxObjectPtr,             // Return type
             GrxCellRendererTextSignalConnect, // Object_method name
             CSTRING, name,             // Signal name
-            ARGLIST, args)             // The whole argument list as an array
+            ARGLIST, args,             // The whole argument list as an array
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     cbcb *cblock;
 
@@ -274,7 +277,7 @@ RexxMethod1(int,                       // Return type
     GtkCellRenderer *myRenderer;
 
     myRenderer = gtk_cell_renderer_pixbuf_new();
-    context->SetObjectVariable("!POINTER", context->NewPointer(myRenderer));
+    context->SendMessage1(self, "POINTER=", context->NewPointer(myRenderer));
     g_object_set_data(G_OBJECT(myRenderer), "OORXOBJECT", self);
 
     return 0;
@@ -294,7 +297,7 @@ RexxMethod1(int,                       // Return type
     GtkCellRenderer *myRenderer;
 
     myRenderer = gtk_cell_renderer_progress_new();
-    context->SetObjectVariable("!POINTER", context->NewPointer(myRenderer));
+    context->SendMessage1(self, "POINTER=", context->NewPointer(myRenderer));
     g_object_set_data(G_OBJECT(myRenderer), "OORXOBJECT", self);
 
     return 0;
@@ -314,7 +317,7 @@ RexxMethod1(int,                       // Return type
     GtkCellRenderer *myRenderer;
 
     myRenderer = gtk_cell_renderer_toggle_new();
-    context->SetObjectVariable("!POINTER", context->NewPointer(myRenderer));
+    context->SendMessage1(self, "POINTER=", context->NewPointer(myRenderer));
     g_object_set_data(G_OBJECT(myRenderer), "OORXOBJECT", self);
 
     return 0;
@@ -329,11 +332,12 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxCellRendererToggleSetRadio, // Object_method name
-            logical_t, flag)           // Radio boolean
+            logical_t, flag,           // Radio boolean
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkCellRendererToggle *myWidget = (GtkCellRendererToggle *)context->PointerValue(rxptr);
 
     gtk_cell_renderer_toggle_set_radio(myWidget, flag);
@@ -348,10 +352,11 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Boolean flag
  **/
-RexxMethod0(int,                       // Return type
-            GrxCellRendererToggleGetRadio) // Object_method name
+RexxMethod1(int,                       // Return type
+            GrxCellRendererToggleGetRadio, // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkCellRendererToggle *myWidget = (GtkCellRendererToggle *)context->PointerValue(rxptr);
 
     return gtk_cell_renderer_toggle_get_radio(myWidget);
@@ -366,11 +371,12 @@ RexxMethod0(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxCellRendererToggleSetActive, // Object_method name
-            logical_t, flag)           // Radio boolean
+            logical_t, flag,           // Radio boolean
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkCellRendererToggle *myWidget = (GtkCellRendererToggle *)context->PointerValue(rxptr);
 
     gtk_cell_renderer_toggle_set_active(myWidget, flag);
@@ -385,10 +391,11 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Boolean flag
  **/
-RexxMethod0(int,                       // Return type
-            GrxCellRendererToggleGetActive) // Object_method name
+RexxMethod1(int,                       // Return type
+            GrxCellRendererToggleGetActive, // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkCellRendererToggle *myWidget = (GtkCellRendererToggle *)context->PointerValue(rxptr);
 
     return gtk_cell_renderer_toggle_get_active(myWidget);
@@ -403,12 +410,13 @@ RexxMethod0(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod2(RexxObjectPtr,             // Return type
+RexxMethod3(RexxObjectPtr,             // Return type
             GrxCellRendererToggleSignalConnect, // Object_method name
             CSTRING, name,             // Signal name
-            ARGLIST, args)             // The whole argument list as an array
+            ARGLIST, args,             // The whole argument list as an array
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     cbcb *cblock;
 
@@ -437,7 +445,7 @@ RexxMethod1(int,                       // Return type
     GtkCellRenderer *myRenderer;
 
     myRenderer = gtk_cell_renderer_accel_new();
-    context->SetObjectVariable("!POINTER", context->NewPointer(myRenderer));
+    context->SendMessage1(self, "POINTER=", context->NewPointer(myRenderer));
     g_object_set_data(G_OBJECT(myRenderer), "OORXOBJECT", self);
 
     return 0;
@@ -452,12 +460,13 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod2(RexxObjectPtr,             // Return type
+RexxMethod3(RexxObjectPtr,             // Return type
             GrxCellRendererAccelSignalConnect, // Object_method name
             CSTRING, name,             // Signal name
-            ARGLIST, args)             // The whole argument list as an array
+            ARGLIST, args,             // The whole argument list as an array
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     cbcb *cblock;
 
@@ -494,7 +503,7 @@ RexxMethod1(int,                       // Return type
     GtkCellRenderer *myRenderer;
 
     myRenderer = gtk_cell_renderer_combo_new();
-    context->SetObjectVariable("!POINTER", context->NewPointer(myRenderer));
+    context->SendMessage1(self, "POINTER=", context->NewPointer(myRenderer));
     g_object_set_data(G_OBJECT(myRenderer), "OORXOBJECT", self);
 
     return 0;
@@ -509,12 +518,13 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod2(RexxObjectPtr,             // Return type
+RexxMethod3(RexxObjectPtr,             // Return type
             GrxCellRendererComboSignalConnect, // Object_method name
             CSTRING, name,             // Signal name
-            ARGLIST, args)             // The whole argument list as an array
+            ARGLIST, args,             // The whole argument list as an array
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     cbcb *cblock;
 

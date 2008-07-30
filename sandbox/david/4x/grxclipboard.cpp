@@ -76,7 +76,7 @@ RexxMethod1(int,                       // Return type
     GtkClipboard *myWidget;
 
     myWidget = gtk_clipboard_get(GDK_SELECTION_PRIMARY);
-    context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
+    context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;

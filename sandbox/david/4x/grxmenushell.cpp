@@ -132,11 +132,12 @@ static gboolean signal_func_1b(GtkWidget *window,
  *
  * @return        Zero
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxMenuShellAppend,        // Object_method name
-            RexxObjectPtr, child)      // The child widget
+            RexxObjectPtr, child,      // The child widget
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkMenuShell *myWidget = (GtkMenuShell *)context->PointerValue(rxptr);
     RexxPointerObject childptr = (RexxPointerObject)context->SendMessage0(child, "POINTER");
     GtkWidget *childWidget = (GtkWidget *)context->PointerValue(childptr);
@@ -155,11 +156,12 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxMenuShellPrepend,       // Object_method name
-            RexxObjectPtr, child)      // The child widget
+            RexxObjectPtr, child,      // The child widget
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkMenuShell *myWidget = (GtkMenuShell *)context->PointerValue(rxptr);
     RexxPointerObject childptr = (RexxPointerObject)context->SendMessage0(child, "POINTER");
     GtkWidget *childWidget = (GtkWidget *)context->PointerValue(childptr);
@@ -180,12 +182,13 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod2(int,                       // Return type
+RexxMethod3(int,                       // Return type
             GrxMenuShellInsert,        // Object_method name
             RexxObjectPtr, child,      // The child widget
-            int, pos)                  // Position
+            int, pos,                  // Position
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkMenuShell *myWidget = (GtkMenuShell *)context->PointerValue(rxptr);
     RexxPointerObject childptr = (RexxPointerObject)context->SendMessage0(child, "POINTER");
     GtkWidget *childWidget = (GtkWidget *)context->PointerValue(childptr);
@@ -202,10 +205,11 @@ RexxMethod2(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod0(int,                       // Return type
-            GrxMenuShellDeactivate)    // Object_method name
+RexxMethod1(int,                       // Return type
+            GrxMenuShellDeactivate,    // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkMenuShell *myWidget = (GtkMenuShell *)context->PointerValue(rxptr);
 
     gtk_menu_shell_deactivate(myWidget);
@@ -222,11 +226,12 @@ RexxMethod0(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxMenuShellSelectItem,    // Object_method name
-            RexxObjectPtr, child)      // The child widget
+            RexxObjectPtr, child,      // The child widget
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkMenuShell *myWidget = (GtkMenuShell *)context->PointerValue(rxptr);
     RexxPointerObject childptr = (RexxPointerObject)context->SendMessage0(child, "POINTER");
     GtkWidget *childWidget = (GtkWidget *)context->PointerValue(childptr);
@@ -245,11 +250,12 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxMenuShellSelectFirst,   // Object_method name
-            logical_t, ss)             // The search sensitive flag
+            logical_t, ss,             // The search sensitive flag
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkMenuShell *myWidget = (GtkMenuShell *)context->PointerValue(rxptr);
 
     gtk_menu_shell_select_first(myWidget, ss);
@@ -264,10 +270,11 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod0(int,                       // Return type
-            GrxMenuShellDeselect)      // Object_method name
+RexxMethod1(int,                       // Return type
+            GrxMenuShellDeselect,      // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkMenuShell *myWidget = (GtkMenuShell *)context->PointerValue(rxptr);
 
     gtk_menu_shell_deselect(myWidget);
@@ -286,12 +293,13 @@ RexxMethod0(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod2(int,                       // Return type
+RexxMethod3(int,                       // Return type
             GrxMenuShellActivateItem,  // Object_method name
             RexxObjectPtr, child,      // The child widget
-            logical_t, force)          // Force deactivate flag
+            logical_t, force,          // Force deactivate flag
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkMenuShell *myWidget = (GtkMenuShell *)context->PointerValue(rxptr);
     RexxPointerObject childptr = (RexxPointerObject)context->SendMessage0(child, "POINTER");
     GtkWidget *childWidget = (GtkWidget *)context->PointerValue(childptr);
@@ -308,10 +316,11 @@ RexxMethod2(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod0(int,                       // Return type
-            GrxMenuShellCancel)        // Object_method name
+RexxMethod1(int,                       // Return type
+            GrxMenuShellCancel,        // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkMenuShell *myWidget = (GtkMenuShell *)context->PointerValue(rxptr);
 
     gtk_menu_shell_cancel(myWidget);
@@ -328,11 +337,12 @@ RexxMethod0(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxMenuShellSetTakeFocus,  // Object_method name
-            logical_t, focus)          // The focus flag
+            logical_t, focus,          // The focus flag
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkMenuShell *myWidget = (GtkMenuShell *)context->PointerValue(rxptr);
 
     gtk_menu_shell_set_take_focus(myWidget, focus);
@@ -347,10 +357,11 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Focus boolean
  **/
-RexxMethod0(logical_t,                 // Return type
-            GrxMenuShellGetTakeFocus)  // Object_method name
+RexxMethod1(logical_t,                 // Return type
+            GrxMenuShellGetTakeFocus,  // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkMenuShell *myWidget = (GtkMenuShell *)context->PointerValue(rxptr);
 
     return gtk_menu_shell_get_take_focus(myWidget);
@@ -365,12 +376,13 @@ RexxMethod0(logical_t,                 // Return type
  *
  * @return        Zero
  **/
-RexxMethod2(RexxObjectPtr,             // Return type
+RexxMethod3(RexxObjectPtr,             // Return type
             GrxMenuShellSignalConnect, // Object_method name
             CSTRING, name,             // Signal name
-            ARGLIST, args)             // The whole argument list as an array
+            ARGLIST, args,             // The whole argument list as an array
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     cbcb *cblock;
 

@@ -76,7 +76,7 @@ RexxMethod1(int,                       // Return type
     GtkWidget *myWidget;
 
     myWidget = gtk_image_new();
-    context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
+    context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
@@ -91,11 +91,12 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxImageSetFromFile,       // Object_method name
-            CSTRING, filename)         // File name/path
+            CSTRING, filename,         // File name/path
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkImage *myWidget = (GtkImage *)context->PointerValue(rxptr);
 
     gtk_image_set_from_file(myWidget, filename);
@@ -114,12 +115,13 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod2(int,                       // Return type
+RexxMethod3(int,                       // Return type
             GrxImageSetFromStock,      // Object_method name
             CSTRING, stockname,        // Stock name
-            int, size)                 // Icon size type
+            int, size,                 // Icon size type
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkImage *myWidget = (GtkImage *)context->PointerValue(rxptr);
 
     gtk_image_set_from_stock(myWidget, stockname, (GtkIconSize)size);
@@ -138,12 +140,13 @@ RexxMethod2(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod2(int,                       // Return type
+RexxMethod3(int,                       // Return type
             GrxImageSetFromIconName,   // Object_method name
             CSTRING, iconname,         // Icon name
-            int, size)                 // Icon size type
+            int, size,                 // Icon size type
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkImage *myWidget = (GtkImage *)context->PointerValue(rxptr);
 
     gtk_image_set_from_icon_name(myWidget, iconname, (GtkIconSize)size);

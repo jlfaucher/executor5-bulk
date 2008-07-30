@@ -164,7 +164,7 @@ RexxMethod1(int,                       // Return type
     GtkWidget *myWidget;
 
     myWidget = gtk_notebook_new();
-    context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
+    context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
@@ -181,12 +181,13 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod2(int,                       // Return type
+RexxMethod3(int,                       // Return type
             GrxNotebookAppendPage,     // Object_method name
             RexxObjectPtr, rxcontainer, // The container
-            RexxObjectPtr, rxlabel)    // The label
+            RexxObjectPtr, rxlabel,    // The label
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkNotebook *myWidget = (GtkNotebook *)context->PointerValue(rxptr);
     RexxPointerObject containerptr = (RexxPointerObject)context->SendMessage0(rxcontainer, "POINTER");
     GtkWidget *myContainer = (GtkWidget *)context->PointerValue(containerptr);
@@ -209,12 +210,13 @@ RexxMethod2(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod2(int,                       // Return type
+RexxMethod3(int,                       // Return type
             GrxNotebookPrependPage,    // Object_method name
             RexxObjectPtr, rxcontainer, // The container
-            RexxObjectPtr, rxlabel)    // The label
+            RexxObjectPtr, rxlabel,    // The label
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkNotebook *myWidget = (GtkNotebook *)context->PointerValue(rxptr);
     RexxPointerObject containerptr = (RexxPointerObject)context->SendMessage0(rxcontainer, "POINTER");
     GtkWidget *myContainer = (GtkWidget *)context->PointerValue(containerptr);
@@ -239,13 +241,14 @@ RexxMethod2(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod3(int,                       // Return type
+RexxMethod4(int,                       // Return type
             GrxNotebookInsertPage,     // Object_method name
             RexxObjectPtr, rxcontainer, // The container
             RexxObjectPtr, rxlabel,    // The label
-            int, pos)                  // The position
+            int, pos,                  // The position
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkNotebook *myWidget = (GtkNotebook *)context->PointerValue(rxptr);
     RexxPointerObject containerptr = (RexxPointerObject)context->SendMessage0(rxcontainer, "POINTER");
     GtkWidget *myContainer = (GtkWidget *)context->PointerValue(containerptr);
@@ -270,13 +273,14 @@ RexxMethod3(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod3(int,                       // Return type
+RexxMethod4(int,                       // Return type
             GrxNotebookAppendPageMenu, // Object_method name
             RexxObjectPtr, rxcontainer, // The container
             RexxObjectPtr, rxlabel,    // The label
-            RexxObjectPtr, rxmenu)     // The menu
+            RexxObjectPtr, rxmenu,     // The menu
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkNotebook *myWidget = (GtkNotebook *)context->PointerValue(rxptr);
     RexxPointerObject containerptr = (RexxPointerObject)context->SendMessage0(rxcontainer, "POINTER");
     GtkWidget *myContainer = (GtkWidget *)context->PointerValue(containerptr);
@@ -303,13 +307,14 @@ RexxMethod3(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod3(int,                       // Return type
+RexxMethod4(int,                       // Return type
             GrxNotebookPrependPageMenu, // Object_method name
             RexxObjectPtr, rxcontainer, // The container
             RexxObjectPtr, rxlabel,    // The label
-            RexxObjectPtr, rxmenu)     // The menu
+            RexxObjectPtr, rxmenu,     // The menu
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkNotebook *myWidget = (GtkNotebook *)context->PointerValue(rxptr);
     RexxPointerObject containerptr = (RexxPointerObject)context->SendMessage0(rxcontainer, "POINTER");
     GtkWidget *myContainer = (GtkWidget *)context->PointerValue(containerptr);
@@ -338,14 +343,15 @@ RexxMethod3(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod4(int,                       // Return type
+RexxMethod5(int,                       // Return type
             GrxNotebookInsertPageMenu, // Object_method name
             RexxObjectPtr, rxcontainer, // The container
             RexxObjectPtr, rxlabel,    // The label
             RexxObjectPtr, rxmenu,     // The menu
-            int, pos)                  // The position
+            int, pos,                  // The position
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkNotebook *myWidget = (GtkNotebook *)context->PointerValue(rxptr);
     RexxPointerObject containerptr = (RexxPointerObject)context->SendMessage0(rxcontainer, "POINTER");
     GtkWidget *myContainer = (GtkWidget *)context->PointerValue(containerptr);
@@ -368,11 +374,12 @@ RexxMethod4(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxNotebookRemovePage,     // Object_method name
-            int, pos)                  // The position
+            int, pos,                  // The position
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkNotebook *myWidget = (GtkNotebook *)context->PointerValue(rxptr);
 
     gtk_notebook_remove_page(myWidget, pos);
@@ -389,11 +396,12 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxNotebookSetShowBorder,  // Object_method name
-            logical_t, toggle)         // The border display boolean
+            logical_t, toggle,         // The border display boolean
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkNotebook *myWidget = (GtkNotebook *)context->PointerValue(rxptr);
 
     gtk_notebook_set_show_border(myWidget, toggle);
@@ -410,11 +418,12 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxNotebookSetShowTabs,    // Object_method name
-            logical_t, toggle)         // The tabs display boolean
+            logical_t, toggle,         // The tabs display boolean
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkNotebook *myWidget = (GtkNotebook *)context->PointerValue(rxptr);
 
     gtk_notebook_set_show_tabs(myWidget, toggle);
@@ -431,11 +440,12 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxNotebookSetTabPos,      // Object_method name
-            int, pos)                  // The tab position
+            int, pos,                  // The tab position
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkNotebook *myWidget = (GtkNotebook *)context->PointerValue(rxptr);
 
     gtk_notebook_set_tab_pos(myWidget, (GtkPositionType)pos);
@@ -452,11 +462,12 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxNotebookSetHomogeneousTabs, // Object_method name
-            logical_t, toggle)         // The homogeneous boolean
+            logical_t, toggle,         // The homogeneous boolean
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkNotebook *myWidget = (GtkNotebook *)context->PointerValue(rxptr);
 
     gtk_notebook_set_homogeneous_tabs(myWidget, toggle);
@@ -473,11 +484,12 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxNotebookSetTabBorder,   // Object_method name
-            int, width)                // The tab border width
+            int, width,                // The tab border width
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkNotebook *myWidget = (GtkNotebook *)context->PointerValue(rxptr);
 
     gtk_notebook_set_tab_border(myWidget, width);
@@ -494,11 +506,12 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxNotebookSetScrollable,  // Object_method name
-            logical_t, toggle)         // The scrollable boolean
+            logical_t, toggle,         // The scrollable boolean
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkNotebook *myWidget = (GtkNotebook *)context->PointerValue(rxptr);
 
     gtk_notebook_set_scrollable(myWidget, toggle);
@@ -513,10 +526,11 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod0(int,                       // Return type
-            GrxNotebookPopupEnable)    // Object_method name
+RexxMethod1(int,                       // Return type
+            GrxNotebookPopupEnable,    // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkNotebook *myWidget = (GtkNotebook *)context->PointerValue(rxptr);
 
     gtk_notebook_popup_enable(myWidget);
@@ -531,10 +545,11 @@ RexxMethod0(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod0(int,                       // Return type
-            GrxNotebookPopupDisable)   // Object_method name
+RexxMethod1(int,                       // Return type
+            GrxNotebookPopupDisable,   // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkNotebook *myWidget = (GtkNotebook *)context->PointerValue(rxptr);
 
     gtk_notebook_popup_disable(myWidget);
@@ -549,10 +564,11 @@ RexxMethod0(int,                       // Return type
  *
  * @return        Page number
  **/
-RexxMethod0(int,                       // Return type
-            GrxNotebookGetCurrentPage) // Object_method name
+RexxMethod1(int,                       // Return type
+            GrxNotebookGetCurrentPage, // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkNotebook *myWidget = (GtkNotebook *)context->PointerValue(rxptr);
 
     return gtk_notebook_get_current_page(myWidget);
@@ -567,11 +583,12 @@ RexxMethod0(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxNotebookSetCurrentPage, // Object_method name
-            int, page)                 // The page number
+            int, page,                 // The page number
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkNotebook *myWidget = (GtkNotebook *)context->PointerValue(rxptr);
 
     gtk_notebook_set_current_page(myWidget, page);
@@ -588,12 +605,13 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod2(RexxObjectPtr,             // Return type
+RexxMethod3(RexxObjectPtr,             // Return type
             GrxNotebookSignalConnect,  // Object_method name
             CSTRING, name,             // Signal name
-            ARGLIST, args)             // The whole argument list as an array
+            ARGLIST, args,             // The whole argument list as an array
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     cbcb *cblock;
 

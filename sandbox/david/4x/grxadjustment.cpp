@@ -108,7 +108,7 @@ RexxMethod7(int,                       // Return type
 
     adj = (GtkAdjustment *)gtk_adjustment_new(value, upper, lower, step,
                                               page, pagesz);
-    context->SetObjectVariable("!POINTER", context->NewPointer(adj));
+    context->SendMessage1(self, "POINTER=", context->NewPointer(adj));
     g_object_set_data(G_OBJECT(adj), "OORXOBJECT", self);
 
     return 0;
@@ -130,7 +130,7 @@ RexxMethod2(int,                       // Return type
 {
     GtkAdjustment *adj = (GtkAdjustment *)context->PointerValue((RexxPointerObject)rxptr);
 
-    context->SetObjectVariable("!POINTER", context->NewPointer(adj));
+    context->SendMessage1(self, "POINTER=", context->NewPointer(adj));
     g_object_set_data(G_OBJECT(adj), "OORXOBJECT", self);
 
     return 0;
@@ -143,10 +143,11 @@ RexxMethod2(int,                       // Return type
  *
  * @return        Value
  **/
-RexxMethod0(double,                    // Return type
-            GrxAdjustmentGetValue)     // Object_method name
+RexxMethod1(double,                    // Return type
+            GrxAdjustmentGetValue,     // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkAdjustment *adj = (GtkAdjustment *)context->PointerValue(rxptr);
 
     return gtk_adjustment_get_value(adj);
@@ -161,11 +162,12 @@ RexxMethod0(double,                    // Return type
  *
  * @return        Zero
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxAdjustmentSetValue,     // Object_method name
-            double, value)             // New value
+            double, value,             // New value
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkAdjustment *adj = (GtkAdjustment *)context->PointerValue(rxptr);
 
     gtk_adjustment_set_value(adj, value);
@@ -184,12 +186,13 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod2(int,                       // Return type
+RexxMethod3(int,                       // Return type
             GrxAdjustmentClampPage,    // Object_method name
             double, lower,             // Lower limit
-            double, upper)             // Upper limit
+            double, upper,             // Upper limit
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkAdjustment *adj = (GtkAdjustment *)context->PointerValue(rxptr);
 
     gtk_adjustment_clamp_page(adj, lower, upper);
@@ -206,12 +209,13 @@ RexxMethod2(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod2(RexxObjectPtr,             // Return type
+RexxMethod3(RexxObjectPtr,             // Return type
             GrxAdjustmentSignalConnect, // Object_method name
             CSTRING, name,             // Signal name
-            ARGLIST, args)             // The whole argument list as an array
+            ARGLIST, args,             // The whole argument list as an array
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     cbcb *cblock;
 

@@ -56,13 +56,6 @@ int rexxgtk_argc = 1;
 
 #define VERSTRING(major,minor,rel) #major "." #minor "." #rel
 
-#if defined WIN32
-BOOL WINAPI DllMain(HANDLE hinst, DWORD dwcallpurpose, LPVOID lpvResvd);
-#else
-int _init(void) __attribute__((constructor));
-int _fini(void) __attribute__((destructor));
-#endif
-
 
 /*============================================================================*/
 /* Private Functions                                                          */
@@ -73,57 +66,6 @@ int _fini(void) __attribute__((destructor));
 /*============================================================================*/
 /* Public Functions                                                           */
 /*============================================================================*/
-
-
-/*----------------------------------------------------------------------------*/
-/* _init / DllMain - Module initialization routine                            */
-/*----------------------------------------------------------------------------*/
-
-#if defined WIN32
-
-BOOL WINAPI DllMain(HANDLE hinst, DWORD dwcallpurpose, LPVOID lpvResvd)
-{
-    char ** argv = (char **)&rexxgtk_argv;
-
-    if (dwcallpurpose == DLL_PROCESS_ATTACH) {
-            gtk_set_locale ();
-            gtk_init (&rexxgtk_argc, &argv);
-    }
-
-    return TRUE;
-}
-
-#else
-
-int _init(void)
-{
-    int rc = 0;
-    char ** argv = (char **)&rexxgtk_argv;
-
-    g_thread_init(NULL);
-    gdk_threads_init();
-    gtk_set_locale ();
-    gtk_init (&rexxgtk_argc, &argv);
-
-    return rc;
-}
-
-#endif
-
-
-/*----------------------------------------------------------------------------*/
-/* _fini - Module finialization routine                                       */
-/*----------------------------------------------------------------------------*/
-
-#if !defined WIN32
-
-int _fini(void)
-{
-
-    return 0;
-}
-
-#endif
 
 /**
  * Function:  GrxVersion
@@ -136,6 +78,23 @@ RexxRoutine0(RexxObjectPtr, GrxVersion)
 {
 
     return context->NewStringFromAsciiz(VERSTRING(VMAJOR,VMINOR,VREL));
+}
+
+/**
+ * Function:  GrxInit
+ *
+ * Initializa the library.
+ */
+RexxRoutine0(int, GrxInit)
+{
+
+    int rc = 0;
+    char ** argv = (char **)&rexxgtk_argv;
+
+    g_thread_init(NULL);
+    gdk_threads_init();
+    gtk_set_locale ();
+    gtk_init (&rexxgtk_argc, &argv);
 }
 
 /**
@@ -348,6 +307,7 @@ RexxRoutine0(CSTRING,                  // Return type
 // build the actual entry list
 RexxRoutineEntry gtkobject_routines[] = {
     REXX_TYPED_ROUTINE(GrxVersion, GrxVersion),
+    REXX_TYPED_ROUTINE(GrxInit, GrxInit),
     REXX_TYPED_ROUTINE(GrxEventsPending, GrxEventsPending),
     REXX_TYPED_ROUTINE(GrxMain, GrxMain),
     REXX_TYPED_ROUTINE(GrxMainQuit, GrxMainQuit),
@@ -414,6 +374,8 @@ RexxMethodEntry gtkobject_methods[] = {
     REXX_METHOD(GrxWindowNew, GrxWindowNew),
     REXX_METHOD(GrxWindowGetTitle, GrxWindowGetTitle),
     REXX_METHOD(GrxWindowSetTitle, GrxWindowSetTitle),
+    REXX_METHOD(GrxWindowGetModal, GrxWindowGetModal),
+    REXX_METHOD(GrxWindowSetModal, GrxWindowSetModal),
     REXX_METHOD(GrxWindowAddAccelGroup, GrxWindowAddAccelGroup),
     REXX_METHOD(GrxWindowSignalConnect, GrxWindowSignalConnect),
     REXX_METHOD(GrxContainerAdd, GrxContainerAdd),

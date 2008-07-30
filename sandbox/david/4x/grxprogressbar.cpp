@@ -75,7 +75,7 @@ RexxMethod1(int,                       // Return type
     GtkWidget       *myWidget;
 
     myWidget = gtk_progress_bar_new();
-    context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
+    context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
@@ -90,11 +90,12 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxProgressBarSetFraction, // Object_method name
-            double, fraction)          // Fraction
+            double, fraction,          // Fraction
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkProgressBar *myWidget = (GtkProgressBar *)context->PointerValue(rxptr);
 
     gtk_progress_bar_set_fraction(myWidget, fraction);
@@ -111,11 +112,12 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxProgressBarSetText,     // Object_method name
-            CSTRING, text)             // Text
+            CSTRING, text,             // Text
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkProgressBar *myWidget = (GtkProgressBar *)context->PointerValue(rxptr);
 
     gtk_progress_bar_set_text(myWidget, text);

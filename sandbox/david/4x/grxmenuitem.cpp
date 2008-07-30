@@ -116,7 +116,7 @@ RexxMethod3(int,                       // Return type
             myWidget = gtk_menu_item_new_with_label(label);
         }
     }
-    context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
+    context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
@@ -131,11 +131,12 @@ RexxMethod3(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxMenuItemSetRightJustified, // Object_method name
-            logical_t, state)          // The state boolean
+            logical_t, state,          // The state boolean
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkMenuItem *myWidget = (GtkMenuItem *)context->PointerValue(rxptr);
 
     gtk_menu_item_set_right_justified(myWidget, state);
@@ -150,10 +151,11 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod0(logical_t,                 // Return type
-            GrxMenuItemGetRightJustified) // Object_method name
+RexxMethod1(logical_t,                 // Return type
+            GrxMenuItemGetRightJustified, // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkMenuItem *myWidget = (GtkMenuItem *)context->PointerValue(rxptr);
 
     return gtk_menu_item_get_right_justified(myWidget);
@@ -168,11 +170,12 @@ RexxMethod0(logical_t,                 // Return type
  *
  * @return        Zero
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxMenuItemSetSubmenu,     // Object_method name
-            RexxObjectPtr, subm)       // The submenu
+            RexxObjectPtr, subm,       // The submenu
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkMenuItem *myWidget = (GtkMenuItem *)context->PointerValue(rxptr);
     RexxPointerObject submptr = (RexxPointerObject)context->SendMessage0(subm, "POINTER");
     GtkWidget *subWidget = (GtkWidget *)context->PointerValue(submptr);
@@ -189,10 +192,11 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod0(int,                       // Return type
-            GrxMenuItemRemoveSubmenu)  // Object_method name
+RexxMethod1(int,                       // Return type
+            GrxMenuItemRemoveSubmenu,  // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkMenuItem *myWidget = (GtkMenuItem *)context->PointerValue(rxptr);
 
     gtk_menu_item_remove_submenu(myWidget);
@@ -209,11 +213,12 @@ RexxMethod0(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxMenuItemSetAccelPath,   // Object_method name
-            CSTRING, path)             // The accel path
+            CSTRING, path,             // The accel path
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkMenuItem *myWidget = (GtkMenuItem *)context->PointerValue(rxptr);
 
     gtk_menu_item_set_accel_path(myWidget, path);
@@ -228,10 +233,11 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod0(int,                       // Return type
-            GrxMenuItemSelect)         // Object_method name
+RexxMethod1(int,                       // Return type
+            GrxMenuItemSelect,         // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkMenuItem *myWidget = (GtkMenuItem *)context->PointerValue(rxptr);
 
     gtk_menu_item_select(myWidget);
@@ -246,10 +252,11 @@ RexxMethod0(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod0(int,                       // Return type
-            GrxMenuItemDeselect)       // Object_method name
+RexxMethod1(int,                       // Return type
+            GrxMenuItemDeselect,       // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkMenuItem *myWidget = (GtkMenuItem *)context->PointerValue(rxptr);
 
     gtk_menu_item_deselect(myWidget);
@@ -266,12 +273,13 @@ RexxMethod0(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod2(RexxObjectPtr,             // Return type
+RexxMethod3(RexxObjectPtr,             // Return type
             GrxMenuItemSignalConnect,  // Object_method name
             CSTRING, name,             // Signal name
-            ARGLIST, args)             // The whole argument list as an array
+            ARGLIST, args,             // The whole argument list as an array
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     cbcb *cblock;
 
@@ -324,7 +332,7 @@ RexxMethod1(int,                       // Return type
     GtkWidget *myWidget;
 
     myWidget = gtk_separator_menu_item_new();
-    context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
+    context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
@@ -344,7 +352,7 @@ RexxMethod1(int,                       // Return type
     GtkWidget *myWidget;
 
     myWidget = gtk_image_menu_item_new();
-    context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
+    context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
@@ -372,7 +380,7 @@ RexxMethod3(int,                       // Return type
     GtkAccelGroup *accelgrpWidget = (GtkAccelGroup *)context->PointerValue(accelgrpptr);
 
     myWidget = gtk_image_menu_item_new_from_stock(stockid, accelgrpWidget);
-    context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
+    context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
@@ -395,7 +403,7 @@ RexxMethod2(int,                       // Return type
     GtkWidget *myWidget;
 
     myWidget = gtk_image_menu_item_new_with_label(text);
-    context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
+    context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
@@ -418,7 +426,7 @@ RexxMethod2(int,                       // Return type
     GtkWidget *myWidget;
 
     myWidget = gtk_image_menu_item_new_with_mnemonic(text);
-    context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
+    context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;

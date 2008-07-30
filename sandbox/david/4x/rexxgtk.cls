@@ -43,8 +43,17 @@
 /* Routine: gtk_main                                                          */
 /*============================================================================*/
 
+::routine gtk_init public
+call GrxInit
+return
+
+
+/*============================================================================*/
+/* Routine: gtk_main                                                          */
+/*============================================================================*/
+
 ::routine gtk_main public
-call gtk_main_iteration
+call GrxMain
 return
 
 
@@ -721,8 +730,12 @@ return
 
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxWidgetNew"
 
--- This method should only be invoked by the C++ code. That is the only place
+-- This methods should only be invoked by the C++ code. That is the only place
 -- where it is actually useful.
+::method 'pointer='
+expose !pointer
+use strict arg !pointer
+return
 ::method pointer
 expose !pointer
 return !pointer
@@ -2190,6 +2203,12 @@ return
 ::METHOD init_1args private EXTERNAL "LIBRARY rexxgtk GrxAdjustmentNewFromPtr"
 ::METHOD init_6args private EXTERNAL "LIBRARY rexxgtk GrxAdjustmentNew"
 
+-- This methods should only be invoked by the C++ code. That is the only place
+-- where it is actually useful.
+::method 'pointer='
+expose !pointer
+use strict arg !pointer
+return
 ::method pointer
 expose !pointer
 return !pointer
@@ -2221,6 +2240,12 @@ return
 ::METHOD append EXTERNAL "LIBRARY rexxgtk GrxListStoreAppend"
 ::METHOD set EXTERNAL "LIBRARY rexxgtk GrxListStoreSetValue"
 
+-- This methods should only be invoked by the C++ code. That is the only place
+-- where it is actually useful.
+::method 'pointer='
+expose !pointer
+use strict arg !pointer
+return
 ::method pointer
 expose !pointer
 return !pointer
@@ -2801,6 +2826,12 @@ return obj
 
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxTreeViewColumnNew"
 
+-- This methods should only be invoked by the C++ code. That is the only place
+-- where it is actually useful.
+::method 'pointer='
+expose !pointer
+use strict arg !pointer
+return
 ::method pointer
 expose !pointer
 return !pointer
@@ -2829,6 +2860,12 @@ return
 ::METHOD append EXTERNAL "LIBRARY rexxgtk GrxTreeStoreAppend"
 ::METHOD set EXTERNAL "LIBRARY rexxgtk GrxTreeStoreSetValue"
 
+-- This methods should only be invoked by the C++ code. That is the only place
+-- where it is actually useful.
+::method 'pointer='
+expose !pointer
+use strict arg !pointer
+return
 ::method pointer
 expose !pointer
 return !pointer
@@ -3039,6 +3076,12 @@ return
 
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxFileFilterNew"
 
+-- This methods should only be invoked by the C++ code. That is the only place
+-- where it is actually useful.
+::method 'pointer='
+expose !pointer
+use strict arg !pointer
+return
 ::method pointer
 expose !pointer
 return !pointer
@@ -3056,6 +3099,12 @@ return !pointer
 
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxClipboardNew"
 
+-- This methods should only be invoked by the C++ code. That is the only place
+-- where it is actually useful.
+::method 'pointer='
+expose !pointer
+use strict arg !pointer
+return
 ::method pointer
 expose !pointer
 return !pointer

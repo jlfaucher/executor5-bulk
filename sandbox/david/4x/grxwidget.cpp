@@ -128,12 +128,13 @@ static void signal_func_1b(GtkWidget *window,
  *
  * @return        Zero.
  **/
-RexxMethod0(int,                       // Return type
-            GrxWidgetNew)              // Object_method name
+RexxMethod1(int,                       // Return type
+            GrxWidgetNew,              // Object_method name
+            OSELF, self)               // Self
 {
     GtkWidget *myWidget = NULL;
 
-    context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
+    context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     // This is an abstract class so no actual widget is created
     return 0;
 }
@@ -145,10 +146,11 @@ RexxMethod0(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod0(int,                       // Return type
-            GrxWidgetShow)             // Object_method name
+RexxMethod1(int,                       // Return type
+            GrxWidgetShow,             // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
 
     gtk_widget_show(myWidget);
@@ -163,10 +165,11 @@ RexxMethod0(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod0(int,                       // Return type
-            GrxWidgetShowAll)          // Object_method name
+RexxMethod1(int,                       // Return type
+            GrxWidgetShowAll,          // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
 
     gtk_widget_show_all(myWidget);
@@ -181,10 +184,11 @@ RexxMethod0(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod0(int,                       // Return type
-            GrxWidgetHide)             // Object_method name
+RexxMethod1(int,                       // Return type
+            GrxWidgetHide,             // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
 
     gtk_widget_hide(myWidget);
@@ -199,10 +203,11 @@ RexxMethod0(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod0(int,                       // Return type
-            GrxWidgetHideAll)          // Object_method name
+RexxMethod1(int,                       // Return type
+            GrxWidgetHideAll,          // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
 
     gtk_widget_hide_all(myWidget);
@@ -221,12 +226,13 @@ RexxMethod0(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod2(int,                       // Return type
+RexxMethod3(int,                       // Return type
             GrxWidgetSetSizeRequest,   // Object_method name
             int, width,                // width of the widget
-            int, height)               // height of the widget
+            int, height,               // height of the widget
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
 
     gtk_widget_set_size_request(myWidget, width, height);
@@ -241,10 +247,11 @@ RexxMethod2(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod0(int,                       // Return type
-            GrxWidgetDestroy)          // Object_method name
+RexxMethod1(int,                       // Return type
+            GrxWidgetDestroy,          // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
 
     gtk_widget_destroy(myWidget);
@@ -259,10 +266,11 @@ RexxMethod0(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod0(int,                       // Return type
-            GrxWidgetGrabFocus)        // Object_method name
+RexxMethod1(int,                       // Return type
+            GrxWidgetGrabFocus,        // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
 
     gtk_widget_grab_focus(myWidget);
@@ -279,11 +287,12 @@ RexxMethod0(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxWidgetSetFont,          // Object_method name
-            CSTRING, fontname)         // Font name
+            CSTRING, fontname,         // Font name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     GtkStyle *style;
 
@@ -301,10 +310,11 @@ RexxMethod1(int,                       // Return type
  *
  * @return        A string with the font name.
  **/
-RexxMethod0(CSTRING,                   // Return type
-            GrxWidgetGetFont)          // Object_method name
+RexxMethod1(CSTRING,                   // Return type
+            GrxWidgetGetFont,          // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     GtkStyle *style = NULL;
 
@@ -319,10 +329,11 @@ RexxMethod0(CSTRING,                   // Return type
  *
  * @return        A string with the name.
  **/
-RexxMethod0(CSTRING,                   // Return type
-            GrxWidgetGetName)          // Object_method name
+RexxMethod1(CSTRING,                   // Return type
+            GrxWidgetGetName,          // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
 
     return gtk_widget_get_name(myWidget);
@@ -337,11 +348,12 @@ RexxMethod0(CSTRING,                   // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxWidgetSetName,          // Object_method name
-            CSTRING, name)             // New name
+            CSTRING, name,             // New name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
 
     gtk_widget_set_name(myWidget, name);
@@ -358,11 +370,12 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxWidgetSetSensitive,     // Object_method name
-            int, flag)                 // Sensitive flag
+            int, flag,                 // Sensitive flag
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
 
     gtk_widget_set_sensitive(myWidget, flag);
@@ -382,12 +395,13 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod2(int,                       // Return type
+RexxMethod3(int,                       // Return type
             GrxWidgetModifyBG,         // Object_method name
             int, type,                 // State
-            CSTRING, colorstr)         // Color string
+            CSTRING, colorstr,         // Color string
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     GdkColor color;
 
@@ -409,12 +423,13 @@ RexxMethod2(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod2(int,                       // Return type
+RexxMethod3(int,                       // Return type
             GrxWidgetModifyFG,         // Object_method name
             int, type,                 // State
-            CSTRING, colorstr)         // Color string
+            CSTRING, colorstr,         // Color string
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     GdkColor color;
 
@@ -435,12 +450,13 @@ RexxMethod2(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod2(int,                       // Return type
+RexxMethod3(int,                       // Return type
             GrxWidgetSetData,          // Object_method name
             CSTRING, name,             // Association name
-            CSTRING, data)             // Association data
+            CSTRING, data,             // Association data
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
 
     // Note: The memory allocated from strdup is never recovered and
@@ -459,11 +475,12 @@ RexxMethod2(int,                       // Return type
  *
  * @return        The value of the object.
  **/
-RexxMethod1(CSTRING,                   // Return type
+RexxMethod2(CSTRING,                   // Return type
             GrxWidgetGetData,          // Object_method name
-            CSTRING, name)             // Association name
+            CSTRING, name,             // Association name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
 
     return (char *)g_object_get_data(G_OBJECT(myWidget), name);
@@ -476,10 +493,11 @@ RexxMethod1(CSTRING,                   // Return type
  *
  * @return        Zero.
  **/
-RexxMethod0(int,                       // Return type
-            GrxWidgetActivate)         // Object_method name
+RexxMethod1(int,                       // Return type
+            GrxWidgetActivate,         // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
 
     gtk_widget_activate(myWidget);
@@ -496,11 +514,12 @@ RexxMethod0(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxWidgetReparent,         // Object_method name
-            RexxObjectPtr, parent)     // New parent widget
+            RexxObjectPtr, parent,     // New parent widget
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     RexxPointerObject parentptr = (RexxPointerObject)context->SendMessage0(parent, "POINTER");
     GtkWidget *parentWidget = (GtkWidget *)context->PointerValue(parentptr);
@@ -517,10 +536,11 @@ RexxMethod1(int,                       // Return type
  *
  * @return        1 (if it has the focus) or zero.
  **/
-RexxMethod0(logical_t,                 // Return type
-            GrxWidgetIsFocus)          // Object_method name
+RexxMethod1(logical_t,                 // Return type
+            GrxWidgetIsFocus,          // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
 
     return gtk_widget_is_focus(myWidget);
@@ -533,10 +553,11 @@ RexxMethod0(logical_t,                 // Return type
  *
  * @return        Zero.
  **/
-RexxMethod0(int,                       // Return type
-            GrxWidgetGrabDefault)      // Object_method name
+RexxMethod1(int,                       // Return type
+            GrxWidgetGrabDefault,      // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
 
     gtk_widget_grab_default(myWidget);
@@ -553,11 +574,12 @@ RexxMethod0(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxWidgetSetParentWindow,  // Object_method name
-            RexxObjectPtr, parent)     // New parent widget
+            RexxObjectPtr, parent,     // New parent widget
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     RexxPointerObject parentptr = (RexxPointerObject)context->SendMessage0(parent, "POINTER");
     GdkWindow *parentWidget = (GdkWindow *)context->PointerValue(parentptr);
@@ -574,10 +596,11 @@ RexxMethod1(int,                       // Return type
  *
  * @return        The parent window object.
  **/
-RexxMethod0(RexxObjectPtr,             // Return type
-            GrxWidgetGetParentWindow)  // Object_method name
+RexxMethod1(RexxObjectPtr,             // Return type
+            GrxWidgetGetParentWindow,  // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     GtkWidget *parent;
     RexxObjectPtr parentptr;
@@ -601,10 +624,11 @@ RexxMethod0(RexxObjectPtr,             // Return type
  *
  * @return        The top level window object.
  **/
-RexxMethod0(RexxObjectPtr,             // Return type
-            GrxWidgetGetToplevel)      // Object_method name
+RexxMethod1(RexxObjectPtr,             // Return type
+            GrxWidgetGetToplevel,      // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     GtkWidget *parentWidget;
     RexxObjectPtr parentptr;
@@ -630,11 +654,12 @@ RexxMethod0(RexxObjectPtr,             // Return type
  *
  * @return        1 or zero.
  **/
-RexxMethod1(logical_t,                 // Return type
+RexxMethod2(logical_t,                 // Return type
             GrxWidgetIsAncestor,       // Object_method name
-            RexxObjectPtr, ancestor)   // Ancestor widget
+            RexxObjectPtr, ancestor,   // Ancestor widget
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     RexxPointerObject ancestorptr = (RexxPointerObject)context->SendMessage0(ancestor, "POINTER");
     GtkWidget *ancestorWidget = (GtkWidget *)context->PointerValue(ancestorptr);
@@ -651,11 +676,12 @@ RexxMethod1(logical_t,                 // Return type
  *
  * @return        The ancestor object or .Nil.
  **/
-RexxMethod1(RexxObjectPtr,             // Return type
+RexxMethod2(RexxObjectPtr,             // Return type
             GrxWidgetGetAncestor,      // Object_method name
-            int, type)                 // Ancestor type
+            int, type,                 // Ancestor type
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     GtkWidget *ancestor;
     RexxObjectPtr ancestorptr;
@@ -681,11 +707,12 @@ RexxMethod1(RexxObjectPtr,             // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxWidgetSetDirection,     // Object_method name
-            int, dir)                  // Direction
+            int, dir,                  // Direction
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
 
     gtk_widget_set_direction(myWidget, (GtkTextDirection)dir);
@@ -700,10 +727,11 @@ RexxMethod1(int,                       // Return type
  *
  * @return        A number representing the reading direction.
  **/
-RexxMethod0(int,                       // Return type
-            GrxWidgetGetDirection)     // Object_method name
+RexxMethod1(int,                       // Return type
+            GrxWidgetGetDirection,     // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
 
     return gtk_widget_get_direction(myWidget);
@@ -718,9 +746,10 @@ RexxMethod0(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxWidgetSetDefaultDirection, // Object_method name
-            int, dir)                  // Direction
+            int, dir,                  // Direction
+            OSELF, self)               // Self
 {
 
     gtk_widget_set_default_direction((GtkTextDirection)dir);
@@ -757,14 +786,15 @@ RexxMethod0(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod4(int,                       // Return type
+RexxMethod5(int,                       // Return type
             GrxWidgetQueueDrawArea,    // Object_method name
             int, x,                    // X coordinate  
             int, y,                    // Y coordinate  
             int, width,                // Width
-            int, height)               // Heaight
+            int, height,               // Heaight
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
 
     gtk_widget_queue_draw_area(myWidget, x, y, width, height);
@@ -779,10 +809,11 @@ RexxMethod4(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod0(int,                       // Return type
-            GrxWidgetResetShapes)      // Object_method name
+RexxMethod1(int,                       // Return type
+            GrxWidgetResetShapes,      // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
 
     gtk_widget_reset_shapes(myWidget);
@@ -802,12 +833,13 @@ RexxMethod0(int,                       // Return type
  *
  * @return        Boolean.
  **/
-RexxMethod2(logical_t,                 // Return type
+RexxMethod3(logical_t,                 // Return type
             GrxWidgetSetScrollAdjustments, // Object_method name
             RexxObjectPtr, hadj,       // Horizontal Adjustment  
-            RexxObjectPtr, vadj)       // Vertical adjustment
+            RexxObjectPtr, vadj,       // Vertical adjustment
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     RexxPointerObject hptr = (RexxPointerObject)context->SendMessage0(hadj, "POINTER");
     GtkAdjustment *hWidget = (GtkAdjustment *)context->PointerValue(hptr);
@@ -826,11 +858,12 @@ RexxMethod2(logical_t,                 // Return type
  *
  * @return        Boolean.
  **/
-RexxMethod1(logical_t,                 // Return type
+RexxMethod2(logical_t,                 // Return type
             GrxWidgetMnemonicActivate, // Object_method name
-            logical_t, flag)           // Group cycling flag
+            logical_t, flag,           // Group cycling flag
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
 
     return (logical_t)gtk_widget_mnemonic_activate(myWidget, flag);
@@ -843,10 +876,11 @@ RexxMethod1(logical_t,                 // Return type
  *
  * @return        Accessible object
  **/
-RexxMethod0(RexxObjectPtr,             // Return type
-            GrxWidgetGetAccessible)    // Object_method name
+RexxMethod1(RexxObjectPtr,             // Return type
+            GrxWidgetGetAccessible,    // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     AtkObject *atk;
     RexxObjectPtr atkptr;
@@ -870,10 +904,11 @@ RexxMethod0(RexxObjectPtr,             // Return type
  *
  * @return        Boolean
  **/
-RexxMethod0(logical_t,                 // Return type
-            GrxWidgetGetChildVisible)  // Object_method name
+RexxMethod1(logical_t,                 // Return type
+            GrxWidgetGetChildVisible,  // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
 
     return (logical_t)gtk_widget_get_child_visible(myWidget);
@@ -886,10 +921,11 @@ RexxMethod0(logical_t,                 // Return type
  *
  * @return        Parent widget object
  **/
-RexxMethod0(RexxObjectPtr,             // Return type
-            GrxWidgetGetParent)        // Object_method name
+RexxMethod1(RexxObjectPtr,             // Return type
+            GrxWidgetGetParent,        // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     GtkWidget *root;
     RexxObjectPtr rootptr;
@@ -913,10 +949,11 @@ RexxMethod0(RexxObjectPtr,             // Return type
  *
  * @return        Array of menu objects
  **/
-RexxMethod0(RexxObjectPtr,              // Return type
-            GrxWidgetGetMenus)          // Object_method name
+RexxMethod1(RexxObjectPtr,              // Return type
+            GrxWidgetGetMenus,          // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     RexxObjectPtr entry;
 
@@ -940,11 +977,12 @@ RexxMethod0(RexxObjectPtr,              // Return type
  *
  * @return        Zero
  **/
-RexxMethod1(int,                        // Return type
+RexxMethod2(int,                        // Return type
             GrxWidgetSetEvents,         // Object_method name
-            int, events)                // Event mask
+            int, events,                // Event mask
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
 
     gtk_widget_set_events(myWidget, events);
@@ -969,15 +1007,16 @@ RexxMethod1(int,                        // Return type
  *
  * @return        Zero.
  **/
-RexxMethod5(int,                       // Return type
+RexxMethod6(int,                       // Return type
             GrxWidgetAddAccelerator,   // Object_method name
             CSTRING, signame,          // Accelerator signal name
             RexxObjectPtr, accelgrp,   // Accelerator group
             int, key,                  // Accelerator key
             int, mods,                 // Accelerator modifiers
-            int, flags)                // Accelerator flags
+            int, flags,                // Accelerator flags
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     RexxPointerObject grpptr = (RexxPointerObject)context->SendMessage0(accelgrp, "POINTER");
     GtkAccelGroup *grpWidget = (GtkAccelGroup *)context->PointerValue(grpptr);
@@ -1001,13 +1040,14 @@ RexxMethod5(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod3(int,                       // Return type
+RexxMethod4(int,                       // Return type
             GrxWidgetRemoveAccelerator, // Object_method name
             RexxObjectPtr, accelgrp,   // Accelerator group
             int, key,                  // Accelerator key
-            int, mods)                 // Accelerator modifiers
+            int, mods,                 // Accelerator modifiers
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     RexxPointerObject grpptr = (RexxPointerObject)context->SendMessage0(accelgrp, "POINTER");
     GtkAccelGroup *grpWidget = (GtkAccelGroup *)context->PointerValue(grpptr);
@@ -1031,12 +1071,13 @@ RexxMethod3(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod2(int,                       // Return type
+RexxMethod3(int,                       // Return type
             GrxWidgetSetAccelPath,     // Object_method name
             CSTRING, path,             // Accelerator path
-            RexxObjectPtr, accelgrp)   // Accelerator group
+            RexxObjectPtr, accelgrp,   // Accelerator group
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     RexxPointerObject grpptr = (RexxPointerObject)context->SendMessage0(accelgrp, "POINTER");
     GtkAccelGroup *grpWidget = (GtkAccelGroup *)context->PointerValue(grpptr);
@@ -1055,12 +1096,13 @@ RexxMethod2(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod2(RexxObjectPtr,             // Return type
+RexxMethod3(RexxObjectPtr,             // Return type
             GrxWidgetSignalConnect,    // Object_method name
             CSTRING, name,             // Signal name
-            ARGLIST, args)             // The whole argument list as an array
+            ARGLIST, args,             // The whole argument list as an array
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     cbcb *cblock;
 

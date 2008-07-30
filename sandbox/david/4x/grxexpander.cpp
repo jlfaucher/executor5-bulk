@@ -92,7 +92,7 @@ RexxMethod2(int,                       // Return type
     GtkWidget *myWidget;
 
     myWidget = gtk_expander_new(label);
-    context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
+    context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
@@ -107,11 +107,12 @@ RexxMethod2(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxExpanderSetExpanded,    // Object_method name
-            logical_t, state)          // Expander state
+            logical_t, state,          // Expander state
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkExpander *myWidget = (GtkExpander *)context->PointerValue(rxptr);
 
     gtk_expander_set_expanded(myWidget, state);
@@ -128,11 +129,12 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxExpanderSetLabel,       // Object_method name
-            CSTRING, label)            // Expander label
+            CSTRING, label,            // Expander label
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkExpander *myWidget = (GtkExpander *)context->PointerValue(rxptr);
 
     gtk_expander_set_label(myWidget, label);
@@ -147,10 +149,11 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Label
  **/
-RexxMethod0(CSTRING,                   // Return type
-            GrxExpanderGetLabel)       // Object_method name
+RexxMethod1(CSTRING,                   // Return type
+            GrxExpanderGetLabel,       // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkExpander *myWidget = (GtkExpander *)context->PointerValue(rxptr);
 
     return gtk_expander_get_label(myWidget);
@@ -165,11 +168,12 @@ RexxMethod0(CSTRING,                   // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxExpanderSetUseUnderline, // Object_method name
-            logical_t, flag)           // Expander underline boolean
+            logical_t, flag,           // Expander underline boolean
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkExpander *myWidget = (GtkExpander *)context->PointerValue(rxptr);
 
     gtk_expander_set_use_underline(myWidget, flag);
@@ -186,11 +190,12 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxExpanderSetSpacing,     // Object_method name
-            int, spacing)              // Expander spacing amount
+            int, spacing,              // Expander spacing amount
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkExpander *myWidget = (GtkExpander *)context->PointerValue(rxptr);
 
     gtk_expander_set_spacing(myWidget, spacing);
@@ -207,12 +212,13 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod2(RexxObjectPtr,             // Return type
+RexxMethod3(RexxObjectPtr,             // Return type
             GrxExpanderSignalConnect,  // Object_method name
             CSTRING, name,             // Signal name
-            ARGLIST, args)             // The whole argument list as an array
+            ARGLIST, args,             // The whole argument list as an array
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     cbcb *cblock;
 

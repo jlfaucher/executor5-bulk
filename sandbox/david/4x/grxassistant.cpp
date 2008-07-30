@@ -104,7 +104,7 @@ RexxMethod1(int,                       // Return type
     GtkWidget       *myWidget;
 
     myWidget = gtk_assistant_new();
-    context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
+    context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
@@ -119,11 +119,12 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxAssistantSetCurrentPage, // Object_method name
-            int, pagenum)              // Page number
+            int, pagenum,              // Page number
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkAssistant *myWidget = (GtkAssistant *)context->PointerValue(rxptr);
 
     gtk_assistant_set_current_page(myWidget, pagenum - 1);
@@ -138,10 +139,11 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Page number
  **/
-RexxMethod0(int,                       // Return type
-            GrxAssistantGetCurrentPage) // Object_method name
+RexxMethod1(int,                       // Return type
+            GrxAssistantGetCurrentPage, // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkAssistant *myWidget = (GtkAssistant *)context->PointerValue(rxptr);
 
     return gtk_assistant_get_current_page(myWidget);
@@ -156,11 +158,12 @@ RexxMethod0(int,                       // Return type
  *
  * @return        Page
  **/
-RexxMethod1(RexxObjectPtr,             // Return type
+RexxMethod2(RexxObjectPtr,             // Return type
             GrxAssistantGetNthPage,    // Object_method name
-            int, pagenum)              // Page number
+            int, pagenum,              // Page number
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkAssistant *myWidget = (GtkAssistant *)context->PointerValue(rxptr);
     GtkWidget *pageWidget;
 
@@ -177,11 +180,12 @@ RexxMethod1(RexxObjectPtr,             // Return type
  *
  * @return        Page number
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxAssistantPrependPage,   // Object_method name
-            RexxObjectPtr, page)       // Page
+            RexxObjectPtr, page,       // Page
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkAssistant *myWidget = (GtkAssistant *)context->PointerValue(rxptr);
     RexxPointerObject pageptr = (RexxPointerObject)context->SendMessage0(page, "POINTER");
     GtkWidget *pageWidget = (GtkWidget *)context->PointerValue(pageptr);
@@ -198,11 +202,12 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Page number
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxAssistantAppendPage,    // Object_method name
-            RexxObjectPtr, page)       // Page
+            RexxObjectPtr, page,       // Page
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkAssistant *myWidget = (GtkAssistant *)context->PointerValue(rxptr);
     RexxPointerObject pageptr = (RexxPointerObject)context->SendMessage0(page, "POINTER");
     GtkWidget *pageWidget = (GtkWidget *)context->PointerValue(pageptr);
@@ -221,12 +226,13 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Page number
  **/
-RexxMethod2(int,                       // Return type
+RexxMethod3(int,                       // Return type
             GrxAssistantInsertPage,    // Object_method name
             RexxObjectPtr, page,       // Page
-            int, pagenum)              // Page number
+            int, pagenum,              // Page number
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkAssistant *myWidget = (GtkAssistant *)context->PointerValue(rxptr);
     RexxPointerObject pageptr = (RexxPointerObject)context->SendMessage0(page, "POINTER");
     GtkWidget *pageWidget = (GtkWidget *)context->PointerValue(pageptr);
@@ -245,12 +251,13 @@ RexxMethod2(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod2(int,                       // Return type
+RexxMethod3(int,                       // Return type
             GrxAssistantSetPageType,   // Object_method name
             RexxObjectPtr, page,       // Page
-            int, type)                 // Page type
+            int, type,                 // Page type
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkAssistant *myWidget = (GtkAssistant *)context->PointerValue(rxptr);
     RexxPointerObject pageptr = (RexxPointerObject)context->SendMessage0(page, "POINTER");
     GtkWidget *pageWidget = (GtkWidget *)context->PointerValue(pageptr);
@@ -271,12 +278,13 @@ RexxMethod2(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod2(int,                       // Return type
+RexxMethod3(int,                       // Return type
             GrxAssistantSetPageTitle,  // Object_method name
             RexxObjectPtr, page,       // Page
-            CSTRING, title)            // Page title
+            CSTRING, title,            // Page title
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkAssistant *myWidget = (GtkAssistant *)context->PointerValue(rxptr);
     RexxPointerObject pageptr = (RexxPointerObject)context->SendMessage0(page, "POINTER");
     GtkWidget *pageWidget = (GtkWidget *)context->PointerValue(pageptr);
@@ -297,12 +305,13 @@ RexxMethod2(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod2(int,                       // Return type
+RexxMethod3(int,                       // Return type
             GrxAssistantSetPageComplete, // Object_method name
             RexxObjectPtr, page,       // Page
-            logical_t, flag)           // Page complete boolean
+            logical_t, flag,           // Page complete boolean
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkAssistant *myWidget = (GtkAssistant *)context->PointerValue(rxptr);
     RexxPointerObject pageptr = (RexxPointerObject)context->SendMessage0(page, "POINTER");
     GtkWidget *pageWidget = (GtkWidget *)context->PointerValue(pageptr);
@@ -323,12 +332,13 @@ RexxMethod2(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod2(int,                       // Return type
+RexxMethod3(int,                       // Return type
             GrxAssistantSetPageHeaderImage, // Object_method name
             RexxObjectPtr, page,       // Page
-            CSTRING, filename)         // Image file name
+            CSTRING, filename,         // Image file name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkAssistant *myWidget = (GtkAssistant *)context->PointerValue(rxptr);
     RexxPointerObject pageptr = (RexxPointerObject)context->SendMessage0(page, "POINTER");
     GtkWidget *pageWidget = (GtkWidget *)context->PointerValue(pageptr);
@@ -350,13 +360,14 @@ RexxMethod2(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod3(int,                       // Return type
+RexxMethod4(int,                       // Return type
             GrxAssistantSetPageSideImage, // Object_method name
             RexxObjectPtr, page,       // Page
             CSTRING, filename,         // Image file name
-            ARGLIST, args)             // The whole argument list as an array
+            ARGLIST, args,             // The whole argument list as an array
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkAssistant *myWidget = (GtkAssistant *)context->PointerValue(rxptr);
     RexxPointerObject pageptr = (RexxPointerObject)context->SendMessage0(page, "POINTER");
     GtkWidget *pageWidget = (GtkWidget *)context->PointerValue(pageptr);
@@ -376,12 +387,13 @@ RexxMethod3(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod2(RexxObjectPtr,             // Return type
+RexxMethod3(RexxObjectPtr,             // Return type
             GrxAssistantSignalConnect, // Object_method name
             CSTRING, name,             // Signal name
-            ARGLIST, args)             // The whole argument list as an array
+            ARGLIST, args,             // The whole argument list as an array
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     cbcb *cblock;
 

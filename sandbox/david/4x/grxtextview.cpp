@@ -191,7 +191,7 @@ RexxMethod1(int,                       // Return type
     GtkWidget       *myWidget;
 
     myWidget = gtk_text_view_new();
-    context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
+    context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
@@ -204,10 +204,11 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Text buffer object
  **/
-RexxMethod0(RexxObjectPtr,             // Return type
-            GrxTextViewGetBuffer)      // Object_method name
+RexxMethod1(RexxObjectPtr,             // Return type
+            GrxTextViewGetBuffer,      // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkTextView *myWidget = (GtkTextView *)context->PointerValue(rxptr);
     GtkTextBuffer   *myBuffer;
 
@@ -233,11 +234,12 @@ RexxMethod0(RexxObjectPtr,             // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxTextViewSetWrapMode,    // Object_method name
-            int, mode)                 // Wrap mode
+            int, mode,                 // Wrap mode
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkTextView *myWidget = (GtkTextView *)context->PointerValue(rxptr);
 
     gtk_text_view_set_wrap_mode(myWidget, (GtkWrapMode)mode);
@@ -252,10 +254,11 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Wrap mode
  **/
-RexxMethod0(int,                       // Return type
-            GrxTextViewGetWrapMode)    // Object_method name
+RexxMethod1(int,                       // Return type
+            GrxTextViewGetWrapMode,    // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkTextView *myWidget = (GtkTextView *)context->PointerValue(rxptr);
 
     return (int)gtk_text_view_get_wrap_mode(myWidget);
@@ -270,11 +273,12 @@ RexxMethod0(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxTextViewSetJustification, // Object_method name
-            int, just)                 // Justification
+            int, just,                 // Justification
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkTextView *myWidget = (GtkTextView *)context->PointerValue(rxptr);
 
     gtk_text_view_set_justification(myWidget, (GtkJustification)just);
@@ -289,10 +293,11 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Wrap mode
  **/
-RexxMethod0(int,                       // Return type
-            GrxTextViewGetJustification) // Object_method name
+RexxMethod1(int,                       // Return type
+            GrxTextViewGetJustification, // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkTextView *myWidget = (GtkTextView *)context->PointerValue(rxptr);
 
     return (int)gtk_text_view_get_justification(myWidget);
@@ -307,11 +312,12 @@ RexxMethod0(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxTextViewSetEditable,    // Object_method name
-            logical_t, flag)           // Editable boolean
+            logical_t, flag,           // Editable boolean
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkTextView *myWidget = (GtkTextView *)context->PointerValue(rxptr);
 
     gtk_text_view_set_editable(myWidget, flag);
@@ -326,10 +332,11 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Editable boolean
  **/
-RexxMethod0(logical_t,                 // Return type
-            GrxTextViewGetEditable)    // Object_method name
+RexxMethod1(logical_t,                 // Return type
+            GrxTextViewGetEditable,    // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkTextView *myWidget = (GtkTextView *)context->PointerValue(rxptr);
 
     return gtk_text_view_get_editable(myWidget);
@@ -344,11 +351,12 @@ RexxMethod0(logical_t,                 // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxTextViewSetCursorVisible, // Object_method name
-            logical_t, flag)           // Cursor visible boolean
+            logical_t, flag,           // Cursor visible boolean
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkTextView *myWidget = (GtkTextView *)context->PointerValue(rxptr);
 
     gtk_text_view_set_cursor_visible(myWidget, flag);
@@ -363,10 +371,11 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Visible boolean
  **/
-RexxMethod0(logical_t,                 // Return type
-            GrxTextViewGetCursorVisible) // Object_method name
+RexxMethod1(logical_t,                 // Return type
+            GrxTextViewGetCursorVisible, // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkTextView *myWidget = (GtkTextView *)context->PointerValue(rxptr);
 
     return gtk_text_view_get_cursor_visible(myWidget);
@@ -381,11 +390,12 @@ RexxMethod0(logical_t,                 // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxTextViewSetPixelsAboveLines, // Object_method name
-            int, pixels)               // Number of pixels
+            int, pixels,               // Number of pixels
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkTextView *myWidget = (GtkTextView *)context->PointerValue(rxptr);
 
     gtk_text_view_set_pixels_above_lines(myWidget, pixels);
@@ -400,10 +410,11 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Number of pixels
  **/
-RexxMethod0(int,                       // Return type
-            GrxTextViewGetPixelsAboveLines) // Object_method name
+RexxMethod1(int,                       // Return type
+            GrxTextViewGetPixelsAboveLines, // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkTextView *myWidget = (GtkTextView *)context->PointerValue(rxptr);
 
     return gtk_text_view_get_pixels_above_lines(myWidget);
@@ -418,11 +429,12 @@ RexxMethod0(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxTextViewSetPixelsBelowLines, // Object_method name
-            int, pixels)               // Number of pixels
+            int, pixels,               // Number of pixels
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkTextView *myWidget = (GtkTextView *)context->PointerValue(rxptr);
 
     gtk_text_view_set_pixels_below_lines(myWidget, pixels);
@@ -437,10 +449,11 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Number of pixels
  **/
-RexxMethod0(int,                       // Return type
-            GrxTextViewGetPixelsBelowLines) // Object_method name
+RexxMethod1(int,                       // Return type
+            GrxTextViewGetPixelsBelowLines, // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkTextView *myWidget = (GtkTextView *)context->PointerValue(rxptr);
 
     return gtk_text_view_get_pixels_below_lines(myWidget);
@@ -455,11 +468,12 @@ RexxMethod0(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxTextViewSetPixelsInsideWrap, // Object_method name
-            int, pixels)               // Number of pixels
+            int, pixels,               // Number of pixels
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkTextView *myWidget = (GtkTextView *)context->PointerValue(rxptr);
 
     gtk_text_view_set_pixels_inside_wrap(myWidget, pixels);
@@ -474,10 +488,11 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Number of pixels
  **/
-RexxMethod0(int,                       // Return type
-            GrxTextViewGetPixelsInsideWrap) // Object_method name
+RexxMethod1(int,                       // Return type
+            GrxTextViewGetPixelsInsideWrap, // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkTextView *myWidget = (GtkTextView *)context->PointerValue(rxptr);
 
     return gtk_text_view_get_pixels_inside_wrap(myWidget);
@@ -492,11 +507,12 @@ RexxMethod0(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxTextViewSetLeftMargin,  // Object_method name
-            int, pixels)               // Number of pixels
+            int, pixels,               // Number of pixels
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkTextView *myWidget = (GtkTextView *)context->PointerValue(rxptr);
 
     gtk_text_view_set_left_margin(myWidget, pixels);
@@ -511,10 +527,11 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Left margin
  **/
-RexxMethod0(int,                       // Return type
-            GrxTextViewGetLeftMargin)  // Object_method name
+RexxMethod1(int,                       // Return type
+            GrxTextViewGetLeftMargin,  // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkTextView *myWidget = (GtkTextView *)context->PointerValue(rxptr);
 
     return gtk_text_view_get_left_margin(myWidget);
@@ -529,11 +546,12 @@ RexxMethod0(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxTextViewSetRightMargin, // Object_method name
-            int, pixels)               // Number of pixels
+            int, pixels,               // Number of pixels
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkTextView *myWidget = (GtkTextView *)context->PointerValue(rxptr);
 
     gtk_text_view_set_right_margin(myWidget, pixels);
@@ -548,10 +566,11 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Right margin
  **/
-RexxMethod0(int,                       // Return type
-            GrxTextViewGetRightMargin) // Object_method name
+RexxMethod1(int,                       // Return type
+            GrxTextViewGetRightMargin, // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkTextView *myWidget = (GtkTextView *)context->PointerValue(rxptr);
 
     return gtk_text_view_get_right_margin(myWidget);
@@ -568,12 +587,13 @@ RexxMethod0(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod2(int,                       // Return type
+RexxMethod3(int,                       // Return type
             GrxTextViewAddChildAtOffset, // Object_method name
             RexxObjectPtr, rxchild,    // Child widget
-            int, offset)               // Offset
+            int, offset,               // Offset
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkTextView *myWidget = (GtkTextView *)context->PointerValue(rxptr);
     RexxPointerObject addptr = (RexxPointerObject)context->SendMessage0(rxchild, "POINTER");
     GtkWidget *myChild = (GtkWidget *)context->PointerValue(addptr);
@@ -599,12 +619,13 @@ RexxMethod2(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod2(RexxObjectPtr,             // Return type
+RexxMethod3(RexxObjectPtr,             // Return type
             GrxTextViewSignalConnect,  // Object_method name
             CSTRING, name,             // Signal name
-            ARGLIST, args)             // The whole argument list as an array
+            ARGLIST, args,             // The whole argument list as an array
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     cbcb *cblock;
 

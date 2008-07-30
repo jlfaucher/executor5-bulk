@@ -96,7 +96,7 @@ RexxMethod3(int,                       // Return type
 
     toolitem = gtk_menu_tool_button_new(iconWidget, label);
 
-    context->SetObjectVariable("!POINTER", context->NewPointer(toolitem));
+    context->SendMessage1(self, "POINTER=", context->NewPointer(toolitem));
     g_object_set_data(G_OBJECT(toolitem), "OORXOBJECT", self);
 
     return 0;
@@ -111,11 +111,12 @@ RexxMethod3(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxMenuToolButtonSetMenu,  // Object_method name
-            RexxObjectPtr, rxobj)      // The icon widget
+            RexxObjectPtr, rxobj,      // The icon widget
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkMenuToolButton *myWidget = (GtkMenuToolButton *)context->PointerValue(rxptr);
     RexxPointerObject widgetptr = (RexxPointerObject)context->SendMessage0(rxobj, "POINTER");
     GtkWidget *menuWidget = (GtkWidget *)context->PointerValue(widgetptr);
@@ -132,10 +133,11 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Icon widget
  **/
-RexxMethod0(RexxObjectPtr,             // Return type
-            GrxMenuToolButtonGetMenu)  // Object_method name
+RexxMethod1(RexxObjectPtr,             // Return type
+            GrxMenuToolButtonGetMenu,  // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkMenuToolButton *myWidget = (GtkMenuToolButton *)context->PointerValue(rxptr);
 
     GtkWidget *menuWidget = gtk_menu_tool_button_get_menu(myWidget);
@@ -151,12 +153,13 @@ RexxMethod0(RexxObjectPtr,             // Return type
  *
  * @return        Zero
  **/
-RexxMethod2(RexxObjectPtr,             // Return type
+RexxMethod3(RexxObjectPtr,             // Return type
             GrxMenuToolButtonSignalConnect, // Object_method name
             CSTRING, name,             // Signal name
-            ARGLIST, args)             // The whole argument list as an array
+            ARGLIST, args,             // The whole argument list as an array
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     cbcb *cblock;
 

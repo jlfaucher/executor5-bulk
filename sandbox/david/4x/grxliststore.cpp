@@ -86,7 +86,7 @@ RexxMethod2(int,                       // Return type
         }
         lstore = (GtkListStore *)gtk_list_store_newv(members, (GType *)types);
     }
-    context->SetObjectVariable("!POINTER", context->NewPointer(lstore));
+    context->SendMessage1(self, "POINTER=", context->NewPointer(lstore));
     g_object_set_data(G_OBJECT(lstore), "OORXOBJECT", self);
     context->SetObjectVariable("!COLTYPES", context->NewPointer(types));
 
@@ -100,10 +100,11 @@ RexxMethod2(int,                       // Return type
  *
  * @return        Row iterator
  **/
-RexxMethod0(RexxObjectPtr,             // Return type
-            GrxListStoreAppend)        // Object_method name
+RexxMethod1(RexxObjectPtr,             // Return type
+            GrxListStoreAppend,        // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkListStore *lstore = (GtkListStore *)context->PointerValue(rxptr);
     GtkTreeIter *iter = (GtkTreeIter *)malloc(sizeof(GtkTreeIter));
 
@@ -125,12 +126,13 @@ RexxMethod0(RexxObjectPtr,             // Return type
  *
  * @return        Zero
  **/
-RexxMethod2(int,                       // Return type
+RexxMethod3(int,                       // Return type
             GrxListStoreSetValue,      // Object_method name
             RexxObjectPtr, rxiter,     // Row iterator
-            ARGLIST, args)             // Argument array
+            ARGLIST, args,             // Argument array
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkListStore *lstore = (GtkListStore *)context->PointerValue(rxptr);
     GtkTreeIter *iter = (GtkTreeIter *)context->PointerValue((RexxPointerObject)rxiter);
     rxptr = (RexxPointerObject)context->GetObjectVariable("!COLTYPES");

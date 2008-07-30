@@ -213,7 +213,7 @@ RexxMethod1(int,                       // Return type
 
     treeview = gtk_tree_view_new();
 
-    context->SetObjectVariable("!POINTER", context->NewPointer(treeview));
+    context->SendMessage1(self, "POINTER=", context->NewPointer(treeview));
     g_object_set_data(G_OBJECT(treeview), "OORXOBJECT", self);
 
     return 0;
@@ -228,11 +228,12 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxTreeViewAppendColumn,   // Object_method name
-            RexxObjectPtr, rxobj)      // Column object
+            RexxObjectPtr, rxobj,      // Column object
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkTreeView *myWidget = (GtkTreeView *)context->PointerValue(rxptr);
     RexxPointerObject objptr = (RexxPointerObject)context->SendMessage0(rxobj, "POINTER");
     GtkTreeViewColumn *colWidget = (GtkTreeViewColumn *)context->PointerValue(objptr);
@@ -251,11 +252,12 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxTreeViewRemoveColumn,   // Object_method name
-            RexxObjectPtr, rxobj)      // Column object
+            RexxObjectPtr, rxobj,      // Column object
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkTreeView *myWidget = (GtkTreeView *)context->PointerValue(rxptr);
     RexxPointerObject objptr = (RexxPointerObject)context->SendMessage0(rxobj, "POINTER");
     GtkTreeViewColumn *colWidget = (GtkTreeViewColumn *)context->PointerValue(objptr);
@@ -276,12 +278,13 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod2(int,                       // Return type
+RexxMethod3(int,                       // Return type
             GrxTreeViewInsertColumn,   // Object_method name
             RexxObjectPtr, rxobj,      // Column object
-            int, pos)                  // Position
+            int, pos,                  // Position
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkTreeView *myWidget = (GtkTreeView *)context->PointerValue(rxptr);
     RexxPointerObject objptr = (RexxPointerObject)context->SendMessage0(rxobj, "POINTER");
     GtkTreeViewColumn *colWidget = (GtkTreeViewColumn *)context->PointerValue(objptr);
@@ -300,11 +303,12 @@ RexxMethod2(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxTreeViewSetModel,       // Object_method name
-            RexxObjectPtr, model)      // Column object
+            RexxObjectPtr, model,      // Column object
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkTreeView *myWidget = (GtkTreeView *)context->PointerValue(rxptr);
     RexxPointerObject objptr = (RexxPointerObject)context->SendMessage0(model, "POINTER");
     GtkTreeModel *modelWidget = (GtkTreeModel *)context->PointerValue(objptr);
@@ -321,10 +325,11 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod0(int,                       // Return type
-            GrxTreeViewExpandAll)      // Object_method name
+RexxMethod1(int,                       // Return type
+            GrxTreeViewExpandAll,      // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkTreeView *myWidget = (GtkTreeView *)context->PointerValue(rxptr);
 
     gtk_tree_view_expand_all(myWidget);
@@ -341,12 +346,13 @@ RexxMethod0(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod2(RexxObjectPtr,             // Return type
+RexxMethod3(RexxObjectPtr,             // Return type
             GrxTreeViewSignalConnect,  // Object_method name
             CSTRING, name,             // Signal name
-            ARGLIST, args)             // The whole argument list as an array
+            ARGLIST, args,             // The whole argument list as an array
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     cbcb *cblock;
 

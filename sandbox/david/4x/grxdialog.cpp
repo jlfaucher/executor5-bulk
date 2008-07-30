@@ -105,7 +105,7 @@ RexxMethod1(int,                       // Return type
     GtkWidget *myWidget;
 
     myWidget = gtk_dialog_new();
-    context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
+    context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
@@ -128,12 +128,13 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod4(int,                       // Return type
+RexxMethod5(int,                       // Return type
             GrxDialogNewWithButtons,   // Object_method name
             CSTRING, title,            // Dialog title
             RexxObjectPtr, parent,     // Parent window
             int, flags,                // Dialog flags
-            ARGLIST, args)             // Array of buttons and responses
+            ARGLIST, args,             // Array of buttons and responses
+            OSELF, self)               // Self
 {
     RexxPointerObject parentptr = (RexxPointerObject)context->SendMessage0(parent, "POINTER");
     GtkWindow *myParent = (GtkWindow *)context->PointerValue(parentptr);
@@ -149,7 +150,7 @@ RexxMethod4(int,                       // Return type
         context->ObjectToNumber(context->ArrayAt(args, i), &rid);
         gtk_dialog_add_button(GTK_DIALOG(myWidget), bid, rid);
     }
-    context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
+    context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", context->GetSelf());
     vbox = GTK_DIALOG(myWidget)->vbox;
     RexxObjectPtr rxvbox = (RexxObjectPtr)g_object_get_data(G_OBJECT(vbox), "OORXOBJECT");
@@ -173,12 +174,13 @@ RexxMethod4(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod2(int,                       // Return type
+RexxMethod3(int,                       // Return type
             GrxDialogAddButton,        // Object_method name
             CSTRING, btext,            // Button text 
-            int, bid)                  // Response id 
+            int, bid,                  // Response id 
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkDialog *myWidget = (GtkDialog *)context->PointerValue(rxptr);
 
     gtk_dialog_add_button(myWidget, btext, bid);
@@ -195,11 +197,12 @@ RexxMethod2(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxDialogSetHasSeparator,  // Object_method name
-            logical_t, flag)           // Separator boolean
+            logical_t, flag,           // Separator boolean
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkDialog *myWidget = (GtkDialog *)context->PointerValue(rxptr);
 
     gtk_dialog_set_has_separator(myWidget, flag);
@@ -216,11 +219,12 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxDialogSetDefaultResponse, // Object_method name
-            int, rid)                  // Response id
+            int, rid,                  // Response id
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkDialog *myWidget = (GtkDialog *)context->PointerValue(rxptr);
 
     gtk_dialog_set_default_response(myWidget, rid);
@@ -235,10 +239,11 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Response id
  **/
-RexxMethod0(int,                       // Return type
-            GrxDialogRun)              // Object_method name
+RexxMethod1(int,                       // Return type
+            GrxDialogRun,              // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkDialog *myWidget = (GtkDialog *)context->PointerValue(rxptr);
     gint response;
 
@@ -256,12 +261,13 @@ RexxMethod0(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod2(RexxObjectPtr,             // Return type
+RexxMethod3(RexxObjectPtr,             // Return type
             GrxDialogSignalConnect,    // Object_method name
             CSTRING, name,             // Signal name
-            ARGLIST, args)             // The whole argument list as an array
+            ARGLIST, args,             // The whole argument list as an array
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     cbcb *cblock;
 
@@ -301,13 +307,14 @@ RexxMethod2(RexxObjectPtr,             // Return type
  *
  * @return        Zero.
  **/
-RexxMethod5(int,                       // Return type
+RexxMethod6(int,                       // Return type
             GrxMessageDialogNew,       // Object_method name
             RexxObjectPtr, parent,     // Parent window
             int, flags,                // Dialog flags
             int, type,                 // Message type
             int, bset,                 // Button set
-            CSTRING, text)             // Message text
+            CSTRING, text,             // Message text
+            OSELF, self)               // Self
 {
     RexxPointerObject parentptr = (RexxPointerObject)context->SendMessage0(parent, "POINTER");
     GtkWindow *myParent = (GtkWindow *)context->PointerValue(parentptr);
@@ -318,7 +325,7 @@ RexxMethod5(int,                       // Return type
                                       (GtkMessageType)type,
                                       (GtkButtonsType)bset, text);
 
-    context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
+    context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", context->GetSelf());
 
     return 0;
@@ -341,12 +348,13 @@ RexxMethod5(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod4(int,                       // Return type
+RexxMethod5(int,                       // Return type
             GrxFileChooserDialogNew,   // Object_method name
             CSTRING, title,            // Title
             RexxObjectPtr, parent,     // Parent window
             int, action,               // Dialog action type
-            ARGLIST, args)             // Array of buttons and responses
+            ARGLIST, args,             // Array of buttons and responses
+            OSELF, self)               // Self
 {
     RexxPointerObject parentptr = (RexxPointerObject)context->SendMessage0(parent, "POINTER");
     GtkWindow *myParent = (GtkWindow *)context->PointerValue(parentptr);
@@ -362,7 +370,7 @@ RexxMethod4(int,                       // Return type
         context->ObjectToNumber(context->ArrayAt(args, i), &rid);
         gtk_dialog_add_button(GTK_DIALOG(myWidget), bid, rid);
     }
-    context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
+    context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", context->GetSelf());
 
     return 0;
@@ -379,14 +387,15 @@ RexxMethod4(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxFontSelectionDialogNew, // Object_method name
-            CSTRING, title)            // Dialog title
+            CSTRING, title,            // Dialog title
+            OSELF, self)               // Self
 {
     GtkWidget *myWidget;
 
     myWidget = gtk_font_selection_dialog_new(title);
-    context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
+    context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", context->GetSelf());
 
     return 0;
@@ -401,11 +410,12 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxFontSelectionDialogSetFontName, // Object_method name
-            CSTRING, name)             // Font name
+            CSTRING, name,             // Font name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
 
     gtk_font_selection_dialog_set_font_name(GTK_FONT_SELECTION_DIALOG(myWidget),
@@ -421,10 +431,11 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Font name
  **/
-RexxMethod0(CSTRING,                   // Return type
-            GrxFontSelectionDialogGetFontName) // Object_method name
+RexxMethod1(CSTRING,                   // Return type
+            GrxFontSelectionDialogGetFontName, // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
 
 
@@ -440,11 +451,12 @@ RexxMethod0(CSTRING,                   // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxFontSelectionDialogSetPreviewText, // Object_method name
-            CSTRING, text)             // Preview text
+            CSTRING, text,             // Preview text
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
 
 
@@ -461,13 +473,14 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod0(int,                       // Return type
-            GrxAboutDialogNew)         // Object_method name
+RexxMethod1(int,                       // Return type
+            GrxAboutDialogNew,         // Object_method name
+            OSELF, self)               // Self
 {
     GtkWidget *myWidget;
 
     myWidget = gtk_about_dialog_new();
-    context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
+    context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", context->GetSelf());
 
     return 0;
@@ -482,11 +495,12 @@ RexxMethod0(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxAboutDialogSetName,     // Object_method name
-            CSTRING, name)             // Program name
+            CSTRING, name,             // Program name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
 
     gtk_about_dialog_set_name(GTK_ABOUT_DIALOG(myWidget), name);
@@ -503,11 +517,12 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxAboutDialogSetVersion,  // Object_method name
-            CSTRING, version)          // Program version
+            CSTRING, version,          // Program version
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
 
     gtk_about_dialog_set_version(GTK_ABOUT_DIALOG(myWidget), version);
@@ -524,11 +539,12 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxAboutDialogSetCopyright, // Object_method name
-            CSTRING, copyright)        // Program copyright text
+            CSTRING, copyright,        // Program copyright text
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
 
     gtk_about_dialog_set_copyright(GTK_ABOUT_DIALOG(myWidget), copyright);
@@ -545,11 +561,12 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxAboutDialogSetComments, // Object_method name
-            CSTRING, comments)         // Program comments
+            CSTRING, comments,         // Program comments
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
 
     gtk_about_dialog_set_comments(GTK_ABOUT_DIALOG(myWidget), comments);
@@ -566,11 +583,12 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxAboutDialogSetLicense,  // Object_method name
-            CSTRING, license)          // Program license
+            CSTRING, license,          // Program license
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
 
     gtk_about_dialog_set_license(GTK_ABOUT_DIALOG(myWidget), license);
@@ -587,11 +605,12 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxAboutDialogSetWrapLicense, // Object_method name
-            logical_t, flag)           // Wrap boolean
+            logical_t, flag,           // Wrap boolean
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
 
     gtk_about_dialog_set_wrap_license(GTK_ABOUT_DIALOG(myWidget), flag);
@@ -608,11 +627,12 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxAboutDialogSetWebsite,  // Object_method name
-            CSTRING, website)          // Program website
+            CSTRING, website,          // Program website
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
 
     gtk_about_dialog_set_website(GTK_ABOUT_DIALOG(myWidget), website);
@@ -629,11 +649,12 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxAboutDialogSetWebsiteLabel, // Object_method name
-            CSTRING, label)            // Program website label
+            CSTRING, label,            // Program website label
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
 
     gtk_about_dialog_set_website_label(GTK_ABOUT_DIALOG(myWidget), label);
@@ -650,11 +671,12 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxAboutDialogSetAuthors,  // Object_method name
-            ARGLIST, args)             // Array of authors
+            ARGLIST, args,             // Array of authors
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     size_t members = context->ArraySize(args);
     const gchar *names[members];
@@ -678,11 +700,12 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxAboutDialogSetArtists,  // Object_method name
-            ARGLIST, args)             // Array of authors
+            ARGLIST, args,             // Array of authors
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     size_t members = context->ArraySize(args);
     const gchar *names[members];
@@ -706,11 +729,12 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxAboutDialogSetDocumentors, // Object_method name
-            ARGLIST, args)             // Array of authors
+            ARGLIST, args,             // Array of authors
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     size_t members = context->ArraySize(args);
     const gchar *names[members];
@@ -734,11 +758,12 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxAboutDialogSetLogo,     // Object_method name
-            CSTRING, logofile)         // Program logo filename
+            CSTRING, logofile,         // Program logo filename
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     GdkPixbuf *logo;
 
@@ -757,18 +782,18 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxColorSelectionDialogNew, // Object_method name
-            CSTRING, title)            // Dialog title
+            CSTRING, title,            // Dialog title
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
+    GtkWidget *myWidget;
     GtkWidget *colorsel;
 
     myWidget = gtk_color_selection_dialog_new(title);
     colorsel = GTK_COLOR_SELECTION_DIALOG(myWidget)->colorsel;
     gtk_color_selection_set_has_opacity_control(GTK_COLOR_SELECTION(colorsel), TRUE);
-    context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
+    context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", context->GetSelf());
 
     return 0;
@@ -781,10 +806,11 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Color
  **/
-RexxMethod0(RexxObjectPtr,             // Return type
-            GrxColorSelectionDialogGetColor) // Object_method name
+RexxMethod1(RexxObjectPtr,             // Return type
+            GrxColorSelectionDialogGetColor, // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     GtkWidget *colorsel;
     GdkColor color;

@@ -93,7 +93,7 @@ RexxMethod1(int,                       // Return type
     GtkWidget       *myWidget;
 
     myWidget = gtk_statusbar_new();
-    context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
+    context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
@@ -108,11 +108,12 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Context id
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxStatusbarGetContextId,  // Object_method name
-            CSTRING, desc)             // Description
+            CSTRING, desc,             // Description
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkStatusbar *myWidget = (GtkStatusbar *)context->PointerValue(rxptr);
 
     return gtk_statusbar_get_context_id(myWidget, desc);
@@ -129,12 +130,13 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Message id
  **/
-RexxMethod2(int,                       // Return type
+RexxMethod3(int,                       // Return type
             GrxStatusbarPush,          // Object_method name
             int, cid,                  // Context id
-            CSTRING, text)             // Message text
+            CSTRING, text,             // Message text
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkStatusbar *myWidget = (GtkStatusbar *)context->PointerValue(rxptr);
 
     return gtk_statusbar_push(myWidget, cid, text);
@@ -149,11 +151,12 @@ RexxMethod2(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxStatusbarPop,           // Object_method name
-            int, cid)                  // Context id
+            int, cid,                  // Context id
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkStatusbar *myWidget = (GtkStatusbar *)context->PointerValue(rxptr);
 
     gtk_statusbar_pop(myWidget, cid);
@@ -172,12 +175,13 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod2(int,                       // Return type
+RexxMethod3(int,                       // Return type
             GrxStatusbarRemove,        // Object_method name
             int, cid,                  // Context id
-            int, mid)                  // Message id
+            int, mid,                  // Message id
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkStatusbar *myWidget = (GtkStatusbar *)context->PointerValue(rxptr);
 
     gtk_statusbar_remove(myWidget, cid, mid);
@@ -194,11 +198,12 @@ RexxMethod2(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxStatusbarSetHasResizeGrip, // Object_method name
-            logical_t, flag)           // Boolean flag
+            logical_t, flag,           // Boolean flag
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkStatusbar *myWidget = (GtkStatusbar *)context->PointerValue(rxptr);
 
     gtk_statusbar_set_has_resize_grip(myWidget, flag);
@@ -213,10 +218,11 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod0(logical_t,                 // Return type
-            GrxStatusbarGetHasResizeGrip) // Object_method name
+RexxMethod1(logical_t,                 // Return type
+            GrxStatusbarGetHasResizeGrip, // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkStatusbar *myWidget = (GtkStatusbar *)context->PointerValue(rxptr);
 
     return gtk_statusbar_get_has_resize_grip(myWidget);
@@ -231,12 +237,13 @@ RexxMethod0(logical_t,                 // Return type
  *
  * @return        Zero
  **/
-RexxMethod2(RexxObjectPtr,             // Return type
+RexxMethod3(RexxObjectPtr,             // Return type
             GrxStatusbarSignalConnect, // Object_method name
             CSTRING, name,             // Signal name
-            ARGLIST, args)             // The whole argument list as an array
+            ARGLIST, args,             // The whole argument list as an array
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     cbcb *cblock;
 

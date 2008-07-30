@@ -125,7 +125,7 @@ RexxMethod1(int,                       // Return type
 
     accelgrp = gtk_accel_group_new();
 
-    context->SetObjectVariable("!POINTER", context->NewPointer(accelgrp));
+    context->SendMessage1(self, "POINTER=", context->NewPointer(accelgrp));
     g_object_set_data(G_OBJECT(accelgrp), "OORXOBJECT", self);
 
     return 0;
@@ -140,12 +140,13 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod2(RexxObjectPtr,             // Return type
+RexxMethod3(RexxObjectPtr,             // Return type
             GrxAccelGroupSignalConnect, // Object_method name
             CSTRING, name,             // Signal name
-            ARGLIST, args)             // The whole argument list as an array
+            ARGLIST, args,             // The whole argument list as an array
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     cbcb *cblock;
 

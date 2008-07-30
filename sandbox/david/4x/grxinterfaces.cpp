@@ -84,11 +84,12 @@ static void signal_func_0(GtkWidget *window,
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxFileChooserSetCurrentFolder, // Object_method name
-            CSTRING, dir)              // Directory
+            CSTRING, dir,              // Directory
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkFileChooser *myWidget = (GtkFileChooser *)context->PointerValue(rxptr);
 
     gtk_file_chooser_set_current_folder(myWidget, dir);
@@ -105,11 +106,12 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxFileChooserSetSelectMultiple, // Object_method name
-            logical_t, flag)           // Flag boolean
+            logical_t, flag,           // Flag boolean
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkFileChooser *myWidget = (GtkFileChooser *)context->PointerValue(rxptr);
 
     gtk_file_chooser_set_select_multiple(myWidget, flag);
@@ -126,11 +128,12 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxFileChooserAddFilter,   // Object_method name
-            RexxObjectPtr, rxfilter)   // Filter object
+            RexxObjectPtr, rxfilter,   // Filter object
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkFileChooser *myWidget = (GtkFileChooser *)context->PointerValue(rxptr);
     RexxPointerObject filterptr = (RexxPointerObject)context->SendMessage0(rxfilter, "POINTER");
     GtkFileFilter *filter = (GtkFileFilter *)context->PointerValue(filterptr);
@@ -147,10 +150,11 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Filename
  **/
-RexxMethod0(CSTRING,                   // Return type
-            GrxFileChooserGetFilename) // Object_method name
+RexxMethod1(CSTRING,                   // Return type
+            GrxFileChooserGetFilename, // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkFileChooser *myWidget = (GtkFileChooser *)context->PointerValue(rxptr);
 
     return gtk_file_chooser_get_filename(myWidget);
@@ -163,10 +167,11 @@ RexxMethod0(CSTRING,                   // Return type
  *
  * @return        Array of filenames
  **/
-RexxMethod0(RexxObjectPtr,             // Return type
-            GrxFileChooserGetFilenames) // Object_method name
+RexxMethod1(RexxObjectPtr,             // Return type
+            GrxFileChooserGetFilenames, // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkFileChooser *myWidget = (GtkFileChooser *)context->PointerValue(rxptr);
     GSList * list;
     RexxArrayObject arr;
@@ -190,12 +195,13 @@ RexxMethod0(RexxObjectPtr,             // Return type
  *
  * @return        Zero
  **/
-RexxMethod2(RexxObjectPtr,             // Return type
+RexxMethod3(RexxObjectPtr,             // Return type
             GrxFileChooserSignalConnect, // Object_method name
             CSTRING, name,             // Signal name
-            ARGLIST, args)             // The whole argument list as an array
+            ARGLIST, args,             // The whole argument list as an array
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     cbcb *cblock;
 
@@ -248,7 +254,7 @@ RexxMethod1(int,                       // Return type
     GtkFileFilter *filter;
 
     filter = gtk_file_filter_new();
-    context->SetObjectVariable("!POINTER", context->NewPointer(filter));
+    context->SendMessage1(self, "POINTER=", context->NewPointer(filter));
     g_object_set_data(G_OBJECT(filter), "OORXOBJECT", self);
 
     return 0;
@@ -263,11 +269,12 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxFileFilterSetName,      // Object_method name
-            CSTRING, name)             // Filter name
+            CSTRING, name,             // Filter name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkFileFilter *filter = (GtkFileFilter *)context->PointerValue(rxptr);
 
     gtk_file_filter_set_name(filter, name);
@@ -284,11 +291,12 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxFileFilterAddPattern,   // Object_method name
-            CSTRING, pattern)          // Filter pattern
+            CSTRING, pattern,          // Filter pattern
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkFileFilter *filter = (GtkFileFilter *)context->PointerValue(rxptr);
 
     gtk_file_filter_add_pattern(filter, pattern);

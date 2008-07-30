@@ -134,7 +134,7 @@ RexxMethod2(int,                       // Return type
        myWidget = gtk_label_new(text);
     else
        myWidget = gtk_label_new("\0");
-    context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
+    context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
@@ -149,11 +149,12 @@ RexxMethod2(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxLabelSetText,           // Object_method name
-            CSTRING, text)             // Label text
+            CSTRING, text,             // Label text
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkLabel *myWidget = (GtkLabel *)context->PointerValue(rxptr);
 
     gtk_label_set_text(myWidget, text); 
@@ -170,11 +171,12 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxLabelSetJustify,        // Object_method name
-            int, jtype)                // Justification type
+            int, jtype,                // Justification type
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkLabel *myWidget = (GtkLabel *)context->PointerValue(rxptr);
 
     gtk_label_set_justify(myWidget, (GtkJustification)jtype); 
@@ -202,10 +204,11 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Justification type
  **/
-RexxMethod0(int,                       // Return type
-            GrxLabelGetJustify)        // Object_method name
+RexxMethod1(int,                       // Return type
+            GrxLabelGetJustify,        // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkLabel *myWidget = (GtkLabel *)context->PointerValue(rxptr);
 
     return (int)gtk_label_get_justify(myWidget);
@@ -220,11 +223,12 @@ RexxMethod0(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxLabelSetSelectable,     // Object_method name
-            logical_t, flag)           // Selectable boolean
+            logical_t, flag,           // Selectable boolean
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkLabel *myWidget = (GtkLabel *)context->PointerValue(rxptr);
 
     gtk_label_set_selectable(myWidget, flag);
@@ -241,12 +245,13 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod2(RexxObjectPtr,             // Return type
+RexxMethod3(RexxObjectPtr,             // Return type
             GrxLabelSignalConnect,     // Object_method name
             CSTRING, name,             // Signal name
-            ARGLIST, args)             // The whole argument list as an array
+            ARGLIST, args,             // The whole argument list as an array
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     cbcb *cblock;
 

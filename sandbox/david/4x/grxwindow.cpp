@@ -107,8 +107,8 @@ RexxMethod2(int,                       // Return type
     GtkWidget       *myWidget;
 
     myWidget = gtk_window_new((GtkWindowType)type);
-    context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
+    context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
 
     return 0;
 }
@@ -120,13 +120,36 @@ RexxMethod2(int,                       // Return type
  *
  * @return        Title string
  **/
-RexxMethod0(CSTRING,                   // Return type
-            GrxWindowGetTitle)         // Object_method name
+RexxMethod1(CSTRING,                   // Return type
+            GrxWindowGetTitle,         // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
 
     return gtk_window_get_title(GTK_WINDOW(myWidget));
+}
+
+/**
+ * Method:  set_title
+ *
+ * Set the title for a window.
+ *
+ * @param title   The window title string.
+ *
+ * @return        Zero
+ **/
+RexxMethod2(int,                       // Return type
+            GrxWindowSetTitle,         // Object_method name
+            CSTRING, title,            // Window title
+            OSELF, self)               // Self
+{
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
+    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
+
+    gtk_window_set_title(GTK_WINDOW(myWidget), title);
+
+    return 0;
 }
 
 /**
@@ -138,16 +161,34 @@ RexxMethod0(CSTRING,                   // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
-            GrxWindowSetTitle,         // Object_method name
-            logical_t, modal)          // Window modal flag
+RexxMethod2(int,                       // Return type
+            GrxWindowSetModal,         // Object_method name
+            logical_t, modal,          // Window modal flag
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
 
     gtk_window_set_modal(GTK_WINDOW(myWidget), modal);
 
     return 0;
+}
+
+/**
+ * Method:  get_modal
+ *
+ * Get the modal flag for the window.
+ *
+ * @return        Modal boolean
+ **/
+RexxMethod1(logical_t,                 // Return type
+            GrxWindowGetModal,         // Object_method name
+            OSELF, self)               // Self
+{
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
+    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
+
+    return gtk_window_get_modal(GTK_WINDOW(myWidget));
 }
 
 /**
@@ -159,11 +200,12 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                        // Return type
+RexxMethod2(int,                        // Return type
             GrxWindowAddAccelGroup,     // Object_method name
-            RexxObjectPtr, accelgrp)    // Accelerator group
+            RexxObjectPtr, accelgrp,    // Accelerator group
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWindow *myWidget = (GtkWindow *)context->PointerValue(rxptr);
     RexxPointerObject accelgrpptr = (RexxPointerObject)context->SendMessage0(accelgrp, "POINTER");
     GtkAccelGroup *accelgrpWidget = (GtkAccelGroup *)context->PointerValue(accelgrpptr);
@@ -182,12 +224,13 @@ RexxMethod1(int,                        // Return type
  *
  * @return        Zero.
  **/
-RexxMethod2(RexxObjectPtr,             // Return type
+RexxMethod3(RexxObjectPtr,             // Return type
             GrxWindowSignalConnect,    // Object_method name
             CSTRING, name,             // Signal name
-            ARGLIST, args)             // The whole argument list as an array
+            ARGLIST, args,             // The whole argument list as an array
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     cbcb *cblock;
 

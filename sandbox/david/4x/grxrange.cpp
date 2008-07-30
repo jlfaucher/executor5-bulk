@@ -131,11 +131,12 @@ static void signal_func_2(GtkWidget *window,
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxScaleSetDigits,         // Object_method name
-            int, digits)               // Digits
+            int, digits,               // Digits
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkScale *myWidget = (GtkScale *)context->PointerValue(rxptr);
 
     gtk_scale_set_digits(myWidget, digits);
@@ -150,10 +151,11 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Digits
  **/
-RexxMethod0(int,                       // Return type
-            GrxScaleGetDigits)         // Object_method name
+RexxMethod1(int,                       // Return type
+            GrxScaleGetDigits,         // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkScale *myWidget = (GtkScale *)context->PointerValue(rxptr);
 
     return gtk_scale_get_digits(myWidget);
@@ -168,11 +170,12 @@ RexxMethod0(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxScaleSetValuePos,       // Object_method name
-            int, type)                 // Position type
+            int, type,                 // Position type
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkScale *myWidget = (GtkScale *)context->PointerValue(rxptr);
 
     gtk_scale_set_value_pos(myWidget, (GtkPositionType)type);
@@ -187,10 +190,11 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod0(int,                       // Return type
-            GrxScaleGetValuePos)       // Object_method name
+RexxMethod1(int,                       // Return type
+            GrxScaleGetValuePos,       // Object_method name
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkScale *myWidget = (GtkScale *)context->PointerValue(rxptr);
 
     return gtk_scale_get_value_pos(myWidget);
@@ -230,7 +234,7 @@ RexxMethod7(int,                       // Return type
 
     adj = (GtkAdjustment *) gtk_adjustment_new(value, lower, upper, step, page, pagesz);
     myWidget = gtk_hscale_new(adj);
-    context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
+    context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
@@ -259,7 +263,7 @@ RexxMethod4(int,                       // Return type
     GtkWidget *myWidget;
 
     myWidget = gtk_hscale_new_with_range(min, max, step);
-    context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
+    context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
@@ -299,7 +303,7 @@ RexxMethod7(int,                       // Return type
 
     adj = (GtkAdjustment *) gtk_adjustment_new(value, lower, upper, step, page, pagesz);
     myWidget = gtk_vscale_new(adj);
-    context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
+    context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
@@ -328,7 +332,7 @@ RexxMethod4(int,                       // Return type
     GtkWidget *myWidget;
 
     myWidget = gtk_vscale_new_with_range(min, max, step);
-    context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
+    context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
@@ -343,12 +347,13 @@ RexxMethod4(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod2(RexxObjectPtr,             // Return type
+RexxMethod3(RexxObjectPtr,             // Return type
             GrxRangeSignalConnect,     // Object_method name
             CSTRING, name,             // Signal name
-            ARGLIST, args)             // The whole argument list as an array
+            ARGLIST, args,             // The whole argument list as an array
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     cbcb *cblock;
 

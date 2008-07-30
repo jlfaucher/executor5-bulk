@@ -86,7 +86,7 @@ RexxMethod2(int,                       // Return type
         }
         tstore = (GtkTreeStore *)gtk_tree_store_newv(members, (GType *)types);
     }
-    context->SetObjectVariable("!POINTER", context->NewPointer(tstore));
+    context->SendMessage1(self, "POINTER=", context->NewPointer(tstore));
     g_object_set_data(G_OBJECT(tstore), "OORXOBJECT", self);
     context->SetObjectVariable("!COLTYPES", context->NewPointer(types));
 
@@ -102,11 +102,12 @@ RexxMethod2(int,                       // Return type
  *
  * @return        Row iterator
  **/
-RexxMethod1(RexxObjectPtr,             // Return type
+RexxMethod2(RexxObjectPtr,             // Return type
             GrxTreeStoreAppend,        // Object_method name
-            RexxObjectPtr, parent)     // Parent object
+            RexxObjectPtr, parent,     // Parent object
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkTreeStore *tstore = (GtkTreeStore *)context->PointerValue(rxptr);
     GtkTreeIter *piter = (GtkTreeIter *)context->PointerValue((RexxPointerObject)parent);
     GtkTreeIter *iter = (GtkTreeIter *)malloc(sizeof(GtkTreeIter));
@@ -127,12 +128,13 @@ RexxMethod1(RexxObjectPtr,             // Return type
  *
  * @return        Zero
  **/
-RexxMethod2(int,                       // Return type
+RexxMethod3(int,                       // Return type
             GrxTreeStoreSetValue,      // Object_method name
             RexxObjectPtr, rxiter,     // Row iterator
-            ARGLIST, args)             // Argument array
+            ARGLIST, args,             // Argument array
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkTreeStore *tstore = (GtkTreeStore *)context->PointerValue(rxptr);
     GtkTreeIter *iter = (GtkTreeIter *)context->PointerValue((RexxPointerObject)rxiter);
     rxptr = (RexxPointerObject)context->GetObjectVariable("!COLTYPES");

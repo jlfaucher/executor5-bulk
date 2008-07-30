@@ -77,7 +77,7 @@ RexxMethod1(int,                       // Return type
 
 
     myWidget = gtk_fixed_new();
-    context->SetObjectVariable("!POINTER", context->NewPointer(myWidget));
+    context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
@@ -96,13 +96,14 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod3(int,                       // Return type
+RexxMethod4(int,                       // Return type
             GrxFixedPut,               // Object_method name
             RexxObjectPtr, rxwidget,   // Page number
             int, xpos,                 // X position 
-            int, ypos)                 // Y position
+            int, ypos,                 // Y position
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkFixed *myWidget = (GtkFixed *)context->PointerValue(rxptr);
     RexxPointerObject putwidget = (RexxPointerObject)context->SendMessage0(rxwidget, "POINTER");
     GtkWidget *putWidget = (GtkWidget *)context->PointerValue(putwidget);
@@ -125,13 +126,14 @@ RexxMethod3(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod3(int,                       // Return type
+RexxMethod4(int,                       // Return type
             GrxFixedMove,              // Object_method name
             RexxObjectPtr, rxwidget,   // Page number
             int, xpos,                 // X position 
-            int, ypos)                 // Y position
+            int, ypos,                 // Y position
+            OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!POINTER");
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkFixed *myWidget = (GtkFixed *)context->PointerValue(rxptr);
     RexxPointerObject movewidget = (RexxPointerObject)context->SendMessage0(rxwidget, "POINTER");
     GtkWidget *moveWidget = (GtkWidget *)context->PointerValue(movewidget);
