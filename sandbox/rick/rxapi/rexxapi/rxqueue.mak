@@ -37,7 +37,7 @@
 #/*----------------------------------------------------------------------------*/
 all:  $(OR_OUTDIR)\rxqueue.exe
 
-!include "$(OR_ORYXLSRC)\ORXWIN32.MAK"
+!include "$(OR_LIBSRC)\ORXWIN32.MAK"
 C=cl
 OPTIONS= $(cflags_common) /DWINTEST $(OR_ORYXINCL)
 OR_LIB=$(OR_OUTDIR)

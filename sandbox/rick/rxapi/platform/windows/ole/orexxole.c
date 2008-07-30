@@ -1177,15 +1177,6 @@ BOOL fFindConstant(const char * pszConstName, POLECLASSINFO pClsInfo, PPOLECONST
         pConstInfo = pConstInfo->pNext;
     } /* endwhile */
 
-#if defined(REXX_DEBUG)
-    if (fFound)
-    {
-        DbgPrintf("Located const info ptr=%p, memid=%8.8X, sValue=%s\n",
-                  pConstInfo, pConstInfo->memId,
-                  pszDbgVariant(&(pConstInfo->sValue)));
-    }
-#endif
-
     return fFound;
 }
 

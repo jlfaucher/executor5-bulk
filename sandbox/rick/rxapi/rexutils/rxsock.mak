@@ -43,7 +43,7 @@ all: $(OR_OUTDIR)\rxsock.dll
     @ECHO All done rxsock.dll
     @ECHO .
 
-!include "$(OR_ORYXLSRC)\ORXWIN32.MAK"
+!include "$(OR_LIBSRC)\ORXWIN32.MAK"
 
 !IFNDEF OR_ORYXASRC
 !ERROR Build error, OR_ORYXASRC not set
@@ -58,9 +58,9 @@ OBJS   = $(OR_OUTDIR)\rxsock.obj $(OR_OUTDIR)\rxsockfn.obj
 #
 # Generate import library (.lib) and export library (.exp) from
 # module-definition (.dfw) file for a DLL
-$(OR_OUTDIR)\rxsock.lib : $(OBJS) $(OR_ORYXRSRC)\rxsock.def
+$(OR_OUTDIR)\rxsock.lib : $(OBJS) $(OR_REXXUTILSRC)\rxsock.def
         $(OR_IMPLIB) -machine:$(CPU) \
-        -def:$(OR_ORYXRSRC)\rxsock.def               \
+        -def:$(OR_REXXUTILSRC)\rxsock.def               \
         $(OBJS)               \
         -out:$(OR_OUTDIR)\rxsock.lib
 
@@ -69,7 +69,7 @@ $(OR_OUTDIR)\rxsock.lib : $(OBJS) $(OR_ORYXRSRC)\rxsock.def
 #
 # need import libraries and def files still
 $(OR_OUTDIR)\rxsock.dll : $(OBJS) $(RXDBG_OBJ) $(OR_OUTDIR)\rxsock.lib \
-                          $(OR_ORYXRSRC)\rxsock.def $(OR_OUTDIR)\rxsock.exp
+                          $(OR_REXXUTILSRC)\rxsock.def $(OR_OUTDIR)\rxsock.exp
     $(OR_LINK) $(lflags_common) $(lflags_dll)  -out:$(OR_OUTDIR)\$(@B).dll \
              $(OBJS) $(RXDBG_OBJ) \
              $(OR_OUTDIR)\verinfo.res \
@@ -81,10 +81,10 @@ $(OR_OUTDIR)\rxsock.dll : $(OBJS) $(RXDBG_OBJ) $(OR_OUTDIR)\rxsock.lib \
 
 
 # *** Inference Rule for CPP->OBJ
-# *** For .CPP files in OR_ORYXLSRC directory
+# *** For .CPP files in OR_LIBSRC directory
 #
 $(OBJS):  $(@B).cpp
     @ECHO .
     @ECHO Compiling $(@B).cpp
-    $(OR_CC) $(cflags_common) $(cflags_dll) /Fo$(OR_OUTDIR)\$(@B).obj $(OR_ORYXINCL)  $(OR_ORYXRSRC)\$(@B).cpp
+    $(OR_CC) $(cflags_common) $(cflags_dll) /Fo$(OR_OUTDIR)\$(@B).obj $(OR_ORYXINCL)  $(OR_REXXUTILSRC)\$(@B).cpp
 

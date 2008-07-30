@@ -42,7 +42,7 @@
 
 # include the version information
 
-!include "$(OR_ORYXSRC)\oorexx.ver.incl"
+!include "$(OR_MAINSRC)\oorexx.ver.incl"
 
 # Make file include for WIN32 stuff
 #
@@ -55,15 +55,6 @@
 !ERROR Build error, OR_ORYXINCL not set
 !ENDIF
 
-!IF "$(REXXDEBUG)" == "1"
-RXDBG=/DREXX_DEBUG
-RXDBG_OBJ=$(OR_OUTDIR)\windbg.obj
-!ELSE
-RXDBG=
-RXDBG_OBJ=
-!ENDIF
-
-# CHM - added assembly listings
 !IF "$(MKASM)" == "1"
 MK_ASM=/FAcs /Fa$(OR_OUTDIR)\ASM\$(@B).asm
 !ELSE
@@ -159,10 +150,3 @@ libs_exe=
 #
 rcflags_common=rc /DWIN32 -dOOREXX_VER=$(ORX_MAJOR) -dOOREXX_REL=$(ORX_MINOR) -dOOREXX_SUB=$(ORX_MOD_LVL) -dOOREXX_BLD=$(ORX_BLD_LVL) -dOOREXX_VER_STR=\"$(ORX_VER_STR)\" -dOOREXX_COPY_YEAR=\"$(ORX_COPY_YEAR)\"
 
-# CHM - define dependency for WINDBG.OBJ
-!IF "$(REXXDEBUG)" == "1"
-$(RXDBG_OBJ): $(OR_ORYXKSRC)\windbg.c
-    @ECHO .
-    @ECHO Compiling WINDBG.c
-    $(OR_CC) $(cflags_common) $(cflags_dll) /Fo$(OR_OUTDIR)\$(@B).obj $(OR_ORYXINCL) $(Tp) $(OR_ORYXKSRC)\$(@B).c
-!ENDIF

@@ -53,8 +53,6 @@
 
 static bool fWriteDebug = true;
 
-// TODO:  Move this out of kernel into the OLE support where it's used.
-
 VOID SysCall DbgPrintf(char * pszDbgArgs, ...)
 {
    char debugHeader[50];
