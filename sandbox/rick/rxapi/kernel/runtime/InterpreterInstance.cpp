@@ -162,6 +162,9 @@ int InterpreterInstance::attachThread(RexxThreadContext *&attachedContext)
 {
     RexxActivity *activity = attachThread();
     attachedContext = activity->getThreadContext();
+    // When we attach, we get the current lock.  We need to ensure we
+    // release this before returning control to the outside world.
+    activity->releaseAccess();
     return 0;
 }
 
@@ -196,12 +199,12 @@ RexxActivity *InterpreterInstance::attachThread()
 /**
  * Detach a thread from this interpreter instance.
  *
+ * @param activity The activity to detach
+ *
  * @return true if this worked ok.
  */
-bool InterpreterInstance::detachThread()
+bool InterpreterInstance::detachThread(RexxActivity *activity)
 {
-    // first check for an existing activity
-    RexxActivity *activity = findActivity();
     // if the thread in question is not found, is not an attached thread, or
     // the thread is currently busy, this fails
     if (activity == OREF_NULL || !activity->isAttached() || activity->isActive())
@@ -210,12 +213,29 @@ bool InterpreterInstance::detachThread()
     }
     ResourceSection lock;
 
-
     allActivities->removeItem((RexxObject *)activity);
     // have the activity manager remove this from the global tables
     // and perform resource cleanup
     ActivityManager::returnActivity(activity);
+
+    // Was this the last detach of an thread?  Signal the shutdown event
+    if (allActivities->items() == 0 && terminating)
+    {
+        terminationSem.post();
+    }
     return true;
+}
+
+
+/**
+ * Detach a thread from this interpreter instance.
+ *
+ * @return true if this worked ok.
+ */
+bool InterpreterInstance::detachThread()
+{
+    // first check for an existing activity
+    return detachThread(findActivity());
 }
 
 
@@ -231,13 +251,12 @@ RexxActivity *InterpreterInstance::spawnActivity(RexxActivity *parent)
 {
     // create a new activity
     RexxActivity *activity = ActivityManager::createNewActivity(parent);
-
-    ResourceSection lock;
-
-    // add this to the activity lists
-    allActivities->append((RexxObject *)activity);
     // associate the thread with this instance
     activity->addToInstance(this);
+    // add this to the activities list
+    ResourceSection lock;
+
+    allActivities->append((RexxObject *)activity);
     return activity;
 }
 
@@ -258,8 +277,10 @@ bool InterpreterInstance::poolActivity(RexxActivity *activity)
 
     if (terminating)
     {
-        // is this the last one to finish up?
-        if (allActivities->items() == 1)
+        // is this the last one to finish up?  Generally, the main thread
+        // will be waiting for this to terminate.  That is thread 1, we're thread
+        // 2.  In reality, this is the test for the last "spawned" thread.
+        if (allActivities->items() <= 2)
         {
             // This activity is currently the current activity.  We're going to run the
             // uninits on this one, so reactivate it until we're done running
@@ -342,12 +363,16 @@ RexxActivity *InterpreterInstance::findActivity()
  */
 RexxActivity *InterpreterInstance::enterOnCurrentThread()
 {
-    ResourceSection lock;              // lock the outer control block access
-
-    // attach this thread to the current activity
-    RexxActivity *activity = attachThread();
-    // this will also get us the kernel lock, and take care of nesting
-    activity->activate();
+    RexxActivity *activity;
+    {
+        ResourceSection lock;              // lock the outer control block access
+        // attach this thread to the current activity
+        activity = attachThread();
+        // this will also get us the kernel lock, and take care of nesting
+        activity->activate();
+    }
+    // we need to ensure the resource lock is released before we attempt to
+    // acquire the kernel lock
     activity->requestAccess();
     // return the activity in case the caller needs it.
     return activity;
@@ -413,9 +438,6 @@ bool InterpreterInstance::terminate()
     // turn on the global termination in process flag
     terminating = true;
 
-
-    //TODO:  Need to so something about uninits here
-
     {
         // remove the current activity from the list so we don't clean everything
         // up.  We need to
@@ -430,26 +452,27 @@ bool InterpreterInstance::terminate()
         allActivities->append((RexxObject *)current);
     }
 
-    // if everything has terminated, then make sure we run the uninits before shutting down.
-    if (terminated)
+    // if there are active threads still running, we need to wait until
+    // they all finish
+    if (!terminated)
     {
-        // This activity is currently the current activity.  We're going to run the
-        // uninits on this one, so reactivate it until we're done running
-        enterOnCurrentThread();
-        // release any global references we've been holding.
-        globalReferences->empty();
-        // before we update of the data structures, make sure we process any
-        // pending uninit activity.
-        memoryObject.collectAndUninit();
-        // ok, deactivate this again...this will return the activity because the terminating
-        // flag is on.
-        exitCurrentThread();
-        terminationSem.close();
-        return true;
+        terminationSem.wait();
     }
 
-    // unable to shut down
-    return false;
+    // if everything has terminated, then make sure we run the uninits before shutting down.
+    // This activity is currently the current activity.  We're going to run the
+    // uninits on this one, so reactivate it until we're done running
+    enterOnCurrentThread();
+    // release any global references we've been holding.
+    globalReferences->empty();
+    // before we update of the data structures, make sure we process any
+    // pending uninit activity.
+    memoryObject.collectAndUninit();
+    // ok, deactivate this again...this will return the activity because the terminating
+    // flag is on.
+    exitCurrentThread();
+    terminationSem.close();
+    return true;
 }
 
 

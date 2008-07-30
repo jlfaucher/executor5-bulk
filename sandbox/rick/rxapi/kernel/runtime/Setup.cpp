@@ -525,7 +525,7 @@ void RexxMemory::createImage()
 
                                        /* Add the instance methods to the   */
                                        /* instance behaviour mdict          */
-  defineKernelMethod(CHAR_SETUNGUARDED ,TheMethodBehaviour, CPPM(RexxMethod::setUnGuardedRexx), 0);
+  defineKernelMethod(CHAR_SETUNGUARDED ,TheMethodBehaviour, CPPM(RexxMethod::setUnguardedRexx), 0);
   defineKernelMethod(CHAR_SETGUARDED   ,TheMethodBehaviour, CPPM(RexxMethod::setGuardedRexx), 0);
   defineKernelMethod(CHAR_SETPRIVATE   ,TheMethodBehaviour, CPPM(RexxMethod::setPrivateRexx), 0);
   defineKernelMethod(CHAR_ISGUARDED    ,TheMethodBehaviour, CPPM(RexxMethod::isGuardedRexx), 0);
@@ -936,7 +936,7 @@ void RexxMemory::createImage()
 
   defineKernelMethod(CHAR_LENGTH                       ,TheMutableBufferBehaviour, CPPM(RexxMutableBuffer::lengthRexx), 0);
   defineKernelMethod(CHAR_MAKEARRAY                    ,TheMutableBufferBehaviour, CPPM(RexxMutableBuffer::makearray), 1);
-  defineKernelMethod(CHAR_STRING                       ,TheMutableBufferBehaviour, CPPM(RexxMutableBuffer::makeString), 0);
+  defineKernelMethod(CHAR_STRING                       ,TheMutableBufferBehaviour, CPPM(RexxObject::makeStringRexx), 0);
 
                                        /* set the scope of the methods to   */
                                        /* this classes oref                 */
@@ -1289,7 +1289,7 @@ void RexxMemory::createImage()
                                            /* create a kernel methods directory */
       RexxDirectory *kernel_methods = new_directory();
       ProtectedObject p1(kernel_methods);   // protect from GC
-      kernel_methods->put(new RexxMethod(getGlobalName(CHAR_LOCAL), CPPCode::resolveExportedMethod(CPPM(RexxLocal::local), 0)), getGlobalName(CHAR_LOCAL));
+      kernel_methods->put(new RexxMethod(getGlobalName(CHAR_LOCAL), CPPCode::resolveExportedMethod(CHAR_LOCAL, CPPM(RexxLocal::local), 0)), getGlobalName(CHAR_LOCAL));
 
                                            /* create the BaseClasses method and run it*/
       RexxString *symb = getGlobalName(BASEIMAGELOAD);   /* get a name version of the string  */

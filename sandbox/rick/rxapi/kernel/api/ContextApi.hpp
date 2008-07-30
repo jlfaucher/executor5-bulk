@@ -69,6 +69,21 @@ public:
         activity->enterCurrentThread();
     }
 
+
+    /**
+     * Initialize an API context from a thread context.
+     * this is a nonblocking context.  The extra argument allows
+     * the overloads to work
+     *
+     * @param c      The source context.
+     */
+    inline ApiContext(RexxThreadContext *c, bool blocking)
+    {
+        activity = contextToActivity(c);
+        context = activity->getApiContext();
+        // this does not acquire the lock
+    }
+
     /**
      * Initialize an API context from a call context.
      *
@@ -147,7 +162,7 @@ public:
      */
     inline InstanceApiContext(RexxInstance *c)
     {
-        instance = (InterpreterInstance *)c;
+        instance = ((InstanceContext *)c)->instance;
     }
 
     /**

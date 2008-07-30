@@ -67,10 +67,11 @@ BEGIN_EXTERN_C()
 
 void RexxEntry DetachThread(RexxThreadContext *c)
 {
-    ApiContext context(c);
+    // we do this one without grabbing the lock because we're going away.
+    ApiContext context(c, false);
     try
     {
-        context.activity->detachInstance();
+        context.activity->detachThread();
     }
     catch (RexxNativeActivation *)
     {
@@ -265,7 +266,7 @@ logical_t RexxEntry HasMethod(RexxThreadContext *c, RexxObjectPtr o, CSTRING n)
     try
     {
         // convert the name to a string instance, and check the environments.
-        return ((RexxObject *)o)->hasMethod(new_string(n)) == TheTrueObject;
+        return ((RexxObject *)o)->hasMethod(new_upper_string(n)) == TheTrueObject;
 
     }
     catch (RexxNativeActivation *)
@@ -559,12 +560,27 @@ RexxObjectPtr RexxEntry NewObject(RexxThreadContext *c)
     return NULLOBJECT;
 }
 
+POINTER RexxEntry ObjectToCSelf(RexxThreadContext *c, RexxObjectPtr o)
+{
+    ApiContext context(c);
+    try
+    {
+        // ask the object to figure this out
+        return ((RexxObject *)o)->getCSelf();
+    }
+    catch (RexxNativeActivation *)
+    {
+    }
+    return NULL;
+}
+
+
 RexxObjectPtr RexxEntry NumberToObject(RexxThreadContext *c, wholenumber_t n)
 {
     ApiContext context(c);
     try
     {
-        return context.ret(Numerics::toObject((wholenumber_t)n));
+        return context.ret(Numerics::wholenumberToObject((wholenumber_t)n));
     }
     catch (RexxNativeActivation *)
     {
@@ -637,7 +653,7 @@ RexxObjectPtr RexxEntry UnsignedNumberToObject(RexxThreadContext *c, stringsize_
     ApiContext context(c);
     try
     {
-        return context.ret(Numerics::toObject((stringsize_t)n));
+        return context.ret(Numerics::stringsizeToObject((stringsize_t)n));
     }
     catch (RexxNativeActivation *)
     {
@@ -692,7 +708,7 @@ RexxObjectPtr RexxEntry Int64ToObject(RexxThreadContext *c, int64_t n)
     ApiContext context(c);
     try
     {
-        return context.ret(Numerics::toObject(n));
+        return context.ret(Numerics::int64ToObject(n));
     }
     catch (RexxNativeActivation *)
     {
@@ -705,7 +721,7 @@ RexxObjectPtr RexxEntry UnsignedInt64ToObject(RexxThreadContext * c, uint64_t n)
     ApiContext context(c);
     try
     {
-        return context.ret(Numerics::toObject(n));
+        return context.ret(Numerics::uint64ToObject(n));
     }
     catch (RexxNativeActivation *)
     {
@@ -760,7 +776,7 @@ RexxObjectPtr RexxEntry DoubleToObject(RexxThreadContext *c, double n)
     ApiContext context(c);
     try
     {
-        return context.ret(new_numberstring(n));
+        return context.ret(new_numberstringFromDouble(n));
     }
     catch (RexxNativeActivation *)
     {
@@ -1094,7 +1110,7 @@ RexxDirectoryObject RexxEntry NewDirectory(RexxThreadContext *c)
     ApiContext context(c);
     try
     {
-        return (RexxDirectoryObject)context.ret(new_table());
+        return (RexxDirectoryObject)context.ret(new_directory());
     }
     catch (RexxNativeActivation *)
     {
@@ -1262,12 +1278,12 @@ logical_t RexxEntry IsArray(RexxThreadContext *c, RexxObjectPtr o)
     return false;
 }
 
-CSTRING RexxEntry BufferData(RexxThreadContext *c, RexxBufferObject b)
+POINTER RexxEntry BufferData(RexxThreadContext *c, RexxBufferObject b)
 {
     ApiContext context(c);
     try
     {
-        return (CSTRING)((RexxBuffer *)b)->getData();
+        return (POINTER)((RexxBuffer *)b)->getData();
     }
     catch (RexxNativeActivation *)
     {
@@ -1463,11 +1479,11 @@ RexxStemObject RexxEntry NewStem(RexxThreadContext *c, CSTRING name)
     {
         if (name == NULL)
         {
-            return (RexxStemObject)context.ret(new RexxStem(new_string(name)));
+            return (RexxStemObject)context.ret(new RexxStem(OREF_NULL));
         }
         else
         {
-            return (RexxStemObject)context.ret(new RexxStem(OREF_NULL));
+            return (RexxStemObject)context.ret(new RexxStem(new_string(name)));
         }
 
     }
@@ -1746,6 +1762,7 @@ RexxThreadInterface RexxActivity::threadContextFunctions =
     SaveRoutine,
 
     NewObject,
+    ObjectToCSelf,
     NumberToObject,
     UintptrToObject,
     ValueToObject,

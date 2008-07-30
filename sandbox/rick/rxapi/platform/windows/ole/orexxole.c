@@ -3292,7 +3292,8 @@ RexxMethod3(RexxObjectPtr,                // Return type
         context->RaiseException(Rexx_Error_System_resources);
     }
 
-    for (size_t i=0; i < iArgCount; i++)
+    size_t i;
+    for (i = 0; i < iArgCount; i++)
     {
         /* arguments are filled in from the end of the array */
         VariantInit(&(pVarArgs[iArgCount - i - 1]));
@@ -3393,7 +3394,7 @@ RexxMethod3(RexxObjectPtr,                // Return type
     // needed for instance of tests
     RexxClassObject variantClass = context->FindClass("OLEVARIANT");
 
-    for (size_t i=0; i < dp.cArgs; i++)
+    for (i = 0; i < dp.cArgs; i++)
     {
         arrItem = context->ArrayAt(msgArgs, i + 1);
 
@@ -4815,6 +4816,7 @@ RexxMethodEntry oleobject_methods[] = {
 
 RexxPackageEntry oleobject_package_entry = {
     STANDARD_PACKAGE_HEADER
+    REXX_INTERPRETER_4_0_0,              // anything after 4.0.0 will work
     "OLEObject",                         // name of the package
     "1.4",                               // package information
     NULL,                                // no load/unload functions

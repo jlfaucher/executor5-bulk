@@ -198,7 +198,7 @@
    ret = ""
    if style~wordpos("NOT WS_VISIBLE") > 0 then ret = "HIDDEN"
    else if style~wordpos("WS_VISIBLE") > 0 then ret = "VISIBLE"
-   if style~wordpos("WS_DISABLED") > 0 then ret = ret || " DISABLED"
+   if style~wordpos("WS_DISABLED") > 0 & style~wordpos("NOT WS_DISABLED") == 0 then ret = ret || " DISABLED"
    if kind = "TREE" then do
       if style~wordpos("TVS_DISABLEDRAGDROP") > 0 then ret = ret || " NODRAG"
       if style~wordpos("TVS_EDITLABELS") > 0 then ret = ret || " EDIT"
@@ -256,6 +256,7 @@
    else if kind = "PROGRESS" then do
         if style~wordpos("PBS_VERTICAL") > 0 then ret = ret || " VERTICAL"
         if style~wordpos("PBS_SMOOTH") > 0 then ret = ret || " SMOOTH"
+        if style~wordpos("PBS_MARQUEE") > 0 then ret = ret || " MARQUEE"
         if style~wordpos("WS_BORDER") > 0 then ret = ret || " BORDER"
         if style~wordpos("WS_TABSTOP") > 0 then ret = ret || " TAB"
    end
@@ -392,9 +393,8 @@
       obj~Hwnd = 0
       obj~Id = 0
       if Arg() = 0 then do
-         if obj~Init_WindowBase \= 0 then return .Nil
-         if obj~Init_WindowExtensions \= 0 then return .Nil
-         obj~oDlg = .Nil
+         self~initCode = obj~Init_WindowBase
+         obj~oDlg = .nil
          return obj
       end
       else do
@@ -483,6 +483,9 @@
 
 ::method GetStyleRaw     -- Get the control's current GWL_STYLE style
    return HandleControlEx(self~hDlg, self~id, "X", "GET")
+
+::method GetFont
+   return HandleControlEx(self~hDlg, self~id, "F", "GET")
 
 ::method Clear
    parse value WindowRect("GET", self~Hwnd) with r.1 r.2 r.3 r.4
@@ -910,6 +913,36 @@
    if width~datatype("N") = 1 then width = width * self~FactorX
    return HandleListCtrl("C","SETWIDTH", self~Hwnd, nr, width~translate)
 
+::method GetColumnCount
+  return HandleListCtrlEx(self~hwnd, "G", "COLCOUNT")
+
+::method GetColumnOrder
+
+   retStr = HandleListCtrlEx(self~hwnd, "M", "ORDER")
+   if retStr~datatype('W') then return retStr
+
+   retArray = .array~new
+   do i = 1 to retStr~words
+     retArray~append(retStr~word(i))
+   end
+   return retArray
+
+::method SetColumnOrder
+   use strict arg order
+   if \ order~isInstanceOf(.array) then return -3
+
+   count = order~items
+   if count < 2 then return 0
+
+   argStr = " "
+   do i = 1 to count
+     nr = order[i]
+     if \ nr~datatype('W') then return -3
+     if \ (nr >= 0 & nr < count) then return -3
+     argStr = argStr || nr || ' '
+   end
+
+   return HandleListCtrlEx(self~hwnd, "M", 'ORDER', argStr)
 
 ::method StringWidth
    use arg text
@@ -1239,47 +1272,29 @@
 
 
 
-/****************************************************** Progress Bar Class *********************************************************/
-
+/***************** Progress Bar Class *********************************************************/
 
 ::class 'ProgressBar' subclass DialogControl public
 
-::method Step
-   if Arg(1,'e') then
-       return HandleOtherNewCtrls("PROGRESS", "DELTA", self~hwnd, arg(1))
-   else
-       return HandleOtherNewCtrls("PROGRESS", "STEP", self~hwnd)
+::method step external "LIBRARY oodialog pbc_stepIt"
+::method setStep external "LIBRARY oodialog pbc_setStep"
 
-::method SetPos
-   use arg newpos
-   if Arg(1,'o') = 1 then return -1
-   return HandleOtherNewCtrls("PROGRESS", "POS", self~hwnd, newpos)
+::method setPos external "LIBRARY oodialog pbc_setPos"
+::method getPos external "LIBRARY oodialog pbc_getPos"
 
-::method SetStep
-   use arg newstep
-   if Arg(1,'o') = 1 then return -1
-   return HandleOtherNewCtrls("PROGRESS", "SETSTEP", self~hwnd, newstep)
+::method setRange external "LIBRARY oodialog pbc_setRange"
+::method getRange external "LIBRARY oodialog pbc_getRange"
 
-::method SetRange
-   use arg min, max
-   if Arg(1,'o') = 1 then min = 0
-   if Arg(2,'o') = 1 then max = 100
-   if max < min then return 0
-   prevrange =  HandleOtherNewCtrls("PROGRESS", "RANGE", self~hwnd, min, max)
-   if prevrange \= 0 then do
-      pmin = BinaryAnd(prevrange, "0x0000FFFF")
-      pmax = BinaryAnd(prevrange, "0xFFFF0000") % "10000"~x2d
-      return pmin || " " || pmax
-   end
-   else return 0
+::method setMarquee external "LIBRARY oodialog pbc_setMarquee"
+
+::method barColor external "LIBRARY oodialog pbc_setBarColor"
+::method backgroundColor external "LIBRARY oodialog pbc_setBkColor"
+
+-- For internal testing only
+::method test external "LIBRARY oodialog pbc_test"
 
 
-
-
-
-
-/****************************************************** Track Bar Class *********************************************************/
-
+/******************** Track Bar Class *********************************************************/
 
 ::class 'SliderControl' subclass DialogControl public
 
@@ -1527,6 +1542,20 @@
 /**********                                    Old controls                                         ****************************/
 
 ::class 'StaticControl' subclass DialogControl public
+
+::method SetIcon
+   use strict arg hIcon
+   return SendWinMsg("ANY", self~hwnd, "0x0170", hIcon, 0) -- 0x0170 == STM_SETICON
+
+::method GetIcon
+   return SendWinMsg("ANY", self~hwnd, "0x0171", "0x0", 0) -- 0x0171 == STM_GETICON
+
+::method SetText
+    use strict arg text
+    return HandleControlEx(self~hDlg, self~id, "E", "TXT", text)
+
+::method GetText
+    return HandleControlEx(self~hDlg, self~id, "E", "TXT")
 
 /****************************************************** Edit Control Class *********************************************************/
 

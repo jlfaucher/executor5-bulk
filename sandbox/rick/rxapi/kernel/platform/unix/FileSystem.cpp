@@ -144,19 +144,25 @@ void SystemInterpreter::loadImage(char **imageBuffer, size_t *imageSize)
 /*******************************************************************/
 {
     char fullname[PATH_MAX + 2];    // finally resolved name
-    // The file may purposefully have no extension.
-    if (!SysFileSystem::searchName(BASEIMAGE, getenv("PATH"), NULL, fullname))
+    // try first in the current directory 
+    FILE *image = fopen(BASEIMAGE, "rb");
+    // if not found, then try a path search 
+    if (image == NULL)
     {
-#ifdef ORX_CATDIR
-         strcpy(fullname, ORX_CATDIR"/rexx.img");
-#else
-         logic_error("no startup image");   /* open failure                      */
-#endif
-    }
-    FILE *image = fopen(fullname, "rb");/* try to open the file              */
-    if ( image == NULL )
-    {
-        logic_error("unable to open image file");
+        // The file may purposefully have no extension.
+        if (!SysFileSystem::primitiveSearchName(BASEIMAGE, getenv("PATH"), NULL, fullname))
+        {
+    #ifdef ORX_CATDIR
+             strcpy(fullname, ORX_CATDIR"/rexx.img");
+    #else
+             logic_error("no startup image");   /* open failure                      */
+    #endif
+        }
+        image = fopen(fullname, "rb");/* try to open the file              */
+        if ( image == NULL )
+        {
+            logic_error("unable to open image file");
+        }
     }
 
     /* Read in the size of the image     */

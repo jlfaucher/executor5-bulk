@@ -50,6 +50,9 @@
 // The currently active activity.
 RexxActivity *ActivityManager::currentActivity = OREF_NULL;
 
+// this is a volatile variable used to ensure instruction ordering
+volatile bool ActivityManager::sentinel = false;
+
 // available activities we can reuse
 RexxList *ActivityManager::availableActivities = OREF_NULL;
 
@@ -104,20 +107,21 @@ void ActivityManager::init()
 {
     availableActivities = new_list();
     allActivities = new_list();
-    activations = new (ACTIVATION_CACHE_SIZE) RexxStack(ACTIVATION_CACHE_SIZE);
+    activations = new (ACTIVATION_CACHE_SIZE, false) RexxStack(ACTIVATION_CACHE_SIZE);
 
     // now initialize both activation caches with empty references.  This generally
     // keeps the cached items from fragmenting the object heap because they are
     // longer lived.
-    for (size_t i = 0; i < ACTIVATION_CACHE_SIZE; i++)
+    size_t i;
+    for (i = 0; i < ACTIVATION_CACHE_SIZE; i++)
     {
         // push a dummy activation on the stack
         activations->push((RexxObject *)new RexxActivation());
     }
     activationCacheSize = ACTIVATION_CACHE_SIZE;
 
-    nativeActivations = new (NATIVE_ACTIVATION_CACHE_SIZE) RexxStack(NATIVE_ACTIVATION_CACHE_SIZE);
-    for (size_t i = 0; i < NATIVE_ACTIVATION_CACHE_SIZE; i++)
+    nativeActivations = new (NATIVE_ACTIVATION_CACHE_SIZE, false) RexxStack(NATIVE_ACTIVATION_CACHE_SIZE);
+    for (i = 0; i < NATIVE_ACTIVATION_CACHE_SIZE; i++)
     {
         // push a dummy activation on the stack
         nativeActivations->push((RexxObject *)new RexxNativeActivation());
@@ -194,6 +198,8 @@ void ActivityManager::addWaitingActivity(
         firstWaitingActivity = waitingAct;
         /* and the tail                      */
         lastWaitingActivity = waitingAct;
+        // this will ensure these are set before the lock is released
+        sentinel = false;
         lock.release();                  // release the lock now
     }
     else
@@ -202,6 +208,7 @@ void ActivityManager::addWaitingActivity(
         lastWaitingActivity->setNextWaitingActivity(waitingAct);
         /* this is the new last one          */
         lastWaitingActivity = waitingAct;
+        sentinel = false;                  // another synchronization point
         waitingAct->clearWait();           /* clear the run semaphore           */
         lock.release();                    // release the lock now
         if (release)                       /* current semaphore owner?          */
@@ -222,6 +229,8 @@ void ActivityManager::addWaitingActivity(
                                          /* this.  This leads to memory       */
                                          /* corruption and unpredictable traps*/
                                          /* dechain the activity              */
+
+    sentinel = false;                    // another memory barrier
 
     /* firstWaitingActivity will be released, so set first to next of first
        The original outcommented code was setting the first to the next of the
@@ -248,7 +257,11 @@ void ActivityManager::addWaitingActivity(
     {
         firstWaitingActivity->postRelease();
     }
+    // the setting of the sentinel variables acts as a memory barrier to
+    // ensure that the assignment of currentActivitiy occurs precisely at this point.
+    sentinel = false;
     currentActivity = waitingAct;        /* set new current activity          */
+    sentinel = true;
     /* and new active settings           */
     Numerics::setCurrentSettings(waitingAct->getNumericSettings());
 }
@@ -745,7 +758,10 @@ void ActivityManager::unlockKernel()
 /* Function:  Release the kernel access                                       */
 /******************************************************************************/
 {
+    // the use of the sentinel variables will ensure that the assignment of
+    // current activity occurs BEFORE the kernel semaphore is released.
     currentActivity = OREF_NULL;         /* no current activation             */
+    sentinel = true;
     kernelSemaphore.release();           /* release the kernel semaphore      */
 }
 
@@ -900,6 +916,9 @@ RexxActivity *ActivityManager::getRootActivity()
 
     // now we need to have this activity become the kernel owner.
     activityObject->requestAccess();
+    // this will help ensure that the code after the request access call
+    // is only executed after access acquired.
+    sentinel = true;
 
     activityObject->activate();        // let the activity know it's in use, potentially nested
     // belt-and-braces.  Make sure the current activity is explicitly set to
@@ -943,6 +962,9 @@ RexxActivity *ActivityManager::attachThread()
 
     // now we need to have this activity become the kernel owner.
     activityObject->requestAccess();
+    // this will help ensure that the code after the request access call
+    // is only executed after access acquired.
+    sentinel = true;
     // belt-and-braces.  Make sure the current activity is explicitly set to
     // this activity before leaving.
     currentActivity = activityObject;

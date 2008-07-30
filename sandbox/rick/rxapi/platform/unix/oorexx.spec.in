@@ -149,10 +149,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_prefix}/include/rexxapitypes.h
 %{_prefix}/include/rexxplatformapis.h
 %{_prefix}/include/rexxplatformdefs.h
+%{_prefix}/include/oorexxapi.h
+%{_prefix}/include/oorexxerrors.h
 %{_prefix}/share/man/man1/rexx.1
 %{_prefix}/share/man/man1/rexxc.1
 %{_prefix}/share/man/man1/rxsubcom.1
 %{_prefix}/share/man/man1/rxqueue.1
+%{_prefix}/share/man/man1/rxdelipc.1
 %{_prefix}/share/ooRexx/rexx.sh
 %{_prefix}/share/ooRexx/rexx.csh
 %{_prefix}/share/ooRexx/*.rex
@@ -212,10 +215,13 @@ if [ -d /opt/ooRexx ]; then
    ln -sf %{_prefix}/include/rexxapitypes.h               /usr/include/rexxapitypes.h
    ln -sf %{_prefix}/include/rexxplatformapis.h           /usr/include/rexxplatformapis.h
    ln -sf %{_prefix}/include/rexxplatformdefs.h           /usr/include/rexxplatformdefs.h
+   ln -sf %{_prefix}/include/oorexxapi.h                  /usr/include/oorexxapi.h
+   ln -sf %{_prefix}/include/oorexxerrors.h               /usr/include/oorexxerrors.h
    ln -sf %{_prefix}/share/man/man1/rexx.1                /usr/share/man/man1/rexx.1
    ln -sf %{_prefix}/share/man/man1/rexxc.1               /usr/share/man/man1/rexxc.1
    ln -sf %{_prefix}/share/man/man1/rxsubcom.1            /usr/share/man/man1/rxsubcom.1
    ln -sf %{_prefix}/share/man/man1/rxqueue.1             /usr/share/man/man1/rxqueue.1
+   ln -sf %{_prefix}/share/man/man1/rxdelipc.1             /usr/share/man/man1/rxdelipc.1
    ln -sf %{_prefix}/share/ooRexx/rexxtry.rex             /usr/bin/rexxtry.rex
 # allow backwards compatibility to Object REXX 2.x
    ln -sf %{_prefix}/lib/ooRexx/librexxapi.so.%{orx_libversion}  /usr/lib/librexxapi.so.2
@@ -235,32 +241,35 @@ rm -f /usr/bin/rxregexp.cls
 rm -f /usr/bin/rxftp.cls
 rm -f /usr/bin/oorexx-config
 rm -f /usr/lib/librexx.so
-rm -f /usr/lib/librexx.%{orx_libversion)
+rm -f /usr/lib/librexx.%{orx_libversion}
 rm -f /usr/lib/librexx.%{orx_current}
 rm -f /usr/lib/librexxapi.so
-rm -f /usr/lib/librexxapi.%{orx_libversion)
+rm -f /usr/lib/librexxapi.%{orx_libversion}
 rm -f /usr/lib/librexxapi.%{orx_current}
 rm -f /usr/lib/librxsock.so
-rm -f /usr/lib/librxsock.%{orx_libversion)
+rm -f /usr/lib/librxsock.%{orx_libversion}
 rm -f /usr/lib/librxsock.%{orx_current}
 rm -f /usr/lib/librxmath.so
-rm -f /usr/lib/librxmath.%{orx_libversion)
+rm -f /usr/lib/librxmath.%{orx_libversion}
 rm -f /usr/lib/librxmath.%{orx_current}
 rm -f /usr/lib/librxregexp.so
-rm -f /usr/lib/librxregexp.%{orx_libversion)
+rm -f /usr/lib/librxregexp.%{orx_libversion}
 rm -f /usr/lib/librxregexp.%{orx_current}
 rm -f /usr/lib/librexxutil.so
-rm -f /usr/lib/librexxutil.%{orx_libversion)
+rm -f /usr/lib/librexxutil.%{orx_libversion}
 rm -f /usr/lib/librexxutil.%{orx_current}
 rm -f /usr/share/man/man1/rexx.1
 rm -f /usr/share/man/man1/rexxc.1
 rm -f /usr/share/man/man1/rxsubcom.1
 rm -f /usr/share/man/man1/rxqueue.1
+rm -f /usr/share/man/man1/rxdelipc.1
 rm -f /usr/include/rexx.h
 rm -f /usr/include/rexxapidefs.h
 rm -f /usr/include/rexxapitypes.h
 rm -f /usr/include/rexxplatformapis.h
 rm -f /usr/include/rexxplatformdefs.h
+rm -f /usr/include/oorexxapi.h
+rm -f /usr/include/oorexxerrors.h
 rm -f /usr/bin/rexxtry.rex
 rm -rf /usr/share/ooRexx
 

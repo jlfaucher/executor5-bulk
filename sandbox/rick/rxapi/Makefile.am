@@ -209,6 +209,7 @@ platformHeaders = $(build_kernel_platform_dir)/APIDefinitions.h \
                   $(build_kernel_platform_dir)/SysInterpreterInstance.hpp \
                   $(build_kernel_platform_dir)/SysLibrary.hpp \
                   $(build_kernel_platform_dir)/SysNativeFunctions.h \
+                  $(build_kernel_platform_dir)/SysNativeMethods.h \
                   $(build_kernel_platform_dir)/SystemCommands.h \
                   $(build_kernel_platform_dir)/SystemInterpreter.hpp \
                   $(build_kernel_platform_dir)/SystemSemaphores.h \
@@ -355,7 +356,8 @@ include_HEADERS = $(build_api_dir)/rexx.h \
 man_MANS = $(build_utils_platform_dir)/rexx.1 \
            $(build_utils_platform_dir)/rexxc.1 \
            $(build_utils_platform_dir)/rxsubcom.1 \
-           $(build_utils_platform_dir)/rxqueue.1
+           $(build_utils_platform_dir)/rxqueue.1 \
+           $(build_utils_platform_dir)/rxdelipc.1
 
 #################### librexx.so ##########################
 # Sources for librexxapi.so
@@ -980,7 +982,7 @@ deb:
 	fakeroot dh_installdirs
 	fakeroot make install DESTDIR=`pwd`/debian/oorexx
 # Do the packaging steps
-	fakeroot dh_installchangelogs CHANGES
+	fakeroot dh_installchangelogs
 	fakeroot dh_installdocs
 	fakeroot dh_installexamples
 	fakeroot dh_installman

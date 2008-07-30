@@ -385,7 +385,7 @@ bool SysFileSystem::hasExtension(const char *name)
     while (name < endPtr)
     {
         // find the first directory element?
-        if (*endPtr == '\\')
+        if (*endPtr == '/')
         {
             return false;        // found a directory portion before an extension...we're extensionless
         }
@@ -402,12 +402,12 @@ bool SysFileSystem::hasExtension(const char *name)
 
 
 /**
- * Test if a filename has a directory portion 
+ * Test if a filename has a directory portion
  *
  * @param name   The name to check.
  *
- * @return true if a directory was found on the file, false if 
- *         there is no directory. 
+ * @return true if a directory was found on the file, false if
+ *         there is no directory.
  */
 bool SysFileSystem::hasDirectory(const char *name)
 {
@@ -418,13 +418,13 @@ bool SysFileSystem::hasDirectory(const char *name)
     while (name < endPtr)
     {
         // find the first directory element?
-        if (*endPtr == '\\')
+        if (*endPtr == '/')
         {
             return true;         // found a directory delimiter
         }
         endPtr--;
     }
-    return false;          // no directory  
+    return false;          // no directory
 }
 
 
@@ -443,6 +443,24 @@ bool SysFileSystem::hasDirectory(const char *name)
 bool SysFileSystem::searchName(const char *name, const char *path, const char *extension, char *resolvedName)
 {
     UnsafeBlock releaser;
+    return primitiveSearchName(name, path, extension, resolvedName);
+}
+
+
+/**
+ * Do a search for a single variation of a filename.
+ *
+ * @param name      The name to search for.
+ * @param directory A specific directory to look in first (can be NULL).
+ * @param extension A potential extension to add to the file name (can be NULL).
+ * @param resolvedName
+ *                  The buffer used to return the resolved file name.
+ *
+ * @return true if the file was located.  A true returns indicates the
+ *         resolved file name has been placed in the provided buffer.
+ */
+bool SysFileSystem::primitiveSearchName(const char *name, const char *path, const char *extension, char *resolvedName)
+{
     // this is for building a temporary name
     char       tempName[PATH_MAX + 3];
 
@@ -509,9 +527,14 @@ bool SysFileSystem::checkCurrentFile(const char *name, char *resolvedName)
     struct stat dummy;                   /* structure for stat system calls   */
 
     // ok, if this exists, life is good.  Return it.
-    if (stat(resolvedName, &dummy))             /* look for file              */
+    if (stat(resolvedName, &dummy) == 0)             /* look for file              */
     {
-        return true;
+        // this needs to be a regular file 
+        if (S_ISREG(dummy.st_mode))
+        {
+            return true;
+        }
+        return false;
     }
     // not found
     return false;
@@ -534,8 +557,8 @@ bool SysFileSystem::searchPath(const char *name, const char *path, char *resolve
     // get an end pointer
     const char *pathEnd = path + strlen(path);
 
-    const char *p = path; 
-    const char *q = strchr(p, ':'); 
+    const char *p = path;
+    const char *q = strchr(p, ':');
     /* For every dir in searchpath*/
     for (; p < pathEnd; p = q + 1, q = strchr(p, ':'))
     {
@@ -556,10 +579,15 @@ bool SysFileSystem::searchPath(const char *name, const char *path, char *resolve
         // a failure here means an invalid name of some sort
         if (canonicalizeName(resolvedName))
         {
-            struct stat dummy; 
-            if (!stat(resolvedName, &dummy))     /* If file is found,          */
+            struct stat dummy;
+            if (stat(resolvedName, &dummy) == 0)     /* If file is found,          */
             {
-                return true;
+                // this needs to be a regular file 
+                if (S_ISREG(dummy.st_mode))
+                {
+                    return true;
+                }
+                return false;
             }
         }
     }
@@ -654,11 +682,17 @@ bool SysFileSystem::canonicalizeName(char *name)
         strncat(name, tempName, PATH_MAX + 1);
     }
 
-    char *tempName = canonicalize_file_name(name);
-    if (tempName == NULL)
+    // NOTE:  realpath() is more portable than canonicalize_file_name().  The biggest difference between them
+    // is support for really long file names (longer than PATH_MAX).  Since everything we've done up to this point 
+    // has assumed that PATH_MAX is the limit, it probably doesn't make much sense to start worrying about this 
+    // at the very last stage of the process. 
+    char tempName[PATH_MAX + 2];
+    char *temp = realpath(name, tempName);
+    if (temp == NULL)
     {
         return false;
     }
+    strcpy(tempName, name); 
     return true;
 }
 

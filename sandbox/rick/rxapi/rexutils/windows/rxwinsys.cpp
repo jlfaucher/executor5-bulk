@@ -136,15 +136,20 @@ LONG HandleArgError(PRXSTRING r, BOOL ToMuch)
    ((value[0] == '0') && (toupper(value[1]) == 'X'))
 
 
+/* Note many existing programs abbreviate HKEY_LOCAL_MACHINE to "LOCAL_MACHINE",
+ * or "MACHINE", and many do not.  Many existing programs use the full
+ * HKEY_LOCAL_MACHINE.  So the comparison needs to remain strstr.
+ *
+ */
 #define GET_HKEY(argum, ghk) { \
      ghk = NULL; \
-     if (strcmp(argum,"MACHINE") == 0) ghk = HKEY_LOCAL_MACHINE; else \
-     if (strcmp(argum,"CLASSES") == 0) ghk = HKEY_CLASSES_ROOT; else \
-     if (strcmp(argum,"CURRENT_USER") == 0) ghk = HKEY_CURRENT_USER; else \
-     if (strcmp(argum,"USERS") == 0) ghk = HKEY_USERS; else \
-     if (strcmp(argum,"PERFORMANCE") == 0) ghk = HKEY_PERFORMANCE_DATA; else \
-     if (strcmp(argum,"CURRENT_CONFIG") == 0) ghk = HKEY_CURRENT_CONFIG; else \
-     if (strcmp(argum,"DYN_DATA") == 0) ghk = HKEY_DYN_DATA; else \
+     if (strstr(argum,"MACHINE")) ghk = HKEY_LOCAL_MACHINE; else \
+     if (strstr(argum,"CLASSES")) ghk = HKEY_CLASSES_ROOT; else \
+     if (strstr(argum,"CURRENT_USER")) ghk = HKEY_CURRENT_USER; else \
+     if (strstr(argum,"USERS")) ghk = HKEY_USERS; else \
+     if (strstr(argum,"PERFORMANCE")) ghk = HKEY_PERFORMANCE_DATA; else \
+     if (strstr(argum,"CURRENT_CONFIG")) ghk = HKEY_CURRENT_CONFIG; else \
+     if (strstr(argum,"DYN_DATA")) ghk = HKEY_DYN_DATA; else \
      string2pointer(argum, (void **)&ghk); \
 }
 
@@ -240,25 +245,14 @@ BOOL IsRunningNT()
 }
 
 
-void firstarg(CHAR tar[STR_BUFFER], CONSTRXSTRING src)
-{
-   register UINT i;
-   for (i=0; ((i<src.strlength) && (i<STR_BUFFER-1));i++) tar[i] = toupper(src.strptr[i]);
-   tar[i] = '\0';
-}
-
-
 size_t RexxEntry WSRegistryKey(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, PRXSTRING retstr)
 {
-    char farg[STR_BUFFER];
     HKEY hk;
     LONG rc;
 
     CHECKARG(2,5);
 
-    firstarg(farg, argv[0]);
-
-    if (strcmp(farg,"CREATE"))
+    if ( strcmp(argv[0].strptr, "CREATE") == 0 )
     {
         HKEY hkResult;
 
@@ -272,7 +266,7 @@ size_t RexxEntry WSRegistryKey(const char *funcname, size_t argc, CONSTRXSTRING 
             RETC(0);
         }
     }
-    else if (strcmp(farg,"OPEN"))
+    else if ( strcmp(argv[0].strptr, "OPEN") == 0 )
     {
         HKEY hkResult;
         DWORD access=0;
@@ -307,7 +301,7 @@ size_t RexxEntry WSRegistryKey(const char *funcname, size_t argc, CONSTRXSTRING 
             RETC(0);
         }
     }
-    else if (strcmp(farg,"CLOSE"))
+    else if ( strcmp(argv[0].strptr, "CLOSE") == 0 )
     {
         GET_HANDLE(argv[1].strptr, hk);
         if (RegCloseKey(hk) == ERROR_SUCCESS)
@@ -319,7 +313,7 @@ size_t RexxEntry WSRegistryKey(const char *funcname, size_t argc, CONSTRXSTRING 
             RETC(1);
         }
     }
-    else if (strcmp(farg,"DELETE"))
+    else if ( strcmp(argv[0].strptr, "DELETE") == 0 )
     {
         GET_HKEY(argv[1].strptr, hk);
 
@@ -332,7 +326,7 @@ size_t RexxEntry WSRegistryKey(const char *funcname, size_t argc, CONSTRXSTRING 
             RETVAL(rc);
         }
     }
-    else if (strcmp(farg,"QUERY"))
+    else if ( strcmp(argv[0].strptr, "QUERY") == 0 )
     {
         char Class[256];
         DWORD retcode, cbClass, cSubKeys, cbMaxSubKeyLen,
@@ -378,7 +372,7 @@ size_t RexxEntry WSRegistryKey(const char *funcname, size_t argc, CONSTRXSTRING 
             RETC(0);
         }
     }
-    else if (strcmp(farg,"LIST"))
+    else if ( strcmp(argv[0].strptr, "LIST") == 0 )
     {
         DWORD retcode, ndx=0;
         char Name[256];
@@ -410,7 +404,7 @@ size_t RexxEntry WSRegistryKey(const char *funcname, size_t argc, CONSTRXSTRING 
         } while (retcode == ERROR_SUCCESS);
         RETC(0);
     }
-    else if (strcmp(farg,"FLUSH"))
+    else if ( strcmp(argv[0].strptr, "FLUSH") == 0 )
     {
         GET_HKEY(argv[1].strptr, hk);
 
@@ -432,15 +426,12 @@ size_t RexxEntry WSRegistryKey(const char *funcname, size_t argc, CONSTRXSTRING 
 
 size_t RexxEntry WSRegistryValue(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, PRXSTRING retstr)
 {
-    char farg[STR_BUFFER];
     HKEY hk;
     LONG rc;
 
     CHECKARG(2,5);
 
-    firstarg(farg, argv[0]);
-
-    if (strcmp(farg,"SET"))
+    if ( strcmp(argv[0].strptr, "SET") == 0 )
     {
         DWORD valType;
         DWORD dwNumber;
@@ -515,7 +506,7 @@ size_t RexxEntry WSRegistryValue(const char *funcname, size_t argc, CONSTRXSTRIN
         }
 
     }
-    else if (strcmp(farg,"QUERY"))
+    else if ( strcmp(argv[0].strptr, "QUERY") == 0 )
     {
         DWORD valType, cbData;
         char * valData, *vType;
@@ -660,7 +651,7 @@ size_t RexxEntry WSRegistryValue(const char *funcname, size_t argc, CONSTRXSTRIN
             RETC(0);
         }
     }
-    else if (strcmp(farg,"LIST"))
+    else if ( strcmp(argv[0].strptr, "LIST") == 0 )
     {
         DWORD retcode, ndx=0, valType, cbValue, cbData, initData = 1024;
         char * valData, Name[256];
@@ -818,7 +809,7 @@ size_t RexxEntry WSRegistryValue(const char *funcname, size_t argc, CONSTRXSTRIN
         GlobalFree(valData);
         RETC(0);
     }
-    else if (strcmp(farg,"DELETE"))
+    else if ( strcmp(argv[0].strptr, "DELETE") == 0 )
     {
         GET_HKEY(argv[1].strptr, hk);
 
@@ -840,7 +831,6 @@ size_t RexxEntry WSRegistryValue(const char *funcname, size_t argc, CONSTRXSTRIN
 
 size_t RexxEntry WSRegistryFile(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, PRXSTRING retstr)
 {
-    char farg[STR_BUFFER];
     DWORD retc, rc;
     HKEY hk;
     HANDLE hToken;              /* handle to process token */
@@ -848,9 +838,7 @@ size_t RexxEntry WSRegistryFile(const char *funcname, size_t argc, CONSTRXSTRING
 
     CHECKARG(2,5);
 
-    firstarg(farg, argv[0]);
-
-    if (strcmp(farg,"CONNECT"))
+    if ( strcmp(argv[0].strptr, "CONNECT") == 0 )
     {
         HKEY hkResult;
         GET_HKEY(argv[1].strptr, hk);
@@ -864,7 +852,7 @@ size_t RexxEntry WSRegistryFile(const char *funcname, size_t argc, CONSTRXSTRING
             RETC(0);
         }
     }
-    else if (strcmp(farg,"SAVE"))
+    else if ( strcmp(argv[0].strptr, "SAVE") == 0 )
     {
         /* set SE_BACKUP_NAME privilege.  */
 
@@ -898,7 +886,8 @@ size_t RexxEntry WSRegistryFile(const char *funcname, size_t argc, CONSTRXSTRING
             RETVAL(retc);
         }
     }
-    else if (strcmp(farg,"LOAD") || strcmp(farg,"RESTORE") || strcmp(farg,"REPLACE") || strcmp(farg,"UNLOAD"))
+    else if ( strcmp(argv[0].strptr, "LOAD") == 0 || strcmp(argv[0].strptr, "RESTORE") == 0 ||
+              strcmp(argv[0].strptr, "REPLACE") == 0 || strcmp(argv[0].strptr, "UNLOAD") == 0 )
     {
         /* set SE_RESTORE_NAME privilege.  */
 
@@ -921,7 +910,7 @@ size_t RexxEntry WSRegistryFile(const char *funcname, size_t argc, CONSTRXSTRING
             RETVAL(rc);
         }
 
-        if (strcmp(farg,"UNLOAD"))
+        if ( strcmp(argv[0].strptr, "UNLOAD") == 0 )
         {
             GET_HKEY(argv[1].strptr, hk);
             if ((retc = RegUnLoadKey(hk, argv[2].strptr)) == ERROR_SUCCESS)
@@ -933,7 +922,7 @@ size_t RexxEntry WSRegistryFile(const char *funcname, size_t argc, CONSTRXSTRING
                 RETVAL(retc);
             }
         }
-        else if (strcmp(farg,"LOAD"))
+        else if ( strcmp(argv[0].strptr, "LOAD") == 0 )
         {
             GET_HKEY(argv[1].strptr, hk);
             if ((retc = RegLoadKey(hk, argv[2].strptr, argv[3].strptr)) == ERROR_SUCCESS)
@@ -945,7 +934,7 @@ size_t RexxEntry WSRegistryFile(const char *funcname, size_t argc, CONSTRXSTRING
                 RETVAL(retc);
             }
         }
-        else if (strcmp(farg,"RESTORE"))
+        else if ( strcmp(argv[0].strptr, "RESTORE") == 0 )
         {
             DWORD vola;
 
@@ -962,7 +951,7 @@ size_t RexxEntry WSRegistryFile(const char *funcname, size_t argc, CONSTRXSTRING
                 RETVAL(retc);
             }
         }
-        else if (strcmp(farg,"REPLACE"))
+        else if ( strcmp(argv[0].strptr, "REPLACE") == 0 )
         {
             const char * p;
             GET_HKEY(argv[1].strptr, hk);
@@ -1525,27 +1514,24 @@ INT DelPMDesktopIcon( const char *lpszName, const char *lpszLocation)
 
 size_t RexxEntry WSProgManager(const char *funcname, size_t argc, CONSTRXSTRING argv[], const char *qname, PRXSTRING retstr)
 {
-    char farg[STR_BUFFER];
     CHECKARG(2,11);
 
-    firstarg(farg, argv[0]);
-
-    if (strcmp(farg,"ADDGROUP"))
+    if (strcmp( argv[0].strptr, "ADDGROUP") == 0 )
     {
         RETC(!AddPMGroup(argv[1].strptr, argv[2].strptr));
     }
-    else if (strcmp(farg,"DELGROUP"))
+    else if ( strcmp(argv[0].strptr, "DELGROUP") == 0 )
     {
         RETC(!DeletePMGroup(argv[1].strptr));
     }
-    else if (strcmp(farg,"SHOWGROUP"))
+    else if ( strcmp(argv[0].strptr, "SHOWGROUP") == 0 )
     {
         INT stype;
-        if (strcmp(argv[2].strptr,"MAX"))
+        if ( strcmp(argv[2].strptr, "MAX") == 0 )
         {
             stype = 3;
         }
-        else if (strcmp(argv[2].strptr,"MIN"))
+        else if ( strcmp(argv[2].strptr, "MIN") == 0 )
         {
             stype = 2;
         }
@@ -1556,7 +1542,7 @@ size_t RexxEntry WSProgManager(const char *funcname, size_t argc, CONSTRXSTRING 
 
         RETC(!ShowPMGroup(argv[1].strptr, (WORD)stype));
     }
-    else if (strcmp(farg,"ADDITEM"))
+    else if ( strcmp(argv[0].strptr, "ADDITEM") == 0 )
     {
         if (argc > 7)
         {
@@ -1571,13 +1557,13 @@ size_t RexxEntry WSProgManager(const char *funcname, size_t argc, CONSTRXSTRING 
         }
 
     }
-    else if (strcmp(farg,"DELITEM"))
+    else if ( strcmp(argv[0].strptr, "DELITEM") == 0 )
     {
         RETC(!DeletePMItem(argv[1].strptr));
     }
-    else if (strcmp(farg,"LEAVE"))
+    else if (strcmp(argv[0].strptr, "LEAVE"))
     {
-        if (!strcmp(argv[1].strptr,"SAVE"))
+        if ( strcmp(argv[1].strptr, "SAVE") == 0)
         {
             RETC(!LeavePM(TRUE));
         }
@@ -1586,13 +1572,13 @@ size_t RexxEntry WSProgManager(const char *funcname, size_t argc, CONSTRXSTRING 
             RETC(!LeavePM(FALSE));
         }
     }
-    else if (strcmp(farg,"ADDDESKTOPICON"))
+    else if ( strcmp(argv[0].strptr, "ADDDESKTOPICON") == 0 )
     {
         RETC(!AddPMDesktopIcon( argv[1].strptr, argv[2].strptr, argv[3].strptr, atoi(argv[4].strptr),
                                 argv[5].strptr, argv[6].strptr, argv[7].strptr, atoi(argv[8].strptr),
                                 atoi(argv[9].strptr), argv[10].strptr ));
     }
-    else if (strcmp(farg,"DELDESKTOPICON"))
+    else if ( strcmp(argv[0].strptr, "DELDESKTOPICON") == 0 )
     {
         CHECKARG(3,3);
         RETVAL(DelPMDesktopIcon( argv[1].strptr, argv[2].strptr));
@@ -2916,7 +2902,7 @@ size_t RexxEntry WSCtrlSend(const char *funcname, size_t argc, CONSTRXSTRING arg
 
     CHECKARG(1,10);
 
-    if (!strcmp(argv[0].strptr,"KEY"))
+    if ( strcmp(argv[0].strptr, "KEY") == 0 )
     {
         CHECKARG(4,5);
         GET_HANDLE(argv[1].strptr, hW);
@@ -3010,7 +2996,7 @@ size_t RexxEntry WSCtrlSend(const char *funcname, size_t argc, CONSTRXSTRING arg
             return 0;
         }
     }
-    else if (!strcmp(argv[0].strptr,"MSG"))
+    else if ( strcmp(argv[0].strptr, "MSG") == 0 )
     {
         WPARAM n[4];
         INT i;
@@ -3047,7 +3033,7 @@ size_t RexxEntry WSCtrlSend(const char *funcname, size_t argc, CONSTRXSTRING arg
             RETVAL(GetLastError())
         }
     }
-    else if ( ! strcmp(argv[0].strptr,"TO") )  /* Send message Time Out */
+    else if ( strcmp(argv[0].strptr,"TO") == 0 )  /* Send message Time Out */
     {
         DWORD dwResult;
         LRESULT lResult;
@@ -3079,25 +3065,29 @@ size_t RexxEntry WSCtrlSend(const char *funcname, size_t argc, CONSTRXSTRING arg
 
         lResult = SendMessageTimeout(hW, n[1], (WPARAM)n[2], (LPARAM)n[3],
                                      MSG_TIMEOUT_OPTS, n[4], &dwResult);
-        if ( ! lResult )
+        if ( lResult == 0 )
         {
+            /* Some error occurred, if last error is 0 it is a time out,
+             * otherwise some other system error. Use i for the error return
+             * code.
+             */
             DWORD err = GetLastError();
             if ( err == 0 )
             {
-                lResult = -1;          /* This is a timeout. */
+                i = -1;
             }
             else
             {
-                lResult = -(INT)err;   /* Some other system error. */
+                i = -(INT)err;
             }
-            RETVAL(lResult);
+            RETVAL(i);
         }
         else
         {
             RETVAL(dwResult);
         }
     }
-    else if (!strcmp(argv[0].strptr,"MAP"))
+    else if ( strcmp(argv[0].strptr, "MAP") == 0 )
     {
         CHECKARG(2,2);
         RETVAL(MapVirtualKey((UINT)atoi(argv[1].strptr), 2));
@@ -3315,6 +3305,7 @@ RexxRoutineEntry rxwinsys_functions[] =
 RexxPackageEntry rxwinsys_package_entry =
 {
     STANDARD_PACKAGE_HEADER
+    REXX_INTERPRETER_4_0_0,              // anything after 4.0.0 will work
     "RXWINSYS",                          // name of the package
     "4.0",                               // package information
     NULL,                                // no load/unload functions

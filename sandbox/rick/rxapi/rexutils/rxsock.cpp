@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2008 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -43,6 +43,9 @@
 /*------------------------------------------------------------------
  * program defines
  *------------------------------------------------------------------*/
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 #if defined(OPSYS_AIX) || defined(OPSYS_LINUX)
 #define PROG_NAME "rxsock"
 #else
@@ -852,6 +855,7 @@ size_t RexxEntry SockDie(const char *name, size_t argc, PCONSTRXSTRING argv, con
 // now build the actual entry list
 RexxRoutineEntry rxsock_functions[] =
 {
+    REXX_CLASSIC_ROUTINE( SockLoadFuncs,      SockLoadFuncs),
     REXX_CLASSIC_ROUTINE( SockDropFuncs,      SockDropFuncs),
     REXX_CLASSIC_ROUTINE( SockAccept,         SockAccept),
     REXX_CLASSIC_ROUTINE( SockBind,           SockBind),
@@ -884,6 +888,7 @@ RexxRoutineEntry rxsock_functions[] =
 RexxPackageEntry rxsock_package_entry =
 {
     STANDARD_PACKAGE_HEADER
+    REXX_INTERPRETER_4_0_0,              // anything after 4.0.0 will work
     "RXSOCK",                            // name of the package
     "4.0",                               // package information
     NULL,                                // no load/unload functions

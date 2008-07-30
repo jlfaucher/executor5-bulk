@@ -1599,6 +1599,7 @@ int StreamInfo::arrayin(RexxArrayObject result)
             appendVariableLine(result);
         }
     }
+    return 0;
 }
 
 
@@ -2272,6 +2273,12 @@ const char *StreamInfo::streamOpen(const char *options)
             /* go raise a notready condition     */
             notreadyError(fileInfo.errorInfo(), context->NewStringFromAsciiz(work));
         }
+    }
+
+    // turn off buffering if requested.
+    if (nobuffer)
+    {
+        fileInfo.setBuffering(false, 0);
     }
 
 /********************************************************************************************/

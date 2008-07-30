@@ -36,6 +36,10 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
+#define NTDDI_VERSION   NTDDI_WINXPSP2
+#define _WIN32_WINNT    0x0501
+#define WINVER          0x0501
+
 #include <windows.h>
 #include <rexx.h>
 #include <stdio.h>
@@ -53,8 +57,7 @@ extern BOOL DataAutodetection(DIALOGADMIN * aDlg);
 extern INT DelDialog(DIALOGADMIN * aDlg);
 extern CRITICAL_SECTION crit_sec;
 extern BOOL DialogInAdminTable(DIALOGADMIN * Dlg);
-extern BOOL GetDialogIcons(DIALOGADMIN *, INT, BOOL, PHANDLE, PHANDLE);
-extern BOOL InitForCommonControls(void);
+extern BOOL GetDialogIcons(DIALOGADMIN *, INT, UINT, PHANDLE, PHANDLE);
 
 //#define USE_DS_CONTROL
 
@@ -83,15 +86,15 @@ public:
 ****************************************************************************************************/
 
 
-LPWORD lpwAlign ( LPWORD lpIn)
+LPWORD lpwAlign (LPWORD lpIn)
 {
   ULONG_PTR ul;
 
-  ul = (ULONG_PTR) lpIn;
+  ul = (ULONG_PTR)lpIn;
   ul +=3;
   ul >>=2;
   ul <<=2;
-  return (LPWORD) ul;
+  return (LPWORD)ul;
 }
 
 
@@ -225,66 +228,66 @@ size_t RexxEntry GetSysMetrics(const char *funcname, size_t argc, CONSTRXSTRING 
 void UCreateDlg(WORD ** ppTemplate, WORD **p, INT NrItems, INT x, INT y, INT cx, INT cy,
                 const char * dlgClass, const char * title, const char * fontname, INT fontsize, ULONG lStyle)
 {
-   int   nchar;
+    int   nchar;
 
-   *ppTemplate = *p = (PWORD) LocalAlloc(LPTR, (NrItems+3)*256);
+    *ppTemplate = *p = (PWORD) LocalAlloc(LPTR, (NrItems+3)*256);
 
-     /* start to fill in the dlgtemplate information.  addressing by WORDs */
-   **p = LOWORD (lStyle);
-   (*p)++;
-   **p = HIWORD (lStyle);
-   (*p)++;
-   **p = 0;          // LOWORD (lExtendedStyle)
-   (*p)++;
-   **p = 0;          // HIWORD (lExtendedStyle)
-   (*p)++;
-   **p = NrItems;          // NumberOfItems
-   (*p)++;
-   **p = x;         // x
-   (*p)++;
-   **p = y;         // y
-   (*p)++;
-   **p = cx;        // cx
-   (*p)++;
-   **p = cy;         // cy
-   (*p)++;
-   /* copy the menu of the dialog */
-
-   /* no menu */
-   **p = 0;
-   (*p)++;
-
-   /* copy the class of the dialog */
-   if ( !(lStyle & WS_CHILD) && (dlgClass))
-   {
-      nchar = nCopyAnsiToWideChar (*p, TEXT(dlgClass));
-      (*p) += nchar;
-   }
-   else
-   {
-     **p = 0;
+    /* start to fill in the dlgtemplate information.  addressing by WORDs */
+    **p = LOWORD (lStyle);
     (*p)++;
-   }
-   /* copy the title of the dialog */
-   if (title)
-   {
-      nchar = nCopyAnsiToWideChar (*p, TEXT(title));
-      (*p) += nchar;
-   }
-   else
-   {
-     **p = 0;
+    **p = HIWORD (lStyle);
     (*p)++;
-   }
+    **p = 0;          // LOWORD (lExtendedStyle)
+    (*p)++;
+    **p = 0;          // HIWORD (lExtendedStyle)
+    (*p)++;
+    **p = NrItems;    // NumberOfItems
+    (*p)++;
+    **p = x;          // x
+    (*p)++;
+    **p = y;          // y
+    (*p)++;
+    **p = cx;         // cx
+    (*p)++;
+    **p = cy;         // cy
+    (*p)++;
+    /* copy the menu of the dialog */
 
-   /* add in the wPointSize and szFontName here iff the DS_SETFONT bit on */
-   **p = fontsize;         // fontsize
-   (*p)++;
-   nchar = nCopyAnsiToWideChar (*p, TEXT(fontname));
-   (*p) += nchar;
+    /* no menu */
+    **p = 0;
+    (*p)++;
 
-   /* make sure the first item starts on a DWORD boundary */
-   (*p) = lpwAlign (*p);
+    /* copy the class of the dialog */
+    if ( !(lStyle & WS_CHILD) && (dlgClass) )
+    {
+        nchar = nCopyAnsiToWideChar (*p, TEXT(dlgClass));
+        (*p) += nchar;
+    }
+    else
+    {
+        **p = 0;
+        (*p)++;
+    }
+    /* copy the title of the dialog */
+    if ( title )
+    {
+        nchar = nCopyAnsiToWideChar (*p, TEXT(title));
+        (*p) += nchar;
+    }
+    else
+    {
+        **p = 0;
+        (*p)++;
+    }
+
+    /* add in the wPointSize and szFontName here iff the DS_SETFONT bit on */
+    **p = fontsize;   // fontsize
+    (*p)++;
+    nchar = nCopyAnsiToWideChar (*p, TEXT(fontname));
+    (*p) += nchar;
+
+    /* make sure the first item starts on a DWORD boundary */
+    (*p) = lpwAlign (*p);
 }
 
 
@@ -386,7 +389,11 @@ DWORD WINAPI WindowUsrLoopThread(LoopThreadArgs * args)
    return ret;
 }
 
-
+static inline size_t illegalBuffer(RXSTRING *retstr)
+{
+    MessageBox(0, "Illegal resource buffer", "Error", MB_OK | MB_ICONHAND | MB_SYSTEMMODAL);
+    RETC(0)
+}
 
 size_t RexxEntry UsrCreateDialog(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
@@ -401,36 +408,43 @@ size_t RexxEntry UsrCreateDialog(const char *funcname, size_t argc, CONSTRXSTRIN
    GET_ADM;
    if (!dlgAdm) RETERR;
 
-   if (argv[1].strptr[0] == 'C')   /* do we have a child dialog to be created? */
+   if (argv[1].strptr[0] == 'C')          /* Create a child dialog. */
    {
-       LONG l = 0;
-       /* set number of items to dialogtemplate */
-       p = (DLGTEMPLATE *) GET_POINTER(argv[3]);
+       /* Get the dialog template pointer and the number of dialog controls. */
+       p = (DLGTEMPLATE *)GET_POINTER(argv[3]);
+       if ( p == NULL )
+       {
+           return illegalBuffer(retstr);
+       }
        p->cdit = (WORD) atoi(argv[2].strptr);
+
+       /* Get the parent dialog's window handle. */
        hW = GET_HWND(argv[4]);
-       /* send a create message. This is out of history so the child dialog has been created in a faster thread */
-       hW = (HWND) SendMessage(hW, WM_USER_CREATECHILD, (WPARAM) l, (LPARAM) p);
 
-       dlgAdm->ChildDlg[atoi(argv[5].strptr)] = hW;
+       /* The child dialog needs to be created in the window procedure thread
+        * of the parent.
+        */
+       hW = (HWND)SendMessage(hW, WM_USER_CREATECHILD, 0, (LPARAM)p);
 
-       /* free the memory allocated for template */
-       if (p) LocalFree(p);
+       /* We are done with the dialog template. */
+       safeLocalFree(p);
 
-       RETHANDLE(hW);
+       /* The child dialog may not have been created. */
+       if ( hW != NULL )
+       {
+           dlgAdm->ChildDlg[atoi(argv[5].strptr)] = hW;
+           RETHANDLE(hW);
+       }
    }
-   else
+   else                                   /* Create a top level dialog. */
    {
        CHECKARGL(8);
 
-       if ( ! ComCtl32Version && ! InitForCommonControls() )
-           RETC(0)
-
        /* set number of items to dialogtemplate */
        p = (DLGTEMPLATE *)GET_POINTER(argv[4]);
-       if (!p)
+       if ( p == NULL )
        {
-           MessageBox(0,"Illegal resource buffer","Error",MB_OK | MB_ICONHAND | MB_SYSTEMMODAL);
-           RETC(0)
+           return illegalBuffer(retstr);
        }
 
        p->cdit = (WORD) atoi(argv[2].strptr);
@@ -461,8 +475,8 @@ size_t RexxEntry UsrCreateDialog(const char *funcname, size_t argc, CONSTRXSTRIN
        while ((!Release) && dlgAdm && (dlgAdm->TheThread)) {Sleep(1);};  /* wait for dialog start */
        LeaveCriticalSection(&crit_sec);
 
-       /* free the memory allocated for template */
-       if (p) LocalFree(p);
+       /* Free the memory allocated for template. */
+       safeLocalFree(p);
 
        if (dlgAdm)
        {
@@ -483,7 +497,7 @@ size_t RexxEntry UsrCreateDialog(const char *funcname, size_t argc, CONSTRXSTRIN
                  HICON hBig = NULL;
                  HICON hSmall = NULL;
 
-                 if ( GetDialogIcons(dlgAdm, atoi(argv[7].strptr), TRUE, (PHANDLE)&hBig, (PHANDLE)&hSmall) )
+                 if ( GetDialogIcons(dlgAdm, atoi(argv[7].strptr), ICON_FILE, (PHANDLE)&hBig, (PHANDLE)&hSmall) )
                  {
                     dlgAdm->SysMenuIcon = (HICON)SetClassLongPtr(dlgAdm->TheDlg, GCL_HICON, (LONG_PTR)hBig);
                     dlgAdm->TitleBarIcon = (HICON)SetClassLongPtr(dlgAdm->TheDlg, GCL_HICONSM, (LONG_PTR)hSmall);
@@ -650,8 +664,7 @@ size_t RexxEntry UsrAddControl(const char *funcname, size_t argc, CONSTRXSTRING 
        /*                       id         x           y         cx          cy  */
        UAddControl(&p, 0x0080, buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], argv[7].strptr, lStyle);
    }
-   else
-   if (!strcmp(argv[0].strptr,"EL"))
+   else if (!strcmp(argv[0].strptr,"EL"))
    {
        CHECKARG(8);
 
@@ -693,8 +706,7 @@ size_t RexxEntry UsrAddControl(const char *funcname, size_t argc, CONSTRXSTRING 
        /*                         id          x       y          cx           cy  */
        UAddControl(&p, 0x0081, buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], NULL, lStyle);
    }
-   else
-   if (!strcmp(argv[0].strptr,"TXT"))
+   else if (!strcmp(argv[0].strptr,"TXT"))
    {
        CHECKARGL(8);
 
@@ -726,8 +738,7 @@ size_t RexxEntry UsrAddControl(const char *funcname, size_t argc, CONSTRXSTRING 
        /*                      id      x         y         cx       cy  */
        UAddControl(&p, 0x0082, i, buffer[0], buffer[1], buffer[2], buffer[3], argv[7].strptr, lStyle);
    }
-   else
-   if (!strcmp(argv[0].strptr,"LB"))
+   else if (!strcmp(argv[0].strptr,"LB"))
    {
        CHECKARG(8);
 
@@ -759,8 +770,7 @@ size_t RexxEntry UsrAddControl(const char *funcname, size_t argc, CONSTRXSTRING 
        /*                         id       x          y            cx        cy  */
        UAddControl(&p, 0x0083, buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], NULL, lStyle);
    }
-   else
-   if (!strcmp(argv[0].strptr,"CB"))
+   else if (!strcmp(argv[0].strptr,"CB"))
    {
        CHECKARG(8);
 
@@ -789,11 +799,11 @@ size_t RexxEntry UsrAddControl(const char *funcname, size_t argc, CONSTRXSTRING 
        /*                         id       x          y            cx        cy  */
        UAddControl(&p, 0x0085, buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], NULL, lStyle);
    }
-   else
-   if (!strcmp(argv[0].strptr,"GB"))
+   else if (!strcmp(argv[0].strptr,"GB"))
    {
        CHECKARGL(8);
 
+       /* UsrAddControl("GB",self~AktPtr, x, y, cx, cy, opts, text, id) */
        for ( i = 0; i < 4; i++ )
        {
            buffer[i] = atoi(argv[i+2].strptr);
@@ -813,10 +823,9 @@ size_t RexxEntry UsrAddControl(const char *funcname, size_t argc, CONSTRXSTRING 
        if (strstr(argv[6].strptr,"TAB")) lStyle |= WS_TABSTOP;
 
        /*                      id      x         y        cx        cy  */
-       UAddControl(&p, 0x0080, i, buffer[0], buffer[1], buffer[2], buffer[3], argv[4].strptr, lStyle);
+       UAddControl(&p, 0x0080, i, buffer[0], buffer[1], buffer[2], buffer[3], argv[7].strptr, lStyle);
    }
-   else
-   if (!strcmp(argv[0].strptr,"FRM"))
+   else if (!strcmp(argv[0].strptr,"FRM"))
    {
        CHECKARGL(8);
 
@@ -838,7 +847,14 @@ size_t RexxEntry UsrAddControl(const char *funcname, size_t argc, CONSTRXSTRING 
        if (buffer[6] == 2) lStyle |= SS_BLACKRECT; else
        if (buffer[6] == 3) lStyle |= SS_WHITEFRAME; else
        if (buffer[6] == 4) lStyle |= SS_GRAYFRAME; else
-       lStyle |= SS_BLACKFRAME;
+       if (buffer[6] == 5) lStyle  |= SS_BLACKFRAME ; else
+       if (buffer[6] == 6) lStyle  |= SS_ETCHEDFRAME ; else
+       if (buffer[6] == 7) lStyle  |= SS_ETCHEDHORZ ; else
+       lStyle |= SS_ETCHEDVERT;
+
+       if (strstr(argv[7].strptr,"NOTIFY")) lStyle |= SS_NOTIFY;
+       if (strstr(argv[7].strptr,"SUNKEN")) lStyle |= SS_SUNKEN;
+
        if (!strstr(argv[7].strptr,"HIDDEN")) lStyle |= WS_VISIBLE;
        if (strstr(argv[7].strptr,"GROUP")) lStyle |= WS_GROUP;
        if (strstr(argv[7].strptr,"DISABLED")) lStyle |= WS_DISABLED;
@@ -848,8 +864,40 @@ size_t RexxEntry UsrAddControl(const char *funcname, size_t argc, CONSTRXSTRING 
        /*                     id    x           y          cx         cy  */
        UAddControl(&p, 0x0082, i, buffer[0], buffer[1], buffer[2], buffer[3], NULL, lStyle);
    }
-   else
-   if (!strcmp(argv[0].strptr,"SB"))
+   else if (!strcmp(argv[0].strptr,"IMG"))
+   {
+       CHECKARGL(8);
+
+       for ( i = 0; i < 5; i++ )
+       {
+           buffer[i] = atoi(argv[i+2].strptr);
+       }
+
+       p = (WORD *)GET_POINTER(argv[1]);
+
+       lStyle = WS_CHILD;
+       if (strstr(argv[7].strptr,"METAFILE")) lStyle |= SS_ENHMETAFILE; else
+       if (strstr(argv[7].strptr,"BITMAP")) lStyle |= SS_BITMAP; else
+       if (strstr(argv[7].strptr,"ICON")) lStyle |= SS_ICON;
+
+       if (strstr(argv[7].strptr,"NOTIFY")) lStyle |= SS_NOTIFY;
+       if (strstr(argv[7].strptr,"CENTERIMAGE")) lStyle |= SS_CENTERIMAGE;
+       if (strstr(argv[7].strptr,"RIGHTJUST")) lStyle |= SS_RIGHTJUST;
+       if (strstr(argv[7].strptr,"SUNKEN")) lStyle |= SS_SUNKEN;
+
+       if (strstr(argv[7].strptr,"SIZECONTROL")) lStyle |= SS_REALSIZECONTROL; else
+       if (strstr(argv[7].strptr,"SIZEIMAGE")) lStyle |= SS_REALSIZEIMAGE;
+
+       if (!strstr(argv[7].strptr,"HIDDEN")) lStyle |= WS_VISIBLE;
+       if (strstr(argv[7].strptr,"GROUP")) lStyle |= WS_GROUP;
+       if (strstr(argv[7].strptr,"DISABLED")) lStyle |= WS_DISABLED;
+       if (strstr(argv[7].strptr,"BORDER")) lStyle |= WS_BORDER;
+       if (strstr(argv[7].strptr,"TAB")) lStyle |= WS_TABSTOP;
+
+       /*                      id           x          y          cx         cy       text  */
+       UAddControl(&p, 0x0082, buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], "", lStyle);
+   }
+   else if (!strcmp(argv[0].strptr,"SB"))
    {
        CHECKARG(8);
 
@@ -1034,6 +1082,9 @@ size_t RexxEntry UsrAddNewCtrl(const char *funcname, size_t argc, CONSTRXSTRING 
        if (strstr(argv[7].strptr,"TAB")) lStyle |= WS_TABSTOP;
        if (strstr(argv[7].strptr,"VERTICAL")) lStyle |= PBS_VERTICAL;
        if (strstr(argv[7].strptr,"SMOOTH")) lStyle |= PBS_SMOOTH;
+
+       if (strstr(argv[7].strptr,"MARQUEE") && ComCtl32Version >= COMCTL32_6_0) lStyle |= PBS_MARQUEE;
+
         /*                                     id       x          y            cx        cy  */
        UAddNamedControl(&p, PROGRESS_CLASS, buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], NULL, lStyle);
        RETPTR(p)

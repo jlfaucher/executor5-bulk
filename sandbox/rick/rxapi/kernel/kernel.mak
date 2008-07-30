@@ -190,7 +190,7 @@ ORXFILES=$(OR_OUTDIR)\CoreClasses.orx  $(OR_OUTDIR)\StreamClasses.orx \
 	 $(OR_OUTDIR)\PlatformObjects.orx $(OR_OUTDIR)\orexxole.cls
 
 #define critical header files for forcing recomp
-ORXHEADERS=$(OR_APISRC)\oorexxerrors.h $(KMESSAGES)\RexxErrorCodes.h $(KMESSAGES)\RexxMessageNumbers.h $(KMESSAGES)\RexxMessageTable.h $(INTERPRETER_RUNTIME)\RexxCore.h \
+ORXHEADERS=$(OR_APISRC)\oorexxerrors.h $(INTERPRETER_MESSAGES)\RexxErrorCodes.h $(INTERPRETER_MESSAGES)\RexxMessageNumbers.h $(INTERPRETER_MESSAGES)\RexxMessageTable.h $(INTERPRETER_RUNTIME)\RexxCore.h \
     $(INTERPRETER_RUNTIME)\PrimitiveBehaviourNames.h $(INTERPRETER_RUNTIME)\ClassTypeCodes.h
 
 
@@ -267,65 +267,70 @@ $(OR_OUTDIR)\rxcmd16.dll : $(OR_INTERPRETER_SRC)\$(@B).dll
 
 # Update the Windows Message Table resource if necessary
 
-$(INT_PLATFORM)\winmsgtb.rc: $(INT_PLATFORM)\WinMessageResource.xsl $(KMESSAGES)\rexxmsg.xml
+$(INT_PLATFORM)\winmsgtb.rc: $(INT_PLATFORM)\WinMessageResource.xsl $(INTERPRETER_MESSAGES)\rexxmsg.xml
     @ECHO .
     @ECHO Generating $(@)
-    xalan -o $(@) $(KMESSAGES)\rexxmsg.xml $(INT_PLATFORM)\WinMessageResource.xsl
+    xalan -o $(@) $(INTERPRETER_MESSAGES)\rexxmsg.xml $(INT_PLATFORM)\WinMessageResource.xsl
 
-$(KMESSAGES)\RexxErrorCodes.h: $(KMESSAGES)\RexxErrorCodes.xsl $(KMESSAGES)\rexxmsg.xml
-    @ECHO .
+$(INTERPRETER_MESSAGES)\RexxErrorCodes.h: $(INTERPRETER_MESSAGES)\RexxErrorCodes.xsl $(INTERPRETER_MESSAGES)\rexxmsg.xml
+    @ECHO.
     @ECHO Generating $(@)
-    xalan -o $(@) $(KMESSAGES)\rexxmsg.xml $(KMESSAGES)\RexxErrorCodes.xsl
+    xalan -o $(@) $(INTERPRETER_MESSAGES)\rexxmsg.xml $(INTERPRETER_MESSAGES)\RexxErrorCodes.xsl
 
-$(KMESSAGES)\DocErrorMessages.sgml: $(KMESSAGES)\DocBookErrors.xsl $(KMESSAGES)\rexxmsg.xml
-    @ECHO .
+$(OR_ORYXAPI)\oorexxerrors.h: $(INTERPRETER_MESSAGES)\ApiErrorCodes.xsl $(INTERPRETER_MESSAGES)\rexxmsg.xml
+    @ECHO.
     @ECHO Generating $(@)
-    xalan -o $(@) $(KMESSAGES)\rexxmsg.xml $(KMESSAGES)\DocBookErrors.xsl
+    xalan -o $(@) $(INTERPRETER_MESSAGES)\rexxmsg.xml $(INTERPRETER_MESSAGES)\ApiErrorCodes.xsl
 
-$(KMESSAGES)\RexxMessageNumbers.h: $(KMESSAGES)\RexxMessageNumbers.xsl $(KMESSAGES)\rexxmsg.xml
-    @ECHO .
+$(INTERPRETER_MESSAGES)\DocErrorMessages.sgml: $(INTERPRETER_MESSAGES)\DocBookErrors.xsl $(INTERPRETER_MESSAGES)\rexxmsg.xml
+    @ECHO.
     @ECHO Generating $(@)
-    xalan -o $(@) $(KMESSAGES)\rexxmsg.xml $(KMESSAGES)\RexxMessageNumbers.xsl
+    xalan -o $(@) $(INTERPRETER_MESSAGES)\rexxmsg.xml $(INTERPRETER_MESSAGES)\DocBookErrors.xsl
 
-$(KMESSAGES)\RexxMessageTable.h: $(KMESSAGES)\RexxMessageTable.xsl $(KMESSAGES)\rexxmsg.xml
-    @ECHO .
+$(INTERPRETER_MESSAGES)\RexxMessageNumbers.h: $(INTERPRETER_MESSAGES)\RexxMessageNumbers.xsl $(INTERPRETER_MESSAGES)\rexxmsg.xml
+    @ECHO.
     @ECHO Generating $(@)
-    xalan -o $(@) $(KMESSAGES)\rexxmsg.xml $(KMESSAGES)\RexxMessageTable.xsl
+    xalan -o $(@) $(INTERPRETER_MESSAGES)\rexxmsg.xml $(INTERPRETER_MESSAGES)\RexxMessageNumbers.xsl
 
-$(OR_APISRC)\api\oorexxerrors.h: $(KMESSAGES)\ApiErrorCodes.xsl $(KMESSAGES)\rexxmsg.xml
+$(INTERPRETER_MESSAGES)\RexxMessageTable.h: $(INTERPRETER_MESSAGES)\RexxMessageTable.xsl $(INTERPRETER_MESSAGES)\rexxmsg.xml
+    @ECHO.
+    @ECHO Generating $(@)
+    xalan -o $(@) $(INTERPRETER_MESSAGES)\rexxmsg.xml $(INTERPRETER_MESSAGES)\RexxMessageTable.xsl
+
+$(OR_APISRC)\api\oorexxerrors.h: $(INTERPRETER_MESSAGES)\ApiErrorCodes.xsl $(INTERPRETER_MESSAGES)\rexxmsg.xml
     @ECHO .
     @ECHO Generating $(@)
-    xalan -o $(@) $(KMESSAGES)\rexxmsg.xml $(KMESSAGES)\ApiErrorCodes.xsl
+    xalan -o $(@) $(INTERPRETER_MESSAGES)\rexxmsg.xml $(INTERPRETER_MESSAGES)\ApiErrorCodes.xsl
 
 $(INTERPRETER_RUNTIME)\PrimitiveBehaviourNames.h: $(INTERPRETER_RUNTIME)\PrimitiveBehaviourNames.xsl $(INTERPRETER_RUNTIME)\PrimitiveClasses.xml
-    @ECHO .
+    @ECHO.
     @ECHO Generating $(@)
     xalan -o $(@) $(INTERPRETER_RUNTIME)\PrimitiveClasses.xml $(INTERPRETER_RUNTIME)\PrimitiveBehaviourNames.xsl
 
 $(INTERPRETER_RUNTIME)\PrimitiveBehaviours.cpp: $(INTERPRETER_RUNTIME)\PrimitiveBehaviours.xsl $(INTERPRETER_RUNTIME)\PrimitiveClasses.xml
-    @ECHO .
+    @ECHO.
     @ECHO Generating $(@)
     xalan -o $(@) $(INTERPRETER_RUNTIME)\PrimitiveClasses.xml $(INTERPRETER_RUNTIME)\PrimitiveBehaviours.xsl
 
 $(INTERPRETER_RUNTIME)\VirtualFunctionTable.cpp: $(INTERPRETER_RUNTIME)\VirtualFunctionTable.xsl $(INTERPRETER_RUNTIME)\PrimitiveClasses.xml
-    @ECHO .
+    @ECHO.
     @ECHO Generating $(@)
     xalan -o $(@) $(INTERPRETER_RUNTIME)\PrimitiveClasses.xml $(INTERPRETER_RUNTIME)\VirtualFunctionTable.xsl
 
 $(INTERPRETER_RUNTIME)\ClassTypeCodes.h: $(INTERPRETER_RUNTIME)\ClassTypeCodes.xsl $(INTERPRETER_RUNTIME)\PrimitiveClasses.xml
-    @ECHO .
+    @ECHO.
     @ECHO Generating $(@)
     xalan -o $(@) $(INTERPRETER_RUNTIME)\PrimitiveClasses.xml $(INTERPRETER_RUNTIME)\ClassTypeCodes.xsl
 
-$(OR_OUTDIR)\winmsgtb.res: $(INT_PLATFORM)\winmsgtb.rc $(KMESSAGES)\DocErrorMessages.sgml
-    @ECHO .
+$(OR_OUTDIR)\winmsgtb.res: $(INT_PLATFORM)\winmsgtb.rc $(INTERPRETER_MESSAGES)\DocErrorMessages.sgml
+    @ECHO.
     @ECHO ResourceCompiling $(@)
         $(rc) $(rcflags_common) $(OR_ORYXRCINCL) -r -fo$(@) $(INT_PLATFORM)\winmsgtb.rc
 
 
 # Update the version information block
 $(OR_OUTDIR)\verinfo.res: $(INT_PLATFORM)\verinfo.rc
-    @ECHO .
+    @ECHO.
     @ECHO ResourceCompiling $(@B).res
         $(rc) $(rcflags_common) -r -fo$(OR_OUTDIR)\$(@B).res $(OR_INTERPRETER_SRC)\$(@B).rc
 

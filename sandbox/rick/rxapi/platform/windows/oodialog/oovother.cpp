@@ -43,10 +43,13 @@
 
 #include <windows.h>
 #include <mmsystem.h>
+#include "oorexxapi.h"
+#include <RexxErrorCodes.h>
 #include <rexx.h>
 #include <stdio.h>
 #include <dlgs.h>
 #include <malloc.h>
+#include <shlwapi.h>
 #include <commctrl.h>
 #include "oovutil.h"
 
@@ -989,6 +992,19 @@ DWORD ListExtendedStyleToString(HWND hList, RXSTRING *retstr)
 }
 
 /**
+ * Determine if a window belongs to the specified window class.
+ */
+static bool checkWindowClass(HWND hwnd, TCHAR *pClass)
+{
+    TCHAR buf[64];
+
+    if ( ! RealGetWindowClass(hwnd, buf, sizeof(buf)) || strcmp(buf, pClass) )
+        return false;
+    return true;
+}
+
+
+/**
  * Extended Common Control functionality.  This function implements capabilities
  * for the common controls that were not available at the time of the original
  * IBM ooDialog, or were available but not put into ooDialog.
@@ -1042,8 +1058,60 @@ size_t RexxEntry HandleControlEx(const char *funcname, size_t argc, CONSTRXSTRIN
     /* Determine the control, or other function.  The single first letter is
      * checked.
      */
-    if ( argv[2].strptr[0] == 'E' )      /* Edit control function */
+    if ( argv[2].strptr[0] == 'E' )      /* Edit control function (or also static) */
     {
+        if ( strcmp(argv[3].strptr, "TXT") == 0 )       /* Set or get the control's text. */
+        {
+            /* The same function is used to set / get the text for an edit
+             * control or for a static control.
+             */
+            if ( ! (checkWindowClass(hCtrl, WC_EDIT) || checkWindowClass(hCtrl, WC_STATIC)) )
+                RETVAL(-1)
+
+            if ( argc > 4 )
+            {
+                if ( SetWindowText(hCtrl, argv[4].strptr) == 0 )
+                    RETVAL(-(LONG)GetLastError())
+                else
+                    RETVAL(0)
+            }
+            else
+            {
+                ULONG count = (ULONG)GetWindowTextLength(hCtrl);
+
+                if ( count == 0 )
+                {
+                    retstr->strptr[0] = '\0';
+                    retstr->strlength = 0;
+                }
+                else
+                {
+                    if ( ++count > RXAUTOBUFLEN )
+                    {
+                        PVOID p = GlobalAlloc(GMEM_FIXED, count);
+                        if ( ! p )
+                        {
+                            RETVAL(-(LONG)GetLastError())
+                        }
+
+                        retstr->strptr = (PCHAR)p;
+                    }
+                    count = GetWindowText(hCtrl, (LPTSTR)retstr->strptr, count);
+
+                    retstr->strlength = count;
+                    if ( count == 0 )
+                    {
+                        retstr->strptr[0] = '\0';
+                    }
+                }
+            }
+            return 0;
+        }
+
+        /* The remaining functions are for an edit control only */
+        if ( ! checkWindowClass(hCtrl, WC_EDIT) )
+            RETVAL(-1)
+
         if ( !strcmp(argv[3].strptr, "MSG") ) /* Send an edit message (EM_*) */
         {
             CHECKARGL(5);
@@ -1125,47 +1193,6 @@ size_t RexxEntry HandleControlEx(const char *funcname, size_t argc, CONSTRXSTRIN
                 else RETERR
             }
             else RETERR
-        }
-        if ( !strcmp(argv[3].strptr, "TXT") )         /* Set or get the edit control's text. */
-        {
-            if ( argc > 4 )
-            {
-                if ( SetWindowText(hCtrl, argv[4].strptr) == 0 )
-                    RETVAL(0)
-                else
-                    RETVAL(-(LONG)GetLastError())
-            }
-            else
-            {
-                ULONG count = (ULONG)GetWindowTextLength(hCtrl);
-
-                if ( count == 0 )
-                {
-                    retstr->strptr[0] = '\0';
-                    retstr->strlength = 0;
-                }
-                else
-                {
-                    if ( ++count > RXAUTOBUFLEN )
-                    {
-                        PVOID p = GlobalAlloc(GMEM_FIXED, count);
-                        if ( ! p )
-                        {
-                            RETVAL(-(LONG)GetLastError())
-                        }
-
-                        retstr->strptr = (PCHAR)p;
-                    }
-                    count = GetWindowText(hCtrl, (LPTSTR)retstr->strptr, count);
-
-                    retstr->strlength = count;
-                    if ( count == 0 )
-                    {
-                        retstr->strptr[0] = '\0';
-                    }
-                }
-            }
-            return 0;
         }
         else RETERR
     }
@@ -1365,9 +1392,49 @@ size_t RexxEntry HandleControlEx(const char *funcname, size_t argc, CONSTRXSTRIN
             RETVAL(-2)  /* Subclass procedure is not installed. */
         }
     }
+    else if ( argv[2].strptr[0] == 'F' )    /* Font */
+    {
+        if ( strcmp(argv[3].strptr, "GET" ) == 0)
+        {
+            RETHANDLE(SendMessage(hCtrl, WM_GETFONT, 0, 0));
+        }
+        else RETERR
+    }
     RETERR
 }
 
+
+static inline int getLVColumnCount(HWND hList)
+{
+    return Header_GetItemCount(ListView_GetHeader(hList));
+}
+
+/**
+ * What is a reasonable number of columns in a list-view?  Seems silly to
+ * restrict the user, someone will always want 2 more.  On the other hand, is
+ * someone going to have 1,000 columns?  10,000 columns?
+ *
+ * @param  count  The number of colums
+ *
+ * @return The size of a space separated ascii string of numbers big enough to
+ *         hold count numbers.
+ */
+static inline size_t getColumnOrderStrlen(int count)
+{
+    if ( count < 100 )
+    {
+        return 3 * count;
+    }
+    else if ( count < 1000 )
+    {
+        return (3 * 99) + (4 * (count - 99));
+    }
+    else if ( count < 10000 )
+    {
+        return (3 * 99) + (4 * 900) + (5 * (count - 999));
+    }
+    return 0;
+}
 
 /**
  * Extended List-View control functionality.  Implements capabilities not
@@ -1508,6 +1575,105 @@ size_t RexxEntry HandleListCtrlEx(const char *funcname, size_t argc, CONSTRXSTRI
              * it.)
              */
             RETVAL(1);  // Return 1 (failed) until this is implemented.
+        }
+        else if ( strcmp(argv[2].strptr, "ORDER") == 0 )  /* Set, get column Order */
+        {
+            int count;
+            int *order;
+            int i = 0;
+            int retVal = 1;
+
+            count = getLVColumnCount(hList);
+            if ( count < 2 )
+            {
+                /* The return is 0 or 1 columns, or -1 for an error. */
+                RETVAL(count == -1 ? -2 : count)
+            }
+
+            order = (int *)malloc(count * sizeof(int));
+            if ( order == NULL )
+            {
+                RETVAL(-(LONG)GetLastError())
+            }
+
+            if ( argc == 3 )
+            {
+                char buf[4];
+
+                size_t l = getColumnOrderStrlen(count);
+                if ( l == 0 )
+                {
+                    retVal = -2;
+                }
+                else
+                {
+                    if ( l > RXAUTOBUFLEN )
+                    {
+                        PVOID p = GlobalAlloc(GMEM_FIXED, count);
+                        if ( ! p )
+                        {
+                            free(order);
+                            RETVAL(-(LONG)GetLastError())
+                        }
+
+                        retstr->strptr = (PCHAR)p;
+                    }
+
+                    if ( ListView_GetColumnOrderArray(hList, count, order) == 0 )
+                    {
+                        retVal = -2;
+                    }
+                    else
+                    {
+                        retstr->strptr[0] = '\0';
+                        for ( i = 0; i < count; i++, order++ )
+                        {
+                            strcat(retstr->strptr, ltoa(*order, buf, 10));
+                            strcat(retstr->strptr, " ");
+                        }
+                        retstr->strlength = strlen(retstr->strptr);
+                    }
+                }
+            }
+            else if ( argc == 4 )
+            {
+                char *token;
+                char *str = _strdup(argv[3].strptr);
+
+                token = strtok(str, " ");
+                while( token != NULL && i++ < count )
+                {
+                    *order++ = atoi(token);
+                    token = strtok(NULL, " ");
+                }
+                free(str);
+
+                retVal = ListView_SetColumnOrderArray(hList, count, order) == 0 ? -2 : 0;
+            }
+            else
+            {
+                retVal = -3;     /* Error with argument. */
+            }
+
+            free(order);
+            if ( retVal != 1 )
+            {
+                RETVAL(retVal)
+            }
+            else
+            {
+                /* The return string is already set, just return 0. */
+                return 0;
+            }
+        }
+        else RETERR;
+    }
+    /* G - Get something function */
+    else if ( argv[1].strptr[0] == 'G' )
+    {
+        if ( !strcmp(argv[2].strptr, "COLCOUNT") )  /* Get List-view column count. */
+        {
+            RETVAL(getLVColumnCount(hList));
         }
         else RETERR;
     }
@@ -1919,7 +2085,8 @@ size_t RexxEntry HandleListCtrl(const char *funcname, size_t argc, CONSTRXSTRING
    {
        if (!strcmp(argv[1].strptr, "INS"))
        {
-           LV_COLUMN lvi;
+           LVCOLUMN lvi;
+           int retVal;
 
            CHECKARG(7);
 
@@ -1937,7 +2104,19 @@ size_t RexxEntry HandleListCtrl(const char *funcname, size_t argc, CONSTRXSTRING
            else if (strstr(argv[6].strptr,"RIGHT")) lvi.fmt = LVCFMT_RIGHT;
            else lvi.fmt = LVCFMT_LEFT;
 
-           RETVAL(ListView_InsertColumn(h, lvi.iSubItem, &lvi));
+           retVal = ListView_InsertColumn(h, lvi.iSubItem, &lvi);
+           if ( retVal != -1 && lvi.fmt != LVCFMT_LEFT && lvi.iSubItem == 0 )
+           {
+               /* According to the MSDN docs: "If a column is added to a
+                * list-view control with index 0 (the leftmost column) and with
+                * LVCFMT_RIGHT or LVCFMT_CENTER specified, the text is not
+                * right-aligned or centered." This is the suggested work around.
+                */
+               lvi.iSubItem = 1;
+               ListView_InsertColumn(h, lvi.iSubItem, &lvi);
+               ListView_DeleteColumn(h, 0);
+           }
+           RETVAL(retVal);
        }
        else
        if (!strcmp(argv[1].strptr, "SET"))
@@ -2039,7 +2218,6 @@ size_t RexxEntry HandleListCtrl(const char *funcname, size_t argc, CONSTRXSTRING
 }
 
 
-
 size_t RexxEntry HandleOtherNewCtrls(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
    HWND h;
@@ -2049,38 +2227,6 @@ size_t RexxEntry HandleOtherNewCtrls(const char *funcname, size_t argc, CONSTRXS
    h = GET_HWND(argv[2]);
    if (!h) RETERR;
 
-   if (!strcmp(argv[0].strptr, "PROGRESS"))
-   {
-       if (!strcmp(argv[1].strptr, "STEP"))
-       {
-           RETVAL((long)SendMessage(h, PBM_STEPIT, 0, 0))
-       }
-       else
-       if (!strcmp(argv[1].strptr, "POS"))
-       {
-           CHECKARG(4);
-           RETVAL((long)SendMessage(h, PBM_SETPOS, atoi(argv[3].strptr), 0))
-       }
-       else
-       if (!strcmp(argv[1].strptr, "SETSTEP"))
-       {
-           CHECKARG(4);
-           RETVAL((long)SendMessage(h, PBM_SETSTEP, atoi(argv[3].strptr), 0))
-       }
-       else
-       if (!strcmp(argv[1].strptr, "DELTA"))
-       {
-           CHECKARG(4);
-           RETVAL((long)SendMessage(h, PBM_DELTAPOS, atoi(argv[3].strptr), 0))
-       }
-       else
-       if (!strcmp(argv[1].strptr, "RANGE"))
-       {
-           CHECKARG(5);
-           RETVAL((long)SendMessage(h, PBM_SETRANGE, 0, MAKELPARAM(atoi(argv[3].strptr), atoi(argv[4].strptr))))
-       }
-   }
-   else
    if (!strcmp(argv[0].strptr, "SLIDER"))
    {
        if (!strcmp(argv[1].strptr, "POS"))
@@ -2091,8 +2237,7 @@ size_t RexxEntry HandleOtherNewCtrls(const char *funcname, size_t argc, CONSTRXS
            else
                SendMessage(h, TBM_SETPOS, IsYes(argv[4].strptr), atol(argv[3].strptr));
        }
-       else
-       if (!strcmp(argv[1].strptr, "SETRANGE"))
+       else if (!strcmp(argv[1].strptr, "SETRANGE"))
        {
            CHECKARG(6);
            if (argv[3].strptr[0] == 'L')
@@ -2102,15 +2247,13 @@ size_t RexxEntry HandleOtherNewCtrls(const char *funcname, size_t argc, CONSTRXS
            else
                SendMessage(h, TBM_SETRANGE, IsYes(argv[5].strptr), MAKELONG(atol(argv[3].strptr), atol(argv[4].strptr)));
        }
-       else
-       if (!strcmp(argv[1].strptr, "GETRANGE"))
+       else if (!strcmp(argv[1].strptr, "GETRANGE"))
        {
            sprintf(retstr->strptr, "%d %d",SendMessage(h, TBM_GETRANGEMIN, 0,0), SendMessage(h, TBM_GETRANGEMAX, 0,0));
            retstr->strlength = strlen(retstr->strptr);
            return 0;
        }
-       else
-       if (!strcmp(argv[1].strptr, "TICS"))
+       else if (!strcmp(argv[1].strptr, "TICS"))
        {
            /*CHECKARG(5); */
            /* 4 arguments for 'N', 5 for all the others */
@@ -2141,24 +2284,21 @@ size_t RexxEntry HandleOtherNewCtrls(const char *funcname, size_t argc, CONSTRXS
            }
            RETC(0);
        }
-       else
-       if (!strcmp(argv[1].strptr, "GETSTEPS"))
+       else if (!strcmp(argv[1].strptr, "GETSTEPS"))
        {
            CHECKARG(4);
            if (argv[3].strptr[0] == 'L')
                RETVAL((long)SendMessage(h, TBM_GETLINESIZE, 0, 0))
            else RETVAL((long)SendMessage(h, TBM_GETPAGESIZE, 0, 0));
        }
-       else
-       if (!strcmp(argv[1].strptr, "SETSTEPS"))
+       else if (!strcmp(argv[1].strptr, "SETSTEPS"))
        {
            CHECKARG(5);
            if (argv[3].strptr[0] == 'L')
                RETVAL((long)SendMessage(h, TBM_SETLINESIZE, 0, atol(argv[4].strptr)))
            else RETVAL((long)SendMessage(h, TBM_SETPAGESIZE, 0, atol(argv[4].strptr)));
        }
-       else
-       if (!strcmp(argv[1].strptr, "SETSEL"))
+       else if (!strcmp(argv[1].strptr, "SETSEL"))
        {
            CHECKARGL(5);
            if (argv[3].strptr[0] == 'C')
@@ -2174,16 +2314,14 @@ size_t RexxEntry HandleOtherNewCtrls(const char *funcname, size_t argc, CONSTRXS
            else
                SendMessage(h, TBM_SETSEL, IsYes(argv[5].strptr), MAKELONG(atol(argv[3].strptr), atol(argv[4].strptr)));
        }
-       else
-       if (!strcmp(argv[1].strptr, "GETSEL"))
+       else if (!strcmp(argv[1].strptr, "GETSEL"))
        {
            sprintf(retstr->strptr, "%d %d",SendMessage(h, TBM_GETSELSTART, 0,0), SendMessage(h, TBM_GETSELEND, 0,0));
            retstr->strlength = strlen(retstr->strptr);
            return 0;
        }
    }
-   else
-   if (!strcmp(argv[0].strptr, "TAB"))
+   else if (!strcmp(argv[0].strptr, "TAB"))
    {
        if (!strcmp(argv[1].strptr, "INS"))
        {
@@ -2207,8 +2345,7 @@ size_t RexxEntry HandleOtherNewCtrls(const char *funcname, size_t argc, CONSTRXS
            }
            RETVAL(TabCtrl_InsertItem(h, item, &tab));
        }
-       else
-       if (!strcmp(argv[1].strptr, "SET"))
+       else if (!strcmp(argv[1].strptr, "SET"))
        {
            TC_ITEM tab;
            INT item;
@@ -2230,8 +2367,7 @@ size_t RexxEntry HandleOtherNewCtrls(const char *funcname, size_t argc, CONSTRXS
            }
            RETC(!TabCtrl_SetItem(h, item, &tab));
        }
-       else
-       if (!strcmp(argv[1].strptr, "GET"))
+       else if (!strcmp(argv[1].strptr, "GET"))
        {
            TC_ITEM tab;
            INT item;
@@ -2255,8 +2391,7 @@ size_t RexxEntry HandleOtherNewCtrls(const char *funcname, size_t argc, CONSTRXS
            }
            else RETVAL(-1)
        }
-       else
-       if (!strcmp(argv[1].strptr, "SEL"))
+       else if (!strcmp(argv[1].strptr, "SEL"))
        {
            TC_ITEM tab;
            CHECKARGL(4);
@@ -2300,8 +2435,7 @@ size_t RexxEntry HandleOtherNewCtrls(const char *funcname, size_t argc, CONSTRXS
                }
            }
        }
-       else
-       if (!strcmp(argv[1].strptr, "FOCUS"))
+       else if (!strcmp(argv[1].strptr, "FOCUS"))
        {
            CHECKARG(4);
            if (argv[3].strptr[0] == 'G')
@@ -2312,8 +2446,7 @@ size_t RexxEntry HandleOtherNewCtrls(const char *funcname, size_t argc, CONSTRXS
                RETC(0);
            }
        }
-       else
-       if (!strcmp(argv[1].strptr, "DEL"))
+       else if (!strcmp(argv[1].strptr, "DEL"))
        {
            INT item;
            CHECKARG(4);
@@ -2324,18 +2457,15 @@ size_t RexxEntry HandleOtherNewCtrls(const char *funcname, size_t argc, CONSTRXS
               RETC(!TabCtrl_DeleteItem(h, item))
            RETVAL(-1)
        }
-       else
-       if (!strcmp(argv[1].strptr, "CNT"))
+       else if (!strcmp(argv[1].strptr, "CNT"))
        {
            RETVAL(TabCtrl_GetItemCount(h))
        }
-       else
-       if (!strcmp(argv[1].strptr, "ROWCNT"))
+       else if (!strcmp(argv[1].strptr, "ROWCNT"))
        {
            RETVAL(TabCtrl_GetRowCount(h))
        }
-       else
-       if (!strcmp(argv[1].strptr, "SETIMG"))
+       else if (!strcmp(argv[1].strptr, "SETIMG"))
        {
            HIMAGELIST iL;
 
@@ -2344,8 +2474,7 @@ size_t RexxEntry HandleOtherNewCtrls(const char *funcname, size_t argc, CONSTRXS
            if (iL) RETHANDLE(TabCtrl_SetImageList(h, iL))
            else RETC(0)
        }
-       else
-       if (!strcmp(argv[1].strptr, "UNSETIMG"))
+       else if (!strcmp(argv[1].strptr, "UNSETIMG"))
        {
            HIMAGELIST iL;
 
@@ -2355,16 +2484,14 @@ size_t RexxEntry HandleOtherNewCtrls(const char *funcname, size_t argc, CONSTRXS
 
            RETC(!ImageList_Destroy( iL))
        }
-       else
-       if (!strcmp(argv[1].strptr, "PADDING"))
+       else if (!strcmp(argv[1].strptr, "PADDING"))
        {
            CHECKARG(5);
 
            TabCtrl_SetPadding(h, atoi(argv[3].strptr), atoi(argv[4].strptr));
            RETC(0);
        }
-       else
-       if (!strcmp(argv[1].strptr, "SIZE"))
+       else if (!strcmp(argv[1].strptr, "SIZE"))
        {
            LONG prevsize;
            CHECKARG(5);
@@ -2374,8 +2501,7 @@ size_t RexxEntry HandleOtherNewCtrls(const char *funcname, size_t argc, CONSTRXS
            retstr->strlength = strlen(retstr->strptr);
            return 0;
        }
-       else
-       if (!strcmp(argv[1].strptr, "RECT"))
+       else if (!strcmp(argv[1].strptr, "RECT"))
        {
            RECT r;
            CHECKARG(4);
@@ -2388,8 +2514,7 @@ size_t RexxEntry HandleOtherNewCtrls(const char *funcname, size_t argc, CONSTRXS
            }
            return 0;
        }
-       else
-       if (!strcmp(argv[1].strptr, "ADJUST"))
+       else if (!strcmp(argv[1].strptr, "ADJUST"))
        {
            RECT r;
            BOOL adapt;  /* or only query */
@@ -2802,4 +2927,391 @@ size_t RexxEntry HandleDateTimePicker(const char *funcname, size_t argc, CONSTRX
     RETERR;
 }
 
+
+/* These inline (and non-inline) convenience functions will be move so that they
+ * are accessible by all of ooDialog at some point.  Right now they are just
+ * used by the Progress Bar native method functions.
+ */
+inline HWND rxGetWindowHandle(RexxMethodContext * context, RexxObjectPtr self)
+{
+    RexxStringObject rxString = (RexxStringObject)context->SendMessage0(self, "HWND");
+    return GET_HWND(context->StringData(rxString));
+}
+
+inline bool rxArgOmitted(RexxMethodContext * context, size_t index)
+{
+    return context->ArrayHasIndex(context->GetArguments(), index) == 0 ? true : false;
+}
+
+inline bool rxArgExists(RexxMethodContext * context, size_t index)
+{
+    return context->ArrayHasIndex(context->GetArguments(), index) == 1 ? true : false;
+}
+
+/**
+ * Return the number of existing arguments passed to a native API Rexx method,
+ * (as opposed to the size of the argument array.)
+ *
+ * @param context  The method context pointer for the native method.
+ *
+ * @return The count of existing arguments in the argument array.
+ */
+inline size_t rxArgCount(RexxMethodContext * context)
+{
+    size_t j = 0;
+    size_t count = context->ArraySize(context->GetArguments());
+    for( size_t i = 1; i <= count; i++ )
+    {
+        if ( rxArgExists(context, i) )
+        {
+            j++;
+        }
+    }
+    return j;
+}
+
+inline bool hasStyle(HWND hwnd, DWORD_PTR style)
+{
+    if ( (GetWindowLongPtr(hwnd, GWL_STYLE) & style) || (GetWindowLongPtr(hwnd, GWL_EXSTYLE) & style) )
+    {
+        return true;
+    }
+    return false;
+}
+
+void comCtl32Exception(RexxMethodContext *context, const char *methodName)
+{
+    char msg[128];
+    sprintf(msg, "The %s method requires Windows XP or later", methodName);
+    context->RaiseException1(Error_System_service_user_defined, context->NewStringFromAsciiz(msg));
+}
+
+void wrongWindowStyleException(RexxMethodContext *context, const char *obj, const char *style)
+{
+    char msg[128];
+    sprintf(msg, "This %s does not have the %s style", obj, style);
+    context->RaiseException1(Error_Incorrect_method_user_defined, context->NewStringFromAsciiz(msg));
+}
+
+/**
+ * Step the progress bar by the step increment or do a delta position.  A delta
+ * position moves the progress bar from its current position by the specified
+ * amount.
+ *
+ * Note this difference between stepping and doing a delta.  When the progress
+ * bar is stepped and the step amount results in a position past the end of the
+ * progress bar, the progress bar restarts at the minimum position.  When a
+ * delta position is done, if the end of the progress bar is reached, it will
+ * just stay at the end.
+ *
+ * @param  delta [Optional]  If present a delta position is done using this
+ *               values.  If absent, then a step is done.
+ *
+ * @return  For both cases the previous position is returned.
+ */
+RexxMethod2(int, pbc_stepIt, OSELF, self, OPTIONAL_uint32_t, delta)
+{
+    HWND hwnd = rxGetWindowHandle(context, self);
+
+    if ( rxArgOmitted(context, 1) )
+    {
+        return (int)SendMessage(hwnd, PBM_STEPIT, 0, 0);
+    }
+    else
+    {
+        return (int)SendMessage(hwnd, PBM_DELTAPOS, delta, 0);
+    }
+}
+
+/**
+ * Set the position of the progress bar.
+ *
+ * @param newPos  Set the position to this value.
+ *
+ * @return The the old progress bar position.
+ */
+RexxMethod2(int, pbc_setPos, OSELF, self, int32_t, newPos)
+{
+    HWND hwnd = rxGetWindowHandle(context, self);
+    return (int)SendMessage(hwnd, PBM_SETPOS, newPos, 0);
+}
+
+RexxMethod1(int, pbc_getPos, OSELF, self)
+{
+    HWND hwnd = rxGetWindowHandle(context, self);
+    return (int)SendMessage(hwnd, PBM_GETPOS, 0, 0);
+}
+
+RexxMethod3(RexxObjectPtr, pbc_setRange, OSELF, self, OPTIONAL_int32_t, min, OPTIONAL_int32_t, max)
+{
+    TCHAR buf[64];
+    HWND hwnd = rxGetWindowHandle(context, self);
+
+    if ( rxArgOmitted(context, 1) )
+    {
+        min = 0;
+    }
+    if ( rxArgOmitted(context, 2) )
+    {
+        max = 100;
+    }
+
+    DWORD range = (DWORD)SendMessage(hwnd, PBM_SETRANGE32, min, max);
+    _snprintf(buf, sizeof(buf), "%d %d", LOWORD(range), HIWORD(range));
+
+    return context->NewStringFromAsciiz(buf);
+}
+
+RexxMethod1(RexxObjectPtr, pbc_getRange, OSELF, self)
+{
+    TCHAR buf[64];
+    HWND hwnd = rxGetWindowHandle(context, self);
+    PBRANGE pbr;
+
+    SendMessage(hwnd, PBM_GETRANGE, TRUE, (LPARAM)&pbr);
+    _snprintf(buf, sizeof(buf), "%d %d", pbr.iLow, pbr.iHigh);
+
+    return context->NewStringFromAsciiz(buf);
+}
+
+RexxMethod2(int, pbc_setStep, OSELF, self, OPTIONAL_int32_t, newStep)
+{
+    HWND hwnd = rxGetWindowHandle(context, self);
+
+    if ( rxArgOmitted(context, 1) )
+    {
+        newStep = 10;
+    }
+    return (int)SendMessage(hwnd, PBM_SETSTEP, newStep, 0);
+}
+
+RexxMethod3(logical_t, pbc_setMarquee, OSELF, self, OPTIONAL_logical_t, on, OPTIONAL_uint32_t, pause)
+{
+    HWND hwnd = rxGetWindowHandle(context, self);
+
+    /* Requires XP Common Controls version 6.0 */
+    if (  ComCtl32Version < COMCTL32_6_0 )
+    {
+        comCtl32Exception(context, "setMarquee");
+        return 0;
+    }
+
+    if ( ! hasStyle(hwnd, PBS_MARQUEE) )
+    {
+        wrongWindowStyleException(context, "progress bar", "PBS_MARQUEE");
+        return 0;
+    }
+
+    if ( rxArgOmitted(context, 1) )
+    {
+        on = 1;
+    }
+    if ( rxArgOmitted(context, 2) )
+    {
+        pause = 1000;
+    }
+
+    /* The Windows message always returns 1, return 1 for .true (succeeded.) */
+    SendMessage(hwnd, PBM_SETMARQUEE, on, pause);
+    return 1;
+}
+
+RexxMethod4(uint32_t, pbc_setBkColor, OSELF, self, uint32_t, r, OPTIONAL_uint8_t, g, OPTIONAL_uint8_t, b)
+{
+    HWND hwnd = rxGetWindowHandle(context, self);
+    size_t count = rxArgCount(context);
+    COLORREF rgb;
+
+    if ( count == 1 )
+    {
+        rgb = r;
+    }
+    else if ( count == 3 )
+    {
+        rgb = RGB((uint8_t)r, g, b);
+    }
+    else
+    {
+        context->RaiseException1(Error_Incorrect_method_minarg, context->NewInteger(3));
+        return 0;
+    }
+
+    return (uint32_t)SendMessage(hwnd, PBM_SETBKCOLOR, 0, rgb);
+}
+
+RexxMethod4(uint32_t, pbc_setBarColor, OSELF, self, uint32_t, r, OPTIONAL_uint8_t, g, OPTIONAL_uint8_t, b)
+{
+    HWND hwnd = rxGetWindowHandle(context, self);
+    size_t count = rxArgCount(context);
+    COLORREF rgb;
+
+    if ( count == 1 )
+    {
+        rgb = r;
+    }
+    else if ( count == 3 )
+    {
+        rgb = RGB((uint8_t)r, g, b);
+    }
+    else
+    {
+        context->RaiseException1(Error_Incorrect_method_minarg, context->NewInteger(3));
+        return 0;
+    }
+
+    return (uint32_t)SendMessage(hwnd, PBM_SETBARCOLOR, 0, rgb);
+}
+
+RexxMethod5(logical_t, pbc_test, OSELF, self, OPTIONAL_int32_t, n1,
+            OPTIONAL_int32_t, n2, OPTIONAL_int32_t, n3, OPTIONAL_int32_t, n4)
+{
+    printf("pbc_test arg count=%d\n", rxArgCount(context));
+    printf("pbc_test arg 1 omitted? %d\n", rxArgOmitted(context, 1));
+    printf("pbc_test arg 2 omitted? %d\n", rxArgOmitted(context, 2));
+    printf("pbc_test arg 3 omitted? %d\n", rxArgOmitted(context, 3));
+    printf("pbc_test arg 4 omitted? %d\n", rxArgOmitted(context, 4));
+
+    return 1;
+}
+
+#define COMCTL_ERR_TITLE    "ooDialog - Windows Common Controls Error"
+#define GENERIC_ERR_TITLE   "ooDialog - Error"
+
+extern DWORD ComCtl32Version = 0;
+
+/**
+ * Convenience function to put up an error message box.
+ *
+ * @param pszMsg    The message.
+ * @param pszTitle  The title of for the message box.
+ */
+static void internalErrorMsg(PSZ pszMsg, PSZ pszTitle)
+{
+    MessageBox(0, pszMsg, pszTitle, MB_OK | MB_ICONHAND | MB_SYSTEMMODAL);
+}
+
+/**
+ * Determines the version of comctl32.dll and initializes the common controls.
+ *
+ * The minimum version of 4.71 is supported on Windows 95 with Internet Explorer
+ * 4.0, Windows NT 4.0 with Internet Explorer 4.0, Windows 98, and Windows 2000.
+ *
+ * @return .true if comctl32.dll is at least version 4.71, otherwise .false.
+ */
+RexxMethod0(logical_t, dlgutil_commonInit)
+{
+    static bool CommonInitDone = false;
+    HINSTANCE   hinst;
+    bool        success = false;
+
+    if ( CommonInitDone )
+    {
+        return (ComCtl32Version >= COMCTL32_4_71 ? 1 : 0);
+    }
+
+    hinst = LoadLibrary(TEXT("comctl32.dll"));
+    if ( hinst )
+    {
+        DLLGETVERSIONPROC pDllGetVersion;
+
+        pDllGetVersion = (DLLGETVERSIONPROC)GetProcAddress(hinst, "DllGetVersion");
+        if ( pDllGetVersion )
+        {
+            DLLVERSIONINFO info;
+
+            ZeroMemory(&info, sizeof(info));
+            info.cbSize = sizeof(info);
+            if ( SUCCEEDED((*pDllGetVersion)(&info)) )
+                ComCtl32Version = MAKEVERSION(info.dwMajorVersion, info.dwMinorVersion);
+        }
+        FreeLibrary(hinst);
+    }
+
+    if ( ComCtl32Version == 0 )
+    {
+        internalErrorMsg("The version of the Windows Common Controls library (comctl32.dll)\n"
+                         "could not be determined.  ooDialog will not run", COMCTL_ERR_TITLE);
+    }
+    else if ( ComCtl32Version < COMCTL32_4_71 )
+    {
+        CHAR msg[256];
+        sprintf(msg, "ooDialog can not run with this version of the Windows Common Controls library\n"
+                "(comctl32.dll.)  The minimum version required is 4.71.\n\nThis system has version: %s\n",
+                ComCtl32Version == COMCTL32_4_0 ? "4.0" : "4.7" );
+
+        internalErrorMsg(msg, COMCTL_ERR_TITLE);
+        ComCtl32Version = 0;
+    }
+    else
+    {
+        INITCOMMONCONTROLSEX ctrlex;
+
+        ctrlex.dwSize = sizeof(ctrlex);
+        ctrlex.dwICC = ICC_WIN95_CLASSES | ICC_STANDARD_CLASSES;
+        if ( ! InitCommonControlsEx(&ctrlex) )
+        {
+            CHAR msg[128];
+            sprintf(msg, "Initializing the Windows Common Controls library (InitCommonControlsEx)\n"
+                    "failed.  Windows System Error Code: %d\n", GetLastError());
+            internalErrorMsg(msg, COMCTL_ERR_TITLE);
+            ComCtl32Version = 0;
+        }
+        else
+        {
+            success = true;
+        }
+    }
+
+    CommonInitDone = true;
+    return (success ? 1 : 0);
+}
+
+
+RexxMethod3(uint32_t, dlgutil_colorRef, RexxObjectPtr, r, OPTIONAL_uint8_t, g, OPTIONAL_uint8_t, b)
+{
+    size_t count = rxArgCount(context);
+
+    if ( count == 1 )
+    {
+        if ( ! context->IsString(r) )
+        {
+            context->RaiseException2(Error_Incorrect_method_noclass,
+                                     context->NewInteger(1),
+                                     context->NewStringFromAsciiz("String"));
+            return 0;
+        }
+        const char * s = context->ObjectToStringValue(r);
+        if ( *s == 'D' || *s == 'd' )
+        {
+            return CLR_DEFAULT;
+        }
+        else if ( *s == 'N' || *s == 'n' )
+        {
+            return CLR_NONE;
+        }
+        else
+        {
+            context->RaiseException2(Error_Incorrect_method_list,
+                                     context->NewInteger(1),
+                                     context->NewStringFromAsciiz("DEFAULT, NONE"));
+            return 0;
+        }
+    }
+
+    if ( count != 3 )
+    {
+        context->RaiseException1(Error_Incorrect_method_minarg, context->NewInteger(3));
+        return 0;
+    }
+
+    if ( ! context->IsInteger(r) )
+    {
+        context->RaiseException2(Error_Incorrect_method_whole, context->NewInteger(1), r);
+        return 0;
+    }
+
+    uint32_t red;
+    context->ObjectToUnsignedNumber(r, &red);
+    return RGB((uint8_t)red, g, b);
+}
 

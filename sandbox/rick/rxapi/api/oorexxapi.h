@@ -55,9 +55,8 @@
 #define REXX_VALUE_ARGLIST     2
 #define REXX_VALUE_NAME        3
 #define REXX_VALUE_SCOPE       4
-#define REXX_VALUE_BUFFER      5
-#define REXX_VALUE_CSELF       6
-#define REXX_VALUE_OSELF       7
+#define REXX_VALUE_CSELF       5
+#define REXX_VALUE_OSELF       6
 
 // each of the following types have an optional equivalent
 
@@ -210,7 +209,10 @@ typedef struct _RexxMethodEntry
 #define REXX_METHOD(n, e) REXX_METHOD_ENTRY(n, e)
 #define REXX_LAST_METHOD()  { 0, 0, NULL, (void *)NULL, 0, 0 }
 
-#define REXX_PACKAGE_API_NO 20051030
+#define REXX_PACKAGE_API_NO 20081030
+// The interpreter version gets defined using two digits for major, minor, and revision.
+#define REXX_INTERPRETER_4_0_0  40000
+#define REXX_CURRENT_INTERPRETER_VERSION REXX_INTERPRETER_4_0_0
 #define NO_VERSION_YET NULL
 
 #define STANDARD_PACKAGE_HEADER sizeof(RexxPackageEntry), REXX_PACKAGE_API_NO,
@@ -228,6 +230,7 @@ typedef struct _RexxPackageEntry
 {
     int size;                      // size of the structure...help compatibility
     int apiVersion;                // version this was compiled with
+    int requiredVersion;           // minimum required interpreter version (0 means any)
     const char *packageName;       // package identifier
     const char  *packageVersion;   // package version #
     RexxPackageLoader loader;      // the package loader
@@ -323,7 +326,6 @@ typedef struct
         RexxArrayObject       value_ARGLIST;
         CSTRING               value_NAME;
         RexxClassObject       value_SCOPE;
-        POINTER               value_BUFFER;
         POINTER               value_CSELF;
         RexxObjectPtr         value_OSELF;
         RexxObjectPtr         value_RexxObjectPtr;
@@ -523,6 +525,7 @@ typedef struct
     RexxBufferObject  (RexxEntry *SaveRoutine)(RexxThreadContext *, RexxRoutineObject);
 
     RexxObjectPtr    (RexxEntry *NewObject)(RexxThreadContext *);
+    POINTER          (RexxEntry *ObjectToCSelf)(RexxThreadContext *, RexxObjectPtr);
     RexxObjectPtr    (RexxEntry *NumberToObject)(RexxThreadContext *, wholenumber_t);
     RexxObjectPtr    (RexxEntry *UintptrToObject)(RexxThreadContext *, uintptr_t);
     RexxObjectPtr    (RexxEntry *ValueToObject)(RexxThreadContext *, ValueDescriptor *);
@@ -580,7 +583,7 @@ typedef struct
     RexxArrayObject (RexxEntry *ArrayOfTwo)(RexxThreadContext *, RexxObjectPtr, RexxObjectPtr);
     logical_t       (RexxEntry *IsArray)(RexxThreadContext *, RexxObjectPtr);
 
-    CSTRING (RexxEntry *BufferData)(RexxThreadContext *, RexxBufferObject);
+    POINTER (RexxEntry *BufferData)(RexxThreadContext *, RexxBufferObject);
     size_t            (RexxEntry *BufferLength)(RexxThreadContext *, RexxBufferObject);
     RexxBufferObject  (RexxEntry *NewBuffer)(RexxThreadContext *, size_t);
     logical_t         (RexxEntry *IsBuffer)(RexxThreadContext *, RexxObjectPtr);
@@ -672,6 +675,7 @@ typedef struct
     wholenumber_t    (RexxEntry *GetContextDigits)(RexxCallContext *);
     wholenumber_t    (RexxEntry *GetContextFuzz)(RexxCallContext *);
     logical_t        (RexxEntry *GetContextForm)(RexxCallContext *);
+    RexxClassObject  (RexxEntry *FindContextClass)(RexxCallContext *, CSTRING);
 } CallContextInterface;
 
 #define EXIT_INTERFACE_VERSION 100
@@ -875,6 +879,10 @@ struct RexxThreadContext_
     RexxObjectPtr NewObject()
     {
         return functions->NewObject(this);
+    }
+    POINTER ObjectToCSelf(RexxObjectPtr o)
+    {
+        return functions->ObjectToCSelf(this, o);
     }
     RexxObjectPtr NumberToObject(wholenumber_t n)
     {
@@ -1089,7 +1097,7 @@ struct RexxThreadContext_
         return functions->IsArray(this, o);
     }
 
-    CSTRING BufferData(RexxBufferObject bo)
+    POINTER BufferData(RexxBufferObject bo)
     {
         return functions->BufferData(this, bo);
     }
@@ -1390,6 +1398,10 @@ struct RexxMethodContext_
     {
         return threadContext->NewObject();
     }
+    POINTER ObjectToCSelf(RexxObjectPtr o)
+    {
+        return threadContext->ObjectToCSelf(o);
+    }
     RexxObjectPtr NumberToObject(wholenumber_t n)
     {
         return threadContext->NumberToObject(n);
@@ -1599,7 +1611,7 @@ struct RexxMethodContext_
         return threadContext->IsArray(o);
     }
 
-    CSTRING BufferData(RexxBufferObject bo)
+    POINTER BufferData(RexxBufferObject bo)
     {
         return threadContext->BufferData(bo);
     }
@@ -1957,6 +1969,10 @@ struct RexxCallContext_
     {
         return threadContext->NewObject();
     }
+    POINTER ObjectToCSelf(RexxObjectPtr o)
+    {
+        return threadContext->ObjectToCSelf(o);
+    }
     RexxObjectPtr NumberToObject(wholenumber_t n)
     {
         return threadContext->NumberToObject(n);
@@ -2166,7 +2182,7 @@ struct RexxCallContext_
         return threadContext->IsArray(o);
     }
 
-    CSTRING BufferData(RexxBufferObject bo)
+    POINTER BufferData(RexxBufferObject bo)
     {
         return threadContext->BufferData(bo);
     }
@@ -2374,6 +2390,10 @@ struct RexxCallContext_
     {
         return functions->GetContextForm(this);
     }
+    RexxClassObject FindContextClass(CSTRING n)
+    {
+        return functions->FindContextClass(this, n);
+    }
 
 #endif
 };
@@ -2517,6 +2537,10 @@ struct RexxExitContext_
     RexxObjectPtr NewObject()
     {
         return threadContext->NewObject();
+    }
+    POINTER ObjectToCSelf(RexxObjectPtr o)
+    {
+        return threadContext->ObjectToCSelf(o);
     }
     RexxObjectPtr NumberToObject(wholenumber_t n)
     {
@@ -2727,7 +2751,7 @@ struct RexxExitContext_
         return threadContext->IsArray(o);
     }
 
-    CSTRING BufferData(RexxBufferObject bo)
+    POINTER BufferData(RexxBufferObject bo)
     {
         return threadContext->BufferData(bo);
     }
@@ -2922,7 +2946,6 @@ RexxReturnCode RexxEntry RexxCreateInterpreter(RexxInstance **, RexxThreadContex
 #define ARGUMENT_TYPE_ARGLIST    RexxArrayObject
 #define ARGUMENT_TYPE_NAME       CSTRING
 #define ARGUMENT_TYPE_SCOPE      RexxClassObject
-#define ARGUMENT_TYPE_BUFFER     POINTER
 #define ARGUMENT_TYPE_CSELF      POINTER
 #define ARGUMENT_TYPE_OSELF      RexxObjectPtr
 
@@ -3245,6 +3268,29 @@ __methodstub(name) \
 } \
 /* the real target method code */  \
 __type(returnType) name##_impl(RexxMethodContext *context, __adcl(t1, n1), __adcl(t2, n2), __adcl(t3, n3), __adcl(t4, n4), __adcl(t5, n5), __adcl(t6, n6), __adcl(t7, n7), __adcl(t8, n8), __adcl(t9, n9))
+
+
+// method with 10 arguments
+#define RexxMethod10(returnType, name, t1, n1, t2, n2, t3, n3, t4, n4, t5, n5, t6, n6, t7, n7, t8, n8, t9, n9, t10, n10) \
+/* forward reference definition for method */ \
+__type(returnType) name##_impl (RexxMethodContext * context, __adcl(t1, n1), __adcl(t2, n2), __adcl(t3, n3), __adcl(t4, n4), __adcl(t5, n5), __adcl(t6, n6), __adcl(t7, n7), __adcl(t8, n8), __adcl(t9, n9), __adcl(t10, n10));  \
+                               \
+/* method signature definition */ \
+static uint16_t name##_types[] = {__tdcl(returnType), __tdcl(t1), __tdcl(t2), __tdcl(t3), __tdcl(t4), __tdcl(t5), __tdcl(t6), __tdcl(t7), __tdcl(t8), __tdcl(t9), __tdcl(t10), REXX_ARGUMENT_TERMINATOR};    \
+\
+__cpp_method_proto(name) \
+/* generated calling stub function */ \
+__methodstub(name) \
+{ \
+    if (arguments != NULL) /* if no arguments passed, this a signature request */ \
+    {                                                                             \
+        /* forward to the method implementation */                                \
+        __ret(returnType, name##_impl(context, __arg(1, t1), __arg(2, t2), __arg(3, t3), __arg(4, t4), __arg(5, t5), __arg(6, t6), __arg(7, t7), __arg(8, t8), __arg(9, t9), __arg(10, t10)));      \
+    }                                                                             \
+    return name##_types;     /* return the type signature */                      \
+} \
+/* the real target method code */  \
+__type(returnType) name##_impl(RexxMethodContext *context, __adcl(t1, n1), __adcl(t2, n2), __adcl(t3, n3), __adcl(t4, n4), __adcl(t5, n5), __adcl(t6, n6), __adcl(t7, n7), __adcl(t8, n8), __adcl(t9, n9), __adcl(t10, n10))
 
 
 #define __functionstub(name) uint16_t * RexxEntry name(RexxCallContext *context, ValueDescriptor *arguments)

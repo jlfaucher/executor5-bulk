@@ -262,18 +262,6 @@ void RexxNativeActivation::processArguments(size_t _argcount, RexxObject **_argl
                 break;
             }
 
-            case REXX_VALUE_BUFFER:               /* reference to Buffered storage     */
-            {
-                // this doesn't make any sense for a function call
-                if (activationType != METHOD_ACTIVATION)
-                {
-                    reportSignatureError();
-                }
-                descriptors[outputIndex].flags = ARGUMENT_EXISTS | SPECIAL_ARGUMENT;
-                descriptors[outputIndex].value.value_POINTER = this->buffer();
-                break;
-            }
-
             case REXX_VALUE_ARGLIST:              /* need the argument list            */
             {
                 descriptors[outputIndex].flags = ARGUMENT_EXISTS | SPECIAL_ARGUMENT;
@@ -522,20 +510,28 @@ void RexxNativeActivation::processArguments(size_t _argcount, RexxObject **_argl
                     switch (type)
                     {
 
-                        case REXX_VALUE_RexxStringObject: /* no object here                    */
-                        case REXX_VALUE_RexxArrayObject: /* no object here                    */
-                        case REXX_VALUE_RexxObjectPtr:  /* no object here                    */
-                        case REXX_VALUE_int:            /* non-integer value                 */
-                        case REXX_VALUE_int64_t:        /* non-integer value                 */
-                        case REXX_VALUE_int32_t:        /* non-integer value                 */
-                        case REXX_VALUE_int16_t:        /* non-integer value                 */
-                        case REXX_VALUE_int8_t:         /* non-integer value                 */
-                        case REXX_VALUE_wholenumber_t:     /* non-existent long                 */
-                        case REXX_VALUE_stringsize_t:   /* non-existent long                 */
-                        case REXX_VALUE_logical_t:      // this must be a boolean value
-                        case REXX_VALUE_size_t:         /* non-existent double               */
-                        case REXX_VALUE_CSTRING:        /* missing character string          */
+                        case REXX_VALUE_RexxObjectPtr:     // no object here
+                        case REXX_VALUE_int:               // non-integer value
+                        case REXX_VALUE_wholenumber_t:     // non-existent long
+                        case REXX_VALUE_CSTRING:           // missing character string
                         case REXX_VALUE_POINTER:
+                        case REXX_VALUE_RexxStringObject:  // no object here
+                        case REXX_VALUE_stringsize_t:      // non-existent long
+                        case REXX_VALUE_int8_t:            // non-integer value
+                        case REXX_VALUE_int16_t:           // non-integer value
+                        case REXX_VALUE_int32_t:           // non-integer value
+                        case REXX_VALUE_int64_t:           // non-integer value
+                        case REXX_VALUE_uint8_t:           // non-integer value
+                        case REXX_VALUE_uint16_t:          // non-integer value
+                        case REXX_VALUE_uint32_t:          // non-integer value
+                        case REXX_VALUE_uint64_t:          // non-integer value
+                        case REXX_VALUE_size_t:
+                        case REXX_VALUE_ssize_t:
+                        case REXX_VALUE_intptr_t:
+                        case REXX_VALUE_uintptr_t:
+                        case REXX_VALUE_logical_t:         // this must be a boolean value
+                        case REXX_VALUE_RexxArrayObject:   // no object here
+                        case REXX_VALUE_RexxStemObject:
                         case REXX_VALUE_POINTERSTRING:
                         {
                             // set this as a 64-bit value to clear everything out
@@ -620,77 +616,82 @@ RexxObject *RexxNativeActivation::valueToObject(ValueDescriptor *value)
 
         case REXX_VALUE_int:                    /* integer value                     */
         {
-            return Numerics::toObject((wholenumber_t)value->value.value_int);
+            return Numerics::wholenumberToObject((wholenumber_t)value->value.value_int);
         }
 
         case REXX_VALUE_int8_t:                         /* integer value                     */
         {
-            return Numerics::toObject((wholenumber_t)value->value.value_int8_t);
+            return Numerics::wholenumberToObject((wholenumber_t)value->value.value_int8_t);
         }
 
         case REXX_VALUE_int16_t:                        /* integer value                     */
         {
-            return Numerics::toObject((wholenumber_t)value->value.value_int16_t);
+            return Numerics::wholenumberToObject((wholenumber_t)value->value.value_int16_t);
         }
 
         case REXX_VALUE_int32_t:                        /* integer value                     */
         {
-            return Numerics::toObject((wholenumber_t)value->value.value_int32_t);
+            return Numerics::wholenumberToObject((wholenumber_t)value->value.value_int32_t);
         }
 
         case REXX_VALUE_int64_t:                        /* integer value                     */
         {
-            return Numerics::toObject(value->value.value_int64_t);
+            return Numerics::int64ToObject(value->value.value_int64_t);
         }
 
         case REXX_VALUE_intptr_t:                       /* integer value                     */
         {
-            return Numerics::toObject((wholenumber_t)value->value.value_intptr_t);
+            return Numerics::wholenumberToObject((wholenumber_t)value->value.value_intptr_t);
         }
 
         case REXX_VALUE_uint8_t:                         /* integer value                     */
         {
-            return Numerics::toObject((stringsize_t)value->value.value_uint8_t);
+            return Numerics::stringsizeToObject((stringsize_t)value->value.value_uint8_t);
         }
 
         case REXX_VALUE_uint16_t:                        /* integer value                     */
         {
-            return Numerics::toObject((stringsize_t)value->value.value_uint16_t);
+            return Numerics::stringsizeToObject((stringsize_t)value->value.value_uint16_t);
         }
 
         case REXX_VALUE_uint32_t:                        /* integer value                     */
         {
-            return Numerics::toObject((wholenumber_t)value->value.value_uint32_t);
+            return Numerics::stringsizeToObject((stringsize_t)value->value.value_uint32_t);
         }
 
         case REXX_VALUE_uint64_t:                        /* integer value                     */
         {
-            return Numerics::toObject(value->value.value_uint64_t);
+            return Numerics::uint64ToObject(value->value.value_uint64_t);
         }
 
         case REXX_VALUE_uintptr_t:                       /* integer value                     */
         {
-            return Numerics::toObject((wholenumber_t)value->value.value_uintptr_t);
+            return Numerics::stringsizeToObject((stringsize_t)value->value.value_uintptr_t);
+        }
+
+        case REXX_VALUE_logical_t:                        /* logical value                     */
+        {
+            return value->value.value_logical_t == 0 ? TheFalseObject : TheTrueObject;
         }
 
         case REXX_VALUE_size_t:                        /* integer value                     */
         {
-            return Numerics::toObject((stringsize_t)value->value.value_size_t);
+            return Numerics::stringsizeToObject((stringsize_t)value->value.value_size_t);
         }
 
         case REXX_VALUE_ssize_t:                        /* integer value                     */
         {
-            return Numerics::toObject((wholenumber_t)value->value.value_size_t);
+            return Numerics::wholenumberToObject((wholenumber_t)value->value.value_size_t);
         }
 
         case REXX_VALUE_wholenumber_t:        /* long integer value                */
         {
-            return Numerics::toObject((wholenumber_t)value->value.value_wholenumber_t);
+            return Numerics::wholenumberToObject((wholenumber_t)value->value.value_wholenumber_t);
         }
 
         case REXX_VALUE_stringsize_t:     /* long integer value                */
         {
-            return Numerics::toObject((stringsize_t)value->value.value_stringsize_t);
+            return Numerics::stringsizeToObject((stringsize_t)value->value.value_stringsize_t);
         }
 
         case REXX_VALUE_double:                 /* double value                      */
@@ -1647,7 +1648,7 @@ stringsize_t RexxNativeActivation::unsignedNumberValue(RexxObject *o, size_t pos
     // convert using the whole value range
     if (!Numerics::objectToStringSize(o, temp, maxValue))
     {
-        reportException(Error_Invalid_argument_whole, position + 1, o);
+        reportException(Error_Invalid_argument_range, new_array(new_integer(position + 1), IntegerZero, new_numberstringFromStringsize(maxValue), o));
     }
     return temp;
 }
@@ -1689,7 +1690,7 @@ uint64_t RexxNativeActivation::unsignedInt64Value(RexxObject *o, size_t position
     // convert using the whole value range
     if (!Numerics::objectToUnsignedInt64(o, temp))
     {
-        reportException(Error_Invalid_argument_whole, position + 1, o);
+        reportException(Error_Invalid_argument_nonnegative, position + 1, o);
     }
     return temp;
 }
@@ -1768,35 +1769,13 @@ void *RexxNativeActivation::cself()
 /*            NULL is returned.                                               */
 /******************************************************************************/
 {
-    /* retrieve from object dictionary   */
-    RexxPointer *C_self = (RexxPointer *)methodVariables()->realValue(OREF_CSELF);
-    if (C_self != OREF_NULL)             /* got an item?                      */
+    // if this is a method invocation, ask the receiver object to figure this out.
+    if (receiver != OREF_NULL)
     {
-        return C_self->pointer();        /* return the pointer value          */
+        return receiver->getCSelf();
     }
-    else
-    {
-        return NULL;                     /* no object available               */
-    }
-}
-
-
-void *RexxNativeActivation::buffer()
-/******************************************************************************/
-/* Function:  Returns "unwrapped" C or C++ object stored in a buffer object.  */
-/*            If the variable CSELF does not exist, then NULL is returned.    */
-/******************************************************************************/
-{
-    /* retrieve from object dictionary   */
-    RexxBuffer *C_self = (RexxBuffer *)this->methodVariables()->realValue(OREF_CSELF);
-    if (C_self != OREF_NULL)             /* got an item?                      */
-    {
-        return(void *)C_self->getData();  /* return a pointer to the address   */
-    }
-    else
-    {
-        return NULL;                       /* no object available               */
-    }
+    // nope, call context doesn't allow this
+    return OREF_NULL;
 }
 
 
@@ -2469,6 +2448,29 @@ RexxClass *RexxNativeActivation::findClass(RexxString *className)
         return executable->findClass(className);
     }
     return Interpreter::findClass(className);
+}
+
+
+/**
+ * Resolve a class in the context of the caller's execution
+ * context.
+ *
+ * @param className The target class name.
+ *
+ * @return The resolved class (if any).
+ */
+RexxClass *RexxNativeActivation::findCallerClass(RexxString *className)
+{
+    // have a caller context?  if not, just do the default environment searches
+    if (activation == OREF_NULL)
+    {
+        return Interpreter::findClass(className);
+    }
+    else
+    {
+        // use the caller activation to resolve this
+        return activation->findClass(className);
+    }
 }
 
 

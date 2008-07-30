@@ -40,9 +40,9 @@
 #------------------------
 
 all: $(OR_OUTDIR)\rexxapi.dll $(OR_OUTDIR)\rxapi.exe
-    @ECHO .
+    @ECHO.
     @ECHO All done rexxapi.dll  rxapi.exe
-    @ECHO .
+    @ECHO.
 
 !include "$(OR_LIBSRC)\ORXWIN32.MAK"
 
@@ -107,7 +107,7 @@ $(OR_OUTDIR)\rxapi.exe : $(SERVEROBJS) $(OR_OUTDIR)\rxapi.res
 
 # Update the resource if necessary
 $(OR_OUTDIR)\rxapi.res: $(APLATFORM)\rxapi.rc $(APLATFORM)\APIServiceMessages.h
-    @ECHO .
+    @ECHO.
     @ECHO ResourceCompiling $(@B).res
         $(rc) $(rcflags_common) -r -fo $(OR_OUTDIR)\rxapi.res $(APLATFORM)\rxapi.rc
 
@@ -116,7 +116,7 @@ $(OR_OUTDIR)\rxapi.res: $(APLATFORM)\rxapi.rc $(APLATFORM)\APIServiceMessages.h
 # *** For .CPP files in OR_LIBSRC directory
 #
 {$(OR_REXXAPISRC)\client}.cpp{$(OR_OUTDIR)}.obj:
-    @ECHO .
+    @ECHO.
     @ECHO Compiling $(**)
     $(OR_CC) $(cflags_common) $(cflags_dll)  /Fo$(@) $CLIENTINC) $(OR_ORYXINCL) $(Tp)$(**)
 
@@ -125,7 +125,7 @@ $(OR_OUTDIR)\rxapi.res: $(APLATFORM)\rxapi.rc $(APLATFORM)\APIServiceMessages.h
 # *** For .CPP files in OR_LIBSRC directory
 #
 {$(OR_REXXAPISRC)\client\platform\windows}.cpp{$(OR_OUTDIR)}.obj:
-    @ECHO .
+    @ECHO.
     @ECHO Compiling $(**)
     $(OR_CC) $(cflags_common) $(cflags_dll)  /Fo$(@) $CLIENTINC) $(OR_ORYXINCL) $(Tp)$(**)
 
@@ -134,7 +134,7 @@ $(OR_OUTDIR)\rxapi.res: $(APLATFORM)\rxapi.rc $(APLATFORM)\APIServiceMessages.h
 # *** For .CPP files in OR_LIBSRC directory
 #
 {$(OR_REXXAPISRC)\server}.cpp{$(OR_OUTDIR)}.obj:
-    @ECHO .
+    @ECHO.
     @ECHO Compiling $(**)
     $(OR_CC) $(cflags_common) $(cflags_dll)  /Fo$(@) $SERVERINC) $(OR_ORYXINCL) $(Tp)$(**)
 
@@ -143,7 +143,7 @@ $(OR_OUTDIR)\rxapi.res: $(APLATFORM)\rxapi.rc $(APLATFORM)\APIServiceMessages.h
 # *** For .CPP files in OR_LIBSRC directory
 #
 {$(OR_REXXAPISRC)\server\platform\windows}.cpp{$(OR_OUTDIR)}.obj:
-    @ECHO .
+    @ECHO.
     @ECHO Compiling $(**)
     $(OR_CC) $(cflags_common) $(cflags_dll)  /Fo$(@) $SERVERINC) $(OR_ORYXINCL) $(Tp)$(**)
 
@@ -158,6 +158,6 @@ $(OR_OUTDIR)\rxapi.res: $(APLATFORM)\rxapi.rc $(APLATFORM)\APIServiceMessages.h
 
 # Update the version information block
 $(OR_OUTDIR)\verinfo.res: $(INT_PLATFORM)\verinfo.rc
-    @ECHO .
+    @ECHO.
     @ECHO ResourceCompiling $(@B).res
         $(rc) $(rcflags_common) -r -fo$(@) $(**)

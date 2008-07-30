@@ -100,8 +100,8 @@ public:
     inline void clearObjectMark() { flags &= LiveMask; }
     inline void setObjectMark(size_t mark) { clearObjectMark(); flags |= mark; }
     inline bool isObjectMarked(size_t mark) { return (flags & mark) != 0; }
-    inline bool isObjectLive(size_t mark) { return (flags & MarkMask) == mark; }
-    inline bool isObjectDead(size_t mark) { return (flags & MarkMask) != mark; }
+    inline bool isObjectLive(size_t mark) { return ((size_t)(flags & MarkMask)) == mark; }
+    inline bool isObjectDead(size_t mark) { return ((size_t)(flags & MarkMask)) != mark; }
     inline void clear() { objectSize = 0; flags = 0; }
     inline void setOldSpace() { flags |= OldSpaceBit; }
     inline void clearOldSpace() { flags &= ~OldSpaceBit; }
@@ -445,6 +445,7 @@ class RexxObject : public RexxInternalObject {
                                        // Following are internal OREXX methods
      RexxObject  *defMethods(RexxDirectory *);
      void         setObjectVariable(RexxString *, RexxObject *, RexxObject *);
+     RexxObject  *getObjectVariable(RexxString *);
      RexxObject  *getObjectVariable(RexxString *, RexxObject *);
      void         addObjectVariables(RexxVariableDictionary *);
      void         copyObjectVariables(RexxObject *newObject);
@@ -476,6 +477,7 @@ class RexxObject : public RexxInternalObject {
      RexxObject  *copyRexx();
      RexxObject  *unknownRexx(RexxString *, RexxArray *);
      RexxObject  *hasMethodRexx(RexxString *);
+     void *getCSelf();
      // compare 2 values for equality, potentially falling back on the
      // "==" method for the test.
      bool inline equalValue(RexxObject *other)
