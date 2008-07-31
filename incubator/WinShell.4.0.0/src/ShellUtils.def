@@ -1,0 +1,126 @@
+;/*----------------------------------------------------------------------------*/
+;/*                                                                            */
+;/* Copyright (c) 2008 Rexx Language Association. All rights reserved.         */
+;/*                                                                            */
+;/* This program and the accompanying materials are made available under       */
+;/* the terms of the Common Public License v1.0 which accompanies this         */
+;/* distribution. A copy is also available at the following address:           */
+;/* http://www.oorexx.org/license.html                                         */
+;/*                                                                            */
+;/* Redistribution and use in source and binary forms, with or                 */
+;/* without modification, are permitted provided that the following            */
+;/* conditions are met:                                                        */
+;/*                                                                            */
+;/* Redistributions of source code must retain the above copyright             */
+;/* notice, this list of conditions and the following disclaimer.              */
+;/* Redistributions in binary form must reproduce the above copyright          */
+;/* notice, this list of conditions and the following disclaimer in            */
+;/* the documentation and/or other materials provided with the distribution.   */
+;/*                                                                            */
+;/* Neither the name of Rexx Language Association nor the names                */
+;/* of its contributors may be used to endorse or promote products             */
+;/* derived from this software without specific prior written permission.      */
+;/*                                                                            */
+;/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+;/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+;/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+;/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+;/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+;/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+;/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+;/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+;/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+;/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+;/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+;/*                                                                            */
+;/*----------------------------------------------------------------------------*/
+LIBRARY SHELLUTILS
+
+SECTIONS
+	shared_data   Read Write Shared
+
+EXPORTS
+  WinShell_init
+  WinShell_uninit
+  WinShell_browseForFolder
+  WinShell_pathFromCSIDL
+  WinShell_pathFromItemID
+  WinShell_getItemID
+  WinShell_getItemIDFromPath
+  WinShell_getItemIDFromCSIDL
+  WinShell_releaseItemID
+  WinShell_openFindFiles
+  WinShell_openFolder
+  WinShell_closeWindow
+  WinShell_addToRecentDocuments
+  WinShell_clearRecentDocuments
+  WinShell_queryDiskSpace_private
+  WinShell_queryRecycleBin_private
+  WinShell_emptyRecycleBin
+  WinShell_selectIcon
+  WinShell_loadIcon
+  WinShell_getSharedIcon
+  WinShell_extractDefaultIcons
+  WinShell_releaseIcon
+  WinShell_about
+  WinShell_test
+
+  ImageList_destroy_class
+  ImageList_init
+  ImageList_uninit
+  ImageList_getImageCount
+  ImageList_getImageSize
+  ImageList_getBkColor
+  ImageList_setBkColor
+  ImageList_setListViewImages
+  ImageList_release
+
+  SimpleFolderBrowse_init
+  SimpleFolderBrowse_uninit
+  SimpleFolderBrowse_setRoot_private
+  SimpleFolderBrowse_getFolder
+  SimpleFolderBrowse_getItemID
+
+  ShellFileOp_init
+  ShellFileOp_uninit
+  ShellFileOp_delete
+  ShellFileOp_copy
+  ShellFileOp_move
+  ShellFileOp_rename
+  ShellFileOp_setFOFlags
+  ShellFileOp_setOwnerWnd
+
+  Path_makePretty
+  Path_canonicalize
+  Path_compact
+  Path_searchAndQualify
+  Path_quoteSpaces
+  Path_unquoteSpaces
+  Path_removeBackslash
+  Path_addBackslash
+  Path_removeFileSpec
+  Path_exists
+  Path_isDirectory
+  Path_isDirectoryEmpty
+  Path_isRoot
+  Path_isFull
+  Path_isNetworkPath
+  Path_isUNC
+  Path_isUNCServer
+  Path_isUNCServerShare
+  Path_getShortPath
+  Path_getLongPath
+
+  Sh_version_class
+  Sh_is64Bit_class
+  Sh_is32on64Bit_class
+  Sh_isW2K_class
+  Sh_isAtLeastW2K_class
+  Sh_isXP_class
+  Sh_isXP32_class
+  Sh_isXP64_class
+  Sh_isAtLeastXP_class
+  Sh_isW2K3_class
+  Sh_isAtLeastW2K3_class
+  Sh_isVista_class
+  Sh_isAtLeastVista_class
