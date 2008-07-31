@@ -35,52 +35,61 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
+/*****************************************************************************/
+/* REXX Windows Support                                                      */
+/*                                                                           */
+/* Process support for Windows                                               */
+/*                                                                           */
+/*****************************************************************************/
 
-#ifndef ClientMessage_HPP_INCLUDED
-#define ClientMessage_HPP_INCLUDED
-
-#include "rexx.h"
-#include "ServiceMessage.hpp"
-
-class ClientMessage : public ServiceMessage
-{
-public:
-    inline ClientMessage(ServerManager target, ServerOperation op)
-    {
-        messageTarget = target;
-        operation = op;
-    }
-
-    inline ClientMessage(ServerManager target, ServerOperation op, uintptr_t p1)
-    {
-        messageTarget = target;
-        operation = op;
-        parameter1 = p1;
-    }
-
-    inline ClientMessage(ServerManager target, ServerOperation op, const char *p1)
-    {
-        messageTarget = target;
-        operation = op;
-        strncpy(nameArg, p1, NAMESIZE);
-    }
-
-    inline ClientMessage(ServerManager target, ServerOperation op, uintptr_t p1, const char *name)
-    {
-        messageTarget = target;
-        operation = op;
-        parameter1 = p1;
-        strncpy(nameArg, name, NAMESIZE);
-    }
-
-    inline ~ClientMessage()
-    {
-        // free the message data, if obtained from the server
-        freeMessageData();
-    }
-
-    void send();
-};
-
+#ifdef HAVE_CONFIG_H
+# include "config.h"
 #endif
+
+#ifdef HAVE_PWD_H
+# include <pwd.h>
+#endif
+
+#ifdef HAVE_UNISTD_H
+# include <unistd.h>
+#endif
+
+#include <stdlib.h>
+#include <string.h>
+#include <sys/types.h>
+#include "SysProcess.hpp"
+
+
+/**
+ * Get the current user name information.
+ *
+ * @param buffer The buffer (of at least MAX_USERID_LENGTH characters) into which the userid is copied.
+ */
+void SysProcess::getUserID(char *buffer)
+{
+#if defined( HAVE_GETPWUID )
+    struct passwd * pstUsrDat;
+#endif
+
+#if defined( HAVE_GETPWUID )
+    pstUsrDat = getpwuid(geteuid());
+    strncpy( buffer,  pstUsrDat->pw_name, MAX_USERID_LENGTH-1);
+#elif defined( HAVE_IDTOUSER )
+    strncpy( buffer, IDtouser(geteuid()), MAX_USERID_LENGTH-1);
+#else
+    strcpy( buffer, "unknown" );
+#endif
+}
+
+
+/**
+ * Do process specific sleep.
+ *
+ * @param milliseconds
+ *               The number of milliseconds to sleep.
+ */
+void SysProcess::sleep(int milliseconds)
+{
+    usleep(milliseconds * 1000);
+}
 

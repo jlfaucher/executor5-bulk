@@ -266,6 +266,13 @@ inline void reportHalt(RexxString *description)
 }
 
 
+inline void missingArgument(size_t argumentPosition)
+{
+                                       /* just raise the error              */
+    reportException(Error_Incorrect_method_noarg, argumentPosition);
+}
+
+
 inline RexxActivity *new_activity()  { return ActivityManager::createNewActivity(); }
 inline RexxActivity *new_activity(RexxActivity *parent)  { return ActivityManager::createNewActivity(parent); }
 

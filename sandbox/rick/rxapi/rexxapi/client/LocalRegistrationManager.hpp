@@ -41,7 +41,7 @@
 
 #include "LocalAPISubsystem.hpp"
 #include "ServiceMessage.hpp"
-#include "oorexx.h"
+#include "rexx.h"
 
 
 // local instance of the registration API...this is a proxy that communicates with the
@@ -53,7 +53,7 @@ public:
     ServiceReturn registerCallback(RegistrationType type, const char *name, const char *module,
         const char *proc, const char *userData, bool drop);
 
-    ServiceReturn registerCallback(RegistrationType type, const char *name, RexxCallback entryPoint,
+    ServiceReturn registerCallback(RegistrationType type, const char *name, REXXPFN entryPoint,
         const char *userData);
 
     ServiceReturn dropCallback(RegistrationType type, const char *name, const char *module);
@@ -62,7 +62,7 @@ public:
 
     ServiceReturn queryCallback(RegistrationType type, const char *name, const char *module, char *userData);
 
-    void resolveCallback(RegistrationType type, const char *name, const char *module, RexxCallback &entryPoint);
+    void resolveCallback(RegistrationType type, const char *name, const char *module, REXXPFN &entryPoint);
     virtual RexxReturnCode processServiceException(ServiceException *e);
 };
 

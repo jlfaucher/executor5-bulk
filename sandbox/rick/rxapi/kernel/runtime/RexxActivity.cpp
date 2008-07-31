@@ -993,7 +993,7 @@ void RexxActivity::reraiseException(RexxDirectory *exobj)
 
     RexxObject *errorcode = exobj->at(OREF_CODE);    /* get the error code                */
                                          /* convert to a decimal              */
-    wholenumber_t errornumber = message_number((RexxString *)errorcode);
+    wholenumber_t errornumber = Interpreter::messageNumber((RexxString *)errorcode);
     /* get the primary message number    */
     wholenumber_t primary = (errornumber / 1000) * 1000;
     if (errornumber != primary)
@@ -1084,7 +1084,7 @@ RexxObject *RexxActivity::display(RexxDirectory *exobj)
     }
     RexxObject *rc = exobj->at(OREF_RC);             /* get the error code                */
     /* get the message number            */
-    wholenumber_t errorCode = message_number((RexxString *)rc);
+    wholenumber_t errorCode = Interpreter::messageNumber((RexxString *)rc);
     /* get the header                    */
     RexxString *text = SystemInterpreter::getMessageHeader(errorCode);
     if (text == OREF_NULL)               /* no header available?              */
@@ -1131,7 +1131,7 @@ RexxObject *RexxActivity::display(RexxDirectory *exobj)
     {
         rc = exobj->at(OREF_CODE);         /* get the error code                */
                                            /* get the message number            */
-        errorCode = message_number((RexxString *)rc);
+        errorCode = Interpreter::messageNumber((RexxString *)rc);
         /* get the header                    */
         text = SystemInterpreter::getMessageHeader(errorCode);
         if (text == OREF_NULL)             /* no header available?              */

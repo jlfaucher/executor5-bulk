@@ -79,7 +79,7 @@ ServiceReturn LocalRegistrationManager::registerCallback(RegistrationType type, 
  *
  * @return The message return code.
  */
-ServiceReturn LocalRegistrationManager::registerCallback(RegistrationType type, const char *name, RexxCallback entryPoint,
+ServiceReturn LocalRegistrationManager::registerCallback(RegistrationType type, const char *name, REXXPFN entryPoint,
     const char *userData)
 {
     // first parameter for these calls is ALWAYS the type
@@ -201,7 +201,7 @@ ServiceReturn LocalRegistrationManager::queryCallback(RegistrationType type, con
  * @param entryPoint Pointer for returning the entry point address.
  */
 void LocalRegistrationManager::resolveCallback(RegistrationType type, const char *name, const char *module,
-    RexxCallback &entryPoint)
+    REXXPFN &entryPoint)
 {
     entryPoint = NULL;                 // assume failure
 
@@ -225,12 +225,12 @@ void LocalRegistrationManager::resolveCallback(RegistrationType type, const char
             SysLibrary lib;
             if (lib.load(retData->moduleName))
             {
-                entryPoint = (RexxCallback)lib.getProcedure(retData->procedureName);
+                entryPoint = (REXXPFN)lib.getProcedure(retData->procedureName);
             }
         }
         else
         {
-            entryPoint = (RexxCallback)retData->entryPoint;
+            entryPoint = (REXXPFN)retData->entryPoint;
         }
     }
 }

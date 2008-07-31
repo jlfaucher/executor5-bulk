@@ -103,7 +103,7 @@ void SystemInterpreter::startInterpreter()
     // make sure we have the home set appropriately
     if ( RxAPIHOMEset() )
     {
-        logic_error(" *** ERROR: No HOME or RXHOME directory for REXX!\n");
+        Interpreter::logicError(" *** ERROR: No HOME or RXHOME directory for REXX!\n");
     }
 }
 

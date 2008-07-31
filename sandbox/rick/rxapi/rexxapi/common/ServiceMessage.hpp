@@ -39,7 +39,7 @@
 #ifndef ServiceMessage_HPP_INCLUDED
 #define ServiceMessage_HPP_INCLUDED
 
-#include "oorexx.h"
+#include "rexx.h"
 #include "ServiceException.hpp"
 #include "SysCSStream.hpp"
 #include "SysProcess.hpp"
@@ -208,7 +208,7 @@ public:
         strncpy(moduleName, module, MAX_NAME_LENGTH);
     }
 
-    inline ServiceRegistrationData(RexxCallback entry, const char *userPointer)
+    inline ServiceRegistrationData(REXXPFN entry, const char *userPointer)
     {
         entryPoint = (uintptr_t)entry;
         dropAuthority = OWNER_ONLY;
@@ -221,8 +221,8 @@ public:
         // we have two bits of user data to copy
         if (userPointer != NULL)
         {
-            userData[0] = const_cast<void **>(userPointer)[0];
-            userData[1] = const_cast<void **>(userPointer)[1];
+            userData[0] = ((void **)userPointer)[0];
+            userData[1] = ((void **)userPointer)[1];
         }
         else
         {
@@ -237,8 +237,8 @@ public:
         // we have two bits of user data to copy
         if (userPointer != NULL)
         {
-            const_cast<void **>(userPointer)[0] = userData[0];
-            const_cast<void **>(userPointer)[1] = userData[0];
+            ((void **)userPointer)[0] = userData[0];
+            ((void **)userPointer)[1] = userData[1];
         }
     }
 
@@ -286,7 +286,7 @@ public:
     {
         result = SERVER_ERROR;
         errorCode = e->getErrorCode();
-        strncpy(nameArg, e->getMessage(), nameArg);
+        strncpy(nameArg, e->getMessage(), NAMESIZE);
     }
 
     inline void clearExceptionInfo()
@@ -316,19 +316,19 @@ public:
         messageDataLength = 0;
     }
 
-    inline char *getMessageData() { return messageData; }
+    inline void *getMessageData() { return messageData; }
     inline size_t getMessageDataLength() { return messageDataLength; }
 
     inline void transferMessageData(RXSTRING &data)
     {
-        MAKERXSTRING(data, messageData, messageDataLength);
+        MAKERXSTRING(data, (char *)messageData, messageDataLength);
         // we've given up ownership of this data, so clear out the
         // pointers so we don't try to free
         messageData = NULL;
         messageDataLength = 0;
     }
 
-    inline void setMessageData(const char *data, size_t length)
+    inline void setMessageData(void *data, size_t length)
     {
         freeMessageData();    // make sure any existing data is cleared.
         messageData = data;
@@ -372,7 +372,7 @@ public:
     uintptr_t parameter5;                // the fifth parameter passed
     ServiceReturn result;                // return result
     ErrorCode errorCode;                 // error code from other side
-    char     *messageData;               // extra data attached to the message.
+    void     *messageData;               // extra data attached to the message.
     size_t    messageDataLength;         // size of the extra data.
     bool      retainMessageData;         // indicates the server should not release result memory.
     char      nameArg[NAMESIZE];         // buffer for name arguments

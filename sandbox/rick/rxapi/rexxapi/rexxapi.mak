@@ -50,21 +50,21 @@ all: $(OR_OUTDIR)\rexxapi.dll $(OR_OUTDIR)\rxapi.exe
 !ERROR Build error, OR_REXXAPISRC not set
 !ENDIF
 
-COMMONINC = -I $(OR_REXXAPISRC)\common
-CLIENTINC = -I $(OR_REXXAPISRC)\client -I $(OR_REXXAPISRC)\client\platform\windows -I $(OR_REXXAPISRC)\common
-SERVERINC = -I $(OR_REXXAPISRC)\server -I $(OR_REXXAPISRC)\server\platform\windows -I $(OR_REXXAPISRC)\common
+COMMONINC = -I$(OR_REXXAPISRC)\common -I$(OR_REXXAPISRC)\common\platform\windows
+CLIENTINC = -I$(OR_REXXAPISRC)\client -I$(OR_REXXAPISRC)\client\platform\windows -I$(OR_REXXAPISRC)\common
+SERVERINC = -I$(OR_REXXAPISRC)\server -I$(OR_REXXAPISRC)\server\platform\windows -I$(OR_REXXAPISRC)\common
 
 CLIENTOBJS = $(OR_OUTDIR)\ClientMessage.obj $(OR_OUTDIR)\LocalAPIContext.obj \
           $(OR_OUTDIR)\LocalAPIManager.obj $(OR_OUTDIR)\LocalQueueManager.obj \
           $(OR_OUTDIR)\LocalMacroSpaceManager.obj $(OR_OUTDIR)\LocalRegistrationManager.obj \
           $(OR_OUTDIR)\MacroSpaceApi.obj $(OR_OUTDIR)\QueuesApi.obj  $(OR_OUTDIR)\RegistrationApi.obj \
-          $(OR_OUTDIR)\ServiceMessage.obj
+          $(OR_OUTDIR)\ServiceMessage.obj $(OR_OUTDIR)\SysCSStream.obj $(OR_OUTDIR)\SysProcess.obj
 
 SERVEROBJS = $(OR_OUTDIR)\APIServer.obj  $(OR_OUTDIR)\APIServerInstance.obj \
           $(OR_OUTDIR)\MacroSpaceManager.obj $(OR_OUTDIR)\QueueManager.obj \
           $(OR_OUTDIR)\RegistrationManager.obj $(OR_OUTDIR)\ServiceMessage.obj \
           $(OR_OUTDIR)\RegistrationManager.obj $(OR_OUTDIR)\ServiceMessage.obj \
-          $(OR_OUTDIR)\APIService.obj
+          $(OR_OUTDIR)\APIService.obj $(OR_OUTDIR)\SysCSStream.obj $(OR_OUTDIR)\SysProcess.obj
 
 # Following for REXXAPI.DLL
 #
@@ -118,7 +118,7 @@ $(OR_OUTDIR)\rxapi.res: $(APLATFORM)\rxapi.rc $(APLATFORM)\APIServiceMessages.h
 {$(OR_REXXAPISRC)\client}.cpp{$(OR_OUTDIR)}.obj:
     @ECHO.
     @ECHO Compiling $(**)
-    $(OR_CC) $(cflags_common) $(cflags_dll)  /Fo$(@) $CLIENTINC) $(OR_ORYXINCL) $(Tp)$(**)
+    $(OR_CC) $(cflags_common) $(cflags_dll)  /Fo$(@) $(CLIENTINC) $(COMMONINC) $(OR_ORYXINCL) $(Tp)$(**)
 
 #
 # *** Inference Rule for CPP->OBJ
@@ -127,7 +127,7 @@ $(OR_OUTDIR)\rxapi.res: $(APLATFORM)\rxapi.rc $(APLATFORM)\APIServiceMessages.h
 {$(OR_REXXAPISRC)\client\platform\windows}.cpp{$(OR_OUTDIR)}.obj:
     @ECHO.
     @ECHO Compiling $(**)
-    $(OR_CC) $(cflags_common) $(cflags_dll)  /Fo$(@) $CLIENTINC) $(OR_ORYXINCL) $(Tp)$(**)
+    $(OR_CC) $(cflags_common) $(cflags_dll)  /Fo$(@) $(CLIENTINC) $(COMMONINC) $(OR_ORYXINCL) $(Tp)$(**)
 
 #
 # *** Inference Rule for CPP->OBJ
@@ -136,7 +136,7 @@ $(OR_OUTDIR)\rxapi.res: $(APLATFORM)\rxapi.rc $(APLATFORM)\APIServiceMessages.h
 {$(OR_REXXAPISRC)\server}.cpp{$(OR_OUTDIR)}.obj:
     @ECHO.
     @ECHO Compiling $(**)
-    $(OR_CC) $(cflags_common) $(cflags_dll)  /Fo$(@) $SERVERINC) $(OR_ORYXINCL) $(Tp)$(**)
+    $(OR_CC) $(cflags_common) $(cflags_dll)  /Fo$(@) $(SERVERINC) $(COMMONINC) $(OR_ORYXINCL) $(Tp)$(**)
 
 #
 # *** Inference Rule for CPP->OBJ
@@ -145,7 +145,7 @@ $(OR_OUTDIR)\rxapi.res: $(APLATFORM)\rxapi.rc $(APLATFORM)\APIServiceMessages.h
 {$(OR_REXXAPISRC)\server\platform\windows}.cpp{$(OR_OUTDIR)}.obj:
     @ECHO.
     @ECHO Compiling $(**)
-    $(OR_CC) $(cflags_common) $(cflags_dll)  /Fo$(@) $SERVERINC) $(OR_ORYXINCL) $(Tp)$(**)
+    $(OR_CC) $(cflags_common) $(cflags_dll)  /Fo$(@) $(SERVERINC) $(COMMONINC) $(OR_ORYXINCL) $(Tp)$(**)
 
 #
 # *** Inference Rule for CPP->OBJ
@@ -154,7 +154,16 @@ $(OR_OUTDIR)\rxapi.res: $(APLATFORM)\rxapi.rc $(APLATFORM)\APIServiceMessages.h
 {$(OR_REXXAPISRC)\common}.cpp{$(OR_OUTDIR)}.obj:
     @ECHO .
     @ECHO Compiling $(**)
-    $(OR_CC) $(cflags_common) $(cflags_dll)  /Fo$(@) $COMMONINC) $(OR_ORYXINCL) $(Tp)$(**)
+    $(OR_CC) $(cflags_common) $(cflags_dll)  /Fo$(@) $(COMMONINC) $(OR_ORYXINCL) $(Tp)$(**)
+
+#
+# *** Inference Rule for CPP->OBJ
+# *** For .CPP files in OR_LIBSRC directory
+#
+{$(OR_REXXAPISRC)\common\platform\windows}.cpp{$(OR_OUTDIR)}.obj:
+    @ECHO .
+    @ECHO Compiling $(**)
+    $(OR_CC) $(cflags_common) $(cflags_dll)  /Fo$(@) $(COMMONINC) $(OR_ORYXINCL) $(Tp)$(**)
 
 # Update the version information block
 $(OR_OUTDIR)\verinfo.res: $(INT_PLATFORM)\verinfo.rc

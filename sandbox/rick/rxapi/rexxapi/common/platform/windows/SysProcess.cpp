@@ -35,52 +35,57 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
+/*****************************************************************************/
+/* REXX Windows Support                                                      */
+/*                                                                           */
+/* Process support for Windows                                               */
+/*                                                                           */
+/*****************************************************************************/
 
-#ifndef ClientMessage_HPP_INCLUDED
-#define ClientMessage_HPP_INCLUDED
+#include "windows.h"
+#include "SysProcess.hpp"
 
-#include "rexx.h"
-#include "ServiceMessage.hpp"
 
-class ClientMessage : public ServiceMessage
+/**
+ * Get the current user name information.
+ *
+ * @param buffer The buffer (of at least MAX_USERID_LENGTH characters) into which the userid is copied.
+ */
+void SysProcess::getUserID(char *buffer)
 {
-public:
-    inline ClientMessage(ServerManager target, ServerOperation op)
+    DWORD account_size = MAX_USERID_LENGTH;
+    GetUserName(buffer, &account_size);
+}
+
+#define OM_WAKEUP (WM_USER+10)
+
+/**
+ * Do process specific sleep.
+ *
+ * @param milliseconds
+ *               The number of milliseconds to sleep.
+ */
+void SysProcess::sleep(int milliseconds)
+{
+    if (useMessageLoop)
     {
-        messageTarget = target;
-        operation = op;
+        MSG msg;
+        if ( !(SetTimer(NULL, 0, (LONG)milliseconds, (TIMERPROC) sleepTimerProc)) )
+        {
+            return;
+        }
+        while (GetMessage (&msg, NULL, 0, 0) )
+        {
+            if (msg.message == OM_WAKEUP)    /* If our message exit loop   */
+            {
+                break;
+            }
+            TranslateMessage( &msg );
+            DispatchMessage ( &msg );
+        }
     }
-
-    inline ClientMessage(ServerManager target, ServerOperation op, uintptr_t p1)
+    else
     {
-        messageTarget = target;
-        operation = op;
-        parameter1 = p1;
+        Sleep(milliseconds);
     }
-
-    inline ClientMessage(ServerManager target, ServerOperation op, const char *p1)
-    {
-        messageTarget = target;
-        operation = op;
-        strncpy(nameArg, p1, NAMESIZE);
-    }
-
-    inline ClientMessage(ServerManager target, ServerOperation op, uintptr_t p1, const char *name)
-    {
-        messageTarget = target;
-        operation = op;
-        parameter1 = p1;
-        strncpy(nameArg, name, NAMESIZE);
-    }
-
-    inline ~ClientMessage()
-    {
-        // free the message data, if obtained from the server
-        freeMessageData();
-    }
-
-    void send();
-};
-
-#endif
-
+}

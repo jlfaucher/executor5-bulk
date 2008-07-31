@@ -36,7 +36,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /****************************************************************************/
-/* REXX Kernel                                                  okutil.c    */
+/* REXX Kernel                                                              */
 /*                                                                          */
 /* Utility Functions                                                        */
 /*                                                                          */
@@ -47,108 +47,9 @@
 #include <string.h>
 #include <ctype.h>
 #include <sys/types.h>
-#include "RexxCore.h"
-#include "StringClass.hpp"
-#include "RexxActivity.hpp"
-#include "ActivityManager.hpp"
-#include "ArrayClass.hpp"
-#include "RexxNativeActivation.hpp"
-#include "ProtectedObject.hpp"
 #include "Utilities.hpp"
 
-void logic_error (const char *desc)
-/******************************************************************************/
-/* Function:  Raise a fatal logic error                                       */
-/******************************************************************************/
-{
-  printf("Logic error: %s\n",desc);
-  exit(RC_LOGIC_ERROR);
-}
-
-
-wholenumber_t message_number(
-    RexxString *errorcode)             /* REXX error code as string         */
-/******************************************************************************/
-/* Function:  Parse out the error code string into the messagecode valuey     */
-/******************************************************************************/
-{
-  const char *decimalPoint;            /* location of decimalPoint in errorcode*/
-  wholenumber_t  primary = 0;          /* Primary part of error code, major */
-  wholenumber_t  secondary = 0;        /* Secondary protion (minor code)    */
-  wholenumber_t  count;
-
-                                       /* make sure we get errorcode as str */
-  errorcode = (RexxString *)errorcode->stringValue();
-                                       /* scan to decimal Point or end of   */
-                                       /* error code.                       */
-  for (decimalPoint = errorcode->getStringData(), count = 0; *decimalPoint && *decimalPoint != '.'; decimalPoint++, count++);
-
-  // must be a whole number in the correct range
-  if (!new_string(errorcode->getStringData(), count)->numberValue(primary) || primary < 1 || primary >= 100)
-  {
-                                       /* Nope raise an error.              */
-      reportException(Error_Expression_result_raise);
-
-  }
-  // now shift over the decimal position.
-  primary *= 1000;
-
-
-  if (*decimalPoint) {                 /* Was there a decimal point specified?*/
-                                       /* is the subcode invalid or too big?*/
-    if (!new_string(decimalPoint + 1, errorcode->getLength() - count -1)->numberValue(secondary) || secondary < 0  || secondary >= 1000) {
-                                       /* Yes, raise an error.              */
-        reportException(Error_Expression_result_raise);
-    }
-  }
-  return primary + secondary;          /* add two portions together, return */
-}
-
-void process_new_args(
-    RexxObject **arg_array,            /* source argument array             */
-    size_t       argCount,             /* size of the argument array        */
-    RexxObject***init_args,            /* remainder arguments               */
-    size_t      *remainderSize,        /* remaining count of arguments      */
-    size_t       required,             /* number of arguments we require    */
-    RexxObject **argument1,            /* first returned argument           */
-    RexxObject **argument2 )           /* second return argument            */
-/******************************************************************************/
-/* Function:  Divide up a class new arglist into new arguments and init args  */
-/******************************************************************************/
-{
-  *argument1 = OREF_NULL;              /* clear the first argument          */
-  if (argCount >= 1)                   /* have at least one argument?       */
-    *argument1 = arg_array[0];         /* get the first argument            */
-  if (required == 2) {                 /* processing two arguments?         */
-    if (argCount >= 2)                 /* get at least 2?                   */
-      *argument2 = arg_array[1];       /* get the second argument           */
-    else
-      *argument2 = OREF_NULL;          /* clear the second argument         */
-  }
-                                       /* get the init args part            */
-  *init_args = arg_array + required;
-  /* if we have at least the required arguments, reduce the count. */
-  /* Otherwise, set this to zero. */
-  if (argCount >= required) {
-      *remainderSize = argCount - required;
-  }
-  else {
-      *remainderSize = 0;
-  }
-}
-
-void missing_argument(
-    size_t argumentPosition)           /* position of the missing argument  */
-/******************************************************************************/
-/* Function:  Raise an error for a missing argument, given the target         */
-/*            position.                                                       */
-/******************************************************************************/
-{
-                                       /* just raise the error              */
-    reportException(Error_Incorrect_method_noarg, argumentPosition);
-}
-
-const char *mempbrk(
+const char *Utilities::locateCharacter(
   const char *String,                  /* search string                     */
   const char *Set,                     /* reference set                     */
   size_t      Length )                 /* size of string                    */
@@ -156,14 +57,16 @@ const char *mempbrk(
 /*  Function:  Find first occurence of set member in memory          */
 /*********************************************************************/
 {
-  while (Length-- > 0) {               /* search through string             */
+    while (Length-- > 0)
+    {               /* search through string             */
 
-    if (strchr(Set, *String)) {        /* find a match in ref set?          */
-        return String;
+        if (strchr(Set, *String))
+        {        /* find a match in ref set?          */
+            return String;
+        }
+        String++;                          /* step the pointer                  */
     }
-    String++;                          /* step the pointer                  */
-  }
-  return NULL;                         /* return matched position           */
+    return NULL;                         /* return matched position           */
 }
 
 

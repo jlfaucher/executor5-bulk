@@ -1,6 +1,5 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
 /* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
@@ -36,34 +35,129 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-#ifndef LocalAPISubsystem_HPP_INCLUDED
-#define LocalAPISubsystem_HPP_INCLUDED
+#ifndef SysCSStream_Included
+#define SysCSStream_Included
 
-#include "rexx.h"
-#include "ServiceException.hpp"
+// Client Server error codes
+typedef enum
+{
+    CSERROR_OK = 0,
+    CSERROR_CONNX_EXISTS,
+    CSERROR_CONNX_FAILED,
+    CSERROR_IO_FAILED,
+    CSERROR_OPEN_FAILED,
+    CSERROR_HOSTNAME_PORT,
+    CSERROR_INTERNAL,
+    CSERROR_UNKNOWN
+} CSErrorCodeT;
 
-class LocalAPIManager;
 
-class LocalAPISubsystem
+// This is the Client TCP/IP Stream class
+class SysClientStream
+{
+protected:
+    CSErrorCodeT errcode;
+    int c; // client socket
+    int domain; // the socket domain
+    int type; // the socket type
+    int protocol; // the socket protocol
+
+public:
+    SysClientStream();
+    SysClientStream(const char *name);
+    SysClientStream(const char *host, int port);
+    ~SysClientStream();
+    CSErrorCodeT getError(void)
+    {
+        return errcode;
+    };
+    bool open(const char *);
+    bool open(const char *, int);
+    bool close();
+    bool read(void *buf, size_t bufsize, size_t *bytesread);
+    bool write(void *buf, size_t bufsize, size_t *byteswritten);
+    // the following APIs are usually not used but are here for completeness
+    // they should be called prior to calling the Open method
+    void setDomain(int newdomain)
+    {
+        domain = newdomain;
+    };
+    void setType(int newtype)
+    {
+        type = newtype;
+    };
+    void setProtocol(int newprotocol)
+    {
+        protocol = newprotocol;
+    };
+};
+
+class SysServerStream;
+
+/**
+ * Class to manage a single instance of a server connection.
+ * These are created any time a server stream object accepts
+ * a connection.
+ */
+class SysServerConnection
 {
 public:
-    virtual ~LocalAPISubsystem() { ; }
-    virtual void initializeLocal(LocalAPIManager *a)
-    {
-        apiManager = a;
-    }
+    SysServerConnection(SysServerStream *s, int socket);
+    ~SysServerConnection();
 
-    virtual void terminateProcess()
-    {
-    }
-
-    virtual RexxReturnCode processServiceException(ServiceException *e)
-    {
-        return RXAPI_MEMFAIL;
-    }
+    bool read(void *buf, size_t bufsize, size_t *bytesread);
+    bool write(void *buf, size_t bufsize, size_t *byteswritten);
+    bool isLocalConnection();
+    bool disconnect(void);
 
 protected:
-    LocalAPIManager *apiManager;    // the client api manager
+    SysServerStream *server;
+    int c; // client socket
+    CSErrorCodeT errcode;
+};
+
+// This is the Server TCP/IP Stream class
+class SysServerStream
+{
+protected:
+    CSErrorCodeT errcode;
+    int s; // server socket
+    int domain; // the socket domain
+    int type; // the socket type
+    int protocol; // the socket protocol
+    int backlog; // backlog for connecting clients
+
+public:
+    SysServerStream();
+    SysServerStream(const char *name);
+    SysServerStream(int port);
+    ~SysServerStream();
+    CSErrorCodeT getError(void)
+    {
+        return errcode;
+    };
+    bool make(const char *);
+    bool make(int);
+    SysServerConnection *connect();
+    bool close();
+    // the following APIs are usually not used but are here for completeness
+    // they should be called prior to calling the Make method
+    void setDomain(int newdomain)
+    {
+        domain = newdomain;
+    };
+    void setType(int newtype)
+    {
+        type = newtype;
+    };
+    void setProtocol(int newprotocol)
+    {
+        protocol = newprotocol;
+    };
+    void setBackLog(int newbacklog)
+    {
+        backlog = newbacklog;
+    };
 };
 
 #endif

@@ -40,7 +40,7 @@
 #define LocalQueueManager_HPP_INCLUDED
 
 #include "LocalAPISubsystem.hpp"
-#include "oorexx.h"
+#include "rexx.h"
 #include "Rxstring.hpp"
 #include "ServiceMessage.hpp"
 #include "SysUtil.hpp"

@@ -119,7 +119,7 @@ RexxReturnCode RexxEntry RexxRegisterSubcomDll(
 
 RexxReturnCode RexxEntry RexxRegisterSubcom(
     const char *    envName,                  // Subcom name
-    RexxCallback    entryPoint,               // callback address
+    REXXPFN    entryPoint,               // callback address
     const char *    userArea)                 // User data
 {
     ENTER_REXX_API(RegistrationManager)
@@ -222,7 +222,7 @@ RexxReturnCode RexxEntry RexxQuerySubcom(
 
 RexxReturnCode RexxEntry RexxResolveSubcom(
   const char       *name,              // Exit name.
-  RexxCallback     *entryPoint)        // the entry point of the exit
+  REXXPFN     *entryPoint)        // the entry point of the exit
 {
     ENTER_REXX_API(RegistrationManager)
     {
@@ -285,7 +285,7 @@ RexxReturnCode RexxEntry RexxRegisterLibraryExit(
 
 RexxReturnCode RexxEntry   RexxRegisterExit(
   const char *      envName,           /* exit name                  */
-  RexxCallback      entryPoint,        /* Entry point address        */
+  REXXPFN      entryPoint,        /* Entry point address        */
   const char *      userArea)          /* User data                  */
 {
     ENTER_REXX_API(RegistrationManager)
@@ -388,7 +388,7 @@ RexxReturnCode RexxEntry RexxQueryExit(
 
 RexxReturnCode RexxEntry RexxResolveExit(
   const char *      name,              // Exit name.
-  RexxCallback     *entryPoint)        // the entry point of the exit
+  REXXPFN     *entryPoint)        // the entry point of the exit
 {
     ENTER_REXX_API(RegistrationManager)
     {
@@ -446,7 +446,7 @@ RexxReturnCode RexxEntry RexxRegisterLibraryFunction(
 
 RexxReturnCode RexxEntry RexxRegisterFunction(
   const char *      name,                 // Function name
-  RexxCallback  entryPoint)               // Entry point address
+  REXXPFN  entryPoint)               // Entry point address
 {
     ENTER_REXX_API(RegistrationManager)
     {
@@ -518,7 +518,7 @@ RexxReturnCode RexxEntry RexxQueryFunction(
 RexxReturnCode RexxEntry   RexxResolveFunction(
     const char *    name,              // Function name
     const char *    library,           // Qualifying library name (optional)
-    RexxCallback   *entryPoint)        // the entry point of the exit
+    REXXPFN   *entryPoint)        // the entry point of the exit
 {
     ENTER_REXX_API(RegistrationManager)
     {

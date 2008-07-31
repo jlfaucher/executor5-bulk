@@ -35,52 +35,32 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
+/*****************************************************************************/
+/* REXX Windows Support                                                      */
+/*                                                                           */
+/* Process control for Windows systems                                       */
+/*                                                                           */
+/*****************************************************************************/
 
-#ifndef ClientMessage_HPP_INCLUDED
-#define ClientMessage_HPP_INCLUDED
+#ifndef SysProcess_DEFINED
+#define SysProcess_DEFINED
 
-#include "rexx.h"
-#include "ServiceMessage.hpp"
+#include <process.h>
 
-class ClientMessage : public ServiceMessage
+enum
 {
-public:
-    inline ClientMessage(ServerManager target, ServerOperation op)
-    {
-        messageTarget = target;
-        operation = op;
-    }
-
-    inline ClientMessage(ServerManager target, ServerOperation op, uintptr_t p1)
-    {
-        messageTarget = target;
-        operation = op;
-        parameter1 = p1;
-    }
-
-    inline ClientMessage(ServerManager target, ServerOperation op, const char *p1)
-    {
-        messageTarget = target;
-        operation = op;
-        strncpy(nameArg, p1, NAMESIZE);
-    }
-
-    inline ClientMessage(ServerManager target, ServerOperation op, uintptr_t p1, const char *name)
-    {
-        messageTarget = target;
-        operation = op;
-        parameter1 = p1;
-        strncpy(nameArg, name, NAMESIZE);
-    }
-
-    inline ~ClientMessage()
-    {
-        // free the message data, if obtained from the server
-        freeMessageData();
-    }
-
-    void send();
+    MAX_USERID_LENGTH = 256    // maximum length for a user name
 };
 
+class SysProcess
+{
+public:
+   static void getUserID(char *buffer);
+   static void sleep(int milliseconds);
+   static inline int getPid()
+   {
+       return _getpid();
+   }
+};
 #endif
 
