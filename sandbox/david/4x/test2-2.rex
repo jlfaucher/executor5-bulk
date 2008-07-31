@@ -69,7 +69,6 @@ return
 ::class myMainWindow subclass GtkWindow
 
 ::method signal_destroy
-say 'Got here!'
 call gtk_main_quit
 return
 
