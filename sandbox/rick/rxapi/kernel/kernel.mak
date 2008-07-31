@@ -513,6 +513,15 @@ ORXHEADERS: $(ORXHEADERS)
     $(OR_CC) $(cflags_common) $(cflags_dll)  /Fo$(@) $(OR_ORYXINCL) $(Tp)$(**)
 
 #
+# *** Inference Rule for CPP->OBJ
+# *** For .CPP files in OR_LIBSRC directory
+#
+{$(OR_COMMONSRC)}.cpp{$(OR_OUTDIR)}.obj:
+    @ECHO .
+    @ECHO Compiling $(**)
+    $(OR_CC) $(cflags_common) $(cflags_dll)  /Fo$(@) $(OR_ORYXINCL) $(Tp)$(**)
+
+#
 # *** Inference Rule for C->OBJ
 # *** For .C files in OR_LIBSRC directory
 #

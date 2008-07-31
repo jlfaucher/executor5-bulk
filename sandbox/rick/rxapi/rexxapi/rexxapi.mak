@@ -165,6 +165,15 @@ $(OR_OUTDIR)\rxapi.res: $(APLATFORM)\rxapi.rc $(APLATFORM)\APIServiceMessages.h
     @ECHO Compiling $(**)
     $(OR_CC) $(cflags_common) $(cflags_dll)  /Fo$(@) $(COMMONINC) $(OR_ORYXINCL) $(Tp)$(**)
 
+#
+# *** Inference Rule for CPP->OBJ
+# *** For .CPP files in OR_LIBSRC directory
+#
+{$(OR_COMMONSRC)}.cpp{$(OR_OUTDIR)}.obj:
+    @ECHO .
+    @ECHO Compiling $(**)
+    $(OR_CC) $(cflags_common) $(cflags_dll)  /Fo$(@) $(OR_ORYXINCL) $(Tp)$(**)
+
 # Update the version information block
 $(OR_OUTDIR)\verinfo.res: $(INT_PLATFORM)\verinfo.rc
     @ECHO.
