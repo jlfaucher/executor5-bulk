@@ -66,6 +66,7 @@ static void signal_func_0(GtkWidget *widget,
     RexxThreadContext *context;
 
     cblock->instance->AttachThread(&context);
+    printf("signal_func_0 called - %s\n", ((cbcb *)data)->signal_name);
     context->SendMessage0(rxobj, ((cbcb *)data)->signal_name);
     context->DetachThread();
     return;

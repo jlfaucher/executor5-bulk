@@ -1005,10 +1005,6 @@ use strict arg mywidget
 self~pack_start(mywidget, .true, .true, 0)
 return
 
-::method signal_connect
-use strict arg event
-return self~signal_connect:super(event)
-
 
 /*============================================================================*/
 /* Class: GtkHBox                                                             */
@@ -1028,10 +1024,6 @@ return
 
 ::METHOD init_1args private EXTERNAL "LIBRARY rexxgtk GrxHBoxNewFromPtr"
 ::METHOD init_2args private EXTERNAL "LIBRARY rexxgtk GrxHBoxNew"
-
-::method signal_connect
-use strict arg event
-return self~signal_connect:super(event)
 
 
 /*============================================================================*/
@@ -1053,10 +1045,6 @@ return
 ::METHOD init_1args private EXTERNAL "LIBRARY rexxgtk GrxVBoxNewFromPtr"
 ::METHOD init_2args private EXTERNAL "LIBRARY rexxgtk GrxVBoxNew"
 
-::method signal_connect
-use strict arg event
-return self~signal_connect:super(event)
-
 
 /*============================================================================*/
 /* Class: GtkAlignment                                                        */
@@ -1065,10 +1053,6 @@ return self~signal_connect:super(event)
 ::class GtkAlignment public subclass GtkContainer
 
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxAlignmentNew"
-
-::method signal_connect
-use strict arg event
-return self~signal_connect:super(event)
 
 
 /*============================================================================*/
@@ -1090,10 +1074,6 @@ return
 -- The following are the methods that can be connected to signals. By default
 -- they do nothing.
 
-::method signal_connect
-use strict arg event
-return self~signal_connect:super(event)
-
 
 /*============================================================================*/
 /* Class: GtkHPaned                                                           */
@@ -1103,10 +1083,6 @@ return self~signal_connect:super(event)
 
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxHPanedNew"
 
-::method signal_connect
-use strict arg event
-return self~signal_connect:super(event)
-
 
 /*============================================================================*/
 /* Class: GtkVPaned                                                           */
@@ -1115,10 +1091,6 @@ return self~signal_connect:super(event)
 ::class GtkVPaned public subclass GtkPaned
 
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxVPanedNew"
-
-::method signal_connect
-use strict arg event
-return self~signal_connect:super(event)
 
 
 /*============================================================================*/
@@ -1324,10 +1296,6 @@ return check
 
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxCheckButtonNew"
 
-::method signal_connect
-use strict arg event
-return self~signal_connect:super(event)
-
 
 /*============================================================================*/
 /* Class: GtkRadioButton                                                      */
@@ -1468,10 +1436,6 @@ return
 ::METHOD set_row_spacings EXTERNAL "LIBRARY rexxgtk GrxTableSetRowSpacings"
 ::METHOD 'col_spacings=' EXTERNAL "LIBRARY rexxgtk GrxTableSetColSpacings"
 ::METHOD set_col_spacings EXTERNAL "LIBRARY rexxgtk GrxTableSetColSpacings"
-
-::method signal_connect
-use strict arg event
-return self~signal_connect:super(event)
 
 
 /*============================================================================*/
@@ -1792,10 +1756,6 @@ return
 ::METHOD put EXTERNAL "LIBRARY rexxgtk GrxFixedPut"
 ::METHOD move EXTERNAL "LIBRARY rexxgtk GrxFixedMove"
 
-::method signal_connect
-use strict arg event
-return self~signal_connect:super(event)
-
 
 /*============================================================================*/
 /* Class: GtkExpander                                                         */
@@ -1962,10 +1922,6 @@ return
 ::METHOD get_value_pos EXTERNAL "LIBRARY rexxgtk GrxScaleGetValuePos"
 ::METHOD value_pos EXTERNAL "LIBRARY rexxgtk GrxScaleGetValuePos"
 
-::method signal_connect
-use strict arg event
-return self~signal_connect:super(event)
-
 
 /*============================================================================*/
 /* Class: GtkHScale                                                           */
@@ -1987,10 +1943,6 @@ return self~signal_connect:super(event)
 ::METHOD newWithRange class EXTERNAL "LIBRARY rexxgtk GrxVScaleNewWithRange"
 
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxVScaleNew"
-
-::method signal_connect
-use strict arg event
-return self~signal_connect:super(event)
 
 
 /*============================================================================*/
