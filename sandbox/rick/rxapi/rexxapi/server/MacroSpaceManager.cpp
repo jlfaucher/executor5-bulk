@@ -37,7 +37,7 @@
 /*----------------------------------------------------------------------------*/
 
 #include "MacroSpaceManager.hpp"
-#include "SysUtil.hpp"
+#include "Utilities.hpp"
 
 /**
  * Create a macro item entry.
@@ -102,7 +102,7 @@ MacroItem *MacroTable::locate(char *name)
     while (current != NULL)              /* while more macros          */
     {
         // find the one we want?
-        if (SysUtil::stricmp(name, current->name) == 0)
+        if (Utilities::strCaselessCompare(name, current->name) == 0)
         {
             // move this to the front so we find it quickly
             reorder(current, previous);
@@ -130,7 +130,7 @@ MacroItem *MacroTable::remove(const char *name)
     {
         iterator = NULL;         // this invalidates any iterator we may have
         // find the one we want?
-        if (SysUtil::stricmp(name, current->name) == 0)
+        if (Utilities::strCaselessCompare(name, current->name) == 0)
         {
             // move this to the front so we find it quickly
             removeMacro(current, previous);

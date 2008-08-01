@@ -41,7 +41,7 @@
 #include <time.h>
 #include <new>
 #include "stdio.h"
-#include "SysUtil.hpp"
+#include "Utilities.hpp"
 
 /**
  * Set the update time for a macro item.
@@ -251,7 +251,7 @@ DataQueue *QueueTable::locate(const char *name)
     while (current != NULL)
     {
         // find the one we want?
-        if (SysUtil::stricmp(name, current->queueName) == 0)
+        if (Utilities::strCaselessCompare(name, current->queueName) == 0)
         {
             // move this to the front so we find it quickly
             reorderQueues(current, previous);
@@ -309,7 +309,7 @@ DataQueue *QueueTable::remove(const char *name)
     while (current != NULL)              /* while more queues          */
     {
         // find the one we want?
-        if (SysUtil::stricmp(name, current->queueName) == 0)
+        if (Utilities::strCaselessCompare(name, current->queueName) == 0)
         {
             // move this to the front so we find it quickly
             removeQueue(current, previous);

@@ -43,7 +43,7 @@
 #include "rexx.h"
 #include "Rxstring.hpp"
 #include "ServiceMessage.hpp"
-#include "SysUtil.hpp"
+#include "Utilities.hpp"
 
 typedef uintptr_t QueueHandle;     // type for returned queue handles
 
@@ -57,7 +57,7 @@ public:
 
     inline bool isSessionQueue(const char *name)
     {
-        return name == NULL || SysUtil::stricmp(name, "SESSION") == 0;
+        return name == NULL || Utilities::strCaselessCompare(name, "SESSION") == 0;
     }
 
     void validateQueueName(const char *username);

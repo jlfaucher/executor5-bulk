@@ -43,7 +43,7 @@
 #include "ServiceMessage.hpp"
 #include "oorexx.h"
 #include "Rxstring.hpp"
-#include "SysUtil.hpp"
+#include "Utilities.hpp"
 #include "SysFile.hpp"
 
 // Macro space version information
@@ -106,7 +106,7 @@ public:
     {
         for (size_t i = 0; i < count; i++)
         {
-            if (SysUtil::stricmp(name, names[i]) == 0)
+            if (Utilities::strCaselessCompare(name, names[i]) == 0)
             {
                 return true;
             }

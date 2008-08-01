@@ -42,7 +42,7 @@
 #include "SysLocalAPIManager.hpp"
 #include "oorexx.h"
 #include "ClientMessage.hpp"
-#include "SysUtil.hpp"
+#include "Utilities.hpp"
 #include <stdio.h>
 #include <ctype.h>
 
@@ -59,7 +59,7 @@ void LocalQueueManager::validateQueueName(const char *username)
         return;
     }
     // "SESSION" is a reserved name, reject this in this context
-    if (SysUtil::stricmp(username, "SESSION") == 0)
+    if (SysUtil::strCaselessCompare(username, "SESSION") == 0)
     {
         throw new ServiceException(INVALID_QUEUE_NAME, username);
     }

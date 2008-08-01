@@ -39,9 +39,9 @@
 #ifndef RegistrationManager_HPP_INCLUDED
 #define RegistrationManager_HPP_INCLUDED
 
-#include "oorexx.h"
+#include "rexx.h"
 #include "ServiceMessage.hpp"
-#include "SysUtil.hpp"
+#include "Utilities.hpp"
 
 class SessionCookie
 {
@@ -68,9 +68,9 @@ public:
     RegistrationData(const char * n, SessionID s, ServiceRegistrationData *regData);
     ~RegistrationData();
 
-    inline bool matches(const char *n, const char *m) { return SysUtil::stricmp(name, n) == 0 && SysUtil::stricmp(moduleName, m) == 0; }
-    inline bool matches(const char *n, SessionID s) { return s == owner && SysUtil::stricmp(name, n) == 0; }
-    inline bool matches(const char *n) { return SysUtil::stricmp(name, n) == 0; }
+    inline bool matches(const char *n, const char *m) { return Utilities::strCaselessCompare(name, n) == 0 && Utilities::strCaselessCompare(moduleName, m) == 0; }
+    inline bool matches(const char *n, SessionID s) { return s == owner && Utilities::strCaselessCompare(name, n) == 0; }
+    inline bool matches(const char *n) { return Utilities::strCaselessCompare(name, n) == 0; }
     inline bool hasReferences() { return references != 0; }
     inline bool isLibrary() { return moduleName != NULL; }
     inline bool isEntryPoint() { return moduleName == NULL; }
