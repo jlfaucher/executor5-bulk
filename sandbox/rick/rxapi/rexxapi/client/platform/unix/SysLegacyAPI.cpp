@@ -34,54 +34,50 @@
 /* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
-/*----------------------------------------------------------------------------*/
+/*********************************************************************/
 
-#ifndef LocalQueueManager_HPP_INCLUDED
-#define LocalQueueManager_HPP_INCLUDED
-
-#include "LocalAPISubsystem.hpp"
-#include "rexx.h"
-#include "Rxstring.hpp"
-#include "ServiceMessage.hpp"
-#include "Utilities.hpp"
-
-typedef uintptr_t QueueHandle;     // type for returned queue handles
-
-// local instance of the queue API...this is a proxy that communicates with the
-// server that manages the queues.
-class LocalQueueManager : public LocalAPISubsystem
-{
-public:
-
-    typedef uintptr_t QueueHandle;
-
-    inline bool isSessionQueue(const char *name)
-    {
-        return name == NULL || Utilities::strCaselessCompare(name, "SESSION") == 0;
-    }
-
-    void validateQueueName(const char *username);
-    void initializeLocal(LocalAPIManager *a);
-    virtual void terminateProcess();
-    QueueHandle initializeSessionQueue(SessionID s);
-    QueueHandle createSessionQueue(SessionID session);
-    bool createNamedQueue(const char *name, size_t size, char *createdName);
-    void deleteSessionQueue();
-    void deleteNamedQueue(const char * name);
-    void clearSessionQueue();
-    void clearNamedQueue(const char * name);
-    size_t getSessionQueueCount();
-    size_t getQueueCount(const char *name);
-    void addToNamedQueue(const char *name, CONSTRXSTRING &data, size_t lifoFifo);
-    void addToSessionQueue(CONSTRXSTRING &data, size_t lifoFifo);
-    void pullFromQueue(const char *name, RXSTRING &data, size_t waitFlag, REXXDATETIME *timeStamp);
-    void nestSessionQueue(QueueHandle q);
-    virtual RexxReturnCode processServiceException(ServiceException *e);
-
-protected:
-    LocalAPIManager *localManager;  // our local manager instance
-    QueueHandle    sessionQueue;    // our resolved session queue
-    SessionID      sessionID;       // the working session id
-};
-
+#ifdef HAVE_CONFIG_H
+# include "config.h"
 #endif
+
+#include "rexx.h"
+
+/*********************************************************************/
+/*                                                                   */
+/*  Function:         RexxPullQueue()                                */
+/*                                                                   */
+/*  Description:      Pull an entry from a queue.                    */
+/*                                                                   */
+/*  Function:         Locate the queue, return its top entry to      */
+/*                    the caller, and tell the queue data            */
+/*                    manager to delete the entry.                   */
+/*                                                                   */
+/*                    If the queue is empty, the caller can elect    */
+/*                    to wait for someone to post an entry.          */
+/*                                                                   */
+/*  Notes:            Caller is responsible for freeing the returned */
+/*                    memory.                                        */
+/*                                                                   */
+/*                    The entry's control block is stored in the     */
+/*                    entry's memory.  We must therefore obtain      */
+/*                    addressability to the entry's memory before    */
+/*                    we can process the entry.                      */
+/*                                                                   */
+/*  Input:            external queue name, wait flag.                */
+/*                                                                   */
+/*  Output:           queue element, data size, date/time stamp.     */
+/*                                                                   */
+/*  Effects:          Top entry removed from the queue.  Message     */
+/*                    queued to the queue data manager.              */
+/*                                                                   */
+/*********************************************************************/
+RexxReturnCode REXXENTRY RexxPullQueue(
+  const char *name,
+  PRXSTRING   data_buf,
+  REXXDATETIME *dt,
+  size_t waitflag)
+{
+    // for unix platforms, this is a straight passthrough to the real API.
+    return RexxPullFromQueue(name, data_buf, dt, waitflag);
+}
+

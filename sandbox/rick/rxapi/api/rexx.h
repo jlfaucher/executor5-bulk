@@ -165,6 +165,21 @@ typedef size_t  logical_t;             // a Rexx logical (1 or 0) value
 #define RexxEntry REXXENTRY
 
 
+/***    RexxPullFromQueue - Retrieve data from an External Data Queue */
+typedef struct _REXXDATETIME {         /* REXX time stamp format            */
+  uint16_t       hours;                /* hour of the day (24-hour)         */
+  uint16_t       minutes;              /* minute of the hour                */
+  uint16_t       seconds;              /* second of the minute              */
+  uint16_t       hundredths;           /* hundredths of a second            */
+  uint16_t       day;                  /* day of the month                  */
+  uint16_t       month;                /* month of the year                 */
+  uint16_t       year;                 /* current year                      */
+  uint16_t       weekday;              /* day of the week                   */
+  uint32_t       microseconds;         /* microseconds                      */
+  uint32_t       yearday;              /* day number within the year        */
+} REXXDATETIME;
+
+
 typedef struct _RexxConditionData
 {
   wholenumber_t code;                 // The condition CODE information
@@ -692,6 +707,15 @@ RexxReturnCode REXXENTRY RexxAddQueue (
         PCONSTRXSTRING,                        /* Data string to add          */
         size_t);                               /* Queue type (FIFO|LIFO)      */
 typedef RexxReturnCode (REXXENTRY *PFNREXXADDQUEUE)(const char *, PCONSTRXSTRING, size_t);
+
+/***    RexxPullFromQueue - Retrieve data from an External Data Queue */
+RexxReturnCode REXXENTRY RexxPullFromQueue (
+        const char *,                          /* Name of queue to read from  */
+        PRXSTRING,                             /* RXSTRING to receive data    */
+        REXXDATETIME *,                        /* Stor for data date/time     */
+        size_t);                               /* wait status (WAIT|NOWAIT)   */
+typedef RexxReturnCode (REXXENTRY *PFNREXXPULLFROMQUEUE)(const char *, PRXSTRING, REXXDATETIME *,
+                                           size_t);
 
 
 #include "rexxplatformapis.h"

@@ -36,10 +36,9 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-#include "oorexx.h"
+#include "rexx.h"
 #include "LocalAPIManager.hpp"
 #include "LocalQueueManager.hpp"
-#include "RexxAPI.h"
 #include "LocalAPIContext.hpp"
 
 // the generated name pattern is
@@ -265,7 +264,7 @@ RexxReturnCode RexxEntry RexxAddQueue(
 
 /*********************************************************************/
 /*                                                                   */
-/*  Function:         RexxPullQueue()                                */
+/*  Function:         RexxPullFromQueue()                            */
 /*                                                                   */
 /*  Description:      Pull an entry from a queue.                    */
 /*                                                                   */
@@ -292,10 +291,10 @@ RexxReturnCode RexxEntry RexxAddQueue(
 /*                    queued to the queue data manager.              */
 /*                                                                   */
 /*********************************************************************/
-RexxReturnCode RexxEntry RexxPullQueue(
+RexxReturnCode RexxEntry RexxPullFromQueue(
   const char *name,
   RXSTRING  *data_buf,
-  RexxTimeStamp *time,
+  REXXDATETIME *time,
   RexxUnsignedNumber waitflag)
 {
     ENTER_REXX_API(QueueManager)

@@ -59,7 +59,7 @@ CLIENTOBJS = $(OR_OUTDIR)\ClientMessage.obj $(OR_OUTDIR)\LocalAPIContext.obj \
           $(OR_OUTDIR)\LocalMacroSpaceManager.obj $(OR_OUTDIR)\LocalRegistrationManager.obj \
           $(OR_OUTDIR)\MacroSpaceApi.obj $(OR_OUTDIR)\QueuesApi.obj  $(OR_OUTDIR)\RegistrationApi.obj \
           $(OR_OUTDIR)\ServiceMessage.obj $(OR_OUTDIR)\SysCSStream.obj $(OR_OUTDIR)\SysProcess.obj \
-          $(OR_OUTDIR)\Utilities.obj
+          $(OR_OUTDIR)\Utilities.obj $(OR_OUTDIR)\SysLegacyAPI.obj
 
 SERVEROBJS = $(OR_OUTDIR)\APIServer.obj  $(OR_OUTDIR)\APIServerInstance.obj \
           $(OR_OUTDIR)\MacroSpaceManager.obj $(OR_OUTDIR)\QueueManager.obj \
