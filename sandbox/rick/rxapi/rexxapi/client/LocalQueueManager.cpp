@@ -40,7 +40,7 @@
 #include "Encodings.hpp"
 #include "LocalAPIManager.hpp"
 #include "SysLocalAPIManager.hpp"
-#include "oorexx.h"
+#include "rexx.h"
 #include "ClientMessage.hpp"
 #include "Utilities.hpp"
 #include <stdio.h>
@@ -59,7 +59,7 @@ void LocalQueueManager::validateQueueName(const char *username)
         return;
     }
     // "SESSION" is a reserved name, reject this in this context
-    if (SysUtil::strCaselessCompare(username, "SESSION") == 0)
+    if (Utilities::strCaselessCompare(username, "SESSION") == 0)
     {
         throw new ServiceException(INVALID_QUEUE_NAME, username);
     }
@@ -68,9 +68,10 @@ void LocalQueueManager::validateQueueName(const char *username)
     if (namelen > 0 && namelen < MAX_QUEUE_NAME_LENGTH)
     {
         const char *valptr = username;      /* point to name              */
+        char ch;
         while ((ch = *(valptr++)))
         {         /* While have not reached end */
-            char ch = toupper(ch);               /* convert to upper case      */
+            ch = toupper(ch);               /* convert to upper case      */
             if (!isalpha(ch) && !isdigit(ch) && ch != ch_PERIOD &&
                 ch != ch_QUESTION_MARK && ch != ch_EXCLAMATION && ch != ch_UNDERSCORE)
             {
@@ -265,7 +266,7 @@ void LocalQueueManager::clearNamedQueue(const char *name)
  * @param data     The data to add
  * @param lifoFifo The lifo/fifo order flag.
  */
-void LocalQueueManager::addToNamedQueue(const char *name, ManagedRxstring &data, size_t lifoFifo)
+void LocalQueueManager::addToNamedQueue(const char *name, CONSTRXSTRING &data, size_t lifoFifo)
 {
     ClientMessage message(QueueManager, ADD_TO_NAMED_QUEUE, name);
                                            // set the additional arguments
@@ -273,7 +274,7 @@ void LocalQueueManager::addToNamedQueue(const char *name, ManagedRxstring &data,
     message.parameter2 = lifoFifo;     // make sure we have the add order
 
     // attach the queue item to the message.
-    message.setMessageData(data.strptr, data.strlength);
+    message.setMessageData((void *)data.strptr, data.strlength);
     message.send();
 }
 
@@ -294,12 +295,12 @@ void LocalQueueManager::addToSessionQueue(CONSTRXSTRING &data, size_t lifoFifo)
     message.parameter3 = sessionQueue; // set the session handle next
 
     // attach the queue item to the message.
-    message.setMessageData(data.strptr, data.strlength);
+    message.setMessageData((void *)data.strptr, data.strlength);
     message.send();
 }
 
 
-void LocalQueueManager::pullFromQueue(const char *name, RXSTRING &data, size_t waitFlag, RexxTimeStamp *timeStamp)
+void LocalQueueManager::pullFromQueue(const char *name, RXSTRING &data, size_t waitFlag, REXXDATETIME *timeStamp)
 {
     ClientMessage message(QueueManager, PULL_FROM_NAMED_QUEUE);
     // set up for either name or session queue read
@@ -314,7 +315,12 @@ void LocalQueueManager::pullFromQueue(const char *name, RXSTRING &data, size_t w
     }
     message.parameter1 = waitFlag != 0 ? QUEUE_WAIT_FOR_DATA : QUEUE_NO_WAIT;
     message.send();
-    MAKERXSTRING(data, message.getMessageData(), message.getMessageDataLength());
+    MAKERXSTRING(data, (char *)message.getMessageData(), message.getMessageDataLength());
+    // if the timestamp was requested, return it.
+    if (timeStamp != NULL)
+    {
+        memcpy(timeStamp, message.nameArg, sizeof(REXXDATETIME));
+    }
 }
 
 /**

@@ -38,7 +38,7 @@
 
 #include "LocalAPIContext.hpp"
 #include "ServiceException.hpp"
-#include "oorexx.h"
+#include "rexx.h"
 
 
 LocalAPIContext::LocalAPIContext(ServerManager t)

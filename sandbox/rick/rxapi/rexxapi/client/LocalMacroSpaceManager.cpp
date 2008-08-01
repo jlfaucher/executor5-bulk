@@ -38,11 +38,10 @@
 
 #include "LocalMacroSpaceManager.hpp"
 #include "LocalAPIManager.hpp"
-#include "InternalAPI.hpp"
 #include "SysLibrary.hpp"
 #include "ClientMessage.hpp"
 #include "SysFile.hpp"
-#include "rexxapitypes.h"
+#include "rexx.h"
 #include <stdio.h>
 
 

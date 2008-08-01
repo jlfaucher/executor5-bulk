@@ -37,13 +37,13 @@
 /*----------------------------------------------------------------------------*/
 
 #include "LocalAPIManager.hpp"
-#include "SynchronizedBlock.hpp"
 #include "SysLocalAPIManager.hpp"
 #include "ClientMessage.hpp"
+#include "SynchronizedBlock.hpp"
 
 // initialize static variables
 LocalAPIManager* LocalAPIManager::singleInstance = NULL;
-SysCriticalSection LocalAPIManager::criticalSection;
+SysMutex LocalAPIManager::messageLock;
 
 /**
  * Get the singleton instance of the local API manager.
@@ -52,7 +52,7 @@ SysCriticalSection LocalAPIManager::criticalSection;
  */
 LocalAPIManager *LocalAPIManager::getInstance()
 {
-    SynchronizedBlock sync(criticalSection);    // make sure we single thread this
+    Lock lock(messageLock);                     // make sure we single thread this
     if (singleInstance == NULL)
     {
         // create an intialize this.  If this fails, an exception is thrown
@@ -67,7 +67,7 @@ LocalAPIManager *LocalAPIManager::getInstance()
  */
 void LocalAPIManager::deleteInstance()
 {
-    SynchronizedBlock sync(criticalSection);    // make sure we single thread this
+    Lock lock(messageLock);                     // make sure we single thread this
     if (singleInstance != NULL)
     {
                               // clean up all local resources

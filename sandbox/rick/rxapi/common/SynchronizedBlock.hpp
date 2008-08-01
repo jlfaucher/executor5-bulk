@@ -35,30 +35,34 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
+/*****************************************************************************/
+/* REXX runtime support                                                      */
+/*                                                                           */
+/* Critical section definitions                                              */
+/*                                                                           */
+/*****************************************************************************/
 
-#ifndef LocalAPIContext_HPP_INCLUDED
-#define LocalAPIContext_HPP_INCLUDED
+#ifndef SynchronizedBlock_DEFINED
+#define SynchronizedBlock_DEFINED
 
-#include "LocalAPIManager.hpp"
-#include "ServiceException.hpp"
-#include "ServiceMessage.hpp"
-#include "rexx.h"
+#include "SysSemaphore.hpp"
 
-class LocalAPIContext
+class Lock
 {
 public:
-    LocalAPIContext(ServerManager t);
-    LocalAPIManager *getAPIManager();
-    RexxReturnCode processServiceException(ServiceException *e);
+    inline Lock(SysMutex &l) : lock(l)
+    {
+        lock.request();
+    }
+
+
+    inline ~Lock()
+    {
+        lock.release();
+    }
 
 protected:
-    LocalAPIManager *localManager;     // the local API manager
-    ServerManager   target;            // service we're processing
-    RexxReturnCode serviceFailureCode;
-    bool     cleanupLocalManager;
-    bool     contextInitialized;
+     SysMutex &lock;
 };
-
-
 #endif
 
