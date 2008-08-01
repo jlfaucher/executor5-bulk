@@ -44,14 +44,15 @@
 -- Foundations of GTK+ Development
 -- by Andrew Krause
 
+call gtk_init
 window = .myMainWindow~new(.gtk~GTK_WINDOW_TOPLEVEL)
 window~set_title('Fixed')
 window~signal_connect("destroy")
 window~set_border_width(10)
 
 fixed = .GtkFixed~new()
-button1 = .MyButton~new('Pixed by Pixel ...')
-button2 = .MyButton~new('you choose by fate.')
+button1 = .MyButton~newWithLabel('Pixed by Pixel ...')
+button2 = .MyButton~newWithLabel('you choose by fate.')
 
 button1~signal_connect("clicked")
 button2~signal_connect("clicked")
@@ -75,10 +76,10 @@ return
 call gtk_main_quit
 return
 
-::class MyButton subclass GtkButton_With_Label
+::class MyButton subclass GtkButton
 
 ::method signal_clicked
-widget = upper(GrxWidgetGetTopLevel(self))
+widget = self~get_toplevel()
 widget~destroy()
 return
 

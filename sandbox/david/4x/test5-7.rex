@@ -44,6 +44,7 @@
 -- Foundations of GTK+ Development
 -- by Andrew Krause
 
+call gtk_init
 dialog = .GtkFileChooserDialog~new('Create a Folder ...', .nil,,
                                    .gtk~GTK_FILE_CHOOSER_ACTION_CREATE_FOLDER,,
                                    .gtk~GTK_STOCK_CANCEL, .gtk~GTK_RESPONSE_CANCEL)

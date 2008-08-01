@@ -46,6 +46,7 @@
 
 -- Text iters are hidden in this example.
 
+call gtk_init
 window = .myMainWindow~new(.gtk~GTK_WINDOW_TOPLEVEL)
 window~set_title('Searching Buffers')
 window~signal_connect('destroy')

@@ -44,6 +44,7 @@
 -- Foundations of GTK+ Development
 -- by Andrew Krause
 
+call gtk_init
 window = .myMainWindow~new(.gtk~GTK_WINDOW_TOPLEVEL)
 window~set_title('Handle Box')
 window~signal_connect("destroy")
@@ -54,7 +55,7 @@ handle = .GtkHandleBox~new()
 label = .GtkLabel~new('Detach Me')
 
 handle~set_shadow_type(.gtk~GTK_SHADOW_IN)
-handle~set_handle_position(.gtk~GTK_POS_LEFT)
+handle~set_position(.gtk~GTK_POS_LEFT)
 handle~set_snap_edge(.gtk~GTK_POS_TOP)
 
 handle~add(label)

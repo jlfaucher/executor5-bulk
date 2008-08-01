@@ -44,6 +44,7 @@
 -- Foundations of GTK+ Development
 -- by Andrew Krause
 
+call gtk_init
 window = .myMainWindow~new(.gtk~GTK_WINDOW_TOPLEVEL)
 window~title = 'Hello World'
 window~set_border_width(25)

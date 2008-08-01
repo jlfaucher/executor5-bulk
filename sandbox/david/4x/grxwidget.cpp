@@ -609,7 +609,7 @@ RexxMethod1(RexxObjectPtr,             // Return type
     if (parent == NULL) {
         return context->Nil(); 
     }
-    parentptr = (RexxObjectPtr)g_object_get_data(G_OBJECT(myWidget), "OORXOBJECT");
+    parentptr = (RexxObjectPtr)g_object_get_data(G_OBJECT(parent), "OORXOBJECT");
     if (parentptr == NULL) {
         return context->Nil(); 
     }
@@ -637,7 +637,7 @@ RexxMethod1(RexxObjectPtr,             // Return type
     if (parentWidget == NULL) {
         return context->Nil(); 
     }
-    parentptr = (RexxObjectPtr)g_object_get_data(G_OBJECT(myWidget), "OORXOBJECT");
+    parentptr = (RexxObjectPtr)g_object_get_data(G_OBJECT(parentWidget), "OORXOBJECT");
     if (parentptr == NULL) {
         return context->Nil(); 
     }
@@ -1083,6 +1083,44 @@ RexxMethod3(int,                       // Return type
     GtkAccelGroup *grpWidget = (GtkAccelGroup *)context->PointerValue(grpptr);
 
     gtk_widget_set_accel_path(myWidget, path, grpWidget);
+
+    return 0;
+}
+
+/**
+ * Method:  realize          
+ *
+ * Realize the widget.
+ *
+ * @return        Zero.
+ **/
+RexxMethod1(int,                       // Return type
+            GrxWidgetRealize,          // Object_method name
+            OSELF, self)               // Self
+{
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
+    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
+
+    gtk_widget_realize(myWidget);
+
+    return 0;
+}
+
+/**
+ * Method:  unrealize          
+ *
+ * Unrealize the widget.
+ *
+ * @return        Zero.
+ **/
+RexxMethod1(int,                       // Return type
+            GrxWidgetUnrealize,        // Object_method name
+            OSELF, self)               // Self
+{
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
+    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
+
+    gtk_widget_unrealize(myWidget);
 
     return 0;
 }

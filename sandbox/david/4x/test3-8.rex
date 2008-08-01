@@ -48,6 +48,7 @@
 -- book is correct. Label controls do not respond to the "clicked" signal so
 -- we need buttons instead.
 
+call gtk_init
 window = .myMainWindow~new(.gtk~GTK_WINDOW_TOPLEVEL)
 window~set_title('Notebook')
 window~signal_connect("destroy")
@@ -57,8 +58,8 @@ window~set_size_request(200, 100)
 notebook = .GtkNotebook~new()
 label1 = .GtkLabel~new('Page One')
 label2 = .GtkLabel~new('Page Two')
-child1 = .MyButton~new('Go to page 2 to find the answer.')
-child2 = .MyButton~new('Go to page 1 to find the answer.')
+child1 = .MyButton~newWithLabel('Go to page 2 to find the answer.')
+child2 = .MyButton~newWithLabel('Go to page 1 to find the answer.')
 
 child1~signal_connect('clicked')
 child2~signal_connect('clicked')
@@ -86,7 +87,7 @@ return
 call gtk_main_quit
 return
 
-::class MyButton subclass GtkButton_With_Label
+::class MyButton subclass GtkButton
 
 ::method signal_clicked
 notebook = self~user_data  -- get the notebook widget

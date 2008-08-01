@@ -44,6 +44,7 @@
 -- Foundations of GTK+ Development
 -- by Andrew Krause
 
+call gtk_init
 window = .myMainWindow~new(.gtk~GTK_WINDOW_TOPLEVEL)
 window~set_title('Event Box')
 window~signal_connect("destroy")
@@ -60,7 +61,7 @@ eventbox~signal_connect('button_press_event')
 
 eventbox~add(label)
 window~add(eventbox)
-eventbox~set_events(gtk~GDK_BUTTON_PRESS_MASK)
+eventbox~set_events(.gtk~GDK_BUTTON_PRESS_MASK)
 eventbox~realize()
 -- FIX THIS! Need to set the cursor to a hand.
 window~show_all()

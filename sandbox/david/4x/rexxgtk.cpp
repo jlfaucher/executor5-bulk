@@ -370,6 +370,8 @@ RexxMethodEntry gtkobject_methods[] = {
     REXX_METHOD(GrxWidgetAddAccelerator, GrxWidgetAddAccelerator),
     REXX_METHOD(GrxWidgetRemoveAccelerator, GrxWidgetRemoveAccelerator),
     REXX_METHOD(GrxWidgetSetAccelPath, GrxWidgetSetAccelPath),
+    REXX_METHOD(GrxWidgetRealize, GrxWidgetRealize),
+    REXX_METHOD(GrxWidgetUnrealize, GrxWidgetUnrealize),
     REXX_METHOD(GrxWidgetSignalConnect, GrxWidgetSignalConnect),
     REXX_METHOD(GrxWindowNew, GrxWindowNew),
     REXX_METHOD(GrxWindowGetTitle, GrxWindowGetTitle),

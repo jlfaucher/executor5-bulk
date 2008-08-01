@@ -44,6 +44,7 @@
 -- Foundations of GTK+ Development
 -- by Andrew Krause
 
+call gtk_init
 buttons1 = .array~new(10, 10)
 buttons2 = .array~new(10, 10)
 

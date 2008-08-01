@@ -44,6 +44,7 @@
 -- Foundations of GTK+ Development
 -- by Andrew Krause
 
+call gtk_init
 dialog = .GtkAboutDialog~new()
 
 logo = './oorexx.jpg'

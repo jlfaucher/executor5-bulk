@@ -44,6 +44,7 @@
 -- Foundations of GTK+ Development
 -- by Andrew Krause
 
+call gtk_init
 dialog = .myFontDialog~new('Choose a Font')
 dialog~set_font_name('Sans Bold Italic 12')
 dialog~set_preview_text('Foundations of GTK+ Development')

@@ -44,6 +44,7 @@
 -- Foundations of GTK+ Development
 -- by Andrew Krause
 
+call gtk_init
 text_scales = .array~new()
 text_scales[1] = .text_to_double~new()
 text_scales[1]~str = 'Quarter Sized'

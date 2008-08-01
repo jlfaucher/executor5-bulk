@@ -44,6 +44,7 @@
 -- Foundations of GTK+ Development
 -- by Andrew Krause
 
+call gtk_init
 BUY_IT = 0
 QUANTITY = 1
 PRODUCT = 2

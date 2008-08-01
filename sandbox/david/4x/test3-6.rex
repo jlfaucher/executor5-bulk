@@ -44,13 +44,14 @@
 -- Foundations of GTK+ Development
 -- by Andrew Krause
 
+call gtk_init
 window = .myMainWindow~new(.gtk~GTK_WINDOW_TOPLEVEL)
 window~set_title('Expander')
 window~signal_connect("destroy")
 window~set_border_width(10)
 window~set_size_request(200, 100)
 
-expander = .GtkExpander_With_Mnemonic~new('Click _Me For More!')
+expander = .GtkExpander~newWithMnemonic('Click _Me For More!')
 label = .GtkLabel~new('Hide me or show me,' || '0A'x || 'that is your choice')
 
 expander~add(label)

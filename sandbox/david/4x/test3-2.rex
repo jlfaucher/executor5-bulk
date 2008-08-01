@@ -44,6 +44,7 @@
 -- Foundations of GTK+ Development
 -- by Andrew Krause
 
+call gtk_init
 names = .array~of('Andrew', 'Joe', 'Samatha', 'Jonanthan')
 
 -- create a new top level window with a title
@@ -54,7 +55,7 @@ window~signal_connect("destroy")
 window~set_border_width(10)
 window~set_size_request(200, -1)
 
-vbox = .GtkVBox~new()
+vbox = .GtkVBox~new(.true, 5)
 
 do i = 1 to names~items()
    button = .MyButton~newWithMnemonic(names[i])

@@ -46,6 +46,7 @@
 
 -- Note: The RexxGTK interface hides the text iterators
 
+call gtk_init
 window = .myMainWindow~new(.gtk~GTK_WINDOW_TOPLEVEL)
 window~set_title('Text Text Iterators')
 window~signal_connect('destroy')

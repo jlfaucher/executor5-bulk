@@ -48,6 +48,7 @@
 --       never modified in this program. So when you switch between the modal
 --       and the non-modal dialogs, the previuos color is lost.
 
+call gtk_init
 if arg() > 0 then color = arg(1)
 else color = '#333344445555FFFF'
 alpha = 65535

@@ -801,6 +801,8 @@ return !pointer
 ::METHOD set_accel_path EXTERNAL "LIBRARY rexxgtk GrxWidgetSetAccelPath"
 ::METHOD set_events EXTERNAL "LIBRARY rexxgtk GrxWidgetSetEvents"
 ::METHOD 'events=' EXTERNAL "LIBRARY rexxgtk GrxWidgetSetEvents"
+::METHOD realize EXTERNAL "LIBRARY rexxgtk GrxWidgetRealize"
+::METHOD unrealize EXTERNAL "LIBRARY rexxgtk GrxWidgetUnrealize"
 ::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxWidgetSignalConnect"
 
 -- The following are the methods that can be connected to signals. By default
@@ -1203,7 +1205,7 @@ return button
 use arg label = ''
 button = self~new()
 button~label = label
-button~set_use_stock = .true
+button~use_stock = .true
 return button
 
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxButtonNew"
@@ -1212,9 +1214,11 @@ return button
 ::METHOD 'label=' EXTERNAL "LIBRARY rexxgtk GrxButtonSetLabel"
 ::METHOD set_label EXTERNAL "LIBRARY rexxgtk GrxButtonSetLabel"
 ::METHOD set_use_underline EXTERNAL "LIBRARY rexxgtk GrxButtonUseUnderline"
+::METHOD 'use_underline=' EXTERNAL "LIBRARY rexxgtk GrxButtonUseUnderline"
 ::METHOD 'relief=' EXTERNAL "LIBRARY rexxgtk GrxButtonSetRelief"
 ::METHOD set_relief EXTERNAL "LIBRARY rexxgtk GrxButtonSetRelief"
 ::METHOD set_use_stock EXTERNAL "LIBRARY rexxgtk GrxButtonSetUseStock"
+::METHOD 'use_stock=' EXTERNAL "LIBRARY rexxgtk GrxButtonSetUseStock"
 ::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxButtonSignalConnect"
 
 -- The following are the methods that can be connected to signals. By default

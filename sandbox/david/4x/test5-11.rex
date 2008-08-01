@@ -44,6 +44,7 @@
 -- Foundations of GTK+ Development
 -- by Andrew Krause
 
+call gtk_init
 page = .Array~new()
 page[1] = .PageInfo~new(.nil, -1, 'Introduction', .gtk~GTK_ASSISTANT_PAGE_INTRO, .true)
 page[2] = .PageInfo~new(.nil, -1, '', .gtk~GTK_ASSISTANT_PAGE_CONTENT, .false)

@@ -44,6 +44,7 @@
 -- Foundations of GTK+ Development
 -- by Andrew Krause
 
+call gtk_init
 names = .array~of('Andrew', 'Joe', 'Samatha', 'Jonanthan')
 
 window = .myMainWindow~new(.gtk~GTK_WINDOW_TOPLEVEL)

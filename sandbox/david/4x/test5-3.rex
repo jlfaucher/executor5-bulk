@@ -44,6 +44,7 @@
 -- Foundations of GTK+ Development
 -- by Andrew Krause
 
+call gtk_init
 dialog = .GtkDialog_With_Buttons~new('Edit User Information', .nil,,
                                      .gtk~GTK_DIALOG_MODAL,,
                                      .gtk~GTK_STOCK_OK, .gtk~GTK_RESPONSE_OK)
