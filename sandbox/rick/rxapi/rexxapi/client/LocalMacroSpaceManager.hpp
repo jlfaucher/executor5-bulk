@@ -41,7 +41,7 @@
 
 #include "LocalAPISubsystem.hpp"
 #include "ServiceMessage.hpp"
-#include "oorexx.h"
+#include "rexx.h"
 #include "Rxstring.hpp"
 #include "Utilities.hpp"
 #include "SysFile.hpp"
@@ -69,7 +69,7 @@ enum { MACRONAMESIZE = 256 };
 
     void    *reserved;               // this is the next pointer in old platforms, but saved in file
     char     name[MACRONAMESIZE];    // function name
-    RxString image;                  // place holder only
+    RXSTRING image;                  // place holder only
     size_t   imageSize;              // size of image
     size_t   position;               // preorder/postorder flag
 };
@@ -122,21 +122,21 @@ protected:
 class MacroSpaceFile
 {
 public:
-    MacroSpaceFile(char *name) : fileName(name), fileInst(NULL) { ; }
+    MacroSpaceFile(const char *name) : fileName(name), fileInst(NULL) { ; }
 
     ~MacroSpaceFile();
     void close();
     size_t openForLoading();
     void nextMacro(char *name, ManagedRxstring &image, size_t &order);
-    void nextMacro(NameTable names, char *name, ManagedRxstring &image, size_t &order);
-    void setFilePosition(int p);
+    void nextMacro(NameTable names, const char *name, ManagedRxstring &image, size_t &order);
+    void setFilePosition(size_t p);
     void create(size_t count);
-    void writeMacroDescriptor(char *name, int size, size_t order);
-    void read(void *data, int length);
-    void read(ManagedRxstring &data, int length);
-    void write(const void *data, int length);
+    void writeMacroDescriptor(const char *name, size_t size, size_t order);
+    void read(void *data, size_t length);
+    void read(ManagedRxstring &data, size_t length);
+    void write(const void *data, size_t length);
 
-    inline void write(char *str)
+    inline void write(const char *str)
     {
         write(str, strlen(str) + 1);
     }
@@ -146,14 +146,14 @@ public:
         write((void *)&i, sizeof(size_t));
     }
 
-    inline void write(RxString &data)
+    inline void write(RXSTRING &data)
     {
-        write(data.strptr, (int)data.strlength);
+        write(data.strptr, data.strlength);
     }
 
 protected:
     bool    creating;           // indicates whether we are reading or creating
-    char    *fileName;
+    const char *fileName;
     SysFile *fileInst;
     size_t  descriptorBase;
     size_t  imageBase;
@@ -172,7 +172,7 @@ public:
     void saveMacroSpace(char *target);
     void queryMacro(char *target, size_t *pos);
     void reorderMacro(char *target, size_t pos);
-    void getMacro(char *target, RxString *image);
+    void getMacro(char *target, RXSTRING *image);
     void saveMacroSpace(char *target, char **names, size_t count);
     void clearMacroSpace();
     void removeMacro(char *name);

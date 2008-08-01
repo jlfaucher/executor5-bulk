@@ -42,8 +42,8 @@
 #include "LocalRegistrationManager.hpp"
 #include "LocalQueueManager.hpp"
 #include "LocalMacroSpaceManager.hpp"
-#include "SysCriticalSection.hpp"
 #include "SysProcess.hpp"
+#include "SysSemaphore.hpp"
 
 class LocalAPIContext;
 
@@ -73,7 +73,7 @@ public:
 protected:
 
     static LocalAPIManager* singleInstance;  // the single local instance
-    static SysCriticalSection criticalSection;  // threading synchronizer
+    static SysMutex messageLock;             // threading synchronizer
     bool           connectionEstablished;    // local initialization state
     SessionID      session;              // the session identifier
     char           userid[MAX_USERID_LENGTH];    // name of the user

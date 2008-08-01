@@ -51,15 +51,15 @@ all: $(OR_OUTDIR)\rexxapi.dll $(OR_OUTDIR)\rxapi.exe
 !ENDIF
 
 COMMONINC = -I$(OR_REXXAPISRC)\common -I$(OR_REXXAPISRC)\common\platform\windows
-CLIENTINC = -I$(OR_REXXAPISRC)\client -I$(OR_REXXAPISRC)\client\platform\windows -I$(OR_REXXAPISRC)\common
-SERVERINC = -I$(OR_REXXAPISRC)\server -I$(OR_REXXAPISRC)\server\platform\windows -I$(OR_REXXAPISRC)\common
+CLIENTINC = -I$(OR_REXXAPISRC)\client -I$(OR_REXXAPISRC)\client\platform\windows
+SERVERINC = -I$(OR_REXXAPISRC)\server -I$(OR_REXXAPISRC)\server\platform\windows
 
 CLIENTOBJS = $(OR_OUTDIR)\ClientMessage.obj $(OR_OUTDIR)\LocalAPIContext.obj \
           $(OR_OUTDIR)\LocalAPIManager.obj $(OR_OUTDIR)\LocalQueueManager.obj \
           $(OR_OUTDIR)\LocalMacroSpaceManager.obj $(OR_OUTDIR)\LocalRegistrationManager.obj \
           $(OR_OUTDIR)\MacroSpaceApi.obj $(OR_OUTDIR)\QueuesApi.obj  $(OR_OUTDIR)\RegistrationApi.obj \
           $(OR_OUTDIR)\ServiceMessage.obj $(OR_OUTDIR)\SysCSStream.obj $(OR_OUTDIR)\SysProcess.obj \
-          $(OR_OUTDIR)\Utilities.obj $(OR_OUTDIR)\SysLegacyAPI.obj
+          $(OR_OUTDIR)\Utilities.obj $(OR_OUTDIR)\SysLegacyAPI.obj $(OR_OUTDIR)\SysFile.obj
 
 SERVEROBJS = $(OR_OUTDIR)\APIServer.obj  $(OR_OUTDIR)\APIServerInstance.obj \
           $(OR_OUTDIR)\MacroSpaceManager.obj $(OR_OUTDIR)\QueueManager.obj \
@@ -170,7 +170,7 @@ $(OR_OUTDIR)\rxapi.res: $(APLATFORM)\rxapi.rc $(APLATFORM)\APIServiceMessages.h
 # *** Inference Rule for CPP->OBJ
 # *** For .CPP files in OR_LIBSRC directory
 #
-{$(OR_COMMONSRC)}.cpp{$(OR_OUTDIR)}.obj:
+{$(OR_COMMONSRC);$(OR_COMMONPLATFORMSRC)}.cpp{$(OR_OUTDIR)}.obj:
     @ECHO .
     @ECHO Compiling $(**)
     $(OR_CC) $(cflags_common) $(cflags_dll)  /Fo$(@) $(OR_ORYXINCL) $(Tp)$(**)
