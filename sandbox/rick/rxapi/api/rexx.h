@@ -229,6 +229,17 @@ typedef RexxReturnCode (REXXENTRY *PFNREXXTRANSLATEPROGRAM)(const char *, const 
 #define REXXTRANSLATEPROGRAM RexxTranslateProgram
 
 
+RexxReturnCode REXXENTRY RexxTranslateInstoreProgram(
+    const char *,                       // input program name
+    CONSTRXSTRING *,                    // program source
+    RXSTRING *);                        // returned image
+
+
+typedef RexxReturnCode (REXXENTRY *PFNREXXTRANSLATEINSTOREPROGRAM)(const char *, CONSTRXSTRING *, RXSTRING *);
+
+#define REXXTRANSLATEINSTOREPROGRAM RexxTranslateInstoreProgram
+
+
 char *REXXENTRY RexxGetVersionInformation(void);
 
 typedef char *(REXXENTRY *PFNGETVERSIONINFORMATION)(void);

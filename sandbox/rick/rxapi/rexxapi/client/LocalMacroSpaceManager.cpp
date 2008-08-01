@@ -175,7 +175,7 @@ void MacroSpaceFile::nextMacro(NameTable names, char *name, ManagedRxstring &ima
  *
  * @param p      The new file position.
  */
-void MacroSpaceFile::setFilePosition(int p)
+void MacroSpaceFile::setFilePosition(size_t p)
 {
     int64_t position;
     if (fileInst->seek(p, SEEK_CUR, position) == false)
@@ -215,7 +215,7 @@ void MacroSpaceFile::create(size_t count)
  * @param size   The size of the macro being written.
  * @param order  The macro order information.
  */
-void MacroSpaceFile::writeMacroDescriptor(const char *name, int size, size_t order)
+void MacroSpaceFile::writeMacroDescriptor(const char *name, size_t size, size_t order)
 {
     MacroSpaceDescriptor desc(name, size, order);
 
@@ -229,7 +229,7 @@ void MacroSpaceFile::writeMacroDescriptor(const char *name, int size, size_t ord
  * @param data   The data buffer pointer.
  * @param length The length to write.
  */
-void MacroSpaceFile::write(const void *data, int length)
+void MacroSpaceFile::write(const void *data, size_t length)
 {
     size_t bytesWritten;
     fileInst->write((const char *)data, length, bytesWritten);
@@ -246,7 +246,7 @@ void MacroSpaceFile::write(const void *data, int length)
  * @param data   The target data buffer.
  * @param length The size to read.
  */
-void MacroSpaceFile::read(void *data, int length)
+void MacroSpaceFile::read(void *data, size_t length)
 {
     size_t bytesRead;
     fileInst->read((char *)data, length, bytesRead);
@@ -263,7 +263,7 @@ void MacroSpaceFile::read(void *data, int length)
  * @param data   The target RXSTRING
  * @param length The length to read.
  */
-void MacroSpaceFile::read(ManagedRxstring &data, int length)
+void MacroSpaceFile::read(ManagedRxstring &data, size_t length)
 {
     data.ensureCapacity(length);
     read(data.strptr, length);
@@ -575,15 +575,15 @@ void LocalMacroSpaceManager::translateRexxProgram(const char *sourceFile, Manage
             throw new ServiceException(MACRO_TRANSLATION_ERROR, "Unable to compile Rexx program");
         }
 
-        void *proc = lib.getProcedure("RexxTranslateSource");
+        void *proc = lib.getProcedure("RexxTranslateInstoreProgram");
         if (proc == NULL)
         {
             throw new ServiceException(MACRO_TRANSLATION_ERROR, "Unable to compile Rexx program");
         }
 
-        RexxReturnCode (RexxEntry *compiler)(RexxStringPointer, RxString *, RxString *);
+        RexxReturnCode (RexxEntry *compiler)(const char *, CONSTRXSTRING *, RXSTRING *);
 
-        compiler = (RexxReturnCode (RexxEntry *)(RexxStringPointer, RxString *, RxString *))proc;
+        compiler = (RexxReturnCode (RexxEntry *)(const char *, CONSTRXSTRING, RXSTRING *))proc;
 
         ManagedRxstring sourceData;
         readRxstringFromFile(fileInst, sourceData, fsize);
@@ -591,7 +591,7 @@ void LocalMacroSpaceManager::translateRexxProgram(const char *sourceFile, Manage
         imageData.strptr = NULL;
         imageData.strlength = 0;
 
-        RexxReturnCode rc = (*compiler)(sourceFile, (RxString *)&sourceData, (RxString *)&imageData);
+        RexxReturnCode rc = (*compiler)(sourceFile, (CONSTRXSTRING *)&sourceData, (RXSTRING *)&imageData);
         if (rc != 0)
         {
             throw new ServiceException(MACRO_TRANSLATION_ERROR, "Unable to compile Rexx program");

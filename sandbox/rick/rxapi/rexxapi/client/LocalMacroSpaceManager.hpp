@@ -58,7 +58,7 @@ public:
 enum { MACRONAMESIZE = 256 };
 
     MacroSpaceDescriptor() { ; }
-    MacroSpaceDescriptor(char *n, size_t s, size_t o)
+    MacroSpaceDescriptor(const char *n, size_t s, size_t o)
     {
         strcpy(name, n);
         image.strlength = s;
@@ -96,13 +96,13 @@ public:
 class NameTable
 {
 public:
-    NameTable(char **n, size_t c)
+    NameTable(const char **n, size_t c)
     {
         names = n;
         count = c;
     }
 
-    bool inTable(char *name)
+    bool inTable(const char *name)
     {
         for (size_t i = 0; i < count; i++)
         {
@@ -115,7 +115,7 @@ public:
     }
 
 protected:
-    char **names;               // pointer to list of names
+    const char **names;         // pointer to list of names
     size_t count;               // name count
 };
 
@@ -128,7 +128,7 @@ public:
     void close();
     size_t openForLoading();
     void nextMacro(char *name, ManagedRxstring &image, size_t &order);
-    void nextMacro(NameTable names, const char *name, ManagedRxstring &image, size_t &order);
+    void nextMacro(NameTable names, char *name, ManagedRxstring &image, size_t &order);
     void setFilePosition(size_t p);
     void create(size_t count);
     void writeMacroDescriptor(const char *name, size_t size, size_t order);
@@ -167,18 +167,18 @@ class LocalMacroSpaceManager : public LocalAPISubsystem
 {
 public:
 
-    void loadMacroSpace(char *target);
-    void loadMacroSpace(char *target, char **nameList, size_t nameCount);
-    void saveMacroSpace(char *target);
-    void queryMacro(char *target, size_t *pos);
-    void reorderMacro(char *target, size_t pos);
-    void getMacro(char *target, RXSTRING *image);
-    void saveMacroSpace(char *target, char **names, size_t count);
+    void loadMacroSpace(const char *target);
+    void loadMacroSpace(const char *target, const char **nameList, size_t nameCount);
+    void saveMacroSpace(const char *target);
+    void queryMacro(const char *target, size_t *pos);
+    void reorderMacro(const char *target, size_t pos);
+    void getMacro(const char *target, RXSTRING &image);
+    void saveMacroSpace(const char *target, const char **names, size_t count);
     void clearMacroSpace();
-    void removeMacro(char *name);
-    void addMacroFromFile(char *name, char *sourceFile, size_t position);
-    void addMacro(char *name, ManagedRxstring &imageData, size_t position);
-    void translateRexxProgram(char *sourcefile, ManagedRxstring &imageData);
+    void removeMacro(const char *name);
+    void addMacroFromFile(const char *name, const char *sourceFile, size_t position);
+    void addMacro(const char *name, ManagedRxstring &imageData, size_t position);
+    void translateRexxProgram(const char *sourcefile, ManagedRxstring &imageData);
     void readRxstringFromFile(SysFile *file, ManagedRxstring &target, size_t size);
     virtual RexxReturnCode processServiceException(ServiceException *e);
 };
