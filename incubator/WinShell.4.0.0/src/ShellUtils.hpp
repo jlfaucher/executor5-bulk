@@ -154,38 +154,30 @@ inline BOOL _isAtLeastVista(void)
     return _isVersion(6, 0, 0, 0, VER_GREATER_EQUAL);
 }
 
-inline void systemServiceException(char *msg, const char *sub)
+inline void systemServiceException(RexxMethodContext *context, char *msg)
+{
+    context->RaiseException1(Rexx_Error_System_service_user_defined, context->NewStringFromAsciiz(msg));
+}
+
+inline void systemServiceException(RexxMethodContext *context, char *msg, const char *sub)
 {
     if ( sub != NULL )
     {
         TCHAR buffer[128];
         _snprintf(buffer, sizeof(buffer), msg, sub);
-        send_exception1(Rexx_Error_System_service_user_defined, RexxArray1(RexxString(buffer)));
+        systemServiceException(context, buffer);
     }
     else
     {
-        send_exception1(Rexx_Error_System_service_user_defined, RexxArray1(RexxString(msg)));
+        systemServiceException(context, msg);
     }
 }
 
-inline void systemServiceExceptionCode(const char *msg, const char *arg1, int code)
+inline void systemServiceExceptionCode(RexxMethodContext *context, const char *msg, const char *arg1)
 {
     TCHAR buffer[256];
-    _snprintf(buffer, sizeof(buffer), msg, arg1, code);
-    send_exception1(Rexx_Error_System_service_user_defined, RexxArray1(RexxString(buffer)));
-}
-
-/**
- * 88.901
- * Missing argument; argument <argument> is required
- *
- * Missing argument; argument 2 is required
- *
- * @param position
- */
-inline void missingArgException(size_t position)
-{
-    send_exception1(Rexx_Error_Invalid_argument_noarg, RexxArray1(RexxInteger(position)));
+    _snprintf(buffer, sizeof(buffer), msg, arg1, GetLastError());
+    systemServiceException(context, buffer);
 }
 
 /**
@@ -198,32 +190,18 @@ inline void missingArgException(size_t position)
  * @param max
  * @param actual
  */
-inline void stringToLongException(int argNumber, int max, int actual)
+inline void stringTooLongException(RexxMethodContext *context, int argNumber, int max, int actual)
 {
     TCHAR buffer[32];
-    RexxObjectPtr array = RexxArray(3);
+    RexxArrayObject array = context->NewArray(3);
 
     _snprintf(buffer, sizeof(buffer), "%d characters in length", max);
 
-    array_put(array, RexxInteger(argNumber), 1);
-    array_put(array, RexxString(buffer), 2);
-    array_put(array, RexxInteger(actual), 3);
+    context->ArrayPut(array, context->NewInteger(argNumber), 1);
+    context->ArrayPut(array, context->NewStringFromAsciiz(buffer), 2);
+    context->ArrayPut(array, context->NewInteger(actual), 3);
 
-    send_exception1(Error_Invalid_argument_toobig, array);
-}
-
-/**
- * 88.914
- * Argument <argument> must be of the <class> class
- *
- * Argument 2 must be of the String class
- *
- * @param position
- */
-inline void notAStringException(size_t position)
-{
-    send_exception1(Error_Invalid_argument_noclass,
-                    RexxArray2(RexxInteger(position), RexxString("String")));
+    context->RaiseExceptionArray(Rexx_Error_Invalid_argument_toobig, array);
 }
 
 /**
@@ -233,10 +211,11 @@ inline void notAStringException(size_t position)
  * @param argNumber
  * @param msg
  */
-inline void badArgException(int argNumber, char * msg)
+inline void badArgException(RexxMethodContext *context, int argNumber, char * msg)
 {
-    send_exception1(Error_Invalid_argument_argType,
-                    RexxArray2(RexxInteger(argNumber), RexxString(msg)));
+    context->RaiseException2(Rexx_Error_Invalid_argument_argType,
+                             context->NewInteger(argNumber),
+                             context->NewStringFromAsciiz(msg));
 }
 
 /**
@@ -314,33 +293,13 @@ inline void wrongArgExceptionRx(int argNumber, char * acceptable, RexxObjectPtr 
  * @param argNumber
  * @param rxActual
  */
-inline void wrongFormatException(int argNumber, RexxObjectPtr rxActual)
+inline void wrongFormatException(RexxMethodContext *context, int argNumber, RexxObjectPtr rxActual)
 {
-    send_exception1(Error_Invalid_argument_format,
-                    RexxArray2(RexxInteger(argNumber), rxActual));
+    context->RaiseExceptionArray(Error_Invalid_argument_format,
+                                 context->NewInteger(argNumber),
+                                 rxActual);
 }
 
-
-inline void requiredArg(RexxObjectPtr rxObj, size_t argNumber)
-{
-    if ( rxObj == NULLOBJECT )
-    {
-        missingArgException(argNumber);
-    }
-}
-
-inline char * requiredStringArg(RexxObjectPtr rxObj, size_t argNumber)
-{
-    if ( rxObj == NULLOBJECT )
-    {
-        missingArgException(argNumber);
-    }
-    if ( ! _isstring(rxObj) )
-    {
-        notAStringException(argNumber);
-    }
-    return string_data(rxObj);
-}
 
 inline size_t getPositive(RexxObjectPtr rxInt, size_t argNumber)
 {
@@ -359,15 +318,6 @@ inline size_t getPositive(RexxObjectPtr rxInt, size_t argNumber)
                         RexxArray2(RexxInteger(argNumber), rxInt));
     }
     return (size_t)arg;
-}
-
-inline size_t requiredPositiveArg(RexxObjectPtr rxInt, size_t argNumber)
-{
-    if ( rxInt == NULLOBJECT )
-    {
-        missingArgException(argNumber);
-    }
-    return getPositive(rxInt, argNumber);
 }
 
 inline size_t optionalPositiveArg(RexxObjectPtr rxInt, size_t defaultValue, size_t argNumber)
