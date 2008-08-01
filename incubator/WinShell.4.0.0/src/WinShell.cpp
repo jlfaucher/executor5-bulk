@@ -54,8 +54,8 @@
 #include <map>
 #include <stdio.h>
 
-#include "ShellUtils.hpp"
-#include "ShellUtilsResources.h"
+#include "WinShell.hpp"
+#include "WinShellResources.h"
 
 // Map strings representing constant defines to their int values.  For
 // translating things like "CSIDL_DRIVES" from the user to the proper API value.
@@ -82,23 +82,22 @@ typedef enum
 
 // Local function prototypes.
 INT CALLBACK         BrowseCallbackProc(HWND, UINT, LPARAM, LPARAM);
-static RexxObjectPtr    folderBrowse(PBROWSEINFO, bool);
-static LPITEMIDLIST  getPossiblePIDL(RexxMethodContext *, RexxObjectPtr, size_t, size_t, size_t *);
+static RexxObjectPtr folderBrowse(RexxMethodContext *, PBROWSEINFO, bool);
 static bool          pidlFromPath(LPCSTR, LPITEMIDLIST *);
 static bool          pidlForSpecialFolder(int, LPITEMIDLIST *);
 static RexxObjectPtr extractAllDefIcons(RexxMethodContext *, const char *);
-inline HIMAGELIST    _getSelf(void);
-static unsigned int  getImageListFlags(STRING, size_t);
+inline HIMAGELIST    _getSelf(RexxMethodContext *);
+static unsigned int  getImageListFlags(RexxMethodContext *, STRING, size_t);
 static int           getListViewImageListType(const char *);
 static RexxObjectPtr setSystemImageList(RexxMethodContext *, bool);
-inline void          setSFBAttribute(char *, STRING, char *);
-static HWND          getValidWindowHandle(RexxMethodContext *, STRING, size_t);
-static void          fillInBrowseData(RexxMethodContext *, STRING, PBROWSEINFO, PBROWSE_DATA);
+inline void          setSFBAttribute(RexxMethodContext *, char *, CSTRING, char *);
+static bool          getOptionalWindowHandle(RexxMethodContext *, RexxObjectPtr, HWND *, size_t);
+static void          fillInBrowseData(RexxMethodContext *, HWND, PBROWSEINFO, PBROWSE_DATA);
 static void          addToFileList(RexxMethodContext *, SFO_DIRECTION, CSTRING);
 static void          setFOFlags(STRING, bool, size_t);
 static FILEOP_FLAGS  getFOFlags(void);
-static void          setOwnerWnd(RexxMethodContext *, STRING, size_t);
-static HWND          getOwnerWnd(RexxMethodContext *);
+static bool          setOwnerWnd(RexxMethodContext *, RexxObjectPtr, size_t);
+static bool          getOwnerWnd(RexxMethodContext *, HWND *);
 static RexxObjectPtr doTheOp(RexxMethodContext *, UINT, size_t, STRING, STRING, STRING, STRING);
 inline char         *getTitle(HWND, FILEOP_FLAGS);
 static RXARG_TYPES   getRxArgType(RexxObjectPtr);
@@ -125,25 +124,45 @@ inline bool rxArgExists(RexxMethodContext * context, size_t index)
     return context->ArrayHasIndex(context->GetArguments(), index) == 1 ? true : false;
 }
 
+/**
+ * 93.914
+ * Method argument <argument> must be one of <values>; found "<value>"
+ *
+ * Method argument 1 must be one of array of icon handles or count of icons;
+ * found "o"
+ *
+ * @param argNumber
+ * @param acceptable
+ * @param actual
+ */
 void wrongArgValueException(RexxMethodContext *c, int pos, const char *list, RexxObjectPtr actual)
 {
     RexxArrayObject a = c->NewArray(3);
-    c->ArrayAppend(a, c->NewInteger(pos));
-    c->ArrayAppend(a, c->NewStringFromAsciiz(list));
-    c->ArrayAppend(a, actual);
+    c->ArrayPut(a, c->NewInteger(pos), 1);
+    c->ArrayPut(a, c->NewStringFromAsciiz(list), 2);
+    c->ArrayPut(a, actual, 3);
 
     c->RaiseExceptionArray(Rexx_Error_Incorrect_method_list, a);
 }
-
 void wrongArgValueException(RexxMethodContext *c, int pos, const char *list, const char *actual)
 {
     wrongArgValueException(c, pos, list, c->NewStringFromAsciiz(actual));
 }
-
 inline void *wrongClassException(RexxMethodContext *c, int pos, const char *n)
 {
     c->RaiseException2(Rexx_Error_Incorrect_method_noclass, c->NewInteger(pos), c->NewStringFromAsciiz(n));
     return NULL;
+}
+
+bool requiredClass(RexxMethodContext *context, RexxObjectPtr obj, const char *name, int argPos)
+{
+    RexxClassObject rxClass = context->FindContextClass(name);
+    if ( ! context->IsInstanceOf(obj, rxClass) )
+    {
+        wrongClassException(context, argPos, name);
+        return false;
+    }
+    return true;
 }
 
 /**
@@ -182,10 +201,80 @@ char *strdupupr(const char *str)
     }
     return retStr;
 }
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+ *  End of functions copied from ooDialog.  Start of functions to move to
+ *  common.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+
+/**
+ * 93.914
+ * Method argument <argument> must be one of <values>; found "<value>"
+ *
+ * Method argument 1 must be one of the valid CSIDL_XXX constants; found "dog"
+ *
+ * @param argNumber
+ * @param acceptable
+ * @param actual
+ */
+void invalidConstantException(RexxMethodContext *c, int argNumber, char *msg,
+                              const char *sub, RexxObjectPtr actual)
+{
+    TCHAR buffer[32];
+    _snprintf(buffer, sizeof(buffer), msg, sub);
+
+    wrongArgValueException(c, argNumber, buffer, actual);
+}
+void invalidConstantException(RexxMethodContext *c, int argNumber, char *msg, const char *sub, char *actual)
+{
+    invalidConstantException(c, argNumber, msg, sub, c->NewStringFromAsciiz(actual));
+}
+
+/**
+ * Methods for a .Size class.
+ */
+RexxMethod2(RexxObjectPtr, size_init, OPTIONAL_int32_t,  cx, OPTIONAL_int32_t, cy)
+{
+    RexxBufferObject obj = context->NewBuffer(sizeof(SIZE));
+    context->SetObjectVariable("CSELF", obj);
+
+    SIZE *s = (SIZE *)context->BufferData(obj);
+
+    s->cx = rxArgExists(context, 1) ? cx : 0;
+    s->cy = rxArgExists(context, 2) ? cy : s->cx;
+
+    return NULLOBJECT;
+}
+
+RexxMethod1(int32_t, size_cx, CSELF, s) { return ((SIZE *)s)->cx; }
+RexxMethod1(int32_t, size_cy, CSELF, s) { return ((SIZE *)s)->cy; }
+RexxMethod2(RexxObjectPtr, size_setCX, CSELF, s, int32_t, cx) { ((SIZE *)s)->cx = cx; return NULLOBJECT; }
+RexxMethod2(RexxObjectPtr, size_setCY, CSELF, s, int32_t, cy) { ((SIZE *)s)->cy = cy; return NULLOBJECT; }
+
+PSIZE rxGetSize(RexxMethodContext *context, RexxObjectPtr s, int argPos)
+{
+    if ( requiredClass(context, s, "Size", argPos) )
+    {
+        return (PSIZE)context->ObjectToCSelf(s);
+    }
+    return NULL;
+}
+
+RexxObjectPtr rxNewSize(RexxMethodContext *context, long cx, long cy)
+{
+    RexxObjectPtr size = NULL;
+    RexxClassObject SizeClass = context->FindContextClass("SIZE");
+    if ( SizeClass != NULL )
+    {
+        size = context->SendMessage2(SizeClass, "NEW", context->NewInteger(cx), context->NewInteger(cy));
+    }
+    return size;
+}
+
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
- *    End of functions copied from ooDialog
+ *  End of functions to move to common.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+
 
 /**
  * Copy bytes, restricting the amount copied to the max path size.
@@ -220,13 +309,14 @@ void pathdup(char *dest, const char *src)
  * globally. CoInitializeEx() and CoUninitialize() must be called on a
  * per-thread basis.
  */
-void CommonInit(RexxMethodContext *context, bool useCOM)
+bool CommonInit(RexxMethodContext *context, bool useCOM)
 {
     if ( (InterlockedIncrementRelease(&globalInstances) == 1) )
     {
         if ( ! _isAtLeastW2K() )
         {
             systemServiceException(context, REQUIRE_W2K_MSG, NULL);
+            return false;
         }
     }
 
@@ -239,6 +329,7 @@ void CommonInit(RexxMethodContext *context, bool useCOM)
         if ( thisModule == NULL )
         {
             systemServiceExceptionCode(context, NO_HMODULE_MSG, SHELL_DLL);
+            return false;
         }
 
         ctrlex.dwSize = sizeof(ctrlex);
@@ -246,6 +337,7 @@ void CommonInit(RexxMethodContext *context, bool useCOM)
         if ( ! InitCommonControlsEx(&ctrlex) )
         {
             systemServiceExceptionCode(context, NO_COMMCTRL_MSG, "Common Control Library");
+            return false;
         }
 
         initMaps();
@@ -258,6 +350,7 @@ void CommonInit(RexxMethodContext *context, bool useCOM)
             #endif
         }
     }
+    return true;
 }
 
 
@@ -291,7 +384,7 @@ void CommonUninit(bool useCOM)
 RexxMethod1(RexxObjectPtr, WinShell_init, OSELF, self)
 {
     CommonInit(context, true);
-    return RexxNil;
+    return NULLOBJECT;
 }
 
 /** WinShell::uninit()
@@ -301,7 +394,7 @@ RexxMethod1(RexxObjectPtr, WinShell_init, OSELF, self)
 RexxMethod1(RexxObjectPtr, WinShell_uninit, OSELF, self)
 {
     CommonUninit(true);
-    return RexxNil;
+    return NULLOBJECT;
 }
 
 
@@ -318,19 +411,25 @@ RexxMethod1(RexxObjectPtr, WinShell_uninit, OSELF, self)
  * @return  Returns the fully qualified path of the folder the user selected, or
  *          the empty string if the user cancels the dialog.
  */
-RexxMethod1(RexxObjectPtr, WinShell_browseForFolder, STRING, rxHwnd)
+RexxMethod1(RexxObjectPtr, WinShell_browseForFolder, OPTIONAL_POINTER, rxHwnd)
 {
-	LPITEMIDLIST pidlRoot = NULL;
-    BROWSEINFO   bi = { 0 };
-    RexxObjectPtr   rxResult = RexxNil;
+	LPITEMIDLIST   pidlRoot = NULL;
+    BROWSEINFO     bi = { 0 };
+    RexxObjectPtr  rxResult = context->Nil();
+
+    HWND owner NULL;
+    if ( ! getOptionalWindowHandle(context, rxHwnd, &hwnd, 1) )
+    {
+        return rxResult;
+    }
 
     if ( pidlForSpecialFolder(CSIDL_DRIVES, &pidlRoot) )
     {
-        bi.hwndOwner =  getValidWindowHandle(context, rxHwnd, 1);
+        bi.hwndOwner = hwnd;
         bi.pidlRoot  = pidlRoot;
         bi.ulFlags   = BIF_RETURNONLYFSDIRS | BIF_NEWDIALOGSTYLE | BIF_RETURNFSANCESTORS;
 
-        rxResult = folderBrowse(&bi, true);
+        rxResult = folderBrowse(context, &bi, true);
         CoTaskMemFree(pidlRoot);
     }
     else
@@ -357,7 +456,7 @@ RexxMethod1(RexxObjectPtr, WinShell_browseForFolder, STRING, rxHwnd)
  *  @return  The file system path for the folder corresponding to the CSIDL
  *           constant, or .nil if there is no file system path for the constant.
  */
-RexxMethod2(RexxObjectPtr, WinShell_pathFromCSIDL, CSTRING, csidlConstant, RexxObjectPtr, rxCreate)
+RexxMethod2(RexxObjectPtr, WinShell_pathFromCSIDL, CSTRING, csidlConstant, OPTIONAL_logical_t, create)
 {
     RexxMethodContext *context;
 	LPITEMIDLIST pidl = NULL;
@@ -369,10 +468,10 @@ RexxMethod2(RexxObjectPtr, WinShell_pathFromCSIDL, CSTRING, csidlConstant, RexxO
 
     if ( csidl == -1 )
     {
-        invalidConstantExceptionRx(1, INVALID_CONSTANT_MSG, "CSIDL", csidlConstant);
+        invalidConstantException(context, 1, INVALID_CONSTANT_MSG, "CSIDL", csidlConstant);
     }
 
-    if ( optionalBoolArg(rxCreate, false, 2) )
+    if ( rxArgExists(context, 2) && create == TRUE )
     {
         csidl |= CSIDL_FLAG_CREATE;
     }
@@ -426,19 +525,9 @@ RexxMethod1(RexxObjectPtr, WinShell_pathFromItemID, RexxObjectPtr, POINTER idlPt
  *
  * @return Pointer to item ID list on success or 0 on failure.
  */
-RexxMethod1(RexxObjectPtr, WinShell_getItemID, RexxObjectPtr, rxObj)
+RexxMethod1(POINTER, WinShell_getItemID, CSTRING, name)
 {
-    size_t source = 0;
-	LPITEMIDLIST pidl = getPossiblePIDL(context, rxObj, 1, PPSF_PATH | PPSF_CSIDL | PPSF_NULL_OK, &source);
-
-    if ( pidl == NULL )
-    {
-        return RexxInteger(0);
-    }
-    else
-    {
-        return ptrToRx(pidl);
-    }
+	return getPidlFromString(context,1, name, true);
 }
 
 
@@ -449,19 +538,11 @@ RexxMethod1(RexxObjectPtr, WinShell_getItemID, RexxObjectPtr, rxObj)
  *  a valid path name.
  *
  */
-RexxMethod1(RexxObjectPtr, WinShell_getItemIDFromPath, STRING, rxObj)
+RexxMethod1(RexxPointerObject, WinShell_getItemIDFromPath, CSTRING, path)
 {
-	LPITEMIDLIST pidl;
-	pidlFromPath(string_data(rxObj), &pidl);
-
-    if ( pidl == NULL )
-    {
-        return RexxInteger(0);
-    }
-    else
-    {
-        return ptrToRx(pidl);
-    }
+	LPITEMIDLIST pidl = NULL;
+	pidlFromPath(path, &pidl);
+    return pidl;
 }
 
 
@@ -471,36 +552,31 @@ RexxMethod1(RexxObjectPtr, WinShell_getItemIDFromPath, STRING, rxObj)
  *  function will accept any string without checking that the string is in the
  *  format of a valid CSIDL constant.
  *
+ *  @param    str  The CSIDL string.
+ *  @return   pidl A ooRexx pointer object.  This may be the null pointer
+ *            object.
  */
 RexxMethod1(RexxObjectPtr, WinShell_getItemIDFromCSIDL, CSTRING, str)
 {
-    RexxObjectPtr rxResult = RexxInteger(-1);
-	LPITEMIDLIST pidl;
+	LPITEMIDLIST pidl = NULL;
 
     int csidl = getConstantValue(str);
-    if ( csidl != -1 && pidlForSpecialFolder(csidl, &pidl) )
+    if ( csidl != -1 )
     {
-        if ( pidl == NULL )
-        {
-            rxResult = RexxInteger(0);
-        }
-        else
-        {
-            rxResult = ptrToRx(pidl);
-        }
+        pidlForSpecialFolder(csidl, &pidl)
     }
-	return rxResult;
+	return pidl;
 }
-
 
 /** WinShell::releaseItemID()
  *
  *  @return  This method does not return any value.
+ *
+ *  @note    CoTaskMemFree() handles null pointers.
  */
 RexxMethod1(RexxObjectPtr, WinShell_releaseItemID, POINTER, idlPtr)
 {
-    LPITEMIDLIST pidl = (LPITEMIDLIST)idlPtr;
-    CoTaskMemFree(pidl);
+    CoTaskMemFree(idlPtr);
     return NULLOBJECT;
 }
 
@@ -508,14 +584,42 @@ RexxMethod1(RexxObjectPtr, WinShell_releaseItemID, POINTER, idlPtr)
 /** WinShell::openFindFiles()
  *
  *  Opens the
+ *
+ *  @return  The window handle of the find files dialog, or the negated system
+ *           error code if the window handle could not be located.
  */
-RexxMethod2(RexxObjectPtr, WinShell_openFindFiles, STRING, rxStart, STRING, rxSaved)
+RexxMethod2(RexxObjectPtr, WinShell_openFindFiles, RexxObjectPtr, start, OPTIONAL_RexxObjectPtr, saved)
 {
+    RexxMethodContext *context;
     RexxObjectPtr rxResult = RexxNil;
-    size_t folderSource = 0;
-    size_t savedSource = 0;
-    LPITEMIDLIST pidlFolder = getPossiblePIDL(context, rxStart, 1, PPSF_ALL_BUT_NIL, &folderSource);
-    LPITEMIDLIST pidlSaved = getPossiblePIDL(context, rxSaved, 2, PPSF_PATH | PPSF_POINTER, &savedSource);
+    bool folderWasPtr = false;
+    bool savedWasPtr = false;
+    LPITEMIDLIST pidlSaved = NULL;
+
+    LPITEMIDLIST pidlFolder = getPidlFromObject(context, start, 1);
+    if ( pidlFolder == NULL )
+    {
+        return context->Nil();
+    }
+
+    if ( context->IsPointer(start) )
+    {
+        folderWasPtr = true;
+    }
+
+    if ( saved != NULL )
+    {
+        // If the user passed in an arg, an exception is raised if it is not good.
+        pidlSaved = getPidlFromObject(context, saved, 2);
+        if ( pidlSaved == NULL )
+        {
+            return context->Nil();
+        }
+        if ( context->IsPointer(saved) )
+        {
+            savedWasPtr = true;
+        }
+    }
 
     /* SHFindFiles is documented as returning true if the dialog is shown,
      * otherwise false.  However, it seems to always return false.  So the
@@ -538,18 +642,18 @@ RexxMethod2(RexxObjectPtr, WinShell_openFindFiles, STRING, rxStart, STRING, rxSa
 
             FlashWindowEx(&fwi);
         }
-        rxResult = handleToRx(hwnd);
+        rxResult = context->NewPointer(hwnd);
     }
     else
     {
-        rxResult = RexxInteger(-(long)GetLastError());
+        rxResult = context->NewInteger(-(long)GetLastError());
     }
 
-    if ( folderSource != PPSF_POINTER )
+    if ( ! folderWasPtr )
     {
         CoTaskMemFree(pidlFolder);
     }
-    if ( pidlSaved != NULL && savedSource != PPSF_POINTER )
+    if ( pidlSaved != NULL && ! savedWasPtr )
     {
         CoTaskMemFree(pidlSaved);
     }
@@ -569,52 +673,71 @@ RexxMethod1(RexxObjectPtr, WinShell_openFolder, STRING, rxFolder)
 /** WinShell::closeWindow()
  *
  */
-RexxMethod1(RexxObjectPtr, WinShell_closeWindow, STRING, rxHwnd)
+RexxMethod1(uint32_t, WinShell_closeWindow, POINTER, hwnd)
 {
-    RexxObjectPtr rxResult = RexxInteger(0);
-    HWND hwnd = (HWND)handleFromRx(rxHwnd);
-
-    if ( ! SendNotifyMessage(hwnd, WM_SYSCOMMAND, SC_CLOSE, 0) )
+    if ( ! SendNotifyMessage((HWND)hwnd, WM_SYSCOMMAND, SC_CLOSE, 0) )
     {
-        rxResult = RexxInteger(GetLastError());
+        return GetLastError();
     }
-    return rxResult;
+    return 0;
 }
 
 
 /** WinShell::clearRecentDocuments()
  *
+ *  Clears the user's list of recent documents.
+ *
+ *  @return  This method does not return a value.
+ *
+ *  @note    SHAddToRecentDocs has no return code.
  */
 RexxMethod0(RexxObjectPtr, WinShell_clearRecentDocuments)
 {
-    // SHAddToRecentDocs has no return code.
     SHAddToRecentDocs(SHARD_PATH, NULL);
-    return RexxInteger(0);
+    return NULLOBJECT;
 }
 
 
 /** WinShell::addToRecentDocuments()
  *
- *  I think the intent was that rxDoc could be a PIDL, CSIDL_, .nil, or empty
- *  string.
+ *  Adds a document to the user's list of recent documents.
  *
+ *  @param  doc  Either a string with the path and file name of the document, or
+ *               a PIDL that identifies the document's file object.  Note that
+ *               when using a path, it must be a fully qualified path.
+ *
+ *  @return  This method does not return a value.
+ *
+ *  @note    SHAddToRecentDocs has no return code.
+ *
+ *           Passing in a null pointer object has the same effect as using the
+ *           WinShell::clearRecentDocuments() method.
  */
-RexxMethod1(RexxObjectPtr, WinShell_addToRecentDocuments, STRING, rxDoc)
+RexxMethod1(RexxObjectPtr, WinShell_addToRecentDocuments, RexxObjectPtr, doc)
 {
-    size_t source = 0;
-	LPITEMIDLIST pidl = getPossiblePIDL(context, rxDoc, 1, PPSF_POINTER | PPSF_NULL_OK, &source);
-
-    if ( pidl == NULL )
+    if ( context->IsString(doc) )
     {
-        SHAddToRecentDocs(SHARD_PATH, string_data((RexxString *)rxDoc));
+        const char *path = context->StringData((RexxStringObject)doc);
+        if ( _PathIsFull(path) )
+        {
+            SHAddToRecentDocs(SHARD_PATH, path);
+        }
+        else
+        {
+            wrongFormatException(context, argNumber, doc);
+        }
+    }
+    else if ( context->IsPointer(doc) )
+    {
+        LPITEMIDLIST pidl = (LPITEMIDLIST)context->PointerValue((RexxPointerObject)doc);
+        SHAddToRecentDocs(SHARD_PIDL, pidl);
     }
     else
     {
-        SHAddToRecentDocs(SHARD_PIDL, pidl);
+        wrongFormatException(context, argNumber, doc);
     }
 
-    // SHAddToRecentDocs has no return code.
-    return RexxInteger(0);
+    return NULLOBJECT;
 }
 
 
@@ -675,7 +798,8 @@ RexxMethod1(RexxObjectPtr, WinShell_queryRecycleBin_private, STRING, rxPath)
  *  Empties the recycle bin, either for a specific drive, or for all drives.
  *
  */
-RexxMethod3(RexxObjectPtr, WinShell_emptyRecycleBin, OPTIONAL_CSTRING, root, RexxObjectPtr, rxConfirm, STRING, rxHwnd)
+RexxMethod3(RexxObjectPtr, WinShell_emptyRecycleBin, OPTIONAL_CSTRING, root, OPTIONAL_logical_t, confirm,
+            OPTIONAL_POINTER, rxHwnd)
 {
     // The flags for no confirmation, which is the defualt.
     DWORD       flags = SHERB_NOCONFIRMATION | SHERB_NOPROGRESSUI | SHERB_NOSOUND;
@@ -694,12 +818,16 @@ RexxMethod3(RexxObjectPtr, WinShell_emptyRecycleBin, OPTIONAL_CSTRING, root, Rex
         }
     }
 
-    if ( optionalBoolArg(rxConfirm, false, 2) )
+    if ( rxArgExists(context, 2) && confirm == FALSE )
     {
         flags = 0;
     }
 
-    HWND hwnd = getValidWindowHandle(context, rxHwnd, 3);
+    HWND hwnd;
+    if ( ! getOptionalWindowHandle(context, rxHwnd, &hwnd, 3) )
+    {
+        return
+    }
 
     if ( recycleBinIsEmpty(root) )
     {
@@ -852,7 +980,7 @@ RexxMethod2(RexxObjectPtr, WinShell_selectIcon, CSTRING, path, STRING, rxHwnd)
         systemServiceException(context, UNICODE_ANSI_FAILED_MSG, NULL);
     }
 
-    HWND hwnd = getValidWindowHandle(context, rxHwnd, 2);
+    HWND hwnd = getOptionalWindowHandle(context, rxHwnd, 2);
     int iconIndex = 0;
 
     if ( PickIconDlg(hwnd, wBuffer, MAX_PATH, &iconIndex) == 1 )
@@ -904,7 +1032,7 @@ RexxMethod1(RexxObjectPtr, WinShell_releaseIcon, POINTER, iconPtr)
  *
  */
 RexxMethod5(logical_t, WinShell_about, CSTRING, title, OPTIONAL_CSTRING, _app,
-            OPTIONAL_CSTRING, other, STRING, rxHwnd, OPTIONAL_POINTER, iconPtr)
+            OPTIONAL_CSTRING, other, OPTIONAL_POINTER, hwnd, OPTIONAL_POINTER, iconPtr)
 {
     char  buffer[128];
     char *app = NULL;
@@ -912,7 +1040,7 @@ RexxMethod5(logical_t, WinShell_about, CSTRING, title, OPTIONAL_CSTRING, _app,
     if ( strlen(title) > 63 )
     {
         stringTooLongException(context, 1, 63, strlen(title));
-        return 0;
+        return FALSE;
     }
 
     if ( _app == NULLOBJECT )
@@ -924,23 +1052,20 @@ RexxMethod5(logical_t, WinShell_about, CSTRING, title, OPTIONAL_CSTRING, _app,
         if ( strlen(_app) > 63 )
         {
             stringTooLongException(context, 2, 63, strlen(_app));
-            return 0;
+            return FALSE;
         }
         _snprintf(buffer, sizeof(buffer), "%s#%s", title, rxApp);
         app = buffer;
     }
 
     // We don't enforce a limit on the other string, but if the programmer makes
-    // it too long it will be truncated.  Both other and icon can be null.
+    // it too long it will be truncated.  hwnd, other, and icon can be null.
 
-    HICON icon = (HICON)handleFromRx(iconPtr);
-    HWND hwnd = getValidWindowHandle(context, rxHwnd, 4);
-
-    if ( ShellAbout(hwnd, app, other, icon) )
+    if ( ShellAbout((HWND)hwnd, app, other, (HICO)icon) )
     {
-        return 1;
+        return TRUE;
     }
-    return 0;
+    return FALSE;
 }
 
 
@@ -964,92 +1089,6 @@ RexxMethod2(RexxObjectPtr, WinShell_test, OSELF, self, STRING, hwnd)
     printf("In WinShell::test(), no more tests.\n");
     return RexxNil;
 }
-
-static LPITEMIDLIST getPossiblePIDL(RexxMethodContext *context, RexxObjectPtr rxArg, size_t argNumber,
-                                    size_t flags, size_t * pSource)
-{
-	LPITEMIDLIST pidl = NULL;
-    bool         success = false;
-
-    if ( rxArg == NULLOBJECT )
-    {
-        *pSource = PPSF_OMITTED;
-        return NULL;
-    }
-
-    if ( rxArg == RexxNil )
-    {
-        if ( !( flags & PPSF_NIL) )
-        {
-            wrongFormatException(context, argNumber, rxArg);
-        }
-
-        *pSource = PPSF_NIL;
-        return NULL;
-    }
-
-    if ( ! context->IsString(rxArg) )
-    {
-        wrongClassException(context, argNumber, "String");
-        return NULL;
-    }
-    char const *arg = context->StringData((RexxStringObject)rxArg);
-    size_t  len = context->StringLength((RexxStringObject)rxArg);
-
-    if ( (flags & PPSF_EMPTY_STRING) && len == 0 )
-    {
-        *pSource = PPSF_EMPTY_STRING;
-        success = true;
-    }
-    else if ( (flags & PPSF_CSIDL) && (len > 6) && (StrCmpNI("CSIDL_", arg, 6) == 0) )
-    {
-        char *argTmp = strdupupr(context->StringData((RexxStringObject)rxArg));
-        int csidl = getConstantValue(argTmp);
-        free(argTmp);
-
-        if ( csidl == -1 )
-        {
-            invalidConstantExceptionRx(argNumber, INVALID_CONSTANT_MSG, "CSIDL", rxArg);
-        }
-
-        *pSource = PPSF_CSIDL;
-        success = pidlForSpecialFolder(csidl, &pidl);
-    }
-    else if ( (flags & PPSF_PATH) && _PathIsFull(arg) )
-    {
-        *pSource = PPSF_PATH;
-        success = pidlFromPath(arg, &pidl);
-    }
-    else if ( (flags & PPSF_POINTER) && ((_is64Bit() && len == 16) || (! _is64Bit() && len == 8)) )
-    {
-        pidl = (LPITEMIDLIST)ptrFromRx(rxArg);
-        if ( pidl == 0 )
-        {
-            systemServiceException(context, STRING_TO_PTR_FAILED_MSG, NULL);
-            return NULL;
-        }
-
-        *pSource = PPSF_POINTER;
-        success = true;
-    }
-    else if ( flags & PPSF_NULL_OK )
-    {
-        success = true;
-    }
-    else
-    {
-        wrongFormatException(context, argNumber, rxArg);
-        return NULL;
-    }
-
-    if ( (! success) && ! (flags & PPSF_NULL_OK) )
-    {
-        wrongFormatException(context, argNumber, rxArg);
-        return NULL;
-    }
-    return pidl;
-}
-
 
 static bool recycleBinIsEmpty(const char *root)
 {
@@ -1097,12 +1136,12 @@ static HRESULT queryTrashCan(const char * root, PDWORDLONG size, PDWORDLONG item
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 #define IL_HANDLE_ATTR         "HANDLE"
 #define IL_IMAGETYPE_ATTR      "IMAGETYPE"
-#define IL_IMAGETYPE_ICON      RexxInteger(0)
-#define IL_IMAGETYPE_BITMAP    RexxInteger(1)
-#define DEFAULT_CX             32
-#define DEFAULT_CY             32
-#define DEFAULT_FLAGS          ILC_COLOR32 | ILC_MASK
-#define DEFAULT_GROW           0
+#define IL_IMAGETYPE_ICON      0
+#define IL_IMAGETYPE_BITMAP    1
+#define IL_DEFAULT_CX          32
+#define IL_DEFAULT_CY          32
+#define IL_DEFAULT_FLAGS       ILC_COLOR32 | ILC_MASK
+#define IL_DEFAULT_GROW        0
 
 
 /** ImageList::init()
@@ -1111,13 +1150,16 @@ static HRESULT queryTrashCan(const char * root, PDWORDLONG size, PDWORDLONG item
  *
  *
  */
-RexxMethod6(RexxObjectPtr, ImageList_init, CSTRING, type, RexxObjectPtr, rxImages,
-            RexxObjectPtr, rxX, RexxObjectPtr, rxY, OPTIONAL_CSTRING, _flags, RexxObjectPtr, rxGrow)
+RexxMethod6(RexxObjectPtr, ImageList_init, CSTRING, type, RexxObjectPtr, rxImages, OPTIONAL_RexxObjectPtr, sizePtr,
+            OPTIONAL_CSTRING, _flags, OPTIONAL_uint32_t, grow)
 {
     bool isBitmap = false;
     bool createEmptyImageList = true;
 
-    CommonInit(context, false);
+    if ( ! CommonInit(context, false) )
+    {
+        return NULLOBJECT;
+    }
 
     /** The type determines how the image list is created.  Some keywords
      *  indicate a short cut creation.  (And some keywords are not yet
@@ -1135,11 +1177,11 @@ RexxMethod6(RexxObjectPtr, ImageList_init, CSTRING, type, RexxObjectPtr, rxImage
     }
     else if ( stricmp("ICON", type) == 0 )
     {
-        REXX_SETVAR(IL_IMAGETYPE_ATTR, IL_IMAGETYPE_ICON);
+        context-SetObjectVariable(IL_IMAGETYPE_ATTR, context->NewInteger(IL_IMAGETYPE_ICON));
     }
     else if ( stricmp("BITMAP", type) == 0 )
     {
-        REXX_SETVAR(IL_IMAGETYPE_ATTR, IL_IMAGETYPE_BITMAP);
+        context-SetObjectVariable(IL_IMAGETYPE_ATTR, context->NewInteger(IL_IMAGETYPE_BITMAP));
         isBitmap = true;
     }
     else
@@ -1160,15 +1202,30 @@ RexxMethod6(RexxObjectPtr, ImageList_init, CSTRING, type, RexxObjectPtr, rxImage
     }
 
     /* Check the optional args first. */
-    int cx   = optionalPositiveArg(rxX, DEFAULT_CX, 3);
-    int cy   = optionalPositiveArg(rxY, DEFAULT_CY, 4);
-    int grow = optionalPositiveArg(rxGrow, DEFAULT_GROW, 6);
+    int cx = IL_DEFAULT_CX;
+    int cy = IL_DEFAULT_CY;
 
-    unsigned int flags = DEFAULT_FLAGS;
+    if ( rxArgExists(context, 3) )
+    {
+        SIZE *size = rxGetSize(context, sizePtr, 3);
+        if ( size == NULL )
+        {
+            return NULLOBJECT;
+        }
+        cx = size->cx;
+        cy = size->cy;
+    }
+
+    if ( rxArgOmitted(context, 5) )
+    {
+        grow = IL_DEFAULT_GROW;
+    }
+
+    unsigned int flags = IL_DEFAULT_FLAGS;
     if ( _flags != NULL )
     {
-        flags = getImageListFlags(_flags, 5);
-        /** DFX TODO should check here for ILC_PERITEMMIRROR and ILC_MIRROR,
+        flags = getImageListFlags(context, _flags, 5);
+        /** TODO should check here for ILC_PERITEMMIRROR and ILC_MIRROR,
          *  these flags are only available with Comctl32.dll version 6.
          */
     }
@@ -1209,7 +1266,8 @@ RexxMethod6(RexxObjectPtr, ImageList_init, CSTRING, type, RexxObjectPtr, rxImage
         int index;
         for ( int i = 1; i <= count; i++ )
         {
-            image = handleFromRx(array_at(rxImages, i));
+            RexxMethodContext *context;
+            image = context->ArrayAt((RexxArrayObject)rxImages, i));
 
             if ( isBitmap )
             {
@@ -1232,7 +1290,7 @@ RexxMethod6(RexxObjectPtr, ImageList_init, CSTRING, type, RexxObjectPtr, rxImage
             //printf("Added image: %p index: %d last err: %d\n", image, index, GetLastError());
         }
     }
-    REXX_SETVAR(IL_HANDLE_ATTR, ptrToRx(himl));
+    context->SetObjectVariable(IL_HANDLE_ATTR, context-NewPointer(himl));
 
     return NULLOBJECT;
 }
@@ -1278,18 +1336,20 @@ RexxMethod1(logical_t, ImageList_destroy_class, POINTER, ptr)
  *  Free the underlying image list that this object represents.  Once this is
  *  done, this object is no longer usable.
  */
-RexxMethod0(RexxObjectPtr, ImageList_release)
+RexxMethod0(logical_t, ImageList_release)
 {
-    HIMAGELIST himl = _getSelf();
-    RexxObjectPtr rxSuccess = RexxFalse;
+    HIMAGELIST himl = _getSelf(context);
+    if ( himl == NULL )
+    {
+        return FALSE;
+    }
 
     if ( ImageList_Destroy(himl) != 0 )
     {
-        REXX_SETVAR(IL_HANDLE_ATTR, ptrToRx(NULL));
-        rxSuccess = RexxTrue;
+        context->SetObjectVariable(IL_HANDLE_ATTR, context->NewPointer(NULL));
+        return TRUE;
     }
-
-    return rxSuccess;
+    return FALSE;
 }
 
 
@@ -1299,14 +1359,19 @@ RexxMethod0(RexxObjectPtr, ImageList_release)
  *  COLORREF, for convenience the value can be returned split into its RGB
  *  values.
  */
-RexxMethod1(RexxObjectPtr, ImageList_getBkColor, RexxObjectPtr, rxUseRGB)
+RexxMethod1(RexxObjectPtr, ImageList_getBkColor, OPTIONAL_logical_t, useRGB)
 {
     TCHAR buffer[32];
-    HIMAGELIST himl  = _getSelf();
-    bool       doRGB = optionalBoolArg(rxUseRGB, false, 1);
-    COLORREF   ref   = ImageList_GetBkColor(himl);
+    HIMAGELIST himl = _getSelf(context);
+    if ( himl == NULL )
+    {
+        return FALSE;
+    }
 
-    if ( doRGB )
+
+    COLORREF ref = ImageList_GetBkColor(himl);
+
+    if ( rxArgExists(context, 1) && useRGB == TRUE )
     {
         _snprintf(buffer, sizeof(buffer), "%d %d %d %08x",
                   GetRValue(ref), GetGValue(ref), GetBValue(ref), ref);
@@ -1315,7 +1380,7 @@ RexxMethod1(RexxObjectPtr, ImageList_getBkColor, RexxObjectPtr, rxUseRGB)
     {
         _snprintf(buffer, sizeof(buffer), "%08x", ref);
     }
-    return RexxString(buffer);
+    return context->NewStringFromAsciiz(buffer);
 }
 
 
@@ -1324,14 +1389,20 @@ RexxMethod1(RexxObjectPtr, ImageList_getBkColor, RexxObjectPtr, rxUseRGB)
  *  Sets the current background color for this image list.  The value is
  *  specified as a COLORREF.  The previous background color is returned.
  */
-RexxMethod1(RexxObjectPtr, ImageList_setBkColor, RexxObjectPtr, rxUseRGB)
+RexxMethod1(RexxObjectPtr, ImageList_setBkColor, RexxObjectPtr, OPTIONAL_logical_t doRGB)
 {
     TCHAR buffer[32];
-    HIMAGELIST himl    = _getSelf();
-    bool       doRGB   = optionalBoolArg(rxUseRGB, false, 1);
     COLORREF   lastRef = ImageList_SetBkColor(himl, CLR_NONE);
 
-    if ( doRGB )
+    HIMAGELIST himl = _getSelf(context);
+    if ( himl == NULL )
+    {
+        return FALSE;
+    }
+
+    // TODO this function was never implemented correctly.
+
+    if ( rxArgExists(context, 1) && doRGB == TRUE )
     {
         _snprintf(buffer, sizeof(buffer), "%d %d %d %08x",
                   GetRValue(lastRef), GetGValue(lastRef), GetBValue(lastRef), lastRef);
@@ -1340,7 +1411,7 @@ RexxMethod1(RexxObjectPtr, ImageList_setBkColor, RexxObjectPtr, rxUseRGB)
     {
         _snprintf(buffer, sizeof(buffer), "%08x", lastRef);
     }
-    return RexxString(buffer);
+    return context->NewStringFromAsciiz(buffer);
 }
 
 
@@ -1348,10 +1419,14 @@ RexxMethod1(RexxObjectPtr, ImageList_setBkColor, RexxObjectPtr, rxUseRGB)
  *
  *  Return the number of images in this list.
  */
-RexxMethod0(RexxObjectPtr, ImageList_getImageCount)
+RexxMethod0(int32_t, ImageList_getImageCount)
 {
-    HIMAGELIST himl = _getSelf();
-    return RexxInteger(ImageList_GetImageCount(himl));
+    HIMAGELIST himl = _getSelf(context);
+    if ( himl == NULL )
+    {
+        return 0;
+    }
+    return ImageList_GetImageCount(himl);
 }
 
 
@@ -1365,7 +1440,12 @@ RexxMethod0(RexxObjectPtr, ImageList_getImageCount)
  */
 RexxMethod0(RexxObjectPtr, ImageList_getImageSize)
 {
-    HIMAGELIST himl = _getSelf();
+    HIMAGELIST himl = _getSelf(context);
+    if ( himl == NULL )
+    {
+        return 0;
+    }
+
     RexxObjectPtr rxResult = RexxNil;
     int cx, cy;
 
@@ -1390,9 +1470,13 @@ RexxMethod0(RexxObjectPtr, ImageList_getImageSize)
  */
 RexxMethod2(RexxObjectPtr, ImageList_setListViewImages, STRING, rxListView, OPTIONAL_CSTRING, size )
 {
-    HWND hwnd = getValidWindowHandle(context, rxListView, 2);
+    HWND hwnd = getOptionalWindowHandle(context, rxListView, 2);
     int flag = LVSIL_NORMAL;
-    HIMAGELIST himl = _getSelf();
+    HIMAGELIST himl = _getSelf(context);
+    if ( himl == NULL )
+    {
+        return 0;
+    }
 
     if ( size != NULLOBJECT )
     {
@@ -1409,20 +1493,20 @@ RexxMethod2(RexxObjectPtr, ImageList_setListViewImages, STRING, rxListView, OPTI
      * If the list view does not have the LVS_SHAREIMAGELISTS style, the old
      * image list needs to be destroyed.  Do it here, let the user do it ??
      */
-    return ptrToRx(oldImages);
+    return context->NewPointer(oldImages);
 }
 
-inline HIMAGELIST _getSelf(void)
+inline HIMAGELIST _getSelf(RexxMethodContext *c)
 {
-    HIMAGELIST himl = (HIMAGELIST)ptrFromRx(REXX_GETVAR(IL_HANDLE_ATTR));
+    HIMAGELIST himl = (HIMAGELIST)c->PointerValue(c->GetObjectVariable(IL_HANDLE_ATTR));
     if ( himl == NULL )
     {
-        send_exception1(Error_Execution_user_defined, RexxArray1(RexxString(IMAGELIST_RELEASED_MSG)));
+        c->RaiseException1(Rexx_Error_Execution_user_defined, c->NewStringFromAsciiz(IMAGELIST_RELEASED_MSG));
     }
     return himl;
 }
 
-static unsigned int getImageListFlags(const char *_flags, size_t argNumber)
+static unsigned int getImageListFlags(RexxMethodContext *context, const char *_flags, size_t argNumber)
 {
     char *flags = strdupupr(_flags);
     unsigned int flag = -1;
@@ -1434,7 +1518,7 @@ static unsigned int getImageListFlags(const char *_flags, size_t argNumber)
         flag = getConstantValue(token);
         if ( flag == -1 )
         {
-            invalidConstantException(argNumber, INVALID_CONSTANT_MSG, "ILC", token);
+            invalidConstantException(context, argNumber, INVALID_CONSTANT_MSG, "ILC", token);
             return -1;
         }
         ilcFlags |= flag;
@@ -1479,7 +1563,7 @@ static int getListViewImageListType(const char *size)
 
     if ( flag == -1 )
     {
-        wrongArgExceptionRx(1, "a valid LVSIL_XXX constant, Normal, Small, or State", size);
+        wrongArgValueException(1, "a valid LVSIL_XXX constant, Normal, Small, or State", size);
     }
     return flag;
 }
@@ -1516,8 +1600,10 @@ static int setSystemImageList(RexxMethodContext * context, bool setLarge)
         return 0;
     }
 
-    REXX_SETVAR(IL_HANDLE_ATTR, setLarge ? ptrToRx(hLarge) : ptrToRx(hSmall));
-    REXX_SETVAR(IL_IMAGETYPE_ATTR, IL_IMAGETYPE_ICON);
+    context->SetObjectVariable(IL_HANDLE_ATTR,
+                               setLarge ? context->NewPointer(hLarge) : context->NewPointer(hSmall));
+
+    context->SetObjectVariable(IL_IMAGETYPE_ATTR, context->NewInteger(IL_IMAGETYPE_ICON));
 
     return 1;
 }
@@ -1552,9 +1638,13 @@ static int setSystemImageList(RexxMethodContext * context, bool setLarge)
  * Basic init for a ShellFileOp object.
  */
 RexxMethod4(RexxObjectPtr, ShellFileOp_init, CSTRING, from, CSTRING, to, RexxObjectPtr, rxFlags,
-            STRING, rxHwndOwner)
+            OPTIONAL_RexxObjectPtr, rxHwndOwner)
 {
-    CommonInit(context, true);
+    if ( ! CommonInit(context, true) )
+    {
+        return NULLOBJECT;
+    }
+
 
     // Set the from and to lists to the default of nil. Then the actual
     // arguments can simply be passed to the addTo function.
@@ -1574,14 +1664,15 @@ RexxMethod4(RexxObjectPtr, ShellFileOp_init, CSTRING, from, CSTRING, to, RexxObj
     REXX_SETVAR(SFO_PERMANENT_ATTR, RexxFalse);
     REXX_SETVAR(SFO_MULTIDESTINATION, RexxFalse);
 
-    setFOFlags(rxFlags, true, 3);
-    setOwnerWnd(context, rxHwndOwner, 4);
-
     // Set the default values for the other attributes.
     REXX_SETVAR(SFO_USERCANCELED_ATTR, RexxNil);
     REXX_SETVAR(SFO_PROGRESSTITLE_ATTR, RexxNil);
 
-    return RexxNil;
+    setFOFlags(rxFlags, true, 3);
+
+    setOwnerWnd(context, rxHwndOwner, 4);
+
+    return NULLOBJECT;
 }
 
 RexxMethod3(RexxObjectPtr, ShellFileOp_delete, CSTRING, file, STRING, rxFlags, STRING, rxHwndOwner)
@@ -1625,7 +1716,7 @@ RexxMethod1(RexxObjectPtr, ShellFileOp_setFOFlags, RexxObjectPtr, rxFlags)
  *  window handle and an exception is raised if it is not.
  *
  */
-RexxMethod1(RexxObjectPtr, ShellFileOp_setOwnerWnd, RexxObjectPtr, rxHwndOwner)
+RexxMethod1(RexxObjectPtr, ShellFileOp_setOwnerWnd, OPTIONAL_RexxObjectPtr, rxHwndOwner)
 {
     RexxObjectPtr oldValue = REXX_GETVAR(SFO_OWNERWINDOW_ATTR);
     setOwnerWnd(context, rxHwndOwner, 1);
@@ -1787,7 +1878,7 @@ static void setFOFlags(RexxObjectPtr rxFlags, bool nullResets, size_t argNumber)
             break;
 
         default :
-            wrongArgExceptionRx(argNumber, ".nil, .true, .false, or valid FOF_XXX flags", rxFlags);
+            wrongArgValueException(argNumber, ".nil, .true, .false, or valid FOF_XXX flags", rxFlags);
             break;
     }
 }
@@ -1846,52 +1937,50 @@ static FILEOP_FLAGS getFOFlags(void)
     return flags;
 }
 
-
-static void setOwnerWnd(RexxMethodContext *context, RexxObjectPtr rxHwnd, size_t argNumber)
+static bool setOwnerWnd(RexxMethodContext *context, RexxObjectPtr rxHwnd, size_t argNumber)
 {
-    switch ( getRxArgType(rxHwnd) )
+    if ( rxHwnd == NULL || rxHwnd == context->Nil() )
     {
-        case OMITTED_TYPE :
-        case NIL_TYPE :
-            REXX_SETVAR(SFO_OWNERWINDOW_ATTR, RexxNil);
-            break;
-
-        case STRING_TYPE :
-            {
-                /** getValidWindowHandle is just used to check that the value is
-                 *  The attribute is set using the ooRexx string.  (An exception
-                 *  is thrown if the hwnd is no good.)
-                 */
-                HWND hwnd = getValidWindowHandle(context, rxHwnd, argNumber);
-                REXX_SETVAR(SFO_OWNERWINDOW_ATTR, rxHwnd);
-            }
-            break;
-
-        default :
-            wrongArgExceptionRx(argNumber, ".nil, or a valid window handle", rxHwnd);
-            break;
+        REXX_SETVAR(SFO_OWNERWINDOW_ATTR, context->Nil());
     }
+    else if ( context->IsPointer(rxHwnd) )
+    {
+        if ( ! IsWindow((HWND)context->PointerValue(rxHwnd)) )
+        {
+            badArgException(context, argNumber, WINDOW_HANDLE_MSG);
+            return false;
+        }
+        REXX_SETVAR(SFO_OWNERWINDOW_ATTR, rxHwnd);
+    }
+    else
+    {
+        wrongArgValueException(argNumber, ".nil, or a valid window handle", rxHwnd);
+        return false;
+    }
+    return true;
 }
 
 
-static HWND getOwnerWnd(RexxMethodContext *context)
+static bool getOwnerWnd(RexxMethodContext *context, HWND *hwnd)
 {
-    HWND hwnd = NULL;
-    RexxObjectPtr rxHwnd = REXX_GETVAR(SFO_OWNERWINDOW_ATTR);
+    *hwnd = NULL;
+    RexxObjectPtr rxHwnd = context->GetObjectVariable(SFO_OWNERWINDOW_ATTR);
 
-    if ( rxHwnd != RexxNil )
+    if ( rxHwnd != context->Nil() )
     {
         // The window handle was good at the time the user set it.  It is
         // possbile that it is no longer good.  Should there be an exception
         // raised?  It won't actually do any harm to use a bad handle.  But
         // there could be some behavior that the user does not understand.
-        hwnd = (HWND)handleFromRx(rxHwnd);
-        if ( ! IsWindow(hwnd) )
+        *hwnd = (HWND)context->PointerValue(rxHwnd);
+        if ( ! IsWindow(*hwnd) )
         {
+            *hwnd = NULL;
             systemServiceException(context, INVALID_WINDOW_MSG, NULL);
+            return false;
         }
     }
-    return hwnd;
+    return true;
 }
 
 
@@ -1922,7 +2011,7 @@ static RXARG_TYPES getRxArgType(RexxObjectPtr rxArg)
 }
 
 
-static RexxObjectPtr doTheOp(RexxMethodContext *context, UINT op, size_t argNumber, CSTRING from,
+static logical_t doTheOp(RexxMethodContext *context, UINT op, size_t argNumber, CSTRING from,
                              CSTRING to, STRING rxFlags, STRING rxHwndOwner)
 {
     SHFILEOPSTRUCT sfos = { 0 };
@@ -1930,12 +2019,20 @@ static RexxObjectPtr doTheOp(RexxMethodContext *context, UINT op, size_t argNumb
     addToFileList(context, FROM_DIRECTION, from);
     addToFileList(context, TO_DIRECTION, to);
     setFOFlags(rxFlags, false, argNumber);
-    setOwnerWnd(context, rxHwndOwner, argNumber + 1);
+
+    if ( ! setOwnerWnd(context, rxHwndOwner, argNumber + 1) )
+    {
+        return FALSE;
+    }
 
     sfos.pFrom  = string_data(REXX_GETVAR(SFO_FROMLIST_ATTR));
     sfos.wFunc  = op;
     sfos.fFlags = getFOFlags();
-    sfos.hwnd   = getOwnerWnd(context);
+
+    if ( ! getOwnerWnd(context, &sfos.hwnd) )
+    {
+        return FALSE;
+    }
 
     sfos.lpszProgressTitle = getTitle(sfos.hwnd, sfos.fFlags);
 
@@ -1946,22 +2043,22 @@ static RexxObjectPtr doTheOp(RexxMethodContext *context, UINT op, size_t argNumb
     printf("FO flags: %x\n", sfos.fFlags);
 
     int rc = SHFileOperation(&sfos);
-    RexxObjectPtr rxSuccess = (rc == 0) ? RexxTrue : RexxFalse;
+    logical_t success = (rc == 0) ? TRUE : FALSE;
 
-    REXX_SETVAR(SFO_USERCANCELED_ATTR, sfos.fAnyOperationsAborted ? RexxTrue : RexxFalse);
+    REXX_SETVAR(SFO_USERCANCELED_ATTR, sfos.fAnyOperationsAborted ? context->True() : context->False());
 
     if ( rc != 0 )
     {
         // Don't clear the lists on failure.  That way the user can examine the
         // lists after an error.
-        return RexxFalse;
+        return FALSE;
     }
 
     // Clear the lists.
     REXX_SETVAR(SFO_FROMLIST_ATTR, RexxNil);
     REXX_SETVAR(SFO_TOLIST_ATTR, RexxNil);
 
-    return rxSuccess;
+    return success;
 }
 
 inline char *getTitle(HWND hwnd, FILEOP_FLAGS flags)
@@ -1986,14 +2083,18 @@ inline char *getTitle(HWND hwnd, FILEOP_FLAGS flags)
  * setting them to either .nil or the empty string.
  */
 RexxMethod4(RexxObjectPtr, SimpleFolderBrowse_init,
-            STRING,    title,
-            STRING,    banner,
-            STRING,    hint,
-            STRING,    startDir)
+            OPTIONAL_CSTRING,  title,
+            OPTIONAL_CSTRING,  banner,
+            OPTIONAL_CSTRING,  hint,
+            OPTIONAL_CSTRING,  startDir)
 {
 	LPITEMIDLIST pidl = NULL;
+    RexxMethodContext *context;
 
-    CommonInit(context, true);
+    if ( ! CommonInit(context, true) )
+    {
+        return NULLOBJECT;
+    }
 
     // Set the default attributes for the browser.
     setSFBAttribute("TITLE", title, BROWSE_TITLE);
@@ -2003,49 +2104,111 @@ RexxMethod4(RexxObjectPtr, SimpleFolderBrowse_init,
 
     if ( pidlForSpecialFolder(CSIDL_DRIVES, &pidl) )
     {
-        REXX_SETVAR("ROOT", ptrToRx(pidl));
+        context->SetObjectVariable("ROOT", context->NewPointer(pidl));
     }
     else
     {
         systemServiceException(context, NO_ITEMID_MSG, "CSIDL_DRIVES");
     }
 
-    return RexxNil;
+    return NULLOBJECT;
 }
 
-
-RexxMethod1(RexxObjectPtr, SimpleFolderBrowse_setRoot_private, RexxObjectPtr, rxObj)
+LPITEMIDLIST getPidlFromString(RexxMethodContext *context, int argPos, CSTRING idl, bool canFail)
 {
-    size_t source = 0;
+    LPITEMIDLIST pidl == NULL;
 
-    /* The possible pidl is required, but setting it to .nil or the empty string
-     * is valid.
-     */
-    LPITEMIDLIST pidl = getPossiblePIDL(context, rxObj, 1, PPSF_ALL, &source);
-
-    // If there is already a root pidl, not .nil, then free it.
-    RexxObjectPtr rxObject = REXX_GETVAR("ROOT");
-    if ( rxObject != RexxNil )
+    /* See if it looks like a CSIDL_ constant. */
+    if ( strlen(idl) > 6 && StrCmpNI("CSIDL_", arg, 6) == 0 )
     {
-        LPITEMIDLIST pidlRoot = (LPITEMIDLIST)ptrFromRx(rxObject);
-        if ( pidlRoot != NULL )
+        char idlTmp[MAX_PATH + 1];
+        char *argTmp = strdupupr(idl);
+        int csidl = getConstantValue(argTmp);
+        free(argTmp);
+
+        if ( csidl == -1 )
         {
-            CoTaskMemFree(pidlRoot);
+            invalidConstantException(context, argPos, INVALID_CONSTANT_MSG, "CSIDL", idl);
+            return NULL;
         }
+        pidlForSpecialFolder(csidl, &pidl);
+    }
+    else if ( _PathIsFull(idl) )
+    {
+        pidlFromPath(idl, &pidl);
+    }
+    else
+    {
+        wrongFormatException(context, argPos, idl);
+    }
+
+    if ( pidl == NULL && ! canFail )
+    {
+        wrongFormatException(context, argPos, idl);
+    }
+    return pidl;
+}
+
+LPITEMIDLIST getPidlFromObject(RexxMethodContext *context, RexxObjectPtr obj, int argPos)
+{
+    LPITEMIDLIST pidl == NULL;
+
+    if ( context->IsString(obj) )
+    {
+        pidl = getPidlFromString(context, argPos, context->StringData((RexxStringObject)obj), false);
+    }
+    else if ( context->IsPointer(obj) )
+    {
+        pidl = (LPITEMIDLIST)context->PointerValue((RexxPointerObject)obj)
     }
 
     if ( pidl == NULL )
     {
-        REXX_SETVAR("ROOT", RexxNil);
+        wrongFormatException(context, argPos, obj);
+    }
+    return pidl;
+}
+
+RexxMethod1(RexxObjectPtr, SimpleFolderBrowse_setRoot, RexxObjectPtr, obj)
+{
+    RexxMethodContext *context;
+    RexxObjectPtr root = context->Nil();
+
+    if ( context->Nil() == obj )
+    {
+        ;  // Do nothing, root is already set to Nil.
+    }
+    else if ( context->IsString(obj) )
+    {
+        if ( obj != context->NullString() )
+        {
+            LPITEMIDLIST pidl = getPidlFromString(context, 1, context->StringData((RexxStringObject)obj), false);
+            if ( pidl == NULL )
+            {
+                return NULLOBJECT;
+            }
+            root = context->NewPointer(pidl);
+        }
+    }
+    else if ( context->IsPointer(obj) )
+    {
+        if ( context->PointerValue((RexxPointerObject)obj) != NULL )
+        {
+            root = obj;
+        }
     }
     else
     {
-        REXX_SETVAR("ROOT", ptrToRx(pidl));
+        wrongFormatException(context, 1, obj);
+        return NULLOBJECT;
     }
-    return RexxNil;
+
+    // Free an existing root pidl.  The function handles the .nil case.
+    freeRootPidl(context);
+
+    context->SetObjectVariable("ROOT", root);
+    return NULLOBJECT;
 }
-
-
 
 /** SimpleFolderBrowse::getFolder()
  *
@@ -2053,7 +2216,7 @@ RexxMethod1(RexxObjectPtr, SimpleFolderBrowse_setRoot_private, RexxObjectPtr, rx
  * this instance.  The optional arg is a window handle.  If specified that
  * window is used as the owner of the dialog.
  *
- * @param   rxHwnd  OPTIONAL  A window handle to be used as owner of the browse
+ * @param   hwnd  OPTIONAL  A window handle to be used as owner of the browse
  *          dialog.  If this arg is used, but is not a valid window handle, then
  *          an exception is raised.
  *
@@ -2062,15 +2225,22 @@ RexxMethod1(RexxObjectPtr, SimpleFolderBrowse_setRoot_private, RexxObjectPtr, rx
  *          selects a virtual folder that has no file system path, .nil is
  *          returned.
  */
-RexxMethod2(RexxObjectPtr, SimpleFolderBrowse_getFolder, OSELF, self, STRING, rxHwnd)
+RexxMethod2(RexxObjectPtr, SimpleFolderBrowse_getFolder, OSELF, self, OPTIONAL_POINTER, hwnd)
 {
     BROWSEINFO   bi = { 0 };
     BROWSE_DATA  bd = { 0 };
 
-    fillInBrowseData(context, rxHwnd, &bi, &bd);
+    if ( rxArgExists(context, 1) && ! IsWindow(hwnd) )
+    {
+        badArgException(context, 1, WINDOW_HANDLE_MSG);
+        return context->Nil();
+    }
+
+    // NULL for hwnd works fine.
+    fillInBrowseData(context, hwnd, &bi, &bd);
 
     // Second arg is true - return path.
-    return folderBrowse(&bi, true);
+    return folderBrowse(context, &bi, true);
 }
 
 
@@ -2078,21 +2248,29 @@ RexxMethod2(RexxObjectPtr, SimpleFolderBrowse_getFolder, OSELF, self, STRING, rx
  *
  * Put up the Browse for Folder dialog and return the PIDL the user selects.
  *
- * @param   rxHwnd  OPTIONAL  If specified, use this window as the owner window
- * of the dialog.
+ * @param   hwnd  OPTIONAL  A window handle to be used as owner of the browse
+ *          dialog.  If this arg is used, but is not a valid window handle, then
+ *          an exception is raised.
  *
  * @return  Returns the pointer to item ID list the user selected, or the empty
  *          string if the user cancels the dialog.
  */
-RexxMethod2(RexxObjectPtr, SimpleFolderBrowse_getItemID, OSELF, self, STRING, rxHwnd)
+RexxMethod2(RexxObjectPtr, SimpleFolderBrowse_getItemID, OSELF, self, OPTIONAL_POINTER, hwnd)
 {
     BROWSEINFO   bi = { 0 };
     BROWSE_DATA  bd = { 0 };
 
-    fillInBrowseData(context, rxHwnd, &bi, &bd);
+    if ( rxArgExists(context, 1) && ! IsWindow(hwnd) )
+    {
+        badArgException(context, 1, WINDOW_HANDLE_MSG);
+        return context->Nil();
+    }
+
+    // NULL for hwnd works fine.
+    fillInBrowseData(context, (HWND)hwnd, &bi, &bd);
 
     // Second arg is false - return PIDL, not path.
-    return folderBrowse(&bi, false);
+    return folderBrowse(context &bi, false);
 }
 
 
@@ -2103,31 +2281,46 @@ RexxMethod2(RexxObjectPtr, SimpleFolderBrowse_getItemID, OSELF, self, STRING, rx
  */
 RexxMethod1(RexxObjectPtr, SimpleFolderBrowse_uninit, OSELF, self)
 {
-
-    RexxObjectPtr rxObject = REXX_GETVAR("ROOT");
-    if ( rxObject != RexxNil )
-    {
-        LPITEMIDLIST pidl = (LPITEMIDLIST)ptrFromRx(rxObject);
-        if ( pidl != NULL )
-        {
-            CoTaskMemFree(pidl);
-        }
-    }
-
+    freeRootPidl(context);
     CommonUninit(true);
-    return RexxNil;
+    return NULLOBJECT;
+}
+
+LPCITEMIDLIST getRootPidl(RexxMethodContext *context)
+{
+    LPCITEMIDLIST pidl = NULL;
+    RexxObjectPtr rxObject = context->GetObjectVariable("ROOT");
+    if ( rxObject != context->Nil() )
+    {
+        pidl = (LPCITEMIDLIST)context->PointerValue((RexxPointerObject)rxObject);
+    }
+    return pidl
 }
 
 
-inline void setSFBAttribute(char * name, STRING userVal, char * defaultVal)
+void freeRootPidl(RexxMethodContext *context)
 {
-    if ( userVal == NULLOBJECT )
-        REXX_SETVAR(name, RexxString(defaultVal));
-    else if ( string_length(userVal) == 0 )
-        REXX_SETVAR(name, RexxNil);
-    else
-        REXX_SETVAR(name, userVal);
+    LPITEMIDLIST pidl = getRootPidl(context);
+    if ( pidl != NULL )
+    {
+        CoTaskMemFree(pidl);
+    }
+}
 
+void setSFBAttribute(RexxMethodContext *context, char *name, CSTRING userVal, char *defaultVal)
+{
+    if ( userVal == NULL )
+    {
+        context->SetObjectVariable(name, context->NewStringFromAsciiz(defaultVal));
+    }
+    else if ( strlen(userVal) == 0 )
+    {
+        context->SetObjectVariable(name, context->Nil());
+    }
+    else
+    {
+        context->SetObjectVariable(name, context->NewStringFromAsciiz(userVal));
+    }
 }
 
 /** Path::makePretty()
@@ -2580,19 +2773,21 @@ RexxMethod0(RexxObjectPtr, Sh_isAtLeastVista_class)
     return RexxFalse;
 }
 
-static HWND getValidWindowHandle(RexxMethodContext *context, STRING rxHwnd, size_t argNumber)
+static HWND getOptionalWindowHandle(RexxMethodContext *context, RexxObjectPtr rxHwnd, HWND *hwnd, size_t argNumber)
 {
-    HWND hwnd = NULL;
+    *hwnd = NULL;
 
     if ( rxHwnd != NULLOBJECT )
     {
-        hwnd = (HWND)handleFromRx(rxHwnd);
+        *hwnd = (HWND)context->PointerValue(rxHwnd);
         if ( ! IsWindow(hwnd) )
         {
+            *hwnd = NULL:
             badArgException(context, argNumber, WINDOW_HANDLE_MSG);
+            return false;
         }
     }
-    return hwnd;
+    return true;
 }
 
 
@@ -2605,11 +2800,11 @@ static HWND getValidWindowHandle(RexxMethodContext *context, STRING rxHwnd, size
  *
  * @return RexxObjectPtr
  */
-static RexxObjectPtr folderBrowse(PBROWSEINFO pBI, bool returnPath)
+static RexxObjectPtr folderBrowse(RexxMethodContext *context, PBROWSEINFO pBI, bool returnPath)
 {
-	LPITEMIDLIST pidl = NULL;
-    TCHAR        path[MAX_PATH];
-    RexxObjectPtr   rxResult = RexxString("");    // User canceled.
+	LPITEMIDLIST  pidl = NULL;
+    TCHAR         path[MAX_PATH];
+    RexxObjectPtr rxResult = context->NullString();    // User canceled.
 
     pidl = SHBrowseForFolder(pBI);
     if ( pidl != NULL )
@@ -2617,26 +2812,30 @@ static RexxObjectPtr folderBrowse(PBROWSEINFO pBI, bool returnPath)
         if ( returnPath )
         {
             if ( SHGetPathFromIDList(pidl, path) )
-                rxResult = RexxString(path);
+            {
+                rxResult = context->NewStringFromAsciiz(path);
+            }
             else
-                rxResult = RexxNil;
+            {
+                rxResult = context->Nil();
+            }
             CoTaskMemFree(pidl);
         }
         else
         {
-            rxResult = ptrToRx(pidl);
+            rxResult = context->PointerValue(pidl);
         }
     }
     return rxResult;
 }
 
-static void fillInBrowseData(RexxMethodContext *context, STRING rxHwnd, PBROWSEINFO pBI, PBROWSE_DATA pBD)
+static void fillInBrowseData(RexxMethodContext *context, HWND hwnd, PBROWSEINFO pBI, PBROWSE_DATA pBD)
 {
 	LPITEMIDLIST pidlRoot = NULL;
     PTCHAR       pHint;
     RexxObjectPtr   rxObject;
 
-    pBI->hwndOwner = getValidWindowHandle(context, rxHwnd, 1);
+    pBI->hwndOwner = hwnd;
     pBI->ulFlags  = BIF_RETURNONLYFSDIRS | BIF_NEWDIALOGSTYLE | BIF_RETURNFSANCESTORS;
 
     rxObject = REXX_GETVAR("TITLE");
@@ -2669,15 +2868,7 @@ static void fillInBrowseData(RexxMethodContext *context, STRING rxHwnd, PBROWSEI
     if ( rxObject != RexxNil )
         pBI->lpszTitle = string_data((RexxString *)rxObject);
 
-    rxObject = REXX_GETVAR("ROOT");
-    if ( rxObject != RexxNil )
-    {
-        pBI->pidlRoot = (LPCITEMIDLIST)ptrFromRx(rxObject);
-        if ( pBI->pidlRoot == NULL )
-        {
-            systemServiceException(context, STRING_TO_PTR_FAILED_MSG, NULL);
-        }
-    }
+    pBI->pidlRoot = getRootPidl(context);
 
     pBI->lpfn   = BrowseCallbackProc;
     pBI->lParam = (LPARAM)pBD;
@@ -3019,6 +3210,37 @@ inline int getConstantValue(const char * str)
 }
 
 
+
+REXX_METHOD_PROTOTYPE(size_init);
+REXX_METHOD_PROTOTYPE(size_cx);
+REXX_METHOD_PROTOTYPE(size_setCX);
+REXX_METHOD_PROTOTYPE(size_cy);
+REXX_METHOD_PROTOTYPE(size_setCY);
+
+RexxMethodEntry winshell_methods[] = {
+    REXX_METHOD(size_init,              size_init),
+    REXX_METHOD(size_x,                 size_x),
+    REXX_METHOD(size_setX,              size_setX),
+    REXX_METHOD(size_y,                 size_y),
+    REXX_METHOD(size_setY,              size_setY),
+    REXX_LAST_METHOD()
+};
+
+RexxPackageEntry winshell_package_entry =
+{
+    STANDARD_PACKAGE_HEADER
+    REXX_INTERPRETER_4_0_0,              // anything after 4.0.0 will work
+    "WINSHELL",                          // name of the package
+    "4.0",                               // package information
+    NULL,                                // no load functions
+    NULL,                                // no unload functions
+    NULL,                                // the exported functions
+    winshell_methods                     // the exported methods
+};
+
+// package loading stub.
+OOREXX_GET_PACKAGE(winshell);
+
 // Below here are, commented out, saved functions.
 
 #if defined(UNUSED_FUNCTIONS)
@@ -3051,7 +3273,7 @@ bool APIENTRY DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 // of settings, etc.  Providing this function as an external function does not
 // seem to have any real advantages.
 
-// Would need this to go into the ShellUtilsTable:
+// Would need this to go into the WinShellTable:
 
 //    BROWSEDIALOG_FUNC,
 

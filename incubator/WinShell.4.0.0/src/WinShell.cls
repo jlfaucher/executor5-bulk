@@ -52,6 +52,20 @@ end
   Directives, Classes, or Routines.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 
+
+/* class: Size - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+
+    Sizes have a width and a height on a coordinate system.  Which translates to
+    a count of the x units (width) and a count of the y units (height.)
+
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::class 'Size' public
+::method init external "LIBRARY winshell size_init"
+::method cx external "LIBRARY winshell size_cx"
+::method 'cx=' external "LIBRARY winshell size_setCX"
+::method cy external "LIBRARY winshell size_cy"
+::method 'cy=' external "LIBRARY winshell size_setCY"
+
 /* class: WinShell - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
 
     A representation of the Windows Shell with methods providing access to the
@@ -60,33 +74,33 @@ end
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::class 'WinShell'
 
-::method init                      external "LIBRARY SHELLUTILS WinShell_init"
-::method uninit                    external "LIBRARY SHELLUTILS WinShell_uninit"
-::method browseForFolder           external "LIBRARY SHELLUTILS WinShell_browseForFolder"
-::method pathFromCSIDL             external "LIBRARY SHELLUTILS WinShell_pathFromCSIDL"
-::method pathFromItemID            external "LIBRARY SHELLUTILS WinShell_pathFromItemID"
-::method getItemID                 external "LIBRARY SHELLUTILS WinShell_getItemID"
-::method getItemIDFromPath         external "LIBRARY SHELLUTILS WinShell_getItemIDFromPath"
-::method getItemIDFromCSIDL        external "LIBRARY SHELLUTILS WinShell_getItemIDFromCSIDL"
-::method releaseItemID             external "LIBRARY SHELLUTILS WinShell_releaseItemID"
-::method openFindFiles             external "LIBRARY SHELLUTILS WinShell_openFindFiles"
-::method openFolder                external "LIBRARY SHELLUTILS WinShell_openFolder"
-::method closeWindow               external "LIBRARY SHELLUTILS WinShell_closeWindow"
-::method addToRecentDocuments      external "LIBRARY SHELLUTILS WinShell_addToRecentDocuments"
-::method clearRecentDocuments      external "LIBRARY SHELLUTILS WinShell_clearRecentDocuments"
-::method emptyRecycleBin           external "LIBRARY SHELLUTILS WinShell_emptyRecycleBin"
-::method selectIcon                external "LIBRARY SHELLUTILS WinShell_selectIcon"
-::method loadIcon                  external "LIBRARY SHELLUTILS WinShell_loadIcon"
-::method getSharedIcon             external "LIBRARY SHELLUTILS WinShell_getSharedIcon"
-::method extractDefaultIcons       external "LIBRARY SHELLUTILS WinShell_extractDefaultIcons"
-::method releaseIcon               external "LIBRARY SHELLUTILS WinShell_releaseIcon"
-::method about                     external "LIBRARY SHELLUTILS WinShell_about"
+::method init                      external "LIBRARY WINSHELL WinShell_init"
+::method uninit                    external "LIBRARY WINSHELL WinShell_uninit"
+::method browseForFolder           external "LIBRARY WINSHELL WinShell_browseForFolder"
+::method pathFromCSIDL             external "LIBRARY WINSHELL WinShell_pathFromCSIDL"
+::method pathFromItemID            external "LIBRARY WINSHELL WinShell_pathFromItemID"
+::method getItemID                 external "LIBRARY WINSHELL WinShell_getItemID"
+::method getItemIDFromPath         external "LIBRARY WINSHELL WinShell_getItemIDFromPath"
+::method getItemIDFromCSIDL        external "LIBRARY WINSHELL WinShell_getItemIDFromCSIDL"
+::method releaseItemID             external "LIBRARY WINSHELL WinShell_releaseItemID"
+::method openFindFiles             external "LIBRARY WINSHELL WinShell_openFindFiles"
+::method openFolder                external "LIBRARY WINSHELL WinShell_openFolder"
+::method closeWindow               external "LIBRARY WINSHELL WinShell_closeWindow"
+::method addToRecentDocuments      external "LIBRARY WINSHELL WinShell_addToRecentDocuments"
+::method clearRecentDocuments      external "LIBRARY WINSHELL WinShell_clearRecentDocuments"
+::method emptyRecycleBin           external "LIBRARY WINSHELL WinShell_emptyRecycleBin"
+::method selectIcon                external "LIBRARY WINSHELL WinShell_selectIcon"
+::method loadIcon                  external "LIBRARY WINSHELL WinShell_loadIcon"
+::method getSharedIcon             external "LIBRARY WINSHELL WinShell_getSharedIcon"
+::method extractDefaultIcons       external "LIBRARY WINSHELL WinShell_extractDefaultIcons"
+::method releaseIcon               external "LIBRARY WINSHELL WinShell_releaseIcon"
+::method about                     external "LIBRARY WINSHELL WinShell_about"
 
-::method _queryDiskSpace  private  external "LIBRARY SHELLUTILS WinShell_queryDiskSpace_private"
-::method _queryRecycleBin private  external "LIBRARY SHELLUTILS WinShell_queryRecycleBin_private"
+::method _queryDiskSpace  private  external "LIBRARY WINSHELL WinShell_queryDiskSpace_private"
+::method _queryRecycleBin private  external "LIBRARY WINSHELL WinShell_queryRecycleBin_private"
 
 -- Temp method used to test things.
-::method test                      external "LIBRARY SHELLUTILS WinShell_test"
+::method test                      external "LIBRARY WINSHELL WinShell_test"
 
 
 /** queryDiskSpace()
@@ -159,16 +173,16 @@ return obj
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::class 'ImageList'
 
-::method destroy class             external "LIBRARY SHELLUTILS ImageList_destroy_class"
+::method destroy class             external "LIBRARY WINSHELL ImageList_destroy_class"
 
-::method init                      external "LIBRARY SHELLUTILS ImageList_init"
-::method uninit                    external "LIBRARY SHELLUTILS ImageList_uninit"
-::method getImageSize              external "LIBRARY SHELLUTILS ImageList_getImageSize"
-::method getImageCount             external "LIBRARY SHELLUTILS ImageList_getImageCount"
-::method getBkColor                external "LIBRARY SHELLUTILS ImageList_getBkColor"
-::method setBkColor                external "LIBRARY SHELLUTILS ImageList_setBkColor"
-::method setListViewImages         external "LIBRARY SHELLUTILS ImageList_setListViewImages"
-::method release                   external "LIBRARY SHELLUTILS ImageList_release"
+::method init                      external "LIBRARY WINSHELL ImageList_init"
+::method uninit                    external "LIBRARY WINSHELL ImageList_uninit"
+::method getImageSize              external "LIBRARY WINSHELL ImageList_getImageSize"
+::method getImageCount             external "LIBRARY WINSHELL ImageList_getImageCount"
+::method getBkColor                external "LIBRARY WINSHELL ImageList_getBkColor"
+::method setBkColor                external "LIBRARY WINSHELL ImageList_setBkColor"
+::method setListViewImages         external "LIBRARY WINSHELL ImageList_setListViewImages"
+::method release                   external "LIBRARY WINSHELL ImageList_release"
 
 ::attribute handle get
 
@@ -181,12 +195,12 @@ return obj
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::class 'SimpleFolderBrowse'
 
-::method init      external "LIBRARY SHELLUTILS SimpleFolderBrowse_init"
-::method uninit    external "LIBRARY SHELLUTILS SimpleFolderBrowse_uninit"
-::method getFolder external "LIBRARY SHELLUTILS SimpleFolderBrowse_getFolder"
-::method getItemID external "LIBRARY SHELLUTILS SimpleFolderBrowse_getItemID"
+::method init      external "LIBRARY WINSHELL SimpleFolderBrowse_init"
+::method uninit    external "LIBRARY WINSHELL SimpleFolderBrowse_uninit"
+::method getFolder external "LIBRARY WINSHELL SimpleFolderBrowse_getFolder"
+::method getItemID external "LIBRARY WINSHELL SimpleFolderBrowse_getItemID"
 
-::method _setRoot  external "LIBRARY SHELLUTILS SimpleFolderBrowse_setRoot_private"
+::method _setRoot
 
 ::attribute title get
 ::attribute title set
@@ -202,7 +216,7 @@ return obj
 ::attribute banner set
   expose banner
   use strict arg _banner
-  if \ _banner~isA(.String) then
+  if \ (_banner~isA(.String) } _banner == .nil) then
     raise syntax 88.900 array ("banner must be set to a string or .nil; found:" _banner)
 
   if _banner == "" then banner = .nil
@@ -212,7 +226,7 @@ return obj
 ::attribute hint set
   expose hint
   use strict arg _hint
-  if \ _hint~isA(.String) then
+  if \ (_hint~isA(.String) | _hint == .nil) then
     raise syntax 88.900 array ("hint must be set to a string or .nil; found:" _hint)
 
   if _hint == "" then hint = .nil
@@ -229,9 +243,7 @@ return obj
   else initialFolder = _initialFolder
 
 ::attribute root get
-::attribute root set
-  use strict arg _root
-  self~_setRoot(_root)
+::method 'root=' external "LIBRARY WINSHELL SimpleFolderBrowse_setRoot"
 
 
 /* class: ShellFileOp- - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
@@ -247,12 +259,12 @@ return obj
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::class 'ShellFileOp'
 
-::method init            external "LIBRARY SHELLUTILS ShellFileOp_init"
-::method uninit          external "LIBRARY SHELLUTILS ShellFileOp_uninit"
-::method delete          external "LIBRARY SHELLUTILS ShellFileOp_delete"
-::method copy            external "LIBRARY SHELLUTILS ShellFileOp_copy"
-::method move            external "LIBRARY SHELLUTILS ShellFileOp_move"
-::method rename          external "LIBRARY SHELLUTILS ShellFileOp_rename"
+::method init            external "LIBRARY WINSHELL ShellFileOp_init"
+::method uninit          external "LIBRARY WINSHELL ShellFileOp_uninit"
+::method delete          external "LIBRARY WINSHELL ShellFileOp_delete"
+::method copy            external "LIBRARY WINSHELL ShellFileOp_copy"
+::method move            external "LIBRARY WINSHELL ShellFileOp_move"
+::method rename          external "LIBRARY WINSHELL ShellFileOp_rename"
 
 -- The file lists.  The programmer can not set these directly.
 ::attribute fromList get
@@ -332,12 +344,12 @@ return obj
 -- If the programmer sets the FOF_XXXX flags directly, this is their value,
 -- otherwise it is .nil.
 ::attribute FOFlags get
-::method setFOFlags      external "LIBRARY SHELLUTILS ShellFileOp_setFOFlags"
+::method setFOFlags      external "LIBRARY WINSHELL ShellFileOp_setFOFlags"
 
 -- The value of the owner window handle, if set by the programmer.  Othewise
 -- .nil.
 ::attribute ownerWindow get
-::method setOwnerWindow  external "LIBRARY SHELLUTILS ShellFileOp_setOwnerWnd"
+::method setOwnerWindow  external "LIBRARY WINSHELL ShellFileOp_setOwnerWnd"
 
 -- After a file operation, set to .true if the user canceled any operation,
 -- otherwise false.  Before any file operation has been done, it is .nil.
@@ -385,26 +397,26 @@ return obj
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::class 'Path'
 
-::method makePretty       class external "LIBRARY SHELLUTILS Path_makePretty"
-::method canonicalize     class external "LIBRARY SHELLUTILS Path_canonicalize"
-::method compact          class external "LIBRARY SHELLUTILS Path_compact"
-::method searchAndQualify class external "LIBRARY SHELLUTILS Path_searchAndQualify"
-::method quoteSpaces      class external "LIBRARY SHELLUTILS Path_quoteSpaces"
-::method unquoteSpaces    class external "LIBRARY SHELLUTILS Path_unquoteSpaces"
-::method removeBackslash  class external "LIBRARY SHELLUTILS Path_removeBackslash"
-::method addBackslash     class external "LIBRARY SHELLUTILS Path_addBackslash"
-::method removeFileSpec   class external "LIBRARY SHELLUTILS Path_removeFileSpec"
-::method exists           class external "LIBRARY SHELLUTILS Path_exists"
-::method isDirectory      class external "LIBRARY SHELLUTILS Path_isDirectory"
-::method isDirectoryEmpty class external "LIBRARY SHELLUTILS Path_isDirectoryEmpty"
-::method isRoot           class external "LIBRARY SHELLUTILS Path_isRoot"
-::method isFull           class external "LIBRARY SHELLUTILS Path_isFull"
-::method isNetworkPath    class external "LIBRARY SHELLUTILS Path_isNetworkPath"
-::method isUNC            class external "LIBRARY SHELLUTILS Path_isUNC"
-::method isUNCServer      class external "LIBRARY SHELLUTILS Path_isUNCServer"
-::method isUNCServerShare class external "LIBRARY SHELLUTILS Path_isUNCServerShare"
-::method getShortPath     class external "LIBRARY SHELLUTILS Path_getShortPath"
-::method getLongPath      class external "LIBRARY SHELLUTILS Path_getLongPath"
+::method makePretty       class external "LIBRARY WINSHELL Path_makePretty"
+::method canonicalize     class external "LIBRARY WINSHELL Path_canonicalize"
+::method compact          class external "LIBRARY WINSHELL Path_compact"
+::method searchAndQualify class external "LIBRARY WINSHELL Path_searchAndQualify"
+::method quoteSpaces      class external "LIBRARY WINSHELL Path_quoteSpaces"
+::method unquoteSpaces    class external "LIBRARY WINSHELL Path_unquoteSpaces"
+::method removeBackslash  class external "LIBRARY WINSHELL Path_removeBackslash"
+::method addBackslash     class external "LIBRARY WINSHELL Path_addBackslash"
+::method removeFileSpec   class external "LIBRARY WINSHELL Path_removeFileSpec"
+::method exists           class external "LIBRARY WINSHELL Path_exists"
+::method isDirectory      class external "LIBRARY WINSHELL Path_isDirectory"
+::method isDirectoryEmpty class external "LIBRARY WINSHELL Path_isDirectoryEmpty"
+::method isRoot           class external "LIBRARY WINSHELL Path_isRoot"
+::method isFull           class external "LIBRARY WINSHELL Path_isFull"
+::method isNetworkPath    class external "LIBRARY WINSHELL Path_isNetworkPath"
+::method isUNC            class external "LIBRARY WINSHELL Path_isUNC"
+::method isUNCServer      class external "LIBRARY WINSHELL Path_isUNCServer"
+::method isUNCServerShare class external "LIBRARY WINSHELL Path_isUNCServerShare"
+::method getShortPath     class external "LIBRARY WINSHELL Path_getShortPath"
+::method getLongPath      class external "LIBRARY WINSHELL Path_getLongPath"
 
 -- Some doc for the above methods.  Haven't written much of it.
 
@@ -437,19 +449,19 @@ return obj
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::class 'Sh'
 
-::method version              class external "LIBRARY SHELLUTILS Sh_version_class"
-::method is64Bit              class external "LIBRARY SHELLUTILS Sh_is64Bit_class"
-::method is32on64Bit          class external "LIBRARY SHELLUTILS Sh_is32on64Bit_class"
-::method isW2K                class external "LIBRARY SHELLUTILS Sh_isW2K_class"
-::method isAtLeastW2K         class external "LIBRARY SHELLUTILS Sh_isAtLeastW2K_class"
-::method isXP                 class external "LIBRARY SHELLUTILS Sh_isXP_class"
-::method isXP32               class external "LIBRARY SHELLUTILS Sh_isXP32_class"
-::method isXP64               class external "LIBRARY SHELLUTILS Sh_isXP64_class"
-::method isAtLeastXP          class external "LIBRARY SHELLUTILS Sh_isAtLeastXP_class"
-::method isW2K3               class external "LIBRARY SHELLUTILS Sh_isW2K3_class"
-::method isAtLeastW2K3        class external "LIBRARY SHELLUTILS Sh_isAtLeastW2K3_class"
-::method isVista              class external "LIBRARY SHELLUTILS Sh_isVista_class"
-::method isAtLeastVista       class external "LIBRARY SHELLUTILS Sh_isAtLeastVista_class"
+::method version              class external "LIBRARY WINSHELL Sh_version_class"
+::method is64Bit              class external "LIBRARY WINSHELL Sh_is64Bit_class"
+::method is32on64Bit          class external "LIBRARY WINSHELL Sh_is32on64Bit_class"
+::method isW2K                class external "LIBRARY WINSHELL Sh_isW2K_class"
+::method isAtLeastW2K         class external "LIBRARY WINSHELL Sh_isAtLeastW2K_class"
+::method isXP                 class external "LIBRARY WINSHELL Sh_isXP_class"
+::method isXP32               class external "LIBRARY WINSHELL Sh_isXP32_class"
+::method isXP64               class external "LIBRARY WINSHELL Sh_isXP64_class"
+::method isAtLeastXP          class external "LIBRARY WINSHELL Sh_isAtLeastXP_class"
+::method isW2K3               class external "LIBRARY WINSHELL Sh_isW2K3_class"
+::method isAtLeastW2K3        class external "LIBRARY WINSHELL Sh_isAtLeastW2K3_class"
+::method isVista              class external "LIBRARY WINSHELL Sh_isVista_class"
+::method isAtLeastVista       class external "LIBRARY WINSHELL Sh_isAtLeastVista_class"
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\

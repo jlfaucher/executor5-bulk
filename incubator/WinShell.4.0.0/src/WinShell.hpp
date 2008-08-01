@@ -35,8 +35,8 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-#ifndef SHELLUTILS_HPP
-#define SHELLUTILS_HPP
+#ifndef WINSHELL_HPP
+#define WINSHELL_HPP
 
 #pragma data_seg("shared_data")
 static long globalInstances = 0;
@@ -46,7 +46,7 @@ static long threadInstances = 0;
 static HINSTANCE thisModule = NULL;
 static bool fileIconInitDone = false;
 
-#define SHELL_DLL "ShellUtils.dll"
+#define SHELL_DLL "WinShell.dll"
 
 #define HINT_ID 0x00003749
 
@@ -219,150 +219,19 @@ inline void badArgException(RexxMethodContext *context, int argNumber, char * ms
 }
 
 /**
- * 88.916
- * Argument <argument> must be one of <values>; found "<value>"
- *
- * Argument 1 must be one of the valid CSIDL_XXX constants; found "dog"
- *
- * @param argNumber
- * @param acceptable
- * @param actual
- */
-inline void invalidConstantException(int argNumber, char *msg, const char *sub, char *actual)
-{
-    TCHAR buffer[32];
-    RexxObjectPtr array = RexxArray(3);
-
-    _snprintf(buffer, sizeof(buffer), msg, sub);
-
-    array_put(array, RexxInteger(argNumber), 1);
-    array_put(array, RexxString(buffer), 2);
-    array_put(array, RexxString(actual), 3);
-
-    send_exception1(Error_Invalid_argument_list, array);
-}
-
-/**
- * 88.916
- * Argument <argument> must be one of <values>; found "<value>"
- *
- * Argument 1 must be one of the valid CSIDL_XXX constants; found "dog"
- *
- * @param argNumber
- * @param acceptable
- * @param actual
- */
-inline void invalidConstantExceptionRx(int argNumber, char *msg, const char *sub, RexxObjectPtr actual)
-{
-    TCHAR buffer[32];
-    RexxObjectPtr array = RexxArray(3);
-
-    _snprintf(buffer, sizeof(buffer), msg, sub);
-
-    array_put(array, RexxInteger(argNumber), 1);
-    array_put(array, RexxString(buffer), 2);
-    array_put(array, actual, 3);
-
-    send_exception1(Error_Invalid_argument_list, array);
-}
-
-/**
- * 88.916
- * Argument <argument> must be one of <values>; found "<value>"
- *
- * Argument 1 must be one of array of icon handles or count of icons; found "o"
- *
- * @param argNumber
- * @param acceptable
- * @param actual
- */
-inline void wrongArgExceptionRx(int argNumber, char * acceptable, RexxObjectPtr actual)
-{
-    RexxObjectPtr array = RexxArray(3);
-    array_put(array, RexxInteger(argNumber), 1);
-    array_put(array, RexxString(acceptable), 2);
-    array_put(array, actual, 3);
-
-    send_exception1(Error_Invalid_argument_list, array);
-}
-
-/**
  * 88.918
  * Argument <argument> is not in a valid format; found "<value>"
  *
  * @param argNumber
  * @param rxActual
  */
-inline void wrongFormatException(RexxMethodContext *context, int argNumber, RexxObjectPtr rxActual)
+inline void wrongFormatException(RexxMethodContext *c, int argNumber, RexxObjectPtr rxActual)
 {
-    context->RaiseExceptionArray(Error_Invalid_argument_format,
-                                 context->NewInteger(argNumber),
-                                 rxActual);
+    c->RaiseException2(Rexx_Error_Invalid_argument_format, c->NewInteger(argNumber), rxActual);
 }
-
-
-inline size_t getPositive(RexxObjectPtr rxInt, size_t argNumber)
+inline void wrongFormatException(RexxMethodContext *c, int argNumber, char * actual)
 {
-    int arg;
-
-    if ( ! _isinteger(rxInt) )
-    {
-        send_exception1(Error_Invalid_argument_number,
-                        RexxArray2(RexxInteger(argNumber), rxInt));
-    }
-
-    arg = integer_value(rxInt);
-    if ( arg < 1 )
-    {
-        send_exception1(Error_Invalid_argument_positive,
-                        RexxArray2(RexxInteger(argNumber), rxInt));
-    }
-    return (size_t)arg;
-}
-
-inline size_t optionalPositiveArg(RexxObjectPtr rxInt, size_t defaultValue, size_t argNumber)
-{
-    if ( rxInt == NULLOBJECT )
-    {
-        return defaultValue;
-    }
-    return getPositive(rxInt, argNumber);
-}
-
-inline bool getBool(RexxObjectPtr rxObj, size_t argNumber)
-{
-    if ( rxObj != RexxTrue && rxObj != RexxFalse )
-    {
-        wrongArgValueException(argNumber, "true or false", rxObj);
-    }
-    return (rxObj == RexxTrue ? true : false);
-}
-
-inline bool optionalBoolArg(RexxObjectPtr rxObj, bool defaultValue, size_t argNumber)
-{
-    if ( rxObj == NULLOBJECT )
-    {
-        return defaultValue;
-    }
-    return getBool(rxObj, argNumber);
-}
-
-
-inline STRING ptrToRx(void * ptr)
-{
-    TCHAR buffer[64];
-    _snprintf(buffer, sizeof(buffer), "%p", ptr);
-    return RexxString(buffer);
-}
-
-inline DWORD_PTR ptrFromRx(RexxObjectPtr value)
-{
-    DWORD_PTR var = 0;
-    if ( sscanf(string_data((RexxString *)value), "%p", &var) == 1 )
-    {
-        return var;
-    }
-    return 0;
+    wrongFormatException(c, argNumber, c->NewStringFromAsciiz(actual));
 }
 
 /**
@@ -383,12 +252,12 @@ inline STRING handleToRx(HANDLE h)
     return RexxString(buffer);
 }
 
-inline STRING hrToRx(HRESULT hr)
+inline RexxObjectPtr hrToRx(RexxMethodContext *c, HRESULT hr)
 {
     TCHAR buffer[32];
 
     _snprintf(buffer, 32, "0x%08x", hr);
-    return RexxString(buffer);
+    return c->NewStringFromAsciiz(buffer);
 }
 
 
@@ -411,4 +280,4 @@ inline void shellFree(void *p)
   }
 }
 
-#endif // not defined ShellUtils.hpp
+#endif // not defined WinShell.hpp

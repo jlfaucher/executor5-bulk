@@ -70,11 +70,11 @@ REXX_INCLUDES = /I$(REXX_HOME)
 !ERROR REXX_HOME or OOREXX_SRC_DRIVE needs to be set, either in environment or in this make file
 !ENDIF
 
-all: ..\bin\ShellUtils.dll ..\bin\WinShell.cls
+all: ..\bin\WinShell.dll ..\bin\WinShell.cls
 
 LIBS = user32.lib $(REXX_LIBS)
 
-SHELLUTILS_LIBS = $(LIBS) shell32.lib ole32.lib shlwapi.lib comctl32.lib
+WINSHELL_LIBS = $(LIBS) shell32.lib ole32.lib shlwapi.lib comctl32.lib
 
 INCLUDES = $(REXX_INCLUDES)
 
@@ -102,17 +102,17 @@ LFLAGS_DEBUG = /MAP /NOLOGO /PROFILE /DEBUG -debugtype:cv
 
 LFLAGS = $(LFLAGS_COMMON) $(LFLAGS_DEBUG)
 
-ShellUtils.dll: ShellUtils.obj ShellUtils.def ShellUtils.res
-	link ShellUtils.obj ShellUtils.res $(LFLAGS) $(SHELLUTILS_LIBS) /def:ShellUtils.def /OUT:$(@R).dll /implib:$(@R).lib /PDB:$(@R).pdb
+WinShell.dll: WinShell.obj WinShell.def WinShell.res
+	link WinShell.obj WinShell.res $(LFLAGS) $(WINSHELL_LIBS) /def:WinShell.def /OUT:$(@R).dll /implib:$(@R).lib /PDB:$(@R).pdb
 
-ShellUtils.obj: ShellUtils.cpp ShellUtils.hpp
-	cl $(CPPFLAGS) /TpShellUtils.cpp
+WinShell.obj: WinShell.cpp WinShell.hpp
+	cl $(CPPFLAGS) /TpWinShell.cpp
 
-ShellUtils.res: ShellUtils.rc ShellUtilsResources.h
-  rc -r -foShellUtils.res ShellUtils.rc
+WinShell.res: WinShell.rc WinShellResources.h
+  rc -r -foWinShell.res WinShell.rc
 
-..\bin\ShellUtils.dll : ShellUtils.dll
-  copy ShellUtils.dll ..\bin\ShellUtils.dll
+..\bin\WinShell.dll : WinShell.dll
+  copy WinShell.dll ..\bin\WinShell.dll
 
 ..\bin\WinShell.cls : WinShell.cls
   copy WinShell.cls ..\bin\WinShell.cls
