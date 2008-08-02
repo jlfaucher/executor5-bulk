@@ -122,25 +122,3 @@ void SysLocalAPIManager::setActiveSessionQueue(QueueHandle sessionQueue)
     setenv("RXQUEUESESSION", envbuffer, 1); // overwrite the old value
 }
 
-/**
- * Allocate API memory on behalf of the allocate memory call.
- *
- * @param l      The length of the required memory.
- *
- * @return The pointer to the memory.  Returns NULL for out of memory conditions.
- */
-void *SysLocalAPIManager::allocateMemory(size_t l)
-{
-    return malloc(l);
-}
-
-/**
- * Free API memory.
- *
- * @param p      Pointer to the memory location.
- */
-void SysLocalAPIManager::releaseMemory(void *p)
-{
-    free(p);
-}
-

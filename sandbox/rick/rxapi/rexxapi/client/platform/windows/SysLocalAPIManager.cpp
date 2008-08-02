@@ -136,25 +136,3 @@ void SysLocalAPIManager::setActiveSessionQueue(QueueHandle sessionQueue)
     SetEnvironmentVariable("RXQUEUESESSION", (LPTSTR) envbuffer);
 }
 
-/**
- * Allocate API memory on behalf of the allocate memory call.
- *
- * @param l      The length of the required memory.
- *
- * @return The pointer to the memory.  Returns NULL for out of memory conditions.
- */
-void *SysLocalAPIManager::allocateMemory(size_t l)
-{
-    return GlobalAlloc(GMEM_FIXED, l);
-}
-
-/**
- * Free API memory.
- *
- * @param p      Pointer to the memory location.
- */
-void SysLocalAPIManager::releaseMemory(void *p)
-{
-    GlobalFree(p);
-}
-

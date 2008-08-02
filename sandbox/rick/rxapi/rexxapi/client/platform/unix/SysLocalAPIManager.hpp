@@ -47,8 +47,6 @@ public:
     static void startServerProcess();
     static bool getActiveSessionQueue(QueueHandle &sessionQueue);
     static void setActiveSessionQueue(QueueHandle sessionQueue);
-    static void *allocateMemory(size_t length);
-    static void releaseMemory(void *p);
 };
 
 #endif

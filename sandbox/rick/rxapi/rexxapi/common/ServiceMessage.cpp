@@ -38,6 +38,7 @@
 
 #include "ServiceMessage.hpp"
 #include "ServiceException.hpp"
+#include "SysAPIManager.hpp"
 
 /**
  * Read a message from the server-side stream.
@@ -154,7 +155,7 @@ void ServiceMessage::readResult(SysClientStream &pipe)
  */
 void *ServiceMessage::allocateResultMemory(size_t length)
 {
-    void *data = RexxAllocateMemory(length);
+    void *data = SysAPIManager::allocateMemory(length);
     if (data == NULL)
     {
         throw new ServiceException(MEMORY_ERROR, "ServiceMessage::allocateResultMemory() Failure allocating result memory");
@@ -169,5 +170,5 @@ void *ServiceMessage::allocateResultMemory(size_t length)
  */
 void ServiceMessage::releaseResultMemory(void *data)
 {
-    RexxFreeMemory(data);
+    SysAPIManager::releaseMemory(data);
 }
