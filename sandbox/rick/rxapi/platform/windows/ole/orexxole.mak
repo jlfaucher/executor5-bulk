@@ -77,8 +77,7 @@ $(OR_OUTDIR)\orexxole.dll : $(CPPOBJS) $(OBJS) $(RXDBG_OBJ) $(OR_OUTDIR)\orexxol
              $(OR_OUTDIR)\verinfo.res \
              $(OR_OUTDIR)\$(@B).exp \
              $(OR_OUTDIR)\rexx.lib \
-             $(OR_OUTDIR)\rexxapi.lib \
-             $(libs_dll)
+             $(OR_OUTDIR)\rexxapi.lib
 
 #
 # *** .c -> .obj rules

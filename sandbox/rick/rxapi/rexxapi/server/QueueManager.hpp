@@ -111,8 +111,9 @@ public:
 
     inline void setName(const char *name)
     {
-        queueName = new char[strlen(name) + 1];
-        strcpy(queueName, name);
+        char *temp = new char[strlen(name) + 1];
+        strcpy(temp, name);
+        queueName = temp;
     }
 
     void add(ServiceMessage &message);

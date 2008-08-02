@@ -226,8 +226,7 @@ $(OR_OUTDIR)\rexx.dll : $(ORXHEADERS) $(ORYXKOBJ) $(ORYXLOBJ) $(RXDBG_OBJ) \
              @$(OR_OUTDIR)\oryxk.lst \
              $(OR_OUTDIR)\winmsgtb.res \
              $(OR_OUTDIR)\$(@B).exp  \
-             $(OR_OUTDIR)\rexxapi.lib \
-             $(libs_dll)
+             $(OR_OUTDIR)\rexxapi.lib
 
 #
 # *** rxcmd32.LIB  : Creates .lib import library
@@ -253,7 +252,6 @@ $(OR_OUTDIR)\rxcmd32.dll : $(SYSUT32OBJ) $(OR_OUTDIR)\$(@B).lib \
     $(OR_LINK) $(lflags_common) $(lflags_dll)  -out:$(OR_OUTDIR)\$(@B).dll \
              $(SYSUT32OBJ) \
              $(OR_OUTDIR)\$(@B).exp  \
-             $(libs_dll) \
              w32sut32.lib
 
 #
@@ -338,7 +336,6 @@ $(OR_OUTDIR)\rexxc.exe : $(OR_OUTDIR)\RexxCompiler.obj
     $(OR_LINK) $(**) $(lflags_common_console) \
     $(OR_OUTDIR)\verinfo.res \
     $(OR_OUTDIR)\rexx.lib \
-    $(libs_dll)  \
     -out:$(@)
 
 #

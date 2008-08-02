@@ -76,8 +76,7 @@ $(OR_OUTDIR)\rxsock.dll : $(OBJS) $(RXDBG_OBJ) $(OR_OUTDIR)\rxsock.lib \
              $(OR_OUTDIR)\$(@B).exp \
              $(OR_OUTDIR)\rexx.lib \
              wsock32.lib \
-             $(OR_OUTDIR)\rexxapi.lib \
-             $(libs_dll)
+             $(OR_OUTDIR)\rexxapi.lib
 
 
 # *** Inference Rule for CPP->OBJ

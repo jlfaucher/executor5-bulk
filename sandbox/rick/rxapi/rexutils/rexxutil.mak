@@ -78,8 +78,7 @@ $(OR_OUTDIR)\rexxutil.dll : $(RXUTILOBJ) $(RXDBG_OBJ)   \
              $(OR_OUTDIR)\verinfo.res \
              $(OR_OUTDIR)\$(@B).exp \
              $(OR_OUTDIR)\rexxapi.lib \
-             $(OR_OUTDIR)\rexx.lib \
-             $(libs_dll)
+             $(OR_OUTDIR)\rexx.lib
 
 #
 # Copy rxftp.cls to the build directory so the test suite can be run directly

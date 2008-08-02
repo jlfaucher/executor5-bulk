@@ -102,7 +102,7 @@ class SysServerStream;
 class SysServerConnection
 {
 public:
-    SysServerConnection(SysServerStream *s, int socket);
+    SysServerConnection(SysServerStream *s, SOCKET socket);
     ~SysServerConnection();
 
     bool read(void *buf, size_t bufsize, size_t *bytesread);

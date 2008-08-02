@@ -170,11 +170,6 @@ lflags_common= /MAP /NOLOGO $(my_ldebug) /SUBSYSTEM:Windows $(lflags_lib) user32
 lflags_common_console= /MAP /NOLOGO $(my_ldebug) /SUBSYSTEM:Console $(lflags_lib) user32.lib comdlg32.lib gdi32.lib kernel32.lib
 lflags_dll = /DLL -entry:_DllMainCRTStartup@12
 lflags_exe =
-#
-# set up the Lib flags used
-#
-libs_dll=
-libs_exe=
 
 #
 # set up the rc flags used

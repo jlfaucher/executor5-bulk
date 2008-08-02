@@ -60,13 +60,14 @@ CLIENTOBJS = $(OR_OUTDIR)\ClientMessage.obj $(OR_OUTDIR)\LocalAPIContext.obj \
           $(OR_OUTDIR)\MacroSpaceApi.obj $(OR_OUTDIR)\QueuesApi.obj  $(OR_OUTDIR)\RegistrationApi.obj \
           $(OR_OUTDIR)\ServiceMessage.obj $(OR_OUTDIR)\SysCSStream.obj $(OR_OUTDIR)\SysProcess.obj \
           $(OR_OUTDIR)\Utilities.obj $(OR_OUTDIR)\SysLegacyAPI.obj $(OR_OUTDIR)\SysFile.obj \
-          $(OR_OUTDIR)\SysLocalAPIManager.obj $(OR_OUTDIR)\SysLibrary.obj
+          $(OR_OUTDIR)\SysLocalAPIManager.obj $(OR_OUTDIR)\SysLibrary.obj $(OR_OUTDIR)\SysAPIManager.obj
 
 SERVEROBJS = $(OR_OUTDIR)\APIServer.obj  $(OR_OUTDIR)\APIServerInstance.obj \
           $(OR_OUTDIR)\MacroSpaceManager.obj $(OR_OUTDIR)\QueueManager.obj \
           $(OR_OUTDIR)\RegistrationManager.obj $(OR_OUTDIR)\ServiceMessage.obj \
           $(OR_OUTDIR)\RegistrationManager.obj $(OR_OUTDIR)\ServiceMessage.obj \
-          $(OR_OUTDIR)\APIService.obj $(OR_OUTDIR)\SysCSStream.obj $(OR_OUTDIR)\SysProcess.obj
+          $(OR_OUTDIR)\APIService.obj $(OR_OUTDIR)\SysCSStream.obj $(OR_OUTDIR)\SysProcess.obj \
+           $(OR_OUTDIR)\SysAPIManager.obj
 
 # Following for REXXAPI.DLL
 #
@@ -94,7 +95,7 @@ $(OR_OUTDIR)\rexxapi.dll : $(CLIENTOBJS) $(RXDBG_OBJ)      \
              $(CLIENTOBJS) \
              $(OR_OUTDIR)\verinfo.res \
              $(OR_OUTDIR)\$(@B).exp \
-             $(libs_dll)
+             wsock32.lib
 
 #
 # *** rxapi.EXE
@@ -102,7 +103,6 @@ $(OR_OUTDIR)\rexxapi.dll : $(CLIENTOBJS) $(RXDBG_OBJ)      \
 $(OR_OUTDIR)\rxapi.exe : $(SERVEROBJS) $(OR_OUTDIR)\rxapi.res
     $(OR_LINK) $(SERVEROBBJS) $(OR_OUTDIR)\rxapi.res /MAP \
     $(lflags_common) $(lflags_exe) \
-    $(libs_dll) \
     /DELAYLOAD:advapi32.dll \
     -out:$(OR_OUTDIR)\$(@B).exe
 

@@ -76,8 +76,7 @@ $(OR_OUTDIR)\rxregexp.dll : $(CPPOBJS) $(OBJS) $(RXDBG_OBJ) $(OR_OUTDIR)\RXREGEX
              $(OR_OUTDIR)\verinfo.res \
              $(OR_OUTDIR)\$(@B).exp \
              $(OR_OUTDIR)\rexx.lib \
-             $(OR_OUTDIR)\rexxapi.lib \
-             $(libs_dll)
+             $(OR_OUTDIR)\rexxapi.lib
 
 
 #

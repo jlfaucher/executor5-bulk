@@ -460,7 +460,7 @@ bool SysServerStream::close()
  * @param s      The parent server connection.
  * @param socket The socket for the connection.
  */
-SysServerConnection::SysServerConnection(SysServerStream *s, int socket)
+SysServerConnection::SysServerConnection(SysServerStream *s, SOCKET socket)
 {
     server = s;
     c = socket;

@@ -75,8 +75,7 @@ $(OR_OUTDIR)\rxmath.dll : $(OBJS) $(RXDBG_OBJ) $(OR_OUTDIR)\rxmath.lib \
              $(OR_OUTDIR)\verinfo.res \
              $(OR_OUTDIR)\$(@B).exp \
              $(OR_OUTDIR)\rexx.lib \
-             $(OR_OUTDIR)\rexxapi.lib \
-             $(libs_dll)
+             $(OR_OUTDIR)\rexxapi.lib
 
 #
 # *** rxmath.obj

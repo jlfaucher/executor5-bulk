@@ -41,6 +41,7 @@
 
 #include "rexx.h"
 #include "ServiceException.hpp"
+#include "SysAPIManager.hpp"
 
 class Rxstring
 {
@@ -67,7 +68,7 @@ public:
     {
         if (strptr != NULL)
         {
-            RexxFreeMemory(strptr);
+            SysAPIManager::releaseMemory(strptr);
         }
     }
 
@@ -82,15 +83,18 @@ public:
     {
         if (strlength < size)
         {
-            RexxFreeMemory(strptr);
-            strptr = NULL;
+            if (strptr != NULL)
+            {
+                SysAPIManager::releaseMemory(strptr);
+                strptr = NULL;
+            }
             setStringSize(size);
         }
     }
 
     char *allocateResult(size_t size)
     {
-        strptr = (char *)RexxAllocateMemory(size);
+        strptr = (char *)SysAPIManager::allocateMemory(size);
         if (strptr == NULL)
         {
             throw new ServiceException(MEMORY_ERROR, "Error allocating result data");

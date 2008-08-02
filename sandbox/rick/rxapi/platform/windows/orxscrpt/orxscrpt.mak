@@ -101,8 +101,7 @@ $(OR_OUTDIR)\ORXSCRPT.dll : $(CPPOBJS) $(RXDBG_OBJ) $(OR_OUTDIR)\ORXSCRPT.lib \
              $(OR_OUTDIR)\$(@B).exp \
              $(OR_OUTDIR)\orexxole.lib \
              $(OR_OUTDIR)\rexx.lib \
-             $(OR_OUTDIR)\rexxapi.lib \
-             $(libs_dll)
+             $(OR_OUTDIR)\rexxapi.lib
 
 #
 # *** .cpp -> .obj rules

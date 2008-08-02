@@ -57,7 +57,7 @@ typedef enum
  *
  * @return The duplicated string.
  */
-inline char *dupString(char *oldString)
+inline char *dupString(const char *oldString)
 {
     char *newString = new char[strlen(oldString) + 1];
     strcpy(newString, oldString);

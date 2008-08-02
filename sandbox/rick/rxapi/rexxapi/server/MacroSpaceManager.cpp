@@ -94,7 +94,7 @@ void MacroTable::clear()
  *
  * @return The located macro item entry.
  */
-MacroItem *MacroTable::locate(char *name)
+MacroItem *MacroTable::locate(const char *name)
 {
     MacroItem *current = macros;    // start the search
     MacroItem *previous = NULL;     // no previous one
@@ -155,11 +155,11 @@ void ServerMacroSpaceManager::addMacro(ServiceMessage &message)
     // already exists?
     if (item == NULL)
     {
-        item = new MacroItem(message.nameArg, message.getMessageData(), message.getMessageDataLength(), message.parameter2);
+        item = new MacroItem(message.nameArg, (const char *)message.getMessageData(), message.getMessageDataLength(), message.parameter2);
     }
     else
     {
-        item->update(message.getMessageData(), message.getMessageDataLength(), message.parameter2);
+        item->update((const char *)message.getMessageData(), message.getMessageDataLength(), message.parameter2);
     }
     // we're keeping the storage here, so detach it from the message.
     message.clearMessageData();
@@ -294,9 +294,9 @@ void ServerMacroSpaceManager::nextImage(ServiceMessage &message)
         strcpy(message.nameArg, item->name);
 
         // get the macro data
-        message.setMessageData(item->imageBuffer, item->imageSize);
+        message.setMessageData((void *)item->imageBuffer, item->imageSize);
         // this data is retained after the result send.
-        message.retainResultMemory = true;
+        message.retainMessageData = true;
     }
 }
 
@@ -349,9 +349,9 @@ void ServerMacroSpaceManager::getImage(ServiceMessage &message)
         message.parameter1 = item->imageSize;
         message.parameter2 = item->searchPosition;
         // get the macro data
-        message.setMessageData(item->imageBuffer, item->imageSize);
+        message.setMessageData((void *)item->imageBuffer, item->imageSize);
         // this data is retained after the result send.
-        message.retainResultMemory = true;
+        message.retainMessageData = true;
     }
 }
 

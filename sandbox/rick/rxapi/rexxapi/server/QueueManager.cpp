@@ -94,7 +94,7 @@ void DataQueue::clear()
  */
 void DataQueue::add(ServiceMessage &message)
 {
-    const char *queueData = message.getMessageData();
+    const char *queueData = (const char *)message.getMessageData();
     size_t itemLength = (size_t)message.parameter1;
     size_t order = (size_t)message.parameter2;
     // detach the message data from the message so the controller
@@ -199,7 +199,7 @@ bool DataQueue::pullData(ServiceMessage &message)
         // back to the client.
         message.setMessageData(item->elementData, item->size);
         // we've taken the data from the item, so clear it out before we delete.
-        item.clearData();
+        item->clearData();
         // we're done with this, let it go.
         delete item;
         message.setResult(QUEUE_ITEM_PULLED);
