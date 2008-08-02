@@ -85,7 +85,7 @@ public:
     const char *name;                  // the registered name
     const char *moduleName;            // module name for object (optional)
     const char *procedureName;         // procedure name (optional)
-    uint32_t userData[2];              // user area information
+    uintptr_t userData[2];             // user area information
     uintptr_t entryPoint;              // target entry point
     int     callType;                  // indicates the style of interface
     size_t  dropAuthority;             // Permission to drop

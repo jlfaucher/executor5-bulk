@@ -54,6 +54,7 @@
 
 class InterpreterInstance;
 class RexxList;
+class RexxActivity;
 
 class Interpreter
 {

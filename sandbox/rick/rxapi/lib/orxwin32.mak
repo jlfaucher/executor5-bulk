@@ -176,3 +176,21 @@ lflags_exe =
 #
 rcflags_common=rc /DWIN32 -dOOREXX_VER=$(ORX_MAJOR) -dOOREXX_REL=$(ORX_MINOR) -dOOREXX_SUB=$(ORX_MOD_LVL) -dOOREXX_BLD=$(ORX_BLD_LVL) -dOOREXX_VER_STR=\"$(ORX_VER_STR)\" -dOOREXX_COPY_YEAR=\"$(ORX_COPY_YEAR)\"
 
+#
+# *** Inference Rule for CPP->OBJ
+# *** For .CPP files in OR_LIBSRC directory
+#
+{$(OR_COMMONPLATFORMSRC)}.cpp{$(OR_OUTDIR)}.obj:
+    @ECHO .
+    @ECHO Compiling $(**)
+    $(OR_CC) $(cflags_common) $(cflags_dll)  /Fo$(@) $(OR_ORYXINCL) $(Tp)$(**)
+
+#
+# *** Inference Rule for CPP->OBJ
+# *** For .CPP files in OR_LIBSRC directory
+#
+{$(OR_COMMONSRC)}.cpp{$(OR_OUTDIR)}.obj:
+    @ECHO .
+    @ECHO Compiling $(**)
+    $(OR_CC) $(cflags_common) $(cflags_dll)  /Fo$(@) $(OR_ORYXINCL) $(Tp)$(**)
+

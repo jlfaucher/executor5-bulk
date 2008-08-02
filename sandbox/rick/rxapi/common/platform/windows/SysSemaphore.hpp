@@ -45,6 +45,8 @@
 #ifndef Included_SysSemaphore
 #define Included_SysSemaphore
 
+#include "rexx.h"
+
 #include <stdlib.h>
 
 inline void waitHandle(HANDLE s)

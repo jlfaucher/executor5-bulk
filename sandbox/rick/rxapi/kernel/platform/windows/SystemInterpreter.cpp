@@ -49,7 +49,6 @@
 #include "RexxCore.h"
 #include "SystemInterpreter.hpp"
 #include "Interpreter.hpp"
-#include "RexxAPIManager.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -64,8 +63,6 @@ HINSTANCE SystemInterpreter::moduleHandle = 0;      // handle to the interpeter 
 void SystemInterpreter::processStartup(HINSTANCE mod)
 {
     moduleHandle = mod;
-    // startup communications with the RXAPI server
-    RxInterProcessInit(true);
     // startup timeslice processing
     startTimeSlice();
     // now do the platform independent startup

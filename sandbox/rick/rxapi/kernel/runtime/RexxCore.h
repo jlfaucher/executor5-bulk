@@ -306,6 +306,7 @@ inline bool isStem(RexxObject *o) { return isOfClass(Stem, o); }
 inline bool isActivation(RexxObject *o) { return isOfClass(Activation, o); }
 inline bool isMethod(RexxObject *o) { return isOfClass(Method, o); }
 
+#include "ActivityManager.hpp"
 
 /* The next macro is specifically for REQUESTing a STRING, since there are    */
 /* four primitive classes that are equivalents for strings.  It will trap on  */
@@ -328,9 +329,6 @@ inline RexxString * REQUIRED_STRING(RexxObject *object, size_t position)
                                            /* force to a string value           */
     return object->requiredString(position);
 }
-
-
-#include "ActivityManager.hpp"
 
 /* The next routine is specifically for REQUESTing an ARRAY needed as a method*/
 /* argument.  This raises an error if the object cannot be converted to a     */

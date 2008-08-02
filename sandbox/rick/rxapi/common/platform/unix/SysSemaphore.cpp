@@ -60,7 +60,8 @@
 #endif
 
 #include <errno.h>
-#include "RexxCore.h"
+
+#include "SysSemaphore.hpp"
 
 
 /* ********************************************************************** */

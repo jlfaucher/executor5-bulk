@@ -151,7 +151,7 @@ SYSOBJ1=$(OR_OUTDIR)\TimeSupport.$(OBJ)  \
 
 SYSOBJ2=$(OR_OUTDIR)\ExternalFunctions.$(OBJ)  $(OR_OUTDIR)\RexxMain.$(OBJ)  $(OR_OUTDIR)\SystemCommands.$(OBJ)   \
         $(OR_OUTDIR)\StreamNative.$(OBJ)   $(OR_OUTDIR)\StreamCommandParser.$(OBJ)    $(OR_OUTDIR)\ProgramMetaData.$(OBJ) \
-	$(OR_OUTDIR)\SysFile.$(OBJ) $(OR_OUTDIR)\SysFileSystem.$(OBJ) $(OR_OUTDIR)\SysLibrary.$(OBJ) $(OR_OUTDIR)\SysThread.$(OBJ) \
+	$(OR_OUTDIR)\SysFile.$(OBJ) $(OR_OUTDIR)\SysFileSystem.$(OBJ) $(OR_OUTDIR)\SysLibrary.$(OBJ) $(OR_OUTDIR)\SysActivity.$(OBJ) \
         $(OR_OUTDIR)\SysSemaphore.$(OBJ)
 
 SYSOBJ3=$(OR_OUTDIR)\MemorySupport.$(OBJ)   $(OR_OUTDIR)\MiscSystem.$(OBJ)  $(OR_OUTDIR)\SystemInitialization.$(OBJ)
@@ -366,15 +366,6 @@ ORXHEADERS: $(ORXHEADERS)
     @ECHO Copying $(**)
     COPY $(**) $(@)
 
-
-#
-# *** Inference Rule for Rexx Extra samples
-#
-{$(KEXTRAS)}.rex{$(OR_OUTDIR)}.rex:
-    @ECHO .
-    @ECHO Copying $(**)
-    COPY $(**) $(@)
-
 #
 # *** Inference Rule for Rexx samples
 #
@@ -419,6 +410,7 @@ ORXHEADERS: $(ORXHEADERS)
     @ECHO Compiling $(**)
     $(OR_CC)  $(cflags_common) $(cflags_dll) /Fo$(@) $(Tp)$(**) $(OR_ORYXINCL)
 
+
 #
 # *** Inference Rule for CPP->OBJ
 # *** For .CPP files in OR_LIBSRC directory
@@ -432,7 +424,7 @@ ORXHEADERS: $(ORXHEADERS)
 # *** Inference Rule for CPP->OBJ
 # *** For .CPP files in OR_LIBSRC directory
 #
-{$(KPARSER)}.cpp{$(OR_OUTDIR)}.obj:
+{$(PARSER)}.cpp{$(OR_OUTDIR)}.obj:
     @ECHO .
     @ECHO Compiling $(**)
     $(OR_CC)  $(cflags_common) $(cflags_dll) /Fo$(@) $(Tp)$(**) $(OR_ORYXINCL)
@@ -459,7 +451,7 @@ ORXHEADERS: $(ORXHEADERS)
 # *** Inference Rule for CPP->OBJ
 # *** For .CPP files in OR_LIBSRC directory
 #
-{$(KCLASSES)}.cpp{$(OR_OUTDIR)}.obj:
+{$(INTERPRETER_CLASSES)}.cpp{$(OR_OUTDIR)}.obj:
     @ECHO .
     @ECHO Compiling $(**)
     $(OR_CC)  $(cflags_common) $(cflags_dll) /Fo$(@) $(Tp)$(**) $(OR_ORYXINCL)
@@ -486,16 +478,7 @@ ORXHEADERS: $(ORXHEADERS)
 # *** Inference Rule for C->OBJ
 # *** For .C files in OR_LIBSRC directory
 #
-{$(KPLATFORM)}.c{$(OR_OUTDIR)}.obj:
-    @ECHO .
-    @ECHO Compiling $(**)
-    $(OR_CC) $(cflags_common) $(cflags_dll)  /Fo$(@) $(OR_ORYXINCL) $(Tp)$(**)
-
-#
-# *** Inference Rule for C->OBJ
-# *** For .C files in OR_LIBSRC directory
-#
-{$(STREAM)}.c{$(OR_OUTDIR)}.obj:
+{$(INT_PLATFORM)}.c{$(OR_OUTDIR)}.obj:
     @ECHO .
     @ECHO Compiling $(**)
     $(OR_CC) $(cflags_common) $(cflags_dll)  /Fo$(@) $(OR_ORYXINCL) $(Tp)$(**)
@@ -508,31 +491,5 @@ ORXHEADERS: $(ORXHEADERS)
     @ECHO .
     @ECHO Compiling $(**)
     $(OR_CC) $(cflags_common) $(cflags_dll)  /Fo$(@) $(OR_ORYXINCL) $(Tp)$(**)
-
-#
-# *** Inference Rule for CPP->OBJ
-# *** For .CPP files in OR_LIBSRC directory
-#
-{$(OR_COMMONSRC)}.cpp{$(OR_OUTDIR)}.obj:
-    @ECHO .
-    @ECHO Compiling $(**)
-    $(OR_CC) $(cflags_common) $(cflags_dll)  /Fo$(@) $(OR_ORYXINCL) $(Tp)$(**)
-
-#
-# *** Inference Rule for C->OBJ
-# *** For .C files in OR_LIBSRC directory
-#
-{$(INT_PLATFORM)}.c{$(OR_OUTDIR)}.obj:
-    @ECHO .
-    @ECHO Compiling $(**)
-    $(OR_CC) $(cflags_common) $(cflags_dll)  /Fo$(@) $(OR_ORYXINCL) $(Tp)$(**)
-
-#
-# *** Inference Rule for local C->OBJ
-#
-{$(OR_OUTDIR)}.c{$(OR_OUTDIR)}.obj:
-    @ECHO .
-    @ECHO Compiling $(@B).c
-    $(OR_CC) $(cflags_common) $(cflags_dll)  /Fo$(OR_OUTDIR)\$(@B).obj $(OR_ORYXINCL) $(Tp)$(OR_OUTDIR)\$(@B).c
 
 

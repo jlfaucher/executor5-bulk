@@ -49,7 +49,7 @@
 #ifndef Included_SysThread
 #define Included_SysThread
 
-#include "PlatformTypes.h"
+#include "rexx.h"
 
 class SysThread
 {

@@ -65,9 +65,9 @@ CLIENTOBJS = $(OR_OUTDIR)\ClientMessage.obj $(OR_OUTDIR)\LocalAPIContext.obj \
 SERVEROBJS = $(OR_OUTDIR)\APIServer.obj  $(OR_OUTDIR)\APIServerInstance.obj \
           $(OR_OUTDIR)\MacroSpaceManager.obj $(OR_OUTDIR)\QueueManager.obj \
           $(OR_OUTDIR)\RegistrationManager.obj $(OR_OUTDIR)\ServiceMessage.obj \
-          $(OR_OUTDIR)\RegistrationManager.obj $(OR_OUTDIR)\ServiceMessage.obj \
           $(OR_OUTDIR)\APIService.obj $(OR_OUTDIR)\SysCSStream.obj $(OR_OUTDIR)\SysProcess.obj \
-          $(OR_OUTDIR)\SysAPIManager.obj $(OR_OUTDIR)\SysThread.obj
+          $(OR_OUTDIR)\SysAPIManager.obj $(OR_OUTDIR)\SysThread.obj $(OR_OUTDIR)\SysSemaphore.obj \
+          $(OR_OUTDIR)\Utilities.obj
 
 # Following for REXXAPI.DLL
 #
@@ -101,17 +101,17 @@ $(OR_OUTDIR)\rexxapi.dll : $(CLIENTOBJS) $(RXDBG_OBJ)      \
 # *** rxapi.EXE
 #
 $(OR_OUTDIR)\rxapi.exe : $(SERVEROBJS) $(OR_OUTDIR)\rxapi.res
-    $(OR_LINK) $(SERVEROBBJS) $(OR_OUTDIR)\rxapi.res /MAP \
+    $(OR_LINK) $(SERVEROBJS) $(OR_OUTDIR)\rxapi.res /MAP \
     $(lflags_common) $(lflags_exe) \
-    /DELAYLOAD:advapi32.dll \
-    -out:$(OR_OUTDIR)\$(@B).exe
+    -out:$(OR_OUTDIR)\$(@B).exe \
+    wsock32.lib
 
 
 # Update the resource if necessary
-$(OR_OUTDIR)\rxapi.res: $(APLATFORM)\rxapi.rc $(APLATFORM)\APIServiceMessages.h
+$(OR_OUTDIR)\rxapi.res: $(OR_REXXAPISRC)\server\platform\windows\rxapi.rc
     @ECHO.
     @ECHO ResourceCompiling $(@B).res
-        $(rc) $(rcflags_common) -r -fo $(OR_OUTDIR)\rxapi.res $(APLATFORM)\rxapi.rc
+        $(rc) $(rcflags_common) -r -fo $(OR_OUTDIR)\rxapi.res $(OR_REXXAPISRC)\server\platform\windows\rxapi.rc
 
 #
 # *** Inference Rule for CPP->OBJ
@@ -166,24 +166,6 @@ $(OR_OUTDIR)\rxapi.res: $(APLATFORM)\rxapi.rc $(APLATFORM)\APIServiceMessages.h
     @ECHO .
     @ECHO Compiling $(**)
     $(OR_CC) $(cflags_common) $(cflags_dll)  /Fo$(@) $(COMMONINC) $(OR_ORYXINCL) $(Tp)$(**)
-
-#
-# *** Inference Rule for CPP->OBJ
-# *** For .CPP files in OR_LIBSRC directory
-#
-{$(OR_COMMONPLATFORMSRC)}.cpp{$(OR_OUTDIR)}.obj:
-    @ECHO .
-    @ECHO Compiling $(**)
-    $(OR_CC) $(cflags_common) $(cflags_dll)  /Fo$(@) $(OR_ORYXINCL) $(Tp)$(**)
-
-#
-# *** Inference Rule for CPP->OBJ
-# *** For .CPP files in OR_LIBSRC directory
-#
-{$(OR_COMMONSRC)}.cpp{$(OR_OUTDIR)}.obj:
-    @ECHO .
-    @ECHO Compiling $(**)
-    $(OR_CC) $(cflags_common) $(cflags_dll)  /Fo$(@) $(OR_ORYXINCL) $(Tp)$(**)
 
 # Update the version information block
 $(OR_OUTDIR)\verinfo.res: $(INT_PLATFORM)\verinfo.rc

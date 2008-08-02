@@ -48,7 +48,6 @@
 #include <dispex.h>
 
 #include "oorexxapi.h"
-#include "DebugOutput.h"
 #include "events.h"
 
 

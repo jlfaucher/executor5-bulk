@@ -216,11 +216,14 @@ RexxReturnCode RexxEntry RexxLoadMacroSpace(
 
 RexxReturnCode RexxEntry RexxQueryMacro(
     const char     *name,                /* name to search for         */
-    size_t         *pos)                 /* pointer for return of pos  */
+    unsigned short *pos)                 /* pointer for return of pos  */
 {
     ENTER_REXX_API(MacroSpaceManager)
     {
-        lam->macroSpaceManager.queryMacro(name, pos);
+        size_t order;
+
+        lam->macroSpaceManager.queryMacro(name, &order);
+        *pos = (unsigned short)order;
     }
     EXIT_REXX_API();
 }

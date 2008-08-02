@@ -115,9 +115,6 @@ void TranslateDispatcher::handleError(wholenumber_t r, RexxDirectory *c)
 void TranslateInstoreDispatcher::run()
 {
     ProtectedSet savedObjects;
-
-    RoutineClass *program;
-
     RexxString *name = OREF_NULLSTRING;     // name of the invoked program
     if (programName != NULL)       /* have an actual name?              */
     {
@@ -129,7 +126,7 @@ void TranslateInstoreDispatcher::run()
 
     RXSTRING instore[2];
 
-    MAKERXSTRING(instore[0], source->strptr, source->strlength);
+    MAKERXSTRING(instore[0], const_cast<char *>(source->strptr), source->strlength);
     MAKERXSTRING(instore[1], NULL, 0);
 
     /* go handle instore parms           */

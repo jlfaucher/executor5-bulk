@@ -49,7 +49,7 @@
 #include "QueueClass.hpp"
 #include "RexxActivation.hpp"
 #include "RaiseInstruction.hpp"
-#include "Interpreer.hpp"
+#include "Interpreter.hpp"
 
 RexxInstructionRaise::RexxInstructionRaise(
   RexxString *_condition,               /* condition to raise                */

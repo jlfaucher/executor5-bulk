@@ -549,3 +549,49 @@ RexxReturnCode RexxEntry   RexxResolveRoutine(const char *name, REXXPFN *entryPo
 }
 
 
+/*********************************************************************/
+/*                                                                   */
+/*  Function Name:   RexxAllocateMemory                              */
+/*                                                                   */
+/*  Description:     Operating system independant method to          */
+/*                   allocate memory. The function is a wrapper      */
+/*                   for appropriate compiler or operating system    */
+/*                   memory function.                                */
+/*                                                                   */
+/*                                                                   */
+/*  Entry Point:     RexxAllocateMemory                              */
+/*                                                                   */
+/*  Parameter(s):    size of memory to allocate (ULONG)              */
+/*                                                                   */
+/*  Return Value:    The allocated Block of memory (PVOID)           */
+/*                                                                   */
+/*********************************************************************/
+void *REXXENTRY RexxAllocateMemory(size_t size)
+{
+   return SysAPIManager::allocateMemory(size);
+}
+
+/*********************************************************************/
+/*                                                                   */
+/*  Function Name:   RexxFreeMemory                                  */
+/*                                                                   */
+/*  Description:     Operating system independant method to          */
+/*                   free memory. The function is a wrapper          */
+/*                   for appropriate compiler or operating system    */
+/*                   memory function.                                */
+/*                                                                   */
+/*                                                                   */
+/*  Entry Point:     RexxFreeMemory                                  */
+/*                                                                   */
+/*  Parameter(s):    size of memory to allocate (ULONG)              */
+/*                                                                   */
+/*  Return Value:    The allocated Block of memory (PVOID)           */
+/*                                                                   */
+/*********************************************************************/
+RexxReturnCode REXXENTRY RexxFreeMemory(void *ptr)
+{
+    SysAPIManager::releaseMemory(ptr);
+    return 0;
+}
+
+

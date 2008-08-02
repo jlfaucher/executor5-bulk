@@ -50,7 +50,7 @@
 #define Included_SysThread
 
 #include <pthread.h>
-#include "PlatformTypes.h"
+#include "rexx.h"
 
 
 class SysThread {

@@ -221,8 +221,8 @@ public:
         // we have two bits of user data to copy
         if (userPointer != NULL)
         {
-            userData[0] = ((void **)userPointer)[0];
-            userData[1] = ((void **)userPointer)[1];
+            userData[0] = ((uintptr_t*)userPointer)[0];
+            userData[1] = ((uintptr_t*)userPointer)[1];
         }
         else
         {
@@ -237,8 +237,8 @@ public:
         // we have two bits of user data to copy
         if (userPointer != NULL)
         {
-            ((void **)userPointer)[0] = userData[0];
-            ((void **)userPointer)[1] = userData[1];
+            ((uintptr_t*)userPointer)[0] = userData[0];
+            ((uintptr_t*)userPointer)[1] = userData[1];
         }
     }
 
@@ -250,7 +250,7 @@ public:
     char moduleName[MAX_NAME_LENGTH];          // name of the library
     char procedureName[MAX_NAME_LENGTH];       // the procedure within the library
     size_t dropAuthority;                      // scope of drop authority
-    void *userData[2];                         // saved user data
+    uintptr_t userData[2];                     // saved user data
     uintptr_t entryPoint;                      // explicit entry point address
     int  legacyStyle;                          // indicates the registration call style
 };
