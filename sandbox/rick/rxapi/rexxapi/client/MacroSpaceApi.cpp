@@ -255,12 +255,12 @@ RexxReturnCode RexxEntry RexxReorderMacro(
 
 /*********************************************************************/
 /*                                                                   */
-/*  Function Name:      RexxExecuteMacroFunction                     */
+/*  Function Name:      RexxResolveMacroFunction                     */
 /*                                                                   */
 /*  Description:        find a macro's pcode and literal images in   */
 /*                      the workspace                                */
 /*                                                                   */
-/*  Entry Point:        RexxExecuteMacroFunction                     */
+/*  Entry Point:        RexxResolveMacroFunction                     */
 /*                                                                   */
 /*  Inputs:             name - macro name asciiz string              */
 /*                      p    - pointer for return of pcode+lits buf  */

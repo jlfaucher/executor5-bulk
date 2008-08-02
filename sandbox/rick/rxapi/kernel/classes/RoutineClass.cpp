@@ -648,7 +648,7 @@ RoutineClass *RoutineClass::restoreFromMacroSpace(RexxString *name)
 
     MAKERXSTRING(buffer, NULL, 0);
     /* get the image of function         */
-    RexxExecuteMacroFunction(name->getStringData(), &buffer);
+    RexxResolveMacroFunction(name->getStringData(), &buffer);
     /* unflatten the method now          */
     RoutineClass *routine = restore(&buffer, name);
     // release the buffer memory

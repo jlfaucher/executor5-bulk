@@ -48,7 +48,7 @@
 
 /*********************************************************************/
 /*                                                                   */
-/*  Function Name:  ooRexxRegisterLibrarySubcom                      */
+/*  Function Name:  RexxRegisterSubcomDll                            */
 /*                                                                   */
 /*  Description:    Registration function for the subcommand         */
 /*                  interface.  All programs wishing to act as       */
@@ -94,7 +94,7 @@ RexxReturnCode RexxEntry RexxRegisterSubcomDll(
 
 /*********************************************************************/
 /*                                                                   */
-/*  Function Name:  RexxRegisterSubcom                               */
+/*  Function Name:  RexxRegisterSubcomExe                            */
 /*                                                                   */
 /*  Description:    Registration function for the subcommand         */
 /*                  interface.  All programs wishing to act as       */
@@ -116,7 +116,7 @@ RexxReturnCode RexxEntry RexxRegisterSubcomDll(
 /*                                                                   */
 /*********************************************************************/
 
-RexxReturnCode RexxEntry RexxRegisterSubcom(
+RexxReturnCode RexxEntry RexxRegisterSubcomExe(
     const char *    envName,                  // Subcom name
     REXXPFN    entryPoint,               // callback address
     const char *    userArea)                 // User data
@@ -204,7 +204,7 @@ RexxReturnCode RexxEntry RexxQuerySubcom(
 
 /*********************************************************************/
 /*                                                                   */
-/*  Function Name:   ooRexxResolveSubcom                             */
+/*  Function Name:   RexxResolveSubcom                               */
 /*                                                                   */
 /*  Description:     Query and return information about a resolved   */
 /*                   Subcom handler                                  */
@@ -230,10 +230,37 @@ RexxReturnCode RexxEntry RexxResolveSubcom(
     EXIT_REXX_API();
 }
 
+/**
+ * Invoke a registered subcommand handler.
+ *
+ * @param name   The name of the handler.
+ * @param cmd    The command string passed to the handler.
+ * @param flags  The return flags from the handler.
+ * @param sbrc   The returned numeric return code from the handler.
+ * @param rv     The return value string that the handle potentially sets.
+ *
+ * @return RXSUBCOM_OK if the handler could be invoked, and the
+ *         appropriate error conditions for any resolution failure.
+ */
+RexxReturnCode REXXENTRY RexxCallSubcom(const char *name, PCONSTRXSTRING cmd,
+    unsigned short *flags, wholenumber_t *sbrc, PRXSTRING rv)
+{
+    RexxSubcomHandler *subcom_addr;
+    RexxReturnCode  rc;                          /* Function return code.      */
+
+    /* Load the handler           */
+    if ((rc = RexxResolveSubcom(name, (REXXPFN *)&subcom_addr)) == 0)
+    {
+        *sbrc = (*subcom_addr )(cmd, flags, rv );
+        rc = RXSUBCOM_OK;
+    }
+    return(rc);                         /* and exit with return code  */
+}
+
 
 /*********************************************************************/
 /*                                                                   */
-/*  Function Name:  RexxRegisterLibraryExit                          */
+/*  Function Name:  RexxRegisterExitDll                              */
 /*                                                                   */
 /*  Description:    Registration function for the exit               */
 /*                  interface.  All programs wishing to act as       */
@@ -250,7 +277,7 @@ RexxReturnCode RexxEntry RexxResolveSubcom(
 /*                                                                   */
 /*********************************************************************/
 
-RexxReturnCode RexxEntry RexxRegisterLibraryExit(
+RexxReturnCode RexxEntry RexxRegisterExitDll(
     const char *     envName,                  // Exit name
     const char *     moduleName,               // Name of DLL
     const char *     procedureName,            // DLL routine name
@@ -266,7 +293,7 @@ RexxReturnCode RexxEntry RexxRegisterLibraryExit(
 
 /*********************************************************************/
 /*                                                                   */
-/*  Function Name:  RexxRegisterExit                                 */
+/*  Function Name:  RexxRegisterExitExe                              */
 /*                                                                   */
 /*  Description:    Registration function for the exit               */
 /*                  interface.  All programs wishing to act as       */
@@ -281,7 +308,7 @@ RexxReturnCode RexxEntry RexxRegisterLibraryExit(
 /*                                                                   */
 /*********************************************************************/
 
-RexxReturnCode RexxEntry   RexxRegisterExit(
+RexxReturnCode RexxEntry   RexxRegisterExitExe(
   const char *      envName,           /* exit name                  */
   REXXPFN      entryPoint,        /* Entry point address        */
   const char *      userArea)          /* User data                  */
@@ -369,7 +396,7 @@ RexxReturnCode RexxEntry RexxQueryExit(
 
 /*********************************************************************/
 /*                                                                   */
-/*  Function Name:   ooRexxResolveExit                               */
+/*  Function Name:   RexxResolveExit                                 */
 /*                                                                   */
 /*  Description:     Resolves a system exit entrypoint address       */
 /*                                                                   */
@@ -397,7 +424,7 @@ RexxReturnCode RexxEntry RexxResolveExit(
 
 /*********************************************************************/
 /*                                                                   */
-/*  Function Name:  RexxRegisterLibraryFunction                      */
+/*  Function Name:  RexxRegisterFunctionDll                          */
 /*                                                                  */
 /*  Description:    Registration function for the external function  */
 /*                  interface.  All programs wishing to act as       */
@@ -412,7 +439,7 @@ RexxReturnCode RexxEntry RexxResolveExit(
 /*                                                                   */
 /*********************************************************************/
 
-RexxReturnCode RexxEntry RexxRegisterLibraryFunction(
+RexxReturnCode RexxEntry RexxRegisterFunctionDll(
   const char *      name,                 // Subcom name
   const char *      moduleName,           // Name of library
   const char *      procedureName)        // library routine name
@@ -426,7 +453,7 @@ RexxReturnCode RexxEntry RexxRegisterLibraryFunction(
 
 /*********************************************************************/
 /*                                                                   */
-/*  Function Name:  RexxRegisterFunction                             */
+/*  Function Name:  RexxRegisterFunctionExe                          */
 /*                                                                   */
 /*  Description:    Registration function for the external function  */
 /*                  interface.  All programs wishing to act as       */
@@ -441,7 +468,7 @@ RexxReturnCode RexxEntry RexxRegisterLibraryFunction(
 /*                                                                   */
 /*********************************************************************/
 
-RexxReturnCode RexxEntry RexxRegisterFunction(
+RexxReturnCode RexxEntry RexxRegisterFunctionExe(
   const char *      name,                 // Function name
   REXXPFN  entryPoint)               // Entry point address
 {
@@ -512,14 +539,11 @@ RexxReturnCode RexxEntry RexxQueryFunction(
 }
 
 
-RexxReturnCode RexxEntry   RexxResolveFunction(
-    const char *    name,              // Function name
-    const char *    library,           // Qualifying library name (optional)
-    REXXPFN   *entryPoint)        // the entry point of the exit
+RexxReturnCode RexxEntry   RexxResolveRoutine(const char *name, REXXPFN *entryPoint)
 {
     ENTER_REXX_API(RegistrationManager)
     {
-        lam->registrationManager.resolveCallback(FunctionAPI, name, library, *entryPoint);
+        lam->registrationManager.resolveCallback(FunctionAPI, name, NULL, *entryPoint);
     }
     EXIT_REXX_API();
 }
