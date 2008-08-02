@@ -36,19 +36,19 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /******************************************************************************/
-/* REXX Kernel                                              SysThread.hpp     */
+/* REXX Kernel                                            SysActivity.hpp     */
 /*                                                                            */
 /* System support for Thread operations                                       */
 /*                                                                            */
 /******************************************************************************/
 
 #include "RexxCore.h"
-#include "SysThread.hpp"
+#include "SysActivity.hpp"
 
 /**
  * Close out any resources required by this thread descriptor.
  */
-void SysThread::close()
+void SysActivity::close()
 {
     CloseHandle(this->hThread);
     hThread = NULL;
@@ -71,7 +71,7 @@ DWORD WINAPI call_thread_function(void * arguments)
  * @param activity  The activity we're creating on.
  * @param stackSize The required stack size.
  */
-void SysThread::create(RexxActivity *activity, size_t stackSize)
+void SysActivity::create(RexxActivity *activity, size_t stackSize)
 {
     DWORD res;
 
@@ -89,7 +89,7 @@ void SysThread::create(RexxActivity *activity, size_t stackSize)
  *
  * @return The thread identifer for the current thread.
  */
-thread_id_t SysThread::queryThreadID()
+thread_id_t SysActivity::queryThreadID()
 {
     return(thread_id_t)GetCurrentThreadId();
 }
@@ -99,7 +99,7 @@ thread_id_t SysThread::queryThreadID()
  * Initialize the descriptor for manipulating the current
  * active thread.
  */
-void SysThread::useCurrentThread()
+void SysActivity::useCurrentThread()
 {
     // we need both an identifier and a handle
     threadId = queryThreadID();
@@ -113,7 +113,7 @@ void SysThread::useCurrentThread()
  *
  * @return The character pointer for the stack base.
  */
-char *SysThread::getStackBase(size_t stackSize)
+char *SysActivity::getStackBase(size_t stackSize)
 {
     size_t temp;
     return(char *)&temp - stackSize;
@@ -123,7 +123,7 @@ char *SysThread::getStackBase(size_t stackSize)
 /**
  * Have this thread reliniquish control
  */
-void SysThread::relinquish()
+void SysActivity::relinquish()
 {
     MSG msg;
 

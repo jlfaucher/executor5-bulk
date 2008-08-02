@@ -36,67 +36,129 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /******************************************************************************/
-/* REXX Kernel                                              SysThread.hpp     */
+/* REXX Kernel                                            SysActivity.hpp     */
 /*                                                                            */
 /* System support for Thread operations                                       */
 /*                                                                            */
 /******************************************************************************/
 
-#ifndef Included_SysThread
-#define Included_SysThread
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
+#include "RexxCore.h"
+#include "ActivityManager.hpp"
+#include <errno.h>
 
-#if defined( HAVE_PTHREAD_H )
-# include <pthread.h>
-#endif
+#define THREAD_PRIORITY 100
 
-#if defined( HAVE_MEMORY_H )
-# include <memory.h>
-#endif
+#include "RexxCore.h"
+#include "SysActivity.hpp"
 
-#if defined( HAVE_SYS_SCHED_H )
-# include <sys/sched.h>
-#endif
 
-#if defined( HAVE_TIME_H )
-# include <time.h>
-#endif
-
-#if defined( HAVE_SCHED_H )
-# include <sched.h>
-#endif
-
-class RexxActivity;
-
-class SysThread
+/**
+ * Top launcher function for spinning off a new activity.
+ *
+ * @param args   The thread arguments (just the pointer to the activity).
+ */
+void *threadFnc(void *args)
 {
-public:
-    inline SysThread() : threadId(0) { }
-    inline bool equals(thread_id_t t) { return threadId == t; }
-    void terminate();
-    void create(RexxActivity *activity, size_t stackSize);
-    void close();
-    void useCurrentThread();
-    char *getStackBase(size_t stackSize);
-    void setPriority(int p);
-    inline thread_id_t getThreadID() { return (thread_id_t)threadId; }
+    ((RexxActivity *)args)->runThread();
+    return NULL;
+}
 
-    static thread_id_t queryThreadID();
-    // the following os a NOP on unix platforms
-    static inline void relinquish() { }
-    static inline void yield()
+/**
+ * Close out any resources required by this thread descriptor.
+ */
+void SysActivity::close()
+{
+    threadId = 0;
+}
+
+
+/**
+ * Perform any platform-specific termination steps.
+ */
+void SysActivity::terminate()
+{
+    pthread_detach(threadId);
+}
+
+
+/**
+ * Create a new thread for an activity.
+ *
+ * @param activity  The activity that will run on this thread.
+ * @param stackSize The desired stack size.
+ */
+void SysActivity::create(RexxActivity *activity, size_t stackSize)
+{
+    int             rc;
+    pthread_attr_t  newThreadAttr;
+    int schedpolicy;
+    struct sched_param schedparam;
+
+                               // Create an attr block for Thread.
+    rc = pthread_attr_init(&newThreadAttr);
+                               // Set the stack size.
+ #if defined(OPSYS_AIX43) || defined(LINUX) ||  defined OPSYS_SUN
+
+ /* scheduling on two threads controlled by the result method of the message object */
+ /* do not work proper without an enhanced priority                                 */
+
+    pthread_getschedparam(pthread_self(), &schedpolicy, &schedparam);
+    schedparam.sched_priority = 100;
+
+ #if defined(OPSYS_SUN) || defined(OPSYS_AIX43)
+ /* PTHREAD_EXPLICIT_SCHED ==> use scheduling attributes of the new object    */
+
+    rc = pthread_attr_setinheritsched(&newThreadAttr, PTHREAD_EXPLICIT_SCHED);
+
+ /* Performance measurements show massive performance improvements > 50 %     */
+ /* using Round Robin scheduling instead of FIFO scheduling                   */
+    rc = pthread_attr_setschedpolicy(&newThreadAttr, SCHED_RR); /* not supported AIX4.1 */
+ #endif
+    rc = pthread_attr_setschedparam(&newThreadAttr, &schedparam);
+
+ #endif
+    rc = pthread_attr_setstacksize(&newThreadAttr, stackSize);
+                                               // Now create the thread
+    rc = pthread_create(&threadId, &newThreadAttr, threadFnc, (void *)activity);
+                               // Bumop thread count by one. Threadid
+    if (rc != 0)
     {
-#ifdef OPSYS_AIX41
-        pthread_yield();
-#else
-        sched_yield();
-#endif
+        reportException(Error_System_service_service, "ERROR CREATING THREAD");
     }
+    rc = pthread_attr_destroy(&newThreadAttr);
+}
 
-protected:
-    pthread_t     threadId;         // the thread identifier
-};
 
-#endif
+/**
+ * Get the ID of the current thread.
+ *
+ * @return The thread identifer for the current thread.
+ */
+thread_id_t SysActivity::queryThreadID()
+{
+    return (thread_id_t)pthread_self();      /* just call the correct function */
+}
+
+
+/**
+ * Initialize the descriptor for manipulating the current
+ * active thread.
+ */
+void SysActivity::useCurrentThread()
+{
+    // we need both an identifier and a handle
+    threadId = pthread_self();
+}
+
+
+/**
+ * Return the pointer to the base of the current stack.
+ * This is used for checking recursion overflows.
+ *
+ * @return The character pointer for the stack base.
+ */
+char *SysActivity::getStackBase(size_t stackSize)
+{
+    size_t temp;
+    return (char *)&temp - stackSize;
+}

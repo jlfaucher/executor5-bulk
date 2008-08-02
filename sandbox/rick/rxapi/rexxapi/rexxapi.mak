@@ -67,7 +67,7 @@ SERVEROBJS = $(OR_OUTDIR)\APIServer.obj  $(OR_OUTDIR)\APIServerInstance.obj \
           $(OR_OUTDIR)\RegistrationManager.obj $(OR_OUTDIR)\ServiceMessage.obj \
           $(OR_OUTDIR)\RegistrationManager.obj $(OR_OUTDIR)\ServiceMessage.obj \
           $(OR_OUTDIR)\APIService.obj $(OR_OUTDIR)\SysCSStream.obj $(OR_OUTDIR)\SysProcess.obj \
-           $(OR_OUTDIR)\SysAPIManager.obj
+          $(OR_OUTDIR)\SysAPIManager.obj $(OR_OUTDIR)\SysThread.obj
 
 # Following for REXXAPI.DLL
 #

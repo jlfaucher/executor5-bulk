@@ -199,7 +199,7 @@ bool DataQueue::pullData(ServiceMessage &message)
         // back to the client.
         message.setMessageData(item->elementData, item->size);
         // we've taken the data from the item, so clear it out before we delete.
-        item->clearData();
+        item->clear();
         // we're done with this, let it go.
         delete item;
         message.setResult(QUEUE_ITEM_PULLED);

@@ -36,26 +36,26 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /******************************************************************************/
-/* REXX Kernel                                              SysThread.hpp     */
+/* REXX Kernel                                              SysActivity.hpp   */
 /*                                                                            */
 /* System support for Thread operations                                       */
 /*                                                                            */
 /******************************************************************************/
 
-#ifndef Included_SysThread
-#define Included_SysThread
+#ifndef Included_SysActivity
+#define Included_SysActivity
 
 #include "windows.h"
 #include <stdio.h>
 
 class RexxActivity;
 
-class SysThread
+class SysActivity
 {
 public:
 
 
-    inline SysThread() : threadId(0), hThread(NULL) { }
+    inline SysActivity() : threadId(0), hThread(NULL) { }
     inline bool equals(thread_id_t t) { return threadId == t; }
     inline void terminate() { }
     void create(RexxActivity *activity, size_t stackSize);

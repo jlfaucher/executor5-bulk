@@ -350,7 +350,7 @@ RexxActivity *InterpreterInstance::findActivity(thread_id_t threadId)
  */
 RexxActivity *InterpreterInstance::findActivity()
 {
-    return findActivity(SysThread::queryThreadID());
+    return findActivity(SysActivity::queryThreadID());
 }
 
 
