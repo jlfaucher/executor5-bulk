@@ -50,21 +50,21 @@
 #include "Utilities.hpp"
 
 const char *Utilities::locateCharacter(
-  const char *String,                  /* search string                     */
-  const char *Set,                     /* reference set                     */
-  size_t      Length )                 /* size of string                    */
+  const char *string,                  /* search string                     */
+  const char *set,                     /* reference set                     */
+  size_t      length )                 /* size of string                    */
 /*********************************************************************/
 /*  Function:  Find first occurence of set member in memory          */
 /*********************************************************************/
 {
-    while (Length-- > 0)
+    while (length-- > 0)
     {               /* search through string             */
 
-        if (strchr(Set, *String))
+        if (strchr(set, *string))
         {        /* find a match in ref set?          */
-            return String;
+            return string;
         }
-        String++;                          /* step the pointer                  */
+        string++;                          /* step the pointer                  */
     }
     return NULL;                         /* return matched position           */
 }

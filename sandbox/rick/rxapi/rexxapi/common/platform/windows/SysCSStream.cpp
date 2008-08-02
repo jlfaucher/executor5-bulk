@@ -233,7 +233,7 @@ bool SysClientStream::read(void *buf, size_t bufsize, size_t *bytesread)
         errcode = CSERROR_IO_FAILED;
         return false;
     }
-    *bytesread = (size_t)recv(c, (char *)buf, bufsize, 0);
+    *bytesread = (size_t)recv(c, (char *)buf, (int)bufsize, 0);
     errcode = CSERROR_OK;
     return true;
 }
@@ -256,7 +256,7 @@ bool SysClientStream::write(void *buf, size_t bufsize, size_t *byteswritten)
         errcode = CSERROR_IO_FAILED;
         return false;
     }
-    *byteswritten = (size_t)send(c, (char *)buf, bufsize, 0);
+    *byteswritten = (size_t)send(c, (char *)buf, (int)bufsize, 0);
     errcode = CSERROR_OK;
     return true;
 }
@@ -420,15 +420,15 @@ SysServerConnection *SysServerStream::connect(void)
         errcode = CSERROR_INTERNAL;
         return NULL;
     }
-    int c = accept(s, (struct sockaddr *) &addr, &sz);
-    if (c == -1)
+    SOCKET client = accept(s, (struct sockaddr *) &addr, &sz);
+    if (client == -1)
     {
         errcode = CSERROR_CONNX_FAILED;
         return NULL;
     }
 
     errcode = CSERROR_OK;
-    return new SysServerConnection(this, c);
+    return new SysServerConnection(this, client);
 }
 
 
@@ -492,7 +492,7 @@ bool SysServerConnection::read(void *buf, size_t bufsize, size_t *bytesread)
         errcode = CSERROR_IO_FAILED;
         return false;
     }
-    *bytesread = (size_t)recv(c, (char *)buf, bufsize, 0);
+    *bytesread = (size_t)recv(c, (char *)buf, (int)bufsize, 0);
     errcode = CSERROR_OK;
     return true;
 }
@@ -515,7 +515,7 @@ bool SysServerConnection::write(void *buf, size_t bufsize, size_t *byteswritten)
         errcode = CSERROR_IO_FAILED;
         return false;
     }
-    *byteswritten = (size_t)send(c, (char *)buf, bufsize, 0);
+    *byteswritten = (size_t)send(c, (char *)buf, (int)bufsize, 0);
     errcode = CSERROR_OK;
     return true;
 }

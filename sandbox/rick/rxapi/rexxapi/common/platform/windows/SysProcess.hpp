@@ -56,7 +56,6 @@ class SysProcess
 {
 public:
    static void getUserID(char *buffer);
-   static void sleep(int milliseconds);
    static inline int getPid()
    {
        return _getpid();

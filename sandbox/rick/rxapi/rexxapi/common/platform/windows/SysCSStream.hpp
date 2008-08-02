@@ -57,7 +57,7 @@ class SysClientStream
 {
 protected:
     CSErrorCodeT errcode;
-    int c; // client socket
+    SOCKET c; // client socket
     int domain; // the socket domain
     int type; // the socket type
     int protocol; // the socket protocol
@@ -112,7 +112,7 @@ public:
 
 protected:
     SysServerStream *server;
-    int c; // client socket
+    SOCKET c; // client socket
     CSErrorCodeT errcode;
 };
 
@@ -121,7 +121,7 @@ class SysServerStream
 {
 protected:
     CSErrorCodeT errcode;
-    int s; // server socket
+    SOCKET s; // server socket
     int domain; // the socket domain
     int type; // the socket type
     int protocol; // the socket protocol

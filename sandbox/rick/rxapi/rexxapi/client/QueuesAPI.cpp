@@ -40,6 +40,7 @@
 #include "LocalAPIManager.hpp"
 #include "LocalQueueManager.hpp"
 #include "LocalAPIContext.hpp"
+#include "RexxAPI.h"
 
 // the generated name pattern is
 #define INTERNALNAME_MINIMUM ((sizeof(void *) * 4) + 3)
@@ -102,15 +103,7 @@ RexxReturnCode RexxEntry RexxCreateQueue(
     ENTER_REXX_API(QueueManager)
     {
         // no user requested name, we'll generate one automatically
-        if (userRequested == NULL)
-        {
-            strcpy(userRequested,"");
-            if (size < INTERNALNAME_MINIMUM)
-            {
-                throw new ServiceException(MEMORY_ERROR, "Unsufficient space for created queue name");
-            }
-        }
-        else
+        if (userRequested != NULL)
         {
             // we copy the queue name back into the user's buffer, so this space
             // must be at least big enough for the requested name
@@ -244,7 +237,6 @@ RexxReturnCode RexxEntry RexxAddQueue(
 {
     ENTER_REXX_API(QueueManager)
     {
-        ManagedRxstring *mdata = (ManagedRxstring *)data;
                                              /* first check the flag       */
         if (flag != RXQUEUE_FIFO && flag != RXQUEUE_LIFO)
         {
@@ -252,11 +244,11 @@ RexxReturnCode RexxEntry RexxAddQueue(
         }
         if (lam->queueManager.isSessionQueue(name))
         {
-            lam->queueManager.addToSessionQueue(*mdata, flag);
+            lam->queueManager.addToSessionQueue(*data, flag);
         }
         else
         {
-            lam->queueManager.addToNamedQueue(name, *mdata, flag);
+            lam->queueManager.addToNamedQueue(name, *data, flag);
         }
     }
     EXIT_REXX_API();
@@ -295,7 +287,7 @@ RexxReturnCode RexxEntry RexxPullFromQueue(
   const char *name,
   RXSTRING  *data_buf,
   REXXDATETIME *time,
-  RexxUnsignedNumber waitflag)
+  size_t waitflag)
 {
     ENTER_REXX_API(QueueManager)
     {

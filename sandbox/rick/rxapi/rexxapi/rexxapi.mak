@@ -74,11 +74,11 @@ SERVEROBJS = $(OR_OUTDIR)\APIServer.obj  $(OR_OUTDIR)\APIServerInstance.obj \
 #
 # Generate import library (.lib) and export library (.exp) from
 # module-definition (.dfw) file for a DLL
-$(OR_OUTDIR)\rexxapi.lib : $(CLIENTOBJS) $(APLATFORM)\rexxapi.def
+$(OR_OUTDIR)\rexxapi.lib : $(CLIENTOBJS) $(OR_REXXAPISRC)\client\platform\windows\rexxapi.def
         $(OR_IMPLIB) -machine:$(CPU) \
-        -def:$(APLATFORM)\$(TARGET).def               \
-        $(OBJLIST)               \
-        -out:$(OR_OUTDIR)\$(TARGET).lib
+        -def:$(OR_REXXAPISRC)\client\platform\windows\rexxapi.def \
+        $(CLIENTOBJS) \
+        -out:$(OR_OUTDIR)\rexxapi.lib
 
 #
 # *** REXXAPI.DLL
@@ -86,11 +86,11 @@ $(OR_OUTDIR)\rexxapi.lib : $(CLIENTOBJS) $(APLATFORM)\rexxapi.def
 # need import libraries and def files still
 $(OR_OUTDIR)\rexxapi.dll : $(CLIENTOBJS) $(RXDBG_OBJ)      \
                              $(OR_OUTDIR)\rexxapi.lib   \
-                             $(APLATFORM)\rexxapi.def \
+                             $(OR_REXXAPISRC)\client\platform\windows\rexxapi.def \
                              $(OR_OUTDIR)\rexxapi.exp   \
                              $(OR_OUTDIR)\verinfo.res
     $(OR_LINK) $(lflags_common) $(lflags_dll) /MAP -out:$(OR_OUTDIR)\$(@B).dll \
-             $(OBJLIST) $(RXDBG_OBJ) \
+             $(CLIENTOBJS) \
              $(OR_OUTDIR)\verinfo.res \
              $(OR_OUTDIR)\$(@B).exp \
              $(libs_dll)
@@ -170,7 +170,16 @@ $(OR_OUTDIR)\rxapi.res: $(APLATFORM)\rxapi.rc $(APLATFORM)\APIServiceMessages.h
 # *** Inference Rule for CPP->OBJ
 # *** For .CPP files in OR_LIBSRC directory
 #
-{$(OR_COMMONSRC);$(OR_COMMONPLATFORMSRC)}.cpp{$(OR_OUTDIR)}.obj:
+{$(OR_COMMONPLATFORMSRC)}.cpp{$(OR_OUTDIR)}.obj:
+    @ECHO .
+    @ECHO Compiling $(**)
+    $(OR_CC) $(cflags_common) $(cflags_dll)  /Fo$(@) $(OR_ORYXINCL) $(Tp)$(**)
+
+#
+# *** Inference Rule for CPP->OBJ
+# *** For .CPP files in OR_LIBSRC directory
+#
+{$(OR_COMMONSRC)}.cpp{$(OR_OUTDIR)}.obj:
     @ECHO .
     @ECHO Compiling $(**)
     $(OR_CC) $(cflags_common) $(cflags_dll)  /Fo$(@) $(OR_ORYXINCL) $(Tp)$(**)

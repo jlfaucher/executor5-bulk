@@ -50,6 +50,7 @@ public:
     static void strupper(char *str);
     static void strlower(char *str);
     static const char *strnchr(const char *, size_t n, char ch);
+    static const char *locateCharacter(const char *s, const char *set, size_t l);
 };
 
 #endif

@@ -36,12 +36,12 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-#include "oorexx.h"
+#include "rexx.h"
 #include "LocalAPIManager.hpp"
 #include "LocalMacroSpaceManager.hpp"
-#include "RexxAPI.h"
 #include "LocalAPIContext.hpp"
-#include "InternalAPI.hpp"
+#include "RexxInternalApis.h"
+#include "RexxAPI.h"
 
 /*********************************************************************/
 /*                                                                   */
@@ -143,7 +143,7 @@ RexxReturnCode RexxEntry RexxClearMacroSpace()
 /*********************************************************************/
 RexxReturnCode RexxEntry RexxSaveMacroSpace(
     size_t           count,                     /* count of arguments         */
-    const char *     names,                     /* argument list              */
+    const char **    names,                     /* argument list              */
     const char *    targetFile)                 /* file name                  */
 {
     ENTER_REXX_API(MacroSpaceManager)
@@ -275,7 +275,7 @@ RexxReturnCode RexxEntry RexxResolveMacroFunction(
 {
     ENTER_REXX_API(MacroSpaceManager)
     {
-        lam->macroSpaceManager.getMacro(name, p);
+        lam->macroSpaceManager.getMacro(name, *p);
     }
     EXIT_REXX_API();
 }

@@ -62,8 +62,8 @@ ServiceReturn LocalRegistrationManager::registerCallback(RegistrationType type, 
     ClientMessage message(RegistrationManager, REGISTER_LIBRARY, type, name);
 
     // we have a secondary data area to send
-    ServiceRegistrationData regData(module, proc, drop, userdata);
-    message.setMessageData(regData, sizeof(ServiceRegistrationData));
+    ServiceRegistrationData regData(module, proc, drop, userData);
+    message.setMessageData(&regData, sizeof(ServiceRegistrationData));
 
     message.send();
     return message.result;

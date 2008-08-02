@@ -36,13 +36,12 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-#include "oorexx.h"
+#include "rexx.h"
 #include "LocalAPIManager.hpp"
 #include "LocalRegistrationManager.hpp"
 #include "RexxAPI.h"
 #include "LocalAPIContext.hpp"
-#include "RexxLegacyAPI.hpp"
-#include "InternalAPI.hpp"
+#include "RexxInternalApis.h"
 #include "ClientMessage.hpp"
 #include "SysLocalAPIManager.hpp"
 
@@ -226,7 +225,6 @@ RexxReturnCode RexxEntry RexxResolveSubcom(
 {
     ENTER_REXX_API(RegistrationManager)
     {
-        int legacy;
         lam->registrationManager.resolveCallback(SubcomAPI, name, NULL, *entryPoint);
     }
     EXIT_REXX_API();
@@ -392,7 +390,6 @@ RexxReturnCode RexxEntry RexxResolveExit(
 {
     ENTER_REXX_API(RegistrationManager)
     {
-        int legacy;
         lam->registrationManager.resolveCallback(ExitAPI, name, NULL, *entryPoint);
     }
     EXIT_REXX_API();

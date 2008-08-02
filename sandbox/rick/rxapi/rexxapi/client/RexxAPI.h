@@ -35,24 +35,34 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-/*****************************************************************************/
-/* REXX Windows Support                                                      */
-/*                                                                           */
-/* Process support for Windows                                               */
-/*                                                                           */
-/*****************************************************************************/
 
-#include "windows.h"
-#include "SysProcess.hpp"
+#ifndef RexxAPI_H_INCLUDED
+#define RexxAPI_H_INCLUDED
 
+#include <new>
 
-/**
- * Get the current user name information.
- *
- * @param buffer The buffer (of at least MAX_USERID_LENGTH characters) into which the userid is copied.
- */
-void SysProcess::getUserID(char *buffer)
-{
-    DWORD account_size = MAX_USERID_LENGTH;
-    GetUserName(buffer, &account_size);
-}
+// the following macros help make sure we don't screw up the
+// error processing infrastructure for API calls.  All APIs
+// must process exceptions the same, so we generate those bits of the
+// code automatically.
+
+#define ENTER_REXX_API(target) \
+    LocalAPIContext context(target); \
+    try                           \
+    {                             \
+        LocalAPIManager *lam = context.getAPIManager(); \
+
+#define EXIT_REXX_API()            \
+    }                              \
+    catch (ServiceException *e)    \
+    {                              \
+        return context.processServiceException(e); \
+    }                              \
+    catch (std::bad_alloc &)      \
+    {                              \
+        return RXAPI_MEMFAIL;      \
+    }                              \
+                                   \
+    return RXAPI_OK;               \
+
+#endif

@@ -154,7 +154,7 @@ void ServiceMessage::readResult(SysClientStream &pipe)
  */
 void *ServiceMessage::allocateResultMemory(size_t length)
 {
-    void *data = ooRexxAllocateMemory((RexxStringLength)length);
+    void *data = RexxAllocateMemory(length);
     if (data == NULL)
     {
         throw new ServiceException(MEMORY_ERROR, "ServiceMessage::allocateResultMemory() Failure allocating result memory");
@@ -169,5 +169,5 @@ void *ServiceMessage::allocateResultMemory(size_t length)
  */
 void ServiceMessage::releaseResultMemory(void *data)
 {
-    ooRexxFreeMemory(data);
+    RexxFreeMemory(data);
 }

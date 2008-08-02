@@ -247,8 +247,6 @@ public:
         MAX_NAME_LENGTH = 256
     };
 
-protected:
-
     char moduleName[MAX_NAME_LENGTH];          // name of the library
     char procedureName[MAX_NAME_LENGTH];       // the procedure within the library
     size_t dropAuthority;                      // scope of drop authority

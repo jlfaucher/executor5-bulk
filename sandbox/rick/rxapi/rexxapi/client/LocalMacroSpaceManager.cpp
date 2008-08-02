@@ -583,10 +583,10 @@ void LocalMacroSpaceManager::translateRexxProgram(const char *sourceFile, Manage
 
         RexxReturnCode (RexxEntry *compiler)(const char *, CONSTRXSTRING *, RXSTRING *);
 
-        compiler = (RexxReturnCode (RexxEntry *)(const char *, CONSTRXSTRING, RXSTRING *))proc;
+        compiler = (RexxReturnCode (RexxEntry *)(const char *, CONSTRXSTRING *, RXSTRING *))proc;
 
         ManagedRxstring sourceData;
-        readRxstringFromFile(fileInst, sourceData, fsize);
+        readRxstringFromFile(fileInst, sourceData, (size_t)fsize);
         fileInst->close();
         imageData.strptr = NULL;
         imageData.strlength = 0;

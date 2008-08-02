@@ -81,15 +81,3 @@ void SysProcess::getUserID(char *buffer)
 #endif
 }
 
-
-/**
- * Do process specific sleep.
- *
- * @param milliseconds
- *               The number of milliseconds to sleep.
- */
-void SysProcess::sleep(int milliseconds)
-{
-    usleep(milliseconds * 1000);
-}
-
