@@ -190,7 +190,7 @@ inline void systemServiceExceptionCode(RexxMethodContext *context, const char *m
  * @param max
  * @param actual
  */
-inline void stringTooLongException(RexxMethodContext *context, int argNumber, int max, int actual)
+inline void stringTooLongException(RexxMethodContext *context, int argNumber, int max, size_t actual)
 {
     TCHAR buffer[32];
     RexxArrayObject array = context->NewArray(3);
@@ -234,24 +234,6 @@ inline void wrongFormatException(RexxMethodContext *c, int argNumber, char * act
     wrongFormatException(c, argNumber, c->NewStringFromAsciiz(actual));
 }
 
-/**
- * A temporary solution.  In ooDialog and WinSystm.cls Windows HANDLE types,
- * HWND, HMODULE, etc are returned to ooRexx as longs.  To be compatible with
- * 3.2.0 window handles are passed back and forth as longs.  For 3.x, this will
- * be fixed.
- */
-inline HANDLE handleFromRx(STRING value)
-{
-    return (HANDLE)atol(string_data(value));
-}
-
-inline STRING handleToRx(HANDLE h)
-{
-    TCHAR buffer[64];
-    _snprintf(buffer, sizeof(buffer), "%d", h);
-    return RexxString(buffer);
-}
-
 inline RexxObjectPtr hrToRx(RexxMethodContext *c, HRESULT hr)
 {
     TCHAR buffer[32];
@@ -259,7 +241,6 @@ inline RexxObjectPtr hrToRx(RexxMethodContext *c, HRESULT hr)
     _snprintf(buffer, 32, "0x%08x", hr);
     return c->NewStringFromAsciiz(buffer);
 }
-
 
 inline void *shellAlloc(size_t size)
 {
