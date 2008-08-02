@@ -52,6 +52,7 @@
 class SysSemaphore {
 public:
      SysSemaphore() { ; }
+     SysSemaphore(bool);
      ~SysSemaphore() { ; }
      void create();
      inline void createGuard() { create(); }
@@ -72,6 +73,7 @@ protected:
 class SysMutex {
 public:
      SysMutex() { ; }
+     SysMutex(bool);
      ~SysMutex() { ; }
      void create();
      inline void open() { ; }

@@ -43,7 +43,6 @@
 #include "MacroSpaceManager.hpp"
 #include "RegistrationManager.hpp"
 #include "QueueManager.hpp"
-#include "SysSemaphore.hpp"
 
 class APIServerInstance
 {

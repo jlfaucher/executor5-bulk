@@ -43,7 +43,7 @@
 
 // initialize static variables
 LocalAPIManager* LocalAPIManager::singleInstance = NULL;
-SysMutex LocalAPIManager::messageLock;
+SysMutex LocalAPIManager::messageLock(true);
 
 /**
  * Get the singleton instance of the local API manager.

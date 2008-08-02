@@ -44,6 +44,22 @@
 
 #include "SysSemaphore.hpp"
 
+/**
+ * Create a semaphore with potential creation-time
+ * initialization.
+ *
+ * @param create Indicates whether the semaphore should be created now.
+ */
+SysSemaphore::SysSemaphore(bool createSem)
+{
+    sem = 0;
+    if (createSem)
+    {
+        create();
+    }
+}
+
+
 /* ********************************************************************** */
 /* ***                  SysSemaphore                                  *** */
 /* ********************************************************************** */
@@ -76,6 +92,23 @@ void SysSemaphore::close()
 /* ********************************************************************** */
 /* ***                  SysMutex                                     *** */
 /* ********************************************************************** */
+
+/**
+ * Create a semaphore with potential creation-time
+ * initialization.
+ *
+ * @param create Indicates whether the semaphore should be created now.
+ */
+SysMutex::SysMutex(bool createSem)
+{
+    mutexMutex = 0;
+    if (createSem)
+    {
+        create();
+    }
+}
+
+
 void SysMutex::create()
 {
     if (mutexMutex == 0)

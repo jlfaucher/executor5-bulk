@@ -67,6 +67,22 @@
 /* ********************************************************************** */
 /* ***                  SysSemaphore                                  *** */
 /* ********************************************************************** */
+
+/**
+ * Create a semaphore with potential creation-time
+ * initialization.
+ *
+ * @param create Indicates whether the semaphore should be created now.
+ */
+SysSemaphore::SysSemaphore(bool create)
+{
+    if (create)
+    {
+        create();
+    }
+}
+
+
 void SysSemaphore::create()
 {
     int iRC = 0;
@@ -192,6 +208,21 @@ void SysSemaphore::reset()
 /* ********************************************************************** */
 /* ***                  SysMutex                                      *** */
 /* ********************************************************************** */
+
+/**
+ * Create a semaphore with potential creation-time
+ * initialization.
+ *
+ * @param create Indicates whether the semaphore should be created now.
+ */
+SysMutex::SysMutex(bool create)
+{
+    if (create)
+    {
+        create();
+    }
+}
+
 void SysMutex::create()
 {
     int iRC = 0;

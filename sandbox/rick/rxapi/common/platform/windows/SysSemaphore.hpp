@@ -92,6 +92,7 @@ inline void waitHandle(HANDLE s)
 class SysSemaphore {
 public:
      SysSemaphore() : sem(0) { ; }
+     SysSemaphore(bool);
      ~SysSemaphore() { ; }
      void create();
      void createGuard();
@@ -119,6 +120,7 @@ protected:
 class SysMutex {
 public:
      SysMutex() : mutexMutex(0) { }
+     SysMutex(bool);
      ~SysMutex() { ; }
      void create();
      void create(char *);

@@ -731,13 +731,6 @@ typedef RexxReturnCode (REXXENTRY *PFNREXXPULLFROMQUEUE)(const char *, PRXSTRING
 
 #include "rexxplatformapis.h"
 
-
-RexxReturnCode REXXENTRY RexxShutDownAPI(void);
-
-typedef RexxReturnCode (REXXENTRY *PFNREXXSHUTDOWNAPI)(void);
-#define REXXSHUTDOWNAPI  RexxShutDownAPI
-
-
 /*----------------------------------------------------------------------------*/
 /***    Memory Allocation Services                                            */
 /*----------------------------------------------------------------------------*/
