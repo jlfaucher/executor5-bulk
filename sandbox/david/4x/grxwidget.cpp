@@ -372,7 +372,7 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxWidgetSetSensitive,     // Object_method name
-            int, flag,                 // Sensitive flag
+            logical_t, flag,           // Sensitive flag
             OSELF, self)               // Self
 {
     RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");

@@ -381,38 +381,16 @@ RexxMethod3(int,                       // Return type
             OPTIONAL_CSTRING, text)    // Button text
 {
     RexxPointerObject listptr = (RexxPointerObject)context->SendMessage0(rxlistptr, "POINTER");
-    GSList *head = (GSList *)context->PointerValue(listptr);
+    GSList *head = NULL;
     GtkWidget *myWidget;
 
+    if (listptr != NULL) {
+        GSList *head = (GSList *)context->PointerValue(listptr);
+    }
     myWidget = gtk_radio_button_new(head);
     if (text != NULL) {
         gtk_button_set_label(GTK_BUTTON(myWidget), text);
     }
-    context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
-    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
-
-    return 0;
-}
-
-/**
- * Method:  init
- *
- * Create a radio button from a pointer.
- *
- * @param group   The widget pointer.
- *
- * @return        Zero.
- **/
-RexxMethod2(int,                        // Return type
-            GrxRadioButtonNewFromWidget, // Object_method name
-            OSELF, self,                // Self
-            RexxObjectPtr, rxwidgetptr) // Widget pointer
-{
-    RexxPointerObject widgetptr = (RexxPointerObject)context->SendMessage0(rxwidgetptr, "POINTER");
-    GtkWidget *srcWidget = (GtkWidget *)context->PointerValue(widgetptr);
-    GtkWidget *myWidget;
-
-    myWidget = gtk_radio_button_new_from_widget(GTK_RADIO_BUTTON(srcWidget));
     context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
@@ -435,6 +413,9 @@ RexxMethod1(RexxObjectPtr,             // Return type
     GSList *head = NULL;
 
     head = gtk_radio_button_get_group(GTK_RADIO_BUTTON(myWidget));
+    if (head == NULL) {
+        return context->Nil();
+    }
     return (RexxObjectPtr)g_object_get_data(G_OBJECT(myWidget), "OORXOBJECT");
 }
 
@@ -742,7 +723,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
     if (strcmp(name, "toggled") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
-        cblock->signal_name = "signal_toggked";
+        cblock->signal_name = "signal_toggled";
         g_signal_connect(G_OBJECT(myWidget), "toggled",
                          G_CALLBACK(signal_func_0), cblock);
         return context->True();

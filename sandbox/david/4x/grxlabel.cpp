@@ -141,7 +141,24 @@ RexxMethod2(int,                       // Return type
 }
 
 /**
- * Method:  set_text
+ * Method:  get_label
+ *
+ * Get the text of the label.
+ *
+ * @return        label text
+ **/
+RexxMethod1(CSTRING,                   // Return type
+            GrxLabelGetLabel,          // Object_method name
+            OSELF, self)               // Self
+{
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
+    GtkLabel *myWidget = (GtkLabel *)context->PointerValue(rxptr);
+
+    return gtk_label_get_label(myWidget); 
+}
+
+/**
+ * Method:  set_label
  *
  * Set the text of the label.
  *
@@ -150,14 +167,14 @@ RexxMethod2(int,                       // Return type
  * @return        Zero.
  **/
 RexxMethod2(int,                       // Return type
-            GrxLabelSetText,           // Object_method name
+            GrxLabelSetLabel,          // Object_method name
             CSTRING, text,             // Label text
             OSELF, self)               // Self
 {
     RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkLabel *myWidget = (GtkLabel *)context->PointerValue(rxptr);
 
-    gtk_label_set_text(myWidget, text); 
+    gtk_label_set_label(myWidget, text); 
 
     return 0;
 }

@@ -85,8 +85,7 @@ return
 ::class MyButton subclass GtkButton
 
 ::method signal_clicked
-widgetpointer = upper(GrxWidgetGetTopLevel(self~pointer))
-widget = .local['GTK_Database']~at(widgetpointer)
+widget = self~get_toplevel()
 widget~destroy()
 return
 

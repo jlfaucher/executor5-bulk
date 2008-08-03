@@ -744,6 +744,12 @@ return !pointer
 -- support callbacks or any other use the user may have.
 ::attribute user_data
 
+-- This method is not a part of the GTK system. It has been added to
+-- support creating GdkEvent objects from C++ methods.
+::method create_event_obj
+use strict arg clsname
+return .context~package~findClass(clsname)~new()
+
 ::METHOD destroy EXTERNAL "LIBRARY rexxgtk GrxWidgetDestroy"
 ::METHOD font EXTERNAL "LIBRARY rexxgtk GrxWidgetGetFont"
 ::METHOD get_font EXTERNAL "LIBRARY rexxgtk GrxWidgetGetFont"
@@ -1309,36 +1315,37 @@ return check
 
 ::method newWithLabel class
 use arg group, label = ''
-button = self~new(group)
+button = .GtkRadioButton~new(group)
 button~label = label
-return
+return button
 
 ::method newWithMnemonic class
 use arg group, label = ''
 button = self~new(group)
 button~label = label
 button~use_underline = .true
-return
+return button
 
-::method newFromPtr class
-use arg group, label = ''
-button = .GtkRadioButton_FromWidget~new(group)
+::method newFromWidget class
+use arg widget, label = ''
+group = widget~get_group()
+button = self~new(group, label)
+return button
+
+::method newWithLabelFromWidget class
+use arg widget, label = ''
+button = .GtkRadioButton~newFromWidget(widget)
 button~label = label
-return
+return button
 
-::method newFromPtrWithLabel class
-use arg group, label = ''
-button = .GtkRadioButton_FromWidget~new(group)
-button~label = label
-return
-
-::method newFromPtrWithMnemonic class
-use arg group, label = ''
-button = .GtkRadioButton_FromWidget~new(group)
+::method newWithMnemonicFromWidget class
+use arg widget, label = ''
+button = .GtkRadioButton~newFromWidget(widget)
 button~label = label
 button~use_underline = .true
-return
+return button
 
+                         
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxRadioButtonNew"
 ::METHOD group EXTERNAL "LIBRARY rexxgtk GrxRadioButtonGetGroup"
 ::METHOD get_group EXTERNAL "LIBRARY rexxgtk GrxRadioButtonGetGroup"
@@ -1731,8 +1738,10 @@ return
 ::METHOD justify EXTERNAL "LIBRARY rexxgtk GrxLabelGetJustify"
 ::METHOD 'justify=' EXTERNAL "LIBRARY rexxgtk GrxLabelSetJustify"
 ::METHOD set_justify EXTERNAL "LIBRARY rexxgtk GrxLabelSetJustify"
-::METHOD set_text EXTERNAL "LIBRARY rexxgtk GrxLabelSetText"
-::METHOD 'text=' EXTERNAL "LIBRARY rexxgtk GrxLabelSetText"
+::METHOD set_label EXTERNAL "LIBRARY rexxgtk GrxLabelSetLabel"
+::METHOD 'label=' EXTERNAL "LIBRARY rexxgtk GrxLabelSetLabel"
+::METHOD get_label EXTERNAL "LIBRARY rexxgtk GrxLabelGetLabel"
+::METHOD label EXTERNAL "LIBRARY rexxgtk GrxLabelGetLabel"
 ::METHOD set_selectable EXTERNAL "LIBRARY rexxgtk GrxLabelSetSelectable"
 ::METHOD 'selectable=' EXTERNAL "LIBRARY rexxgtk GrxLabelSetSelectable"
 ::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxLabelSignalConnect"

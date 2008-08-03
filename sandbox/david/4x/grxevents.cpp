@@ -88,8 +88,8 @@ gboolean signal_GdkEvent(GtkWidget *window,
     cblock->instance->AttachThread(&context);
 
     // Create the instance
-    RexxClassObject eobj = context->FindClass("GdkEventKey");
-    rxevent = context->SendMessage0(eobj, "NEW");
+    rxevent = context->SendMessage1(rxobj, "create_event_obj",
+                                    (RexxObjectPtr)context->NewStringFromAsciiz("GdkEvent"));
     // Assign the standard event data
     context->SendMessage1(rxevent, "type=",
                           context->NumberToObject((wholenumber_t)event->type));
@@ -126,8 +126,8 @@ gboolean signal_GdkEventKey(GtkWidget *window,
     cblock->instance->AttachThread(&context);
 
     // Create the instance
-    RexxClassObject eobj = context->FindClass("GdkEventKey");
-    rxevent = context->SendMessage0(eobj, "NEW");
+    rxevent = context->SendMessage1(rxobj, "create_event_obj",
+                                    (RexxObjectPtr)context->NewStringFromAsciiz("GdkEventKey"));
     // Assign the standard event data
     context->SendMessage1(rxevent, "type=",
                           context->NumberToObject((wholenumber_t)event->type));
@@ -190,8 +190,8 @@ gboolean signal_GdkEventButton(GtkWidget *window,
     cblock->instance->AttachThread(&context);
 
     // Create the instance
-    RexxClassObject eobj = context->FindClass("GdkEventButton");
-    rxevent = context->SendMessage0(eobj, "NEW");
+    rxevent = context->SendMessage1(rxobj, "create_event_obj",
+                                    (RexxObjectPtr)context->NewStringFromAsciiz("GdkEventButton"));
     // Assign the standard event data
     context->SendMessage1(rxevent, "type=",
                           context->NumberToObject((wholenumber_t)event->type));
@@ -211,8 +211,8 @@ gboolean signal_GdkEventButton(GtkWidget *window,
                           context->DoubleToObject(event->x));
     context->SendMessage1(rxevent, "y=",
                           context->DoubleToObject(event->y));
-    context->SendMessage1(rxevent, "axes=",
-                          context->DoubleToObject(*event->axes));
+    // TODO - fix this.
+    context->SendMessage1(rxevent, "axes=", context->Nil());
     context->SendMessage1(rxevent, "state=",
                           context->UnsignedNumberToObject((size_t)event->state));
     context->SendMessage1(rxevent, "button=",
@@ -256,8 +256,8 @@ gboolean signal_GdkEventScroll(GtkWidget *window,
     cblock->instance->AttachThread(&context);
 
     // Create the instance
-    RexxClassObject eobj = context->FindClass("GdkEventScroll");
-    rxevent = context->SendMessage0(eobj, "NEW");
+    rxevent = context->SendMessage1(rxobj, "create_event_obj",
+                                    (RexxObjectPtr)context->NewStringFromAsciiz("GdkEventScroll"));
     // Assign the standard event data
     context->SendMessage1(rxevent, "type=",
                           context->NumberToObject((wholenumber_t)event->type));
@@ -320,8 +320,8 @@ gboolean signal_GdkEventMotion(GtkWidget *window,
     cblock->instance->AttachThread(&context);
 
     // Create the instance
-    RexxClassObject eobj = context->FindClass("GdkEventMotion");
-    rxevent = context->SendMessage0(eobj, "NEW");
+    rxevent = context->SendMessage1(rxobj, "create_event_obj",
+                                    (RexxObjectPtr)context->NewStringFromAsciiz("GdkEventMotion"));
     // Assign the standard event data
     context->SendMessage1(rxevent, "type=",
                           context->NumberToObject((wholenumber_t)event->type));
@@ -386,8 +386,8 @@ gboolean signal_GdkEventExpose(GtkWidget *window,
     cblock->instance->AttachThread(&context);
 
     // Create the instance
-    RexxClassObject eobj = context->FindClass("GdkEventExpose");
-    rxevent = context->SendMessage0(eobj, "NEW");
+    rxevent = context->SendMessage1(rxobj, "create_event_obj",
+                                    (RexxObjectPtr)context->NewStringFromAsciiz("GdkEventExpose"));
     // Assign the standard event data
     context->SendMessage1(rxevent, "type=",
                           context->NumberToObject((wholenumber_t)event->type));
@@ -401,8 +401,6 @@ gboolean signal_GdkEventExpose(GtkWidget *window,
     context->SendMessage1(rxevent, "send_event=",
                           context->NumberToObject((wholenumber_t)event->send_event));
     // Assign the event specific data
-    eobj = context->FindClass("GdkEventExpose");
-    temp = context->SendMessage0(eobj, "NEW");
     context->SendMessage1(temp, "x=",
                           context->NumberToObject((wholenumber_t)event->area.x));
     context->SendMessage1(temp, "y=",
@@ -450,8 +448,8 @@ gboolean signal_GdkEventVisibility(GtkWidget *window,
     cblock->instance->AttachThread(&context);
 
     // Create the instance
-    RexxClassObject eobj = context->FindClass("GdkEventVisibility");
-    rxevent = context->SendMessage0(eobj, "NEW");
+    rxevent = context->SendMessage1(rxobj, "create_event_obj",
+                                    (RexxObjectPtr)context->NewStringFromAsciiz("GdkEventVisibility"));
     // Assign the standard event data
     context->SendMessage1(rxevent, "type=",
                           context->NumberToObject((wholenumber_t)event->type));
@@ -500,8 +498,8 @@ gboolean signal_GdkEventCrossing(GtkWidget *window,
     cblock->instance->AttachThread(&context);
 
     // Create the instance
-    RexxClassObject eobj = context->FindClass("GdkEventCrossing");
-    rxevent = context->SendMessage0(eobj, "NEW");
+    rxevent = context->SendMessage1(rxobj, "create_event_obj",
+                                    (RexxObjectPtr)context->NewStringFromAsciiz("GdkEventCrossing"));
     // Assign the standard event data
     context->SendMessage1(rxevent, "type=",
                           context->NumberToObject((wholenumber_t)event->type));
@@ -573,8 +571,8 @@ gboolean signal_GdkEventFocus(GtkWidget *window,
     cblock->instance->AttachThread(&context);
 
     // Create the instance
-    RexxClassObject eobj = context->FindClass("GdkEventFocus");
-    rxevent = context->SendMessage0(eobj, "NEW");
+    rxevent = context->SendMessage1(rxobj, "create_event_obj",
+                                    (RexxObjectPtr)context->NewStringFromAsciiz("GdkEventFocus"));
     // Assign the standard event data
     context->SendMessage1(rxevent, "type=",
                           context->NumberToObject((wholenumber_t)event->type));
@@ -624,8 +622,8 @@ gboolean signal_GdkEventConfigure(GtkWidget *window,
     cblock->instance->AttachThread(&context);
 
     // Create the instance
-    RexxClassObject eobj = context->FindClass("GdkEventConfigure");
-    rxevent = context->SendMessage0(eobj, "NEW");
+    rxevent = context->SendMessage1(rxobj, "create_event_obj",
+                                    (RexxObjectPtr)context->NewStringFromAsciiz("GdkEventConfigure"));
     // Assign the standard event data
     context->SendMessage1(rxevent, "type=",
                           context->NumberToObject((wholenumber_t)event->type));
@@ -680,8 +678,8 @@ gboolean signal_GdkEventProperty(GtkWidget *window,
     cblock->instance->AttachThread(&context);
 
     // Create the instance
-    RexxClassObject eobj = context->FindClass("GdkEventProperty");
-    rxevent = context->SendMessage0(eobj, "NEW");
+    rxevent = context->SendMessage1(rxobj, "create_event_obj",
+                                    (RexxObjectPtr)context->NewStringFromAsciiz("GdkEventProperty"));
     // Assign the standard event data
     context->SendMessage1(rxevent, "type=",
                           context->NumberToObject((wholenumber_t)event->type));
@@ -735,8 +733,8 @@ gboolean signal_GdkEventSelection(GtkWidget *window,
     cblock->instance->AttachThread(&context);
 
     // Create the instance
-    RexxClassObject eobj = context->FindClass("GdkEventSelection");
-    rxevent = context->SendMessage0(eobj, "NEW");
+    rxevent = context->SendMessage1(rxobj, "create_event_obj",
+                                    (RexxObjectPtr)context->NewStringFromAsciiz("GdkEventSelection"));
     // Assign the standard event data
     context->SendMessage1(rxevent, "type=",
                           context->NumberToObject((wholenumber_t)event->type));
@@ -792,8 +790,8 @@ gboolean signal_GdkEventDND(GtkWidget *window,
     cblock->instance->AttachThread(&context);
 
     // Create the instance
-    RexxClassObject eobj = context->FindClass("GdkEventDND");
-    rxevent = context->SendMessage0(eobj, "NEW");
+    rxevent = context->SendMessage1(rxobj, "create_event_obj",
+                                    (RexxObjectPtr)context->NewStringFromAsciiz("GdkEventDND"));
     // Assign the standard event data
     context->SendMessage1(rxevent, "type=",
                           context->NumberToObject((wholenumber_t)event->type));
@@ -849,8 +847,8 @@ gboolean signal_GdkEventProximity(GtkWidget *window,
     cblock->instance->AttachThread(&context);
 
     // Create the instance
-    RexxClassObject eobj = context->FindClass("GdkEventProximity");
-    rxevent = context->SendMessage0(eobj, "NEW");
+    rxevent = context->SendMessage1(rxobj, "create_event_obj",
+                                    (RexxObjectPtr)context->NewStringFromAsciiz("GdkEventProximity"));
     // Assign the standard event data
     context->SendMessage1(rxevent, "type=",
                           context->NumberToObject((wholenumber_t)event->type));
@@ -900,8 +898,8 @@ gboolean signal_GdkEventClient(GtkWidget *window,
     cblock->instance->AttachThread(&context);
 
     // Create the instance
-    RexxClassObject eobj = context->FindClass("GdkEventClient");
-    rxevent = context->SendMessage0(eobj, "NEW");
+    rxevent = context->SendMessage1(rxobj, "create_event_obj",
+                                    (RexxObjectPtr)context->NewStringFromAsciiz("GdkEventClient"));
     // Assign the standard event data
     context->SendMessage1(rxevent, "type=",
                           context->NumberToObject((wholenumber_t)event->type));
@@ -975,8 +973,8 @@ gboolean signal_GdkEventNoExpose(GtkWidget *window,
     cblock->instance->AttachThread(&context);
 
     // Create the instance
-    RexxClassObject eobj = context->FindClass("GdkEventNoExpose");
-    rxevent = context->SendMessage0(eobj, "NEW");
+    rxevent = context->SendMessage1(rxobj, "create_event_obj",
+                                    (RexxObjectPtr)context->NewStringFromAsciiz("GdkEventNoExpose"));
     // Assign the standard event data
     context->SendMessage1(rxevent, "type=",
                           context->NumberToObject((wholenumber_t)event->type));
@@ -1023,8 +1021,8 @@ gboolean signal_GdkEventWindowState(GtkWidget *window,
     cblock->instance->AttachThread(&context);
 
     // Create the instance
-    RexxClassObject eobj = context->FindClass("GdkEventWindowState");
-    rxevent = context->SendMessage0(eobj, "NEW");
+    rxevent = context->SendMessage1(rxobj, "create_event_obj",
+                                    (RexxObjectPtr)context->NewStringFromAsciiz("GdkEventWindowState"));
     // Assign the standard event data
     context->SendMessage1(rxevent, "type=",
                           context->NumberToObject((wholenumber_t)event->type));
@@ -1075,8 +1073,8 @@ gboolean signal_GdkEventSetting(GtkWidget *window,
     cblock->instance->AttachThread(&context);
 
     // Create the instance
-    RexxClassObject eobj = context->FindClass("GdkEventSetting");
-    rxevent = context->SendMessage0(eobj, "NEW");
+    rxevent = context->SendMessage1(rxobj, "create_event_obj",
+                                    (RexxObjectPtr)context->NewStringFromAsciiz("GdkEventSetting"));
     // Assign the standard event data
     context->SendMessage1(rxevent, "type=",
                           context->NumberToObject((wholenumber_t)event->type));
@@ -1128,8 +1126,8 @@ gboolean signal_GdkEventOwnerChange(GtkWidget *window,
     cblock->instance->AttachThread(&context);
 
     // Create the instance
-    RexxClassObject eobj = context->FindClass("GdkEventOwnerChange");
-    rxevent = context->SendMessage0(eobj, "NEW");
+    rxevent = context->SendMessage1(rxobj, "create_event_obj",
+                                    (RexxObjectPtr)context->NewStringFromAsciiz("GdkEventOwnerChange"));
     // Assign the standard event data
     context->SendMessage1(rxevent, "type=",
                           context->NumberToObject((wholenumber_t)event->type));
@@ -1186,8 +1184,8 @@ gboolean signal_GdkEventGrabBroken(GtkWidget *window,
     cblock->instance->AttachThread(&context);
 
     // Create the instance
-    RexxClassObject eobj = context->FindClass("GdkEventGrabBroken");
-    rxevent = context->SendMessage0(eobj, "NEW");
+    rxevent = context->SendMessage1(rxobj, "create_event_obj",
+                                    (RexxObjectPtr)context->NewStringFromAsciiz("GdkEventGrabBroken"));
     // Assign the standard event data
     context->SendMessage1(rxevent, "type=",
                           context->NumberToObject((wholenumber_t)event->type));

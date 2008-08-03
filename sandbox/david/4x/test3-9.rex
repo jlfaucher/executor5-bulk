@@ -83,12 +83,12 @@ return
 ::method signal_button_press_event
 use strict arg event
 if event~type() =.gtk~GDK_2BUTTON_PRESS then do
-   text = self~user_data~get_text()
+   text = self~user_data~get_label()
    if text~substr(1, 1) = 'D' then do
-      self~user_data~set_text('I was Double-Clicked!')
+      self~user_data~set_label('I was Double-Clicked!')
       end
    else do
-      self~user_data~set_text('Double-Click Me Again!')
+      self~user_data~set_label('Double-Click Me Again!')
       end
    end
 return .false

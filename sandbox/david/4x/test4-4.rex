@@ -51,9 +51,9 @@ window~signal_connect("destroy")
 window~set_border_width(10)
 
 radio1 = .GtkRadioButton~newWithLabel(.nil, 'I want to be clicked!')
-radio2 = .GtkRadioButton_From_Widget_With_Label~new(radio1, 'Click me instead!')
-radio3 = .GtkRadioButton_From_Widget_With_Label~new(radio1, 'No! Click me!')
-radio4 = .GtkRadioButton_From_Widget_With_Label~new(radio1, 'No! Click me instead!')
+radio2 = .GtkRadioButton~newWithLabelFromWidget(radio1, 'Click me instead!')
+radio3 = .GtkRadioButton~newWithLabelFromWidget(radio1, 'No! Click me!')
+radio4 = .GtkRadioButton~newWithLabelFromWidget(radio3, 'No! Click me instead!')
 
 vbox = .GtkVBox~new(.false, 5)
 vbox~pack_start_defaults(radio1)
