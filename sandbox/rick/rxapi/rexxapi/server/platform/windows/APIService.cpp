@@ -78,7 +78,7 @@ void Run (bool asService)
     try
     {
         apiServer.initServer();               // start up the server
-        apiServer.processMessages();          // go into the message loop
+        apiServer.listenForConnections();     // go into the message loop
     }
     catch (ServiceException *)
     {

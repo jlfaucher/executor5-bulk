@@ -150,7 +150,7 @@ public:
     };
 
 
-    ServerMacroSpaceManager() { ; }
+    ServerMacroSpaceManager() { lock.create(); }
 
     void terminateServer();
     void addMacro(ServiceMessage &message);
@@ -172,6 +172,7 @@ public:
     }
 
 protected:
+    SysMutex          lock;            // our subsystem lock
     MacroTable   macros;               // all of the manaaged macros.
 };
 

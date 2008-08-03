@@ -53,7 +53,8 @@ public:
     virtual ~APIServer() { ; }
     void terminateServer();
     void initServer();
-    void processMessages();
+    void listenForConnections();
+    void processMessages(SysServerConnection *connection);
     ServiceReturn shutdown();
     virtual bool isStoppable();
     void cleanupProcessResources(ServiceMessage &message);

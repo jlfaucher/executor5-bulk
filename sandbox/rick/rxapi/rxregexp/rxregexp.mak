@@ -43,7 +43,7 @@ all: $(OR_OUTDIR)\rxregexp.dll $(OR_OUTDIR)\rxregexp.cls
     @ECHO All done RXREGEXP.DLL
     @ECHO.
 
-!include "$(OR_ORYXLSRC)\ORXWIN32.MAK"
+!include "$(OR_LIBSRC)\ORXWIN32.MAK"
 
 !IFNDEF OR_REGEXPSRC
 !ERROR Build error, OR_REGEXPSRC not set

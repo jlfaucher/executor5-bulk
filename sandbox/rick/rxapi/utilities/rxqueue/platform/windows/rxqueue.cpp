@@ -68,7 +68,7 @@ char  work[256];               /* buffer for queue name, if default  */
 
 static void options_error(     /* function called on errors          */
     int   type,
-    char *queuename ) ;
+    const char *queuename ) ;
 
 /* function to read stdin */
 static bool get_line(char *, size_t, size_t *);
@@ -170,7 +170,7 @@ int __cdecl main(
             /* express in RXSTRING form   */
             MAKERXSTRING(queuedata, line, linelen);
             // now write to the named queue
-            rc = RexxAddQueue(quename, &queuedata, queuemode);
+            rc = RexxAddQueue(quename, (PCONSTRXSTRING)&queuedata, queuemode);
             if (rc != RXQUEUE_OK)
             {
                 options_error(rc, quename);
@@ -209,9 +209,9 @@ int __cdecl main(
 
 
 static void options_error(int type,      /* Error type.                */
-    char *quename )                      /* Name of offending queue.   */
+    const char *quename )                /* Name of offending queue.   */
 {
-    LONG   rc = 0 ;                      /* Exit return code.          */
+    int    rc = 0 ;                      /* Exit return code.          */
     char   DataArea[ 256 ] ;             /* Message buffer.            */
     char   DataArea2[ 256 ] ;            /* Message buffer.            */
     int    MsgNumber ;                   /* Message number.            */

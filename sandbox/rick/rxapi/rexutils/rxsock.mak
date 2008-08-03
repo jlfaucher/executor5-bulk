@@ -45,10 +45,6 @@ all: $(OR_OUTDIR)\rxsock.dll
 
 !include "$(OR_LIBSRC)\ORXWIN32.MAK"
 
-!IFNDEF OR_ORYXASRC
-!ERROR Build error, OR_ORYXASRC not set
-!ENDIF
-
 OBJS   = $(OR_OUTDIR)\rxsock.obj $(OR_OUTDIR)\rxsockfn.obj
 
 # Following for rxsock.DLL

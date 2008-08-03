@@ -76,7 +76,7 @@ void APIServer::terminateServer()
  * message is handled through to completion, so the message
  * queue is the synchronization point.
  */
-void APIServer::processMessages()
+void APIServer::listenForConnections()
 {
     ServiceMessage message;
 
@@ -89,72 +89,45 @@ void APIServer::processMessages()
         {
             break;
         }
+        // create a new thread to service this client connection
+        APIServerThread *thread = new APIServerThread(this, connection);
+        thread.start();
+    }
+}
 
-        // everything is handled synchronously by default.
-        bool returnDeferred = false;
 
+/**
+ * Process the Rexx API requests as a queue of messages.  Each
+ * message is handled through to completion, so the message
+ * queue is the synchronization point.
+ */
+void APIServer::processMessages(SysServerConnection *connection)
+{
+    ServiceMessage message;
+
+    while (serverActive)
+    {
+        // read the message.
+        message.readMessage(connection);
+
+        message.result = MESSAGE_OK;     // unconditionally zero the result
+        // each target handles its own dispatch.
+        switch (message.messageTarget)
         {
-            // synchronize access at this point.
-            ServerLock(this);
-            try
+            case QueueManager:
+            case RegistrationManager:
+            case MacroSpaceManager:
             {
-                // read the message.
-                message.readMessage(connection);
-
-                message.result = MESSAGE_OK;     // unconditionally zero the result
-                // each target handles its own dispatch.
-                switch (message.messageTarget)
-                {
-                    case QueueManager:
-                    case RegistrationManager:
-                    case MacroSpaceManager:
-                    {
-                        getInstance(message)->dispatch(message);
-                        break;
-                    }
-
-                    // general API control message.
-                    case APIManager:
-                    {
-                        dispatch(message);
-                        break;
-                    }
-                }
-
-            }
-            // we have a pull with wait operation from a queue that can't yet be
-            // satisfied, so we're going to spin off a thread and let it run.
-            catch (ExecutionDeferral)
-            {
-                try
-                {
-                    QueueReadThread *reader = new QueueReadThread(this, &getInstance(message)->queueManager, connection, &message);
-                    reader->start();
-                    // don't return the message
-                    returnDeferred = true;
-                }
-                catch (ServiceException *e)
-                {
-                    message.setExceptionInfo(e);
-                    // there is no extra data to return for exception cases.
-                    message.freeMessageData();
-                }
-                catch (std::bad_alloc &)
-                {
-                    message.setExceptionInfo(SERVER_FAILURE, "Server memory error");
-                    // there is no extra data to return for exception cases.
-                    message.freeMessageData();
-                }
+                getInstance(message)->dispatch(message);
+                break;
             }
 
-        }
-
-        if (!returnDeferred)
-        {
-            // send the result back to the sender.
-            message.writeResult(connection);
-            // disconnect from this instance.
-            delete connection;
+            // general API control message.
+            case APIManager:
+            {
+                dispatch(message);
+                break;
+            }
         }
     }
 }
@@ -265,6 +238,9 @@ bool APIServer::isStoppable()
  */
 APIServerInstance *APIServer::getInstance(ServiceMessage &m)
 {
+    // synchronize access on this
+    ServerLock(this);
+
     APIServerInstance *current = instances;
     while (current != NULL)
     {

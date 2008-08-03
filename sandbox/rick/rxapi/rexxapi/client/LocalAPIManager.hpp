@@ -54,7 +54,8 @@ public:
 
     LocalAPIManager()
     {
-        initProcess();
+        connectionEstablished = false;
+        session = 0;
     }
 
     static LocalAPIManager *getInstance();

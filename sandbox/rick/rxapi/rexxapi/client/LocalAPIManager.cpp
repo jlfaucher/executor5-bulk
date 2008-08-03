@@ -57,6 +57,8 @@ LocalAPIManager *LocalAPIManager::getInstance()
     {
         // create an intialize this.  If this fails, an exception is thrown
         singleInstance = new LocalAPIManager();
+        // to the process-specific initialization now.
+        singleInstance->initProcess();
     }
     return singleInstance;
 }

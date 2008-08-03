@@ -185,8 +185,16 @@ QueueItem *DataQueue::getFirst()
  * @return true if the queue had a data item, false if it was currently
  *         empty.
  */
-bool DataQueue::pullData(ServiceMessage &message)
+bool DataQueue::pullData(ServerQueueManager *manager, ServiceMessage &message)
 {
+    Lock managerLock(manager->lock);   // this needs synchronization here
+
+    // now that we have the lock, clear the wait sem unconditionally.
+    // this should be safe, as it is either already clear, and has waiters camped
+    // on it, or it has recently been posted, and since we're going to read data,
+    // we either want it cleared for others to wait, or we're going to need to wait
+    // on it ourself.
+    waitSem.clear();
     QueueItem *item = getFirst();
     // if we have an item, return it.
     if (item != NULL)
@@ -215,21 +223,47 @@ bool DataQueue::pullData(ServiceMessage &message)
  *
  * @param message The message from the client.
  */
-void DataQueue::pull(ServiceMessage &message)
+void DataQueue::pull(ServerQueueManager *manager, ServiceMessage &message)
 {
-    // try to pull an item off the queue.
-    if (!pullData(message))
+    // this might take multiple times if we have to wait
+    size_t noWait = (size_t)message.parameter1;
+
+    // if the pull succeeded, return now.
+    if (pullData(message))
     {
-        // nowait value
-        size_t noWait = (size_t)message.parameter1;
-        if (noWait == QUEUE_WAIT_FOR_DATA)
+        return;
+    }
+
+    // nowait value
+    if (noWait != QUEUE_WAIT_FOR_DATA)
+    {
+        message.setResult(QUEUE_EMPTY);    // nada
+        return;
+    }
+    else
+    {
         {
-            // indicate we need to wait for this
-            throw QueueWait;
+            Lock managerLock(manager->lock);
+            // indicate we have another waiting queue
+            queue->addWaiter();
         }
-        else
+        // now keep looping until we actually get an item
+        while (true)
         {
-            message.setResult(QUEUE_EMPTY);    // nada
+            queue->waitForData();
+            {
+                // see if this is doable now without waiting...there was a window of
+                // opportunity for an item to be added.
+                if (queue->pullData(message))
+                {
+                    {
+                        Lock managerLock(manager->lock);
+                        // remove us as a waiter
+                        queue->removeWaiter();
+                    }
+                    return;
+                }
+            }
         }
     }
 }
@@ -432,7 +466,7 @@ void ServerQueueManager::addToNamedQueue(ServiceMessage &message)
 void ServerQueueManager::pullFromSessionQueue(ServiceMessage &message)
 {
     DataQueue *queue = (DataQueue *)message.parameter3;
-    queue->pull(message);
+    queue->pull(this, message);
 }
 
 
@@ -454,7 +488,7 @@ void ServerQueueManager::pullFromNamedQueue(ServiceMessage &message)
     // queue exists, so add the item
     else
     {
-        queue->pull(message);
+        queue->pull(this, message);
     }
 }
 
@@ -716,50 +750,63 @@ void ServerQueueManager::clearNamedQueue(ServiceMessage &message)
  */
 void ServerQueueManager::dispatch(ServiceMessage &message)
 {
-    switch (message.operation)
+    // the pull operations might have to wait for an item to be added,
+    // so they need to control their own locking mechanisms
+    if (message.operation == PULL_FROM_NAMED_QUEUE)
     {
-        case NEST_SESSION_QUEUE:
-            nestSessionQueue(message);
-            break;
-        case CREATE_SESSION_QUEUE:
-            createSessionQueue(message);
-            break;
-        case CREATE_NAMED_QUEUE:
-            createNamedQueue(message);
-            break;
-        case DELETE_SESSION_QUEUE:
-            deleteSessionQueue(message);
-            break;
-        case DELETE_NAMED_QUEUE:
-            deleteNamedQueue(message);
-            break;
-        case GET_SESSION_QUEUE_COUNT:
-            getSessionQueueCount(message);
-            break;
-        case GET_NAMED_QUEUE_COUNT:
-            getNamedQueueCount(message);
-            break;
-        case CLEAR_SESSION_QUEUE:
-            clearSessionQueue(message);
-            break;
-        case CLEAR_NAMED_QUEUE:
-            clearNamedQueue(message);
-            break;
-        case ADD_TO_NAMED_QUEUE:
-            addToNamedQueue(message);
-            break;
-        case ADD_TO_SESSION_QUEUE:
-            addToSessionQueue(message);
-            break;
-        case PULL_FROM_NAMED_QUEUE:
-            pullFromNamedQueue(message);
-            break;
-        case PULL_FROM_SESSION_QUEUE:
-            pullFromSessionQueue(message);
-            break;
-        default:
-            message.setExceptionInfo(SERVER_FAILURE, "Invalid queue manager operation");
-            break;
+        addToNamedQueue(message);
+    }
+    else if (message.operation == PULL_FROM_SESSION_QUEUE)
+    {
+        addToSessionQueue(message);
+    }
+    else {
+        Lock managerLock(lock);     // we need to synchronize on this instance
+        switch (message.operation)
+        {
+            case NEST_SESSION_QUEUE:
+                nestSessionQueue(message);
+                break;
+            case CREATE_SESSION_QUEUE:
+                createSessionQueue(message);
+                break;
+            case CREATE_NAMED_QUEUE:
+                createNamedQueue(message);
+                break;
+            case DELETE_SESSION_QUEUE:
+                deleteSessionQueue(message);
+                break;
+            case DELETE_NAMED_QUEUE:
+                deleteNamedQueue(message);
+                break;
+            case GET_SESSION_QUEUE_COUNT:
+                getSessionQueueCount(message);
+                break;
+            case GET_NAMED_QUEUE_COUNT:
+                getNamedQueueCount(message);
+                break;
+            case CLEAR_SESSION_QUEUE:
+                clearSessionQueue(message);
+                break;
+            case CLEAR_NAMED_QUEUE:
+                clearNamedQueue(message);
+                break;
+            case ADD_TO_NAMED_QUEUE:
+                addToNamedQueue(message);
+                break;
+            case ADD_TO_SESSION_QUEUE:
+                addToSessionQueue(message);
+                break;
+            case PULL_FROM_NAMED_QUEUE:
+                pullFromNamedQueue(message);
+                break;
+            case PULL_FROM_SESSION_QUEUE:
+                pullFromSessionQueue(message);
+                break;
+            default:
+                message.setExceptionInfo(SERVER_FAILURE, "Invalid queue manager operation");
+                break;
+        }
     }
 }
 
@@ -772,115 +819,4 @@ void ServerQueueManager::cleanupProcessResources(SessionID session)
     {
         deleteSessionQueue((DataQueue *)queue);
     }
-}
-
-/**
- * Do a deferred pull from the queue when the call has specified
- * that we should wait until a queue item is available.
- *
- * @param server  The server we're running as part of.
- * @param message The message we're processing.
- */
-void ServerQueueManager::deferredPull(APIServer *server, ServiceMessage &message)
-{
-    DataQueue *queue = NULL;
-    {
-        // get exclusive access
-        ServerLock lock(server);
-        if (message.operation == PULL_FROM_NAMED_QUEUE)
-        {
-            queue = namedQueues.locate(message.nameArg);
-        }
-        else
-        {
-            queue = (DataQueue *)message.parameter3;
-        }
-
-        // not previously created?
-        if (queue == NULL)
-        {
-            // this is an error
-            message.setExceptionInfo(QUEUE_DOES_NOT_EXIST, message.nameArg);
-            return;
-        }
-        // see if this is doable now without waiting...there was a window of
-        // opportunity for an item to be added.
-        if (queue->pullData(message))
-        {
-            return;
-        }
-
-        // indicate we have another waiting queue
-        queue->addWaiter();
-    }
-
-    // NOTE:  we've release the lock here!
-
-    // now keep looping until we actually get an item
-    while (true)
-    {
-        queue->waitForData();
-        {
-            // get exclusive access again
-            ServerLock lock(server);
-            // see if this is doable now without waiting...there was a window of
-            // opportunity for an item to be added.
-            if (queue->pullData(message))
-            {
-                // remove us as a waiter
-                queue->removeWaiter();
-                return;
-            }
-        }
-    }
-}
-
-/**
- * Constructor for a queue reader thread.
- *
- * @param s      The server instance we're running under.
- * @param c      The client connection used to return the result.
- * @param m      The current message.
- */
-QueueReadThread::QueueReadThread(APIServer *s, ServerQueueManager *q, SysServerConnection *c, ServiceMessage *m) : SysThread()
-{
-    server = s;
-    manager = q;
-    connection = c;
-    message = *m;         // this copies the message content
-}
-
-
-// start up the reader thread.
-void QueueReadThread::start()
-{
-    SysThread::createThread();
-}
-
-/**
- * Dispatch the newly created reader thread to do it's work.
- */
-void QueueReadThread::dispatch()
-{
-    try
-    {
-        // have the queue manager do the work.
-        manager->deferredPull(server, message);
-    }
-    catch (ServiceException *e)
-    {
-        message.setExceptionInfo(e);
-        // there is no extra data to return for exception cases.
-        message.freeMessageData();
-    }
-    catch (std::bad_alloc &)
-    {
-        message.setExceptionInfo(SERVER_FAILURE, "Server memory error");
-        // there is no extra data to return for exception cases.
-        message.freeMessageData();
-    }
-    // send the result back to the sender.
-    message.writeResult(connection);
-    // disconnect from this instance.
-    delete connection;
 }

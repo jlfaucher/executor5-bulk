@@ -130,7 +130,7 @@ protected:
 class ServerRegistrationManager
 {
 public:
-    ServerRegistrationManager() { ; }
+    ServerRegistrationManager() { lock.create(); }
     void terminateServer();
     // It will remove all the registration entries for a specific process
     void freeProcessRegistrations(SessionID session);
@@ -146,6 +146,7 @@ protected:
     RegistrationTable functions;         // our tables for the 2 registration types
     RegistrationTable exits;
     RegistrationTable commandHandlers;
+    SysMutex          lock;             // our subsystem lock
 };
 
 #endif

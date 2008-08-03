@@ -100,6 +100,7 @@ public:
     {
         session = s;
         references = 1;      // session queues always have one ref
+        waitSem.create();    // make sure this is created
     }
 
     DataQueue(const char *name)
@@ -125,7 +126,6 @@ public:
     inline void addWaiter()
     {
         waiters++;
-        waitSem.create();        // make sure the semaphore is created once we're waiting.
     }
 
     inline void removeWaiter()
@@ -153,8 +153,8 @@ public:
         return waiters > 0;
     }
 
-    void pull(ServiceMessage &message);
-    bool pullData(ServiceMessage &message);
+    void pull(ServerQueueManager *manager, ServiceMessage &message);
+    bool pullData(ServerQueueManager *manager, ServiceMessage &message);
 
     inline void addReference() { references++; }
     inline size_t removeReference() { return --references; }
@@ -225,8 +225,9 @@ protected:
 // the server instance of the queue manager
 class ServerQueueManager
 {
+    friend class DataQueue;     // needs access to the instance lock
 public:
-    ServerQueueManager() { ; }
+    ServerQueueManager() { lock.create(); }
     void terminateServer();
     void addToSessionQueue(ServiceMessage &message);
     void addToNamedQueue(ServiceMessage &message);
@@ -245,35 +246,16 @@ public:
     void getNamedQueueCount(ServiceMessage &message);
     void dispatch(ServiceMessage &message);
     void cleanupProcessResources(SessionID session);
-    void deferredPull(APIServer *server, ServiceMessage &message);
     inline bool isStoppable()
     {
         return namedQueues.isEmpty() && sessionQueues.isEmpty();
     }
 
+
 protected:
     QueueTable        namedQueues;      // our named queues
     QueueTable        sessionQueues;    // the sessions queues
-};
-
-class APIServer;
-class SysServerConnection;
-
-
-class QueueReadThread : public SysThread
-{
-
-public:
-    QueueReadThread(APIServer *s, ServerQueueManager *q, SysServerConnection *c, ServiceMessage *m);
-
-    void start();
-    virtual void dispatch();
-
-protected:
-    APIServer *server;              // the attached API server
-    ServerQueueManager *manager;    // the queue manager instance.
-    SysServerConnection *connection; // the client connection
-    ServiceMessage message;         // our message contents
+    SysMutex          lock;             // our subsystem lock
 };
 
 #endif
