@@ -93,16 +93,8 @@ static unsigned int  getImageListFlags(RexxMethodContext *, CSTRING, int);
 static int           getListViewImageListType(RexxMethodContext *, CSTRING);
 static logical_t setSystemImageList(RexxMethodContext *, bool);
 inline void          setSFBAttribute(RexxMethodContext *, char *, CSTRING, char *);
-static bool          getOptionalWindowHandle(RexxMethodContext *, POINTER, HWND *, size_t);
+static bool          checkOptionalWindow(RexxMethodContext *, HWND, int);
 static void          fillInBrowseData(RexxMethodContext *, HWND, PBROWSEINFO, PBROWSE_DATA);
-static void          addToFileList(RexxMethodContext *, SFO_DIRECTION, CSTRING);
-static void          setFOFlags(STRING, bool, size_t);
-static FILEOP_FLAGS  getFOFlags(void);
-static bool          setOwnerWnd(RexxMethodContext *, RexxObjectPtr, size_t);
-static bool          getOwnerWnd(RexxMethodContext *, HWND *);
-static RexxObjectPtr doTheOp(RexxMethodContext *, UINT, size_t, STRING, STRING, STRING, RexxObjectPtr);
-inline char         *getTitle(RexxMethodContext *, HWND, FILEOP_FLAGS);
-static RXARG_TYPES   getRxArgType(RexxObjectPtr);
 static LPWSTR        ansiToUnicodeLength(LPCSTR, size_t, size_t *);
 inline LPWSTR        ansiToUnicode(LPCSTR str, size_t inSize);
 static HRESULT       queryTrashCan(const char *, PDWORDLONG, PDWORDLONG);
@@ -204,7 +196,7 @@ char *strdupupr(const char *str)
     return retStr;
 }
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
- *  End of functions copied from ooDialog.  Start of functions to move to
+ *  End of functions copied from ooDialog.  Start of functions to maybe move to
  *  common.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 
@@ -229,6 +221,16 @@ void invalidConstantException(RexxMethodContext *c, int argNumber, char *msg,
 void invalidConstantException(RexxMethodContext *c, int argNumber, char *msg, const char *sub, const char *actual)
 {
     invalidConstantException(c, argNumber, msg, sub, c->NewStringFromAsciiz(actual));
+}
+
+bool checkOptionalWindow(RexxMethodContext *context, HWND hwnd, int argNumber)
+{
+    if ( hwnd != NULL && ! IsWindow(hwnd) )
+    {
+        badArgException(context, argNumber, WINDOW_HANDLE_MSG);
+        return false;
+    }
+    return true;
 }
 
 /**
@@ -405,7 +407,7 @@ RexxMethod1(RexxObjectPtr, WinShell_uninit, OSELF, self)
  * Put up a plain Browse for Folder dialog and return the full qualified path of
  * the folder the user selects.
  *
- * @param   rxHwnd  OPTIONAL
+ * @param   owner  OPTIONAL
  *   If specified, use this window as the owner window of the dialog.  This will
  *   disable the owner window until the user closes the dialog (which is usually
  *   what is wanted.)
@@ -413,21 +415,20 @@ RexxMethod1(RexxObjectPtr, WinShell_uninit, OSELF, self)
  * @return  Returns the fully qualified path of the folder the user selected, or
  *          the empty string if the user cancels the dialog.
  */
-RexxMethod1(RexxObjectPtr, WinShell_browseForFolder, OPTIONAL_POINTER, rxHwnd)
+RexxMethod1(RexxObjectPtr, WinShell_browseForFolder, OPTIONAL_POINTER, owner)
 {
 	LPITEMIDLIST   pidlRoot = NULL;
     BROWSEINFO     bi = { 0 };
     RexxObjectPtr  rxResult = context->Nil();
 
-    HWND owner = NULL;
-    if ( ! getOptionalWindowHandle(context, rxHwnd, &owner, 1) )
+    if ( ! checkOptionalWindow(context, (HWND)owner, 1) )
     {
         return rxResult;
     }
 
     if ( pidlForSpecialFolder(CSIDL_DRIVES, &pidlRoot) )
     {
-        bi.hwndOwner = owner;
+        bi.hwndOwner = (HWND)owner;
         bi.pidlRoot  = pidlRoot;
         bi.ulFlags   = BIF_RETURNONLYFSDIRS | BIF_NEWDIALOGSTYLE | BIF_RETURNFSANCESTORS;
 
@@ -483,7 +484,6 @@ RexxMethod2(RexxObjectPtr, WinShell_pathFromCSIDL, CSTRING, csidlConstant, OPTIO
         TCHAR path[MAX_PATH];
         if ( SHGetPathFromIDList(pidl, path) )
         {
-            RexxMethodContext *context;
             rxResult = context->NewStringFromAsciiz(path);
         }
         CoTaskMemFree(pidl);
@@ -802,7 +802,7 @@ RexxMethod1(RexxObjectPtr, WinShell_queryRecycleBin_private, CSTRING, root)
  *
  */
 RexxMethod3(RexxObjectPtr, WinShell_emptyRecycleBin, OPTIONAL_CSTRING, root, OPTIONAL_logical_t, confirm,
-            OPTIONAL_POINTER, rxHwnd)
+            OPTIONAL_POINTER, owner)
 {
     // The flags for no confirmation, which is the defualt.
     DWORD       flags = SHERB_NOCONFIRMATION | SHERB_NOPROGRESSUI | SHERB_NOSOUND;
@@ -827,8 +827,7 @@ RexxMethod3(RexxObjectPtr, WinShell_emptyRecycleBin, OPTIONAL_CSTRING, root, OPT
         flags = 0;
     }
 
-    HWND hwnd;
-    if ( ! getOptionalWindowHandle(context, rxHwnd, &hwnd, 3) )
+    if ( ! checkOptionalWindow(context, (HWND)owner, 3) )
     {
         return rxResult;
     }
@@ -837,15 +836,15 @@ RexxMethod3(RexxObjectPtr, WinShell_emptyRecycleBin, OPTIONAL_CSTRING, root, OPT
     {
         if ( flags == 0 )
         {
-            ShellMessageBox(NULL, hwnd, "The Recycle Bin is empty.",
-                            (hwnd == NULL ? "ooRexx Windows Shell - Information" : NULL),
+            ShellMessageBox(NULL, (HWND)owner, "The Recycle Bin is empty.",
+                            (owner == NULL ? "ooRexx Windows Shell - Information" : NULL),
                             MB_TASKMODAL | MB_OK | MB_ICONINFORMATION);
         }
     }
     else
     {
 
-        hr = SHEmptyRecycleBin(hwnd, root, flags);
+        hr = SHEmptyRecycleBin((HWND)owner, root, flags);
         if ( hr != S_OK )
         {
             rxResult = hrToRx(context, hr);
@@ -973,7 +972,7 @@ static RexxObjectPtr extractAllDefIcons(RexxMethodContext *context, const char *
  *
  *
  */
-RexxMethod2(RexxObjectPtr, WinShell_selectIcon, CSTRING, path, OPTIONAL_POINTER, rxHwnd)
+RexxMethod2(RexxObjectPtr, WinShell_selectIcon, CSTRING, path, OPTIONAL_POINTER, owner)
 {
     RexxObjectPtr rxResult = context->Nil();
 
@@ -986,14 +985,13 @@ RexxMethod2(RexxObjectPtr, WinShell_selectIcon, CSTRING, path, OPTIONAL_POINTER,
         return rxResult;
     }
 
-    HWND hwnd = NULL;
-    if ( ! getOptionalWindowHandle(context, rxHwnd, &hwnd, 2) )
+    if ( ! checkOptionalWindow(context, (HWND)owner, 2) )
     {
         return rxResult;
     }
     int iconIndex = 0;
 
-    if ( PickIconDlg(hwnd, wBuffer, MAX_PATH, &iconIndex) == 1 )
+    if ( PickIconDlg((HWND)owner, wBuffer, MAX_PATH, &iconIndex) == 1 )
     {
         if ( WideCharToMultiByte(CP_ACP, 0, wBuffer, -1, pathBuffer, MAX_PATH, NULL, NULL) == 0)
         {
@@ -1191,7 +1189,6 @@ RexxMethod5(RexxObjectPtr, ImageList_init, CSTRING, type, RexxObjectPtr, rxImage
     }
     else if ( _stricmp("BITMAP", type) == 0 )
     {
-        RexxMethodContext *context;
         context->SetObjectVariable(IL_IMAGETYPE_ATTR, context->NewInteger(IL_IMAGETYPE_BITMAP));
         isBitmap = true;
     }
@@ -1627,9 +1624,24 @@ static logical_t setSystemImageList(RexxMethodContext * context, bool setLarge)
 }
 
 
-/* class: ShellFileOp- - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+/** class: ShellFileOp
+ *
+ * Instances of ShellFileOp are used to perform graphical shell file operations.
+ * These operations can provide graphical confirmation and or progress dialogs.
+ * In addition, the shell file operations are the only way to send items to the
+ * trash can which gives the user the ability to undo deletes.
+ *
+ * The Windows shell provides a large number of options to how graphical file
+ * operations can be done. These options are controlled by attributes of the
+ * object.  The user of this class can either accept a predefined set of
+ * attributes or specify exactly what they want by directly setting the FOF_XXX
+ * flags.
+ *
+ * Using the predefined set of attributes allows for either a silent operation
+ * or not silent.
+ */
 
-\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+
 
 //                                  Attribute              Default        Meaning
 //                                 ----------              -------       ----------
@@ -1637,7 +1649,7 @@ static logical_t setSystemImageList(RexxMethodContext * context, bool setLarge)
 #define SFO_CONFIRM_MKDIR_ATTR    "CONFIRMMKDIR"        // true          ! FOF_NOCONFIRMMKDIR
 #define SFO_PROGRESS_ATTR         "PROGRESSGUI"         // true          ! FOF_SILENT
 #define SFO_PROGRESS_SIMPLE_ATTR  "PROGRESSSIMPLEGUI"   // false         ! FOF_SIMPLEPROGRESS
-#define SFO_ERRUR_ATTR            "ERRORGUI"            // true          ! FOF_NOERRORUI
+#define SFO_ERRORUI_ATTR          "ERRORGUI"            // true          ! FOF_NOERRORUI
 #define SFO_RECURSIVE_ATTR        "RECURSIVE"           // true          ! FOF_NORECURSION
 #define SFO_PERMANENT_ATTR        "PERMANENT"           // false           FOF_ALLOWUNDO
 
@@ -1651,79 +1663,200 @@ static logical_t setSystemImageList(RexxMethodContext * context, bool setLarge)
 #define SFO_USERCANCELED_ATTR     "USERCANCELED"        // .nil before file op.
 #define SFO_PROGRESSTITLE_ATTR    "PROGRESSDLGTITLE"    // .nil until user sets it.
 
+// Function prototypes for the ShellFileOp helper functions.
+static bool          setTitle(RexxMethodContext *, RexxObjectPtr, int);
+static bool          addToFileList(RexxMethodContext *, SFO_DIRECTION, CSTRING, int);
+static bool          setFOFlags(RexxMethodContext *, RexxObjectPtr, int);
+static FILEOP_FLAGS  getFOFlags(RexxMethodContext *);
+static bool          setOwnerWnd(RexxMethodContext *, RexxObjectPtr, int);
+static bool          getOwnerWnd(RexxMethodContext *, HWND *);
+static logical_t     doTheOp(RexxMethodContext *, UINT, CSTRING, CSTRING, RexxObjectPtr, RexxObjectPtr, int);
+inline CSTRING       getTitle(RexxMethodContext *, HWND, FILEOP_FLAGS);
+
 /** ShellFileOp::init()
  *
  * Basic init for a ShellFileOp object.
  */
-RexxMethod4(RexxObjectPtr, ShellFileOp_init, CSTRING, from, CSTRING, to, RexxObjectPtr, rxFlags,
-            OPTIONAL_RexxObjectPtr, rxHwndOwner)
+RexxMethod5(RexxObjectPtr, ShellFileOp_init, OPTIONAL_CSTRING, from, OPTIONAL_CSTRING, to, OPTIONAL_RexxObjectPtr, rxFlags,
+            OPTIONAL_RexxObjectPtr, rxHwndOwner, OPTIONAL_RexxObjectPtr, rxTitle)
 {
     if ( ! CommonInit(context, true) )
     {
         return NULLOBJECT;
     }
 
-
     // Set the from and to lists to the default of nil. Then the actual
     // arguments can simply be passed to the addTo function.
-    REXX_SETVAR(SFO_FROMLIST_ATTR, context->Nil());
-    REXX_SETVAR(SFO_TOLIST_ATTR, context->Nil());
+    context->SetObjectVariable(SFO_FROMLIST_ATTR, context->Nil());
+    context->SetObjectVariable(SFO_TOLIST_ATTR, context->Nil());
 
-    addToFileList(context, FROM_DIRECTION, from);
-    addToFileList(context, TO_DIRECTION, to);
+    if ( ! addToFileList(context, FROM_DIRECTION, from, 1) )
+    {
+        return NULLOBJECT;
+    }
+    if ( ! addToFileList(context, TO_DIRECTION, to, 2) )
+    {
+        return NULLOBJECT;
+    }
 
     // Set the default flag attributes.
-    REXX_SETVAR(SFO_CONFIRM_ATTR, context->True());
-    REXX_SETVAR(SFO_CONFIRM_MKDIR_ATTR, context->True());
-    REXX_SETVAR(SFO_PROGRESS_ATTR, context->True());
-    REXX_SETVAR(SFO_PROGRESS_SIMPLE_ATTR, context->False());
-    REXX_SETVAR(SFO_ERRUR_ATTR, context->True());
-    REXX_SETVAR(SFO_RECURSIVE_ATTR, context->True());
-    REXX_SETVAR(SFO_PERMANENT_ATTR, context->False());
-    REXX_SETVAR(SFO_MULTIDESTINATION, context->False());
+    context->SetObjectVariable(SFO_CONFIRM_ATTR, context->True());
+    context->SetObjectVariable(SFO_CONFIRM_MKDIR_ATTR, context->True());
+    context->SetObjectVariable(SFO_PROGRESS_ATTR, context->True());
+    context->SetObjectVariable(SFO_PROGRESS_SIMPLE_ATTR, context->False());
+    context->SetObjectVariable(SFO_ERRORUI_ATTR, context->True());
+    context->SetObjectVariable(SFO_RECURSIVE_ATTR, context->True());
+    context->SetObjectVariable(SFO_PERMANENT_ATTR, context->False());
+    context->SetObjectVariable(SFO_MULTIDESTINATION, context->False());
+    context->SetObjectVariable(SFO_FOFLAGS_ATTR, context->Nil());
 
     // Set the default values for the other attributes.
-    REXX_SETVAR(SFO_USERCANCELED_ATTR, context->Nil());
-    REXX_SETVAR(SFO_PROGRESSTITLE_ATTR, context->Nil());
+    context->SetObjectVariable(SFO_USERCANCELED_ATTR, context->Nil());
+    context->SetObjectVariable(SFO_PROGRESSTITLE_ATTR, context->Nil());
 
-    setFOFlags(rxFlags, true, 3);
-
-    setOwnerWnd(context, rxHwndOwner, 4);
+    if ( ! setFOFlags(context, rxFlags, 3) )
+    {
+        return NULLOBJECT;
+    }
+    if ( ! setOwnerWnd(context, rxHwndOwner, 4) )
+    {
+        return NULLOBJECT;
+    }
+    setTitle(context, rxTitle, 5);
 
     return NULLOBJECT;
 }
 
-RexxMethod3(RexxObjectPtr, ShellFileOp_delete, CSTRING, file, STRING, rxFlags, OPTIONAL_RexxObjectPtr, rxHwndOwner)
+/**
+ * The following functions initiate the actual file operation.  All parameters
+ * are optional and can be used to over-ride the current setttings of this
+ * object.  Except for the to and from file options, which do not over-ride, but
+ * rather are appended to the current lists.
+ */
+
+
+/** ShellFileOp::delete()
+ */
+RexxMethod3(logical_t, ShellFileOp_delete, OPTIONAL_CSTRING, file, OPTIONAL_RexxObjectPtr, rxFlags,
+            OPTIONAL_RexxObjectPtr, rxHwndOwner)
 {
-    return doTheOp(context, FO_DELETE, 2, file, NULLOBJECT, rxFlags, rxHwndOwner);
+    return doTheOp(context, FO_DELETE, file, NULLOBJECT, rxFlags, rxHwndOwner, 2);
 }
 
-
-RexxMethod4(RexxObjectPtr, ShellFileOp_copy, CSTRING, from, CSTRING, to, STRING, rxFlags, OPTIONAL_RexxObjectPtr, rxHwndOwner)
+/** ShellFileOp::copy()
+ */
+RexxMethod4(logical_t, ShellFileOp_copy, OPTIONAL_CSTRING, from, OPTIONAL_CSTRING, to,
+            OPTIONAL_RexxObjectPtr, rxFlags, OPTIONAL_RexxObjectPtr, rxHwndOwner)
 {
-    return doTheOp(context, FO_COPY, 3, from, to, rxFlags, rxHwndOwner);
+    return doTheOp(context, FO_COPY, from, to, rxFlags, rxHwndOwner, 3);
 }
 
-
-RexxMethod4(RexxObjectPtr, ShellFileOp_move, CSTRING, from, CSTRING, to, STRING, rxFlags, OPTIONAL_RexxObjectPtr, rxHwndOwner)
+/** ShellFileOp::move()
+ */
+RexxMethod4(logical_t, ShellFileOp_move, OPTIONAL_CSTRING, from, OPTIONAL_CSTRING, to,
+            OPTIONAL_RexxObjectPtr, rxFlags, OPTIONAL_RexxObjectPtr, rxHwndOwner)
 {
-    return doTheOp(context, FO_MOVE, 3, from, to, rxFlags, rxHwndOwner);
+    return doTheOp(context, FO_MOVE, from, to, rxFlags, rxHwndOwner, 3);
 }
 
-
-RexxMethod4(RexxObjectPtr, ShellFileOp_rename, CSTRING, from, CSTRING, to, STRING, rxFlags, OPTIONAL_RexxObjectPtr, rxHwndOwner)
+/** ShellFileOp::rename()
+ */
+RexxMethod4(logical_t, ShellFileOp_rename, OPTIONAL_CSTRING, from, OPTIONAL_CSTRING, to,
+            OPTIONAL_RexxObjectPtr, rxFlags, OPTIONAL_RexxObjectPtr, rxHwndOwner)
 {
-    return doTheOp(context, FO_RENAME, 3, from, to, rxFlags, rxHwndOwner);
+    return doTheOp(context, FO_RENAME, from, to, rxFlags, rxHwndOwner, 3);
 }
 
+/**
+ * The following functions are used to set the true / false attributes.
+ */
 
-RexxMethod1(RexxObjectPtr, ShellFileOp_setFOFlags, RexxObjectPtr, rxFlags)
+/** ShellFileOp::confirmation=
+ */
+RexxMethod1(RexxObjectPtr, ShellFileOp_setConfirmation, logical_t, confirm)
 {
-    RexxObjectPtr oldValue = REXX_GETVAR(SFO_FOFLAGS_ATTR);
-    setFOFlags(rxFlags, true, 1);
+    context->SetObjectVariable(SFO_CONFIRM_ATTR, (confirm ? context->True() : context->False()));
+    return NULLOBJECT;
+}
+
+/** ShellFileOp::confirmMkDir=
+ */
+RexxMethod1(RexxObjectPtr, ShellFileOp_setConfirmMkDir, logical_t, set)
+{
+    context->SetObjectVariable(SFO_CONFIRM_MKDIR_ATTR, (set ? context->True() : context->False()));
+    return NULLOBJECT;
+}
+
+/** ShellFileOp::progressGUI=
+ */
+RexxMethod1(RexxObjectPtr, ShellFileOp_setProgressGUI, logical_t, set)
+{
+    context->SetObjectVariable(SFO_PROGRESS_ATTR, (set ? context->True() : context->False()));
+    return NULLOBJECT;
+}
+
+/** ShellFileOp::progressSimpleGUI=
+ */
+RexxMethod1(RexxObjectPtr, ShellFileOp_setProgressSimpleGUI, logical_t, set)
+{
+    context->SetObjectVariable(SFO_PROGRESS_SIMPLE_ATTR, (set ? context->True() : context->False()));
+    return NULLOBJECT;
+}
+
+/** ShellFileOp::errorGUI=
+ */
+RexxMethod1(RexxObjectPtr, ShellFileOp_setErrorGUI, logical_t, set)
+{
+    context->SetObjectVariable(SFO_ERRORUI_ATTR, (set ? context->True() : context->False()));
+    return NULLOBJECT;
+}
+
+/** ShellFileOp::recursive=
+ */
+RexxMethod1(RexxObjectPtr, ShellFileOp_setRecursive, logical_t, set)
+{
+    context->SetObjectVariable(SFO_RECURSIVE_ATTR, (set ? context->True() : context->False()));
+    return NULLOBJECT;
+}
+
+/** ShellFileOp::permanent=
+ */
+RexxMethod1(RexxObjectPtr, ShellFileOp_setPermanent, logical_t, set)
+{
+    context->SetObjectVariable(SFO_PERMANENT_ATTR, (set ? context->True() : context->False()));
+    return NULLOBJECT;
+}
+
+/** ShellFileOp::setFOFlags()
+ *
+ *  Sets or clears the FOF_xxx flags.  If the FOFlags attribute is .nil then the
+ *  file operation options are determined from the FOF attributes (like
+ *  recursive, etc..)  If not .nil then the value of this attribute is the true
+ *  value to use for the fFlags member of the SHFILEOPSTRUCT struct.
+ *
+ *  The user clears this attribute by using no arg or .nil for the arg.  In
+ *  addition, the user can send an arg of .true to get the default setting for a
+ *  silent operation or .false to get the default setting for not silent.
+ *
+ *  @return  The old value of the FOFlags attribute is returned.
+ *
+ *  @note Exceptions are raised if the user sends the wrong arg or uses an
+ *        invalid FOF_xxx flag.
+ */
+RexxMethod1(RexxObjectPtr, ShellFileOp_setFOFlags, OPTIONAL_RexxObjectPtr, rxFlags)
+{
+    RexxObjectPtr oldValue = context->GetObjectVariable(SFO_FOFLAGS_ATTR);
+
+    if ( rxFlags == NULLOBJECT )
+    {
+        context->SetObjectVariable(SFO_FOFLAGS_ATTR, context->Nil());
+    }
+    else
+    {
+        setFOFlags(context, rxFlags, 1);
+    }
     return oldValue;
 }
-
 
 /** ShellFileOp::setOwnerWnd()
  *
@@ -1733,12 +1866,30 @@ RexxMethod1(RexxObjectPtr, ShellFileOp_setFOFlags, RexxObjectPtr, rxFlags)
  *  If the arg is not .nil, then it is checked to determine that it is a valid
  *  window handle and an exception is raised if it is not.
  *
+ *  @return  The old value for
  */
 RexxMethod1(RexxObjectPtr, ShellFileOp_setOwnerWnd, OPTIONAL_RexxObjectPtr, rxHwndOwner)
 {
-    RexxObjectPtr oldValue = REXX_GETVAR(SFO_OWNERWINDOW_ATTR);
+    RexxObjectPtr oldValue = context->GetObjectVariable(SFO_OWNERWINDOW_ATTR);
     setOwnerWnd(context, rxHwndOwner, 1);
     return oldValue;
+}
+
+
+/** ShellFileOp::setTitle()
+ *
+ *  Sets or clears the simple progress dialog window title.  The user can invoke
+ *  setTitle() with no arg or with .nil to clear the current title.
+ *
+ *  This title is only used, (by the Windows API,) if the FOF_SIMPLEPROGRESS
+ *  flag is set.
+ *
+ *  This method does not return a value.
+ */
+RexxMethod1(RexxObjectPtr, ShellFileOp_setTitle, OPTIONAL_RexxObjectPtr, rxTitle)
+{
+    setTitle(context, rxTitle, 1);
+    return NULLOBJECT;
 }
 
 
@@ -1749,205 +1900,336 @@ RexxMethod1(RexxObjectPtr, ShellFileOp_setOwnerWnd, OPTIONAL_RexxObjectPtr, rxHw
 RexxMethod1(RexxObjectPtr, ShellFileOp_uninit, OSELF, self)
 {
     CommonUninit(true);
-    return RexxNil;
+    return context->Nil();
 }
 
 
 /**
+ * Performs the shell file operation specified by the 'op' flag.
+ *
+ * @param context      ooRexx method context.
+ * @param op           Flag specifing which file operation.
+ * @param argNumber    Arg number of the rxFlags parameter.  Used for
+ *                     exceptions.
+ * @param from         From file list.  Can be null.
+ * @param to           To file list.  Can be null.
+ * @param rxFlags      File operation flags.  Can be null.  If not null, must be
+ *                     .true, .nil, or a FOF flag string.
+ * @param rxHwndOwner  Owner window of any dialog put up by the shell. Can be
+ *                     null.  If not null, must be a valid window.
+ *
+ * @return TRUE for success, otherwise FALSE.
+ */
+static logical_t doTheOp(RexxMethodContext *context, UINT op, CSTRING from, CSTRING to,
+                         RexxObjectPtr rxFlags, RexxObjectPtr rxHwndOwner, int argNumber)
+{
+    SHFILEOPSTRUCT sfos = { 0 };
+
+    int fromArgNumber = (op == FO_DELETE ? argNumber - 1 : argNumber - 2);
+    if ( ! addToFileList(context, FROM_DIRECTION, from, fromArgNumber) )
+    {
+        return FALSE;
+    }
+
+    if ( op != FO_DELETE )
+    {
+        if ( ! addToFileList(context, TO_DIRECTION, to, argNumber - 1) )
+        {
+            return FALSE;
+        }
+    }
+
+    if ( ! setFOFlags(context, rxFlags, argNumber) )
+    {
+        return FALSE;
+    }
+
+    if ( rxHwndOwner != NULL && (setOwnerWnd(context, rxHwndOwner, argNumber + 1) == FALSE) )
+    {
+        return FALSE;
+    }
+
+    RexxObjectPtr list = context->GetObjectVariable(SFO_FROMLIST_ATTR);
+    if ( list == context->Nil() )
+    {
+        context->RaiseException1(Rexx_Error_Incorrect_method,
+                                 context->NewStringFromAsciiz("No source files have been specified for this shell file operation"));
+        return FALSE;
+    }
+    sfos.pFrom  = context->StringData((RexxStringObject)list);
+
+    if ( op != FO_DELETE )
+    {
+        list = context->GetObjectVariable(SFO_TOLIST_ATTR);
+        if ( list == context->Nil() )
+        {
+            context->RaiseException1(Rexx_Error_Incorrect_method,
+                                     context->NewStringFromAsciiz("No destination files have been specified for this shell file operation"));
+            return FALSE;
+        }
+        sfos.pTo = context->StringData((RexxStringObject)list);
+    }
+
+    sfos.wFunc  = op;
+    sfos.fFlags = getFOFlags(context);
+
+    if ( ! getOwnerWnd(context, &sfos.hwnd) )
+    {
+        return FALSE;
+    }
+
+    sfos.lpszProgressTitle = getTitle(context, sfos.hwnd, sfos.fFlags);
+
+    printf("FO flags: %x\n", sfos.fFlags);
+
+    // Finally, do the shell file operation.
+    logical_t success = (SHFileOperation(&sfos) == 0) ? TRUE : FALSE;
+
+    context->SetObjectVariable(SFO_USERCANCELED_ATTR, sfos.fAnyOperationsAborted ? context->True() : context->False());
+
+    if ( success )
+    {
+        // Only clear the lists on success.  That way the user can examine the
+        // lists after an error.
+        context->SetObjectVariable(SFO_FROMLIST_ATTR, context->Nil());
+        context->SetObjectVariable(SFO_TOLIST_ATTR, context->Nil());
+    }
+
+    return success;
+}
+
+/**
  * Adds a file to either the from list or the to list.  These lists are
  * maintained with 2 trailing nulls to signal the end of the list and a single
- * null between items in the list.  Each item is a fully qualified path name.
+ * null between items in the list.  Each item is turned into a fully qualified
+ * path name.  (The Windows API requires this to work reliably.)
  *
  * @param direction  Whether the file goes on the from or the to list.
- * @param rxFile     The path name to add.
+ * @param file       The path name to add.  This can be null, in which case do
+ *                   nothing.
+ *
+ * @note  If file can not be turned into a fully qualified path name an
+ *        exception is raised.
  */
-static void addToFileList(RexxMethodContext *context, SFO_DIRECTION direction, CSTRING file)
+static bool addToFileList(RexxMethodContext *context, SFO_DIRECTION direction, CSTRING file, int argPos)
 {
-    char inBuffer[MAX_PATH + 1];
-    pathdup(inBuffer, file);
+    if ( file == NULL )
+    {
+        return true;
+    }
 
-    char outBuffer[MAX_PATH + 2]
+    char inBuffer[MAX_PATH + 1];
+    char outBuffer[MAX_PATH + 2];
+
+    /* TODO why did I make a copy of file?  Is that needed? */
+    pathdup(inBuffer, file);
 
     if ( PathSearchAndQualify(inBuffer, outBuffer, MAX_PATH) )
     {
-        /* TODO Function was reworked for new APIs, need to recheck this. */
+        /* TODO Function was reworked for new APIs, need to retest this. */
+
+        // Add the second terminating null and save the length which is needed
+        // for the ooRexx string creation.
         size_t l = strlen(outBuffer) + 1;
-        *(outBuffer + l++) = '\0';
-        *(outBuffer + l) = '\0';
+        outBuffer[l++] = '\0';
 
-        RexxObjectPtr  list = RexxNil;
-        char       *newBuffer = NULL;
+        // Point newBuffer at the existing file name first.
+        char *newBuffer = outBuffer;
 
+        RexxObjectPtr list;
         if ( direction == FROM_DIRECTION )
         {
-            list = REXX_GETVAR(SFO_FROMLIST_ATTR);
+            list = context->GetObjectVariable(SFO_FROMLIST_ATTR);
         }
         else
         {
-            list = REXX_GETVAR(SFO_TOLIST_ATTR);
+            list = context->GetObjectVariable(SFO_TOLIST_ATTR);
         }
 
-        if ( list != RexxNil )
+        if ( list != context->Nil() )
         {
-            char   *oldList = string_data((RexxString *)list);
-            size_t  oldL = string_length((RexxString *)list);
-
+            // We are adding a file to an existing list.  If this is the
+            // destination list, we need the multi destionation flag set.
             if ( direction == TO_DIRECTION )
             {
-                REXX_SETVAR(SFO_MULTIDESTINATION, RexxTrue);
+                context->SetObjectVariable(SFO_MULTIDESTINATION, context->True());
             }
-            // Not sure if the ooRexx kernel tacks on an extra trailing
-            // null when a new string is created.  But, there will be room
-            // for one in the buffer.
-            newBuffer = (char *)GlobalAlloc(GMEM_FIXED, oldL + l);
 
+            // The old list has an extra trailing null at the end.  We need to
+            // get the true length of the existing ooRexx string.
+            size_t oldL = context->StringLength((RexxStringObject)list);
+
+            // Now we need a buffer big enough to hold the old list and the new
+            // file (with the extra trailing null.)
+            newBuffer = (char *)malloc(oldL + l);
             if ( newBuffer == NULL )
             {
                 systemServiceException(context, MEMORY_ALLOC_FAILED_MSG, NULL);
+                return false;
             }
 
-            // oldList has 2 trailing nulls, there needs to only be 1 null
-            // between items.
-            oldL--;
-            memcpy(newBuffer, oldList, oldL);
+            // Now have ooRexx copy the old list into the new buffer. I think
+            // this copy removes the extra null.  TODO need to test.
+            size_t copyL = context->StringGet((RexxStringObject)list, 0, newBuffer, oldL);
+
+            // Now append the new file.
             memcpy((newBuffer + oldL), outBuffer, l);
-
-            char *pTmp = outBuffer;
-            l = oldL + l;
-            outBuffer = newBuffer;
-
-            GlobalFree(pTmp);
+            l += oldL;
         }
 
+        list = context->NewString(newBuffer, l);
         if ( direction == FROM_DIRECTION )
         {
-            REXX_SETVAR(SFO_FROMLIST_ATTR, RexxStringL(outBuffer, l));
+            context->SetObjectVariable(SFO_FROMLIST_ATTR, list);
         }
         else
         {
-            REXX_SETVAR(SFO_TOLIST_ATTR, RexxStringL(outBuffer, l));
+            context->SetObjectVariable(SFO_TOLIST_ATTR, list);
+        }
+
+        // Free memory if we allocated it.
+        if ( newBuffer != outBuffer )
+        {
+            free(newBuffer);
         }
     }
     else
     {
-        badArgException(context, 1, QUALIFIED_PATH_MSG);
+        badArgException(context, argPos, QUALIFIED_PATH_MSG);
+        return false;
     }
+    return true;
 }
 
 
-static void setFOFlags(RexxObjectPtr rxFlags, bool nullResets, size_t argNumber)
+/**
+ * Sets the attributes that control the file operation flags.
+ *
+ * @param context     ooRexx method context.
+ * @param rxFlags     The ooRexx object that controls how the flags are set.
+ *                    This may be null and if so nothing is done.
+ * @param argNumber   Argument number for exceptions.
+ *
+ * @return            True if an exception was raised, otherwise false.
+ *
+ * @note              This function may be called from doTheOp() where the
+ *                    rxFlags arg is optional.  Because of this, if rxFlags is
+ *                    null, we do not want to set the FOFlags attribute back to
+ *                    .nil.
+ */
+static bool setFOFlags(RexxMethodContext *context, RexxObjectPtr rxFlags, int argNumber)
 {
-    switch ( getRxArgType(rxFlags) )
+    if ( rxFlags == NULLOBJECT )
     {
-        case OMITTED_TYPE :
-            if ( nullResets )
-            {
-                REXX_SETVAR(SFO_FOFLAGS_ATTR, RexxNil);
-            }
-            break;
-
-        case NIL_TYPE :
-            REXX_SETVAR(SFO_FOFLAGS_ATTR, RexxNil);
-            break;
-
-        case BOOLEAN_TYPE :
-            if ( rxFlags == RexxTrue )
-            {
-                /** If this is a boolean it is the silent arg.  If true, there
-                 * are no GUIs put up and no confirmation messages.  If false,
-                 * there is no change.
-                 */
-                REXX_SETVAR(SFO_CONFIRM_ATTR, RexxFalse);
-                REXX_SETVAR(SFO_CONFIRM_MKDIR_ATTR, RexxFalse);
-                REXX_SETVAR(SFO_PROGRESS_ATTR, RexxFalse);
-                REXX_SETVAR(SFO_ERRUR_ATTR, RexxFalse);
-            }
-
-            /** Use of the boolan silent arg should negate the use of the pure
-             * FOF_XXXX flags.
-             */
-            REXX_SETVAR(SFO_FOFLAGS_ATTR, RexxNil);
-            break;
-
-        case STRING_TYPE :
-            {
-                RexxMethodContext *context;
-                char *flags = strdupupr(context->StringData((RexxStringObject)rxFlags));
-                int   foFlag, foFlags = 0;
-
-                /** The user can separate tokens with either spaces, commas, or
-                 *  the '|' symbol.
-                 */
-                char *token = strtok(flags, " ,|");
-                while( token != NULL )
-                {
-                    foFlag = getConstantValue(token);
-                    if ( foFlag == -1 )
-                    {
-                        invalidConstantException(argNumber, INVALID_CONSTANT_MSG, "FOF", token);
-                    }
-                    foFlags |= foFlag;
-                    token = strtok(NULL, " ,|");
-                }
-                free(flags);
-
-                REXX_SETVAR(SFO_FOFLAGS_ATTR, RexxInteger(foFlags));
-            }
-            break;
-
-        default :
-            wrongArgValueException(argNumber, ".nil, .true, .false, or valid FOF_XXX flags", rxFlags);
-            break;
+        return true;
     }
+
+    if ( context->IsString(rxFlags) )
+    {
+        char *flags = strdupupr(context->StringData((RexxStringObject)rxFlags));
+        int   foFlag, foFlags = 0;
+
+        // The user can separate tokens with either spaces, commas, or  the '|'
+        // symbol.
+        char *token = strtok(flags, " ,|");
+        while( token != NULL )
+        {
+            foFlag = getConstantValue(token);
+            if ( foFlag == -1 )
+            {
+                invalidConstantException(context, argNumber, INVALID_CONSTANT_MSG, "FOF", token);
+                return false;
+            }
+            foFlags |= foFlag;
+            token = strtok(NULL, " ,|");
+        }
+        free(flags);
+
+        context->SetObjectVariable(SFO_FOFLAGS_ATTR, context->NewInteger(foFlags));
+    }
+    else if ( rxFlags == context->Nil())
+    {
+        context->SetObjectVariable(SFO_FOFLAGS_ATTR, context->Nil());
+    }
+    else if ( rxFlags == context->True() )
+    {
+        // This is the 'silent' arg.
+        context->SetObjectVariable(SFO_CONFIRM_ATTR, context->False());
+        context->SetObjectVariable(SFO_CONFIRM_MKDIR_ATTR, context->False());
+        context->SetObjectVariable(SFO_PROGRESS_ATTR, context->False());
+        context->SetObjectVariable(SFO_ERRORUI_ATTR, context->False());
+
+        // Use of the boolan silent arg should negate the use of the pure
+        // FOF_XXXX flags.
+        context->SetObjectVariable(SFO_FOFLAGS_ATTR, context->Nil());
+    }
+    else if ( rxFlags == context->False() )
+    {
+        // This is the not 'silent' arg.
+        context->SetObjectVariable(SFO_CONFIRM_ATTR, context->True());
+        context->SetObjectVariable(SFO_CONFIRM_MKDIR_ATTR, context->True());
+        context->SetObjectVariable(SFO_PROGRESS_ATTR, context->True());
+        context->SetObjectVariable(SFO_ERRORUI_ATTR, context->True());
+
+        // Use of the boolan silent arg should negate the use of the pure
+        // FOF_XXXX flags.
+        context->SetObjectVariable(SFO_FOFLAGS_ATTR, context->Nil());
+    }
+    else
+    {
+        wrongArgValueException(context, argNumber, ".nil, .true, .false, or valid FOF_XXX flags", rxFlags);
+        return false;
+    }
+    return true;
 }
 
 
-static FILEOP_FLAGS getFOFlags(void)
+static FILEOP_FLAGS getFOFlags(RexxMethodContext *context)
 {
     FILEOP_FLAGS flags = 0;
-    RexxObjectPtr rxFlags = REXX_GETVAR(SFO_FOFLAGS_ATTR);
+    RexxObjectPtr rxFlags = context->GetObjectVariable(SFO_FOFLAGS_ATTR);
 
-    if ( rxFlags == RexxNil )
+    if ( rxFlags == context->Nil() )
     {
-        if ( REXX_GETVAR(SFO_CONFIRM_ATTR) == RexxFalse )
+        if ( context->GetObjectVariable(SFO_CONFIRM_ATTR) == context->False() )
         {
             flags |= FOF_NOCONFIRMATION;
         }
-        if ( REXX_GETVAR(SFO_CONFIRM_MKDIR_ATTR) == RexxFalse )
+        if ( context->GetObjectVariable(SFO_CONFIRM_MKDIR_ATTR) == context->False() )
         {
             flags |= FOF_NOCONFIRMMKDIR;
         }
-        if ( REXX_GETVAR(SFO_CONFIRM_MKDIR_ATTR) == RexxFalse )
+        if ( context->GetObjectVariable(SFO_CONFIRM_MKDIR_ATTR) == context->False() )
         {
             flags |= FOF_NOCONFIRMMKDIR;
         }
-        if ( REXX_GETVAR(SFO_PROGRESS_ATTR) == RexxFalse )
+        if ( context->GetObjectVariable(SFO_PROGRESS_ATTR) == context->False() )
         {
             flags |= FOF_SILENT;
         }
-        if ( REXX_GETVAR(SFO_PROGRESS_SIMPLE_ATTR) == RexxTrue )
+        if ( context->GetObjectVariable(SFO_PROGRESS_SIMPLE_ATTR) == context->True() )
         {
             flags |= FOF_SIMPLEPROGRESS;
         }
-        if ( REXX_GETVAR(SFO_ERRUR_ATTR) == RexxFalse )
+        if ( context->GetObjectVariable(SFO_ERRORUI_ATTR) == context->False() )
         {
             flags |= FOF_NOERRORUI;
         }
-        if ( REXX_GETVAR(SFO_RECURSIVE_ATTR) == RexxFalse )
+        if ( context->GetObjectVariable(SFO_RECURSIVE_ATTR) == context->False() )
         {
             flags |= FOF_NORECURSION;
         }
-        if ( REXX_GETVAR(SFO_PERMANENT_ATTR) == RexxFalse )
+        if ( context->GetObjectVariable(SFO_PERMANENT_ATTR) == context->False() )
         {
             flags |= FOF_ALLOWUNDO;
         }
     }
     else
     {
-        flags = (WORD)integer_value(rxFlags);
+        flags = (FILEOP_FLAGS)context->IntegerValue((RexxIntegerObject)rxFlags);
     }
 
-    if ( REXX_GETVAR(SFO_MULTIDESTINATION) == RexxTrue )
+    if ( context->GetObjectVariable(SFO_MULTIDESTINATION) == context->True() )
     {
         flags |= FOF_MULTIDESTFILES;
     }
@@ -1955,30 +2237,46 @@ static FILEOP_FLAGS getFOFlags(void)
     return flags;
 }
 
-static bool setOwnerWnd(RexxMethodContext *context, RexxObjectPtr rxHwnd, size_t argNumber)
+static bool setOwnerWnd(RexxMethodContext *context, RexxObjectPtr rxHwnd, int argNumber)
 {
     if ( rxHwnd == NULL || rxHwnd == context->Nil() )
     {
-        REXX_SETVAR(SFO_OWNERWINDOW_ATTR, context->Nil());
+        context->SetObjectVariable(SFO_OWNERWINDOW_ATTR, context->Nil());
     }
     else if ( context->IsPointer(rxHwnd) )
     {
-        if ( ! IsWindow((HWND)context->PointerValue(rxHwnd)) )
+        if ( ! IsWindow((HWND)context->PointerValue((RexxPointerObject)rxHwnd)) )
         {
             badArgException(context, argNumber, WINDOW_HANDLE_MSG);
             return false;
         }
-        REXX_SETVAR(SFO_OWNERWINDOW_ATTR, rxHwnd);
+        context->SetObjectVariable(SFO_OWNERWINDOW_ATTR, rxHwnd);
     }
     else
     {
-        wrongArgValueException(argNumber, ".nil, or a valid window handle", rxHwnd);
+        wrongArgValueException(context, argNumber, ".nil, or a valid window handle", rxHwnd);
         return false;
     }
     return true;
 }
 
 
+/**
+ * Retrieves the window handle from the owner window attribute.
+ *
+ * @param  context  ooRexx method context.
+ * @param  *hwnd    Handle is returned here.
+ *
+ * @return false if an exception is raised, otherwise true.
+ *
+ * @note   The owner window attribute is guarenteed to be set. If nil, which is
+ *         valid, hwnd is set to null.  If the attribute is not nil, then the
+ *         hwnd is checked to be sure it is still a valid window.  If it is not
+ *         a valid window, an exception is raised.  This may be too harsh,
+ *         because using an invalid window handle will not cause the file
+ *         operation to fail.  But, this will prevent behavior that the user
+ *         does not understand.
+ */
 static bool getOwnerWnd(RexxMethodContext *context, HWND *hwnd)
 {
     *hwnd = NULL;
@@ -1986,11 +2284,7 @@ static bool getOwnerWnd(RexxMethodContext *context, HWND *hwnd)
 
     if ( rxHwnd != context->Nil() )
     {
-        // The window handle was good at the time the user set it.  It is
-        // possbile that it is no longer good.  Should there be an exception
-        // raised?  It won't actually do any harm to use a bad handle.  But
-        // there could be some behavior that the user does not understand.
-        *hwnd = (HWND)context->PointerValue(rxHwnd);
+        *hwnd = (HWND)context->PointerValue((RexxPointerObject)rxHwnd);
         if ( ! IsWindow(*hwnd) )
         {
             *hwnd = NULL;
@@ -2002,96 +2296,57 @@ static bool getOwnerWnd(RexxMethodContext *context, HWND *hwnd)
 }
 
 
-static RXARG_TYPES getRxArgType(RexxObjectPtr rxArg)
+static bool setTitle(RexxMethodContext *context, RexxObjectPtr rxTitle, int argNumber)
 {
-    RXARG_TYPES type = OMITTED_TYPE;
-
-    if ( rxArg != NULLOBJECT )
+    if ( rxTitle == NULL || rxTitle == context->Nil() )
     {
-        if ( rxArg == RexxNil )
-        {
-            type = NIL_TYPE;
-        }
-        else if ( rxArg == RexxTrue || rxArg == RexxFalse )
-        {
-            type = BOOLEAN_TYPE;
-        }
-        else if ( _isstring(rxArg) )
-        {
-            type = STRING_TYPE;
-        }
-        else
-        {
-            type = OBJECT_TYPE;
-        }
+        context->SetObjectVariable(SFO_PROGRESSTITLE_ATTR, context->Nil());
     }
-    return type;
+    else if ( context->IsString(rxTitle) )
+    {
+        context->SetObjectVariable(SFO_PROGRESSTITLE_ATTR, rxTitle);
+    }
+    else
+    {
+        wrongArgValueException(context, argNumber, ".nil, or a string", rxTitle);
+        return false;
+    }
+    return true;
 }
 
 
-static logical_t doTheOp(RexxMethodContext *context, UINT op, size_t argNumber, CSTRING from,
-                             CSTRING to, STRING rxFlags, RexxObjectPtr rxHwndOwner)
+/**
+ * Gets the title for the simple progress dialog.  This title is only used, (by
+ * the Windows API,) if the FOF_SIMPLEPROGRESS flag is set.
+ *
+ * @param c
+ * @param hwnd
+ * @param flags
+ *
+ * @return      The title if appropriate, otherwise null.
+ */
+inline CSTRING getTitle(RexxMethodContext *c, HWND hwnd, FILEOP_FLAGS flags)
 {
-    SHFILEOPSTRUCT sfos = { 0 };
-
-    addToFileList(context, FROM_DIRECTION, from);
-    addToFileList(context, TO_DIRECTION, to);
-    setFOFlags(rxFlags, false, argNumber);
-
-    if ( ! setOwnerWnd(context, rxHwndOwner, argNumber + 1) )
+    if ( hwnd != NULL && (flags & FOF_SIMPLEPROGRESS) )
     {
-        return FALSE;
-    }
-
-    sfos.pFrom  = string_data(REXX_GETVAR(SFO_FROMLIST_ATTR));
-    sfos.wFunc  = op;
-    sfos.fFlags = getFOFlags();
-
-    if ( ! getOwnerWnd(context, &sfos.hwnd) )
-    {
-        return FALSE;
-    }
-
-    sfos.lpszProgressTitle = getTitle(context, sfos.hwnd, sfos.fFlags);
-
-    if ( op != FO_DELETE )
-    {
-        sfos.pTo = string_data(REXX_GETVAR(SFO_TOLIST_ATTR));
-    }
-    printf("FO flags: %x\n", sfos.fFlags);
-
-    int rc = SHFileOperation(&sfos);
-    logical_t success = (rc == 0) ? TRUE : FALSE;
-
-    REXX_SETVAR(SFO_USERCANCELED_ATTR, sfos.fAnyOperationsAborted ? context->True() : context->False());
-
-    if ( rc != 0 )
-    {
-        // Don't clear the lists on failure.  That way the user can examine the
-        // lists after an error.
-        return FALSE;
-    }
-
-    // Clear the lists.
-    REXX_SETVAR(SFO_FROMLIST_ATTR, RexxNil);
-    REXX_SETVAR(SFO_TOLIST_ATTR, RexxNil);
-
-    return success;
-}
-
-inline char *getTitle(RexxMethodContext *c, HWND hwnd, FILEOP_FLAGS flags)
-{
-    if ( hwnd != NULL && (flags & FOF_SIMPLEPROGRESS) && c->IsString(REXX_GETVAR(SFO_PROGRESSTITLE_ATTR)) )
-    {
-        return c->StringData(c->GetObjectVariable(SFO_PROGRESSTITLE_ATTR));
+        RexxObjectPtr t = c->GetObjectVariable(SFO_PROGRESSTITLE_ATTR);
+        if ( t != c->Nil() )
+        {
+            return c->StringData((RexxStringObject)t);
+        }
     }
     return NULL;
 }
+
+#define SIMPLE_FOLDER_BROWSE_CLASS "SimpleFolderBrowse"
 
 #define BROWSE_TITLE       "ooRexx Browse for Folder"
 #define BROWSE_BANNER      "Select (or create) the folder you want"
 #define BROWSE_HINT        "If the folder you want does not exist you can create it"
 #define BROWSE_START_DIR   ""
+
+// Function prototypes for the SimpleFolderBrowse helper functions.
+void freeRootPidl(RexxMethodContext *);
 
 /** SimpleFolderBrowse::init()
  *
@@ -2133,12 +2388,11 @@ RexxMethod4(RexxObjectPtr, SimpleFolderBrowse_init,
 
 LPITEMIDLIST getPidlFromString(RexxMethodContext *context, CSTRING idl, int argPos, bool canFail)
 {
-    LPITEMIDLIST pidl == NULL;
+    LPITEMIDLIST pidl = NULL;
 
-    /* See if it looks like a CSIDL_ constant. */
-    if ( strlen(idl) > 6 && StrCmpNI("CSIDL_", arg, 6) == 0 )
+    // See if it looks like a CSIDL_ constant.
+    if ( strlen(idl) > 6 && StrCmpNI("CSIDL_", idl, 6) == 0 )
     {
-        char idlTmp[MAX_PATH + 1];
         char *argTmp = strdupupr(idl);
         int csidl = getConstantValue(argTmp);
         free(argTmp);
@@ -2168,7 +2422,7 @@ LPITEMIDLIST getPidlFromString(RexxMethodContext *context, CSTRING idl, int argP
 
 LPITEMIDLIST getPidlFromObject(RexxMethodContext *context, RexxObjectPtr obj, int argPos)
 {
-    LPITEMIDLIST pidl == NULL;
+    LPITEMIDLIST pidl = NULL;
 
     if ( context->IsString(obj) )
     {
@@ -2176,7 +2430,7 @@ LPITEMIDLIST getPidlFromObject(RexxMethodContext *context, RexxObjectPtr obj, in
     }
     else if ( context->IsPointer(obj) )
     {
-        pidl = (LPITEMIDLIST)context->PointerValue((RexxPointerObject)obj)
+        pidl = (LPITEMIDLIST)context->PointerValue((RexxPointerObject)obj);
     }
 
     if ( pidl == NULL )
@@ -2188,7 +2442,6 @@ LPITEMIDLIST getPidlFromObject(RexxMethodContext *context, RexxObjectPtr obj, in
 
 RexxMethod1(RexxObjectPtr, SimpleFolderBrowse_setRoot, RexxObjectPtr, obj)
 {
-    RexxMethodContext *context;
     RexxObjectPtr root = context->Nil();
 
     if ( context->Nil() == obj )
@@ -2242,19 +2495,18 @@ RexxMethod1(RexxObjectPtr, SimpleFolderBrowse_setRoot, RexxObjectPtr, obj)
  *          selects a virtual folder that has no file system path, .nil is
  *          returned.
  */
-RexxMethod2(RexxObjectPtr, SimpleFolderBrowse_getFolder, OSELF, self, OPTIONAL_POINTER, hwnd)
+RexxMethod2(RexxObjectPtr, SimpleFolderBrowse_getFolder, OSELF, self, OPTIONAL_POINTER, owner)
 {
     BROWSEINFO   bi = { 0 };
     BROWSE_DATA  bd = { 0 };
 
-    if ( rxArgExists(context, 1) && ! IsWindow(hwnd) )
+    if ( ! checkOptionalWindow(context, (HWND)owner, 1) )
     {
-        badArgException(context, 1, WINDOW_HANDLE_MSG);
-        return context->Nil();
+        return NULLOBJECT;
     }
 
     // NULL for hwnd works fine.
-    fillInBrowseData(context, hwnd, &bi, &bd);
+    fillInBrowseData(context, (HWND)owner, &bi, &bd);
 
     // Second arg is true - return path.
     return folderBrowse(context, &bi, true);
@@ -2272,22 +2524,21 @@ RexxMethod2(RexxObjectPtr, SimpleFolderBrowse_getFolder, OSELF, self, OPTIONAL_P
  * @return  Returns the pointer to item ID list the user selected, or the empty
  *          string if the user cancels the dialog.
  */
-RexxMethod2(RexxObjectPtr, SimpleFolderBrowse_getItemID, OSELF, self, OPTIONAL_POINTER, hwnd)
+RexxMethod2(RexxObjectPtr, SimpleFolderBrowse_getItemID, OSELF, self, OPTIONAL_POINTER, owner)
 {
     BROWSEINFO   bi = { 0 };
     BROWSE_DATA  bd = { 0 };
 
-    if ( rxArgExists(context, 1) && ! IsWindow(hwnd) )
+    if ( ! checkOptionalWindow(context, (HWND)owner, 1) )
     {
-        badArgException(context, 1, WINDOW_HANDLE_MSG);
-        return context->Nil();
+        return NULLOBJECT;
     }
 
-    // NULL for hwnd works fine.
-    fillInBrowseData(context, (HWND)hwnd, &bi, &bd);
+    // NULL for owner works fine.
+    fillInBrowseData(context, (HWND)owner, &bi, &bd);
 
     // Second arg is false - return PIDL, not path.
-    return folderBrowse(context &bi, false);
+    return folderBrowse(context, &bi, false);
 }
 
 
@@ -2311,16 +2562,16 @@ LPCITEMIDLIST getRootPidl(RexxMethodContext *context)
     {
         pidl = (LPCITEMIDLIST)context->PointerValue((RexxPointerObject)rxObject);
     }
-    return pidl
+    return pidl;
 }
 
 
 void freeRootPidl(RexxMethodContext *context)
 {
-    LPITEMIDLIST pidl = getRootPidl(context);
+    LPCITEMIDLIST pidl = getRootPidl(context);
     if ( pidl != NULL )
     {
-        CoTaskMemFree(pidl);
+        CoTaskMemFree((LPVOID)pidl);
     }
 }
 
@@ -2364,7 +2615,7 @@ RexxMethod1(RexxStringObject, Path_canonicalize, CSTRING, path)
     char inBuffer[MAX_PATH + 1];
     pathdup(inBuffer, path);
 
-    outBuffer[MAX_PATH];
+    char outBuffer[MAX_PATH];
 
     if ( PathCanonicalize(outBuffer, inBuffer) )
     {
@@ -2380,12 +2631,12 @@ RexxMethod1(RexxStringObject, Path_canonicalize, CSTRING, path)
  *
  * Compacts a path name to the specified width.
  */
-RexxMethod2(RexxStringObject, Path_compact, CSTRING, path, size_t, count)
+RexxMethod2(RexxStringObject, Path_compact, CSTRING, path, uint32_t, count)
 {
     char inBuffer[MAX_PATH + 1];
     pathdup(inBuffer, path);
 
-    outBuffer[MAX_PATH];
+    char outBuffer[MAX_PATH];
 
     if ( PathCompactPathEx(outBuffer, inBuffer, count, 0) )
     {
@@ -2541,7 +2792,7 @@ RexxMethod1(logical_t, Path_isRoot, CSTRING, path)
  *  list from the desktop folder.  A path name of say, \Windows, is not
  *  sufficient.  It is necessary to use C:\Windows.
  */
-RexxMethod1(logical_t, Path_isFull, STRING, path)
+RexxMethod1(logical_t, Path_isFull, CSTRING, path)
 {
     return _PathIsFull(path) ? 1 : 0;
 }
@@ -2551,7 +2802,7 @@ RexxMethod1(logical_t, Path_isFull, STRING, path)
  *  Returns true if the specified path represents a network resource, otherwise
  *  returns false.
  */
-RexxMethod1(logical_t, Path_isNetworkPath, STRING, path)
+RexxMethod1(logical_t, Path_isNetworkPath, CSTRING, path)
 {
     return PathIsNetworkPath(path) ? 1 : 0;
 }
@@ -2591,7 +2842,7 @@ RexxMethod1(logical_t, Path_isUNCServerShare, CSTRING, path)
  *
  *  Given a long path name, converts and returns its short path name.
  */
-RexxMethod1(CSTRING, Path_getShortPath, CSTRING, path)
+RexxMethod1(RexxStringObject, Path_getShortPath, CSTRING, path)
 {
     char pathBuffer[MAX_PATH];
     WCHAR wBuffer[MAX_PATH];
@@ -2648,7 +2899,7 @@ static bool _PathIsFull(const char *path)
  */
 RexxMethod0(RexxObjectPtr, Sh_version_class)
 {
-    return RexxString(WIN_SHELL_VERSION);
+    return context->NewStringFromAsciiz(WIN_SHELL_VERSION);
 }
 
 /** Sh::is64Bit()
@@ -2659,8 +2910,8 @@ RexxMethod0(RexxObjectPtr, Sh_version_class)
 RexxMethod0(RexxObjectPtr, Sh_is64Bit_class)
 {
     if ( _is64Bit() )
-        return RexxTrue;
-    return RexxFalse;
+        return context->True();
+    return context->False();
 }
 
 /** Sh::is32on64Bit()
@@ -2671,8 +2922,8 @@ RexxMethod0(RexxObjectPtr, Sh_is64Bit_class)
 RexxMethod0(RexxObjectPtr, Sh_is32on64Bit_class)
 {
     if ( _is32on64Bit() )
-        return RexxTrue;
-    return RexxFalse;
+        return context->True();
+    return context->False();
 }
 
 /** Sh::isW2K()
@@ -2682,8 +2933,8 @@ RexxMethod0(RexxObjectPtr, Sh_is32on64Bit_class)
 RexxMethod0(RexxObjectPtr, Sh_isW2K_class)
 {
     if ( _isW2K() )
-        return RexxTrue;
-    return RexxFalse;
+        return context->True();
+    return context->False();
 }
 
 /** Sh::isAtLeastW2K()
@@ -2694,8 +2945,8 @@ RexxMethod0(RexxObjectPtr, Sh_isW2K_class)
 RexxMethod0(RexxObjectPtr, Sh_isAtLeastW2K_class)
 {
     if ( _isAtLeastW2K() )
-        return RexxTrue;
-    return RexxFalse;
+        return context->True();
+    return context->False();
 }
 
 /** Sh::isXP()
@@ -2705,8 +2956,8 @@ RexxMethod0(RexxObjectPtr, Sh_isAtLeastW2K_class)
 RexxMethod0(RexxObjectPtr, Sh_isXP_class)
 {
     if ( _isXP() )
-        return RexxTrue;
-    return RexxFalse;
+        return context->True();
+    return context->False();
 }
 
 /** Sh::isXP32()
@@ -2716,8 +2967,8 @@ RexxMethod0(RexxObjectPtr, Sh_isXP_class)
 RexxMethod0(RexxObjectPtr, Sh_isXP32_class)
 {
     if ( _isXP32() )
-        return RexxTrue;
-    return RexxFalse;
+        return context->True();
+    return context->False();
 }
 
 /** Sh::isXP64()
@@ -2727,8 +2978,8 @@ RexxMethod0(RexxObjectPtr, Sh_isXP32_class)
 RexxMethod0(RexxObjectPtr, Sh_isXP64_class)
 {
     if ( _isXP64() )
-        return RexxTrue;
-    return RexxFalse;
+        return context->True();
+    return context->False();
 }
 
 /** Sh::isAtLeastXP()
@@ -2739,8 +2990,8 @@ RexxMethod0(RexxObjectPtr, Sh_isXP64_class)
 RexxMethod0(RexxObjectPtr, Sh_isAtLeastXP_class)
 {
     if ( _isAtLeastXP() )
-        return RexxTrue;
-    return RexxFalse;
+        return context->True();
+    return context->False();
 }
 
 /** Sh::isW2K3()
@@ -2751,8 +3002,8 @@ RexxMethod0(RexxObjectPtr, Sh_isAtLeastXP_class)
 RexxMethod0(RexxObjectPtr, Sh_isW2K3_class)
 {
     if ( _isW2K3() )
-        return RexxTrue;
-    return RexxFalse;
+        return context->True();
+    return context->False();
 }
 
 /** Sh::isAtLeastW2K3()
@@ -2763,8 +3014,8 @@ RexxMethod0(RexxObjectPtr, Sh_isW2K3_class)
 RexxMethod0(RexxObjectPtr, Sh_isAtLeastW2K3_class)
 {
     if ( _isAtLeastW2K3() )
-        return RexxTrue;
-    return RexxFalse;
+        return context->True();
+    return context->False();
 }
 
 /** Sh::isVista()
@@ -2774,8 +3025,8 @@ RexxMethod0(RexxObjectPtr, Sh_isAtLeastW2K3_class)
 RexxMethod0(RexxObjectPtr, Sh_isVista_class)
 {
     if ( _isVista() )
-        return RexxTrue;
-    return RexxFalse;
+        return context->True();
+    return context->False();
 }
 
 /** Sh::isAtLeastVista()
@@ -2786,27 +3037,9 @@ RexxMethod0(RexxObjectPtr, Sh_isVista_class)
 RexxMethod0(RexxObjectPtr, Sh_isAtLeastVista_class)
 {
     if ( _isAtLeastVista() )
-        return RexxTrue;
-    return RexxFalse;
+        return context->True();
+    return context->False();
 }
-
-static HWND getOptionalWindowHandle(RexxMethodContext *context, POINTER rxHwnd, HWND *hwnd, size_t argNumber)
-{
-    *hwnd = NULL;
-
-    if ( rxHwnd != NULLOBJECT )
-    {
-        *hwnd = (HWND)context->PointerValue(rxHwnd);
-        if ( ! IsWindow(hwnd) )
-        {
-            *hwnd = NULL:
-            badArgException(context, argNumber, WINDOW_HANDLE_MSG);
-            return false;
-        }
-    }
-    return true;
-}
-
 
 /**
  * Puts up the Browse for Folder dialog using the supplied browse info
@@ -2840,7 +3073,7 @@ static RexxObjectPtr folderBrowse(RexxMethodContext *context, PBROWSEINFO pBI, b
         }
         else
         {
-            rxResult = context->PointerValue(pidl);
+            rxResult = context->NewPointer(pidl);
         }
     }
     return rxResult;
@@ -2855,15 +3088,17 @@ static void fillInBrowseData(RexxMethodContext *context, HWND hwnd, PBROWSEINFO 
     pBI->hwndOwner = hwnd;
     pBI->ulFlags  = BIF_RETURNONLYFSDIRS | BIF_NEWDIALOGSTYLE | BIF_RETURNFSANCESTORS;
 
-    rxObject = REXX_GETVAR("TITLE");
-    if ( rxObject != RexxNil )
-        pBD->dlgTitle = string_data((RexxString *)rxObject);
+    rxObject = context->GetObjectVariable("TITLE");
+    if ( rxObject != context->Nil() )
+    {
+        pBD->dlgTitle = (char *)context->StringData((RexxStringObject)rxObject);
+    }
 
-    rxObject = REXX_GETVAR("HINT");
-    if ( rxObject != RexxNil )
+    rxObject = context->GetObjectVariable("HINT");
+    if ( rxObject != context->Nil() )
     {
         pBI->ulFlags |= BIF_UAHINT;
-        pHint = string_data((RexxString *)rxObject);
+        pHint = (char *)context->StringData((RexxStringObject)rxObject);
         if ( _stricmp("PATH", pHint) == 0 )
         {
             pBD->usePathForHint = true;
@@ -2875,15 +3110,19 @@ static void fillInBrowseData(RexxMethodContext *context, HWND hwnd, PBROWSEINFO 
         }
     }
 
-    rxObject = REXX_GETVAR("INITIALFOLDER");
-    if ( rxObject != RexxNil )
-        pBD->startDir = string_data((RexxString *)rxObject);
+    rxObject = context->GetObjectVariable("INITIALFOLDER");
+    if ( rxObject != context->Nil() )
+    {
+        pBD->startDir = (char *)context->StringData((RexxStringObject)rxObject);
+    }
 
     // Note that banner goes into the BROWSEINFO structure, not the BROWSE_DATA
     // structure.
-    rxObject = REXX_GETVAR("BANNER");
-    if ( rxObject != RexxNil )
-        pBI->lpszTitle = string_data((RexxString *)rxObject);
+    rxObject = context->GetObjectVariable("BANNER");
+    if ( rxObject != context->Nil() )
+    {
+        pBI->lpszTitle = context->StringData((RexxStringObject)rxObject);
+    }
 
     pBI->pidlRoot = getRootPidl(context);
 
@@ -3236,10 +3475,10 @@ REXX_METHOD_PROTOTYPE(size_setCY);
 
 RexxMethodEntry winshell_methods[] = {
     REXX_METHOD(size_init,              size_init),
-    REXX_METHOD(size_x,                 size_x),
-    REXX_METHOD(size_setX,              size_setX),
-    REXX_METHOD(size_y,                 size_y),
-    REXX_METHOD(size_setY,              size_setY),
+    REXX_METHOD(size_cx,                size_cx),
+    REXX_METHOD(size_setCX,             size_setCX),
+    REXX_METHOD(size_cy,                size_cy),
+    REXX_METHOD(size_setCY,             size_setCY),
     REXX_LAST_METHOD()
 };
 

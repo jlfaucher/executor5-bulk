@@ -270,63 +270,34 @@ return obj
 ::attribute fromList get
 ::attribute toList   get
 
+/* TODO need to add these methods:  addSourceFiles, addDestinationFiles which
+   will take a single file name or an array of file names.  Note that more than
+   one file / directory destination name can only be used with FO_MOVE and
+   FO_COPY.  FO_DELETE does not use a destionation obviously and more than one
+   name can not be used with FO_RENAME.  For FO_RENAME you would use FO_MOVE.
+*/
+
 -- The attributes corresponding to some of the FOF_XXXX flags.  Setting these
 -- attributes gives the programmer a simple-to-understand way of setting the
 -- most commonly used flags.
 
 ::attribute confirmation  get        -- if false use FOF_NOCONFIRMATION
-::attribute confirmation  set
-  expose confirmation
-  use strict arg confirm
-
-  if \ isBoolean(confirm) then
-    raise syntax 88.916 array ("1 'confirmation'", "true or false", confirm)
-  confirmation = confirm
+::method 'confirmation='  external "LIBRARY WINSHELL ShellFileOp_setConfirmation"
 
 ::attribute confirmMkdir  get        -- if false use FOF_NOCONFIRMMKDIR
-::attribute confirmMkdir  set
-  expose confirmMkdir
-  use strict arg confirm
-
-  if \ isBoolean(confirm) then
-    raise syntax 88.916 array ("1 'confirmMkdir'", "true or false", confirm)
-  confirmMkDir = confirm
+::method 'confirmMkdir='  external "LIBRARY WINSHELL ShellFileOp_setConfirmMkDir"
 
 ::attribute progressGUI get          -- if false use FOF_SILENT
-::attribute progressGUI set
-  expose progressGUI
-  use strict arg showProgress
-
-  if \ isBoolean(showProgress) then
-    raise syntax 88.916 array ("1 'progressGUI'", "true or false", showProgress)
-  progressGUI = showProgress
+::method 'progressGUI=' external "LIBRARY WINSHELL ShellFileOp_setProgressGUI"
 
 ::attribute progressSimpleGUI get    -- if true use FOF_SIMPLEPROGRESS
-::attribute progressSimpleGUI set
-  expose progressSimpleGUI
-  use strict arg useSimple
-
-  if \ isBoolean(useSimple) then
-    raise syntax 88.916 array ("1 'progressSimpleGUI'", "true or false", useSimple)
-  progressSimpleGUI = useSimple
+::method 'progressSimpleGUI=' external "LIBRARY WINSHELL ShellFileOp_setProgressSimpleGUI"
 
 ::attribute errorGUI get             -- if false use FOF_NOERRORUI
-::attribute errorGUI set
-  expose errorGUI
-  use strict arg useErrorGUI
-
-  if \ isBoolean(useErrorGUI) then
-    raise syntax 88.916 array ("1 'errorGUI'", "true or false", useErrorGUI)
-  errorGUI = useErrorGUI
+::method 'errorGUI=' external "LIBRARY WINSHELL ShellFileOp_setErrorGUI"
 
 ::attribute recursive get            -- if false use FOF_NORECURSION
-::attribute recursive set
-  expose recursive
-  use strict arg recurse
-
-  if \ isBoolean(recurse) then
-    raise syntax 88.916 array ("1 'recursive'", "true or false", recurse)
-  recursive = recurse
+::method 'recursive=' external "LIBRARY WINSHELL ShellFileOp_setRecursive"
 
 ::attribute permanent get            -- if false use FOF_ALLOWUNDO
 ::attribute permanent set
@@ -351,10 +322,6 @@ return obj
 ::attribute ownerWindow get
 ::method setOwnerWindow  external "LIBRARY WINSHELL ShellFileOp_setOwnerWnd"
 
--- After a file operation, set to .true if the user canceled any operation,
--- otherwise false.  Before any file operation has been done, it is .nil.
-::attribute userCanceled get
-
 -- .nil until (if) the programmer sets it.  This is *only* used if the owner
 -- window is set and the FOF_XXXX flags include FOF_SIMPLEPROGRESS.
 ::attribute progressDlgTitle get
@@ -364,6 +331,10 @@ return obj
   if \ title~isA(.string) then
       raise syntax 88.914 array (1 "'progressDlgTitle'", "String")
   progressDlgTitle = title
+
+-- After a file operation, set to .true if the user canceled any operation,
+-- otherwise false.  Before any file operation has been done, it is .nil.
+::attribute userCanceled get
 
 -- Not a permanent method of this class.  It is / was used for testing purposes.
 -- Do not use this method, its results are indeterminate for the programmer.

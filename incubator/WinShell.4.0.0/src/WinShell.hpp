@@ -229,7 +229,7 @@ inline void wrongFormatException(RexxMethodContext *c, int argNumber, RexxObject
 {
     c->RaiseException2(Rexx_Error_Invalid_argument_format, c->NewInteger(argNumber), rxActual);
 }
-inline void wrongFormatException(RexxMethodContext *c, int argNumber, char * actual)
+inline void wrongFormatException(RexxMethodContext *c, int argNumber, CSTRING actual)
 {
     wrongFormatException(c, argNumber, c->NewStringFromAsciiz(actual));
 }
