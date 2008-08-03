@@ -103,10 +103,11 @@ IF %USELOGFILE% equ 1 ( REXXIMAGE >>%OR_ERRLOG% 2>&1 ) else ( REXXIMAGE )
 if ERRORLEVEL 1 goto error
 
 @ECHO Building RXSUBCOM and RXQUEUE..
-CD  %OR_ORYXASRC%
-IF %USELOGFILE% equ 1 ( NMAKE /F Rxsubcom.MAK >>%OR_ERRLOG% 2>&1 ) else ( NMAKE /F Rxsubcom.MAK )
+CD  %OR_UTILITIES%\rxsubcom\platform\windows
+IF %USELOGFILE% equ 1 ( NMAKE /F rxsubcom.mak >>%OR_ERRLOG% 2>&1 ) else ( NMAKE /F rxsubcom.mak )
 if ERRORLEVEL 1 goto error
-IF %USELOGFILE% equ 1 ( NMAKE /F Rxqueue.MAK >>%OR_ERRLOG% 2>&1 ) else ( NMAKE /F Rxqueue.MAK )
+CD  %OR_UTILITIES%\rxqueue\platform\windows
+IF %USELOGFILE% equ 1 ( NMAKE /F rxqueue.mak >>%OR_ERRLOG% 2>&1 ) else ( NMAKE /F rxqueue.mak )
 if ERRORLEVEL 1 goto error
 
 

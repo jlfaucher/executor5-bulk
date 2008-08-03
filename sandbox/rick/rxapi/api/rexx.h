@@ -728,6 +728,12 @@ RexxReturnCode REXXENTRY RexxPullFromQueue (
 typedef RexxReturnCode (REXXENTRY *PFNREXXPULLFROMQUEUE)(const char *, PRXSTRING, REXXDATETIME *,
                                            size_t);
 
+/***    RexxClearQueue - Clear all lines in a queue */
+
+RexxReturnCode REXXENTRY RexxClearQueue (
+        const char * );                         /* Name of queue to be deleted */
+typedef RexxReturnCode (REXXENTRY *PFNREXXCLEARQUEUE)(const char *);
+
 
 #include "rexxplatformapis.h"
 

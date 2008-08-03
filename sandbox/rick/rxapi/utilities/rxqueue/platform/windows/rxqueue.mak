@@ -42,10 +42,10 @@ C=cl
 OPTIONS= $(cflags_common) /DWINTEST $(OR_ORYXINCL)
 OR_LIB=$(OR_OUTDIR)
 
-$(OR_OUTDIR)\QueueCommand.obj:    $(APLATFORM)\QueueCommand.c
-    $(C) $(OPTIONS) /DINCL_32  -c $(**) /Fo$(@)
+$(OR_OUTDIR)\rxqueue.obj:    rxqueue.cpp
+    $(C) $(OPTIONS) -c $(**) /Fo$(@)
 
-$(OR_OUTDIR)\rxqueue.exe:    $(OR_OUTDIR)\QueueCommand.obj
+$(OR_OUTDIR)\rxqueue.exe:    $(OR_OUTDIR)\rxqueue.obj
     $(OR_LINK) \
     $(**) \
     $(lflags_common_console) \

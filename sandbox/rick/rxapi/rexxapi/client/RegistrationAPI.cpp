@@ -230,6 +230,37 @@ RexxReturnCode RexxEntry RexxResolveSubcom(
     EXIT_REXX_API();
 }
 
+
+/*********************************************************************/
+/*                                                                   */
+/*  Function Name:   RexxLoadSubcom                                  */
+/*                                                                   */
+/*  Description:     Force a subcommand handler to the resolved and  */
+/*                   loaded.                                         */
+/*                                                                   */
+/*  Entry Point:     RexxLoadSubcom                                  */
+/*                                                                   */
+/*  Parameter(s):    name       -  Name of the desired system exit   */
+/*                   entryPoint -  Pointer to the resolved handler   */
+/*                   style      -  The subcom call style info        */
+/*                                                                   */
+/*  Return Value:    Return code from subcommand handler processing  */
+/*                                                                   */
+/*********************************************************************/
+
+RexxReturnCode RexxEntry RexxLoadSubcom(
+  const char       *name,         // handler name
+  const char       *lib)          // handler library
+{
+    ENTER_REXX_API(RegistrationManager)
+    {
+        REXXPFN entryPoint;
+
+        lam->registrationManager.resolveCallback(SubcomAPI, name, lib, entryPoint);
+    }
+    EXIT_REXX_API();
+}
+
 /**
  * Invoke a registered subcommand handler.
  *
