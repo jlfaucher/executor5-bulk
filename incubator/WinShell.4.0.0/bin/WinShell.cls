@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2008 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2007-2008 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -38,12 +38,12 @@
 if \ .local~hasEntry('WINSHELL_VERSION') then do
   .local~WinShell_version = .Sh~version
 
+  .local~setentry("SH", .Sh)
   .local~setentry("WINSHELL", .WinShell)
   .local~setentry("IMAGELIST", .ImageList)
   .local~setentry("SIMPLEFOLDERBROWSE", .SimpleFolderBrowse)
   .local~setentry("SHELLFILEOP", .ShellFileOp)
   .local~setentry("PATH", .Path)
-  .local~setentry("SH", .Sh)
 
 end
 -- End of entry point.
@@ -51,6 +51,21 @@ end
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
   Directives, Classes, or Routines.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::requires 'winshell' LIBRARY
+
+
+/* class: Size - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+
+    Sizes have a width and a height on a coordinate system.  Which translates to
+    a count of the x units (width) and a count of the y units (height.)
+
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::class 'Size' public
+::method init external "LIBRARY winshell size_init"
+::method cx external "LIBRARY winshell size_cx"
+::method 'cx=' external "LIBRARY winshell size_setCX"
+::method cy external "LIBRARY winshell size_cy"
+::method 'cy=' external "LIBRARY winshell size_setCY"
 
 /* class: WinShell - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
 
@@ -186,7 +201,7 @@ return obj
 ::method getFolder external "LIBRARY WINSHELL SimpleFolderBrowse_getFolder"
 ::method getItemID external "LIBRARY WINSHELL SimpleFolderBrowse_getItemID"
 
-::method _setRoot  external "LIBRARY WINSHELL SimpleFolderBrowse_setRoot_private"
+::method _setRoot
 
 ::attribute title get
 ::attribute title set
@@ -202,7 +217,7 @@ return obj
 ::attribute banner set
   expose banner
   use strict arg _banner
-  if \ _banner~isA(.String) then
+  if \ (_banner~isA(.String) | _banner == .nil) then
     raise syntax 88.900 array ("banner must be set to a string or .nil; found:" _banner)
 
   if _banner == "" then banner = .nil
@@ -212,7 +227,7 @@ return obj
 ::attribute hint set
   expose hint
   use strict arg _hint
-  if \ _hint~isA(.String) then
+  if \ (_hint~isA(.String) | _hint == .nil) then
     raise syntax 88.900 array ("hint must be set to a string or .nil; found:" _hint)
 
   if _hint == "" then hint = .nil
@@ -229,9 +244,7 @@ return obj
   else initialFolder = _initialFolder
 
 ::attribute root get
-::attribute root set
-  use strict arg _root
-  self~_setRoot(_root)
+::method 'root=' external "LIBRARY WINSHELL SimpleFolderBrowse_setRoot"
 
 
 /* class: ShellFileOp- - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
@@ -258,72 +271,37 @@ return obj
 ::attribute fromList get
 ::attribute toList   get
 
+/* TODO need to add these methods:  addSourceFiles, addDestinationFiles which
+   will take a single file name or an array of file names.  Note that more than
+   one file / directory destination name can only be used with FO_MOVE and
+   FO_COPY.  FO_DELETE does not use a destionation obviously and more than one
+   name can not be used with FO_RENAME.  For FO_RENAME you would use FO_MOVE.
+*/
+
 -- The attributes corresponding to some of the FOF_XXXX flags.  Setting these
 -- attributes gives the programmer a simple-to-understand way of setting the
 -- most commonly used flags.
 
 ::attribute confirmation  get        -- if false use FOF_NOCONFIRMATION
-::attribute confirmation  set
-  expose confirmation
-  use strict arg confirm
-
-  if \ isBoolean(confirm) then
-    raise syntax 88.916 array ("1 'confirmation'", "true or false", confirm)
-  confirmation = confirm
+::method 'confirmation='  external "LIBRARY WINSHELL ShellFileOp_setConfirmation"
 
 ::attribute confirmMkdir  get        -- if false use FOF_NOCONFIRMMKDIR
-::attribute confirmMkdir  set
-  expose confirmMkdir
-  use strict arg confirm
-
-  if \ isBoolean(confirm) then
-    raise syntax 88.916 array ("1 'confirmMkdir'", "true or false", confirm)
-  confirmMkDir = confirm
+::method 'confirmMkdir='  external "LIBRARY WINSHELL ShellFileOp_setConfirmMkDir"
 
 ::attribute progressGUI get          -- if false use FOF_SILENT
-::attribute progressGUI set
-  expose progressGUI
-  use strict arg showProgress
-
-  if \ isBoolean(showProgress) then
-    raise syntax 88.916 array ("1 'progressGUI'", "true or false", showProgress)
-  progressGUI = showProgress
+::method 'progressGUI=' external "LIBRARY WINSHELL ShellFileOp_setProgressGUI"
 
 ::attribute progressSimpleGUI get    -- if true use FOF_SIMPLEPROGRESS
-::attribute progressSimpleGUI set
-  expose progressSimpleGUI
-  use strict arg useSimple
-
-  if \ isBoolean(useSimple) then
-    raise syntax 88.916 array ("1 'progressSimpleGUI'", "true or false", useSimple)
-  progressSimpleGUI = useSimple
+::method 'progressSimpleGUI=' external "LIBRARY WINSHELL ShellFileOp_setProgressSimpleGUI"
 
 ::attribute errorGUI get             -- if false use FOF_NOERRORUI
-::attribute errorGUI set
-  expose errorGUI
-  use strict arg useErrorGUI
-
-  if \ isBoolean(useErrorGUI) then
-    raise syntax 88.916 array ("1 'errorGUI'", "true or false", useErrorGUI)
-  errorGUI = useErrorGUI
+::method 'errorGUI=' external "LIBRARY WINSHELL ShellFileOp_setErrorGUI"
 
 ::attribute recursive get            -- if false use FOF_NORECURSION
-::attribute recursive set
-  expose recursive
-  use strict arg recurse
-
-  if \ isBoolean(recurse) then
-    raise syntax 88.916 array ("1 'recursive'", "true or false", recurse)
-  recursive = recurse
+::method 'recursive=' external "LIBRARY WINSHELL ShellFileOp_setRecursive"
 
 ::attribute permanent get            -- if false use FOF_ALLOWUNDO
-::attribute permanent set
-  expose permanent
-  use strict arg noRecycleBin
-
-  if \ isBoolean(noRecycleBin) then
-    raise syntax 88.916 array ("1 'permanent'", "true or false", noRecycleBin)
-  permanent = noRecycleBin
+::method 'permanent='  external "LIBRARY WINSHELL ShellFileOp_setPermanent"
 
 -- The programmer can not set this, it is set internally if the to list contains
 -- more than 1 path name.
@@ -339,19 +317,14 @@ return obj
 ::attribute ownerWindow get
 ::method setOwnerWindow  external "LIBRARY WINSHELL ShellFileOp_setOwnerWnd"
 
--- After a file operation, set to .true if the user canceled any operation,
--- otherwise false.  Before any file operation has been done, it is .nil.
-::attribute userCanceled get
-
 -- .nil until (if) the programmer sets it.  This is *only* used if the owner
 -- window is set and the FOF_XXXX flags include FOF_SIMPLEPROGRESS.
 ::attribute progressDlgTitle get
-::attribute progressDlgTitle set
-  expose progressDlgTitle
-  use strict arg title
-  if \ title~isA(.string) then
-      raise syntax 88.914 array (1 "'progressDlgTitle'", "String")
-  progressDlgTitle = title
+::method setProgressDlgTitle external "LIBRARY WINSHELL ShellFileOp_setProgressDlgTitle"
+
+-- After a file operation, set to .true if the user canceled any operation,
+-- otherwise false.  Before any file operation has been done, it is .nil.
+::attribute userCanceled get
 
 -- Not a permanent method of this class.  It is / was used for testing purposes.
 -- Do not use this method, its results are indeterminate for the programmer.
@@ -365,10 +338,8 @@ return obj
     Provides access to the Shell Lightweight path utilities.  All the methods of
     this class are class methods.
 
-    This class does not follow the pattern of the other WinShell classes in that
-    it does not need the external routines loaded, and does not load them.  You
-    do not instantiate an object of this class but rather use the class methods
-    as utility routines.  (At least that is the intent at this point.)
+    You do not instantiate an object of this class but rather use the class
+    methods as utility routines.  (At least that is the intent at this point.)
 
     The purpose of many of the methods in this class is to make repetitive
     chores in dealing with paths a little easier.  For instance, take the task
@@ -423,7 +394,7 @@ return obj
 
 /* class: Sh - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
 
-    A class of simple ultility routines.  Each routine is a class method.
+    A class of simple utility routines.  Each routine is a class method.
 
     This class does not follow the pattern of the other WinShell classes in that
     it does not need the external routines loaded, and does not load them.  You

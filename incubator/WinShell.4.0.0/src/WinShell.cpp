@@ -175,7 +175,7 @@ char *strdupupr(const char *str)
     if ( str )
     {
         size_t l = strlen(str);
-        retStr = (char *)malloc(l);
+        retStr = (char *)malloc(l + 1);
         if ( retStr )
         {
             char *p;
@@ -1886,7 +1886,7 @@ RexxMethod1(RexxObjectPtr, ShellFileOp_setOwnerWnd, OPTIONAL_RexxObjectPtr, rxHw
  *
  *  This method does not return a value.
  */
-RexxMethod1(RexxObjectPtr, ShellFileOp_setTitle, OPTIONAL_RexxObjectPtr, rxTitle)
+RexxMethod1(RexxObjectPtr, ShellFileOp_setProgressDlgTitle, OPTIONAL_RexxObjectPtr, rxTitle)
 {
     setTitle(context, rxTitle, 1);
     return NULLOBJECT;
@@ -3466,6 +3466,100 @@ inline int getConstantValue(const char * str)
 }
 
 
+REXX_METHOD_PROTOTYPE(WinShell_init                   );
+REXX_METHOD_PROTOTYPE(WinShell_uninit                 );
+REXX_METHOD_PROTOTYPE(WinShell_browseForFolder        );
+REXX_METHOD_PROTOTYPE(WinShell_pathFromCSIDL          );
+REXX_METHOD_PROTOTYPE(WinShell_pathFromItemID         );
+REXX_METHOD_PROTOTYPE(WinShell_getItemID              );
+REXX_METHOD_PROTOTYPE(WinShell_getItemIDFromPath      );
+REXX_METHOD_PROTOTYPE(WinShell_getItemIDFromCSIDL     );
+REXX_METHOD_PROTOTYPE(WinShell_releaseItemID          );
+REXX_METHOD_PROTOTYPE(WinShell_openFindFiles          );
+REXX_METHOD_PROTOTYPE(WinShell_openFolder             );
+REXX_METHOD_PROTOTYPE(WinShell_closeWindow            );
+REXX_METHOD_PROTOTYPE(WinShell_addToRecentDocuments   );
+REXX_METHOD_PROTOTYPE(WinShell_clearRecentDocuments   );
+REXX_METHOD_PROTOTYPE(WinShell_queryDiskSpace_private );
+REXX_METHOD_PROTOTYPE(WinShell_queryRecycleBin_private);
+REXX_METHOD_PROTOTYPE(WinShell_emptyRecycleBin        );
+REXX_METHOD_PROTOTYPE(WinShell_selectIcon             );
+REXX_METHOD_PROTOTYPE(WinShell_loadIcon               );
+REXX_METHOD_PROTOTYPE(WinShell_getSharedIcon          );
+REXX_METHOD_PROTOTYPE(WinShell_extractDefaultIcons    );
+REXX_METHOD_PROTOTYPE(WinShell_releaseIcon            );
+REXX_METHOD_PROTOTYPE(WinShell_about                  );
+REXX_METHOD_PROTOTYPE(WinShell_test                   );
+
+REXX_METHOD_PROTOTYPE(SimpleFolderBrowse_init     );
+REXX_METHOD_PROTOTYPE(SimpleFolderBrowse_uninit   );
+REXX_METHOD_PROTOTYPE(SimpleFolderBrowse_setRoot  );
+REXX_METHOD_PROTOTYPE(SimpleFolderBrowse_getFolder);
+REXX_METHOD_PROTOTYPE(SimpleFolderBrowse_getItemID);
+
+REXX_METHOD_PROTOTYPE(ShellFileOp_init       );
+REXX_METHOD_PROTOTYPE(ShellFileOp_uninit     );
+REXX_METHOD_PROTOTYPE(ShellFileOp_delete     );
+REXX_METHOD_PROTOTYPE(ShellFileOp_copy       );
+REXX_METHOD_PROTOTYPE(ShellFileOp_move       );
+REXX_METHOD_PROTOTYPE(ShellFileOp_rename     );
+
+REXX_METHOD_PROTOTYPE(ShellFileOp_setConfirmation     );
+REXX_METHOD_PROTOTYPE(ShellFileOp_setConfirmMkDir     );
+REXX_METHOD_PROTOTYPE(ShellFileOp_setProgressGUI      );
+REXX_METHOD_PROTOTYPE(ShellFileOp_setProgressSimpleGUI);
+REXX_METHOD_PROTOTYPE(ShellFileOp_setErrorGUI         );
+REXX_METHOD_PROTOTYPE(ShellFileOp_setRecursive        );
+REXX_METHOD_PROTOTYPE(ShellFileOp_setPermanent        );
+REXX_METHOD_PROTOTYPE(ShellFileOp_setProgressDlgTitle );
+
+REXX_METHOD_PROTOTYPE(ShellFileOp_setFOFlags );
+REXX_METHOD_PROTOTYPE(ShellFileOp_setOwnerWnd);
+
+REXX_METHOD_PROTOTYPE(ImageList_destroy_class    );
+REXX_METHOD_PROTOTYPE(ImageList_init             );
+REXX_METHOD_PROTOTYPE(ImageList_uninit           );
+REXX_METHOD_PROTOTYPE(ImageList_getImageCount    );
+REXX_METHOD_PROTOTYPE(ImageList_getImageSize     );
+REXX_METHOD_PROTOTYPE(ImageList_getBkColor       );
+REXX_METHOD_PROTOTYPE(ImageList_setBkColor       );
+REXX_METHOD_PROTOTYPE(ImageList_setListViewImages);
+REXX_METHOD_PROTOTYPE(ImageList_release          );
+
+REXX_METHOD_PROTOTYPE(Path_makePretty      );
+REXX_METHOD_PROTOTYPE(Path_canonicalize    );
+REXX_METHOD_PROTOTYPE(Path_compact         );
+REXX_METHOD_PROTOTYPE(Path_searchAndQualify);
+REXX_METHOD_PROTOTYPE(Path_quoteSpaces     );
+REXX_METHOD_PROTOTYPE(Path_unquoteSpaces   );
+REXX_METHOD_PROTOTYPE(Path_removeBackslash );
+REXX_METHOD_PROTOTYPE(Path_addBackslash    );
+REXX_METHOD_PROTOTYPE(Path_removeFileSpec  );
+REXX_METHOD_PROTOTYPE(Path_exists          );
+REXX_METHOD_PROTOTYPE(Path_isDirectory     );
+REXX_METHOD_PROTOTYPE(Path_isDirectoryEmpty);
+REXX_METHOD_PROTOTYPE(Path_isRoot          );
+REXX_METHOD_PROTOTYPE(Path_isFull          );
+REXX_METHOD_PROTOTYPE(Path_isNetworkPath   );
+REXX_METHOD_PROTOTYPE(Path_isUNC           );
+REXX_METHOD_PROTOTYPE(Path_isUNCServer     );
+REXX_METHOD_PROTOTYPE(Path_isUNCServerShare);
+REXX_METHOD_PROTOTYPE(Path_getShortPath    );
+REXX_METHOD_PROTOTYPE(Path_getLongPath     );
+
+REXX_METHOD_PROTOTYPE(Sh_version_class       );
+REXX_METHOD_PROTOTYPE(Sh_is64Bit_class       );
+REXX_METHOD_PROTOTYPE(Sh_is32on64Bit_class   );
+REXX_METHOD_PROTOTYPE(Sh_isW2K_class         );
+REXX_METHOD_PROTOTYPE(Sh_isAtLeastW2K_class  );
+REXX_METHOD_PROTOTYPE(Sh_isXP_class          );
+REXX_METHOD_PROTOTYPE(Sh_isXP32_class        );
+REXX_METHOD_PROTOTYPE(Sh_isXP64_class        );
+REXX_METHOD_PROTOTYPE(Sh_isAtLeastXP_class   );
+REXX_METHOD_PROTOTYPE(Sh_isW2K3_class        );
+REXX_METHOD_PROTOTYPE(Sh_isAtLeastW2K3_class );
+REXX_METHOD_PROTOTYPE(Sh_isVista_class       );
+REXX_METHOD_PROTOTYPE(Sh_isAtLeastVista_class);
 
 REXX_METHOD_PROTOTYPE(size_init);
 REXX_METHOD_PROTOTYPE(size_cx);
@@ -3473,12 +3567,107 @@ REXX_METHOD_PROTOTYPE(size_setCX);
 REXX_METHOD_PROTOTYPE(size_cy);
 REXX_METHOD_PROTOTYPE(size_setCY);
 
+
 RexxMethodEntry winshell_methods[] = {
-    REXX_METHOD(size_init,              size_init),
-    REXX_METHOD(size_cx,                size_cx),
-    REXX_METHOD(size_setCX,             size_setCX),
-    REXX_METHOD(size_cy,                size_cy),
-    REXX_METHOD(size_setCY,             size_setCY),
+
+    REXX_METHOD(WinShell_init                   ,    WinShell_init                   ),
+    REXX_METHOD(WinShell_uninit                 ,    WinShell_uninit                 ),
+    REXX_METHOD(WinShell_browseForFolder        ,    WinShell_browseForFolder        ),
+    REXX_METHOD(WinShell_pathFromCSIDL          ,    WinShell_pathFromCSIDL          ),
+    REXX_METHOD(WinShell_pathFromItemID         ,    WinShell_pathFromItemID         ),
+    REXX_METHOD(WinShell_getItemID              ,    WinShell_getItemID              ),
+    REXX_METHOD(WinShell_getItemIDFromPath      ,    WinShell_getItemIDFromPath      ),
+    REXX_METHOD(WinShell_getItemIDFromCSIDL     ,    WinShell_getItemIDFromCSIDL     ),
+    REXX_METHOD(WinShell_releaseItemID          ,    WinShell_releaseItemID          ),
+    REXX_METHOD(WinShell_openFindFiles          ,    WinShell_openFindFiles          ),
+    REXX_METHOD(WinShell_openFolder             ,    WinShell_openFolder             ),
+    REXX_METHOD(WinShell_closeWindow            ,    WinShell_closeWindow            ),
+    REXX_METHOD(WinShell_addToRecentDocuments   ,    WinShell_addToRecentDocuments   ),
+    REXX_METHOD(WinShell_clearRecentDocuments   ,    WinShell_clearRecentDocuments   ),
+    REXX_METHOD(WinShell_queryDiskSpace_private ,    WinShell_queryDiskSpace_private ),
+    REXX_METHOD(WinShell_queryRecycleBin_private,    WinShell_queryRecycleBin_private),
+    REXX_METHOD(WinShell_emptyRecycleBin        ,    WinShell_emptyRecycleBin        ),
+    REXX_METHOD(WinShell_selectIcon             ,    WinShell_selectIcon             ),
+    REXX_METHOD(WinShell_loadIcon               ,    WinShell_loadIcon               ),
+    REXX_METHOD(WinShell_getSharedIcon          ,    WinShell_getSharedIcon          ),
+    REXX_METHOD(WinShell_extractDefaultIcons    ,    WinShell_extractDefaultIcons    ),
+    REXX_METHOD(WinShell_releaseIcon            ,    WinShell_releaseIcon            ),
+    REXX_METHOD(WinShell_about                  ,    WinShell_about                  ),
+    REXX_METHOD(WinShell_test                   ,    WinShell_test                   ),
+
+    REXX_METHOD(SimpleFolderBrowse_init         ,    SimpleFolderBrowse_init     ),
+    REXX_METHOD(SimpleFolderBrowse_uninit       ,    SimpleFolderBrowse_uninit   ),
+    REXX_METHOD(SimpleFolderBrowse_setRoot      ,    SimpleFolderBrowse_setRoot  ),
+    REXX_METHOD(SimpleFolderBrowse_getFolder    ,    SimpleFolderBrowse_getFolder),
+    REXX_METHOD(SimpleFolderBrowse_getItemID    ,    SimpleFolderBrowse_getItemID),
+
+    REXX_METHOD(ShellFileOp_init                ,    ShellFileOp_init       ),
+    REXX_METHOD(ShellFileOp_uninit              ,    ShellFileOp_uninit     ),
+    REXX_METHOD(ShellFileOp_delete              ,    ShellFileOp_delete     ),
+    REXX_METHOD(ShellFileOp_copy                ,    ShellFileOp_copy       ),
+    REXX_METHOD(ShellFileOp_move                ,    ShellFileOp_move       ),
+    REXX_METHOD(ShellFileOp_rename              ,    ShellFileOp_rename     ),
+    REXX_METHOD(ShellFileOp_setConfirmation     ,    ShellFileOp_setConfirmation     ),
+    REXX_METHOD(ShellFileOp_setConfirmMkDir     ,    ShellFileOp_setConfirmMkDir     ),
+    REXX_METHOD(ShellFileOp_setProgressGUI      ,    ShellFileOp_setProgressGUI      ),
+    REXX_METHOD(ShellFileOp_setProgressSimpleGUI,    ShellFileOp_setProgressSimpleGUI),
+    REXX_METHOD(ShellFileOp_setErrorGUI         ,    ShellFileOp_setErrorGUI         ),
+    REXX_METHOD(ShellFileOp_setRecursive        ,    ShellFileOp_setRecursive        ),
+    REXX_METHOD(ShellFileOp_setPermanent        ,    ShellFileOp_setPermanent        ),
+    REXX_METHOD(ShellFileOp_setProgressDlgTitle ,    ShellFileOp_setProgressDlgTitle ),
+    REXX_METHOD(ShellFileOp_setFOFlags ,             ShellFileOp_setFOFlags ),
+    REXX_METHOD(ShellFileOp_setOwnerWnd,             ShellFileOp_setOwnerWnd),
+
+    REXX_METHOD(ImageList_destroy_class    ,         ImageList_destroy_class     ),
+    REXX_METHOD(ImageList_init             ,         ImageList_init              ),
+    REXX_METHOD(ImageList_uninit           ,         ImageList_uninit            ),
+    REXX_METHOD(ImageList_getImageCount    ,         ImageList_getImageCount     ),
+    REXX_METHOD(ImageList_getImageSize     ,         ImageList_getImageSize      ),
+    REXX_METHOD(ImageList_getBkColor       ,         ImageList_getBkColor        ),
+    REXX_METHOD(ImageList_setBkColor       ,         ImageList_setBkColor        ),
+    REXX_METHOD(ImageList_setListViewImages,         ImageList_setListViewImages ),
+    REXX_METHOD(ImageList_release          ,         ImageList_release           ),
+
+    REXX_METHOD(Path_makePretty      ,               Path_makePretty      ),
+    REXX_METHOD(Path_canonicalize    ,               Path_canonicalize    ),
+    REXX_METHOD(Path_compact         ,               Path_compact         ),
+    REXX_METHOD(Path_searchAndQualify,               Path_searchAndQualify),
+    REXX_METHOD(Path_quoteSpaces     ,               Path_quoteSpaces     ),
+    REXX_METHOD(Path_unquoteSpaces   ,               Path_unquoteSpaces   ),
+    REXX_METHOD(Path_removeBackslash ,               Path_removeBackslash ),
+    REXX_METHOD(Path_addBackslash    ,               Path_addBackslash    ),
+    REXX_METHOD(Path_removeFileSpec  ,               Path_removeFileSpec  ),
+    REXX_METHOD(Path_exists          ,               Path_exists          ),
+    REXX_METHOD(Path_isDirectory     ,               Path_isDirectory     ),
+    REXX_METHOD(Path_isDirectoryEmpty,               Path_isDirectoryEmpty),
+    REXX_METHOD(Path_isRoot          ,               Path_isRoot          ),
+    REXX_METHOD(Path_isFull          ,               Path_isFull          ),
+    REXX_METHOD(Path_isNetworkPath   ,               Path_isNetworkPath   ),
+    REXX_METHOD(Path_isUNC           ,               Path_isUNC           ),
+    REXX_METHOD(Path_isUNCServer     ,               Path_isUNCServer     ),
+    REXX_METHOD(Path_isUNCServerShare,               Path_isUNCServerShare),
+    REXX_METHOD(Path_getShortPath    ,               Path_getShortPath    ),
+    REXX_METHOD(Path_getLongPath     ,               Path_getLongPath     ),
+
+    REXX_METHOD(Sh_version_class       ,             Sh_version_class       ),
+    REXX_METHOD(Sh_is64Bit_class       ,             Sh_is64Bit_class       ),
+    REXX_METHOD(Sh_is32on64Bit_class   ,             Sh_is32on64Bit_class   ),
+    REXX_METHOD(Sh_isW2K_class         ,             Sh_isW2K_class         ),
+    REXX_METHOD(Sh_isAtLeastW2K_class  ,             Sh_isAtLeastW2K_class  ),
+    REXX_METHOD(Sh_isXP_class          ,             Sh_isXP_class          ),
+    REXX_METHOD(Sh_isXP32_class        ,             Sh_isXP32_class        ),
+    REXX_METHOD(Sh_isXP64_class        ,             Sh_isXP64_class        ),
+    REXX_METHOD(Sh_isAtLeastXP_class   ,             Sh_isAtLeastXP_class   ),
+    REXX_METHOD(Sh_isW2K3_class        ,             Sh_isW2K3_class        ),
+    REXX_METHOD(Sh_isAtLeastW2K3_class ,             Sh_isAtLeastW2K3_class ),
+    REXX_METHOD(Sh_isVista_class       ,             Sh_isVista_class       ),
+    REXX_METHOD(Sh_isAtLeastVista_class,             Sh_isAtLeastVista_class),
+
+    REXX_METHOD(size_init,                           size_init),
+    REXX_METHOD(size_cx,                             size_cx),
+    REXX_METHOD(size_setCX,                          size_setCX),
+    REXX_METHOD(size_cy,                             size_cy),
+    REXX_METHOD(size_setCY,                          size_setCY),
     REXX_LAST_METHOD()
 };
 

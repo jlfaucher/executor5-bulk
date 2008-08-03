@@ -51,6 +51,7 @@ end
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
   Directives, Classes, or Routines.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::requires 'winshell' LIBRARY
 
 
 /* class: Size - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
@@ -216,7 +217,7 @@ return obj
 ::attribute banner set
   expose banner
   use strict arg _banner
-  if \ (_banner~isA(.String) } _banner == .nil) then
+  if \ (_banner~isA(.String) | _banner == .nil) then
     raise syntax 88.900 array ("banner must be set to a string or .nil; found:" _banner)
 
   if _banner == "" then banner = .nil
@@ -300,13 +301,7 @@ return obj
 ::method 'recursive=' external "LIBRARY WINSHELL ShellFileOp_setRecursive"
 
 ::attribute permanent get            -- if false use FOF_ALLOWUNDO
-::attribute permanent set
-  expose permanent
-  use strict arg noRecycleBin
-
-  if \ isBoolean(noRecycleBin) then
-    raise syntax 88.916 array ("1 'permanent'", "true or false", noRecycleBin)
-  permanent = noRecycleBin
+::method 'permanent='  external "LIBRARY WINSHELL ShellFileOp_setPermanent"
 
 -- The programmer can not set this, it is set internally if the to list contains
 -- more than 1 path name.
@@ -325,12 +320,7 @@ return obj
 -- .nil until (if) the programmer sets it.  This is *only* used if the owner
 -- window is set and the FOF_XXXX flags include FOF_SIMPLEPROGRESS.
 ::attribute progressDlgTitle get
-::attribute progressDlgTitle set
-  expose progressDlgTitle
-  use strict arg title
-  if \ title~isA(.string) then
-      raise syntax 88.914 array (1 "'progressDlgTitle'", "String")
-  progressDlgTitle = title
+::method setProgressDlgTitle external "LIBRARY WINSHELL ShellFileOp_setProgressDlgTitle"
 
 -- After a file operation, set to .true if the user canceled any operation,
 -- otherwise false.  Before any file operation has been done, it is .nil.
@@ -348,10 +338,8 @@ return obj
     Provides access to the Shell Lightweight path utilities.  All the methods of
     this class are class methods.
 
-    This class does not follow the pattern of the other WinShell classes in that
-    it does not need the external routines loaded, and does not load them.  You
-    do not instantiate an object of this class but rather use the class methods
-    as utility routines.  (At least that is the intent at this point.)
+    You do not instantiate an object of this class but rather use the class
+    methods as utility routines.  (At least that is the intent at this point.)
 
     The purpose of many of the methods in this class is to make repetitive
     chores in dealing with paths a little easier.  For instance, take the task
