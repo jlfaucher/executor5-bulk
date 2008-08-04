@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2008 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2008-2008 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -66,25 +66,35 @@ use arg cmdLine
     paths[8] = "C:\my.name\my.dir"
     paths[9] = ""
 
+    -- To use queryDiskSpace() you pass in the path and a directory object.  The
+    -- data is passed back in the directory object using known indexes.  See the
+    -- print() routine below for details.
+    numbers = .directory~new
+
     do path over paths
-      numbers = shell~queryDiskSpace(path)
+      if \ shell~queryDiskSpace(path, numbers) then say "Had an error on this."
       z = print(numbers, path)
     end
   end
   else do
     say 'Querying disk space using parameters from command line'
     say
+
+    obj = .directory~new
     do i = 1 to cmdLine~words
       path = cmdLine~word(i)
-      numbers = shell~queryDiskSpace(path)
-      z = print(numbers, path)
+      if \ shell~queryDiskSpace(path, obj) then say "Hand an error on this."
+      z = print(obj, path)
     end
   end
 
-  -- And finally a regular syntax error.  Don't supply the required path
-  say 'Demonstrate a syntax error using queryDiskSpace (called with no arg.)'
+  -- And finally a regular syntax error.  Don't supply the required directory
+  -- object.
+  say 'Demonstrate a syntax error using queryDiskSpace (called without directory object.)'
   say
-  numbers = shell~queryDiskSpace
+
+  numbers = .directory~new
+  shell~queryDiskSpace("C:", .array~new)
   z = print(numbers)
 
 

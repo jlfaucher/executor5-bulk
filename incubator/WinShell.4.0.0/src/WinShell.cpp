@@ -375,7 +375,7 @@ bool checkOptionalWindow(RexxMethodContext *context, HWND hwnd, int argNumber)
 
 RexxDirectoryObject getDirectory(RexxMethodContext *c, RexxObjectPtr obj, int argPos)
 {
-    if ( ! requiredClass(c, obj, "DIRECTORY", argPos) )
+    if ( ! requiredClass(c, obj, "Directory", argPos) )
     {
         // An exception is raised bye requiredClass().
         return NULLOBJECT;
@@ -558,7 +558,9 @@ RexxMethod0(RexxObjectPtr, Sh_init_class)
  */
 RexxMethod0(RexxObjectPtr, Sh_version_class)
 {
-    return context->NewStringFromAsciiz(WIN_SHELL_VERSION);
+    char buf[64];
+    _snprintf(buf, sizeof(buf), "ooRexx Windows Extension WinShell Version %u.%u.%u.%u", ORX_VER, ORX_REL, ORX_MOD, OOREXX_BLD);
+    return context->NewStringFromAsciiz(buf);
 }
 
 /** Sh::is64Bit()

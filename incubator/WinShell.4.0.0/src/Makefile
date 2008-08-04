@@ -35,92 +35,22 @@
 #/*                                                                            */
 #/*----------------------------------------------------------------------------*/
 
-!INCLUDE winshell.ver.incl
-
 # This make file is currently set to build outside of the ooRexx source tree.
 # It is my intent to add this package to the Windows extensions shipped with
 # ooRexx.  If that is done this make file needs to be reworked.
 
-# The easiest way to build is to use the api directory in an installed version
-# of ooRexx 4.0.0.  But, if that is not practical, then you need to build using
-# the ooRexx source tree, and you need to have rexx.lib and rexxapi.lib built.
-#
-# If you need to build using the ooRexx source tree then either define these
-# variables in your environment, or uncomment them here and set them to the
-# correct paths.  Otherwise, just ensure that REXX_HOME is set properly.
-#
-# OOREXX_SRC_DRIVE=your.drive
-# OOREXX_SRC_DIR=\some\directory\on\your\system
+# This make file is just used to get the version information into macros.  The
+# real make file is WinShell.mak and that file documents the build.  Please read
+# that file for information on building.
 
-!IF DEFINED(OOREXX_SRC_DRIVE) && DEFINED(OOREXX_SRC_DIR)
-SRC_ROOT = $(OOREXX_SRC_DRIVE)$(OOREXX_SRC_DIR)
-SRC_API = $(SRC_ROOT)\api
+all: VER
+  nMake /NOLOGO /F WinShell.mak
 
-!IF "$(DBG)" == "1"
-REXX_LIBS = $(SRC_ROOT)\Win32Dbg\rexx.lib $(SRC_ROOT)\Win32Dbg\rexxapi.lib
-!ELSE
-REXX_LIBS = $(SRC_ROOT)\Win32Rel\rexx.lib $(SRC_ROOT)\Win32Rel\rexxapi.lib
-!ENDIF
 
-REXX_INCLUDES = /I$(SRC_API) /I$(SRC_API)\platform\windows
+VER:
+  @winshell.bat
 
-!ELSE IF DEFINED(REXX_HOME)
-REXX_HOME = "$(REXX_HOME)"
-REXX_LIBS = $(REXX_HOME)\rexx.lib $(REXX_HOME)\rexxapi.lib
-REXX_INCLUDES = /I$(REXX_HOME)
-!ELSE
-!ERROR REXX_HOME or OOREXX_SRC_DRIVE needs to be set, either in environment or in this make file
-!ENDIF
-
-all: ..\bin\WinShell.dll ..\bin\WinShell.cls
-
-LIBS = user32.lib $(REXX_LIBS)
-
-WINSHELL_LIBS = $(LIBS) shell32.lib ole32.lib shlwapi.lib comctl32.lib
-
-INCLUDES = $(REXX_INCLUDES)
-
-VER_DEF = /DORX_VER=$(ORX_MAJOR) /DORX_REL=$(ORX_MINOR) /DORX_MOD=$(ORX_MOD_LVL) /DOOREXX_BLD=$(ORX_BLD_LVL)
-
-!IF "$(VCPP8)" == "1"
-CFLAGS_COMMON = /nologo /c /EHsc /W3 /Wp64
-!ELSE
-CFLAGS_COMMON = /nologo /c /GX /W3
-!ENDIF
-
-CFLAGS_DEFINES = /DWIN32 /D_CRT_SECURE_NO_DEPRECATE
-
-!IF "$(DBG)" == "1"
-CFLAGS_DEBUG =  /MTd /Zi /Od -D_DEBUG /DEBUGTYPE:CV
-!ELSE
-CFLAGS_OPTIMIZE = /MT /Ox
-!ENDIF
-
-CPPFLAGS = $(CFLAGS_OPTIMIZE) $(CFLAGS_COMMON) $(CFLAGS_DEBUG) $(VER_DEF) $(CFLAGS_DEFINES) $(INCLUDES)
-
-LFLAGS_COMMON = /nologo /machine:X86 /SUBSYSTEM:Windows /DLL
-
-!IF "$(DBG)" == "1"
-LFLAGS_DEBUG = /MAP /NOLOGO /PROFILE /DEBUG -debugtype:cv
-!ENDIF
-
-LFLAGS = $(LFLAGS_COMMON) $(LFLAGS_DEBUG)
-
-WinShell.dll: WinShell.obj WinShell.def WinShell.res
-	link WinShell.obj WinShell.res $(LFLAGS) $(WINSHELL_LIBS) /def:WinShell.def /OUT:$(@R).dll /implib:$(@R).lib /PDB:$(@R).pdb
-
-WinShell.obj: WinShell.cpp WinShell.hpp
-	cl $(CPPFLAGS) /TpWinShell.cpp
-
-WinShell.res: WinShell.rc WinShellResources.h
-  rc -r -foWinShell.res WinShell.rc
-
-..\bin\WinShell.dll : WinShell.dll
-  copy WinShell.dll ..\bin\WinShell.dll
-
-..\bin\WinShell.cls : WinShell.cls
-  copy WinShell.cls ..\bin\WinShell.cls
 
 clean:
-	@del *.dll *.obj *.res *.pdb *.lib *.exp *.map 1>nul 2>&1
+	nMake /NOLOGO /F WinShell.mak clean
 
