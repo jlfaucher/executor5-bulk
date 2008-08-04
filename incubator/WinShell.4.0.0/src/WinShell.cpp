@@ -64,15 +64,6 @@ typedef map<string, int, less<string> > String2Int;
 String2Int *ConstantsMap = 0;
 
 
-typedef enum {
-    OMITTED_TYPE,
-    NIL_TYPE,
-    STRING_TYPE,
-    BOOLEAN_TYPE,
-    OBJECT_TYPE
-} RXARG_TYPES;
-
-
 typedef enum
 {
     TO_DIRECTION,
@@ -105,8 +96,124 @@ static void          initMaps(void);
 inline int           getConstantValue(const char *);
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
- *    Functions copied from ooDialog
+ *    Functions, data, etc., copied from ooDialog
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+
+#define COMCTL_ERR_TITLE    "WinShell - Windows Common Controls Error"
+#define GENERIC_ERR_TITLE   "WinShell - Error"
+
+
+/* Defines for the different possible versions of comctl32.dll up to Windows
+ * XP SP2. These DWORD "packed version" numbers are calculated using the
+ * following macro:
+ */
+#define MAKEVERSION(major,minor) MAKELONG(minor,major)
+
+#define COMCTL32_4_0         262144
+#define COMCTL32_4_7         262151
+#define COMCTL32_4_71        262215
+#define COMCTL32_4_72        262216
+#define COMCTL32_5_8         327688
+#define COMCTL32_5_81        327761
+#define COMCTL32_6_0         393216
+
+extern DWORD ComCtl32Version = 0;
+
+// Function prototypes needed for compilation.
+inline void systemServiceException(RexxMethodContext *, char *);
+void systemServiceException(RexxMethodContext *, char *, const char *);
+void systemServiceExceptionCode(RexxMethodContext *, const char *, const char *);
+void systemServiceExceptionComCode(RexxMethodContext *, const char *, const char *, HRESULT);
+
+/**
+ * Convenience function to put up an error message box.
+ *
+ * @param pszMsg    The message.
+ * @param pszTitle  The title of for the message box.
+ */
+static void internalErrorMsg(PSZ pszMsg, PSZ pszTitle)
+{
+    MessageBox(0, pszMsg, pszTitle, MB_OK | MB_ICONHAND | MB_SYSTEMMODAL);
+}
+
+#define DLLGETVERSION_FUNCTION       "DllGetVersion"
+#define COMMON_CONTROL_DLL           "comctl32.dll"
+
+/**
+ * Determines the version of comctl32.dll.
+ *
+ * @return A packed unsigned long that represents the version, or 0 on failure.
+ *         This number is created using Microsoft's suggested process and can be
+ *         used for numeric comparisons.
+ *
+ * @note  If this function fails, an exception is raised.
+ */
+DWORD getComCtl32Version(RexxMethodContext *context)
+{
+    HINSTANCE hinst;
+    DWORD     dllVersion = 0;
+
+    hinst = LoadLibrary(TEXT(COMMON_CONTROL_DLL));
+    if ( hinst )
+    {
+        DLLGETVERSIONPROC pDllGetVersion;
+
+        pDllGetVersion = (DLLGETVERSIONPROC)GetProcAddress(hinst, DLLGETVERSION_FUNCTION);
+        if ( pDllGetVersion )
+        {
+            HRESULT hr;
+            DLLVERSIONINFO info;
+
+            ZeroMemory(&info, sizeof(info));
+            info.cbSize = sizeof(info);
+
+            hr = (*pDllGetVersion)(&info);
+            if ( SUCCEEDED(hr) )
+            {
+                dllVersion = MAKEVERSION(info.dwMajorVersion, info.dwMinorVersion);
+            }
+            else
+            {
+                systemServiceExceptionComCode(context, API_FAILED_MSG, DLLGETVERSION_FUNCTION, hr);
+            }
+        }
+        else
+        {
+            systemServiceExceptionCode(context, NO_PROC_MSG, DLLGETVERSION_FUNCTION);
+        }
+        FreeLibrary(hinst);
+    }
+    else
+    {
+        systemServiceExceptionCode(context, NO_HMODULE_MSG, COMMON_CONTROL_DLL);
+    }
+    return dllVersion;
+}
+
+/**
+ * Initializes the common control library for the specified classes.
+ *
+ * @param classes  Flag specifing the classes to be initialized.
+ *
+ * @return True on success, otherwise false.
+ *
+ * @note   An exception has been raised when false is returned.
+ */
+bool initCommonControls(RexxMethodContext *context, DWORD classes)
+{
+    INITCOMMONCONTROLSEX ctrlex;
+
+    ctrlex.dwSize = sizeof(ctrlex);
+    ctrlex.dwICC = classes;
+
+    if ( ! InitCommonControlsEx(&ctrlex) )
+    {
+        systemServiceExceptionCode(context, NO_COMMCTRL_MSG, "Common Control Library");
+        return false;
+    }
+    return true;
+}
+
 
 inline bool rxArgOmitted(RexxMethodContext * context, size_t index)
 {
@@ -200,6 +307,39 @@ char *strdupupr(const char *str)
  *  common.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 
+inline void systemServiceException(RexxMethodContext *context, char *msg)
+{
+    context->RaiseException1(Rexx_Error_System_service_user_defined, context->NewStringFromAsciiz(msg));
+}
+
+void systemServiceException(RexxMethodContext *context, char *msg, const char *sub)
+{
+    if ( sub != NULL )
+    {
+        TCHAR buffer[128];
+        _snprintf(buffer, sizeof(buffer), msg, sub);
+        systemServiceException(context, buffer);
+    }
+    else
+    {
+        systemServiceException(context, msg);
+    }
+}
+
+void systemServiceExceptionCode(RexxMethodContext *context, const char *msg, const char *arg1)
+{
+    TCHAR buffer[256];
+    _snprintf(buffer, sizeof(buffer), msg, arg1, GetLastError());
+    systemServiceException(context, buffer);
+}
+
+void systemServiceExceptionComCode(RexxMethodContext *context, const char *msg, const char *arg1, HRESULT hr)
+{
+    TCHAR buffer[256];
+    _snprintf(buffer, sizeof(buffer), msg, arg1, hr);
+    systemServiceException(context, buffer);
+}
+
 /**
  * 93.914
  * Method argument <argument> must be one of <values>; found "<value>"
@@ -231,6 +371,16 @@ bool checkOptionalWindow(RexxMethodContext *context, HWND hwnd, int argNumber)
         return false;
     }
     return true;
+}
+
+RexxDirectoryObject getDirectory(RexxMethodContext *c, RexxObjectPtr obj, int argPos)
+{
+    if ( ! requiredClass(c, obj, "DIRECTORY", argPos) )
+    {
+        // An exception is raised bye requiredClass().
+        return NULLOBJECT;
+    }
+    return (RexxDirectoryObject)obj;
 }
 
 /**
@@ -302,8 +452,8 @@ void pathdup(char *dest, const char *src)
  * All objects use CommonInit in their ~init() methods to ensure that the
  * correct initial set up is done.
  *
- * Objects that do not need COM should indicate so by passing in false.  These
- * object then need to be sure and also use false in the CommonUnint call.
+ * Objects that do not need COM should indicate so by passing in false.  Those
+ * objects then need to be sure and also use false in the CommonUnint call.
  *
  * The minimum required operating system is W2K with service pack 4.  This
  * ensures these minimum shell DLLs: Shell32.dll: 5.0 Shlwapi.dll: 5.0, and
@@ -315,32 +465,16 @@ void pathdup(char *dest, const char *src)
  */
 bool CommonInit(RexxMethodContext *context, bool useCOM)
 {
-    if ( (InterlockedIncrementRelease(&globalInstances) == 1) )
-    {
-        if ( ! _isAtLeastW2K() )
-        {
-            systemServiceException(context, REQUIRE_W2K_MSG, NULL);
-            return false;
-        }
-    }
+    InterlockedIncrementRelease(&globalInstances);
 
     if ( InterlockedIncrementRelease(&threadInstances) == 1 )
     {
         HRESULT  hr;
-        INITCOMMONCONTROLSEX ctrlex;
 
         thisModule = GetModuleHandle(SHELL_DLL);
         if ( thisModule == NULL )
         {
             systemServiceExceptionCode(context, NO_HMODULE_MSG, SHELL_DLL);
-            return false;
-        }
-
-        ctrlex.dwSize = sizeof(ctrlex);
-        ctrlex.dwICC = ICC_WIN95_CLASSES | ICC_STANDARD_CLASSES;
-        if ( ! InitCommonControlsEx(&ctrlex) )
-        {
-            systemServiceExceptionCode(context, NO_COMMCTRL_MSG, "Common Control Library");
             return false;
         }
 
@@ -372,14 +506,211 @@ void CommonUninit(bool useCOM)
     InterlockedDecrementRelease(&globalInstances);
 }
 
+#define SH_CLASS             "Sh"
+/** class: Sh
+ *
+ *  A class of simple utility routines.  Each routine is a class method.
+ *
+ *  For example:
+ *
+ *    if .SH~isXP then say 'The current operating system is Windows XP.'
+ */
+
+
+#define WIN_SHELL_VERSION    "Windows Shell for ooRexx Version 1.0.0.0 "
+
+/** Sh::init()
+ *
+ *  This is the class init() method, which means it will execute when the
+ *  WinShell package is first processed.  It is used to ensure that the minimum
+ *  requirements for the WinShell package are met.  It is also useful for things
+ *  that need to be set up one time prior to any other methods being executed.
+ */
+RexxMethod0(RexxObjectPtr, Sh_init_class)
+{
+
+    if ( ! _isAtLeastW2K() )
+    {
+        systemServiceException(context, REQUIRE_W2K_MSG, NULL);
+        return NULLOBJECT;
+    }
+
+    ComCtl32Version = getComCtl32Version(context);
+    if ( ComCtl32Version == 0 )
+    {
+        internalErrorMsg("The version of the Windows Common Controls library (comctl32.dll)\n"
+                         "could not be determined.  WinShell can not continue", COMCTL_ERR_TITLE);
+        return NULLOBJECT;
+    }
+
+    if ( ! initCommonControls(context, ICC_WIN95_CLASSES | ICC_STANDARD_CLASSES) )
+    {
+        return NULLOBJECT;
+    }
+
+
+    return NULLOBJECT;
+}
+
+/** Sh::version()
+ *
+ * Return the WinShell version.
+ */
+RexxMethod0(RexxObjectPtr, Sh_version_class)
+{
+    return context->NewStringFromAsciiz(WIN_SHELL_VERSION);
+}
+
+/** Sh::is64Bit()
+ *
+ * Returns true if the current process is running in 64 bit mode, otherwise
+ * false.
+ */
+RexxMethod0(RexxObjectPtr, Sh_is64Bit_class)
+{
+    if ( _is64Bit() )
+        return context->True();
+    return context->False();
+}
+
+/** Sh::is32on64Bit()
+ *
+ * Returns true if the current process is running in 32 bit mode on a 64 bit
+ * operating system, otherwise false.
+ */
+RexxMethod0(RexxObjectPtr, Sh_is32on64Bit_class)
+{
+    if ( _is32on64Bit() )
+        return context->True();
+    return context->False();
+}
+
+/** Sh::isW2K()
+ *
+ * Returns true if the operating system is Windows 2000 (W2K), otherwise false.
+ */
+RexxMethod0(RexxObjectPtr, Sh_isW2K_class)
+{
+    if ( _isW2K() )
+        return context->True();
+    return context->False();
+}
+
+/** Sh::isAtLeastW2K()
+ *
+ * Returns true if the operating system is Windows 2000 (W2K), service pack 4,
+ * or later. Otherwise returns false.
+ */
+RexxMethod0(RexxObjectPtr, Sh_isAtLeastW2K_class)
+{
+    if ( _isAtLeastW2K() )
+        return context->True();
+    return context->False();
+}
+
+/** Sh::isXP()
+ *
+ * Returns true if the operating system is Windows XP, otherwise false.
+ */
+RexxMethod0(RexxObjectPtr, Sh_isXP_class)
+{
+    if ( _isXP() )
+        return context->True();
+    return context->False();
+}
+
+/** Sh::isXP32()
+ *
+ * Returns true if the operating system is Windows XP 32 bit, otherwise false.
+ */
+RexxMethod0(RexxObjectPtr, Sh_isXP32_class)
+{
+    if ( _isXP32() )
+        return context->True();
+    return context->False();
+}
+
+/** Sh::isXP64()
+ *
+ * Returns true if the operating system is Windows XP 64 bit, otherwise false.
+ */
+RexxMethod0(RexxObjectPtr, Sh_isXP64_class)
+{
+    if ( _isXP64() )
+        return context->True();
+    return context->False();
+}
+
+/** Sh::isAtLeastXP()
+ *
+ * Returns true if the operating system is Windows XP, service pack 2, or later.
+ * Otherwise returns false.
+ */
+RexxMethod0(RexxObjectPtr, Sh_isAtLeastXP_class)
+{
+    if ( _isAtLeastXP() )
+        return context->True();
+    return context->False();
+}
+
+/** Sh::isW2K3()
+ *
+ * Returns true if the operating system is Windows Server 2003 (W2K3), otherwise
+ * false.
+ */
+RexxMethod0(RexxObjectPtr, Sh_isW2K3_class)
+{
+    if ( _isW2K3() )
+        return context->True();
+    return context->False();
+}
+
+/** Sh::isAtLeastW2K3()
+ *
+ * Returns true if the operating system is Windows Server 2003 (W2K3), service
+ * pack 1, or later.  Otherwise returns false.
+ */
+RexxMethod0(RexxObjectPtr, Sh_isAtLeastW2K3_class)
+{
+    if ( _isAtLeastW2K3() )
+        return context->True();
+    return context->False();
+}
+
+/** Sh::isVista()
+ *
+ * Returns true if the operating system is Visata, otherwise false.
+ */
+RexxMethod0(RexxObjectPtr, Sh_isVista_class)
+{
+    if ( _isVista() )
+        return context->True();
+    return context->False();
+}
+
+/** Sh::isAtLeastVista()
+ *
+ * Returns true if the operating system is Vista, or later.  Otherwise returns
+ * false.
+ */
+RexxMethod0(RexxObjectPtr, Sh_isAtLeastVista_class)
+{
+    if ( _isAtLeastVista() )
+        return context->True();
+    return context->False();
+}
+
+
+#define WINSHELL_CLASS              "WinShell"
+
+#define FINDFILES_WINDOW_CLASS      "CabinetWClass"
+#define FINDFILES_WINDOW_TITLE      "Search Results"
+
 /** Some useful Shell function not implemented.
  *  SHFormatDrive puts up the Format Drive dialog
  *  SHGetFileInfo file info, mostly can get icons.
  *
  */
-
-#define FINDFILES_WINDOW_CLASS      "CabinetWClass"
-#define FINDFILES_WINDOW_TITLE      "Search Results"
 
 /** WinShell::init()
  *
@@ -745,27 +1076,54 @@ RexxMethod1(RexxObjectPtr, WinShell_addToRecentDocuments, RexxObjectPtr, doc)
 }
 
 
-/** WinShell::_queryDiskSpace()  <private>
- *                                        TODO redo this function now that it is
- *                                        easy to return ooRexx objects.
+/** WinShell::_queryDiskSpace()
  *
- *  Note that rxPath is not omitted (can not be omitted) because use strict arg
- *  is done in WinShell.cls.
+ * Returns the total size of a disk and the the free space in bytes.  The free
+ * space includes total number of bytes free and total number of bytes free for
+ * the current user.  If disk quotas are in effect, the free bytes available for
+ * the user many be different than the total free bytes.  Any valid path name,
+ * including UNC path names, for the disk may be used.  (Including C:)
+ *
+ * @param rxPath   A path name that indicates which disk the query is for.
+ *
+ * @param obj      A .Directory object that is used to return the different byte
+ *                 values and the system error code.  The directory will have
+ *                 these indexes:
+ *
+ *                 obj~total
+ *                 obj~free
+ *                 obj~userFree
+ *                 obj~error
+ *
+ * @return  True on success, false on failure.  On failure, the system error
+ * code can be obtained from the 'error' index of the directory object.
  */
-RexxMethod1(RexxObjectPtr, WinShell_queryDiskSpace_private, CSTRING, rxPath)
+RexxMethod2(logical_t, WinShell_queryDiskSpace, CSTRING, rxPath, RexxObjectPtr, obj)
 {
+    RexxDirectoryObject directory = getDirectory(context, obj, 2);
+    if ( directory == NULLOBJECT )
+    {
+        return FALSE;
+    }
+
     ULARGE_INTEGER userFree, total, totalFree;
-    TCHAR buffer[64];
 
     if ( SHGetDiskFreeSpaceEx(rxPath, &userFree, &total, &totalFree) )
     {
-        _snprintf(buffer, 64, "%I64d %I64d %I64d", total, totalFree, userFree);
+        context->DirectoryPut(directory, context->UnsignedInt64ToObject(total.QuadPart), "TOTAL");
+        context->DirectoryPut(directory, context->UnsignedInt64ToObject(totalFree.QuadPart), "FREE");
+        context->DirectoryPut(directory, context->UnsignedInt64ToObject(userFree.QuadPart), "USERFREE");
+        context->DirectoryPut(directory, context->NewInteger(0), "ERROR");
+        return TRUE;
     }
     else
     {
-        _snprintf(buffer, 64, "Err: %d", GetLastError());
+        context->DirectoryPut(directory, context->NewInteger(0), "TOTAL");
+        context->DirectoryPut(directory, context->NewInteger(0), "FREE");
+        context->DirectoryPut(directory, context->NewInteger(0), "USERFREE");
+        context->DirectoryPut(directory, context->NewInteger(GetLastError()), "ERROR");
+        return FALSE;
     }
-    return context->NewStringFromAsciiz(buffer);
 }
 
 
@@ -2891,156 +3249,6 @@ static bool _PathIsFull(const char *path)
 }
 
 
-#define WIN_SHELL_VERSION    "Windows Shell for ooRexx Version 1.0.0.0 "
-
-/** Sh::version()
- *
- * Return the WinShell version.
- */
-RexxMethod0(RexxObjectPtr, Sh_version_class)
-{
-    return context->NewStringFromAsciiz(WIN_SHELL_VERSION);
-}
-
-/** Sh::is64Bit()
- *
- * Returns true if the current process is running in 64 bit mode, otherwise
- * false.
- */
-RexxMethod0(RexxObjectPtr, Sh_is64Bit_class)
-{
-    if ( _is64Bit() )
-        return context->True();
-    return context->False();
-}
-
-/** Sh::is32on64Bit()
- *
- * Returns true if the current process is running in 32 bit mode on a 64 bit
- * operating system, otherwise false.
- */
-RexxMethod0(RexxObjectPtr, Sh_is32on64Bit_class)
-{
-    if ( _is32on64Bit() )
-        return context->True();
-    return context->False();
-}
-
-/** Sh::isW2K()
- *
- * Returns true if the operating system is Windows 2000 (W2K), otherwise false.
- */
-RexxMethod0(RexxObjectPtr, Sh_isW2K_class)
-{
-    if ( _isW2K() )
-        return context->True();
-    return context->False();
-}
-
-/** Sh::isAtLeastW2K()
- *
- * Returns true if the operating system is Windows 2000 (W2K), service pack 4,
- * or later. Otherwise returns false.
- */
-RexxMethod0(RexxObjectPtr, Sh_isAtLeastW2K_class)
-{
-    if ( _isAtLeastW2K() )
-        return context->True();
-    return context->False();
-}
-
-/** Sh::isXP()
- *
- * Returns true if the operating system is Windows XP, otherwise false.
- */
-RexxMethod0(RexxObjectPtr, Sh_isXP_class)
-{
-    if ( _isXP() )
-        return context->True();
-    return context->False();
-}
-
-/** Sh::isXP32()
- *
- * Returns true if the operating system is Windows XP 32 bit, otherwise false.
- */
-RexxMethod0(RexxObjectPtr, Sh_isXP32_class)
-{
-    if ( _isXP32() )
-        return context->True();
-    return context->False();
-}
-
-/** Sh::isXP64()
- *
- * Returns true if the operating system is Windows XP 64 bit, otherwise false.
- */
-RexxMethod0(RexxObjectPtr, Sh_isXP64_class)
-{
-    if ( _isXP64() )
-        return context->True();
-    return context->False();
-}
-
-/** Sh::isAtLeastXP()
- *
- * Returns true if the operating system is Windows XP, service pack 2, or later.
- * Otherwise returns false.
- */
-RexxMethod0(RexxObjectPtr, Sh_isAtLeastXP_class)
-{
-    if ( _isAtLeastXP() )
-        return context->True();
-    return context->False();
-}
-
-/** Sh::isW2K3()
- *
- * Returns true if the operating system is Windows Server 2003 (W2K3), otherwise
- * false.
- */
-RexxMethod0(RexxObjectPtr, Sh_isW2K3_class)
-{
-    if ( _isW2K3() )
-        return context->True();
-    return context->False();
-}
-
-/** Sh::isAtLeastW2K3()
- *
- * Returns true if the operating system is Windows Server 2003 (W2K3), service
- * pack 1, or later.  Otherwise returns false.
- */
-RexxMethod0(RexxObjectPtr, Sh_isAtLeastW2K3_class)
-{
-    if ( _isAtLeastW2K3() )
-        return context->True();
-    return context->False();
-}
-
-/** Sh::isVista()
- *
- * Returns true if the operating system is Visata, otherwise false.
- */
-RexxMethod0(RexxObjectPtr, Sh_isVista_class)
-{
-    if ( _isVista() )
-        return context->True();
-    return context->False();
-}
-
-/** Sh::isAtLeastVista()
- *
- * Returns true if the operating system is Vista, or later.  Otherwise returns
- * false.
- */
-RexxMethod0(RexxObjectPtr, Sh_isAtLeastVista_class)
-{
-    if ( _isAtLeastVista() )
-        return context->True();
-    return context->False();
-}
-
 /**
  * Puts up the Browse for Folder dialog using the supplied browse info
  * structure.
@@ -3466,6 +3674,21 @@ inline int getConstantValue(const char * str)
 }
 
 
+REXX_METHOD_PROTOTYPE(Sh_init_class          );
+REXX_METHOD_PROTOTYPE(Sh_version_class       );
+REXX_METHOD_PROTOTYPE(Sh_is64Bit_class       );
+REXX_METHOD_PROTOTYPE(Sh_is32on64Bit_class   );
+REXX_METHOD_PROTOTYPE(Sh_isW2K_class         );
+REXX_METHOD_PROTOTYPE(Sh_isAtLeastW2K_class  );
+REXX_METHOD_PROTOTYPE(Sh_isXP_class          );
+REXX_METHOD_PROTOTYPE(Sh_isXP32_class        );
+REXX_METHOD_PROTOTYPE(Sh_isXP64_class        );
+REXX_METHOD_PROTOTYPE(Sh_isAtLeastXP_class   );
+REXX_METHOD_PROTOTYPE(Sh_isW2K3_class        );
+REXX_METHOD_PROTOTYPE(Sh_isAtLeastW2K3_class );
+REXX_METHOD_PROTOTYPE(Sh_isVista_class       );
+REXX_METHOD_PROTOTYPE(Sh_isAtLeastVista_class);
+
 REXX_METHOD_PROTOTYPE(WinShell_init                   );
 REXX_METHOD_PROTOTYPE(WinShell_uninit                 );
 REXX_METHOD_PROTOTYPE(WinShell_browseForFolder        );
@@ -3480,7 +3703,7 @@ REXX_METHOD_PROTOTYPE(WinShell_openFolder             );
 REXX_METHOD_PROTOTYPE(WinShell_closeWindow            );
 REXX_METHOD_PROTOTYPE(WinShell_addToRecentDocuments   );
 REXX_METHOD_PROTOTYPE(WinShell_clearRecentDocuments   );
-REXX_METHOD_PROTOTYPE(WinShell_queryDiskSpace_private );
+REXX_METHOD_PROTOTYPE(WinShell_queryDiskSpace         );
 REXX_METHOD_PROTOTYPE(WinShell_queryRecycleBin_private);
 REXX_METHOD_PROTOTYPE(WinShell_emptyRecycleBin        );
 REXX_METHOD_PROTOTYPE(WinShell_selectIcon             );
@@ -3503,7 +3726,6 @@ REXX_METHOD_PROTOTYPE(ShellFileOp_delete     );
 REXX_METHOD_PROTOTYPE(ShellFileOp_copy       );
 REXX_METHOD_PROTOTYPE(ShellFileOp_move       );
 REXX_METHOD_PROTOTYPE(ShellFileOp_rename     );
-
 REXX_METHOD_PROTOTYPE(ShellFileOp_setConfirmation     );
 REXX_METHOD_PROTOTYPE(ShellFileOp_setConfirmMkDir     );
 REXX_METHOD_PROTOTYPE(ShellFileOp_setProgressGUI      );
@@ -3512,7 +3734,6 @@ REXX_METHOD_PROTOTYPE(ShellFileOp_setErrorGUI         );
 REXX_METHOD_PROTOTYPE(ShellFileOp_setRecursive        );
 REXX_METHOD_PROTOTYPE(ShellFileOp_setPermanent        );
 REXX_METHOD_PROTOTYPE(ShellFileOp_setProgressDlgTitle );
-
 REXX_METHOD_PROTOTYPE(ShellFileOp_setFOFlags );
 REXX_METHOD_PROTOTYPE(ShellFileOp_setOwnerWnd);
 
@@ -3547,20 +3768,6 @@ REXX_METHOD_PROTOTYPE(Path_isUNCServerShare);
 REXX_METHOD_PROTOTYPE(Path_getShortPath    );
 REXX_METHOD_PROTOTYPE(Path_getLongPath     );
 
-REXX_METHOD_PROTOTYPE(Sh_version_class       );
-REXX_METHOD_PROTOTYPE(Sh_is64Bit_class       );
-REXX_METHOD_PROTOTYPE(Sh_is32on64Bit_class   );
-REXX_METHOD_PROTOTYPE(Sh_isW2K_class         );
-REXX_METHOD_PROTOTYPE(Sh_isAtLeastW2K_class  );
-REXX_METHOD_PROTOTYPE(Sh_isXP_class          );
-REXX_METHOD_PROTOTYPE(Sh_isXP32_class        );
-REXX_METHOD_PROTOTYPE(Sh_isXP64_class        );
-REXX_METHOD_PROTOTYPE(Sh_isAtLeastXP_class   );
-REXX_METHOD_PROTOTYPE(Sh_isW2K3_class        );
-REXX_METHOD_PROTOTYPE(Sh_isAtLeastW2K3_class );
-REXX_METHOD_PROTOTYPE(Sh_isVista_class       );
-REXX_METHOD_PROTOTYPE(Sh_isAtLeastVista_class);
-
 REXX_METHOD_PROTOTYPE(size_init);
 REXX_METHOD_PROTOTYPE(size_cx);
 REXX_METHOD_PROTOTYPE(size_setCX);
@@ -3569,6 +3776,21 @@ REXX_METHOD_PROTOTYPE(size_setCY);
 
 
 RexxMethodEntry winshell_methods[] = {
+
+    REXX_METHOD(Sh_init_class          ,             Sh_init_class          ),
+    REXX_METHOD(Sh_version_class       ,             Sh_version_class       ),
+    REXX_METHOD(Sh_is64Bit_class       ,             Sh_is64Bit_class       ),
+    REXX_METHOD(Sh_is32on64Bit_class   ,             Sh_is32on64Bit_class   ),
+    REXX_METHOD(Sh_isW2K_class         ,             Sh_isW2K_class         ),
+    REXX_METHOD(Sh_isAtLeastW2K_class  ,             Sh_isAtLeastW2K_class  ),
+    REXX_METHOD(Sh_isXP_class          ,             Sh_isXP_class          ),
+    REXX_METHOD(Sh_isXP32_class        ,             Sh_isXP32_class        ),
+    REXX_METHOD(Sh_isXP64_class        ,             Sh_isXP64_class        ),
+    REXX_METHOD(Sh_isAtLeastXP_class   ,             Sh_isAtLeastXP_class   ),
+    REXX_METHOD(Sh_isW2K3_class        ,             Sh_isW2K3_class        ),
+    REXX_METHOD(Sh_isAtLeastW2K3_class ,             Sh_isAtLeastW2K3_class ),
+    REXX_METHOD(Sh_isVista_class       ,             Sh_isVista_class       ),
+    REXX_METHOD(Sh_isAtLeastVista_class,             Sh_isAtLeastVista_class),
 
     REXX_METHOD(WinShell_init                   ,    WinShell_init                   ),
     REXX_METHOD(WinShell_uninit                 ,    WinShell_uninit                 ),
@@ -3584,7 +3806,7 @@ RexxMethodEntry winshell_methods[] = {
     REXX_METHOD(WinShell_closeWindow            ,    WinShell_closeWindow            ),
     REXX_METHOD(WinShell_addToRecentDocuments   ,    WinShell_addToRecentDocuments   ),
     REXX_METHOD(WinShell_clearRecentDocuments   ,    WinShell_clearRecentDocuments   ),
-    REXX_METHOD(WinShell_queryDiskSpace_private ,    WinShell_queryDiskSpace_private ),
+    REXX_METHOD(WinShell_queryDiskSpace         ,    WinShell_queryDiskSpace ),
     REXX_METHOD(WinShell_queryRecycleBin_private,    WinShell_queryRecycleBin_private),
     REXX_METHOD(WinShell_emptyRecycleBin        ,    WinShell_emptyRecycleBin        ),
     REXX_METHOD(WinShell_selectIcon             ,    WinShell_selectIcon             ),
@@ -3648,20 +3870,6 @@ RexxMethodEntry winshell_methods[] = {
     REXX_METHOD(Path_isUNCServerShare,               Path_isUNCServerShare),
     REXX_METHOD(Path_getShortPath    ,               Path_getShortPath    ),
     REXX_METHOD(Path_getLongPath     ,               Path_getLongPath     ),
-
-    REXX_METHOD(Sh_version_class       ,             Sh_version_class       ),
-    REXX_METHOD(Sh_is64Bit_class       ,             Sh_is64Bit_class       ),
-    REXX_METHOD(Sh_is32on64Bit_class   ,             Sh_is32on64Bit_class   ),
-    REXX_METHOD(Sh_isW2K_class         ,             Sh_isW2K_class         ),
-    REXX_METHOD(Sh_isAtLeastW2K_class  ,             Sh_isAtLeastW2K_class  ),
-    REXX_METHOD(Sh_isXP_class          ,             Sh_isXP_class          ),
-    REXX_METHOD(Sh_isXP32_class        ,             Sh_isXP32_class        ),
-    REXX_METHOD(Sh_isXP64_class        ,             Sh_isXP64_class        ),
-    REXX_METHOD(Sh_isAtLeastXP_class   ,             Sh_isAtLeastXP_class   ),
-    REXX_METHOD(Sh_isW2K3_class        ,             Sh_isW2K3_class        ),
-    REXX_METHOD(Sh_isAtLeastW2K3_class ,             Sh_isAtLeastW2K3_class ),
-    REXX_METHOD(Sh_isVista_class       ,             Sh_isVista_class       ),
-    REXX_METHOD(Sh_isAtLeastVista_class,             Sh_isAtLeastVista_class),
 
     REXX_METHOD(size_init,                           size_init),
     REXX_METHOD(size_cx,                             size_cx),

@@ -63,9 +63,10 @@ static bool fileIconInitDone = false;
 #define NO_IMAGELIST_MSG          "the Windows Shell did not return the system image list for %s icons"
 #define NO_ITEMID_MSG             "the Windows Shell did not return the item ID for %s"
 #define NO_HMODULE_MSG            "failed to obtain %s module handle; OS error code %d"
-#define NO_PROC_MSG               "failed to obtain %s procedure address; OS error code %d"
+#define NO_PROC_MSG               "failed to get procedeure adddress for %s(); OS error code %d"
 #define NO_COMMCTRL_MSG           "failed to initialize %s; OS error code %d"
 #define NO_CREATE_MSG             "failed to create %s; OS error code %d"
+#define API_FAILED_MSG            "system API %s() failed; COM code 0x%08x"
 #define INVALID_CONSTANT_MSG      "the valid %s_XXX constants"
 
 #define PPSF_PATH                 0x0001
@@ -152,32 +153,6 @@ inline bool _isVista(void)
 inline BOOL _isAtLeastVista(void)
 {
     return _isVersion(6, 0, 0, 0, VER_GREATER_EQUAL);
-}
-
-inline void systemServiceException(RexxMethodContext *context, char *msg)
-{
-    context->RaiseException1(Rexx_Error_System_service_user_defined, context->NewStringFromAsciiz(msg));
-}
-
-inline void systemServiceException(RexxMethodContext *context, char *msg, const char *sub)
-{
-    if ( sub != NULL )
-    {
-        TCHAR buffer[128];
-        _snprintf(buffer, sizeof(buffer), msg, sub);
-        systemServiceException(context, buffer);
-    }
-    else
-    {
-        systemServiceException(context, msg);
-    }
-}
-
-inline void systemServiceExceptionCode(RexxMethodContext *context, const char *msg, const char *arg1)
-{
-    TCHAR buffer[256];
-    _snprintf(buffer, sizeof(buffer), msg, arg1, GetLastError());
-    systemServiceException(context, buffer);
 }
 
 /**

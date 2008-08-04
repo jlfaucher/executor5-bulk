@@ -35,17 +35,6 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-if \ .local~hasEntry('WINSHELL_VERSION') then do
-  .local~WinShell_version = .Sh~version
-
-  .local~setentry("SH", .Sh)
-  .local~setentry("WINSHELL", .WinShell)
-  .local~setentry("IMAGELIST", .ImageList)
-  .local~setentry("SIMPLEFOLDERBROWSE", .SimpleFolderBrowse)
-  .local~setentry("SHELLFILEOP", .ShellFileOp)
-  .local~setentry("PATH", .Path)
-
-end
 -- End of entry point.
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
@@ -53,6 +42,36 @@ end
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::requires 'winshell' LIBRARY
 
+/* class: Sh - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+
+    A class of simple utility routines.  Each routine is a class method.
+
+    This class does not follow the pattern of the other WinShell classes in that
+    it does not need the external routines loaded, and does not load them.  You
+    do not instantiate an object of this class but rather use the class methods
+    as utility routines.
+
+    For example:
+
+    if .SH~isXP then say 'The current operating system is Windows XP.'
+
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::class 'Sh' public
+
+::method init                 class external "LIBRARY WINSHELL Sh_init_class"
+::method version              class external "LIBRARY WINSHELL Sh_version_class"
+::method is64Bit              class external "LIBRARY WINSHELL Sh_is64Bit_class"
+::method is32on64Bit          class external "LIBRARY WINSHELL Sh_is32on64Bit_class"
+::method isW2K                class external "LIBRARY WINSHELL Sh_isW2K_class"
+::method isAtLeastW2K         class external "LIBRARY WINSHELL Sh_isAtLeastW2K_class"
+::method isXP                 class external "LIBRARY WINSHELL Sh_isXP_class"
+::method isXP32               class external "LIBRARY WINSHELL Sh_isXP32_class"
+::method isXP64               class external "LIBRARY WINSHELL Sh_isXP64_class"
+::method isAtLeastXP          class external "LIBRARY WINSHELL Sh_isAtLeastXP_class"
+::method isW2K3               class external "LIBRARY WINSHELL Sh_isW2K3_class"
+::method isAtLeastW2K3        class external "LIBRARY WINSHELL Sh_isAtLeastW2K3_class"
+::method isVista              class external "LIBRARY WINSHELL Sh_isVista_class"
+::method isAtLeastVista       class external "LIBRARY WINSHELL Sh_isAtLeastVista_class"
 
 /* class: Size - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
 
@@ -61,10 +80,10 @@ end
 
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::class 'Size' public
-::method init external "LIBRARY winshell size_init"
-::method cx external "LIBRARY winshell size_cx"
+::method init  external "LIBRARY winshell size_init"
+::method cx    external "LIBRARY winshell size_cx"
 ::method 'cx=' external "LIBRARY winshell size_setCX"
-::method cy external "LIBRARY winshell size_cy"
+::method cy    external "LIBRARY winshell size_cy"
 ::method 'cy=' external "LIBRARY winshell size_setCY"
 
 /* class: WinShell - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
@@ -73,7 +92,7 @@ end
     Windows Shell functionality.
 
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::class 'WinShell'
+::class 'WinShell' public
 
 ::method init                      external "LIBRARY WINSHELL WinShell_init"
 ::method uninit                    external "LIBRARY WINSHELL WinShell_uninit"
@@ -97,7 +116,7 @@ end
 ::method releaseIcon               external "LIBRARY WINSHELL WinShell_releaseIcon"
 ::method about                     external "LIBRARY WINSHELL WinShell_about"
 
-::method _queryDiskSpace  private  external "LIBRARY WINSHELL WinShell_queryDiskSpace_private"
+::method _queryDiskSpace  private  external "LIBRARY WINSHELL WinShell_queryDiskSpace"
 ::method _queryRecycleBin private  external "LIBRARY WINSHELL WinShell_queryRecycleBin_private"
 
 -- Temp method used to test things.
@@ -115,25 +134,7 @@ end
  * The information is returned in a directory object with the indexes of:
  * error, total, free, and userFree.
  */
-::method queryDiskSpace
-  use strict arg path
-
-  details = self~_queryDiskSpace(path)
-
-  obj = .directory~new
-  if details~abbrev("Err:") then do
-    obj~error    = details~word(2)
-    obj~total    = 0
-    obj~free     = 0
-    obj~userFree = 0
-  end
-  else do
-    obj~error    = 0
-    obj~total    = details~word(1)
-    obj~free     = details~word(2)
-    obj~userFree = details~word(3)
-  end
-return obj
+::method queryDiskSpace external "LIBRARY WINSHELL WinShell_queryDiskSpace"
 
 
 /** queryRecycleBin()
@@ -172,7 +173,7 @@ return obj
     same sized images and methods to manipulate those images.
 
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::class 'ImageList'
+::class 'ImageList' public
 
 ::method destroy class             external "LIBRARY WINSHELL ImageList_destroy_class"
 
@@ -194,7 +195,7 @@ return obj
     common dialog.
 
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::class 'SimpleFolderBrowse'
+::class 'SimpleFolderBrowse' public
 
 ::method init      external "LIBRARY WINSHELL SimpleFolderBrowse_init"
 ::method uninit    external "LIBRARY WINSHELL SimpleFolderBrowse_uninit"
@@ -258,7 +259,7 @@ return obj
     copy operation is being done the progress dialog will display.
 
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::class 'ShellFileOp'
+::class 'ShellFileOp' public
 
 ::method init            external "LIBRARY WINSHELL ShellFileOp_init"
 ::method uninit          external "LIBRARY WINSHELL ShellFileOp_uninit"
@@ -354,7 +355,7 @@ return obj
 
       path = .Path~addBackSlash(path)
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::class 'Path'
+::class 'Path' public
 
 ::method makePretty       class external "LIBRARY WINSHELL Path_makePretty"
 ::method canonicalize     class external "LIBRARY WINSHELL Path_canonicalize"
@@ -391,36 +392,6 @@ return obj
  *
  */
 
-
-/* class: Sh - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
-
-    A class of simple utility routines.  Each routine is a class method.
-
-    This class does not follow the pattern of the other WinShell classes in that
-    it does not need the external routines loaded, and does not load them.  You
-    do not instantiate an object of this class but rather use the class methods
-    as utility routines.
-
-    For example:
-
-    if .SH~isXP then say 'The current operating system is Windows XP.'
-
-\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::class 'Sh'
-
-::method version              class external "LIBRARY WINSHELL Sh_version_class"
-::method is64Bit              class external "LIBRARY WINSHELL Sh_is64Bit_class"
-::method is32on64Bit          class external "LIBRARY WINSHELL Sh_is32on64Bit_class"
-::method isW2K                class external "LIBRARY WINSHELL Sh_isW2K_class"
-::method isAtLeastW2K         class external "LIBRARY WINSHELL Sh_isAtLeastW2K_class"
-::method isXP                 class external "LIBRARY WINSHELL Sh_isXP_class"
-::method isXP32               class external "LIBRARY WINSHELL Sh_isXP32_class"
-::method isXP64               class external "LIBRARY WINSHELL Sh_isXP64_class"
-::method isAtLeastXP          class external "LIBRARY WINSHELL Sh_isAtLeastXP_class"
-::method isW2K3               class external "LIBRARY WINSHELL Sh_isW2K3_class"
-::method isAtLeastW2K3        class external "LIBRARY WINSHELL Sh_isAtLeastW2K3_class"
-::method isVista              class external "LIBRARY WINSHELL Sh_isVista_class"
-::method isAtLeastVista       class external "LIBRARY WINSHELL Sh_isAtLeastVista_class"
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
