@@ -44,6 +44,9 @@
 #include "LocalMacroSpaceManager.hpp"
 #include "SysProcess.hpp"
 #include "SysSemaphore.hpp"
+#include "SysCSStream.hpp"
+
+#include <list>
 
 class LocalAPIContext;
 
@@ -51,6 +54,10 @@ class LocalAPIContext;
 class LocalAPIManager
 {
 public:
+
+    enum {
+        MAX_CONNECTIONS = 3     // Limit on the number of connections we keep active.
+    };
 
     LocalAPIManager()
     {
@@ -70,14 +77,17 @@ public:
     void establishServerConnection();
     RexxReturnCode processServiceException(ServerManager t, ServiceException *e);
     void shutdown();
+    SysClientStream *getConnection();
+    void returnConnection(SysClientStream *);
 
 protected:
 
     static LocalAPIManager* singleInstance;  // the single local instance
     static SysMutex messageLock;             // threading synchronizer
     bool           connectionEstablished;    // local initialization state
-    SessionID      session;              // the session identifier
-    char           userid[MAX_USERID_LENGTH];    // name of the user
+    SessionID      session;                  // the session identifier
+    char           userid[MAX_USERID_LENGTH]; // name of the user
+    std::list<SysClientStream *> connections; // connection pool
 
 public:                                  // let's make these public
     LocalQueueManager queueManager;      // our managers for the different API sets

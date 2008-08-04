@@ -46,21 +46,26 @@
  */
 void ClientMessage::send()
 {
-    session = LocalAPIManager::getInstance()->getSession();
-    LocalAPIManager::getInstance()->getUserID(userid);
+    LocalAPIManager *manager = LocalAPIManager::getInstance();
+    session = manager->getSession();
+    manager->getUserID(userid);
 
-    SysClientStream pipe;
+    // get an active connection to the server
+    SysClientStream *pipe = manager->getConnection();
 
-    // open the pipe to the connection->
-    if (!pipe.open("localhost", REXX_API_PORT))
+    try
     {
-        throw new ServiceException(SERVER_FAILURE, "ServiceMessage::send() Failure connecting to rxapi server");
+        // write the message and get the result reply.
+        writeMessage(*pipe);
+        readResult(*pipe);
+    }
+    catch (ServiceException *)
+    {
+        // this could have been caused by an error, so we need to delete the connection
+        delete pipe;
+        // rethrow the exception
+        throw;
     }
 
-    // write the message and get the result reply.
-    writeMessage(pipe);
-    readResult(pipe);
 
-    // close the connection.
-    pipe.close();
 }

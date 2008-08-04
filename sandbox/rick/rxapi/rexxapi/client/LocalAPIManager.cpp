@@ -40,6 +40,7 @@
 #include "SysLocalAPIManager.hpp"
 #include "ClientMessage.hpp"
 #include "SynchronizedBlock.hpp"
+#include <list>
 
 // initialize static variables
 LocalAPIManager* LocalAPIManager::singleInstance = NULL;
@@ -129,6 +130,14 @@ void LocalAPIManager::terminateProcess()
     queueManager.terminateProcess();
     macroSpaceManager.terminateProcess();
     registrationManager.terminateProcess();
+
+    // clean up the connection pools
+    while (!connections.empty())
+    {
+        SysClientStream *connection = connections.front();
+        connections.pop_front();
+        delete connection;
+    }
 }
 
 
@@ -211,10 +220,61 @@ void LocalAPIManager::establishServerConnection()
 }
 
 /**
+ * Request a connection from the connection pool
+ *
+ * @return An active connection to the data server.
+ */
+SysClientStream *LocalAPIManager::getConnection()
+{
+    {
+        Lock lock(messageLock);                     // make sure we single thread this
+        // if we have an active connection, grab it from the cache and
+        // reuse it.
+        if (!connections.empty())
+        {
+            SysClientStream *connection = connections.front();
+            connections.pop_front();
+            return connection;
+        }
+    }
+
+    SysClientStream *connection = new SysClientStream();
+
+    // open the pipe to the connection->
+    if (!connection->open("localhost", REXX_API_PORT))
+    {
+        throw new ServiceException(SERVER_FAILURE, "Failure connecting to rxapi server");
+    }
+    return connection;
+}
+
+
+/**
+ * Return a connection after use.
+ *
+ * @param connection The returned connection.
+ */
+void LocalAPIManager::returnConnection(SysClientStream *connection)
+{
+    {
+        Lock lock(messageLock);                     // make sure we single thread this
+        if (connections.size() < MAX_CONNECTIONS)
+        {
+            connections.push_back(connection);
+            return;
+        }
+    }
+    // not cachable, make sure this is delete.
+    delete connection;
+}
+
+
+/**
  * Send the shutdown message to the API daemon.
  */
 void LocalAPIManager::shutdown()
 {
+
     // first parameter for these calls is ALWAYS the type
     ClientMessage message(APIManager, SHUTDOWN_SERVER);
     message.send();
