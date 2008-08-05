@@ -51,8 +51,8 @@ window~signal_connect("destroy")
 window~set_border_width(10)
 window~set_size_request(250, -1)
 
-scale_int = .GtkHScale_With_Range~new(0.0, 10.0, 1.0)
-scale_float = .GtkHScale_With_Range~new(0.0, 1.0, 0.1)
+scale_int = .GtkHScaleWithRange~new(0.0, 10.0, 1.0)
+scale_float = .GtkHScaleWithRange~new(0.0, 1.0, 0.1)
 
 scale_int~set_digits(0)
 scale_float~set_digits(1)

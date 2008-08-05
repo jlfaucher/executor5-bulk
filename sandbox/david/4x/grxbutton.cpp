@@ -399,7 +399,8 @@ RexxMethod3(int,                       // Return type
     return 0;
 }
 
-/**                   cMethod:  get_group
+/** 
+ * Method:  get_group
  *
  * Get the radio button group.
  *

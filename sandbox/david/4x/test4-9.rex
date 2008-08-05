@@ -51,7 +51,7 @@ window~signal_connect("destroy")
 window~set_border_width(10)
 
 color = '#000033336666'  -- each color is really 16-bit number, not 8 bits
-button = .MyButton~new(color)
+button = .MyButton~newWithColor(color)
 button~set_title('Select a Color')
 
 label = .GtkLabel~new('Look at my color!')
@@ -81,7 +81,7 @@ return
 call gtk_main_quit
 return
 
-::class MyButton subclass GtkColorButton_With_Color
+::class MyButton subclass GtkColorButton
 
 ::method signal_color_set
 color = self~get_color()

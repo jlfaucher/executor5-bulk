@@ -1370,6 +1370,10 @@ return
 
 ::class GtkColorButton public subclass GtkButton
 
+::METHOD newWithColor class
+use strict arg color
+return .GtkColorButton~new(color)
+
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxColorButtonNew"
 ::METHOD 'title=' EXTERNAL "LIBRARY rexxgtk GrxColorButtonSetTitle"
 ::METHOD set_title EXTERNAL "LIBRARY rexxgtk GrxColorButtonSetTitle"
@@ -1513,7 +1517,7 @@ return
 ::METHOD 'visibility=' EXTERNAL "LIBRARY rexxgtk GrxEntrySetVisibility"
 ::METHOD invisile_char EXTERNAL "LIBRARY rexxgtk GrxEntryGetInvisibleChar"
 ::METHOD get_invisile_char EXTERNAL "LIBRARY rexxgtk GrxEntryGetInvisibleChar"
-::METHOD set_invisile_char EXTERNAL "LIBRARY rexxgtk GrxEntrySetInvisibleChar"
+::METHOD set_invisible_char EXTERNAL "LIBRARY rexxgtk GrxEntrySetInvisibleChar"
 ::METHOD 'invisile_char=' EXTERNAL "LIBRARY rexxgtk GrxEntrySetInvisibleChar"
 ::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxEntrySignalConnect"
 
@@ -1942,9 +1946,16 @@ return
 
 ::class GtkHScale public subclass GtkScale
 
-::METHOD newWithRange class EXTERNAL "LIBRARY rexxgtk GrxHScaleNewWithRange"
-
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxHScaleNew"
+
+
+/*============================================================================*/
+/* Class: GtkHScaleWithRange                                                  */
+/*============================================================================*/
+
+::class GtkHScaleWithRange public subclass GtkScale
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxHScaleNewWithRange"
 
 
 /*============================================================================*/
@@ -1953,9 +1964,16 @@ return
 
 ::class GtkVScale public subclass GtkScale
 
-::METHOD newWithRange class EXTERNAL "LIBRARY rexxgtk GrxVScaleNewWithRange"
-
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxVScaleNew"
+
+
+/*============================================================================*/
+/* Class: GtkVScaleWithRange                                                  */
+/*============================================================================*/
+
+::class GtkVScaleWithRange public subclass GtkScale
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxVScaleNewWithRange"
 
 
 /*============================================================================*/

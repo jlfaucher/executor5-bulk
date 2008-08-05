@@ -45,7 +45,7 @@
 -- by Andrew Krause
 
 call gtk_init
-window = .myMainWindow~new(.gtl~GTK_WINDOW_TOPLEVEL)
+window = .myMainWindow~new(.gtk~GTK_WINDOW_TOPLEVEL)
 window~set_title('Password')
 window~signal_connect("destroy")
 window~set_border_width(10)
