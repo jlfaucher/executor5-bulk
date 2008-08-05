@@ -43,23 +43,12 @@
 ::requires 'winshell' LIBRARY
 
 /* class: Sh - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
-
-    A class of simple utility routines.  Each routine is a class method.
-
-    This class does not follow the pattern of the other WinShell classes in that
-    it does not need the external routines loaded, and does not load them.  You
-    do not instantiate an object of this class but rather use the class methods
-    as utility routines.
-
-    For example:
-
-    if .SH~isXP then say 'The current operating system is Windows XP.'
-
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::class 'Sh' public
 
 ::method init                 class external "LIBRARY WINSHELL Sh_init_class"
 ::method version              class external "LIBRARY WINSHELL Sh_version_class"
+::method comctl32Version      class external "LIBRARY WINSHELL Sh_comctl32Version_class"
 ::method is64Bit              class external "LIBRARY WINSHELL Sh_is64Bit_class"
 ::method is32on64Bit          class external "LIBRARY WINSHELL Sh_is32on64Bit_class"
 ::method isW2K                class external "LIBRARY WINSHELL Sh_isW2K_class"

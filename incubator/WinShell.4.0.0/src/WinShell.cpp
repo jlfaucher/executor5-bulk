@@ -86,8 +86,6 @@ static logical_t setSystemImageList(RexxMethodContext *, bool);
 inline void          setSFBAttribute(RexxMethodContext *, char *, CSTRING, char *);
 static bool          checkOptionalWindow(RexxMethodContext *, HWND, int);
 static void          fillInBrowseData(RexxMethodContext *, HWND, PBROWSEINFO, PBROWSE_DATA);
-static LPWSTR        ansiToUnicodeLength(LPCSTR, size_t, size_t *);
-inline LPWSTR        ansiToUnicode(LPCSTR str, size_t inSize);
 static HRESULT       queryTrashCan(const char *, PDWORDLONG, PDWORDLONG);
 static bool          recycleBinIsEmpty(const char *);
 static bool          _PathIsFull(const char *);
@@ -131,29 +129,71 @@ void systemServiceExceptionComCode(RexxMethodContext *, const char *, const char
  * @param pszMsg    The message.
  * @param pszTitle  The title of for the message box.
  */
-static void internalErrorMsg(PSZ pszMsg, PSZ pszTitle)
+static void internalErrorMsg(CSTRING pszMsg, CSTRING pszTitle)
 {
     MessageBox(0, pszMsg, pszTitle, MB_OK | MB_ICONHAND | MB_SYSTEMMODAL);
+}
+
+const char *comctl32VersionName(DWORD id)
+{
+    const char *name;
+    switch ( id )
+    {
+        case COMCTL32_4_0 :
+            name = "comctl32.dll version 4.0 (W95 / NT4)";
+            break;
+
+        case COMCTL32_4_7 :
+            name = "comctl32.dll version 4.7 (IE 3.x)";
+            break;
+
+        case COMCTL32_4_71 :
+            name = "comctl32.dll version 4.71 (IE 4.0)";
+            break;
+        case COMCTL32_4_72 :
+            name = "comctl32.dll version 4.72 (W98 / IE 4.01)";
+            break;
+        case COMCTL32_5_8 :
+            name = "comctl32.dll version 5.8 (IE 5)";
+            break;
+        case COMCTL32_5_81 :
+            name = "comctl32.dll version 5.81 (W2K / ME)";
+            break;
+        case COMCTL32_6_0 :
+            name = "comctl32.dll version 6.0 (XP)";
+            break;
+        default :
+            name = "Unknown";
+            break;
+    }
+    return name;
 }
 
 #define DLLGETVERSION_FUNCTION       "DllGetVersion"
 #define COMMON_CONTROL_DLL           "comctl32.dll"
 
 /**
- * Determines the version of comctl32.dll.
+ * Determines the version of comctl32.dll and compares it against a minimum
+ * required version.
  *
- * @return A packed unsigned long that represents the version, or 0 on failure.
- *         This number is created using Microsoft's suggested process and can be
- *         used for numeric comparisons.
+ * @param  context      The ooRexx method context.
+ * @param  pDllVersion  The loaded version of comctl32.dll is returned here as a
+ *                      packed unsigned long. This number is created using
+ *                      Microsoft's suggested process and can be used for
+ *                      numeric comparisons.
+ * @param  minVersion   The minimum acceptable version.
+ * @param  packageName  The name of the package initiating this check.
+ * @param  errTitle     The title for the error dialog if it is displayed.
  *
  * @note  If this function fails, an exception is raised.
  */
-DWORD getComCtl32Version(RexxMethodContext *context)
+bool getComCtl32Version(RexxMethodContext *context, DWORD *pDllVersion, DWORD minVersion,
+                         CSTRING packageName, CSTRING errTitle)
 {
-    HINSTANCE hinst;
-    DWORD     dllVersion = 0;
+    bool success = false;
+    *pDllVersion = 0;
 
-    hinst = LoadLibrary(TEXT(COMMON_CONTROL_DLL));
+    HINSTANCE hinst = LoadLibrary(TEXT(COMMON_CONTROL_DLL));
     if ( hinst )
     {
         DLLGETVERSIONPROC pDllGetVersion;
@@ -170,7 +210,8 @@ DWORD getComCtl32Version(RexxMethodContext *context)
             hr = (*pDllGetVersion)(&info);
             if ( SUCCEEDED(hr) )
             {
-                dllVersion = MAKEVERSION(info.dwMajorVersion, info.dwMinorVersion);
+                *pDllVersion = MAKEVERSION(info.dwMajorVersion, info.dwMinorVersion);
+                success = true;
             }
             else
             {
@@ -187,19 +228,48 @@ DWORD getComCtl32Version(RexxMethodContext *context)
     {
         systemServiceExceptionCode(context, NO_HMODULE_MSG, COMMON_CONTROL_DLL);
     }
-    return dllVersion;
+
+    if ( *pDllVersion == 0 )
+    {
+        CHAR msg[256];
+        _snprintf(msg, sizeof(msg),
+                  "The version of the Windows Common Controls library (%s)\n"
+                  "could not be determined.  %s can not continue",
+                  COMMON_CONTROL_DLL, packageName);
+
+        internalErrorMsg(msg, errTitle);
+        success = false;
+    }
+    else if ( *pDllVersion < minVersion )
+    {
+        CHAR msg[256];
+        _snprintf(msg, sizeof(msg),
+                  "%s can not continue with this version of the Windows\n"
+                  "Common Controls library(%s.)  The minimum\n"
+                  "version required is: %s.\n\n"
+                  "This system has: %s\n",
+                  packageName, COMMON_CONTROL_DLL, comctl32VersionName(minVersion),
+                  comctl32VersionName(*pDllVersion));
+
+        internalErrorMsg(msg, errTitle);
+        *pDllVersion = 0;
+        success = false;
+    }
+    return success;
 }
 
 /**
  * Initializes the common control library for the specified classes.
  *
- * @param classes  Flag specifing the classes to be initialized.
+ * @param classes       Flag specifing the classes to be initialized.
+ * @param  packageName  The name of the package initializing the classes.
+ * @param  errTitle     The title for the error dialog if it is displayed.
  *
  * @return True on success, otherwise false.
  *
  * @note   An exception has been raised when false is returned.
  */
-bool initCommonControls(RexxMethodContext *context, DWORD classes)
+bool initCommonControls(RexxMethodContext *context, DWORD classes, CSTRING packageName, CSTRING errTitle)
 {
     INITCOMMONCONTROLSEX ctrlex;
 
@@ -209,11 +279,18 @@ bool initCommonControls(RexxMethodContext *context, DWORD classes)
     if ( ! InitCommonControlsEx(&ctrlex) )
     {
         systemServiceExceptionCode(context, NO_COMMCTRL_MSG, "Common Control Library");
+
+        CHAR msg[128];
+        _snprintf(msg, sizeof(msg),
+                  "Initializing the Windows Common Controls\n"
+                  "library failed.  %s can not continue.\n\n"
+                  "Windows System Error Code: %d\n", packageName, GetLastError());
+
+        internalErrorMsg(msg, errTitle);
         return false;
     }
     return true;
 }
-
 
 inline bool rxArgOmitted(RexxMethodContext * context, size_t index)
 {
@@ -223,6 +300,39 @@ inline bool rxArgOmitted(RexxMethodContext * context, size_t index)
 inline bool rxArgExists(RexxMethodContext * context, size_t index)
 {
     return context->ArrayHasIndex(context->GetArguments(), index) == 1 ? true : false;
+}
+
+inline void systemServiceException(RexxMethodContext *context, char *msg)
+{
+    context->RaiseException1(Rexx_Error_System_service_user_defined, context->NewStringFromAsciiz(msg));
+}
+
+void systemServiceException(RexxMethodContext *context, char *msg, const char *sub)
+{
+    if ( sub != NULL )
+    {
+        TCHAR buffer[128];
+        _snprintf(buffer, sizeof(buffer), msg, sub);
+        systemServiceException(context, buffer);
+    }
+    else
+    {
+        systemServiceException(context, msg);
+    }
+}
+
+void systemServiceExceptionCode(RexxMethodContext *context, const char *msg, const char *arg1)
+{
+    TCHAR buffer[256];
+    _snprintf(buffer, sizeof(buffer), msg, arg1, GetLastError());
+    systemServiceException(context, buffer);
+}
+
+void systemServiceExceptionComCode(RexxMethodContext *context, const char *msg, const char *arg1, HRESULT hr)
+{
+    TCHAR buffer[256];
+    _snprintf(buffer, sizeof(buffer), msg, arg1, hr);
+    systemServiceException(context, buffer);
 }
 
 /**
@@ -306,39 +416,6 @@ char *strdupupr(const char *str)
  *  End of functions copied from ooDialog.  Start of functions to maybe move to
  *  common.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-
-inline void systemServiceException(RexxMethodContext *context, char *msg)
-{
-    context->RaiseException1(Rexx_Error_System_service_user_defined, context->NewStringFromAsciiz(msg));
-}
-
-void systemServiceException(RexxMethodContext *context, char *msg, const char *sub)
-{
-    if ( sub != NULL )
-    {
-        TCHAR buffer[128];
-        _snprintf(buffer, sizeof(buffer), msg, sub);
-        systemServiceException(context, buffer);
-    }
-    else
-    {
-        systemServiceException(context, msg);
-    }
-}
-
-void systemServiceExceptionCode(RexxMethodContext *context, const char *msg, const char *arg1)
-{
-    TCHAR buffer[256];
-    _snprintf(buffer, sizeof(buffer), msg, arg1, GetLastError());
-    systemServiceException(context, buffer);
-}
-
-void systemServiceExceptionComCode(RexxMethodContext *context, const char *msg, const char *arg1, HRESULT hr)
-{
-    TCHAR buffer[256];
-    _snprintf(buffer, sizeof(buffer), msg, arg1, hr);
-    systemServiceException(context, buffer);
-}
 
 /**
  * 93.914
@@ -526,41 +603,52 @@ void CommonUninit(bool useCOM)
  *  requirements for the WinShell package are met.  It is also useful for things
  *  that need to be set up one time prior to any other methods being executed.
  */
-RexxMethod0(RexxObjectPtr, Sh_init_class)
+RexxMethod0(logical_t, Sh_init_class)
 {
-
     if ( ! _isAtLeastW2K() )
     {
         systemServiceException(context, REQUIRE_W2K_MSG, NULL);
-        return NULLOBJECT;
+        return false;
     }
 
-    ComCtl32Version = getComCtl32Version(context);
-    if ( ComCtl32Version == 0 )
+    if ( ! getComCtl32Version(context, &ComCtl32Version, COMCTL32_5_8, "WinShell", COMCTL_ERR_TITLE) )
     {
-        internalErrorMsg("The version of the Windows Common Controls library (comctl32.dll)\n"
-                         "could not be determined.  WinShell can not continue", COMCTL_ERR_TITLE);
-        return NULLOBJECT;
+        return false;
     }
 
-    if ( ! initCommonControls(context, ICC_WIN95_CLASSES | ICC_STANDARD_CLASSES) )
+    if ( ! initCommonControls(context, ICC_WIN95_CLASSES | ICC_STANDARD_CLASSES, "WinShell", COMCTL_ERR_TITLE) )
     {
-        return NULLOBJECT;
+        return false;
     }
 
+    RexxDirectoryObject local = context->GetLocalEnvironment();
+    if ( local != NULLOBJECT )
+    {
+        context->DirectoryPut(local, context->NewPointer(NULL), "NULLPOINTER");
+        context->DirectoryPut(local, context->NewInteger(0), "SYSTEMERRORCODE");
+    }
 
-    return NULLOBJECT;
+    return true;
 }
 
 /** Sh::version()
  *
- * Return the WinShell version.
+ * Return the WinShell package version.
  */
 RexxMethod0(RexxObjectPtr, Sh_version_class)
 {
     char buf[64];
-    _snprintf(buf, sizeof(buf), "ooRexx Windows Extension WinShell Version %u.%u.%u.%u", ORX_VER, ORX_REL, ORX_MOD, OOREXX_BLD);
+    _snprintf(buf, sizeof(buf), "WinShell Version %u.%u.%u.%u (an ooRexx Windows Extension)", ORX_VER, ORX_REL, ORX_MOD, OOREXX_BLD);
     return context->NewStringFromAsciiz(buf);
+}
+
+/** Sh::comCtl32Version()
+ *
+ * Return the WinShell package version.
+ */
+RexxMethod0(RexxStringObject, Sh_comctl32Version_class)
+{
+    return context->NewStringFromAsciiz(comctl32VersionName(ComCtl32Version));
 }
 
 /** Sh::is64Bit()
@@ -3393,14 +3481,19 @@ INT CALLBACK BrowseCallbackProc(HWND hwnd, UINT uMsg, LPARAM lp, LPARAM pData)
  * @param ppidl  The item ID list is returned in this variable.
  *
  * @return True on success, otherwise false.
+ *
+ * @note   If this function fails, *ppidl will be null on return.  This function
+ *         does not raise an exception, that is left to the caller.
  */
 static bool pidlFromPath(LPCSTR path, LPITEMIDLIST *ppidl)
 {
    LPSHELLFOLDER pShellFolder = NULL;
    HRESULT       hr;
-   LPWSTR        wPath = ansiToUnicode(path, strlen(path) + 1);
+   WCHAR         wPath[MAX_PATH];
 
-   if ( ! wPath )
+   *ppidl = NULL;
+
+   if ( MultiByteToWideChar(CP_ACP, 0, path, -1, wPath, MAX_PATH) == 0 )
    {
        return false;
    }
@@ -3415,7 +3508,6 @@ static bool pidlFromPath(LPCSTR path, LPITEMIDLIST *ppidl)
    hr = pShellFolder->ParseDisplayName(NULL, NULL, wPath, NULL, ppidl, NULL);
 
    pShellFolder->Release();
-   shellFree(wPath);
 
    if (FAILED(hr))
    {
@@ -3443,61 +3535,12 @@ static bool pidlForSpecialFolder(int csidl, LPITEMIDLIST *ppidl)
     return success;
 }
 
-inline LPWSTR ansiToUnicode(LPCSTR str, size_t inSize)
-{
-    return ansiToUnicodeLength(str, inSize, NULL);
-}
-
-
 /**
- * Convert an ANSI string to a wide character (Unicode) string.
+ * Tests if this process is a 32-bit process running on a Windows 64-bit system.
  *
- * @param str      The string to convert, zero-length null-terminated strings
- *                 are acceptable.
- *
- * @param inSize   The size of the ANSI string, this should include the
- *                 null-terminator.  For a zero-length string this value would
- *                 be 1.
- *
- * @param outSize  If not null, the number of wide characters in the converted
- *                 Unicode string is returned here.
- *
- * @return  On success, a pointer to the allocated, converted string, otherwise
- *          null.  The caller is repsonsible for freeing this memory.
+ * @return True if the Windows system is 64-bit and this process is 32-bit,
+ *         otherwise false.
  */
-static LPWSTR ansiToUnicodeLength(LPCSTR str, size_t inSize, size_t *outSize)
-{
-    size_t    newSize;
-    LPWSTR    pStr = NULL;
-
-    if ( (str == NULL) || (inSize == 0) )
-    {
-        return pStr;
-    }
-
-    newSize = MultiByteToWideChar(CP_ACP, 0, str, (int)inSize, NULL, 0);
-    if ( newSize )
-    {
-        pStr = (LPOLESTR)shellAlloc(newSize * sizeof(WCHAR));
-        if ( pStr )
-        {
-            newSize = MultiByteToWideChar(CP_ACP, 0, str, (int)inSize, pStr, (int)newSize);
-            if ( newSize == 0 )
-            {
-                // Conversion failed.
-                shellFree(pStr);
-                pStr = NULL;
-            }
-
-            if ( outSize )
-                *outSize = newSize;
-        }
-    }
-
-    return pStr;
-}
-
-
 static bool _is32on64Bit(void)
 {
     if ( _isAtLeastXP() )
@@ -3676,20 +3719,21 @@ inline int getConstantValue(const char * str)
 }
 
 
-REXX_METHOD_PROTOTYPE(Sh_init_class          );
-REXX_METHOD_PROTOTYPE(Sh_version_class       );
-REXX_METHOD_PROTOTYPE(Sh_is64Bit_class       );
-REXX_METHOD_PROTOTYPE(Sh_is32on64Bit_class   );
-REXX_METHOD_PROTOTYPE(Sh_isW2K_class         );
-REXX_METHOD_PROTOTYPE(Sh_isAtLeastW2K_class  );
-REXX_METHOD_PROTOTYPE(Sh_isXP_class          );
-REXX_METHOD_PROTOTYPE(Sh_isXP32_class        );
-REXX_METHOD_PROTOTYPE(Sh_isXP64_class        );
-REXX_METHOD_PROTOTYPE(Sh_isAtLeastXP_class   );
-REXX_METHOD_PROTOTYPE(Sh_isW2K3_class        );
-REXX_METHOD_PROTOTYPE(Sh_isAtLeastW2K3_class );
-REXX_METHOD_PROTOTYPE(Sh_isVista_class       );
-REXX_METHOD_PROTOTYPE(Sh_isAtLeastVista_class);
+REXX_METHOD_PROTOTYPE(Sh_init_class            );
+REXX_METHOD_PROTOTYPE(Sh_version_class         );
+REXX_METHOD_PROTOTYPE(Sh_comctl32Version_class );
+REXX_METHOD_PROTOTYPE(Sh_is64Bit_class         );
+REXX_METHOD_PROTOTYPE(Sh_is32on64Bit_class     );
+REXX_METHOD_PROTOTYPE(Sh_isW2K_class           );
+REXX_METHOD_PROTOTYPE(Sh_isAtLeastW2K_class    );
+REXX_METHOD_PROTOTYPE(Sh_isXP_class            );
+REXX_METHOD_PROTOTYPE(Sh_isXP32_class          );
+REXX_METHOD_PROTOTYPE(Sh_isXP64_class          );
+REXX_METHOD_PROTOTYPE(Sh_isAtLeastXP_class     );
+REXX_METHOD_PROTOTYPE(Sh_isW2K3_class          );
+REXX_METHOD_PROTOTYPE(Sh_isAtLeastW2K3_class   );
+REXX_METHOD_PROTOTYPE(Sh_isVista_class         );
+REXX_METHOD_PROTOTYPE(Sh_isAtLeastVista_class  );
 
 REXX_METHOD_PROTOTYPE(WinShell_init                   );
 REXX_METHOD_PROTOTYPE(WinShell_uninit                 );
@@ -3779,20 +3823,21 @@ REXX_METHOD_PROTOTYPE(size_setCY);
 
 RexxMethodEntry winshell_methods[] = {
 
-    REXX_METHOD(Sh_init_class          ,             Sh_init_class          ),
-    REXX_METHOD(Sh_version_class       ,             Sh_version_class       ),
-    REXX_METHOD(Sh_is64Bit_class       ,             Sh_is64Bit_class       ),
-    REXX_METHOD(Sh_is32on64Bit_class   ,             Sh_is32on64Bit_class   ),
-    REXX_METHOD(Sh_isW2K_class         ,             Sh_isW2K_class         ),
-    REXX_METHOD(Sh_isAtLeastW2K_class  ,             Sh_isAtLeastW2K_class  ),
-    REXX_METHOD(Sh_isXP_class          ,             Sh_isXP_class          ),
-    REXX_METHOD(Sh_isXP32_class        ,             Sh_isXP32_class        ),
-    REXX_METHOD(Sh_isXP64_class        ,             Sh_isXP64_class        ),
-    REXX_METHOD(Sh_isAtLeastXP_class   ,             Sh_isAtLeastXP_class   ),
-    REXX_METHOD(Sh_isW2K3_class        ,             Sh_isW2K3_class        ),
-    REXX_METHOD(Sh_isAtLeastW2K3_class ,             Sh_isAtLeastW2K3_class ),
-    REXX_METHOD(Sh_isVista_class       ,             Sh_isVista_class       ),
-    REXX_METHOD(Sh_isAtLeastVista_class,             Sh_isAtLeastVista_class),
+    REXX_METHOD(Sh_init_class           ,             Sh_init_class           ),
+    REXX_METHOD(Sh_version_class        ,             Sh_version_class        ),
+    REXX_METHOD(Sh_comctl32Version_class,             Sh_comctl32Version_class),
+    REXX_METHOD(Sh_is64Bit_class        ,             Sh_is64Bit_class        ),
+    REXX_METHOD(Sh_is32on64Bit_class    ,             Sh_is32on64Bit_class    ),
+    REXX_METHOD(Sh_isW2K_class          ,             Sh_isW2K_class          ),
+    REXX_METHOD(Sh_isAtLeastW2K_class   ,             Sh_isAtLeastW2K_class   ),
+    REXX_METHOD(Sh_isXP_class           ,             Sh_isXP_class           ),
+    REXX_METHOD(Sh_isXP32_class         ,             Sh_isXP32_class         ),
+    REXX_METHOD(Sh_isXP64_class         ,             Sh_isXP64_class         ),
+    REXX_METHOD(Sh_isAtLeastXP_class    ,             Sh_isAtLeastXP_class    ),
+    REXX_METHOD(Sh_isW2K3_class         ,             Sh_isW2K3_class         ),
+    REXX_METHOD(Sh_isAtLeastW2K3_class  ,             Sh_isAtLeastW2K3_class  ),
+    REXX_METHOD(Sh_isVista_class        ,             Sh_isVista_class        ),
+    REXX_METHOD(Sh_isAtLeastVista_class ,             Sh_isAtLeastVista_class ),
 
     REXX_METHOD(WinShell_init                   ,    WinShell_init                   ),
     REXX_METHOD(WinShell_uninit                 ,    WinShell_uninit                 ),
@@ -3896,180 +3941,3 @@ RexxPackageEntry winshell_package_entry =
 // package loading stub.
 OOREXX_GET_PACKAGE(winshell);
 
-// Below here are, commented out, saved functions.
-
-#if defined(UNUSED_FUNCTIONS)
-
-// I don't really think we need a DllMain
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-bool APIENTRY DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
-{
-   if (fdwReason == DLL_PROCESS_ATTACH)
-   {
-      printf("DLL process attach Thread: %x\n", GetCurrentThreadId());
-   }
-   else if (fdwReason == DLL_PROCESS_DETACH)
-   {
-      printf("DLL process detach\n");
-   }
-   return true;
-}
-
-#ifdef __cplusplus
-}
-#endif
-
-
-// The start of a customizable Browse for Folder dialog implemente as an
-// external function.  Using the ShellSimpleBrowse is much easier to keep track
-// of settings, etc.  Providing this function as an external function does not
-// seem to have any real advantages.
-
-// Would need this to go into the WinShellTable:
-
-//    BROWSEDIALOG_FUNC,
-
-#define BROWSEDIALOG_FUNC         "BrowseDialog"
-
-// And this to go into the exports section of the *.def file.
-
-//  BROWSEDIALOG       =   BrowseDialog
-
-/** BrowseDialog()
- *    Puts up the common Browse for Folder dialog to allow the user to select
- *    a directory.  The dialog is customized according to input and can be used
- *    to return either the path name of the selected folder or the pointer to
- *    the item ID list.
- *
- *  Syntax in ooRexx:
- *    ret = BrowseDialog(type, hwnd, banner, dlgTitle, hint, initialDir, root)
- *
- * argv[0]  type        I | P  Return item ID pointer or path name.
- *
- * argv[1]  hwnd        Handle of the parent window.
- *
- * argv[2]  banner      The text above the tree control
- *
- * argv[3]  dlgTitle    A custom title for the dialog.
- *
- * argv[4]  hint        Text for the hint.
- *
- * argv[5]  initialDir  Unfold the tree to start at this node.
- *
- * argv[6]  root        Make this the root of the tree.
- *
- * Returns to ooRexx:
- *
- *       0  User canceled.
- *    path  If arg 1 is P
- *    PIDL  If arg 1 is I
- *      -1  Invalid argument.
- *   other  ?
- */
-APIRET APIENTRY BrowseDialog(
-    const char     *funcName,
-    const size_t    argc,
-    const RXSTRING  argv[],
-    const char     *qName,
-    PRXSTRING       retStr)
-{
-    int code = 0;
-	LPITEMIDLIST pidl     = NULL;
-	LPITEMIDLIST pidlRoot = NULL;
-	BROWSEINFO   bi       = { 0 };
-    BROWSE_DATA  bd       = { 0 };
-    TCHAR        buffer[MAX_PATH];
-    BOOL         success = FALSE;
-    bool         returnPath;
-
-    if ( argc < 1 )
-    {
-        return codeToRexx(-1, retStr);
-    }
-
-    if ( argv[0].strptr[0] == 'I' )
-    {
-        returnPath = false;
-    }
-    else if ( argv[0].strptr[0] == 'P' )
-    {
-        returnPath = true;
-    }
-    else
-    {
-        return codeToRexx(-1, retStr);
-    }
-
-    pidl = (LPITEMIDLIST)pointerFromRexx(argv[2]);
-    printf("pointerFromRexx using %s pidl: %p\n", argv[2].strptr, pidl);
-
-    printf("Browse count: %d\n", argc);
-    for ( size_t i = 0; i < argc; i++ )
-    {
-        printf("Arg %d len: %d value: %s\n", i, argv[i].strlength, argv[i].strptr);
-    }
-
-	//bi.hwndOwner      = hwnd;
-	bi.hwndOwner      = NULL;
-	bi.pszDisplayName = buffer;
-	//bi.pidlRoot       = pidlRoot;
-	bi.pidlRoot       = NULL;
-	//bi.lpszTitle      = szTitle;
-    //bi.lpfn           = BrowseCallbackProc;
-	//bi.ulFlags        = BIF_RETURNONLYFSDIRS | BIF_USENEWUI;
-	//bi.ulFlags        = BIF_RETURNONLYFSDIRS | BIF_UAHINT | BIF_NEWDIALOGSTYLE;
-	bi.ulFlags        = BIF_RETURNONLYFSDIRS | BIF_NEWDIALOGSTYLE | BIF_RETURNFSANCESTORS;
-
-    pidl = SHBrowseForFolder(&bi);
-	if ( pidl != NULL )
-	{
-        printf("Path from displayName buffer: %s\n", buffer);
-		success = SHGetPathFromIDList(pidl, buffer);
-        printf("Buffer after convert: %s\n", buffer);
-		CoTaskMemFree(pidl);
-	}
-
-
-
-    if ( success )
-    {
-        sprintf(retStr->strptr, "%s", buffer);
-        retStr->strlength = strlen(retStr->strptr);
-    }
-    else
-    {
-        sprintf(retStr->strptr, "%d", code);
-        retStr->strlength = strlen(retStr->strptr);
-    }
-
-    return 0;
-}
-
-/**
- * This is a simplier pidlFromPath() function, but will only work on XP or
- * later.
- */
-static bool pidlFromPath(LPCSTR path, LPITEMIDLIST *ppidl)
-{
-   HRESULT  hr;
-   LPWSTR   p = ansiToUnicode(path, strlen(path) + 1);
-
-   if ( ! p )
-   {
-       return false;
-   }
-
-   hr = SHParseDisplayName(p, NULL, ppidl, NULL, NULL);
-   shellFree(p);
-
-   if (FAILED(hr))
-   {
-      return false;
-   }
-   return true;
-}
-
-#endif
