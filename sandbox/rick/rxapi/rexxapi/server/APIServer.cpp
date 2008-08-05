@@ -161,6 +161,7 @@ void APIServer::dispatch(ServiceMessage &message)
         case CONNECTION_ACTIVE:
         {
             message.parameter1 = REXXAPI_VERSION;
+            break;
         }
 
         default:

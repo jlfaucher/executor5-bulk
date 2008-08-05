@@ -40,6 +40,26 @@
 #include "ServiceException.hpp"
 #include "SysAPIManager.hpp"
 
+
+ServiceMessage::ServiceMessage()
+{
+    messageTarget = APIManager;
+    operation = CONNECTION_ACTIVE;
+    session = 0;
+    parameter1 = 0;
+    parameter2 = 0;
+    parameter3 = 0;
+    parameter4 = 0;
+    parameter5 = 0;
+    result = MESSAGE_OK;
+    errorCode = NO_ERROR_CODE;
+    messageData = NULL;
+    messageDataLength = 0;
+    retainMessageData = false;
+    nameArg[0] = '\0';
+    userid[0] = '\0';
+}
+
 /**
  * Read a message from the server-side stream.
  *

@@ -264,7 +264,7 @@ public:
         NAMESIZE = 256
     };
 
-    inline ServiceMessage() { ; }
+    ServiceMessage();
     virtual ~ServiceMessage() { ; }
 
     inline void setResult(ServiceReturn code)

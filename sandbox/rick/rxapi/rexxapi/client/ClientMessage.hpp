@@ -45,27 +45,27 @@
 class ClientMessage : public ServiceMessage
 {
 public:
-    inline ClientMessage(ServerManager target, ServerOperation op)
+    inline ClientMessage(ServerManager target, ServerOperation op) : ServiceMessage()
     {
         messageTarget = target;
         operation = op;
     }
 
-    inline ClientMessage(ServerManager target, ServerOperation op, uintptr_t p1)
+    inline ClientMessage(ServerManager target, ServerOperation op, uintptr_t p1)  : ServiceMessage()
     {
         messageTarget = target;
         operation = op;
         parameter1 = p1;
     }
 
-    inline ClientMessage(ServerManager target, ServerOperation op, const char *p1)
+    inline ClientMessage(ServerManager target, ServerOperation op, const char *p1)  : ServiceMessage()
     {
         messageTarget = target;
         operation = op;
         strncpy(nameArg, p1, NAMESIZE);
     }
 
-    inline ClientMessage(ServerManager target, ServerOperation op, uintptr_t p1, const char *name)
+    inline ClientMessage(ServerManager target, ServerOperation op, uintptr_t p1, const char *name) : ServiceMessage()
     {
         messageTarget = target;
         operation = op;
