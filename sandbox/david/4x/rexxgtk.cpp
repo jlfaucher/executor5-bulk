@@ -417,7 +417,6 @@ RexxMethodEntry gtkobject_methods[] = {
     REXX_METHOD(GrxCheckButtonNew, GrxCheckButtonNew),
     REXX_METHOD(GrxRadioButtonNew, GrxRadioButtonNew),
     REXX_METHOD(GrxRadioButtonGetGroup, GrxRadioButtonGetGroup),
-    REXX_METHOD(GrxRadioButtonSetGroup, GrxRadioButtonSetGroup),
     REXX_METHOD(GrxRadioButtonSignalConnect, GrxRadioButtonSignalConnect),
     REXX_METHOD(GrxColorButtonNew, GrxColorButtonNew),
     REXX_METHOD(GrxColorButtonSetTitle, GrxColorButtonSetTitle),

@@ -380,13 +380,15 @@ RexxMethod3(int,                       // Return type
             RexxObjectPtr, rxlistptr,  // GList object
             OPTIONAL_CSTRING, text)    // Button text
 {
-    RexxPointerObject listptr = (RexxPointerObject)context->SendMessage0(rxlistptr, "POINTER");
+    RexxPointerObject listptr = NULL;
     GSList *head = NULL;
     GtkWidget *myWidget;
 
-    if (listptr != NULL) {
-        GSList *head = (GSList *)context->PointerValue(listptr);
+    if (rxlistptr != context->Nil()) {
+        listptr = (RexxPointerObject)context->SendMessage0(rxlistptr, "POINTER");
+        head = (GSList *)context->PointerValue(listptr);                                        
     }
+    // create the widget
     myWidget = gtk_radio_button_new(head);
     if (text != NULL) {
         gtk_button_set_label(GTK_BUTTON(myWidget), text);
@@ -397,50 +399,22 @@ RexxMethod3(int,                       // Return type
     return 0;
 }
 
-/**
- * Method:  get_group
+/**                   cMethod:  get_group
  *
  * Get the radio button group.
  *
- * @return        GList group.
+ * @return        Zero.
  **/
 RexxMethod1(RexxObjectPtr,             // Return type
             GrxRadioButtonGetGroup,    // Object_method name
             OSELF, self)               // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GSList *myWidget = (GSList *)context->PointerValue(rxptr);
-    GSList *head = NULL;
+    RexxPointerObject rxWidget = (RexxPointerObject)context->SendMessage0(self, "POINTER");
+    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxWidget);
+    GSList *head = gtk_radio_button_get_group(GTK_RADIO_BUTTON(myWidget));
 
-    head = gtk_radio_button_get_group(GTK_RADIO_BUTTON(myWidget));
-    if (head == NULL) {
-        return context->Nil();
-    }
-    return (RexxObjectPtr)g_object_get_data(G_OBJECT(myWidget), "OORXOBJECT");
-}
-
-/**
- * Method:  set_group
- *
- * Set the radio button group.
- *
- * @param group   The group pointer.
- *
- * @return        Zero.
- **/
-RexxMethod2(int,                       // Return type
-            GrxRadioButtonSetGroup,    // Object_method name
-            RexxObjectPtr, rxlistptr,  // GList pointer
-            OSELF, self)               // Self
-{
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-    RexxPointerObject listptr = (RexxPointerObject)context->SendMessage0(rxlistptr, "POINTER");
-    GSList *head = (GSList *)context->PointerValue(listptr);
-
-    gtk_radio_button_set_group(GTK_RADIO_BUTTON(myWidget), head);
-
-    return 0;
+    RexxObjectPtr retc = context->SendMessage1(self, "create_gslist", context->NewPointer(head));
+    return retc;
 }
 
 /**

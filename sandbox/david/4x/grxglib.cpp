@@ -64,11 +64,19 @@
  *
  * @return        Zero
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxGSListNew,              // Routine name
-            OSELF, self)               // Self
+            OSELF, self,               // Self
+            OPTIONAL_RexxObjectPtr, ptr) // List head
 {
-    context->SendMessage1(self, "POINTER=", context->NewPointer(NULL));
+
+    if (ptr == context->Nil()) {
+        context->SendMessage1(self, "POINTER=", context->NewPointer(NULL));
+    }
+    else {
+        GSList * head = (GSList *)context->PointerValue((RexxPointerObject)ptr);
+        context->SendMessage1(self, "POINTER=", context->NewPointer(head));
+    }
     return 0;
 }
 

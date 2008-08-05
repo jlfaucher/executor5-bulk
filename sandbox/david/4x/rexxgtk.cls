@@ -730,7 +730,7 @@ return
 
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxWidgetNew"
 
--- This methods should only be invoked by the C++ code. That is the only place
+-- These methods should only be invoked by the C++ code. That is the only place
 -- where it is actually useful.
 ::method 'pointer='
 expose !pointer
@@ -738,6 +738,7 @@ use strict arg !pointer
 return
 ::method pointer
 expose !pointer
+use strict arg
 return !pointer
 
 -- This attribute is not a part of the GTK system. It has been added to
@@ -1344,14 +1345,13 @@ button = .GtkRadioButton~newFromWidget(widget)
 button~label = label
 button~use_underline = .true
 return button
-
                          
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxRadioButtonNew"
-::METHOD group EXTERNAL "LIBRARY rexxgtk GrxRadioButtonGetGroup"
 ::METHOD get_group EXTERNAL "LIBRARY rexxgtk GrxRadioButtonGetGroup"
-::METHOD set_group EXTERNAL "LIBRARY rexxgtk GrxRadioButtonSetGroup"
-::METHOD 'group=' EXTERNAL "LIBRARY rexxgtk GrxRadioButtonSetGroup"
 ::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxRadioButtonSignalConnect"
+::METHOD create_gslist
+use strict arg ptr
+return .GSList~new(ptr)
 
 -- The following are the methods that can be connected to signals. By default
 -- they do nothing.
@@ -2958,6 +2958,17 @@ do while ptr <> .Nil
    end
 return list
 
+-- These methods should only be invoked by the C++ code. That is the only place
+-- where it is actually useful.
+::method 'pointer='
+expose !pointer
+use strict arg !pointer
+return
+::method pointer
+expose !pointer
+use strict arg
+return !pointer
+
 
 
 /*============================================================================*/
@@ -2986,6 +2997,17 @@ do while ptr <> .Nil
    ptr = GrxGListNext(ptr)
    end
 return list
+
+-- These methods should only be invoked by the C++ code. That is the only place
+-- where it is actually useful.
+::method 'pointer='
+expose !pointer
+use strict arg !pointer
+return
+::method pointer
+expose !pointer
+use strict arg
+return !pointer
 
 
 /*============================================================================*/
@@ -3041,7 +3063,7 @@ return
 
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxFileFilterNew"
 
--- This methods should only be invoked by the C++ code. That is the only place
+-- These methods should only be invoked by the C++ code. That is the only place
 -- where it is actually useful.
 ::method 'pointer='
 expose !pointer
@@ -3049,6 +3071,7 @@ use strict arg !pointer
 return
 ::method pointer
 expose !pointer
+use strict arg
 return !pointer
 
 ::METHOD set_name EXTERNAL "LIBRARY rexxgtk GrxFileFilterSetName"
@@ -3064,7 +3087,7 @@ return !pointer
 
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxClipboardNew"
 
--- This methods should only be invoked by the C++ code. That is the only place
+-- These methods should only be invoked by the C++ code. That is the only place
 -- where it is actually useful.
 ::method 'pointer='
 expose !pointer
@@ -3072,6 +3095,7 @@ use strict arg !pointer
 return
 ::method pointer
 expose !pointer
+use strict arg
 return !pointer
 
 
