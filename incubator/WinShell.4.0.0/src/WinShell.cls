@@ -43,6 +43,7 @@
 ::requires 'winshell' LIBRARY
 
 /* class: Sh - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+     A class of utility methods.  All methods are class methods.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::class 'Sh' public
 
@@ -104,26 +105,13 @@
 ::method extractDefaultIcons       external "LIBRARY WINSHELL WinShell_extractDefaultIcons"
 ::method releaseIcon               external "LIBRARY WINSHELL WinShell_releaseIcon"
 ::method about                     external "LIBRARY WINSHELL WinShell_about"
+::method queryDiskSpace            external "LIBRARY WINSHELL WinShell_queryDiskSpace"
 
-::method _queryDiskSpace  private  external "LIBRARY WINSHELL WinShell_queryDiskSpace"
-::method _queryRecycleBin private  external "LIBRARY WINSHELL WinShell_queryRecycleBin_private"
 
 -- Temp method used to test things.
 ::method test                      external "LIBRARY WINSHELL WinShell_test"
 
 
-/** queryDiskSpace()
- *
- * Returns the total size of a disk and the the free space in bytes.  The free
- * space includes total number of bytes free and total number of bytes free for
- * the current user.  If disk quotas are in effect, the free bytes available for
- * the user many be different than the total free bytes.  Any valid path name,
- * including UNC path names, for the disk may be used.  (Including C:)
- *
- * The information is returned in a directory object with the indexes of:
- * error, total, free, and userFree.
- */
-::method queryDiskSpace external "LIBRARY WINSHELL WinShell_queryDiskSpace"
 
 
 /** queryRecycleBin()
@@ -137,7 +125,7 @@
  * and objects.
  *
  */
-::method queryRecycleBin
+::method queryRecycleBin external "LIBRARY WINSHELL WinShell_queryRecycleBin"
   use strict arg path = ""
 
   details = self~_queryRecycleBin(path)
@@ -241,12 +229,6 @@ return obj
 
     Performs operations on files in the same manner as the Windows Shell.
 
-    The file operations are: delete, move, copy, and rename.  These operations
-    can all be undone.  This means that files deleted are put in the Recycle
-    Bin and can be restored by the user.  In addition, the normal GUI dialogs
-    will be displayed (if desired) for the file operations.  I.e., if a large
-    copy operation is being done the progress dialog will display.
-
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::class 'ShellFileOp' public
 
@@ -325,24 +307,8 @@ return obj
 
 /* class: Path - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
 
-    Provides access to the Shell Lightweight path utilities.  All the methods of
-    this class are class methods.
+    Provides access to the Shell Lightweight path utilities.
 
-    You do not instantiate an object of this class but rather use the class
-    methods as utility routines.  (At least that is the intent at this point.)
-
-    The purpose of many of the methods in this class is to make repetitive
-    chores in dealing with paths a little easier.  For instance, take the task
-    of adding the backslash character to a path name.  It is easy enough to do
-    in Rexx:
-
-      if path~left(1) \== '\' then
-        path = path || '\'
-
-    With the Path class this just becomes slightly easier, it is not any
-    ground-shaking functionality.  <grin>
-
-      path = .Path~addBackSlash(path)
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::class 'Path' public
 
@@ -367,69 +333,4 @@ return obj
 ::method getShortPath     class external "LIBRARY WINSHELL Path_getShortPath"
 ::method getLongPath      class external "LIBRARY WINSHELL Path_getLongPath"
 
--- Some doc for the above methods.  Haven't written much of it.
 
-/** getShortPath()
- *
- * Converts a long path name to its short path name equivalent.  Note that the
- * long path name has to be a valid path or file name.  When the conversion
- * fails, the original path name is returned.  You can use relative path names
- * and single file names:
- *
- *  "..\active.windows\activatedHook.dll"  works
- *  "activatedWindows.frm"                 works
- *
- */
-
-
-
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
-  Some useful public routines.
-\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-
-/** isBoolean()
- *
- * Tests if an object is a boolean (.true or .false.)
- *
- * Note that this function will always return true or false so that it is always
- * safe to use in an logical expression.  If no argument is supplied (which of
- * course makes no sense) then false is returned.
- *
- * @param obj   The object to test.
- *
- * Returns true if the object is strictly true, otherwise false.
- */
-::routine isBoolean public
-  use arg obj
-  if arg(1, 'E') then do
-    if obj~isA(.string) then do
-      if obj~datatype('O') then return .true
-    end
-  end
-return .false
--- End isBoolean()
-
-/** isHandleType()
- *
- * Tests if an object is a number that can be used for a Windows handle.
- *
- * This is a temporary solution until ooRexx 3.x with its pointer class is
- * available.  Windows handles are numbers (the same size as a pointer) and it
- * is common to represent them as hex numbers.  ooDialog however used decimal
- * numbers.  This function returns true if obj is a valid decimal or hexadecimal
- * number.
- *
- * @param obj   The object to test.
- *
- * @return Returns true if the object is a whole number in either base 10 or
- * base 16, otherwise false.
- */
-::routine isHandleType public
-  use arg obj
-  if arg(1, 'E') then do
-    if obj~isA(.string) then do
-      if obj~datatype('W') | obj~datatype('X') then return .true
-    end
-  end
-return .false
--- End isBoolean()

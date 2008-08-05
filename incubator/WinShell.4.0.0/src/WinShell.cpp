@@ -594,8 +594,6 @@ void CommonUninit(bool useCOM)
  */
 
 
-#define WIN_SHELL_VERSION    "Windows Shell for ooRexx Version 1.0.0.0 "
-
 /** Sh::init()
  *
  *  This is the class init() method, which means it will execute when the
@@ -1193,7 +1191,7 @@ RexxMethod2(logical_t, WinShell_queryDiskSpace, CSTRING, rxPath, RexxObjectPtr, 
     RexxDirectoryObject directory = getDirectory(context, obj, 2);
     if ( directory == NULLOBJECT )
     {
-        return FALSE;
+        return false;
     }
 
     ULARGE_INTEGER userFree, total, totalFree;
@@ -1204,7 +1202,7 @@ RexxMethod2(logical_t, WinShell_queryDiskSpace, CSTRING, rxPath, RexxObjectPtr, 
         context->DirectoryPut(directory, context->UnsignedInt64ToObject(totalFree.QuadPart), "FREE");
         context->DirectoryPut(directory, context->UnsignedInt64ToObject(userFree.QuadPart), "USERFREE");
         context->DirectoryPut(directory, context->NewInteger(0), "ERROR");
-        return TRUE;
+        return true;
     }
     else
     {
@@ -1212,7 +1210,7 @@ RexxMethod2(logical_t, WinShell_queryDiskSpace, CSTRING, rxPath, RexxObjectPtr, 
         context->DirectoryPut(directory, context->NewInteger(0), "FREE");
         context->DirectoryPut(directory, context->NewInteger(0), "USERFREE");
         context->DirectoryPut(directory, context->NewInteger(GetLastError()), "ERROR");
-        return FALSE;
+        return false;
     }
 }
 
@@ -1225,22 +1223,34 @@ RexxMethod2(logical_t, WinShell_queryDiskSpace, CSTRING, rxPath, RexxObjectPtr, 
  *  Note that rxPath does not need to be checked for an omitted argument because
  *  use strict arg is done in WinShell.cls.
  */
-RexxMethod1(RexxObjectPtr, WinShell_queryRecycleBin_private, CSTRING, root)
+RexxMethod2(logical_t, WinShell_queryRecycleBin, CSTRING, root, RexxObjectPtr, obj)
 {
+    RexxDirectoryObject directory = getDirectory(context, obj, 2);
+    if ( directory == NULLOBJECT )
+    {
+        return false;
+    }
+
     DWORDLONG bytes = 0, items = 0;
     HRESULT   hr;
-    TCHAR     buffer[64];
 
     hr = queryTrashCan(root, &bytes, &items);
     if ( hr == S_OK )
     {
-        _snprintf(buffer, 64, "%I64u %I64u", bytes, items);
+        context->DirectoryPut(directory, context->Int64ToObject(bytes), "BYTES");
+        context->DirectoryPut(directory, context->Int64ToObject(items), "OBJECTS");
+        context->DirectoryPut(directory, context->NewInteger(0), "ERROR");
+        return true;
     }
     else
     {
-        _snprintf(buffer, 64, "Err: 0x%08x", hr);
+        TCHAR     buffer[64];
+        _snprintf(buffer, 64, "0x%08x", hr);
+        context->DirectoryPut(directory, context->NewInteger(0), "BYTES");
+        context->DirectoryPut(directory, context->NewInteger(0), "OBJECTS");
+        context->DirectoryPut(directory, context->NewStringFromAsciiz(buffer), "ERROR");
+        return false;
     }
-    return context->NewStringFromAsciiz(buffer);
 }
 
 
@@ -1586,10 +1596,13 @@ static HRESULT queryTrashCan(const char * root, PDWORDLONG size, PDWORDLONG item
     return hr;
 }
 
+#define IMAGE_LIST_CLASS               "ImageList"
+/** class: ImageList
+ *
+ * A representation of the ImageList control
+ *
+ */
 
-/* class: ImageList- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
-    A representation of the ImageList control
-\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 #define IL_HANDLE_ATTR         "HANDLE"
 #define IL_IMAGETYPE_ATTR      "IMAGETYPE"
 #define IL_IMAGETYPE_ICON      0
@@ -2072,6 +2085,7 @@ static logical_t setSystemImageList(RexxMethodContext * context, bool setLarge)
 }
 
 
+#define SHELL_FILE_OP_CLASS            "ShellFileOp"
 /** class: ShellFileOp
  *
  * Instances of ShellFileOp are used to perform graphical shell file operations.
@@ -3039,6 +3053,31 @@ void setSFBAttribute(RexxMethodContext *context, char *name, CSTRING userVal, ch
     }
 }
 
+
+#define PATH_CLASS                       "Path"
+/** class: Path
+ *
+ *  Provides access to the Shell Lightweight path utilities.  All the methods of
+ *  this class are class methods.
+ *
+ *  You do not instantiate an object of this class but rather use the class
+ *  methods as utility routines.  (At least that is the intent at this point.)
+ *
+ *  The purpose of many of the methods in this class is to make repetitive
+ *  chores in dealing with paths a little easier.  For instance, take the task
+ *  of adding the backslash character to a path name.  It is easy enough to do
+ *  in Rexx:
+ *
+ *    if path~left(1) \== '\' then
+ *      path = path || '\'
+ *
+ *  With the Path class this just becomes slightly easier, it is not any
+ *  ground-shaking functionality.  <grin>
+ *
+ *    path = .Path~addBackSlash(path)
+ */
+
+
 /** Path::makePretty()
  *
  * Makes a path all lowercase characters so it has a consistent appearance.
@@ -3288,7 +3327,14 @@ RexxMethod1(logical_t, Path_isUNCServerShare, CSTRING, path)
 
 /** Path::getShortPath
  *
- *  Given a long path name, converts and returns its short path name.
+ * Converts a long path name to its short path name equivalent.  Note that the
+ * long path name has to be a valid path or file name.  When the conversion
+ * fails, the original path name is returned.  You can use relative path names
+ * and single file names:
+ *
+ *  "..\active.windows\activatedHook.dll"  works
+ *  "activatedWindows.frm"                 works
+ *
  */
 RexxMethod1(RexxStringObject, Path_getShortPath, CSTRING, path)
 {
@@ -3750,7 +3796,7 @@ REXX_METHOD_PROTOTYPE(WinShell_closeWindow            );
 REXX_METHOD_PROTOTYPE(WinShell_addToRecentDocuments   );
 REXX_METHOD_PROTOTYPE(WinShell_clearRecentDocuments   );
 REXX_METHOD_PROTOTYPE(WinShell_queryDiskSpace         );
-REXX_METHOD_PROTOTYPE(WinShell_queryRecycleBin_private);
+REXX_METHOD_PROTOTYPE(WinShell_queryRecycleBin);
 REXX_METHOD_PROTOTYPE(WinShell_emptyRecycleBin        );
 REXX_METHOD_PROTOTYPE(WinShell_selectIcon             );
 REXX_METHOD_PROTOTYPE(WinShell_loadIcon               );
@@ -3854,7 +3900,7 @@ RexxMethodEntry winshell_methods[] = {
     REXX_METHOD(WinShell_addToRecentDocuments   ,    WinShell_addToRecentDocuments   ),
     REXX_METHOD(WinShell_clearRecentDocuments   ,    WinShell_clearRecentDocuments   ),
     REXX_METHOD(WinShell_queryDiskSpace         ,    WinShell_queryDiskSpace ),
-    REXX_METHOD(WinShell_queryRecycleBin_private,    WinShell_queryRecycleBin_private),
+    REXX_METHOD(WinShell_queryRecycleBin,    WinShell_queryRecycleBin),
     REXX_METHOD(WinShell_emptyRecycleBin        ,    WinShell_emptyRecycleBin        ),
     REXX_METHOD(WinShell_selectIcon             ,    WinShell_selectIcon             ),
     REXX_METHOD(WinShell_loadIcon               ,    WinShell_loadIcon               ),
