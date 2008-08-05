@@ -106,42 +106,10 @@
 ::method releaseIcon               external "LIBRARY WINSHELL WinShell_releaseIcon"
 ::method about                     external "LIBRARY WINSHELL WinShell_about"
 ::method queryDiskSpace            external "LIBRARY WINSHELL WinShell_queryDiskSpace"
-
+::method queryRecycleBin           external "LIBRARY WINSHELL WinShell_queryRecycleBin"
 
 -- Temp method used to test things.
 ::method test                      external "LIBRARY WINSHELL WinShell_test"
-
-
-
-
-/** queryRecycleBin()
- *
- * If path is omitted, queries info for all recycle bins.  When used, path is
- * restricted to a fully qualified path and then the query is for just the
- * recycle bin on that drive.  On error, the error code is in hexadecimal
- * format.  Error codes are COM error codes.
- *
- * The info is returned in a directory object with the indexes of: error, bytes,
- * and objects.
- *
- */
-::method queryRecycleBin external "LIBRARY WINSHELL WinShell_queryRecycleBin"
-  use strict arg path = ""
-
-  details = self~_queryRecycleBin(path)
-
-  obj = .directory~new
-  if details~abbrev("Err:") then do
-    obj~error   = details~word(2)
-    obj~objects = 0
-    obj~bytes   = 0
-  end
-  else do
-    obj~error   = 0
-    obj~objects = details~word(2)
-    obj~bytes   = details~word(1)
-  end
-return obj
 
 
 /* class: ImageList- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\

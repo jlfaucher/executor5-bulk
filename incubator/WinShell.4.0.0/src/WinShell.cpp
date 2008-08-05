@@ -1215,13 +1215,28 @@ RexxMethod2(logical_t, WinShell_queryDiskSpace, CSTRING, rxPath, RexxObjectPtr, 
 }
 
 
-/** WinShell::_queryRecycleBin()  <private>
- *                                               TODO redo this function.
+/** WinShell::queryRecycleBin()
+ *
  *  Determines the size (in bytes) and number of items in the Recycle Bin.  This
  *  can be either for all Recycle Bins, or the Recycle Bin a specific drive.
  *
- *  Note that rxPath does not need to be checked for an omitted argument because
- *  use strict arg is done in WinShell.cls.
+ *  If path is omitted, queries info for all recycle bins.  When used, path is
+ *  restricted to a fully qualified path and then the query is for just the
+ *  recycle bin on that drive.
+ *
+ * @param rxPath   A path name that indicates which disk the query is for.  The
+ *                 path must be fully qualified
+ *
+ * @param obj      A .Directory object that is used to return the number of
+ *                 bytes and the items in the recycle bin(s).  Along with an
+ *                 error code. The directory will have these indexes:
+ *
+ *                 obj~bytes
+ *                 obj~objects
+ *                 obj~error
+ *
+ * @return  True on success, false on failure.  The error index is 0 on success
+ *          and will be a COM error code (in hexadecimal format) on failure.
  */
 RexxMethod2(logical_t, WinShell_queryRecycleBin, CSTRING, root, RexxObjectPtr, obj)
 {
