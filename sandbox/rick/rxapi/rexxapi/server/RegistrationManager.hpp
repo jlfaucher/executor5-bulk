@@ -42,6 +42,7 @@
 #include "rexx.h"
 #include "ServiceMessage.hpp"
 #include "Utilities.hpp"
+#include "SysSemaphore.hpp"
 
 class SessionCookie
 {

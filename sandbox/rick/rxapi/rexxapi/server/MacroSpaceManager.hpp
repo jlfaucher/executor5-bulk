@@ -40,6 +40,7 @@
 #define MacroSpaceManager_HPP_INCLUDED
 
 #include "ServiceMessage.hpp"
+#include "SysSemaphore.hpp"
 
 class MacroItem
 {

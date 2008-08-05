@@ -39,6 +39,7 @@
 
 #include "APIServer.hpp"
 #include "APIServerInstance.hpp"
+#include "APIServerThread.hpp"
 #include <new>
 #include "ServiceMessage.hpp"
 #include "ServiceException.hpp"
@@ -91,7 +92,7 @@ void APIServer::listenForConnections()
         }
         // create a new thread to service this client connection
         APIServerThread *thread = new APIServerThread(this, connection);
-        thread.start();
+        thread->start();
     }
 }
 

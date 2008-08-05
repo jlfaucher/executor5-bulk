@@ -143,9 +143,8 @@ cflags_common=/EHsc /nologo /D:_X86_ /DWIN32 $(VER_DEF) $(WARNING_FLAGS) -c $(my
 cflags_common = $(cflags_common) /DJAPANESE
 !ENDIF
 
-# Toronto does not want to use MSVCRT20.DLL so we need a statically linked rexx
-!IFDEF NOCRTDLL
-cflags_dll=/MT   #MTd if runtime debug
+!IF "$(NODEBUG)" == "1"
+cflags_dll=/MT   #MT if runtime nodebug
 !ELSE
 cflags_dll=/MDd   #MDd if runtime debug
 !ENDIF
@@ -166,7 +165,9 @@ my_ldebug =
 my_ldebug = /PROFILE /DEBUG -debugtype:cv
 !ENDIF
 
-lflags_common= /MAP /NOLOGO $(my_ldebug) /SUBSYSTEM:Windows $(lflags_lib) user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib delayimp.lib ole32.lib oleaut32.lib uuid.lib shell32.lib kernel32.lib
+libs_common=user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib delayimp.lib ole32.lib oleaut32.lib uuid.lib shell32.lib kernel32.lib
+
+lflags_common= /MAP /NOLOGO $(my_ldebug) /SUBSYSTEM:Windows $(lflags_lib) $(libs_common)
 lflags_common_console= /MAP /NOLOGO $(my_ldebug) /SUBSYSTEM:Console $(lflags_lib) user32.lib comdlg32.lib gdi32.lib kernel32.lib
 lflags_dll = /DLL -entry:_DllMainCRTStartup@12
 lflags_exe =

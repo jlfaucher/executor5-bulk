@@ -44,6 +44,7 @@
 #include "SysThread.hpp"
 
 class APIServer;
+class ServerQueueManager;
 
 class QueueItem
 {

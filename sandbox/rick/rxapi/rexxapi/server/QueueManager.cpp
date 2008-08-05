@@ -42,6 +42,7 @@
 #include <new>
 #include "stdio.h"
 #include "Utilities.hpp"
+#include "SynchronizedBlock.hpp"
 
 /**
  * Set the update time for a macro item.
@@ -194,7 +195,7 @@ bool DataQueue::pullData(ServerQueueManager *manager, ServiceMessage &message)
     // on it, or it has recently been posted, and since we're going to read data,
     // we either want it cleared for others to wait, or we're going to need to wait
     // on it ourself.
-    waitSem.clear();
+    waitSem.reset();
     QueueItem *item = getFirst();
     // if we have an item, return it.
     if (item != NULL)
@@ -229,7 +230,7 @@ void DataQueue::pull(ServerQueueManager *manager, ServiceMessage &message)
     size_t noWait = (size_t)message.parameter1;
 
     // if the pull succeeded, return now.
-    if (pullData(message))
+    if (pullData(manager, message))
     {
         return;
     }
@@ -245,21 +246,21 @@ void DataQueue::pull(ServerQueueManager *manager, ServiceMessage &message)
         {
             Lock managerLock(manager->lock);
             // indicate we have another waiting queue
-            queue->addWaiter();
+            addWaiter();
         }
         // now keep looping until we actually get an item
         while (true)
         {
-            queue->waitForData();
+            waitForData();
             {
                 // see if this is doable now without waiting...there was a window of
                 // opportunity for an item to be added.
-                if (queue->pullData(message))
+                if (pullData(manager, message))
                 {
                     {
                         Lock managerLock(manager->lock);
                         // remove us as a waiter
-                        queue->removeWaiter();
+                        removeWaiter();
                     }
                     return;
                 }
