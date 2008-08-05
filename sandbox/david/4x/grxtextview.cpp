@@ -213,16 +213,7 @@ RexxMethod1(RexxObjectPtr,             // Return type
     GtkTextBuffer   *myBuffer;
 
     myBuffer = gtk_text_view_get_buffer(myWidget);
-    // TODO: This does not work because no TextBuffer Rexx object has been
-    // instantaited!
-    return (RexxObjectPtr)g_object_get_data(G_OBJECT(myBuffer), "OORXOBJECT");
-    RexxObjectPtr txtbuf = (RexxObjectPtr)g_object_get_data(G_OBJECT(myBuffer), "OORXOBJECT");
-    if (txtbuf == NULL) {
-        // no Rexx Object found so create it
-        RexxClassObject cobj = context->FindClass("GtkTextBuffer");
-        txtbuf = context->SendMessage1(cobj, "NEW", context->NewPointer(myBuffer));
-    }
-    return txtbuf;
+    return context->SendMessage1(self, "create_textbuffer", context->NewPointer(myBuffer));
 }
 
 /**

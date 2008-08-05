@@ -109,27 +109,24 @@ static void signal_func_2(GtkWidget *window,
 RexxMethod3(int,                       // Return type
             GrxScrolledWindowNew,      // Object_method name
             OSELF, self,               // Self
-            OPTIONAL_RexxObjectPtr, rxhadj,     // The horizontal adjustment
-            OPTIONAL_RexxObjectPtr, rxvadj)     // The vertical adjustment
+            OPTIONAL_RexxObjectPtr, rxhadj, // The horizontal adjustment
+            OPTIONAL_RexxObjectPtr, rxvadj) // The vertical adjustment
 {
     GtkWidget     *myWidget;     
-    GtkAdjustment *hadj, *vadj;
+    GtkAdjustment *hadj = NULL, *vadj = NULL;
 
-    if (rxhadj == NULL) {
-        hadj = NULL;
+    if (rxhadj != NULL) {
+        if (rxhadj != context->Nil()) {
+            RexxPointerObject hadjptr = (RexxPointerObject)context->SendMessage0(rxhadj, "POINTER");
+            hadj = (GtkAdjustment *)context->PointerValue(hadjptr);
+        }
     }
-    else {
-        RexxPointerObject hadjptr = (RexxPointerObject)context->SendMessage0(rxhadj, "POINTER");
-        hadj = (GtkAdjustment *)context->PointerValue(hadjptr);
+    if (rxvadj != NULL) {
+        if (rxvadj != context->Nil()) {
+            RexxPointerObject vadjptr = (RexxPointerObject)context->SendMessage0(rxvadj, "POINTER");
+            vadj = (GtkAdjustment *)context->PointerValue(vadjptr);
+        }
     }
-    if (rxvadj == NULL) {
-        vadj = NULL;
-    }
-    else {
-        RexxPointerObject vadjptr = (RexxPointerObject)context->SendMessage0(rxvadj, "POINTER");
-        vadj = (GtkAdjustment *)context->PointerValue(vadjptr);
-    }
-
     myWidget = gtk_scrolled_window_new(hadj, vadj);
     context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);

@@ -237,9 +237,9 @@ return
 ::constant GTK_RELIEF_HALF 1
 ::constant GTK_RELIEF_NONE 2
    -- GtkAtom
-::constant GTK_SELECTION_PRIMARY 1
-::constant GTK_SELECTION_SECONDARY 2
-::constant GTK_SELECTION_CLIPBOARD 69
+::constant GDK_SELECTION_PRIMARY 1
+::constant GDK_SELECTION_SECONDARY 2
+::constant GDK_SELECTION_CLIPBOARD 69
    -- GtkShadow
 ::constant GTK_SHADOW_NONE 0
 ::constant GTK_SHADOW_IN 1
@@ -1990,19 +1990,19 @@ return
 
 ::method newFromFile class
 use strict arg filename
-img = self~new()
+img = .GtkImage~new()
 img~set_from_file(filename)
 return img
 
 ::method newFromStock class
 use strict arg stockid, size
-img = self~new()
+img = .GtkImage~new()
 img~set_from_stock(stockid, size)
 return img
 
 ::method newFromIconName class
 use strict arg iconname, size
-img = self~new()
+img = .GtkImage~new()
 img~set_from_icon_name(iconname, size)
 return img
 
@@ -2072,6 +2072,9 @@ return img
 ::METHOD 'right_margin=' EXTERNAL "LIBRARY rexxgtk GrxTextViewSetRightMargin"
 ::METHOD add_child_at_offset EXTERNAL "LIBRARY rexxgtk GrxTextViewAddChildAtOffset"
 ::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxTextViewSignalConnect"
+::Method create_textbuffer private
+use strict arg ptr
+return .GtkTextBuffer~new(ptr)
 
 -- The following are the methods that can be connected to signals. By default
 -- they do nothing.
@@ -2128,18 +2131,7 @@ return
 
 ::class GtkTextBuffer public
 
-::method init
-if arg() = 1 then do
-   use strict arg ptr
-   self~init_1args(ptr)
-   return
-   end
-self~init_0args()
-return
-
-::METHOD init_1args private EXTERNAL "LIBRARY rexxgtk GrxTextBufferNewFromPtr"
-::METHOD init_0args private EXTERNAL "LIBRARY rexxgtk GrxTextBufferNew"
-
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxTextBufferNew"
 ::METHOD set_text EXTERNAL "LIBRARY rexxgtk GrxTextBufferSetText"
 ::METHOD 'text=' EXTERNAL "LIBRARY rexxgtk GrxTextBufferSetText"
 ::METHOD get_text EXTERNAL "LIBRARY rexxgtk GrxTextBufferGetText"
@@ -2156,6 +2148,16 @@ return
 ::METHOD remove_all_tags EXTERNAL "LIBRARY rexxgtk GrxTextBufferRemoveAllTags"
 ::METHOD insert_image EXTERNAL "LIBRARY rexxgtk GrxTextBufferInsertImage"
 ::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxTextBufferSignalConnect"
+
+-- These methods should only be invoked by the C++ code. That is the only place
+-- where it is actually useful.
+::method 'pointer='
+expose !pointer
+use strict arg !pointer
+return
+::method pointer
+expose !pointer
+return !pointer
 
 -- The following are the methods that can be connected to signals. By default
 -- they do nothing.
@@ -2192,7 +2194,7 @@ return
 ::METHOD init_1args private EXTERNAL "LIBRARY rexxgtk GrxAdjustmentNewFromPtr"
 ::METHOD init_6args private EXTERNAL "LIBRARY rexxgtk GrxAdjustmentNew"
 
--- This methods should only be invoked by the C++ code. That is the only place
+-- These methods should only be invoked by the C++ code. That is the only place
 -- where it is actually useful.
 ::method 'pointer='
 expose !pointer
@@ -2229,7 +2231,7 @@ return
 ::METHOD append EXTERNAL "LIBRARY rexxgtk GrxListStoreAppend"
 ::METHOD set EXTERNAL "LIBRARY rexxgtk GrxListStoreSetValue"
 
--- This methods should only be invoked by the C++ code. That is the only place
+-- These methods should only be invoked by the C++ code. That is the only place
 -- where it is actually useful.
 ::method 'pointer='
 expose !pointer
@@ -2815,7 +2817,7 @@ return obj
 
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxTreeViewColumnNew"
 
--- This methods should only be invoked by the C++ code. That is the only place
+-- These methods should only be invoked by the C++ code. That is the only place
 -- where it is actually useful.
 ::method 'pointer='
 expose !pointer
@@ -2849,7 +2851,7 @@ return
 ::METHOD append EXTERNAL "LIBRARY rexxgtk GrxTreeStoreAppend"
 ::METHOD set EXTERNAL "LIBRARY rexxgtk GrxTreeStoreSetValue"
 
--- This methods should only be invoked by the C++ code. That is the only place
+-- These methods should only be invoked by the C++ code. That is the only place
 -- where it is actually useful.
 ::method 'pointer='
 expose !pointer

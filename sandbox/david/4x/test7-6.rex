@@ -99,7 +99,7 @@ find = self~user_data[1]~get_text()
 buffer = self~user_data[2]~get_buffer()
 
 iter = buffer~forward_search(find, .true)
-do while iter <> ''
+do while iter <> .nil
    i = i + 1
    iter = buffer~forward_search_next(find, iter)
 end

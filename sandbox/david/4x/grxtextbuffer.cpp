@@ -82,35 +82,19 @@ static void signal_func_0(GtkWidget *window,
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxTextBufferNew,          // Object_method name
-            OSELF, self)               // Self
+            OSELF, self,               // Self
+            OPTIONAL_RexxObjectPtr, rxptr) // buffer pointer
 {
     GtkTextBuffer       *myBuffer;
 
-    myBuffer = gtk_text_buffer_new(NULL);
-    context->SendMessage1(self, "POINTER=", context->NewPointer(myBuffer));
-    g_object_set_data(G_OBJECT(myBuffer), "OORXOBJECT", self);
-
-    return 0;
-}
-
-/**
- * Method:  init
- *
- * Create an textbuffer.
- *
- * @param rxptr   The widget pointer
- *
- * @return        Zero.
- **/
-RexxMethod2(int,                       // Return type
-            GrxTextBufferNewFromPtr,   // Object_method name
-            OSELF, self,               // Self
-            RexxObjectPtr, rxptr)
-{
-    GtkTextBuffer *myBuffer = (GtkTextBuffer *)context->PointerValue((RexxPointerObject)rxptr);
-
+    if (rxptr == context->Nil()) {
+        myBuffer = gtk_text_buffer_new(NULL);
+    }
+    else {
+        myBuffer = (GtkTextBuffer *)context->PointerValue((RexxPointerObject)rxptr);
+    }
     context->SendMessage1(self, "POINTER=", context->NewPointer(myBuffer));
     g_object_set_data(G_OBJECT(myBuffer), "OORXOBJECT", self);
 

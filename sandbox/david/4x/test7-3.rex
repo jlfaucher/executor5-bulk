@@ -71,7 +71,7 @@ buffer = textview~get_buffer()
 buffer~text = 'This is some text!' || '0A'x || 'Change me!' || '0A'x || 'Please!'
 
 scrolled_win = .GtkScrolledWindow~new(.nil, .nil)
-scrolled_win~set_policy(.gtk~GTK_POLICY_AUTOMAYIC, .gtk~GTK_POLICY_ALWAYS)
+scrolled_win~set_policy(.gtk~GTK_POLICY_AUTOMATIC, .gtk~GTK_POLICY_ALWAYS)
 scrolled_win~add(textview)
 window~add(scrolled_win)
 window~show_all()

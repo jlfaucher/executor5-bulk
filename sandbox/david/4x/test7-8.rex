@@ -55,8 +55,9 @@ textview = .GtkTextview~new()
 buffer = textview~get_buffer()
 buffer~set_text(" ooRexx" || '0A'x)
 
-image = .GtkImage_From_File~new('oorexx.jpg')
+image = .GtkImage~newFromFile('oorexx.jpg')
 buffer~insert_image(image, 0)
+say 'got here'
 
 scrolled_win = .GtkScrolledWindow~new(.nil, .nil)
 scrolled_win~add(textview)

@@ -96,29 +96,26 @@ return
 ::class MyCut subclass GtkButton
 
 ::method signal_clicked
-cb = .GtkClipboard~get(.gtk~GDK_SELECTION_CLIPBOARD)
 buffer = self~user_data~get_buffer()
 
-buffer~cut_clipboard(cb, .true)
+buffer~cut_clipboard(.true)
 return
 
 
 ::class MyCopy subclass GtkButton
 
 ::method signal_clicked
-cb = .GtkClipboard~get(.gtk~GDK_SELECTION_CLIPBOARD)
 buffer = self~user_data~get_buffer()
 
-buffer~copy_clipboard(cb)
+buffer~copy_clipboard()
 return
 
 
 ::class MyPaste subclass GtkButton
 
 ::method signal_clicked
-cb = .GtkClipboard~get(.gtk~GDK_SELECTION_CLIPBOARD)
 buffer = self~user_data~get_buffer()
 
-buffer~paste_clipboard(cb, .true)
+buffer~paste_clipboard(.true)
 return
 

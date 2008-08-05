@@ -576,7 +576,6 @@ RexxMethodEntry gtkobject_methods[] = {
     REXX_METHOD(GrxTextViewAddChildAtOffset, GrxTextViewAddChildAtOffset),
     REXX_METHOD(GrxTextViewSignalConnect, GrxTextViewSignalConnect),
     REXX_METHOD(GrxTextBufferNew, GrxTextBufferNew),
-    REXX_METHOD(GrxTextBufferNewFromPtr, GrxTextBufferNewFromPtr),
     REXX_METHOD(GrxTextBufferSetText, GrxTextBufferSetText),
     REXX_METHOD(GrxTextBufferInsertText, GrxTextBufferInsertText),
     REXX_METHOD(GrxTextBufferGetText, GrxTextBufferGetText),
