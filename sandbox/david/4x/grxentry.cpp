@@ -397,6 +397,14 @@ RexxMethod3(RexxObjectPtr,             // Return type
                          G_CALLBACK(signal_func_0), cblock);
         return context->True();
     }
+    else if (strcmp(name, "changed") == 0) {
+        cblock = (cbcb *)malloc(sizeof(cbcb));
+        cblock->instance = context->threadContext->instance;
+        cblock->signal_name = "signal_changed";
+        g_signal_connect(G_OBJECT(myWidget), "changed",
+                         G_CALLBACK(signal_func_0), cblock);
+        return context->True();
+    }
     else if (strcmp(name, "copy_clipboard") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;

@@ -133,7 +133,7 @@ return
 text = self~get_text()
 num = self~user_data~get_current_page()
 page = self~user_data~get_nth_page(num)
-self~user_data~~set_page_complete(page, length(text))
+self~user_data~set_page_complete(page, length(text) > 0)
 return
 
 ::class myButton subclass GtkButton

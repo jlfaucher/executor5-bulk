@@ -146,7 +146,7 @@ RexxMethod1(int,                       // Return type
     RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkAssistant *myWidget = (GtkAssistant *)context->PointerValue(rxptr);
 
-    return gtk_assistant_get_current_page(myWidget);
+    return gtk_assistant_get_current_page(myWidget) + 1;
 }
 
 /**
