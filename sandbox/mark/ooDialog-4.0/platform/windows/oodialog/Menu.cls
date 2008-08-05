@@ -54,7 +54,8 @@
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::class 'Menu' public mixinclass Object
 
-::attribute hMenu private
+::attribute hMenu set private
+::attribute hMenu get
 
 ::attribute dlg private
 
@@ -699,8 +700,7 @@
 
   if \ owner~isA(.BaseDialog) then return -3
   if self~dlg \== owner then do
-    -- Question: Do we want to set the assigned dialog to the owner ??
-    say "ALERT ALERT owner not self~dialog!!!!!!!"
+    -- TODO Revisit  Question: Do we want to set the assigned dialog to the owner ??
     self~dlg = owner
   end
 
@@ -719,7 +719,7 @@
 
   if \ owner~isA(.BaseDialog) then return -3
   if self~dlg \== owner then do
-    say "ALERT ALERT owner not self~dialog!!!!!!!"
+    -- TODO Revisit  Question: Do we want to set the assigned dialog to the owner ??
     self~dlg = owner
   end
 

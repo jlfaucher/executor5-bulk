@@ -593,7 +593,6 @@ size_t RexxEntry MemMenu(const char *f, size_t argc, CONSTRXSTRING *argv, const 
        if (lResInfo & MFR_POPUP)
        {
            *dp++ = dwHelpID;
-           //p = lpwAlign(p);
        }
 
        RETPTR(dp)
@@ -942,7 +941,6 @@ size_t RexxEntry SetMII(const char *f, size_t argc, CONSTRXSTRING *argv, const c
 
     if ( SetMenuItemInfo(hMenu, itemID, byPosition, &mii) == 0 )
     {
-        printf("%s Did SetMenuItemInfo() byPosition=%d mii.wID=%d lastErr=%d\n", __FUNCTION__, byPosition, mii.wID, GetLastError());
         RETVAL(-(INT)GetLastError())
     }
 
@@ -984,7 +982,6 @@ size_t RexxEntry GetMII(const char *f, size_t argc, CONSTRXSTRING *argv, const c
         {
             RETVAL(-(INT)GetLastError())
         }
-        printf("%s posID=%d mii.fState=%d\n", __FUNCTION__, itemID, mii.fState);
         return itemStateToRexx(mii.fState, retstr);
     }
     else if ( strcmp(argv[0].strptr, "TYPE") == 0 )  /* Get the type of a menu item. */
@@ -995,7 +992,6 @@ size_t RexxEntry GetMII(const char *f, size_t argc, CONSTRXSTRING *argv, const c
         {
             RETVAL(-(INT)GetLastError())
         }
-        printf("%s posID=%d mii.fType=%d\n", __FUNCTION__, itemID, mii.fType);
         return itemTypeToRexx(mii.fState, retstr);
     }
     else if ( strcmp(argv[0].strptr, "ID") == 0 )  /* Get the resource ID of a menu item. */
@@ -1006,7 +1002,6 @@ size_t RexxEntry GetMII(const char *f, size_t argc, CONSTRXSTRING *argv, const c
         {
             RETVAL(-(INT)GetLastError())
         }
-        printf("%s posID=%d byPosition=%d mii.wID=%d lastErr=%d\n", __FUNCTION__, itemID, byPosition, mii.wID, GetLastError());
         RETVAL(mii.wID);
     }
     else if ( strcmp(argv[0].strptr, "SUB") == 0 )  /* Get the handle of a submen. */
@@ -1016,9 +1011,6 @@ size_t RexxEntry GetMII(const char *f, size_t argc, CONSTRXSTRING *argv, const c
         {
             RETVAL(-(INT)GetLastError())
         }
-        printf("%s itemID=%d byPosition=%d mii.hSubMenu=%p \n", __FUNCTION__,
-               itemID, byPosition, mii.hSubMenu);
-
         return menuHandleToRexx(mii.hSubMenu, retstr);
     }
     else if ( strcmp(argv[0].strptr, "ISSUB") == 0 )  /* Determine if the item is a submenu. */
@@ -1026,8 +1018,6 @@ size_t RexxEntry GetMII(const char *f, size_t argc, CONSTRXSTRING *argv, const c
         mii.fMask = MIIM_SUBMENU;
         if ( GetMenuItemInfo(hMenu, itemID, byPosition, &mii) != 0 )
         {
-            printf("%s itemID=%d byPosition=%d mii.hSubMenu=%p mii.cch=%d\n", __FUNCTION__,
-                   itemID, byPosition, mii.hSubMenu, mii.cch);
             if ( mii.hSubMenu != NULL && mii.cch == 0 )
             {
                 RETVAL(1)
@@ -1035,8 +1025,8 @@ size_t RexxEntry GetMII(const char *f, size_t argc, CONSTRXSTRING *argv, const c
         }
         else
         {
-            /* Temp debugging */
-            printf("%s ISSUB last error=%d\n", __FUNCTION__, GetLastError());
+            /* TODO FIXME remove temp debugging */
+            //printf("%s ISSUB last error=%d\n", __FUNCTION__, GetLastError());
         }
         RETVAL(0)
     }
@@ -1045,8 +1035,6 @@ size_t RexxEntry GetMII(const char *f, size_t argc, CONSTRXSTRING *argv, const c
         mii.fMask = MIIM_SUBMENU | MIIM_FTYPE;
         if ( GetMenuItemInfo(hMenu, itemID, byPosition, &mii) != 0 )
         {
-            printf("%s itemID=%d byPosition=%d mii.hSubMenu=%p mii.fType=%u mii.cch=%d\n", __FUNCTION__,
-                   itemID, byPosition, mii.hSubMenu, mii.fType, mii.cch);
             if ( mii.hSubMenu == NULL && (mii.fType & MFT_SEPARATOR) == 0 )
             {
                 RETVAL(1)
@@ -1054,8 +1042,8 @@ size_t RexxEntry GetMII(const char *f, size_t argc, CONSTRXSTRING *argv, const c
         }
         else
         {
-            /* Temp debugging */
-            printf("%s ISITEM last error=%d\n", __FUNCTION__, GetLastError());
+            /* TODO FIXME remove temp debugging */
+            //printf("%s ISITEM last error=%d\n", __FUNCTION__, GetLastError());
         }
         RETVAL(0)
     }
@@ -1064,8 +1052,6 @@ size_t RexxEntry GetMII(const char *f, size_t argc, CONSTRXSTRING *argv, const c
         mii.fMask = MIIM_FTYPE;
         if ( GetMenuItemInfo(hMenu, itemID, byPosition, &mii) != 0 )
         {
-            printf("%s itemID=%d byPosition=%d mii.fType=%u mii.cch=%d\n", __FUNCTION__,
-                   itemID, byPosition, mii.fType, mii.cch);
             if ( (mii.fType & MFT_SEPARATOR) == MFT_SEPARATOR )
             {
                 RETVAL(1)
@@ -1073,8 +1059,8 @@ size_t RexxEntry GetMII(const char *f, size_t argc, CONSTRXSTRING *argv, const c
         }
         else
         {
-            /* Temp debugging */
-            printf("%s ISSEP last error=%d\n", __FUNCTION__, GetLastError());
+            /* TODO FIXME remove temp debugging */
+            // printf("%s ISSEP last error=%d\n", __FUNCTION__, GetLastError());
         }
         RETVAL(0)
     }
@@ -1090,8 +1076,6 @@ size_t RexxEntry GetMII(const char *f, size_t argc, CONSTRXSTRING *argv, const c
         {
             RETVAL(-(INT)GetLastError())
         }
-        printf("%s itemID=%d byPosition=%d mii.cch=%d mii.dwTypeData=%s\n", __FUNCTION__,
-               itemID, byPosition, mii.cch, mii.dwTypeData);
 
         retstr->strlength = mii.cch;
         return 0;
@@ -1264,6 +1248,7 @@ size_t RexxEntry TrackPopup(const char *f, size_t argc, CONSTRXSTRING *argv, con
     tp.hWnd = getWindowHandle(argv[2].strptr);
     if ( tp.hMenu == NULL || (tp.hWnd == NULL) )
     {
+        printf("%s hMenu=%p hWnd=%p\n", __FUNCTION__, tp.hMenu, tp.hWnd);
         RETVAL(-3)
     }
 
