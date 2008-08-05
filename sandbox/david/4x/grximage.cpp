@@ -98,8 +98,10 @@ RexxMethod2(int,                       // Return type
 {
     RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkImage *myWidget = (GtkImage *)context->PointerValue(rxptr);
+    GdkPixbuf *buf;
 
-    gtk_image_set_from_file(myWidget, filename);
+    buf = gdk_pixbuf_new_from_file(filename, NULL);
+    gtk_image_set_from_pixbuf(myWidget, buf);
 
     return 0;
 }
