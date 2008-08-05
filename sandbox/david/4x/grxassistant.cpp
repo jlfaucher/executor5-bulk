@@ -360,20 +360,18 @@ RexxMethod3(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod4(int,                       // Return type
+RexxMethod3(int,                       // Return type
             GrxAssistantSetPageSideImage, // Object_method name
             RexxObjectPtr, page,       // Page
-            CSTRING, filename,         // Image file name
-            ARGLIST, args,             // The whole argument list as an array
+            CSTRING, title,            // Page title
             OSELF, self)               // Self
 {
     RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkAssistant *myWidget = (GtkAssistant *)context->PointerValue(rxptr);
     RexxPointerObject pageptr = (RexxPointerObject)context->SendMessage0(page, "POINTER");
     GtkWidget *pageWidget = (GtkWidget *)context->PointerValue(pageptr);
-    GdkPixbuf *image = gdk_pixbuf_new_from_file(filename, NULL);
 
-    gtk_assistant_set_page_side_image(myWidget, pageWidget, image);
+    gtk_assistant_set_page_title(myWidget, pageWidget, title);
 
     return 0;
 }

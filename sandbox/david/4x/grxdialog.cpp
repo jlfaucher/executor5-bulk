@@ -107,6 +107,9 @@ RexxMethod1(int,                       // Return type
     myWidget = gtk_dialog_new();
     context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
+    GtkWidget *vbox = GTK_DIALOG(myWidget)->vbox;
+    // create the vbox object
+    RexxObjectPtr rxvbox = context->SendMessage1(self, "VBOX=", context->NewPointer(vbox));
 
     return 0;
 }
@@ -136,13 +139,17 @@ RexxMethod5(int,                       // Return type
             ARGLIST, args,             // Array of buttons and responses
             OSELF, self)               // Self
 {
-    RexxPointerObject parentptr = (RexxPointerObject)context->SendMessage0(parent, "POINTER");
-    GtkWindow *myParent = (GtkWindow *)context->PointerValue(parentptr);
+    RexxPointerObject parentptr;
+    GtkWindow *myParent = NULL;
     GtkWidget *myWidget, *vbox;
     const gchar *bid;
     int rid;
     size_t members = context->ArraySize(args);
 
+    if (parent != context->Nil()) {
+        parentptr = (RexxPointerObject)context->SendMessage0(parent, "POINTER");
+        myParent = (GtkWindow *)context->PointerValue(parentptr);
+    }
     myWidget = gtk_dialog_new_with_buttons(title, myParent,
                                            (GtkDialogFlags)flags, NULL);
     for (int i = 5; i <= members; i += 2) {
@@ -151,14 +158,10 @@ RexxMethod5(int,                       // Return type
         gtk_dialog_add_button(GTK_DIALOG(myWidget), bid, rid);
     }
     context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
-    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", context->GetSelf());
+    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
     vbox = GTK_DIALOG(myWidget)->vbox;
-    RexxObjectPtr rxvbox = (RexxObjectPtr)g_object_get_data(G_OBJECT(vbox), "OORXOBJECT");
-    if (rxvbox == NULL) {
-        // no Rexx Object found so create it
-        RexxClassObject cobj = context->FindClass("GtkVBox");
-        rxvbox = context->SendMessage1(cobj, "NEW", context->NewPointer(vbox));
-    }
+    // create the vbox object
+    RexxObjectPtr rxvbox = context->SendMessage1(self, "VBOX=", context->NewPointer(vbox));
 
     return 0;
 }
@@ -316,17 +319,20 @@ RexxMethod6(int,                       // Return type
             CSTRING, text,             // Message text
             OSELF, self)               // Self
 {
-    RexxPointerObject parentptr = (RexxPointerObject)context->SendMessage0(parent, "POINTER");
-    GtkWindow *myParent = (GtkWindow *)context->PointerValue(parentptr);
+    RexxPointerObject parentptr;
+    GtkWindow *myParent = NULL;
     GtkWidget *myWidget;
 
-
+    if (parent != context->Nil()) {
+        parentptr = (RexxPointerObject)context->SendMessage0(parent, "POINTER");
+        myParent = (GtkWindow *)context->PointerValue(parentptr);
+    }
     myWidget = gtk_message_dialog_new(myParent, (GtkDialogFlags)flags,
                                       (GtkMessageType)type,
                                       (GtkButtonsType)bset, text);
 
     context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
-    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", context->GetSelf());
+    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
 }
@@ -356,13 +362,17 @@ RexxMethod5(int,                       // Return type
             ARGLIST, args,             // Array of buttons and responses
             OSELF, self)               // Self
 {
-    RexxPointerObject parentptr = (RexxPointerObject)context->SendMessage0(parent, "POINTER");
-    GtkWindow *myParent = (GtkWindow *)context->PointerValue(parentptr);
+    RexxPointerObject parentptr;
+    GtkWindow *myParent = NULL;
     GtkWidget *myWidget;
     const gchar *bid;
     int rid;
     size_t members = context->ArraySize(args);
 
+    if (parent != context->Nil()) {
+        parentptr = (RexxPointerObject)context->SendMessage0(parent, "POINTER");
+        myParent = (GtkWindow *)context->PointerValue(parentptr);
+    }
     myWidget = gtk_file_chooser_dialog_new(title, myParent,
                                            (GtkFileChooserAction)action, NULL);
     for (int i = 5; i <= members; i += 2) {
@@ -371,7 +381,7 @@ RexxMethod5(int,                       // Return type
         gtk_dialog_add_button(GTK_DIALOG(myWidget), bid, rid);
     }
     context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
-    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", context->GetSelf());
+    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
 }
@@ -396,7 +406,7 @@ RexxMethod2(int,                       // Return type
 
     myWidget = gtk_font_selection_dialog_new(title);
     context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
-    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", context->GetSelf());
+    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
 }
@@ -481,7 +491,7 @@ RexxMethod1(int,                       // Return type
 
     myWidget = gtk_about_dialog_new();
     context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
-    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", context->GetSelf());
+    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
 }
@@ -794,7 +804,7 @@ RexxMethod2(int,                       // Return type
     colorsel = GTK_COLOR_SELECTION_DIALOG(myWidget)->colorsel;
     gtk_color_selection_set_has_opacity_control(GTK_COLOR_SELECTION(colorsel), TRUE);
     context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
-    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", context->GetSelf());
+    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
 }

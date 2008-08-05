@@ -76,8 +76,9 @@ int rexxgtk_argc = 1;
  */
 RexxRoutine0(RexxObjectPtr, GrxVersion)
 {
-
-    return context->NewStringFromAsciiz(VERSTRING(VMAJOR,VMINOR,VREL));
+    char verstr[20];
+    g_snprintf(verstr, sizeof(verstr), "%d.%d.%d", VMAJOR, VMINOR, VREL);
+    return context->NewStringFromAsciiz(verstr);
 }
 
 /**

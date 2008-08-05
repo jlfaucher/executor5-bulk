@@ -51,7 +51,6 @@ logo = './oorexx.jpg'
 
 dialog~set_logo(logo)
 
-dialog~set_program_name('GtkAboutDialog')
 dialog~set_version(GrxVersion())
 dialog~set_copyright('(c) 2008 Rexx Language Association. All rights reserved.')
 dialog~set_comments('All About GtkAboutDialog')
@@ -61,7 +60,6 @@ dialog~set_website('http://www.oorexx.org/')
 dialog~set_website_label('ooRexx Web Site')
 
 dialog~set_authors('W. David Ashley', 'Mark Miesfeld')
-dialog~set_documenters('W. David Ashley')
 -- the following statement is not in the original example
 dialog~set_artists('Julian Choy')
 

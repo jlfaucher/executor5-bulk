@@ -89,8 +89,9 @@ return
 ::method init
 expose color alpha
 use arg title, color, alpha
-self~init:super(title)
-
+self~init:super()
+self~label = title
+return
 
 ::method signal_clicked
 expose color alpha
@@ -103,7 +104,9 @@ return
 ::method init
 expose color alpha
 use arg title, color, alpha
-self~init:super(title)
+self~init:super()
+self~label = title
+return
 
 ::method signal_clicked
 expose color alpha
@@ -115,9 +118,11 @@ return
 
 ::method init
 use strict arg title, color, alpha
-self~init:super(title, color, alpha)
+self~init:super(title)
+-- TODO: set the color and alpha, need a new method to do this
 self~signal_connect('response')
 self~show_all()
+return
 
 ::method signal_response
 use strict arg response

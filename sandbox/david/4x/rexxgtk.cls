@@ -1128,8 +1128,8 @@ return
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxWindowNew"
 ::METHOD 'title=' EXTERNAL "LIBRARY rexxgtk GrxWindowSetTitle"
 ::METHOD set_title EXTERNAL "LIBRARY rexxgtk GrxWindowSetTitle"
--- ::METHOD 'modal=' EXTERNAL "LIBRARY rexxgtk GrxWindowSetModal"
--- ::METHOD set_modal EXTERNAL "LIBRARY rexxgtk GrxWindowSetModal"
+::METHOD 'modal=' EXTERNAL "LIBRARY rexxgtk GrxWindowSetModal"
+::METHOD set_modal EXTERNAL "LIBRARY rexxgtk GrxWindowSetModal"
 ::METHOD add_accel_group EXTERNAL "LIBRARY rexxgtk GrxWindowAddAccelGroup"
 ::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxWindowSignalConnect"
 
@@ -1588,7 +1588,12 @@ return
 
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxDialogNew"
 
-::method vbox
+::attribute vbox set
+expose vbox
+use strict arg ptr
+vbox = .GtkVBox~new(ptr)
+return
+::attribute vbox get
 expose vbox
 return vbox
 
@@ -1613,10 +1618,10 @@ return
 
 
 /*============================================================================*/
-/* Class: GtkDialog_With_Buttons                                              */
+/* Class: GtkDialogWithButtons                                                */
 /*============================================================================*/
 
-::class GtkDialog_With_Buttons public subclass GtkDialog
+::class GtkDialogWithButtons public subclass GtkDialog
 
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxDialogNewWithButtons"
 
@@ -1713,6 +1718,7 @@ return
 ::METHOD set_page_complete EXTERNAL "LIBRARY rexxgtk GrxAssistantSetPageComplete"
 ::METHOD set_page_header_image EXTERNAL "LIBRARY rexxgtk GrxAssistantSetPageHeaderImage"
 ::METHOD set_page_side_image EXTERNAL "LIBRARY rexxgtk GrxAssistantSetPageSideImage"
+::METHOD set_page_title EXTERNAL "LIBRARY rexxgtk GrxAssistantSetPageTitle"
 ::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxAssistantSignalConnect"
 
 -- The following are the methods that can be connected to signals. By default

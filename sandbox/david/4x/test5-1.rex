@@ -75,7 +75,7 @@ return
 ::class MyButton subclass GtkButton
 
 ::method signal_clicked
-dialog = .GtkDialog_With_Buttons~new('Information', self~user_data,,
+dialog = .GtkDialogWithButtons~new('Information', self~user_data,,
                                      .gtk~GTK_DIALOG_MODAL,,
                                      .gtk~GTK_STOCK_OK, .gtk~GTK_RESPONSE_OK)
 dialog~set_has_separator(.false)
