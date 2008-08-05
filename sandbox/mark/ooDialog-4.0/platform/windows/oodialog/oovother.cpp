@@ -1034,7 +1034,12 @@ static bool checkWindowClass(HWND hwnd, TCHAR *pClass)
  *     1 the Windows API call failed
  *  >  1 dependent on the function, usually a returned value not a return code
  */
-size_t RexxEntry HandleControlEx(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
+size_t RexxEntry HandleControlEx(
+    const char *funcname,
+    size_t argc,
+    CONSTRXSTRING *argv,
+    const char *qname,
+    RXSTRING *retstr)
 {
     HWND hDlg;
     HWND hCtrl;
