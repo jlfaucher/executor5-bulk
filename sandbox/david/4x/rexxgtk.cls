@@ -2859,7 +2859,7 @@ return
 
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxTreeStoreNew"
 ::METHOD append EXTERNAL "LIBRARY rexxgtk GrxTreeStoreAppend"
-::METHOD set EXTERNAL "LIBRARY rexxgtk GrxTreeStoreSetValue"
+::METHOD set_value EXTERNAL "LIBRARY rexxgtk GrxTreeStoreSetValue"
 
 -- These methods should only be invoked by the C++ code. That is the only place
 -- where it is actually useful.

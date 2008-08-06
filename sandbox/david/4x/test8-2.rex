@@ -71,26 +71,28 @@ window~set_border_width(10)
 window~set_size_request(275, 300)
 
 treeview = .GtkTreeview~new()
-call setup_tree_view treeview
+call setup_tree_view treeview, BUY_IT, QUANTITY, PRODUCT
 
 store = .GtkTreeStore~new(.gtk~G_TYPE_BOOLEAN, .gtk~G_TYPE_INT, .gtk~G_TYPE_STRING)
 
-do i = 1 to store~items
-   if store[i]~product_type = PRODUCT_CATEGORY then do
+do i = 1 to list~items
+   if list[i]~product_type = PRODUCT_CATEGORY then do
       j = i + 1
-      do while j <= store~items & store[j]~product_type <> PRODUCT_CATEGORY
-         if store[j]~buy then do
-            store[i]~quantity += store[j]~quantity
+      do while list[j]~product_type <> PRODUCT_CATEGORY
+         if list[j]~buy then do
+            list[i]~quantity += list[j]~quantity
             end
+         j += 1
+         if j > list~items then leave
          end
       iter = store~append(.nil)
-      store~set_value(iter, BUY_IT, store[i]~buy. QUANTITY, store[i]~quantity,,
-                      PRODUCT, store[i]~product)
+      store~set_value(iter, BUY_IT, list[i]~buy, QUANTITY, list[i]~quantity,,
+                      PRODUCT, list[i]~product)
       end
    else do
       child = store~append(iter)
-      store~set_value(child, BUY_IT, store[i]~buy. QUANTITY, store[i]~quantity,,
-                      PRODUCT, store[i]~product)
+      store~set_value(child, BUY_IT, list[i]~buy, QUANTITY, list[i]~quantity,,
+                      PRODUCT, list[i]~product)
       end
    end
 
@@ -100,7 +102,7 @@ treeview~set_model(store)
 treeview~expand_all()
 
 scrolled_win = .GtkScrolledWindow~new(.nil, .nil)
-scrolled_win_set+policy(.gtk~GTK_POLICY_AUTOMATIC, gtk~GTK_POLICY_AUTOMATIC)
+scrolled_win~set_policy(.gtk~GTK_POLICY_AUTOMATIC, .gtk~GTK_POLICY_AUTOMATIC)
 
 scrolled_win~add(treeview)
 window~add(scrolled_win)
@@ -112,19 +114,19 @@ return
 ::requires 'rexxgtk.cls'
 
 ::routine setup_tree_view
-use strict arg treeview
+use strict arg treeview, BUY_IT, QUANTITY, PRODUCT
 
-renderer = .GtkCellRendererTextView~new()
+renderer = .GtkCellRendererText~new()
 column = .GtkTreeViewColumn~new_with_attributes('Buy', renderer, 'text', BUY_IT)
-treeview~append(column)
+treeview~append_column(column)
 
-renderer = .GtkCellRendererTextView~new()
+renderer = .GtkCellRendererText~new()
 column = .GtkTreeViewColumn~new_with_attributes('Count', renderer, 'text', QUANTITY)
-treeview~append(column)
+treeview~append_column(column)
 
-renderer = .GtkCellRendererTextView~new()
+renderer = .GtkCellRendererText~new()
 column = .GtkTreeViewColumn~new_with_attributes('Product', renderer, 'text', PRODUCT)
-treeview~append(column)
+treeview~append_column(column)
 return
 
 ::class GroceryItem
