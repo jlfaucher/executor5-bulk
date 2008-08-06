@@ -121,6 +121,7 @@ return
 ::class myEventBox subclass GtkEventBox
 
 ::method signal_button_press_event
+use strict arg event
 if event~button = 3 then do
    menu~popup()
    end
