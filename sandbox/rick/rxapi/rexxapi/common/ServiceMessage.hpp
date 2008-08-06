@@ -277,7 +277,7 @@ public:
     {
         result = SERVER_ERROR;
         errorCode = error;
-        strcpy(nameArg, message);
+        strncpy(nameArg, message, NAMESIZE);
     }
 
     inline void setExceptionInfo(ServiceException *e)

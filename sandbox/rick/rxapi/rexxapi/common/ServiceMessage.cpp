@@ -81,10 +81,16 @@ void ServiceMessage::readMessage(SysServerConnection *connection)
         if (!connection->read(messageData, messageDataLength, &actual) || actual != messageDataLength)
         {
             delete[] messageData;
+            // make sure these are cleared out
+            messageData = NULL;
+            messageDataLength = 0;
             throw new ServiceException(SERVER_FAILURE, "ServiceMessage::readMessage() Failure reading service message");
         }
+        // this is a releasable value
+        retainMessageData = false;
     }
 }
+
 
 /**
  * Write a server side message result back to the client.
@@ -141,6 +147,11 @@ void ServiceMessage::writeMessage(SysClientStream &pipe)
 }
 
 
+/**
+ * Read a message result back from a server message.
+ *
+ * @param pipe   The connection used to send the original message.
+ */
 void ServiceMessage::readResult(SysClientStream &pipe)
 {
     size_t actual = 0;
@@ -148,6 +159,9 @@ void ServiceMessage::readResult(SysClientStream &pipe)
     {
         throw new ServiceException(SERVER_FAILURE, "ServiceMessage::readResult() Failure reading service message");
     }
+
+    // handle any errors that the server side might have raised.
+    raiseServerError();
 
     // does this message have extra data associated with it?
     if (messageDataLength != 0)

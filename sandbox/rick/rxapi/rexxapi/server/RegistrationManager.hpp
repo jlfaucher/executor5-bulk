@@ -49,6 +49,7 @@ class SessionCookie
 public:
     SessionCookie(SessionID s)
     {
+        next = NULL;
         session = s;
         references = 1;
     }
@@ -65,7 +66,7 @@ public:
 class RegistrationData
 {
 public:
-    RegistrationData(const char * n, const char * m, ServiceRegistrationData *regData);
+    RegistrationData(const char * n, const char * m, SessionID s, ServiceRegistrationData *regData);
     RegistrationData(const char * n, SessionID s, ServiceRegistrationData *regData);
     ~RegistrationData();
 
@@ -88,7 +89,6 @@ public:
     const char *procedureName;         // procedure name (optional)
     uintptr_t userData[2];             // user area information
     uintptr_t entryPoint;              // target entry point
-    int     callType;                  // indicates the style of interface
     size_t  dropAuthority;             // Permission to drop
     SessionID owner;                   // Pid of Registrant
     SessionCookie *references;         // references to this registration from other processes
@@ -98,6 +98,12 @@ public:
 class RegistrationTable
 {
 public:
+    RegistrationTable()
+    {
+        firstEntryPoint = NULL;
+        firstLibrary = NULL;
+    }
+
     void registerLibraryCallback(ServiceMessage &message);
     void registerCallback(ServiceMessage &message);
     void queryCallback(ServiceMessage &message);

@@ -67,6 +67,12 @@ class MacroTable
 {
 public:
 
+    MacroTable()
+    {
+        macros = NULL;
+        iterator = NULL;
+    }
+
     void clear();
     // locate a named data queue
     MacroItem *locate(const char *name);
@@ -173,7 +179,7 @@ public:
     }
 
 protected:
-    SysMutex          lock;            // our subsystem lock
+    SysMutex     lock;                 // our subsystem lock
     MacroTable   macros;               // all of the manaaged macros.
 };
 

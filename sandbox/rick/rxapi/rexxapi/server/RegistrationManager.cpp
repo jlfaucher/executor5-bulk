@@ -48,14 +48,18 @@
  * @param m       The callback library.
  * @param regData The additional registration data sent with the message.
  */
-RegistrationData::RegistrationData(const char *n, const char *m, ServiceRegistrationData *regData)
+RegistrationData::RegistrationData(const char *n, const char *m, SessionID s, ServiceRegistrationData *regData)
 {
+    next = NULL;
     name = dupString(n);
     moduleName = dupString(m);
     procedureName = dupString(regData->procedureName);
+    owner = s;
     dropAuthority = regData->dropAuthority;
     userData[0] = regData->userData[0];
     userData[1] = regData->userData[1];
+    entryPoint = NULL;
+    references = NULL;
 }
 
 /**
@@ -67,12 +71,16 @@ RegistrationData::RegistrationData(const char *n, const char *m, ServiceRegistra
  */
 RegistrationData::RegistrationData(const char *n, SessionID s, ServiceRegistrationData *regData)
 {
+    next = NULL;
     name = dupString(n);
+    moduleName = NULL;
+    procedureName = NULL;
     owner = s;
     dropAuthority = regData->dropAuthority;
     userData[0] = regData->userData[0];
     userData[1] = regData->userData[1];
     entryPoint = regData->entryPoint;
+    references = NULL;
 }
 
 /**
@@ -229,7 +237,7 @@ void RegistrationTable::registerLibraryCallback(ServiceMessage &message)
     }
     else
     {
-        callback = new RegistrationData(name, module, regData);
+        callback = new RegistrationData(name, module, message.session, regData);
 
         // add to the chain
         callback->next = firstLibrary;

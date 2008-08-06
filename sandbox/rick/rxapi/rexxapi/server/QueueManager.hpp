@@ -48,21 +48,13 @@ class ServerQueueManager;
 
 class QueueItem
 {
+    friend class DataQueue;
 public:
     QueueItem(const char *data, size_t s)
     {
-        // allocate new memory and copy from the transfer buffer
-        elementData = new char[s];
-        memcpy(elementData, data, s);
-        size = s;
-        setTime();
-    }
-
-    // create a partial queue item
-    QueueItem(size_t s)
-    {
-        // allocate new memory only
-        elementData = new char[s];
+        next = NULL;
+        // we can use the memory item directly
+        elementData = data;
         size = s;
         setTime();
     }
@@ -84,28 +76,32 @@ public:
         size = 0;
     }
 
+protected:
+
     QueueItem *next;             // next item in the queue
-    char      *elementData;      // the element data
+    const char *elementData;     // the element data
     size_t     size;             // size of the element data
     REXXDATETIME  addTime;       // time the element was added
 };
 
 class DataQueue
 {
+    friend class QueueTable;
 public:
     DataQueue()
     {
+        init();      // do common initilization
     }
 
     DataQueue(SessionID s)
     {
+        init();      // do common initilization
         session = s;
-        references = 1;      // session queues always have one ref
-        waitSem.create();    // make sure this is created
     }
 
     DataQueue(const char *name)
     {
+        init();      // do common initilization
         setName(name);
     }
 
@@ -113,9 +109,7 @@ public:
 
     inline void setName(const char *name)
     {
-        char *temp = new char[strlen(name) + 1];
-        strcpy(temp, name);
-        queueName = temp;
+        queueName = dupString(name);
     }
 
     void add(ServiceMessage &message);
@@ -161,6 +155,23 @@ public:
     inline size_t removeReference() { return --references; }
     inline bool hasReferences() { return references != 0; }
 
+    void init()
+    {
+        next = NULL;
+        itemCount = 0;
+        waiters = 0;
+        references = 1;
+        waitSem.create();
+        firstItem = NULL;
+        lastItem = NULL;
+        queueName = "";
+        session = 0;
+    }
+
+    size_t getItemCount() { return itemCount; }
+
+protected:
+
     DataQueue *next;             // next item in the chain
     size_t     itemCount;        // number of items in the queue
     size_t     waiters;          // number of processes waiting on a queue item
@@ -176,6 +187,11 @@ public:
 class QueueTable
 {
 public:
+
+    QueueTable()
+    {
+        queues = NULL;
+    }
 
     // locate a named data queue
     DataQueue *locate(const char *name);

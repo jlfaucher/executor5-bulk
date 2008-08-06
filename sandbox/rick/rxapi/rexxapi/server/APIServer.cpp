@@ -108,8 +108,18 @@ void APIServer::processMessages(SysServerConnection *connection)
 
     while (serverActive)
     {
-        // read the message.
-        message.readMessage(connection);
+        try
+        {
+            // read the message.
+            message.readMessage(connection);
+        } catch (ServiceMessage *e)
+        {
+            // an error here is likely caused by the client closing the connection.
+            // delete both the exception and the connection and terminate the thread.
+            delete e;
+            delete connection;
+            return;
+        }
 
         message.result = MESSAGE_OK;     // unconditionally zero the result
         // each target handles its own dispatch.
@@ -129,6 +139,19 @@ void APIServer::processMessages(SysServerConnection *connection)
                 dispatch(message);
                 break;
             }
+        }
+
+        try
+        {
+            // ping the message back to the caller
+            message.writeResult(connection);
+        } catch (ServiceMessage *e)
+        {
+            // an error here is likely caused by the client closing the connection.
+            // delete both the exception and the connection and terminate the thread.
+            delete e;
+            delete connection;
+            return;
         }
     }
 }

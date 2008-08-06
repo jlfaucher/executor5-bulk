@@ -206,7 +206,7 @@ bool DataQueue::pullData(ServerQueueManager *manager, ServiceMessage &message)
         memcpy(message.nameArg, &item->addTime, sizeof(REXXDATETIME));
         // the message will delete the queue data once it has been sent
         // back to the client.
-        message.setMessageData(item->elementData, item->size);
+        message.setMessageData((void *)item->elementData, item->size);
         // we've taken the data from the item, so clear it out before we delete.
         item->clear();
         // we're done with this, let it go.
@@ -537,6 +537,8 @@ void ServerQueueManager::createUniqueQueue(ServiceMessage &message)
         sprintf(message.nameArg, "S%pQ%p", (void *)message.parameter1, (void *)tag);
         if (namedQueues.locate(message.nameArg) == 0)
         {
+            // set the name
+            queue->setName(message.nameArg);
             // got a good one, add it and return
             namedQueues.add(queue);
             return;
@@ -681,7 +683,7 @@ void ServerQueueManager::getSessionQueueCount(ServiceMessage &message)
     DataQueue *queue = (DataQueue *)message.parameter1;
     // session queues are automatically created, so we always have
     // an item count
-    message.parameter1 = queue->itemCount;
+    message.parameter1 = queue->getItemCount();
     message.setResult(QUEUE_EXISTS);
 }
 
@@ -702,7 +704,7 @@ void ServerQueueManager::getNamedQueueCount(ServiceMessage &message)
     // queue exists, so add the item
     else
     {
-        message.parameter1 = queue->itemCount;
+        message.parameter1 = queue->getItemCount();
         message.setResult(QUEUE_EXISTS);
     }
 }

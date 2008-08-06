@@ -56,6 +56,13 @@ LocalAPIManager *LocalAPIContext::getAPIManager()
     return localManager;
 }
 
+/**
+ * Process a service exception thrown as part of an API
+ *
+ * @param e      The exception information (deleted before return).
+ *
+ * @return The mapped return code.
+ */
 RexxReturnCode LocalAPIContext::processServiceException(ServiceException *e)
 {
     ErrorCode code = e->getErrorCode();

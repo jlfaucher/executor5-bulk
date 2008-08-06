@@ -49,6 +49,7 @@
  */
 MacroItem::MacroItem(const char *n, const char *data, size_t l, size_t p)
 {
+    next = NULL;
     name = dupString(n);
     imageBuffer = data;
     imageSize = l;
@@ -194,6 +195,7 @@ void ServerMacroSpaceManager::clear(ServiceMessage &message)
     macros.clear();
     message.setResult(MACRO_SPACE_CLEARED);
 }
+
 
 // Query an item from the macro space.  The message arguments have the
 // following meanings:
@@ -375,7 +377,7 @@ void ServerMacroSpaceManager::dispatch(ServiceMessage &message)
             nextDescriptor(message);
             break;
         case GET_MACRO_IMAGE:
-            nextImage(message);
+            getImage(message);
             break;
         case GET_MACRO_DESCRIPTOR:
             getDescriptor(message);
