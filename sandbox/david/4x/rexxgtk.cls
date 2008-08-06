@@ -333,26 +333,26 @@ return
 ::constant PANGO_UNDERLINE_ERROR 4
    -- Fundamental GTypes
 ::constant G_TYPE_INVALID 0
-::constant G_TYPE_NONE 1
-::constant G_TYPE_INTERFACE 2
-::constant G_TYPE_CHAR 3
-::constant G_TYPE_UCHAR 4
-::constant G_TYPE_BOOLEAN 5
-::constant G_TYPE_INT 6
-::constant G_TYPE_UINT 7
-::constant G_TYPE_LONG 8
-::constant G_TYPE_ULONG 9
-::constant G_TYPE_INT64 10
-::constant G_TYPE_UINT64 11
-::constant G_TYPE_ENUM 12
-::constant G_TYPE_FLAGS 13
-::constant G_TYPE_FLOAT 14
-::constant G_TYPE_DOUBLE 15
-::constant G_TYPE_STRING 16
-::constant G_TYPE_POINTER 17
-::constant G_TYPE_BOXED 18
-::constant G_TYPE_PARAM 19
-::constant G_TYPE_OBJECT 20
+::constant G_TYPE_NONE 4
+::constant G_TYPE_INTERFACE 8
+::constant G_TYPE_CHAR 12
+::constant G_TYPE_UCHAR 16
+::constant G_TYPE_BOOLEAN 20
+::constant G_TYPE_INT 24
+::constant G_TYPE_UINT 28
+::constant G_TYPE_LONG 32
+::constant G_TYPE_ULONG 36
+::constant G_TYPE_INT64 40
+::constant G_TYPE_UINT64 44
+::constant G_TYPE_ENUM 48
+::constant G_TYPE_FLAGS 52
+::constant G_TYPE_FLOAT 56
+::constant G_TYPE_DOUBLE 60
+::constant G_TYPE_STRING 64
+::constant G_TYPE_POINTER 68
+::constant G_TYPE_BOXED 72
+::constant G_TYPE_PARAM 76
+::constant G_TYPE_OBJECT 80
    -- GdkEventType
 ::constant GDK_NOTHING '-1'
 ::constant GDK_DELETE 0
@@ -2229,7 +2229,7 @@ return
 
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxListStoreNew"
 ::METHOD append EXTERNAL "LIBRARY rexxgtk GrxListStoreAppend"
-::METHOD set EXTERNAL "LIBRARY rexxgtk GrxListStoreSetValue"
+::METHOD set_value EXTERNAL "LIBRARY rexxgtk GrxListStoreSetValue"
 
 -- These methods should only be invoked by the C++ code. That is the only place
 -- where it is actually useful.
@@ -2633,6 +2633,16 @@ return
 
 ::METHOD set_fixed_size EXTERNAL "LIBRARY rexxgtk GrxCellRendererSetFixedSize"
 ::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxCellRendererSignalConnect"
+
+-- These methods should only be invoked by the C++ code. That is the only place
+-- where it is actually useful.
+::method 'pointer='
+expose !pointer
+use strict arg !pointer
+return
+::method pointer
+expose !pointer
+return !pointer
 
 -- The following are the methods that can be connected to signals. By default
 -- they do nothing.

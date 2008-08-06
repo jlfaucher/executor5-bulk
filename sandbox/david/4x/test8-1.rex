@@ -65,20 +65,20 @@ window~set_border_width(10)
 window~set_size_request(250, 175)
 
 treeview = .GtkTreeview~new()
-call setup_tree_view treeview
+call setup_tree_view treeview, BUY_IT, QUANTITY, PRODUCT
 
 store = .GtkListStore~new(.gtk~G_TYPE_BOOLEAN, .gtk~G_TYPE_INT, .gtk~G_TYPE_STRING)
 
 do item over list
    iter = store~append()
-   store~set_value(iter, BUY_IT, item~buy. QUANTITY, item~quantity,,
+   store~set_value(iter, BUY_IT, item~buy, QUANTITY, item~quantity,,
                    PRODUCT, item~product)
    end
 
 treeview~set_model(store)
 
 scrolled_win = .GtkScrolledWindow~new(.nil, .nil)
-scrolled_win_set+policy(.gtk~GTK_POLICY_AUTOMATIC, gtk~GTK_POLICY_AUTOMATIC)
+scrolled_win~set_policy(.gtk~GTK_POLICY_AUTOMATIC, .gtk~GTK_POLICY_AUTOMATIC)
 
 scrolled_win~add(treeview)
 window~add(scrolled_win)
@@ -90,19 +90,19 @@ return
 ::requires 'rexxgtk.cls'
 
 ::routine setup_tree_view
-use strict arg treeview
+use strict arg treeview, BUY_IT, QUANTITY, PRODUCT
 
-renderer = .GtkCellRendererTextView~new()
+renderer = .GtkCellRendererText~new()
 column = .GtkTreeViewColumn~new_with_attributes('Buy', renderer, 'text', BUY_IT)
-treeview~append(column)
+treeview~append_column(column)
 
-renderer = .GtkCellRendererTextView~new()
+renderer = .GtkCellRendererText~new()
 column = .GtkTreeViewColumn~new_with_attributes('Count', renderer, 'text', QUANTITY)
-treeview~append(column)
+treeview~append_column(column)
 
-renderer = .GtkCellRendererTextView~new()
+renderer = .GtkCellRendererText~new()
 column = .GtkTreeViewColumn~new_with_attributes('Product', renderer, 'text', PRODUCT)
-treeview~append(column)
+treeview~append_column(column)
 return
 
 ::class GroceryItem
