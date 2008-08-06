@@ -2022,6 +2022,8 @@ return img
 ::METHOD set_text EXTERNAL "LIBRARY rexxgtk GrxProgressBarSetText"
 ::METHOD 'text=' EXTERNAL "LIBRARY rexxgtk GrxProgressBarSetText"
 ::METHOD set_fraction EXTERNAL "LIBRARY rexxgtk GrxProgressBarSetFraction"
+::METHOD set_pulse_step EXTERNAL "LIBRARY rexxgtk GrxProgressBarSetPulseStep"
+::METHOD pulse EXTERNAL "LIBRARY rexxgtk GrxProgressBarPulse"
 ::METHOD 'fraction=' EXTERNAL "LIBRARY rexxgtk GrxProgressBarSetFraction"
 
 

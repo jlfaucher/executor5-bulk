@@ -64,11 +64,12 @@ eventbox~user_data = menu
 eventbox~signal_connect('button_press_event')
 
 eventbox~add(progress)
+window~add(eventbox)
+
+eventbox~set_events(.gtk~GDK_BUTTON_PRESS_MASK)
 eventbox~realize()
 
-window~add(scrolled_win)
 window~show_all()
-
 call gtk_main
 return
 
@@ -110,8 +111,9 @@ return
 ::class myEventBox subclass GtkEventBox
 
 ::method signal_button_press_event
-if event~button = 3 then do
-   menu~popup()
+use strict arg event
+if event~button = 3 & event~type = .gtk~GDK_BUTTON_PRESS then do
+   self~user_data~popup()
    end
 return .true
 

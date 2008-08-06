@@ -104,6 +104,47 @@ RexxMethod2(int,                       // Return type
 }
 
 /**
+ * Method:  set_pulse_step
+ *
+ * Set the pulse step.
+ *
+ * @param fraction Fraction
+ *
+ * @return        Zero
+ **/
+RexxMethod2(int,                       // Return type
+            GrxProgressBarSetPulseStep, // Object_method name
+            double, fraction,          // Fraction
+            OSELF, self)               // Self
+{
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
+    GtkProgressBar *myWidget = (GtkProgressBar *)context->PointerValue(rxptr);
+
+    gtk_progress_bar_set_pulse_step(myWidget, fraction);
+
+    return 0;
+}
+
+/**
+ * Method:  pulse
+ *
+ * Pulse the progress bar.
+ *
+ * @return        Zero
+ **/
+RexxMethod1(int,                       // Return type
+            GrxProgressBarPulse,       // Object_method name
+            OSELF, self)               // Self
+{
+    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
+    GtkProgressBar *myWidget = (GtkProgressBar *)context->PointerValue(rxptr);
+
+    gtk_progress_bar_pulse(myWidget);
+
+    return 0;
+}
+
+/**
  * Method:  set_text
  *
  * Set the test of the progress bar.
