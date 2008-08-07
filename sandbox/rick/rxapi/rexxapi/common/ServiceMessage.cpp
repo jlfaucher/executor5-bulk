@@ -110,7 +110,7 @@ void ServiceMessage::writeResult(SysServerConnection *connection)
     {
         if (!connection->write(messageData, messageDataLength, &actual) || actual != messageDataLength)
         {
-            delete[] messageData;
+            freeMessageData();
             throw new ServiceException(SERVER_FAILURE, "ServiceMessage::readMessage() Failure reading service message");
         }
         // we might be sending a copy of data that's still resident in the connection->  If
@@ -144,6 +144,8 @@ void ServiceMessage::writeMessage(SysClientStream &pipe)
             throw new ServiceException(SERVER_FAILURE, "ServiceMessage::readMessage() Failure reading service message");
         }
     }
+    // make sure we free and release any attached data before proceeding
+    freeMessageData();
 }
 
 

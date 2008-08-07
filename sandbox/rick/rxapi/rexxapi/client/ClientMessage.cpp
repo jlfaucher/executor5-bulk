@@ -66,6 +66,6 @@ void ClientMessage::send()
         // rethrow the exception
         throw;
     }
-
-
+    // return the connection to the pool
+    manager->returnConnection(pipe);
 }

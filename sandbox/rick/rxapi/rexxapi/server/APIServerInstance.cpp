@@ -61,14 +61,17 @@ void APIServerInstance::dispatch(ServiceMessage &message)
         case QueueManager:
         {
             queueManager.dispatch(message);
+            break;
         }
         case RegistrationManager:
         {
             registrationManager.dispatch(message);
+            break;
         }
         case MacroSpaceManager:
         {
             macroSpaceManager.dispatch(message);
+            break;
         }
         case APIManager:
         {

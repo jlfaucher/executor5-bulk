@@ -252,6 +252,7 @@ void RegistrationTable::registerLibraryCallback(ServiceMessage &message)
             message.setResult(REGISTRATION_COMPLETED);
         }
     }
+
     // make sure the data message buffer is not passed back.
     message.freeMessageData();
 }

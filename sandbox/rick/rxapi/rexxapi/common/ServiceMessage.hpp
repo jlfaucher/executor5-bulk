@@ -291,6 +291,7 @@ public:
         result = SERVER_ERROR;
         errorCode = error;
         strncpy(nameArg, message, NAMESIZE);
+        freeMessageData();   // make sure we don't send back any attached data
     }
 
     inline void setExceptionInfo(ServiceException *e)
@@ -298,6 +299,7 @@ public:
         result = SERVER_ERROR;
         errorCode = e->getErrorCode();
         strncpy(nameArg, e->getMessage(), NAMESIZE);
+        freeMessageData();   // make sure we don't send back any attached data
     }
 
     inline void clearExceptionInfo()
@@ -339,6 +341,7 @@ public:
         messageDataLength = 0;
     }
 
+
     inline void setMessageData(void *data, size_t length)
     {
         freeMessageData();    // make sure any existing data is cleared.
@@ -347,6 +350,7 @@ public:
         // this is not freeable data
         retainMessageData = true;
     }
+
 
     inline void *allocateMessageData(size_t length)
     {
