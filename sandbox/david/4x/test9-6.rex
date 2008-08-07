@@ -74,25 +74,25 @@ return
 
 ::class myCut subclass .GtkToolItem
 
-:method signal_clicked
+::method signal_clicked
 self~user_data~cut_clipboard()
 return
 
 ::class myCopy subclass .GtkToolItem
 
-:method signal_clicked
+::method signal_clicked
 self~user_data~copy_clipboard()
 return
 
 ::class myPaste subclass .GtkToolItem
 
-:method signal_clicked
+::method signal_clicked
 self~user_data~paste_clipboard()
 return
 
 ::class mySelectall subclass .GtkToolItem
 
-:method signal_clicked
+::method signal_clicked
 self~user_data~select_region(self~user_data, 0, -1)
 return
 
