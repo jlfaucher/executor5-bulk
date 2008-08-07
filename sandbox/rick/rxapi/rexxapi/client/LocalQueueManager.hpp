@@ -53,6 +53,8 @@ class LocalQueueManager : public LocalAPISubsystem
 {
 public:
 
+    LocalQueueManager();
+
     typedef uintptr_t QueueHandle;
 
     inline bool isSessionQueue(const char *name)

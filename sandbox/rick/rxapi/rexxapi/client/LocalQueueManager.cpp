@@ -48,6 +48,16 @@
 
 
 /**
+ * Initialize the local queue manager.
+ */
+LocalQueueManager::LocalQueueManager() : LocalAPISubsystem()
+{
+    localManager = NULL;
+    sessionQueue = 0;
+    sessionID = 0;
+}
+
+/**
  * Validate a queue name
  *
  * @param username The name to validate.

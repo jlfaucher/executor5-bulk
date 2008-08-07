@@ -43,6 +43,12 @@
 #include "ClientMessage.hpp"
 
 
+
+LocalRegistrationManager::LocalRegistrationManager() : LocalAPISubsystem()
+{
+    // no state in this
+}
+
 /**
  * Register a DLL-based callback type.
  *

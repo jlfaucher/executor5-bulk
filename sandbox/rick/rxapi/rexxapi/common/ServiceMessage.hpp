@@ -201,15 +201,29 @@ public:
         strncpy(procedureName, proc, MAX_NAME_LENGTH);
         dropAuthority = !drop ? DROP_ANY : OWNER_ONLY;
         setUserData(userPointer);
+        entryPoint = 0;
     }
 
     inline ServiceRegistrationData(const char *module)
     {
-        strncpy(moduleName, module, MAX_NAME_LENGTH);
+        if (module != NULL)
+        {
+            strncpy(moduleName, module, MAX_NAME_LENGTH);
+        }
+        else
+        {
+            strcpy(moduleName, "");
+        }
+        strcpy(procedureName, "");
+        dropAuthority = DROP_ANY;
+        setUserData(NULL);
+        entryPoint = 0;
     }
 
     inline ServiceRegistrationData(REXXPFN entry, const char *userPointer)
     {
+        strcpy(moduleName, "");
+        strcpy(procedureName, "");
         entryPoint = (uintptr_t)entry;
         dropAuthority = OWNER_ONLY;
         setUserData(userPointer);
@@ -252,7 +266,6 @@ public:
     size_t dropAuthority;                      // scope of drop authority
     uintptr_t userData[2];                     // saved user data
     uintptr_t entryPoint;                      // explicit entry point address
-    int  legacyStyle;                          // indicates the registration call style
 };
 
 
@@ -265,7 +278,7 @@ public:
     };
 
     ServiceMessage();
-    virtual ~ServiceMessage() { ; }
+    inline ~ServiceMessage() { ; }
 
     inline void setResult(ServiceReturn code)
     {

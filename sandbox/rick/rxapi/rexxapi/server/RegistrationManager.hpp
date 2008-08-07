@@ -137,7 +137,7 @@ protected:
 class ServerRegistrationManager
 {
 public:
-    ServerRegistrationManager() { lock.create(); }
+    ServerRegistrationManager() : functions(), exits(), commandHandlers(), lock() { lock.create(); }
     void terminateServer();
     // It will remove all the registration entries for a specific process
     void freeProcessRegistrations(SessionID session);

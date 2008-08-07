@@ -167,6 +167,8 @@ class LocalMacroSpaceManager : public LocalAPISubsystem
 {
 public:
 
+    LocalMacroSpaceManager();
+
     void loadMacroSpace(const char *target);
     void loadMacroSpace(const char *target, const char **nameList, size_t nameCount);
     void saveMacroSpace(const char *target);

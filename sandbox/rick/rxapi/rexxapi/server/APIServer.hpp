@@ -50,6 +50,7 @@ class APIServerInstance;
 class APIServer
 {
 public:
+    APIServer() : lock(), server(), serverActive(false), instances(NULL) { }
     virtual ~APIServer() { ; }
     void terminateServer();
     void initServer();

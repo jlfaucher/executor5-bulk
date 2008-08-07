@@ -66,16 +66,6 @@ LocalAPIManager *LocalAPIContext::getAPIManager()
 RexxReturnCode LocalAPIContext::processServiceException(ServiceException *e)
 {
     ErrorCode code = e->getErrorCode();
-    // if this is a major API failure, we clean up the local instance
-    // so we start a new next time
-    if (code == API_FAILURE || code == SERVER_FAILURE)
-    {
-        // do the error cleanup
-        LocalAPIManager::deleteInstance();
-        delete e;     // delete the exception info
-        // treat all resource problems as a memory failure
-        return RXAPI_MEMFAIL;
-    }
 
     if (localManager != NULL)
     {

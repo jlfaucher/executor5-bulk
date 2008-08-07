@@ -49,6 +49,7 @@
 class LocalRegistrationManager : public LocalAPISubsystem
 {
 public:
+    LocalRegistrationManager();
 
     ServiceReturn registerCallback(RegistrationType type, const char *name, const char *module,
         const char *proc, const char *userData, bool drop);

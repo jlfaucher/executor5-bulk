@@ -43,7 +43,7 @@
 #include "ServiceException.hpp"
 
 
-APIServerInstance::APIServerInstance(ServiceMessage &m)
+APIServerInstance::APIServerInstance(ServiceMessage &m) : queueManager(), registrationManager(), macroSpaceManager(), next(NULL)
 {
     strcpy(userid, m.userid);
 }

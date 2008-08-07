@@ -104,10 +104,10 @@ void APIServer::listenForConnections()
  */
 void APIServer::processMessages(SysServerConnection *connection)
 {
-    ServiceMessage message;
 
     while (serverActive)
     {
+        ServiceMessage message;
         try
         {
             // read the message.

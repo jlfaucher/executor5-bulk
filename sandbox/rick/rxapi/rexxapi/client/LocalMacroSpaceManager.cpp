@@ -271,6 +271,12 @@ void MacroSpaceFile::read(ManagedRxstring &data, size_t length)
 }
 
 
+LocalMacroSpaceManager::LocalMacroSpaceManager() : LocalAPISubsystem()
+{
+    // no state in this
+}
+
+
 /**
  * Load a macrospace file into our space.
  *
