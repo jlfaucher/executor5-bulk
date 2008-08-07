@@ -453,7 +453,138 @@ return
 ::constant GDK_OWNER_CHANGE_NEW_OWNER 0
 ::constant GDK_OWNER_CHANGE_DESTROY 1
 ::constant GDK_OWNER_CHANGE_CLOSE 2
-
+   -- GdkMasks
+::constant GDK_SHIFT_MASK    1
+::constant GDK_LOCK_MASK	  2
+::constant GDK_CONTROL_MASK  4
+::constant GDK_MOD1_MASK	  8
+::constant GDK_MOD2_MASK	  16
+::constant GDK_MOD3_MASK	  32
+::constant GDK_MOD4_MASK	  64
+::constant GDK_MOD5_MASK	  128
+::constant GDK_BUTTON1_MASK  256
+::constant GDK_BUTTON2_MASK  512
+::constant GDK_BUTTON3_MASK  1024
+::constant GDK_BUTTON4_MASK  2048
+::constant GDK_BUTTON5_MASK  4096
+   -- GdkAccelFlags
+::constant GTK_ACCEL_VISIBLE 1
+::constant GTK_ACCEL_LOCKED  2
+::constant GTK_ACCEL_MASK    7
+   -- GdkKeySyms
+/* These are here just for reference as ooRexx will not differentiate
+   between mixed case constants (a real bummer in this case)!
+::constant GDK_F1 'ffbe'x
+::constant GDK_F2 'ffbf'x
+::constant GDK_F3 'ffc0'x
+::constant GDK_F4 'ffc1'x
+::constant GDK_F5 'ffc2'x
+::constant GDK_F6 'ffc3'x
+::constant GDK_F7 'ffc4'x
+::constant GDK_F8 'ffc5'x
+::constant GDK_F9 'ffc6'x
+::constant GDK_F10 'ffc7'x
+::constant GDK_F11 'ffc8'x
+::constant GDK_L1 'ffc8'x
+::constant GDK_F12 'ffc9'x
+::constant GDK_space '020'x
+::constant GDK_exclam '021'x
+::constant GDK_quotedbl '022'x
+::constant GDK_numbersign '023'x
+::constant GDK_dollar '024'x
+::constant GDK_percent '025'x
+::constant GDK_ampersand '026'x
+::constant GDK_apostrophe '027'x
+::constant GDK_quoteright '027'x
+::constant GDK_parenleft '028'x
+::constant GDK_parenright '029'x
+::constant GDK_asterisk '02a'x
+::constant GDK_plus '02b'x
+::constant GDK_comma '02c'x
+::constant GDK_minus '02d'x
+::constant GDK_period '02e'x
+::constant GDK_slash '02f'x
+::constant GDK_0 '030'x
+::constant GDK_1 '031'x
+::constant GDK_2 '032'x
+::constant GDK_3 '033'x
+::constant GDK_4 '034'x
+::constant GDK_5 '035'x
+::constant GDK_6 '036'x
+::constant GDK_7 '037'x
+::constant GDK_8 '038'x
+::constant GDK_9 '039'x
+::constant GDK_colon '03a'x
+::constant GDK_semicolon '03b'x
+::constant GDK_less '03c'x
+::constant GDK_equal '03d'x
+::constant GDK_greater '03e'x
+::constant GDK_question '03f'x
+::constant GDK_at '040'x
+::constant GDK_A '041'x
+::constant GDK_B '042'x
+::constant GDK_C '043'x
+::constant GDK_D '044'x
+::constant GDK_E '045'x
+::constant GDK_F '046'x
+::constant GDK_G '047'x
+::constant GDK_H '048'x
+::constant GDK_I '049'x
+::constant GDK_J '04a'x
+::constant GDK_K '04b'x
+::constant GDK_L '04c'x
+::constant GDK_M '04d'x
+::constant GDK_N '04e'x
+::constant GDK_O '04f'x
+::constant GDK_P '050'x
+::constant GDK_Q '051'x
+::constant GDK_R '052'x
+::constant GDK_S '053'x
+::constant GDK_T '054'x
+::constant GDK_U '055'x
+::constant GDK_V '056'x
+::constant GDK_W '057'x
+::constant GDK_X '058'x
+::constant GDK_Y '059'x
+::constant GDK_Z '05a'x
+::constant GDK_bracketleft '05b'x
+::constant GDK_backslash '05c'x
+::constant GDK_bracketright '05d'x
+::constant GDK_asciicircum '05e'x
+::constant GDK_underscore '05f'x
+::constant GDK_grave '060'x
+::constant GDK_quoteleft '060'x
+::constant GDK_a '061'x
+::constant GDK_b '062'x
+::constant GDK_c '063'x
+::constant GDK_d '064'x
+::constant GDK_e '065'x
+::constant GDK_f '066'x
+::constant GDK_g '067'x
+::constant GDK_h '068'x
+::constant GDK_i '069'x
+::constant GDK_j '06a'x
+::constant GDK_k '06b'x
+::constant GDK_l '06c'x
+::constant GDK_m '06d'x
+::constant GDK_n '06e'x
+::constant GDK_o '06f'x
+::constant GDK_p '070'x
+::constant GDK_q '071'x
+::constant GDK_r '072'x
+::constant GDK_s '073'x
+::constant GDK_t '074'x
+::constant GDK_u '075'x
+::constant GDK_v '076'x
+::constant GDK_w '077'x
+::constant GDK_x '078'x
+::constant GDK_y '079'x
+::constant GDK_z '07a'x
+::constant GDK_braceleft '07b'x
+::constant GDK_bar '07c'x
+::constant GDK_braceright '07d'x
+::constant GDK_asciitilde '07e'x
+*/
 
 /*============================================================================*/
 /* Class: GdkEvent                                                            */
@@ -2589,6 +2720,16 @@ return
 
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxAccelGroupNew"
 ::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxAccelGroupSignalConnect"
+
+-- These methods should only be invoked by the C++ code. That is the only place
+-- where it is actually useful.
+::method 'pointer='
+expose !pointer
+use strict arg !pointer
+return
+::method pointer
+expose !pointer
+return !pointer
 
 -- The following are the methods that can be connected to signals. By default
 -- they do nothing.

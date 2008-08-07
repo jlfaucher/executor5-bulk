@@ -64,11 +64,12 @@ eventbox~user_data = menu
 eventbox~signal_connect('button_press_event')
 
 eventbox~add(progress)
+window~add(eventbox)
+
+eventbox~set_events(.gtk~GDK_BUTTON_PRESS_MASK)
 eventbox~realize()
 
-window~add(scrolled_win)
 window~show_all()
-
 call gtk_main
 return
 
@@ -80,18 +81,18 @@ use strict arg menu, window, progress
 
 group = .GtkAccelGroup~new()
 window~add_accel_group(group)
-menu ~set_accel_group(group)
+menu~set_accel_group(group)
 
 pulse = .MyPulse~new_with_label('Pulse Progress')
 fill = .MyFill~new_with_label('Set as Complete')
 clear = .MyClear~new_with_label('Clear Progress')
 separator = .GtkSeparatorMenuItem~new()
 
-pulse~add_accelerator('activate', group, .gtk~GDL_P, .gtk~GDK_CONTROL_MASK,
+pulse~add_accelerator('activate', group, '050'~x2d, .gtk~GDK_CONTROL_MASK,,
                       .gtk~GTK_ACCEL_VISIBLE)
-fill~add_accelerator('activate', group, .gtk~GDL_F, .gtk~GDK_CONTROL_MASK,
+fill~add_accelerator('activate', group, '046'~x2d, .gtk~GDK_CONTROL_MASK,,
                      .gtk~GTK_ACCEL_VISIBLE)
-clear~add_accelerator('activate', group, .gtk~GDL_C, .gtk~GDK_CONTROL_MASK,
+clear~add_accelerator('activate', group, '043'~x2d, .gtk~GDK_CONTROL_MASK,,
                       .gtk~GTK_ACCEL_VISIBLE)
 
 -- set up the user data for the signals
@@ -123,7 +124,7 @@ return
 ::method signal_button_press_event
 use strict arg event
 if event~button = 3 then do
-   menu~popup()
+   self~user_data~popup()
    end
 return .true
 
