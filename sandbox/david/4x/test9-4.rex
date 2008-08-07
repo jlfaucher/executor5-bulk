@@ -54,7 +54,7 @@ window~set_size_request(250, -1)
 menu = .GtkMenu~new()
 eventbox = .myEventBox~new()
 progress = .GtkProgressBar~new()
-statusbar = .MyStatusbar
+statusbar = .GtkStatusbar~new()
 progress~set_text('Nothing Yet Happened')
 call create_popup_menu menu, progress, statusbar
 
@@ -83,29 +83,28 @@ return
 ::routine create_popup_menu
 use strict arg menu, progress, statusbar
 
-group = .GtkAccelGroup~new()
-window~add_accel_group(group)
-menu~set_accel_group(group)
-
 pulse = .MyPulse~new_with_label('Pulse Progress')
 fill = .MyFill~new_with_label('Set as Complete')
 clear = .MyClear~new_with_label('Clear Progress')
 separator = .GtkSeparatorMenuItem~new()
 
--- set up the user data for the signals
-pulse~user_data = .array~new(1)
-fill~user_data = .array~new(1)
-clear~user_data = .array~new(1)
-pulse~user_data[1] = progress
-fill~user_data[1] = progress
-clear~user_data[1] = progress
-pulse~user_data[2] = statusbar
-fill~user_data[2] = statusbar
-clear~user_data[2] = statusbar
-
 pulse~signal_connect('activate')
 fill~signal_connect('activate')
 clear~signal_connect('activate')
+
+-- set up the user data for the signals
+pulse~user_data = .array~new()
+pulse~user_data[1] = progres
+pulse~user_data[2] = statusbar
+pulse~user_data[3] = 'Pulse the progressbar one step.'
+fill~user_data = .array~new()
+fill~user_data[1] = progres
+fill~user_data[2] = statusbar
+fill~user_data[3] = 'Set the progress bar to 100%.'
+clear~user_data = .array~new()
+clear~user_data[1] = progres
+clear~user_data[2] = statusbar
+clear~user_data[3] = 'Clear the progress bar to 0%.'
 
 pulse~signal_connect('enter_notify_event')
 pulse~signal_connect('leave_notify_event')
@@ -132,8 +131,9 @@ return
 ::class myEventBox subclass GtkEventBox
 
 ::method signal_button_press_event
+use strict arg event
 if event~button = 3 then do
-   menu~popup()
+   self~user_data~popup()
    end
 return .true
 
@@ -146,12 +146,12 @@ return
 
 ::method signal_enter_notify_event
 use strict arg event
-call statusbar_hint self~userdata[1], event, self~user_data[2]
+call statusbar_hint self, event, self~user_data[2]
 return .false
 
 ::method signal_leave_notify_event
 use strict arg event
-call statusbar_hint self~userdata[1], event, self~user_data[2]
+call statusbar_hint self, event, self~user_data[2]
 return .false
 
 ::class MyFill subclass GtkMenuItem
@@ -163,12 +163,12 @@ return
 
 ::method signal_enter_notify_event
 use strict arg event
-call statusbar_hint self~userdata[1], event, self~user_data[2]
+call statusbar_hint self, event, self~user_data[2]
 return .false
 
 ::method signal_leave_notify_event
 use strict arg event
-call statusbar_hint self~userdata[1], event, self~user_data[2]
+call statusbar_hint self, event, self~user_data[2]
 return .false
 
 ::class MyClear subclass GtkMenuItem
@@ -180,24 +180,22 @@ return
 
 ::method signal_enter_notify_event
 use strict arg event
-call statusbar_hint self~userdata[1], event, self~user_data[2]
+call statusbar_hint self, event, self~user_data[2]
 return .false
 
 ::method signal_leave_notify_event
 use strict arg event
-call statusbar_hint self~userdata[1], event, self~user_data[2]
+call statusbar_hint self, event, self~user_data[2]
 return .false
 
 ::routine statusbar_hint
-use strict arg menuitem, event, statusbar
+use strict arg self, event, statusbar
 id = statusbar~get_context_id('MenuItemHints')
 if event~type = .gtk~GDK_ENTER_NOTIFY then do
-   hint = menuitem~get_data('menuhint')
-   statusbar~push(id, hint)
+   statusbar~push(id, self~user_data[3])
    end
 else do
-   statusbar~pop(id, hint)
+   statusbar~pop(id)
    end
 return
-
 

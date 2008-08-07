@@ -459,9 +459,7 @@ RexxMethod3(int,                       // Return type
     RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
 
-    // Note: The memory allocated from strdup is never recovered and
-    // thus causes a memory leak.
-    g_object_set_data(G_OBJECT(myWidget), name, strdup(data));
+    g_object_set_data(G_OBJECT(myWidget), strdup(name), strdup(data));
 
     return 0;
 }
@@ -475,7 +473,7 @@ RexxMethod3(int,                       // Return type
  *
  * @return        The value of the object.
  **/
-RexxMethod2(CSTRING,                   // Return type
+RexxMethod2(RexxObjectPtr,             // Return type
             GrxWidgetGetData,          // Object_method name
             CSTRING, name,             // Association name
             OSELF, self)               // Self
@@ -483,7 +481,11 @@ RexxMethod2(CSTRING,                   // Return type
     RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
 
-    return (char *)g_object_get_data(G_OBJECT(myWidget), name);
+    char *data = (char *)g_object_get_data(G_OBJECT(myWidget), name);
+    if (data == NULL) {
+        return context->NewStringFromAsciiz("");
+    }
+    return context->NewStringFromAsciiz(data);
 }
 
 /**
