@@ -2425,7 +2425,7 @@ return
 /* Class: GtkMenu                                                             */
 /*============================================================================*/
 
-::class GtkMenu public subclass GtkmenuShell
+::class GtkMenu public subclass GtkMenuShell
 
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxMenuNew"
 ::METHOD reorder_child EXTERNAL "LIBRARY rexxgtk GrxMenuReorderChild"
@@ -2460,11 +2460,11 @@ return
 
 ::class GtkMenuItem public subclass GtkContainer
 
-::method new_with_label class
+::method newWithLabel class
 use arg label
 return self~new(label, .false)
 
-::method new_with_mnemonic class
+::method newWithMnemonic class
 use arg label
 return self~new(label, .true)
 
@@ -2500,23 +2500,15 @@ return
 
 ::class GtkImageMenuItem public subclass GtkMenuItem
 
-::method new_from_stock class
-use strict arg id, accelgrp
-return self~new_from_stock_p(id, accelgrp)
+::method newFromStock class
+use strict arg label, accelgrp
+return .GtkImageMenuItem~new(label, 2, accelgrp)
 
-::method new_with_label class
+::method newWithMnemonic class
 use strict arg label
-return self~new_with_label_p(label)
-
-::method new_with_mnemonic class
-use strict arg label
-return self~new_with_mnemonic_p(label)
+return .GtkImageMenuItem~new(label, 1)
 
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxImageMenuItemNew"
-
-::METHOD new_from_stock_p private EXTERNAL "LIBRARY rexxgtk GrxImageMenuItemNewFromStock"
-::METHOD new_with_label_p private EXTERNAL "LIBRARY rexxgtk GrxImageMenuItemNewWithLabel"
-::METHOD new_with_mnemonic_p private EXTERNAL "LIBRARY rexxgtk GrxImageMenuItemNewWithMnemonic"
 
 
 /*============================================================================*/

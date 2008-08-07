@@ -341,91 +341,30 @@ RexxMethod1(int,                       // Return type
 /**
  * Method:  init
  *
- * Create an image menu item.
+ * Create a menu item.
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod4(int,                       // Return type
             GrxImageMenuItemNew,       // Object_method name
-            OSELF, self)               // Self
-{
-    GtkWidget *myWidget;
-
-    myWidget = gtk_image_menu_item_new();
-    context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
-    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
-
-    return 0;
-}
-
-/**
- * Method:  init
- *
- * Create an image menu item.
- *
- * @param stockid The stock id string
- *
- * @param accelgrp The accelerator group
- *
- * @return        Zero.
- **/
-RexxMethod3(int,                       // Return type
-            GrxImageMenuItemNewFromStock, // Object_method name
             OSELF, self,               // Self
-            CSTRING, stockid,          // Stock id string
-            RexxObjectPtr, accelgrp)   // Self
-{
-    GtkWidget *myWidget;
-    RexxPointerObject accelgrpptr = (RexxPointerObject)context->SendMessage0(accelgrp, "POINTER");
-    GtkAccelGroup *accelgrpWidget = (GtkAccelGroup *)context->PointerValue(accelgrpptr);
-
-    myWidget = gtk_image_menu_item_new_from_stock(stockid, accelgrpWidget);
-    context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
-    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
-
-    return 0;
-}
-
-/**
- * Method:  init
- *
- * Create an image menu item.
- *
- * @param text    The label text
- *
- * @return        Zero.
- **/
-RexxMethod2(int,                       // Return type
-            GrxImageMenuItemNewWithLabel, // Object_method name
-            OSELF, self,               // Self
-            CSTRING, text)             // label string
+            CSTRING, label,            // Menu label
+            OPTIONAL_int, flag,        // Menu label
+            OPTIONAL_RexxObjectPtr, accelgrp) // Self
 {
     GtkWidget *myWidget;
 
-    myWidget = gtk_image_menu_item_new_with_label(text);
-    context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
-    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
-
-    return 0;
-}
-
-/**
- * Method:  init
- *
- * Create an image menu item.
- *
- * @param text    The label text
- *
- * @return        Zero.
- **/
-RexxMethod2(int,                       // Return type
-            GrxImageMenuItemNewWithMnemonic, // Object_method name
-            OSELF, self,               // Self
-            CSTRING, text)             // label string
-{
-    GtkWidget *myWidget;
-
-    myWidget = gtk_image_menu_item_new_with_mnemonic(text);
+    if (flag == 0) {
+        myWidget = gtk_image_menu_item_new_with_label(label);
+    }
+    else if (flag == 1) {
+        myWidget = gtk_image_menu_item_new_with_mnemonic(label);
+    }
+    else {
+        RexxPointerObject accelgrpptr = (RexxPointerObject)context->SendMessage0(accelgrp, "POINTER");
+        GtkAccelGroup *accelgrpWidget = (GtkAccelGroup *)context->PointerValue(accelgrpptr);
+        myWidget = gtk_image_menu_item_new_from_stock(label, accelgrpWidget);
+    }
     context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
