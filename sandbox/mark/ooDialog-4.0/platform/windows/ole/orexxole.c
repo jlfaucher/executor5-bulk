@@ -102,24 +102,24 @@ BOOL isOutParam(RexxThreadContext *, RexxObjectPtr , POLEFUNCINFO, size_t);
 VOID handleVariantClear(RexxMethodContext *, VARIANT *, RexxObjectPtr  );
 __inline BOOL okayToClear(RexxMethodContext *, RexxObjectPtr  );
 static void formatDispatchException(EXCEPINFO *, char *);
-void sendOutArgBackToRexx(REXXOBJECT, VARIANT *);
+void sendOutArgBackToRexx(RexxObjectPtr, VARIANT *);
 bool getClassInfo(IDispatch *, ITypeInfo **);
 bool getConnectionPointContainer(IDispatch *, IConnectionPointContainer **);
 bool eventTypeInfoFromCoClass(ITypeInfo *, ITypeInfo **);
 bool getClassInfoFromCLSID(ITypeInfo *, CLSID *, ITypeInfo **);
-bool addEventHandler(REXXOBJECT, bool, IDispatch *, POLECLASSINFO, ITypeInfo *, CLSID *);
+bool addEventHandler(RexxMethodContext *, RexxObjectPtr, bool, IDispatch *, POLECLASSINFO, ITypeInfo *, CLSID *);
 inline bool haveEventHandler(RexxMethodContext *);
-inline bool connectedToEvents(void);
+inline bool connectedToEvents(RexxMethodContext *);
 void GUIDFromTypeInfo(ITypeInfo *pTypeInfo, GUID *guid);
 bool getClassInfoFromTypeInfo(ITypeInfo *p, ITypeInfo **);
 bool isImplementedInterface(ITypeInfo *, GUID *);
 bool getEventTypeInfo(IDispatch *, ITypeInfo *, CLSID *, ITypeInfo **);
-bool createEventHandler(ITypeInfo *, REXXOBJECT, POLECLASSINFO, OLEObjectEvent **);
-bool connectEventHandler(IConnectionPointContainer *, OLEObjectEvent *);
+bool createEventHandler(RexxMethodContext *, ITypeInfo *, RexxObjectPtr, POLECLASSINFO, OLEObjectEvent **);
+bool connectEventHandler(RexxMethodContext *, IConnectionPointContainer *, OLEObjectEvent *);
 void releaseEventHandler(RexxMethodContext *);
-void disconnectEventHandler(void);
+void disconnectEventHandler(RexxMethodContext *);
 void getClsIDFromString(const char *, CLSID *);
-bool maybeCreateEventHandler(OLEObjectEvent **, IConnectionPointContainer **, REXXOBJECT);
+bool maybeCreateEventHandler(RexxMethodContext *, OLEObjectEvent **, IConnectionPointContainer **, RexxObjectPtr);
 bool isConnectableObject(IDispatch *);
 
 int (__stdcall *creationCallback)(CLSID, IUnknown*) = NULL;
@@ -2710,21 +2710,26 @@ RexxMethod4(int,                             // Return type
         rexx_exception1(Error_System_service_service, ooRexxString(errmsg));
     }
 #endif
-    // if pTypeInfo is not set (happens when an instance of the class was already created),
-    // get it: needed for event handling!
-    if (!pTypeInfo && pClsInfo)
+
+    /* pTypeInfo may not be set.  It happens when this object is created from a
+     * CLSID or PROGID and an OLEObject instance has already been created for
+     * this COM class.  It needs to be set for the event handling check.
+     */
+    if ( !pTypeInfo && pClsInfo )
     {
         pTypeInfo = pClsInfo->pTypeInfo;
     }
 
-  /* Event handling:  Only create the event object if the use asks for it.  The
-   * user has to explicitly specify the second events arg.
-   */
-  if (eventString != NULL && pTypeInfo != NULL)
-  {
-      bool connect = (strcmpi(eventString,"WITHEVENTS") == 0) ? true : false;
-      addEventHandler(self, connect, pDispatch, pClsInfo, pTypeInfo, &clsID);
-  }
+    /* Event handling:  Only create the event object if the user asks for it by
+     * explicitly specifying the second 'events' arg.  Without a type library,
+     * there is no way to know what events the object supports.  So, we have to
+     * have pTypeInfo.
+     */
+    if ( eventString != NULL && pTypeInfo != NULL )
+    {
+        bool connect = (strcmpi(eventString,"WITHEVENTS") == 0) ? true : false;
+        addEventHandler(context, self, connect, pDispatch, pClsInfo, pTypeInfo, &clsID);
+    }
 
     return 0;
 }
@@ -4305,7 +4310,7 @@ RexxMethod1(RexxObjectPtr,                // Return type
         OLEInit();
     }
 
-  getDispatchPtr(&pDispatch);
+    getDispatchPtr(context, &pDispatch);
 
     hResult = pDispatch->GetTypeInfoCount(&iTypeInfoCount);
     // check if type information is available
@@ -4684,8 +4689,7 @@ RexxMethod1(RexxObjectPtr,                // Return type
             OLEObject_GetKnownEvents,  // Object_method name
             OSELF, self)               // Pointer to self
 {
-    RexxObjectPtr      RxString;
-    RexxObjectPtr      RxResult = context->Nil();
+    RexxObjectPtr   RxResult = context->Nil();
     INT             iCount = 0;
     INT             j;
     CHAR            pszInfoBuffer[2048];
@@ -4707,7 +4711,7 @@ RexxMethod1(RexxObjectPtr,                // Return type
     {
         IConnectionPointContainer *pContainer = NULL;
 
-        if ( maybeCreateEventHandler(&pEventHandler, &pContainer, self) )
+        if ( maybeCreateEventHandler(context, &pEventHandler, &pContainer, self) )
         {
             /* This is not needed. */
             pContainer->Release();
@@ -4768,22 +4772,21 @@ RexxMethod1(RexxObjectPtr,                // Return type
             RxResult = RxStem;
         }
     }
-
     return RxResult;
 }
 
 
-RexxMethod0(REXXOBJECT, OLEObject_isConnected)
+RexxMethod0(logical_t, OLEObject_isConnected)
 {
 
-    if ( connectedToEvents() )
+    if ( connectedToEvents(context) )
     {
-        return ooRexxTrue;
+        true;
     }
-    return ooRexxFalse;
+    return false;
 }
 
-RexxMethod0(REXXOBJECT, OLEObject_isConnectable)
+RexxMethod0(logical_t, OLEObject_isConnectable)
 {
     IDispatch *pDispatch = NULL;
 
@@ -4792,63 +4795,63 @@ RexxMethod0(REXXOBJECT, OLEObject_isConnectable)
      */
     if ( haveEventHandler(context) )
     {
-        return ooRexxTrue;
+        return true;
     }
 
     /* Get the IDispatch pointer for this object and see if the COM object we
      *  are proxying for is a connectable object.
      */
-    getDispatchPtr(&pDispatch);
+    getDispatchPtr(context, &pDispatch);
 
     if ( isConnectableObject(pDispatch) )
     {
-        return ooRexxTrue;
+        return true;
     }
-    return ooRexxFalse;
+    return false;
 }
 
-RexxMethod1(REXXOBJECT, OLEObject_connectEvents, OSELF, self)
+RexxMethod1(logical_t, OLEObject_connectEvents, OSELF, self)
 {
     IConnectionPointContainer *pContainer = NULL;
     IDispatch                 *pDispatch = NULL;
     OLEObjectEvent            *pEventHandler = NULL;
     bool                       connected = false;
 
-    if ( connectedToEvents() )
+    if ( connectedToEvents(context) )
     {
-        return ooRexxTrue;
+        return true;
     }
 
     if ( haveEventHandler(context) )
     {
         getEventHandlerPtr(context, &pEventHandler);
-        getDispatchPtr(&pDispatch);
+        getDispatchPtr(context, &pDispatch);
         getConnectionPointContainer(pDispatch, &pContainer);
     }
     else
     {
-        maybeCreateEventHandler(&pEventHandler, &pContainer, self);
+        maybeCreateEventHandler(context, &pEventHandler, &pContainer, self);
     }
 
     if ( pEventHandler != NULL && pContainer != NULL )
     {
-        connected = connectEventHandler(pContainer, pEventHandler);
+        connected = connectEventHandler(context, pContainer, pEventHandler);
         pContainer->Release();
     }
 
     if ( connected )
     {
-        return ooRexxTrue;
+        return true;
     }
-    return ooRexxFalse;
+    return false;
 }
 
 
 RexxMethod0(logical_t, OLEObject_disconnectEvents)
 {
-    if ( connectedToEvents() )
+    if ( connectedToEvents(context) )
     {
-        disconnectEventHandler();
+        disconnectEventHandler(context);
         return true;
     }
     return false;
@@ -4879,8 +4882,8 @@ RexxMethod0(logical_t, OLEObject_removeEventHandler)
  *
  * @return True if the event handler object is instantiated, otherwise false.
  */
-bool addEventHandler(REXXOBJECT self, bool connect, IDispatch *pDispatch, POLECLASSINFO pClsInfo,
-                     ITypeInfo *pTypeInfo, CLSID *pClsID)
+bool addEventHandler(RexxMethodContext *context, RexxObjectPtr self, bool connect, IDispatch *pDispatch,
+                     POLECLASSINFO pClsInfo, ITypeInfo *pTypeInfo, CLSID *pClsID)
 {
     IConnectionPointContainer *pConnectionPointContainer = NULL;
     bool created = false;
@@ -4897,10 +4900,10 @@ bool addEventHandler(REXXOBJECT self, bool connect, IDispatch *pDispatch, POLECL
 
         if ( pEventTypeInfo != NULL )
         {
-            created = createEventHandler(pEventTypeInfo, self, pClsInfo, &pEventHandler);
+            created = createEventHandler(context, pEventTypeInfo, self, pClsInfo, &pEventHandler);
             if ( created && connect )
             {
-                connectEventHandler(pConnectionPointContainer, pEventHandler);
+                connectEventHandler(context, pConnectionPointContainer, pEventHandler);
             }
 
             pEventTypeInfo->Release();
@@ -4922,8 +4925,8 @@ bool addEventHandler(REXXOBJECT self, bool connect, IDispatch *pDispatch, POLECL
  * @return True if the OLEObject is instantiated, otherwise false.  Provided
  *         that pEventTypeInfo is correct, failure is very unlikely.
  */
-bool createEventHandler(ITypeInfo *pEventTypeInfo, REXXOBJECT self, POLECLASSINFO pClsInfo,
-                        OLEObjectEvent **ppEventHandler)
+bool createEventHandler(RexxMethodContext *context, ITypeInfo *pEventTypeInfo, RexxObjectPtr self,
+                        POLECLASSINFO pClsInfo, OLEObjectEvent **ppEventHandler)
 {
     POLEFUNCINFO2 pEventList = NULL;
     bool          success = false;
@@ -4938,10 +4941,10 @@ bool createEventHandler(ITypeInfo *pEventTypeInfo, REXXOBJECT self, POLECLASSINF
 
     if ( pEventList )
     {
-        *ppEventHandler = new OLEObjectEvent(pEventList, self, theIID);
+        *ppEventHandler = new OLEObjectEvent(pEventList, self, context->threadContext->instance, theIID);
         success = true;
 
-        context->SetObjectVariable("!EVENTHANDLER", ooRexxPointer(*ppEventHandler));
+        context->SetObjectVariable("!EVENTHANDLER", context->NewPointer(*ppEventHandler));
     }
     return success;
 }
@@ -4958,7 +4961,8 @@ bool createEventHandler(ITypeInfo *pEventTypeInfo, REXXOBJECT self, POLECLASSINF
  * Note:  The caller is responsible for releasing the IConnectionPointContainer
  * pointer.
  */
-bool connectEventHandler(IConnectionPointContainer *pContainer, OLEObjectEvent *pEventHandler)
+bool connectEventHandler(RexxMethodContext *context, IConnectionPointContainer *pContainer,
+                         OLEObjectEvent *pEventHandler)
 {
     IConnectionPoint *pConnectionPoint = NULL;
     HRESULT           hResult;
@@ -4970,8 +4974,8 @@ bool connectEventHandler(IConnectionPointContainer *pContainer, OLEObjectEvent *
         hResult = pConnectionPoint->Advise((IUnknown*) pEventHandler, &dwCookie);
         if ( hResult == S_OK )
         {
-            context->SetObjectVariable("!EVENTHANDLERCOOKIE", ooRexxInteger(dwCookie));
-            context->SetObjectVariable("!CONNECTIONPOINT", ooRexxPointer(pConnectionPoint));
+            context->SetObjectVariable("!EVENTHANDLERCOOKIE", context->UnsignedNumberToObject(dwCookie));
+            context->SetObjectVariable("!CONNECTIONPOINT", context->NewPointer(pConnectionPoint));
         }
         else
         {
@@ -5459,10 +5463,10 @@ void GUIDFromTypeInfo(ITypeInfo *pTypeInfo, GUID *guid)
  * info for the COM object.
  *
  */
-bool maybeCreateEventHandler(OLEObjectEvent **ppHandler, IConnectionPointContainer **ppContainer,
-                             REXXOBJECT self)
+bool maybeCreateEventHandler(RexxMethodContext * context, OLEObjectEvent **ppHandler,
+                             IConnectionPointContainer **ppContainer, RexxObjectPtr self)
 {
-    REXXOBJECT      value;
+    RexxStringObject   value;
     IDispatch      *pDispatch = NULL;
     ITypeInfo      *pTypeInfo = NULL;
     ITypeInfo      *pEventTypeInfo = NULL;
@@ -5472,16 +5476,16 @@ bool maybeCreateEventHandler(OLEObjectEvent **ppHandler, IConnectionPointContain
 
     *ppContainer = NULL;  /* Insurance. */
 
-    getDispatchPtr(&pDispatch);
+    getDispatchPtr(context, &pDispatch);
 
     if ( getConnectionPointContainer(pDispatch, ppContainer) )
     {
-        getCachedClassInfo(&pClsInfo, &pTypeInfo);
+        getCachedClassInfo(context, &pClsInfo, &pTypeInfo);
 
-        value = context->GetObjectVariable("!CLSID");
+        value = (RexxStringObject)context->GetObjectVariable("!CLSID");
         if (value != NULLOBJECT)
         {
-            getClsIDFromString(string_data(value), &clsID);
+            getClsIDFromString(context->StringData(value), &clsID);
         }
 
         if ( pClsInfo != NULL )
@@ -5490,7 +5494,7 @@ bool maybeCreateEventHandler(OLEObjectEvent **ppHandler, IConnectionPointContain
 
             if ( pEventTypeInfo != NULL )
             {
-                createEventHandler(pEventTypeInfo, self, pClsInfo, ppHandler);
+                createEventHandler(context, pEventTypeInfo, self, pClsInfo, ppHandler);
                 pEventTypeInfo->Release();
                 created = true;
             }
@@ -5515,7 +5519,7 @@ bool maybeCreateEventHandler(OLEObjectEvent **ppHandler, IConnectionPointContain
  *
  * @return True if an OLEObjectEvent instance exists, otherwise false.
  */
-inline bool haveEventHandler(void)
+inline bool haveEventHandler(RexxMethodContext *context)
 {
     return (context->GetObjectVariable("!EVENTHANDLER") != NULLOBJECT);
 }
@@ -5527,9 +5531,9 @@ inline bool haveEventHandler(void)
  * @return True if connected as an event sink to an event source, otherwise
  *         false.
  */
-inline bool connectedToEvents(void)
+inline bool connectedToEvents(RexxMethodContext *context)
 {
-    return (haveEventHandler() &&
+    return (haveEventHandler(context) &&
             (context->GetObjectVariable("!EVENTHANDLERCOOKIE") != NULLOBJECT) &&
             (context->GetObjectVariable("!CONNECTIONPOINT") != NULLOBJECT));
 }
@@ -5543,9 +5547,9 @@ void releaseEventHandler(RexxMethodContext *context)
 {
     OLEObjectEvent *pEventHandler = NULL;
 
-    if ( connectedToEvents() )
+    if ( connectedToEvents(context) )
     {
-        disconnectEventHandler();
+        disconnectEventHandler(context);
     }
 
     getEventHandlerPtr(context, &pEventHandler);
@@ -5561,20 +5565,20 @@ void releaseEventHandler(RexxMethodContext *context)
  * the connection is closed, the connection point in released, and the
  * connection variables are removed from this object's instance variables.
  */
-void disconnectEventHandler(void)
+void disconnectEventHandler(RexxMethodContext *context)
 {
     IConnectionPoint *pConnectionPoint = NULL;
     DWORD             dwCookie = 0;
 
-    REXXOBJECT ptr = context->GetObjectVariable("!CONNECTIONPOINT");
+    RexxObjectPtr ptr = context->GetObjectVariable("!CONNECTIONPOINT");
     if ( ptr != NULLOBJECT )
     {
-        pConnectionPoint = (IConnectionPoint *)pointer_value(ptr);
+        pConnectionPoint = (IConnectionPoint *)context->PointerValue((RexxPointerObject)ptr);
 
-        REXXOBJECT cookie = context->GetObjectVariable("!EVENTHANDLERCOOKIE");
+        RexxObjectPtr cookie = context->GetObjectVariable("!EVENTHANDLERCOOKIE");
         if ( cookie != NULLOBJECT )
         {
-            dwCookie = (DWORD)integer_value(cookie);
+            dwCookie = context->IntegerValue((RexxIntegerObject)cookie);
         }
 
         if (pConnectionPoint != NULL) {
@@ -5606,6 +5610,11 @@ RexxMethodEntry oleobject_methods[] = {
     REXX_METHOD( OLEObject_GetKnownMethods_Class  , OLEObject_GetKnownMethods_Class ),
     REXX_METHOD( OLEObject_GetKnownEvents  , OLEObject_GetKnownEvents ),
     REXX_METHOD( OLEObject_GetObject_Class , OLEObject_GetObject_Class ),
+    REXX_METHOD( OLEObject_isConnected         , OLEObject_isConnected        ),
+    REXX_METHOD( OLEObject_isConnectable       , OLEObject_isConnectable      ),
+    REXX_METHOD( OLEObject_connectEvents       , OLEObject_connectEvents      ),
+    REXX_METHOD( OLEObject_disconnectEvents    , OLEObject_disconnectEvents   ),
+    REXX_METHOD( OLEObject_removeEventHandler  , OLEObject_removeEventHandler ),
     REXX_METHOD( OLEVariant_ParamFlagsEquals, OLEVariant_ParamFlagsEquals ),
     REXX_METHOD( OLEVariant_VarTypeEquals, OLEVariant_VarTypeEquals ),
     REXX_METHOD( OLEVariant_VarValueEquals, OLEVariant_VarValueEquals ),
