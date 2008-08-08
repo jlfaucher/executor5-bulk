@@ -61,8 +61,6 @@
     catch (std::bad_alloc &)      \
     {                              \
         return RXAPI_MEMFAIL;      \
-    }                              \
-                                   \
-    return RXAPI_OK;               \
+    }
 
 #endif

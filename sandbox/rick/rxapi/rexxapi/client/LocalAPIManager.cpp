@@ -136,7 +136,8 @@ void LocalAPIManager::terminateProcess()
     {
         SysClientStream *connection = connections.front();
         connections.pop_front();
-        delete connection;
+        // tell the server we're going away and clean up
+        closeConnection(connection);
     }
 }
 
@@ -256,6 +257,13 @@ SysClientStream *LocalAPIManager::getConnection()
  */
 void LocalAPIManager::returnConnection(SysClientStream *connection)
 {
+    // if we've encountered an error, then just delete the connection
+    if (!connection->isClean())
+    {
+        delete connection;
+        return;
+    }
+
     {
         Lock lock(messageLock);                     // make sure we single thread this
         if (connections.size() < MAX_CONNECTIONS)
@@ -265,6 +273,27 @@ void LocalAPIManager::returnConnection(SysClientStream *connection)
         }
     }
     // not cachable, make sure this is delete.
+    delete connection;
+}
+
+
+/**
+ * Close a connection to the server.
+ *
+ * @param connection The connection to close.
+ */
+void LocalAPIManager::closeConnection(SysClientStream *connection)
+{
+    ClientMessage message(APIManager, CLOSE_CONNECTION);
+
+    try
+    {
+        // this is a one-way message...we don't expect a reply
+        message.writeMessage(*connection);
+    } catch (ServiceException *)
+    {
+        // ignored
+    }
     delete connection;
 }
 

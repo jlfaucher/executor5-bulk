@@ -169,19 +169,20 @@ public:
 
     LocalMacroSpaceManager();
 
-    void loadMacroSpace(const char *target);
-    void loadMacroSpace(const char *target, const char **nameList, size_t nameCount);
-    void saveMacroSpace(const char *target);
-    void queryMacro(const char *target, size_t *pos);
-    void reorderMacro(const char *target, size_t pos);
-    void getMacro(const char *target, RXSTRING &image);
-    void saveMacroSpace(const char *target, const char **names, size_t count);
-    void clearMacroSpace();
-    void removeMacro(const char *name);
-    void addMacroFromFile(const char *name, const char *sourceFile, size_t position);
-    void addMacro(const char *name, ManagedRxstring &imageData, size_t position);
+    RexxReturnCode loadMacroSpace(const char *target);
+    RexxReturnCode loadMacroSpace(const char *target, const char **nameList, size_t nameCount);
+    RexxReturnCode saveMacroSpace(const char *target);
+    RexxReturnCode queryMacro(const char *target, size_t *pos);
+    RexxReturnCode reorderMacro(const char *target, size_t pos);
+    RexxReturnCode getMacro(const char *target, RXSTRING &image);
+    RexxReturnCode saveMacroSpace(const char *target, const char **names, size_t count);
+    RexxReturnCode clearMacroSpace();
+    RexxReturnCode removeMacro(const char *name);
+    RexxReturnCode addMacroFromFile(const char *name, const char *sourceFile, size_t position);
+    RexxReturnCode addMacro(const char *name, ManagedRxstring &imageData, size_t position);
     void translateRexxProgram(const char *sourcefile, ManagedRxstring &imageData);
     void readRxstringFromFile(SysFile *file, ManagedRxstring &target, size_t size);
+    RexxReturnCode mapReturnResult(ServiceMessage &m);
     virtual RexxReturnCode processServiceException(ServiceException *e);
 };
 

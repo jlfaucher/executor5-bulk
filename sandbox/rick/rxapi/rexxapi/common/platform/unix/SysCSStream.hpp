@@ -91,6 +91,10 @@ public:
     {
         protocol = newprotocol;
     };
+    inline bool isClean()
+    {
+        return errcode == CSERROR_OK;
+    }
 };
 
 class SysServerStream;
@@ -143,21 +147,25 @@ public:
     bool close();
     // the following APIs are usually not used but are here for completeness
     // they should be called prior to calling the Make method
-    void setDomain(int newdomain)
+    inline void setDomain(int newdomain)
     {
         domain = newdomain;
     };
-    void setType(int newtype)
+    inline void setType(int newtype)
     {
         type = newtype;
     };
-    void setProtocol(int newprotocol)
+    inline void setProtocol(int newprotocol)
     {
         protocol = newprotocol;
     };
-    void setBackLog(int newbacklog)
+    inline void setBackLog(int newbacklog)
     {
         backlog = newbacklog;
     };
+    inline bool isClean()
+    {
+        return errcode == CSERROR_OK;
+    }
 };
 

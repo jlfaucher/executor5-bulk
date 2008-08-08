@@ -55,17 +55,32 @@ void ClientMessage::send()
 
     try
     {
-        // write the message and get the result reply.
-        writeMessage(*pipe);
-        readResult(*pipe);
+        // do the send operation
+        send(pipe);
     }
     catch (ServiceException *)
     {
-        // this could have been caused by an error, so we need to delete the connection
-        delete pipe;
+        // return the connection to the pool
+        manager->returnConnection(pipe);
         // rethrow the exception
         throw;
     }
     // return the connection to the pool
     manager->returnConnection(pipe);
 }
+
+
+/**
+ * Send a message to the server using a supplied connection.
+ *
+ * @param pipe   The connection to use.
+ */
+void ClientMessage::send(SysClientStream *pipe)
+{
+    // write the message and get the result reply.
+    writeMessage(*pipe);
+    readResult(*pipe);
+}
+
+
+

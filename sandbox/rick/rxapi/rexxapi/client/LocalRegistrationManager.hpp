@@ -51,19 +51,20 @@ class LocalRegistrationManager : public LocalAPISubsystem
 public:
     LocalRegistrationManager();
 
-    ServiceReturn registerCallback(RegistrationType type, const char *name, const char *module,
+    RexxReturnCode registerCallback(RegistrationType type, const char *name, const char *module,
         const char *proc, const char *userData, bool drop);
 
-    ServiceReturn registerCallback(RegistrationType type, const char *name, REXXPFN entryPoint,
+    RexxReturnCode registerCallback(RegistrationType type, const char *name, REXXPFN entryPoint,
         const char *userData);
 
-    ServiceReturn dropCallback(RegistrationType type, const char *name, const char *module);
+    RexxReturnCode dropCallback(RegistrationType type, const char *name, const char *module);
 
-    ServiceReturn queryCallback(RegistrationType type, const char *name);
+    RexxReturnCode queryCallback(RegistrationType type, const char *name);
 
-    ServiceReturn queryCallback(RegistrationType type, const char *name, const char *module, char *userData);
+    RexxReturnCode queryCallback(RegistrationType type, const char *name, const char *module, char *userData);
 
-    void resolveCallback(RegistrationType type, const char *name, const char *module, REXXPFN &entryPoint);
+    RexxReturnCode resolveCallback(RegistrationType type, const char *name, const char *module, REXXPFN &entryPoint);
+    RexxReturnCode mapReturnResult(ServiceMessage &m);
     virtual RexxReturnCode processServiceException(ServiceException *e);
 };
 

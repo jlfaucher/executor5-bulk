@@ -79,6 +79,7 @@ public:
     void shutdown();
     SysClientStream *getConnection();
     void returnConnection(SysClientStream *);
+    void closeConnection(SysClientStream *connection);
 
 protected:
 

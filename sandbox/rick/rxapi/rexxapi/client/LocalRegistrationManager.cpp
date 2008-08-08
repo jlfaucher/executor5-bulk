@@ -61,7 +61,7 @@ LocalRegistrationManager::LocalRegistrationManager() : LocalAPISubsystem()
  *
  * @return The return code for the registration.
  */
-ServiceReturn LocalRegistrationManager::registerCallback(RegistrationType type, const char *name,
+RexxReturnCode LocalRegistrationManager::registerCallback(RegistrationType type, const char *name,
     const char *module, const char *proc, const char *userData, bool drop)
 {
     // first parameter for these calls is ALWAYS the type, second is always the name
@@ -72,7 +72,7 @@ ServiceReturn LocalRegistrationManager::registerCallback(RegistrationType type, 
     message.setMessageData(&regData, sizeof(ServiceRegistrationData));
 
     message.send();
-    return message.result;
+    return mapReturnResult(message);
 }
 
 /**
@@ -85,7 +85,7 @@ ServiceReturn LocalRegistrationManager::registerCallback(RegistrationType type, 
  *
  * @return The message return code.
  */
-ServiceReturn LocalRegistrationManager::registerCallback(RegistrationType type, const char *name, REXXPFN entryPoint,
+RexxReturnCode LocalRegistrationManager::registerCallback(RegistrationType type, const char *name, REXXPFN entryPoint,
     const char *userData)
 {
     // first parameter for these calls is ALWAYS the type
@@ -96,7 +96,7 @@ ServiceReturn LocalRegistrationManager::registerCallback(RegistrationType type, 
     message.setMessageData((char *)&regData, sizeof(ServiceRegistrationData));
 
     message.send();
-    return message.result;
+    return mapReturnResult(message);
 }
 
 
@@ -109,7 +109,7 @@ ServiceReturn LocalRegistrationManager::registerCallback(RegistrationType type, 
  *
  * @return The operation return code.
  */
-ServiceReturn LocalRegistrationManager::dropCallback(RegistrationType type, const char *name, const char *module)
+RexxReturnCode LocalRegistrationManager::dropCallback(RegistrationType type, const char *name, const char *module)
 {
     // this is a different operation depending on whether we have a module specified
     if (module != NULL)
@@ -121,14 +121,14 @@ ServiceReturn LocalRegistrationManager::dropCallback(RegistrationType type, cons
         message.setMessageData((char *)&regData, sizeof(ServiceRegistrationData));
 
         message.send();
-        return message.result;
+        return mapReturnResult(message);
     }
     else
     {
         // first parameter for these calls is ALWAYS the type
         ClientMessage message(RegistrationManager, REGISTER_DROP, type, name);
         message.send();
-        return message.result;
+        return mapReturnResult(message);
     }
 }
 
@@ -141,13 +141,13 @@ ServiceReturn LocalRegistrationManager::dropCallback(RegistrationType type, cons
  *
  * @return The query return code.
  */
-ServiceReturn LocalRegistrationManager::queryCallback(RegistrationType type, const char *name)
+RexxReturnCode LocalRegistrationManager::queryCallback(RegistrationType type, const char *name)
 {
     // first parameter for these calls is ALWAYS the type
     ClientMessage message(RegistrationManager, REGISTER_QUERY, type, name);
 
     message.send();
-    return message.result;
+    return mapReturnResult(message);
 }
 
 /**
@@ -161,7 +161,7 @@ ServiceReturn LocalRegistrationManager::queryCallback(RegistrationType type, con
  *
  * @return The service return code.
  */
-ServiceReturn LocalRegistrationManager::queryCallback(RegistrationType type, const char *name, const char *module,
+RexxReturnCode LocalRegistrationManager::queryCallback(RegistrationType type, const char *name, const char *module,
     char *userData)
 {
     if (module != NULL)
@@ -180,7 +180,7 @@ ServiceReturn LocalRegistrationManager::queryCallback(RegistrationType type, con
 
             retData->retrieveUserData(userData);
         }
-        return message.result;
+        return mapReturnResult(message);
     }
     else
     {
@@ -194,7 +194,7 @@ ServiceReturn LocalRegistrationManager::queryCallback(RegistrationType type, con
 
             retData->retrieveUserData(userData);
         }
-        return message.result;
+        return mapReturnResult(message);
     }
 }
 
@@ -206,7 +206,7 @@ ServiceReturn LocalRegistrationManager::queryCallback(RegistrationType type, con
  * @param module     An optional library qualifier.
  * @param entryPoint Pointer for returning the entry point address.
  */
-void LocalRegistrationManager::resolveCallback(RegistrationType type, const char *name, const char *module,
+RexxReturnCode LocalRegistrationManager::resolveCallback(RegistrationType type, const char *name, const char *module,
     REXXPFN &entryPoint)
 {
     entryPoint = NULL;                 // assume failure
@@ -239,6 +239,7 @@ void LocalRegistrationManager::resolveCallback(RegistrationType type, const char
             entryPoint = (REXXPFN)retData->entryPoint;
         }
     }
+    return mapReturnResult(message);
 }
 
 
@@ -262,5 +263,29 @@ RexxReturnCode LocalRegistrationManager::processServiceException(ServiceExceptio
 
         default:
             return RXAPI_MEMFAIL;
+    }
+}
+
+
+/**
+ * Process an result returned from the server and
+ * map it into an API return code.
+ *
+ * @param m      The return message.
+ *
+ * @return The mapped return code.
+ */
+RexxReturnCode LocalRegistrationManager::mapReturnResult(ServiceMessage &m)
+{
+    switch (m.result)
+    {
+        case CALLBACK_NOT_FOUND:
+            return RXSUBCOM_NOTREG;
+
+        case DROP_NOT_AUTHORIZED:
+            return RXSUBCOM_NOCANDROP;
+
+        default:
+            return RXSUBCOM_OK;
     }
 }

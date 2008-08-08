@@ -282,7 +282,7 @@ LocalMacroSpaceManager::LocalMacroSpaceManager() : LocalAPISubsystem()
  *
  * @param target The target file name.
  */
-void LocalMacroSpaceManager::loadMacroSpace(const char *target)
+RexxReturnCode LocalMacroSpaceManager::loadMacroSpace(const char *target)
 {
     // now open and read the file header
     MacroSpaceFile file(target);
@@ -306,8 +306,11 @@ void LocalMacroSpaceManager::loadMacroSpace(const char *target)
 
         // request the next one.
         message.send();
+        // NB:  The only error that can occur here is a critical exception.  We don't
+        // need to check the return
     }
     file.close();
+    return RXMACRO_OK;
 }
 
 
@@ -319,7 +322,7 @@ void LocalMacroSpaceManager::loadMacroSpace(const char *target)
  * @param nameList  The list of names to load.
  * @param nameCount The number of items to load.
  */
-void LocalMacroSpaceManager::loadMacroSpace(const char *target, const char **nameList, size_t nameCount)
+RexxReturnCode LocalMacroSpaceManager::loadMacroSpace(const char *target, const char **nameList, size_t nameCount)
 {
     NameTable names(nameList, nameCount);
 
@@ -346,8 +349,11 @@ void LocalMacroSpaceManager::loadMacroSpace(const char *target, const char **nam
 
         // request the next one.
         message.send();
+        // NB:  The only error that can occur here is a critical exception.  We don't
+        // need to check the return
     }
     file.close();
+    return RXMACRO_OK;
 }
 
 
@@ -356,7 +362,7 @@ void LocalMacroSpaceManager::loadMacroSpace(const char *target, const char **nam
  *
  * @param target The target file name.
  */
-void LocalMacroSpaceManager::saveMacroSpace(const char *target)
+RexxReturnCode LocalMacroSpaceManager::saveMacroSpace(const char *target)
 {
     ClientMessage message(MacroSpaceManager, ITERATE_MACRO_DESCRIPTORS);
 
@@ -365,7 +371,7 @@ void LocalMacroSpaceManager::saveMacroSpace(const char *target)
     // we're empty, no point in this.
     if (message.parameter1 == 0)
     {
-        return;
+        return RXMACRO_OK;
     }
 
     // now open and write the file header
@@ -401,6 +407,7 @@ void LocalMacroSpaceManager::saveMacroSpace(const char *target)
     }
     // all done!
     file.close();
+    return RXMACRO_OK;
 }
 
 
@@ -410,13 +417,19 @@ void LocalMacroSpaceManager::saveMacroSpace(const char *target)
  * @param target The target macro name.
  * @param image  The returned image data.
  */
-void LocalMacroSpaceManager::getMacro(const char *target, RXSTRING &image)
+RexxReturnCode LocalMacroSpaceManager::getMacro(const char *target, RXSTRING &image)
 {
     ClientMessage message(MacroSpaceManager, GET_MACRO_IMAGE, target);
 
     // request, then receive the image data
     message.send();
-    message.transferMessageData(image);
+    RexxReturnCode ret = mapReturnResult(message);
+    // if this worked, transfer the image data
+    if (ret == RXMACRO_OK)
+    {
+        message.transferMessageData(image);
+    }
+    return ret;
 }
 
 /**
@@ -427,7 +440,7 @@ void LocalMacroSpaceManager::getMacro(const char *target, RXSTRING &image)
  * @param names  The list of names.
  * @param count  The number of names in the list.
  */
-void LocalMacroSpaceManager::saveMacroSpace(const char *target, const char **names, size_t count)
+RexxReturnCode LocalMacroSpaceManager::saveMacroSpace(const char *target, const char **names, size_t count)
 {
     // now open and write the file header
     MacroSpaceFile file(target);
@@ -439,8 +452,13 @@ void LocalMacroSpaceManager::saveMacroSpace(const char *target, const char **nam
     for (i = 0; i < count; i++)
     {
         strcpy(message.nameArg, names[i]);
-        // request the next one.  This will throw an exception if it doesn't exist.
+        // request the next one.
         message.send();
+        // if not there, time to bail out
+        if (message.result == MACRO_DOES_NOT_EXIST)
+        {
+            return mapReturnResult(message);
+        }
         file.writeMacroDescriptor(message.nameArg, message.parameter1, message.parameter2);
     }
     // now iterate the images
@@ -451,20 +469,27 @@ void LocalMacroSpaceManager::saveMacroSpace(const char *target, const char **nam
         strcpy(message.nameArg, names[i]);
         // request the next one.  This will throw an exception if it doesn't exist.
         message.send();
+        // if not there, time to bail out
+        if (message.result == MACRO_DOES_NOT_EXIST)
+        {
+            return mapReturnResult(message);
+        }
         file.write(message.getMessageData(), message.getMessageDataLength());
     }
     // all done!
     file.close();
+    return RXMACRO_OK;
 }
 
 
 /**
  * Clear all macros from the macro space.
  */
-void LocalMacroSpaceManager::clearMacroSpace()
+RexxReturnCode LocalMacroSpaceManager::clearMacroSpace()
 {
     ClientMessage message(MacroSpaceManager, CLEAR_MACRO_SPACE);
     message.send();
+    return mapReturnResult(message);
 }
 
 
@@ -473,10 +498,11 @@ void LocalMacroSpaceManager::clearMacroSpace()
  *
  * @param name   The name of the macro to remove.
  */
-void LocalMacroSpaceManager::removeMacro(const char *name)
+RexxReturnCode LocalMacroSpaceManager::removeMacro(const char *name)
 {
     ClientMessage message(MacroSpaceManager, REMOVE_MACRO, name);
     message.send();
+    return mapReturnResult(message);
 }
 
 
@@ -487,11 +513,12 @@ void LocalMacroSpaceManager::removeMacro(const char *name)
  * @param name   The name to check.
  * @param pos
  */
-void LocalMacroSpaceManager::queryMacro(const char *name, size_t *pos)
+RexxReturnCode LocalMacroSpaceManager::queryMacro(const char *name, size_t *pos)
 {
     ClientMessage message(MacroSpaceManager, QUERY_MACRO, name);
     message.send();
     *pos = message.parameter1;
+    return mapReturnResult(message);
 }
 
 
@@ -501,11 +528,12 @@ void LocalMacroSpaceManager::queryMacro(const char *name, size_t *pos)
  * @param name   The name of the target macro.
  * @param pos    The new search order.
  */
-void LocalMacroSpaceManager::reorderMacro(const char *name, size_t pos)
+RexxReturnCode LocalMacroSpaceManager::reorderMacro(const char *name, size_t pos)
 {
     ClientMessage message(MacroSpaceManager, REORDER_MACRO, name);
     message.parameter1 = pos;
     message.send();
+    return mapReturnResult(message);
 }
 
 
@@ -516,13 +544,13 @@ void LocalMacroSpaceManager::reorderMacro(const char *name, size_t pos)
  * @param sourceFile The target source file.
  * @param position   The macro search position.
  */
-void LocalMacroSpaceManager::addMacroFromFile(const char *name, const char *sourceFile, size_t position)
+RexxReturnCode LocalMacroSpaceManager::addMacroFromFile(const char *name, const char *sourceFile, size_t position)
 {
     ManagedRxstring imageData;
 
     // translate the image
     translateRexxProgram(sourceFile, imageData);
-    addMacro(name, imageData, position);
+    return addMacro(name, imageData, position);
 }
 
 
@@ -533,7 +561,7 @@ void LocalMacroSpaceManager::addMacroFromFile(const char *name, const char *sour
  * @param imageData The source image data
  * @param position  The search order position.
  */
-void LocalMacroSpaceManager::addMacro(const char *name, ManagedRxstring &imageData, size_t position)
+RexxReturnCode LocalMacroSpaceManager::addMacro(const char *name, ManagedRxstring &imageData, size_t position)
 {
     ClientMessage message(MacroSpaceManager, ADD_MACRO, name);
     message.setMessageData(imageData.strptr, imageData.strlength);
@@ -545,6 +573,7 @@ void LocalMacroSpaceManager::addMacro(const char *name, ManagedRxstring &imageDa
     message.setMessageData(imageData.strptr, imageData.strlength);
 
     message.send();
+    return mapReturnResult(message);
 }
 
 
@@ -664,5 +693,26 @@ RexxReturnCode LocalMacroSpaceManager::processServiceException(ServiceException 
         case MACRO_LOAD_REXX:
         default:
             return RXMACRO_NO_STORAGE;
+    }
+}
+
+
+/**
+ * Process an result returned from the server and
+ * map it into an API return code.
+ *
+ * @param m      The return message.
+ *
+ * @return The mapped return code.
+ */
+RexxReturnCode LocalMacroSpaceManager::mapReturnResult(ServiceMessage &m)
+{
+    switch (m.result)
+    {
+        // this is generally the only error returned by the server
+        case MACRO_DOES_NOT_EXIST:
+            return RXMACRO_NOT_FOUND;
+        default:
+            return RXMACRO_OK;
     }
 }

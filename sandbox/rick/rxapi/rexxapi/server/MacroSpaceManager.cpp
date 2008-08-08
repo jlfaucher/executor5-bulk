@@ -184,7 +184,7 @@ void ServerMacroSpaceManager::deleteMacro(ServiceMessage &message)
     }
     else
     {
-        message.setExceptionInfo(MACRO_DOES_NOT_EXIST, message.nameArg);
+        message.setResult(MACRO_DOES_NOT_EXIST);
         return;
     }
 }
@@ -211,7 +211,7 @@ void ServerMacroSpaceManager::queryMacro(ServiceMessage &message)
     }
     else
     {
-        message.setExceptionInfo(MACRO_DOES_NOT_EXIST, message.nameArg);
+        message.setResult(MACRO_DOES_NOT_EXIST);
     }
 }
 
@@ -232,7 +232,7 @@ void ServerMacroSpaceManager::reorderMacro(ServiceMessage &message)
     }
     else
     {
-        message.setExceptionInfo(MACRO_DOES_NOT_EXIST, message.nameArg);
+        message.setResult(MACRO_DOES_NOT_EXIST);
     }
 }
 
@@ -316,7 +316,7 @@ void ServerMacroSpaceManager::getDescriptor(ServiceMessage &message)
     if (item == NULL)
     {
         // this is an end indication
-        message.setExceptionInfo(MACRO_DOES_NOT_EXIST, message.nameArg);
+        message.setResult(MACRO_DOES_NOT_EXIST);
     }
     else
     {
@@ -343,7 +343,7 @@ void ServerMacroSpaceManager::getImage(ServiceMessage &message)
     if (item == NULL)
     {
         // this is an end indication
-        message.setExceptionInfo(MACRO_DOES_NOT_EXIST, message.nameArg);
+        message.setResult(MACRO_DOES_NOT_EXIST);
     }
     else
     {

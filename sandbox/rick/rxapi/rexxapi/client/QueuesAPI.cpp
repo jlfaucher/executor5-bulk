@@ -112,8 +112,7 @@ RexxReturnCode RexxEntry RexxCreateQueue(
                 throw new ServiceException(MEMORY_ERROR, "Unsufficient space for created queue name");
             }
         }
-        // make sure we set the duplicate flag
-        *pdup = (size_t)lam->queueManager.createNamedQueue(userRequested, size, name);
+        return lam->queueManager.createNamedQueue(userRequested, size, name, pdup);
     }
     EXIT_REXX_API();
 }
@@ -141,7 +140,7 @@ RexxReturnCode RexxEntry RexxDeleteQueue(
 {
     ENTER_REXX_API(QueueManager)
     {
-        lam->queueManager.deleteNamedQueue(name);
+        return lam->queueManager.deleteNamedQueue(name);
     }
     EXIT_REXX_API();
 }
@@ -169,11 +168,11 @@ RexxReturnCode RexxEntry RexxClearQueue(
         // "SESSION" means get the session queue
         if (lam->queueManager.isSessionQueue(name))
         {
-            lam->queueManager.clearSessionQueue();
+            return lam->queueManager.clearSessionQueue();
         }
         else
         {
-            lam->queueManager.clearNamedQueue(name);
+            return lam->queueManager.clearNamedQueue(name);
         }
     }
     EXIT_REXX_API();
@@ -202,11 +201,11 @@ RexxReturnCode  RexxEntry RexxQueryQueue(
         // "SESSION" means get the session queue
         if (lam->queueManager.isSessionQueue(name))
         {
-            *count = lam->queueManager.getSessionQueueCount();
+            return lam->queueManager.getSessionQueueCount(*count);
         }
         else
         {
-            *count = lam->queueManager.getQueueCount(name);
+            return lam->queueManager.getQueueCount(name, *count);
         }
     }
     EXIT_REXX_API();
@@ -240,15 +239,15 @@ RexxReturnCode RexxEntry RexxAddQueue(
                                              /* first check the flag       */
         if (flag != RXQUEUE_FIFO && flag != RXQUEUE_LIFO)
         {
-            throw new ServiceException(BAD_FIFO_LIFO, "Invalid queue ordering flag");
+            return RXQUEUE_BADWAITFLAG;
         }
         if (lam->queueManager.isSessionQueue(name))
         {
-            lam->queueManager.addToSessionQueue(*data, flag);
+            return lam->queueManager.addToSessionQueue(*data, flag);
         }
         else
         {
-            lam->queueManager.addToNamedQueue(name, *data, flag);
+            return lam->queueManager.addToNamedQueue(name, *data, flag);
         }
     }
     EXIT_REXX_API();
@@ -294,7 +293,7 @@ RexxReturnCode RexxEntry RexxPullFromQueue(
                                             /* first check the flag       */
         if (waitflag != RXQUEUE_NOWAIT && waitflag != RXQUEUE_WAIT)
         {
-            throw new ServiceException(BAD_WAIT_FLAG, "Invalid queue wait flag");
+            return RXQUEUE_BADWAITFLAG;
         }
         // we use a common path here, because pull is more complicated.
         // NULL for the name is the signal to use the session queue.
@@ -302,7 +301,7 @@ RexxReturnCode RexxEntry RexxPullFromQueue(
         {
             name = NULL;
         }
-        lam->queueManager.pullFromQueue(name, *data_buf, waitflag, time);
+        return lam->queueManager.pullFromQueue(name, *data_buf, waitflag, time);
     }
     EXIT_REXX_API();
 }
@@ -318,7 +317,7 @@ RexxReturnCode RexxEntry RexxDeleteSessionQueue()
 {
     ENTER_REXX_API(QueueManager)
     {
-        lam->queueManager.deleteSessionQueue();
+        return lam->queueManager.deleteSessionQueue();
     }
     EXIT_REXX_API();
 }

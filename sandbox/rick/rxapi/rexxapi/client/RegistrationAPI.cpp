@@ -85,8 +85,7 @@ RexxReturnCode RexxEntry RexxRegisterSubcomDll(
 {
     ENTER_REXX_API(RegistrationManager)
     {
-        //TODO:  add style validity checking
-        lam->registrationManager.registerCallback(SubcomAPI,
+        return lam->registrationManager.registerCallback(SubcomAPI,
             envName, moduleName, procedureName, userArea, dropAuthority == RXSUBCOM_NONDROP);
     }
     EXIT_REXX_API();
@@ -123,7 +122,7 @@ RexxReturnCode RexxEntry RexxRegisterSubcomExe(
 {
     ENTER_REXX_API(RegistrationManager)
     {
-        lam->registrationManager.registerCallback(SubcomAPI, envName, entryPoint, userArea);
+        return lam->registrationManager.registerCallback(SubcomAPI, envName, entryPoint, userArea);
     }
     EXIT_REXX_API();
 }
@@ -151,7 +150,7 @@ RexxReturnCode RexxEntry RexxDeregisterSubcom(
 {
     ENTER_REXX_API(RegistrationManager)
     {
-        lam->registrationManager.dropCallback(SubcomAPI, name, moduleName);
+        return lam->registrationManager.dropCallback(SubcomAPI, name, moduleName);
     }
     EXIT_REXX_API();
 }
@@ -188,15 +187,9 @@ RexxReturnCode RexxEntry RexxQuerySubcom(
     *flags = 0;
     ENTER_REXX_API(RegistrationManager)
     {
-        if (lam->registrationManager.queryCallback(SubcomAPI, name, module, userWord) == CALLBACK_EXISTS)
-        {
-            *flags = 1;
-            return RXSUBCOM_OK;
-        }
-        else
-        {
-            return RXSUBCOM_NOTREG;
-        }
+        RexxReturnCode ret = lam->registrationManager.queryCallback(SubcomAPI, name, module, userWord);
+        *flags = (ret == RXSUBCOM_OK);
+        return ret;
     }
     EXIT_REXX_API();
 }
@@ -225,7 +218,7 @@ RexxReturnCode RexxEntry RexxResolveSubcom(
 {
     ENTER_REXX_API(RegistrationManager)
     {
-        lam->registrationManager.resolveCallback(SubcomAPI, name, NULL, *entryPoint);
+        return lam->registrationManager.resolveCallback(SubcomAPI, name, NULL, *entryPoint);
     }
     EXIT_REXX_API();
 }
@@ -256,7 +249,7 @@ RexxReturnCode RexxEntry RexxLoadSubcom(
     {
         REXXPFN entryPoint;
 
-        lam->registrationManager.resolveCallback(SubcomAPI, name, lib, entryPoint);
+        return lam->registrationManager.resolveCallback(SubcomAPI, name, lib, entryPoint);
     }
     EXIT_REXX_API();
 }
@@ -317,7 +310,7 @@ RexxReturnCode RexxEntry RexxRegisterExitDll(
 {
     ENTER_REXX_API(RegistrationManager)
     {
-        lam->registrationManager.registerCallback(ExitAPI, envName, moduleName, procedureName, userArea, dropAuthority == RXSUBCOM_NONDROP);
+        return lam->registrationManager.registerCallback(ExitAPI, envName, moduleName, procedureName, userArea, dropAuthority == RXSUBCOM_NONDROP);
     }
     EXIT_REXX_API();
 }
@@ -346,7 +339,7 @@ RexxReturnCode RexxEntry   RexxRegisterExitExe(
 {
     ENTER_REXX_API(RegistrationManager)
     {
-        lam->registrationManager.registerCallback(ExitAPI, envName, entryPoint, userArea);
+        return lam->registrationManager.registerCallback(ExitAPI, envName, entryPoint, userArea);
     }
     EXIT_REXX_API();
 }
@@ -374,7 +367,7 @@ RexxReturnCode RexxEntry RexxDeregisterExit(
 {
     ENTER_REXX_API(RegistrationManager)
     {
-        lam->registrationManager.dropCallback(ExitAPI, name, moduleName);
+        return lam->registrationManager.dropCallback(ExitAPI, name, moduleName);
     }
     EXIT_REXX_API();
 }
@@ -406,20 +399,14 @@ RexxReturnCode RexxEntry RexxQueryExit(
   const char *      name,              /* Environment Name           */
   const char *      module,            /* Associated Name (of DLL)   */
   size_t             *exist,           /* existence information      */
-  char               *userword)        /* data from registration     */
+  char               *userWord)        /* data from registration     */
 {
     *exist = 0;
     ENTER_REXX_API(RegistrationManager)
     {
-        if (lam->registrationManager.queryCallback(ExitAPI, name, module, userword) == CALLBACK_EXISTS)
-        {
-            *exist = 1;
-            return RXSUBCOM_OK;
-        }
-        else
-        {
-            return RXSUBCOM_NOTREG;
-        }
+        RexxReturnCode ret = lam->registrationManager.queryCallback(ExitAPI, name, module, userWord);
+        *exist = (ret == RXQUEUE_OK);
+        return ret;
     }
     EXIT_REXX_API();
 }
@@ -448,7 +435,7 @@ RexxReturnCode RexxEntry RexxResolveExit(
 {
     ENTER_REXX_API(RegistrationManager)
     {
-        lam->registrationManager.resolveCallback(ExitAPI, name, NULL, *entryPoint);
+        return lam->registrationManager.resolveCallback(ExitAPI, name, NULL, *entryPoint);
     }
     EXIT_REXX_API();
 }
@@ -477,7 +464,7 @@ RexxReturnCode RexxEntry RexxRegisterFunctionDll(
 {
     ENTER_REXX_API(RegistrationManager)
     {
-        lam->registrationManager.registerCallback(FunctionAPI, name, moduleName, procedureName, NULL, true);
+        return lam->registrationManager.registerCallback(FunctionAPI, name, moduleName, procedureName, NULL, true);
     }
     EXIT_REXX_API();
 }
@@ -505,7 +492,7 @@ RexxReturnCode RexxEntry RexxRegisterFunctionExe(
 {
     ENTER_REXX_API(RegistrationManager)
     {
-        lam->registrationManager.registerCallback(FunctionAPI, name, entryPoint, NULL);
+        return lam->registrationManager.registerCallback(FunctionAPI, name, entryPoint, NULL);
     }
     EXIT_REXX_API();
 }
@@ -530,7 +517,7 @@ RexxReturnCode RexxEntry RexxDeregisterFunction(
 {
     ENTER_REXX_API(RegistrationManager)
     {
-        lam->registrationManager.dropCallback(FunctionAPI, name, NULL);
+        return lam->registrationManager.dropCallback(FunctionAPI, name, NULL);
     }
     EXIT_REXX_API();
 }
@@ -557,24 +544,17 @@ RexxReturnCode RexxEntry RexxQueryFunction(
 {
     ENTER_REXX_API(RegistrationManager)
     {
-        if (lam->registrationManager.queryCallback(FunctionAPI, name, NULL, NULL) == CALLBACK_EXISTS)
-        {
-            return RXSUBCOM_OK;
-        }
-        else
-        {
-            return RXSUBCOM_NOTREG;
-        }
+        return lam->registrationManager.queryCallback(FunctionAPI, name, NULL, NULL);
     }
     EXIT_REXX_API();
 }
 
 
-RexxReturnCode RexxEntry   RexxResolveRoutine(const char *name, REXXPFN *entryPoint)
+RexxReturnCode RexxEntry RexxResolveRoutine(const char *name, REXXPFN *entryPoint)
 {
     ENTER_REXX_API(RegistrationManager)
     {
-        lam->registrationManager.resolveCallback(FunctionAPI, name, NULL, *entryPoint);
+        return lam->registrationManager.resolveCallback(FunctionAPI, name, NULL, *entryPoint);
     }
     EXIT_REXX_API();
 }

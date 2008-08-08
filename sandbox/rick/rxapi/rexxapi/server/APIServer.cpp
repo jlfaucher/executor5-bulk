@@ -112,7 +112,7 @@ void APIServer::processMessages(SysServerConnection *connection)
         {
             // read the message.
             message.readMessage(connection);
-        } catch (ServiceMessage *e)
+        } catch (ServiceException *e)
         {
             // an error here is likely caused by the client closing the connection.
             // delete both the exception and the connection and terminate the thread.
@@ -136,6 +136,14 @@ void APIServer::processMessages(SysServerConnection *connection)
             // general API control message.
             case APIManager:
             {
+                // this could be a shutdown operation
+                if (message.operation == CLOSE_CONNECTION)
+                {
+                    connection->disconnect();
+                    delete connection;
+                    return;
+                }
+
                 dispatch(message);
                 break;
             }

@@ -62,23 +62,24 @@ public:
         return name == NULL || Utilities::strCaselessCompare(name, "SESSION") == 0;
     }
 
-    void validateQueueName(const char *username);
+    bool validateQueueName(const char *username);
     void initializeLocal(LocalAPIManager *a);
     virtual void terminateProcess();
     QueueHandle initializeSessionQueue(SessionID s);
     QueueHandle createSessionQueue(SessionID session);
-    bool createNamedQueue(const char *name, size_t size, char *createdName);
-    void deleteSessionQueue();
-    void deleteNamedQueue(const char * name);
-    void clearSessionQueue();
-    void clearNamedQueue(const char * name);
-    size_t getSessionQueueCount();
-    size_t getQueueCount(const char *name);
-    void addToNamedQueue(const char *name, CONSTRXSTRING &data, size_t lifoFifo);
-    void addToSessionQueue(CONSTRXSTRING &data, size_t lifoFifo);
-    void pullFromQueue(const char *name, RXSTRING &data, size_t waitFlag, REXXDATETIME *timeStamp);
+    RexxReturnCode createNamedQueue(const char *name, size_t size, char *createdName, size_t *dup);
+    RexxReturnCode deleteSessionQueue();
+    RexxReturnCode deleteNamedQueue(const char * name);
+    RexxReturnCode clearSessionQueue();
+    RexxReturnCode clearNamedQueue(const char * name);
+    RexxReturnCode getSessionQueueCount(size_t &);
+    RexxReturnCode getQueueCount(const char *name, size_t &);
+    RexxReturnCode addToNamedQueue(const char *name, CONSTRXSTRING &data, size_t lifoFifo);
+    RexxReturnCode addToSessionQueue(CONSTRXSTRING &data, size_t lifoFifo);
+    RexxReturnCode pullFromQueue(const char *name, RXSTRING &data, size_t waitFlag, REXXDATETIME *timeStamp);
     void nestSessionQueue(QueueHandle q);
     virtual RexxReturnCode processServiceException(ServiceException *e);
+    RexxReturnCode mapReturnResult(ServiceMessage &m);
 
 protected:
     LocalAPIManager *localManager;  // our local manager instance

@@ -323,9 +323,7 @@ DataQueue *QueueTable::locate(SessionID id)
         previous = current;         // remember this block
         current = current->next;    // to the next block
     }
-    current = new DataQueue(id);    // create a new session queue
-    add(current);                   // and add it to the table.
-    return current;
+    return NULL;                    // return NULL if not located
 }
 
 
@@ -448,7 +446,7 @@ void ServerQueueManager::addToNamedQueue(ServiceMessage &message)
     if (queue == NULL)
     {
         // this is an error
-        message.setExceptionInfo(QUEUE_DOES_NOT_EXIST, message.nameArg);
+        message.setResult(QUEUE_DOES_NOT_EXIST);
     }
     // queue exists, so add the item
     else
@@ -484,7 +482,7 @@ void ServerQueueManager::pullFromNamedQueue(ServiceMessage &message)
     if (queue == NULL)
     {
         // this is an error
-        message.setExceptionInfo(QUEUE_DOES_NOT_EXIST, message.nameArg);
+        message.setResult(QUEUE_DOES_NOT_EXIST);
     }
     // queue exists, so add the item
     else
@@ -607,7 +605,7 @@ void ServerQueueManager::deleteSessionQueue(ServiceMessage &message)
     // not previously created?
     if (queue == NULL)
     {
-        message.setExceptionInfo(QUEUE_DOES_NOT_EXIST, "Session queue does not exist");
+        message.setResult(QUEUE_DOES_NOT_EXIST);
     }
     // name collision...we need to update
     else
@@ -615,7 +613,7 @@ void ServerQueueManager::deleteSessionQueue(ServiceMessage &message)
         // do we have clients waiting for pull data?
         if (queue->hasWaiters())
         {
-            message.setExceptionInfo(QUEUE_IN_USE, "Session queue in use");
+            message.setResult(QUEUE_IN_USE);
         }
         // still have references?
         else if (queue->removeReference() == 0)
@@ -656,14 +654,14 @@ void ServerQueueManager::deleteNamedQueue(ServiceMessage &message)
     // not previously created?
     if (queue == NULL)
     {
-        message.setExceptionInfo(QUEUE_DOES_NOT_EXIST, message.nameArg);
+        message.setResult(QUEUE_DOES_NOT_EXIST);
     }
     else
     {
         // do we have clients waiting for pull data?
         if (queue->hasWaiters())
         {
-            message.setExceptionInfo(QUEUE_IN_USE, "Named queue in use");
+            message.setResult(QUEUE_IN_USE);
         }
         else
         {
@@ -699,7 +697,7 @@ void ServerQueueManager::getNamedQueueCount(ServiceMessage &message)
     if (queue == NULL)
     {
         // this is an error
-        message.setExceptionInfo(QUEUE_DOES_NOT_EXIST, message.nameArg);
+        message.setResult(QUEUE_DOES_NOT_EXIST);
     }
     // queue exists, so add the item
     else
@@ -735,7 +733,7 @@ void ServerQueueManager::clearNamedQueue(ServiceMessage &message)
     if (queue == NULL)
     {
         // this is an error
-        message.setExceptionInfo(QUEUE_DOES_NOT_EXIST, message.nameArg);
+        message.setResult(QUEUE_DOES_NOT_EXIST);
     }
     // queue exists, so add the item
     else

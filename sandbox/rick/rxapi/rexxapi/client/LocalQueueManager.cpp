@@ -62,16 +62,16 @@ LocalQueueManager::LocalQueueManager() : LocalAPISubsystem()
  *
  * @param username The name to validate.
  */
-void LocalQueueManager::validateQueueName(const char *username)
+bool LocalQueueManager::validateQueueName(const char *username)
 {
     if (username == NULL)               /* NULL is OK.                */
     {
-        return;
+        return true;
     }
     // "SESSION" is a reserved name, reject this in this context
     if (Utilities::strCaselessCompare(username, "SESSION") == 0)
     {
-        throw new ServiceException(INVALID_QUEUE_NAME, username);
+        return false;
     }
 
     size_t namelen = strlen(username);
@@ -85,13 +85,14 @@ void LocalQueueManager::validateQueueName(const char *username)
             if (!isalpha(ch) && !isdigit(ch) && ch != ch_PERIOD &&
                 ch != ch_QUESTION_MARK && ch != ch_EXCLAMATION && ch != ch_UNDERSCORE)
             {
-                throw new ServiceException(INVALID_QUEUE_NAME, username);
+                return false;
             }
         }
+        return true;
     }
     else
     {
-        throw new ServiceException(INVALID_QUEUE_NAME, username);
+        return false;
     }
 }
 
@@ -174,29 +175,37 @@ QueueHandle LocalQueueManager::createSessionQueue(SessionID session)
  * @param size   The size of the buffer for the returned name.
  * @param createdName
  *               The buffer for the returned name.
+ * @param dup    The duplicate flag.
  *
  * @return true if the requested name already exists and a new name
  *         was provided.
  */
-bool LocalQueueManager::createNamedQueue(const char *name, size_t size, char *createdName)
+RexxReturnCode LocalQueueManager::createNamedQueue(const char *name, size_t size, char *createdName, size_t *dup)
 {
-    validateQueueName(name);            // make sure this is a valid name
+    if (!validateQueueName(name))            // make sure this is a valid name
+    {
+        return RXQUEUE_BADQNAME;
+    }
 
     ClientMessage message(QueueManager, CREATE_NAMED_QUEUE, name);
 
     message.send();
     strncpy(createdName, message.nameArg, size);
     // return the dup name indicator
-    return message.result == DUPLICATE_QUEUE_NAME;
+    *dup = message.result == DUPLICATE_QUEUE_NAME;
+    // everything worked here.
+    return RXQUEUE_OK;
 }
 
 /**
  * Delete the current session queue.
  */
-void LocalQueueManager::deleteSessionQueue()
+RexxReturnCode LocalQueueManager::deleteSessionQueue()
 {
     ClientMessage message(QueueManager, DELETE_SESSION_QUEUE, sessionQueue);
     message.send();
+    // map the server result to an API return code.
+    return mapReturnResult(message);
 }
 
 /**
@@ -204,12 +213,17 @@ void LocalQueueManager::deleteSessionQueue()
  *
  * @param name   The name of the queue.
  */
-void LocalQueueManager::deleteNamedQueue(const char *name)
+RexxReturnCode LocalQueueManager::deleteNamedQueue(const char *name)
 {
-    validateQueueName(name);            // make sure this is a valid name
+    if (!validateQueueName(name))            // make sure this is a valid name
+    {
+        return RXQUEUE_BADQNAME;
+    }
 
     ClientMessage message(QueueManager, DELETE_NAMED_QUEUE, name);
     message.send();
+    // map the server result to an API return code.
+    return mapReturnResult(message);
 }
 
 /**
@@ -217,13 +231,15 @@ void LocalQueueManager::deleteNamedQueue(const char *name)
  *
  * @return The queue line count.
  */
-size_t LocalQueueManager::getSessionQueueCount()
+RexxReturnCode LocalQueueManager::getSessionQueueCount(size_t &result)
 {
     ClientMessage message(QueueManager, GET_SESSION_QUEUE_COUNT, sessionQueue);
 
     message.send();
     // the handle is returned in the first parameter
-    return (size_t)message.parameter1;
+    result = (size_t)message.parameter1;
+    // map the server result to an API return code.
+    return mapReturnResult(message);
 }
 
 /**
@@ -233,25 +249,31 @@ size_t LocalQueueManager::getSessionQueueCount()
  *
  * @return The count of items in the queue.
  */
-size_t LocalQueueManager::getQueueCount(const char *name)
+RexxReturnCode LocalQueueManager::getQueueCount(const char *name, size_t &result)
 {
-    validateQueueName(name);            // make sure this is a valid name
+    if (!validateQueueName(name))            // make sure this is a valid name
+    {
+        return RXQUEUE_BADQNAME;
+    }
 
     ClientMessage message(QueueManager, GET_NAMED_QUEUE_COUNT, name);
-
     message.send();
     // the handle is returned in the first parameter
-    return (size_t)message.parameter1;
+    result = (size_t)message.parameter1;
+    // map the server result to an API return code.
+    return mapReturnResult(message);
 }
 
 /**
  * Remove all items from the session queue.
  */
-void LocalQueueManager::clearSessionQueue()
+RexxReturnCode LocalQueueManager::clearSessionQueue()
 {
     ClientMessage message(QueueManager, CLEAR_SESSION_QUEUE, sessionQueue);
 
     message.send();
+    // map the server result to an API return code.
+    return mapReturnResult(message);
 }
 
 /**
@@ -259,13 +281,18 @@ void LocalQueueManager::clearSessionQueue()
  *
  * @param name   The queue name.
  */
-void LocalQueueManager::clearNamedQueue(const char *name)
+RexxReturnCode LocalQueueManager::clearNamedQueue(const char *name)
 {
-    validateQueueName(name);            // make sure this is a valid name
+    if (!validateQueueName(name))            // make sure this is a valid name
+    {
+        return RXQUEUE_BADQNAME;
+    }
 
     ClientMessage message(QueueManager, CLEAR_NAMED_QUEUE, name);
 
     message.send();
+    // map the server result to an API return code.
+    return mapReturnResult(message);
 }
 
 
@@ -276,7 +303,7 @@ void LocalQueueManager::clearNamedQueue(const char *name)
  * @param data     The data to add
  * @param lifoFifo The lifo/fifo order flag.
  */
-void LocalQueueManager::addToNamedQueue(const char *name, CONSTRXSTRING &data, size_t lifoFifo)
+RexxReturnCode LocalQueueManager::addToNamedQueue(const char *name, CONSTRXSTRING &data, size_t lifoFifo)
 {
     ClientMessage message(QueueManager, ADD_TO_NAMED_QUEUE, name);
                                            // set the additional arguments
@@ -286,6 +313,8 @@ void LocalQueueManager::addToNamedQueue(const char *name, CONSTRXSTRING &data, s
     // attach the queue item to the message.
     message.setMessageData((void *)data.strptr, data.strlength);
     message.send();
+    // map the server result to an API return code.
+    return mapReturnResult(message);
 }
 
 
@@ -295,7 +324,7 @@ void LocalQueueManager::addToNamedQueue(const char *name, CONSTRXSTRING &data, s
  * @param data     The data to add.
  * @param lifoFifo The lifo/fifo flag.
  */
-void LocalQueueManager::addToSessionQueue(CONSTRXSTRING &data, size_t lifoFifo)
+RexxReturnCode LocalQueueManager::addToSessionQueue(CONSTRXSTRING &data, size_t lifoFifo)
 {
     ClientMessage message(QueueManager, ADD_TO_SESSION_QUEUE);
 
@@ -307,10 +336,12 @@ void LocalQueueManager::addToSessionQueue(CONSTRXSTRING &data, size_t lifoFifo)
     // attach the queue item to the message.
     message.setMessageData((void *)data.strptr, data.strlength);
     message.send();
+    // map the server result to an API return code.
+    return mapReturnResult(message);
 }
 
 
-void LocalQueueManager::pullFromQueue(const char *name, RXSTRING &data, size_t waitFlag, REXXDATETIME *timeStamp)
+RexxReturnCode LocalQueueManager::pullFromQueue(const char *name, RXSTRING &data, size_t waitFlag, REXXDATETIME *timeStamp)
 {
     ClientMessage message(QueueManager, PULL_FROM_NAMED_QUEUE);
     // set up for either name or session queue read
@@ -325,13 +356,19 @@ void LocalQueueManager::pullFromQueue(const char *name, RXSTRING &data, size_t w
     }
     message.parameter1 = waitFlag != 0 ? QUEUE_WAIT_FOR_DATA : QUEUE_NO_WAIT;
     message.send();
-    MAKERXSTRING(data, (char *)message.getMessageData(), message.getMessageDataLength());
-    // if the timestamp was requested, return it.
-    if (timeStamp != NULL)
+    if (message.result == MESSAGE_OK)
     {
-        memcpy(timeStamp, message.nameArg, sizeof(REXXDATETIME));
+        MAKERXSTRING(data, (char *)message.getMessageData(), message.getMessageDataLength());
+        // if the timestamp was requested, return it.
+        if (timeStamp != NULL)
+        {
+            memcpy(timeStamp, message.nameArg, sizeof(REXXDATETIME));
+        }
     }
+    // map the server result to an API return code.
+    return mapReturnResult(message);
 }
+
 
 /**
  * Bump the usage count of a session queue when it is
@@ -375,5 +412,38 @@ RexxReturnCode LocalQueueManager::processServiceException(ServiceException *e)
 
         default:
             return RXQUEUE_MEMFAIL;
+    }
+}
+
+
+/**
+ * Process an exception returned from the server and
+ * map it into an API return code.
+ *
+ * @param e      The exception from the server.
+ *
+ * @return The mapped return code.
+ */
+RexxReturnCode LocalQueueManager::mapReturnResult(ServiceMessage &m)
+{
+    switch (m.result)
+    {
+        case INVALID_QUEUE_NAME:
+            return RXQUEUE_BADQNAME;
+
+        case BAD_FIFO_LIFO:
+            return RXQUEUE_PRIORITY;
+
+        case BAD_WAIT_FLAG:
+            return RXQUEUE_BADWAITFLAG;
+
+        case QUEUE_DOES_NOT_EXIST:
+            return RXQUEUE_NOTREG;
+
+        case QUEUE_IN_USE:
+            return RXQUEUE_ACCESS;
+
+        default:
+            return RXQUEUE_OK;
     }
 }

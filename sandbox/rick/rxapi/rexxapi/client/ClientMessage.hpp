@@ -42,6 +42,8 @@
 #include "rexx.h"
 #include "ServiceMessage.hpp"
 
+class SysClientStream;
+
 class ClientMessage : public ServiceMessage
 {
 public:
@@ -80,6 +82,7 @@ public:
     }
 
     void send();
+    void send(SysClientStream *pipe);
 };
 
 #endif

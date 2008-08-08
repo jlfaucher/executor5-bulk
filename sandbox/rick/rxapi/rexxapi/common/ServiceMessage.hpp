@@ -131,7 +131,8 @@ typedef enum
     // global API operations
     SHUTDOWN_SERVER,
     PROCESS_CLEANUP,
-    CONNECTION_ACTIVE
+    CONNECTION_ACTIVE,
+    CLOSE_CONNECTION,
 } ServerOperation;
 
 typedef enum
@@ -152,6 +153,7 @@ typedef enum
     MACRO_RETURNED,
     MACRO_IMAGE_RETURNED,
     MACRO_RETRIEVE_NEXT_BUFFER,
+    MACRO_DOES_NOT_EXIST,
 
     // queue manager results
     DUPLICATE_QUEUE_NAME,
@@ -165,12 +167,16 @@ typedef enum
     QUEUE_DELETED,
     QUEUE_EXISTS,
     QUEUE_OK,
+    QUEUE_DOES_NOT_EXIST,
+    QUEUE_IN_USE,
 
     // registration manager results
     REGISTRATION_COMPLETED,
     DUPLICATE_REGISTRATION,
     CALLBACK_EXISTS,
     CALLBACK_DROPPED,
+    CALLBACK_NOT_FOUND,
+    DROP_NOT_AUTHORIZED,
 
     // API manager results
     SERVER_STOPPED,
@@ -374,8 +380,8 @@ public:
     void writeMessage(SysClientStream &server);
     void readResult(SysClientStream &server);
 
-    virtual void *allocateResultMemory(size_t length);
-    virtual void  releaseResultMemory(void *mem);
+    void *allocateResultMemory(size_t length);
+    void  releaseResultMemory(void *mem);
 
     ServerManager messageTarget;         // end receiver of the message
     ServerOperation operation;           // operation to be performed

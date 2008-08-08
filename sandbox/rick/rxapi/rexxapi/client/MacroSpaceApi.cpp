@@ -67,7 +67,7 @@ RexxReturnCode RexxEntry RexxAddMacro(
 {
     ENTER_REXX_API(MacroSpaceManager)
     {
-        lam->macroSpaceManager.addMacroFromFile(name, file, pos);
+        return lam->macroSpaceManager.addMacroFromFile(name, file, pos);
     }
     EXIT_REXX_API();
 }
@@ -92,7 +92,7 @@ RexxReturnCode RexxEntry RexxDropMacro(
 {
     ENTER_REXX_API(MacroSpaceManager)
     {
-        lam->macroSpaceManager.removeMacro(name);
+        return lam->macroSpaceManager.removeMacro(name);
     }
     EXIT_REXX_API();
 }
@@ -114,7 +114,7 @@ RexxReturnCode RexxEntry RexxClearMacroSpace()
 {
     ENTER_REXX_API(MacroSpaceManager)
     {
-        lam->macroSpaceManager.clearMacroSpace();
+        return lam->macroSpaceManager.clearMacroSpace();
     }
     EXIT_REXX_API();
 }
@@ -151,12 +151,12 @@ RexxReturnCode RexxEntry RexxSaveMacroSpace(
         // save an explicit list of macros
         if (names != NULL)
         {
-            lam->macroSpaceManager.saveMacroSpace(targetFile, names, count);
+            return lam->macroSpaceManager.saveMacroSpace(targetFile, names, count);
         }
         else
         {
             // saving everything
-            lam->macroSpaceManager.saveMacroSpace(targetFile);
+            return lam->macroSpaceManager.saveMacroSpace(targetFile);
         }
     }
     EXIT_REXX_API();
@@ -188,12 +188,12 @@ RexxReturnCode RexxEntry RexxLoadMacroSpace(
         // load an explicit list of macros
         if (names != NULL)
         {
-            lam->macroSpaceManager.loadMacroSpace(macroFile, names, count);
+            return lam->macroSpaceManager.loadMacroSpace(macroFile, names, count);
         }
         else
         {
             // loading everything
-            lam->macroSpaceManager.loadMacroSpace(macroFile);
+            return lam->macroSpaceManager.loadMacroSpace(macroFile);
         }
     }
     EXIT_REXX_API();
@@ -220,10 +220,11 @@ RexxReturnCode RexxEntry RexxQueryMacro(
 {
     ENTER_REXX_API(MacroSpaceManager)
     {
-        size_t order;
+        size_t order = 0;
 
-        lam->macroSpaceManager.queryMacro(name, &order);
+        RexxReturnCode ret = lam->macroSpaceManager.queryMacro(name, &order);
         *pos = (unsigned short)order;
+        return ret;
     }
     EXIT_REXX_API();
 }
@@ -250,7 +251,7 @@ RexxReturnCode RexxEntry RexxReorderMacro(
 {
     ENTER_REXX_API(MacroSpaceManager)
     {
-        lam->macroSpaceManager.reorderMacro(name, pos);
+        return lam->macroSpaceManager.reorderMacro(name, pos);
     }
     EXIT_REXX_API();
 }
@@ -278,7 +279,7 @@ RexxReturnCode RexxEntry RexxResolveMacroFunction(
 {
     ENTER_REXX_API(MacroSpaceManager)
     {
-        lam->macroSpaceManager.getMacro(name, *p);
+        return lam->macroSpaceManager.getMacro(name, *p);
     }
     EXIT_REXX_API();
 }

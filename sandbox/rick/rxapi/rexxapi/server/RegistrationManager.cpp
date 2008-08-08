@@ -327,8 +327,10 @@ void RegistrationTable::queryCallback(ServiceMessage &message)
     }
     else
     {
-        message.setExceptionInfo(CALLBACK_NOT_FOUND, message.nameArg);
+        message.setResult(CALLBACK_NOT_FOUND);
     }
+    // make sure the data message buffer is not passed back.
+    message.freeMessageData();
 }
 
 
@@ -357,8 +359,10 @@ void RegistrationTable::queryLibraryCallback(ServiceMessage &message)
     }
     else
     {
-        message.setExceptionInfo(CALLBACK_NOT_FOUND, message.nameArg);
+        message.setResult(CALLBACK_NOT_FOUND);
     }
+    // make sure the data message buffer is not passed back.
+    message.freeMessageData();
 }
 
 
@@ -385,7 +389,7 @@ void RegistrationTable::updateCallback(ServiceMessage &message)
     }
     else
     {
-        message.setExceptionInfo(CALLBACK_NOT_FOUND, message.nameArg);
+        message.setResult(CALLBACK_NOT_FOUND);
     }
     // make sure the data message buffer is not passed back.
     message.freeMessageData();
@@ -409,7 +413,7 @@ void RegistrationTable::dropLibraryCallback(ServiceMessage &message)
         // an attempt to drop by somebody other than the owner?
         if (callback->dropAuthority == OWNER_ONLY && callback->owner != message.session)
         {
-            message.setExceptionInfo(DROP_NOT_AUTHORIZED, message.nameArg);
+            message.setResult(DROP_NOT_AUTHORIZED);
         }
         else
         {
@@ -419,7 +423,7 @@ void RegistrationTable::dropLibraryCallback(ServiceMessage &message)
             // still referenced by other processes?
             if (callback->hasReferences())
             {
-                message.setExceptionInfo(DROP_NOT_AUTHORIZED, message.nameArg);
+                message.setResult(DROP_NOT_AUTHORIZED);
             }
             else
             {
@@ -431,8 +435,10 @@ void RegistrationTable::dropLibraryCallback(ServiceMessage &message)
     }
     else
     {
-        message.setExceptionInfo(CALLBACK_NOT_FOUND, message.nameArg);
+        message.setResult(CALLBACK_NOT_FOUND);
     }
+    // make sure the data message buffer is not passed back.
+    message.freeMessageData();
 }
 
 
@@ -459,7 +465,7 @@ void RegistrationTable::dropCallback(ServiceMessage &message)
         // an attempt to drop by somebody other than the owner?
         if (callback->dropAuthority == OWNER_ONLY && callback->owner != message.session)
         {
-            message.setExceptionInfo(DROP_NOT_AUTHORIZED, message.nameArg);
+            message.setResult(DROP_NOT_AUTHORIZED);
         }
         else
         {
@@ -469,7 +475,7 @@ void RegistrationTable::dropCallback(ServiceMessage &message)
             // still referenced by other processes?
             if (callback->hasReferences())
             {
-                message.setExceptionInfo(DROP_NOT_AUTHORIZED, message.nameArg);
+                message.setResult(DROP_NOT_AUTHORIZED);
             }
             else
             {
@@ -488,8 +494,10 @@ void RegistrationTable::dropCallback(ServiceMessage &message)
     }
     else
     {
-        message.setExceptionInfo(CALLBACK_NOT_FOUND, message.nameArg);
+        message.setResult(CALLBACK_NOT_FOUND);
     }
+    // make sure the data message buffer is not passed back.
+    message.freeMessageData();
 }
 
 /**
@@ -761,6 +769,8 @@ void ServerRegistrationManager::dispatch(ServiceMessage &message)
 
         default:
             message.setExceptionInfo(SERVER_FAILURE, "Invalid registration manager operation");
+            // make sure the data message buffer is not passed back.
+            message.freeMessageData();
             break;
     }
 }
