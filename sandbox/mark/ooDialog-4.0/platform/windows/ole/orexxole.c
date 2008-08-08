@@ -4781,7 +4781,7 @@ RexxMethod0(logical_t, OLEObject_isConnected)
 
     if ( connectedToEvents(context) )
     {
-        true;
+        return true;
     }
     return false;
 }
