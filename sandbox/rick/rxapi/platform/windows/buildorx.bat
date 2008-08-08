@@ -168,32 +168,32 @@ set LIB=%LIB%;%OR_OUTDIR%
 set INCLUDE=%OR_OUTDIR%;%SAMPLEPATH%;%INCLUDE%
 @ECHO Include path is %INCLUDE%
 
-CD  %OR_APISAMPLESSRC%\callrxnt
+CD  %OR_APISAMPLESRC%\callrxnt
 IF %USELOGFILE% equ 1 ( NMAKE /F callrxnt.mak >>%OR_ERRLOG% 2>&1 ) else ( NMAKE /F callrxnt.mak )
 if ERRORLEVEL 1 goto error
 
-CD  %OR_APISAMPLESSRC%\callrxwn
+CD  %OR_APISAMPLESRC%\callrxwn
 IF %USELOGFILE% equ 1 ( NMAKE /F callrxwn.mak >>%OR_ERRLOG% 2>&1 ) else ( NMAKE /F callrxwn.mak )
 if ERRORLEVEL 1 goto error
 
-CD  %OR_APISAMPLESSRC%\rexxexit
+CD  %OR_APISAMPLESRC%\rexxexit
 IF %USELOGFILE% equ 1 ( NMAKE /F rexxexit.mak >>%OR_ERRLOG% 2>&1 ) else ( NMAKE /F rexxexit.mak )
 if ERRORLEVEL 1 goto error
 
-CD  %OR_APISAMPLESSRC%\wpipe\wpipe1
+CD  %OR_APISAMPLESRC%\wpipe\wpipe1
 IF %USELOGFILE% equ 1 ( NMAKE /F rexxapi1.mak >>%OR_ERRLOG% 2>&1 ) else ( NMAKE /F rexxapi1.mak )
 if ERRORLEVEL 1 goto error
 
-CD  %OR_APISAMPLESSRC%\wpipe\wpipe2
+CD  %OR_APISAMPLESRC%\wpipe\wpipe2
 IF %USELOGFILE% equ 1 ( NMAKE /F rexxapi2.mak >>%OR_ERRLOG% 2>&1 ) else ( NMAKE /F rexxapi2.mak )
 if ERRORLEVEL 1 goto error
 
-CD  %OR_APISAMPLESSRC%\wpipe\wpipe3
+CD  %OR_APISAMPLESRC%\wpipe\wpipe3
 IF %USELOGFILE% equ 1 ( NMAKE /F rexxapi3.mak >>%OR_ERRLOG% 2>&1 ) else ( NMAKE /F rexxapi3.mak )
 if ERRORLEVEL 1 goto error
 
 @ECHO Building OODialog Samples..
-CD  %OR_ORYXOODIALOGSAMPLES%\res
+CD  %OR_OODIALOGSAMPLES%\res
 IF %USELOGFILE% equ 1 ( NMAKE /F res.mak >>%OR_ERRLOG% 2>&1 ) else ( NMAKE /F res.mak )
 if ERRORLEVEL 1 goto error
 

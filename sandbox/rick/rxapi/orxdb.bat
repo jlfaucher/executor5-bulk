@@ -88,7 +88,7 @@ set OR_OLEOBJECTSRC=%SRC_DRV%%SRC_DIR%\platform\windows\ole
 set OR_ORXSCRIPTSRC=%SRC_DRV%%SRC_DIR%\platform\windows\orxscrpt
 set OR_REGEXPSRC=%SRC_DRV%%SRC_DIR%\rxregexp
 set OR_SAMPLESRC=%SRC_DRV%%SRC_DIR%\samples
-set OR_APISRCSAMPLES=%SRC_DRV%%SRC_DIR%\samples\windows\api
+set OR_APISAMPLESRC=%SRC_DRV%%SRC_DIR%\samples\windows\api
 set OR_OODIALOGSAMPLES=%SRC_DRV%%SRC_DIR%\samples\windows\oodialog
 set OR_UTILITIES=%SRC_DRV%%SRC_DIR%\utilities
 

@@ -143,10 +143,20 @@ cflags_common=/EHsc /nologo /D:_X86_ /DWIN32 $(VER_DEF) $(WARNING_FLAGS) -c $(my
 cflags_common = $(cflags_common) /DJAPANESE
 !ENDIF
 
+# ooRexx has always been using a statically linked CRT.
+!IFDEF NOCRTDLL
+# statically linked rexx
 !IF "$(NODEBUG)" == "1"
-cflags_dll=/MT   #MT if runtime nodebug
+cflags_dll=/MT
 !ELSE
-cflags_dll=/MDd   #MDd if runtime debug
+cflags_dll=/MTd
+!ENDIF
+!ELSE
+!IF "$(NODEBUG)" == "1"
+cflags_dll=/MD
+!ELSE
+cflags_dll=/MDd
+!ENDIF
 !ENDIF
 cflags_exe=
 
