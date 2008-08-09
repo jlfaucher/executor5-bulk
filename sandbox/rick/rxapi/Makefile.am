@@ -83,6 +83,7 @@ build_rexutils_dir = $(top_srcdir)/rexutils
 build_rxregexp_dir = $(top_srcdir)/rxregexp
 build_samples_dir = $(top_srcdir)/samples
 build_rexxclasses_dir = $(build_kernel_dir)/RexxClasses
+build_utilities_dir = $(build_kernel_dir)/utilities
 
 # These are the *nix directories
 utils_unix_dir = $(build_utils_dir)/unix
@@ -358,7 +359,7 @@ BUILT_SOURCES = $(errorHeaders) \
 #
 # Binary targets
 #
-bin_PROGRAMS = rexximage rexx rexxc rxqueue rxsubcom rxdelipc
+bin_PROGRAMS = rxapi rexximage rexx rexxc rxqueue rxsubcom rxdelipc
 
 #
 # Shared library targets
@@ -415,21 +416,6 @@ librexxapi_la_SOURCES = $(build_rexxapi_client_dir)/ClientMessage.cpp \
                         $(build_common_dir)/platform/unix/SysFile.cpp \
                         $(build_common_dir)/platform/unix/SysThread.cpp
 
-rxapi_SOURCES = $(build_rexxapi_server_dir)/APIServer.cpp
-                $(build_rexxapi_server_dir)/APIServerInstance.cpp \
-                $(build_rexxapi_server_dir)/APIServerThread.cpp \
-                $(build_rexxapi_server_dir)/MacroSpaceManager.cpp \
-                $(build_rexxapi_server_dir)/QueueManager.cpp \
-                $(build_rexxapi_server_dir)/RegistrationManager.cpp \
-                $(build_rexxapi_server_dir)/platform/unix/APIService.cpp \
-                $(build_rexxapi_common_dir)/ServiceMessage.cpp \
-                $(build_rexxapi_common_dir)/platform/unix/SysAPIManager.cpp \
-                $(build_rexxapi_common_dir)/platform/unix/SysCSStream.cpp \
-                $(build_rexxapi_common_dir)/platform/unix/SysProcess.cpp \
-                $(build_common_dir)/Utilities.cpp \
-                $(build_common_dir)/platform/unix/SysSemaphore.cpp \
-                $(build_common_dir)/platform/unix/SysThread.cpp
-
 #
 # Preprocessor flags for librexxapi.so
 #
@@ -437,8 +423,8 @@ librexxapi_la_CXXFLAGS  = $(COMMON_CPPFLAGS) \
                           -I$(build_lib_dir) \
                           -I$(build_api_dir) \
                           -I$(build_api_platform_dir) \
-                          -I$(build_rexxapi_server_dir) \
-                          -I$(build_rexxapi_server_platform_dir) \
+                          -I$(build_rexxapi_client_dir) \
+                          -I$(build_rexxapi_client_platform_dir) \
                           -I$(build_rexxapi_common_dir) \
                           -I$(build_rexxapi_common_platform_dir) \
                           -I$(build_common_dir) \
@@ -659,6 +645,43 @@ librexx_la_CXXFLAGS  = $(COMMON_CPPFLAGS) \
                        -I$(build_rexxapi_platform_dir)
 
 librexx_la_LDFLAGS = $(VERSION_INFO) -nostartfiles
+#################### rxapi ##########################
+# Sources for rxapi
+#
+rxapi_SOURCES = $(build_rexxapi_server_dir)/APIServer.cpp
+                $(build_rexxapi_server_dir)/APIServerInstance.cpp \
+                $(build_rexxapi_server_dir)/APIServerThread.cpp \
+                $(build_rexxapi_server_dir)/MacroSpaceManager.cpp \
+                $(build_rexxapi_server_dir)/QueueManager.cpp \
+                $(build_rexxapi_server_dir)/RegistrationManager.cpp \
+                $(build_rexxapi_server_dir)/platform/unix/APIService.cpp \
+                $(build_rexxapi_common_dir)/ServiceMessage.cpp \
+                $(build_rexxapi_common_dir)/platform/unix/SysAPIManager.cpp \
+                $(build_rexxapi_common_dir)/platform/unix/SysCSStream.cpp \
+                $(build_rexxapi_common_dir)/platform/unix/SysProcess.cpp \
+                $(build_common_dir)/Utilities.cpp \
+                $(build_common_dir)/platform/unix/SysSemaphore.cpp \
+                $(build_common_dir)/platform/unix/SysThread.cpp
+#
+# Preprocessor flags for rxapi
+#
+rxapi_CXXFLAGS  = $(COMMON_CPPFLAGS) \
+                 -I$(build_lib_dir) \
+                 -I$(build_api_dir) \
+                 -I$(build_api_platform_dir) \
+                 -I$(build_messages_dir) \
+                 -I$(build_rexxapi_server_dir) \
+                 -I$(build_rexxapi_server_platform_dir) \
+                 -I$(build_rexxapi_common_dir) \
+                 -I$(build_rexxapi_common_platform_dir) \
+                 -I$(build_common_dir) \
+                 -I$(build_common_platform_dir)
+#
+# Extra libraries for rxapi
+#
+rxapi_LDADD   = @ORX_LDADD_EXECUTABLE@
+rxapi_LDFLAGS = @ORX_LDFLAGS_EXECUTABLE@
+
 #################### rexx ##########################
 # Sources for rexx
 #
@@ -725,7 +748,7 @@ rexxc_LDFLAGS = @ORX_LDFLAGS_EXECUTABLE@
 #################### rxqueue #########################
 # Sources for rxqueue
 #
-rxqueue_SOURCES =  $(build_rexxapi_platform_dir)/QueueCommand.cpp
+rxqueue_SOURCES =  $(build_utilities_dir)/rxqueue/platform/unix/rxqueue.cpp
 #
 # Preprocessor flags for rxqueue
 #
@@ -745,7 +768,7 @@ rxqueue_LDFLAGS = @ORX_LDFLAGS_EXECUTABLE@
 #################### rxsubcom #########################
 # Sources for rxsubcom
 #
-rxsubcom_SOURCES =  $(build_rexxapi_platform_dir)/SUBCOMCommand.cpp
+rxsubcom_SOURCES =  $(build_utilities_dir)/rxsubcom/platform/unix/rxsubcom.cpp
 #
 # Preprocessor flags for rxsubcom
 #

@@ -294,6 +294,23 @@ LRESULT CALLBACK RexxDlgProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
              case WM_USER_HOOK:
                  ReplyMessage((LRESULT)SetWindowsHookEx(WH_KEYBOARD, (HOOKPROC)wParam, NULL, GetCurrentThreadId()));
                  return (TRUE);
+
+             case WM_USER_CONTEXT_MENU:
+             {
+                 PTRACKPOP ptp = (PTRACKPOP)wParam;
+                 int cmd;
+
+                 SetLastError(0);
+                 cmd = (int)TrackPopupMenuEx(ptp->hMenu, ptp->flags, ptp->point.x, ptp->point.y,
+                                             ptp->hWnd, ptp->lptpm);
+
+                 if ( (! (ptp->flags & TPM_RETURNCMD)) && (cmd == 0) )
+                 {
+                     cmd = -(int)GetLastError();
+                 }
+                 ReplyMessage((LRESULT)cmd);
+                 return (TRUE);
+             }
           }
        }
    }
@@ -437,7 +454,6 @@ INT DelDialog(DIALOGADMIN * aDlg)
     PostMessage(aDlg->TheDlg, WM_QUIT, 0, 0);      /* to exit GetMessage */
 
     if (aDlg->TheDlg) DestroyWindow(aDlg->TheDlg);      /* docu states "must not use EndDialog for non-modal dialogs" */
-    if (aDlg->menu) DestroyMenu(aDlg->menu);
 
 #ifdef __CTL3D
     if ((!StoredDialogs) && (aDlg->Use3DControls)) Ctl3dUnregister(aDlg->TheInstance);
@@ -1774,117 +1790,6 @@ size_t RexxEntry HandleDlg(const char *funcname, size_t argc, CONSTRXSTRING *arg
 }
 
 
-size_t RexxEntry DialogMenu(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
-{
-    HWND hWnd;
-    DEF_ADM;
-
-    CHECKARGL(3);
-
-    if (!strcmp(argv[0].strptr, "ASSOC"))   /* Associates a menu with a dialog */
-    {
-        hWnd = GET_HWND(argv[1]);
-
-        if (hWnd)
-        {
-            SEEK_DLGADM_TABLE(hWnd, dlgAdm);
-            if (dlgAdm)
-            {
-                dlgAdm->menu = LoadMenu(dlgAdm->TheInstance, MAKEINTRESOURCE(atoi(argv[2].strptr)));
-                if (dlgAdm->menu)
-                {
-                    SetMenu(hWnd, dlgAdm->menu);
-                    RETC(0);
-                }
-            }
-        }
-        RETC(1);
-    }
-    else
-    {
-        DWORD opt;
-        DEF_ADM;
-        dlgAdm = (DIALOGADMIN *)GET_POINTER(argv[1]);
-        if (!dlgAdm)
-        {
-            RETERR;
-        }
-        if (!dlgAdm->menu)
-        {
-            RETC(1);
-        }
-
-        if (!strcmp(argv[0].strptr, "SETMI"))   /* set state of menu item */
-        {
-            CHECKARGL(4);
-            if (argc == 4)
-            {
-                if (!strcmp(argv[3].strptr, "ENABLE")) opt = MF_ENABLED;
-                else if (!strcmp(argv[3].strptr, "DISABLE")) opt = MF_DISABLED;
-                else if (!strcmp(argv[3].strptr, "GRAY")) opt = MF_GRAYED;
-                else
-                {
-                    if (!strcmp(argv[3].strptr, "CHECK")) opt = MF_CHECKED;
-                    else if (!strcmp(argv[3].strptr, "UNCHECK")) opt = MF_UNCHECKED;
-                    else
-                    {
-                        RETC(1)
-                    }
-                    if (CheckMenuItem(dlgAdm->menu, atoi(argv[2].strptr), MF_BYCOMMAND | opt) == 0xFFFFFFFF)
-                    {
-                        RETC(1);
-                    }
-                    else
-                    {
-                        RETC(0);
-                    }
-                }
-                if (EnableMenuItem(dlgAdm->menu, atoi(argv[2].strptr), MF_BYCOMMAND | opt) == 0xFFFFFFFF)
-                {
-                    RETC(1);
-                }
-                else
-                {
-                    RETC(0);
-                }
-            }
-            else if (argc == 5)
-            {
-                /* start of group       end                selected item */
-                if (!CheckMenuRadioItem(dlgAdm->menu, atoi(argv[2].strptr), atoi(argv[3].strptr), atoi(argv[4].strptr), MF_BYCOMMAND))
-                {
-                    RETC(1);
-                }
-                else
-                {
-                    RETC(0);
-                }
-
-            }
-            else
-            {
-                RETC(1);
-            }
-        }
-        else if (!strcmp(argv[0].strptr, "GETMI"))    /* get state of menu item */
-        {
-            UINT state;
-            retstr->strptr[0] = '\0';
-            state = GetMenuState(dlgAdm->menu, atoi(argv[2].strptr), MF_BYCOMMAND);
-            if (state == 0xFFFFFFFF) RETC(1);
-            if (state & MF_CHECKED) strcat(retstr->strptr, "CHECKED ");
-            if (state & MF_DISABLED) strcat(retstr->strptr, "DISABLED ");
-            if (state & MF_GRAYED) strcat(retstr->strptr, "GRAYED ");
-            if (state & MF_HILITE) strcat(retstr->strptr, "HIGHLIGHTED ");
-            retstr->strlength = strlen(retstr->strptr);
-            return 0;
-        }
-        RETERR;
-    }
-}
-
-
-
 /* dump out the dialog admin table(s) */
 
 LONG SetRexxStem(const char * name, INT id, const char * secname, const char * data)
@@ -1944,8 +1849,6 @@ size_t RexxEntry DumpAdmin(const char *funcname, size_t argc, CONSTRXSTRING *arg
        if (!SetRexxStem(name, -1, "hThread", data))  { RETERR; }
        pointer2string(data, dlgAdm->TheDlg);
        if (!SetRexxStem(name, -1, "hDialog", data))  { RETERR; }
-       pointer2string(data, dlgAdm->menu);
-       if (!SetRexxStem(name, -1, "hMenu", data))  { RETERR; }
        pointer2string(data, dlgAdm->BkgBrush);
        if (!SetRexxStem(name, -1, "BkgBrush", data))  { RETERR; }
        pointer2string(data, dlgAdm->BkgBitmap);
@@ -2028,8 +1931,6 @@ size_t RexxEntry DumpAdmin(const char *funcname, size_t argc, CONSTRXSTRING *arg
                if (!SetRexxStem(name, cnt, "hThread", data)) { RETERR; }
                pointer2string(data, DialogTab[i]->TheDlg);
                if (!SetRexxStem(name, cnt, "hDialog", data)) { RETERR; }
-               pointer2string(data, DialogTab[i]->menu);
-               if (!SetRexxStem(name, cnt, "hMenu", data)) { RETERR; }
                pointer2string(data, DialogTab[i]->BkgBrush);
                if (!SetRexxStem(name, cnt, "BkgBrush", data)) { RETERR; }
                pointer2string(data, DialogTab[i]->BkgBitmap);
@@ -2134,16 +2035,22 @@ REXX_CLASSIC_ROUTINE_PROTOTYPE(HandleControlEx);
 REXX_CLASSIC_ROUTINE_PROTOTYPE(HandleOtherNewCtrls);
 REXX_CLASSIC_ROUTINE_PROTOTYPE(HandleMonthCalendar);
 REXX_CLASSIC_ROUTINE_PROTOTYPE(HandleDateTimePicker);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(DialogMenu);
 REXX_CLASSIC_ROUTINE_PROTOTYPE(WinTimer);
 REXX_CLASSIC_ROUTINE_PROTOTYPE(HandleFont);
 REXX_CLASSIC_ROUTINE_PROTOTYPE(DumpAdmin);
 REXX_CLASSIC_ROUTINE_PROTOTYPE(UsrAddControl);
 REXX_CLASSIC_ROUTINE_PROTOTYPE(UsrCreateDialog);
 REXX_CLASSIC_ROUTINE_PROTOTYPE(UsrDefineDialog);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(UsrMenu);
 REXX_CLASSIC_ROUTINE_PROTOTYPE(UsrAddNewCtrl);
 REXX_CLASSIC_ROUTINE_PROTOTYPE(UsrAddResource);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(WinMenu);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(InsertMII);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(SetMII);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(GetMII);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(SetMI);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(GetMI);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(TrackPopup);
+REXX_CLASSIC_ROUTINE_PROTOTYPE(MemMenu);
 
 
 // now build the actual entry list
@@ -2196,21 +2103,37 @@ RexxRoutineEntry oodialog_functions[] =
     REXX_CLASSIC_ROUTINE(HandleOtherNewCtrls,  HandleOtherNewCtrls),
     REXX_CLASSIC_ROUTINE(HandleMonthCalendar,  HandleMonthCalendar),
     REXX_CLASSIC_ROUTINE(HandleDateTimePicker, HandleDateTimePicker),
-    REXX_CLASSIC_ROUTINE(DialogMenu,           DialogMenu),
     REXX_CLASSIC_ROUTINE(WinTimer,             WinTimer),
     REXX_CLASSIC_ROUTINE(HandleFont,           HandleFont),
     REXX_CLASSIC_ROUTINE(DumpAdmin,            DumpAdmin),
     REXX_CLASSIC_ROUTINE(UsrAddControl,        UsrAddControl),
     REXX_CLASSIC_ROUTINE(UsrCreateDialog,      UsrCreateDialog),
     REXX_CLASSIC_ROUTINE(UsrDefineDialog,      UsrDefineDialog),
-    REXX_CLASSIC_ROUTINE(UsrMenu,              UsrMenu),
     REXX_CLASSIC_ROUTINE(UsrAddNewCtrl,        UsrAddNewCtrl),
     REXX_CLASSIC_ROUTINE(UsrAddResource,       UsrAddResource),
+
+    REXX_CLASSIC_ROUTINE(WinMenu,              WinMenu),
+    REXX_CLASSIC_ROUTINE(InsertMII,            InsertMII),
+    REXX_CLASSIC_ROUTINE(SetMII,               SetMII),
+    REXX_CLASSIC_ROUTINE(GetMII,               GetMII),
+    REXX_CLASSIC_ROUTINE(SetMI,                SetMI),
+    REXX_CLASSIC_ROUTINE(GetMI,                GetMI),
+    REXX_CLASSIC_ROUTINE(TrackPopup,           TrackPopup),
+    REXX_CLASSIC_ROUTINE(MemMenu,              MemMenu),
     REXX_LAST_ROUTINE()
 };
 
-REXX_METHOD_PROTOTYPE(dlgutil_commonInit);
+REXX_METHOD_PROTOTYPE(dlgutil_init);
+REXX_METHOD_PROTOTYPE(dlgutil_comctl32Version);
+REXX_METHOD_PROTOTYPE(dlgutil_version);
+REXX_METHOD_PROTOTYPE(dlgutil_hiWord);
+REXX_METHOD_PROTOTYPE(dlgutil_loWord);
 REXX_METHOD_PROTOTYPE(dlgutil_colorRef);
+REXX_METHOD_PROTOTYPE(dlgutil_getRValue);
+REXX_METHOD_PROTOTYPE(dlgutil_getGValue);
+REXX_METHOD_PROTOTYPE(dlgutil_getBValue);
+REXX_METHOD_PROTOTYPE(dlgutil_handleToPointer);
+
 REXX_METHOD_PROTOTYPE(pbc_stepIt);
 REXX_METHOD_PROTOTYPE(pbc_getPos);
 REXX_METHOD_PROTOTYPE(pbc_setPos);
@@ -2222,19 +2145,101 @@ REXX_METHOD_PROTOTYPE(pbc_setBkColor);
 REXX_METHOD_PROTOTYPE(pbc_setBarColor);
 REXX_METHOD_PROTOTYPE(pbc_test);
 
+REXX_METHOD_PROTOTYPE(bc_cls_checkInGroup);
+REXX_METHOD_PROTOTYPE(bc_getState);
+REXX_METHOD_PROTOTYPE(bc_setState);
+REXX_METHOD_PROTOTYPE(bc_setStyle);
+REXX_METHOD_PROTOTYPE(bc_isChecked);
+REXX_METHOD_PROTOTYPE(bc_click);
+REXX_METHOD_PROTOTYPE(bc_getImage);
+REXX_METHOD_PROTOTYPE(bc_setImage);
+REXX_METHOD_PROTOTYPE(bc_checked);
+REXX_METHOD_PROTOTYPE(bc_isIndeterminate);
+REXX_METHOD_PROTOTYPE(bc_indeterminate);
+REXX_METHOD_PROTOTYPE(bc_check);
+REXX_METHOD_PROTOTYPE(bc_uncheck);
+REXX_METHOD_PROTOTYPE(bc_getIdealSize);
+REXX_METHOD_PROTOTYPE(bc_getTextMargin);
+REXX_METHOD_PROTOTYPE(bc_setTextMargin);
+REXX_METHOD_PROTOTYPE(bc_setImageList);
+REXX_METHOD_PROTOTYPE(bc_getImageList);
+REXX_METHOD_PROTOTYPE(bc_test);
+
+REXX_METHOD_PROTOTYPE(menu_test);
+REXX_METHOD_PROTOTYPE(menu_connectAllItems);
+
+REXX_METHOD_PROTOTYPE(rect_init);
+REXX_METHOD_PROTOTYPE(rect_left);
+REXX_METHOD_PROTOTYPE(rect_top);
+REXX_METHOD_PROTOTYPE(rect_right);
+REXX_METHOD_PROTOTYPE(rect_bottom);
+REXX_METHOD_PROTOTYPE(rect_setLeft);
+REXX_METHOD_PROTOTYPE(rect_setTop);
+REXX_METHOD_PROTOTYPE(rect_setRight);
+REXX_METHOD_PROTOTYPE(rect_setBottom);
+
+REXX_METHOD_PROTOTYPE(point_init);
+REXX_METHOD_PROTOTYPE(point_x);
+REXX_METHOD_PROTOTYPE(point_setX);
+REXX_METHOD_PROTOTYPE(point_y);
+REXX_METHOD_PROTOTYPE(point_setY);
+
 RexxMethodEntry oodialog_methods[] = {
-    REXX_METHOD(dlgutil_commonInit,    dlgutil_commonInit),
-    REXX_METHOD(dlgutil_colorRef,      dlgutil_colorRef),
-    REXX_METHOD(pbc_stepIt,            pbc_stepIt),
-    REXX_METHOD(pbc_getPos,            pbc_getPos),
-    REXX_METHOD(pbc_setPos,            pbc_setPos),
-    REXX_METHOD(pbc_getRange,          pbc_getRange),
-    REXX_METHOD(pbc_setRange,          pbc_setRange),
-    REXX_METHOD(pbc_setStep,           pbc_setStep),
-    REXX_METHOD(pbc_setMarquee,        pbc_setMarquee),
-    REXX_METHOD(pbc_setBkColor,        pbc_setBkColor),
-    REXX_METHOD(pbc_setBarColor,       pbc_setBarColor),
-    REXX_METHOD(pbc_test,              pbc_test),
+    REXX_METHOD(dlgutil_init,            dlgutil_init),
+    REXX_METHOD(dlgutil_comctl32Version, dlgutil_comctl32Version),
+    REXX_METHOD(dlgutil_version,         dlgutil_version),
+    REXX_METHOD(dlgutil_hiWord,          dlgutil_hiWord),
+    REXX_METHOD(dlgutil_loWord,          dlgutil_loWord),
+    REXX_METHOD(dlgutil_colorRef,        dlgutil_colorRef),
+    REXX_METHOD(dlgutil_getRValue,       dlgutil_getRValue),
+    REXX_METHOD(dlgutil_getGValue,       dlgutil_getGValue),
+    REXX_METHOD(dlgutil_getBValue,       dlgutil_getBValue),
+    REXX_METHOD(dlgutil_handleToPointer, dlgutil_handleToPointer),
+    REXX_METHOD(pbc_stepIt,              pbc_stepIt),
+    REXX_METHOD(pbc_getPos,              pbc_getPos),
+    REXX_METHOD(pbc_setPos,              pbc_setPos),
+    REXX_METHOD(pbc_getRange,            pbc_getRange),
+    REXX_METHOD(pbc_setRange,            pbc_setRange),
+    REXX_METHOD(pbc_setStep,             pbc_setStep),
+    REXX_METHOD(pbc_setMarquee,          pbc_setMarquee),
+    REXX_METHOD(pbc_setBkColor,          pbc_setBkColor),
+    REXX_METHOD(pbc_setBarColor,         pbc_setBarColor),
+    REXX_METHOD(pbc_test,                pbc_test),
+    REXX_METHOD(bc_cls_checkInGroup,     bc_cls_checkInGroup),
+    REXX_METHOD(bc_getState,             bc_getState),
+    REXX_METHOD(bc_setState,             bc_setState),
+    REXX_METHOD(bc_setStyle,             bc_setStyle),
+    REXX_METHOD(bc_click,                bc_click),
+    REXX_METHOD(bc_getImage,             bc_getImage),
+    REXX_METHOD(bc_setImage,             bc_setImage),
+    REXX_METHOD(bc_isChecked,            bc_isChecked),
+    REXX_METHOD(bc_checked,              bc_checked),
+    REXX_METHOD(bc_isIndeterminate,      bc_isIndeterminate),
+    REXX_METHOD(bc_indeterminate,        bc_indeterminate),
+    REXX_METHOD(bc_check,                bc_check),
+    REXX_METHOD(bc_uncheck,              bc_uncheck),
+    REXX_METHOD(bc_getIdealSize,         bc_getIdealSize),
+    REXX_METHOD(bc_getTextMargin,        bc_getTextMargin),
+    REXX_METHOD(bc_setTextMargin,        bc_setTextMargin),
+    REXX_METHOD(bc_setImageList,         bc_setImageList),
+    REXX_METHOD(bc_getImageList,         bc_getImageList),
+    REXX_METHOD(bc_test,                 bc_test),
+    REXX_METHOD(menu_test,               menu_test),
+    REXX_METHOD(menu_connectAllItems,    menu_connectAllItems),
+    REXX_METHOD(rect_init,               rect_init),
+    REXX_METHOD(rect_left,               rect_left),
+    REXX_METHOD(rect_top,                rect_top),
+    REXX_METHOD(rect_right,              rect_right),
+    REXX_METHOD(rect_bottom,             rect_bottom),
+    REXX_METHOD(rect_setLeft,            rect_setLeft),
+    REXX_METHOD(rect_setTop,             rect_setTop),
+    REXX_METHOD(rect_setRight,           rect_setRight),
+    REXX_METHOD(rect_setBottom,          rect_setBottom),
+    REXX_METHOD(point_init,              point_init),
+    REXX_METHOD(point_x,                 point_x),
+    REXX_METHOD(point_setX,              point_setX),
+    REXX_METHOD(point_y,                 point_y),
+    REXX_METHOD(point_setY,              point_setY),
     REXX_LAST_METHOD()
 };
 

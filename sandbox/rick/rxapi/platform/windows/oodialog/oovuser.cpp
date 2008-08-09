@@ -644,6 +644,7 @@ size_t RexxEntry UsrAddControl(const char *funcname, size_t argc, CONSTRXSTRING 
        if (strstr(argv[8].strptr,"OWNER")) lStyle |= BS_OWNERDRAW;
        if (strstr(argv[8].strptr,"LEFTTEXT")) lStyle |= BS_LEFTTEXT;
        if (strstr(argv[8].strptr,"BITMAP")) lStyle |= BS_BITMAP;
+       if (strstr(argv[8].strptr,"ICON")) lStyle |= BS_ICON;
        if (strstr(argv[8].strptr,"LEFT")) lStyle |= BS_LEFT;
        if (strstr(argv[8].strptr,"RIGHT")) lStyle |= BS_RIGHT;
        if (strstr(argv[8].strptr,"HCENTER")) lStyle |= BS_CENTER;
@@ -663,6 +664,32 @@ size_t RexxEntry UsrAddControl(const char *funcname, size_t argc, CONSTRXSTRING 
 
        /*                       id         x           y         cx          cy  */
        UAddControl(&p, 0x0080, buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], argv[7].strptr, lStyle);
+   }
+   else if (!strcmp(argv[0].strptr,"GB"))  // A groupbox is actually a button.
+   {
+       CHECKARGL(8);
+
+       /* UsrAddControl("GB",self~AktPtr, x, y, cx, cy, opts, text, id) */
+       for ( i = 0; i < 4; i++ )
+       {
+           buffer[i] = atoi(argv[i+2].strptr);
+       }
+
+       if (argc > 8)
+          i = atoi(argv[8].strptr);
+       else i = -1;
+
+       p = (WORD *)GET_POINTER(argv[1]);
+
+       lStyle = WS_CHILD | BS_GROUPBOX;
+       if (!strstr(argv[6].strptr,"HIDDEN")) lStyle |= WS_VISIBLE;
+       if (strstr(argv[6].strptr,"GROUP")) lStyle |= WS_GROUP;
+       if (strstr(argv[6].strptr,"DISABLED")) lStyle |= WS_DISABLED;
+       if (strstr(argv[6].strptr,"BORDER")) lStyle |= WS_BORDER;
+       if (strstr(argv[6].strptr,"TAB")) lStyle |= WS_TABSTOP;
+
+       /*                      id      x         y        cx        cy  */
+       UAddControl(&p, 0x0080, i, buffer[0], buffer[1], buffer[2], buffer[3], argv[7].strptr, lStyle);
    }
    else if (!strcmp(argv[0].strptr,"EL"))
    {
@@ -798,32 +825,6 @@ size_t RexxEntry UsrAddControl(const char *funcname, size_t argc, CONSTRXSTRING 
 
        /*                         id       x          y            cx        cy  */
        UAddControl(&p, 0x0085, buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], NULL, lStyle);
-   }
-   else if (!strcmp(argv[0].strptr,"GB"))
-   {
-       CHECKARGL(8);
-
-       /* UsrAddControl("GB",self~AktPtr, x, y, cx, cy, opts, text, id) */
-       for ( i = 0; i < 4; i++ )
-       {
-           buffer[i] = atoi(argv[i+2].strptr);
-       }
-
-       if (argc > 8)
-          i = atoi(argv[8].strptr);
-       else i = -1;
-
-       p = (WORD *)GET_POINTER(argv[1]);
-
-       lStyle = WS_CHILD | BS_GROUPBOX;
-       if (!strstr(argv[6].strptr,"HIDDEN")) lStyle |= WS_VISIBLE;
-       if (strstr(argv[6].strptr,"GROUP")) lStyle |= WS_GROUP;
-       if (strstr(argv[6].strptr,"DISABLED")) lStyle |= WS_DISABLED;
-       if (strstr(argv[6].strptr,"BORDER")) lStyle |= WS_BORDER;
-       if (strstr(argv[6].strptr,"TAB")) lStyle |= WS_TABSTOP;
-
-       /*                      id      x         y        cx        cy  */
-       UAddControl(&p, 0x0080, i, buffer[0], buffer[1], buffer[2], buffer[3], argv[7].strptr, lStyle);
    }
    else if (!strcmp(argv[0].strptr,"FRM"))
    {
@@ -1180,8 +1181,6 @@ size_t RexxEntry UsrAddNewCtrl(const char *funcname, size_t argc, CONSTRXSTRING 
 }
 
 
-
-
 extern BOOL SHIFTkey = FALSE;
 
 #ifndef USE_DS_CONTROL
@@ -1275,180 +1274,4 @@ BOOL IsNestedDialogMessage(
 #endif
 
 
-
-size_t RexxEntry UsrMenu(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
-{
-   INT i;
-   WORD *p, *pTemplate;
-   HANDLE hMem;
-
-   CHECKARGL(1);
-
-   if (!strcmp(argv[0].strptr,"INIT"))
-   {
-       if (argc == 2)
-       {
-          i = atoi(argv[1].strptr);
-       } else i = 100;
-
-       hMem = GlobalAlloc(GMEM_MOVEABLE | GMEM_ZEROINIT, (i+1)*128);
-
-       pTemplate = p = (PWORD) GlobalLock(hMem);
-
-       if (!p) RETC(1)
-       /* writing menu header */
-    #if EXTENDED_MENU
-       *p = 1;    /* for extended menu */
-       p++;
-       *p = 0;
-       offsetptr = p;
-       p++;
-       *p = 0;   /* DWORD helpid */
-       p++;
-       *p = 0;
-       p++;
-       p = lpwAlign (p);
-       *offsetptr = (ULONG)p - (ULONG)offsetptr - sizeof(WORD);
-    #else
-       *p = 0;    /* for normal menu */
-       p++;
-       *p = 0;
-       p++;
-    #endif
-
-       sprintf(retstr->strptr, "%p %p %p", hMem, pTemplate, p);
-       retstr->strlength = strlen(retstr->strptr);
-       return 0;
-   }
-   else
-   if (!strcmp(argv[0].strptr,"ADD"))
-   {
-       ULONG lStyle = MFS_ENABLED | MFS_UNCHECKED;
-       ULONG lType = MFT_STRING;
-       WORD lResInfo = 0;
-       int nchar;
-
-       CHECKARG(5);
-
-       p = (WORD *)GET_POINTER(argv[1]);
-       if (!p) RETC(1)
-
-#if EXTENDED_MENU
-       if (strstr(argv[4].strptr, "CHECK")) lStyle |= MFS_CHECKED;
-       if (strstr(argv[4].strptr, "GRAY")) lStyle |= MFS_GRAYED;
-       if (strstr(argv[4].strptr, "DISABLE")) lStyle |= MFS_DISABLED;
-       if (strstr(argv[4].strptr, "HILITE")) lStyle |= MFS_HILITE;
-
-       if (strstr(argv[4].strptr, "POPUP")) lResInfo |= 0x01;
-       if (strstr(argv[4].strptr, "END")) lResInfo |= 0x80;
-
-       if (strstr(argv[4].strptr, "SEPARATOR")) lType = MFT_SEPARATOR;
-       if (strstr(argv[4].strptr, "RIGHT")) lType |= MFT_RIGHTJUSTIFY;
-       if (strstr(argv[4].strptr, "RADIO")) lType |= MFT_RADIOCHECK;
-
-       This is not finsihed!
-
-       dp = p;
-       *dp = lType;
-       dp++;
-       *dp = lStyle;
-       dp++;
-       p = dp;
-       *p = atoi(argv[2].strptr);     /* menu id */
-       p++;
-       *p = lResInfo;
-       p++;
-
-       /* copy the name of the item */
-       if (strlen(argv[3].strptr) > 96)
-       {
-           *p = 0;
-           p++;
-       }
-       else
-       {
-           nchar = nCopyAnsiToWideChar (p, TEXT(argv[3].strptr));
-           p += nchar;
-       }
-       p = lpwAlign (p);
-       if (lResInfo == 0x01)
-       {
-           *p = 0;
-           p++;
-           *p = 0;
-           p++;
-           p = lpwAlign (p);
-       }
-#else
-       if (strstr(argv[4].strptr, "CHECKED")) lStyle |= MF_CHECKED;
-       if (strstr(argv[4].strptr, "GRAYED")) lStyle |= MF_GRAYED;
-       if (strstr(argv[4].strptr, "DISABLED")) lStyle |= MF_DISABLED;
-       if (strstr(argv[4].strptr, "POPUP")) lStyle |= MF_POPUP;
-       if (strstr(argv[4].strptr, "END")) lStyle |= MF_END;
-       if (strstr(argv[4].strptr, "SEPARATOR")) lStyle |= MF_SEPARATOR;
-
-
-       *p = (WORD)lStyle;
-       p++;
-
-       if (!(lStyle & MF_POPUP))
-       {
-           *p = atoi(argv[2].strptr);     /* menu id */
-           p++;
-       }
-
-       /* copy the name of the item */
-       if (strlen(argv[3].strptr) > 96)
-       {
-           *p = 0;
-           p++;
-       }
-       else
-       {
-           nchar = nCopyAnsiToWideChar (p, TEXT(argv[3].strptr));
-           p += nchar;
-       }
-#endif
-       RETPTR(p)
-   }
-   else
-   if (!strcmp(argv[0].strptr,"SET"))
-   {
-       HWND hWnd;
-       PVOID *p;
-       DEF_ADM;
-
-       CHECKARG(4);
-
-       hWnd = (HWND)GET_HWND(argv[1]);
-
-       if (hWnd)
-       {
-          SEEK_DLGADM_TABLE(hWnd, dlgAdm);
-          if (!dlgAdm) RETC(1)
-
-          hMem = GET_HANDLE(argv[2]);
-          p = (PVOID *)GET_POINTER(argv[3]);
-
-          if (p)
-          {
-              INT rc;
-              dlgAdm->menu = LoadMenuIndirect(p);
-              rc = GetLastError();
-
-              if (dlgAdm->menu)
-                  SetMenu(hWnd, dlgAdm->menu);
-
-              /* free the memory allocated for template */
-              GlobalUnlock(hMem);
-              GlobalFree(hMem);
-              if (!dlgAdm->menu)
-                  RETVAL(rc)
-              RETC(0)
-          }
-       }
-       RETC(1)
-   }
-   RETC(0)
-}
 

@@ -2186,8 +2186,23 @@ bool RexxNativeActivation::trap(RexxString *condition, RexxDirectory * exception
 
     // we end up seeing this a second time if we're raising the exception on
     // return from an external call or method.
-    if (trapErrors)
+    if (condition->isEqual(OREF_SYNTAX))
     {
+        if (trapErrors)
+        {
+            // record this in case any callers want to know about it.
+            setConditionInfo(exception_object);
+            // this will unwind back to the calling level, with the
+            // exception information recorded.
+            throw this;
+        }
+
+    }
+    else if (trapConditions)
+    {
+        // pretty much the same deal, but we're only handling conditions, and
+        // only one condtion, so reset the trap flag
+        trapConditions = false;
         // record this in case any callers want to know about it.
         setConditionInfo(exception_object);
         // this will unwind back to the calling level, with the
@@ -2632,7 +2647,7 @@ void RexxNativeActivation::variablePoolFetchVariable(PSHVBLOCK pshvblock)
  */
 void RexxNativeActivation::variablePoolSetVariable(PSHVBLOCK pshvblock)
 {
-    RexxVariableBase *retriever = variablePoolGetVariable(pshvblock, pshvblock->shvcode == RXSHV_SYFET);
+    RexxVariableBase *retriever = variablePoolGetVariable(pshvblock, pshvblock->shvcode == RXSHV_SYSET);
     if (retriever != OREF_NULL)
     {
         /* have a non-name retriever?        */
@@ -2664,7 +2679,7 @@ void RexxNativeActivation::variablePoolSetVariable(PSHVBLOCK pshvblock)
  */
 void RexxNativeActivation::variablePoolDropVariable(PSHVBLOCK pshvblock)
 {
-    RexxVariableBase *retriever = variablePoolGetVariable(pshvblock, pshvblock->shvcode == RXSHV_SYFET);
+    RexxVariableBase *retriever = variablePoolGetVariable(pshvblock, pshvblock->shvcode == RXSHV_SYDRO);
     if (retriever != OREF_NULL)
     {
         /* have a non-name retriever?        */
