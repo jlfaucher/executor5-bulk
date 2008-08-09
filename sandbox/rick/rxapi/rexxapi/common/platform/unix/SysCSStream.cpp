@@ -208,7 +208,7 @@ bool SysClientStream::close()
 {
     if (c != -1)
     {
-        close();
+        ::close(c);
     }
     else
     {
