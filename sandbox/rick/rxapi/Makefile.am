@@ -276,8 +276,7 @@ runtimeHeaders = $(build_runtime_dir)/ActivationApiContexts.hpp \
                  $(build_runtime_dir)/RexxVariable.hpp \
                  $(build_runtime_dir)/RexxVariableDictionary.hpp \
                  $(build_runtime_dir)/SecurityManager.hpp \
-                 $(build_runtime_dir)/TranslateDispatcher.hpp \
-                 $(build_runtime_dir)/Utilities.hpp
+                 $(build_runtime_dir)/TranslateDispatcher.hpp 
 streamlibraryHeaders = $(build_streamlibrary_dir)/StreamCommandParser.h \
                        $(build_streamlibrary_dir)/StreamNative.hpp
 libHeaders = $(build_lib_dir)/RexxPlatformDefinitions.h \
@@ -541,16 +540,12 @@ platform_sources = $(build_kernel_platform_dir)/ErrorMessages.cpp \
                    $(build_kernel_platform_dir)/MemorySupport.cpp \
                    $(build_kernel_platform_dir)/MiscSystem.cpp \
                    $(build_kernel_platform_dir)/RexxMain.cpp \
-                   $(build_kernel_platform_dir)/SysFile.cpp \
                    $(build_kernel_platform_dir)/SysFileSystem.cpp \
                    $(build_kernel_platform_dir)/SysInterpreterInstance.cpp \
-                   $(build_kernel_platform_dir)/SysLibrary.cpp \
                    $(build_kernel_platform_dir)/SystemCommands.cpp \
                    $(build_kernel_platform_dir)/SystemInitialization.cpp \
                    $(build_kernel_platform_dir)/SystemInterpreter.cpp \
                    $(build_kernel_platform_dir)/SystemSemaphores.cpp \
-                   $(build_kernel_platform_dir)/SysSemaphore.cpp \
-                   $(build_kernel_platform_dir)/SysThread.cpp \
                    $(build_kernel_platform_dir)/TimeSupport.cpp \
                    $(build_kernel_platform_dir)/UseridFunction.cpp \
                    $(build_kernel_platform_dir)/ValueFunction.cpp
@@ -605,7 +600,6 @@ runtime_sources  = $(build_runtime_dir)/ActivityDispatcher.cpp \
                    $(build_runtime_dir)/SecurityManager.cpp \
                    $(build_runtime_dir)/Setup.cpp \
                    $(build_runtime_dir)/TranslateDispatcher.cpp \
-                   $(build_runtime_dir)/Utilities.cpp \
                    $(build_runtime_dir)/Version.cpp \
                    $(build_runtime_dir)/VirtualFunctionTable.cpp
 streamlibrary_sources = $(build_streamlibrary_dir)/StreamCommandParser.cpp \
@@ -648,7 +642,7 @@ librexx_la_LDFLAGS = $(VERSION_INFO) -nostartfiles
 #################### rxapi ##########################
 # Sources for rxapi
 #
-rxapi_SOURCES = $(build_rexxapi_server_dir)/APIServer.cpp
+rxapi_SOURCES = $(build_rexxapi_server_dir)/APIServer.cpp \
                 $(build_rexxapi_server_dir)/APIServerInstance.cpp \
                 $(build_rexxapi_server_dir)/APIServerThread.cpp \
                 $(build_rexxapi_server_dir)/MacroSpaceManager.cpp \
