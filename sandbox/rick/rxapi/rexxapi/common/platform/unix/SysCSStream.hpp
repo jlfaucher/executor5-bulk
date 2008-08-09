@@ -36,6 +36,9 @@
 /*----------------------------------------------------------------------------*/
 
 
+#ifndef SysCSStream_Included
+#define SysCSStream_Included
+
 #include <netinet/in.h>
 
 
@@ -58,7 +61,7 @@ class SysClientStream
 {
 protected:
     CSErrorCodeT errcode;
-    SOCKET c; // client socket
+    int c;      // client socket
     int domain; // the socket domain
     int type; // the socket type
     int protocol; // the socket protocol
@@ -117,7 +120,7 @@ public:
 
 protected:
     SysServerStream *server;
-    SOCKET c; // client socket
+    int    c; // client socket
     CSErrorCodeT errcode;
 };
 
@@ -126,7 +129,7 @@ class SysServerStream
 {
 protected:
     CSErrorCodeT errcode;
-    SOCKET s; // server socket
+    int s;      // server socket
     int domain; // the socket domain
     int type; // the socket type
     int protocol; // the socket protocol
@@ -168,4 +171,4 @@ public:
         return errcode == CSERROR_OK;
     }
 };
-
+#endif 

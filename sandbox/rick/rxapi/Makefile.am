@@ -389,7 +389,6 @@ man_MANS = $(build_utils_platform_dir)/rexx.1 \
 librexxapi_la_SOURCES = $(build_rexxapi_client_dir)/ClientMessage.cpp \
                         $(build_rexxapi_client_dir)/LocalAPIContext.cpp \
                         $(build_rexxapi_client_dir)/LocalAPIManager.cpp \
-                        $(build_rexxapi_client_dir)/LocalAPISubsystem.cpp \
                         $(build_rexxapi_client_dir)/LocalMacroSpaceManager.cpp \
                         $(build_rexxapi_client_dir)/LocalQueueManager.cpp \
                         $(build_rexxapi_client_dir)/LocalRegistrationManager.cpp \

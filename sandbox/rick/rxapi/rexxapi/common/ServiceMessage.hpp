@@ -370,7 +370,7 @@ public:
     {
         if (messageData != NULL && !retainMessageData)
         {
-            delete[] messageData;
+            delete[] ((char *)messageData);
             clearMessageData();
         }
     }

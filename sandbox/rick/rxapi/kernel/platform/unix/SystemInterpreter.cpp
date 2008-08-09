@@ -49,7 +49,6 @@
 #include "RexxCore.h"
 #include "SystemInterpreter.hpp"
 #include "Interpreter.hpp"
-#include "RexxAPIManager.h"
 
 #if defined( HAVE_SIGNAL_H )
 # include <signal.h>

@@ -74,9 +74,9 @@
  *
  * @param create Indicates whether the semaphore should be created now.
  */
-SysSemaphore::SysSemaphore(bool create)
+SysSemaphore::SysSemaphore(bool createSem)
 {
-    if (create)
+    if (createSem)
     {
         create();
     }
@@ -215,9 +215,9 @@ void SysSemaphore::reset()
  *
  * @param create Indicates whether the semaphore should be created now.
  */
-SysMutex::SysMutex(bool create)
+SysMutex::SysMutex(bool createSem)
 {
-    if (create)
+    if (createSem)
     {
         create();
     }
