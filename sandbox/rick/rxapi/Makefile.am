@@ -219,14 +219,13 @@ platformHeaders = $(build_kernel_platform_dir)/APIDefinitions.h \
                   $(build_kernel_platform_dir)/SystemCommands.h \
                   $(build_kernel_platform_dir)/SystemInterpreter.hpp \
                   $(build_kernel_platform_dir)/SystemSemaphores.h
-commonheaders = $(build_common_dir)/SynchronizedBlock.hpp \
+commonHeaders = $(build_common_dir)/SynchronizedBlock.hpp \
                 $(build_common_dir)/Utilities.hpp \
                 $(build_common_platform_dir)/SysFile.hpp \
                 $(build_common_platform_dir)/SysLibrary.hpp \
                 $(build_common_platform_dir)/SysSemaphore.hpp \
                 $(build_common_platform_dir)/SysThread.hpp
 
-platformcommonHeaders =
 runtimeHeaders = $(build_runtime_dir)/ActivationApiContexts.hpp \
                  $(build_runtime_dir)/ActivityDispatcher.hpp \
                  $(build_runtime_dir)/ActivityManager.hpp \
@@ -281,12 +280,6 @@ streamlibraryHeaders = $(build_streamlibrary_dir)/StreamCommandParser.h \
                        $(build_streamlibrary_dir)/StreamNative.hpp
 libHeaders = $(build_lib_dir)/RexxPlatformDefinitions.h \
              $(build_lib_dir)/RexxInternalApis.h
-commonHeaders = $(build_common_dir)/SynchronizedBlock.hpp \
-                $(build_common_dir)/Utilities.hpp \
-                $(build_common_dir)/platform/unix/SysFile.hpp \
-                $(build_common_dir)/platform/unix/SysLibrary.hpp \
-                $(build_common_dir)/platform/unix/SysSemaphore.hpp \
-                $(build_common_dir)/platform/unix/SysThread.hpp
 rexxapiServerHeaders = $(build_rexxapi_server_dir)/APIServer.hpp \
                  $(build_rexxapi_server_dir)/APIServerInstance.hpp \
                  $(build_rexxapi_server_dir)/APIServerThread.hpp \
@@ -626,6 +619,8 @@ librexx_la_CXXFLAGS  = $(COMMON_CPPFLAGS) \
                        -I$(build_lib_dir) \
                        -I$(build_api_dir) \
                        -I$(build_api_platform_dir) \
+                       -I$(build_common_dir) \
+                       -I$(build_common_platform_dir) \
                        -I$(build_kernel_dir) \
                        -I$(build_expression_dir) \
                        -I$(build_instructions_dir) \
@@ -962,7 +957,7 @@ EXTRA_DIST = $(build_messages_dir)/RexxMessageNumbers.xsl \
              $(instructionsHeaders) \
              $(parserHeaders) \
              $(platformHeaders) \
-             $(platformcommonHeaders) \
+             $(commonHeaders) \
              $(runtimeHeaders) \
              $(streamlibraryHeaders) \
              $(libHeaders) \
