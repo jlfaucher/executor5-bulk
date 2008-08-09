@@ -204,8 +204,6 @@
 #endif
 
 #include "oorexxapi.h"
-#include "RexxAPIManager.h"
-#include "APIUtilities.h"
 
 #if defined( HAVE_SYS_WAIT_H )
 # include <sys/wait.h>
@@ -286,7 +284,6 @@ union semun {
 };
 #endif
 
-extern REXXAPIDATA  *apidata;          /* Global state data          */
 extern thread_id_t opencnt[][2];       /* open count array for sems  */
 extern char *resolve_tilde(const char *);
 
@@ -948,25 +945,29 @@ int SearchPath(
 *************************************************************************/
 int initUtilSems()
 {
-  int rc = 0;
-  int semId;
+    int rc = 0;
+    int semId;
 
-  if(!apidata->rexxutilsems){          /* if no semaphore set aviable    */
-                                       /* greate one                     */
-    rc = createsem(&semId, IPC_PRIVATE, MAXUTILSEM);
-    if(rc){                            /* if system limit reached        */
-      APICLEANUP(MACROCHAIN);
-      return rc;
+#if 0
+    if (!apidata->rexxutilsems)          /* if no semaphore set aviable    */
+    {
+        /* greate one                     */
+        rc = createsem(&semId, IPC_PRIVATE, MAXUTILSEM);
+        if (rc)                            /* if system limit reached        */
+        {
+            return rc;
+        }
+        apidata->rexxutilsems = semId;     /* remember the ID                */
+        /* reset the semaphore control array                                 */
+        for (int i=0;i<MAXUTILSEM;i++)     /* for the whole array            */
+        {
+            /* clear the name array           */
+            memset((apidata->utilsemfree[i]).name,'\0',MAXNAME);
+            (apidata->utilsemfree[i]).usecount = 0;   /* reset usecount        */
+        }
     }
-    apidata->rexxutilsems = semId;     /* remember the ID                */
-    /* reset the semaphore control array                                 */
-    for(int i=0;i<MAXUTILSEM;i++){     /* for the whole array            */
-                                       /* clear the name array           */
-      memset((apidata->utilsemfree[i]).name,'\0',MAXNAME);
-      (apidata->utilsemfree[i]).usecount = 0;   /* reset usecount        */
-    }
-  }
-  return rc;
+#endif 
+    return rc;
 }
 
 /*************************************************************************
@@ -992,25 +993,27 @@ void dead(int sig)
 * Return:   none                                                         *
 *************************************************************************/
 void* tout(void * brk){
-  struct timeval tv;                 /* time for the select func   */
-  int * bk;
+    struct timeval tv;                 /* time for the select func   */
+    int * bk;
 
-  signal(SIGUSR1,dead);
-  bk = (int *)brk;
-  bk[1] = bk[1] * 1000;              /* convert to mircoseconds    */
-  if(bk[1]<1000000){                 /* less than one second ?     */
-    tv.tv_sec = 0;                   /* set seconds to NULL        */
-    tv.tv_usec = bk[1];              /* set the microseconds       */
-  }
-  else {
-    tv.tv_usec = bk[1]%1000000;      /* set the microsecs and      */
-    bk[1] = bk[1]-tv.tv_usec;        /* substract them             */
-    tv.tv_sec = bk[1]/1000000;       /* now set the seconds        */
-  }
-  select(0,(fd_set*)0,(fd_set*)0,(fd_set*)0,&tv);/* do the sleep   */
-  bk[0] = 1;                         /* break                      */
-  sleep(10);                         /* wait for death             */
-  return((void *) NULL);
+    signal(SIGUSR1,dead);
+    bk = (int *)brk;
+    bk[1] = bk[1] * 1000;              /* convert to mircoseconds    */
+    if (bk[1]<1000000)                 /* less than one second ?     */
+    {
+        tv.tv_sec = 0;                   /* set seconds to NULL        */
+        tv.tv_usec = bk[1];              /* set the microseconds       */
+    }
+    else
+    {
+        tv.tv_usec = bk[1]%1000000;      /* set the microsecs and      */
+        bk[1] = bk[1]-tv.tv_usec;        /* substract them             */
+        tv.tv_sec = bk[1]/1000000;       /* now set the seconds        */
+    }
+    select(0,(fd_set*)0,(fd_set*)0,(fd_set*)0,&tv);/* do the sleep   */
+    bk[0] = 1;                         /* break                      */
+    sleep(10);                         /* wait for death             */
+    return((void *) NULL);
 }
 
 
@@ -2430,118 +2433,127 @@ size_t RexxEntry SysVersion(const char *name, size_t numargs, CONSTRXSTRING args
 *************************************************************************/
 size_t RexxEntry SysCreateEventSem(const char *name, size_t numargs, CONSTRXSTRING args[], const char *queuename, PRXSTRING retstr)
 {
-  int handle;                          /* semaphore handle           */
-  int i;                               /* counter                    */
-  bool bwaitreset = false;
-  union semun semopts;               /* for semaphore control      */
-  if (numargs > 2)                     /* Too many arguments?        */
-      return INVALID_ROUTINE;          /* raise error too many       */
-
-  APISTARTUP(MACROCHAIN);
-  if(initUtilSems()) {                 /* if system limit reached    */
-    retstr->strlength = 0;             /* return null string         */
-    APICLEANUP(MACROCHAIN);
-    return VALID_ROUTINE;
-  }
-
-  if (!args[1].strlength)
-  {
-    bwaitreset = true;
-  }
-
-  if ((numargs) && (args[0].strlength))
-  {
-                                       /* if name to long or zero    */
-    if(args[0].strlength>MAXNAME-1) {
-      printf("\nSemaphore name to long !  \nName: %s\n",args[0].strptr);
-      retstr->strlength = 0;           /* return null string         */
-      APICLEANUP(MACROCHAIN);
-      return VALID_ROUTINE;
+    int handle;                          /* semaphore handle           */
+    int i;                               /* counter                    */
+    bool bwaitreset = false;
+    union semun semopts;               /* for semaphore control      */
+    if (numargs > 2)                     /* Too many arguments?        */
+    {
+        return INVALID_ROUTINE;          /* raise error too many       */
     }
-    /* check wheather semaphore exists                               */
-    handle = -1;                       /* reset handle               */
-    for(i=0;i<MAXUTILSEM;i++){         /* for all semaphores         */
-      if(((apidata->utilsemfree[i]).usecount > 0) &&/* a used     */
-             ((apidata->utilsemfree[i]).type == EVENT)){/*event sem ?*/
-                                       /* if we have a match         */
-        if(!strcmp((apidata->utilsemfree[i]).name,args[0].strptr)){
-          handle = i;                  /* remember the handle        */
-          break;                       /* for max sem        */
+
+    return VALID_ROUTINE; 
+#if 0
+    if (initUtilSems())                 /* if system limit reached    */
+    {
+        retstr->strlength = 0;             /* return null string         */
+        return VALID_ROUTINE;
+    }
+
+    if (!args[1].strlength)
+    {
+        bwaitreset = true;
+    }
+
+    if ((numargs) && (args[0].strlength))
+    {
+        /* if name to long or zero    */
+        if (args[0].strlength>MAXNAME-1)
+        {
+            printf("\nSemaphore name to long !  \nName: %s\n",args[0].strptr);
+            retstr->strlength = 0;           /* return null string         */
+            return VALID_ROUTINE;
         }
-      }
+        /* check wheather semaphore exists                               */
+        handle = -1;                       /* reset handle               */
+        for (i=0;i<MAXUTILSEM;i++)         /* for all semaphores         */
+        {
+            if (((apidata->utilsemfree[i]).usecount > 0) &&/* a used     */
+                ((apidata->utilsemfree[i]).type == EVENT))/*event sem ?*/
+            {
+                /* if we have a match         */
+                if (!strcmp((apidata->utilsemfree[i]).name,args[0].strptr))
+                {
+                    handle = i;                  /* remember the handle        */
+                    break;                       /* for max sem        */
+                }
+            }
+        }
+        if (handle != -1)                  /* if semaphore exists        */
+        {
+            (apidata->utilsemfree[handle]).usecount++;/* increment usecount*/
+            (opencnt[handle][0])++;          /* and privat open count      */
+                                             /* format the result          */
+            sprintf(retstr->strptr, "%d", (handle+OFFSET));
+            retstr->strlength = strlen(retstr->strptr);
+            return VALID_ROUTINE;
+        }
+        else                             /* semaphore doesn't exists   */
+        {
+            handle = -1;                     /* reset the handle           */
+            /*looking for a unused semaphore                               */
+            for (i=0;i<MAXUTILSEM;i++)       /* for all semaphores         */
+            {
+                /* found a unused one ?       */
+                if ((apidata->utilsemfree[i]).usecount == 0)
+                {                              /* for max sem        */
+                    handle = i;                  /* remember the handle        */
+                    break;                       /* for max sem        */
+                }                              /* for max sem        */
+            }
+            if (handle == -1)                /* all semaphores used        */
+            {
+                retstr->strlength = 0;         /* return null string         */
+                return VALID_ROUTINE;
+            }
+            /* copy the name over         */
+            strcpy((apidata->utilsemfree[handle]).name,args[0].strptr);
+            (apidata->utilsemfree[handle]).usecount++;/*increment usecount */
+            (opencnt[handle][0])++;          /* and privat open count      */
+            (apidata->utilsemfree[handle]).type = EVENT;/* set the type    */
+            (apidata->utilsemfree[handle]).waitandreset = bwaitreset;/* set the type */
+            /* reset the semaphore                                         */
+            semopts.val = 1;                 /* initial value                  */
+                                             /* do the initialisation          */
+            semctl(apidata->rexxutilsems, handle, SETVAL, semopts);
+            /* format the result          */
+            sprintf(retstr->strptr, "%d", (handle+OFFSET));
+            retstr->strlength = strlen(retstr->strptr);
+            return VALID_ROUTINE;
+        }
     }
-    if(handle != -1){                  /* if semaphore exists        */
-      (apidata->utilsemfree[handle]).usecount++;/* increment usecount*/
-      (opencnt[handle][0])++;          /* and privat open count      */
-                                       /* format the result          */
-      sprintf(retstr->strptr, "%d", (handle+OFFSET));
-      retstr->strlength = strlen(retstr->strptr);
-      APICLEANUP(MACROCHAIN);
-      return VALID_ROUTINE;
-    }
-    else {                             /* semaphore doesn't exists   */
-      handle = -1;                     /* reset the handle           */
-      /*looking for a unused semaphore                               */
-      for(i=0;i<MAXUTILSEM;i++){       /* for all semaphores         */
-                                       /* found a unused one ?       */
-        if((apidata->utilsemfree[i]).usecount == 0 )
-        {                              /* for max sem        */
-          handle = i;                  /* remember the handle        */
-          break;                       /* for max sem        */
-        }                              /* for max sem        */
-      }
-      if(handle == -1){                /* all semaphores used        */
-        retstr->strlength = 0;         /* return null string         */
-        APICLEANUP(MACROCHAIN);
+    else                               /* unnamed semaphore          */
+    {
+        handle = -1;                     /* reset the handle           */
+        /*looking for a unused semaphore                               */
+        for (i=0;i<MAXUTILSEM;i++)       /* for all semaphores         */
+        {
+            /* found a unused one ?       */
+            if ((apidata->utilsemfree[i]).usecount == 0)
+            {                              /* for max sem        */
+                handle = i;                  /* remember the handle        */
+                break;                       /* for max sem        */
+            }                              /* for max sem        */
+        }
+        if (handle == -1)                /* all semaphores used        */
+        {
+            retstr->strlength = 0;         /* return null string         */
+            return VALID_ROUTINE;
+        }
+        (apidata->utilsemfree[handle]).usecount++;/*increment usecount */
+        (opencnt[handle][0])++;          /* and privat open count      */
+        (apidata->utilsemfree[handle]).type = EVENT;/* set the type    */
+        (apidata->utilsemfree[handle]).waitandreset = bwaitreset;/* set the type */
+        /* reset the semaphore                                         */
+        semopts.val = 1;                 /* initial value                  */
+                                         /* do the initialisation          */
+        semctl(apidata->rexxutilsems, handle, SETVAL, semopts);
+        /* format the result          */
+        sprintf(retstr->strptr, "%d", (handle+OFFSET));
+        retstr->strlength = strlen(retstr->strptr);
         return VALID_ROUTINE;
-      }
-                                       /* copy the name over         */
-      strcpy((apidata->utilsemfree[handle]).name,args[0].strptr);
-      (apidata->utilsemfree[handle]).usecount++;/*increment usecount */
-      (opencnt[handle][0])++;          /* and privat open count      */
-      (apidata->utilsemfree[handle]).type = EVENT;/* set the type    */
-      (apidata->utilsemfree[handle]).waitandreset = bwaitreset;/* set the type */
-      /* reset the semaphore                                         */
-      semopts.val = 1;                 /* initial value                  */
-                                       /* do the initialisation          */
-      semctl(apidata->rexxutilsems, handle, SETVAL, semopts);
-                                       /* format the result          */
-      sprintf(retstr->strptr, "%d", (handle+OFFSET));
-      retstr->strlength = strlen(retstr->strptr);
-      APICLEANUP(MACROCHAIN);
-      return VALID_ROUTINE;
     }
-  }
-  else {                               /* unnamed semaphore          */
-      handle = -1;                     /* reset the handle           */
-      /*looking for a unused semaphore                               */
-      for(i=0;i<MAXUTILSEM;i++){       /* for all semaphores         */
-                                       /* found a unused one ?       */
-        if((apidata->utilsemfree[i]).usecount == 0 )
-        {                              /* for max sem        */
-          handle = i;                  /* remember the handle        */
-          break;                       /* for max sem        */
-        }                              /* for max sem        */
-      }
-      if(handle == -1){                /* all semaphores used        */
-        retstr->strlength = 0;         /* return null string         */
-        APICLEANUP(MACROCHAIN);
-        return VALID_ROUTINE;
-      }
-      (apidata->utilsemfree[handle]).usecount++;/*increment usecount */
-      (opencnt[handle][0])++;          /* and privat open count      */
-      (apidata->utilsemfree[handle]).type = EVENT;/* set the type    */
-      (apidata->utilsemfree[handle]).waitandreset = bwaitreset;/* set the type */
-      /* reset the semaphore                                         */
-      semopts.val = 1;                 /* initial value                  */
-                                       /* do the initialisation          */
-      semctl(apidata->rexxutilsems, handle, SETVAL, semopts);
-                                       /* format the result          */
-      sprintf(retstr->strptr, "%d", (handle+OFFSET));
-      retstr->strlength = strlen(retstr->strptr);
-      APICLEANUP(MACROCHAIN);
-      return VALID_ROUTINE;
-  }
+#endif 
 }
 
 /*************************************************************************
@@ -2556,51 +2568,62 @@ size_t RexxEntry SysCreateEventSem(const char *name, size_t numargs, CONSTRXSTRI
 
 size_t RexxEntry SysOpenEventSem(const char *name, size_t numargs, CONSTRXSTRING args[], const char *queuename, PRXSTRING retstr)
 {
-  int       handle;                    /* semaphore  handle          */
-  const char *character;
-  char      c[2]= {'\0','\0'};
+    int       handle;                    /* semaphore  handle          */
+    const char *character;
+    char      c[2]= {'\0','\0'};
 
-  if (numargs != 1)                    /* Only one argument accepted */
-    return INVALID_ROUTINE;            /* raise error condition      */
-                                       /* for each char of the handle*/
-  for(character=args[0].strptr; *character != '\0';character++){
-    c[0] = *character;
-    if(!strpbrk(c,"1234567890"))      /* if it is no number         */
-      return INVALID_ROUTINE;          /* get out                    */
-  }
-                                       /* get a binary handle        */
-  handle = strtoul(args[0].strptr, NULL, 10);
-  handle = handle - OFFSET;            /* make it real               */
-  if (handle < 0 || handle >= MAXUTILSEM){/* if bad handle        */
-    sprintf(retstr->strptr, "%d", 6);  /* say so                     */
+    if (numargs != 1)                    /* Only one argument accepted */
+    {
+        return INVALID_ROUTINE;            /* raise error condition      */
+    }
+
+    return VALID_ROUTINE; 
+#if 0
+                                           /* for each char of the handle*/
+    for (character=args[0].strptr; *character != '\0';character++)
+    {
+        c[0] = *character;
+        if (!strpbrk(c,"1234567890"))      /* if it is no number         */
+        {  
+            return INVALID_ROUTINE;          /* get out                    */
+        }
+    }
+    /* get a binary handle        */
+    handle = strtoul(args[0].strptr, NULL, 10);
+    handle = handle - OFFSET;            /* make it real               */
+    if (handle < 0 || handle >= MAXUTILSEM)/* if bad handle        */
+    {
+        sprintf(retstr->strptr, "%d", 6);  /* say so                     */
+        retstr->strlength = strlen(retstr->strptr);
+        return VALID_ROUTINE;
+    }
+    if (!apidata->rexxutilsems)          /* no sems created until now  */
+    {
+        sprintf(retstr->strptr, "%d", 6);  /* invalid handle             */
+        retstr->strlength = strlen(retstr->strptr);
+        return VALID_ROUTINE;
+    }
+    /* if the semaphore is unused or isn't a event semaphore           */
+    if (((apidata->utilsemfree[handle]).usecount == 0 ) ||
+        ((apidata->utilsemfree[handle]).type != EVENT))
+    {
+        sprintf(retstr->strptr, "%d", 6);  /* invalid handle             */
+        retstr->strlength = strlen(retstr->strptr);
+        return VALID_ROUTINE;
+    }
+    if ((apidata->utilsemfree[handle]).usecount < MAXUSECOUNT)
+    {
+        (apidata->utilsemfree[handle]).usecount++;/* increment usecount  */
+        (opencnt[handle][0])++;            /* and privat open count      */
+        sprintf(retstr->strptr, "%d", 0);  /* no errors                  */
+    }
+    else
+    {
+        sprintf(retstr->strptr, "%d", 291);/* to many opens              */
+    }
     retstr->strlength = strlen(retstr->strptr);
-    return VALID_ROUTINE;
-  }
-  APISTARTUP(MACROCHAIN);
-  if(!apidata->rexxutilsems){          /* no sems created until now  */
-    sprintf(retstr->strptr, "%d", 6);  /* invalid handle             */
-    retstr->strlength = strlen(retstr->strptr);
-    APICLEANUP(MACROCHAIN);
-    return VALID_ROUTINE;
-  }
-  /* if the semaphore is unused or isn't a event semaphore           */
-  if(((apidata->utilsemfree[handle]).usecount == 0 ) ||
-         ((apidata->utilsemfree[handle]).type != EVENT)){
-    sprintf(retstr->strptr, "%d", 6);  /* invalid handle             */
-    retstr->strlength = strlen(retstr->strptr);
-    APICLEANUP(MACROCHAIN);
-    return VALID_ROUTINE;
-  }
-  if((apidata->utilsemfree[handle]).usecount < MAXUSECOUNT){
-    (apidata->utilsemfree[handle]).usecount++;/* increment usecount  */
-    (opencnt[handle][0])++;            /* and privat open count      */
-    sprintf(retstr->strptr, "%d", 0);  /* no errors                  */
-  }
-  else
-    sprintf(retstr->strptr, "%d", 291);/* to many opens              */
-  retstr->strlength = strlen(retstr->strptr);
-  APICLEANUP(MACROCHAIN);
-  return VALID_ROUTINE;                /* good completion            */
+    return VALID_ROUTINE;                /* good completion            */
+#endif 
 }
 
 /*************************************************************************
@@ -2615,61 +2638,71 @@ size_t RexxEntry SysOpenEventSem(const char *name, size_t numargs, CONSTRXSTRING
 
 size_t RexxEntry SysResetEventSem(const char *name, size_t numargs, CONSTRXSTRING args[], const char *queuename, PRXSTRING retstr)
 {
-  int       handle;                    /* semaphore  handle          */
-  union semun semopts;               /* for semaphore control        */
-  const char *character;
-  char      c[2]={'\0','\0'};
+    int       handle;                    /* semaphore  handle          */
+    union semun semopts;               /* for semaphore control        */
+    const char *character;
+    char      c[2]={'\0','\0'};
 
-  if (numargs != 1)                    /* Only one argument accepted */
-    return INVALID_ROUTINE;            /* raise error condition      */
-                                       /* for each char of the handle*/
-  for(character=args[0].strptr;*character != '\0';character++){
-    c[0] = *character;
-    if(!strpbrk(c,"1234567890"))       /* if it is no number        */
-      return INVALID_ROUTINE;          /* get out                    */
-  }
-                                       /* get a binary handle        */
-  handle = strtoul(args[0].strptr, NULL, 10);
-  handle = handle - OFFSET;            /* make it real               */
-  if (handle < 0 || handle >= MAXUTILSEM){/* if bad handle        */
-    sprintf(retstr->strptr, "%d", 6);  /* say so                     */
+    if (numargs != 1)                    /* Only one argument accepted */
+    {
+        return INVALID_ROUTINE;            /* raise error condition      */
+    }
+
+    return VALID_ROUTINE; 
+#if 0
+                                           /* for each char of the handle*/
+    for (character=args[0].strptr;*character != '\0';character++)
+    {
+        c[0] = *character;
+        if (!strpbrk(c,"1234567890"))       /* if it is no number        */
+        {  
+            return INVALID_ROUTINE;          /* get out                    */
+        }
+    }
+    /* get a binary handle        */
+    handle = strtoul(args[0].strptr, NULL, 10);
+    handle = handle - OFFSET;            /* make it real               */
+    if (handle < 0 || handle >= MAXUTILSEM)/* if bad handle        */
+    {
+        sprintf(retstr->strptr, "%d", 6);  /* say so                     */
+        retstr->strlength = strlen(retstr->strptr);
+        return VALID_ROUTINE;
+    }
+    if (!apidata->rexxutilsems)          /* no sems created until now  */
+    {
+        sprintf(retstr->strptr, "%d", 6);  /* invalid handle             */
+        retstr->strlength = strlen(retstr->strptr);
+        return VALID_ROUTINE;
+    }
+    /* if the semaphore is unused or isn't a event semaphore           */
+    if (((apidata->utilsemfree[handle]).usecount == 0 ) ||
+        ((apidata->utilsemfree[handle]).type != EVENT))
+    {
+        sprintf(retstr->strptr, "%d", 6);  /* invalid handle             */
+        retstr->strlength = strlen(retstr->strptr);
+        return VALID_ROUTINE;
+    }
+    if (!(opencnt[handle][0]))           /* if I haven't open the sem  */
+    {
+        sprintf(retstr->strptr, "%d", 6);  /* invalid handle             */
+        retstr->strlength = strlen(retstr->strptr);
+        return VALID_ROUTINE;
+    }
+    if (!getval(apidata->rexxutilsems, handle))/* already reset        */
+    {
+        sprintf(retstr->strptr, "%d", 300);/* say so                     */
+    }
+    else
+    {
+        semopts.val = 1;             /* initial value                      */
+                                     /* do the initialisation              */
+        semctl(apidata->rexxutilsems, handle, SETVAL, semopts);
+        locksem(apidata->rexxutilsems, handle);/* lock the semaphore     */
+        sprintf(retstr->strptr, "%d", 0);    /* no errors                */
+    }
     retstr->strlength = strlen(retstr->strptr);
-    return VALID_ROUTINE;
-  }
-  APISTARTUP(MACROCHAIN);
-  if(!apidata->rexxutilsems){          /* no sems created until now  */
-    sprintf(retstr->strptr, "%d", 6);  /* invalid handle             */
-    retstr->strlength = strlen(retstr->strptr);
-    APICLEANUP(MACROCHAIN);
-    return VALID_ROUTINE;
-  }
-  /* if the semaphore is unused or isn't a event semaphore           */
-  if(((apidata->utilsemfree[handle]).usecount == 0 ) ||
-         ((apidata->utilsemfree[handle]).type != EVENT)){
-    sprintf(retstr->strptr, "%d", 6);  /* invalid handle             */
-    retstr->strlength = strlen(retstr->strptr);
-    APICLEANUP(MACROCHAIN);
-    return VALID_ROUTINE;
-  }
-  if(!(opencnt[handle][0])){           /* if I haven't open the sem  */
-    sprintf(retstr->strptr, "%d", 6);  /* invalid handle             */
-    retstr->strlength = strlen(retstr->strptr);
-    APICLEANUP(MACROCHAIN);
-    return VALID_ROUTINE;
-  }
-  if(!getval(apidata->rexxutilsems, handle)){/* already reset        */
-    sprintf(retstr->strptr, "%d", 300);/* say so                     */
-  }
-  else {
-    semopts.val = 1;             /* initial value                      */
-                                 /* do the initialisation              */
-    semctl(apidata->rexxutilsems, handle, SETVAL, semopts);
-    locksem(apidata->rexxutilsems, handle);/* lock the semaphore     */
-    sprintf(retstr->strptr, "%d", 0);    /* no errors                */
-  }
-  retstr->strlength = strlen(retstr->strptr);
-  APICLEANUP(MACROCHAIN);
-  return VALID_ROUTINE;                /* good completion            */
+    return VALID_ROUTINE;                /* good completion            */
+#endif 
 }
 
 /*************************************************************************
@@ -2684,57 +2717,68 @@ size_t RexxEntry SysResetEventSem(const char *name, size_t numargs, CONSTRXSTRIN
 
 size_t RexxEntry SysPostEventSem(const char *name, size_t numargs, CONSTRXSTRING args[], const char *queuename, PRXSTRING retstr)
 {
-  int       handle;                    /* semaphore  handle          */
-  const char *character;
-  char      c[2]={'\0','\0'};
+    int       handle;                    /* semaphore  handle          */
+    const char *character;
+    char      c[2]={'\0','\0'};
 
-  if (numargs != 1)                    /* Only one argument accepted */
-    return INVALID_ROUTINE;            /* raise error condition      */
-                                       /* for each char of the handle*/
-  for(character=args[0].strptr;*character != '\0';character++){
-    c[0] = *character;
-    if(!strpbrk(c,"1234567890"))       /* if it is no number        */
-      return INVALID_ROUTINE;          /* get out                    */
-  }
-                                       /* get a binary handle        */
-  handle = strtoul(args[0].strptr, NULL, 10);
-  handle = handle - OFFSET;            /* make it real               */
-  if (handle < 0 || handle >= MAXUTILSEM){/* if bad handle        */
-    sprintf(retstr->strptr, "%d", 6);  /* say so                     */
+    if (numargs != 1)                    /* Only one argument accepted */
+    {
+        return INVALID_ROUTINE;            /* raise error condition      */
+    }
+
+    return VALID_ROUTINE; 
+#if 0
+                                           /* for each char of the handle*/
+    for (character=args[0].strptr;*character != '\0';character++)
+    {
+        c[0] = *character;
+        if (!strpbrk(c,"1234567890"))       /* if it is no number        */
+        {  
+            return INVALID_ROUTINE;          /* get out                    */
+        }
+    }
+    /* get a binary handle        */
+    handle = strtoul(args[0].strptr, NULL, 10);
+    handle = handle - OFFSET;            /* make it real               */
+    if (handle < 0 || handle >= MAXUTILSEM)/* if bad handle        */
+    {
+        sprintf(retstr->strptr, "%d", 6);  /* say so                     */
+        retstr->strlength = strlen(retstr->strptr);
+        return VALID_ROUTINE;
+    }
+    if (!apidata->rexxutilsems)          /* no sems created until now  */
+    {
+        sprintf(retstr->strptr, "%d", 6);  /* invalid handle             */
+        retstr->strlength = strlen(retstr->strptr);
+        return VALID_ROUTINE;
+    }
+    /* if the semaphore is unused or isn't a event semaphore           */
+    if (((apidata->utilsemfree[handle]).usecount == 0 ) ||
+        ((apidata->utilsemfree[handle]).type != EVENT))
+    {
+        sprintf(retstr->strptr, "%d", 6);  /* invalid handle             */
+        retstr->strlength = strlen(retstr->strptr);
+        return VALID_ROUTINE;
+    }
+    if (!(opencnt[handle][0]))           /* if I haven't open the sem  */
+    {
+        sprintf(retstr->strptr, "%d", 6);  /* invalid handle             */
+        retstr->strlength = strlen(retstr->strptr);
+        return VALID_ROUTINE;
+    }
+    if (!getval(apidata->rexxutilsems, handle))/* if sem is locked     */
+    {
+        /* unlock the sem to wake the one who waits                        */
+        unlocksem(apidata->rexxutilsems, handle);
+        sprintf(retstr->strptr, "%d", 0);    /* no errors                  */
+    }
+    else
+    {
+        sprintf(retstr->strptr, "%d", 299);/* already posted             */
+    }
     retstr->strlength = strlen(retstr->strptr);
-    return VALID_ROUTINE;
-  }
-  APISTARTUP(MACROCHAIN);
-  if(!apidata->rexxutilsems){          /* no sems created until now  */
-    sprintf(retstr->strptr, "%d", 6);  /* invalid handle             */
-    retstr->strlength = strlen(retstr->strptr);
-    APICLEANUP(MACROCHAIN);
-    return VALID_ROUTINE;
-  }
-  /* if the semaphore is unused or isn't a event semaphore           */
-  if(((apidata->utilsemfree[handle]).usecount == 0 ) ||
-         ((apidata->utilsemfree[handle]).type != EVENT)){
-    sprintf(retstr->strptr, "%d", 6);  /* invalid handle             */
-    retstr->strlength = strlen(retstr->strptr);
-    APICLEANUP(MACROCHAIN);
-    return VALID_ROUTINE;
-  }
-  if(!(opencnt[handle][0])){           /* if I haven't open the sem  */
-    sprintf(retstr->strptr, "%d", 6);  /* invalid handle             */
-    retstr->strlength = strlen(retstr->strptr);
-    APICLEANUP(MACROCHAIN);
-    return VALID_ROUTINE;
-  }
-  if(!getval(apidata->rexxutilsems, handle)){/* if sem is locked     */
-  /* unlock the sem to wake the one who waits                        */
-  unlocksem(apidata->rexxutilsems, handle);
-  sprintf(retstr->strptr, "%d", 0);    /* no errors                  */
-  }
-  else
-    sprintf(retstr->strptr, "%d", 299);/* already posted             */
-  retstr->strlength = strlen(retstr->strptr);
-  APICLEANUP(MACROCHAIN);
-  return VALID_ROUTINE;                /* good completion            */
+    return VALID_ROUTINE;                /* good completion            */
+#endif 
 }
 /*************************************************************************
 * Function:  SysCloseEventSem                                            *
@@ -2748,89 +2792,113 @@ size_t RexxEntry SysPostEventSem(const char *name, size_t numargs, CONSTRXSTRING
 
 size_t RexxEntry SysCloseEventSem(const char *name, size_t numargs, CONSTRXSTRING args[], const char *queuename, PRXSTRING retstr)
 {
-  int       handle;                    /* semaphore  handle          */
-  union semun semopts;               /* for semaphore control          */
-  int i;                               /* counter                    */
-  int used = 0;
-  const char *     character;
-  char      c[2]={'\0','\0'};
+    int       handle;                    /* semaphore  handle          */
+    union semun semopts;               /* for semaphore control          */
+    int i;                               /* counter                    */
+    int used = 0;
+    const char *     character;
+    char      c[2]={'\0','\0'};
 
-  if (numargs != 1)                    /* Only one argument accepted */
-    return INVALID_ROUTINE;            /* raise error condition      */
-                                       /* for each char of the handle*/
-  for(character=args[0].strptr;*character != '\0';character++){
-    c[0] = *character;
-    if(!strpbrk(c,"1234567890"))       /* if it is no number        */
-      return INVALID_ROUTINE;          /* get out                    */
-  }
-                                       /* get a binary handle        */
-  handle = strtoul(args[0].strptr, NULL, 10);
-  handle = handle - OFFSET;            /* make it real               */
-  if (handle < 0 || handle >= MAXUTILSEM){/* if bad handle        */
-    sprintf(retstr->strptr, "%d", 6);  /* say so                     */
-    retstr->strlength = strlen(retstr->strptr);
-    return VALID_ROUTINE;
-  }
-  APISTARTUP(MACROCHAIN);
-  if(!apidata->rexxutilsems){          /* no sems created until now  */
-    sprintf(retstr->strptr, "%d", 6);  /* invalid handle             */
-    retstr->strlength = strlen(retstr->strptr);
-    APICLEANUP(MACROCHAIN);
-    return VALID_ROUTINE;
-  }
-  /* if the semaphore is unused or isn't a event semaphore           */
-  if(((apidata->utilsemfree[handle]).usecount == 0 ) ||
-         ((apidata->utilsemfree[handle]).type != EVENT)){
-    sprintf(retstr->strptr, "%d", 6);  /* invalid handle             */
-    retstr->strlength = strlen(retstr->strptr);
-    APICLEANUP(MACROCHAIN);
-    return VALID_ROUTINE;
-  }
-  /* if this will be the final close */
-  if((apidata->utilsemfree[handle]).usecount == 1){
-    /* if another thread in the process is waiting on the sem        */
-    if(semgetnumberwaiting(apidata->rexxutilsems,handle))
-      sprintf(retstr->strptr, "%d", 301);/* error sem busy           */
-    else {                            /* we can close                */
-      if((opencnt[handle][0])){       /* if I have it open           */
-        --((apidata->utilsemfree[handle]).usecount);/* decrement usecount*/
-        --(opencnt[handle][0]);            /* and privat open count  */
-        sprintf(retstr->strptr, "%d", 0);  /* no errors              */
-      }
-      else
-        sprintf(retstr->strptr, "%d", 6);  /* invalid handle         */
+    if (numargs != 1)                    /* Only one argument accepted */
+    {
+        return INVALID_ROUTINE;            /* raise error condition      */
     }
-  }
-  else {
-      if((opencnt[handle][0])){       /* if I have it open           */
-        --((apidata->utilsemfree[handle]).usecount);/* decrement usecount*/
-        --(opencnt[handle][0]);            /* and privat open count  */
-        sprintf(retstr->strptr, "%d", 0);  /* no errors              */
-      }
-      else
-        sprintf(retstr->strptr, "%d", 6);  /* invalid handle         */
-  }
-  if(!(apidata->utilsemfree[handle]).usecount){/*sem now unused ?    */
-                                       /* clear the name array       */
-    memset((apidata->utilsemfree[handle]).name, '\0', MAXNAME);
-    /* make sure the sem  is in a clear state                        */
-    semopts.val = 1;                   /* initial value                  */
-                                       /* do the initialisation          */
-    semctl(apidata->rexxutilsems, handle, SETVAL, semopts);
-  }
-  /* Possibly this was the last used sem. So we can remove the       */
-  /* semaphore set. Check this possibility.                          */
-  for(i=0;i<MAXUTILSEM;i++){           /* for all semaphores         */
-    if((apidata->utilsemfree[i]).usecount != 0 )/* a used one ?      */
-      used = 1;                        /* remember it                */
-  }
-  if(!used){                           /* if all sems are unused     */
-    removesem(apidata->rexxutilsems);  /* remove the semaphore set   */
-    apidata->rexxutilsems = 0;         /* delete the old ID          */
-  }
-  retstr->strlength = strlen(retstr->strptr);
-  APICLEANUP(MACROCHAIN);
-  return VALID_ROUTINE;                /* good completion            */
+
+    return VALID_ROUTINE; 
+#if 0
+                                           /* for each char of the handle*/
+    for (character=args[0].strptr;*character != '\0';character++)
+    {
+        c[0] = *character;
+        if (!strpbrk(c,"1234567890"))       /* if it is no number        */
+        {  
+            return INVALID_ROUTINE;          /* get out                    */
+        }
+    }
+    /* get a binary handle        */
+    handle = strtoul(args[0].strptr, NULL, 10);
+    handle = handle - OFFSET;            /* make it real               */
+    if (handle < 0 || handle >= MAXUTILSEM)/* if bad handle        */
+    {
+        sprintf(retstr->strptr, "%d", 6);  /* say so                     */
+        retstr->strlength = strlen(retstr->strptr);
+        return VALID_ROUTINE;
+    }
+    if (!apidata->rexxutilsems)          /* no sems created until now  */
+    {
+        sprintf(retstr->strptr, "%d", 6);  /* invalid handle             */
+        retstr->strlength = strlen(retstr->strptr);
+        return VALID_ROUTINE;
+    }
+    /* if the semaphore is unused or isn't a event semaphore           */
+    if (((apidata->utilsemfree[handle]).usecount == 0 ) ||
+        ((apidata->utilsemfree[handle]).type != EVENT))
+    {
+        sprintf(retstr->strptr, "%d", 6);  /* invalid handle             */
+        retstr->strlength = strlen(retstr->strptr);
+        return VALID_ROUTINE;
+    }
+    /* if this will be the final close */
+    if ((apidata->utilsemfree[handle]).usecount == 1)
+    {
+        /* if another thread in the process is waiting on the sem        */
+        if (semgetnumberwaiting(apidata->rexxutilsems,handle))
+        {  
+            sprintf(retstr->strptr, "%d", 301);/* error sem busy           */
+        }
+        else                            /* we can close                */
+        {
+            if ((opencnt[handle][0]))       /* if I have it open           */
+            {
+                --((apidata->utilsemfree[handle]).usecount);/* decrement usecount*/
+                --(opencnt[handle][0]);            /* and privat open count  */
+                sprintf(retstr->strptr, "%d", 0);  /* no errors              */
+            }
+            else
+            {
+                sprintf(retstr->strptr, "%d", 6);  /* invalid handle         */
+            }
+        }
+    }
+    else
+    {
+        if ((opencnt[handle][0]))       /* if I have it open           */
+        {
+            --((apidata->utilsemfree[handle]).usecount);/* decrement usecount*/
+            --(opencnt[handle][0]);            /* and privat open count  */
+            sprintf(retstr->strptr, "%d", 0);  /* no errors              */
+        }
+        else
+        {  
+            sprintf(retstr->strptr, "%d", 6);  /* invalid handle         */
+        }
+    }
+    if (!(apidata->utilsemfree[handle]).usecount)/*sem now unused ?    */
+    {
+        /* clear the name array       */
+        memset((apidata->utilsemfree[handle]).name, '\0', MAXNAME);
+        /* make sure the sem  is in a clear state                        */
+        semopts.val = 1;                   /* initial value                  */
+                                           /* do the initialisation          */
+        semctl(apidata->rexxutilsems, handle, SETVAL, semopts);
+    }
+    /* Possibly this was the last used sem. So we can remove the       */
+    /* semaphore set. Check this possibility.                          */
+    for (i=0;i<MAXUTILSEM;i++)           /* for all semaphores         */
+    {
+        if ((apidata->utilsemfree[i]).usecount != 0)/* a used one ?      */
+        {  
+            used = 1;                        /* remember it                */
+        }
+    }
+    if (!used)                           /* if all sems are unused     */
+    {
+        removesem(apidata->rexxutilsems);  /* remove the semaphore set   */
+        apidata->rexxutilsems = 0;         /* delete the old ID          */
+    }
+    retstr->strlength = strlen(retstr->strptr);
+    return VALID_ROUTINE;                /* good completion            */
+#endif 
 }
 
 /*************************************************************************
@@ -2845,127 +2913,147 @@ size_t RexxEntry SysCloseEventSem(const char *name, size_t numargs, CONSTRXSTRIN
 
 size_t RexxEntry SysWaitEventSem(const char *name, size_t numargs, CONSTRXSTRING args[], const char *queuename, PRXSTRING retstr)
 {
-  int       handle;                    /* semaphore  handle          */
-  int       timeout = 0;               /* time for timeout           */
-  const char *character;
-  char      c[2]={'\0','\0'};
-  pthread_t  thread;                   /* timeout thread             */
-  bool bwaitandreset = false;
+    int       handle;                    /* semaphore  handle          */
+    int       timeout = 0;               /* time for timeout           */
+    const char *character;
+    char      c[2]={'\0','\0'};
+    pthread_t  thread;                   /* timeout thread             */
+    bool bwaitandreset = false;
 
-  if (numargs < 1 ||                   /* too few, or                */
-      numargs > 2 ||                   /* too many, or               */
-      !RXVALIDSTRING(args[0]))         /* first is omitted           */
-    return INVALID_ROUTINE;            /* raise error condition      */
-                                       /* get a binary handle        */
-  if (numargs == 2) {                  /* have a timeout value?      */
-                                       /*for each char of the timeout*/
-    for(character=args[1].strptr;*character != '\0';character++){
-      c[0] = *character;
-      if(!strpbrk(c,"1234567890"))     /* if it is no number         */
-        return INVALID_ROUTINE;        /* get out                    */
-    }
-                                       /* get number of seconds      */
-    timeout = strtol(args[1].strptr, NULL, 0);
-  }
-                                       /* for each char of the handle*/
-  for(character=args[0].strptr;*character != '\0';character++){
-    c[0] = *character;
-    if(!strpbrk(c,"1234567890"))       /* if it is no number        */
-      return INVALID_ROUTINE;          /* get out                    */
-  }
-  handle = strtoul(args[0].strptr, NULL, 10);/* get binary handle    */
-  handle = handle - OFFSET;            /* make it real               */
-  if (handle < 0 || handle >= MAXUTILSEM){/* if bad handle        */
-    sprintf(retstr->strptr, "%d", 6);  /* say so                     */
-    retstr->strlength = strlen(retstr->strptr);
-    return VALID_ROUTINE;
-  }
-  APISTARTUP(MACROCHAIN);
-  if(!apidata->rexxutilsems){          /* no sems created until now  */
-    sprintf(retstr->strptr, "%d", 6);  /* invalid handle             */
-    retstr->strlength = strlen(retstr->strptr);
-    APICLEANUP(MACROCHAIN);
-    return VALID_ROUTINE;
-  }
-  /* if the semaphore is unused or isn't a event semaphore           */
-  if(((apidata->utilsemfree[handle]).usecount == 0 ) ||
-         ((apidata->utilsemfree[handle]).type != EVENT)){
-    sprintf(retstr->strptr, "%d", 6);  /* invalid handle             */
-    retstr->strlength = strlen(retstr->strptr);
-    APICLEANUP(MACROCHAIN);
-    return VALID_ROUTINE;
-  }
-  if(!(opencnt[handle][0])){           /* if I haven't open the sem  */
-    sprintf(retstr->strptr, "%d", 6);  /* invalid handle             */
-    retstr->strlength = strlen(retstr->strptr);
-    APICLEANUP(MACROCHAIN);
-    return VALID_ROUTINE;
-  }
-  bwaitandreset = apidata->utilsemfree[handle].waitandreset;
-  if(numargs == 1){                    /* indefinit wait             */
-    APICLEANUP(MACROCHAIN);            /* release the shared resouces*/
-    /* try to lock the sem to do the wait                            */
-    locksem(apidata->rexxutilsems, handle);
-
-    /* take care, if WAITANDRESET == true don't unlock               */
-
-    if(!bwaitandreset)
+    if (numargs < 1 ||                   /* too few, or                */
+        numargs > 2 ||                   /* too many, or               */
+        !RXVALIDSTRING(args[0]))         /* first is omitted           */
     {
-      unlocksem(apidata->rexxutilsems, handle);
+        return INVALID_ROUTINE;            /* raise error condition      */
     }
-    sprintf(retstr->strptr, "%d", 0);  /* no errors                  */
-    retstr->strlength = strlen(retstr->strptr);
-    return VALID_ROUTINE;              /* good completion            */
-  }
-  else {                               /* need timeout               */
-    int brk[2];                        /* timeout flag and value     */
-    struct sembuf sem_lock = {handle, -1,IPC_NOWAIT};
 
-    if((!timeout) || (timeout > INT_MAX/1000)){/* if zero timeout    */
-      sprintf(retstr->strptr, "%d", 640);/* error timeout            */
-      APICLEANUP(MACROCHAIN);          /* release the shared resouces*/
-      retstr->strlength = strlen(retstr->strptr);
-      return VALID_ROUTINE;            /* good completion            */
+    return VALID_ROUTINE; 
+#if 0
+                                           /* get a binary handle        */
+    if (numargs == 2)                  /* have a timeout value?      */
+    {
+        /*for each char of the timeout*/
+        for (character=args[1].strptr;*character != '\0';character++)
+        {
+            c[0] = *character;
+            if (!strpbrk(c,"1234567890"))     /* if it is no number         */
+            {  
+                return INVALID_ROUTINE;        /* get out                    */
+            }
+        }
+        /* get number of seconds      */
+        timeout = strtol(args[1].strptr, NULL, 0);
     }
-    brk[0]=0;                          /* reset the timeout flag     */
-    brk[1]=timeout;                    /* set the requested timeout  */
-                                       /* start the timeout thread   */
-    if(pthread_create(&thread,NULL,tout,(void*)brk)){
-      sprintf(retstr->strptr, "%d", 95);/* error not enough memory   */
-      APICLEANUP(MACROCHAIN);          /* release the shared resouces*/
-      retstr->strlength = strlen(retstr->strptr);
-      return VALID_ROUTINE;
+    /* for each char of the handle*/
+    for (character=args[0].strptr;*character != '\0';character++)
+    {
+        c[0] = *character;
+        if (!strpbrk(c,"1234567890"))       /* if it is no number        */
+        {  
+            return INVALID_ROUTINE;          /* get out                    */
+        }
     }
-    APICLEANUP(MACROCHAIN);            /* release the shared resouces*/
-    SysThreadYield();                  /* some time to register sig           */
-                                       /* while no success           */
-    while(semop(apidata->rexxutilsems,&sem_lock,1) != 0 ){
-      if((errno) && (errno != EAGAIN)){/* if there was a real error  */
-       sprintf(retstr->strptr, "%d", 95);/* error not enough memory  */
-       retstr->strlength = strlen(retstr->strptr);
-       return VALID_ROUTINE;
-      }
-      else {
-        SysThreadYield();            /* free the processor           */
-        if(brk[0])                   /* if time out                  */
-          break;                     /*no longer tying to get the sem*/
-      }
+    handle = strtoul(args[0].strptr, NULL, 10);/* get binary handle    */
+    handle = handle - OFFSET;            /* make it real               */
+    if (handle < 0 || handle >= MAXUTILSEM)/* if bad handle        */
+    {
+        sprintf(retstr->strptr, "%d", 6);  /* say so                     */
+        retstr->strlength = strlen(retstr->strptr);
+        return VALID_ROUTINE;
     }
-    pthread_kill(thread,SIGUSR1);    /* kill the timer thread        */
-    if(brk[0]){
-      sprintf(retstr->strptr, "%d", 640);/* error timeout            */
+    if (!apidata->rexxutilsems)          /* no sems created until now  */
+    {
+        sprintf(retstr->strptr, "%d", 6);  /* invalid handle             */
+        retstr->strlength = strlen(retstr->strptr);
+        return VALID_ROUTINE;
     }
-    else {/* immediatly release the sem                              */
-    /* take care, if WAITANDRESET == true don't unlock               */
-      if(!bwaitandreset)
-      {
-        unlocksem(apidata->rexxutilsems, handle);
-      }
-      sprintf(retstr->strptr, "%d", 0);/* no error                   */
+    /* if the semaphore is unused or isn't a event semaphore           */
+    if (((apidata->utilsemfree[handle]).usecount == 0 ) ||
+        ((apidata->utilsemfree[handle]).type != EVENT))
+    {
+        sprintf(retstr->strptr, "%d", 6);  /* invalid handle             */
+        retstr->strlength = strlen(retstr->strptr);
+        return VALID_ROUTINE;
     }
-    retstr->strlength = strlen(retstr->strptr);
-    return VALID_ROUTINE;              /* good completion            */
-  }
+    if (!(opencnt[handle][0]))           /* if I haven't open the sem  */
+    {
+        sprintf(retstr->strptr, "%d", 6);  /* invalid handle             */
+        retstr->strlength = strlen(retstr->strptr);
+        return VALID_ROUTINE;
+    }
+    bwaitandreset = apidata->utilsemfree[handle].waitandreset;
+    if (numargs == 1)                    /* indefinit wait             */
+    {
+        /* try to lock the sem to do the wait                            */
+        locksem(apidata->rexxutilsems, handle);
+
+        /* take care, if WAITANDRESET == true don't unlock               */
+
+        if (!bwaitandreset)
+        {
+            unlocksem(apidata->rexxutilsems, handle);
+        }
+        sprintf(retstr->strptr, "%d", 0);  /* no errors                  */
+        retstr->strlength = strlen(retstr->strptr);
+        return VALID_ROUTINE;              /* good completion            */
+    }
+    else                               /* need timeout               */
+    {
+        int brk[2];                        /* timeout flag and value     */
+        struct sembuf sem_lock = {handle, -1,IPC_NOWAIT};
+
+        if ((!timeout) || (timeout > INT_MAX/1000))/* if zero timeout    */
+        {
+            sprintf(retstr->strptr, "%d", 640);/* error timeout            */
+            retstr->strlength = strlen(retstr->strptr);
+            return VALID_ROUTINE;            /* good completion            */
+        }
+        brk[0]=0;                          /* reset the timeout flag     */
+        brk[1]=timeout;                    /* set the requested timeout  */
+                                           /* start the timeout thread   */
+        if (pthread_create(&thread,NULL,tout,(void*)brk))
+        {
+            sprintf(retstr->strptr, "%d", 95);/* error not enough memory   */
+            retstr->strlength = strlen(retstr->strptr);
+            return VALID_ROUTINE;
+        }
+        SysThreadYield();                  /* some time to register sig           */
+                                           /* while no success           */
+        while (semop(apidata->rexxutilsems,&sem_lock,1) != 0)
+        {
+            if ((errno) && (errno != EAGAIN))/* if there was a real error  */
+            {
+                sprintf(retstr->strptr, "%d", 95);/* error not enough memory  */
+                retstr->strlength = strlen(retstr->strptr);
+                return VALID_ROUTINE;
+            }
+            else
+            {
+                SysThreadYield();            /* free the processor           */
+                if (brk[0])                   /* if time out                  */
+                {  
+                    break;                     /*no longer tying to get the sem*/
+                }
+            }
+        }
+        pthread_kill(thread,SIGUSR1);    /* kill the timer thread        */
+        if (brk[0])
+        {
+            sprintf(retstr->strptr, "%d", 640);/* error timeout            */
+        }
+        else/* immediatly release the sem                              */
+        {
+            /* take care, if WAITANDRESET == true don't unlock               */
+            if (!bwaitandreset)
+            {
+                unlocksem(apidata->rexxutilsems, handle);
+            }
+            sprintf(retstr->strptr, "%d", 0);/* no error                   */
+        }
+        retstr->strlength = strlen(retstr->strptr);
+        return VALID_ROUTINE;              /* good completion            */
+    }
+#endif 
 }
 
 /*************************************************************************
@@ -2982,111 +3070,122 @@ size_t RexxEntry SysWaitEventSem(const char *name, size_t numargs, CONSTRXSTRING
 *************************************************************************/
 size_t RexxEntry SysCreateMutexSem(const char *name, size_t numargs, CONSTRXSTRING args[], const char *queuename, PRXSTRING retstr)
 {
-  int handle;                          /* semaphore handle           */
-  int i;                               /* counter                    */
-  union semun semopts;               /* for semaphore control          */
+    int handle;                          /* semaphore handle           */
+    int i;                               /* counter                    */
+    union semun semopts;               /* for semaphore control          */
 
-  if (numargs > 1)                     /* Too many arguments?        */
-      return INVALID_ROUTINE;          /* raise error too many       */
-
-  APISTARTUP(MACROCHAIN);
-  if(initUtilSems()) {                 /* if system limit reached    */
-    retstr->strlength = 0;             /* return null string         */
-    APICLEANUP(MACROCHAIN);
-    return VALID_ROUTINE;
-  }
-
-
-  if (numargs == 1) {                  /* request for named sem      */
-                                       /* if name to long or zero    */
-    if((args[0].strlength>MAXNAME-1) || !(args[0].strlength)){
-      printf("\nSemaphore name to long or no name provided !\nName: %s\n",args[0].strptr);
-      retstr->strlength = 0;           /* return null string         */
-      APICLEANUP(MACROCHAIN);
-      return VALID_ROUTINE;
+    if (numargs > 1)                     /* Too many arguments?        */
+    {
+        return INVALID_ROUTINE;          /* raise error too many       */
     }
-    /* check wheather semaphore exists                               */
-    handle = -1;                       /* reset handle               */
-    for(i=0;i<MAXUTILSEM;i++){         /* for all semaphores         */
-      if(((apidata->utilsemfree[i]).usecount > 0) &&/* a used     */
-             ((apidata->utilsemfree[i]).type == MUTEX)){/*mutex sem ?*/
-                                       /* if we have a match         */
-        if(!strcmp((apidata->utilsemfree[i]).name,args[0].strptr)){
-          handle = i;                  /* remember the handle        */
-          break;                       /*         for max sem        */
-        }
-      }
-    }
-    if(handle != -1){                  /* if semaphore exists        */
-      (apidata->utilsemfree[handle]).usecount++;/* increment usecount*/
-      (opencnt[handle][0])++;          /* and privat open count      */
-                                       /* format the result          */
-      sprintf(retstr->strptr, "%d", (handle+OFFSET));
-      retstr->strlength = strlen(retstr->strptr);
-      APICLEANUP(MACROCHAIN);
-      return VALID_ROUTINE;
-    }
-    else {                             /* semaphore doesn't exists   */
-      handle = -1;                     /* reset the handle           */
-      /*looking for a unused semaphore                               */
-      for(i=0;i<MAXUTILSEM;i++){       /* for all semaphores         */
-                                       /* found a unused one ?       */
-        if((apidata->utilsemfree[i]).usecount == 0 )
-        {                              /* for max sem        */
-          handle = i;                  /* remember the handle        */
-          break;                       /* for max sem        */
-        }                              /* for max sem        */
-      }
-      if(handle == -1){                /* all semaphores used        */
-        retstr->strlength = 0;         /* return null string         */
-        APICLEANUP(MACROCHAIN);
+
+    return VALID_ROUTINE; 
+#if 0
+
+    if (initUtilSems())                 /* if system limit reached    */
+    {
+        retstr->strlength = 0;             /* return null string         */
         return VALID_ROUTINE;
-      }
-                                       /* copy the name over         */
-      strcpy((apidata->utilsemfree[handle]).name,args[0].strptr);
-      (apidata->utilsemfree[handle]).usecount++;/*increment usecount */
-      (opencnt[handle][0])++;          /* and privat open count      */
-      (apidata->utilsemfree[handle]).type = MUTEX;/* set the type    */
-      /* reset the semaphore                                         */
-      semopts.val = 1;                 /* initial value                  */
-                                       /* do the initialisation          */
-      semctl(apidata->rexxutilsems, handle, SETVAL, semopts);
-                                       /* format the result          */
-      sprintf(retstr->strptr, "%d", (handle+OFFSET));
-      retstr->strlength = strlen(retstr->strptr);
-      APICLEANUP(MACROCHAIN);
-      return VALID_ROUTINE;
     }
-  }
-  else {                               /* unnamed semaphore          */
-      handle = -1;                     /* reset the handle           */
-      /*looking for a unused semaphore                               */
-      for(i=0;i<MAXUTILSEM;i++){       /* for all semaphores         */
-                                       /* found a unused one ?       */
-        if((apidata->utilsemfree[i]).usecount == 0 )
+
+
+    if (numargs == 1)                  /* request for named sem      */
+    {
+        /* if name to long or zero    */
+        if ((args[0].strlength>MAXNAME-1) || !(args[0].strlength))
         {
-          handle = i;                  /* remember the handle        */
-          break;                       /*         for max sem        */
+            printf("\nSemaphore name to long or no name provided !\nName: %s\n",args[0].strptr);
+            retstr->strlength = 0;           /* return null string         */
+            return VALID_ROUTINE;
         }
-      }
-      if(handle == -1){                /* all semaphores used        */
-        retstr->strlength = 0;         /* return null string         */
-        APICLEANUP(MACROCHAIN);
+        /* check wheather semaphore exists                               */
+        handle = -1;                       /* reset handle               */
+        for (i=0;i<MAXUTILSEM;i++)         /* for all semaphores         */
+        {
+            if (((apidata->utilsemfree[i]).usecount > 0) &&/* a used     */
+                ((apidata->utilsemfree[i]).type == MUTEX))/*mutex sem ?*/
+            {
+                /* if we have a match         */
+                if (!strcmp((apidata->utilsemfree[i]).name,args[0].strptr))
+                {
+                    handle = i;                  /* remember the handle        */
+                    break;                       /*         for max sem        */
+                }
+            }
+        }
+        if (handle != -1)                  /* if semaphore exists        */
+        {
+            (apidata->utilsemfree[handle]).usecount++;/* increment usecount*/
+            (opencnt[handle][0])++;          /* and privat open count      */
+                                             /* format the result          */
+            sprintf(retstr->strptr, "%d", (handle+OFFSET));
+            retstr->strlength = strlen(retstr->strptr);
+            return VALID_ROUTINE;
+        }
+        else                             /* semaphore doesn't exists   */
+        {
+            handle = -1;                     /* reset the handle           */
+            /*looking for a unused semaphore                               */
+            for (i=0;i<MAXUTILSEM;i++)       /* for all semaphores         */
+            {
+                /* found a unused one ?       */
+                if ((apidata->utilsemfree[i]).usecount == 0)
+                {                              /* for max sem        */
+                    handle = i;                  /* remember the handle        */
+                    break;                       /* for max sem        */
+                }                              /* for max sem        */
+            }
+            if (handle == -1)                /* all semaphores used        */
+            {
+                retstr->strlength = 0;         /* return null string         */
+                return VALID_ROUTINE;
+            }
+            /* copy the name over         */
+            strcpy((apidata->utilsemfree[handle]).name,args[0].strptr);
+            (apidata->utilsemfree[handle]).usecount++;/*increment usecount */
+            (opencnt[handle][0])++;          /* and privat open count      */
+            (apidata->utilsemfree[handle]).type = MUTEX;/* set the type    */
+            /* reset the semaphore                                         */
+            semopts.val = 1;                 /* initial value                  */
+                                             /* do the initialisation          */
+            semctl(apidata->rexxutilsems, handle, SETVAL, semopts);
+            /* format the result          */
+            sprintf(retstr->strptr, "%d", (handle+OFFSET));
+            retstr->strlength = strlen(retstr->strptr);
+            return VALID_ROUTINE;
+        }
+    }
+    else                               /* unnamed semaphore          */
+    {
+        handle = -1;                     /* reset the handle           */
+        /*looking for a unused semaphore                               */
+        for (i=0;i<MAXUTILSEM;i++)       /* for all semaphores         */
+        {
+            /* found a unused one ?       */
+            if ((apidata->utilsemfree[i]).usecount == 0)
+            {
+                handle = i;                  /* remember the handle        */
+                break;                       /*         for max sem        */
+            }
+        }
+        if (handle == -1)                /* all semaphores used        */
+        {
+            retstr->strlength = 0;         /* return null string         */
+            return VALID_ROUTINE;
+        }
+        (apidata->utilsemfree[handle]).usecount++;/*increment usecount */
+        (opencnt[handle][0])++;          /* and privat open count      */
+        (apidata->utilsemfree[handle]).type = MUTEX;/* set the type    */
+        /* reset the semaphore                                         */
+        semopts.val = 1;                 /* initial value                  */
+                                         /* do the initialisation          */
+        semctl(apidata->rexxutilsems, handle, SETVAL, semopts);
+        /* format the result          */
+        sprintf(retstr->strptr, "%d", (handle+OFFSET));
+        retstr->strlength = strlen(retstr->strptr);
         return VALID_ROUTINE;
-      }
-      (apidata->utilsemfree[handle]).usecount++;/*increment usecount */
-      (opencnt[handle][0])++;          /* and privat open count      */
-      (apidata->utilsemfree[handle]).type = MUTEX;/* set the type    */
-      /* reset the semaphore                                         */
-      semopts.val = 1;                 /* initial value                  */
-                                       /* do the initialisation          */
-      semctl(apidata->rexxutilsems, handle, SETVAL, semopts);
-                                       /* format the result          */
-      sprintf(retstr->strptr, "%d", (handle+OFFSET));
-      retstr->strlength = strlen(retstr->strptr);
-      APICLEANUP(MACROCHAIN);
-      return VALID_ROUTINE;
-  }
+    }
+#endif 
 }
 
 /*************************************************************************
@@ -3101,51 +3200,62 @@ size_t RexxEntry SysCreateMutexSem(const char *name, size_t numargs, CONSTRXSTRI
 
 size_t RexxEntry SysOpenMutexSem(const char *name, size_t numargs, CONSTRXSTRING args[], const char *queuename, PRXSTRING retstr)
 {
-  int       handle;                    /* semaphore  handle          */
-  const char *character;
-  char      c[2]={'\0','\0'};
+    int       handle;                    /* semaphore  handle          */
+    const char *character;
+    char      c[2]={'\0','\0'};
 
-  if (numargs != 1)                    /* Only one argument accepted */
-    return INVALID_ROUTINE;            /* raise error condition      */
-                                       /* for each char of the handle*/
-  for(character=args[0].strptr;*character != '\0';character++){
-    c[0] = *character;
-    if(!strpbrk(c,"1234567890"))       /* if it is no number         */
-      return INVALID_ROUTINE;          /* get out                    */
-  }
-                                       /* get a binary handle        */
-  handle = strtoul(args[0].strptr, NULL, 10);
-  handle = handle - OFFSET;            /* make it real               */
-  if (handle < 0 || handle >= MAXUTILSEM){/* if bad handle        */
-    sprintf(retstr->strptr, "%d", 6);  /* say so                     */
+    if (numargs != 1)                    /* Only one argument accepted */
+    {
+        return INVALID_ROUTINE;            /* raise error condition      */
+    }
+
+    return VALID_ROUTINE; 
+#if 0
+                                           /* for each char of the handle*/
+    for (character=args[0].strptr;*character != '\0';character++)
+    {
+        c[0] = *character;
+        if (!strpbrk(c,"1234567890"))       /* if it is no number         */
+        {  
+            return INVALID_ROUTINE;          /* get out                    */
+        }
+    }
+    /* get a binary handle        */
+    handle = strtoul(args[0].strptr, NULL, 10);
+    handle = handle - OFFSET;            /* make it real               */
+    if (handle < 0 || handle >= MAXUTILSEM)/* if bad handle        */
+    {
+        sprintf(retstr->strptr, "%d", 6);  /* say so                     */
+        retstr->strlength = strlen(retstr->strptr);
+        return VALID_ROUTINE;
+    }
+    if (!apidata->rexxutilsems)          /* no sems created until now  */
+    {
+        sprintf(retstr->strptr, "%d", 6);  /* invalid handle             */
+        retstr->strlength = strlen(retstr->strptr);
+        return VALID_ROUTINE;
+    }
+    /* if the semaphore is unused or isn't a mutex semaphore           */
+    if (((apidata->utilsemfree[handle]).usecount == 0 ) ||
+        ((apidata->utilsemfree[handle]).type != MUTEX))
+    {
+        sprintf(retstr->strptr, "%d", 6);  /* invalid handle             */
+        retstr->strlength = strlen(retstr->strptr);
+        return VALID_ROUTINE;
+    }
+    if ((apidata->utilsemfree[handle]).usecount < MAXUSECOUNT)
+    {
+        (apidata->utilsemfree[handle]).usecount++;/* increment usecount  */
+        (opencnt[handle][0])++;            /* and privat open count      */
+        sprintf(retstr->strptr, "%d", 0);    /* no errors                */
+    }
+    else
+    {
+        sprintf(retstr->strptr, "%d", 291);  /* to many opens            */
+    }
     retstr->strlength = strlen(retstr->strptr);
-    return VALID_ROUTINE;
-  }
-  APISTARTUP(MACROCHAIN);
-  if(!apidata->rexxutilsems){          /* no sems created until now  */
-    sprintf(retstr->strptr, "%d", 6);  /* invalid handle             */
-    retstr->strlength = strlen(retstr->strptr);
-    APICLEANUP(MACROCHAIN);
-    return VALID_ROUTINE;
-  }
-  /* if the semaphore is unused or isn't a mutex semaphore           */
-  if(((apidata->utilsemfree[handle]).usecount == 0 ) ||
-         ((apidata->utilsemfree[handle]).type != MUTEX)){
-    sprintf(retstr->strptr, "%d", 6);  /* invalid handle             */
-    retstr->strlength = strlen(retstr->strptr);
-    APICLEANUP(MACROCHAIN);
-    return VALID_ROUTINE;
-  }
-  if((apidata->utilsemfree[handle]).usecount < MAXUSECOUNT){
-    (apidata->utilsemfree[handle]).usecount++;/* increment usecount  */
-    (opencnt[handle][0])++;            /* and privat open count      */
-    sprintf(retstr->strptr, "%d", 0);    /* no errors                */
-  }
-  else
-    sprintf(retstr->strptr, "%d", 291);  /* to many opens            */
-  retstr->strlength = strlen(retstr->strptr);
-  APICLEANUP(MACROCHAIN);
-  return VALID_ROUTINE;                /* good completion            */
+    return VALID_ROUTINE;                /* good completion            */
+#endif 
 }
 
 /*************************************************************************
@@ -3160,138 +3270,173 @@ size_t RexxEntry SysOpenMutexSem(const char *name, size_t numargs, CONSTRXSTRING
 
 size_t RexxEntry SysRequestMutexSem(const char *name, size_t numargs, CONSTRXSTRING args[], const char *queuename, PRXSTRING retstr)
 {
-  int       handle;                    /* semaphore  handle          */
-  int       timeout = 0;               /* time for timeout           */
-  pthread_t thread;                    /* timeout thread             */
-  const char *character;
-  char      c[2]={'\0','\0'};
+    int       handle;                    /* semaphore  handle          */
+    int       timeout = 0;               /* time for timeout           */
+    pthread_t thread;                    /* timeout thread             */
+    const char *character;
+    char      c[2]={'\0','\0'};
 
-  if (numargs < 1 ||                   /* too few, or                */
-      numargs > 2 ||                   /* too many, or               */
-      !RXVALIDSTRING(args[0]))         /* first is omitted           */
-    return INVALID_ROUTINE;            /* raise error condition      */
-                                       /* get a binary handle        */
-  if (numargs == 2) {                  /* have a timeout value?      */
-                                       /*for each char of the timeout*/
-    for(character=args[1].strptr;*character != '\0';character++){
-      c[0] = *character;
-      if(!strpbrk(c,"1234567890"))     /* if it is no number         */
-        return INVALID_ROUTINE;        /* get out                    */
+    if (numargs < 1 ||                   /* too few, or                */
+        numargs > 2 ||                   /* too many, or               */
+        !RXVALIDSTRING(args[0]))         /* first is omitted           */
+    {
+        return INVALID_ROUTINE;            /* raise error condition      */
     }
-                                       /* get number of seconds      */
-    timeout = strtol(args[1].strptr, NULL, 10);
-  }
-                                       /* for each char of the handle*/
-  for(character=args[0].strptr;*character != '\0';character++){
-    c[0] = *character;
-    if(!strpbrk(c,"1234567890"))       /* if it is no number        */
-      return INVALID_ROUTINE;          /* get out                    */
-  }
-  handle = strtoul(args[0].strptr, NULL, 10);/* get binary handle    */
-  handle = handle - OFFSET;            /* make it real               */
-  if (handle < 0 || handle >= MAXUTILSEM){/* if bad handle        */
-    sprintf(retstr->strptr, "%d", 6);  /* say so                     */
-    retstr->strlength = strlen(retstr->strptr);
-    return VALID_ROUTINE;
-  }
-  if(!apidata->rexxutilsems){          /* no sems created until now  */
-    sprintf(retstr->strptr, "%d", 6);  /* invalid handle             */
-    retstr->strlength = strlen(retstr->strptr);
-    return VALID_ROUTINE;
-  }
-  /* if the semaphore is unused or isn't a mutex semaphore           */
-  if(((apidata->utilsemfree[handle]).usecount == 0 ) ||
-         ((apidata->utilsemfree[handle]).type != MUTEX)){
-    sprintf(retstr->strptr, "%d", 6);  /* invalid handle             */
-    retstr->strlength = strlen(retstr->strptr);
-    return VALID_ROUTINE;
-  }
-  if(!(opencnt[handle][0])){           /* if I haven't open the sem  */
-    sprintf(retstr->strptr, "%d", 6);  /* invalid handle             */
-    retstr->strlength = strlen(retstr->strptr);
-    return VALID_ROUTINE;
-  }
-  if(numargs == 1){                    /* indefinit wait             */
 
-    if(!getval(apidata->rexxutilsems, handle)){/* if sem is locked     */
-                                               /* and I'm the owner    */
-      if((opencnt[handle][1]) == pthread_self()){
-        sprintf(retstr->strptr, "%d", 0);    /* no errors              */
-      }
-      else {                             /* wait for it                */
-        /* try to lock the sem                                         */
-        locksem(apidata->rexxutilsems, handle);
-        (opencnt[handle][1])= pthread_self();/* TID of the owner   */
-        sprintf(retstr->strptr, "%d", 0);  /* no errors                */
-      }
-    }
-    else {                               /* sem unlocked               */
-      /*        lock the sem                                           */
-      locksem(apidata->rexxutilsems, handle);
-      (opencnt[handle][1])= pthread_self();/* TID of the owner     */
-      sprintf(retstr->strptr, "%d", 0);  /* no errors                  */
-    }
-    retstr->strlength = strlen(retstr->strptr);
-    return VALID_ROUTINE;                /* good completion            */
-  }
-  else {                                 /* need timeout porcess       */
-      if(!getval(apidata->rexxutilsems, handle)){/* if sem is locked   */
-                                                 /* and I'm the owner  */
-        if((opencnt[handle][1]) == pthread_self()){
-          sprintf(retstr->strptr, "%d", 0);/* no errors                */
-        }
-        else {                           /* wait for it                */
-          int brk[2];
-          struct sembuf sem_lock = {handle, -1,IPC_NOWAIT};
-          if((!timeout) || (timeout > INT_MAX/1000)){/* if zero timeout*/
-            sprintf(retstr->strptr, "%d", 640);/* error timeout        */
-            retstr->strlength = strlen(retstr->strptr);
-            return VALID_ROUTINE;        /* good completion            */
-          }
-          brk[0]=0;                      /* reset the timeout flag     */
-          brk[1]=timeout;                /* set the requested timeout  */
-                                         /* start the timeout thread   */
-          if(pthread_create(&thread,NULL,tout,(void*)brk)){
-            sprintf(retstr->strptr, "%d", 95);/*error not enough memory*/
-            retstr->strlength = strlen(retstr->strptr);
-            return VALID_ROUTINE;
-          }
-          SysThreadYield();              /* free the processor           */
-                                         /* while no success           */
-          while(semop(apidata->rexxutilsems,&sem_lock,1) != 0 ){
-            if((errno) && (errno != EAGAIN)){/* if there was a real error  */
-             sprintf(retstr->strptr, "%d", 95);/* error not enough memory  */
-             retstr->strlength = strlen(retstr->strptr);
-             return VALID_ROUTINE;
+    return VALID_ROUTINE; 
+#if 0
+                                           /* get a binary handle        */
+    if (numargs == 2)                  /* have a timeout value?      */
+    {
+        /*for each char of the timeout*/
+        for (character=args[1].strptr;*character != '\0';character++)
+        {
+            c[0] = *character;
+            if (!strpbrk(c,"1234567890"))     /* if it is no number         */
+            {  
+                return INVALID_ROUTINE;        /* get out                    */
             }
-            else {
-              SysThreadYield();        /* free the processor           */
-              if(brk[0])               /* if time out                  */
-                break;                 /*no longer tying to get the sem*/
-            }
-          }
-          pthread_kill(thread,SIGUSR1);/* kill the timer thread        */
-          if(brk[0]){
-            sprintf(retstr->strptr, "%d", 640);/* error timeout        */
-          }
-          else {/* got it                                              */
-            (opencnt[handle][1])= pthread_self();/*TID of the owner*/
-            sprintf(retstr->strptr, "%d", 0);/* no error               */
-          }
-          retstr->strlength = strlen(retstr->strptr);
-          return VALID_ROUTINE;          /* good completion            */
         }
-      }
-      else {                             /* sem unlocked               */
+        /* get number of seconds      */
+        timeout = strtol(args[1].strptr, NULL, 10);
+    }
+    /* for each char of the handle*/
+    for (character=args[0].strptr;*character != '\0';character++)
+    {
+        c[0] = *character;
+        if (!strpbrk(c,"1234567890"))       /* if it is no number        */
+        {
+            return INVALID_ROUTINE;          /* get out                    */
+        }
+    }
+    handle = strtoul(args[0].strptr, NULL, 10);/* get binary handle    */
+    handle = handle - OFFSET;            /* make it real               */
+    if (handle < 0 || handle >= MAXUTILSEM)/* if bad handle        */
+    {
+        sprintf(retstr->strptr, "%d", 6);  /* say so                     */
+        retstr->strlength = strlen(retstr->strptr);
+        return VALID_ROUTINE;
+    }
+    if (!apidata->rexxutilsems)          /* no sems created until now  */
+    {
+        sprintf(retstr->strptr, "%d", 6);  /* invalid handle             */
+        retstr->strlength = strlen(retstr->strptr);
+        return VALID_ROUTINE;
+    }
+    /* if the semaphore is unused or isn't a mutex semaphore           */
+    if (((apidata->utilsemfree[handle]).usecount == 0 ) ||
+        ((apidata->utilsemfree[handle]).type != MUTEX))
+    {
+        sprintf(retstr->strptr, "%d", 6);  /* invalid handle             */
+        retstr->strlength = strlen(retstr->strptr);
+        return VALID_ROUTINE;
+    }
+    if (!(opencnt[handle][0]))           /* if I haven't open the sem  */
+    {
+        sprintf(retstr->strptr, "%d", 6);  /* invalid handle             */
+        retstr->strlength = strlen(retstr->strptr);
+        return VALID_ROUTINE;
+    }
+    if (numargs == 1)                    /* indefinit wait             */
+    {
+        if (!getval(apidata->rexxutilsems, handle))/* if sem is locked     */
+        {
+            /* and I'm the owner    */
+            if ((opencnt[handle][1]) == pthread_self())
+            {
+                sprintf(retstr->strptr, "%d", 0);    /* no errors              */
+            }
+            else                             /* wait for it                */
+            {
+                /* try to lock the sem                                         */
+                locksem(apidata->rexxutilsems, handle);
+                (opencnt[handle][1])= pthread_self();/* TID of the owner   */
+                sprintf(retstr->strptr, "%d", 0);  /* no errors                */
+            }
+        }
+        else                               /* sem unlocked               */
+        {
+            /*        lock the sem                                           */
+            locksem(apidata->rexxutilsems, handle);
+            (opencnt[handle][1])= pthread_self();/* TID of the owner     */
+            sprintf(retstr->strptr, "%d", 0);  /* no errors                  */
+        }
+        retstr->strlength = strlen(retstr->strptr);
+        return VALID_ROUTINE;                /* good completion            */
+    }
+    else                                 /* need timeout porcess       */
+    {
+        if (!getval(apidata->rexxutilsems, handle))/* if sem is locked   */
+        {
+            /* and I'm the owner  */
+            if ((opencnt[handle][1]) == pthread_self())
+            {
+                sprintf(retstr->strptr, "%d", 0);/* no errors                */
+            }
+            else                           /* wait for it                */
+            {
+                int brk[2];
+                struct sembuf sem_lock = {handle, -1,IPC_NOWAIT};
+                if ((!timeout) || (timeout > INT_MAX/1000))/* if zero timeout*/
+                {
+                    sprintf(retstr->strptr, "%d", 640);/* error timeout        */
+                    retstr->strlength = strlen(retstr->strptr);
+                    return VALID_ROUTINE;        /* good completion            */
+                }
+                brk[0]=0;                      /* reset the timeout flag     */
+                brk[1]=timeout;                /* set the requested timeout  */
+                                               /* start the timeout thread   */
+                if (pthread_create(&thread,NULL,tout,(void*)brk))
+                {
+                    sprintf(retstr->strptr, "%d", 95);/*error not enough memory*/
+                    retstr->strlength = strlen(retstr->strptr);
+                    return VALID_ROUTINE;
+                }
+                SysThreadYield();              /* free the processor           */
+                                               /* while no success           */
+                while (semop(apidata->rexxutilsems,&sem_lock,1) != 0)
+                {
+                    if ((errno) && (errno != EAGAIN))/* if there was a real error  */
+                    {
+                        sprintf(retstr->strptr, "%d", 95);/* error not enough memory  */
+                        retstr->strlength = strlen(retstr->strptr);
+                        return VALID_ROUTINE;
+                    }
+                    else
+                    {
+                        SysThreadYield();        /* free the processor           */
+                        if (brk[0])               /* if time out                  */
+                        {
+                            break;                 /*no longer tying to get the sem*/
+                        }
+                    }
+                }
+                pthread_kill(thread,SIGUSR1);/* kill the timer thread        */
+                if (brk[0])
+                {
+                    sprintf(retstr->strptr, "%d", 640);/* error timeout        */
+                }
+                else/* got it                                              */
+                {
+                    (opencnt[handle][1])= pthread_self();/*TID of the owner*/
+                    sprintf(retstr->strptr, "%d", 0);/* no error               */
+                }
+                retstr->strlength = strlen(retstr->strptr);
+                return VALID_ROUTINE;          /* good completion            */
+            }
+        }
+        else                             /* sem unlocked               */
+        {
 
-        /*        lock the sem                                         */
-        locksem(apidata->rexxutilsems, handle);
-        (opencnt[handle][1])= pthread_self();/* TID of the owner   */
-        sprintf(retstr->strptr, "%d", 0);/* no errors                  */
-      }
-    retstr->strlength = strlen(retstr->strptr);
-    return VALID_ROUTINE;              /* good completion              */
-  }
+            /*        lock the sem                                         */
+            locksem(apidata->rexxutilsems, handle);
+            (opencnt[handle][1])= pthread_self();/* TID of the owner   */
+            sprintf(retstr->strptr, "%d", 0);/* no errors                  */
+        }
+        retstr->strlength = strlen(retstr->strptr);
+        return VALID_ROUTINE;              /* good completion              */
+    }
+#endif 
 }
 
 
@@ -3307,58 +3452,77 @@ size_t RexxEntry SysRequestMutexSem(const char *name, size_t numargs, CONSTRXSTR
 
 size_t RexxEntry SysReleaseMutexSem(const char *name, size_t numargs, CONSTRXSTRING args[], const char *queuename, PRXSTRING retstr)
 {
-  int       handle;                    /* semaphore  handle          */
-  const char *character;
-  char      c[2]={'\0','\0'};
+    int       handle;                    /* semaphore  handle          */
+    const char *character;
+    char      c[2]={'\0','\0'};
 
-  if (numargs != 1)                    /* Only one argument accepted */
-    return INVALID_ROUTINE;            /* raise error condition      */
-                                       /* for each char of the handle*/
-  for(character=args[0].strptr;*character != '\0';character++){
-    c[0] = *character;
-    if(!strpbrk(c,"1234567890"))       /* if it is no number        */
-      return INVALID_ROUTINE;          /* get out                    */
-  }
-                                       /* get a binary handle        */
-  handle = strtoul(args[0].strptr, NULL, 10);
-  handle = handle - OFFSET;            /* make it real               */
-  if (handle < 0 || handle >= MAXUTILSEM){/* if bad handle        */
-    sprintf(retstr->strptr, "%d", 6);  /* say so                     */
-    retstr->strlength = strlen(retstr->strptr);
-    return VALID_ROUTINE;
-  }
-  if(!apidata->rexxutilsems){          /* no sems created until now  */
-    sprintf(retstr->strptr, "%d", 6);  /* invalid handle             */
-    retstr->strlength = strlen(retstr->strptr);
-    return VALID_ROUTINE;
-  }
-  /* if the semaphore is unused or isn't a mutex semaphore           */
-  if(((apidata->utilsemfree[handle]).usecount == 0 ) ||
-         ((apidata->utilsemfree[handle]).type != MUTEX)){
-    sprintf(retstr->strptr, "%d", 6);  /* invalid handle             */
-    retstr->strlength = strlen(retstr->strptr);
-    return VALID_ROUTINE;
-  }
-  if(!(opencnt[handle][0])){           /* if I haven't open the sem  */
-    sprintf(retstr->strptr, "%d", 6);  /* invalid handle             */
-    retstr->strlength = strlen(retstr->strptr);
-    return VALID_ROUTINE;
-  }
-  if(!getval(apidata->rexxutilsems, handle)){/* if sem is locked     */
-                                             /* and I'm the owner    */
-    if((opencnt[handle][1])== pthread_self()){
-      /* unlock the sem                                              */
-      unlocksem(apidata->rexxutilsems, handle);
-      (opencnt[handle][1])= 0;         /* reset the owner TID        */
-      sprintf(retstr->strptr, "%d", 0);    /* no errors              */
+    if (numargs != 1)                    /* Only one argument accepted */
+    {
+        return INVALID_ROUTINE;            /* raise error condition      */
+    }
+
+    return VALID_ROUTINE; 
+#if 0
+                                           /* for each char of the handle*/
+    for (character=args[0].strptr;*character != '\0';character++)
+    {
+        c[0] = *character;
+        if (!strpbrk(c,"1234567890"))       /* if it is no number        */
+        {  
+            return INVALID_ROUTINE;          /* get out                    */
+        }
+    }
+    /* get a binary handle        */
+    handle = strtoul(args[0].strptr, NULL, 10);
+    handle = handle - OFFSET;            /* make it real               */
+    if (handle < 0 || handle >= MAXUTILSEM)/* if bad handle        */
+    {
+        sprintf(retstr->strptr, "%d", 6);  /* say so                     */
+        retstr->strlength = strlen(retstr->strptr);
+        return VALID_ROUTINE;
+    }
+    if (!apidata->rexxutilsems)          /* no sems created until now  */
+    {
+        sprintf(retstr->strptr, "%d", 6);  /* invalid handle             */
+        retstr->strlength = strlen(retstr->strptr);
+        return VALID_ROUTINE;
+    }
+    /* if the semaphore is unused or isn't a mutex semaphore           */
+    if (((apidata->utilsemfree[handle]).usecount == 0 ) ||
+        ((apidata->utilsemfree[handle]).type != MUTEX))
+    {
+        sprintf(retstr->strptr, "%d", 6);  /* invalid handle             */
+        retstr->strlength = strlen(retstr->strptr);
+        return VALID_ROUTINE;
+    }
+    if (!(opencnt[handle][0]))           /* if I haven't open the sem  */
+    {
+        sprintf(retstr->strptr, "%d", 6);  /* invalid handle             */
+        retstr->strlength = strlen(retstr->strptr);
+        return VALID_ROUTINE;
+    }
+    if (!getval(apidata->rexxutilsems, handle))/* if sem is locked     */
+    {
+        /* and I'm the owner    */
+        if ((opencnt[handle][1])== pthread_self())
+        {
+            /* unlock the sem                                              */
+            unlocksem(apidata->rexxutilsems, handle);
+            (opencnt[handle][1])= 0;         /* reset the owner TID        */
+            sprintf(retstr->strptr, "%d", 0);    /* no errors              */
+        }
+        else
+        {
+            sprintf(retstr->strptr, "%d", 288);/* error not owner          */
+        }
     }
     else
-      sprintf(retstr->strptr, "%d", 288);/* error not owner          */
-  }
-  else
-    sprintf(retstr->strptr, "%d", 288);/* error not owner            */
-  retstr->strlength = strlen(retstr->strptr);
-  return VALID_ROUTINE;                /* good completion            */
+    {
+        sprintf(retstr->strptr, "%d", 288);/* error not owner            */
+    }
+    retstr->strlength = strlen(retstr->strptr);
+    return VALID_ROUTINE;                /* good completion            */
+#endif 
 }
 /*************************************************************************
 * Function:  SysCloseMutexSem                                            *
@@ -3372,92 +3536,115 @@ size_t RexxEntry SysReleaseMutexSem(const char *name, size_t numargs, CONSTRXSTR
 
 size_t RexxEntry SysCloseMutexSem(const char *name, size_t numargs, CONSTRXSTRING args[], const char *queuename, PRXSTRING retstr)
 {
-  int       handle;                    /* semaphore  handle          */
-  union semun semopts;               /* for semaphore control          */
-  int i;                               /* counter                    */
-  int used = 0;
-  const char *character;
-  char      c[2]={'\0','\0'};
+    int       handle;                    /* semaphore  handle          */
+    union semun semopts;               /* for semaphore control          */
+    int i;                               /* counter                    */
+    int used = 0;
+    const char *character;
+    char      c[2]={'\0','\0'};
 
-  if (numargs != 1)                    /* Only one argument accepted */
-    return INVALID_ROUTINE;            /* raise error condition      */
-                                       /* for each char of the handle*/
-  for(character=args[0].strptr;*character != '\0';character++){
-    c[0] = *character;
-    if(!strpbrk(c,"1234567890"))       /* if it is no number         */
-      return INVALID_ROUTINE;          /* get out                    */
-  }
-                                       /* get a binary handle        */
-  handle = strtoul(args[0].strptr, NULL, 10);
-  handle = handle - OFFSET;            /* make it real               */
-  if (handle < 0 || handle >= MAXUTILSEM){/* if bad handle        */
-    sprintf(retstr->strptr, "%d", 6);  /* say so                     */
-    retstr->strlength = strlen(retstr->strptr);
-    return VALID_ROUTINE;
-  }
-  APISTARTUP(MACROCHAIN);
-  if(!apidata->rexxutilsems){          /* no sems created until now  */
-    sprintf(retstr->strptr, "%d", 6);  /* invalid handle             */
-    retstr->strlength = strlen(retstr->strptr);
-    APICLEANUP(MACROCHAIN);
-    return VALID_ROUTINE;
-  }
-  /* if the semaphore is unused or isn't a mutex semaphore           */
-  if(((apidata->utilsemfree[handle]).usecount == 0 ) ||
-         ((apidata->utilsemfree[handle]).type != MUTEX)){
-    sprintf(retstr->strptr, "%d", 6);  /* invalid handle             */
-    retstr->strlength = strlen(retstr->strptr);
-    APICLEANUP(MACROCHAIN);
-    return VALID_ROUTINE;
-  }
-  /* if this will be the final close */
-  if((apidata->utilsemfree[handle]).usecount == 1){
-    /* if another thread in the process is the owner  (sem locked)   */
-    if(!getval(apidata->rexxutilsems, handle))
-      sprintf(retstr->strptr, "%d", 301);/* error sem busy           */
-    else {                             /* we can close               */
-      if((opencnt[handle][0])){        /* if I have it open          */
-        --((apidata->utilsemfree[handle]).usecount);/* decrement usecount*/
-        --(opencnt[handle][0]);          /* and privat open count    */
-        sprintf(retstr->strptr, "%d", 0);  /* no errors              */
-      }
-      else
-        sprintf(retstr->strptr, "%d", 6);  /* invalid handle         */
+    if (numargs != 1)                    /* Only one argument accepted */
+    {
+        return INVALID_ROUTINE;            /* raise error condition      */
     }
-  }
-  else {
-      if((opencnt[handle][0])){       /* if I have it open           */
-        --((apidata->utilsemfree[handle]).usecount);/* decrement usecount*/
-        --(opencnt[handle][0]);          /* and privat open count    */
-        sprintf(retstr->strptr, "%d", 0);  /* no errors              */
-      }
-      else
-        sprintf(retstr->strptr, "%d", 6);  /* invalid handle         */
-  }
-  if(!(apidata->utilsemfree[handle]).usecount){/*sem now unused ?    */
-                                       /* clear the name array       */
-    memset((apidata->utilsemfree[handle]).name, '\0', MAXNAME);
-    /* make sure the sem  is in a clear state                        */
-    semopts.val = 1;                   /* initial value                  */
-                                       /* do the initialisation          */
-    semctl(apidata->rexxutilsems, handle, SETVAL, semopts);
-  }
-  /* Possibly this was the last used sem. So we can remove the       */
-  /* semaphore set. Check this possibility.                          */
-  for(i=0;i<MAXUTILSEM;i++){           /* for all semaphores         */
-    if((apidata->utilsemfree[i]).usecount != 0 ) /* a used one ?          */
-    {                                  /* for max sem        */
-      used = 1;                        /* remember it                */
-      break;                           /* for max sem        */
-    }                                  /* for max sem        */
-  }
-  if(!used){                           /* if all sems are unused     */
-    removesem(apidata->rexxutilsems);  /* remove the semaphore set   */
-    apidata->rexxutilsems = 0;         /* delete the old ID          */
-  }
-  retstr->strlength = strlen(retstr->strptr);
-  APICLEANUP(MACROCHAIN);
-  return VALID_ROUTINE;                /* good completion            */
+
+    return VALID_ROUTINE; 
+#if 0
+                                           /* for each char of the handle*/
+    for (character=args[0].strptr;*character != '\0';character++)
+    {
+        c[0] = *character;
+        if (!strpbrk(c,"1234567890"))       /* if it is no number         */
+        {  
+            return INVALID_ROUTINE;          /* get out                    */
+        }
+    }
+    /* get a binary handle        */
+    handle = strtoul(args[0].strptr, NULL, 10);
+    handle = handle - OFFSET;            /* make it real               */
+    if (handle < 0 || handle >= MAXUTILSEM)/* if bad handle        */
+    {
+        sprintf(retstr->strptr, "%d", 6);  /* say so                     */
+        retstr->strlength = strlen(retstr->strptr);
+        return VALID_ROUTINE;
+    }
+    if (!apidata->rexxutilsems)          /* no sems created until now  */
+    {
+        sprintf(retstr->strptr, "%d", 6);  /* invalid handle             */
+        retstr->strlength = strlen(retstr->strptr);
+        return VALID_ROUTINE;
+    }
+    /* if the semaphore is unused or isn't a mutex semaphore           */
+    if (((apidata->utilsemfree[handle]).usecount == 0 ) ||
+        ((apidata->utilsemfree[handle]).type != MUTEX))
+    {
+        sprintf(retstr->strptr, "%d", 6);  /* invalid handle             */
+        retstr->strlength = strlen(retstr->strptr);
+        return VALID_ROUTINE;
+    }
+    /* if this will be the final close */
+    if ((apidata->utilsemfree[handle]).usecount == 1)
+    {
+        /* if another thread in the process is the owner  (sem locked)   */
+        if (!getval(apidata->rexxutilsems, handle))
+        {  
+            sprintf(retstr->strptr, "%d", 301);/* error sem busy           */
+        }
+        else                             /* we can close               */
+        {
+            if ((opencnt[handle][0]))        /* if I have it open          */
+            {
+                --((apidata->utilsemfree[handle]).usecount);/* decrement usecount*/
+                --(opencnt[handle][0]);          /* and privat open count    */
+                sprintf(retstr->strptr, "%d", 0);  /* no errors              */
+            }
+            else
+            {
+                sprintf(retstr->strptr, "%d", 6);  /* invalid handle         */
+            }
+        }
+    }
+    else
+    {
+        if ((opencnt[handle][0]))       /* if I have it open           */
+        {
+            --((apidata->utilsemfree[handle]).usecount);/* decrement usecount*/
+            --(opencnt[handle][0]);          /* and privat open count    */
+            sprintf(retstr->strptr, "%d", 0);  /* no errors              */
+        }
+        else
+        {  
+            sprintf(retstr->strptr, "%d", 6);  /* invalid handle         */
+        }
+    }
+    if (!(apidata->utilsemfree[handle]).usecount)/*sem now unused ?    */
+    {
+        /* clear the name array       */
+        memset((apidata->utilsemfree[handle]).name, '\0', MAXNAME);
+        /* make sure the sem  is in a clear state                        */
+        semopts.val = 1;                   /* initial value                  */
+                                           /* do the initialisation          */
+        semctl(apidata->rexxutilsems, handle, SETVAL, semopts);
+    }
+    /* Possibly this was the last used sem. So we can remove the       */
+    /* semaphore set. Check this possibility.                          */
+    for (i=0;i<MAXUTILSEM;i++)           /* for all semaphores         */
+    {
+        if ((apidata->utilsemfree[i]).usecount != 0) /* a used one ?          */
+        {
+            /* for max sem        */
+            used = 1;                        /* remember it                */
+            break;                           /* for max sem        */
+        }                                  /* for max sem        */
+    }
+    if (!used)                           /* if all sems are unused     */
+    {
+        removesem(apidata->rexxutilsems);  /* remove the semaphore set   */
+        apidata->rexxutilsems = 0;         /* delete the old ID          */
+    }
+    retstr->strlength = strlen(retstr->strptr);
+    return VALID_ROUTINE;                /* good completion            */
+#endif 
 }
 
 

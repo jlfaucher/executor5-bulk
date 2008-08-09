@@ -1059,7 +1059,7 @@ void SysFile::getStreamTypeInfo()
 void SysFile::setStdIn()
 {
     // set the file handle
-    fileHandle = SysFileSystem::stdinHandle;
+    fileHandle = stdinHandle;
     // we didn't open this.
     openedHandle = false;
     ungetchar = 0xFF;            // -1 indicates no char
@@ -1073,7 +1073,7 @@ void SysFile::setStdIn()
 void SysFile::setStdOut()
 {
     // set the file handle
-    fileHandle = SysFileSystem::stdoutHandle;
+    fileHandle = stdoutHandle;
     // we didn't open this.
     openedHandle = false;
     ungetchar = 0xFF;            // -1 indicates no char
@@ -1087,7 +1087,7 @@ void SysFile::setStdOut()
 void SysFile::setStdErr()
 {
     // set the file handle
-    fileHandle = SysFileSystem::stderrHandle;
+    fileHandle = stderrHandle;
     // we didn't open this.
     openedHandle = false;
     ungetchar = 0xFF;            // -1 indicates no char
