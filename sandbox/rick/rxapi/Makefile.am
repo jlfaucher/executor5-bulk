@@ -218,8 +218,7 @@ platformHeaders = $(build_kernel_platform_dir)/APIDefinitions.h \
                   $(build_kernel_platform_dir)/SysNativeFunctions.h \
                   $(build_kernel_platform_dir)/SysNativeMethods.h \
                   $(build_kernel_platform_dir)/SystemCommands.h \
-                  $(build_kernel_platform_dir)/SystemInterpreter.hpp \
-                  $(build_kernel_platform_dir)/SystemSemaphores.h
+                  $(build_kernel_platform_dir)/SystemInterpreter.hpp 
 commonHeaders = $(build_common_dir)/SynchronizedBlock.hpp \
                 $(build_common_dir)/Utilities.hpp \
                 $(build_common_platform_dir)/SysFile.hpp \
@@ -524,9 +523,6 @@ parser_sources = $(build_parser_dir)/Clause.cpp \
                  $(build_parser_dir)/Scanner.cpp \
                  $(build_parser_dir)/SourceFile.cpp \
                  $(build_parser_dir)/Token.cpp
-kernel_platform_common_sources =
-#                        SharedMemorySupport.cpp
-#                        SystemSemaphores.cpp
 platform_sources = $(build_kernel_platform_dir)/ErrorMessages.cpp \
                    $(build_kernel_platform_dir)/ExternalFunctions.cpp \
                    $(build_kernel_platform_dir)/FileSystem.cpp \
@@ -539,7 +535,6 @@ platform_sources = $(build_kernel_platform_dir)/ErrorMessages.cpp \
                    $(build_kernel_platform_dir)/SystemCommands.cpp \
                    $(build_kernel_platform_dir)/SystemInitialization.cpp \
                    $(build_kernel_platform_dir)/SystemInterpreter.cpp \
-                   $(build_kernel_platform_dir)/SystemSemaphores.cpp \
                    $(build_kernel_platform_dir)/TimeSupport.cpp \
                    $(build_kernel_platform_dir)/UseridFunction.cpp \
                    $(build_kernel_platform_dir)/ValueFunction.cpp
@@ -603,7 +598,6 @@ librexx_la_SOURCES = $(classes_sources) \
                      $(expression_sources) \
                      $(instructions_sources) \
                      $(parser_sources) \
-                     $(kernel_platform_common_sources) \
                      $(platform_sources) \
                      $(common_sources) \
                      $(runtime_sources) \
