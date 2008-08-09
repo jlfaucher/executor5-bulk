@@ -85,7 +85,7 @@ public:
 
 #define LINE_TERMINATOR "\n"
 
-    bool open(char *name, int openFlags, int openMode, int shareMode);
+    bool open(const char *name, int openFlags, int openMode, int shareMode);
     bool open(int handle);
     void reset();
     void setStdIn();
@@ -105,9 +105,9 @@ public:
     bool seek(int64_t offset, int direction, int64_t &position);
     bool getPosition(int64_t &position);
     bool getSize(int64_t &size);
-    bool getSize(char *name, int64_t &size);
+    bool getSize(const char *name, int64_t &size);
     bool getTimeStamp(char *&time);
-    bool getTimeStamp(char *name, char *&time);
+    bool getTimeStamp(const char *name, char *&time);
     bool putLine(const char *buffer, size_t len, size_t &bytesWritten);
     bool hasData();
     bool countLines(int64_t &count);
@@ -136,7 +136,7 @@ protected:
     int    flags;           // open flag information
     int    mode;            // mode flags
     int    share;           // sharing mode flags
-    char  *filename;        // the input file name
+    const char  *filename;  // the input file name
     bool   buffered;        // the buffering indicator
     bool   transient;       // this is a transient stream
     bool   device;          // this stream is a device.

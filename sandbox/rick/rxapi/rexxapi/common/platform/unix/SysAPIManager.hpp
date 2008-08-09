@@ -39,6 +39,8 @@
 #ifndef SysAPIManager_HPP_INCLUDED
 #define SysAPIManager_HPP_INCLUDED
 
+#include "rexx.h"
+
 class SysAPIManager
 {
 public:

@@ -98,7 +98,7 @@ SysFile::SysFile()
  *
  * @return true if the file was opened successfully, false otherwise.
  */
-bool SysFile::open(char *name, int openFlags, int openMode, int shareMode)
+bool SysFile::open(const char *name, int openFlags, int openMode, int shareMode)
 {
     flags = openFlags;           // save the initial flag values
 
@@ -212,7 +212,7 @@ bool SysFile::close()
     // free out storage areas first
     if (filename != NULL)
     {
-        free(filename);
+        free(const_cast<char *>(filename));
     }
     if (buffer != NULL)
     {
@@ -935,7 +935,7 @@ bool SysFile::getSize(int64_t &size)
  *
  * @return True if the size was retrievable, false otherwise.
  */
-bool SysFile::getSize(char *name, int64_t &size)
+bool SysFile::getSize(const char *name, int64_t &size)
 {
     // the handle is not active, use the name
     struct stat fileInfo;
@@ -992,7 +992,7 @@ bool SysFile::getTimeStamp(char *&time)
  *
  * @return True if the size was retrievable, false otherwise.
  */
-bool SysFile::getTimeStamp(char *name, char *&time)
+bool SysFile::getTimeStamp(const char *name, char *&time)
 {
     *time = '\0';     // default return value
     // the handle is not active, use the name

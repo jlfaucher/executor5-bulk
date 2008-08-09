@@ -46,7 +46,7 @@
  *
  * @return The pointer to the memory.  Returns NULL for out of memory conditions.
  */
-void *SysLocalAPIManager::allocateMemory(size_t l)
+void *SysAPIManager::allocateMemory(size_t l)
 {
     return malloc(l);
 }
@@ -56,7 +56,7 @@ void *SysLocalAPIManager::allocateMemory(size_t l)
  *
  * @param p      Pointer to the memory location.
  */
-void SysLocalAPIManager::releaseMemory(void *p)
+void SysAPIManager::releaseMemory(void *p)
 {
     free(p);
 }

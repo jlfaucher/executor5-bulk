@@ -80,7 +80,7 @@ void ServiceMessage::readMessage(SysServerConnection *connection)
         messageData = new char[messageDataLength];
         if (!connection->read(messageData, messageDataLength, &actual) || actual != messageDataLength)
         {
-            delete[] messageData;
+            delete[] ((char *)messageData);
             // make sure these are cleared out
             messageData = NULL;
             messageDataLength = 0;

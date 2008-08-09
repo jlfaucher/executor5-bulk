@@ -65,8 +65,6 @@ LocalAPIManager *LocalAPIContext::getAPIManager()
  */
 RexxReturnCode LocalAPIContext::processServiceException(ServiceException *e)
 {
-    ErrorCode code = e->getErrorCode();
-
     if (localManager != NULL)
     {
         RexxReturnCode rc = localManager->processServiceException(target, e);
