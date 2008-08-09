@@ -208,7 +208,6 @@
 #if defined( HAVE_SYS_WAIT_H )
 # include <sys/wait.h>
 #endif
-#include "SystemSemaphores.h"
 
 #include <sys/ipc.h>
 #include <memory.h>
@@ -231,6 +230,8 @@
 #include <stddef.h>
 #include <sys/types.h>
 #include <sys/ipc.h>
+#include <pthread.h>
+#include <semaphore.h>
 
 #if defined( HAVE_SYS_SEM_H )
 # include <sys/sem.h>
@@ -2361,7 +2362,7 @@ typedef struct RxSemData {
 *            '' - Empty string in case of any error                      *
 *************************************************************************/
 
-RexxFunction2(uintptr_t, SysCreateEventSem, OPTIONAL_CSTRING, name, OPTIONAL_CSTRING, reset)
+RexxRoutine2(uintptr_t, SysCreateEventSem, OPTIONAL_CSTRING, name, OPTIONAL_CSTRING, reset)
 {
     RXSEMDATA *semdata;
     int rc;
@@ -2518,7 +2519,7 @@ RexxMethod1(int, SysCloseEventSem, uintptr_t, vhandle)
 * Return:    result - return code from DosWaitEventSem                   *
 *************************************************************************/
 
-RexxFunction2(int, SysWaitEventSem, uintptr_t, vhandle, OPTIONAL_int, timeout)
+RexxRoutine2(int, SysWaitEventSem, uintptr_t, vhandle, OPTIONAL_int, timeout)
 {
     RXSEMDATA *semdata = (RXSEMDATA *)vhandle;
     int rc = 0;
@@ -2565,7 +2566,7 @@ RexxFunction2(int, SysWaitEventSem, uintptr_t, vhandle, OPTIONAL_int, timeout)
 *            '' - Empty string in case of any error                      *
 *************************************************************************/
 
-RexxFunction1(uintptr_t, SysCreateMutexSem, OPTIONAL_CSTRING, name)
+RexxRoutine1(uintptr_t, SysCreateMutexSem, OPTIONAL_CSTRING, name)
 {
     RXSEMDATA *semdata;
     int rc;
@@ -2609,7 +2610,7 @@ RexxFunction1(uintptr_t, SysCreateMutexSem, OPTIONAL_CSTRING, name)
 * Return:    result - return code from DosOpenEventSem                   *
 *************************************************************************/
 
-RexxFunction1(uintptr_t, SysOpenMutexSem, CSTRING, name)
+RexxRoutine1(uintptr_t, SysOpenMutexSem, CSTRING, name)
 {
     RXSEMDATA *semdata;
 
@@ -2636,7 +2637,7 @@ RexxFunction1(uintptr_t, SysOpenMutexSem, CSTRING, name)
 * Return:    result - return code from DosWaitEventSem                   *
 *************************************************************************/
 
-RexxFunction2(int, SysRequestMutexSem, uintptr_t, vhandle, OPTIONAL_int, timeout)
+RexxRoutine2(int, SysRequestMutexSem, uintptr_t, vhandle, OPTIONAL_int, timeout)
 {
     RXSEMDATA *semdata = (RXSEMDATA *)vhandle;
     int rc = 0;
@@ -2680,7 +2681,7 @@ RexxFunction2(int, SysRequestMutexSem, uintptr_t, vhandle, OPTIONAL_int, timeout
 * Return:    result - return code from DosCloseEventSem                  *
 *************************************************************************/
 
-RexxFunction1(int, SysReleaseMutexSem, uintptr_t, vhandle)
+RexxRoutine1(int, SysReleaseMutexSem, uintptr_t, vhandle)
 {
     RXSEMDATA *semdata = (RXSEMDATA *)vhandle;
     int rc;
@@ -2716,7 +2717,7 @@ RexxFunction1(int, SysReleaseMutexSem, uintptr_t, vhandle)
 * Return:    result - return code from DosCloseEventSem                  *
 *************************************************************************/
 
-RexxFunction1(int, SysCloseMutexSem, uintptr_t, vhandle)
+RexxRoutine1(int, SysCloseMutexSem, uintptr_t, vhandle)
 {
     RXSEMDATA *semdata = (RXSEMDATA *)vhandle;
 
