@@ -212,6 +212,7 @@ parserHeaders = $(build_parser_dir)/Clause.hpp \
 platformHeaders = $(build_kernel_platform_dir)/APIDefinitions.h \
                   $(build_kernel_platform_dir)/PlatformDefinitions.h \
                   $(build_kernel_platform_dir)/SharedMemorySupport.h \
+                  $(build_kernel_platform_dir)/SysActivity.hpp \
                   $(build_kernel_platform_dir)/SysFileSystem.hpp \
                   $(build_kernel_platform_dir)/SysInterpreterInstance.hpp \
                   $(build_kernel_platform_dir)/SysNativeFunctions.h \
@@ -275,7 +276,7 @@ runtimeHeaders = $(build_runtime_dir)/ActivationApiContexts.hpp \
                  $(build_runtime_dir)/RexxVariable.hpp \
                  $(build_runtime_dir)/RexxVariableDictionary.hpp \
                  $(build_runtime_dir)/SecurityManager.hpp \
-                 $(build_runtime_dir)/TranslateDispatcher.hpp 
+                 $(build_runtime_dir)/TranslateDispatcher.hpp
 streamlibraryHeaders = $(build_streamlibrary_dir)/StreamCommandParser.h \
                        $(build_streamlibrary_dir)/StreamNative.hpp
 libHeaders = $(build_lib_dir)/RexxPlatformDefinitions.h \
@@ -532,6 +533,7 @@ platform_sources = $(build_kernel_platform_dir)/ErrorMessages.cpp \
                    $(build_kernel_platform_dir)/MemorySupport.cpp \
                    $(build_kernel_platform_dir)/MiscSystem.cpp \
                    $(build_kernel_platform_dir)/RexxMain.cpp \
+                   $(build_kernel_platform_dir)/SysActivity.cpp \
                    $(build_kernel_platform_dir)/SysFileSystem.cpp \
                    $(build_kernel_platform_dir)/SysInterpreterInstance.cpp \
                    $(build_kernel_platform_dir)/SystemCommands.cpp \

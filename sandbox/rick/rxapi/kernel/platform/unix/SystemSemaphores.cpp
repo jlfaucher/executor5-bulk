@@ -64,8 +64,6 @@
 # include <sched.h>
 #endif
 
-extern int iSemShmMode;                        /* Mode from startup          */
-
 #if !defined( HAVE_UNION_SEMUN )
 union semun {
   int val;
@@ -95,7 +93,7 @@ int createsem(int *sid, key_t key, int members){
     return (1);             /* return error                                   */
                             /* try to get a semaphore with rw-rights for the  */
                             /* owner only(0600).                              */
-  if ((*sid = semget(key, members, IPC_CREAT|IPC_EXCL|iSemShmMode)) == -1) {
+  if ((*sid = semget(key, members, IPC_CREAT|IPC_EXCL|432)) == -1) {
     if(errno == EEXIST)
       return (-1);          /* already exists                                 */
     return (1);             /* some other error                               */
@@ -123,7 +121,7 @@ int createsem(int *sid, key_t key, int members){
 int opensem(int *sid, key_t key){
 
   /* Open the semaphore set - do not create ! */
-  if((*sid = semget(key, 0, iSemShmMode)) == -1)
+  if((*sid = semget(key, 0, 432)) == -1)
     return (1);        /* error - not exists  */
   return (0);          /* worked well         */
 }
