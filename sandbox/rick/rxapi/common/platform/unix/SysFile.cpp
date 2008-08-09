@@ -57,8 +57,11 @@
 #include <errno.h>
 #include <time.h>
 #include "SysFile.hpp"
-#include "SysFileSystem.hpp"
 
+// This is all the static stuff
+const int SysFile::stdinHandle = 0;
+const int SysFile::stdoutHandle = 1;
+const int SysFile::stderrHandle = 2;
 
 /**
  * Default constructor for a SysFile object.

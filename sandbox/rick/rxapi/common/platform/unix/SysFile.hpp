@@ -77,6 +77,10 @@ class SysFile
 public:
     SysFile();
 
+    static const int stdinHandle;
+    static const int stdoutHandle;
+    static const int stderrHandle;
+
     enum
     {
         DEFAULT_BUFFER_SIZE = 4096,   // default size for buffering
