@@ -191,6 +191,18 @@ return testResult
    a=.array~of(3,4,5)               -- test sequence #1
    self~assertTrue(testSequence(u3, a))
 
+::method "test_QUEUE_unique"        -- sahananda 20080731
+   u3=.CircularQueue~of(1,2,3)      -- queue of three elements
+   a=.array~of(1,2,3)               -- test sequence #1
+   self~assertTrue(testSequence(u3, a))
+
+   u3~~queue(4,'Unique')~~queue(5,'Unique')
+   a=.array~of(3,4,5)               -- test sequence #1
+   self~assertTrue(testSequence(u3, a))
+
+   u3~~queue(5,'Unique')~~queue(4,'Unique')
+   a=.array~of(3,5,4)               -- test sequence #1
+   self~assertTrue(testSequence(u3, a))
 
    -- test PUSH method ---------------------------------------------
 ::method "test_PUSH_1a"
@@ -213,7 +225,18 @@ return testResult
    a=.array~of(5,4,3)               -- test sequence #1
    self~assertTrue(testSequence(u3, a))
 
+::method "test_PUSH_unique"
+   u3=.CircularQueue~of(1,2,3)      -- queue of three elements
+   a=.array~of(1,2,3)               -- test sequence #1
+   self~assertTrue(testSequence(u3, a))
 
+   u3~~push(4,'Unique')~~push(5,'Unique')
+   a=.array~of(5,4,1)               -- test sequence #1
+   self~assertTrue(testSequence(u3, a))
+
+   u3~~push(5,'Unique')~~push(4,'Unique')
+   a=.array~of(4,5,1)               -- test sequence #1
+   self~assertTrue(testSequence(u3, a))
 
    -- test MAKEARRAY method ---------------------------------------------
 ::method "test_MAKEARRAY_1a"
