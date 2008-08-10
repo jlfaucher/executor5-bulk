@@ -2134,7 +2134,9 @@ the capitalized letter is needed; all characters following it are ignored.)
 
 <programlisting>
 <![CDATA[
->>-push(item)--------------------------------------------------><
+             +-,-Normal-+
+>>-push(item-+----------+)---------------------------------------><
+             +-,-Unique-+
 ]]>
 </programlisting>
 
@@ -2153,6 +2155,13 @@ will be deleted, before the insertion takes place. In this case the
 <emphasis role="italic">deleted item</emphasis> will be returned, otherwise
 <emphasis role="italic">.nil</emphasis>.
 </para>
+
+<para>
+If the second parameter is 'Unique' then if there are already items in
+the circular queue with the same index as the first parameter, they will be removed
+before the operation is performed.  This allows you to maintain a list like the
+recent files list of an editor
+</para>
 </section>
 
 
@@ -2167,7 +2176,9 @@ will be deleted, before the insertion takes place. In this case the
 
 <programlisting>
 <![CDATA[
->>-queue(item)-------------------------------------------------><
+              +-,-Normal-+
+>>-queue(item-+----------+)------------------------------------><
+              +-,-Unique-+
 ]]>
 </programlisting>
 
@@ -2183,6 +2194,12 @@ at the end of the circular queue.
 If the circular queue is full, than the first item will be deleted, before the
 insertion takes place.  In this case the <emphasis role="italic">deleted item</emphasis>
 will be returned, otherwise <emphasis role="italic">.nil</emphasis>.
+</para>
+
+<para>
+If the second parameter is 'Unique' then if there are already items in
+the circular queue with the same index as the first parameter, they will be removed
+before the operation is performed.
 </para>
 </section>
 
