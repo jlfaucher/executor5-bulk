@@ -134,6 +134,8 @@ RexxMethod1(int,                       // Return type
 {
     GtkWidget *myWidget = NULL;
 
+    // Save ourself
+    context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
     context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     // This is an abstract class so no actual widget is created
     return 0;

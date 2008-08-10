@@ -108,6 +108,9 @@ RexxMethod7(int,                       // Return type
 
     adj = (GtkAdjustment *)gtk_adjustment_new(value, upper, lower, step,
                                               page, pagesz);
+
+    // Save ourself
+    context->SetObjectVariable("CSELF", context->NewPointer(adj));
     context->SendMessage1(self, "POINTER=", context->NewPointer(adj));
     g_object_set_data(G_OBJECT(adj), "OORXOBJECT", self);
 
@@ -130,6 +133,8 @@ RexxMethod2(int,                       // Return type
 {
     GtkAdjustment *adj = (GtkAdjustment *)context->PointerValue((RexxPointerObject)rxptr);
 
+    // Save ourself
+    context->SetObjectVariable("CSELF", context->NewPointer(adj));
     context->SendMessage1(self, "POINTER=", context->NewPointer(adj));
     g_object_set_data(G_OBJECT(adj), "OORXOBJECT", self);
 

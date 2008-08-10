@@ -89,9 +89,10 @@ RexxMethod2(int,                       // Return type
             OSELF, self,               // Self
             CSTRING, label)            // Expander label
 {
-    GtkWidget *myWidget;
+    GtkWidget *myWidget = gtk_expander_new(label);
 
-    myWidget = gtk_expander_new(label);
+    // Save ourself
+    context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
     context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 

@@ -126,10 +126,10 @@ RexxMethod1(int,                       // Return type
             GrxToolItemNew,            // Object_method name
             OSELF, self)               // Self
 {
-    GtkToolItem *toolitem;
+    GtkToolItem *toolitem = gtk_tool_item_new();
 
-    toolitem = gtk_tool_item_new();
-
+    // Save ourself
+    context->SetObjectVariable("CSELF", context->NewPointer(toolitem));
     context->SendMessage1(self, "POINTER=", context->NewPointer(toolitem));
     g_object_set_data(G_OBJECT(toolitem), "OORXOBJECT", self);
 

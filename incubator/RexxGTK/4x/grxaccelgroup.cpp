@@ -125,6 +125,8 @@ RexxMethod1(int,                       // Return type
 
     accelgrp = gtk_accel_group_new();
 
+    // Save ourself
+    context->SetObjectVariable("CSELF", context->NewPointer(accelgrp));
     context->SendMessage1(self, "POINTER=", context->NewPointer(accelgrp));
     g_object_set_data(G_OBJECT(accelgrp), "OORXOBJECT", self);
 

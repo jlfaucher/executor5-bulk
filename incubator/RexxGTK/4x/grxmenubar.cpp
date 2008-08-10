@@ -73,9 +73,10 @@ RexxMethod1(int,                       // Return type
             GrxMenuBarNew,             // Object_method name
             OSELF, self)               // Self
 {
-    GtkWidget *myWidget;
+    GtkWidget *myWidget = gtk_menu_bar_new();
 
-    myWidget = gtk_menu_bar_new();
+    // Save ourself
+    context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
     context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 

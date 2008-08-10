@@ -134,6 +134,9 @@ RexxMethod2(int,                       // Return type
        myWidget = gtk_label_new(text);
     else
        myWidget = gtk_label_new("\0");
+
+    // Save ourself
+    context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
     context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 

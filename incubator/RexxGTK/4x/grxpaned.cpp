@@ -173,9 +173,10 @@ RexxMethod1(int,                       // Return type
             GrxVPanedNew,              // Object_method name
             OSELF, self)               // Self
 {
-    GtkWidget *myWidget;
+    GtkWidget *myWidget = gtk_vpaned_new();
 
-    myWidget = gtk_vpaned_new();
+    // Save ourself
+    context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
     context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
@@ -193,9 +194,10 @@ RexxMethod1(int,                       // Return type
             GrxHPanedNew,              // Object_method name
             OSELF, self)               // Self
 {
-    GtkWidget *myWidget;
+    GtkWidget *myWidget = gtk_hpaned_new();
 
-    myWidget = gtk_hpaned_new();
+    // Save ourself
+    context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
     context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 

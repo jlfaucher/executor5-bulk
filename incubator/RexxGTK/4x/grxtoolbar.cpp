@@ -143,10 +143,10 @@ RexxMethod1(int,                       // Return type
             GrxToolbarNew,             // Object_method name
             OSELF, self)               // Self
 {
-    GtkWidget *toolbar;
+    GtkWidget *toolbar = gtk_toolbar_new();
 
-    toolbar = gtk_toolbar_new();
-
+    // Save ourself
+    context->SetObjectVariable("CSELF", context->NewPointer(toolbar));
     context->SendMessage1(self, "POINTER=", context->NewPointer(toolbar));
     g_object_set_data(G_OBJECT(toolbar), "OORXOBJECT", self);
 

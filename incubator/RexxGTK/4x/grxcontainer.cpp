@@ -243,10 +243,10 @@ RexxMethod3(int,                       // Return type
             logical_t, homogeneous,    // Homogeneous boolean
             int, spacing)              // Spacing amount
 {
-    GtkWidget *myWidget;
+    GtkWidget *myWidget = gtk_vbox_new(homogeneous, spacing);
 
-
-    myWidget = gtk_vbox_new(homogeneous, spacing);
+    // Save ourself
+    context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
     context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
@@ -269,6 +269,8 @@ RexxMethod2(int,                       // Return type
 {
     GtkVBox *vbox = (GtkVBox *)context->PointerValue((RexxPointerObject)rxptr);
 
+    // Save ourself
+    context->SetObjectVariable("CSELF", context->NewPointer(vbox));
     context->SendMessage1(self, "POINTER=", context->NewPointer(vbox));
     g_object_set_data(G_OBJECT(vbox), "OORXOBJECT", self);
 
@@ -291,6 +293,8 @@ RexxMethod2(int,                       // Return type
 {
     RexxPointerObject vboxptr = (RexxPointerObject)context->SendMessage0(ptr, "POINTER");
 
+    // Save ourself
+    context->SetObjectVariable("CSELF", context->NewPointer(vboxptr));
     context->SendMessage1(self, "POINTER=", context->NewPointer(vboxptr));
     g_object_set_data(G_OBJECT(ptr), "OORXOBJECT", self);
 
@@ -314,9 +318,10 @@ RexxMethod3(int,                       // Return type
             logical_t, homogeneous,    // Homogeneous boolean
             int, spacing)              // Spacing amount
 {
-    GtkWidget *myWidget;
+    GtkWidget *myWidget = gtk_hbox_new(homogeneous, spacing);
 
-    myWidget = gtk_hbox_new(homogeneous, spacing);
+    // Save ourself
+    context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
     context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
@@ -339,6 +344,8 @@ RexxMethod2(int,                       // Return type
 {
     GtkVBox *hbox = (GtkVBox *)context->PointerValue((RexxPointerObject)rxptr);
 
+    // Save ourself
+    context->SetObjectVariable("CSELF", context->NewPointer(hbox));
     context->SendMessage1(self, "POINTER=", context->NewPointer(hbox));
     g_object_set_data(G_OBJECT(hbox), "OORXOBJECT", self);
 
@@ -368,9 +375,10 @@ RexxMethod5(int,                       // Return type
             float, xscale,             // Y scale
             float, yscale)             // Y scale
 {
-    GtkWidget *myWidget;
+    GtkWidget *myWidget = gtk_alignment_new(xalign, yalign, xscale, yscale);
 
-    myWidget = gtk_alignment_new(xalign, yalign, xscale, yscale);
+    // Save ourself
+    context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
     context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
@@ -453,9 +461,10 @@ RexxMethod3(int,                       // Return type
     GtkAdjustment *hadj = (GtkAdjustment *)context->PointerValue(hadjptr);
     RexxPointerObject vadjptr = (RexxPointerObject)context->SendMessage0(rxvadj, "POINTER");
     GtkAdjustment *vadj = (GtkAdjustment *)context->PointerValue(vadjptr);
-    GtkWidget *myWidget;
+    GtkWidget *myWidget = gtk_viewport_new(hadj, vadj);
 
-    myWidget = gtk_viewport_new(hadj, vadj);
+    // Save ourself
+    context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
     context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 

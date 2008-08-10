@@ -86,8 +86,12 @@ RexxMethod2(int,                       // Return type
         }
         tstore = (GtkTreeStore *)gtk_tree_store_newv(members, (GType *)types);
     }
+
+    // Save ourself
+    context->SetObjectVariable("CSELF", context->NewPointer(tstore));
     context->SendMessage1(self, "POINTER=", context->NewPointer(tstore));
     g_object_set_data(G_OBJECT(tstore), "OORXOBJECT", self);
+
     context->SetObjectVariable("!COLTYPES", context->NewPointer(types));
 
     return 0;

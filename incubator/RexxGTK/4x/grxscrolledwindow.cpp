@@ -112,7 +112,6 @@ RexxMethod3(int,                       // Return type
             OPTIONAL_RexxObjectPtr, rxhadj, // The horizontal adjustment
             OPTIONAL_RexxObjectPtr, rxvadj) // The vertical adjustment
 {
-    GtkWidget     *myWidget;     
     GtkAdjustment *hadj = NULL, *vadj = NULL;
 
     if (rxhadj != NULL) {
@@ -127,7 +126,10 @@ RexxMethod3(int,                       // Return type
             vadj = (GtkAdjustment *)context->PointerValue(vadjptr);
         }
     }
-    myWidget = gtk_scrolled_window_new(hadj, vadj);
+    GtkWidget *myWidget = gtk_scrolled_window_new(hadj, vadj);
+
+    // Save ourself
+    context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
     context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 

@@ -72,9 +72,11 @@ RexxMethod2(int,                       // Return type
 
     if (ptr == context->Nil()) {
         context->SendMessage1(self, "POINTER=", context->NewPointer(NULL));
+        context->SetObjectVariable("CSELF", context->NewPointer(NULL));
     }
     else {
         GSList * head = (GSList *)context->PointerValue((RexxPointerObject)ptr);
+        context->SetObjectVariable("CSELF", context->NewPointer(head));
         context->SendMessage1(self, "POINTER=", context->NewPointer(head));
     }
     return 0;
@@ -117,6 +119,7 @@ RexxMethod2(int,                       // Return type
     GSList *head = (GSList *)context->PointerValue(rxptr);
 
     head = g_slist_append(head, (void *)item);
+    context->SetObjectVariable("CSELF", context->NewPointer(head));
     context->SendMessage1(self, "POINTER=", context->NewPointer(head));
 
     return 0;
@@ -140,6 +143,7 @@ RexxMethod2(int,                       // Return type
     GSList *head = (GSList *)context->PointerValue(rxptr);
 
     head = g_slist_prepend(head, (void *)item);
+    context->SetObjectVariable("CSELF", context->NewPointer(head));
     context->SendMessage1(self, "POINTER=", context->NewPointer(head));
 
     return 0;
@@ -166,6 +170,7 @@ RexxMethod3(int,                       // Return type
     GSList *head = (GSList *)context->PointerValue(rxptr);
 
     head = g_slist_insert(head, (void *)item, pos - 1);
+    context->SetObjectVariable("CSELF", context->NewPointer(head));
     context->SendMessage1(self, "POINTER=", context->NewPointer(head));
 
     return 0;
@@ -240,6 +245,7 @@ RexxMethod1(int,                       // Return type
             GrxGListNew,               // Routine name
             OSELF, self)               // Self
 {
+    context->SetObjectVariable("CSELF", context->NewPointer(NULL));
     context->SendMessage1(self, "POINTER=", context->NewPointer(NULL));
 
     return 0;
@@ -282,6 +288,7 @@ RexxMethod2(int,                       // Return type
     GList *head = (GList *)context->PointerValue(rxptr);
 
     head = g_list_append(head, (void *)item);
+    context->SetObjectVariable("CSELF", context->NewPointer(head));
     context->SendMessage1(self, "POINTER=", context->NewPointer(head));
 
     return 0;
@@ -305,6 +312,7 @@ RexxMethod2(int,                       // Return type
     GList *head = (GList *)context->PointerValue(rxptr);
 
     head = g_list_prepend(head, (void *)item);
+    context->SetObjectVariable("CSELF", context->NewPointer(head));
     context->SendMessage1(self, "POINTER=", context->NewPointer(head));
 
     return 0;
@@ -331,6 +339,7 @@ RexxMethod3(int,                       // Return type
     GList *head = (GList *)context->PointerValue(rxptr);
 
     head = g_list_insert(head, (void *)item, pos - 1);
+    context->SetObjectVariable("CSELF", context->NewPointer(head));
     context->SendMessage1(self, "POINTER=", context->NewPointer(head));
 
     return 0;

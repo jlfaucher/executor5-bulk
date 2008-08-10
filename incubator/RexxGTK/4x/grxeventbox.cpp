@@ -73,9 +73,10 @@ RexxMethod1(int,                       // Return type
             GrxEventBoxNew,            // Object_method name
             OSELF, self)               // Self
 {
-    GtkWidget *myWidget;
+    GtkWidget *myWidget = gtk_event_box_new();
 
-    myWidget = gtk_event_box_new();
+    // Save ourself
+    context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
     context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 

@@ -92,10 +92,10 @@ RexxMethod3(int,                       // Return type
 {
     RexxPointerObject widgetptr = (RexxPointerObject)context->SendMessage0(icon, "POINTER");
     GtkWidget *iconWidget = (GtkWidget *)context->PointerValue(widgetptr);
-    GtkToolItem *toolitem;
+    GtkToolItem *toolitem = gtk_tool_button_new(iconWidget, label);
 
-    toolitem = gtk_tool_button_new(iconWidget, label);
-
+    // Save ourself
+    context->SetObjectVariable("CSELF", context->NewPointer(toolitem));
     context->SendMessage1(self, "POINTER=", context->NewPointer(toolitem));
     g_object_set_data(G_OBJECT(toolitem), "OORXOBJECT", self);
 
@@ -383,10 +383,10 @@ RexxMethod1(int,                       // Return type
             GrxSeparatorToolItemNew,   // Object_method name
             OSELF, self)               // Self
 {
-    GtkToolItem *toolitem;
+    GtkToolItem *toolitem = gtk_separator_tool_item_new();
 
-    toolitem = gtk_separator_tool_item_new();
-
+    // Save ourself
+    context->SetObjectVariable("CSELF", context->NewPointer(toolitem));
     context->SendMessage1(self, "POINTER=", context->NewPointer(toolitem));
     g_object_set_data(G_OBJECT(toolitem), "OORXOBJECT", self);
 

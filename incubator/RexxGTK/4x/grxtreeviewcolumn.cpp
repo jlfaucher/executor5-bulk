@@ -86,10 +86,10 @@ RexxMethod1(int,                       // Return type
             GrxTreeViewColumnNew,      // Object_method name
             OSELF, self)               // Self
 {
-    GtkTreeViewColumn *treeviewcol;
+    GtkTreeViewColumn *treeviewcol = gtk_tree_view_column_new();
 
-    treeviewcol = gtk_tree_view_column_new();
-
+    // Save ourself
+    context->SetObjectVariable("CSELF", context->NewPointer(treeviewcol));
     context->SendMessage1(self, "POINTER=", context->NewPointer(treeviewcol));
     g_object_set_data(G_OBJECT(treeviewcol), "OORXOBJECT", self);
 

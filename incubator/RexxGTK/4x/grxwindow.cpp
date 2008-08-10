@@ -104,9 +104,10 @@ RexxMethod2(int,                       // Return type
             OSELF, self,               // Self
             int, type)                 // Window type
 {
-    GtkWidget       *myWidget;
+    GtkWidget *myWidget = gtk_window_new((GtkWindowType)type);
 
-    myWidget = gtk_window_new((GtkWindowType)type);
+    // Save ourself
+    context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
     context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
 

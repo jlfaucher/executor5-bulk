@@ -86,9 +86,10 @@ RexxMethod1(int,                       // Return type
             GrxButtonNew,              // Object_method name
             OSELF, self)               // Self
 {
-    GtkWidget *myWidget;
+    GtkWidget *myWidget = gtk_button_new();
 
-    myWidget = gtk_button_new();
+    // Save ourself
+    context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
     context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
@@ -209,9 +210,10 @@ RexxMethod1(int,                       // Return type
             GrxToggleButtonNew,        // Object_method name
             OSELF, self)               // Self
 {
-    GtkWidget *myWidget;
+    GtkWidget *myWidget = gtk_toggle_button_new();
 
-    myWidget = gtk_toggle_button_new();
+    // Save ourself
+    context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
     context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
@@ -357,6 +359,9 @@ RexxMethod2(int,                       // Return type
     else {
         myWidget = gtk_check_button_new();
     }
+
+    // Save ourself
+    context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
     context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
@@ -382,17 +387,19 @@ RexxMethod3(int,                       // Return type
 {
     RexxPointerObject listptr = NULL;
     GSList *head = NULL;
-    GtkWidget *myWidget;
 
     if (rxlistptr != context->Nil()) {
         listptr = (RexxPointerObject)context->SendMessage0(rxlistptr, "POINTER");
         head = (GSList *)context->PointerValue(listptr);                                        
     }
     // create the widget
-    myWidget = gtk_radio_button_new(head);
+    GtkWidget *myWidget = gtk_radio_button_new(head);
     if (text != NULL) {
         gtk_button_set_label(GTK_BUTTON(myWidget), text);
     }
+
+    // Save ourself
+    context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
     context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
@@ -442,6 +449,9 @@ RexxMethod2(int,                       // Return type
         gdk_color_parse(colorstr, &color);
         myWidget = gtk_color_button_new_with_color(&color);
     }
+
+    // Save ourself
+    context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
     context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
@@ -536,9 +546,10 @@ RexxMethod3(int,                       // Return type
             CSTRING, title,            // Title string
             int, action)               // Title action
 {
-    GtkWidget *myWidget;
+    GtkWidget *myWidget = gtk_file_chooser_button_new(title, (GtkFileChooserAction)action);
 
-    myWidget = gtk_file_chooser_button_new(title, (GtkFileChooserAction)action);
+    // Save ourself
+    context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
     context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
@@ -556,9 +567,10 @@ RexxMethod1(int,                       // Return type
             GrxFontButtonNew,          // Object_method name
             OSELF, self)               // Self
 {
-    GtkWidget *myWidget;
+    GtkWidget *myWidget = gtk_font_button_new();
 
-    myWidget = gtk_font_button_new();
+    // Save ourself
+    context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
     context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 

@@ -82,10 +82,10 @@ RexxMethod4(int,                       // Return type
             int, cols,                 // Table columns
             logical_t, homogeneous)    // Homogeneous boolean
 {
-    GtkWidget *myWidget;
+    GtkWidget *myWidget = gtk_table_new(rows, cols, homogeneous);
 
-    myWidget = gtk_table_new(rows, cols, homogeneous);
-	
+    // Save ourself
+    context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
     context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 

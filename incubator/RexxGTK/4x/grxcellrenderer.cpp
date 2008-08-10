@@ -224,9 +224,10 @@ RexxMethod1(int,                       // Return type
             GrxCellRendererTextNew,    // Object_method name
             OSELF, self)               // Self
 {
-    GtkCellRenderer *myRenderer;
+    GtkCellRenderer *myRenderer = gtk_cell_renderer_text_new();
 
-    myRenderer = gtk_cell_renderer_text_new();
+    // Save ourself
+    context->SetObjectVariable("CSELF", context->NewPointer(myRenderer));
     context->SendMessage1(self, "POINTER=", context->NewPointer(myRenderer));
     g_object_set_data(G_OBJECT(myRenderer), "OORXOBJECT", self);
 
@@ -274,9 +275,10 @@ RexxMethod1(int,                       // Return type
             GrxCellRendererPixbufNew,  // Object_method name
             OSELF, self)               // Self
 {
-    GtkCellRenderer *myRenderer;
+    GtkCellRenderer *myRenderer = gtk_cell_renderer_pixbuf_new();
 
-    myRenderer = gtk_cell_renderer_pixbuf_new();
+    // Save ourself
+    context->SetObjectVariable("CSELF", context->NewPointer(myRenderer));
     context->SendMessage1(self, "POINTER=", context->NewPointer(myRenderer));
     g_object_set_data(G_OBJECT(myRenderer), "OORXOBJECT", self);
 
@@ -294,9 +296,10 @@ RexxMethod1(int,                       // Return type
             GrxCellRendererProgressNew, // Object_method name
             OSELF, self)               // Self
 {
-    GtkCellRenderer *myRenderer;
+    GtkCellRenderer *myRenderer = gtk_cell_renderer_progress_new();
 
-    myRenderer = gtk_cell_renderer_progress_new();
+    // Save ourself
+    context->SetObjectVariable("CSELF", context->NewPointer(myRenderer));
     context->SendMessage1(self, "POINTER=", context->NewPointer(myRenderer));
     g_object_set_data(G_OBJECT(myRenderer), "OORXOBJECT", self);
 
@@ -314,9 +317,10 @@ RexxMethod1(int,                       // Return type
             GrxCellRendererToggleNew,  // Object_method name
             OSELF, self)               // Self
 {
-    GtkCellRenderer *myRenderer;
+    GtkCellRenderer *myRenderer = gtk_cell_renderer_toggle_new();
 
-    myRenderer = gtk_cell_renderer_toggle_new();
+    // Save ourself
+    context->SetObjectVariable("CSELF", context->NewPointer(myRenderer));
     context->SendMessage1(self, "POINTER=", context->NewPointer(myRenderer));
     g_object_set_data(G_OBJECT(myRenderer), "OORXOBJECT", self);
 
@@ -442,9 +446,10 @@ RexxMethod1(int,                       // Return type
             GrxCellRendererAccelNew,   // Object_method name
             OSELF, self)               // Self
 {
-    GtkCellRenderer *myRenderer;
+    GtkCellRenderer *myRenderer = gtk_cell_renderer_accel_new();
 
-    myRenderer = gtk_cell_renderer_accel_new();
+    // Save ourself
+    context->SetObjectVariable("CSELF", context->NewPointer(myRenderer));
     context->SendMessage1(self, "POINTER=", context->NewPointer(myRenderer));
     g_object_set_data(G_OBJECT(myRenderer), "OORXOBJECT", self);
 
@@ -500,9 +505,10 @@ RexxMethod1(int,                       // Return type
             GrxCellRendererComboNew,   // Object_method name
             OSELF, self)               // Self
 {
-    GtkCellRenderer *myRenderer;
+    GtkCellRenderer *myRenderer = gtk_cell_renderer_combo_new();
 
-    myRenderer = gtk_cell_renderer_combo_new();
+    // Save ourself
+    context->SetObjectVariable("CSELF", context->NewPointer(myRenderer));
     context->SendMessage1(self, "POINTER=", context->NewPointer(myRenderer));
     g_object_set_data(G_OBJECT(myRenderer), "OORXOBJECT", self);
 

@@ -116,6 +116,9 @@ RexxMethod3(int,                       // Return type
             myWidget = gtk_menu_item_new_with_label(label);
         }
     }
+
+    // Save ourself
+    context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
     context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
@@ -329,9 +332,10 @@ RexxMethod1(int,                       // Return type
             GrxSeparatorMenuItemNew,   // Object_method name
             OSELF, self)               // Self
 {
-    GtkWidget *myWidget;
+    GtkWidget *myWidget = gtk_separator_menu_item_new();
 
-    myWidget = gtk_separator_menu_item_new();
+    // Save ourself
+    context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
     context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
@@ -365,6 +369,9 @@ RexxMethod4(int,                       // Return type
         GtkAccelGroup *accelgrpWidget = (GtkAccelGroup *)context->PointerValue(accelgrpptr);
         myWidget = gtk_image_menu_item_new_from_stock(label, accelgrpWidget);
     }
+
+    // Save ourself
+    context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
     context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 

@@ -95,6 +95,9 @@ RexxMethod2(int,                       // Return type
     else {
         myBuffer = (GtkTextBuffer *)context->PointerValue((RexxPointerObject)rxptr);
     }
+
+    // Save ourself
+    context->SetObjectVariable("CSELF", context->NewPointer(myBuffer));
     context->SendMessage1(self, "POINTER=", context->NewPointer(myBuffer));
     g_object_set_data(G_OBJECT(myBuffer), "OORXOBJECT", self);
 

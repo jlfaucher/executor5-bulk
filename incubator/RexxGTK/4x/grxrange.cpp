@@ -230,10 +230,11 @@ RexxMethod7(int,                       // Return type
             double, pagesz)            // Page size
 {
     GtkWidget *myWidget;
-    GtkAdjustment *adj;
-
-    adj = (GtkAdjustment *) gtk_adjustment_new(value, lower, upper, step, page, pagesz);
+    GtkAdjustment *adj = (GtkAdjustment *) gtk_adjustment_new(value, lower, upper, step, page, pagesz);
     myWidget = gtk_hscale_new(adj);
+
+    // Save ourself
+    context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
     context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
@@ -260,9 +261,10 @@ RexxMethod4(int,                       // Return type
             double, max,               // Maximum
             double, step)              // Step increment
 {
-    GtkWidget *myWidget;
+    GtkWidget *myWidget = gtk_hscale_new_with_range(min, max, step);
 
-    myWidget = gtk_hscale_new_with_range(min, max, step);
+    // Save ourself
+    context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
     context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
@@ -299,10 +301,11 @@ RexxMethod7(int,                       // Return type
             double, pagesz)            // Page size
 {
     GtkWidget *myWidget;
-    GtkAdjustment *adj;
-
-    adj = (GtkAdjustment *) gtk_adjustment_new(value, lower, upper, step, page, pagesz);
+    GtkAdjustment *adj = (GtkAdjustment *) gtk_adjustment_new(value, lower, upper, step, page, pagesz);
     myWidget = gtk_vscale_new(adj);
+
+    // Save ourself
+    context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
     context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
@@ -329,9 +332,10 @@ RexxMethod4(int,                       // Return type
             double, max,               // Maximum
             double, step)              // Step increment
 {
-    GtkWidget *myWidget;
+    GtkWidget *myWidget = gtk_vscale_new_with_range(min, max, step);
 
-    myWidget = gtk_vscale_new_with_range(min, max, step);
+    // Save ourself
+    context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
     context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 

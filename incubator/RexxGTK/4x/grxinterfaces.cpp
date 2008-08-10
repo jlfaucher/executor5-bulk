@@ -251,9 +251,10 @@ RexxMethod1(int,                       // Return type
             GrxFileFilterNew,          // Object_method name
             OSELF, self)               // Self
 {
-    GtkFileFilter *filter;
+    GtkFileFilter *filter = gtk_file_filter_new();
 
-    filter = gtk_file_filter_new();
+    // Save ourself
+    context->SetObjectVariable("CSELF", context->NewPointer(filter));
     context->SendMessage1(self, "POINTER=", context->NewPointer(filter));
     g_object_set_data(G_OBJECT(filter), "OORXOBJECT", self);
 

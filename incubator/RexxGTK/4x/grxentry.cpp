@@ -172,9 +172,10 @@ RexxMethod1(int,                       // Return type
             GrxEntryNew,               // Object_method name
             OSELF, self)               // Self
 {
-    GtkWidget *myWidget;
+    GtkWidget *myWidget = gtk_entry_new();
 
-    myWidget = gtk_entry_new();
+    // Save ourself
+    context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
     context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
@@ -492,12 +493,12 @@ RexxMethod4(int,                       // Return type
             double, crate,             // Climb rate
             uint32_t, digits)          // Digits
 {
-    GtkWidget *myWidget;
     RexxPointerObject adjptr = (RexxPointerObject)context->SendMessage0(rxadj, "POINTER");
     GtkAdjustment *adj = (GtkAdjustment *)context->PointerValue(adjptr);
+    GtkWidget *myWidget = gtk_spin_button_new(adj, crate, digits);
 
-
-    myWidget = gtk_spin_button_new(adj, crate, digits);
+    // Save ourself
+    context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
     context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
@@ -524,9 +525,10 @@ RexxMethod4(int,                       // Return type
             double, upper,             // Upper limit
             double, step)              // Step
 {
-    GtkWidget *myWidget;
+    GtkWidget *myWidget = gtk_spin_button_new_with_range(lower, upper, step);
 
-    myWidget = gtk_spin_button_new_with_range(lower, upper, step);
+    // Save ourself
+    context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
     context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 

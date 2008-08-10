@@ -102,13 +102,15 @@ RexxMethod1(int,                       // Return type
             GrxDialogNew,              // Object_method name
             OSELF, self)               // Self
 {
-    GtkWidget *myWidget;
+    GtkWidget *myWidget = gtk_dialog_new();
 
-    myWidget = gtk_dialog_new();
+    // Save ourself
+    context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
     context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
-    GtkWidget *vbox = GTK_DIALOG(myWidget)->vbox;
+
     // create the vbox object
+    GtkWidget *vbox = GTK_DIALOG(myWidget)->vbox;
     RexxObjectPtr rxvbox = context->SendMessage1(self, "VBOX=", context->NewPointer(vbox));
 
     return 0;
@@ -157,10 +159,14 @@ RexxMethod5(int,                       // Return type
         context->ObjectToNumber(context->ArrayAt(args, i), &rid);
         gtk_dialog_add_button(GTK_DIALOG(myWidget), bid, rid);
     }
+
+    // Save ourself
+    context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
     context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
-    vbox = GTK_DIALOG(myWidget)->vbox;
+
     // create the vbox object
+    vbox = GTK_DIALOG(myWidget)->vbox;
     RexxObjectPtr rxvbox = context->SendMessage1(self, "VBOX=", context->NewPointer(vbox));
 
     return 0;
@@ -331,6 +337,8 @@ RexxMethod6(int,                       // Return type
                                       (GtkMessageType)type,
                                       (GtkButtonsType)bset, text);
 
+    // Save ourself
+    context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
     context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
@@ -380,6 +388,9 @@ RexxMethod5(int,                       // Return type
         context->ObjectToNumber(context->ArrayAt(args, i), &rid);
         gtk_dialog_add_button(GTK_DIALOG(myWidget), bid, rid);
     }
+
+    // Save ourself
+    context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
     context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
@@ -402,9 +413,10 @@ RexxMethod2(int,                       // Return type
             CSTRING, title,            // Dialog title
             OSELF, self)               // Self
 {
-    GtkWidget *myWidget;
+    GtkWidget *myWidget = gtk_font_selection_dialog_new(title);
 
-    myWidget = gtk_font_selection_dialog_new(title);
+    // Save ourself
+    context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
     context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
@@ -468,7 +480,6 @@ RexxMethod2(int,                       // Return type
 {
     RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
     GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-
 
     gtk_font_selection_dialog_set_preview_text(GTK_FONT_SELECTION_DIALOG(myWidget),
                                                text);
@@ -797,12 +808,12 @@ RexxMethod2(int,                       // Return type
             CSTRING, title,            // Dialog title
             OSELF, self)               // Self
 {
-    GtkWidget *myWidget;
-    GtkWidget *colorsel;
-
-    myWidget = gtk_color_selection_dialog_new(title);
-    colorsel = GTK_COLOR_SELECTION_DIALOG(myWidget)->colorsel;
+    GtkWidget *myWidget = gtk_color_selection_dialog_new(title);
+    GtkWidget *colorsel = GTK_COLOR_SELECTION_DIALOG(myWidget)->colorsel;
     gtk_color_selection_set_has_opacity_control(GTK_COLOR_SELECTION(colorsel), TRUE);
+
+    // Save ourself
+    context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
     context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 

@@ -209,10 +209,10 @@ RexxMethod1(int,                       // Return type
             GrxTreeViewNew,            // Object_method name
             OSELF, self)               // Self
 {
-    GtkWidget *treeview;
+    GtkWidget *treeview = gtk_tree_view_new();
 
-    treeview = gtk_tree_view_new();
-
+    // Save ourself
+    context->SetObjectVariable("CSELF", context->NewPointer(treeview));
     context->SendMessage1(self, "POINTER=", context->NewPointer(treeview));
     g_object_set_data(G_OBJECT(treeview), "OORXOBJECT", self);
 

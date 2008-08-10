@@ -188,9 +188,10 @@ RexxMethod1(int,                       // Return type
             GrxTextViewNew,            // Object_method name
             OSELF, self)               // Self
 {
-    GtkWidget       *myWidget;
+    GtkWidget *myWidget = gtk_text_view_new();
 
-    myWidget = gtk_text_view_new();
+    // Save ourself
+    context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
     context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
