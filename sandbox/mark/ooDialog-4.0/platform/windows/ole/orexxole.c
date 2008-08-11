@@ -668,7 +668,7 @@ void getCachedClassInfo(RexxMethodContext *context, POLECLASSINFO *pClsInfo, ITy
  *
  * @param pDispatch The returned IDispatch pointer
  */
-void getDispatchPtr(RexxMethodContext *context, IDispatch **pDispatch)
+bool getDispatchPtr(RexxMethodContext *context, IDispatch **pDispatch)
 {
     /* Get the IDispatch pointer for the OLE object we represent. */
     RexxObjectPtr value = context->GetObjectVariable("!IDISPATCH");
@@ -680,7 +680,9 @@ void getDispatchPtr(RexxMethodContext *context, IDispatch **pDispatch)
     if (*pDispatch == NULL)
     {
         context->RaiseException(Rexx_Error_Interpretation_initialization);
+        return false;
     }
+    return true;
 }
 
 /**
@@ -839,6 +841,7 @@ POLECLASSINFO psFindClassInfo(RexxThreadContext *context, const char *pszCLSId, 
         else
         {
             context->RaiseException(Rexx_Error_System_resources);
+            return NULL;
         }
     }
 
@@ -885,6 +888,7 @@ POLECLASSINFO psFindClassInfo(RexxThreadContext *context, const char *pszCLSId, 
             else
             {
                 context->RaiseException(Rexx_Error_System_resources);
+                return NULL;
             }
         }
 
@@ -1817,9 +1821,10 @@ void Rexx2Variant(RexxThreadContext *context, RexxObjectPtr _RxObject, VARIANT *
  *
  * @param VarArray  The variant to contain the empty safe array.
  *
- * @return True always.
+ * @return          True if the array was created, false if an exception was
+ *                  raised.
  */
-BOOL createEmptySafeArray(RexxThreadContext *context, VARIANT *VarArray)
+bool createEmptySafeArray(RexxThreadContext *context, VARIANT *VarArray)
 {
     SAFEARRAY      *pSafeArray;
     SAFEARRAYBOUND *pArrayBound;
@@ -1832,6 +1837,7 @@ BOOL createEmptySafeArray(RexxThreadContext *context, VARIANT *VarArray)
     if ( ! pSafeArray )
     {
         context->RaiseException(Rexx_Error_System_resources);
+        false;
     }
 
     V_VT(VarArray) = VT_ARRAY | VT_VARIANT;
@@ -3170,13 +3176,17 @@ RexxMethod3(RexxObjectPtr,                // Return type
 
     iArgCount = context->ArraySize(msgArgs);
 
-    getDispatchPtr(context, &pDispatch);
+    if ( ! getDispatchPtr(context, &pDispatch) )
+    {
+        return ResultObj;
+    }
     getCachedClassInfo(context, &pClsInfo, &pTypeInfo);
 
     pszFunction = pszStringDupe(msgName);
     if (!pszFunction)
     {
         context->RaiseException(Rexx_Error_System_resources);
+        return ResultObj;
     }
 
     if ( pszFunction[strlen(pszFunction)-1] == '=' )
@@ -3849,7 +3859,10 @@ RexxMethod2(RexxObjectPtr,                // Return type
         OLEInit();
     }
 
-    getDispatchPtr(context, &pDispatch);
+    if ( ! getDispatchPtr(context, &pDispatch) )
+    {
+        return ResultObj;
+    }
     getCachedClassInfo(context, &pClsInfo, &pTypeInfo);
 
     if (stricmp(classID, "ARRAY") == 0)
@@ -4310,7 +4323,10 @@ RexxMethod1(RexxObjectPtr,                // Return type
         OLEInit();
     }
 
-    getDispatchPtr(context, &pDispatch);
+    if ( ! getDispatchPtr(context, &pDispatch) )
+    {
+        return context->Nil();
+    }
 
     hResult = pDispatch->GetTypeInfoCount(&iTypeInfoCount);
     // check if type information is available
@@ -4396,7 +4412,8 @@ RexxMethod1(RexxObjectPtr,                // Return type
 //   Arguments:
 //     self - A pointer to self
 //     monikerName (RexxObjectPtr) - The moniker name to get an object of
-//     optClass (RexxObjectPtr)    - The class from which to create the object (optional, must be derived from OLEObject)
+//     optClass (RexxObjectPtr)    - The class from which to create the object
+//                                   (optional, must be derived from OLEObject)
 //
 //   Returned:
 //     returnObject (RexxObjectPtr) - an REXX OLE instance or .Nil.
@@ -4801,7 +4818,10 @@ RexxMethod0(logical_t, OLEObject_isConnectable)
     /* Get the IDispatch pointer for this object and see if the COM object we
      *  are proxying for is a connectable object.
      */
-    getDispatchPtr(context, &pDispatch);
+    if ( ! getDispatchPtr(context, &pDispatch) )
+    {
+        return false;
+    }
 
     if ( isConnectableObject(pDispatch) )
     {
@@ -4825,7 +4845,10 @@ RexxMethod1(logical_t, OLEObject_connectEvents, OSELF, self)
     if ( haveEventHandler(context) )
     {
         getEventHandlerPtr(context, &pEventHandler);
-        getDispatchPtr(context, &pDispatch);
+        if ( ! getDispatchPtr(context, &pDispatch) )
+        {
+            return false;
+        }
         getConnectionPointContainer(pDispatch, &pContainer);
     }
     else
@@ -5476,7 +5499,10 @@ bool maybeCreateEventHandler(RexxMethodContext * context, OLEObjectEvent **ppHan
 
     *ppContainer = NULL;  /* Insurance. */
 
-    getDispatchPtr(context, &pDispatch);
+    if ( ! getDispatchPtr(context, &pDispatch) )
+    {
+        return false;
+    }
 
     if ( getConnectionPointContainer(pDispatch, ppContainer) )
     {
