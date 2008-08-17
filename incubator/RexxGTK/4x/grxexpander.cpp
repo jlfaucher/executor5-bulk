@@ -93,7 +93,6 @@ RexxMethod2(int,                       // Return type
 
     // Save ourself
     context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
-    context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
@@ -110,13 +109,10 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxExpanderSetExpanded,    // Object_method name
-            logical_t, state,          // Expander state
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            logical_t, state)          // Expander state
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkExpander *myWidget = (GtkExpander *)context->PointerValue(rxptr);
-
-    gtk_expander_set_expanded(myWidget, state);
+    gtk_expander_set_expanded(GTK_EXPANDER(self), state);
 
     return 0;
 }
@@ -132,13 +128,10 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxExpanderSetLabel,       // Object_method name
-            CSTRING, label,            // Expander label
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            CSTRING, label)            // Expander label
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkExpander *myWidget = (GtkExpander *)context->PointerValue(rxptr);
-
-    gtk_expander_set_label(myWidget, label);
+    gtk_expander_set_label(GTK_EXPANDER(self), label);
 
     return 0;
 }
@@ -152,12 +145,9 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod1(CSTRING,                   // Return type
             GrxExpanderGetLabel,       // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkExpander *myWidget = (GtkExpander *)context->PointerValue(rxptr);
-
-    return gtk_expander_get_label(myWidget);
+    return gtk_expander_get_label(GTK_EXPANDER(self));
 }
 
 /**
@@ -171,13 +161,10 @@ RexxMethod1(CSTRING,                   // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxExpanderSetUseUnderline, // Object_method name
-            logical_t, flag,           // Expander underline boolean
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            logical_t, flag)           // Expander underline boolean
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkExpander *myWidget = (GtkExpander *)context->PointerValue(rxptr);
-
-    gtk_expander_set_use_underline(myWidget, flag);
+    gtk_expander_set_use_underline(GTK_EXPANDER(self), flag);
 
     return 0;
 }
@@ -193,13 +180,10 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxExpanderSetSpacing,     // Object_method name
-            int, spacing,              // Expander spacing amount
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            int, spacing)              // Expander spacing amount
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkExpander *myWidget = (GtkExpander *)context->PointerValue(rxptr);
-
-    gtk_expander_set_spacing(myWidget, spacing);
+    gtk_expander_set_spacing(GTK_EXPANDER(self), spacing);
 
     return 0;
 }
@@ -215,19 +199,17 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxExpanderSignalConnect,  // Object_method name
+            CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            ARGLIST, args,             // The whole argument list as an array
-            OSELF, self)               // Self
+            ARGLIST, args)             // The whole argument list as an array
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     cbcb *cblock;
 
     if (strcmp(name, "activate") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_activate";
-        g_signal_connect(G_OBJECT(myWidget), "activate",
+        g_signal_connect(G_OBJECT(self), "activate",
                          G_CALLBACK(signal_func_0), cblock);
         return context->True();
     }

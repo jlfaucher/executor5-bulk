@@ -90,13 +90,12 @@ RexxMethod3(int,                       // Return type
             RexxObjectPtr, icon,       // Icon widget
             CSTRING, label)            // Button label text
 {
-    RexxPointerObject widgetptr = (RexxPointerObject)context->SendMessage0(icon, "POINTER");
-    GtkWidget *iconWidget = (GtkWidget *)context->PointerValue(widgetptr);
+    GtkWidget *iconWidget = (GtkWidget *)context->ObjectToCSelf(icon);
+
     GtkToolItem *toolitem = gtk_menu_tool_button_new(iconWidget, label);
 
     // Save ourself
     context->SetObjectVariable("CSELF", context->NewPointer(toolitem));
-    context->SendMessage1(self, "POINTER=", context->NewPointer(toolitem));
     g_object_set_data(G_OBJECT(toolitem), "OORXOBJECT", self);
 
     return 0;
@@ -113,15 +112,12 @@ RexxMethod3(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxMenuToolButtonSetMenu,  // Object_method name
-            RexxObjectPtr, rxobj,      // The icon widget
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            RexxObjectPtr, rxobj)      // The icon widget
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkMenuToolButton *myWidget = (GtkMenuToolButton *)context->PointerValue(rxptr);
-    RexxPointerObject widgetptr = (RexxPointerObject)context->SendMessage0(rxobj, "POINTER");
-    GtkWidget *menuWidget = (GtkWidget *)context->PointerValue(widgetptr);
+    GtkWidget *menuWidget = (GtkWidget *)context->ObjectToCSelf(rxobj);
 
-    gtk_menu_tool_button_set_menu(myWidget, menuWidget);
+    gtk_menu_tool_button_set_menu(GTK_MENU_TOOL_BUTTON(self), menuWidget);
 
     return 0;
 }
@@ -135,12 +131,9 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod1(RexxObjectPtr,             // Return type
             GrxMenuToolButtonGetMenu,  // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkMenuToolButton *myWidget = (GtkMenuToolButton *)context->PointerValue(rxptr);
-
-    GtkWidget *menuWidget = gtk_menu_tool_button_get_menu(myWidget);
+    GtkWidget *menuWidget = gtk_menu_tool_button_get_menu(GTK_MENU_TOOL_BUTTON(self));
     return (RexxObjectPtr)g_object_get_data(G_OBJECT(menuWidget), "OORXOBJECT");
 }
 
@@ -155,19 +148,17 @@ RexxMethod1(RexxObjectPtr,             // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxMenuToolButtonSignalConnect, // Object_method name
+            CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            ARGLIST, args,             // The whole argument list as an array
-            OSELF, self)               // Self
+            ARGLIST, args)             // The whole argument list as an array
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     cbcb *cblock;
 
     if (strcmp(name, "show_menu") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_show_menu";
-        g_signal_connect(G_OBJECT(myWidget), "show-menu",
+        g_signal_connect(G_OBJECT(self), "show-menu",
                          G_CALLBACK(signal_func_0), cblock);
         return context->True();
     }

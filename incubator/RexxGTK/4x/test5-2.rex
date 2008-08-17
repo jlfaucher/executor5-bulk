@@ -94,7 +94,7 @@ dialog~show_all()
 dialog~signal_connect("response")
 return
 
-::class myDialog subclass GtkDialog_With_Buttons
+::class myDialog subclass GtkDialog
 
 ::method signal_response
 self~destroy()

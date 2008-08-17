@@ -170,7 +170,7 @@ buffer~apply_tag_by_name(tagname)
 return
 
 
-::class myComboBox subclass GtkComboBox_Text
+::class myComboBox subclass GtkComboBoxText
 
 ::method signal_changed
 if self~get_active() = -1 then return

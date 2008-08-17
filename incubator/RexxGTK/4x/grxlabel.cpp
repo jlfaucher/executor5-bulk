@@ -137,7 +137,6 @@ RexxMethod2(int,                       // Return type
 
     // Save ourself
     context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
-    context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
@@ -152,12 +151,9 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod1(CSTRING,                   // Return type
             GrxLabelGetLabel,          // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkLabel *myWidget = (GtkLabel *)context->PointerValue(rxptr);
-
-    return gtk_label_get_label(myWidget); 
+    return gtk_label_get_label(GTK_LABEL(self)); 
 }
 
 /**
@@ -171,13 +167,10 @@ RexxMethod1(CSTRING,                   // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxLabelSetLabel,          // Object_method name
-            CSTRING, text,             // Label text
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            CSTRING, text)             // Label text
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkLabel *myWidget = (GtkLabel *)context->PointerValue(rxptr);
-
-    gtk_label_set_label(myWidget, text); 
+    gtk_label_set_label(GTK_LABEL(self), text); 
 
     return 0;
 }
@@ -193,22 +186,19 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxLabelSetJustify,        // Object_method name
-            int, jtype,                // Justification type
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            int, jtype)                // Justification type
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkLabel *myWidget = (GtkLabel *)context->PointerValue(rxptr);
-
-    gtk_label_set_justify(myWidget, (GtkJustification)jtype); 
+    gtk_label_set_justify(GTK_LABEL(self), (GtkJustification)jtype); 
     switch (jtype) {
     case GTK_JUSTIFY_LEFT:
-        gtk_misc_set_alignment(GTK_MISC(myWidget), 0, 0);
+        gtk_misc_set_alignment(GTK_MISC(self), 0, 0);
         break;
     case GTK_JUSTIFY_RIGHT:
-        gtk_misc_set_alignment(GTK_MISC(myWidget), 1, 0);
+        gtk_misc_set_alignment(GTK_MISC(self), 1, 0);
         break;
     case GTK_JUSTIFY_CENTER:
-        gtk_misc_set_alignment(GTK_MISC(myWidget), 0.5, 0.5);
+        gtk_misc_set_alignment(GTK_MISC(self), 0.5, 0.5);
         break;
     default:
         break;
@@ -226,12 +216,9 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod1(int,                       // Return type
             GrxLabelGetJustify,        // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkLabel *myWidget = (GtkLabel *)context->PointerValue(rxptr);
-
-    return (int)gtk_label_get_justify(myWidget);
+    return (int)gtk_label_get_justify(GTK_LABEL(self));
 }
 
 /**
@@ -245,13 +232,10 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxLabelSetSelectable,     // Object_method name
-            logical_t, flag,           // Selectable boolean
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            logical_t, flag)           // Selectable boolean
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkLabel *myWidget = (GtkLabel *)context->PointerValue(rxptr);
-
-    gtk_label_set_selectable(myWidget, flag);
+    gtk_label_set_selectable(GTK_LABEL(self), flag);
 
     return 0;
 }
@@ -267,19 +251,17 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxLabelSignalConnect,     // Object_method name
+            CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            ARGLIST, args,             // The whole argument list as an array
-            OSELF, self)               // Self
+            ARGLIST, args)             // The whole argument list as an array
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     cbcb *cblock;
 
     if (strcmp(name, "copy_clipboard") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_copy_clipboard";
-        g_signal_connect(G_OBJECT(myWidget), "copy-clipboard",
+        g_signal_connect(G_OBJECT(self), "copy-clipboard",
                          G_CALLBACK(signal_func_0), cblock);
         return context->True();
     }
@@ -287,7 +269,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_move_cursor";
-        g_signal_connect(G_OBJECT(myWidget), "move-cursor",
+        g_signal_connect(G_OBJECT(self), "move-cursor",
                          G_CALLBACK(signal_func_2), cblock);
         return context->True();
     }
@@ -295,7 +277,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_populate_popup";
-        g_signal_connect(G_OBJECT(myWidget), "populate-popup",
+        g_signal_connect(G_OBJECT(self), "populate-popup",
                          G_CALLBACK(signal_func_1), cblock);
         return context->True();
     }

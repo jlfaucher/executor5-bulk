@@ -111,7 +111,6 @@ RexxMethod7(int,                       // Return type
 
     // Save ourself
     context->SetObjectVariable("CSELF", context->NewPointer(adj));
-    context->SendMessage1(self, "POINTER=", context->NewPointer(adj));
     g_object_set_data(G_OBJECT(adj), "OORXOBJECT", self);
 
     return 0;
@@ -135,7 +134,6 @@ RexxMethod2(int,                       // Return type
 
     // Save ourself
     context->SetObjectVariable("CSELF", context->NewPointer(adj));
-    context->SendMessage1(self, "POINTER=", context->NewPointer(adj));
     g_object_set_data(G_OBJECT(adj), "OORXOBJECT", self);
 
     return 0;
@@ -150,12 +148,9 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod1(double,                    // Return type
             GrxAdjustmentGetValue,     // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkAdjustment *adj = (GtkAdjustment *)context->PointerValue(rxptr);
-
-    return gtk_adjustment_get_value(adj);
+    return gtk_adjustment_get_value(GTK_ADJUSTMENT(self));
 }
 
 /**
@@ -169,13 +164,10 @@ RexxMethod1(double,                    // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxAdjustmentSetValue,     // Object_method name
-            double, value,             // New value
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            double, value)             // New value
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkAdjustment *adj = (GtkAdjustment *)context->PointerValue(rxptr);
-
-    gtk_adjustment_set_value(adj, value);
+    gtk_adjustment_set_value(GTK_ADJUSTMENT(self), value);
 
     return 0;
 }
@@ -193,14 +185,11 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod3(int,                       // Return type
             GrxAdjustmentClampPage,    // Object_method name
+            CSELF, self,               // GTK self
             double, lower,             // Lower limit
-            double, upper,             // Upper limit
-            OSELF, self)               // Self
+            double, upper)             // Upper limit
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkAdjustment *adj = (GtkAdjustment *)context->PointerValue(rxptr);
-
-    gtk_adjustment_clamp_page(adj, lower, upper);
+    gtk_adjustment_clamp_page(GTK_ADJUSTMENT(self), lower, upper);
 
     return 0;
 }
@@ -216,19 +205,17 @@ RexxMethod3(int,                       // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxAdjustmentSignalConnect, // Object_method name
+            CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            ARGLIST, args,             // The whole argument list as an array
-            OSELF, self)               // Self
+            ARGLIST, args)             // The whole argument list as an array
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     cbcb *cblock;
 
     if (strcmp(name, "changed") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_changed";
-        g_signal_connect(G_OBJECT(myWidget), "changed",
+        g_signal_connect(G_OBJECT(self), "changed",
                          G_CALLBACK(signal_func_0), cblock);
         return context->True();
     }
@@ -236,7 +223,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_value_changed";
-        g_signal_connect(G_OBJECT(myWidget), "value-changed",
+        g_signal_connect(G_OBJECT(self), "value-changed",
                          G_CALLBACK(signal_func_0), cblock);
         return context->True();
     }

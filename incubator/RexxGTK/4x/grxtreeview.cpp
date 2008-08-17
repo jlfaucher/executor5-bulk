@@ -213,7 +213,6 @@ RexxMethod1(int,                       // Return type
 
     // Save ourself
     context->SetObjectVariable("CSELF", context->NewPointer(treeview));
-    context->SendMessage1(self, "POINTER=", context->NewPointer(treeview));
     g_object_set_data(G_OBJECT(treeview), "OORXOBJECT", self);
 
     return 0;
@@ -230,15 +229,12 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxTreeViewAppendColumn,   // Object_method name
-            RexxObjectPtr, rxobj,      // Column object
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            RexxObjectPtr, rxobj)      // Column object
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkTreeView *myWidget = (GtkTreeView *)context->PointerValue(rxptr);
-    RexxPointerObject objptr = (RexxPointerObject)context->SendMessage0(rxobj, "POINTER");
-    GtkTreeViewColumn *colWidget = (GtkTreeViewColumn *)context->PointerValue(objptr);
+    GtkTreeViewColumn *colWidget = (GtkTreeViewColumn *)context->ObjectToCSelf(rxobj);
 
-    gtk_tree_view_append_column(myWidget, colWidget);
+    gtk_tree_view_append_column(GTK_TREE_VIEW(self), colWidget);
 
     return 0;
 }
@@ -254,15 +250,12 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxTreeViewRemoveColumn,   // Object_method name
-            RexxObjectPtr, rxobj,      // Column object
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            RexxObjectPtr, rxobj)      // Column object
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkTreeView *myWidget = (GtkTreeView *)context->PointerValue(rxptr);
-    RexxPointerObject objptr = (RexxPointerObject)context->SendMessage0(rxobj, "POINTER");
-    GtkTreeViewColumn *colWidget = (GtkTreeViewColumn *)context->PointerValue(objptr);
+    GtkTreeViewColumn *colWidget = (GtkTreeViewColumn *)context->ObjectToCSelf(rxobj);
 
-    gtk_tree_view_remove_column(myWidget, colWidget);
+    gtk_tree_view_remove_column(GTK_TREE_VIEW(self), colWidget);
 
     return 0;
 }
@@ -280,16 +273,13 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod3(int,                       // Return type
             GrxTreeViewInsertColumn,   // Object_method name
+            CSELF, self,               // GTK self
             RexxObjectPtr, rxobj,      // Column object
-            int, pos,                  // Position
-            OSELF, self)               // Self
+            int, pos)                  // Position
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkTreeView *myWidget = (GtkTreeView *)context->PointerValue(rxptr);
-    RexxPointerObject objptr = (RexxPointerObject)context->SendMessage0(rxobj, "POINTER");
-    GtkTreeViewColumn *colWidget = (GtkTreeViewColumn *)context->PointerValue(objptr);
+    GtkTreeViewColumn *colWidget = (GtkTreeViewColumn *)context->ObjectToCSelf(rxobj);
 
-    gtk_tree_view_insert_column(myWidget, colWidget, pos);
+    gtk_tree_view_insert_column(GTK_TREE_VIEW(self), colWidget, pos);
 
     return 0;
 }
@@ -305,15 +295,12 @@ RexxMethod3(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxTreeViewSetModel,       // Object_method name
-            RexxObjectPtr, model,      // Column object
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            RexxObjectPtr, model)      // Column object
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkTreeView *myWidget = (GtkTreeView *)context->PointerValue(rxptr);
-    RexxPointerObject objptr = (RexxPointerObject)context->SendMessage0(model, "POINTER");
-    GtkTreeModel *modelWidget = (GtkTreeModel *)context->PointerValue(objptr);
+    GtkTreeModel *modelWidget = (GtkTreeModel *)context->ObjectToCSelf(model);
 
-    gtk_tree_view_set_model(myWidget, modelWidget);
+    gtk_tree_view_set_model(GTK_TREE_VIEW(self), modelWidget);
 
     return 0;
 }
@@ -327,12 +314,9 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod1(int,                       // Return type
             GrxTreeViewExpandAll,      // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkTreeView *myWidget = (GtkTreeView *)context->PointerValue(rxptr);
-
-    gtk_tree_view_expand_all(myWidget);
+    gtk_tree_view_expand_all(GTK_TREE_VIEW(self));
 
     return 0;
 }
@@ -348,19 +332,17 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxTreeViewSignalConnect,  // Object_method name
+            CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            ARGLIST, args,             // The whole argument list as an array
-            OSELF, self)               // Self
+            ARGLIST, args)             // The whole argument list as an array
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     cbcb *cblock;
 
     if (strcmp(name, "columns_changed") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_columns_changed";
-        g_signal_connect(G_OBJECT(myWidget), "columns-changed",
+        g_signal_connect(G_OBJECT(self), "columns-changed",
                          G_CALLBACK(signal_func_0), cblock);
         return context->True();
     }
@@ -368,7 +350,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_cursor_changed";
-        g_signal_connect(G_OBJECT(myWidget), "cursor-changed",
+        g_signal_connect(G_OBJECT(self), "cursor-changed",
                          G_CALLBACK(signal_func_0), cblock);
         return context->True();
     }
@@ -376,7 +358,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_expand_collapse_cursor_row";
-        g_signal_connect(G_OBJECT(myWidget), "expand-collapse-cursor-row",
+        g_signal_connect(G_OBJECT(self), "expand-collapse-cursor-row",
                          G_CALLBACK(signal_func_0), cblock);
         return context->True();
     }
@@ -384,7 +366,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_move_cursor";
-        g_signal_connect(G_OBJECT(myWidget), "move-cursor",
+        g_signal_connect(G_OBJECT(self), "move-cursor",
                          G_CALLBACK(signal_func_2), cblock);
         return context->True();
     }
@@ -392,7 +374,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_row_activated";
-        g_signal_connect(G_OBJECT(myWidget), "row-activated",
+        g_signal_connect(G_OBJECT(self), "row-activated",
                          G_CALLBACK(signal_func_2a), cblock);
         return context->True();
     }
@@ -400,7 +382,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_row_collapsed";
-        g_signal_connect(G_OBJECT(myWidget), "row-collapsed",
+        g_signal_connect(G_OBJECT(self), "row-collapsed",
                          G_CALLBACK(signal_func_2a), cblock);
         return context->True();
     }
@@ -408,7 +390,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_row_expanded";
-        g_signal_connect(G_OBJECT(myWidget), "row-expanded",
+        g_signal_connect(G_OBJECT(self), "row-expanded",
                          G_CALLBACK(signal_func_2a), cblock);
         return context->True();
     }
@@ -416,7 +398,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_select_all";
-        g_signal_connect(G_OBJECT(myWidget), "select-all",
+        g_signal_connect(G_OBJECT(self), "select-all",
                          G_CALLBACK(signal_func_0a), cblock);
         return context->True();
     }
@@ -424,7 +406,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_select_cursor_parent";
-        g_signal_connect(G_OBJECT(myWidget), "select-cursor-parent",
+        g_signal_connect(G_OBJECT(self), "select-cursor-parent",
                          G_CALLBACK(signal_func_0a), cblock);
         return context->True();
     }
@@ -432,7 +414,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_select_cursor_row";
-        g_signal_connect(G_OBJECT(myWidget), "select-cursor-row",
+        g_signal_connect(G_OBJECT(self), "select-cursor-row",
                          G_CALLBACK(signal_func_1), cblock);
         return context->True();
     }
@@ -440,7 +422,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_set_scroll_adjustments";
-        g_signal_connect(G_OBJECT(myWidget), "set-scroll-adjustments",
+        g_signal_connect(G_OBJECT(self), "set-scroll-adjustments",
                          G_CALLBACK(signal_func_2a), cblock);
         return context->True();
     }
@@ -448,7 +430,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_start_interactive_search";
-        g_signal_connect(G_OBJECT(myWidget), "start-interactive-search",
+        g_signal_connect(G_OBJECT(self), "start-interactive-search",
                          G_CALLBACK(signal_func_0a), cblock);
         return context->True();
     }
@@ -456,7 +438,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_test_collapse_row";
-        g_signal_connect(G_OBJECT(myWidget), "test-collapse-row",
+        g_signal_connect(G_OBJECT(self), "test-collapse-row",
                          G_CALLBACK(signal_func_2b), cblock);
         return context->True();
     }
@@ -464,7 +446,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_test_expand_row";
-        g_signal_connect(G_OBJECT(myWidget), "test-expand-row",
+        g_signal_connect(G_OBJECT(self), "test-expand-row",
                          G_CALLBACK(signal_func_2b), cblock);
         return context->True();
     }
@@ -472,7 +454,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_toggle_cursor_row";
-        g_signal_connect(G_OBJECT(myWidget), "toggle-cursor-row",
+        g_signal_connect(G_OBJECT(self), "toggle-cursor-row",
                          G_CALLBACK(signal_func_0a), cblock);
         return context->True();
     }
@@ -480,7 +462,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_unselect_all";
-        g_signal_connect(G_OBJECT(myWidget), "unselect-all",
+        g_signal_connect(G_OBJECT(self), "unselect-all",
                          G_CALLBACK(signal_func_0a), cblock);
         return context->True();
     }

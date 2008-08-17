@@ -89,7 +89,6 @@ RexxMethod2(int,                       // Return type
 
     // Save ourself
     context->SetObjectVariable("CSELF", context->NewPointer(lstore));
-    context->SendMessage1(self, "POINTER=", context->NewPointer(lstore));
     g_object_set_data(G_OBJECT(lstore), "OORXOBJECT", self);
 
     context->SetObjectVariable("!COLTYPES", context->NewPointer(types));
@@ -106,13 +105,11 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod1(RexxObjectPtr,             // Return type
             GrxListStoreAppend,        // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkListStore *lstore = (GtkListStore *)context->PointerValue(rxptr);
     GtkTreeIter *iter = (GtkTreeIter *)malloc(sizeof(GtkTreeIter));
 
-    gtk_list_store_append(lstore, iter);
+    gtk_list_store_append(GTK_LIST_STORE(self), iter);
 
     return (RexxObjectPtr)context->NewPointer(iter);
 }
@@ -132,14 +129,12 @@ RexxMethod1(RexxObjectPtr,             // Return type
  **/
 RexxMethod3(int,                       // Return type
             GrxListStoreSetValue,      // Object_method name
+            CSELF, self,               // GTK self
             RexxObjectPtr, rxiter,     // Row iterator
-            ARGLIST, args,             // Argument array
-            OSELF, self)               // Self
+            ARGLIST, args)             // Argument array
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkListStore *lstore = (GtkListStore *)context->PointerValue(rxptr);
     GtkTreeIter *iter = (GtkTreeIter *)context->PointerValue((RexxPointerObject)rxiter);
-    rxptr = (RexxPointerObject)context->GetObjectVariable("!COLTYPES");
+    RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!COLTYPES");
     gint *types = (gint *)context->PointerValue(rxptr);
     size_t members = context->ArraySize(args);
     int i, col, ival;
@@ -191,7 +186,7 @@ RexxMethod3(int,                       // Return type
         default:
             break;
         }
-        gtk_list_store_set_value(lstore, iter, col, &coldata);
+        gtk_list_store_set_value(GTK_LIST_STORE(self), iter, col, &coldata);
     }
 
     return 0;

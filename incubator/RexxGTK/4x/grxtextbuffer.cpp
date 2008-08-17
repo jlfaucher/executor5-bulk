@@ -98,7 +98,6 @@ RexxMethod2(int,                       // Return type
 
     // Save ourself
     context->SetObjectVariable("CSELF", context->NewPointer(myBuffer));
-    context->SendMessage1(self, "POINTER=", context->NewPointer(myBuffer));
     g_object_set_data(G_OBJECT(myBuffer), "OORXOBJECT", self);
 
     return 0;
@@ -115,13 +114,10 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxTextBufferSetText,      // Object_method name
-            CSTRING, text,             // Tagtable object
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            CSTRING, text)             // Tagtable object
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkTextBuffer *myBuffer = (GtkTextBuffer *)context->PointerValue(rxptr);
-
-    gtk_text_buffer_set_text(myBuffer, text, -1);
+    gtk_text_buffer_set_text(GTK_TEXT_BUFFER(self), text, -1);
 
     return 0;
 }
@@ -137,17 +133,15 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxTextBufferInsertText,   // Object_method name
-            CSTRING, text,             // Tagtable object
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            CSTRING, text)             // Tagtable object
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkTextBuffer *myBuffer = (GtkTextBuffer *)context->PointerValue(rxptr);
     GtkTextMark         *mark;
     GtkTextIter         iter;
 
-    mark = gtk_text_buffer_get_insert(myBuffer);
-    gtk_text_buffer_get_iter_at_mark(myBuffer, &iter, mark);
-    gtk_text_buffer_insert(myBuffer, &iter, text, -1);
+    mark = gtk_text_buffer_get_insert(GTK_TEXT_BUFFER(self));
+    gtk_text_buffer_get_iter_at_mark(GTK_TEXT_BUFFER(self), &iter, mark);
+    gtk_text_buffer_insert(GTK_TEXT_BUFFER(self), &iter, text, -1);
 
     return 0;
 }
@@ -161,14 +155,12 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod1(CSTRING,                   // Return type
             GrxTextBufferGetText,      // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkTextBuffer *myBuffer = (GtkTextBuffer *)context->PointerValue(rxptr);
     GtkTextIter         start, end;
 
-    gtk_text_buffer_get_selection_bounds(myBuffer, &start, &end);
-    return gtk_text_buffer_get_text(myBuffer, &start, &end, FALSE);
+    gtk_text_buffer_get_selection_bounds(GTK_TEXT_BUFFER(self), &start, &end);
+    return gtk_text_buffer_get_text(GTK_TEXT_BUFFER(self), &start, &end, FALSE);
 }
 
 /**
@@ -182,14 +174,12 @@ RexxMethod1(CSTRING,                   // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxTextBufferCutClipboard, // Object_method name
-            logical_t, flag,           // Editable flag
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            logical_t, flag)           // Editable flag
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkTextBuffer *myBuffer = (GtkTextBuffer *)context->PointerValue(rxptr);
     GtkClipboard *cb = gtk_clipboard_get(GDK_SELECTION_PRIMARY);
 
-    gtk_text_buffer_cut_clipboard(myBuffer, cb, flag);
+    gtk_text_buffer_cut_clipboard(GTK_TEXT_BUFFER(self), cb, flag);
 
     return 0;
 }
@@ -203,13 +193,11 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod1(int,                       // Return type
             GrxTextBufferCopyClipboard, // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkTextBuffer *myBuffer = (GtkTextBuffer *)context->PointerValue(rxptr);
     GtkClipboard *cb = gtk_clipboard_get(GDK_SELECTION_PRIMARY);
 
-    gtk_text_buffer_copy_clipboard(myBuffer, cb);
+    gtk_text_buffer_copy_clipboard(GTK_TEXT_BUFFER(self), cb);
 
     return 0;
 }
@@ -225,14 +213,12 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxTextBufferPasteClipboard, // Object_method name
-            logical_t, flag,           // Editable flag
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            logical_t, flag)           // Editable flag
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkTextBuffer *myBuffer = (GtkTextBuffer *)context->PointerValue(rxptr);
     GtkClipboard *cb = gtk_clipboard_get(GDK_SELECTION_PRIMARY);
 
-    gtk_text_buffer_paste_clipboard(myBuffer, cb, NULL, flag);
+    gtk_text_buffer_paste_clipboard(GTK_TEXT_BUFFER(self), cb, NULL, flag);
 
     return 0;
 }
@@ -250,24 +236,22 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxTextBufferForwardSearch, // Object_method name
+            CSELF, self,               // GTK self
             CSTRING, text,             // Search text
-            logical_t, flag,           // Position boolean
-            OSELF, self)               // Self
+            logical_t, flag)           // Position boolean
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkTextBuffer *myBuffer = (GtkTextBuffer *)context->PointerValue(rxptr);
     gboolean            found;
     GtkTextIter         start, begin, end, *retiter;
     GtkTextMark         *mark;
 
     if (flag) {
         /* start search from the start of the buffer */
-        gtk_text_buffer_get_start_iter(myBuffer, &start);
+        gtk_text_buffer_get_start_iter(GTK_TEXT_BUFFER(self), &start);
     }
     else {
         /* start search from the current position */
-        mark = gtk_text_buffer_get_insert(myBuffer);
-        gtk_text_buffer_get_iter_at_mark(myBuffer, &start, mark);
+        mark = gtk_text_buffer_get_insert(GTK_TEXT_BUFFER(self));
+        gtk_text_buffer_get_iter_at_mark(GTK_TEXT_BUFFER(self), &start, mark);
     }
     found = gtk_text_iter_forward_search(&start, text, GTK_TEXT_SEARCH_TEXT_ONLY,
                                          &begin, &end, NULL);
@@ -288,11 +272,10 @@ RexxMethod3(RexxObjectPtr,             // Return type
  *
  * @return        The iter object or Nil
  **/
-RexxMethod3(RexxObjectPtr,             // Return type
+RexxMethod2(RexxObjectPtr,             // Return type
             GrxTextBufferForwardSearchNext, // Object_method name
             CSTRING, text,             // Search text
-            RexxObjectPtr, rxiter,     // The iter returned from the last call
-            OSELF, self)               // Self
+            RexxObjectPtr, rxiter)     // The iter returned from the last call
 {
     GtkTextIter *start = (GtkTextIter *)context->PointerValue((RexxPointerObject)rxiter);
     GtkTextIter         begin, end, *retiter;
@@ -324,15 +307,12 @@ RexxMethod3(RexxObjectPtr,             // Return type
  **/
 RexxMethod4(int,                       // Return type
             GrxTextBufferCreateTagInt, // Object_method name
+            CSELF, self,               // GTK self
             CSTRING, name,             // Tag name
             CSTRING, pname,            // Property name
-            int, pvalue,               // The property value
-            OSELF, self)               // Self
+            int, pvalue)               // The property value
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkTextBuffer *myBuffer = (GtkTextBuffer *)context->PointerValue(rxptr);
-
-    gtk_text_buffer_create_tag(myBuffer, name, pname, pvalue, NULL);
+    gtk_text_buffer_create_tag(GTK_TEXT_BUFFER(self), name, pname, pvalue, NULL);
 
     return 0;
 }
@@ -352,15 +332,12 @@ RexxMethod4(int,                       // Return type
  **/
 RexxMethod4(int,                       // Return type
             GrxTextBufferCreateTagFloat, // Object_method name
+            CSELF, self,               // GTK self
             CSTRING, name,             // Tag name
             CSTRING, pname,            // Property name
-            float, pvalue,             // The property value
-            OSELF, self)               // Self
+            float, pvalue)             // The property value
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkTextBuffer *myBuffer = (GtkTextBuffer *)context->PointerValue(rxptr);
-
-    gtk_text_buffer_create_tag(myBuffer, name, pname, pvalue, NULL);
+    gtk_text_buffer_create_tag(GTK_TEXT_BUFFER(self), name, pname, pvalue, NULL);
 
     return 0;
 }
@@ -376,15 +353,13 @@ RexxMethod4(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxTextBufferApplyTagByName, // Object_method name
-            CSTRING, name,             // Tag name
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            CSTRING, name)             // Tag name
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkTextBuffer *myBuffer = (GtkTextBuffer *)context->PointerValue(rxptr);
     GtkTextIter   start, end;
 
-    gtk_text_buffer_get_selection_bounds(myBuffer, &start, &end);
-    gtk_text_buffer_apply_tag_by_name(myBuffer, name, &start, &end);
+    gtk_text_buffer_get_selection_bounds(GTK_TEXT_BUFFER(self), &start, &end);
+    gtk_text_buffer_apply_tag_by_name(GTK_TEXT_BUFFER(self), name, &start, &end);
 
     return 0;
 }
@@ -398,14 +373,12 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod1(int,                       // Return type
             GrxTextBufferRemoveAllTags, // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkTextBuffer *myBuffer = (GtkTextBuffer *)context->PointerValue(rxptr);
     GtkTextIter   start, end;
 
-    gtk_text_buffer_get_selection_bounds(myBuffer, &start, &end);
-    gtk_text_buffer_remove_all_tags(myBuffer, &start, &end);
+    gtk_text_buffer_get_selection_bounds(GTK_TEXT_BUFFER(self), &start, &end);
+    gtk_text_buffer_remove_all_tags(GTK_TEXT_BUFFER(self), &start, &end);
 
     return 0;
 }
@@ -423,20 +396,17 @@ RexxMethod1(int,                       // Return type
  */
 RexxMethod3(int,                       // Return type
             GrxTextBufferInsertImage,  // Object_method name
+            CSELF, self,               // GTK self
             RexxObjectPtr, image,      // Image
-            int, linenum,              // Line number
-            OSELF, self)               // Self
+            int, linenum)              // Line number
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkTextBuffer *myBuffer = (GtkTextBuffer *)context->PointerValue(rxptr);
-    RexxPointerObject imgptr = (RexxPointerObject)context->SendMessage0(image, "POINTER");
-    GtkImage *img = (GtkImage *)context->PointerValue(imgptr);
+    GtkImage *img = (GtkImage *)context->ObjectToCSelf(image);
     GtkTextIter   line;
     GdkPixbuf     *pixbuf;
 
     pixbuf = gtk_image_get_pixbuf(img);
-    gtk_text_buffer_get_iter_at_line(myBuffer, &line, linenum);
-    gtk_text_buffer_insert_pixbuf(myBuffer, &line, pixbuf);
+    gtk_text_buffer_get_iter_at_line(GTK_TEXT_BUFFER(self), &line, linenum);
+    gtk_text_buffer_insert_pixbuf(GTK_TEXT_BUFFER(self), &line, pixbuf);
 
     return 0;
 }
@@ -452,19 +422,17 @@ RexxMethod3(int,                       // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxTextBufferSignalConnect, // Object_method name
+            CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            ARGLIST, args,             // The whole argument list as an array
-            OSELF, self)               // Self
+            ARGLIST, args)             // The whole argument list as an array
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     cbcb *cblock;
 
     if (strcmp(name, "begin_user_action") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_begin_user_action";
-        g_signal_connect(G_OBJECT(myWidget), "begin-user-action",
+        g_signal_connect(G_OBJECT(self), "begin-user-action",
                          G_CALLBACK(signal_func_0), cblock);
         return context->True();
     }
@@ -472,7 +440,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_changed";
-        g_signal_connect(G_OBJECT(myWidget), "changed",
+        g_signal_connect(G_OBJECT(self), "changed",
                          G_CALLBACK(signal_func_0), cblock);
         return context->True();
     }
@@ -480,7 +448,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_end_user_action";
-        g_signal_connect(G_OBJECT(myWidget), "end-user-action",
+        g_signal_connect(G_OBJECT(self), "end-user-action",
                          G_CALLBACK(signal_func_0), cblock);
         return context->True();
     }
@@ -488,7 +456,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_modified_changed";
-        g_signal_connect(G_OBJECT(myWidget), "modified-changed",
+        g_signal_connect(G_OBJECT(self), "modified-changed",
                          G_CALLBACK(signal_func_0), cblock);
         return context->True();
     }

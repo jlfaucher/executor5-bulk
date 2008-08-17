@@ -116,21 +116,18 @@ RexxMethod3(int,                       // Return type
 
     if (rxhadj != NULL) {
         if (rxhadj != context->Nil()) {
-            RexxPointerObject hadjptr = (RexxPointerObject)context->SendMessage0(rxhadj, "POINTER");
-            hadj = (GtkAdjustment *)context->PointerValue(hadjptr);
+            hadj = (GtkAdjustment *)context->ObjectToCSelf(rxhadj);
         }
     }
     if (rxvadj != NULL) {
         if (rxvadj != context->Nil()) {
-            RexxPointerObject vadjptr = (RexxPointerObject)context->SendMessage0(rxvadj, "POINTER");
-            vadj = (GtkAdjustment *)context->PointerValue(vadjptr);
+            vadj = (GtkAdjustment *)context->ObjectToCSelf(rxvadj);
         }
     }
     GtkWidget *myWidget = gtk_scrolled_window_new(hadj, vadj);
 
     // Save ourself
     context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
-    context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
@@ -143,20 +140,15 @@ RexxMethod3(int,                       // Return type
  *
  * @return        Horizontal adjustment object
  **/
-RexxMethod1(RexxObjectPtr,             // Return type
+RexxMethod2(RexxObjectPtr,             // Return type
             GrxScrolledWindowGetHAdjustment, // Object_method name
-            OSELF, self)               // Self
+            OSELF, oself,              // Self
+            CSELF, cself)              // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkScrolledWindow *myWidget = (GtkScrolledWindow *)context->PointerValue(rxptr);
-    GtkAdjustment   *adj;     
-
-    adj = gtk_scrolled_window_get_hadjustment(myWidget);
+    GtkAdjustment *adj = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(cself));
     RexxObjectPtr rxhadj = (RexxObjectPtr)g_object_get_data(G_OBJECT(adj), "OORXOBJECT");
     if (rxhadj == NULL) {
-        // no Rexx Oject found so create it
-        RexxClassObject cobj = context->FindClass("GtkAdjustment");
-        rxhadj = context->SendMessage1(cobj, "NEW", context->NewPointer(adj));
+        rxhadj = context->SendMessage1((RexxObjectPtr)oself, "create_adj", context->NewPointer(adj));
     }
     return rxhadj;
 }
@@ -168,20 +160,15 @@ RexxMethod1(RexxObjectPtr,             // Return type
  *
  * @return        Vertical adjustment object
  **/
-RexxMethod1(RexxObjectPtr,             // Return type
+RexxMethod2(RexxObjectPtr,             // Return type
             GrxScrolledWindowGetVAdjustment, // Object_method name
-            OSELF, self)               // Self
+            OSELF, oself,              // Self
+            CSELF, cself)              // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkScrolledWindow *myWidget = (GtkScrolledWindow *)context->PointerValue(rxptr);
-    GtkAdjustment   *adj;     
-
-    adj = gtk_scrolled_window_get_vadjustment(myWidget);
+    GtkAdjustment *adj = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(cself));
     RexxObjectPtr rxvadj = (RexxObjectPtr)g_object_get_data(G_OBJECT(adj), "OORXOBJECT");
     if (rxvadj == NULL) {
-        // no Rexx Object found so create it
-        RexxClassObject cobj = context->FindClass("GtkAdjustment");
-        rxvadj = context->SendMessage1(cobj, "NEW", context->NewPointer(adj));
+        rxvadj = context->SendMessage1((RexxObjectPtr)oself, "create_adj", context->NewPointer(adj));
     }
     return rxvadj;
 }
@@ -199,14 +186,13 @@ RexxMethod1(RexxObjectPtr,             // Return type
  **/
 RexxMethod3(int,                       // Return type
             GrxScrolledWindowSetPolicy, // Object_method name
+            CSELF, self,               // GTK self
             int, hpolicy,              // Horizontal policy
-            int, vpolicy,              // Vertical policy
-            OSELF, self)               // Self
+            int, vpolicy)              // Vertical policy
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkScrolledWindow *myWidget = (GtkScrolledWindow *)context->PointerValue(rxptr);
-
-    gtk_scrolled_window_set_policy(myWidget, (GtkPolicyType)hpolicy, (GtkPolicyType)vpolicy);
+    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(self),
+                                   (GtkPolicyType)hpolicy,
+                                   (GtkPolicyType)vpolicy);
 
     return 0;
 }
@@ -222,15 +208,12 @@ RexxMethod3(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxScrolledWindowAddWithViewport, // Object_method name
-            RexxObjectPtr, rxchild,    // Child widget
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            RexxObjectPtr, rxchild)    // Child widget
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkScrolledWindow *myWidget = (GtkScrolledWindow *)context->PointerValue(rxptr);
-    RexxPointerObject childptr = (RexxPointerObject)context->SendMessage0(rxchild, "POINTER");
-    GtkWidget *myChild = (GtkWidget *)context->PointerValue(childptr);
+    GtkWidget *myChild = (GtkWidget *)context->ObjectToCSelf(rxchild);
 
-    gtk_scrolled_window_add_with_viewport(myWidget, myChild);
+    gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(self), myChild);
 
     return 0;
 }
@@ -246,19 +229,17 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxScrolledWindowSignalConnect, // Object_method name
+            CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            ARGLIST, args,             // The whole argument list as an array
-            OSELF, self)               // Self
+            ARGLIST, args)             // The whole argument list as an array
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     cbcb *cblock;
 
     if (strcmp(name, "move_focus_out") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_move_focus_out";
-        g_signal_connect(G_OBJECT(myWidget), "move-focus-out",
+        g_signal_connect(G_OBJECT(self), "move-focus-out",
                          G_CALLBACK(signal_func_1), cblock);
         return context->True();
     }
@@ -266,7 +247,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_scroll_child";
-        g_signal_connect(G_OBJECT(myWidget), "scroll-child",
+        g_signal_connect(G_OBJECT(self), "scroll-child",
                          G_CALLBACK(signal_func_2), cblock);
         return context->True();
     }

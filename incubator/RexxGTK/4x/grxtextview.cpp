@@ -192,7 +192,6 @@ RexxMethod1(int,                       // Return type
 
     // Save ourself
     context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
-    context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
@@ -205,16 +204,20 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Text buffer object
  **/
-RexxMethod1(RexxObjectPtr,             // Return type
+RexxMethod2(RexxObjectPtr,             // Return type
             GrxTextViewGetBuffer,      // Object_method name
-            OSELF, self)               // Self
+            CSELF, cself,              // GTK self
+            OSELF, oself)              // Self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkTextView *myWidget = (GtkTextView *)context->PointerValue(rxptr);
-    GtkTextBuffer   *myBuffer;
+    GtkTextBuffer *myBuffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(cself));
+    RexxObjectPtr rxbuf = (RexxObjectPtr)g_object_get_data(G_OBJECT(myBuffer), "OORXOBJECT");
+    if (rxbuf == NULL) {
+        rxbuf = context->SendMessage1((RexxObjectPtr)oself, "create_textbuffer",
+                                      context->NewPointer(myBuffer));
+    }
+    return rxbuf;
 
-    myBuffer = gtk_text_view_get_buffer(myWidget);
-    return context->SendMessage1(self, "create_textbuffer", context->NewPointer(myBuffer));
+
 }
 
 /**
@@ -228,13 +231,10 @@ RexxMethod1(RexxObjectPtr,             // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxTextViewSetWrapMode,    // Object_method name
-            int, mode,                 // Wrap mode
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            int, mode)                 // Wrap mode
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkTextView *myWidget = (GtkTextView *)context->PointerValue(rxptr);
-
-    gtk_text_view_set_wrap_mode(myWidget, (GtkWrapMode)mode);
+    gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(self), (GtkWrapMode)mode);
 
     return 0;
 }
@@ -248,12 +248,9 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod1(int,                       // Return type
             GrxTextViewGetWrapMode,    // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkTextView *myWidget = (GtkTextView *)context->PointerValue(rxptr);
-
-    return (int)gtk_text_view_get_wrap_mode(myWidget);
+    return (int)gtk_text_view_get_wrap_mode(GTK_TEXT_VIEW(self));
 }
 
 /**
@@ -267,13 +264,10 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxTextViewSetJustification, // Object_method name
-            int, just,                 // Justification
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            int, just)                 // Justification
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkTextView *myWidget = (GtkTextView *)context->PointerValue(rxptr);
-
-    gtk_text_view_set_justification(myWidget, (GtkJustification)just);
+    gtk_text_view_set_justification(GTK_TEXT_VIEW(self), (GtkJustification)just);
 
     return 0;
 }
@@ -287,12 +281,9 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod1(int,                       // Return type
             GrxTextViewGetJustification, // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkTextView *myWidget = (GtkTextView *)context->PointerValue(rxptr);
-
-    return (int)gtk_text_view_get_justification(myWidget);
+    return (int)gtk_text_view_get_justification(GTK_TEXT_VIEW(self));
 }
 
 /**
@@ -306,13 +297,10 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxTextViewSetEditable,    // Object_method name
-            logical_t, flag,           // Editable boolean
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            logical_t, flag)           // Editable boolean
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkTextView *myWidget = (GtkTextView *)context->PointerValue(rxptr);
-
-    gtk_text_view_set_editable(myWidget, flag);
+    gtk_text_view_set_editable(GTK_TEXT_VIEW(self), flag);
 
     return 0;
 }
@@ -326,12 +314,9 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod1(logical_t,                 // Return type
             GrxTextViewGetEditable,    // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkTextView *myWidget = (GtkTextView *)context->PointerValue(rxptr);
-
-    return gtk_text_view_get_editable(myWidget);
+    return gtk_text_view_get_editable(GTK_TEXT_VIEW(self));
 }
 
 /**
@@ -345,13 +330,10 @@ RexxMethod1(logical_t,                 // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxTextViewSetCursorVisible, // Object_method name
-            logical_t, flag,           // Cursor visible boolean
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            logical_t, flag)           // Cursor visible boolean
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkTextView *myWidget = (GtkTextView *)context->PointerValue(rxptr);
-
-    gtk_text_view_set_cursor_visible(myWidget, flag);
+    gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(self), flag);
 
     return 0;
 }
@@ -365,12 +347,9 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod1(logical_t,                 // Return type
             GrxTextViewGetCursorVisible, // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkTextView *myWidget = (GtkTextView *)context->PointerValue(rxptr);
-
-    return gtk_text_view_get_cursor_visible(myWidget);
+    return gtk_text_view_get_cursor_visible(GTK_TEXT_VIEW(self));
 }
 
 /**
@@ -384,13 +363,10 @@ RexxMethod1(logical_t,                 // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxTextViewSetPixelsAboveLines, // Object_method name
-            int, pixels,               // Number of pixels
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            int, pixels)               // Number of pixels
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkTextView *myWidget = (GtkTextView *)context->PointerValue(rxptr);
-
-    gtk_text_view_set_pixels_above_lines(myWidget, pixels);
+    gtk_text_view_set_pixels_above_lines(GTK_TEXT_VIEW(self), pixels);
 
     return 0;
 }
@@ -404,12 +380,9 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod1(int,                       // Return type
             GrxTextViewGetPixelsAboveLines, // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkTextView *myWidget = (GtkTextView *)context->PointerValue(rxptr);
-
-    return gtk_text_view_get_pixels_above_lines(myWidget);
+    return gtk_text_view_get_pixels_above_lines(GTK_TEXT_VIEW(self));
 }
 
 /**
@@ -423,13 +396,10 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxTextViewSetPixelsBelowLines, // Object_method name
-            int, pixels,               // Number of pixels
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            int, pixels)               // Number of pixels
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkTextView *myWidget = (GtkTextView *)context->PointerValue(rxptr);
-
-    gtk_text_view_set_pixels_below_lines(myWidget, pixels);
+    gtk_text_view_set_pixels_below_lines(GTK_TEXT_VIEW(self), pixels);
 
     return 0;
 }
@@ -443,12 +413,9 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod1(int,                       // Return type
             GrxTextViewGetPixelsBelowLines, // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkTextView *myWidget = (GtkTextView *)context->PointerValue(rxptr);
-
-    return gtk_text_view_get_pixels_below_lines(myWidget);
+    return gtk_text_view_get_pixels_below_lines(GTK_TEXT_VIEW(self));
 }
 
 /**
@@ -462,13 +429,10 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxTextViewSetPixelsInsideWrap, // Object_method name
-            int, pixels,               // Number of pixels
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            int, pixels)               // Number of pixels
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkTextView *myWidget = (GtkTextView *)context->PointerValue(rxptr);
-
-    gtk_text_view_set_pixels_inside_wrap(myWidget, pixels);
+    gtk_text_view_set_pixels_inside_wrap(GTK_TEXT_VIEW(self), pixels);
 
     return 0;
 }
@@ -482,12 +446,9 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod1(int,                       // Return type
             GrxTextViewGetPixelsInsideWrap, // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkTextView *myWidget = (GtkTextView *)context->PointerValue(rxptr);
-
-    return gtk_text_view_get_pixels_inside_wrap(myWidget);
+    return gtk_text_view_get_pixels_inside_wrap(GTK_TEXT_VIEW(self));
 }
 
 /**
@@ -501,13 +462,10 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxTextViewSetLeftMargin,  // Object_method name
-            int, pixels,               // Number of pixels
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            int, pixels)               // Number of pixels
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkTextView *myWidget = (GtkTextView *)context->PointerValue(rxptr);
-
-    gtk_text_view_set_left_margin(myWidget, pixels);
+    gtk_text_view_set_left_margin(GTK_TEXT_VIEW(self), pixels);
 
     return 0;
 }
@@ -521,12 +479,9 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod1(int,                       // Return type
             GrxTextViewGetLeftMargin,  // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkTextView *myWidget = (GtkTextView *)context->PointerValue(rxptr);
-
-    return gtk_text_view_get_left_margin(myWidget);
+    return gtk_text_view_get_left_margin(GTK_TEXT_VIEW(self));
 }
 
 /**
@@ -540,13 +495,10 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxTextViewSetRightMargin, // Object_method name
-            int, pixels,               // Number of pixels
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            int, pixels)               // Number of pixels
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkTextView *myWidget = (GtkTextView *)context->PointerValue(rxptr);
-
-    gtk_text_view_set_right_margin(myWidget, pixels);
+    gtk_text_view_set_right_margin(GTK_TEXT_VIEW(self), pixels);
 
     return 0;
 }
@@ -560,12 +512,9 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod1(int,                       // Return type
             GrxTextViewGetRightMargin, // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkTextView *myWidget = (GtkTextView *)context->PointerValue(rxptr);
-
-    return gtk_text_view_get_right_margin(myWidget);
+    return gtk_text_view_get_right_margin(GTK_TEXT_VIEW(self));
 }
 
 /**
@@ -581,22 +530,19 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod3(int,                       // Return type
             GrxTextViewAddChildAtOffset, // Object_method name
+            CSELF, self,               // GTK self
             RexxObjectPtr, rxchild,    // Child widget
-            int, offset,               // Offset
-            OSELF, self)               // Self
+            int, offset)               // Offset
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkTextView *myWidget = (GtkTextView *)context->PointerValue(rxptr);
-    RexxPointerObject addptr = (RexxPointerObject)context->SendMessage0(rxchild, "POINTER");
-    GtkWidget *myChild = (GtkWidget *)context->PointerValue(addptr);
+    GtkWidget *myChild = (GtkWidget *)context->ObjectToCSelf(rxchild);
     GtkTextBuffer    *myBuffer;
     GtkTextIter      iter;
     GtkTextChildAnchor *anchor;
 
-    myBuffer = gtk_text_view_get_buffer(myWidget);
+    myBuffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(self));
     gtk_text_buffer_get_iter_at_offset(myBuffer, &iter, offset);
     anchor = gtk_text_buffer_create_child_anchor(myBuffer, &iter);
-    gtk_text_view_add_child_at_anchor(myWidget, myChild, anchor);
+    gtk_text_view_add_child_at_anchor(GTK_TEXT_VIEW(self), myChild, anchor);
 
     return 0;
 }
@@ -613,19 +559,17 @@ RexxMethod3(int,                       // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxTextViewSignalConnect,  // Object_method name
+            CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            ARGLIST, args,             // The whole argument list as an array
-            OSELF, self)               // Self
+            ARGLIST, args)             // The whole argument list as an array
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     cbcb *cblock;
 
     if (strcmp(name, "backspace") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_backspace";
-        g_signal_connect(G_OBJECT(myWidget), "backspace",
+        g_signal_connect(G_OBJECT(self), "backspace",
                          G_CALLBACK(signal_func_0), cblock);
         return context->True();
     }
@@ -633,7 +577,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_copy_clipboard";
-        g_signal_connect(G_OBJECT(myWidget), "copy-clipboard",
+        g_signal_connect(G_OBJECT(self), "copy-clipboard",
                          G_CALLBACK(signal_func_0), cblock);
         return context->True();
     }
@@ -641,7 +585,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_cut_clipboard";
-        g_signal_connect(G_OBJECT(myWidget), "cut-clipboard",
+        g_signal_connect(G_OBJECT(self), "cut-clipboard",
                          G_CALLBACK(signal_func_0), cblock);
         return context->True();
     }
@@ -649,7 +593,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_delete_from_cursor";
-        g_signal_connect(G_OBJECT(myWidget), "delete-from-cursor",
+        g_signal_connect(G_OBJECT(self), "delete-from-cursor",
                          G_CALLBACK(signal_func_2), cblock);
         return context->True();
     }
@@ -657,7 +601,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_insert_at_cursor";
-        g_signal_connect(G_OBJECT(myWidget), "insert-at-cursor",
+        g_signal_connect(G_OBJECT(self), "insert-at-cursor",
                          G_CALLBACK(signal_func_1), cblock);
         return context->True();
     }
@@ -665,7 +609,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_move_cursor";
-        g_signal_connect(G_OBJECT(myWidget), "move-cursor",
+        g_signal_connect(G_OBJECT(self), "move-cursor",
                          G_CALLBACK(signal_func_3), cblock);
         return context->True();
     }
@@ -673,7 +617,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_move_viewport";
-        g_signal_connect(G_OBJECT(myWidget), "move-viewport",
+        g_signal_connect(G_OBJECT(self), "move-viewport",
                          G_CALLBACK(signal_func_2), cblock);
         return context->True();
     }
@@ -681,7 +625,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_page_horizontally";
-        g_signal_connect(G_OBJECT(myWidget), "page-horizontally",
+        g_signal_connect(G_OBJECT(self), "page-horizontally",
                          G_CALLBACK(signal_func_2a), cblock);
         return context->True();
     }
@@ -689,7 +633,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_paste_clipboard";
-        g_signal_connect(G_OBJECT(myWidget), "paste-clipboard",
+        g_signal_connect(G_OBJECT(self), "paste-clipboard",
                          G_CALLBACK(signal_func_0), cblock);
         return context->True();
     }
@@ -697,7 +641,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_populate_popup";
-        g_signal_connect(G_OBJECT(myWidget), "populate-popup",
+        g_signal_connect(G_OBJECT(self), "populate-popup",
                          G_CALLBACK(signal_func_1a), cblock);
         return context->True();
     }
@@ -705,7 +649,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_select_all";
-        g_signal_connect(G_OBJECT(myWidget), "select-all",
+        g_signal_connect(G_OBJECT(self), "select-all",
                          G_CALLBACK(signal_func_1a), cblock);
         return context->True();
     }
@@ -713,7 +657,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_set_anchor";
-        g_signal_connect(G_OBJECT(myWidget), "set-anchor",
+        g_signal_connect(G_OBJECT(self), "set-anchor",
                          G_CALLBACK(signal_func_0), cblock);
         return context->True();
     }
@@ -721,7 +665,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_set_scroll_adjustments";
-        g_signal_connect(G_OBJECT(myWidget), "set-scroll-adjustments",
+        g_signal_connect(G_OBJECT(self), "set-scroll-adjustments",
                          G_CALLBACK(signal_func_2), cblock);
         return context->True();
     }
@@ -729,7 +673,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_toggle_cursor_visible";
-        g_signal_connect(G_OBJECT(myWidget), "toggle_cursor_visible",
+        g_signal_connect(G_OBJECT(self), "toggle_cursor_visible",
                          G_CALLBACK(signal_func_0), cblock);
         return context->True();
     }
@@ -737,7 +681,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_toggle_overwrite";
-        g_signal_connect(G_OBJECT(myWidget), "toggle_overwrite",
+        g_signal_connect(G_OBJECT(self), "toggle_overwrite",
                          G_CALLBACK(signal_func_0), cblock);
         return context->True();
     }

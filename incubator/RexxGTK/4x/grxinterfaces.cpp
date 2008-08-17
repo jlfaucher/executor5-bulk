@@ -86,13 +86,10 @@ static void signal_func_0(GtkWidget *window,
  **/
 RexxMethod2(int,                       // Return type
             GrxFileChooserSetCurrentFolder, // Object_method name
-            CSTRING, dir,              // Directory
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            CSTRING, dir)              // Directory
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkFileChooser *myWidget = (GtkFileChooser *)context->PointerValue(rxptr);
-
-    gtk_file_chooser_set_current_folder(myWidget, dir);
+    gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(self), dir);
 
     return 0;
 }
@@ -108,13 +105,10 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxFileChooserSetSelectMultiple, // Object_method name
-            logical_t, flag,           // Flag boolean
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            logical_t, flag)           // Flag boolean
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkFileChooser *myWidget = (GtkFileChooser *)context->PointerValue(rxptr);
-
-    gtk_file_chooser_set_select_multiple(myWidget, flag);
+    gtk_file_chooser_set_select_multiple(GTK_FILE_CHOOSER(self), flag);
 
     return 0;
 }
@@ -130,15 +124,12 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxFileChooserAddFilter,   // Object_method name
-            RexxObjectPtr, rxfilter,   // Filter object
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            RexxObjectPtr, rxfilter)   // Filter object
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkFileChooser *myWidget = (GtkFileChooser *)context->PointerValue(rxptr);
-    RexxPointerObject filterptr = (RexxPointerObject)context->SendMessage0(rxfilter, "POINTER");
-    GtkFileFilter *filter = (GtkFileFilter *)context->PointerValue(filterptr);
+    GtkFileFilter *filter = (GtkFileFilter *)context->ObjectToCSelf(rxfilter);
 
-    gtk_file_chooser_add_filter(myWidget, filter); 
+    gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(self), filter); 
 
     return 0;
 }
@@ -152,12 +143,9 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod1(CSTRING,                   // Return type
             GrxFileChooserGetFilename, // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkFileChooser *myWidget = (GtkFileChooser *)context->PointerValue(rxptr);
-
-    return gtk_file_chooser_get_filename(myWidget);
+    return gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(self));
 }
 
 /**
@@ -169,14 +157,12 @@ RexxMethod1(CSTRING,                   // Return type
  **/
 RexxMethod1(RexxObjectPtr,             // Return type
             GrxFileChooserGetFilenames, // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkFileChooser *myWidget = (GtkFileChooser *)context->PointerValue(rxptr);
     GSList * list;
     RexxArrayObject arr;
 
-    list = gtk_file_chooser_get_filenames(myWidget);
+    list = gtk_file_chooser_get_filenames(GTK_FILE_CHOOSER(self));
     while (list != NULL) {
         RexxObjectPtr rxnewptr = context->NewStringFromAsciiz((char *)list->data);
         context->ArrayPut(arr, rxnewptr, 1);
@@ -197,19 +183,17 @@ RexxMethod1(RexxObjectPtr,             // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxFileChooserSignalConnect, // Object_method name
+            CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            ARGLIST, args,             // The whole argument list as an array
-            OSELF, self)               // Self
+            ARGLIST, args)             // The whole argument list as an array
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     cbcb *cblock;
 
     if (strcmp(name, "current_folder_changed") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_current_folder_changed";
-        g_signal_connect(G_OBJECT(myWidget), "current-folder-changed",
+        g_signal_connect(G_OBJECT(self), "current-folder-changed",
                          G_CALLBACK(signal_func_0), cblock);
         return context->True();
     }
@@ -217,7 +201,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_file_activated";
-        g_signal_connect(G_OBJECT(myWidget), "file-activated",
+        g_signal_connect(G_OBJECT(self), "file-activated",
                          G_CALLBACK(signal_func_0), cblock);
         return context->True();
     }
@@ -225,7 +209,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_selection_changed";
-        g_signal_connect(G_OBJECT(myWidget), "selection-changed",
+        g_signal_connect(G_OBJECT(self), "selection-changed",
                          G_CALLBACK(signal_func_0), cblock);
         return context->True();
     }
@@ -233,7 +217,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_update_preview";
-        g_signal_connect(G_OBJECT(myWidget), "update-preview",
+        g_signal_connect(G_OBJECT(self), "update-preview",
                          G_CALLBACK(signal_func_0), cblock);
         return context->True();
     }
@@ -255,7 +239,6 @@ RexxMethod1(int,                       // Return type
 
     // Save ourself
     context->SetObjectVariable("CSELF", context->NewPointer(filter));
-    context->SendMessage1(self, "POINTER=", context->NewPointer(filter));
     g_object_set_data(G_OBJECT(filter), "OORXOBJECT", self);
 
     return 0;
@@ -272,13 +255,10 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxFileFilterSetName,      // Object_method name
-            CSTRING, name,             // Filter name
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            CSTRING, name)             // Filter name
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkFileFilter *filter = (GtkFileFilter *)context->PointerValue(rxptr);
-
-    gtk_file_filter_set_name(filter, name);
+    gtk_file_filter_set_name(GTK_FILE_FILTER(self), name);
 
     return 0;
 }
@@ -294,13 +274,10 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxFileFilterAddPattern,   // Object_method name
-            CSTRING, pattern,          // Filter pattern
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            CSTRING, pattern)          // Filter pattern
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkFileFilter *filter = (GtkFileFilter *)context->PointerValue(rxptr);
-
-    gtk_file_filter_add_pattern(filter, pattern);
+    gtk_file_filter_add_pattern(GTK_FILE_FILTER(self), pattern);
 
     return 0;
 }

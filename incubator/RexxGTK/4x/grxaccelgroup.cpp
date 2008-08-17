@@ -127,7 +127,6 @@ RexxMethod1(int,                       // Return type
 
     // Save ourself
     context->SetObjectVariable("CSELF", context->NewPointer(accelgrp));
-    context->SendMessage1(self, "POINTER=", context->NewPointer(accelgrp));
     g_object_set_data(G_OBJECT(accelgrp), "OORXOBJECT", self);
 
     return 0;
@@ -144,19 +143,17 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxAccelGroupSignalConnect, // Object_method name
+            CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            ARGLIST, args,             // The whole argument list as an array
-            OSELF, self)               // Self
+            ARGLIST, args)             // The whole argument list as an array
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     cbcb *cblock;
 
     if (strcmp(name, "accel_activate") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_accel_activate";
-        g_signal_connect(G_OBJECT(myWidget), "accel-activate",
+        g_signal_connect(G_OBJECT(self), "accel-activate",
                          G_CALLBACK(signal_func_3a), cblock);
         return context->True();
     }
@@ -164,7 +161,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_accel_changed";
-        g_signal_connect(G_OBJECT(myWidget), "accel-changed",
+        g_signal_connect(G_OBJECT(self), "accel-changed",
                          G_CALLBACK(signal_func_3b), cblock);
         return context->True();
     }

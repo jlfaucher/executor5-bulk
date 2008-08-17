@@ -77,7 +77,6 @@ RexxMethod1(int,                       // Return type
 
     // Save ourself
     context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
-    context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
@@ -94,13 +93,10 @@ RexxMethod1(int,                       // Return type
  */
 RexxMethod2(int,                       // Return type
             GrxEventBoxSetAboveChild,  // Object_method name
-            logical_t, flag,           // Flag
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            logical_t, flag)           // Flag
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkEventBox *myWidget = (GtkEventBox *)context->PointerValue(rxptr);
-
-    gtk_event_box_set_above_child(myWidget, flag);
+    gtk_event_box_set_above_child(GTK_EVENT_BOX(self), flag);
 
     return 0;
 }
@@ -114,12 +110,9 @@ RexxMethod2(int,                       // Return type
  */
 RexxMethod1(int,                       // Return type
             GrxEventBoxGetAboveChild,  // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkEventBox *myWidget = (GtkEventBox *)context->PointerValue(rxptr);
-
-    return gtk_event_box_get_above_child(myWidget);
+    return gtk_event_box_get_above_child(GTK_EVENT_BOX(self));
 }
 
 /**
@@ -133,13 +126,10 @@ RexxMethod1(int,                       // Return type
  */
 RexxMethod2(int,                       // Return type
             GrxEventBoxSetVisibleWindow, // Object_method name
-            logical_t, flag,           // Flag
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            logical_t, flag)           // Flag
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkEventBox *myWidget = (GtkEventBox *)context->PointerValue(rxptr);
-
-    gtk_event_box_set_visible_window(myWidget, flag);
+    gtk_event_box_set_visible_window(GTK_EVENT_BOX(self), flag);
 
     return 0;
 }
@@ -153,11 +143,8 @@ RexxMethod2(int,                       // Return type
  */
 RexxMethod1(logical_t,                 // Return type
             GrxEventBoxGetVisibleWindow, // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkEventBox *myWidget = (GtkEventBox *)context->PointerValue(rxptr);
-
-    return gtk_event_box_get_visible_window(myWidget);
+    return gtk_event_box_get_visible_window(GTK_EVENT_BOX(self));
 }
 

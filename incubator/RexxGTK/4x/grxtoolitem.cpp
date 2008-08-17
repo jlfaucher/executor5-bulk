@@ -122,15 +122,15 @@ static gboolean signal_func_3(GtkToolbar *toolitem,
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxToolItemNew,            // Object_method name
-            OSELF, self)               // Self
+            OSELF, self,               // Self
+            OPTIONAL_CSTRING, stockid) // Stock id
 {
     GtkToolItem *toolitem = gtk_tool_item_new();
 
     // Save ourself
     context->SetObjectVariable("CSELF", context->NewPointer(toolitem));
-    context->SendMessage1(self, "POINTER=", context->NewPointer(toolitem));
     g_object_set_data(G_OBJECT(toolitem), "OORXOBJECT", self);
 
     return 0;
@@ -147,13 +147,10 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxToolItemSetHomogeneous, // Object_method name
-            logical_t, homo,           // Homogeneous boolean
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            logical_t, homo)           // Homogeneous boolean
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkToolItem *myWidget = (GtkToolItem *)context->PointerValue(rxptr);
-
-    gtk_tool_item_set_homogeneous(myWidget, homo);
+    gtk_tool_item_set_homogeneous(GTK_TOOL_ITEM(self), homo);
 
     return 0;
 }
@@ -167,12 +164,9 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod1(logical_t,                 // Return type
             GrxToolItemGetHomogeneous, // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkToolItem *myWidget = (GtkToolItem *)context->PointerValue(rxptr);
-
-    return gtk_tool_item_get_homogeneous(myWidget);
+    return gtk_tool_item_get_homogeneous(GTK_TOOL_ITEM(self));
 }
 
 /**
@@ -186,13 +180,10 @@ RexxMethod1(logical_t,                 // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxToolItemSetExpand,      // Object_method name
-            logical_t, expand,         // Expand boolean
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            logical_t, expand)         // Expand boolean
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkToolItem *myWidget = (GtkToolItem *)context->PointerValue(rxptr);
-
-    gtk_tool_item_set_expand(myWidget, expand);
+    gtk_tool_item_set_expand(GTK_TOOL_ITEM(self), expand);
 
     return 0;
 }
@@ -206,12 +197,9 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod1(logical_t,                 // Return type
             GrxToolItemGetExpand,      // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkToolItem *myWidget = (GtkToolItem *)context->PointerValue(rxptr);
-
-    return gtk_tool_item_get_expand(myWidget);
+    return gtk_tool_item_get_expand(GTK_TOOL_ITEM(self));
 }
 
 /**
@@ -229,17 +217,14 @@ RexxMethod1(logical_t,                 // Return type
  **/
 RexxMethod4(int,                       // Return type
             GrxToolItemSetTooltip,     // Object_method name
+            CSELF, self,               // GTK self
             RexxObjectPtr, tooltip,    // The tooltips
             CSTRING, text,             // The tooltip text
-            CSTRING, ptext,            // The tooltip private text
-            OSELF, self)               // Self
+            CSTRING, ptext)            // The tooltip private text
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkToolItem *myWidget = (GtkToolItem *)context->PointerValue(rxptr);
-    RexxPointerObject toolptr = (RexxPointerObject)context->SendMessage0(tooltip, "POINTER");
-    GtkTooltips *tooltWidget = (GtkTooltips *)context->PointerValue(toolptr);
+    GtkTooltips *tooltWidget = (GtkTooltips *)context->ObjectToCSelf(tooltip);
 
-    gtk_tool_item_set_tooltip(myWidget, tooltWidget, text, ptext);
+    gtk_tool_item_set_tooltip(GTK_TOOL_ITEM(self), tooltWidget, text, ptext);
 
     return 0;
 }
@@ -255,13 +240,10 @@ RexxMethod4(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxToolItemSetUseDragWindow, // Object_method name
-            logical_t, drag,           // Drag boolean
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            logical_t, drag)           // Drag boolean
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkToolItem *myWidget = (GtkToolItem *)context->PointerValue(rxptr);
-
-    gtk_tool_item_set_use_drag_window(myWidget, drag);
+    gtk_tool_item_set_use_drag_window(GTK_TOOL_ITEM(self), drag);
 
     return 0;
 }
@@ -275,12 +257,9 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod1(logical_t,                 // Return type
             GrxToolItemGetUseDragWindow, // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkToolItem *myWidget = (GtkToolItem *)context->PointerValue(rxptr);
-
-    return gtk_tool_item_get_use_drag_window(myWidget);
+    return gtk_tool_item_get_use_drag_window(GTK_TOOL_ITEM(self));
 }
 
 /**
@@ -294,13 +273,10 @@ RexxMethod1(logical_t,                 // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxToolItemSetVisibleHorizontal, // Object_method name
-            logical_t, visible,        // Visible boolean
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            logical_t, visible)        // Visible boolean
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkToolItem *myWidget = (GtkToolItem *)context->PointerValue(rxptr);
-
-    gtk_tool_item_set_visible_horizontal(myWidget, visible);
+    gtk_tool_item_set_visible_horizontal(GTK_TOOL_ITEM(self), visible);
 
     return 0;
 }
@@ -314,12 +290,9 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod1(logical_t,                 // Return type
             GrxToolItemGetVisibleHorizontal, // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkToolItem *myWidget = (GtkToolItem *)context->PointerValue(rxptr);
-
-    return gtk_tool_item_get_visible_horizontal(myWidget);
+    return gtk_tool_item_get_visible_horizontal(GTK_TOOL_ITEM(self));
 }
 
 /**
@@ -333,13 +306,10 @@ RexxMethod1(logical_t,                 // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxToolItemSetVisibleVertical, // Object_method name
-            logical_t, visible,        // Visible boolean
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            logical_t, visible)        // Visible boolean
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkToolItem *myWidget = (GtkToolItem *)context->PointerValue(rxptr);
-
-    gtk_tool_item_set_visible_vertical(myWidget, visible);
+    gtk_tool_item_set_visible_vertical(GTK_TOOL_ITEM(self), visible);
 
     return 0;
 }
@@ -353,12 +323,9 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod1(logical_t,                 // Return type
             GrxToolItemGetVisibleVertical, // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkToolItem *myWidget = (GtkToolItem *)context->PointerValue(rxptr);
-
-    return gtk_tool_item_get_visible_vertical(myWidget);
+    return gtk_tool_item_get_visible_vertical(GTK_TOOL_ITEM(self));
 }
 
 /**
@@ -372,13 +339,10 @@ RexxMethod1(logical_t,                 // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxToolItemSetIsImportant, // Object_method name
-            logical_t, import,         // Important boolean
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            logical_t, import)         // Important boolean
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkToolItem *myWidget = (GtkToolItem *)context->PointerValue(rxptr);
-
-    gtk_tool_item_set_is_important(myWidget, import);
+    gtk_tool_item_set_is_important(GTK_TOOL_ITEM(self), import);
 
     return 0;
 }
@@ -392,12 +356,9 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod1(logical_t,                 // Return type
             GrxToolItemGetIsImportant, // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkToolItem *myWidget = (GtkToolItem *)context->PointerValue(rxptr);
-
-    return gtk_tool_item_get_is_important(myWidget);
+    return gtk_tool_item_get_is_important(GTK_TOOL_ITEM(self));
 }
 
 /**
@@ -409,12 +370,9 @@ RexxMethod1(logical_t,                 // Return type
  **/
 RexxMethod1(int,                       // Return type
             GrxToolItemGetIconSize,    // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkToolItem *myWidget = (GtkToolItem *)context->PointerValue(rxptr);
-
-    return gtk_tool_item_get_icon_size(myWidget);
+    return gtk_tool_item_get_icon_size(GTK_TOOL_ITEM(self));
 }
 
 /**
@@ -426,12 +384,9 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod1(int,                       // Return type
             GrxToolItemGetOrientation, // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkToolItem *myWidget = (GtkToolItem *)context->PointerValue(rxptr);
-
-    return gtk_tool_item_get_orientation(myWidget);
+    return gtk_tool_item_get_orientation(GTK_TOOL_ITEM(self));
 }
 
 /**
@@ -443,12 +398,9 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod1(int,                       // Return type
             GrxToolItemGetToolbarStyle, // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkToolItem *myWidget = (GtkToolItem *)context->PointerValue(rxptr);
-
-    return gtk_tool_item_get_toolbar_style(myWidget);
+    return gtk_tool_item_get_toolbar_style(GTK_TOOL_ITEM(self));
 }
 
 /**
@@ -460,12 +412,9 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod1(int,                       // Return type
             GrxToolItemGetReliefStyle, // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkToolItem *myWidget = (GtkToolItem *)context->PointerValue(rxptr);
-
-    return gtk_tool_item_get_relief_style(myWidget);
+    return gtk_tool_item_get_relief_style(GTK_TOOL_ITEM(self));
 }
 
 /**
@@ -477,13 +426,11 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod1(RexxObjectPtr,             // Return type
             GrxToolItemRetrieveProxyMenuItem, // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkToolItem *myWidget = (GtkToolItem *)context->PointerValue(rxptr);
     GtkWidget *temp;
 
-    temp = gtk_tool_item_retrieve_proxy_menu_item(myWidget);
+    temp = gtk_tool_item_retrieve_proxy_menu_item(GTK_TOOL_ITEM(self));
     return (RexxObjectPtr)g_object_get_data(G_OBJECT(temp), "OORXOBJECT");
 }
 
@@ -496,14 +443,12 @@ RexxMethod1(RexxObjectPtr,             // Return type
  **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxToolItemGetProxyMenuItem, // Object_method name
-            CSTRING, id,               // The id
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            CSTRING, id)               // The id
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkToolItem *myWidget = (GtkToolItem *)context->PointerValue(rxptr);
     GtkWidget *temp;
 
-    temp = gtk_tool_item_get_proxy_menu_item(myWidget, id);
+    temp = gtk_tool_item_get_proxy_menu_item(GTK_TOOL_ITEM(self), id);
     return (RexxObjectPtr)g_object_get_data(G_OBJECT(temp), "OORXOBJECT");
 }
 
@@ -516,16 +461,13 @@ RexxMethod2(RexxObjectPtr,             // Return type
  **/
 RexxMethod3(int,                       // Return type
             GrxToolItemSetProxyMenuItem, // Object_method name
+            CSELF, self,               // GTK self
             CSTRING, id,               // Item id
-            RexxObjectPtr, item,       // Proxy menu itemame
-            OSELF, self)               // Self
+            RexxObjectPtr, item)       // Proxy menu itemame
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkToolItem *myWidget = (GtkToolItem *)context->PointerValue(rxptr);
-    RexxPointerObject itemptr = (RexxPointerObject)context->SendMessage0(item, "POINTER");
-    GtkWidget *itemWidget = (GtkWidget *)context->PointerValue(itemptr);
+    GtkWidget *itemWidget = (GtkWidget *)context->ObjectToCSelf(item);
 
-    gtk_tool_item_set_proxy_menu_item(myWidget, id, itemWidget);
+    gtk_tool_item_set_proxy_menu_item(GTK_TOOL_ITEM(self), id, itemWidget);
 
     return 0;
 }
@@ -539,12 +481,9 @@ RexxMethod3(int,                       // Return type
  **/
 RexxMethod1(RexxObjectPtr,             // Return type
             GrxToolItemRebuildMenu,    // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkToolItem *myWidget = (GtkToolItem *)context->PointerValue(rxptr);
-
-    gtk_tool_item_rebuild_menu(myWidget);
+    gtk_tool_item_rebuild_menu(GTK_TOOL_ITEM(self));
 
     return 0;
 }
@@ -560,19 +499,17 @@ RexxMethod1(RexxObjectPtr,             // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxToolItemSignalConnect,  // Object_method name
+            CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            ARGLIST, args,             // The whole argument list as an array
-            OSELF, self)               // Self
+            ARGLIST, args)             // The whole argument list as an array
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     cbcb *cblock;
 
     if (strcmp(name, "create_menu_proxy") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_create_menu_proxy";
-        g_signal_connect(G_OBJECT(myWidget), "create-menu-proxy",
+        g_signal_connect(G_OBJECT(self), "create-menu-proxy",
                          G_CALLBACK(signal_func_0), cblock);
         return context->True();
     }
@@ -580,7 +517,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_set_tooltip";
-        g_signal_connect(G_OBJECT(myWidget), "set-tooltip",
+        g_signal_connect(G_OBJECT(self), "set-tooltip",
                          G_CALLBACK(signal_func_3), cblock);
         return context->True();
     }
@@ -588,7 +525,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_toolbar_reconfigured";
-        g_signal_connect(G_OBJECT(myWidget), "toolbar-reconfigured",
+        g_signal_connect(G_OBJECT(self), "toolbar-reconfigured",
                          G_CALLBACK(signal_func_0a), cblock);
         return context->True();
     }

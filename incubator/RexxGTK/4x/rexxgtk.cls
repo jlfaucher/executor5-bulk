@@ -861,23 +861,13 @@ return
 
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxWidgetNew"
 
--- These methods should only be invoked by the C++ code. That is the only place
--- where it is actually useful.
-::method 'pointer='
-expose !pointer
-use strict arg !pointer
-return
-::method pointer
-expose !pointer
-use strict arg
-return !pointer
-
 -- This attribute is not a part of the GTK system. It has been added to
 -- support callbacks or any other use the user may have.
 ::attribute user_data
 
 -- This method is not a part of the GTK system. It has been added to
 -- support creating GdkEvent objects from C++ methods.
+-- Note: Do not make this method private!
 ::method create_event_obj
 use strict arg clsname
 return .context~package~findClass(clsname)~new()
@@ -1093,9 +1083,6 @@ return .false
 
 ::class GtkContainer public subclass GtkWidget
 
-::method init
-return
-
 ::METHOD add EXTERNAL "LIBRARY rexxgtk GrxContainerAdd"
 ::METHOD remove EXTERNAL "LIBRARY rexxgtk GrxContainerRemove"
 ::METHOD set_border_width EXTERNAL "LIBRARY rexxgtk GrxContainerSetBorderWidth"
@@ -1126,13 +1113,9 @@ return
 
 ::class GtkBox public subclass GtkContainer
 
-::method init
-return
-
 ::METHOD pack_end EXTERNAL "LIBRARY rexxgtk GrxBoxPackEnd"
 
 ::method pack_end_defaults
--- insert an object into the box with default attributes
 use strict arg mywidget
 self~pack_end(myWidget, .true, .true, 0)
 return
@@ -1140,7 +1123,6 @@ return
 ::METHOD pack_start EXTERNAL "LIBRARY rexxgtk GrxBoxPackEnd"
 
 ::method pack_start_defaults
--- insert an object into the box with default attributes
 use strict arg mywidget
 self~pack_start(mywidget, .true, .true, 0)
 return
@@ -1203,16 +1185,10 @@ return
 
 ::class GtkPaned public subclass GtkContainer
 
-::method init
-return
-
 ::METHOD add1 EXTERNAL "LIBRARY rexxgtk GrxPanedAdd1"
 ::METHOD add2 EXTERNAL "LIBRARY rexxgtk GrxPanedAdd2"
 ::METHOD pack1 EXTERNAL "LIBRARY rexxgtk GrxPanedPack1"
 ::METHOD pack2 EXTERNAL "LIBRARY rexxgtk GrxPanedPack2"
-
--- The following are the methods that can be connected to signals. By default
--- they do nothing.
 
 
 /*============================================================================*/
@@ -1295,6 +1271,13 @@ return
 ::METHOD add_with_viewport EXTERNAL "LIBRARY rexxgtk GrxScrolledWindowAddWithViewport"
 ::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxScrolledWindowSignalConnect"
 
+-- This method is not a part of the GTK system. It has been added to
+-- support creating GtkAdjustment objects from C++ methods.
+::METHOD create_adj private
+use strict arg ptr
+return .GtkAdjustment~new(ptr)
+
+
 -- The following are the methods that can be connected to signals. By default
 -- they do nothing.
 
@@ -1327,20 +1310,20 @@ return
 ::class GtkButton public subclass GtkContainer
 
 ::method newWithLabel class
-use arg label = ''
+use strict arg label = ''
 button = self~new()
 button~label = label
 return button
 
 ::method newWithMnemonic class
-use arg label = ''
+use strict arg label = ''
 button = self~new()
 button~label = label
 button~use_underline = .true
 return button
 
 ::method newFromStock class
-use arg label = ''
+use strict arg label = ''
 button = self~new()
 button~label = label
 button~use_stock = .true
@@ -1385,13 +1368,13 @@ return
 ::class GtkToggleButton public subclass GtkButton
 
 ::method newWithLabel class
-use arg label = ''
+use strict arg label = ''
 button = self~new()
 button~label = label
 return button
 
 ::method newWithMnemonic class
-use arg label = ''
+use strict arg label = ''
 button = self~new()
 button~label = label
 button~use_underline = .true
@@ -1423,14 +1406,14 @@ return
 
 ::method newWithLabel class
 self~init:super
-use arg label = ''
+use strict arg label = ''
 check = self~new()
 check~label = label
 return check
 
 ::method newWithMnemonic class
 self~init:super
-use arg label = ''
+use strict arg label = ''
 check = self~new()
 check~label = label
 check~use_underline = .true
@@ -1446,53 +1429,23 @@ return check
 ::class GtkRadioButton public subclass GtkCheckbutton
 
 ::method newWithLabel class
-use arg group, label = ''
-button = .GtkRadioButton~new(group)
-button~label = label
-return button
+use strict arg widget, label
+return .GtkRadioButton~new(widget, label)
 
 ::method newWithMnemonic class
-use arg group, label = ''
-button = self~new(group)
-button~label = label
-button~use_underline = .true
-return button
-
-::method newFromWidget class
-use arg widget, label = ''
-group = widget~get_group()
-button = self~new(group, label)
-return button
-
-::method newWithLabelFromWidget class
-use arg widget, label = ''
-button = .GtkRadioButton~newFromWidget(widget)
-button~label = label
-return button
-
-::method newWithMnemonicFromWidget class
-use arg widget, label = ''
-button = .GtkRadioButton~newFromWidget(widget)
-button~label = label
-button~use_underline = .true
-return button
+use strict arg widget, label
+rb = .GtkRadioButton~new(widget, label)
+rb~use_underline = .true
+return rb
                          
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxRadioButtonNew"
-::METHOD get_group EXTERNAL "LIBRARY rexxgtk GrxRadioButtonGetGroup"
 ::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxRadioButtonSignalConnect"
-::METHOD create_gslist
-use strict arg ptr
-return .GSList~new(ptr)
 
 -- The following are the methods that can be connected to signals. By default
 -- they do nothing.
 
 ::method signal_group_changed
 return
-
--- ::class GtkRadioButton_FromWidget public subclass GtkRadioButton
-
--- ::METHOD init class EXTERNAL "LIBRARY rexxgtk GrxRadioButtonNewFromWidget"
 
 
 /*============================================================================*/
@@ -1571,17 +1524,17 @@ return
 ::class GtkTable public subclass GtkContainer
 
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxTableNew"
+
+::METHOD 'row_spacings=' EXTERNAL "LIBRARY rexxgtk GrxTableSetRowSpacings"
+::METHOD set_row_spacings EXTERNAL "LIBRARY rexxgtk GrxTableSetRowSpacings"
+::METHOD 'col_spacings=' EXTERNAL "LIBRARY rexxgtk GrxTableSetColSpacings"
+::METHOD set_col_spacings EXTERNAL "LIBRARY rexxgtk GrxTableSetColSpacings"
 ::METHOD attach EXTERNAL "LIBRARY rexxgtk GrxTableAttach"
 
 ::method attach_defaults
 use strict arg widget, left, right, top, bottom
 self~attach(widget, left, right, top, bottom,5, 5, 0, 0)
 return
-
-::METHOD 'row_spacings=' EXTERNAL "LIBRARY rexxgtk GrxTableSetRowSpacings"
-::METHOD set_row_spacings EXTERNAL "LIBRARY rexxgtk GrxTableSetRowSpacings"
-::METHOD 'col_spacings=' EXTERNAL "LIBRARY rexxgtk GrxTableSetColSpacings"
-::METHOD set_col_spacings EXTERNAL "LIBRARY rexxgtk GrxTableSetColSpacings"
 
 
 /*============================================================================*/
@@ -1617,10 +1570,10 @@ return
 
 
 /*============================================================================*/
-/* Class: GtkComboBox_Text                                                    */
+/* Class: GtkComboBoxText                                                     */
 /*============================================================================*/
 
-::class GtkComboBox_Text public subclass GtkComboBox
+::class GtkComboBoxText public subclass GtkComboBox
 
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxComboBoxNewText"
 
@@ -1717,14 +1670,15 @@ return
 
 ::class GtkDialog public subclass GtkWindow
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxDialogNew"
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxDialogNewWithButtons"
 
-::attribute vbox set
+::method 'vbox=' private
 expose vbox
 use strict arg ptr
 vbox = .GtkVBox~new(ptr)
 return
-::attribute vbox get
+
+::method vbox
 expose vbox
 return vbox
 
@@ -1746,15 +1700,6 @@ return
 
 ::method signal_response
 return
-
-
-/*============================================================================*/
-/* Class: GtkDialogWithButtons                                                */
-/*============================================================================*/
-
-::class GtkDialogWithButtons public subclass GtkDialog
-
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxDialogNewWithButtons"
 
 
 /*============================================================================*/
@@ -1918,7 +1863,7 @@ return
 ::class GtkExpander public subclass GtkContainer
 
 ::method newWithMnemonic class
-use arg label = ''
+use strict arg label = ''
 exp = self~new(label)
 exp~use_underline = .true
 return exp
@@ -2083,16 +2028,23 @@ return
 
 ::class GtkHScale public subclass GtkScale
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxHScaleNew"
+::method newWithRange class
+use strict arg min, max, step
+return .GtkHScale~new(min, max, step)
 
+::METHOD init
+if arg() = 3 then do
+   use strict arg min, max, step
+   self~init_3args(min, max, step)
+   return
+   end
+use strict arg value, lower, upper, step, page, pagesz
+self~init_6args(value, lower, upper, step, page, pagesz)
+return
 
-/*============================================================================*/
-/* Class: GtkHScaleWithRange                                                  */
-/*============================================================================*/
+::METHOD init_6args private EXTERNAL "LIBRARY rexxgtk GrxHScaleNew"
+::METHOD init_3args private EXTERNAL "LIBRARY rexxgtk GrxHScaleNewWithRange"
 
-::class GtkHScaleWithRange public subclass GtkScale
-
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxHScaleNewWithRange"
 
 
 /*============================================================================*/
@@ -2101,16 +2053,22 @@ return
 
 ::class GtkVScale public subclass GtkScale
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxVScaleNew"
+::method newWithRange class
+use strict arg min, max, step
+return .GtkVScale~new(min, max, step)
 
+::METHOD init
+if arg() = 3 then do
+   use strict arg min, max, step
+   self~init_3args(min, max, step)
+   return
+   end
+use strict arg value, lower, upper, step, page, pagesz
+self~init_6args(value, lower, upper, step, page, pagesz)
+return
 
-/*============================================================================*/
-/* Class: GtkVScaleWithRange                                                  */
-/*============================================================================*/
-
-::class GtkVScaleWithRange public subclass GtkScale
-
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxVScaleNewWithRange"
+::METHOD init_6args private EXTERNAL "LIBRARY rexxgtk GrxVScaleNew"
+::METHOD init_3args private EXTERNAL "LIBRARY rexxgtk GrxVScaleNewWithRange"
 
 
 /*============================================================================*/
@@ -2205,6 +2163,9 @@ return img
 ::METHOD 'right_margin=' EXTERNAL "LIBRARY rexxgtk GrxTextViewSetRightMargin"
 ::METHOD add_child_at_offset EXTERNAL "LIBRARY rexxgtk GrxTextViewAddChildAtOffset"
 ::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxTextViewSignalConnect"
+
+-- This method is not a part of the GTK system. It has been added to
+-- support creating GtkTextBuffer objects from C++ methods.
 ::Method create_textbuffer private
 use strict arg ptr
 return .GtkTextBuffer~new(ptr)
@@ -2282,16 +2243,6 @@ return
 ::METHOD insert_image EXTERNAL "LIBRARY rexxgtk GrxTextBufferInsertImage"
 ::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxTextBufferSignalConnect"
 
--- These methods should only be invoked by the C++ code. That is the only place
--- where it is actually useful.
-::method 'pointer='
-expose !pointer
-use strict arg !pointer
-return
-::method pointer
-expose !pointer
-return !pointer
-
 -- The following are the methods that can be connected to signals. By default
 -- they do nothing.
 
@@ -2327,16 +2278,6 @@ return
 ::METHOD init_1args private EXTERNAL "LIBRARY rexxgtk GrxAdjustmentNewFromPtr"
 ::METHOD init_6args private EXTERNAL "LIBRARY rexxgtk GrxAdjustmentNew"
 
--- These methods should only be invoked by the C++ code. That is the only place
--- where it is actually useful.
-::method 'pointer='
-expose !pointer
-use strict arg !pointer
-return
-::method pointer
-expose !pointer
-return !pointer
-
 ::METHOD set_value EXTERNAL "LIBRARY rexxgtk GrxAdjustmentSetValue"
 ::METHOD 'value=' EXTERNAL "LIBRARY rexxgtk GrxAdjustmentSetValue"
 ::METHOD get_value EXTERNAL "LIBRARY rexxgtk GrxAdjustmentGetValue"
@@ -2363,16 +2304,6 @@ return
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxListStoreNew"
 ::METHOD append EXTERNAL "LIBRARY rexxgtk GrxListStoreAppend"
 ::METHOD set_value EXTERNAL "LIBRARY rexxgtk GrxListStoreSetValue"
-
--- These methods should only be invoked by the C++ code. That is the only place
--- where it is actually useful.
-::method 'pointer='
-expose !pointer
-use strict arg !pointer
-return
-::method pointer
-expose !pointer
-return !pointer
 
 
 /*============================================================================*/
@@ -2432,16 +2363,25 @@ return
 ::METHOD attach EXTERNAL "LIBRARY rexxgtk GrxMenuAttach"
 ::METHOD popup EXTERNAL "LIBRARY rexxgtk GrxMenuPopup"
 ::METHOD set_accel_group EXTERNAL "LIBRARY rexxgtk GrxMenuSetAccelGroup"
+::METHOD 'accel_group=' EXTERNAL "LIBRARY rexxgtk GrxMenuSetAccelGroup"
 ::METHOD get_accel_group EXTERNAL "LIBRARY rexxgtk GrxMenuGetAccelGroup"
+::METHOD accel_group EXTERNAL "LIBRARY rexxgtk GrxMenuGetAccelGroup"
 ::METHOD set_accel_path EXTERNAL "LIBRARY rexxgtk GrxMenuSetAccelPath"
+::METHOD 'accel_path=' EXTERNAL "LIBRARY rexxgtk GrxMenuSetAccelPath"
 ::METHOD set_title EXTERNAL "LIBRARY rexxgtk GrxMenuSetTitle"
+::METHOD 'title=' EXTERNAL "LIBRARY rexxgtk GrxMenuSetTitle"
 ::METHOD get_title EXTERNAL "LIBRARY rexxgtk GrxMenuGetTitle"
+::METHOD title EXTERNAL "LIBRARY rexxgtk GrxMenuGetTitle"
 ::METHOD set_tearoff_state EXTERNAL "LIBRARY rexxgtk GrxMenuSetTearoffState"
+::METHOD 'tearoff_state=' EXTERNAL "LIBRARY rexxgtk GrxMenuSetTearoffState"
 ::METHOD get_tearoff_state EXTERNAL "LIBRARY rexxgtk GrxMenuGetTearoffState"
+::METHOD tearoff_state EXTERNAL "LIBRARY rexxgtk GrxMenuGetTearoffState"
 ::METHOD popdown EXTERNAL "LIBRARY rexxgtk GrxMenuPopdown"
 ::METHOD reposition EXTERNAL "LIBRARY rexxgtk GrxMenuReposition"
 ::METHOD set_active EXTERNAL "LIBRARY rexxgtk GrxMenuSetActive"
+::METHOD 'active=' EXTERNAL "LIBRARY rexxgtk GrxMenuSetActive"
 ::METHOD get_active EXTERNAL "LIBRARY rexxgtk GrxMenuGetActive"
+::METHOD active EXTERNAL "LIBRARY rexxgtk GrxMenuGetActive"
 ::METHOD attach_to_widget EXTERNAL "LIBRARY rexxgtk GrxMenuAttachToWidget"
 ::METHOD detach EXTERNAL "LIBRARY rexxgtk GrxMenuDetach"
 ::METHOD get_attach_widget EXTERNAL "LIBRARY rexxgtk GrxMenuGetAttachWidget"
@@ -2461,19 +2401,22 @@ return
 ::class GtkMenuItem public subclass GtkContainer
 
 ::method newWithLabel class
-use arg label
+use strict arg label
 return self~new(label, .false)
 
 ::method newWithMnemonic class
-use arg label
+use strict arg label
 return self~new(label, .true)
 
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxMenuItemNew"
 ::METHOD set_right_justified EXTERNAL "LIBRARY rexxgtk GrxMenuItemSetRightJustified"
+::METHOD 'right_justified=' EXTERNAL "LIBRARY rexxgtk GrxMenuItemSetRightJustified"
 ::METHOD get_right_justified EXTERNAL "LIBRARY rexxgtk GrxMenuItemGetRightJustified"
+::METHOD right_justified EXTERNAL "LIBRARY rexxgtk GrxMenuItemGetRightJustified"
 ::METHOD set_submenu EXTERNAL "LIBRARY rexxgtk GrxMenuItemSetSubmenu"
 ::METHOD remove_submenu EXTERNAL "LIBRARY rexxgtk GrxMenuItemRemoveSubmenu"
 ::METHOD set_accel_path EXTERNAL "LIBRARY rexxgtk GrxMenuItemSetAccelPath"
+::METHOD 'accel_path=' EXTERNAL "LIBRARY rexxgtk GrxMenuItemSetAccelPath"
 ::METHOD select EXTERNAL "LIBRARY rexxgtk GrxMenuItemSelect"
 ::METHOD deselect EXTERNAL "LIBRARY rexxgtk GrxMenuItemDeselect"
 ::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxMenuItemSignalConnect"
@@ -2522,9 +2465,13 @@ return .GtkImageMenuItem~new(label, 1)
 ::METHOD prepend EXTERNAL "LIBRARY rexxgtk GrxMenuBarPrepend"
 ::METHOD insert EXTERNAL "LIBRARY rexxgtk GrxMenuBarInsert"
 ::METHOD set_pack_direction EXTERNAL "LIBRARY rexxgtk GrxMenuBarSetPackDirection"
+::METHOD 'pack_direction=' EXTERNAL "LIBRARY rexxgtk GrxMenuBarSetPackDirection"
 ::METHOD get_pack_direction EXTERNAL "LIBRARY rexxgtk GrxMenuBarGetPackDirection"
+::METHOD pack_direction EXTERNAL "LIBRARY rexxgtk GrxMenuBarGetPackDirection"
 ::METHOD set_child_pack_direction EXTERNAL "LIBRARY rexxgtk GrxMenuBarSetChildPackDirection"
+::METHOD 'child_pack_direction=' EXTERNAL "LIBRARY rexxgtk GrxMenuBarSetChildPackDirection"
 ::METHOD get_child_pack_direction EXTERNAL "LIBRARY rexxgtk GrxMenuBarGetChildPackDirection"
+::METHOD child_pack_direction EXTERNAL "LIBRARY rexxgtk GrxMenuBarGetChildPackDirection"
 
 
 /*============================================================================*/
@@ -2536,19 +2483,30 @@ return .GtkImageMenuItem~new(label, 1)
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxToolbarNew"
 ::METHOD insert EXTERNAL "LIBRARY rexxgtk GrxToolbarInsert"
 ::METHOD get_item_index EXTERNAL "LIBRARY rexxgtk GrxToolbarGetItemIndex"
+::METHOD item_index EXTERNAL "LIBRARY rexxgtk GrxToolbarGetItemIndex"
 ::METHOD get_n_items EXTERNAL "LIBRARY rexxgtk GrxToolbarGetNItems"
+::METHOD n_items EXTERNAL "LIBRARY rexxgtk GrxToolbarGetNItems"
 ::METHOD get_nth_item EXTERNAL "LIBRARY rexxgtk GrxToolbarGetNthItem"
+::METHOD nth_item EXTERNAL "LIBRARY rexxgtk GrxToolbarGetNthItem"
 ::METHOD get_drop_index EXTERNAL "LIBRARY rexxgtk GrxToolbarGetDropIndex"
+::METHOD drop_index EXTERNAL "LIBRARY rexxgtk GrxToolbarGetDropIndex"
 ::METHOD set_drop_highlight_item EXTERNAL "LIBRARY rexxgtk GrxToolbarSetDropHighlightItem"
 ::METHOD set_show_arrow EXTERNAL "LIBRARY rexxgtk GrxToolbarSetShowArrow"
+::METHOD 'show_arrow=' EXTERNAL "LIBRARY rexxgtk GrxToolbarSetShowArrow"
 ::METHOD set_orientation EXTERNAL "LIBRARY rexxgtk GrxToolbarSetOrientation"
+::METHOD 'orientation=' EXTERNAL "LIBRARY rexxgtk GrxToolbarSetOrientation"
 ::METHOD set_tooltips EXTERNAL "LIBRARY rexxgtk GrxToolbarSetTooltips"
 ::METHOD set_icon_size EXTERNAL "LIBRARY rexxgtk GrxToolbarSetIconSize"
+::METHOD 'icon_size=' EXTERNAL "LIBRARY rexxgtk GrxToolbarSetIconSize"
 ::METHOD get_show_arrow EXTERNAL "LIBRARY rexxgtk GrxToolbarGetShowArrow"
+::METHOD show_arrow EXTERNAL "LIBRARY rexxgtk GrxToolbarGetShowArrow"
 ::METHOD get_orientation EXTERNAL "LIBRARY rexxgtk GrxToolbarGetOrientation"
+::METHOD orientation EXTERNAL "LIBRARY rexxgtk GrxToolbarGetOrientation"
 ::METHOD get_style EXTERNAL "LIBRARY rexxgtk GrxToolbarGetStyle"
+::METHOD style EXTERNAL "LIBRARY rexxgtk GrxToolbarGetStyle"
 ::METHOD get_icon_size EXTERNAL "LIBRARY rexxgtk GrxToolbarGetIconSize"
 ::METHOD get_tooltips EXTERNAL "LIBRARY rexxgtk GrxToolbarGetTooltips"
+::METHOD tooltips EXTERNAL "LIBRARY rexxgtk GrxToolbarGetTooltips"
 ::METHOD append_item EXTERNAL "LIBRARY rexxgtk GrxToolbarAppendItem"
 ::METHOD prepend_item EXTERNAL "LIBRARY rexxgtk GrxToolbarPrependItem"
 ::METHOD insert_item EXTERNAL "LIBRARY rexxgtk GrxToolbarInsertItem"
@@ -2562,6 +2520,7 @@ return .GtkImageMenuItem~new(label, 1)
 ::METHOD prepend_widget EXTERNAL "LIBRARY rexxgtk GrxToolbarPrependWidget"
 ::METHOD insert_widget EXTERNAL "LIBRARY rexxgtk GrxToolbarInsertWidget"
 ::METHOD set_style EXTERNAL "LIBRARY rexxgtk GrxToolbarSetStyle"
+::METHOD 'style=' EXTERNAL "LIBRARY rexxgtk GrxToolbarSetStyle"
 ::METHOD insert_stock EXTERNAL "LIBRARY rexxgtk GrxToolbarInsertStock"
 ::METHOD remove_space EXTERNAL "LIBRARY rexxgtk GrxToolbarRemoveSpace"
 ::METHOD unset_style EXTERNAL "LIBRARY rexxgtk GrxToolbarUnsetStyle"
@@ -2589,26 +2548,47 @@ return
 
 ::class GtkToolItem public subclass GtkContainer
 
+::method newFromStock class
+use strict arg sid
+return .GtkToolItem~new(sid)
+
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxToolItemNew"
 ::METHOD set_homogeneous EXTERNAL "LIBRARY rexxgtk GrxToolItemSetHomogeneous"
+::METHOD 'homogeneous=' EXTERNAL "LIBRARY rexxgtk GrxToolItemSetHomogeneous"
 ::METHOD get_homogeneous EXTERNAL "LIBRARY rexxgtk GrxToolItemGetHomogeneous"
+::METHOD homogeneous EXTERNAL "LIBRARY rexxgtk GrxToolItemGetHomogeneous"
 ::METHOD set_expand EXTERNAL "LIBRARY rexxgtk GrxToolItemSetExpand"
+::METHOD 'expand=' EXTERNAL "LIBRARY rexxgtk GrxToolItemSetExpand"
 ::METHOD get_expand EXTERNAL "LIBRARY rexxgtk GrxToolItemGetExpand"
+::METHOD expand EXTERNAL "LIBRARY rexxgtk GrxToolItemGetExpand"
 ::METHOD set_tooltip EXTERNAL "LIBRARY rexxgtk GrxToolItemSetTooltip"
 ::METHOD set_use_drag_window EXTERNAL "LIBRARY rexxgtk GrxToolItemSetUseDragWindow"
+::METHOD 'use_drag_window=' EXTERNAL "LIBRARY rexxgtk GrxToolItemSetUseDragWindow"
 ::METHOD get_use_drag_window EXTERNAL "LIBRARY rexxgtk GrxToolItemGetUseDragWindow"
+::METHOD use_drag_window EXTERNAL "LIBRARY rexxgtk GrxToolItemGetUseDragWindow"
 ::METHOD set_visible_horizontal EXTERNAL "LIBRARY rexxgtk GrxToolItemSetVisibleHorizontal"
+::METHOD 'visible_horizontal=' EXTERNAL "LIBRARY rexxgtk GrxToolItemSetVisibleHorizontal"
 ::METHOD get_visible_horizontal EXTERNAL "LIBRARY rexxgtk GrxToolItemGetVisibleHorizontal"
+::METHOD visible_horizontal EXTERNAL "LIBRARY rexxgtk GrxToolItemGetVisibleHorizontal"
 ::METHOD set_visible_vertical EXTERNAL "LIBRARY rexxgtk GrxToolItemSetVisibleVertical"
+::METHOD 'visible_vertical=' EXTERNAL "LIBRARY rexxgtk GrxToolItemSetVisibleVertical"
 ::METHOD get_visible_vertical EXTERNAL "LIBRARY rexxgtk GrxToolItemGetVisibleVertical"
+::METHOD visible_vertical EXTERNAL "LIBRARY rexxgtk GrxToolItemGetVisibleVertical"
 ::METHOD set_is_important EXTERNAL "LIBRARY rexxgtk GrxToolItemSetIsImportant"
+::METHOD 'is_important=' EXTERNAL "LIBRARY rexxgtk GrxToolItemSetIsImportant"
 ::METHOD get_is_important EXTERNAL "LIBRARY rexxgtk GrxToolItemGetIsImportant"
+::METHOD is_important EXTERNAL "LIBRARY rexxgtk GrxToolItemGetIsImportant"
 ::METHOD get_icon_size EXTERNAL "LIBRARY rexxgtk GrxToolItemGetIconSize"
+::METHOD icon_size EXTERNAL "LIBRARY rexxgtk GrxToolItemGetIconSize"
 ::METHOD get_orientation EXTERNAL "LIBRARY rexxgtk GrxToolItemGetOrientation"
+::METHOD orientation EXTERNAL "LIBRARY rexxgtk GrxToolItemGetOrientation"
 ::METHOD get_toolbar_style EXTERNAL "LIBRARY rexxgtk GrxToolItemGetToolbarStyle"
+::METHOD toolbar_style EXTERNAL "LIBRARY rexxgtk GrxToolItemGetToolbarStyle"
 ::METHOD get_relief_style EXTERNAL "LIBRARY rexxgtk GrxToolItemGetReliefStyle"
+::METHOD relief_style EXTERNAL "LIBRARY rexxgtk GrxToolItemGetReliefStyle"
 ::METHOD retrieve_proxy_menu_item EXTERNAL "LIBRARY rexxgtk GrxToolItemRetrieveProxyMenuItem"
 ::METHOD get_proxy_menu_item EXTERNAL "LIBRARY rexxgtk GrxToolItemGetProxyMenuItem"
+::METHOD proxy_menu_item EXTERNAL "LIBRARY rexxgtk GrxToolItemGetProxyMenuItem"
 ::METHOD set_proxy_menu_item EXTERNAL "LIBRARY rexxgtk GrxToolItemSetProxyMenuItem"
 ::METHOD rebuild_menu EXTERNAL "LIBRARY rexxgtk GrxToolItemRebuildMenu"
 ::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxToolItemSignalConnect"
@@ -2641,25 +2621,47 @@ return
 
 ::class GtkToolButton public subclass GtkToolItem
 
-::METHOD new_from_stock class
-use strict arg id
-obj = .GtkToolButton~new(.nil, .nil)
-obj~set_stock_id(id)
-return obj
+::method newFromStock class
+use strict arg sid
+return .GtkToolButton~new(sid)
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxToolButtonNew"
+::METHOD init
+if arg() = 1 then do
+   use strict arg sid
+   self~init_1args(sid)
+   return
+   end
+use strict arg icon, label
+self~init_1args(icon, label)
+return
+
+::METHOD init_2args private EXTERNAL "LIBRARY rexxgtk GrxToolButtonNew"
+::METHOD init_1args private EXTERNAL "LIBRARY rexxgtk GrxToolButtonNewFromStock"
+
 ::METHOD get_label EXTERNAL "LIBRARY rexxgtk GrxToolButtonGetLabel"
+::METHOD label EXTERNAL "LIBRARY rexxgtk GrxToolButtonGetLabel"
 ::METHOD set_label EXTERNAL "LIBRARY rexxgtk GrxToolButtonSetLabel"
+::METHOD 'label=' EXTERNAL "LIBRARY rexxgtk GrxToolButtonSetLabel"
 ::METHOD get_use_underline EXTERNAL "LIBRARY rexxgtk GrxToolButtonGetUseUnderline"
+::METHOD use_underline EXTERNAL "LIBRARY rexxgtk GrxToolButtonGetUseUnderline"
 ::METHOD set_use_underline EXTERNAL "LIBRARY rexxgtk GrxToolButtonSetUseUnderline"
+::METHOD 'use_underline=' EXTERNAL "LIBRARY rexxgtk GrxToolButtonSetUseUnderline"
 ::METHOD get_stock_id EXTERNAL "LIBRARY rexxgtk GrxToolButtonGetStockId"
+::METHOD stock_id EXTERNAL "LIBRARY rexxgtk GrxToolButtonGetStockId"
 ::METHOD set_stock_id EXTERNAL "LIBRARY rexxgtk GrxToolButtonSetStockId"
+::METHOD 'stock_id=' EXTERNAL "LIBRARY rexxgtk GrxToolButtonSetStockId"
 ::METHOD get_icon_name EXTERNAL "LIBRARY rexxgtk GrxToolButtonGetIconName"
+::METHOD icon_name EXTERNAL "LIBRARY rexxgtk GrxToolButtonGetIconName"
 ::METHOD set_icon_name EXTERNAL "LIBRARY rexxgtk GrxToolButtonSetIconName"
+::METHOD 'icon_name=' EXTERNAL "LIBRARY rexxgtk GrxToolButtonSetIconName"
 ::METHOD get_icon_widget EXTERNAL "LIBRARY rexxgtk GrxToolButtonGetIconWidget"
+::METHOD icon_widget EXTERNAL "LIBRARY rexxgtk GrxToolButtonGetIconWidget"
 ::METHOD set_icon_widget EXTERNAL "LIBRARY rexxgtk GrxToolButtonSetIconWidget"
+::METHOD 'icon_widget=' EXTERNAL "LIBRARY rexxgtk GrxToolButtonSetIconWidget"
 ::METHOD get_label_widget EXTERNAL "LIBRARY rexxgtk GrxToolButtonGetLabelWidget"
+::METHOD label_widget EXTERNAL "LIBRARY rexxgtk GrxToolButtonGetLabelWidget"
 ::METHOD set_label_widget EXTERNAL "LIBRARY rexxgtk GrxToolButtonSetLabelWidget"
+::METHOD 'label_widget=' EXTERNAL "LIBRARY rexxgtk GrxToolButtonSetLabelWidget"
 ::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxToolButtonSignalConnect"
 
 -- The following are the methods that can be connected to signals. By default
@@ -2683,7 +2685,9 @@ return obj
 
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxMenuToolButtonNew"
 ::METHOD get_menu EXTERNAL "LIBRARY rexxgtk GrxMenuToolButtonGetMenu"
+::METHOD menu EXTERNAL "LIBRARY rexxgtk GrxMenuToolButtonGetMenu"
 ::METHOD set_menu EXTERNAL "LIBRARY rexxgtk GrxMenuToolButtonSetMenu"
+::METHOD 'menu=' EXTERNAL "LIBRARY rexxgtk GrxMenuToolButtonSetMenu"
 ::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxMenuToolButtonSignalConnect"
 
 -- The following are the methods that can be connected to signals. By default
@@ -2701,7 +2705,9 @@ return
 
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxSeparatorToolItemNew"
 ::METHOD set_draw EXTERNAL "LIBRARY rexxgtk GrxSeparatorToolItemSetDraw"
+::METHOD 'draw=' EXTERNAL "LIBRARY rexxgtk GrxSeparatorToolItemSetDraw"
 ::METHOD get_draw EXTERNAL "LIBRARY rexxgtk GrxSeparatorToolItemGetDraw"
+::METHOD draw EXTERNAL "LIBRARY rexxgtk GrxSeparatorToolItemGetDraw"
 
 
 /*============================================================================*/
@@ -2712,16 +2718,6 @@ return
 
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxAccelGroupNew"
 ::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxAccelGroupSignalConnect"
-
--- These methods should only be invoked by the C++ code. That is the only place
--- where it is actually useful.
-::method 'pointer='
-expose !pointer
-use strict arg !pointer
-return
-::method pointer
-expose !pointer
-return !pointer
 
 -- The following are the methods that can be connected to signals. By default
 -- they do nothing.
@@ -2745,7 +2741,9 @@ return
 ::METHOD pop EXTERNAL "LIBRARY rexxgtk GrxStatusbarPop"
 ::METHOD remove EXTERNAL "LIBRARY rexxgtk GrxStatusbarRemove"
 ::METHOD set_has_resize_grip EXTERNAL "LIBRARY rexxgtk GrxStatusbarSetHasResizeGrip"
+::METHOD 'has_resize_grip=' EXTERNAL "LIBRARY rexxgtk GrxStatusbarSetHasResizeGrip"
 ::METHOD get_has_resize_grip EXTERNAL "LIBRARY rexxgtk GrxStatusbarGetHasResizeGrip"
+::METHOD has_resize_grip EXTERNAL "LIBRARY rexxgtk GrxStatusbarGetHasResizeGrip"
 ::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxStatusbarSignalConnect"
 
 -- The following are the methods that can be connected to signals. By default
@@ -2768,16 +2766,6 @@ return
 
 ::METHOD set_fixed_size EXTERNAL "LIBRARY rexxgtk GrxCellRendererSetFixedSize"
 ::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxCellRendererSignalConnect"
-
--- These methods should only be invoked by the C++ code. That is the only place
--- where it is actually useful.
-::method 'pointer='
-expose !pointer
-use strict arg !pointer
-return
-::method pointer
-expose !pointer
-return !pointer
 
 -- The following are the methods that can be connected to signals. By default
 -- they do nothing.
@@ -2831,9 +2819,13 @@ return
 
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxCellRendererToggleNew"
 ::METHOD set_radio EXTERNAL "LIBRARY rexxgtk GrxCellRendererToggleSetRadio"
+::METHOD 'radio=' EXTERNAL "LIBRARY rexxgtk GrxCellRendererToggleSetRadio"
 ::METHOD get_radio EXTERNAL "LIBRARY rexxgtk GrxCellRendererToggleGetRadio"
+::METHOD radio EXTERNAL "LIBRARY rexxgtk GrxCellRendererToggleGetRadio"
 ::METHOD set_active EXTERNAL "LIBRARY rexxgtk GrxCellRendererToggleSetActive"
+::METHOD 'active=' EXTERNAL "LIBRARY rexxgtk GrxCellRendererToggleSetActive"
 ::METHOD get_active EXTERNAL "LIBRARY rexxgtk GrxCellRendererToggleGetActive"
+::METHOD active EXTERNAL "LIBRARY rexxgtk GrxCellRendererToggleGetActive"
 ::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxCellRendererToggleSignalConnect"
 
 -- The following are the methods that can be connected to signals. By default
@@ -2950,7 +2942,7 @@ return .false
 
 ::class GtkTreeViewColumn public
 
-::METHOD new_with_attributes class
+::METHOD newWithAttributes class
 use arg title, renderer
 obj = .GtkTreeViewColumn~new()
 obj~set_title(title)
@@ -2961,19 +2953,10 @@ do i = 3 to arg() by 2
 return obj
 
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxTreeViewColumnNew"
-
--- These methods should only be invoked by the C++ code. That is the only place
--- where it is actually useful.
-::method 'pointer='
-expose !pointer
-use strict arg !pointer
-return
-::method pointer
-expose !pointer
-return !pointer
-
 ::METHOD set_title EXTERNAL "LIBRARY rexxgtk GrxTreeViewColumnSetTitle"
+::METHOD 'title=' EXTERNAL "LIBRARY rexxgtk GrxTreeViewColumnSetTitle"
 ::METHOD get_title EXTERNAL "LIBRARY rexxgtk GrxTreeViewColumnGetTitle"
+::METHOD title EXTERNAL "LIBRARY rexxgtk GrxTreeViewColumnGetTitle"
 ::METHOD pack_start EXTERNAL "LIBRARY rexxgtk GrxTreeViewColumnPackStart"
 ::METHOD pack_end EXTERNAL "LIBRARY rexxgtk GrxTreeViewColumnPackEnd"
 ::METHOD set_attribute EXTERNAL "LIBRARY rexxgtk GrxTreeViewColumnSetAttribute"
@@ -2995,16 +2978,6 @@ return
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxTreeStoreNew"
 ::METHOD append EXTERNAL "LIBRARY rexxgtk GrxTreeStoreAppend"
 ::METHOD set_value EXTERNAL "LIBRARY rexxgtk GrxTreeStoreSetValue"
-
--- These methods should only be invoked by the C++ code. That is the only place
--- where it is actually useful.
-::method 'pointer='
-expose !pointer
-use strict arg !pointer
-return
-::method pointer
-expose !pointer
-return !pointer
 
 
 /*============================================================================*/
@@ -3129,17 +3102,6 @@ do while ptr <> .Nil
    end
 return list
 
--- These methods should only be invoked by the C++ code. That is the only place
--- where it is actually useful.
-::method 'pointer='
-expose !pointer
-use strict arg !pointer
-return
-::method pointer
-expose !pointer
-use strict arg
-return !pointer
-
 
 
 /*============================================================================*/
@@ -3168,17 +3130,6 @@ do while ptr <> .Nil
    ptr = GrxGListNext(ptr)
    end
 return list
-
--- These methods should only be invoked by the C++ code. That is the only place
--- where it is actually useful.
-::method 'pointer='
-expose !pointer
-use strict arg !pointer
-return
-::method pointer
-expose !pointer
-use strict arg
-return !pointer
 
 
 /*============================================================================*/
@@ -3233,18 +3184,6 @@ return
 ::class GtkFileFilter public
 
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxFileFilterNew"
-
--- These methods should only be invoked by the C++ code. That is the only place
--- where it is actually useful.
-::method 'pointer='
-expose !pointer
-use strict arg !pointer
-return
-::method pointer
-expose !pointer
-use strict arg
-return !pointer
-
 ::METHOD set_name EXTERNAL "LIBRARY rexxgtk GrxFileFilterSetName"
 ::METHOD 'name=' EXTERNAL "LIBRARY rexxgtk GrxFileFilterSetName"
 ::METHOD add_pattern EXTERNAL "LIBRARY rexxgtk GrxFileFilterAddPattern"
@@ -3257,16 +3196,4 @@ return !pointer
 ::class GtkClipboard public
 
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxClipboardNew"
-
--- These methods should only be invoked by the C++ code. That is the only place
--- where it is actually useful.
-::method 'pointer='
-expose !pointer
-use strict arg !pointer
-return
-::method pointer
-expose !pointer
-use strict arg
-return !pointer
-
 

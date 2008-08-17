@@ -83,9 +83,9 @@ group = .GtkAccelGroup~new()
 window~add_accel_group(group)
 menu~set_accel_group(group)
 
-pulse = .MyPulse~new_with_label('Pulse Progress')
-fill = .MyFill~new_with_label('Set as Complete')
-clear = .MyClear~new_with_label('Clear Progress')
+pulse = .MyPulse~newWithLabel('Pulse Progress')
+fill = .MyFill~newWithLabel('Set as Complete')
+clear = .MyClear~newWithLabel('Clear Progress')
 separator = .GtkSeparatorMenuItem~new()
 
 pulse~add_accelerator('activate', group, '050'~x2d, .gtk~GDK_CONTROL_MASK,,

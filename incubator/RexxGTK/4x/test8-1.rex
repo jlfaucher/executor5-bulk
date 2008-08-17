@@ -93,15 +93,15 @@ return
 use strict arg treeview, BUY_IT, QUANTITY, PRODUCT
 
 renderer = .GtkCellRendererText~new()
-column = .GtkTreeViewColumn~new_with_attributes('Buy', renderer, 'text', BUY_IT)
+column = .GtkTreeViewColumn~newWithAttributes('Buy', renderer, 'text', BUY_IT)
 treeview~append_column(column)
 
 renderer = .GtkCellRendererText~new()
-column = .GtkTreeViewColumn~new_with_attributes('Count', renderer, 'text', QUANTITY)
+column = .GtkTreeViewColumn~newWithAttributes('Count', renderer, 'text', QUANTITY)
 treeview~append_column(column)
 
 renderer = .GtkCellRendererText~new()
-column = .GtkTreeViewColumn~new_with_attributes('Product', renderer, 'text', PRODUCT)
+column = .GtkTreeViewColumn~newWithAttributes('Product', renderer, 'text', PRODUCT)
 treeview~append_column(column)
 return
 

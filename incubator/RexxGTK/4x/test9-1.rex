@@ -79,9 +79,9 @@ return
 ::routine create_popup_menu
 use strict arg menu, progress
 
-pulse = .MyPulse~new_with_label('Pulse Progress')
-fill = .MyFill~new_with_label('Set as Complete')
-clear = .MyClear~new_with_label('Clear Progress')
+pulse = .MyPulse~newWithLabel('Pulse Progress')
+fill = .MyFill~newWithLabel('Set as Complete')
+clear = .MyClear~newWithLabel('Clear Progress')
 separator = .GtkSeparatorMenuItem~new()
 
 -- set up the user data for the signals

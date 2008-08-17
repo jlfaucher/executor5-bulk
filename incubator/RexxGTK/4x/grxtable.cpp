@@ -86,7 +86,6 @@ RexxMethod4(int,                       // Return type
 
     // Save ourself
     context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
-    context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
@@ -119,6 +118,7 @@ RexxMethod4(int,                       // Return type
  **/
 RexxMethod10(int,                       // Return type
             GrxTableAttach,            // Object_method name
+            CSELF, self,               // GTK self
             RexxObjectPtr, rxWidget,   // Widget to be added
             int, left,                 // Left position
             int, right,                // Right position
@@ -127,15 +127,11 @@ RexxMethod10(int,                       // Return type
             int, xoptions,             // X options        
             int, yoptions,             // Y options
             int, xpad,                 // X padding
-            int, ypad,                 // Y padding
-            OSELF, self)               // Self
+            int, ypad)                 // Y padding
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *tableWidget = (GtkWidget *)context->PointerValue(rxptr);
-    RexxPointerObject addptr = (RexxPointerObject)context->SendMessage0(rxWidget, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(addptr);
+    GtkWidget *myWidget = (GtkWidget *)context->ObjectToCSelf(rxWidget);
 
-    gtk_table_attach(GTK_TABLE(tableWidget), myWidget, left, right, top, bottom,
+    gtk_table_attach(GTK_TABLE(self), myWidget, left, right, top, bottom,
                      (GtkAttachOptions)xoptions, (GtkAttachOptions)yoptions,
                      xpad, ypad);         
 
@@ -153,13 +149,10 @@ RexxMethod10(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxTableSetRowSpacings,    // Object_method name
-            int, spacing,              // Row spacing
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            int, spacing)              // Row spacing
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-
-    gtk_table_set_row_spacings(GTK_TABLE(myWidget), spacing);
+    gtk_table_set_row_spacings(GTK_TABLE(self), spacing);
 
     return 0;
 }
@@ -175,13 +168,10 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxTableSetColSpacings,    // Object_method name
-            int, spacing,              // Column spacing
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            int, spacing)              // Column spacing
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-
-    gtk_table_set_col_spacings(GTK_TABLE(myWidget), spacing);
+    gtk_table_set_col_spacings(GTK_TABLE(self), spacing);
 
     return 0;
 }

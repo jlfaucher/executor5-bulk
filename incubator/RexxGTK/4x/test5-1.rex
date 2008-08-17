@@ -75,9 +75,9 @@ return
 ::class MyButton subclass GtkButton
 
 ::method signal_clicked
-dialog = .GtkDialogWithButtons~new('Information', self~user_data,,
-                                     .gtk~GTK_DIALOG_MODAL,,
-                                     .gtk~GTK_STOCK_OK, .gtk~GTK_RESPONSE_OK)
+dialog = .GtkDialog~new('Information', self~user_data,,
+                        .gtk~GTK_DIALOG_MODAL,,
+                        .gtk~GTK_STOCK_OK, .gtk~GTK_RESPONSE_OK)
 dialog~set_has_separator(.false)
 
 label= .GtkLabel~new('The button was clicked!')

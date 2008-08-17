@@ -45,9 +45,9 @@
 -- by Andrew Krause
 
 call gtk_init
-dialog = .GtkDialogWithButtons~new('Edit User Information', .nil,,
-                                     .gtk~GTK_DIALOG_MODAL,,
-                                     .gtk~GTK_STOCK_OK, .gtk~GTK_RESPONSE_OK)
+dialog = .GtkDialog~new('Edit User Information', .nil,,
+                        .gtk~GTK_DIALOG_MODAL,,
+                        .gtk~GTK_STOCK_OK, .gtk~GTK_RESPONSE_OK)
 dialog~add_button(.gtk~GTK_STOCK_CANCEL, .gtk~GTK_RESPONSE_CANCEL)
 dialog~set_default_response(.gtk~GTK_RESPONSE_OK)
 

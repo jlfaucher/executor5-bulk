@@ -94,7 +94,6 @@ RexxMethod1(int,                       // Return type
 
     // Save ourself
     context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
-    context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
@@ -111,13 +110,10 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxStatusbarGetContextId,  // Object_method name
-            CSTRING, desc,             // Description
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            CSTRING, desc)             // Description
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkStatusbar *myWidget = (GtkStatusbar *)context->PointerValue(rxptr);
-
-    return gtk_statusbar_get_context_id(myWidget, desc);
+    return gtk_statusbar_get_context_id(GTK_STATUSBAR(self), desc);
 }
 
 /**
@@ -133,14 +129,11 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod3(int,                       // Return type
             GrxStatusbarPush,          // Object_method name
+            CSELF, self,               // GTK self
             int, cid,                  // Context id
-            CSTRING, text,             // Message text
-            OSELF, self)               // Self
+            CSTRING, text)             // Message text
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkStatusbar *myWidget = (GtkStatusbar *)context->PointerValue(rxptr);
-
-    return gtk_statusbar_push(myWidget, cid, text);
+    return gtk_statusbar_push(GTK_STATUSBAR(self), cid, text);
 }
 
 /**
@@ -154,13 +147,10 @@ RexxMethod3(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxStatusbarPop,           // Object_method name
-            int, cid,                  // Context id
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            int, cid)                  // Context id
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkStatusbar *myWidget = (GtkStatusbar *)context->PointerValue(rxptr);
-
-    gtk_statusbar_pop(myWidget, cid);
+    gtk_statusbar_pop(GTK_STATUSBAR(self), cid);
 
     return 0;
 }
@@ -178,14 +168,11 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod3(int,                       // Return type
             GrxStatusbarRemove,        // Object_method name
+            CSELF, self,               // GTK self
             int, cid,                  // Context id
-            int, mid,                  // Message id
-            OSELF, self)               // Self
+            int, mid)                  // Message id
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkStatusbar *myWidget = (GtkStatusbar *)context->PointerValue(rxptr);
-
-    gtk_statusbar_remove(myWidget, cid, mid);
+    gtk_statusbar_remove(GTK_STATUSBAR(self), cid, mid);
 
     return 0;
 }
@@ -201,13 +188,10 @@ RexxMethod3(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxStatusbarSetHasResizeGrip, // Object_method name
-            logical_t, flag,           // Boolean flag
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            logical_t, flag)           // Boolean flag
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkStatusbar *myWidget = (GtkStatusbar *)context->PointerValue(rxptr);
-
-    gtk_statusbar_set_has_resize_grip(myWidget, flag);
+    gtk_statusbar_set_has_resize_grip(GTK_STATUSBAR(self), flag);
 
     return 0;
 }
@@ -221,12 +205,9 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod1(logical_t,                 // Return type
             GrxStatusbarGetHasResizeGrip, // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkStatusbar *myWidget = (GtkStatusbar *)context->PointerValue(rxptr);
-
-    return gtk_statusbar_get_has_resize_grip(myWidget);
+    return gtk_statusbar_get_has_resize_grip(GTK_STATUSBAR(self));
 }
 
 /**
@@ -240,19 +221,17 @@ RexxMethod1(logical_t,                 // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxStatusbarSignalConnect, // Object_method name
+            CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            ARGLIST, args,             // The whole argument list as an array
-            OSELF, self)               // Self
+            ARGLIST, args)             // The whole argument list as an array
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     cbcb *cblock;
 
     if (strcmp(name, "text_popped") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_text_popped";
-        g_signal_connect(G_OBJECT(myWidget), "text-popped",
+        g_signal_connect(G_OBJECT(self), "text-popped",
                          G_CALLBACK(signal_func_2), cblock);
         return context->True();
     }
@@ -260,7 +239,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_text_pushed";
-        g_signal_connect(G_OBJECT(myWidget), "text-pushed",
+        g_signal_connect(G_OBJECT(self), "text-pushed",
                          G_CALLBACK(signal_func_2), cblock);
         return context->True();
     }

@@ -133,13 +133,10 @@ static void signal_func_2(GtkWidget *window,
  **/
 RexxMethod2(int,                       // Return type
             GrxScaleSetDigits,         // Object_method name
-            int, digits,               // Digits
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            int, digits)               // Digits
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkScale *myWidget = (GtkScale *)context->PointerValue(rxptr);
-
-    gtk_scale_set_digits(myWidget, digits);
+    gtk_scale_set_digits(GTK_SCALE(self), digits);
 
     return 0;
 }
@@ -153,12 +150,9 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod1(int,                       // Return type
             GrxScaleGetDigits,         // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkScale *myWidget = (GtkScale *)context->PointerValue(rxptr);
-
-    return gtk_scale_get_digits(myWidget);
+    return gtk_scale_get_digits(GTK_SCALE(self));
 }
 
 /**
@@ -172,13 +166,10 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxScaleSetValuePos,       // Object_method name
-            int, type,                 // Position type
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            int, type)                 // Position type
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkScale *myWidget = (GtkScale *)context->PointerValue(rxptr);
-
-    gtk_scale_set_value_pos(myWidget, (GtkPositionType)type);
+    gtk_scale_set_value_pos(GTK_SCALE(self), (GtkPositionType)type);
 
     return 0;
 }
@@ -192,12 +183,9 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod1(int,                       // Return type
             GrxScaleGetValuePos,       // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkScale *myWidget = (GtkScale *)context->PointerValue(rxptr);
-
-    return gtk_scale_get_value_pos(myWidget);
+    return gtk_scale_get_value_pos(GTK_SCALE(self));
 }
 
 /**
@@ -235,7 +223,6 @@ RexxMethod7(int,                       // Return type
 
     // Save ourself
     context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
-    context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
@@ -265,7 +252,6 @@ RexxMethod4(int,                       // Return type
 
     // Save ourself
     context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
-    context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
@@ -306,7 +292,6 @@ RexxMethod7(int,                       // Return type
 
     // Save ourself
     context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
-    context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
@@ -315,7 +300,7 @@ RexxMethod7(int,                       // Return type
 /**
  * Method:  init
  *
- * Create a new HScale with a range.
+ * Create a new VScale with a range.
  *
  * @param min     The minimum
  *
@@ -336,7 +321,6 @@ RexxMethod4(int,                       // Return type
 
     // Save ourself
     context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
-    context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
@@ -353,19 +337,17 @@ RexxMethod4(int,                       // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxRangeSignalConnect,     // Object_method name
+            CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            ARGLIST, args,             // The whole argument list as an array
-            OSELF, self)               // Self
+            ARGLIST, args)             // The whole argument list as an array
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     cbcb *cblock;
 
     if (strcmp(name, "adjust_bounds") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_adjust_bounds";
-        g_signal_connect(G_OBJECT(myWidget), "adjust-bounds",
+        g_signal_connect(G_OBJECT(self), "adjust-bounds",
                          G_CALLBACK(signal_func_1a), cblock);
         return context->True();
     }
@@ -373,7 +355,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_move_slider";
-        g_signal_connect(G_OBJECT(myWidget), "move-slider",
+        g_signal_connect(G_OBJECT(self), "move-slider",
                          G_CALLBACK(signal_func_1), cblock);
         return context->True();
     }
@@ -381,7 +363,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_value_changed";
-        g_signal_connect(G_OBJECT(myWidget), "value-changed",
+        g_signal_connect(G_OBJECT(self), "value-changed",
                          G_CALLBACK(signal_func_0), cblock);
         return context->True();
     }
@@ -389,7 +371,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_change_value";
-        g_signal_connect(G_OBJECT(myWidget), "change-value",
+        g_signal_connect(G_OBJECT(self), "change-value",
                          G_CALLBACK(signal_func_2), cblock);
         return context->True();
     }

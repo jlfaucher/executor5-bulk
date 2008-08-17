@@ -101,15 +101,12 @@ static void signal_func_1(GtkWidget *window,
  **/
 RexxMethod2(int,                       // Return type
             GrxContainerAdd,           // Object_method name
-            RexxObjectPtr, rxaddptr,   // Object to add
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            RexxObjectPtr, rxadd)      // Object to add
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-    RexxPointerObject addptr = (RexxPointerObject)context->SendMessage0(rxaddptr, "POINTER");
-    GtkWidget *addWidget = (GtkWidget *)context->PointerValue(addptr);
+    GtkWidget *addWidget = (GtkWidget *)context->ObjectToCSelf(rxadd);
 
-    gtk_container_add(GTK_CONTAINER(myWidget), addWidget); 
+    gtk_container_add(GTK_CONTAINER(self), addWidget); 
 
     return 0;
 }
@@ -125,15 +122,12 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxContainerRemove,        // Object_method name
-            RexxObjectPtr, rxremptr,   // Object to add
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            RexxObjectPtr, rxrem)      // Object to add
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-    RexxPointerObject remptr = (RexxPointerObject)context->SendMessage0(rxremptr, "POINTER");
-    GtkWidget *remWidget = (GtkWidget *)context->PointerValue(remptr);
+    GtkWidget *remWidget = (GtkWidget *)context->ObjectToCSelf(rxrem);
 
-    gtk_container_remove(GTK_CONTAINER(myWidget), remWidget); 
+    gtk_container_remove(GTK_CONTAINER(self), remWidget); 
 
     return 0;
 }
@@ -149,13 +143,10 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxContainerSetBorderWidth,// Object_method name
-            int, width,                // Border widthd
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            int, width)                // Border widthd
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-
-    gtk_container_set_border_width(GTK_CONTAINER(myWidget), width); 
+    gtk_container_set_border_width(GTK_CONTAINER(self), width); 
 
     return 0;
 }
@@ -177,18 +168,15 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod5(int,                       // Return type
             GrxBoxPackStart,           // Object_method name
-            RexxObjectPtr, rxpackptr,  // Widget to pack
+            CSELF, self,               // GTK self
+            RexxObjectPtr, rxpack,     // Widget to pack
             logical_t, expand,         // Expand boolean
             logical_t, fill,           // Fill boolean
-            int, padding,              // Padding amount
-            OSELF, self)               // Self
+            int, padding)              // Padding amount
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-    RexxPointerObject packptr = (RexxPointerObject)context->SendMessage0(rxpackptr, "POINTER");
-    GtkWidget *packWidget = (GtkWidget *)context->PointerValue(packptr);
+    GtkWidget *packWidget = (GtkWidget *)context->ObjectToCSelf(rxpack);
 
-    gtk_box_pack_start(GTK_BOX(myWidget), packWidget, expand, fill, (unsigned int)padding); 
+    gtk_box_pack_start(GTK_BOX(self), packWidget, expand, fill, (unsigned int)padding); 
 
     return 0;
 }
@@ -210,18 +198,15 @@ RexxMethod5(int,                       // Return type
  **/
 RexxMethod5(int,                       // Return type
             GrxBoxPackEnd,             // Object_method name
-            RexxObjectPtr, rxpackptr,  // Widget to pack
+            CSELF, self,               // GTK self
+            RexxObjectPtr, rxpack,     // Widget to pack
             logical_t, expand,         // Expand boolean
             logical_t, fill,           // Fill boolean
-            int, padding,              // Padding amount
-            OSELF, self)               // Self
+            int, padding)              // Padding amount
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-    RexxPointerObject packptr = (RexxPointerObject)context->SendMessage0(rxpackptr, "POINTER");
-    GtkWidget *packWidget = (GtkWidget *)context->PointerValue(packptr);
+    GtkWidget *packWidget = (GtkWidget *)context->ObjectToCSelf(rxpack);
 
-    gtk_box_pack_end(GTK_BOX(myWidget), packWidget, expand, fill, (unsigned int)padding); 
+    gtk_box_pack_end(GTK_BOX(self), packWidget, expand, fill, (unsigned int)padding); 
 
     return 0;
 }
@@ -247,7 +232,6 @@ RexxMethod3(int,                       // Return type
 
     // Save ourself
     context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
-    context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
@@ -265,13 +249,12 @@ RexxMethod3(int,                       // Return type
 RexxMethod2(int,                       // Return type
             GrxVBoxNewFromPtr,         // Object_method name
             OSELF, self,               // Self
-            RexxObjectPtr, rxptr)      // Homogeneous boolean
+            RexxObjectPtr, rxptr)      // Vbox pointer
 {
     GtkVBox *vbox = (GtkVBox *)context->PointerValue((RexxPointerObject)rxptr);
 
     // Save ourself
     context->SetObjectVariable("CSELF", context->NewPointer(vbox));
-    context->SendMessage1(self, "POINTER=", context->NewPointer(vbox));
     g_object_set_data(G_OBJECT(vbox), "OORXOBJECT", self);
 
     return 0;
@@ -282,7 +265,7 @@ RexxMethod2(int,                       // Return type
  *
  * Create a new HBox from a pointer.
  *
- * @param ptr     The VBoc pointer
+ * @param ptr     The VBox pointer
  *
  * @return        Zero.
  **/
@@ -291,11 +274,10 @@ RexxMethod2(int,                       // Return type
             OSELF, self,               // Self
             RexxObjectPtr, ptr)        // The pointer
 {
-    RexxPointerObject vboxptr = (RexxPointerObject)context->SendMessage0(ptr, "POINTER");
+    GtkWidget *myWidget = (GtkWidget *)context->PointerValue((RexxPointerObject)ptr);
 
     // Save ourself
-    context->SetObjectVariable("CSELF", context->NewPointer(vboxptr));
-    context->SendMessage1(self, "POINTER=", context->NewPointer(vboxptr));
+    context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(ptr), "OORXOBJECT", self);
 
     return 0;
@@ -322,7 +304,6 @@ RexxMethod3(int,                       // Return type
 
     // Save ourself
     context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
-    context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
@@ -346,7 +327,6 @@ RexxMethod2(int,                       // Return type
 
     // Save ourself
     context->SetObjectVariable("CSELF", context->NewPointer(hbox));
-    context->SendMessage1(self, "POINTER=", context->NewPointer(hbox));
     g_object_set_data(G_OBJECT(hbox), "OORXOBJECT", self);
 
     return 0;
@@ -379,7 +359,6 @@ RexxMethod5(int,                       // Return type
 
     // Save ourself
     context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
-    context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
@@ -396,19 +375,17 @@ RexxMethod5(int,                       // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxContainerSignalConnect, // Object_method name
+            CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            ARGLIST, args,             // The whole argument list as an array
-            OSELF, self)               // Self
+            ARGLIST, args)             // The whole argument list as an array
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     cbcb *cblock;
 
     if (strcmp(name, "add") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_add";
-        g_signal_connect(G_OBJECT(myWidget), "add",
+        g_signal_connect(G_OBJECT(self), "add",
                          G_CALLBACK(signal_func_1), cblock);
         return context->True();
     }
@@ -416,7 +393,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_check_resize";
-        g_signal_connect(G_OBJECT(myWidget), "check-resize",
+        g_signal_connect(G_OBJECT(self), "check-resize",
                          G_CALLBACK(signal_func_0), cblock);
         return context->True();
     }
@@ -424,7 +401,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_remove";
-        g_signal_connect(G_OBJECT(myWidget), "remove",
+        g_signal_connect(G_OBJECT(self), "remove",
                          G_CALLBACK(signal_func_1), cblock);
         return context->True();
     }
@@ -432,7 +409,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_set_focus_child";
-        g_signal_connect(G_OBJECT(myWidget), "set-focus-child",
+        g_signal_connect(G_OBJECT(self), "set-focus-child",
                          G_CALLBACK(signal_func_1), cblock);
         return context->True();
     }
@@ -457,15 +434,12 @@ RexxMethod3(int,                       // Return type
             RexxObjectPtr, rxhadj,     // Horizontal adjustment object
             RexxObjectPtr, rxvadj)     // Vertical adjustment object
 {
-    RexxPointerObject hadjptr = (RexxPointerObject)context->SendMessage0(rxhadj, "POINTER");
-    GtkAdjustment *hadj = (GtkAdjustment *)context->PointerValue(hadjptr);
-    RexxPointerObject vadjptr = (RexxPointerObject)context->SendMessage0(rxvadj, "POINTER");
-    GtkAdjustment *vadj = (GtkAdjustment *)context->PointerValue(vadjptr);
+    GtkAdjustment *hadj = (GtkAdjustment *)context->ObjectToCSelf(rxhadj);
+    GtkAdjustment *vadj = (GtkAdjustment *)context->ObjectToCSelf(rxvadj);
     GtkWidget *myWidget = gtk_viewport_new(hadj, vadj);
 
     // Save ourself
     context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
-    context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
@@ -482,19 +456,17 @@ RexxMethod3(int,                       // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxViewportSignalConnect,  // Object_method name
+            CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            ARGLIST, args,             // The whole argument list as an array
-            OSELF, self)               // Self
+            ARGLIST, args)             // The whole argument list as an array
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     cbcb *cblock;
 
     if (strcmp(name, "set_scroll_adjustments") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_set_scroll_adjustments";
-        g_signal_connect(G_OBJECT(myWidget), "set-scroll-adjustments",
+        g_signal_connect(G_OBJECT(self), "set-scroll-adjustments",
                          G_CALLBACK(signal_func_1), cblock);
         return context->True();
     }

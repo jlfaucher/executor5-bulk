@@ -136,8 +136,7 @@ RexxMethod1(int,                       // Return type
 
     // Save ourself
     context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
-    context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
-    // This is an abstract class so no actual widget is created
+    g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
     return 0;
 }
 
@@ -150,12 +149,9 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod1(int,                       // Return type
             GrxWidgetShow,             // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-
-    gtk_widget_show(myWidget);
+    gtk_widget_show(GTK_WIDGET(self));
 
     return 0;
 }
@@ -169,12 +165,9 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod1(int,                       // Return type
             GrxWidgetShowAll,          // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-
-    gtk_widget_show_all(myWidget);
+    gtk_widget_show_all(GTK_WIDGET(self));
 
     return 0;
 }
@@ -188,12 +181,9 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod1(int,                       // Return type
             GrxWidgetHide,             // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-
-    gtk_widget_hide(myWidget);
+    gtk_widget_hide(GTK_WIDGET(self));
 
     return 0;
 }
@@ -207,12 +197,9 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod1(int,                       // Return type
             GrxWidgetHideAll,          // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-
-    gtk_widget_hide_all(myWidget);
+    gtk_widget_hide_all(GTK_WIDGET(self));
 
     return 0;
 }
@@ -230,14 +217,11 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod3(int,                       // Return type
             GrxWidgetSetSizeRequest,   // Object_method name
+            CSELF, self,               // GTK self
             int, width,                // width of the widget
-            int, height,               // height of the widget
-            OSELF, self)               // Self
+            int, height)               // height of the widget
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-
-    gtk_widget_set_size_request(myWidget, width, height);
+    gtk_widget_set_size_request(GTK_WIDGET(self), width, height);
 
     return 0;
 }
@@ -251,12 +235,9 @@ RexxMethod3(int,                       // Return type
  **/
 RexxMethod1(int,                       // Return type
             GrxWidgetDestroy,          // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-
-    gtk_widget_destroy(myWidget);
+    gtk_widget_destroy(GTK_WIDGET(self));
 
     return 0;
 }
@@ -270,12 +251,9 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod1(int,                       // Return type
             GrxWidgetGrabFocus,        // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-
-    gtk_widget_grab_focus(myWidget);
+    gtk_widget_grab_focus(GTK_WIDGET(self));
 
     return 0;
 }
@@ -291,16 +269,14 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxWidgetSetFont,          // Object_method name
-            CSTRING, fontname,         // Font name
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            CSTRING, fontname)         // Font name
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     GtkStyle *style;
 
-    style = gtk_style_copy(gtk_widget_get_style(myWidget));
+    style = gtk_style_copy(gtk_widget_get_style(GTK_WIDGET(self)));
     style->font_desc = pango_font_description_from_string(fontname);
-    gtk_widget_set_style(myWidget, style);
+    gtk_widget_set_style(GTK_WIDGET(self), style);
 
     return 0;
 }
@@ -314,13 +290,11 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod1(CSTRING,                   // Return type
             GrxWidgetGetFont,          // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     GtkStyle *style = NULL;
 
-    style = gtk_widget_get_style(myWidget);
+    style = gtk_widget_get_style(GTK_WIDGET(self));
     return pango_font_description_to_string(style->font_desc);
 }
 
@@ -333,12 +307,9 @@ RexxMethod1(CSTRING,                   // Return type
  **/
 RexxMethod1(CSTRING,                   // Return type
             GrxWidgetGetName,          // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-
-    return gtk_widget_get_name(myWidget);
+    return gtk_widget_get_name(GTK_WIDGET(self));
 }
 
 /**
@@ -352,13 +323,10 @@ RexxMethod1(CSTRING,                   // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxWidgetSetName,          // Object_method name
-            CSTRING, name,             // New name
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            CSTRING, name)             // New name
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-
-    gtk_widget_set_name(myWidget, name);
+    gtk_widget_set_name(GTK_WIDGET(self), name);
 
     return 0;
 }
@@ -374,13 +342,10 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxWidgetSetSensitive,     // Object_method name
-            logical_t, flag,           // Sensitive flag
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            logical_t, flag)           // Sensitive flag
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-
-    gtk_widget_set_sensitive(myWidget, flag);
+    gtk_widget_set_sensitive(GTK_WIDGET(self), flag);
 
     return 0;
 }
@@ -399,16 +364,14 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod3(int,                       // Return type
             GrxWidgetModifyBG,         // Object_method name
+            CSELF, self,               // GTK self
             int, type,                 // State
-            CSTRING, colorstr,         // Color string
-            OSELF, self)               // Self
+            CSTRING, colorstr)         // Color string
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     GdkColor color;
 
     gdk_color_parse(colorstr, &color);
-    gtk_widget_modify_bg(myWidget, (GtkStateType)type, &color);
+    gtk_widget_modify_bg(GTK_WIDGET(self), (GtkStateType)type, &color);
 
     return 0;
 }
@@ -427,16 +390,14 @@ RexxMethod3(int,                       // Return type
  **/
 RexxMethod3(int,                       // Return type
             GrxWidgetModifyFG,         // Object_method name
+            CSELF, self,               // GTK self
             int, type,                 // State
-            CSTRING, colorstr,         // Color string
-            OSELF, self)               // Self
+            CSTRING, colorstr)         // Color string
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     GdkColor color;
 
     gdk_color_parse(colorstr, &color);
-    gtk_widget_modify_fg(myWidget, (GtkStateType)type, &color);
+    gtk_widget_modify_fg(GTK_WIDGET(self), (GtkStateType)type, &color);
 
     return 0;
 }
@@ -454,14 +415,11 @@ RexxMethod3(int,                       // Return type
  **/
 RexxMethod3(int,                       // Return type
             GrxWidgetSetData,          // Object_method name
+            CSELF, self,               // GTK self
             CSTRING, name,             // Association name
-            CSTRING, data,             // Association data
-            OSELF, self)               // Self
+            CSTRING, data)             // Association data
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-
-    g_object_set_data(G_OBJECT(myWidget), strdup(name), strdup(data));
+    g_object_set_data(G_OBJECT(self), strdup(name), strdup(data));
 
     return 0;
 }
@@ -477,13 +435,11 @@ RexxMethod3(int,                       // Return type
  **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxWidgetGetData,          // Object_method name
-            CSTRING, name,             // Association name
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            CSTRING, name)             // Association name
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
 
-    char *data = (char *)g_object_get_data(G_OBJECT(myWidget), name);
+    char *data = (char *)g_object_get_data(G_OBJECT(self), name);
     if (data == NULL) {
         return context->NewStringFromAsciiz("");
     }
@@ -499,12 +455,9 @@ RexxMethod2(RexxObjectPtr,             // Return type
  **/
 RexxMethod1(int,                       // Return type
             GrxWidgetActivate,         // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-
-    gtk_widget_activate(myWidget);
+    gtk_widget_activate(GTK_WIDGET(self));
 
     return 0;
 }
@@ -520,15 +473,12 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxWidgetReparent,         // Object_method name
-            RexxObjectPtr, parent,     // New parent widget
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            RexxObjectPtr, parent)     // New parent widget
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-    RexxPointerObject parentptr = (RexxPointerObject)context->SendMessage0(parent, "POINTER");
-    GtkWidget *parentWidget = (GtkWidget *)context->PointerValue(parentptr);
+    GtkWidget *parentWidget = (GtkWidget *)context->ObjectToCSelf(parent);
 
-    gtk_widget_reparent(myWidget, parentWidget);
+    gtk_widget_reparent(GTK_WIDGET(self), parentWidget);
 
     return 0;
 }
@@ -542,12 +492,9 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod1(logical_t,                 // Return type
             GrxWidgetIsFocus,          // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-
-    return gtk_widget_is_focus(myWidget);
+    return gtk_widget_is_focus(GTK_WIDGET(self));
 }
 
 /**
@@ -559,12 +506,9 @@ RexxMethod1(logical_t,                 // Return type
  **/
 RexxMethod1(int,                       // Return type
             GrxWidgetGrabDefault,      // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-
-    gtk_widget_grab_default(myWidget);
+    gtk_widget_grab_default(GTK_WIDGET(self));
 
     return 0;
 }
@@ -580,15 +524,12 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxWidgetSetParentWindow,  // Object_method name
-            RexxObjectPtr, parent,     // New parent widget
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            RexxObjectPtr, parent)     // New parent widget
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-    RexxPointerObject parentptr = (RexxPointerObject)context->SendMessage0(parent, "POINTER");
-    GdkWindow *parentWidget = (GdkWindow *)context->PointerValue(parentptr);
+    GdkWindow *parentWidget = (GdkWindow *)context->ObjectToCSelf(parent);
 
-    gtk_widget_set_parent_window(myWidget, parentWidget);
+    gtk_widget_set_parent_window(GTK_WIDGET(self), parentWidget);
 
     return 0;
 }
@@ -602,19 +543,15 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod1(RexxObjectPtr,             // Return type
             GrxWidgetGetParentWindow,  // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-    GtkWidget *parent;
-    RexxObjectPtr parentptr;
-
-    parent = (GtkWidget *)gtk_widget_get_parent_window(myWidget);
+    GtkWidget *parent = (GtkWidget *)gtk_widget_get_parent_window(GTK_WIDGET(self));
     if (parent == NULL) {
         return context->Nil(); 
     }
-    parentptr = (RexxObjectPtr)g_object_get_data(G_OBJECT(parent), "OORXOBJECT");
-    if (parentptr == NULL) {
+    RexxObjectPtr parentptr = (RexxObjectPtr)g_object_get_data(G_OBJECT(parent),
+                                                               "OORXOBJECT");
+    if (parentptr == context->Nil()) {
         return context->Nil(); 
     }
 
@@ -630,19 +567,15 @@ RexxMethod1(RexxObjectPtr,             // Return type
  **/
 RexxMethod1(RexxObjectPtr,             // Return type
             GrxWidgetGetToplevel,      // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-    GtkWidget *parentWidget;
-    RexxObjectPtr parentptr;
-
-    parentWidget = gtk_widget_get_toplevel(myWidget);
+    GtkWidget *parentWidget = gtk_widget_get_toplevel(GTK_WIDGET(self));
     if (parentWidget == NULL) {
         return context->Nil(); 
     }
-    parentptr = (RexxObjectPtr)g_object_get_data(G_OBJECT(parentWidget), "OORXOBJECT");
-    if (parentptr == NULL) {
+    RexxObjectPtr parentptr = (RexxObjectPtr)g_object_get_data(G_OBJECT(parentWidget),
+                                                               "OORXOBJECT");
+    if (parentptr == context->Nil()) {
         return context->Nil(); 
     }
 
@@ -660,15 +593,12 @@ RexxMethod1(RexxObjectPtr,             // Return type
  **/
 RexxMethod2(logical_t,                 // Return type
             GrxWidgetIsAncestor,       // Object_method name
-            RexxObjectPtr, ancestor,   // Ancestor widget
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            RexxObjectPtr, ancestor)   // Ancestor widget
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-    RexxPointerObject ancestorptr = (RexxPointerObject)context->SendMessage0(ancestor, "POINTER");
-    GtkWidget *ancestorWidget = (GtkWidget *)context->PointerValue(ancestorptr);
+    GtkWidget *ancestorWidget = (GtkWidget *)context->ObjectToCSelf(ancestor);
 
-    return gtk_widget_is_ancestor(myWidget, ancestorWidget);
+    return gtk_widget_is_ancestor(GTK_WIDGET(self), ancestorWidget);
 }
 
 /**
@@ -682,20 +612,16 @@ RexxMethod2(logical_t,                 // Return type
  **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxWidgetGetAncestor,      // Object_method name
-            int, type,                 // Ancestor type
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            int, type)                 // Ancestor type
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-    GtkWidget *ancestor;
-    RexxObjectPtr ancestorptr;
-
-    ancestor = gtk_widget_get_ancestor(myWidget, type);
+    GtkWidget *ancestor = gtk_widget_get_ancestor(GTK_WIDGET(self), type);
     if (ancestor == NULL) {
         return context->Nil(); 
     }
-    ancestorptr = (RexxObjectPtr)g_object_get_data(G_OBJECT(myWidget), "OORXOBJECT");
-    if (ancestorptr == NULL) {
+    RexxObjectPtr ancestorptr = (RexxObjectPtr)g_object_get_data(G_OBJECT(self),
+                                                                 "OORXOBJECT");
+    if (ancestorptr == context->Nil()) {
         return context->Nil(); 
     }
 
@@ -713,13 +639,10 @@ RexxMethod2(RexxObjectPtr,             // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxWidgetSetDirection,     // Object_method name
-            int, dir,                  // Direction
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            int, dir)                  // Direction
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-
-    gtk_widget_set_direction(myWidget, (GtkTextDirection)dir);
+    gtk_widget_set_direction(GTK_WIDGET(self), (GtkTextDirection)dir);
 
     return 0;
 }
@@ -733,12 +656,9 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod1(int,                       // Return type
             GrxWidgetGetDirection,     // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-
-    return gtk_widget_get_direction(myWidget);
+    return gtk_widget_get_direction(GTK_WIDGET(self));
 }
 
 /**
@@ -750,10 +670,9 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod2(int,                       // Return type
+RexxMethod1(int,                       // Return type
             GrxWidgetSetDefaultDirection, // Object_method name
-            int, dir,                  // Direction
-            OSELF, self)               // Self
+            int, dir)                  // Direction
 {
 
     gtk_widget_set_default_direction((GtkTextDirection)dir);
@@ -792,16 +711,13 @@ RexxMethod0(int,                       // Return type
  **/
 RexxMethod5(int,                       // Return type
             GrxWidgetQueueDrawArea,    // Object_method name
+            CSELF, self,               // GTK self
             int, x,                    // X coordinate  
             int, y,                    // Y coordinate  
             int, width,                // Width
-            int, height,               // Heaight
-            OSELF, self)               // Self
+            int, height)               // Heaight
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-
-    gtk_widget_queue_draw_area(myWidget, x, y, width, height);
+    gtk_widget_queue_draw_area(GTK_WIDGET(self), x, y, width, height);
 
     return 0;
 }
@@ -815,12 +731,9 @@ RexxMethod5(int,                       // Return type
  **/
 RexxMethod1(int,                       // Return type
             GrxWidgetResetShapes,      // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-
-    gtk_widget_reset_shapes(myWidget);
+    gtk_widget_reset_shapes(GTK_WIDGET(self));
 
     return 0;
 }
@@ -839,18 +752,15 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod3(logical_t,                 // Return type
             GrxWidgetSetScrollAdjustments, // Object_method name
+            CSELF, self,               // GTK self
             RexxObjectPtr, hadj,       // Horizontal Adjustment  
-            RexxObjectPtr, vadj,       // Vertical adjustment
-            OSELF, self)               // Self
+            RexxObjectPtr, vadj)       // Vertical adjustment
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-    RexxPointerObject hptr = (RexxPointerObject)context->SendMessage0(hadj, "POINTER");
-    GtkAdjustment *hWidget = (GtkAdjustment *)context->PointerValue(hptr);
-    RexxPointerObject vptr = (RexxPointerObject)context->SendMessage0(vadj, "POINTER");
-    GtkAdjustment *vWidget = (GtkAdjustment *)context->PointerValue(vptr);
+    GtkAdjustment *hWidget = (GtkAdjustment *)context->ObjectToCSelf(hadj);
+    GtkAdjustment *vWidget = (GtkAdjustment *)context->ObjectToCSelf(vadj);
 
-    return (logical_t)gtk_widget_set_scroll_adjustments(myWidget, hWidget, vWidget);
+    return (logical_t)gtk_widget_set_scroll_adjustments(GTK_WIDGET(self),
+                                                        hWidget, vWidget);
 }
 
 /**
@@ -864,13 +774,10 @@ RexxMethod3(logical_t,                 // Return type
  **/
 RexxMethod2(logical_t,                 // Return type
             GrxWidgetMnemonicActivate, // Object_method name
-            logical_t, flag,           // Group cycling flag
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            logical_t, flag)           // Group cycling flag
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-
-    return (logical_t)gtk_widget_mnemonic_activate(myWidget, flag);
+    return (logical_t)gtk_widget_mnemonic_activate(GTK_WIDGET(self), flag);
 }
 
 /**
@@ -882,19 +789,17 @@ RexxMethod2(logical_t,                 // Return type
  **/
 RexxMethod1(RexxObjectPtr,             // Return type
             GrxWidgetGetAccessible,    // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     AtkObject *atk;
     RexxObjectPtr atkptr;
 
-    atk = gtk_widget_get_accessible(myWidget);
+    atk = gtk_widget_get_accessible(GTK_WIDGET(self));
     if (atk == NULL) {
         return context->Nil(); 
     }
-    atkptr = (RexxObjectPtr)g_object_get_data(G_OBJECT(myWidget), "OORXOBJECT");
-    if (atkptr == NULL) {
+    atkptr = (RexxObjectPtr)g_object_get_data(G_OBJECT(self), "OORXOBJECT");
+    if (atkptr == context->Nil()) {
         return context->Nil(); 
     }
 
@@ -910,12 +815,9 @@ RexxMethod1(RexxObjectPtr,             // Return type
  **/
 RexxMethod1(logical_t,                 // Return type
             GrxWidgetGetChildVisible,  // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-
-    return (logical_t)gtk_widget_get_child_visible(myWidget);
+    return (logical_t)gtk_widget_get_child_visible(GTK_WIDGET(self));
 }
 
 /**
@@ -927,19 +829,17 @@ RexxMethod1(logical_t,                 // Return type
  **/
 RexxMethod1(RexxObjectPtr,             // Return type
             GrxWidgetGetParent,        // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     GtkWidget *root;
     RexxObjectPtr rootptr;
 
-    root = gtk_widget_get_parent(myWidget);
+    root = gtk_widget_get_parent(GTK_WIDGET(self));
     if (root == NULL) {
         return context->Nil(); 
     }
-    rootptr = (RexxObjectPtr)g_object_get_data(G_OBJECT(myWidget), "OORXOBJECT");
-    if (rootptr == NULL) {
+    rootptr = (RexxObjectPtr)g_object_get_data(G_OBJECT(self), "OORXOBJECT");
+    if (rootptr == context->Nil()) {
         return context->Nil(); 
     }
 
@@ -953,15 +853,13 @@ RexxMethod1(RexxObjectPtr,             // Return type
  *
  * @return        Array of menu objects
  **/
-RexxMethod1(RexxObjectPtr,              // Return type
-            GrxWidgetGetMenus,          // Object_method name
-            OSELF, self)               // Self
+RexxMethod1(RexxObjectPtr,             // Return type
+            GrxWidgetGetMenus,         // Object_method name
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     RexxObjectPtr entry;
 
-    GList *list = gtk_menu_get_for_attach_widget(myWidget);
+    GList *list = gtk_menu_get_for_attach_widget(GTK_WIDGET(self));
     RexxArrayObject arr = context->NewArray(g_list_length(list));
     list = g_list_first(list);
     int i = 0;
@@ -981,15 +879,12 @@ RexxMethod1(RexxObjectPtr,              // Return type
  *
  * @return        Zero
  **/
-RexxMethod2(int,                        // Return type
-            GrxWidgetSetEvents,         // Object_method name
-            int, events,                // Event mask
-            OSELF, self)               // Self
+RexxMethod2(int,                       // Return type
+            GrxWidgetSetEvents,        // Object_method name
+            CSELF, self,               // GTK self
+            int, events)               // Event mask
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-
-    gtk_widget_set_events(myWidget, events);
+    gtk_widget_set_events(GTK_WIDGET(self), events);
 
     return 0;
 }
@@ -1013,19 +908,16 @@ RexxMethod2(int,                        // Return type
  **/
 RexxMethod6(int,                       // Return type
             GrxWidgetAddAccelerator,   // Object_method name
+            CSELF, self,               // GTK self
             CSTRING, signame,          // Accelerator signal name
             RexxObjectPtr, accelgrp,   // Accelerator group
             int, key,                  // Accelerator key
             int, mods,                 // Accelerator modifiers
-            int, flags,                // Accelerator flags
-            OSELF, self)               // Self
+            int, flags)                // Accelerator flags
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-    RexxPointerObject grpptr = (RexxPointerObject)context->SendMessage0(accelgrp, "POINTER");
-    GtkAccelGroup *grpWidget = (GtkAccelGroup *)context->PointerValue(grpptr);
+    GtkAccelGroup *grpWidget = (GtkAccelGroup *)context->ObjectToCSelf(accelgrp);
 
-    gtk_widget_add_accelerator(myWidget, signame, grpWidget, key, 
+    gtk_widget_add_accelerator(GTK_WIDGET(self), signame, grpWidget, key, 
                                (GdkModifierType)mods, (GtkAccelFlags)flags);
 
     return 0;
@@ -1046,17 +938,14 @@ RexxMethod6(int,                       // Return type
  **/
 RexxMethod4(int,                       // Return type
             GrxWidgetRemoveAccelerator, // Object_method name
+            CSELF, self,               // GTK self
             RexxObjectPtr, accelgrp,   // Accelerator group
             int, key,                  // Accelerator key
-            int, mods,                 // Accelerator modifiers
-            OSELF, self)               // Self
+            int, mods)                 // Accelerator modifiers
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-    RexxPointerObject grpptr = (RexxPointerObject)context->SendMessage0(accelgrp, "POINTER");
-    GtkAccelGroup *grpWidget = (GtkAccelGroup *)context->PointerValue(grpptr);
+    GtkAccelGroup *grpWidget = (GtkAccelGroup *)context->ObjectToCSelf(accelgrp);
 
-    gtk_widget_remove_accelerator(myWidget, grpWidget, key, 
+    gtk_widget_remove_accelerator(GTK_WIDGET(self), grpWidget, key, 
                                   (GdkModifierType)mods);
 
     return 0;
@@ -1077,16 +966,13 @@ RexxMethod4(int,                       // Return type
  **/
 RexxMethod3(int,                       // Return type
             GrxWidgetSetAccelPath,     // Object_method name
+            CSELF, self,               // GTK self
             CSTRING, path,             // Accelerator path
-            RexxObjectPtr, accelgrp,   // Accelerator group
-            OSELF, self)               // Self
+            RexxObjectPtr, accelgrp)   // Accelerator group
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-    RexxPointerObject grpptr = (RexxPointerObject)context->SendMessage0(accelgrp, "POINTER");
-    GtkAccelGroup *grpWidget = (GtkAccelGroup *)context->PointerValue(grpptr);
+    GtkAccelGroup *grpWidget = (GtkAccelGroup *)context->ObjectToCSelf(accelgrp);
 
-    gtk_widget_set_accel_path(myWidget, path, grpWidget);
+    gtk_widget_set_accel_path(GTK_WIDGET(self), path, grpWidget);
 
     return 0;
 }
@@ -1100,12 +986,9 @@ RexxMethod3(int,                       // Return type
  **/
 RexxMethod1(int,                       // Return type
             GrxWidgetRealize,          // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-
-    gtk_widget_realize(myWidget);
+    gtk_widget_realize(GTK_WIDGET(self));
 
     return 0;
 }
@@ -1119,12 +1002,9 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod1(int,                       // Return type
             GrxWidgetUnrealize,        // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-
-    gtk_widget_unrealize(myWidget);
+    gtk_widget_unrealize(GTK_WIDGET(self));
 
     return 0;
 }
@@ -1140,19 +1020,17 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxWidgetSignalConnect,    // Object_method name
+            CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            ARGLIST, args,             // The whole argument list as an array
-            OSELF, self)               // Self
+            ARGLIST, args)             // The whole argument list as an array
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     cbcb *cblock;
 
     if (strcmp(name, "destroy") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_destroy";
-        g_signal_connect(G_OBJECT(myWidget), "destroy",
+        g_signal_connect(G_OBJECT(self), "destroy",
                          G_CALLBACK(signal_func_0), cblock);
         return context->True();
     }
@@ -1160,7 +1038,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_unrealize";
-        g_signal_connect(G_OBJECT(myWidget), "unrealize",
+        g_signal_connect(G_OBJECT(self), "unrealize",
                          G_CALLBACK(signal_func_0), cblock);
         return context->True();
     }
@@ -1168,7 +1046,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_unmap";
-        g_signal_connect(G_OBJECT(myWidget), "unmap",
+        g_signal_connect(G_OBJECT(self), "unmap",
                          G_CALLBACK(signal_func_0), cblock);
         return context->True();
     }
@@ -1176,7 +1054,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_show";
-        g_signal_connect(G_OBJECT(myWidget), "show",
+        g_signal_connect(G_OBJECT(self), "show",
                          G_CALLBACK(signal_func_0), cblock);
         return context->True();
     }
@@ -1184,7 +1062,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_realize";
-        g_signal_connect(G_OBJECT(myWidget), "realize",
+        g_signal_connect(G_OBJECT(self), "realize",
                          G_CALLBACK(signal_func_0), cblock);
         return context->True();
     }
@@ -1192,7 +1070,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_popup_menu";
-        g_signal_connect(G_OBJECT(myWidget), "popup-menu",
+        g_signal_connect(G_OBJECT(self), "popup-menu",
                          G_CALLBACK(signal_func_0), cblock);
         return context->True();
     }
@@ -1200,7 +1078,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_map";
-        g_signal_connect(G_OBJECT(myWidget), "map",
+        g_signal_connect(G_OBJECT(self), "map",
                          G_CALLBACK(signal_func_0), cblock);
         return context->True();
     }
@@ -1208,7 +1086,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_hide";
-        g_signal_connect(G_OBJECT(myWidget), "hide",
+        g_signal_connect(G_OBJECT(self), "hide",
                          G_CALLBACK(signal_func_0), cblock);
         return context->True();
     }
@@ -1216,7 +1094,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_grab_focus";
-        g_signal_connect(G_OBJECT(myWidget), "grab-focus",
+        g_signal_connect(G_OBJECT(self), "grab-focus",
                          G_CALLBACK(signal_func_0), cblock);
         return context->True();
     }
@@ -1224,7 +1102,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_accel_closures_changed";
-        g_signal_connect(G_OBJECT(myWidget), "accel-closures-changed",
+        g_signal_connect(G_OBJECT(self), "accel-closures-changed",
                          G_CALLBACK(signal_func_0), cblock);
         return context->True();
     }
@@ -1232,7 +1110,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_composited_changed";
-        g_signal_connect(G_OBJECT(myWidget), "composited-changed",
+        g_signal_connect(G_OBJECT(self), "composited-changed",
                          G_CALLBACK(signal_func_0), cblock);
         return context->True();
     }
@@ -1240,7 +1118,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_state_changed";
-        g_signal_connect(G_OBJECT(myWidget), "state-changed",
+        g_signal_connect(G_OBJECT(self), "state-changed",
                          G_CALLBACK(signal_func_1), cblock);
         return context->True();
     }
@@ -1248,7 +1126,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_keynav_failed";
-        g_signal_connect(G_OBJECT(myWidget), "keynav-failed",
+        g_signal_connect(G_OBJECT(self), "keynav-failed",
                          G_CALLBACK(signal_func_1), cblock);
         return context->True();
     }
@@ -1256,7 +1134,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_move_focus";
-        g_signal_connect(G_OBJECT(myWidget), "move-focus",
+        g_signal_connect(G_OBJECT(self), "move-focus",
                          G_CALLBACK(signal_func_1), cblock);
         return context->True();
     }
@@ -1264,7 +1142,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_focus";
-        g_signal_connect(G_OBJECT(myWidget), "focus",
+        g_signal_connect(G_OBJECT(self), "focus",
                          G_CALLBACK(signal_func_1), cblock);
         return context->True();
     }
@@ -1272,7 +1150,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_parent_set";
-        g_signal_connect(G_OBJECT(myWidget), "parent-set",
+        g_signal_connect(G_OBJECT(self), "parent-set",
                          G_CALLBACK(signal_func_1a), cblock);
         return context->True();
     }
@@ -1280,7 +1158,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_hiearchy_changed";
-        g_signal_connect(G_OBJECT(myWidget), "hiearchy_changed",
+        g_signal_connect(G_OBJECT(self), "hiearchy_changed",
                          G_CALLBACK(signal_func_1a), cblock);
         return context->True();
     }
@@ -1288,7 +1166,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_mnemonic_activate";
-        g_signal_connect(G_OBJECT(myWidget), "mnemonic-activate",
+        g_signal_connect(G_OBJECT(self), "mnemonic-activate",
                          G_CALLBACK(signal_func_1b), cblock);
         return context->True();
     }
@@ -1296,7 +1174,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_grab_notify";
-        g_signal_connect(G_OBJECT(myWidget), "grab_notify",
+        g_signal_connect(G_OBJECT(self), "grab_notify",
                          G_CALLBACK(signal_func_1b), cblock);
         return context->True();
     }
@@ -1304,7 +1182,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_button_press_event";
-        g_signal_connect(G_OBJECT(myWidget), "button-press-event",
+        g_signal_connect(G_OBJECT(self), "button-press-event",
                          G_CALLBACK(signal_GdkEventButton), cblock);
         return context->True();
     }
@@ -1312,7 +1190,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_button_release_event";
-        g_signal_connect(G_OBJECT(myWidget), "button-release-event",
+        g_signal_connect(G_OBJECT(self), "button-release-event",
                          G_CALLBACK(signal_GdkEventButton), cblock);
         return context->True();
     }
@@ -1320,7 +1198,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_client_event";
-        g_signal_connect(G_OBJECT(myWidget), "client-event",
+        g_signal_connect(G_OBJECT(self), "client-event",
                          G_CALLBACK(signal_GdkEventClient), cblock);
         return context->True();
     }
@@ -1328,7 +1206,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_configure_event";
-        g_signal_connect(G_OBJECT(myWidget), "configure-event",
+        g_signal_connect(G_OBJECT(self), "configure-event",
                          G_CALLBACK(signal_GdkEventConfigure), cblock);
         return context->True();
     }
@@ -1336,7 +1214,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_delete_event";
-        g_signal_connect(G_OBJECT(myWidget), "delete-event",
+        g_signal_connect(G_OBJECT(self), "delete-event",
                          G_CALLBACK(signal_GdkEvent), cblock);
         return context->True();
     }
@@ -1344,7 +1222,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_destroy_event";
-        g_signal_connect(G_OBJECT(myWidget), "destroy-event",
+        g_signal_connect(G_OBJECT(self), "destroy-event",
                          G_CALLBACK(signal_GdkEvent), cblock);
         return context->True();
     }
@@ -1352,7 +1230,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_enter_notify_event";
-        g_signal_connect(G_OBJECT(myWidget), "enter-notify-event",
+        g_signal_connect(G_OBJECT(self), "enter-notify-event",
                          G_CALLBACK(signal_GdkEventCrossing), cblock);
         return context->True();
     }
@@ -1360,7 +1238,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_event";
-        g_signal_connect(G_OBJECT(myWidget), "event",
+        g_signal_connect(G_OBJECT(self), "event",
                          G_CALLBACK(signal_GdkEvent), cblock);
         return context->True();
     }
@@ -1368,7 +1246,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_event_after";
-        g_signal_connect(G_OBJECT(myWidget), "event-after",
+        g_signal_connect(G_OBJECT(self), "event-after",
                          G_CALLBACK(signal_GdkEvent), cblock);
         return context->True();
     }
@@ -1376,7 +1254,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_expose_event";
-        g_signal_connect(G_OBJECT(myWidget), "expose-event",
+        g_signal_connect(G_OBJECT(self), "expose-event",
                          G_CALLBACK(signal_GdkEventExpose), cblock);
         return context->True();
     }
@@ -1384,7 +1262,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_focus_in_event";
-        g_signal_connect(G_OBJECT(myWidget), "focus-in-event",
+        g_signal_connect(G_OBJECT(self), "focus-in-event",
                          G_CALLBACK(signal_GdkEventFocus), cblock);
         return context->True();
     }
@@ -1392,7 +1270,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_focus_out_event";
-        g_signal_connect(G_OBJECT(myWidget), "focus-out-event",
+        g_signal_connect(G_OBJECT(self), "focus-out-event",
                          G_CALLBACK(signal_GdkEventFocus), cblock);
         return context->True();
     }
@@ -1400,7 +1278,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_grab_broken_event";
-        g_signal_connect(G_OBJECT(myWidget), "grab-broken-event",
+        g_signal_connect(G_OBJECT(self), "grab-broken-event",
                          G_CALLBACK(signal_GdkEventGrabBroken), cblock);
         return context->True();
     }
@@ -1408,7 +1286,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_key_press_event";
-        g_signal_connect(G_OBJECT(myWidget), "key-press-event",
+        g_signal_connect(G_OBJECT(self), "key-press-event",
                          G_CALLBACK(signal_GdkEventKey), cblock);
         return context->True();
     }
@@ -1416,7 +1294,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_key_release_event";
-        g_signal_connect(G_OBJECT(myWidget), "key-release-event",
+        g_signal_connect(G_OBJECT(self), "key-release-event",
                          G_CALLBACK(signal_GdkEventKey), cblock);
         return context->True();
     }
@@ -1424,7 +1302,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_leave_notify_event";
-        g_signal_connect(G_OBJECT(myWidget), "leave-notify-event",
+        g_signal_connect(G_OBJECT(self), "leave-notify-event",
                          G_CALLBACK(signal_GdkEventCrossing), cblock);
         return context->True();
     }
@@ -1432,7 +1310,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_map_event";
-        g_signal_connect(G_OBJECT(myWidget), "map-event",
+        g_signal_connect(G_OBJECT(self), "map-event",
                          G_CALLBACK(signal_GdkEvent), cblock);
         return context->True();
     }
@@ -1440,7 +1318,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_motion_notify_event";
-        g_signal_connect(G_OBJECT(myWidget), "motion-notify-event",
+        g_signal_connect(G_OBJECT(self), "motion-notify-event",
                          G_CALLBACK(signal_GdkEventMotion), cblock);
         return context->True();
     }
@@ -1448,7 +1326,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_no_expose_event";
-        g_signal_connect(G_OBJECT(myWidget), "no-expose-event",
+        g_signal_connect(G_OBJECT(self), "no-expose-event",
                          G_CALLBACK(signal_GdkEventNoExpose), cblock);
         return context->True();
     }
@@ -1456,7 +1334,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_property_notify_event";
-        g_signal_connect(G_OBJECT(myWidget), "property-notify-event",
+        g_signal_connect(G_OBJECT(self), "property-notify-event",
                          G_CALLBACK(signal_GdkEventProperty), cblock);
         return context->True();
     }
@@ -1464,7 +1342,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_proximity_in_event";
-        g_signal_connect(G_OBJECT(myWidget), "proximity-in-event",
+        g_signal_connect(G_OBJECT(self), "proximity-in-event",
                          G_CALLBACK(signal_GdkEventProximity), cblock);
         return context->True();
     }
@@ -1472,7 +1350,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_proximity_out_event";
-        g_signal_connect(G_OBJECT(myWidget), "proximity-out-event",
+        g_signal_connect(G_OBJECT(self), "proximity-out-event",
                          G_CALLBACK(signal_GdkEventProximity), cblock);
         return context->True();
     }
@@ -1480,7 +1358,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_scroll_event";
-        g_signal_connect(G_OBJECT(myWidget), "scroll-event",
+        g_signal_connect(G_OBJECT(self), "scroll-event",
                          G_CALLBACK(signal_GdkEventScroll), cblock);
         return context->True();
     }
@@ -1488,7 +1366,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_selection_clear_event";
-        g_signal_connect(G_OBJECT(myWidget), "selection-clear-event",
+        g_signal_connect(G_OBJECT(self), "selection-clear-event",
                          G_CALLBACK(signal_GdkEventSelection), cblock);
         return context->True();
     }
@@ -1496,7 +1374,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_selection_notify_event";
-        g_signal_connect(G_OBJECT(myWidget), "selection-notify-event",
+        g_signal_connect(G_OBJECT(self), "selection-notify-event",
                          G_CALLBACK(signal_GdkEventSelection), cblock);
         return context->True();
     }
@@ -1504,7 +1382,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_selection_request_event";
-        g_signal_connect(G_OBJECT(myWidget), "selection-request-event",
+        g_signal_connect(G_OBJECT(self), "selection-request-event",
                          G_CALLBACK(signal_GdkEventSelection), cblock);
         return context->True();
     }
@@ -1512,7 +1390,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_visibility_notify_event";
-        g_signal_connect(G_OBJECT(myWidget), "visibility-notify-event",
+        g_signal_connect(G_OBJECT(self), "visibility-notify-event",
                          G_CALLBACK(signal_GdkEventVisibility), cblock);
         return context->True();
     }
@@ -1520,7 +1398,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_window_state_event";
-        g_signal_connect(G_OBJECT(myWidget), "window-state-event",
+        g_signal_connect(G_OBJECT(self), "window-state-event",
                          G_CALLBACK(signal_GdkEventWindowState), cblock);
         return context->True();
     }

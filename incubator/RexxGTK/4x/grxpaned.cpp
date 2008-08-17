@@ -73,15 +73,12 @@
  **/
 RexxMethod2(int,                       // Return type
             GrxPanedAdd1,              // Object_method name
-            RexxObjectPtr, rxaddptr,   // Widget to add
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            RexxObjectPtr, rxadd)      // Widget to add
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-    RexxPointerObject addptr = (RexxPointerObject)context->SendMessage0(rxaddptr, "POINTER");
-    GtkWidget *addWidget = (GtkWidget *)context->PointerValue(addptr);
+    GtkWidget *addWidget = (GtkWidget *)context->ObjectToCSelf(rxadd);
 
-    gtk_paned_add1(GTK_PANED(myWidget), addWidget); 
+    gtk_paned_add1(GTK_PANED(self), addWidget); 
 
     return 0;
 }
@@ -97,15 +94,12 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxPanedAdd2,              // Object_method name
-            RexxObjectPtr, rxaddptr,   // Widget to add
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            RexxObjectPtr, rxadd)      // Widget to add
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-    RexxPointerObject addptr = (RexxPointerObject)context->SendMessage0(rxaddptr, "POINTER");
-    GtkWidget *addWidget = (GtkWidget *)context->PointerValue(addptr);
+    GtkWidget *addWidget = (GtkWidget *)context->ObjectToCSelf(rxadd);
 
-    gtk_paned_add2(GTK_PANED(myWidget), addWidget); 
+    gtk_paned_add2(GTK_PANED(self), addWidget); 
 
     return 0;
 }
@@ -121,17 +115,14 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod4(int,                       // Return type
             GrxPanedPack1,             // Object_method name
-            RexxObjectPtr, rxpackptr,  // Widget to add
+            CSELF, self,               // GTK self
+            RexxObjectPtr, rxpack,     // Widget to add
             logical_t, resize,         // Resize flag
-            logical_t, shrink,         // Shrink flag
-            OSELF, self)               // Self
+            logical_t, shrink)         // Shrink flag
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-    RexxPointerObject packptr = (RexxPointerObject)context->SendMessage0(rxpackptr, "POINTER");
-    GtkWidget *packWidget = (GtkWidget *)context->PointerValue(packptr);
+    GtkWidget *packWidget = (GtkWidget *)context->ObjectToCSelf(rxpack);
 
-    gtk_paned_pack1(GTK_PANED(myWidget), packWidget, resize, shrink); 
+    gtk_paned_pack1(GTK_PANED(self), packWidget, resize, shrink); 
 
     return 0;
 }
@@ -147,17 +138,14 @@ RexxMethod4(int,                       // Return type
  **/
 RexxMethod4(int,                       // Return type
             GrxPanedPack2,             // Object_method name
-            RexxObjectPtr, rxpackptr,  // Widget to add
+            CSELF, self,               // GTK self
+            RexxObjectPtr, rxpack,     // Widget to add
             logical_t, resize,         // Resize flag
-            logical_t, shrink,         // Shrink flag
-            OSELF, self)               // Self
+            logical_t, shrink)         // Shrink flag
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-    RexxPointerObject packptr = (RexxPointerObject)context->SendMessage0(rxpackptr, "POINTER");
-    GtkWidget *packWidget = (GtkWidget *)context->PointerValue(packptr);
+    GtkWidget *packWidget = (GtkWidget *)context->ObjectToCSelf(rxpack);
 
-    gtk_paned_pack2(GTK_PANED(myWidget), packWidget, resize, shrink); 
+    gtk_paned_pack2(GTK_PANED(self), packWidget, resize, shrink); 
 
     return 0;
 }
@@ -177,7 +165,6 @@ RexxMethod1(int,                       // Return type
 
     // Save ourself
     context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
-    context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
@@ -198,7 +185,6 @@ RexxMethod1(int,                       // Return type
 
     // Save ourself
     context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
-    context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;

@@ -83,9 +83,9 @@ return
 ::routine create_popup_menu
 use strict arg menu, progress, statusbar
 
-pulse = .MyPulse~new_with_label('Pulse Progress')
-fill = .MyFill~new_with_label('Set as Complete')
-clear = .MyClear~new_with_label('Clear Progress')
+pulse = .MyPulse~newWithLabel('Pulse Progress')
+fill = .MyFill~newWithLabel('Set as Complete')
+clear = .MyClear~newWithLabel('Clear Progress')
 separator = .GtkSeparatorMenuItem~new()
 
 pulse~signal_connect('activate')
@@ -189,6 +189,7 @@ call statusbar_hint self, event, self~user_data[2]
 return .false
 
 ::routine statusbar_hint
+say 'got here'
 use strict arg self, event, statusbar
 id = statusbar~get_context_id('MenuItemHints')
 if event~type = .gtk~GDK_ENTER_NOTIFY then do

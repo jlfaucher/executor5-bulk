@@ -109,7 +109,6 @@ RexxMethod2(int,                       // Return type
     // Save ourself
     context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
-    context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
 
     return 0;
 }
@@ -123,12 +122,9 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod1(CSTRING,                   // Return type
             GrxWindowGetTitle,         // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-
-    return gtk_window_get_title(GTK_WINDOW(myWidget));
+    return gtk_window_get_title(GTK_WINDOW(self));
 }
 
 /**
@@ -142,13 +138,10 @@ RexxMethod1(CSTRING,                   // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxWindowSetTitle,         // Object_method name
-            CSTRING, title,            // Window title
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            CSTRING, title)            // Window title
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-
-    gtk_window_set_title(GTK_WINDOW(myWidget), title);
+    gtk_window_set_title(GTK_WINDOW(self), title);
 
     return 0;
 }
@@ -164,13 +157,10 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxWindowSetModal,         // Object_method name
-            logical_t, modal,          // Window modal flag
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            logical_t, modal)          // Window modal flag
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-
-    gtk_window_set_modal(GTK_WINDOW(myWidget), modal);
+    gtk_window_set_modal(GTK_WINDOW(self), modal);
 
     return 0;
 }
@@ -184,12 +174,9 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod1(logical_t,                 // Return type
             GrxWindowGetModal,         // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
-
-    return gtk_window_get_modal(GTK_WINDOW(myWidget));
+    return gtk_window_get_modal(GTK_WINDOW(self));
 }
 
 /**
@@ -203,15 +190,12 @@ RexxMethod1(logical_t,                 // Return type
  **/
 RexxMethod2(int,                        // Return type
             GrxWindowAddAccelGroup,     // Object_method name
-            RexxObjectPtr, accelgrp,    // Accelerator group
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            RexxObjectPtr, accelgrp)    // Accelerator group
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWindow *myWidget = (GtkWindow *)context->PointerValue(rxptr);
-    RexxPointerObject accelgrpptr = (RexxPointerObject)context->SendMessage0(accelgrp, "POINTER");
-    GtkAccelGroup *accelgrpWidget = (GtkAccelGroup *)context->PointerValue(accelgrpptr);
+    GtkAccelGroup *accelgrpWidget = (GtkAccelGroup *)context->ObjectToCSelf(accelgrp);
 
-    gtk_window_add_accel_group(myWidget, accelgrpWidget);
+    gtk_window_add_accel_group(GTK_WINDOW(self), accelgrpWidget);
 
     return 0;
 }
@@ -227,19 +211,17 @@ RexxMethod2(int,                        // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxWindowSignalConnect,    // Object_method name
+            CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            ARGLIST, args,             // The whole argument list as an array
-            OSELF, self)               // Self
+            ARGLIST, args)             // The whole argument list as an array
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     cbcb *cblock;
 
     if (strcmp(name, "activate_default") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_set_scroll_adjustments";
-        g_signal_connect(G_OBJECT(myWidget), "set-scroll-adjustments",
+        g_signal_connect(G_OBJECT(self), "set-scroll-adjustments",
                          G_CALLBACK(signal_func_0), cblock);
         return context->True();
     }
@@ -247,7 +229,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_activate_focus";
-        g_signal_connect(G_OBJECT(myWidget), "activate-focus",
+        g_signal_connect(G_OBJECT(self), "activate-focus",
                          G_CALLBACK(signal_func_0), cblock);
         return context->True();
     }
@@ -255,7 +237,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_keys_changed";
-        g_signal_connect(G_OBJECT(myWidget), "keys-changed",
+        g_signal_connect(G_OBJECT(self), "keys-changed",
                          G_CALLBACK(signal_func_0), cblock);
         return context->True();
     }
@@ -263,7 +245,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_set_focus";
-        g_signal_connect(G_OBJECT(myWidget), "set-focus",
+        g_signal_connect(G_OBJECT(self), "set-focus",
                          G_CALLBACK(signal_func_1), cblock);
         return context->True();
     }

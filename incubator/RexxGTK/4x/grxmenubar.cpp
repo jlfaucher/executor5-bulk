@@ -77,7 +77,6 @@ RexxMethod1(int,                       // Return type
 
     // Save ourself
     context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
-    context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
@@ -94,15 +93,12 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxMenuBarAppend,          // Object_method name
-            RexxObjectPtr, child,      // The child menu
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            RexxObjectPtr, child)      // The child menu
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkMenuBar *myWidget = (GtkMenuBar *)context->PointerValue(rxptr);
-    RexxPointerObject childptr = (RexxPointerObject)context->SendMessage0(child, "POINTER");
-    GtkWidget *childWidget = (GtkWidget *)context->PointerValue(childptr);
+    GtkWidget *childWidget = (GtkWidget *)context->ObjectToCSelf(child);
 
-    gtk_menu_bar_append(myWidget, childWidget);
+    gtk_menu_bar_append(GTK_MENU_BAR(self), childWidget);
 
     return 0;
 }
@@ -118,15 +114,12 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxMenuBarPrepend,         // Object_method name
-            RexxObjectPtr, child,      // The child menu
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            RexxObjectPtr, child)      // The child menu
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkMenuBar *myWidget = (GtkMenuBar *)context->PointerValue(rxptr);
-    RexxPointerObject childptr = (RexxPointerObject)context->SendMessage0(child, "POINTER");
-    GtkWidget *childWidget = (GtkWidget *)context->PointerValue(childptr);
+    GtkWidget *childWidget = (GtkWidget *)context->ObjectToCSelf(child);
 
-    gtk_menu_bar_prepend(myWidget, childWidget);
+    gtk_menu_bar_prepend(GTK_MENU_BAR(self), childWidget);
 
     return 0;
 }
@@ -144,16 +137,13 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod3(int,                       // Return type
             GrxMenuBarInsert,          // Object_method name
+            CSELF, self,               // GTK self
             RexxObjectPtr, child,      // The child menu
-            int, pos,                  // Position
-            OSELF, self)               // Self
+            int, pos)                  // Position
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkMenuBar *myWidget = (GtkMenuBar *)context->PointerValue(rxptr);
-    RexxPointerObject childptr = (RexxPointerObject)context->SendMessage0(child, "POINTER");
-    GtkWidget *childWidget = (GtkWidget *)context->PointerValue(childptr);
+    GtkWidget *childWidget = (GtkWidget *)context->ObjectToCSelf(child);
 
-    gtk_menu_bar_insert(myWidget, childWidget, pos);
+    gtk_menu_bar_insert(GTK_MENU_BAR(self), childWidget, pos);
 
     return 0;
 }
@@ -169,13 +159,10 @@ RexxMethod3(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxMenuBarSetPackDirection, // Object_method name
-            int, dir,                  // Position
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            int, dir)                  // Position
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkMenuBar *myWidget = (GtkMenuBar *)context->PointerValue(rxptr);
-
-    gtk_menu_bar_set_pack_direction(myWidget, (GtkPackDirection)dir);
+    gtk_menu_bar_set_pack_direction(GTK_MENU_BAR(self), (GtkPackDirection)dir);
 
     return 0;
 }
@@ -189,12 +176,9 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod1(int,                       // Return type
             GrxMenuBarGetPackDirection, // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkMenuBar *myWidget = (GtkMenuBar *)context->PointerValue(rxptr);
-
-    return gtk_menu_bar_get_pack_direction(myWidget);
+    return gtk_menu_bar_get_pack_direction(GTK_MENU_BAR(self));
 
     return 0;
 }
@@ -210,13 +194,10 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxMenuBarSetChildPackDirection, // Object_method name
-            int, dir,                  // Position
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            int, dir)                  // Position
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkMenuBar *myWidget = (GtkMenuBar *)context->PointerValue(rxptr);
-
-    gtk_menu_bar_set_child_pack_direction(myWidget, (GtkPackDirection)dir);
+    gtk_menu_bar_set_child_pack_direction(GTK_MENU_BAR(self), (GtkPackDirection)dir);
 
     return 0;
 }
@@ -230,12 +211,9 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod1(int,                       // Return type
             GrxMenuBarGetChildPackDirection, // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkMenuBar *myWidget = (GtkMenuBar *)context->PointerValue(rxptr);
-
-    return gtk_menu_bar_get_child_pack_direction(myWidget);
+    return gtk_menu_bar_get_child_pack_direction(GTK_MENU_BAR(self));
 
     return 0;
 }

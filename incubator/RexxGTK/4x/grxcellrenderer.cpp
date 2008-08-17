@@ -163,14 +163,11 @@ static void signal_func_4(GtkCellRenderer *renderer,
  **/
 RexxMethod3(int,                       // Return type
             GrxCellRendererSetFixedSize, // Object_method name
+            CSELF, self,               // GTK self
             int, width,                // Width
-            int, height,               // Height
-            OSELF, self)               // Self
+            int, height)               // Height
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkCellRenderer *myWidget = (GtkCellRenderer *)context->PointerValue(rxptr);
-
-    gtk_cell_renderer_set_fixed_size(myWidget, width, height);
+    gtk_cell_renderer_set_fixed_size(GTK_CELL_RENDERER(self), width, height);
 
     return 0;
 }
@@ -186,19 +183,17 @@ RexxMethod3(int,                       // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxCellRendererSignalConnect, // Object_method name
+            CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            ARGLIST, args,             // The whole argument list as an array
-            OSELF, self)               // Self
+            ARGLIST, args)             // The whole argument list as an array
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     cbcb *cblock;
 
     if (strcmp(name, "editing_canceled") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_editing_canceled";
-        g_signal_connect(G_OBJECT(myWidget), "editing-canceled",
+        g_signal_connect(G_OBJECT(self), "editing-canceled",
                          G_CALLBACK(signal_func_0), cblock);
         return context->True();
     }
@@ -206,7 +201,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_editing_started";
-        g_signal_connect(G_OBJECT(myWidget), "editing-started",
+        g_signal_connect(G_OBJECT(self), "editing-started",
                          G_CALLBACK(signal_func_2a), cblock);
         return context->True();
     }
@@ -228,7 +223,6 @@ RexxMethod1(int,                       // Return type
 
     // Save ourself
     context->SetObjectVariable("CSELF", context->NewPointer(myRenderer));
-    context->SendMessage1(self, "POINTER=", context->NewPointer(myRenderer));
     g_object_set_data(G_OBJECT(myRenderer), "OORXOBJECT", self);
 
     return 0;
@@ -245,19 +239,17 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxCellRendererTextSignalConnect, // Object_method name
+            CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            ARGLIST, args,             // The whole argument list as an array
-            OSELF, self)               // Self
+            ARGLIST, args)             // The whole argument list as an array
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     cbcb *cblock;
 
     if (strcmp(name, "edited") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_edited";
-        g_signal_connect(G_OBJECT(myWidget), "edited",
+        g_signal_connect(G_OBJECT(self), "edited",
                          G_CALLBACK(signal_func_2), cblock);
         return context->True();
     }
@@ -279,7 +271,6 @@ RexxMethod1(int,                       // Return type
 
     // Save ourself
     context->SetObjectVariable("CSELF", context->NewPointer(myRenderer));
-    context->SendMessage1(self, "POINTER=", context->NewPointer(myRenderer));
     g_object_set_data(G_OBJECT(myRenderer), "OORXOBJECT", self);
 
     return 0;
@@ -300,7 +291,6 @@ RexxMethod1(int,                       // Return type
 
     // Save ourself
     context->SetObjectVariable("CSELF", context->NewPointer(myRenderer));
-    context->SendMessage1(self, "POINTER=", context->NewPointer(myRenderer));
     g_object_set_data(G_OBJECT(myRenderer), "OORXOBJECT", self);
 
     return 0;
@@ -321,7 +311,6 @@ RexxMethod1(int,                       // Return type
 
     // Save ourself
     context->SetObjectVariable("CSELF", context->NewPointer(myRenderer));
-    context->SendMessage1(self, "POINTER=", context->NewPointer(myRenderer));
     g_object_set_data(G_OBJECT(myRenderer), "OORXOBJECT", self);
 
     return 0;
@@ -338,13 +327,10 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxCellRendererToggleSetRadio, // Object_method name
-            logical_t, flag,           // Radio boolean
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            logical_t, flag)           // Radio boolean
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkCellRendererToggle *myWidget = (GtkCellRendererToggle *)context->PointerValue(rxptr);
-
-    gtk_cell_renderer_toggle_set_radio(myWidget, flag);
+    gtk_cell_renderer_toggle_set_radio(GTK_CELL_RENDERER_TOGGLE(self), flag);
 
     return 0;
 }
@@ -358,12 +344,9 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod1(int,                       // Return type
             GrxCellRendererToggleGetRadio, // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkCellRendererToggle *myWidget = (GtkCellRendererToggle *)context->PointerValue(rxptr);
-
-    return gtk_cell_renderer_toggle_get_radio(myWidget);
+    return gtk_cell_renderer_toggle_get_radio(GTK_CELL_RENDERER_TOGGLE(self));
 }
 
 /**
@@ -377,13 +360,10 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxCellRendererToggleSetActive, // Object_method name
-            logical_t, flag,           // Radio boolean
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            logical_t, flag)           // Radio boolean
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkCellRendererToggle *myWidget = (GtkCellRendererToggle *)context->PointerValue(rxptr);
-
-    gtk_cell_renderer_toggle_set_active(myWidget, flag);
+    gtk_cell_renderer_toggle_set_active(GTK_CELL_RENDERER_TOGGLE(self), flag);
 
     return 0;
 }
@@ -397,12 +377,9 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod1(int,                       // Return type
             GrxCellRendererToggleGetActive, // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkCellRendererToggle *myWidget = (GtkCellRendererToggle *)context->PointerValue(rxptr);
-
-    return gtk_cell_renderer_toggle_get_active(myWidget);
+    return gtk_cell_renderer_toggle_get_active(GTK_CELL_RENDERER_TOGGLE(self));
 }
 
 /**
@@ -416,19 +393,17 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxCellRendererToggleSignalConnect, // Object_method name
+            CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            ARGLIST, args,             // The whole argument list as an array
-            OSELF, self)               // Self
+            ARGLIST, args)             // The whole argument list as an array
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     cbcb *cblock;
 
     if (strcmp(name, "toggled") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_toggled";
-        g_signal_connect(G_OBJECT(myWidget), "toggled",
+        g_signal_connect(G_OBJECT(self), "toggled",
                          G_CALLBACK(signal_func_1), cblock);
         return context->True();
     }
@@ -450,7 +425,6 @@ RexxMethod1(int,                       // Return type
 
     // Save ourself
     context->SetObjectVariable("CSELF", context->NewPointer(myRenderer));
-    context->SendMessage1(self, "POINTER=", context->NewPointer(myRenderer));
     g_object_set_data(G_OBJECT(myRenderer), "OORXOBJECT", self);
 
     return 0;
@@ -467,19 +441,17 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxCellRendererAccelSignalConnect, // Object_method name
+            CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            ARGLIST, args,             // The whole argument list as an array
-            OSELF, self)               // Self
+            ARGLIST, args)             // The whole argument list as an array
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     cbcb *cblock;
 
     if (strcmp(name, "accel_cleared") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_accel_cleared";
-        g_signal_connect(G_OBJECT(myWidget), "accel-cleared",
+        g_signal_connect(G_OBJECT(self), "accel-cleared",
                          G_CALLBACK(signal_func_1), cblock);
         return context->True();
     }
@@ -487,7 +459,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_accel_edited";
-        g_signal_connect(G_OBJECT(myWidget), "accel-edited",
+        g_signal_connect(G_OBJECT(self), "accel-edited",
                          G_CALLBACK(signal_func_4), cblock);
         return context->True();
     }
@@ -509,7 +481,6 @@ RexxMethod1(int,                       // Return type
 
     // Save ourself
     context->SetObjectVariable("CSELF", context->NewPointer(myRenderer));
-    context->SendMessage1(self, "POINTER=", context->NewPointer(myRenderer));
     g_object_set_data(G_OBJECT(myRenderer), "OORXOBJECT", self);
 
     return 0;
@@ -526,19 +497,17 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxCellRendererComboSignalConnect, // Object_method name
+            CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            ARGLIST, args,             // The whole argument list as an array
-            OSELF, self)               // Self
+            ARGLIST, args)             // The whole argument list as an array
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     cbcb *cblock;
 
     if (strcmp(name, "changed") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_changed";
-        g_signal_connect(G_OBJECT(myWidget), "changed",
+        g_signal_connect(G_OBJECT(self), "changed",
                          G_CALLBACK(signal_func_2a), cblock);
         return context->True();
     }

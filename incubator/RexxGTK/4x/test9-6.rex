@@ -72,25 +72,25 @@ return
 call gtk_main_quit
 return
 
-::class myCut subclass .GtkToolItem
+::class myCut subclass GtkToolButton
 
 ::method signal_clicked
 self~user_data~cut_clipboard()
 return
 
-::class myCopy subclass .GtkToolItem
+::class myCopy subclass GtkToolButton
 
 ::method signal_clicked
 self~user_data~copy_clipboard()
 return
 
-::class myPaste subclass .GtkToolItem
+::class myPaste subclass GtkToolButton
 
 ::method signal_clicked
 self~user_data~paste_clipboard()
 return
 
-::class mySelectall subclass .GtkToolItem
+::class mySelectall subclass GtkToolButton
 
 ::method signal_clicked
 self~user_data~select_region(self~user_data, 0, -1)
@@ -99,10 +99,10 @@ return
 ::routine create_toolbar
 use strict arg toolbar, entry
 
-cut = .myCut~new(.gtk~GTK_STOCK_CUT);
-copy = .myCopy~new(.gtk~GTK_STOCK_COPY);
-paste = .myPaste~new(.gtk~GTK_STOCK_PASTE);
-selectall = .mySelectall~new(.gtk~GTK_STOCK_SELECT_ALL);
+cut = .myCut~newFromStock(.gtk~GTK_STOCK_CUT);
+copy = .myCopy~newFromStock(.gtk~GTK_STOCK_COPY);
+paste = .myPaste~newFromStock(.gtk~GTK_STOCK_PASTE);
+selectall = .mySelectall~newFromStock(.gtk~GTK_STOCK_SELECT_ALL);
 separator = .GtkSeparatorToolItem~new();
 
 toolbar~set_show_arrow(.true)

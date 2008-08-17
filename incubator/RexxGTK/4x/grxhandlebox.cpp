@@ -92,7 +92,6 @@ RexxMethod1(int,                       // Return type
 
     // Save ourself
     context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
-    context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
@@ -109,13 +108,10 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxHandleBoxSetShadowType, // Object_method name
-            int, type,                 // Shadow type
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            int, type)                 // Shadow type
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkHandleBox *myWidget = (GtkHandleBox *)context->PointerValue(rxptr);
-
-    gtk_handle_box_set_shadow_type(myWidget, (GtkShadowType)type);
+    gtk_handle_box_set_shadow_type(GTK_HANDLE_BOX(self), (GtkShadowType)type);
 
     return 0;
 }
@@ -131,13 +127,10 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxHandleBoxSetPosition,   // Object_method name
-            int, type,                 // Position type
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            int, type)                 // Position type
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkHandleBox *myWidget = (GtkHandleBox *)context->PointerValue(rxptr);
-
-    gtk_handle_box_set_handle_position(myWidget, (GtkPositionType)type);
+    gtk_handle_box_set_handle_position(GTK_HANDLE_BOX(self), (GtkPositionType)type);
 
     return 0;
 }
@@ -153,13 +146,10 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxHandleBoxSetSnapEdge,   // Object_method name
-            int, type,                 // Snap edge type
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            int, type)                 // Snap edge type
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkHandleBox *myWidget = (GtkHandleBox *)context->PointerValue(rxptr);
-
-    gtk_handle_box_set_snap_edge(myWidget, (GtkPositionType)type);
+    gtk_handle_box_set_snap_edge(GTK_HANDLE_BOX(self), (GtkPositionType)type);
 
     return 0;
 }
@@ -175,19 +165,17 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxHandleBoxSignalConnect, // Object_method name
+            CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            ARGLIST, args,             // The whole argument list as an array
-            OSELF, self)               // Self
+            ARGLIST, args)             // The whole argument list as an array
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     cbcb *cblock;
 
     if (strcmp(name, "child_attached") == 0) {
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_child_attached";
-        g_signal_connect(G_OBJECT(myWidget), "child-attached",
+        g_signal_connect(G_OBJECT(self), "child-attached",
                          G_CALLBACK(signal_func_1), cblock);
         return context->True();
     }
@@ -195,7 +183,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
         cblock = (cbcb *)malloc(sizeof(cbcb));
         cblock->instance = context->threadContext->instance;
         cblock->signal_name = "signal_child_detached";
-        g_signal_connect(G_OBJECT(myWidget), "child-detached",
+        g_signal_connect(G_OBJECT(self), "child-detached",
                          G_CALLBACK(signal_func_1), cblock);
         return context->True();
     }

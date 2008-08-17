@@ -106,12 +106,10 @@ RexxMethod1(int,                       // Return type
 
     // Save ourself
     context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
-    context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
 }
-
 /**
  * Method:  init
  *
@@ -127,7 +125,6 @@ RexxMethod1(int,                       // Return type
 
     // Save ourself
     context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
-    context->SendMessage1(self, "POINTER=", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
@@ -144,13 +141,10 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxComboBoxAppendText,     // Object_method name
-            CSTRING, text,             // Text to append
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            CSTRING, text)             // Text to append
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkComboBox *myWidget = (GtkComboBox *)context->PointerValue(rxptr);
-
-    gtk_combo_box_append_text(myWidget, text);
+    gtk_combo_box_append_text(GTK_COMBO_BOX(self), text);
 
     return 0;
 }
@@ -164,12 +158,9 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod1(CSTRING,                   // Return type
             GrxComboBoxGetActiveText,  // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkComboBox *myWidget = (GtkComboBox *)context->PointerValue(rxptr);
-
-    return gtk_combo_box_get_active_text(myWidget);
+    return gtk_combo_box_get_active_text(GTK_COMBO_BOX(self));
 }
 
 /**
@@ -183,13 +174,10 @@ RexxMethod1(CSTRING,                   // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxComboBoxSetActive,      // Object_method name
-            int, active,               // Entry number
-            OSELF, self)               // Self
+            CSELF, self,               // GTK self
+            int, active)               // Entry number
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkComboBox *myWidget = (GtkComboBox *)context->PointerValue(rxptr);
-
-    gtk_combo_box_set_active(myWidget, active);
+    gtk_combo_box_set_active(GTK_COMBO_BOX(self), active);
 
     return 0;
 }
@@ -203,12 +191,9 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod1(int,                       // Return type
             GrxComboBoxGetActive,      // Object_method name
-            OSELF, self)               // Self
+            CSELF, self)               // GTK self
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkComboBox *myWidget = (GtkComboBox *)context->PointerValue(rxptr);
-
-    return gtk_combo_box_get_active(myWidget);
+    return gtk_combo_box_get_active(GTK_COMBO_BOX(self));
 }
 
 /**
@@ -222,47 +207,43 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxComboBoxSignalConnect,  // Object_method name
+            CSELF, self,               // GTK self
             CSTRING, name,             // Image file name
-            ARGLIST, args,             // The whole argument list as an array
-            OSELF, self)               // Self
+            ARGLIST, args)             // The whole argument list as an array
 {
-    RexxPointerObject rxptr = (RexxPointerObject)context->SendMessage0(self, "POINTER");
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue(rxptr);
     cbcb *cblock;
 
-    if (GTK_IS_WIDGET(GTK_OBJECT(myWidget))) {
-        if (strcmp(name, "changed") == 0) {
-            cblock = (cbcb *)malloc(sizeof(cbcb));
-            cblock->instance = context->threadContext->instance;
-            cblock->signal_name = "signal_changed";
-            g_signal_connect(G_OBJECT(myWidget), "changed",
-                             G_CALLBACK(signal_func_0), cblock);
-            return context->True();
-        }
-        else if (strcmp(name, "move_active") == 0) {
-            cblock = (cbcb *)malloc(sizeof(cbcb));
-            cblock->instance = context->threadContext->instance;
-            cblock->signal_name = "signal_move_active";
-            g_signal_connect(G_OBJECT(myWidget), "move-active",
-                             G_CALLBACK(signal_func_1), cblock);
-            return context->True();
-        }
-        else if (strcmp(name, "popdown") == 0) {
-            cblock = (cbcb *)malloc(sizeof(cbcb));
-            cblock->instance = context->threadContext->instance;
-            cblock->signal_name = "signal_popdown";
-            g_signal_connect(G_OBJECT(myWidget), "popdown",
-                             G_CALLBACK(signal_func_0), cblock);
-            return context->True();
-        }
-        else if (strcmp(name, "popup") == 0) {
-            cblock = (cbcb *)malloc(sizeof(cbcb));
-            cblock->instance = context->threadContext->instance;
-            cblock->signal_name = "signal_popup";
-            g_signal_connect(G_OBJECT(myWidget), "popup",
-                             G_CALLBACK(signal_func_0), cblock);
-            return context->True();
-        }
+    if (strcmp(name, "changed") == 0) {
+        cblock = (cbcb *)malloc(sizeof(cbcb));
+        cblock->instance = context->threadContext->instance;
+        cblock->signal_name = "signal_changed";
+        g_signal_connect(G_OBJECT(self), "changed",
+                         G_CALLBACK(signal_func_0), cblock);
+        return context->True();
+    }
+    else if (strcmp(name, "move_active") == 0) {
+        cblock = (cbcb *)malloc(sizeof(cbcb));
+        cblock->instance = context->threadContext->instance;
+        cblock->signal_name = "signal_move_active";
+        g_signal_connect(G_OBJECT(self), "move-active",
+                         G_CALLBACK(signal_func_1), cblock);
+        return context->True();
+    }
+    else if (strcmp(name, "popdown") == 0) {
+        cblock = (cbcb *)malloc(sizeof(cbcb));
+        cblock->instance = context->threadContext->instance;
+        cblock->signal_name = "signal_popdown";
+        g_signal_connect(G_OBJECT(self), "popdown",
+                         G_CALLBACK(signal_func_0), cblock);
+        return context->True();
+    }
+    else if (strcmp(name, "popup") == 0) {
+        cblock = (cbcb *)malloc(sizeof(cbcb));
+        cblock->instance = context->threadContext->instance;
+        cblock->signal_name = "signal_popup";
+        g_signal_connect(G_OBJECT(self), "popup",
+                         G_CALLBACK(signal_func_0), cblock);
+        return context->True();
     }
     return context->SendSuperMessage("signal_connect", args);
 }
