@@ -809,6 +809,17 @@ RexxMethodEntry gtkobject_methods[] = {
     REXX_METHOD(GrxTreeStoreNew, GrxTreeStoreNew),
     REXX_METHOD(GrxTreeStoreAppend, GrxTreeStoreAppend),
     REXX_METHOD(GrxTreeStoreSetValue, GrxTreeStoreSetValue),
+    REXX_METHOD(GrxTreePathNew, GrxTreePathNew),
+    REXX_METHOD(GrxTreePathToString, GrxTreePathToString),
+    REXX_METHOD(GrxTreePathUp, GrxTreePathUp),
+    REXX_METHOD(GrxTreePathDown, GrxTreePathDown),
+    REXX_METHOD(GrxTreePathPrevious, GrxTreePathPrevious),
+    REXX_METHOD(GrxTreePathNext, GrxTreePathNext),
+    REXX_METHOD(GrxTreePathAppendIndex, GrxTreePathAppendIndex),
+    REXX_METHOD(GrxTreePathPrependIndex, GrxTreePathPrependIndex),
+    REXX_METHOD(GrxTreePathGetDepth, GrxTreePathGetDepth),
+    REXX_METHOD(GrxTreePathIsAncestor, GrxTreePathIsAncestor),
+    REXX_METHOD(GrxTreePathIsDescendant, GrxTreePathIsDescendant),
     REXX_LAST_METHOD()
 };
 

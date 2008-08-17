@@ -3197,3 +3197,27 @@ return
 
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxClipboardNew"
 
+
+/*============================================================================*/
+/* Class: GtkTreePath                                                         */
+/*============================================================================*/
+
+::class GtkTreePath public
+
+::method newFromString
+use strict arg spath
+return .GtkTreePath~new(spath)
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxTreePathNew"
+::METHOD to_string EXTERNAL "LIBRARY rexxgtk GrxTreePathToString"
+::METHOD up EXTERNAL "LIBRARY rexxgtk GrxTreePathUp"
+::METHOD down EXTERNAL "LIBRARY rexxgtk GrxTreePathDown"
+::METHOD prev EXTERNAL "LIBRARY rexxgtk GrxTreePathPrev"
+::METHOD next EXTERNAL "LIBRARY rexxgtk GrxTreePathNext"
+::METHOD prepend_index EXTERNAL "LIBRARY rexxgtk GrxTreePathPrependIndex"
+::METHOD append_index EXTERNAL "LIBRARY rexxgtk GrxTreePathAppendIndex"
+::METHOD get_depth EXTERNAL "LIBRARY rexxgtk GrxTreePathGetDepth"
+::METHOD depth EXTERNAL "LIBRARY rexxgtk GrxTreePathGetDepth"
+::METHOD is_ancestor EXTERNAL "LIBRARY rexxgtk GrxTreePathIsAncestor"
+::METHOD is_descendant EXTERNAL "LIBRARY rexxgtk GrxTreePathIsDescendant"
+

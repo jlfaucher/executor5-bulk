@@ -189,7 +189,6 @@ call statusbar_hint self, event, self~user_data[2]
 return .false
 
 ::routine statusbar_hint
-say 'got here'
 use strict arg self, event, statusbar
 id = statusbar~get_context_id('MenuItemHints')
 if event~type = .gtk~GDK_ENTER_NOTIFY then do
