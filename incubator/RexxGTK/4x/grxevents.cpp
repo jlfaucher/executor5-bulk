@@ -513,12 +513,17 @@ gboolean signal_GdkEventCrossing(GtkWidget *window,
     context->SendMessage1(rxevent, "send_event=",
                           context->NumberToObject((wholenumber_t)event->send_event));
     // Assign the event specific data
-    temp = (RexxObjectPtr)g_object_get_data(G_OBJECT(event->subwindow), "OORXOBJECT");
-    if (temp == NULL) {
-        context->SendMessage1(rxevent, "subwindow=", context->Nil());
+    if (event->subwindow != NULL) {
+        temp = (RexxObjectPtr)g_object_get_data(G_OBJECT(event->subwindow), "OORXOBJECT");
+        if (temp == NULL) {
+            context->SendMessage1(rxevent, "subwindow=", context->Nil());
+        }
+        else {
+            context->SendMessage1(rxevent, "subwindow=", temp);
+        }
     }
     else {
-        context->SendMessage1(rxevent, "subwindow=", temp);
+        context->SendMessage1(rxevent, "subwindow=", context->Nil());
     }
     context->SendMessage1(rxevent, "time=",
                           context->UnsignedNumberToObject((size_t)event->time));
@@ -1203,12 +1208,17 @@ gboolean signal_GdkEventGrabBroken(GtkWidget *window,
                           context->NumberToObject((wholenumber_t)event->keyboard));
     context->SendMessage1(rxevent, "implicit=",
                           context->NumberToObject((wholenumber_t)event->implicit));
-    temp = (RexxObjectPtr)g_object_get_data(G_OBJECT(event->grab_window), "OORXOBJECT");
-    if (temp == NULL) {
-        context->SendMessage1(rxevent, "grab_window=", context->Nil());
+    if (event->grab_window != NULL) {
+        temp = (RexxObjectPtr)g_object_get_data(G_OBJECT(event->grab_window), "OORXOBJECT");
+        if (temp == NULL) {
+            context->SendMessage1(rxevent, "grab_window=", context->Nil());
+        }
+        else {
+            context->SendMessage1(rxevent, "grab_window=", temp);
+        }
     }
     else {
-        context->SendMessage1(rxevent, "grab_window=", temp);
+        context->SendMessage1(rxevent, "grab_window=", context->Nil());
     }
 
     temp = context->SendMessage1(rxobj, ((cbcb *)data)->signal_name, rxevent);

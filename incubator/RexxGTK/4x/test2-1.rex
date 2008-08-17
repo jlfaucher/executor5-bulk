@@ -49,7 +49,8 @@ window = .GTKWindow~new(.gtk~GTK_WINDOW_TOPLEVEL)
 window~set_title('Hello World')
 window~show()
 
-say 'You must ctrl-c (twice) to end this program after closing the window'
+say 'You must ctrl-c (twice) to end this program after closing the window.'
+say 'Do not be surprised if you get a seg fault after you hit ctrl-c.'
 
 call gtk_main
 say 'I am back'
