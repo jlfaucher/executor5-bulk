@@ -1,6 +1,6 @@
 #------------------------------------------------------------------------------*
 #
-# Copyright (c) 2007 Rexx Language Association. All rights reserved.
+# Copyright (c) 2007-2008 Rexx Language Association. All rights reserved.
 #
 # This program and the accompanying materials are made available under
 # the terms of the Common Public License v1.0 which accompanies this
@@ -48,11 +48,17 @@ EXE_FILES = $(BINDIR)\stouch.exe $(BINDIR)\killer.exe
 all : $(OBJDIR) $(BINDIR) $(EXE_FILES)
 
 touchheaders : $(BINDIR)\stouch.exe $(ooRexx_SRCDIR)
-    $(BINDIR)\stouch $(ooRexx_SRCDIR)\kernel\messages\RexxErrorCodes.h
-    $(BINDIR)\stouch $(ooRexx_SRCDIR)\kernel\messages\RexxMessageNumbers.h
-    $(BINDIR)\stouch $(ooRexx_SRCDIR)\kernel\messages\RexxMessageTable.h
-    $(BINDIR)\stouch $(ooRexx_SRCDIR)\kernel\platform\windows\winmsgtb.rc
-    $(BINDIR)\stouch $(ooRexx_SRCDIR)\kernel\platform\unix\rexx.cat
+    $(BINDIR)\stouch $(ooRexx_SRCDIR)\interpreter\messages\RexxErrorCodes.h
+    $(BINDIR)\stouch $(ooRexx_SRCDIR)\interpreter\messages\RexxMessageNumbers.h
+    $(BINDIR)\stouch $(ooRexx_SRCDIR)\interpreter\messages\RexxMessageTable.h
+    $(BINDIR)\stouch $(ooRexx_SRCDIR)\interpreter\messages\DocErrorMessages.sgml
+    $(BINDIR)\stouch $(ooRexx_SRCDIR)\interpreter\messages\gencat.inp
+    $(BINDIR)\stouch $(ooRexx_SRCDIR)\interpreter\platform\windows\winmsgtb.rc
+    $(BINDIR)\stouch $(ooRexx_SRCDIR)\interpreter\platform\unix\rexx.cat
+    $(BINDIR)\stouch $(ooRexx_SRCDIR)\interpreter\behaviour\PrimitiveBehaviourNames.h
+    $(BINDIR)\stouch $(ooRexx_SRCDIR)\interpreter\behaviour\VirtualFunctionTable.cpp
+    $(BINDIR)\stouch $(ooRexx_SRCDIR)\interpreter\behaviour\ClassTypeCodes.h
+    $(BINDIR)\stouch $(ooRexx_SRCDIR)\api\oorexxerrors.h
 
 clean :
     @if exist $(OBJDIR) del $(OBJDIR)\*.obj 1>nul 2>&1
@@ -93,7 +99,7 @@ $(OBJDIR)\stouch.obj : $(SRCDIR)\stouch.c $(SRCDIR)\stouch.h
     $(CC) $(CFLAGS) /O1 $(SRCDIR)\stouch.c
 
 $(BINDIR)\killer.exe : $(BINDIR) $(OBJDIR) $(OBJDIR)\killer.obj
-    $(LD) /SUBSYSTEM:Console /out:$(BINDIR)\killer.exe $(OBJDIR)\killer.obj psapi.lib
+    $(LD) /SUBSYSTEM:Console /out:$(BINDIR)\killer.exe $(OBJDIR)\killer.obj
 
 $(OBJDIR)\killer.obj : $(SRCDIR)\killer.c
     $(CC) $(CFLAGS) $(SRCDIR)\killer.c

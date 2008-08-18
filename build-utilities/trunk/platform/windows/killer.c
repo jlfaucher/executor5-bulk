@@ -33,88 +33,117 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
+
 /*
- * Program to kill a named process under Windows
- * Only argument: process name
+ * Program to kill a named process under Windows.  The compiled program
+ * (compiled as 32-bit) should also work on 64-bit Windows.
+ *
+ * Only argument: The process name.  This can include, or not, the ".exe"
+ * extension.
  */
+
 #include <windows.h>
 #include <stdio.h>
-#include "psapi.h"
+#include <tlhelp32.h>
+
+/* Prototypes */
+void tryToKill(PROCESSENTRY32 *pPe32);
+void printError(const char *msg);
 
 int main( int argc, char *argv[] )
 {
-   // Find all processes
-
-   DWORD aProcesses[4096], cbNeeded, cProcesses, processID, cLength;
-   HANDLE hProcess;
-   char szProcessName[MAX_PATH] = "";
-   char szArgName[MAX_PATH] = "";
-   unsigned int i;
-   BOOL fFound = FALSE;
-   char *pszExt;
+   char           szArgName[MAX_PATH] = "";
+   BOOL           fFound = FALSE;
+   char           *pszExt;
+   HANDLE         hAllProcesses;
+   PROCESSENTRY32 pe32;
 
    if ( argc != 2 )
    {
-      fprintf( stderr, "No process name supplied\n" );
-      return 1;
+       fprintf(stderr, "No process name supplied\n");
+       return 1;
    }
 
    // Support either kill or taskkill syntax
    pszExt = strrchr( argv[1], '.' );
-   if ( pszExt && (stricmp( pszExt, ".exe" ) == 0) )
-      sprintf( szArgName, "%s", argv[1] );
+   if ( pszExt && (stricmp(pszExt, ".exe") == 0) )
+   {
+       _snprintf(szArgName, sizeof(szArgName), "%s", argv[1]);
+   }
    else
-      sprintf( szArgName, "%s.exe", argv[1] );
-
-   if ( !EnumProcesses( aProcesses, sizeof(aProcesses), &cbNeeded ) )
    {
-      CHAR LastError[256];
-      ULONG last_error = GetLastError();
-      FormatMessage( FORMAT_MESSAGE_FROM_SYSTEM, NULL, GetLastError(), MAKELANGID( LANG_NEUTRAL, SUBLANG_DEFAULT), LastError, 256, NULL ) ;
-      fprintf( stderr, "No processes found. %s\n", LastError );
-      return 1;
+       _snprintf(szArgName, sizeof(szArgName), "%s.exe", argv[1] );
    }
 
-   // How many processes?
-
-   cProcesses = cbNeeded / sizeof(DWORD);
-
-   // Find our process and kill it
-
-   for ( i = 0; i < cProcesses; i++ )
+   // Get a snapshot of all processes running on the system.
+   pe32.dwSize = sizeof(PROCESSENTRY32);
+   hAllProcesses = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+   if( hAllProcesses == INVALID_HANDLE_VALUE )
    {
-      // Get a handle to the process.
-      hProcess = OpenProcess( PROCESS_ALL_ACCESS, FALSE, aProcesses[i] );
-
-      // Get the process name.
-      if ( hProcess )
-      {
-         HMODULE hMod;
-
-         if ( EnumProcessModules( hProcess, &hMod, sizeof(hMod), &cbNeeded) )
-         {
-            GetModuleBaseName( hProcess, hMod, szProcessName, sizeof(szProcessName) );
-            if ( stricmp( szProcessName, szArgName ) == 0 )
-            {
-               fFound = TRUE;
-               if ( TerminateProcess( hProcess, 0 ) )
-               {
-                  printf( "%s (Process ID: %u) killed successfully\n", szProcessName, aProcesses[i] );
-               }
-               else
-               {
-                  CHAR LastError[256];
-                  ULONG last_error = GetLastError();
-                  FormatMessage( FORMAT_MESSAGE_FROM_SYSTEM, NULL, GetLastError(), MAKELANGID( LANG_NEUTRAL, SUBLANG_DEFAULT), LastError, 256, NULL ) ;
-                  printf( "%s (Process ID: %u) NOT killed. %s\n", szProcessName, aProcesses[i], LastError );
-               }
-            }
-         }
-         CloseHandle( hProcess );
-      }
+     printError("Creating process list");
+     return 1;
    }
+
+   // Get the first process entry.
+   if( ! Process32First(hAllProcesses, &pe32) )
+   {
+     printError("Process32First()");
+     CloseHandle(hAllProcesses);
+     return 1;
+   }
+
+   // Look at each process until we find the one we want.  Then try to kill it.
+   do
+   {
+       if ( stricmp(pe32.szExeFile, szArgName) == 0 )
+       {
+           fFound = TRUE;
+           tryToKill(&pe32);
+           break;
+       }
+   } while( Process32Next(hAllProcesses, &pe32) );
+
+   CloseHandle(hAllProcesses);
+
    if ( ! fFound )
-      printf( "The process \"%s\" was not found.\n", szArgName );
+   {
+       printf("The process \"%s\" was not found.\n", szArgName);
+   }
 
    return 0;
+}
+
+void tryToKill(PROCESSENTRY32 *pPe32)
+{
+    HANDLE hProcess;
+
+    hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pPe32->th32ProcessID);
+    if( hProcess == NULL )
+    {
+        printError("OpenProcess()");
+    }
+    else
+    {
+        if ( TerminateProcess(hProcess, 0) )
+        {
+           printf("%s (process ID: %u) killed successfully\n", pPe32->szExeFile, pPe32->th32ProcessID);
+        }
+        else
+        {
+           TCHAR msg[64];
+           _snprintf(msg, sizeof(msg), "Killing %s (process ID: %u)", pPe32->szExeFile, pPe32->th32ProcessID);
+           printError(msg);
+        }
+        CloseHandle(hProcess);
+    }
+}
+
+void printError(const char *msg)
+{
+    TCHAR buf[256];
+    DWORD err = GetLastError();
+
+    FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, NULL, err, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+                  buf, 256, NULL);
+    fprintf(stderr, "%s failed with error %d (%s)\n", msg, err, buf);
 }
