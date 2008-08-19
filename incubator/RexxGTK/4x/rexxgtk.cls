@@ -3238,16 +3238,11 @@ return GtkTreeModel~new(ptr)
 
 ::class GtkTreeModel public
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxTreeModelNewFromPtr"
-::METHOD row_reference_new EXTERNAL "LIBRARY rexxgtk GrxTreeModelRowReferenceNew"
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxTreeModelNew"
 ::METHOD get_n_columns EXTERNAL "LIBRARY rexxgtk GrxTreeModelGetNColumns"
 ::METHOD n_columns EXTERNAL "LIBRARY rexxgtk GrxTreeModelGetNColumns"
 ::METHOD get_column_type EXTERNAL "LIBRARY rexxgtk GrxTreeModelGetColumnType"
 ::METHOD column_type EXTERNAL "LIBRARY rexxgtk GrxTreeModelGetColumnType"
-
-::model create_tree_row_reference private
-use strict arg ptr1, ptr2
-return GtkTreeRowReference~new(ptr1, ptr2)
 
 
 /*============================================================================*/

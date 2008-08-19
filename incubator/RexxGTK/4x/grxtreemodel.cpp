@@ -260,31 +260,6 @@ RexxMethod2(logical_t,                 // Return type
 }
 
 /**
- * Method:  reference_new
- *
- * Get a tree row reference.
- *
- * @param node    The node to test
- *
- * @return        Boolean
- **/
-RexxMethod3(int,                       // Return type
-            GrxTreeModelRowReferenceNew, // Object_method name
-            OSELF, oself,              // GTK self
-            CSELF, cself,              // GTK self
-            RexxObjectPtr, path)       // Tree path
-{
-    GtkTreePath *node = (GtkTreePath *)context->ObjectToCSelf(path);
-
-    // Create the Rexx object
-    context->SendMessage2(oself, "create_tree_row_reference",
-                          (RexxObjectPtr)context->NewPointer(cself),
-                          (RexxObjectPtr)context->NewPointer(node));
-
-    return 0;
-}
-
-/**
  * Method:  init
  *
  * Create a tree row reference.
@@ -294,13 +269,13 @@ RexxMethod3(int,                       // Return type
  * @return        Zero.
  **/
 RexxMethod3(int,                       // Return type
-            GrxTreeRowReferenceNewFromPtr, // Object_method name
+            GrxTreeRowReferenceNew, // Object_method name
             OSELF, self,               // Self
-            RexxObjectPtr, ptr1,       // Model pointer
-            RexxObjectPtr, ptr2)       // Path pointer
+            RexxObjectPtr, modelobj,   // Model pointer
+            RexxObjectPtr, pathobj)    // Path pointer
 {
-    GtkTreeModel *model = (GtkTreeModel *)context->PointerValue((RexxPointerObject)ptr1);
-    GtkTreePath *path = (GtkTreePath *)context->PointerValue((RexxPointerObject)ptr2);
+    GtkTreeModel *model = (GtkTreeModel *)context->ObjectToCSelf(modelobj);
+    GtkTreePath *path = (GtkTreePath *)context->ObjectToCSelf(pathobj);
 
     GtkTreeRowReference *ref = gtk_tree_row_reference_new(model, path);
 
