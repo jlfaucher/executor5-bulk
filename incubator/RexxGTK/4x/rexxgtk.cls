@@ -305,6 +305,13 @@ return
    -- GtkToolbarSpaceStyle
 ::constant GTK_TOOLBAR_SPACE_EMPTY 0
 ::constant GTK_TOOLBAR_SPACE_LINE 1
+   -- GtkCalendarDisplayOptions
+::constant GTK_CALENDAR_SHOW_HEADING 1
+::constant GTK_CALENDAR_SHOW_DAY_NAMES 2
+::constant GTK_CALENDAR_NO_MONTH_CHANGE 4
+::constant GTK_CALENDAR_SHOW_WEEK_NUMBERS 8
+::constant GTK_CALENDAR_WEEK_START_MONDAY 16
+::constant GTK_CALENDAR_SHOW_DETAILS 32
    -- Pango scale factors
 ::constant PANGO_SCALE_XX_SMALL 0.5787037037037
 ::constant PANGO_SCALE_X_SMALL 0.6444444444444
@@ -2983,6 +2990,48 @@ return
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxTreeStoreNew"
 ::METHOD append EXTERNAL "LIBRARY rexxgtk GrxTreeStoreAppend"
 ::METHOD set_value EXTERNAL "LIBRARY rexxgtk GrxTreeStoreSetValue"
+
+
+/*============================================================================*/
+/* Class: GtkCalendar                                                         */
+/*============================================================================*/
+
+::class GtkCalendar public subclass GtkWidget
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxCalendarNew"
+::METHOD select_month EXTERNAL "LIBRARY rexxgtk GrxCalendarSelectMonth"
+::METHOD select_day EXTERNAL "LIBRARY rexxgtk GrxCalendarSelectDay"
+::METHOD mark_day EXTERNAL "LIBRARY rexxgtk GrxCalendarMarkDay"
+::METHOD unmark_day EXTERNAL "LIBRARY rexxgtk GrxCalendarUnmarkDay"
+::METHOD clear_marks EXTERNAL "LIBRARY rexxgtk GrxCalendarClearMarks"
+::METHOD get_display_options EXTERNAL "LIBRARY rexxgtk GrxCalendarGetDisplayOptions"
+::METHOD set_display_options EXTERNAL "LIBRARY rexxgtk GrxCalendarSetDisplayOptions"
+::METHOD get_date EXTERNAL "LIBRARY rexxgtk GrxCalendarGetDate"
+::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxCalendarSignalConnect"
+
+-- The following are the methods that can be connected to signals. By default
+-- they do nothing.
+
+::method signal_day_selected
+return
+
+::method signal_day_selected_double_click
+return
+
+::method signal_month_changed
+return
+
+::method signal_next_month
+return
+
+::method signal_next_year
+return
+
+::method signal_prev_month
+return
+
+::method signal_prev_year
+return
 
 
 /*============================================================================*/

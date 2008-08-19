@@ -634,6 +634,16 @@ REXX_METHOD_PROTOTYPE(GrxTreeRowReferenceValid)
 REXX_METHOD_PROTOTYPE(GrxTreeModelNewFromPtr)
 REXX_METHOD_PROTOTYPE(GrxTreeModelGetNColumns)
 REXX_METHOD_PROTOTYPE(GrxTreeModelGetColumnType)
+REXX_METHOD_PROTOTYPE(GrxCalendarNew)
+REXX_METHOD_PROTOTYPE(GrxCalendarSelectMonth)
+REXX_METHOD_PROTOTYPE(GrxCalendarSelectDay)
+REXX_METHOD_PROTOTYPE(GrxCalendarMarkDay)
+REXX_METHOD_PROTOTYPE(GrxCalendarUnmarkDay)
+REXX_METHOD_PROTOTYPE(GrxCalendarClearMarks)
+REXX_METHOD_PROTOTYPE(GrxCalendarGetDisplayOptions)
+REXX_METHOD_PROTOTYPE(GrxCalendarSetDisplayOptions)
+REXX_METHOD_PROTOTYPE(GrxCalendarGetDate)
+REXX_METHOD_PROTOTYPE(GrxCalendarSignalConnect)
  
  #endif /* REXXGTK_H */
  

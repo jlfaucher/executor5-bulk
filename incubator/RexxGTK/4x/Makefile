@@ -87,7 +87,8 @@ OBJECTS = rexxgtk.o \
 	grxtreeview.o \
 	grxtreeviewcolumn.o \
 	grxtreestore.o \
-	grxtreemodel.o
+	grxtreemodel.o \
+	grxcalendar.o
 
 
 # Build the shared library
@@ -227,6 +228,9 @@ grxtreestore.o: grxtreestore.cpp rexxgtk.h
 
 grxtreemodel.o: grxtreemodel.cpp rexxgtk.h
 	gcc -c $(GRXCFLAGS) grxtreemodel.cpp
+
+grxcalendar.o: grxcalendar.cpp rexxgtk.h
+	gcc -c $(GRXCFLAGS) grxcalendar.cpp
 
 
 

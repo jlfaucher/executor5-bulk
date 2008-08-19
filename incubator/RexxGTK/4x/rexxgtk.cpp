@@ -826,6 +826,16 @@ RexxMethodEntry gtkobject_methods[] = {
     REXX_METHOD(GrxTreeModelNewFromPtr, GrxTreeModelNewFromPtr),
     REXX_METHOD(GrxTreeModelGetNColumns, GrxTreeModelGetNColumns),
     REXX_METHOD(GrxTreeModelGetColumnType, GrxTreeModelGetColumnType),
+    REXX_METHOD(GrxCalendarNew, GrxCalendarNew),
+    REXX_METHOD(GrxCalendarSelectMonth, GrxCalendarSelectMonth),
+    REXX_METHOD(GrxCalendarSelectDay, GrxCalendarSelectDay),
+    REXX_METHOD(GrxCalendarMarkDay, GrxCalendarMarkDay),
+    REXX_METHOD(GrxCalendarUnmarkDay, GrxCalendarUnmarkDay),
+    REXX_METHOD(GrxCalendarClearMarks, GrxCalendarClearMarks),
+    REXX_METHOD(GrxCalendarGetDisplayOptions, GrxCalendarGetDisplayOptions),
+    REXX_METHOD(GrxCalendarSetDisplayOptions, GrxCalendarSetDisplayOptions),
+    REXX_METHOD(GrxCalendarGetDate, GrxCalendarGetDate),
+    REXX_METHOD(GrxCalendarSignalConnect, GrxCalendarSignalConnect),
     REXX_LAST_METHOD()
 };
 
