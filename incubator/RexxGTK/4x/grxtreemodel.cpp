@@ -232,7 +232,7 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(logical_t,                 // Return type
             GrxTreePathIsAncestor,     // Object_method name
-            RexxObjectPtr, obj,        // Note to test
+            RexxObjectPtr, obj,        // Node to test
             CSELF, self)               // GTK self
 {
     GtkTreePath *node = (GtkTreePath *)context->ObjectToCSelf(obj);
@@ -250,12 +250,130 @@ RexxMethod2(logical_t,                 // Return type
  * @return        Boolean
  **/
 RexxMethod2(logical_t,                 // Return type
-            GrxTreePathIdDescendant,   // Object_method name
-            RexxObjectPtr, obj,        // Note to test
+            GrxTreePathIsDescendant,   // Object_method name
+            RexxObjectPtr, obj,        // Node to test
             CSELF, self)               // GTK self
 {
     GtkTreePath *node = (GtkTreePath *)context->ObjectToCSelf(obj);
 
     return gtk_tree_path_is_descendant((GtkTreePath *)self, node);
+}
+
+/**
+ * Method:  reference_new
+ *
+ * Get a tree row reference.
+ *
+ * @param node    The node to test
+ *
+ * @return        Boolean
+ **/
+RexxMethod3(int,                       // Return type
+            GrxTreeModelRowReferenceNew, // Object_method name
+            OSELF, oself,              // GTK self
+            CSELF, cself,              // GTK self
+            RexxObjectPtr, path)       // Tree path
+{
+    GtkTreePath *node = (GtkTreePath *)context->ObjectToCSelf(path);
+
+    // Create the Rexx object
+    context->SendMessage2(oself, "create_tree_row_reference",
+                          (RexxObjectPtr)context->NewPointer(cself),
+                          (RexxObjectPtr)context->NewPointer(node));
+
+    return 0;
+}
+
+/**
+ * Method:  init
+ *
+ * Create a tree row reference.
+ *
+ * @param pointer The pointer
+ *
+ * @return        Zero.
+ **/
+RexxMethod3(int,                       // Return type
+            GrxTreeRowReferenceNewFromPtr, // Object_method name
+            OSELF, self,               // Self
+            RexxObjectPtr, ptr1,       // Model pointer
+            RexxObjectPtr, ptr2)       // Path pointer
+{
+    GtkTreeModel *model = (GtkTreeModel *)context->PointerValue((RexxPointerObject)ptr1);
+    GtkTreePath *path = (GtkTreePath *)context->PointerValue((RexxPointerObject)ptr2);
+
+    GtkTreeRowReference *ref = gtk_tree_row_reference_new(model, path);
+
+    // Save ourself
+    context->SetObjectVariable("CSELF", context->NewPointer(ref));
+
+    return 0;
+}
+
+/**
+ * Method:  valid
+ *
+ * Is the row reference valid.
+ *
+ * @return        Boolean
+ **/
+RexxMethod1(logical_t,                 // Return type
+            GrxTreeRowReferenceValid,  // Object_method name
+            CSELF, self)               // GTK self
+{
+
+    return gtk_tree_row_reference_valid((GtkTreeRowReference *)self);
+}
+
+/**
+ * Method:  init
+ *
+ * Create a tree model.
+ *
+ * @param pointer The pointer
+ *
+ * @return        Zero.
+ **/
+RexxMethod2(int,                       // Return type
+            GrxTreeModelNewFromPtr,    // Object_method name
+            OSELF, self,               // Self
+            RexxObjectPtr, ptr)        // Pointer
+{
+    // Save ourself
+    context->SetObjectVariable("CSELF", 
+                               (RexxObjectPtr)context->PointerValue((RexxPointerObject)ptr));
+
+    return 0;
+}
+
+/**
+ * Method:  get_n_columns
+ *
+ * Get the number of columns.
+ *
+ * @return        Zero.
+ **/
+RexxMethod1(int,                       // Return type
+            GrxTreeModelGetNColumns,   // Object_method name
+            CSELF, self)               // Self
+{
+    return gtk_tree_model_get_n_columns((GtkTreeModel *)self);
+}
+
+/**
+ * Method:  get_column_type
+ *
+ * Get the column type.
+ *
+ * @param idx     The column index
+ *
+ * @return        Zero.
+ **/
+RexxMethod2(int,                       // Return type
+            GrxTreeModelGetColumnType, // Object_method name
+            CSELF, self,               // Self
+            int, idx)                  // Column index
+{
+    return gtk_tree_model_get_column_type((GtkTreeModel *)self, idx);
 }
 

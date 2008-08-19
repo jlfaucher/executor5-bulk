@@ -2882,7 +2882,12 @@ return
 ::METHOD remove_column EXTERNAL "LIBRARY rexxgtk GrxTreeViewRemoveColumn"
 ::METHOD set_model EXTERNAL "LIBRARY rexxgtk GrxTreeViewSetModel"
 ::METHOD expand_all EXTERNAL "LIBRARY rexxgtk GrxTreeViewExpandAll"
+::METHOD get_model EXTERNAL "LIBRARY rexxgtk GrxTreePathGetModel"
 ::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxTreeViewSignalConnect"
+
+::model create_tree_model private
+use strict arg ptr
+return GtkTreeModel~new(ptr)
 
 -- The following are the methods that can be connected to signals. By default
 -- they do nothing.
@@ -3220,4 +3225,37 @@ return .GtkTreePath~new(spath)
 ::METHOD depth EXTERNAL "LIBRARY rexxgtk GrxTreePathGetDepth"
 ::METHOD is_ancestor EXTERNAL "LIBRARY rexxgtk GrxTreePathIsAncestor"
 ::METHOD is_descendant EXTERNAL "LIBRARY rexxgtk GrxTreePathIsDescendant"
+::METHOD get_model EXTERNAL "LIBRARY rexxgtk GrxTreePathGetModel"
+
+::model create_tree_model private
+use strict arg ptr
+return GtkTreeModel~new(ptr)
+
+
+/*============================================================================*/
+/* Class: GtkTreeModel                                                        */
+/*============================================================================*/
+
+::class GtkTreeModel public
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxTreeModelNewFromPtr"
+::METHOD row_reference_new EXTERNAL "LIBRARY rexxgtk GrxTreeModelRowReferenceNew"
+::METHOD get_n_columns EXTERNAL "LIBRARY rexxgtk GrxTreeModelGetNColumns"
+::METHOD n_columns EXTERNAL "LIBRARY rexxgtk GrxTreeModelGetNColumns"
+::METHOD get_column_type EXTERNAL "LIBRARY rexxgtk GrxTreeModelGetColumnType"
+::METHOD column_type EXTERNAL "LIBRARY rexxgtk GrxTreeModelGetColumnType"
+
+::model create_tree_row_reference private
+use strict arg ptr1, ptr2
+return GtkTreeRowReference~new(ptr1, ptr2)
+
+
+/*============================================================================*/
+/* Class: GtkRowReference                                                     */
+/*============================================================================*/
+
+::class GtkTreeRowReference public
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxTreeRowReferenceNewFromPtr"
+::METHOD valid EXTERNAL "LIBRARY rexxgtk GrxTreeRowReferenceValid"
 

@@ -306,6 +306,25 @@ RexxMethod2(int,                       // Return type
 }
 
 /**
+ * Method:  get_model
+ *
+ * Get the model for the tree.
+ *
+ * @return        Treemodel object
+ **/
+RexxMethod2(RexxObjectPtr,             // Return type
+            GrxTreeViewGetModel,       // Object_method name
+            CSELF, cself,              // GTK self
+            OSELF, oself)              // GTK self
+{
+    GtkTreeModel *model = (GtkTreeModel *)gtk_tree_view_get_model(GTK_TREE_VIEW(cself));
+
+    // Create the Rexx object
+    return context->SendMessage1(oself, "create_tree_model",
+                                 context->NewPointer((RexxPointerObject)model));
+}
+
+/**
  * Method:  expand_all
  *
  * Expand all levels of the tree.
