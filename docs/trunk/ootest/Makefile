@@ -44,7 +44,13 @@ HTML_STYLESHEET = /usr/share/sgml/docbook/dsssl-stylesheets/html/docbook.dsl \
              ../shared/oorexx.html.dsl
 
 
-SGML_FILES = ootest.sgml \
+OOTEST_SGML_FILES = ootest.sgml \
+     ../shared/notices.sgml \
+     ../shared/legalstuff.sgml \
+     ../shared/gethelp.sgml \
+     ../shared/CPLv1.0.sgml
+
+OOTESTQS_SGML_FILES = ootestQuick.sgml \
      ../shared/notices.sgml \
      ../shared/legalstuff.sgml \
      ../shared/gethelp.sgml \
@@ -63,14 +69,17 @@ export TEXFORMATS=.:
 
 all: pdf html
 
-pdf: ootest.pdf
+pdf: ootest.pdf ootestQuickStart.pdf
 
 html: ootest-html.zip
 
-ootest.pdf: $(IMAGE_FILES) $(STYLESHEET) $(JADETEXFMT) genindex.sgml svnrev.tmp
+ootest.pdf: $(IMAGE_FILES) $(STYLESHEET) $(JADETEXFMT) ootest_index.sgml svnrev.tmp
 	docbook2pdf -d ../shared/oorexx.print.dsl ootest.sgml
 
-book1.htm: $(IMAGE_FILES) $(HTML_STYLESHEET) genindex.sgml svnrev.tmp
+ootestQuickStart.pdf: $(IMAGE_FILES) $(STYLESHEET) $(JADETEXFMT) ootestQuick_index.sgml svnrev.tmp
+	docbook2pdf -d ../shared/oorexx.print.dsl ootestQuick.sgml
+
+book1.htm: $(IMAGE_FILES) $(HTML_STYLESHEET) ootest_index.sgml svnrev.tmp
 	docbook2html -d ../shared/oorexx.html.dsl ootest.sgml
 
 ootest-html.zip: book1.htm
@@ -79,11 +88,17 @@ ootest-html.zip: book1.htm
 $(JADETEXFMT): $(HYPERREFCFG)
 	pdftex -ini \&pdflatex pdfjadetex.ini
 
-genindex.sgml: $(HTML_STYLESHEET) $(SGML_FILES) svnrev.tmp
-	collateindex.pl -N -o genindex.sgml
+ootest_index.sgml: $(HTML_STYLESHEET) $(OOTEST_SGML_FILES) svnrev.tmp
+	collateindex.pl -N -o ootest_index.sgml
 	jade -t sgml -d ../shared/oorexx.html.dsl -V html-index ootest.sgml
 	rm *.htm
-	collateindex.pl -p -g -o genindex.sgml HTML.index
+	collateindex.pl -p -g -o ootest_index.sgml HTML.index
+
+ootestQuick_index.sgml: $(HTML_STYLESHEET) $(OOTESTQS_SGML_FILES) svnrev.tmp
+	collateindex.pl -N -o ootestQuick_index.sgml
+	jade -t sgml -d ../shared/oorexx.html.dsl -V html-index ootestQuick.sgml
+	rm *.htm
+	collateindex.pl -p -g -o ootestQuick_index.sgml HTML.index
 
 svnrev.tmp:
 	svnversion > svnrev.tmp
@@ -92,6 +107,6 @@ svnrev.tmp:
 
 
 clean:
-	@rm -f *.log *.aux *.out *.fmt *.pdf genindex.sgml *.htm *.zip \
-           HTML.index *.tmp
+	@rm -f *.log *.aux *.out *.fmt *.pdf ootest_index.sgml *.htm *.zip \
+           HTML.index *.tmp ootestQuick_index.sgml
 
