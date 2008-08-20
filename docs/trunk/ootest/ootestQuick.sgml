@@ -172,9 +172,11 @@ to using objects in your own ooRexx code.
 </section>
 <section><title>Extract the Files</title>
 <para>
-    Unzip or untar the snapshot in a convenient spot.  After unpackaging you
-    will end up with a directory structure similar to this:
+    Open a console window and unzip or untar the snapshot in a convenient spot.
+    After unpackaging you will end up with a directory structure similar to
+    this:
 
+<programlisting>
 <![CDATA[
 ooRexxUnit.X.X.X
    |
@@ -190,6 +192,8 @@ ooRexxUnit.X.X.X
              |
              *-----<subdirectories>
 ]]>
+</programlisting>
+
 </para>
 
 <para>
@@ -207,668 +211,416 @@ ooRexxUnit.X.X.X
     test group files.
 </para>
 </section>
+<section><title>Test Your Install</title>
+<para>
+  After unpackaging the snapshot cd into the top level directory and read the
+  ReadMe.first file.
+</para>
+<para>
+  The program file testOORexx.rex is what drives the automated execution of the
+  test cases.  Provided that you have a standard ooRexx install, you can execute
+  the entire test case with the command below.
+</para>
+<note><title>Note</title><para>
+  For the sake of this document I am going to show examples on Windows.  But,
+  the same general thing applies to Linux.  Just translate the slashes.  In
+  addition the examples are from the 3.2.0 version of ooTest.  The same general
+  principles apply to whatever snapshot you have.
+</para></note>
+<para>
+  This command will execute the entire test suite.  Depending on your system it
+  will take several minutes to finish.
+<programlisting>
+<![CDATA[
+E:\work.ooRexx\ooRexxUnit\3.2.0>dir
+ Volume in drive E is Blackfoot
+ Volume Serial Number is 9C3D-6D2A
+
+ Directory of E:\work.ooRexx\ooRexxUnit\3.2.0
+
+07/03/2008  08:00 PM    <DIR>          .
+07/03/2008  08:00 PM    <DIR>          ..
+07/03/2008  08:00 PM    <DIR>          framework
+07/03/2008  08:06 PM    <DIR>          misc
+07/03/2008  08:06 PM    <DIR>          ooRexx
+11/29/2007  05:47 PM            11,839 CPLv1.0.txt
+12/19/2007  09:15 PM             2,822 directory.structure.tests
+06/30/2008  05:47 PM             1,737 Expected.Results
+01/18/2008  10:39 AM            69,323 ooTest.frm
+06/30/2008  05:47 PM             5,918 ReadMe.first
+01/02/2008  08:03 PM             9,139 runTestGroups.rex
+12/04/2007  08:07 PM             2,437 setTestEnv.bat
+12/04/2007  08:06 PM             3,062 setTestEnv.sh
+01/13/2008  01:15 PM             4,441 testOORexx.rex
+01/12/2008  08:44 PM            18,190 worker.rex
+              10 File(s)        128,908 bytes
+               6 Dir(s)  14,359,519,232 bytes free
+
+E:\work.ooRexx\ooRexxUnit\3.2.0>rexx testOORexx.rex -V 5
+Searching for test containers........................................
+Executing automated test suite..............................................
+...........................................................................
+..........
+
+ooTest Framework - Automated Test of the ooRexx Interpreter
+
+
+Interpreter: REXX-ooRexx_3.2.0(MT) 6.02 30 Oct 2007
+ooRexxUnit:  2.0.0_3.2.0        ooTest: 1.0.0_3.2.0
+
+Tests ran:           16600
+Assertions:          537835
+Failures:            2
+  (Known failures:)  42
+Errors:              2
+Exceptions:          0
+Skipped files:       0
+Messages:            0
+
+[failure] [20080819 17:37:57.809000]
+  Test:   TEST_MULTIPLE_INHERITANCE_WITH_MULTIPLE_METACLASSES
+  Class:  Class.testGroup
+  File:   E:\work.ooRexx\ooRexxUnit\3.2.0\ooRexx\base\class\Class.testGroup
+  Line:   576
+  Failed: assertEquals
+    Expected: [['123.'], identityHash="495954478"]
+    Actual:   [['231.'], identityHash="421451928"]
+
+[failure] [20080819 17:37:57.825000]
+  Test:   TEST_SUBCLASSES
+  Class:  Class.testGroup
+  File:   E:\work.ooRexx\ooRexxUnit\3.2.0\ooRexx\base\class\Class.testGroup
+  Line:   684
+  Failed: assertTrue
+    Expected: [1]
+    Actual:   [[0], identityHash="535806184"]
+
+[error] [20080819 17:37:57.809000]
+  Test:  TEST_MIXINCLASS_01
+  Class: Class.testGroup
+  File:  E:\work.ooRexx\ooRexxUnit\3.2.0\ooRexx\base\class\Class.testGroup
+  Event: [SYNTAX 97.1] raised unexpectedly.
+    Object "NOT_AN_EXISTING_CLASS" does not understand message "NEW"
+    Line:    509
+   509 *-* cl=.object~mixinclass("subTest_01", not_an_existing_class)
+
+[error] [20080819 17:37:57.825000]
+  Test:  TEST_SUBCLASS_01
+  Class: Class.testGroup
+  File:  E:\work.ooRexx\ooRexxUnit\3.2.0\ooRexx\base\class\Class.testGroup
+  Event: [SYNTAX 97.1] raised unexpectedly.
+    Object "NOT_AN_EXISTING_CLASS" does not understand message "NEW"
+    Line:    616
+   616 *-* cl=.object~subclass("subtest_01", not_an_existing_class)
+
+
+Interpreter: REXX-ooRexx_3.2.0(MT) 6.02 30 Oct 2007
+ooRexxUnit:  2.0.0_3.2.0        ooTest: 1.0.0_3.2.0
+
+Tests ran:           16600
+Assertions:          537835
+Failures:            2
+  (Known failures:)  42
+Errors:              2
+Exceptions:          0
+Skipped files:       0
+Messages:            0
+
+File search:        00:00:51.456000
+Suite construction: 00:00:02.000000
+Test execution:     00:02:17.632000
+Total time:         00:03:11.620000
+
+
+E:\work.ooRexx\ooRexxUnit\3.2.0>
+]]>
+</programlisting>
+</para>
+</section>
+<section><title>Understanding What you See</title>
+<para>
+  You should get results similar to the above.  Included with the snapshot is a
+  file called expected results.  That file should show you results similar to
+  what you actually get.  Let's pick the above apart.  The below stats show:
+<programlisting>
+<![CDATA[
+Interpreter: REXX-ooRexx_3.2.0(MT) 6.02 30 Oct 2007
+ooRexxUnit:  2.0.0_3.2.0        ooTest: 1.0.0_3.2.0
+
+Tests ran:           16600
+Assertions:          537835
+Failures:            2
+  (Known failures:)  42
+Errors:              2
+Exceptions:          0
+Skipped files:       0
+Messages:            0
+
+File search:        00:00:51.456000
+Suite construction: 00:00:02.000000
+Test execution:     00:02:17.632000
+Total time:         00:03:11.620000
+]]>
+</programlisting>
+  that 16,600 tests ran, comprising 537,835 assertations, taking about 3 minutes
+  total to finish.  There were 2 failures, 42 known failures, and 2 errors.
+</para>
+<para>
+  For a little terminology.  When you write a test case there are 2 expected
+  outcomes.  It is expected that the test case either passes or fails.  So in
+  ooTest, a failure is a test case that did not pass.  An error is an
+  *unexpected* event.
+</para>
+<para>
+  I'm going to just explain one of the failures.  You have this output:
+<programlisting>
+<![CDATA[
+[failure] [20080819 17:37:57.809000]
+  Test:   TEST_MULTIPLE_INHERITANCE_WITH_MULTIPLE_METACLASSES
+  Class:  Class.testGroup
+  File:   E:\work.ooRexx\ooRexxUnit\3.2.0\ooRexx\base\class\Class.testGroup
+  Line:   576
+  Failed: assertEquals
+    Expected: [['123.'], identityHash="495954478"]
+    Actual:   [['231.'], identityHash="421451928"]
+]]>
+</programlisting>
+</para>
+<para>
+  The above shows that the name of the failed test was
+  TEST_MULTIPLE_INHERITANCE_WITH_MULTIPLE_METACLASSES and it can be found on
+  line 576 in the file ... Class.testGroup.
+</para>
+<para>
+  What failed was an assertion that two things were equal.  It was
+  expected to be equal to '123' but it actually was '231'
+</para>
+<para>
+  Unfortunately these failing two test are a little complex, maybe not the best
+  for an intro, but to continue with what we have.  If we look at the failing
+  test file on line 576 we see:
+<programlisting>
+<![CDATA[
+  self~assertEquals("'123.'", .class123~info)
+]]>
+</programlisting>
+</para>
+<para>
+  Okay, it has a method, but just bear with me for a second.  This is
+  the heart of writing a test case.
+<programlisting>
+<![CDATA[
+  assertEquals("123", .class123~info)
+]]>
+</programlisting>
+</para>
+<para>
+  Think of the method just as a routine for now with some prefix on it that you
+  do not need to worry about.  The routine has 2 args and what we are doing is
+  asserting that the 2 args are equal.
+</para>
+<para>
+  If they are not equal, the test case fails and the ooTest framework takes care
+  of all the details of reporting the failure.  That is the print out you see
+  above.  For now, don't worry about how the framework does this, just accept
+  that it does it.
+</para>
+<para>
+  Next, let's look at the lines around 567, and you see this:
+
+<programlisting>
+<![CDATA[
+::method "test_MULTIPLE_INHERITANCE_WITH_MULTIPLE_METACLASSES"
+
+  self~assertEquals("'123.'", .class123~info)
+]]>
+</programlisting>
+  Think of the method as a routine, for now, that is named:
+  test_MULTIPLE_INHERITANCE_WITH_MULTIPLE_METACLASSES
+</para>
+<para>
+  And that is the test name, the name reported in the print out.  That
+  is the assertion.  The test writer is asserting that "123" is equal to
+  .class123~info.  The assertion failed, the test failed.
+</para>
+<para>
+  You and I don't need to figure out what .class123~info is right now.
+</para>
+<para>
+  Enough for an introduction.
+</para>
+</section>
 </chapter>
 
-<chapter><title>Functions</title>
-<para>Most function names in the Rexx Mathematical Functions package are similar to
-the names of their corresponding mathematical functions.</para>
+<programlisting>
+<![CDATA[
+]]>
+</programlisting>
+
+<chapter><title>Starting to Write a Test Case</title>
+<para>
+  In the last section we looked at this, which I said was the heart of a test
+  case:
+<programlisting>
+<![CDATA[
+  ::method "test_MULTIPLE_INHERITANCE_WITH_MULTIPLE_METACLASSES"
+
+   self~assertEquals("'123.'", .class123~info)
+]]>
+</programlisting>
+  In this section we will start to write our own test case.
+</para>
+<section><title>A First Test Case</title>
+<para>
+  Say we want to test that the interpreter is adding 2 + 3 correctly.  We expect
+  our test case either to show that the interpreter is adding 2 + 3 correctly or
+  that it is not.
+</para>
+<para>
+  To write a test case, it has to be in a method, which always starts as follows:
+<programlisting>
+<![CDATA[
+  ::method
+]]>
+</programlisting>
+</para>
+<para>
+  That is boilerplate, just type it.  Then the next key thing is that
+  the framework executes each method whose name begins with 'test', case
+  not significant as a test case.  We need to name the test case method
+  so we do this:
+<programlisting>
+<![CDATA[
+  ::method test_simpleAddition
+]]>
+</programlisting>
+</para>
+<para>
+  That's also boilerplate, make up a name, start it with test.  I usually add
+  the underscore, but it is not needed.
+</para>
+<para>
+  What's the test?  We know that 2 + 3 is 5, so if the interpreter adds
+  2 + 3 we would expect the result to be 5.  We write some code that
+  adds 2 + 3 and then assert that the result is 5:
+
+<programlisting>
+<![CDATA[
+  ::method test_simpleAdditon
+
+   val = 2 + 3
+   self~assertEquals(5, val)
+]]>
+</programlisting>
+</para>
+<para>
+  That is all there is to it.  The framework takes care of all the details.
+</para>
+<para>
+  Well there is a little more to it, we need to add the test case methods to a
+  file, I'll show that later.
+</para>
+<para>
+  To get started, think of ::method as a function think of self~assertEquals as
+  a function with a prefix of 'self~'  and we'll worry about learning about
+  classes some other time.  This is enough to write test cases.
+</para></section>
+
+<section><title>Contributing to the ooRexx Project</title>
+<para>
+  First, a little info on contributing to the ooRexx project / to the test
+  suite.
+</para>
+<para>
+  The test suite is enormously helpful to the project.  Everyone and any
+  one can contribute to this effort.  Even though we have a large number
+  of tests we still have a lot of holes.
+</para>
+<para>
+  There are 4 main ways someone can contribute:
+</para>
+
 <itemizedlist>
-<listitem><para>MathLoadFuncs()</para></listitem>
-<listitem><para>MathDropFuncs()</para></listitem>
-<listitem><para>RxCalcSqrt()   </para></listitem>
-<listitem><para>RxCalcExp()    </para></listitem>
-<listitem><para>RxCalcLog()    </para></listitem>
-<listitem><para>RxCalcLog10()  </para></listitem>
-<listitem><para>RxCalcSinH()   </para></listitem>
-<listitem><para>RxCalcCosH()   </para></listitem>
-<listitem><para>RxCalcTanH()   </para></listitem>
-<listitem><para>RxCalcPower()  </para></listitem>
-<listitem><para>RxCalcSin()    </para></listitem>
-<listitem><para>RxCalcCos()    </para></listitem>
-<listitem><para>RxCalcTan()    </para></listitem>
-<listitem><para>RxCalcCotan()  </para></listitem>
-<listitem><para>RxCalcPi()     </para></listitem>
-<listitem><para>RxCalcArcSin() </para></listitem>
-<listitem><para>RxCalcArcCos() </para></listitem>
-<listitem><para>RxCalcArcTan() </para></listitem>
+<listitem><para>1.) You could write a whole new *.testGroup file.</para></listitem>
+<listitem><para>2.) You can add tests to an existing .testGroup file.</para></listitem>
+<listitem><para>3.) You can examine existing test case code for correctness and
+correct or improve wrong or weak test cases.</para></listitem>
+<listitem><para>4.) You can help organize or promote the contribution of test cases
+into the project.</para></listitem>
 </itemizedlist>
 
-<section><title>MathLoadFuncs()</title>
-<indexterm><primary>MathLoadFuncs</primary></indexterm>
-<indexterm><primary>functions</primary>
-<secondary>MathLoadFuncs</secondary></indexterm>
-<indexterm><primary>load functions</primary></indexterm>
-<indexterm><primary>register functions</primary></indexterm>
+<para>
+  It is my strong opinion that all the .testGroup files in the test
+  suite are works in progress.
+</para>
+<para>
+  We could really use more pairs of eye examining the existing
+  .testGroup files with a critical eye.
+</para>
+<para>
+  Any one and every one is encouraged to either add to an existing file
+  or to say hey this test is wrong, it should be written this way.   Or
+  to say, hey the Lines.testGroup does not have a test for this option,
+  here's a method that does test it.
+</para>
+<para>
+  The other thing that is really important, is that just because
+  something is working now, that doesn't mean there shouldn't be a test
+  for it.  There  is no guarantee that anything that is working today
+  will be working after I make my next commit.  If I break something
+  with my next commit, and we have a test case for it, it will show up
+  right away and get fixed.
+</para>
+<para>
+  You may think that there is no way the say instruction could be
+  broken.  But what about if you have this in a Rexx file:
 <programlisting>
 <![CDATA[
->>-MathLoadFuncs()---------------------------------------------><
+/* Simple.rex */
+say 'Hello World'
 ]]>
 </programlisting>
-<para>Loads all functions in the Rexx Mathematical Functions package.</para>
-<para>If you supply any parameters, they will be used only to deliver copyright
-information.</para>
-</section>
-
-<section><title>MathDropFuncs()</title>
-<indexterm><primary>MathDropFuncs</primary></indexterm>
-<indexterm><primary>functions</primary>
-<secondary>MathDropFuncs</secondary></indexterm>
-<indexterm><primary>unload functions</primary></indexterm>
-<indexterm><primary>deregister functions</primary></indexterm>
+  and then run it like this:
 <programlisting>
 <![CDATA[
->>-MathDropFuncs()---------------------------------------------><
+E:\>rexx Simple.rex > myTest.file
 ]]>
 </programlisting>
-<para>Drops all functions in the Rexx Mathematical Functions package.</para>
-</section>
-
-<section><title>RxCalcSqrt()</title>
-<indexterm><primary>RxCalcSqrt</primary></indexterm>
-<indexterm><primary>functions</primary>
-<secondary>RxCalcSqrt</secondary></indexterm>
-<indexterm><primary>square root of a number</primary></indexterm>
+</para>
+<para>
+  You would expect myTest.File to contain 1 line consisting of:
 <programlisting>
 <![CDATA[
->>-RxCalcSqrt(number--+---------------+--)---------------------><
-                      +--, precision--+
+   Hello World<endOfLineCharacter>
 ]]>
 </programlisting>
-<para>Returns the absolute value of the square root of number.</para>
-<para>Parameters:</para>
-<variablelist>
-   <varlistentry>
-      <term>number</term>
-      <listitem><para>The number whose square root you wish to calculate.
-      </para></listitem>
-   </varlistentry>
-   <varlistentry>
-      <term>precision</term>
-      <listitem><para>The precision of the calculation. If a value is not specified, the precision of
-      the calling Rexx activity is used. If the precision exceeds 16 digits, the call
-      will fail.
-      </para></listitem>
-   </varlistentry>
-</variablelist>
-</section>
+</para>
+<para>
+  Well, a real life bug we just had was that instead of the normal
+  Windows end of line which is 0x0d0a we were actually getting 0x0d0d0a.
+</para>
+<para>
+  Now, running the test suite did catch this, but not because we had a
+  test for it.  The test suite caught it because some other tests were
+  failing with what appeared to be no reason.  It took quite awhile to
+  locate what was really wrong.
+</para>
+<para>
+  We did not, and still don't, have a simple test case that asserts that
+  a say statement redirected to a file produces what it should.  The
+  simple test should assert that the bytes in the file are exactly 13
+  and then assert that byte 1 is 0x48, byte 2 is 0x45, ... byte 12 is
+  0x0d, byte 13 is 0x0a.
+</para>
+<para>
+  Next chapter, create a testGroup file from the template and start a test
+  group.
+</para></section>
+</chapter>
+<chapter>
+  <section><title>A First Test Case</title>
 
-<section><title>RxCalcExp()</title>
-<indexterm><primary>RxCalcExp</primary></indexterm>
-<indexterm><primary>functions</primary>
-<secondary>RxCalcExp</secondary></indexterm>
-<indexterm><primary>exponential</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-RxCalcExp(number--+---------------+--)----------------------><
-                     +--, precision--+
-]]>
-</programlisting>
-<para>Returns the exponential function of number.</para>
-<para>Parameters:</para>
-<variablelist>
-   <varlistentry>
-      <term>number</term>
-      <listitem><para>The number for which you wish to calculate the exponential function.
-      </para></listitem>
-   </varlistentry>
-   <varlistentry>
-      <term>precision</term>
-      <listitem><para>The precision of the calculation. If a value is not specified, the precision of
-      the calling Rexx activity is used. If the precision exceeds 16 digits, the call
-      will fail.
-      </para></listitem>
-   </varlistentry>
-</variablelist>
-</section>
-
-<section><title>RxCalcLog()</title>
-<indexterm><primary>RxCalcLog</primary></indexterm>
-<indexterm><primary>functions</primary>
-<secondary>RxCalcLog</secondary></indexterm>
-<indexterm><primary>natural logarithm</primary></indexterm>
-<indexterm><primary>logarithm, natural</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-RxCalcLog(number--+---------------+--)----------------------><
-                     +--, precision--+
-]]>
-</programlisting>
-<para>Returns the natural logarithm (base e) of number.</para>
-<para>Parameters:</para>
-<variablelist>
-   <varlistentry>
-      <term>number</term>
-      <listitem><para>The number for which you wish to calculate the natural logarithm.
-      </para></listitem>
-   </varlistentry>
-   <varlistentry>
-      <term>precision</term>
-      <listitem><para>The precision of the calculation. If a value is not specified, the precision of
-      the calling Rexx activity is used. If the precision exceeds 16 digits, the call
-      will fail.
-      </para></listitem>
-   </varlistentry>
-</variablelist>
-</section>
-
-<section><title>RxCalcLog10()</title>
-<indexterm><primary>RxCalcLog10</primary></indexterm>
-<indexterm><primary>functions</primary>
-<secondary>RxCalcLog10</secondary></indexterm>
-<indexterm><primary>base 10 logarithm</primary></indexterm>
-<indexterm><primary>logarithm, base 10</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-RxCalcLog10(number--+---------------+--)--------------------><
-                       +--, precision--+
-]]>
-</programlisting>
-<para>Returns the base 10 logarithm of number.</para>
-<para>Parameters:</para>
-<variablelist>
-   <varlistentry>
-      <term>number</term>
-      <listitem><para>The number for which you wish to calculate the base 10 logarithm.
-      </para></listitem>
-   </varlistentry>
-   <varlistentry>
-      <term>precision</term>
-      <listitem><para>The precision of the calculation. If a value is not specified, the precision of
-      the calling Rexx activity is used. If the precision exceeds 16 digits, the call
-      will fail.
-      </para></listitem>
-   </varlistentry>
-</variablelist>
-</section>
-
-<section><title>RxCalcSinH()</title>
-<indexterm><primary>RxCalcSinH</primary></indexterm>
-<indexterm><primary>functions</primary>
-<secondary>RxCalcSinH</secondary></indexterm>
-<indexterm><primary>hyperbolic sine of a number</primary></indexterm>
-<indexterm><primary>number, hyperbolic sine of a</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-RxCalcSinH(number--+---------------+--)---------------------><
-                      +--, precision--+
-]]>
-</programlisting>
-<para>Returns the hyperbolic sine of number, expressed in radians.</para>
-<para>Parameters:</para>
-<variablelist>
-   <varlistentry>
-      <term>number</term>
-      <listitem><para>The number for which you wish to calculate the hyperbolic sine.
-      </para></listitem>
-   </varlistentry>
-   <varlistentry>
-      <term>precision</term>
-      <listitem><para>The precision of the calculation. If a value is not specified, the precision of
-      the calling Rexx activity is used. If the precision exceeds 16 digits, the call
-      will fail.
-      </para></listitem>
-   </varlistentry>
-</variablelist>
-</section>
-
-<section><title>RxCalcCosH()</title>
-<indexterm><primary>RxCalcCosH</primary></indexterm>
-<indexterm><primary>functions</primary>
-<secondary>RxCalcCosH</secondary></indexterm>
-<indexterm><primary>hyperbolic cosine of a number</primary></indexterm>
-<indexterm><primary>number, hyperbolic cosine of a</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-RxCalcCosH(number--+---------------+--)---------------------><
-                      +--, precision--+
-]]>
-</programlisting>
-<para>Returns the hyperbolic cosine of number, expressed in radians.</para>
-<para>Parameters:</para>
-<variablelist>
-   <varlistentry>
-      <term>number</term>
-      <listitem><para>The number for which you wish to calculate the hyperbolic cosine.
-      </para></listitem>
-   </varlistentry>
-   <varlistentry>
-      <term>precision</term>
-      <listitem><para>The precision of the calculation. If a value is not specified, the precision of
-      the calling Rexx activity is used. If the precision exceeds 16 digits, the call
-      will fail.
-      </para></listitem>
-   </varlistentry>
-</variablelist>
-</section>
-
-<section><title>RxCalcTanH()</title>
-<indexterm><primary>RxCalcTanH</primary></indexterm>
-<indexterm><primary>functions</primary>
-<secondary>RxCalcTanH</secondary></indexterm>
-<indexterm><primary>hyperbolic tangent of a number</primary></indexterm>
-<indexterm><primary>number, hyperbolic tangent of a</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-RxCalcTanH(number--+---------------+--)---------------------><
-                      +--, precision--+
-]]>
-</programlisting>
-<para>Returns the hyperbolic tangent of number, expressed in radians.</para>
-<para>Parameters:</para>
-<variablelist>
-   <varlistentry>
-      <term>number</term>
-      <listitem><para>The number for which you wish to calculate the hyperbolic tangent.
-      </para></listitem>
-   </varlistentry>
-   <varlistentry>
-      <term>precision</term>
-      <listitem><para>The precision of the calculation. If a value is not specified, the precision of
-      the calling Rexx activity is used. If the precision exceeds 16 digits, the call
-      will fail.
-      </para></listitem>
-   </varlistentry>
-</variablelist>
-</section>
-
-<section><title>RxCalcPower()</title>
-<indexterm><primary>RxCalcPower</primary></indexterm>
-<indexterm><primary>functions</primary>
-<secondary>RxCalcPower</secondary></indexterm>
-<indexterm><primary>raise a number to a power</primary></indexterm>
-<indexterm><primary>number to a power, raise a</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-RxCalcPower(number1, number2--+---------------+--)----------><
-                                 +--, precision--+
-]]>
-</programlisting>
-<para> Returns the value of mathematical expression number1 raised to the power of
-exponent number2.</para>
-<para>Parameters:</para>
-<variablelist>
-   <varlistentry>
-      <term>number1</term>
-      <listitem><para>The mathematical expression to be raised to the power of exponent
-      number2.
-      </para></listitem>
-   </varlistentry>
-   <varlistentry>
-      <term>number2</term>
-      <listitem><para>The exponent to which number1 is to be raised.
-      </para></listitem>
-   </varlistentry>
-   <varlistentry>
-      <term>precision</term>
-      <listitem><para>The precision of the calculation. If a value is not specified, the precision of
-      the calling Rexx activity is used. If the precision exceeds 16 digits, the call
-      will fail.
-      </para></listitem>
-   </varlistentry>
-</variablelist>
-</section>
-
-<section><title>RxCalcSin()</title>
-<indexterm><primary>RxCalcSin</primary></indexterm>
-<indexterm><primary>functions</primary>
-<secondary>RxCalcSin</secondary></indexterm>
-<indexterm><primary>sine value of a number</primary></indexterm>
-<indexterm><primary>number, sine value of a</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-RxCalcSin(number--+--------------------------+--)-----------><
-                     |                 +--D--+  |
-                     +--, precision, --+--R--+--+
-                                       +--G--+
-]]>
-</programlisting>
-<para>Returns the sine value for number, where number is the angle size, expressed in
-degree [D], radian [R], or grade [G] units.</para>
-<para>Parameters:</para>
-<variablelist>
-   <varlistentry>
-      <term>number</term>
-      <listitem><para>The angle size, expressed in degree [D], radian [R], or grade [G] units.
-      </para></listitem>
-   </varlistentry>
-   <varlistentry>
-      <term>precision</term>
-      <listitem><para>The precision of the calculation. If a value is not specified, the precision of
-      the calling Rexx activity is used. If the precision exceeds 16 digits, the call
-      will fail.
-      </para></listitem>
-   </varlistentry>
-   <varlistentry>
-      <term>D</term>
-      <listitem><para>Indicates that the angle size is expressed in degrees. This is the default.
-      </para></listitem>
-   </varlistentry>
-   <varlistentry>
-      <term>R</term>
-      <listitem><para>Indicates that the angle size is expressed in radians.
-      </para></listitem>
-   </varlistentry>
-   <varlistentry>
-      <term>G</term>
-      <listitem><para>Indicates that the angle size is expressed in grades.
-      </para></listitem>
-   </varlistentry>
-</variablelist>
-</section>
-
-<section><title>RxCalcCos()</title>
-<indexterm><primary>RxCalcCos</primary></indexterm>
-<indexterm><primary>functions</primary>
-<secondary>RxCalcCos</secondary></indexterm>
-<indexterm><primary>cosine value of a number</primary></indexterm>
-<indexterm><primary>number, cosine value of a</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-RxCalcCos(number--+--------------------------+--)-----------><
-                     |                 +--D--+  |
-                     +--, precision, --+--R--+--+
-                                       +--G--+
-]]>
-</programlisting>
-<para>Returns the cosine value for number, where number is the angle size, expressed in
-degree [D], radian [R], or grade [G] units.</para>
-<para>Parameters:</para>
-<variablelist>
-   <varlistentry>
-      <term>number</term>
-      <listitem><para>The angle size, expressed in degree [D], radian [R], or grade [G] units.
-      </para></listitem>
-   </varlistentry>
-   <varlistentry>
-      <term>precision</term>
-      <listitem><para>The precision of the calculation. If a value is not specified, the precision of
-      the calling Rexx activity is used. If the precision exceeds 16 digits, the call
-      will fail.
-      </para></listitem>
-   </varlistentry>
-   <varlistentry>
-      <term>D</term>
-      <listitem><para>Indicates that the angle size is expressed in degrees. This is the default.
-      </para></listitem>
-   </varlistentry>
-   <varlistentry>
-      <term>R</term>
-      <listitem><para>Indicates that the angle size is expressed in radians.
-      </para></listitem>
-   </varlistentry>
-   <varlistentry>
-      <term>G</term>
-      <listitem><para>Indicates that the angle size is expressed in grades.
-      </para></listitem>
-   </varlistentry>
-</variablelist>
-</section>
-
-<section><title>RxCalcTan()</title>
-<indexterm><primary>RxCalcTan</primary></indexterm>
-<indexterm><primary>functions</primary>
-<secondary>RxCalcTan</secondary></indexterm>
-<indexterm><primary>tangent value of a number</primary></indexterm>
-<indexterm><primary>number, tangent value of a</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-RxCalcTan(number--+--------------------------+--)-----------><
-                     |                 +--D--+  |
-                     +--, precision, --+--R--+--+
-                                       +--G--+
-]]>
-</programlisting>
-<para>Returns the tangent value for number, where number is the angle size, expressed in
-degree [D], radian [R], or grade [G] units.</para>
-<para>Parameters:</para>
-<variablelist>
-   <varlistentry>
-      <term>number</term>
-      <listitem><para>The angle size, expressed in degree [D], radian [R], or grade [G] units.
-      </para></listitem>
-   </varlistentry>
-   <varlistentry>
-      <term>precision</term>
-      <listitem><para>The precision of the calculation. If a value is not specified, the precision of
-      the calling Rexx activity is used. If the precision exceeds 16 digits, the call
-      will fail.
-      </para></listitem>
-   </varlistentry>
-   <varlistentry>
-      <term>D</term>
-      <listitem><para>Indicates that the angle size is expressed in degrees. This is the default.
-      </para></listitem>
-   </varlistentry>
-   <varlistentry>
-      <term>R</term>
-      <listitem><para>Indicates that the angle size is expressed in radians.
-      </para></listitem>
-   </varlistentry>
-   <varlistentry>
-      <term>G</term>
-      <listitem><para>Indicates that the angle size is expressed in grades.
-      </para></listitem>
-   </varlistentry>
-</variablelist>
-</section>
-
-<section><title>RxCalcCotan()</title>
-<indexterm><primary>RxCalcCotan</primary></indexterm>
-<indexterm><primary>functions</primary>
-<secondary>RxCalcCotan</secondary></indexterm>
-<indexterm><primary>cotangent value of a number</primary></indexterm>
-<indexterm><primary>number, cotangent value of a</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-RxCalcCotan(number--+--------------------------+--)---------><
-                       |                 +--D--+  |
-                       +--, precision, --+--R--+--+
-                                         +--G--+
-]]>
-</programlisting>
-<para>Returns the cotangent value for number, where number is the angle size, expressed
-in degree [D], radian [R], or grade [G] units.</para>
-<para>Parameters:</para>
-<variablelist>
-   <varlistentry>
-      <term>number</term>
-      <listitem><para>The angle size, expressed in degree [D], radian [R], or grade [G] units.
-      </para></listitem>
-   </varlistentry>
-   <varlistentry>
-      <term>precision</term>
-      <listitem><para>The precision of the calculation. If a value is not specified, the precision of
-      the calling Rexx activity is used. If the precision exceeds 16 digits, the call
-      will fail.
-      </para></listitem>
-   </varlistentry>
-   <varlistentry>
-      <term>D</term>
-      <listitem><para>Indicates that the angle size is expressed in degrees. This is the default.
-      </para></listitem>
-   </varlistentry>
-   <varlistentry>
-      <term>R</term>
-      <listitem><para>Indicates that the angle size is expressed in radians.
-      </para></listitem>
-   </varlistentry>
-   <varlistentry>
-      <term>G</term>
-      <listitem><para>Indicates that the angle size is expressed in grades.
-      </para></listitem>
-   </varlistentry>
-</variablelist>
-</section>
-
-<section><title>RxCalcPi()</title>
-<indexterm><primary>RxCalcPi</primary></indexterm>
-<indexterm><primary>functions</primary>
-<secondary>RxCalcPi</secondary></indexterm>
-<indexterm><primary>value of pi</primary></indexterm>
-<indexterm><primary>pi, value of</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-RxCalcPi(--+---------------+--)-----------------------------><
-              +--, precision--+
-]]>
-</programlisting>
-<para>Returns the value of pi.</para>
-<para>Parameters:</para>
-<variablelist>
-   <varlistentry>
-      <term>precision</term>
-      <listitem><para>The precision of the calculation. If a value is not specified, the precision of
-      the calling Rexx activity is used. If the precision exceeds 16 digits, the call
-      will fail.
-      </para></listitem>
-   </varlistentry>
-</variablelist>
-</section>
-
-<section><title>RxCalcArcSin()</title>
-<indexterm><primary>RxCalcArcSin</primary></indexterm>
-<indexterm><primary>functions</primary>
-<secondary>RxCalcArcSin</secondary></indexterm>
-<indexterm><primary>arcsine value of a number</primary></indexterm>
-<indexterm><primary>number, arcsine value of a</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-RxCalcArcSin(number--+--------------------------+--)--------><
-                        |                 +--D--+  |
-                        +--, precision, --+--R--+--+
-                                          +--G--+
-]]>
-</programlisting>
-<para> Returns the arcsine of number, where the result can be expressed in degree [D],
-radian [R], or grade [G] units.</para>
-<para>Parameters:</para>
-<variablelist>
-   <varlistentry>
-      <term>number</term>
-      <listitem><para>The number for which the arcsine is to be calculated.
-      </para></listitem>
-   </varlistentry>
-   <varlistentry>
-      <term>precision</term>
-      <listitem><para>The precision of the calculation. If a value is not specified, the precision of
-      the calling Rexx activity is used. If the precision exceeds 16 digits, the call
-      will fail.
-      </para></listitem>
-   </varlistentry>
-   <varlistentry>
-      <term>D</term>
-      <listitem><para>Indicates that the result is expressed in degrees. This is the default.
-      </para></listitem>
-   </varlistentry>
-   <varlistentry>
-      <term>R</term>
-      <listitem><para>Indicates that the result is expressed in radians.
-      </para></listitem>
-   </varlistentry>
-   <varlistentry>
-      <term>G</term>
-      <listitem><para>Indicates that the result is expressed in grades.
-      </para></listitem>
-   </varlistentry>
-</variablelist>
-</section>
-
-<section><title>RxCalcArcCos()</title>
-<indexterm><primary>RxCalcArcCos</primary></indexterm>
-<indexterm><primary>functions</primary>
-<secondary>RxCalcArcCos</secondary></indexterm>
-<indexterm><primary>arccosine value of a number</primary></indexterm>
-<indexterm><primary>number, arccosine value of a</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-RxCalcArcCos(number--+--------------------------+--)--------><
-                        |                 +--D--+  |
-                        +--, precision, --+--R--+--+
-                                          +--G--+
-]]>
-</programlisting>
-<para>Returns the arccosine of number, where the result can be expressed in degree [D],
-radian [R], or grade [G] units.</para>
-<para>Parameters:</para>
-<variablelist>
-   <varlistentry>
-      <term>number</term>
-      <listitem><para>The number for which the arccosine is to be calculated.
-      </para></listitem>
-   </varlistentry>
-   <varlistentry>
-      <term>precision</term>
-      <listitem><para>The precision of the calculation. If a value is not specified, the precision of
-      the calling Rexx activity is used. If the precision exceeds 16 digits, the call
-      will fail.
-      </para></listitem>
-   </varlistentry>
-   <varlistentry>
-      <term>D</term>
-      <listitem><para>Indicates that the result is expressed in degrees. This is the default.
-      </para></listitem>
-   </varlistentry>
-   <varlistentry>
-      <term>R</term>
-      <listitem><para>Indicates that the result is expressed in radians.
-      </para></listitem>
-   </varlistentry>
-   <varlistentry>
-      <term>G</term>
-      <listitem><para>Indicates that the result is expressed in grades.
-      </para></listitem>
-   </varlistentry>
-</variablelist>
-</section>
-
-<section><title>RxCalcArcTan()</title>
-<indexterm><primary>RxCalcArcTan</primary></indexterm>
-<indexterm><primary>functions</primary>
-<secondary>RxCalcArcTan</secondary></indexterm>
-<indexterm><primary>arctangent value of a number</primary></indexterm>
-<indexterm><primary>number, arctangent value of a</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-RxCalcArcTan(number--+--------------------------+--)--------><
-                        |                 +--D--+  |
-                        +--, precision, --+--R--+--+
-                                          +--G--+
-]]>
-</programlisting>
-<para>Returns the arctangent of number, where the result can be expressed in degree [D],
-radian [R], or grade [G] units.</para>
-<para>Parameters:</para>
-<variablelist>
-   <varlistentry>
-      <term>number</term>
-      <listitem><para>The number for which the arctangent is to be calculated.
-      </para></listitem>
-   </varlistentry>
-   <varlistentry>
-      <term>precision</term>
-      <listitem><para>The precision of the calculation. If a value is not specified, the precision of
-      the calling Rexx activity is used. If the precision exceeds 16 digits, the call
-      will fail.
-      </para></listitem>
-   </varlistentry>
-   <varlistentry>
-      <term>D</term>
-      <listitem><para>Indicates that the result is expressed in degrees. This is the default.
-      </para></listitem>
-   </varlistentry>
-   <varlistentry>
-      <term>R</term>
-      <listitem><para>Indicates that the result is expressed in radians.
-      </para></listitem>
-   </varlistentry>
-   <varlistentry>
-      <term>G</term>
-      <listitem><para>Indicates that the result is expressed in grades.
-      </para></listitem>
-   </varlistentry>
-</variablelist>
-</section>
-
+  </section>
 </chapter>
 
 &notices;
