@@ -51,8 +51,8 @@ OOTEST_SGML_FILES = ootest.sgml \
      ../shared/CPLv1.0.sgml
 
 OOTESTQS_SGML_FILES = ootestQuick.sgml \
+     legalstuff_oot.sgml \
      ../shared/notices.sgml \
-     ../shared/legalstuff.sgml \
      ../shared/gethelp.sgml \
      ../shared/CPLv1.0.sgml
 
@@ -102,8 +102,6 @@ ootestQuick_index.sgml: $(HTML_STYLESHEET) $(OOTESTQS_SGML_FILES) svnrev.tmp
 
 svnrev.tmp:
 	svnversion > svnrev.tmp
-
-
 
 
 clean:

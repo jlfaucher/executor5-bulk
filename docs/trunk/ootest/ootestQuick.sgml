@@ -1,7 +1,7 @@
 <?xml version="1.0" standalone="no">
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook V4.2//EN"
 [
-<!ENTITY legalstuff SYSTEM "../shared/legalstuff.sgml">
+<!ENTITY legalstuff SYSTEM "legalstuff_oot.sgml">
 <!ENTITY notices    SYSTEM "../shared/notices.sgml">
 <!ENTITY cpl        SYSTEM "../shared/CPLv1.0.sgml">
 <!ENTITY gethelp    SYSTEM "../shared/gethelp.sgml">
@@ -49,36 +49,42 @@
 -->
 <book>
 <bookinfo>
-<title>A Quick Start to Writing ooRexx Test Cases</title>
-<titleabbrev>Quick Start</titleabbrev>
+<title>Using the ooTest Framework to Write ooRexx Test Cases</title>
+<subtitle>Quick Start</subtitle>
+<titleabbrev>ooTest Quick Start</titleabbrev>
 
 &legalstuff;
 
 </bookinfo>
 
 <preface id="preface"><title>About This Book</title>
-<para>ooTest is a testing framework that facilitates the testing of the ooRexx
-interpreter.  It sits on top of the ooRexxUnit framework which is a generic
-testing framework that anyone can use to test their Rexx applications.
+<para>
+    ooTest is a testing framework that facilitates the testing of the ooRexx
+    interpreter.  It sits on top of the ooRexxUnit framework which is a generic
+    testing framework that anyone can use to test their Rexx applications.
 </para>
-<para>This PDF attempts to give anyone, even those with only a small
-understanding of Rexx, a quick start to writing test cases to test the ooRexx
-interpreter. In particular, it is geared towards the person who says: I would
-like to help the ooRexx project by writing test cases, but I don't understand
-that object stuff.
+<para>
+    This PDF attempts to give anyone, even those with only a small understanding
+    of Rexx, a quick start to writing test cases that test the ooRexx
+    interpreter. In particular, it is geared towards the person who says: I
+    would like to help the ooRexx project by writing test cases, but I don't
+    understand that object stuff.
 </para>
-<para>The Quick Start comes from a series of e-mail messages I posted on the
-ooRexx Developer's list.  As such it has a rather informal tone.  The basic idea
-driving this book is that by using a few mechanical techniques along with some
-boilerplate code, anyone who can write a small piece of Rexx code can write a
-working test case.  Although the ooTest framework is object orientated, you do
-not need to know objects, or even understand objects to write test cases.
+<para>
+    The Quick Start comes from a series of e-mail messages I posted on the
+    ooRexx Developer's list.  As such it has a rather informal tone.  The basic
+    idea driving this book is that by using a few mechanical techniques along
+    with some boilerplate code, anyone who can write a small piece of Rexx code
+    can write a working test case.  Although the ooTest framework is object
+    orientated, you do not need to know objects, or even understand objects, to
+    write test cases.
 </para>
-<para>It is not my intention to fully explain every detail here.  My intention
-is to get some people started writing test cases.  I believe that if you use the
-boilerplate code to start writing test cases, some of the object stuff will just
-seep in.  Because of this, writing test cases is a good way to slowly get used
-to using objects in your own ooRexx code.
+<para>
+    It is not my intention to fully explain every detail here.  My intention is
+    to get some people started writing test cases.  I believe that if you use
+    the boilerplate code to start writing test cases, some of the object stuff
+    will just seep in.  Because of this, writing test cases is a good way to
+    slowly get used to using objects in your own ooRexx code.
 </para>
 
 <section id="relinf"><title>Related Information</title>
@@ -86,12 +92,16 @@ to using objects in your own ooRexx code.
 <citetitle pubwork="book">Open Object Rexx: Reference</citetitle></para>
 </section>
 
-
 &gethelp;
 
 </preface>
 
 <chapter><title>First Steps</title>
+<para>
+    We'll start with a quick explanation of how to get started and a little bit
+    of an overview.
+</para>
+<section><title>ooRexxUnit Snapshots/title>
 <para>
     Download one of the ooRexxUnit snapshots from SourceForge.  Through out this
     discussion I use the term ooRexxUnit and ooTest interchangeably. ooRexxUnit
@@ -153,6 +163,7 @@ to using objects in your own ooRexx code.
 
     <ulink url="http://rexxla.org/"><citetitle>RexxLA Home Page</citetitle></ulink>
 </para>
+</section>
 
 <section><title>Download</title>
 <para>
@@ -165,8 +176,8 @@ to using objects in your own ooRexx code.
 </para>
 <para>
     Most of the times the snapshots are packaged in both zip and tar format.
-    However, the ooTest framework and files are completely platform independent
-    so any package will work on any system that ooRexx is working on.  Pick the
+    However, the ooTest framework and files are completely platform independent.
+    Either package will work on any system that ooRexx is working on.  Pick the
     packaging type that is most convenient for your needs.
 </para>
 </section>
@@ -175,7 +186,6 @@ to using objects in your own ooRexx code.
     Open a console window and unzip or untar the snapshot in a convenient spot.
     After unpackaging you will end up with a directory structure similar to
     this:
-
 <programlisting>
 <![CDATA[
 ooRexxUnit.X.X.X
@@ -193,9 +203,7 @@ ooRexxUnit.X.X.X
              *-----<subdirectories>
 ]]>
 </programlisting>
-
 </para>
-
 <para>
     The framework directory and subdirectories contain additional documentation
     and examples.
@@ -208,28 +216,13 @@ ooRexxUnit.X.X.X
 <para>
     The misc directory has, well miscellaneous stuff.  The most important of
     which for this discussion is a template file that can be used to start your
-    test group files.
+    test group files and several examples of test group files.
 </para>
 </section>
 <section><title>Test Your Install</title>
 <para>
-  After unpackaging the snapshot cd into the top level directory and read the
-  ReadMe.first file.
-</para>
-<para>
-  The program file testOORexx.rex is what drives the automated execution of the
-  test cases.  Provided that you have a standard ooRexx install, you can execute
-  the entire test case with the command below.
-</para>
-<note><title>Note</title><para>
-  For the sake of this document I am going to show examples on Windows.  But,
-  the same general thing applies to Linux.  Just translate the slashes.  In
-  addition the examples are from the 3.2.0 version of ooTest.  The same general
-  principles apply to whatever snapshot you have.
-</para></note>
-<para>
-  This command will execute the entire test suite.  Depending on your system it
-  will take several minutes to finish.
+  After unpackaging the snapshot, cd into the top level directory and read the
+  ReadMe.first file.  The top level directory will look similar to below:
 <programlisting>
 <![CDATA[
 E:\work.ooRexx\ooRexxUnit\3.2.0>dir
@@ -255,7 +248,25 @@ E:\work.ooRexx\ooRexxUnit\3.2.0>dir
 01/12/2008  08:44 PM            18,190 worker.rex
               10 File(s)        128,908 bytes
                6 Dir(s)  14,359,519,232 bytes free
-
+]]>
+</programlisting>
+</para>
+<note><title>Note</title><para>
+  For the sake of this document I am going to show examples on Windows.  But,
+  the same general thing applies to Linux.  Just translate the slashes.  In
+  addition the examples are from the 3.2.0 version of ooTest.  The same general
+  principles apply to whatever snapshot you have.
+</para></note>
+<para>
+  The program file testOORexx.rex is what drives the automated execution of the
+  test cases.  Provided that you have a standard ooRexx install, you can execute
+  the entire test case with the command below.
+</para>
+<para>
+  This command will execute the entire test suite.  Depending on your system it
+  will take several minutes to finish.
+<programlisting>
+<![CDATA[
 E:\work.ooRexx\ooRexxUnit\3.2.0>rexx testOORexx.rex -V 5
 Searching for test containers........................................
 Executing automated test suite..............................................
@@ -336,12 +347,16 @@ E:\work.ooRexx\ooRexxUnit\3.2.0>
 ]]>
 </programlisting>
 </para>
-</section>
-<section><title>Understanding What you See</title>
 <para>
   You should get results similar to the above.  Included with the snapshot is a
   file called expected results.  That file should show you results similar to
-  what you actually get.  Let's pick the above apart.  The below stats show:
+  what you actually get.
+</para>
+</section>
+<section><title>Understanding What you See</title>
+<para>
+  We looked at the entire output from running the automated test suite. Let's
+  examine some of the sections in more detail.  The below stats show:
 <programlisting>
 <![CDATA[
 Interpreter: REXX-ooRexx_3.2.0(MT) 6.02 30 Oct 2007
@@ -369,7 +384,9 @@ Total time:         00:03:11.620000
   For a little terminology.  When you write a test case there are 2 expected
   outcomes.  It is expected that the test case either passes or fails.  So in
   ooTest, a failure is a test case that did not pass.  An error is an
-  *unexpected* event.
+  <emphasis role="bold">unexpected</emphasis> event.  We are going to ignore
+  the errors for now.  In general they indicate something is wrong, maybe with the
+  framework, maybe with the interpreter.
 </para>
 <para>
   I'm going to just explain one of the failures.  You have this output:
@@ -392,7 +409,7 @@ Total time:         00:03:11.620000
   line 576 in the file ... Class.testGroup.
 </para>
 <para>
-  What failed was an assertion that two things were equal.  It was
+  What failed was an assertion that two things were equal.  The thing was
   expected to be equal to '123' but it actually was '231'
 </para>
 <para>
@@ -416,8 +433,8 @@ Total time:         00:03:11.620000
 </para>
 <para>
   Think of the method just as a routine for now with some prefix on it that you
-  do not need to worry about.  The routine has 2 args and what we are doing is
-  asserting that the 2 args are equal.
+  do not need to worry about.  The routine name is assertEquals.  The routine
+  has 2 args and what we are doing is asserting that the 2 args are equal.
 </para>
 <para>
   If they are not equal, the test case fails and the ooTest framework takes care
@@ -436,26 +453,20 @@ Total time:         00:03:11.620000
 ]]>
 </programlisting>
   Think of the method as a routine, for now, that is named:
-  test_MULTIPLE_INHERITANCE_WITH_MULTIPLE_METACLASSES
+  <computeroutput>test_MULTIPLE_INHERITANCE_WITH_MULTIPLE_METACLASSES</computeroutput>.
+  And that is the test name, the name reported in the print out.  Next is the assertion,
+  <computeroutput>assertEquals()</computeroutput>.The test writer is asserting that
+  <computeroutput>"123"</computeroutput> is equal to <computeroutput>.class123~info</computeroutput>.
+  The assertion failed, the test failed.
 </para>
 <para>
-  And that is the test name, the name reported in the print out.  That
-  is the assertion.  The test writer is asserting that "123" is equal to
-  .class123~info.  The assertion failed, the test failed.
-</para>
-<para>
-  You and I don't need to figure out what .class123~info is right now.
+  You and I don't need to figure out what <computeroutput>.class123~info</computeroutput> is right now.
 </para>
 <para>
   Enough for an introduction.
 </para>
 </section>
 </chapter>
-
-<programlisting>
-<![CDATA[
-]]>
-</programlisting>
 
 <chapter><title>Starting to Write a Test Case</title>
 <para>
@@ -487,7 +498,7 @@ Total time:         00:03:11.620000
 <para>
   That is boilerplate, just type it.  Then the next key thing is that
   the framework executes each method whose name begins with 'test', case
-  not significant as a test case.  We need to name the test case method
+  not significant, as a test case.  We need to name the test case method
   so we do this:
 <programlisting>
 <![CDATA[
@@ -521,41 +532,52 @@ Total time:         00:03:11.620000
   file, I'll show that later.
 </para>
 <para>
-  To get started, think of ::method as a function think of self~assertEquals as
-  a function with a prefix of 'self~'  and we'll worry about learning about
-  classes some other time.  This is enough to write test cases.
+  To get started, think of <computeroutput>::method</computeroutput> as a the
+  beginning of a function think of <computeroutput>self~assertEquals()</computeroutput>
+   as a call to a function with a prefix of <computeroutput>'self~'</computeroutput>  and
+  we'll worry about learning about classes some other time.  This is enough to
+  write test cases.
 </para></section>
 
 <section><title>Contributing to the ooRexx Project</title>
 <para>
-  First, a little info on contributing to the ooRexx project / to the test
-  suite.
+  At this point, I'm going to interject a little info on contributing to
+  the ooRexx project / contributing to the test suite.
 </para>
 <para>
   The test suite is enormously helpful to the project.  Everyone and any
   one can contribute to this effort.  Even though we have a large number
-  of tests we still have a lot of holes.
+  of tests, we still have a lot of holes in the coverage.
 </para>
 <para>
   There are 4 main ways someone can contribute:
 </para>
 
 <itemizedlist>
-<listitem><para>1.) You could write a whole new *.testGroup file.</para></listitem>
-<listitem><para>2.) You can add tests to an existing .testGroup file.</para></listitem>
-<listitem><para>3.) You can examine existing test case code for correctness and
-correct or improve wrong or weak test cases.</para></listitem>
-<listitem><para>4.) You can help organize or promote the contribution of test cases
-into the project.</para></listitem>
+<listitem>
+  <para>You could write a whole new *.testGroup file.</para>
+</listitem>
+<listitem>
+  <para>You can add tests to an existing .testGroup file.</para>
+</listitem>
+<listitem>
+  <para>
+    You can examine existing test case code for correctness and correct or
+    improve wrong or weak test cases.
+  </para>
+</listitem>
+<listitem>
+  <para>
+    You can help organize or promote the contribution of test cases into the
+    project.
+  </para>
+</listitem>
 </itemizedlist>
 
 <para>
   It is my strong opinion that all the .testGroup files in the test
-  suite are works in progress.
-</para>
-<para>
-  We could really use more pairs of eye examining the existing
-  .testGroup files with a critical eye.
+  suite are works in progress. In addition, we could really use more pairs of
+  eye examining the existing .testGroup files with a critical eye.
 </para>
 <para>
   Any one and every one is encouraged to either add to an existing file
@@ -572,18 +594,18 @@ into the project.</para></listitem>
   right away and get fixed.
 </para>
 <para>
-  You may think that there is no way the say instruction could be
+  For example, you may think that there is no way the say instruction could be
   broken.  But what about if you have this in a Rexx file:
 <programlisting>
 <![CDATA[
-/* Simple.rex */
-say 'Hello World'
+  /* Simple.rex */
+  say 'Hello World'
 ]]>
 </programlisting>
   and then run it like this:
 <programlisting>
 <![CDATA[
-E:\>rexx Simple.rex > myTest.file
+  E:\>rexx Simple.rex > myTest.file
 ]]>
 </programlisting>
 </para>
@@ -617,10 +639,409 @@ E:\>rexx Simple.rex > myTest.file
   group.
 </para></section>
 </chapter>
-<chapter>
-  <section><title>A First Test Case</title>
+<chapter><title>Starting a Test Group from Scratch</title>
+<para>
+    In the ooTest framework, tests are orgainized as follows. An assertation is
+    a single test.  A single method represents a test case.  Each test case
+    would contain at least one assertion, but often a test case will contain
+    several assertation.  Then a number of test cases for a similar area are
+    gathered together in a file, which we call a test group.
+</para>
+<section><title>Starting a Test Group</title>
+<para>
+  I'm going to assume that the reader has been following along in the thread and
+  try not to repeat myself. The idea behind this thread is to show how to start
+  writing test cases even if you do not understand classes by using boilerplate
+  code.
+</para>
+<para>
+    If you downloaded a snapshot and unzipped it, it will have creates a
+    directory tree.  We start in the root of the tree which will be named
+    ooRexxUnit.X.X.X.
+</para>
+<para>
+    There is the misc/ subdirectory.  It has a template file.  Pick a name
+    for the test group and figure out roughly where it should go.  Copy
+    the template to the subdirectory renaming it in the copy.  I am going
+    to work with the stream BIF, since we do not even have a test group
+    started for that important BIF.  This example is on Linux
+<programlisting>
+<![CDATA[
+Raven:/ooRexxUnit.3.2.0 # cp misc/template.testGroup ooRexx/base/bif/STREAM.testGroup
+]]>
+</programlisting>
+</para>
+<para>
+    You don't even have to put it in the proper subdirectory.  To get
+    started you could just put it anywhere under the ooRexx subdirectory.
+<programlisting>
+<![CDATA[
+Raven:/ooRexxUnit.3.2.0 # cp misc/template.testGroup ooRexx/STREAM.testGroup
+]]>
+</programlisting>
+</para>
+<para>
+    Open the file in an editor.  The first thing I do is a search and
+    replace of template.testGroup with STREAM.testGroup.  I'm not going to
+    give editor lessons, but if you do not understand classes, be sure you
+    don't skip this first step.
+</para>
+<para>
+    Then starting at the top of the editor we have the first 41 lines that
+    you just ignore and leave alone.  The first few are:
+<programlisting>
+<![CDATA[
+    #!/usr/bin/rexx
+    /*
+     SVN Revision: $Rev: 2267 $
+     Change Date:  $Date: 2008-01-18 09:41:04 -0800 (Fri, 18 Jan 2008) $
+    */
+]]>
+</programlisting>
+    Which are just book keeping. #!/usr/bin/rexx so the file will execute as
+    a script on Linux, etc.  The next is just svn book keeping.  Then there
+    is the license text.
+</para>
+<para>
+    Starting on line 42 through 51 we have what I think of as the entry
+    point to an ooRexx program that has directives in it.  You do not need
+    to understand this to start off with, it is the code that lets the
+    framework automate the execution of tests.  You just need to be sure
+    you changed template.testGroup to STREAM.testGroup.  The lines look
+    like:
+<programlisting>
+<![CDATA[
+  parse source . . s
 
-  </section>
+  group = .TestGroup~new(s)
+  group~add(.STREAM.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+ return testResult
+ -- End of entry point.
+]]>
+</programlisting>
+</para>
+<para>
+    Briefly what this does is:
+
+    create a new TestGroup object using the full path name of the file.
+
+    add the STREAM.testGroup class to the test group
+
+    magically test if the invocation of the program is part of an
+    automated test.  If so the group object is returned and the code
+    execution is done.
+
+    If not an automated test, it is a stand alone test.  The test group
+    executes all the tests it contains and prints out the results, then
+    returns the test result object.  This allows you to execute the tests
+    by just invoking the file as an ooRexx program.  I am not going to go
+    into details about that now.
+</para>
+<para>
+    When working on just your own test group file, it is best to just run
+    the single test group by itself through the frame work:
+
+    Right now you have a complete test group that will execute.  You can
+    run it.  Using my shortcut directory:
+<programlisting>
+<![CDATA[
+    Raven:/ooRexxUnit.3.2.0 # ./testOORexx.rex -R ooRexx -f STREAM
+]]>
+</programlisting>
+    (The above should work, but I can not try it right now, so I am going
+    to show Windows.)
+<programlisting>
+<![CDATA[
+    E:\ooRexxUnit.3.2.0>testOORexx.rex -R ooRexx\ -f STREAM
+    Searching for test containers..
+    Executing automated test suite..
+
+    ooTest Framework - Automated Test of the ooRexx Interpreter
+
+
+    Interpreter: REXX-ooRexx_3.2.0(MT) 6.02 30 Oct 2007
+    ooRexxUnit:  2.0.0_3.2.0        ooTest: 1.0.0_3.2.0
+
+    Tests ran:           4
+    Assertions:          2
+    Failures:            0
+    Errors:              0
+    Skipped files:       0
+
+    File search:        00:00:00.047000
+    Suite construction: 00:00:00.000000
+    Test execution:     00:00:00.000000
+    Total time:         00:00:01.000000
+
+    E:\ooRexxUnit.3.2.0>
+]]>
+</programlisting>
+</para>
+<para>
+    Okay, that's it you created and executed your first group of tests.  4
+    tests ran using 2 assertions with no failures or errors.  On my system
+    the total execution time was 1 second.
+</para>
+<para>
+    That takes care of all the initial steps.  You have a working test group.
+</para>
+<para>
+    The next installment will show adding some test cases to the new test group.
+</para>
+</section>
+<section><title>S</title>
+Picking up with writing the new test group STREAM.testGroup.
+
+The last post showed the top boilerplate from the the template file.
+This picks up the actual test case class.  I'm not to going to explain
+too much about the class part of this, I'll save that for later.  This
+is about just editing the boilerplate to quickly get started.
+
+This is the rest of the file, leaving out some comment lines.  Format
+your code however you like.
+
+-- End of entry point.
+
+::requires 'ooTest.frm'
+
+::class "STREAM.testGroup" public subclass ooTestCase
+
+ ::method test_YYY
+   self~assertTrue(.true)
+
+ ::method  test_XXX
+   self~assertSame('dog', 'dog')
+
+The ::requires line pulls in the ooTest framework.  That is what
+provides the backing code for our test cases.
+
+Then we have our STREAM.testGroup class which is a subclass of
+ooTestCase.  Once you do the replace of template.testGroup with
+STREAM.testGroup you are done with those lines.  You can just leave
+the boilerplate alone and figure out what this means later.
+
+Then, to restate what I've said earlier.  Each individual test is a
+method of the test case class where the method names starts with
+'test'  Here our test case class is: STREAM.testGroup and we see that
+we have 2 methods: test_YYY and test_XXX.
+
+That is why executing the STREAM.testGroup file actually runs some
+tests, even though we didn't add any tests to the file yet.
+
+If you don't understand classes yet, just think of the two methods as
+two routines, or functions, or procedures.  Whichever terminology you
+are comfortable with.  I'm going to call them methods, because that's
+what they are.
+
+The 2 methods are in the template to jog your memory and get you
+started.  I start out by editing the first method and coding an actual
+test.  We are doing a group of tests for the stream BIF, so an easy
+way to get started is to look at the documentation for the stream BIF.
+
+If you are following along and don't understand stream at all, the
+advice is that the principles here apply to writing any test cases,
+pick some area of Rexx you do understand.
+
+For Bill, I have to add, if you don't understand stream, then digging
+in to it enough to write some test cases is a great way to learn about
+stream.
+
+Looking at the doc, we see that it says stream returns a string, which
+string is dependent on the args to stream, and that the first arg
+names the stream to be worked with.  The second arg can be one of:
+State, Command, or Description.
+
+Now for the Description arg it says that it returns the same string as
+State, but with a colon at the end, maybe followed by some text
+describing an error or not ready condition.
+
+That suggests a test.  If we use the Description arg, the returned
+string must have a colon in it.
+
+This is the interesting part.  If you like to program, then it is
+usually fun to think of a way to code a test for this.  Here is one.
+
+The mechanics of this are to change the name of the first method.  The
+restriction is that every method in the class has to have an unique
+name.  If there is a failure, the name of the method gets printed out.
+ If the name of the method reflects the test, it is a little easier to
+discern what the test is about.  But, you could just name every method
+test_001, test_002, test_003 and so on.
+
+Here goes, rename the method:
+
+::method test_description_arg
+
+One of the most common types of streams is file input or output.  The
+name of the stream is the file name.  One approach is to use a file
+name for the stream name, use the Description arg, and validate the
+return:
+
+::method test_description_arg
+ streamName = ???
+ retString = stream(streamName, "Description")
+ <check retString>
+
+Remember this is going to be an automated test that should run on any
+system.  We don't want to use a file name that is on your system, but
+is not on Rick's system.  What file name are we absolutely sure
+exists?
+
+The STREAM.testGroup file, for sure, because that is the file we are
+using.  We can get that name from parse source.  If you don't know
+parse source, look it up in the doc.
+
+::method test_description_arg
+ parse source junk notUsed streamName
+ retString = stream(streamName, "Description")
+ <check retString>
+
+Now we just need to code the check of retString.
+
+Here we are at the core of the ooTest framework.  We validate expected
+results by using one of the assertXXX() methods.  I will list the
+different assertXXX a little later.
+
+In the template code we already had:
+
+ self~assertTrue(.true)
+
+The meaning of that should be easy enough to discern.  We are
+asserting that .true is true.
+
+Okay, our test is about the stated fact that the Description arg must
+return a string with a colon in it.  We need to write some code that
+we can get true out of.  There are a number of ways to do this.  I'll
+use a BIF since this is directed toward people who may not know
+classes too well.
+
+We know that if the returned string has a colon in it, then the pos
+bif will return a non-zero position for the colon.   Here is the
+complete test case:
+
+::method test_description_arg
+ parse source junk notUsed streamName
+ retString = stream(streamName, "Description")
+ p = pos(retSting, ":")
+ self~assertTrue(p > 0)
+
+And here is the output from executing this test group (stripped of a
+little bit):
+
+C:\ooRexxUnit.3.2.0>rexx testOORexx.rex -R ooRexx -f stream
+...
+
+Tests ran:           4
+Assertions:          1
+Failures:            1
+Errors:              0
+Skipped files:       0
+
+[failure] [20080701 07:48:09.882000]
+ Test:   TEST_DESCRIPTION_ARG
+ Class:  STREAM.testGroup
+ File:   C:\work.ooRexx\ooRexxUnit\3.2.0\ooRexx\STREAM.testGroup
+ Line:   68
+ Failed: assertTrue
+   Expected: [1]
+   Actual:   [[0], identityHash="535806184"]
+
+This is perfect!  Okay, the output shows that the test named
+TEST_DESCRIPTION_ARG failed.    Whoa, that's the one I just wrote.  It
+shows that what failed was assertTrue and that it was on line 68.
+
+What was expected was 1 (true) but the actual was 0 (false)
+
+Let's look at the test case again:
+
+ p = pos(retSting, ":")
+ self~assertTrue(p > 0)
+
+I always forget the args to pos.  They are needle, haystack.  I coded
+haystack, needle.  Well the astute observer may have noticed that I
+also coded retSting rather than retString
+
+The fixed test case:
+
+::method test_description_arg
+ parse source junk notUsed streamName
+ retString = stream(streamName, "Description")
+ p = pos(":", retString)
+ self~assertTrue(p > 0)
+
+The output:
+
+Interpreter: REXX-ooRexx_3.2.0(MT) 6.02 30 Oct 2007
+ooRexxUnit:  2.0.0_3.2.0        ooTest: 1.0.0_3.2.0
+
+Tests ran:           4
+Assertions:          2
+Failures:            0
+Errors:              0
+Skipped files:       0
+
+File search:        00:00:00.160000
+Suite construction: 00:00:00.000000
+Test execution:     00:00:00.000000
+Total time:         00:00:00.160000
+
+Alright.  Now, if someone rewrote the stream libraries, a lot of work,
+and had some trivial error that forgot to tack on the ":" for the
+Description arg, we have a test case that would catch it.
+
+Let's do one more quickly.
+
+The doc also says that the Description arg returns the same the same
+string as the State arg, with a colon and some other possible text
+added after the colon.  That suggests a test.
+
+Here is the code.  Notice the use of assertSame() which really fits in
+with the semantics of the test.  We are testing that the Description
+and State args return the same string:
+
+::method  test_description_state_same
+ parse source junk notUsed streamName
+
+ retDiscrpt = stream(streamName, "Description")
+ retState   = stream(streamName, "State")
+
+ retDiscrpt = left(retDiscrpt, pos(":", retDiscrpt) - 1)
+
+ self~assertSame(retDiscrpt, retState)
+
+Here is the output:
+
+C:\ooRexxUnit.3.2.0>rexx testOORexx.rex -R ooRexx -f stream
+...
+Interpreter: REXX-ooRexx_3.2.0(MT) 6.02 30 Oct 2007
+ooRexxUnit:  2.0.0_3.2.0        ooTest: 1.0.0_3.2.0
+
+Tests ran:           4
+Assertions:          2
+Failures:            0
+Errors:              0
+Skipped files:       0
+
+File search:        00:00:00.160000
+Suite construction: 00:00:00.000000
+Test execution:     00:00:00.000000
+Total time:         00:00:00.160000
+
+To code the 2 tests, we really just used classic Rexx.  The 'object'
+stuff is confined to some boilerplate code that you should be able to
+use without really understanding it.  The process of just writing
+this, will allow the 'object' stuff to start seeping in.
+
+Next installment:  I am always threatening to write the documentation
+for the ooTest framework, but it is an empty threat.  Or - what *are*
+the assertXXX methods?
+
+</section>
 </chapter>
 
 &notices;
