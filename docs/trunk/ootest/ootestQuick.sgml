@@ -101,7 +101,7 @@
     We'll start with a quick explanation of how to get started and a little bit
     of an overview.
 </para>
-<section><title>ooRexxUnit Snapshots/title>
+<section><title>ooRexxUnit Snapshots</title>
 <para>
     Download one of the ooRexxUnit snapshots from SourceForge.  Through out this
     discussion I use the term ooRexxUnit and ooTest interchangeably. ooRexxUnit
@@ -175,10 +175,10 @@
     and download the snapshot for your version of ooRexx.
 </para>
 <para>
-    Most of the times the snapshots are packaged in both zip and tar format.
-    However, the ooTest framework and files are completely platform independent.
-    Either package will work on any system that ooRexx is working on.  Pick the
-    packaging type that is most convenient for your needs.
+  Most of the time the snapshots are packaged in both zip and tar format.
+  However, the ooTest framework and files are completely platform independent.
+  Either package will work on any system that ooRexx is working on.  Pick the
+  packaging type that is most convenient for your needs.
 </para>
 </section>
 <section><title>Extract the Files</title>
@@ -258,99 +258,97 @@ E:\work.ooRexx\ooRexxUnit\3.2.0>dir
   principles apply to whatever snapshot you have.
 </para></note>
 <para>
-  The program file testOORexx.rex is what drives the automated execution of the
-  test cases.  Provided that you have a standard ooRexx install, you can execute
-  the entire test case with the command below.
-</para>
-<para>
-  This command will execute the entire test suite.  Depending on your system it
-  will take several minutes to finish.
-<programlisting>
-<![CDATA[
-E:\work.ooRexx\ooRexxUnit\3.2.0>rexx testOORexx.rex -V 5
-Searching for test containers........................................
-Executing automated test suite..............................................
-...........................................................................
-..........
+  The program file <computeroutput>testOORexx.rex</computeroutput> is what
+  drives the automated execution of the test cases.  Provided that you have
+  a standard ooRexx install, you can execute the entire test suite as
+  follows.  This command will execute the entire test suite.  Depending on
+  your system itwill take several minutes to finish.
+  <programlisting>
+  <![CDATA[
+  E:\work.ooRexx\ooRexxUnit\3.2.0>rexx testOORexx.rex -V 5
+  Searching for test containers........................................
+  Executing automated test suite..............................................
+  ...........................................................................
+  ..........
 
-ooTest Framework - Automated Test of the ooRexx Interpreter
+  ooTest Framework - Automated Test of the ooRexx Interpreter
 
 
-Interpreter: REXX-ooRexx_3.2.0(MT) 6.02 30 Oct 2007
-ooRexxUnit:  2.0.0_3.2.0        ooTest: 1.0.0_3.2.0
+  Interpreter: REXX-ooRexx_3.2.0(MT) 6.02 30 Oct 2007
+  ooRexxUnit:  2.0.0_3.2.0        ooTest: 1.0.0_3.2.0
 
-Tests ran:           16600
-Assertions:          537835
-Failures:            2
-  (Known failures:)  42
-Errors:              2
-Exceptions:          0
-Skipped files:       0
-Messages:            0
+  Tests ran:           16600
+  Assertions:          537835
+  Failures:            2
+    (Known failures:)  42
+  Errors:              2
+  Exceptions:          0
+  Skipped files:       0
+  Messages:            0
 
-[failure] [20080819 17:37:57.809000]
-  Test:   TEST_MULTIPLE_INHERITANCE_WITH_MULTIPLE_METACLASSES
-  Class:  Class.testGroup
-  File:   E:\work.ooRexx\ooRexxUnit\3.2.0\ooRexx\base\class\Class.testGroup
-  Line:   576
-  Failed: assertEquals
-    Expected: [['123.'], identityHash="495954478"]
-    Actual:   [['231.'], identityHash="421451928"]
+  [failure] [20080819 17:37:57.809000]
+    Test:   TEST_MULTIPLE_INHERITANCE_WITH_MULTIPLE_METACLASSES
+    Class:  Class.testGroup
+    File:   E:\work.ooRexx\ooRexxUnit\3.2.0\ooRexx\base\class\Class.testGroup
+    Line:   576
+    Failed: assertEquals
+      Expected: [['123.'], identityHash="495954478"]
+      Actual:   [['231.'], identityHash="421451928"]
 
-[failure] [20080819 17:37:57.825000]
-  Test:   TEST_SUBCLASSES
-  Class:  Class.testGroup
-  File:   E:\work.ooRexx\ooRexxUnit\3.2.0\ooRexx\base\class\Class.testGroup
-  Line:   684
-  Failed: assertTrue
-    Expected: [1]
-    Actual:   [[0], identityHash="535806184"]
+  [failure] [20080819 17:37:57.825000]
+    Test:   TEST_SUBCLASSES
+    Class:  Class.testGroup
+    File:   E:\work.ooRexx\ooRexxUnit\3.2.0\ooRexx\base\class\Class.testGroup
+    Line:   684
+    Failed: assertTrue
+      Expected: [1]
+      Actual:   [[0], identityHash="535806184"]
 
-[error] [20080819 17:37:57.809000]
-  Test:  TEST_MIXINCLASS_01
-  Class: Class.testGroup
-  File:  E:\work.ooRexx\ooRexxUnit\3.2.0\ooRexx\base\class\Class.testGroup
-  Event: [SYNTAX 97.1] raised unexpectedly.
-    Object "NOT_AN_EXISTING_CLASS" does not understand message "NEW"
-    Line:    509
-   509 *-* cl=.object~mixinclass("subTest_01", not_an_existing_class)
+  [error] [20080819 17:37:57.809000]
+    Test:  TEST_MIXINCLASS_01
+    Class: Class.testGroup
+    File:  E:\work.ooRexx\ooRexxUnit\3.2.0\ooRexx\base\class\Class.testGroup
+    Event: [SYNTAX 97.1] raised unexpectedly.
+      Object "NOT_AN_EXISTING_CLASS" does not understand message "NEW"
+      Line:    509
+     509 *-* cl=.object~mixinclass("subTest_01", not_an_existing_class)
 
-[error] [20080819 17:37:57.825000]
-  Test:  TEST_SUBCLASS_01
-  Class: Class.testGroup
-  File:  E:\work.ooRexx\ooRexxUnit\3.2.0\ooRexx\base\class\Class.testGroup
-  Event: [SYNTAX 97.1] raised unexpectedly.
-    Object "NOT_AN_EXISTING_CLASS" does not understand message "NEW"
-    Line:    616
-   616 *-* cl=.object~subclass("subtest_01", not_an_existing_class)
-
-
-Interpreter: REXX-ooRexx_3.2.0(MT) 6.02 30 Oct 2007
-ooRexxUnit:  2.0.0_3.2.0        ooTest: 1.0.0_3.2.0
-
-Tests ran:           16600
-Assertions:          537835
-Failures:            2
-  (Known failures:)  42
-Errors:              2
-Exceptions:          0
-Skipped files:       0
-Messages:            0
-
-File search:        00:00:51.456000
-Suite construction: 00:00:02.000000
-Test execution:     00:02:17.632000
-Total time:         00:03:11.620000
+  [error] [20080819 17:37:57.825000]
+    Test:  TEST_SUBCLASS_01
+    Class: Class.testGroup
+    File:  E:\work.ooRexx\ooRexxUnit\3.2.0\ooRexx\base\class\Class.testGroup
+    Event: [SYNTAX 97.1] raised unexpectedly.
+      Object "NOT_AN_EXISTING_CLASS" does not understand message "NEW"
+      Line:    616
+     616 *-* cl=.object~subclass("subtest_01", not_an_existing_class)
 
 
-E:\work.ooRexx\ooRexxUnit\3.2.0>
-]]>
-</programlisting>
+  Interpreter: REXX-ooRexx_3.2.0(MT) 6.02 30 Oct 2007
+  ooRexxUnit:  2.0.0_3.2.0        ooTest: 1.0.0_3.2.0
+
+  Tests ran:           16600
+  Assertions:          537835
+  Failures:            2
+    (Known failures:)  42
+  Errors:              2
+  Exceptions:          0
+  Skipped files:       0
+  Messages:            0
+
+  File search:        00:00:51.456000
+  Suite construction: 00:00:02.000000
+  Test execution:     00:02:17.632000
+  Total time:         00:03:11.620000
+
+
+  E:\work.ooRexx\ooRexxUnit\3.2.0>
+  ]]>
+  </programlisting>
 </para>
 <para>
   You should get results similar to the above.  Included with the snapshot is a
-  file called expected results.  That file should show you results similar to
-  what you actually get.
+  file called <computeroutput>Expected.results</computeroutput>. That file should
+  show you results similar to what you actually get.
 </para>
 </section>
 <section><title>Understanding What you See</title>
@@ -404,9 +402,9 @@ Total time:         00:03:11.620000
 </programlisting>
 </para>
 <para>
-  The above shows that the name of the failed test was
-  TEST_MULTIPLE_INHERITANCE_WITH_MULTIPLE_METACLASSES and it can be found on
-  line 576 in the file ... Class.testGroup.
+  The above shows that the name of the failed test was <computeroutput>
+  TEST_MULTIPLE_INHERITANCE_WITH_MULTIPLE_METACLASSES</computeroutput> and it can
+  be found on line 576 in the file <computeroutput>Class.testGroup</computeroutput>.
 </para>
 <para>
   What failed was an assertion that two things were equal.  The thing was
@@ -498,7 +496,7 @@ Total time:         00:03:11.620000
 <para>
   That is boilerplate, just type it.  Then the next key thing is that
   the framework executes each method whose name begins with 'test', case
-  not significant, as a test case.  We need to name the test case method
+  not significant, as a test case.  We need to name the test case method,
   so we do this:
 <programlisting>
 <![CDATA[
@@ -518,31 +516,35 @@ Total time:         00:03:11.620000
 <programlisting>
 <![CDATA[
   ::method test_simpleAdditon
-
-   val = 2 + 3
-   self~assertEquals(5, val)
+      val = 2 + 3
+      self~assertEquals(5, val)
 ]]>
 </programlisting>
 </para>
 <para>
-  That is all there is to it.  The framework takes care of all the details.
+  That is all there is to it.  The above 3 lines of code will test that the
+  interpreter adds 2 plus 3 correctly.  The framework takes care of all the
+  other details.
 </para>
 <para>
   Well there is a little more to it, we need to add the test case methods to a
   file, I'll show that later.
 </para>
 <para>
-  To get started, think of <computeroutput>::method</computeroutput> as a the
-  beginning of a function think of <computeroutput>self~assertEquals()</computeroutput>
-   as a call to a function with a prefix of <computeroutput>'self~'</computeroutput>  and
-  we'll worry about learning about classes some other time.  This is enough to
-  write test cases.
+  To summarize, to get started: Think of
+  <computeroutput>::method</computeroutput> as a the beginning of a function definition,
+  where the function name comes right after the <computeroutput>::method</computeroutput>/
+  Think of <computeroutput>assertEquals()</computeroutput> as a function call.  And
+  just note that the function call has to start with a prefix of <computeroutput>'self~'</computeroutput>.
+  You do not need to really understand the <computeroutput>'self~'</computeroutput> part at
+  first.  Just know that you have to add it. We'll worry about learning about classes some
+  other time.  This is enough to write test cases.
 </para></section>
 
 <section><title>Contributing to the ooRexx Project</title>
 <para>
   At this point, I'm going to interject a little info on contributing to
-  the ooRexx project / contributing to the test suite.
+  the ooRexx project / contributing to the ooRexx test suite.
 </para>
 <para>
   The test suite is enormously helpful to the project.  Everyone and any
@@ -555,10 +557,10 @@ Total time:         00:03:11.620000
 
 <itemizedlist>
 <listitem>
-  <para>You could write a whole new *.testGroup file.</para>
+  <para>You could write a whole new <computeroutput>*.testGroup</computeroutput> file.</para>
 </listitem>
 <listitem>
-  <para>You can add tests to an existing .testGroup file.</para>
+  <para>You can add tests to an existing <computeroutput>*.testGroup</computeroutput> file.</para>
 </listitem>
 <listitem>
   <para>
@@ -575,15 +577,15 @@ Total time:         00:03:11.620000
 </itemizedlist>
 
 <para>
-  It is my strong opinion that all the .testGroup files in the test
-  suite are works in progress. In addition, we could really use more pairs of
-  eye examining the existing .testGroup files with a critical eye.
+  It is my strong opinion that all the <computeroutput>.testGroup</computeroutput>
+  files in the test suite are works in progress. In addition, we could really use
+  more pairs of eye examining the existing .testGroup files with a critical eye.
 </para>
 <para>
   Any one and every one is encouraged to either add to an existing file
   or to say hey this test is wrong, it should be written this way.   Or
-  to say, hey the Lines.testGroup does not have a test for this option,
-  here's a method that does test it.
+  to say, hey the <computeroutput>Lines.testGroup</computeroutput> does
+  not have a test for this option, here's a method that does test it.
 </para>
 <para>
   The other thing that is really important, is that just because
@@ -610,7 +612,7 @@ Total time:         00:03:11.620000
 </programlisting>
 </para>
 <para>
-  You would expect myTest.File to contain 1 line consisting of:
+  You would expect <computeroutput>myTest.File</computeroutput> to contain 1 line consisting of:
 <programlisting>
 <![CDATA[
    Hello World<endOfLineCharacter>
@@ -684,7 +686,8 @@ Raven:/ooRexxUnit.3.2.0 # cp misc/template.testGroup ooRexx/STREAM.testGroup
 <section><title>Editing STREAM.testGroup</title>
 <para>
     Open the file in an editor.  The first thing I do is a search and
-    replace of template.testGroup with STREAM.testGroup.  I'm not going to
+    replace of <computeroutput>template.testGroup</computeroutput> with
+    <computeroutput>STREAM.testGroup</computeroutput>.  I'm not going to
     give editor lessons, but if you do not understand classes, be sure you
     don't skip this first step.
 </para>
@@ -700,16 +703,17 @@ Raven:/ooRexxUnit.3.2.0 # cp misc/template.testGroup ooRexx/STREAM.testGroup
     */
 ]]>
 </programlisting>
-    Which are just book keeping. #!/usr/bin/rexx so the file will execute as
-    a script on Linux, etc.  The next is just svn book keeping.  Then there
-    is the license text.
+    Which are just book keeping. The <computeroutput>#!/usr/bin/rexx</computeroutput>
+    causes the file to execute as a script on Linux, etc.  The next is just svn
+    book keeping.  Then there is the license text.
 </para>
 <para>
     Starting on line 42 through 51 we have what I think of as the entry
     point to an ooRexx program that has directives in it.  You do not need
     to understand this to start off with, it is the code that lets the
     framework automate the execution of tests.  You just need to be sure
-    you changed template.testGroup to STREAM.testGroup.  The lines look
+    you changed <computeroutput>template.testGroup</computeroutput> to
+    <computeroutput>STREAM.testGroup</computeroutput>.  The lines look
     like:
 <programlisting>
 <![CDATA[
@@ -731,21 +735,22 @@ Raven:/ooRexxUnit.3.2.0 # cp misc/template.testGroup ooRexx/STREAM.testGroup
     Briefly what this does is:
 <itemizedlist>
 <listitem>
-  <para>create a new TestGroup object using the full path name of the file.</para>
+  <para>
+    Create a new TestGroup object using the full path name of the file.
+  </para>
 </listitem>
 <listitem>
-  <para>add the STREAM.testGroup class to the test group</para>
+  <para>Add the <computeroutput>STREAM.testGroup</computeroutput> class to the test group</para>
 </listitem>
 <listitem>
   <para>
-    magically test if the invocation of the program is part of an
-    automated test.  If so the group object is returned and the code
-    execution is done.
+    Magically test if the invocation of the program is part of an automated
+    test. If so the group object is returned and the code execution is done.
   </para>
 </listitem>
 <listitem>
   <para>
-    If not an automated test, it is a stand alone test.  The test group
+    If it is not an automated test, it is a stand alone test.  The test group
     executes all the tests it contains and prints out the results, then
     returns the test result object.  This allows you to execute the tests
     by just invoking the file as an ooRexx program.  I am not going to go
@@ -793,7 +798,7 @@ Raven:/ooRexxUnit.3.2.0 # cp misc/template.testGroup ooRexx/STREAM.testGroup
 </programlisting>
 </para>
 <para>
-  Okay, that's it you created and executed your first group of tests.  4 tests
+  Okay, that's it.  You created and executed your first group of tests.  4 tests
   ran using 2 assertions with no failures or errors.  On my system the total
   execution time was 1 second.
 </para>
@@ -806,7 +811,7 @@ Raven:/ooRexxUnit.3.2.0 # cp misc/template.testGroup ooRexx/STREAM.testGroup
 </section>
 <section><title>STREAM.testGroup Continued</title>
 <para>
-  Picking up with writing the new test group STREAM.testGroup.
+  Picking up with writing the new test group <computeroutput>STREAM.testGroup</computeroutput>.
 </para>
 <para>
   The last section showed the top boilerplate from the the template file. This
@@ -826,29 +831,31 @@ Raven:/ooRexxUnit.3.2.0 # cp misc/template.testGroup ooRexx/STREAM.testGroup
   ::class "STREAM.testGroup" public subclass ooTestCase
 
   ::method test_YYY
-    self~assertTrue(.true)
+      self~assertTrue(.true)
 
   ::method  test_XXX
-    self~assertSame('dog', 'dog')
+      self~assertSame('dog', 'dog')
 ]]>
 </programlisting>
   The <computeroutput>::requires</computeroutput> line pulls in the ooTest
   framework.  That is what provides the backing code for our test cases.
 </para>
 <para>
-  Then we have our STREAM.testGroup class which is a subclass of ooTestCase.
-  Once you do the replace of template.testGroup with STREAM.testGroup you are
+  Then we have our <computeroutput>STREAM.testGroup</computeroutput> class which
+  is a subclass of ooTestCase. Once you do the replace of <computeroutput>template.testGroup</computeroutput>
+  with <computeroutput>STREAM.testGroup</computeroutput> you are
   done with those lines.  You can just leave the boilerplate alone and figure
   out what this means later.
 </para>
 <para>
   Then, to restate what I've said earlier.  Each individual test is a
   method of the test case class where the method names starts with
-  'test'  Here our test case class is: STREAM.testGroup and we see that
-  we have 2 methods: test_YYY and test_XXX.
+  'test'  Here our test case class is: <computeroutput>STREAM.testGroup</computeroutput> and we see that
+  we have 2 methods: <computeroutput>test_YYY</computeroutput> and
+  <computeroutput>test_XXX</computeroutput>.
 </para>
 <para>
-  That is why executing the STREAM.testGroup file actually runs some
+  That is why executing the <computeroutput>STREAM.testGroup</computeroutput> actually runs some
   tests, even though we didn't add any tests to the file yet.
 </para>
 <para>
@@ -924,7 +931,7 @@ Raven:/ooRexxUnit.3.2.0 # cp misc/template.testGroup ooRexx/STREAM.testGroup
   system.  What file name are we absolutely sure exists?
 </para>
 <para>
-  The STREAM.testGroup file, for sure, because that is the file we are using.
+  The <computeroutput>STREAM.testGroup</computeroutput> file, for sure, because that is the file we are using.
   We can get that name from parse source.  If you don't know parse source, look
   it up in the doc.
 <programlisting>
@@ -1004,7 +1011,7 @@ Raven:/ooRexxUnit.3.2.0 # cp misc/template.testGroup ooRexx/STREAM.testGroup
 </para>
 <para>
   This is perfect!  Okay, the output shows that the test named
-  TEST_DESCRIPTION_ARG failed.    Whoa, that's the one I just wrote.  It
+  <computeroutput>TEST_DESCRIPTION_ARG</computeroutput> failed.    Whoa, that's the one I just wrote.  It
   shows that what failed was assertTrue and that it was on line 68.
 </para>
 <para>
@@ -1116,6 +1123,530 @@ Raven:/ooRexxUnit.3.2.0 # cp misc/template.testGroup ooRexx/STREAM.testGroup
   Next installment:  I am always threatening to write the documentation
   for the ooTest framework, but it is an empty threat.  Or - what *are*
   the assertXXX methods?
+</para>
+</section>
+</chapter>
+
+<chapter><title>Some Reference Documentation</title>
+<para>
+  This chapter will provide some basic documentation for the ooTest framework.
+  In the spirit of the rest of this document, it is minimalistic.  Just enough
+  to write simple tests.
+</para>
+<para>
+  The best way to get more information if you are stuck is to join the
+  ooRexx-Devel list and ask questions.  Asking questions on that list will help
+  in several ways.  You'll get your question answered.  Other people that have
+  the same question will benefit from the answer.  The question and answer
+  become part of the permanent archive.  And, hopefully, that information will
+  migrate from the list into the ooTest documentation in a similar manner to the
+  way the information in this document was migrated.
+</para>
+<section><title>The assertXXX() Methods</title>
+<para>
+  The main thing that is left is to list the different assertXXX() methods. They
+  are:
+
+  <itemizedlist mark='bullet'>
+  <listitem><para>assertEquals(expected, actual,[msg])</para></listitem>
+  <listitem><para>assertNotEquals(expected, actual,[msg])</para></listitem>
+  <listitem><para>assertNull(actual,[msg])</para></listitem>
+  <listitem><para>assertNotNullactual, [msg])</para></listitem>
+  <listitem><para>assertSame(expected, actual,[msg])</para></listitem>
+  <listitem><para>assertNotSame(expected, actual,[msg])</para></listitem>
+  <listitem><para>assertTrue(actual,[msg])</para></listitem>
+  <listitem><para>assertFalse(actual,[msg])</para></listitem>
+  </itemizedlist>
+</para>
+<para>
+  Some key points.
+</para>
+<para>
+  1.) All of these are methods, so to use them in your tests you do, for example:
+<programlisting>
+<![CDATA[
+  self~assertTrue(.true)
+]]>
+</programlisting>
+  If you are hazy on objects, just think of that as a routine with a
+  mandatory prefix of 'self~'
+</para>
+<para>
+  2.) Where you have expected and actual args, expected always comes first.
+<programlisting>
+<![CDATA[
+  val = 2 + 3
+  self~assertSame(5, val)
+]]>
+</programlisting>
+  5 is expected, val is the actual.
+</para>
+<para>
+  3.) Where you just have the actual arg, it is the actual thing.
+  <programlisting>
+  <![CDATA[
+    val = .true
+    self~assertTrue(val)
+  ]]>
+  </programlisting>
+  or
+  <programlisting>
+  <![CDATA[
+    val = 2 + 3
+    self~assertTrue(val == 5)
+  ]]>
+  </programlisting>
+</para>
+<para>
+  4.) As the above shows, there are usually several ways to write the
+  same assertion.  Pick what you are comfortable with.
+</para>
+<para>
+  5.) All the assertions have an optional 'message' argument that is the
+  last arg.  The message is printed out if the assertion fails.
+</para>
+<para>
+  Here is an example:
+  <programlisting>
+  <![CDATA[
+    ::method test_addition
+     val = 2 + 3
+     self~assertSame(6, val, 'Special test, 2 plus 3 must equal 6')
+  ]]>
+  </programlisting>
+  and the output:
+  <programlisting>
+  <![CDATA[
+    [failure] [20080701 09:19:45.455000]
+     Test:   TEST_ADDITION
+     Class:  STREAM.testGroup
+     File:   C:\work.ooRexx\ooRexxUnit\3.2.0\ooRexx\STREAM.testGroup
+     Line:   82
+     Failed: assertSame
+       Expected: [[6], identityHash="535894080"]
+       Actual:   [[5], identityHash="535906054"]
+       Message:  Special test 2 plus 3 must equal 6
+  ]]>
+  </programlisting>
+</para>
+<para>
+  The intention of the message is to give some idea about what the test is
+  testing.  Here we see that the test writer has some special purpose in mind
+  for this test.
+</para>
+<para>
+  Without the message and a non-descriptive test name we would see:
+  <programlisting>
+  <![CDATA[
+    [failure] [20080701 09:22:45.367000]
+     Test:   TEST_001
+     Class:  STREAM.testGroup
+     File:   C:\work.ooRexx\ooRexxUnit\3.2.0\ooRexx\STREAM.testGroup
+     Line:   82
+     Failed: assertSame
+       Expected: [[6], identityHash="535894080"]
+       Actual:   [[5], identityHash="535906054"]
+  ]]>
+  </programlisting>
+  which, if you were not the one that wrote the test, might leave you
+  clueless.  Then if you look at the test you would see:
+  <programlisting>
+  <![CDATA[
+    ::method test_001
+     val = 2 + 3
+     self~assertSame(6, val)
+  ]]>
+  </programlisting>
+  And you might really wonder what the test writer had in mind for this test
+  in the STREAM test group.  (Of course even with the message, we still don't
+  know why 2 + 3 should equal 6.)
+</para>
+<para>
+  In general you don't need a message.  But, it can help clarify what
+  the test is about by using a message that states what is expected.
+</para>
+<para>
+  6.)  The assertXXX() methods are pretty self explanatory, with maybe
+  the exception of assertSame() and assertEquals().
+</para>
+<para>
+  assertSame() (and assertNotSame()) assert that 2 things are stictly equal.
+  <programlisting>
+  <![CDATA[
+    5 == 5
+  ]]>
+  </programlisting>
+  assertEquals() (and assertNotEquals())  assert that 2 things are loosely equal.
+  <programlisting>
+  <![CDATA[
+    'dog ' = 'dog'
+  ]]>
+  </programlisting>
+  equals is also used to test if 2 collections are loosely equal.
+  <programlisting>
+  <![CDATA[
+    a1 = .array~of(1, 2, 3)
+    a2 = .array~of(1, 2, 3)
+    self~assertEquals(a1, a2)
+  ]]>
+  </programlisting>
+</para>
+<para>
+  assertNull() and assertNotNull() might also need some explaining. They test if
+  the actual is .nil (or not .nil).
+</para>
+<para>
+  7.)  The assertXXX() methods are located in the OOREXXUNIT.CLS file.
+  Since this is open source you can always browse the file to see what
+  assertXXX() methods are available to you.  Which is what I do since I
+  can never remember them and no one has produced easy to find
+  documentation for the framework.
+</para>
+<para>
+  OOREXXUNIT.CLS is located in the framework subdirectory:
+  <programlisting>
+  <![CDATA[
+    C:\ooRexxUnit.3.2.0>dir framework\OOREXXUNIT.CLS
+     Volume in drive C has no label.
+     Volume Serial Number is B4C0-DCBA
+
+     Directory of C:\ooRexxUnit.3.2.0\framework
+
+    05/12/2008  01:15 PM            65,321 OOREXXUNIT.CLS
+
+    ---------
+  ]]>
+  </programlisting>
+</para>
+<para>
+  Speaking of doc etc., in the misc subdirectory there are some sample
+  test group files.  Looking at those should be helpful.  I believe I
+  tried to comment them well.
+  <programlisting>
+  <![CDATA[
+    C:\ooRexxUnit.3.2.0>dir misc
+     Volume in drive C has no label.
+     Volume Serial Number is B4C0-DCBA
+
+     Directory of C:\ooRexxUnit.3.2.0\misc
+
+    01/18/2008  10:41 AM             5,755 SampleOLEObject.testGroup
+    01/16/2008  01:40 PM             5,638 Simplest.testGroup
+    01/16/2008  04:17 PM             5,775 SimpleWithOneTimeSetup.testGroup
+    01/16/2008  04:28 PM             5,609 SimpleWithSomeSetup.testGroup
+  ]]>
+  </programlisting>
+</para>
+<para>
+  There is also doc and more examples in the framework directory.
+  However, those docs and examples are from the original ooRexxUnit
+  framework.
+</para>
+<para>
+  The framework we are using here is the ooTest framework, which sits on
+  top of ooRexxUnit.  The ooRexxUnit doc does not necessarily apply to
+  ooTest.  And, I have made changes to ooRexxUnit, but have not been
+  rigorous about maintaining the ooRexxUnit doc and examples.
+</para>
+<para>
+  Armed with this quick start, I think that anyone who can program
+  in Rexx and is using ooRexx to some degree can begin writing test
+  cases for the ooRexx interpreter.
+</para>
+</section>
+</chapter>
+
+<chapter><title>How to Become a Committer</title>
+<para>
+  Armed with this quick start, I think that anyone who can program in Rexx and
+  is using ooRexx to some degree can begin writing test cases for the ooRexx
+  interpreter.
+</para>
+<para>
+  Ask questions when you get stuck.  Contribute test cases to the project.  Earn
+  yourself the status of a committer.
+</para>
+<para>
+  About that last sentence.  Want to have the exalted rank of a committer on an
+  Open Source project?  But you don't know C or C++. Contribute test cases to
+  the ooRexx project and I guarantee I will push to make you a committer.
+</para>
+<para>
+  <programlisting>
+  <![CDATA[
+    Rick McGuire to Open show details Jul 1 2008  Reply
+
+    And I will vote in favor of them <g>
+  ]]>
+  </programlisting>
+</para>
+</chapter>
+
+<chapter><title>Negative Tests</title>
+<para>
+  In my original series of e-mail posts, Rick pointed out that I forgot to
+  include how to do negative tests. This is really an important part of testing,
+  and since I spent a lot of time in test, I'm kicking myself for overlooking it
+  here.  <literal><![CDATA[<grin>]]></literal>
+</para>
+<section><title>Example One</title>
+<para>
+  We'll continue with the STREAM.testGroup and look at what the doc says
+  about the second arg.  Which is exactly: "The second argument can be
+  one of the following strings ..." and it the lists exactly 3 strings:
+  State, Description, and Command.
+</para>
+<para>
+  So a negative test is what happens when you don't follow a requirement.  (Well
+  there are other types of negative tests, but let's not get too complicated
+  here.)
+</para>
+<para>
+  The requirement is that the second arg be one of only 3 different things.
+  What we want to test, is what happens if we don't use of the 3 specified args.
+  Say if we use FILESTATE ?
+</para>
+<para>
+  Staying with the same STREAM.testGroup.  How do we test this? Maybe something
+  along those lines?
+  <programlisting>
+  <![CDATA[
+    ::method test_wrong_2nd_arg
+     parse source junk notUsed streamName
+
+     retDiscrpt = stream(streamName, "FILESTATE")
+  ]]>
+  </programlisting>
+  Output:
+  <programlisting>
+  <![CDATA[
+    [error] [20080701 12:06:53.206000]
+     Test:  TEST_WRONG_2ND_ARG
+     Class: STREAM.testGroup
+     File:  C:\work.ooRexx\ooRexxUnit\3.2.0\ooRexx\STREAM.testGroup
+     Event: [SYNTAX 40.904] raised unexpectedly.
+       STREAM argument 2 must be one of SDC; found "FILESTATE"
+       Line:    83
+       83 *-* retDiscrpt = stream(streamName, "FILESTATE")
+  ]]>
+  </programlisting>
+  Now if you look closely at that, it was not a failure, it was an error.
+</para>
+<para>
+  If you remember back to what I said about terminology, I said with a test case
+  you expect one of 2 outcomes.  You either expect the test to pass, or you
+  expect the test to fail.
+</para>
+<para>
+  Errors are something totally unexpected.  We can see from the output that the
+  interpreter is handling this the way it should.  But, what we want is a test
+  case for this that passes.
+</para>
+<para>
+  In this case we *expect* the error condition.  So our test case will pass when
+  we get an error.  The framework provides for these types of test with the
+  expectSyntax() method.
+</para>
+<para>
+  We code our test like this:
+  <programlisting>
+  <![CDATA[
+    ::method test_wrong_2nd_arg
+     parse source junk notUsed streamName
+
+     self~expectSyntax(40.904)
+     retDiscrpt = stream(streamName, "FILESTATE")
+  ]]>
+  </programlisting>
+  And the output we get is:
+  <programlisting>
+  <![CDATA[
+    C:\ooRexxUnit.3.2.0>rexx testOORexx.rex -R ooRexx -f stream
+    ..
+    Interpreter: REXX-ooRexx_3.2.0(MT) 6.02 30 Oct 2007
+    ooRexxUnit:  2.0.0_3.2.0        ooTest: 1.0.0_3.2.0
+
+    Tests ran:           5
+    Assertions:          3
+    Failures:            0
+    Errors:              0
+    Skipped files:       0
+
+    File search:        00:00:00.160000
+    Suite construction: 00:00:00.000000
+    Test execution:     00:00:00.000000
+    Total time:         00:00:00.160000
+  ]]>
+  </programlisting>
+</para>
+<para>
+  Great, we now have 3 tests coded and they all pass.
+</para>
+</section>
+<section><title>Example Two</title>
+<para>
+  What else can we test in this way?  We see from the doc that the first arg to
+  stream is required.  What happens if we leave it out?  We should get some type
+  of error.  And the interpreter should not blow up.
+</para>
+<para>
+  Now how to code it?  Similar to what we just did:
+  <programlisting>
+  <![CDATA[
+    ::method test_no_args
+
+     --self~expectSyntax(40.904)
+     retDiscrpt = stream()
+  ]]>
+  </programlisting>
+</para>
+<para>
+  But, what syntax error do we expect?  The best thing to do, is to look up the
+  error numbers and descriptions and decide for yourself what you think it
+  *should* be.
+</para>
+<para>
+  The error message list is in the back of the doc, in an appendix.  I don't
+  want to drag this out, so I'm going to say, since the first error was in the
+  40. range, that is a good place to start.  Looking there we see:
+  <programlisting>
+  <![CDATA[
+    001
+    External routine "routine" failed
+  ]]>
+  </programlisting>
+</para>
+<para>
+  Okay, that seems reasonable.  Though, there is also:
+  <programlisting>
+  <![CDATA[
+    005
+    Missing argument in invocation of routine; argument argument_number is required
+  ]]>
+  </programlisting>
+</para>
+<para>
+  Aha, that is it.  Argument 1 is required, says the doc.  So the message:
+  "Missing argument in invocation of STREAM; argument 1 is required" seems
+  perfect.
+</para>
+<para>
+  Our test looks like:
+  <programlisting>
+  <![CDATA[
+    ::method test_no_args
+
+     self~expectSyntax(40.005)
+     retDiscrpt = stream()
+  ]]>
+  </programlisting>
+  and our output looks like this:
+  <programlisting>
+  <![CDATA[
+    [error] [20080701 12:27:15.323000]
+     Test:  TEST_NO_ARGS
+     Class: STREAM.testGroup
+     File:  C:\work.ooRexx\ooRexxUnit\3.2.0\ooRexx\STREAM.testGroup
+     Event: [SYNTAX 40.3] raised unexpectedly.
+       Not enough arguments in invocation of STREAM; minimum expected is 1
+       Line:    90
+       90 *-* retDiscrpt = stream()
+  ]]>
+  </programlisting>
+</para>
+<para>
+  Eureka!  We found a bug!  This is what it is all about, finding bugs.
+  <literal><![CDATA[<grin>]]></literal> But, let's investigate a little.  What
+  is 40.3?
+  <programlisting>
+  <![CDATA[
+    003
+    Not enough arguments in invocation of routine; minimum expected is number
+  ]]>
+  </programlisting>
+</para>
+<para>
+  Making the message: Not enough arguments in STREAM; minimum expected is 1
+  Well, okay, that message also seems to fit.  What to do?  If you find
+  something like this, that you think is a bug, then the thing to do is bring it
+  up on the developer's list and lay out your case for why you think this is a
+  bug.
+</para>
+<para>
+  In this instance, you would not prevail with your case.  The reason being that
+  40.3 is applicable and it is what has been used in the past. Therefore,
+  changing it because you think 40.5 is better has the potential of breaking
+  existing code that is checking for this specific error code.
+</para>
+<para>
+  So, the test looks like this:
+  <programlisting>
+  <![CDATA[
+    ::method test_no_args
+
+     self~expectSyntax(40.003)
+     retDiscrpt = stream()
+  ]]>
+  </programlisting>
+  output:
+  <programlisting>
+  <![CDATA[
+    [error] [20080701 12:39:59.063000]
+     Test:  TEST_NO_ARGS
+     Class: STREAM.testGroup
+     File:  C:\work.ooRexx\ooRexxUnit\3.2.0\ooRexx\STREAM.testGroup
+     Event: [SYNTAX 40.3] raised unexpectedly.
+       Not enough arguments in invocation of STREAM; minimum expected is 1
+       Line:    90
+       90 *-* retDiscrpt = stream()
+  ]]>
+  </programlisting>
+</para>
+<para>
+  Great!! Now we REALLY found a bug!  It is supposed to be error 40.003.  Well,
+  again, do a little research.  What the doc says is:
+  <programlisting>
+  <![CDATA[
+    Some errors have associated subcodes. A subcode is a one- to
+    three-digit decimal extension to the error number, for example, 115 in
+    40.115
+  ]]>
+  </programlisting>
+  A subcode is a *one* to three digit.
+</para>
+<para>
+  Okay, no bug.  Our test looks like this:
+  <programlisting>
+  <![CDATA[
+    ::method test_no_args
+
+     self~expectSyntax(40.3)
+     retDiscrpt = stream()
+  ]]>
+  </programlisting>
+  output:
+  <programlisting>
+  <![CDATA[
+    Interpreter: REXX-ooRexx_3.2.0(MT) 6.02 30 Oct 2007
+    ooRexxUnit:  2.0.0_3.2.0        ooTest: 1.0.0_3.2.0
+
+    Tests ran:           6
+    Assertions:          4
+    Failures:            0
+    Errors:              0
+    Skipped files:       0
+
+    File search:        00:00:00.160000
+    Suite construction: 00:00:00.000000
+    Test execution:     00:00:00.000000
+    Total time:         00:00:00.160000
+  ]]>
+  </programlisting>
+</para>
+<para>
+  Now we have 4 tests of an area that hadn't been touched.  The 4 additional
+  tests add 0 seconds  to the overall test execution time.  2 of the tests are
+  positive tests, 2 are negative.
 </para>
 </section>
 </chapter>
