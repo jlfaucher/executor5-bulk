@@ -680,6 +680,8 @@ Raven:/ooRexxUnit.3.2.0 # cp misc/template.testGroup ooRexx/STREAM.testGroup
 ]]>
 </programlisting>
 </para>
+</section>
+<section><title>Editing STREAM.testGroup</title>
 <para>
     Open the file in an editor.  The first thing I do is a search and
     replace of template.testGroup with STREAM.testGroup.  I'm not going to
@@ -727,65 +729,73 @@ Raven:/ooRexxUnit.3.2.0 # cp misc/template.testGroup ooRexx/STREAM.testGroup
 </para>
 <para>
     Briefly what this does is:
-
-    create a new TestGroup object using the full path name of the file.
-
-    add the STREAM.testGroup class to the test group
-
+<itemizedlist>
+<listitem>
+  <para>create a new TestGroup object using the full path name of the file.</para>
+</listitem>
+<listitem>
+  <para>add the STREAM.testGroup class to the test group</para>
+</listitem>
+<listitem>
+  <para>
     magically test if the invocation of the program is part of an
     automated test.  If so the group object is returned and the code
     execution is done.
-
+  </para>
+</listitem>
+<listitem>
+  <para>
     If not an automated test, it is a stand alone test.  The test group
     executes all the tests it contains and prints out the results, then
     returns the test result object.  This allows you to execute the tests
     by just invoking the file as an ooRexx program.  I am not going to go
     into details about that now.
+  </para>
+</listitem>
+</itemizedlist>
 </para>
 <para>
-    When working on just your own test group file, it is best to just run
-    the single test group by itself through the frame work:
-
-    Right now you have a complete test group that will execute.  You can
-    run it.  Using my shortcut directory:
+  When working on just your own test group file, it is best to just run the
+  single test group by itself through the frame work.  Right now you have a
+  complete test group that will execute.  You can run it using this command:
 <programlisting>
 <![CDATA[
     Raven:/ooRexxUnit.3.2.0 # ./testOORexx.rex -R ooRexx -f STREAM
 ]]>
 </programlisting>
-    (The above should work, but I can not try it right now, so I am going
-    to show Windows.)
+  (The above should work, but I can not try it right now, so I am going to show
+  it on Windows.)
 <programlisting>
 <![CDATA[
-    E:\ooRexxUnit.3.2.0>testOORexx.rex -R ooRexx\ -f STREAM
-    Searching for test containers..
-    Executing automated test suite..
+  E:\ooRexxUnit.3.2.0>testOORexx.rex -R ooRexx\ -f STREAM
+  Searching for test containers..
+  Executing automated test suite..
 
-    ooTest Framework - Automated Test of the ooRexx Interpreter
+  ooTest Framework - Automated Test of the ooRexx Interpreter
 
 
-    Interpreter: REXX-ooRexx_3.2.0(MT) 6.02 30 Oct 2007
-    ooRexxUnit:  2.0.0_3.2.0        ooTest: 1.0.0_3.2.0
+  Interpreter: REXX-ooRexx_3.2.0(MT) 6.02 30 Oct 2007
+  ooRexxUnit:  2.0.0_3.2.0        ooTest: 1.0.0_3.2.0
 
-    Tests ran:           4
-    Assertions:          2
-    Failures:            0
-    Errors:              0
-    Skipped files:       0
+  Tests ran:           4
+  Assertions:          2
+  Failures:            0
+  Errors:              0
+  Skipped files:       0
 
-    File search:        00:00:00.047000
-    Suite construction: 00:00:00.000000
-    Test execution:     00:00:00.000000
-    Total time:         00:00:01.000000
+  File search:        00:00:00.047000
+  Suite construction: 00:00:00.000000
+  Test execution:     00:00:00.000000
+  Total time:         00:00:01.000000
 
-    E:\ooRexxUnit.3.2.0>
+  E:\ooRexxUnit.3.2.0>
 ]]>
 </programlisting>
 </para>
 <para>
-    Okay, that's it you created and executed your first group of tests.  4
-    tests ran using 2 assertions with no failures or errors.  On my system
-    the total execution time was 1 second.
+  Okay, that's it you created and executed your first group of tests.  4 tests
+  ran using 2 assertions with no failures or errors.  On my system the total
+  execution time was 1 second.
 </para>
 <para>
     That takes care of all the initial steps.  You have a working test group.
@@ -794,253 +804,319 @@ Raven:/ooRexxUnit.3.2.0 # cp misc/template.testGroup ooRexx/STREAM.testGroup
     The next installment will show adding some test cases to the new test group.
 </para>
 </section>
-<section><title>S</title>
-Picking up with writing the new test group STREAM.testGroup.
+<section><title>STREAM.testGroup Continued</title>
+<para>
+  Picking up with writing the new test group STREAM.testGroup.
+</para>
+<para>
+  The last section showed the top boilerplate from the the template file. This
+  picks up with the actual test case class.  I'm not to going to explain too
+  much about the class part of this, I'll save that for later.  This is about
+  just editing the boilerplate to quickly get started.
+</para>
+<para>
+  This is the rest of the file, leaving out some comment lines.  Format your
+  code however you like.
+<programlisting>
+<![CDATA[
+  -- End of entry point.
 
-The last post showed the top boilerplate from the the template file.
-This picks up the actual test case class.  I'm not to going to explain
-too much about the class part of this, I'll save that for later.  This
-is about just editing the boilerplate to quickly get started.
+  ::requires 'ooTest.frm'
 
-This is the rest of the file, leaving out some comment lines.  Format
-your code however you like.
+  ::class "STREAM.testGroup" public subclass ooTestCase
 
--- End of entry point.
+  ::method test_YYY
+    self~assertTrue(.true)
 
-::requires 'ooTest.frm'
+  ::method  test_XXX
+    self~assertSame('dog', 'dog')
+]]>
+</programlisting>
+  The <computeroutput>::requires</computeroutput> line pulls in the ooTest
+  framework.  That is what provides the backing code for our test cases.
+</para>
+<para>
+  Then we have our STREAM.testGroup class which is a subclass of ooTestCase.
+  Once you do the replace of template.testGroup with STREAM.testGroup you are
+  done with those lines.  You can just leave the boilerplate alone and figure
+  out what this means later.
+</para>
+<para>
+  Then, to restate what I've said earlier.  Each individual test is a
+  method of the test case class where the method names starts with
+  'test'  Here our test case class is: STREAM.testGroup and we see that
+  we have 2 methods: test_YYY and test_XXX.
+</para>
+<para>
+  That is why executing the STREAM.testGroup file actually runs some
+  tests, even though we didn't add any tests to the file yet.
+</para>
+<para>
+  If you don't understand classes yet, just think of the two methods as
+  two routines, or functions, or procedures.  Whichever terminology you
+  are comfortable with.  I'm going to call them methods, because that's
+  what they are.
+</para>
+<para>
+  The 2 methods are in the template to jog your memory and get you
+  started.  I start out by editing the first method and coding an actual
+  test.  We are doing a group of tests for the stream BIF, so an easy
+  way to get started is to look at the documentation for the stream BIF.
+</para>
+<para>
+  If you are following along and don't understand stream at all, the advice is
+  that the principles here apply to writing any test cases, pick some area of
+  Rexx you do understand. Plus, I have to add, if you don't understand stream,
+  then digging in to it enough to write some test cases is a great way to learn
+  about stream.
+</para>
+<para>
+  Looking at the doc, we see that it says stream returns a string, which
+  string is dependent on the args to stream, and that the first arg
+  names the stream to be worked with.  The second arg can be one of:
+  State, Command, or Description.
+</para>
+<para>
+  For the Description arg it says that it returns the same string as State, but
+  with a colon at the end, maybe followed by some text describing an error or
+  not ready condition. That suggests a test.  If we use the Description arg, the
+  returned string must have a colon in it.
+</para>
+</sections>
+<section><title>Finally, the Interesting Part</title>
+<para>
+  This is the interesting part.  If you like to program, then it is usually fun
+  to think of a way to code a test for this.  Here is one way.
+</para>
+<para>
+  The mechanics of this are to change the name of the first method.  The
+  restriction is that every method in the class has to have an unique
+  name.  If there is a failure, the name of the method gets printed out.
+   If the name of the method reflects the test, it is a little easier to
+  discern what the test is about.  But, you could just name every method
+  test_001, test_002, test_003 and so on.
+</para>
+<para>
+  Here goes, rename the method:
 
-::class "STREAM.testGroup" public subclass ooTestCase
-
- ::method test_YYY
+  <programlisting>
+  <![CDATA[
+    ::method test_description_arg
+  ]]>
+  </programlisting>
+</para>
+<para>
+  One of the most common types of streams is file input or output.  The name of
+  the stream is the file name.  One approach is to use a file name for the
+  stream name, use the Description arg, and validate the return:
+<programlisting>
+<![CDATA[
+  ::method test_description_arg
+    streamName = ???
+    retString = stream(streamName, "Description")
+    <check retString>
+]]>
+</programlisting>
+</para>
+<para>
+  Remember this is going to be an automated test that should run on any system.
+  We don't want to use a file name that is on your system, but is not on Rick's
+  system.  What file name are we absolutely sure exists?
+</para>
+<para>
+  The STREAM.testGroup file, for sure, because that is the file we are using.
+  We can get that name from parse source.  If you don't know parse source, look
+  it up in the doc.
+<programlisting>
+<![CDATA[
+  ::method test_description_arg
+    parse source junk notUsed streamName
+    retString = stream(streamName, "Description")
+    <check retString>
+]]>
+</programlisting>
+  Now we just need to code the check of retString.
+</para>
+</section>
+<section><title>The Core, Validating Results</title>
+<para>
+  Here we are at the core of the ooTest framework.  We validate expected
+  results by using one of the assertXXX() methods.  I will list the
+  different assertXXX a little later.
+</para>
+<para>
+  In the template code we already had:
+<programlisting>
+<![CDATA[
    self~assertTrue(.true)
+]]>
+</programlisting>
+  The meaning of that should be easy enough to discern.  We are asserting that
+  .true is true.
+</para>
+<para>
+  Okay, our test is about the stated fact that the Description arg must
+  return a string with a colon in it.  We need to write some code that
+  we can get true out of.  There are a number of ways to do this.  I'll
+  use a BIF since this is directed toward people who may not know
+  classes too well.
+</para>
+<para>
+  We know that if the returned string has a colon in it, then the pos
+  bif will return a non-zero position for the colon.   Here is the
+  complete test case:
+<programlisting>
+<![CDATA[
+  ::method test_description_arg
+   parse source junk notUsed streamName
+   retString = stream(streamName, "Description")
+   p = pos(retSting, ":")
+   self~assertTrue(p > 0)
+]]>
+</programlisting>
+</para>
+</section>
+<section><title>The Finale, Executing our Test</title>
+<para>
+  And here is the output from executing this test group (stripped of a
+  little bit):
+<programlisting>
+<![CDATA[
+  C:\ooRexxUnit.3.2.0>rexx testOORexx.rex -R ooRexx -f stream
+  ...
 
- ::method  test_XXX
-   self~assertSame('dog', 'dog')
+  Tests ran:           4
+  Assertions:          1
+  Failures:            1
+  Errors:              0
+  Skipped files:       0
 
-The ::requires line pulls in the ooTest framework.  That is what
-provides the backing code for our test cases.
-
-Then we have our STREAM.testGroup class which is a subclass of
-ooTestCase.  Once you do the replace of template.testGroup with
-STREAM.testGroup you are done with those lines.  You can just leave
-the boilerplate alone and figure out what this means later.
-
-Then, to restate what I've said earlier.  Each individual test is a
-method of the test case class where the method names starts with
-'test'  Here our test case class is: STREAM.testGroup and we see that
-we have 2 methods: test_YYY and test_XXX.
-
-That is why executing the STREAM.testGroup file actually runs some
-tests, even though we didn't add any tests to the file yet.
-
-If you don't understand classes yet, just think of the two methods as
-two routines, or functions, or procedures.  Whichever terminology you
-are comfortable with.  I'm going to call them methods, because that's
-what they are.
-
-The 2 methods are in the template to jog your memory and get you
-started.  I start out by editing the first method and coding an actual
-test.  We are doing a group of tests for the stream BIF, so an easy
-way to get started is to look at the documentation for the stream BIF.
-
-If you are following along and don't understand stream at all, the
-advice is that the principles here apply to writing any test cases,
-pick some area of Rexx you do understand.
-
-For Bill, I have to add, if you don't understand stream, then digging
-in to it enough to write some test cases is a great way to learn about
-stream.
-
-Looking at the doc, we see that it says stream returns a string, which
-string is dependent on the args to stream, and that the first arg
-names the stream to be worked with.  The second arg can be one of:
-State, Command, or Description.
-
-Now for the Description arg it says that it returns the same string as
-State, but with a colon at the end, maybe followed by some text
-describing an error or not ready condition.
-
-That suggests a test.  If we use the Description arg, the returned
-string must have a colon in it.
-
-This is the interesting part.  If you like to program, then it is
-usually fun to think of a way to code a test for this.  Here is one.
-
-The mechanics of this are to change the name of the first method.  The
-restriction is that every method in the class has to have an unique
-name.  If there is a failure, the name of the method gets printed out.
- If the name of the method reflects the test, it is a little easier to
-discern what the test is about.  But, you could just name every method
-test_001, test_002, test_003 and so on.
-
-Here goes, rename the method:
-
-::method test_description_arg
-
-One of the most common types of streams is file input or output.  The
-name of the stream is the file name.  One approach is to use a file
-name for the stream name, use the Description arg, and validate the
-return:
-
-::method test_description_arg
- streamName = ???
- retString = stream(streamName, "Description")
- <check retString>
-
-Remember this is going to be an automated test that should run on any
-system.  We don't want to use a file name that is on your system, but
-is not on Rick's system.  What file name are we absolutely sure
-exists?
-
-The STREAM.testGroup file, for sure, because that is the file we are
-using.  We can get that name from parse source.  If you don't know
-parse source, look it up in the doc.
-
-::method test_description_arg
- parse source junk notUsed streamName
- retString = stream(streamName, "Description")
- <check retString>
-
-Now we just need to code the check of retString.
-
-Here we are at the core of the ooTest framework.  We validate expected
-results by using one of the assertXXX() methods.  I will list the
-different assertXXX a little later.
-
-In the template code we already had:
-
- self~assertTrue(.true)
-
-The meaning of that should be easy enough to discern.  We are
-asserting that .true is true.
-
-Okay, our test is about the stated fact that the Description arg must
-return a string with a colon in it.  We need to write some code that
-we can get true out of.  There are a number of ways to do this.  I'll
-use a BIF since this is directed toward people who may not know
-classes too well.
-
-We know that if the returned string has a colon in it, then the pos
-bif will return a non-zero position for the colon.   Here is the
-complete test case:
-
-::method test_description_arg
- parse source junk notUsed streamName
- retString = stream(streamName, "Description")
+  [failure] [20080701 07:48:09.882000]
+   Test:   TEST_DESCRIPTION_ARG
+   Class:  STREAM.testGroup
+   File:   C:\work.ooRexx\ooRexxUnit\3.2.0\ooRexx\STREAM.testGroup
+   Line:   68
+   Failed: assertTrue
+     Expected: [1]
+     Actual:   [[0], identityHash="535806184"]
+]]>
+</programlisting>
+</para>
+<para>
+  This is perfect!  Okay, the output shows that the test named
+  TEST_DESCRIPTION_ARG failed.    Whoa, that's the one I just wrote.  It
+  shows that what failed was assertTrue and that it was on line 68.
+</para>
+<para>
+  What was expected was 1 (true) but the actual was 0 (false) Let's look at the
+  test case again:
+<programlisting>
+<![CDATA[
  p = pos(retSting, ":")
  self~assertTrue(p > 0)
+]]>
+</programlisting>
+</para>
+<para>
+  I always forget the args to pos.  They are needle, haystack.  I coded
+  haystack, needle.  Well the astute observer may have noticed that I
+  also coded retSting rather than retString.  The fixed test case:
+<programlisting>
+<![CDATA[
+  ::method test_description_arg
+    parse source junk notUsed streamName
+    retString = stream(streamName, "Description")
+    p = pos(":", retString)
+    self~assertTrue(p > 0)
+]]>
+</programlisting>
+</para>
+<para>
+  The output:
+<programlisting>
+<![CDATA[
+  Interpreter: REXX-ooRexx_3.2.0(MT) 6.02 30 Oct 2007
+  ooRexxUnit:  2.0.0_3.2.0        ooTest: 1.0.0_3.2.0
 
-And here is the output from executing this test group (stripped of a
-little bit):
+  Tests ran:           4
+  Assertions:          2
+  Failures:            0
+  Errors:              0
+  Skipped files:       0
 
-C:\ooRexxUnit.3.2.0>rexx testOORexx.rex -R ooRexx -f stream
-...
+  File search:        00:00:00.160000
+  Suite construction: 00:00:00.000000
+  Test execution:     00:00:00.000000
+  Total time:         00:00:00.160000
+]]>
+</programlisting>
+</para>
+<para>
+  Alright.  Now, if someone rewrote the stream libraries, a lot of work,
+  and had some trivial error that forgot to tack on the ":" for the
+  Description arg, we have a test case that would catch it.
+</para>
+</section>
+<section><title>One More Quick Test</title>
+<para>
+   Let's do one more quickly.
+</para>
+<para>
+  The doc also says that the Description arg returns the same the same
+  string as the State arg, with a colon and some other possible text
+  added after the colon.  That suggests a test.
+</para>
+<para>
+  Here is the code.  Notice the use of assertSame() which really fits in
+  with the semantics of the test.  We are testing that the Description
+  and State args return the same string:
+<programlisting>
+<![CDATA[
+  ::method  test_description_state_same
+    parse source junk notUsed streamName
 
-Tests ran:           4
-Assertions:          1
-Failures:            1
-Errors:              0
-Skipped files:       0
+    retDiscrpt = stream(streamName, "Description")
+    retState   = stream(streamName, "State")
 
-[failure] [20080701 07:48:09.882000]
- Test:   TEST_DESCRIPTION_ARG
- Class:  STREAM.testGroup
- File:   C:\work.ooRexx\ooRexxUnit\3.2.0\ooRexx\STREAM.testGroup
- Line:   68
- Failed: assertTrue
-   Expected: [1]
-   Actual:   [[0], identityHash="535806184"]
+    retDiscrpt = left(retDiscrpt, pos(":", retDiscrpt) - 1)
 
-This is perfect!  Okay, the output shows that the test named
-TEST_DESCRIPTION_ARG failed.    Whoa, that's the one I just wrote.  It
-shows that what failed was assertTrue and that it was on line 68.
+    self~assertSame(retDiscrpt, retState)
+]]>
+</programlisting>
+</para>
+<para>
+  Here is the output:
+<programlisting>
+<![CDATA[
+  C:\ooRexxUnit.3.2.0>rexx testOORexx.rex -R ooRexx -f stream
+  ...
+  Interpreter: REXX-ooRexx_3.2.0(MT) 6.02 30 Oct 2007
+  ooRexxUnit:  2.0.0_3.2.0        ooTest: 1.0.0_3.2.0
 
-What was expected was 1 (true) but the actual was 0 (false)
+  Tests ran:           4
+  Assertions:          2
+  Failures:            0
+  Errors:              0
+  Skipped files:       0
 
-Let's look at the test case again:
-
- p = pos(retSting, ":")
- self~assertTrue(p > 0)
-
-I always forget the args to pos.  They are needle, haystack.  I coded
-haystack, needle.  Well the astute observer may have noticed that I
-also coded retSting rather than retString
-
-The fixed test case:
-
-::method test_description_arg
- parse source junk notUsed streamName
- retString = stream(streamName, "Description")
- p = pos(":", retString)
- self~assertTrue(p > 0)
-
-The output:
-
-Interpreter: REXX-ooRexx_3.2.0(MT) 6.02 30 Oct 2007
-ooRexxUnit:  2.0.0_3.2.0        ooTest: 1.0.0_3.2.0
-
-Tests ran:           4
-Assertions:          2
-Failures:            0
-Errors:              0
-Skipped files:       0
-
-File search:        00:00:00.160000
-Suite construction: 00:00:00.000000
-Test execution:     00:00:00.000000
-Total time:         00:00:00.160000
-
-Alright.  Now, if someone rewrote the stream libraries, a lot of work,
-and had some trivial error that forgot to tack on the ":" for the
-Description arg, we have a test case that would catch it.
-
-Let's do one more quickly.
-
-The doc also says that the Description arg returns the same the same
-string as the State arg, with a colon and some other possible text
-added after the colon.  That suggests a test.
-
-Here is the code.  Notice the use of assertSame() which really fits in
-with the semantics of the test.  We are testing that the Description
-and State args return the same string:
-
-::method  test_description_state_same
- parse source junk notUsed streamName
-
- retDiscrpt = stream(streamName, "Description")
- retState   = stream(streamName, "State")
-
- retDiscrpt = left(retDiscrpt, pos(":", retDiscrpt) - 1)
-
- self~assertSame(retDiscrpt, retState)
-
-Here is the output:
-
-C:\ooRexxUnit.3.2.0>rexx testOORexx.rex -R ooRexx -f stream
-...
-Interpreter: REXX-ooRexx_3.2.0(MT) 6.02 30 Oct 2007
-ooRexxUnit:  2.0.0_3.2.0        ooTest: 1.0.0_3.2.0
-
-Tests ran:           4
-Assertions:          2
-Failures:            0
-Errors:              0
-Skipped files:       0
-
-File search:        00:00:00.160000
-Suite construction: 00:00:00.000000
-Test execution:     00:00:00.000000
-Total time:         00:00:00.160000
-
-To code the 2 tests, we really just used classic Rexx.  The 'object'
-stuff is confined to some boilerplate code that you should be able to
-use without really understanding it.  The process of just writing
-this, will allow the 'object' stuff to start seeping in.
-
-Next installment:  I am always threatening to write the documentation
-for the ooTest framework, but it is an empty threat.  Or - what *are*
-the assertXXX methods?
-
+  File search:        00:00:00.160000
+  Suite construction: 00:00:00.000000
+  Test execution:     00:00:00.000000
+  Total time:         00:00:00.160000
+]]>
+</programlisting>
+</para>
+<para>
+  To code the 2 tests, we really just used classic Rexx.  The 'object'
+  stuff is confined to some boilerplate code that you should be able to
+  use without really understanding it.  The process of just writing
+  this, will allow the 'object' stuff to start seeping in.
+</para>
+<para>
+  Next installment:  I am always threatening to write the documentation
+  for the ooTest framework, but it is an empty threat.  Or - what *are*
+  the assertXXX methods?
+</para>
 </section>
 </chapter>
 
