@@ -3028,7 +3028,7 @@ or the presence of data in a transient stream.</para></note>
 <programlisting>
 <![CDATA[
 >>-lower(string-+----------------------------+--)--------------><
-                +--,--+-----+--+-----------+-+      
+                +--,--+-----+--+-----------+-+
                       +--n--+  +--,length--+
 ]]>
 </programlisting>
@@ -4738,10 +4738,10 @@ TRACE("?I")   ->   "O"  /* now in interactive debugging */
 <![CDATA[
 >>-TRANSLATE(string--------------------------------------------->
 
->--+--------------------------------------------+--)-----------><
-   +-,--+--------+--+-------------------------+-+
-        +-tableo-+  +-,--+--------+--+------+-+
-                         +-tablei-+  +-,pad-+
+>--+--------------------------------------------+--)--------------------------------+-><
+   +-,--+--------+--+-------------------------+-+     +-------------------------+-)-+
+        +-tableo-+  +-,--+--------+--+------+-+       +-,--+-----+--+---------+-+
+                         +-tablei-+  +-,pad-+              +-pos-+  +-,length-+
 ]]>
 </programlisting>
 
@@ -4773,6 +4773,11 @@ processor translates the entire string to
 <emphasis role="italic">tableo</emphasis> defaults to the null string and is
 padded with <emphasis role="italic">pad</emphasis> or truncated as necessary.
 The default <emphasis role="italic">pad</emphasis> is a blank.</para>
+<para><emphasis role="italic">pos</emphasis> is the position of the first
+character of the translated range.  The default starting position is 1.
+<emphasis role="italic">length</emphasis> is the range of characters to be
+translated.  If omitted, <emphasis role="italic">length</emphasis> remainder of
+the string from the starting position to the end is used. </para>
 <para>Here are some examples:</para>
 <indexterm><primary>TRANSLATE function</primary>
 <secondary>example</secondary></indexterm>
@@ -4780,10 +4785,12 @@ The default <emphasis role="italic">pad</emphasis> is a blank.</para>
 <secondary>TRANSLATE function</secondary></indexterm>
 <programlisting>
 TRANSLATE("abcdef")                    ->    "ABCDEF"
+TRANSLATE("abcdef",,,,2,3)             ->    "ABCDEF"
 TRANSLATE("abcdef","12","ec")          ->    "ab2d1f"
 TRANSLATE("abcdef","12","abcd",".")    ->    "12..ef"
 TRANSLATE("APQRV", ,"PR")              ->    "A Q V"
 TRANSLATE("APQRV",XRANGE("00"X,"Q"))   ->    "APQ  "
+TRANSLATE("4123","abcd","1234",,2,2)   ->    "1ab4"
 TRANSLATE("4123","abcd","1234")        ->    "dabc"
 </programlisting>
 
@@ -4862,7 +4869,7 @@ it.
 <programlisting>
 <![CDATA[
 >>-upper(string-+----------------------------+--)--------------><
-                +--,--+-----+--+-----------+-+      
+                +--,--+-----+--+-----------+-+
                       +--n--+  +--,length--+
 ]]>
 </programlisting>

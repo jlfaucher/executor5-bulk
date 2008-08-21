@@ -4472,10 +4472,10 @@ function.)</para>
 
 <programlisting>
 <![CDATA[
->>-translate-+-----------------------------------------------+-><
-             +-(--+-------------------------------------+--)-+
-                  +-tableo--+-------------------------+-+
-                            +-,--+--------+--+------+-+
+>>-translate-+--------------------------------------------------------------------------+-><
+             +-(--+-------------------------------------+-+-------------------------+-)-+
+                  +-tableo--+-------------------------+-+ +-,--+-----+--+---------+-+
+                            +-,--+--------+--+------+-+        +-pos-+  +-,length-+
                                  +-tablei-+  +-,pad-+
 ]]>
 </programlisting>
@@ -4507,15 +4507,22 @@ string to <emphasis role="italic">pad</emphasis> characters.
 <emphasis role="italic">tableo</emphasis> defaults to the null string and
 is padded with <emphasis role="italic">pad</emphasis> or truncated as necessary.
 The default <emphasis role="italic">pad</emphasis> is a blank.</para>
+<para><emphasis role="italic">pos</emphasis> is the position of the first
+character of the translated range.  The default starting position is 1.
+<emphasis role="italic">length</emphasis> is the range of characters to be
+translated.  If omitted, <emphasis role="italic">length</emphasis> remainder of
+the string from the starting position to the end is used. </para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>translate method</secondary></indexterm>
 <programlisting>
 "abcdef"~translate                     ->    "ABCDEF"
+"abcdef"~translate(,,,3,2)             ->    "abcDEf"
 "abcdef"~translate("12","ec")          ->    "ab2d1f"
 "abcdef"~translate("12","abcd",".")    ->    "12..ef"
 "APQRV"~translate(,"PR")               ->    "A Q V"
 "APQRV"~translate(XRANGE("00"X,"Q"))   ->    "APQ  "
+"4123"~translate("abcd","1234",,2,2)   ->    "1ab4"
 "4123"~translate("abcd","1234")        ->    "dabc"
 </programlisting>
 
