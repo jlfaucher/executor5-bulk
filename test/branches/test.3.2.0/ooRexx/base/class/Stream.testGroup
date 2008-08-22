@@ -42,7 +42,7 @@
   parse source . . s
 
   group = .TestGroup~new(s)
-  group~add(.STREAM.testGroup)
+  group~add(.Stream.testGroup)
 
   if group~isAutomatedTest then return group
 
@@ -55,44 +55,49 @@ return testResult
   Directives, Classes, or Routines.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::requires 'ooTest.frm'
+::requires 'FileUtils.cls'
 
-/* class: STREAM.testGroup - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+/* class: Stream.testGroup - - - - - - - - - - - - - - - - - - - - - - - - - -*\
 
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::class "STREAM.testGroup" public subclass ooTestCase
+::class "Stream.testGroup" public subclass ooTestCase
 
-::method test_simple_open
+::method test_open
 
-  f = 'streamTest.delMe'
-  ret = stream(f, 'C', "OPEN")
+  f = 'streamClassTest.delMe'
+  obj = .stream~new(f)
+  self~assertTrue(obj~isA(.Stream))
+
+  ret = obj~open
   self~assertSame("READY:", ret)
 
   -- We need to close the stream so we can delete the file.
 
   -- Close should return READY: on success (from docs.)
-  ret = stream(f, 'C', "CLOSE")
+  ret = obj~close
   self~assertSame("READY:", ret)
 
   j = deleteFile(f)
 
-::method test_open_isUsable
+::method test_simple_lineout
 
-  f = 'streamTest.delMe'
-  ret = stream(f, 'C', "OPEN")
-  self~assertSame("READY:", ret)
+  f = 'streamClassTest.delMe'
+  obj = .stream~new(f)
+  self~assertTrue(obj~isA(.Stream))
 
   -- Write a single line, close the file, read the file, and compare.
-  ret = lineout(f, "line 1")
+  ret = obj~lineout("line 1")
   self~assertSame(0, ret)
 
-  ret = stream(f, 'C', "CLOSE")
+  ret = obj~close
   self~assertSame("READY:", ret)
 
-  line = linein(f)
+  -- Linein should reopen the file for us.
+  line = obj~linein
   self~assertSame("line 1", line)
 
   -- Need to close again so we can delete the file.
-  ret = stream(f, 'C', "CLOSE")
+  ret = obj~close
   self~assertSame("READY:", ret)
 
   j = deleteFile(f)
@@ -100,52 +105,27 @@ return testResult
 ::method test_close_twice
 
   f = "streamCloseTest.delMe"
+  obj = .stream~new(f)
+  self~assertTrue(obj~isA(.Stream))
 
   -- Lineout should open the file and write the line.
-  ret = lineout(f, 'line 1')
+  ret = obj~lineout('line 1')
   self~assertSame(0, ret)
 
   -- Close the file, return should be READY: and query state should be unknown
-  ret = stream(f, 'C', "CLOSE")
-  state = stream(f, "STATE")
+  ret = obj~close
+  state = obj~state
 
   self~assertSame("READY:", ret)
   self~assertSame("UNKNOWN", state)
 
   -- Close it again. This time the return should be the empty string (docs.)
-  ret = stream(f, 'C', "CLOSE")
-  state = stream(f, "STATE")
+  ret = obj~close
+  state = obj~state
 
   self~assertSame("", ret)
   self~assertSame("UNKNOWN", state)
 
   ret = deleteFile(f)
 
-::method test_description_arg
-  parse source junk notUsed streamName
-  retString = stream(streamName, "Description")
-  p = pos(":", retString)
-  self~assertTrue(p > 0)
-
-::method  test_description_state_same
-  parse source junk notUsed streamName
-
-  retDiscrpt = stream(streamName, "Description")
-  retState   = stream(streamName, "State")
-
-  retDiscrpt = left(retDiscrpt, pos(":", retDiscrpt) - 1)
-
-  self~assertSame(retDiscrpt, retState)
-
-::method test_wrong_2nd_arg
-  parse source junk notUsed streamName
-
-  self~expectSyntax(40.904)
-  retDiscrpt = stream(streamName, "FILESTATE")
-
-::method test_no_args
-
-  self~expectSyntax(40.3)
-  retDiscrpt = stream()
-
--- End of class: STREAM.testGroup
+-- End of class: Stream.testGroup

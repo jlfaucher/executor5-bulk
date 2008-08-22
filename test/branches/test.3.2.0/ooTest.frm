@@ -1718,41 +1718,17 @@ return suite
         end
 
         when \ isSubClassOf(container~class, "TestContainer") then do
-          obj = self~maybeCreateContainer(container, fileName)
-
-          select
-            when obj~isA(.Notification) then do
-              testResult~addNotification(obj)
-              iterate
-            end
-
-            when obj~isA(.ExceptionData) then do
-              testResult~addException(obj)
-              iterate
-            end
-
-            when obj~isA(.ErrorReport.) then do
-              testReport~addError(obj)
-              iterate
-            end
-
-            otherwise do
-              -- Add a notification that this was an old style test group, so we
-              -- can update them.
-              n = .Notification~new(timeStamp(), fileName, .Notification~TEXT_TYPE )
-              n~message = "Converted old-style TestUnit list into a test group."
-              n~additionalObject = obj
-              testResult~addNotification(n)
-
-              q~queue(obj)
-            end
-          end
-          -- End select
+          n = .Notification~new(timeStamp(), fileName, .Notification~SKIP_TYPE)
+          n~reason = "Invocation of test container file did not produce the expected result."
+          n~additional = "Returned object is not a test container, object is:" container
+          rn~additionalObject = container
+          testResult~addNotification(n)
+          iterate
         end
 
         when \ container~hasTests then do
           n = .Notification~new(timeStamp(), fileName, .Notification~SKIP_TYPE)
-          n~reason = "Test container has no executable tests"
+          n~reason = "The test container has no executable tests"
           n~additional = container~getNoTestsReason
           testResult~addNotification(n)
           iterate
@@ -1765,7 +1741,7 @@ return suite
         -- Caller wants a certain type of tests.
         when \ container~hasTestTypes(testTypes) then do
           n = .Notification~new(timeStamp(), fileName, .Notification~SKIP_TYPE)
-          n~reason = "Container has no executable tests of specified test types"
+          n~reason = "The test container has none of the specified test types"
           n~additional = "Specified Test Types:" testTypes
           n~additionalObject = testTypes
           testResult~addNotification(n)
@@ -1792,7 +1768,7 @@ return suite
     callError:
       err = .ExceptionData~new(timeStamp(), file, "Trap")
       err~conditionObject = condition('O')
-      err~msg = "Initial call of Test Group failed"
+      err~msg = "Initial call of test container failed"
 
   return err
   -- End getContainer()
@@ -1823,72 +1799,6 @@ return suite
       if re~match(file~upper) then return .true
     end
     return .false
-
-
-  /** maybeCreateContainer()
-   * Attempts to create a TestGroup from object.  This is a temporary method,
-   * used to ease the migration from ooRexxUnit 1 to ooRexxUnit 2.0.0.
-   *
-   */
-  ::method maybeCreateContainer private
-    use arg obj, fileName
-
-    -- Try to determine if this is an old-style .testUnit list.  If it is, it
-    -- can be converted to a test group.  If it isn't add the file to the
-    -- omitted files list.
-
-    data = .Notification~new(timeStamp(), fileName, .Notification~SKIP_TYPE)
-    data~reason = "Attempt to convert returned object into a TestGroup failed"
-    data~additional = ""
-    if \ self~objectIsTestUnitList(obj, data) then return data
-
-    -- Okay, an old-style TestUnit list.  Create a TestGroup and populate it
-    -- with the TestCase class(es) from the file.  It is possible, but very
-    -- unlikely that .TestGroup~new will throw an exception.  So, catch it.
-    signal on any name tempHandler
-    group = .TestGroup~new(fileName)
-
-    -- objectIsTestUnitList() has already done our error checking for us.
-    do a over obj
-      group~add(a[1])
-      if a[2]~isEmpty then iterate
-      group~addWithCollection(a[1], a[2])
-    end
-
-    return group
-
-  tempHandler:
-    err = .ExceptionData~new(timeStamp(), fileName, "Trap")
-    err~conditionObject = condition('O')
-    err~msg = "Creating TestGroup from old-style TestUnit list file failed."
-  return err
-
-  ::method objectIsTestUnitList private
-    use arg obj, data
-
-    if obj~isA(.list) then do a over obj
-      if \ a~isA(.array) then
-        return self~updateData(data, "Item in TestUnit list is not an array", obj)
-
-      if a~items \== 2 then
-        return self~updateData(data, "Array item in TestUnit list does not have 2 indexes", obj)
-
-      if \ isSubclassOf(a[1], "TestCase") then
-        return self~updateData(data, "Index 1 of array item is not subclass of TestCase", obj)
-
-      if \ a[2]~isA(.list) then
-        return self~updateData(data, "Index 2 of array item is not a .List", obj)
-
-      return .true
-    end
-
-  return self~updateData(data, "Object is not a list, object is:" obj)
-
-  ::method updateData private
-    use arg data, msg, obj
-    data~additional = msg
-    data~additionalObject = obj
-  return .false
 
 -- End of class: ooTestFinder
 
