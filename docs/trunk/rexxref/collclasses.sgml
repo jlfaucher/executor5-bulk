@@ -106,6 +106,15 @@ table index.  The table class determines the index match by using the == compari
 method. A table contains no duplicate indexes. See
 <link linkend="clsTable">The Table Class</link> for details.
 </para></listitem></varlistentry>
+<varlistentry><term>IdentityTable</term>
+<listitem><para>A collection with indexes that can be any object. For example, string
+objects, array objects, alarm objects, or any user-created object can be a
+table index.  The table class determines index item matches by using an object
+identity comparison.  With object identity matches, an index will only match if
+the same object instance is used as a table index.  An identity table contains
+no duplicate indexes. See
+<link linkend="clsIdentityTable">The IdentityTable Class</link> for details.
+</para></listitem></varlistentry>
 </variablelist>
 
 <section id="CollectionClassOrganization"><title>
@@ -124,6 +133,7 @@ the organization of the classes.</para>
       <link linkend="clsRelation">Relation</link>
       <link linkend="clsStem">Stem</link>
       <link linkend="clsTable">Table</link>
+      <link linkend="clsIdentityTable">IdentityTable</link>
    <link linkend="clsOrderedCollection">OrderedCollection</link>
       <link linkend="clsArray">Array</link>
       <link linkend="clsList">List</link>
@@ -5915,6 +5925,337 @@ removed item.
 <indexterm><primary>method</primary>
 <secondary>supplier method</secondary>
 <tertiary>of Table class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-supplier----------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a supplier object for the collection. After you have obtained a
+supplier, you can send it messages (see
+<link linkend="clsSupplier">The Supplier Class</link>) to enumerate
+all the items that were in the collection at the time of the supplier's
+creation. The supplier enumerates the items in an unspecified order. (The
+program should not rely on any order.)</para>
+</section>
+</section>
+
+<section id="clsIdentityTable"><title>The IdentityTable Class</title>
+<indexterm><primary>IdentityTable class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>IdentityTable class</secondary></indexterm>
+<indexterm><primary>Map Collection classes</primary>
+<secondary>IdentityTable class</secondary></indexterm>
+
+<para>An identity table is a collection with indexes
+that can be any object the user supplies. In an identity table, each item is
+associated with a single index, and there can be only one item for each index
+(unlike a relation, which can contain more than one item with the same index).
+Index and item matches in an identity table are made using an object
+identity comparison.  That is, an index will only match if the same instance is
+used in the collection.
+</para>
+<figure><title>The IdentityTable class and methods</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxIdentityTableClass.png" align="left">
+</imageobject>
+</mediaobject>
+</figure>
+<note><title>Note</title>
+<para>The IdentityTable class also has available class methods that its
+metaclass, the <link linkend="clsClass">Class class</link>, defines.
+It also inherits methods from the <link linkend="clsMapCollection">Map Collection
+class</link>, although there are not currently any methods defined in that class.
+</para></note>
+
+<section><title>Inherited Methods</title>
+
+&objclsmthods;
+&collclsmthods;
+&mcollclsmthods;
+
+</section>
+
+<section id="mthIdentityTableNew"><title>new (Class Method)</title>
+<indexterm><primary>new method</primary>
+<secondary>of IdentityTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>new method</secondary>
+<tertiary>of IdentityTable class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-new---------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>This method overrides the
+<link linkend="mthObjectNew">new class method</link> from the
+<link linkend="clsObject">Object class</link>.</para>
+<para>Returns an empty IdentityTable object.</para>
+</section>
+
+<section id="mthIdentityTableAtGet"><title>[]</title>
+<indexterm><primary>[] method</primary>
+<secondary>of IdentityTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>[] method</secondary>
+<tertiary>of IdentityTable class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-[index]-----------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the same item as the
+<emphasis role="bold">at</emphasis> method. See
+<link linkend="mthIdentityTableAt">at</link>.</para>
+</section>
+
+<section id="mthIdentityTablePutSet"><title>[]=</title>
+<indexterm><primary>[]= method</primary>
+<secondary>of IdentityTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>[]= method</secondary>
+<tertiary>of IdentityTable class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-[index]=item------------------------------------------------><
+]]>
+</programlisting>
+
+<para>This method is the same as the
+<emphasis role="bold">put</emphasis> method. See
+<link linkend="mthIdentityTablePut">put</link>.</para>
+</section>
+
+<section id="mthIdentityTableAllIndexes"<title>allIndexes</title>
+<indexterm><primary>allIndexes method</primary>
+<secondary>of IdentityTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>allIndexes method</secondary>
+<tertiary>of IdentityTable class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-allIndexes--------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns an array of all indices contained in the table.</para>
+</section>
+
+<section id="mthIdentityTableAllItems"<title>allItems</title>
+<indexterm><primary>allItems method</primary>
+<secondary>of IdentityTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>allItems method</secondary>
+<tertiary>of IdentityTable class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-allItems----------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns an array of all items contained in the table.</para>
+</section>
+
+<section id="mthIdentityTableAt"><title>at</title>
+<indexterm><primary>at method</primary>
+<secondary>of IdentityTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>at method</secondary>
+<tertiary>of IdentityTable class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-at(index)---------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the item associated with index
+<emphasis role="italic">index</emphasis>. If the collection
+has no item associated with <emphasis role="italic">index</emphasis>, this
+method returns the Nil object.</para>
+</section>
+
+<section id="mthIdentityTableEmpty"<title>empty</title>
+<indexterm><primary>difference method</primary>
+<secondary>of IdentityTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>empty method</secondary>
+<tertiary>of IdentityTable class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-empty-------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Removes all items from the table.</para>
+</section>
+
+<section id="mthIdentityTableHasIndex"><title>hasIndex</title>
+<indexterm><primary>hasIndex method</primary>
+<secondary>of IdentityTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>hasIndex method</secondary>
+<tertiary>of IdentityTable class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-hasIndex(index)---------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns <computeroutput>1</computeroutput> (true) if the collection
+contains any item associated with index <emphasis role="italic">index</emphasis>,
+or <computeroutput>0</computeroutput> (false).</para>
+</section>
+
+<section id="mthIdentityTableHasItem"<title>hasItem</title>
+<indexterm><primary>hasItem method</primary>
+<secondary>of IdentityTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>hasItem method</secondary>
+<tertiary>of IdentityTable class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-hasItem(value)----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns <computeroutput>1</computeroutput> (true) if the collection
+contains the <emphasis role="italic">value</emphasis> at any index position or
+otherwise returns <computeroutput>0</computeroutput> (false).</para>
+</section>
+
+<section id="mthIdentityTableIndex"<title>index</title>
+<indexterm><primary>index method</primary>
+<secondary>of IdentityTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>index method</secondary>
+<tertiary>of IdentityTable class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-index(item)-------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the index of the specified item within the table.  If the
+target item appears at more than one index, the first located index will
+be returned.  If the table does not contain the specified item, .nil is
+returned.
+</para>
+</section>
+
+<section id="mthIdentityTableIsEmpty"<title>isEmpty</title>
+<indexterm><primary>isEmpty method</primary>
+<secondary>of IdentityTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>isEmpty method</secondary>
+<tertiary>of IdentityTable class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-isEmpty-----------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns <computeroutput>1</computeroutput> (true) if the table
+is empty.  Returns
+<computeroutput>0</computeroutput> (false) otherwise.</para>
+</section>
+
+<section id="mthIdentityTableItems"><title>items</title>
+<indexterm><primary>items method</primary>
+<secondary>of IdentityTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>items method</secondary>
+<tertiary>of IdentityTable class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-items-------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the number of items in the collection.</para>
+</section>
+
+<section id="mthIdentityTableMakeArray"><title>makeArray</title>
+<indexterm><primary>makeArray method</primary>
+<secondary>of IdentityTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>makeArray method</secondary>
+<tertiary>of IdentityTable class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-makeArray---------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a single-index array containing the index objects. The array
+indexes range from <computeroutput>1</computeroutput> to the number of items.
+The collection items appear in the array in an unspecified order. (The program
+should not rely on any order.)</para>
+</section>
+
+<section id="mthIdentityTablePut"><title>put</title>
+<indexterm><primary>put method</primary>
+<secondary>of IdentityTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>put method</secondary>
+<tertiary>of IdentityTable class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-put(item,index)---------------------------------------------><
+]]>
+</programlisting>
+
+<para>Makes the object <emphasis role="italic">item</emphasis>
+a member item of the collection and associates it with index
+<emphasis role="italic">index</emphasis>. The new item replaces any existing
+items associated with index <emphasis role="italic">index</emphasis>.</para>
+</section>
+
+<section id="mthIdentityTableRemove"><title>remove</title>
+<indexterm><primary>remove method</primary>
+<secondary>of IdentityTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>remove method</secondary>
+<tertiary>of IdentityTable class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-remove(index)-----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns and removes from a collection the member item with index
+<emphasis role="italic">index</emphasis>. If no item has index
+<emphasis role="italic">index</emphasis>, this method returns
+the Nil object and removes no item.</para>
+</section>
+
+<section id="mthIdentityTableRemoveItem"<title>removeItem</title>
+<indexterm><primary>removeItem method</primary>
+<secondary>of IdentityTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>removeItem method</secondary>
+<tertiary>of IdentityTable class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-removeItem(item)--------------------------------------------><
+]]>
+</programlisting>
+
+<para>Removes an item from the table. If the target item exists at more than
+one index, the first located item is removed.  The return value is the
+removed item.
+</para>
+</section>
+
+<section id="mthIdentityTableSupplier"><title>supplier</title>
+<indexterm><primary>supplier method</primary>
+<secondary>of IdentityTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>supplier method</secondary>
+<tertiary>of IdentityTable class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
 >>-supplier----------------------------------------------------><
