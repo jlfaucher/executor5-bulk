@@ -447,7 +447,7 @@ Total time:         00:03:11.620000
 <![CDATA[
 ::method "test_MULTIPLE_INHERITANCE_WITH_MULTIPLE_METACLASSES"
 
-  self~assertEquals("'123.'", .class123~info)
+     self~assertEquals("'123.'", .class123~info)
 ]]>
 </programlisting>
   Think of the method as a routine, for now, that is named:
@@ -474,7 +474,7 @@ Total time:         00:03:11.620000
 <![CDATA[
   ::method "test_MULTIPLE_INHERITANCE_WITH_MULTIPLE_METACLASSES"
 
-   self~assertEquals("'123.'", .class123~info)
+      self~assertEquals("'123.'", .class123~info)
 ]]>
 </programlisting>
   In this section we will start to write our own test case.
@@ -919,9 +919,9 @@ Raven:/ooRexxUnit.3.2.0 # cp misc/template.testGroup ooRexx/STREAM.testGroup
 <programlisting>
 <![CDATA[
   ::method test_description_arg
-    streamName = ???
-    retString = stream(streamName, "Description")
-    <check retString>
+      streamName = ???
+      retString = stream(streamName, "Description")
+      <check retString>
 ]]>
 </programlisting>
 </para>
@@ -937,9 +937,9 @@ Raven:/ooRexxUnit.3.2.0 # cp misc/template.testGroup ooRexx/STREAM.testGroup
 <programlisting>
 <![CDATA[
   ::method test_description_arg
-    parse source junk notUsed streamName
-    retString = stream(streamName, "Description")
-    <check retString>
+      parse source junk notUsed streamName
+      retString = stream(streamName, "Description")
+      <check retString>
 ]]>
 </programlisting>
   Now we just need to code the check of retString.
@@ -975,10 +975,10 @@ Raven:/ooRexxUnit.3.2.0 # cp misc/template.testGroup ooRexx/STREAM.testGroup
 <programlisting>
 <![CDATA[
   ::method test_description_arg
-   parse source junk notUsed streamName
-   retString = stream(streamName, "Description")
-   p = pos(retSting, ":")
-   self~assertTrue(p > 0)
+      parse source junk notUsed streamName
+      retString = stream(streamName, "Description")
+      p = pos(retSting, ":")
+      self~assertTrue(p > 0)
 ]]>
 </programlisting>
 </para>
@@ -1011,8 +1011,9 @@ Raven:/ooRexxUnit.3.2.0 # cp misc/template.testGroup ooRexx/STREAM.testGroup
 </para>
 <para>
   This is perfect!  Okay, the output shows that the test named
-  <computeroutput>TEST_DESCRIPTION_ARG</computeroutput> failed.    Whoa, that's the one I just wrote.  It
-  shows that what failed was assertTrue and that it was on line 68.
+  <computeroutput>TEST_DESCRIPTION_ARG</computeroutput> failed.
+  Whoa, that's the one I just wrote.  It shows that what failed
+  was assertTrue and that it was on line 68.
 </para>
 <para>
   What was expected was 1 (true) but the actual was 0 (false) Let's look at the
@@ -1031,10 +1032,10 @@ Raven:/ooRexxUnit.3.2.0 # cp misc/template.testGroup ooRexx/STREAM.testGroup
 <programlisting>
 <![CDATA[
   ::method test_description_arg
-    parse source junk notUsed streamName
-    retString = stream(streamName, "Description")
-    p = pos(":", retString)
-    self~assertTrue(p > 0)
+      parse source junk notUsed streamName
+      retString = stream(streamName, "Description")
+      p = pos(":", retString)
+      self~assertTrue(p > 0)
 ]]>
 </programlisting>
 </para>
@@ -1074,20 +1075,20 @@ Raven:/ooRexxUnit.3.2.0 # cp misc/template.testGroup ooRexx/STREAM.testGroup
   added after the colon.  That suggests a test.
 </para>
 <para>
-  Here is the code.  Notice the use of assertSame() which really fits in
-  with the semantics of the test.  We are testing that the Description
-  and State args return the same string:
+  Here is the code.  Notice the use of <computeroutput>assertSame()</computeroutput>
+  which really fits in with the semantics of the test.  We are testing that the
+  Description and State args return the same string:
 <programlisting>
 <![CDATA[
   ::method  test_description_state_same
-    parse source junk notUsed streamName
+      parse source junk notUsed streamName
 
-    retDiscrpt = stream(streamName, "Description")
-    retState   = stream(streamName, "State")
+      retDiscrpt = stream(streamName, "Description")
+      retState   = stream(streamName, "State")
 
-    retDiscrpt = left(retDiscrpt, pos(":", retDiscrpt) - 1)
+      retDiscrpt = left(retDiscrpt, pos(":", retDiscrpt) - 1)
 
-    self~assertSame(retDiscrpt, retState)
+      self~assertSame(retDiscrpt, retState)
 ]]>
 </programlisting>
 </para>
@@ -1121,8 +1122,8 @@ Raven:/ooRexxUnit.3.2.0 # cp misc/template.testGroup ooRexx/STREAM.testGroup
 </para>
 <para>
   Next installment:  I am always threatening to write the documentation
-  for the ooTest framework, but it is an empty threat.  Or - what *are*
-  the assertXXX methods?
+  for the ooTest framework, but it is an <emphasis role="italic">empty</emphasis>
+  threat.  Or - what <emphasis role="italic">are</emphasis> the assertXXX methods?
 </para>
 </section>
 </chapter>
@@ -1148,14 +1149,14 @@ Raven:/ooRexxUnit.3.2.0 # cp misc/template.testGroup ooRexx/STREAM.testGroup
   are:
 
   <itemizedlist mark='bullet'>
-  <listitem><para>assertEquals(expected, actual,[msg])</para></listitem>
-  <listitem><para>assertNotEquals(expected, actual,[msg])</para></listitem>
-  <listitem><para>assertNull(actual,[msg])</para></listitem>
-  <listitem><para>assertNotNullactual, [msg])</para></listitem>
-  <listitem><para>assertSame(expected, actual,[msg])</para></listitem>
-  <listitem><para>assertNotSame(expected, actual,[msg])</para></listitem>
-  <listitem><para>assertTrue(actual,[msg])</para></listitem>
-  <listitem><para>assertFalse(actual,[msg])</para></listitem>
+  <listitem><para><computeroutput>assertEquals(expected, actual,[msg])</computeroutput></para></listitem>
+  <listitem><para><computeroutput>assertNotEquals(expected, actual,[msg])</computeroutput></para></listitem>
+  <listitem><para><computeroutput>assertNull(actual,[msg])</computeroutput></para></listitem>
+  <listitem><para><computeroutput>assertNotNull(actual, [msg])</computeroutput></para></listitem>
+  <listitem><para><computeroutput>assertSame(expected, actual,[msg])</computeroutput></para></listitem>
+  <listitem><para><computeroutput>assertNotSame(expected, actual,[msg])</computeroutput></para></listitem>
+  <listitem><para><computeroutput>assertTrue(actual,[msg])</computeroutput></para></listitem>
+  <listitem><para><computeroutput>assertFalse(actual,[msg])</computeroutput></para></listitem>
   </itemizedlist>
 </para>
 <para>
@@ -1210,8 +1211,8 @@ Raven:/ooRexxUnit.3.2.0 # cp misc/template.testGroup ooRexx/STREAM.testGroup
   <programlisting>
   <![CDATA[
     ::method test_addition
-     val = 2 + 3
-     self~assertSame(6, val, 'Special test, 2 plus 3 must equal 6')
+        val = 2 + 3
+        self~assertSame(6, val, 'Special test, 2 plus 3 must equal 6')
   ]]>
   </programlisting>
   and the output:
@@ -1253,8 +1254,8 @@ Raven:/ooRexxUnit.3.2.0 # cp misc/template.testGroup ooRexx/STREAM.testGroup
   <programlisting>
   <![CDATA[
     ::method test_001
-     val = 2 + 3
-     self~assertSame(6, val)
+        val = 2 + 3
+        self~assertSame(6, val)
   ]]>
   </programlisting>
   And you might really wonder what the test writer had in mind for this test
@@ -1267,22 +1268,25 @@ Raven:/ooRexxUnit.3.2.0 # cp misc/template.testGroup ooRexx/STREAM.testGroup
 </para>
 <para>
   6.)  The assertXXX() methods are pretty self explanatory, with maybe
-  the exception of assertSame() and assertEquals().
+  the exception of <computeroutput>assertSame()</computeroutput> and
+  <computeroutput>assertEquals()</computeroutput>.
 </para>
 <para>
-  assertSame() (and assertNotSame()) assert that 2 things are stictly equal.
+  <computeroutput>assertSame()</computeroutput> (and <computeroutput>assertNotSame()</computeroutput>)
+  assert that 2 things are stictly equal.
   <programlisting>
   <![CDATA[
     5 == 5
   ]]>
   </programlisting>
-  assertEquals() (and assertNotEquals())  assert that 2 things are loosely equal.
+  <computeroutput>assertEquals()</computeroutput> (and <computeroutput>assertNotEquals()</computeroutput>)
+  assert that 2 things are loosely equal.
   <programlisting>
   <![CDATA[
     'dog ' = 'dog'
   ]]>
   </programlisting>
-  equals is also used to test if 2 collections are loosely equal.
+  Equals is also used to test if 2 collections are loosely equal.
   <programlisting>
   <![CDATA[
     a1 = .array~of(1, 2, 3)
@@ -1292,8 +1296,10 @@ Raven:/ooRexxUnit.3.2.0 # cp misc/template.testGroup ooRexx/STREAM.testGroup
   </programlisting>
 </para>
 <para>
-  assertNull() and assertNotNull() might also need some explaining. They test if
-  the actual is .nil (or not .nil).
+  <computeroutput>assertNull()</computeroutput> and <computeroutput>assertNotNull()</computeroutput>
+  might also need some explaining. They test if the actual is <computeroutput>.nil</computeroutput>
+  (or not <computeroutput>.nil</computeroutput>).
+
 </para>
 <para>
   7.)  The assertXXX() methods are located in the OOREXXUNIT.CLS file.
@@ -1348,11 +1354,6 @@ Raven:/ooRexxUnit.3.2.0 # cp misc/template.testGroup ooRexx/STREAM.testGroup
   ooTest.  And, I have made changes to ooRexxUnit, but have not been
   rigorous about maintaining the ooRexxUnit doc and examples.
 </para>
-<para>
-  Armed with this quick start, I think that anyone who can program
-  in Rexx and is using ooRexx to some degree can begin writing test
-  cases for the ooRexx interpreter.
-</para>
 </section>
 </chapter>
 
@@ -1386,20 +1387,20 @@ Raven:/ooRexxUnit.3.2.0 # cp misc/template.testGroup ooRexx/STREAM.testGroup
 <para>
   In my original series of e-mail posts, Rick pointed out that I forgot to
   include how to do negative tests. This is really an important part of testing,
-  and since I spent a lot of time in test, I'm kicking myself for overlooking it
-  here.  <literal><![CDATA[<grin>]]></literal>
+  and since I spent a lot of time in test, I'm kicking myself for overlooking
+  it. <literal><![CDATA[<grin>]]></literal>
 </para>
 <section><title>Example One</title>
 <para>
-  We'll continue with the STREAM.testGroup and look at what the doc says
-  about the second arg.  Which is exactly: "The second argument can be
-  one of the following strings ..." and it the lists exactly 3 strings:
-  State, Description, and Command.
+  We'll continue with the <computeroutput>STREAM.testGroup</computeroutput>
+  and look at what the doc says about the second arg.  Which is exactly:
+  "The second argument can be one of the following strings ..." and it the
+  lists exactly 3 strings: State, Description, and Command.
 </para>
 <para>
-  So a negative test is what happens when you don't follow a requirement.  (Well
-  there are other types of negative tests, but let's not get too complicated
-  here.)
+  So a negative test is what happens when you do something that is incorrect. In
+  this case what happens if you don't follow a requirement.  (Well there are
+  other types of negative tests, but let's not get too complicated here.)
 </para>
 <para>
   The requirement is that the second arg be one of only 3 different things.
@@ -1407,14 +1408,14 @@ Raven:/ooRexxUnit.3.2.0 # cp misc/template.testGroup ooRexx/STREAM.testGroup
   Say if we use FILESTATE ?
 </para>
 <para>
-  Staying with the same STREAM.testGroup.  How do we test this? Maybe something
-  along those lines?
+  Staying with the same <computeroutput>STREAM.testGroup</computeroutput>.  How
+  do we test this? Maybe something along those lines?
   <programlisting>
   <![CDATA[
     ::method test_wrong_2nd_arg
-     parse source junk notUsed streamName
+        parse source junk notUsed streamName
 
-     retDiscrpt = stream(streamName, "FILESTATE")
+        retDiscrpt = stream(streamName, "FILESTATE")
   ]]>
   </programlisting>
   Output:
@@ -1440,22 +1441,22 @@ Raven:/ooRexxUnit.3.2.0 # cp misc/template.testGroup ooRexx/STREAM.testGroup
 <para>
   Errors are something totally unexpected.  We can see from the output that the
   interpreter is handling this the way it should.  But, what we want is a test
-  case for this that passes.
+  case for this that <emphasis role="italic">passes</emphasis>.
 </para>
 <para>
-  In this case we *expect* the error condition.  So our test case will pass when
-  we get an error.  The framework provides for these types of test with the
-  expectSyntax() method.
+  In this case we <emphasis role="bold">expect</emphasis> the error condition.
+  So our test case will pass when we get an error.  The framework provides for
+  these types of test with the <computeroutput>expectSyntax()</computeroutput> method.
 </para>
 <para>
   We code our test like this:
   <programlisting>
   <![CDATA[
     ::method test_wrong_2nd_arg
-     parse source junk notUsed streamName
+        parse source junk notUsed streamName
 
-     self~expectSyntax(40.904)
-     retDiscrpt = stream(streamName, "FILESTATE")
+        self~expectSyntax(40.904)
+        retDiscrpt = stream(streamName, "FILESTATE")
   ]]>
   </programlisting>
   And the output we get is:
@@ -1495,15 +1496,15 @@ Raven:/ooRexxUnit.3.2.0 # cp misc/template.testGroup ooRexx/STREAM.testGroup
   <![CDATA[
     ::method test_no_args
 
-     --self~expectSyntax(40.904)
-     retDiscrpt = stream()
+        --self~expectSyntax(40.904)
+        retDiscrpt = stream()
   ]]>
   </programlisting>
 </para>
 <para>
   But, what syntax error do we expect?  The best thing to do, is to look up the
   error numbers and descriptions and decide for yourself what you think it
-  *should* be.
+  <emphasis role="italic">should</emphasis> be.
 </para>
 <para>
   The error message list is in the back of the doc, in an appendix.  I don't
@@ -1536,8 +1537,8 @@ Raven:/ooRexxUnit.3.2.0 # cp misc/template.testGroup ooRexx/STREAM.testGroup
   <![CDATA[
     ::method test_no_args
 
-     self~expectSyntax(40.005)
-     retDiscrpt = stream()
+        self~expectSyntax(40.005)
+        retDiscrpt = stream()
   ]]>
   </programlisting>
   and our output looks like this:
@@ -1584,8 +1585,8 @@ Raven:/ooRexxUnit.3.2.0 # cp misc/template.testGroup ooRexx/STREAM.testGroup
   <![CDATA[
     ::method test_no_args
 
-     self~expectSyntax(40.003)
-     retDiscrpt = stream()
+        self~expectSyntax(40.003)
+        retDiscrpt = stream()
   ]]>
   </programlisting>
   output:
@@ -1612,7 +1613,7 @@ Raven:/ooRexxUnit.3.2.0 # cp misc/template.testGroup ooRexx/STREAM.testGroup
     40.115
   ]]>
   </programlisting>
-  A subcode is a *one* to three digit.
+  A subcode is a <emphasis role="italic">one</emphasis> to three digit number.
 </para>
 <para>
   Okay, no bug.  Our test looks like this:
@@ -1620,8 +1621,8 @@ Raven:/ooRexxUnit.3.2.0 # cp misc/template.testGroup ooRexx/STREAM.testGroup
   <![CDATA[
     ::method test_no_args
 
-     self~expectSyntax(40.3)
-     retDiscrpt = stream()
+        self~expectSyntax(40.3)
+        retDiscrpt = stream()
   ]]>
   </programlisting>
   output:
@@ -1645,7 +1646,7 @@ Raven:/ooRexxUnit.3.2.0 # cp misc/template.testGroup ooRexx/STREAM.testGroup
 </para>
 <para>
   Now we have 4 tests of an area that hadn't been touched.  The 4 additional
-  tests add 0 seconds  to the overall test execution time.  2 of the tests are
+  tests add 0 seconds to the overall test execution time.  2 of the tests are
   positive tests, 2 are negative.
 </para>
 </section>
@@ -1657,4 +1658,3 @@ Raven:/ooRexxUnit.3.2.0 # cp misc/template.testGroup ooRexx/STREAM.testGroup
 &genindex;
 
 </book>
-
