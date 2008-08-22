@@ -6,7 +6,7 @@
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
 /* distribution. A copy is also available at the following address:           */
-/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
+/* http://www.oorexx.org/license.html                                         */
 /*                                                                            */
 /* Redistribution and use in source and binary forms, with or                 */
 /* without modification, are permitted provided that the following            */
@@ -98,8 +98,11 @@ arguments = arg(1)
    -- This next line is what it is all about.
    suite~execute(testResult)
 
-   testResult~addEvent(executionPhase~~done)
-   testResult~addEvent(overallPhase~~done)
+   executionPhase~done
+   overallPhase~done
+
+   testResult~addEvent(executionPhase)
+   testResult~addEvent(overallPhase)
 
    testResult~print("ooTest Framework - Automated Test of the ooRexx Interpreter")
 
@@ -503,7 +506,7 @@ return 0
 
   originalCommandLine = cmdLine~copy
 
-  self~version = "0.9.0"
+  self~version = "1.0.0"
   self~needsHelp = .false
   self~doLongHelp = .false
   self~errMsg = .nil
