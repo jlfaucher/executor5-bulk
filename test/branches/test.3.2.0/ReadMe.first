@@ -9,6 +9,9 @@ NOTE: This is mostly a place-holder file, it is just barely started.  But,
 the quick start notes below should allow one to quickly run the current
 test suite.
 
+The snapshot package includes a quick start tutorial in PDF format.  This
+file: ooTestQuick.pdf provides additional useful infomation.
+
 NOTE: You need to match the ooRexxUnit version level with the version of
 the ooRexx interpreter you are running.  To use the ooRexxUnit 3.2.0 test
 framework you must have the 3.2.0 version of the interpreter running.
@@ -66,7 +69,7 @@ Help
 This command will print out some help:
 
 E:\ooRexxUnit.3.2.0>testOORexx.rex /?
-testOORexx version 0.9.0 ooTest Framwork version 1.0.0_3.2.0
+testOORexx version 1.0.0 ooTest Framwork version 1.0.0_3.2.0
 
 usage: testOORexx [OPTIONS]
 Try 'testOORexx --help' for more information.
@@ -135,24 +138,26 @@ E:\ooRexxUnit.3.2.0>
    ----------------------------------------------------------------------
 
 In the misc subdirectory there is a template file.  Simply copy it to a
-subdirectory that might be appropriate renaming, it to something you think
-is close.  For example:
+subdirectory that might be appropriate, renaming it to the name of your test
+group.  For example:
 
-E:\ooRexxUnit.3.2.0>copy misc\template.testGroup ooRexx\base\bif\STREAM.testGroup
+E:\ooRexxUnit.3.2.0>copy misc\template.testGroup ooRexx\MyTests.testGroup
 
 Edit the file and start writing your test cases.
 
 PLEASE ask questions on one of the Rexx lists, as this Quick Start does not
 go much further.
 
-You can learn a lot by examining some other test groups.  The
-template.testGroup file will execute as is and contains all the boilerplate
-needed:
+You can learn a lot by examining some other test groups.
 
-E:\ooRexxUnit.3.2.0>copy misc\template.testGroup ooRexx\base\bif\STREAM.testGroup
+The template.testGroup file will execute as is and contains all the
+boilerplate needed.  By simply copying it to a new file name, a working test
+group is created:
+
+E:\ooRexxUnit.3.2.0>copy misc\template.testGroup ooRexx\MyTests.testGroup
         1 file(s) copied.
 
-E:\ooRexxUnit.3.2.0>testOORexx.rex -R ooRexx\base\bif -f Stream
+E:\ooRexxUnit.3.2.0>testOORexx.rex ooRexx\MyTests.testGroup
 Searching for test containers..
 Executing automated test suite..
 
