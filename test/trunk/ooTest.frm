@@ -237,24 +237,28 @@ return a
   ::method UNIT_LONG_TEST;         return 2
   ::method SAMPLE_TEST      class; return 3
   ::method SAMPLE_TEST;            return 3
-  ::method GUI_SAMPLE_TEST  class; return 4
-  ::method GUI_SAMPLE_TEST;        return 4
-  ::method DOC_EXAMPLE_TEST class; return 5
-  ::method DOC_EXAMPLE_TEST;       return 5
+  ::method GUI_TEST         class; return 4
+  ::method GUI_TEST;               return 4
+  ::method GUI_SAMPLE_TEST  class; return 5
+  ::method GUI_SAMPLE_TEST;        return 5
+  ::method OLE_TEST         class; return 6
+  ::method OLE_TEST;               return 6
+  ::method DOC_EXAMPLE_TEST class; return 7
+  ::method DOC_EXAMPLE_TEST;       return 7
 
   -- A test type that makes noise.  I frequently need to run the test suite in
   -- an environment where I need these types of test cases to be skipped.  This
   -- is a convenience for myself (Mark Miesfeld.)
-  ::method DOC_EXAMPLE_NOISE_TEST   class; return 6
-  ::method DOC_EXAMPLE_NOISE_TEST;         return 6
+  ::method DOC_EXAMPLE_NOISE_TEST   class; return 8
+  ::method DOC_EXAMPLE_NOISE_TEST;         return 8
 
   -- A test type for the ooTest framework examples.
-  ::method FRAMEWORK_EXAMPLE_TEST   class; return 7
-  ::method FRAMEWORK_EXAMPLE_TEST;         return 7
+  ::method FRAMEWORK_EXAMPLE_TEST   class; return 9
+  ::method FRAMEWORK_EXAMPLE_TEST;         return 9
 
 
-  ::method MAX_TEST_TYPE  class; return 7
-  ::method MAX_TEST_TYPE;        return 7
+  ::method MAX_TEST_TYPE  class; return 10
+  ::method MAX_TEST_TYPE;        return 10
 
   /** all()
    * Returns a set of all the test types possible.
