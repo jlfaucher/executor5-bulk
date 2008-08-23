@@ -2630,8 +2630,9 @@ INSERT("123","abc", ,5,"-")    ->    "123--abc"
 
 <programlisting>
 <![CDATA[
->>-LASTPOS(needle,haystack--+--------+--)----------------------><
-                            +-,start-+
+>>-LASTPOS(needle,haystack-+---------------------------+--)----------------------><
+                           +-,--+-------+--+---------+-+
+                                +-start-+  +-,length-+
 ]]>
 </programlisting>
 
@@ -2642,12 +2643,17 @@ in another, <emphasis role="italic">haystack</emphasis>. (See also
 <computeroutput>0</computeroutput> if <emphasis role="italic">needle</emphasis>
 is a null string or not found. By default, the
 search starts at the last character of
-<emphasis role="italic">haystack</emphasis> and scans backward.
-You can override this by specifying <emphasis role="italic">start</emphasis>,
-the point at which the backward scan starts.
+<emphasis role="italic">haystack</emphasis> and scans backward to the
+beginning of the string.  You can
+override this by specifying
+<emphasis role="italic">start</emphasis>, the point at which the
+backward scan starts and <emphasis role="italic">length</emphasis>, the range of
+characters to scan.  The
 <emphasis role="italic">start</emphasis> must be a positive whole number and
-defaults to <computeroutput>LENGTH(haystack)</computeroutput> if larger than
-that value or omitted.</para>
+defaults to <computeroutput>receiving_string~length</computeroutput> if larger than that
+value or omitted.
+The <emphasis role="italic">length</emphasis> must be a non-negative whole
+number and defaults to <emphasis role="italic">start</emphasis>.
 <para>Here are some examples:</para>
 <indexterm><primary>LASTPOS function</primary>
 <secondary>example</secondary></indexterm>
@@ -2658,6 +2664,7 @@ LASTPOS(" ","abc def ghi")      ->    8
 LASTPOS(" ","abcdefghi")        ->    0
 LASTPOS("xy","efgxyz")          ->    4
 LASTPOS(" ","abc def ghi",7)    ->    4
+LASTPOS(" ","abc def ghi",7,3)  ->    0
 </programlisting>
 </section>
 
@@ -3183,8 +3190,9 @@ OVERLAY("123","abc",5,6,"+")    ->    "abc+123+++"
 
 <programlisting>
 <![CDATA[
->>-POS(needle,haystack--+--------+--)--------------------------><
-                        +-,start-+
+>>-POS(needle,haystack--+---------------------------+--)--------------------------><
+                        +-,--+-------+--+---------+-+
+                             +-start-+  +-,length-+
 ]]>
 </programlisting>
 
@@ -3195,11 +3203,17 @@ OVERLAY("123","abc",5,6,"+")    ->    "abc+123+++"
 <computeroutput>0</computeroutput> if <emphasis role="italic">needle</emphasis>
 is a null string or not found or if <emphasis role="italic">start</emphasis>
 is greater than the length of <emphasis role="italic">haystack</emphasis>.
-By default, the search starts at the first character of
-<emphasis role="italic">haystack</emphasis>, that is, the value of
-<emphasis role="italic">start</emphasis> is <computeroutput>1</computeroutput>.
-You can override this by specifying <emphasis role="italic">start</emphasis>
-(which must be a positive whole number), the point at which the search starts.</para>
+By default, the search starts at the first
+character of the receiving string (that is, the value of
+<emphasis role="italic">start</emphasis> is <computeroutput>1</computeroutput>),
+and continues to the end of the string.  You can override this by specifying
+<emphasis role="italic">start
+</emphasis>, the point at which the search starts, and
+<emphasis role="italic">length</emphasis>, the bounding limit for the search.
+If specified, <emphasis role="italic">start</emphasis> must be a positive
+whole number and <emphasis role="italic">length</emphasis> must be
+a non-negative whole number.
+</para>
 <para>Here are some examples:</para>
 <indexterm><primary>POS function</primary>
 <secondary>example</secondary></indexterm>
@@ -3210,6 +3224,7 @@ POS("day","Saturday")       ->    6
 POS("x","abc def ghi")      ->    0
 POS(" ","abc def ghi")      ->    4
 POS(" ","abc def ghi",5)    ->    8
+POS(" ","abc def ghi",5,3)  ->    0
 </programlisting>
 </section>
 

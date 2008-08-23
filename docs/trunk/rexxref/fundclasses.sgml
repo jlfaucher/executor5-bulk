@@ -2659,8 +2659,9 @@ Returns .false ("0") if the two strings are not strictly equal.
 
 <programlisting>
 <![CDATA[
->>-caselessLastPos(needle-+--------+-)---------------------------------><
-                          +-,start-+
+>>-caselessLastPos(needle-+---------------------------+-)---><
+                          +-,--+-------+--+---------+-+
+                               +-start-+  +-,length-+
 ]]>
 </programlisting>
 
@@ -2670,12 +2671,18 @@ in the receiving string. (See also <link linkend="mthStringPos">POS</link>.) It
 returns <computeroutput>0</computeroutput> if
 <emphasis role="italic">needle</emphasis> is the null string or not found.
 By default, the search starts at the last character of the receiving string
-and scans backward. You can override this by specifying
+and scans backward to the beginning of the string. You can override this by
+specifying
 <emphasis role="italic">start</emphasis>, the point at which the
-backward scan starts. The <emphasis role="italic">start</emphasis> must be a
-positive whole number and defaults to
-<computeroutput>receiving_string~length</computeroutput> if larger than that
-value or omitted.  The search is performed using caseless comparisons.</para>
+backward scan starts and <emphasis role="italic">length</emphasis>, the range of
+characters to scan.  The
+<emphasis role="italic">start</emphasis> must be a positive whole number and
+defaults to <computeroutput>receiving_string~length</computeroutput> if larger than that
+value or omitted.
+The <emphasis role="italic">length</emphasis> must be a non-negative whole
+number and defaults to <emphasis role="italic">start</emphasis>.  The search is
+performed using caseless comparisons.
+</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>caselessLastPos method</secondary></indexterm>
@@ -2684,6 +2691,7 @@ value or omitted.  The search is performed using caseless comparisons.</para>
 "abcdefghi"~caselessLastPos(" ")        ->    0
 "efgxyz"~caselessLastPos("XY")          ->    4
 "abc def ghi"~caselessLastPos(" ",7)    ->    4
+"abc def ghi"~caselessLastPos(" ",7,3)  ->    0
 </programlisting>
 <para>(See <link linkend="bifLastpos">LASTPOS (Last Position)</link>
 for information about the LASTPOS built-in function.)</para>
@@ -2786,8 +2794,9 @@ a positive whole number less than or equal to the length of the target string.</
 
 <programlisting>
 <![CDATA[
->>-caselessPos(needle-+--------+-)-------------------------------------><
-                      +-,start-+
+>>-caselessPos(needle-+---------------------------+-)---><
+                      +-,--+-------+--+---------+-+
+                           +-start-+  +-,length-+
 ]]>
 </programlisting>
 
@@ -2801,10 +2810,15 @@ the length of the receiving string.  The search is performed using caseless
 comparisons.
 By default, the search starts at the first
 character of the receiving string (that is, the value of
-<emphasis role="italic">start</emphasis> is <computeroutput>1</computeroutput>).
-You can override this by specifying <emphasis role="italic">start</emphasis>
-(which must be
-a positive whole number), the point at which the search starts.</para>
+<emphasis role="italic">start</emphasis> is <computeroutput>1</computeroutput>),
+and continues to the end of the string.  You can override this by specifying
+<emphasis role="italic">start
+</emphasis>, the point at which the search starts, and
+<emphasis role="italic">length</emphasis>, the bounding limit for the search.
+If specified, <emphasis role="italic">start</emphasis> must be a positive
+whole number and <emphasis role="italic">length</emphasis> must be
+a non-negative whole number.
+</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>caselessPos method</secondary></indexterm>
@@ -2813,6 +2827,7 @@ a positive whole number), the point at which the search starts.</para>
 "abc def ghi"~caselessPos("x")      ->    0
 "abc def ghi"~caselessPos(" ")      ->    4
 "abc def ghi"~caselessPos(" ",5)    ->    8
+"abc def ghi"~caselessPos(" ",5,3)  ->    0
 </programlisting>
 </section>
 
@@ -3734,8 +3749,9 @@ for information about the INSERT built-in function.)</para>
 
 <programlisting>
 <![CDATA[
->>-lastPos(needle-+--------+-)---------------------------------><
-                  +-,start-+
+>>-lastPos(needle-+---------------------------+-)---><
+                  +-,--+-------+--+---------+-+
+                       +-start-+  +-,length-+
 ]]>
 </programlisting>
 
@@ -3745,12 +3761,16 @@ in the receiving string. (See also <link linkend="mthStringPos">POS</link>.) It
 returns <computeroutput>0</computeroutput> if
 <emphasis role="italic">needle</emphasis> is the null string or not found.
 By default, the search starts at the last character of the receiving string
-and scans backward. You can override this by specifying
+and scans backward to the beginning of the string. You can override this by
+specifying
 <emphasis role="italic">start</emphasis>, the point at which the
-backward scan starts. The <emphasis role="italic">start</emphasis> must be a
-positive whole number and defaults to
-<computeroutput>receiving_string~length</computeroutput> if larger than that
-value or omitted.</para>
+backward scan starts and <emphasis role="italic">length</emphasis>, the range of
+characters to scan.  The
+<emphasis role="italic">start</emphasis> must be a positive whole number and
+defaults to <computeroutput>receiving_string~length</computeroutput> if larger than that
+value or omitted.
+The <emphasis role="italic">length</emphasis> must be a non-negative whole
+number and defaults to <emphasis role="italic">start</emphasis>.
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>lastPos method</secondary></indexterm>
@@ -3759,6 +3779,7 @@ value or omitted.</para>
 "abcdefghi"~lastPos(" ")        ->    0
 "efgxyz"~lastPos("xy")          ->    4
 "abc def ghi"~lastPos(" ",7)    ->    4
+"abc def ghi"~lastPos(" ",7,3)  ->    0
 </programlisting>
 <para>(See <link linkend="bifLastpos">LASTPOS (Last Position)</link>
 for information about the LASTPOS built-in function.)</para>
@@ -4118,8 +4139,9 @@ for information about the OVERLAY built-in function.)</para>
 
 <programlisting>
 <![CDATA[
->>-pos(needle-+--------+-)-------------------------------------><
-              +-,start-+
+>>-pos(needle-+---------------------------+-)---><
+              +-,--+-------+--+---------+-+
+                   +-start-+  +-,length-+
 ]]>
 </programlisting>
 
@@ -4129,12 +4151,18 @@ for information about the OVERLAY built-in function.)</para>
 <computeroutput>0</computeroutput> if
 <emphasis role="italic">needle</emphasis> is the null string or is not found
 or if <emphasis role="italic">start</emphasis> is greater than
-the length of the receiving string. By default, the search starts at the first
+the length of the receiving string.
+By default, the search starts at the first
 character of the receiving string (that is, the value of
-<emphasis role="italic">start</emphasis> is <computeroutput>1</computeroutput>).
-You can override this by specifying <emphasis role="italic">start</emphasis>
-(which must be
-a positive whole number), the point at which the search starts.</para>
+<emphasis role="italic">start</emphasis> is <computeroutput>1</computeroutput>),
+and continues to the end of the string.  You can override this by specifying
+<emphasis role="italic">start
+</emphasis>, the point at which the search starts, and
+<emphasis role="italic">length</emphasis>, the bounding limit for the search.
+If specified, <emphasis role="italic">start</emphasis> must be a positive
+whole number and <emphasis role="italic">length</emphasis> must be
+a non-negative whole number.
+</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>pos method</secondary></indexterm>
@@ -4143,6 +4171,7 @@ a positive whole number), the point at which the search starts.</para>
 "abc def ghi"~pos("x")      ->    0
 "abc def ghi"~pos(" ")      ->    4
 "abc def ghi"~pos(" ",5)    ->    8
+"abc def ghi"~pos(" ",5,3)  ->    0
 </programlisting>
 <para>(See <link linkend="bifPos">POS (Position)</link>
 for information about the POS built-in function.)</para>
