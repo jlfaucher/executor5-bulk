@@ -86,7 +86,77 @@ return testResult
   self~assertTrue(count == 1)
   self~assertSame(trueCurrentDir, line)
 
-::method  test_XXX
-  self~assertSame('dog', 'dog')
+::method  test_multi_lines
+
+  -- In order to work on different platforms, it is easier to just create our
+  -- own program so we can control the number of lines of output.
+  src = .array~new
+  src[1] = "do i = 1 to 5"
+  src[2] = "  say 'line' i"
+  src[3] = "end"
+  src[4] = "return 5"
+
+  prg = createRexxPrgFile(src, "TestRxQueue")
+
+  -- Assert the file was created okay
+  self~assertNotSame('', prg)
+
+  'rexx' prg '| rxqueue'
+
+  -- Delete the temp file
+  j = deleteFile(prg)
+
+  -- Now assert what should be true
+  count = queued()
+  self~assertSame(5, count)
+
+  do i = 1 to 5
+    parse pull line
+    expected = 'line' i
+    self~assertSame(expected, line)
+  end
+
+/** test_stderr_to_rxqueue()
+ * This tests that stderr can be redirected and both stderr and stdout end up
+ * in the queue.  This works on 3.2.0 in Windows and it seems reasonable to
+ * ensure it keeps working in the future.  Note, that it is conceivable that
+ * this may not work on all platforms that ooRexx works on.
+ */
+::method test_stderr_to_rxqueue
+
+  -- Note to someone investigating a failure here.  Add the code to get this
+  -- to work on your platform and, probably, turn this into a select statement.
+  msg = "Please fix this test if OS is not Windows or Linux"
+  self~assertTrue(.ooRexxUnit.OSName == "WINDOWS" | .ooRexxUnit.OSName == "LINUX", msg)
+
+  -- This redirects stderr correctly on Windows and Linux (bash).  We may need
+  -- to add a test for the proper shell on Linux.
+  stdErrToStdOut = '2>&1'
+
+  src = .array~new
+  src[1] = ".stdout~lineout('stdout line 1')"
+  src[2] = ".stdout~lineout('stdout line 2')"
+  src[3] = ".stderr~lineout('stderr line 3')"
+  src[4] = ".stderr~lineout('stderr line 4')"
+  src[5] = "return 0"
+
+  prg = createRexxPrgFile(src, "TestRxQueue")
+  self~assertNotSame('', prg)
+
+  'rexx' prg stdErrToStdOut '| rxqueue'
+  j = deleteFile(prg)
+
+  -- Now test.
+  count = queued()
+  self~assertSame(4, count)
+
+  parse pull line
+  self~assertSame("stdout line 1", line)
+  parse pull line
+  self~assertSame("stdout line 2", line)
+  parse pull line
+  self~assertSame("stderr line 3", line)
+  parse pull line
+  self~assertSame("stderr line 4", line)
 
 -- End of class: rxQueue.testGroup
