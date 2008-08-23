@@ -42,7 +42,7 @@
   parse source . . s
 
   group = .TestGroup~new(s)
-  group~add(.template.testGroup)
+  group~add(.rxQueue.testGroup)
 
   if group~isAutomatedTest then return group
 
@@ -55,16 +55,38 @@ return testResult
   Directives, Classes, or Routines.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::requires 'ooTest.frm'
+::requires 'FileUtils.cls'
 
-/* class: template.testGroup - - - - - - - - - - - - - - - - - - - - - - - - -*\
+/* class: rxQueue.testGroup- - - - - - - - - - - - - - - - - - - - - - - - - -*\
 
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::class "template.testGroup" public subclass ooTestCase
+::class "rxQueue.testGroup" public subclass ooTestCase
 
-::method test_YYY
-  self~assertTrue(.true)
+::method test_current_dir_filter
+
+  -- Use a select to allow for expansion.  When this test fails on a plaform
+  -- because cmd is not set correctly, then whoever investigates can add the
+  -- appropriate command for that platform.  Note it is possible that we will
+  -- also need to test for the appropriate shell.
+  os = .ooRexxUnit.OSName
+  select
+    when os == 'WINDOWS' then cmd = 'cd'
+    when os == 'LINUX' then cmd = 'pwd'
+    when os == 'MACOS' then cmd = 'pwd'
+    when os == 'SUNOS' then cmd = 'pwd'
+    when os == 'AIX' then cmd = 'pwd'
+    otherwise cmd = 'pwd'
+  end
+
+  cmd "| rxqueue"
+  count = queued()
+  parse pull line
+  trueCurrentDir = directory()
+
+  self~assertTrue(count == 1)
+  self~assertSame(trueCurrentDir, line)
 
 ::method  test_XXX
   self~assertSame('dog', 'dog')
 
--- End of class: template.testGroup
+-- End of class: rxQueue.testGroup
