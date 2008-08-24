@@ -4177,6 +4177,48 @@ a non-negative whole number.
 for information about the POS built-in function.)</para>
 </section>
 
+<section id="mthStringReplaceAt"><title>replaceAt</title>
+<indexterm><primary>replaceAt method</primary>
+<secondary>of String class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>replaceAt method</secondary>
+<tertiary>of String class</tertiary></indexterm>
+<indexterm><primary>replacing characters within a string</primary></indexterm>
+
+<programlisting>
+<![CDATA[
+>>-replaceAt(new,n,length-+------+-)-----><
+                          +-,pad-+
+]]>
+</programlisting>
+
+<para>Returns a copy of the receiving string, with the
+characters from the
+<emphasis role="italic">n</emphasis>th character for <emphasisrole="italic">length</emphasis>
+characters is replace with
+<emphasis role="italic">new</emphasis>. The replacement position and length can
+extend beyond the end of the receiving string.
+The starting
+position,
+<emphasis role="italic">n</emphasis>, must be a positive whole number, and
+the
+<emphasis role="italic">length</emphasis> must be a positive whole number or
+zero.  If <emphasis
+role="italic">n</emphasis> is greater than the length of the receiving string,
+padding is added before the <emphasis role="italic">new</emphasis> string. The
+default
+<emphasis role="italic">pad</emphasis> character is a blank.
+</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>replaceAt method</secondary></indexterm>
+<programlisting>
+"abcdef"~replaceAt(" ",3, 1)      ->    "ab def"
+"abcdef"~replaceAt(" ",3, 3)      ->    "ab ef"
+"abc"~replaceAt("123",5,6,"+")    ->    "abc+123"
+</programlisting>
+</section>
+
 <section id="mthStringReverse"><title>reverse</title>
 <indexterm><primary>reverse method</primary>
 <secondary>of String class</secondary></indexterm>
