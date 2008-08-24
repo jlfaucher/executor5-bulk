@@ -4558,6 +4558,12 @@ can have the values <computeroutput>00</computeroutput> through
 There are always two digits. Any fractions
 of seconds are ignored (times are never rounded). This is the default.
 </para></listitem></varlistentry>
+<varlistentry><term>Offset</term>
+<listitem><para>returns the offset of the local time from UTC in microseconds.
+The offset value will be negative for timezones west of the Prime Meridian
+and positive for timezones east of Prime Meridian.  The local time('F') value
+can be converted to UTC by adding the time('O') value.
+</para></listitem></varlistentry>
 <varlistentry><term>Reset</term>
 <listitem><para>returns sssssssss.uuuuuu, the number of seconds and microseconds
 since the elapsed-time clock (described later) was started or reset and also
