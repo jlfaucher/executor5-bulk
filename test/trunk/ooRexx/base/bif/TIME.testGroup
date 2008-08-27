@@ -671,10 +671,10 @@ return testResult
    y = time(a); z = time(a)
    self~assertEquals(y, z)
 
-::method test_invalidOpt_hex_4F
+::method test_validOpt_bigChar_O
    a = d2c(79)
-   self~expectSyntax(40.904)
-   z = time(a)
+   y = time(a); z = time(a)
+   self~assertEquals(y, z)
 
 ::method test_invalidOpt_hex_50
    a = d2c(80)
@@ -837,10 +837,10 @@ return testResult
    y = time(a); z = time(a)
    self~assertEquals(y, z)
 
-::method test_invalidOpt_hex_6F
+::method test_validOpt_littleChar_o
    a = d2c(111)
-   self~expectSyntax(40.904)
-   z = time(a)
+   y = time(a); z = time(a)
+   self~assertEquals(y, z)
 
 ::method test_invalidOpt_hex_70
    a = d2c(112)
