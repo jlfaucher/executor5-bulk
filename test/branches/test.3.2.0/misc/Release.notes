@@ -1,8 +1,8 @@
-                        ooRexxUnit 3.2.0 Snapshot 03
-                        ============================
+                        ooRexxUnit  Snapshot 03
+                        =======================
 
 ooRexxUnit is an ooRexx implementation of junit, originally designed and
-implemented by Prof. Rony G. Flatscher, and released to the Rexx Language
+implemented by Prof. Rony G.  Flatscher, and released to the Rexx Language
 Association under the Common Public License v1.0 as part of the ooRexx
 project.
 
@@ -11,31 +11,46 @@ ooRexx programs.  In addition, the ooRexxUnit framework is used by the
 ooRexx project team to test the ooRexx interpreter.
 
 Note that this release contains a quick start document in the root of the
-directory tree.  ooTestQuick.pdf  This document contains some tips to help
+directory tree.  ooTestQuick.pdf This document contains some tips to help
 get started in writing test cases.
 
-ooRexxUnit 3.2.0 Snapshot 03 is a package released by the ooRexx team that
-contains both the testing framework and the set of tests used in testing the
-ooRexx interpreter at the 3.2.0 level.  As the version name implies, it is a
-snapshot of ooRexxUnit at this point in time.  (August 23 2008 svn revision
-level: 3060.) This package contains all the currently available test groups
-written to test the 3.2.0 interpreter.  These test groups are an excellent
+ooRexxUnit Snapshot 03 is a group of related packages released by the ooRexx
+team that contains both the testing framework and the set of tests used in
+testing the ooRexx interpreter.
+
+Each package comes in a zip, tar, and self-extracting zip (*.exe) file
+format.  The contained files themselves are completely platform independent.
+Pick the format most convenient.
+
+This snapshot contains both the 3.2.0 package and the 4.0.0 package.  As the
+name implies, it is a snapshot of ooRexxUnit at this point in time.  (August
+23 2008 around a svn revision level of 3060.) This snapshot contains all the
+currently available test groups written to test the 3.2.0 interpreter and
+those to test the 4.0.0 interpreter.  These test groups are an excellent
 source of techniques for using ooRexxUnit.
 
-The ooRexxUnit framework takes advantage of new features introduced into the
-interpreter.  A ooRexxUnit 3.2.0 version of the framework is guaranteed to
-work with the 3.2.0 release of the interpreter.  It will not run on a prior
-version of ooRexx.  People still running a 3.1.2 version of ooRexx should
-get a matching version of the ooRexxUnit framework.
+As the ooRexx interpreter evolves, the ooRexxUnit framework evolves to take
+advantage of new features introduced in the interpreter.  In addition, there
+are test cases for testing features that are only present in the 4.0.0
+interpreter.  For these reasons, the ooRexxUnit-3.2.0-snapshot03 package is
+specific to ooRexx version 3.2.0 and the ooRexxUnit-4.0.0-snapshot03 package
+is specific to ooRexx version 4.0.0.
+
+A ooRexxUnit 4.0.0 version of the framework is guaranteed to work with the
+4.0.0 release of the interpreter.  It may not run on a prior version of
+ooRexx.  A similar thing applies to the 3.2.0 version of ooRexxUnit.  While
+it will probably run under a 4.0.0 interpreter, it will be missing the tests
+for 4.0.0 specific features.  People should pick the ooRexxUnit package
+designed for the interpreter version they are running / planning to test.
 
 The primary purpose of releasing this snapshot version of ooRexxUnit is to
-encourage individuals and organizations to contribute test cases for the
-3.2.0 interpreter.
+encourage individuals and organizations to contribute test cases to test
+ooRexx.
 
 Writing test groups to test the interpreter requires nothing other than an
-installed 3.2.0 interpreter and this framework package.  If an individual
-has limited knowledge of ooRexx programming, then writing test cases will be
-a excellent way to learn the language.
+installed ooRexx and this framework package.  If an individual has limited
+knowledge of ooRexx programming, then writing test cases will be a excellent
+way to learn the language.
 
 It can not be stressed enough how valuable a contribution to the ooRexx
 project test units are.
@@ -61,9 +76,10 @@ Install
 -------
 
 Unzip or untar the package in a convenient location.  The root of the
-package directory will be as follows
+package directory will be as follows, where the x.x.x is replaced by the
+version number of the package used:
 
-ooRexxUnit.3.2.0
+ooRexxUnit.x.x.x
    |
    *------*framework
    |          |

@@ -74,15 +74,13 @@ return testResult
    validopts='cdisCDISoOaA'
    append='uyfgsduyvbfeh@&ª'
    Do i=1 To length(validopts)
-      id=1'-'i
       arg=substr(validopts,i,1)
       exp_res = ''
       If pos(arg,'aAoO')>0 Then
-         /* exp_res = 'The NIL object' */
-         interpret "exp_res=.nil" /* so Regina does not barf */
-      self~assertSame(condition(arg), exp_res)
+         exp_res = .nil
+      self~assertSame(exp_res, condition(arg), "checking arg:" arg)
       arg=arg||substr(append,i)
-      self~assertSame(condition(arg), exp_res)
+      self~assertSame(exp_res, condition(arg), "checking arg:" arg)
       End
 
 -- rexxref documentation tests
