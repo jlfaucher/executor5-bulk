@@ -153,7 +153,7 @@ RexxMethod3(int,                       // Return type
         case G_TYPE_POINTER:
         case G_TYPE_STRING:
         case G_TYPE_OBJECT:
-            val = (char *)context->StringData((RexxStringObject)context->ArrayAt(args, i + 1));
+            val = (char *)context->ObjectToStringValue(context->ArrayAt(args, i + 1));
             coldata.data[0].v_pointer = val;
             break;
         case G_TYPE_INT:
@@ -163,24 +163,24 @@ RexxMethod3(int,                       // Return type
         case G_TYPE_FLAGS:
         case G_TYPE_CHAR:
         case G_TYPE_UCHAR:
-            context->ObjectToNumber((RexxStringObject)context->ArrayAt(args, i + 1), &ival);
+            context->ObjectToNumber(context->ArrayAt(args, i + 1), &ival);
             coldata.data[0].v_int = ival;
             break;
         case G_TYPE_UINT:
         case G_TYPE_ULONG:
-            context->ObjectToUnsignedNumber((RexxStringObject)context->ArrayAt(args, i + 1), &uival);
+            context->ObjectToUnsignedNumber(context->ArrayAt(args, i + 1), &uival);
             coldata.data[0].v_uint = uival;
             break;
         case G_TYPE_INT64:
-            context->ObjectToInt64((RexxStringObject)context->ArrayAt(args, i + 1), &ival64);
+            context->ObjectToInt64(context->ArrayAt(args, i + 1), &ival64);
             coldata.data[0].v_int64 = ival64;
             break;
         case G_TYPE_UINT64:
-            context->ObjectToUnsignedInt64((RexxStringObject)context->ArrayAt(args, i + 1), &uival64);
+            context->ObjectToUnsignedInt64(context->ArrayAt(args, i + 1), &uival64);
             coldata.data[0].v_uint64 = uival64;
             break;
         case G_TYPE_DOUBLE:
-            context->ObjectToDouble((RexxStringObject)context->ArrayAt(args, i + 1), &dval);
+            context->ObjectToDouble(context->ArrayAt(args, i + 1), &dval);
             coldata.data[0].v_double = dval;
             break;
         default:

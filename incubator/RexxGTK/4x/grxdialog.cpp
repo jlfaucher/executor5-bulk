@@ -128,7 +128,7 @@ RexxMethod5(int,                       // Return type
     myWidget = gtk_dialog_new_with_buttons(title, myParent,
                                            (GtkDialogFlags)flags, NULL);
     for (int i = 5; i <= members; i += 2) {
-        bid = context->StringData((RexxStringObject)context->ArrayAt(args, i - 1));
+        bid = context->ObjectToStringValue(context->ArrayAt(args, i - 1));
         context->ObjectToNumber(context->ArrayAt(args, i), &rid);
         gtk_dialog_add_button(GTK_DIALOG(myWidget), bid, rid);
     }
@@ -334,7 +334,7 @@ RexxMethod5(int,                       // Return type
     myWidget = gtk_file_chooser_dialog_new(title, myParent,
                                            (GtkFileChooserAction)action, NULL);
     for (int i = 5; i <= members; i += 2) {
-        bid = context->StringData((RexxStringObject)context->ArrayAt(args, i - 1));
+        bid = context->ObjectToStringValue(context->ArrayAt(args, i - 1));
         context->ObjectToNumber(context->ArrayAt(args, i), &rid);
         gtk_dialog_add_button(GTK_DIALOG(myWidget), bid, rid);
     }
@@ -614,7 +614,7 @@ RexxMethod2(int,                       // Return type
 
     if (members) {
         for (int i = 0; i < members; i++) {
-            names[i] = context->StringData((RexxStringObject)context->ArrayAt(args, i + 1));
+            names[i] = context->ObjectToStringValue(context->ArrayAt(args, i + 1));
         }
         names[members] = NULL;
         gtk_about_dialog_set_authors(GTK_ABOUT_DIALOG(self), names);
@@ -642,7 +642,7 @@ RexxMethod2(int,                       // Return type
 
     if (members) {
         for (int i = 0; i < members; i++) {
-            names[i] = context->StringData((RexxStringObject)context->ArrayAt(args, i + 1));
+            names[i] = context->ObjectToStringValue(context->ArrayAt(args, i + 1));
         }
         names[members] = NULL;
         gtk_about_dialog_set_artists(GTK_ABOUT_DIALOG(self), names);
@@ -670,7 +670,7 @@ RexxMethod2(int,                       // Return type
 
     if (members) {
         for (int i = 0; i < members; i++) {
-            names[i] = context->StringData((RexxStringObject)context->ArrayAt(args, i + 1));
+            names[i] = context->ObjectToStringValue(context->ArrayAt(args, i + 1));
         }
         gtk_about_dialog_set_documenters(GTK_ABOUT_DIALOG(self), names);
     }
