@@ -922,7 +922,7 @@ gboolean signal_GdkEventClient(GtkWidget *window,
                           context->NumberToObject((wholenumber_t)event->message_type));
     context->SendMessage1(rxevent, "data_format=",
                           context->NumberToObject((wholenumber_t)event->data_format));
-    RexxArrayObject temparr = context->NewArray(20);
+    RexxArrayObject temparr = context->NewArray(1);
     if (event->data_format == 8) {
         for (int i = 0; i < 20; i++) {
             context->ArrayPut(temparr,

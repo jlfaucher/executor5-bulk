@@ -860,8 +860,7 @@ RexxMethod1(RexxObjectPtr,             // Return type
     RexxObjectPtr entry;
 
     GList *list = gtk_menu_get_for_attach_widget(GTK_WIDGET(self));
-    RexxArrayObject arr = context->NewArray(g_list_length(list));
-    list = g_list_first(list);
+    RexxArrayObject arr = context->NewArray(1);
     int i = 0;
     while (list != NULL) {
         i++;

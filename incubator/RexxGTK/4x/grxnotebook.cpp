@@ -130,10 +130,9 @@ static void signal_func_3(GtkWidget *window,
     cbcb *cblock = (cbcb *)data;
     RexxObjectPtr rxobj = (RexxObjectPtr)g_object_get_data(G_OBJECT(window), "OORXOBJECT");
     RexxThreadContext *context;
-    RexxArrayObject arr;
+    RexxArrayObject arr = context->NewArray(1);
 
     cblock->instance->AttachThread(&context);
-    arr = context->NewArray(1);
     RexxObjectPtr rxwidget = (RexxObjectPtr)g_object_get_data(G_OBJECT(widget), "OORXOBJECT");
     context->ArrayPut(arr, rxwidget, 1);
     RexxObjectPtr rxarg2 = context->NumberToObject((wholenumber_t)arg2);;
