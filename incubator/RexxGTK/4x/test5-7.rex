@@ -51,7 +51,7 @@ dialog = .GtkFileChooserDialog~new('Create a Folder ...', .nil,,
 dialog~add_button(.gtk~GTK_STOCK_OK, .gtk~GTK_RESPONSE_OK)
 
 retc = dialog~dialog_run()
-if retc = 'GTK_RESPONSE_OK' then do
+if retc = .gtk~GTK_RESPONSE_OK then do
    filename = dialog~get_filename()
    say 'Creating directory:' filename
    end

@@ -155,21 +155,23 @@ RexxMethod1(CSTRING,                   // Return type
  *
  * @return        Array of filenames
  **/
-RexxMethod1(RexxObjectPtr,             // Return type
+RexxMethod1(RexxArrayObject,           // Return type
             GrxFileChooserGetFilenames, // Object_method name
             CSELF, self)               // GTK self
 {
-    GSList * list;
-    RexxArrayObject arr;
+    GSList *list;
+    RexxArrayObject arr = context->NewArray(1);;
+    int i = 1;
 
     list = gtk_file_chooser_get_filenames(GTK_FILE_CHOOSER(self));
     while (list != NULL) {
         RexxObjectPtr rxnewptr = context->NewStringFromAsciiz((char *)list->data);
-        context->ArrayPut(arr, rxnewptr, 1);
+        context->ArrayPut(arr, rxnewptr, i);
         list = list->next;
+        i++;
     }
 
-    return (RexxObjectPtr)arr;
+    return arr;
 }
 
 /**

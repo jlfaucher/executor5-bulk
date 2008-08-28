@@ -505,6 +505,25 @@ RexxMethod4(int,                       // Return type
 }
 
 /**
+ * Method:  set_digits
+ *
+ * Set the digits.
+ *
+ * @param digits  The number of digits
+ *
+ * @return        Zero.
+ **/
+RexxMethod2(int,                       // Return type
+            GrxSpinButtonSetDigits,    // Object_method name
+            CSELF, self,               // GTK self
+            uint32_t, digits)          // The digits
+{
+    gtk_spin_button_set_digits(GTK_SPIN_BUTTON(self), digits); 
+
+    return 0;
+}
+
+/**
  * Method:  signal_connect
  *
  * Connect a signal to an ooRexx method.

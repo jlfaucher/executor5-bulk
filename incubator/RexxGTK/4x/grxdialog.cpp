@@ -118,7 +118,7 @@ RexxMethod5(int,                       // Return type
 {
     GtkWindow *myParent = NULL;
     GtkWidget *myWidget, *vbox;
-    const gchar *bid;
+    const gchar *bid, *rids;
     int rid;
     size_t members = context->ArraySize(args);
 
@@ -139,7 +139,7 @@ RexxMethod5(int,                       // Return type
 
     // create the vbox object
     vbox = GTK_DIALOG(myWidget)->vbox;
-    RexxObjectPtr rxvbox = context->SendMessage1(self, "VBOX=", context->NewPointer(vbox));
+    context->SendMessage1(self, "VBOX=", context->NewPointer(vbox));
 
     return 0;
 }
@@ -215,11 +215,7 @@ RexxMethod1(int,                       // Return type
             GrxDialogRun,              // Object_method name
             CSELF, self)               // GTK self
 {
-    gint response;
-
-    response = gtk_dialog_run(GTK_DIALOG(self));
-
-    return response;
+    return gtk_dialog_run(GTK_DIALOG(self));
 }
 
 /**

@@ -269,9 +269,9 @@ return
 ::constant GTK_POLICY_AUTOMATIC 1
 ::constant GTK_POLICY_NEVER 2
    -- GtkAttachOptions
-::constant GTK_EXPAND 0
-::constant GTK_SHRINK 1
-::constant GTK_FILL 2
+::constant GTK_EXPAND 1
+::constant GTK_SHRINK 2
+::constant GTK_FILL 4
    -- GtkWrapMode
 ::constant GTK_WRAP_NONE 0
 ::constant GTK_WRAP_CHAR 1
@@ -1655,8 +1655,22 @@ return
 
 ::class GtkSpinButton public subclass GtkEntry
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxSpinButtonNew"
-::METHOD sifnal_connect EXTERNAL "LIBRARY rexxgtk GrxSpinButtonSignalConnect"
+::METHOD newWithRange class
+use strict arg p1, p2, p3
+return .GtkSpinButton~new(p1, p2, p3)
+
+::METHOD init
+use strict arg p1, p2, p3
+if p1~isa('GtkAdjustment') then self~init_3args(p1, p2, p3)
+else self~init_range(p1, p2, p3)
+return
+
+::METHOD init_3args private EXTERNAL "LIBRARY rexxgtk GrxSpinButtonNew"
+::METHOD init_range private EXTERNAL "LIBRARY rexxgtk GrxSpinButtonNewWithRange"
+
+::METHOD set_digits EXTERNAL "LIBRARY rexxgtk GrxSpinButtonSetDigits"
+::METHOD 'digits=' EXTERNAL "LIBRARY rexxgtk GrxSpinButtonSetDigits"
+::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxSpinButtonSignalConnect"
 
 -- The following are the methods that can be connected to signals. By default
 -- they do nothing.
@@ -2889,10 +2903,9 @@ return
 ::METHOD remove_column EXTERNAL "LIBRARY rexxgtk GrxTreeViewRemoveColumn"
 ::METHOD set_model EXTERNAL "LIBRARY rexxgtk GrxTreeViewSetModel"
 ::METHOD expand_all EXTERNAL "LIBRARY rexxgtk GrxTreeViewExpandAll"
-::METHOD get_model EXTERNAL "LIBRARY rexxgtk GrxTreePathGetModel"
 ::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxTreeViewSignalConnect"
 
-::model create_tree_model private
+::method create_tree_model private
 use strict arg ptr
 return GtkTreeModel~new(ptr)
 
@@ -3274,9 +3287,8 @@ return .GtkTreePath~new(spath)
 ::METHOD depth EXTERNAL "LIBRARY rexxgtk GrxTreePathGetDepth"
 ::METHOD is_ancestor EXTERNAL "LIBRARY rexxgtk GrxTreePathIsAncestor"
 ::METHOD is_descendant EXTERNAL "LIBRARY rexxgtk GrxTreePathIsDescendant"
-::METHOD get_model EXTERNAL "LIBRARY rexxgtk GrxTreePathGetModel"
 
-::model create_tree_model private
+::method create_tree_model private
 use strict arg ptr
 return GtkTreeModel~new(ptr)
 
@@ -3300,6 +3312,6 @@ return GtkTreeModel~new(ptr)
 
 ::class GtkTreeRowReference public
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxTreeRowReferenceNewFromPtr"
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxTreeRowReferenceNew"
 ::METHOD valid EXTERNAL "LIBRARY rexxgtk GrxTreeRowReferenceValid"
 

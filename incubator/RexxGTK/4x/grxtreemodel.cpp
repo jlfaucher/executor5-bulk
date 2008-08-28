@@ -310,7 +310,7 @@ RexxMethod1(logical_t,                 // Return type
  * @return        Zero.
  **/
 RexxMethod2(int,                       // Return type
-            GrxTreeModelNewFromPtr,    // Object_method name
+            GrxTreeModelNew,           // Object_method name
             OSELF, self,               // Self
             RexxObjectPtr, ptr)        // Pointer
 {

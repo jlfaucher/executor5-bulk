@@ -156,11 +156,16 @@ RexxMethod2(int,                       // Return type
  *
  * @return        Text.
  **/
-RexxMethod1(CSTRING,                   // Return type
+RexxMethod1(RexxObjectPtr,             // Return type
             GrxComboBoxGetActiveText,  // Object_method name
             CSELF, self)               // GTK self
 {
-    return gtk_combo_box_get_active_text(GTK_COMBO_BOX(self));
+    char *text = gtk_combo_box_get_active_text(GTK_COMBO_BOX(self));
+
+    if (text == NULL) {
+        return context->NewStringFromAsciiz("");
+    }
+    return context->NewStringFromAsciiz(text);
 }
 
 /**
