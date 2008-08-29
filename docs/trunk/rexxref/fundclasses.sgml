@@ -2609,8 +2609,8 @@ string that do not overlap.  All matches are made using caseless comparisons.</p
 <secondary>countStr method</secondary></indexterm>
 <programlisting>
 <![CDATA[
-"a0Aa0A"~countStr("a")        ->    4
-"J0kKk0"~CountStr("KK")       ->    1
+"a0Aa0A"~caselessCountStr("a")        ->    4
+"J0kKk0"~caselessCountStr("KK")       ->    1
 ]]>
 </programlisting>
 </section>
@@ -2693,8 +2693,6 @@ performed using caseless comparisons.
 "abc def ghi"~caselessLastPos(" ",7)    ->    4
 "abc def ghi"~caselessLastPos(" ",7,3)  ->    0
 </programlisting>
-<para>(See <link linkend="bifLastpos">LASTPOS (Last Position)</link>
-for information about the LASTPOS built-in function.)</para>
 </section>
 
 <section id="mthStringCaselessMatch"><title>caselessMatch</title>
@@ -2733,8 +2731,9 @@ less than or equal to the length of <emphasis role="italic">other</emphasis>.
 must be a positive whole number and the combination of <emphasis role="italic">n</emphasis> and
 <emphasis role="italic">length</emphasis> must be a valid substring within the bounds of
 <emphasis role="italic">other</emphasis>.</para>
-<para>The caselessMatch method is useful efficient string parsing as it does not require new string objects be extracted from
-the target string.</para>
+<para>The caselessMatch method is useful for efficient string parsing as it does
+not require new string objects be extracted from the target string.
+</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>caselessMatch method</secondary></indexterm>
@@ -2802,7 +2801,7 @@ a positive whole number less than or equal to the length of the target string.</
 
 <para>Returns the position in the receiving string of another string,
 <emphasis role="italic">needle</emphasis>. (See also
-<link linkend="mthStringLastPos">lastPos</link>.) It returns
+<link linkend="mthStringLastPos">caselessLastPos</link>.) It returns
 <computeroutput>0</computeroutput> if
 <emphasis role="italic">needle</emphasis> is the null string or is not found
 or if <emphasis role="italic">start</emphasis> is greater than
@@ -3863,7 +3862,7 @@ for information about the LENGTH built-in function.)</para>
 <indexterm><primary>lower method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>lorer method</secondary>
+<secondary>lower method</secondary>
 <tertiary>of String class</tertiary></indexterm>
 
 <programlisting>
@@ -3974,8 +3973,9 @@ less than or equal to the length of <emphasis role="italic">other</emphasis>.
 must be a positive whole number and the combination of <emphasis role="italic">n</emphasis> and
 <emphasis role="italic">length</emphasis> must be a valid substring within the bounds of
 <emphasis role="italic">other</emphasis>.</para>
-<para>The match method is useful efficient string parsing as it does not require new string objects be extracted from
-the target string.</para>
+<para>The match method is useful for efficient string parsing as it does not
+require new string objects be extracted from the target string.
+</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>match method</secondary></indexterm>
@@ -4196,7 +4196,7 @@ for information about the POS built-in function.)</para>
 <para>Returns a copy of the receiving string, with the
 characters from the
 <emphasis role="italic">n</emphasis>th character for <emphasis role="italic">length</emphasis>
-characters is replace with
+characters replaced with
 <emphasis role="italic">new</emphasis>. The replacement position and length can
 extend beyond the end of the receiving string.
 The starting
@@ -4545,9 +4545,9 @@ function.)</para>
 <programlisting>
 <![CDATA[
 >>-translate-+--------------------------------------------------------------------------+-><
-             +-(--+-------------------------------------+-+-------------------------+-)-+
-                  +-tableo--+-------------------------+-+ +-,--+-----+--+---------+-+
-                            +-,--+--------+--+------+-+        +-pos-+  +-,length-+
+             +-(--+-------------------------------------+-+-----------------------+-)-+
+                  +-tableo--+-------------------------+-+ +-,--+---+--+---------+-+
+                            +-,--+--------+--+------+-+        +-n-+  +-,length-+
                                  +-tablei-+  +-,pad-+
 ]]>
 </programlisting>
@@ -4579,7 +4579,7 @@ string to <emphasis role="italic">pad</emphasis> characters.
 <emphasis role="italic">tableo</emphasis> defaults to the null string and
 is padded with <emphasis role="italic">pad</emphasis> or truncated as necessary.
 The default <emphasis role="italic">pad</emphasis> is a blank.</para>
-<para><emphasis role="italic">pos</emphasis> is the position of the first
+<para><emphasis role="italic">n</emphasis> is the position of the first
 character of the translated range.  The default starting position is 1.
 <emphasis role="italic">length</emphasis> is the range of characters to be
 translated.  If omitted, <emphasis role="italic">length</emphasis> remainder of
@@ -4704,9 +4704,10 @@ for information about the UPPER built-in function.)</para>
 
 <programlisting>
 <![CDATA[
->>-verify(reference-+---------------------------+-)------------><
-                    +-,--+--------+--+--------+-+
-                         +-option-+  +-,start-+
+>>-verify(reference-+----------------------------------------------+-)--><
+                    +-,--+--------+--+---------------------------+-+
+                         +-option-+  +-,--+-------+--+---------+-+
+                                          +-start-+  +-,length-+
 ]]>
 </programlisting>
 
@@ -4733,6 +4734,13 @@ are found.</para>
 at the first character of the receiving string. You can override this by
 specifying a different <emphasis role="italic">start</emphasis> point,
 which must be a positive whole number.</para>
+<para>The default for <emphasis role="italic">length</emphasis> the length of
+the string from <emphasis role="italic">start</emphasis> to the end of the
+string. Thus, the search proceeds to the end of the receiving string.  You can
+override this by specifying a different
+<emphasis role="italic">length</emphasis>, which must be a non-negative whole
+number.
+</para>
 <para>If the receiving string is null, the method returns
 <computeroutput>0</computeroutput>, regardless
 of the value of the <emphasis role="italic">option</emphasis>. Similarly, if

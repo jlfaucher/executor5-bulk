@@ -3152,6 +3152,277 @@ does not fit into the buffer.</para>
 is increased if necessary.</para>
 </section>
 
+
+<section id="mthMutableBufferCaselessChangeStr"><title>caselessChangeStr</title>
+<indexterm><primary>caselessChangeStr method</primary>
+<secondary>of MutableBuffer class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>caselessChangeStr method</secondary>
+<tertiary>of MutableBuffer class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-caselessChangeStr(needle,newneedle--+--------+--)---------------------------------><
+                                       +-,count-+
+]]>
+</programlisting>
+
+<para>Returns the receiver object with
+<emphasis role="italic">newneedle</emphasis> replacing occurrences of <emphasis
+role="italic">needle</emphasis>. If <emphasis role="italic">count</emphasis> is
+not specified, all occurrences of
+<emphasis role="italic">needle</emphasis> are replaced.  If <emphasis role="italic">count</emphasis>
+is specified, it must be a positive, whole number that gives the maximum number of
+occurrences to be replaced.
+The <emphasis role="italic">needle</emphasis> searches are performed
+using caseless comparisons.
+</para>
+</section>
+
+<section id="mthMutableBufferCaselessCountStr"><title>caselessCountStr</title>
+<indexterm><primary>caselessCountStr method</primary>
+<secondary>of MutableBuffer class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>caselessCountStr method</secondary>
+<tertiary>of MutableBuffer class</tertiary></indexterm>
+<indexterm><primary>caselessCountStr method</primary>
+<secondary>of MutableBuffer class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>caselessCountStr method</secondary>
+<tertiary>of MutableBuffer class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-caselessCountStr(needle)--------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a count of the occurrences of
+<emphasis role="italic">needle</emphasis> in the receiving mutable buffer that
+do not overlap. All matches are made using caseless comparisons.
+</para>
+</section>
+
+
+<section id="mthMutableBufferCaselessLastPos"><title>caselessLastPos</title>
+<indexterm><primary>caselessLastPos method</primary>
+<secondary>of MutableBuffer class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>caselessLastPos method</secondary>
+<tertiary>of MutableBuffer class</tertiary></indexterm>
+<indexterm><primary>caselessLastPos method</primary>
+<secondary>of MutableBuffer class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>caselessLastPos method</secondary>
+<tertiary>of MutableBuffer class</tertiary></indexterm>
+
+<programlisting>
+<![CDATA[
+>>-caselessLastPos(needle-+---------------------------+-)---><
+                          +-,--+-------+--+---------+-+
+                               +-start-+  +-,length-+
+]]>
+</programlisting>
+
+<para>Returns the position of the last occurrence of a string,
+<emphasis role="italic">needle</emphasis>,
+in the receiving buffer. (See also <link linkend="mthMutableBufferPos">POS</link>.)
+It returns <computeroutput>0</computeroutput> if
+<emphasis role="italic">needle</emphasis> is the null string or not found.
+By default, the search starts at the last character of the receiving buffer and
+scans backward to the beginning of the string. You can override this by
+specifying
+<emphasis role="italic">start</emphasis>, the point at which the backward scan
+starts and <emphasis role="italic">length</emphasis>, the range of characters to
+scan.  The
+<emphasis role="italic">start</emphasis> must be a positive whole number and
+defaults to <computeroutput>receiving_buffer~length</computeroutput> if larger
+than that value or omitted. The <emphasis role="italic">length</emphasis> must be a
+non-negative whole number and defaults to <emphasis
+role="italic">start</emphasis>.  The search is performed using caseless
+comparisons.
+</para>
+</section>
+
+
+<section id="mthMutableBufferCaselessMatch"><title>caselessMatch</title>
+<indexterm><primary>caselessMatch method</primary>
+<secondary>of MutableBuffer class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>caselessMatch method</secondary>
+<tertiary>of MutableBuffer class</tertiary></indexterm>
+<indexterm><primary>caselessMatch method</primary>
+<secondary>of MutableBuffer class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>caselessMatch method</secondary>
+<tertiary>of MutableBuffer class</tertiary></indexterm>
+
+<programlisting>
+<![CDATA[
+>>-caselessMatch(start,other-+----------------------------+-)-------------------><
+                             +-,--+---+--+---------+-+
+                                  +-n-+  +-,length-+
+]]>
+</programlisting>
+
+<para>Returns .true ("1") if the characters of the <emphasis role="italic">other</emphasis> match the
+characters of the target buffer beginning at position <emphasis role="italic">start</emphasis>.  Return .false
+("0") if the characters are not a match.  The matching is performed using caseless comparisons.
+<emphasis role="italic">start</emphasis> must be a positive whole number less than or equal to the length of
+the target buffer.
+</para>
+<para>If <emphasis role="italic">n</emphasis> is specified, the match will be performed starting with character
+<emphasis role="italic">n</emphasis> of <emphasis role="italic">other</emphasis>.  The default value for
+<emphasis role="italic">n</emphasis> is "1".  <emphasis role="italic">n</emphasis> must be a positive whole number
+less than or equal to the length of <emphasis role="italic">other</emphasis>.
+</para>
+<para>If <emphasis role="italic">length</emphasis> is specified, it defines a substring of
+<emphasis role="italic">other</emphasis> that is used for the match.  <emphasis role="italic">length</emphasis>
+must be a positive whole number and the combination of <emphasis role="italic">n</emphasis> and
+<emphasis role="italic">length</emphasis> must be a valid substring within the bounds of
+<emphasis role="italic">other</emphasis>.</para>
+<para>The caselessMatch method is useful for efficient string parsing as it does
+not require new string objects be extracted from the target string.
+</para>
+</section>
+
+<section id="mthMutableBufferCaselessMatchChar"><title>caselessMatchChar</title>
+<indexterm><primary>caselessMatchChar method</primary>
+<secondary>of MutableBuffer class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>caselessMatchChar method</secondary>
+<tertiary>of MutableBuffer class</tertiary></indexterm>
+<indexterm><primary>caselessMatchChar method</primary>
+<secondary>of MutableBuffer class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>caselessMatchChar method</secondary>
+<tertiary>of MutableBuffer class</tertiary></indexterm>
+
+<programlisting>
+<![CDATA[
+>>-caselessMatchChar(n,chars)-------------------------><
+]]>
+</programlisting>
+
+<para>Returns .true ("1") if the character at position <emphasis role="italic">n</emphasis> matches any
+character of the string <emphasis role="italic">chars</emphasis>.  Returns .false ("0") if the character does not
+match any of the characters in the reference set.  The match is made using caseless comparisons.
+The argument <emphasis role="italic">n</emphasis> must be
+a positive whole number less than or equal to the length of the target string.</para>
+</section>
+
+<section id="mthMutableBufferCaselessPos"><title>caselessPos</title>
+<indexterm><primary>caselessPos method</primary>
+<secondary>of MutableBuffer class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>caselessPos method</secondary>
+<tertiary>of MutableBuffer class</tertiary></indexterm>
+<indexterm><primary>caselessPos method</primary>
+<secondary>of MutableBuffer class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>caselessPos method</secondary>
+<tertiary>of MutableBuffer class</tertiary></indexterm>
+
+<programlisting>
+<![CDATA[
+>>-caselessPos(needle-+---------------------------+-)---><
+                      +-,--+-------+--+---------+-+
+                           +-start-+  +-,length-+
+]]>
+</programlisting>
+
+<para>Returns the position in the receiving buffer of a
+<emphasis role="italic">needle</emphasis> string. (See also
+<link linkend="mthMutableBufferLastPos">caselessLastPos</link>.) It returns
+<computeroutput>0</computeroutput> if
+<emphasis role="italic">needle</emphasis> is the null string or is not found
+or if <emphasis role="italic">start</emphasis> is greater than
+the length of the receiving buffer.  The search is performed using caseless
+comparisons.
+By default, the search starts at the first
+character of the receiving buffer (that is, the value of
+<emphasis role="italic">start</emphasis> is <computeroutput>1</computeroutput>),
+and continues to the end of the buffer.  You can override this by specifying
+<emphasis role="italic">start
+</emphasis>, the point at which the search starts, and
+<emphasis role="italic">length</emphasis>, the bounding limit for the search.
+If specified, <emphasis role="italic">start</emphasis> must be a positive
+whole number and <emphasis role="italic">length</emphasis> must be
+a non-negative whole number.
+</para>
+</section>
+
+<section id="mthMutableBufferCaselessWordPos"><title>caselessWordPos</title>
+<indexterm><primary>caselessWordPos method</primary>
+<secondary>of MutableBuffer class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>wordPos method</secondary>
+<tertiary>of MutableBuffer class</tertiary></indexterm>
+<indexterm><primary>word</primary>
+<secondary>locating in a string</secondary></indexterm>
+
+<programlisting>
+<![CDATA[
+>>-caselessWordPos(phrase-+--------+-)---------------------------------><
+                          +-,start-+
+]]>
+</programlisting>
+
+<para>Returns the word number of the first word of
+<emphasis role="italic">phrase</emphasis> found in the receiving buffer, or
+<computeroutput>0</computeroutput> if
+<emphasis role="italic">phrase</emphasis> contains no words or
+if <emphasis role="italic">phrase</emphasis> is not found.
+Word matches are made independent of case.
+Several blanks
+between words in either <emphasis role="italic">phrase</emphasis> or the
+receiving buffer are treated as a single blank for the
+comparison, but, otherwise, the words must match exactly.</para>
+<para>By default the search starts at the first word in the receiving
+string.
+You can override this by specifying <emphasis
+role="italic">start</emphasis>
+(which must be positive),
+the word at which the search is to be started.</para>
+</section>
+
+<section id="mthMutableBufferChangeStr"><title>changeStr</title>
+<indexterm><primary>changeStr method</primary>
+<secondary>of MutableBuffer class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>changeStr method</secondary>
+<tertiary>of MutableBuffer class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-changeStr(needle,newneedle--+--------+--)---------------------------------><
+                               +-,count-+
+]]>
+</programlisting>
+
+<para>Returns the receiver object with
+<emphasis role="italic">newneedle</emphasis> replacing occurrences of <emphasis
+role="italic">needle</emphasis>.</para>
+<para>If <emphasis role="italic">count</emphasis> is not specified, all occurrences of
+<emphasis role="italic">needle</emphasis> are replaced.  If <emphasis role="italic">count</emphasis>
+is specified, it must be a positive, whole number that gives the maximum number of
+occurrences to be replaced.</para>
+</section>
+
+<section id="mthMutableBufferCountStr"><title>countStr</title>
+<indexterm><primary>countStr method</primary>
+<secondary>of MutableBuffer class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>countStr method</secondary>
+<tertiary>of MutableBuffer class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-countStr(needle)--------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a count of the occurrences of
+<emphasis role="italic">needle</emphasis> in the receiving buffer that do not
+overlap.</para>
+</section>
+
 <section id="mthMutableBufferDelete"><title>delete</title>
 <indexterm><primary>delete method</primary>
 <secondary>of MutableBuffer class</secondary></indexterm>
@@ -3175,6 +3446,43 @@ or zero. The <emphasis>n</emphasis> must be a positive integer. If
 <emphasis>n</emphasis> is greater than
 the length of the buffer or zero, the method does not modify the
 buffer content.</para>
+</section>
+
+
+<section id="mthMutableBufferDelWord"><title>delWord</title>
+<indexterm><primary>delWord method</primary>
+<secondary>of MutableBuffer class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>delWord method</secondary>
+<tertiary>of MutableBuffer class</tertiary></indexterm>
+<indexterm><primary>deleting</primary>
+<secondary>words from a mutablebuffer</secondary></indexterm>
+<indexterm><primary>word</primary>
+<secondary>deleting from a mutablebuffer</secondary></indexterm>
+
+<programlisting>
+<![CDATA[
+>>-delWord(n--+---------+--)-----------------------------------><
+              +-,length-+
+]]>
+</programlisting>
+
+<para>Deletes a substring from the mutable buffer substring that starts at the
+<emphasis role="italic">n</emphasis>th word and is of
+<emphasis role="italic">length</emphasis> blank-delimited
+words. If you omit <emphasis role="italic">length</emphasis>, or if
+<emphasis role="italic">length</emphasis> is greater than
+the number of words from <emphasis role="italic">n</emphasis> to the end of the
+receiving bufffer, the
+method deletes the remaining words in the receiving buffer (including the
+<emphasis role="italic">n</emphasis>th word). The
+<emphasis role="italic">length</emphasis> must be a positive whole number or
+zero. The <emphasis role="italic">n</emphasis> must be a positive whole number.
+If <emphasis role="italic">n</emphasis> is greater than
+the number of words in the receiving buffer, the method returns the receiving
+buffer unchanged. The portion deleted includes any blanks following the final
+word involved but none of the blanks preceding the first word involved.
+</para>
 </section>
 
 <section id="mthMutableBufferGetBufferSize"><title>getBufferSize</title>
@@ -3257,15 +3565,14 @@ value or omitted.</para>
 <indexterm><primary>examples</primary>
 <secondary>lastPos method</secondary></indexterm>
 <programlisting>
-x1 - .mutablebuffer~new()
-x1 = "abc def ghi"
+x1 - .mutablebuffer~new("abc def ghi")
 x1~lastPos(" ")      ->    8
-x1 = "abcdefghi"
-x1~lastPos(" ")      ->    0
-x1 = "efgxyz"
+x1 - .mutablebuffer~new("abcdefghi")
+x1~lastPos(" ") -> 0
+x1 - .mutablebuffer~new("efgxyz")
 x1~lastPos("xy")     ->    4
-x1 = "abc def ghi"
-x1~lastPos(" ",7)    ->    4
+x1 - .mutablebuffer~new("abc def ghi")
+x1~lastPos(" ",7) -> 4
 </programlisting>
 </section>
 
@@ -3283,6 +3590,86 @@ x1~lastPos(" ",7)    ->    4
 </programlisting>
 
 <para>Returns length of data in buffer.</para>
+</section>
+
+<section id="mthMutableBufferLower"><title>lower</title>
+<indexterm><primary>lower method</primary>
+<secondary>of MutableBuffer class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>lower method</secondary>
+<tertiary>of MutableBuffer class</tertiary></indexterm>
+
+<programlisting>
+<![CDATA[
+>>-lower(+---+--+---------+---)----------------------><
+         +-n-+  +-,length-+
+]]>
+</programlisting>
+
+<para>Returns the receiving buffer with the characters of the target string
+beginning with character
+<emphasis role="italic">n</emphasis> for <emphasis role="italic">length</emphasis>
+characters converted to lowercase.  If <emphasis role="italic">n</emphasis> is specified, it must
+be a positive whole number.  If <emphasis role="italic">n</emphasis> is not specified, the case
+conversion will start with the first character.  If <emphasis role="italic">length</emphasis>
+is specified, it must be a non-negative whole number.  If <emphasis role="italic">length</emphasis>
+the default is to convert the remainder of the buffer.</para>
+</section>
+
+<section id="mthMutableBufferMatch"><title>match</title>
+<indexterm><primary>match method</primary>
+<secondary>of MutableBuffer class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>match method</secondary>
+<tertiary>of MutableBuffer class</tertiary></indexterm>
+
+<programlisting>
+<![CDATA[
+>>-match(start,other-+----------------------------+-)-------------------><
+                     +-,--+---+--+---------+-+
+                          +-n-+  +-,length-+
+]]>
+</programlisting>
+
+<para>Returns .true ("1") if the characters of the <emphasis role="italic">other</emphasis> match the
+characters of the target buffer beginning at position <emphasis role="italic">start</emphasis>.  Return .false
+("0") if the characters are not a match.
+<emphasis role="italic">start</emphasis> must be a positive whole number less than or equal to the length of
+the target buffer.
+</para>
+<para>If <emphasis role="italic">n</emphasis> is specified, the match will be performed starting with character
+<emphasis role="italic">n</emphasis> of <emphasis role="italic">other</emphasis>.  The default value for
+<emphasis role="italic">n</emphasis> is "1".  <emphasis role="italic">n</emphasis> must be a positive whole number
+less than or equal to the length of <emphasis role="italic">other</emphasis>.
+</para>
+<para>If <emphasis role="italic">length</emphasis> is specified, it defines a substring of
+<emphasis role="italic">other</emphasis> that is used for the match.  <emphasis role="italic">length</emphasis>
+must be a positive whole number and the combination of <emphasis role="italic">n</emphasis> and
+<emphasis role="italic">length</emphasis> must be a valid substring within the bounds of
+<emphasis role="italic">other</emphasis>.</para>
+<para>The match method is useful fort efficient string parsing as it does not
+require new string objects be extracted from the target string.
+</para>
+</section>
+
+<section id="mthMutableBufferMatchChar"><title>matchChar</title>
+<indexterm><primary>matchChar method</primary>
+<secondary>of MutableBuffer class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>matchChar method</secondary>
+<tertiary>of MutableBuffer class</tertiary></indexterm>
+
+<programlisting>
+<![CDATA[
+>>-matchChar(n,chars)-------------------------><
+]]>
+</programlisting>
+
+<para>Returns .true ("1") if the character at position <emphasis role="italic">n</emphasis> matches any
+character of the string <emphasis role="italic">chars</emphasis>.  Returns .false ("0") if the character does not
+match any of the characters in the reference set.  The argument <emphasis role="italic">n</emphasis> must be
+a positive whole number less than or equal to the length of the target
+buffer.</para>
 </section>
 
 <section id="mthMutableBufferOverlay"><title>overlay</title>
@@ -3348,16 +3735,46 @@ a positive whole number), the point at which the search starts.</para>
 <indexterm><primary>examples</primary>
 <secondary>pos method</secondary></indexterm>
 <programlisting>
-x1 = .mutablebuffer~new()
-x1 = "Saturday"
+x1 = .mutablebuffer~new("Saturday")
 x1~pos("day")       ->    6
-x1 = "abc def ghi"
+x1 = .mutablebuffer~new("abc def ghi")
 x1~pos("x")         ->    0
-x1 = "abc def ghi"
 x1~pos(" ")         ->    4
-x1 = "abc def ghi"
 x1~pos(" ",5)       ->    8
 </programlisting>
+</section>
+
+<section id="mthMutableBufferReplaceAt"><title>replaceAt</title>
+<indexterm><primary>replaceAt method</primary>
+<secondary>of MutableBuffer class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>replaceAt method</secondary>
+<tertiary>of MutableBuffer class</tertiary></indexterm>
+<indexterm><primary>replacing characters within a string</primary></indexterm>
+
+<programlisting>
+<![CDATA[
+>>-replaceAt(new,n,length-+------+-)-----><
+                          +-,pad-+
+]]>
+</programlisting>
+
+<para>Returns the receiving buffer with the characters from the
+<emphasis role="italic">n</emphasis>th character for <emphasis role="italic">length</emphasis>
+characters replaced with
+<emphasis role="italic">new</emphasis>. The replacement position and length can
+extend beyond the end of the receiving string.
+The starting
+position,
+<emphasis role="italic">n</emphasis>, must be a positive whole number, and
+the
+<emphasis role="italic">length</emphasis> must be a positive whole number or
+zero.  If <emphasis
+role="italic">n</emphasis> is greater than the length of the receiving string,
+padding is added before the <emphasis role="italic">new</emphasis> string. The
+default
+<emphasis role="italic">pad</emphasis> character is a blank.
+</para>
 </section>
 
 <section id="mthMutableBufferRequest"<title>request</title>
@@ -3461,40 +3878,300 @@ buffer content is returned.
 The default <emphasis>pad</emphasis> character is a blank.</para>
 </section>
 
-<section id="mthMutableBufferUninit"><title>uninit</title>
-<indexterm><primary>uninit method</primary>
+<section id="mthMutableBufferSubWord"><title>subWord</title>
+<indexterm><primary>subWord method</primary>
 <secondary>of MutableBuffer class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>uninit method</secondary>
+<secondary>subWord method</secondary>
+<tertiary>of MutableBuffer class</tertiary></indexterm>
+<indexterm><primary>extracting words with subWord</primary></indexterm>
+<indexterm><primary>word</primary>
+<secondary>extracting from a string</secondary></indexterm>
+
+<programlisting>
+<![CDATA[
+>>-subWord(n-+---------+-)-------------------------------------><
+             +-,length-+
+]]>
+</programlisting>
+
+<para>Returns the substring of the receiving buffer that starts at the
+<emphasis role="italic">n</emphasis>th word and is up to
+<emphasis role="italic">length</emphasis> blank-delimited words. The
+<emphasis role="italic">n</emphasis> must be a positive whole number.
+If you omit <emphasis role="italic">length</emphasis>, it defaults
+to the number of remaining words in the receiving buffer. The returned string
+never has leading or trailing blanks, but includes all blanks between the
+selected words.
+</para>
+</section>
+
+<section id="mthMutableBufferTranslate"><title>translate</title>
+<indexterm><primary>translate method</primary>
+<secondary>of MutableBuffer class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>translate method</secondary>
+<tertiary>of MutableBuffer class</tertiary></indexterm>
+<indexterm><primary>reordering data</primary></indexterm>
+<indexterm><primary>translation</primary>
+<secondary>with translate method</secondary></indexterm>
+<indexterm><primary>uppercase translation</primary>
+<secondary>with translate method</secondary></indexterm>
+
+<programlisting>
+<![CDATA[
+>>-translate-+--------------------------------------------------------------------------+-><
+             +-(--+-------------------------------------+-+-----------------------+-)-+
+                  +-tableo--+-------------------------+-+ +-,--+---+--+---------+-+
+                            +-,--+--------+--+------+-+        +-n-+  +-,length-+
+                                 +-tablei-+  +-,pad-+
+]]>
+</programlisting>
+
+<para>Returns the receiving buffer with each character translated to another
+character or unchanged. You can also use this method to reorder the characters
+in the output table.</para>
+<para>The output table is <emphasis role="italic">tableo</emphasis>
+and the input translation table is <emphasis role="italic">tablei</emphasis>.
+<emphasis role="bold">translate</emphasis> searches
+<emphasis role="italic">tablei</emphasis> for each character
+in the receiving buffer.  If the character is found, the corresponding character
+in
+<emphasis role="italic">tableo</emphasis> is replaces the character in the
+buffer. If there are duplicates in
+<emphasis role="italic">tablei</emphasis>, the first (leftmost) occurrence is
+used. If the character is not found, the original character in the receiving
+buffer is unchanged. </para>
+<para>The tables can be of any length. If you specify neither translation table and
+omit <emphasis role="italic">pad</emphasis>, the receiving string is
+translated to uppercase (that is, lowercase
+<computeroutput>a</computeroutput>-<computeroutput>z</computeroutput>
+to uppercase
+<computeroutput>A</computeroutput>-<computeroutput>Z</computeroutput>),
+but if you include <emphasis role="italic">pad</emphasis>
+the language processor translates the entire
+string to <emphasis role="italic">pad</emphasis> characters.
+<emphasis role="italic">tablei</emphasis> defaults to
+<computeroutput>XRANGE("00"x,"FF"x)</computeroutput>, and
+<emphasis role="italic">tableo</emphasis> defaults to the null string and
+is padded with <emphasis role="italic">pad</emphasis> or truncated as necessary.
+The default <emphasis role="italic">pad</emphasis> is a blank.</para>
+<para><emphasis role="italic">n</emphasis> is the position of the first
+character of the translated range.  The default starting position is 1.
+<emphasis role="italic">length</emphasis> is the range of characters to be
+translated.  If omitted, <emphasis role="italic">length</emphasis> remainder of
+the buffer from the starting position to the end is used. </para>
+</section>
+
+<section id="mthMutableBufferUpper"><title>upper</title>
+<indexterm><primary>upper method</primary>
+<secondary>of MutableBuffer class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>upper method</secondary>
+<tertiary>of MutableBuffer class</tertiary></indexterm>
+
+<programlisting>
+<![CDATA[
+>>-upper(+---+--+---------+---)----------------------><
+         +-n-+  +-,length-+
+]]>
+</programlisting>
+
+<para>Returns teh receiving buffer with the characters of the target string
+beginning with character <emphasis role="italic">n</emphasis> for <emphasis role="italic">length</emphasis>
+characters converted to uppercase.  If <emphasis role="italic">n</emphasis> is specified, it must
+be a positive whole number.  If <emphasis role="italic">n</emphasis> is not specified, the case
+conversion will start with the first character.  If <emphasis role="italic">length</emphasis>
+is specified, it must be a non-negative whole number.  If <emphasis role="italic">length</emphasis>
+the default is to convert the remainder of the buffer.</para>
+</section>
+
+<section id="mthMutableBufferVerify"><title>verify</title>
+<indexterm><primary>verify method</primary>
+<secondary>of MutableBuffer class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>verify method</secondary>
+<tertiary>of MutableBuffer class</tertiary></indexterm>
+<indexterm><primary>string</primary>
+<secondary>verifying contents of</secondary></indexterm>
+<indexterm><primary>verifying contents of a buffer</primary></indexterm>
+
+<programlisting>
+<![CDATA[
+>>-verify(reference-+----------------------------------------------+-)--><
+                    +-,--+--------+--+---------------------------+-+
+                         +-option-+  +-,--+-------+--+---------+-+
+                                          +-start-+  +-,length-+
+]]>
+</programlisting>
+
+<para>Returns a number that, by default, indicates whether the receiving string
+is composed only of characters from
+<emphasis role="italic">reference</emphasis>. It returns
+<computeroutput>0</computeroutput> if all characters in the receiving buffer are
+in
+<emphasis role="italic">reference</emphasis> or returns the position of the
+first character in the receiving buffer not in
+<emphasis role="italic">reference</emphasis>.</para>
+<para>The <emphasis role="italic">option</emphasis> can be either
+<computeroutput>Nomatch</computeroutput> (the
+default) or <computeroutput>Match</computeroutput>. (You need to specify only
+the first capitalized and highlighted letter; the language processor ignores
+all characters following the first character, which can be in uppercase or
+lowercase.)</para>
+<para>If you specify <computeroutput>Match</computeroutput>, the method returns
+the position of the first character in the receiving buffer that is in
+<emphasis role="italic">reference</emphasis>, or returns
+<computeroutput>0</computeroutput> if none of the characters
+are found.</para>
+<para>The default for <emphasis role="italic">start</emphasis> is
+<computeroutput>1</computeroutput>. Thus, the search starts
+at the first character of the receiving buffer. You can override this by
+specifying a different
+<emphasis role="italic">start</emphasis> point, which must be a positive whole
+number.</para>
+<para>The default for <emphasis role="italic">length</emphasis> the length of
+the buffer from <emphasis role="italic">start</emphasis> to the end of the
+buffer. Thus, the search proceeds to the end of the receiving buffer. You can
+override this by specifying a different
+<emphasis role="italic">length</emphasis>, which must be a non-negative whole
+number.
+</para>
+<para>If the receiving string is null, the method returns
+<computeroutput>0</computeroutput>, regardless
+of the value of the <emphasis role="italic">option</emphasis>. Similarly, if
+<emphasis role="italic">start</emphasis> is greater
+than <computeroutput>receiving_buffer~length</computeroutput>, the method
+returns
+<computeroutput>0</computeroutput>. If
+<emphasis role="italic">reference</emphasis> is null, the method returns
+<computeroutput>0</computeroutput> if
+you specify <computeroutput>Match</computeroutput>. Otherwise, the method
+returns the <emphasis role="italic">start</emphasis> value.</para>
+</section>
+
+<section id="mthMutableBufferWord"><title>word</title>
+<indexterm><primary>word method</primary>
+<secondary>of MutableBuffer class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>word method</secondary>
+<tertiary>of MutableBuffer class</tertiary></indexterm>
+<indexterm><primary>extracting</primary>
+<secondary>word from a mutable buffer</secondary></indexterm>
+<indexterm><primary>locating</primary>
+<secondary>word in another mutable buffer</secondary></indexterm>
+
+<programlisting>
+<![CDATA[
+>>-word(n)-----------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the <emphasis role="italic">n</emphasis>th blank-delimited word
+in the receiving buffer or the null string if the receiving buffer has fewer
+than
+<emphasis role="italic">n</emphasis> words. The
+<emphasis role="italic">n</emphasis> must be a positive whole number. This
+method is exactly equivalent
+to <computeroutput>receiving_buffer~subWord(n,1)</computeroutput>.</para>
+</section>
+
+<section id="mthMutableBufferWordIndex"><title>wordIndex</title>
+<indexterm><primary>wordIndex method</primary>
+<secondary>of MutableBuffer class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>wordIndex method</secondary>
 <tertiary>of MutableBuffer class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-uninit------------------------------------------------------><
+>>-wordIndex(n)------------------------------------------------><
 ]]>
 </programlisting>
 
-<para>This method cleans up the object when it is garbage collected. It should
-not be invoked directly except via an
-<emphasis role="bold">uninit</emphasis> method of a subclass of the
-MutableBuffer class.
+<para>Returns the position of the first character in the
+<emphasis role="italic">n</emphasis>th blank-delimited
+word in the receiving buffer. It returns <computeroutput>0</computeroutput> if
+the receiving buffer has fewer than
+<emphasis role="italic">n</emphasis> words. The
+<emphasis role="italic">n</emphasis> must be a positive whole number.
 </para>
-<para>If the MutableBuffer class is subclassed and the subclass provides an
-<emphasis role="bold">uninit</emphasis>
-method then that method must invoke the superclass
-<emphasis role="bold">uninit</emphasis> method
-The following example shows how to accomplish this.</para>
+</section>
+
+<section id="mthMutableBufferWordLength"><title>wordLength</title>
+<indexterm><primary>wordLength method</primary>
+<secondary>of MutableBuffer class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>wordLength method</secondary>
+<tertiary>of MutableBuffer class</tertiary></indexterm>
+<indexterm><primary>finding</primary>
+<secondary>word length</secondary></indexterm>
+
 <programlisting>
 <![CDATA[
-::class CustomMutableBuffer subclass MutableBuffer
-
-...
-
-::method uninit
-/* the subclass instance cleanup code should be placed here */
-super~uninit  -- this should be the last action in the method
-return
+>>-wordLength(n)-----------------------------------------------><
 ]]>
 </programlisting>
+
+<para>Returns the length of the <emphasis role="italic">n</emphasis>th
+blank-delimited word in the receiving buffer or
+<computeroutput>0</computeroutput> if the receiving buffer has fewer than
+<emphasis role="italic">n</emphasis> words. The <emphasis
+role="italic">n</emphasis> must be a positive whole number.</para>
+</section>
+
+<section id="mthMutableBufferWordPos"><title>wordPos</title>
+<indexterm><primary>wordPos method</primary>
+<secondary>of MutableBuffer class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>wordPos method</secondary>
+<tertiary>of MutableBuffer class</tertiary></indexterm>
+<indexterm><primary>word</primary>
+<secondary>locating in a mutable buffer</secondary></indexterm>
+
+<programlisting>
+<![CDATA[
+>>-wordPos(phrase-+--------+-)---------------------------------><
+                  +-,start-+
+]]>
+</programlisting>
+
+<para>Returns the word number of the first word of
+<emphasis role="italic">phrase</emphasis> found in the receiving buffer, or
+<computeroutput>0</computeroutput> if
+<emphasis role="italic">phrase</emphasis> contains no words or
+if <emphasis role="italic">phrase</emphasis> is not found. Several blanks
+between words in either <emphasis role="italic">phrase</emphasis> or the
+receiving buffer are treated as a single blank for the
+comparison, but, otherwise, the words must match exactly.</para>
+<para>By default the search starts at the first word in the receiving buffer.
+You can override this by specifying
+<emphasis role="italic">start</emphasis> (which must be positive), the word at
+which the search is to be started.</para>
+</section>
+
+<section id="mthMutableBufferWords"><title>words</title>
+<indexterm><primary>words method</primary>
+<secondary>of MutableBuffer class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>words method</secondary>
+<tertiary>of MutableBuffer class</tertiary></indexterm>
+<indexterm><primary>counting</primary>
+<secondary>words in a mutable buffer</secondary></indexterm>
+<indexterm><primary>extracting</primary>
+<secondary>words from a mutable buffer</secondary></indexterm>
+<indexterm><primary>word</primary>
+<secondary>counting in a mutable buffer</secondary></indexterm>
+<indexterm><primary>word</primary>
+<secondary>extracting from a mutable buffer</secondary></indexterm>
+
+<programlisting>
+<![CDATA[
+>>-words-------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the number of blank-delimited words in the receiving buffer.
+</para>
 </section>
 </section>
 
