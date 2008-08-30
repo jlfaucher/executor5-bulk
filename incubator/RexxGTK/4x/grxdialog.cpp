@@ -129,7 +129,7 @@ RexxMethod5(int,                       // Return type
                                            (GtkDialogFlags)flags, NULL);
     for (int i = 5; i <= members; i += 2) {
         bid = context->ObjectToStringValue(context->ArrayAt(args, i - 1));
-        context->ObjectToNumber(context->ArrayAt(args, i), &rid);
+        context->ObjectToNumber(context->ArrayAt(args, i), (wholenumber_t *)&rid);
         gtk_dialog_add_button(GTK_DIALOG(myWidget), bid, rid);
     }
 
@@ -151,15 +151,15 @@ RexxMethod5(int,                       // Return type
  *
  * @param btext1  The button text
  *
- * @param bid1    The response id 
+ * @param bid1    The response id
  *
  * @return        Zero.
  **/
 RexxMethod3(int,                       // Return type
             GrxDialogAddButton,        // Object_method name
             CSELF, self,               // GTK self
-            CSTRING, btext,            // Button text 
-            int, bid)                  // Response id 
+            CSTRING, btext,            // Button text
+            int, bid)                  // Response id
 {
     gtk_dialog_add_button(GTK_DIALOG(self), btext, bid);
 
@@ -188,7 +188,7 @@ RexxMethod2(int,                       // Return type
 /**
  * Method:  set_default_response
  *
- * Set the default response id.    
+ * Set the default response id.
  *
  * @param rid     Response id
  *
@@ -265,7 +265,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
  *
  * @param type    The message type
  *
- * @param bset    The button set  
+ * @param bset    The button set
  *
  * @param text    The message text
  *
@@ -335,7 +335,7 @@ RexxMethod5(int,                       // Return type
                                            (GtkFileChooserAction)action, NULL);
     for (int i = 5; i <= members; i += 2) {
         bid = context->ObjectToStringValue(context->ArrayAt(args, i - 1));
-        context->ObjectToNumber(context->ArrayAt(args, i), &rid);
+        context->ObjectToNumber(context->ArrayAt(args, i), (wholenumber_t *)&rid);
         gtk_dialog_add_button(GTK_DIALOG(myWidget), bid, rid);
     }
 
@@ -610,13 +610,18 @@ RexxMethod2(int,                       // Return type
             ARGLIST, args)             // Array of authors
 {
     size_t members = context->ArraySize(args);
-    const gchar *names[members + 1];
 
     if (members) {
-        for (int i = 0; i < members; i++) {
-            names[i] = context->ObjectToStringValue(context->ArrayAt(args, i + 1));
+        const gchar **names = (const char **)malloc(sizeof(const char *) * members);
+        if ( ! names ) {
+            context->RaiseException(Rexx_Error_System_resources);
+            return 0;
         }
-        names[members] = NULL;
+
+        for (int i = 0; i < members; i++, names++) {
+            *names = context->ObjectToStringValue(context->ArrayAt(args, i + 1));
+        }
+        *(++names) = NULL;
         gtk_about_dialog_set_authors(GTK_ABOUT_DIALOG(self), names);
     }
 
@@ -638,13 +643,18 @@ RexxMethod2(int,                       // Return type
             ARGLIST, args)             // Array of artists
 {
     size_t members = context->ArraySize(args);
-    const gchar *names[members +1];
 
     if (members) {
-        for (int i = 0; i < members; i++) {
-            names[i] = context->ObjectToStringValue(context->ArrayAt(args, i + 1));
+        const gchar **names = (const char **)malloc(sizeof(const char *) * members);
+        if ( ! names ) {
+            context->RaiseException(Rexx_Error_System_resources);
+            return 0;
         }
-        names[members] = NULL;
+
+        for (int i = 0; i < members; i++, names++) {
+            *names = context->ObjectToStringValue(context->ArrayAt(args, i + 1));
+        }
+        *(++names) = NULL;
         gtk_about_dialog_set_artists(GTK_ABOUT_DIALOG(self), names);
     }
 
@@ -666,12 +676,18 @@ RexxMethod2(int,                       // Return type
             ARGLIST, args)             // Array of authors
 {
     size_t members = context->ArraySize(args);
-    const gchar *names[members];
 
     if (members) {
-        for (int i = 0; i < members; i++) {
-            names[i] = context->ObjectToStringValue(context->ArrayAt(args, i + 1));
+        const gchar **names = (const char **)malloc(sizeof(const char *) * members);
+        if ( ! names ) {
+            context->RaiseException(Rexx_Error_System_resources);
+            return 0;
         }
+
+        for (int i = 0; i < members; i++, names++) {
+            *names = context->ObjectToStringValue(context->ArrayAt(args, i + 1));
+        }
+        *(++names) = NULL;
         gtk_about_dialog_set_documenters(GTK_ABOUT_DIALOG(self), names);
     }
 

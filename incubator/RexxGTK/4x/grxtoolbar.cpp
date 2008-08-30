@@ -82,7 +82,7 @@ static gboolean signal_func_1a(GtkToolbar *toolbar,
     cblock->instance->AttachThread(&context);
     RexxObjectPtr tempobj = context->NumberToObject((wholenumber_t)arg1);;
     tempobj = context->SendMessage1(rxobj, ((cbcb *)data)->signal_name, tempobj);
-    context->ObjectToNumber(tempobj, &retc);
+    context->ObjectToNumber(tempobj, (wholenumber_t *)&retc);
     context->DetachThread();
     return retc;
 }
@@ -122,7 +122,7 @@ static gboolean signal_func_3(GtkToolbar *toolbar,
     tempobj = context->NumberToObject((wholenumber_t)arg3);;
     context->ArrayPut(arr, tempobj, 2);
     tempobj = context->SendMessage(rxobj, ((cbcb *)data)->signal_name, arr);
-    context->ObjectToNumber(tempobj, &retc);
+    context->ObjectToNumber(tempobj, (wholenumber_t *)&retc);
     context->DetachThread();
     return retc;
 }

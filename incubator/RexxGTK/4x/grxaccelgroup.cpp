@@ -77,7 +77,7 @@ static gboolean signal_func_3a(GtkAccelGroup *accelgrp,
     tempobj = context->NumberToObject((wholenumber_t)arg3);;
     context->ArrayPut(arr, tempobj, 2);
     tempobj = context->SendMessage(rxobj, ((cbcb *)data)->signal_name, arr);
-    context->ObjectToNumber(tempobj, &retc);
+    context->ObjectToNumber(tempobj, (wholenumber_t *)&retc);
     context->DetachThread();
     return retc;
 }

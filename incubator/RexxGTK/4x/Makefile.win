@@ -41,11 +41,11 @@ include ver.mak
 GTK = gtk+-2.0
 
 # Point RX_PATH at your installation of ooRexx
-RX_PATH = "C:\home\ooRexx"
+RX_PATH = "D:\Interpreters\Rexx\ooRexx"
 
 # Point GTK_PATH to your top level GTK directory.  Use unix style forward
 # slashes
-GTK_PATH = C:/work.ooRexx/gtk
+GTK_PATH = F:/Tools.misc/gtk
 
 # Set the GTK+ include path. Provided your GTK_PATH above is correct, this
 # should work.
@@ -81,7 +81,6 @@ LIBS = $(GTKLIBS) $(RX_PATH)\api\rexx.lib $(RX_PATH)\api\rexxapi.lib
 
 INCLUDES = -I$(RX_PATH)\api $(GTK_IPATH)
 
-#GCFLAGS_COMMON = /nologo /EHsc /W3 /Wp64 /c /Gr
 GCFLAGS_COMMON = /nologo /EHsc /W3 /Wp64 /c
 
 GCFLAGS_DEFINES = /DVMAJOR=$(VMAJOR) /DVMINOR=$(VMINOR) /DVREL=$(VREL) /DWIN32 /DNULL=0 /D_CRT_SECURE_NO_DEPRECATE /D_CRT_NONSTDC_NO_DEPRECATE

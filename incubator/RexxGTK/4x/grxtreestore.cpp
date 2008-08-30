@@ -76,7 +76,7 @@ RexxMethod2(int,                       // Return type
             OSELF, self,               // Self
             ARGLIST, args)             // Array of column types
 {
-    GtkTreeStore *tstore = NULL;  
+    GtkTreeStore *tstore = NULL;
     size_t       members = context->ArraySize(args);
 
     GType *types = (GType *)malloc(sizeof(GType) * members);
@@ -152,7 +152,7 @@ RexxMethod3(int,                       // Return type
     GValue coldata;
 
     for (i = 2; i <= members; i += 2) {
-        context->ObjectToNumber(context->ArrayAt(args, i), &col);
+        context->ObjectToNumber(context->ArrayAt(args, i), (wholenumber_t *)&col);
         coldata.g_type = types[col];
         switch (types[col]) {
         case G_TYPE_POINTER:
@@ -168,7 +168,7 @@ RexxMethod3(int,                       // Return type
         case G_TYPE_FLAGS:
         case G_TYPE_CHAR:
         case G_TYPE_UCHAR:
-            context->ObjectToNumber(context->ArrayAt(args, i + 1), &ival);
+            context->ObjectToNumber(context->ArrayAt(args, i + 1), (wholenumber_t *)&ival);
             coldata.data[0].v_int = ival;
             break;
         case G_TYPE_UINT:

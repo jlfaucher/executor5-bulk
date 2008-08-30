@@ -96,6 +96,7 @@ RexxRoutine0(int, GrxInit)
     gdk_threads_init();
     gtk_set_locale ();
     gtk_init (&rexxgtk_argc, &argv);
+    return rc;
 }
 
 /**
@@ -168,7 +169,7 @@ RexxRoutine1(int,                      // Return type
 {
 
     g_message(msg);
-	
+
     return 0;
 }
 
@@ -187,7 +188,7 @@ RexxRoutine1(int,                      // Return type
 {
 
     g_warning(msg);
-	
+
     return 0;
 }
 
@@ -206,7 +207,7 @@ RexxRoutine1(int,                      // Return type
 {
 
     g_critical(msg);
-	
+
     return 0;
 }
 
@@ -225,7 +226,7 @@ RexxRoutine1(int,                      // Return type
 {
 
     g_error(msg);
-	
+
     return 0;
 }
 
@@ -244,7 +245,7 @@ RexxRoutine1(int,                      // Return type
 {
 
     g_debug(msg);
-	
+
     return 0;
 }
 
