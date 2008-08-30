@@ -95,7 +95,7 @@ gboolean signal_GdkEvent(GtkWidget *window,
                           context->NumberToObject((wholenumber_t)event->type));
 
     temp = context->SendMessage1(rxobj, ((cbcb *)data)->signal_name, rxevent);
-    context->ObjectToNumber(temp, (wholenumber_t *)&retc);
+    context->ObjectToInt32(temp, &retc);
     context->DetachThread();
     return retc;
 }
@@ -159,7 +159,7 @@ gboolean signal_GdkEventKey(GtkWidget *window,
                           context->UnsignedNumberToObject((size_t)event->is_modifier));
 
     temp = context->SendMessage1(rxobj, ((cbcb *)data)->signal_name, rxevent);
-    context->ObjectToNumber(temp, (wholenumber_t *)&retc);
+    context->ObjectToInt32(temp, &retc);
     context->DetachThread();
     return retc;
 }
@@ -225,7 +225,7 @@ gboolean signal_GdkEventButton(GtkWidget *window,
                           context->DoubleToObject(event->y_root));
 
     temp = context->SendMessage1(rxobj, ((cbcb *)data)->signal_name, rxevent);
-    context->ObjectToNumber(temp, (wholenumber_t *)&retc);
+    context->ObjectToInt32(temp, &retc);
     context->DetachThread();
     return retc;
 }
@@ -289,7 +289,7 @@ gboolean signal_GdkEventScroll(GtkWidget *window,
                           context->DoubleToObject(event->y_root));
 
     temp = context->SendMessage1(rxobj, ((cbcb *)data)->signal_name, rxevent);
-    context->ObjectToNumber(temp, (wholenumber_t *)&retc);
+    context->ObjectToInt32(temp, &retc);
     context->DetachThread();
     return retc;
 }
@@ -355,7 +355,7 @@ gboolean signal_GdkEventMotion(GtkWidget *window,
                           context->DoubleToObject(event->y_root));
 
     temp = context->SendMessage1(rxobj, ((cbcb *)data)->signal_name, rxevent);
-    context->ObjectToNumber(temp, (wholenumber_t *)&retc);
+    context->ObjectToInt32(temp, &retc);
     context->DetachThread();
     return retc;
 }
@@ -416,7 +416,7 @@ gboolean signal_GdkEventExpose(GtkWidget *window,
                           context->NumberToObject((wholenumber_t)event->count));
 
     temp = context->SendMessage1(rxobj, ((cbcb *)data)->signal_name, rxevent);
-    context->ObjectToNumber(temp, (wholenumber_t *)&retc);
+    context->ObjectToInt32(temp, &retc);
     context->DetachThread();
     return retc;
 }
@@ -467,7 +467,7 @@ gboolean signal_GdkEventVisibility(GtkWidget *window,
                           context->UnsignedNumberToObject((size_t)event->state));
 
     temp = context->SendMessage1(rxobj, ((cbcb *)data)->signal_name, rxevent);
-    context->ObjectToNumber(temp, (wholenumber_t *)&retc);
+    context->ObjectToInt32(temp, &retc);
     context->DetachThread();
     return retc;
 }
@@ -545,7 +545,7 @@ gboolean signal_GdkEventCrossing(GtkWidget *window,
                           context->UnsignedNumberToObject((size_t)event->state));
 
     temp = context->SendMessage1(rxobj, ((cbcb *)data)->signal_name, rxevent);
-    context->ObjectToNumber(temp, (wholenumber_t *)&retc);
+    context->ObjectToInt32(temp, &retc);
     context->DetachThread();
     return retc;
 }
@@ -595,7 +595,7 @@ gboolean signal_GdkEventFocus(GtkWidget *window,
                           context->NumberToObject((wholenumber_t)event->in));
 
     temp = context->SendMessage1(rxobj, ((cbcb *)data)->signal_name, rxevent);
-    context->ObjectToNumber(temp, (wholenumber_t *)&retc);
+    context->ObjectToInt32(temp, &retc);
     context->DetachThread();
     return retc;
 }
@@ -652,7 +652,7 @@ gboolean signal_GdkEventConfigure(GtkWidget *window,
                           context->NumberToObject((wholenumber_t)event->height));
 
     temp = context->SendMessage1(rxobj, ((cbcb *)data)->signal_name, rxevent);
-    context->ObjectToNumber(temp, (wholenumber_t *)&retc);
+    context->ObjectToInt32(temp, &retc);
     context->DetachThread();
     return retc;
 }
@@ -706,7 +706,7 @@ gboolean signal_GdkEventProperty(GtkWidget *window,
                           context->UnsignedNumberToObject((size_t)event->state));
 
     temp = context->SendMessage1(rxobj, ((cbcb *)data)->signal_name, rxevent);
-    context->ObjectToNumber(temp, (wholenumber_t *)&retc);
+    context->ObjectToInt32(temp, &retc);
     context->DetachThread();
     return retc;
 }
@@ -764,7 +764,7 @@ gboolean signal_GdkEventSelection(GtkWidget *window,
     context->SendMessage1(rxevent, "requestor=", context->Nil());
 
     temp = context->SendMessage1(rxobj, ((cbcb *)data)->signal_name, rxevent);
-    context->ObjectToNumber(temp, (wholenumber_t *)&retc);
+    context->ObjectToInt32(temp, &retc);
     context->DetachThread();
     return retc;
 }
@@ -820,7 +820,7 @@ gboolean signal_GdkEventDND(GtkWidget *window,
                           context->NumberToObject((wholenumber_t)event->y_root));
 
     temp = context->SendMessage1(rxobj, ((cbcb *)data)->signal_name, rxevent);
-    context->ObjectToNumber(temp, (wholenumber_t *)&retc);
+    context->ObjectToInt32(temp, &retc);
     context->DetachThread();
     return retc;
 }
@@ -872,7 +872,7 @@ gboolean signal_GdkEventProximity(GtkWidget *window,
     context->SendMessage1(rxevent, "device=", context->Nil());
 
     temp = context->SendMessage1(rxobj, ((cbcb *)data)->signal_name, rxevent);
-    context->ObjectToNumber(temp, (wholenumber_t *)&retc);
+    context->ObjectToInt32(temp, &retc);
     context->DetachThread();
     return retc;
 }
@@ -947,7 +947,7 @@ gboolean signal_GdkEventClient(GtkWidget *window,
     context->SendMessage1(rxevent, "data=", temp);
 
     temp = context->SendMessage1(rxobj, ((cbcb *)data)->signal_name, rxevent);
-    context->ObjectToNumber(temp, (wholenumber_t *)&retc);
+    context->ObjectToInt32(temp, &retc);
     context->DetachThread();
     return retc;
 }
@@ -994,7 +994,7 @@ gboolean signal_GdkEventNoExpose(GtkWidget *window,
                           context->NumberToObject((wholenumber_t)event->send_event));
 
     temp = context->SendMessage1(rxobj, ((cbcb *)data)->signal_name, rxevent);
-    context->ObjectToNumber(temp, (wholenumber_t *)&retc);
+    context->ObjectToInt32(temp, &retc);
     context->DetachThread();
     return retc;
 }
@@ -1047,7 +1047,7 @@ gboolean signal_GdkEventWindowState(GtkWidget *window,
                           context->NumberToObject((wholenumber_t)event->new_window_state));
 
     temp = context->SendMessage1(rxobj, ((cbcb *)data)->signal_name, rxevent);
-    context->ObjectToNumber(temp, (wholenumber_t *)&retc);
+    context->ObjectToInt32(temp, &retc);
     context->DetachThread();
     return retc;
 }
@@ -1099,7 +1099,7 @@ gboolean signal_GdkEventSetting(GtkWidget *window,
                           context->NewStringFromAsciiz(event->name));
 
     temp = context->SendMessage1(rxobj, ((cbcb *)data)->signal_name, rxevent);
-    context->ObjectToNumber(temp, (wholenumber_t *)&retc);
+    context->ObjectToInt32(temp, &retc);
     context->DetachThread();
     return retc;
 }
@@ -1157,7 +1157,7 @@ gboolean signal_GdkEventOwnerChange(GtkWidget *window,
                           context->UnsignedNumberToObject((size_t)event->selection_time));
 
     temp = context->SendMessage1(rxobj, ((cbcb *)data)->signal_name, rxevent);
-    context->ObjectToNumber(temp, (wholenumber_t *)&retc);
+    context->ObjectToInt32(temp, &retc);
     context->DetachThread();
     return retc;
 }
@@ -1222,7 +1222,7 @@ gboolean signal_GdkEventGrabBroken(GtkWidget *window,
     }
 
     temp = context->SendMessage1(rxobj, ((cbcb *)data)->signal_name, rxevent);
-    context->ObjectToNumber(temp, (wholenumber_t *)&retc);
+    context->ObjectToInt32(temp, &retc);
     context->DetachThread();
     return retc;
 }

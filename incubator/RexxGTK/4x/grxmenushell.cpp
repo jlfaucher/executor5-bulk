@@ -113,7 +113,7 @@ static gboolean signal_func_1b(GtkWidget *window,
     cblock->instance->AttachThread(&context);
     RexxObjectPtr arg1type = context->NumberToObject((wholenumber_t)arg1);;
     retc = context->SendMessage1(rxobj, ((cbcb *)data)->signal_name, arg1type);
-    context->ObjectToNumber(retc, (wholenumber_t *)&rc);
+    context->ObjectToInt32(retc, &rc);
     context->DetachThread();
     return rc;
 }

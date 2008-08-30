@@ -147,7 +147,7 @@ RexxMethod3(int,                       // Return type
     GValue coldata;
 
     for (i = 2; i <= members; i += 2) {
-        context->ObjectToNumber(context->ArrayAt(args, i), (wholenumber_t *)&col);
+        context->ObjectToInt32(context->ArrayAt(args, i), &col);
         coldata.g_type = types[col];
         switch (types[col]) {
         case G_TYPE_POINTER:
@@ -163,7 +163,7 @@ RexxMethod3(int,                       // Return type
         case G_TYPE_FLAGS:
         case G_TYPE_CHAR:
         case G_TYPE_UCHAR:
-            context->ObjectToNumber(context->ArrayAt(args, i + 1), (wholenumber_t *)&ival);
+            context->ObjectToInt32(context->ArrayAt(args, i + 1), &ival);
             coldata.data[0].v_int = ival;
             break;
         case G_TYPE_UINT:

@@ -645,6 +645,6 @@ REXX_METHOD_PROTOTYPE(GrxCalendarGetDisplayOptions)
 REXX_METHOD_PROTOTYPE(GrxCalendarSetDisplayOptions)
 REXX_METHOD_PROTOTYPE(GrxCalendarGetDate)
 REXX_METHOD_PROTOTYPE(GrxCalendarSignalConnect)
-
+ 
  #endif /* REXXGTK_H */
-
+ 

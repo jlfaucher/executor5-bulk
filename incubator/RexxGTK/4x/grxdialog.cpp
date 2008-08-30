@@ -335,7 +335,7 @@ RexxMethod5(int,                       // Return type
                                            (GtkFileChooserAction)action, NULL);
     for (int i = 5; i <= members; i += 2) {
         bid = context->ObjectToStringValue(context->ArrayAt(args, i - 1));
-        context->ObjectToNumber(context->ArrayAt(args, i), (wholenumber_t *)&rid);
+        context->ObjectToInt32(context->ArrayAt(args, i), &rid);
         gtk_dialog_add_button(GTK_DIALOG(myWidget), bid, rid);
     }
 
