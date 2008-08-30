@@ -139,8 +139,8 @@ RexxMethod3(int,                       // Return type
     size_t members = context->ArraySize(args);
     int i, col, ival;
     unsigned int uival;
-    long long ival64;
-    unsigned long long uival64;
+    int64_t ival64;
+    uint64_t uival64;
     float fval;
     double dval;
     char *val;

@@ -47,6 +47,9 @@ RX_PATH = "D:\Interpreters\Rexx\ooRexx"
 # slashes
 GTK_PATH = F:/Tools.misc/gtk
 
+# Set VCPP6 to 1 if you want to compile with Visual C++ 6.0
+VCPP6 = 0
+
 # Set the GTK+ include path. Provided your GTK_PATH above is correct, this
 # should work.
 #
@@ -81,7 +84,11 @@ LIBS = $(GTKLIBS) $(RX_PATH)\api\rexx.lib $(RX_PATH)\api\rexxapi.lib
 
 INCLUDES = -I$(RX_PATH)\api $(GTK_IPATH)
 
+!IF "$(VCPP6)" == "1"
+GCFLAGS_COMMON = /nologo /EHsc /W3 /c
+!ELSE
 GCFLAGS_COMMON = /nologo /EHsc /W3 /Wp64 /c
+!ENDIF
 
 GCFLAGS_DEFINES = /DVMAJOR=$(VMAJOR) /DVMINOR=$(VMINOR) /DVREL=$(VREL) /DWIN32 /DNULL=0 /D_CRT_SECURE_NO_DEPRECATE /D_CRT_NONSTDC_NO_DEPRECATE
 
