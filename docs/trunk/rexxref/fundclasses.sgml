@@ -5214,6 +5214,22 @@ string.</para>
 </para>
 </section>
 
+<section id="mthMethodPackage"><title>package</title>
+<indexterm><primary>package method</primary>
+<secondary>of Method class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>package method</secondary>
+<tertiary>of Method class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-package-----------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns the Package class instance that defined the method instance.  The
+package instance controls and defines the search order for classes and routines
+referenced by the method code.
+</section>
+
 <section id="mthMethodSetGuarded"><title>setGuarded</title>
 <indexterm><primary>setGuarded method</primary>
 <secondary>of Method class</secondary></indexterm>
@@ -5332,6 +5348,166 @@ pool, regardless of whether it received a
 </programlisting>
 <para>Returns the method source code as a single-index array of source
 lines. If the source code is not available,
+<emphasis role="bold">source</emphasis> returns an array of zero
+items.</para>
+</section>
+</section>
+
+<section id="clsRoutine"><title>The Routine Class</title>
+<indexterm><primary>Routine class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>Routine class</secondary></indexterm>
+
+<para>The Routine class creates routine objects from Rexx source code. It is a
+subclass of the <link linkend="clsObject">Object class</link>.</para>
+<figure><title>The Routine class and methods</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxRoutineClass.png" align="left">
+</imageobject>
+</mediaobject>
+</figure>
+<note><title>Note</title>
+<para>The Routine class also has available class methods that its
+metaclass, the Class class, defines.</para></note>
+
+<section><title>Inherited Methods</title>
+
+&objclsmthods;
+
+</section>
+
+<section id="mthRoutineNew"><title>new (Class Method)</title>
+<indexterm><primary>new method</primary>
+<secondary>of Routine class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>new method</secondary>
+<tertiary>of Routine class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-new(name,source--+------------------+---)-------------------><
+                    +--, methodobject--+
+]]>
+</programlisting>
+
+<para>Returns a new instance of routine class, which is an executable
+representation of the code contained in the
+<emphasis role="italic">source</emphasis>. The
+<emphasis role="italic">name</emphasis> is a string.
+The <emphasis role="italic">source</emphasis> can be a single string or an
+array of strings containing individual method lines.</para>
+
+<para>The third parameter influences the scope of the routine. If none is given,
+the program scope is used. If another method or routine object is specified, the
+scope of the provided methoe or routine is used.
+</para>
+
+</section>
+
+<section id="mthRoutineNewFile"><title>newFile (Class Method)</title>
+<indexterm><primary>newFile method</primary>
+<secondary>of Routine class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>newFile method</secondary>
+<tertiary>of Routine class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-newFile(filename)-------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a new instance of routine class, which is an executable
+representation of the code contained in the file filename. The filename is a
+string.
+</para>
+
+<section id="mthRoutineCall"><title>call</title>
+<indexterm><primary>call method</primary>
+<secondary>of Routine class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>call method</secondary>
+<tertiary>of Routine class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-call-+--------------------+------------------------------------><
+        |    +-,--------.    |
+        |    V          |    |
+        +-(----argument-+--)-+
+]]>
+</programlisting>
+<para>Calls the routine object using the provided arguments.  The code in the
+routine object is called as if it was an external routine call.  The return
+value will be any value returned by the executed routine.</para>
+</section>
+
+<section id="mthRoutineCallWith"><title>callWith</title>
+<indexterm><primary>callWith method</primary>
+<secondary>of Routine class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>callWith method</secondary>
+<tertiary>of Routine class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-call(array)----------------------------------------------------><
+]]>
+</programlisting>
+<para>Calls the routine object using the arguments provided in
+<emphasis role="italic">array</emphasis>. Each element of array will be mapped
+to its corresponding call argument.  The code in the routine object is called as
+if it was an external routine call. The return value will be any value returned
+by the executed routine.
+</para>
+</section>
+
+<section id="mthRoutinePackage"><title>package</title>
+<indexterm><primary>package method</primary>
+<secondary>of Routine class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>package method</secondary>
+<tertiary>of Routine class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-package-----------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns the Package class instance that defined the routine instance.  The
+package instance controls and defines the search order for classes and routines
+referenced by the routine code.</para>
+</section>
+
+<section id="mthMethodSetSecurityManager"><title>setSecurityManager</title>
+<indexterm><primary>setSecurityManager method</primary>
+<secondary>of Routine class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>setSecurityManager method</secondary>
+<tertiary>of Routine class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-setSecurityManager--+---------------------------+-----------><
+                       +-(security_manager_object)-+
+]]>
+</programlisting>
+
+<para>Replaces the existing security manager with the specified
+<emphasis role="italic">security_manager_object</emphasis>. If
+<emphasis role="italic">security_manager_object</emphasis> is omitted, any
+existing security manager is removed.</para>
+</section>
+
+<section id="mthRoutineSource"><title>source</title>
+<indexterm><primary>source method</primary>
+<secondary>of Routine class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>source method</secondary>
+<tertiary>of Routine class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-source------------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns the routine source code as a single-index array of source lines.
+If the source code is not available,
 <emphasis role="bold">source</emphasis> returns an array of zero
 items.</para>
 </section>
