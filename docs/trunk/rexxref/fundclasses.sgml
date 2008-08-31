@@ -5391,7 +5391,7 @@ metaclass, the Class class, defines.</para></note>
 ]]>
 </programlisting>
 
-<para>Returns a new instance of routine class, which is an executable
+<para>Returns a new instance of the routine class, which is an executable
 representation of the code contained in the
 <emphasis role="italic">source</emphasis>. The
 <emphasis role="italic">name</emphasis> is a string.
@@ -5400,7 +5400,7 @@ array of strings containing individual method lines.</para>
 
 <para>The third parameter influences the scope of the routine. If none is given,
 the program scope is used. If another method or routine object is specified, the
-scope of the provided methoe or routine is used.
+scope of the provided method or routine is used.
 </para>
 </section>
 
@@ -5416,7 +5416,7 @@ scope of the provided methoe or routine is used.
 ]]>
 </programlisting>
 
-<para>Returns a new instance of routine class, which is an executable
+<para>Returns a new instance of the routine class, which is an executable
 representation of the code contained in the file filename. The filename is a
 string.
 </para>
@@ -5510,6 +5510,428 @@ existing security manager is removed.</para>
 If the source code is not available,
 <emphasis role="bold">source</emphasis> returns an array of zero
 items.</para>
+</section>
+</section>
+
+<section id="clsPackage"><title>The Package Class</title>
+<indexterm><primary>Package class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>Package class</secondary></indexterm>
+
+<para>The Package class contains the source code for a package of ooRexx code. A
+package instance holds all of the routines, classes, and methods created from a
+source code unit and also manages external dependencies refereced by ::REQUIRES
+directives.  The files loaded by ::REQUIRES are also contained in Package class
+instances. It is a subclass of the <link linkend="clsObject">Object
+class</link>.</para>
+<figure><title>The Package class and methods</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxPackageClass.png" align="left">
+</imageobject>
+</mediaobject>
+</figure>
+<note><title>Note</title>
+<para>The Package class also has available class methods that its metaclass, the
+Class class, defines.
+</para></note>
+
+<section><title>Inherited Methods</title>
+
+&objclsmthods;
+
+</section>
+
+<section id="mthPackageNew"><title>new (Class Method)</title>
+<indexterm><primary>new method</primary>
+<secondary>of Package class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>new method</secondary>
+<tertiary>of Package class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-new(name,source--+------------------+---)-------------------><
+                    +--, methodobject--+
+]]>
+</programlisting>
+
+<para>Returns a new instance of the package class, which is a representation of
+the code contained in the
+<emphasis role="italic">source</emphasis>. The
+<emphasis role="italic">name</emphasis> is a string.
+The <emphasis role="italic">source</emphasis> can be a single string or an
+array of strings containing individual method lines.</para>
+
+<para>The third parameter influences the scope of the routine. If none is given,
+the program scope is used. If another method or routine object is specified, the
+scope of the provided method or routine is used.
+</para>
+</section>
+
+<section id="mthPackageNewFile"><title>newFile (Class Method)</title>
+<indexterm><primary>newFile method</primary>
+<secondary>of Package class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>newFile method</secondary>
+<tertiary>of Package class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-newFile(filename)-------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a new instance of the package class, which is an executable
+representation of the code contained in the file filename. The filename is a
+string.
+</para>
+</section>
+
+<section id="mthPackageClasses"><title>classes</title>
+<indexterm><primary>classes method</primary>
+<secondary>of Package class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>classes method</secondary>
+<tertiary>of Package class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-classes-----------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns a directory containing all classes available to this package. This
+includes classes defined directly by this package as well as public classes
+obtained from dependent packages accessed via ::REQUIRES or the addPackage
+method.</para>
+</section>
+
+<section id="mthPackageAddClass"><title>addClass</title>
+<indexterm><primary>addClass method</primary>
+<secondary>of Package class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>addClass method</secondary>
+<tertiary>of Package class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-addClass(name,class)----------------------------------------><
+]]>
+</programlisting>
+<para>Adds the class object <emphasis role="italic">class</emphasis> to the
+available classes under the name <emphasis role="italic">name</emphasis>.  This
+is added to the package as a non-public class.</para>
+</section>
+
+<section id="mthPackageAddPackage"><title>addPackage</title>
+<indexterm><primary>addPackage method</primary>
+<secondary>of Package class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>addPackage method</secondary>
+<tertiary>of Package class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-addPackage(package)----------------------------------------><
+]]>
+</programlisting>
+<para>Adds the package object <emphasis role="italic">package</emphasis> to the
+dependent packages under the name
+<emphasis role="italic">name</emphasis>.
+The added package is processed as if it had been added using a ::REQUIRES
+directive in the original package source.</para>
+</section>
+
+<section id="mthPackageAddPublicClass"><title>addPublicClass</title>
+<indexterm><primary>addPublicClass method</primary>
+<secondary>of Package class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>addPublicClass method</secondary>
+<tertiary>of Package class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-addPublicClass(name,class)----------------------------------><
+]]>
+</programlisting>
+<para>Adds the class object <emphasis role="italic">class</emphasis> to the
+available public classes under the name <emphasis role="italic">name</emphasis>.
+This is added to the package as a public class.</para>
+</section>
+
+<section id="mthPackageAddPublicRoutine"><title>addPurblicRoutine</title>
+<indexterm><primary>addPublicRoutine method</primary>
+<secondary>of Package class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>addPublicRoutine method</secondary>
+<tertiary>of Package class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-addPublicRoutine(name,routine)----------------------------------------><
+]]>
+</programlisting>
+<para>Adds the routine object <emphasis role="italic">routine</emphasis> to the
+available routines under the name
+<emphasis role="italic">name</emphasis>.  This is added to the package as a
+public routine.</para>
+</section>
+
+<section id="mthPackageAddRoutine"><title>addRoutine</title>
+<indexterm><primary>addRoutine method</primary>
+<secondary>of Package class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>addRoutine method</secondary>
+<tertiary>of Package class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-addRoutine(name,routine)----------------------------------------><
+]]>
+</programlisting>
+<para>Adds the routine object <emphasis role="italic">routine</emphasis> to the
+available routines under the name
+<emphasis role="italic">name</emphasis>.  This is added to the package as a
+non-public routine.</para>
+</section>
+
+<section id="mthPackageClasses"><title>classes</title>
+<indexterm><primary>classes method</primary>
+<secondary>of Package class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>classes method</secondary>
+<tertiary>of Package class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-classes----------------------------------------------><
+]]>
+</programlisting>
+<para>Returns a directory containing all classes defined by this packag or
+imported as public classes from another package.</para>
+</section>
+
+<section id="mthPackageDefinedMethods"><title>definedMethods</title>
+<indexterm><primary>definedMethods method</primary>
+<secondary>of Package class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>definedMethods method</secondary>
+<tertiary>of Package class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-definedMethods----------------------------------------------><
+]]>
+</programlisting>
+<para>Returns a directory containing all unattached methods defined by this
+package.  This is the same directory available to code within the package with
+the .METHODS environment symbol.</para>
+</section>
+
+<section id="mthPackageFindClass"><title>findClass</title>
+<indexterm><primary>findClass method</primary>
+<secondary>of Package class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>findClass method</secondary>
+<tertiary>of Package class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-findClass(name)---------------------------------------------><
+]]>
+</programlisting>
+<para>Performs the standard environment symbol searchs for a given class with
+the name <emphasis role="italic">name</emphasis>, which must be a string object.
+The search is performed using the same search mechanism used for environment
+symbols or class names specified on ::CLASS directives.
+If the name is not
+found, .nil will be returned.</para>
+</section>
+
+<section id="mthPackageFindRoutine"><title>findRoutine</title>
+<indexterm><primary>findRoutine method</primary>
+<secondary>of Package class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>findRoutine method</secondary>
+<tertiary>of Package class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-findRoutine(name)---------------------------------------------><
+]]>
+</programlisting>
+<para>Searches for a routine within the package search order.  This includes
+::ROUTINE directives within the package, public routines imported from other
+packages, or routines added using the addRoutine method. The argument
+<emphasis role="italic">name</emphasis> must be a string object. If the name is
+not found, .nil will be returned.</para>
+</section>
+
+<section id="mthPackageImportedClasses"><title>importedClasses</title>
+<indexterm><primary>importedClasses method</primary>
+<secondary>of Package class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>importedClasses method</secondary>
+<tertiary>of Package class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-importedClasses--------------------------------------><
+]]>
+</programlisting>
+<para>Returns a directory containing all public classes imported from other
+packages.</para>
+</section>
+
+<section id="mthPackageImportedRoutines"><title>importedRoutines</title>
+<indexterm><primary>importedRoutines method</primary>
+<secondary>of Package class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>importedRoutines method</secondary>
+<tertiary>of Package class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-importedRoutines-------------------------------------><
+]]>
+</programlisting>
+<para>Returns a directory containing all public routines imported from other
+    packages.</para>
+</section>
+
+<section id="mthPackageLoadPackage"><title>loadPackage</title>
+<indexterm><primary>loadPackage method</primary>
+<secondary>of Package class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>loadPackage method</secondary>
+<tertiary>of Package class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-loadPackage(name-+--------+-)----------------------------><
+                    +-source-+
+]]>
+</programlisting>
+<para>Loads a package and addes it to the list of packages loaded by the package
+manager.   If only <emphasis role="italic">name</emphasis> is specified,
+<emphasis role="italic">name</emphasis> identifies a file that will be located
+and loaded as if it had been named on a ::REQUIRES directive.  If
+<emphasis role="italic">source</emphasis> is given, it must be an array of
+strings that is the source for the loaded package.  If a package
+<emphasis role="italic">name</emphasis> has already been loaded by the package
+manager, the previously loaded version will be use.  The resolved package object
+will be added to the receiving package object's dependent packages.</para>
+</section>
+
+<section id="mthPackageName"><title>name</title>
+<indexterm><primary>name method</primary>
+<secondary>of Package class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>name method</secondary>
+<tertiary>of Package class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-name-------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns the string name of the package.</para>
+</section>
+
+<section id="mthPackagePublicClasses"><title>publicClasses</title>
+<indexterm><primary>publicClasses method</primary>
+<secondary>of Package class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>publicClasses method</secondary>
+<tertiary>of Package class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-publicClasses--------------------------------------><
+]]>
+</programlisting>
+<para>Returns a directory containing all public classes defined in this package.</para>
+</section>
+
+<section id="mthPackagePublicRoutines"><title>publicRoutines</title>
+<indexterm><primary>publicRoutines method</primary>
+<secondary>of Package class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>publicRoutines method</secondary>
+<tertiary>of Package class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-publicRoutines-------------------------------------><
+]]>
+</programlisting>
+<para>Returns a directory containing all public routines defined in this
+    package.</para>
+</section>
+
+<section id="mthPackageRoutines"><title>routines</title>
+<indexterm><primary>routines method</primary>
+<secondary>of Package class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>routines method</secondary>
+<tertiary>of Package class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-routines-------------------------------------><
+]]>
+</programlisting>
+<para>Returns a directory containing all routines defined in this
+    package.</para>
+</section>
+
+<section id="mthPackageSetSecurityManager"><title>setSecurityManager</title>
+<indexterm><primary>setSecurityManager method</primary>
+<secondary>of Package class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>setSecurityManager method</secondary>
+<tertiary>of Package class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-setSecurityManager--+---------------------------+-----------><
+                       +-(security_manager_object)-+
+]]>
+</programlisting>
+
+<para>Replaces the existing security manager with the specified
+<emphasis role="italic">security_manager_object</emphasis>. If
+<emphasis role="italic">security_manager_object</emphasis> is omitted, any
+existing security manager is removed.</para>
+</section>
+
+<section id="mthPackageSource"><title>source</title>
+<indexterm><primary>source method</primary>
+<secondary>of Package class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>source method</secondary>
+<tertiary>of Package class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-source------------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns the package source code as a single-index array of source lines.
+If the source code is not available,
+<emphasis role="bold">source</emphasis> returns an array of zero
+items.</para>
+</section>
+
+<section id="mthPackageSourceLine"><title>sourceLine</title>
+<indexterm><primary>sourceLine method</primary>
+<secondary>of Package class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>sourceLine method</secondary>
+<tertiary>of Package class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-sourceLine(n)------------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns the <emphasis role="italic">n</emphasis>th source line from the
+package source.  If the source code is not available or the indicated line does
+not exist, a null stirng is returned.</para>
+</section>
+
+<section id="mthPackageSourceSize"><title>sourceSize</title>
+<indexterm><primary>sourceSize method</primary>
+<secondary>of Package class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>sourceSize method</secondary>
+<tertiary>of Package class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-sourceSize---------------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns the size of the source code for the package object. If the source
+code is not available, 0 is returned.</para>
 </section>
 </section>
 
