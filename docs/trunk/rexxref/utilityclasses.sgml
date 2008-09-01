@@ -5229,5 +5229,164 @@ supplier to be passed to methods that expect an object that implements a
 </section>
 </section>
 
+<section id="clsRexxContext"><title>The RexxContext Class</title>
+<indexterm><primary>RexxContext class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>RexxContext class</secondary></indexterm>
+
+<para>The RexxContext class gives access to context information about the
+currently executing ooRexx code.  Instances of the RexxContext class can only be
+obtained via the .CONTEXT environment symbol.  They cannot be directly created
+by the user. It is a
+subclass of the <link linkend="clsObject">Object class</link>.</para>
+<figure><title>The RexxContext class and methods</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxContextClass.png" align="left">
+</imageobject>
+</mediaobject>
+</figure>
+
+<section><title>Inherited Methods</title>
+
+&objclsmthods;
+
+</section>
+
+<section id="mthRexxContextArgs"><title>args</title>
+<indexterm><primary>args method</primary>
+<secondary>of RexxContextclass</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>args method</secondary>
+<tertiary>of RexxContext class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-args---------------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns the arguments used to invoke the current context as an array.
+This is equivalent to using the Args(1, 'A') builtin function.
+</para>
+</section>
+
+<section id="mthRexxContextCondition"><title>condition</title>
+<indexterm><primary>condition method</primary>
+<secondary>of RexxContextclass</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>condition method</secondary>
+<tertiary>of RexxContext class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-condition----------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns the current context condition object, or .nil if the context does
+not currently have a trapped condition.  This is equivalent to using the
+Condition('O') builtin function.
+</para>
+</section>
+
+<section id="mthRexxContextDigits"><title>digits</title>
+<indexterm><primary>digits method</primary>
+<secondary>of RexxContextclass</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>digits method</secondary>
+<tertiary>of RexxContext class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-digits-------------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns the current context digits setting. This is equivalent to using
+the digits() builtin function.
+</para>
+</section>
+
+<section id="mthRexxContextExecutable"><title>executable</title>
+<indexterm><primary>executable method</primary>
+<secondary>of RexxContextclass</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>executable method</secondary>
+<tertiary>of RexxContext class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-executable-------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns the current executable object for the current context.  The
+executable will be either a routine or method object, depending on the type of
+the active context.
+</para>
+</section>
+
+<section id="mthRexxContextForm"><title>form</title>
+<indexterm><primary>form method</primary>
+<secondary>of RexxContextclass</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>form method</secondary>
+<tertiary>of RexxContext class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-form-------------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns the current context form setting. This is equivalent to using the
+form() builtin function.
+</para>
+</section>
+
+<section id="mthRexxContextFuzz"><title>fuzz</title>
+<indexterm><primary>fuzz method</primary>
+<secondary>of RexxContextclass</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>fuzz method</secondary>
+<tertiary>of RexxContext class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-fuzz-------------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns the current context fuzz setting. This is equivalent to using the
+fuzz() builtin function.
+</para>
+</section>
+
+<section id="mthRexxContextPackage"><title>package</title>
+<indexterm><primary>package method</primary>
+<secondary>of RexxContextclass</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>package method</secondary>
+<tertiary>of RexxContext class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-package----------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns the package object associated with the current executable object.
+</para>
+</section>
+
+<section id="mthRexxContextVariables"><title>variables</title>
+<indexterm><primary>variables method</primary>
+<secondary>of RexxContextclass</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>variables method</secondary>
+<tertiary>of RexxContext class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-variables--------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns a directory object containing all of the variables in the current
+execution context.  The directory keys will be the variable names and the
+mapped values are the values of the variables.  The directory will only
+contain simple variables and stem variables.  Compound variable values may
+be accessed by using the stem objects that are returned for the stem
+variable names.
+</para>
+</section>
+</section>
+
 </section>
 
