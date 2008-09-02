@@ -234,7 +234,7 @@ RexxMethod2(int,                       // Return type
  *
  * @return        The iter object or Nil
  **/
-RexxMethod3(RexxObjectPtr,             // Return type
+RexxMethod3(POINTER,                   // Return type
             GrxTextBufferForwardSearch, // Object_method name
             CSELF, self,               // GTK self
             CSTRING, text,             // Search text
@@ -256,9 +256,9 @@ RexxMethod3(RexxObjectPtr,             // Return type
     found = gtk_text_iter_forward_search(&start, text, GTK_TEXT_SEARCH_TEXT_ONLY,
                                          &begin, &end, NULL);
     if (found) {
-        return (RexxObjectPtr)context->NewPointer(gtk_text_iter_copy(&begin));
+        return gtk_text_iter_copy(&begin);
     }
-    return context->Nil();
+    return NULL;
 }
 
 /**
@@ -272,12 +272,12 @@ RexxMethod3(RexxObjectPtr,             // Return type
  *
  * @return        The iter object or Nil
  **/
-RexxMethod2(RexxObjectPtr,             // Return type
+RexxMethod2(POINTER,                   // Return type
             GrxTextBufferForwardSearchNext, // Object_method name
             CSTRING, text,             // Search text
             RexxObjectPtr, rxiter)     // The iter returned from the last call
 {
-    GtkTextIter *start = (GtkTextIter *)context->PointerValue((RexxPointerObject)rxiter);
+    GtkTextIter *start = (GtkTextIter *)rxiter;
     GtkTextIter         begin, end, *retiter;
     gboolean            found;
 
@@ -287,9 +287,9 @@ RexxMethod2(RexxObjectPtr,             // Return type
                                          &begin, &end, NULL);
     gtk_text_iter_free(start);
     if (found) {
-        return (RexxObjectPtr)context->NewPointer(gtk_text_iter_copy(&begin));
+        return gtk_text_iter_copy(&begin);
     }
-    return context->Nil();
+    return NULL;
 }
 
 /**

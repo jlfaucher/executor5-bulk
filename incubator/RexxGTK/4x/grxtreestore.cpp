@@ -105,20 +105,20 @@ RexxMethod2(int,                       // Return type
  *
  * @return        Row iterator
  **/
-RexxMethod2(RexxObjectPtr,             // Return type
+RexxMethod2(POINTER,                   // Return type
             GrxTreeStoreAppend,        // Object_method name
             CSELF, self,               // GTK self
-            RexxObjectPtr, parent)     // Parent object
+            POINTER, parent)           // Parent object
 {
     GtkTreeIter *piter = NULL;
     GtkTreeIter iter;
 
-    if (parent != context->Nil()) {
-        piter = (GtkTreeIter *)context->PointerValue((RexxPointerObject)parent);
+    if (parent != NULL) {
+        piter = (GtkTreeIter *)parent;
     }
     gtk_tree_store_append(GTK_TREE_STORE(self), &iter, piter);
 
-    return (RexxObjectPtr)context->NewPointer(gtk_tree_iter_copy(&iter));
+    return gtk_tree_iter_copy(&iter);
 }
 
 /**
@@ -135,10 +135,10 @@ RexxMethod2(RexxObjectPtr,             // Return type
 RexxMethod3(int,                       // Return type
             GrxTreeStoreSetValue,      // Object_method name
             CSELF, self,               // GTK self
-            RexxObjectPtr, rxiter,     // Row iterator
+            POINTER, rxiter,           // Row iterator
             ARGLIST, args)             // Argument array
 {
-    GtkTreeIter *iter = (GtkTreeIter *)context->PointerValue((RexxPointerObject)rxiter);
+    GtkTreeIter *iter = (GtkTreeIter *)rxiter;
     RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!COLTYPES");
     GType *types = (GType *)context->PointerValue(rxptr);
     size_t members = context->ArraySize(args);
