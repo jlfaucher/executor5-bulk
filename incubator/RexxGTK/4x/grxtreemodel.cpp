@@ -309,14 +309,13 @@ RexxMethod1(logical_t,                 // Return type
  *
  * @return        Zero.
  **/
-RexxMethod2(int,                       // Return type
+RexxMethod1(int,                       // Return type
             GrxTreeModelNew,           // Object_method name
-            OSELF, self,               // Self
             RexxObjectPtr, ptr)        // Pointer
 {
     // Save ourself
     context->SetObjectVariable("CSELF", 
-                               (RexxObjectPtr)context->PointerValue((RexxPointerObject)ptr));
+                               (RexxObjectPtr)ptr);
 
     return 0;
 }
@@ -350,5 +349,128 @@ RexxMethod2(int,                       // Return type
             int, idx)                  // Column index
 {
     return gtk_tree_model_get_column_type((GtkTreeModel *)self, idx);
+}
+
+/**
+ * Method:  get_iter_from_string
+ *
+ * Get an iterator from a string.
+ *        
+ * @param str     The string
+ *
+ * @return        Iter pointer
+ **/
+RexxMethod2(RexxObjectPtr,             // Return type
+            GrxTreeModelGetIterFromString, // Object_method name
+            CSELF, self,               // Self
+            CSTRING, str)              // The string
+{
+    GtkTreeIter iter;
+
+    gboolean retc = gtk_tree_model_get_iter_from_string((GtkTreeModel *)self, &iter, str);
+    if (retc) {
+        return (RexxObjectPtr)context->NewPointer(gtk_tree_iter_copy(&iter));
+    }
+    return context->Nil();
+}
+
+/**
+ * Method:  get_value 
+ *
+ * Get the value in a column.
+ *
+ * @param iter    The iterator
+ *
+ * @param col     The column number
+ *
+ * @return        Value
+ **/
+RexxMethod3(RexxObjectPtr,             // Return type
+            GrxTreeModelGetValue,      // Object_method name
+            CSELF, self,               // GTK self
+            RexxObjectPtr, rxiter,     // Row iterator
+            int, col)                  // Column number
+{
+    GtkTreeIter *iter = (GtkTreeIter *)context->PointerValue((RexxPointerObject)rxiter);
+    GType type = gtk_tree_model_get_column_type(GTK_TREE_MODEL(self), col);
+    long long coldata;
+
+    gtk_tree_model_get(GTK_TREE_MODEL(self), iter, col, &coldata, -1);
+    switch (type) {
+    case G_TYPE_POINTER:
+    case G_TYPE_STRING:
+    case G_TYPE_OBJECT:
+        return (RexxObjectPtr)context->NewStringFromAsciiz((char *)coldata);
+        break;
+    case G_TYPE_INT:
+    case G_TYPE_BOOLEAN:
+    case G_TYPE_LONG:
+    case G_TYPE_ENUM:
+    case G_TYPE_FLAGS:
+    case G_TYPE_CHAR:
+    case G_TYPE_UCHAR:
+        return (RexxObjectPtr)context->Int32ToObject((gint)coldata);
+        break;
+    case G_TYPE_UINT:
+    case G_TYPE_ULONG:
+        return (RexxObjectPtr)context->UnsignedInt32ToObject((guint)coldata);
+        break;
+    case G_TYPE_INT64:
+        return (RexxObjectPtr)context->Int64ToObject((long long)coldata);
+        break;
+    case G_TYPE_UINT64:
+        return (RexxObjectPtr)context->UnsignedInt64ToObject((unsigned long long)coldata);
+        break;
+    case G_TYPE_DOUBLE:
+        return (RexxObjectPtr)context->DoubleToObject((double)coldata);
+        break;
+    default:
+        break;
+    }
+
+    return context->Nil();
+}
+
+/**
+ * Method:  iter_next
+ *
+ * Move the iterator to the next entry
+ *        
+ * @param rxiter  The iter pointer
+ *
+ * @return        Iter pointer
+ **/
+RexxMethod2(RexxObjectPtr,             // Return type
+            GrxTreeModelIterNext,      // Object_method name
+            CSELF, self,               // Self
+            RexxObjectPtr, rxiter)     // The iter
+{
+    GtkTreeIter *iter = (GtkTreeIter *)context->PointerValue((RexxPointerObject)rxiter);
+
+    gboolean retc = gtk_tree_model_iter_next((GtkTreeModel *)self, iter);
+    if (retc) {
+        return (RexxObjectPtr)context->NewPointer(iter);
+    }
+    gtk_tree_iter_free(iter);
+    return context->Nil();
+}
+
+/**
+ * Method:  get_path
+ *
+ * Get the path from an iter.
+ *        
+ * @param rxiter  The iter pointer
+ *
+ * @return        Path pointer
+ **/
+RexxMethod2(RexxObjectPtr,             // Return type
+            GrxTreeModelGetPath,       // Object_method name
+            CSELF, self,               // Self
+            RexxObjectPtr, rxiter)     // The iter
+{
+    GtkTreeIter *iter = (GtkTreeIter *)context->PointerValue((RexxPointerObject)rxiter);
+
+    return context->NewPointer(gtk_tree_model_get_path((GtkTreeModel *)self, iter));
 }
 

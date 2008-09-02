@@ -89,7 +89,7 @@ RexxMethod2(int,                       // Return type
 {
     GtkTextBuffer       *myBuffer;
 
-    if (rxptr == context->Nil()) {
+    if (rxptr == NULL || rxptr == context->Nil()) {
         myBuffer = gtk_text_buffer_new(NULL);
     }
     else {

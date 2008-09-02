@@ -2902,12 +2902,15 @@ return
 ::METHOD insert_column EXTERNAL "LIBRARY rexxgtk GrxTreeViewInsertColumn"
 ::METHOD remove_column EXTERNAL "LIBRARY rexxgtk GrxTreeViewRemoveColumn"
 ::METHOD set_model EXTERNAL "LIBRARY rexxgtk GrxTreeViewSetModel"
+::METHOD 'model=' EXTERNAL "LIBRARY rexxgtk GrxTreeViewSetModel"
+::METHOD get_model EXTERNAL "LIBRARY rexxgtk GrxTreeViewGetModel"
+::METHOD model EXTERNAL "LIBRARY rexxgtk GrxTreeViewGetModel"
 ::METHOD expand_all EXTERNAL "LIBRARY rexxgtk GrxTreeViewExpandAll"
 ::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxTreeViewSignalConnect"
 
 ::method create_tree_model private
 use strict arg ptr
-return GtkTreeModel~new(ptr)
+return .GtkTreeModel~new(ptr)
 
 -- The following are the methods that can be connected to signals. By default
 -- they do nothing.
@@ -3290,7 +3293,7 @@ return .GtkTreePath~new(spath)
 
 ::method create_tree_model private
 use strict arg ptr
-return GtkTreeModel~new(ptr)
+return .GtkTreeModel~new(ptr)
 
 
 /*============================================================================*/
@@ -3304,6 +3307,12 @@ return GtkTreeModel~new(ptr)
 ::METHOD n_columns EXTERNAL "LIBRARY rexxgtk GrxTreeModelGetNColumns"
 ::METHOD get_column_type EXTERNAL "LIBRARY rexxgtk GrxTreeModelGetColumnType"
 ::METHOD column_type EXTERNAL "LIBRARY rexxgtk GrxTreeModelGetColumnType"
+::METHOD get_iter_from_string EXTERNAL "LIBRARY rexxgtk GrxTreeModelGetIterFromString"
+::METHOD get_value EXTERNAL "LIBRARY rexxgtk GrxTreeModelGetValue"
+::METHOD value EXTERNAL "LIBRARY rexxgtk GrxTreeModelGetValue"
+::METHOD iter_next EXTERNAL "LIBRARY rexxgtk GrxTreeModelIterNext"
+::METHOD get_path EXTERNAL "LIBRARY rexxgtk GrxTreeModelGetPath"
+::METHOD path EXTERNAL "LIBRARY rexxgtk GrxTreeModelGetPath"
 
 
 /*============================================================================*/

@@ -40,7 +40,7 @@
 /*----------------------------------------------------------------------------*/
 
 
--- Derived from Listing 8-2
+-- Derived from Listing 8-6
 -- Foundations of GTK+ Development
 -- by Andrew Krause
 
@@ -117,6 +117,10 @@ remove~user_data = .array~new()
 add~user_data[1] = treeview
 add~user_data[2] = list
 add~user_data[3] = PRODUCT_CATEGORY
+add~user_data[4] = BUY_IT
+add~user_data[5] = PRODUCT
+add~user_data[6] = QUANTITY
+add~user_data[7] = store
 remove~user_data[1] = treeview
 
 add~signal_connect('clicked')
@@ -177,6 +181,10 @@ return
 treeview = self~user_data[1]
 list = self~user_data[2]
 PRODUCT_CATEGORY = self~user_data[3]
+BUY_IT = self~user_data[4]
+PRODUCT = self~user_data[5]
+QUANTITY = self~user_data[6]
+store = self~user_data[7]
 
 dialog = .GtkDialog~new('Add a Product', .nil, .gtk~GTK_DIALOG_MODAL,,
                         .gtk~GTK_STOCK_ADD, .gtk~GTK_RESPONSE_OK,,
@@ -187,9 +195,9 @@ spin = .GtkSpinButton~newWithRange(0, 100, 1)
 check = .GtkCheckButton~newWithMnemonic('_Buy the Product')
 spin~set_digits(0)
 
-do product over list
-   if product~product_type = PRODUCT_CATEGORY then do
-      combobox~append_text(product~product)
+do prod over list
+   if prod~product_type = PRODUCT_CATEGORY then do
+      combobox~append_text(prod~product)
       end
    end
 
@@ -223,32 +231,37 @@ table~attach(check, 1, 2, 3, 4,,
 dialog~vbox~pack_start_defaults(table)
 dialog~show_all()
 
--- if dialog~dialog_run() = .gtk~GTK_RESPONSE_OK then do
-resp = dialog~dialog_run()
-say 'resp = "'resp'"'
-if resp = .gtk~GTK_RESPONSE_OK then do
-   quantity = spin~get_value()
-   product = entry~get_text()
-   category = combobox~get_active_text()
+if dialog~dialog_run() = .gtk~GTK_RESPONSE_OK then do
+   quant = spin~get_text()
+   prod = entry~get_text()
+   cat = combobox~get_active_text()
    buy = check~get_active()
 
-   if product = '' | category = '' then do
+   if prod = '' | cat = '' then do
       say 'All of the fields were not correctly filled out!'
       dialog~destroy()
       return
       end
 
+   model = treeview~get_model()
+   iter = model~get_iter_from_string('0');
 
+   do while iter <> .nil
+      name = model~get_value(iter, PRODUCT)
+      if name = cat then leave
+      iter = model~iter_next(iter)
+      end
 
+   path = model~get_path(iter)
+   child = store~append(iter)
+   store~set_value(child, BUY_IT, buy, QUANTITY, quant, PRODUCT, prod)
 
-
-
-
-
-
-
-
-
+   if buy = .true then do
+      path = model~get_path(iter)
+      i = model~get_value(iter, QUANTITY)
+      i += quant
+      store~set_value(iter, QUANTITY, i)
+      end
    end
 
 dialog~destroy()
