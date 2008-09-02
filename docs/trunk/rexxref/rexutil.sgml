@@ -4076,7 +4076,15 @@ only)</title>
 <para><emphasis role="bold">Parameter:</emphasis></para>
 <variablelist>
 <varlistentry><term><emphasis role="italic">description</emphasis></term>
-<listitem><para>Must have the form "Printername,Drivername,Portname".
+<listitem><para>A string identifying the printer.  On Windows 2000 or later this
+  string can be just the printer name.  For earlier versions of Windows, the
+  string must have the form "Printername,Drivername,Portname".
+<note><title>Note</title><para>
+  For Windows 2000 or later either form of the description string is accepted.
+  However, using just the printer name is the preferred method.  Using the
+  "Printername,Drivername,Portname" form will invoke an outdated Windows API
+  that Microsoft has deprecated.
+</para></note>
 </para></listitem></varlistentry>
 </variablelist>
 <para><emphasis role="bold">Return codes:</emphasis></para>
@@ -4085,8 +4093,8 @@ only)</title>
 <listitem><para>Success
 </para></listitem></varlistentry>
 <varlistentry><term>non-zero</term>
-<listitem><para>System error codes (use SysGetErrortext() to get a description
-of the error)
+<listitem><para>A system error code. (Use SysGetErrortext() to get a description
+of the error.)
 </para></listitem></varlistentry>
 </variablelist>
 <para><emphasis role="bold">Example:</emphasis></para>
@@ -4116,6 +4124,8 @@ of the error)
 
 default = SysWinGetDefaultPrinter()
 parse var default default",".
+say 'The Default printer is:' default
+say
 
 if SysWinGetPrinters(list.) == 0 then do
   say "List of available printers (* = default):"
@@ -4129,9 +4139,35 @@ if SysWinGetPrinters(list.) == 0 then do
   say
   say "Please enter number of new default printer (0 = keep default)"
   pull i
-  if i > 0 then call SysWinSetDefaultPrinter(list.i)
+
+  numberOk = .false
+
+  if i~datatype('W') then do
+    if 0 <= i & i <= list.0 then do
+      numberOK = .true
+
+      if i > 0 then do
+        -- Assumes we are on Windows 2000 or later.
+        parse var list.i pname",".
+        ret = SysWinSetDefaultPrinter(pname)
+        if ret <> 0 then do
+          say "Error setting default printer ("ret"):" SysGetErrorText(ret)
+        end
+        else do
+          say "The new default printer is:" pname
+        end
+      end
+    end
+  end
+
+  if \ numberOk then do
+    say "You did not enter a valid printer number."
+  end
 end
-exit
+else do
+  say "Failed to get a list of the available printers."
+end
+
 </programlisting>
 </section>
 
