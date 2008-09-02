@@ -4120,6 +4120,7 @@ of the error.)
 <indexterm><primary>examples</primary>
 <secondary>SysGetPrinters</secondary></indexterm>
 <programlisting>
+<![CDATA[
 /* set default printer */
 
 default = SysWinGetDefaultPrinter()
@@ -4147,7 +4148,7 @@ if SysWinGetPrinters(list.) == 0 then do
       numberOK = .true
 
       if i > 0 then do
-        -- Assumes we are on Windows 2000 or later.
+        /* Assumes we are on Windows 2000 or later. */
         parse var list.i pname",".
         ret = SysWinSetDefaultPrinter(pname)
         if ret <> 0 then do
@@ -4167,7 +4168,7 @@ end
 else do
   say "Failed to get a list of the available printers."
 end
-
+]]>
 </programlisting>
 </section>
 
