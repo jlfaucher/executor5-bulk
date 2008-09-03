@@ -149,33 +149,33 @@ the associated button control.</para>
 separated by blanks:
 <variablelist>
 <varlistentry><term>&quot;CHECKED&quot;</term>
-<listitem><para>The radio button or the check box is checked.  A radio button is 
-checked when it contains a black dot, a check box is checked when it contains a 
+<listitem><para>The radio button or the check box is checked.  A radio button is
+checked when it contains a black dot, a check box is checked when it contains a
 check mark.
 </para></listitem></varlistentry>
 <varlistentry><term>&quot;UNCHECKED&quot;</term>
-<listitem><para>The radio button or the check box is not checked.  A radio 
-button is not checked when it does not contain a black dot and a check box is 
+<listitem><para>The radio button or the check box is not checked.  A radio
+button is not checked when it does not contain a black dot and a check box is
 not checked when it does not contain a check mark.
 </para></listitem></varlistentry>
 <varlistentry><term>&quot;INDETERMINATE&quot;</term>
-<listitem><para>A 3-state check box button is neither checked nor unchecked. 
-Only 3-state check box buttons can be in this state.  When in the indeterminate 
-state, the check box button is drawn in a visually distinctive manner that is 
-different from checked or unchecked.  Exactly how the indeterminate state is 
+<listitem><para>A 3-state check box button is neither checked nor unchecked.
+Only 3-state check box buttons can be in this state.  When in the indeterminate
+state, the check box button is drawn in a visually distinctive manner that is
+different from checked or unchecked.  Exactly how the indeterminate state is
 drawn is dependent on the operating system version.
 </para></listitem></varlistentry>
 <varlistentry><term>&quot;PUSHED&quot;</term>
-<listitem><para>When a button is in the pushed state it is drawn as a sunken 
-button, otherwise it is drawn as a raised button.  The user causes a button to 
-be in the pushed state by clicking the button with the left mouse button.  As 
+<listitem><para>When a button is in the pushed state it is drawn as a sunken
+button, otherwise it is drawn as a raised button.  The user causes a button to
+be in the pushed state by clicking the button with the left mouse button.  As
 long as the mouse button is held down, the button will be drawn as pushed. When
-the user releases the mouse button, the button will resume its not pushed state.  
-When this keyword is not in the text string, the button is not in the pushed 
+the user releases the mouse button, the button will resume its not pushed state.
+When this keyword is not in the text string, the button is not in the pushed
 state.
 </para></listitem></varlistentry>
 <varlistentry><term>&quot;FOCUS&quot;</term>
-<listitem><para>The button has the keyboard focus.  When this keyword is missing 
+<listitem><para>The button has the keyboard focus.  When this keyword is missing
 from the text string, the button does not have the focus.
 </para></listitem></varlistentry>
 </variablelist>
@@ -222,16 +222,16 @@ button control.</para>
 keywords, separated by a blank:
 <variablelist>
 <varlistentry><term>CHECKED</term>
-<listitem><para>The radio button or the check box is to be set to the 
+<listitem><para>The radio button or the check box is to be set to the
 &quot;checked&quot; state.
 </para></listitem></varlistentry>
 <varlistentry><term>UNCHECKED</term>
-<listitem><para>The radio button or the check box is to be set to the 
+<listitem><para>The radio button or the check box is to be set to the
 &quot;unchecked&quot; state.
 </para></listitem></varlistentry>
 <varlistentry><term>INDETERMINATE</term>
-<listitem><para>The 3-state check box button is to be set to the 
-&quot;indeterminate&quot; state.  This state can only be applied to 3-state 
+<listitem><para>The 3-state check box button is to be set to the
+&quot;indeterminate&quot; state.  This state can only be applied to 3-state
 check box buttons.
 </para></listitem></varlistentry>
 <varlistentry><term>PUSHED</term>
@@ -260,16 +260,16 @@ button~State="FOCUS PUSHED"
 <varlistentry><term><emphasis role="bold">Notes:</emphasis></term>
 <listitem><para>Some points to remember when using this method.
 <orderedlist>
-<listitem><para>A button can be set to only one of the checked, unchecked or 
-indeterminate states.  If more than one of these states is specified in the 
+<listitem><para>A button can be set to only one of the checked, unchecked or
+indeterminate states.  If more than one of these states is specified in the
 text string the button is set to the state that is first in the string.
 </para></listitem>
-<listitem><para>Only 3-state check box buttons can be set to the indeterminate 
-state.  If this keyword is used for a button that is not a 3-state button then 
+<listitem><para>Only 3-state check box buttons can be set to the indeterminate
+state.  If this keyword is used for a button that is not a 3-state button then
 the button's state is not changed.
 </para></listitem>
-<listitem><para>To change a button state to not focused programmatically use 
-one of the ooDialog methods that move the focus: <link linkend="tabtonext">TabToNext</link>,  
+<listitem><para>To change a button state to not focused programmatically use
+one of the ooDialog methods that move the focus: <link linkend="tabtonext">TabToNext</link>,
 <link linkend="tabtoprevious">TabToPrevious</link>, <link linkend="setfocus">SetFocus</link>,
 <link linkend="focusitem">FocusItem</link>, etc..
 </para></listitem>
@@ -283,75 +283,225 @@ one of the ooDialog methods that move the focus: <link linkend="tabtonext">TabTo
 <programlisting>
 <![CDATA[
 >>-aButtonControl~Style=--"--+-DEFPUSHBUTTON---+--"------------><
+                             +-PUSHBOX---------+
+                             +-RADIO-----------+
+                             +-AUTORADIO-------+
                              +-CHECKBOX--------+
                              +-AUTOCHECKBOX----+
-                             +-RADIOBUTTON-----+
-                             +-AUTORADIOBUTTON-+
                              +-3STATE----------+
                              +-AUTO3STATE------+
                              +-GROUPBOX--------+
                              +-OWNERDRAW-------+
+                             +-LEFTTEXT--------+
+                             +-RIGHTBUTTON-----+
+                             +-NOTLEFTTEXT-----+
+                             +-TEXT------------+
+                             +-ICON------------+
+                             +-BITMAP----------+
+                             +-LEFT------------+
+                             +-RIGHT-----------+
+                             +-HCENTER---------+
+                             +-TOP-------------+
+                             +-BOTTOM----------+
+                             +-VCENTER---------+
+                             +-PUSHLIKE--------+
+                             +-MULTILINE-------+
+                             +-NOTIFY----------+
+                             +-FLAT------------+
+                             +-NOTPUSHLIKE-----+
+                             +-NOTMULTILINE----+
+                             +-NOTNOTIFY-------+
+                             +-NOTFLAT---------+
 
 
 ]]>
 </programlisting>
 
 <para>The Style= method changes the style of the associated
-button control.</para>
+button control.
+<note><title>Note</title><para>
+  In the past, the documentation for this method was incomplete or misleading.
+  There are really two aspects to a button, its type (or kind) and its style.
+  Many of the button styles only have meaning within the same type of button.
+  These styles can not be applied to a button of a different type after the
+  button has been created.
+<para>
+  For instance, the AUTOCHECKBOX style can only be applied to a check box type
+  of button.  Trying to give this style to a radio type button has no effect.
+  Because of this, certain of the style key words have no effect.  They are
+  listed here only because they were listed in previous versions of the
+  documentation.  This may have lead someone to use the key word in their code.
+  An example is the GROUPBOX key word. The group box type of button only has one
+  style. This style can not be applied to any other type of button, so setting
+  the style of any button to GROUPBOX has no effect, and has never had any
+  effect.
+</para>
+<para>
+  However, within each type of button, the styles that apply to that type of
+  button can be changed.  For instance, a check box type of button that has the
+  3STATE style, can be changed to have the AUTOCHECKBOX style or to have the
+  AUTO3STATE style.
+</para>
+</para></note>
+</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The only argument is:
 <variablelist>
 <varlistentry><term>new_Style</term>
-<listitem><para>A text string that contains one of the following keywords:
+<listitem><para>A text string containing at least one or more of the following
+  keywords.  Common sense should be used when constructing the new_Style string.
+  If mutually exclusive key words are used, the outcome will be dependent on the
+  order of the key words.
 <variablelist>
 <varlistentry><term>DEFPUSHBUTTON</term>
-<listitem><para>A default push button that is pushed when the Enter key is pressed.
+<listitem><para>In a dialog, the default push button is the button that is
+  pushed when the Enter key is pressed.  Changing the default push button will
+  change the behavior of the dialog when the user presses the enter key.
 </para></listitem></varlistentry>
-<varlistentry><term>CHECKBOX</term>
-<listitem><para>A check box the state of which has to be maintained by the program.
-</para></listitem></varlistentry>
-<varlistentry><term>AUTOCHECKBOX</term>
-<listitem><para>A check box the check state of which toggles between checked and unchecked
-each time the user selects the check box.
+<varlistentry><term>PUSHBOX</term>
+<listitem><para>A push button that does not display the button face or border,
+  only the text appears.  This button style is not applicable when Windows
+  themes are in use.
 </para></listitem></varlistentry>
 <varlistentry><term>RADIOBUTTON</term>
-<listitem><para>A radio button the state of which has to be maintained by the program.
+<listitem><para>A radio button the state of which has to be maintained by the
+  programmer.
 </para></listitem></varlistentry>
 <varlistentry><term>AUTORADIOBUTTON</term>
-<listitem><para>A radio button that sets the check state of the button to checked and
-the check state for all other buttons in the same group to unchecked each
-time the user selects this radio button.
+<listitem><para>A radio button where the operating system maintains the check
+state for all radio buttons in the same group.  When one radio button in the
+group is checked by the user, the operating system unchecks all other buttons in
+the group.
+</para></listitem></varlistentry>
+<varlistentry><term>CHECKBOX</term>
+<listitem><para>A check box where the state has to be maintained by the
+  programmer.  The state can only be checked or unchecke.
+</para></listitem></varlistentry>
+<varlistentry><term>AUTOCHECKBOX</term>
+<listitem><para>A check box where the operating system maintains the check state
+  for the programmer.
 </para></listitem></varlistentry>
 <varlistentry><term>3STATE</term>
-<listitem><para>A button that is equal to a check box except that the check box can
-be grayed as well as checked or unchecked.
+<listitem><para>A check box button that has a grayed state as well as checked or
+unchecked.  The greyed state shows that the check state of the button is not
+determined.  The programmer needs to manage the state of the button when it is
+clicked.
 </para></listitem></varlistentry>
 <varlistentry><term>AUTO3STATE</term>
-<listitem><para>A button that is equal to a three-state check box except that the check
-box changes its state when the user selects it. The state cycles through checked,
-grayed, and unchecked.
+<listitem><para>A check box button that is the same as a three-state check box
+except that the the operating system maintains the check state for the
+programmer.
 </para></listitem></varlistentry>
 <varlistentry><term>GROUPBOX</term>
-<listitem><para>A rectangle in which other controls can be grouped. A label is displayed
-in the upper left corner of the rectangle.
+<listitem><para>This key word has no effect.
 </para></listitem></varlistentry>
 <varlistentry><term>OWNERDRAW</term>
-<listitem><para>An owner-drawn button that can be used to display a bitmap or graphics.
-If none of the previous values is specified, the push-button style is set
-for the associated button control.
+<listitem><para>This key word has no effect.
+</para></listitem></varlistentry>
+<varlistentry><term>LEFTTEXT</term>
+<listitem><para>Places the text on the left of the button for a radio button or
+  check box.
+</para></listitem></varlistentry>
+<varlistentry><term>RIGHTBUTTON</term>
+<listitem><para>This key word is synonomous with LEFTTEXT.
+</para></listitem></varlistentry>
+<varlistentry><term>NOTLEFTTEXT</term>
+<listitem><para>Removes the LEFTTEXT style.
+</para></listitem></varlistentry>
+<varlistentry><term>TEXT</term>
+<listitem><para>The button displays text.
+</para></listitem></varlistentry>
+<varlistentry><term>ICON</term>
+<listitem><para>The button displays an icon image.
+</para></listitem></varlistentry>
+<varlistentry><term>BITMAP</term>
+<listitem><para>The button displays a bitmap image.
+</para></listitem></varlistentry>
+<varlistentry><term>LEFT</term>
+<listitem><para>The button has its text left-justified in the button rectangle.
+</para></listitem></varlistentry>
+<varlistentry><term>RIGHT</term>
+<listitem><para>The button has its text right-justified in the button rectangle.
+</para></listitem></varlistentry>
+<varlistentry><term>HCENTER</term>
+<listitem><para>The button has its text centered horizontally in the button
+  rectangle.
+</para></listitem></varlistentry>
+<varlistentry><term>TOP</term>
+<listitem><para>The text is placed at the top of the button rectangle.
+</para></listitem></varlistentry>
+<varlistentry><term>BOTTOM</term>
+<listitem><para>The text is placed at the bottom of the button rectangle.
+</para></listitem></varlistentry>
+<varlistentry><term>VCENTER</term>
+<listitem><para>The text is vertically centered in the button rectanble.
+</para></listitem></varlistentry>
+<varlistentry><term>PUSHLIKE</term>
+<listitem><para>Causes a radio button or check box button to behave like a push
+  button.
+</para></listitem></varlistentry>
+<varlistentry><term>MULTILINE</term>
+<listitem><para>Causes the text for a button to wrap to multiple lines if the
+  text is too long for the width of the button.
+</para></listitem></varlistentry>
+<varlistentry><term>NOTIFY</term>
+<listitem><para>Enables a button to send the kill focus and set focus messages.
+  See the<link linkend="connectbuttonnotify">ConnectButtonNotify</link> method
+  of the <link linkend="mesextcl">MessageExtensions Class</link>.
+</para></listitem></varlistentry>
+<varlistentry><term>FLAT</term>
+<listitem><para>Gives the button a flat appearance.  This style is not
+  applicable when Windows themes are in effect.
+</para></listitem></varlistentry>
+<varlistentry><term>NOTPUSHLIKE</term>
+<listitem><para>Removes the push like style.
+</para></listitem></varlistentry>
+<varlistentry><term>NOTMULTILINE</term>
+<listitem><para>Removes the multi-line style.
+</para></listitem></varlistentry>
+<varlistentry><term>NOTNOTIFY</term>
+<listitem><para>Removes the notify style.
+</para></listitem></varlistentry>
+<varlistentry><term>NOTFLAT</term>
+<listitem><para>Removes the flat style.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<varlistentry><term><emphasis role="bold">Example 1:</emphasis></term>
 <listitem><para>The following example makes the OK button the default button:
 <programlisting>
 <![CDATA[
 button = MyDialog~GetButtonControl("IDOK")
 if button == .Nil then return
 button~Style="DEFPUSHBUTTON"
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example 2:</emphasis></term>
+<listitem><para>This example changes the text of a check box button depending on
+  the state another check box.  When the button text is long, the multi-line
+  style is added and the placement of the text in relation to the button
+  rectangle is changed.  When the text is short, the button style is set back to
+  the default style.
+<programlisting> <![CDATA[
+::method idCheckOne
+  use arg wParam, lParam
+
+  id = .DlgUtil~loWord(wParam)
+  if self~getCheckControl(id)~checked then do
+    chkButton = self~getCheckControl(IDC_CHECK_TWO)
+    chkButton~style = "MULTILINE TOP HCENTER"
+    chkButton~setTitle("Use IPv6 not IPv4 during this connection")
+  end
+  else do
+    chkButton = self~getCheckControl(IDC_CHECK_TWO)
+    chkButton~style = "NOTMULTILINE VCENTER LEFT"
+    chkButton~setTitle("Connect")
+  end
+
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
