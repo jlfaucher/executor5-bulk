@@ -85,15 +85,15 @@ static void signal_func_0(GtkWidget *window,
 RexxMethod2(int,                       // Return type
             GrxTextBufferNew,          // Object_method name
             OSELF, self,               // Self
-            OPTIONAL_RexxObjectPtr, rxptr) // buffer pointer
+            OPTIONAL_POINTER, rxptr)   // buffer pointer
 {
     GtkTextBuffer       *myBuffer;
 
-    if (rxptr == NULL || rxptr == context->Nil()) {
+    if (rxptr == NULL) {
         myBuffer = gtk_text_buffer_new(NULL);
     }
     else {
-        myBuffer = (GtkTextBuffer *)context->PointerValue((RexxPointerObject)rxptr);
+        myBuffer = (GtkTextBuffer *)rxptr;
     }
 
     // Save ourself
@@ -241,7 +241,7 @@ RexxMethod3(POINTER,                   // Return type
             logical_t, flag)           // Position boolean
 {
     gboolean            found;
-    GtkTextIter         start, begin, end, *retiter;
+    GtkTextIter         start, begin, end;
     GtkTextMark         *mark;
 
     if (flag) {
@@ -256,7 +256,7 @@ RexxMethod3(POINTER,                   // Return type
     found = gtk_text_iter_forward_search(&start, text, GTK_TEXT_SEARCH_TEXT_ONLY,
                                          &begin, &end, NULL);
     if (found) {
-        return gtk_text_iter_copy(&begin);
+        return gtk_text_iter_copy(&end);
     }
     return NULL;
 }
@@ -275,7 +275,7 @@ RexxMethod3(POINTER,                   // Return type
 RexxMethod2(POINTER,                   // Return type
             GrxTextBufferForwardSearchNext, // Object_method name
             CSTRING, text,             // Search text
-            RexxObjectPtr, rxiter)     // The iter returned from the last call
+            POINTER, rxiter)           // The iter returned from the last call
 {
     GtkTextIter *start = (GtkTextIter *)rxiter;
     GtkTextIter         begin, end, *retiter;
@@ -287,7 +287,7 @@ RexxMethod2(POINTER,                   // Return type
                                          &begin, &end, NULL);
     gtk_text_iter_free(start);
     if (found) {
-        return gtk_text_iter_copy(&begin);
+        return gtk_text_iter_copy(&end);
     }
     return NULL;
 }

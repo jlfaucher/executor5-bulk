@@ -249,9 +249,9 @@ RexxMethod3(int,                       // Return type
 RexxMethod2(int,                       // Return type
             GrxVBoxNewFromPtr,         // Object_method name
             OSELF, self,               // Self
-            RexxObjectPtr, rxptr)      // Vbox pointer
+            POINTER, rxptr)            // Vbox pointer
 {
-    GtkVBox *vbox = (GtkVBox *)context->PointerValue((RexxPointerObject)rxptr);
+    GtkVBox *vbox = (GtkVBox *)rxptr;
 
     // Save ourself
     context->SetObjectVariable("CSELF", context->NewPointer(vbox));
@@ -272,9 +272,9 @@ RexxMethod2(int,                       // Return type
 RexxMethod2(int,                       // Return type
             GrxVBoxNewFromPointer,     // Object_method name
             OSELF, self,               // Self
-            RexxObjectPtr, ptr)        // The pointer
+            POINTER, ptr)              // The pointer
 {
-    GtkWidget *myWidget = (GtkWidget *)context->PointerValue((RexxPointerObject)ptr);
+    GtkWidget *myWidget = (GtkWidget *)ptr;
 
     // Save ourself
     context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
@@ -321,9 +321,9 @@ RexxMethod3(int,                       // Return type
 RexxMethod2(int,                       // Return type
             GrxHBoxNewFromPtr,         // Object_method name
             OSELF, self,               // Self
-            RexxObjectPtr, rxptr)      // Homogeneous boolean
+            POINTER, rxptr)            // Homogeneous boolean
 {
-    GtkVBox *hbox = (GtkVBox *)context->PointerValue((RexxPointerObject)rxptr);
+    GtkVBox *hbox = (GtkVBox *)rxptr;
 
     // Save ourself
     context->SetObjectVariable("CSELF", context->NewPointer(hbox));

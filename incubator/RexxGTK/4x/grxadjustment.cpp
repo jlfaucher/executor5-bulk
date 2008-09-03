@@ -128,9 +128,9 @@ RexxMethod7(int,                       // Return type
 RexxMethod2(int,                       // Return type
             GrxAdjustmentNewFromPtr,   // Object_method name
             OSELF, self,               // Self
-            RexxObjectPtr, rxptr)      // Widget pointer
+            POINTER, rxptr)            // Widget pointer
 {
-    GtkAdjustment *adj = (GtkAdjustment *)context->PointerValue((RexxPointerObject)rxptr);
+    GtkAdjustment *adj = (GtkAdjustment *)rxptr;
 
     // Save ourself
     context->SetObjectVariable("CSELF", context->NewPointer(adj));

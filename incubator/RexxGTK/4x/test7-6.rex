@@ -100,6 +100,7 @@ buffer = self~user_data[2]~get_buffer()
 
 iter = buffer~forward_search(find, .true)
 do while iter <> .nil
+   say iter
    i = i + 1
    iter = buffer~forward_search_next(find, iter)
 end

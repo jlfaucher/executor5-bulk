@@ -1661,7 +1661,7 @@ return .GtkSpinButton~new(p1, p2, p3)
 
 ::METHOD init
 use strict arg p1, p2, p3
-if p1~isa('GtkAdjustment') then self~init_3args(p1, p2, p3)
+if p1~isInstanceOf(.GtkAdjustment) then self~init_3args(p1, p2, p3)
 else self~init_range(p1, p2, p3)
 return
 

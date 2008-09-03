@@ -67,14 +67,14 @@
 RexxMethod2(int,                       // Return type
             GrxGSListNew,              // Routine name
             OSELF, self,               // Self
-            OPTIONAL_RexxObjectPtr, ptr) // List head
+            OPTIONAL_POINTER, ptr)     // List head
 {
 
-    if (ptr == context->Nil()) {
+    if (ptr == NULL) {
         context->SetObjectVariable("CSELF", context->NewPointer(NULL));
     }
     else {
-        GSList * head = (GSList *)context->PointerValue((RexxPointerObject)ptr);
+        GSList * head = (GSList *)ptr;
         context->SetObjectVariable("CSELF", context->NewPointer(head));
     }
     return 0;
@@ -170,9 +170,9 @@ RexxMethod3(int,                       // Return type
  **/
 RexxMethod1(RexxObjectPtr,             // Return type
             GrxGSListItem,             // Routine name
-            RexxObjectPtr, rxptr)      // Pointer to the item
+            POINTER, rxptr)            // Pointer to the item
 {
-    GSList *item = (GSList *)context->PointerValue((RexxPointerObject)rxptr);
+    GSList *item = (GSList *)rxptr;
 
     return context->NewStringFromAsciiz((char *)item->data);
 }
@@ -184,14 +184,14 @@ RexxMethod1(RexxObjectPtr,             // Return type
  *
  * @return        Zero
  **/
-RexxMethod1(RexxObjectPtr,             // Return type
+RexxMethod1(POINTER,                   // Return type
             GrxGSListFirst,            // Routine name
             CSELF, self)               // GTK self
 {
     if (self == NULL) {
         return context->Nil();
     }
-    return (RexxObjectPtr)context->NewPointer(self);
+    return self;
 }
 
 /**
@@ -201,16 +201,16 @@ RexxMethod1(RexxObjectPtr,             // Return type
  *
  * @return        Zero
  **/
-RexxMethod1(RexxObjectPtr,             // Return type
+RexxMethod1(POINTER,                   // Return type
             GrxGSListNext,             // Routine name
-            RexxObjectPtr, rxptr)      // Routine name
+            POINTER, rxptr)            // Routine name
 {
-    GSList *item = (GSList *)context->PointerValue((RexxPointerObject)rxptr);
+    GSList *item = (GSList *)rxptr;
 
     if (item->next == NULL) {
         return context->Nil();
     }
-    return (RexxObjectPtr)context->NewPointer(item->next);
+    return item->next;
 }
 
 
@@ -318,13 +318,13 @@ RexxMethod3(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod1(RexxObjectPtr,             // Return type
+RexxMethod1(POINTER,                   // Return type
             GrxGListItem,              // Routine name
-            RexxObjectPtr, rxptr)      // Pointer to the item
+            POINTER, rxptr)            // Pointer to the item
 {
-    GList *item = (GList *)context->PointerValue((RexxPointerObject)rxptr);
+    GList *item = (GList *)rxptr;
 
-    return context->NewStringFromAsciiz((char *)item->data);
+    return item->data;
 }
 
 
@@ -352,15 +352,15 @@ RexxMethod1(RexxObjectPtr,             // Return type
  *
  * @return        Zero
  **/
-RexxMethod1(RexxObjectPtr,             // Return type
+RexxMethod1(POINTER,                   // Return type
             GrxGListNext,              // Routine name
-            RexxObjectPtr, rxptr)      // Routine name
+            POINTER, rxptr)            // Routine name
 {
-    GList *item = (GList *)context->PointerValue((RexxPointerObject)rxptr);
+    GList *item = (GList *)rxptr;
 
     if (item->next == NULL) {
         return context->Nil();
     }
-    return (RexxObjectPtr)context->NewPointer(item->next);
+    return item->next;
 }
 
