@@ -3165,8 +3165,8 @@ return GrxGetHostName()
 use strict arg
 ptr = self~head
 list = .Array~new()
-if ptr = .Nil then return list
-do while ptr <> .Nil
+if \ptr~isNull() then return list
+do while \ptr~isNull()
    list~append(GrxGSListItem(ptr))
    ptr = GrxGSListNext(ptr)
    end
@@ -3194,8 +3194,8 @@ return list
 use strict arg
 ptr = self~head
 list = .Array~new()
-if ptr = .Nil then return list
-do while ptr <> .Nil
+if \ptr~isNull() then return list
+do while \ptr~isNull()
    list~append(GrxGSListItem(ptr))
    ptr = GrxGListNext(ptr)
    end

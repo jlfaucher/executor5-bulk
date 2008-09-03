@@ -246,7 +246,7 @@ if dialog~dialog_run() = .gtk~GTK_RESPONSE_OK then do
    model = treeview~get_model()
    iter = model~get_iter_from_string('0');
 
-   do while iter <> .nil
+   do while \iter~isNull()
       name = model~get_value(iter, PRODUCT)
       if name = cat then leave
       iter = model~iter_next(iter)
