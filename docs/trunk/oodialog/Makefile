@@ -48,11 +48,9 @@ HTML_STYLESHEET = /usr/share/sgml/docbook/dsssl-stylesheets/html/docbook.dsl \
 
 
 SGML_FILES = advcntlc.sgml \
-	     anibut.sgml \
 	     basedialog.sgml \
-	     buttoncontrolc.sgml \
+	     buttoncontrols.sgml \
 	     categorydialog.sgml \
-	     checkboxc.sgml \
 	     comboboxc.sgml \
 	     dialogcontrolc.sgml \
 	     editcontrolc.sgml \
@@ -65,7 +63,6 @@ SGML_FILES = advcntlc.sgml \
 	     preface.sgml \
 	     progressbarc.sgml \
 	     propertysheetc.sgml \
-	     radiobuttonc.sgml \
 	     reference.sgml \
 	     resdialog.sgml \
 	     scrollbarc.sgml \
