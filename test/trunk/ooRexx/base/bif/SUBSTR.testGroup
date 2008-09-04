@@ -140,7 +140,10 @@ return testResult
 
 ::method 'test018'
     self~expectSyntax(40.12)
-    xre = subStr('hasdghj',1E10)
+    if digits() == 9 then
+        xre = subStr('hasdghj',1E10)
+    else
+        xre = subStr('hasdghj',1E19)
 
 ::method 'test019'
     self~expectSyntax(40.12)
