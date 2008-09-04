@@ -126,6 +126,7 @@ return testResult
    self~assertSame((12345/3)~bitand, '4115')
 
 ::method "test_17"
+   numeric digits 9
    self~assertSame((1E-122/7)~bitand, '1.42857143E-123')
 
 ::method "test_18"
@@ -184,9 +185,11 @@ return testResult
    self~assertSame((17+4)~bitand(99+0), '01')
 
 ::method "test_34"
+   numeric digits 9
    self~assertSame((12345/3)~bitand(3/12345), '3020'x||'000243013366')
 
 ::method "test_35"
+   numeric digits 9
    self~assertSame((1E-122/7)~bitand(1e+122/7), '1.42857143E'||'29'x||'121')
 
 ::method "test_36"
@@ -276,6 +279,7 @@ return testResult
    self~assertSame((12345/3)~bitand(,10/2), '34313135'x)
 
 ::method "test_61"
+   numeric digits 9
    self~assertSame((1E-122/7)~bitand(,9+12-20), '312030303031313130310121313031'x)
 
 ::method "test_62"
@@ -385,6 +389,7 @@ return testResult
    self~assertSame((17+4)~bitand(99+0,1+1), '01')
 
 ::method "test_90"
+   numeric digits 9
    self~assertSame((12345/3)~bitand(3/12345,8/2), '3020303030303430303030303434'x)
 
 ::method "test_91"

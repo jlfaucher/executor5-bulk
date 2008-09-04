@@ -121,6 +121,7 @@ return testResult
    self~assertSame((12345/3)~bitor, '4115')
 
 ::method "test_16"
+   numeric digits 9
    self~assertSame((1E-122/7)~bitor, '1.42857143E-123')
 
 ::method "test_17"
@@ -206,9 +207,11 @@ return testResult
    self~assertSame((17+4)~bitor(99+0), '3B39'X)
 
 ::method "test_41"
+   numeric digits 9
    self~assertSame((12345/3)~bitor(3/12345), '343F313530323433303133333636'X)
 
 ::method "test_42"
+   numeric digits 9
    self~assertSame((1E-122/7)~bitor(1e+122/7), '1.42857143E/123')
 
 ::method "test_43"
@@ -311,6 +314,7 @@ return testResult
    self~assertSame((12345/3)~bitor(,10/2), '5555')
 
 ::method "test_71"
+   numeric digits 9
    self~assertSame((1E-122/7)~bitor(,9+12-20), 1'3F3533393537313533753D313333'X)
 
 ::method "test_72"
@@ -418,6 +422,7 @@ return testResult
    self~assertSame((17+4)~bitor(99+0,1+1), '3B39'X)
 
 ::method "test_100"
+   numeric digits 9
    self~assertSame((12345/3)~bitor(3/12345,8/2), '343f313534363437343537373636'X)
 
 ::method "test_101"
