@@ -185,6 +185,7 @@ return testResult
     self~assertSame(mb~length(),(17+4)~length())
 
 ::method 'test019'
+    numeric digits 9
     mb = .mutablebuffer~new(+10000000000000000000000000000000000)
     self~assertSame('14', mb~length())
     self~assertSame(mb~length(),(+10000000000000000000000000000000000)~length())
@@ -196,6 +197,7 @@ return testResult
 
 ::method 'test021'
     len1 = 1
+    numeric digits 9
     mb = .mutablebuffer~new(1.0000000001**1000000)
     self~assertSame(len1, mb~length())
     self~assertSame(mb~length(),1.0000000001**1000000~length())

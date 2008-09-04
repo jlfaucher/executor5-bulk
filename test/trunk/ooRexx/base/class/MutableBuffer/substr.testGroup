@@ -178,7 +178,10 @@ return testResult
 ::method 'test018'
     self~expectSyntax(93.924)
     mb = .mutablebuffer~new('hasdghj')
-    xre = mb~substr(1E10)
+    if digits() == 9 then
+       xre = mb~substr(1E10)
+    else
+       xre = mb~substr(1E19)
 
 ::method 'test019'
     self~expectSyntax(93.924)
