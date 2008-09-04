@@ -141,14 +141,13 @@ return testResult
     self~assertSame('2', length(17+4))
 
 ::method 'test019'
-    self~assertSame('14', length(+10000000000000000000000000000000000))
+    if digits() == 9 then
+        self~assertSame('14', length(+10000000000000000000000000000000000))
+    else
+        self~assertSame('23', length(+10000000000000000000000000000000000))
 
 ::method 'test020'
     self~assertSame('36', length('+10000000000000000000000000000000000'))
-
-::method 'test021'
-    len1 = 1
-    self~assertSame(len1, length(1.0000000001**1000000))
 
 ::method 'test022'
     self~assertSame('4', length(1111))
