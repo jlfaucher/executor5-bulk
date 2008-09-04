@@ -109,9 +109,11 @@ return testResult
     self~assertSame('3210987654321', reverse(1234567890123))
 
 ::method 'test011'
+    numeric digits 9
     self~assertSame('31+E98765432.1', reverse(+12345678901234))
 
 ::method 'test012'
+    numeric digits 9
     self~assertSame('31+E98765432.1-', reverse(-12345678901234))
 
 ::method 'test013'
