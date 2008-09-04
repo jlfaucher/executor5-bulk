@@ -124,10 +124,7 @@ return testResult
    self~assertSame(bitand(17+4), '21')
 
 ::method "test_16"
-   self~assertSame(bitand(12345/3), '4115')
-
-::method "test_17"
-   self~assertSame(bitand(1E-122/7), '1.42857143E-123')
+   self~assertSame(bitand('1.42857143E-123'), '1.42857143E-123')
 
 ::method "test_18"
    self~assertSame(bitand(SUBSTR('FFFFFF FF'X,3,1)), 'ff'x)
@@ -185,10 +182,10 @@ return testResult
    self~assertSame(bitand(17+4,99+0), '01')
 
 ::method "test_34"
-   self~assertSame(bitand(12345/3,3/12345), '3020'x||'000243013366')
+   self~assertSame(bitand(4115,0.000243013366), '3020'x||'000243013366')
 
 ::method "test_35"
-   self~assertSame(bitand(1E-122/7,1e+122/7), '1.42857143E'||'29'x||'121')
+   self~assertSame(bitand(1.42857143E-123,1.42857143E+121), '1.42857143E'||'29'x||'121')
 
 ::method "test_36"
    self~assertSame(bitand(SUBSTR('FFFFFF FF'X,3,1),delstr('4567',2,2)), '47')
@@ -277,7 +274,7 @@ return testResult
    self~assertSame(BITAND(12345/3,,10/2), '34313135'x)
 
 ::method "test_61"
-   self~assertSame(BITAND(1E-122/7,,9+12-20), '312030303031313130310121313031'x)
+   self~assertSame(BITAND(1.42857143E-123,,9+12-20), '312030303031313130310121313031'x)
 
 ::method "test_62"
    self~assertSame(BITAND(SUBSTR('FFFFFF FF'X,3,1),,'.'), '.')
@@ -386,7 +383,7 @@ return testResult
    self~assertSame(BITAND(17+4,99+0,1+1), '01')
 
 ::method "test_90"
-   self~assertSame(BITAND(12345/3,3/12345,8/2), '3020303030303430303030303434'x)
+   self~assertSame(BITAND(4115,0.000243013366,8/2), '3020303030303430303030303434'x)
 
 ::method "test_91"
    self~expectSyntax(40.23)
