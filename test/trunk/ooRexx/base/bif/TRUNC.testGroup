@@ -126,13 +126,19 @@ return testResult
     xre = trunc('AB.CD')
 
 ::method 'test015'
+    numeric digits 9
     self~assertSame(102939, trunc(102938.999999))
+    numeric digits 18
+    self~assertSame(102939, trunc(102938.999999999999999))
 
 ::method 'test016'
     self~assertSame(0, trunc(.1111111111))
 
 ::method 'test017'
+    numeric digits 9
     self~assertSame(1, trunc(.9999999999))
+    numeric digits 18
+    self~assertSame(1, trunc(.9999999999999999999))
 
 ::method 'test018'
     self~assertSame(255, trunc('  000255  ','30'x))
@@ -141,12 +147,15 @@ return testResult
     self~assertSame(256.00000, trunc(.000256E+6,' 5 '))
 
 ::method 'test020'
+    numeric digits 9
     self~assertSame(32768.32770, trunc(.3276832768E+5,.005E+3))
 
 ::method 'test021'
+    numeric digits 9
     self~assertSame(65536.6554000000, trunc(65536.65536,.v10))
 
 ::method 'test022'
+    numeric digits 9
     self~assertSame(65536.65540000000000000000, trunc(65536.65536,.v10*2))
 
 ::method 'test023'
@@ -157,10 +166,16 @@ return testResult
     self~assertSame(65536.65, trunc(          65536.65536       ,   2                   ))
 
 ::method 'test025'
+    numeric digits 9
     self~assertSame(0.1111111110, trunc(.1111111111,.v10))
+    numeric digits 18
+    self~assertSame(0.1111111111111111110, trunc(.1111111111111111111,19))
 
 ::method 'test026'
+    numeric digits 9
     self~assertSame('1.'||copies('0',42), trunc(.9999999999,.v10+32))
+    numeric digits 18
+    self~assertSame('1.'||copies('0',42), trunc(.9999999999999999999,.v10+32))
 
 ::method 'test027'
     numeric digits 10
@@ -182,6 +197,7 @@ return testResult
 
 ::method 'test032'
     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = copies('3',100000)
+    numeric digits 9
     self~assertSame(copies('3',9)||copies('0',99991)||'.000000000000000', trunc(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX,15))
 
 ::method 'test033'
