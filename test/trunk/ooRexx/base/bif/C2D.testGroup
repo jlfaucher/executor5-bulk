@@ -309,7 +309,8 @@ return testResult
 
 ::method "test_58"
    self~expectSyntax(93.936)
-   self~assertSame(C2D(nv.10), '336453316912')
+   numeric digits 18
+   self~assertSame(C2D(nv.10.nv.10), 336453316912)
 
 ::method "test_59"
    NUMERIC DIGITS 5000
@@ -323,7 +324,9 @@ return testResult
 
 ::method "test_62"
    self~expectSyntax(93.936)
+   numeric digits 9
    self~assertSame(C2D(nv.10), 336453316912)
+
 
 ::method "test_63"
    NUMERIC DIGITS 5000
