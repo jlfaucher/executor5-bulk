@@ -81,22 +81,34 @@ return testResult
     self~assertSame('1', min(1,1.00))
 
 ::method 'test003'
+    numeric digits 9
     self~assertSame('12345678.0', min(12345678.00, 12345678))
+    numeric digits 18
+    self~assertSame('12345678999999999.0', min(12345678999999999.00, 123456789999999999))
 
 ::method 'test004'
     self~assertSame('12345678', min(12345678, 12345678.00))
 
 ::method 'test005'
+    numeric digits 9
     self~assertSame(12345679, min(12345679, 12345678.96))
+    numeric digits 18
+    self~assertSame(12345679999999999, min(12345679999999999, 12345679999999998.96))
 
 ::method 'test006'
+    numeric digits 9
     self~assertSame('-12345678.0', min('-12345678.00', -12345678))
+    numeric digits 18
+    self~assertSame('-12345678999999999.0', min('-12345678999999999.00', -12345678999999999))
 
 ::method 'test007'
     self~assertSame('-12345678', min(-12345678, '-12345678.00'))
 
 ::method 'test008'
+    numeric digits 9
     self~assertSame(-12345679.0, min('-12345678.96', -12345679))
+    numeric digits 18
+    self~assertSame(-12345679999999999.0, min('-12345679999999998.96', -12345679999999999))
 
 -- from bif.testgroup
    -- test the BIF, using examples from the documentation
