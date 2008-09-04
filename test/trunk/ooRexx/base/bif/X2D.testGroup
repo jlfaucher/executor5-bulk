@@ -96,19 +96,43 @@ return testResult
 
 ::method 'test006'
     self~expectSyntax(93.935)
+    numeric digits 9
     xre = x2d('1123456789')
+
+::method 'test006b'
+    self~expectSyntax(93.935)
+    numeric digits 18
+    xre = x2d('1123456789999999999')
 
 ::method 'test007'
     self~expectSyntax(93.935)
+    numeric digits 9
     xre = x2d('11 23 4567 89')
+
+::method 'test007b'
+    self~expectSyntax(93.935)
+    numeric digits 18
+    xre = x2d('11 23 4567 89 99 99 99 99')
 
 ::method 'test008'
     self~expectSyntax(93.935)
+    numeric digits 9
     xre = x2d('123456789')
+
+::method 'test008b'
+    self~expectSyntax(93.935)
+    numeric digits 18
+    xre = x2d('123456789999999999')
 
 ::method 'test009'
     self~expectSyntax(93.935)
+    numeric digits 9
     xre = x2d('1 23 4567 89')
+
+::method 'test009b'
+    self~expectSyntax(93.935)
+    numeric digits 18
+    xre = x2d('1 23 4567 89 99 99 99 99')
 
 ::method 'test010'
     self~assertSame('1893', x2d('765'))
