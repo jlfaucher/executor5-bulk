@@ -136,7 +136,10 @@ return testResult
 
 ::method 'test16'
     self~expectSyntax(40.12)
-    r = delStr('hasdghj',1E10)
+    if digits() == 9 then
+        r = delStr('hasdghj',1E10)
+    else
+        r = delStr('hasdghj',1E19)
 
 ::method 'test17'
     self~expectSyntax(40.12)
