@@ -118,15 +118,24 @@ return testResult
 
 ::method 'test016'
     self~expectSyntax(93.943)
-    xre = '-1.0e-999999999'~sign()
+    if digits() == 9 then
+        xre = '-1.0e-999999999'~sign()
+    else
+        xre = '-1.0e-999999999999999999'~sign()
 
 ::method 'test017'
     self~expectSyntax(93.943)
-    xre = '0.1e-999999999'~sign()
+    if digits() == 9 then
+        xre = '0.1e-999999999'~sign()
+    else
+        xre = '0.1e-999999999999999999'~sign()
 
 ::method 'test018'
     self~expectSyntax(93.943)
-    xre = '0.1e-9999999999'~sign()
+    if digits() == 9 then
+        xre = '0.1e-9999999999'~sign()
+    else
+        xre = '0.1e-9999999999999999999'~sign()
 
 ::method 'test019'
     self~expectSyntax(93.943)
@@ -141,7 +150,10 @@ return testResult
 
 ::method 'test022'
     self~expectSyntax(93.943)
-    xre = -0.1e-999999999~sign()
+    if digits() == 9 then
+        xre = -0.1e-999999999~sign()
+    else
+        xre = -0.1e-999999999999999999~sign()
 
 ::method 'test023'
     self~assertSame('1', "123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789"~sign())
@@ -186,18 +198,21 @@ return testResult
     self~assertSame(-1, (17-21)~sign)
 
 ::method 'test034'
+    numeric digits 9
     self~assertSame(0, (17+4-21.000000000000005)~sign)
 
 ::method 'test035'
     self~assertSame('-1', (0.999999995-1)~sign)
 
 ::method 'test036'
+    numeric digits 9
     self~assertSame('0', (0.999999996-1)~sign)
 
 ::method 'test037'
     self~assertSame('0', (1.000000000-1)~sign)
 
 ::method 'test038'
+    numeric digits 9
     self~assertSame('0', (1.000000004-1)~sign)
 
 ::method 'test039'

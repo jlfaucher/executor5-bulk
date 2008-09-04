@@ -304,7 +304,7 @@ return testResult
     rarray~append('000000000C')
 
     do i = 1 to sarray~items
-        self~assertSame(rarray[i], dts(sarray[i]))
+        self~assertSame(i rarray[i], i dts(sarray[i]))
     end
 
 ::method 'test04'  -- Additional tests added by Lee
@@ -511,7 +511,10 @@ return erg
     self~assertTrue('-1'   ~datatype('9'))
     self~assertTrue('12345' ~datatype('9')) -- ?
     self~assertTrue('1E3'   ~datatype('9')) -- ?
-    self~assertFalse('1E9'  ~datatype('9')) -- ?
+    if digits() == 9 then
+        self~assertFalse('1E9'  ~datatype('9')) -- ?
+    else
+        self~assertFalse('1E18'  ~datatype('9')) -- ?
     numeric digits a
 
 ::method "test_DATATYPE_9"

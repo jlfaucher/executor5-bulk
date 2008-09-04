@@ -308,7 +308,13 @@ return testResult
 
 ::method "test_58"
    self~expectSyntax(93.936)
+   numeric digits 9
    self~assertSame(nv.10~c2d, '336453316912')
+
+::method "test_58b"
+   self~expectSyntax(93.936)
+   numeric digits 18
+   self~assertSame(nv.10.nv.10~c2d, '336453316912')
 
 ::method "test_59"
    NUMERIC DIGITS 5000

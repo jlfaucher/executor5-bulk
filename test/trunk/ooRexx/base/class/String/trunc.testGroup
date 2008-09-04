@@ -122,13 +122,19 @@ return testResult
     xre = 'AB.CD'~trunc()
 
 ::method 'test015'
+    numeric digits 9
     self~assertSame(102939, 102938.999999~trunc())
+    numeric digits 18
+    self~assertSame(102939, 102938.9999999999999999~trunc())
 
 ::method 'test016'
     self~assertSame(0, .1111111111~trunc())
 
 ::method 'test017'
+    numeric digits 9
     self~assertSame(1, .9999999999~trunc())
+    numeric digits 18
+    self~assertSame(1, .9999999999999999999~trunc())
 
 ::method 'test018'
     self~assertSame(255, '  000255  '~trunc('30'x))
@@ -137,12 +143,15 @@ return testResult
     self~assertSame(256.00000, .000256E+6~trunc(' 5 '))
 
 ::method 'test020'
+    numeric digits 9
     self~assertSame(32768.32770, .3276832768E+5~trunc(.005E+3))
 
 ::method 'test021'
+    numeric digits 9
     self~assertSame(65536.6554000000, 65536.65536~trunc(.v10))
 
 ::method 'test022'
+    numeric digits 9
     self~assertSame(65536.65540000000000000000, 65536.65536~trunc(.v10*2))
 
 ::method 'test023'
@@ -153,9 +162,11 @@ return testResult
     self~assertSame(65536.65, (          65536.65536       )~trunc(   2                   ))
 
 ::method 'test025'
+    numeric digits 9
     self~assertSame(0.1111111110, .1111111111~trunc(.v10))
 
 ::method 'test026'
+    numeric digits 9
     self~assertSame('1.'||copies('0',42), .9999999999~trunc(.v10+32))
 
 ::method 'test027'
@@ -178,6 +189,7 @@ return testResult
 
 ::method 'test032'
     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = copies('3',100000)
+    numeric digits 9
     self~assertSame(copies('3',9)||copies('0',99991)||'.000000000000000', XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~trunc(15))
 
 ::method 'test033'

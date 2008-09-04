@@ -132,7 +132,10 @@ return testResult
 
 ::method 'test16'
     self~expectSyntax(93.924)
-    r = 'hasdghj'~delstr(1E10)
+    if digits() == 9 then
+        r = 'hasdghj'~delstr(1E10)
+    else
+        r = 'hasdghj'~delstr(1E19)
 
 ::method 'test17'
     self~expectSyntax(93.924)
