@@ -260,33 +260,43 @@ return testResult
     self~assertSame('123456.78', 123456.78~format(6,2,3,6))
 
 ::method test064
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame('7.65467547E+10', 76546754654.87658765~format())
 
 ::method test065
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame('          7.655E+10', 76546754654.87658765~format(11,3))
 
 ::method test066
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame('          7.6547E+10', 76546754654.87658765~format(11,4))
 
 ::method test067
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame('          7.65468E+10', 76546754654.87658765~format(11,5))
 
 ::method test068
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame('           7.655E+10', 76546754654.87658765~format(12,3))
 
 ::method test069
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame('           7.6547E+10', 76546754654.87658765~format(12,4))
 
 ::method test070
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame('           7.65468E+10', 76546754654.87658765~format(12,5))
 
 ::method test071
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame('            7.655E+10', 76546754654.87658765~format(13,3))
 
 ::method test072
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame('            7.6547E+10', 76546754654.87658765~format(13,4))
 
 ::method test073
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame('            7.65468E+10', 76546754654.87658765~format(13,5))
 
 ::method test074
@@ -494,30 +504,39 @@ return testResult
     self~assertSame('2.2E+7', 22287634.9876~format(1,1,1,1))
 
 ::method test142
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame('22287635.000000000', 22287634.9876~format(8,9,8,9))
 
 ::method test143
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame('22287635.000000000', 22287634.9876~format(8,9,9,9))
 
 ::method test144
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame('22287635.000000000', 22287634.9876~format(8,9,10,9))
 
 ::method test145
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame(' 22287635.000000000', 22287634.9876~format(9,9,8,9))
 
 ::method test146
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame(' 22287635.000000000', 22287634.9876~format(9,9,9,9))
 
 ::method test147
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame(' 22287635.000000000', 22287634.9876~format(9,9,10,9))
 
 ::method test148
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame('  22287635.000000000', 22287634.9876~format(10,9,8,9))
 
 ::method test149
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame('  22287635.000000000', 22287634.9876~format(10,9,9,9))
 
 ::method test150
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame('  22287635.000000000', 22287634.9876~format(10,9,10,9))
 
 ::method test151
@@ -620,84 +639,111 @@ return testResult
     self~assertSame('  1000000000.0000000000000000000000000000000', 999999999.9999999999~format(12,31,30,30))
 
 ::method test184
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame('1000000000.00000000000000000000000000000', 999999999.999999999~format(10,29,30,30))
 
 ::method test185
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame('1000000000.000000000000000000000000000000', 999999999.999999999~format(10,30,30,30))
 
 ::method test186
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame('1000000000.0000000000000000000000000000000', 999999999.999999999~format(10,31,30,30))
 
 ::method test187
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame(' 1000000000.00000000000000000000000000000', 999999999.999999999~format(11,29,30,30))
 
 ::method test188
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame(' 1000000000.000000000000000000000000000000', 999999999.999999999~format(11,30,30,30))
 
 ::method test189
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame(' 1000000000.0000000000000000000000000000000', 999999999.999999999~format(11,31,30,30))
 
 ::method test190
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame('  1000000000.00000000000000000000000000000', 999999999.999999999~format(12,29,30,30))
 
 ::method test191
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame('  1000000000.000000000000000000000000000000', 999999999.999999999~format(12,30,30,30))
 
 ::method test192
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame('  1000000000.0000000000000000000000000000000', 999999999.999999999~format(12,31,30,30))
 
 ::method test193
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame('1000000000.00000000000000000000000000000', 999999999.99999999~format(10,29,30,30))
 
 ::method test194
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame('1000000000.000000000000000000000000000000', 999999999.99999999~format(10,30,30,30))
 
 ::method test195
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame('1000000000.0000000000000000000000000000000', 999999999.99999999~format(10,31,30,30))
 
 ::method test196
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame(' 1000000000.00000000000000000000000000000', 999999999.99999999~format(11,29,30,30))
 
 ::method test197
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame(' 1000000000.000000000000000000000000000000', 999999999.99999999~format(11,30,30,30))
 
 ::method test198
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame(' 1000000000.0000000000000000000000000000000', 999999999.99999999~format(11,31,30,30))
 
 ::method test199
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame('  1000000000.00000000000000000000000000000', 999999999.99999999~format(12,29,30,30))
 
 ::method test200
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame('  1000000000.000000000000000000000000000000', 999999999.99999999~format(12,30,30,30))
 
 ::method test201
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame('  1000000000.0000000000000000000000000000000', 999999999.99999999~format(12,31,30,30))
 
 ::method test202
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame(' 100000000.00000000000000000000000000000', 99999999.99999999~format(10,29,30,30))
 
 ::method test203
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame(' 100000000.000000000000000000000000000000', 99999999.99999999~format(10,30,30,30))
 
 ::method test204
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame(' 100000000.0000000000000000000000000000000', 99999999.99999999~format(10,31,30,30))
 
 ::method test205
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame('  100000000.00000000000000000000000000000', 99999999.99999999~format(11,29,30,30))
 
 ::method test206
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame('  100000000.000000000000000000000000000000', 99999999.99999999~format(11,30,30,30))
 
 ::method test207
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame('  100000000.0000000000000000000000000000000', 99999999.99999999~format(11,31,30,30))
 
 ::method test208
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame('   100000000.00000000000000000000000000000', 99999999.99999999~format(12,29,30,30))
 
 ::method test209
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame('   100000000.000000000000000000000000000000', 99999999.99999999~format(12,30,30,30))
 
 ::method test210
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame('   100000000.0000000000000000000000000000000', 99999999.99999999~format(12,31,30,30))
 
 ::method test211
@@ -1214,9 +1260,11 @@ return testResult
     self~assertSame('123456.780', 123456.78~format(6,3,2,6))
 
 ::method test397
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame('7.65467547E+10', 76546754654.87658765~format())
 
 ::method test398
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame('           7.6547E+10', 76546754654.87658765~format(12,4))
 
 ::method test399
@@ -1400,30 +1448,39 @@ return testResult
     self~assertSame(' 2.23E+7', 22287634.9876~format(2,2,1,1))
 
 ::method test459
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame(' 22287635.00000000', 22287634.9876~format(9,8,9,8))
 
 ::method test460
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame(' 22287635.00000000', 22287634.9876~format(9,8,9,9))
 
 ::method test461
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame(' 22287635.00000000', 22287634.9876~format(9,8,9,10))
 
 ::method test462
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame(' 22287635.000000000', 22287634.9876~format(9,9,9,8))
 
 ::method test463
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame(' 22287635.000000000', 22287634.9876~format(9,9,9,9))
 
 ::method test464
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame(' 22287635.000000000', 22287634.9876~format(9,9,9,10))
 
 ::method test465
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame(' 22287635.0000000000', 22287634.9876~format(9,10,9,8))
 
 ::method test466
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame(' 22287635.0000000000', 22287634.9876~format(9,10,9,9))
 
 ::method test467
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame(' 22287635.0000000000', 22287634.9876~format(9,10,9,10))
 
 ::method test468
@@ -1535,84 +1592,111 @@ return testResult
     self~assertSame(' 1000000000.000000000000000000000000000000', 999999999.9999999999~format(11,30,31,31))
 
 ::method test504
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame(' 1000000000.000000000000000000000000000000', 999999999.999999999~format(11,30,29,29))
 
 ::method test505
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame(' 1000000000.000000000000000000000000000000', 999999999.999999999~format(11,30,29,30))
 
 ::method test506
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame(' 1000000000.000000000000000000000000000000', 999999999.999999999~format(11,30,29,31))
 
 ::method test507
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame(' 1000000000.000000000000000000000000000000', 999999999.999999999~format(11,30,30,29))
 
 ::method test508
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame(' 1000000000.000000000000000000000000000000', 999999999.999999999~format(11,30,30,30))
 
 ::method test509
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame(' 1000000000.000000000000000000000000000000', 999999999.999999999~format(11,30,30,31))
 
 ::method test510
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame(' 1000000000.000000000000000000000000000000', 999999999.999999999~format(11,30,31,29))
 
 ::method test511
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame(' 1000000000.000000000000000000000000000000', 999999999.999999999~format(11,30,31,30))
 
 ::method test512
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame(' 1000000000.000000000000000000000000000000', 999999999.999999999~format(11,30,31,31))
 
 ::method test513
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame(' 1000000000.000000000000000000000000000000', 999999999.99999999~format(11,30,29,29))
 
 ::method test514
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame(' 1000000000.000000000000000000000000000000', 999999999.99999999~format(11,30,29,30))
 
 ::method test515
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame(' 1000000000.000000000000000000000000000000', 999999999.99999999~format(11,30,29,31))
 
 ::method test516
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame(' 1000000000.000000000000000000000000000000', 999999999.99999999~format(11,30,30,29))
 
 ::method test517
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame(' 1000000000.000000000000000000000000000000', 999999999.99999999~format(11,30,30,30))
 
 ::method test518
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame(' 1000000000.000000000000000000000000000000', 999999999.99999999~format(11,30,30,31))
 
 ::method test519
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame(' 1000000000.000000000000000000000000000000', 999999999.99999999~format(11,30,31,29))
 
 ::method test520
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame(' 1000000000.000000000000000000000000000000', 999999999.99999999~format(11,30,31,30))
 
 ::method test521
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame(' 1000000000.000000000000000000000000000000', 999999999.99999999~format(11,30,31,31))
 
 ::method test522
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame('  100000000.000000000000000000000000000000', 99999999.99999999~format(11,30,29,29))
 
 ::method test523
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame('  100000000.000000000000000000000000000000', 99999999.99999999~format(11,30,29,30))
 
 ::method test524
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame('  100000000.000000000000000000000000000000', 99999999.99999999~format(11,30,29,31))
 
 ::method test525
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame('  100000000.000000000000000000000000000000', 99999999.99999999~format(11,30,30,29))
 
 ::method test526
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame('  100000000.000000000000000000000000000000', 99999999.99999999~format(11,30,30,30))
 
 ::method test527
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame('  100000000.000000000000000000000000000000', 99999999.99999999~format(11,30,30,31))
 
 ::method test528
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame('  100000000.000000000000000000000000000000', 99999999.99999999~format(11,30,31,29))
 
 ::method test529
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame('  100000000.000000000000000000000000000000', 99999999.99999999~format(11,30,31,30))
 
 ::method test530
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame('  100000000.000000000000000000000000000000', 99999999.99999999~format(11,30,31,31))
 
 ::method test531
@@ -1769,6 +1853,7 @@ return testResult
     self~assertSame('9.9999999900', 9.99999999~format(1,10,4,5))
 
 ::method test582
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame('1.0000000000E+0001', 9.999999995~format(1,10,4,3))
 
 ::method test583
@@ -1790,12 +1875,15 @@ return testResult
     self~assertSame('9.9999999900', 9.99999999~format(1,10,2,3))
 
 ::method test589
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame('1.0000000000E+01', 9.999999995~format(1,10,2,1))
 
 ::method test590
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame('1.0000000000E+01', 9.999999995~format(1,10,2,2))
 
 ::method test591
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame('1.0000000000E+01', 9.999999995~format(1,10,2,3))
 
 ::method test592
@@ -1817,12 +1905,15 @@ return testResult
     self~assertSame('9.9999999900', 9.99999999~format(1,10,1,2))
 
 ::method test598
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame('1.0000000000E+1', 9.999999995~format(1,10,1,0))
 
 ::method test599
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame('1.0000000000E+1', 9.999999995~format(1,10,1,1))
 
 ::method test600
+    numeric digits 9 -- needs a predictable digits setting
     self~assertSame('1.0000000000E+1', 9.999999995~format(1,10,1,2))
 
 ::method test601
@@ -2341,34 +2432,42 @@ return testResult
 
 ::method test752
     self~expectSyntax(93.942)
+    numeric digits 9 -- needs a predictable digits setting
     xre = 9.999999995~format(1,10,8,7)
 
 ::method test753
     self~expectSyntax(93.942)
+    numeric digits 9 -- needs a predictable digits setting
     xre = 9.999999995~format(1,10,8,8)
 
 ::method test754
     self~expectSyntax(93.942)
+    numeric digits 9 -- needs a predictable digits setting
     xre = 9.999999995~format(1,10,8,9)
 
 ::method test755
     self~expectSyntax(93.942)
+    numeric digits 9 -- needs a predictable digits setting
     xre = 9.999999995~format(1,10,6,5)
 
 ::method test756
     self~expectSyntax(93.942)
+    numeric digits 9 -- needs a predictable digits setting
     xre = 9.999999995~format(1,10,6,6)
 
 ::method test757
     self~expectSyntax(93.942)
+    numeric digits 9 -- needs a predictable digits setting
     xre = 9.999999995~format(1,10,6,7)
 
 ::method test758
     self~expectSyntax(93.942)
+    numeric digits 9 -- needs a predictable digits setting
     xre = 9.999999995~format(1,10,4,4)
 
 ::method test759
     self~expectSyntax(93.942)
+    numeric digits 9 -- needs a predictable digits setting
     xre = 9.999999995~format(1,10,4,5)
 
 ::method test760
