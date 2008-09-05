@@ -78,7 +78,7 @@ return testResult
     sp = '25'~x2d
     objFolder = objShell~nameSpace(sp)
     objFolderItem = objFolder~self
-    self~assertSame(sysSystemDirectory(),objFolderItem~path)
+    self~assertSame(0, sysSystemDirectory()~caselessCompare(objFolderItem~path))
 
 ::method 'testSystem32A'
     self~expectSyntax(40.1)
