@@ -78,16 +78,28 @@ return testResult
    self~assertSame(45.876E-15 / 1, 0.000000000000045876)
 
 ::method "test_3"
+   Numeric Digits 9
    self~assertSame(45.876E-15 / 12.3E-23, 372975610)
+   Numeric Digits 18
+   self~assertSame(45.876E-15 / 12.3E-23, 372975609.756097561)
 
 ::method "test_4"
+   Numeric Digits 9
    self~assertSame(1E88 / 123456789123456789E67, 8100.00007)
+   Numeric Digits 18
+   self~assertSame(1E88 / 123456789123456789E67, 8100.00006561000061)
 
 ::method "test_5"
+   Numeric Digits 9
    self~assertSame(123E12 / 12312332434543E88, 9.98998368E-88)
+   Numeric Digits 18
+   self~assertSame(123E12 / 12312332434543E88, 9.98998367319225348E-88)
 
 ::method "test_6"
+   Numeric Digits 9
    self~assertSame(12123123123E-354 / 102938098E9345, 1.17771004E-9697)
+   Numeric Digits 18
+   self~assertSame(12123123123E-354 / 102938098E9345, 1.17771003724976539E-9697)
 
 ::method "test_7"
    self~assertSame(11E999999 / 11E-999999, 1E+1999998)
@@ -108,26 +120,44 @@ return testResult
    self~assertSame(1E100 / 1E100, 1)
 
 ::method "test_13"
+   Numeric Digits 9
    self~assertSame(12E12 / 333, 3.6036036E+10)
+   Numeric Digits 18
+   self~assertSame(12E12 / 333, 36036036036.036036)
 
 ::method "test_14"
+   Numeric Digits 9
    self~assertSame("-12E12" / 333, -3.6036036E+10)
+   Numeric Digits 18
+   self~assertSame("-12E12" / 333, -36036036036.036036)
 
 ::method "test_15"
+   Numeric Digits 9
    self~assertSame(12E12 / "-333", -3.6036036E+10)
+   Numeric Digits 18
+   self~assertSame(12E12 / "-333", -36036036036.036036)
 
 ::method "test_16"
+   Numeric Digits 9
    self~assertSame("-12E12" / "-333", 3.6036036E+10)
+   Numeric Digits 18
+   self~assertSame("-12E12" / "-333", 36036036036.036036)
 
 ::method "test_17"
+   Numeric Digits 9
    self~assertSame(12E12 / 333, 3.6036036E+10)
+   Numeric Digits 18
+   self~assertSame(12E12 / 333, 36036036036.036036)
 
 ::method "test_18"
    Numeric Digits 20
    self~assertSame(12E12 / 333, 36036036036.036036036)
 
 ::method "test_19"
+   Numeric Digits 9
    self~assertSame(12000000000000 / 333, 3.6036036E+10)
+   Numeric Digits 18
+   self~assertSame(12000000000000 / 333, 36036036036.036036)
 
 ::method "test_20"
    self~assertSame(10E1000 / 10E99999, 1E-98999)
@@ -139,10 +169,16 @@ return testResult
    self~assertSame(500 / 5, 100)
 
 ::method "test_23"
+   Numeric Digits 9
    self~assertSame(12345 / 7, 1763.57143)
+   Numeric Digits 18
+   self~assertSame(12345 / 7, 1763.57142857142857)
 
 ::method "test_24"
+   Numeric Digits 9
    self~assertSame(77E-20 / 7, 1.1E-19)
+   Numeric Digits 18
+   self~assertSame(77E-20 / 7, 0.00000000000000000011)
 
 ::method "test_25"
    self~assertSame(345 / 6, 57.5)
@@ -151,7 +187,10 @@ return testResult
    self~assertSame(1000 / 25, 40)
 
 ::method "test_27"
+   Numeric Digits 9
    self~assertSame(13 / "-2592", -0.0050154321)
+   Numeric Digits 18
+   self~assertSame(13 / "-2592", -0.0050154320987654321)
 
 ::method "test_28"
    self~assertSame(999999999E99 / 1.0, 9.99999999E+107)
@@ -160,61 +199,115 @@ return testResult
    self~assertSame(4 / 1000, 0.004)
 
 ::method "test_30"
+   Numeric Digits 9
    self~assertSame(1000E-3 / 300, 0.00333333333)
+   Numeric Digits 18
+   self~assertSame(1000E-3 / 300, 0.00333333333333333333)
 
 ::method "test_31"
+   Numeric Digits 9
    self~assertSame(123E34 / 456E12, 2.69736842E+21)
+   Numeric Digits 18
+   self~assertSame(123E34 / 456E12, 2.69736842105263158E+21)
 
 ::method "test_32"
+   Numeric Digits 9
    self~assertSame(123E-65 / "-456E+54", -2.69736842E-120)
+   Numeric Digits 18
+   self~assertSame(123E-65 / "-456E+54", -2.69736842105263158E-120)
 
 ::method "test_33"
+   Numeric Digits 9
    self~assertSame("-123E-34" / "-456E-3", 2.69736842E-32)
+   Numeric Digits 18
+   self~assertSame("-123E-34" / "-456E-3", 2.69736842105263158E-32)
 
 ::method "test_34"
+   Numeric Digits 9
    self~assertSame(12300 / 456, 26.9736842)
+   Numeric Digits 18
+   self~assertSame(12300 / 456, 26.9736842105263158)
 
 ::method "test_35"
+   Numeric Digits 9
    self~assertSame(01230.0 / 4560.00, 0.269736842)
+   Numeric Digits 18
+   self~assertSame(01230.0 / 4560.00, 0.269736842105263158)
 
 ::method "test_36"
+   Numeric Digits 9
    self~assertSame(123.04500 / 12.00500, 10.2494794)
+   Numeric Digits 18
+   self~assertSame(123.04500 / 12.00500, 10.2494793835901708)
 
 ::method "test_37"
+   Numeric Digits 9
    self~assertSame(123.456 / 345.45678, 0.35737032)
+   Numeric Digits 18
+   self~assertSame(123.456 / 345.45678, 0.357370319957246171)
 
 ::method "test_38"
+   Numeric Digits 9
    self~assertSame(123456.789012 / 12345.56789123, 10.0000899)
+   Numeric Digits 18
+   self~assertSame(123456.789012 / 12345.56789123, 10.0000899188850428)
 
 ::method "test_39"
+   Numeric Digits 9
    self~assertSame(100 / "-11", -9.09090909)
+   Numeric Digits 18
+   self~assertSame(100 / "-11", -9.09090909090909091)
 
 ::method "test_40"
    self~assertSame(123.4E-3 / 2, 0.0617)
 
 ::method "test_41"
+   Numeric Digits 9
    self~assertSame(23.9E-8 / 3, 0.0000000796666667)
+   Numeric Digits 18
+   self~assertSame(23.9E-8 / 3, 0.0000000796666666666666667)
 
 ::method "test_42"
+   Numeric Digits 9
    self~assertSame(45.8786E-15 / 23E-7, 0.0000000199472174)
+   Numeric Digits 18
+   self~assertSame(45.8786E-15 / 23E-7, 0.0000000199472173913043478)
 
 ::method "test_43"
+   Numeric Digits 9
    self~assertSame("-56.78E-5" / "-6787.76E-15", 83650571)
+   Numeric Digits 18
+   self~assertSame("-56.78E-5" / "-6787.76E-15", 83650571.0278501302)
 
 ::method "test_44"
+   Numeric Digits 9
    self~assertSame(3456757 / 8768E-34, 3.94246921E+36)
+   Numeric Digits 18
+   self~assertSame(3456757 / 8768E-34, 3.94246920620437956E+36)
 
 ::method "test_45"
+   Numeric Digits 9
    self~assertSame(56E-2 / 67E-2, 0.835820896)
+   Numeric Digits 18
+   self~assertSame(56E-2 / 67E-2, 0.83582089552238806)
 
 ::method "test_46"
+   Numeric Digits 9
    self~assertSame(12.00 / 1.005000, 11.9402985)
+   Numeric Digits 18
+   self~assertSame(12.00 / 1.005000, 11.9402985074626866)
 
 ::method "test_47"
+   Numeric Digits 9
    self~assertSame(1E9 / 999999999E19, 1E-19)
+   Numeric Digits 18
+   self~assertSame(1E9 / 999999999E19, 0.0000000000000000001000000001)
 
 ::method "test_48"
+   Numeric Digits 9
    self~assertSame(9218374.9128374 / 98123749821.299873242345, 0.000093946419)
+   Numeric Digits 18
+   self~assertSame(9218374.9128374 / 98123749821.299873242345, 0.0000939464189824139108)
 
 ::method "test_49"
    Numeric Digits 15
@@ -242,19 +335,31 @@ return testResult
 
 ::method "test_55"
    Numeric Form ENGINEERING
+   Numeric Digits 9
    self~assertSame(45.876E-15 / 12.3E-23, 372975610)
+   Numeric Digits 18
+   self~assertSame(45.876E-15 / 12.3E-23, 372975609.756097561)
 
 ::method "test_56"
    Numeric Form ENGINEERING
+   Numeric Digits 9
    self~assertSame(1E88 / 123456789123456789E67, 8100.00007)
+   Numeric Digits 18
+   self~assertSame(1E88 / 123456789123456789E67, 8100.00006561000061)
 
 ::method "test_57"
    Numeric Form ENGINEERING
+   Numeric Digits 9
    self~assertSame(123E12 / 12312332434543E88, 998.998368E-90)
+   Numeric Digits 18
+   self~assertSame(123E12 / 12312332434543E88, 998.998367319225348E-90)
 
 ::method "test_58"
    Numeric Form ENGINEERING
+   Numeric Digits 9
    self~assertSame(12123123123E-354 / 102938098E9345, 117.771004E-9699)
+   Numeric Digits 18
+   self~assertSame(12123123123E-354 / 102938098E9345, 117.771003724976539E-9699)
 
 ::method "test_59"
    Numeric Form ENGINEERING
@@ -282,23 +387,38 @@ return testResult
 
 ::method "test_65"
    Numeric Form ENGINEERING
+   Numeric Digits 9
    self~assertSame(12E12 / 333, 36.036036E+9)
+   Numeric Digits 18
+   self~assertSame(12E12 / 333, 36036036036.036036)
 
 ::method "test_66"
    Numeric Form ENGINEERING
+   Numeric Digits 9
    self~assertSame("-12E12" / 333, -36.036036E+9)
+   Numeric Digits 18
+   self~assertSame("-12E12" / 333, -36036036036.036036)
 
 ::method "test_67"
    Numeric Form ENGINEERING
+   Numeric Digits 9
    self~assertSame(12E12 / "-333", -36.036036E+9)
+   Numeric Digits 18
+   self~assertSame(12E12 / "-333", -36036036036.036036)
 
 ::method "test_68"
    Numeric Form ENGINEERING
+   Numeric Digits 9
    self~assertSame("-12E12" / "-333", 36.036036E+9)
+   Numeric Digits 18
+   self~assertSame("-12E12" / "-333", 36036036036.036036)
 
 ::method "test_69"
    Numeric Form ENGINEERING
+   Numeric Digits 9
    self~assertSame(12E12 / 333, 36.036036E+9)
+   Numeric Digits 18
+   self~assertSame(12E12 / 333, 36036036036.036036)
 
 ::method "test_70"
    Numeric Form ENGINEERING
@@ -307,7 +427,10 @@ return testResult
 
 ::method "test_71"
    Numeric Form ENGINEERING
+   Numeric Digits 9
    self~assertSame(12000000000000 / 333, 36.036036E+9)
+   Numeric Digits 18
+   self~assertSame(12000000000000 / 333, 36036036036.036036)
 
 ::method "test_72"
    Numeric Form ENGINEERING
@@ -323,11 +446,17 @@ return testResult
 
 ::method "test_75"
    Numeric Form ENGINEERING
+   Numeric Digits 9
    self~assertSame(12345 / 7, 1763.57143)
+   Numeric Digits 18
+   self~assertSame(12345 / 7, 1763.57142857142857)
 
 ::method "test_76"
    Numeric Form ENGINEERING
+   Numeric Digits 9
    self~assertSame(77E-20 / 7, 110E-21)
+   Numeric Digits 18
+   self~assertSame(77E-20 / 7, 0.00000000000000000011)
 
 ::method "test_77"
    Numeric Form ENGINEERING
@@ -339,7 +468,10 @@ return testResult
 
 ::method "test_79"
    Numeric Form ENGINEERING
+   Numeric Digits 9
    self~assertSame(13 / "-2592", -0.0050154321)
+   Numeric Digits 18
+   self~assertSame(13 / "-2592", -0.0050154320987654321)
 
 ::method "test_80"
    Numeric Form ENGINEERING
@@ -351,43 +483,73 @@ return testResult
 
 ::method "test_82"
    Numeric Form ENGINEERING
+   Numeric Digits 9
    self~assertSame(1000E-3 / 300, 0.00333333333)
+   Numeric Digits 18
+   self~assertSame(1000E-3 / 300, 0.00333333333333333333)
 
 ::method "test_83"
    Numeric Form ENGINEERING
+   Numeric Digits 9
    self~assertSame(123E34 / 456E12, 2.69736842E+21)
+   Numeric Digits 18
+   self~assertSame(123E34 / 456E12, 2.69736842105263158E+21)
 
 ::method "test_84"
    Numeric Form ENGINEERING
+   Numeric Digits 9
    self~assertSame(123E-65 / "-456E+54", -2.69736842E-120)
+   Numeric Digits 18
+   self~assertSame(123E-65 / "-456E+54", -2.69736842105263158E-120)
 
 ::method "test_85"
    Numeric Form ENGINEERING
+   Numeric Digits 9
    self~assertSame("-123E-34" / "-456E-3", 26.9736842E-33)
+   Numeric Digits 18
+   self~assertSame("-123E-34" / "-456E-3", 26.9736842105263158E-33)
 
 ::method "test_86"
    Numeric Form ENGINEERING
+   Numeric Digits 9
    self~assertSame(12300 / 456, 26.9736842)
+   Numeric Digits 18
+   self~assertSame(12300 / 456, 26.9736842105263158)
 
 ::method "test_87"
    Numeric Form ENGINEERING
+   Numeric Digits 9
    self~assertSame(01230.0 / 4560.00, 0.269736842)
+   Numeric Digits 18
+   self~assertSame(01230.0 / 4560.00, 0.269736842105263158)
 
 ::method "test_88"
    Numeric Form ENGINEERING
+   Numeric Digits 9
    self~assertSame(123.04500 / 12.00500, 10.2494794)
+   Numeric Digits 18
+   self~assertSame(123.04500 / 12.00500, 10.2494793835901708)
 
 ::method "test_89"
    Numeric Form ENGINEERING
+   Numeric Digits 9
    self~assertSame(123.456 / 345.45678, 0.35737032)
+   Numeric Digits 18
+   self~assertSame(123.456 / 345.45678, 0.357370319957246171)
 
 ::method "test_90"
    Numeric Form ENGINEERING
+   Numeric Digits 9
    self~assertSame(123456.789012 / 12345.56789123, 10.0000899)
+   Numeric Digits 18
+   self~assertSame(123456.789012 / 12345.56789123, 10.0000899188850428)
 
 ::method "test_91"
    Numeric Form ENGINEERING
+   Numeric Digits 9
    self~assertSame(100 / "-11", -9.09090909)
+   Numeric Digits 18
+   self~assertSame(100 / "-11", -9.09090909090909091)
 
 ::method "test_92"
    Numeric Form ENGINEERING
@@ -395,35 +557,59 @@ return testResult
 
 ::method "test_93"
    Numeric Form ENGINEERING
+   Numeric Digits 9
    self~assertSame(23.9E-8 / 3, 0.0000000796666667)
+   Numeric Digits 18
+   self~assertSame(23.9E-8 / 3, 0.0000000796666666666666667)
 
 ::method "test_94"
    Numeric Form ENGINEERING
+   Numeric Digits 9
    self~assertSame(45.8786E-15 / 23E-7, 0.0000000199472174)
+   Numeric Digits 18
+   self~assertSame(45.8786E-15 / 23E-7, 0.0000000199472173913043478)
 
 ::method "test_95"
    Numeric Form ENGINEERING
+   Numeric Digits 9
    self~assertSame("-56.78E-5" / "-6787.76E-15", 83650571)
+   Numeric Digits 18
+   self~assertSame("-56.78E-5" / "-6787.76E-15", 83650571.0278501302)
 
 ::method "test_96"
    Numeric Form ENGINEERING
+   Numeric Digits 9
    self~assertSame(3456757 / 8768E-34, 3.94246921E+36)
+   Numeric Digits 18
+   self~assertSame(3456757 / 8768E-34, 3.94246920620437956E+36)
 
 ::method "test_97"
    Numeric Form ENGINEERING
+   Numeric Digits 9
    self~assertSame(56E-2 / 67E-2, 0.835820896)
+   Numeric Digits 18
+   self~assertSame(56E-2 / 67E-2, 0.83582089552238806)
 
 ::method "test_98"
    Numeric Form ENGINEERING
+   Numeric Digits 9
    self~assertSame(12.00 / 1.005000, 11.9402985)
+   Numeric Digits 18
+   self~assertSame(12.00 / 1.005000, 11.9402985074626866)
 
 ::method "test_99"
    Numeric Form ENGINEERING
+   Numeric Digits 9
    self~assertSame(1E9 / 999999999E19, 100E-21)
+   Numeric Digits 18
+   self~assertSame(1E9 / 999999999E19, 0.0000000000000000001000000001)
 
 ::method "test_100"
    Numeric Form ENGINEERING
+   Numeric Digits 9
    self~assertSame(9218374.9128374 / 98123749821.299873242345, 0.000093946419)
+   Numeric Digits 18
+   self~assertSame(9218374.9128374 / 98123749821.299873242345, 0.0000939464189824139108)
 
 ::method "test_101"
    Numeric Form ENGINEERING
@@ -470,22 +656,27 @@ return testResult
 
 ::method "test_207"
    self~expectSyntax(26.11)
+   Numeric Digits 9
    self~assertSame(12E12 % 333, 1)
 
 ::method "test_208"
    self~expectSyntax(26.11)
+   Numeric Digits 9
    self~assertSame("-12E12" % 333, 1)
 
 ::method "test_209"
    self~expectSyntax(26.11)
+   Numeric Digits 9
    self~assertSame(12E12 % "-333", 1)
 
 ::method "test_210"
    self~expectSyntax(26.11)
+   Numeric Digits 9
    self~assertSame("-12E12" % "-333", 1)
 
 ::method "test_211"
    self~expectSyntax(26.11)
+   Numeric Digits 9
    self~assertSame(12E12 % 333, 1)
 
 ::method "test_212"
@@ -494,6 +685,7 @@ return testResult
 
 ::method "test_213"
    self~expectSyntax(26.11)
+   Numeric Digits 9
    self~assertSame(12000000000000 % 333, 1)
 
 ::method "test_214"
@@ -812,26 +1004,31 @@ return testResult
 ::method "test_290"
    self~expectSyntax(26.11)
    Numeric Form ENGINEERING
+   Numeric Digits 9
    self~assertSame(12E12 % 333, 1)
 
 ::method "test_291"
    self~expectSyntax(26.11)
    Numeric Form ENGINEERING
+   Numeric Digits 9
    self~assertSame("-12E12" % 333, 1)
 
 ::method "test_292"
    self~expectSyntax(26.11)
    Numeric Form ENGINEERING
+   Numeric Digits 9
    self~assertSame(12E12 % "-333", 1)
 
 ::method "test_293"
    self~expectSyntax(26.11)
    Numeric Form ENGINEERING
+   Numeric Digits 9
    self~assertSame("-12E12" % "-333", 1)
 
 ::method "test_294"
    self~expectSyntax(26.11)
    Numeric Form ENGINEERING
+   Numeric Digits 9
    self~assertSame(12E12 % 333, 1)
 
 ::method "test_295"
@@ -842,6 +1039,7 @@ return testResult
 ::method "test_296"
    self~expectSyntax(26.11)
    Numeric Form ENGINEERING
+   Numeric Digits 9
    self~assertSame(12000000000000 % 333, 1)
 
 ::method "test_297"
