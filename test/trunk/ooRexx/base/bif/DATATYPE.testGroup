@@ -135,9 +135,17 @@ return testResult
     sarray~append('-1')
     sarray~append('+1')
     sarray~append('2')
-    sarray~append('123456789')
-    sarray~append('1234567890')
-    sarray~append('12345678901')
+    -- 64-bit vs 32-bit test cases
+    if digits() == 9 then do
+        sarray~append('123456789')
+        sarray~append('1234567890')
+        sarray~append('12345678901')
+    end
+    else do
+        sarray~append('123456789999999999')
+        sarray~append('1234567899999999990')
+        sarray~append('12345678999999999901')
+    end
     sarray~append('-1.4142')
     sarray~append('+1.4142')
     sarray~append('+1.733e+5')
@@ -308,7 +316,7 @@ return testResult
     rarray~append('000000000C')
 
     do i = 1 to sarray~items
-        self~assertSame(i rarray[i], i dts(sarray[i]))
+        self~assertSame(rarray[i], dts(sarray[i]), 'Datatype test "'sarray[i]'"')
     end
 
 ::method 'test04'  -- Additional tests added by Lee
