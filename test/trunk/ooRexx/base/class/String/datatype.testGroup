@@ -513,7 +513,7 @@ return erg
 ::method "test_DATATYPE_WITH_OPTION_9"
     a=digits()          -- get digits
 
-    numeric digits 1    -- make sure that numeric digits is not set to 9
+    numeric digits 2    -- make sure that numeric digits is not set to 9
     self~assertTrue('0'    ~datatype('9')) -- whole number under 9 digits (?)
     self~assertTrue('1'    ~datatype('9'))
     self~assertTrue('-1'   ~datatype('9'))
