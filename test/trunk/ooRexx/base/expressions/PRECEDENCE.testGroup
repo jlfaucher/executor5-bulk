@@ -147,9 +147,11 @@ return testResult
    self~assertSame(1/1, '1')
 
 ::method "test_25"
+   numeric digits 9
    self~assertSame(1/17, '0.0588235294')
 
 ::method "test_26"
+   numeric digits 9
    self~assertSame(1/-17, '-0.0588235294')
 
 ::method "test_27"
@@ -332,12 +334,15 @@ return testResult
    xre=-17/0/17
 
 ::method "test_82"
+   numeric digits 9
    self~assertSame(1/17/1, '0.0588235294')
 
 ::method "test_83"
+   numeric digits 9
    self~assertSame(1/17/-17, '-0.00346020761')
 
 ::method "test_84"
+   numeric digits 9
    self~assertSame(1/-17/17, '-0.00346020761')
 
 ::method "test_85"
@@ -478,9 +483,11 @@ return testResult
    self~assertSame(1*(17/1), '17')
 
 ::method "test_124"
+   numeric digits 9
    self~assertSame((1/17)*-17, '-1.00000000')
 
 ::method "test_125"
+   numeric digits 9
    self~assertSame(1/(17*-17), '-0.00346020761')
 
 ::method "test_126"
@@ -499,6 +506,7 @@ return testResult
    self~assertSame((-17*1)/17, '-1')
 
 ::method "test_131"
+   numeric digits 9
    self~assertSame(-17*(1/17), '-1.00000000')
 
 ::method "test_132"
@@ -587,6 +595,7 @@ return testResult
    self~assertSame((1/17)*-17, 1/17*-17)
 
 ::method "test_158"
+   numeric digits 9
    self~assertSame(1/(17*-17), '-0.00346020761')
 
 ::method "test_159"
@@ -687,6 +696,7 @@ return testResult
    self~assertSame((17%1)/17, 17%1/17)
 
 ::method "test_190"
+   numeric digits 9
    self~assertSame(17%(1/17), '289')
 
 ::method "test_191"
@@ -2035,6 +2045,7 @@ return testResult
 
 ::method "test_619"
    blank=" "
+   numeric digits 9
    self~assertSame(blank "2"/3, '  0.666666667')
 
 ::method "test_620"
@@ -2119,6 +2130,7 @@ return testResult
    self~assertSame(4||"2"*3, '46')
 
 ::method "test_645"
+   numeric digits 9
    self~assertSame(4||"2"/3, '40.666666667')
 
 ::method "test_646"
@@ -2200,6 +2212,7 @@ return testResult
    self~assertSame(4"2"*3, '46')
 
 ::method "test_670"
+   numeric digits 9
    self~assertSame(4"2"/3, '40.666666667')
 
 ::method "test_671"
@@ -2282,6 +2295,7 @@ return testResult
    self~assertSame(4+"2"*3, '10')
 
 ::method "test_695"
+   numeric digits 9
    self~assertSame(4+"2"/3, '4.66666667')
 
 ::method "test_696"
@@ -2357,6 +2371,7 @@ return testResult
    self~assertSame(4-"2"*3, '-2')
 
 ::method "test_720"
+   numeric digits 9
    self~assertSame(4-"2"/3, '3.33333333')
 
 ::method "test_721"
@@ -2510,12 +2525,14 @@ return testResult
    self~assertSame(4/"2"*3, '6')
 
 ::method "test_770"
+   numeric digits 9
    self~assertSame(4/"2"/3, '0.666666667')
 
 ::method "test_771"
    self~assertSame(.5/3%1, '0')
 
 ::method "test_772"
+   numeric digits 9
    self~assertSame(12/13//3, '0.923076923')
 
 ::method "test_773"
@@ -2587,6 +2604,7 @@ return testResult
    self~assertSame(4%"2"*3, '6')
 
 ::method "test_795"
+   numeric digits 9
    self~assertSame(4%"2"/3, '0.666666667')
 
 ::method "test_796"
