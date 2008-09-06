@@ -76,7 +76,10 @@ return testResult
    self~assertSame(999999999E99 // 1.0, 1)
 
 ::method "test_2"
+   numeric digits 9
    self~assertSame(1E88 // 123456789123456789E67, 8.2900E+79)
+   numeric digits 18
+   self~assertSame(1E88 // 123456789123456789E67, 8.100000009100E+79)
 
 ::method "test_3"
    self~expectSyntax(26.12)
@@ -94,22 +97,27 @@ return testResult
 
 ::method "test_7"
    self~expectSyntax(26.12)
+   numeric digits 9
    self~assertSame(12E12 // 333, 0)
 
 ::method "test_8"
    self~expectSyntax(26.12)
+   numeric digits 9
    self~assertSame("-12E12" // 333, 0)
 
 ::method "test_9"
    self~expectSyntax(26.12)
+   numeric digits 9
    self~assertSame(12E12 // "-333", 0)
 
 ::method "test_10"
    self~expectSyntax(26.12)
+   numeric digits 9
    self~assertSame("-12E12" // "-333", 0)
 
 ::method "test_11"
    self~expectSyntax(26.12)
+   numeric digits 9
    self~assertSame(12E12 // 333, 0)
 
 ::method "test_12"
@@ -118,6 +126,7 @@ return testResult
 
 ::method "test_13"
    self~expectSyntax(26.12)
+   numeric digits 9
    self~assertSame(12000000000000 // 333, 12)
 
 ::method "test_14"
@@ -147,7 +156,10 @@ return testResult
    self~assertSame(123.04500 // 12.00500, 2.99500)
 
 ::method "test_22"
+   numeric digits 9
    self~assertSame(123456.789012 // 12345.56789123, 1.11010)
+   numeric digits 18
+   self~assertSame(123456.789012 // 12345.56789123, 1.11009970)
 
 ::method "test_23"
    self~assertSame(100 // "-11", 1)
@@ -838,7 +850,10 @@ return testResult
 
 ::method "test_180"
    Numeric Form ENGINEERING
+   numeric digits 9
    self~assertSame(1E88 // 123456789123456789E67, 82.900E+78)
+   numeric digits 18
+   self~assertSame(1E88 // 123456789123456789E67, 81.00000009100E+78)
 
 ::method "test_181"
    self~expectSyntax(26.12)
@@ -861,26 +876,31 @@ return testResult
 ::method "test_185"
    self~expectSyntax(26.12)
    Numeric Form ENGINEERING
+   numeric digits 9
    self~assertSame(12E12 // 333, 0)
 
 ::method "test_186"
    self~expectSyntax(26.12)
    Numeric Form ENGINEERING
+   numeric digits 9
    self~assertSame("-12E12" // 333, 0)
 
 ::method "test_187"
    self~expectSyntax(26.12)
    Numeric Form ENGINEERING
+   numeric digits 9
    self~assertSame(12E12 // "-333", 0)
 
 ::method "test_188"
    self~expectSyntax(26.12)
    Numeric Form ENGINEERING
+   numeric digits 9
    self~assertSame("-12E12" // "-333", 0)
 
 ::method "test_189"
    self~expectSyntax(26.12)
    Numeric Form ENGINEERING
+   numeric digits 9
    self~assertSame(12E12 // 333, 0)
 
 ::method "test_190"
@@ -891,6 +911,7 @@ return testResult
 ::method "test_191"
    self~expectSyntax(26.12)
    Numeric Form ENGINEERING
+   numeric digits 9
    self~assertSame(12000000000000 // 333, 1)
 
 ::method "test_192"
@@ -929,7 +950,10 @@ return testResult
 
 ::method "test_200"
    Numeric Form ENGINEERING
+   numeric digits 9
    self~assertSame(123456.789012 // 12345.56789123, 1.11010)
+   numeric digits 18
+   self~assertSame(123456.789012 // 12345.56789123, 1.11009970)
 
 ::method "test_201"
    Numeric Form ENGINEERING
