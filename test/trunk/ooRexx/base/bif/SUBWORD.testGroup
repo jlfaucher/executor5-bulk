@@ -95,10 +95,16 @@ return testResult
     xre = subWord('SUBWORD1 SUBWORD2',2.000000009)
 
 ::method 'test003'
-    self~assertSame('SUBWORD1 SUBWORD2', subWord('SUBWORD1 SUBWORD2',1.000000004))
+    if digits() == 9 then
+        self~assertSame('SUBWORD1 SUBWORD2', subWord('SUBWORD1 SUBWORD2',1.000000000000000004))
+    else
+        self~assertSame('SUBWORD1 SUBWORD2', subWord('SUBWORD1 SUBWORD2',1.000000000000000004))
 
 ::method 'test004'
-    self~assertSame('SUBWORD2', subWord('SUBWORD1 SUBWORD2',2.000000004))
+    if digits() == 9 then
+        self~assertSame('SUBWORD2', subWord('SUBWORD1 SUBWORD2',2.000000000000000004))
+    else
+        self~assertSame('SUBWORD2', subWord('SUBWORD1 SUBWORD2',2.000000000000000004))
 
 ::method 'test005'
     self~assertSame('J', subWord('4a'x,.zeros1))
@@ -346,10 +352,16 @@ return testResult
     xre = subWord('SUBWORD1 SUBWORD2',2.000000009,2.000000009)
 
 ::method 'test077'
-    self~assertSame('SUBWORD1', subWord('SUBWORD1 SUBWORD2',1.000000004,1.000000004))
+    if digits() == 9 then
+       self~assertSame('SUBWORD1', subWord('SUBWORD1 SUBWORD2',1.000000000000000004,1.000000000000000004))
+    else
+       self~assertSame('SUBWORD1', subWord('SUBWORD1 SUBWORD2',1.000000000000000004,1.000000000000000004))
 
 ::method 'test078'
-    self~assertSame('SUBWORD2', subWord('SUBWORD1 SUBWORD2',2.000000004,2.000000004))
+    if digits() == 9 then
+        self~assertSame('SUBWORD2', subWord('SUBWORD1 SUBWORD2',2.000000000000000004,2.0000000000000000004))
+    else
+        self~assertSame('SUBWORD2', subWord('SUBWORD1 SUBWORD2',2.000000000000000004,2.0000000000000000004))
 
 ::method 'test079'
     self~assertSame('J', subWord('4a'x,.zeros1,2))

@@ -153,7 +153,10 @@ return testResult
     self~assertSame('0', verify('j',"ABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghij",,251))
 
 ::method 'test024'
-    self~assertSame('0', verify('j',"ABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghij",,251.00000001))
+    if digits() == 9 then
+        self~assertSame('0', verify('j',"ABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghij",,251.00000001))
+    else
+        self~assertSame('0', verify('j',"ABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghij",,251.00000000000000001))
 
 ::method 'test025'
     self~expectSyntax(40.12)
