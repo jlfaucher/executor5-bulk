@@ -202,7 +202,10 @@ return testResult
    self~assertSame(999999999E99 ** 1.0, 9.99999999E+107)
 
 ::method "test_44"
+   numeric digits 9
    self~assertSame(4 ** 1000, 1.1481307E+602)
+   numeric digits 18
+   self~assertSame(4 ** 1000, 1.14813069527425452E+602)
 
 ::method "test_45"
    self~assertSame(1000E-3 ** 300, 1)
