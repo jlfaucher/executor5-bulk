@@ -364,8 +364,13 @@ return testResult
 
 ::method "test_50"
    self~expectSyntax(26.6)
+   use32 = digits() == 9
+
    Numeric Digits 1000
-   Numeric Fuzz 9999999999
+   if use32 then
+       Numeric Fuzz 9999999999
+   else
+       Numeric Fuzz 9999999999999999999
 
 ::method "test_51"
    self~expectSyntax(26.6)

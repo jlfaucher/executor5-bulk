@@ -96,10 +96,16 @@ return testResult
     xre = 'WORD1 WORD2'~wordIndex(2.000000009)
 
 ::method 'test004'
-    self~assertSame('1', 'WORD1 WORD2'~wordIndex(1.000000004))
+    if digits() == 9 then
+        self~assertSame('1', 'WORD1 WORD2'~wordIndex(1.000000004))
+    else
+        self~assertSame('1', 'WORD1 WORD2'~wordIndex(1.000000000000000004))
 
 ::method 'test005'
-    self~assertSame('7', 'WORD1 WORD2'~wordIndex(2.000000004))
+    if digits() == 9 then
+        self~assertSame('7', 'WORD1 WORD2'~wordIndex(2.000000004))
+    else
+        self~assertSame('7', 'WORD1 WORD2'~wordIndex(2.000000000000000004))
 
 ::method 'test006'
     self~assertSame('1', '4a'x~wordIndex(.zeros1))

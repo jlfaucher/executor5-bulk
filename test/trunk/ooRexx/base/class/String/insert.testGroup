@@ -184,7 +184,10 @@ return testResult
 
 ::method 'test034'
     self~expectSyntax(93.923)
-    xre = 'hasdghj'~insert('A',1E10)
+    if digits() == 9 then
+        xre = 'hasdghj'~insert('A',1E10)
+    else
+        xre = 'hasdghj'~insert('A',1E19)
 
 ::method 'test035'
     self~expectSyntax(93.923)
