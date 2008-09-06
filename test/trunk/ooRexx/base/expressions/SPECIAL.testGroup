@@ -94,15 +94,19 @@ return testResult
    self~assertSame(3||3=3||3&3||3=3||3&(aa/aa||1)*3=33>0, '1')
 
 ::method "test_7"
+   numeric digits 9
    self~assertSame(-1111111119**2*3+17||0, '3.70370376E+180')
 
 ::method "test_8"
+   numeric digits 9
    self~assertSame(+1111111119**2*3+17||0, '3.70370376E+180')
 
 ::method "test_9"
+   numeric digits 9
    self~assertSame(-1111111119**2/3+17||0, '4.1152264E+170')
 
 ::method "test_10"
+   numeric digits 9
    self~assertSame(+1111111119**2/3+17||0, '4.1152264E+170')
 
 ::method "test_11"
@@ -112,21 +116,27 @@ return testResult
    self~assertSame(+1111111119**2%5e55+17||0, '170')
 
 ::method "test_13"
+   numeric digits 9
    self~assertSame(-1111111119**2//5e55+17||0, '1.23456792E+180')
 
 ::method "test_14"
+   numeric digits 9
    self~assertSame(+1111111119**2//5e55+17||0, '1.23456792E+180')
 
 ::method "test_15"
+   numeric digits 9
    self~assertSame(-1111111119**2*3-17||0, '3.70370376E+180')
 
 ::method "test_16"
+   numeric digits 9
    self~assertSame(+1111111119**2*3-17||0, '3.70370376E+180')
 
 ::method "test_17"
+   numeric digits 9
    self~assertSame(-1111111119**2/3-17||0, '4.1152264E+170')
 
 ::method "test_18"
+   numeric digits 9
    self~assertSame(+1111111119**2/3-17||0, '4.1152264E+170')
 
 ::method "test_19"
@@ -136,9 +146,11 @@ return testResult
    self~assertSame(+1111111119**2%5e55-17||0, '-170')
 
 ::method "test_21"
+   numeric digits 9
    self~assertSame(-1111111119**2//5e55-17||0, '1.23456792E+180')
 
 ::method "test_22"
+   numeric digits 9
    self~assertSame(+1111111119**2//5e55-17||0, '1.23456792E+180')
 
 ::method "test_23"
