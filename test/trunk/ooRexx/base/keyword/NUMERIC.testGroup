@@ -225,11 +225,11 @@ return testResult
    self~assertSame(s, '1/2/3/4/5/6/7/8/9/1E+1/1E+1/1E+1/1E+1/')
 
 ::method "test_27"
+   default = digits()
    Numeric Digits 13
    Numeric Digits
-   self~assertSame(dig(), 9)
+   self~assertSame(digits(), default)
    return
-   dig: Return digits()
 
 ::method "test_28"
    self~expectSyntax(26.5)
@@ -241,14 +241,19 @@ return testResult
 
 ::method "test_31"
    self~expectSyntax(26.5)
-   Numeric Digits 9999999999
+   if digits() == 9 then
+       Numeric Digits 9999999999
+   else
+       Numeric Digits 9999999999999999999
 
 ::method "test_32"
    self~expectSyntax(26.5)
    Numeric Digits +12.5
 
 ::method "test_33"
-   self~assertSame(dig(), 9)
+   default = (1/3)~length - 2
+
+   self~assertSame(dig(), default)
    Numeric Digits +12.0
    self~assertSame(dig(), 12)
    return
