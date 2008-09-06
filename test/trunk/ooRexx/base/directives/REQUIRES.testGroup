@@ -103,35 +103,6 @@ return testResult
   ret = 'testRequires'()
   self~assertSame(2, ret)
 
-::method  test_requires_library_ext
-  self~assertNotSame("", self~functionFileName, "Must be able to create source file")
-
-  src = .array~new
-  src[1] = "return RxCalcSqrt(4)"
-
-  select
-    when .ooRexxUnit.OSName == "WINDOWS" then do
-      src[2] = "::requires 'rxmath.dll' LIBRARY"
-      os = "WINDOWS"
-    end
-    when .ooRexxUnit.OSName == "LINUX" then do
-      src[2] = "::requires 'rxmath.so' LIBRARY"
-      os = "LINUX"
-    end
-    otherwise os = "untested"
-  end
-  -- End select
-
-  -- This is used to ensure this test fails on an OS other than Windows or
-  -- Linux.  I'm not sure what the library extension is on other OSes.  When
-  -- this fails, the person investigating should add the untested OS.
-  self~assertNotSame("untested", os)
-
-  name = addToFile(src, self~functionFileName)
-
-  ret = 'testRequires'()
-  self~assertSame(2, ret)
-
 ::method test_requires_library_case_mixed
   self~assertNotSame("", self~functionFileName, "Must be able to create source file")
 
