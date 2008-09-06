@@ -384,6 +384,7 @@ return testResult
 ::method "test_5"
    a=8; a.=8; a.8=88;
    b=4; b.=4; b.4=44;
+   numeric digits 9
    id=1 ; i = 8 + 4  ;   self~assertSame(i, 12)
    id=2 ; i = 8 + b  ;   self~assertSame(i, 12)
    id=3 ; i = 8 + b.4  ;   self~assertSame(i, 52)
