@@ -146,8 +146,7 @@ return testResult
 
 ::method 'test_RxCalcSqrtC'
 -- Test syntax on precision value > 16
-    self~expectSyntax('40.1')
-    rv = RxCalcSqrt(3,17)
+    self~assertEquals(RxCalcSqrt(3, 16), RxCalcSqrt(3,17))
 
 ::method 'test_RxCalcSqrtD'
 -- Test syntax on no argument supplied
@@ -157,8 +156,7 @@ return testResult
 ::method 'test_RxCalcSqrtE'
 -- Test syntax when numeric digits is > than max allowed by RxMath
     numeric digits 20
-    self~expectSyntax('40.1')
-    rv = RxCalcSqrt(25)
+    self~assertEquals(RxCalcSqrt(3, 16), RxCalcSqrt(3))
 
 ::method 'test_RxCalcSqrtF'
 -- Test significant digits when square root is a whole number
@@ -191,14 +189,12 @@ return testResult
 
 ::method 'testRxCalcExpE'
 -- Test invalid high precision
-    self~expectSyntax('40.1')
-    rv = RxCalcExp(.5,17)
+    self~assertEquals(RxCalcExp(.5,16), RxCalcExp(.5,17))
 
 ::method 'testRxCalcExpF'
 -- Test invalid high precision base on numeric digits
     numeric digits 20
-    self~expectSyntax('40.1')
-    rv = RxCalcExp(.5)
+    self~assertEquals(RxCalcExp(.5,16), RxCalcExp(.5))
 
 ::method 'testRxCalcExpG'
 -- Test default precision not equals
@@ -229,14 +225,12 @@ return testResult
 
 ::method 'testRxCalcLogE'
 -- Test invalid high precision
-    self~expectSyntax('40.1')
-    rv = RxCalcLog(16,17)
+    self~assertEquals(RxCalcLog(16,16), RxCalcLog(16,17))
 
 ::method 'testRxCalcLogF'
 -- Test invalid high precision base on numeric digits
     numeric digits 20
-    self~expectSyntax('40.1')
-    rv = RxCalcLog(16)
+    self~assertEquals(RxCalcLog(16,16), RxCalcLog(16))
 
 ::method 'testRxCalcLogG'
 -- Test default precision not equals
@@ -267,14 +261,12 @@ return testResult
 
 ::method 'testRxCalcLog10E'
 -- Test invalid high precision
-    self~expectSyntax('40.1')
-    rv = RxCalcLog10(16,17)
+    self~assertEquals(RxCalcLog10(16,16), RxCalcLog10(16,17))
 
 ::method 'testRxCalcLog10F'
 -- Test invalid high precision base on numeric digits
     numeric digits 20
-    self~expectSyntax('40.1')
-    rv = RxCalcLog10(16)
+    self~assertEquals(RxCalcLog10(16,16), RxCalcLog10(16))
 
 ::method 'testRxCalcLog10G'
 -- Test default precision not equals
@@ -305,14 +297,12 @@ return testResult
 
 ::method 'testRxCalcSinhE'
 -- Test invalid high precision
-    self~expectSyntax('40.1')
-    rv = RxCalcSinh(.25,17)
+    self~assertEquals(RxCalcSinh(.25,16), RxCalcSinh(.25,17))
 
 ::method 'testRxCalcSinhF'
 -- Test invalid high precision base on numeric digits
     numeric digits 20
-    self~expectSyntax('40.1')
-    rv = RxCalcSinh(.25)
+    self~assertEquals(RxCalcSinh(.25,16), RxCalcSinh(.25))
 
 ::method 'testRxCalcSinhG'
 -- Test default precision not equals
@@ -342,15 +332,13 @@ return testResult
     rv = RxCalcCosh(16,0)
 
 ::method 'testRxCalcCoshE'
--- Test invalid high precision
-    self~expectSyntax('40.1')
-    rv = RxCalcCosh(.25,17)
+-- Test invalid high precision, capped at 16
+    self~assertEquals(RxCalcCosh(.25,16), RxCalcCosh(.25,17))
 
 ::method 'testRxCalcCoshF'
 -- Test invalid high precision base on numeric digits
     numeric digits 20
-    self~expectSyntax('40.1')
-    rv = RxCalcCosh(.25)
+    self~assertEquals(RxCalcCosh(.25,16), RxCalcCosh(.25))
 
 ::method 'testRxCalcCoshG'
 -- Test default precision not equals
@@ -381,14 +369,12 @@ return testResult
 
 ::method 'testRxCalcTanhE'
 -- Test invalid high precision
-    self~expectSyntax('40.1')
-    rv = RxCalcTanh(.25,17)
+    self~assertEquals(RxCalcTanh(.25,16), RxCalcTanh(.25,17))
 
 ::method 'testRxCalcTanhF'
 -- Test invalid high precision base on numeric digits
     numeric digits 20
-    self~expectSyntax('40.1')
-    rv = RxCalcTanh(.25)
+    self~assertEquals(RxCalcTanh(.25,16), RxCalcTanh(.25))
 
 ::method 'testRxCalcTanhG'
 -- Test default precision not equals
@@ -419,14 +405,12 @@ return testResult
 
 ::method 'testRxCalcPowerE'
 -- Test invalid high precision
-    self~expectSyntax('40.1')
-    rv = RxCalcPower(6.13,3,17)
+    self~assertEquals(RxCalcPower(6.13,3,16), RxCalcPower(6.13,3,17))
 
 ::method 'testRxCalcPowerF'
 -- Test invalid high precision base on numeric digits
     numeric digits 20
-    self~expectSyntax('40.1')
-    rv = RxCalcPower(6.13,3)
+    self~assertEquals(RxCalcPower(6.13,3,16), RxCalcPower(6.13,3))
 
 ::method 'testRxCalcPowerG'
 -- Test default precision not equals
@@ -457,14 +441,12 @@ return testResult
 
 ::method 'testRxCalcSinE'
 -- Test invalid high precision
-    self~expectSyntax('40.1')
-    rv = RxCalcSin(12,17)
+    self~assertEquals(RxCalcSin(12,16), RxCalcSin(12,17))
 
 ::method 'testRxCalcSinF'
 -- Test invalid high precision base on numeric digits
     numeric digits 20
-    self~expectSyntax('40.1')
-    rv = RxCalcSin(12)
+    self~assertEquals(RxCalcSin(12,16), RxCalcSin(12))
 
 ::method 'testRxCalcSinG'
 -- Test default precision not equals
@@ -519,14 +501,12 @@ return testResult
 
 ::method 'testRxCalcSin_rE'
 -- Test invalid high precision
-    self~expectSyntax('40.1')
-    rv = RxCalcSin(12,17,'r')
+    self~assertEquals(RxCalcSin(12,16,'r'), RxCalcSin(12,17,'r'))
 
 ::method 'testRxCalcSin_rF'
 -- Test invalid high precision base on numeric digits
     numeric digits 20
-    self~expectSyntax('40.1')
-    rv = RxCalcSin(12,,'r')
+    self~assertEquals(RxCalcSin(12,16,'r'), RxCalcSin(12,,'r'))
 
 ::method 'testRxCalcSin_rG'
 -- Test default precision not equals
@@ -581,14 +561,12 @@ return testResult
 
 ::method 'testRxCalcSin_gE'
 -- Test invalid high precision
-    self~expectSyntax('40.1')
-    rv = RxCalcSin(12,17,'g')
+    self~assertEquals(RxCalcSin(12,16,'g'), RxCalcSin(12,17,'g'))
 
 ::method 'testRxCalcSin_gF'
 -- Test invalid high precision base on numeric digits
     numeric digits 20
-    self~expectSyntax('40.1')
-    rv = RxCalcSin(12,,'g')
+    self~assertEquals(RxCalcSin(12,16,'g'), RxCalcSin(12,,'g'))
 
 ::method 'testRxCalcSin_gG'
 -- Test default precision not equals
@@ -643,14 +621,12 @@ return testResult
 
 ::method 'testRxCalcCosE'
 -- Test invalid high precision
-    self~expectSyntax('40.1')
-    rv = RxCalcCos(12,17)
+    self~assertEquals(RxCalcCos(12,16), RxCalcCos(12,17))
 
 ::method 'testRxCalcCosF'
 -- Test invalid high precision base on numeric digits
     numeric digits 20
-    self~expectSyntax('40.1')
-    rv = RxCalcCos(12)
+    self~assertEquals(RxCalcCos(12,16), RxCalcCos(12))
 
 ::method 'testRxCalcCosG'
 -- Test default precision not equals
@@ -705,14 +681,12 @@ return testResult
 
 ::method 'testRxCalcCos_rE'
 -- Test invalid high precision
-    self~expectSyntax('40.1')
-    rv = RxCalcCos(12,17,'r')
+    self~assertEquals(RxCalcCos(12,16,'r'), RxCalcCos(12,17,'r'))
 
 ::method 'testRxCalcCos_rF'
 -- Test invalid high precision base on numeric digits
     numeric digits 20
-    self~expectSyntax('40.1')
-    rv = RxCalcCos(12,,'r')
+    self~assertEquals(RxCalcCos(12,16,'r'), RxCalcCos(12,,'r'))
 
 ::method 'testRxCalcCos_rG'
 -- Test default precision not equals
@@ -767,14 +741,12 @@ return testResult
 
 ::method 'testRxCalcCos_gE'
 -- Test invalid high precision
-    self~expectSyntax('40.1')
-    rv = RxCalcCos(12,17,'g')
+    self~assertEquals(RxCalcCos(12,16,'g'), RxCalcCos(12,17,'g'))
 
 ::method 'testRxCalcCos_gF'
 -- Test invalid high precision base on numeric digits
     numeric digits 20
-    self~expectSyntax('40.1')
-    rv = RxCalcCos(12,,'g')
+    self~assertEquals(RxCalcCos(12,16,'g'), RxCalcCos(12,,'g'))
 
 ::method 'testRxCalcCos_gG'
 -- Test default precision not equals
@@ -829,14 +801,12 @@ return testResult
 
 ::method 'testRxCalcTanE'
 -- Test invalid high precision
-    self~expectSyntax('40.1')
-    rv = RxCalcTan(12,17)
+    self~assertEquals(RxCalcTan(12,16), RxCalcTan(12,17))
 
 ::method 'testRxCalcTanF'
 -- Test invalid high precision base on numeric digits
     numeric digits 20
-    self~expectSyntax('40.1')
-    rv = RxCalcTan(12)
+    self~assertEquals(RxCalcTan(12,16), RxCalcTan(12))
 
 ::method 'testRxCalcTanG'
 -- Test default precision not equals
@@ -891,14 +861,12 @@ return testResult
 
 ::method 'testRxCalcTan_rE'
 -- Test invalid high precision
-    self~expectSyntax('40.1')
-    rv = RxCalcTan(12,17,'r')
+    self~assertEquals(RxCalcTan(12,16,'r'), RxCalcTan(12,17,'r'))
 
 ::method 'testRxCalcTan_rF'
 -- Test invalid high precision base on numeric digits
     numeric digits 20
-    self~expectSyntax('40.1')
-    rv = RxCalcTan(12,,'r')
+    self~assertEquals(RxCalcTan(12,16,'r'), RxCalcTan(12,,'r'))
 
 ::method 'testRxCalcTan_rG'
 -- Test default precision not equals
@@ -953,14 +921,12 @@ return testResult
 
 ::method 'testRxCalcTan_gE'
 -- Test invalid high precision
-    self~expectSyntax('40.1')
-    rv = RxCalcTan(12,17,'g')
+    self~assertEquals(RxCalcTan(12,16,'g'), RxCalcTan(12,17,'g'))
 
 ::method 'testRxCalcTan_gF'
 -- Test invalid high precision base on numeric digits
     numeric digits 20
-    self~expectSyntax('40.1')
-    rv = RxCalcTan(12,,'g')
+    self~assertEquals(RxCalcTan(12,16,'g'), RxCalcTan(12,,'g'))
 
 ::method 'testRxCalcTan_gG'
 -- Test default precision not equals
@@ -1015,14 +981,12 @@ return testResult
 
 ::method 'testRxCalcCotanE'
 -- Test invalid high precision
-    self~expectSyntax('40.1')
-    rv = RxCalcCotan(12,17)
+    self~assertEquals(RxCalcCotan(12,16), RxCalcCotan(12,17))
 
 ::method 'testRxCalcCotanF'
 -- Test invalid high precision base on numeric digits
     numeric digits 20
-    self~expectSyntax('40.1')
-    rv = RxCalcCotan(12)
+    self~assertEquals(RxCalcCotan(12,16), RxCalcCotan(12))
 
 ::method 'testRxCalcCotanG'
 -- Test default precision not equals
@@ -1077,14 +1041,12 @@ return testResult
 
 ::method 'testRxCalcCotan_rE'
 -- Test invalid high precision
-    self~expectSyntax('40.1')
-    rv = RxCalcCotan(12,17,'r')
+    self~assertEquals(RxCalcCotan(12,16,'r'), RxCalcCotan(12,17,'r'))
 
 ::method 'testRxCalcCotan_rF'
 -- Test invalid high precision base on numeric digits
     numeric digits 20
-    self~expectSyntax('40.1')
-    rv = RxCalcCotan(12,,'r')
+    self~assertEquals(RxCalcCotan(12,16,'r'), RxCalcCotan(12,,'r'))
 
 ::method 'testRxCalcCotan_rG'
 -- Test default precision not equals
@@ -1139,14 +1101,12 @@ return testResult
 
 ::method 'testRxCalcCotan_gE'
 -- Test invalid high precision
-    self~expectSyntax('40.1')
-    rv = RxCalcCotan(12,17,'g')
+    self~assertEquals(RxCalcCotan(12,16,'g'), RxCalcCotan(12,17,'g'))
 
 ::method 'testRxCalcCotan_gF'
 -- Test invalid high precision base on numeric digits
     numeric digits 20
-    self~expectSyntax('40.1')
-    rv = RxCalcCotan(12,,'g')
+    self~assertEquals(RxCalcCotan(12,16,'g'), RxCalcCotan(12,,'g'))
 
 ::method 'testRxCalcCotan_gG'
 -- Test default precision not equals
@@ -1201,14 +1161,12 @@ return testResult
 
 ::method 'testRxCalcPiE'
 -- Test invalid high precision
-    self~expectSyntax('40.1')
-    rv = RxCalcPi(17)
+    self~assertEquals(RxCalcPi(16), RxCalcPi(17))
 
 ::method 'testRxCalcPiF'
 -- Test invalid high precision base on numeric digits
     numeric digits 20
-    self~expectSyntax('40.1')
-    rv = RxCalcPi()
+    self~assertEquals(RxCalcPi(16), RxCalcPi())
 
 ::method 'testRxCalcPiG'
 -- Test default precision not equals
@@ -1238,14 +1196,12 @@ return testResult
 
 ::method 'testRxCalcArcSinE'
 -- Test invalid high precision
-    self~expectSyntax('40.1')
-    rv = RxCalcArcSin(.1526,17)
+    self~assertEquals(RxCalcArcSin(.1526,16), RxCalcArcSin(.1526,17))
 
 ::method 'testRxCalcArcSinF'
 -- Test invalid high precision base on numeric digits
     numeric digits 20
-    self~expectSyntax('40.1')
-    rv = RxCalcArcSin(.1526)
+    self~assertEquals(RxCalcArcSin(.1526,16), RxCalcArcSin(.1526))
 
 ::method 'testRxCalcArcSinG'
 -- Test default precision not equals
@@ -1300,14 +1256,12 @@ return testResult
 
 ::method 'testRxCalcArcSin_rE'
 -- Test invalid high precision
-    self~expectSyntax('40.1')
-    rv = RxCalcArcSin(.1526,17,'r')
+    self~assertEquals(RxCalcArcSin(.1526,16,'r'), RxCalcArcSin(.1526,17,'r'))
 
 ::method 'testRxCalcArcSin_rF'
 -- Test invalid high precision base on numeric digits
     numeric digits 20
-    self~expectSyntax('40.1')
-    rv = RxCalcArcSin(.1526,,'r')
+    self~assertEquals(RxCalcArcSin(.1526,16,'r'), RxCalcArcSin(.1526,,'r'))
 
 ::method 'testRxCalcArcSin_rG'
 -- Test default precision not equals
@@ -1362,14 +1316,12 @@ return testResult
 
 ::method 'testRxCalcArcSin_gE'
 -- Test invalid high precision
-    self~expectSyntax('40.1')
-    rv = RxCalcArcSin(.1526,17,'g')
+    self~assertEquals(RxCalcArcSin(.1526,16,'g'), RxCalcArcSin(.1526,17,'g'))
 
 ::method 'testRxCalcArcSin_gF'
 -- Test invalid high precision base on numeric digits
     numeric digits 20
-    self~expectSyntax('40.1')
-    rv = RxCalcArcSin(.1526,,'g')
+    self~assertEquals(RxCalcArcSin(.1526,16,'g'), RxCalcArcSin(.1526,,'g'))
 
 ::method 'testRxCalcArcSin_gG'
 -- Test default precision not equals
@@ -1424,14 +1376,12 @@ return testResult
 
 ::method 'testRxCalcArcCosE'
 -- Test invalid high precision
-    self~expectSyntax('40.1')
-    rv = RxCalcArcCos(.1526,17)
+    self~assertEquals(RxCalcArcCos(.1526,16), RxCalcArcCos(.1526,17))
 
 ::method 'testRxCalcArcCosF'
 -- Test invalid high precision base on numeric digits
     numeric digits 20
-    self~expectSyntax('40.1')
-    rv = RxCalcArcCos(.1526)
+    self~assertEquals(RxCalcArcCos(.1526,16), RxCalcArcCos(.1526))
 
 ::method 'testRxCalcArcCosG'
 -- Test default precision not equals
@@ -1486,14 +1436,12 @@ return testResult
 
 ::method 'testRxCalcArcCos_rE'
 -- Test invalid high precision
-    self~expectSyntax('40.1')
-    rv = RxCalcArcCos(.1526,17,'r')
+    self~assertEquals(RxCalcArcCos(.1526,16,'r'), RxCalcArcCos(.1526,17,'r'))
 
 ::method 'testRxCalcArcCos_rF'
 -- Test invalid high precision base on numeric digits
     numeric digits 20
-    self~expectSyntax('40.1')
-    rv = RxCalcArcCos(.1526,,'r')
+    self~assertEquals(RxCalcArcCos(.1526,16,'r'), RxCalcArcCos(.1526,,'r'))
 
 ::method 'testRxCalcArcCos_rG'
 -- Test default precision not equals
@@ -1548,14 +1496,12 @@ return testResult
 
 ::method 'testRxCalcArcCos_gE'
 -- Test invalid high precision
-    self~expectSyntax('40.1')
-    rv = RxCalcArcCos(.1526,17,'g')
+    self~assertEquals(RxCalcArcCos(.1526,16,'g'), RxCalcArcCos(.1526,17,'g'))
 
 ::method 'testRxCalcArcCos_gF'
 -- Test invalid high precision base on numeric digits
     numeric digits 20
-    self~expectSyntax('40.1')
-    rv = RxCalcArcCos(.1526,,'g')
+    self~assertEquals(RxCalcArcCos(.1526,16,'g'), RxCalcArcCos(.1526,,'g'))
 
 ::method 'testRxCalcArcCos_gG'
 -- Test default precision not equals
@@ -1611,14 +1557,12 @@ return testResult
 
 ::method 'testRxCalcArcTanE'
 -- Test invalid high precision
-    self~expectSyntax('40.1')
-    rv = RxCalcArcTan(.1526,17)
+    self~assertEquals(RxCalcArcTan(.1526,16), RxCalcArcTan(.1526,17))
 
 ::method 'testRxCalcArcTanF'
 -- Test invalid high precision base on numeric digits
     numeric digits 20
-    self~expectSyntax('40.1')
-    rv = RxCalcArcTan(.1526)
+    self~assertEquals(RxCalcArcTan(.1526,16), RxCalcArcTan(.1526))
 
 ::method 'testRxCalcArcTanG'
 -- Test default precision not equals
@@ -1673,14 +1617,12 @@ return testResult
 
 ::method 'testRxCalcArcTan_rE'
 -- Test invalid high precision
-    self~expectSyntax('40.1')
-    rv = RxCalcArcTan(.1526,17,'r')
+    self~assertEquals(RxCalcArcTan(.1526,16,'r'), RxCalcArcTan(.1526,17,'r'))
 
 ::method 'testRxCalcArcTan_rF'
 -- Test invalid high precision base on numeric digits
     numeric digits 20
-    self~expectSyntax('40.1')
-    rv = RxCalcArcTan(.1526,,'r')
+    self~assertEquals(RxCalcArcTan(.1526,16,'r'), RxCalcArcTan(.1526,,'r'))
 
 ::method 'testRxCalcArcTan_rG'
 -- Test default precision not equals
@@ -1735,14 +1677,12 @@ return testResult
 
 ::method 'testRxCalcArcTan_gE'
 -- Test invalid high precision
-    self~expectSyntax('40.1')
-    rv = RxCalcArcTan(.1526,17,'g')
+    self~assertEquals(RxCalcArcTan(.1526,16,'g'), RxCalcArcTan(.1526,17,'g'))
 
 ::method 'testRxCalcArcTan_gF'
 -- Test invalid high precision base on numeric digits
     numeric digits 20
-    self~expectSyntax('40.1')
-    rv = RxCalcArcTan(.1526,,'g')
+    self~assertEquals(RxCalcArcTan(.1526,16,'g'), RxCalcArcTan(.1526,,'g'))
 
 ::method 'testRxCalcArcTan_gG'
 -- Test default precision not equals
