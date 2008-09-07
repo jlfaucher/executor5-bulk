@@ -1796,13 +1796,9 @@ return testResult
 -- behave exactly the same cross platform.  But, for the 3.2.0 version of the
 -- ooRexxUnit tests, fix this so that the tests pass on Linux.
 ::method 'testRxCalcArcSinError'
-    if .ooRexxUnit.OSName == 'LINUX' then expected = 'nan'
-    else expected = 'ERROR'
-    self~assertSame(expected, RxCalcArcSin(25))
+    self~assertSame('nan', RxCalcArcSin(25))
 
 ::method 'testRxCalcArcCosError'
-    if .ooRexxUnit.OSName == 'LINUX' then expected = 'nan'
-    else expected = 'ERROR'
-    self~assertSame(expected, RxCalcArcCos(25))
+    self~assertSame('nan', RxCalcArcCos(25))
 
 
