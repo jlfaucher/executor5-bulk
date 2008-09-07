@@ -813,8 +813,14 @@ NOTE:   If the user has changed the name of a "special folder" the following lin
 
    wmi = .oleObject~getObject("winmgmts:\\.\root\cimv2")
    columns = wmi~ExecQuery("Select * from Win32_OperatingSystem")
-   if columns~count > 0 then do
-      osInfo = columns~itemIndex(0)
+
+   osInfo = .nil
+   do obj over columns
+     osInfo = obj
+     leave
+   end
+
+   if osInfo \== .nil then do
       if osInfo~version > 6.0 then return .true
    end
    return .false
