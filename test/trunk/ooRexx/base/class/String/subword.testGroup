@@ -100,7 +100,7 @@ return testResult
     if digits() == 9 then
         self~assertSame('SUBWORD2', 'SUBWORD1 SUBWORD2'~subWord(2.000000004))
     else
-        self~assertSame('SUBWORD2', 'SUBWORD1 SUBWORD2'~subWord(2.00000000000000004))
+        self~assertSame('SUBWORD2', 'SUBWORD1 SUBWORD2'~subWord(2.000000000000000004))
 
 ::method 'test005'
     self~assertSame('J', '4a'x~subWord(.zeros1))
