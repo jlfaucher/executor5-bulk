@@ -1078,6 +1078,23 @@ return str
   -- Assertion holds
   self~fAssertions += 1
 
+
+/** assertFuzzyEquals()
+ * Checks if two objects are equal using fuzzy math 
+ */
+::method assertFuzzyEquals
+  use strict arg expected, actual, digits = (digits()), msg = ""
+
+  numeric digits digits 
+  numeric fuzz 1 
+
+  if \ (expected = actual) then do
+      self~fail(self~makeFailure(expected, actual, msg, "assertEquals"))
+  end
+
+  -- Assertion holds
+  self~fAssertions += 1
+
 ::method assertNotEquals
   use strict arg expected, actual, msg = ""
 

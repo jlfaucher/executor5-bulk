@@ -1073,7 +1073,7 @@ return a
     fObj = .stream~new(fileSpec)
     self~pathName = fObj~query("EXISTS")
     if self~pathName == "" then
-      raise syntax 88.917 array ("1 'fileSpec'", "must be an existing file path name")
+      raise syntax 88.917 array ("1 'fileSpec'", "must be an existing file path name.  File:" fileSpec)
 
     if fObj~open("SHAREREAD") \== "READY:" then
       raise syntax 88.917 array ("1 'fileSpec'", "must be a readable file")
