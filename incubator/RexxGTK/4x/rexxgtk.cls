@@ -3009,6 +3009,23 @@ return
 
 
 /*============================================================================*/
+/* Class: GtkTreeSelection                                                    */
+/*============================================================================*/
+
+::class GtkTreeSelection public
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxTreeSelectionNewFromPtr"
+::METHOD get_selected_rows EXTERNAL "LIBRARY rexxgtk GrxTreeSelectionGetSelectedRows"
+::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxTreeSelectionSignalConnect"
+
+-- The following are the methods that can be connected to signals. By default
+-- they do nothing.
+
+::method signal_changed
+return
+
+
+/*============================================================================*/
 /* Class: GtkCalendar                                                         */
 /*============================================================================*/
 
