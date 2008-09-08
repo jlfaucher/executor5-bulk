@@ -221,7 +221,8 @@ return retObj
   if haveRPM then sample = checkRpmForSample(name)
   if sample \== .nil then return sample
 
-  if haveDPKG then return checkDpkgForSample(name)
+  if haveDPKG then sample = checkDpkgForSample(name)
+  return sample
 
 ::routine checkRpmForSample
   use strict arg name
