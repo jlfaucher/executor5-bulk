@@ -4251,8 +4251,14 @@ return testResult
 
 ::method "test_1321"
    self~expectSyntax(42.1)
-   minval=1e-999999999
-   maxval=1e+999999999
+   if digits() == 9 then do
+       minval=1e-999999999
+       maxval=1e+999999999
+   end
+   else do
+       minval=1e-999999999999999999
+       maxval=1e+999999999999999999
+   end
    xre=maxval // minval ** 2
 
 ::method "test_1322"

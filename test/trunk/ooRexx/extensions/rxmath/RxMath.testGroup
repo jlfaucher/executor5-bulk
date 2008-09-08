@@ -131,7 +131,10 @@ return testResult
     end
 
 -- Test that default numeric digits' value is used if expression is not specified
-    expected = sqrt_expected[self~digits]
+    if self~digits == 9 then
+        expected = sqrt_expected[self~digits]
+    else
+        expected = sqrt_expected[16]
     self~assertSame(expected, RxCalcSqrt(3))
 
 -- Test that manually set numeric digits' value is used if expression is not specified
