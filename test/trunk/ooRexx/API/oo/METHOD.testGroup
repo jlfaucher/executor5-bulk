@@ -86,123 +86,123 @@ return testResult
   -- Over-ride the default test type
   self~ooTestType = .ooTestTypes~NATIVE_API_TEST
 
+-- The following tests the functions for 0-10 arguments
 ::method 'test000'
-  self~assertSame(1, self~tstargs000())
-
-::method 'test001'
-  self~assertSame(1, self~tstargs001(1))
-
-::method 'test001'
-  self~assertSame(1, self~tstargs001(1))
+  self~assertSame(0, self~tstargs000())
 
 ::method 'test002'
-  self~assertSame(2, self~tstargs002(1,1))
+  self~assertSame(1, self~tstargs001(1))
 
 ::method 'test003'
-  self~assertSame(3, self~tstargs003(1,1,1))
+  self~assertSame(2, self~tstargs002(1,1))
 
 ::method 'test004'
-  self~assertSame(4, self~tstargs004(1,1,1,1))
+  self~assertSame(3, self~tstargs003(1,1,1))
 
 ::method 'test005'
-  self~assertSame(5, self~tstargs005(1,1,1,1,1))
+  self~assertSame(4, self~tstargs004(1,1,1,1))
 
 ::method 'test006'
-  self~assertSame(6, self~tstargs006(1,1,1,1,1,1))
+  self~assertSame(5, self~tstargs005(1,1,1,1,1))
 
 ::method 'test007'
-  self~assertSame(7, self~tstargs007(1,1,1,1,1,1,1))
+  self~assertSame(6, self~tstargs006(1,1,1,1,1,1))
 
 ::method 'test008'
-  self~assertSame(8, self~tstargs008(1,1,1,1,1,1,1,1))
+  self~assertSame(7, self~tstargs007(1,1,1,1,1,1,1))
 
 ::method 'test009'
-  self~assertSame(9, self~tstargs009(1,1,1,1,1,1,1,1,1))
+  self~assertSame(8, self~tstargs008(1,1,1,1,1,1,1,1))
 
 ::method 'test010'
-  self~assertSame(10, self~tstargs010(1,1,1,1,1,1,1,1,1,1))
+  self~assertSame(9, self~tstargs009(1,1,1,1,1,1,1,1,1))
 
 ::method 'test011'
-  self~expectSyntax('93.902')
+  self~assertSame(10, self~tstargs010(1,1,1,1,1,1,1,1,1,1))
+
+-- The following error tests the functions for 0-10 arguments
+::method 'test013'
+  self~expectSyntax('88.922')
   self~assertSame(0, self~tstargs000(1))
 
-::method 'test012'
-  self~expectSyntax('93.902')
+::method 'test014'
+  self~expectSyntax('88.922')
   self~assertSame(1, self~tstargs001(1,1))
 
-::method 'test013'
-  self~expectSyntax('93.902')
+::method 'test015'
+  self~expectSyntax('88.922')
   self~assertSame(2, self~tstargs002(1,1,1))
 
-::method 'test014'
-  self~expectSyntax('93.902')
+::method 'test016'
+  self~expectSyntax('88.922')
   self~assertSame(3, self~tstargs003(1,1,1,1))
 
-::method 'test015'
-  self~expectSyntax('93.902')
+::method 'test017'
+  self~expectSyntax('88.922')
   self~assertSame(4, self~tstargs004(1,1,1,1,1))
 
-::method 'test016'
-  self~expectSyntax('93.902')
+::method 'test018'
+  self~expectSyntax('88.922')
   self~assertSame(5, self~tstargs005(1,1,1,1,1,1))
 
-::method 'test017'
-  self~expectSyntax('93.902')
+::method 'test019'
+  self~expectSyntax('88.922')
   self~assertSame(6, self~tstargs006(1,1,1,1,1,1,1))
 
-::method 'test018'
-  self~expectSyntax('93.902')
+::method 'test020'
+  self~expectSyntax('88.922')
   self~assertSame(7, self~tstargs007(1,1,1,1,1,1,1,1))
 
-::method 'test019'
-  self~expectSyntax('93.902')
+::method 'test021'
+  self~expectSyntax('88.922')
   self~assertSame(8, self~tstargs008(1,1,1,1,1,1,1,1,1))
 
-::method 'test020'
-  self~expectSyntax('93.902')
+::method 'test022'
+  self~expectSyntax('88.922')
   self~assertSame(9, self~tstargs009(1,1,1,1,1,1,1,1,1,1))
 
-::method 'test021'
-  self~expectSyntax('93.902')
+::method 'test023'
+  self~expectSyntax('88.922')
   self~assertSame(10, self~tstargs010(1,1,1,1,1,1,1,1,1,1,1))
 
-::method 'test022'
-  self~expectSyntax('93.901')
+::method 'test024'
+  self~expectSyntax('88.901')
   self~assertSame(1, self~tstargs001())
 
-::method 'test023'
-  self~expectSyntax('93.901')
+-- The following error tests the functions for 0-10 arguments
+::method 'test025'
+  self~expectSyntax('88.901')
   self~assertSame(2, self~tstargs002(1))
 
-::method 'test024'
-  self~expectSyntax('93.901')
+::method 'test026'
+  self~expectSyntax('88.901')
   self~assertSame(3, self~tstargs003(1,1))
 
-::method 'test025'
-  self~expectSyntax('93.901')
+::method 'test027'
+  self~expectSyntax('88.901')
   self~assertSame(4, self~tstargs004(1,1,1))
 
-::method 'test026'
-  self~expectSyntax('93.901')
+::method 'test028'
+  self~expectSyntax('88.901')
   self~assertSame(5, self~tstargs005(1,1,1,1))
 
-::method 'test027'
-  self~expectSyntax('93.901')
+::method 'test029'
+  self~expectSyntax('88.901')
   self~assertSame(6, self~tstargs006(1,1,1,1,1))
 
-::method 'test028'
-  self~expectSyntax('93.901')
+::method 'test030'
+  self~expectSyntax('88.901')
   self~assertSame(7, self~tstargs007(1,1,1,1,1,1))
 
-::method 'test029'
-  self~expectSyntax('93.901')
+::method 'test031'
+  self~expectSyntax('88.901')
   self~assertSame(8, self~tstargs008(1,1,1,1,1,1,1))
 
-::method 'test030'
-  self~expectSyntax('93.901')
+::method 'test032'
+  self~expectSyntax('88.901')
   self~assertSame(9, self~tstargs009(1,1,1,1,1,1,1,1))
 
-::method 'test031'
-  self~expectSyntax('93.901')
+::method 'test033'
+  self~expectSyntax('88.901')
   self~assertSame(10, self~tstargs010(1,1,1,1,1,1,1,1,1))
 

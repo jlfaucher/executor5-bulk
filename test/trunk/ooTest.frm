@@ -256,9 +256,13 @@ return a
   ::method FRAMEWORK_EXAMPLE_TEST   class; return 9
   ::method FRAMEWORK_EXAMPLE_TEST;         return 9
 
+  -- A test type for the ooRexx APIs.
+  ::method NATIVE_API_TEST   class; return 10
+  ::method NATIVE_API_TEST;         return 10
 
-  ::method MAX_TEST_TYPE  class; return 10
-  ::method MAX_TEST_TYPE;        return 10
+
+  ::method MAX_TEST_TYPE  class; return 11
+  ::method MAX_TEST_TYPE;        return 11
 
   /** all()
    * Returns a set of all the test types possible.
