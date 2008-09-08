@@ -178,7 +178,10 @@ return testResult
 
 ::method "test_29"
    self~expectSyntax(93.943)
-   self~assertSame(1E1234567890~abs, 1)
+   if digits() == 9 then
+       x = 1E1234567890~abs
+   else
+       x = 1E1234567899999999990~abs
 
 ::method "test_30"
    self~expectSyntax(93.943)

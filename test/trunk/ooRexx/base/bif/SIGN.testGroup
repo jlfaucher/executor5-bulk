@@ -118,7 +118,10 @@ return testResult
 
 ::method 'test015'
     self~expectSyntax(93.943)
-    xre = sign('999999999e999999999')
+    if digits() == 9 then
+        xre = sign('999999999e999999999')
+    else
+        xre = sign('999999999e999999999999999999')
 
 ::method 'test016'
     self~expectSyntax(93.943)
@@ -143,14 +146,20 @@ return testResult
 
 ::method 'test019'
     self~expectSyntax(93.943)
-    xre = sign('0.1e9999999999')
+    if digits() == 9 then
+        xre = sign('0.1e9999999999')
+    else
+xre = sign('0.1e9999999999999999999')
 
 ::method 'test020'
     self~assertSame('1', sign('3132'x))
 
 ::method 'test021'
     self~expectSyntax(93.943)
-    xre = sign(999e999999999)
+    if digits() == 9 then
+        xre = sign(999e999999999)
+    else
+        xre = sign(999e999999999999999999)
 
 ::method 'test022'
     self~expectSyntax(41.1)
