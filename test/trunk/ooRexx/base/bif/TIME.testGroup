@@ -627,7 +627,9 @@ return testResult
 ::method test_validOpt_bigChar_F
    a = d2c(70)
    y = time(a); z = time(a)
-   self~assertEquals(y, z)
+   -- On a fast system and since the above is 2 separate instructions, z can be
+   -- slightly greate than y
+   self~assertTrue(y <= z)
 
 ::method test_invalidOpt_hex_47
    a = d2c(71)
@@ -793,7 +795,9 @@ return testResult
 ::method test_validOpt_littleChar_f
    a = d2c(102)
    y = time(a); z = time(a)
-   self~assertEquals(y, z)
+   -- On a fast system and since the above is 2 separate instructions, z can be
+   -- slightly greate than y
+   self~assertTrue(y <= z)
 
 ::method test_invalidOpt_hex_67
    a = d2c(103)
