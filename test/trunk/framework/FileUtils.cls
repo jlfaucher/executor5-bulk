@@ -273,7 +273,13 @@ return retObj
   return escName || tmp
 
 
-/** findBuildRoot()  A private helper function. */
+/** findBuildRoot()
+ * A private helper function that assumes the test suite was started from a
+ * developer's build directory and returns what directory that is.
+ *
+ * Note: The caller is resposible for maintaining her local working directory.
+ *       This function may change directories.
+ */
 ::routine findBuildRoot
   use strict arg os
 
@@ -286,7 +292,12 @@ return retObj
         tmp = directory("..\")
         if tmp \== "" then buildRoot = directory()
       end
-      when os == "LINUX" then buildRoot = directory()
+      when os == "LINUX" then do
+        if tmp~right(6) == "/.libs" then do
+          tmp = directory("../")
+        end
+        if tmp \== "" then buildRoot = directory()
+      end
       otherwise nop
     end
     -- End select
