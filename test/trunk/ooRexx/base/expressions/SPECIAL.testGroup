@@ -242,21 +242,30 @@ return testResult
 
 ::method "test_42"
    self~expectSyntax(41.1)
-   XX9999999999=9e9999999999;
+   if digits() == 9 then
+       XX9999999999=9e9999999999;
+   else
+       XX9999999999=9e9999999999999999999;
    xre=0+9E9999999999+ft()
    return
    ft:  x=6 ; Return 1
 
 ::method "test_43"
    self~expectSyntax(41.1)
-   XX9999999999=9e9999999999;
+   if digits() == 9 then
+       XX9999999999=9e9999999999;
+   else
+       XX9999999999=9e9999999999999999999;
    xre=0+xx9999999999+ft()
    return
    ft:  x=6 ; Return 1
 
 ::method "test_44"
    self~expectSyntax(41.1)
-   xre=ft()+9E9999999999+0
+   if digits() == 9 then
+       xre=ft()+9E9999999999+0
+   else
+       xre=ft()+9E9999999999999999999+0
    return
    ft:  x=6 ; Return 1
 
@@ -268,15 +277,27 @@ return testResult
 
 ::method "test_46"
    self~expectSyntax(42.901)
-   a=9E999999999
-   xre=a+2E999999999/ft()
+   if digits() == 9 then do
+       a=9E999999999
+       xre=a+2E999999999/ft()
+   end
+   else do
+       a=9E999999999999999999
+       xre=a+2E999999999999999999/ft()
+   end
    return
    ft:  x=6 ; Return 1
 
 ::method "test_47"
    self~expectSyntax(42.901)
-   a=9E999999999
-   xre=(a+2E999999999)/ft()
+   if digits() == 9 then do
+       a=9E999999999
+       xre=(a+2E999999999)/ft()
+   end
+   else do
+       a=9E999999999999999999
+       xre=(a+2E999999999999999999)/ft()
+   end
    return
    ft:  x=6 ; Return 1
 

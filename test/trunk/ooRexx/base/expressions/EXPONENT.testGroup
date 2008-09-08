@@ -424,11 +424,17 @@ return testResult
 
 ::method "test_77"
    self~expectSyntax(42.1)
-   self~assertSame(9E999999999 ** 3, 1)
+   if digits() == 9 then
+       x = 9E999999999 ** 3
+   else
+       x = 9E999999999999999999 ** 3
 
 ::method "test_78"
    self~expectSyntax(42.1)
-   self~assertSame(9E999999999 ** 999999999, 1)
+   if digits() == 9 then
+       x = 9E999999999 ** 999999999
+   else
+       x = 9E999999999999999999 ** 999999999
 
 ::method "test_79"
    self~expectSyntax(26.8)
@@ -442,38 +448,60 @@ return testResult
 
 ::method "test_81"
    self~expectSyntax(42.1)
+   defaultDigits = digits()
    Numeric Digits 100
-   self~assertSame(9E999999999 ** 999999999, 1)
+   if defaultDigits == 9 then
+       x = 9E999999999 ** 999999999
+   else
+       x = 9E999999999999999999 ** 999999999
 
 ::method "test_82"
    self~expectSyntax(42.1)
-   self~assertSame(9E999999999 ** 999999999, 1)
+   if digits() == 9 then
+       x = 9E999999999 ** 999999999
+   else
+       x = 9E999999999999999999 ** 999999999
 
 ::method "test_83"
    self~expectSyntax(41.1)
-   op = 0.1E-999999999
-   self~assertSame(op ** 999999999, 1)
+   if digits() == 9 then
+       op = 0.1E-999999999
+   else
+       op = 0.1E-999999999999999999
+   x = op ** 999999999
 
 ::method "test_84"
    self~assertSame(1E-999999999 ** 1, 1E-999999999)
 
 ::method "test_85"
    self~expectSyntax(42.1)
-   self~assertSame(1E-999999999 ** 3, 1)
+   if digits() == 9 then
+       x = 1E-999999999 ** 3
+   else
+       x = 1E-999999999999999999 ** 3
 
 ::method "test_86"
    self~expectSyntax(41.1)
-   op = 0.1E-999999999
-   self~assertSame(op ** 1, 1)
+   if digits() == 9 then
+       op = 0.1E-999999999
+   else
+       op = 0.1E-999999999999999999
+   x = op ** 1
 
 ::method "test_87"
    self~expectSyntax(41.1)
-   op = 0.1E-999999999
-   self~assertSame(op ** 3, 1)
+   if digits() == 9 then
+       op = 0.1E-999999999
+   else
+       op = 0.1E-999999999999999999
+   x = op ** 3
 
 ::method "test_88"
    self~expectSyntax(26.8)
-   self~assertSame(2 ** 9999999999, 1)
+   if digits() == 9 then
+       x = 2 ** 9999999999
+   else
+       x = 2 ** 9999999999999999999
 
 ::method "test_89"
    Numeric Digits 1
