@@ -35,6 +35,8 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
+#include <oorexxapi.h>
+
 
 RexxMethod0(int,                       // Return type
             TstArgs000)                // Object_method name
@@ -49,7 +51,7 @@ RexxMethod1(int,                       // Return type
 #include "tstargs001.cpp"
 }
 
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             TstArgs002,                // Object_method name
             int, arg1,                 // Argument
             int, arg2)                 // Argument
@@ -57,18 +59,18 @@ RexxMethod1(int,                       // Return type
 #include "tstargs002.cpp"
 }
 
-RexxMethod1(int,                       // Return type
+RexxMethod3(int,                       // Return type
             TstArgs003,                // Object_method name
-            int, arg1)                 // Argument
+            int, arg1,                 // Argument
             int, arg2,                 // Argument
             int, arg3)                 // Argument
 {
 #include "tstargs003.cpp"
 }
 
-RexxMethod1(int,                       // Return type
+RexxMethod4(int,                       // Return type
             TstArgs004,                // Object_method name
-            int, arg1)                 // Argument
+            int, arg1,                 // Argument
             int, arg2,                 // Argument
             int, arg3,                 // Argument
             int, arg4)                 // Argument
@@ -76,9 +78,9 @@ RexxMethod1(int,                       // Return type
 #include "tstargs004.cpp"
 }
 
-RexxMethod1(int,                       // Return type
+RexxMethod5(int,                       // Return type
             TstArgs005,                // Object_method name
-            int, arg1)                 // Argument
+            int, arg1,                 // Argument
             int, arg2,                 // Argument
             int, arg3,                 // Argument
             int, arg4,                 // Argument
@@ -87,9 +89,9 @@ RexxMethod1(int,                       // Return type
 #include "tstargs005.cpp"
 }
 
-RexxMethod1(int,                       // Return type
+RexxMethod6(int,                       // Return type
             TstArgs006,                // Object_method name
-            int, arg1)                 // Argument
+            int, arg1,                 // Argument
             int, arg2,                 // Argument
             int, arg3,                 // Argument
             int, arg4,                 // Argument
@@ -99,9 +101,9 @@ RexxMethod1(int,                       // Return type
 #include "tstargs006.cpp"
 }
 
-RexxMethod1(int,                       // Return type
+RexxMethod7(int,                       // Return type
             TstArgs007,                // Object_method name
-            int, arg1)                 // Argument
+            int, arg1,                 // Argument
             int, arg2,                 // Argument
             int, arg3,                 // Argument
             int, arg4,                 // Argument
@@ -112,9 +114,9 @@ RexxMethod1(int,                       // Return type
 #include "tstargs007.cpp"
 }
 
-RexxMethod1(int,                       // Return type
+RexxMethod8(int,                       // Return type
             TstArgs008,                // Object_method name
-            int, arg1)                 // Argument
+            int, arg1,                 // Argument
             int, arg2,                 // Argument
             int, arg3,                 // Argument
             int, arg4,                 // Argument
@@ -126,9 +128,9 @@ RexxMethod1(int,                       // Return type
 #include "tstargs008.cpp"
 }
 
-RexxMethod1(int,                       // Return type
+RexxMethod9(int,                       // Return type
             TstArgs009,                // Object_method name
-            int, arg1)                 // Argument
+            int, arg1,                 // Argument
             int, arg2,                 // Argument
             int, arg3,                 // Argument
             int, arg4,                 // Argument
@@ -141,9 +143,9 @@ RexxMethod1(int,                       // Return type
 #include "tstargs009.cpp"
 }
 
-RexxMethod1(int,                       // Return type
+RexxMethod10(int,                       // Return type
             TstArgs010,                // Object_method name
-            int, arg1)                 // Argument
+            int, arg1,                 // Argument
             int, arg2,                 // Argument
             int, arg3,                 // Argument
             int, arg4,                 // Argument
@@ -178,7 +180,7 @@ RexxPackageEntry UnitTest_package_entry = {
     STANDARD_PACKAGE_HEADER
     REXX_INTERPRETER_4_0_0,              // anything after 4.0.0 will work
     "UnitTest",                          // name of the package
-    VERSTRING("1.0.0").                  // package information
+    "1.0.0",                             // package information
     NULL,                                // no load/unload functions
     NULL,
     NULL,                                // the exported routines

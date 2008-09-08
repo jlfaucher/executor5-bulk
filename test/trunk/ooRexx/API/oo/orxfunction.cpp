@@ -35,6 +35,8 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
+#include <oorexxapi.h>
+
 
 RexxRoutine0(int,                      // Return type
             TstArgs000)                // Function routine name
@@ -49,7 +51,7 @@ RexxRoutine1(int,                      // Return type
 #include "tstargs001.cpp"
 }
 
-RexxRoutine1(int,                      // Return type
+RexxRoutine2(int,                      // Return type
             TstArgs002,                // Function routine name
             int, arg1,                 // Argument
             int, arg2)                 // Argument
@@ -57,18 +59,18 @@ RexxRoutine1(int,                      // Return type
 #include "tstargs002.cpp"
 }
 
-RexxRoutine1(int,                      // Return type
+RexxRoutine3(int,                      // Return type
             TstArgs003,                // Function routine name
-            int, arg1)                 // Argument
+            int, arg1,                 // Argument
             int, arg2,                 // Argument
             int, arg3)                 // Argument
 {
 #include "tstargs003.cpp"
 }
 
-RexxRoutine1(int,                      // Return type
+RexxRoutine4(int,                      // Return type
             TstArgs004,                // Function routine name
-            int, arg1)                 // Argument
+            int, arg1,                 // Argument
             int, arg2,                 // Argument
             int, arg3,                 // Argument
             int, arg4)                 // Argument
@@ -76,9 +78,9 @@ RexxRoutine1(int,                      // Return type
 #include "tstargs004.cpp"
 }
 
-RexxRoutine1(int,                      // Return type
+RexxRoutine5(int,                      // Return type
             TstArgs005,                // Function routine name
-            int, arg1)                 // Argument
+            int, arg1,                 // Argument
             int, arg2,                 // Argument
             int, arg3,                 // Argument
             int, arg4,                 // Argument
@@ -87,9 +89,9 @@ RexxRoutine1(int,                      // Return type
 #include "tstargs005.cpp"
 }
 
-RexxRoutine1(int,                      // Return type
+RexxRoutine6(int,                      // Return type
             TstArgs006,                // Function routine name
-            int, arg1)                 // Argument
+            int, arg1,                 // Argument
             int, arg2,                 // Argument
             int, arg3,                 // Argument
             int, arg4,                 // Argument
@@ -99,9 +101,9 @@ RexxRoutine1(int,                      // Return type
 #include "tstargs006.cpp"
 }
 
-RexxRoutine1(int,                      // Return type
+RexxRoutine7(int,                      // Return type
             TstArgs007,                // Function routine name
-            int, arg1)                 // Argument
+            int, arg1,                 // Argument
             int, arg2,                 // Argument
             int, arg3,                 // Argument
             int, arg4,                 // Argument
@@ -112,9 +114,9 @@ RexxRoutine1(int,                      // Return type
 #include "tstargs007.cpp"
 }
 
-RexxRoutine1(int,                      // Return type
+RexxRoutine8(int,                      // Return type
             TstArgs008,                // Function routine name
-            int, arg1)                 // Argument
+            int, arg1,                 // Argument
             int, arg2,                 // Argument
             int, arg3,                 // Argument
             int, arg4,                 // Argument
@@ -126,9 +128,9 @@ RexxRoutine1(int,                      // Return type
 #include "tstargs008.cpp"
 }
 
-RexxRoutine1(int,                      // Return type
+RexxRoutine9(int,                      // Return type
             TstArgs009,                // Function routine name
-            int, arg1)                 // Argument
+            int, arg1,                 // Argument
             int, arg2,                 // Argument
             int, arg3,                 // Argument
             int, arg4,                 // Argument
@@ -141,9 +143,9 @@ RexxRoutine1(int,                      // Return type
 #include "tstargs009.cpp"
 }
 
-RexxRoutine1(int,                      // Return type
+RexxRoutine10(int,                      // Return type
             TstArgs010,                // Function routine name
-            int, arg1)                 // Argument
+            int, arg1,                 // Argument
             int, arg2,                 // Argument
             int, arg3,                 // Argument
             int, arg4,                 // Argument
@@ -178,7 +180,7 @@ RexxPackageEntry UnitTest_package_entry = {
     STANDARD_PACKAGE_HEADER
     REXX_INTERPRETER_4_0_0,              // anything after 4.0.0 will work
     "UnitTest",                          // name of the package
-    VERSTRING("1.0.0").                  // package information
+    "1.0.0",                             // package information
     NULL,                                // no load/unload functions
     NULL,
     orxtest_funcs,                       // the exported routines
