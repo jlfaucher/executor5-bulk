@@ -222,6 +222,63 @@ RexxRoutine1(uint64_t,                 // Return type
     return arg1;
 }
 
+RexxRoutine1(wholenumber_t,            // Return type
+            TstArgs020,                // Function routine name
+            wholenumber_t, arg1)       // Argument
+{
+    return arg1;
+}
+
+RexxRoutine1(logical_t,                // Return type
+            TstArgs021,                // Function routine name
+            logical_t, arg1)           // Argument
+{
+    return arg1;
+}
+
+RexxRoutine1(float,                    // Return type
+            TstArgs022,                // Function routine name
+            float, arg1)               // Argument
+{
+    return arg1;
+}
+
+RexxRoutine1(double,                   // Return type
+            TstArgs023,                // Function routine name
+            double, arg1)              // Argument
+{
+    return arg1;
+}
+
+RexxRoutine1(CSTRING,                  // Return type
+            TstArgs024,                // Function routine name
+            CSTRING, arg1)             // Argument
+{
+    return arg1;
+}
+
+RexxRoutine0(POINTER,                  // Return type
+            TstArgs025a)               // Function routine name
+{
+    return (void *)TstArgs025a;
+}
+
+RexxRoutine1(logical_t,                // Return type
+            TstArgs025b,               // Function routine name
+            POINTER, arg1)             // Argument
+{
+    if (arg1 == TstArgs025a) {
+        return 1;
+    }
+    return 0;
+}
+
+RexxRoutine0(POINTER,                  // Return type
+            TstArgs025c)               // Function routine name
+{
+    return NULL;
+}
+
 
 RexxRoutineEntry orxtest_funcs[] = {
     REXX_TYPED_ROUTINE(TstArgs000, TstArgs000),
@@ -244,6 +301,14 @@ RexxRoutineEntry orxtest_funcs[] = {
     REXX_TYPED_ROUTINE(TstArgs017, TstArgs017),
     REXX_TYPED_ROUTINE(TstArgs018, TstArgs018),
     REXX_TYPED_ROUTINE(TstArgs019, TstArgs019),
+    REXX_TYPED_ROUTINE(TstArgs020, TstArgs020),
+    REXX_TYPED_ROUTINE(TstArgs021, TstArgs021),
+    REXX_TYPED_ROUTINE(TstArgs022, TstArgs022),
+    REXX_TYPED_ROUTINE(TstArgs023, TstArgs023),
+    REXX_TYPED_ROUTINE(TstArgs024, TstArgs024),
+    REXX_TYPED_ROUTINE(TstArgs025a, TstArgs025a),
+    REXX_TYPED_ROUTINE(TstArgs025b, TstArgs025b),
+    REXX_TYPED_ROUTINE(TstArgs025c, TstArgs025c),
     REXX_LAST_ROUTINE()
 };
 

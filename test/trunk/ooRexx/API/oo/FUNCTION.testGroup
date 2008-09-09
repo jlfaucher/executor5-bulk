@@ -85,6 +85,14 @@ return testResult
 ::routine tstargs017 EXTERNAL "LIBRARY orxfunction TstArgs017"
 ::routine tstargs018 EXTERNAL "LIBRARY orxfunction TstArgs018"
 ::routine tstargs019 EXTERNAL "LIBRARY orxfunction TstArgs019"
+::routine tstargs020 EXTERNAL "LIBRARY orxfunction TstArgs020"
+::routine tstargs021 EXTERNAL "LIBRARY orxfunction TstArgs021"
+::routine tstargs022 EXTERNAL "LIBRARY orxfunction TstArgs022"
+::routine tstargs023 EXTERNAL "LIBRARY orxfunction TstArgs023"
+::routine tstargs024 EXTERNAL "LIBRARY orxfunction TstArgs024"
+::routine tstargs025a EXTERNAL "LIBRARY orxfunction TstArgs025a"
+::routine tstargs025b EXTERNAL "LIBRARY orxfunction TstArgs025b"
+::routine tstargs025c EXTERNAL "LIBRARY orxfunction TstArgs025c"
 
 -- class named exactly like file
 ::class "FUNCTION.testGroup" subclass ooTestCase public
@@ -320,4 +328,71 @@ return testResult
   self~assertSame(val, tstargs019(val))
   val = 1
   self~assertSame(val, tstargs019(val))
+
+-- test wholenumber_t
+::method 'test041'
+  val = 0
+  self~assertSame(val, tstargs020(val))
+  val = 65535
+  self~assertSame(val, tstargs020(val))
+  val = 1
+  self~assertSame(val, tstargs020(val))
+
+-- test logical_t
+::method 'test042'
+  val = .true
+  self~assertSame(val, tstargs021(val))
+  val = .false
+  self~assertSame(val, tstargs021(val))
+  val = 2
+  self~expectSyntax('34.901')
+  self~assertSame(val, tstargs021(val))
+
+-- test float
+::method 'test043'
+  numeric digits 15
+  val = 3.40282347E+38
+  self~assertSame(val, tstargs022(val))
+  val = 1.17549435E-38
+  self~assertSame(val, tstargs022(val))
+  val = 0
+  self~assertSame(val, tstargs022(val))
+  val = 1
+  self~assertSame(val, tstargs022(val))
+  val = -1
+  self~assertSame(val, tstargs022(val))
+
+-- test double
+::method 'test044'
+  numeric digits 23
+  val = 1.79769313E+308
+  self~assertSame(val, tstargs023(val))
+  val = 2.22507386E-308
+  self~assertSame(val, tstargs023(val))
+  val = 0
+  self~assertSame(val, tstargs023(val))
+  val = 1
+  self~assertSame(val, tstargs023(val))
+  val = -1
+  self~assertSame(val, tstargs023(val))
+
+-- test CSTRING
+::method 'test045'
+  val = ''
+  self~assertSame(val, tstargs024(val))
+  val = copies('AbCdEfGhIjKlMnOpQrStUvWxYz0123456789', 1)
+  self~assertSame(val, tstargs024(val))
+  val = copies('AbCdEfGhIjKlMnOpQrStUvWxYz0123456789', 10)
+  self~assertSame(val, tstargs024(val))
+  val = copies('AbCdEfGhIjKlMnOpQrStUvWxYz0123456789', 100)
+  self~assertSame(val, tstargs024(val))
+  val = copies('AbCdEfGhIjKlMnOpQrStUvWxYz0123456789', 1000)
+  self~assertSame(val, tstargs024(val))
+
+-- test POINTER
+::method 'test046'
+  val = tstargs025a()
+  self~assertTrue(tstargs025b(val))
+  val = tstargs025c()
+  self~assertTrue(val~isNull())
 

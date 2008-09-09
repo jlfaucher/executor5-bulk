@@ -222,6 +222,63 @@ RexxMethod1(uint64_t,                  // Return type
     return arg1;
 }
 
+RexxMethod1(wholenumber_t,             // Return type
+            TstArgs020,                // Function routine name
+            wholenumber_t, arg1)       // Argument
+{
+    return arg1;
+}
+
+RexxMethod1(logical_t,                 // Return type
+            TstArgs021,                // Function routine name
+            logical_t, arg1)           // Argument
+{
+    return arg1;
+}
+
+RexxMethod1(float,                     // Return type
+            TstArgs022,                // Function routine name
+            float, arg1)               // Argument
+{
+    return arg1;
+}
+
+RexxMethod1(double,                    // Return type
+            TstArgs023,                // Function routine name
+            double, arg1)              // Argument
+{
+    return arg1;
+}
+
+RexxMethod1(CSTRING,                   // Return type
+            TstArgs024,                // Function routine name
+            CSTRING, arg1)             // Argument
+{
+    return arg1;
+}
+
+RexxMethod0(POINTER,                   // Return type
+           TstArgs025a)                // Function routine name
+{
+    return (void *)TstArgs025a;
+}
+
+RexxMethod1(logical_t,                 // Return type
+           TstArgs025b,                // Function routine name
+           POINTER, arg1)              // Argument
+{
+    if (arg1 == TstArgs025a) {
+        return 1;
+    }
+    return 0;
+}
+
+RexxMethod0(POINTER,                   // Return type
+           TstArgs025c)                // Function routine name
+{
+    return NULL;
+}
+
 
 RexxMethodEntry orxtest_methods[] = {
     REXX_METHOD(TstArgs000, TstArgs000),
@@ -244,6 +301,14 @@ RexxMethodEntry orxtest_methods[] = {
     REXX_METHOD(TstArgs017, TstArgs017),
     REXX_METHOD(TstArgs018, TstArgs018),
     REXX_METHOD(TstArgs019, TstArgs019),
+    REXX_METHOD(TstArgs020, TstArgs020),
+    REXX_METHOD(TstArgs021, TstArgs021),
+    REXX_METHOD(TstArgs022, TstArgs022),
+    REXX_METHOD(TstArgs023, TstArgs023),
+    REXX_METHOD(TstArgs024, TstArgs024),
+    REXX_METHOD(TstArgs025a, TstArgs025a),
+    REXX_METHOD(TstArgs025b, TstArgs025b),
+    REXX_METHOD(TstArgs025c, TstArgs025c),
     REXX_LAST_METHOD()
 };
 
