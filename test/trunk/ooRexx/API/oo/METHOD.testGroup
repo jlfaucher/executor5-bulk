@@ -99,124 +99,124 @@ return testResult
 ::method 'test000'
   self~assertSame(0, self~tstargs000())
 
-::method 'test002'
+::method 'test001'
   self~assertSame(1, self~tstargs001(1))
 
-::method 'test003'
+::method 'test002'
   self~assertSame(2, self~tstargs002(1,1))
 
-::method 'test004'
+::method 'test003'
   self~assertSame(3, self~tstargs003(1,1,1))
 
-::method 'test005'
+::method 'test004'
   self~assertSame(4, self~tstargs004(1,1,1,1))
 
-::method 'test006'
+::method 'test005'
   self~assertSame(5, self~tstargs005(1,1,1,1,1))
 
-::method 'test007'
+::method 'test006'
   self~assertSame(6, self~tstargs006(1,1,1,1,1,1))
 
-::method 'test008'
+::method 'test007'
   self~assertSame(7, self~tstargs007(1,1,1,1,1,1,1))
 
-::method 'test009'
+::method 'test008'
   self~assertSame(8, self~tstargs008(1,1,1,1,1,1,1,1))
 
-::method 'test010'
+::method 'test009'
   self~assertSame(9, self~tstargs009(1,1,1,1,1,1,1,1,1))
 
-::method 'test011'
+::method 'test010'
   self~assertSame(10, self~tstargs010(1,1,1,1,1,1,1,1,1,1))
 
 -- The following error tests the functions for 0-10 arguments
-::method 'test013'
+::method 'test011'
   self~expectSyntax('88.922')
   self~assertSame(0, self~tstargs000(1))
 
-::method 'test014'
+::method 'test012'
   self~expectSyntax('88.922')
   self~assertSame(1, self~tstargs001(1,1))
 
-::method 'test015'
+::method 'test013'
   self~expectSyntax('88.922')
   self~assertSame(2, self~tstargs002(1,1,1))
 
-::method 'test016'
+::method 'test014'
   self~expectSyntax('88.922')
   self~assertSame(3, self~tstargs003(1,1,1,1))
 
-::method 'test017'
+::method 'test015'
   self~expectSyntax('88.922')
   self~assertSame(4, self~tstargs004(1,1,1,1,1))
 
-::method 'test018'
+::method 'test016'
   self~expectSyntax('88.922')
   self~assertSame(5, self~tstargs005(1,1,1,1,1,1))
 
-::method 'test019'
+::method 'test017'
   self~expectSyntax('88.922')
   self~assertSame(6, self~tstargs006(1,1,1,1,1,1,1))
 
-::method 'test020'
+::method 'test018'
   self~expectSyntax('88.922')
   self~assertSame(7, self~tstargs007(1,1,1,1,1,1,1,1))
 
-::method 'test021'
+::method 'test019'
   self~expectSyntax('88.922')
   self~assertSame(8, self~tstargs008(1,1,1,1,1,1,1,1,1))
 
-::method 'test022'
+::method 'test020'
   self~expectSyntax('88.922')
   self~assertSame(9, self~tstargs009(1,1,1,1,1,1,1,1,1,1))
 
-::method 'test023'
+::method 'test021'
   self~expectSyntax('88.922')
   self~assertSame(10, self~tstargs010(1,1,1,1,1,1,1,1,1,1,1))
 
-::method 'test024'
+::method 'test022'
   self~expectSyntax('88.901')
   self~assertSame(1, self~tstargs001())
 
 -- The following error tests the functions for 0-10 arguments
-::method 'test025'
+::method 'test023'
   self~expectSyntax('88.901')
   self~assertSame(2, self~tstargs002(1))
 
-::method 'test026'
+::method 'test024'
   self~expectSyntax('88.901')
   self~assertSame(3, self~tstargs003(1,1))
 
-::method 'test027'
+::method 'test025'
   self~expectSyntax('88.901')
   self~assertSame(4, self~tstargs004(1,1,1))
 
-::method 'test028'
+::method 'test026'
   self~expectSyntax('88.901')
   self~assertSame(5, self~tstargs005(1,1,1,1))
 
-::method 'test029'
+::method 'test027'
   self~expectSyntax('88.901')
   self~assertSame(6, self~tstargs006(1,1,1,1,1))
 
-::method 'test030'
+::method 'test028'
   self~expectSyntax('88.901')
   self~assertSame(7, self~tstargs007(1,1,1,1,1,1))
 
-::method 'test031'
+::method 'test029'
   self~expectSyntax('88.901')
   self~assertSame(8, self~tstargs008(1,1,1,1,1,1,1))
 
-::method 'test032'
+::method 'test030'
   self~expectSyntax('88.901')
   self~assertSame(9, self~tstargs009(1,1,1,1,1,1,1,1))
 
-::method 'test033'
+::method 'test031'
   self~expectSyntax('88.901')
   self~assertSame(10, self~tstargs010(1,1,1,1,1,1,1,1,1))
 
 -- test int
-::method 'test034'
+::method 'test032'
   numeric digits 11
   val = 0
   self~assertSame(val, self~tstargs011(val))
@@ -230,7 +230,7 @@ return testResult
   self~assertSame(val, self~tstargs011(val))
 
 -- test int32_t
-::method 'test035'
+::method 'test033'
   numeric digits 11
   val = 0
   self~assertSame(val, self~tstargs012(val))
@@ -244,7 +244,7 @@ return testResult
   self~assertSame(val, self~tstargs012(val))
 
 -- test uint32_t
-::method 'test036'
+::method 'test034'
   numeric digits 11
   val = 0
   self~assertSame(val, self~tstargs013(val))
@@ -254,7 +254,7 @@ return testResult
   self~assertSame(val, self~tstargs013(val))
 
 -- test int8_t
-::method 'test037'
+::method 'test035'
   val = 0
   self~assertSame(val, self~tstargs014(val))
   val = 127
@@ -267,7 +267,7 @@ return testResult
   self~assertSame(val, self~tstargs014(val))
 
 -- test uint8_t
-::method 'test038'
+::method 'test036'
   val = 0
   self~assertSame(val, self~tstargs015(val))
   val = 255
@@ -276,7 +276,7 @@ return testResult
   self~assertSame(val, self~tstargs015(val))
 
 -- test int16_t
-::method 'test039'
+::method 'test037'
   val = 0
   self~assertSame(val, self~tstargs016(val))
   val = 32767
@@ -289,7 +289,7 @@ return testResult
   self~assertSame(val, self~tstargs016(val))
 
 -- test uint16_t
-::method 'test040'
+::method 'test038'
   val = 0
   self~assertSame(val, self~tstargs017(val))
   val = 65535
@@ -298,7 +298,7 @@ return testResult
   self~assertSame(val, self~tstargs017(val))
 
 -- test int64_t
-::method 'test041'
+::method 'test039'
   numeric digits 20
   val = 0
   self~assertSame(val, self~tstargs018(val))
@@ -312,11 +312,11 @@ return testResult
   self~assertSame(val, self~tstargs018(val))
 
 -- test uint64_t
-::method 'test042'
-  numeric digits 40
+::method 'test040'
+  numeric digits 21
   val = 0
   self~assertSame(val, self~tstargs019(val))
-  val = 340282366920938463463374607431768211455
+  val = 18446744073709551615
   self~assertSame(val, self~tstargs019(val))
   val = 1
   self~assertSame(val, self~tstargs019(val))

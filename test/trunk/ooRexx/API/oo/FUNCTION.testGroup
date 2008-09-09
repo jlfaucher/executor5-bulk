@@ -313,10 +313,10 @@ return testResult
 
 -- test uint64_t
 ::method 'test040'
-  numeric digits 40
+  numeric digits 21
   val = 0
   self~assertSame(val, tstargs019(val))
-  val = 340282366920938463463374607431768211455
+  val = 18446744073709551615
   self~assertSame(val, tstargs019(val))
   val = 1
   self~assertSame(val, tstargs019(val))

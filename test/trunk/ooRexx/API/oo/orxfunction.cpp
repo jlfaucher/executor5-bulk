@@ -41,14 +41,14 @@
 RexxRoutine0(int,                      // Return type
             TstArgs000)                // Function routine name
 {
-#include "tstargs000.cpp"
+    return 0;
 }
 
 RexxRoutine1(int,                      // Return type
             TstArgs001,                // Function routine name
             int, arg1)                 // Argument
 {
-#include "tstargs001.cpp"
+    return 1;
 }
 
 RexxRoutine2(int,                      // Return type
@@ -56,7 +56,7 @@ RexxRoutine2(int,                      // Return type
             int, arg1,                 // Argument
             int, arg2)                 // Argument
 {
-#include "tstargs002.cpp"
+    return 2;
 }
 
 RexxRoutine3(int,                      // Return type
@@ -65,7 +65,7 @@ RexxRoutine3(int,                      // Return type
             int, arg2,                 // Argument
             int, arg3)                 // Argument
 {
-#include "tstargs003.cpp"
+    return 3;
 }
 
 RexxRoutine4(int,                      // Return type
@@ -75,7 +75,7 @@ RexxRoutine4(int,                      // Return type
             int, arg3,                 // Argument
             int, arg4)                 // Argument
 {
-#include "tstargs004.cpp"
+    return 4;
 }
 
 RexxRoutine5(int,                      // Return type
@@ -86,7 +86,7 @@ RexxRoutine5(int,                      // Return type
             int, arg4,                 // Argument
             int, arg5)                 // Argument
 {
-#include "tstargs005.cpp"
+    return 5;
 }
 
 RexxRoutine6(int,                      // Return type
@@ -98,7 +98,7 @@ RexxRoutine6(int,                      // Return type
             int, arg5,                 // Argument
             int, arg6)                 // Argument
 {
-#include "tstargs006.cpp"
+    return 6;
 }
 
 RexxRoutine7(int,                      // Return type
@@ -111,7 +111,7 @@ RexxRoutine7(int,                      // Return type
             int, arg6,                 // Argument
             int, arg7)                 // Argument
 {
-#include "tstargs007.cpp"
+    return 7;
 }
 
 RexxRoutine8(int,                      // Return type
@@ -125,7 +125,7 @@ RexxRoutine8(int,                      // Return type
             int, arg7,                 // Argument
             int, arg8)                 // Argument
 {
-#include "tstargs008.cpp"
+    return 8;
 }
 
 RexxRoutine9(int,                      // Return type
@@ -140,7 +140,7 @@ RexxRoutine9(int,                      // Return type
             int, arg8,                 // Argument
             int, arg9)                 // Argument
 {
-#include "tstargs009.cpp"
+    return 9;
 }
 
 RexxRoutine10(int,                      // Return type
@@ -156,70 +156,70 @@ RexxRoutine10(int,                      // Return type
             int, arg9,                 // Argument
             int, arg10)                // Argument
 {
-#include "tstargs010.cpp"
+    return 10;
 }
 
 RexxRoutine1(int,                      // Return type
             TstArgs011,                // Function routine name
             int, arg1)                 // Argument
 {
-#include "tstargs011.cpp"
+    return arg1;
 }
 
 RexxRoutine1(int32_t,                  // Return type
             TstArgs012,                // Function routine name
             int32_t, arg1)             // Argument
 {
-#include "tstargs012.cpp"
+    return arg1;
 }
 
 RexxRoutine1(uint32_t,                 // Return type
             TstArgs013,                // Function routine name
             uint32_t, arg1)            // Argument
 {
-#include "tstargs013.cpp"
+    return arg1;
 }
 
 RexxRoutine1(int8_t,                   // Return type
             TstArgs014,                // Function routine name
             int8_t, arg1)              // Argument
 {
-#include "tstargs014.cpp"
+    return arg1;
 }
 
 RexxRoutine1(uint8_t,                  // Return type
             TstArgs015,                // Function routine name
             uint8_t, arg1)             // Argument
 {
-#include "tstargs015.cpp"
+    return arg1;
 }
 
 RexxRoutine1(int16_t,                  // Return type
             TstArgs016,                // Function routine name
             int16_t, arg1)             // Argument
 {
-#include "tstargs016.cpp"
+    return arg1;
 }
 
 RexxRoutine1(uint16_t,                 // Return type
             TstArgs017,                // Function routine name
             uint16_t, arg1)            // Argument
 {
-#include "tstargs017.cpp"
+    return arg1;
 }
 
 RexxRoutine1(int64_t,                  // Return type
             TstArgs018,                // Function routine name
             int64_t, arg1)             // Argument
 {
-#include "tstargs018.cpp"
+    return arg1;
 }
 
 RexxRoutine1(uint64_t,                 // Return type
             TstArgs019,                // Function routine name
             uint64_t, arg1)            // Argument
 {
-#include "tstargs019.cpp"
+    return arg1;
 }
 
 

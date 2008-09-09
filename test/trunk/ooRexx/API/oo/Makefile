@@ -39,17 +39,7 @@
 # Setup
 ORXLFLAGS = --export-dynamic -shared -nostartfiles
 ORXCFLAGS =  -fPIC
-COMMON_SRC_DEPS = tstargs000.cpp \
-                  tstargs001.cpp \
-                  tstargs002.cpp \
-                  tstargs003.cpp \
-                  tstargs004.cpp \
-                  tstargs005.cpp \
-                  tstargs006.cpp \
-                  tstargs007.cpp \
-                  tstargs008.cpp \
-                  tstargs009.cpp \
-                  tstargs010.cpp
+COMMON_SRC_DEPS =
 FUNCTION_SRC_DEPS = $(COMMON_SRC_DEPS)
 METHOD_SRC_DEPS = $(COMMON_SRC_DEPS)
 
