@@ -159,6 +159,69 @@ RexxMethod10(int,                       // Return type
 #include "tstargs010.cpp"
 }
 
+RexxMethod1(int,                       // Return type
+            TstArgs011,                // Object_method name
+            int, arg1)                 // Argument
+{
+#include "tstargs011.cpp"
+}
+
+RexxMethod1(int32_t,                   // Return type
+            TstArgs012,                // Function routine name
+            int32_t, arg1)             // Argument
+{
+#include "tstargs012.cpp"
+}
+
+RexxMethod1(uint32_t,                  // Return type
+            TstArgs013,                // Function routine name
+            uint32_t, arg1)            // Argument
+{
+#include "tstargs013.cpp"
+}
+
+RexxMethod1(int8_t,                    // Return type
+            TstArgs014,                // Function routine name
+            int8_t, arg1)              // Argument
+{
+#include "tstargs014.cpp"
+}
+
+RexxMethod1(uint8_t,                   // Return type
+            TstArgs015,                // Function routine name
+            uint8_t, arg1)             // Argument
+{
+#include "tstargs015.cpp"
+}
+
+RexxMethod1(int16_t,                   // Return type
+            TstArgs016,                // Function routine name
+            int16_t, arg1)             // Argument
+{
+#include "tstargs016.cpp"
+}
+
+RexxMethod1(uint16_t,                  // Return type
+            TstArgs017,                // Function routine name
+            uint16_t, arg1)            // Argument
+{
+#include "tstargs017.cpp"
+}
+
+RexxMethod1(int64_t,                   // Return type
+            TstArgs018,                // Function routine name
+            int64_t, arg1)             // Argument
+{
+#include "tstargs018.cpp"
+}
+
+RexxMethod1(uint64_t,                  // Return type
+            TstArgs019,                // Function routine name
+            uint64_t, arg1)            // Argument
+{
+#include "tstargs019.cpp"
+}
+
 
 RexxMethodEntry orxtest_methods[] = {
     REXX_METHOD(TstArgs000, TstArgs000),
@@ -172,6 +235,15 @@ RexxMethodEntry orxtest_methods[] = {
     REXX_METHOD(TstArgs008, TstArgs008),
     REXX_METHOD(TstArgs009, TstArgs009),
     REXX_METHOD(TstArgs010, TstArgs010),
+    REXX_METHOD(TstArgs011, TstArgs011),
+    REXX_METHOD(TstArgs012, TstArgs012),
+    REXX_METHOD(TstArgs013, TstArgs013),
+    REXX_METHOD(TstArgs014, TstArgs014),
+    REXX_METHOD(TstArgs015, TstArgs015),
+    REXX_METHOD(TstArgs016, TstArgs016),
+    REXX_METHOD(TstArgs017, TstArgs017),
+    REXX_METHOD(TstArgs018, TstArgs018),
+    REXX_METHOD(TstArgs019, TstArgs019),
     REXX_LAST_METHOD()
 };
 

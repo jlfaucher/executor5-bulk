@@ -159,6 +159,69 @@ RexxRoutine10(int,                      // Return type
 #include "tstargs010.cpp"
 }
 
+RexxRoutine1(int,                      // Return type
+            TstArgs011,                // Function routine name
+            int, arg1)                 // Argument
+{
+#include "tstargs011.cpp"
+}
+
+RexxRoutine1(int32_t,                  // Return type
+            TstArgs012,                // Function routine name
+            int32_t, arg1)             // Argument
+{
+#include "tstargs012.cpp"
+}
+
+RexxRoutine1(uint32_t,                 // Return type
+            TstArgs013,                // Function routine name
+            uint32_t, arg1)            // Argument
+{
+#include "tstargs013.cpp"
+}
+
+RexxRoutine1(int8_t,                   // Return type
+            TstArgs014,                // Function routine name
+            int8_t, arg1)              // Argument
+{
+#include "tstargs014.cpp"
+}
+
+RexxRoutine1(uint8_t,                  // Return type
+            TstArgs015,                // Function routine name
+            uint8_t, arg1)             // Argument
+{
+#include "tstargs015.cpp"
+}
+
+RexxRoutine1(int16_t,                  // Return type
+            TstArgs016,                // Function routine name
+            int16_t, arg1)             // Argument
+{
+#include "tstargs016.cpp"
+}
+
+RexxRoutine1(uint16_t,                 // Return type
+            TstArgs017,                // Function routine name
+            uint16_t, arg1)            // Argument
+{
+#include "tstargs017.cpp"
+}
+
+RexxRoutine1(int64_t,                  // Return type
+            TstArgs018,                // Function routine name
+            int64_t, arg1)             // Argument
+{
+#include "tstargs018.cpp"
+}
+
+RexxRoutine1(uint64_t,                 // Return type
+            TstArgs019,                // Function routine name
+            uint64_t, arg1)            // Argument
+{
+#include "tstargs019.cpp"
+}
+
 
 RexxRoutineEntry orxtest_funcs[] = {
     REXX_TYPED_ROUTINE(TstArgs000, TstArgs000),
@@ -172,6 +235,15 @@ RexxRoutineEntry orxtest_funcs[] = {
     REXX_TYPED_ROUTINE(TstArgs008, TstArgs008),
     REXX_TYPED_ROUTINE(TstArgs009, TstArgs009),
     REXX_TYPED_ROUTINE(TstArgs010, TstArgs010),
+    REXX_TYPED_ROUTINE(TstArgs011, TstArgs011),
+    REXX_TYPED_ROUTINE(TstArgs012, TstArgs012),
+    REXX_TYPED_ROUTINE(TstArgs013, TstArgs013),
+    REXX_TYPED_ROUTINE(TstArgs014, TstArgs014),
+    REXX_TYPED_ROUTINE(TstArgs015, TstArgs015),
+    REXX_TYPED_ROUTINE(TstArgs016, TstArgs016),
+    REXX_TYPED_ROUTINE(TstArgs017, TstArgs017),
+    REXX_TYPED_ROUTINE(TstArgs018, TstArgs018),
+    REXX_TYPED_ROUTINE(TstArgs019, TstArgs019),
     REXX_LAST_ROUTINE()
 };
 

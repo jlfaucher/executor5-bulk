@@ -79,6 +79,15 @@ return testResult
 ::method tstargs008 EXTERNAL "LIBRARY orxmethod TstArgs008"
 ::method tstargs009 EXTERNAL "LIBRARY orxmethod TstArgs009"
 ::method tstargs010 EXTERNAL "LIBRARY orxmethod TstArgs010"
+::method tstargs011 EXTERNAL "LIBRARY orxmethod TstArgs011"
+::method tstargs012 EXTERNAL "LIBRARY orxmethod TstArgs012"
+::method tstargs013 EXTERNAL "LIBRARY orxmethod TstArgs013"
+::method tstargs014 EXTERNAL "LIBRARY orxmethod TstArgs014"
+::method tstargs015 EXTERNAL "LIBRARY orxmethod TstArgs015"
+::method tstargs016 EXTERNAL "LIBRARY orxmethod TstArgs016"
+::method tstargs017 EXTERNAL "LIBRARY orxmethod TstArgs017"
+::method tstargs018 EXTERNAL "LIBRARY orxmethod TstArgs018"
+::method tstargs019 EXTERNAL "LIBRARY orxmethod TstArgs019"
 
 ::method init class
   forward class (super) continue
@@ -205,4 +214,110 @@ return testResult
 ::method 'test033'
   self~expectSyntax('88.901')
   self~assertSame(10, self~tstargs010(1,1,1,1,1,1,1,1,1))
+
+-- test int
+::method 'test034'
+  numeric digits 11
+  val = 0
+  self~assertSame(val, self~tstargs011(val))
+  val = 2147483647
+  self~assertSame(val, self~tstargs011(val))
+  val = 1
+  self~assertSame(val, self~tstargs011(val))
+  val = -1
+  self~assertSame(val, self~tstargs011(val))
+  val = -2147483647
+  self~assertSame(val, self~tstargs011(val))
+
+-- test int32_t
+::method 'test035'
+  numeric digits 11
+  val = 0
+  self~assertSame(val, self~tstargs012(val))
+  val = 2147483647
+  self~assertSame(val, self~tstargs012(val))
+  val = 1
+  self~assertSame(val, self~tstargs012(val))
+  val = -1
+  self~assertSame(val, self~tstargs012(val))
+  val = -2147483647
+  self~assertSame(val, self~tstargs012(val))
+
+-- test uint32_t
+::method 'test036'
+  numeric digits 11
+  val = 0
+  self~assertSame(val, self~tstargs013(val))
+  val = 4294967295
+  self~assertSame(val, self~tstargs013(val))
+  val = 1
+  self~assertSame(val, self~tstargs013(val))
+
+-- test int8_t
+::method 'test037'
+  val = 0
+  self~assertSame(val, self~tstargs014(val))
+  val = 127
+  self~assertSame(val, self~tstargs014(val))
+  val = 1
+  self~assertSame(val, self~tstargs014(val))
+  val = -1
+  self~assertSame(val, self~tstargs014(val))
+  val = -128
+  self~assertSame(val, self~tstargs014(val))
+
+-- test uint8_t
+::method 'test038'
+  val = 0
+  self~assertSame(val, self~tstargs015(val))
+  val = 255
+  self~assertSame(val, self~tstargs015(val))
+  val = 1
+  self~assertSame(val, self~tstargs015(val))
+
+-- test int16_t
+::method 'test039'
+  val = 0
+  self~assertSame(val, self~tstargs016(val))
+  val = 32767
+  self~assertSame(val, self~tstargs016(val))
+  val = 1
+  self~assertSame(val, self~tstargs016(val))
+  val = -1
+  self~assertSame(val, self~tstargs016(val))
+  val = -32768
+  self~assertSame(val, self~tstargs016(val))
+
+-- test uint16_t
+::method 'test040'
+  val = 0
+  self~assertSame(val, self~tstargs017(val))
+  val = 65535
+  self~assertSame(val, self~tstargs017(val))
+  val = 1
+  self~assertSame(val, self~tstargs017(val))
+
+-- test int64_t
+::method 'test041'
+  numeric digits 20
+  val = 0
+  self~assertSame(val, self~tstargs018(val))
+  val = 9223372036854775807
+  self~assertSame(val, self~tstargs018(val))
+  val = 1
+  self~assertSame(val, self~tstargs018(val))
+  val = -1
+  self~assertSame(val, self~tstargs018(val))
+  val = 9223372036854775807
+  self~assertSame(val, self~tstargs018(val))
+
+-- test uint64_t
+::method 'test042'
+  numeric digits 40
+  val = 0
+  self~assertSame(val, self~tstargs019(val))
+  val = 340282366920938463463374607431768211455
+  self~assertSame(val, self~tstargs019(val))
+  val = 1
+  self~assertSame(val, self~tstargs019(val))
 
