@@ -194,7 +194,7 @@ RexxMethod2(int,                       // Return type
             CSELF, self,               // GTK self
             int, maxlen)               // Max text length
 {
-    gtk_entry_set_max_length(GTK_ENTRY(self), maxlen); 
+    gtk_entry_set_max_length(GTK_ENTRY(self), maxlen);
 
     return 0;
 }
@@ -212,7 +212,7 @@ RexxMethod1(int,                       // Return type
 {
     gint maxlen = 0;
 
-    return gtk_entry_get_max_length(GTK_ENTRY(self)); 
+    return gtk_entry_get_max_length(GTK_ENTRY(self));
 }
 
 /**
@@ -229,7 +229,7 @@ RexxMethod2(int,                       // Return type
             CSELF, self,               // GTK self
             CSTRING, text)             // The text to set
 {
-    gtk_entry_set_text(GTK_ENTRY(self), text); 
+    gtk_entry_set_text(GTK_ENTRY(self), text);
 
     return 0;
 }
@@ -245,7 +245,7 @@ RexxMethod1(CSTRING,                   // Return type
             GrxEntryGetText,           // Object_method name
             CSELF, self)               // GTK self
 {
-    return gtk_entry_get_text(GTK_ENTRY(self)); 
+    return gtk_entry_get_text(GTK_ENTRY(self));
 }
 
 /**
@@ -262,7 +262,7 @@ RexxMethod2(int,                       // Return type
             CSELF, self,               // GTK self
             int, width)                // The width
 {
-    gtk_entry_set_width_chars(GTK_ENTRY(self), width); 
+    gtk_entry_set_width_chars(GTK_ENTRY(self), width);
 
     return 0;
 }
@@ -270,7 +270,7 @@ RexxMethod2(int,                       // Return type
 /**
  * Method:  get_visibility
  *
- * Get the text visibility flag. 
+ * Get the text visibility flag.
  *
  * @return        Flag
  **/
@@ -278,7 +278,7 @@ RexxMethod1(logical_t,                 // Return type
             GrxEntryGetVisibility,     // Object_method name
             CSELF, self)               // GTK self
 {
-    return gtk_entry_get_visibility(GTK_ENTRY(self)); 
+    return gtk_entry_get_visibility(GTK_ENTRY(self));
 }
 
 /**
@@ -295,7 +295,7 @@ RexxMethod2(int,                       // Return type
             CSELF, self,               // GTK self
             logical_t, flag)           // The flag
 {
-    gtk_entry_set_visibility(GTK_ENTRY(self), flag); 
+    gtk_entry_set_visibility(GTK_ENTRY(self), flag);
 
     return 0;
 }
@@ -303,7 +303,7 @@ RexxMethod2(int,                       // Return type
 /**
  * Method:  get_invisible_char
  *
- * Get the text invisible char. 
+ * Get the text invisible char.
  *
  * @return        Flag
  **/
@@ -313,7 +313,7 @@ RexxMethod1(RexxObjectPtr,             // Return type
 {
     char retc[2] = {' ', '\0'};
 
-    retc[0] = gtk_entry_get_invisible_char(GTK_ENTRY(self)); 
+    retc[0] = gtk_entry_get_invisible_char(GTK_ENTRY(self));
     return context->NewStringFromAsciiz(retc);
 }
 
@@ -331,7 +331,7 @@ RexxMethod2(int,                       // Return type
             CSELF, self,               // GTK self
             CSTRING, ichar)            // The character
 {
-    gtk_entry_set_invisible_char(GTK_ENTRY(self), *ichar); 
+    gtk_entry_set_invisible_char(GTK_ENTRY(self), *ichar);
 
     return 0;
 }
@@ -349,7 +349,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
             GrxEntrySignalConnect,     // Object_method name
             CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            ARGLIST, args)             // The whole argument list as an array
+            SUPER, super)              // The superclass override
 {
     cbcb *cblock;
 
@@ -441,7 +441,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
                          G_CALLBACK(signal_func_0), cblock);
         return context->True();
     }
-    return context->SendSuperMessage("signal_connect", args);
+    return context->ForwardMessage(NULLOBJECT, NULL, super, NULLOBJECT);
 }
 
 /**
@@ -517,7 +517,7 @@ RexxMethod2(int,                       // Return type
             CSELF, self,               // GTK self
             uint32_t, digits)          // The digits
 {
-    gtk_spin_button_set_digits(GTK_SPIN_BUTTON(self), digits); 
+    gtk_spin_button_set_digits(GTK_SPIN_BUTTON(self), digits);
 
     return 0;
 }
@@ -535,7 +535,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
             GrxSpinButtonSignalConnect, // Object_method name
             OSELF, self,               // Self
             CSTRING, name,             // Signal name
-            ARGLIST, args)             // The whole argument list as an array
+            SUPER, super)              // The superclass override
 {
     cbcb *cblock;
 
@@ -563,6 +563,6 @@ RexxMethod3(RexxObjectPtr,             // Return type
                          G_CALLBACK(signal_func_0), cblock);
         return context->True();
     }
-    return context->SendSuperMessage("signal_connect", args);
+    return context->ForwardMessage(NULLOBJECT, NULL, super, NULLOBJECT);
 }
 

@@ -141,11 +141,10 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod3(RexxObjectPtr,             // Return type
+RexxMethod2(RexxObjectPtr,             // Return type
             GrxAccelGroupSignalConnect, // Object_method name
             CSELF, self,               // GTK self
-            CSTRING, name,             // Signal name
-            ARGLIST, args)             // The whole argument list as an array
+            CSTRING, name)             // Signal name
 {
     cbcb *cblock;
 

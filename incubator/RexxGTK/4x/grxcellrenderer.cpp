@@ -181,11 +181,10 @@ RexxMethod3(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod3(RexxObjectPtr,             // Return type
+RexxMethod2(RexxObjectPtr,             // Return type
             GrxCellRendererSignalConnect, // Object_method name
             CSELF, self,               // GTK self
-            CSTRING, name,             // Signal name
-            ARGLIST, args)             // The whole argument list as an array
+            CSTRING, name)             // Signal name
 {
     cbcb *cblock;
 
@@ -241,7 +240,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
             GrxCellRendererTextSignalConnect, // Object_method name
             CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            ARGLIST, args)             // The whole argument list as an array
+            SUPER, super)              // The superclass override
 {
     cbcb *cblock;
 
@@ -253,7 +252,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
                          G_CALLBACK(signal_func_2), cblock);
         return context->True();
     }
-    return context->SendSuperMessage("signal_connect", args);
+    return context->ForwardMessage(NULLOBJECT, NULL, super, NULLOBJECT);
 }
 
 /**
@@ -395,7 +394,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
             GrxCellRendererToggleSignalConnect, // Object_method name
             CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            ARGLIST, args)             // The whole argument list as an array
+            SUPER, super)              // The superclass override
 {
     cbcb *cblock;
 
@@ -407,7 +406,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
                          G_CALLBACK(signal_func_1), cblock);
         return context->True();
     }
-    return context->SendSuperMessage("signal_connect", args);
+    return context->ForwardMessage(NULLOBJECT, NULL, super, NULLOBJECT);
 }
 
 /**
@@ -443,7 +442,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
             GrxCellRendererAccelSignalConnect, // Object_method name
             CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            ARGLIST, args)             // The whole argument list as an array
+            SUPER, super)              // The superclass override
 {
     cbcb *cblock;
 
@@ -463,7 +462,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
                          G_CALLBACK(signal_func_4), cblock);
         return context->True();
     }
-    return context->SendSuperMessage("signal_connect", args);
+    return context->ForwardMessage(NULLOBJECT, NULL, super, NULLOBJECT);
 }
 
 /**
@@ -499,7 +498,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
             GrxCellRendererComboSignalConnect, // Object_method name
             CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            ARGLIST, args)             // The whole argument list as an array
+            SUPER, super)              // The superclass override
 {
     cbcb *cblock;
 
@@ -511,6 +510,6 @@ RexxMethod3(RexxObjectPtr,             // Return type
                          G_CALLBACK(signal_func_2a), cblock);
         return context->True();
     }
-    return context->SendSuperMessage("signal_connect", args);
+    return context->ForwardMessage(NULLOBJECT, NULL, super, NULLOBJECT);
 }
 

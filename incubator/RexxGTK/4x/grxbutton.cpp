@@ -190,7 +190,7 @@ RexxMethod2(int,                       // Return type
  * Create a toggle button.
  *
  * @return        Zero.
- **/                      
+ **/
 RexxMethod1(int,                       // Return type
             GrxToggleButtonNew,        // Object_method name
             OSELF, self)               // Self
@@ -568,7 +568,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
             GrxButtonSignalConnect,    // Object_method name
             CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            ARGLIST, args)             // The whole argument list as an array
+            SUPER, super)              // The superclass override
 {
     cbcb *cblock;
 
@@ -620,7 +620,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
                          G_CALLBACK(signal_func_0), cblock);
         return context->True();
     }
-    return context->SendSuperMessage("signal_connect", args);
+    return context->ForwardMessage(NULLOBJECT, NULL, super, NULLOBJECT);
 }
 
 /**
@@ -636,7 +636,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
             GrxToggleButtonSignalConnect, // Object_method name
             CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            ARGLIST, args)             // The whole argument list as an array
+            SUPER, super)              // The superclass override
 {
     cbcb *cblock;
 
@@ -648,7 +648,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
                          G_CALLBACK(signal_func_0), cblock);
         return context->True();
     }
-    return context->SendSuperMessage("signal_connect", args);
+    return context->ForwardMessage(NULLOBJECT, NULL, super, NULLOBJECT);
 }
 
 /**
@@ -664,7 +664,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
             GrxRadioButtonSignalConnect, // Object_method name
             CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            ARGLIST, args)             // The whole argument list as an array
+            SUPER, super)              // The superclass override
 {
     cbcb *cblock;
 
@@ -676,7 +676,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
                          G_CALLBACK(signal_func_0), cblock);
         return context->True();
     }
-    return context->SendSuperMessage("signal_connect", args);
+    return context->ForwardMessage(NULLOBJECT, NULL, super, NULLOBJECT);
 }
 
 /**
@@ -692,7 +692,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
             GrxColorButtonSignalConnect, // Object_method name
             CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            ARGLIST, args)             // The whole argument list as an array
+            SUPER, super)              // The superclass override
 {
     cbcb *cblock;
 
@@ -704,7 +704,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
                          G_CALLBACK(signal_func_0), cblock);
         return context->True();
     }
-    return context->SendSuperMessage("signal_connect", args);
+    return context->ForwardMessage(NULLOBJECT, NULL, super, NULLOBJECT);
 }
 
 /**
@@ -720,7 +720,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
             GrxFileChooserButtonSignalConnect, // Object_method name
             CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            ARGLIST, args)             // The whole argument list as an array
+            SUPER, super)              // The superclass override
 {
     cbcb *cblock;
 
@@ -732,7 +732,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
                          G_CALLBACK(signal_func_0), cblock);
         return context->True();
     }
-    return context->SendSuperMessage("signal_connect", args);
+    return context->ForwardMessage(NULLOBJECT, NULL, super, NULLOBJECT);
 }
 
 /**
@@ -748,7 +748,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
             GrxFontButtonSignalConnect, // Object_method name
             CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            ARGLIST, args)             // The whole argument list as an array
+            SUPER, super)              // The superclass override
 {
     cbcb *cblock;
 
@@ -760,6 +760,6 @@ RexxMethod3(RexxObjectPtr,             // Return type
                          G_CALLBACK(signal_func_0), cblock);
         return context->True();
     }
-    return context->SendSuperMessage("signal_connect", args);
+    return context->ForwardMessage(NULLOBJECT, NULL, super, NULLOBJECT);
 }
 

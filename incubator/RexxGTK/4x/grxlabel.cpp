@@ -152,7 +152,7 @@ RexxMethod1(CSTRING,                   // Return type
             GrxLabelGetLabel,          // Object_method name
             CSELF, self)               // GTK self
 {
-    return gtk_label_get_label(GTK_LABEL(self)); 
+    return gtk_label_get_label(GTK_LABEL(self));
 }
 
 /**
@@ -169,7 +169,7 @@ RexxMethod2(int,                       // Return type
             CSELF, self,               // GTK self
             CSTRING, text)             // Label text
 {
-    gtk_label_set_label(GTK_LABEL(self), text); 
+    gtk_label_set_label(GTK_LABEL(self), text);
 
     return 0;
 }
@@ -188,7 +188,7 @@ RexxMethod2(int,                       // Return type
             CSELF, self,               // GTK self
             int, jtype)                // Justification type
 {
-    gtk_label_set_justify(GTK_LABEL(self), (GtkJustification)jtype); 
+    gtk_label_set_justify(GTK_LABEL(self), (GtkJustification)jtype);
     switch (jtype) {
     case GTK_JUSTIFY_LEFT:
         gtk_misc_set_alignment(GTK_MISC(self), 0, 0);
@@ -252,7 +252,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
             GrxLabelSignalConnect,     // Object_method name
             CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            ARGLIST, args)             // The whole argument list as an array
+            SUPER, super)              // The superclass override
 {
     cbcb *cblock;
 
@@ -280,6 +280,6 @@ RexxMethod3(RexxObjectPtr,             // Return type
                          G_CALLBACK(signal_func_1), cblock);
         return context->True();
     }
-    return context->SendSuperMessage("signal_connect", args);
+    return context->ForwardMessage(NULLOBJECT, NULL, super, NULLOBJECT);
 }
 

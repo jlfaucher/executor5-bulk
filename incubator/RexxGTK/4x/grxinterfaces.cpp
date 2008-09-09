@@ -129,7 +129,7 @@ RexxMethod2(int,                       // Return type
 {
     GtkFileFilter *filter = (GtkFileFilter *)context->ObjectToCSelf(rxfilter);
 
-    gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(self), filter); 
+    gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(self), filter);
 
     return 0;
 }
@@ -183,11 +183,10 @@ RexxMethod1(RexxArrayObject,           // Return type
  *
  * @return        Zero
  **/
-RexxMethod3(RexxObjectPtr,             // Return type
+RexxMethod2(RexxObjectPtr,             // Return type
             GrxFileChooserSignalConnect, // Object_method name
             CSELF, self,               // GTK self
-            CSTRING, name,             // Signal name
-            ARGLIST, args)             // The whole argument list as an array
+            CSTRING, name)             // Signal name
 {
     cbcb *cblock;
 

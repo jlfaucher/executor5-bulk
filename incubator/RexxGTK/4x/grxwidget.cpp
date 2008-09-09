@@ -355,7 +355,7 @@ RexxMethod2(int,                       // Return type
  *
  * Modify the forground color of the widget.
  *
- * @param type    A number representing the state of the widget 
+ * @param type    A number representing the state of the widget
  *                to modify (normal, active, etc)
  *
  * @param color   A sting representing the color
@@ -381,7 +381,7 @@ RexxMethod3(int,                       // Return type
  *
  * Modify the background color of the widget.
  *
- * @param type    A number representing the state of the widget 
+ * @param type    A number representing the state of the widget
  *                to modify (normal, active, etc)
  *
  * @param color   A sting representing the color
@@ -547,12 +547,12 @@ RexxMethod1(RexxObjectPtr,             // Return type
 {
     GtkWidget *parent = (GtkWidget *)gtk_widget_get_parent_window(GTK_WIDGET(self));
     if (parent == NULL) {
-        return context->Nil(); 
+        return context->Nil();
     }
     RexxObjectPtr parentptr = (RexxObjectPtr)g_object_get_data(G_OBJECT(parent),
                                                                "OORXOBJECT");
     if (parentptr == context->Nil()) {
-        return context->Nil(); 
+        return context->Nil();
     }
 
     return parentptr;
@@ -571,12 +571,12 @@ RexxMethod1(RexxObjectPtr,             // Return type
 {
     GtkWidget *parentWidget = gtk_widget_get_toplevel(GTK_WIDGET(self));
     if (parentWidget == NULL) {
-        return context->Nil(); 
+        return context->Nil();
     }
     RexxObjectPtr parentptr = (RexxObjectPtr)g_object_get_data(G_OBJECT(parentWidget),
                                                                "OORXOBJECT");
     if (parentptr == context->Nil()) {
-        return context->Nil(); 
+        return context->Nil();
     }
 
     return parentptr;
@@ -585,7 +585,7 @@ RexxMethod1(RexxObjectPtr,             // Return type
 /**
  * Method:  isancestor
  *
- * Determine if the wiget is an ancestor of another widgety. 
+ * Determine if the wiget is an ancestor of another widgety.
  *
  * @param ancestor The ancestor widget.
  *
@@ -617,12 +617,12 @@ RexxMethod2(RexxObjectPtr,             // Return type
 {
     GtkWidget *ancestor = gtk_widget_get_ancestor(GTK_WIDGET(self), type);
     if (ancestor == NULL) {
-        return context->Nil(); 
+        return context->Nil();
     }
     RexxObjectPtr ancestorptr = (RexxObjectPtr)g_object_get_data(G_OBJECT(self),
                                                                  "OORXOBJECT");
     if (ancestorptr == context->Nil()) {
-        return context->Nil(); 
+        return context->Nil();
     }
 
     return ancestorptr;
@@ -712,8 +712,8 @@ RexxMethod0(int,                       // Return type
 RexxMethod5(int,                       // Return type
             GrxWidgetQueueDrawArea,    // Object_method name
             CSELF, self,               // GTK self
-            int, x,                    // X coordinate  
-            int, y,                    // Y coordinate  
+            int, x,                    // X coordinate
+            int, y,                    // Y coordinate
             int, width,                // Width
             int, height)               // Heaight
 {
@@ -741,7 +741,7 @@ RexxMethod1(int,                       // Return type
 /**
  * Method:  set_scroll_adjustments
  *
- * Set the adjustment settings if the widget supports 
+ * Set the adjustment settings if the widget supports
  * them.
  *
  * @param hadj    The horizontal adjustment
@@ -753,7 +753,7 @@ RexxMethod1(int,                       // Return type
 RexxMethod3(logical_t,                 // Return type
             GrxWidgetSetScrollAdjustments, // Object_method name
             CSELF, self,               // GTK self
-            RexxObjectPtr, hadj,       // Horizontal Adjustment  
+            RexxObjectPtr, hadj,       // Horizontal Adjustment
             RexxObjectPtr, vadj)       // Vertical adjustment
 {
     GtkAdjustment *hWidget = (GtkAdjustment *)context->ObjectToCSelf(hadj);
@@ -796,11 +796,11 @@ RexxMethod1(RexxObjectPtr,             // Return type
 
     atk = gtk_widget_get_accessible(GTK_WIDGET(self));
     if (atk == NULL) {
-        return context->Nil(); 
+        return context->Nil();
     }
     atkptr = (RexxObjectPtr)g_object_get_data(G_OBJECT(self), "OORXOBJECT");
     if (atkptr == context->Nil()) {
-        return context->Nil(); 
+        return context->Nil();
     }
 
     return atkptr;
@@ -836,11 +836,11 @@ RexxMethod1(RexxObjectPtr,             // Return type
 
     root = gtk_widget_get_parent(GTK_WIDGET(self));
     if (root == NULL) {
-        return context->Nil(); 
+        return context->Nil();
     }
     rootptr = (RexxObjectPtr)g_object_get_data(G_OBJECT(self), "OORXOBJECT");
     if (rootptr == context->Nil()) {
-        return context->Nil(); 
+        return context->Nil();
     }
 
     return rootptr;
@@ -897,7 +897,7 @@ RexxMethod2(int,                       // Return type
  *
  * @param accelgrp The accelerator group
  *
- * @param key     The accel key binding 
+ * @param key     The accel key binding
  *
  * @param mods    The accel modifiers
  *
@@ -916,7 +916,7 @@ RexxMethod6(int,                       // Return type
 {
     GtkAccelGroup *grpWidget = (GtkAccelGroup *)context->ObjectToCSelf(accelgrp);
 
-    gtk_widget_add_accelerator(GTK_WIDGET(self), signame, grpWidget, key, 
+    gtk_widget_add_accelerator(GTK_WIDGET(self), signame, grpWidget, key,
                                (GdkModifierType)mods, (GtkAccelFlags)flags);
 
     return 0;
@@ -929,7 +929,7 @@ RexxMethod6(int,                       // Return type
  *
  * @param accelgrp The accelerator group
  *
- * @param key     The accel key binding 
+ * @param key     The accel key binding
  *
  * @param mods    The accel modifiers
  *
@@ -944,7 +944,7 @@ RexxMethod4(int,                       // Return type
 {
     GtkAccelGroup *grpWidget = (GtkAccelGroup *)context->ObjectToCSelf(accelgrp);
 
-    gtk_widget_remove_accelerator(GTK_WIDGET(self), grpWidget, key, 
+    gtk_widget_remove_accelerator(GTK_WIDGET(self), grpWidget, key,
                                   (GdkModifierType)mods);
 
     return 0;
@@ -957,7 +957,7 @@ RexxMethod4(int,                       // Return type
  *
  * @param accelgrp The accelerator group
  *
- * @param key     The accel key binding 
+ * @param key     The accel key binding
  *
  * @param mods    The accel modifiers
  *
@@ -977,7 +977,7 @@ RexxMethod3(int,                       // Return type
 }
 
 /**
- * Method:  realize          
+ * Method:  realize
  *
  * Realize the widget.
  *
@@ -993,7 +993,7 @@ RexxMethod1(int,                       // Return type
 }
 
 /**
- * Method:  unrealize          
+ * Method:  unrealize
  *
  * Unrealize the widget.
  *
@@ -1017,11 +1017,10 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod3(RexxObjectPtr,             // Return type
+RexxMethod2(RexxObjectPtr,             // Return type
             GrxWidgetSignalConnect,    // Object_method name
             CSELF, self,               // GTK self
-            CSTRING, name,             // Signal name
-            ARGLIST, args)             // The whole argument list as an array
+            CSTRING, name)             // Signal name
 {
     cbcb *cblock;
 

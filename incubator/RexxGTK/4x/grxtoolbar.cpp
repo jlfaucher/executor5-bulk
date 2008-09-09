@@ -978,7 +978,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
             GrxToolbarSignalConnect,   // Object_method name
             CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            ARGLIST, args)             // The whole argument list as an array
+            SUPER, super)              // The superclass override
 {
     cbcb *cblock;
 
@@ -1014,6 +1014,6 @@ RexxMethod3(RexxObjectPtr,             // Return type
                          G_CALLBACK(signal_func_1b), cblock);
         return context->True();
     }
-    return context->SendSuperMessage("signal_connect", args);
+    return context->ForwardMessage(NULLOBJECT, NULL, super, NULLOBJECT);
 }
 

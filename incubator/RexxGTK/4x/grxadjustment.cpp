@@ -104,7 +104,7 @@ RexxMethod7(int,                       // Return type
             double, page,              // Page increment
             double, pagesz)            // Page size
 {
-    GtkAdjustment   *adj;     
+    GtkAdjustment   *adj;
 
     adj = (GtkAdjustment *)gtk_adjustment_new(value, upper, lower, step,
                                               page, pagesz);
@@ -203,11 +203,10 @@ RexxMethod3(int,                       // Return type
  *
  * @return        Zero
  **/
-RexxMethod3(RexxObjectPtr,             // Return type
+RexxMethod2(RexxObjectPtr,             // Return type
             GrxAdjustmentSignalConnect, // Object_method name
             CSELF, self,               // GTK self
-            CSTRING, name,             // Signal name
-            ARGLIST, args)             // The whole argument list as an array
+            CSTRING, name)             // Signal name
 {
     cbcb *cblock;
 

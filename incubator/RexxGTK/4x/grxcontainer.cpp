@@ -106,7 +106,7 @@ RexxMethod2(int,                       // Return type
 {
     GtkWidget *addWidget = (GtkWidget *)context->ObjectToCSelf(rxadd);
 
-    gtk_container_add(GTK_CONTAINER(self), addWidget); 
+    gtk_container_add(GTK_CONTAINER(self), addWidget);
 
     return 0;
 }
@@ -127,7 +127,7 @@ RexxMethod2(int,                       // Return type
 {
     GtkWidget *remWidget = (GtkWidget *)context->ObjectToCSelf(rxrem);
 
-    gtk_container_remove(GTK_CONTAINER(self), remWidget); 
+    gtk_container_remove(GTK_CONTAINER(self), remWidget);
 
     return 0;
 }
@@ -146,7 +146,7 @@ RexxMethod2(int,                       // Return type
             CSELF, self,               // GTK self
             int, width)                // Border widthd
 {
-    gtk_container_set_border_width(GTK_CONTAINER(self), width); 
+    gtk_container_set_border_width(GTK_CONTAINER(self), width);
 
     return 0;
 }
@@ -176,7 +176,7 @@ RexxMethod5(int,                       // Return type
 {
     GtkWidget *packWidget = (GtkWidget *)context->ObjectToCSelf(rxpack);
 
-    gtk_box_pack_start(GTK_BOX(self), packWidget, expand, fill, (unsigned int)padding); 
+    gtk_box_pack_start(GTK_BOX(self), packWidget, expand, fill, (unsigned int)padding);
 
     return 0;
 }
@@ -206,7 +206,7 @@ RexxMethod5(int,                       // Return type
 {
     GtkWidget *packWidget = (GtkWidget *)context->ObjectToCSelf(rxpack);
 
-    gtk_box_pack_end(GTK_BOX(self), packWidget, expand, fill, (unsigned int)padding); 
+    gtk_box_pack_end(GTK_BOX(self), packWidget, expand, fill, (unsigned int)padding);
 
     return 0;
 }
@@ -377,7 +377,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
             GrxContainerSignalConnect, // Object_method name
             CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            ARGLIST, args)             // The whole argument list as an array
+            SUPER, super)              // The superclass override
 {
     cbcb *cblock;
 
@@ -413,7 +413,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
                          G_CALLBACK(signal_func_1), cblock);
         return context->True();
     }
-    return context->SendSuperMessage("signal_connect", args);
+    return context->ForwardMessage(NULLOBJECT, NULL, super, NULLOBJECT);
 }
 
 
@@ -458,7 +458,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
             GrxViewportSignalConnect,  // Object_method name
             CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            ARGLIST, args)             // The whole argument list as an array
+            SUPER, super)              // The superclass override
 {
     cbcb *cblock;
 
@@ -470,5 +470,5 @@ RexxMethod3(RexxObjectPtr,             // Return type
                          G_CALLBACK(signal_func_1), cblock);
         return context->True();
     }
-    return context->SendSuperMessage("signal_connect", args);
+    return context->ForwardMessage(NULLOBJECT, NULL, super, NULLOBJECT);
 }
