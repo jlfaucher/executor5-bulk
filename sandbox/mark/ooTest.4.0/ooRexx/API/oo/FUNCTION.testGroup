@@ -52,9 +52,26 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
+use arg testTypes
+
   parse source . . s
   group = .TestGroup~new(s)
   group~add(.FUNCTION.testGroup)
+
+  if testTypes~isA(.set) then do
+    if \ group~hasTestTypes(testTypes) then do
+      group~markNoTests("This is a native API test and not included in the test types to execute.")
+
+      if group~isAutomatedTest then return group
+      else return group~suite~execute~~print
+    end
+  end
+
+  ctx = .context
+  package = ctx~package
+
+  signal on syntax name packageErr
+  package~loadPackage('FUNCTIONPackage.cls')
 
   if group~isAutomatedTest then return group
 
@@ -62,37 +79,14 @@
 
 return testResult
 
-::requires 'ooTest.frm' -- load the ooRexxUnit classes
+packageErr:
+  err = .ExceptionData~new(timeStamp(), s, "Trap")
+  err~conditionObject = condition('O')
+  err~msg = "Failed to load the external API package needed for this test group."
+  return err
 
--- These are the real external functions we are testing
-::routine tstargs000 EXTERNAL "LIBRARY orxfunction TstArgs000"
-::routine tstargs001 EXTERNAL "LIBRARY orxfunction TstArgs001"
-::routine tstargs002 EXTERNAL "LIBRARY orxfunction TstArgs002"
-::routine tstargs003 EXTERNAL "LIBRARY orxfunction TstArgs003"
-::routine tstargs004 EXTERNAL "LIBRARY orxfunction TstArgs004"
-::routine tstargs005 EXTERNAL "LIBRARY orxfunction TstArgs005"
-::routine tstargs006 EXTERNAL "LIBRARY orxfunction TstArgs006"
-::routine tstargs007 EXTERNAL "LIBRARY orxfunction TstArgs007"
-::routine tstargs008 EXTERNAL "LIBRARY orxfunction TstArgs008"
-::routine tstargs009 EXTERNAL "LIBRARY orxfunction TstArgs009"
-::routine tstargs010 EXTERNAL "LIBRARY orxfunction TstArgs010"
-::routine tstargs011 EXTERNAL "LIBRARY orxfunction TstArgs011"
-::routine tstargs012 EXTERNAL "LIBRARY orxfunction TstArgs012"
-::routine tstargs013 EXTERNAL "LIBRARY orxfunction TstArgs013"
-::routine tstargs014 EXTERNAL "LIBRARY orxfunction TstArgs014"
-::routine tstargs015 EXTERNAL "LIBRARY orxfunction TstArgs015"
-::routine tstargs016 EXTERNAL "LIBRARY orxfunction TstArgs016"
-::routine tstargs017 EXTERNAL "LIBRARY orxfunction TstArgs017"
-::routine tstargs018 EXTERNAL "LIBRARY orxfunction TstArgs018"
-::routine tstargs019 EXTERNAL "LIBRARY orxfunction TstArgs019"
-::routine tstargs020 EXTERNAL "LIBRARY orxfunction TstArgs020"
-::routine tstargs021 EXTERNAL "LIBRARY orxfunction TstArgs021"
-::routine tstargs022 EXTERNAL "LIBRARY orxfunction TstArgs022"
-::routine tstargs023 EXTERNAL "LIBRARY orxfunction TstArgs023"
-::routine tstargs024 EXTERNAL "LIBRARY orxfunction TstArgs024"
-::routine tstargs025a EXTERNAL "LIBRARY orxfunction TstArgs025a"
-::routine tstargs025b EXTERNAL "LIBRARY orxfunction TstArgs025b"
-::routine tstargs025c EXTERNAL "LIBRARY orxfunction TstArgs025c"
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
 -- class named exactly like file
 ::class "FUNCTION.testGroup" subclass ooTestCase public

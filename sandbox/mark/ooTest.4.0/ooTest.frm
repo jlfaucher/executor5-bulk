@@ -280,8 +280,8 @@ return 0
   ::method NATIVE_API_TEST;         return 10
 
 
-  ::method MAX_TEST_TYPE  class; return 11
-  ::method MAX_TEST_TYPE;        return 11
+  ::method MAX_TEST_TYPE  class; return 10
+  ::method MAX_TEST_TYPE;        return 10
 
   /** all()
    * Returns a set of all the test types possible.
@@ -1788,7 +1788,7 @@ return suite
     use arg file
 
     signal on any name callError
-    call (file)
+    call (file) self~testTypes
     container = RESULT
     return container
 
