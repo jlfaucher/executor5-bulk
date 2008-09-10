@@ -66,7 +66,7 @@ static void signal_func_1(GtkWidget *window,
     RexxThreadContext *context;
 
     cblock->instance->AttachThread(&context);
-    RexxObjectPtr arg1type = context->NumberToObject((wholenumber_t)arg1);;
+    RexxObjectPtr arg1type = context->WholeNumberToObject((wholenumber_t)arg1);;
     context->SendMessage1(rxobj, ((cbcb *)data)->signal_name, arg1type);
     context->DetachThread();
     return;
@@ -81,7 +81,7 @@ static void signal_func_1a(GtkWidget *window,
     RexxThreadContext *context;
 
     cblock->instance->AttachThread(&context);
-    RexxObjectPtr arg1type = context->NumberToObject((wholenumber_t)arg1);;
+    RexxObjectPtr arg1type = context->WholeNumberToObject((wholenumber_t)arg1);;
     context->SendMessage1(rxobj, ((cbcb *)data)->signal_name, arg1type);
     context->DetachThread();
     return;
@@ -98,7 +98,7 @@ static void signal_func_2(GtkWidget *window,
     RexxThreadContext *context;
 
     cblock->instance->AttachThread(&context);
-    RexxObjectPtr arg2type = context->NumberToObject((wholenumber_t)arg2);;
+    RexxObjectPtr arg2type = context->WholeNumberToObject((wholenumber_t)arg2);;
     context->SendMessage2(rxobj, ((cbcb *)data)->signal_name, rxwidget, arg2type);
     context->DetachThread();
     return;
@@ -114,8 +114,8 @@ static void signal_func_2a(GtkWidget *window,
     RexxThreadContext *context;
 
     cblock->instance->AttachThread(&context);
-    RexxObjectPtr arg1type = context->NumberToObject((wholenumber_t)arg1);;
-    RexxObjectPtr arg2type = context->NumberToObject((wholenumber_t)arg2);;
+    RexxObjectPtr arg1type = context->WholeNumberToObject((wholenumber_t)arg1);;
+    RexxObjectPtr arg2type = context->WholeNumberToObject((wholenumber_t)arg2);;
     context->SendMessage2(rxobj, ((cbcb *)data)->signal_name, arg1type, arg2type);
     context->DetachThread();
     return;
@@ -135,9 +135,9 @@ static void signal_func_3(GtkWidget *window,
     cblock->instance->AttachThread(&context);
     RexxObjectPtr rxwidget = (RexxObjectPtr)g_object_get_data(G_OBJECT(widget), "OORXOBJECT");
     context->ArrayPut(arr, rxwidget, 1);
-    RexxObjectPtr rxarg2 = context->NumberToObject((wholenumber_t)arg2);;
+    RexxObjectPtr rxarg2 = context->WholeNumberToObject((wholenumber_t)arg2);;
     context->ArrayPut(arr, rxarg2, 2);
-    RexxObjectPtr rxarg3 = context->NumberToObject((wholenumber_t)arg3);;
+    RexxObjectPtr rxarg3 = context->WholeNumberToObject((wholenumber_t)arg3);;
     context->ArrayPut(arr, rxarg3, 3);
     context->SendMessage(rxobj, ((cbcb *)data)->signal_name, arr);
     context->DetachThread();

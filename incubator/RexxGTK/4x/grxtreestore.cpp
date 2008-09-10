@@ -173,7 +173,7 @@ RexxMethod3(int,                       // Return type
             break;
         case G_TYPE_UINT:
         case G_TYPE_ULONG:
-            context->ObjectToUnsignedNumber(context->ArrayAt(args, i + 1), &uival);
+            context->ObjectToStringSize(context->ArrayAt(args, i + 1), &uival);
             coldata.data[0].v_uint = uival;
             break;
         case G_TYPE_INT64:

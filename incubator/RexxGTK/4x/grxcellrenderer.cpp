@@ -134,11 +134,11 @@ static void signal_func_4(GtkCellRenderer *renderer,
     RexxArrayObject arr = context->NewArray(1);
     RexxObjectPtr tempobj = context->NewStringFromAsciiz(arg1);
     context->ArrayPut(arr, tempobj, 1);
-    tempobj = context->NumberToObject((wholenumber_t)arg2);;
+    tempobj = context->WholeNumberToObject((wholenumber_t)arg2);;
     context->ArrayPut(arr, tempobj, 2);
-    tempobj = context->NumberToObject((wholenumber_t)arg3);;
+    tempobj = context->WholeNumberToObject((wholenumber_t)arg3);;
     context->ArrayPut(arr, tempobj, 3);
-    tempobj = context->UnsignedNumberToObject((size_t)arg4);;
+    tempobj = context->StringSizeToObject((size_t)arg4);;
     context->ArrayPut(arr, tempobj, 4);
     context->SendMessage(rxobj, ((cbcb *)data)->signal_name, arr);
     context->DetachThread();

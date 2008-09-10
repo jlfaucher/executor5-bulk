@@ -68,7 +68,7 @@ static void signal_func_2(GtkStatusbar *window,
 
     cblock->instance->AttachThread(&context);
     context->SendMessage2(rxobj, ((cbcb *)data)->signal_name,
-                          context->NumberToObject((wholenumber_t)arg1),
+                          context->WholeNumberToObject((wholenumber_t)arg1),
                           context->NewStringFromAsciiz(arg2));
     context->DetachThread();
     return;

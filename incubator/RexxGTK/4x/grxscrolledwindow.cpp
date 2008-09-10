@@ -66,7 +66,7 @@ static void signal_func_1(GtkWidget *window,
     RexxThreadContext *context;
 
     cblock->instance->AttachThread(&context);
-    RexxObjectPtr arg1type = context->NumberToObject((wholenumber_t)arg1);;
+    RexxObjectPtr arg1type = context->WholeNumberToObject((wholenumber_t)arg1);;
     context->SendMessage1(rxobj, ((cbcb *)data)->signal_name, arg1type);
     context->DetachThread();
     return;
@@ -83,8 +83,8 @@ static void signal_func_2(GtkWidget *window,
     RexxThreadContext *context;
 
     cblock->instance->AttachThread(&context);
-    RexxObjectPtr arg1type = context->NumberToObject((wholenumber_t)arg1);;
-    RexxObjectPtr arg2type = context->NumberToObject((wholenumber_t)arg2);;
+    RexxObjectPtr arg1type = context->WholeNumberToObject((wholenumber_t)arg1);;
+    RexxObjectPtr arg2type = context->WholeNumberToObject((wholenumber_t)arg2);;
     context->SendMessage2(rxobj, ((cbcb *)data)->signal_name, arg1type, arg2type);
     context->DetachThread();
     return;

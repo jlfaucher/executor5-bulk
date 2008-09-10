@@ -80,7 +80,7 @@ static void signal_func_1(GtkWidget *window,
     RexxThreadContext *context;
 
     cblock->instance->AttachThread(&context);
-    RexxObjectPtr rxarg1 = context->NumberToObject((wholenumber_t)arg1);;
+    RexxObjectPtr rxarg1 = context->WholeNumberToObject((wholenumber_t)arg1);;
     context->SendMessage1(rxobj, ((cbcb *)data)->signal_name, rxarg1);
     context->DetachThread();
     return;
@@ -129,7 +129,7 @@ RexxMethod5(int,                       // Return type
                                            (GtkDialogFlags)flags, NULL);
     for (int i = 5; i <= members; i += 2) {
         bid = context->ObjectToStringValue(context->ArrayAt(args, i - 1));
-        context->ObjectToNumber(context->ArrayAt(args, i), (wholenumber_t *)&rid);
+        context->ObjectToInt32(context->ArrayAt(args, i), &rid);
         gtk_dialog_add_button(GTK_DIALOG(myWidget), bid, rid);
     }
 

@@ -82,7 +82,7 @@ RexxMethod2(int,                       // Return type
     GType *types = (GType *)malloc(sizeof(GType) * members);
     if (members) {
         for (int i = 1; i <= members; i++) {
-            context->ObjectToNumber(context->ArrayAt(args, i), (wholenumber_t *)&types[i - 1]);
+            context->ObjectToInt32(context->ArrayAt(args, i), (wholenumber_t *)&types[i - 1]);
         }
         lstore = (GtkListStore *)gtk_list_store_newv(members, types);
     }
@@ -168,7 +168,7 @@ RexxMethod3(int,                       // Return type
             break;
         case G_TYPE_UINT:
         case G_TYPE_ULONG:
-            context->ObjectToUnsignedNumber(context->ArrayAt(args, i + 1), &uival);
+            context->ObjectToStringSize(context->ArrayAt(args, i + 1), &uival);
             coldata.data[0].v_uint = uival;
             break;
         case G_TYPE_INT64:

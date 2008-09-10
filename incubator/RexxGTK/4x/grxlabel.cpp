@@ -97,11 +97,11 @@ static void signal_func_2(GtkWidget *window,
     RexxArrayObject arr = context->NewArray(1);
 
     cblock->instance->AttachThread(&context);
-    RexxObjectPtr rxstep = context->NumberToObject((wholenumber_t)arg1);;
+    RexxObjectPtr rxstep = context->WholeNumberToObject((wholenumber_t)arg1);;
     context->ArrayPut(arr, rxstep, 1);
-    RexxObjectPtr rxarg2 = context->NumberToObject((wholenumber_t)arg2);;
+    RexxObjectPtr rxarg2 = context->WholeNumberToObject((wholenumber_t)arg2);;
     context->ArrayPut(arr, rxarg2, 2);
-    RexxObjectPtr rxarg3 = context->NumberToObject((wholenumber_t)arg3);;
+    RexxObjectPtr rxarg3 = context->WholeNumberToObject((wholenumber_t)arg3);;
     context->ArrayPut(arr, rxarg3, 3);
     context->SendMessage(rxobj, ((cbcb *)data)->signal_name, arr);
     context->DetachThread();

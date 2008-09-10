@@ -80,7 +80,7 @@ static gboolean signal_func_1a(GtkToolbar *toolbar,
     gboolean retc;
 
     cblock->instance->AttachThread(&context);
-    RexxObjectPtr tempobj = context->NumberToObject((wholenumber_t)arg1);;
+    RexxObjectPtr tempobj = context->WholeNumberToObject((wholenumber_t)arg1);;
     tempobj = context->SendMessage1(rxobj, ((cbcb *)data)->signal_name, tempobj);
     context->ObjectToInt32(tempobj, &retc);
     context->DetachThread();
@@ -96,7 +96,7 @@ static void signal_func_1b(GtkToolbar *toolbar,
     RexxThreadContext *context;
 
     cblock->instance->AttachThread(&context);
-    RexxObjectPtr tempobj = context->NumberToObject((wholenumber_t)arg1);;
+    RexxObjectPtr tempobj = context->WholeNumberToObject((wholenumber_t)arg1);;
     context->SendMessage1(rxobj, ((cbcb *)data)->signal_name, tempobj);
     context->DetachThread();
     return;
@@ -115,11 +115,11 @@ static gboolean signal_func_3(GtkToolbar *toolbar,
 
     cblock->instance->AttachThread(&context);
     RexxArrayObject arr = context->NewArray(1);
-    RexxObjectPtr tempobj = context->NumberToObject((wholenumber_t)arg1);;
+    RexxObjectPtr tempobj = context->WholeNumberToObject((wholenumber_t)arg1);;
     context->ArrayPut(arr, tempobj, 1);
-    tempobj = context->NumberToObject((wholenumber_t)arg2);;
+    tempobj = context->WholeNumberToObject((wholenumber_t)arg2);;
     context->ArrayPut(arr, tempobj, 2);
-    tempobj = context->NumberToObject((wholenumber_t)arg3);;
+    tempobj = context->WholeNumberToObject((wholenumber_t)arg3);;
     context->ArrayPut(arr, tempobj, 2);
     tempobj = context->SendMessage(rxobj, ((cbcb *)data)->signal_name, arr);
     context->ObjectToInt32(tempobj, &retc);

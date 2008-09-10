@@ -92,7 +92,7 @@ gboolean signal_GdkEvent(GtkWidget *window,
                                     (RexxObjectPtr)context->NewStringFromAsciiz("GdkEvent"));
     // Assign the standard event data
     context->SendMessage1(rxevent, "type=",
-                          context->NumberToObject((wholenumber_t)event->type));
+                          context->WholeNumberToObject((wholenumber_t)event->type));
 
     temp = context->SendMessage1(rxobj, ((cbcb *)data)->signal_name, rxevent);
     context->ObjectToInt32(temp, &retc);
@@ -130,7 +130,7 @@ gboolean signal_GdkEventKey(GtkWidget *window,
                                     (RexxObjectPtr)context->NewStringFromAsciiz("GdkEventKey"));
     // Assign the standard event data
     context->SendMessage1(rxevent, "type=",
-                          context->NumberToObject((wholenumber_t)event->type));
+                          context->WholeNumberToObject((wholenumber_t)event->type));
     temp = (RexxObjectPtr)g_object_get_data(G_OBJECT(event->window), "OORXOBJECT");
     if (temp == NULL) {
         context->SendMessage1(rxevent, "window=", context->Nil());
@@ -139,24 +139,24 @@ gboolean signal_GdkEventKey(GtkWidget *window,
         context->SendMessage1(rxevent, "window=", temp);
     }
     context->SendMessage1(rxevent, "send_event=",
-                          context->NumberToObject((wholenumber_t)event->send_event));
+                          context->WholeNumberToObject((wholenumber_t)event->send_event));
     // Assign the event specific data
     context->SendMessage1(rxevent, "time=",
-                          context->UnsignedNumberToObject((size_t)event->time));
+                          context->StringSizeNumberToObject((size_t)event->time));
     context->SendMessage1(rxevent, "state=",
-                          context->UnsignedNumberToObject((size_t)event->state));
+                          context->StringSizeToObject((size_t)event->state));
     context->SendMessage1(rxevent, "keyval=",
-                          context->UnsignedNumberToObject((size_t)event->keyval));
+                          context->StringSizeToObject((size_t)event->keyval));
     context->SendMessage1(rxevent, "length=",
-                          context->NumberToObject((wholenumber_t)event->length));
+                          context->WholeNumberToObject((wholenumber_t)event->length));
     context->SendMessage1(rxevent, "string=",
                           context->NewStringFromAsciiz(event->string));
     context->SendMessage1(rxevent, "hardware_keycode=",
-                          context->UnsignedNumberToObject((size_t)event->hardware_keycode));
+                          context->StringSizeToObject((size_t)event->hardware_keycode));
     context->SendMessage1(rxevent, "group=",
-                          context->UnsignedNumberToObject((size_t)event->group));
+                          context->StringSizeToObject((size_t)event->group));
     context->SendMessage1(rxevent, "is_modifier=",
-                          context->UnsignedNumberToObject((size_t)event->is_modifier));
+                          context->StringSizeToObject((size_t)event->is_modifier));
 
     temp = context->SendMessage1(rxobj, ((cbcb *)data)->signal_name, rxevent);
     context->ObjectToInt32(temp, &retc);
@@ -194,7 +194,7 @@ gboolean signal_GdkEventButton(GtkWidget *window,
                                     (RexxObjectPtr)context->NewStringFromAsciiz("GdkEventButton"));
     // Assign the standard event data
     context->SendMessage1(rxevent, "type=",
-                          context->NumberToObject((wholenumber_t)event->type));
+                          context->WholeNumberToObject((wholenumber_t)event->type));
     temp = (RexxObjectPtr)g_object_get_data(G_OBJECT(event->window), "OORXOBJECT");
     if (temp == NULL) {
         context->SendMessage1(rxevent, "window=", context->Nil());
@@ -203,10 +203,10 @@ gboolean signal_GdkEventButton(GtkWidget *window,
         context->SendMessage1(rxevent, "window=", temp);
     }
     context->SendMessage1(rxevent, "send_event=",
-                          context->NumberToObject((wholenumber_t)event->send_event));
+                          context->WholeNumberToObject((wholenumber_t)event->send_event));
     // Assign the event specific data
     context->SendMessage1(rxevent, "time=",
-                          context->UnsignedNumberToObject((size_t)event->time));
+                          context->StringSizeToObject((size_t)event->time));
     context->SendMessage1(rxevent, "x=",
                           context->DoubleToObject(event->x));
     context->SendMessage1(rxevent, "y=",
@@ -214,9 +214,9 @@ gboolean signal_GdkEventButton(GtkWidget *window,
     // TODO - fix this.
     context->SendMessage1(rxevent, "axes=", context->Nil());
     context->SendMessage1(rxevent, "state=",
-                          context->UnsignedNumberToObject((size_t)event->state));
+                          context->StringSizeToObject((size_t)event->state));
     context->SendMessage1(rxevent, "button=",
-                          context->UnsignedNumberToObject((size_t)event->button));
+                          context->StringSizeToObject((size_t)event->button));
     // TODO - fix this.
     context->SendMessage1(rxevent, "device=", context->Nil());
     context->SendMessage1(rxevent, "x_root=",
@@ -260,7 +260,7 @@ gboolean signal_GdkEventScroll(GtkWidget *window,
                                     (RexxObjectPtr)context->NewStringFromAsciiz("GdkEventScroll"));
     // Assign the standard event data
     context->SendMessage1(rxevent, "type=",
-                          context->NumberToObject((wholenumber_t)event->type));
+                          context->WholeNumberToObject((wholenumber_t)event->type));
     temp = (RexxObjectPtr)g_object_get_data(G_OBJECT(event->window), "OORXOBJECT");
     if (temp == NULL) {
         context->SendMessage1(rxevent, "window=", context->Nil());
@@ -269,18 +269,18 @@ gboolean signal_GdkEventScroll(GtkWidget *window,
         context->SendMessage1(rxevent, "window=", temp);
     }
     context->SendMessage1(rxevent, "send_event=",
-                          context->NumberToObject((wholenumber_t)event->send_event));
+                          context->WholeNumberToObject((wholenumber_t)event->send_event));
     // Assign the event specific data
     context->SendMessage1(rxevent, "time=",
-                          context->UnsignedNumberToObject((size_t)event->time));
+                          context->StringSizeToObject((size_t)event->time));
     context->SendMessage1(rxevent, "x=",
                           context->DoubleToObject(event->x));
     context->SendMessage1(rxevent, "y=",
                           context->DoubleToObject(event->y));
     context->SendMessage1(rxevent, "state=",
-                          context->UnsignedNumberToObject((size_t)event->state));
+                          context->StringSizeToObject((size_t)event->state));
     context->SendMessage1(rxevent, "direction=",
-                          context->NumberToObject((wholenumber_t)event->direction));
+                          context->WholeNumberToObject((wholenumber_t)event->direction));
     // TODO - fix this.
     context->SendMessage1(rxevent, "device=", context->Nil());
     context->SendMessage1(rxevent, "x_root=",
@@ -324,7 +324,7 @@ gboolean signal_GdkEventMotion(GtkWidget *window,
                                     (RexxObjectPtr)context->NewStringFromAsciiz("GdkEventMotion"));
     // Assign the standard event data
     context->SendMessage1(rxevent, "type=",
-                          context->NumberToObject((wholenumber_t)event->type));
+                          context->WholeNumberToObject((wholenumber_t)event->type));
     temp = (RexxObjectPtr)g_object_get_data(G_OBJECT(event->window), "OORXOBJECT");
     if (temp == NULL) {
         context->SendMessage1(rxevent, "window=", context->Nil());
@@ -333,10 +333,10 @@ gboolean signal_GdkEventMotion(GtkWidget *window,
         context->SendMessage1(rxevent, "window=", temp);
     }
     context->SendMessage1(rxevent, "send_event=",
-                          context->NumberToObject((wholenumber_t)event->send_event));
+                          context->WholeNumberToObject((wholenumber_t)event->send_event));
     // Assign the event specific data
     context->SendMessage1(rxevent, "time=",
-                          context->UnsignedNumberToObject((size_t)event->time));
+                          context->StringSizeToObject((size_t)event->time));
     context->SendMessage1(rxevent, "x=",
                           context->DoubleToObject(event->x));
     context->SendMessage1(rxevent, "y=",
@@ -344,9 +344,9 @@ gboolean signal_GdkEventMotion(GtkWidget *window,
     context->SendMessage1(rxevent, "axes=",
                           context->DoubleToObject(*event->axes));
     context->SendMessage1(rxevent, "state=",
-                          context->UnsignedNumberToObject((size_t)event->state));
+                          context->StringSizeToObject((size_t)event->state));
     context->SendMessage1(rxevent, "is_hint=",
-                          context->UnsignedNumberToObject((size_t)event->is_hint));
+                          context->StringSizeToObject((size_t)event->is_hint));
     // TODO - fix this.
     context->SendMessage1(rxevent, "device=", context->Nil());
     context->SendMessage1(rxevent, "x_root=",
@@ -390,7 +390,7 @@ gboolean signal_GdkEventExpose(GtkWidget *window,
                                     (RexxObjectPtr)context->NewStringFromAsciiz("GdkEventExpose"));
     // Assign the standard event data
     context->SendMessage1(rxevent, "type=",
-                          context->NumberToObject((wholenumber_t)event->type));
+                          context->WholeNumberToObject((wholenumber_t)event->type));
     temp = (RexxObjectPtr)g_object_get_data(G_OBJECT(event->window), "OORXOBJECT");
     if (temp == NULL) {
         context->SendMessage1(rxevent, "window=", context->Nil());
@@ -399,21 +399,21 @@ gboolean signal_GdkEventExpose(GtkWidget *window,
         context->SendMessage1(rxevent, "window=", temp);
     }
     context->SendMessage1(rxevent, "send_event=",
-                          context->NumberToObject((wholenumber_t)event->send_event));
+                          context->WholeNumberToObject((wholenumber_t)event->send_event));
     // Assign the event specific data
     context->SendMessage1(temp, "x=",
-                          context->NumberToObject((wholenumber_t)event->area.x));
+                          context->WholeNumberToObject((wholenumber_t)event->area.x));
     context->SendMessage1(temp, "y=",
-                          context->NumberToObject((wholenumber_t)event->area.y));
+                          context->WholeNumberToObject((wholenumber_t)event->area.y));
     context->SendMessage1(temp, "width=",
-                          context->NumberToObject((wholenumber_t)event->area.width));
+                          context->WholeNumberToObject((wholenumber_t)event->area.width));
     context->SendMessage1(temp, "height=",
-                          context->NumberToObject((wholenumber_t)event->area.height));
+                          context->WholeNumberToObject((wholenumber_t)event->area.height));
     context->SendMessage1(rxevent, "area=", temp);
     // TODO - fix this.
     context->SendMessage1(rxevent, "region=", context->Nil());
     context->SendMessage1(rxevent, "count=",
-                          context->NumberToObject((wholenumber_t)event->count));
+                          context->WholeNumberToObject((wholenumber_t)event->count));
 
     temp = context->SendMessage1(rxobj, ((cbcb *)data)->signal_name, rxevent);
     context->ObjectToInt32(temp, &retc);
@@ -452,7 +452,7 @@ gboolean signal_GdkEventVisibility(GtkWidget *window,
                                     (RexxObjectPtr)context->NewStringFromAsciiz("GdkEventVisibility"));
     // Assign the standard event data
     context->SendMessage1(rxevent, "type=",
-                          context->NumberToObject((wholenumber_t)event->type));
+                          context->WholeNumberToObject((wholenumber_t)event->type));
     temp = (RexxObjectPtr)g_object_get_data(G_OBJECT(event->window), "OORXOBJECT");
     if (temp == NULL) {
         context->SendMessage1(rxevent, "window=", context->Nil());
@@ -461,10 +461,10 @@ gboolean signal_GdkEventVisibility(GtkWidget *window,
         context->SendMessage1(rxevent, "window=", temp);
     }
     context->SendMessage1(rxevent, "send_event=",
-                          context->NumberToObject((wholenumber_t)event->send_event));
+                          context->WholeNumberToObject((wholenumber_t)event->send_event));
     // Assign the event specific data
     context->SendMessage1(rxevent, "state=",
-                          context->UnsignedNumberToObject((size_t)event->state));
+                          context->StringSizeToObject((size_t)event->state));
 
     temp = context->SendMessage1(rxobj, ((cbcb *)data)->signal_name, rxevent);
     context->ObjectToInt32(temp, &retc);
@@ -502,7 +502,7 @@ gboolean signal_GdkEventCrossing(GtkWidget *window,
                                     (RexxObjectPtr)context->NewStringFromAsciiz("GdkEventCrossing"));
     // Assign the standard event data
     context->SendMessage1(rxevent, "type=",
-                          context->NumberToObject((wholenumber_t)event->type));
+                          context->WholeNumberToObject((wholenumber_t)event->type));
     temp = (RexxObjectPtr)g_object_get_data(G_OBJECT(event->window), "OORXOBJECT");
     if (temp == NULL) {
         context->SendMessage1(rxevent, "window=", context->Nil());
@@ -511,7 +511,7 @@ gboolean signal_GdkEventCrossing(GtkWidget *window,
         context->SendMessage1(rxevent, "window=", temp);
     }
     context->SendMessage1(rxevent, "send_event=",
-                          context->NumberToObject((wholenumber_t)event->send_event));
+                          context->WholeNumberToObject((wholenumber_t)event->send_event));
     // Assign the event specific data
     if (event->subwindow != NULL) {
         temp = (RexxObjectPtr)g_object_get_data(G_OBJECT(event->subwindow), "OORXOBJECT");
@@ -526,7 +526,7 @@ gboolean signal_GdkEventCrossing(GtkWidget *window,
         context->SendMessage1(rxevent, "subwindow=", context->Nil());
     }
     context->SendMessage1(rxevent, "time=",
-                          context->UnsignedNumberToObject((size_t)event->time));
+                          context->StringSizeToObject((size_t)event->time));
     context->SendMessage1(rxevent, "x=",
                           context->DoubleToObject(event->x));
     context->SendMessage1(rxevent, "y=",
@@ -536,13 +536,13 @@ gboolean signal_GdkEventCrossing(GtkWidget *window,
     context->SendMessage1(rxevent, "y_root=",
                           context->DoubleToObject(event->y_root));
     context->SendMessage1(rxevent, "mode=",
-                          context->NumberToObject((wholenumber_t)event->mode));
+                          context->WholeNumberToObject((wholenumber_t)event->mode));
     context->SendMessage1(rxevent, "detail=",
-                          context->NumberToObject((wholenumber_t)event->detail));
+                          context->WholeNumberToObject((wholenumber_t)event->detail));
     context->SendMessage1(rxevent, "focus=",
-                          context->NumberToObject((wholenumber_t)event->focus));
+                          context->WholeNumberToObject((wholenumber_t)event->focus));
     context->SendMessage1(rxevent, "state=",
-                          context->UnsignedNumberToObject((size_t)event->state));
+                          context->StringSizeToObject((size_t)event->state));
 
     temp = context->SendMessage1(rxobj, ((cbcb *)data)->signal_name, rxevent);
     context->ObjectToInt32(temp, &retc);
@@ -580,7 +580,7 @@ gboolean signal_GdkEventFocus(GtkWidget *window,
                                     (RexxObjectPtr)context->NewStringFromAsciiz("GdkEventFocus"));
     // Assign the standard event data
     context->SendMessage1(rxevent, "type=",
-                          context->NumberToObject((wholenumber_t)event->type));
+                          context->WholeNumberToObject((wholenumber_t)event->type));
     temp = (RexxObjectPtr)g_object_get_data(G_OBJECT(event->window), "OORXOBJECT");
     if (temp == NULL) {
         context->SendMessage1(rxevent, "window=", context->Nil());
@@ -589,10 +589,10 @@ gboolean signal_GdkEventFocus(GtkWidget *window,
         context->SendMessage1(rxevent, "window=", temp);
     }
     context->SendMessage1(rxevent, "send_event=",
-                          context->NumberToObject((wholenumber_t)event->send_event));
+                          context->WholeNumberToObject((wholenumber_t)event->send_event));
     // Assign the event specific data
     context->SendMessage1(rxevent, "in=",
-                          context->NumberToObject((wholenumber_t)event->in));
+                          context->WholeNumberToObject((wholenumber_t)event->in));
 
     temp = context->SendMessage1(rxobj, ((cbcb *)data)->signal_name, rxevent);
     context->ObjectToInt32(temp, &retc);
@@ -631,7 +631,7 @@ gboolean signal_GdkEventConfigure(GtkWidget *window,
                                     (RexxObjectPtr)context->NewStringFromAsciiz("GdkEventConfigure"));
     // Assign the standard event data
     context->SendMessage1(rxevent, "type=",
-                          context->NumberToObject((wholenumber_t)event->type));
+                          context->WholeNumberToObject((wholenumber_t)event->type));
     temp = (RexxObjectPtr)g_object_get_data(G_OBJECT(event->window), "OORXOBJECT");
     if (temp == NULL) {
         context->SendMessage1(rxevent, "window=", context->Nil());
@@ -640,16 +640,16 @@ gboolean signal_GdkEventConfigure(GtkWidget *window,
         context->SendMessage1(rxevent, "window=", temp);
     }
     context->SendMessage1(rxevent, "send_event=",
-                          context->NumberToObject((wholenumber_t)event->send_event));
+                          context->WholeNumberToObject((wholenumber_t)event->send_event));
     // Assign the event specific data
     context->SendMessage1(rxevent, "x=",
-                          context->NumberToObject((wholenumber_t)event->x));
+                          context->WholeNumberToObject((wholenumber_t)event->x));
     context->SendMessage1(rxevent, "y=",
-                          context->NumberToObject((wholenumber_t)event->y));
+                          context->WholeNumberToObject((wholenumber_t)event->y));
     context->SendMessage1(rxevent, "width=",
-                          context->NumberToObject((wholenumber_t)event->width));
+                          context->WholeNumberToObject((wholenumber_t)event->width));
     context->SendMessage1(rxevent, "height=",
-                          context->NumberToObject((wholenumber_t)event->height));
+                          context->WholeNumberToObject((wholenumber_t)event->height));
 
     temp = context->SendMessage1(rxobj, ((cbcb *)data)->signal_name, rxevent);
     context->ObjectToInt32(temp, &retc);
@@ -687,7 +687,7 @@ gboolean signal_GdkEventProperty(GtkWidget *window,
                                     (RexxObjectPtr)context->NewStringFromAsciiz("GdkEventProperty"));
     // Assign the standard event data
     context->SendMessage1(rxevent, "type=",
-                          context->NumberToObject((wholenumber_t)event->type));
+                          context->WholeNumberToObject((wholenumber_t)event->type));
     temp = (RexxObjectPtr)g_object_get_data(G_OBJECT(event->window), "OORXOBJECT");
     if (temp == NULL) {
         context->SendMessage1(rxevent, "window=", context->Nil());
@@ -696,14 +696,14 @@ gboolean signal_GdkEventProperty(GtkWidget *window,
         context->SendMessage1(rxevent, "window=", temp);
     }
     context->SendMessage1(rxevent, "send_event=",
-                          context->NumberToObject((wholenumber_t)event->send_event));
+                          context->WholeNumberToObject((wholenumber_t)event->send_event));
     // Assign the event specific data
     context->SendMessage1(rxevent, "atom=",
-                          context->NumberToObject((wholenumber_t)event->atom));
+                          context->WholeNumberToObject((wholenumber_t)event->atom));
     context->SendMessage1(rxevent, "time=",
-                          context->UnsignedNumberToObject((size_t)event->time));
+                          context->StringSizeToObject((size_t)event->time));
     context->SendMessage1(rxevent, "state=",
-                          context->UnsignedNumberToObject((size_t)event->state));
+                          context->StringSizeToObject((size_t)event->state));
 
     temp = context->SendMessage1(rxobj, ((cbcb *)data)->signal_name, rxevent);
     context->ObjectToInt32(temp, &retc);
@@ -742,7 +742,7 @@ gboolean signal_GdkEventSelection(GtkWidget *window,
                                     (RexxObjectPtr)context->NewStringFromAsciiz("GdkEventSelection"));
     // Assign the standard event data
     context->SendMessage1(rxevent, "type=",
-                          context->NumberToObject((wholenumber_t)event->type));
+                          context->WholeNumberToObject((wholenumber_t)event->type));
     temp = (RexxObjectPtr)g_object_get_data(G_OBJECT(event->window), "OORXOBJECT");
     if (temp == NULL) {
         context->SendMessage1(rxevent, "window=", context->Nil());
@@ -751,16 +751,16 @@ gboolean signal_GdkEventSelection(GtkWidget *window,
         context->SendMessage1(rxevent, "window=", temp);
     }
     context->SendMessage1(rxevent, "send_event=",
-                          context->NumberToObject((wholenumber_t)event->send_event));
+                          context->WholeNumberToObject((wholenumber_t)event->send_event));
     // Assign the event specific data
     context->SendMessage1(rxevent, "selection=",
-                          context->NumberToObject((wholenumber_t)event->selection));
+                          context->WholeNumberToObject((wholenumber_t)event->selection));
     context->SendMessage1(rxevent, "target=",
-                          context->NumberToObject((wholenumber_t)event->target));
+                          context->WholeNumberToObject((wholenumber_t)event->target));
     context->SendMessage1(rxevent, "property=",
-                          context->NumberToObject((wholenumber_t)event->property));
+                          context->WholeNumberToObject((wholenumber_t)event->property));
     context->SendMessage1(rxevent, "time=",
-                          context->UnsignedNumberToObject((size_t)event->time));
+                          context->StringSizeToObject((size_t)event->time));
     context->SendMessage1(rxevent, "requestor=", context->Nil());
 
     temp = context->SendMessage1(rxobj, ((cbcb *)data)->signal_name, rxevent);
@@ -799,7 +799,7 @@ gboolean signal_GdkEventDND(GtkWidget *window,
                                     (RexxObjectPtr)context->NewStringFromAsciiz("GdkEventDND"));
     // Assign the standard event data
     context->SendMessage1(rxevent, "type=",
-                          context->NumberToObject((wholenumber_t)event->type));
+                          context->WholeNumberToObject((wholenumber_t)event->type));
     temp = (RexxObjectPtr)g_object_get_data(G_OBJECT(event->window), "OORXOBJECT");
     if (temp == NULL) {
         context->SendMessage1(rxevent, "window=", context->Nil());
@@ -808,16 +808,16 @@ gboolean signal_GdkEventDND(GtkWidget *window,
         context->SendMessage1(rxevent, "window=", temp);
     }
     context->SendMessage1(rxevent, "send_event=",
-                          context->NumberToObject((wholenumber_t)event->send_event));
+                          context->WholeNumberToObject((wholenumber_t)event->send_event));
     // Assign the event specific data
     // TODO - fix this.
     context->SendMessage1(rxevent, "context=", context->Nil());
     context->SendMessage1(rxevent, "time=",
-                          context->UnsignedNumberToObject((size_t)event->time));
+                          context->StringSizeToObject((size_t)event->time));
     context->SendMessage1(rxevent, "x_root=",
-                          context->NumberToObject((wholenumber_t)event->x_root));
+                          context->WholeNumberToObject((wholenumber_t)event->x_root));
     context->SendMessage1(rxevent, "y_root=",
-                          context->NumberToObject((wholenumber_t)event->y_root));
+                          context->WholeNumberToObject((wholenumber_t)event->y_root));
 
     temp = context->SendMessage1(rxobj, ((cbcb *)data)->signal_name, rxevent);
     context->ObjectToInt32(temp, &retc);
@@ -856,7 +856,7 @@ gboolean signal_GdkEventProximity(GtkWidget *window,
                                     (RexxObjectPtr)context->NewStringFromAsciiz("GdkEventProximity"));
     // Assign the standard event data
     context->SendMessage1(rxevent, "type=",
-                          context->NumberToObject((wholenumber_t)event->type));
+                          context->WholeNumberToObject((wholenumber_t)event->type));
     temp = (RexxObjectPtr)g_object_get_data(G_OBJECT(event->window), "OORXOBJECT");
     if (temp == NULL) {
         context->SendMessage1(rxevent, "window=", context->Nil());
@@ -865,10 +865,10 @@ gboolean signal_GdkEventProximity(GtkWidget *window,
         context->SendMessage1(rxevent, "window=", temp);
     }
     context->SendMessage1(rxevent, "send_event=",
-                          context->NumberToObject((wholenumber_t)event->send_event));
+                          context->WholeNumberToObject((wholenumber_t)event->send_event));
     // Assign the event specific data
     context->SendMessage1(rxevent, "time=",
-                          context->UnsignedNumberToObject((size_t)event->time));
+                          context->StringSizeToObject((size_t)event->time));
     context->SendMessage1(rxevent, "device=", context->Nil());
 
     temp = context->SendMessage1(rxobj, ((cbcb *)data)->signal_name, rxevent);
@@ -907,7 +907,7 @@ gboolean signal_GdkEventClient(GtkWidget *window,
                                     (RexxObjectPtr)context->NewStringFromAsciiz("GdkEventClient"));
     // Assign the standard event data
     context->SendMessage1(rxevent, "type=",
-                          context->NumberToObject((wholenumber_t)event->type));
+                          context->WholeNumberToObject((wholenumber_t)event->type));
     temp = (RexxObjectPtr)g_object_get_data(G_OBJECT(event->window), "OORXOBJECT");
     if (temp == NULL) {
         context->SendMessage1(rxevent, "window=", context->Nil());
@@ -916,31 +916,31 @@ gboolean signal_GdkEventClient(GtkWidget *window,
         context->SendMessage1(rxevent, "window=", temp);
     }
     context->SendMessage1(rxevent, "send_event=",
-                          context->NumberToObject((wholenumber_t)event->send_event));
+                          context->WholeNumberToObject((wholenumber_t)event->send_event));
     // Assign the event specific data
     context->SendMessage1(rxevent, "message_type=",
-                          context->NumberToObject((wholenumber_t)event->message_type));
+                          context->WholeNumberToObject((wholenumber_t)event->message_type));
     context->SendMessage1(rxevent, "data_format=",
-                          context->NumberToObject((wholenumber_t)event->data_format));
+                          context->WholeNumberToObject((wholenumber_t)event->data_format));
     RexxArrayObject temparr = context->NewArray(1);
     if (event->data_format == 8) {
         for (int i = 0; i < 20; i++) {
             context->ArrayPut(temparr,
-                              context->NumberToObject((wholenumber_t)event->data.b[i]),
+                              context->WholeNumberToObject((wholenumber_t)event->data.b[i]),
                               i + 1);
         }
     }
     else if (event->data_format == 16) {
         for (int i = 0; i < 10; i++) {
             context->ArrayPut(temparr,
-                              context->NumberToObject((wholenumber_t)event->data.s[i]),
+                              context->WholeNumberToObject((wholenumber_t)event->data.s[i]),
                               i + 1);
         }
     }
     else if (event->data_format == 32) {
         for (int i = 0; i < 5; i++) {
             context->ArrayPut(temparr,
-                              context->NumberToObject((wholenumber_t)event->data.l[i]),
+                              context->WholeNumberToObject((wholenumber_t)event->data.l[i]),
                               i + 1);
         }
     }
@@ -982,7 +982,7 @@ gboolean signal_GdkEventNoExpose(GtkWidget *window,
                                     (RexxObjectPtr)context->NewStringFromAsciiz("GdkEventNoExpose"));
     // Assign the standard event data
     context->SendMessage1(rxevent, "type=",
-                          context->NumberToObject((wholenumber_t)event->type));
+                          context->WholeNumberToObject((wholenumber_t)event->type));
     temp = (RexxObjectPtr)g_object_get_data(G_OBJECT(event->window), "OORXOBJECT");
     if (temp == NULL) {
         context->SendMessage1(rxevent, "window=", context->Nil());
@@ -991,7 +991,7 @@ gboolean signal_GdkEventNoExpose(GtkWidget *window,
         context->SendMessage1(rxevent, "window=", temp);
     }
     context->SendMessage1(rxevent, "send_event=",
-                          context->NumberToObject((wholenumber_t)event->send_event));
+                          context->WholeNumberToObject((wholenumber_t)event->send_event));
 
     temp = context->SendMessage1(rxobj, ((cbcb *)data)->signal_name, rxevent);
     context->ObjectToInt32(temp, &retc);
@@ -1030,7 +1030,7 @@ gboolean signal_GdkEventWindowState(GtkWidget *window,
                                     (RexxObjectPtr)context->NewStringFromAsciiz("GdkEventWindowState"));
     // Assign the standard event data
     context->SendMessage1(rxevent, "type=",
-                          context->NumberToObject((wholenumber_t)event->type));
+                          context->WholeNumberToObject((wholenumber_t)event->type));
     temp = (RexxObjectPtr)g_object_get_data(G_OBJECT(event->window), "OORXOBJECT");
     if (temp == NULL) {
         context->SendMessage1(rxevent, "window=", context->Nil());
@@ -1039,12 +1039,12 @@ gboolean signal_GdkEventWindowState(GtkWidget *window,
         context->SendMessage1(rxevent, "window=", temp);
     }
     context->SendMessage1(rxevent, "send_event=",
-                          context->NumberToObject((wholenumber_t)event->send_event));
+                          context->WholeNumberToObject((wholenumber_t)event->send_event));
     // Assign the event specific data
     context->SendMessage1(rxevent, "changed_mask=",
-                          context->NumberToObject((wholenumber_t)event->changed_mask));
+                          context->WholeNumberToObject((wholenumber_t)event->changed_mask));
     context->SendMessage1(rxevent, "new_window_state=",
-                          context->NumberToObject((wholenumber_t)event->new_window_state));
+                          context->WholeNumberToObject((wholenumber_t)event->new_window_state));
 
     temp = context->SendMessage1(rxobj, ((cbcb *)data)->signal_name, rxevent);
     context->ObjectToInt32(temp, &retc);
@@ -1082,7 +1082,7 @@ gboolean signal_GdkEventSetting(GtkWidget *window,
                                     (RexxObjectPtr)context->NewStringFromAsciiz("GdkEventSetting"));
     // Assign the standard event data
     context->SendMessage1(rxevent, "type=",
-                          context->NumberToObject((wholenumber_t)event->type));
+                          context->WholeNumberToObject((wholenumber_t)event->type));
     temp = (RexxObjectPtr)g_object_get_data(G_OBJECT(event->window), "OORXOBJECT");
     if (temp == NULL) {
         context->SendMessage1(rxevent, "window=", context->Nil());
@@ -1091,10 +1091,10 @@ gboolean signal_GdkEventSetting(GtkWidget *window,
         context->SendMessage1(rxevent, "window=", temp);
     }
     context->SendMessage1(rxevent, "send_event=",
-                          context->NumberToObject((wholenumber_t)event->send_event));
+                          context->WholeNumberToObject((wholenumber_t)event->send_event));
     // Assign the event specific data
     context->SendMessage1(rxevent, "action=",
-                          context->NumberToObject((wholenumber_t)event->action));
+                          context->WholeNumberToObject((wholenumber_t)event->action));
     context->SendMessage1(rxevent, "name=",
                           context->NewStringFromAsciiz(event->name));
 
@@ -1135,7 +1135,7 @@ gboolean signal_GdkEventOwnerChange(GtkWidget *window,
                                     (RexxObjectPtr)context->NewStringFromAsciiz("GdkEventOwnerChange"));
     // Assign the standard event data
     context->SendMessage1(rxevent, "type=",
-                          context->NumberToObject((wholenumber_t)event->type));
+                          context->WholeNumberToObject((wholenumber_t)event->type));
     temp = (RexxObjectPtr)g_object_get_data(G_OBJECT(event->window), "OORXOBJECT");
     if (temp == NULL) {
         context->SendMessage1(rxevent, "window=", context->Nil());
@@ -1144,17 +1144,17 @@ gboolean signal_GdkEventOwnerChange(GtkWidget *window,
         context->SendMessage1(rxevent, "window=", temp);
     }
     context->SendMessage1(rxevent, "send_event=",
-                          context->NumberToObject((wholenumber_t)event->send_event));
+                          context->WholeNumberToObject((wholenumber_t)event->send_event));
     // Assign the event specific data
     context->SendMessage1(rxevent, "owner=", context->Nil());
     context->SendMessage1(rxevent, "reason=",
-                          context->NumberToObject((wholenumber_t)event->reason));
+                          context->WholeNumberToObject((wholenumber_t)event->reason));
     context->SendMessage1(rxevent, "selection=",
-                          context->NumberToObject((wholenumber_t)event->selection));
+                          context->WholeNumberToObject((wholenumber_t)event->selection));
     context->SendMessage1(rxevent, "time=",
-                          context->UnsignedNumberToObject((size_t)event->time));
+                          context->StringSizeToObject((size_t)event->time));
     context->SendMessage1(rxevent, "selection_time=",
-                          context->UnsignedNumberToObject((size_t)event->selection_time));
+                          context->StringSizeToObject((size_t)event->selection_time));
 
     temp = context->SendMessage1(rxobj, ((cbcb *)data)->signal_name, rxevent);
     context->ObjectToInt32(temp, &retc);
@@ -1193,7 +1193,7 @@ gboolean signal_GdkEventGrabBroken(GtkWidget *window,
                                     (RexxObjectPtr)context->NewStringFromAsciiz("GdkEventGrabBroken"));
     // Assign the standard event data
     context->SendMessage1(rxevent, "type=",
-                          context->NumberToObject((wholenumber_t)event->type));
+                          context->WholeNumberToObject((wholenumber_t)event->type));
     temp = (RexxObjectPtr)g_object_get_data(G_OBJECT(event->window), "OORXOBJECT");
     if (temp == NULL) {
         context->SendMessage1(rxevent, "window=", context->Nil());
@@ -1202,12 +1202,12 @@ gboolean signal_GdkEventGrabBroken(GtkWidget *window,
         context->SendMessage1(rxevent, "window=", temp);
     }
     context->SendMessage1(rxevent, "send_event=",
-                          context->NumberToObject((wholenumber_t)event->send_event));
+                          context->WholeNumberToObject((wholenumber_t)event->send_event));
     // Assign the event specific data
     context->SendMessage1(rxevent, "keyboard=",
-                          context->NumberToObject((wholenumber_t)event->keyboard));
+                          context->WholeNumberToObject((wholenumber_t)event->keyboard));
     context->SendMessage1(rxevent, "implicit=",
-                          context->NumberToObject((wholenumber_t)event->implicit));
+                          context->WholeNumberToObject((wholenumber_t)event->implicit));
     if (event->grab_window != NULL) {
         temp = (RexxObjectPtr)g_object_get_data(G_OBJECT(event->grab_window), "OORXOBJECT");
         if (temp == NULL) {

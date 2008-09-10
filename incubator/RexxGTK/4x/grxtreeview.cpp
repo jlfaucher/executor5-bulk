@@ -96,7 +96,7 @@ static gboolean signal_func_1(GtkWidget *treeview,
 
     cblock->instance->AttachThread(&context);
     RexxArrayObject arr = context->NewArray(1);
-    RexxObjectPtr tempobj = context->NumberToObject((wholenumber_t)arg1);
+    RexxObjectPtr tempobj = context->WholeNumberToObject((wholenumber_t)arg1);
     context->ArrayPut(arr, tempobj, 1);
     tempobj = context->SendMessage(rxobj, ((cbcb *)data)->signal_name, arr);
     context->ObjectToInt32(tempobj, &retc);
@@ -116,9 +116,9 @@ static gboolean signal_func_2(GtkWidget *treeview,
 
     cblock->instance->AttachThread(&context);
     RexxArrayObject arr = context->NewArray(1);
-    RexxObjectPtr tempobj = context->NumberToObject((wholenumber_t)arg1);
+    RexxObjectPtr tempobj = context->WholeNumberToObject((wholenumber_t)arg1);
     context->ArrayPut(arr, tempobj, 1);
-    tempobj = context->NumberToObject((wholenumber_t)arg2);
+    tempobj = context->WholeNumberToObject((wholenumber_t)arg2);
     context->ArrayPut(arr, tempobj, 2);
     tempobj = context->SendMessage(rxobj, ((cbcb *)data)->signal_name, arr);
     context->ObjectToInt32(tempobj, &retc);
@@ -181,11 +181,11 @@ static gboolean signal_func_3(GtkWidget *treeview,
 
     cblock->instance->AttachThread(&context);
     RexxArrayObject arr = context->NewArray(1);
-    RexxObjectPtr tempobj = context->NumberToObject((wholenumber_t)arg1);
+    RexxObjectPtr tempobj = context->WholeNumberToObject((wholenumber_t)arg1);
     context->ArrayPut(arr, tempobj, 1);
-    tempobj = context->NumberToObject((wholenumber_t)arg2);
+    tempobj = context->WholeNumberToObject((wholenumber_t)arg2);
     context->ArrayPut(arr, tempobj, 2);
-    tempobj = context->NumberToObject((wholenumber_t)arg3);
+    tempobj = context->WholeNumberToObject((wholenumber_t)arg3);
     context->ArrayPut(arr, tempobj, 3);
     tempobj = context->SendMessage(rxobj, ((cbcb *)data)->signal_name, arr);
     context->ObjectToInt32(tempobj, &retc);

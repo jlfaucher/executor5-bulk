@@ -109,7 +109,7 @@ static void signal_func_1b(GtkWidget *window,
     RexxThreadContext *context;
 
     cblock->instance->AttachThread(&context);
-    RexxObjectPtr scrolltype = context->NumberToObject((wholenumber_t)arg1);;
+    RexxObjectPtr scrolltype = context->WholeNumberToObject((wholenumber_t)arg1);;
     context->SendMessage1(rxobj, ((cbcb *)data)->signal_name, scrolltype);
     context->DetachThread();
     return;
@@ -125,8 +125,8 @@ static void signal_func_2(GtkWidget *window,
     RexxThreadContext *context;
 
     cblock->instance->AttachThread(&context);
-    RexxObjectPtr rxtype = context->NumberToObject((wholenumber_t)type);;
-    RexxObjectPtr rxarg2 = context->NumberToObject((wholenumber_t)arg2);;
+    RexxObjectPtr rxtype = context->WholeNumberToObject((wholenumber_t)type);;
+    RexxObjectPtr rxarg2 = context->WholeNumberToObject((wholenumber_t)arg2);;
     context->SendMessage2(rxobj, ((cbcb *)data)->signal_name, rxtype, rxarg2);
     context->DetachThread();
     return;
@@ -144,11 +144,11 @@ static void signal_func_3(GtkWidget *window,
     RexxArrayObject arr = context->NewArray(1);
 
     cblock->instance->AttachThread(&context);
-    RexxObjectPtr rxstep = context->NumberToObject((wholenumber_t)step);;
+    RexxObjectPtr rxstep = context->WholeNumberToObject((wholenumber_t)step);;
     context->ArrayPut(arr, rxstep, 1);
-    RexxObjectPtr rxarg2 = context->NumberToObject((wholenumber_t)arg2);;
+    RexxObjectPtr rxarg2 = context->WholeNumberToObject((wholenumber_t)arg2);;
     context->ArrayPut(arr, rxarg2, 2);
-    RexxObjectPtr rxarg3 = context->NumberToObject((wholenumber_t)arg3);;
+    RexxObjectPtr rxarg3 = context->WholeNumberToObject((wholenumber_t)arg3);;
     context->ArrayPut(arr, rxarg3, 3);
     context->SendMessage(rxobj, ((cbcb *)data)->signal_name, arr);
     context->DetachThread();
