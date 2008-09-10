@@ -1,0 +1,398 @@
+#!/usr/bin/rexx
+/*
+   name:             METHOD.testUnit
+   author:           W. David Ashley
+   date:             2008/09/08
+   version:          1.0
+
+-- commented lines are ignored, when building the directory of infos from this header
+   changed:
+
+   languageLevel:    6.02
+   purpose:          Test the oo external class methods
+   remark:           ---
+
+   license:          CPL 1.0 (Common Public License v1.0, see below)
+   link:
+
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2008 Rexx Language Association. All rights reserved.         */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYright HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYright   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.METHOD.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+-- class named exactly like file
+::class "METHOD.testGroup" subclass ooTestCase public
+
+-- These are the real external functions we are testing
+::method tstargs000 EXTERNAL "LIBRARY orxmethod TstArgs000"
+::method tstargs001 EXTERNAL "LIBRARY orxmethod TstArgs001"
+::method tstargs002 EXTERNAL "LIBRARY orxmethod TstArgs002"
+::method tstargs003 EXTERNAL "LIBRARY orxmethod TstArgs003"
+::method tstargs004 EXTERNAL "LIBRARY orxmethod TstArgs004"
+::method tstargs005 EXTERNAL "LIBRARY orxmethod TstArgs005"
+::method tstargs006 EXTERNAL "LIBRARY orxmethod TstArgs006"
+::method tstargs007 EXTERNAL "LIBRARY orxmethod TstArgs007"
+::method tstargs008 EXTERNAL "LIBRARY orxmethod TstArgs008"
+::method tstargs009 EXTERNAL "LIBRARY orxmethod TstArgs009"
+::method tstargs010 EXTERNAL "LIBRARY orxmethod TstArgs010"
+::method tstargs011 EXTERNAL "LIBRARY orxmethod TstArgs011"
+::method tstargs012 EXTERNAL "LIBRARY orxmethod TstArgs012"
+::method tstargs013 EXTERNAL "LIBRARY orxmethod TstArgs013"
+::method tstargs014 EXTERNAL "LIBRARY orxmethod TstArgs014"
+::method tstargs015 EXTERNAL "LIBRARY orxmethod TstArgs015"
+::method tstargs016 EXTERNAL "LIBRARY orxmethod TstArgs016"
+::method tstargs017 EXTERNAL "LIBRARY orxmethod TstArgs017"
+::method tstargs018 EXTERNAL "LIBRARY orxmethod TstArgs018"
+::method tstargs019 EXTERNAL "LIBRARY orxmethod TstArgs019"
+::method tstargs020 EXTERNAL "LIBRARY orxmethod TstArgs020"
+::method tstargs021 EXTERNAL "LIBRARY orxmethod TstArgs021"
+::method tstargs022 EXTERNAL "LIBRARY orxmethod TstArgs022"
+::method tstargs023 EXTERNAL "LIBRARY orxmethod TstArgs023"
+::method tstargs024 EXTERNAL "LIBRARY orxmethod TstArgs024"
+::method tstargs025a EXTERNAL "LIBRARY orxmethod TstArgs025a"
+::method tstargs025b EXTERNAL "LIBRARY orxmethod TstArgs025b"
+::method tstargs025c EXTERNAL "LIBRARY orxmethod TstArgs025c"
+
+::method init class
+  forward class (super) continue
+
+  -- Over-ride the default test type
+  self~ooTestType = .ooTestTypes~NATIVE_API_TEST
+
+-- The following tests the functions for 0-10 arguments
+::method 'test000'
+  self~assertSame(0, self~tstargs000())
+
+::method 'test001'
+  self~assertSame(1, self~tstargs001(1))
+
+::method 'test002'
+  self~assertSame(2, self~tstargs002(1,1))
+
+::method 'test003'
+  self~assertSame(3, self~tstargs003(1,1,1))
+
+::method 'test004'
+  self~assertSame(4, self~tstargs004(1,1,1,1))
+
+::method 'test005'
+  self~assertSame(5, self~tstargs005(1,1,1,1,1))
+
+::method 'test006'
+  self~assertSame(6, self~tstargs006(1,1,1,1,1,1))
+
+::method 'test007'
+  self~assertSame(7, self~tstargs007(1,1,1,1,1,1,1))
+
+::method 'test008'
+  self~assertSame(8, self~tstargs008(1,1,1,1,1,1,1,1))
+
+::method 'test009'
+  self~assertSame(9, self~tstargs009(1,1,1,1,1,1,1,1,1))
+
+::method 'test010'
+  self~assertSame(10, self~tstargs010(1,1,1,1,1,1,1,1,1,1))
+
+-- The following error tests the functions for 0-10 arguments
+::method 'test011'
+  self~expectSyntax('88.922')
+  self~assertSame(0, self~tstargs000(1))
+
+::method 'test012'
+  self~expectSyntax('88.922')
+  self~assertSame(1, self~tstargs001(1,1))
+
+::method 'test013'
+  self~expectSyntax('88.922')
+  self~assertSame(2, self~tstargs002(1,1,1))
+
+::method 'test014'
+  self~expectSyntax('88.922')
+  self~assertSame(3, self~tstargs003(1,1,1,1))
+
+::method 'test015'
+  self~expectSyntax('88.922')
+  self~assertSame(4, self~tstargs004(1,1,1,1,1))
+
+::method 'test016'
+  self~expectSyntax('88.922')
+  self~assertSame(5, self~tstargs005(1,1,1,1,1,1))
+
+::method 'test017'
+  self~expectSyntax('88.922')
+  self~assertSame(6, self~tstargs006(1,1,1,1,1,1,1))
+
+::method 'test018'
+  self~expectSyntax('88.922')
+  self~assertSame(7, self~tstargs007(1,1,1,1,1,1,1,1))
+
+::method 'test019'
+  self~expectSyntax('88.922')
+  self~assertSame(8, self~tstargs008(1,1,1,1,1,1,1,1,1))
+
+::method 'test020'
+  self~expectSyntax('88.922')
+  self~assertSame(9, self~tstargs009(1,1,1,1,1,1,1,1,1,1))
+
+::method 'test021'
+  self~expectSyntax('88.922')
+  self~assertSame(10, self~tstargs010(1,1,1,1,1,1,1,1,1,1,1))
+
+::method 'test022'
+  self~expectSyntax('88.901')
+  self~assertSame(1, self~tstargs001())
+
+-- The following error tests the functions for 0-10 arguments
+::method 'test023'
+  self~expectSyntax('88.901')
+  self~assertSame(2, self~tstargs002(1))
+
+::method 'test024'
+  self~expectSyntax('88.901')
+  self~assertSame(3, self~tstargs003(1,1))
+
+::method 'test025'
+  self~expectSyntax('88.901')
+  self~assertSame(4, self~tstargs004(1,1,1))
+
+::method 'test026'
+  self~expectSyntax('88.901')
+  self~assertSame(5, self~tstargs005(1,1,1,1))
+
+::method 'test027'
+  self~expectSyntax('88.901')
+  self~assertSame(6, self~tstargs006(1,1,1,1,1))
+
+::method 'test028'
+  self~expectSyntax('88.901')
+  self~assertSame(7, self~tstargs007(1,1,1,1,1,1))
+
+::method 'test029'
+  self~expectSyntax('88.901')
+  self~assertSame(8, self~tstargs008(1,1,1,1,1,1,1))
+
+::method 'test030'
+  self~expectSyntax('88.901')
+  self~assertSame(9, self~tstargs009(1,1,1,1,1,1,1,1))
+
+::method 'test031'
+  self~expectSyntax('88.901')
+  self~assertSame(10, self~tstargs010(1,1,1,1,1,1,1,1,1))
+
+-- test int
+::method 'test032'
+  numeric digits 11
+  val = 0
+  self~assertSame(val, self~tstargs011(val))
+  val = 2147483647
+  self~assertSame(val, self~tstargs011(val))
+  val = 1
+  self~assertSame(val, self~tstargs011(val))
+  val = -1
+  self~assertSame(val, self~tstargs011(val))
+  val = -2147483647
+  self~assertSame(val, self~tstargs011(val))
+
+-- test int32_t
+::method 'test033'
+  numeric digits 11
+  val = 0
+  self~assertSame(val, self~tstargs012(val))
+  val = 2147483647
+  self~assertSame(val, self~tstargs012(val))
+  val = 1
+  self~assertSame(val, self~tstargs012(val))
+  val = -1
+  self~assertSame(val, self~tstargs012(val))
+  val = -2147483647
+  self~assertSame(val, self~tstargs012(val))
+
+-- test uint32_t
+::method 'test034'
+  numeric digits 11
+  val = 0
+  self~assertSame(val, self~tstargs013(val))
+  val = 4294967295
+  self~assertSame(val, self~tstargs013(val))
+  val = 1
+  self~assertSame(val, self~tstargs013(val))
+
+-- test int8_t
+::method 'test035'
+  val = 0
+  self~assertSame(val, self~tstargs014(val))
+  val = 127
+  self~assertSame(val, self~tstargs014(val))
+  val = 1
+  self~assertSame(val, self~tstargs014(val))
+  val = -1
+  self~assertSame(val, self~tstargs014(val))
+  val = -128
+  self~assertSame(val, self~tstargs014(val))
+
+-- test uint8_t
+::method 'test036'
+  val = 0
+  self~assertSame(val, self~tstargs015(val))
+  val = 255
+  self~assertSame(val, self~tstargs015(val))
+  val = 1
+  self~assertSame(val, self~tstargs015(val))
+
+-- test int16_t
+::method 'test037'
+  val = 0
+  self~assertSame(val, self~tstargs016(val))
+  val = 32767
+  self~assertSame(val, self~tstargs016(val))
+  val = 1
+  self~assertSame(val, self~tstargs016(val))
+  val = -1
+  self~assertSame(val, self~tstargs016(val))
+  val = -32768
+  self~assertSame(val, self~tstargs016(val))
+
+-- test uint16_t
+::method 'test038'
+  val = 0
+  self~assertSame(val, self~tstargs017(val))
+  val = 65535
+  self~assertSame(val, self~tstargs017(val))
+  val = 1
+  self~assertSame(val, self~tstargs017(val))
+
+-- test int64_t
+::method 'test039'
+  numeric digits 20
+  val = 0
+  self~assertSame(val, self~tstargs018(val))
+  val = 9223372036854775807
+  self~assertSame(val, self~tstargs018(val))
+  val = 1
+  self~assertSame(val, self~tstargs018(val))
+  val = -1
+  self~assertSame(val, self~tstargs018(val))
+  val = 9223372036854775807
+  self~assertSame(val, self~tstargs018(val))
+
+-- test uint64_t
+::method 'test040'
+  numeric digits 21
+  val = 0
+  self~assertSame(val, self~tstargs019(val))
+  val = 18446744073709551615
+  self~assertSame(val, self~tstargs019(val))
+  val = 1
+  self~assertSame(val, self~tstargs019(val))
+
+-- test wholenumber_t
+::method 'test041'
+  val = 0
+  self~assertSame(val, self~tstargs020(val))
+  val = 65535
+  self~assertSame(val, self~tstargs020(val))
+  val = 1
+  self~assertSame(val, self~tstargs020(val))
+
+-- test logical_t
+::method 'test042'
+  val = .true
+  self~assertSame(val, self~tstargs021(val))
+  val = .false
+  self~assertSame(val, self~tstargs021(val))
+  val = 2
+  self~expectSyntax('34.901')
+  self~assertSame(val, self~tstargs021(val))
+
+-- test float
+::method 'test043'
+  numeric digits 15
+  val = 3.40282347E+38
+  self~assertSame(val, self~tstargs022(val))
+  val = 1.17549435E-38
+  self~assertSame(val, self~tstargs022(val))
+  val = 0
+  self~assertSame(val, self~tstargs022(val))
+  val = 1
+  self~assertSame(val, self~tstargs022(val))
+  val = -1
+  self~assertSame(val, self~tstargs022(val))
+
+-- test double
+::method 'test044'
+  numeric digits 23
+  val = 1.79769313E+308
+  self~assertSame(val, self~tstargs023(val))
+  val = 2.22507386E-308
+  self~assertSame(val, self~tstargs023(val))
+  val = 0
+  self~assertSame(val, self~tstargs023(val))
+  val = 1
+  self~assertSame(val, self~tstargs023(val))
+  val = -1
+  self~assertSame(val, self~tstargs023(val))
+
+-- test CSTRING
+::method 'test045'
+  val = ''
+  self~assertSame(val, self~tstargs024(val))
+  val = copies('AbCdEfGhIjKlMnOpQrStUvWxYz0123456789', 1)
+  self~assertSame(val, self~tstargs024(val))
+  val = copies('AbCdEfGhIjKlMnOpQrStUvWxYz0123456789', 10)
+  self~assertSame(val, self~tstargs024(val))
+  val = copies('AbCdEfGhIjKlMnOpQrStUvWxYz0123456789', 100)
+  self~assertSame(val, self~tstargs024(val))
+  val = copies('AbCdEfGhIjKlMnOpQrStUvWxYz0123456789', 1000)
+  self~assertSame(val, self~tstargs024(val))
+
+-- test POINTER
+::method 'test046'
+  val = self~tstargs025a()
+  self~assertTrue(self~tstargs025b(val))
+  val = self~tstargs025c()
+  self~assertTrue(val~isNull())
+

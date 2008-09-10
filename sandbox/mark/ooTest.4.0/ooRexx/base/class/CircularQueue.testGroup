@@ -1,0 +1,402 @@
+#!/usr/bin/rexx
+/*
+   name:             CircularQueue.testGroup
+   author:           Rony G. Flatscher
+   date:             2006-05-17
+   version:          1.0.2
+
+-- line commented lines are ignored, when building the directory of infos from this header
+   changed:          2006-05-27, ---rgf, added tests for added behaviour: circular queue will
+                                 return the item it had to pull/remove in order to make room
+                                 for a new item object; will return .nil, if there was space
+                     2007-05-30, ---rgf, adapted to language level 6.02 as some raised errors
+                                         are generated with an own error number by USE STRICT ARG
+
+   languageLevel:    6.02
+   purpose:          Test the methods of the class CircularQueue.
+   remark:           ---
+
+   license:          CPL 1.0 (Common Public License v1.0, see below)
+   link:
+
+// category needs not to be numbered, importance is given by position (1=most important)
+   category:         ooRexx
+   category:         Base
+   category:         Class
+   category:         CircularQueue
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2006-2007 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+
+  group = .TestGroup~new(s)
+  group~add(.CircularQueue.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "CircularQueue.testGroup" subclass ooTestCase public
+
+
+   -- test INIT arguments (sent via NEW) ---------------------------------------------
+::method "test_INIT_ARG_1"
+   self~expectSyntax(93.901)     -- reflect USE STRICT ARG error message
+   u=.CircularQueue~new
+
+::method "test_INIT_ARG_2"
+   self~expectSyntax(93.902)     -- too many arguments
+   u=.CircularQueue~new(one, two)
+
+::method "test_INIT_ARG_3a"
+   self~expectSyntax(93.906)     -- not numeric, smaller than 0
+   u=.CircularQueue~new("max")
+
+::method "test_INIT_ARG_3b"
+   self~expectSyntax(93.906)     -- not numeric, smaller than 0
+   u=.CircularQueue~new(-1)
+
+::method "test_INIT_ARG_4"
+   self~assertEquals(3, .CircularQueue~new(3)~size)
+   self~assertEquals(0, .CircularQueue~new(0)~size)
+
+
+   -- test OF (class method) ---------------------------------------------
+::method "test_OF"
+   u0=.CircularQueue~of
+   u3=.CircularQueue~of(1,2,3)
+   self~assertEquals(0, u0~items)
+   self~assertEquals(0, u0~size)
+   self~assertEquals(3, u3~items)
+   self~assertEquals(3, u3~size)
+
+
+   -- test SIZE method ---------------------------------------------
+::method "test_SIZE_1a"
+   self~expectSyntax(93.902)        -- too many arguments
+   u=.CircularQueue~new(3)~size(3)  -- no arguments expected!
+
+::method "test_SIZE_1b"
+   self~expectSyntax(93.902)           -- too many arguments
+   u=.CircularQueue~new(3)~size(.nil)  -- no arguments expected!
+
+::method "test_SIZE_1c"
+   self~expectSyntax(93.902)        -- too many arguments
+   u=.CircularQueue~new(3)~size(1, 2)  -- no arguments expected!
+
+::method "test_SIZE_2"
+   u0=.CircularQueue~of
+   u3=.CircularQueue~of(1,2,3)
+
+   self~assertEquals(0, u0~size)
+   self~assertEquals(3, u3~size)
+
+
+   -- test RESIZE method ---------------------------------------------
+::method "test_RESIZE_1a"
+   self~expectSyntax(93.901)     -- reflect USE STRICT ARG error message
+   u=.CircularQueue~new(3)~resize   -- omit mandatory argument
+
+::method "test_RESIZE_1b"
+   self~expectSyntax(93.902)        -- too many arguments
+   u=.CircularQueue~new(3)~resize(1, 2, 3)
+
+::method "test_RESIZE_1c"
+   self~expectSyntax(93.914)        -- wrong second argument
+   u=.CircularQueue~new(3)~resize(1, 2)
+
+::method "test_RESIZE_1d"
+   self~expectSyntax(93.906)     -- not numeric, smaller than 0
+   u=.CircularQueue~new(3)~resize("max")
+
+::method "test_RESIZE_1e"
+   self~expectSyntax(93.906)     -- not numeric, smaller than 0
+   u=.CircularQueue~new(3)~resize(-1)
+
+::method "test_RESIZE_2"
+   u0=.CircularQueue~of
+   u3=.CircularQueue~of(1,2,3)
+   self~assertEquals(0, u0~items)
+   self~assertEquals(0, u0~size)
+   u0~resize(1)
+   self~assertEquals(0, u0~items)
+   self~assertEquals(1, u0~size)
+
+   u3~resize(2, "LIFO")
+   self~assertEquals(2, u3~items)
+   self~assertEquals(2, u3~size)
+
+   u3~resize(0)
+   self~assertEquals(0, u3~items)
+   self~assertEquals(0, u3~size)
+
+
+   -- test QUEUE method ---------------------------------------------
+::method "test_QUEUE_1a"
+   self~expectSyntax(93.901)     -- reflect USE STRICT ARG error message
+   u=.CircularQueue~new(3)~queue    -- omit mandatory argument
+
+::method "test_QUEUE_1b"
+   self~expectSyntax(93.902)        -- too many arguments
+   u=.CircularQueue~new(3)~queue(1, 2, 3)
+
+::method "test_QUEUE_2"
+   u0=.CircularQueue~new(0)         -- empty queue (size=0, items=0)
+   self~assertEquals(0, u0~~queue(1)~items)
+
+   u3=.CircularQueue~of(1,2,3)      -- queue of three elements
+   a=.array~of(1,2,3)               -- test sequence #1
+   self~assertTrue(testSequence(u3, a))
+
+   u3~~queue(4)~~queue(5)
+   a=.array~of(3,4,5)               -- test sequence #1
+   self~assertTrue(testSequence(u3, a))
+
+::method "test_QUEUE_unique"        -- sahananda 20080731
+   u3=.CircularQueue~of(1,2,3)      -- queue of three elements
+   a=.array~of(1,2,3)               -- test sequence #1
+   self~assertTrue(testSequence(u3, a))
+
+   u3~~queue(4,'Unique')~~queue(5,'Unique')
+   a=.array~of(3,4,5)               -- test sequence #1
+   self~assertTrue(testSequence(u3, a))
+
+   u3~~queue(5,'Unique')~~queue(4,'Unique')
+   a=.array~of(3,5,4)               -- test sequence #1
+   self~assertTrue(testSequence(u3, a))
+
+   -- test PUSH method ---------------------------------------------
+::method "test_PUSH_1a"
+   self~expectSyntax(93.901)     -- reflect USE STRICT ARG error message
+   u=.CircularQueue~new(3)~queue    -- omit mandatory argument
+
+::method "test_PUSH_1b"
+   self~expectSyntax(93.902)        -- too many arguments
+   u=.CircularQueue~new(3)~queue(1, 2, 3)
+
+::method "test_PUSH_2"
+   u0=.CircularQueue~new(0)         -- empty queue (size=0, items=0)
+   self~assertEquals(0, u0~~push(1)~items)
+
+   u3=.CircularQueue~of(1,2,3)      -- queue of three elements
+   a=.array~of(1,2,3)               -- test sequence #1
+   self~assertTrue(testSequence(u3, a))
+
+   u3~~push(4)~~push(5)
+   a=.array~of(5,4,3)               -- test sequence #1
+   self~assertTrue(testSequence(u3, a))
+
+::method "test_PUSH_unique"
+   u3=.CircularQueue~of(1,2,3)      -- queue of three elements
+   a=.array~of(1,2,3)               -- test sequence #1
+   self~assertTrue(testSequence(u3, a))
+
+   u3~~push(4,'Unique')~~push(5,'Unique')
+   a=.array~of(5,4,1)               -- test sequence #1
+   self~assertTrue(testSequence(u3, a))
+
+   u3~~push(5,'Unique')~~push(4,'Unique')
+   a=.array~of(4,5,1)               -- test sequence #1
+   self~assertTrue(testSequence(u3, a))
+
+   -- test MAKEARRAY method ---------------------------------------------
+::method "test_MAKEARRAY_1a"
+   self~expectSyntax(93.902)        -- too many arguments
+   u=.CircularQueue~new(3)~makearray(1, 2)
+
+::method "test_MAKEARRAY_1b"
+   self~expectSyntax(93.914)        -- wrong argument
+   u=.CircularQueue~new(3)~makearray("wrong")
+
+::method "test_MAKEARRAY_2"
+   u0=.CircularQueue~of
+   self~assertEquals(0, u0~makearray~items)
+
+   u3=.CircularQueue~of(1,2,3)
+   m=u3~makearray
+   self~assertEquals(3, m~items)
+   a=.array~of(1,2,3)
+   self~assertTrue(testSequence(m, a))
+   -- self~assertTrue(testSequence(m, .array~of(1,2,3)))
+
+   m=u3~makearray("FIFO")
+   self~assertEquals(3, m~items)
+   self~assertTrue(testSequence(m, .array~of(1,2,3)))
+
+   m=u3~makearray("FIFO")
+   self~assertEquals(3, m~items)
+   self~assertFalse(testSequence(m, .array~of(3,2,1)))
+
+   m=u3~makearray("LIFO")
+   self~assertEquals(3, m~items)
+   self~assertFalse(testSequence(m, .array~of(1,5,3)))
+
+   m=u3~makearray("LIFO")
+   self~assertEquals(3, m~items)
+   self~assertTrue(testSequence(m, .array~of(3,2,1)))
+
+
+
+   -- test SUPPLIER method ---------------------------------------------
+::method "test_SUPPLIER_1a"
+   self~expectSyntax(93.902)        -- too many arguments
+   u=.CircularQueue~new(3)~SUPPLIER(1, 2)
+
+::method "test_SUPPLIER_1b"
+   self~expectSyntax(93.914)        -- wrong argument
+   u=.CircularQueue~new(3)~SUPPLIER("wrong")
+
+::method "test_SUPPLIER_2"
+   u0=.CircularQueue~of
+   self~assertEquals(0, countSupplierItems(u0~supplier))
+
+   u3=.CircularQueue~of(1,2,3)
+   m=u3~SUPPLIER
+   self~assertEquals(3, countSupplierItems(m))
+   self~assertTrue(testSequence(m, .array~of(1,2,3)))
+   -- self~assertTrue(testSequence(m, .array~of(1,2,3)))
+
+   m=u3~SUPPLIER("FIFO")
+   self~assertEquals(3, countSupplierItems(m))
+   -- self~assertEquals(3, countSupplierItems(u3~supplier("FIFO")))
+   self~assertTrue(testSequence(m, .array~of(1,2,3)))
+
+   m=u3~SUPPLIER
+   self~assertEquals(3, countSupplierItems(m))
+   self~assertFalse(testSequence(m, .array~of(3,2,1)))
+
+   m=u3~SUPPLIER("LIFO")
+   self~assertEquals(3, countSupplierItems(m))
+   self~assertFalse(testSequence(m, .array~of(1,5,3)))
+
+   m=u3~SUPPLIER("LIFO")
+   self~assertEquals(3, countSupplierItems(m))
+   self~assertTrue(testSequence(m, .array~of(3,2,1)))
+   return
+
+
+testSequence: procedure
+   use arg s, a
+   bSame=.true
+   i=0
+   do while s~available & bSame
+      i=i+1
+      bSame=(bSame & (s~item=a[i]))
+      s~next
+   end
+   return bSame
+
+countSupplierItems: procedure
+   use arg s
+
+   i=0
+   s=s~copy    -- work on the copy, otherwise supplier gets "exhausted" by this loop
+   do while s~available
+      i=i+1
+      s~next
+   end
+   return i
+
+
+   -- test STRING method ---------------------------------------------
+::method "test_STRING_1a"
+   self~expectSyntax(93.902)        -- too many arguments
+   u=.CircularQueue~of(3)~STRING(1, 2, 3)
+
+::method "test_STRING_1b"
+   self~expectSyntax(93.914)        -- wrong second argument
+   u=.CircularQueue~of(3)~STRING(1, 2)
+
+::method "test_STRING_2"
+   u0=.CircularQueue~of
+   u3=.CircularQueue~of(1,2,3)
+   self~assertEquals("", u0~string)
+   self~assertEquals("1,2,3", u3~string)
+
+   self~assertEquals("", u0~string("-"))
+   self~assertEquals("", u0~string("-", "FIFO"))
+   self~assertEquals("", u0~string("-", "LIFO"))
+   self~assertEquals("", u0~string("-", "L"   ))
+
+   self~assertEquals("1-2-3", u3~string("-"))
+   self~assertEquals("123", u3~string(""))
+   self~assertEquals("321", u3~string("", "LIFO"))
+   self~assertEquals("3-2-1", u3~string("-", "LIFO"))
+   self~assertEquals("3,2,1", u3~string(, "LIFO"))
+
+
+::method "test_Queue_Push_Empty"
+   u0=.CircularQueue~of
+   self~assertEquals(.nil, u0~queue("1"))
+   self~assertEquals(.nil, u0~queue("2"))
+   self~assertEquals(.nil, u0~ push("1"))
+   self~assertEquals(.nil, u0~ push("2"))
+
+::method "test_Queue_Fill"
+   u1=.CircularQueue~new(2)
+   self~assertEquals(.nil, u1~queue("1"))
+   self~assertEquals(.nil, u1~queue("2"))
+   self~assertEquals(1, u1~queue("3"))
+   self~assertEquals(2, u1~queue("4"))
+   self~assertEquals(3, u1~queue("5"))
+
+::method "test_Queue_Push"
+   u1=.CircularQueue~new(2)
+   self~assertEquals(.nil, u1~push("1"))
+   self~assertEquals(.nil, u1~push("2"))
+   self~assertEquals(1, u1~push("3"))
+   self~assertEquals(2, u1~push("4"))
+   self~assertEquals(3, u1~push("5"))
+
+
+
+
+
+::routine testSequence           -- test whether both collections have the items in the same sequence
+   use arg x, y
+   bSame=(x~items=y~items)
+   do i=1 to y~items while bSame
+      bSame=(bSame & y[1]=x[1])  -- same element in same position ?
+   end
+   return bSame
+
+
