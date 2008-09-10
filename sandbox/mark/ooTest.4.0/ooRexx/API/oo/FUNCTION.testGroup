@@ -58,20 +58,15 @@ use arg testTypes
   group = .TestGroup~new(s)
   group~add(.FUNCTION.testGroup)
 
-  if testTypes~isA(.set) then do
-    if \ group~hasTestTypes(testTypes) then do
-      group~markNoTests("This is a native API test and not included in the test types to execute.")
+  if \ group~hasTestTypes(testTypes) then do
+    group~markNoTests("This is a native API test and not included in the test types to execute.")
 
-      if group~isAutomatedTest then return group
-      else return group~suite~execute~~print
-    end
+    if group~isAutomatedTest then return group
+    else return group~suite~execute~~print
   end
 
-  ctx = .context
-  package = ctx~package
-
   signal on syntax name packageErr
-  package~loadPackage('FUNCTIONPackage.cls')
+  .context~package~loadPackage('FUNCTIONPackage.cls')
 
   if group~isAutomatedTest then return group
 
