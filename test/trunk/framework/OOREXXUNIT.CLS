@@ -1080,16 +1080,16 @@ return str
 
 
 /** assertFuzzyEquals()
- * Checks if two objects are equal using fuzzy math 
+ * Checks if two objects are equal using fuzzy math
  */
 ::method assertFuzzyEquals
   use strict arg expected, actual, digits = (digits()), msg = ""
 
-  numeric digits digits 
-  numeric fuzz 1 
+  numeric digits digits
+  numeric fuzz 1
 
   if \ (expected = actual) then do
-      self~fail(self~makeFailure(expected, actual, msg, "assertEquals"))
+      self~fail(self~makeFailure(expected, actual, msg, "assertFuzzyEquals"))
   end
 
   -- Assertion holds

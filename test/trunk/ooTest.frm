@@ -72,6 +72,9 @@ if \ .local~hasEntry('OOTEST_FRAMEWORK_VERSION') then do
   if \ .local~hasEntry(ooTest.originalWorkingDir) then
     .local~ooTest.originalWorkingDir = directory()
 
+  -- Set up the external library path
+  j = setExternalLibDir()
+
 end
 -- End of entry point.
 
@@ -133,6 +136,22 @@ return s
 return a
 -- End makeArrayOfWords()
 
+::routine setExternalLibDir
+
+  os = .ooRexxUnit.osName
+
+  if os == "WINDOWS" then do
+    libDir = .ooTest.dir || '\bin\'os
+    j = addToPath(libDir)
+  end
+  else do
+    curLDPath = value("LD_LIBRARY_PATH", , 'ENVIRONMENT')
+    libDir = .ooTest.dir || '/bin/'os || .ooRexxUnit.path.separator || curLDPath
+
+    j = value("LD_LIBRARY_PATH", libDir, 'ENVIRONMENT')
+  end
+
+return 0
 
 /** class:  TestContainer
  * Defines an interface for a test container.  Objects containing tests that
@@ -1080,7 +1099,7 @@ return a
       raise syntax 88.917 array ("1 'fileSpec'", "must be an existing file path name.  File:" fileSpec)
 
     if fObj~open("SHAREREAD") \== "READY:" then
-      raise syntax 88.917 array ("1 'fileSpec'", "must be a readable file")
+      raise syntax 88.917 array ("1 'fileSpec'", "must be a readable file.  File:" fileSpec)
 
     data = self~readMetadata(fObj)
     if data == .nil then
