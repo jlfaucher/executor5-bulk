@@ -72,11 +72,11 @@ liborxmethod.so: orxmethod.o
 orxmethod.o: orxmethod.cpp $(METHOD_SRC_DEPS)
 	gcc -c $(ORXCFLAGS) $(REXX_INCLUDES) orxmethod.cpp
 
-$(BIN_DIR)/orxfunction.so: orxfunction.so
-  cp orxfunction.dll $(BIN_DIR)
+$(BIN_DIR)/liborxfunction.so: liborxfunction.so
+	cp liborxfunction.so $(BIN_DIR)
 
-$(BIN_DIR)/orxmethod.so: orxmethod.so
-  cp orxmethod.so $(BIN_DIR)
+$(BIN_DIR)/liborxmethod.so: liborxmethod.so
+	cp liborxmethod.so $(BIN_DIR)
 
 
 clean:
