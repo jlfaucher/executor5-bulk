@@ -37,50 +37,48 @@
 
 
 # Setup
-!IF DEFINED(REXX_HOME)
-API_LIB = $(REXX_HOME)\api
-API_INCLUDE = $(API_LIB)
-!ELSE IF DEFINED(REXX_BUILD_HOME)
-API_LIB = $(REXX_BUILD_HOME)\Win32Dbg
-API_INCLUDE = $(REXX_BUILD_HOME)\api
-!ELSE
-!ERROR You must define REXX_HOME or REXX_BUILD_HOME
-!ENDIF
+ORXLFLAGS = --export-dynamic -shared -nostartfiles
+ORXCFLAGS =  -fPIC
+COMMON_SRC_DEPS =
+FUNCTION_SRC_DEPS = $(COMMON_SRC_DEPS)
+METHOD_SRC_DEPS = $(COMMON_SRC_DEPS)
 
-REXX_LIBS = $(API_LIB)\rexx.lib $(API_LIB)\rexxapi.lib
-REXX_INCLUDES = /I$(API_INCLUDE)
+ifdef REXX_BUILD_HOME
+REXX_INCLUDES = -I $(REXX_BUILD_HOME)/api -I $(REXX_BUILD_HOME)/api/platform/unix
+REXX_LIBS = -L$(REXX_BUILD_HOME)/.libs
+endif
 
-# May need to add Windows libs - but it doesn't seem like it
-LIBS = $(REXX_LIBS)
-WARNINGFLAGS = /W3 /Wp64 /D_CRT_SECURE_NO_DEPRECATE /D_CRT_NONSTDC_NO_DEPRECATE
-
-ORXLFLAGS = /NOLOGO /DEBUG -debugtype:cv /SUBSYSTEM:Windows $(LIBS) /DLL
-
-ORXCFLAGS =  /nologo /EHsc /Zi /Od /Gr /MTd $(WARNINGFLAG) $(REXX_INCLUDES) /c
-
+# The destination for libraries
+BIN_DIR = ../../bin/LINUX
 
 # Build the libraries
-all: orxfunction.dll orxmethod.dll
+all: $(BIN_DIR)/liborxfunction.so $(BIN_DIR)/liborxmethod.so
 
 
 # Build the shared library
-orxfunction.dll: orxfunction.obj
-	link $(ORXLFLAGS) /def:orxfunction.def orxfunction.obj
+liborxfunction.so: orxfunction.o
+	gcc $(ORXLFLAGS) $(REXX_LIBS) -lrexx -lrexxapi -o liborxfunction.so orxfunction.o
 
 # Build the objects
-orxfunction.obj: orxfunction.cpp
-	cl $(ORXCFLAGS) orxfunction.cpp
+orxfunction.o: orxfunction.cpp $(FUNCTION_SRC_DEPS)
+	gcc -c $(ORXCFLAGS) $(REXX_INCLUDES) orxfunction.cpp
 
 
 # Build the shared library
-orxmethod.dll: orxmethod.obj
-	link $(ORXLFLAGS) /def:orxmethod.def orxmethod.obj
+liborxmethod.so: orxmethod.o
+	gcc $(ORXLFLAGS) $(REXX_LIBS) -lrexx -lrexxapi -o liborxmethod.so orxmethod.o
 
 # Build the objects
-orxmethod.obj: orxmethod.cpp
-	cl $(ORXCFLAGS) orxmethod.cpp
+orxmethod.o: orxmethod.cpp $(METHOD_SRC_DEPS)
+	gcc -c $(ORXCFLAGS) $(REXX_INCLUDES) orxmethod.cpp
+
+$(BIN_DIR)/orxfunction.so: orxfunction.so
+  cp orxfunction.dll $(BIN_DIR)
+
+$(BIN_DIR)/orxmethod.so: orxmethod.so
+  cp orxmethod.so $(BIN_DIR)
 
 
 clean:
-	rm *.dll *.obj *.ilk *.pdb *.lib *.exp
+	rm *.so *.o
 

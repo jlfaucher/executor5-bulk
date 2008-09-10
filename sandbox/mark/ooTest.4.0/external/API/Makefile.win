@@ -37,36 +37,56 @@
 
 
 # Setup
-ORXLFLAGS = --export-dynamic -shared -nostartfiles
-ORXCFLAGS =  -fPIC
-COMMON_SRC_DEPS =
-FUNCTION_SRC_DEPS = $(COMMON_SRC_DEPS)
-METHOD_SRC_DEPS = $(COMMON_SRC_DEPS)
+!IF DEFINED(REXX_BUILD_HOME)
+API_LIB = $(REXX_BUILD_HOME)\Win32Dbg
+API_INCLUDE = $(REXX_BUILD_HOME)\api
+!ELSE IF DEFINED(REXX_HOME)
+API_LIB = $(REXX_HOME)\api
+API_INCLUDE = $(API_LIB)
+!ELSE
+!ERROR You must define REXX_HOME or REXX_BUILD_HOME
+!ENDIF
 
+REXX_LIBS = $(API_LIB)\rexx.lib $(API_LIB)\rexxapi.lib
+REXX_INCLUDES = /I$(API_INCLUDE) /I$(API_INCLUDE)\platform\windows
+
+# May need to add Windows libs - but it doesn't seem like it
+LIBS = $(REXX_LIBS)
+WARNINGFLAGS = /W3 /Wp64 /D_CRT_SECURE_NO_DEPRECATE /D_CRT_NONSTDC_NO_DEPRECATE
+
+ORXLFLAGS = /NOLOGO /DEBUG -debugtype:cv /SUBSYSTEM:Windows $(LIBS) /DLL
+
+ORXCFLAGS =  /nologo /EHsc /Zi /Od /Gr /MTd $(WARNINGFLAG) $(REXX_INCLUDES) /c
+
+BIN_DIR = ..\..\bin\WINDOWS
 
 # Build the libraries
-all: liborxfunction.so liborxmethod.so
+all: $(BIN_DIR)\orxfunction.dll $(BIN_DIR)\orxmethod.dll
 
 
 # Build the shared library
-liborxfunction.so: orxfunction.o
-	gcc $(ORXLFLAGS) -lrexx -lrexxapi -o liborxfunction.so orxfunction.o
+orxfunction.dll: orxfunction.obj
+	link $(ORXLFLAGS) /def:orxfunction.def orxfunction.obj
 
 # Build the objects
-orxfunction.o: orxfunction.cpp $(FUNCTION_SRC_DEPS)
-	gcc -c $(ORXCFLAGS) orxfunction.cpp
+orxfunction.obj: orxfunction.cpp
+	cl $(ORXCFLAGS) orxfunction.cpp
 
 
 # Build the shared library
-liborxmethod.so: orxmethod.o
-	gcc $(ORXLFLAGS) -lrexx -lrexxapi -o liborxmethod.so orxmethod.o
+orxmethod.dll: orxmethod.obj
+	link $(ORXLFLAGS) /def:orxmethod.def orxmethod.obj
 
 # Build the objects
-orxmethod.o: orxmethod.cpp $(METHOD_SRC_DEPS)
-	gcc -c $(ORXCFLAGS) orxmethod.cpp
+orxmethod.obj: orxmethod.cpp
+	cl $(ORXCFLAGS) orxmethod.cpp
 
+$(BIN_DIR)\orxfunction.dll: orxfunction.dll
+  copy orxfunction.dll $(BIN_DIR)
 
+$(BIN_DIR)\orxmethod.dll: orxmethod.dll
+  copy orxmethod.dll $(BIN_DIR)
 
 clean:
-	rm *.so *.o
+	rm *.dll *.obj *.ilk *.pdb *.lib *.exp
 
