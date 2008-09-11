@@ -72,4 +72,7 @@
 ::method TestPointerValue EXTERNAL "LIBRARY orxmethod TestPointerValue"
 ::method TestPointerArg EXTERNAL "LIBRARY orxmethod TestPointerArg"
 ::method TestNullPointerValue EXTERNAL "LIBRARY orxmethod TestNullPointerValue"
+::method TestPointerStringValue EXTERNAL "LIBRARY orxmethod TestPointerStringValue"
+::method TestPointerStringArg EXTERNAL "LIBRARY orxmethod TestPointerStringArg"
+::method TestNullPointerStringValue EXTERNAL "LIBRARY orxmethod TestNullPointerStringValue"
 

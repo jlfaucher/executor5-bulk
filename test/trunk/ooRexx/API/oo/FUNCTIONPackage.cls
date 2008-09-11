@@ -70,4 +70,7 @@
 ::routine TestPointerValue EXTERNAL "LIBRARY orxfunction TestPointerValue"
 ::routine TestPointerArg EXTERNAL "LIBRARY orxfunction TestPointerArg"
 ::routine TestNullPointerValue EXTERNAL "LIBRARY orxfunction TestNullPointerValue"
+::routine TestPointerStringValue EXTERNAL "LIBRARY orxfunction TestPointerStringValue"
+::routine TestPointerStringArg EXTERNAL "LIBRARY orxfunction TestPointerStringArg"
+::routine TestNullPointerStringValue EXTERNAL "LIBRARY orxfunction TestNullPointerStringValue"
 

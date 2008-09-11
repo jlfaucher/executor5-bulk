@@ -315,6 +315,28 @@ RexxRoutine0(POINTER,                   // Return type
     return NULL;
 }
 
+RexxRoutine0(POINTERSTRING,             // Return type
+           TestPointerStringValue)      // Function routine name
+{
+    return (void *)TestPointerStringValue;
+}
+
+RexxRoutine1(logical_t,                 // Return type
+           TestPointerStringArg,        // Function routine name
+           POINTERSTRING, arg1)         // Argument
+{
+    if (arg1 == TestPointerStringValue) {
+        return 1;
+    }
+    return 0;
+}
+
+RexxRoutine0(POINTERSTRING,                   // Return type
+           TestNullPointerStringValue)        // Function routine name
+{
+    return NULL;
+}
+
 RexxRoutineEntry orxtest_funcs[] = {
     REXX_TYPED_ROUTINE(TestZeroIntArgs,       TestZeroIntArgs),
     REXX_TYPED_ROUTINE(TestOneIntArg,         TestOneIntArg),
@@ -349,6 +371,9 @@ RexxRoutineEntry orxtest_funcs[] = {
     REXX_TYPED_ROUTINE(TestPointerValue,      TestPointerValue),
     REXX_TYPED_ROUTINE(TestPointerArg,        TestPointerArg),
     REXX_TYPED_ROUTINE(TestNullPointerValue,  TestNullPointerValue),
+    REXX_TYPED_ROUTINE(TestPointerStringValue,      TestPointerStringValue),
+    REXX_TYPED_ROUTINE(TestPointerStringArg,        TestPointerStringArg),
+    REXX_TYPED_ROUTINE(TestNullPointerStringValue,  TestNullPointerStringValue),
     REXX_LAST_ROUTINE()
 };
 
