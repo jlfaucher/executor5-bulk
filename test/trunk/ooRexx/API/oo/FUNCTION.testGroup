@@ -240,6 +240,16 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame(1,TestIntArg(1.0))
   self~assertSame(1,TestIntArg(1e0))
 
+::method 'testint02'
+  numeric digits 11
+  self~expectSyntax('88.903')
+  TestIntArg(2147483648)
+
+::method 'testint03'
+  numeric digits 11
+  self~expectSyntax('88.903')
+  TestIntArg('-2147483649')
+
 -- test int32_t
 ::method 'test033'
   numeric digits 11

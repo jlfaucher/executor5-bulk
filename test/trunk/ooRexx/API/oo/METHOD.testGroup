@@ -270,10 +270,22 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame(val, tester~TestIntArg(val))
   val = -1
   self~assertSame(val, tester~TestIntArg(val))
-  val = -2147483647
+  val = '-2147483648'
   self~assertSame(val, tester~TestIntArg(val))
   self~assertSame(1, tester~TestIntArg(1.0))
   self~assertSame(1, tester~TestIntArg(1e0))
+
+::method 'testint02'
+  tester = .METHODtester~new
+  numeric digits 11
+  self~expectSyntax('88.903')
+  tester~TestIntArg(2147483648)
+
+::method 'testint03'
+  tester = .METHODtester~new
+  numeric digits 11
+  self~expectSyntax('88.903')
+  tester~TestIntArg('-2147483649')
 
 -- test int32_t
 ::method 'test033'
