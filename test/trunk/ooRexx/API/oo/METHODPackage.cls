@@ -63,6 +63,8 @@
 ::method TestUintPtrArg EXTERNAL "LIBRARY orxmethod TestUintPtrArg"
 ::method TestWholeNumberArg EXTERNAL "LIBRARY orxmethod TestWholeNumberArg"
 ::method TestStringSizeArg EXTERNAL "LIBRARY orxmethod TestStringSizeArg"
+::method TestSizeArg EXTERNAL "LIBRARY orxmethod TestSizeArg"
+::method TestSSizeArg EXTERNAL "LIBRARY orxmethod TestSSizeArg"
 ::method TestLogicalArg EXTERNAL "LIBRARY orxmethod TestLogicalArg"
 ::method TestFloatArg EXTERNAL "LIBRARY orxmethod TestFloatArg"
 ::method TestDoubleArg EXTERNAL "LIBRARY orxmethod TestDoubleArg"

@@ -251,6 +251,20 @@ RexxRoutine1(stringsize_t,              // Return type
     return arg1;
 }
 
+RexxRoutine1(size_t,                     // Return type
+            TestSizeArg,                // Function routine name
+            size_t, arg1)               // Argument
+{
+    return arg1;
+}
+
+RexxRoutine1(ssize_t,                     // Return type
+            TestSSizeArg,                // Function routine name
+            ssize_t, arg1)               // Argument
+{
+    return arg1;
+}
+
 RexxRoutine1(logical_t,                 // Return type
             TestLogicalArg,             // Function routine name
             logical_t, arg1)           // Argument
@@ -326,6 +340,8 @@ RexxRoutineEntry orxtest_funcs[] = {
     REXX_TYPED_ROUTINE(TestUintPtrArg,        TestUintPtrArg),
     REXX_TYPED_ROUTINE(TestWholeNumberArg,    TestWholeNumberArg),
     REXX_TYPED_ROUTINE(TestStringSizeArg,     TestStringSizeArg),
+    REXX_TYPED_ROUTINE(TestSizeArg,           TestSizeArg),
+    REXX_TYPED_ROUTINE(TestSSizeArg,          TestSSizeArg),
     REXX_TYPED_ROUTINE(TestLogicalArg,        TestLogicalArg),
     REXX_TYPED_ROUTINE(TestFloatArg,          TestFloatArg),
     REXX_TYPED_ROUTINE(TestDoubleArg,         TestDoubleArg),
