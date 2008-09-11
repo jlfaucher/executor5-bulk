@@ -36,5 +36,5 @@
 #/*                                                                            */
 #/*----------------------------------------------------------------------------*/
 
-frameworkPath=`pwd`/framework:
+frameworkPath=`pwd`:`pwd`/framework:
 export PATH=$frameworkPath$PATH

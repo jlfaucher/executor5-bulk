@@ -58,7 +58,7 @@ use arg testTypes
   group = .TestGroup~new(s)
   group~add(.FUNCTION.testGroup)
 
-  if \ group~hasTestTypes(testTypes) then do
+  if arg(1, 'E'), \ group~hasTestTypes(testTypes) then do
     group~markNoTests("This is a native API test and not included in the test types to execute.")
 
     if group~isAutomatedTest then return group
