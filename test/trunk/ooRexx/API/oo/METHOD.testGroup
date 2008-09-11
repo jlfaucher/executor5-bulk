@@ -393,6 +393,16 @@ packageErr:
   self~assertSame(val, tester~tstargs022(val))
   val = -1
   self~assertSame(val, tester~tstargs022(val))
+  val = "nan"
+  self~assertSame(val, tester~tstargs022(val))
+  val = "+infinity"
+  self~assertSame(val, tester~tstargs022(val))
+  val = "-infinity"
+  self~assertSame(val, tester~tstargs022(val))
+  val = 3.40282347E+40
+  self~assertSame("+infinity", tester~tstargs022(val))
+  val = -3.40282347E+40
+  self~assertSame("-infinity", tester~tstargs022(val))
 
 -- test double
 ::method 'test044'
@@ -408,6 +418,16 @@ packageErr:
   self~assertSame(val, tester~tstargs023(val))
   val = -1
   self~assertSame(val, tester~tstargs023(val))
+  val = "nan"
+  self~assertSame(val, tester~tstargs023(val))
+  val = "+infinity"
+  self~assertSame(val, tester~tstargs023(val))
+  val = "-infinity"
+  self~assertSame(val, tester~tstargs023(val))
+  val = 1.79769313E+310
+  self~assertSame("+infinity", tester~tstargs023(val))
+  val = -1.79769313E+310
+  self~assertSame("-infinity", tester~tstargs023(val))
 
 -- test CSTRING
 ::method 'test045'
