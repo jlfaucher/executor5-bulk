@@ -104,31 +104,31 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame(1, TestOneIntArg(1))
 
 ::method 'test002'
-  self~assertSame(2, TestTwoIntArgs(1,1))
+  self~assertSame(3, TestTwoIntArgs(1,2))
 
 ::method 'test003'
-  self~assertSame(3, TestThreeIntArgs(1,1,1))
+  self~assertSame(6, TestThreeIntArgs(1,2,3))
 
 ::method 'test004'
-  self~assertSame(4, TestFourIntArgs(1,1,1,1))
+  self~assertSame(10, TestFourIntArgs(1,2,3,4))
 
 ::method 'test005'
-  self~assertSame(5, TestFiveIntArgs(1,1,1,1,1))
+  self~assertSame(15, TestFiveIntArgs(1,2,3,4,5))
 
 ::method 'test006'
-  self~assertSame(6, TestSixIntArgs(1,1,1,1,1,1))
+  self~assertSame(21, TestSixIntArgs(1,2,3,4,5,6))
 
 ::method 'test007'
-  self~assertSame(7, TestSevenIntArgs(1,1,1,1,1,1,1))
+  self~assertSame(28, TestSevenIntArgs(1,2,3,4,5,6,7))
 
 ::method 'test008'
-  self~assertSame(8, TestEightIntArgs(1,1,1,1,1,1,1,1))
+  self~assertSame(36, TestEightIntArgs(1,2,3,4,5,6,7,8))
 
 ::method 'test009'
-  self~assertSame(9, TestNineIntArgs(1,1,1,1,1,1,1,1,1))
+  self~assertSame(45, TestNineIntArgs(1,2,3,4,5,6,7,8,9))
 
 ::method 'test010'
-  self~assertSame(10, TestTenIntArgs(1,1,1,1,1,1,1,1,1,1))
+  self~assertSame(55, TestTenIntArgs(1,2,3,4,5,6,7,8,9,10))
 
 -- The following error tests the macros for 0-10 arguments
 ::method 'test011'

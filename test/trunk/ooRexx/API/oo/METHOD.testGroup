@@ -107,39 +107,39 @@ return .ooTestResult~new(5)~~addException(err)
 
 ::method 'test002'
   tester = .METHODtester~new
-  self~assertSame(2, tester~TestTwoIntArgs(1,1))
+  self~assertSame(3, tester~TestTwoIntArgs(1,2))
 
 ::method 'test003'
   tester = .METHODtester~new
-  self~assertSame(3, tester~TestThreeIntArgs(1,1,1))
+  self~assertSame(6, tester~TestThreeIntArgs(1,2,3))
 
 ::method 'test004'
   tester = .METHODtester~new
-  self~assertSame(4, tester~TestFourIntArgs(1,1,1,1))
+  self~assertSame(10, tester~TestFourIntArgs(1,2,3,4))
 
 ::method 'test005'
   tester = .METHODtester~new
-  self~assertSame(5, tester~TestFiveIntArgs(1,1,1,1,1))
+  self~assertSame(15, tester~TestFiveIntArgs(1,2,3,4,5))
 
 ::method 'test006'
   tester = .METHODtester~new
-  self~assertSame(6, tester~TestSixIntArgs(1,1,1,1,1,1))
+  self~assertSame(21, tester~TestSixIntArgs(1,2,3,4,5,6))
 
 ::method 'test007'
   tester = .METHODtester~new
-  self~assertSame(7, tester~TestSevenIntArgs(1,1,1,1,1,1,1))
+  self~assertSame(28, tester~TestSevenIntArgs(1,2,3,4,5,6,7))
 
 ::method 'test008'
   tester = .METHODtester~new
-  self~assertSame(8, tester~TestEightIntArgs(1,1,1,1,1,1,1,1))
+  self~assertSame(36, tester~TestEightIntArgs(1,2,3,4,5,6,7,8))
 
 ::method 'test009'
   tester = .METHODtester~new
-  self~assertSame(9, tester~TestNineIntArgs(1,1,1,1,1,1,1,1,1))
+  self~assertSame(45, tester~TestNineIntArgs(1,2,3,4,5,6,7,8,9))
 
 ::method 'test010'
   tester = .METHODtester~new
-  self~assertSame(10, tester~TestTenIntArgs(1,1,1,1,1,1,1,1,1,1))
+  self~assertSame(55, tester~TestTenIntArgs(1,2,3,4,5,6,7,8,9,10))
 
 -- The following error tests the functions for 0-10 arguments
 ::method 'test011'
