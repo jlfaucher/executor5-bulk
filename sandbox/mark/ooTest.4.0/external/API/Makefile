@@ -49,10 +49,12 @@ REXX_LIBS = -L$(REXX_BUILD_HOME)/.libs
 endif
 
 # The destination for libraries
-BIN_DIR = ../../bin/LINUX
+ifndef OOTEST_BIN_DIR
+OOTEST_BIN_DIR = ../../bin/LINUX
+endif
 
 # Build the libraries
-all: $(BIN_DIR)/liborxfunction.so $(BIN_DIR)/liborxmethod.so
+all: $(OOTEST_BIN_DIR)/liborxfunction.so $(OOTEST_BIN_DIR)/liborxmethod.so
 
 
 # Build the shared library
@@ -72,11 +74,11 @@ liborxmethod.so: orxmethod.o
 orxmethod.o: orxmethod.cpp $(METHOD_SRC_DEPS)
 	gcc -c $(ORXCFLAGS) $(REXX_INCLUDES) orxmethod.cpp
 
-$(BIN_DIR)/liborxfunction.so: liborxfunction.so
-	cp liborxfunction.so $(BIN_DIR)
+$(OOTEST_BIN_DIR)/liborxfunction.so: liborxfunction.so
+	cp liborxfunction.so $(OOTEST_BIN_DIR)
 
-$(BIN_DIR)/liborxmethod.so: liborxmethod.so
-	cp liborxmethod.so $(BIN_DIR)
+$(OOTEST_BIN_DIR)/liborxmethod.so: liborxmethod.so
+	cp liborxmethod.so $(OOTEST_BIN_DIR)
 
 
 clean:

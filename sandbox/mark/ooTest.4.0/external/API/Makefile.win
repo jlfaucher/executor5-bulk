@@ -58,10 +58,12 @@ ORXLFLAGS = /NOLOGO /DEBUG -debugtype:cv /SUBSYSTEM:Windows $(LIBS) /DLL
 
 ORXCFLAGS =  /nologo /EHsc /Zi /Od /Gr /MTd $(WARNINGFLAG) $(REXX_INCLUDES) /c
 
-BIN_DIR = ..\..\bin\WINDOWS
+!IFNDEF OOTEST_BIN_DIR
+OOTEST_BIN_DIR = ..\..\bin\WINDOWS
+!ENDIF
 
 # Build the libraries
-all: $(BIN_DIR)\orxfunction.dll $(BIN_DIR)\orxmethod.dll
+all: $(OOTEST_BIN_DIR)\orxfunction.dll $(OOTEST_BIN_DIR)\orxmethod.dll
 
 
 # Build the shared library
@@ -81,11 +83,11 @@ orxmethod.dll: orxmethod.obj
 orxmethod.obj: orxmethod.cpp
 	cl $(ORXCFLAGS) orxmethod.cpp
 
-$(BIN_DIR)\orxfunction.dll: orxfunction.dll
-  copy orxfunction.dll $(BIN_DIR)
+$(OOTEST_BIN_DIR)\orxfunction.dll: orxfunction.dll
+  copy orxfunction.dll $(OOTEST_BIN_DIR)
 
-$(BIN_DIR)\orxmethod.dll: orxmethod.dll
-  copy orxmethod.dll $(BIN_DIR)
+$(OOTEST_BIN_DIR)\orxmethod.dll: orxmethod.dll
+  copy orxmethod.dll $(OOTEST_BIN_DIR)
 
 clean:
 	rm *.dll *.obj *.ilk *.pdb *.lib *.exp
