@@ -78,7 +78,12 @@ packageErr:
   err = .ExceptionData~new(timeStamp(), s, "Trap")
   err~conditionObject = condition('O')
   err~msg = "Failed to load the external API package needed for this test group."
-  return err
+
+  if group~isAutomatedTest then return err
+
+  err~print("Test group exception", .false)
+return .ooTestResult~new(5)~~addException(err)
+
 
 ::requires 'ooTest.frm' -- load the ooRexxUnit classes
 

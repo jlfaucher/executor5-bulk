@@ -621,7 +621,7 @@ return 0
     end
 
     if tResult~exceptionCount > 0 then do data over tResult~getExceptions
-      self~printExceptions(data)
+      data~print
     end
 
     if verbose > 3 then self~printSkippedFiles
@@ -732,21 +732,6 @@ return 0
     stats~messages = msgs
 
   return stats
-
-  ::method printExceptions private      -- DFX TODO fix this rough outline
-    use arg err
-
-    say "[Framework exception]" err~when
-    say "  File:" pathCompact(err~where, 70)
-    if err~line <> -1 then say "  Line:" err~line
-    say "  Type:" err~type "Severity:" err~severity
-    say " " err~getMessage
-    if err~conditionObject <> .nil then do
-      if err~conditionObject~traceBack~isA(.list) then do line over err~conditionObject~traceBack
-        say line
-      end
-    end
-    say
 
   ::method printMessages private       -- DFX TODO fix this rough outline
     expose notifications
@@ -1865,6 +1850,25 @@ return suite
       msg = "n/a"
 
     return msg
+
+  ::method print      -- DFX TODO this is a rough outline, it maybe could be improved
+    use strict arg title = "Framework exception", compact = .true
+
+    say "["title"]" self~when
+
+    if compact then say "  File:" pathCompact(self~where, 70)
+    else say "  File:" self~where
+
+    if self~line <> -1 then say "  Line:" self~line
+    say "  Type:" self~type "Severity:" self~severity
+    say " " self~getMessage
+    if self~conditionObject <> .nil then do
+      if self~conditionObject~traceBack~isA(.list) then do line over self~conditionObject~traceBack
+        say line
+      end
+    end
+    say
+
 
 -- End of class: ExceptionData
 
