@@ -133,60 +133,68 @@ return .ooTestResult~new(5)~~addException(err)
 -- The following error tests the macros for 0-10 arguments
 ::method 'test011'
   self~expectSyntax('88.922')
-  self~assertSame(0, TestZeroIntArgs(1))
+  TestZeroIntArgs(1)
 
 ::method 'test012'
   self~expectSyntax('88.922')
-  self~assertSame(1, TestOneIntArg(1,1))
+  TestOneIntArg(1,1)
 
 ::method 'test013'
   self~expectSyntax('88.922')
-  self~assertSame(2, TestTwoIntArgs(1,1,1))
+  TestTwoIntArgs(1,1,1)
 
 ::method 'test014'
   self~expectSyntax('88.922')
-  self~assertSame(3, TestThreeIntArgs(1,1,1,1))
+  TestThreeIntArgs(1,1,1,1)
 
 ::method 'test015'
   self~expectSyntax('88.922')
-  self~assertSame(4, TestFourIntArgs(1,1,1,1,1))
+  TestFourIntArgs(1,1,1,1,1)
 
 ::method 'test016'
   self~expectSyntax('88.922')
-  self~assertSame(5, TestFiveIntArgs(1,1,1,1,1,1))
+  TestFiveIntArgs(1,1,1,1,1,1)
 
 ::method 'test017'
   self~expectSyntax('88.922')
-  self~assertSame(6, TestSixIntArgs(1,1,1,1,1,1,1))
+  TestSixIntArgs(1,1,1,1,1,1,1)
 
 ::method 'test018'
   self~expectSyntax('88.922')
-  self~assertSame(7, TestSevenIntArgs(1,1,1,1,1,1,1,1))
+  TestSevenIntArgs(1,1,1,1,1,1,1,1)
 
 ::method 'test019'
   self~expectSyntax('88.922')
-  self~assertSame(8, TestEightIntArgs(1,1,1,1,1,1,1,1,1))
+  TestEightIntArgs(1,1,1,1,1,1,1,1,1)
 
 ::method 'test020'
   self~expectSyntax('88.922')
-  self~assertSame(9, TestNineIntArgs(1,1,1,1,1,1,1,1,1,1))
+  TestNineIntArgs(1,1,1,1,1,1,1,1,1,1)
 
 ::method 'test021'
   self~expectSyntax('88.922')
-  self~assertSame(10, TestTenIntArgs(1,1,1,1,1,1,1,1,1,1,1))
+  TestTenIntArgs(1,1,1,1,1,1,1,1,1,1,1)
 
 -- The following error tests the macros for 0-10 arguments
 ::method 'test022'
   self~expectSyntax('88.901')
-  self~assertSame(1, TestOneIntArg())
+  TestOneIntArg()
 
 ::method 'test023'
   self~expectSyntax('88.901')
-  self~assertSame(2, TestTwoIntArgs(1))
+  TestTwoIntArgs(1)
+
+::method 'test023a'
+  self~expectSyntax('88.901')
+  TestTwoIntArgs(,1)
 
 ::method 'test024'
   self~expectSyntax('88.901')
-  self~assertSame(3, TestThreeIntArgs(1,1))
+  TestThreeIntArgs(1,1)
+
+::method 'test024a'
+  self~expectSyntax('88.901')
+  TestThreeIntArgs(1,,1)
 
 ::method 'test025'
   self~expectSyntax('88.901')
@@ -194,30 +202,30 @@ return .ooTestResult~new(5)~~addException(err)
 
 ::method 'test026'
   self~expectSyntax('88.901')
-  self~assertSame(5, TestFiveIntArgs(1,1,1,1))
+  TestFiveIntArgs(1,1,1,1)
 
 ::method 'test027'
   self~expectSyntax('88.901')
-  self~assertSame(6, TestSixIntArgs(1,1,1,1,1))
+  TestSixIntArgs(1,1,1,1,1)
 
 ::method 'test028'
   self~expectSyntax('88.901')
-  self~assertSame(7, TestSevenIntArgs(1,1,1,1,1,1))
+  TestSevenIntArgs(1,1,1,1,1,1)
 
 ::method 'test029'
   self~expectSyntax('88.901')
-  self~assertSame(8, TestEightIntArgs(1,1,1,1,1,1,1))
+  TestEightIntArgs(1,1,1,1,1,1,1)
 
 ::method 'test030'
   self~expectSyntax('88.901')
-  self~assertSame(9, TestNineIntArgs(1,1,1,1,1,1,1,1))
+  TestNineIntArgs(1,1,1,1,1,1,1,1)
 
 ::method 'test031'
   self~expectSyntax('88.901')
-  self~assertSame(10, TestTenIntArgs(1,1,1,1,1,1,1,1,1))
+  TestTenIntArgs(1,1,1,1,1,1,1,1,1)
 
 -- test int
-::method 'test032'
+::method 'testint01'
   numeric digits 11
   val = 0
   self~assertSame(val, TestIntArg(val))
@@ -229,6 +237,8 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame(val, TestIntArg(val))
   val = -2147483647
   self~assertSame(val, TestIntArg(val))
+  self~assertSame(1,TestIntArg(1.0))
+  self~assertSame(1,TestIntArg(1e0))
 
 -- test int32_t
 ::method 'test033'
