@@ -43,28 +43,42 @@ COMMON_SRC_DEPS =
 FUNCTION_SRC_DEPS = $(COMMON_SRC_DEPS)
 METHOD_SRC_DEPS = $(COMMON_SRC_DEPS)
 
+ifdef REXX_BUILD_HOME
+REXX_INCLUDES = -I $(REXX_BUILD_HOME)/api -I $(REXX_BUILD_HOME)/api/platform/unix
+REXX_LIBS = -L$(REXX_BUILD_HOME)/.libs
+endif
+
+# The destination for libraries
+ifndef OOTEST_BIN_DIR
+OOTEST_BIN_DIR = ../../bin/LINUX
+endif
 
 # Build the libraries
-all: liborxfunction.so liborxmethod.so
+all: $(OOTEST_BIN_DIR)/liborxfunction.so $(OOTEST_BIN_DIR)/liborxmethod.so
 
 
 # Build the shared library
 liborxfunction.so: orxfunction.o
-	gcc $(ORXLFLAGS) -lrexx -lrexxapi -o liborxfunction.so orxfunction.o
+	gcc $(ORXLFLAGS) $(REXX_LIBS) -lrexx -lrexxapi -o liborxfunction.so orxfunction.o
 
 # Build the objects
 orxfunction.o: orxfunction.cpp $(FUNCTION_SRC_DEPS)
-	gcc -c $(ORXCFLAGS) orxfunction.cpp
+	gcc -c $(ORXCFLAGS) $(REXX_INCLUDES) orxfunction.cpp
 
 
 # Build the shared library
 liborxmethod.so: orxmethod.o
-	gcc $(ORXLFLAGS) -lrexx -lrexxapi -o liborxmethod.so orxmethod.o
+	gcc $(ORXLFLAGS) $(REXX_LIBS) -lrexx -lrexxapi -o liborxmethod.so orxmethod.o
 
 # Build the objects
 orxmethod.o: orxmethod.cpp $(METHOD_SRC_DEPS)
-	gcc -c $(ORXCFLAGS) orxmethod.cpp
+	gcc -c $(ORXCFLAGS) $(REXX_INCLUDES) orxmethod.cpp
 
+$(OOTEST_BIN_DIR)/liborxfunction.so: liborxfunction.so
+	cp liborxfunction.so $(OOTEST_BIN_DIR)
+
+$(OOTEST_BIN_DIR)/liborxmethod.so: liborxmethod.so
+	cp liborxmethod.so $(OOTEST_BIN_DIR)
 
 
 clean:

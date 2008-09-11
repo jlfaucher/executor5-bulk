@@ -37,18 +37,18 @@
 
 
 # Setup
-!IF DEFINED(REXX_HOME)
-API_LIB = $(REXX_HOME)\api
-API_INCLUDE = $(API_LIB)
-!ELSE IF DEFINED(REXX_BUILD_HOME)
+!IF DEFINED(REXX_BUILD_HOME)
 API_LIB = $(REXX_BUILD_HOME)\Win32Dbg
 API_INCLUDE = $(REXX_BUILD_HOME)\api
+!ELSE IF DEFINED(REXX_HOME)
+API_LIB = $(REXX_HOME)\api
+API_INCLUDE = $(API_LIB)
 !ELSE
 !ERROR You must define REXX_HOME or REXX_BUILD_HOME
 !ENDIF
 
 REXX_LIBS = $(API_LIB)\rexx.lib $(API_LIB)\rexxapi.lib
-REXX_INCLUDES = /I$(API_INCLUDE)
+REXX_INCLUDES = /I$(API_INCLUDE) /I$(API_INCLUDE)\platform\windows
 
 # May need to add Windows libs - but it doesn't seem like it
 LIBS = $(REXX_LIBS)
@@ -58,9 +58,12 @@ ORXLFLAGS = /NOLOGO /DEBUG -debugtype:cv /SUBSYSTEM:Windows $(LIBS) /DLL
 
 ORXCFLAGS =  /nologo /EHsc /Zi /Od /Gr /MTd $(WARNINGFLAG) $(REXX_INCLUDES) /c
 
+!IFNDEF OOTEST_BIN_DIR
+OOTEST_BIN_DIR = ..\..\bin\WINDOWS
+!ENDIF
 
 # Build the libraries
-all: orxfunction.dll orxmethod.dll
+all: $(OOTEST_BIN_DIR)\orxfunction.dll $(OOTEST_BIN_DIR)\orxmethod.dll
 
 
 # Build the shared library
@@ -80,6 +83,11 @@ orxmethod.dll: orxmethod.obj
 orxmethod.obj: orxmethod.cpp
 	cl $(ORXCFLAGS) orxmethod.cpp
 
+$(OOTEST_BIN_DIR)\orxfunction.dll: orxfunction.dll
+  copy orxfunction.dll $(OOTEST_BIN_DIR)
+
+$(OOTEST_BIN_DIR)\orxmethod.dll: orxmethod.dll
+  copy orxmethod.dll $(OOTEST_BIN_DIR)
 
 clean:
 	rm *.dll *.obj *.ilk *.pdb *.lib *.exp

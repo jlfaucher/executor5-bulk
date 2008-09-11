@@ -52,9 +52,21 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
+use arg testTypes
+
   parse source . . s
   group = .TestGroup~new(s)
   group~add(.METHOD.testGroup)
+
+  if \ group~hasTestTypes(testTypes) then do
+    group~markNoTests("This is a native API test and not included in the test types to execute.")
+
+    if group~isAutomatedTest then return group
+    else return group~suite~execute~~print
+  end
+
+  signal on syntax name packageErr
+  .context~package~loadPackage('METHODPackage.cls')
 
   if group~isAutomatedTest then return group
 
@@ -62,40 +74,16 @@
 
 return testResult
 
+packageErr:
+  err = .ExceptionData~new(timeStamp(), s, "Trap")
+  err~conditionObject = condition('O')
+  err~msg = "Failed to load the external API package needed for this test group."
+  return err
+
 ::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
 -- class named exactly like file
 ::class "METHOD.testGroup" subclass ooTestCase public
-
--- These are the real external functions we are testing
-::method tstargs000 EXTERNAL "LIBRARY orxmethod TstArgs000"
-::method tstargs001 EXTERNAL "LIBRARY orxmethod TstArgs001"
-::method tstargs002 EXTERNAL "LIBRARY orxmethod TstArgs002"
-::method tstargs003 EXTERNAL "LIBRARY orxmethod TstArgs003"
-::method tstargs004 EXTERNAL "LIBRARY orxmethod TstArgs004"
-::method tstargs005 EXTERNAL "LIBRARY orxmethod TstArgs005"
-::method tstargs006 EXTERNAL "LIBRARY orxmethod TstArgs006"
-::method tstargs007 EXTERNAL "LIBRARY orxmethod TstArgs007"
-::method tstargs008 EXTERNAL "LIBRARY orxmethod TstArgs008"
-::method tstargs009 EXTERNAL "LIBRARY orxmethod TstArgs009"
-::method tstargs010 EXTERNAL "LIBRARY orxmethod TstArgs010"
-::method tstargs011 EXTERNAL "LIBRARY orxmethod TstArgs011"
-::method tstargs012 EXTERNAL "LIBRARY orxmethod TstArgs012"
-::method tstargs013 EXTERNAL "LIBRARY orxmethod TstArgs013"
-::method tstargs014 EXTERNAL "LIBRARY orxmethod TstArgs014"
-::method tstargs015 EXTERNAL "LIBRARY orxmethod TstArgs015"
-::method tstargs016 EXTERNAL "LIBRARY orxmethod TstArgs016"
-::method tstargs017 EXTERNAL "LIBRARY orxmethod TstArgs017"
-::method tstargs018 EXTERNAL "LIBRARY orxmethod TstArgs018"
-::method tstargs019 EXTERNAL "LIBRARY orxmethod TstArgs019"
-::method tstargs020 EXTERNAL "LIBRARY orxmethod TstArgs020"
-::method tstargs021 EXTERNAL "LIBRARY orxmethod TstArgs021"
-::method tstargs022 EXTERNAL "LIBRARY orxmethod TstArgs022"
-::method tstargs023 EXTERNAL "LIBRARY orxmethod TstArgs023"
-::method tstargs024 EXTERNAL "LIBRARY orxmethod TstArgs024"
-::method tstargs025a EXTERNAL "LIBRARY orxmethod TstArgs025a"
-::method tstargs025b EXTERNAL "LIBRARY orxmethod TstArgs025b"
-::method tstargs025c EXTERNAL "LIBRARY orxmethod TstArgs025c"
 
 ::method init class
   forward class (super) continue
@@ -105,294 +93,341 @@ return testResult
 
 -- The following tests the functions for 0-10 arguments
 ::method 'test000'
-  self~assertSame(0, self~tstargs000())
+  tester = .METHODtester~new
+  self~assertSame(0, tester~tstargs000())
 
 ::method 'test001'
-  self~assertSame(1, self~tstargs001(1))
+  tester = .METHODtester~new
+  self~assertSame(1, tester~tstargs001(1))
 
 ::method 'test002'
-  self~assertSame(2, self~tstargs002(1,1))
+  tester = .METHODtester~new
+  self~assertSame(2, tester~tstargs002(1,1))
 
 ::method 'test003'
-  self~assertSame(3, self~tstargs003(1,1,1))
+  tester = .METHODtester~new
+  self~assertSame(3, tester~tstargs003(1,1,1))
 
 ::method 'test004'
-  self~assertSame(4, self~tstargs004(1,1,1,1))
+  tester = .METHODtester~new
+  self~assertSame(4, tester~tstargs004(1,1,1,1))
 
 ::method 'test005'
-  self~assertSame(5, self~tstargs005(1,1,1,1,1))
+  tester = .METHODtester~new
+  self~assertSame(5, tester~tstargs005(1,1,1,1,1))
 
 ::method 'test006'
-  self~assertSame(6, self~tstargs006(1,1,1,1,1,1))
+  tester = .METHODtester~new
+  self~assertSame(6, tester~tstargs006(1,1,1,1,1,1))
 
 ::method 'test007'
-  self~assertSame(7, self~tstargs007(1,1,1,1,1,1,1))
+  tester = .METHODtester~new
+  self~assertSame(7, tester~tstargs007(1,1,1,1,1,1,1))
 
 ::method 'test008'
-  self~assertSame(8, self~tstargs008(1,1,1,1,1,1,1,1))
+  tester = .METHODtester~new
+  self~assertSame(8, tester~tstargs008(1,1,1,1,1,1,1,1))
 
 ::method 'test009'
-  self~assertSame(9, self~tstargs009(1,1,1,1,1,1,1,1,1))
+  tester = .METHODtester~new
+  self~assertSame(9, tester~tstargs009(1,1,1,1,1,1,1,1,1))
 
 ::method 'test010'
-  self~assertSame(10, self~tstargs010(1,1,1,1,1,1,1,1,1,1))
+  tester = .METHODtester~new
+  self~assertSame(10, tester~tstargs010(1,1,1,1,1,1,1,1,1,1))
 
 -- The following error tests the functions for 0-10 arguments
 ::method 'test011'
+  tester = .METHODtester~new
   self~expectSyntax('88.922')
-  self~assertSame(0, self~tstargs000(1))
+  self~assertSame(0, tester~tstargs000(1))
 
 ::method 'test012'
+  tester = .METHODtester~new
   self~expectSyntax('88.922')
-  self~assertSame(1, self~tstargs001(1,1))
+  self~assertSame(1, tester~tstargs001(1,1))
 
 ::method 'test013'
+  tester = .METHODtester~new
   self~expectSyntax('88.922')
-  self~assertSame(2, self~tstargs002(1,1,1))
+  self~assertSame(2, tester~tstargs002(1,1,1))
 
 ::method 'test014'
+  tester = .METHODtester~new
   self~expectSyntax('88.922')
-  self~assertSame(3, self~tstargs003(1,1,1,1))
+  self~assertSame(3, tester~tstargs003(1,1,1,1))
 
 ::method 'test015'
+  tester = .METHODtester~new
   self~expectSyntax('88.922')
-  self~assertSame(4, self~tstargs004(1,1,1,1,1))
+  self~assertSame(4, tester~tstargs004(1,1,1,1,1))
 
 ::method 'test016'
+  tester = .METHODtester~new
   self~expectSyntax('88.922')
-  self~assertSame(5, self~tstargs005(1,1,1,1,1,1))
+  self~assertSame(5, tester~tstargs005(1,1,1,1,1,1))
 
 ::method 'test017'
+  tester = .METHODtester~new
   self~expectSyntax('88.922')
-  self~assertSame(6, self~tstargs006(1,1,1,1,1,1,1))
+  self~assertSame(6, tester~tstargs006(1,1,1,1,1,1,1))
 
 ::method 'test018'
+  tester = .METHODtester~new
   self~expectSyntax('88.922')
-  self~assertSame(7, self~tstargs007(1,1,1,1,1,1,1,1))
+  self~assertSame(7, tester~tstargs007(1,1,1,1,1,1,1,1))
 
 ::method 'test019'
+  tester = .METHODtester~new
   self~expectSyntax('88.922')
-  self~assertSame(8, self~tstargs008(1,1,1,1,1,1,1,1,1))
+  self~assertSame(8, tester~tstargs008(1,1,1,1,1,1,1,1,1))
 
 ::method 'test020'
+  tester = .METHODtester~new
   self~expectSyntax('88.922')
-  self~assertSame(9, self~tstargs009(1,1,1,1,1,1,1,1,1,1))
+  self~assertSame(9, tester~tstargs009(1,1,1,1,1,1,1,1,1,1))
 
 ::method 'test021'
+  tester = .METHODtester~new
   self~expectSyntax('88.922')
-  self~assertSame(10, self~tstargs010(1,1,1,1,1,1,1,1,1,1,1))
+  self~assertSame(10, tester~tstargs010(1,1,1,1,1,1,1,1,1,1,1))
 
 ::method 'test022'
+  tester = .METHODtester~new
   self~expectSyntax('88.901')
-  self~assertSame(1, self~tstargs001())
+  self~assertSame(1, tester~tstargs001())
 
 -- The following error tests the functions for 0-10 arguments
 ::method 'test023'
+  tester = .METHODtester~new
   self~expectSyntax('88.901')
-  self~assertSame(2, self~tstargs002(1))
+  self~assertSame(2, tester~tstargs002(1))
 
 ::method 'test024'
+  tester = .METHODtester~new
   self~expectSyntax('88.901')
-  self~assertSame(3, self~tstargs003(1,1))
+  self~assertSame(3, tester~tstargs003(1,1))
 
 ::method 'test025'
+  tester = .METHODtester~new
   self~expectSyntax('88.901')
-  self~assertSame(4, self~tstargs004(1,1,1))
+  self~assertSame(4, tester~tstargs004(1,1,1))
 
 ::method 'test026'
+  tester = .METHODtester~new
   self~expectSyntax('88.901')
-  self~assertSame(5, self~tstargs005(1,1,1,1))
+  self~assertSame(5, tester~tstargs005(1,1,1,1))
 
 ::method 'test027'
+  tester = .METHODtester~new
   self~expectSyntax('88.901')
-  self~assertSame(6, self~tstargs006(1,1,1,1,1))
+  self~assertSame(6, tester~tstargs006(1,1,1,1,1))
 
 ::method 'test028'
+  tester = .METHODtester~new
   self~expectSyntax('88.901')
-  self~assertSame(7, self~tstargs007(1,1,1,1,1,1))
+  self~assertSame(7, tester~tstargs007(1,1,1,1,1,1))
 
 ::method 'test029'
+  tester = .METHODtester~new
   self~expectSyntax('88.901')
-  self~assertSame(8, self~tstargs008(1,1,1,1,1,1,1))
+  self~assertSame(8, tester~tstargs008(1,1,1,1,1,1,1))
 
 ::method 'test030'
+  tester = .METHODtester~new
   self~expectSyntax('88.901')
-  self~assertSame(9, self~tstargs009(1,1,1,1,1,1,1,1))
+  self~assertSame(9, tester~tstargs009(1,1,1,1,1,1,1,1))
 
 ::method 'test031'
+  tester = .METHODtester~new
   self~expectSyntax('88.901')
-  self~assertSame(10, self~tstargs010(1,1,1,1,1,1,1,1,1))
+  self~assertSame(10, tester~tstargs010(1,1,1,1,1,1,1,1,1))
 
 -- test int
 ::method 'test032'
+  tester = .METHODtester~new
   numeric digits 11
   val = 0
-  self~assertSame(val, self~tstargs011(val))
+  self~assertSame(val, tester~tstargs011(val))
   val = 2147483647
-  self~assertSame(val, self~tstargs011(val))
+  self~assertSame(val, tester~tstargs011(val))
   val = 1
-  self~assertSame(val, self~tstargs011(val))
+  self~assertSame(val, tester~tstargs011(val))
   val = -1
-  self~assertSame(val, self~tstargs011(val))
+  self~assertSame(val, tester~tstargs011(val))
   val = -2147483647
-  self~assertSame(val, self~tstargs011(val))
+  self~assertSame(val, tester~tstargs011(val))
 
 -- test int32_t
 ::method 'test033'
+  tester = .METHODtester~new
   numeric digits 11
   val = 0
-  self~assertSame(val, self~tstargs012(val))
+  self~assertSame(val, tester~tstargs012(val))
   val = 2147483647
-  self~assertSame(val, self~tstargs012(val))
+  self~assertSame(val, tester~tstargs012(val))
   val = 1
-  self~assertSame(val, self~tstargs012(val))
+  self~assertSame(val, tester~tstargs012(val))
   val = -1
-  self~assertSame(val, self~tstargs012(val))
+  self~assertSame(val, tester~tstargs012(val))
   val = -2147483647
-  self~assertSame(val, self~tstargs012(val))
+  self~assertSame(val, tester~tstargs012(val))
 
 -- test uint32_t
 ::method 'test034'
+  tester = .METHODtester~new
   numeric digits 11
   val = 0
-  self~assertSame(val, self~tstargs013(val))
+  self~assertSame(val, tester~tstargs013(val))
   val = 4294967295
-  self~assertSame(val, self~tstargs013(val))
+  self~assertSame(val, tester~tstargs013(val))
   val = 1
-  self~assertSame(val, self~tstargs013(val))
+  self~assertSame(val, tester~tstargs013(val))
 
 -- test int8_t
 ::method 'test035'
+  tester = .METHODtester~new
   val = 0
-  self~assertSame(val, self~tstargs014(val))
+  self~assertSame(val, tester~tstargs014(val))
   val = 127
-  self~assertSame(val, self~tstargs014(val))
+  self~assertSame(val, tester~tstargs014(val))
   val = 1
-  self~assertSame(val, self~tstargs014(val))
+  self~assertSame(val, tester~tstargs014(val))
   val = -1
-  self~assertSame(val, self~tstargs014(val))
+  self~assertSame(val, tester~tstargs014(val))
   val = -128
-  self~assertSame(val, self~tstargs014(val))
+  self~assertSame(val, tester~tstargs014(val))
 
 -- test uint8_t
 ::method 'test036'
+  tester = .METHODtester~new
   val = 0
-  self~assertSame(val, self~tstargs015(val))
+  self~assertSame(val, tester~tstargs015(val))
   val = 255
-  self~assertSame(val, self~tstargs015(val))
+  self~assertSame(val, tester~tstargs015(val))
   val = 1
-  self~assertSame(val, self~tstargs015(val))
+  self~assertSame(val, tester~tstargs015(val))
 
 -- test int16_t
 ::method 'test037'
+  tester = .METHODtester~new
   val = 0
-  self~assertSame(val, self~tstargs016(val))
+  self~assertSame(val, tester~tstargs016(val))
   val = 32767
-  self~assertSame(val, self~tstargs016(val))
+  self~assertSame(val, tester~tstargs016(val))
   val = 1
-  self~assertSame(val, self~tstargs016(val))
+  self~assertSame(val, tester~tstargs016(val))
   val = -1
-  self~assertSame(val, self~tstargs016(val))
+  self~assertSame(val, tester~tstargs016(val))
   val = -32768
-  self~assertSame(val, self~tstargs016(val))
+  self~assertSame(val, tester~tstargs016(val))
 
 -- test uint16_t
 ::method 'test038'
+  tester = .METHODtester~new
   val = 0
-  self~assertSame(val, self~tstargs017(val))
+  self~assertSame(val, tester~tstargs017(val))
   val = 65535
-  self~assertSame(val, self~tstargs017(val))
+  self~assertSame(val, tester~tstargs017(val))
   val = 1
-  self~assertSame(val, self~tstargs017(val))
+  self~assertSame(val, tester~tstargs017(val))
 
 -- test int64_t
 ::method 'test039'
+  tester = .METHODtester~new
   numeric digits 20
   val = 0
-  self~assertSame(val, self~tstargs018(val))
+  self~assertSame(val, tester~tstargs018(val))
   val = 9223372036854775807
-  self~assertSame(val, self~tstargs018(val))
+  self~assertSame(val, tester~tstargs018(val))
   val = 1
-  self~assertSame(val, self~tstargs018(val))
+  self~assertSame(val, tester~tstargs018(val))
   val = -1
-  self~assertSame(val, self~tstargs018(val))
+  self~assertSame(val, tester~tstargs018(val))
   val = 9223372036854775807
-  self~assertSame(val, self~tstargs018(val))
+  self~assertSame(val, tester~tstargs018(val))
 
 -- test uint64_t
 ::method 'test040'
+  tester = .METHODtester~new
   numeric digits 21
   val = 0
-  self~assertSame(val, self~tstargs019(val))
+  self~assertSame(val, tester~tstargs019(val))
   val = 18446744073709551615
-  self~assertSame(val, self~tstargs019(val))
+  self~assertSame(val, tester~tstargs019(val))
   val = 1
-  self~assertSame(val, self~tstargs019(val))
+  self~assertSame(val, tester~tstargs019(val))
 
 -- test wholenumber_t
 ::method 'test041'
+  tester = .METHODtester~new
   val = 0
-  self~assertSame(val, self~tstargs020(val))
+  self~assertSame(val, tester~tstargs020(val))
   val = 65535
-  self~assertSame(val, self~tstargs020(val))
+  self~assertSame(val, tester~tstargs020(val))
   val = 1
-  self~assertSame(val, self~tstargs020(val))
+  self~assertSame(val, tester~tstargs020(val))
 
 -- test logical_t
 ::method 'test042'
+  tester = .METHODtester~new
   val = .true
-  self~assertSame(val, self~tstargs021(val))
+  self~assertSame(val, tester~tstargs021(val))
   val = .false
-  self~assertSame(val, self~tstargs021(val))
+  self~assertSame(val, tester~tstargs021(val))
   val = 2
   self~expectSyntax('34.901')
-  self~assertSame(val, self~tstargs021(val))
+  self~assertSame(val, tester~tstargs021(val))
 
 -- test float
 ::method 'test043'
+  tester = .METHODtester~new
   numeric digits 15
   val = 3.40282347E+38
-  self~assertSame(val, self~tstargs022(val))
+  self~assertSame(val, tester~tstargs022(val))
   val = 1.17549435E-38
-  self~assertSame(val, self~tstargs022(val))
+  self~assertSame(val, tester~tstargs022(val))
   val = 0
-  self~assertSame(val, self~tstargs022(val))
+  self~assertSame(val, tester~tstargs022(val))
   val = 1
-  self~assertSame(val, self~tstargs022(val))
+  self~assertSame(val, tester~tstargs022(val))
   val = -1
-  self~assertSame(val, self~tstargs022(val))
+  self~assertSame(val, tester~tstargs022(val))
 
 -- test double
 ::method 'test044'
+  tester = .METHODtester~new
   numeric digits 23
   val = 1.79769313E+308
-  self~assertSame(val, self~tstargs023(val))
+  self~assertSame(val, tester~tstargs023(val))
   val = 2.22507386E-308
-  self~assertSame(val, self~tstargs023(val))
+  self~assertSame(val, tester~tstargs023(val))
   val = 0
-  self~assertSame(val, self~tstargs023(val))
+  self~assertSame(val, tester~tstargs023(val))
   val = 1
-  self~assertSame(val, self~tstargs023(val))
+  self~assertSame(val, tester~tstargs023(val))
   val = -1
-  self~assertSame(val, self~tstargs023(val))
+  self~assertSame(val, tester~tstargs023(val))
 
 -- test CSTRING
 ::method 'test045'
+  tester = .METHODtester~new
   val = ''
-  self~assertSame(val, self~tstargs024(val))
+  self~assertSame(val, tester~tstargs024(val))
   val = copies('AbCdEfGhIjKlMnOpQrStUvWxYz0123456789', 1)
-  self~assertSame(val, self~tstargs024(val))
+  self~assertSame(val, tester~tstargs024(val))
   val = copies('AbCdEfGhIjKlMnOpQrStUvWxYz0123456789', 10)
-  self~assertSame(val, self~tstargs024(val))
+  self~assertSame(val, tester~tstargs024(val))
   val = copies('AbCdEfGhIjKlMnOpQrStUvWxYz0123456789', 100)
-  self~assertSame(val, self~tstargs024(val))
+  self~assertSame(val, tester~tstargs024(val))
   val = copies('AbCdEfGhIjKlMnOpQrStUvWxYz0123456789', 1000)
-  self~assertSame(val, self~tstargs024(val))
+  self~assertSame(val, tester~tstargs024(val))
 
 -- test POINTER
 ::method 'test046'
-  val = self~tstargs025a()
-  self~assertTrue(self~tstargs025b(val))
-  val = self~tstargs025c()
+  tester = .METHODtester~new
+  val = tester~tstargs025a()
+  self~assertTrue(tester~tstargs025b(val))
+  val = tester~tstargs025c()
   self~assertTrue(val~isNull())
 

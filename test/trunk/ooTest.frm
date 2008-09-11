@@ -280,8 +280,8 @@ return 0
   ::method NATIVE_API_TEST;         return 10
 
 
-  ::method MAX_TEST_TYPE  class; return 11
-  ::method MAX_TEST_TYPE;        return 11
+  ::method MAX_TEST_TYPE  class; return 10
+  ::method MAX_TEST_TYPE;        return 10
 
   /** all()
    * Returns a set of all the test types possible.
@@ -963,19 +963,22 @@ return 0
    * specified, otherwise returns false.
    *
    * @param types REQUIRED
-   *   The test type keywords to check for.  This can be a blank delimited
-   *   string of words or any .collection object whose items are the words.
-   *   Case is not significant.
+   *   The test type constants to check for.  This can be a blank delimited
+   *   string of constants or any .collection object whose items are the
+   *   constants.
    *
+   * @note  Through out the ooTest framework .nil is used to indicate any and
+   *   all tests.
    */
   ::method hasTestTypes
     use strict arg types
 
+    if \ self~hasTests then return .false
+    if types == .nil then return .true
+
     s = makeSetOfWords(types)
     if s == .nil then
-       raise syntax 88.917 array ("1 'types'", "must be a string or a collection of words")
-
-    if \ self~hasTests then return .false
+       raise syntax 88.917 array ("1 'types'", "must be .nil, a string, or a collection of words")
 
   return s~intersection(self~currentTypes)~items <> 0
   -- End hasTestTypes()
@@ -1788,7 +1791,7 @@ return suite
     use arg file
 
     signal on any name callError
-    call (file)
+    call (file) self~testTypes
     container = RESULT
     return container
 
