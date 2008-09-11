@@ -40,11 +40,14 @@
 !IF DEFINED(REXX_BUILD_HOME)
 API_LIB = $(REXX_BUILD_HOME)\Win32Dbg
 API_INCLUDE = $(REXX_BUILD_HOME)\api
+!ELSE IF DEFINED(SRC_DRV) && DEFINED(SRC_DIR)
+API_LIB = $(SRC_DRV)$(SRC_DIR)\Win32Dbg
+API_INCLUDE = $(SRC_DRV)$(SRC_DIR)\api
 !ELSE IF DEFINED(REXX_HOME)
 API_LIB = $(REXX_HOME)\api
 API_INCLUDE = $(API_LIB)
 !ELSE
-!ERROR You must define REXX_HOME or REXX_BUILD_HOME
+!ERROR You must define REXX_BUILD_HOME, or SRC_DRV and SRC_DIR, or  REXX_HOME
 !ENDIF
 
 REXX_LIBS = $(API_LIB)\rexx.lib $(API_LIB)\rexxapi.lib
@@ -90,5 +93,5 @@ $(OOTEST_BIN_DIR)\orxmethod.dll: orxmethod.dll
   copy orxmethod.dll $(OOTEST_BIN_DIR)
 
 clean:
-	rm *.dll *.obj *.ilk *.pdb *.lib *.exp
+	del *.dll *.obj *.ilk *.pdb *.lib *.exp 1>nul 2>&1
 
