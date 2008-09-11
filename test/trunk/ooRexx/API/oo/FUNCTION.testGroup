@@ -243,15 +243,15 @@ return .ooTestResult~new(5)~~addException(err)
 ::method 'testint02'
   numeric digits 11
   self~expectSyntax('88.903')
-  TestIntArg(2147483648)
+  x = TestIntArg(2147483648)
 
 ::method 'testint03'
   numeric digits 11
   self~expectSyntax('88.903')
-  TestIntArg('-2147483649')
+  x = TestIntArg('-2147483649')
 
 -- test int32_t
-::method 'test033'
+::method 'testint3201'
   numeric digits 11
   val = 0
   self~assertSame(val, TestInt32Arg(val))
@@ -263,9 +263,19 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame(val, TestInt32Arg(val))
   val = -2147483647
   self~assertSame(val, TestInt32Arg(val))
+  self~assertSame(1, TestInt32Arg(1.0))
+  self~assertSame(1, TestInt32Arg(1e0))
+
+::method 'testint3202'
+  self~expectSyntax('88.903')
+  x = TestInt32Arg(2147483648)
+
+::method 'testint3203'
+  self~expectSyntax('88.903')
+  x = TestInt32Arg('-2147483649')
 
 -- test uint32_t
-::method 'test034'
+::method 'testuint3201'
   numeric digits 11
   val = 0
   self~assertSame(val, TestUint32Arg(val))
@@ -273,6 +283,14 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame(val, TestUint32Arg(val))
   val = 1
   self~assertSame(val, TestUint32Arg(val))
+
+::method 'testuint3202'
+  self~expectSyntax('88.907')
+  TestUint32Arg(4294967296)
+
+::method 'testuint3203'
+  self~expectSyntax('88.907')
+  TestUint32Arg(-1)
 
 -- test int8_t
 ::method 'test035'
