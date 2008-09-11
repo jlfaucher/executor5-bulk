@@ -98,314 +98,314 @@ return .ooTestResult~new(5)~~addException(err)
 
 -- The following tests the macros for 0-10 arguments
 ::method 'test000'
-  self~assertSame(0, tstargs000())
+  self~assertSame(0, TestZeroIntArgs())
 
 ::method 'test001'
-  self~assertSame(1, tstargs001(1))
+  self~assertSame(1, TestOneIntArg(1))
 
 ::method 'test002'
-  self~assertSame(2, tstargs002(1,1))
+  self~assertSame(2, TestTwoIntArgs(1,1))
 
 ::method 'test003'
-  self~assertSame(3, tstargs003(1,1,1))
+  self~assertSame(3, TestThreeIntArgs(1,1,1))
 
 ::method 'test004'
-  self~assertSame(4, tstargs004(1,1,1,1))
+  self~assertSame(4, TestFourIntArgs(1,1,1,1))
 
 ::method 'test005'
-  self~assertSame(5, tstargs005(1,1,1,1,1))
+  self~assertSame(5, TestFiveIntArgs(1,1,1,1,1))
 
 ::method 'test006'
-  self~assertSame(6, tstargs006(1,1,1,1,1,1))
+  self~assertSame(6, TestSixIntArgs(1,1,1,1,1,1))
 
 ::method 'test007'
-  self~assertSame(7, tstargs007(1,1,1,1,1,1,1))
+  self~assertSame(7, TestSevenIntArgs(1,1,1,1,1,1,1))
 
 ::method 'test008'
-  self~assertSame(8, tstargs008(1,1,1,1,1,1,1,1))
+  self~assertSame(8, TestEightIntArgs(1,1,1,1,1,1,1,1))
 
 ::method 'test009'
-  self~assertSame(9, tstargs009(1,1,1,1,1,1,1,1,1))
+  self~assertSame(9, TestNineIntArgs(1,1,1,1,1,1,1,1,1))
 
 ::method 'test010'
-  self~assertSame(10, tstargs010(1,1,1,1,1,1,1,1,1,1))
+  self~assertSame(10, TestTenIntArgs(1,1,1,1,1,1,1,1,1,1))
 
 -- The following error tests the macros for 0-10 arguments
 ::method 'test011'
   self~expectSyntax('88.922')
-  self~assertSame(0, tstargs000(1))
+  self~assertSame(0, TestZeroIntArgs(1))
 
 ::method 'test012'
   self~expectSyntax('88.922')
-  self~assertSame(1, tstargs001(1,1))
+  self~assertSame(1, TestOneIntArg(1,1))
 
 ::method 'test013'
   self~expectSyntax('88.922')
-  self~assertSame(2, tstargs002(1,1,1))
+  self~assertSame(2, TestTwoIntArgs(1,1,1))
 
 ::method 'test014'
   self~expectSyntax('88.922')
-  self~assertSame(3, tstargs003(1,1,1,1))
+  self~assertSame(3, TestThreeIntArgs(1,1,1,1))
 
 ::method 'test015'
   self~expectSyntax('88.922')
-  self~assertSame(4, tstargs004(1,1,1,1,1))
+  self~assertSame(4, TestFourIntArgs(1,1,1,1,1))
 
 ::method 'test016'
   self~expectSyntax('88.922')
-  self~assertSame(5, tstargs005(1,1,1,1,1,1))
+  self~assertSame(5, TestFiveIntArgs(1,1,1,1,1,1))
 
 ::method 'test017'
   self~expectSyntax('88.922')
-  self~assertSame(6, tstargs006(1,1,1,1,1,1,1))
+  self~assertSame(6, TestSixIntArgs(1,1,1,1,1,1,1))
 
 ::method 'test018'
   self~expectSyntax('88.922')
-  self~assertSame(7, tstargs007(1,1,1,1,1,1,1,1))
+  self~assertSame(7, TestSevenIntArgs(1,1,1,1,1,1,1,1))
 
 ::method 'test019'
   self~expectSyntax('88.922')
-  self~assertSame(8, tstargs008(1,1,1,1,1,1,1,1,1))
+  self~assertSame(8, TestEightIntArgs(1,1,1,1,1,1,1,1,1))
 
 ::method 'test020'
   self~expectSyntax('88.922')
-  self~assertSame(9, tstargs009(1,1,1,1,1,1,1,1,1,1))
+  self~assertSame(9, TestNineIntArgs(1,1,1,1,1,1,1,1,1,1))
 
 ::method 'test021'
   self~expectSyntax('88.922')
-  self~assertSame(10, tstargs010(1,1,1,1,1,1,1,1,1,1,1))
+  self~assertSame(10, TestTenIntArgs(1,1,1,1,1,1,1,1,1,1,1))
 
 -- The following error tests the macros for 0-10 arguments
 ::method 'test022'
   self~expectSyntax('88.901')
-  self~assertSame(1, tstargs001())
+  self~assertSame(1, TestOneIntArg())
 
 ::method 'test023'
   self~expectSyntax('88.901')
-  self~assertSame(2, tstargs002(1))
+  self~assertSame(2, TestTwoIntArgs(1))
 
 ::method 'test024'
   self~expectSyntax('88.901')
-  self~assertSame(3, tstargs003(1,1))
+  self~assertSame(3, TestThreeIntArgs(1,1))
 
 ::method 'test025'
   self~expectSyntax('88.901')
-  self~assertSame(4, tstargs004(1,1,1))
+  self~assertSame(4, TestFourIntArgs(1,1,1))
 
 ::method 'test026'
   self~expectSyntax('88.901')
-  self~assertSame(5, tstargs005(1,1,1,1))
+  self~assertSame(5, TestFiveIntArgs(1,1,1,1))
 
 ::method 'test027'
   self~expectSyntax('88.901')
-  self~assertSame(6, tstargs006(1,1,1,1,1))
+  self~assertSame(6, TestSixIntArgs(1,1,1,1,1))
 
 ::method 'test028'
   self~expectSyntax('88.901')
-  self~assertSame(7, tstargs007(1,1,1,1,1,1))
+  self~assertSame(7, TestSevenIntArgs(1,1,1,1,1,1))
 
 ::method 'test029'
   self~expectSyntax('88.901')
-  self~assertSame(8, tstargs008(1,1,1,1,1,1,1))
+  self~assertSame(8, TestEightIntArgs(1,1,1,1,1,1,1))
 
 ::method 'test030'
   self~expectSyntax('88.901')
-  self~assertSame(9, tstargs009(1,1,1,1,1,1,1,1))
+  self~assertSame(9, TestNineIntArgs(1,1,1,1,1,1,1,1))
 
 ::method 'test031'
   self~expectSyntax('88.901')
-  self~assertSame(10, tstargs010(1,1,1,1,1,1,1,1,1))
+  self~assertSame(10, TestTenIntArgs(1,1,1,1,1,1,1,1,1))
 
 -- test int
 ::method 'test032'
   numeric digits 11
   val = 0
-  self~assertSame(val, tstargs011(val))
+  self~assertSame(val, TestIntArg(val))
   val = 2147483647
-  self~assertSame(val, tstargs011(val))
+  self~assertSame(val, TestIntArg(val))
   val = 1
-  self~assertSame(val, tstargs011(val))
+  self~assertSame(val, TestIntArg(val))
   val = -1
-  self~assertSame(val, tstargs011(val))
+  self~assertSame(val, TestIntArg(val))
   val = -2147483647
-  self~assertSame(val, tstargs011(val))
+  self~assertSame(val, TestIntArg(val))
 
 -- test int32_t
 ::method 'test033'
   numeric digits 11
   val = 0
-  self~assertSame(val, tstargs012(val))
+  self~assertSame(val, TestInt32Arg(val))
   val = 2147483647
-  self~assertSame(val, tstargs012(val))
+  self~assertSame(val, TestInt32Arg(val))
   val = 1
-  self~assertSame(val, tstargs012(val))
+  self~assertSame(val, TestInt32Arg(val))
   val = -1
-  self~assertSame(val, tstargs012(val))
+  self~assertSame(val, TestInt32Arg(val))
   val = -2147483647
-  self~assertSame(val, tstargs012(val))
+  self~assertSame(val, TestInt32Arg(val))
 
 -- test uint32_t
 ::method 'test034'
   numeric digits 11
   val = 0
-  self~assertSame(val, tstargs013(val))
+  self~assertSame(val, TestUint32Arg(val))
   val = 4294967295
-  self~assertSame(val, tstargs013(val))
+  self~assertSame(val, TestUint32Arg(val))
   val = 1
-  self~assertSame(val, tstargs013(val))
+  self~assertSame(val, TestUint32Arg(val))
 
 -- test int8_t
 ::method 'test035'
   val = 0
-  self~assertSame(val, tstargs014(val))
+  self~assertSame(val, TestInt8Arg(val))
   val = 127
-  self~assertSame(val, tstargs014(val))
+  self~assertSame(val, TestInt8Arg(val))
   val = 1
-  self~assertSame(val, tstargs014(val))
+  self~assertSame(val, TestInt8Arg(val))
   val = -1
-  self~assertSame(val, tstargs014(val))
+  self~assertSame(val, TestInt8Arg(val))
   val = -127
-  self~assertSame(val, tstargs014(val))
+  self~assertSame(val, TestInt8Arg(val))
 
 -- test uint8_t
 ::method 'test036'
   val = 0
-  self~assertSame(val, tstargs015(val))
+  self~assertSame(val, TestUint8Arg(val))
   val = 255
-  self~assertSame(val, tstargs015(val))
+  self~assertSame(val, TestUint8Arg(val))
   val = 1
-  self~assertSame(val, tstargs015(val))
+  self~assertSame(val, TestUint8Arg(val))
 
 -- test int16_t
 ::method 'test037'
   val = 0
-  self~assertSame(val, tstargs016(val))
+  self~assertSame(val, TestInt16Arg(val))
   val = 32767
-  self~assertSame(val, tstargs016(val))
+  self~assertSame(val, TestInt16Arg(val))
   val = 1
-  self~assertSame(val, tstargs016(val))
+  self~assertSame(val, TestInt16Arg(val))
   val = -1
-  self~assertSame(val, tstargs016(val))
+  self~assertSame(val, TestInt16Arg(val))
   val = -32768
-  self~assertSame(val, tstargs016(val))
+  self~assertSame(val, TestInt16Arg(val))
 
 -- test uint16_t
 ::method 'test038'
   val = 0
-  self~assertSame(val, tstargs017(val))
+  self~assertSame(val, TestUint16Arg(val))
   val = 65535
-  self~assertSame(val, tstargs017(val))
+  self~assertSame(val, TestUint16Arg(val))
   val = 1
-  self~assertSame(val, tstargs017(val))
+  self~assertSame(val, TestUint16Arg(val))
 
 -- test int64_t
 ::method 'test039'
   numeric digits 20
   val = 0
-  self~assertSame(val, tstargs018(val))
+  self~assertSame(val, TestInt64Arg(val))
   val = 9223372036854775807
-  self~assertSame(val, tstargs018(val))
+  self~assertSame(val, TestInt64Arg(val))
   val = 1
-  self~assertSame(val, tstargs018(val))
+  self~assertSame(val, TestInt64Arg(val))
   val = -9223372036854775807
-  self~assertSame(val, tstargs018(val))
+  self~assertSame(val, TestInt64Arg(val))
   val = -16382
-  self~assertSame(val, tstargs018(val))
+  self~assertSame(val, TestInt64Arg(val))
 
 -- test uint64_t
 ::method 'test040'
   numeric digits 21
   val = 0
-  self~assertSame(val, tstargs019(val))
+  self~assertSame(val, TestUint64Arg(val))
   val = 18446744073709551615
-  self~assertSame(val, tstargs019(val))
+  self~assertSame(val, TestUint64Arg(val))
   val = 1
-  self~assertSame(val, tstargs019(val))
+  self~assertSame(val, TestUint64Arg(val))
 
 -- test wholenumber_t
 ::method 'test041'
   val = 0
-  self~assertSame(val, tstargs020(val))
+  self~assertSame(val, TestWholeNumberArg(val))
   val = 65535
-  self~assertSame(val, tstargs020(val))
+  self~assertSame(val, TestWholeNumberArg(val))
   val = 1
-  self~assertSame(val, tstargs020(val))
+  self~assertSame(val, TestWholeNumberArg(val))
 
 -- test logical_t
 ::method 'test042'
   val = .true
-  self~assertSame(val, tstargs021(val))
+  self~assertSame(val, TestLogicalArg(val))
   val = .false
-  self~assertSame(val, tstargs021(val))
+  self~assertSame(val, TestLogicalArg(val))
   val = 2
   self~expectSyntax('34.901')
-  self~assertSame(val, tstargs021(val))
+  self~assertSame(val, TestLogicalArg(val))
 
 -- test float
 ::method 'test043'
   numeric digits 15
   val = 3.40282347E+38
-  self~assertSame(val, tstargs022(val))
+  self~assertSame(val, TestFloatArg(val))
   val = 1.17549435E-38
-  self~assertSame(val, tstargs022(val))
+  self~assertSame(val, TestFloatArg(val))
   val = 0
-  self~assertSame(val, tstargs022(val))
+  self~assertSame(val, TestFloatArg(val))
   val = 1
-  self~assertSame(val, tstargs022(val))
+  self~assertSame(val, TestFloatArg(val))
   val = -1
-  self~assertSame(val, tstargs022(val))
+  self~assertSame(val, TestFloatArg(val))
   val = "nan"
-  self~assertSame(val, tstargs022(val))
+  self~assertSame(val, TestFloatArg(val))
   val = "+infinity"
-  self~assertSame(val, tstargs022(val))
+  self~assertSame(val, TestFloatArg(val))
   val = "-infinity"
-  self~assertSame(val, tstargs022(val))
+  self~assertSame(val, TestFloatArg(val))
   val = 3.40282347E+40
-  self~assertSame("+infinity", tstargs022(val))
+  self~assertSame("+infinity", TestFloatArg(val))
   val = -3.40282347E+40
-  self~assertSame("-infinity", tstargs022(val))
+  self~assertSame("-infinity", TestFloatArg(val))
 
 -- test double
 ::method 'test044'
   numeric digits 23
   val = 1.79769313E+308
-  self~assertSame(val, tstargs023(val))
+  self~assertSame(val, TestDoubleArg(val))
   val = 2.22507386E-308
-  self~assertSame(val, tstargs023(val))
+  self~assertSame(val, TestDoubleArg(val))
   val = 0
-  self~assertSame(val, tstargs023(val))
+  self~assertSame(val, TestDoubleArg(val))
   val = 1
-  self~assertSame(val, tstargs023(val))
+  self~assertSame(val, TestDoubleArg(val))
   val = -1
-  self~assertSame(val, tstargs023(val))
+  self~assertSame(val, TestDoubleArg(val))
   val = "nan"
-  self~assertSame(val, tstargs023(val))
+  self~assertSame(val, TestDoubleArg(val))
   val = "+infinity"
-  self~assertSame(val, tstargs023(val))
+  self~assertSame(val, TestDoubleArg(val))
   val = "-infinity"
-  self~assertSame(val, tstargs023(val))
+  self~assertSame(val, TestDoubleArg(val))
   val = 1.79769313E+310
-  self~assertSame("+infinity", tstargs023(val))
+  self~assertSame("+infinity", TestDoubleArg(val))
   val = -1.79769313E+310
-  self~assertSame("-infinity", tstargs023(val))
+  self~assertSame("-infinity", TestDoubleArg(val))
 
 -- test CSTRING
 ::method 'test045'
   val = ''
-  self~assertSame(val, tstargs024(val))
+  self~assertSame(val, TestCstringArg(val))
   val = copies('AbCdEfGhIjKlMnOpQrStUvWxYz0123456789', 1)
-  self~assertSame(val, tstargs024(val))
+  self~assertSame(val, TestCstringArg(val))
   val = copies('AbCdEfGhIjKlMnOpQrStUvWxYz0123456789', 10)
-  self~assertSame(val, tstargs024(val))
+  self~assertSame(val, TestCstringArg(val))
   val = copies('AbCdEfGhIjKlMnOpQrStUvWxYz0123456789', 100)
-  self~assertSame(val, tstargs024(val))
+  self~assertSame(val, TestCstringArg(val))
   val = copies('AbCdEfGhIjKlMnOpQrStUvWxYz0123456789', 1000)
-  self~assertSame(val, tstargs024(val))
+  self~assertSame(val, TestCstringArg(val))
 
 -- test POINTER
 ::method 'test046'
-  val = tstargs025a()
-  self~assertTrue(tstargs025b(val))
-  val = tstargs025c()
+  val = TestPointerValue()
+  self~assertTrue(TestPointerArg(val))
+  val = TestNullPointerValue()
   self~assertTrue(val~isNull())
 

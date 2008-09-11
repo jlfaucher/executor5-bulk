@@ -37,60 +37,61 @@
 
 #include <oorexxapi.h>
 
+#include "teststubs.hpp"
 
-RexxRoutine0(int,                      // Return type
-            TstArgs000)                // Function routine name
+RexxRoutine0(int,                       // Return type
+            TestZeroIntArgs)            // Object_method name
 {
     return 0;
 }
 
-RexxRoutine1(int,                      // Return type
-            TstArgs001,                // Function routine name
+RexxRoutine1(int,                       // Return type
+            TestOneIntArg,              // Object_method name
             int, arg1)                 // Argument
 {
-    return 1;
+    return arg1;
 }
 
-RexxRoutine2(int,                      // Return type
-            TstArgs002,                // Function routine name
+RexxRoutine2(int,                       // Return type
+            TestTwoIntArgs,             // Object_method name
             int, arg1,                 // Argument
             int, arg2)                 // Argument
 {
-    return 2;
+    return arg1 + arg2;
 }
 
-RexxRoutine3(int,                      // Return type
-            TstArgs003,                // Function routine name
+RexxRoutine3(int,                       // Return type
+            TestThreeIntArgs,           // Object_method name
             int, arg1,                 // Argument
             int, arg2,                 // Argument
             int, arg3)                 // Argument
 {
-    return 3;
+    return arg1 + arg2 + arg3;
 }
 
-RexxRoutine4(int,                      // Return type
-            TstArgs004,                // Function routine name
+RexxRoutine4(int,                       // Return type
+            TestFourIntArgs,            // Object_method name
             int, arg1,                 // Argument
             int, arg2,                 // Argument
             int, arg3,                 // Argument
             int, arg4)                 // Argument
 {
-    return 4;
+    return arg1 + arg2 + arg3 + arg4;
 }
 
-RexxRoutine5(int,                      // Return type
-            TstArgs005,                // Function routine name
+RexxRoutine5(int,                       // Return type
+            TestFiveIntArgs,            // Object_method name
             int, arg1,                 // Argument
             int, arg2,                 // Argument
             int, arg3,                 // Argument
             int, arg4,                 // Argument
             int, arg5)                 // Argument
 {
-    return 5;
+    return arg1 + arg2 + arg3 + arg4 + arg5;
 }
 
-RexxRoutine6(int,                      // Return type
-            TstArgs006,                // Function routine name
+RexxRoutine6(int,                       // Return type
+            TestSixIntArgs,             // Object_method name
             int, arg1,                 // Argument
             int, arg2,                 // Argument
             int, arg3,                 // Argument
@@ -98,11 +99,11 @@ RexxRoutine6(int,                      // Return type
             int, arg5,                 // Argument
             int, arg6)                 // Argument
 {
-    return 6;
+    return arg1 + arg2 + arg3 + arg4 + arg5 + arg6;
 }
 
-RexxRoutine7(int,                      // Return type
-            TstArgs007,                // Function routine name
+RexxRoutine7(int,                       // Return type
+            TestSevenIntArgs,           // Object_method name
             int, arg1,                 // Argument
             int, arg2,                 // Argument
             int, arg3,                 // Argument
@@ -111,11 +112,11 @@ RexxRoutine7(int,                      // Return type
             int, arg6,                 // Argument
             int, arg7)                 // Argument
 {
-    return 7;
+    return arg1 + arg2 + arg3 + arg4 + arg5 + arg6 + arg7;
 }
 
-RexxRoutine8(int,                      // Return type
-            TstArgs008,                // Function routine name
+RexxRoutine8(int,                       // Return type
+            TestEightIntArgs,           // Object_method name
             int, arg1,                 // Argument
             int, arg2,                 // Argument
             int, arg3,                 // Argument
@@ -125,11 +126,11 @@ RexxRoutine8(int,                      // Return type
             int, arg7,                 // Argument
             int, arg8)                 // Argument
 {
-    return 8;
+    return arg1 + arg2 + arg3 + arg4 + arg5 + arg6 + arg7 + arg8;
 }
 
-RexxRoutine9(int,                      // Return type
-            TstArgs009,                // Function routine name
+RexxRoutine9(int,                       // Return type
+            TestNineIntArgs,            // Object_method name
             int, arg1,                 // Argument
             int, arg2,                 // Argument
             int, arg3,                 // Argument
@@ -140,11 +141,11 @@ RexxRoutine9(int,                      // Return type
             int, arg8,                 // Argument
             int, arg9)                 // Argument
 {
-    return 9;
+    return arg1 + arg2 + arg3 + arg4 + arg5 + arg6 + arg7 + arg8 + arg9;
 }
 
-RexxRoutine10(int,                      // Return type
-            TstArgs010,                // Function routine name
+RexxRoutine10(int,                       // Return type
+            TestTenIntArgs,             // Object_method name
             int, arg1,                 // Argument
             int, arg2,                 // Argument
             int, arg3,                 // Argument
@@ -156,159 +157,182 @@ RexxRoutine10(int,                      // Return type
             int, arg9,                 // Argument
             int, arg10)                // Argument
 {
-    return 10;
+    return arg1 + arg2 + arg3 + arg4 + arg5 + arg6 + arg7 + arg8 + arg9 + arg10;
 }
 
-RexxRoutine1(int,                      // Return type
-            TstArgs011,                // Function routine name
+RexxRoutine1(int,                       // Return type
+            TestIntArg,                 // Object_method name
             int, arg1)                 // Argument
 {
     return arg1;
 }
 
-RexxRoutine1(int32_t,                  // Return type
-            TstArgs012,                // Function routine name
+RexxRoutine1(int32_t,                   // Return type
+            TestInt32Arg,               // Function routine name
             int32_t, arg1)             // Argument
 {
     return arg1;
 }
 
-RexxRoutine1(uint32_t,                 // Return type
-            TstArgs013,                // Function routine name
+RexxRoutine1(uint32_t,                  // Return type
+            TestUint32Arg,              // Function routine name
             uint32_t, arg1)            // Argument
 {
     return arg1;
 }
 
-RexxRoutine1(int8_t,                   // Return type
-            TstArgs014,                // Function routine name
+RexxRoutine1(int8_t,                    // Return type
+            TestInt8Arg,                // Function routine name
             int8_t, arg1)              // Argument
 {
     return arg1;
 }
 
-RexxRoutine1(uint8_t,                  // Return type
-            TstArgs015,                // Function routine name
+RexxRoutine1(uint8_t,                   // Return type
+            TestUint8Arg,               // Function routine name
             uint8_t, arg1)             // Argument
 {
     return arg1;
 }
 
-RexxRoutine1(int16_t,                  // Return type
-            TstArgs016,                // Function routine name
+RexxRoutine1(int16_t,                   // Return type
+            TestInt16Arg,               // Function routine name
             int16_t, arg1)             // Argument
 {
     return arg1;
 }
 
-RexxRoutine1(uint16_t,                 // Return type
-            TstArgs017,                // Function routine name
+RexxRoutine1(uint16_t,                  // Return type
+            TestUint16Arg,              // Function routine name
             uint16_t, arg1)            // Argument
 {
     return arg1;
 }
 
-RexxRoutine1(int64_t,                  // Return type
-            TstArgs018,                // Function routine name
+RexxRoutine1(int64_t,                   // Return type
+            TestInt64Arg,               // Function routine name
             int64_t, arg1)             // Argument
 {
     return arg1;
 }
 
-RexxRoutine1(uint64_t,                 // Return type
-            TstArgs019,                // Function routine name
+RexxRoutine1(uint64_t,                  // Return type
+            TestUint64Arg,              // Function routine name
             uint64_t, arg1)            // Argument
 {
     return arg1;
 }
 
-RexxRoutine1(wholenumber_t,            // Return type
-            TstArgs020,                // Function routine name
+RexxRoutine1(intptr_t,                  // Return type
+            TestIntPtrArg,               // Function routine name
+            intptr_t, arg1)            // Argument
+{
+    return arg1;
+}
+
+RexxRoutine1(uintptr_t,                 // Return type
+            TestUintPtrArg,              // Function routine name
+            uintptr_t, arg1)           // Argument
+{
+    return arg1;
+}
+
+RexxRoutine1(wholenumber_t,             // Return type
+            TestWholeNumberArg,         // Function routine name
             wholenumber_t, arg1)       // Argument
 {
     return arg1;
 }
 
-RexxRoutine1(logical_t,                // Return type
-            TstArgs021,                // Function routine name
+RexxRoutine1(stringsize_t,              // Return type
+            TestStringSizeArg,          // Function routine name
+            stringsize_t, arg1)         // Argument
+{
+    return arg1;
+}
+
+RexxRoutine1(logical_t,                 // Return type
+            TestLogicalArg,             // Function routine name
             logical_t, arg1)           // Argument
 {
     return arg1;
 }
 
-RexxRoutine1(float,                    // Return type
-            TstArgs022,                // Function routine name
+RexxRoutine1(float,                     // Return type
+            TestFloatArg,               // Function routine name
             float, arg1)               // Argument
 {
     return arg1;
 }
 
-RexxRoutine1(double,                   // Return type
-            TstArgs023,                // Function routine name
+RexxRoutine1(double,                    // Return type
+            TestDoubleArg,              // Function routine name
             double, arg1)              // Argument
 {
     return arg1;
 }
 
-RexxRoutine1(CSTRING,                  // Return type
-            TstArgs024,                // Function routine name
+RexxRoutine1(CSTRING,                   // Return type
+            TestCstringArg,             // Function routine name
             CSTRING, arg1)             // Argument
 {
     return arg1;
 }
 
-RexxRoutine0(POINTER,                  // Return type
-            TstArgs025a)               // Function routine name
+RexxRoutine0(POINTER,                   // Return type
+           TestPointerValue)            // Function routine name
 {
-    return (void *)TstArgs025a;
+    return (void *)TestPointerValue;
 }
 
-RexxRoutine1(logical_t,                // Return type
-            TstArgs025b,               // Function routine name
-            POINTER, arg1)             // Argument
+RexxRoutine1(logical_t,                 // Return type
+           TestPointerArg,              // Function routine name
+           POINTER, arg1)              // Argument
 {
-    if (arg1 == TstArgs025a) {
+    if (arg1 == TestPointerValue) {
         return 1;
     }
     return 0;
 }
 
-RexxRoutine0(POINTER,                  // Return type
-            TstArgs025c)               // Function routine name
+RexxRoutine0(POINTER,                   // Return type
+           TestNullPointerValue)        // Function routine name
 {
     return NULL;
 }
 
-
 RexxRoutineEntry orxtest_funcs[] = {
-    REXX_TYPED_ROUTINE(TstArgs000, TstArgs000),
-    REXX_TYPED_ROUTINE(TstArgs001, TstArgs001),
-    REXX_TYPED_ROUTINE(TstArgs002, TstArgs002),
-    REXX_TYPED_ROUTINE(TstArgs003, TstArgs003),
-    REXX_TYPED_ROUTINE(TstArgs004, TstArgs004),
-    REXX_TYPED_ROUTINE(TstArgs005, TstArgs005),
-    REXX_TYPED_ROUTINE(TstArgs006, TstArgs006),
-    REXX_TYPED_ROUTINE(TstArgs007, TstArgs007),
-    REXX_TYPED_ROUTINE(TstArgs008, TstArgs008),
-    REXX_TYPED_ROUTINE(TstArgs009, TstArgs009),
-    REXX_TYPED_ROUTINE(TstArgs010, TstArgs010),
-    REXX_TYPED_ROUTINE(TstArgs011, TstArgs011),
-    REXX_TYPED_ROUTINE(TstArgs012, TstArgs012),
-    REXX_TYPED_ROUTINE(TstArgs013, TstArgs013),
-    REXX_TYPED_ROUTINE(TstArgs014, TstArgs014),
-    REXX_TYPED_ROUTINE(TstArgs015, TstArgs015),
-    REXX_TYPED_ROUTINE(TstArgs016, TstArgs016),
-    REXX_TYPED_ROUTINE(TstArgs017, TstArgs017),
-    REXX_TYPED_ROUTINE(TstArgs018, TstArgs018),
-    REXX_TYPED_ROUTINE(TstArgs019, TstArgs019),
-    REXX_TYPED_ROUTINE(TstArgs020, TstArgs020),
-    REXX_TYPED_ROUTINE(TstArgs021, TstArgs021),
-    REXX_TYPED_ROUTINE(TstArgs022, TstArgs022),
-    REXX_TYPED_ROUTINE(TstArgs023, TstArgs023),
-    REXX_TYPED_ROUTINE(TstArgs024, TstArgs024),
-    REXX_TYPED_ROUTINE(TstArgs025a, TstArgs025a),
-    REXX_TYPED_ROUTINE(TstArgs025b, TstArgs025b),
-    REXX_TYPED_ROUTINE(TstArgs025c, TstArgs025c),
+    REXX_TYPED_ROUTINE(TestZeroIntArgs,       TestZeroIntArgs),
+    REXX_TYPED_ROUTINE(TestOneIntArg,         TestOneIntArg),
+    REXX_TYPED_ROUTINE(TestTwoIntArgs,        TestTwoIntArgs),
+    REXX_TYPED_ROUTINE(TestThreeIntArgs,      TestThreeIntArgs),
+    REXX_TYPED_ROUTINE(TestFourIntArgs,       TestFourIntArgs),
+    REXX_TYPED_ROUTINE(TestFiveIntArgs,       TestFiveIntArgs),
+    REXX_TYPED_ROUTINE(TestSixIntArgs,        TestSixIntArgs),
+    REXX_TYPED_ROUTINE(TestSevenIntArgs,      TestSevenIntArgs),
+    REXX_TYPED_ROUTINE(TestEightIntArgs,      TestEightIntArgs),
+    REXX_TYPED_ROUTINE(TestNineIntArgs,       TestNineIntArgs),
+    REXX_TYPED_ROUTINE(TestTenIntArgs,        TestTenIntArgs),
+    REXX_TYPED_ROUTINE(TestIntArg,            TestIntArg),
+    REXX_TYPED_ROUTINE(TestInt32Arg,          TestInt32Arg),
+    REXX_TYPED_ROUTINE(TestUint32Arg,         TestUint32Arg),
+    REXX_TYPED_ROUTINE(TestInt8Arg,           TestInt8Arg),
+    REXX_TYPED_ROUTINE(TestUint8Arg,          TestUint8Arg),
+    REXX_TYPED_ROUTINE(TestInt16Arg,          TestInt16Arg),
+    REXX_TYPED_ROUTINE(TestUint16Arg,         TestUint16Arg),
+    REXX_TYPED_ROUTINE(TestInt64Arg,          TestInt64Arg),
+    REXX_TYPED_ROUTINE(TestUint64Arg,         TestUint64Arg),
+    REXX_TYPED_ROUTINE(TestIntPtrArg,         TestIntPtrArg),
+    REXX_TYPED_ROUTINE(TestUintPtrArg,        TestUintPtrArg),
+    REXX_TYPED_ROUTINE(TestWholeNumberArg,    TestWholeNumberArg),
+    REXX_TYPED_ROUTINE(TestStringSizeArg,     TestStringSizeArg),
+    REXX_TYPED_ROUTINE(TestLogicalArg,        TestLogicalArg),
+    REXX_TYPED_ROUTINE(TestFloatArg,          TestFloatArg),
+    REXX_TYPED_ROUTINE(TestDoubleArg,         TestDoubleArg),
+    REXX_TYPED_ROUTINE(TestCstringArg,        TestCstringArg),
+    REXX_TYPED_ROUTINE(TestPointerValue,      TestPointerValue),
+    REXX_TYPED_ROUTINE(TestPointerArg,        TestPointerArg),
+    REXX_TYPED_ROUTINE(TestNullPointerValue,  TestNullPointerValue),
     REXX_LAST_ROUTINE()
 };
 
