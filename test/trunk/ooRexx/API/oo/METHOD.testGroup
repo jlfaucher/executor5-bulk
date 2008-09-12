@@ -535,6 +535,83 @@ return .ooTestResult~new(5)~~addException(err)
   self~expectSyntax('88.907')
   tester~TestStringSizeArg(-1)
 
+-- test size_t
+::method 'testSize01'
+  defaultDigits = digits()
+  numeric digits 20
+  tester = .METHODtester~new
+  val = 0
+  self~assertSame(val, tester~TestSizeArg(val))
+  val = 65535
+  self~assertSame(val, tester~TestSizeArg(val))
+  val = 1
+  self~assertSame(val, tester~TestSizeArg(val))
+  if defaultDigits == 9 then
+      val = 2**32-1
+  else
+      val = 2**64-1
+  self~assertSame(val, tester~TestSizeArg(val))
+
+::method 'testSize02'
+  tester = .METHODtester~new
+  self~expectSyntax('88.907')
+  defaultDigits = digits()
+  numeric digits 20
+  if defaultDigits == 9 then
+      val = 2**32
+  else
+      val = 2**64
+  tester~TestSizeArg(val)
+
+::method 'testSize03'
+  tester = .METHODtester~new
+  self~expectSyntax('88.907')
+  tester~TestSizeArg(-1)
+
+-- test ssize_t
+::method 'testSSize01'
+  tester = .METHODtester~new
+  defaultDigits = digits()
+  numeric digits 20
+  val = 0
+  self~assertSame(val, tester~TestSSizeArg(val))
+  val = 65535
+  self~assertSame(val, tester~TestSSizeArg(val))
+  val = 1
+  self~assertSame(val, tester~TestSSizeArg(val))
+  if defaultDigits == 9 then
+      val = 2**31-1
+  else
+      val = 2**63-1
+  self~assertSame(val, tester~TestSSizeArg(val))
+  if defaultDigits == 9 then
+      val = -2**31
+  else
+      val = -2**63
+  self~assertSame(val, tester~TestSSizeArg(val))
+
+::method 'testSSize02'
+  tester = .METHODtester~new
+  self~expectSyntax('88.907')
+  defaultDigits = digits()
+  numeric digits 20
+  if defaultDigits == 9 then
+      val = 2**31
+  else
+      val = 2**63
+  tester~TestSSizeArg(val)
+
+::method 'testSSize03'
+  tester = .METHODtester~new
+  self~expectSyntax('88.907')
+  defaultDigits = digits()
+  numeric digits 20
+  if defaultDigits == 9 then
+      val = -2**31 - 1
+  else
+      val = -2**63 - 1
+  tester~TestSSizeArg(val)
+
 -- test logical_t
 ::method 'testLogical01'
   tester = .METHODtester~new

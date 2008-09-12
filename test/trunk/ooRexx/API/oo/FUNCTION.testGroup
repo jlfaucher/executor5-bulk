@@ -446,6 +446,77 @@ return .ooTestResult~new(5)~~addException(err)
       TestWholeNumberArg(-1000000000000000000)
 
 
+-- test size_t
+::method 'testSize01'
+  defaultDigits = digits()
+  numeric digits 20
+  val = 0
+  self~assertSame(val, TestSizeArg(val))
+  val = 65535
+  self~assertSame(val, TestSizeArg(val))
+  val = 1
+  self~assertSame(val, TestSizeArg(val))
+  if defaultDigits == 9 then
+      val = 2**32-1
+  else
+      val = 2**64-1
+  self~assertSame(val, TestSizeArg(val))
+
+::method 'testSize02'
+  self~expectSyntax('88.907')
+  defaultDigits = digits()
+  numeric digits 20
+  if defaultDigits == 9 then
+      val = 2**32
+  else
+      val = 2**64
+  TestSizeArg(val)
+
+::method 'testSize03'
+  self~expectSyntax('88.907')
+  TestSizeArg(-1)
+
+-- test ssize_t
+::method 'testSSize01'
+  defaultDigits = digits()
+  numeric digits 20
+  val = 0
+  self~assertSame(val, TestSSizeArg(val))
+  val = 65535
+  self~assertSame(val, TestSSizeArg(val))
+  val = 1
+  self~assertSame(val, TestSSizeArg(val))
+  if defaultDigits == 9 then
+      val = 2**31-1
+  else
+      val = 2**63-1
+  self~assertSame(val, TestSSizeArg(val))
+  if defaultDigits == 9 then
+      val = -2**31
+  else
+      val = -2**63
+  self~assertSame(val, TestSSizeArg(val))
+
+::method 'testSSize02'
+  self~expectSyntax('88.907')
+  defaultDigits = digits()
+  numeric digits 20
+  if defaultDigits == 9 then
+      val = 2**31
+  else
+      val = 2**63
+  TestSSizeArg(val)
+
+::method 'testSSize03'
+  self~expectSyntax('88.907')
+  defaultDigits = digits()
+  numeric digits 20
+  if defaultDigits == 9 then
+      val = -2**31 - 1
+  else
+      val = -2**63 - 1
+  TestSSizeArg(val)
+
 -- test logical_t
 ::method 'testLogical01'
   val = .true
