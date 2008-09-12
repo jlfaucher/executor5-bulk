@@ -371,7 +371,7 @@ return .ooTestResult~new(5)~~addException(err)
   TestUint16Arg(-1)
 
 -- test int64_t
-::method 'test039'
+::method 'testint6401'
   numeric digits 20
   val = 0
   self~assertSame(val, TestInt64Arg(val))
@@ -379,10 +379,18 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame(val, TestInt64Arg(val))
   val = 1
   self~assertSame(val, TestInt64Arg(val))
-  val = -9223372036854775807
+  val = -1
   self~assertSame(val, TestInt64Arg(val))
-  val = -16382
+  val = '-9223372036854775808'
   self~assertSame(val, TestInt64Arg(val))
+
+::method 'testint6402'
+  self~expectSyntax('88.907')
+  TestInt64Arg(9223372036854775808)
+
+::method 'testint6403'
+  self~expectSyntax('88.907')
+  TestInt64Arg('-9223372036854775809')
 
 -- test uint64_t
 ::method 'test040'
