@@ -302,6 +302,8 @@ return .ooTestResult~new(5)~~addException(err)
   val = '-2147483648'
   self~assertSame(val, tester~TestInt32Arg(val))
   self~assertSame(1, tester~TestInt32Arg(1.0))
+  self~assertSame(1, tester~TestInt32Arg(2.1 - 1.1))    -- forces this to be a number string
+  self~assertSame(1, tester~TestInt32Arg(word("2 1 3", 2)))   -- forces this to be a character string
   self~assertSame(1, tester~TestInt32Arg(1e0))
 
 ::method 'testint3202'
@@ -380,7 +382,7 @@ return .ooTestResult~new(5)~~addException(err)
   tester~TestUint8Arg(-1)
 
 -- test int16_t
-::method 'test037'
+::method 'testint1601'
   tester = .METHODtester~new
   val = 0
   self~assertSame(val, tester~TestInt16Arg(val))
@@ -393,8 +395,18 @@ return .ooTestResult~new(5)~~addException(err)
   val = -32768
   self~assertSame(val, tester~TestInt16Arg(val))
 
+::method 'testint1602'
+  tester = .METHODtester~new
+  self~expectSyntax('88.907')
+  tester~TestInt16Arg(32768)
+
+::method 'testint1603'
+  tester = .METHODtester~new
+  self~expectSyntax('88.907')
+  tester~TestInt16Arg(-32769)
+
 -- test uint16_t
-::method 'test038'
+::method 'testuint1601'
   tester = .METHODtester~new
   val = 0
   self~assertSame(val, tester~TestUint16Arg(val))
@@ -402,6 +414,16 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame(val, tester~TestUint16Arg(val))
   val = 1
   self~assertSame(val, tester~TestUint16Arg(val))
+
+::method 'testuint1602'
+  tester = .METHODtester~new
+  self~expectSyntax('88.907')
+  tester~TestUint16Arg(65536)
+
+::method 'testuint1603'
+  tester = .METHODtester~new
+  self~expectSyntax('88.907')
+  tester~TestUint16Arg(-1)
 
 -- test int64_t
 ::method 'test039'
@@ -430,7 +452,7 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame(val, tester~TestUint64Arg(val))
 
 -- test wholenumber_t
-::method 'test041'
+::method 'testWholeNumber01'
   tester = .METHODtester~new
   val = 0
   self~assertSame(val, tester~TestWholeNumberArg(val))
@@ -438,6 +460,60 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame(val, tester~TestWholeNumberArg(val))
   val = 1
   self~assertSame(val, tester~TestWholeNumberArg(val))
+  if digits() == 9 then
+      val = 999999999
+  else
+      val = 999999999999999999
+  self~assertSame(val, tester~TestWholeNumberArg(val))
+  if digits() == 9 then
+      val = -999999999
+  else
+      val = -999999999999999999
+  self~assertSame(val, tester~TestWholeNumberArg(val))
+
+::method 'testWholenumber02'
+  tester = .METHODtester~new
+  self~expectSyntax('88.907')
+  if digits() == 9 then
+      tester~TestWholeNumberArg(1000000000)
+  else
+      tester~TestWholeNumberArg(1000000000000000000)
+
+::method 'testWholenumber03'
+  tester = .METHODtester~new
+  self~expectSyntax('88.907')
+  if digits() == 9 then
+      tester~TestWholeNumberArg(-1000000000)
+  else
+      tester~TestWholeNumberArg(-1000000000000000000)
+
+-- test stringsize_t
+::method 'testStringSize01'
+  tester = .METHODtester~new
+  val = 0
+  self~assertSame(val, tester~TestStringSizeArg(val))
+  val = 65535
+  self~assertSame(val, tester~TestStringSizeArg(val))
+  val = 1
+  self~assertSame(val, tester~TestStringSizeArg(val))
+  if digits() == 9 then
+      val = 999999999
+  else
+      val = 999999999999999999
+  self~assertSame(val, tester~TestStringSizeArg(val))
+
+::method 'testStringSize02'
+  tester = .METHODtester~new
+  self~expectSyntax('88.907')
+  if digits() == 9 then
+      tester~TestStringSizeArg(1000000000)
+  else
+      tester~TestStringSizeArg(1000000000000000000)
+
+::method 'testStringSize03'
+  tester = .METHODtester~new
+  self~expectSyntax('88.907')
+  tester~TestStringSizeArg(-1)
 
 -- test logical_t
 ::method 'test042'
