@@ -37,8 +37,6 @@
 
 #include <oorexxapi.h>
 
-#include "teststubs.hpp"
-
 RexxRoutine0(int,                       // Return type
             TestZeroIntArgs)            // Object_method name
 {
