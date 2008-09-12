@@ -431,7 +431,7 @@ return .ooTestResult~new(5)~~addException(err)
 
 
 -- test logical_t
-::method 'test042'
+::method 'testLogical01'
   val = .true
   self~assertSame(val, TestLogicalArg(val))
   val = .false
@@ -439,6 +439,18 @@ return .ooTestResult~new(5)~~addException(err)
   val = 2
   self~expectSyntax('34.901')
   self~assertSame(val, TestLogicalArg(val))
+  self~assertSame(.false, TestLogicalArg('0'||""))
+  self~assertSame(.false, TestLogicalArg(0))
+  self~assertSame(.true, TestLogicalArg('1'||""))
+  self~assertSame(.true, TestLogicalArg(1))
+
+::method 'testLogical02'
+  self~expectSyntax('34.901')
+  TestLogicalArg(2)
+
+::method 'testLogical03'
+  self~expectSyntax('34.901')
+  TestLogicalArg(1.0)
 
 -- test float
 ::method 'test043'
