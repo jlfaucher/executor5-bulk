@@ -211,28 +211,19 @@ return 0
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::class 'ooTestConstants' public mixinclass Object
 
-  ::method TEST_ROOT  class; return "ooRexx"
-  ::method TEST_ROOT;        return "ooRexx"
-
-  ::method TEST_CONTAINER_EXT  class; return ".testGroup"
-  ::method TEST_CONTAINER_EXT;        return ".testGroup"
+  ::constant TEST_ROOT            "ooRexx"
+  ::constant TEST_CONTAINER_EXT   ".testGroup"
 
   -- .nil signals no restriction on test types.
   ::method TEST_TYPES_DEFAULT  class; return .nil
   ::method TEST_TYPES_DEFAULT;        return .nil
 
-  ::method TEST_SUCCESS_RC   class; return 0
-  ::method TEST_SUCCESS_RC;         return 0
-  ::method TEST_HELP_RC      class; return 1
-  ::method TEST_HELP_RC;            return 1
-  ::method TEST_FAILURES_RC  class; return 2
-  ::method TEST_FAILURES_RC;        return 2
-  ::method TEST_ERRORS_RC    class; return 3
-  ::method TEST_ERRORS_RC;          return 3
-  ::method TEST_NO_TESTS_RC  class; return 4
-  ::method TEST_NO_TESTS_RC;        return 4
-  ::method TEST_BADARGS_RC   class; return 5
-  ::method TEST_BADARGS_RC;         return 5
+  ::constant TEST_SUCCESS_RC    0
+  ::constant TEST_HELP_RC       1
+  ::constant TEST_FAILURES_RC   2
+  ::constant TEST_ERRORS_RC     3
+  ::constant TEST_NO_TESTS_RC   4
+  ::constant TEST_BADARGS_RC    5
 
   -- SL (back SLash or forward SLash) abbreviation for the directory separator.
   ::method SL  class; return .ooRexxUnit.directory.separator
@@ -1874,23 +1865,16 @@ return suite
 
 
 ::class 'NotificationTypes' mixinclass Object
-  /* Would prefer to use the CONSTANT directive */
-  ::method MIN_TYPE  class; return 1
-  ::method MIN_TYPE;        return 1
 
-  ::method SKIP_TYPE  class; return 1
-  ::method WARN_TYPE  class; return 2
-  ::method TEXT_TYPE  class; return 3
-  ::method STEP_TYPE  class; return 4
-  ::method STATS_TYPE class; return 5
-  ::method SKIP_TYPE;        return 1
-  ::method WARN_TYPE;        return 2
-  ::method TEXT_TYPE;        return 3
-  ::method STEP_TYPE;        return 4
-  ::method STATS_TYPE;       return 5
+  ::constant MIN_TYPE    1
 
-  ::method MAX_TYPE  class; return 5
-  ::method MAX_TYPE;        return 5
+  ::constant SKIP_TYPE   1
+  ::constant WARN_TYPE   2
+  ::constant TEXT_TYPE   3
+  ::constant STEP_TYPE   4
+  ::constant STATS_TYPE  5
+
+  ::constant MAX_TYPE    5
 
 
 /* class: Notification - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
@@ -1955,20 +1939,14 @@ return suite
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::class 'PhaseReport' public subclass Notification
 
-  ::method MIN_PHASE  class; return 1
-  ::method MIN_PHASE;        return 1
+  ::constant MIN_PHASE            1
 
-  ::method AUTOMATED_TEST_PHASE class; return 1
-  ::method FILE_SEARCH_PHASE    class; return 2
-  ::method SUITE_BUILD_PHASE    class; return 3
-  ::method TEST_EXECUTION_PHASE class; return 4
-  ::method AUTOMATED_TEST_PHASE;       return 1
-  ::method FILE_SEARCH_PHASE;          return 2
-  ::method SUITE_BUILD_PHASE;          return 3
-  ::method TEST_EXECUTION_PHASE;       return 4
+  ::constant AUTOMATED_TEST_PHASE 1
+  ::constant FILE_SEARCH_PHASE    2
+  ::constant SUITE_BUILD_PHASE    3
+  ::constant TEST_EXECUTION_PHASE 4
 
-  ::method MAX_PHASE  class; return 4
-  ::method MAX_PHASE;        return 4
+  ::constant MAX_PHASE            4
 
   ::attribute begin get
   ::attribute begin set private
