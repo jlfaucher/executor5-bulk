@@ -451,7 +451,7 @@ return .ooTestResult~new(5)~~addException(err)
   tester~TestInt64Arg('-9223372036854775809')
 
 -- test uint64_t
-::method 'test040'
+::method 'testuint6401'
   tester = .METHODtester~new
   numeric digits 21
   val = 0
@@ -460,6 +460,16 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame(val, tester~TestUint64Arg(val))
   val = 1
   self~assertSame(val, tester~TestUint64Arg(val))
+
+::method 'testuint6402'
+  tester = .METHODtester~new
+  self~expectSyntax('88.907')
+  tester~TestUint64Arg(18446744073709551616)
+
+::method 'testuint6403'
+  tester = .METHODtester~new
+  self~expectSyntax('88.907')
+  tester~TestUint64Arg('-1')
 
 -- test wholenumber_t
 ::method 'testWholeNumber01'
