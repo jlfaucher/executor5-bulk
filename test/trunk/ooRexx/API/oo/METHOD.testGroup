@@ -278,13 +278,13 @@ return .ooTestResult~new(5)~~addException(err)
 ::method 'testint02'
   tester = .METHODtester~new
   numeric digits 11
-  self~expectSyntax('88.903')
+  self~expectSyntax('88.907')
   tester~TestIntArg(2147483648)
 
 ::method 'testint03'
   tester = .METHODtester~new
   numeric digits 11
-  self~expectSyntax('88.903')
+  self~expectSyntax('88.907')
   tester~TestIntArg('-2147483649')
 
 -- test int32_t
@@ -306,12 +306,12 @@ return .ooTestResult~new(5)~~addException(err)
 
 ::method 'testint3202'
   tester = .METHODtester~new
-  self~expectSyntax('88.903')
+  self~expectSyntax('88.907')
   tester~TestInt32Arg(2147483648)
 
 ::method 'testint3203'
   tester = .METHODtester~new
-  self~expectSyntax('88.903')
+  self~expectSyntax('88.907')
   tester~TestInt32Arg('-2147483649')
 
 -- test uint32_t
@@ -336,7 +336,7 @@ return .ooTestResult~new(5)~~addException(err)
   tester~TestUint32Arg(-1)
 
 -- test int8_t
-::method 'test035'
+::method 'testint801'
   tester = .METHODtester~new
   val = 0
   self~assertSame(val, tester~TestInt8Arg(val))
@@ -349,8 +349,18 @@ return .ooTestResult~new(5)~~addException(err)
   val = -128
   self~assertSame(val, tester~TestInt8Arg(val))
 
+::method 'testint802'
+  tester = .METHODtester~new
+  self~expectSyntax('88.907')
+  tester~TestInt8Arg(128)
+
+::method 'testint803'
+  tester = .METHODtester~new
+  self~expectSyntax('88.907')
+  tester~TestInt8Arg(-129)
+
 -- test uint8_t
-::method 'test036'
+::method 'testuint801'
   tester = .METHODtester~new
   val = 0
   self~assertSame(val, tester~TestUint8Arg(val))
@@ -358,6 +368,16 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame(val, tester~TestUint8Arg(val))
   val = 1
   self~assertSame(val, tester~TestUint8Arg(val))
+
+::method 'testuint802'
+  tester = .METHODtester~new
+  self~expectSyntax('88.907')
+  tester~TestUint8Arg(256)
+
+::method 'testuint803'
+  tester = .METHODtester~new
+  self~expectSyntax('88.907')
+  tester~TestUint8Arg(-1)
 
 -- test int16_t
 ::method 'test037'
