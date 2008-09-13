@@ -336,6 +336,216 @@ RexxMethod0(POINTERSTRING,                   // Return type
     return NULL;
 }
 
+RexxMethod1(wholenumber_t,             // Return type
+            TestObjectToWholeNumber,    // Function routine name
+            RexxObjectPtr, arg1)       // Argument
+{
+    wholenumber_t result;
+    if (!context->ObjectToWholeNumber(arg1, &result))
+    {
+        context->RaiseException1(Rexx_Error_Invalid_argument_user_defined, context->NewStringFromAsciiz("Conversion error"));
+        return 0;
+    }
+
+    return result;
+}
+
+RexxMethod1(stringsize_t,              // Return type
+            TestObjectToStringSize,     // Function routine name
+            RexxObjectPtr, arg1)       // Argument
+{
+    stringsize_t result;
+    if (!context->ObjectToStringSize(arg1, &result))
+    {
+        context->RaiseException1(Rexx_Error_Invalid_argument_user_defined, context->NewStringFromAsciiz("Conversion error"));
+        return 0;
+    }
+
+    return result;
+}
+
+RexxMethod1(int64_t,                   // Return type
+            TestObjectToInt64,          // Function routine name
+            RexxObjectPtr, arg1)       // Argument
+{
+    int64_t result;
+    if (!context->ObjectToInt64(arg1, &result))
+    {
+        context->RaiseException1(Rexx_Error_Invalid_argument_user_defined, context->NewStringFromAsciiz("Conversion error"));
+        return 0;
+    }
+
+    return result;
+}
+
+RexxMethod1(uint64_t,                   // Return type
+            TestObjectToUnsignedInt64,  // Function routine name
+            RexxObjectPtr, arg1)        // Argument
+{
+    uint64_t result;
+    if (!context->ObjectToUnsignedInt64(arg1, &result))
+    {
+        context->RaiseException1(Rexx_Error_Invalid_argument_user_defined, context->NewStringFromAsciiz("Conversion error"));
+        return 0;
+    }
+
+    return result;
+}
+
+RexxMethod1(int32_t,                   // Return type
+            TestObjectToInt32,          // Function routine name
+            RexxObjectPtr, arg1)       // Argument
+{
+    int32_t result;
+    if (!context->ObjectToInt32(arg1, &result))
+    {
+        context->RaiseException1(Rexx_Error_Invalid_argument_user_defined, context->NewStringFromAsciiz("Conversion error"));
+        return 0;
+    }
+
+    return result;
+}
+
+RexxMethod1(uint32_t,                   // Return type
+            TestObjectToUnsignedInt32,  // Function routine name
+            RexxObjectPtr, arg1)        // Argument
+{
+    uint32_t result;
+    if (!context->ObjectToUnsignedInt32(arg1, &result))
+    {
+        context->RaiseException1(Rexx_Error_Invalid_argument_user_defined, context->NewStringFromAsciiz("Conversion error"));
+        return 0;
+    }
+
+    return result;
+}
+
+RexxMethod1(intptr_t,                  // Return type
+            TestObjectToIntptr,         // Function routine name
+            RexxObjectPtr, arg1)       // Argument
+{
+    intptr_t result;
+    if (!context->ObjectToIntptr(arg1, &result))
+    {
+        context->RaiseException1(Rexx_Error_Invalid_argument_user_defined, context->NewStringFromAsciiz("Conversion error"));
+        return 0;
+    }
+
+    return result;
+}
+
+RexxMethod1(uintptr_t,                  // Return type
+            TestObjectToUintptr,        // Function routine name
+            RexxObjectPtr, arg1)        // Argument
+{
+    uintptr_t result;
+    if (!context->ObjectToUintptr(arg1, &result))
+    {
+        context->RaiseException1(Rexx_Error_Invalid_argument_user_defined, context->NewStringFromAsciiz("Conversion error"));
+        return 0;
+    }
+
+    return result;
+}
+
+RexxMethod1(logical_t,                 // Return type
+            TestObjectToLogical,        // Function routine name
+            RexxObjectPtr, arg1)       // Argument
+{
+    logical_t result;
+    if (!context->ObjectToLogical(arg1, &result))
+    {
+        context->RaiseException1(Rexx_Error_Invalid_argument_user_defined, context->NewStringFromAsciiz("Conversion error"));
+        return 0;
+    }
+
+    return result;
+}
+
+RexxMethod1(double,                    // Return type
+            TestObjectToDouble,         // Function routine name
+            RexxObjectPtr, arg1)       // Argument
+{
+    double result;
+    if (!context->ObjectToDouble(arg1, &result))
+    {
+        context->RaiseException1(Rexx_Error_Invalid_argument_user_defined, context->NewStringFromAsciiz("Conversion error"));
+        return 0.0;
+    }
+
+    return result;
+}
+
+RexxMethod1(RexxObjectPtr,             // Return type
+            TestWholeNumberToObject,    // Function routine name
+            wholenumber_t, arg1)       // Argument
+{
+    return context->WholeNumberToObject(arg1);
+}
+
+RexxMethod1(RexxObjectPtr,             // Return type
+            TestStringSizeToObject,    // Function routine name
+            stringsize_t, arg1)        // Argument
+{
+    return context->StringSizeToObject(arg1);
+}
+
+RexxMethod1(RexxObjectPtr,             // Return type
+            TestInt64ToObject,         // Function routine name
+            int64_t,      arg1)        // Argument
+{
+    return context->Int64ToObject(arg1);
+}
+
+RexxMethod1(RexxObjectPtr,             // Return type
+            TestUnsignedInt64ToObject, // Function routine name
+            uint64_t,     arg1)        // Argument
+{
+    return context->UnsignedInt64ToObject(arg1);
+}
+
+RexxMethod1(RexxObjectPtr,             // Return type
+            TestInt32ToObject,         // Function routine name
+            int32_t,      arg1)        // Argument
+{
+    return context->Int32ToObject(arg1);
+}
+
+RexxMethod1(RexxObjectPtr,             // Return type
+            TestUnsignedInt32ToObject, // Function routine name
+            uint32_t,     arg1)        // Argument
+{
+    return context->UnsignedInt32ToObject(arg1);
+}
+
+RexxMethod1(RexxObjectPtr,             // Return type
+            TestIntptrToObject,        // Function routine name
+            intptr_t,      arg1)       // Argument
+{
+    return context->IntptrToObject(arg1);
+}
+
+RexxMethod1(RexxObjectPtr,             // Return type
+            TestUintptrToObject,       // Function routine name
+            uintptr_t,      arg1)      // Argument
+{
+    return context->UintptrToObject(arg1);
+}
+
+RexxMethod1(RexxObjectPtr,             // Return type
+            TestLogicalToObject,       // Function routine name
+            logical_t,      arg1)      // Argument
+{
+    return context->LogicalToObject(arg1);
+}
+
+RexxMethod1(RexxObjectPtr,             // Return type
+            TestDoubleToObject,       // Function routine name
+            double,         arg1)      // Argument
+{
+    return context->DoubleToObject(arg1);
+}
+
 
 RexxMethodEntry orxtest_methods[] = {
     REXX_METHOD(TestZeroIntArgs,       TestZeroIntArgs),
@@ -374,6 +584,26 @@ RexxMethodEntry orxtest_methods[] = {
     REXX_METHOD(TestPointerStringValue,      TestPointerStringValue),
     REXX_METHOD(TestPointerStringArg,        TestPointerStringArg),
     REXX_METHOD(TestNullPointerStringValue,  TestNullPointerStringValue),
+    REXX_METHOD(TestObjectToWholeNumber,     TestObjectToWholeNumber),
+    REXX_METHOD(TestObjectToStringSize,      TestObjectToStringSize),
+    REXX_METHOD(TestObjectToInt64,           TestObjectToInt64),
+    REXX_METHOD(TestObjectToUnsignedInt64,   TestObjectToUnsignedInt64),
+    REXX_METHOD(TestObjectToInt32,           TestObjectToInt32),
+    REXX_METHOD(TestObjectToUnsignedInt32,   TestObjectToUnsignedInt32),
+    REXX_METHOD(TestObjectToIntptr,          TestObjectToIntptr),
+    REXX_METHOD(TestObjectToUintptr,         TestObjectToUintptr),
+    REXX_METHOD(TestObjectToLogical,         TestObjectToLogical),
+    REXX_METHOD(TestObjectToDouble,          TestObjectToDouble),
+    REXX_METHOD(TestWholeNumberToObject,     TestWholeNumberToObject),
+    REXX_METHOD(TestStringSizeToObject,      TestStringSizeToObject),
+    REXX_METHOD(TestInt64ToObject,           TestInt64ToObject),
+    REXX_METHOD(TestUnsignedInt64ToObject,   TestUnsignedInt64ToObject),
+    REXX_METHOD(TestInt32ToObject,           TestInt32ToObject),
+    REXX_METHOD(TestUnsignedInt32ToObject,   TestUnsignedInt32ToObject),
+    REXX_METHOD(TestIntptrToObject,          TestIntptrToObject),
+    REXX_METHOD(TestUintptrToObject,         TestUintptrToObject),
+    REXX_METHOD(TestLogicalToObject,         TestLogicalToObject),
+    REXX_METHOD(TestDoubleToObject,          TestDoubleToObject),
     REXX_LAST_METHOD()
 };
 

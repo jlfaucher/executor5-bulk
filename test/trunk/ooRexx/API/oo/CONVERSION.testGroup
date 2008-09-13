@@ -1,0 +1,511 @@
+#!/usr/bin/rexx
+/*
+   name:             CONVERSION.testUnit
+   author:           Rick McGuire
+   date:             2008/09/08
+   version:          1.0
+
+-- commented lines are ignored, when building the directory of infos from this header
+   changed:
+
+   languageLevel:    6.02
+   purpose:          Test the oo external class methods
+   remark:           ---
+
+   license:          CPL 1.0 (Common Public License v1.0, see below)
+   link:
+
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2008 Rexx Language Association. All rights reserved.         */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYright HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYright   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+use arg testTypes
+
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.CONVERSION.testGroup)
+
+  if arg(1, 'E'), \ group~hasTestTypes(testTypes) then do
+    group~markNoTests("This is a native API test and not included in the test types to execute.")
+
+    if group~isAutomatedTest then return group
+    else return group~suite~execute~~print
+  end
+
+  signal on syntax name packageErr
+  .context~package~loadPackage('CONVERSIONPackage.cls')
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+packageErr:
+  err = .ExceptionData~new(timeStamp(), s, "Trap")
+  err~conditionObject = condition('O')
+  err~msg = "Failed to load the external API package needed for this test group."
+
+  if group~isAutomatedTest then return err
+
+  err~print("Test group exception", .false)
+return .ooTestResult~new(5)~~addException(err)
+
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+-- class named exactly like file
+::class "CONVERSION.testGroup" subclass ooTestCase public
+
+::method init class
+  forward class (super) continue
+
+  -- Over-ride the default test type
+  self~ooTestType = .ooTestTypes~NATIVE_API_TEST
+
+-- test int32_t
+::method 'testint3201'
+  numeric digits 11
+  val = 0
+  self~assertSame(val, .CONVERSIONTester~TestObjectToInt32(val))
+  val = 2147483647
+  self~assertSame(val, .CONVERSIONTester~TestObjectToInt32(val))
+  val = 1
+  self~assertSame(val, .CONVERSIONTester~TestObjectToInt32(val))
+  val = -1
+  self~assertSame(val, .CONVERSIONTester~TestObjectToInt32(val))
+  val = '-2147483648'
+  self~assertSame(val, .CONVERSIONTester~TestObjectToInt32(val))
+  self~assertSame(1, .CONVERSIONTester~TestObjectToInt32(1.0))
+  self~assertSame(1, .CONVERSIONTester~TestObjectToInt32(2.1 - 1.1))    -- forces this to be a number string
+  self~assertSame(1, .CONVERSIONTester~TestObjectToInt32(word("2 1 3", 2)))   -- forces this to be a character string
+  self~assertSame(1, .CONVERSIONTester~TestObjectToInt32(1e0))
+
+::method 'testint3202'
+  self~expectSyntax('88.900')
+  .CONVERSIONTester~TestObjectToInt32(2147483648)
+
+::method 'testint3203'
+  self~expectSyntax('88.900')
+  .CONVERSIONTester~TestObjectToInt32('-2147483649')
+
+::method 'testint3204'
+  numeric digits 11
+  val = 0
+  self~assertSame(val, .CONVERSIONTester~TestInt32ToObject(val))
+  val = 2147483647
+  self~assertSame(val, .CONVERSIONTester~TestInt32ToObject(val))
+  val = 1
+  self~assertSame(val, .CONVERSIONTester~TestInt32ToObject(val))
+  val = -1
+  self~assertSame(val, .CONVERSIONTester~TestInt32ToObject(val))
+  val = '-2147483648'
+  self~assertSame(val, .CONVERSIONTester~TestInt32ToObject(val))
+  self~assertSame(1, .CONVERSIONTester~TestInt32ToObject(1.0))
+  self~assertSame(1, .CONVERSIONTester~TestInt32ToObject(2.1 - 1.1))    -- forces this to be a number string
+  self~assertSame(1, .CONVERSIONTester~TestInt32ToObject(word("2 1 3", 2)))   -- forces this to be a character string
+  self~assertSame(1, .CONVERSIONTester~TestInt32ToObject(1e0))
+
+-- test uint32_t
+::method 'testuint3201'
+  numeric digits 11
+  val = 0
+  self~assertSame(val, .CONVERSIONTester~TestObjectToUnsignedInt32(val))
+  val = 4294967295
+  self~assertSame(val, .CONVERSIONTester~TestObjectToUnsignedInt32(val))
+  val = 1
+  self~assertSame(val, .CONVERSIONTester~TestObjectToUnsignedInt32(val))
+
+::method 'testuint3202'
+  self~expectSyntax('88.900')
+  .CONVERSIONTester~TestObjectToUnsignedInt32(4294967296)
+
+::method 'testuint3203'
+  self~expectSyntax('88.900')
+  .CONVERSIONTester~TestObjectToUnsignedInt32(-1)
+
+-- test uint32_t
+::method 'testuint3204'
+  numeric digits 11
+  val = 0
+  self~assertSame(val, .CONVERSIONTester~TestUnsignedInt32ToObject(val))
+  val = 4294967295
+  self~assertSame(val, .CONVERSIONTester~TestUnsignedInt32ToObject(val))
+  val = 1
+  self~assertSame(val, .CONVERSIONTester~TestUnsignedInt32ToObject(val))
+
+-- test int64_t
+::method 'testint6401'
+  numeric digits 20
+  val = 0
+  self~assertSame(val, .CONVERSIONTester~TestObjectToInt64(val))
+  val = 9223372036854775807
+  self~assertSame(val, .CONVERSIONTester~TestObjectToInt64(val))
+  val = 1
+  self~assertSame(val, .CONVERSIONTester~TestObjectToInt64(val))
+  val = -1
+  self~assertSame(val, .CONVERSIONTester~TestObjectToInt64(val))
+  val = '-9223372036854775808'
+  self~assertSame(val, .CONVERSIONTester~TestObjectToInt64(val))
+
+::method 'testint6402'
+  self~expectSyntax('88.900')
+  .CONVERSIONTester~TestObjectToInt64(9223372036854775808)
+
+::method 'testint6403'
+  self~expectSyntax('88.900')
+  .CONVERSIONTester~TestObjectToInt64('-9223372036854775809')
+
+-- test int64_t
+::method 'testint6404'
+  numeric digits 20
+  val = 0
+  self~assertSame(val, .CONVERSIONTester~TestInt64ToObject(val))
+  val = 9223372036854775807
+  self~assertSame(val, .CONVERSIONTester~TestInt64ToObject(val))
+  val = 1
+  self~assertSame(val, .CONVERSIONTester~TestInt64ToObject(val))
+  val = -1
+  self~assertSame(val, .CONVERSIONTester~TestInt64ToObject(val))
+  val = '-9223372036854775808'
+  self~assertSame(val, .CONVERSIONTester~TestInt64ToObject(val))
+
+-- test uint64_t
+::method 'testuint6401'
+  numeric digits 21
+  val = 0
+  self~assertSame(val, .CONVERSIONTester~TestObjectToUnsignedInt64(val))
+  val = 18446744073709551615
+  self~assertSame(val, .CONVERSIONTester~TestObjectToUnsignedInt64(val))
+  val = 1
+  self~assertSame(val, .CONVERSIONTester~TestObjectToUnsignedInt64(val))
+
+::method 'testuint6402'
+  self~expectSyntax('88.900')
+  .CONVERSIONTester~TestObjectToUnsignedInt64(18446744073709551616)
+
+::method 'testuint6403'
+  self~expectSyntax('88.900')
+  .CONVERSIONTester~TestObjectToUnsignedInt64('-1')
+
+-- test uint64_t
+::method 'testuint6404'
+  numeric digits 21
+  val = 0
+  self~assertSame(val, .CONVERSIONTester~TestUnsignedInt64ToObject(val))
+  val = 18446744073709551615
+  self~assertSame(val, .CONVERSIONTester~TestUnsignedInt64ToObject(val))
+  val = 1
+  self~assertSame(val, .CONVERSIONTester~TestUnsignedInt64ToObject(val))
+
+-- test wholenumber_t
+::method 'testWholeNumber01'
+  val = 0
+  self~assertSame(val, .CONVERSIONTester~TestObjectToWholeNumber(val))
+  val = 65535
+  self~assertSame(val, .CONVERSIONTester~TestObjectToWholeNumber(val))
+  val = 1
+  self~assertSame(val, .CONVERSIONTester~TestObjectToWholeNumber(val))
+  if digits() == 9 then
+      val = 999999999
+  else
+      val = 999999999999999999
+  self~assertSame(val, .CONVERSIONTester~TestObjectToWholeNumber(val))
+  if digits() == 9 then
+      val = -999999999
+  else
+      val = -999999999999999999
+  self~assertSame(val, .CONVERSIONTester~TestObjectToWholeNumber(val))
+
+::method 'testWholenumber02'
+  self~expectSyntax('88.900')
+  if digits() == 9 then
+      .CONVERSIONTester~TestObjectToWholeNumber(1000000000)
+  else
+      .CONVERSIONTester~TestObjectToWholeNumber(1000000000000000000)
+
+::method 'testWholenumber03'
+  self~expectSyntax('88.900')
+  if digits() == 9 then
+      .CONVERSIONTester~TestObjectToWholeNumber(-1000000000)
+  else
+      .CONVERSIONTester~TestObjectToWholeNumber(-1000000000000000000)
+
+-- test wholenumber_t
+::method 'testWholeNumber04'
+  val = 0
+  self~assertSame(val, .CONVERSIONTester~TestWholeNumberToObject(val))
+  val = 65535
+  self~assertSame(val, .CONVERSIONTester~TestWholeNumberToObject(val))
+  val = 1
+  self~assertSame(val, .CONVERSIONTester~TestWholeNumberToObject(val))
+  if digits() == 9 then
+      val = 999999999
+  else
+      val = 999999999999999999
+  self~assertSame(val, .CONVERSIONTester~TestWholeNumberToObject(val))
+  if digits() == 9 then
+      val = -999999999
+  else
+      val = -999999999999999999
+  self~assertSame(val, .CONVERSIONTester~TestWholeNumberToObject(val))
+
+-- test stringsize_t
+::method 'testStringSize01'
+  val = 0
+  self~assertSame(val, .CONVERSIONTester~TestObjectToStringSize(val))
+  val = 65535
+  self~assertSame(val, .CONVERSIONTester~TestObjectToStringSize(val))
+  val = 1
+  self~assertSame(val, .CONVERSIONTester~TestObjectToStringSize(val))
+  if digits() == 9 then
+      val = 999999999
+  else
+      val = 999999999999999999
+  self~assertSame(val, .CONVERSIONTester~TestObjectToStringSize(val))
+
+::method 'testStringSize02'
+  self~expectSyntax('88.900')
+  if digits() == 9 then
+      .CONVERSIONTester~TestObjectToStringSize(1000000000)
+  else
+      .CONVERSIONTester~TestObjectToStringSize(1000000000000000000)
+
+::method 'testStringSize03'
+  self~expectSyntax('88.900')
+  .CONVERSIONTester~TestObjectToStringSize(-1)
+
+-- test stringsize_t
+::method 'testStringSize04'
+  val = 0
+  self~assertSame(val, .CONVERSIONTester~TestStringSizeToObject(val))
+  val = 65535
+  self~assertSame(val, .CONVERSIONTester~TestStringSizeToObject(val))
+  val = 1
+  self~assertSame(val, .CONVERSIONTester~TestStringSizeToObject(val))
+  if digits() == 9 then
+      val = 999999999
+  else
+      val = 999999999999999999
+  self~assertSame(val, .CONVERSIONTester~TestStringSizeToObject(val))
+
+-- test uintptr_t
+::method 'testUintptr01'
+  defaultDigits = digits()
+  numeric digits 20
+  val = 0
+  self~assertSame(val, .CONVERSIONTester~TestObjectToUintptr(val))
+  val = 65535
+  self~assertSame(val, .CONVERSIONTester~TestObjectToUintptr(val))
+  val = 1
+  self~assertSame(val, .CONVERSIONTester~TestObjectToUintptr(val))
+  if defaultDigits == 9 then
+      val = 2**32-1
+  else
+      val = 2**64-1
+  self~assertSame(val, .CONVERSIONTester~TestObjectToUintptr(val))
+
+::method 'testUintptr02'
+  self~expectSyntax('88.900')
+  defaultDigits = digits()
+  numeric digits 20
+  if defaultDigits == 9 then
+      val = 2**32
+  else
+      val = 2**64
+  .CONVERSIONTester~TestObjectToUintptr(val)
+
+::method 'testUintptr03'
+  self~expectSyntax('88.900')
+  .CONVERSIONTester~TestObjectToUintptr(-1)
+
+-- test uintptr_t
+::method 'testUintptr04'
+  defaultDigits = digits()
+  numeric digits 20
+  val = 0
+  self~assertSame(val, .CONVERSIONTester~TestUintptrToObject(val))
+  val = 65535
+  self~assertSame(val, .CONVERSIONTester~TestUintptrToObject(val))
+  val = 1
+  self~assertSame(val, .CONVERSIONTester~TestUintptrToObject(val))
+  if defaultDigits == 9 then
+      val = 2**32-1
+  else
+      val = 2**64-1
+  self~assertSame(val, .CONVERSIONTester~TestUintptrToObject(val))
+
+-- test ssize_t
+::method 'testIntptr01'
+  defaultDigits = digits()
+  numeric digits 20
+  val = 0
+  self~assertSame(val, .CONVERSIONTester~TestObjectToIntptr(val))
+  val = 65535
+  self~assertSame(val, .CONVERSIONTester~TestObjectToIntptr(val))
+  val = 1
+  self~assertSame(val, .CONVERSIONTester~TestObjectToIntptr(val))
+  if defaultDigits == 9 then
+      val = 2**31-1
+  else
+      val = 2**63-1
+  self~assertSame(val, .CONVERSIONTester~TestObjectToIntptr(val))
+  if defaultDigits == 9 then
+      val = -2**31
+  else
+      val = -2**63
+  self~assertSame(val, .CONVERSIONTester~TestObjectToIntptr(val))
+
+::method 'testIntptr02'
+  self~expectSyntax('88.900')
+  defaultDigits = digits()
+  numeric digits 20
+  if defaultDigits == 9 then
+      val = 2**31
+  else
+      val = 2**63
+  .CONVERSIONTester~TestObjectToIntptr(val)
+
+::method 'testIntptr03'
+  self~expectSyntax('88.900')
+  defaultDigits = digits()
+  numeric digits 20
+  if defaultDigits == 9 then
+      val = -2**31 - 1
+  else
+      val = -2**63 - 1
+  .CONVERSIONTester~TestObjectToIntptr(val)
+
+-- test ssize_t
+::method 'testIntptr04'
+  defaultDigits = digits()
+  numeric digits 20
+  val = 0
+  self~assertSame(val, .CONVERSIONTester~TestIntptrToObject(val))
+  val = 65535
+  self~assertSame(val, .CONVERSIONTester~TestIntptrToObject(val))
+  val = 1
+  self~assertSame(val, .CONVERSIONTester~TestIntptrToObject(val))
+  if defaultDigits == 9 then
+      val = 2**31-1
+  else
+      val = 2**63-1
+  self~assertSame(val, .CONVERSIONTester~TestIntptrToObject(val))
+  if defaultDigits == 9 then
+      val = -2**31
+  else
+      val = -2**63
+  self~assertSame(val, .CONVERSIONTester~TestIntptrToObject(val))
+
+-- test logical_t
+::method 'testLogical01'
+  val = .true
+  self~assertSame(val, .CONVERSIONTester~TestObjectToLogical(val))
+  val = .false
+  self~assertSame(val, .CONVERSIONTester~TestObjectToLogical(val))
+  self~assertSame(.false, .CONVERSIONTester~TestObjectToLogical('0'||""))
+  self~assertSame(.false, .CONVERSIONTester~TestObjectToLogical(0))
+  self~assertSame(.true, .CONVERSIONTester~TestObjectToLogical('1'||""))
+  self~assertSame(.true, .CONVERSIONTester~TestObjectToLogical(1))
+
+::method 'testLogical02'
+  self~expectSyntax('88.900')
+  .CONVERSIONTester~TestObjectToLogical(2)
+
+::method 'testLogical03'
+  self~expectSyntax('88.900')
+  .CONVERSIONTester~TestObjectToLogical(1.0)
+
+-- test logical_t
+::method 'testLogical04'
+  val = .true
+  self~assertSame(val, .CONVERSIONTester~TestLogicalToObject(val))
+  val = .false
+  self~assertSame(val, .CONVERSIONTester~TestLogicalToObject(val))
+  self~assertSame(.false, .CONVERSIONTester~TestLogicalToObject('0'||""))
+  self~assertSame(.false, .CONVERSIONTester~TestLogicalToObject(0))
+  self~assertSame(.true, .CONVERSIONTester~TestLogicalToObject('1'||""))
+  self~assertSame(.true, .CONVERSIONTester~TestLogicalToObject(1))
+
+-- test double
+::method 'testDouble01'
+  numeric digits 23
+  val = 1.79769313E+308
+  self~assertSame(val, .CONVERSIONTester~TestObjectToDouble(val))
+  val = 2.22507386E-308
+  self~assertSame(val, .CONVERSIONTester~TestObjectToDouble(val))
+  val = 0
+  self~assertSame(val, .CONVERSIONTester~TestObjectToDouble(val))
+  val = 1
+  self~assertSame(val, .CONVERSIONTester~TestObjectToDouble(val))
+  val = -1
+  self~assertSame(val, .CONVERSIONTester~TestObjectToDouble(val))
+  val = "nan"
+  self~assertSame(val, .CONVERSIONTester~TestObjectToDouble(val))
+  val = "+infinity"
+  self~assertSame(val, .CONVERSIONTester~TestObjectToDouble(val))
+  val = "-infinity"
+  self~assertSame(val, .CONVERSIONTester~TestObjectToDouble(val))
+  val = 1.79769313E+310
+  self~assertSame("+infinity", .CONVERSIONTester~TestObjectToDouble(val))
+  val = -1.79769313E+310
+  self~assertSame("-infinity", .CONVERSIONTester~TestObjectToDouble(val))
+
+-- test double
+::method 'testDouble02'
+  numeric digits 23
+  val = 1.79769313E+308
+  self~assertSame(val, .CONVERSIONTester~TestObjectToDouble(val))
+  val = 2.22507386E-308
+  self~assertSame(val, .CONVERSIONTester~TestObjectToDouble(val))
+  val = 0
+  self~assertSame(val, .CONVERSIONTester~TestObjectToDouble(val))
+  val = 1
+  self~assertSame(val, .CONVERSIONTester~TestObjectToDouble(val))
+  val = -1
+  self~assertSame(val, .CONVERSIONTester~TestObjectToDouble(val))
+  val = "nan"
+  self~assertSame(val, .CONVERSIONTester~TestObjectToDouble(val))
+  val = "+infinity"
+  self~assertSame(val, .CONVERSIONTester~TestObjectToDouble(val))
+  val = "-infinity"
+  self~assertSame(val, .CONVERSIONTester~TestObjectToDouble(val))
+  val = 1.79769313E+310
+  self~assertSame("+infinity", .CONVERSIONTester~TestObjectToDouble(val))
+  val = -1.79769313E+310
+  self~assertSame("-infinity", .CONVERSIONTester~TestObjectToDouble(val))
+
+
