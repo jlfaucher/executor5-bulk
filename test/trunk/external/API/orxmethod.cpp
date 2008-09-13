@@ -343,6 +343,41 @@ RexxMethod1(RexxStemObject,              // Return type
     return arg1;
 }
 
+RexxMethod1(RexxClassObject,             // Return type
+           TestSuperArg,                 // Function routine name
+           SUPER, arg1)                  // Argument
+{
+    return (RexxClassObject)arg1;
+}
+
+RexxMethod1(RexxObjectPtr,               // Return type
+           TestScopeArg,                 // Function routine name
+           SCOPE, arg1)                  // Argument
+{
+    return arg1;
+}
+
+RexxMethod1(RexxObjectPtr,               // Return type
+           TestOSelfArg,                 // Function routine name
+           OSELF, arg1)                  // Argument
+{
+    return arg1;
+}
+
+RexxMethod1(RexxArrayObject,             // Return type
+           TestArglistArg,               // Function routine name
+           ARGLIST, arg1)                // Argument
+{
+    return arg1;
+}
+
+RexxMethod1(CSTRING,                     // Return type
+           TestNameArg,                  // Function routine name
+           NAME, arg1)                   // Argument
+{
+    return arg1;
+}
+
 RexxMethod1(wholenumber_t,             // Return type
             TestObjectToWholeNumber,    // Function routine name
             RexxObjectPtr, arg1)       // Argument
@@ -630,6 +665,11 @@ RexxMethodEntry orxtest_methods[] = {
     REXX_METHOD(TestDoubleToObject,          TestDoubleToObject),
     REXX_METHOD(TestObjectToValue,           TestObjectToValue),
     REXX_METHOD(TestStemArg,                 TestStemArg),
+    REXX_METHOD(TestSuperArg,                TestSuperArg),
+    REXX_METHOD(TestScopeArg,                TestScopeArg),
+    REXX_METHOD(TestNameArg,                 TestNameArg),
+    REXX_METHOD(TestArglistArg,              TestArglistArg),
+    REXX_METHOD(TestOSelfArg,                TestOSelfArg),
     REXX_LAST_METHOD()
 };
 

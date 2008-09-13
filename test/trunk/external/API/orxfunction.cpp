@@ -359,6 +359,20 @@ RexxRoutine2(RexxObjectPtr,
     return context->ValueToObject(&value);
 }
 
+RexxRoutine1(RexxArrayObject,             // Return type
+            TestArglistArg,               // Function routine name
+            ARGLIST, arg1)                // Argument
+{
+    return arg1;
+}
+
+RexxRoutine1(CSTRING,                     // Return type
+            TestNameArg,                  // Function routine name
+            NAME, arg1)                   // Argument
+{
+    return arg1;
+}
+
 RexxRoutineEntry orxtest_funcs[] = {
     REXX_TYPED_ROUTINE(TestZeroIntArgs,       TestZeroIntArgs),
     REXX_TYPED_ROUTINE(TestOneIntArg,         TestOneIntArg),
@@ -397,6 +411,8 @@ RexxRoutineEntry orxtest_funcs[] = {
     REXX_TYPED_ROUTINE(TestPointerStringArg,        TestPointerStringArg),
     REXX_TYPED_ROUTINE(TestNullPointerStringValue,  TestNullPointerStringValue),
     REXX_TYPED_ROUTINE(TestStemArg,           TestStemArg),
+    REXX_TYPED_ROUTINE(TestNameArg,           TestNameArg),
+    REXX_TYPED_ROUTINE(TestArglistArg,        TestArglistArg),
     REXX_TYPED_ROUTINE(TestObjectToValue,     TestObjectToValue),
     REXX_LAST_ROUTINE()
 };
