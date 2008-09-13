@@ -623,3 +623,67 @@ return .ooTestResult~new(5)~~addException(err)
   val = TestNullPointerValue()
   self~assertTrue(val~isNull())
 
+-- test RexxStemObject
+::method 'testStem01'
+  a.1 = 2
+  b. = TestStemArg(a.)
+  self~assertSame(2, b.1)
+  b.2 = 3
+  self~assertSame(3, a.2)    -- verify same object
+  b. = TestStemArg('a.')
+  self~assertSame(2, b.1)
+  b. = TestStemArg('A.')
+  self~assertSame(2, b.1)
+  b. = TestStemArg('a')      -- no period on name
+  self~assertSame(2, b.1)
+
+  d. = TestStemArg(c.)   -- uninitialized stem variable
+  d.1 = 2
+  self~assertSame(2, c.1)    -- verify same object
+
+  d. = TestStemArg('cc.')   -- uninitialized stem variable
+  d.1 = 2
+  self~assertSame(2, cc.1)    -- verify same object
+
+  e = .stem~new("FRED.")
+  e. = TestStemArg(e)
+  e.1 = 2
+  self~assertSame(2, e[1])    -- verify same object
+
+::method 'testStem02'
+  self~expectSyntax('40.919')
+  TestStemArg(.nil)
+
+
+::method 'testStem03'
+  a.1 = 2
+  b. = TestObjectToValue(a., .TypeConstants~StemType)
+  self~assertSame(2, b.1)
+  b.2 = 3
+  self~assertSame(3, a.2)    -- verify same object
+  b. = TestObjectToValue('a.', .TypeConstants~StemType)
+  self~assertSame(2, b.1)
+  b. = TestObjectToValue('A.', .TypeConstants~StemType)
+  self~assertSame(2, b.1)
+  b. = TestObjectToValue('a', .TypeConstants~StemType)      -- no period on name
+  self~assertSame(2, b.1)
+
+  d. = TestObjectToValue(c., .TypeConstants~StemType)   -- uninitialized stem variable
+  d.1 = 2
+  self~assertSame(2, c.1)    -- verify same object
+
+  d. = TestObjectToValue('cc.', .TypeConstants~StemType)   -- uninitialized stem variable
+  d.1 = 2
+  self~assertSame(2, cc.1)    -- verify same object
+  d. = TestObjectToValue(c., .TypeConstants~StemType) -- uninitialized stem variable
+  d.1 = 2
+  self~assertSame(2, c.1)    -- verify same object
+  e = .stem~new("FRED.")
+  e. = TestObjectToValue(e, .TypeConstants~StemType)
+  e.1 = 2
+  self~assertSame(2, e[1])    -- verify same object
+
+::method 'testStem04'
+  self~expectSyntax('88.900')
+  TestObjectToValue(.nil, .TypeConstants~StemType)
+

@@ -335,6 +335,30 @@ RexxRoutine0(POINTERSTRING,                   // Return type
     return NULL;
 }
 
+RexxRoutine1(RexxStemObject,              // Return type
+           TestStemArg,                  // Function routine name
+           RexxStemObject, arg1)         // Argument
+{
+    return arg1;
+}
+
+RexxRoutine2(RexxObjectPtr,
+            TestObjectToValue,
+            RexxObjectPtr, arg1,
+            int, type)                 // the type of value to convert
+{
+    ValueDescriptor value;
+    value.type = type;                 // this is the desired type
+
+    if (!context->ObjectToValue(arg1, &value))
+    {
+        context->RaiseException1(Rexx_Error_Invalid_argument_user_defined, context->NewStringFromAsciiz("Conversion error"));
+        return NULLOBJECT;
+    }
+
+    return context->ValueToObject(&value);
+}
+
 RexxRoutineEntry orxtest_funcs[] = {
     REXX_TYPED_ROUTINE(TestZeroIntArgs,       TestZeroIntArgs),
     REXX_TYPED_ROUTINE(TestOneIntArg,         TestOneIntArg),
@@ -372,6 +396,8 @@ RexxRoutineEntry orxtest_funcs[] = {
     REXX_TYPED_ROUTINE(TestPointerStringValue,      TestPointerStringValue),
     REXX_TYPED_ROUTINE(TestPointerStringArg,        TestPointerStringArg),
     REXX_TYPED_ROUTINE(TestNullPointerStringValue,  TestNullPointerStringValue),
+    REXX_TYPED_ROUTINE(TestStemArg,           TestStemArg),
+    REXX_TYPED_ROUTINE(TestObjectToValue,     TestObjectToValue),
     REXX_LAST_ROUTINE()
 };
 

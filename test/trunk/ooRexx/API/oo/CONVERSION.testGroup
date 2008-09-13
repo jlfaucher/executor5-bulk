@@ -985,3 +985,29 @@ return .ooTestResult~new(5)~~addException(err)
   self~expectSyntax('88.900')
   .CONVERSIONTester~TestObjectToValue(-1, .CONVERSIONTester~Uint16Type)
 
+-- RexxStemObject
+::method 'testStem01'
+  a.1 = 2
+  b. = .CONVERSIONTester~TestObjectToValue(a., .CONVERSIONTester~StemType)
+  self~assertSame(2, b.1)
+  b.2 = 3
+  self~assertSame(3, a.2)    -- verify same object
+  d. = .CONVERSIONTester~TestObjectToValue(c., .CONVERSIONTester~StemType) -- uninitialized stem variable
+  d.1 = 2
+  self~assertSame(2, c.1)    -- verify same object
+  e = .stem~new("FRED.")
+  e. = .CONVERSIONTester~TestObjectToValue(e, .CONVERSIONTester~StemType)
+  e.1 = 2
+  self~assertSame(2, e[1])    -- verify same object
+
+::method 'testStem02'
+  self~expectSyntax('88.900')
+  .CONVERSIONTester~TestObjectToValue('abc', .CONVERSIONTester~StemType)
+
+::method 'testStem03'
+  self~expectSyntax('88.900')
+  .CONVERSIONTester~TestObjectToValue('abc.', .CONVERSIONTester~StemType)
+
+::method 'testStem04'
+  self~expectSyntax('88.900')
+  .CONVERSIONTester~TestObjectToValue(.nil, .CONVERSIONTester~StemType)

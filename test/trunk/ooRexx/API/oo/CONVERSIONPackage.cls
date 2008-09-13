@@ -82,6 +82,7 @@
 ::constant IntptrType 28
 ::constant UintptrType 29
 ::constant LogicalType 30
+::constant StemType    32
 ::constant SizeType    33
 ::constant SSizeType   34
 ::constant PointerStringype   35

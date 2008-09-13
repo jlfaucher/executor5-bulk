@@ -336,6 +336,13 @@ RexxMethod0(POINTERSTRING,                   // Return type
     return NULL;
 }
 
+RexxMethod1(RexxStemObject,              // Return type
+           TestStemArg,                  // Function routine name
+           RexxStemObject, arg1)         // Argument
+{
+    return arg1;
+}
+
 RexxMethod1(wholenumber_t,             // Return type
             TestObjectToWholeNumber,    // Function routine name
             RexxObjectPtr, arg1)       // Argument
@@ -622,6 +629,7 @@ RexxMethodEntry orxtest_methods[] = {
     REXX_METHOD(TestLogicalToObject,         TestLogicalToObject),
     REXX_METHOD(TestDoubleToObject,          TestDoubleToObject),
     REXX_METHOD(TestObjectToValue,           TestObjectToValue),
+    REXX_METHOD(TestStemArg,                 TestStemArg),
     REXX_LAST_METHOD()
 };
 
