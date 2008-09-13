@@ -546,6 +546,23 @@ RexxMethod1(RexxObjectPtr,             // Return type
     return context->DoubleToObject(arg1);
 }
 
+RexxMethod2(RexxObjectPtr,
+            TestObjectToValue,
+            RexxObjectPtr, arg1,
+            int, type)                 // the type of value to convert
+{
+    ValueDescriptor value;
+    value.type = type;                 // this is the desired type
+
+    if (!context->ObjectToValue(arg1, &value))
+    {
+        context->RaiseException1(Rexx_Error_Invalid_argument_user_defined, context->NewStringFromAsciiz("Conversion error"));
+        return NULLOBJECT;
+    }
+
+    return context->ValueToObject(&value);
+}
+
 
 RexxMethodEntry orxtest_methods[] = {
     REXX_METHOD(TestZeroIntArgs,       TestZeroIntArgs),
@@ -604,6 +621,7 @@ RexxMethodEntry orxtest_methods[] = {
     REXX_METHOD(TestUintptrToObject,         TestUintptrToObject),
     REXX_METHOD(TestLogicalToObject,         TestLogicalToObject),
     REXX_METHOD(TestDoubleToObject,          TestDoubleToObject),
+    REXX_METHOD(TestObjectToValue,           TestObjectToValue),
     REXX_LAST_METHOD()
 };
 

@@ -60,4 +60,30 @@
 ::method TestUintptrToObject CLASS EXTERNAL       "LIBRARY orxmethod TestUintptrToObject"
 ::method TestLogicalToObject CLASS EXTERNAL       "LIBRARY orxmethod TestLogicalToObject"
 ::method TestDoubleToObject CLASS EXTERNAL        "LIBRARY orxmethod TestDoubleToObject"
+::method TestObjectToValue  CLASS EXTERNAL        "LIBRARY orxmethod TestObjectToValue"
+
+::constant ObjectType 11
+::constant IntType    12
+::constant WholeNumberType  13
+::constant DoubleType  14
+::constant CStringType 15
+::constant PointerType 16
+::constant StringObjectType 17
+::constant StringSizeType 18
+::constant FloatType 19
+::constant Int8Type  20
+::constant Int16Type 21
+::constant Int32Type 22
+::constant Int64Type 23
+::constant Uint8Type 24
+::constant Uint16Type 25
+::constant Uint32Type 26
+::constant Uint64Type 27
+::constant IntptrType 28
+::constant UintptrType 29
+::constant LogicalType 30
+::constant SizeType    33
+::constant SSizeType   34
+::constant PointerStringype   35
+
 

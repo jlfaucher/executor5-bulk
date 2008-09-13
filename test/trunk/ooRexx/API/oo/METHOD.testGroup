@@ -635,7 +635,7 @@ return .ooTestResult~new(5)~~addException(err)
   tester~TestLogicalArg(1.0)
 
 -- test float
-::method 'test043'
+::method 'testFloat01'
   tester = .METHODtester~new
   numeric digits 15
   val = 3.40282347E+38
@@ -659,8 +659,13 @@ return .ooTestResult~new(5)~~addException(err)
   val = -3.40282347E+40
   self~assertSame("-infinity", tester~TestFloatArg(val))
 
+::method 'testFloat02'
+  tester = .METHODtester~new
+  self~expectSyntax('88.921')
+  tester~TestFloatArg('abc')
+
 -- test double
-::method 'test044'
+::method 'testDouble01'
   tester = .METHODtester~new
   numeric digits 23
   val = 1.79769313E+308
@@ -683,6 +688,11 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame("+infinity", tester~TestDoubleArg(val))
   val = -1.79769313E+310
   self~assertSame("-infinity", tester~TestDoubleArg(val))
+
+::method 'testDoublel02'
+  tester = .METHODtester~new
+  self~expectSyntax('88.921')
+  tester~TestDoubleArg('abc')
 
 -- test CSTRING
 ::method 'test045'
