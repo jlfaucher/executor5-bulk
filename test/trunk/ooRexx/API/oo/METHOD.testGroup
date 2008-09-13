@@ -642,6 +642,10 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame(val, tester~TestFloatArg(val))
   val = 1.17549435E-38
   self~assertSame(val, tester~TestFloatArg(val))
+  val = -3.40282347E+38
+  self~assertSame(val, tester~TestFloatArg(val))
+  val = -1.17549435E-38
+  self~assertSame(val, tester~TestFloatArg(val))
   val = 0
   self~assertSame(val, tester~TestFloatArg(val))
   val = 1
@@ -658,6 +662,10 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame("+infinity", tester~TestFloatArg(val))
   val = -3.40282347E+40
   self~assertSame("-infinity", tester~TestFloatArg(val))
+  val = 3.40282347E-50
+  self~assertSame(0, tester~TestFloatArg(val))
+  val = -3.40282347E-50
+  self~assertSame(0, tester~TestFloatArg(val))
 
 ::method 'testFloat02'
   tester = .METHODtester~new
@@ -671,6 +679,10 @@ return .ooTestResult~new(5)~~addException(err)
   val = 1.79769313E+308
   self~assertSame(val, tester~TestDoubleArg(val))
   val = 2.22507386E-308
+  self~assertSame(val, tester~TestDoubleArg(val))
+  val = -1.79769313E+308
+  self~assertSame(val, tester~TestDoubleArg(val))
+  val = -2.22507386E-308
   self~assertSame(val, tester~TestDoubleArg(val))
   val = 0
   self~assertSame(val, tester~TestDoubleArg(val))
@@ -688,6 +700,10 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame("+infinity", tester~TestDoubleArg(val))
   val = -1.79769313E+310
   self~assertSame("-infinity", tester~TestDoubleArg(val))
+  val = 1.79769313E-350
+  self~assertSame(0, tester~TestDoubleArg(val))
+  val = -1.79769313E-350
+  self~assertSame(0, tester~TestDoubleArg(val))
 
 ::method 'testDoublel02'
   tester = .METHODtester~new
