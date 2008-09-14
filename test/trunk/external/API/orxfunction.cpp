@@ -373,6 +373,97 @@ RexxRoutine1(CSTRING,                     // Return type
     return arg1;
 }
 
+RexxRoutine0(RexxArrayObject, TestGetArguments)
+{
+    return context->GetArguments();
+}
+
+RexxRoutine1(RexxObjectPtr,
+            TestGetArgument,
+            size_t, index)
+{
+    return context->GetArgument(index);
+}
+
+RexxRoutine0(CSTRING,
+            TestGetRoutineName)
+{
+    return context->GetRoutineName();
+}
+
+RexxRoutine0(RexxObjectPtr,
+            TestGetRoutine)
+{
+    return (RexxObjectPtr)context->GetRoutine();
+}
+
+RexxRoutine2(int,
+            TestSetContextVariable,
+            CSTRING, name,
+            RexxObjectPtr, value)
+{
+    context->SetContextVariable(name, value);
+    return 0;
+}
+
+RexxRoutine1(RexxObjectPtr,
+            TestGetContextVariable,
+            CSTRING, name)
+{
+    RexxObjectPtr value = context->GetContextVariable(name);
+    if (value == NULLOBJECT) {
+        context->RaiseException1(Rexx_Error_Invalid_argument_user_defined, context->NewStringFromAsciiz("Conversion error"));
+        return NULLOBJECT;
+    }
+    return value;
+}
+
+RexxRoutine1(int,
+            TestDropContextVariable,
+            CSTRING, name)
+{
+    context->DropContextVariable(name);
+    return 0;
+}
+
+RexxRoutine0(RexxObjectPtr,
+            TestGetAllContextVariables)
+{
+    return (RexxObjectPtr)context->GetAllContextVariables();
+}
+
+RexxRoutine0(stringsize_t,
+            TestGetContextDigits)
+{
+    return context->GetContextDigits();
+}
+
+RexxRoutine0(stringsize_t,
+            TestGetContextFuzz)
+{
+    return context->GetContextFuzz();
+}
+
+RexxRoutine0(logical_t,
+            TestGetContextForm)
+{
+    return context->GetContextForm();
+}
+
+RexxRoutine1(RexxStemObject,
+            TestResolveStemVariable,
+            RexxObjectPtr, arg1)
+{
+    return context->ResolveStemVariable(arg1);
+}
+
+RexxRoutine1(RexxClassObject,
+            TestFindContextClass,
+            CSTRING, name)
+{
+    return context->FindContextClass(name);
+}
+
 RexxRoutineEntry orxtest_funcs[] = {
     REXX_TYPED_ROUTINE(TestZeroIntArgs,       TestZeroIntArgs),
     REXX_TYPED_ROUTINE(TestOneIntArg,         TestOneIntArg),
@@ -414,6 +505,19 @@ RexxRoutineEntry orxtest_funcs[] = {
     REXX_TYPED_ROUTINE(TestNameArg,           TestNameArg),
     REXX_TYPED_ROUTINE(TestArglistArg,        TestArglistArg),
     REXX_TYPED_ROUTINE(TestObjectToValue,     TestObjectToValue),
+    REXX_TYPED_ROUTINE(TestGetArguments,      TestGetArguments),
+    REXX_TYPED_ROUTINE(TestGetArgument,       TestGetArgument),
+    REXX_TYPED_ROUTINE(TestGetRoutineName,    TestGetRoutineName),
+    REXX_TYPED_ROUTINE(TestGetRoutine,        TestGetRoutine),
+    REXX_TYPED_ROUTINE(TestSetContextVariable, TestSetContextVariable),
+    REXX_TYPED_ROUTINE(TestGetContextVariable, TestGetContextVariable),
+    REXX_TYPED_ROUTINE(TestDropContextVariable, TestDropContextVariable),
+    REXX_TYPED_ROUTINE(TestGetAllContextVariables, TestGetAllContextVariables),
+    REXX_TYPED_ROUTINE(TestGetContextFuzz,    TestGetContextFuzz),
+    REXX_TYPED_ROUTINE(TestGetContextForm,    TestGetContextForm),
+    REXX_TYPED_ROUTINE(TestGetContextDigits,  TestGetContextDigits),
+    REXX_TYPED_ROUTINE(TestResolveStemVariable, TestResolveStemVariable),
+    REXX_TYPED_ROUTINE(TestFindContextClass,  TestFindContextClass),
     REXX_LAST_ROUTINE()
 };
 
