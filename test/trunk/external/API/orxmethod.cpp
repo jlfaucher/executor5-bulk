@@ -605,6 +605,96 @@ RexxMethod2(RexxObjectPtr,
     return context->ValueToObject(&value);
 }
 
+RexxMethod0(RexxArrayObject, TestGetArguments)
+{
+    return context->GetArguments();
+}
+
+RexxMethod1(RexxObjectPtr,
+            TestGetArgument,
+            size_t, index)
+{
+    return context->GetArgument(index);
+}
+
+RexxMethod0(CSTRING,
+            TestGetMessageName)
+{
+    return context->GetMessageName();
+}
+
+RexxMethod0(RexxObjectPtr,
+            TestGetMethod)
+{
+    return (RexxObjectPtr)context->GetMethod();
+}
+
+RexxMethod0(RexxObjectPtr,
+            TestGetSelf)
+{
+    return (RexxObjectPtr)context->GetSelf();
+}
+
+RexxMethod0(RexxClassObject,
+            TestGetSuper)
+{
+    return context->GetSuper();
+}
+
+RexxMethod0(RexxObjectPtr,
+            TestGetScope)
+{
+    return context->GetScope();
+}
+
+RexxMethod2(int,
+            TestSetObjectVariable,
+            CSTRING, name,
+            RexxObjectPtr, value)
+{
+    context->SetObjectVariable(name, value);
+    return 0;
+}
+
+RexxMethod1(RexxObjectPtr,
+            TestGetObjectVariable,
+            CSTRING, name)
+{
+    RexxObjectPtr value = context->GetObjectVariable(name);
+    if (value == NULLOBJECT) {
+        context->RaiseException1(Rexx_Error_Invalid_argument_user_defined, context->NewStringFromAsciiz("Conversion error"));
+        return NULLOBJECT;
+    }
+    return value;
+}
+
+RexxMethod1(int,
+            TestDropObjectVariable,
+            CSTRING, name)
+{
+    context->DropObjectVariable(name);
+    return 0;
+}
+
+
+RexxMethod4(RexxObjectPtr,
+            TestForwardMessage,
+            RexxObjectPtr, to,
+            CSTRING, name,
+            RexxClassObject, super,
+            RexxArrayObject, args)
+{
+    return context->ForwardMessage(to, name, super, args);
+}
+
+
+RexxMethod1(RexxClassObject,
+            TestFindContextClass,
+            CSTRING, name)
+{
+    return context->FindContextClass(name);
+}
+
 
 RexxMethodEntry orxtest_methods[] = {
     REXX_METHOD(TestZeroIntArgs,       TestZeroIntArgs),
@@ -670,6 +760,19 @@ RexxMethodEntry orxtest_methods[] = {
     REXX_METHOD(TestNameArg,                 TestNameArg),
     REXX_METHOD(TestArglistArg,              TestArglistArg),
     REXX_METHOD(TestOSelfArg,                TestOSelfArg),
+    REXX_METHOD(TestGetArguments,            TestGetArguments),
+    REXX_METHOD(TestGetArgument,             TestGetArgument),
+    REXX_METHOD(TestGetMessageName,          TestGetMessageName),
+    REXX_METHOD(TestGetMessageName,          TestGetMessageName),
+    REXX_METHOD(TestGetMethod,               TestGetMethod),
+    REXX_METHOD(TestGetSelf,                 TestGetSelf),
+    REXX_METHOD(TestGetSuper,                TestGetSuper),
+    REXX_METHOD(TestGetScope,                TestGetScope),
+    REXX_METHOD(TestSetObjectVariable,       TestSetObjectVariable),
+    REXX_METHOD(TestGetObjectVariable,       TestGetObjectVariable),
+    REXX_METHOD(TestDropObjectVariable,      TestDropObjectVariable),
+    REXX_METHOD(TestForwardMessage,          TestForwardMessage),
+    REXX_METHOD(TestFindContextClass,        TestFindContextClass),
     REXX_LAST_METHOD()
 };
 
