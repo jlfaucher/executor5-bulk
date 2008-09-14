@@ -53,18 +53,31 @@ arguments = arg(1)
 
    .local~bRunTestsLocally = .false
 
+   testResult = .ooRexxUnit.default.TestResult.Class~new
+   testResult~noAutoTiming
+
+   -- Set verbosity.
+   testResult~setVerbosity(cl~getVerbosity)
+
+   if cl~buildFirst then do
+     -- Create a phase report here and send it along.
+     ret = buildExternalBins(testResult, file, cl~forceBuild)
+   end
+
+   if cl~noTests then do
+     overallPhase~done
+     testResult~addEvent(overallPhase)
+
+     testResult~print("ooTest Framework - Automated Test of the ooRexx Interpreter")
+     return 0
+   end
+
    searchPhase  = .PhaseReport~new(file, .PhaseReport~FILE_SEARCH_PHASE)
    msg = "Searching for test containers"
    if cl~noTicks then
      say msg
    else
      searchPhase~tickTock(msg)
-
-   testResult = .ooRexxUnit.default.TestResult.Class~new
-   testResult~noAutoTiming
-
-   -- Set verbosity.
-   testResult~setVerbosity(cl~getVerbosity)
 
    finder = .ooTestFinder~new(cl~root, cl~ext, cl~testTypes)
    if \ cl~simpleTestSelection then do
@@ -110,6 +123,22 @@ return 0
 
 ::requires "ooTest.frm"
 
+::routine buildExternalBins
+  use arg testResult, file, force
+
+  signal on syntax name loadErr
+  .context~package~loadPackage('building.frm')
+
+return .ooTestConstants~SUCCESS_RC
+
+loadErr:
+  err = .ExceptionData~new(timeStamp(), file, "Trap")
+  err~setLine(sigl)
+  err~conditionObject = condition('O')
+  err~msg = 'Error loading the required framework for compiling ("building.frm")'
+  testResult~addException(err)
+return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
+
 ::class 'CommandLine' public inherit ooTestConstants NoiseAdjustable
 
 ::attribute version get
@@ -135,6 +164,12 @@ return 0
 ::attribute noTicks set private
 ::attribute noTestCaseTicks get             -- u
 ::attribute noTestCaseTicks set private
+::attribute buildFirst get                  -- b
+::attribute buildFirst set private
+::attribute forceBuild get                  -- B
+::attribute forceBuild set private
+::attribute noTests get                     -- n
+::attribute noTests set private
 
 -- Don't need to look at patterns, multi-dirs, single file, etc..
 ::attribute simpleTestSelection get
@@ -234,6 +269,13 @@ return 0
   if optTable['showTestCases'] \== .nil then self~verboseTestCase = .true
   if optTable['suppressTicks'] \== .nil then self~noTestCaseTicks = .true
   if optTable['suppressAllTicks'] \== .nil then self~noTicks = .true
+  if optTable['noTests'] \== .nil then self~noTests = .true
+  if optTable['buildFirst'] \== .nil then self~buildFirst = .true
+  if optTable['forceBuild'] \== .nil then do
+    self~forceBuild = .true
+    self~buildFirst = .true
+    optTable['buildFirst'] = .true
+  end
 
 
 ::method parse private
@@ -322,6 +364,15 @@ return 0
   j = i
 
   select
+    when word == '-b' then do
+      optTable['buildFirst'] = .true
+    end
+
+    when word == '-B' then do
+      optTable['buildFirst'] = .true
+      optTable['forceBuild'] = .true
+    end
+
     when word == '-f' then do
       if self~lastToken(i, "The -f option must be followed by a file name segment") then return -1
       if \ self~isSingleValueToken(i, "The -F option must be followed by a single file name segment") then return -1
@@ -334,6 +385,10 @@ return 0
 
     when word == '-F' then do
       return self~notImplemented("-F")
+    end
+
+    when word == '-n' then do
+      optTable['noTests'] = .true
     end
 
     when word == '-p' then do
@@ -524,6 +579,10 @@ return 0
   self~simpleTestSelection = .true
   self~testFile = .nil
 
+  self~buildFirst = .false
+  self~forceBuild = .false
+  self~noTests    = .false
+
   self~optTable = .table~new
 
 ::method hasHelpArg private
@@ -558,9 +617,12 @@ return 0
   say
   say 'Valid options:'
   say ' Test selection:'
+  say '  -b  --build-first            Build external binaries before running tests'
+  say '  -B  --force-build            Force building (implies -b)'
   say '  -f  --file=NAME              Excute the single NAME test group'
   say '  -F  --files=N1 N2 ...        Execute the N1 N2 ... test groups'
   say '  -I, --test-types=T1 T2 ..    Include test types T1 T2 ...'
+  say '  -n  --no-tests               No tests to execute (deliberately)'
   say '  -p  --files-with-pattern=PA  Execute test groups matching PA'
   say '  -R, --root=DIR               DIR is root of search tree'
   say '  -X  --exclude-types=X1 X2 .. Exclude test types X1 X2 ...'

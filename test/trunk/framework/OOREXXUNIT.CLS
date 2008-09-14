@@ -493,6 +493,37 @@ return .false
 ::routine timeStamp public
   return pp(date("S") time("L"))
 
+/** isConditionObj()
+ * Tests if an object is likely to be a condition object returned from the
+ * condition('O') BIF.  This is not a foolproof test.
+ */
+::routine isConditionObj public
+  use strict arg cObj
+  if cObj~isA(.directory), cObj~hasEntry("CONDITION"), cObj~hasEntry("INSTRUCTION") then return .true
+  return .false
+
+/** conditionObjLineNumber()
+ * Given an object, will return the line number of a syntax exception, if the
+ * object is a condition object for a syntax exception.  Othewise returns -1.
+ */
+::routine conditionObjLineNumber public
+  use strict arg obj
+
+  lineNumber = -1
+
+  if isConditionObj(obj) then do
+    if obj~condition == "SYNTAX" then do
+      lineNumber = obj~position
+    end
+    else if obj~traceBack~isA(.list) then do
+      parse value obj~traceBack~lastItem with number "*-*" .
+      lineNumber = number~strip
+      if \ isPositive(lineNumber) then lineNumber = -1
+    end
+  end
+
+  return lineNumber
+
 
 /* class: TestUtil - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
 
@@ -515,18 +546,9 @@ return .false
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::class "NoiseAdjustable" public mixinclass Object
 
-  -- Want to use the new ::constant directive here.  <grin>
-  /*
-  ::constant MAX_VERBOSTIY 10
-  ::constant MIN_VERBOSITY  0
-  ::constant DEFAULT_VERBOSITY  2
-  */
-  ::method MAX_VERBOSITY     class; return 10
-  ::method MIN_VERBOSITY     class; return  0
-  ::method DEFAULT_VERBOSITY class; return  2
-  ::method MAX_VERBOSITY;           return 10
-  ::method MIN_VERBOSITY;           return  0
-  ::method DEFAULT_VERBOSITY;       return  2
+  ::constant MAX_VERBOSITY      10
+  ::constant MIN_VERBOSITY       0
+  ::constant DEFAULT_VERBOSITY   2
 
   ::attribute verbose private
 
@@ -959,7 +981,7 @@ return str
 ::attribute conditionObject set
   expose conditionObject
   use strict arg cObj
-  if \ self~isConditionObj(cObj) then
+  if \ isConditionObj(cObj) then
     raise syntax 88.900 array ("conditionObject must be set to the object returned from CONDITION('O')")
   conditionObject = cObj
 
@@ -985,25 +1007,8 @@ return str
   expose lineNumber conditionObject
 
   if lineNumber \== .nil then return lineNumber
+  else return conditionObjLineNumber(conditionObject)
 
-  if conditionObject == .nil then do
-    lineNumber = -1
-  end
-  else if \ conditionObject~traceBack~isA(.list) then do
-    lineNumber = -1
-  end
-  else do
-    parse value conditionObject~traceBack~lastItem with number "*-*" .
-    lineNumber = number~strip
-    if \ isPositive(lineNumber) then lineNumber = -1
-  end
-
-  return lineNumber
-
-::method isConditionObj private
-  use strict arg cObj
-  if cObj~isA(.directory), cObj~hasEntry("CONDITION"), cObj~hasEntry("INSTRUCTION") then return .true
-  return .false
 
 /* class: AssertFailure- - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
 

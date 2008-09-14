@@ -1,4 +1,8 @@
 #!/usr/bin/rexx
+/*
+  SVN Revision: $Rev: 3047 $
+  Change Date:  $Date: 2008-08-22 19:56:58 -0700 (Fri, 22 Aug 2008) $
+*/
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 2007-2008 Rexx Language Association. All rights reserved.    */
@@ -36,28 +40,19 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-/*
-   name:             ooTest.frm
-   authors:          Mark Miesfeld
-   date:             2007-12-05
-   version:          1.0.0
-
-   purpose:          An extension to the ooRexxUnit framework providing function
-                     and features specific to testing the ooRexx interpreter and
-                     its distribution package.
-
-                     Although others may find this framework useful, its primary
-                     design goal is to fit the needs of the ooRexx development
-                     team.  Classes in this framework are not guaranteed to be
-                     backwards compatible with previous versions of this
-                     framework as the ooRexx committers may decide to break
-                     compatibility to further the goals of the project.
-
-   category:         Framework
-*/
+/** ooTest.frm
+ * An extension to the ooRexxUnit framework providing function and features
+ * specific to testing the ooRexx interpreter and its distribution package.
+ *
+ * Although others may find this framework useful, its primary design goal is to
+ * fit the needs of the ooRexx development team.  Classes in this framework are
+ * not guaranteed to be backwards compatible with previous versions of this
+ * framework as the ooRexx committers may decide to break compatibility to
+ * further the goals of the project.
+ */
 
 if \ .local~hasEntry('OOTEST_FRAMEWORK_VERSION') then do
-  .local~ooTest_Framework_version = 1.0.0_3.2.0
+  .local~ooTest_Framework_version = 1.0.0_4.0.0
 
   -- Replace the default test result class in the environment with the ooRexx
   -- project's default class.
@@ -218,12 +213,14 @@ return 0
   ::method TEST_TYPES_DEFAULT  class; return .nil
   ::method TEST_TYPES_DEFAULT;        return .nil
 
-  ::constant TEST_SUCCESS_RC    0
-  ::constant TEST_HELP_RC       1
-  ::constant TEST_FAILURES_RC   2
-  ::constant TEST_ERRORS_RC     3
-  ::constant TEST_NO_TESTS_RC   4
-  ::constant TEST_BADARGS_RC    5
+  ::constant TEST_SUCCESS_RC                    0
+  ::constant SUCCESS_RC                         0
+  ::constant TEST_HELP_RC                       1
+  ::constant TEST_FAILURES_RC                   2
+  ::constant TEST_ERRORS_RC                     3
+  ::constant TEST_NO_TESTS_RC                   4
+  ::constant TEST_BADARGS_RC                    5
+  ::constant FAILED_PACKAGE_LOAD_RC             6
 
   -- SL (back SLash or forward SLash) abbreviation for the directory separator.
   ::method SL  class; return .ooRexxUnit.directory.separator
@@ -1773,6 +1770,7 @@ return suite
 
     callError:
       err = .ExceptionData~new(timeStamp(), file, "Trap")
+      err~setLine(sigl)
       err~conditionObject = condition('O')
       err~msg = "Initial call of test container failed"
 
@@ -1833,33 +1831,54 @@ return suite
 
   ::method getMessage
 
-    if self~type == "Trap", self~conditionObject \== .nil then
-      msg = self~conditionObject~message
-    else if self~msg \== "" then
-      msg = self~msg
-    else
-      msg = "n/a"
+    if self~msg \== "" then return self~msg
+    else return "(none)"
 
-    return msg
-
-  ::method print      -- DFX TODO this is a rough outline, it maybe could be improved
+  /** print()
+   * Prints to the console the information this object contains.
+   *
+   * @param  title    A name / title for the data print out
+   * @parar  compact  If true compact the file path name(s).
+   */
+  ::method print
     use strict arg title = "Framework exception", compact = .true
 
     say "["title"]" self~when
+    say "  Type:" self~type "Severity:" self~severity
 
     if compact then say "  File:" pathCompact(self~where, 70)
     else say "  File:" self~where
 
     if self~line <> -1 then say "  Line:" self~line
-    say "  Type:" self~type "Severity:" self~severity
-    say " " self~getMessage
-    if self~conditionObject <> .nil then do
-      if self~conditionObject~traceBack~isA(.list) then do line over self~conditionObject~traceBack
-        say line
-      end
-    end
+    if self~msg \== "" then say " " self~getMessage
+
+    if self~conditionObject <> .nil then self~printConditionInfo(compact)
     say
 
+  ::method printConditionInfo private
+    use strict arg compact
+
+    obj = self~conditionObject
+
+    sameFiles = (self~where~caselessCompare(obj~program) == 0 & self~line == obj~position)
+
+    say "  Condition:" obj~condition
+
+    if obj~condition == "SYNTAX" then do
+      say "   " obj~message
+      if \ sameFiles then do
+        if compact then say "    File:" pathCompact(obj~program, 70)
+        else say "    File:" obj~program
+        say "    Line:" obj~position
+      end
+    end
+    else do
+      say "   " obj~description
+    end
+
+    if obj~traceBack~isA(.list) then do line over obj~traceBack
+      say " " line
+    end
 
 -- End of class: ExceptionData
 
