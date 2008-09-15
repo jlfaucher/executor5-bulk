@@ -925,3 +925,12 @@ return .ooTestResult~new(5)~~addException(err)
 ::method 'testResolveStem02'
   self~expectSyntax('88.900')
   x = TestResolveStemVariable(.nil)
+
+::method TestFindContextClass01
+  self ~assertSame(.Array, TestFindContextClass("ARRAY"))
+  self ~assertSame(.Array, TestFindContextClass("array"))
+  self ~assertSame(.TypeConstants, TestFindContextClass("typeconstants"))
+
+::method TestFindContextClass02
+  self~expectSyntax('88.900')
+  x = TestFindContextClass("Yada")

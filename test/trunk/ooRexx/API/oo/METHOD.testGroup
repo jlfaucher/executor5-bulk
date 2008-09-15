@@ -923,5 +923,14 @@ return .ooTestResult~new(5)~~addException(err)
   tester = .METHODTester~new
   self~assertSame(tester~TestGetMethod, .METHODTester~method('TESTGETMETHOD'))
 
+::method TestFindContextClass01
+  tester = .METHODTester~new
+  self ~assertSame(.Array, tester~TestFindContextClass("ARRAY"))
+  self ~assertSame(.Array, tester~TestFindContextClass("array"))
+  self ~assertSame(.METHODTester, tester~TestFindContextClass("methodtester"))
 
+::method TestFindContextClass02
+  self~expectSyntax('88.900')
+  tester = .METHODTester~new
+  x = tester~TestFindContextClass("Yada")
 

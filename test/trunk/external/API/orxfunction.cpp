@@ -475,7 +475,12 @@ RexxRoutine1(RexxClassObject,
             TestFindContextClass,
             CSTRING, name)
 {
-    return context->FindContextClass(name);
+    RexxClassObject value = context->FindContextClass(name);
+    if (value == NULLOBJECT) {
+        context->RaiseException1(Rexx_Error_Invalid_argument_user_defined, context->NewStringFromAsciiz("Conversion error"));
+        return NULLOBJECT;
+    }
+    return value;
 }
 
 RexxRoutineEntry orxtest_funcs[] = {
