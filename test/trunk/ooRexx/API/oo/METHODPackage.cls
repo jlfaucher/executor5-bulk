@@ -94,3 +94,83 @@
 ::method TestSetObjectVariable EXTERNAL "LIBRARY orxmethod TestSetObjectVariable"
 ::method TestDropObjectVariable EXTERNAL "LIBRARY orxmethod TestDropObjectVariable"
 
+::class VariableTester PUBLIC
+::method init
+  expose var1 stem1. stem2.1
+  var1 = "Hello"
+  stem1.1 = "World"
+  stem2.1 = "Again"
+
+::method TestGet01
+  use arg testgroup
+  testGroup~assertSame("Hello", self~TestGetObjectVariable('VAR1'))
+  testGroup~assertSame("Hello", self~TestGetObjectVariable('var1'))
+
+  a = self~TestGetObjectVariable('stem1.')
+  testGroup~assertTrue(a~isA(.Stem))
+  testGroup~assertSame("World", a[1])
+
+  a = self~TestGetObjectVariable('STEM1.')
+  testGroup~assertTrue(a~isA(.Stem))
+  testGroup~assertSame("World", a[1])
+
+  a = self~TestGetObjectVariable('STEM2.')
+  testGroup~assertTrue(a~isA(.Stem))
+  testGroup~assertSame("Again", a[1])
+
+::method TestGet02
+  self~TestGetObjectVariable("FOOBAR");
+
+::method TestGet03
+  self~TestGetObjectVariable("STEM1.1");
+
+::method TestSet01
+  expose setVar1 setStem.
+  use arg testgroup
+
+  drop setVar1
+  drop setStem.
+
+
+  self~TestSetObjectVariable('setVar1', "abc")
+  testGroup~assertSame("abc", setVar1)
+
+  self~TestSetObjectVariable('setVar1', "def")
+  testGroup~assertSame("def", setVar1)
+
+  self~TestSetObjectVariable('setStem.', .stem~new("FOOBAR."))
+  testGroup~assertSame("FOOBAR.", setStem.[])
+  testGroup~assertSame("FOOBAR.1", setStem.1)
+
+  self~TestSetObjectVariable('setStem.', "Fred")
+  testGroup~assertSame("Fred", setStem.[])
+  testGroup~assertSame("Fred", setStem.1)
+
+  setStem.1 = "Mike"
+  self~TestSetObjectVariable("STEM1.1", "George");
+
+  testGroup~assertSame("Mike", setStem.1)
+
+::method TestDrop01
+  expose setVar1 setStem.
+  use arg testgroup
+
+  setVar1 = "Mike"
+  self~TestDropObjectVariable("setVar1")
+  testGroup~assertFalse(var("SETVAR1"), "Simple var 1")
+
+  setVar1 = "Mike"
+  self~TestDropObjectVariable("SETVAR1")
+  testGroup~assertFalse(var("SETVAR1"), "Simple var 2")
+
+  setStem.1 = "Mike"
+  self~TestDropObjectVariable("setStem.")
+  testGroup~assertSame("SETSTEM.1", setStem.1, "Stem var 1")
+  setStem.1 = "Mike"
+  self~TestDropObjectVariable("SETSTEM.")
+  testGroup~assertSame("SETSTEM.1", setStem.1, "Stem var 1")
+
+::method TestGetObjectVariable EXTERNAL "LIBRARY orxmethod TestGetObjectVariable"
+::method TestSetObjectVariable EXTERNAL "LIBRARY orxmethod TestSetObjectVariable"
+::method TestDropObjectVariable EXTERNAL "LIBRARY orxmethod TestDropObjectVariable"
+

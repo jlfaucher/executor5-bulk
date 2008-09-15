@@ -896,3 +896,27 @@ return .ooTestResult~new(5)~~addException(err)
   self~expectSyntax('88.900')
   tester = .METHODtester~new
   arg = tester~TestGetArgument(100,,'abc')
+
+::method 'testGetObjectVariable01'
+  tester = .VariableTester~new
+  tester~TestGet01(self)
+
+::method 'testGetObjectVariable02'
+  self~expectSyntax('88.900')
+  tester = .VariableTester~new
+  tester~TestGet02
+
+::method 'testGetObjectVariable03'
+  self~expectSyntax('88.900')
+  tester = .VariableTester~new
+  tester~TestGet03
+
+::method 'testSetObjectVariable01'
+  tester = .VariableTester~new
+  tester~TestSet01(self)
+
+::method 'testDropObjectVariable01'
+  tester = .VariableTester~new
+  tester~TestDrop01(self)
+
+
