@@ -89,10 +89,12 @@
 ::method TestGetMessageName2 EXTERNAL "LIBRARY orxmethod TestGetMessageName"    -- extra definition for name testing
 ::method TestGetArguments EXTERNAL "LIBRARY orxmethod TestGetArguments"
 ::method TestGetArgument EXTERNAL "LIBRARY orxmethod TestGetArgument"
+::method TestGetMethod EXTERNAL "LIBRARY orxmethod TestGetMethod"
 ::method TestForwardMessage EXTERNAL "LIBRARY orxmethod TestForwardMessage"
 ::method TestGetObjectVariable EXTERNAL "LIBRARY orxmethod TestGetObjectVariable"
 ::method TestSetObjectVariable EXTERNAL "LIBRARY orxmethod TestSetObjectVariable"
 ::method TestDropObjectVariable EXTERNAL "LIBRARY orxmethod TestDropObjectVariable"
+::method TestFindContextClass EXTERNAL "LIBRARY orxmethod TestFindContextClass"
 
 ::class VariableTester PUBLIC
 ::method init
@@ -146,6 +148,8 @@
   testGroup~assertSame("Fred", setStem.[])
   testGroup~assertSame("Fred", setStem.1)
 
+  -- The following does not set...for object variables, only
+  -- simple vars and stems are supported
   setStem.1 = "Mike"
   self~TestSetObjectVariable("STEM1.1", "George");
 

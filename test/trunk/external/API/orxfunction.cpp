@@ -463,7 +463,12 @@ RexxRoutine1(RexxStemObject,
             TestResolveStemVariable,
             RexxObjectPtr, arg1)
 {
-    return context->ResolveStemVariable(arg1);
+    RexxStemObject value = context->ResolveStemVariable(arg1);
+    if (value == NULLOBJECT) {
+        context->RaiseException1(Rexx_Error_Invalid_argument_user_defined, context->NewStringFromAsciiz("Conversion error"));
+        return NULLOBJECT;
+    }
+    return value;
 }
 
 RexxRoutine1(RexxClassObject,

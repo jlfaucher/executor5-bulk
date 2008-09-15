@@ -82,6 +82,17 @@
 ::routine TestGetRoutineName2 PUBLIC EXTERNAL "LIBRARY orxfunction TestGetRoutineName"    -- extra definition for name testing
 ::routine TestGetArguments PUBLIC EXTERNAL "LIBRARY orxfunction TestGetArguments"
 ::routine TestGetArgument PUBLIC EXTERNAL "LIBRARY orxfunction TestGetArgument"
+::routine TestGetRoutine PUBLIC EXTERNAL "LIBRARY orxfunction TestGetRoutine"
+::routine TestGetRoutine2 PUBLIC EXTERNAL "LIBRARY orxfunction TestGetRoutine"      -- extra definition for routine testing
+::routine TestGetContextVariable PUBLIC EXTERNAL "LIBRARY orxfunction TestGetContextVariable"
+::routine TestSetContextVariable PUBLIC EXTERNAL "LIBRARY orxfunction TestSetContextVariable"
+::routine TestDropContextVariable PUBLIC EXTERNAL "LIBRARY orxfunction TestDropContextVariable"
+::routine TestGetAllContextVariables PUBLIC EXTERNAL "LIBRARY orxfunction TestGetAllContextVariables"
+::routine TestGetContextDigits PUBLIC EXTERNAL "LIBRARY orxfunction TestGetContextDigits"
+::routine TestGetContextFuzz PUBLIC EXTERNAL "LIBRARY orxfunction TestGetContextFuzz"
+::routine TestGetContextForm PUBLIC EXTERNAL "LIBRARY orxfunction TestGetContextForm"
+::routine TestResolveStemVariable PUBLIC EXTERNAL "LIBRARY orxfunction TestResolveStemVariable"
+::routine TestFindContextClass PUBLIC EXTERNAL "LIBRARY orxfunction TestFindContextClass"
 
 ::class TypeConstants PUBLIC
 ::constant ObjectType 11

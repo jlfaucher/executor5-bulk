@@ -919,4 +919,9 @@ return .ooTestResult~new(5)~~addException(err)
   tester = .VariableTester~new
   tester~TestDrop01(self)
 
+::method 'testGetMethod01'
+  tester = .METHODTester~new
+  self~assertSame(tester~TestGetMethod, .METHODTester~method('TESTGETMETHOD'))
+
+
 
