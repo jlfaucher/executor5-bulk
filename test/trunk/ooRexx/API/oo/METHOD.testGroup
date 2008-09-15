@@ -764,4 +764,135 @@ return .ooTestResult~new(5)~~addException(err)
   self~expectSyntax('93.969')
   tester~TestStemArg(.nil)
 
+::method 'testSuper01'
+  tester = .METHODtester~new
+  self~assertSame(.Object, tester~testSuperArg);
 
+::method 'testSuper02'
+  tester = .METHODtester~new
+  self~assertSame(.Object, tester~testGetSuper);
+
+::method 'testScope01'
+  tester = .METHODtester~new
+  self~assertSame(.MethodTester, tester~testScopeArg);
+
+::method 'testScope02'
+  tester = .METHODtester~new
+  self~assertSame(.MethodTester, tester~testGetScope);
+
+::method 'testOSelf01'
+  tester = .METHODtester~new
+  self~assertSame(tester, tester~testOSelfArg);
+
+::method 'testOSelf02'
+  tester = .METHODtester~new
+  self~assertSame(tester, tester~testGetSelf);
+
+::method 'testName01'
+  tester = .METHODtester~new
+  self~assertSame('TESTNAMEARG', tester~testNameArg);
+  self~assertSame('TESTNAMEARG2', tester~testNameArg2);   -- same native method, different name
+
+::method 'testName02'
+  tester = .METHODtester~new
+  self~assertSame('TESTGETMESSAGENAME', tester~testGetMessageName);
+  self~assertSame('TESTGETMESSAGENAME2', tester~testGetMessageName2);   -- same native method, different name
+
+::method 'testArglist01'
+  tester = .METHODtester~new
+  args = tester~TestArglistArg
+  self~assertSame(0, args~items)
+  self~assertSame(0, args~size)
+  args = tester~TestArglistArg(1, 2)
+  self~assertSame(2, args~items)
+  self~assertSame(2, args~size)
+  self~assertSame(1, args[1])
+  self~assertSame(2, args[2])
+  args = tester~TestArglistArg(1,,2)
+  self~assertSame(2, args~items)
+  self~assertSame(3, args~size)
+  self~assertSame(1, args[1])
+  self~assertSame(.nil, args[2])
+  self~assertSame(2, args[3])
+
+  args = tester~TestArglistArg(,2)
+  self~assertSame(1, args~items)
+  self~assertSame(2, args~size)
+  self~assertSame(.nil, args[1])
+  self~assertSame(2, args[2])
+
+  args = tester~TestArglistArg(,)
+  self~assertSame(0, args~items)
+  self~assertSame(0, args~size)
+  self~assertSame(.nil, args[1])
+  self~assertSame(.nil, args[2])
+
+  args = tester~TestArglistArg(1,)
+  self~assertSame(1, args~items)
+  self~assertSame(1, args~size)
+  self~assertSame(1, args[1])
+  self~assertSame(.nil, args[2])
+
+::method 'testGetArguments01'
+  tester = .METHODtester~new
+  args = tester~TestGetArguments
+  self~assertSame(0, args~items)
+  self~assertSame(0, args~size)
+  args = tester~TestGetArguments(1, 2)
+  self~assertSame(2, args~items)
+  self~assertSame(2, args~size)
+  self~assertSame(1, args[1])
+  self~assertSame(2, args[2])
+  args = tester~TestGetArguments(1,,2)
+  self~assertSame(2, args~items)
+  self~assertSame(3, args~size)
+  self~assertSame(1, args[1])
+  self~assertSame(.nil, args[2])
+  self~assertSame(2, args[3])
+
+  args = tester~TestGetArguments(,2)
+  self~assertSame(1, args~items)
+  self~assertSame(2, args~size)
+  self~assertSame(.nil, args[1])
+  self~assertSame(2, args[2])
+
+  args = tester~TestGetArguments(,)
+  self~assertSame(0, args~items)
+  self~assertSame(0, args~size)
+  self~assertSame(.nil, args[1])
+  self~assertSame(.nil, args[2])
+
+  args = tester~TestGetArguments(1,)
+  self~assertSame(1, args~items)
+  self~assertSame(1, args~size)
+  self~assertSame(1, args[1])
+  self~assertSame(.nil, args[2])
+
+  args = tester~TestGetArguments(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20)
+  self~assertSame(20, args~items)
+  self~assertSame(20, args~size)
+  self~assertSame(20, args[20])
+
+::method 'testGetArgument01'
+  tester = .METHODtester~new
+  arg = tester~TestGetArgument(1)
+  self~assertSame(1, arg)
+  arg = tester~TestGetArgument(2, 'abc')
+  self~assertSame('abc', arg)
+  arg = tester~TestGetArgument(3,,'abc')
+  self~assertSame('abc', arg)
+
+::method 'testGetArgument02'
+  self~expectSyntax('88.900')
+  tester = .METHODtester~new
+  arg = tester~TestGetArgument(2)
+
+::method 'testGetArgument03'
+  self~expectSyntax('88.900')
+  tester = .METHODtester~new
+  arg = tester~TestGetArgument(2,,'abc')
+
+::method 'testGetArgument04'
+  self~expectSyntax('88.900')
+  tester = .METHODtester~new
+  arg = tester~TestGetArgument(100,,'abc')

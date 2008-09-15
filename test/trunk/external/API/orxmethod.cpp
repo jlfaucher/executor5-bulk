@@ -605,16 +605,25 @@ RexxMethod2(RexxObjectPtr,
     return context->ValueToObject(&value);
 }
 
-RexxMethod0(RexxArrayObject, TestGetArguments)
+RexxMethod1(RexxArrayObject, TestGetArguments,
+            ARGLIST, arg1)          // unused dummy argument that allows this to be invoked with variable args.
 {
     return context->GetArguments();
 }
 
-RexxMethod1(RexxObjectPtr,
+RexxMethod2(RexxObjectPtr,
             TestGetArgument,
-            size_t, index)
+            size_t, index,
+            ARGLIST, arg1)          // unused dummy argument that allows this to be invoked with variable args.
 {
-    return context->GetArgument(index);
+    RexxObjectPtr result = context->GetArgument(index);
+    if (result == NULLOBJECT)
+    {
+        // distinguishes between existing/non-existing argments
+        context->RaiseException1(Rexx_Error_Invalid_argument_user_defined, context->NewStringFromAsciiz("Conversion error"));
+        return NULLOBJECT;
+    }
+    return result;
 }
 
 RexxMethod0(CSTRING,

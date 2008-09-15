@@ -134,96 +134,96 @@ return .ooTestResult~new(5)~~addException(err)
 -- The following error tests the macros for 0-10 arguments
 ::method 'test011'
   self~expectSyntax('88.922')
-  TestZeroIntArgs(1)
+  x = TestZeroIntArgs(1)
 
 ::method 'test012'
   self~expectSyntax('88.922')
-  TestOneIntArg(1,1)
+  x = TestOneIntArg(1,1)
 
 ::method 'test013'
   self~expectSyntax('88.922')
-  TestTwoIntArgs(1,1,1)
+  x = TestTwoIntArgs(1,1,1)
 
 ::method 'test014'
   self~expectSyntax('88.922')
-  TestThreeIntArgs(1,1,1,1)
+  x = TestThreeIntArgs(1,1,1,1)
 
 ::method 'test015'
   self~expectSyntax('88.922')
-  TestFourIntArgs(1,1,1,1,1)
+  x = TestFourIntArgs(1,1,1,1,1)
 
 ::method 'test016'
   self~expectSyntax('88.922')
-  TestFiveIntArgs(1,1,1,1,1,1)
+  x = TestFiveIntArgs(1,1,1,1,1,1)
 
 ::method 'test017'
   self~expectSyntax('88.922')
-  TestSixIntArgs(1,1,1,1,1,1,1)
+  x = TestSixIntArgs(1,1,1,1,1,1,1)
 
 ::method 'test018'
   self~expectSyntax('88.922')
-  TestSevenIntArgs(1,1,1,1,1,1,1,1)
+  x = TestSevenIntArgs(1,1,1,1,1,1,1,1)
 
 ::method 'test019'
   self~expectSyntax('88.922')
-  TestEightIntArgs(1,1,1,1,1,1,1,1,1)
+  x = TestEightIntArgs(1,1,1,1,1,1,1,1,1)
 
 ::method 'test020'
   self~expectSyntax('88.922')
-  TestNineIntArgs(1,1,1,1,1,1,1,1,1,1)
+  x = TestNineIntArgs(1,1,1,1,1,1,1,1,1,1)
 
 ::method 'test021'
   self~expectSyntax('88.922')
-  TestTenIntArgs(1,1,1,1,1,1,1,1,1,1,1)
+  x = TestTenIntArgs(1,1,1,1,1,1,1,1,1,1,1)
 
 -- The following error tests the macros for 0-10 arguments
 ::method 'test022'
   self~expectSyntax('88.901')
-  TestOneIntArg()
+  x = TestOneIntArg()
 
 ::method 'test023'
   self~expectSyntax('88.901')
-  TestTwoIntArgs(1)
+  x = TestTwoIntArgs(1)
 
 ::method 'test023a'
   self~expectSyntax('88.901')
-  TestTwoIntArgs(,1)
+  x = TestTwoIntArgs(,1)
 
 ::method 'test024'
   self~expectSyntax('88.901')
-  TestThreeIntArgs(1,1)
+  x = TestThreeIntArgs(1,1)
 
 ::method 'test024a'
   self~expectSyntax('88.901')
-  TestThreeIntArgs(1,,1)
+  x = TestThreeIntArgs(1,,1)
 
 ::method 'test025'
   self~expectSyntax('88.901')
-  self~assertSame(4, TestFourIntArgs(1,1,1))
+  x = TestFourIntArgs(1,1,1)
 
 ::method 'test026'
   self~expectSyntax('88.901')
-  TestFiveIntArgs(1,1,1,1)
+  x = TestFiveIntArgs(1,1,1,1)
 
 ::method 'test027'
   self~expectSyntax('88.901')
-  TestSixIntArgs(1,1,1,1,1)
+  x = TestSixIntArgs(1,1,1,1,1)
 
 ::method 'test028'
   self~expectSyntax('88.901')
-  TestSevenIntArgs(1,1,1,1,1,1)
+  x = TestSevenIntArgs(1,1,1,1,1,1)
 
 ::method 'test029'
   self~expectSyntax('88.901')
-  TestEightIntArgs(1,1,1,1,1,1,1)
+  x = TestEightIntArgs(1,1,1,1,1,1,1)
 
 ::method 'test030'
   self~expectSyntax('88.901')
-  TestNineIntArgs(1,1,1,1,1,1,1,1)
+  x = TestNineIntArgs(1,1,1,1,1,1,1,1)
 
 ::method 'test031'
   self~expectSyntax('88.901')
-  TestTenIntArgs(1,1,1,1,1,1,1,1,1)
+  x = TestTenIntArgs(1,1,1,1,1,1,1,1,1)
 
 -- test int
 ::method 'testint01'
@@ -688,3 +688,103 @@ return .ooTestResult~new(5)~~addException(err)
   self~expectSyntax('88.900')
   TestObjectToValue(.nil, .TypeConstants~StemType)
 
+::method 'testName01'
+  self~assertSame('TESTNAMEARG', TestNameArg());
+  self~assertSame('TESTNAMEARG2', TestNameArg2());   -- same native method, different name
+
+::method 'testName02'
+  self~assertSame('TESTGETROUTINENAME', TestGetRoutineName());
+  self~assertSame('TESTGETROUTINENAME2', TestGetRoutineName2());   -- same native method, different name
+
+::method 'testArglist01'
+  args = TestArglistArg()
+  self~assertSame(0, args~items)
+  self~assertSame(0, args~size)
+  args = TestArglistArg(1, 2)
+  self~assertSame(2, args~items)
+  self~assertSame(2, args~size)
+  self~assertSame(1, args[1])
+  self~assertSame(2, args[2])
+  args = TestArglistArg(1,,2)
+  self~assertSame(2, args~items)
+  self~assertSame(3, args~size)
+  self~assertSame(1, args[1])
+  self~assertSame(.nil, args[2])
+  self~assertSame(2, args[3])
+
+  args = TestArglistArg(,2)
+  self~assertSame(1, args~items)
+  self~assertSame(2, args~size)
+  self~assertSame(.nil, args[1])
+  self~assertSame(2, args[2])
+
+  args = TestArglistArg(,)
+  self~assertSame(0, args~items)
+  self~assertSame(0, args~size)
+  self~assertSame(.nil, args[1])
+  self~assertSame(.nil, args[2])
+
+  args = TestArglistArg(1,)
+  self~assertSame(1, args~items)
+  self~assertSame(1, args~size)
+  self~assertSame(1, args[1])
+  self~assertSame(.nil, args[2])
+
+::method 'testGetArguments01'
+  args = TestGetArguments()
+  self~assertSame(0, args~items)
+  self~assertSame(0, args~size)
+  args = TestGetArguments(1, 2)
+  self~assertSame(2, args~items)
+  self~assertSame(2, args~size)
+  self~assertSame(1, args[1])
+  self~assertSame(2, args[2])
+  args = TestGetArguments(1,,2)
+  self~assertSame(2, args~items)
+  self~assertSame(3, args~size)
+  self~assertSame(1, args[1])
+  self~assertSame(.nil, args[2])
+  self~assertSame(2, args[3])
+
+  args = TestGetArguments(,2)
+  self~assertSame(1, args~items)
+  self~assertSame(2, args~size)
+  self~assertSame(.nil, args[1])
+  self~assertSame(2, args[2])
+
+  args = TestGetArguments(,)
+  self~assertSame(0, args~items)
+  self~assertSame(0, args~size)
+  self~assertSame(.nil, args[1])
+  self~assertSame(.nil, args[2])
+
+  args = TestGetArguments(1,)
+  self~assertSame(1, args~items)
+  self~assertSame(1, args~size)
+  self~assertSame(1, args[1])
+  self~assertSame(.nil, args[2])
+
+  args = TestGetArguments(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20)
+  self~assertSame(20, args~items)
+  self~assertSame(20, args~size)
+  self~assertSame(20, args[20])
+
+::method 'testGetArgument01'
+  arg = TestGetArgument(1)
+  self~assertSame(1, arg)
+  arg = TestGetArgument(2, 'abc')
+  self~assertSame('abc', arg)
+  arg = TestGetArgument(3,,'abc')
+  self~assertSame('abc', arg)
+
+::method 'testGetArgument02'
+  self~expectSyntax('88.900')
+  arg = TestGetArgument(2)
+
+::method 'testGetArgument03'
+  self~expectSyntax('88.900')
+  arg = TestGetArgument(2,,'abc')
+
+::method 'testGetArgument04'
+  self~expectSyntax('88.900')
+  arg = TestGetArgument(100,,'abc')

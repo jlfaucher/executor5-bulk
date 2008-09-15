@@ -81,4 +81,16 @@
 ::method TestOSelfArg EXTERNAL "LIBRARY orxmethod TestOSelfArg"
 ::method TestArglistArg EXTERNAL "LIBRARY orxmethod TestArglistArg"
 ::method TestNameArg EXTERNAL "LIBRARY orxmethod TestNameArg"
+::method TestNameArg2 EXTERNAL "LIBRARY orxmethod TestNameArg"        -- extra definition for name testing
+::method TestGetSuper EXTERNAL "LIBRARY orxmethod TestGetSuper"
+::method TestGetScope EXTERNAL "LIBRARY orxmethod TestGetScope"
+::method TestGetSelf EXTERNAL "LIBRARY orxmethod TestGetSelf"
+::method TestGetMessageName EXTERNAL "LIBRARY orxmethod TestGetMessageName"
+::method TestGetMessageName2 EXTERNAL "LIBRARY orxmethod TestGetMessageName"    -- extra definition for name testing
+::method TestGetArguments EXTERNAL "LIBRARY orxmethod TestGetArguments"
+::method TestGetArgument EXTERNAL "LIBRARY orxmethod TestGetArgument"
+::method TestForwardMessage EXTERNAL "LIBRARY orxmethod TestForwardMessage"
+::method TestGetObjectVariable EXTERNAL "LIBRARY orxmethod TestGetObjectVariable"
+::method TestSetObjectVariable EXTERNAL "LIBRARY orxmethod TestSetObjectVariable"
+::method TestDropObjectVariable EXTERNAL "LIBRARY orxmethod TestDropObjectVariable"
 
