@@ -562,11 +562,11 @@ return xxx
 ::method select
 expose errno
 use strict arg reads, writes, excepts, timeout
-if \reads~isA(.Array) then ,
+if \reads~isInstanceOf(.Array) then ,
  raise syntax 93.914 array (1, 'an Array', reads)
-if \writes~isA(.Array) then ,
+if \writes~isInstanceOf(.Array) then ,
  raise syntax 93.914 array (2, 'an Array', writes)
-if \excepts~isA(.Array) then ,
+if \excepts~isInstanceOf(.Array) then ,
  raise syntax 93.914 array (3, 'an Array', excepts)
 reads.0 = reads~items
 do i = 1 to reads~items
@@ -586,7 +586,19 @@ if retc = -1 then do
    return .nil
    end
 else errno = ''
-return xxx
+reads~empty()
+do i = 1 to reads.0
+   reads[i] = reads.i
+   end
+writes~empty()
+do i = 1 to writes.0
+   writes[i] = writes.i
+   end
+excepts~empty()
+do i = 1 to excepts.0
+   excepts[i] = excepts.i
+   end
+return retc
 
 /*----------------------------------------------------------------------------*/
 /* Method: send                                                               */
@@ -821,7 +833,7 @@ return
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
-::attribute address get   -- the main address of the host
+::attribute address get  -- the main address of the host
 ::attribute name    get  -- the standard host name
 ::attribute addr    get  -- an array of internet addresses of the host
 ::attribute alias   get  -- an array of alias names of the host

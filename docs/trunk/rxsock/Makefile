@@ -51,11 +51,15 @@ SGML_FILES = rxsock.sgml \
      ../shared/notices.sgml \
      ../shared/legalstuff.sgml \
      ../shared/gethelp.sgml \
-     ../shared/CPLv1.0.sgml
+     ../shared/CPLv1.0.sgml \
+     socketclass.sgml
 
 IMAGE_FILES = oorexx.jpg \
  	      docbook-1.png \
-	      new_rexxla.jpg
+	      new_rexxla.jpg \
+	      HostInfo.png \
+	      InetAddress.png \
+	      SocketClass.png
 
 JADETEXFMT  = ./pdfjadetex.fmt
 HYPERREFCFG = ./hyperref.cfg
