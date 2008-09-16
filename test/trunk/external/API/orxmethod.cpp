@@ -710,6 +710,340 @@ RexxMethod1(RexxClassObject,
 }
 
 
+RexxMethod1(RexxStemObject,
+            TestNewStem,
+            CSTRING, name)
+{
+    return context->NewStem(name);
+}
+
+RexxMethod3(int,
+            TestSetStemElement,
+            RexxStemObject, stem,
+            CSTRING, tail,
+            RexxObjectPtr, value)
+{
+    context->SetStemElement(stem, tail, value);
+    return 0;
+}
+
+RexxMethod2(RexxObjectPtr,
+            TestGetStemElement,
+            RexxStemObject, stem,
+            CSTRING, tail)
+{
+    RexxObjectPtr value = context->GetStemElement(stem, tail);
+    if (value == NULLOBJECT) {
+        context->RaiseException1(Rexx_Error_Invalid_argument_user_defined, context->NewStringFromAsciiz("Conversion error"));
+        return NULLOBJECT;
+    }
+    return value;
+}
+
+RexxMethod2(int,
+            TestDropStemElement,
+            RexxStemObject, stem,
+            CSTRING, tail)
+{
+    context->DropStemElement(stem, tail);
+    return 0;
+}
+
+RexxMethod3(int,
+            TestSetStemArrayElement,
+            RexxStemObject, stem,
+            size_t, tail,
+            RexxObjectPtr, value)
+{
+    context->SetStemArrayElement(stem, tail, value);
+    return 0;
+}
+
+RexxMethod2(RexxObjectPtr,
+            TestGetStemArrayElement,
+            RexxStemObject, stem,
+            size_t, tail)
+{
+    RexxObjectPtr value = context->GetStemArrayElement(stem, tail);
+    if (value == NULLOBJECT) {
+        context->RaiseException1(Rexx_Error_Invalid_argument_user_defined, context->NewStringFromAsciiz("Conversion error"));
+        return NULLOBJECT;
+    }
+    return value;
+}
+
+RexxMethod2(int,
+            TestDropStemArrayElement,
+            RexxStemObject, stem,
+            size_t, tail)
+{
+    context->DropStemArrayElement(stem, tail);
+    return 0;
+}
+
+RexxMethod1(RexxObjectPtr,
+            TestGetAllStemElements,
+            RexxStemObject, stem)
+{
+    return (RexxObjectPtr)context->GetAllStemElements(stem);
+}
+
+RexxMethod1(RexxObjectPtr,
+            TestGetStemValue,
+            RexxStemObject, stem)
+{
+    return context->GetStemValue(stem);
+}
+
+RexxMethod1(logical_t,
+            TestIsStem,
+            RexxObjectPtr, stem)
+{
+    return context->IsStem(stem);
+}
+
+RexxMethod1(RexxObjectPtr,
+            TestSupplierValue,
+            RexxObjectPtr, supplier)
+{
+    return context->SupplierValue((RexxSupplierObject)supplier);
+}
+
+RexxMethod1(RexxObjectPtr,
+            TestSupplierIndex,
+            RexxObjectPtr, supplier)
+{
+    return context->SupplierIndex((RexxSupplierObject)supplier);
+}
+
+RexxMethod1(logical_t,
+            TestSupplierAvailable,
+            RexxObjectPtr, supplier)
+{
+    return context->SupplierAvailable((RexxSupplierObject)supplier);
+}
+
+RexxMethod1(int,
+            TestSupplierNext,
+            RexxObjectPtr, supplier)
+{
+    context->SupplierNext((RexxSupplierObject)supplier);
+    return 0;
+}
+
+
+RexxMethod2(RexxObjectPtr,
+            TestNewSupplier,
+            RexxArrayObject, values,
+            RexxArrayObject, indexes)
+{
+    return (RexxObjectPtr)context->NewSupplier(values, indexes);
+}
+
+
+RexxMethod2(RexxObjectPtr,
+            TestArrayAt,
+            RexxArrayObject, array,
+            size_t, index)
+{
+    RexxObjectPtr value = context->ArrayAt(array, index);
+    if (value == NULLOBJECT) {
+        context->RaiseException1(Rexx_Error_Invalid_argument_user_defined, context->NewStringFromAsciiz("Conversion error"));
+        return NULLOBJECT;
+    }
+    return value;
+}
+
+
+RexxMethod2(logical_t,
+            TestArrayHasIndex,
+            RexxArrayObject, array,
+            size_t, index)
+{
+    return context->ArrayHasIndex(array, index);
+}
+
+RexxMethod3(int,
+            TestArrayPut,
+            RexxArrayObject, array,
+            RexxObjectPtr, value,
+            size_t, index)
+{
+    context->ArrayPut(array, value, index);
+    return 0;
+}
+
+
+RexxMethod2(size_t,
+            TestArrayAppend,
+            RexxArrayObject, array,
+            RexxObjectPtr, value)
+{
+    return context->ArrayAppend(array, value);
+}
+
+
+RexxMethod2(size_t,
+            TestArrayAppendString,
+            RexxArrayObject, array,
+            CSTRING, value)
+{
+    return context->ArrayAppendString(array, value, strlen(value));
+}
+
+
+RexxMethod1(size_t,
+            TestArraySize,
+            RexxArrayObject, array)
+{
+    return context->ArraySize(array);
+}
+
+
+RexxMethod1(size_t,
+            TestArrayDimension,
+            RexxArrayObject, array)
+{
+    return context->ArrayDimension(array);
+}
+
+
+RexxMethod1(RexxArrayObject,
+            TestNewArray,
+            size_t, size)
+{
+    return context->NewArray(size);
+}
+
+
+RexxMethod1(RexxArrayObject,
+            TestArrayOfOne,
+            RexxObjectPtr, arg1)
+{
+    return context->ArrayOfOne(arg1);
+}
+
+
+RexxMethod2(RexxArrayObject,
+            TestArrayOfTwo,
+            RexxObjectPtr, arg1,
+            RexxObjectPtr, arg2)
+{
+    return context->ArrayOfTwo(arg1, arg2);
+}
+
+RexxMethod1(logical_t,
+            TestIsArray,
+            RexxObjectPtr, o)
+{
+    return context->IsArray(o);
+}
+
+RexxMethod3(int,
+            TestDirectoryPut,
+            RexxObjectPtr, dir,
+            RexxObjectPtr, value,
+            CSTRING, index)
+{
+    context->DirectoryPut((RexxDirectoryObject)dir, value, index);
+    return 0;
+}
+
+
+RexxMethod2(RexxObjectPtr,
+            TestDirectoryAt,
+            RexxObjectPtr, dir,
+            CSTRING, index)
+{
+    RexxObjectPtr value = context->DirectoryAt((RexxDirectoryObject)dir, index);
+    if (value == NULLOBJECT) {
+        context->RaiseException1(Rexx_Error_Invalid_argument_user_defined, context->NewStringFromAsciiz("Conversion error"));
+        return NULLOBJECT;
+    }
+    return value;
+}
+
+
+RexxMethod2(RexxObjectPtr,
+            TestDirectoryRemove,
+            RexxObjectPtr, dir,
+            CSTRING, index)
+{
+    RexxObjectPtr value = context->DirectoryRemove((RexxDirectoryObject)dir, index);
+    if (value == NULLOBJECT) {
+        context->RaiseException1(Rexx_Error_Invalid_argument_user_defined, context->NewStringFromAsciiz("Conversion error"));
+        return NULLOBJECT;
+    }
+    return value;
+}
+
+
+RexxMethod0(RexxObjectPtr,
+            TestNewDirectory)
+{
+    return (RexxObjectPtr)context->NewDirectory();
+}
+
+RexxMethod1(logical_t,
+            TestIsDirectory,
+            RexxObjectPtr, o)
+{
+    return context->IsDirectory(o);
+}
+
+RexxMethod3(int,
+            TestTablePut,
+            RexxObjectPtr, dir,
+            RexxObjectPtr, value,
+            RexxObjectPtr, index)
+{
+    context->TablePut((RexxTableObject)dir, value, index);
+    return 0;
+}
+
+
+RexxMethod2(RexxObjectPtr,
+            TestTableGet,
+            RexxObjectPtr, dir,
+            RexxObjectPtr, index)
+{
+    RexxObjectPtr value = context->TableGet((RexxTableObject)dir, index);
+    if (value == NULLOBJECT) {
+        context->RaiseException1(Rexx_Error_Invalid_argument_user_defined, context->NewStringFromAsciiz("Conversion error"));
+        return NULLOBJECT;
+    }
+    return value;
+}
+
+
+RexxMethod2(RexxObjectPtr,
+            TestTableRemove,
+            RexxObjectPtr, dir,
+            RexxObjectPtr, index)
+{
+    RexxObjectPtr value = context->TableRemove((RexxTableObject)dir, index);
+    if (value == NULLOBJECT) {
+        context->RaiseException1(Rexx_Error_Invalid_argument_user_defined, context->NewStringFromAsciiz("Conversion error"));
+        return NULLOBJECT;
+    }
+    return value;
+}
+
+
+RexxMethod0(RexxObjectPtr,
+            TestNewTable)
+{
+    return (RexxObjectPtr)context->NewTable();
+}
+
+RexxMethod1(logical_t,
+            TestIsTable,
+            RexxObjectPtr, o)
+{
+    return context->IsTable(o);
+}
+
+
 RexxMethodEntry orxtest_methods[] = {
     REXX_METHOD(TestZeroIntArgs,       TestZeroIntArgs),
     REXX_METHOD(TestOneIntArg,         TestOneIntArg),
@@ -787,6 +1121,42 @@ RexxMethodEntry orxtest_methods[] = {
     REXX_METHOD(TestDropObjectVariable,      TestDropObjectVariable),
     REXX_METHOD(TestForwardMessage,          TestForwardMessage),
     REXX_METHOD(TestFindContextClass,        TestFindContextClass),
+    REXX_METHOD(TestNewStem,                 TestNewStem),
+    REXX_METHOD(TestSetStemElement,          TestSetStemElement),
+    REXX_METHOD(TestGetStemElement,          TestGetStemElement),
+    REXX_METHOD(TestDropStemElement,         TestDropStemElement),
+    REXX_METHOD(TestSetStemArrayElement,     TestSetStemArrayElement),
+    REXX_METHOD(TestGetStemArrayElement,     TestGetStemArrayElement),
+    REXX_METHOD(TestDropStemArrayElement,    TestDropStemArrayElement),
+    REXX_METHOD(TestGetAllStemElements,      TestGetAllStemElements),
+    REXX_METHOD(TestGetStemValue,            TestGetStemValue),
+    REXX_METHOD(TestIsStem,                  TestIsStem),
+    REXX_METHOD(TestSupplierValue,           TestSupplierValue),
+    REXX_METHOD(TestSupplierIndex,           TestSupplierIndex),
+    REXX_METHOD(TestSupplierAvailable,       TestSupplierAvailable),
+    REXX_METHOD(TestSupplierNext,            TestSupplierNext),
+    REXX_METHOD(TestNewSupplier,             TestNewSupplier),
+    REXX_METHOD(TestArrayAt,                 TestArrayAt),
+    REXX_METHOD(TestArrayHasIndex,           TestArrayHasIndex),
+    REXX_METHOD(TestArrayPut,                TestArrayPut),
+    REXX_METHOD(TestArrayAppend,             TestArrayAppend),
+    REXX_METHOD(TestArrayAppendString,       TestArrayAppendString),
+    REXX_METHOD(TestArraySize,               TestArraySize),
+    REXX_METHOD(TestArrayDimension,          TestArrayDimension),
+    REXX_METHOD(TestNewArray,                TestNewArray),
+    REXX_METHOD(TestArrayOfOne,              TestArrayOfOne),
+    REXX_METHOD(TestArrayOfTwo,              TestArrayOfTwo),
+    REXX_METHOD(TestIsArray,                 TestIsArray),
+    REXX_METHOD(TestDirectoryPut,            TestDirectoryPut),
+    REXX_METHOD(TestDirectoryAt,             TestDirectoryAt),
+    REXX_METHOD(TestDirectoryRemove,         TestDirectoryRemove),
+    REXX_METHOD(TestNewDirectory,            TestNewDirectory),
+    REXX_METHOD(TestIsDirectory,             TestIsDirectory),
+    REXX_METHOD(TestTablePut,                TestTablePut),
+    REXX_METHOD(TestTableGet,                TestTableGet),
+    REXX_METHOD(TestTableRemove,             TestTableRemove),
+    REXX_METHOD(TestNewTable,                TestNewTable),
+    REXX_METHOD(TestIsTable,                 TestIsTable),
     REXX_LAST_METHOD()
 };
 
