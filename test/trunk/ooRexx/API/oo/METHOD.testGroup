@@ -275,6 +275,8 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame(val, tester~TestIntArg(val))
   self~assertSame(1, tester~TestIntArg(1.0))
   self~assertSame(1, tester~TestIntArg(1e0))
+  self~assertSame(1, tester~TestOptionalIntArg(1))
+  self~assertSame(0, tester~TestOptionalIntArg())
 
 ::method 'testint02'
   tester = .METHODtester~new
@@ -306,6 +308,8 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame(1, tester~TestInt32Arg(2.1 - 1.1))    -- forces this to be a number string
   self~assertSame(1, tester~TestInt32Arg(word("2 1 3", 2)))   -- forces this to be a character string
   self~assertSame(1, tester~TestInt32Arg(1e0))
+  self~assertSame(1, tester~TestOptionalInt32Arg(1))
+  self~assertSame(0, tester~TestOptionalInt32Arg())
 
 ::method 'testint3202'
   tester = .METHODtester~new
@@ -327,6 +331,8 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame(val, tester~TestUint32Arg(val))
   val = 1
   self~assertSame(val, tester~TestUint32Arg(val))
+  self~assertSame(1, tester~TestOptionalUint32Arg(1))
+  self~assertSame(0, tester~TestOptionalUint32Arg())
 
 ::method 'testuint3202'
   tester = .METHODtester~new
@@ -351,6 +357,8 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame(val, tester~TestInt8Arg(val))
   val = -128
   self~assertSame(val, tester~TestInt8Arg(val))
+  self~assertSame(1, tester~TestOptionalInt8Arg(1))
+  self~assertSame(0, tester~TestOptionalInt8Arg())
 
 ::method 'testint802'
   tester = .METHODtester~new
@@ -371,6 +379,8 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame(val, tester~TestUint8Arg(val))
   val = 1
   self~assertSame(val, tester~TestUint8Arg(val))
+  self~assertSame(1, tester~TestOptionalUint8Arg(1))
+  self~assertSame(0, tester~TestOptionalUint8Arg())
 
 ::method 'testuint802'
   tester = .METHODtester~new
@@ -395,6 +405,8 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame(val, tester~TestInt16Arg(val))
   val = -32768
   self~assertSame(val, tester~TestInt16Arg(val))
+  self~assertSame(1, tester~TestOptionalInt16Arg(1))
+  self~assertSame(0, tester~TestOptionalInt16Arg())
 
 ::method 'testint1602'
   tester = .METHODtester~new
@@ -415,6 +427,8 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame(val, tester~TestUint16Arg(val))
   val = 1
   self~assertSame(val, tester~TestUint16Arg(val))
+  self~assertSame(1, tester~TestOptionalUint16Arg(1))
+  self~assertSame(0, tester~TestOptionalUint16Arg())
 
 ::method 'testuint1602'
   tester = .METHODtester~new
@@ -440,6 +454,8 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame(val, tester~TestInt64Arg(val))
   val = '-9223372036854775808'
   self~assertSame(val, tester~TestInt64Arg(val))
+  self~assertSame(1, tester~TestOptionalInt64Arg(1))
+  self~assertSame(0, tester~TestOptionalInt64Arg())
 
 ::method 'testint6402'
   tester = .METHODtester~new
@@ -461,6 +477,8 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame(val, tester~TestUint64Arg(val))
   val = 1
   self~assertSame(val, tester~TestUint64Arg(val))
+  self~assertSame(1, tester~TestOptionalUint64Arg(1))
+  self~assertSame(0, tester~TestOptionalUint64Arg())
 
 ::method 'testuint6402'
   tester = .METHODtester~new
@@ -491,6 +509,8 @@ return .ooTestResult~new(5)~~addException(err)
   else
       val = -999999999999999999
   self~assertSame(val, tester~TestWholeNumberArg(val))
+  self~assertSame(1, tester~TestOptionalWholeNumberArg(1))
+  self~assertSame(0, tester~TestOptionalWholeNumberArg())
 
 ::method 'testWholenumber02'
   tester = .METHODtester~new
@@ -522,6 +542,8 @@ return .ooTestResult~new(5)~~addException(err)
   else
       val = 999999999999999999
   self~assertSame(val, tester~TestStringSizeArg(val))
+  self~assertSame(1, tester~TestOptionalStringSizeArg(1))
+  self~assertSame(0, tester~TestOptionalStringSizeArg())
 
 ::method 'testStringSize02'
   tester = .METHODtester~new
@@ -552,6 +574,8 @@ return .ooTestResult~new(5)~~addException(err)
   else
       val = 2**64-1
   self~assertSame(val, tester~TestSizeArg(val))
+  self~assertSame(1, tester~TestOptionalSizeArg(1))
+  self~assertSame(0, tester~TestOptionalSizeArg())
 
 ::method 'testSize02'
   tester = .METHODtester~new
@@ -590,6 +614,8 @@ return .ooTestResult~new(5)~~addException(err)
   else
       val = -2**63
   self~assertSame(val, tester~TestSSizeArg(val))
+  self~assertSame(1, tester~TestOptionalSSizeArg(1))
+  self~assertSame(0, tester~TestOptionalSSizeArg())
 
 ::method 'testSSize02'
   tester = .METHODtester~new
@@ -624,6 +650,8 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame(.false, tester~TestLogicalArg(0))
   self~assertSame(.true, tester~TestLogicalArg('1'||""))
   self~assertSame(.true, tester~TestLogicalArg(1))
+  self~assertSame(1, tester~TestOptionalLogicalArg(1))
+  self~assertSame(0, tester~TestOptionalLogicalArg())
 
 ::method 'testLogical02'
   tester = .METHODtester~new
@@ -667,6 +695,8 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame(0, tester~TestFloatArg(val))
   val = -3.40282347E-50
   self~assertSame(0, tester~TestFloatArg(val))
+  self~assertSame(1, tester~TestOptionalFloatArg(1))
+  self~assertSame(0, tester~TestOptionalFloatArg())
 
 ::method 'testFloat02'
   tester = .METHODtester~new
@@ -705,6 +735,8 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame(0, tester~TestDoubleArg(val))
   val = -1.79769313E-350
   self~assertSame(0, tester~TestDoubleArg(val))
+  self~assertSame(1, tester~TestOptionalDoubleArg(1))
+  self~assertSame(0, tester~TestOptionalDoubleArg())
 
 ::method 'testDoublel02'
   tester = .METHODtester~new
@@ -712,7 +744,7 @@ return .ooTestResult~new(5)~~addException(err)
   tester~TestDoubleArg('abc')
 
 -- test CSTRING
-::method 'test045'
+::method 'testCString01'
   tester = .METHODtester~new
   val = ''
   self~assertSame(val, tester~TestCstringArg(val))
@@ -724,6 +756,12 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame(val, tester~TestCstringArg(val))
   val = copies('AbCdEfGhIjKlMnOpQrStUvWxYz0123456789', 1000)
   self~assertSame(val, tester~TestCstringArg(val))
+  self~assertSame("abc", tester~TestOptionalCstringArg("abc"))
+
+::method 'testCString02'
+  tester = .METHODtester~new
+  self~expectSyntax('91.999')
+  x = tester~TestOptionalCStringArg()
 
 -- test POINTER
 ::method 'test046'
@@ -732,12 +770,15 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertTrue(tester~TestPointerArg(val))
   val = tester~TestNullPointerValue()
   self~assertTrue(val~isNull())
+  val = tester~TestOptionalPointerArg()
+  self~assertTrue(val~isNull())
 
 -- test RexxStemObject
 ::method 'testStem01'
   tester = .METHODtester~new
   a.1 = 2
   b. = tester~TestStemArg(a.)
+  b. = tester~TestOptionalStemArg(a.)
   self~assertSame(2, b.1)
   b.2 = 3
   self~assertSame(3, a.2)    -- verify same object
@@ -763,6 +804,112 @@ return .ooTestResult~new(5)~~addException(err)
   tester = .METHODtester~new
   self~expectSyntax('93.969')
   tester~TestStemArg(.nil)
+
+::method 'testStem05'
+  tester = .METHODtester~new
+  self~expectSyntax('91.999')
+  x = tester~TestOptionalStemArg()
+
+-- test RexxObjectPtr
+::method 'testObject01'
+  tester = .METHODtester~new
+  self~assertSame(.nil, tester~TestObjectArg(.nil))
+  self~assertSame("abc", tester~TestObjectArg("abc"))
+  self~assertSame(1, tester~TestObjectArg(1))
+  self~assertSame(0.0, tester~TestObjectArg(0.0))
+  self~assertSame(.Object, tester~TestObjectArg(.Object))
+  val = .array~of(1,2,3)
+  self~assertSame(val, tester~TestObjectArg(val))
+  self~assertSame(val, tester~TestOptionalObjectArg(val))
+
+::method 'testObject02'
+  tester = .METHODtester~new
+  self~expectSyntax('88.901')
+  tester~TestObjectArg()
+
+::method 'testObject03'
+  tester = .METHODtester~new
+  self~expectSyntax('91.999')
+  x = tester~TestOptionalObjectArg()
+
+-- test RexxStringObject
+::method 'testString01'
+  tester = .METHODtester~new
+  self~assertSame("abc", tester~TestStringArg("abc"))
+  self~assertSame(1, tester~TestStringArg(1))
+  self~assertSame(0.0, tester~TestStringArg(0.0))
+  self~assertSame("abc", tester~TestOptionalStringArg("abc"))
+
+::method 'testString02'
+  tester = .METHODtester~new
+  self~expectSyntax('88.901')
+  tester~TestStringArg()
+
+::method 'testString03'
+  tester = .METHODtester~new
+  self~expectSyntax('91.999')
+  x = tester~TestOptionalStringArg()
+
+::method 'testString04'
+  tester = .METHODtester~new
+  self~expectSyntax('93.938')
+  x = tester~TestOptionalStringArg(.nil)
+
+-- test RexxArrayObject
+::method 'testArray01'
+  tester = .METHODtester~new
+  val = .array~new(0)
+  self~assertSame(val, tester~TestArrayArg(val))
+  val = .array~new(10)
+  self~assertSame(val, tester~TestArrayArg(val))
+  self~assertSame(val, tester~TestOptionalArrayArg(val))
+  val = tester~TestArrayArg(.directory~new)  -- this will convert
+  self~assertSame(0, val~items)
+
+::method 'testArray02'
+  tester = .METHODtester~new
+  self~expectSyntax('88.901')
+  tester~TestArrayArg()
+
+::method 'testArray03'
+  tester = .METHODtester~new
+  self~expectSyntax('91.999')
+  x = tester~TestOptionalArrayArg()
+
+::method 'testArray04'
+  tester = .METHODtester~new
+  self~expectSyntax('98.913')
+  x = tester~TestOptionalArrayArg("abc")
+
+::method 'testArray05'
+  tester = .METHODtester~new
+  self~expectSyntax('98.913')
+  x = tester~TestOptionalArrayArg(.array~new(10,10))
+
+-- test RexxClassObject
+::method 'testClass01'
+  tester = .METHODtester~new
+  self~assertSame(.Object, tester~TestClassArg(.Object))
+  self~assertSame(.Class, tester~TestClassArg(.Class))
+  self~assertSame(.MethodTester, tester~TestClassArg(.MethodTester))
+  self~assertSame(.Collection, tester~TestClassArg(.Collection))
+  val = .class~new("FooBar")
+  self~assertSame(val, tester~TestClassArg(val))
+
+::method 'testClass02'
+  tester = .METHODtester~new
+  self~expectSyntax('88.901')
+  tester~TestClassArg()
+
+::method 'testClass03'
+  tester = .METHODtester~new
+  self~expectSyntax('91.999')
+  x = tester~TestOptionalClassArg()
+
+::method 'testClass04'
+  tester = .METHODtester~new
+  self~expectSyntax('88.914')
+  x = tester~TestOptionalClassArg("abc")
 
 ::method 'testSuper01'
   tester = .METHODtester~new
@@ -934,3 +1081,317 @@ return .ooTestResult~new(5)~~addException(err)
   tester = .METHODTester~new
   x = tester~TestFindContextClass("Yada")
 
+::method TestNewStem01
+  tester = .METHODTester~new
+  s = tester~TestNewStem("Fred.")
+  self~assertTrue(s~isA(.stem))
+  self~assertSame("Fred.1", s[1])
+
+::method TestSetStemElement01
+  tester = .METHODTester~new
+  tester~TestSetStemElement(a., "abc", 1)
+  self~assertSame(1, a.["abc"])
+  tester~TestSetStemElement(a., "", 2)
+  self~assertSame(2, a.[""])
+  tester~TestSetStemElement(a., "abc def", 3)
+  self~assertSame(3, a.["abc def"])
+  tester~TestSetStemElement(a., "abc", 4)
+  self~assertSame(4, a.["abc"])
+  tester~TestSetStemElement(a., "ABC.DEF", 5)
+  self~assertSame(5, a.abc.def)
+
+::method TestGetStemElement01
+  tester = .METHODTester~new
+  a.1 = "abc"
+  self~assertSame("abc", tester~TestGetStemElement(a., 1))
+  a.abc = 2
+  self~assertSame(2, tester~TestGetStemElement(a., "ABC"))
+  a.1.2.3 = 3
+  self~assertSame(3, tester~TestGetStemElement(a., 1.2.3))
+
+::method TestGetStemElement02
+  self~expectSyntax('88.900')
+  tester = .METHODTester~new
+  x = tester~TestGetStemElement(a., 1)
+
+::method TestGetStemElement03
+  self~expectSyntax('88.900')
+  tester = .METHODTester~new
+  x.ABC = 1
+  x = tester~TestGetStemElement(a., "abc")
+
+::method TestDropStemElement01
+  tester = .METHODTester~new
+  a.1 = "abc"
+  tester~TestDropStemElement(a., 1)
+  self~assertFalse(var("A.1"))
+  self~assertSame("A.1", a.1)
+  a.1.2.3 = "abc"
+  tester~TestDropStemElement(a., 1.2.3)
+  self~assertFalse(var("A.1.2.3"))
+  self~assertSame("A.1.2.3", a.1.2.3)
+  tester~TestDropStemElement(a., 2)
+  self~assertFalse(var("A.2"))
+  self~assertSame("A.2", a.2)
+
+::method TestSetStemArrayElement01
+  tester = .METHODTester~new
+  tester~TestSetStemArrayElement(a., 1, 1)
+  self~assertSame(1, a.[1])
+  tester~TestSetStemArrayElement(a., 1, 2)
+  self~assertSame(2, a.[1])
+
+::method TestGetStemArrayElement01
+  tester = .METHODTester~new
+  a.1 = "abc"
+  self~assertSame("abc", tester~TestGetStemArrayElement(a., 1))
+
+::method TestGetStemArrayElement02
+  self~expectSyntax('88.900')
+  tester = .METHODTester~new
+  x = tester~TestGetStemArrayElement(a., 1)
+
+::method TestDropStemArrayElement01
+  tester = .METHODTester~new
+  a.1 = "abc"
+  tester~TestDropStemArrayElement(a., 1)
+  self~assertFalse(var("A.1"))
+  self~assertSame("A.1", a.1)
+  tester~TestDropStemArrayElement(a., 2)
+  self~assertFalse(var("A.2"))
+  self~assertSame("A.2", a.2)
+
+::method TestGetAllStemElements01
+  tester = .METHODTester~new
+  d = tester~TestGetAllStemElements(a.)
+  self~assertSame(0, d~items)
+  a.1 = 1
+  a.["abc"] = 2
+  a.abc = 3
+
+  d = tester~TestGetAllStemElements(a.)
+  self~assertSame(3, d~items)
+  self~assertSame(1, d[1])
+  self~assertSame(2, d["abc"])
+  self~assertSame(3, d["ABC"])
+
+  drop a.abc
+  d = tester~TestGetAllStemElements(a.)
+  self~assertSame(2, d~items)
+  self~assertSame(1, d[1])
+  self~assertSame(2, d["abc"])
+  self~assertSame(.nil, d["ABC"])
+
+::method TestGetStemValue01
+  tester = .METHODTester~new
+  self~assertSame("A.", tester~TestGetStemValue(a.))
+  a. = "George"
+  self~assertSame("George", tester~TestGetStemValue(a.))
+  self~assertSame("Fred.", tester~TestGetStemValue(.stem~new("Fred.")))
+  self~assertSame("", tester~TestGetStemValue(.stem~new("")))
+
+::method TestIsStem01
+  tester = .METHODTester~new
+  self~assertTrue(tester~TestIsStem(a.))
+  self~assertTrue(tester~TestIsStem(.stem~new("B.")))
+  self~assertFalse(tester~TestIsStem("A."))
+  self~assertFalse(tester~TestIsStem(.nil))
+  self~assertFalse(tester~TestIsStem(.stem))
+
+::method TestSupplier01
+  tester = .METHODTester~new
+  values = .array~of(1,2,3,4)
+  indexes = .array~of("Fred", "Mike", "Chip", "Mark")
+  s = .supplier~new(values, indexes)
+  s2 = tester~TestNewSupplier(values, indexes)
+  do while tester~TestSupplierAvailable(s2)
+      self~assertSame(s~item, tester~TestSupplierItem(s2))
+      self~assertSame(s~index, tester~TestSupplierIndex(s2))
+      tester~TestSupplierNext(s2)
+      s~next
+  end
+
+::method TestArrayAt01
+  tester = .METHODTester~new
+  a = .array~of(1,2,3)
+  self~assertSame(1, tester~TestArrayAt(a, 1))
+
+::method TestArrayAt02
+  self~expectSyntax('88.900')
+  tester = .METHODTester~new
+  a = .array~of(1,2,3)
+  x = tester~TestArrayAt(a, 4)
+
+::method TestArrayAt03
+  self~expectSyntax('88.900')
+  tester = .METHODTester~new
+  a = .array~new(0)
+  x = tester~TestArrayAt(a, 1)
+
+::method TestArrayAt04
+  self~expectSyntax('88.900')
+  tester = .METHODTester~new
+  a = .array~new
+  a[1] = 1
+  a[3] = 3
+  x = tester~TestArrayAt(a, 2)
+
+::method TestArrayPut01
+  tester = .METHODTester~new
+  a = .array~of(1,2,3)
+  tester~TestArrayPut(a, 4, 1)
+  self~assertSame(4, a[1])
+
+  tester~TestArrayPut(a, "abc", 50)
+  self~assertSame(50, a~size)
+  self~assertSame("abc", a[50])
+  self~assertSame(4, a[1])
+  self~assertSame(4, a~items)
+  self~assertSame(.nil, a[49])
+
+::method TestArrayAppend01
+  tester = .METHODTester~new
+  a = .array~of(1,2,3)
+  tester~testArrayAppend(a, "abc")
+  self~assertSame(4, a~size)
+  self~assertSame("abc", a[4])
+  self~assertSame(4, a~items)
+
+::method TestArrayAppendString01
+  tester = .METHODTester~new
+  a = .array~of(1,2,3)
+  tester~testArrayAppendString(a, "abc")
+  self~assertSame(4, a~size)
+  self~assertSame("abc", a[4])
+  self~assertSame(4, a~items)
+
+::method TestArraySize01
+  tester = .METHODTester~new
+  self~assertSame(3, tester~TestArraySize(.array~of(1,2,3)))
+  self~assertSame(0, tester~TestArraySize(.array~new(0)))
+  self~assertSame(100, tester~TestArraySize(.array~new(100)))
+
+::method TestArrayItems01
+  tester = .METHODTester~new
+  self~assertSame(3, tester~TestArrayItems(.array~of(1,2,3)))
+  self~assertSame(0, tester~TestArrayItems(.array~new(0)))
+  a = .array~new
+  a[1] = 1
+  a[3] = 3
+  self~assertSame(2, tester~TestArrayItems(a))
+
+::method TestArrayDimension01
+  tester = .METHODTester~new
+  self~assertSame(1, tester~TestArrayDimension(.array~of(1,2,3)))
+  self~assertSame(1, tester~TestArrayDimension(.array~new))
+  self~assertSame(2, tester~TestArrayDimension(.array~new(100, 200)))
+  self~assertSame(6, tester~TestArrayDimension(.array~new(4,4,4,4,4,4)))
+
+::method TestNewArray01
+  tester = .METHODTester~new
+  a = tester~TestNewArray(0)
+  self~assertSame(0, a~size)
+  self~assertSame(0, a~items)
+  a = tester~TestNewArray(10)
+  self~assertSame(10, a~size)
+  self~assertSame(0, a~items)
+
+::method TestArrayOfOne01
+  tester = .METHODTester~new
+  a = tester~TestArrayOfOne("abc")
+  self~assertSame(1, a~size)
+  self~assertSame(1, a~items)
+  self~assertSame("abc", a[1])
+
+::method TestArrayOfTwo01
+  tester = .METHODTester~new
+  a = tester~TestArrayOfTwo("abc", "def")
+  self~assertSame(2, a~size)
+  self~assertSame(2, a~items)
+  self~assertSame("abc", a[1])
+  self~assertSame("def", a[2])
+
+::method TestArrayOfThree01
+  tester = .METHODTester~new
+  a = tester~TestArrayOfThree("abc", "def", "ghi")
+  self~assertSame(3, a~size)
+  self~assertSame(3, a~items)
+  self~assertSame("abc", a[1])
+  self~assertSame("def", a[2])
+  self~assertSame("ghi", a[3])
+
+::method TestArrayOfFour01
+  tester = .METHODTester~new
+  a = tester~TestArrayOfFour("abc", "def", "ghi", "jkl")
+  self~assertSame(4, a~size)
+  self~assertSame(4, a~items)
+  self~assertSame("abc", a[1])
+  self~assertSame("def", a[2])
+  self~assertSame("ghi", a[3])
+  self~assertSame("jkl", a[4])
+
+::method TestIsArray01
+  tester = .METHODTester~new
+  self~assertTrue(tester~TestIsArray(.array~new))
+  self~assertTrue(tester~TestIsArray(.array~new(2,2)))
+  self~assertFalse(tester~TestIsArray("abc"))
+  self~assertFalse(tester~TestIsArray(.array))
+  self~assertFalse(tester~TestIsArray(.nil))
+
+::method TestDirectory01
+  tester = .METHODTester~new
+  d = tester~TestNewDirectory
+  self~assertTrue(d~isA(.Directory))
+  self~assertTrue(tester~TestIsDirectory(d))
+  tester~TestDirectoryPut(d, 1, 'abc')
+  tester~TestDirectoryPut(d, 2, 'ABC')
+  self~assertSame(1, d['abc'], "Test 1")
+  self~assertSame(2, d['ABC'], "Test 2")
+  self~assertSame(1, tester~TestDirectoryAt(d, 'abc'), "Test 3")
+  self~assertSame(2, tester~TestDirectoryAt(d, 'ABC'), "Test 4")
+  self~assertSame(1, tester~TestDirectoryRemove(d, 'abc'))
+  self~assertSame(.nil, d['abc'], "Test 5")
+
+  self~assertFalse(tester~TestIsDirectory("abc"))
+  self~assertFalse(tester~TestIsDirectory(.nil))
+
+::method TestDirectory02
+  self~expectSyntax('88.900')
+  tester = .METHODTester~new
+  d = .directory~new
+  x = tester~TestDirectoryAt(d, "abc")
+
+::method TestDirectory03
+  self~expectSyntax('88.900')
+  tester = .METHODTester~new
+  d = .directory~new
+  x = tester~TestDirectoryRemove(d, "abc")
+
+::method TestTable01
+  tester = .METHODTester~new
+  d = tester~TestNewTable
+  self~assertTrue(d~isA(.Table))
+  self~assertTrue(tester~TestIsTable(d))
+  tester~TestTablePut(d, 1, 'abc')
+  tester~TestTablePut(d, 2, 'ABC')
+  self~assertSame(1, d['abc'], "Test 1")
+  self~assertSame(2, d['ABC'], "Test 2")
+  self~assertSame(1, tester~TestTableAt(d, 'abc'), "Test 3")
+  self~assertSame(2, tester~TestTableAt(d, 'ABC'), "Test 4")
+  self~assertSame(1, tester~TestTableRemove(d, 'abc'))
+  self~assertSame(.nil, d['abc'], "Test 5")
+
+  self~assertFalse(tester~TestIsTable("abc"))
+  self~assertFalse(tester~TestIsTable(.nil))
+
+::method TestTable02
+  self~expectSyntax('88.900')
+  tester = .METHODTester~new
+  d = .table~new
+  x = tester~TestTableAt(d, "abc")
+
+::method TestTable03
+  self~expectSyntax('88.900')
+  tester = .METHODTester~new
+  d = .table~new
+  x = tester~TestTableRemove(d, "abc")

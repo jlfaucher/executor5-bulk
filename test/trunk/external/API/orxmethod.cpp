@@ -831,10 +831,10 @@ RexxMethod1(logical_t,
 }
 
 RexxMethod1(RexxObjectPtr,
-            TestSupplierValue,
+            TestSupplierItem,
             RexxObjectPtr, supplier)
 {
-    return context->SupplierValue((RexxSupplierObject)supplier);
+    return context->SupplierItem((RexxSupplierObject)supplier);
 }
 
 RexxMethod1(RexxObjectPtr,
@@ -921,10 +921,18 @@ RexxMethod1(size_t,
 
 
 RexxMethod1(size_t,
-            TestArrayDimension,
+            TestArrayItems,
             RexxArrayObject, array)
 {
-    return context->ArrayDimension(array);
+    return context->ArrayItems(array);
+}
+
+
+RexxMethod1(size_t,
+            TestArrayDimension,
+            RexxObjectPtr, array)
+{
+    return context->ArrayDimension((RexxArrayObject)array);
 }
 
 
@@ -1044,11 +1052,11 @@ RexxMethod3(int,
 
 
 RexxMethod2(RexxObjectPtr,
-            TestTableGet,
+            TestTableAt,
             RexxObjectPtr, dir,
             RexxObjectPtr, index)
 {
-    RexxObjectPtr value = context->TableGet((RexxTableObject)dir, index);
+    RexxObjectPtr value = context->TableAt((RexxTableObject)dir, index);
     if (value == NULLOBJECT) {
         context->RaiseException1(Rexx_Error_Invalid_argument_user_defined, context->NewStringFromAsciiz("Conversion error"));
         return NULLOBJECT;
@@ -1282,7 +1290,7 @@ RexxMethod1(size_t,                     // Return type
 
 RexxMethod1(ssize_t,                     // Return type
             TestOptionalSSizeArg,        // Function routine name
-            ssize_t, arg1)               // Argument
+            OPTIONAL_ssize_t, arg1)      // Argument
 {
     if (argumentOmitted(1))
     {
@@ -1566,7 +1574,7 @@ RexxMethodEntry orxtest_methods[] = {
     REXX_METHOD(TestGetAllStemElements,      TestGetAllStemElements),
     REXX_METHOD(TestGetStemValue,            TestGetStemValue),
     REXX_METHOD(TestIsStem,                  TestIsStem),
-    REXX_METHOD(TestSupplierValue,           TestSupplierValue),
+    REXX_METHOD(TestSupplierItem,            TestSupplierItem),
     REXX_METHOD(TestSupplierIndex,           TestSupplierIndex),
     REXX_METHOD(TestSupplierAvailable,       TestSupplierAvailable),
     REXX_METHOD(TestSupplierNext,            TestSupplierNext),
@@ -1576,6 +1584,7 @@ RexxMethodEntry orxtest_methods[] = {
     REXX_METHOD(TestArrayAppend,             TestArrayAppend),
     REXX_METHOD(TestArrayAppendString,       TestArrayAppendString),
     REXX_METHOD(TestArraySize,               TestArraySize),
+    REXX_METHOD(TestArrayItems,              TestArrayItems),
     REXX_METHOD(TestArrayDimension,          TestArrayDimension),
     REXX_METHOD(TestNewArray,                TestNewArray),
     REXX_METHOD(TestArrayOfOne,              TestArrayOfOne),
@@ -1589,7 +1598,7 @@ RexxMethodEntry orxtest_methods[] = {
     REXX_METHOD(TestNewDirectory,            TestNewDirectory),
     REXX_METHOD(TestIsDirectory,             TestIsDirectory),
     REXX_METHOD(TestTablePut,                TestTablePut),
-    REXX_METHOD(TestTableGet,                TestTableGet),
+    REXX_METHOD(TestTableAt,                 TestTableAt),
     REXX_METHOD(TestTableRemove,             TestTableRemove),
     REXX_METHOD(TestNewTable,                TestNewTable),
     REXX_METHOD(TestIsTable,                 TestIsTable),
