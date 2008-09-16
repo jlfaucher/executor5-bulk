@@ -343,6 +343,34 @@ RexxMethod1(RexxStemObject,              // Return type
     return arg1;
 }
 
+RexxMethod1(RexxStringObject,            // Return type
+           TestStringArg,                // Function routine name
+           RexxStringObject, arg1)       // Argument
+{
+    return arg1;
+}
+
+RexxMethod1(RexxObjectPtr,               // Return type
+           TestObjectArg,                // Function routine name
+           RexxObjectPtr, arg1)          // Argument
+{
+    return arg1;
+}
+
+RexxMethod1(RexxArrayObject,             // Return type
+           TestArrayArg,                 // Function routine name
+           RexxArrayObject, arg1)        // Argument
+{
+    return arg1;
+}
+
+RexxMethod1(RexxClassObject,             // Return type
+           TestClassArg,                 // Function routine name
+           RexxClassObject, arg1)        // Argument
+{
+    return arg1;
+}
+
 RexxMethod1(RexxClassObject,             // Return type
            TestSuperArg,                 // Function routine name
            SUPER, arg1)                  // Argument
@@ -1056,6 +1084,370 @@ RexxMethod1(logical_t,
     return context->IsTable(o);
 }
 
+RexxMethod1(int,                       // Return type
+            TestOptionalIntArg,        // Object_method name
+            OPTIONAL_int, arg1)        // Argument
+{
+    if (argumentOmitted(1))
+    {
+        if (arg1 != 0)
+        {
+            context->RaiseException1(Rexx_Error_Invalid_argument_user_defined, context->NewStringFromAsciiz("Conversion error"));
+        }
+    }
+    return arg1;
+}
+
+RexxMethod1(int32_t,                    // Return type
+            TestOptionalInt32Arg,       // Function routine name
+            OPTIONAL_int32_t, arg1)     // Argument
+{
+    if (argumentOmitted(1))
+    {
+        if (arg1 != 0)
+        {
+            context->RaiseException1(Rexx_Error_Invalid_argument_user_defined, context->NewStringFromAsciiz("Conversion error"));
+        }
+    }
+    return arg1;
+}
+
+RexxMethod1(uint32_t,                   // Return type
+            TestOptionalUint32Arg,      // Function routine name
+            OPTIONAL_uint32_t, arg1)    // Argument
+{
+    if (argumentOmitted(1))
+    {
+        if (arg1 != 0)
+        {
+            context->RaiseException1(Rexx_Error_Invalid_argument_user_defined, context->NewStringFromAsciiz("Conversion error"));
+        }
+    }
+    return arg1;
+}
+
+RexxMethod1(int8_t,                     // Return type
+            TestOptionalInt8Arg,        // Function routine name
+            OPTIONAL_int8_t, arg1)      // Argument
+{
+    if (argumentOmitted(1))
+    {
+        if (arg1 != 0)
+        {
+            context->RaiseException1(Rexx_Error_Invalid_argument_user_defined, context->NewStringFromAsciiz("Conversion error"));
+        }
+    }
+    return arg1;
+}
+
+RexxMethod1(uint8_t,                   // Return type
+            TestOptionalUint8Arg,      // Function routine name
+            OPTIONAL_uint8_t, arg1)    // Argument
+{
+    if (argumentOmitted(1))
+    {
+        if (arg1 != 0)
+        {
+            context->RaiseException1(Rexx_Error_Invalid_argument_user_defined, context->NewStringFromAsciiz("Conversion error"));
+        }
+    }
+    return arg1;
+}
+
+RexxMethod1(int16_t,                   // Return type
+            TestOptionalInt16Arg,      // Function routine name
+            OPTIONAL_int16_t, arg1)    // Argument
+{
+    if (argumentOmitted(1))
+    {
+        if (arg1 != 0)
+        {
+            context->RaiseException1(Rexx_Error_Invalid_argument_user_defined, context->NewStringFromAsciiz("Conversion error"));
+        }
+    }
+    return arg1;
+}
+
+RexxMethod1(uint16_t,                  // Return type
+            TestOptionalUint16Arg,     // Function routine name
+            OPTIONAL_uint16_t, arg1)   // Argument
+{
+    if (argumentOmitted(1))
+    {
+        if (arg1 != 0)
+        {
+            context->RaiseException1(Rexx_Error_Invalid_argument_user_defined, context->NewStringFromAsciiz("Conversion error"));
+        }
+    }
+    return arg1;
+}
+
+RexxMethod1(int64_t,                   // Return type
+            TestOptionalInt64Arg,      // Function routine name
+            OPTIONAL_int64_t, arg1)    // Argument
+{
+    if (argumentOmitted(1))
+    {
+        if (arg1 != 0)
+        {
+            context->RaiseException1(Rexx_Error_Invalid_argument_user_defined, context->NewStringFromAsciiz("Conversion error"));
+        }
+    }
+    return arg1;
+}
+
+RexxMethod1(uint64_t,                  // Return type
+            TestOptionalUint64Arg,     // Function routine name
+            OPTIONAL_uint64_t, arg1)   // Argument
+{
+    if (argumentOmitted(1))
+    {
+        if (arg1 != 0)
+        {
+            context->RaiseException1(Rexx_Error_Invalid_argument_user_defined, context->NewStringFromAsciiz("Conversion error"));
+        }
+    }
+    return arg1;
+}
+
+RexxMethod1(intptr_t,                  // Return type
+            TestOptionalIntPtrArg,     // Function routine name
+            OPTIONAL_intptr_t, arg1)   // Argument
+{
+    if (argumentOmitted(1))
+    {
+        if (arg1 != 0)
+        {
+            context->RaiseException1(Rexx_Error_Invalid_argument_user_defined, context->NewStringFromAsciiz("Conversion error"));
+        }
+    }
+    return arg1;
+}
+
+RexxMethod1(uintptr_t,                 // Return type
+            TestOptionalUintPtrArg,    // Function routine name
+            OPTIONAL_uintptr_t, arg1)  // Argument
+{
+    if (argumentOmitted(1))
+    {
+        if (arg1 != 0)
+        {
+            context->RaiseException1(Rexx_Error_Invalid_argument_user_defined, context->NewStringFromAsciiz("Conversion error"));
+        }
+    }
+    return arg1;
+}
+
+RexxMethod1(wholenumber_t,             // Return type
+            TestOptionalWholeNumberArg,// Function routine name
+            OPTIONAL_wholenumber_t, arg1)       // Argument
+{
+    if (argumentOmitted(1))
+    {
+        if (arg1 != 0)
+        {
+            context->RaiseException1(Rexx_Error_Invalid_argument_user_defined, context->NewStringFromAsciiz("Conversion error"));
+        }
+    }
+    return arg1;
+}
+
+RexxMethod1(stringsize_t,              // Return type
+            TestOptionalStringSizeArg,          // Function routine name
+            OPTIONAL_stringsize_t, arg1)        // Argument
+{
+    if (argumentOmitted(1))
+    {
+        if (arg1 != 0)
+        {
+            context->RaiseException1(Rexx_Error_Invalid_argument_user_defined, context->NewStringFromAsciiz("Conversion error"));
+        }
+    }
+    return arg1;
+}
+
+RexxMethod1(size_t,                     // Return type
+            TestOptionalSizeArg,                // Function routine name
+            OPTIONAL_size_t, arg1)               // Argument
+{
+    if (argumentOmitted(1))
+    {
+        if (arg1 != 0)
+        {
+            context->RaiseException1(Rexx_Error_Invalid_argument_user_defined, context->NewStringFromAsciiz("Conversion error"));
+        }
+    }
+    return arg1;
+}
+
+RexxMethod1(ssize_t,                     // Return type
+            TestOptionalSSizeArg,        // Function routine name
+            ssize_t, arg1)               // Argument
+{
+    if (argumentOmitted(1))
+    {
+        if (arg1 != 0)
+        {
+            context->RaiseException1(Rexx_Error_Invalid_argument_user_defined, context->NewStringFromAsciiz("Conversion error"));
+        }
+    }
+    return arg1;
+}
+
+RexxMethod1(logical_t,                 // Return type
+            TestOptionalLogicalArg,    // Function routine name
+            OPTIONAL_logical_t, arg1)           // Argument
+{
+    if (argumentOmitted(1))
+    {
+        if (arg1 != 0)
+        {
+            context->RaiseException1(Rexx_Error_Invalid_argument_user_defined, context->NewStringFromAsciiz("Conversion error"));
+        }
+    }
+    return arg1;
+}
+
+RexxMethod1(float,                     // Return type
+            TestOptionalFloatArg,               // Function routine name
+            OPTIONAL_float, arg1)               // Argument
+{
+    if (argumentOmitted(1))
+    {
+        if (arg1 != 0.0)
+        {
+            context->RaiseException1(Rexx_Error_Invalid_argument_user_defined, context->NewStringFromAsciiz("Conversion error"));
+        }
+    }
+    return arg1;
+}
+
+RexxMethod1(double,                    // Return type
+            TestOptionalDoubleArg,     // Function routine name
+            OPTIONAL_double, arg1)     // Argument
+{
+    if (argumentOmitted(1))
+    {
+        if (arg1 != 0.0)
+        {
+            context->RaiseException1(Rexx_Error_Invalid_argument_user_defined, context->NewStringFromAsciiz("Conversion error"));
+        }
+    }
+    return arg1;
+}
+
+RexxMethod1(CSTRING,                   // Return type
+            TestOptionalCstringArg,    // Function routine name
+            OPTIONAL_CSTRING, arg1)    // Argument
+{
+    if (argumentOmitted(1))
+    {
+        if (arg1 != NULL)
+        {
+            context->RaiseException1(Rexx_Error_Invalid_argument_user_defined, context->NewStringFromAsciiz("Conversion error"));
+        }
+    }
+    return arg1;
+}
+
+RexxMethod1(POINTER,                   // Return type
+           TestOptionalPointerArg,     // Function routine name
+           OPTIONAL_POINTER, arg1)     // Argument
+{
+    if (argumentOmitted(1))
+    {
+        if (arg1 != NULL)
+        {
+            context->RaiseException1(Rexx_Error_Invalid_argument_user_defined, context->NewStringFromAsciiz("Conversion error"));
+        }
+    }
+    return arg1;
+}
+
+RexxMethod1(POINTER,                             // Return type
+           TestOptionalPointerStringArg,         // Function routine name
+           OPTIONAL_POINTERSTRING, arg1)         // Argument
+{
+    if (argumentOmitted(1))
+    {
+        if (arg1 != NULL)
+        {
+            context->RaiseException1(Rexx_Error_Invalid_argument_user_defined, context->NewStringFromAsciiz("Conversion error"));
+        }
+    }
+    return arg1;
+}
+
+RexxMethod1(RexxStemObject,              // Return type
+           TestOptionalStemArg,          // Function routine name
+           OPTIONAL_RexxStemObject, arg1)         // Argument
+{
+    if (argumentOmitted(1))
+    {
+        if (arg1 != NULLOBJECT)
+        {
+            context->RaiseException1(Rexx_Error_Invalid_argument_user_defined, context->NewStringFromAsciiz("Conversion error"));
+        }
+    }
+    return arg1;
+}
+
+RexxMethod1(RexxObjectPtr,               // Return type
+           TestOptionalObjectArg,        // Function routine name
+           OPTIONAL_RexxObjectPtr, arg1) // Argument
+{
+    if (argumentOmitted(1))
+    {
+        if (arg1 != NULLOBJECT)
+        {
+            context->RaiseException1(Rexx_Error_Invalid_argument_user_defined, context->NewStringFromAsciiz("Conversion error"));
+        }
+    }
+    return arg1;
+}
+
+RexxMethod1(RexxStringObject,            // Return type
+           TestOptionalStringArg,        // Function routine name
+           OPTIONAL_RexxStringObject, arg1)       // Argument
+{
+    if (argumentOmitted(1))
+    {
+        if (arg1 != NULLOBJECT)
+        {
+            context->RaiseException1(Rexx_Error_Invalid_argument_user_defined, context->NewStringFromAsciiz("Conversion error"));
+        }
+    }
+    return arg1;
+}
+
+RexxMethod1(RexxArrayObject,             // Return type
+           TestOptionalArrayArg,         // Function routine name
+           OPTIONAL_RexxArrayObject, arg1)        // Argument
+{
+    if (argumentOmitted(1))
+    {
+        if (arg1 != NULLOBJECT)
+        {
+            context->RaiseException1(Rexx_Error_Invalid_argument_user_defined, context->NewStringFromAsciiz("Conversion error"));
+        }
+    }
+    return arg1;
+}
+
+RexxMethod1(RexxClassObject,             // Return type
+           TestOptionalClassArg,         // Function routine name
+           OPTIONAL_RexxClassObject, arg1)        // Argument
+{
+    if (argumentOmitted(1))
+    {
+        if (arg1 != NULLOBJECT)
+        {
+            context->RaiseException1(Rexx_Error_Invalid_argument_user_defined, context->NewStringFromAsciiz("Conversion error"));
+        }
+    }
+    return arg1;
+}
+
 
 RexxMethodEntry orxtest_methods[] = {
     REXX_METHOD(TestZeroIntArgs,       TestZeroIntArgs),
@@ -1094,6 +1486,11 @@ RexxMethodEntry orxtest_methods[] = {
     REXX_METHOD(TestPointerStringValue,      TestPointerStringValue),
     REXX_METHOD(TestPointerStringArg,        TestPointerStringArg),
     REXX_METHOD(TestNullPointerStringValue,  TestNullPointerStringValue),
+    REXX_METHOD(TestStemArg,                 TestStemArg),
+    REXX_METHOD(TestObjectArg,               TestObjectArg),
+    REXX_METHOD(TestStringArg,               TestStringArg),
+    REXX_METHOD(TestArrayArg,                TestArrayArg),
+    REXX_METHOD(TestClassArg,                TestClassArg),
     REXX_METHOD(TestObjectToWholeNumber,     TestObjectToWholeNumber),
     REXX_METHOD(TestObjectToStringSize,      TestObjectToStringSize),
     REXX_METHOD(TestObjectToInt64,           TestObjectToInt64),
@@ -1115,7 +1512,32 @@ RexxMethodEntry orxtest_methods[] = {
     REXX_METHOD(TestLogicalToObject,         TestLogicalToObject),
     REXX_METHOD(TestDoubleToObject,          TestDoubleToObject),
     REXX_METHOD(TestObjectToValue,           TestObjectToValue),
-    REXX_METHOD(TestStemArg,                 TestStemArg),
+    REXX_METHOD(TestOptionalIntArg,            TestOptionalIntArg),
+    REXX_METHOD(TestOptionalInt32Arg,          TestOptionalInt32Arg),
+    REXX_METHOD(TestOptionalUint32Arg,         TestOptionalUint32Arg),
+    REXX_METHOD(TestOptionalInt8Arg,           TestOptionalInt8Arg),
+    REXX_METHOD(TestOptionalUint8Arg,          TestOptionalUint8Arg),
+    REXX_METHOD(TestOptionalInt16Arg,          TestOptionalInt16Arg),
+    REXX_METHOD(TestOptionalUint16Arg,         TestOptionalUint16Arg),
+    REXX_METHOD(TestOptionalInt64Arg,          TestOptionalInt64Arg),
+    REXX_METHOD(TestOptionalUint64Arg,         TestOptionalUint64Arg),
+    REXX_METHOD(TestOptionalIntPtrArg,         TestOptionalIntPtrArg),
+    REXX_METHOD(TestOptionalUintPtrArg,        TestOptionalUintPtrArg),
+    REXX_METHOD(TestOptionalWholeNumberArg,    TestOptionalWholeNumberArg),
+    REXX_METHOD(TestOptionalStringSizeArg,     TestOptionalStringSizeArg),
+    REXX_METHOD(TestOptionalSizeArg,           TestOptionalSizeArg),
+    REXX_METHOD(TestOptionalSSizeArg,          TestOptionalSSizeArg),
+    REXX_METHOD(TestOptionalLogicalArg,        TestOptionalLogicalArg),
+    REXX_METHOD(TestOptionalFloatArg,          TestOptionalFloatArg),
+    REXX_METHOD(TestOptionalDoubleArg,         TestOptionalDoubleArg),
+    REXX_METHOD(TestOptionalCstringArg,        TestOptionalCstringArg),
+    REXX_METHOD(TestOptionalPointerArg,        TestOptionalPointerArg),
+    REXX_METHOD(TestOptionalPointerStringArg,        TestOptionalPointerStringArg),
+    REXX_METHOD(TestOptionalStemArg,                 TestOptionalStemArg),
+    REXX_METHOD(TestOptionalObjectArg,               TestOptionalObjectArg),
+    REXX_METHOD(TestOptionalStringArg,               TestOptionalStringArg),
+    REXX_METHOD(TestOptionalArrayArg,                TestOptionalArrayArg),
+    REXX_METHOD(TestOptionalClassArg,                TestOptionalClassArg),
     REXX_METHOD(TestSuperArg,                TestSuperArg),
     REXX_METHOD(TestScopeArg,                TestScopeArg),
     REXX_METHOD(TestNameArg,                 TestNameArg),
