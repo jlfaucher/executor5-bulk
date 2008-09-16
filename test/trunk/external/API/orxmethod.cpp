@@ -855,14 +855,6 @@ RexxMethod2(RexxObjectPtr,
 }
 
 
-RexxMethod2(logical_t,
-            TestArrayHasIndex,
-            RexxArrayObject, array,
-            size_t, index)
-{
-    return context->ArrayHasIndex(array, index);
-}
-
 RexxMethod3(int,
             TestArrayPut,
             RexxArrayObject, array,
@@ -930,6 +922,27 @@ RexxMethod2(RexxArrayObject,
             RexxObjectPtr, arg2)
 {
     return context->ArrayOfTwo(arg1, arg2);
+}
+
+
+RexxMethod3(RexxArrayObject,
+            TestArrayOfThree,
+            RexxObjectPtr, arg1,
+            RexxObjectPtr, arg2,
+            RexxObjectPtr, arg3)
+{
+    return context->ArrayOfThree(arg1, arg2, arg3);
+}
+
+
+RexxMethod4(RexxArrayObject,
+            TestArrayOfFour,
+            RexxObjectPtr, arg1,
+            RexxObjectPtr, arg2,
+            RexxObjectPtr, arg3,
+            RexxObjectPtr, arg4)
+{
+    return context->ArrayOfFour(arg1, arg2, arg3, arg4);
 }
 
 RexxMethod1(logical_t,
@@ -1137,7 +1150,6 @@ RexxMethodEntry orxtest_methods[] = {
     REXX_METHOD(TestSupplierNext,            TestSupplierNext),
     REXX_METHOD(TestNewSupplier,             TestNewSupplier),
     REXX_METHOD(TestArrayAt,                 TestArrayAt),
-    REXX_METHOD(TestArrayHasIndex,           TestArrayHasIndex),
     REXX_METHOD(TestArrayPut,                TestArrayPut),
     REXX_METHOD(TestArrayAppend,             TestArrayAppend),
     REXX_METHOD(TestArrayAppendString,       TestArrayAppendString),
@@ -1146,6 +1158,8 @@ RexxMethodEntry orxtest_methods[] = {
     REXX_METHOD(TestNewArray,                TestNewArray),
     REXX_METHOD(TestArrayOfOne,              TestArrayOfOne),
     REXX_METHOD(TestArrayOfTwo,              TestArrayOfTwo),
+    REXX_METHOD(TestArrayOfThree,            TestArrayOfThree),
+    REXX_METHOD(TestArrayOfFour,             TestArrayOfFour),
     REXX_METHOD(TestIsArray,                 TestIsArray),
     REXX_METHOD(TestDirectoryPut,            TestDirectoryPut),
     REXX_METHOD(TestDirectoryAt,             TestDirectoryAt),

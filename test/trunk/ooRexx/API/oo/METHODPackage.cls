@@ -119,6 +119,8 @@
 ::method TestNewArray EXTERNAL "LIBRARY orxmethod TestNewArray"
 ::method TestArrayOfOne EXTERNAL "LIBRARY orxmethod TestArrayOfOne"
 ::method TestArrayOfTwo EXTERNAL "LIBRARY orxmethod TestArrayOfTwo"
+::method TestArrayOfThree EXTERNAL "LIBRARY orxmethod TestArrayOfThree"
+::method TestArrayOfFour EXTERNAL "LIBRARY orxmethod TestArrayOfFour"
 ::method TestIsArray EXTERNAL "LIBRARY orxmethod TestIsArray"
 ::method TestDirectoryPut EXTERNAL "LIBRARY orxmethod TestDirectoryPut"
 ::method TestDirectoryAt EXTERNAL "LIBRARY orxmethod TestDirectoryAt"
