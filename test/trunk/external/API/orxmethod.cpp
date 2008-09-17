@@ -1456,6 +1456,300 @@ RexxMethod1(RexxClassObject,             // Return type
     return arg1;
 }
 
+RexxMethod3(RexxObjectPtr,
+            TestSendMessage,
+            RexxObjectPtr, target,
+            CSTRING, name,
+            RexxArrayObject, args)
+{
+    return context->SendMessage(target, name, args);
+}
+
+RexxMethod2(RexxObjectPtr,
+            TestSendMessage0,
+            RexxObjectPtr, target,
+            CSTRING, name)
+{
+    return context->SendMessage0(target, name);
+}
+
+RexxMethod3(RexxObjectPtr,
+            TestSendMessage1,
+            RexxObjectPtr, target,
+            CSTRING, name,
+            RexxObjectPtr, arg1)
+{
+    return context->SendMessage1(target, name, arg1);
+}
+
+RexxMethod4(RexxObjectPtr,
+            TestSendMessage2,
+            RexxObjectPtr, target,
+            CSTRING, name,
+            RexxObjectPtr, arg1,
+            RexxObjectPtr, arg2)
+{
+    return context->SendMessage2(target, name, arg1, arg2);
+}
+
+
+RexxMethod2(logical_t,
+            TestIsInstanceOf,
+            RexxObjectPtr, arg1,
+            RexxClassObject, arg2)
+{
+    return context->IsInstanceOf(arg1, arg2);
+}
+
+
+RexxMethod2(logical_t,
+            TestHasMethod,
+            RexxObjectPtr, arg1,
+            CSTRING, name)
+{
+    return context->HasMethod(arg1, name);
+}
+
+
+RexxMethod1(RexxObjectPtr,
+            TestLoadPackage,
+            CSTRING, name)
+{
+    return (RexxObjectPtr)context->LoadPackage(name);
+}
+
+RexxMethod2(RexxObjectPtr,
+            TestLoadPackageFromData,
+            CSTRING, name,
+            RexxStringObject, data)
+{
+    return (RexxObjectPtr)context->LoadPackageFromData(name, context->StringData(data), context->StringLength(data));
+}
+
+
+RexxMethod1(RexxClassObject,
+            TestFindClass,
+            CSTRING, name)
+{
+    return context->FindClass(name);
+}
+
+
+RexxMethod2(RexxClassObject,
+            TestFindPackageClass,
+            RexxObjectPtr, package,
+            CSTRING, name)
+{
+    return context->FindPackageClass((RexxPackageObject)package, name);
+}
+
+
+RexxMethod1(RexxObjectPtr,
+            TestGetPackageRoutines,
+            RexxObjectPtr, package)
+{
+    return (RexxObjectPtr)context->GetPackageRoutines((RexxPackageObject)package);
+}
+
+
+RexxMethod1(RexxObjectPtr,
+            TestGetPackagePublicRoutines,
+            RexxObjectPtr, package)
+{
+    return (RexxObjectPtr)context->GetPackagePublicRoutines((RexxPackageObject)package);
+}
+
+
+RexxMethod1(RexxObjectPtr,
+            TestGetPackageClasses,
+            RexxObjectPtr, package)
+{
+    return (RexxObjectPtr)context->GetPackageClasses((RexxPackageObject)package);
+}
+
+
+RexxMethod1(RexxObjectPtr,
+            TestGetPackagePublicClasses,
+            RexxObjectPtr, package)
+{
+    return (RexxObjectPtr)context->GetPackagePublicClasses((RexxPackageObject)package);
+}
+
+
+RexxMethod1(RexxObjectPtr,
+            TestGetPackageMethods,
+            RexxObjectPtr, package)
+{
+    return (RexxObjectPtr)context->GetPackageMethods((RexxPackageObject)package);
+}
+
+RexxMethod2(RexxObjectPtr,
+            TestCallRoutine,
+            RexxObjectPtr, routine,
+            RexxArrayObject, args)
+{
+    return context->CallRoutine((RexxRoutineObject)routine, args);
+}
+
+RexxMethod2(RexxObjectPtr,
+            TestCallProgram,
+            CSTRING, name,
+            RexxArrayObject, args)
+{
+    return context->CallProgram(name, args);
+}
+
+RexxMethod2(RexxObjectPtr,
+            TestNewMethod,
+            CSTRING, name,
+            RexxStringObject, data)
+{
+    return (RexxObjectPtr)context->NewMethod(name, context->StringData(data), context->StringLength(data));
+}
+
+RexxMethod2(RexxObjectPtr,
+            TestNewRoutine,
+            CSTRING, name,
+            RexxStringObject, data)
+{
+    return (RexxObjectPtr)context->NewRoutine(name, context->StringData(data), context->StringLength(data));
+}
+
+RexxMethod1(logical_t,
+            TestIsMethod,
+            RexxObjectPtr, target)
+{
+    return context->IsMethod(target);
+}
+
+RexxMethod1(logical_t,
+            TestIsRoutine,
+            RexxObjectPtr, target)
+{
+    return context->IsRoutine(target);
+}
+
+RexxMethod1(RexxObjectPtr,
+            TestGetMethodPackage,
+            RexxObjectPtr, target)
+{
+    return (RexxObjectPtr)context->GetMethodPackage((RexxMethodObject)target);
+}
+
+RexxMethod1(RexxObjectPtr,
+            TestGetRoutinePackage,
+            RexxObjectPtr, target)
+{
+    return (RexxObjectPtr)context->GetRoutinePackage((RexxRoutineObject)target);
+}
+
+RexxMethod1(RexxStringObject,
+            TestObjectToString,
+            RexxObjectPtr, target)
+{
+    return context->ObjectToString(target);
+}
+
+RexxMethod3(RexxStringObject,
+            TestStringGet,
+            RexxStringObject, source,
+            stringsize_t, offset,
+            stringsize_t, length)
+{
+    char *buffer = (char *)malloc(length + 16);
+    context->StringGet(source, offset, buffer, length);
+    RexxStringObject result = context->NewString(buffer, length);
+    free(buffer);
+    return result;
+}
+
+RexxMethod1(stringsize_t,
+            TestStringLength,
+            RexxStringObject, target)
+{
+    return context->StringLength(target);
+}
+
+
+RexxMethod1(CSTRING,
+            TestStringData,
+            RexxStringObject, target)
+{
+    return context->StringData(target);
+}
+
+
+RexxMethod1(RexxStringObject,
+            TestStringUpper,
+            RexxStringObject, target)
+{
+    return context->StringUpper(target);
+}
+
+RexxMethod1(RexxStringObject,
+            TestStringLower,
+            RexxStringObject, target)
+{
+    return context->StringLower(target);
+}
+
+RexxMethod1(logical_t,
+            TestIsString,
+            RexxObjectPtr, target)
+{
+    return context->IsString(target);
+}
+
+RexxMethod1(int,
+            TestRaiseException0,
+            size_t, errNo)
+{
+    context->RaiseException0(errNo);
+    return 0;
+}
+
+RexxMethod2(int,
+            TestRaiseException1,
+            size_t, errNo,
+            RexxObjectPtr, sub1)
+{
+    context->RaiseException1(errNo, sub1);
+    return 0;
+}
+
+RexxMethod3(int,
+            TestRaiseException2,
+            size_t, errNo,
+            RexxObjectPtr, sub1,
+            RexxObjectPtr, sub2)
+{
+    context->RaiseException2(errNo, sub1, sub2);
+    return 0;
+}
+
+RexxMethod2(int,
+            TestRaiseException,
+            size_t, errNo,
+            RexxArrayObject, subs)
+{
+    context->RaiseException(errNo, subs);
+    return 0;
+}
+
+
+RexxMethod4(int,
+            TestRaiseCondition,
+            CSTRING, name,
+            OPTIONAL_CSTRING, desc,
+            OPTIONAL_RexxArrayObject, add,
+            OPTIONAL_RexxObjectPtr, result)
+{
+    context->RaiseCondition(name, desc, add, result);
+    return 0;
+}
+
+
+
 
 RexxMethodEntry orxtest_methods[] = {
     REXX_METHOD(TestZeroIntArgs,       TestZeroIntArgs),
