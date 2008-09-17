@@ -614,7 +614,7 @@ RexxMethod2(int,                       // Return type
     if (members) {
         const gchar **names = (const char **)malloc(sizeof(const char *) * members);
         if ( ! names ) {
-            context->RaiseException(Rexx_Error_System_resources);
+            context->RaiseException0(Rexx_Error_System_resources);
             return 0;
         }
 
@@ -647,7 +647,7 @@ RexxMethod2(int,                       // Return type
     if (members) {
         const gchar **names = (const char **)malloc(sizeof(const char *) * members);
         if ( ! names ) {
-            context->RaiseException(Rexx_Error_System_resources);
+            context->RaiseException0(Rexx_Error_System_resources);
             return 0;
         }
 
@@ -680,7 +680,7 @@ RexxMethod2(int,                       // Return type
     if (members) {
         const gchar **names = (const char **)malloc(sizeof(const char *) * members);
         if ( ! names ) {
-            context->RaiseException(Rexx_Error_System_resources);
+            context->RaiseException0(Rexx_Error_System_resources);
             return 0;
         }
 
