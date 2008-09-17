@@ -1,0 +1,483 @@
+#!/usr/bin/rexx
+/*
+   name:             RexxQueue.testGroup
+   authors:          Jon Wolfers
+                     much of this testgroup is modified from Mark Miesfeld's testgroup
+                     for the .queue collection class
+   date:             2008-08-16
+   version:          1.0.1
+
+   changed:          
+
+   languageLevel:    6.02
+   purpose:          Regression test for the Open Object REXX supplied .RexxQueue class.
+                     Particularly those methods that are designed for user interaction.
+
+   remark:           Work in progress at this time.  Tests for some methods are
+                     simply place holders, the actual tests need to be filled in.
+
+   license:          CPL 1.0 (Common Public License v1.0, see below)
+   link:
+
+   category:         ooRexx
+   category:         Base
+   category:         Class
+   category:         RexxQueue
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2005-2008 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+cmdLine = arg(1)
+
+  .Queue.testGroup~setVerbose(cmdLine)
+
+  -- Create a TestGroup using information specific to this file.
+  parse source . . fileSpec
+  group = .TestGroup~new(fileSpec)
+
+  group~add(.REXXQUEUE.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+  Directives, Classes, or Routines.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::requires 'ooTest.frm'
+
+/* class: RexxQueue.testGroup  - - - - - - - - - - - - - - - - - - - - - - - -*\
+
+    A test case class to regression test the .RexxQueue class.
+    The .RexxQueue class is one of the classes supplied by Open Object REXX.
+
+    All test case methods in this class begin with 'test_'.
+
+    The design specification used for these test cases of the .queue class is
+    the current documentation for the class from:
+
+      Open Object Rexx
+      Reference
+      Version 3.0.0 Revision 3 Edition
+      November 11, 2005
+
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::class "RexxQueue.testGroup" public subclass ooTestCase
+
+  /* test_new( ) - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+      Test the .RexxQueue class method: new.
+  \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::method  test_new
+
+    if self~class~verbose > 2 then say '*In test_new'
+
+    -- Prefix to my messages.
+    be   = "New object should be"
+    have = "New object should have"
+
+    -- Create what should be a new instance of a queue.
+    q = .RexxQueue~new
+
+    -- Test that the object is indeed an instance of .queue.
+    self~assertEquals(q~class, .RexxQueue,  "subtest01:" be "instance of .RexxQueue")
+
+    -- Test that the new object is a direct subclass of .object.
+    supers = q~class~superclasses
+
+    self~assertEquals(supers~items, 1,  "subtest02:"  have "only 1 superclass")
+
+    self~assertEquals(supers[ 1 ], .object,  "subtest03:"  have ".object as superclass")
+
+    -- Test that the object has all the .queue methods.
+    self~assertTrue(q~class~hasmethod( "CREATE"    ), "subtest04:" have '"[]" class method')
+    self~assertTrue(q~class~hasmethod( "DELETE"    ), "subtest05:" have '"[]=" class method')
+
+    self~assertTrue(q~hasmethod( "GET"       ), "subtest06:" have "GET method")
+    self~assertTrue(q~hasmethod( "SET"       ), "subtest07:" have "SET method")
+    self~assertTrue(q~hasmethod( "DELETE"    ), "subtest08:" have 'DELETE class method')
+    self~assertTrue(q~hasmethod( "LINEOUT"   ), "subtest09:" have "LINEOUT method")
+    self~assertTrue(q~hasmethod( "SAY"       ), "subtest10:" have "SAY method")
+    self~assertTrue(q~hasmethod( "MAKEARRAY" ), "subtest11:" have "MAKEARRAY method")
+    self~assertTrue(q~hasmethod( "PULL"      ), "subtest12:" have "PULL method")
+    self~assertTrue(q~hasmethod( "PUSH"      ), "subtest13:" have "PUSH method")
+    self~assertTrue(q~hasmethod( "LINEIN"    ), "subtest14:" have "LINEIN method")
+    self~assertTrue(q~hasmethod( "QUEUE"     ), "subtest15:" have "QUEUE method")
+    self~assertTrue(q~hasmethod( "EMPTY"     ), "subtest16:" have "EMPTY method")
+    self~assertTrue(q~hasmethod( "QUEUED"    ), "subtest17:" have "QUEUED method")
+
+    -- Test that the queue is created empty.
+    self~assertEquals( q~queued, 0, "subtest18:" be "empty")
+
+  -- End test_new( )
+
+
+  /* test_queue( )- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+      Test the .RexxQueue instance method: Queue.
+
+      >>-queue(-+------+-)----------------------------------><
+                +-line-+
+
+  \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::method  test_queue
+
+    if self~class~verbose > 2 then say '*In test_queue'
+
+      q = .RexxQueue~new('testQueue')
+      s = 'test string'
+      s2 = 'test string2'
+      q~queue(s)
+      q~queue(s2)
+      self~assertEquals(q~queued, 2, 'subTest19: Queue adds one line')
+      self~assertEquals(q~pull, s,   'subTest20: Queued line correct FIFO')
+      q~delete
+
+  -- End test_queue( )
+
+  /* test_push( ) - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+      Test the .RexxQueue instance method: Push.
+
+      >>-push(-+------+-)-----------------------------------><
+               +-line-+
+
+  \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::method  test_push
+
+    if self~class~verbose > 2 then say '*In test_push'
+                                                     
+      q = .RexxQueue~new
+      s = 'test string'
+      s2 = 'test string2'
+      q~push(s)
+      q~push(s2)
+      self~assertEquals(q~queued, 2, 'subTest21: Queue adds one line')
+      self~assertEquals(q~pull, s2,  'subTest22: Queued line correct FIFO')
+
+  -- End test_push( )
+
+  /* test_queue_external  - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+
+     Lines piped to the RxQueue device should end up on the queue
+
+  \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::method  test_queue_external
+
+    if self~class~verbose > 2 then say '*In test_queue_external'
+
+      q = .RexxQueue~new('TestQext')
+      s = 'test string'
+      s2 = 'test string2'
+      address cmd 'echo' s '| RxQueue' q
+      address cmd 'echo' s2 '| RxQueue' q
+      self~assertEquals(q~queued, 2, 'subTest23: Queue adds one line')
+      self~assertEquals(q~pull, s,   'subTest24: Queued line correct FIFO')
+      q~delete
+
+  -- End test_queue( )
+
+  /* test_push_external  - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+
+     Lines piped to the RxQueue device should end up on the queue
+
+  \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::method  test_push_external
+
+    if self~class~verbose > 2 then say '*In test_push_external'
+
+      q = .RexxQueue~new('TEST')
+      s = 'test string'
+      s2 = 'test string2'
+      address cmd 'echo' s '| RxQueue' q '/LIFO'
+      address cmd 'echo' s2 '| RxQueue' q '/LIFO'
+      self~assertEquals(q~queued, 2, 'subTest25: Queue adds one line')
+      self~assertEquals(q~pull, s2,   'subTest26: Queued line correct LIFO')
+      q~delete
+
+  -- End test_push( )
+  
+
+  /* test_get  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+      Test the .RexxQueue instance method: Get.
+
+      >>-get------------------------------------------------><
+
+      Returns the name of the Rexx external queue associated with this instance.
+  \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::method  test_get
+
+    if self~class~verbose > 2 then say '*In test_get'
+
+      q = .rexxQueue~new
+      self~assertEquals(q~get, SESSION,  "subtest 27: default queue named session")
+--    self~assertEquals(q, q~get,     "subtest 28: get returns queue name")
+
+      q = .rexxqueue~new('Rosebud')
+      self~assertEquals(q~get, Rosebud,   "subtest 29: queue named as in init")
+--    self~assertEquals(q, q~get,     "subtest 30: get returns queue name")
+
+      q~delete
+
+  -- End test_get( )
+
+  /* test_linein( ) - - - - - - - - - - - - - - - - - - - - - - - - - - - - - *\
+      Test the .rexxqueue instance method: lineIn.
+
+      >>-lineIn--------------------------------------------------><
+      Reads a single line from the Rexx external queue. If the queue is empty,
+      lineIn will wait until a line is added to the queue.
+  \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::method  test_lineIn
+
+    if self~class~verbose > 2 then say '*In test_linein'
+
+    q = .rexxQueue~new('test')
+    q~push('Item1')
+    q~push('Item2')
+    self~assertEquals(q~lineIn, 'Item2', 'subtest 31: Linein Reads from RexxQueue')
+    x = q~lineIn
+    q~delete
+
+    -- There realy should be a test here that shows that lineIn will wait till
+    -- there is data available
+
+  -- End test_lineIn( )
+
+  /* test_lineout( ) - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+      Test the .rexxqueue instance method: lineOut.
+
+      >>-lineOut(-+------+-)----------------------------------><
+                  +-line-+
+
+      Adds a line to the Rexx external queue in first-in-first-out (FIFO) order.
+      If line is not specified, a null string ("") is added.
+  \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::method  test_lineOut
+
+    if self~class~verbose > 2 then say '*In test_lineOut'
+
+    q = .rexxQueue~new('test')
+    q~lineOut('Item1')
+    q~lineOut
+    self~assertEquals(q~lineIn, 'Item1', 'subtest 32: LineOut Puts on RexxQueue')
+    self~assertEquals(q~lineIn, '',      'subtest 33: LineOut without parms puts null string on rexxqueue')
+    q~delete
+
+  -- End test_lineOut( )
+
+  /* test_Queued( ) -- - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+      Test the .rexxqueue instance method: Queued.
+
+      >>-queued---------------------------------------------><
+
+      Returns the count of lines currently in the Rexx external queue.
+  \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::method  test_Queued
+
+    if self~class~verbose > 2 then say '*In test_Queued'
+
+    q = .rexxQueue~new('testQueued')
+    q~empty
+    do n over self~class~arrayOf100numbers
+      q~queue( n )
+    end
+    self~assertEquals(q~queued, 100, 'subtest 34: Queued returns items on rexxQueue')
+    q~empty
+    q~delete
+
+  -- End test_Queued( )
+
+  /* test_Set - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+      Test the .rexxqueue instance method: Set.
+
+      >>-set(name)----------------------------------><
+
+      Switches the Rexx external queue associated with RexxQueue instance.
+      The new queue must have been previously created.
+      The method return value is the name of current queue being used by the instance.
+  \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::method  test_set
+
+    if self~class~verbose > 2 then say '*In test_set'
+
+    q1 = .rexxQueue~new('Q1')
+    q2 = .rexxQueue~new('Q2')
+    q1~push('Q1Item1')
+    q2~set(q1)
+    self~assertEquals(q2~pull, 'Q1Item1', 'subtest 35: Set changes external queue')
+    q1~delete
+    q2~delete
+
+  -- End test_Queued( )
+
+
+  /* test_makearray( ) - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+      Test the .rexxqueue instance method: makearray.
+
+      >>-MAKEARRAY---------------------------------------------------><
+
+      Returns a single-index array containing the receiver queue items. The
+      array indexes range from 1 to the number of items. The order in which the
+      queue items appear in the array is the same as their queuing order, with
+      the head of the queue as index 1.  The queue is emptied
+  \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::method  test_makearray
+
+      q = .RexxQueue~new('test')
+      q~Queue('First')
+      q~Queue('Second')
+      q~Queue('Third')
+      Arr = q~makeArray
+
+      self~assertEquals(q~queued, 0,     'subtest 36: Queue is emptied by makearray')
+      self~assertEquals(arr[1], 'First', 'subtest 37: Makearray transfers first item')
+      self~assertEquals(arr[3], 'Third', 'subtest 38: MakeArray transfers all items')
+
+      q~delete
+  -- End test_makearray( )
+
+
+  /* test_empty( )- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+      Test the .rexxqueue instance method: empty.
+
+      >>-EMPTY-------------------------------------------------------><
+
+      Removes all items from the queue.
+  \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::method  test_empty
+
+    q = .rexxQueue~new('testempty')
+    do n over self~class~arrayOf100numbers
+      q~queue( n )
+    end
+    q~empty
+    self~assertEquals(q~queued, 0, 'subtest 39: empty removes items from queue') 
+
+    q~delete
+
+  -- End test_empty( )
+
+
+  /* ==========================================================================*/
+
+
+
+  -- Attribute: arrayOf100numbers
+  --   Holds the numbers 1 through 100.  This array is
+  --   not changed by any test cases and only needs to be initialized once.
+::method  arrayOf100numbers attribute class
+
+  /* setUp( ) - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+      Some initialization to be performed prior to each test running.
+  \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::method  setUp
+
+    -- Array only needs to be created and filled one time.  No test changes the
+    -- array in any way.
+    if self~class~arrayOf100numbers~class <> .array then do
+      arr = .array~new
+      do i = 1 to 100
+        arr[ i ] = i
+      end
+      self~class~arrayOf100numbers = arr
+    end
+
+  -- End setUp( )
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+  Code below this separator is useful during the implementation of this test
+  unit.  It has helped with debugging the test unit itself.  It could be removed
+  when the test unit is fully implemented.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+
+  -- verbose                 public / private
+  --   Flag used while implementing this test unit.  Controls if extra messages
+  --   are printed to the console while this test unit is executed.  Turn on
+  --   by calling this program file using an arg of exactly 'verboseN', where
+  --   N is an integer from 1 to 10.   Anything else turns the extra messages
+  --   off.  The higher N, the more verbose.
+::attribute verbose get class
+::attribute verbose set class private
+
+  /* init( ) - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+
+    Class method to initialize some class variables.
+
+    Input:
+      None.
+
+    Returns:
+      0, always.
+  \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::method  init class
+    self~verbose = 0
+    forward class (super)
+  return 0
+  -- End init( )
+
+  /* setVerbose( flag )- - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+
+    Sets the verbose class attribute as specified.
+
+    Input:
+      flag  OPTIONAL
+        If this is exactly: 'verboseN' where N is an integer from 1 to 10 then
+        verbose is set to the value of N.  Anything else, including omitting the
+        argument sets verbose off.
+
+    Returns:
+      The state of the verbose setting after this method executes.
+  \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::method  setVerbose class
+    use arg flag
+
+    if flag~class == .string then do
+      if flag~abbrev( 'verbose' ) then do
+        N = flag~substr( 8 )
+        if N~datatype( 'W' ) then do
+          if N > 0 & N < 11 then do
+            self~verbose = N
+          end
+        end
+      end
+    end
+
+  return self~verbose
+  -- End setVerbose( flag )
+
+-- End of class: Queue.testGroup
+
