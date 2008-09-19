@@ -85,23 +85,20 @@ return group
   if \ isSubClassOf(testResult~class, "ooTestCollectingParameter") then
      raise syntax 88.914 array ("1 'testResult'", "ooTestCollectingParameter")
 
-  prgFile = indirectRequire('winsystm.cls')
+  signal on any name loadErr
+  .context~package~loadPackage('winsystm.cls')
+  return
 
-  if prgFile == "" then do
-    parse source . . fileSpec
-    err = .ExceptionData~new(timeStamp(), fileSpec, .ExceptionData~UNEXPECTED)
-    err~setLine(.line - 5)
-    err~severity = "Unrecoverable"
-    err~msg = "Could not create program file for indirect require of 'winsystm.cls'"
-    err~className = self~class~id
-    testResult~addException(err)
-    testResult~stop
-    return
-  end
+loadErr:
+  err = .ExceptionData~new(timeStamp(), s, .ExceptionData~TRAP)
+  err~setLine(sigl)
+  err~conditionObject = condition('O')
+  err~msg = "Could not load 'winsystm.cls' the package needed for this test group."
+  err~severity = "Unrecoverable"
 
-  -- No error.
-  call (prgFile)
-  j = deleteFile(prgFile)
+  testResult~addException(err)
+  testResult~stop
+  return
 
 -- End of class ClipboardSuite
 

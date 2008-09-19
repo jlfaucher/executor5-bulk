@@ -591,56 +591,6 @@ return prgRet
 return execRexxPrgWithArgs(prgName, "", output)
 
 
-/* indirectRequire( fileName ) - - - - - - - - - - - - - - - - - - - - - - - -*\
-
-  Provides a way for a test unit to indirectly 'require' (use the ::requires
-  directive) a file.  This is best explained using an example.
-
-  A test unit written to test a Windows specific feature of the interprerter,
-  say the WindowsClipboard class, can test if the operating system is Windows
-  before it executes any tests.  If the OS is not Windows, it simply returns an
-  empty list and no tests are executed.
-
-  However, if that test unit has a requires directive for a Windows only file,
-  the test unit produces an error when run on a non-Windows OS because the
-  required file is not found.  This error ocurrs before the OS test has a chance
-  to execute.
-
-  This function allows the test unit to first determine that the OS is Windows,
-  then add the 'required' file.  This supports the ooRexx project goal of having
-  the entire test suite run on any supported OS and not produce extraneous
-  errors.  Although the example is Windows, the principle applies to any OS.
-
-  Psuedo code to use this function:
-
-  -- Test OS
-  if not right OS then return empty list
-
-  prgFile = indirectRequire(<fileToRequire>)
-  if pgrFile == "" then return empty list  -- Some error happened.
-
-  call (prgfile)       -- Now the requires directive for the file has executed.
-
-  deleteFile(prgFile)  -- Delete the temporary file.
-
-  Input:
-    fileName   REQUIRED
-      The file that is to be indirectly required.
-
-  Returns:
-    On success, the fully quailified file name of the Rexx program that will
-    'require' the specified file.  The empty string is returned on error.
-\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::routine indirectRequire public
-  use strict arg fileName
-
-  srcLines = .array~of('::requires' .TestUtil~enQuote(fileName))
-  fullName = createRexxPrgFile(srcLines, 'tmpIndirectRequire')
-
-return fullName
--- End indirectRequire()
-
-
 /* createOleObject( id ) - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
 
   Creates an .OLEObject instance, a proxy for the specified COM object.  This
