@@ -43,9 +43,14 @@ COMMON_SRC_DEPS =
 FUNCTION_SRC_DEPS = $(COMMON_SRC_DEPS)
 METHOD_SRC_DEPS = $(COMMON_SRC_DEPS)
 
-ifdef REXX_BUILD_HOME
-REXX_INCLUDES = -I $(REXX_BUILD_HOME)/api -I $(REXX_BUILD_HOME)/api/platform/unix
-REXX_LIBS = -L$(REXX_BUILD_HOME)/.libs
+ifdef OOREXX_BUILD_HOME
+REXX_INCLUDES = -I $(OOREXX_BUILD_HOME)/api -I $(OOREXX_BUILD_HOME)/api/platform/unix
+REXX_LIBS = -L$(OOREXX_BUILD_HOME)/.libs
+else
+ifdef REXX_HOME
+REXX_INCLUDES = -I $(REXX_HOME)/include
+REXX_LIBS = -L$(REXX_HOME)/lib/ooRexx
+endif
 endif
 
 # The destination for libraries
@@ -82,5 +87,5 @@ $(OOTEST_BIN_DIR)/liborxmethod.so: liborxmethod.so
 
 
 clean:
-	rm *.so *.o
+	rm -f *.so *.o
 

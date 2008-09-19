@@ -62,7 +62,7 @@ use arg testTypes
 return testResult
 
 packageErr:
-  err = .ExceptionData~new(timeStamp(), s, "Trap")
+  err = .ExceptionData~new(timeStamp(), s, .ExceptionData~TRAP)
   err~setLine(sigl)
   err~conditionObject = condition('O')
   err~msg = "Failed to load the external API package needed for this test group."

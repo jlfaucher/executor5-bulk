@@ -961,9 +961,15 @@ return str
 ::attribute type get
 ::attribute type set private
 
+::attribute additionalObject
+::attribute additional
+
 ::method init
   expose when where type
   use strict arg when, where, type, ...
+
+  self~additionalObject = .nil
+  self~additional = .nil
 
 
 /* class: TestProblem- - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\

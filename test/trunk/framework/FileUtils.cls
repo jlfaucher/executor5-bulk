@@ -1,4 +1,8 @@
 #!/usr/bin/rexx
+/*
+  SVN Revision: $Rev: 3047 $
+  Change Date:  $Date: 2008-08-22 19:56:58 -0700 (Fri, 22 Aug 2008) $
+*/
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 2007-2008 Rexx Language Association. All rights reserved.    */
@@ -35,23 +39,12 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-/*
-   name:             FileUtils.cls
-   authors:          Mark Miesfeld
-   last update:      2007-11-24
 
-   purpose:          Provides common public routines and utility classes to do
-                     file system related tasks, to make writing test units
-                     easier.
-
-   remarks:          This file has the requires directive for ooRexxUnit.cls.
-                     When writing a test unit, use a requires directive for this
-                     class and the requires directive for ooRexxUnit.cls is not
-                     needed.
-
-   category0:        ooRexxUnit
-   category1:        framework
-*/
+/** FileUtils.cls
+ *
+ * Provides common public routines and utility classes to do file system related
+ * tasks, to make writing test units easier.
+ */
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
@@ -105,6 +98,120 @@
 return prgRet
 
 
+/** findBuildDir()
+ *
+ * Determines the top-level directory in the ooRexx build source tree.
+ *
+ * This function works on the assumption that the test suite is being executed
+ * from a developer's build directory.  There are a couple of variables that
+ * can be used to over-ride that assumption.  But, if those variables are not
+ * set then this function will only succeed when the assumption is true.
+ */
+::routine findBuildDir public
+
+  -- When the -Dname=value arg is added to testOORexx then it will over-ride
+  -- all else.  TODO check that this is the correct name.
+  if .local~hasEntry("OOREXX_BUILD_HOME") then return .OOREXX_BUILD_HOME
+
+  -- Setting the variable in the environment will be next in the order of
+  -- precedence.  TODO change the REXX_BUILD_HOME var in the make files.
+  dir = value("OOREXX_BUILD_HOME", , 'ENVIRONMENT')
+  if dir \== "" then return dir
+
+  -- Change directory to the directory the test suite was started from.  If we
+  -- have an error, just return.  On error the current directory will not have
+  -- been changed.
+  currentDir = directory(.ooTest.originalWorkingDir)
+  if currentDir == "" then return .nil
+
+  dir = .nil
+  currentOS = .ooRexxUnit.OSName
+
+  -- As new OSes are added to the list of OSes that the test suite runs on, this
+  -- select will need to be expanded.
+  select label FIND_BUILD_DIR_LABEL
+    when currentOS == 'WINDOWS' then do
+      -- On Windows check for SRC_DRV and SRC_DIR
+      srcDrv = value("SRC_DRV", , 'ENVIRONMENT')
+      srcDir = value("SRC_DIR", , 'ENVIRONMENT')
+      if srcDrv \== "", srcDir \== "" then do
+        tmpDir = srcDrv || srcDir
+        if SysIsFileDirectory(tmpDir) then do
+          dir = tmpDir
+          leave FIND_BUILD_DIR_LABLEL
+        end
+      end
+
+      -- Assume
+      tmp = directory("..\")
+      if tmp \== "" then dir = directory()
+    end
+
+    when currentOS == 'LINUX' then do
+      -- On Linux we could be in the root to begin with, or in .libs
+      if .ooTest.originalWorkingDir~right(6) == "/.libs" then do
+        tmp = directory("../")
+        if tmp \== "" then dir = directory()
+      end
+      else do
+        dir = directory()
+      end
+    end
+
+    otherwise do
+      nop
+    end
+  end FIND_BUILD_DIR_LABEL
+  -- End select
+
+  -- Restore the current directory.
+  j = directory(currentDir)
+
+return dir
+-- End findBuildDir()
+
+/** findInstallDir()
+ *
+ * Determines if ooRexx is installed on the current system and returns the root
+ * directory of the installation.  Returns .nil if the install directory can not
+ * be determined.
+ *
+ * @return  The fully-qualified path to the install directory on success,
+ *          otherwise .nil
+ *
+ * @note    This is a 'best attempt' function.  If .nil is returned, it
+ *          indicates ooRexx is probably not installed, not that ooRexx for
+ *          sure is not installed.
+ */
+::routine findInstallDir public
+
+  dir = .nil
+  currentOS = .ooRexxUnit.OSName
+
+  select
+    when currentOS == "WINDOWS" then do
+      -- On Windows, the install package sets REXX_HOME.
+      home = value("REXX_HOME", , 'ENVIRONMENT')
+
+      -- Verify (to some degree) that this is the correct install directory.
+      if home \== "" then do
+        if SysIsFileDirectory(home) then do
+          if SysIsFile(home"\uninstall.exe") then dir = home
+        end
+      end
+    end
+
+    when currentOS == "LINUX" then do
+      dir = findInstallDirOnLinux()
+    end
+
+    otherwise nop
+  end
+  -- End select
+
+return dir
+-- End findInstallDir()
+
 /** locateSamplePrg()
  * Locates a sample program normally shipped with the ooRexx distribution.
  *
@@ -114,138 +221,208 @@ return prgRet
  * allows the test suite to be run by a developer from his build directory
  * without having a regular install.
  *
- * @param   REQUIRED name  The name of the sample program
+ * @param   name REQUIRED
+ *            The name of the sample program.
+ *
  * @return  The complete path name of the sample if it is located, otherwise
  *          .nil.
  */
 ::routine locateSamplePrg public
   use strict arg name
 
-  sl = .ooRexxUnit.directory.separator
   retObj = .nil
 
-  -- We have several possiblities here, but if REXX_HOME is set we just assume
-  -- it is set correctly.  Currently, REXX_HOME is only set on Windows.
-
   currentOS = .ooRexxUnit.OSName
-  home = value("REXX_HOME", , 'ENVIRONMENT')
+  installDir = findInstallDir()
 
-  -- It is possible that a developer has REXX_HOME set (left over from an
-  -- install) but currently has nothing there.  If home is set, but no sample is
-  -- found, then try the other methods.
-
-  if home \== "" then do
-    j = SysFileTree(home || sl || 'samples' || sl || name, f., 'FOS')
-    if j == 0, f.0 == 1 then return f.1
-  end
+  -- When the test suite begins running on a new OS, then another when clause
+  -- will need to be added to the select for that OS.
 
   select label FINDSAMPLE
     when currentOS == "WINDOWS" then do
-      currentWorkingDirectory = directory()
-      buildRoot = findBuildRoot(currentOS)
+      if installDir \== .nil then do
+        j = SysFileTree(installDir'\samples\'name, f., 'FOS')
+        if j == 0, f.0 == 1, SysIsFile(f.1) then do
+          retObj = f.1
+          leave FINDSAMPLE
+        end
+      end
 
-      if buildRoot \== "" then do
+      buildRoot = findBuildDir()
+
+      if buildRoot \== .nil then do
         sampleDir = buildRoot || "\samples\"
 
         if SysIsFileDirectory(sampleDir) then do
           -- Okay, we are good (in all probability.)
           j = SysFileTree(sampleDir || name, f., 'FOS')
-          if j == 0, f.0 == 1 then retObj = f.1
+          if j == 0, f.0 == 1, SysIsFile(f.1) then do
+            retObj = f.1
+            leave FINDSAMPLE
+          end
         end
       end
-      j = directory(currentWorkingdirectory)
     end
 
     when currentOS == "LINUX" then do
-      -- See if ooRexx is installed from a some type of package manager.
-      retObj = sampleFromPackageInstall(name)
-
-      if retObj \== .nil then leave FINDSAMPLE
-
-      -- Not found, see if it is a user install in /opt
-      if SysIsFileDirectory("/opt/ooRexx") then do
-        j = SysFileTree("/opt/ooRexx/share/ooRexx/" || name, f., 'FOS')
-        if j == 0, f.0 == 1 then retObj = f.1
-        leave FINDSAMPLE
+      if installDir \== .nil then do
+        j = SysFileTree(installDir'/share/ooRexx/'name, f., 'FOS')
+        if j == 0, f.0 == 1, SysIsFile(f.1) then do
+          retObj = f.1
+          leave FINDSAMPLE
+        end
       end
 
       -- Not found, see if we can get a build directory
-      currentWorkingDirectory = directory()
-      buildRoot = findBuildRoot(currentOS)
+      buildRoot = findBuildDir()
 
-      if buildRoot \== "" then do
+      if buildRoot \== .nil then do
         sampleDir = buildRoot || "/samples/"
 
         if SysIsFileDirectory(sampleDir) then do
           -- Okay, we are good (in all probability.)
           j = SysFileTree(sampleDir || name, f., 'FOS')
-          if j == 0, f.0 == 1 then retObj = f.1
+          if j == 0, f.0 == 1, SysIsFile(f.1) then do
+            retObj = f.1
+            leave FINDSAMPLE
+          end
         end
       end
-      j = directory(currentWorkingdirectory)
     end
 
     otherwise do
-      -- When the test suite is starting to be run on other OSes this will
-      -- have to be filled in.
       nop
     end
   end findSample -- End select
 
 return retObj
--- End locateSample()
+-- End locateSamplePrg()
 
-/** sampleFromPackageInstall()
- * A private helper function locate a sample program on a Linux system where
- * ooRexx has been installed by a package managing system.  Currently only works
- * for rpm and debian (dpkg.)
+
+/** findInstallDirOnLinux()
+ * Tries to locate the install directory on Linux using what is known about how
+ * ooRexx gets installed on a Linux system.
  *
- * returns .nil if not found.
+ * @return   The fully qualified directory path to an installed ooRexx on
+ *           success, otherwise .nil.
  */
-::routine sampleFromPackageInstall
-  use strict arg name
+::routine findInstallDirOnLinux
 
-  sample = .nil
+  dir = .nil
 
-  -- First decide if rpm or dpkg is on the system.
+  -- See if we can locate rexx.img using a package manager.
+  select
+    when haveRpm() then do
+      imageFile = checkRpmForInstalledFile("rexx.img")
+    end
+
+    when haveDpkg() then do
+      imageFile = checkDpkgForInstalledFile("rexx.img")
+    end
+
+    otherwise imageFile = .nil
+  end
+  -- End select
+
+  -- If no luck, try the default install location
+  if imageFile == .nil then do
+    imageFile = "/opt/ooRexx/bin/rexx.img"
+  end
+
+  if SysIsFile(imageFile) then do
+    p = imageFile~pos("/bin/rexx.img")
+    if p <> 0 then do
+      return imageFile~left(p - 1)
+    end
+  end
+
+  -- Still didn't find it.  Try one more thing.  The problem with this, is that
+  -- if we find a rexx, we need to be sure it is ooRexx.  And, it is assuming
+  -- the install set up a soft link.
+  softLink = ""
+  cmdOut = .array~new
+  ret = issueCmd('which rexx', cmdOut)
+  if ret == 0, cmdOut~items == 1 then do
+    rexxFile = cmdOut[1]
+    cmdOut~empty
+    ret = issueCmd('ls -la' rexxFile, cmdOut)
+    if ret == 0, cmdOut~items == 1 then do
+      if cmdOut[1]~left(1) == 'l' then softLink = cmdOut[1]
+    end
+  end
+
+  if softLink \== "" then do
+    parse var softLink discard "->" rexxFile
+    rexxFile = rexxFile~strip
+    if rexxFile \== "" then do
+      binDir = rexxFile~left(rexxFile~pos("rexx") - 1)
+      if SysIsFile(binDir"/rxftp.cls"), SysIsFile(binDir"/rxregexp.cls") then do
+        p = rexxFile~pos("/bin/rexx")
+        if p <> 0 then do
+          tmp = rexxFile~left(p - 1)
+          if SysIsFileDirectory(tmp) then dir = tmp
+        end
+      end
+    end
+  end
+
+return dir
+-- End findInstallDirOnLinux()
+
+::routine haveRpm public
   cmdOut = .array~new
   ret = issueCmd('which rpm', cmdOut)
-  haveRPM = (ret == 0)
+  if ret == 0 then return .true
+  else return .false
 
+::routine haveDpkg public
   cmdOut = .array~new
   ret = issueCmd('which dpkg', cmdOut)
-  haveDPKG = (ret == 0)
+  if ret == 0 then return .true
+  else return .false
 
-  if \ haveRPM, \ haveDPKG then return .nil
 
-  if haveRPM then sample = checkRpmForSample(name)
-  if sample \== .nil then return sample
-
-  if haveDPKG then sample = checkDpkgForSample(name)
-  return sample
-
-::routine checkRpmForSample
+/** checkRpmForInstalledFile()
+ * Uses rpm to check that: 1.) ooRexx is installed by rpm, 2.) the specified
+ * file is installed, and 3.) what the fully qualified path name of the file is.
+ *
+ * @param   name  The file name to check for.
+ *
+ @ @return  The fully qualified file name if ooRexx is installed and the file is
+ @          installed as part of the ooRexx package, otherwise .nil.
+ */
+::routine checkRpmForInstalledFile public
   use strict arg name
 
-  sample = .nil
+  fileName = .nil
   cmdOut = .array~new
   ret = issueCmd('rpm -q ooRexx', cmdOut)
 
   if ret == 0 then do
     cmdOut = .array~new
 
-    -- Escape the dot(s) in the sample program name
+    -- Escape the dot(s) in the file name
     escName = escapeDots(name)
 
     ret = issueCmd('rpm -q ooRexx --list | grep' escName, cmdOut)
-    if cmdOut~items == 1 then sample = cmdOut[1]
+    if cmdOut~items == 1 then fileName = cmdOut[1]
   end
-  return sample
+  return fileName
 
-::routine checkDpkgForSample
+/** checkDpkgForInstalledFile()
+ * Uses the debian package manager, dpkg, to check that: 1.) ooRexx is installed
+ * by dpkg, 2.) the specified file is installed, and 3.) what the fully
+ * qualified path name of the file is.
+ *
+ * @param   name  The file name to check for.
+ *
+ @ @return  The fully qualified file name if ooRexx is installed and the file is
+ @          installed as part of the ooRexx package, otherwise .nil.
+ */
+::routine checkDpkgForInstalledFile public
   use strict arg name
 
-  sample = .nil
+  fileName = .nil
   cmdOut = .array~new
   ret = issueCmd('dpkg -s oorexx', cmdOut)
 
@@ -256,9 +433,9 @@ return retObj
     escName = escapeDots(name)
 
     ret = issueCmd('dpkg -L oorexx | grep' escName, cmdOut)
-    if cmdOut~items == 1 then sample = cmdOut[1]
+    if cmdOut~items == 1 then fileName = cmdOut[1]
   end
-  return sample
+  return fileName
 
 ::routine escapeDots
   use strict arg name
@@ -271,38 +448,6 @@ return retObj
   end
 
   return escName || tmp
-
-
-/** findBuildRoot()
- * A private helper function that assumes the test suite was started from a
- * developer's build directory and returns what directory that is.
- *
- * Note: The caller is resposible for maintaining her local working directory.
- *       This function may change directories.
- */
-::routine findBuildRoot
-  use strict arg os
-
-  buildRoot = ""
-
-  tmp = directory(.ooTest.originalWorkingDir)
-  if tmp \== "" then do
-    select
-      when os == "WINDOWS" then do
-        tmp = directory("..\")
-        if tmp \== "" then buildRoot = directory()
-      end
-      when os == "LINUX" then do
-        if tmp~right(6) == "/.libs" then do
-          tmp = directory("../")
-        end
-        if tmp \== "" then buildRoot = directory()
-      end
-      otherwise nop
-    end
-    -- End select
-  end
-return buildRoot
 
 
 /* createFile( src, name ) - - - - - - - - - - - - - - - - - - - - - - - - - -*\
@@ -320,7 +465,7 @@ return buildRoot
     The fully qualified name of the file on succes.  Returns the empty string
     on error.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::routine  createFile public
+::routine createFile public
   use strict arg src, name
 
   fileName = ""
@@ -336,7 +481,7 @@ return fileName
 -- End createFile( src, name )
 
 /* Convenience method.  Calls createFile() with .rex tacked onto basename. */
-::routine  createRexxPrgFile public
+::routine createRexxPrgFile public
   use strict arg src, baseName
 return createFile(src, baseName || '.rex')
 
@@ -355,7 +500,7 @@ return createFile(src, baseName || '.rex')
     The fully qualified name of the file on succes.  Returns the empty string
     on error.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::routine  addToFile public
+::routine addToFile public
   use strict arg src, name
 
   fileName = ""
@@ -385,7 +530,7 @@ return fileName
   Returns:
     The operating system return code when the delete is done.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::routine  deleteFile public
+::routine deleteFile public
   use strict arg fileName
 
   -- On Linux (bash) and Windows the delete can be forced.  Not sure on other
@@ -428,7 +573,7 @@ return ret
     The return code produced by executing the program on success.  Returns 9999
     for an internal error.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::routine  execRexxPrgWithArgs public
+::routine execRexxPrgWithArgs public
   use strict arg prgName, params, output
 
   cmd = 'rexx' .TestUtil~enQuote(prgName) params
@@ -441,7 +586,7 @@ return prgRet
  * This is a convenience method to execute a Rexx program with no arguments.  It
  * delegates to execRexxPrgWithArgs().
  */
-::routine  execRexxPrg public
+::routine execRexxPrg public
   use strict arg prgName, output
 return execRexxPrgWithArgs(prgName, "", output)
 
@@ -520,7 +665,7 @@ return fullName
   Returns:
     An instance of .OLEObject on success, .nil on failure.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::routine  createOleObject public
+::routine createOleObject public
   use strict arg id, withEvents = .false, beVerbose = .false
 
   if \ isBoolean(withEvents) then

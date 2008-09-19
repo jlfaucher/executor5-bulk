@@ -129,10 +129,12 @@ return 0
   signal on syntax name loadErr
   .context~package~loadPackage('building.frm')
 
+  ret = buildBinaries(testResult, force)
+
 return .ooTestConstants~SUCCESS_RC
 
 loadErr:
-  err = .ExceptionData~new(timeStamp(), file, "Trap")
+  err = .ExceptionData~new(timeStamp(), file, .ExceptionData~TRAP)
   err~setLine(sigl)
   err~conditionObject = condition('O')
   err~msg = 'Error loading the required framework for compiling ("building.frm")'

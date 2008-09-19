@@ -131,6 +131,14 @@ return s
 return a
 -- End makeArrayOfWords()
 
+::routine replaceEnvValue public
+  use strict arg name, val
+return value(name, val, 'ENVIRONMENT')
+
+::routine getEnvValue public
+  use strict arg name
+return value(name, , 'ENVIRONMENT')
+
 ::routine setExternalLibDir
 
   os = .ooRexxUnit.osName
@@ -140,10 +148,10 @@ return a
     j = addToPath(libDir)
   end
   else do
-    curLDPath = value("LD_LIBRARY_PATH", , 'ENVIRONMENT')
+    curLDPath = getEnvValue("LD_LIBRARY_PATH")
     libDir = .ooTest.dir || '/bin/'os || .ooRexxUnit.path.separator || curLDPath
 
-    j = value("LD_LIBRARY_PATH", libDir, 'ENVIRONMENT')
+    j = replaceEnvValue("LD_LIBRARY_PATH", libDir)
   end
 
 return 0
@@ -153,7 +161,6 @@ return 0
  * implement the TestContainer interface can be 'found' by the ooTestFinder
  * class.
  */
---::class 'TestContainer' public
 ::class 'TestContainer' public mixinclass Object
 
 /** isEmpty() Returns true or false.  True if the container has no tests,
@@ -213,14 +220,16 @@ return 0
   ::method TEST_TYPES_DEFAULT  class; return .nil
   ::method TEST_TYPES_DEFAULT;        return .nil
 
-  ::constant TEST_SUCCESS_RC                    0
   ::constant SUCCESS_RC                         0
+  ::constant TEST_SUCCESS_RC                    0
   ::constant TEST_HELP_RC                       1
   ::constant TEST_FAILURES_RC                   2
   ::constant TEST_ERRORS_RC                     3
   ::constant TEST_NO_TESTS_RC                   4
   ::constant TEST_BADARGS_RC                    5
   ::constant FAILED_PACKAGE_LOAD_RC             6
+  ::constant BUILD_FAILED_RC                    7
+  ::constant UNEXPECTED_ERR_RC                  8
 
   -- SL (back SLash or forward SLash) abbreviation for the directory separator.
   ::method SL  class; return .ooRexxUnit.directory.separator
@@ -609,7 +618,7 @@ return 0
     end
 
     if tResult~exceptionCount > 0 then do data over tResult~getExceptions
-      data~print
+      data~print( , , verbose)
     end
 
     if verbose > 3 then self~printSkippedFiles
@@ -687,6 +696,7 @@ return 0
     end
 
     say "Messages:"~left(20) stats~messages
+    say "Logs:"~left(20) stats~logs
     say
 
   ::method calcStats private
@@ -707,17 +717,19 @@ return 0
     stats~totalProblems = stats~totalFails + stats~totalErrs
 
     -- Brute force for now.
-    skips = 0; msgs = 0
+    skips = 0; msgs = 0; logs = 0
     do n over notifications
       select
         when n~type == self~SKIP_TYPE then skips += 1
         when n~type == self~TEXT_TYPE then msgs += 1
+        when n~type == self~LOG_TYPE then logs += 1
         otherwise nop -- For now, please fix.
       end
       -- End select
     end
     stats~skippedFiles = skips
     stats~messages = msgs
+    stats~logs = logs
 
   return stats
 
@@ -725,7 +737,12 @@ return 0
     expose notifications
 
     do n over notifications
-      if n~type == self~TEXT_TYPE then self~printMsg(n)
+      select
+        when n~type == self~TEXT_TYPE then self~printMsg(n)
+        when n~type == self~LOG_TYPE then self~printLog(n)
+        otherwise nop
+      end
+      -- End select
     end
 
   ::method printMsg private
@@ -737,6 +754,27 @@ return 0
       say " " n~additional
     if n~additionalObject \== .nil then
       say "  Object involved:" n~additionalObject
+    say
+
+  ::method printLog private
+    use arg l
+
+    if self~getVerbosity < 7 then return
+
+    say "[Log]" l~when
+    say " " l~message
+    say "  Command line:" l~additional
+    say "  Return code: " l~reason
+
+    if l~where \== "" then say "  Location:" pathCompact(l~where, 70)
+
+    if l~additionalObject \== .nil then do
+      log = l~additionalObject
+      say
+      do line over log
+        say line
+      end
+    end
     say
 
 
@@ -1703,7 +1741,7 @@ return suite
     files = self~findFiles
 
     if files~items == 0 then do
-      err = .ExceptionData~new(timeStamp(), simpleFileSpec, "Anomly")
+      err = .ExceptionData~new(timeStamp(), simpleFileSpec, .ExceptionData~ANOMLY)
       err~severity = "Warning"
       err~msg = "No test containers found matching search paramters."
       testResult~addException(err)
@@ -1769,7 +1807,7 @@ return suite
     return container
 
     callError:
-      err = .ExceptionData~new(timeStamp(), file, "Trap")
+      err = .ExceptionData~new(timeStamp(), file, .ExceptionData~TRAP)
       err~setLine(sigl)
       err~conditionObject = condition('O')
       err~msg = "Initial call of test container failed"
@@ -1807,6 +1845,13 @@ return suite
 -- End of class: ooTestFinder
 
 
+::class 'ExceptionTypes' public mixinclass Object
+
+  ::constant TRAP        1
+  ::constant ANOMLY      2
+  ::constant UNEXPECTED  3
+  ::constant EXTERNAL    4
+
 /* class: ExceptionData- - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
 
     A data object containing information concerning an unrecoverable error that
@@ -1818,16 +1863,28 @@ return suite
     happen during some set up prior to actually invoking a test case method.
 
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::class 'ExceptionData' public subclass TestProblem
+::class 'ExceptionData' public subclass TestProblem inherit ExceptionTypes
 
   ::attribute severity
   ::attribute msg
+
+  ::attribute typeName get
+  ::attribute typeName set private
 
   ::method init
     forward class (super) continue
 
     self~severity = "Fatal"
     self~msg = ""
+
+    select
+      when self~type == self~TRAP then self~typeName = "Trap"
+      when self~type == self~ANOMLY then self~typeName = "Anomly"
+      when self~type == self~UNEXPECTED then self~typeName = "Unexpected Error"
+      when self~type == self~EXTERNAL then self~typeName = "External Command Failure"
+      otherwise self~typeName = "Unexpected Error"
+    end
+    -- End select
 
   ::method getMessage
 
@@ -1841,10 +1898,11 @@ return suite
    * @parar  compact  If true compact the file path name(s).
    */
   ::method print
-    use strict arg title = "Framework exception", compact = .true
+    use strict arg title = "Framework exception", compact = .true,  -
+                   verbose = (.NoiseAdjustable~DEFAULT_VERBOSITY)
 
     say "["title"]" self~when
-    say "  Type:" self~type "Severity:" self~severity
+    say "  Type:" self~typeName "Severity:" self~severity
 
     if compact then say "  File:" pathCompact(self~where, 70)
     else say "  File:" self~where
@@ -1852,7 +1910,19 @@ return suite
     if self~line <> -1 then say "  Line:" self~line
     if self~msg \== "" then say " " self~getMessage
 
-    if self~conditionObject <> .nil then self~printConditionInfo(compact)
+    if self~type == self~EXTERNAL then do
+      self~printExternalException(compact, verbose)
+      say
+      return
+    end
+
+    if self~conditionObject <> .nil then do
+      self~printConditionInfo(compact)
+      say
+      return
+    end
+
+    if self~additional~isA(.string) then say " " self~additional
     say
 
   ::method printConditionInfo private
@@ -1880,10 +1950,33 @@ return suite
       say " " line
     end
 
+  ::method printExternalException private
+    use strict arg compact, verbose
+
+    n = self~additionalObject
+
+    say " " n~message
+    say "  Command line:" n~additional
+    say "  Return code: " n~reason
+
+    if n~where \== "" then do
+      l = "  Location:"
+      if compact then say l pathCompact(n~where, 70)
+      else say l n~where
+    end
+
+    if verbose >= 5, n~additionalObject \== .nil then do
+      log = n~additionalObject
+      say
+      do line over log
+        say line
+      end
+    end
+
 -- End of class: ExceptionData
 
 
-::class 'NotificationTypes' mixinclass Object
+::class 'NotificationTypes' public mixinclass Object
 
   ::constant MIN_TYPE    1
 
@@ -1892,9 +1985,17 @@ return suite
   ::constant TEXT_TYPE   3
   ::constant STEP_TYPE   4
   ::constant STATS_TYPE  5
+  ::constant LOG_TYPE    6
 
-  ::constant MAX_TYPE    5
+  ::constant MAX_TYPE    6
 
+/* Notes on LOG_TYPE notification
+
+     notification~reason == return code
+     notification~additional == command line
+     notification~message == some message
+     notification~additionObject == .array of lines of captured output
+*/
 
 /* class: Notification - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
 
@@ -1912,8 +2013,6 @@ return suite
   ::attribute message
   ::attribute warning
 
-  ::attribute additional
-  ::attribute additionalObject
   ::attribute originatorsID
 
   ::method init
@@ -1942,8 +2041,6 @@ return suite
     end
     -- End select
 
-    self~additional = .nil
-    self~additionalObject = .nil
     self~originatorsID = .nil
 
 -- End of class: Notification

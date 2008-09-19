@@ -89,7 +89,7 @@ return group
 
   if prgFile == "" then do
     parse source . . fileSpec
-    err = .ExceptionData~new(timeStamp(), fileSpec, "Unexpected Error")
+    err = .ExceptionData~new(timeStamp(), fileSpec, .ExceptionData~UNEXPECTED)
     err~setLine(.line - 5)
     err~severity = "Unrecoverable"
     err~msg = "Could not create program file for indirect require of 'winsystm.cls'"

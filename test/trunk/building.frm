@@ -47,4 +47,200 @@
  */
 
 
+::requires 'ooTest.frm'
 ::requires 'FileUtils.cls'
+
+
+/** buildBinaries()
+ */
+::routine buildBinaries public
+  use strict arg testResult, force
+
+  parse source . . fileSpec
+  os = .ooRexxUnit.OSName
+  rrc = .ooTestConstants~UNEXPECTED_ERR_RC
+
+  select
+    when os == "WINDOWS" then do
+      rrc = buildWindows(testResult, force, fileSpec)
+    end
+
+    when os == "LINUX" then do
+      rrc = buildLinux(testResult, force, fileSpec)
+    end
+
+    -- As an example of how to add support for a new OS.  Add a when section for
+    -- the OS.  Then add / implement the code to build on that OS.
+    when os == "MACOS" then do
+      err = .ExceptionData~new(timeStamp(), fileSpec, .ExceptionData~UNEXPECTED)
+      err~setLine(.line - 2)
+      err~severity = "Unrecoverable"
+      err~msg = "Building external binaries on MACOS is not implemented."
+      testResult~addException(err)
+    end
+
+    otherwise  do
+      err = .ExceptionData~new(timeStamp(), fileSpec, .ExceptionData~UNEXPECTED)
+      err~setLine(.line - 2)
+      err~severity = "Unrecoverable"
+      err~msg = "Building external binaries on" os "is not implemented."
+      testResult~addException(err)
+    end
+  end
+  -- End select
+
+return rrc
+-- End buildBinaries()
+
+::routine buildWindows public
+  use strict arg testResult, force, fileSpec
+
+  argTable = .table~new
+  argTable["oldHomeVal"] = .nil
+  argTable["oldBuildVal"] = .nil
+
+  rCode = locateAPIDir(testResult, fileSpec, argTable)
+  if rCode \== .ooTestConstants~SUCCESS_RC then return rCode
+
+  oldHomeVal = argTable["oldHomeVal"]
+  oldBuildVal = argTable["oldBuildVal"]
+  currentDir = directory()
+
+  makeDir = .ooTest.dir"\external\API"
+  makeFile = "Makefile.win"
+  makeLocation = makeDir"\"makefile
+
+  oldBinVal = replaceEnvValue("OOTEST_BIN_DIR", .ooTest.dir"\bin\WINDOWS")
+  j = directory(makeDir)
+
+  if force then do
+    cmd = "nMake /nologo /F" makeFile "clean"
+    rCode = doMake(testResult, cmd, makeLocation, "Issuing make clean", fileSpec)
+  end
+
+  if rCode == .ooTestConstants~SUCCESS_RC then do
+    cmd = "nMake /nologo /F" makeFile
+    rCode = doMake(testResult, cmd, makeLocation, "Issuing make", fileSpec)
+  end
+
+  if oldHomeVal \== .nil then j = replaceEnvValue("REXX_HOME", oldHomeVal)
+  if oldBuildVal \ == .nil then j = replaceEnvValue("OOREXX_BUILD_HOME", oldBuildVal)
+  j = directory(currentDir)
+
+return rCode
+-- End buildWindows()
+
+
+::routine buildLinux public
+  use strict arg testResult, force, fileSpec
+
+  argTable = .table~new
+  argTable["oldHomeVal"] = .nil
+  argTable["oldBuildVal"] = .nil
+
+  rCode = locateAPIDir(testResult, fileSpec, argTable)
+  if rCode \== .ooTestConstants~SUCCESS_RC then return rCode
+
+  oldHomeVal = argTable["oldHomeVal"]
+  oldBuildVal = argTable["oldBuildVal"]
+  currentDir = directory()
+
+  makeDir = .ooTest.dir"/external/API"
+  makeFile = "Makefile"
+  makeLocation = makeDir"/"makefile
+
+  oldBinVal = replaceEnvValue("OOTEST_BIN_DIR", .ooTest.dir"/bin/LINUX")
+  j = directory(makeDir)
+
+  if force then do
+    cmd = "make -f" makeFile "clean"
+    rCode = doMake(testResult, cmd, makeLocation, "Issuing make clean", fileSpec)
+  end
+
+  if rCode == .ooTestConstants~SUCCESS_RC then do
+    cmd = "make -f" makeFile
+    rCode = doMake(testResult, cmd, makeLocation, "Issuing make", fileSpec)
+  end
+
+  if oldHomeVal \== .nil then j = replaceEnvValue("REXX_HOME", oldHomeVal)
+  if oldBuildVal \ == .nil then j = replaceEnvValue("OOREXX_BUILD_HOME", oldBuildVal)
+  j = directory(currentDir)
+
+return rCode
+-- End buildLinux()
+
+
+/** locateAPIDir()
+ * A private helper function used to locate where the API include and library
+ * files are.  It then sets the proper environment macros used by the platform
+ * make files to construct the correct compile and link commands.
+ */
+::routine locateAPIDir
+  use strict arg testResult, fileSpec, argTable
+
+  rCode = .ooTestConstants~SUCCESS_RC
+
+  dir = findInstallDir()
+  if dir \== .nil then do
+    argTable['oldHomeVal'] = replaceEnvValue("REXX_HOME", dir)
+  end
+  else do
+    dir = findBuildDir()
+    if dir \== .nil then do
+      argTable['oldBuildVal'] = replaceEnvValue("OOREXX_BUILD_HOME", dir)
+    end
+    else do
+      err = .ExceptionData~new(timeStamp(), fileSpec, .ExceptionData~UNEXPECTED)
+      err~setLine(.line)
+      err~severity = "Unrecoverable"
+      err~msg = "Failed to build external binaries"
+      err~additional = "Could not locate either the ooRexx install or ooRexx build directories"
+      testResult~addException(err)
+      rCode = .ooTestConstants~BUILD_FAILED_RC
+    end
+  end
+
+return rCode
+-- End locateAPIDir()
+
+
+/** doMake()
+ * A private helper routine to do the actual chore of issuing a make command
+ * and collecting the results.
+ */
+::routine doMake
+  use strict arg testResult, makeCmd, location, msg, fileSpec
+
+  note = .Notification~new(timeStamp(), location, .NotificationTypes~LOG_TYPE)
+  output = .array~new
+
+  line = .line + 1
+  ret = issueCmd(makeCmd, output)
+
+  note~message = msg
+  note~reason = ret
+  note~additional = makeCmd
+  note~additionalObject = output
+
+  retObj = note
+
+  if ret <> 0 then do
+    err = .ExceptionData~new(timeStamp(), fileSpec, .ExceptionData~EXTERNAL)
+    err~setLine(line)
+    err~severity = "Severe"
+    err~msg = "Failed to build external binaries"
+
+    note~message = msg "failed"
+    err~additionalObject = note
+
+    testResult~addException(err)
+    rCode = .ooTestConstants~BUILD_FAILED_RC
+  end
+  else do
+    testResult~addNotification(note)
+    rCode = .ooTestConstants~SUCCESS_RC
+  end
+
+return rCode
+-- End doMake()
+
