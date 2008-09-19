@@ -7,7 +7,7 @@
    date:             2008-08-16
    version:          1.0.1
 
-   changed:          
+   changed:
 
    languageLevel:    6.02
    purpose:          Regression test for the Open Object REXX supplied .RexxQueue class.
@@ -60,9 +60,6 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-cmdLine = arg(1)
-
-  .Queue.testGroup~setVerbose(cmdLine)
 
   -- Create a TestGroup using information specific to this file.
   parse source . . fileSpec
@@ -105,8 +102,6 @@ return testResult
   \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::method  test_new
 
-    if self~class~verbose > 2 then say '*In test_new'
-
     -- Prefix to my messages.
     be   = "New object should be"
     have = "New object should have"
@@ -115,14 +110,14 @@ return testResult
     q = .RexxQueue~new
 
     -- Test that the object is indeed an instance of .queue.
-    self~assertEquals(q~class, .RexxQueue,  "subtest01:" be "instance of .RexxQueue")
+    self~assertEquals(.RexxQueue,  q~class, "subtest01:" be "instance of .RexxQueue")
 
     -- Test that the new object is a direct subclass of .object.
     supers = q~class~superclasses
 
-    self~assertEquals(supers~items, 1,  "subtest02:"  have "only 1 superclass")
+    self~assertEquals(1,  supers~items, "subtest02:"  have "only 1 superclass")
 
-    self~assertEquals(supers[ 1 ], .object,  "subtest03:"  have ".object as superclass")
+    self~assertEquals(.object,  supers[ 1 ], "subtest03:"  have ".object as superclass")
 
     -- Test that the object has all the .queue methods.
     self~assertTrue(q~class~hasmethod( "CREATE"    ), "subtest04:" have '"[]" class method')
@@ -142,7 +137,7 @@ return testResult
     self~assertTrue(q~hasmethod( "QUEUED"    ), "subtest17:" have "QUEUED method")
 
     -- Test that the queue is created empty.
-    self~assertEquals( q~queued, 0, "subtest18:" be "empty")
+    self~assertEquals(0, q~queued, "subtest18:" be "empty")
 
   -- End test_new( )
 
@@ -156,15 +151,13 @@ return testResult
   \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::method  test_queue
 
-    if self~class~verbose > 2 then say '*In test_queue'
-
       q = .RexxQueue~new('testQueue')
       s = 'test string'
       s2 = 'test string2'
       q~queue(s)
       q~queue(s2)
-      self~assertEquals(q~queued, 2, 'subTest19: Queue adds one line')
-      self~assertEquals(q~pull, s,   'subTest20: Queued line correct FIFO')
+      self~assertEquals(2, q~queued, 'subTest19: Queue 2 adds two lines')
+      self~assertEquals(s, q~pull,   'subTest20: Queued line correct FIFO')
       q~delete
 
   -- End test_queue( )
@@ -178,15 +171,13 @@ return testResult
   \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::method  test_push
 
-    if self~class~verbose > 2 then say '*In test_push'
-                                                     
       q = .RexxQueue~new
       s = 'test string'
       s2 = 'test string2'
       q~push(s)
       q~push(s2)
-      self~assertEquals(q~queued, 2, 'subTest21: Queue adds one line')
-      self~assertEquals(q~pull, s2,  'subTest22: Queued line correct FIFO')
+      self~assertEquals(2, q~queued, 'subTest21: Queueing 2 adds two lines')
+      self~assertEquals(s2, q~pull,  'subTest22: Queued line correct FIFO')
 
   -- End test_push( )
 
@@ -197,15 +188,45 @@ return testResult
   \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::method  test_queue_external
 
-    if self~class~verbose > 2 then say '*In test_queue_external'
+      defEnv = address()
 
       q = .RexxQueue~new('TestQext')
       s = 'test string'
       s2 = 'test string2'
-      address cmd 'echo' s '| RxQueue' q
-      address cmd 'echo' s2 '| RxQueue' q
-      self~assertEquals(q~queued, 2, 'subTest23: Queue adds one line')
-      self~assertEquals(q~pull, s,   'subTest24: Queued line correct FIFO')
+
+      select
+        when defEnv == "CMD" then do
+          address "CMD" 'echo' s '| rxqueue' q
+          address "CMD" 'echo' s2 '| rxqueue' q
+        end
+
+        when defEnv == "bash" then do
+          address "bash" 'echo' s '| rxqueue' q
+          address "bash" 'echo' s2 '| rxqueue' q
+        end
+
+        when defEnv == "ksh" then do
+          address "ksh" 'echo' s '| rxqueue' q
+          address "ksh" 'echo' s2 '| rxqueue' q
+        end
+
+        when defEnv == "sh" then do
+          address "sh" 'echo' s '| rxqueue' q
+          address "sh" 'echo' s2 '| rxqueue' q
+        end
+
+        otherwise do
+          -- An unanticipated command environment.  This is used to force a
+          -- failure.  Whoever investigates should fix the test for this
+          -- environment.
+          self~assertSame("Unknown", defEnv, "Command environment of" defEnv "is unexpected")
+        end
+
+      end
+      -- End select
+
+      self~assertEquals(2, q~queued, 'subTest23: Queueing 2 adds two lines')
+      self~assertEquals(s, q~pull,   'subTest24: Queued line correct FIFO')
       q~delete
 
   -- End test_queue( )
@@ -217,19 +238,49 @@ return testResult
   \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::method  test_push_external
 
-    if self~class~verbose > 2 then say '*In test_push_external'
+      defEnv = address()
 
       q = .RexxQueue~new('TEST')
       s = 'test string'
       s2 = 'test string2'
-      address cmd 'echo' s '| RxQueue' q '/LIFO'
-      address cmd 'echo' s2 '| RxQueue' q '/LIFO'
-      self~assertEquals(q~queued, 2, 'subTest25: Queue adds one line')
-      self~assertEquals(q~pull, s2,   'subTest26: Queued line correct LIFO')
+
+      select
+        when defEnv == "CMD" then do
+          address "CMD" 'echo' s '| rxqueue' q '/LIFO'
+          address "CMD" 'echo' s2 '| rxqueue' q '/LIFO'
+        end
+
+        when defEnv == "bash" then do
+          address "bash" 'echo' s '| rxqueue' q '/LIFO'
+          address "bash" 'echo' s2 '| rxqueue' q '/LIFO'
+        end
+
+        when defEnv == "ksh" then do
+          address "ksh" 'echo' s '| rxqueue' q '/LIFO'
+          address "ksh" 'echo' s2 '| rxqueue' q '/LIFO'
+        end
+
+        when defEnv == "sh" then do
+          address "sh" 'echo' s '| rxqueue' q '/LIFO'
+          address "sh" 'echo' s2 '| rxqueue' q '/LIFO'
+        end
+
+        otherwise do
+          -- An unanticipated command environment.  This is used to force a
+          -- failure.  Whoever investigates should fix the test for this
+          -- environment.
+          self~assertSame("Unknown", defEnv, "Command environment of" defEnv "is unexpected")
+        end
+
+      end
+      -- End select
+
+      self~assertEquals(2, q~queued, 'subTest25: Queueing 2 adds two lines')
+      self~assertEquals(s2, q~pull,   'subTest26: Queued line correct LIFO')
       q~delete
 
   -- End test_push( )
-  
+
 
   /* test_get  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
       Test the .RexxQueue instance method: Get.
@@ -240,14 +291,12 @@ return testResult
   \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::method  test_get
 
-    if self~class~verbose > 2 then say '*In test_get'
-
       q = .rexxQueue~new
-      self~assertEquals(q~get, SESSION,  "subtest 27: default queue named session")
+      self~assertEquals(SESSION, q~get,  "subtest 27: default queue named session")
 --    self~assertEquals(q, q~get,     "subtest 28: get returns queue name")
 
       q = .rexxqueue~new('Rosebud')
-      self~assertEquals(q~get, Rosebud,   "subtest 29: queue named as in init")
+      self~assertEquals(Rosebud, q~get,   "subtest 29: queue named as in init")
 --    self~assertEquals(q, q~get,     "subtest 30: get returns queue name")
 
       q~delete
@@ -263,12 +312,10 @@ return testResult
   \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::method  test_lineIn
 
-    if self~class~verbose > 2 then say '*In test_linein'
-
     q = .rexxQueue~new('test')
     q~push('Item1')
     q~push('Item2')
-    self~assertEquals(q~lineIn, 'Item2', 'subtest 31: Linein Reads from RexxQueue')
+    self~assertEquals('Item2', q~lineIn, 'subtest 31: Linein Reads from RexxQueue')
     x = q~lineIn
     q~delete
 
@@ -288,13 +335,11 @@ return testResult
   \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::method  test_lineOut
 
-    if self~class~verbose > 2 then say '*In test_lineOut'
-
     q = .rexxQueue~new('test')
     q~lineOut('Item1')
     q~lineOut
-    self~assertEquals(q~lineIn, 'Item1', 'subtest 32: LineOut Puts on RexxQueue')
-    self~assertEquals(q~lineIn, '',      'subtest 33: LineOut without parms puts null string on rexxqueue')
+    self~assertEquals('Item1', q~lineIn, 'subtest 32: LineOut Puts on RexxQueue')
+    self~assertEquals('', q~lineIn,      'subtest 33: LineOut without parms puts null string on rexxqueue')
     q~delete
 
   -- End test_lineOut( )
@@ -308,14 +353,12 @@ return testResult
   \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::method  test_Queued
 
-    if self~class~verbose > 2 then say '*In test_Queued'
-
     q = .rexxQueue~new('testQueued')
     q~empty
     do n over self~class~arrayOf100numbers
       q~queue( n )
     end
-    self~assertEquals(q~queued, 100, 'subtest 34: Queued returns items on rexxQueue')
+    self~assertEquals(100, q~queued, 'subtest 34: Queued returns items on rexxQueue')
     q~empty
     q~delete
 
@@ -332,13 +375,11 @@ return testResult
   \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::method  test_set
 
-    if self~class~verbose > 2 then say '*In test_set'
-
     q1 = .rexxQueue~new('Q1')
     q2 = .rexxQueue~new('Q2')
     q1~push('Q1Item1')
     q2~set(q1)
-    self~assertEquals(q2~pull, 'Q1Item1', 'subtest 35: Set changes external queue')
+    self~assertEquals('Q1Item1', q2~pull, 'subtest 35: Set changes external queue')
     q1~delete
     q2~delete
 
@@ -363,9 +404,9 @@ return testResult
       q~Queue('Third')
       Arr = q~makeArray
 
-      self~assertEquals(q~queued, 0,     'subtest 36: Queue is emptied by makearray')
-      self~assertEquals(arr[1], 'First', 'subtest 37: Makearray transfers first item')
-      self~assertEquals(arr[3], 'Third', 'subtest 38: MakeArray transfers all items')
+      self~assertEquals(0, q~queued,     'subtest 36: Queue is emptied by makearray')
+      self~assertEquals('First', arr[1], 'subtest 37: Makearray transfers first item')
+      self~assertEquals('Third', arr[3], 'subtest 38: MakeArray transfers all items')
 
       q~delete
   -- End test_makearray( )
@@ -385,7 +426,7 @@ return testResult
       q~queue( n )
     end
     q~empty
-    self~assertEquals(q~queued, 0, 'subtest 39: empty removes items from queue') 
+    self~assertEquals(0, q~queued, 'subtest 39: empty removes all items from queue')
 
     q~delete
 
@@ -417,67 +458,6 @@ return testResult
     end
 
   -- End setUp( )
-
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
-  Code below this separator is useful during the implementation of this test
-  unit.  It has helped with debugging the test unit itself.  It could be removed
-  when the test unit is fully implemented.
-\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-
-  -- verbose                 public / private
-  --   Flag used while implementing this test unit.  Controls if extra messages
-  --   are printed to the console while this test unit is executed.  Turn on
-  --   by calling this program file using an arg of exactly 'verboseN', where
-  --   N is an integer from 1 to 10.   Anything else turns the extra messages
-  --   off.  The higher N, the more verbose.
-::attribute verbose get class
-::attribute verbose set class private
-
-  /* init( ) - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
-
-    Class method to initialize some class variables.
-
-    Input:
-      None.
-
-    Returns:
-      0, always.
-  \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::method  init class
-    self~verbose = 0
-    forward class (super)
-  return 0
-  -- End init( )
-
-  /* setVerbose( flag )- - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
-
-    Sets the verbose class attribute as specified.
-
-    Input:
-      flag  OPTIONAL
-        If this is exactly: 'verboseN' where N is an integer from 1 to 10 then
-        verbose is set to the value of N.  Anything else, including omitting the
-        argument sets verbose off.
-
-    Returns:
-      The state of the verbose setting after this method executes.
-  \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::method  setVerbose class
-    use arg flag
-
-    if flag~class == .string then do
-      if flag~abbrev( 'verbose' ) then do
-        N = flag~substr( 8 )
-        if N~datatype( 'W' ) then do
-          if N > 0 & N < 11 then do
-            self~verbose = N
-          end
-        end
-      end
-    end
-
-  return self~verbose
-  -- End setVerbose( flag )
 
 -- End of class: Queue.testGroup
 
