@@ -1395,3 +1395,313 @@ return .ooTestResult~new(5)~~addException(err)
   tester = .METHODTester~new
   d = .table~new
   x = tester~TestTableRemove(d, "abc")
+
+::method TestIsInstanceOf01
+  tester = .METHODTester~new
+  self~assertTrue(tester~TestIsInstanceOf("abc", .String))
+  self~assertTrue(tester~TestIsInstanceOf("abc", .Object))
+  self~assertFalse(tester~TestIsInstanceOf("abc", .Array))
+  self~assertTrue(tester~TestIsInstanceOf(.array~new, .Collection))
+  self~assertTrue(tester~TestIsInstanceOf(.Object, .Class))
+
+::method TestHasMethod01
+  tester = .METHODTester~new
+  self~assertTrue(tester~TestHasMethod("abc", "SUBSTR"))
+  self~assertTrue(tester~TestHasMethod("abc", "substr"))
+  self~assertTrue(tester~TestHasMethod("abc", ""))
+  self~assertTrue(tester~TestHasMethod("abc", " "))
+  self~assertFalse(tester~TestHasMethod("abc", "substring"))
+  self~assertTrue(tester~TestHasMethod(.Array, "new"))
+
+::method TestSendMessage001
+  tester = .METHODTester~new
+  self~assertSame(3, tester~TestSendMessage0("abc", "LENGTH"))
+  self~assertSame(3, tester~TestSendMessage0("abc", "length"))
+  d = .directory~new
+  d["FRED"] = 1
+  self~assertSame(1, tester~TestSendMessage0(d, "fred"))
+
+::method TestSendMessage002
+  self~expectSyntax('93.903')
+  tester = .METHODTester~new
+  x = tester~TestSendMessage0("abc", "substr")
+
+::method TestSendMessage003
+  self~expectSyntax('97.1')
+  tester = .METHODTester~new
+  x = tester~TestSendMessage0("abc", "foobar")
+
+::method TestSendMessage101
+  tester = .METHODTester~new
+  self~assertSame("bc", tester~TestSendMessage1("abc", "SUBSTR", 2))
+  self~assertSame("bc", tester~TestSendMessage1("abc", "substr", 2))
+  d = .directory~new
+  d["FRED"] = 1
+  tester~TestSendMessage1(d, "fred=", 2)
+  self~assertSame(2, d["FRED"])
+
+::method TestSendMessage102
+  self~expectSyntax('93.902')
+  tester = .METHODTester~new
+  x = tester~TestSendMessage1("abc", "length", 1)
+
+::method TestSendMessage103
+  self~expectSyntax('97.1')
+  tester = .METHODTester~new
+  x = tester~TestSendMessage1("abc", "foobar", 1)
+
+::method TestSendMessage201
+  tester = .METHODTester~new
+  self~assertSame("b", tester~TestSendMessage2("abc", "SUBSTR", 2, 1))
+  self~assertSame("b", tester~TestSendMessage2("abc", "substr", 2, 1))
+
+::method TestSendMessage202
+  self~expectSyntax('93.902')
+  tester = .METHODTester~new
+  x = tester~TestSendMessage2("abc", "length", 1, 3)
+
+::method TestSendMessage203
+  self~expectSyntax('97.1')
+  tester = .METHODTester~new
+  x = tester~TestSendMessage2("abc", "foobar", 1, 2)
+
+::method TestSendMessage204
+  self~expectSyntax('88.901')
+  tester = .METHODTester~new
+  x = tester~TestSendMessage2("abc", "substr",,2)
+
+::method TestSendMessage01
+  tester = .METHODTester~new
+  self~assertSame(3, tester~TestSendMessage("abc", "LENGTH", .array~new(0)))
+  self~assertSame(3, tester~TestSendMessage("abc", "length", .array~new(0)))
+  self~assertSame("bc", tester~TestSendMessage("abc", "substr", .array~of(2)))
+  self~assertSame("b", tester~TestSendMessage("abc", "substr", .array~of(2, 1)))
+  self~assertSame("bc??", tester~TestSendMessage("abc", "substr", .array~of(2, 4, "?")))
+
+::method TestSendMessage02
+  self~expectSyntax('93.903')
+  tester = .METHODTester~new
+  x = tester~TestSendMessage("abc", "substr", .array~new(0))
+
+::method TestSendMessage03
+  self~expectSyntax('97.1')
+  tester = .METHODTester~new
+  x = tester~TestSendMessage("abc", "foobar", .array~of(1,2,3))
+
+::method TestSendMessage04
+  self~expectSyntax('93.903')
+  tester = .METHODTester~new
+  a = .array~new(2)
+  a[2] = 2
+  x = tester~TestSendMessage("abc", "substr", a)
+
+::method TestGetPackageRoutines01
+  tester = .METHODTester~new
+  routine = .Routine~new("Testing", "return 123")
+  package = routine~package
+  routines = tester~TestGetPackageRoutines(package)
+  self~assertSame(0, routines~items)
+  source = .array~new
+  source~append("::routine a1")
+  source~append("  return 1")
+  source~append("::routine a2")
+  source~append("  return 2")
+  routine = .Routine~new("Testing", source)
+  package = routine~package
+  routines = tester~TestGetPackageRoutines(package)
+  self~assertSame(2, routines~items)
+  self~assertTrue(routines~hasIndex("A1"))
+  self~assertTrue(routines["A1"]~isA(.routine))
+  self~assertSame(1, routines["A1"]~call)
+  self~assertTrue(routines~hasIndex("A2"))
+  self~assertTrue(routines["A2"]~isA(.routine))
+  self~assertSame(2, routines["A2"]~call)
+
+::method TestGetPackagePublicRoutines01
+  tester = .METHODTester~new
+  routine = .Routine~new("Testing", "return 123")
+  package = routine~package
+  routines = tester~TestGetPackagePublicRoutines(package)
+  self~assertSame(0, routines~items)
+  source = .array~new
+  source~append("::routine a1")
+  source~append("  return 1")
+  source~append("::routine a2")
+  source~append("  return 2")
+  routine = .Routine~new("Testing", source)
+  package = routine~package
+  routines = tester~TestGetPackagePublicRoutines(package)
+  self~assertSame(0, routines~items)
+  source = .array~new
+  source~append("::routine a1 public")
+  source~append("  return 1")
+  source~append("::routine a2")
+  source~append("  return 2")
+  routine = .Routine~new("Testing", source)
+  package = routine~package
+  routines = tester~TestGetPackagePublicRoutines(package)
+  self~assertSame(1, routines~items)
+  self~assertTrue(routines~hasIndex("A1"))
+  self~assertTrue(routines["A1"]~isA(.routine))
+  self~assertSame(1, routines["A1"]~call)
+
+::method TestGetPackageClasses01
+  tester = .METHODTester~new
+  routine = .Routine~new("Testing", "return 123")
+  package = routine~package
+  classes = tester~TestGetPackageClasses(package)
+  self~assertSame(0, classes~items)
+  source = .array~new
+  source~append("::class a1")
+  source~append("::class a2")
+  routine = .Routine~new("Testing", source)
+  package = routine~package
+  classes = tester~TestGetPackageClasses(package)
+  self~assertSame(2, classes~items)
+  self~assertTrue(classes~hasIndex("A1"))
+  self~assertTrue(classes["A1"]~isA(.class))
+  self~assertTrue(classes~hasIndex("A2"))
+  self~assertTrue(classes["A2"]~isA(.class))
+
+  source = .array~new
+  source~append("::class a1 public")
+  source~append("::class a2")
+  routine = .Routine~new("Testing", source)
+  package = routine~package
+  classes = tester~TestGetPackageClasses(package)
+  self~assertSame(2, classes~items)
+  self~assertTrue(classes~hasIndex("A1"))
+  self~assertTrue(classes["A1"]~isA(.class))
+  self~assertTrue(classes~hasIndex("A2"))
+  self~assertTrue(classes["A2"]~isA(.class))
+
+::method TestGetPackagePublicClasses01
+  tester = .METHODTester~new
+  routine = .Routine~new("Testing", "return 123")
+  package = routine~package
+  classes = tester~TestGetPackagePublicClasses(package)
+  self~assertSame(0, classes~items)
+  source = .array~new
+  source~append("::class a1")
+  source~append("::class a2")
+  routine = .Routine~new("Testing", source)
+  package = routine~package
+  classes = tester~TestGetPackagePublicClasses(package)
+  self~assertSame(0, classes~items)
+  source = .array~new
+  source~append("::class a1")
+  source~append("::class a2 public")
+  routine = .Routine~new("Testing", source)
+  package = routine~package
+  classes = tester~TestGetPackagePublicClasses(package)
+  self~assertSame(1, classes~items)
+  self~assertTrue(classes~hasIndex("A2"))
+  self~assertTrue(classes["A2"]~isA(.class))
+
+::method TestIsRoutine01
+  tester = .METHODTester~new
+  routine = .Routine~new("Testing", "return 123")
+  self~assertTrue(tester~TestIsRoutine(routine))
+  self~assertFalse(tester~TestIsRoutine(.routine))
+  self~assertFalse(tester~TestIsRoutine(.method~new("Testing", "return 123")))
+
+::method TestIsMethod01
+  tester = .METHODTester~new
+  method = .Method~new("Testing", "return 123")
+  self~assertTrue(tester~TestIsMethod(method))
+  self~assertFalse(tester~TestIsMethod(.method))
+  self~assertFalse(tester~TestIsMethod(.routine~new("Testing", "return 123")))
+
+::method TestNewRoutine01
+  tester = .METHODTester~new
+  source = "return arg(1)"
+  routine = tester~TestNewRoutine("Testing", source)
+  self~assertTrue(routine~isA(.routine))
+  self~assertSame("foo", routine~call("foo"))
+  source = "use arg x" .endofline "return x"
+  routine = tester~TestNewRoutine("Testing", source)
+  self~assertTrue(routine~isA(.routine))
+  self~assertSame("foo", routine~call("foo"))
+
+::method TestNewRoutine02
+  self~expectSyntax('36.901')
+  tester = .METHODTester~new
+  source = "return arg(1"   -- syntax error
+  routine = tester~TestNewRoutine("Testing", source)
+
+::method TestNewMethod01
+  tester = .METHODTester~new
+  source = "return arg(1)"
+  method = tester~TestNewMethod("Testing", source)
+  self~assertTrue(method~isA(.method))
+--assertSame("foo", routine~call("foo"))
+  source = "use arg x" .endofline "return x"
+  method = tester~TestNewMethod("Testing", source)
+  self~assertTrue(method~isA(.method))
+--assertSame("foo", routine~call("foo"))
+
+::method TestNewMethod02
+  self~expectSyntax('36.901')
+  tester = .METHODTester~new
+  source = "return arg(1"   -- syntax error
+  method = tester~TestNewMethod("Testing", source)
+
+::method TestGetRoutinePackage01
+  tester = .METHODTester~new
+  routine = .Routine~new("Testing", "return 123")
+  self~assertSame(routine~package, tester~TestGetRoutinePackage(routine))
+
+::method TestGetMethodPackage01
+  tester = .METHODTester~new
+  method = .Method~new("Testing", "return 123")
+  self~assertSame(method~package, tester~TestGetMethodPackage(method))
+
+::method TestObjectToString01
+  tester = .METHODTester~new
+  self~assertSame("abc", tester~TestObjectToString("abc"))
+  self~assertSame("", tester~TestObjectToString(""))
+  self~assertSame(1, tester~TestObjectToString(1))
+  self~assertSame(1.0, tester~TestObjectToString(1.0))
+  self~assertSame("an Array", tester~TestObjectToString(.array~new))
+
+::method TestStringGet01
+  tester = .METHODTester~new
+  self~assertSame("abc", tester~TestStringGet("abc", 1, 3))
+  self~assertSame("abc", tester~TestStringGet("xxxabcxxxx", 4, 3))
+
+::method TestStringData01
+  tester = .METHODTester~new
+  self~assertSame("abc", tester~TestStringData("abc"))
+  self~assertSame("", tester~TestStringData(""))
+  self~assertSame("abc", tester~TestStringData("abc"||'00'x||"def"))
+
+::method TestStringLength01
+  tester = .METHODTester~new
+  self~assertSame(3, tester~TestStringLength("abc"))
+  self~assertSame(0, tester~TestStringLength(""))
+  self~assertSame(7, tester~TestStringLength("abc"||'00'x||"def"))
+
+::method TestStringUpper01
+  tester = .METHODTester~new
+  self~assertSame("ABC", tester~TestStringUpper("abc"))
+  self~assertSame("ABC", tester~TestStringUpper("ABC"))
+  self~assertSame("!&*", tester~TestStringUpper("!&*"))
+  self~assertSame("", tester~TestStringUpper(""))
+  self~assertSame("ABC"||'00'x||"DEF", tester~TestStringUpper("abc"||'00'x||"def"))
+
+::method TestStringLower01
+  tester = .METHODTester~new
+  self~assertSame("abc", tester~TestStringLower("abc"))
+  self~assertSame("abc", tester~TestStringLower("ABC"))
+  self~assertSame("!&*", tester~TestStringLower("!&*"))
+  self~assertSame("", tester~TestStringLower(""))
+  self~assertSame("abc"||'00'x||"def", tester~TestStringLower("ABC"||'00'x||"DEF"))
+
+::method TestIsString01
+  tester = .METHODTester~new
+  self~assertTrue(tester~TestIsString("abc"))
+  self~assertFalse(tester~TestIsString(1))    -- actually integer object
+  self~assertTrue(tester~TestIsString(1.0))
+  self~assertTrue(tester~TestIsString("!&*"))
+  self~assertFalse(tester~TestIsString(.string))
+  self~assertFalse(tester~TestIsString(.array~new))
