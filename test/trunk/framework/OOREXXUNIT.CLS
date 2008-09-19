@@ -512,13 +512,13 @@ return .false
   lineNumber = -1
 
   if isConditionObj(obj) then do
-    if obj~condition == "SYNTAX" then do
-      lineNumber = obj~position
-    end
-    else if obj~traceBack~isA(.list) then do
+    if obj~traceBack~isA(.list) then do
       parse value obj~traceBack~lastItem with number "*-*" .
       lineNumber = number~strip
       if \ isPositive(lineNumber) then lineNumber = -1
+    end
+    else if obj~condition == "SYNTAX" then do
+      lineNumber = obj~position
     end
   end
 
