@@ -1,18 +1,13 @@
 #!/usr/bin/rexx
 /*
    name:             Method.testGroup
-   author:           Rony G. Flatscher
    date:             2007-03-21
    version:          0.0.3
 
 -- line commented lines are ignored, when building the directory of infos from this header
-   changed:          2007-04-03, ---rgf, fixed coding error in "test_New_And_Source"
-                     2007-05-30, ---rgf, fixed a bug in "test_New_And_Source, subtest_01" (comparing with array instead of first entry)
 
-   languageLevel:    6.0.1
-   purpose:          Test the methods of the class CircularQueue.
-   remark:           just one test case which documents a bug in 3.1.1, cf.
-                     <https://sourceforge.net/tracker/index.php?func=detail&aid=1682634&group_id=119701&atid=684730>
+   languageLevel:    6.0.2
+   purpose:          Test the methods of the class Method
 
    license:          CPL 1.0 (Common Public License v1.0, see below)
    link:
@@ -108,3 +103,34 @@ return testResult
 
   self~assertEquals(value4, m4~source)
 
+::method testDirectives
+  a = .array~new
+  a~append("return testRoutine()")
+  a~append("::class test1")
+  a~append("::routine testRoutine")
+  a~append("  return .test1")
+  method = .method~new("Testing", a)
+  o = .RunTester~new
+  o~setMethod("TESTING", method)
+  self~assertTrue(o~testing~isA(.class))
+  package = method~package
+
+  self~assertSame(package~classes["TEST1"], o~testing)
+
+  self~assertTrue(method~isGuarded)
+  self~assertFalse(method~isProtected)
+  self~assertFalse(method~isPrivate)
+
+  method~setunGuarded
+  self~assertFalse(method~isGuarded)
+  method~setGuarded
+  self~assertTrue(method~isGuarded)
+  method~setPrivate
+  self~assertTrue(method~isPrivate)
+  method~setProtected
+  self~assertTrue(method~isProtected)
+
+
+::class RunTester
+::method setMethod
+  forward class(super)
