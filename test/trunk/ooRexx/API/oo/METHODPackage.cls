@@ -199,6 +199,38 @@
 ::method TestRaiseException EXTERNAL "LIBRARY orxmethod TestRaiseException"
 ::method TestRaiseCondition EXTERNAL "LIBRARY orxmethod TestRaiseCondition"
 
+::method TestRaiseExceptionX
+  signal on syntax
+  forward message(TestRaiseException) continue
+  return .nil
+
+  syntax:
+     return condition('o')
+
+::method TestRaiseException0X
+  signal on syntax
+  forward message(TestRaiseException0) continue
+  return .nil
+
+  syntax:
+     return condition('o')
+
+::method TestRaiseException1X
+  signal on syntax
+  forward message(TestRaiseException1) continue
+  return .nil
+
+  syntax:
+     return condition('o')
+
+::method TestRaiseException2X
+  signal on syntax
+  forward message(TestRaiseException2) continue
+  return .nil
+
+  syntax:
+     return condition('o')
+
 ::class VariableTester PUBLIC
 ::method init
   expose var1 stem1. stem2.1
