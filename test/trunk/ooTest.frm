@@ -1,7 +1,7 @@
 #!/usr/bin/rexx
 /*
-  SVN Revision: $Rev: 3047 $
-  Change Date:  $Date: 2008-08-22 19:56:58 -0700 (Fri, 22 Aug 2008) $
+  SVN Revision: $Rev$
+  Change Date:  $Date$
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
@@ -412,23 +412,23 @@ return 0
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::class 'ooTestCase' public subclass TestCase inherit ooTestTypes
 
-  -- The ooTestType attribute is the type of test cases contained in this test
-  -- case class.  The default type is set here.  Test case writers need to
-  -- over-ride the class init() to provide the the test case type when the
-  -- default is not appropriate.
-  ::attribute ooTestType get class
-  ::attribute ooTestType set class private
+-- The ooTestType attribute is the type of test cases contained in this test
+-- case class.  The default type is set here.  Test case writers need to
+-- over-ride the class init() to provide the the test case type when the
+-- default is not appropriate.
+::attribute ooTestType get class
+::attribute ooTestType set class private
 
-  ::method init class
-    forward class (super) continue
+::method init class
+  forward class (super) continue
 
-    -- Use the ooTestResult as the default test result.
-    self~defaultTestResultClass = .ooTestResult
+  -- Use the ooTestResult as the default test result.
+  self~defaultTestResultClass = .ooTestResult
 
-    -- Set the type of test cases this class contains to the default.
-    self~ooTestType = .ooTestTypes~DEFAULT_TEST
+  -- Set the type of test cases this class contains to the default.
+  self~ooTestType = .ooTestTypes~DEFAULT_TEST
 
-  -- End init( )
+-- End init( ) class
 
 -- End of class: ooTestCase
 
@@ -698,6 +698,71 @@ return 0
     say "Messages:"~left(20) stats~messages
     say "Logs:"~left(20) stats~logs
     say
+
+  /* Over-ride the super-class printFailuerInfo(), even though almost exactly
+   * the same, because the super-class is used to print TestCase objects and
+   * here we are printing ooTestCase objects.  ooTestCase objects have data not
+   * avaiable to TestCase objects.
+   */
+  ::method printFailureInfo private
+    use arg data
+
+
+    say "[failure]" data~when
+    self~printSVNInfo(data)
+    say "  Test:  " data~testName
+    say "  Class: " data~className
+    say "  File:  " pathCompact(data~where, 70)
+    say "  Line:  " data~line
+    say "  Failed:" data~type
+    say "    Expected:" data~expected
+    say "    Actual:  " data~actual
+
+    if data~msg \== "" then
+      say "    Message: " data~msg
+    say
+
+  /* Over-ride the super-class method for the same reason as printFailureInfo().
+   */
+  ::method printErrorInfo private
+    use arg data
+
+    -- It is possible that the error happened in a file other than the test case
+    -- file.  Most often the files are the same.
+    different = (data~where~compareTo(data~conditionObject~program) <> 0)
+
+    say "[error]" data~when
+    self~printSVNInfo(data)
+    say "  Test:  " data~testName
+    say "  Class: " data~className
+    say "  File:  " pathCompact(data~where, 70)
+    say "  Event: " pp(data~type) "raised unexpectedly."
+    if data~conditionObject~message \== .nil then
+      say "    "data~conditionObject~message
+    if different then
+      say "    Program:" pathCompact(data~conditionObject~program, 60)
+    say "    Line:   " data~line
+    if data~conditionObject~traceBack~isA(.list) then do line over data~conditionObject~traceBack
+      say line
+    end
+    say
+
+  /** printSVNInfo()
+   * Problem report objects have an additionalObject attribute.  For both
+   * assert failures and error reports this attribute is set to the test case
+   * object.  The test case *class* object has the SVN information in its
+   * information directory.
+   */
+  ::method printSVNInfo private
+    use strict arg problem
+
+    if problem~additionalObject~isA(.ooTestCase) then do
+      info = problem~additionalObject~class~testCaseInfo
+      if info~hasEntry("test_Case-revsion") then do
+        parse value info~entry("test_Case-date") with date time offset junk
+        say "  svn:    r" || info~entry("test_Case-revsion") "  Change date:" date time offset
+      end
+    end
 
   ::method calcStats private
     expose failTable notifications
@@ -1459,73 +1524,21 @@ return 0
     use strict arg src
 
     data = .directory~new
-    data~setentry("test_Case-source", self~pathName);
+    data~setentry("test_Case-source", self~pathName)
+    data~setentry("test_Case-revsion", "unknown")
+    data~setentry("test_Case-date", "unknown")
 
-    keyWord=""
-    tOut=xrange("A","Z")||xrange("a","z")
-    tIn =xrange("A","Z")||xrange("a","z")||xrange()
+    parse value src[3] with '$Rev:' rev '$' .
+    parse value src[4] with '$Date:' date '$' .
 
-    do line over src
-      line = line~strip
-      ch = line~left(2)
-      if ch == "--" | ch == "/*" | ch == "*/" then iterate
+    rev = rev~strip
+    date = date~strip
 
-      -- If not a keyword line, add the line if needed and iterate.
-      if line~pos(":") == 0 then do
-        if keyWord \== "" then data~entry(keyWord)~queue(line)
-        iterate
-      end
+    if rev \== "" then data~setentry("test_Case-revsion", rev)
+    if date \== "" then data~setentry("test_Case-date", date)
 
-      -- It is a keyword line, process it.
-      parse var line name ":" rest
-      keyword = name~translate(tOut, tIn)~space(0)
-
-      -- If the key word has changed then add a new entry.
-      if \ data~hasEntry(keyword) then
-        data~setentry(keyword, .queue~new)
-
-      data~entry(keyword)~queue(rest~strip)
-    end
-
-    self~cleanUpMetaData(data)
     self~testInfo = data
   -- End createMetaData()
-
-  /** cleanUpMetaData()
-   *
-   * Cleans up the the metadata directory object.  If an entry is a queue, blank
-   * lines at the end of the queue are stripped out.  If the queue has less than
-   * 2 items, the queue is eliminated and the directory item is replaced by a
-   * string.
-   *
-   */
-  ::method cleanUpMetaData private
-    use arg data
-
-    keywords = data~allIndexes
-    do keyword over keywords
-      if data~entry(keyword)~isA(.queue) then do
-        -- First strip out any items at the end of the queue that are blank
-        -- lines.
-        q = data~entry(keyword)
-        i = q~last
-        do while i <> .nil
-          if q~at(i) \== "" then leave
-          q~remove(i)
-          i = q~last
-        end
-
-        -- Now, if the queue has only 1 line left in it (or none,) set the data
-        -- item to a string consisting of just this line.  (Discard the queue.)
-        if q~items < 2 then do
-          item = q~pull
-          if item == .nil then item = ""
-          data~setEntry(keyword, item)
-        end
-      end
-    end
-
-  -- End cleanUpMetaData()
 
 -- End of class: TestGroup
 

@@ -1,27 +1,7 @@
 #!/usr/bin/rexx
 /*
--- Do NOT change anything from here down!!!!
-
-   name:             SOURCELINE.testUnit
-   author:           Lee Peedin
-   date:             2007/12/13  2007/12/18
-   version:          1.0         1.1
-
--- line commented lines are ignored, when building the directory of infos from this header
-   changed:
-
-   languageLevel:    6.02
-   purpose:          Test the SOURCELINE BIF
-   remark:           ---
-
-   license:          CPL 1.0 (Common Public License v1.0, see below)
-   link:
-
-// category needs not to be numbered, importance is given by position (1=most important)
-   category1:        ooRexx
-   category2:        Base
-   category3:        BIF
-
+  SVN Revision: $Rev$
+  Change Date:  $Date$
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
@@ -87,22 +67,22 @@ return testResult
     xre = sourceLine(-1)
 
 ::method 'test004'
-    self~assertSame("::method 'test003'", sourceLine(85))
+    self~assertSame("::method 'test003'", sourceLine(65))
 
 ::method 'test005'
-    self~assertSame("::method 'test004'", sourceLine('137'~d2x))
+    self~assertSame("::method 'test004'", sourceLine('105'~d2x))
 
 ::method 'test006'
-    self~assertSame("::method 'test005'", sourceLine(100-8))
+    self~assertSame("::method 'test005'", sourceLine(80-8))
 
 ::method 'test007'
-    self~assertSame("::method 'test002'", sourceLine(.81E+2))
+    self~assertSame("::method 'test002'", sourceLine(.61E+2))
 
 ::method 'test008'
-    self~assertSame("::method 'test007'", sourceLine(000000000098))
+    self~assertSame("::method 'test007'", sourceLine(000000000078))
 
 ::method 'test009'
-    v127 = 83
+    v127 = 63
     self~assertSame("    xre = sourceLine(novalue)", sourceLine(v127))
 
 ::method 'test_line_one'
@@ -132,7 +112,7 @@ return testResult
 
 ::method 'test_last_line'
     lastLine = "/* End of file. Don't remove this marker.  Don't add lines after this line. */"
-    self~assertSame(lastLine, sourceLine(157))
+    self~assertSame(lastLine, sourceLine(137))
 
 ::method 'test_negative_number'
     self~expectSyntax(40.14)
@@ -152,6 +132,6 @@ return testResult
 
 ::method "test_sourceline_with_no_args"
     self~assertTrue(sourceline()~datatype("N"), "sourceline() datatype must be a number")
-    self~assertSame(157, sourceline(), "sourceline() must return correct count of lines")
+    self~assertSame(137, sourceline(), "sourceline() must return correct count of lines")
 
 /* End of file. Don't remove this marker.  Don't add lines after this line. */

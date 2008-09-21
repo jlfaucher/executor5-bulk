@@ -73,6 +73,7 @@ return testResult
 
     n1 = 5
     n2 = 7
+
     self~assertTrue(n1 + n2 == 12)
     self~assertFalse(n1 + n2 == 13)
 
@@ -84,5 +85,12 @@ return testResult
 
     str3 = "Dog"
     self~assertSame(str1, str3)
+
+  ::method test_name_that_is_very_long_to_test_long_things
+    num1 = 18
+    num2 = 3
+    expected = 6
+
+    self~assertSame(expected, num1 / num2)
 
 -- End of class: SimpleTests.testGroup

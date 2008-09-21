@@ -1495,6 +1495,7 @@ exceptionHandler:
     data~testName = self~getName
     data~testString = self~string
     data~conditionObject = cObj
+    data~additionalObject = self
     aTestResult~addFailure(self, data)
   end
   else do
@@ -1506,6 +1507,7 @@ exceptionHandler:
     err~className = self~class~id
     err~testName = self~getName
     err~testString = self~string
+    err~additionalObject = self
     aTestResult~addError(self, err)
   end
 
