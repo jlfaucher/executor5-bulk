@@ -117,7 +117,7 @@ void tryToKill(PROCESSENTRY32 *pPe32)
 {
     HANDLE hProcess;
 
-    hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pPe32->th32ProcessID);
+    hProcess = OpenProcess(PROCESS_TERMINATE, FALSE, pPe32->th32ProcessID);
     if( hProcess == NULL )
     {
         printError("OpenProcess()");
