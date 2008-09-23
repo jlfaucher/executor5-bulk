@@ -82,7 +82,7 @@ RexxMethod2(int,                       // Return type
     GType *types = (GType *)malloc(sizeof(GType) * members);
     if (members) {
         for (int i = 1; i <= members; i++) {
-            context->ObjectToNumber(context->ArrayAt(args, i), (wholenumber_t *)&types[i - 1]);
+            context->ObjectToWholeNumber(context->ArrayAt(args, i), (wholenumber_t *)&types[i - 1]);
         }
         tstore = (GtkTreeStore *)gtk_tree_store_newv(members, (GType *)types);
     }

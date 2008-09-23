@@ -142,7 +142,7 @@ gboolean signal_GdkEventKey(GtkWidget *window,
                           context->WholeNumberToObject((wholenumber_t)event->send_event));
     // Assign the event specific data
     context->SendMessage1(rxevent, "time=",
-                          context->StringSizeNumberToObject((size_t)event->time));
+                          context->StringSizeToObject((size_t)event->time));
     context->SendMessage1(rxevent, "state=",
                           context->StringSizeToObject((size_t)event->state));
     context->SendMessage1(rxevent, "keyval=",
