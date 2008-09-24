@@ -94,15 +94,15 @@ clear~signal_connect('activate')
 
 -- set up the user data for the signals
 pulse~user_data = .array~new()
-pulse~user_data[1] = progres
+pulse~user_data[1] = progress
 pulse~user_data[2] = statusbar
 pulse~user_data[3] = 'Pulse the progressbar one step.'
 fill~user_data = .array~new()
-fill~user_data[1] = progres
+fill~user_data[1] = progress
 fill~user_data[2] = statusbar
 fill~user_data[3] = 'Set the progress bar to 100%.'
 clear~user_data = .array~new()
-clear~user_data[1] = progres
+clear~user_data[1] = progress
 clear~user_data[2] = statusbar
 clear~user_data[3] = 'Clear the progress bar to 0%.'
 
