@@ -485,3 +485,18 @@ return testResult
   self~expectSyntax('88.914')
   package~addPublicClass("TESTING", "xyz")
 
+::method TestLoadLibrary01
+  package = .context~package
+  self~assertTrue(package~loadLibrary("rxmath"))
+  self~assertSame(2, rxcalcsqrt(4))
+  self~assertFalse(package~loadLibrary("invalid_library_name"))
+
+::method TestLoadLibrary02
+  self~expectSyntax('88.901')
+  package = .context~package
+  package~loadLibrary
+
+::method TestLoadLibrary03
+  self~expectSyntax('93.902')
+  package = .context~package
+  package~loadLibrary("a", "b")
