@@ -138,7 +138,7 @@ return prgRet
         tmpDir = srcDrv || srcDir
         if SysIsFileDirectory(tmpDir) then do
           dir = tmpDir
-          leave FIND_BUILD_DIR_LABLEL
+          leave FIND_BUILD_DIR_LABEL
         end
       end
 
