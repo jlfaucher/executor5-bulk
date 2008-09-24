@@ -98,143 +98,102 @@ librexxgtk.so: $(OBJECTS)
 
 
 # Build the objects
-rexxgtk.o: rexxgtk.cpp rexxgtk.h
-	gcc -c $(GRXCFLAGS) rexxgtk.cpp
+# Compile *.cpp to *.o inference rule
+.cpp.o:
+	gcc -c $(GRXCFLAGS) $<
 
-grxwidget.o: grxwidget.cpp rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxwidget.cpp
+# Dependencies
+rexxgtk.obj: rexxgtk.cpp rexxgtk.h
 
-grxwindow.o: grxwindow.cpp rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxwindow.cpp
+grxwidget.obj: grxwidget.cpp rexxgtk.h
 
-grxcontainer.o: grxcontainer.cpp rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxcontainer.cpp
+grxwindow.obj: grxwindow.cpp rexxgtk.h
 
-grxlabel.o: grxlabel.cpp rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxlabel.cpp
+grxcontainer.obj: grxcontainer.cpp rexxgtk.h
 
-grxbutton.o: grxbutton.cpp rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxbutton.cpp
+grxlabel.obj: grxlabel.cpp rexxgtk.h
 
-grxpaned.o: grxpaned.cpp rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxpaned.cpp
+grxbutton.obj: grxbutton.cpp rexxgtk.h
 
-grxtable.o: grxtable.cpp rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxtable.cpp
+grxpaned.obj: grxpaned.cpp rexxgtk.h
 
-grxentry.o: grxentry.cpp rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxentry.cpp
+grxtable.obj: grxtable.cpp rexxgtk.h
 
-grxfixed.o: grxfixed.cpp rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxfixed.cpp
+grxentry.obj: grxentry.cpp rexxgtk.h
 
-grxexpander.o: grxexpander.cpp rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxexpander.cpp
+grxfixed.obj: grxfixed.cpp rexxgtk.h
 
-grxhandlebox.o: grxhandlebox.cpp rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxhandlebox.cpp
+grxexpander.obj: grxexpander.cpp rexxgtk.h
 
-grxnotebook.o: grxnotebook.cpp rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxnotebook.cpp
+grxhandlebox.obj: grxhandlebox.cpp rexxgtk.h
 
-grxrange.o: grxrange.cpp rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxrange.cpp
+grxnotebook.obj: grxnotebook.cpp rexxgtk.h
 
-grxinterfaces.o: grxinterfaces.cpp rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxinterfaces.cpp
+grxrange.obj: grxrange.cpp rexxgtk.h
 
-grximage.o: grximage.cpp rexxgtk.h
-	gcc -c $(GRXCFLAGS) grximage.cpp
+grxinterfaces.obj: grxinterfaces.cpp rexxgtk.h
 
-grxdialog.o: grxdialog.cpp rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxdialog.cpp
+grximage.obj: grximage.cpp rexxgtk.h
 
-grxglib.o: grxglib.cpp rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxglib.cpp
+grxdialog.obj: grxdialog.cpp rexxgtk.h
 
-grxassistant.o: grxassistant.cpp rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxassistant.cpp
+grxglib.obj: grxglib.cpp rexxgtk.h
 
-grxprogressbar.o: grxprogressbar.cpp rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxprogressbar.cpp
+grxassistant.obj: grxassistant.cpp rexxgtk.h
 
-grxadjustment.o: grxadjustment.cpp rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxadjustment.cpp
+grxprogressbar.obj: grxprogressbar.cpp rexxgtk.h
 
-grxscrolledwindow.o: grxscrolledwindow.cpp rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxscrolledwindow.cpp
+grxadjustment.obj: grxadjustment.cpp rexxgtk.h
 
-grxtextview.o: grxtextview.cpp rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxtextview.cpp
+grxscrolledwindow.obj: grxscrolledwindow.cpp rexxgtk.h
 
-grxtextbuffer.o: grxtextbuffer.cpp rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxtextbuffer.cpp
+grxtextview.obj: grxtextview.cpp rexxgtk.h
 
-grxclipboard.o: grxclipboard.cpp rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxclipboard.cpp
+grxtextbuffer.obj: grxtextbuffer.cpp rexxgtk.h
 
-grxcombobox.o: grxcombobox.cpp rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxcombobox.cpp
+grxclipboard.obj: grxclipboard.cpp rexxgtk.h
 
-grxliststore.o: grxliststore.cpp rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxliststore.cpp
+grxcombobox.obj: grxcombobox.cpp rexxgtk.h
 
-grxeventbox.o: grxeventbox.cpp rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxeventbox.cpp
+grxliststore.obj: grxliststore.cpp rexxgtk.h
 
-grxmenushell.o: grxmenushell.cpp rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxmenushell.cpp
+grxeventbox.obj: grxeventbox.cpp rexxgtk.h
 
-grxmenu.o: grxmenu.cpp rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxmenu.cpp
+grxmenushell.obj: grxmenushell.cpp rexxgtk.h
 
-grxmenuitem.o: grxmenuitem.cpp rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxmenuitem.cpp
+grxmenu.obj: grxmenu.cpp rexxgtk.h
 
-grxmenubar.o: grxmenubar.cpp rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxmenubar.cpp
+grxmenuitem.obj: grxmenuitem.cpp rexxgtk.h
 
-grxevents.o: grxevents.cpp rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxevents.cpp
+grxmenubar.obj: grxmenubar.cpp rexxgtk.h
 
-grxaccelgroup.o: grxaccelgroup.cpp rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxaccelgroup.cpp
+grxevents.obj: grxevents.cpp rexxgtk.h
 
-grxstatusbar.o: grxstatusbar.cpp rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxstatusbar.cpp
+grxaccelgroup.obj: grxaccelgroup.cpp rexxgtk.h
 
-grxtoolbar.o: grxtoolbar.cpp rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxtoolbar.cpp
+grxstatusbar.obj: grxstatusbar.cpp rexxgtk.h
 
-grxtoolitem.o: grxtoolitem.cpp rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxtoolitem.cpp
+grxtoolbar.obj: grxtoolbar.cpp rexxgtk.h
 
-grxtoolbutton.o: grxtoolbutton.cpp rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxtoolbutton.cpp
+grxtoolitem.obj: grxtoolitem.cpp rexxgtk.h
 
-grxmenutoolbutton.o: grxmenutoolbutton.cpp rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxmenutoolbutton.cpp
+grxtoolbutton.obj: grxtoolbutton.cpp rexxgtk.h
 
-grxcellrenderer.o: grxcellrenderer.cpp rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxcellrenderer.cpp
+grxmenutoolbutton.obj: grxmenutoolbutton.cpp rexxgtk.h
 
-grxtreeview.o: grxtreeview.cpp rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxtreeview.cpp
+grxcellrenderer.obj: grxcellrenderer.cpp rexxgtk.h
 
-grxtreeviewcolumn.o: grxtreeviewcolumn.cpp rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxtreeviewcolumn.cpp
+grxtreeview.obj: grxtreeview.cpp rexxgtk.h
 
-grxtreestore.o: grxtreestore.cpp rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxtreestore.cpp
+grxtreeviewcolumn.obj: grxtreeviewcolumn.cpp rexxgtk.h
 
-grxtreemodel.o: grxtreemodel.cpp rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxtreemodel.cpp
+grxtreestore.obj: grxtreestore.cpp rexxgtk.h
 
-grxcalendar.o: grxcalendar.cpp rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxcalendar.cpp
+grxtreemodel.obj: grxtreemodel.cpp rexxgtk.h
 
-grxtreeselection.o: grxtreeselection.cpp rexxgtk.h
-	gcc -c $(GRXCFLAGS) grxtreeselection.cpp
+grxcalendar.obj: grxcalendar.cpp rexxgtk.h
+
+grxtreeselection.obj: grxtreeselection.cpp rexxgtk.h
 
 
 
