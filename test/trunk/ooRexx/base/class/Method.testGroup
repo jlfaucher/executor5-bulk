@@ -115,6 +115,44 @@ return testResult
   method~setProtected
   self~assertTrue(method~isProtected)
 
+::method TestLoadExternalMethod01
+  method = .method~loadExternalMethod("INIT", "LIBRARY rxregexp RegExp_Init")
+  self~assertTrue(method~isA(.method))
+
+  method = .method~loadExternalMethod("RegExp_Init", "LIBRARY rxregexp")
+  self~assertTrue(method~isA(.method))
+
+  method = .method~loadExternalMethod("Init", "LIBRARY rxregexp not_one_we_have")
+  self~assertSame(.nil, method)
+
+  method = .method~loadExternalMethod("Init", "LIBRARY not_one_we_have")
+  self~assertSame(.nil, method)
+
+::method TestLoadExternalMethod02
+  self~expectSyntax('88.901')
+  .method~loadExternalMethod
+
+::method TestLoadExternalMethod03
+  self~expectSyntax('88.901')
+  .method~loadExternalMethod("FOO")
+
+::method TestLoadExternalMethod04
+  self~expectSyntax('93.902')
+  .method~loadExternalMethod("FOO", "Bar", "And Then Some")
+
+::method TestLoadExternalMethod05
+  self~expectSyntax('88.901')
+  .method~loadExternalMethod(,"FOO")
+
+::method TestLoadExternalMethod06
+  self~expectSyntax('99.917')
+  .method~loadExternalMethod("FOO","PACKAGE rxmath RxCalcSqrt")
+
+::method TestLoadExternalMethod07
+  self~expectSyntax('99.917')
+  .method~loadExternalMethod("FOO","LIBRARY")
+
+
 
 ::class RunTester
 ::method setMethod

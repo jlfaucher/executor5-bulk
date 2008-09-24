@@ -137,3 +137,46 @@ return testResult
   args[3] = "Mike"
   a = routine~callWith(args)
   self~assertEquals(args, a)
+
+::method TestLoadExternalRoutine01
+  routine = .routine~loadExternalRoutine("SQRT", "LIBRARY rxmath RxCalcSqrt")
+  self~assertTrue(routine~isA(.routine))
+  self~assertSame(2, routine~call(4))
+
+  routine = .routine~loadExternalRoutine("RxCalcSqrt", "LIBRARY rxmath")
+  self~assertTrue(routine~isA(.routine))
+  self~assertSame(2, routine~call(4))
+
+  routine = .routine~loadExternalRoutine("RxCalcSqrt", "LIBRARY rxmath not_one_we_have")
+  self~assertSame(.nil, routine)
+
+  routine = .routine~loadExternalRoutine("RxCalcSqrt", "LIBRARY not_one_we_have")
+  self~assertSame(.nil, routine)
+
+::method TestLoadExternalRoutine02
+  self~expectSyntax('88.901')
+  .routine~loadExternalRoutine
+
+::method TestLoadExternalRoutine03
+  self~expectSyntax('88.901')
+  .routine~loadExternalRoutine("FOO")
+
+::method TestLoadExternalRoutine04
+  self~expectSyntax('93.902')
+  .routine~loadExternalRoutine("FOO", "Bar", "And Then Some")
+
+::method TestLoadExternalRoutine05
+  self~expectSyntax('88.901')
+  .routine~loadExternalRoutine(,"FOO")
+
+::method TestLoadExternalRoutine06
+  self~expectSyntax('99.917')
+  .routine~loadExternalRoutine("FOO","PACKAGE rxmath RxCalcSqrt")
+
+::method TestLoadExternalRoutine07
+  self~expectSyntax('99.917')
+  .routine~loadExternalRoutine("FOO","LIBRARY")
+
+::method TestLoadExternalRoutine08
+  self~expectSyntax('99.917')
+  .routine~loadExternalRoutine("FOO","PACKAGE rxmath RxCalcSqrt AndExtra")
