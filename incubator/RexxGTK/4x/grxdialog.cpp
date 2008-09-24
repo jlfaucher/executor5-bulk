@@ -612,17 +612,18 @@ RexxMethod2(int,                       // Return type
     size_t members = context->ArraySize(args);
 
     if (members) {
-        const gchar **names = (const char **)malloc(sizeof(const char *) * members);
+        const gchar **names = (const char **)malloc(sizeof(const char *) * (members +1));
+        const gchar **allnames = names;
         if ( ! names ) {
             context->RaiseException0(Rexx_Error_System_resources);
             return 0;
         }
 
-        for (int i = 0; i < members; i++, names++) {
-            *names = context->ObjectToStringValue(context->ArrayAt(args, i + 1));
+        for (int i = 1; i <= members; i++, names++) {
+            *names = context->ObjectToStringValue(context->ArrayAt(args, i));
         }
-        *(++names) = NULL;
-        gtk_about_dialog_set_authors(GTK_ABOUT_DIALOG(self), names);
+        *names = NULL;
+        gtk_about_dialog_set_authors(GTK_ABOUT_DIALOG(self), allnames);
     }
 
     return 0;
@@ -645,17 +646,18 @@ RexxMethod2(int,                       // Return type
     size_t members = context->ArraySize(args);
 
     if (members) {
-        const gchar **names = (const char **)malloc(sizeof(const char *) * members);
+        const gchar **names = (const char **)malloc(sizeof(const char *) * (members +1));
+        const gchar **allnames = names;
         if ( ! names ) {
             context->RaiseException0(Rexx_Error_System_resources);
             return 0;
         }
 
-        for (int i = 0; i < members; i++, names++) {
-            *names = context->ObjectToStringValue(context->ArrayAt(args, i + 1));
+        for (int i = 1; i <= members; i++, names++) {
+            *names = context->ObjectToStringValue(context->ArrayAt(args, i));
         }
-        *(++names) = NULL;
-        gtk_about_dialog_set_artists(GTK_ABOUT_DIALOG(self), names);
+        *names = NULL;
+        gtk_about_dialog_set_artists(GTK_ABOUT_DIALOG(self), allnames);
     }
 
     return 0;

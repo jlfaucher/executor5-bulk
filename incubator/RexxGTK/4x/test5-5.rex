@@ -60,6 +60,7 @@ dialog~set_website('http://www.oorexx.org/')
 dialog~set_website_label('ooRexx Web Site')
 
 dialog~set_authors('W. David Ashley', 'Mark Miesfeld')
+
 -- the following statement is not in the original example
 dialog~set_artists('Julian Choy')
 
