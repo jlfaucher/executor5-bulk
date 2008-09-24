@@ -268,19 +268,27 @@ RexxMethod2(logical_t,                 // Return type
  *
  * @return        Zero.
  **/
-RexxMethod3(int,                       // Return type
+RexxMethod4(int,                       // Return type
             GrxTreeRowReferenceNew, // Object_method name
             OSELF, self,               // Self
             RexxObjectPtr, modelobj,   // Model pointer
-            RexxObjectPtr, pathobj)    // Path pointer
+            RexxObjectPtr, pathobj,    // Path pointer
+            OPTIONAL_POINTER, rxref)   // self
 {
-    GtkTreeModel *model = (GtkTreeModel *)context->ObjectToCSelf(modelobj);
-    GtkTreePath *path = (GtkTreePath *)context->ObjectToCSelf(pathobj);
+    GtkTreeRowReference *ref;
 
-    GtkTreeRowReference *ref = gtk_tree_row_reference_new(model, path);
+    if (rxref == NULL) {
+        GtkTreeModel *model = (GtkTreeModel *)context->ObjectToCSelf(modelobj);
+        GtkTreePath *path = (GtkTreePath *)context->ObjectToCSelf(pathobj);
+        ref = gtk_tree_row_reference_new(model, path);
 
-    // Save ourself
-    context->SetObjectVariable("CSELF", context->NewPointer(ref));
+        // Save ourself
+        context->SetObjectVariable("CSELF", context->NewPointer(ref));
+    }
+    else {
+        // Save ourself
+        context->SetObjectVariable("CSELF", context->NewPointer(rxref));
+    }
 
     return 0;
 }
@@ -298,6 +306,22 @@ RexxMethod1(logical_t,                 // Return type
 {
 
     return gtk_tree_row_reference_valid((GtkTreeRowReference *)self);
+}
+
+/**
+ * Method:  get_path
+ *
+ * Get the path from an a row reference.
+ *
+ * @return        Path pointer
+ **/
+RexxMethod1(POINTER,                   // Return type
+            GrxTreeRowReferenceGetPath, // Object_method name
+            CSELF, self)               // Self
+{
+    GtkTreePath *path = gtk_tree_row_reference_get_path((GtkTreeRowReference *)self);
+
+    return path;
 }
 
 /**
@@ -349,6 +373,30 @@ RexxMethod2(int,                       // Return type
             int, idx)                  // Column index
 {
     return gtk_tree_model_get_column_type((GtkTreeModel *)self, idx);
+}
+
+/**
+ * Method:  get_iter
+ *
+ * Get an iterator from a path.
+ *        
+ * @param path    The path
+ *
+ * @return        Iter pointer
+ **/
+RexxMethod2(POINTER,                   // Return type
+            GrxTreeModelGetIter,       // Object_method name
+            CSELF, self,               // Self
+            POINTER, pathptr)          // The path
+{
+    GtkTreePath *path = (GtkTreePath *)pathptr;
+    GtkTreeIter iter;
+
+    gboolean retc = gtk_tree_model_get_iter((GtkTreeModel *)self, &iter, path);
+    if (retc) {
+        return gtk_tree_iter_copy(&iter);
+    }
+    return NULL;
 }
 
 /**
@@ -472,5 +520,46 @@ RexxMethod2(POINTER,                   // Return type
     GtkTreeIter *iter = (GtkTreeIter *)rxiter;
 
     return gtk_tree_model_get_path((GtkTreeModel *)self, iter);
+}
+
+/**
+ * Method:  has_parent
+ *
+ * Return boolean true if the iter has a parent.
+ *        
+ * @param rxiter  The iter pointer
+ *
+ * @return        Path pointer
+ **/
+RexxMethod2(logical_t,                 // Return type
+            GrxTreeModelHasParent,     // Object_method name
+            CSELF, self,               // Self
+            POINTER, rxiter)           // The iter
+{
+    GtkTreeIter *iter = (GtkTreeIter *)rxiter;
+    GtkTreeIter parent;
+
+    return gtk_tree_model_iter_parent((GtkTreeModel *)self, &parent, iter);
+}
+
+/**
+ * Method:  get_parent
+ *
+ * Return the parent.
+ *        
+ * @param rxiter  The iter pointer
+ *
+ * @return        Object
+ **/
+RexxMethod2(POINTER,                   // Return type
+            GrxTreeModelGetParent,     // Object_method name
+            CSELF, self,               // Self
+            POINTER, rxiter)           // The iter
+{
+    GtkTreeIter *iter = (GtkTreeIter *)rxiter;
+    GtkTreeIter parent;
+
+    gtk_tree_model_iter_parent((GtkTreeModel *)self, &parent, iter);
+    return gtk_tree_iter_copy(&parent);
 }
 

@@ -102,9 +102,8 @@ treeview~expand_all()
 scrolled_win = .GtkScrolledWindow~new(.nil, .nil)
 scrolled_win~set_policy(.gtk~GTK_POLICY_AUTOMATIC, .gtk~GTK_POLICY_AUTOMATIC)
 
--- TODO: fix this!
--- selection = treeview~get_selection()
--- selection~set_node(.gtk~GTK_SELECTION_MULTIPLE)
+selection = treeview~get_selection()
+selection~set_mode(.gtk~GTK_SELECTION_MULTIPLE)
 
 scrolled_win~add(treeview)
 scrolled_win~set_policy(.gtk~GTK_POLICY_AUTOMATIC, .gtk~GTK_POLICY_AUTOMATIC)
@@ -284,9 +283,24 @@ PRODUCT = self~user_data[5]
 QUANTITY = self~user_data[6]
 store = self~user_data[7]
 
-
-
-
-
+selection = treeview~get_selection()
+model = treeview~get_model()
+rows = selection~get_selected_rows(model)
+do row over rows
+   -- remove each row
+   path = row~get_path()
+   iter = model~get_iter(path)
+   if model~has_parent(iter) then do
+      buy = model~get_value(iter, BUY_IT)
+      quant = model~get_value(iter, QUANTITY)
+      parent = model~get_parent(iter)
+      num = model~get_value(parent, QUANTITY)
+      if buy then do
+         num = num - quant
+         store~set_value(parent, QUANTITY, num)
+         end
+      store~remove(iter);
+      end
+   end
 return
 

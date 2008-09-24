@@ -97,30 +97,54 @@ RexxMethod2(int,                       // Return type
  *
  * @return        An array
  **/
-RexxMethod1(RexxArrayObject,           // Return type
+RexxMethod3(RexxArrayObject,           // Return type
             GrxTreeSelectionGetSelectedRows, // Object_method name
-            OSELF, self)               // Self
+            OSELF, oself,              // Self
+            CSELF, cself,              // Self
+            RexxObjectPtr, treemodel)  // The tree model
 {
     RexxArrayObject arr = context->NewArray(1);
-    GtkTreeModel *model;
-    GtkTreeRowReference *ref;
+    RexxObjectPtr ref;
     GList *list, *ptr;
     int i = 1;
+    GtkTreeModel *model = (GtkTreeModel *)context->ObjectToCSelf(treemodel);
 
-    list = gtk_tree_selection_get_selected_rows((GtkTreeSelection *)self,
+    list = gtk_tree_selection_get_selected_rows((GtkTreeSelection *)cself,
                                                 &model);
     ptr = list;
     while (ptr != NULL) {
-        ref = gtk_tree_row_reference_new(model, (GtkTreePath *)ptr->data);
-        // TODO: fix this
+        GtkTreeRowReference *treeref = gtk_tree_row_reference_new(model, (GtkTreePath *)ptr->data);
+        ref = context->SendMessage1(oself, "create_tree_row_reference",
+                                    context->NewPointer(gtk_tree_row_reference_copy(treeref)));
         context->ArrayPut(arr, (RexxObjectPtr)ref, i++);
-        gtk_tree_row_reference_free(ref);
+        gtk_tree_row_reference_free(treeref);
         ptr = ptr->next;
     }
     g_list_foreach(list, (GFunc) gtk_tree_path_free, NULL);
     g_list_free(list);
 
     return arr;
+}
+
+/**
+ * Method:  set_mode
+ *
+ * Set the selection mode.
+ *
+ * @param mode    The mode
+ *
+ * @return        Zero
+ **/
+RexxMethod2(int,                       // Return type
+            GrxTreeSelectionSetMode,   // Object_method name
+            CSELF, cself,              // Self
+            int, mode)                 // The mode
+{
+
+    gtk_tree_selection_set_mode((GtkTreeSelection *)cself,
+                                (GtkSelectionMode)mode);
+
+    return 0;
 }
 
 /**

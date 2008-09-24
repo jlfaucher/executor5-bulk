@@ -197,3 +197,20 @@ RexxMethod3(int,                       // Return type
     return 0;
 }
 
+/**
+ * Method:  remove
+ *
+ * Remove a row
+ *
+ * @param args    The object iter
+ *
+ * @return        Row iterator valid flag
+ **/
+RexxMethod2(logical_t,                 // Return type
+            GrxTreeStoreRemove,        // Object_method name
+            CSELF, self,               // GTK self
+            POINTER, iter)             // Parent object
+{
+    return gtk_tree_store_remove(GTK_TREE_STORE(self), (GtkTreeIter *)iter);
+}
+

@@ -102,9 +102,8 @@ treeview~expand_all()
 scrolled_win = .GtkScrolledWindow~new(.nil, .nil)
 scrolled_win~set_policy(.gtk~GTK_POLICY_AUTOMATIC, .gtk~GTK_POLICY_AUTOMATIC)
 
--- TODO: fix this!
--- selection = treeview~get_selection()
--- selection~set_node(.gtk~GTK_SELECTION_MULTIPLE)
+selection = treeview~get_selection()
+selection~set_mode(.gtk~GTK_SELECTION_MULTIPLE)
 
 scrolled_win~add(treeview)
 scrolled_win~set_policy(.gtk~GTK_POLICY_AUTOMATIC, .gtk~GTK_POLICY_AUTOMATIC)

@@ -325,6 +325,25 @@ RexxMethod2(RexxObjectPtr,             // Return type
 }
 
 /**
+ * Method:  get_selection
+ *
+ * Get the selection for the tree.
+ *
+ * @return        Treeselectionh object
+ **/
+RexxMethod2(RexxObjectPtr,             // Return type
+            GrxTreeViewGetSelection,   // Object_method name
+            CSELF, cself,              // GTK self
+            OSELF, oself)              // GTK self
+{
+    GtkTreeSelection *sel = (GtkTreeSelection *)gtk_tree_view_get_selection(GTK_TREE_VIEW(cself));
+
+    // Create the Rexx object
+    return context->SendMessage1(oself, "create_tree_selection",
+                                 context->NewPointer((RexxPointerObject)sel));
+}
+
+/**
  * Method:  expand_all
  *
  * Expand all levels of the tree.

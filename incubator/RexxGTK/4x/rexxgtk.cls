@@ -312,6 +312,11 @@ return
 ::constant GTK_CALENDAR_SHOW_WEEK_NUMBERS 8
 ::constant GTK_CALENDAR_WEEK_START_MONDAY 16
 ::constant GTK_CALENDAR_SHOW_DETAILS 32
+   -- GtkSelectionMode
+::constant GTK_SELECTION_NONE 0
+::constant GTK_SELECTION_SINGLE 1
+::constant GTK_SELECTION_BROWSE 2
+::constant GTK_SELECTION_MULTIPLE 3
    -- Pango scale factors
 ::constant PANGO_SCALE_XX_SMALL 0.5787037037037
 ::constant PANGO_SCALE_X_SMALL 0.6444444444444
@@ -2904,6 +2909,7 @@ return
 ::METHOD set_model EXTERNAL "LIBRARY rexxgtk GrxTreeViewSetModel"
 ::METHOD 'model=' EXTERNAL "LIBRARY rexxgtk GrxTreeViewSetModel"
 ::METHOD get_model EXTERNAL "LIBRARY rexxgtk GrxTreeViewGetModel"
+::METHOD get_selection EXTERNAL "LIBRARY rexxgtk GrxTreeViewGetSelection"
 ::METHOD model EXTERNAL "LIBRARY rexxgtk GrxTreeViewGetModel"
 ::METHOD expand_all EXTERNAL "LIBRARY rexxgtk GrxTreeViewExpandAll"
 ::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxTreeViewSignalConnect"
@@ -2911,6 +2917,10 @@ return
 ::method create_tree_model private
 use strict arg ptr
 return .GtkTreeModel~new(ptr)
+
+::method create_tree_selection private
+use strict arg ptr
+return .GtkTreeSelection~new(ptr)
 
 -- The following are the methods that can be connected to signals. By default
 -- they do nothing.
@@ -2965,6 +2975,17 @@ return .false
 
 
 /*============================================================================*/
+/* Class: GtkTreeRowReference                                                 */
+/*============================================================================*/
+
+::class GtkTreeRowReference public
+
+::METHOD init EXTERNAL "LIBRARY rexxgtk GrxTreeRowReferenceNew"
+::METHOD valid EXTERNAL "LIBRARY rexxgtk GrxTreeRowReferenceValid"
+::METHOD get_path EXTERNAL "LIBRARY rexxgtk GrxTreeRowReferenceGetPath"
+
+
+/*============================================================================*/
 /* Class: GtkTreeViewColumn                                                   */
 /*============================================================================*/
 
@@ -3006,6 +3027,7 @@ return
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxTreeStoreNew"
 ::METHOD append EXTERNAL "LIBRARY rexxgtk GrxTreeStoreAppend"
 ::METHOD set_value EXTERNAL "LIBRARY rexxgtk GrxTreeStoreSetValue"
+::METHOD remove EXTERNAL "LIBRARY rexxgtk GrxTreeStoreRemove"
 
 
 /*============================================================================*/
@@ -3016,7 +3038,13 @@ return
 
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxTreeSelectionNewFromPtr"
 ::METHOD get_selected_rows EXTERNAL "LIBRARY rexxgtk GrxTreeSelectionGetSelectedRows"
+::METHOD set_mode EXTERNAL "LIBRARY rexxgtk GrxTreeSelectionSetMode"
+::METHOD 'mode=' EXTERNAL "LIBRARY rexxgtk GrxTreeSelectionSetMode"
 ::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxTreeSelectionSignalConnect"
+
+::method create_tree_row_reference private
+use strict arg ptr
+return .GtkTreeRowReference~new(.nil, .nil, ptr)
 
 -- The following are the methods that can be connected to signals. By default
 -- they do nothing.
@@ -3324,20 +3352,13 @@ return .GtkTreeModel~new(ptr)
 ::METHOD n_columns EXTERNAL "LIBRARY rexxgtk GrxTreeModelGetNColumns"
 ::METHOD get_column_type EXTERNAL "LIBRARY rexxgtk GrxTreeModelGetColumnType"
 ::METHOD column_type EXTERNAL "LIBRARY rexxgtk GrxTreeModelGetColumnType"
+::METHOD get_iter EXTERNAL "LIBRARY rexxgtk GrxTreeModelGetIter"
 ::METHOD get_iter_from_string EXTERNAL "LIBRARY rexxgtk GrxTreeModelGetIterFromString"
 ::METHOD get_value EXTERNAL "LIBRARY rexxgtk GrxTreeModelGetValue"
 ::METHOD value EXTERNAL "LIBRARY rexxgtk GrxTreeModelGetValue"
 ::METHOD iter_next EXTERNAL "LIBRARY rexxgtk GrxTreeModelIterNext"
 ::METHOD get_path EXTERNAL "LIBRARY rexxgtk GrxTreeModelGetPath"
 ::METHOD path EXTERNAL "LIBRARY rexxgtk GrxTreeModelGetPath"
-
-
-/*============================================================================*/
-/* Class: GtkRowReference                                                     */
-/*============================================================================*/
-
-::class GtkTreeRowReference public
-
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxTreeRowReferenceNew"
-::METHOD valid EXTERNAL "LIBRARY rexxgtk GrxTreeRowReferenceValid"
+::METHOD has_parent EXTERNAL "LIBRARY rexxgtk GrxTreeModelHasParent"
+::METHOD get_parent EXTERNAL "LIBRARY rexxgtk GrxTreeModelGetParent"
 
