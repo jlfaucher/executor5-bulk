@@ -74,15 +74,24 @@
 RexxMethod2(int,                       // Return type
             GrxTreePathNew,            // Object_method name
             OSELF, self,               // Self
-            OPTIONAL_CSTRING, spath)   // Path string
+            OPTIONAL_RexxObjectPtr, spath) // Path string
 {
     GtkTreePath *path;
 
     if (spath == NULL) {
         path = gtk_tree_path_new();
     }
+    else if (context->IsInstanceOf(spath, context->FindContextClass("String"))) {
+        path = gtk_tree_path_new_from_string(context->ObjectToStringValue(spath));
+    }
+    else if (context->IsInstanceOf(spath, context->FindContextClass("Pointer"))) {
+        path = (GtkTreePath *)context->PointerValue((RexxPointerObject)spath);
+    }
     else {
-        path = gtk_tree_path_new_from_string(spath);
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(1),
+                                 context->NewStringFromAsciiz("String"));
+        return 0;
     }
 
     // Save ourself
@@ -315,13 +324,14 @@ RexxMethod1(logical_t,                 // Return type
  *
  * @return        Path pointer
  **/
-RexxMethod1(POINTER,                   // Return type
+RexxMethod2(RexxObjectPtr,             // Return type
             GrxTreeRowReferenceGetPath, // Object_method name
-            CSELF, self)               // Self
+            OSELF, oself,              // Self
+            CSELF, cself)              // Self
 {
-    GtkTreePath *path = gtk_tree_row_reference_get_path((GtkTreeRowReference *)self);
+    GtkTreePath *path = gtk_tree_row_reference_get_path((GtkTreeRowReference *)cself);
 
-    return path;
+    return context->SendMessage1(oself, "create_tree_path", context->NewPointer(path));
 }
 
 /**
@@ -387,9 +397,9 @@ RexxMethod2(int,                       // Return type
 RexxMethod2(POINTER,                   // Return type
             GrxTreeModelGetIter,       // Object_method name
             CSELF, self,               // Self
-            POINTER, pathptr)          // The path
+            RexxObjectPtr, pathobj)    // The path
 {
-    GtkTreePath *path = (GtkTreePath *)pathptr;
+    GtkTreePath *path = (GtkTreePath *)context->ObjectToCSelf(pathobj);
     GtkTreeIter iter;
 
     gboolean retc = gtk_tree_model_get_iter((GtkTreeModel *)self, &iter, path);
@@ -512,14 +522,17 @@ RexxMethod2(POINTER,                   // Return type
  *
  * @return        Path pointer
  **/
-RexxMethod2(POINTER,                   // Return type
+RexxMethod3(RexxObjectPtr,             // Return type
             GrxTreeModelGetPath,       // Object_method name
-            CSELF, self,               // Self
+            OSELF, oself,              // Self
+            CSELF, cself,              // Self
             POINTER, rxiter)           // The iter
 {
     GtkTreeIter *iter = (GtkTreeIter *)rxiter;
 
-    return gtk_tree_model_get_path((GtkTreeModel *)self, iter);
+    GtkTreePath *path = gtk_tree_model_get_path((GtkTreeModel *)cself, iter);
+
+    return context->SendMessage1(oself, "create_tree_path", context->NewPointer(path));
 }
 
 /**

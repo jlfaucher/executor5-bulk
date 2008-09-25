@@ -2984,6 +2984,10 @@ return .false
 ::METHOD valid EXTERNAL "LIBRARY rexxgtk GrxTreeRowReferenceValid"
 ::METHOD get_path EXTERNAL "LIBRARY rexxgtk GrxTreeRowReferenceGetPath"
 
+::method create_tree_path private
+use strict arg ptr
+return .GtkTreePath~new(ptr)
+
 
 /*============================================================================*/
 /* Class: GtkTreeViewColumn                                                   */
@@ -3361,4 +3365,8 @@ return .GtkTreeModel~new(ptr)
 ::METHOD path EXTERNAL "LIBRARY rexxgtk GrxTreeModelGetPath"
 ::METHOD has_parent EXTERNAL "LIBRARY rexxgtk GrxTreeModelHasParent"
 ::METHOD get_parent EXTERNAL "LIBRARY rexxgtk GrxTreeModelGetParent"
+
+::method create_tree_path private
+use strict arg ptr
+return .GtkTreePath~new(ptr)
 
