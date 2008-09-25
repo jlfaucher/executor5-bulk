@@ -92,6 +92,12 @@ RexxMethod3(int,                       // Return type
             RexxObjectPtr, icon,       // Icon widget
             CSTRING, label)            // Button label text
 {
+    if (!context->IsInstanceOf(icon, context->FindContextClass("GtkWidget"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(1),
+                                 context->NewStringFromAsciiz("GtkWidget"));
+        return 0;
+    }
     GtkWidget *iconWidget = (GtkWidget *)context->ObjectToCSelf(icon);
     GtkToolItem *toolitem = gtk_tool_button_new(iconWidget, label);
 
@@ -271,6 +277,12 @@ RexxMethod2(int,                       // Return type
             CSELF, self,               // GTK self
             RexxObjectPtr, icon)       // The icon widget
 {
+    if (!context->IsInstanceOf(icon, context->FindContextClass("GtkWidget"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(1),
+                                 context->NewStringFromAsciiz("GtkWidget"));
+        return 0;
+    }
     GtkWidget *iconWidget = (GtkWidget *)context->ObjectToCSelf(icon);
 
     gtk_tool_button_set_icon_widget(GTK_TOOL_BUTTON(self), iconWidget);
@@ -307,6 +319,12 @@ RexxMethod2(int,                       // Return type
             CSELF, self,               // GTK self
             RexxObjectPtr, label)      // The label
 {
+    if (!context->IsInstanceOf(label, context->FindContextClass("GtkWidget"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(1),
+                                 context->NewStringFromAsciiz("GtkWidget"));
+        return 0;
+    }
     GtkWidget *labelWidget = (GtkWidget *)context->ObjectToCSelf(label);
 
     gtk_tool_button_set_label_widget(GTK_TOOL_BUTTON(self), labelWidget);

@@ -116,11 +116,23 @@ RexxMethod3(int,                       // Return type
 
     if (rxhadj != NULL) {
         if (rxhadj != context->Nil()) {
+            if (!context->IsInstanceOf(rxhadj, context->FindContextClass("GtkAdjustment"))) {
+                context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                         context->WholeNumberToObject(1),
+                                         context->NewStringFromAsciiz("GtkAdjustment"));
+                return 0;
+            }
             hadj = (GtkAdjustment *)context->ObjectToCSelf(rxhadj);
         }
     }
     if (rxvadj != NULL) {
         if (rxvadj != context->Nil()) {
+            if (!context->IsInstanceOf(rxvadj, context->FindContextClass("GtkAdjustment"))) {
+                context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                         context->WholeNumberToObject(2),
+                                         context->NewStringFromAsciiz("GtkAdjustment"));
+                return 0;
+            }
             vadj = (GtkAdjustment *)context->ObjectToCSelf(rxvadj);
         }
     }
@@ -211,6 +223,12 @@ RexxMethod2(int,                       // Return type
             CSELF, self,               // GTK self
             RexxObjectPtr, rxchild)    // Child widget
 {
+    if (!context->IsInstanceOf(rxchild, context->FindContextClass("GtkWidget"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(1),
+                                 context->NewStringFromAsciiz("GtkWidget"));
+        return 0;
+    }
     GtkWidget *myChild = (GtkWidget *)context->ObjectToCSelf(rxchild);
 
     gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(self), myChild);

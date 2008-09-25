@@ -171,6 +171,12 @@ RexxMethod2(int,                       // Return type
             CSELF, self,               // GTK self
             RexxObjectPtr, subm)       // The submenu
 {
+    if (!context->IsInstanceOf(subm, context->FindContextClass("GtkWidget"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(1),
+                                 context->NewStringFromAsciiz("GtkWidget"));
+        return 0;
+    }
     GtkWidget *subWidget = (GtkWidget *)context->ObjectToCSelf(subm);
 
     gtk_menu_item_set_submenu(GTK_MENU_ITEM(self), subWidget);
@@ -328,7 +334,7 @@ RexxMethod4(int,                       // Return type
             GrxImageMenuItemNew,       // Object_method name
             OSELF, self,               // Self
             CSTRING, label,            // Menu label
-            OPTIONAL_int, flag,        // Menu label
+            OPTIONAL_int, flag,        // Menu flag
             OPTIONAL_RexxObjectPtr, accelgrp) // Self
 {
     GtkWidget *myWidget;
@@ -340,6 +346,12 @@ RexxMethod4(int,                       // Return type
         myWidget = gtk_image_menu_item_new_with_mnemonic(label);
     }
     else {
+        if (!context->IsInstanceOf(accelgrp, context->FindContextClass("GtkAccelGroup"))) {
+            context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                     context->WholeNumberToObject(1),
+                                     context->NewStringFromAsciiz("GtkAccelGroup"));
+            return 0;
+        }
         GtkAccelGroup *accelgrpWidget = (GtkAccelGroup *)context->ObjectToCSelf(accelgrp);
         myWidget = gtk_image_menu_item_new_from_stock(label, accelgrpWidget);
     }

@@ -476,6 +476,12 @@ RexxMethod2(int,                       // Return type
             CSELF, self,               // GTK self
             RexxObjectPtr, parent)     // New parent widget
 {
+    if (!context->IsInstanceOf(parent, context->FindContextClass("GtkWidget"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(1),
+                                 context->NewStringFromAsciiz("GtkWidget"));
+        return 0;
+    }
     GtkWidget *parentWidget = (GtkWidget *)context->ObjectToCSelf(parent);
 
     gtk_widget_reparent(GTK_WIDGET(self), parentWidget);
@@ -527,6 +533,12 @@ RexxMethod2(int,                       // Return type
             CSELF, self,               // GTK self
             RexxObjectPtr, parent)     // New parent widget
 {
+    if (!context->IsInstanceOf(parent, context->FindContextClass("GtkWindow"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(1),
+                                 context->NewStringFromAsciiz("GtkWindow"));
+        return 0;
+    }
     GdkWindow *parentWidget = (GdkWindow *)context->ObjectToCSelf(parent);
 
     gtk_widget_set_parent_window(GTK_WIDGET(self), parentWidget);
@@ -596,6 +608,12 @@ RexxMethod2(logical_t,                 // Return type
             CSELF, self,               // GTK self
             RexxObjectPtr, ancestor)   // Ancestor widget
 {
+    if (!context->IsInstanceOf(ancestor, context->FindContextClass("GtkWidget"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(1),
+                                 context->NewStringFromAsciiz("GtkWidget"));
+        return 0;
+    }
     GtkWidget *ancestorWidget = (GtkWidget *)context->ObjectToCSelf(ancestor);
 
     return gtk_widget_is_ancestor(GTK_WIDGET(self), ancestorWidget);
@@ -756,7 +774,19 @@ RexxMethod3(logical_t,                 // Return type
             RexxObjectPtr, hadj,       // Horizontal Adjustment
             RexxObjectPtr, vadj)       // Vertical adjustment
 {
+    if (!context->IsInstanceOf(hadj, context->FindContextClass("GtkAdjustment"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(1),
+                                 context->NewStringFromAsciiz("GtkAdjustment"));
+        return 0;
+    }
     GtkAdjustment *hWidget = (GtkAdjustment *)context->ObjectToCSelf(hadj);
+    if (!context->IsInstanceOf(vadj, context->FindContextClass("GtkAdjustment"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(2),
+                                 context->NewStringFromAsciiz("GtkAdjustment"));
+        return 0;
+    }
     GtkAdjustment *vWidget = (GtkAdjustment *)context->ObjectToCSelf(vadj);
 
     return (logical_t)gtk_widget_set_scroll_adjustments(GTK_WIDGET(self),
@@ -914,6 +944,12 @@ RexxMethod6(int,                       // Return type
             int, mods,                 // Accelerator modifiers
             int, flags)                // Accelerator flags
 {
+    if (!context->IsInstanceOf(accelgrp, context->FindContextClass("GtkAccelGroup"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(2),
+                                 context->NewStringFromAsciiz("GtkAccelGroup"));
+        return 0;
+    }
     GtkAccelGroup *grpWidget = (GtkAccelGroup *)context->ObjectToCSelf(accelgrp);
 
     gtk_widget_add_accelerator(GTK_WIDGET(self), signame, grpWidget, key,
@@ -942,6 +978,12 @@ RexxMethod4(int,                       // Return type
             int, key,                  // Accelerator key
             int, mods)                 // Accelerator modifiers
 {
+    if (!context->IsInstanceOf(accelgrp, context->FindContextClass("GtkAccelGroup"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(1),
+                                 context->NewStringFromAsciiz("GtkAccelGroup"));
+        return 0;
+    }
     GtkAccelGroup *grpWidget = (GtkAccelGroup *)context->ObjectToCSelf(accelgrp);
 
     gtk_widget_remove_accelerator(GTK_WIDGET(self), grpWidget, key,
@@ -969,6 +1011,12 @@ RexxMethod3(int,                       // Return type
             CSTRING, path,             // Accelerator path
             RexxObjectPtr, accelgrp)   // Accelerator group
 {
+    if (!context->IsInstanceOf(accelgrp, context->FindContextClass("GtkAccelGroup"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(2),
+                                 context->NewStringFromAsciiz("GtkAccelGroup"));
+        return 0;
+    }
     GtkAccelGroup *grpWidget = (GtkAccelGroup *)context->ObjectToCSelf(accelgrp);
 
     gtk_widget_set_accel_path(GTK_WIDGET(self), path, grpWidget);

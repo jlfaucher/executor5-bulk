@@ -3048,7 +3048,7 @@ return
 
 ::method create_tree_row_reference private
 use strict arg ptr
-return .GtkTreeRowReference~new(.nil, .nil, ptr)
+return .GtkTreeRowReference~new(ptr)
 
 -- The following are the methods that can be connected to signals. By default
 -- they do nothing.

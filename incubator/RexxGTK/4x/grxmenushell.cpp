@@ -137,6 +137,12 @@ RexxMethod2(int,                       // Return type
             CSELF, self,               // GTK self
             RexxObjectPtr, child)      // The child widget
 {
+    if (!context->IsInstanceOf(child, context->FindContextClass("GtkWidget"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(1),
+                                 context->NewStringFromAsciiz("GtkWidget"));
+        return 0;
+    }
     GtkWidget *childWidget = (GtkWidget *)context->ObjectToCSelf(child);
 
     gtk_menu_shell_append(GTK_MENU_SHELL(self), childWidget);
@@ -158,6 +164,12 @@ RexxMethod2(int,                       // Return type
             CSELF, self,               // GTK self
             RexxObjectPtr, child)      // The child widget
 {
+    if (!context->IsInstanceOf(child, context->FindContextClass("GtkWidget"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(1),
+                                 context->NewStringFromAsciiz("GtkWidget"));
+        return 0;
+    }
     GtkWidget *childWidget = (GtkWidget *)context->ObjectToCSelf(child);
 
     gtk_menu_shell_prepend(GTK_MENU_SHELL(self), childWidget);
@@ -182,6 +194,12 @@ RexxMethod3(int,                       // Return type
             RexxObjectPtr, child,      // The child widget
             int, pos)                  // Position
 {
+    if (!context->IsInstanceOf(child, context->FindContextClass("GtkWidget"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(1),
+                                 context->NewStringFromAsciiz("GtkWidget"));
+        return 0;
+    }
     GtkWidget *childWidget = (GtkWidget *)context->ObjectToCSelf(child);
 
     gtk_menu_shell_insert(GTK_MENU_SHELL(self), childWidget, pos);
@@ -219,6 +237,12 @@ RexxMethod2(int,                       // Return type
             CSELF, self,               // GTK self
             RexxObjectPtr, child)      // The child widget
 {
+    if (!context->IsInstanceOf(child, context->FindContextClass("GtkWidget"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(1),
+                                 context->NewStringFromAsciiz("GtkWidget"));
+        return 0;
+    }
     GtkWidget *childWidget = (GtkWidget *)context->ObjectToCSelf(child);
 
     gtk_menu_shell_select_item(GTK_MENU_SHELL(self), childWidget);
@@ -278,6 +302,12 @@ RexxMethod3(int,                       // Return type
             RexxObjectPtr, child,      // The child widget
             logical_t, force)          // Force deactivate flag
 {
+    if (!context->IsInstanceOf(child, context->FindContextClass("GtkWidget"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(1),
+                                 context->NewStringFromAsciiz("GtkWidget"));
+        return 0;
+    }
     GtkWidget *childWidget = (GtkWidget *)context->ObjectToCSelf(child);
 
     gtk_menu_shell_activate_item(GTK_MENU_SHELL(self), childWidget, force);

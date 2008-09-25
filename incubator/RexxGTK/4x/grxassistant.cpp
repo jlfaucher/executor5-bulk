@@ -179,6 +179,12 @@ RexxMethod2(int,                       // Return type
             CSELF, self,               // GTK self
             RexxObjectPtr, page)       // Page
 {
+    if (!context->IsInstanceOf(page, context->FindContextClass("GtkWidget"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(1),
+                                 context->NewStringFromAsciiz("GtkWidget"));
+        return 0;
+    }
     GtkWidget *pageWidget = (GtkWidget *)context->ObjectToCSelf(page);
 
     return gtk_assistant_prepend_page(GTK_ASSISTANT(self), pageWidget);
@@ -198,6 +204,12 @@ RexxMethod2(int,                       // Return type
             CSELF, self,               // GTK self
             RexxObjectPtr, page)       // Page
 {
+    if (!context->IsInstanceOf(page, context->FindContextClass("GtkWidget"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(1),
+                                 context->NewStringFromAsciiz("GtkWidget"));
+        return 0;
+    }
     GtkWidget *pageWidget = (GtkWidget *)context->ObjectToCSelf(page);
 
     return gtk_assistant_append_page(GTK_ASSISTANT(self), pageWidget);
@@ -220,6 +232,12 @@ RexxMethod3(int,                       // Return type
             RexxObjectPtr, page,       // Page
             int, pagenum)              // Page number
 {
+    if (!context->IsInstanceOf(page, context->FindContextClass("GtkWidget"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(1),
+                                 context->NewStringFromAsciiz("GtkWidget"));
+        return 0;
+    }
     GtkWidget *pageWidget = (GtkWidget *)context->ObjectToCSelf(page);
 
     return gtk_assistant_insert_page(GTK_ASSISTANT(self), pageWidget, pagenum - 1);
@@ -242,6 +260,12 @@ RexxMethod3(int,                       // Return type
             RexxObjectPtr, page,       // Page
             int, type)                 // Page type
 {
+    if (!context->IsInstanceOf(page, context->FindContextClass("GtkWidget"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(1),
+                                 context->NewStringFromAsciiz("GtkWidget"));
+        return 0;
+    }
     GtkWidget *pageWidget = (GtkWidget *)context->ObjectToCSelf(page);
 
     gtk_assistant_set_page_type(GTK_ASSISTANT(self), pageWidget, (GtkAssistantPageType)type);
@@ -266,6 +290,12 @@ RexxMethod3(int,                       // Return type
             RexxObjectPtr, page,       // Page
             CSTRING, title)            // Page title
 {
+    if (!context->IsInstanceOf(page, context->FindContextClass("GtkWidget"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(1),
+                                 context->NewStringFromAsciiz("GtkWidget"));
+        return 0;
+    }
     GtkWidget *pageWidget = (GtkWidget *)context->ObjectToCSelf(page);
 
     gtk_assistant_set_page_title(GTK_ASSISTANT(self), pageWidget, title);
@@ -290,6 +320,12 @@ RexxMethod3(int,                       // Return type
             RexxObjectPtr, page,       // Page
             logical_t, flag)           // Page complete boolean
 {
+    if (!context->IsInstanceOf(page, context->FindContextClass("GtkWidget"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(1),
+                                 context->NewStringFromAsciiz("GtkWidget"));
+        return 0;
+    }
     GtkWidget *pageWidget = (GtkWidget *)context->ObjectToCSelf(page);
 
     gtk_assistant_set_page_complete(GTK_ASSISTANT(self), pageWidget, flag);
@@ -314,6 +350,12 @@ RexxMethod3(int,                       // Return type
             RexxObjectPtr, page,       // Page
             CSTRING, filename)         // Image file name
 {
+    if (!context->IsInstanceOf(page, context->FindContextClass("GtkWidget"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(1),
+                                 context->NewStringFromAsciiz("GtkWidget"));
+        return 0;
+    }
     GtkWidget *pageWidget = (GtkWidget *)context->ObjectToCSelf(page);
     GdkPixbuf *image = gdk_pixbuf_new_from_file(filename, NULL);
 
@@ -339,6 +381,12 @@ RexxMethod3(int,                       // Return type
             RexxObjectPtr, page,       // Page
             CSTRING, title)            // Page title
 {
+    if (!context->IsInstanceOf(page, context->FindContextClass("GtkWidget"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(1),
+                                 context->NewStringFromAsciiz("GtkWidget"));
+        return 0;
+    }
     GtkWidget *pageWidget = (GtkWidget *)context->ObjectToCSelf(page);
 
     gtk_assistant_set_page_title(GTK_ASSISTANT(self), pageWidget, title);

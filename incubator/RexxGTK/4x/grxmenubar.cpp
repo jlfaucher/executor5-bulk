@@ -96,6 +96,12 @@ RexxMethod2(int,                       // Return type
             CSELF, self,               // GTK self
             RexxObjectPtr, child)      // The child menu
 {
+    if (!context->IsInstanceOf(child, context->FindContextClass("GtkWidget"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(1),
+                                 context->NewStringFromAsciiz("GtkWidget"));
+        return 0;
+    }
     GtkWidget *childWidget = (GtkWidget *)context->ObjectToCSelf(child);
 
     gtk_menu_bar_append(GTK_MENU_BAR(self), childWidget);
@@ -117,6 +123,12 @@ RexxMethod2(int,                       // Return type
             CSELF, self,               // GTK self
             RexxObjectPtr, child)      // The child menu
 {
+    if (!context->IsInstanceOf(child, context->FindContextClass("GtkWidget"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(1),
+                                 context->NewStringFromAsciiz("GtkWidget"));
+        return 0;
+    }
     GtkWidget *childWidget = (GtkWidget *)context->ObjectToCSelf(child);
 
     gtk_menu_bar_prepend(GTK_MENU_BAR(self), childWidget);
@@ -141,6 +153,12 @@ RexxMethod3(int,                       // Return type
             RexxObjectPtr, child,      // The child menu
             int, pos)                  // Position
 {
+    if (!context->IsInstanceOf(child, context->FindContextClass("GtkWidget"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(1),
+                                 context->NewStringFromAsciiz("GtkWidget"));
+        return 0;
+    }
     GtkWidget *childWidget = (GtkWidget *)context->ObjectToCSelf(child);
 
     gtk_menu_bar_insert(GTK_MENU_BAR(self), childWidget, pos);

@@ -76,6 +76,12 @@ RexxMethod2(int,                       // Return type
             CSELF, self,               // GTK self
             RexxObjectPtr, rxadd)      // Widget to add
 {
+    if (!context->IsInstanceOf(rxadd, context->FindContextClass("GtkWidget"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(1),
+                                 context->NewStringFromAsciiz("GtkWidget"));
+        return 0;
+    }
     GtkWidget *addWidget = (GtkWidget *)context->ObjectToCSelf(rxadd);
 
     gtk_paned_add1(GTK_PANED(self), addWidget); 
@@ -97,6 +103,12 @@ RexxMethod2(int,                       // Return type
             CSELF, self,               // GTK self
             RexxObjectPtr, rxadd)      // Widget to add
 {
+    if (!context->IsInstanceOf(rxadd, context->FindContextClass("GtkWidget"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(1),
+                                 context->NewStringFromAsciiz("GtkWidget"));
+        return 0;
+    }
     GtkWidget *addWidget = (GtkWidget *)context->ObjectToCSelf(rxadd);
 
     gtk_paned_add2(GTK_PANED(self), addWidget); 
@@ -120,6 +132,12 @@ RexxMethod4(int,                       // Return type
             logical_t, resize,         // Resize flag
             logical_t, shrink)         // Shrink flag
 {
+    if (!context->IsInstanceOf(rxpack, context->FindContextClass("GtkWidget"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(1),
+                                 context->NewStringFromAsciiz("GtkWidget"));
+        return 0;
+    }
     GtkWidget *packWidget = (GtkWidget *)context->ObjectToCSelf(rxpack);
 
     gtk_paned_pack1(GTK_PANED(self), packWidget, resize, shrink); 
@@ -143,6 +161,12 @@ RexxMethod4(int,                       // Return type
             logical_t, resize,         // Resize flag
             logical_t, shrink)         // Shrink flag
 {
+    if (!context->IsInstanceOf(rxpack, context->FindContextClass("GtkWidget"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(1),
+                                 context->NewStringFromAsciiz("GtkWidget"));
+        return 0;
+    }
     GtkWidget *packWidget = (GtkWidget *)context->ObjectToCSelf(rxpack);
 
     gtk_paned_pack2(GTK_PANED(self), packWidget, resize, shrink); 

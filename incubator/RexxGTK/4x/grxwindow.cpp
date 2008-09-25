@@ -193,6 +193,12 @@ RexxMethod2(int,                        // Return type
             CSELF, self,               // GTK self
             RexxObjectPtr, accelgrp)    // Accelerator group
 {
+    if (!context->IsInstanceOf(accelgrp, context->FindContextClass("GtkAccelGroup"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(1),
+                                 context->NewStringFromAsciiz("GtkAccelGroup"));
+        return 0;
+    }
     GtkAccelGroup *accelgrpWidget = (GtkAccelGroup *)context->ObjectToCSelf(accelgrp);
 
     gtk_window_add_accel_group(GTK_WINDOW(self), accelgrpWidget);

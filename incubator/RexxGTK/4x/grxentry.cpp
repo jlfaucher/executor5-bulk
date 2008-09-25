@@ -464,6 +464,12 @@ RexxMethod4(int,                       // Return type
             double, crate,             // Climb rate
             uint32_t, digits)          // Digits
 {
+    if (!context->IsInstanceOf(rxadj, context->FindContextClass("GtkAdjustment"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(1),
+                                 context->NewStringFromAsciiz("GtkAdjustment"));
+        return 0;
+    }
     GtkAdjustment *adj = (GtkAdjustment *)context->ObjectToCSelf(rxadj);
     GtkWidget *myWidget = gtk_spin_button_new(adj, crate, digits);
 

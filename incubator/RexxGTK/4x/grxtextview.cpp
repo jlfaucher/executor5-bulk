@@ -533,6 +533,12 @@ RexxMethod3(int,                       // Return type
             RexxObjectPtr, rxchild,    // Child widget
             int, offset)               // Offset
 {
+    if (!context->IsInstanceOf(rxchild, context->FindContextClass("GtkWidget"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(1),
+                                 context->NewStringFromAsciiz("GtkWidget"));
+        return 0;
+    }
     GtkWidget *myChild = (GtkWidget *)context->ObjectToCSelf(rxchild);
     GtkTextBuffer    *myBuffer;
     GtkTextIter      iter;

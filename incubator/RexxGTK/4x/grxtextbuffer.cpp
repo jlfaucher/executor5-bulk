@@ -400,6 +400,12 @@ RexxMethod3(int,                       // Return type
             RexxObjectPtr, image,      // Image
             int, linenum)              // Line number
 {
+    if (!context->IsInstanceOf(image, context->FindContextClass("GtkImage"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(1),
+                                 context->NewStringFromAsciiz("GtkImage"));
+        return 0;
+    }
     GtkImage *img = (GtkImage *)context->ObjectToCSelf(image);
     GtkTextIter   line;
     GdkPixbuf     *pixbuf;

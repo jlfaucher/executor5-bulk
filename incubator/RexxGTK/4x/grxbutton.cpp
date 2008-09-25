@@ -358,6 +358,12 @@ RexxMethod3(int,                       // Return type
         myWidget = gtk_radio_button_new(NULL);
     }
     else {
+        if (!context->IsInstanceOf(rxwidget, context->FindContextClass("GtkWidget"))) {
+            context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                     context->WholeNumberToObject(1),
+                                     context->NewStringFromAsciiz("GtkWidget"));
+            return 0;
+        }
         GtkWidget *cpWidget = (GtkWidget *)context->ObjectToCSelf(rxwidget);
         if (cpWidget == NULL) {
             myWidget = gtk_radio_button_new(NULL);

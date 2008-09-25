@@ -123,6 +123,12 @@ RexxMethod5(int,                       // Return type
     size_t members = context->ArraySize(args);
 
     if (parent != context->Nil()) {
+        if (!context->IsInstanceOf(parent, context->FindContextClass("GtkWindow"))) {
+            context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                     context->WholeNumberToObject(2),
+                                     context->NewStringFromAsciiz("GtkWindow"));
+            return 0;
+        }
         myParent = (GtkWindow *)context->ObjectToCSelf(parent);
     }
     myWidget = gtk_dialog_new_with_buttons(title, myParent,
@@ -284,6 +290,12 @@ RexxMethod6(int,                       // Return type
     GtkWidget *myWidget;
 
     if (parent != context->Nil()) {
+        if (!context->IsInstanceOf(parent, context->FindContextClass("GtkWindow"))) {
+            context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                     context->WholeNumberToObject(1),
+                                     context->NewStringFromAsciiz("GtkWindow"));
+            return 0;
+        }
         myParent = (GtkWindow *)context->ObjectToCSelf(parent);
     }
     myWidget = gtk_message_dialog_new(myParent, (GtkDialogFlags)flags,
@@ -329,11 +341,23 @@ RexxMethod5(int,                       // Return type
     size_t members = context->ArraySize(args);
 
     if (parent != context->Nil()) {
+        if (!context->IsInstanceOf(parent, context->FindContextClass("GtkWindow"))) {
+            context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                     context->WholeNumberToObject(2),
+                                     context->NewStringFromAsciiz("GtkWindow"));
+            return 0;
+        }
         myParent = (GtkWindow *)context->ObjectToCSelf(parent);
     }
     myWidget = gtk_file_chooser_dialog_new(title, myParent,
                                            (GtkFileChooserAction)action, NULL);
     for (int i = 5; i <= members; i += 2) {
+        if (!context->IsInstanceOf(context->ArrayAt(args, i - 1), context->FindContextClass("String"))) {
+            context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                     context->WholeNumberToObject(i - 1),
+                                     context->NewStringFromAsciiz("string"));
+            return 0;
+        }
         bid = context->ObjectToStringValue(context->ArrayAt(args, i - 1));
         context->ObjectToInt32(context->ArrayAt(args, i), &rid);
         gtk_dialog_add_button(GTK_DIALOG(myWidget), bid, rid);
@@ -620,6 +644,12 @@ RexxMethod2(int,                       // Return type
         }
 
         for (int i = 1; i <= members; i++, names++) {
+            if (!context->IsInstanceOf(context->ArrayAt(args, i), context->FindContextClass("String"))) {
+                context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                         context->WholeNumberToObject(i),
+                                         context->NewStringFromAsciiz("String"));
+                return 0;
+            }
             *names = context->ObjectToStringValue(context->ArrayAt(args, i));
         }
         *names = NULL;
@@ -654,6 +684,12 @@ RexxMethod2(int,                       // Return type
         }
 
         for (int i = 1; i <= members; i++, names++) {
+            if (!context->IsInstanceOf(context->ArrayAt(args, i), context->FindContextClass("String"))) {
+                context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                         context->WholeNumberToObject(i),
+                                         context->NewStringFromAsciiz("String"));
+                return 0;
+            }
             *names = context->ObjectToStringValue(context->ArrayAt(args, i));
         }
         *names = NULL;
@@ -687,6 +723,12 @@ RexxMethod2(int,                       // Return type
         }
 
         for (int i = 0; i < members; i++, names++) {
+            if (!context->IsInstanceOf(context->ArrayAt(args, i), context->FindContextClass("String"))) {
+                context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                         context->WholeNumberToObject(i),
+                                         context->NewStringFromAsciiz("String"));
+                return 0;
+            }
             *names = context->ObjectToStringValue(context->ArrayAt(args, i + 1));
         }
         *(++names) = NULL;

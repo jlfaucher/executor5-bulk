@@ -122,10 +122,9 @@ static gboolean signal_func_3(GtkToolbar *toolitem,
  *
  * @return        Zero.
  **/
-RexxMethod2(int,                       // Return type
+RexxMethod1(int,                       // Return type
             GrxToolItemNew,            // Object_method name
-            OSELF, self,               // Self
-            OPTIONAL_CSTRING, stockid) // Stock id
+            OSELF, self)               // Self
 {
     GtkToolItem *toolitem = gtk_tool_item_new();
 
@@ -222,6 +221,12 @@ RexxMethod4(int,                       // Return type
             CSTRING, text,             // The tooltip text
             CSTRING, ptext)            // The tooltip private text
 {
+    if (!context->IsInstanceOf(tooltip, context->FindContextClass("GtkToolTips"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(1),
+                                 context->NewStringFromAsciiz("GtkToolTips"));
+        return 0;
+    }
     GtkTooltips *tooltWidget = (GtkTooltips *)context->ObjectToCSelf(tooltip);
 
     gtk_tool_item_set_tooltip(GTK_TOOL_ITEM(self), tooltWidget, text, ptext);
@@ -465,6 +470,12 @@ RexxMethod3(int,                       // Return type
             CSTRING, id,               // Item id
             RexxObjectPtr, item)       // Proxy menu itemame
 {
+    if (!context->IsInstanceOf(item, context->FindContextClass("GtkWidget"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(2),
+                                 context->NewStringFromAsciiz("GtkWidget"));
+        return 0;
+    }
     GtkWidget *itemWidget = (GtkWidget *)context->ObjectToCSelf(item);
 
     gtk_tool_item_set_proxy_menu_item(GTK_TOOL_ITEM(self), id, itemWidget);

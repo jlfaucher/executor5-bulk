@@ -102,6 +102,12 @@ RexxMethod4(int,                       // Return type
             int, xpos,                 // X position 
             int, ypos)                 // Y position
 {
+    if (!context->IsInstanceOf(rxwidget, context->FindContextClass("GtkWidget"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(1),
+                                 context->NewStringFromAsciiz("GtkWidget"));
+        return 0;
+    }
     GtkWidget *putWidget = (GtkWidget *)context->ObjectToCSelf(rxwidget);
 
     gtk_fixed_put(GTK_FIXED(self), putWidget, xpos, ypos);
@@ -129,6 +135,12 @@ RexxMethod4(int,                       // Return type
             int, xpos,                 // X position 
             int, ypos)                 // Y position
 {
+    if (!context->IsInstanceOf(rxwidget, context->FindContextClass("GtkWidget"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(1),
+                                 context->NewStringFromAsciiz("GtkWidget"));
+        return 0;
+    }
     GtkWidget *moveWidget = (GtkWidget *)context->ObjectToCSelf(rxwidget);
 
     gtk_fixed_move(GTK_FIXED(self), moveWidget, xpos, ypos);

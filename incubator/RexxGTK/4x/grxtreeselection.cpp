@@ -107,6 +107,12 @@ RexxMethod3(RexxArrayObject,           // Return type
     RexxObjectPtr ref;
     GList *list, *ptr;
     int i = 1;
+    if (!context->IsInstanceOf(treemodel, context->FindContextClass("GtkTreeModel"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(1),
+                                 context->NewStringFromAsciiz("GtkTreeModel"));
+        return 0;
+    }
     GtkTreeModel *model = (GtkTreeModel *)context->ObjectToCSelf(treemodel);
 
     list = gtk_tree_selection_get_selected_rows((GtkTreeSelection *)cself,

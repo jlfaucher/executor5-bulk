@@ -232,6 +232,12 @@ RexxMethod2(int,                       // Return type
             CSELF, self,               // GTK self
             RexxObjectPtr, rxobj)      // Column object
 {
+    if (!context->IsInstanceOf(rxobj, context->FindContextClass("GtkTreeViewColumn"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(1),
+                                 context->NewStringFromAsciiz("GtkTreeViewColumn"));
+        return 0;
+    }
     GtkTreeViewColumn *colWidget = (GtkTreeViewColumn *)context->ObjectToCSelf(rxobj);
 
     gtk_tree_view_append_column(GTK_TREE_VIEW(self), colWidget);
@@ -253,6 +259,12 @@ RexxMethod2(int,                       // Return type
             CSELF, self,               // GTK self
             RexxObjectPtr, rxobj)      // Column object
 {
+    if (!context->IsInstanceOf(rxobj, context->FindContextClass("GtkTreeViewColumn"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(1),
+                                 context->NewStringFromAsciiz("GtkTreeViewColumn"));
+        return 0;
+    }
     GtkTreeViewColumn *colWidget = (GtkTreeViewColumn *)context->ObjectToCSelf(rxobj);
 
     gtk_tree_view_remove_column(GTK_TREE_VIEW(self), colWidget);
@@ -277,6 +289,12 @@ RexxMethod3(int,                       // Return type
             RexxObjectPtr, rxobj,      // Column object
             int, pos)                  // Position
 {
+    if (!context->IsInstanceOf(rxobj, context->FindContextClass("GtkTreeViewColumn"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(1),
+                                 context->NewStringFromAsciiz("GtkTreeViewColumn"));
+        return 0;
+    }
     GtkTreeViewColumn *colWidget = (GtkTreeViewColumn *)context->ObjectToCSelf(rxobj);
 
     gtk_tree_view_insert_column(GTK_TREE_VIEW(self), colWidget, pos);
@@ -298,6 +316,7 @@ RexxMethod2(int,                       // Return type
             CSELF, self,               // GTK self
             RexxObjectPtr, model)      // Column object
 {
+    // Do not test model for its class as it can be of multiple classes
     GtkTreeModel *modelWidget = (GtkTreeModel *)context->ObjectToCSelf(model);
 
     gtk_tree_view_set_model(GTK_TREE_VIEW(self), modelWidget);

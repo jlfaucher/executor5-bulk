@@ -143,6 +143,12 @@ RexxMethod3(int,                       // Return type
             RexxObjectPtr, rxobj,      // Renderer
             logical_t, flag)           // Expand boolean
 {
+    if (!context->IsInstanceOf(rxobj, context->FindContextClass("GtkCellRenderer"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(1),
+                                 context->NewStringFromAsciiz("GtkCellRenderer"));
+        return 0;
+    }
     GtkCellRenderer *renWidget = (GtkCellRenderer *)context->ObjectToCSelf(rxobj);
 
     gtk_tree_view_column_pack_start(GTK_TREE_VIEW_COLUMN(self), renWidget, flag);
@@ -165,6 +171,12 @@ RexxMethod3(int,                       // Return type
             RexxObjectPtr, rxobj,      // Renderer
             logical_t, flag)           // Expand boolean
 {
+    if (!context->IsInstanceOf(rxobj, context->FindContextClass("GtkCellRenderer"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(1),
+                                 context->NewStringFromAsciiz("GtkCellRenderer"));
+        return 0;
+    }
     GtkCellRenderer *renWidget = (GtkCellRenderer *)context->ObjectToCSelf(rxobj);
 
     gtk_tree_view_column_pack_end(GTK_TREE_VIEW_COLUMN(self), renWidget, flag);
@@ -188,6 +200,12 @@ RexxMethod4(int,                       // Return type
             CSTRING, attr,             // Attribute
             int, col)                  // Column
 {
+    if (!context->IsInstanceOf(rxobj, context->FindContextClass("GtkCellRenderer"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(1),
+                                 context->NewStringFromAsciiz("GtkCellRenderer"));
+        return 0;
+    }
     GtkCellRenderer *renWidget = (GtkCellRenderer *)context->ObjectToCSelf(rxobj);
 
     gtk_tree_view_column_set_attributes(GTK_TREE_VIEW_COLUMN(self), renWidget,

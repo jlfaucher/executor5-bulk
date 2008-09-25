@@ -186,7 +186,19 @@ RexxMethod3(int,                       // Return type
             RexxObjectPtr, rxcontainer, // The container
             RexxObjectPtr, rxlabel)    // The label
 {
+    if (!context->IsInstanceOf(rxcontainer, context->FindContextClass("GtkWidget"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(1),
+                                 context->NewStringFromAsciiz("GtkWidget"));
+        return 0;
+    }
     GtkWidget *myContainer = (GtkWidget *)context->ObjectToCSelf(rxcontainer);
+    if (!context->IsInstanceOf(rxlabel, context->FindContextClass("GtkWidget"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(2),
+                                 context->NewStringFromAsciiz("GtkWidget"));
+        return 0;
+    }
     GtkWidget *myLabel = (GtkWidget *)context->ObjectToCSelf(rxlabel);
 
     gtk_notebook_append_page(GTK_NOTEBOOK(self), myContainer, myLabel);
@@ -211,7 +223,19 @@ RexxMethod3(int,                       // Return type
             RexxObjectPtr, rxcontainer, // The container
             RexxObjectPtr, rxlabel)    // The label
 {
+    if (!context->IsInstanceOf(rxcontainer, context->FindContextClass("GtkWidget"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(1),
+                                 context->NewStringFromAsciiz("GtkWidget"));
+        return 0;
+    }
     GtkWidget *myContainer = (GtkWidget *)context->ObjectToCSelf(rxcontainer);
+    if (!context->IsInstanceOf(rxlabel, context->FindContextClass("GtkWidget"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(2),
+                                 context->NewStringFromAsciiz("GtkWidget"));
+        return 0;
+    }
     GtkWidget *myLabel = (GtkWidget *)context->ObjectToCSelf(rxlabel);
 
     gtk_notebook_prepend_page(GTK_NOTEBOOK(self), myContainer, myLabel);
@@ -239,7 +263,19 @@ RexxMethod4(int,                       // Return type
             RexxObjectPtr, rxlabel,    // The label
             int, pos)                  // The position
 {
+    if (!context->IsInstanceOf(rxcontainer, context->FindContextClass("GtkWidget"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(1),
+                                 context->NewStringFromAsciiz("GtkWidget"));
+        return 0;
+    }
     GtkWidget *myContainer = (GtkWidget *)context->ObjectToCSelf(rxcontainer);
+    if (!context->IsInstanceOf(rxlabel, context->FindContextClass("GtkWidget"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(2),
+                                 context->NewStringFromAsciiz("GtkWidget"));
+        return 0;
+    }
     GtkWidget *myLabel = (GtkWidget *)context->ObjectToCSelf(rxlabel);
 
     gtk_notebook_insert_page(GTK_NOTEBOOK(self), myContainer, myLabel, pos);
@@ -267,8 +303,26 @@ RexxMethod4(int,                       // Return type
             RexxObjectPtr, rxlabel,    // The label
             RexxObjectPtr, rxmenu)     // The menu
 {
+    if (!context->IsInstanceOf(rxcontainer, context->FindContextClass("GtkWidget"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(1),
+                                 context->NewStringFromAsciiz("GtkWidget"));
+        return 0;
+    }
     GtkWidget *myContainer = (GtkWidget *)context->ObjectToCSelf(rxcontainer);
+    if (!context->IsInstanceOf(rxlabel, context->FindContextClass("GtkWidget"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(2),
+                                 context->NewStringFromAsciiz("GtkWidget"));
+        return 0;
+    }
     GtkWidget *myLabel = (GtkWidget *)context->ObjectToCSelf(rxlabel);
+    if (!context->IsInstanceOf(rxmenu, context->FindContextClass("GtkWidget"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(3),
+                                 context->NewStringFromAsciiz("GtkWidget"));
+        return 0;
+    }
     GtkWidget *myMenu = (GtkWidget *)context->ObjectToCSelf(rxmenu);
 
     gtk_notebook_append_page_menu(GTK_NOTEBOOK(self), myContainer, myLabel,
@@ -297,8 +351,26 @@ RexxMethod4(int,                       // Return type
             RexxObjectPtr, rxlabel,    // The label
             RexxObjectPtr, rxmenu)     // The menu
 {
+    if (!context->IsInstanceOf(rxcontainer, context->FindContextClass("GtkWidget"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(1),
+                                 context->NewStringFromAsciiz("GtkWidget"));
+        return 0;
+    }
     GtkWidget *myContainer = (GtkWidget *)context->ObjectToCSelf(rxcontainer);
+    if (!context->IsInstanceOf(rxlabel, context->FindContextClass("GtkWidget"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(2),
+                                 context->NewStringFromAsciiz("GtkWidget"));
+        return 0;
+    }
     GtkWidget *myLabel = (GtkWidget *)context->ObjectToCSelf(rxlabel);
+    if (!context->IsInstanceOf(rxmenu, context->FindContextClass("GtkWidget"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(3),
+                                 context->NewStringFromAsciiz("GtkWidget"));
+        return 0;
+    }
     GtkWidget *myMenu = (GtkWidget *)context->ObjectToCSelf(rxmenu);
 
     gtk_notebook_prepend_page_menu(GTK_NOTEBOOK(self), myContainer, myLabel,
@@ -330,8 +402,26 @@ RexxMethod5(int,                       // Return type
             RexxObjectPtr, rxmenu,     // The menu
             int, pos)                  // The position
 {
+    if (!context->IsInstanceOf(rxcontainer, context->FindContextClass("GtkWidget"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(1),
+                                 context->NewStringFromAsciiz("GtkWidget"));
+        return 0;
+    }
     GtkWidget *myContainer = (GtkWidget *)context->ObjectToCSelf(rxcontainer);
+    if (!context->IsInstanceOf(rxlabel, context->FindContextClass("GtkWidget"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(2),
+                                 context->NewStringFromAsciiz("GtkWidget"));
+        return 0;
+    }
     GtkWidget *myLabel = (GtkWidget *)context->ObjectToCSelf(rxlabel);
+    if (!context->IsInstanceOf(rxmenu, context->FindContextClass("GtkWidget"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(3),
+                                 context->NewStringFromAsciiz("GtkWidget"));
+        return 0;
+    }
     GtkWidget *myMenu = (GtkWidget *)context->ObjectToCSelf(rxmenu);
 
     gtk_notebook_insert_page_menu(GTK_NOTEBOOK(self), myContainer, myLabel,

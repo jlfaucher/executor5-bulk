@@ -104,6 +104,12 @@ RexxMethod2(int,                       // Return type
             CSELF, self,               // GTK self
             RexxObjectPtr, rxadd)      // Object to add
 {
+    if (!context->IsInstanceOf(rxadd, context->FindContextClass("GtkWidget"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(1),
+                                 context->NewStringFromAsciiz("GtkWidget"));
+        return 0;
+    }
     GtkWidget *addWidget = (GtkWidget *)context->ObjectToCSelf(rxadd);
 
     gtk_container_add(GTK_CONTAINER(self), addWidget);
@@ -125,6 +131,12 @@ RexxMethod2(int,                       // Return type
             CSELF, self,               // GTK self
             RexxObjectPtr, rxrem)      // Object to add
 {
+    if (!context->IsInstanceOf(rxrem, context->FindContextClass("GtkWidget"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(1),
+                                 context->NewStringFromAsciiz("GtkWidget"));
+        return 0;
+    }
     GtkWidget *remWidget = (GtkWidget *)context->ObjectToCSelf(rxrem);
 
     gtk_container_remove(GTK_CONTAINER(self), remWidget);
@@ -174,6 +186,12 @@ RexxMethod5(int,                       // Return type
             logical_t, fill,           // Fill boolean
             int, padding)              // Padding amount
 {
+    if (!context->IsInstanceOf(rxpack, context->FindContextClass("GtkWidget"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(1),
+                                 context->NewStringFromAsciiz("GtkWidget"));
+        return 0;
+    }
     GtkWidget *packWidget = (GtkWidget *)context->ObjectToCSelf(rxpack);
 
     gtk_box_pack_start(GTK_BOX(self), packWidget, expand, fill, (unsigned int)padding);
@@ -204,6 +222,12 @@ RexxMethod5(int,                       // Return type
             logical_t, fill,           // Fill boolean
             int, padding)              // Padding amount
 {
+    if (!context->IsInstanceOf(rxpack, context->FindContextClass("GtkWidget"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(1),
+                                 context->NewStringFromAsciiz("GtkWidget"));
+        return 0;
+    }
     GtkWidget *packWidget = (GtkWidget *)context->ObjectToCSelf(rxpack);
 
     gtk_box_pack_end(GTK_BOX(self), packWidget, expand, fill, (unsigned int)padding);
@@ -434,7 +458,19 @@ RexxMethod3(int,                       // Return type
             RexxObjectPtr, rxhadj,     // Horizontal adjustment object
             RexxObjectPtr, rxvadj)     // Vertical adjustment object
 {
+    if (!context->IsInstanceOf(rxhadj, context->FindContextClass("GtkAdjustment"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(1),
+                                 context->NewStringFromAsciiz("GtkAdjustment"));
+        return 0;
+    }
     GtkAdjustment *hadj = (GtkAdjustment *)context->ObjectToCSelf(rxhadj);
+    if (!context->IsInstanceOf(rxvadj, context->FindContextClass("GtkAdjustment"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(2),
+                                 context->NewStringFromAsciiz("GtkAdjustment"));
+        return 0;
+    }
     GtkAdjustment *vadj = (GtkAdjustment *)context->ObjectToCSelf(rxvadj);
     GtkWidget *myWidget = gtk_viewport_new(hadj, vadj);
 

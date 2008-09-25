@@ -129,6 +129,12 @@ RexxMethod10(int,                       // Return type
             int, xpad,                 // X padding
             int, ypad)                 // Y padding
 {
+    if (!context->IsInstanceOf(rxWidget, context->FindContextClass("GtkWidget"))) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(1),
+                                 context->NewStringFromAsciiz("GtkWidget"));
+        return 0;
+    }
     GtkWidget *myWidget = (GtkWidget *)context->ObjectToCSelf(rxWidget);
 
     gtk_table_attach(GTK_TABLE(self), myWidget, left, right, top, bottom,
