@@ -232,7 +232,7 @@ RexxMethod2(int,                       // Return type
             CSELF, self,               // GTK self
             RexxObjectPtr, rxobj)      // Column object
 {
-    if (!context->IsInstanceOf(rxobj, context->FindContextClass("GtkTreeViewColumn"))) {
+    if (!context->IsOfType(rxobj, "GtkTreeViewColumn")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(1),
                                  context->NewStringFromAsciiz("GtkTreeViewColumn"));
@@ -259,7 +259,7 @@ RexxMethod2(int,                       // Return type
             CSELF, self,               // GTK self
             RexxObjectPtr, rxobj)      // Column object
 {
-    if (!context->IsInstanceOf(rxobj, context->FindContextClass("GtkTreeViewColumn"))) {
+    if (!context->IsOfType(rxobj, "GtkTreeViewColumn")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(1),
                                  context->NewStringFromAsciiz("GtkTreeViewColumn"));
@@ -289,7 +289,7 @@ RexxMethod3(int,                       // Return type
             RexxObjectPtr, rxobj,      // Column object
             int, pos)                  // Position
 {
-    if (!context->IsInstanceOf(rxobj, context->FindContextClass("GtkTreeViewColumn"))) {
+    if (!context->IsOfType(rxobj, "GtkTreeViewColumn")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(1),
                                  context->NewStringFromAsciiz("GtkTreeViewColumn"));

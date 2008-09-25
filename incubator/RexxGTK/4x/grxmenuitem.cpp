@@ -171,7 +171,7 @@ RexxMethod2(int,                       // Return type
             CSELF, self,               // GTK self
             RexxObjectPtr, subm)       // The submenu
 {
-    if (!context->IsInstanceOf(subm, context->FindContextClass("GtkWidget"))) {
+    if (!context->IsOfType(subm, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(1),
                                  context->NewStringFromAsciiz("GtkWidget"));
@@ -346,7 +346,7 @@ RexxMethod4(int,                       // Return type
         myWidget = gtk_image_menu_item_new_with_mnemonic(label);
     }
     else {
-        if (!context->IsInstanceOf(accelgrp, context->FindContextClass("GtkAccelGroup"))) {
+        if (!context->IsOfType(accelgrp, "GtkAccelGroup")) {
             context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                      context->WholeNumberToObject(1),
                                      context->NewStringFromAsciiz("GtkAccelGroup"));

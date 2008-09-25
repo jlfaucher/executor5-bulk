@@ -114,7 +114,7 @@ RexxMethod3(int,                       // Return type
             RexxObjectPtr, child,      // The child widget
             int, pos)                  // Position
 {
-    if (!context->IsInstanceOf(child, context->FindContextClass("GtkWidget"))) {
+    if (!context->IsOfType(child, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(1),
                                  context->NewStringFromAsciiz("GtkWidget"));
@@ -153,7 +153,7 @@ RexxMethod6(int,                       // Return type
             int, top,                  // Top row number
             int, bottom)               // Bottom row number
 {
-    if (!context->IsInstanceOf(child, context->FindContextClass("GtkWidget"))) {
+    if (!context->IsOfType(child, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(1),
                                  context->NewStringFromAsciiz("GtkWidget"));
@@ -197,7 +197,7 @@ RexxMethod2(int,                       // Return type
             CSELF, self,               // GTK self
             RexxObjectPtr, accel)      // The accel widget
 {
-    if (!context->IsInstanceOf(accel, context->FindContextClass("GtkAccelGroup"))) {
+    if (!context->IsOfType(accel, "GtkAccelGroup")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(1),
                                  context->NewStringFromAsciiz("GtkAccelGroup"));
@@ -390,7 +390,7 @@ RexxMethod2(int,                       // Return type
             CSELF, self,               // GTK self
             RexxObjectPtr, target)     // The accel widget
 {
-    if (!context->IsInstanceOf(target, context->FindContextClass("GtkWidget"))) {
+    if (!context->IsOfType(target, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(1),
                                  context->NewStringFromAsciiz("GtkWidget"));

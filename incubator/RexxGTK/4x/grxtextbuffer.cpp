@@ -400,7 +400,7 @@ RexxMethod3(int,                       // Return type
             RexxObjectPtr, image,      // Image
             int, linenum)              // Line number
 {
-    if (!context->IsInstanceOf(image, context->FindContextClass("GtkImage"))) {
+    if (!context->IsOfType(image, "GtkImage")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(1),
                                  context->NewStringFromAsciiz("GtkImage"));

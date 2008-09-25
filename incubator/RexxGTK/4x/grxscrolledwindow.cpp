@@ -116,7 +116,7 @@ RexxMethod3(int,                       // Return type
 
     if (rxhadj != NULL) {
         if (rxhadj != context->Nil()) {
-            if (!context->IsInstanceOf(rxhadj, context->FindContextClass("GtkAdjustment"))) {
+            if (!context->IsOfType(rxhadj, "GtkAdjustment")) {
                 context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                          context->WholeNumberToObject(1),
                                          context->NewStringFromAsciiz("GtkAdjustment"));
@@ -127,7 +127,7 @@ RexxMethod3(int,                       // Return type
     }
     if (rxvadj != NULL) {
         if (rxvadj != context->Nil()) {
-            if (!context->IsInstanceOf(rxvadj, context->FindContextClass("GtkAdjustment"))) {
+            if (!context->IsOfType(rxvadj, "GtkAdjustment")) {
                 context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                          context->WholeNumberToObject(2),
                                          context->NewStringFromAsciiz("GtkAdjustment"));
@@ -223,7 +223,7 @@ RexxMethod2(int,                       // Return type
             CSELF, self,               // GTK self
             RexxObjectPtr, rxchild)    // Child widget
 {
-    if (!context->IsInstanceOf(rxchild, context->FindContextClass("GtkWidget"))) {
+    if (!context->IsOfType(rxchild, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(1),
                                  context->NewStringFromAsciiz("GtkWidget"));

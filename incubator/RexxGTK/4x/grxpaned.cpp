@@ -76,7 +76,7 @@ RexxMethod2(int,                       // Return type
             CSELF, self,               // GTK self
             RexxObjectPtr, rxadd)      // Widget to add
 {
-    if (!context->IsInstanceOf(rxadd, context->FindContextClass("GtkWidget"))) {
+    if (!context->IsOfType(rxadd, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(1),
                                  context->NewStringFromAsciiz("GtkWidget"));
@@ -103,7 +103,7 @@ RexxMethod2(int,                       // Return type
             CSELF, self,               // GTK self
             RexxObjectPtr, rxadd)      // Widget to add
 {
-    if (!context->IsInstanceOf(rxadd, context->FindContextClass("GtkWidget"))) {
+    if (!context->IsOfType(rxadd, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(1),
                                  context->NewStringFromAsciiz("GtkWidget"));
@@ -132,7 +132,7 @@ RexxMethod4(int,                       // Return type
             logical_t, resize,         // Resize flag
             logical_t, shrink)         // Shrink flag
 {
-    if (!context->IsInstanceOf(rxpack, context->FindContextClass("GtkWidget"))) {
+    if (!context->IsOfType(rxpack, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(1),
                                  context->NewStringFromAsciiz("GtkWidget"));
@@ -161,7 +161,7 @@ RexxMethod4(int,                       // Return type
             logical_t, resize,         // Resize flag
             logical_t, shrink)         // Shrink flag
 {
-    if (!context->IsInstanceOf(rxpack, context->FindContextClass("GtkWidget"))) {
+    if (!context->IsOfType(rxpack, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(1),
                                  context->NewStringFromAsciiz("GtkWidget"));

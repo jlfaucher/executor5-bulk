@@ -221,7 +221,7 @@ RexxMethod4(int,                       // Return type
             CSTRING, text,             // The tooltip text
             CSTRING, ptext)            // The tooltip private text
 {
-    if (!context->IsInstanceOf(tooltip, context->FindContextClass("GtkToolTips"))) {
+    if (!context->IsOfType(tooltip, "GtkToolTips")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(1),
                                  context->NewStringFromAsciiz("GtkToolTips"));
@@ -470,7 +470,7 @@ RexxMethod3(int,                       // Return type
             CSTRING, id,               // Item id
             RexxObjectPtr, item)       // Proxy menu itemame
 {
-    if (!context->IsInstanceOf(item, context->FindContextClass("GtkWidget"))) {
+    if (!context->IsOfType(item, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(2),
                                  context->NewStringFromAsciiz("GtkWidget"));

@@ -464,7 +464,7 @@ RexxMethod4(int,                       // Return type
             double, crate,             // Climb rate
             uint32_t, digits)          // Digits
 {
-    if (!context->IsInstanceOf(rxadj, context->FindContextClass("GtkAdjustment"))) {
+    if (!context->IsOfType(rxadj, "GtkAdjustment")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(1),
                                  context->NewStringFromAsciiz("GtkAdjustment"));

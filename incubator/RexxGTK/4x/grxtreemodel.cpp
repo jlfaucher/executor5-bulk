@@ -81,10 +81,10 @@ RexxMethod2(int,                       // Return type
     if (spath == NULL) {
         path = gtk_tree_path_new();
     }
-    else if (context->IsInstanceOf(spath, context->FindContextClass("String"))) {
+    else if (context->IsOfType(spath, "String")) {
         path = gtk_tree_path_new_from_string(context->ObjectToStringValue(spath));
     }
-    else if (context->IsInstanceOf(spath, context->FindContextClass("Pointer"))) {
+    else if (context->IsOfType(spath, "Pointer")) {
         path = (GtkTreePath *)context->PointerValue((RexxPointerObject)spath);
     }
     else {
@@ -244,7 +244,7 @@ RexxMethod2(logical_t,                 // Return type
             RexxObjectPtr, obj,        // Node to test
             CSELF, self)               // GTK self
 {
-    if (!context->IsInstanceOf(obj, context->FindContextClass("GtkTreePath"))) {
+    if (!context->IsOfType(obj, "GtkTreePath")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(1),
                                  context->NewStringFromAsciiz("GtkTreePath"));
@@ -269,7 +269,7 @@ RexxMethod2(logical_t,                 // Return type
             RexxObjectPtr, obj,        // Node to test
             CSELF, self)               // GTK self
 {
-    if (!context->IsInstanceOf(obj, context->FindContextClass("GtkTreePath"))) {
+    if (!context->IsOfType(obj, "GtkTreePath")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(1),
                                  context->NewStringFromAsciiz("GtkTreePath"));
@@ -298,7 +298,7 @@ RexxMethod3(int,                       // Return type
     GtkTreeRowReference *ref;
 
     if (pathobj == NULL) {
-        if (context->IsInstanceOf(modelobj, context->FindContextClass("Pointer"))) {
+        if (context->IsOfType(modelobj, "Pointer")) {
             // Save ourself
             context->SetObjectVariable("CSELF", modelobj);
         }
@@ -310,19 +310,19 @@ RexxMethod3(int,                       // Return type
         }
     }
     else {
-        if (!context->IsInstanceOf(modelobj, context->FindContextClass("GtkTreeModel"))) {
+        if (!context->IsOfType(modelobj, "GtkTreeModel")) {
             context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                      context->WholeNumberToObject(1),
-                                     context->NewStringFromAsciiz("Pointer"));
-            return 0;
-        }
-        if (!context->IsInstanceOf(pathobj, context->FindContextClass("GtkTreePath"))) {
-            context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
-                                     context->WholeNumberToObject(1),
-                                     context->NewStringFromAsciiz("Pointer"));
+                                     context->NewStringFromAsciiz("GtkTreeModel"));
             return 0;
         }
         GtkTreeModel *model = (GtkTreeModel *)context->ObjectToCSelf(modelobj);
+        if (!context->IsOfType(pathobj, "GtkTreePath")) {
+            context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                     context->WholeNumberToObject(1),
+                                     context->NewStringFromAsciiz("GtkTreePath"));
+            return 0;
+        }
         GtkTreePath *path = (GtkTreePath *)context->ObjectToCSelf(pathobj);
         ref = gtk_tree_row_reference_new(model, path);
 
@@ -376,16 +376,10 @@ RexxMethod2(RexxObjectPtr,             // Return type
  **/
 RexxMethod1(int,                       // Return type
             GrxTreeModelNew,           // Object_method name
-            RexxObjectPtr, ptr)        // Pointer
+            POINTER, ptr)              // Pointer
 {
-    if (!context->IsInstanceOf(ptr, context->FindContextClass("Pointer"))) {
-        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
-                                 context->WholeNumberToObject(1),
-                                 context->NewStringFromAsciiz("Pointer"));
-        return 0;
-    }
     // Save ourself
-    context->SetObjectVariable("CSELF", ptr);
+    context->SetObjectVariable("CSELF", context->NewPointer(ptr));
 
     return 0;
 }
@@ -436,10 +430,10 @@ RexxMethod2(POINTER,                   // Return type
             RexxObjectPtr, pathobj)    // The path
 {
     GtkTreeIter iter;
-    if (!context->IsInstanceOf(pathobj, context->FindContextClass("GtkTreePath"))) {
+    if (!context->IsOfType(pathobj, "GtkTreePath")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(1),
-                                 context->NewStringFromAsciiz("Pointer"));
+                                 context->NewStringFromAsciiz("GtkTreePath"));
         return 0;
     }
     GtkTreePath *path = (GtkTreePath *)context->ObjectToCSelf(pathobj);

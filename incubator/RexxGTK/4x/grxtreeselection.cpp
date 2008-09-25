@@ -107,7 +107,7 @@ RexxMethod3(RexxArrayObject,           // Return type
     RexxObjectPtr ref;
     GList *list, *ptr;
     int i = 1;
-    if (!context->IsInstanceOf(treemodel, context->FindContextClass("GtkTreeModel"))) {
+    if (!context->IsOfType(treemodel, "GtkTreeModel")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(1),
                                  context->NewStringFromAsciiz("GtkTreeModel"));

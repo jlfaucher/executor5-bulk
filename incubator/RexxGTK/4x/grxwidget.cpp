@@ -476,7 +476,7 @@ RexxMethod2(int,                       // Return type
             CSELF, self,               // GTK self
             RexxObjectPtr, parent)     // New parent widget
 {
-    if (!context->IsInstanceOf(parent, context->FindContextClass("GtkWidget"))) {
+    if (!context->IsOfType(parent, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(1),
                                  context->NewStringFromAsciiz("GtkWidget"));
@@ -533,7 +533,7 @@ RexxMethod2(int,                       // Return type
             CSELF, self,               // GTK self
             RexxObjectPtr, parent)     // New parent widget
 {
-    if (!context->IsInstanceOf(parent, context->FindContextClass("GtkWindow"))) {
+    if (!context->IsOfType(parent, "GtkWindow")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(1),
                                  context->NewStringFromAsciiz("GtkWindow"));
@@ -608,7 +608,7 @@ RexxMethod2(logical_t,                 // Return type
             CSELF, self,               // GTK self
             RexxObjectPtr, ancestor)   // Ancestor widget
 {
-    if (!context->IsInstanceOf(ancestor, context->FindContextClass("GtkWidget"))) {
+    if (!context->IsOfType(ancestor, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(1),
                                  context->NewStringFromAsciiz("GtkWidget"));
@@ -774,14 +774,14 @@ RexxMethod3(logical_t,                 // Return type
             RexxObjectPtr, hadj,       // Horizontal Adjustment
             RexxObjectPtr, vadj)       // Vertical adjustment
 {
-    if (!context->IsInstanceOf(hadj, context->FindContextClass("GtkAdjustment"))) {
+    if (!context->IsOfType(hadj, "GtkAdjustment")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(1),
                                  context->NewStringFromAsciiz("GtkAdjustment"));
         return 0;
     }
     GtkAdjustment *hWidget = (GtkAdjustment *)context->ObjectToCSelf(hadj);
-    if (!context->IsInstanceOf(vadj, context->FindContextClass("GtkAdjustment"))) {
+    if (!context->IsOfType(vadj, "GtkAdjustment")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(2),
                                  context->NewStringFromAsciiz("GtkAdjustment"));
@@ -944,7 +944,7 @@ RexxMethod6(int,                       // Return type
             int, mods,                 // Accelerator modifiers
             int, flags)                // Accelerator flags
 {
-    if (!context->IsInstanceOf(accelgrp, context->FindContextClass("GtkAccelGroup"))) {
+    if (!context->IsOfType(accelgrp, "GtkAccelGroup")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(2),
                                  context->NewStringFromAsciiz("GtkAccelGroup"));
@@ -978,7 +978,7 @@ RexxMethod4(int,                       // Return type
             int, key,                  // Accelerator key
             int, mods)                 // Accelerator modifiers
 {
-    if (!context->IsInstanceOf(accelgrp, context->FindContextClass("GtkAccelGroup"))) {
+    if (!context->IsOfType(accelgrp, "GtkAccelGroup")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(1),
                                  context->NewStringFromAsciiz("GtkAccelGroup"));
@@ -1011,7 +1011,7 @@ RexxMethod3(int,                       // Return type
             CSTRING, path,             // Accelerator path
             RexxObjectPtr, accelgrp)   // Accelerator group
 {
-    if (!context->IsInstanceOf(accelgrp, context->FindContextClass("GtkAccelGroup"))) {
+    if (!context->IsOfType(accelgrp, "GtkAccelGroup")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(2),
                                  context->NewStringFromAsciiz("GtkAccelGroup"));

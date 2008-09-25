@@ -143,7 +143,7 @@ RexxMethod3(int,                       // Return type
             RexxObjectPtr, rxobj,      // Renderer
             logical_t, flag)           // Expand boolean
 {
-    if (!context->IsInstanceOf(rxobj, context->FindContextClass("GtkCellRenderer"))) {
+    if (!context->IsOfType(rxobj, "GtkCellRenderer")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(1),
                                  context->NewStringFromAsciiz("GtkCellRenderer"));
@@ -171,7 +171,7 @@ RexxMethod3(int,                       // Return type
             RexxObjectPtr, rxobj,      // Renderer
             logical_t, flag)           // Expand boolean
 {
-    if (!context->IsInstanceOf(rxobj, context->FindContextClass("GtkCellRenderer"))) {
+    if (!context->IsOfType(rxobj, "GtkCellRenderer")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(1),
                                  context->NewStringFromAsciiz("GtkCellRenderer"));
@@ -200,7 +200,7 @@ RexxMethod4(int,                       // Return type
             CSTRING, attr,             // Attribute
             int, col)                  // Column
 {
-    if (!context->IsInstanceOf(rxobj, context->FindContextClass("GtkCellRenderer"))) {
+    if (!context->IsOfType(rxobj, "GtkCellRenderer")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(1),
                                  context->NewStringFromAsciiz("GtkCellRenderer"));

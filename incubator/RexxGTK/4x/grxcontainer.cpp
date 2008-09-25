@@ -104,7 +104,7 @@ RexxMethod2(int,                       // Return type
             CSELF, self,               // GTK self
             RexxObjectPtr, rxadd)      // Object to add
 {
-    if (!context->IsInstanceOf(rxadd, context->FindContextClass("GtkWidget"))) {
+    if (!context->IsOfType(rxadd, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(1),
                                  context->NewStringFromAsciiz("GtkWidget"));
@@ -131,7 +131,7 @@ RexxMethod2(int,                       // Return type
             CSELF, self,               // GTK self
             RexxObjectPtr, rxrem)      // Object to add
 {
-    if (!context->IsInstanceOf(rxrem, context->FindContextClass("GtkWidget"))) {
+    if (!context->IsOfType(rxrem, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(1),
                                  context->NewStringFromAsciiz("GtkWidget"));
@@ -186,7 +186,7 @@ RexxMethod5(int,                       // Return type
             logical_t, fill,           // Fill boolean
             int, padding)              // Padding amount
 {
-    if (!context->IsInstanceOf(rxpack, context->FindContextClass("GtkWidget"))) {
+    if (!context->IsOfType(rxpack, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(1),
                                  context->NewStringFromAsciiz("GtkWidget"));
@@ -222,7 +222,7 @@ RexxMethod5(int,                       // Return type
             logical_t, fill,           // Fill boolean
             int, padding)              // Padding amount
 {
-    if (!context->IsInstanceOf(rxpack, context->FindContextClass("GtkWidget"))) {
+    if (!context->IsOfType(rxpack, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(1),
                                  context->NewStringFromAsciiz("GtkWidget"));
@@ -458,14 +458,14 @@ RexxMethod3(int,                       // Return type
             RexxObjectPtr, rxhadj,     // Horizontal adjustment object
             RexxObjectPtr, rxvadj)     // Vertical adjustment object
 {
-    if (!context->IsInstanceOf(rxhadj, context->FindContextClass("GtkAdjustment"))) {
+    if (!context->IsOfType(rxhadj, "GtkAdjustment")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(1),
                                  context->NewStringFromAsciiz("GtkAdjustment"));
         return 0;
     }
     GtkAdjustment *hadj = (GtkAdjustment *)context->ObjectToCSelf(rxhadj);
-    if (!context->IsInstanceOf(rxvadj, context->FindContextClass("GtkAdjustment"))) {
+    if (!context->IsOfType(rxvadj, "GtkAdjustment")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(2),
                                  context->NewStringFromAsciiz("GtkAdjustment"));

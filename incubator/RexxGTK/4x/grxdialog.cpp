@@ -123,7 +123,7 @@ RexxMethod5(int,                       // Return type
     size_t members = context->ArraySize(args);
 
     if (parent != context->Nil()) {
-        if (!context->IsInstanceOf(parent, context->FindContextClass("GtkWindow"))) {
+        if (!context->IsOfType(parent, "GtkWindow")) {
             context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                      context->WholeNumberToObject(2),
                                      context->NewStringFromAsciiz("GtkWindow"));
@@ -290,7 +290,7 @@ RexxMethod6(int,                       // Return type
     GtkWidget *myWidget;
 
     if (parent != context->Nil()) {
-        if (!context->IsInstanceOf(parent, context->FindContextClass("GtkWindow"))) {
+        if (!context->IsOfType(parent, "GtkWindow")) {
             context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                      context->WholeNumberToObject(1),
                                      context->NewStringFromAsciiz("GtkWindow"));
@@ -341,7 +341,7 @@ RexxMethod5(int,                       // Return type
     size_t members = context->ArraySize(args);
 
     if (parent != context->Nil()) {
-        if (!context->IsInstanceOf(parent, context->FindContextClass("GtkWindow"))) {
+        if (!context->IsOfType(parent, "GtkWindow")) {
             context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                      context->WholeNumberToObject(2),
                                      context->NewStringFromAsciiz("GtkWindow"));
@@ -352,10 +352,10 @@ RexxMethod5(int,                       // Return type
     myWidget = gtk_file_chooser_dialog_new(title, myParent,
                                            (GtkFileChooserAction)action, NULL);
     for (int i = 5; i <= members; i += 2) {
-        if (!context->IsInstanceOf(context->ArrayAt(args, i - 1), context->FindContextClass("String"))) {
+        if (!context->IsOfType(context->ArrayAt(args, i - 1), "String")) {
             context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                      context->WholeNumberToObject(i - 1),
-                                     context->NewStringFromAsciiz("string"));
+                                     context->NewStringFromAsciiz("String"));
             return 0;
         }
         bid = context->ObjectToStringValue(context->ArrayAt(args, i - 1));
@@ -644,7 +644,7 @@ RexxMethod2(int,                       // Return type
         }
 
         for (int i = 1; i <= members; i++, names++) {
-            if (!context->IsInstanceOf(context->ArrayAt(args, i), context->FindContextClass("String"))) {
+            if (!context->IsOfType(context->ArrayAt(args, i), "String")) {
                 context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                          context->WholeNumberToObject(i),
                                          context->NewStringFromAsciiz("String"));
@@ -684,7 +684,7 @@ RexxMethod2(int,                       // Return type
         }
 
         for (int i = 1; i <= members; i++, names++) {
-            if (!context->IsInstanceOf(context->ArrayAt(args, i), context->FindContextClass("String"))) {
+            if (!context->IsOfType(context->ArrayAt(args, i), "String")) {
                 context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                          context->WholeNumberToObject(i),
                                          context->NewStringFromAsciiz("String"));
@@ -723,7 +723,7 @@ RexxMethod2(int,                       // Return type
         }
 
         for (int i = 0; i < members; i++, names++) {
-            if (!context->IsInstanceOf(context->ArrayAt(args, i), context->FindContextClass("String"))) {
+            if (!context->IsOfType(context->ArrayAt(args, i), "String")) {
                 context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                          context->WholeNumberToObject(i),
                                          context->NewStringFromAsciiz("String"));

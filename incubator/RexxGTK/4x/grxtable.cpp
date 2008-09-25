@@ -129,7 +129,7 @@ RexxMethod10(int,                       // Return type
             int, xpad,                 // X padding
             int, ypad)                 // Y padding
 {
-    if (!context->IsInstanceOf(rxWidget, context->FindContextClass("GtkWidget"))) {
+    if (!context->IsOfType(rxWidget, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(1),
                                  context->NewStringFromAsciiz("GtkWidget"));

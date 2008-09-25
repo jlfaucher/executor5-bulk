@@ -102,7 +102,7 @@ RexxMethod4(int,                       // Return type
             int, xpos,                 // X position 
             int, ypos)                 // Y position
 {
-    if (!context->IsInstanceOf(rxwidget, context->FindContextClass("GtkWidget"))) {
+    if (!context->IsOfType(rxwidget, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(1),
                                  context->NewStringFromAsciiz("GtkWidget"));
@@ -135,7 +135,7 @@ RexxMethod4(int,                       // Return type
             int, xpos,                 // X position 
             int, ypos)                 // Y position
 {
-    if (!context->IsInstanceOf(rxwidget, context->FindContextClass("GtkWidget"))) {
+    if (!context->IsOfType(rxwidget, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(1),
                                  context->NewStringFromAsciiz("GtkWidget"));

@@ -169,7 +169,7 @@ RexxMethod3(int,                       // Return type
             RexxObjectPtr, child,      // The child item
             int, pos)                  // Position
 {
-    if (!context->IsInstanceOf(child, context->FindContextClass("GtkToolItem"))) {
+    if (!context->IsOfType(child, "GtkToolItem")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(1),
                                  context->NewStringFromAsciiz("GtkToolItem"));
@@ -196,7 +196,7 @@ RexxMethod2(int,                       // Return type
             CSELF, self,               // GTK self
             RexxObjectPtr, child)      // The child item
 {
-    if (!context->IsInstanceOf(child, context->FindContextClass("GtkToolItem"))) {
+    if (!context->IsOfType(child, "GtkToolItem")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(1),
                                  context->NewStringFromAsciiz("GtkToolItem"));
@@ -280,7 +280,7 @@ RexxMethod3(int,                       // Return type
             RexxObjectPtr, child,      // The child item
             int, idx)                  // Position index
 {
-    if (!context->IsInstanceOf(child, context->FindContextClass("GtkToolItem"))) {
+    if (!context->IsOfType(child, "GtkToolItem")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(1),
                                  context->NewStringFromAsciiz("GtkToolItem"));
@@ -476,7 +476,7 @@ RexxMethod6(RexxObjectPtr,             // Return type
             RexxObjectPtr, icon,       // Widget icon
             CSTRING, method)           // The ooRexx method name
 {
-    if (!context->IsInstanceOf(icon, context->FindContextClass("GtkWidget"))) {
+    if (!context->IsOfType(icon, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(4),
                                  context->NewStringFromAsciiz("GtkWidget"));
@@ -520,7 +520,7 @@ RexxMethod6(RexxObjectPtr,             // Return type
             RexxObjectPtr, icon,       // Widget icon
             CSTRING, method)           // The ooRexx method name
 {
-    if (!context->IsInstanceOf(icon, context->FindContextClass("GtkWidget"))) {
+    if (!context->IsOfType(icon, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(4),
                                  context->NewStringFromAsciiz("GtkWidget"));
@@ -567,7 +567,7 @@ RexxMethod7(RexxObjectPtr,             // Return type
             CSTRING, method,           // The ooRexx method name
             int, pos)                  // Insert position
 {
-    if (!context->IsInstanceOf(icon, context->FindContextClass("GtkWidget"))) {
+    if (!context->IsOfType(icon, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(4),
                                  context->NewStringFromAsciiz("GtkWidget"));
@@ -666,14 +666,14 @@ RexxMethod8(RexxObjectPtr,             // Return type
             RexxObjectPtr, icon,       // Widget icon
             CSTRING, method)           // The ooRexx method name
 {
-    if (!context->IsInstanceOf(elem, context->FindContextClass("GtkWidget"))) {
+    if (!context->IsOfType(elem, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(2),
                                  context->NewStringFromAsciiz("GtkWidget"));
         return 0;
     }
     GtkWidget *elemWidget = (GtkWidget *)context->ObjectToCSelf(elem);
-    if (!context->IsInstanceOf(icon, context->FindContextClass("GtkWidget"))) {
+    if (!context->IsOfType(icon, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(6),
                                  context->NewStringFromAsciiz("GtkWidget"));
@@ -722,14 +722,14 @@ RexxMethod8(RexxObjectPtr,             // Return type
             RexxObjectPtr, icon,       // Widget icon
             CSTRING, method)           // The ooRexx method name
 {
-    if (!context->IsInstanceOf(elem, context->FindContextClass("GtkWidget"))) {
+    if (!context->IsOfType(elem, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(2),
                                  context->NewStringFromAsciiz("GtkWidget"));
         return 0;
     }
     GtkWidget *elemWidget = (GtkWidget *)context->ObjectToCSelf(elem);
-    if (!context->IsInstanceOf(icon, context->FindContextClass("GtkWidget"))) {
+    if (!context->IsOfType(icon, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(6),
                                  context->NewStringFromAsciiz("GtkWidget"));
@@ -781,14 +781,14 @@ RexxMethod9(RexxObjectPtr,             // Return type
             CSTRING, method,           // The ooRexx method name
             int, pos)                  // The ooRexx method name
 {
-    if (!context->IsInstanceOf(elem, context->FindContextClass("GtkWidget"))) {
+    if (!context->IsOfType(elem, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(2),
                                  context->NewStringFromAsciiz("GtkWidget"));
         return 0;
     }
     GtkWidget *elemWidget = (GtkWidget *)context->ObjectToCSelf(elem);
-    if (!context->IsInstanceOf(icon, context->FindContextClass("GtkWidget"))) {
+    if (!context->IsOfType(icon, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(6),
                                  context->NewStringFromAsciiz("GtkWidget"));
@@ -831,14 +831,14 @@ RexxMethod8(RexxObjectPtr,             // Return type
             RexxObjectPtr, icon,       // Widget icon
             CSTRING, method)           // The ooRexx method name
 {
-    if (!context->IsInstanceOf(tool, context->FindContextClass("GtkWidget"))) {
+    if (!context->IsOfType(tool, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(2),
                                  context->NewStringFromAsciiz("GtkWidget"));
         return 0;
     }
     GtkWidget *toolWidget = (GtkWidget *)context->ObjectToCSelf(tool);
-    if (!context->IsInstanceOf(icon, context->FindContextClass("GtkWidget"))) {
+    if (!context->IsOfType(icon, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(6),
                                  context->NewStringFromAsciiz("GtkWidget"));
@@ -882,14 +882,14 @@ RexxMethod8(RexxObjectPtr,             // Return type
             RexxObjectPtr, icon,       // Widget icon
             CSTRING, method)           // The ooRexx method name
 {
-    if (!context->IsInstanceOf(tool, context->FindContextClass("GtkWidget"))) {
+    if (!context->IsOfType(tool, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(2),
                                  context->NewStringFromAsciiz("GtkWidget"));
         return 0;
     }
     GtkWidget *toolWidget = (GtkWidget *)context->ObjectToCSelf(tool);
-    if (!context->IsInstanceOf(icon, context->FindContextClass("GtkWidget"))) {
+    if (!context->IsOfType(icon, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(6),
                                  context->NewStringFromAsciiz("GtkWidget"));
@@ -936,14 +936,14 @@ RexxMethod9(RexxObjectPtr,             // Return type
             CSTRING, method,           // The ooRexx method name
             int, pos)                  // Tooltips private text
 {
-    if (!context->IsInstanceOf(tool, context->FindContextClass("GtkWidget"))) {
+    if (!context->IsOfType(tool, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(2),
                                  context->NewStringFromAsciiz("GtkWidget"));
         return 0;
     }
     GtkWidget *toolWidget = (GtkWidget *)context->ObjectToCSelf(tool);
-    if (!context->IsInstanceOf(icon, context->FindContextClass("GtkWidget"))) {
+    if (!context->IsOfType(icon, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(6),
                                  context->NewStringFromAsciiz("GtkWidget"));

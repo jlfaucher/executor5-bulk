@@ -127,7 +127,7 @@ RexxMethod2(int,                       // Return type
             CSELF, self,               // GTK self
             RexxObjectPtr, rxfilter)   // Filter object
 {
-    if (!context->IsInstanceOf(rxfilter, context->FindContextClass("GtkFileFilter"))) {
+    if (!context->IsOfType(rxfilter, "GtkFileFilter")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(1),
                                  context->NewStringFromAsciiz("GtkFileFilter"));

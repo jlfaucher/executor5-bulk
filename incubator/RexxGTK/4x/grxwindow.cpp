@@ -193,7 +193,7 @@ RexxMethod2(int,                        // Return type
             CSELF, self,               // GTK self
             RexxObjectPtr, accelgrp)    // Accelerator group
 {
-    if (!context->IsInstanceOf(accelgrp, context->FindContextClass("GtkAccelGroup"))) {
+    if (!context->IsOfType(accelgrp, "GtkAccelGroup")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(1),
                                  context->NewStringFromAsciiz("GtkAccelGroup"));

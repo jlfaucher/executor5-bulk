@@ -186,14 +186,14 @@ RexxMethod3(int,                       // Return type
             RexxObjectPtr, rxcontainer, // The container
             RexxObjectPtr, rxlabel)    // The label
 {
-    if (!context->IsInstanceOf(rxcontainer, context->FindContextClass("GtkWidget"))) {
+    if (!context->IsOfType(rxcontainer, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(1),
                                  context->NewStringFromAsciiz("GtkWidget"));
         return 0;
     }
     GtkWidget *myContainer = (GtkWidget *)context->ObjectToCSelf(rxcontainer);
-    if (!context->IsInstanceOf(rxlabel, context->FindContextClass("GtkWidget"))) {
+    if (!context->IsOfType(rxlabel, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(2),
                                  context->NewStringFromAsciiz("GtkWidget"));
@@ -223,14 +223,14 @@ RexxMethod3(int,                       // Return type
             RexxObjectPtr, rxcontainer, // The container
             RexxObjectPtr, rxlabel)    // The label
 {
-    if (!context->IsInstanceOf(rxcontainer, context->FindContextClass("GtkWidget"))) {
+    if (!context->IsOfType(rxcontainer, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(1),
                                  context->NewStringFromAsciiz("GtkWidget"));
         return 0;
     }
     GtkWidget *myContainer = (GtkWidget *)context->ObjectToCSelf(rxcontainer);
-    if (!context->IsInstanceOf(rxlabel, context->FindContextClass("GtkWidget"))) {
+    if (!context->IsOfType(rxlabel, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(2),
                                  context->NewStringFromAsciiz("GtkWidget"));
@@ -263,14 +263,14 @@ RexxMethod4(int,                       // Return type
             RexxObjectPtr, rxlabel,    // The label
             int, pos)                  // The position
 {
-    if (!context->IsInstanceOf(rxcontainer, context->FindContextClass("GtkWidget"))) {
+    if (!context->IsOfType(rxcontainer, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(1),
                                  context->NewStringFromAsciiz("GtkWidget"));
         return 0;
     }
     GtkWidget *myContainer = (GtkWidget *)context->ObjectToCSelf(rxcontainer);
-    if (!context->IsInstanceOf(rxlabel, context->FindContextClass("GtkWidget"))) {
+    if (!context->IsOfType(rxlabel, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(2),
                                  context->NewStringFromAsciiz("GtkWidget"));
@@ -303,21 +303,21 @@ RexxMethod4(int,                       // Return type
             RexxObjectPtr, rxlabel,    // The label
             RexxObjectPtr, rxmenu)     // The menu
 {
-    if (!context->IsInstanceOf(rxcontainer, context->FindContextClass("GtkWidget"))) {
+    if (!context->IsOfType(rxcontainer, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(1),
                                  context->NewStringFromAsciiz("GtkWidget"));
         return 0;
     }
     GtkWidget *myContainer = (GtkWidget *)context->ObjectToCSelf(rxcontainer);
-    if (!context->IsInstanceOf(rxlabel, context->FindContextClass("GtkWidget"))) {
+    if (!context->IsOfType(rxlabel, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(2),
                                  context->NewStringFromAsciiz("GtkWidget"));
         return 0;
     }
     GtkWidget *myLabel = (GtkWidget *)context->ObjectToCSelf(rxlabel);
-    if (!context->IsInstanceOf(rxmenu, context->FindContextClass("GtkWidget"))) {
+    if (!context->IsOfType(rxmenu, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(3),
                                  context->NewStringFromAsciiz("GtkWidget"));
@@ -351,21 +351,21 @@ RexxMethod4(int,                       // Return type
             RexxObjectPtr, rxlabel,    // The label
             RexxObjectPtr, rxmenu)     // The menu
 {
-    if (!context->IsInstanceOf(rxcontainer, context->FindContextClass("GtkWidget"))) {
+    if (!context->IsOfType(rxcontainer, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(1),
                                  context->NewStringFromAsciiz("GtkWidget"));
         return 0;
     }
     GtkWidget *myContainer = (GtkWidget *)context->ObjectToCSelf(rxcontainer);
-    if (!context->IsInstanceOf(rxlabel, context->FindContextClass("GtkWidget"))) {
+    if (!context->IsOfType(rxlabel, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(2),
                                  context->NewStringFromAsciiz("GtkWidget"));
         return 0;
     }
     GtkWidget *myLabel = (GtkWidget *)context->ObjectToCSelf(rxlabel);
-    if (!context->IsInstanceOf(rxmenu, context->FindContextClass("GtkWidget"))) {
+    if (!context->IsOfType(rxmenu, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(3),
                                  context->NewStringFromAsciiz("GtkWidget"));
@@ -402,21 +402,21 @@ RexxMethod5(int,                       // Return type
             RexxObjectPtr, rxmenu,     // The menu
             int, pos)                  // The position
 {
-    if (!context->IsInstanceOf(rxcontainer, context->FindContextClass("GtkWidget"))) {
+    if (!context->IsOfType(rxcontainer, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(1),
                                  context->NewStringFromAsciiz("GtkWidget"));
         return 0;
     }
     GtkWidget *myContainer = (GtkWidget *)context->ObjectToCSelf(rxcontainer);
-    if (!context->IsInstanceOf(rxlabel, context->FindContextClass("GtkWidget"))) {
+    if (!context->IsOfType(rxlabel, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(2),
                                  context->NewStringFromAsciiz("GtkWidget"));
         return 0;
     }
     GtkWidget *myLabel = (GtkWidget *)context->ObjectToCSelf(rxlabel);
-    if (!context->IsInstanceOf(rxmenu, context->FindContextClass("GtkWidget"))) {
+    if (!context->IsOfType(rxmenu, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(3),
                                  context->NewStringFromAsciiz("GtkWidget"));

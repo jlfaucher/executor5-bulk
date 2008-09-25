@@ -96,7 +96,7 @@ RexxMethod2(int,                       // Return type
             CSELF, self,               // GTK self
             RexxObjectPtr, child)      // The child menu
 {
-    if (!context->IsInstanceOf(child, context->FindContextClass("GtkWidget"))) {
+    if (!context->IsOfType(child, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(1),
                                  context->NewStringFromAsciiz("GtkWidget"));
@@ -123,7 +123,7 @@ RexxMethod2(int,                       // Return type
             CSELF, self,               // GTK self
             RexxObjectPtr, child)      // The child menu
 {
-    if (!context->IsInstanceOf(child, context->FindContextClass("GtkWidget"))) {
+    if (!context->IsOfType(child, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(1),
                                  context->NewStringFromAsciiz("GtkWidget"));
@@ -153,7 +153,7 @@ RexxMethod3(int,                       // Return type
             RexxObjectPtr, child,      // The child menu
             int, pos)                  // Position
 {
-    if (!context->IsInstanceOf(child, context->FindContextClass("GtkWidget"))) {
+    if (!context->IsOfType(child, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(1),
                                  context->NewStringFromAsciiz("GtkWidget"));
