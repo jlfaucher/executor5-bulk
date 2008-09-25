@@ -80,6 +80,10 @@ RexxMethod2(int,                       // Return type
     size_t       members = context->ArraySize(args);
 
     GType *types = (GType *)malloc(sizeof(GType) * members);
+    if (!types) {
+        context->RaiseException0(Rexx_Error_System_resources);
+        return 0;
+    }
     if (members) {
         for (int i = 1; i <= members; i++) {
             context->ObjectToInt32(context->ArrayAt(args, i), (wholenumber_t *)&types[i - 1]);
