@@ -1041,58 +1041,6 @@ RexxMethod1(logical_t,
     return context->IsDirectory(o);
 }
 
-RexxMethod3(int,
-            TestTablePut,
-            RexxObjectPtr, dir,
-            RexxObjectPtr, value,
-            RexxObjectPtr, index)
-{
-    context->TablePut((RexxTableObject)dir, value, index);
-    return 0;
-}
-
-
-RexxMethod2(RexxObjectPtr,
-            TestTableAt,
-            RexxObjectPtr, dir,
-            RexxObjectPtr, index)
-{
-    RexxObjectPtr value = context->TableAt((RexxTableObject)dir, index);
-    if (value == NULLOBJECT) {
-        context->RaiseException1(Rexx_Error_Invalid_argument_user_defined, context->NewStringFromAsciiz("Conversion error"));
-        return NULLOBJECT;
-    }
-    return value;
-}
-
-
-RexxMethod2(RexxObjectPtr,
-            TestTableRemove,
-            RexxObjectPtr, dir,
-            RexxObjectPtr, index)
-{
-    RexxObjectPtr value = context->TableRemove((RexxTableObject)dir, index);
-    if (value == NULLOBJECT) {
-        context->RaiseException1(Rexx_Error_Invalid_argument_user_defined, context->NewStringFromAsciiz("Conversion error"));
-        return NULLOBJECT;
-    }
-    return value;
-}
-
-
-RexxMethod0(RexxObjectPtr,
-            TestNewTable)
-{
-    return (RexxObjectPtr)context->NewTable();
-}
-
-RexxMethod1(logical_t,
-            TestIsTable,
-            RexxObjectPtr, o)
-{
-    return context->IsTable(o);
-}
-
 RexxMethod1(int,                       // Return type
             TestOptionalIntArg,        // Object_method name
             OPTIONAL_int, arg1)        // Argument
@@ -1892,11 +1840,6 @@ RexxMethodEntry orxtest_methods[] = {
     REXX_METHOD(TestDirectoryRemove,         TestDirectoryRemove),
     REXX_METHOD(TestNewDirectory,            TestNewDirectory),
     REXX_METHOD(TestIsDirectory,             TestIsDirectory),
-    REXX_METHOD(TestTablePut,                TestTablePut),
-    REXX_METHOD(TestTableAt,                 TestTableAt),
-    REXX_METHOD(TestTableRemove,             TestTableRemove),
-    REXX_METHOD(TestNewTable,                TestNewTable),
-    REXX_METHOD(TestIsTable,                 TestIsTable),
     REXX_METHOD(TestSendMessage,             TestSendMessage),
     REXX_METHOD(TestSendMessage0,            TestSendMessage0),
     REXX_METHOD(TestSendMessage1,            TestSendMessage1),

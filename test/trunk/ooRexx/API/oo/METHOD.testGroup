@@ -1354,35 +1354,6 @@ return .ooTestResult~new(5)~~addException(err)
   d = .directory~new
   x = tester~TestDirectoryRemove(d, "abc")
 
-::method TestTable01
-  tester = .METHODTester~new
-  d = tester~TestNewTable
-  self~assertTrue(d~isA(.Table))
-  self~assertTrue(tester~TestIsTable(d))
-  tester~TestTablePut(d, 1, 'abc')
-  tester~TestTablePut(d, 2, 'ABC')
-  self~assertSame(1, d['abc'], "Test 1")
-  self~assertSame(2, d['ABC'], "Test 2")
-  self~assertSame(1, tester~TestTableAt(d, 'abc'), "Test 3")
-  self~assertSame(2, tester~TestTableAt(d, 'ABC'), "Test 4")
-  self~assertSame(1, tester~TestTableRemove(d, 'abc'))
-  self~assertSame(.nil, d['abc'], "Test 5")
-
-  self~assertFalse(tester~TestIsTable("abc"))
-  self~assertFalse(tester~TestIsTable(.nil))
-
-::method TestTable02
-  self~expectSyntax('88.900')
-  tester = .METHODTester~new
-  d = .table~new
-  x = tester~TestTableAt(d, "abc")
-
-::method TestTable03
-  self~expectSyntax('88.900')
-  tester = .METHODTester~new
-  d = .table~new
-  x = tester~TestTableRemove(d, "abc")
-
 ::method TestIsInstanceOf01
   tester = .METHODTester~new
   self~assertTrue(tester~TestIsInstanceOf("abc", .String))
