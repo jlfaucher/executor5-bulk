@@ -36,7 +36,7 @@
 
 /*
  * Program to kill a named process under Windows.  The compiled program
- * (compiled as 32-bit) should also work on 64-bit Windows.
+ * (compiled as 32-bit) will also work on 64-bit Windows.
  *
  * Only argument: The process name.  This can include, or not, the ".exe"
  * extension.
@@ -46,9 +46,14 @@
 #include <stdio.h>
 #include <tlhelp32.h>
 
+#define BUFFER_SIZE 256
+
 /* Prototypes */
+HANDLE openForTerminate(DWORD pid);
 void tryToKill(PROCESSENTRY32 *pPe32);
 void printError(const char *msg);
+void formatMsg(char *buf, const char *additional);
+HANDLE openWithDebugPrivilege(char *errMsg, DWORD processID);
 
 int main( int argc, char *argv[] )
 {
@@ -113,16 +118,12 @@ int main( int argc, char *argv[] )
    return 0;
 }
 
+
 void tryToKill(PROCESSENTRY32 *pPe32)
 {
-    HANDLE hProcess;
+    HANDLE hProcess = openForTerminate(pPe32->th32ProcessID);
 
-    hProcess = OpenProcess(PROCESS_TERMINATE, FALSE, pPe32->th32ProcessID);
-    if( hProcess == NULL )
-    {
-        printError("OpenProcess()");
-    }
-    else
+    if ( hProcess != NULL )
     {
         if ( TerminateProcess(hProcess, 0) )
         {
@@ -130,20 +131,134 @@ void tryToKill(PROCESSENTRY32 *pPe32)
         }
         else
         {
-           TCHAR msg[64];
-           _snprintf(msg, sizeof(msg), "Killing %s (process ID: %u)", pPe32->szExeFile, pPe32->th32ProcessID);
+           TCHAR msg[BUFFER_SIZE];
+           _snprintf(msg, BUFFER_SIZE, "Killing %s (process ID: %u)", pPe32->szExeFile, pPe32->th32ProcessID);
            printError(msg);
         }
         CloseHandle(hProcess);
     }
 }
 
+/**
+ * Attempts to open a process with process terminate access.  On Vista, opening
+ * with all access can fail when opening with just terminate access will
+ * succeed.
+ *
+ * If the process is not opened, then an attempt to open the process by granting
+ * the current access token the SeDebugPivilege is made.  If the privilege is
+ * granted, the open will succeed.  If it isn't granted then the invoker just
+ * doesn't have the authority to kill the process, and the process won't be
+ * opened.
+ *
+ * @param  pid  The id of the process to be opened.
+ *
+ * @return The opened handle, or null on failure.  Caller is responsible for
+ *         closing the handle.
+ */
+HANDLE openForTerminate(DWORD pid)
+{
+    HANDLE hProcess = OpenProcess(PROCESS_TERMINATE, FALSE, pid);
+
+    if( hProcess == NULL )
+    {
+        TCHAR  errBuf[BUFFER_SIZE];
+        hProcess = openWithDebugPrivilege(errBuf, pid);
+        if ( hProcess == NULL )
+        {
+            fprintf(stderr, errBuf);
+        }
+    }
+    return hProcess;
+}
+
 void printError(const char *msg)
 {
-    TCHAR buf[256];
+    TCHAR buf[BUFFER_SIZE];
+    formatMsg(buf, msg);
+    fprintf(stderr, buf);
+}
+
+void formatMsg(char *buf, const char *additional)
+{
+    TCHAR sysMsg[BUFFER_SIZE];
     DWORD err = GetLastError();
 
     FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, NULL, err, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-                  buf, 256, NULL);
-    fprintf(stderr, "%s failed with error %d (%s)\n", msg, err, buf);
+                  sysMsg, BUFFER_SIZE, NULL);
+
+    _snprintf(buf, BUFFER_SIZE, "%s failed with error %d (%s)\n", additional, err, sysMsg);
+}
+
+/**
+ * Attempts to enable the SeDebugPrivilege in the current access token and then
+ * open the process with terminate access.  After the open process the previous
+ * privilege level of the access token is restored.
+ *
+ * @param   errMsg  Passed in buffer used to format a message on error and
+ *                  return to the caller.
+ *
+ * @param   processID  ID of the process to be opened.
+ *
+ * @return  The opened handle to the process on success, otherwise the handle is
+ *          NULL.
+ */
+HANDLE openWithDebugPrivilege(char *errMsg, DWORD processID)
+{
+    TOKEN_PRIVILEGES newPrivileges;
+    TOKEN_PRIVILEGES oldPrivileges;
+    DWORD            oldLength = 0;
+    LUID   luid;
+    HANDLE hCurrent;
+    HANDLE hProcess = NULL;
+    HANDLE hToken;
+    DWORD  pid;
+    BOOL   success = FALSE;
+
+    if ( ! LookupPrivilegeValue(NULL, "SeDebugPrivilege", &luid ) )
+    {
+        formatMsg(errMsg, "LookupPrivilegeValue()");
+        return hProcess;
+    }
+
+    pid = GetCurrentProcessId();
+    hCurrent = OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, pid);
+    if ( hCurrent == NULL )
+    {
+        formatMsg(errMsg, "OpenProcess() (this process)");
+        return hProcess;
+    }
+    if ( ! OpenProcessToken(hCurrent, TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &hToken) )
+    {
+        CloseHandle(hCurrent);
+        formatMsg(errMsg, "OpenProcessToken()");
+        return FALSE;
+    }
+
+    newPrivileges.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
+    newPrivileges.Privileges[0].Luid = luid;
+    newPrivileges.PrivilegeCount = 1;
+
+    // Try to enable the debug privilege
+    success = AdjustTokenPrivileges(hToken, FALSE, &newPrivileges, sizeof(TOKEN_PRIVILEGES), &oldPrivileges, &oldLength);
+
+    if ( success )
+    {
+        // Now try to open the process.  If the debug privilege was granted this
+        // will work.  If the privilege was not granted, it will fail again.
+        hProcess = OpenProcess(PROCESS_TERMINATE, FALSE, processID);
+        if ( hProcess == NULL )
+        {
+            formatMsg(errMsg, "OpenProcess()");
+        }
+        // Restore the toke to the state it was in prior to the adjustment.
+        success = AdjustTokenPrivileges(hToken, FALSE, &oldPrivileges, oldLength, NULL, NULL);
+    }
+    else
+    {
+        formatMsg(errMsg, "AdjustTokenPrivileges()");
+    }
+
+    CloseHandle(hCurrent);
+    CloseHandle(hToken);
+    return hProcess;
 }

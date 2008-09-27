@@ -99,7 +99,7 @@ $(OBJDIR)\stouch.obj : $(SRCDIR)\stouch.c $(SRCDIR)\stouch.h
     $(CC) $(CFLAGS) /O1 $(SRCDIR)\stouch.c
 
 $(BINDIR)\killer.exe : $(BINDIR) $(OBJDIR) $(OBJDIR)\killer.obj
-    $(LD) /SUBSYSTEM:Console /out:$(BINDIR)\killer.exe $(OBJDIR)\killer.obj
+    $(LD) /SUBSYSTEM:Console /out:$(BINDIR)\killer.exe $(OBJDIR)\killer.obj Advapi32.lib
 
 $(OBJDIR)\killer.obj : $(SRCDIR)\killer.c
     $(CC) $(CFLAGS) $(SRCDIR)\killer.c
