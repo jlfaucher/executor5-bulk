@@ -1729,3 +1729,19 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame(80, c~additional[2])
   self~assertSame(100, c~additional[3])
   self~assertSame(0, c~additional[4])
+
+::method TestBuffer01
+  tester = .BufferTester~new(123)
+  buffer = tester~getBuffer
+  self~assertTrue(buffer~isA(.Buffer))
+  self~assertTrue(tester~IsBuffer(buffer))
+  self~assertSame("a Buffer", buffer~string)
+
+  self~assertSame(123, tester~cself)
+  self~assertSame(123, tester~objectToCSelf)
+
+::method TestBufferNew01
+  self~expectSyntax(93.967)
+  c = .Buffer~new
+
+

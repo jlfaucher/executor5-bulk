@@ -308,3 +308,10 @@
 ::method TestSetObjectVariable EXTERNAL "LIBRARY orxmethod TestSetObjectVariable"
 ::method TestDropObjectVariable EXTERNAL "LIBRARY orxmethod TestDropObjectVariable"
 
+::class BufferTester PUBLIC
+::method Init EXTERNAL "LIBRARY orxmethod TestBufferInit"
+::method GetBuffer  EXTERNAL "LIBRARY orxmethod TestGetBuffer"
+::method CSELF      EXTERNAL "LIBRARY orxmethod TestBufferCSelf"
+::method OBJECTTOCSELF  EXTERNAL "LIBRARY orxmethod TestBufferObjectToCSelf"
+::method IsBuffer EXTERNAL "LIBRARY orxmethod TestIsBuffer"
+

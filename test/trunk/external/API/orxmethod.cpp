@@ -1697,10 +1697,53 @@ RexxMethod4(int,
     return 0;
 }
 
+RexxMethod1(int,
+            TestBufferInit,
+            int, initValue)
+{
+    RexxBufferObject buffer = context->NewBuffer(sizeof(int));
+    int *ptr = (int *)context->BufferData(buffer);
+    *ptr = initValue;
+    context->SetObjectVariable("CSELF", (RexxObjectPtr)buffer);
+    return 0;
+}
+
+RexxMethod1(int,
+            TestBufferCSelf,
+            CSELF, self)
+{
+    return *((int *)self);
+}
+
+RexxMethod0(RexxObjectPtr,
+            TestGetBuffer)
+{
+    return context->GetObjectVariable("CSELF");
+}
+
+RexxMethod1(int,
+            TestBufferObjectToCSelf,
+            OSELF, self)
+{
+    int *ptr = (int *)context->ObjectToCSelf(self);
+    return *ptr;
+}
+
+RexxMethod1(logical_t,
+            TestIsBuffer,
+            RexxObjectPtr, target)
+{
+    return context->IsBuffer(target);
+}
 
 
 
 RexxMethodEntry orxtest_methods[] = {
+    REXX_METHOD(TestIsBuffer,          TestIsBuffer),
+    REXX_METHOD(TestBufferInit,        TestBufferInit),
+    REXX_METHOD(TestBufferCSelf,       TestBufferCSelf),
+    REXX_METHOD(TestBufferObjectToCSelf,  TestBufferObjectToCSelf),
+    REXX_METHOD(TestGetBuffer,         TestGetBuffer),
     REXX_METHOD(TestZeroIntArgs,       TestZeroIntArgs),
     REXX_METHOD(TestOneIntArg,         TestOneIntArg),
     REXX_METHOD(TestTwoIntArgs,        TestTwoIntArgs),
