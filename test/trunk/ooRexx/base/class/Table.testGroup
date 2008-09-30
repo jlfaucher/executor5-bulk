@@ -154,13 +154,13 @@ return testResult
 
    -- now test where other is an 'OrderedCollection': "makeArray" returns "allItems"
   o1=.object~new
-  c =clz~new~~put(1, "1")~~put(2, "2")~~put(o1, o1)~~put("a","a")
+  c =clz~new~~put(123, "1")~~put(456, "2")~~put("xyz", o1)~~put("abc","a")
   other=.array~new
   other[104]="2"
   other[106]=o1
   other[107]="a"
                  -- expected result
-  d1=clz~new~~put("1", "1")
+  d1=clz~new~~put(123, "1")
   d2=c~difference(other)
 
   self~assertTrue(sameContent(d1, d2), "subtest8: 'other' is an 'OrderedCollection'")
@@ -241,7 +241,7 @@ return testResult
 
    -- now test where other is an 'OrderedCollection': "makeArray" returns "allItems"
   o1=.object~new
-  c =clz~new~~put("1", "1")~~put("2", "2")~~put(o1, o1)~~put("a","a")
+  c =clz~new~~put(123, "1")~~put(456, "2")~~put("abc", o1)~~put("def","a")
   other=.array~new
   other[104]="2"
   other[106]=o1
