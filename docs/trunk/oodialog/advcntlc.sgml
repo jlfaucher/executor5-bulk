@@ -129,6 +129,10 @@ the methods listed in the
 <entry><link linkend="geteditcontrol">GetEditControl</link></entry>
 </row>
 <row>
+<entry>GetGroupBox</entry>
+<entry><link linkend="getgroupbox">GetGroupBox</link></entry>
+</row>
+<row>
 <entry>GetListBox</entry>
 <entry><link linkend="getlistbox">GetListBox</link></entry>
 </row>
@@ -453,6 +457,71 @@ GetCheckControl connects an Object Rexx object with a Windows object.
 If the object does not exist, the NIL object is returned. Therefore, this
 method can only be applied after the Windows dialog has been created (after
 the invocation of <link linkend="h002048">StartIt</link>).
+</para></note>
+</section>
+
+<section id="getgroupbox"><title>GetGroupBox</title>
+<indexterm><primary>GetGroupBox</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-anAdvancedControl~GetGroupBox(--id--+-------------+--)------><
+                                       +-,--category-+
+
+
+]]>
+</programlisting>
+
+<para>
+  The GetGroupBox method returns an object of the GroupBox class that represents
+  the group box with the specified resource ID. See the
+  <link linkend="groupboxc">GroupBox Class</link> for more detail on group
+  boxes.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>The resource ID of the group box.
+</para></listitem></varlistentry>
+<varlistentry><term>category</term>
+<listitem><para>The number of the category dialog page containing the requested
+group box. This argument must only be specified for category dialogs.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>A GroupBox object or .Nil if the underlying Windows group box
+control does not exist.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example shows how the text (label) of a group box
+  could be changed during program execution:
+<programlisting>
+<![CDATA[
+::class MyPhoneBook subclass ResDialog inherit AdvancedControls
+
+::method onUseFull
+  gb = self~getGroupBox(IDC_GB_TELEPHONE)
+  chkBox = self~getCheckBox(IDC_CHK_USE_FULL)
+  if chkBox~checked then do
+    gb~setTitle("Phone Numbers (including area code)")
+  end
+  else do
+    gb~setTitle("Phone Numbers")
+  end
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+
+<note><title>Note</title>
+<para>
+  GetGroupBox connects the ooDialog object with a Windows control.  If the
+  control does not exist, this connection can not be made. Therefore, this
+  method should only be used after the Windows dialog has been created. In
+  <link linkend="mthInitDialog">initDialog()</link> or at some point in the life
+  cycle of the dialog after initDialog().
 </para></note>
 </section>
 

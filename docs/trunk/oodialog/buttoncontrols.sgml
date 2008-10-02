@@ -44,7 +44,62 @@
 <chapter id="buttoncontrols"><title>Button Controls</title>
 <indexterm><primary>Button Controls</primary></indexterm>
 <para>
-  Button controls are
+  In Windows the Button control has a number of different types or kinds.  Most
+  button types have a number of different styles.  The style of a button effects
+  its behavior and appearance.  The appearance of a button is usually maintained
+  by the operating system in combination with the programmer.
+</para>
+<para>
+  In general people refer to "pushing," "clicking," or "checking" a button.  The
+  mouse is used to click a button and the enter key to push a button.  Checking
+  a button can be done with the mouse or the keyboard.  Buttons have a state,
+  the most common of which are checked, unchecked, pushed, and focused.
+</para>
+<para>
+  The five kinds of buttons are:
+  <itemizedlist>
+    <listitem><para>Push Buttons</para></listitem>
+    <listitem><para>Check Boxes</para></listitem>
+    <listitem><para>Radio Buttons</para></listitem>
+    <listitem><para>Group Boxes</para></listitem>
+    <listitem><para>Owner Drawn Buttons</para></listitem>
+  </itemizedlist>
+</para>
+<para>
+  ooDialog provides these classes to allow the programmer to interface with the
+  underlying button controls:
+<table id="tButtonControls" frame="all">
+<title>ooDialog Button Control Classes</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Button Control Type</entry>
+<entry>ooDialog Class</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>Push Button</entry>
+<entry><link linkend="buttoncontrolc">ButtonControl Class</link></entry>
+</row>
+<row>
+<entry>Check Box Button</entry>
+<entry><link linkend="checkboxc">Check Boxes</link></entry>
+</row>
+<row>
+<entry>Raido Button</entry>
+<entry><link linkend="radiobuttonc">Radio Buttons</link></entry>
+</row>
+<row>
+<entry>Group Box</entry>
+<entry><link linkend="groupboxc">Group Boxes</link></entry>
+</row>
+<row>
+<entry>Owner Drawn Button</entry>
+<entry><link linkend="anibut">Owner Drawn Buttons</link></entry>
+</row>
+</tbody></tgroup>
+</table>
 </para>
 <section id="buttoncontrolc"><title>ButtonControl Class</title>
 <indexterm><primary>ButtonControl class</primary></indexterm>
@@ -284,7 +339,8 @@ one of the ooDialog methods that move the focus: <link linkend="tabtonext">TabTo
 </section>
 
 <section id="stylenew"><title>Style=</title>
-<indexterm><primary>Style=</primary></indexterm>
+<indexterm><primary>Style=</primary>
+<secondary>ButtonControl class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aButtonControl~Style=--"--+-DEFPUSHBUTTON---+--"------------><
@@ -1111,6 +1167,83 @@ to retrieve an object of the CheckBox class.</para>
 <para>Events for instances of the CheckBox class may be captured using the
 <link linkend="connectbuttonnotify">ConnectButtonNotify</link> method of the
 <link linkend="mesextcl">MessageExtensions Class</link>.</para>
+</section>
+
+<section id="groupboxc"><title>GroupBox Class</title>
+<indexterm><primary>GroupBox class</primary></indexterm>
+<para>
+  The Windows Group Box control is actually a button control, not a static
+  control.  Its purpose is to group together a set of related controls.  It
+  consists of a label and a rectangle.  The related controls are placed within
+  the rectangle. Group boxes have no state, they can not be selected, and an
+  application can not send messages to the control. In addition, a group box
+  does not send notifications to its parent so there are no events to connect ot
+  a group box.
+</para>
+<para>
+  The GroupBox class provides methods to work with group box controls. It
+  inherits all methods of:
+</para>
+<itemizedlist>
+<listitem><para>The DialogControl class (see
+<link linkend="dialogcontrolc">DialogControl Class</link>)
+</para></listitem>
+</itemizedlist>
+<para>The GroupBox class requires the class definition file
+<computeroutput>oodwin32.cls</computeroutput>:</para>
+<programlisting>
+<![CDATA[
+::requires "oodwin32.cls"
+]]>
+</programlisting>
+<para>Use the GetGroupBox method (see
+<link linkend="getgroupbox">GetCheckControl</link>)
+to retrieve an object of the GroupBox class.</para>
+
+<section id="mthGBStyleEquals"><title>Style=</title>
+<indexterm><primary>Style=</primary>
+<secondary>GroupBox class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aControl~style=-"--+-LEFT-----+--"-------------------><
+                      +-RIGHT----+
+
+]]>
+</programlisting>
+
+<para>
+  Assigns a new text alignment to the group box.  By default the text of a group
+  box is in the upper left corner.  The alignment can also be set to the right,
+  although this is not commonly done.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>new_style/term>
+<listitem><para>A text string that is either:
+<variablelist>
+<varlistentry><term>LEFT</term>
+<listitem><para>The group box label is aligned to the upper left.
+</para></listitem></varlistentry>
+<varlistentry><term>RIGHT</term>
+<listitem><para>The label is aligned to the upper right.
+</para></listitem></varlistentry>
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>
+<programlisting>
+<![CDATA[
+gb = dlg~getGroupBox(IDC_GB_AREACODES)
+if gb == .Nil then return
+gb~style="RIGHT"
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
 </section>
 
 <section id="anibut"><title>AnimatedButton Class</title>
