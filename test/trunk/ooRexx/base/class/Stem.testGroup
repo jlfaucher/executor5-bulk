@@ -739,11 +739,19 @@ makeColl: procedure
   self~expectSyntax(93.938)
   a~unknown(.nil, .nil)
 
+::method TestToDirectory01
+  a.1 = "abc"
+  a.1.2..4 = "def"
 
+  d = a.~toDirectory
+  self~assertSame(2, d~items)
+  self~assertSame("abc", d[1])
+  self~assertSame("def", d["1.2..4"])
 
-
-
-
+::method TestToDirectory02
+  self~expectSyntax(93.902)
+  a.1 = "abc"
+  d = a.~toDirectory(1)
 
 
 /* Test whether both collections contain the same entries.
