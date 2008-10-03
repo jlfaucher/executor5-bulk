@@ -181,7 +181,7 @@ return testResult
   coll = self~buildTable
 
   do i = 1 to values~size
-     self~assertSame(indexes[i], coll~index(values[i]))
+     self~assertIdentical(indexes[i], coll~index(values[i]))
   end
 
   self~assertNull(coll~index("1223"~substr(2,1)))

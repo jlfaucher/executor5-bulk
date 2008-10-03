@@ -1168,6 +1168,28 @@ return str
   -- Assertion holds.
   self~fAssertions += 1
 
+-- Check if an object is EXACTLY the same object instance
+::method assertIdentical
+  use strict arg expected, actual, msg = ""
+
+  if (expected~identityHash != actual~identityHash) then do
+    self~fail(self~makeFailure(expected, actual, msg, "assertIdentical"))
+  end
+
+  -- Assertion holds.
+  self~fAssertions += 1
+
+-- Check if an object is NOT EXACTLY the same object instance
+::method assertNotIdentical
+  use strict arg expected, actual, msg = ""
+
+  if (expected~identityHash == actual~identityHash) then do
+    self~fail(self~makeFailure(expected, actual, msg, "assertNotIdentical"))
+  end
+
+  -- Assertion holds.
+  self~fAssertions += 1
+
 
 /** assertEitherOr()
  * Exclusive or, either arg 1 is true or arg 2 is true, but not both.
