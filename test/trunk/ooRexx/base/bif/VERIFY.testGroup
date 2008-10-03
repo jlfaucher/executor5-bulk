@@ -390,3 +390,25 @@ return testResult
     self~assertEquals(3, VERIFY('ABCDE','', ,3))  --
     self~assertEquals(6, VERIFY('AB3CD5','1234567890','M',4))
 
+
+::method testRange01
+    self~assertSame('0', verify('','',,,3))
+    self~assertSame('1', verify('abc','',,,0))
+    self~assertSame('2', verify('abc','',,2,0))
+    self~assertSame('0', verify('ab','a',,,1))
+    self~assertSame('0', verify('ABCDEF','ABC',,,3.0))
+    self~assertSame('4', verify('ABCDEF','ABC',,2,3))
+    self~assertSame('4', verify('ABCDEF','DEF',Match,,3))
+    self~assertSame('4', verify('ABCDEF','ADEF',Match,2,3))
+
+::method testRange02
+    self~expectSyntax(40.12)
+    xre = verify('ABCDEF','ABC',,2,'xxx')
+
+::method testRange03
+    self~expectSyntax(93.923)
+    xre = verify('ABCDEF','ABC',,2,-12)
+
+::method testRange04
+    self~expectSyntax(40.12)
+    xre = verify('ABCDEF','ABC',,2,0.5)
