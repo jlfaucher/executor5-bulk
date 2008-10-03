@@ -408,4 +408,23 @@ return testResult
    -- new test
     self~assertEquals(0, 'abc def ghi'~POS('',5))
 
+::method testRange01
+    self~assertSame('0', ''~pos('',,100))
+    self~assertSame('0', ''~pos('',,0))
+    self~assertSame('0', 'abcdeeeeef'~pos('e',,4))
+    self~assertSame('0', 'abcdeeeeef'~pos('e',1,4))
+    self~assertSame('5', 'abcdeeeeef'~pos('e',2,4))
+    self~assertSame('0', 'abcdeeeeef'~pos('eee',5,2))
+
+::method testRange02
+    self~expectSyntax(93.923)
+    xre = '123456789'~pos('34',1,'xxx')
+
+::method testRange03
+    self~expectSyntax(93.923)
+    xre = '--------'~pos('-',1,-12)
+
+::method testRange04
+    self~expectSyntax(93.923)
+    xre = '--------'~pos('-',1,0.5)
 

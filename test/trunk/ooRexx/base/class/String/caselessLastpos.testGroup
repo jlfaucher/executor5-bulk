@@ -676,4 +676,23 @@ return testResult
     .local~remove(vc740x)
     .local~remove(vxnx)
 
+::method testRange01
+    self~assertSame('0', ''~caselessLastPos('',,100))
+    self~assertSame('0', ''~caselessLastPos('',,0))
+    self~assertSame('0', 'aaaaabcdef'~caselessLastPos('a',,5))
+    self~assertSame('0', 'aaaaabcdef'~caselessLastPos('a',10,5))
+    self~assertSame('5', 'aaaaabcdef'~caselessLastPos('a',9,5))
+    self~assertSame('0', 'aaaaabcdef'~caselessLastPos('aaa',5,2))
+
+::method testRange02
+    self~expectSyntax(93.923)
+    xre = '123456789'~caselessLastPos('34',1,'xxx')
+
+::method testRange03
+    self~expectSyntax(93.923)
+    xre = '--------'~caselessLastPos('-',1,-12)
+
+::method testRange04
+    self~expectSyntax(93.923)
+    xre = '--------'~caselessLastPos('-',1,0.5)
 

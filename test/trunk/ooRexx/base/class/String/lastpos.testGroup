@@ -681,4 +681,22 @@ return testResult
     self~assertEquals(0, 'abc def ghi'~lastPos('',7))
     self~assertEquals(0, ''~lastPos(''))
 
+::method testRange01
+    self~assertSame('0', ''~lastPos('',,100))
+    self~assertSame('0', ''~lastPos('',,0))
+    self~assertSame('0', 'aaaaabcdef'~lastPos('a',,5))
+    self~assertSame('0', 'aaaaabcdef'~lastPos('a',10,5))
+    self~assertSame('5', 'aaaaabcdef'~lastPos('a',9,5))
+    self~assertSame('0', 'aaaaabcdef'~lastPos('aaa',5,2))
 
+::method testRange02
+    self~expectSyntax(93.923)
+    xre = '123456789'~lastPos('34',1,'xxx')
+
+::method testRange03
+    self~expectSyntax(93.923)
+    xre = '--------'~lastPos('-',1,-12)
+
+::method testRange04
+    self~expectSyntax(93.923)
+    xre = '--------'~lastPos('-',1,0.5)

@@ -405,3 +405,22 @@ return testResult
     self~assertSame('9', a~caselessPos(b,c))
 
 
+::method testRange01
+    self~assertSame('0', ''~caselessPos('',,100))
+    self~assertSame('0', ''~caselessPos('',,0))
+    self~assertSame('0', 'abcdeeeeef'~caselessPos('e',,4))
+    self~assertSame('0', 'abcdeeeeef'~caselessPos('e',1,4))
+    self~assertSame('5', 'abcdeeeeef'~caselessPos('e',2,4))
+    self~assertSame('0', 'abcdeeeeef'~caselessPos('eee',5,2))
+
+::method testRange02
+    self~expectSyntax(93.923)
+    xre = '123456789'~caselessPos('34',1,'xxx')
+
+::method testRange03
+    self~expectSyntax(93.923)
+    xre = '--------'~caselessPos('-',1,-12)
+
+::method testRange04
+    self~expectSyntax(93.923)
+    xre = '--------'~caselessPos('-',1,0.5)
