@@ -353,3 +353,10 @@ return testResult
     number = tab||"-"||tab||1||tab||tab
     self~assertSame(-1, number + 0)
 
+::method "test_SOURCE_whitespace"
+    tab = '09'x
+    interpret tab"x"tab"="tab"1"tab"+"tab"2"tab
+    self~assertSame(3, x)
+    interpret tab"x"tab"="tab"1"tab"2"tab
+    self~assertSame("1 2", x)
+
