@@ -1423,8 +1423,8 @@ File System=NTFS
 </programlisting>
 
 <para>Finds all files that match a file specification. SysFileTree returns the
-file descriptions (date, time, size, attributes, and file specification) in
-a Rexx stem variable collection.</para>
+file descriptions (date, time, size, attributes, and file specification) space delimited in
+a Rexx stem variable collection. The default format for date and time is platform specific.</para>
 <para><emphasis role="bold">Parameters:</emphasis></para>
 <variablelist>
 <varlistentry><term><emphasis role="italic">filespec</emphasis></term>
@@ -1436,6 +1436,9 @@ SysFileTree sets Rexx variable <emphasis role="italic">stem.0</emphasis>
 to the number of files and directories found and stores individual
 file descriptions into variables <emphasis role="italic">stem.1</emphasis> to
 <emphasis role="italic">stem.n</emphasis>.
+Note: <emphasis role="italic">stem</emphasis> can be specified as
+<emphasis role="italic">stem</emphasis> or <emphasis role="italic">stem.</emphasis>
+(with or without the trailing period)
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="italic">options</emphasis></term>
 <listitem><para>A string with any combination of the following:</para>
@@ -1453,7 +1456,8 @@ file descriptions into variables <emphasis role="italic">stem.1</emphasis> to
 <listitem><para>Search subdirectories recursively.
 </para></listitem></varlistentry>
 <varlistentry><term>"T"</term>
-<listitem><para>Return the time and date in the form YY/MM/DD/HH/MM.
+<listitem><para>Return the time and date in the form YY/MM/DD/HH/MM. If the "L" option is also specified
+then this option will be ignored.
 </para></listitem></varlistentry>
 <varlistentry><term>"L"</term>
 <listitem><para>Return the time and date in the form YYYY-MM-DD HH:MM:SS.
@@ -1465,13 +1469,8 @@ is ignored on systems like Windows where the file system is case-insensitive
 by default.
 </para></listitem></varlistentry>
 <varlistentry><term>"O"</term>
-<listitem><para>Return only the fully-qualified file name. The default is to
-return the date, time, size, attributes, and fully-qualified name for each file
-found. </para></listitem></varlistentry>
+<listitem><para>Return only the fully-qualified file name.</para></listitem></varlistentry>
 </variablelist>
-<para>If both the "L" and "T" options are given then the "T" option will
-be ignored.
-</para></listitem></varlistentry>
 <varlistentry><term><emphasis role="italic">tattrib</emphasis></term>
 <listitem><para>The target attribute mask for file specification matches. Only
 files that match the target mask are returned. The default mask is "*****".
