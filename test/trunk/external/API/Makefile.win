@@ -69,7 +69,17 @@ OOTEST_BIN_DIR = ..\..\bin\WINDOWS
 !ENDIF
 
 # Build the libraries
-all: $(OOTEST_BIN_DIR)\orxfunction.dll $(OOTEST_BIN_DIR)\orxmethod.dll
+all: $(OOTEST_BIN_DIR)\orxfunction.dll $(OOTEST_BIN_DIR)\orxmethod.dll \
+     $(OOTEST_BIN_DIR)\orxclassic.dll
+
+$(OOTEST_BIN_DIR)\orxfunction.dll: orxfunction.dll
+  copy orxfunction.dll $(OOTEST_BIN_DIR)
+
+$(OOTEST_BIN_DIR)\orxmethod.dll: orxmethod.dll
+  copy orxmethod.dll $(OOTEST_BIN_DIR)
+
+$(OOTEST_BIN_DIR)\orxclassic.dll: orxclassic.dll
+  copy orxclassic.dll $(OOTEST_BIN_DIR)
 
 
 # Build the shared library
@@ -89,12 +99,15 @@ orxmethod.dll: orxmethod.obj
 orxmethod.obj: orxmethod.cpp
 	cl $(ORXCFLAGS) orxmethod.cpp
 
-$(OOTEST_BIN_DIR)\orxfunction.dll: orxfunction.dll
-  copy orxfunction.dll $(OOTEST_BIN_DIR)
 
-$(OOTEST_BIN_DIR)\orxmethod.dll: orxmethod.dll
-  copy orxmethod.dll $(OOTEST_BIN_DIR)
+# Build the shared library
+orxclassic.dll: orxclassic.obj
+	link $(ORXLFLAGS) /def:orxclassic.def orxclassic.obj
+
+# Build the objects
+orxclassic.obj: orxclassic.cpp
+	cl $(ORXCFLAGS) orxclassic.cpp
 
 clean:
-	del *.dll *.obj *.ilk *.pdb *.lib *.exp 1>nul 2>&1
+	del *.dll *.obj *.ilk *.pdb *.lib *.exp $(OOTEST_BIN_DIR)/*.dll 1>nul 2>&1
 

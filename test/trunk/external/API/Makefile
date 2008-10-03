@@ -59,7 +59,17 @@ OOTEST_BIN_DIR = ../../bin/LINUX
 endif
 
 # Build the libraries
-all: $(OOTEST_BIN_DIR)/liborxfunction.so $(OOTEST_BIN_DIR)/liborxmethod.so
+all: $(OOTEST_BIN_DIR)/liborxfunction.so $(OOTEST_BIN_DIR)/liborxmethod.so \
+     $(OOTEST_BIN_DIR)/liborxclassic.so
+
+$(OOTEST_BIN_DIR)/liborxfunction.so: liborxfunction.so
+	cp liborxfunction.so $(OOTEST_BIN_DIR)
+
+$(OOTEST_BIN_DIR)/liborxmethod.so: liborxmethod.so
+	cp liborxmethod.so $(OOTEST_BIN_DIR)
+
+$(OOTEST_BIN_DIR)/liborxclassic.so: liborxclassic.so
+	cp liborxclassic.so $(OOTEST_BIN_DIR)
 
 
 # Build the shared library
@@ -79,13 +89,16 @@ liborxmethod.so: orxmethod.o
 orxmethod.o: orxmethod.cpp $(METHOD_SRC_DEPS)
 	gcc -c $(ORXCFLAGS) $(REXX_INCLUDES) orxmethod.cpp
 
-$(OOTEST_BIN_DIR)/liborxfunction.so: liborxfunction.so
-	cp liborxfunction.so $(OOTEST_BIN_DIR)
 
-$(OOTEST_BIN_DIR)/liborxmethod.so: liborxmethod.so
-	cp liborxmethod.so $(OOTEST_BIN_DIR)
+# Build the shared library
+liborxclassic.so: orxclassic.o
+	gcc $(ORXLFLAGS) $(REXX_LIBS) -lrexx -lrexxapi -o liborxclassic.so orxclassic.o
+
+# Build the objects
+orxclassic.o: orxclassic.cpp $(FUNCTION_SRC_DEPS)
+	gcc -c $(ORXCFLAGS) $(REXX_INCLUDES) orxclassic.cpp
 
 
 clean:
-	rm -f *.so *.o
+	rm -f *.so *.o $(OOTEST_BIN_DIR)/lib*.so
 
