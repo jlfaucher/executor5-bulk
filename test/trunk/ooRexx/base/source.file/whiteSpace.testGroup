@@ -344,4 +344,12 @@ return testResult
 
     self~assertEquals(4, words(str0))
 
--- End of class: whiteSpace.testGroup
+::method "test_TABS_Numbers"
+    tab = '09'x
+    number = tab||tab||1||tab||tab
+    self~assertSame(1, number + 0)
+    number = tab||"+"||tab||1||tab||tab
+    self~assertSame(1, number + 0)
+    number = tab||"-"||tab||1||tab||tab
+    self~assertSame(-1, number + 0)
+

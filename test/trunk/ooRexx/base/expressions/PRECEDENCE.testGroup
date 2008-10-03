@@ -4403,7 +4403,13 @@ return testResult
 ::method "test_1369"
    self~assertSame(2\==2//17, '0')
 
-
+::method 'test_='
+   tab = '09'x
+   self~assertTrue(" " = '')
+   self~assertTrue("9"x = '')
+   self~assertTrue("9"x = ' ')
+   self~assertTrue((tab||"abc"||tab) = "abc")
+   self~assertTrue((" "||tab||" abc "||tab||" ") = "abc")
 
 
 
