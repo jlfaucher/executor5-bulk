@@ -136,4 +136,41 @@ return testResult
     self~assertSame('APQ  ', TRANSLATE('APQRV',XRANGE('00'X,'Q')))
     self~assertSame('dabc', TRANSLATE('4123','abcd','1234'))
 
+::method "testStart01"
+    self~assertSame(('aBC'), translate('abc',,,,2))
+    self~assertSame(('aBc'), translate('abc',,,,2,1))
+    self~assertSame(('Abc'), translate('abc',,,,,1))
+    self~assertSame('a4.def', translate('abcdef','123456','aaabbbcc','.', 2, 3))
+    self~assertSame('a$$def ', translate('abcdef ',,,'$',2,2))
+    self~assertSame('a$$$$$$', translate('abcdef ',,,'$',2))
+    self~assertSame('abcdef ', translate('abcdef ',,,'$',2,0))
+    self~assertSame('abcdef ', translate('abcdef ',,,'$',8,6))
+
+::method testStart02
+    self~expectSyntax(93.924)
+    x = translate('abcdef ',,,'$',0,6)
+
+::method testStart03
+    self~expectSyntax(40.12)
+    x = translate('abcdef ',,,'$',"xxx",6)
+
+::method testStart04
+    self~expectSyntax(40.12)
+    x = translate('abcdef ',,,'$',0.5,6)
+
+::method testStart05
+    self~expectSyntax(93.924)
+    x = translate('abcdef ',,,'$',-5,6)
+
+::method testStart06
+    self~expectSyntax(93.923)
+    x = translate('abcdef ',,,'$',1, -6)
+
+::method testStart07
+    self~expectSyntax(40.12)
+    x = translate('abcdef ',,,'$',1, 'x')
+
+::method testStart08
+    self~expectSyntax(40.12)
+    x = translate('abcdef ',,,'$',1, 0.5)
 

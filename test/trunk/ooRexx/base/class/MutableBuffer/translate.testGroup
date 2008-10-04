@@ -131,3 +131,40 @@ return testResult
     self~assertSame('APQ  ', .mutablebuffer~new('APQRV')~translate(XRANGE('00'X,'Q'))~string)
     self~assertSame('dabc', .mutablebuffer~new('4123')~translate('abcd','1234')~string)
 
+::method "testStart01"
+    self~assertSame(('aBC'), .mutablebuffer~new('abc')~translate(,,,2)~string)
+    self~assertSame(('aBc'), .mutablebuffer~new('abc')~translate(,,,2,1)~string)
+    self~assertSame(('Abc'), .mutablebuffer~new('abc')~translate(,,,,1)~string)
+    self~assertSame(('a4.def'), .mutablebuffer~new('abcdef')~translate('123456','aaabbbcc','.', 2, 3)~string)
+    self~assertSame('a$$def ', .mutablebuffer~new('abcdef ')~translate(,,'$',2,2)~string)
+    self~assertSame('a$$$$$$', .mutablebuffer~new('abcdef ')~translate(,,'$',2)~string)
+    self~assertSame('abcdef ', .mutablebuffer~new('abcdef ')~translate(,,'$',2,0)~string)
+    self~assertSame('abcdef ', .mutablebuffer~new('abcdef ')~translate(,,'$',8,6)~string)
+
+::method testStart02
+    self~expectSyntax(93.924)
+    x = .mutablebuffer~new('abcdef ')~translate(,,'$',0,6)
+
+::method testStart03
+    self~expectSyntax(93.924)
+    x = .mutablebuffer~new('abcdef ')~translate(,,'$',"xxx",6)
+
+::method testStart04
+    self~expectSyntax(93.924)
+    x = .mutablebuffer~new('abcdef ')~translate(,,'$',0.5,6)
+
+::method testStart05
+    self~expectSyntax(93.924)
+    x = .mutablebuffer~new('abcdef ')~translate(,,'$',-5,6)
+
+::method testStart06
+    self~expectSyntax(93.923)
+    x = .mutablebuffer~new('abcdef ')~translate(,,'$',1, -6)
+
+::method testStart07
+    self~expectSyntax(93.923)
+    x = .mutablebuffer~new('abcdef ')~translate(,,'$',1, 'x')
+
+::method testStart08
+    self~expectSyntax(93.923)
+    x = .mutablebuffer~new('abcdef ')~translate(,,'$',1, 0.5)
