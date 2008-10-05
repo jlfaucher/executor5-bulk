@@ -43,7 +43,7 @@ use arg testTypes
 
   parse source . . s
   group = .TestGroup~new(s)
-  group~add(.FUNCTION.testGroup)
+  group~add(.CLASSIC.testGroup)
 
   if arg(1, 'E'), \ group~hasTestTypes(testTypes) then do
     group~markNoTests("This is a native API test and not included in the test types to execute.")
@@ -53,7 +53,7 @@ use arg testTypes
   end
 
   signal on syntax name packageErr
-  .context~package~loadPackage('CLASSICPackage.cls')
+  .context~package~loadPackage('CLASSIC.cls')
 
   if group~isAutomatedTest then return group
 
