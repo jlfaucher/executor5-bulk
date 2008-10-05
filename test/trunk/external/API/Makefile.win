@@ -53,8 +53,8 @@ API_INCLUDE = $(API_LIB)
 !ERROR You must define OOREXX_BUILD_HOME, or SRC_DRV and SRC_DIR, or REXX_HOME
 !ENDIF
 
-REXX_LIBS = $(API_LIB)\rexx.lib $(API_LIB)\rexxapi.lib
-REXX_INCLUDES = /I$(API_INCLUDE) /I$(API_INCLUDE)\platform\windows
+REXX_LIBS = "$(API_LIB)\rexx.lib" "$(API_LIB)\rexxapi.lib"
+REXX_INCLUDES = /I"$(API_INCLUDE)" /I"$(API_INCLUDE)\platform\windows"
 
 # May need to add Windows libs - but it doesn't seem like it
 LIBS = $(REXX_LIBS)
