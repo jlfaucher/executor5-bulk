@@ -162,7 +162,7 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertEquals(0, t1~retc)
   self~assertEquals(2, t1~flag) -- flag is the count
 
-::method 'test_08_pullfrom_queue'
+::method 'test_08_pullfrom_queue_1'
   expose t1
   q1 = 'MyTestQueue1'
   -- pull from a named queue
@@ -184,6 +184,24 @@ return .ooTestResult~new(5)~~addException(err)
   t1~testqueryqueue(q1)
   self~assertEquals(0, t1~retc)
   self~assertEquals(0, t1~flag) -- flag is the count
+
+::method 'test_10_pullfrom_queue_2'
+  expose t1
+  q1 = 'MyTestQueue1'
+  -- add to a named queue
+  t1~testaddqueue(q1, 'FIFO test data' || d2c(0) || 'more data', 0) -- 0 = FIFO
+  self~assertEquals(0, t1~retc)
+  -- pull from a named queue
+  t1~testpullfromqueue(q1)
+  self~assertEquals(0, t1~retc)
+  self~assertEquals('FIFO test data', t1~flag) -- flag is the pulled data
+
+::method 'test_11_delete_queue'
+  expose t1
+  q1 = 'MyTestQueue1'
+  -- delete a named queue
+  t1~testdeletequeue(q1)
+  self~assertEquals(0, t1~retc)
 
 
 
