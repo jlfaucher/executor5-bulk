@@ -47,9 +47,6 @@ use arg testTypes
 
   if arg(1, 'E'), \ group~hasTestTypes(testTypes) then do
     group~markNoTests("This is a native API test and not included in the test types to execute.")
-
-    if group~isAutomatedTest then return group
-    else return group~suite~execute~~print
   end
 
   signal on syntax name packageErr
@@ -79,11 +76,15 @@ return .ooTestResult~new(5)~~addException(err)
 ::class "CLASSIC.testGroup" subclass ooTestCase public
 
 ::method init class
-  expose t1
   forward class (super) continue
 
   -- Over-ride the default test type
   self~ooTestType = .ooTestTypes~NATIVE_API_TEST
+
+::method init
+  expose t1
+  forward class (super) continue
+  t1 = .TestQueueFuncs~new
 
 -- Note: The order of these tests is very important.
 
@@ -167,7 +168,7 @@ return .ooTestResult~new(5)~~addException(err)
   -- pull from a named queue
   t1~testpullfromqueue(q1)
   self~assertEquals(0, t1~retc)
-  self~assertEquals('FIFO test data', t1~flag) -- flag is the pulled data
+  self~assertEquals('LIFO test data', t1~flag) -- flag is the pulled data
 
 ::method 'test_09_clear_queue'
   expose t1
