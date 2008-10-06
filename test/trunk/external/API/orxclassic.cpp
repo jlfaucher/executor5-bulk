@@ -37,9 +37,10 @@
 
 #include <rexx.h>
 #include <oorexxapi.h>
+#include <string.h>
 
 RexxMethod1(RexxObjectPtr,              // Return type
-            TestCreateQueue,            // Routine name
+            TestCreateQueue,            // Method name
             OPTIONAL_CSTRING, qname)    // Queue name
 {
     char newQueueName[MAX_QUEUE_NAME_LENGTH];
@@ -52,10 +53,96 @@ RexxMethod1(RexxObjectPtr,              // Return type
     return context->NewStringFromAsciiz(newQueueName);
 }
 
+RexxMethod1(int,                        // Return type
+            TestOpenQueue,              // Method name
+            CSTRING, qname)             // Queue name
+{
+    size_t flag;
 
-RexxRoutineEntry orxtest_funcs[] = {
-    REXX_TYPED_ROUTINE(TestCreateQueue,       TestCreateQueue),
-    REXX_LAST_ROUTINE()
+    RexxReturnCode rc = RexxOpenQueue(qname, &flag);
+    context->SetObjectVariable("RETC", context->Int32ToObject(rc));
+    context->SetObjectVariable("FLAG", context->Int32ToObject(flag));
+    return rc;
+}
+
+RexxMethod1(int,                        // Return type
+            TestQueueExists,            // Method name
+            CSTRING, qname)             // Queue name
+{
+    RexxReturnCode rc = RexxQueueExists(qname);
+    context->SetObjectVariable("RETC", context->Int32ToObject(rc));
+    return rc;
+}
+
+RexxMethod1(int,                        // Return type
+            TestDeleteQueue,            // Method name
+            CSTRING, qname)             // Queue name
+{
+    RexxReturnCode rc = RexxDeleteQueue(qname);
+    context->SetObjectVariable("RETC", context->Int32ToObject(rc));
+    return rc;
+}
+
+RexxMethod1(int,                        // Return type
+            TestQueryQueue,             // Method name
+            CSTRING, qname)             // Queue name
+{
+    size_t count;
+
+    RexxReturnCode rc = RexxQueryQueue(qname, &count);
+    context->SetObjectVariable("RETC", context->Int32ToObject(rc));
+    context->SetObjectVariable("FLAG", context->Int32ToObject(count));
+    return rc;
+}
+
+RexxMethod3(int,                        // Return type
+            TestAddQueue,               // Method name
+            CSTRING, qname,             // Queue name
+            CSTRING, data,              // Queue data to add
+            int, type)                  // Queue FIFO/LIFO flag
+{
+    CONSTRXSTRING rxdata;
+
+    rxdata.strptr = data;
+    rxdata.strlength = strlen(data);
+    RexxReturnCode rc = RexxAddQueue(qname, &rxdata, type);
+    context->SetObjectVariable("RETC", context->Int32ToObject(rc));
+    return rc;
+}
+
+RexxMethod1(int,                        // Return type
+            TestPullFromQueue,          // Method name
+            CSTRING, qname)             // Queue name
+{
+    RXSTRING data;
+    REXXDATETIME timestamp;
+
+    RexxReturnCode rc = RexxPullFromQueue(qname, &data, &timestamp, 0);
+    context->SetObjectVariable("RETC", context->Int32ToObject(rc));
+    context->SetObjectVariable("FLAG", context->NewStringFromAsciiz(data.strptr));
+    return rc;
+}
+
+RexxMethod1(int,                        // Return type
+            TestClearQueue,             // Method name
+            CSTRING, qname)             // Queue name
+{
+    RexxReturnCode rc = RexxClearQueue(qname);
+    context->SetObjectVariable("RETC", context->Int32ToObject(rc));
+    return rc;
+}
+
+
+RexxMethodEntry orxtest_methods[] = {
+    REXX_METHOD(TestCreateQueue,       TestCreateQueue),
+    REXX_METHOD(TestOpenQueue,         TestOpenQueue),
+    REXX_METHOD(TestQueueExists,       TestQueueExists),
+    REXX_METHOD(TestDeleteQueue,       TestDeleteQueue),
+    REXX_METHOD(TestQueryQueue,        TestQueryQueue),
+    REXX_METHOD(TestAddQueue,          TestAddQueue),
+    REXX_METHOD(TestPullFromQueue,     TestPullFromQueue),
+    REXX_METHOD(TestClearQueue,        TestClearQueue),
+    REXX_LAST_METHOD()
 };
 
 
@@ -66,8 +153,8 @@ RexxPackageEntry UnitTest_package_entry = {
     "1.0.0",                             // package information
     NULL,                                // no load/unload functions
     NULL,
-    orxtest_funcs,                       // the exported routines
-    NULL                                 // the exported methods
+    NULL,                                // the exported routines
+    orxtest_methods                      // the exported methods
 };
 
 // package loading stub.
