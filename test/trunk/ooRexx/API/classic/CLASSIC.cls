@@ -42,17 +42,16 @@
 expose retc
 return retc
 
-::attribute flag get
+::attribute flag get -- this attribute contains method specific data
 expose flag
 return flag
 
 ::method TestCreateQueue PUBLIC EXTERNAL "LIBRARY orxclassic TestCreateQueue"
-
-
-
-
-
-
-
-
+::method TestOpenQueue PUBLIC EXTERNAL "LIBRARY orxclassic TestOpenQueue"
+::method TestQueueExists PUBLIC EXTERNAL "LIBRARY orxclassic TestQueueExists"
+::method TestDeleteQueue PUBLIC EXTERNAL "LIBRARY orxclassic TestDeleteQueue"
+::method TestQueryQueue PUBLIC EXTERNAL "LIBRARY orxclassic TestQueryQueue"
+::method TestAddQueue PUBLIC EXTERNAL "LIBRARY orxclassic TestAddQueue"
+::method TestPullFromQueue PUBLIC EXTERNAL "LIBRARY orxclassic TestPullFromQueue"
+::method TestClearQueue PUBLIC EXTERNAL "LIBRARY orxclassic TestClearQueue"
 

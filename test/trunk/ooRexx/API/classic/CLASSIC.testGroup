@@ -79,14 +79,16 @@ return .ooTestResult~new(5)~~addException(err)
 ::class "CLASSIC.testGroup" subclass ooTestCase public
 
 ::method init class
+  expose t1
   forward class (super) continue
+  t1 = .TestQueueFuncs~new()
 
   -- Over-ride the default test type
   self~ooTestType = .ooTestTypes~NATIVE_API_TEST
 
 ::method 'testcreate_queue'
+  expose t1
   q1 = 'MyTestQueue1'
-  t1 = .TestQueueFuncs~new()
   -- create a named queue
   nq1 = t1~testcreatequeue(q1)
   self~assertEquals(0, t1~retc)
@@ -101,6 +103,84 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertEquals(0, t1~retc)
   self~assertNotEquals(0, t1~flag)
   self~assertNotSame(q1, nq1)
+
+::method 'testopen_queue'
+  expose t1
+  q2 = 'MyTestQueue2'
+  -- open a named queue
+  t1~testopenqueue(q2)
+  self~assertEquals(0, t1~retc)
+  -- try to create a duplicate queue
+  t1~testopenqueue(q2)
+  self~assertEquals(0, t1~retc)
+
+::method 'testQueue_exists'
+  expose t1
+  q2 = 'MyTestQueue2'
+  -- query a named queue
+  t1~testqueryqueue(q2)
+  self~assertEquals(0, t1~retc)
+  -- try to query a queue that does not exist
+  t1~testdeletequeue('ZYXCBA')
+  self~assertNotEquals(0, t1~retc)
+
+::method 'testdelete_queue'
+  expose t1
+  q2 = 'MyTestQueue2'
+  -- delete a named queue
+  t1~testdeletequeue(q2)
+  self~assertEquals(0, t1~retc)
+  -- try to delete a queue that does not exist
+  t1~testdeletequeue('ZYXCBA')
+  self~assertNotEquals(0, t1~retc)
+
+::method 'testquery_queue'
+  expose t1
+  q1 = 'MyTestQueue1'
+  -- query a named queue
+  t1~testqueryqueue(q1)
+  self~assertEquals(0, t1~retc)
+  self~assertEquals(0, t1~flag) -- flag is the count
+
+::method 'testadd_queue_1'
+  expose t1
+  q1 = 'MyTestQueue1'
+  -- add to a named queue
+  t1~testaddqueue(q1, 'FIFO test data', 0) -- 0 = FIFO
+  self~assertEquals(0, t1~retc)
+  t1~testaddqueue(q1, 'LIFO test data', 1) -- 1 = LIFO
+  self~assertEquals(0, t1~retc)
+
+::method 'testquery_queue_2'
+  expose t1
+  q1 = 'MyTestQueue1'
+  -- query a named queue
+  t1~testqueryqueue(q1)
+  self~assertEquals(0, t1~retc)
+  self~assertEquals(2, t1~flag) -- flag is the count
+
+::method 'testpullfrom_queue'
+  expose t1
+  q1 = 'MyTestQueue1'
+  -- pull from a named queue
+  t1~testpullfromqueue(q1)
+  self~assertEquals(0, t1~retc)
+  self~assertEquals('FIFO test data', t1~flag) -- flag is the pulled data
+
+::method 'testclear_queue'
+  expose t1
+  q1 = 'MyTestQueue1'
+  -- make sure there is still data in the queue
+  t1~testqueryqueue(q1)
+  self~assertEquals(0, t1~retc)
+  self~assertEquals(1, t1~flag) -- flag is the count
+  -- clear a named queue
+  t1~testclearqueue(q1)
+  self~assertEquals(0, t1~retc)
+  -- make sure there is no data in the queue
+  t1~testqueryqueue(q1)
+  self~assertEquals(0, t1~retc)
+  self~assertEquals(0, t1~flag) -- flag is the count
 
 
 
