@@ -6,7 +6,7 @@
 srv = .myserver~new()
 srv~listen()
 
-::requires 'c:\dev\oorexx development\main\trunk\extensions\rxsock\socket.cls'
+::requires 'socket.cls'
 
 ::class myserver
 

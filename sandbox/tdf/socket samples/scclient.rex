@@ -45,4 +45,4 @@
     if sock~close() < 0 then
         say 'SockClose Failed'
 
-::requires 'c:\dev\oorexx development\main\trunk\extensions\rxsock\socket.cls'
+::requires 'socket.cls'
