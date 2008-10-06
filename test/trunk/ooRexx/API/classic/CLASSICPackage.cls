@@ -55,3 +55,7 @@ return flag
 ::method TestPullFromQueue PUBLIC EXTERNAL "LIBRARY orxclassic TestPullFromQueue"
 ::method TestClearQueue PUBLIC EXTERNAL "LIBRARY orxclassic TestClearQueue"
 
+::class TestMemoryFuncs public
+
+::method TestAllocateFreeMemory PUBLIC EXTERNAL "LIBRARY orxclassic TestAllocateFreeMemory"
+

@@ -132,16 +132,28 @@ RexxMethod1(int,                        // Return type
     return rc;
 }
 
+RexxMethod1(int,                        // Return type
+            TestAllocateFreeMemory,     // Method name
+            int, size)                  // Size of memory block
+{
+    void *block = RexxAllocateMemory(size);
+    if (block == NULL) {
+        return 1;
+    }
+    return RexxFreeMemory(block);
+}
+
 
 RexxMethodEntry orxtest_methods[] = {
-    REXX_METHOD(TestCreateQueue,       TestCreateQueue),
-    REXX_METHOD(TestOpenQueue,         TestOpenQueue),
-    REXX_METHOD(TestQueueExists,       TestQueueExists),
-    REXX_METHOD(TestDeleteQueue,       TestDeleteQueue),
-    REXX_METHOD(TestQueryQueue,        TestQueryQueue),
-    REXX_METHOD(TestAddQueue,          TestAddQueue),
-    REXX_METHOD(TestPullFromQueue,     TestPullFromQueue),
-    REXX_METHOD(TestClearQueue,        TestClearQueue),
+    REXX_METHOD(TestCreateQueue,        TestCreateQueue),
+    REXX_METHOD(TestOpenQueue,          TestOpenQueue),
+    REXX_METHOD(TestQueueExists,        TestQueueExists),
+    REXX_METHOD(TestDeleteQueue,        TestDeleteQueue),
+    REXX_METHOD(TestQueryQueue,         TestQueryQueue),
+    REXX_METHOD(TestAddQueue,           TestAddQueue),
+    REXX_METHOD(TestPullFromQueue,      TestPullFromQueue),
+    REXX_METHOD(TestClearQueue,         TestClearQueue),
+    REXX_METHOD(TestAllocateFreeMemory, TestAllocateFreeMemory),
     REXX_LAST_METHOD()
 };
 

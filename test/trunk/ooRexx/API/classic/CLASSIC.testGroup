@@ -203,8 +203,20 @@ return .ooTestResult~new(5)~~addException(err)
   t1~testdeletequeue(q1)
   self~assertEquals(0, t1~retc)
 
-
-
+::method 'test_20_allocatefree_memory'
+  m1 = .TestMemoryFuncs~new()
+  retc = m1~TestAllocateFreeMemory(1) 
+  self~assertEquals(0, retc)
+  retc = m1~TestAllocateFreeMemory(64) 
+  self~assertEquals(0, retc)
+  retc = m1~TestAllocateFreeMemory(128) 
+  self~assertEquals(0, retc)
+  retc = m1~TestAllocateFreeMemory(256) 
+  self~assertEquals(0, retc)
+  retc = m1~TestAllocateFreeMemory(4096) 
+  self~assertEquals(0, retc)
+  retc = m1~TestAllocateFreeMemory(65535) 
+  self~assertEquals(0, retc)
 
 
 
