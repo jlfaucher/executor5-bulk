@@ -133,6 +133,16 @@ return testResult
   self~expectSyntax(93.970)
   c = .context~copy
 
+::method TestLine01
+  self~assertSame(.line, .context~line)
+
+::method TestRS01
+  self~assertSame(.nil, .context~rs)
+  'echo foo'
+  self~assertSame(.rs, .context~rs)
+
+
+
 ::routine testargs
   return .context~args
 
