@@ -143,6 +143,119 @@ RexxMethod1(int,                        // Return type
     return RexxFreeMemory(block);
 }
 
+RexxMethod1(int,                        // Return type
+            TestVariablePool,           // Method name
+            RexxArrayObject, arr)       // Array of shvblocks
+{
+    RexxReturnCode retc;
+    size_t members = context->ArrayItems(arr);
+    size_t ctr;
+    PSHVBLOCK blocks = NULL;
+    PSHVBLOCK nextblock = NULL;
+    PSHVBLOCK currentblock = NULL;
+    unsigned int tempint;
+
+    if (members == 0) {
+        return RXSHV_NOAVL;
+    }
+
+    // set up the shvblocks fro the array
+    for (ctr = 1; ctr <= members; ctr++) {
+        nextblock = (PSHVBLOCK)malloc(sizeof(SHVBLOCK));
+        if (currentblock != NULL) {
+            currentblock->shvnext = nextblock;
+        }
+        currentblock = nextblock;
+        if (blocks == NULL) {
+            blocks = currentblock;
+        }
+        RexxObjectPtr entry = context->ArrayAt(arr, ctr);
+        RexxObjectPtr val = context->SendMessage0(entry, "shvcode");
+        context->ObjectToUnsignedInt32(val, &tempint);
+        currentblock->shvcode = (unsigned char)tempint;
+        val = context->SendMessage0(entry, "shvret");
+        context->ObjectToUnsignedInt32(val, &tempint);
+        currentblock->shvret = (unsigned char)tempint;
+        val = context->SendMessage0(entry, "shvnamelen");
+        context->ObjectToUnsignedInt32(val, &tempint);
+        currentblock->shvnamelen = (size_t)tempint;
+        val = context->SendMessage0(entry, "shvvaluelen");
+        context->ObjectToUnsignedInt32(val, &tempint);
+        currentblock->shvvaluelen = (size_t)tempint;
+        switch (currentblock->shvcode) {
+        case RXSHV_SET:
+        case RXSHV_SYSET:
+            val = context->SendMessage0(entry, "shvname");
+            currentblock->shvname.strptr = context->ObjectToStringValue(val);
+            currentblock->shvname.strlength = strlen(currentblock->shvname.strptr);
+            val = context->SendMessage0(entry, "shvvalue");
+            currentblock->shvvalue.strptr = (char*)malloc(strlen(context->ObjectToStringValue(val)) + 1);
+            strcpy(currentblock->shvvalue.strptr, context->ObjectToStringValue(val));
+            currentblock->shvvalue.strlength = strlen(currentblock->shvvalue.strptr);
+            break;
+        case RXSHV_FETCH:
+        case RXSHV_SYFET:
+            val = context->SendMessage0(entry, "shvname");
+            currentblock->shvname.strptr = context->ObjectToStringValue(val);
+            currentblock->shvname.strlength = strlen(currentblock->shvname.strptr);
+            currentblock->shvvalue.strptr = (char*)malloc(currentblock->shvvaluelen + 1);
+            currentblock->shvvalue.strlength = currentblock->shvvaluelen + 1;
+            break;
+        case RXSHV_DROPV:
+        case RXSHV_SYDRO:
+            val = context->SendMessage0(entry, "shvname");
+            currentblock->shvname.strptr = context->ObjectToStringValue(val);
+            currentblock->shvname.strlength = strlen(currentblock->shvname.strptr);
+            currentblock->shvvalue.strptr = NULL;
+            currentblock->shvvalue.strlength = 0;
+            break;
+        case RXSHV_NEXTV:
+            break;
+        case RXSHV_PRIV:
+            break;
+        default:
+            free(currentblock);
+            return RXSHV_NOAVL;
+        }
+    }
+
+    // call the variable pool interface
+    retc = RexxVariablePool(blocks);
+
+    // set the array to the shvblocks
+    currentblock = blocks;
+    for (ctr = 1; ctr <= members; ctr++) {
+        RexxObjectPtr entry = context->ArrayAt(arr, ctr);
+        context->SendMessage1(entry, "shvret=", context->UnsignedInt32ToObject((uint32_t)currentblock->shvret));
+        switch (currentblock->shvcode) {
+        case RXSHV_SET:
+        case RXSHV_SYSET:
+            free(currentblock->shvvalue.strptr);
+            break;
+        case RXSHV_FETCH:
+        case RXSHV_SYFET:
+            context->SendMessage1(entry, "shvvalue=", context->NewStringFromAsciiz(currentblock->shvvalue.strptr));
+            context->SendMessage1(entry, "shvvaluelen=", context->UnsignedInt32ToObject((uint32_t)currentblock->shvvalue.strlength));
+            free(currentblock->shvvalue.strptr);
+            break;
+        case RXSHV_DROPV:
+        case RXSHV_SYDRO:
+            break;
+        case RXSHV_NEXTV:
+            break;
+        case RXSHV_PRIV:
+            break;
+        default:
+            break;
+        }
+        nextblock = currentblock->shvnext;
+        free(currentblock);
+        currentblock = nextblock;
+    }
+
+    return retc;
+}
+
 
 RexxMethodEntry orxtest_methods[] = {
     REXX_METHOD(TestCreateQueue,        TestCreateQueue),
@@ -154,6 +267,7 @@ RexxMethodEntry orxtest_methods[] = {
     REXX_METHOD(TestPullFromQueue,      TestPullFromQueue),
     REXX_METHOD(TestClearQueue,         TestClearQueue),
     REXX_METHOD(TestAllocateFreeMemory, TestAllocateFreeMemory),
+    REXX_METHOD(TestVariablePool,       TestVariablePool),
     REXX_LAST_METHOD()
 };
 

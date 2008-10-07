@@ -55,7 +55,23 @@ return flag
 ::method TestPullFromQueue PUBLIC EXTERNAL "LIBRARY orxclassic TestPullFromQueue"
 ::method TestClearQueue PUBLIC EXTERNAL "LIBRARY orxclassic TestClearQueue"
 
+
 ::class TestMemoryFuncs public
 
 ::method TestAllocateFreeMemory PUBLIC EXTERNAL "LIBRARY orxclassic TestAllocateFreeMemory"
+
+
+::class TestVariablePool public
+
+::method TestVariablePool PUBLIC EXTERNAL "LIBRARY orxclassic TestVariablePool"
+
+
+::class ShvBlock public
+
+::attribute shvname
+::attribute shvvalue
+::attribute shvnamelen
+::attribute shvvaluelen
+::attribute shvcode
+::attribute shvret
 
