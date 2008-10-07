@@ -38,6 +38,7 @@
 #include <rexx.h>
 #include <oorexxapi.h>
 #include <string.h>
+#include <stdio.h>
 
 RexxMethod1(RexxObjectPtr,              // Return type
             TestCreateQueue,            // Method name
@@ -143,8 +144,15 @@ RexxMethod1(int,                        // Return type
     return RexxFreeMemory(block);
 }
 
-RexxMethod1(int,                        // Return type
-            TestVariablePool,           // Method name
+RexxMethod0(int,                        // Return type
+            TestMVariablePool)          // Method name
+{
+    RexxReturnCode retc = RexxVariablePool(NULL);
+    return retc;
+}
+
+RexxRoutine1(int,                       // Return type
+            TestFVariablePool,          // Function name
             RexxArrayObject, arr)       // Array of shvblocks
 {
     RexxReturnCode retc;
@@ -169,6 +177,7 @@ RexxMethod1(int,                        // Return type
         if (blocks == NULL) {
             blocks = currentblock;
         }
+        currentblock->shvnext = NULL;
         RexxObjectPtr entry = context->ArrayAt(arr, ctr);
         RexxObjectPtr val = context->SendMessage0(entry, "shvcode");
         context->ObjectToUnsignedInt32(val, &tempint);
@@ -188,6 +197,7 @@ RexxMethod1(int,                        // Return type
             val = context->SendMessage0(entry, "shvname");
             currentblock->shvname.strptr = context->ObjectToStringValue(val);
             currentblock->shvname.strlength = strlen(currentblock->shvname.strptr);
+//            printf("setting %s\n", currentblock->shvname.strptr);
             val = context->SendMessage0(entry, "shvvalue");
             currentblock->shvvalue.strptr = (char*)malloc(strlen(context->ObjectToStringValue(val)) + 1);
             strcpy(currentblock->shvvalue.strptr, context->ObjectToStringValue(val));
@@ -267,8 +277,14 @@ RexxMethodEntry orxtest_methods[] = {
     REXX_METHOD(TestPullFromQueue,      TestPullFromQueue),
     REXX_METHOD(TestClearQueue,         TestClearQueue),
     REXX_METHOD(TestAllocateFreeMemory, TestAllocateFreeMemory),
-    REXX_METHOD(TestVariablePool,       TestVariablePool),
+    REXX_METHOD(TestMVariablePool,      TestMVariablePool),
     REXX_LAST_METHOD()
+};
+
+
+RexxRoutineEntry orxtest_routines[] = {
+    REXX_TYPED_ROUTINE(TestFVariablePool, TestFVariablePool),
+    REXX_LAST_ROUTINE()
 };
 
 
@@ -279,7 +295,7 @@ RexxPackageEntry UnitTest_package_entry = {
     "1.0.0",                             // package information
     NULL,                                // no load/unload functions
     NULL,
-    NULL,                                // the exported routines
+    orxtest_routines,                    // the exported routines
     orxtest_methods                      // the exported methods
 };
 

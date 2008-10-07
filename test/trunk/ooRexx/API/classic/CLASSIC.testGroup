@@ -218,7 +218,12 @@ return .ooTestResult~new(5)~~addException(err)
   retc = m1~TestAllocateFreeMemory(65535) 
   self~assertEquals(0, retc)
 
-::method 'test_30_variablepool_1'
+::method 'test_30_variablepool'
+  vp = .TestVariablePool~new()
+  retc = vp~TestVariablePool()
+  self~assertEquals(144, retc)
+
+::method 'test_31_variablepool'
   vp = .TestVariablePool~new()
   test1_val = 'my test string'
   arr = .array~new(1)
@@ -229,9 +234,38 @@ return .ooTestResult~new(5)~~addException(err)
   arr[1]~shvvaluelen = arr[1]~shvvalue()~length
   arr[1]~shvcode = 0 -- RXSHV_SET
   arr[1]~shvret = 0
-  vp~TestVariablePool(arr)
+  retc = TestFVariablePool(arr)
+  self~assertEquals(0, retc)
+  self~assertEquals(0, arr[1]~shvret)
   self~assertEquals(test1_val, arr[1]~shvvalue)
   self~assertEquals(test1_val~length, arr[1]~shvvaluelen)
+
+::method 'test_32_variablepool'
+  vp = .TestVariablePool~new()
+  test1_val = 'my test string'
+  test2_val = 'another test string'
+  arr = .array~new(2)
+  arr[1] = .ShvBlock~new()
+  arr[1]~shvname = 'test1'
+  arr[1]~shvvalue = test1_val
+  arr[1]~shvnamelen = arr[1]~shvname()~length
+  arr[1]~shvvaluelen = arr[1]~shvvalue()~length
+  arr[1]~shvcode = 0 -- RXSHV_SET
+  arr[1]~shvret = 0
+  arr[2] = .ShvBlock~new()
+  arr[2]~shvname = 'test2'
+  arr[2]~shvvalue = test2_val
+  arr[2]~shvnamelen = arr[2]~shvname()~length
+  arr[2]~shvvaluelen = arr[2]~shvvalue()~length
+  arr[2]~shvcode = 0 -- RXSHV_SET
+  arr[2]~shvret = 0
+  retc = TestFVariablePool(arr)
+  self~assertEquals(0, retc)
+  self~assertEquals(0, arr[1]~shvret)
+  self~assertEquals(test1_val, arr[1]~shvvalue)
+  self~assertEquals(test1_val~length, arr[1]~shvvaluelen)
+  self~assertEquals(test2_val, arr[2]~shvvalue)
+  self~assertEquals(test2_val~length, arr[2]~shvvaluelen)
 
 
 

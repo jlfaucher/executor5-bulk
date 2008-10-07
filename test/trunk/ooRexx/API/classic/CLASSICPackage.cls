@@ -63,7 +63,7 @@ return flag
 
 ::class TestVariablePool public
 
-::method TestVariablePool PUBLIC EXTERNAL "LIBRARY orxclassic TestVariablePool"
+::method TestVariablePool PUBLIC EXTERNAL "LIBRARY orxclassic TestMVariablePool"
 
 
 ::class ShvBlock public
