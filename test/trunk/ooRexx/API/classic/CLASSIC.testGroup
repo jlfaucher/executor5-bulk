@@ -396,7 +396,7 @@ return .ooTestResult~new(5)~~addException(err)
   test1 = 'my test string'
   arr = .array~new(1)
   arr[1] = .ShvBlock~new()
-  arr[1]~shvname = 'TEST1' -- invalid name!
+  arr[1]~shvname = 'TEST1'
   arr[1]~shvvalue = test1_val
   arr[1]~shvnamelen = arr[1]~shvname()~length
   arr[1]~shvvaluelen = 5 -- this is too small a buffer and should cause an error
@@ -460,5 +460,41 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertEquals(8, retc)
   self~assertEquals(8, arr[1]~shvret) -- make sure an error was generated
 
+::method 'test_35_variablepool'
+  arr = .array~new(1)
+  arr[1] = .ShvBlock~new()
+  arr[1]~shvname = 'VERSION'
+  arr[1]~shvvalue = ''
+  arr[1]~shvnamelen = arr[1]~shvname()~length
+  arr[1]~shvvaluelen = 0
+  arr[1]~shvcode = 7 -- RXSHV_PRIV
+  arr[1]~shvret = 0
+  retc = TestFVariablePool(arr)
+  self~assertEquals(0, retc)
+  self~assertEquals(0, arr[1]~shvret)
+  self~assertNotEquals('', arr[1]~shvvalue)
+
+::method 'test_35a_variablepool'
+  arr = .array~new(2)
+  arr[1] = .ShvBlock~new()
+  arr[1]~shvname = 'QUENAME'
+  arr[1]~shvvalue = ''
+  arr[1]~shvnamelen = arr[1]~shvname()~length
+  arr[1]~shvvaluelen = 0
+  arr[1]~shvcode = 7 -- RXSHV_PRIV
+  arr[1]~shvret = 0
+  arr[2] = .ShvBlock~new()
+  arr[2]~shvname = 'PARM'
+  arr[2]~shvvalue = ''
+  arr[2]~shvnamelen = arr[2]~shvname()~length
+  arr[2]~shvvaluelen = 0
+  arr[2]~shvcode = 7 -- RXSHV_PRIV
+  arr[2]~shvret = 0
+  retc = TestFVariablePool(arr)
+  self~assertEquals(0, retc)
+  self~assertEquals(0, arr[1]~shvret)
+  self~assertNotEquals('', arr[1]~shvvalue)
+  self~assertEquals(0, arr[2]~shvret)
+  self~assertNotEquals('', arr[2]~shvvalue)
 
 
