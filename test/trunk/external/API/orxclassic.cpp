@@ -167,7 +167,7 @@ RexxRoutine1(int,                       // Return type
         return RXSHV_NOAVL;
     }
 
-    // set up the shvblocks fro the array
+    // set up the shvblocks from the array
     for (ctr = 1; ctr <= members; ctr++) {
         nextblock = (PSHVBLOCK)malloc(sizeof(SHVBLOCK));
         if (currentblock != NULL) {
@@ -197,7 +197,6 @@ RexxRoutine1(int,                       // Return type
             val = context->SendMessage0(entry, "shvname");
             currentblock->shvname.strptr = context->ObjectToStringValue(val);
             currentblock->shvname.strlength = strlen(currentblock->shvname.strptr);
-//            printf("setting %s\n", currentblock->shvname.strptr);
             val = context->SendMessage0(entry, "shvvalue");
             currentblock->shvvalue.strptr = (char*)malloc(strlen(context->ObjectToStringValue(val)) + 1);
             strcpy(currentblock->shvvalue.strptr, context->ObjectToStringValue(val));
