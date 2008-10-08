@@ -400,11 +400,11 @@ return .ooTestResult~new(5)~~addException(err)
   arr[1]~shvvalue = test1_val
   arr[1]~shvnamelen = arr[1]~shvname()~length
   arr[1]~shvvaluelen = 5 -- this is too small a buffer and should cause an error
-  arr[1]~shvcode = 3 -- RXSHV_SYFET
+  arr[1]~shvcode = 4 -- RXSHV_SYFET
   arr[1]~shvret = 0
   retc = TestFVariablePool(arr)
-  self~assertEquals(16, retc)
-  self~assertEquals(16, arr[1]~shvret) -- make sure an error was generated
+  self~assertEquals(4, retc)
+  self~assertEquals(4, arr[1]~shvret) -- make sure an error was generated
 
 ::method 'test_34_variablepool'
   test1 = 123 -- give this an existing value
