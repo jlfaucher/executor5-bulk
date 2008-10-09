@@ -288,7 +288,7 @@ RexxRoutine1(int,                       // Return type
             }
             else {
                 context->SendMessage1(entry, "shvvalue=", context->NewStringFromAsciiz("\0"));
-                context->SendMessage1(entry, "shvvaluelen=", 0);
+                context->SendMessage1(entry, "shvvaluelen=", context->WholeNumberToObject(0));
             }
             break;
         default:
