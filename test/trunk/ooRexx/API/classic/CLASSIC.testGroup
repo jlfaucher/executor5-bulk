@@ -636,7 +636,7 @@ return .ooTestResult~new(5)~~addException(err)
   arr[1]~shvname = 'TEST1'
   arr[1]~shvvalue = ''
   arr[1]~shvnamelen = arr[1]~shvname()~length
-  arr[1]~shvvaluelen = arr[1]~shvvalue()~length
+  arr[1]~shvvaluelen = 20    -- just give some head room for this
   arr[1]~shvcode = 1 -- RXSHV_FETCH
   arr[1]~shvret = 0
   retc = TestFVariablePool(arr)
@@ -652,14 +652,14 @@ return .ooTestResult~new(5)~~addException(err)
   arr[1]~shvname = 'TEST1'
   arr[1]~shvvalue = ''
   arr[1]~shvnamelen = arr[1]~shvname()~length
-  arr[1]~shvvaluelen = arr[1]~shvvalue()~length
+  arr[1]~shvvaluelen = test1~length
   arr[1]~shvcode = 1 -- RXSHV_FETCH
   arr[1]~shvret = 0
   arr[2] = .ShvBlock~new()
   arr[2]~shvname = 'TEST2'
   arr[2]~shvvalue = ''
   arr[2]~shvnamelen = arr[2]~shvname()~length
-  arr[2]~shvvaluelen = arr[2]~shvvalue()~length
+  arr[2]~shvvaluelen = test2~length
   arr[2]~shvcode = 1 -- RXSHV_FETCH
   arr[2]~shvret = 0
   retc = TestFVariablePool(arr)
@@ -676,7 +676,7 @@ return .ooTestResult~new(5)~~addException(err)
   arr[1]~shvname = 'TEST1'
   arr[1]~shvvalue = ''
   arr[1]~shvnamelen = arr[1]~shvname()~length
-  arr[1]~shvvaluelen = arr[1]~shvvalue()~length
+  arr[1]~shvvaluelen = 5
   arr[1]~shvcode = 1 -- RXSHV_FETCH
   arr[1]~shvret = 0
   retc = TestFVariablePool(arr)
@@ -690,12 +690,13 @@ return .ooTestResult~new(5)~~addException(err)
   arr[1]~shvname = '2TEST' -- invalid name!
   arr[1]~shvvalue = test1_val
   arr[1]~shvnamelen = arr[1]~shvname()~length
-  arr[1]~shvvaluelen = arr[1]~shvvalue()~length
+  arr[1]~shvvaluelen = test1~length
   arr[1]~shvcode = 1 -- RXSHV_FETCH
   arr[1]~shvret = 0
   retc = TestFVariablePool(arr)
-  self~assertEquals(8, retc)
-  self~assertEquals(8, arr[1]~shvret) -- make sure an error was generated
+  self~assertEquals(0, retc)
+  self~assertEquals(0, arr[1]~shvret) -- make sure an error was generated
+  self~assertEquals("2TEST", arr[1]~shvvalue)
 
 ::method 'test_39d_variablepool'
   test1 = 'my test string'
