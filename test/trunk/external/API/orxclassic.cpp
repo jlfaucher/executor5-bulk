@@ -242,9 +242,6 @@ RexxRoutine1(int,                       // Return type
 
     // call the variable pool interface
     retc = RexxVariablePool(blocks);
-    if (currentblock->shvcode == RXSHV_PRIV) {
-        printf("retc = %d\n", retc);
-    }
 
     // set the array to the shvblocks
     currentblock = blocks;
