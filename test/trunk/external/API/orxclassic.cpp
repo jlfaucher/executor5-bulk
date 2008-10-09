@@ -194,14 +194,17 @@ RexxRoutine1(int,                       // Return type
         switch (currentblock->shvcode) {
         case RXSHV_SET:
         case RXSHV_SYSET:
+        {
             val = context->SendMessage0(entry, "shvname");
             currentblock->shvname.strptr = (char*)context->ObjectToStringValue(val);
             currentblock->shvname.strlength = strlen(currentblock->shvname.strptr);
             val = context->SendMessage0(entry, "shvvalue");
-            currentblock->shvvalue.strptr = (char*)malloc(strlen(context->ObjectToStringValue(val)) + 1);
-            strcpy(currentblock->shvvalue.strptr, context->ObjectToStringValue(val));
-            currentblock->shvvalue.strlength = strlen(currentblock->shvvalue.strptr);
+            size_t len = strlen(context->ObjectToStringValue(val)) + 1;
+            currentblock->shvvalue.strptr = (char *)malloc(len);
+            strncpy(currentblock->shvvalue.strptr, context->ObjectToStringValue(val), len);
+            currentblock->shvvalue.strlength = len - 1;
             break;
+        }
         case RXSHV_FETCH:
         case RXSHV_SYFET:
             val = context->SendMessage0(entry, "shvname");
@@ -269,7 +272,7 @@ RexxRoutine1(int,                       // Return type
             context->SendMessage1(entry, "shvvaluelen=", context->UnsignedInt32ToObject((uint32_t)currentblock->shvvalue.strlength));
             if (currentblock->shvret == 0) {
                 // this memory must be freed this way since it was allocated with RexxAllocateMemeory
-                RexxFreeMemory(currentblock->shvname.strptr);
+                RexxFreeMemory((void *)currentblock->shvname.strptr);
             }
             if (currentblock->shvret == 0) {
                 // this memory must be freed this way since it was allocated with RexxAllocateMemeory
