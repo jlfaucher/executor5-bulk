@@ -195,7 +195,7 @@ RexxRoutine1(int,                       // Return type
         case RXSHV_SET:
         case RXSHV_SYSET:
             val = context->SendMessage0(entry, "shvname");
-            currentblock->shvname.strptr = context->ObjectToStringValue(val);
+            currentblock->shvname.strptr = (char*)context->ObjectToStringValue(val);
             currentblock->shvname.strlength = strlen(currentblock->shvname.strptr);
             val = context->SendMessage0(entry, "shvvalue");
             currentblock->shvvalue.strptr = (char*)malloc(strlen(context->ObjectToStringValue(val)) + 1);
@@ -205,7 +205,7 @@ RexxRoutine1(int,                       // Return type
         case RXSHV_FETCH:
         case RXSHV_SYFET:
             val = context->SendMessage0(entry, "shvname");
-            currentblock->shvname.strptr = context->ObjectToStringValue(val);
+            currentblock->shvname.strptr = (char*)context->ObjectToStringValue(val);
             currentblock->shvname.strlength = strlen(currentblock->shvname.strptr);
             currentblock->shvvalue.strptr = (char*)malloc(currentblock->shvvaluelen + 1);
             currentblock->shvvalue.strlength = currentblock->shvvaluelen + 1;
@@ -213,7 +213,7 @@ RexxRoutine1(int,                       // Return type
         case RXSHV_DROPV:
         case RXSHV_SYDRO:
             val = context->SendMessage0(entry, "shvname");
-            currentblock->shvname.strptr = context->ObjectToStringValue(val);
+            currentblock->shvname.strptr = (char*)context->ObjectToStringValue(val);
             currentblock->shvname.strlength = strlen(currentblock->shvname.strptr);
             currentblock->shvvalue.strptr = NULL;
             currentblock->shvvalue.strlength = 0;
@@ -226,7 +226,7 @@ RexxRoutine1(int,                       // Return type
             break;
         case RXSHV_PRIV:
             val = context->SendMessage0(entry, "shvname");
-            currentblock->shvname.strptr = context->ObjectToStringValue(val);
+            currentblock->shvname.strptr = (char*)context->ObjectToStringValue(val);
             currentblock->shvname.strlength = strlen(currentblock->shvname.strptr);
             currentblock->shvvalue.strptr = NULL;
             currentblock->shvvalue.strlength = 0;
@@ -267,21 +267,25 @@ RexxRoutine1(int,                       // Return type
             context->SendMessage1(entry, "shvnamelen=", context->UnsignedInt32ToObject((uint32_t)currentblock->shvname.strlength));
             context->SendMessage1(entry, "shvvalue=", context->NewStringFromAsciiz(currentblock->shvvalue.strptr));
             context->SendMessage1(entry, "shvvaluelen=", context->UnsignedInt32ToObject((uint32_t)currentblock->shvvalue.strlength));
-            if (currentblock->shvname.strptr != NULL) {
+            if (currentblock->shvret == 0) {
                 // this memory must be freed this way since it was allocated with RexxAllocateMemeory
-                RexxFreeMemory((void *)currentblock->shvname.strptr);
+                RexxFreeMemory(currentblock->shvname.strptr);
             }
-            if (currentblock->shvvalue.strptr != NULL) {
+            if (currentblock->shvret == 0) {
                 // this memory must be freed this way since it was allocated with RexxAllocateMemeory
-                RexxFreeMemory((void *)currentblock->shvvalue.strptr);
+                RexxFreeMemory(currentblock->shvvalue.strptr);
             }
             break;
         case RXSHV_PRIV:
-            context->SendMessage1(entry, "shvvalue=", context->NewStringFromAsciiz(currentblock->shvvalue.strptr));
-            context->SendMessage1(entry, "shvvaluelen=", context->UnsignedInt32ToObject((uint32_t)currentblock->shvvalue.strlength));
-            if (currentblock->shvvalue.strptr != NULL) {
+            if (currentblock->shvret == 0) {
+                context->SendMessage1(entry, "shvvalue=", context->NewStringFromAsciiz(currentblock->shvvalue.strptr));
+                context->SendMessage1(entry, "shvvaluelen=", context->UnsignedInt32ToObject((uint32_t)currentblock->shvvalue.strlength));
                 // this memory must be freed this way since it was allocated with RexxAllocateMemeory
-                RexxFreeMemory((void *)currentblock->shvvalue.strptr);
+                RexxFreeMemory(currentblock->shvvalue.strptr);
+            }
+            else {
+                context->SendMessage1(entry, "shvvalue=", context->NewStringFromAsciiz("\0"));
+                context->SendMessage1(entry, "shvvaluelen=", 0);
             }
             break;
         default:
