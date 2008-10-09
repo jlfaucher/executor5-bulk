@@ -221,12 +221,6 @@ RexxRoutine1(int,                       // Return type
             currentblock->shvvalue.strptr = NULL;
             currentblock->shvvalue.strlength = 0;
             break;
-        case RXSHV_NEXTV:
-            currentblock->shvname.strptr = NULL;
-            currentblock->shvname.strlength = 0;
-            currentblock->shvvalue.strptr = NULL;
-            currentblock->shvvalue.strlength = 0;
-            break;
         case RXSHV_PRIV:
             val = context->SendMessage0(entry, "shvname");
             currentblock->shvname.strptr = (char*)context->ObjectToStringValue(val);
@@ -262,20 +256,6 @@ RexxRoutine1(int,                       // Return type
         case RXSHV_DROPV:
         case RXSHV_SYDRO:
             break;
-        case RXSHV_NEXTV:
-            context->SendMessage1(entry, "shvname=", context->NewStringFromAsciiz(currentblock->shvname.strptr));
-            context->SendMessage1(entry, "shvnamelen=", context->UnsignedInt32ToObject((uint32_t)currentblock->shvname.strlength));
-            context->SendMessage1(entry, "shvvalue=", context->NewStringFromAsciiz(currentblock->shvvalue.strptr));
-            context->SendMessage1(entry, "shvvaluelen=", context->UnsignedInt32ToObject((uint32_t)currentblock->shvvalue.strlength));
-            if (currentblock->shvret == 0) {
-                // this memory must be freed this way since it was allocated with RexxAllocateMemeory
-                RexxFreeMemory((void *)currentblock->shvname.strptr);
-            }
-            if (currentblock->shvret == 0) {
-                // this memory must be freed this way since it was allocated with RexxAllocateMemeory
-                RexxFreeMemory(currentblock->shvvalue.strptr);
-            }
-            break;
         case RXSHV_PRIV:
             if (currentblock->shvret == 0) {
                 context->SendMessage1(entry, "shvvalue=", context->NewStringFromAsciiz(currentblock->shvvalue.strptr));
@@ -299,6 +279,41 @@ RexxRoutine1(int,                       // Return type
     return retc;
 }
 
+RexxRoutine0(int,                       // Return type
+            TestFNVariablePool)         // Function name
+{
+    RexxReturnCode retc = 0;
+    size_t ctr = 0;
+    SHVBLOCK block;
+
+    while (retc != RXSHV_LVAR) {
+        block.shvnext = NULL;
+        block.shvname.strptr = NULL;
+        block.shvname.strlength = 0;
+        block.shvvalue.strptr = NULL;
+        block.shvvalue.strlength = 0;
+        block.shvnamelen = 0;
+        block.shvvaluelen = 0;
+        block.shvcode = RXSHV_NEXTV;
+        block.shvret = 0;
+        retc = RexxVariablePool(&block);
+        if (retc != 0 && retc != RXSHV_LVAR) {
+            return -1; // indicate an error
+        }
+        ctr++;
+        if (block.shvname.strptr != NULL) {
+            // this memory must be freed this way since it was allocated with RexxAllocateMemeory
+            RexxFreeMemory((void *)block.shvname.strptr);
+        }
+        if (block.shvvalue.strptr != NULL) {
+            // this memory must be freed this way since it was allocated with RexxAllocateMemeory
+            RexxFreeMemory(block.shvvalue.strptr);
+        }
+    }
+
+    return ctr;
+}
+
 
 RexxMethodEntry orxtest_methods[] = {
     REXX_METHOD(TestCreateQueue,        TestCreateQueue),
@@ -316,7 +331,8 @@ RexxMethodEntry orxtest_methods[] = {
 
 
 RexxRoutineEntry orxtest_routines[] = {
-    REXX_TYPED_ROUTINE(TestFVariablePool, TestFVariablePool),
+    REXX_TYPED_ROUTINE(TestFVariablePool,  TestFVariablePool),
+    REXX_TYPED_ROUTINE(TestFNVariablePool, TestFNVariablePool),
     REXX_LAST_ROUTINE()
 };
 

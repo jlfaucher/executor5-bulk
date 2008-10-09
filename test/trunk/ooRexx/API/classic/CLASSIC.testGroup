@@ -511,22 +511,20 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertEquals(8, arr[1]~shvret)
 
 ::method 'test_36_variablepool'
-  arr = .array~new(1)
-  ctr = 0
-  do forever
-    arr[1] = .ShvBlock~new()
-    arr[1]~shvname = ''
-    arr[1]~shvvalue = ''
-    arr[1]~shvnamelen = arr[1]~shvname()~length
-    arr[1]~shvvaluelen = 0
-    arr[1]~shvcode = 6 -- RXSHV_NEXTV
-    arr[1]~shvret = 0
-    retc = TestFVariablePool(arr)
-    if arr[1]~shvret <> 0 then leave
-    say arr[1]~shvname '=' arr[1]~shvvalue
-    self~assertEquals(0, retc)
-    self~assertEquals(0, arr[1]~shvret)
-    ctr += 1
-    if ctr > 10 then leave
-    end
+  count = TestFNVariablePool()
+  self~assertEquals(1, count > -1) -- -1 is the error condition
+
+::method 'test_36a_variablepool'
+  test1 = 'xx'
+  count = TestFNVariablePool()
+  self~assertEquals(1, count > -1) -- -1 is the error condition
+
+::method 'test_36b_variablepool'
+  test1 = 'xx'
+  test2 = 'xx'
+  test3 = 'xx'
+  test4 = 'xx'
+  test5 = 'xx'
+  count = TestFNVariablePool()
+  self~assertEquals(1, count > -1) -- -1 is the error condition
 
