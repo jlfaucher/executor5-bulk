@@ -39,28 +39,15 @@
 #include <string.h>
 #include <stdio.h>
 
-
-// Note: In order to ensure binary compatibility we are going to define these
-// functions using the old style. That way if there is a compatibility problem
-// the tests should indicate that.
-
-typedef unsigned long ULONG;
-typedef long LONG;
-typedef const char * PSZ;
-#define APIENTRY REXXENTRY
-
-ULONG APIENTRY TestExternalFunction(PSZ Name, LONG Argc, RXSTRING Argv[],
-                                    PSZ Queuename, PRXSTRING Retstr) {
+size_t REXXENTRY TestExternalFunction(const char *Name, long Argc, CONSTRXSTRING Argv[],
+                                    const char *Queuename, PRXSTRING Retstr) {
     int retc = 0;
-    snprintf(Retstr->strptr, RXAUTOBUFLEN, "%d", retc);
+    sprintf(Retstr->strptr, "%d", retc);
     Retstr->strlength = strlen(Retstr->strptr);
 
     printf("Name = %s\n", Name);
     printf("Argc = %d\n", Argc);
     printf("Queuename = %s\n", Queuename);
-
-
-
     return 0;
 }
 
