@@ -794,3 +794,24 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertEquals(8, retc)
   self~assertEquals(8, arr[1]~shvret) -- make sure an error was generated
 
+-- Note: The order of these tests is very important.
+
+::method 'test_50_externalfunction'
+  call rxfuncdrop 'TestExternalFunction'
+  call rxfuncadd 'TestExternalFunction', 'orxclassic1', 'TestExternalFunction'
+  self~assertEquals(0, result)
+  call rxfuncquery 'TestExternalFunction'
+  self~assertEquals(0, result)
+  call TestExternalFunction
+  self~assertEquals(0, result)
+  call rxfuncdrop 'TestExternalFunction'
+  self~assertEquals(0, result)
+
+
+
+
+
+
+
+
+

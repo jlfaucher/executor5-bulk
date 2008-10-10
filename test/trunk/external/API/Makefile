@@ -60,7 +60,7 @@ endif
 
 # Build the libraries
 all: $(OOTEST_BIN_DIR)/liborxfunction.so $(OOTEST_BIN_DIR)/liborxmethod.so \
-     $(OOTEST_BIN_DIR)/liborxclassic.so
+     $(OOTEST_BIN_DIR)/liborxclassic.so $(OOTEST_BIN_DIR)/liborxclassic1.so
 
 $(OOTEST_BIN_DIR)/liborxfunction.so: liborxfunction.so
 	cp liborxfunction.so $(OOTEST_BIN_DIR)
@@ -70,6 +70,9 @@ $(OOTEST_BIN_DIR)/liborxmethod.so: liborxmethod.so
 
 $(OOTEST_BIN_DIR)/liborxclassic.so: liborxclassic.so
 	cp liborxclassic.so $(OOTEST_BIN_DIR)
+
+$(OOTEST_BIN_DIR)/liborxclassic1.so: liborxclassic1.so
+	cp liborxclassic1.so $(OOTEST_BIN_DIR)
 
 
 # Build the shared library
@@ -97,6 +100,15 @@ liborxclassic.so: orxclassic.o
 # Build the objects
 orxclassic.o: orxclassic.cpp $(FUNCTION_SRC_DEPS)
 	gcc -c $(ORXCFLAGS) $(REXX_INCLUDES) orxclassic.cpp
+
+
+# Build the shared library
+liborxclassic1.so: orxclassic1.o
+	gcc $(ORXLFLAGS) $(REXX_LIBS) -lrexx -lrexxapi -o liborxclassic1.so orxclassic1.o
+
+# Build the objects
+orxclassic1.o: orxclassic1.c $(FUNCTION_SRC_DEPS)
+	gcc -c $(ORXCFLAGS) $(REXX_INCLUDES) orxclassic1.c
 
 
 clean:
