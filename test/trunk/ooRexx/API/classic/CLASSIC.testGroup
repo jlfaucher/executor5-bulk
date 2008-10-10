@@ -740,3 +740,57 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertEquals(8, retc)
   self~assertEquals(8, arr[1]~shvret) -- make sure an error was generated
 
+::method 'test_40_variablepool'
+  test1 = 123 -- give this an existing value
+  arr = .array~new(1)
+  arr[1] = .ShvBlock~new()
+  arr[1]~shvname = 'TEST1'
+  arr[1]~shvvalue = ''
+  arr[1]~shvnamelen = arr[1]~shvname()~length
+  arr[1]~shvvaluelen = 0
+  arr[1]~shvcode = 2 -- RXSHV_DROPV
+  arr[1]~shvret = 0
+  retc = TestFVariablePool(arr)
+  self~assertEquals(0, retc)
+  self~assertEquals(0, arr[1]~shvret)
+  self~assertEquals(test1, 'TEST1')
+
+::method 'test_40a_variablepool'
+  test1 = 123 -- give this an existing value
+  test2 = 'my teststring' -- give this an existing value
+  arr = .array~new(2)
+  arr[1] = .ShvBlock~new()
+  arr[1]~shvname = 'TEST1'
+  arr[1]~shvvalue = ''
+  arr[1]~shvnamelen = arr[1]~shvname()~length
+  arr[1]~shvvaluelen = 0
+  arr[1]~shvcode = 2 -- RXSHV_DROPV
+  arr[1]~shvret = 0
+  arr[2] = .ShvBlock~new()
+  arr[2]~shvname = 'TEST2'
+  arr[2]~shvvalue = ''
+  arr[2]~shvnamelen = arr[2]~shvname()~length
+  arr[2]~shvvaluelen = 0
+  arr[2]~shvcode = 2 -- RXSHV_DROPV
+  arr[2]~shvret = 0
+  retc = TestFVariablePool(arr)
+  self~assertEquals(0, retc)
+  self~assertEquals(0, arr[1]~shvret)
+  self~assertEquals(test1, 'TEST1')
+  self~assertEquals(0, arr[2]~shvret)
+  self~assertEquals(test2, 'TEST2')
+
+::method 'test_40b_variablepool'
+  test1_val = 'my test string'
+  arr = .array~new(1)
+  arr[1] = .ShvBlock~new()
+  arr[1]~shvname = '2TEST' -- invalid name!
+  arr[1]~shvvalue = test1_val
+  arr[1]~shvnamelen = arr[1]~shvname()~length
+  arr[1]~shvvaluelen = arr[1]~shvvalue()~length
+  arr[1]~shvcode = 2 -- RXSHV_DROPV
+  arr[1]~shvret = 0
+  retc = TestFVariablePool(arr)
+  self~assertEquals(8, retc)
+  self~assertEquals(8, arr[1]~shvret) -- make sure an error was generated
+
