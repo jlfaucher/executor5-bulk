@@ -818,6 +818,36 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertEquals(0, result)
   call TestExternalFunction
   self~assertEquals(0, result)
+  call rxfuncquery 'MyTestExtFunc'
+  self~assertEquals(0, result)
+
+::method 'test_51_externalfunction'
+  call MyTestExtFunc
+  self~assertEquals(0, result)
+
+::method 'test_52_externalfunction'
+  call MyTestExtFunc 'dummy'
+  self~assertEquals(0, result)
+  call rxfuncquery 'MyTestExtFunc'
+  self~assertNotEquals(0, result)
+
+::method 'test_53_externalfunction'
+  call TestExternalFunction 'dummy'
+  self~assertEquals(0, result)
+  call rxfuncquery 'MyTestExtFunc'
+  self~assertEquals(0, result)
+
+::method 'test_54_externalfunction'
+  call MyTestExtFunc
+  self~assertEquals(0, result)
+
+::method 'test_55_externalfunction'
+  call MyTestExtFunc 'dummy'
+  self~assertEquals(0, result)
+  call rxfuncquery 'MyTestExtFunc'
+  self~assertNotEquals(0, result)
+
+::method 'test_56_externalfunction'
   call rxfuncdrop 'TestExternalFunction'
   self~assertEquals(0, result)
 

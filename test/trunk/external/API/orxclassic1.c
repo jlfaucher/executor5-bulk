@@ -39,15 +39,70 @@
 #include <string.h>
 #include <stdio.h>
 
+
+size_t REXXENTRY MyTestExtFunc(const char *Name, long Argc, CONSTRXSTRING Argv[],
+                               const char *Queuename, PRXSTRING Retstr) {
+    int retc = 0;
+    sprintf(Retstr->strptr, "%d", 0);
+    Retstr->strlength = strlen(Retstr->strptr);
+
+    if (Argc > 0) {
+        retc = RexxDeregisterFunction("MyTestExtFunc");
+        if (retc) {
+            sprintf(Retstr->strptr, "%d", -2);
+            Retstr->strlength = strlen(Retstr->strptr);
+        }
+    }
+    return 0;
+}
+
+
 size_t REXXENTRY TestExternalFunction(const char *Name, long Argc, CONSTRXSTRING Argv[],
                                     const char *Queuename, PRXSTRING Retstr) {
     int retc = 0;
-    sprintf(Retstr->strptr, "%d", retc);
+    int i;
+    sprintf(Retstr->strptr, "%d", 0);
     Retstr->strlength = strlen(Retstr->strptr);
 
-    printf("Name = %s\n", Name);
-    printf("Argc = %d\n", Argc);
-    printf("Queuename = %s\n", Queuename);
+    if (strcmp(Name, "TESTEXTERNALFUNCTION")) {
+        sprintf(Retstr->strptr, "%d", -1);
+        Retstr->strlength = strlen(Retstr->strptr);
+        return 0;
+    }
+    if (strcmp(Queuename, "SESSION")) {
+        sprintf(Retstr->strptr, "%d", -1);
+        Retstr->strlength = strlen(Retstr->strptr);
+        return 0;
+    }
+    if (Argc == 0) {
+        retc = RexxRegisterFunctionDll("MyTestExtFunc", "orxclassic1", "MyTestExtFunc");
+        if (retc) {
+            sprintf(Retstr->strptr, "%d", -2);
+            Retstr->strlength = strlen(Retstr->strptr);
+            return 0;
+        }
+    }
+    else {
+        for (i = 0; i < Argc; i++) {
+            if (!RXVALIDSTRING(Argv[i])) {
+                sprintf(Retstr->strptr, "%d", -4);
+                Retstr->strlength = strlen(Retstr->strptr);
+                return 0;
+            }
+        }
+        retc = RexxRegisterFunctionExe("MyTestExtFunc", MyTestExtFunc);
+        if (retc) {
+            sprintf(Retstr->strptr, "%d", -2);
+            Retstr->strlength = strlen(Retstr->strptr);
+            return 0;
+        }
+    }
+    retc = RexxQueryFunction("MyTestExtFunc");
+    if (retc) {
+        sprintf(Retstr->strptr, "%d", -3);
+        Retstr->strlength = strlen(Retstr->strptr);
+        return 0;
+    }
     return 0;
 }
 
