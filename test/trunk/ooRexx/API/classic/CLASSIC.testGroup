@@ -853,7 +853,7 @@ return .ooTestResult~new(5)~~addException(err)
 
 -- Note: The order of these tests is very important.
 
-::method 'test_60_externalfunction'
+::method 'test_60_subcom'
   call rxfuncdrop 'TestSubcomHandler'
   call rxfuncadd 'TestSubcomHandler', 'orxclassic1', 'TestSubcomHandler'
   self~assertEquals(0, result)
@@ -862,14 +862,14 @@ return .ooTestResult~new(5)~~addException(err)
   address 'TestSubcom' myteststring
   self~assertEquals(myteststring, rc)
 
-::method 'test_61_externalfunction'
+::method 'test_61_subcom'
   call TestSubcomHandler 'D', 'TestSubcom'
   call rxfuncdrop 'TestExternalFunction'
   self~assertEquals(0, result)
   call rxfuncdrop 'TestSubcomHandler'
   self~assertEquals(0, result)
 
-::method 'test_62_externalfunction'
+::method 'test_62_subcom'
   call rxfuncdrop 'TestSubcomHandler'
   call rxfuncadd 'TestSubcomHandler', 'orxclassic1', 'TestSubcomHandler'
   self~assertEquals(0, result)
@@ -878,7 +878,7 @@ return .ooTestResult~new(5)~~addException(err)
   address 'TestSubcom' myteststring
   self~assertEquals(myteststring, rc)
 
-::method 'test_63_externalfunction'
+::method 'test_63_subcom'
   call TestSubcomHandler 'X', 'TestSubcom'
   call rxfuncdrop 'TestExternalFunction'
   self~assertEquals(0, result)
