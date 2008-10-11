@@ -107,16 +107,16 @@ size_t REXXENTRY TestExternalFunction(const char *Name, long Argc, CONSTRXSTRING
 }
 
 
-RexxReturnCode REXXENTRY MyTestSubcomHandler(const char *Cmd, unsigned short *flags,
+RexxReturnCode REXXENTRY MyTestSubcomHandler(CONSTRXSTRING *Cmd, unsigned short *flags,
                                              PRXSTRING Retstr) {
 
-    if (strlen(Cmd) > RXAUTOBUFLEN - 1) {
+    if (Cmd->strlength > RXAUTOBUFLEN - 1) {
         *flags = RXSUBCOM_ERROR;
         return 0;
     }
     *flags = RXSUBCOM_OK;
-    strcpy(Retstr->strptr, Cmd);
-    Retstr->strlength = strlen(Cmd);
+    strcpy(Retstr->strptr, Cmd->strptr);
+    Retstr->strlength = Cmd->strlength;
     return 0;
 }
 
@@ -136,7 +136,7 @@ size_t REXXENTRY TestSubcomHandler(const char *Name, long Argc, CONSTRXSTRING Ar
     }
     if (*Argv[0].strptr == 'R') {
         retc = RexxRegisterSubcomDll(Argv[1].strptr, "orxclassic1",
-                                     "MyTestSubcomHandler", 
+                                     "MyTestSubcomHandler",
                                      (char*)malloc(8), RXSUBCOM_DROPPABLE);
         if (retc != 0) {
             sprintf(Retstr->strptr, "%d", -2);
@@ -151,7 +151,7 @@ size_t REXXENTRY TestSubcomHandler(const char *Name, long Argc, CONSTRXSTRING Ar
         }
     }
     else if (*Argv[0].strptr == 'E') {
-        retc = RexxRegisterSubcomExe(Argv[1].strptr, MyTestSubcomHandler, 
+        retc = RexxRegisterSubcomExe(Argv[1].strptr, MyTestSubcomHandler,
                                      (char*)malloc(8));
         if (retc != 0) {
             sprintf(Retstr->strptr, "%d", -2);

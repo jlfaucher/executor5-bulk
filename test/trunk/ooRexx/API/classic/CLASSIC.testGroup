@@ -828,8 +828,10 @@ return .ooTestResult~new(5)~~addException(err)
 ::method 'test_52_externalfunction'
   call MyTestExtFunc 'dummy'
   self~assertEquals(0, result)
+  -- the interpreter caches these, so drops that don't use rxfuncdrop
+  -- won't remove the function from the cache.
   call rxfuncquery 'MyTestExtFunc'
-  self~assertNotEquals(0, result)
+  self~assertEquals(0, result)
 
 ::method 'test_53_externalfunction'
   call TestExternalFunction 'dummy'
@@ -840,12 +842,6 @@ return .ooTestResult~new(5)~~addException(err)
 ::method 'test_54_externalfunction'
   call MyTestExtFunc
   self~assertEquals(0, result)
-
-::method 'test_55_externalfunction'
-  call MyTestExtFunc 'dummy'
-  self~assertEquals(0, result)
-  call rxfuncquery 'MyTestExtFunc'
-  self~assertNotEquals(0, result)
 
 ::method 'test_56_externalfunction'
   call rxfuncdrop 'TestExternalFunction'
@@ -864,8 +860,6 @@ return .ooTestResult~new(5)~~addException(err)
 
 ::method 'test_61_subcom'
   call TestSubcomHandler 'D', 'TestSubcom'
-  call rxfuncdrop 'TestExternalFunction'
-  self~assertEquals(0, result)
   call rxfuncdrop 'TestSubcomHandler'
   self~assertEquals(0, result)
 
@@ -880,8 +874,6 @@ return .ooTestResult~new(5)~~addException(err)
 
 ::method 'test_63_subcom'
   call TestSubcomHandler 'X', 'TestSubcom'
-  call rxfuncdrop 'TestExternalFunction'
-  self~assertEquals(0, result)
   call rxfuncdrop 'TestSubcomHandler'
   self~assertEquals(0, result)
 
