@@ -193,6 +193,8 @@
 ::method TestRaiseException2 EXTERNAL "LIBRARY orxmethod TestRaiseException2"
 ::method TestRaiseException EXTERNAL "LIBRARY orxmethod TestRaiseException"
 ::method TestRaiseCondition EXTERNAL "LIBRARY orxmethod TestRaiseCondition"
+::method TestInterpreterVersion EXTERNAL "LIBRARY orxmethod TestInterpreterVersion"
+::method TestLanguageLevel EXTERNAL "LIBRARY orxmethod TestLanguageLevel"
 
 ::method TestRaiseExceptionX
   signal on syntax

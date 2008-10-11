@@ -1736,6 +1736,31 @@ RexxMethod1(logical_t,
     return context->IsBuffer(target);
 }
 
+RexxMethod0(size_t,
+            TestInterpreterVersion)
+{
+    size_t version = context->InterpreterVersion();
+    // this validates that the headers are in sync with the interpreter build
+    if (version != REXX_CURRENT_INTERPRETER_VERSION)
+    {
+        context->RaiseException1(Rexx_Error_Invalid_argument_user_defined, context->NewStringFromAsciiz("Interpreter version mismatch"));
+    }
+    return version;
+}
+
+RexxMethod0(size_t,
+            TestLanguageLevel)
+{
+    size_t version = context->LanguageLevel();
+    // this validates that the headers are in sync with the interpreter build
+    if (version != REXX_CURRENT_LANGUAGE_LEVEL)
+    {
+        context->RaiseException1(Rexx_Error_Invalid_argument_user_defined, context->NewStringFromAsciiz("Language level mismatch"));
+    }
+    return version;
+}
+
+
 
 
 RexxMethodEntry orxtest_methods[] = {
@@ -1918,6 +1943,8 @@ RexxMethodEntry orxtest_methods[] = {
     REXX_METHOD(TestRaiseException2,         TestRaiseException2),
     REXX_METHOD(TestRaiseException,          TestRaiseException),
     REXX_METHOD(TestRaiseCondition,          TestRaiseCondition),
+    REXX_METHOD(TestInterpreterVersion,      TestInterpreterVersion),
+    REXX_METHOD(TestLanguageLevel,           TestLanguageLevel),
     REXX_LAST_METHOD()
 };
 

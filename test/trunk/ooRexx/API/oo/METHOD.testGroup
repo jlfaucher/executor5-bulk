@@ -1744,4 +1744,14 @@ return .ooTestResult~new(5)~~addException(err)
   self~expectSyntax(93.967)
   c = .Buffer~new
 
+::method TestVersion01
+  tester = .METHODTester~new
+  parse version "_" version "." release "." mod "(" ")" lang "." sub " "
+
+  interpreterVersion = '00'||d2x(version, 2)||d2x(release, 2)||d2x(mod, 2)
+  languageLevel = '0000'||d2x(lang,2)||d2x(sub,2)
+
+  self~assertSame(interpreterVersion, d2x(tester~TestInterpreterVersion,8))
+  self~assertSame(languageLevel, d2x(tester~TestLanguageLevel,8))
+
 
