@@ -106,3 +106,100 @@ size_t REXXENTRY TestExternalFunction(const char *Name, long Argc, CONSTRXSTRING
     return 0;
 }
 
+
+RexxReturnCode REXXENTRY MyTestSubcomHandler(const char *Cmd, unsigned short *flags,
+                                             PRXSTRING Retstr) {
+
+    if (strlen(Cmd) > RXAUTOBUFLEN - 1) {
+        *flags = RXSUBCOM_ERROR;
+        return 0;
+    }
+    *flags = RXSUBCOM_OK;
+    strcpy(Retstr->strptr, Cmd);
+    Retstr->strlength = strlen(Cmd);
+    return 0;
+}
+
+
+size_t REXXENTRY TestSubcomHandler(const char *Name, long Argc, CONSTRXSTRING Argv[],
+                                   const char *Queuename, PRXSTRING Retstr) {
+    unsigned short flags;
+    char userarea[8];
+    int retc;
+    sprintf(Retstr->strptr, "%d", 0);
+    Retstr->strlength = strlen(Retstr->strptr);
+
+    if (Argc != 2) {
+        sprintf(Retstr->strptr, "%d", -1);
+        Retstr->strlength = strlen(Retstr->strptr);
+        return 0;
+    }
+    if (*Argv[0].strptr == 'R') {
+        retc = RexxRegisterSubcomDll(Argv[1].strptr, "orxclassic1",
+                                     "MyTestSubcomHandler", 
+                                     (char*)malloc(8), RXSUBCOM_DROPPABLE);
+        if (retc != 0) {
+            sprintf(Retstr->strptr, "%d", -2);
+            Retstr->strlength = strlen(Retstr->strptr);
+            return 0;
+        }
+        retc = RexxQuerySubcom(Argv[1].strptr, "orxclassic1", &flags, userarea);
+        if (retc != 0) {
+            sprintf(Retstr->strptr, "%d", -2);
+            Retstr->strlength = strlen(Retstr->strptr);
+            return 0;
+        }
+    }
+    else if (*Argv[0].strptr == 'E') {
+        retc = RexxRegisterSubcomExe(Argv[1].strptr, MyTestSubcomHandler, 
+                                     (char*)malloc(8));
+        if (retc != 0) {
+            sprintf(Retstr->strptr, "%d", -2);
+            Retstr->strlength = strlen(Retstr->strptr);
+            return 0;
+        }
+        retc = RexxQuerySubcom(Argv[1].strptr, NULL, &flags, userarea);
+        if (retc != 0) {
+            sprintf(Retstr->strptr, "%d", -2);
+            Retstr->strlength = strlen(Retstr->strptr);
+            return 0;
+        }
+    }
+    else if (*Argv[0].strptr == 'D') {
+        retc = RexxDeregisterSubcom(Argv[1].strptr, "orxclassic1");
+        if (retc != 0) {
+            sprintf(Retstr->strptr, "%d", -2);
+            Retstr->strlength = strlen(Retstr->strptr);
+            return 0;
+        }
+        retc = RexxQuerySubcom(Argv[1].strptr, "orxclassic1", &flags, userarea);
+        if (retc != 0) {
+            sprintf(Retstr->strptr, "%d", -2);
+            Retstr->strlength = strlen(Retstr->strptr);
+            return 0;
+        }
+    }
+    else if (*Argv[0].strptr == 'X') {
+        retc = RexxDeregisterSubcom(Argv[1].strptr, NULL);
+        if (retc != 0) {
+            sprintf(Retstr->strptr, "%d", -2);
+            Retstr->strlength = strlen(Retstr->strptr);
+            return 0;
+        }
+        retc = RexxQuerySubcom(Argv[1].strptr, NULL, &flags, userarea);
+        if (retc != 0) {
+            sprintf(Retstr->strptr, "%d", -2);
+            Retstr->strlength = strlen(Retstr->strptr);
+            return 0;
+        }
+    }
+    else {
+        sprintf(Retstr->strptr, "%d", -2);
+        Retstr->strlength = strlen(Retstr->strptr);
+        return 0;
+    }
+    return 0;
+}
+
+
+
