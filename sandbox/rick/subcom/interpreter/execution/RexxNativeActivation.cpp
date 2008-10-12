@@ -2346,7 +2346,7 @@ void RexxNativeActivation::raiseCondition(RexxString *condition, RexxString *des
 {
     this->result = (RexxObject *)_result; /* save the result                   */
                                          /* go raise the condition            */
-    this->activity->raiseCondition(condition, OREF_NULL, description, additional, result, OREF_NULL);
+    this->activity->raiseCondition(condition, OREF_NULL, description, additional, result);
 
     // We only return here if no activation above us has trapped this.  If we do return, then
     // we terminate the call by throw this up the stack.

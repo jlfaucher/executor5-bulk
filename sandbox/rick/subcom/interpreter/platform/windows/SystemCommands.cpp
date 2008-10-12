@@ -102,13 +102,22 @@ RexxString *SystemInterpreter::getDefaultAddressName()
 /*             environment, we'll try passing the command to the system for   */
 /*             execution.                                                     */
 /******************************************************************************/
-RexxObject *SystemInterpreter::invokeHostCommand(
+void SystemInterpreter::invokeHostCommand(
   RexxActivation    * activation,      /* activation working on behalf of     */
   RexxActivity      * activity,        /* activity running on                 */
   RexxString        * environment,     /* target address                      */
   RexxString        * command,         /* command to issue                    */
-  RexxString       ** error_failure )  /* error or failure flags              */
+  ProtectedObject   & rc,              // the command return code
+  ProtectedObject   & condition)       /* returned condition object           */
 {
+    // first check for registered command handlers
+    CommandHandler *handler = activity->resolveCommandHandler(environment);
+    if (handler != OREF_NULL)
+    {
+        handler->call(activity, activation, environment, command, rc, condition);
+        return;
+    }
+
     int      rc    = 0;                  /* Return code from call               */
     const char *current_address;         /* Subcom handler that gets cmd        */
     CONSTRXSTRING rxstrcmd;              /* Command to be executed              */
