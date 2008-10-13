@@ -57,6 +57,40 @@ platforms; the package contains external Rexx functions. These functions:</para>
 startup so there is no need to register the functions either individually or
 via the SysLoadFuncs function.</para>
 
+<section id="systemerrorcodes"><title>A Note on Error Codes</title>
+<indexterm><primary>Windows OS Error Codes</primary></indexterm>
+<para>On Windows, some of the REXXUTIL functions return operating system error
+codes on failure.  The <link linkend="utlSysgeterrortext">SysGetErrorText()</link>
+function can be used retrieve a description of system error code. In addition,
+the meaning of these error return codes can be looked up in the Windows
+Operating System documentation provided by Microsoft.
+</para>
+<para>The documentation is called the MSDN Library.  The library is provided
+online for anyone to access. Pus, since May 2006, Microsoft has also provided
+the ISO images for the library free of charge.  Anyone can download the ISOs,
+burn them to a CD, and install the library locally on their system.
+</para>
+<para>The information below is provided to help the ooRexx programmer locate the
+MSDN Library, if they would like to.  All things on the Internet change. The
+URLs listed here are accurate at the time of this writing.
+</para>
+<para>The online MSDN Library is currently located at:</para>
+<para>http://msdn2.microsoft.com/en-us/library/default.aspx.</para>
+<para>A direct link to the section on the System Error codes is:</para>
+<para>http://msdn.microsoft.com/en-us/library/ms681381.aspx</para>
+<para>A Google search of <computeroutput>MSDN Library</computeroutput> will turn
+up the section on the error codes. A Google search of <computeroutput>MSDN
+"System Error Codes"</computeroutput> will turn up the section on the error
+codes.
+</para>
+<para>Directions to the downloadable ISO images of the MSDN Library have been
+posted on this blog entry:</para>
+<para>http://blogs.msdn.com/robcaron/archive/2006/07/26/678897.aspx</para>
+<para>A Google search using: <computeroutput>"Rob Caron" General Downloads MSDN
+Library</computeroutput> should also turn up the blog entry.
+</para>
+</section>
+
 <section id="utilfuncttable"><title>List of Rexx Utility Functions</title>
 <indexterm><primary>rexxutil functions</primary></indexterm>
 <para>The following table lists all of the REXXUTIL functions and the
@@ -604,11 +638,12 @@ window in the Z order.
 </variablelist>
 <para><emphasis role="bold">Return codes:</emphasis></para>
 <para>If the application is started successfully, the process id (PID) is
-returned.If an error occurs the returned value is less than 32.</para>
-<para>Error return codes correspond to Windows system error codes. If the
-Windown system error code is greater than 32 it is negated. This is to prevent
-confusion between a legitimate error code and a PID.</para>
-<para>Common error returns for this function are as follows.</para>
+returned.  If an error occurs the returned value is less than 32.</para>
+<para>Error return codes correspond to a <link linkend="systemerrorcodes">
+Windows System Error code</link>. If the Windown system error code is greater
+than 32 it is negated. This is to prevent confusion between a legitimate error
+code and a PID.</para>
+<para>Some common error returns for this function are as follows.</para>
 <variablelist>
 <varlistentry><term>2</term>
 <listitem><para>The specified file was not found.
@@ -704,6 +739,10 @@ SysOpenEventSem call.
 <varlistentry><term>0</term>
 <listitem><para>No errors.
 </para></listitem></varlistentry>
+<varlistentry><term>Other</term>
+<listitem><para>An error occurred.  On Windows, a <link linkend="systemerrorcodes">Windows System Error
+code</link> is returned.  This may be one of the following, but could be others.
+</para></listitem></varlistentry>
 <varlistentry><term>6</term>
 <listitem><para>Invalid handle.
 </para></listitem></varlistentry>
@@ -734,6 +773,10 @@ SysOpenEventSem call.
 <variablelist>
 <varlistentry><term>0</term>
 <listitem><para>No errors.
+</para></listitem></varlistentry>
+<varlistentry><term>Other</term>
+<listitem><para>An error occurred.  On Windows, a <link linkend="systemerrorcodes">Windows System Error
+code</link> is returned.  This may be one of the following, but could be others.
 </para></listitem></varlistentry>
 <varlistentry><term>6</term>
 <listitem><para>Invalid handle.
@@ -1140,8 +1183,9 @@ copied.</para></listitem></varlistentry>
 <varlistentry><term>0</term>
 <listitem><para>File copied successfully.
 </para></listitem></varlistentry>
-<varlistentry><term>2</term>
-<listitem><para>A Windows error code.
+<varlistentry><term>Other</term>
+<listitem><para>A <link linkend="systemerrorcodes"> Windows System Error
+code</link>.
 </para></listitem></varlistentry>
 </variablelist>
 <para><emphasis role="bold">Example:</emphasis></para>
@@ -1180,6 +1224,10 @@ specifications.</para>
 <variablelist>
 <varlistentry><term>0</term>
 <listitem><para>File deleted successfully.
+</para></listitem></varlistentry>
+<varlistentry><term>Other</term>
+<listitem><para>An error occurred.  On Windows, a <link linkend="systemerrorcodes">Windows System Error
+code</link> is returned.  This may be one of the following, but could be others.
 </para></listitem></varlistentry>
 <varlistentry><term>2</term>
 <listitem><para>File not found.
@@ -1248,8 +1296,9 @@ component.</para></listitem></varlistentry>
 <varlistentry><term>0</term>
 <listitem><para>File copied successfully.
 </para></listitem></varlistentry>
-<varlistentry><term>2</term>
-<listitem><para>A Windows error code.
+<varlistentry><term>Other</term>
+<listitem><para>On failure, a <link linkend="systemerrorcodes">
+Windows System Error code</link> is returned.
 </para></listitem></varlistentry>
 </variablelist>
 <para><emphasis role="bold">Example:</emphasis></para>
@@ -1720,6 +1769,11 @@ during the conversion and "0" if it was not.</para></listitem></varlistentry>
 <variablelist>
 <varlistentry><term>0</term>
 <listitem><para>No errors.
+</para></listitem></varlistentry>
+<varlistentry><term>Other</term>
+<listitem><para>An error occurred.  A <link linkend="systemerrorcodes">Windows
+System Error code</link> is returned.  This may be one of the following, but
+could be others.
 </para></listitem></varlistentry>
 <varlistentry><term>87</term>
 <listitem><para>Incorrect code page or
@@ -2488,6 +2542,10 @@ SysSaveRexxMacroSpace must have created the file.
 <varlistentry><term>0</term>
 <listitem><para>Directory creation was successful.
 </para></listitem></varlistentry>
+<varlistentry><term>Other</term>
+<listitem><para>An error occurred.  On Windows, a <link linkend="systemerrorcodes">Windows System Error
+code</link> is returned.  This may be one of the following, but could be others.
+</para></listitem></varlistentry>
 <varlistentry><term>2</term>
 <listitem><para>File not found.
 </para></listitem></varlistentry>
@@ -2577,8 +2635,7 @@ returns a handle to the semaphore, or zero if an error occurred.</para>
 ]]>
 </programlisting>
 
-<para>Posts an event semaphore. SysPostEventSem
-returns the GetLastError return code of SetEvent.</para>
+<para>Posts an event semaphore.</para>
 <para><emphasis role="bold">Parameter:</emphasis></para>
 <variablelist>
 <varlistentry><term><emphasis role="italic">handle</emphasis></term>
@@ -2589,6 +2646,10 @@ returns the GetLastError return code of SetEvent.</para>
 <variablelist>
 <varlistentry><term>0</term>
 <listitem><para>No errors.
+</para></listitem></varlistentry>
+<varlistentry><term>Other</term>
+<listitem><para>An error occurred.  On Windows, a <link linkend="systemerrorcodes">Windows System Error
+code</link> is returned.  This may be one of the following, but could be others.
 </para></listitem></varlistentry>
 <varlistentry><term>6</term>
 <listitem><para>Invalid handle.
@@ -2616,7 +2677,10 @@ to nonsignaled, and PulseEvent returns. If the event is automatic, a single
 thread is released, the event is set to nonsignaled, and PulseEvent returns.
 If no threads are waiting, or no threads can be released immediately, PulseEvent
 sets the state of the event to nonsignaled and returns.</para>
-<para>SysPulseEventSem returns GetLastError of PulseEvent.</para>
+<para>SysPulseEventSem returns 0 on success and a
+<link linkend="systemerrorcodes">Windows System Error code</link> is returned on
+error.
+.</para>
 <para><emphasis role="bold">Parameter:</emphasis></para>
 <variablelist>
 <varlistentry><term><emphasis role="italic">handle</emphasis></term>
@@ -2746,8 +2810,7 @@ if the function does not exist in the macrospace.</para>
 ]]>
 </programlisting>
 
-<para>Releases a mutex semaphore. SysReleaseMutexSem
-returns the GetLastError return code of ReleaseMutex.</para>
+<para>Releases a mutex semaphore.</para>
 <para><emphasis role="bold">Parameter:</emphasis></para>
 <variablelist>
 <varlistentry><term><emphasis role="italic">handle</emphasis></term>
@@ -2758,6 +2821,10 @@ returns the GetLastError return code of ReleaseMutex.</para>
 <variablelist>
 <varlistentry><term>0</term>
 <listitem><para>No errors.
+</para></listitem></varlistentry>
+<varlistentry><term>Other</term>
+<listitem><para>An error occurred.  On Windows, a <link linkend="systemerrorcodes">Windows System Error
+code</link> is returned.  This may be one of the following, but could be others.
 </para></listitem></varlistentry>
 <varlistentry><term>6</term>
 <listitem><para>Invalid handle.
@@ -2823,6 +2890,10 @@ The default <emphasis role="italic">timeout</emphasis> is an infinite wait.
 <varlistentry><term>0</term>
 <listitem><para>No errors.
 </para></listitem></varlistentry>
+<varlistentry><term>Other</term>
+<listitem><para>An error occurred.  On Windows, a <link linkend="systemerrorcodes">Windows System Error
+code</link> is returned.  This may be one of the following, but could be others.
+</para></listitem></varlistentry>
 <varlistentry><term>6</term>
 <listitem><para>Invalid handle.
 </para></listitem></varlistentry>
@@ -2845,8 +2916,7 @@ The default <emphasis role="italic">timeout</emphasis> is an infinite wait.
 ]]>
 </programlisting>
 
-<para>Resets an event semaphore. SysResetEventSem
-returns the GetLastError return code of ResetEvent.</para>
+<para>Resets an event semaphore..</para>
 <para><emphasis role="bold">Parameter:</emphasis></para>
 <variablelist>
 <varlistentry><term><emphasis role="italic">handle</emphasis></term>
@@ -2857,6 +2927,10 @@ returns the GetLastError return code of ResetEvent.</para>
 <variablelist>
 <varlistentry><term>0</term>
 <listitem><para>No errors.
+</para></listitem></varlistentry>
+<varlistentry><term>Other</term>
+<listitem><para>An error occurred.  On Windows, a <link linkend="systemerrorcodes">Windows System Error
+code</link> is returned.  This may be one of the following, but could be others.
 </para></listitem></varlistentry>
 <varlistentry><term>6</term>
 <listitem><para>Invalid handle.
@@ -2885,6 +2959,10 @@ returns the GetLastError return code of ResetEvent.</para>
 <variablelist>
 <varlistentry><term>0</term>
 <listitem><para>Directory removal was successful.
+</para></listitem></varlistentry>
+<varlistentry><term>Other</term>
+<listitem><para>An error occurred.  On Windows, a <link linkend="systemerrorcodes">Windows System Error
+code</link> is returned.  This may be one of the following, but could be others.
 </para></listitem></varlistentry>
 <varlistentry><term>2</term>
 <listitem><para>File not found.
@@ -3125,6 +3203,11 @@ It can also be a symbolic name:
 <varlistentry><term>0</term>
 <listitem><para>No errors.
 </para></listitem></varlistentry>
+<varlistentry><term>Other</term>
+<listitem><para>An error occurred.  A <link linkend="systemerrorcodes">Windows
+System Error code</link> is returned.  This may be one of the following, but
+could be others.
+</para></listitem></varlistentry>
 <varlistentry><term>307</term>
 <listitem><para>Invalid priority class.
 </para></listitem></varlistentry>
@@ -3170,8 +3253,8 @@ It can also be a symbolic name:
 </variablelist>
 
 <para><emphasis role="bold">Returns:</emphasis></para>
-<para>Returns <computeroutput>1</computeroutput> for success or
-<computeroutput>0</computeroutput> for failure.</para>
+<para>Returns <computeroutput>0</computeroutput> for success or a <link
+linkend="systemerrorcodes">Windows System Error code</link> for failure.</para>
 </section>
 
 <section id="utlSyssleep"><title>SysSleep</title>
@@ -3482,14 +3565,16 @@ Call SysStemSort "MyStem.", , ,10, 20, 1, 10
 ]]>
 </programlisting>
 
-<para>Makes the named application the foreground application. SysSwitchSession
-returns GetLastError of SetForegroundWindow.</para>
+<para>Makes the named application the foreground application.</para>
 <para><emphasis role="bold">Parameter:</emphasis></para>
 <variablelist>
 <varlistentry><term><emphasis role="italic">name</emphasis></term>
 <listitem><para>The name of the application you want to be the foreground
 application.</para></listitem></varlistentry>
 </variablelist>
+<para>O is returned on success and a <link linkend="systemerrorcodes">Windows
+System Error code </link> on failure.
+</para>
 </section>
 
 <section id="utlSyssystemdirectory"><title>SysSystemDirectory (Windows only)</title>
@@ -3593,6 +3678,8 @@ multiple lines.</para>
 end of the screen.
 </para></listitem></varlistentry>
 </variablelist>
+<para>Note that, on error, a <link linkend="systemerrorcodes">Windows System
+Error code</link> is returned.</para>
 <para>Limitations: This function reads in only screen characters
 and does not consider the color attributes of each character read. When
 restoring a character string to the screen with SAY or the CHAROUT built-in
@@ -3742,6 +3829,11 @@ the following value(s):
 <variablelist>
 <varlistentry><term>0</term>
 <listitem><para>No errors.
+</para></listitem></varlistentry>
+<varlistentry><term>Other</term>
+<listitem><para>An error occurred.  A <link linkend="systemerrorcodes">Windows
+System Error code</link> is returned.  This may be one of the following, but
+could be others.
 </para></listitem></varlistentry>
 <varlistentry><term>87</term>
 <listitem><para>Incorrect code page or
@@ -3899,6 +3991,10 @@ default <emphasis role="italic">timeout</emphasis> is an infinite wait.
 <varlistentry><term>0</term>
 <listitem><para>No errors.
 </para></listitem></varlistentry>
+<varlistentry><term>Other</term>
+<listitem><para>An error occurred.  On Windows, a <link linkend="systemerrorcodes">Windows System Error
+code</link> is returned.  This may be one of the following, but could be others.
+</para></listitem></varlistentry>
 <varlistentry><term>6</term>
 <listitem><para>Invalid handle.
 </para></listitem></varlistentry>
@@ -3934,6 +4030,9 @@ specify 0, SysWaitNamedPipe uses the default timeout value. To wait until
 the pipe is no longer busy, you can use a value of -1.
 </para></listitem></varlistentry>
 </variablelist>
+<para>Returns 0 on success. A <link linkend="systemerrorcodes">Windows System
+Error code</link> is returned on error.
+</para>
 </section>
 
 <section id="utlSyswindecryptfile"><title>SysWinDecryptFile (Windows
@@ -3958,6 +4057,10 @@ only)</title>
 <variablelist>
 <varlistentry><term>0</term>
 <listitem><para>Decryption was successful.
+</para></listitem></varlistentry>
+<varlistentry><term>Other</term>
+<listitem><para>A <link linkend="systemerrorcodes">Windows System Error code
+</link>.  This may be one of the following, but could be others.
 </para></listitem></varlistentry>
 <varlistentry><term>2</term>
 <listitem><para>File not found.
@@ -3996,6 +4099,10 @@ only)</title>
 <variablelist>
 <varlistentry><term>0</term>
 <listitem><para>Encryption was successful.
+</para></listitem></varlistentry>
+<varlistentry><term>Other</term>
+<listitem><para>A <link linkend="systemerrorcodes">Windows System Error code
+</link>.  This may be one of the following, but could be others.
 </para></listitem></varlistentry>
 <varlistentry><term>2</term>
 <listitem><para>File not found.
@@ -4092,8 +4199,8 @@ only)</title>
 <listitem><para>Success
 </para></listitem></varlistentry>
 <varlistentry><term>non-zero</term>
-<listitem><para>A system error code. (Use SysGetErrortext() to get a description
-of the error.)
+<listitem><para>A <link linkend="systemerrorcodes">Windows System Error
+code</link>.  You can use SysGetErrortext() to get a description of the error.
 </para></listitem></varlistentry>
 </variablelist>
 <para><emphasis role="bold">Example:</emphasis></para>
