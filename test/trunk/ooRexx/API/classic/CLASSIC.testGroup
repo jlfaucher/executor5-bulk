@@ -877,7 +877,81 @@ return .ooTestResult~new(5)~~addException(err)
   call rxfuncdrop 'TestSubcomHandler'
   self~assertEquals(0, result)
 
+-- Note: The order of these tests is very important.
 
+::method 'test_70_macrospace'
+  expose t2
+  t2 = .TestMacroSpaceFuncs~new()
+  retc = t2~TestAddMacro('xxx', 'xxx', 1) -- should produce an error
+  self~assertEquals(5, retc)
+  retc = t2~TestAddMacro('myreverse', 'testmacro1.rex', 1)
+  self~assertEquals(0, retc)
+  retc = t2~TestQueryMacro('myreverse')
+  self~assertEquals(0, retc)
+  teststr = 'abcdefgh1234567890'
+  retc = myreverse(teststr)
+  self~assertEquals(teststr~reverse~upper, retc)
+
+::method 'test_71_macrospace'
+  expose t2
+  t2 = .TestMacroSpaceFuncs~new()
+  retc = t2~TestAddMacro('myupper', 'testmacro2.rex', 2)
+  self~assertEquals(0, retc)
+  retc = t2~TestQueryMacro('myupper')
+  self~assertEquals(0, retc)
+  teststr = 'abcdefgh1234567890'
+  retc = myupper(teststr)
+  self~assertEquals(teststr~upper, retc)
+
+::method 'test_72_macrospace'
+  expose t2
+  t2 = .TestMacroSpaceFuncs~new()
+  names = .array~new(2)
+  names[1] = 'myreverse'
+  names[2] = 'myupper'
+  retc = t2~TestSaveMacroSpace(names, 'macrosave.bin')
+  self~assertEquals(0, retc)
+
+::method 'test_73_macrospace'
+  expose t2
+  t2 = .TestMacroSpaceFuncs~new()
+  retc = t2~TestClearMacroSpace()
+  self~assertEquals(0, retc)
+  retc = t2~TestQueryMacro('myreverse')
+  self~assertEquals(2, retc)
+  retc = t2~TestQueryMacro('myupper')
+  self~assertEquals(2, retc)
+
+::method 'test_74_macrospace'
+  expose t2
+  t2 = .TestMacroSpaceFuncs~new()
+  names = .array~new(2)
+  names[1] = 'myreverse'
+  names[2] = 'myupper'
+  retc = t2~TestLoadMacroSpace(names, 'macrosave.bin')
+  self~assertEquals(0, retc)
+  retc = t2~TestQueryMacro('myreverse')
+  self~assertEquals(0, retc)
+  retc = t2~TestQueryMacro('myupper')
+  self~assertEquals(0, retc)
+
+::method 'test_75_macrospace'
+  expose t2
+  t2 = .TestMacroSpaceFuncs~new()
+  retc = t2~TestReorderMacro('myupper', 1)
+  self~assertEquals(0, retc)
+
+::method 'test_76_macrospace'
+  expose t2
+  t2 = .TestMacroSpaceFuncs~new()
+  retc = t2~TestDropMacro('myupper')
+  self~assertEquals(0, retc)
+  retc = t2~TestDropMacro('myreverse')
+  self~assertEquals(0, retc)
+  retc = t2~TestQueryMacro('myreverse')
+  self~assertEquals(2, retc)
+  retc = t2~TestQueryMacro('myupper')
+  self~assertEquals(2, retc)
 
 
 

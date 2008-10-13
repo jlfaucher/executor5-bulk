@@ -314,6 +314,82 @@ RexxRoutine0(int,                       // Return type
     return ctr;
 }
 
+RexxMethod3(int,                        // Return type
+            TestAddMacro,               // Method name
+            CSTRING, name,              // Macro name
+            CSTRING, filename,          // Macro file name
+            size_t, srchpos)            // Search position
+{
+    RexxReturnCode retc = RexxAddMacro(name, filename, srchpos);
+    return retc;
+}
+
+RexxMethod1(int,                        // Return type
+            TestDropMacro,              // Method name
+            CSTRING, name)              // Macro name
+{
+    RexxReturnCode retc = RexxDropMacro(name);
+    return retc;
+}
+
+RexxMethod2(int,                        // Return type
+            TestSaveMacroSpace,         // Method name
+            RexxArrayObject, names,     // Array of macro names
+            CSTRING, filename)          // Macro file name
+{
+    int argc = context->ArrayItems(names);
+    const char *cnames[argc];
+
+    for (int i = 1; i <= argc; i++) {
+        cnames[i - 1] = context->ObjectToStringValue(context->ArrayAt(names, i));
+    }
+
+    RexxReturnCode retc = RexxSaveMacroSpace(argc, cnames, filename);
+    return retc;
+}
+
+RexxMethod2(int,                        // Return type
+            TestLoadMacroSpace,         // Method name
+            RexxArrayObject, names,     // Array of macro names
+            CSTRING, filename)          // Macro file name
+{
+    int argc = context->ArrayItems(names);
+    const char *cnames[argc];
+
+    for (int i = 1; i <= argc; i++) {
+        cnames[i - 1] = context->ObjectToStringValue(context->ArrayAt(names, i));
+    }
+
+    RexxReturnCode retc = RexxLoadMacroSpace(argc, cnames, filename);
+    return retc;
+}
+
+RexxMethod1(int,                        // Return type
+            TestQueryMacro,             // Method name
+            CSTRING, name)              // Macro name
+{
+    unsigned short pos;
+
+    RexxReturnCode retc = RexxQueryMacro(name, &pos);
+    return retc;
+}
+
+RexxMethod2(int,                        // Return type
+            TestReorderMacro,           // Method name
+            CSTRING, name,              // Macro name
+            size_t, pos)                // New position
+{
+    RexxReturnCode retc = RexxReorderMacro(name, pos);
+    return retc;
+}
+
+RexxMethod0(int,                        // Return type
+            TestClearMacroSpace)        // Method name
+{
+    RexxReturnCode retc = RexxClearMacroSpace();
+    return retc;
+}
+
 
 RexxMethodEntry orxtest_methods[] = {
     REXX_METHOD(TestCreateQueue,        TestCreateQueue),
@@ -326,6 +402,13 @@ RexxMethodEntry orxtest_methods[] = {
     REXX_METHOD(TestClearQueue,         TestClearQueue),
     REXX_METHOD(TestAllocateFreeMemory, TestAllocateFreeMemory),
     REXX_METHOD(TestMVariablePool,      TestMVariablePool),
+    REXX_METHOD(TestAddMacro,           TestAddMacro),
+    REXX_METHOD(TestDropMacro,          TestDropMacro),
+    REXX_METHOD(TestSaveMacroSpace,     TestSaveMacroSpace),
+    REXX_METHOD(TestLoadMacroSpace,     TestLoadMacroSpace),
+    REXX_METHOD(TestQueryMacro,         TestQueryMacro),
+    REXX_METHOD(TestReorderMacro,       TestReorderMacro),
+    REXX_METHOD(TestClearMacroSpace,    TestClearMacroSpace),
     REXX_LAST_METHOD()
 };
 

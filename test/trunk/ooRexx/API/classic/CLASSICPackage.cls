@@ -75,3 +75,14 @@ return flag
 ::attribute shvcode
 ::attribute shvret
 
+
+::class TestMacroSpaceFuncs public
+
+::method TestAddMacro PUBLIC EXTERNAL "LIBRARY orxclassic TestAddMacro"
+::method TestDropMacro PUBLIC EXTERNAL "LIBRARY orxclassic TestDropMacro"
+::method TestSaveMacroSpace PUBLIC EXTERNAL "LIBRARY orxclassic TestSaveMacroSpace"
+::method TestLoadMacroSpace PUBLIC EXTERNAL "LIBRARY orxclassic TestLoadMacroSpace"
+::method TestQueryMacro PUBLIC EXTERNAL "LIBRARY orxclassic TestQueryMacro"
+::method TestReorderMacro PUBLIC EXTERNAL "LIBRARY orxclassic TestReorderMacro"
+::method TestClearMacroSpace PUBLIC EXTERNAL "LIBRARY orxclassic TestClearMacroSpace"
+
