@@ -338,13 +338,14 @@ RexxMethod2(int,                        // Return type
             CSTRING, filename)          // Macro file name
 {
     int argc = context->ArrayItems(names);
-    const char *cnames[argc];
+    const char **cnames = (const char **)calloc(argc, sizeof(const char *));
 
     for (int i = 1; i <= argc; i++) {
         cnames[i - 1] = context->ObjectToStringValue(context->ArrayAt(names, i));
     }
 
     RexxReturnCode retc = RexxSaveMacroSpace(argc, cnames, filename);
+    free(cnames);
     return retc;
 }
 
@@ -354,13 +355,14 @@ RexxMethod2(int,                        // Return type
             CSTRING, filename)          // Macro file name
 {
     int argc = context->ArrayItems(names);
-    const char *cnames[argc];
+    const char **cnames = (const char **)calloc(argc, sizeof(const char *));
 
     for (int i = 1; i <= argc; i++) {
         cnames[i - 1] = context->ObjectToStringValue(context->ArrayAt(names, i));
     }
 
     RexxReturnCode retc = RexxLoadMacroSpace(argc, cnames, filename);
+    free(cnames);
     return retc;
 }
 
