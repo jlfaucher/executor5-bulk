@@ -294,7 +294,7 @@ RexxObjectPtr sysCommandNT(RexxExitContext *context, const char *command, const 
 /*             command handler with the command to be executed                */
 /*                                                                            */
 /******************************************************************************/
-RexxObjectPtr RexxEntry SystemCommandHandler(RexxExitContext *context, RexxStringObject address, RexxStringObject command)
+RexxObjectPtr RexxEntry systemCommandHandler(RexxExitContext *context, RexxStringObject address, RexxStringObject command)
 {
     // address the command information
     const char *cmd = context->StringData(command);
@@ -501,4 +501,15 @@ RexxObjectPtr RexxEntry SystemCommandHandler(RexxExitContext *context, RexxStrin
 }                                      // SystemCommand
 
 
-
+/**
+ * Register the standard system command handlers.
+ *
+ * @param instance The created instance.
+ */
+void SysInterpreterInstance::registerCommandHandlers(InterpreterInstance *instance)
+{
+    // Windows only has the single command environment, we also register this
+    // under "" for the default handler
+    instance->addCommandHandler("CMD", systemCommandHandler);
+    instance->addCommandHandler("", systemCommandHandler);
+}

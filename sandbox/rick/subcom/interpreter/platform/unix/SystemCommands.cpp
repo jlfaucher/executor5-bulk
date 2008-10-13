@@ -534,7 +534,7 @@ bool scan_cmd(const char *parm_cmd, char **argPtr)
 /*             and invoke the shell indicated by the local_env_type argument. */
 /*             This is modeled after command handling done in Classic REXX.   */
 /******************************************************************************/
-RexxObjectPtr RexxEntry SystemCommandHandler(RexxExitContext *context, RexxStringObject address, RexxStringObject command)
+RexxObjectPtr RexxEntry systemCommandHandler(RexxExitContext *context, RexxStringObject address, RexxStringObject command)
 {
     const char *cmd = context->StringData(command);
     const char *envName = context->StringData(address);
@@ -595,6 +595,12 @@ RexxObjectPtr RexxEntry SystemCommandHandler(RexxExitContext *context, RexxStrin
     /****************************************************************************/
     /* Invoke the system command handler to execute the command                 */
     /****************************************************************************/
+    // if this is the null string, then use the default address environment
+    // for the platform
+    if (strlen(envName) == 0)
+    {
+        envName = SYSINITIALADDRESS;
+    }
 
     int errCode = 0;
 #ifdef LINUX
@@ -680,6 +686,24 @@ RexxObjectPtr RexxEntry SystemCommandHandler(RexxExitContext *context, RexxStrin
         context->RaiseException("ERROR", cmd, NULL, context->WholeNumberToObject(errCode));
     }
     return context->False();      // zero return code
+}
+
+
+/**
+ * Register the standard system command handlers.
+ *
+ * @param instance The created instance.
+ */
+void SysInterpreterInstance::registerCommandHandlers(InterpreterInstance *instance)
+{
+    // Unix has a whole collection of similar environments, services by a single handler
+    instance->addCommandHandler("COMMAND", systemCommandHandler);
+    instance->addCommandHandler("", systemCommandHandler);
+    instance->addCommandHandler("SH", systemCommandHandler);
+    instance->addCommandHandler("KSH", systemCommandHandler);
+    instance->addCommandHandler("CSH", systemCommandHandler);
+    instance->addCommandHandler("BSH", systemCommandHandler);
+    instance->addCommandHandler("BASH", systemCommandHandler);
 }
 
 
