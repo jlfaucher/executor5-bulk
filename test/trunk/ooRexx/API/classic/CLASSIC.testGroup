@@ -909,7 +909,7 @@ return .ooTestResult~new(5)~~addException(err)
   names = .array~new(2)
   names[1] = 'myreverse'
   names[2] = 'myupper'
-  retc = t2~TestSaveMacroSpace(names, 'c:\temp\macrosave.bin')
+  retc = t2~TestSaveMacroSpace(names, 'macrosave.bin')
   self~assertEquals(0, retc)
 
 ::method 'test_73_macrospace'
@@ -928,7 +928,7 @@ return .ooTestResult~new(5)~~addException(err)
   names = .array~new(2)
   names[1] = 'myreverse'
   names[2] = 'myupper'
-  retc = t2~TestLoadMacroSpace(names, 'c:\temp\macrosave.bin')
+  retc = t2~TestLoadMacroSpace(names, 'macrosave.bin')
   self~assertEquals(0, retc)
   retc = t2~TestQueryMacro('myreverse')
   self~assertEquals(0, retc)
