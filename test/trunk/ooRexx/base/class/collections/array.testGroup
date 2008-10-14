@@ -258,7 +258,6 @@ return testResult
 
 ::method "test_21a"
    arr1 = .array~new(4,4)
-   self~expectSyntax(40) -- this is not the correct error
    self~assertSame(.nil, arr1~next(1,1))
 
 ::method "test_22"
@@ -272,7 +271,6 @@ return testResult
 
 ::method "test_22a"
    arr1 = .array~new(4,4)
-   self~expectSyntax(40) -- this is not the correct error
    self~assertSame(.nil, arr1~previous(1,1))
 
 ::method "test_23"

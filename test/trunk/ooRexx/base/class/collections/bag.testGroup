@@ -111,6 +111,9 @@ return testResult
    self~assertEquals(1, bag1~hasIndex("Mike"))
    bag1~put("Pete", "Pete")
    self~assertEquals(1, bag1~hasIndex("Pete"))
+   bag1~put("Pete", "Pete")
+   self~assertEquals(1, bag1~hasIndex("Pete"))
+   self~assertEquals(6, bag1~items) -- make sure we have the duplicate indexes
    self~expectSyntax(93.949)
    bag1~put("Mike", "Linda")
 
@@ -121,10 +124,10 @@ return testResult
    self~assertEquals(5, bag1~items)
    self~assertEquals(1, bag1~hasIndex("Linda"))
    self~assertEquals(1, bag1~hasIndex("Lynn"))
-   arr = .array~of("Craig", "Pam")
+   arr = .array~of("Linda", "Pam")  -- this adds one duplicate index
    bag1~putAll(arr)
    self~assertEquals(7, bag1~items)
-   self~assertEquals(1, bag1~hasIndex("Craig"))
+   self~assertEquals(1, bag1~hasIndex("Linda"))
    self~assertEquals(1, bag1~hasIndex("Pam"))
    self~assertEquals(0, bag1~hasIndex("Debbie"))
 
@@ -136,16 +139,15 @@ return testResult
    self~assertEquals(0, bag3~subset(bag1))
 
 ::method "test_10"
+   bag0 = .bag~of()
    bag1 = .bag~of("Mike", "David", "Sam", "Debbie")
    bag2 = .bag~of("Linda")
    bag3 = .bag~of("Mike", "David", "Sam", "Debbie", "Linda")
-   bag4 = .bag~of("Linda", "David")
-   bag5 = .bag~of("David")
-   bag0 = .bag~new()
-   self~assertEquals(1, self~bag_compare(bag0, bag1~union(bag2)))
-   self~assertEquals(1, self~bag_compare(bag3, bag1~union(bag3)))
-   self~assertEquals(1, self~bag_compare(bag3, bag1~union(bag4)))
-   self~assertEquals(1, self~bag_compare(bag1, bag1~union(bag5)))
+   bag4 = .bag~of("Mike", "Linda")
+   bag5 = .bag~of("Mike", "David", "Sam", "Debbie", "Linda", "Mike")
+   self~assertEquals(1, self~bag_compare(bag3, bag1~union(bag2)))
+   self~assertEquals(1, self~bag_compare(bag5, bag1~union(bag4)))
+   self~assertEquals(1, self~bag_compare(bag1, bag1~union(bag0)))
 
 ::method "test_11"
    bag1 = .bag~of("Mike", "David", "Sam", "Debbie")
