@@ -72,6 +72,7 @@
 #include "RexxInternalApis.h"
 #include "PackageManager.hpp"
 #include "RexxCompoundTail.hpp"
+#include "CommandHandler.hpp"
 
 /* max instructions without a yield */
 #define MAX_INSTRUCTIONS  100
@@ -3474,12 +3475,11 @@ void RexxActivation::traceClause(      /* trace a REXX instruction          */
  *
  * @return The return code object
  */
-RexxObject * RexxActivation::command(RexxString *command, RexxString * address, ProtectedObject &result)
+void RexxActivation::command(RexxString *address, RexxString *command)
 {
-    RexxObject * rc;                     /* return code                       */
-    RexxString * rc_trace;               /* traced return code                */
     bool         instruction_traced;     /* instruction has been traced       */
     ProtectedObject condition;
+    ProtectedObject result;
 
                                          /* instruction already traced?       */
     if (tracingAll() || tracingCommands())
@@ -3491,13 +3491,13 @@ RexxObject * RexxActivation::command(RexxString *command, RexxString * address, 
         instruction_traced = false;        /* not traced yet                    */
     }
                                            /* if exit declines call             */
-    if (this->activity->callCommandExit(this, address, command, result, condition);
+    if (this->activity->callCommandExit(this, address, command, result, condition))
     {
         // first check for registered command handlers
-        CommandHandler *handler = activity->resolveCommandHandler(environment);
+        CommandHandler *handler = activity->resolveCommandHandler(address);
         if (handler != OREF_NULL)
         {
-            handler->call(activity, activation, address, command, rc, condition);
+            handler->call(activity, this, address, command, result, condition);
         }
         else
         {
@@ -3536,9 +3536,9 @@ RexxObject * RexxActivation::command(RexxString *command, RexxString * address, 
             rc = temp;
         }
 
-        RexxString *condition = conditionObj->at(OREF_CONDITION);
+        RexxString *conditionName = (RexxString *)conditionObj->at(OREF_CONDITION);
         // check for an error or failure condition, since these get special handling
-        if (condition->strCompare(OREF_FAILURENAME))
+        if (conditionName->strCompare(CHAR_FAILURENAME))
         {
             // unconditionally update the RC value
             conditionObj->put(temp, OREF_RC);
@@ -3546,14 +3546,14 @@ RexxObject * RexxActivation::command(RexxString *command, RexxString * address, 
             // we'll need to reraise this as an ERROR condition if not trapped.
             failureCondition = true;
             // set the appropriate return status
-            returnStatus = RETURN_FAILURE_STATUS;
+            returnStatus = RETURN_STATUS_FAILURE;
         }
-        if (condition->strCompare(OREF_ERRORNAME))
+        if (conditionName->strCompare(CHAR_ERROR))
         {
             // unconditionally update the RC value
             conditionObj->put(temp, OREF_RC);
             // set the appropriate return status
-            returnStatus = RETURN_ERROR_STATUS;
+            returnStatus = RETURN_STATUS_ERROR;
         }
     }
 
@@ -3564,13 +3564,13 @@ RexxObject * RexxActivation::command(RexxString *command, RexxString * address, 
         // set the RC value before anything
         this->setLocalVariable(OREF_RC, VARIABLE_RC, rc);
         /* tracing command errors or fails?  */
-        if ((returnStatus == RETURN_ERROR_STATUS && tracingErrors()) ||
-            (returnStatus == RETURN_FAILURE_STATUS && (tracingFailures())))
+        if ((returnStatus == RETURN_STATUS_ERROR && tracingErrors()) ||
+            (returnStatus == RETURN_STATUS_FAILURE && (tracingFailures())))
         {
             /* trace the current instruction     */
             this->traceClause(this->current, TRACE_PREFIX_CLAUSE);
             /* then we always trace full command */
-            this->traceValue(commandString, TRACE_PREFIX_RESULT);
+            this->traceValue(command, TRACE_PREFIX_RESULT);
             instruction_traced = true;       /* we've now traced this             */
         }
 
@@ -3579,7 +3579,7 @@ RexxObject * RexxActivation::command(RexxString *command, RexxString * address, 
         if (instruction_traced && rc->numberValue(rcValue) && rcValue != 0)
         {
             /* get RC as a string                */
-            rc_trace = rc->stringValue();
+            RexxString *rc_trace = rc->stringValue();
             /* tack on the return code           */
             rc_trace = rc_trace->concatToCstring("RC(");
             /* add the closing part              */
@@ -3603,8 +3603,8 @@ RexxObject * RexxActivation::command(RexxString *command, RexxString * address, 
                 if (failureCondition)
                 {
                     // just change the condition name
-                    conditionObj->Put(OREF_ERRORNAME, OREF_CONDITION);
-                    activity->raiseCondition(conditionObj;
+                    conditionObj->put(OREF_ERRORNAME, OREF_CONDITION);
+                    activity->raiseCondition(conditionObj);
                 }
             }
         }
@@ -3617,9 +3617,13 @@ RexxObject * RexxActivation::command(RexxString *command, RexxString * address, 
             this->debugPause();                /* do the debug pause                */
         }
     }
-    return rc;
 }
 
+/**
+ * Set the return status flag for an activation context.
+ *
+ * @param status The new status value.
+ */
 void RexxActivation::setReturnStatus(int status)
 {
     this->settings.return_status = status;

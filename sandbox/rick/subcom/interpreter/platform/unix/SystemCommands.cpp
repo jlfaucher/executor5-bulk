@@ -62,8 +62,9 @@
 #include "RexxActivity.hpp"
 #include "ActivityManager.hpp"
 #include "SystemInterpreter.hpp"
+#include "InterpreterInstance.hpp"
+#include "SysInterpreterInstance.hpp"
 
-#include "SystemCommands.h"
 #include "RexxInternalApis.h"
 #include <sys/types.h>
 #include <pwd.h>
@@ -697,13 +698,13 @@ RexxObjectPtr RexxEntry systemCommandHandler(RexxExitContext *context, RexxStrin
 void SysInterpreterInstance::registerCommandHandlers(InterpreterInstance *instance)
 {
     // Unix has a whole collection of similar environments, services by a single handler
-    instance->addCommandHandler("COMMAND", systemCommandHandler);
-    instance->addCommandHandler("", systemCommandHandler);
-    instance->addCommandHandler("SH", systemCommandHandler);
-    instance->addCommandHandler("KSH", systemCommandHandler);
-    instance->addCommandHandler("CSH", systemCommandHandler);
-    instance->addCommandHandler("BSH", systemCommandHandler);
-    instance->addCommandHandler("BASH", systemCommandHandler);
+    instance->addCommandHandler("COMMAND", (REXXPFN)systemCommandHandler);
+    instance->addCommandHandler("", (REXXPFN)systemCommandHandler);
+    instance->addCommandHandler("SH", (REXXPFN)systemCommandHandler);
+    instance->addCommandHandler("KSH", (REXXPFN)systemCommandHandler);
+    instance->addCommandHandler("CSH", (REXXPFN)systemCommandHandler);
+    instance->addCommandHandler("BSH", (REXXPFN)systemCommandHandler);
+    instance->addCommandHandler("BASH", (REXXPFN)systemCommandHandler);
 }
 
 

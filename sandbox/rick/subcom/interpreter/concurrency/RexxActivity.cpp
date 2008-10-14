@@ -407,7 +407,7 @@ wholenumber_t RexxActivity::errorNumber(RexxDirectory *conditionObject)
 bool RexxActivity::raiseCondition(RexxString *condition, RexxObject *rc, RexxString *description, RexxObject *additional, RexxObject *result)
 {
     // just create a condition object and process the traps.
-    RexxDirectory *conditionObj = createCondition(condition, rc, description, additional, result);
+    RexxDirectory *conditionObj = createConditionObject(condition, rc, description, additional, result);
     return raiseCondition(conditionObj);
 }
 
@@ -424,11 +424,12 @@ bool RexxActivity::raiseCondition(RexxString *condition, RexxObject *rc, RexxStr
 bool RexxActivity::raiseCondition(RexxDirectory *conditionObj)
 {
     bool handled = false;                     /* condition not handled yet         */
+    RexxString *condition = (RexxString *)conditionObj->at(OREF_CONDITION);
 
     /* invoke the error traps, on all    */
     /*  nativeacts until reach 1st       */
     /*  also give 1st activation a shot. */
-    for (RexxActivation *activation = this->getTopStackFrame() ; !activation->isStackBase(); activation = activation->getPreviousStackFrame())
+    for (RexxActivationBase *activation = this->getTopStackFrame() ; !activation->isStackBase(); activation = activation->getPreviousStackFrame())
     {
         handled = activation->trap(condition, conditionObj);
         if (isOfClass(Activation, activation)) /* reached our 1st activation yet.   */
@@ -839,7 +840,7 @@ RexxDirectory *RexxActivity::createExceptionObject(
             reportException(Error_Execution_error_condition, code);
         }
         /* do required substitutions         */
-        message = this->messageSubstitution(message, additional);
+        message = messageSubstitution(message, additional);
         /* replace the original message text */
         exobj->put(message, OREF_NAME_MESSAGE);
     }
@@ -929,76 +930,71 @@ RexxString *RexxActivity::messageSubstitution(
 /*            error message.                                                  */
 /******************************************************************************/
 {
-  size_t      substitutions;           /* number of substitutions           */
-  size_t      subposition;             /* substitution position             */
-  size_t      i;                       /* loop counter                      */
-  size_t      selector;                /* substitution position             */
-  RexxString *newmessage;              /* resulting new error message       */
-  RexxString *front;                   /* front message part                */
-  RexxString *back;                    /* back message part                 */
-  RexxObject *value;                   /* substituted message value         */
-  RexxString *stringVal;               /* converted substitution value      */
-
-  substitutions = additional->size();  /* get the substitution count        */
-  newmessage = OREF_NULLSTRING;        /* start with a null string          */
-                                       /* loop through and substitute values*/
-  for (i = 1; i <= substitutions; i++) {
-                                       /* search for a substitution         */
-    subposition = message->pos(OREF_AND, 0);
-    if (subposition == 0)              /* not found?                        */
-      break;                           /* get outta here...                 */
-                                       /* get the leading part              */
-    front = message->extract(0, subposition - 1);
-                                       /* pull off the remainder            */
-    back = message->extract(subposition + 1, message->getLength() - (subposition + 1));
-                                       /* get the descriptor position       */
-    selector = message->getChar(subposition);
-                                       /* not a good number?                */
-    if (selector < '0' || selector > '9')
-                                       /* use a default message             */
-      stringVal = new_string("<BAD MESSAGE>"); /* must be stringValue, not value, otherwise trap */
-    else {
-      selector -= '0';                 /* convert to a number               */
-      if (selector > substitutions)    /* out of our range?                 */
-        stringVal = OREF_NULLSTRING;   /* use a null string                 */
-      else {                           /* get the indicated selector value  */
-        value = additional->get(selector);
-        if (value != OREF_NULL) {      /* have a value?                     */
-                                       /* set the reentry flag              */
-          this->requestingString = true;
-          this->stackcheck = false;    /* disable the checking              */
-          // save the actitivation level in case there's an error unwind for an unhandled
-          // exception;
-          size_t activityLevel = getActivationLevel();
-                                       /* now protect against reentry       */
-          try
-          {
-                                       /* force to character form           */
-              stringVal = value->stringValue();
-          }
-          catch (ActivityException)
-          {
-              stringVal = value->defaultName();
-          }
-
-          // make sure we get restored to the same base activation level.
-          restoreActivationLevel(activityLevel);
-                                       /* we're safe again                  */
-          this->requestingString = false;
-          this->stackcheck = true;     /* disable the checking              */
+    size_t substitutions = additional->size();  /* get the substitution count        */
+    RexxString *newmessage = OREF_NULLSTRING;        /* start with a null string          */
+                                         /* loop through and substitute values*/
+    for (size_t i = 1; i <= substitutions; i++)
+    {
+        /* search for a substitution         */
+        size_t subposition = message->pos(OREF_AND, 0);
+        if (subposition == 0)              /* not found?                        */
+        {
+            break;                           /* get outta here...                 */
+        }
+                                             /* get the leading part              */
+        RexxString *front = message->extract(0, subposition - 1);
+        /* pull off the remainder            */
+        RexxString *back = message->extract(subposition + 1, message->getLength() - (subposition + 1));
+        /* get the descriptor position       */
+        size_t selector = message->getChar(subposition);
+        /* not a good number?                */
+        RexxString *stringVal = OREF_NULLSTRING;
+        if (selector < '0' || selector > '9')
+        {
+            /* use a default message             */
+            stringVal = new_string("<BAD MESSAGE>"); /* must be stringValue, not value, otherwise trap */
         }
         else
-                                       /* use a null string                 */
-          stringVal = OREF_NULLSTRING;
-      }
+        {
+            selector -= '0';                 /* convert to a number               */
+            // still in range?
+            if (selector <= substitutions)    /* out of our range?                 */
+            {
+                RexxObject *value = additional->get(selector);
+                if (value != OREF_NULL)      /* have a value?                     */
+                {
+                    /* set the reentry flag              */
+                    this->requestingString = true;
+                    this->stackcheck = false;    /* disable the checking              */
+                    // save the actitivation level in case there's an error unwind for an unhandled
+                    // exception;
+                    size_t activityLevel = getActivationLevel();
+                    /* now protect against reentry       */
+                    try
+                    {
+                        /* force to character form           */
+                        stringVal = value->stringValue();
+                    }
+                    catch (ActivityException)
+                    {
+                        stringVal = value->defaultName();
+                    }
+
+                    // make sure we get restored to the same base activation level.
+                    restoreActivationLevel(activityLevel);
+                    /* we're safe again                  */
+                    this->requestingString = false;
+                    this->stackcheck = true;     /* disable the checking              */
+                }
+            }
+        }
+        /* accumulate the front part         */
+        newmessage = newmessage->concat(front->concat(stringVal));
+        message = back;                    /* replace with the remainder        */
     }
-                                       /* accumulate the front part         */
-    newmessage = newmessage->concat(front->concat(stringVal));
-    message = back;                    /* replace with the remainder        */
-  }
-                                       /* add on any remainder              */
-  newmessage = newmessage->concat(message);
-  return newmessage;                   /* return the message                */
+    /* add on any remainder              */
+    newmessage = newmessage->concat(message);
+    return newmessage;                   /* return the message                */
 }
 
 /**
@@ -2379,10 +2375,10 @@ bool RexxActivity::callCommandExit(RexxActivation *activation, RexxString *addre
         exit_parm.rxcmd_flags.rxfcfail = 0;/* Initialize failure/error to zero  */
         exit_parm.rxcmd_flags.rxfcerr = 0;
         /* fill in the environment parm      */
-        exit_parm.rxcmd_addressl = (unsigned short)environment->getLength();
-        exit_parm.rxcmd_address = environment->getStringData();
+        exit_parm.rxcmd_addressl = (unsigned short)address->getLength();
+        exit_parm.rxcmd_address = address->getStringData();
         /* make cmdaname into RXSTRING form  */
-        cmdname->toRxstring(exit_parm.rxcmd_command);
+        command->toRxstring(exit_parm.rxcmd_command);
 
         exit_parm.rxcmd_dll = NULL;        /* Currently no DLL support          */
         exit_parm.rxcmd_dll_len = 0;       /* 0 means .EXE style                */
@@ -3097,4 +3093,19 @@ RexxString *RexxActivity::resolveProgramName(RexxString *name, RexxString *dir, 
 RexxObject *RexxActivity::getLocalEnvironment(RexxString *name)
 {
     return instance->getLocalEnvironment(name);
+}
+
+
+/**
+ * Resolve a command handler from the interpreter
+ * instance.
+ *
+ * @param name   The name of the command environment.
+ *
+ * @return A configured command environment, or OREF_NULL if the
+ *         target environment is not found.
+ */
+CommandHandler *RexxActivity::resolveCommandHandler(RexxString *name)
+{
+    return instance->resolveCommandHandler(name);
 }

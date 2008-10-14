@@ -57,6 +57,8 @@
 #include "ProtectedObject.hpp"
 #include "RexxInternalApis.h"          /* Get private REXXAPI API's         */
 #include "SystemInterpreter.hpp"
+#include "InterpreterInstance.hpp"
+#include "SysInterpreterInstance.hpp"
 
 #define CMDBUFSIZE32S 260              /* Max size of executable cmd     */
 #define CMDBUFSIZENT 8092              /* Max size of executable cmd     */
@@ -318,7 +320,7 @@ RexxObjectPtr RexxEntry systemCommandHandler(RexxExitContext *context, RexxStrin
     {
         if (interncmd[i] == '"')
         {
-            iQuotes = inQuotes;
+            inQuotes = inQuotes;
         }
         else
         {
@@ -373,7 +375,7 @@ RexxObjectPtr RexxEntry systemCommandHandler(RexxExitContext *context, RexxStrin
                     int code = _chdrive(toupper( tmp[0] ) - 'A' + 1);
                     if (code != 0)
                     {
-                        context->RaiseCondition("ERROR", command, NULLOBJECT, context->WholeNumberToObject(code));
+                        context->RaiseCondition("ERROR", context->StringData(command), NULLOBJECT, context->WholeNumberToObject(code));
                         return NULLOBJECT;
                     }
                     else
@@ -451,7 +453,8 @@ RexxObjectPtr RexxEntry systemCommandHandler(RexxExitContext *context, RexxStrin
             cmdstring_ptr[i]='\0';
         }
 
-        bool fileFound = SearchPath(NULL, cmdstring_ptr, ".EXE", CMDBUFSIZENT-1, cmdstring, (LPSTR *)&filepart) != 0;
+        LPSTR filepart;
+        bool fileFound = SearchPath(NULL, cmdstring_ptr, ".EXE", CMDBUFSIZENT-1, cmdstring, &filepart) != 0;
         cmdstring_ptr = cmdstring;           /* Set pointer again to cmd buffer (might have been increased) */
 
         if (fileFound && !stricmp(sys_cmd_handler, cmdstring_ptr))
@@ -510,6 +513,7 @@ void SysInterpreterInstance::registerCommandHandlers(InterpreterInstance *instan
 {
     // Windows only has the single command environment, we also register this
     // under "" for the default handler
-    instance->addCommandHandler("CMD", systemCommandHandler);
-    instance->addCommandHandler("", systemCommandHandler);
+    instance->addCommandHandler("CMD", (REXXPFN)systemCommandHandler);
+    instance->addCommandHandler("COMMAND", (REXXPFN)systemCommandHandler);
+    instance->addCommandHandler("", (REXXPFN)systemCommandHandler);
 }

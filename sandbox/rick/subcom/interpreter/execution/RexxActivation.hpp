@@ -267,7 +267,7 @@ class ActivationSettings
    RexxString       *resolveProgramName(RexxString *name);
    RexxClass        *findClass(RexxString *name);
    RexxObject       *resolveDotVariable(RexxString *name);
-   RexxObject      * command(RexxString *, RexxString *);
+   void              command(RexxString *, RexxString *);
    int64_t           getElapsed();
    RexxDateTime      getTime();
    RexxInteger     * random(RexxInteger *, RexxInteger *, RexxInteger *);
@@ -339,6 +339,7 @@ class ActivationSettings
    PackageClass     *getPackage();
    RexxObject       *getExecutableObject() { return executable; }
    RexxObject       *getLocalEnvironment(RexxString *name);
+   void              setReturnStatus(int status);
 
    inline void              setCallType(RexxString *type) {this->settings.calltype = type; }
    inline void              pushBlock(RexxDoBlock *block) { block->setPrevious(this->dostack); this->dostack = block; }

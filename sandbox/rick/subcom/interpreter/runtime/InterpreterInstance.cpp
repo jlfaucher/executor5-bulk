@@ -47,6 +47,7 @@
 #include "RexxActivation.hpp"
 #include "PackageManager.hpp"
 #include "DirectoryClass.hpp"
+#include "CommandHandler.hpp"
 
 /**
  * Create a new Package object instance.
@@ -663,6 +664,36 @@ bool InterpreterInstance::processOptions(RexxOption *options)
                 }
             }
         }
+        // old-style registered command handler
+        else if (strcmp(options->optionName, REGISTERED_ENVIRONMENTS) == 0)
+        {
+            RexxRegisteredEnvironment *handlers = (RexxRegisteredEnvironment *)options->option.value.value_POINTER;
+            // if we have handlers, initialize the array
+            if (handlers != NULL)
+            {
+                                               /* while not the list ender          */
+                for (int i= 0; handlers[i].registeredName != NULL; i++)
+                {
+                    // add the handler to this setup
+                    addCommandHandler(handlers[i].name, handlers[i].registeredName);
+                }
+            }
+        }
+        // a direct call command handler
+        else if (strcmp(options->optionName, DIRECT_ENVIRONMENTS) == 0)
+        {
+            RexxContextEnvironment *handlers = (RexxContextEnvironment *)options->option.value.value_POINTER;
+            // if we have handlers, initialize the array
+            if (handlers != NULL)
+            {
+                                               /* while not the list ender          */
+                for (int i= 0; handlers[i].handler != NULL; i++)
+                {
+                    // add the handler to this setup
+                    addCommandHandler(handlers[i].name, (REXXPFN)handlers[i].handler);
+                }
+            }
+        }
         // a package to load at startup
         else if (strcmp(options->optionName, LOAD_REQUIRED_LIBRARY) == 0)
         {
@@ -720,7 +751,7 @@ RexxObject *InterpreterInstance::getLocalEnvironment(RexxString *name)
 void InterpreterInstance::addCommandHandler(const char *name, REXXPFN entryPoint)
 {
     RexxString *handlerName = new_upper_string(name);
-    commandHandlers->put(new CommandHandler(entryPoint), handlerName);
+    commandHandlers->put((RexxObject *)new CommandHandler(entryPoint), handlerName);
 }
 
 /**
@@ -738,7 +769,7 @@ void InterpreterInstance::addCommandHandler(const char *name, const char *regist
     // it's possible we were give a bogus name, so validate this first
     if (handler->isResolved())
     {
-        commandHandlers->put(handler, handlerName);
+        commandHandlers->put((RexxObject *)handler, handlerName);
     }
 }
 
@@ -762,7 +793,7 @@ CommandHandler *InterpreterInstance::resolveCommandHandler(RexxString *name)
         {
             return OREF_NULL;   // can't find this
         }
-        commandHandlers->put(handler, upperName);
+        commandHandlers->put((RexxObject *)handler, upperName);
     }
     return handler;
 }

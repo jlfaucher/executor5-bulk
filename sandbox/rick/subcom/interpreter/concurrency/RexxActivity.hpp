@@ -56,12 +56,14 @@
 #include "SysActivity.hpp"
 
 
+
 class ProtectedObject;                 // needed for look aheads
 class RexxSource;
 class RexxMethod;
 class InterpreterInstance;
 class ActivityDispatcher;
 class CallbackDispatcher;
+class CommandHandler;
 
                                        /* interface values for the          */
                                        /* activity_queue method             */
@@ -140,7 +142,7 @@ typedef enum
    bool        raiseCondition(RexxDirectory *);
    static RexxDirectory *createConditionObject(RexxString *, RexxObject *, RexxString *, RexxObject *, RexxObject *);
    void        raiseException(wholenumber_t, SourceLocation *, RexxSource *, RexxString *, RexxArray *, RexxObject *);
-   static RexxDirectory *createExceptionObject(wholenumber_t, RexxActivation *, SourceLocation *, RexxSource *, RexxString *, RexxArray *, RexxObject *);
+   RexxDirectory *createExceptionObject(wholenumber_t, RexxActivation *, SourceLocation *, RexxSource *, RexxString *, RexxArray *, RexxObject *);
    void        reportAnException(wholenumber_t, const char *);
    void        reportAnException(wholenumber_t, const char *, const char *);
    void        reportAnException(wholenumber_t, RexxObject *, const char *);
@@ -215,7 +217,7 @@ typedef enum
    bool callObjectFunctionExit(RexxActivation *, RexxString *, RexxObject *, ProtectedObject &, RexxObject **, size_t);
    bool callFunctionExit(RexxActivation *, RexxString *, RexxObject *, ProtectedObject &, RexxObject **, size_t);
    bool callScriptingExit(RexxActivation *, RexxString *, RexxObject *, ProtectedObject &, RexxObject **, size_t);
-   bool callCommandExit(RexxActivation *, RexxString *, RexxString *, RexxString **, RexxObject **);
+   bool callCommandExit(RexxActivation *, RexxString *, RexxString *, ProtectedObject &result, ProtectedObject &condition);
    bool callPullExit(RexxActivation *, RexxString *&);
    bool callPushExit(RexxActivation *, RexxString *, int);
    bool callQueueSizeExit(RexxActivation *, RexxInteger *&);
@@ -316,6 +318,7 @@ typedef enum
    void createExitContext(ExitContext &context, RexxNativeActivation *owner);
    RexxObject *getLocalEnvironment(RexxString *name);
    RexxDirectory *getLocal();
+   CommandHandler *resolveCommandHandler(RexxString *);
 
    static void initializeThreadContext();
 
