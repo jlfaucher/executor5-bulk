@@ -1283,8 +1283,9 @@ default line end separator.</para>
 <para>Returns the index of the item that
 follows the array item having index <emphasis role="italic">index</emphasis>
 or returns the Nil object if the item having that index is last in the array.
-The <emphasis role="bold">next</emphasis>
-method is valid only for single-index arrays.</para>
+The <emphasis role="bold">next</emphasis> method uses the same ordering as the
+<emphasis role="bold">allItems</emphasis> method to convert a multidimensional
+array into a non-sparse array.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>next method</secondary></indexterm>
@@ -1910,13 +1911,10 @@ index values in the receiver collection.</para>
 
 <para>Returns a new collection of the same class as the receiver that contains
 all the items from the receiver collection and selected items from the
-<emphasis role="italic">argument</emphasis> collection. This method includes
-an item from <emphasis role="italic">argument</emphasis> in
-the new collection only if there is no item with the same associated index
-in the receiver collection and the method has not already included an item
-with the same index. The order in which this method selects items in
+<emphasis role="italic">argument</emphasis> collection. The order in which this 
+method selects items in
 <emphasis role="italic">argument</emphasis> is unspecified. (The program
-should not rely on any order.) See also the
+should not rely on any order.) See the
 <emphasis role="bold">union</emphasis> method of the Collection
 (<link linkend="mthCollectionUnion">union</link>) and Relation
 (<link linkend="mthRelationUnion">union</link>) classes. The
