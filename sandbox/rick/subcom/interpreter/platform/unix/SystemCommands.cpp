@@ -104,7 +104,7 @@ RexxString *SystemInterpreter::getDefaultAddressName()
 }
 
 /* Handle "export" command in same process */
-bool sys_process_export(RexxExitContext *, const char * cmd, RexxObjectPtr &rc, int flag)
+bool sys_process_export(RexxExitContext *context, const char * cmd, RexxObjectPtr &rc, int flag)
 {
     char *Env_Var_String = NULL;         /* Environment variable string for   */
     size_t size, allocsize;              /* size of the string                */
@@ -183,7 +183,7 @@ bool sys_process_export(RexxExitContext *, const char * cmd, RexxObjectPtr &rc, 
         else
         {
             // this worked ok (well, sort of)
-            rc = context->False;
+            rc = context->False();
             return true;
         }
     }
@@ -340,7 +340,7 @@ bool sys_process_export(RexxExitContext *, const char * cmd, RexxObjectPtr &rc, 
         if (errCode != 0)
         {
             // non-zero is an error condition
-            context->RaiseException("ERROR", cmd, NULL, context->WholeNumberToObject(errCode));
+            context->RaiseCondition("ERROR", cmd, NULL, context->WholeNumberToObject(errCode));
         }
         else
         {
@@ -358,7 +358,7 @@ bool sys_process_export(RexxExitContext *, const char * cmd, RexxObjectPtr &rc, 
 
 
 /* Handle "cd XXX" command in same process */
-bool sys_process_cd(RexxExitContext *, const char * cmd, RexxObjectPtr rc)
+bool sys_process_cd(RexxExitContext *context, const char * cmd, RexxObjectPtr rc)
 {
     const char * st;
     const char *home_dir = NULL;            /* home directory path        */
@@ -456,7 +456,7 @@ bool sys_process_cd(RexxExitContext *, const char * cmd, RexxObjectPtr rc)
     if (errCode != 0)
     {
         // non-zero is an error condition
-        context->RaiseException("ERROR", cmd, NULL, context->WholeNumberToObject(errCode));
+        context->RaiseCondition("ERROR", cmd, NULL, context->WholeNumberToObject(errCode));
     }
     else
     {
@@ -554,6 +554,7 @@ RexxObjectPtr RexxEntry systemCommandHandler(RexxExitContext *context, RexxStrin
     }
     else if (commandLen >= 3)
     {
+        char tmp[16]; 
         strncpy(tmp, cmd, 3);
         tmp[3] = '\0';
         if (strcmp("cd ",tmp) == 0)
@@ -576,7 +577,7 @@ RexxObjectPtr RexxEntry systemCommandHandler(RexxExitContext *context, RexxStrin
         tmp[6] = '\0';
         if (Utilities::strCaselessCompare("unset ", tmp) == 0)
         {
-            if (sys_process_export(context cmd, rc, UNSET_FLAG))
+            if (sys_process_export(context, cmd, rc, UNSET_FLAG))
             {
                 return rc;
             }
@@ -608,7 +609,7 @@ RexxObjectPtr RexxEntry systemCommandHandler(RexxExitContext *context, RexxStrin
 
     if (Utilities::strCaselessCompare("bash", envName) == 0)
     {
-        int errCode = system( cmd );
+        errCode = system( cmd );
         if ( errCode >= 256 )
         {
             errCode = errCode / 256;
@@ -617,7 +618,8 @@ RexxObjectPtr RexxEntry systemCommandHandler(RexxExitContext *context, RexxStrin
     else
 #endif
     {
-        pid = fork();
+        int pid = fork();
+        int status; 
 
         if (pid != 0)                         /* spawn a child process to run the  */
         {
@@ -679,12 +681,12 @@ RexxObjectPtr RexxEntry systemCommandHandler(RexxExitContext *context, RexxStrin
     if (errCode == UNKNOWN_COMMAND)
     {
         // failure condition
-        context->RaiseException("FAILURE", cmd, NULL, context->WholeNumberToObject(errCode));
+        context->RaiseCondition("FAILURE", cmd, NULL, context->WholeNumberToObject(errCode));
     }
     else if (errCode != 0)
     {
         // non-zero is an error condition
-        context->RaiseException("ERROR", cmd, NULL, context->WholeNumberToObject(errCode));
+        context->RaiseCondition("ERROR", cmd, NULL, context->WholeNumberToObject(errCode));
     }
     return context->False();      // zero return code
 }
@@ -695,16 +697,16 @@ RexxObjectPtr RexxEntry systemCommandHandler(RexxExitContext *context, RexxStrin
  *
  * @param instance The created instance.
  */
-void SysInterpreterInstance::registerCommandHandlers(InterpreterInstance *instance)
+void SysInterpreterInstance::registerCommandHandlers(InterpreterInstance *_instance)
 {
     // Unix has a whole collection of similar environments, services by a single handler
-    instance->addCommandHandler("COMMAND", (REXXPFN)systemCommandHandler);
-    instance->addCommandHandler("", (REXXPFN)systemCommandHandler);
-    instance->addCommandHandler("SH", (REXXPFN)systemCommandHandler);
-    instance->addCommandHandler("KSH", (REXXPFN)systemCommandHandler);
-    instance->addCommandHandler("CSH", (REXXPFN)systemCommandHandler);
-    instance->addCommandHandler("BSH", (REXXPFN)systemCommandHandler);
-    instance->addCommandHandler("BASH", (REXXPFN)systemCommandHandler);
+    _instance->addCommandHandler("COMMAND", (REXXPFN)systemCommandHandler);
+    _instance->addCommandHandler("", (REXXPFN)systemCommandHandler);
+    _instance->addCommandHandler("SH", (REXXPFN)systemCommandHandler);
+    _instance->addCommandHandler("KSH", (REXXPFN)systemCommandHandler);
+    _instance->addCommandHandler("CSH", (REXXPFN)systemCommandHandler);
+    _instance->addCommandHandler("BSH", (REXXPFN)systemCommandHandler);
+    _instance->addCommandHandler("BASH", (REXXPFN)systemCommandHandler);
 }
 
 

@@ -3475,11 +3475,11 @@ void RexxActivation::traceClause(      /* trace a REXX instruction          */
  *
  * @return The return code object
  */
-void RexxActivation::command(RexxString *address, RexxString *command)
+void RexxActivation::command(RexxString *address, RexxString *commandString)
 {
     bool         instruction_traced;     /* instruction has been traced       */
     ProtectedObject condition;
-    ProtectedObject result;
+    ProtectedObject commandResult;
 
                                          /* instruction already traced?       */
     if (tracingAll() || tracingCommands())
@@ -3491,28 +3491,27 @@ void RexxActivation::command(RexxString *address, RexxString *command)
         instruction_traced = false;        /* not traced yet                    */
     }
                                            /* if exit declines call             */
-    if (this->activity->callCommandExit(this, address, command, result, condition))
+    if (this->activity->callCommandExit(this, address, commandString, commandResult, condition))
     {
         // first check for registered command handlers
         CommandHandler *handler = activity->resolveCommandHandler(address);
         if (handler != OREF_NULL)
         {
-            handler->call(activity, this, address, command, result, condition);
+            handler->call(activity, this, address, commandString, commandResult, condition);
         }
         else
         {
             // No handler for this environment
             result = new_integer(RXSUBCOM_NOTREG);   // just use the not registered return code
             // raise the condition when things are done
-            condition = RexxActivity::createConditionObject(OREF_FAILURENAME, (RexxObject *)result, command, OREF_NULL, OREF_NULL);
+            condition = RexxActivity::createConditionObject(OREF_FAILURENAME, (RexxObject *)commandResult, commandString, OREF_NULL, OREF_NULL);
         }
     }
 
-    RexxObject *rc = (RexxObject *)result;
+    RexxObject *rc = (RexxObject *)commandResult;
     RexxDirectory *conditionObj = (RexxDirectory *)(RexxObject *)condition;
 
     bool failureCondition = false;    // don't have a failure condition yet
-    bool errorTrace = false;          // mark whether we need to trace error/failure conditions
 
     int returnStatus = RETURN_STATUS_NORMAL;
     // did a handler raise a condition?  We need to pull the rc value from the
@@ -3570,7 +3569,7 @@ void RexxActivation::command(RexxString *address, RexxString *command)
             /* trace the current instruction     */
             this->traceClause(this->current, TRACE_PREFIX_CLAUSE);
             /* then we always trace full command */
-            this->traceValue(command, TRACE_PREFIX_RESULT);
+            this->traceValue(commandString, TRACE_PREFIX_RESULT);
             instruction_traced = true;       /* we've now traced this             */
         }
 

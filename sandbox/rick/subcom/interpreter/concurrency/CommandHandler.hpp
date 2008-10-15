@@ -63,7 +63,7 @@ public:
 
     void call(RexxActivity *activity, RexxActivation *activation, RexxString *address, RexxString *command, ProtectedObject &rc, ProtectedObject &condition);
     void resolve(const char *name);
-    inline boolean isResolved() { return type != UNRESOLVED; }
+    inline bool isResolved() { return type != UNRESOLVED; }
 
 protected:
 
