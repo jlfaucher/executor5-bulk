@@ -148,5 +148,18 @@ return testResult
    self~assertEquals(.nil, que[6])
 
 ::method "test_6"
-   -- supplier
+   que = .circularqueue~of("David", "Rick")
+   sup = que~supplier
+   self~assertEquals('a Supplier', sup)
+   self~assertEquals(1, sup~available)
+   self~assertEquals(1, sup~index)
+   self~assertEquals('David', sup~item)
+   sup~next
+   self~assertEquals(1, sup~available)
+   self~assertEquals(2, sup~index)
+   self~assertEquals('Rick', sup~item)
+   sup~next
+   self~assertEquals(0, sup~available)
+   self~expectSyntax(93.937)
+   sup~next
 

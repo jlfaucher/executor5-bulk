@@ -221,5 +221,18 @@ return testResult
    self~assertEquals(3, que~items)
 
 ::method "test_17"
-   -- supplier
+   que = .queue~of("David", "Rick")
+   sup = que~supplier
+   self~assertEquals('a Supplier', sup)
+   self~assertEquals(1, sup~available)
+   self~assertEquals(1, sup~index)
+   self~assertEquals('David', sup~item)
+   sup~next
+   self~assertEquals(1, sup~available)
+   self~assertEquals(2, sup~index)
+   self~assertEquals('Rick', sup~item)
+   sup~next
+   self~assertEquals(0, sup~available)
+   self~expectSyntax(93.937)
+   sup~next
 

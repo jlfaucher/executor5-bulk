@@ -222,7 +222,22 @@ return testResult
    self~assertEquals(1, arr~hasItem('Spy'))
 
 ::method "test_16"
-   -- supplier
+   dir = .directory~new()
+   dir['MIKE'] = 'Shrek'
+   dir['Dennis'] = 'Miller'
+   sup = dir~supplier
+   self~assertEquals('a Supplier', sup)
+   self~assertEquals(1, sup~available)
+   if sup~index = 'MIKE' then self~assertEquals('Shrek', sup~item)
+   else if sup~index = 'Dennis' then self~assertEquals('Miller', sup~item)
+   sup~next
+   self~assertEquals(1, sup~available)
+   if sup~index = 'MIKE' then self~assertEquals('Shrek', sup~item)
+   else if sup~index = 'Dennis' then self~assertEquals('Miller', sup~item)
+   sup~next
+   self~assertEquals(0, sup~available)
+   self~expectSyntax(93.937)
+   sup~next
 
 ::method "test_17"
    dir = .directory~new()
@@ -235,4 +250,14 @@ return testResult
 
 ::method "test_18"
    -- xor
+   dir = .directory~new()
+   dir['MIKE'] = 'Shrek'
+   dir['Dennis'] = 'Miller'
+   dir['Linda'] = 'Miller'
+   arr = .array~of('MIKE', 'Dennis') 
+   -- Note: The array is converted to a bag in the xor method and the
+   --       array indexes are lost
+   newdir = dir~xor(arr)
+   self~assertEquals('Miller', newdir['Linda'])
+   self~assertEquals(1, newdir~items)
                                                             
