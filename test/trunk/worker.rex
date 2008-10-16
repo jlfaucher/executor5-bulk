@@ -119,6 +119,12 @@ arguments = arg(1)
 
    testResult~print("ooTest Framework - Automated Test of the ooRexx Interpreter")
 
+   if cl~waitAtCompletion then do
+     say
+     say "The automated test run is finished, hit enter to continue"
+     pull
+   end
+
 return 0
 
 ::requires "ooTest.frm"
@@ -172,6 +178,8 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
 ::attribute forceBuild set private
 ::attribute noTests get                     -- n
 ::attribute noTests set private
+::attribute waitAtCompletion get            -- w
+::attribute waitAtCompletion set private
 
 -- Don't need to look at patterns, multi-dirs, single file, etc..
 ::attribute simpleTestSelection get
@@ -272,6 +280,7 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
   if optTable['suppressTicks'] \== .nil then self~noTestCaseTicks = .true
   if optTable['suppressAllTicks'] \== .nil then self~noTicks = .true
   if optTable['noTests'] \== .nil then self~noTests = .true
+  if optTable['waitAtCompletion'] \== .nil then self~waitAtCompletion = .true
   if optTable['buildFirst'] \== .nil then self~buildFirst = .true
   if optTable['forceBuild'] \== .nil then do
     self~forceBuild = .true
@@ -445,6 +454,10 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
       self~setVerbosity(level)
     end
 
+    when word == '-w' then do
+      optTable['waitAtCompletion'] = .true
+    end
+
     when word == '-X' then do
       j = self~addTestTypes(i, '-X')
     end
@@ -581,6 +594,8 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
   self~simpleTestSelection = .true
   self~testFile = .nil
 
+  self~waitAtCompletion = .false
+
   self~buildFirst = .false
   self~forceBuild = .false
   self~noTests    = .false
@@ -638,6 +653,7 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
   say '  -U  --suppress-all-ticks     Do not show any ticks'
   say '  -v, --version                Show version and quit'
   say '  -V, --verbose=NUM            Set vebosity to NUM'
+  say '  -w, --wait-at-completion     At test end, wait for user to hit enter'
   say
 
   return self~TEST_HELP_RC
