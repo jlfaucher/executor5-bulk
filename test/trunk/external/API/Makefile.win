@@ -70,7 +70,8 @@ OOTEST_BIN_DIR = ..\..\bin\WINDOWS
 
 # Build the libraries
 all: $(OOTEST_BIN_DIR)\orxfunction.dll $(OOTEST_BIN_DIR)\orxmethod.dll \
-     $(OOTEST_BIN_DIR)\orxclassic.dll $(OOTEST_BIN_DIR)\orxclassic1.dll
+     $(OOTEST_BIN_DIR)\orxclassic.dll $(OOTEST_BIN_DIR)\orxclassic1.dll \
+     $(OOTEST_BIN_DIR)\orxclassicexits.dll
 
 $(OOTEST_BIN_DIR)\orxfunction.dll: orxfunction.dll
   copy orxfunction.dll $(OOTEST_BIN_DIR)
@@ -83,6 +84,9 @@ $(OOTEST_BIN_DIR)\orxclassic.dll: orxclassic.dll
 
 $(OOTEST_BIN_DIR)\orxclassic1.dll: orxclassic1.dll
   copy orxclassic1.dll $(OOTEST_BIN_DIR)
+
+$(OOTEST_BIN_DIR)\orxclassicexits.dll: orxclassicexits.dll
+  copy orxclassicexits.dll $(OOTEST_BIN_DIR)
 
 
 # Build the shared library
@@ -102,6 +106,13 @@ orxmethod.dll: orxmethod.obj
 orxmethod.obj: orxmethod.cpp
 	cl $(ORXCFLAGS) orxmethod.cpp
 
+# Build the objects
+orxclassicexits.obj: orxclassicexits.cpp
+	cl $(ORXCFLAGS) orxclassicexits.cpp
+
+# Build the objects
+orxclassic1.obj: orxclassic1.c
+	cl $(ORXCFLAGS) orxclassic1.c
 
 # Build the shared library
 orxclassic.dll: orxclassic.obj
@@ -111,14 +122,13 @@ orxclassic.dll: orxclassic.obj
 orxclassic.obj: orxclassic.cpp
 	cl $(ORXCFLAGS) orxclassic.cpp
 
-
 # Build the shared library
 orxclassic1.dll: orxclassic1.obj
 	link $(ORXLFLAGS) /def:orxclassic1.def orxclassic1.obj
 
-# Build the objects
-orxclassic1.obj: orxclassic1.c
-	cl $(ORXCFLAGS) orxclassic1.c
+# Build the shared library
+orxclassicexits.dll: orxclassicexits.obj
+	link $(ORXLFLAGS) /def:orxclassicexits.def orxclassicexits.obj
 
 clean:
 	del *.dll *.obj *.ilk *.pdb *.lib *.exp $(OOTEST_BIN_DIR)\*.dll 1>nul 2>&1
