@@ -124,7 +124,7 @@ RexxReturnCode REXXENTRY MyTestSubcomHandler(CONSTRXSTRING *Cmd, unsigned short 
 size_t REXXENTRY TestSubcomHandler(const char *Name, long Argc, CONSTRXSTRING Argv[],
                                    const char *Queuename, PRXSTRING Retstr) {
     unsigned short flags;
-    char userarea[8];
+    char userarea[2*sizeof(void *)];  // different size on 64-bit systems
     int retc;
     sprintf(Retstr->strptr, "%d", 0);
     Retstr->strlength = strlen(Retstr->strptr);
