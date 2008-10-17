@@ -736,6 +736,9 @@ its own.</para>
 that are positive whole numbers. You can reference array items by using one
 or more indexes. The number of indexes is the same as the number of dimensions
 of the array. This number is called the dimensionality of the array.</para>
+<para>Array items can be any valid ooRexx object. If an object has not been 
+assigned to an array index then that index is considered to contain the NIL
+object.</para>
 <figure><title>The Array class and methods</title>
 <mediaobject>
 <imageobject>
@@ -1665,7 +1668,7 @@ end
 <indexterm><primary>Set Collection classes</primary>
 <secondary>Bag class</secondary></indexterm>
 
-<para>A bag is a collection that restricts the elements
+<para>A bag is a non-sparse collection that restricts the elements
 to having an item that is the same as the index. Any object can be placed
 in a bag, and the same object can be placed in a bag several times.</para>
 <figure><title>The Bag class and methods</title>
@@ -1975,7 +1978,9 @@ say fruit~items          /* How many pieces? (5)      */
 <para>
 The CircularQueue class allows for storing objects in a circular queue
 of a predefined size. Once the end of the queue has been reached, new item
-objects are inserted from the beginning, replacing earlier entries.
+objects are inserted from the beginning, replacing earlier entries. Any object
+can be placed in the queue and the same object can occupy more than one position
+in the queue.
 </para>
 <figure><title>The CircularQueue class and methods</title>
 <mediaobject>
@@ -2456,8 +2461,9 @@ content: [3,2], content (LIFO): [2->3]
 <indexterm><primary>Map Collection classes</primary>
 <secondary>Directory class</secondary></indexterm>
 
-<para>A directory is a collection with unique
-indexes that are character strings representing names.</para>
+<para>A directory is a non-sparse collection with unique
+indexes that are character strings representing names. The items of the collect
+can be any valid ooRexx object.</para>
 <figure><title>The Directory class and methods</title>
 <mediaobject>
 <imageobject>
@@ -3028,16 +3034,19 @@ Exit
 <secondary>List class</secondary></indexterm>
 
 <para>A list is a non-sparse sequenced collection similar to the
-<link linkend="clsArray">The Array Class</link> to which you
-can add new items at any position in the sequence. The collection supplies
-the list indexes at the time items are added with the
+<link linkend="clsArray">Array Class</link> to which you can add new items at
+any position in the sequence. The collection supplies the list indexes at the
+time items are added with the
 <emphasis role="bold">insert</emphasis> method. The
 <emphasis role="bold">first</emphasis>,
 <emphasis role="bold">last</emphasis>, and
 <emphasis role="bold">next</emphasis> methods can also retrieve list indexes.
 Only indexes the list
 object generates are valid i.e. the list is never a sparse list and the list
-object will not modify indexes for items in the list.</para>
+object will not modify indexes for items in the list. However, the indexes
+themselves can be sparse from a sequence point of view i.e. a sequence of 
+indexes such as 3, 4, 1, 9 are perfectly valid and do not represent the actual
+order of the items in the collection.</para>
 <figure><title>The List class and methods</title>
 <mediaobject>
 <imageobject>
@@ -4948,8 +4957,9 @@ End
 <secondary>Set class</secondary></indexterm>
 
 <para>A set is a collection containing the member items
-where the index is the same as the item. Any object can be placed in a set.
- There can be only one occurrence of any object in a set. </para>
+where the index is the same as the item (similar to a Bag collection). Any 
+object can be placed in a set. There can be only one occurrence of any object in 
+a set (unlike a Bag collection).</para>
 <figure><title>The Set class and methods</title>
 <mediaobject>
 <imageobject>
