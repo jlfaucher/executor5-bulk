@@ -1793,4 +1793,146 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame(interpreterVersion, d2x(tester~TestInterpreterVersion,8))
   self~assertSame(languageLevel, d2x(tester~TestLanguageLevel,8))
 
+::method 'testWholeNumberToObject01'
+  tester = .METHODtester~new
+  val = 0
+  self~assertSame(val, tester~TestWholeNumberToObject(val))
+  self~assertSame(val, tester~TestWholeNumberToObjectAlt(val))
+  val = 65535
+  self~assertSame(val, tester~TestWholeNumberToObject(val))
+  self~assertSame(val, tester~TestWholeNumberToObjectAlt(val))
+  val = 1
+  self~assertSame(val, tester~TestWholeNumberToObject(val))
+  self~assertSame(val, tester~TestWholeNumberToObjectAlt(val))
+  if digits() == 9 then
+      val = 999999999
+  else
+      val = 999999999999999999
+  self~assertSame(val, tester~TestWholeNumberToObject(val))
+  self~assertSame(val, tester~TestWholeNumberToObjectAlt(val))
+  if digits() == 9 then
+      val = -999999999
+  else
+      val = -999999999999999999
+  self~assertSame(val, tester~TestWholeNumberToObject(val))
+  self~assertSame(val, tester~TestWholeNumberToObjectAlt(val))
 
+::method 'testObjectToWholeNumber01'
+  tester = .METHODtester~new
+  val = 0
+  self~assertSame(val, tester~TestObjectToWholeNumber(val))
+  self~assertSame(val, tester~TestObjectToWholeNumberAlt(val))
+  val = 65535
+  self~assertSame(val, tester~TestObjectToWholeNumber(val))
+  self~assertSame(val, tester~TestObjectToWholeNumberAlt(val))
+  val = 1
+  self~assertSame(val, tester~TestObjectToWholeNumber(val))
+  self~assertSame(val, tester~TestObjectToWholeNumberAlt(val))
+  if digits() == 9 then
+      val = 999999999
+  else
+      val = 999999999999999999
+  self~assertSame(val, tester~TestObjectToWholeNumber(val))
+  self~assertSame(val, tester~TestObjectToWholeNumberAlt(val))
+  if digits() == 9 then
+      val = -999999999
+  else
+      val = -999999999999999999
+  self~assertSame(val, tester~TestObjectToWholeNumber(val))
+  self~assertSame(val, tester~TestObjectToWholeNumberAlt(val))
+
+::method 'testObjectToWholenumber02'
+  tester = .METHODtester~new
+  self~expectSyntax('88.900')
+  if digits() == 9 then
+      tester~TestObjectToWholeNumber(1000000000)
+  else
+      tester~TestObjectToWholeNumber(1000000000000000000)
+
+::method 'testObjectToWholenumber02a'
+  tester = .METHODtester~new
+  self~expectSyntax('88.900')
+  if digits() == 9 then
+      tester~TestObjectToWholeNumberAlt(1000000000)
+  else
+      tester~TestObjectToWholeNumberAlt(1000000000000000000)
+
+::method 'testObjectToWholenumber03'
+  tester = .METHODtester~new
+  self~expectSyntax('88.900')
+  if digits() == 9 then
+      tester~TestObjectToWholeNumber(-1000000000)
+  else
+      tester~TestObjectToWholeNumber(-1000000000000000000)
+
+::method 'testObjectToWholenumber03a'
+  tester = .METHODtester~new
+  self~expectSyntax('88.900')
+  if digits() == 9 then
+      tester~TestObjectToWholeNumberAlt(-1000000000)
+  else
+      tester~TestObjectToWholeNumberAlt(-1000000000000000000)
+
+
+::method 'testStringSizeToObject01'
+  tester = .METHODtester~new
+  val = 0
+  self~assertSame(val, tester~TestStringSizeToObject(val))
+  self~assertSame(val, tester~TestStringSizeToObjectAlt(val))
+  val = 65535
+  self~assertSame(val, tester~TestStringSizeToObject(val))
+  self~assertSame(val, tester~TestStringSizeToObjectAlt(val))
+  val = 1
+  self~assertSame(val, tester~TestStringSizeToObject(val))
+  self~assertSame(val, tester~TestStringSizeToObjectAlt(val))
+  if digits() == 9 then
+      val = 999999999
+  else
+      val = 999999999999999999
+  self~assertSame(val, tester~TestStringSizeToObject(val))
+  self~assertSame(val, tester~TestStringSizeToObjectAlt(val))
+
+
+::method 'testObjectToStringSize01'
+  tester = .METHODtester~new
+  val = 0
+  self~assertSame(val, tester~TestObjectToStringSize(val))
+  self~assertSame(val, tester~TestObjectToStringSizeAlt(val))
+  val = 65535
+  self~assertSame(val, tester~TestObjectToStringSize(val))
+  self~assertSame(val, tester~TestObjectToStringSizeAlt(val))
+  val = 1
+  self~assertSame(val, tester~TestObjectToStringSize(val))
+  self~assertSame(val, tester~TestObjectToStringSizeAlt(val))
+  if digits() == 9 then
+      val = 999999999
+  else
+      val = 999999999999999999
+  self~assertSame(val, tester~TestObjectToStringSize(val))
+  self~assertSame(val, tester~TestObjectToStringSizeAlt(val))
+
+::method 'testObjectToStringSize02'
+  tester = .METHODtester~new
+  self~expectSyntax('88.900')
+  if digits() == 9 then
+      tester~TestObjectToStringSize(1000000000)
+  else
+      tester~TestObjectToStringSize(1000000000000000000)
+
+::method 'testObjectToStringSize02a'
+  tester = .METHODtester~new
+  self~expectSyntax('88.900')
+  if digits() == 9 then
+      tester~TestObjectToStringSizeAlt(1000000000)
+  else
+      tester~TestObjectToStringSizeAlt(1000000000000000000)
+
+::method 'testObjectToStringSize03'
+  tester = .METHODtester~new
+  self~expectSyntax('88.900')
+  tester~TestObjectToStringSize(-1)
+
+::method 'testObjectToStringSize03a'
+  tester = .METHODtester~new
+  self~expectSyntax('88.900')
+  tester~TestObjectToStringSizeAlt(-1)

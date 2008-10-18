@@ -421,12 +421,40 @@ RexxMethod1(wholenumber_t,             // Return type
     return result;
 }
 
+RexxMethod1(wholenumber_t,             // Return type
+            TestObjectToWholeNumberAlt,  // Function routine name
+            RexxObjectPtr, arg1)       // Argument
+{
+    wholenumber_t result;
+    if (!context->WholeNumber(arg1, &result))
+    {
+        context->RaiseException1(Rexx_Error_Invalid_argument_user_defined, context->NewStringFromAsciiz("Conversion error"));
+        return 0;
+    }
+
+    return result;
+}
+
 RexxMethod1(stringsize_t,              // Return type
             TestObjectToStringSize,     // Function routine name
             RexxObjectPtr, arg1)       // Argument
 {
     stringsize_t result;
     if (!context->ObjectToStringSize(arg1, &result))
+    {
+        context->RaiseException1(Rexx_Error_Invalid_argument_user_defined, context->NewStringFromAsciiz("Conversion error"));
+        return 0;
+    }
+
+    return result;
+}
+
+RexxMethod1(stringsize_t,              // Return type
+            TestObjectToStringSizeAlt, // Function routine name
+            RexxObjectPtr, arg1)       // Argument
+{
+    stringsize_t result;
+    if (!context->StringSize(arg1, &result))
     {
         context->RaiseException1(Rexx_Error_Invalid_argument_user_defined, context->NewStringFromAsciiz("Conversion error"));
         return 0;
@@ -555,10 +583,24 @@ RexxMethod1(RexxObjectPtr,             // Return type
 }
 
 RexxMethod1(RexxObjectPtr,             // Return type
+            TestWholeNumberToObjectAlt, // Function routine name
+            wholenumber_t, arg1)       // Argument
+{
+    return context->WholeNumber(arg1);
+}
+
+RexxMethod1(RexxObjectPtr,             // Return type
             TestStringSizeToObject,    // Function routine name
             stringsize_t, arg1)        // Argument
 {
     return context->StringSizeToObject(arg1);
+}
+
+RexxMethod1(RexxObjectPtr,             // Return type
+            TestStringSizeToObjectAlt, // Function routine name
+            stringsize_t, arg1)        // Argument
+{
+    return context->StringSize(arg1);
 }
 
 RexxMethod1(RexxObjectPtr,             // Return type
@@ -1879,7 +1921,9 @@ RexxMethodEntry orxtest_methods[] = {
     REXX_METHOD(TestArrayArg,                TestArrayArg),
     REXX_METHOD(TestClassArg,                TestClassArg),
     REXX_METHOD(TestObjectToWholeNumber,     TestObjectToWholeNumber),
+    REXX_METHOD(TestObjectToWholeNumberAlt,  TestObjectToWholeNumberAlt),
     REXX_METHOD(TestObjectToStringSize,      TestObjectToStringSize),
+    REXX_METHOD(TestObjectToStringSizeAlt,   TestObjectToStringSizeAlt),
     REXX_METHOD(TestObjectToInt64,           TestObjectToInt64),
     REXX_METHOD(TestObjectToUnsignedInt64,   TestObjectToUnsignedInt64),
     REXX_METHOD(TestObjectToInt32,           TestObjectToInt32),
@@ -1889,7 +1933,9 @@ RexxMethodEntry orxtest_methods[] = {
     REXX_METHOD(TestObjectToLogical,         TestObjectToLogical),
     REXX_METHOD(TestObjectToDouble,          TestObjectToDouble),
     REXX_METHOD(TestWholeNumberToObject,     TestWholeNumberToObject),
+    REXX_METHOD(TestWholeNumberToObjectAlt,  TestWholeNumberToObjectAlt),
     REXX_METHOD(TestStringSizeToObject,      TestStringSizeToObject),
+    REXX_METHOD(TestStringSizeToObjectAlt,   TestStringSizeToObjectAlt),
     REXX_METHOD(TestInt64ToObject,           TestInt64ToObject),
     REXX_METHOD(TestUnsignedInt64ToObject,   TestUnsignedInt64ToObject),
     REXX_METHOD(TestInt32ToObject,           TestInt32ToObject),

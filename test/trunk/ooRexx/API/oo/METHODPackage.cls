@@ -203,6 +203,14 @@
 ::method TestNewStringFromAsciizAlt EXTERNAL "LIBRARY orxmethod TestNewStringFromAsciizAlt"
 ::method TestNewString EXTERNAL "LIBRARY orxmethod TestNewString"
 ::method TestNewStringAlt EXTERNAL "LIBRARY orxmethod TestNewStringAlt"
+::method TestObjectToWholeNumber EXTERNAL "LIBRARY orxmethod TestObjectToWholeNumber"
+::method TestObjectToWholeNumberAlt EXTERNAL "LIBRARY orxmethod TestObjectToWholeNumberAlt"
+::method TestWholeNumberToObject EXTERNAL "LIBRARY orxmethod TestWholeNumberToObject"
+::method TestWholeNumberToObjectAlt EXTERNAL "LIBRARY orxmethod TestWholeNumberToObjectAlt"
+::method TestStringSizeToObject EXTERNAL "LIBRARY orxmethod TestStringSizeToObject"
+::method TestStringSizeToObjectAlt EXTERNAL "LIBRARY orxmethod TestStringSizeToObjectAlt"
+::method TestObjectToStringSize EXTERNAL "LIBRARY orxmethod TestObjectToStringSize"
+::method TestObjectToStringSizeAlt EXTERNAL "LIBRARY orxmethod TestObjectToStringSizeAlt"
 
 ::method TestRaiseExceptionX
   signal on syntax
