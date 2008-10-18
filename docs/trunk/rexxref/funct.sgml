@@ -2370,23 +2370,36 @@ ERRORTEXT(60)    ->    ""
 ]]>
 </programlisting>
 
-<para>Returns a selected element of filespec, a given
-file specification, identified by one of the following strings for option:</para>
+<para>Returns a selected element of <emphasis role="italic">filespec</emphasis>,
+given file specification, identified by one of the following option strings:
+</para>
 <variablelist>
 <varlistentry><term>Drive</term>
-<listitem><para>The drive letter of the given filespec.
+<listitem><para>The drive letter of the given filespec.  Only available on
+Windows
 </para></listitem></varlistentry>
 <varlistentry><term>Path</term>
 <listitem><para>The directory path of the given
 <emphasis role="italic">filespec</emphasis>.
 </para></listitem></varlistentry>
+<varlistentry><term>Location</term>
+<listitem><para>The full location portion of the given
+<emphasis role="italic">filespec</emphasis>.  On Windows, this
+will include both the Drive and Path information.  On other platforms,
+this returns the same result as the Path option.
+</para></listitem></varlistentry>
 <varlistentry><term>Name</term>
 <listitem><para>The file name of the given
 <emphasis role="italic">filespec</emphasis>.
 </para></listitem></varlistentry>
+<varlistentry><term>Extension</term>
+<listitem><para>The extension portion of the
+<emphasis role="italic">filespec</emphasis> file name.
+</para></listitem></varlistentry>
 </variablelist>
-<para>If the requested string is not found, then FILESPEC returns a null string
-(&quot;&quot;). </para>
+<para>If <emphasis role="italic">filespec</emphasis> the requested information,
+then the FILESPEC function returns a null string (&quot;&quot;).
+</para>
 
 <note><title>Note</title>
 <para>Only the initial letter of option is needed.</para></note>
@@ -2399,7 +2412,9 @@ file specification, identified by one of the following strings for option:</para
 thisfile = "C:\WINDOWS\UTIL\SYSTEM.INI"
 say FILESPEC("drive",thisfile)     /* says "C:"              */
 say FILESPEC("path",thisfile)      /* says "\WINDOWS\UTIL\"  */
+say FILESPEC("location",thisfile)  /* says "C:\WINDOWS\UTIL\"  */
 say FILESPEC("name",thisfile)      /* says "SYSTEM.INI"      */
+say FILESPEC("extension",thisfile) /* says "INI"      */
 part = "name"
 say FILESPEC(part,thisfile)        /* says "SYSTEM.INI"      */
 </programlisting>
