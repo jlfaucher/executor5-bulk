@@ -725,7 +725,7 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame(1, tester~TestOptionalDoubleArg(1))
   self~assertSame(0, tester~TestOptionalDoubleArg())
 
-::method 'testDoublel02'
+::method 'testDouble02'
   tester = .METHODtester~new
   self~expectSyntax('88.921')
   tester~TestDoubleArg('abc')
@@ -1702,6 +1702,15 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame("a", tester~TestNewStringAlt("abc", 1))
   self~assertSame("", tester~TestNewStringAlt("abc", 0))
 
+::method TestCStringToObject
+  tester = .METHODTester~new
+  self~assertSame("abc", tester~TestCStringToObject("abc"))
+  self~assertSame("", tester~TestCStringToObject(""))
+
+::method TestObjectToCString
+  tester = .METHODTester~new
+  self~assertSame("abc", tester~TestObjectToCString("abc"))
+  self~assertSame("", tester~TestObjectToCString(""))
 
 ::method TestRaiseException001
   tester = .METHODTester~new
@@ -1936,3 +1945,649 @@ return .ooTestResult~new(5)~~addException(err)
   tester = .METHODtester~new
   self~expectSyntax('88.900')
   tester~TestObjectToStringSizeAlt(-1)
+
+::method 'testInt64ToObject01'
+  tester = .METHODtester~new
+  numeric digits 20
+  val = 0
+  self~assertSame(val, tester~TestInt64ToObject(val))
+  self~assertSame(val, tester~TestInt64ToObjectAlt(val))
+  val = 9223372036854775807
+  self~assertSame(val, tester~TestInt64ToObject(val))
+  self~assertSame(val, tester~TestInt64ToObjectAlt(val))
+  val = 1
+  self~assertSame(val, tester~TestInt64ToObject(val))
+  self~assertSame(val, tester~TestInt64ToObjectAlt(val))
+  val = -1
+  self~assertSame(val, tester~TestInt64ToObject(val))
+  self~assertSame(val, tester~TestInt64ToObjectAlt(val))
+  val = '-9223372036854775808'
+  self~assertSame(val, tester~TestInt64ToObject(val))
+  self~assertSame(val, tester~TestInt64ToObjectAlt(val))
+
+::method 'testObjectToInt6401'
+  tester = .METHODtester~new
+  numeric digits 20
+  val = 0
+  self~assertSame(val, tester~TestObjectToInt64(val))
+  self~assertSame(val, tester~TestObjectToInt64Alt(val))
+  val = 9223372036854775807
+  self~assertSame(val, tester~TestObjectToInt64(val))
+  self~assertSame(val, tester~TestObjectToInt64Alt(val))
+  val = 1
+  self~assertSame(val, tester~TestObjectToInt64(val))
+  self~assertSame(val, tester~TestObjectToInt64Alt(val))
+  val = -1
+  self~assertSame(val, tester~TestObjectToInt64(val))
+  self~assertSame(val, tester~TestObjectToInt64Alt(val))
+  val = '-9223372036854775808'
+  self~assertSame(val, tester~TestObjectToInt64(val))
+  self~assertSame(val, tester~TestObjectToInt64Alt(val))
+
+::method 'testObjectToInt6402'
+  tester = .METHODtester~new
+  self~expectSyntax('88.900')
+  tester~TestObjectToInt64(9223372036854775808)
+
+::method 'testObjectToInt6402a'
+  tester = .METHODtester~new
+  self~expectSyntax('88.900')
+  tester~TestObjectToInt64Alt(9223372036854775808)
+
+::method 'testObjectToInt6403'
+  tester = .METHODtester~new
+  self~expectSyntax('88.900')
+  tester~TestObjectToInt64('-9223372036854775809')
+
+::method 'testObjectToInt6403a'
+  tester = .METHODtester~new
+  self~expectSyntax('88.900')
+  tester~TestObjectToInt64Alt('-9223372036854775809')
+
+::method 'testUnsignedInt64ToObject01'
+  tester = .METHODtester~new
+  numeric digits 21
+  val = 0
+  self~assertSame(val, tester~TestUnsignedInt64ToObject(val))
+  self~assertSame(val, tester~TestUnsignedInt64ToObjectAlt(val))
+  val = 18446744073709551615
+  self~assertSame(val, tester~TestUnsignedInt64ToObject(val))
+  self~assertSame(val, tester~TestUnsignedInt64ToObjectAlt(val))
+  val = 1
+  self~assertSame(val, tester~TestUnsignedInt64ToObject(val))
+  self~assertSame(val, tester~TestUnsignedInt64ToObjectAlt(val))
+
+::method 'testObjectToUnsignedInt6401'
+  tester = .METHODtester~new
+  numeric digits 21
+  val = 0
+  self~assertSame(val, tester~TestObjectToUnsignedInt64(val))
+  self~assertSame(val, tester~TestObjectToUnsignedInt64Alt(val))
+  val = 18446744073709551615
+  self~assertSame(val, tester~TestObjectToUnsignedInt64(val))
+  self~assertSame(val, tester~TestObjectToUnsignedInt64Alt(val))
+  val = 1
+  self~assertSame(val, tester~TestObjectToUnsignedInt64(val))
+  self~assertSame(val, tester~TestObjectToUnsignedInt64Alt(val))
+
+::method 'testObjectToUnsignedInt6402'
+  tester = .METHODtester~new
+  self~expectSyntax('88.900')
+  tester~TestObjectToUnsignedInt64(18446744073709551616)
+
+::method 'testObjectToUnsignedInt6402a'
+  tester = .METHODtester~new
+  self~expectSyntax('88.900')
+  tester~TestObjectToUnsignedInt64Alt(18446744073709551616)
+
+::method 'testObjectToUnsignedInt6403'
+  tester = .METHODtester~new
+  self~expectSyntax('88.900')
+  tester~TestObjectToUnsignedInt64('-1')
+
+::method 'testObjectToUnsignedInt6403a'
+  tester = .METHODtester~new
+  self~expectSyntax('88.900')
+  tester~TestObjectToUnsignedInt64Alt('-1')
+
+::method 'testInt32ToObject01'
+  tester = .METHODtester~new
+  numeric digits 11
+  val = 0
+  self~assertSame(val, tester~TestInt32ToObject(val))
+  self~assertSame(val, tester~TestInt32ToObjectAlt(val))
+  val = 2147483647
+  self~assertSame(val, tester~TestInt32ToObject(val))
+  self~assertSame(val, tester~TestInt32ToObjectAlt(val))
+  val = 1
+  self~assertSame(val, tester~TestInt32ToObject(val))
+  self~assertSame(val, tester~TestInt32ToObjectAlt(val))
+  val = -1
+  self~assertSame(val, tester~TestInt32ToObject(val))
+  self~assertSame(val, tester~TestInt32ToObjectAlt(val))
+  val = '-2147483648'
+  self~assertSame(val, tester~TestInt32ToObject(val))
+  self~assertSame(val, tester~TestInt32ToObjectAlt(val))
+  self~assertSame(1, tester~TestInt32ToObject(1.0))
+  self~assertSame(1, tester~TestInt32ToObjectAlt(1.0))
+  self~assertSame(1, tester~TestInt32ToObject(2.1 - 1.1))    -- forces this to be a number string
+  self~assertSame(1, tester~TestInt32ToObjectAlt(2.1 - 1.1))    -- forces this to be a number string
+  self~assertSame(1, tester~TestInt32ToObject(word("2 1 3", 2)))   -- forces this to be a character string
+  self~assertSame(1, tester~TestInt32ToObjectAlt(word("2 1 3", 2)))   -- forces this to be a character string
+  self~assertSame(1, tester~TestInt32ToObject(1e0))
+  self~assertSame(1, tester~TestInt32ToObjectAlt(1e0))
+
+::method 'testObjectToInt3201'
+  tester = .METHODtester~new
+  numeric digits 11
+  val = 0
+  self~assertSame(val, tester~TestObjectToInt32(val))
+  self~assertSame(val, tester~TestObjectToInt32Alt(val))
+  val = 2147483647
+  self~assertSame(val, tester~TestObjectToInt32(val))
+  self~assertSame(val, tester~TestObjectToInt32Alt(val))
+  val = 1
+  self~assertSame(val, tester~TestObjectToInt32(val))
+  self~assertSame(val, tester~TestObjectToInt32Alt(val))
+  val = -1
+  self~assertSame(val, tester~TestObjectToInt32(val))
+  self~assertSame(val, tester~TestObjectToInt32Alt(val))
+  val = '-2147483648'
+  self~assertSame(val, tester~TestObjectToInt32(val))
+  self~assertSame(val, tester~TestObjectToInt32Alt(val))
+  self~assertSame(1, tester~TestObjectToInt32(1.0))
+  self~assertSame(1, tester~TestObjectToInt32Alt(1.0))
+  self~assertSame(1, tester~TestObjectToInt32(2.1 - 1.1))    -- forces this to be a number string
+  self~assertSame(1, tester~TestObjectToInt32Alt(2.1 - 1.1))    -- forces this to be a number string
+  self~assertSame(1, tester~TestObjectToInt32(word("2 1 3", 2)))   -- forces this to be a character string
+  self~assertSame(1, tester~TestObjectToInt32Alt(word("2 1 3", 2)))   -- forces this to be a character string
+  self~assertSame(1, tester~TestObjectToInt32(1e0))
+  self~assertSame(1, tester~TestObjectToInt32Alt(1e0))
+
+::method 'testObjectToInt3202'
+  tester = .METHODtester~new
+  self~expectSyntax('88.900')
+  tester~TestObjectToInt32(2147483648)
+
+::method 'testObjectToInt3202a'
+  tester = .METHODtester~new
+  self~expectSyntax('88.900')
+  tester~TestObjectToInt32Alt(2147483648)
+
+::method 'testObjectToInt3203'
+  tester = .METHODtester~new
+  self~expectSyntax('88.900')
+  tester~TestObjectToInt32('-2147483649')
+
+::method 'testObjectToInt3203a'
+  tester = .METHODtester~new
+  self~expectSyntax('88.900')
+  tester~TestObjectToInt32Alt('-2147483649')
+
+::method 'testUnsignedInt32ToObject01'
+  tester = .METHODtester~new
+  numeric digits 11
+  val = 0
+  self~assertSame(val, tester~TestUnsignedInt32ToObject(val))
+  self~assertSame(val, tester~TestUnsignedInt32ToObjectAlt(val))
+  val = 4294967295
+  self~assertSame(val, tester~TestUnsignedInt32ToObject(val))
+  self~assertSame(val, tester~TestUnsignedInt32ToObjectAlt(val))
+  val = 1
+  self~assertSame(val, tester~TestUnsignedInt32ToObject(val))
+  self~assertSame(val, tester~TestUnsignedInt32ToObjectAlt(val))
+
+::method 'testTestUnsignedInt32ToObject01'
+  tester = .METHODtester~new
+  numeric digits 11
+  val = 0
+  self~assertSame(val, tester~TestObjectToUnsignedInt32(val))
+  self~assertSame(val, tester~TestObjectToUnsignedInt32Alt(val))
+  val = 4294967295
+  self~assertSame(val, tester~TestObjectToUnsignedInt32(val))
+  self~assertSame(val, tester~TestObjectToUnsignedInt32Alt(val))
+  val = 1
+  self~assertSame(val, tester~TestObjectToUnsignedInt32(val))
+  self~assertSame(val, tester~TestObjectToUnsignedInt32Alt(val))
+
+::method 'testTestUnsignedInt32ToObject02'
+  tester = .METHODtester~new
+  self~expectSyntax('88.900')
+  tester~TestObjectToUnsignedInt32(4294967296)
+
+::method 'testTestUnsignedInt32ToObject02a'
+  tester = .METHODtester~new
+  self~expectSyntax('88.900')
+  tester~TestObjectToUnsignedInt32Alt(4294967296)
+
+::method 'testTestUnsignedInt32ToObject03'
+  tester = .METHODtester~new
+  self~expectSyntax('88.900')
+  tester~TestObjectToUnsignedInt32(-1)
+
+::method 'testTestUnsignedInt32ToObject03a'
+  tester = .METHODtester~new
+  self~expectSyntax('88.900')
+  tester~TestObjectToUnsignedInt32Alt(-1)
+
+::method 'testIntptr01'
+  tester = .METHODtester~new
+  if digits() == 9 then do
+      val = 2147483647
+      self~assertSame(val, tester~TestIntptrArg(val))
+      val = '-2147483648'
+      self~assertSame(val, tester~TestIntptrArg(val))
+  end
+  else do
+      val = 9223372036854775807
+      self~assertSame(val, tester~TestIntptrArg(val))
+      val = '-9223372036854775808'
+      self~assertSame(val, tester~TestIntptrArg(val))
+  end
+  val = 0
+  self~assertSame(val, tester~TestIntptrArg(val))
+  val = 1
+  self~assertSame(val, tester~TestIntptrArg(val))
+  val = -1
+  self~assertSame(val, tester~TestIntptrArg(val))
+  self~assertSame(1, tester~TestIntptrArg(1.0))
+  self~assertSame(1, tester~TestIntptrArg(2.1 - 1.1))    -- forces this to be a number string
+  self~assertSame(1, tester~TestIntptrArg(word("2 1 3", 2)))   -- forces this to be a character string
+  self~assertSame(1, tester~TestIntptrArg(1e0))
+  self~assertSame(1, tester~TestOptionalIntptrArg(1))
+  self~assertSame(0, tester~TestOptionalIntptrArg())
+
+::method 'testIntptr02'
+  tester = .METHODtester~new
+  self~expectSyntax('88.907')
+  if digits() == 9 then
+      tester~TestIntptrArg(2147483648)
+  else
+      tester~TestIntptrArg(9223372036854775808)
+
+::method 'testIntptr03'
+  tester = .METHODtester~new
+  self~expectSyntax('88.907')
+  if digits() == 9 then
+      tester~TestIntptrArg('-2147483649')
+  else
+      tester~TestIntptrArg('-9223372036854775809')
+
+::method 'testIntptrToObject01'
+  tester = .METHODtester~new
+  if digits() == 9 then do
+      val = 2147483647
+      self~assertSame(val, tester~TestIntptrToObject(val))
+      self~assertSame(val, tester~TestIntptrToObjectAlt(val))
+      val = '-2147483648'
+      self~assertSame(val, tester~TestIntptrToObject(val))
+      self~assertSame(val, tester~TestIntptrToObjectAlt(val))
+  end
+  else do
+      val = 9223372036854775807
+      self~assertSame(val, tester~TestIntptrToObject(val))
+      self~assertSame(val, tester~TestIntptrToObjectAlt(val))
+      val = '-9223372036854775808'
+      self~assertSame(val, tester~TestIntptrToObject(val))
+      self~assertSame(val, tester~TestIntptrToObjectAlt(val))
+  end
+  val = 0
+  self~assertSame(val, tester~TestIntptrToObject(val))
+  self~assertSame(val, tester~TestIntptrToObjectAlt(val))
+  val = 1
+  self~assertSame(val, tester~TestIntptrToObject(val))
+  self~assertSame(val, tester~TestIntptrToObjectAlt(val))
+  val = -1
+  self~assertSame(val, tester~TestIntptrToObject(val))
+  self~assertSame(val, tester~TestIntptrToObjectAlt(val))
+  self~assertSame(1, tester~TestIntptrToObject(1.0))
+  self~assertSame(1, tester~TestIntptrToObjectAlt(1.0))
+  self~assertSame(1, tester~TestIntptrToObject(2.1 - 1.1))    -- forces this to be a number string
+  self~assertSame(1, tester~TestIntptrToObjectAlt(2.1 - 1.1))    -- forces this to be a number string
+  self~assertSame(1, tester~TestIntptrToObject(word("2 1 3", 2)))   -- forces this to be a character string
+  self~assertSame(1, tester~TestIntptrToObjectAlt(word("2 1 3", 2)))   -- forces this to be a character string
+  self~assertSame(1, tester~TestIntptrToObject(1e0))
+  self~assertSame(1, tester~TestIntptrToObjectAlt(1e0))
+
+::method 'testObjectToIntptr01'
+  tester = .METHODtester~new
+  if digits() == 9 then do
+      val = 2147483647
+      self~assertSame(val, tester~TestObjectToIntptr(val))
+      self~assertSame(val, tester~TestObjectToIntptrAlt(val))
+      val = '-2147483648'
+      self~assertSame(val, tester~TestObjectToIntptr(val))
+      self~assertSame(val, tester~TestObjectToIntptrAlt(val))
+  end
+  else do
+      numeric digits 20
+      val = 9223372036854775807
+      self~assertSame(val, tester~TestObjectToIntptr(val))
+      self~assertSame(val, tester~TestObjectToIntptrAlt(val))
+      val = '-9223372036854775808'
+      self~assertSame(val, tester~TestObjectToIntptr(val))
+      self~assertSame(val, tester~TestObjectToIntptrAlt(val))
+  end
+  val = 0
+  self~assertSame(val, tester~TestObjectToIntptr(val))
+  self~assertSame(val, tester~TestObjectToIntptrAlt(val))
+  val = 1
+  self~assertSame(val, tester~TestObjectToIntptr(val))
+  self~assertSame(val, tester~TestObjectToIntptrAlt(val))
+  val = -1
+  self~assertSame(val, tester~TestObjectToIntptr(val))
+  self~assertSame(val, tester~TestObjectToIntptrAlt(val))
+  self~assertSame(1, tester~TestObjectToIntptr(1.0))
+  self~assertSame(1, tester~TestObjectToIntptrAlt(1.0))
+  self~assertSame(1, tester~TestObjectToIntptr(2.1 - 1.1))    -- forces this to be a number string
+  self~assertSame(1, tester~TestObjectToIntptrAlt(2.1 - 1.1))    -- forces this to be a number string
+  self~assertSame(1, tester~TestObjectToIntptr(word("2 1 3", 2)))   -- forces this to be a character string
+  self~assertSame(1, tester~TestObjectToIntptrAlt(word("2 1 3", 2)))   -- forces this to be a character string
+  self~assertSame(1, tester~TestObjectToIntptr(1e0))
+  self~assertSame(1, tester~TestObjectToIntptrAlt(1e0))
+
+::method 'testObjectToIntptr02'
+  tester = .METHODtester~new
+  self~expectSyntax('88.900')
+  if digits() == 9 then
+      tester~TestObjectToIntptr(2147483648)
+  else
+      tester~TestObjectToIntptr(9223372036854775808)
+
+::method 'testObjectToIntptr02a'
+  tester = .METHODtester~new
+  self~expectSyntax('88.900')
+  if digits() == 9 then
+      tester~TestObjectToIntptrAlt(2147483648)
+  else
+      tester~TestObjectToIntptrAlt(9223372036854775808)
+
+::method 'testObjectToIntptr03'
+  tester = .METHODtester~new
+  self~expectSyntax('88.900')
+  if digits() == 9 then
+      tester~TestObjectToIntptr('-2147483649')
+  else
+      tester~TestObjectToIntptr('-9223372036854775809')
+
+::method 'testObjectToIntptr03a'
+  tester = .METHODtester~new
+  self~expectSyntax('88.900')
+  if digits() == 9 then
+      tester~TestObjectToIntptrAlt('-2147483649')
+  else
+      tester~TestObjectToIntptrAlt('-9223372036854775809')
+
+
+::method 'testuintptr01'
+  tester = .METHODtester~new
+
+  if digits() == 9 then do
+      val = 4294967295
+      self~assertSame(val, tester~TestUintptrArg(val))
+  end
+  else do
+      val = 18446744073709551615
+      self~assertSame(val, tester~TestUintptrArg(val))
+  end
+  val = 0
+  self~assertSame(val, tester~TestUintptrArg(val))
+  val = 1
+  self~assertSame(val, tester~TestUintptrArg(val))
+  self~assertSame(1, tester~TestOptionalUintptrArg(1))
+  self~assertSame(0, tester~TestOptionalUintptrArg())
+
+::method 'testuintptr02'
+  tester = .METHODtester~new
+  self~expectSyntax('88.907')
+  if digits() == 9 then
+     tester~TestUintptrArg(4294967296)
+  else
+     tester~TestUintptrArg(18446744073709551616)
+
+::method 'testuintptr03'
+  tester = .METHODtester~new
+  self~expectSyntax('88.907')
+  tester~TestUintptrArg(-1)
+
+::method 'testUintptrToObject01'
+  tester = .METHODtester~new
+
+  if digits() == 9 then do
+      val = 4294967295
+      self~assertSame(val, tester~TestUintptrToObject(val))
+      self~assertSame(val, tester~TestUintptrToObjectAlt(val))
+  end
+  else do
+      val = 18446744073709551615
+      self~assertSame(val, tester~TestUintptrToObject(val))
+      self~assertSame(val, tester~TestUintptrToObjectAlt(val))
+  end
+  val = 0
+  self~assertSame(val, tester~TestUintptrToObject(val))
+  self~assertSame(val, tester~TestUintptrToObjectAlt(val))
+  val = 1
+  self~assertSame(val, tester~TestUintptrToObject(val))
+  self~assertSame(val, tester~TestUintptrToObjectAlt(val))
+
+
+::method 'testObjectToUintptr01'
+  tester = .METHODtester~new
+
+  if digits() == 9 then do
+      val = 4294967295
+      self~assertSame(val, tester~TestObjectToUintptr(val))
+      self~assertSame(val, tester~TestObjectToUintptrAlt(val))
+  end
+  else do
+      val = 18446744073709551615
+      self~assertSame(val, tester~TestObjectToUintptr(val))
+      self~assertSame(val, tester~TestObjectToUintptrAlt(val))
+  end
+  val = 0
+  self~assertSame(val, tester~TestObjectToUintptr(val))
+  self~assertSame(val, tester~TestObjectToUintptrAlt(val))
+  val = 1
+  self~assertSame(val, tester~TestObjectToUintptr(val))
+  self~assertSame(val, tester~TestObjectToUintptrAlt(val))
+
+::method 'testObjectToUintptr02'
+  tester = .METHODtester~new
+  self~expectSyntax('88.900')
+  if digits() == 9 then
+     tester~TestObjectToUintptr(4294967296)
+  else
+     tester~TestObjectToUintptr(18446744073709551616)
+
+::method 'testObjectToUintptr02a'
+  tester = .METHODtester~new
+  self~expectSyntax('88.900')
+  if digits() == 9 then
+     tester~TestObjectToUintptrAlt(4294967296)
+  else
+     tester~TestObjectToUintptrAlt(18446744073709551616)
+
+::method 'testObjectToUintptr03'
+  tester = .METHODtester~new
+  self~expectSyntax('88.900')
+  tester~TestObjectToUintptr(-1)
+
+::method 'testObjectToUintptr03a'
+  tester = .METHODtester~new
+  self~expectSyntax('88.900')
+  tester~TestObjectToUintptrAlt(-1)
+
+::method 'testLogicalToObject01'
+  tester = .METHODtester~new
+  val = .true
+  self~assertSame(val, tester~TestLogicalToObject(val))
+  self~assertSame(val, tester~TestLogicalToObjectAlt(val))
+  val = .false
+  self~assertSame(val, tester~TestLogicalToObject(val))
+  self~assertSame(val, tester~TestLogicalToObjectAlt(val))
+  self~assertSame(.false, tester~TestLogicalToObject('0'||""))
+  self~assertSame(.false, tester~TestLogicalToObjectAlt('0'||""))
+  self~assertSame(.false, tester~TestLogicalToObject(0))
+  self~assertSame(.false, tester~TestLogicalToObjectAlt(0))
+  self~assertSame(.true, tester~TestLogicalToObject('1'||""))
+  self~assertSame(.true, tester~TestLogicalToObjectAlt('1'||""))
+  self~assertSame(.true, tester~TestLogicalToObject(1))
+  self~assertSame(.true, tester~TestLogicalToObjectAlt(1))
+
+::method 'testObjectToLogical01'
+  tester = .METHODtester~new
+  val = .true
+  self~assertSame(val, tester~TestObjectToLogical(val))
+  self~assertSame(val, tester~TestObjectToLogicalAlt(val))
+  val = .false
+  self~assertSame(val, tester~TestObjectToLogical(val))
+  self~assertSame(val, tester~TestObjectToLogicalAlt(val))
+  self~assertSame(.false, tester~TestObjectToLogical('0'||""))
+  self~assertSame(.false, tester~TestObjectToLogicalAlt('0'||""))
+  self~assertSame(.false, tester~TestObjectToLogical(0))
+  self~assertSame(.false, tester~TestObjectToLogicalAlt(0))
+  self~assertSame(.true, tester~TestObjectToLogical('1'||""))
+  self~assertSame(.true, tester~TestObjectToLogicalAlt('1'||""))
+  self~assertSame(.true, tester~TestObjectToLogical(1))
+  self~assertSame(.true, tester~TestObjectToLogicalAlt(1))
+
+::method 'testObjectToLogical02'
+  tester = .METHODtester~new
+  self~expectSyntax('88.900')
+  tester~TestObjectToLogical(2)
+
+::method 'testObjectToLogical02a'
+  tester = .METHODtester~new
+  self~expectSyntax('88.900')
+  tester~TestObjectToLogicalAlt(2)
+
+::method 'testObjectToLogical03'
+  tester = .METHODtester~new
+  self~expectSyntax('88.900')
+  tester~TestObjectToLogical(1.0)
+
+::method 'testObjectToLogical03a'
+  tester = .METHODtester~new
+  self~expectSyntax('88.900')
+  tester~TestObjectToLogicalAlt(1.0)
+
+
+::method 'testDoubleToObject01'
+  tester = .METHODtester~new
+  numeric digits 23
+  val = 1.79769313E+308
+  self~assertSame(val, tester~TestDoubleToObject(val))
+  self~assertSame(val, tester~TestDoubleToObjectAlt(val))
+  val = 2.22507386E-308
+  self~assertSame(val, tester~TestDoubleToObject(val))
+  self~assertSame(val, tester~TestDoubleToObjectAlt(val))
+  val = -1.79769313E+308
+  self~assertSame(val, tester~TestDoubleToObject(val))
+  self~assertSame(val, tester~TestDoubleToObjectAlt(val))
+  val = -2.22507386E-308
+  self~assertSame(val, tester~TestDoubleToObject(val))
+  self~assertSame(val, tester~TestDoubleToObjectAlt(val))
+  val = 0
+  self~assertSame(val, tester~TestDoubleToObject(val))
+  self~assertSame(val, tester~TestDoubleToObjectAlt(val))
+  val = 1
+  self~assertSame(val, tester~TestDoubleToObject(val))
+  self~assertSame(val, tester~TestDoubleToObjectAlt(val))
+  val = -1
+  self~assertSame(val, tester~TestDoubleToObject(val))
+  self~assertSame(val, tester~TestDoubleToObjectAlt(val))
+  val = "nan"
+  self~assertSame(val, tester~TestDoubleToObject(val))
+  self~assertSame(val, tester~TestDoubleToObjectAlt(val))
+  val = "+infinity"
+  self~assertSame(val, tester~TestDoubleToObject(val))
+  self~assertSame(val, tester~TestDoubleToObjectAlt(val))
+  val = "-infinity"
+  self~assertSame(val, tester~TestDoubleToObject(val))
+  self~assertSame(val, tester~TestDoubleToObjectAlt(val))
+  val = 1.79769313E+310
+  self~assertSame("+infinity", tester~TestDoubleToObject(val))
+  self~assertSame("+infinity", tester~TestDoubleToObjectAlt(val))
+  val = -1.79769313E+310
+  self~assertSame("-infinity", tester~TestDoubleToObject(val))
+  self~assertSame("-infinity", tester~TestDoubleToObjectAlt(val))
+  val = 1.79769313E-350
+  self~assertSame(0, tester~TestDoubleToObject(val))
+  self~assertSame(0, tester~TestDoubleToObjectAlt(val))
+  val = -1.79769313E-350
+  self~assertSame(0, tester~TestDoubleToObject(val))
+  self~assertSame(0, tester~TestDoubleToObjectAlt(val))
+
+::method 'testObjectToDouble01'
+  tester = .METHODtester~new
+  numeric digits 23
+  val = 1.79769313E+308
+  self~assertSame(val, tester~TestObjectToDouble(val))
+  val = 2.22507386E-308
+  self~assertSame(val, tester~TestObjectToDouble(val))
+  val = -1.79769313E+308
+  self~assertSame(val, tester~TestObjectToDouble(val))
+  val = -2.22507386E-308
+  self~assertSame(val, tester~TestObjectToDouble(val))
+  val = 0
+  self~assertSame(val, tester~TestObjectToDouble(val))
+  val = 1
+  self~assertSame(val, tester~TestObjectToDouble(val))
+  val = -1
+  self~assertSame(val, tester~TestObjectToDouble(val))
+  val = "nan"
+  self~assertSame(val, tester~TestObjectToDouble(val))
+  val = "+infinity"
+  self~assertSame(val, tester~TestObjectToDouble(val))
+  val = "-infinity"
+  self~assertSame(val, tester~TestObjectToDouble(val))
+  val = 1.79769313E+310
+  self~assertSame("+infinity", tester~TestObjectToDouble(val))
+  val = -1.79769313E+310
+  self~assertSame("-infinity", tester~TestObjectToDouble(val))
+  val = 1.79769313E-350
+  self~assertSame(0, tester~TestObjectToDouble(val))
+  val = -1.79769313E-350
+  self~assertSame(0, tester~TestObjectToDouble(val))
+
+::method 'testObjectToDouble01a'
+  tester = .METHODtester~new
+  numeric digits 23
+  val = 1.79769313E+308
+  self~assertSame(val, tester~TestObjectToDoubleAlt(val))
+  val = 2.22507386E-308
+  self~assertSame(val, tester~TestObjectToDoubleAlt(val))
+  val = -1.79769313E+308
+  self~assertSame(val, tester~TestObjectToDoubleAlt(val))
+  val = -2.22507386E-308
+  self~assertSame(val, tester~TestObjectToDoubleAlt(val))
+  val = 0
+  self~assertSame(val, tester~TestObjectToDoubleAlt(val))
+  val = 1
+  self~assertSame(val, tester~TestObjectToDoubleAlt(val))
+  val = -1
+  self~assertSame(val, tester~TestObjectToDoubleAlt(val))
+  val = "nan"
+  self~assertSame(val, tester~TestObjectToDoubleAlt(val))
+  val = "+infinity"
+  self~assertSame(val, tester~TestObjectToDoubleAlt(val))
+  val = "-infinity"
+  self~assertSame(val, tester~TestObjectToDoubleAlt(val))
+  val = 1.79769313E+310
+  self~assertSame("+infinity", tester~TestObjectToDoubleAlt(val))
+  val = -1.79769313E+310
+  self~assertSame("-infinity", tester~TestObjectToDoubleAlt(val))
+  val = 1.79769313E-350
+  self~assertSame(0, tester~TestObjectToDoubleAlt(val))
+  val = -1.79769313E-350
+  self~assertSame(0, tester~TestObjectToDoubleAlt(val))
+
+::method 'testObjectToDouble02'
+  tester = .METHODtester~new
+  self~expectSyntax('88.900')
+  tester~TestObjectToDouble('abc')
+
+::method 'testObjectToDouble02a'
+  tester = .METHODtester~new
+  self~expectSyntax('88.900')
+  tester~TestObjectToDoubleAlt('abc')
