@@ -982,6 +982,44 @@ RexxMethod4(RexxArrayObject,
     return context->ArrayOfFour(arg1, arg2, arg3, arg4);
 }
 
+
+RexxMethod1(RexxArrayObject,
+            TestArrayOfOneAlt,
+            RexxObjectPtr, arg1)
+{
+    return context->Array(arg1);
+}
+
+
+RexxMethod2(RexxArrayObject,
+            TestArrayOfTwoAlt,
+            RexxObjectPtr, arg1,
+            RexxObjectPtr, arg2)
+{
+    return context->Array(arg1, arg2);
+}
+
+
+RexxMethod3(RexxArrayObject,
+            TestArrayOfThreeAlt,
+            RexxObjectPtr, arg1,
+            RexxObjectPtr, arg2,
+            RexxObjectPtr, arg3)
+{
+    return context->Array(arg1, arg2, arg3);
+}
+
+
+RexxMethod4(RexxArrayObject,
+            TestArrayOfFourAlt,
+            RexxObjectPtr, arg1,
+            RexxObjectPtr, arg2,
+            RexxObjectPtr, arg3,
+            RexxObjectPtr, arg4)
+{
+    return context->Array(arg1, arg2, arg3, arg4);
+}
+
 RexxMethod1(logical_t,
             TestIsArray,
             RexxObjectPtr, o)
@@ -1649,6 +1687,36 @@ RexxMethod1(logical_t,
     return context->IsString(target);
 }
 
+RexxMethod1(RexxStringObject,
+            TestNewStringFromAsciiz,
+            CSTRING, source)
+{
+    return context->NewStringFromAsciiz(source);
+}
+
+RexxMethod1(RexxStringObject,
+            TestNewStringFromAsciizAlt,
+            CSTRING, source)
+{
+    return context->String(source);
+}
+
+RexxMethod2(RexxStringObject,
+            TestNewString,
+            CSTRING, source,
+            size_t, len)
+{
+    return context->NewString(source, len);
+}
+
+RexxMethod2(RexxStringObject,
+            TestNewStringAlt,
+            CSTRING, source,
+            size_t, len)
+{
+    return context->String(source, len);
+}
+
 RexxMethod1(int,
             TestRaiseException0,
             size_t, errNo)
@@ -1902,6 +1970,10 @@ RexxMethodEntry orxtest_methods[] = {
     REXX_METHOD(TestArrayOfTwo,              TestArrayOfTwo),
     REXX_METHOD(TestArrayOfThree,            TestArrayOfThree),
     REXX_METHOD(TestArrayOfFour,             TestArrayOfFour),
+    REXX_METHOD(TestArrayOfOneAlt,           TestArrayOfOneAlt),
+    REXX_METHOD(TestArrayOfTwoAlt,           TestArrayOfTwoAlt),
+    REXX_METHOD(TestArrayOfThreeAlt,         TestArrayOfThreeAlt),
+    REXX_METHOD(TestArrayOfFourAlt,          TestArrayOfFourAlt),
     REXX_METHOD(TestIsArray,                 TestIsArray),
     REXX_METHOD(TestDirectoryPut,            TestDirectoryPut),
     REXX_METHOD(TestDirectoryAt,             TestDirectoryAt),
@@ -1945,6 +2017,10 @@ RexxMethodEntry orxtest_methods[] = {
     REXX_METHOD(TestRaiseCondition,          TestRaiseCondition),
     REXX_METHOD(TestInterpreterVersion,      TestInterpreterVersion),
     REXX_METHOD(TestLanguageLevel,           TestLanguageLevel),
+    REXX_METHOD(TestNewStringFromAsciiz,     TestNewStringFromAsciiz),
+    REXX_METHOD(TestNewStringFromAsciizAlt,  TestNewStringFromAsciizAlt),
+    REXX_METHOD(TestNewString,               TestNewString),
+    REXX_METHOD(TestNewStringAlt,            TestNewStringAlt),
     REXX_LAST_METHOD()
 };
 

@@ -1289,10 +1289,19 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame(1, a~size)
   self~assertSame(1, a~items)
   self~assertSame("abc", a[1])
+  a = tester~TestArrayOfOneAlt("abc")
+  self~assertSame(1, a~size)
+  self~assertSame(1, a~items)
+  self~assertSame("abc", a[1])
 
 ::method TestArrayOfTwo01
   tester = .METHODTester~new
   a = tester~TestArrayOfTwo("abc", "def")
+  self~assertSame(2, a~size)
+  self~assertSame(2, a~items)
+  self~assertSame("abc", a[1])
+  self~assertSame("def", a[2])
+  a = tester~TestArrayOfTwoAlt("abc", "def")
   self~assertSame(2, a~size)
   self~assertSame(2, a~items)
   self~assertSame("abc", a[1])
@@ -1306,10 +1315,23 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame("abc", a[1])
   self~assertSame("def", a[2])
   self~assertSame("ghi", a[3])
+  a = tester~TestArrayOfThreeAlt("abc", "def", "ghi")
+  self~assertSame(3, a~size)
+  self~assertSame(3, a~items)
+  self~assertSame("abc", a[1])
+  self~assertSame("def", a[2])
+  self~assertSame("ghi", a[3])
 
 ::method TestArrayOfFour01
   tester = .METHODTester~new
   a = tester~TestArrayOfFour("abc", "def", "ghi", "jkl")
+  self~assertSame(4, a~size)
+  self~assertSame(4, a~items)
+  self~assertSame("abc", a[1])
+  self~assertSame("def", a[2])
+  self~assertSame("ghi", a[3])
+  self~assertSame("jkl", a[4])
+  a = tester~TestArrayOfFourAlt("abc", "def", "ghi", "jkl")
   self~assertSame(4, a~size)
   self~assertSame(4, a~items)
   self~assertSame("abc", a[1])
@@ -1663,6 +1685,23 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertTrue(tester~TestIsString("!&*"))
   self~assertFalse(tester~TestIsString(.string))
   self~assertFalse(tester~TestIsString(.array~new))
+
+::method TestNewStringFromAsciiz
+  tester = .METHODTester~new
+  self~assertSame("abc", tester~TestNewStringFromAsciiz("abc"))
+  self~assertSame("", tester~TestNewStringFromAsciiz(""))
+  self~assertSame("abc", tester~TestNewStringFromAsciizAlt("abc"))
+  self~assertSame("", tester~TestNewStringFromAsciizAlt(""))
+
+::method TestNewString
+  tester = .METHODTester~new
+  self~assertSame("abc", tester~TestNewString("abc", 3))
+  self~assertSame("a", tester~TestNewString("abc", 1))
+  self~assertSame("", tester~TestNewString("abc", 0))
+  self~assertSame("abc", tester~TestNewStringAlt("abc", 3))
+  self~assertSame("a", tester~TestNewStringAlt("abc", 1))
+  self~assertSame("", tester~TestNewStringAlt("abc", 0))
+
 
 ::method TestRaiseException001
   tester = .METHODTester~new

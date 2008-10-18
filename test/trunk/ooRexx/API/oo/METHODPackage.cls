@@ -152,6 +152,10 @@
 ::method TestArrayOfTwo EXTERNAL "LIBRARY orxmethod TestArrayOfTwo"
 ::method TestArrayOfThree EXTERNAL "LIBRARY orxmethod TestArrayOfThree"
 ::method TestArrayOfFour EXTERNAL "LIBRARY orxmethod TestArrayOfFour"
+::method TestArrayOfOneAlt EXTERNAL "LIBRARY orxmethod TestArrayOfOneAlt"
+::method TestArrayOfTwoAlt EXTERNAL "LIBRARY orxmethod TestArrayOfTwoAlt"
+::method TestArrayOfThreeAlt EXTERNAL "LIBRARY orxmethod TestArrayOfThreeAlt"
+::method TestArrayOfFourAlt EXTERNAL "LIBRARY orxmethod TestArrayOfFourAlt"
 ::method TestIsArray EXTERNAL "LIBRARY orxmethod TestIsArray"
 ::method TestDirectoryPut EXTERNAL "LIBRARY orxmethod TestDirectoryPut"
 ::method TestDirectoryAt EXTERNAL "LIBRARY orxmethod TestDirectoryAt"
@@ -195,6 +199,10 @@
 ::method TestRaiseCondition EXTERNAL "LIBRARY orxmethod TestRaiseCondition"
 ::method TestInterpreterVersion EXTERNAL "LIBRARY orxmethod TestInterpreterVersion"
 ::method TestLanguageLevel EXTERNAL "LIBRARY orxmethod TestLanguageLevel"
+::method TestNewStringFromAsciiz EXTERNAL "LIBRARY orxmethod TestNewStringFromAsciiz"
+::method TestNewStringFromAsciizAlt EXTERNAL "LIBRARY orxmethod TestNewStringFromAsciizAlt"
+::method TestNewString EXTERNAL "LIBRARY orxmethod TestNewString"
+::method TestNewStringAlt EXTERNAL "LIBRARY orxmethod TestNewStringAlt"
 
 ::method TestRaiseExceptionX
   signal on syntax
