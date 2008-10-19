@@ -102,13 +102,15 @@ void dropContextVariable(const char *name)
 int RexxEntry TestFunctionExit(int code, int subcode, PEXIT exitInfo)
 {
     InstanceInfo *instanceInfo = getApplicationData();
-    if (strcmp(instanceInfo->cmd, "SKIP") == 0)
+
+    switch (instanceInfo->fnc)
     {
-        return RXEXIT_NOT_HANDLED;
-    }
-    else if (strcmp(instanceInfo->cmd, "ERROR") == 0)
-    {
-        return RXEXIT_RAISE_ERROR;
+        case InstanceInfo::SKIP:
+            return RXEXIT_NOT_HANDLED;
+        case InstanceInfo::EXIT_ERROR:
+            return RXEXIT_RAISE_ERROR;
+        case InstanceInfo::RAISE:
+            return RXEXIT_RAISE_ERROR;
     }
 
     RXFNCCAL_PARM *parms = (RXFNCCAL_PARM *)exitInfo;
@@ -165,16 +167,18 @@ int RexxEntry TestFunctionExit(int code, int subcode, PEXIT exitInfo)
 int RexxEntry TestCommandExit(int code, int subcode, PEXIT exitInfo)
 {
     InstanceInfo *instanceInfo = getApplicationData();
-    RXCMDHST_PARM *parms = (RXCMDHST_PARM *)exitInfo;
-    if (strcmp(instanceInfo->cmd, "SKIP") == 0)
+
+    switch (instanceInfo->cmd)
     {
-        return RXEXIT_NOT_HANDLED;
-    }
-    else if (strcmp(instanceInfo->cmd, "ERROR") == 0)
-    {
-        return RXEXIT_RAISE_ERROR;
+        case InstanceInfo::SKIP:
+            return RXEXIT_NOT_HANDLED;
+        case InstanceInfo::EXIT_ERROR:
+            return RXEXIT_RAISE_ERROR;
+        case InstanceInfo::RAISE:
+            return RXEXIT_RAISE_ERROR;
     }
 
+    RXCMDHST_PARM *parms = (RXCMDHST_PARM *)exitInfo;
     // handle commands here...we need to process both the address environment and the commands
     if (strcmp(parms->rxcmd_address, "FOOBAR") == 0)
     {
@@ -200,7 +204,7 @@ int RexxEntry TestCommandExit(int code, int subcode, PEXIT exitInfo)
     // ok, a good address...now do the different commands
     else if (strcmp(parms->rxcmd_command.strptr, "TRACEON") == 0)
     {
-        instanceInfo->msq = "ON";
+        instanceInfo->trc = InstanceInfo::TRACEON;
         strcpy(parms->rxcmd_retc.strptr, "0");
         parms->rxcmd_retc.strlength = 1;
         return RXEXIT_HANDLED;
@@ -208,7 +212,7 @@ int RexxEntry TestCommandExit(int code, int subcode, PEXIT exitInfo)
     // ok, a good address...now do the different commands
     else if (strcmp(parms->rxcmd_command.strptr, "TRACEOFF") == 0)
     {
-        instanceInfo->msq = "OFF";
+        instanceInfo->trc = InstanceInfo::TRACEOFF;
         strcpy(parms->rxcmd_retc.strptr, "0");
         parms->rxcmd_retc.strlength = 1;
         return RXEXIT_HANDLED;
@@ -216,7 +220,7 @@ int RexxEntry TestCommandExit(int code, int subcode, PEXIT exitInfo)
     // ok, a good address...now do the different commands
     else if (strcmp(parms->rxcmd_command.strptr, "HALT") == 0)
     {
-        instanceInfo->hlt = "HALT";
+        instanceInfo->hlt = InstanceInfo::HALT;
         strcpy(parms->rxcmd_retc.strptr, "0");
         parms->rxcmd_retc.strlength = 1;
         return RXEXIT_HANDLED;
@@ -234,14 +238,17 @@ int RexxEntry TestCommandExit(int code, int subcode, PEXIT exitInfo)
 int RexxEntry TestQueueExit(int code, int subcode, PEXIT exitInfo)
 {
     InstanceInfo *instanceInfo = getApplicationData();
-    if (strcmp(instanceInfo->msq, "SKIP") == 0)
+
+    switch (instanceInfo->msq)
     {
-        return RXEXIT_NOT_HANDLED;
+        case InstanceInfo::SKIP:
+            return RXEXIT_NOT_HANDLED;
+        case InstanceInfo::EXIT_ERROR:
+            return RXEXIT_RAISE_ERROR;
+        case InstanceInfo::RAISE:
+            return RXEXIT_RAISE_ERROR;
     }
-    else if (strcmp(instanceInfo->msq, "ERROR") == 0)
-    {
-        return RXEXIT_RAISE_ERROR;
-    }
+
     switch (subcode)
     {
         case RXMSQPLL:
@@ -298,19 +305,21 @@ int RexxEntry TestQueueExit(int code, int subcode, PEXIT exitInfo)
 int RexxEntry TestSessionIOExit(int code, int subcode, PEXIT exitInfo)
 {
     InstanceInfo *instanceInfo = getApplicationData();
-    if (strcmp(instanceInfo->sio, "SKIP") == 0)
+
+    switch (instanceInfo->sio)
     {
-        return RXEXIT_NOT_HANDLED;
-    }
-    else if (strcmp(instanceInfo->sio, "ERROR") == 0)
-    {
-        return RXEXIT_RAISE_ERROR;
+        case InstanceInfo::SKIP:
+            return RXEXIT_NOT_HANDLED;
+        case InstanceInfo::EXIT_ERROR:
+            return RXEXIT_RAISE_ERROR;
+        case InstanceInfo::RAISE:
+            return RXEXIT_RAISE_ERROR;
     }
     switch (subcode)
     {
         case RXSIOTRD:
         {
-            if (strcmp(instanceInfo->sio, "ALL") == 0 || strcmp(instanceInfo->sio, "CONSOLE") == 0)
+            if (instanceInfo->sio == InstanceInfo::ALL || instanceInfo->sio == InstanceInfo::CONSOLE)
             {
                 RXSIOTRD_PARM *parms = (RXSIOTRD_PARM *)exitInfo;
                 strcpy(parms->rxsiotrd_retc.strptr, "Hello World");
@@ -321,7 +330,7 @@ int RexxEntry TestSessionIOExit(int code, int subcode, PEXIT exitInfo)
         }
         case RXSIODTR:
         {
-            if (strcmp(instanceInfo->sio, "ALL") == 0 || strcmp(instanceInfo->sio, "TRACE") == 0)
+            if (instanceInfo->sio == InstanceInfo::ALL || instanceInfo->sio == InstanceInfo::CONSOLE)
             {
                 RXSIODTR_PARM *parms = (RXSIODTR_PARM *)exitInfo;
                 strcpy(parms->rxsiodtr_retc.strptr, "trace off");
@@ -332,7 +341,7 @@ int RexxEntry TestSessionIOExit(int code, int subcode, PEXIT exitInfo)
         }
         case RXSIOSAY:
         {
-            if (strcmp(instanceInfo->sio, "ALL") == 0 || strcmp(instanceInfo->sio, "CONSOLE") == 0)
+            if (instanceInfo->sio == InstanceInfo::ALL || instanceInfo->sio == InstanceInfo::CONSOLE)
             {
                 RXSIOSAY_PARM *parms = (RXSIOSAY_PARM *)exitInfo;
                 if (strcmp(parms->rxsio_string.strptr, "HELLO") == 0)
@@ -348,7 +357,7 @@ int RexxEntry TestSessionIOExit(int code, int subcode, PEXIT exitInfo)
         }
         case RXSIOTRC:
         {
-            if (strcmp(instanceInfo->sio, "ALL") == 0 || strcmp(instanceInfo->sio, "TRACE") == 0)
+            if (instanceInfo->sio == InstanceInfo::ALL || instanceInfo->sio == InstanceInfo::CONSOLE)
             {
                 RXMSQSIZ_PARM *parms = (RXMSQSIZ_PARM *)exitInfo;
                 // this one is really hard to test, so it's sufficient that we got here.
@@ -363,25 +372,29 @@ int RexxEntry TestSessionIOExit(int code, int subcode, PEXIT exitInfo)
 int RexxEntry TestHaltExit(int code, int subcode, PEXIT exitInfo)
 {
     InstanceInfo *instanceInfo = getApplicationData();
-    if (strcmp(instanceInfo->cmd, "SKIP") == 0)
+
+    switch (instanceInfo->hlt)
     {
-        return RXEXIT_NOT_HANDLED;
-    }
-    else if (strcmp(instanceInfo->cmd, "ERROR") == 0)
-    {
-        return RXEXIT_RAISE_ERROR;
-    }
-    else if (strcmp(instanceInfo->cmd, "HALT") == 0)
-    {
-        RXHLTTST_PARM *parms = (RXHLTTST_PARM *)exitInfo;
-        parms->rxhlt_flags.rxfhhalt = 1;
-        return RXEXIT_HANDLED;
-    }
-    else if (strcmp(instanceInfo->cmd, "NOHALT") == 0)
-    {
-        RXHLTTST_PARM *parms = (RXHLTTST_PARM *)exitInfo;
-        parms->rxhlt_flags.rxfhhalt = 0;
-        return RXEXIT_HANDLED;
+        case InstanceInfo::SKIP:
+            return RXEXIT_NOT_HANDLED;
+        case InstanceInfo::EXIT_ERROR:
+            return RXEXIT_RAISE_ERROR;
+        case InstanceInfo::RAISE:
+            return RXEXIT_RAISE_ERROR;
+        case InstanceInfo::HALT:
+        {
+            RXHLTTST_PARM *parms = (RXHLTTST_PARM *)exitInfo;
+            parms->rxhlt_flags.rxfhhalt = 1;
+            // the next call is a no
+            instanceInfo->hlt = InstanceInfo::NOHALT;
+            return RXEXIT_HANDLED;
+        }
+        case InstanceInfo::NOHALT:
+        {
+            RXHLTTST_PARM *parms = (RXHLTTST_PARM *)exitInfo;
+            parms->rxhlt_flags.rxfhhalt = 0;
+            return RXEXIT_HANDLED;
+        }
     }
     return RXEXIT_NOT_HANDLED;
 }
@@ -389,25 +402,27 @@ int RexxEntry TestHaltExit(int code, int subcode, PEXIT exitInfo)
 int RexxEntry TestTraceExit(int code, int subcode, PEXIT exitInfo)
 {
     InstanceInfo *instanceInfo = getApplicationData();
-    if (strcmp(instanceInfo->cmd, "SKIP") == 0)
+
+    switch (instanceInfo->trc)
     {
-        return RXEXIT_NOT_HANDLED;
-    }
-    else if (strcmp(instanceInfo->cmd, "ERROR") == 0)
-    {
-        return RXEXIT_RAISE_ERROR;
-    }
-    else if (strcmp(instanceInfo->cmd, "ON") == 0)
-    {
-        RXHLTTST_PARM *parms = (RXHLTTST_PARM *)exitInfo;
-        parms->rxhlt_flags.rxfhhalt = 1;
-        return RXEXIT_HANDLED;
-    }
-    else if (strcmp(instanceInfo->cmd, "OFF") == 0)
-    {
-        RXHLTTST_PARM *parms = (RXHLTTST_PARM *)exitInfo;
-        parms->rxhlt_flags.rxfhhalt = 0;
-        return RXEXIT_HANDLED;
+        case InstanceInfo::SKIP:
+            return RXEXIT_NOT_HANDLED;
+        case InstanceInfo::EXIT_ERROR:
+            return RXEXIT_RAISE_ERROR;
+        case InstanceInfo::RAISE:
+            return RXEXIT_RAISE_ERROR;
+        case InstanceInfo::TRACEON:
+        {
+            RXTRCTST_PARM *parms = (RXTRCTST_PARM *)exitInfo;
+            parms->rxtrc_flags.rxftrace = 1;
+            return RXEXIT_HANDLED;
+        }
+        case InstanceInfo::TRACEOFF:
+        {
+            RXTRCTST_PARM *parms = (RXTRCTST_PARM *)exitInfo;
+            parms->rxtrc_flags.rxftrace = 0;
+            return RXEXIT_HANDLED;
+        }
     }
     return RXEXIT_NOT_HANDLED;
 }
@@ -415,13 +430,15 @@ int RexxEntry TestTraceExit(int code, int subcode, PEXIT exitInfo)
 int RexxEntry TestInitExit(int code, int subcode, PEXIT exitInfo)
 {
     InstanceInfo *instanceInfo = getApplicationData();
-    if (strcmp(instanceInfo->cmd, "SKIP") == 0)
+
+    switch (instanceInfo->sio)
     {
-        return RXEXIT_NOT_HANDLED;
-    }
-    else if (strcmp(instanceInfo->cmd, "ERROR") == 0)
-    {
-        return RXEXIT_RAISE_ERROR;
+        case InstanceInfo::SKIP:
+            return RXEXIT_NOT_HANDLED;
+        case InstanceInfo::EXIT_ERROR:
+            return RXEXIT_RAISE_ERROR;
+        case InstanceInfo::RAISE:
+            return RXEXIT_RAISE_ERROR;
     }
     setContextVariable("TEST1", "Hello World");
     return RXEXIT_HANDLED;
@@ -430,13 +447,15 @@ int RexxEntry TestInitExit(int code, int subcode, PEXIT exitInfo)
 int RexxEntry TestTerminationExit(int code, int subcode, PEXIT exitInfo)
 {
     InstanceInfo *instanceInfo = getApplicationData();
-    if (strcmp(instanceInfo->cmd, "SKIP") == 0)
+
+    switch (instanceInfo->sio)
     {
-        return RXEXIT_NOT_HANDLED;
-    }
-    else if (strcmp(instanceInfo->cmd, "ERROR") == 0)
-    {
-        return RXEXIT_RAISE_ERROR;
+        case InstanceInfo::SKIP:
+            return RXEXIT_NOT_HANDLED;
+        case InstanceInfo::EXIT_ERROR:
+            return RXEXIT_RAISE_ERROR;
+        case InstanceInfo::RAISE:
+            return RXEXIT_RAISE_ERROR;
     }
 
     char buffer[256];
@@ -454,13 +473,15 @@ int RexxEntry TestTerminationExit(int code, int subcode, PEXIT exitInfo)
 int RexxEntry TestScriptFunctionExit(int code, int subcode, PEXIT exitInfo)
 {
     InstanceInfo *instanceInfo = getApplicationData();
-    if (strcmp(instanceInfo->cmd, "SKIP") == 0)
+
+    switch (instanceInfo->sio)
     {
-        return RXEXIT_NOT_HANDLED;
-    }
-    else if (strcmp(instanceInfo->cmd, "ERROR") == 0)
-    {
-        return RXEXIT_RAISE_ERROR;
+        case InstanceInfo::SKIP:
+            return RXEXIT_NOT_HANDLED;
+        case InstanceInfo::EXIT_ERROR:
+            return RXEXIT_RAISE_ERROR;
+        case InstanceInfo::RAISE:
+            return RXEXIT_RAISE_ERROR;
     }
     // nothing else really testable in a classic fashion
     return RXEXIT_NOT_HANDLED;
@@ -469,13 +490,15 @@ int RexxEntry TestScriptFunctionExit(int code, int subcode, PEXIT exitInfo)
 int RexxEntry TestObjectFunctionExit(int code, int subcode, PEXIT exitInfo)
 {
     InstanceInfo *instanceInfo = getApplicationData();
-    if (strcmp(instanceInfo->cmd, "SKIP") == 0)
+
+    switch (instanceInfo->sio)
     {
-        return RXEXIT_NOT_HANDLED;
-    }
-    else if (strcmp(instanceInfo->cmd, "ERROR") == 0)
-    {
-        return RXEXIT_RAISE_ERROR;
+        case InstanceInfo::SKIP:
+            return RXEXIT_NOT_HANDLED;
+        case InstanceInfo::EXIT_ERROR:
+            return RXEXIT_RAISE_ERROR;
+        case InstanceInfo::RAISE:
+            return RXEXIT_RAISE_ERROR;
     }
     // nothing else really testable in a classic fashion
     return RXEXIT_NOT_HANDLED;
@@ -484,13 +507,15 @@ int RexxEntry TestObjectFunctionExit(int code, int subcode, PEXIT exitInfo)
 int RexxEntry TestNovalueExit(int code, int subcode, PEXIT exitInfo)
 {
     InstanceInfo *instanceInfo = getApplicationData();
-    if (strcmp(instanceInfo->cmd, "SKIP") == 0)
+
+    switch (instanceInfo->sio)
     {
-        return RXEXIT_NOT_HANDLED;
-    }
-    else if (strcmp(instanceInfo->cmd, "ERROR") == 0)
-    {
-        return RXEXIT_RAISE_ERROR;
+        case InstanceInfo::SKIP:
+            return RXEXIT_NOT_HANDLED;
+        case InstanceInfo::EXIT_ERROR:
+            return RXEXIT_RAISE_ERROR;
+        case InstanceInfo::RAISE:
+            return RXEXIT_RAISE_ERROR;
     }
 
     // nothing else really testable in a classic fashion
@@ -500,13 +525,15 @@ int RexxEntry TestNovalueExit(int code, int subcode, PEXIT exitInfo)
 int RexxEntry TestValueExit(int code, int subcode, PEXIT exitInfo)
 {
     InstanceInfo *instanceInfo = getApplicationData();
-    if (strcmp(instanceInfo->cmd, "SKIP") == 0)
+
+    switch (instanceInfo->sio)
     {
-        return RXEXIT_NOT_HANDLED;
-    }
-    else if (strcmp(instanceInfo->cmd, "ERROR") == 0)
-    {
-        return RXEXIT_RAISE_ERROR;
+        case InstanceInfo::SKIP:
+            return RXEXIT_NOT_HANDLED;
+        case InstanceInfo::EXIT_ERROR:
+            return RXEXIT_RAISE_ERROR;
+        case InstanceInfo::RAISE:
+            return RXEXIT_RAISE_ERROR;
     }
 
     // nothing else really testable in a classic fashion
