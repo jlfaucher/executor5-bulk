@@ -35,491 +35,8 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-#include "rexx.h"
-#include "orxexits.h"
-
-class InstanceInfo
-{
-    const char *fnc;
-    const char *cmd;
-    const char *msq;
-    const char *sio;
-    const char *hlt;
-    const char *trc;
-    const char *ini;
-    const char *ter;
-    const char *exf;
-    const char *var;
-    const char *val;
-    const char *ofnc;
-};
-
-
-int RexxEntry TestFunctionExit(RexxExitContext *context, int code, int subcode, PEXIT exitInfo)
-{
-    InstanceInfo *instanceInfo = (InstanceInfo *)context->GetApplicationData();
-    if (strcmp(instanceInfo->cmd, "SKIP") == 0)
-    {
-        return RXEXIT_NOT_HANDLED;
-    }
-    else if (strcmp(instanceInfo->cmd, "ERROR") == 0)
-    {
-        return RXEXIT_RAISE_ERROR;
-    }
-    else if (strcmp(instanceInfo->cmd, "RAISE") == 0)
-    {
-        context->RaiseException1(Rexx_Error_System_service_user_defined, context->NewStringFromAsciiz("Script Function Exit"));
-        return RXEXIT_NOT_HANDLED;
-    }
-
-    RXFNCCAL_PARM *parms = (RXFNCCAL_PARM *)exitInfo;
-    const char *functionName = parms->rxfnc_name.strptr;
-    if (strcmp(functionName, "TESTSUBCALL") == 0)
-    {
-        // return the status of the flag
-        if (parms->rxfnc_flags.rxffsub)
-        {
-            strcpy(parms->rxfnc_retc.strptr, "SUBROUTINE");
-        }
-        else
-        {
-            strcpy(parms->rxfnc_retc.strptr, "FUNCTION");
-        }
-        parms->rxfnc_retc.strlength = strlen(parms->rxfnc_retc.strptr);
-        return RXEXIT_HANDLED;
-    }
-    else if (strcmp(functionName, "TESTERROR") == 0)
-    {
-        // this should raise an error
-        parms->rxfnc_flags.rxfferr = 1;
-        return RXEXIT_HANDLED;
-    }
-    else if (strcmp(functionName, "TESTNOTOUND") == 0)
-    {
-        // this should raise an error
-        parms->rxfnc_flags.rxffnfnd = 1;
-        return RXEXIT_HANDLED;
-    }
-    else
-    {
-        // pass on this
-        return RXEXIT_NOT_HANDLED;
-    }
-}
-
-int RexxEntry TestCommandExit(RexxExitContext *context, int code, int subcode, PEXIT exitInfo)
-{
-    InstanceInfo *instanceInfo = (InstanceInfo *)context->GetApplicationData();
-    RXCMDHST_PARM *parms = (RXCMDHST_PARM *)exitInfo;
-    if (strcmp(instanceInfo->cmd, "SKIP") == 0)
-    {
-        return RXEXIT_NOT_HANDLED;
-    }
-    else if (strcmp(instanceInfo->cmd, "ERROR") == 0)
-    {
-        return RXEXIT_RAISE_ERROR;
-    }
-    else if (strcmp(instanceInfo->cmd, "RAISE") == 0)
-    {
-        context->RaiseException1(Rexx_Error_System_service_user_defined, context->NewStringFromAsciiz("Command Exit"));
-        return RXEXIT_NOT_HANDLED;
-    }
-
-    // handle commands here...we need to process both the address environment and the commands
-    if (strcmp(parms->rxcmd_address.strptr, "FOOBAR") == 0)
-    {
-        strcpy(parms->rxcmd_retc.strptr, "-1");
-        parms->rxcmd_retc.strlength = 2;
-        return RXEXIT_HANDLED;
-    }
-    // ok, a good address...now do the different commands
-    if (strcmp(parms->rxcmd_command.strptr, "GOOD") == 0)
-    {
-        strcpy(parms->rxcmd_retc.strptr, "0");
-        parms->rxcmd_retc.strlength = 1;
-        return RXEXIT_HANDLED;
-    }
-    else if (strcmp(parms->rxcmd_command.strptr, "ERROR") == 0)
-    {
-        strcpy(parms->rxcmd_retc.strptr, "1");
-        parms->rxcmd_retc.strlength = 1;
-        parms->rxcmd_flags.rxfcerr = 1;
-        return RXEXIT_HANDLED;
-    }
-    // ok, a good address...now do the different commands
-    else if (strcmp(parms->rxcmd_command.strptr, "TRACEON") == 0)
-    {
-        instanceInfo->msq = "ON";
-        strcpy(parms->rxcmd_retc.strptr, "0");
-        parms->rxcmd_retc.strlength = 1;
-        return RXEXIT_HANDLED;
-    }
-    // ok, a good address...now do the different commands
-    else if (strcmp(parms->rxcmd_command.strptr, "TRACEOFF") == 0)
-    {
-        instanceInfo->msq = "OFF";
-        strcpy(parms->rxcmd_retc.strptr, "0");
-        parms->rxcmd_retc.strlength = 1;
-        return RXEXIT_HANDLED;
-    }
-    // ok, a good address...now do the different commands
-    else if (strcmp(parms->rxcmd_command.strptr, "HALT") == 0)
-    {
-        instanceInfo->hlt = "HALT";
-        strcpy(parms->rxcmd_retc.strptr, "0");
-        parms->rxcmd_retc.strlength = 1;
-        return RXEXIT_HANDLED;
-    }
-    else
-    {
-        // unknown command
-        strcpy(parms->rxcmd_retc.strptr, "-2");
-        parms->rxcmd_retc.strlength = 2;
-        parms->rxcmd_flags.rxfcfail = 1;
-        return RXEXIT_HANDLED;
-    }
-}
-
-int RexxEntry TestQueueExit(RexxExitContext *context, int code, int subcode, PEXIT exitInfo)
-{
-    InstanceInfo *instanceInfo = (InstanceInfo *)context->GetApplicationData();
-    if (strcmp(instanceInfo->msq, "SKIP") == 0)
-    {
-        return RXEXIT_NOT_HANDLED;
-    }
-    else if (strcmp(instanceInfo->msq, "ERROR") == 0)
-    {
-        return RXEXIT_RAISE_ERROR;
-    }
-    else if (strcmp(instanceInfo->msq, "RAISE") == 0)
-    {
-        context->RaiseException1(Rexx_Error_System_service_user_defined, context->NewStringFromAsciiz("Queue Exit"));
-        return RXEXIT_NOT_HANDLED;
-    }
-    switch (subcode)
-    {
-        case RXMSQPLL:
-        {
-            RXMSQPLL_PARM *parms = (RXMSQPLL_PARM *)exitInfo;
-            strcpy(parms->rxcmd_retc.strptr, "Hello World");
-            parms->rxcmd_retc.strlength = strlen("Hello World");
-            return RXEXIT_HANDLED;
-        }
-        case RXMSQPSH:
-        {
-            RXMSQPSH_PARM *parms = (RXMSQPSH_PARM *)exitInfo;
-            if (parms->rxmsq_flags.rxfmlifo)
-            {
-                if (strcmp(parms->rxmsq_value.strptr, "LIFO") == 0)
-                {
-                    return RXEXIT_HANDLED;
-                }
-                else
-                {
-                    return RXEXIT_RAISE_ERROR;
-                }
-            }
-            else
-            {
-                if (strcmp(parms->rxmsq_value.strptr, "FIFO") == 0)
-                {
-                    return RXEXIT_HANDLED;
-                }
-                else
-                {
-                    return RXEXIT_RAISE_ERROR;
-                }
-            }
-        }
-        case RXMSQSIZ:
-        {
-            RXMSQSIZ_PARM *parms = (RXMSQSIZ_PARM *)exitInfo;
-            // this always returns a large, distinctive number
-            parms->rxmsq_size = 999999;
-            return RXEXIT_HANDLED;
-        }
-        case RXMSQNAM:
-        {
-            RXMSQPLL_PARM *parms = (RXMSQPLL_PARM *)exitInfo;
-            strcpy(parms->rxcmd_retc.strptr, "FOOBAR");
-            parms->rxcmd_retc.strlength = strlen("FOOBAR");
-            return RXEXIT_HANDLED;
-        }
-    }
-    return RXEXIT_RAISE_ERROR;
-}
-
-int RexxEntry TestSessionIOExit(RexxExitContext *context, int code, int subcode, PEXIT exitInfo)
-{
-    InstanceInfo *instanceInfo = (InstanceInfo *)context->GetApplicationData();
-    if (strcmp(instanceInfo->sio, "SKIP") == 0)
-    {
-        return RXEXIT_NOT_HANDLED;
-    }
-    else if (strcmp(instanceInfo->sio, "ERROR") == 0)
-    {
-        return RXEXIT_RAISE_ERROR;
-    }
-    else if (strcmp(instanceInfo->sio, "RAISE") == 0)
-    {
-        context->RaiseException1(Rexx_Error_System_service_user_defined, context->NewStringFromAsciiz("IO Exit"));
-        return RXEXIT_NOT_HANDLED;
-    }
-    switch (subcode)
-    {
-        case RXSIOTRD:
-        {
-            if (strcmp(instanceInfo->sio, "ALL") == 0 || strcmp(instanceInfo->sio, "CONSOLE") == 0)
-            {
-                RXSIOTRD_PARM *parms = (RXSIOTRD_PARM *)exitInfo;
-                strcpy(parms->rxcmd_retc.strptr, "Hello World");
-                parms->rxcmd_retc.strlength = strlen("Hello World");
-                return RXEXIT_HANDLED;
-            }
-            return RXEXIT_NOT_HANDLED;
-        }
-        case RXSIODTR:
-        {
-            if (strcmp(instanceInfo->sio, "ALL") == 0 || strcmp(instanceInfo->sio, "TRACE") == 0)
-            {
-                RXSIODTR_PARM *parms = (RXSIODTR_PARM *)exitInfo;
-                strcpy(parms->rxcmd_retc.strptr, "trace off");
-                parms->rxcmd_retc.strlength = strlen("trace off");
-                return RXEXIT_HANDLED;
-            }
-            return RXEXIT_NOT_HANDLED;
-        }
-        case RXSIOSAY:
-        {
-            if (strcmp(instanceInfo->sio, "ALL") == 0 || strcmp(instanceInfo->sio, "CONSOLE") == 0)
-            {
-                RXSIOSAY_PARM *parms = (RXSIOSAY_PARM *)exitInfo;
-                if (strcmp(parms->rxmsq_value.strptr, "HELLO") == 0)
-                {
-                    return RXEXIT_HANDLED;
-                }
-                else
-                {
-                    return RXEXIT_RAISE_ERROR;
-                }
-            }
-            return RXEXIT_NOT_HANDLED;
-        }
-        case RXSIOTRC:
-        {
-            if (strcmp(instanceInfo->sio, "ALL") == 0 || strcmp(instanceInfo->sio, "TRACE") == 0)
-            {
-                RXMSQSIZ_PARM *parms = (RXMSQSIZ_PARM *)exitInfo;
-                // this one is really hard to test, so it's sufficient that we got here.
-                return RXEXIT_HANDLED;
-            }
-            return RXEXIT_NOT_HANDLED;
-        }
-    }
-    return RXEXIT_RAISE_ERROR;
-}
-
-int RexxEntry TestHaltExit(RexxExitContext *context, int code, int subcode, PEXIT exitInfo)
-{
-    InstanceInfo *instanceInfo = (InstanceInfo *)context->GetApplicationData();
-    if (strcmp(instanceInfo->cmd, "SKIP") == 0)
-    {
-        return RXEXIT_NOT_HANDLED;
-    }
-    else if (strcmp(instanceInfo->cmd, "ERROR") == 0)
-    {
-        return RXEXIT_RAISE_ERROR;
-    }
-    else if (strcmp(instanceInfo->cmd, "RAISE") == 0)
-    {
-        context->RaiseException1(Rexx_Error_System_service_user_defined, context->NewStringFromAsciiz("Halt Exit"));
-        return RXEXIT_NOT_HANDLED;
-    }
-    else if (strcmp(instanceInfo->cmd, "HALT") == 0)
-    {
-        RXHLTTST_PARM *parms = (RXHLTTST_PARM *)exitInfo;
-        parms->rxhlt_flags.rxfhhalt = 1;
-        return RXEXIT_HANDLED;
-    }
-    else if (strcmp(instanceInfo->cmd, "NOHALT") == 0)
-    {
-        RXHLTTST_PARM *parms = (RXHLTTST_PARM *)exitInfo;
-        parms->rxhlt_flags.rxfhhalt = 0;
-        return RXEXIT_HANDLED;
-    }
-    return RXEXIT_NOT_HANDLED;
-}
-
-int RexxEntry TestTraceExit(RexxExitContext *context, int code, int subcode, PEXIT exitInfo)
-{
-    InstanceInfo *instanceInfo = (InstanceInfo *)context->GetApplicationData();
-    if (strcmp(instanceInfo->cmd, "SKIP") == 0)
-    {
-        return RXEXIT_NOT_HANDLED;
-    }
-    else if (strcmp(instanceInfo->cmd, "ERROR") == 0)
-    {
-        return RXEXIT_RAISE_ERROR;
-    }
-    else if (strcmp(instanceInfo->cmd, "RAISE") == 0)
-    {
-        context->RaiseException1(Rexx_Error_System_service_user_defined, context->NewStringFromAsciiz("Trace Exit"));
-        return RXEXIT_NOT_HANDLED;
-    }
-    else if (strcmp(instanceInfo->cmd, "ON") == 0)
-    {
-        RXHLTTST_PARM *parms = (RXHLTTST_PARM *)exitInfo;
-        parms->rxhlt_flags.rxfhhalt = 1;
-        return RXEXIT_HANDLED;
-    }
-    else if (strcmp(instanceInfo->cmd, "OFF") == 0)
-    {
-        RXHLTTST_PARM *parms = (RXHLTTST_PARM *)exitInfo;
-        parms->rxhlt_flags.rxfhhalt = 0;
-        return RXEXIT_HANDLED;
-    }
-    return RXEXIT_NOT_HANDLED;
-}
-
-int RexxEntry TestInitExit(RexxExitContext *context, int code, int subcode, PEXIT exitInfo)
-{
-    InstanceInfo *instanceInfo = (InstanceInfo *)context->GetApplicationData();
-    if (strcmp(instanceInfo->cmd, "SKIP") == 0)
-    {
-        return RXEXIT_NOT_HANDLED;
-    }
-    else if (strcmp(instanceInfo->cmd, "ERROR") == 0)
-    {
-        return RXEXIT_RAISE_ERROR;
-    }
-    else if (strcmp(instanceInfo->cmd, "RAISE") == 0)
-    {
-        context->RaiseException1(Rexx_Error_System_service_user_defined, context->NewStringFromAsciiz("Initialization Exit"));
-        return RXEXIT_NOT_HANDLED;
-    }
-
-    context->SetContextVariable("test1", context->NewStringFromAsciiz("Hello World"));
-}
-
-int RexxEntry TestTerminationExit(RexxExitContext *context, int code, int subcode, PEXIT exitInfo)
-{
-    InstanceInfo *instanceInfo = (InstanceInfo *)context->GetApplicationData();
-    if (strcmp(instanceInfo->cmd, "SKIP") == 0)
-    {
-        return RXEXIT_NOT_HANDLED;
-    }
-    else if (strcmp(instanceInfo->cmd, "ERROR") == 0)
-    {
-        return RXEXIT_RAISE_ERROR;
-    }
-    else if (strcmp(instanceInfo->cmd, "RAISE") == 0)
-    {
-        context->RaiseException1(Rexx_Error_System_service_user_defined, context->NewStringFromAsciiz("Termination Exit"));
-        return RXEXIT_NOT_HANDLED;
-    }
-
-    RexxObjectPtr value = context->GetContextVariable("test1");
-    if (strcmp(context->ObjectToStringValue(value), "Hello World") != 0)
-    {
-        context->RaiseException1(Rexx_Error_System_service_user_defined, context->NewStringFromAsciiz("Termination Exit"));
-    }
-    return RXEXIT_NOT_HANDLED;
-}
-
-int RexxEntry TestScriptFunctionExit(RexxExitContext *context, int code, int subcode, PEXIT exitInfo)
-{
-    InstanceInfo *instanceInfo = (InstanceInfo *)context->GetApplicationData();
-    if (strcmp(instanceInfo->cmd, "SKIP") == 0)
-    {
-        return RXEXIT_NOT_HANDLED;
-    }
-    else if (strcmp(instanceInfo->cmd, "ERROR") == 0)
-    {
-        return RXEXIT_RAISE_ERROR;
-    }
-    else if (strcmp(instanceInfo->cmd, "RAISE") == 0)
-    {
-        context->RaiseException1(Rexx_Error_System_service_user_defined, context->NewStringFromAsciiz("Script Function Exit"));
-        return RXEXIT_NOT_HANDLED;
-    }
-    return invokeExitFunction("Script", exitInfo);
-}
-
-int RexxEntry TestObjectFunctionExit(RexxExitContext *context, int code, int subcode, PEXIT exitInfo)
-{
-    InstanceInfo *instanceInfo = (InstanceInfo *)context->GetApplicationData();
-    if (strcmp(instanceInfo->cmd, "SKIP") == 0)
-    {
-        return RXEXIT_NOT_HANDLED;
-    }
-    else if (strcmp(instanceInfo->cmd, "ERROR") == 0)
-    {
-        return RXEXIT_RAISE_ERROR;
-    }
-    else if (strcmp(instanceInfo->cmd, "RAISE") == 0)
-    {
-        context->RaiseException1(Rexx_Error_System_service_user_defined, context->NewStringFromAsciiz("Object Function Exit"));
-        return RXEXIT_NOT_HANDLED;
-    }
-    return invokeExitFunction("Object", exitInfo);
-}
-
-int RexxEntry TestNovalueExit(RexxExitContext *context, int code, int subcode, PEXIT exitInfo)
-{
-    InstanceInfo *instanceInfo = (InstanceInfo *)context->GetApplicationData();
-    if (strcmp(instanceInfo->cmd, "SKIP") == 0)
-    {
-        return RXEXIT_NOT_HANDLED;
-    }
-    else if (strcmp(instanceInfo->cmd, "ERROR") == 0)
-    {
-        return RXEXIT_RAISE_ERROR;
-    }
-    else if (strcmp(instanceInfo->cmd, "RAISE") == 0)
-    {
-        context->RaiseException1(Rexx_Error_System_service_user_defined, context->NewStringFromAsciiz("Novalue Exit"));
-        return RXEXIT_NOT_HANDLED;
-    }
-
-    RXVARNOVALUE_PARM *parms = (RXVARNOVALUE_PARM *)exitInfo;
-
-    if (strcmp(parms->variable_name.strptr, "FOO") == 0)
-    {
-        parms->value = context->ArrayOfOne(context->NewStringFromAsciiz("BAR"));
-        return RXEXIT_HANDLED;
-    }
-    return RXEXIT_NOT_HANDLED;
-}
-
-int RexxEntry TestValueExit(RexxExitContext *context, int code, int subcode, PEXIT exitInfo)
-{
-    InstanceInfo *instanceInfo = (InstanceInfo *)context->GetApplicationData();
-    if (strcmp(instanceInfo->cmd, "SKIP") == 0)
-    {
-        return RXEXIT_NOT_HANDLED;
-    }
-    else if (strcmp(instanceInfo->cmd, "ERROR") == 0)
-    {
-        return RXEXIT_RAISE_ERROR;
-    }
-    else if (strcmp(instanceInfo->cmd, "RAISE") == 0)
-    {
-        context->RaiseException1(Rexx_Error_System_service_user_defined, context->NewStringFromAsciiz("VALUE Exit"));
-        return RXEXIT_NOT_HANDLED;
-    }
-
-    RXVALCALL_PARM *parms = (RXVALCALL_PARM *)exitInfo;
-
-    if (strcmp(parms->selector.strptr, "TEST") == 0)
-    {
-        if (strcmp(parms->variable_name.strptr, "FOO") == 0)
-        {
-            parms->value = context->ArrayOfOne(context->NewStringFromAsciiz("BAR"));
-            return RXEXIT_HANDLED;
-        }
-    }
-    return RXEXIT_NOT_HANDLED;
-}
+#include "oorexxapi.h"
+#include "orxexits.hpp"
 
 RexxObjectPtr TestGetContextVariable(RexxExitContext *context, size_t argc, RexxObjectPtr *argv)
 {
@@ -600,11 +117,11 @@ int invokeExitFunction(RexxExitContext *context, const char *name, PEXIT exitInf
     else if (strcmp(functionName, "TESTARGUMENTS") == 0)
     {
         RexxArrayObject args = context->NewArray(parms->rxfnc_argc);
-        for (int i = 0; i < parms->rxfnc_argc)
+        for (int i = 0; i < parms->rxfnc_argc; i++)
         {
             if (parms->rxfnc_argv[i] != NULLOBJECT)
             {
-                context->ArrayPut(args, argv[i], i + 1);
+                context->ArrayPut(args, parms->rxfnc_argv[i], i + 1);
             }
         }
         parms->rxfnc_retc = (RexxObjectPtr)args;
@@ -615,5 +132,472 @@ int invokeExitFunction(RexxExitContext *context, const char *name, PEXIT exitInf
         // pass on this
         return RXEXIT_NOT_HANDLED;
     }
+}
+
+int RexxEntry TestContextFunctionExit(RexxExitContext *context, int code, int subcode, PEXIT exitInfo)
+{
+    InstanceInfo *instanceInfo = (InstanceInfo *)context->GetApplicationData();
+    if (strcmp(instanceInfo->cmd, "SKIP") == 0)
+    {
+        return RXEXIT_NOT_HANDLED;
+    }
+    else if (strcmp(instanceInfo->cmd, "ERROR") == 0)
+    {
+        return RXEXIT_RAISE_ERROR;
+    }
+    else if (strcmp(instanceInfo->cmd, "RAISE") == 0)
+    {
+        context->RaiseException1(Rexx_Error_System_service_user_defined, context->NewStringFromAsciiz("Script Function Exit"));
+        return RXEXIT_NOT_HANDLED;
+    }
+
+    RXFNCCAL_PARM *parms = (RXFNCCAL_PARM *)exitInfo;
+    const char *functionName = parms->rxfnc_name;
+    if (strcmp(functionName, "TESTSUBCALL") == 0)
+    {
+        // return the status of the flag
+        if (parms->rxfnc_flags.rxffsub)
+        {
+            strcpy(parms->rxfnc_retc.strptr, "SUBROUTINE");
+        }
+        else
+        {
+            strcpy(parms->rxfnc_retc.strptr, "FUNCTION");
+        }
+        parms->rxfnc_retc.strlength = strlen(parms->rxfnc_retc.strptr);
+        return RXEXIT_HANDLED;
+    }
+    else if (strcmp(functionName, "TESTERROR") == 0)
+    {
+        // this should raise an error
+        parms->rxfnc_flags.rxfferr = 1;
+        return RXEXIT_HANDLED;
+    }
+    else if (strcmp(functionName, "TESTNOTOUND") == 0)
+    {
+        // this should raise an error
+        parms->rxfnc_flags.rxffnfnd = 1;
+        return RXEXIT_HANDLED;
+    }
+    else
+    {
+        // pass on this
+        return RXEXIT_NOT_HANDLED;
+    }
+}
+
+int RexxEntry TestContextCommandExit(RexxExitContext *context, int code, int subcode, PEXIT exitInfo)
+{
+    InstanceInfo *instanceInfo = (InstanceInfo *)context->GetApplicationData();
+    RXCMDHST_PARM *parms = (RXCMDHST_PARM *)exitInfo;
+    if (strcmp(instanceInfo->cmd, "SKIP") == 0)
+    {
+        return RXEXIT_NOT_HANDLED;
+    }
+    else if (strcmp(instanceInfo->cmd, "ERROR") == 0)
+    {
+        return RXEXIT_RAISE_ERROR;
+    }
+    else if (strcmp(instanceInfo->cmd, "RAISE") == 0)
+    {
+        context->RaiseException1(Rexx_Error_System_service_user_defined, context->NewStringFromAsciiz("Command Exit"));
+        return RXEXIT_NOT_HANDLED;
+    }
+
+    // handle commands here...we need to process both the address environment and the commands
+    if (strcmp(parms->rxcmd_address, "FOOBAR") == 0)
+    {
+        strcpy(parms->rxcmd_retc.strptr, "-1");
+        parms->rxcmd_retc.strlength = 2;
+        return RXEXIT_HANDLED;
+    }
+    // ok, a good address...now do the different commands
+    if (strcmp(parms->rxcmd_command.strptr, "GOOD") == 0)
+    {
+        strcpy(parms->rxcmd_retc.strptr, "0");
+        parms->rxcmd_retc.strlength = 1;
+        return RXEXIT_HANDLED;
+    }
+    else if (strcmp(parms->rxcmd_command.strptr, "ERROR") == 0)
+    {
+        strcpy(parms->rxcmd_retc.strptr, "1");
+        parms->rxcmd_retc.strlength = 1;
+        parms->rxcmd_flags.rxfcerr = 1;
+        return RXEXIT_HANDLED;
+    }
+    // ok, a good address...now do the different commands
+    else if (strcmp(parms->rxcmd_command.strptr, "TRACEON") == 0)
+    {
+        instanceInfo->msq = "ON";
+        strcpy(parms->rxcmd_retc.strptr, "0");
+        parms->rxcmd_retc.strlength = 1;
+        return RXEXIT_HANDLED;
+    }
+    // ok, a good address...now do the different commands
+    else if (strcmp(parms->rxcmd_command.strptr, "TRACEOFF") == 0)
+    {
+        instanceInfo->msq = "OFF";
+        strcpy(parms->rxcmd_retc.strptr, "0");
+        parms->rxcmd_retc.strlength = 1;
+        return RXEXIT_HANDLED;
+    }
+    // ok, a good address...now do the different commands
+    else if (strcmp(parms->rxcmd_command.strptr, "HALT") == 0)
+    {
+        instanceInfo->hlt = "HALT";
+        strcpy(parms->rxcmd_retc.strptr, "0");
+        parms->rxcmd_retc.strlength = 1;
+        return RXEXIT_HANDLED;
+    }
+    else
+    {
+        // unknown command
+        strcpy(parms->rxcmd_retc.strptr, "-2");
+        parms->rxcmd_retc.strlength = 2;
+        parms->rxcmd_flags.rxfcfail = 1;
+        return RXEXIT_HANDLED;
+    }
+}
+
+int RexxEntry TestContextQueueExit(RexxExitContext *context, int code, int subcode, PEXIT exitInfo)
+{
+    InstanceInfo *instanceInfo = (InstanceInfo *)context->GetApplicationData();
+    if (strcmp(instanceInfo->msq, "SKIP") == 0)
+    {
+        return RXEXIT_NOT_HANDLED;
+    }
+    else if (strcmp(instanceInfo->msq, "ERROR") == 0)
+    {
+        return RXEXIT_RAISE_ERROR;
+    }
+    else if (strcmp(instanceInfo->msq, "RAISE") == 0)
+    {
+        context->RaiseException1(Rexx_Error_System_service_user_defined, context->NewStringFromAsciiz("Queue Exit"));
+        return RXEXIT_NOT_HANDLED;
+    }
+    switch (subcode)
+    {
+        case RXMSQPLL:
+        {
+            RXMSQPLL_PARM *parms = (RXMSQPLL_PARM *)exitInfo;
+            strcpy(parms->rxmsq_retc.strptr, "Hello World");
+            parms->rxmsq_retc.strlength = strlen("Hello World");
+            return RXEXIT_HANDLED;
+        }
+        case RXMSQPSH:
+        {
+            RXMSQPSH_PARM *parms = (RXMSQPSH_PARM *)exitInfo;
+            if (parms->rxmsq_flags.rxfmlifo)
+            {
+                if (strcmp(parms->rxmsq_value.strptr, "LIFO") == 0)
+                {
+                    return RXEXIT_HANDLED;
+                }
+                else
+                {
+                    return RXEXIT_RAISE_ERROR;
+                }
+            }
+            else
+            {
+                if (strcmp(parms->rxmsq_value.strptr, "FIFO") == 0)
+                {
+                    return RXEXIT_HANDLED;
+                }
+                else
+                {
+                    return RXEXIT_RAISE_ERROR;
+                }
+            }
+        }
+        case RXMSQSIZ:
+        {
+            RXMSQSIZ_PARM *parms = (RXMSQSIZ_PARM *)exitInfo;
+            // this always returns a large, distinctive number
+            parms->rxmsq_size = 999999;
+            return RXEXIT_HANDLED;
+        }
+        case RXMSQNAM:
+        {
+            RXMSQPLL_PARM *parms = (RXMSQPLL_PARM *)exitInfo;
+            strcpy(parms->rxmsq_retc.strptr, "FOOBAR");
+            parms->rxmsq_retc.strlength = strlen("FOOBAR");
+            return RXEXIT_HANDLED;
+        }
+    }
+    return RXEXIT_RAISE_ERROR;
+}
+
+int RexxEntry TestContextSessionIOExit(RexxExitContext *context, int code, int subcode, PEXIT exitInfo)
+{
+    InstanceInfo *instanceInfo = (InstanceInfo *)context->GetApplicationData();
+    if (strcmp(instanceInfo->sio, "SKIP") == 0)
+    {
+        return RXEXIT_NOT_HANDLED;
+    }
+    else if (strcmp(instanceInfo->sio, "ERROR") == 0)
+    {
+        return RXEXIT_RAISE_ERROR;
+    }
+    else if (strcmp(instanceInfo->sio, "RAISE") == 0)
+    {
+        context->RaiseException1(Rexx_Error_System_service_user_defined, context->NewStringFromAsciiz("IO Exit"));
+        return RXEXIT_NOT_HANDLED;
+    }
+    switch (subcode)
+    {
+        case RXSIOTRD:
+        {
+            if (strcmp(instanceInfo->sio, "ALL") == 0 || strcmp(instanceInfo->sio, "CONSOLE") == 0)
+            {
+                RXSIOTRD_PARM *parms = (RXSIOTRD_PARM *)exitInfo;
+                strcpy(parms->rxsiotrd_retc.strptr, "Hello World");
+                parms->rxsiotrd_retc.strlength = strlen("Hello World");
+                return RXEXIT_HANDLED;
+            }
+            return RXEXIT_NOT_HANDLED;
+        }
+        case RXSIODTR:
+        {
+            if (strcmp(instanceInfo->sio, "ALL") == 0 || strcmp(instanceInfo->sio, "TRACE") == 0)
+            {
+                RXSIODTR_PARM *parms = (RXSIODTR_PARM *)exitInfo;
+                strcpy(parms->rxsiodtr_retc.strptr, "trace off");
+                parms->rxsiodtr_retc.strlength = strlen("trace off");
+                return RXEXIT_HANDLED;
+            }
+            return RXEXIT_NOT_HANDLED;
+        }
+        case RXSIOSAY:
+        {
+            if (strcmp(instanceInfo->sio, "ALL") == 0 || strcmp(instanceInfo->sio, "CONSOLE") == 0)
+            {
+                RXSIOSAY_PARM *parms = (RXSIOSAY_PARM *)exitInfo;
+                if (strcmp(parms->rxsio_string.strptr, "HELLO") == 0)
+                {
+                    return RXEXIT_HANDLED;
+                }
+                else
+                {
+                    return RXEXIT_RAISE_ERROR;
+                }
+            }
+            return RXEXIT_NOT_HANDLED;
+        }
+        case RXSIOTRC:
+        {
+            if (strcmp(instanceInfo->sio, "ALL") == 0 || strcmp(instanceInfo->sio, "TRACE") == 0)
+            {
+                RXMSQSIZ_PARM *parms = (RXMSQSIZ_PARM *)exitInfo;
+                // this one is really hard to test, so it's sufficient that we got here.
+                return RXEXIT_HANDLED;
+            }
+            return RXEXIT_NOT_HANDLED;
+        }
+    }
+    return RXEXIT_RAISE_ERROR;
+}
+
+int RexxEntry TestContextHaltExit(RexxExitContext *context, int code, int subcode, PEXIT exitInfo)
+{
+    InstanceInfo *instanceInfo = (InstanceInfo *)context->GetApplicationData();
+    if (strcmp(instanceInfo->cmd, "SKIP") == 0)
+    {
+        return RXEXIT_NOT_HANDLED;
+    }
+    else if (strcmp(instanceInfo->cmd, "ERROR") == 0)
+    {
+        return RXEXIT_RAISE_ERROR;
+    }
+    else if (strcmp(instanceInfo->cmd, "RAISE") == 0)
+    {
+        context->RaiseException1(Rexx_Error_System_service_user_defined, context->NewStringFromAsciiz("Halt Exit"));
+        return RXEXIT_NOT_HANDLED;
+    }
+    else if (strcmp(instanceInfo->cmd, "HALT") == 0)
+    {
+        RXHLTTST_PARM *parms = (RXHLTTST_PARM *)exitInfo;
+        parms->rxhlt_flags.rxfhhalt = 1;
+        return RXEXIT_HANDLED;
+    }
+    else if (strcmp(instanceInfo->cmd, "NOHALT") == 0)
+    {
+        RXHLTTST_PARM *parms = (RXHLTTST_PARM *)exitInfo;
+        parms->rxhlt_flags.rxfhhalt = 0;
+        return RXEXIT_HANDLED;
+    }
+    return RXEXIT_NOT_HANDLED;
+}
+
+int RexxEntry TestContextTraceExit(RexxExitContext *context, int code, int subcode, PEXIT exitInfo)
+{
+    InstanceInfo *instanceInfo = (InstanceInfo *)context->GetApplicationData();
+    if (strcmp(instanceInfo->cmd, "SKIP") == 0)
+    {
+        return RXEXIT_NOT_HANDLED;
+    }
+    else if (strcmp(instanceInfo->cmd, "ERROR") == 0)
+    {
+        return RXEXIT_RAISE_ERROR;
+    }
+    else if (strcmp(instanceInfo->cmd, "RAISE") == 0)
+    {
+        context->RaiseException1(Rexx_Error_System_service_user_defined, context->NewStringFromAsciiz("Trace Exit"));
+        return RXEXIT_NOT_HANDLED;
+    }
+    else if (strcmp(instanceInfo->cmd, "ON") == 0)
+    {
+        RXHLTTST_PARM *parms = (RXHLTTST_PARM *)exitInfo;
+        parms->rxhlt_flags.rxfhhalt = 1;
+        return RXEXIT_HANDLED;
+    }
+    else if (strcmp(instanceInfo->cmd, "OFF") == 0)
+    {
+        RXHLTTST_PARM *parms = (RXHLTTST_PARM *)exitInfo;
+        parms->rxhlt_flags.rxfhhalt = 0;
+        return RXEXIT_HANDLED;
+    }
+    return RXEXIT_NOT_HANDLED;
+}
+
+int RexxEntry TestContextInitExit(RexxExitContext *context, int code, int subcode, PEXIT exitInfo)
+{
+    InstanceInfo *instanceInfo = (InstanceInfo *)context->GetApplicationData();
+    if (strcmp(instanceInfo->cmd, "SKIP") == 0)
+    {
+        return RXEXIT_NOT_HANDLED;
+    }
+    else if (strcmp(instanceInfo->cmd, "ERROR") == 0)
+    {
+        return RXEXIT_RAISE_ERROR;
+    }
+    else if (strcmp(instanceInfo->cmd, "RAISE") == 0)
+    {
+        context->RaiseException1(Rexx_Error_System_service_user_defined, context->NewStringFromAsciiz("Initialization Exit"));
+        return RXEXIT_NOT_HANDLED;
+    }
+
+    context->SetContextVariable("test1", context->NewStringFromAsciiz("Hello World"));
+    return RXEXIT_HANDLED;
+}
+
+int RexxEntry TestContextTerminationExit(RexxExitContext *context, int code, int subcode, PEXIT exitInfo)
+{
+    InstanceInfo *instanceInfo = (InstanceInfo *)context->GetApplicationData();
+    if (strcmp(instanceInfo->cmd, "SKIP") == 0)
+    {
+        return RXEXIT_NOT_HANDLED;
+    }
+    else if (strcmp(instanceInfo->cmd, "ERROR") == 0)
+    {
+        return RXEXIT_RAISE_ERROR;
+    }
+    else if (strcmp(instanceInfo->cmd, "RAISE") == 0)
+    {
+        context->RaiseException1(Rexx_Error_System_service_user_defined, context->NewStringFromAsciiz("Termination Exit"));
+        return RXEXIT_NOT_HANDLED;
+    }
+
+    RexxObjectPtr value = context->GetContextVariable("test1");
+    if (strcmp(context->ObjectToStringValue(value), "Hello World") != 0)
+    {
+        context->RaiseException1(Rexx_Error_System_service_user_defined, context->NewStringFromAsciiz("Termination Exit"));
+    }
+    return RXEXIT_NOT_HANDLED;
+}
+
+int RexxEntry TestContextScriptFunctionExit(RexxExitContext *context, int code, int subcode, PEXIT exitInfo)
+{
+    InstanceInfo *instanceInfo = (InstanceInfo *)context->GetApplicationData();
+    if (strcmp(instanceInfo->cmd, "SKIP") == 0)
+    {
+        return RXEXIT_NOT_HANDLED;
+    }
+    else if (strcmp(instanceInfo->cmd, "ERROR") == 0)
+    {
+        return RXEXIT_RAISE_ERROR;
+    }
+    else if (strcmp(instanceInfo->cmd, "RAISE") == 0)
+    {
+        context->RaiseException1(Rexx_Error_System_service_user_defined, context->NewStringFromAsciiz("Script Function Exit"));
+        return RXEXIT_NOT_HANDLED;
+    }
+    return invokeExitFunction(context, "Script", exitInfo);
+}
+
+int RexxEntry TestContextObjectFunctionExit(RexxExitContext *context, int code, int subcode, PEXIT exitInfo)
+{
+    InstanceInfo *instanceInfo = (InstanceInfo *)context->GetApplicationData();
+    if (strcmp(instanceInfo->cmd, "SKIP") == 0)
+    {
+        return RXEXIT_NOT_HANDLED;
+    }
+    else if (strcmp(instanceInfo->cmd, "ERROR") == 0)
+    {
+        return RXEXIT_RAISE_ERROR;
+    }
+    else if (strcmp(instanceInfo->cmd, "RAISE") == 0)
+    {
+        context->RaiseException1(Rexx_Error_System_service_user_defined, context->NewStringFromAsciiz("Object Function Exit"));
+        return RXEXIT_NOT_HANDLED;
+    }
+    return invokeExitFunction(context, "Object", exitInfo);
+}
+
+int RexxEntry TestContextNovalueExit(RexxExitContext *context, int code, int subcode, PEXIT exitInfo)
+{
+    InstanceInfo *instanceInfo = (InstanceInfo *)context->GetApplicationData();
+    if (strcmp(instanceInfo->cmd, "SKIP") == 0)
+    {
+        return RXEXIT_NOT_HANDLED;
+    }
+    else if (strcmp(instanceInfo->cmd, "ERROR") == 0)
+    {
+        return RXEXIT_RAISE_ERROR;
+    }
+    else if (strcmp(instanceInfo->cmd, "RAISE") == 0)
+    {
+        context->RaiseException1(Rexx_Error_System_service_user_defined, context->NewStringFromAsciiz("Novalue Exit"));
+        return RXEXIT_NOT_HANDLED;
+    }
+
+    RXVARNOVALUE_PARM *parms = (RXVARNOVALUE_PARM *)exitInfo;
+
+    if (strcmp(parms->variable_name.strptr, "FOO") == 0)
+    {
+        parms->value = context->ArrayOfOne(context->NewStringFromAsciiz("BAR"));
+        return RXEXIT_HANDLED;
+    }
+    return RXEXIT_NOT_HANDLED;
+}
+
+int RexxEntry TestContextValueExit(RexxExitContext *context, int code, int subcode, PEXIT exitInfo)
+{
+    InstanceInfo *instanceInfo = (InstanceInfo *)context->GetApplicationData();
+    if (strcmp(instanceInfo->cmd, "SKIP") == 0)
+    {
+        return RXEXIT_NOT_HANDLED;
+    }
+    else if (strcmp(instanceInfo->cmd, "ERROR") == 0)
+    {
+        return RXEXIT_RAISE_ERROR;
+    }
+    else if (strcmp(instanceInfo->cmd, "RAISE") == 0)
+    {
+        context->RaiseException1(Rexx_Error_System_service_user_defined, context->NewStringFromAsciiz("VALUE Exit"));
+        return RXEXIT_NOT_HANDLED;
+    }
+
+    RXVALCALL_PARM *parms = (RXVALCALL_PARM *)exitInfo;
+
+    if (strcmp(parms->selector.strptr, "TEST") == 0)
+    {
+        if (strcmp(parms->variable_name.strptr, "FOO") == 0)
+        {
+            parms->value = context->ArrayOfOne(context->NewStringFromAsciiz("BAR"));
+            return RXEXIT_HANDLED;
+        }
+    }
+    return RXEXIT_NOT_HANDLED;
 }
 
