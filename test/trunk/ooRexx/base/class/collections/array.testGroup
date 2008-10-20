@@ -374,3 +374,23 @@ return testResult
    self~assertEquals(c3, arr1~toString('L'))
    self~assertEquals(c2, arr1~toString('L', ','))
 
+::method "test_34"
+   arr1 = .array~of("Mike", "Rick", "Fred", "Rick")
+   self~expectSyntax(93.907)
+   t1 = arr1[0]
+
+::method "test_35"
+   arr1 = .array~of("Mike", "Rick", "Fred", "Rick")
+   self~expectSyntax(93.907)
+   t1 = arr1[-1]
+
+::method "test_36"
+   arr1 = .array~of("Mike", "Rick", "Fred", "Rick")
+   self~expectSyntax(93.907)
+   t1 = arr1['Mike']
+
+::method "test_37"
+   arr1 = .array~of("Mike", "Rick", "Fred", "Rick")
+   self~expectSyntax(93.907)
+   t1 = arr1[.nil]
+

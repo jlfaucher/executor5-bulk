@@ -236,3 +236,23 @@ return testResult
    self~expectSyntax(93.937)
    sup~next
 
+::method "test_18"
+   que1 = .queue~of("Mike", "Rick", "Fred", "Rick")
+   self~expectSyntax(93.966)
+   t1 = que1[0]
+
+::method "test_19"
+   que1 = .queue~of("Mike", "Rick", "Fred", "Rick")
+   self~expectSyntax(93.966)
+   t1 = que1[-1]
+
+::method "test_20"
+   que1 = .queue~of("Mike", "Rick", "Fred", "Rick")
+   self~expectSyntax(93.966)
+   t1 = que1['Mike']
+
+::method "test_21"
+   que1 = .queue~of("Mike", "Rick", "Fred", "Rick")
+   self~expectSyntax(93.966)
+   t1 = que1[.nil]
+
