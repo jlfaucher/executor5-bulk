@@ -103,7 +103,7 @@ int RexxEntry TestFunctionExit(int code, int subcode, PEXIT exitInfo)
 {
     InstanceInfo *instanceInfo = getApplicationData();
 
-    switch (instanceInfo->fnc)
+    switch (instanceInfo->fnc.action)
     {
         case InstanceInfo::SKIP:
             return RXEXIT_NOT_HANDLED;
@@ -168,7 +168,7 @@ int RexxEntry TestCommandExit(int code, int subcode, PEXIT exitInfo)
 {
     InstanceInfo *instanceInfo = getApplicationData();
 
-    switch (instanceInfo->cmd)
+    switch (instanceInfo->cmd.action)
     {
         case InstanceInfo::SKIP:
             return RXEXIT_NOT_HANDLED;
@@ -239,7 +239,7 @@ int RexxEntry TestQueueExit(int code, int subcode, PEXIT exitInfo)
 {
     InstanceInfo *instanceInfo = getApplicationData();
 
-    switch (instanceInfo->msq)
+    switch (instanceInfo->msq.action)
     {
         case InstanceInfo::SKIP:
             return RXEXIT_NOT_HANDLED;
@@ -306,7 +306,7 @@ int RexxEntry TestSessionIOExit(int code, int subcode, PEXIT exitInfo)
 {
     InstanceInfo *instanceInfo = getApplicationData();
 
-    switch (instanceInfo->sio)
+    switch (instanceInfo->sio.action)
     {
         case InstanceInfo::SKIP:
             return RXEXIT_NOT_HANDLED;
@@ -373,7 +373,7 @@ int RexxEntry TestHaltExit(int code, int subcode, PEXIT exitInfo)
 {
     InstanceInfo *instanceInfo = getApplicationData();
 
-    switch (instanceInfo->hlt)
+    switch (instanceInfo->hlt.action)
     {
         case InstanceInfo::SKIP:
             return RXEXIT_NOT_HANDLED;
@@ -403,7 +403,7 @@ int RexxEntry TestTraceExit(int code, int subcode, PEXIT exitInfo)
 {
     InstanceInfo *instanceInfo = getApplicationData();
 
-    switch (instanceInfo->trc)
+    switch (instanceInfo->trc.action)
     {
         case InstanceInfo::SKIP:
             return RXEXIT_NOT_HANDLED;
@@ -431,7 +431,7 @@ int RexxEntry TestInitExit(int code, int subcode, PEXIT exitInfo)
 {
     InstanceInfo *instanceInfo = getApplicationData();
 
-    switch (instanceInfo->sio)
+    switch (instanceInfo->sio.action)
     {
         case InstanceInfo::SKIP:
             return RXEXIT_NOT_HANDLED;
@@ -448,7 +448,7 @@ int RexxEntry TestTerminationExit(int code, int subcode, PEXIT exitInfo)
 {
     InstanceInfo *instanceInfo = getApplicationData();
 
-    switch (instanceInfo->sio)
+    switch (instanceInfo->ter.action)
     {
         case InstanceInfo::SKIP:
             return RXEXIT_NOT_HANDLED;
@@ -474,7 +474,7 @@ int RexxEntry TestScriptFunctionExit(int code, int subcode, PEXIT exitInfo)
 {
     InstanceInfo *instanceInfo = getApplicationData();
 
-    switch (instanceInfo->sio)
+    switch (instanceInfo->exf.action)
     {
         case InstanceInfo::SKIP:
             return RXEXIT_NOT_HANDLED;
@@ -491,7 +491,7 @@ int RexxEntry TestObjectFunctionExit(int code, int subcode, PEXIT exitInfo)
 {
     InstanceInfo *instanceInfo = getApplicationData();
 
-    switch (instanceInfo->sio)
+    switch (instanceInfo->ofnc.action)
     {
         case InstanceInfo::SKIP:
             return RXEXIT_NOT_HANDLED;
@@ -508,7 +508,7 @@ int RexxEntry TestNovalueExit(int code, int subcode, PEXIT exitInfo)
 {
     InstanceInfo *instanceInfo = getApplicationData();
 
-    switch (instanceInfo->sio)
+    switch (instanceInfo->var.action)
     {
         case InstanceInfo::SKIP:
             return RXEXIT_NOT_HANDLED;
@@ -526,7 +526,7 @@ int RexxEntry TestValueExit(int code, int subcode, PEXIT exitInfo)
 {
     InstanceInfo *instanceInfo = getApplicationData();
 
-    switch (instanceInfo->sio)
+    switch (instanceInfo->val.action)
     {
         case InstanceInfo::SKIP:
             return RXEXIT_NOT_HANDLED;

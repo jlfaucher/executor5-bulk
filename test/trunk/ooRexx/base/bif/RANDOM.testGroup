@@ -55,11 +55,11 @@ return testResult
 ::class "RANDOM.testGroup" subclass ooTestCase public
 
    -- test the BIF, using examples from the documentation
-::method "test_RANDOM"
+::method "test_RANDOM01"
 
-    min="0  0 1  9999"
-    max="1 +1 9 99999"
-    seed="0 179 34 99999"
+    min="0  0 1  9999 1 -5"
+    max="1 +1 9 99999 999999999 5"
+    seed="0 179 34 99999 999999999 42"
     reps=100
 
     do i=1 to words(min)
@@ -103,4 +103,64 @@ return testResult
        drop x. y.
     end
 
+::method testRandom02
+  do 100
+      r = random()
+      self~assertTrue(r >= 0 & r<= 999)
+  end
 
+  r = random(,,12345)
+  self~assertTrue(r >= 0 & r<= 999)
+
+  r = random(1,1)
+  self~assertSame(1, r)
+  r = random(1,2)
+  self~assertTrue(r >= 1 & r<= 2)
+
+  r = random(5)
+  self~assertTrue(r >= 0 & r<= 5)
+  r = random(0)
+  self~assertSame(0, r)
+  r = random(999999998)
+  self~assertTrue(r >= 0 & r<= 999999998)
+  r = random(,0)
+  self~assertSame(0, r)
+  r = random(,1)
+  self~assertTrue(r >= 0 & r<= 1)
+  r = random(0,1,0)
+  self~assertTrue(r >= 0 & r<= 1)
+
+::method testRandom03
+  self~expectSyntax(40.12)
+  r = random("abc")
+
+::method testRandom04
+  self~expectSyntax(40.12)
+  r = random(1, "abc")
+
+::method testRandom05
+  self~expectSyntax(40.12)
+  r = random(1, 2, "abc")
+
+::method testRandom06
+  self~expectSyntax(40.13)
+  r = random(1, 2, -1)
+
+::method testRandom07
+  self~expectSyntax(40.12)
+  r = random(1.5)
+
+::method testRandom08
+  self~expectSyntax(40.12)
+  r = random(1, 1.5)
+
+::method testRandom09
+  self~expectSyntax(40.12)
+  r = random(1, 2, 1.5)
+
+::method testRandom10
+  self~expectSyntax(40.33)
+  r = random(2, 1)
+
+::method testRandom11
+  r = random(0, 999999999)

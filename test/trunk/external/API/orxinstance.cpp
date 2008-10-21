@@ -138,7 +138,7 @@ int RexxEntry TestContextFunctionExit(RexxExitContext *context, int code, int su
 {
     InstanceInfo *instanceInfo = (InstanceInfo *)context->GetApplicationData();
 
-    switch (instanceInfo->fnc)
+    switch (instanceInfo->fnc.action)
     {
         case InstanceInfo::SKIP:
             return RXEXIT_NOT_HANDLED;
@@ -188,7 +188,7 @@ int RexxEntry TestContextCommandExit(RexxExitContext *context, int code, int sub
 {
     InstanceInfo *instanceInfo = (InstanceInfo *)context->GetApplicationData();
 
-    switch (instanceInfo->cmd)
+    switch (instanceInfo->cmd.action)
     {
         case InstanceInfo::SKIP:
             return RXEXIT_NOT_HANDLED;
@@ -259,7 +259,7 @@ int RexxEntry TestContextQueueExit(RexxExitContext *context, int code, int subco
 {
     InstanceInfo *instanceInfo = (InstanceInfo *)context->GetApplicationData();
 
-    switch (instanceInfo->msq)
+    switch (instanceInfo->msq.action)
     {
         case InstanceInfo::SKIP:
             return RXEXIT_NOT_HANDLED;
@@ -327,7 +327,7 @@ int RexxEntry TestContextSessionIOExit(RexxExitContext *context, int code, int s
 {
     InstanceInfo *instanceInfo = (InstanceInfo *)context->GetApplicationData();
 
-    switch (instanceInfo->sio)
+    switch (instanceInfo->sio.action)
     {
         case InstanceInfo::SKIP:
             return RXEXIT_NOT_HANDLED;
@@ -396,7 +396,7 @@ int RexxEntry TestContextHaltExit(RexxExitContext *context, int code, int subcod
 {
     InstanceInfo *instanceInfo = (InstanceInfo *)context->GetApplicationData();
 
-    switch (instanceInfo->hlt)
+    switch (instanceInfo->hlt.action)
     {
         case InstanceInfo::SKIP:
             return RXEXIT_NOT_HANDLED;
@@ -427,7 +427,7 @@ int RexxEntry TestContextTraceExit(RexxExitContext *context, int code, int subco
 {
     InstanceInfo *instanceInfo = (InstanceInfo *)context->GetApplicationData();
 
-    switch (instanceInfo->trc)
+    switch (instanceInfo->trc.action)
     {
         case InstanceInfo::SKIP:
             return RXEXIT_NOT_HANDLED;
@@ -456,7 +456,7 @@ int RexxEntry TestContextInitExit(RexxExitContext *context, int code, int subcod
 {
     InstanceInfo *instanceInfo = (InstanceInfo *)context->GetApplicationData();
 
-    switch (instanceInfo->ini)
+    switch (instanceInfo->ini.action)
     {
         case InstanceInfo::SKIP:
             return RXEXIT_NOT_HANDLED;
@@ -475,7 +475,7 @@ int RexxEntry TestContextTerminationExit(RexxExitContext *context, int code, int
 {
     InstanceInfo *instanceInfo = (InstanceInfo *)context->GetApplicationData();
 
-    switch (instanceInfo->ter)
+    switch (instanceInfo->ter.action)
     {
         case InstanceInfo::SKIP:
             return RXEXIT_NOT_HANDLED;
@@ -498,7 +498,7 @@ int RexxEntry TestContextScriptFunctionExit(RexxExitContext *context, int code, 
 {
     InstanceInfo *instanceInfo = (InstanceInfo *)context->GetApplicationData();
 
-    switch (instanceInfo->exf)
+    switch (instanceInfo->exf.action)
     {
         case InstanceInfo::SKIP:
             return RXEXIT_NOT_HANDLED;
@@ -515,7 +515,7 @@ int RexxEntry TestContextObjectFunctionExit(RexxExitContext *context, int code, 
 {
     InstanceInfo *instanceInfo = (InstanceInfo *)context->GetApplicationData();
 
-    switch (instanceInfo->ofnc)
+    switch (instanceInfo->ofnc.action)
     {
         case InstanceInfo::SKIP:
             return RXEXIT_NOT_HANDLED;
@@ -532,7 +532,7 @@ int RexxEntry TestContextNovalueExit(RexxExitContext *context, int code, int sub
 {
     InstanceInfo *instanceInfo = (InstanceInfo *)context->GetApplicationData();
 
-    switch (instanceInfo->var)
+    switch (instanceInfo->var.action)
     {
         case InstanceInfo::SKIP:
             return RXEXIT_NOT_HANDLED;
@@ -557,7 +557,7 @@ int RexxEntry TestContextValueExit(RexxExitContext *context, int code, int subco
 {
     InstanceInfo *instanceInfo = (InstanceInfo *)context->GetApplicationData();
 
-    switch (instanceInfo->val)
+    switch (instanceInfo->val.action)
     {
         case InstanceInfo::SKIP:
             return RXEXIT_NOT_HANDLED;
