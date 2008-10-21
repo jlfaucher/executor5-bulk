@@ -3295,13 +3295,13 @@ QUEUED()    ->    5    /* Perhaps */
 ]]>
 </programlisting>
 
-<para>Returns a quasi-random nonnegative whole number in the range
+<para>Returns a quasi-random whole number in the range
 <emphasis role="italic">min</emphasis> to
 <emphasis role="italic">max</emphasis> inclusive. If you specify
 <emphasis role="italic">max</emphasis> or
 <emphasis role="italic">min,max</emphasis>, then
 <emphasis role="italic">max</emphasis> minus
-<emphasis role="italic">min</emphasis> cannot exceed 100000.
+<emphasis role="italic">min</emphasis> cannot exceed 999999999.
 <emphasis role="italic">min</emphasis> and
 <emphasis role="italic">max</emphasis> default to
 <computeroutput>0</computeroutput> and <computeroutput>999</computeroutput>,
@@ -3320,6 +3320,7 @@ RANDOM()          ->    305
 RANDOM(5,8)       ->      7
 RANDOM(2)         ->      0  /*  0  to  2    */
 RANDOM(, ,1983)   ->    123  /* reproducible */
+RANDOM(-5, 5)     ->    -3
 </programlisting>
 
 <para><emphasis role="bold">Notes:</emphasis></para>
