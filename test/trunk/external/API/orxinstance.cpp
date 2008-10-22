@@ -581,3 +581,100 @@ int RexxEntry TestContextValueExit(RexxExitContext *context, int code, int subco
     return RXEXIT_NOT_HANDLED;
 }
 
+
+bool buildContextExitList(InstanceInfo *instanceInfo, RexxContextExit *exitList)
+{
+    int counter = 0;
+    if (instanceInfo->fnc.isEnabled())
+    {
+        exitList->handler = TestContextFunctionExit;
+        exitList->sysexit_code = RXFNC;
+        exitList++;
+        counter++;
+    }
+    if (instanceInfo->cmd.isEnabled())
+    {
+        exitList->handler = TestContextCommandExit;
+        exitList->sysexit_code = RXCMD;
+        exitList++;
+        counter++;
+    }
+    if (instanceInfo->msq.isEnabled())
+    {
+        exitList->handler = TestContextQueueExit;
+        exitList->sysexit_code = RXMSQ;
+        exitList++;
+        counter++;
+    }
+    if (instanceInfo->sio.isEnabled())
+    {
+        exitList->handler = TestContextSessionIOExit;
+        exitList->sysexit_code = RXSIO;
+        exitList++;
+        counter++;
+    }
+    if (instanceInfo->hlt.isEnabled())
+    {
+        exitList->handler = TestContextHaltExit;
+        exitList->sysexit_code = RXHLT;
+        exitList++;
+        counter++;
+    }
+    if (instanceInfo->trc.isEnabled())
+    {
+        exitList->handler = TestContextTraceExit;
+        exitList->sysexit_code = RXTRC;
+        exitList++;
+        counter++;
+    }
+    if (instanceInfo->ini.isEnabled())
+    {
+        exitList->handler = TestContextInitExit;
+        exitList->sysexit_code = RXINI;
+        exitList++;
+        counter++;
+    }
+    if (instanceInfo->ter.isEnabled())
+    {
+        exitList->handler = TestContextTerminationExit;
+        exitList->sysexit_code = RXTER;
+        exitList++;
+        counter++;
+    }
+    if (instanceInfo->exf.isEnabled())
+    {
+        exitList->handler = TestContextScriptFunctionExit;
+        exitList->sysexit_code = RXEXF;
+        exitList++;
+        counter++;
+    }
+    if (instanceInfo->var.isEnabled())
+    {
+        exitList->handler = TestContextNovalueExit;
+        exitList->sysexit_code = RXNOVAL;
+        exitList++;
+        counter++;
+    }
+    if (instanceInfo->val.isEnabled())
+    {
+        exitList->handler = TestContextValueExit;
+        exitList->sysexit_code = RXVALUE;
+        exitList++;
+        counter++;
+    }
+    if (instanceInfo->ofnc.isEnabled())
+    {
+        exitList->handler = TestContextObjectFunctionExit;
+        exitList->sysexit_code = RXOFNC;
+        exitList++;
+        counter++;
+    }
+
+    if (counter > 0)
+    {
+        exitList->handler = NULL;
+        exitList->sysexit_code = 0;
+        return true;
+    }
+    return false;
+}

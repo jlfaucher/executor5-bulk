@@ -599,3 +599,101 @@ void REXXENTRY registerDllExits(void *data)
     RexxRegisterExitDll("TestValueExit", "orxclassicexits",           "TestValueExit", (char *)userData, RXEXIT_DROPPABLE);
     RexxRegisterExitDll("TestTraceExit", "orxclassicexits",           "TestTraceExit", (char *)userData, RXEXIT_DROPPABLE);
 }
+
+
+bool buildRegisterdExitList(InstanceInfo *instanceInfo, RXSYSEXIT *exitList)
+{
+    int counter = 0;
+    if (instanceInfo->fnc.isEnabled())
+    {
+        exitList->sysexit_name = "TestFunctionExit";
+        exitList->sysexit_code = RXFNC;
+        exitList++;
+        counter++;
+    }
+    if (instanceInfo->cmd.isEnabled())
+    {
+        exitList->sysexit_name = "TestCommandExit";
+        exitList->sysexit_code = RXCMD;
+        exitList++;
+        counter++;
+    }
+    if (instanceInfo->msq.isEnabled())
+    {
+        exitList->sysexit_name = "TestQueueExit";
+        exitList->sysexit_code = RXMSQ;
+        exitList++;
+        counter++;
+    }
+    if (instanceInfo->sio.isEnabled())
+    {
+        exitList->sysexit_name = "TestSessionIOExit";
+        exitList->sysexit_code = RXSIO;
+        exitList++;
+        counter++;
+    }
+    if (instanceInfo->hlt.isEnabled())
+    {
+        exitList->sysexit_name = "TestHaltExit";
+        exitList->sysexit_code = RXHLT;
+        exitList++;
+        counter++;
+    }
+    if (instanceInfo->trc.isEnabled())
+    {
+        exitList->sysexit_name = "TestTraceExit";
+        exitList->sysexit_code = RXTRC;
+        exitList++;
+        counter++;
+    }
+    if (instanceInfo->ini.isEnabled())
+    {
+        exitList->sysexit_name = "TestInitExit";
+        exitList->sysexit_code = RXINI;
+        exitList++;
+        counter++;
+    }
+    if (instanceInfo->ter.isEnabled())
+    {
+        exitList->sysexit_name = "TestTerminationExit";
+        exitList->sysexit_code = RXTER;
+        exitList++;
+        counter++;
+    }
+    if (instanceInfo->exf.isEnabled())
+    {
+        exitList->sysexit_name = "TestScriptFunctionExit";
+        exitList->sysexit_code = RXEXF;
+        exitList++;
+        counter++;
+    }
+    if (instanceInfo->var.isEnabled())
+    {
+        exitList->sysexit_name = "TestNovalueExit";
+        exitList->sysexit_code = RXNOVAL;
+        exitList++;
+        counter++;
+    }
+    if (instanceInfo->val.isEnabled())
+    {
+        exitList->sysexit_name = "TestValueExit";
+        exitList->sysexit_code = RXVALUE;
+        exitList++;
+        counter++;
+    }
+    if (instanceInfo->ofnc.isEnabled())
+    {
+        exitList->sysexit_name = "TestObjectFunctionExit";
+        exitList->sysexit_code = RXOFNC;
+        exitList++;
+        counter++;
+    }
+
+    if (counter > 0)
+    {
+        exitList->sysexit_name = NULL;
+        exitList->sysexit_code = 0;
+        return true;
+    }
+    return false;
+}
