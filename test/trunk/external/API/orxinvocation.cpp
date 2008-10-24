@@ -101,6 +101,36 @@ RexxMethod1(int, setInitialAddress,
 }
 
 
+RexxMethod1(int, setSearchPath,
+            CSELF, self,
+            CSTRING, path)
+{
+    InstanceInfo *instanceInfo = (InstanceInfo *)self;
+    instanceInfo->extensionPath = path;
+    return 0;
+}
+
+
+RexxMethod1(int, setExtensions,
+            CSELF, self,
+            CSTRING, extensions)
+{
+    InstanceInfo *instanceInfo = (InstanceInfo *)self;
+    instanceInfo->extensions = extensions;
+    return 0;
+}
+
+
+RexxMethod1(int, setLoadLibrary,
+            CSELF, self,
+            CSTRING, lib)
+{
+    InstanceInfo *instanceInfo = (InstanceInfo *)self;
+    instanceInfo->loadLibrary = lib;
+    return 0;
+}
+
+
 
 RexxMethod1(CSTRING, getExitType,
             CSELF, self)
@@ -312,6 +342,55 @@ RexxMethod1(CSTRING, getValueExit,
 {
     InstanceInfo *instanceInfo = (InstanceInfo *)self;
     return (const char *)instaneInfo->val;
+}
+
+
+RexxMethod1(wholenumber_t, getRC,
+            CSELF, self)
+{
+     InstanceInfo *instanceInfo = (InstanceInfo *)self;
+     return instanceInfo->rc;
+}
+
+
+RexxMethod1(wholenumber_t, getCode,
+            CSELF, self)
+{
+     InstanceInfo *instanceInfo = (InstanceInfo *)self;
+     return instanceInfo->code;
+}
+
+
+RexxMethod3(RexxObjectPtr, callInstanceProgram,
+            CSELF, self,
+            CSTRING, program,
+            RexxArrayObject, args)
+{
+    InstanceInfo *instanceInfo = (InstanceInfo *)self;
+    instanceInfo->programName = program;
+    instanceInfo->argCount = context->ArraySize(args);
+    for (size_t i = 0; i < instanceInfo->argcount; i++)
+    {
+        RexxObjectPtr arg = context->ArrayAt(i + 1);
+        if (arg != NULLOBJECT)
+        {
+            instanceInfo->arguments[i] = context->String(arg);
+        }
+        else
+        {
+            instanceInfo->arguments[i] = NULL;
+        }
+    }
+
+    invokeProgram(instanceInfo);
+    if (instanceInfo->rc != 0)
+    {
+        return context->Nil();
+    }
+    else
+    {
+        return context->String(instanceInfo->returnResult);
+    }
 }
 
 

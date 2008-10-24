@@ -171,6 +171,14 @@ public:
     ExitType exitStyle;
     // the program name
     const char *programName;
+    // additional search path
+    const char *extensionPath;
+    // the initial address environment
+    const char *initialAddress;
+    // external function seach extensions
+    const char *extensions;
+    // an initial library to load
+    const char *loadLibrary;
 
     ExitConfig fnc;
     ExitConfig cmd;
@@ -184,4 +192,11 @@ public:
     ExitConfig var;
     ExitConfig val;
     ExitConfig ofnc;
+
+    wholenumber_t code;
+    wholenumber_t rc;
+
+    size_t argCount;
+    const char *arguments[10];
+    char returnResult[1024];
 };

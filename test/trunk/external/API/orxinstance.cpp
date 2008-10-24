@@ -678,3 +678,120 @@ bool buildContextExitList(InstanceInfo *instanceInfo, RexxContextExit *exitList)
     }
     return false;
 }
+
+
+RexxReturnCode createInstance(InstanceInfo *instanceInfo, RexxInstance *&instance, RexxThreadContext *&threadContext)
+{
+    RexxOption options[25];      // space for a boatload of options
+                                 // space for building exit lists
+    RexxContextExit contextExits[RXNOOFEXITS];
+    RXSYSEXIT       registeredExits[RXNOOFEXITS];
+    int optionCount = 0;
+
+    switch (instanceInfo->ExitStyle)
+    {
+        case InstanceInfo::CONTEXT:
+        {
+            options[optionCount].optionName = DIRECT_EXITS;
+            buildContextExitList(instanceInfo, contextExits);
+            options[optionCount].option = (void *)contextExits;
+            optionCount++;
+        }
+        case InstanceInfo::REGISTERED_DLL:
+        {
+            options[optionCount].optionName = REGISTERED_EXITS;
+            registerDllExits((void *)instanceInfo);
+            buildRegisteredExitList(instanceInfo, registeredExits);
+            options[optionCount].option = (void *)registeredExits;
+            optionCount++;
+        }
+        case InstanceInfo::REGISTERED_EXE:
+        {
+            options[optionCount].optionName = REGISTERED_EXITS;
+            registerExeExits((void *)instanceInfo);
+            buildRegisteredExitList(instanceInfo, registeredExits);
+            options[optionCount].option = (void *)registeredExits;
+            optionCount++;
+        }
+        default:
+            // no options added
+            break;
+
+    }
+
+    if (instanceInfo->extensionPath != null)
+    {
+        options[optionCount].optionName = EXTERNAL_CALL_PATH;
+        options[optionCount].option = instanceInfo->extensionPath;
+        optionCount++;
+    }
+
+    if (instanceInfo->extensions != null)
+    {
+        options[optionCount].optionName = EXTERNAL_CALL_EXTENSIONS;
+        options[optionCount].option = instanceInfo->extensions;
+        optionCount++;
+    }
+
+    if (instanceInfo->loadLibrary != null)
+    {
+        options[optionCount].optionName = LOAD_REQUIRED_LIBRARY;
+        options[optionCount].option = instanceInfo->loadLibrary;
+        optionCount++;
+    }
+
+    if (instanceInfo->initialAddress != null)
+    {
+        options[optionCount].optionName = INITIAL_ADDRESS_ENVIRONMENT;
+        options[optionCount].option = instanceInfo->initialAddress;
+        optionCount++;
+    }
+
+    options[optionCount].optionName = APPLICATION_DATA;
+    options[optionCount].option = (void *)instanceInfo;
+    optionCount++;
+
+    options[optionCount].optionName = NULL;
+    options[optionCount].option = 0;
+
+    return RexxCreateInterpreter(&instance, &threadContext, options);
+}
+
+
+void invokeProgram(InstanceInfo *instanceInfo)
+{
+    RexxInstance *instance;
+    RexxThreadContext *context;
+
+    instanceInfo->code = 0;
+    instanceInfo->rc = 0;
+    strcpy(instanceInfo->returnResult, "");
+
+    createInstance(instanceInfo, instance, threadContext);
+
+    RexxArrayObject args = context->NewArray(instanceInfo->argCount);
+    for (size_t i = 0; i < instanceInfo->argCount; i++)
+    {
+        if (instanceInfo->arguments[i] != NULL)
+        {
+            context->ArrayPut(args, context->String(instanceInfo->arguments[i]), i + 1);
+        }
+    }
+
+    RexxObjectPtr result = context->CallProgram(instanceInfo->programName, args);
+    // if an exception occurred, get the decoded exception information
+    if (context->CheckCondition())
+    {
+        RexxCondition condition;
+
+        RexxDirectoryObject cond = context->GetConditionInfo();
+        context->DecodeConditionInfo(cond, &condition);
+        instanceInfo->code = condition.code;
+        instanceInfo->rc = condition.rc;
+    }
+    else
+    {
+        CSTRING resultString = context->String(result);
+        strncpy(instanceInfo->returnResult, resultString, sizeof(instanceInfo->returnResult));
+    }
+}

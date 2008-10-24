@@ -601,7 +601,7 @@ void REXXENTRY registerDllExits(void *data)
 }
 
 
-bool buildRegisterdExitList(InstanceInfo *instanceInfo, RXSYSEXIT *exitList)
+bool buildRegisteredExitList(InstanceInfo *instanceInfo, RXSYSEXIT *exitList)
 {
     int counter = 0;
     if (instanceInfo->fnc.isEnabled())
