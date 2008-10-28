@@ -107,7 +107,7 @@ return rrc
   currentDir = directory()
 
   makeDir = .ooTest.dir"\external\API"
-  makeFile = "Makefile.win"
+  makeFile = "Makefile.windows"
   makeLocation = makeDir"\"makefile
 
   oldBinVal = replaceEnvValue("OOTEST_BIN_DIR", .ooTest.dir"\bin\WINDOWS")
@@ -146,7 +146,7 @@ return rCode
   currentDir = directory()
 
   makeDir = .ooTest.dir"/external/API"
-  makeFile = "Makefile"
+  makeFile = "Makefile." || .ooRexxUnit.OSName~lower
   makeLocation = makeDir"/"makefile
 
   oldBinVal = replaceEnvValue("OOTEST_BIN_DIR", .ooTest.dir"/bin/" || .ooRexxUnit.OSName)
