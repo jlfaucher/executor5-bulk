@@ -62,6 +62,13 @@ return testResult
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::class "rxQueue.testGroup" public subclass ooTestCase
 
+-- Set up is used to be sure the queue is empty before the start of each
+-- test.
+::method setup
+  do queued()
+    pull .
+  end
+
 ::method test_current_dir_filter
 
   -- Use a select to allow for expansion.  When this test fails on a plaform
@@ -83,7 +90,7 @@ return testResult
   parse pull line
   trueCurrentDir = directory()
 
-  self~assertTrue(count == 1)
+  self~assertSame(1, count)
   self~assertSame(trueCurrentDir, line)
 
 ::method  test_multi_lines
@@ -125,12 +132,13 @@ return testResult
 ::method test_stderr_to_rxqueue
 
   -- Note to someone investigating a failure here.  Add the code to get this
-  -- to work on your platform and, probably, turn this into a select statement.
-  msg = "Please fix this test if OS is not Windows or Linux"
-  self~assertTrue(.ooRexxUnit.OSName == "WINDOWS" | .ooRexxUnit.OSName == "LINUX", msg)
+  -- to work on your platform and, maybe, turn this into a select statement.
+  os = .ooRexxUnit.OSName
+  msg = "Please fix this test if OS is not Windows, Linux, or AIX"
+  self~assertTrue(os == "WINDOWS" | os == "LINUX" | os = "AIX", msg)
 
-  -- This redirects stderr correctly on Windows and Linux (bash).  We may need
-  -- to add a test for the proper shell on Linux.
+  -- This redirects stderr correctly on Windows, Linux (bash), and AIX (ksh).
+  -- We may need to add a test for the proper shell in use.
   stdErrToStdOut = '2>&1'
 
   src = .array~new
