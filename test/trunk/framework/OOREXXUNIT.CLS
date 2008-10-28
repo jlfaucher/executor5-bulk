@@ -182,7 +182,7 @@ if \ .local~hasEntry(ooRexxUnit.version) then do
   -- is used so that if the test suite needs to be run on an OS with different
   -- characters, it can easily be added here.
   select
-    when .OSName == "WINDOWS" then do
+    when .ooRexxUnit.OSName == "WINDOWS" then do
       .local~ooRexxUnit.directory.separator = '\'
       .local~ooRexxUnit.path.separator=";"
     end

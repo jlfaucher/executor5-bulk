@@ -71,12 +71,13 @@
 
   if \ output~isInstanceOf(.array) then return 9999
 
-  -- This is only known to be good for Linux and Windows.  When issued under
+  -- This is only known to be good for AIX, Linux and Windows.  When issued under
   -- another OS, it is likely to fail.  The select is used so that the proper
   -- code can be placed here when it does fail.
   select
     when .ooRexxUnit.OSName == "WINDOWS" then stdErrToStdOut = '2>&1'
     when .ooRexxUnit.OSName == "LINUX" then stdErrToStdOut = '2>&1'
+    when .ooRexxUnit.OSName == "AIX" then stdErrToStdOut = '2>&1'
     otherwise stdErrToStdOut = '2>&1'
   end
 
@@ -147,8 +148,8 @@ return prgRet
       if tmp \== "" then dir = directory()
     end
 
-    when currentOS == 'LINUX' then do
-      -- On Linux we could be in the root to begin with, or in .libs
+    when currentOS == 'LINUX' || currentOS = 'AIX' then do
+      -- On AIX and Linux we could be in the root to begin with, or in .libs
       if .ooTest.originalWorkingDir~right(6) == "/.libs" then do
         tmp = directory("../")
         if tmp \== "" then dir = directory()
@@ -188,6 +189,12 @@ return dir
   dir = .nil
   currentOS = .ooRexxUnit.OSName
 
+  -- Notes for extending this on new platforms.  For unix-like platforms, if
+  -- the generic findInstallDirOnUnix() can be slightly tweaked to work for the
+  -- platform, then do that.  If the generic function is not sufficient, then
+  -- add a platform specific function, like maybe findInstallDirOnBSD().  If
+  -- the platform is not unix-like, then a new function will probably be needed.
+
   select
     when currentOS == "WINDOWS" then do
       -- On Windows, the install package sets REXX_HOME.
@@ -201,8 +208,8 @@ return dir
       end
     end
 
-    when currentOS == "LINUX" then do
-      dir = findInstallDirOnLinux()
+    when currentOS == "LINUX" | currentOS == "AIX" then do
+      dir = findInstallDirOnUnix()
     end
 
     otherwise nop
@@ -236,7 +243,10 @@ return dir
   installDir = findInstallDir()
 
   -- When the test suite begins running on a new OS, then another when clause
-  -- will need to be added to the select for that OS.
+  -- will need to be added to the select for that OS.  If the new OS is unix-
+  -- like, then the generic locateSampleOnUnix() function can most likely be
+  -- used.  It that is not possible, then write a OS specific function, like
+  -- maybe locateSampleOnBSD().
 
   select label FINDSAMPLE
     when currentOS == "WINDOWS" then do
@@ -264,30 +274,8 @@ return dir
       end
     end
 
-    when currentOS == "LINUX" then do
-      if installDir \== .nil then do
-        j = SysFileTree(installDir'/share/ooRexx/'name, f., 'FOS')
-        if j == 0, f.0 == 1, SysIsFile(f.1) then do
-          retObj = f.1
-          leave FINDSAMPLE
-        end
-      end
-
-      -- Not found, see if we can get a build directory
-      buildRoot = findBuildDir()
-
-      if buildRoot \== .nil then do
-        sampleDir = buildRoot || "/samples/"
-
-        if SysIsFileDirectory(sampleDir) then do
-          -- Okay, we are good (in all probability.)
-          j = SysFileTree(sampleDir || name, f., 'FOS')
-          if j == 0, f.0 == 1, SysIsFile(f.1) then do
-            retObj = f.1
-            leave FINDSAMPLE
-          end
-        end
-      end
+    when currentOS == "LINUX" | currentOS == "AIX" then do
+      retObj = locateSampleOnUnix(name, installDir)
     end
 
     otherwise do
@@ -298,15 +286,46 @@ return dir
 return retObj
 -- End locateSamplePrg()
 
+::routine locateSampleOnUnix
+  use strict arg name, installDir
 
-/** findInstallDirOnLinux()
- * Tries to locate the install directory on Linux using what is known about how
- * ooRexx gets installed on a Linux system.
+  retObj = .nil
+
+  if installDir \== .nil then do
+    j = SysFileTree(installDir'/share/ooRexx/'name, f., 'FOS')
+    if j == 0, f.0 == 1, SysIsFile(f.1) then do
+      retObj = f.1
+    end
+  end
+
+  if retObj == .nil then do
+    -- Not found, see if we can get a build directory
+    buildRoot = findBuildDir()
+
+    if buildRoot \== .nil then do
+      sampleDir = buildRoot || "/samples/"
+
+      if SysIsFileDirectory(sampleDir) then do
+        -- Okay, we are good (in all probability.)
+        j = SysFileTree(sampleDir || name, f., 'FOS')
+        if j == 0, f.0 == 1, SysIsFile(f.1) then do
+          retObj = f.1
+        end
+      end
+    end
+  end
+
+return retObj
+-- End locateSampleOnUnix()
+
+/** findInstallDirOnUnix()
+ * Tries to locate the install directory on a Unix-like system using what is
+ * known about how ooRexx gets installed on those systems.
  *
  * @return   The fully qualified directory path to an installed ooRexx on
  *           success, otherwise .nil.
  */
-::routine findInstallDirOnLinux
+::routine findInstallDirOnUnix
 
   dir = .nil
 
@@ -318,6 +337,10 @@ return retObj
 
     when haveDpkg() then do
       imageFile = checkDpkgForInstalledFile("rexx.img")
+    end
+
+    when haveLpp() then do
+      imageFile = checkLppForInstalledFile("rexx.img")
     end
 
     otherwise imageFile = .nil
@@ -367,7 +390,7 @@ return retObj
   end
 
 return dir
--- End findInstallDirOnLinux()
+-- End findInstallDirOnUnix()
 
 ::routine haveRpm public
   cmdOut = .array~new
@@ -378,6 +401,13 @@ return dir
 ::routine haveDpkg public
   cmdOut = .array~new
   ret = issueCmd('which dpkg', cmdOut)
+  if ret == 0 then return .true
+  else return .false
+
+/* AIX TODO Is this code correct for lpp ? */
+::routine haveLpp public
+  cmdOut = .array~new
+  ret = issueCmd('which lpp', cmdOut)
   if ret == 0 then return .true
   else return .false
 
@@ -435,6 +465,24 @@ return dir
     ret = issueCmd('dpkg -L oorexx | grep' escName, cmdOut)
     if cmdOut~items == 1 then fileName = cmdOut[1]
   end
+  return fileName
+
+/** checkLppForInstalledFile()
+ *
+ * AIX TODO code this function for lpp.
+ *
+ * @param   name  The file name to check for.
+ *
+ @ @return  The fully qualified file name if ooRexx is installed and the file is
+ @          installed as part of the ooRexx package, otherwise .nil.
+ */
+::routine checkLppForInstalledFile public
+  use strict arg name
+
+  fileName = .nil
+
+  -- ... ?
+
   return fileName
 
 ::routine escapeDots
@@ -533,7 +581,7 @@ return fileName
 ::routine deleteFile public
   use strict arg fileName
 
-  -- On Linux (bash) and Windows the delete can be forced.  Not sure on other
+  -- On AIX (ksh), Linux (bash) and Windows the delete can be forced.  Not sure on other
   -- OSes
   select
     when .ooRexxUnit.OSName == "WINDOWS" then do
@@ -541,6 +589,10 @@ return fileName
       ret = RC
     end
     when .ooRexxUnit.OSName == "LINUX" then do
+      'rm -f' fileName '>/dev/null 2>&1'
+      ret = RC
+    end
+    when .ooRexxUnit.OSName == "AIX" then do
       'rm -f' fileName '>/dev/null 2>&1'
       ret = RC
     end

@@ -65,8 +65,8 @@
       rrc = buildWindows(testResult, force, fileSpec)
     end
 
-    when os == "LINUX" then do
-      rrc = buildLinux(testResult, force, fileSpec)
+    when os == "LINUX" | os == "AIX"  then do
+      rrc = buildUnix(testResult, force, fileSpec)
     end
 
     -- As an example of how to add support for a new OS.  Add a when section for
@@ -131,7 +131,7 @@ return rCode
 -- End buildWindows()
 
 
-::routine buildLinux public
+::routine buildUnix public
   use strict arg testResult, force, fileSpec
 
   argTable = .table~new
@@ -149,7 +149,7 @@ return rCode
   makeFile = "Makefile"
   makeLocation = makeDir"/"makefile
 
-  oldBinVal = replaceEnvValue("OOTEST_BIN_DIR", .ooTest.dir"/bin/LINUX")
+  oldBinVal = replaceEnvValue("OOTEST_BIN_DIR", .ooTest.dir"/bin/" || .ooRexxUnit.OSName)
   j = directory(makeDir)
 
   if force then do
@@ -167,8 +167,7 @@ return rCode
   j = directory(currentDir)
 
 return rCode
--- End buildLinux()
-
+-- End buildUnix()
 
 /** locateAPIDir()
  * A private helper function used to locate where the API include and library
