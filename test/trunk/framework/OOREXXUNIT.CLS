@@ -178,12 +178,20 @@ if \ .local~hasEntry(ooRexxUnit.version) then do
   -- define end-of-line chars
   .local~ooRexxUnit.line.separator=.endOfLine
 
-  -- get and memorize the path.separator on this system
-  .local~ooRexxUnit.directory.separator=filespec("Path", directory())~left(1)
-  if .ooRexxUnit.directory.separator="\" then     -- DOS-like
-     .local~ooRexxUnit.path.separator=";"
-  else                                            -- Unix-like
-     .local~ooRexxUnit.path.separator=":"
+  -- Set the path and directory separator characers for the current OS. A select
+  -- is used so that if the test suite needs to be run on an OS with different
+  -- characters, it can easily be added here.
+  select
+    when .OSName == "WINDOWS" then do
+      .local~ooRexxUnit.directory.separator = '\'
+      .local~ooRexxUnit.path.separator=";"
+    end
+    otherwise do
+      .local~ooRexxUnit.directory.separator = '/'
+      .local~ooRexxUnit.path.separator=":"
+    end
+  end
+  -- End select
 
   -- Put the default test result class into the environment.
   .local~ooRexxUnit.default.TestResult.Class = .TestResult
