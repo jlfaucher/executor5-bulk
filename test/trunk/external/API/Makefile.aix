@@ -37,8 +37,9 @@
 
 
 # Setup
-ORXLFLAGS = --export-dynamic -shared -nostartfiles
-ORXCFLAGS =  -fPIC
+ORXLFLAGS = -bexpall -G
+ORXCFLAGS = -fPIC  -g -+ -c -M -DHAVE_CONFIG_H -DORX_SYS_STR="AIX" -DORX_SHARED_LIBRARY_EXT=".so" -qchars=unsigned -qnodigraph -DPTHREAD_KERNEL -D_POSIX_THREAD -D_REENTRANT -D_GNU_SOURCE -DOPSYS_AIX43 -DAIX -DOPSYS_AIX 
+ORXCXXFLAGS = -fPIC  -g -+ -c -M -DHAVE_CONFIG_H -DORX_SYS_STR="AIX" -DORX_SHARED_LIBRARY_EXT=".so" -qchars=unsigned -qnodigraph -DPTHREAD_KERNEL -D_POSIX_THREAD -D_REENTRANT -D_GNU_SOURCE -DOPSYS_AIX43 -DAIX -DOPSYS_AIX 
 COMMON_SRC_DEPS =
 FUNCTION_SRC_DEPS = $(COMMON_SRC_DEPS)
 METHOD_SRC_DEPS = $(COMMON_SRC_DEPS)
@@ -55,7 +56,7 @@ endif
 
 # The destination for libraries
 ifndef OOTEST_BIN_DIR
-OOTEST_BIN_DIR = ../../bin/LINUX
+OOTEST_BIN_DIR = ../../bin/AIX
 endif
 
 # Build the libraries
@@ -77,38 +78,38 @@ $(OOTEST_BIN_DIR)/liborxclassic1.so: liborxclassic1.so
 
 # Build the shared library
 liborxfunction.so: orxfunction.o
-	gcc $(ORXLFLAGS) $(REXX_LIBS) -lrexx -lrexxapi -o liborxfunction.so orxfunction.o
+	xlC_r $(ORXLFLAGS) $(REXX_LIBS) -lrexx -lrexxapi -o liborxfunction.so orxfunction.o
 
 # Build the objects
 orxfunction.o: orxfunction.cpp $(FUNCTION_SRC_DEPS)
-	gcc -c $(ORXCFLAGS) $(REXX_INCLUDES) orxfunction.cpp
+	xlC_r $(ORXCXXFLAGS) $(REXX_INCLUDES) orxfunction.cpp
 
 
 # Build the shared library
 liborxmethod.so: orxmethod.o
-	gcc $(ORXLFLAGS) $(REXX_LIBS) -lrexx -lrexxapi -o liborxmethod.so orxmethod.o
+	xlC_r $(ORXLFLAGS) $(REXX_LIBS) -lrexx -lrexxapi -o liborxmethod.so orxmethod.o
 
 # Build the objects
 orxmethod.o: orxmethod.cpp $(METHOD_SRC_DEPS)
-	gcc -c $(ORXCFLAGS) $(REXX_INCLUDES) orxmethod.cpp
+	xlC_r -c $(ORXCXXFLAGS) $(REXX_INCLUDES) orxmethod.cpp
 
 
 # Build the shared library
 liborxclassic.so: orxclassic.o
-	gcc $(ORXLFLAGS) $(REXX_LIBS) -lrexx -lrexxapi -o liborxclassic.so orxclassic.o
+	xlC_r $(ORXLFLAGS) $(REXX_LIBS) -lrexx -lrexxapi -o liborxclassic.so orxclassic.o
 
 # Build the objects
 orxclassic.o: orxclassic.cpp $(FUNCTION_SRC_DEPS)
-	gcc -c $(ORXCFLAGS) $(REXX_INCLUDES) orxclassic.cpp
+	xlC_r -c $(ORXCXXFLAGS) $(REXX_INCLUDES) orxclassic.cpp
 
 
 # Build the shared library
 liborxclassic1.so: orxclassic1.o
-	gcc $(ORXLFLAGS) $(REXX_LIBS) -lrexx -lrexxapi -o liborxclassic1.so orxclassic1.o
+	xlc_r $(ORXLFLAGS) $(REXX_LIBS) -lrexx -lrexxapi -o liborxclassic1.so orxclassic1.o
 
 # Build the objects
 orxclassic1.o: orxclassic1.c $(FUNCTION_SRC_DEPS)
-	gcc -c $(ORXCFLAGS) $(REXX_INCLUDES) orxclassic1.c
+	xlc_r -c $(ORXCFLAGS) $(REXX_INCLUDES) orxclassic1.c
 
 
 clean:
