@@ -142,17 +142,31 @@ return value(name, , 'ENVIRONMENT')
 ::routine setExternalLibDir
 
   os = .ooRexxUnit.osName
+  sl = .ooRexxUnit.directory.separator
+  sep = .ooRexxUnit.path.separator
 
-  if os == "WINDOWS" then do
-    libDir = .ooTest.dir || '\bin\'os
-    j = addToPath(libDir)
-  end
-  else do
-    curLDPath = getEnvValue("LD_LIBRARY_PATH")
-    libDir = .ooTest.dir || '/bin/'os || .ooRexxUnit.path.separator || curLDPath
+  libDir = .ooTest.dir || sl || 'bin' || sl || os
 
-    j = replaceEnvValue("LD_LIBRARY_PATH", libDir)
+  select
+    when os == "WINDOWS" then do
+      j = addToPath(libDir)
+    end
+    when os == 'AIX' then do
+      curLibPath = getEnvValue("LIBPATH")
+      libDir = libDir || sep || curLibPath
+      j = replaceEnvValue("LIBPATH", libDir)
+    end
+    when os == 'LINUX' then do
+      curLDPath = getEnvValue("LD_LIBRARY_PATH")
+      libDir = libDir || sep || curLDPath
+      j = replaceEnvValue("LD_LIBRARY_PATH", libDir)
+    end
+    otherwise do
+      say 'ooTest.frm::routine::setExternalDir() line:' .line
+      say '  Need code for operating system:' os
+    end
   end
+  -- End select
 
 return 0
 
