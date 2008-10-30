@@ -36,6 +36,26 @@
 #/*                                                                            */
 #/*----------------------------------------------------------------------------*/
 
-frameworkPath=`pwd`:`pwd`/framework:
-export PATH=$frameworkPath$PATH
-export LD_LIBRARY_PATH=`pwd`/bin/LINUX:$LD_LIBRARY_PATH
+
+UNAME_SYSTEM=`(uname -s) 2>/dev/null`  || UNAME_SYSTEM=unknown
+
+case "${UNAME_SYSTEM}" in
+    AIX)
+      echo "Setting env for AIX"
+      frameworkPath=`pwd`:`pwd`/framework:
+      export PATH=$frameworkPath$PATH
+      export LIBPATH=`pwd`/bin/AIX:$LIBPATH
+      exit ;;
+
+    Linux)
+      echo "Setting env for Linux"
+      frameworkPath=`pwd`:`pwd`/framework:
+      export PATH=$frameworkPath$PATH
+      export LD_LIBRARY_PATH=`pwd`/bin/LINUX:$LD_LIBRARY_PATH
+      exit ;;
+
+    *)
+    echo "Unsupported OS"
+    exit;;
+
+esac
