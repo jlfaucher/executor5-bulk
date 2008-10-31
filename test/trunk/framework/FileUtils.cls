@@ -404,10 +404,9 @@ return dir
   if ret == 0 then return .true
   else return .false
 
-/* AIX TODO Is this code correct for lpp ? */
 ::routine haveLpp public
   cmdOut = .array~new
-  ret = issueCmd('which lpp', cmdOut)
+  ret = issueCmd('which lslpp', cmdOut)
   if ret == 0 then return .true
   else return .false
 
@@ -459,7 +458,7 @@ return dir
   if ret == 0 then do
     cmdOut = .array~new
 
-    -- Escape the dot(s) in the sample program name
+    -- Escape the dot(s) in the name
     escName = escapeDots(name)
 
     ret = issueCmd('dpkg -L oorexx | grep' escName, cmdOut)
@@ -469,7 +468,7 @@ return dir
 
 /** checkLppForInstalledFile()
  *
- * AIX TODO code this function for lpp.
+ * We use lslpp to get the list of installed files.
  *
  * @param   name  The file name to check for.
  *
@@ -481,8 +480,18 @@ return dir
 
   fileName = .nil
 
-  -- ... ?
+  cmdOut = .array~new
+  ret = issueCmd('lslpp -L ooRexx.rte', cmdOut)
 
+  if ret == 0 then do
+    cmdOut = .array~new
+
+    -- Escape the dot(s) in the name
+    escName = escapeDots(name)
+
+    ret = issueCmd('lslpp -f ooRexx.rte | grep' escName, cmdOut)
+    if cmdOut~items == 1 then fileName = strip(cmdOut[1])
+  end
   return fileName
 
 ::routine escapeDots

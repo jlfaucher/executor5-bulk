@@ -144,36 +144,27 @@ return rCode
   oldHomeVal = argTable["oldHomeVal"]
   oldBuildVal = argTable["oldBuildVal"]
   currentDir = directory()
+  os = .ooRexxUnit.OSName
 
   makeDir = .ooTest.dir"/external/API"
-  makeFile = "Makefile." || .ooRexxUnit.OSName~lower
+  makeFile = "Makefile." || os~lower
   makeLocation = makeDir"/"makefile
 
-  oldBinVal = replaceEnvValue("OOTEST_BIN_DIR", .ooTest.dir"/bin/" || .ooRexxUnit.OSName)
+  oldBinVal = replaceEnvValue("OOTEST_BIN_DIR", .ooTest.dir"/bin/" || os)
   j = directory(makeDir)
 
   -- For now we have to use GNU make from the AIX Toolbox because the AIX
   -- make does not support "ifdef"
+  if os == "AIX" then baseCmd = "/opt/freeware/bin/make -f" makeFile
+  else baseCmd = "make -f" makeFile
+
   if force then do
-    if os == "AIX" then do
-      cmd = "/opt/freeware/bin/make -f" makeFile "clean"
-    end
-    else do
-      cmd = "make -f" makeFile "clean"
-    end
+    cmd = baseCmd "clean"
     rCode = doMake(testResult, cmd, makeLocation, "Issuing make clean", fileSpec)
   end
 
-  -- For now we have to use GNU make from the AIX Toolbox because the AIX
-  -- make does not support "ifdef"
   if rCode == .ooTestConstants~SUCCESS_RC then do
-    if os == "AIX" then do
-      cmd = "/opt/freeware/bin/make -f" makeFile
-    end
-    else do
-      cmd = "make -f" makeFile
-    end
-    rCode = doMake(testResult, cmd, makeLocation, "Issuing make", fileSpec)
+    rCode = doMake(testResult, baseCmd, makeLocation, "Issuing make", fileSpec)
   end
 
   if oldHomeVal \== .nil then j = replaceEnvValue("REXX_HOME", oldHomeVal)
