@@ -157,7 +157,8 @@ return rCode
   if force then do
     if os == "AIX" then do
       cmd = "/opt/freeware/bin/make -f" makeFile "clean"
-    else
+    end
+    else do
       cmd = "make -f" makeFile "clean"
     end
     rCode = doMake(testResult, cmd, makeLocation, "Issuing make clean", fileSpec)
@@ -168,7 +169,8 @@ return rCode
   if rCode == .ooTestConstants~SUCCESS_RC then do
     if os == "AIX" then do
       cmd = "/opt/freeware/bin/make -f" makeFile
-    else
+    end
+    else do
       cmd = "make -f" makeFile
     end
     rCode = doMake(testResult, cmd, makeLocation, "Issuing make", fileSpec)
