@@ -152,13 +152,25 @@ return rCode
   oldBinVal = replaceEnvValue("OOTEST_BIN_DIR", .ooTest.dir"/bin/" || .ooRexxUnit.OSName)
   j = directory(makeDir)
 
+  -- For now we have to use GNU make from the AIX Toolbox because the AIX
+  -- make does not support "ifdef"
   if force then do
-    cmd = "make -f" makeFile "clean"
+    if os == "AIX" then do
+      cmd = "/opt/freeware/bin/make -f" makeFile "clean"
+    else
+      cmd = "make -f" makeFile "clean"
+    end
     rCode = doMake(testResult, cmd, makeLocation, "Issuing make clean", fileSpec)
   end
 
+  -- For now we have to use GNU make from the AIX Toolbox because the AIX
+  -- make does not support "ifdef"
   if rCode == .ooTestConstants~SUCCESS_RC then do
-    cmd = "make -f" makeFile
+    if os == "AIX" then do
+      cmd = "/opt/freeware/bin/make -f" makeFile
+    else
+      cmd = "make -f" makeFile
+    end
     rCode = doMake(testResult, cmd, makeLocation, "Issuing make", fileSpec)
   end
 

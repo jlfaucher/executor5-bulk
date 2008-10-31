@@ -38,8 +38,8 @@
 
 # Setup
 ORXLFLAGS = -bexpall -G
-ORXCFLAGS = -fPIC  -g -+ -c -M -DHAVE_CONFIG_H -DORX_SYS_STR="AIX" -DORX_SHARED_LIBRARY_EXT=".so" -qchars=unsigned -qnodigraph -DPTHREAD_KERNEL -D_POSIX_THREAD -D_REENTRANT -D_GNU_SOURCE -DOPSYS_AIX43 -DAIX -DOPSYS_AIX 
-ORXCXXFLAGS = -fPIC  -g -+ -c -M -DHAVE_CONFIG_H -DORX_SYS_STR="AIX" -DORX_SHARED_LIBRARY_EXT=".so" -qchars=unsigned -qnodigraph -DPTHREAD_KERNEL -D_POSIX_THREAD -D_REENTRANT -D_GNU_SOURCE -DOPSYS_AIX43 -DAIX -DOPSYS_AIX 
+ORXCFLAGS = -M -DHAVE_CONFIG_H -DORX_SYS_STR="AIX" -DORX_SHARED_LIBRARY_EXT=".so" -qchars=unsigned -qnodigraph -DPTHREAD_KERNEL -D_POSIX_THREAD -D_REENTRANT -D_GNU_SOURCE -DOPSYS_AIX43 -DAIX -DOPSYS_AIX 
+ORXCXXFLAGS = -+ -M -DHAVE_CONFIG_H -DORX_SYS_STR="AIX" -DORX_SHARED_LIBRARY_EXT=".so" -qchars=unsigned -qnodigraph -DPTHREAD_KERNEL -D_POSIX_THREAD -D_REENTRANT -D_GNU_SOURCE -DOPSYS_AIX43 -DAIX -DOPSYS_AIX 
 COMMON_SRC_DEPS =
 FUNCTION_SRC_DEPS = $(COMMON_SRC_DEPS)
 METHOD_SRC_DEPS = $(COMMON_SRC_DEPS)
@@ -64,15 +64,19 @@ all: $(OOTEST_BIN_DIR)/liborxfunction.so $(OOTEST_BIN_DIR)/liborxmethod.so \
      $(OOTEST_BIN_DIR)/liborxclassic.so $(OOTEST_BIN_DIR)/liborxclassic1.so
 
 $(OOTEST_BIN_DIR)/liborxfunction.so: liborxfunction.so
+	slibclean
 	cp liborxfunction.so $(OOTEST_BIN_DIR)
 
 $(OOTEST_BIN_DIR)/liborxmethod.so: liborxmethod.so
+	slibclean
 	cp liborxmethod.so $(OOTEST_BIN_DIR)
 
 $(OOTEST_BIN_DIR)/liborxclassic.so: liborxclassic.so
+	slibclean
 	cp liborxclassic.so $(OOTEST_BIN_DIR)
 
 $(OOTEST_BIN_DIR)/liborxclassic1.so: liborxclassic1.so
+	slibclean
 	cp liborxclassic1.so $(OOTEST_BIN_DIR)
 
 
@@ -82,7 +86,7 @@ liborxfunction.so: orxfunction.o
 
 # Build the objects
 orxfunction.o: orxfunction.cpp $(FUNCTION_SRC_DEPS)
-	xlC_r $(ORXCXXFLAGS) $(REXX_INCLUDES) orxfunction.cpp
+	xlC_r -c $(ORXCXXFLAGS) $(REXX_INCLUDES) orxfunction.cpp
 
 
 # Build the shared library
@@ -110,7 +114,6 @@ liborxclassic1.so: orxclassic1.o
 # Build the objects
 orxclassic1.o: orxclassic1.c $(FUNCTION_SRC_DEPS)
 	xlc_r -c $(ORXCFLAGS) $(REXX_INCLUDES) orxclassic1.c
-
 
 clean:
 	rm -f *.so *.o $(OOTEST_BIN_DIR)/lib*.so
