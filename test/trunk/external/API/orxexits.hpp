@@ -34,13 +34,17 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
+#ifndef orxexits_included
+#define orsexits_included
 
-
-
+#include "oorexxapi.h"
 
 class InstanceInfo
 {
 public:
+    inline void * operator new(size_t size, void *objectPtr) { return objectPtr; };
+    inline void  operator delete(void *, void *) {;}
+
     typedef enum
     {
         DISABLED = 0,
@@ -200,3 +204,13 @@ public:
     const char *arguments[10];
     char returnResult[1024];
 };
+
+void REXXENTRY deregisterExits();
+void REXXENTRY registerExeExits(void *data);
+void REXXENTRY registerDllExits(void *data);
+bool REXXENTRY buildRegisteredExitList(InstanceInfo *instanceInfo, RXSYSEXIT *exitList);
+RexxReturnCode REXXENTRY createInstance(InstanceInfo *instanceInfo, RexxInstance *&instance, RexxThreadContext *&threadContext);
+bool REXXENTRY buildContextExitList(InstanceInfo *instanceInfo, RexxContextExit *exitList);
+void REXXENTRY invokeProgram(InstanceInfo *instanceInfo);
+
+#endif

@@ -42,8 +42,8 @@
 RexxMethod0(int, init)
 {
     RexxBufferObject buffer = context->NewBuffer(sizeof(InstanceInfo));
-    InstanceInfo *instanceInfo = new(context->BufferData(buffer)) InstanceInfo();
-    instanceInfo->exitType = InstanceInfo::NONE;
+    InstanceInfo *instanceInfo = new (context->BufferData(buffer)) InstanceInfo();
+    instanceInfo->exitStyle = InstanceInfo::NONE;
     instanceInfo->programName = "";
     instanceInfo->initialAddress = "";
     context->SetObjectVariable("CSELF", buffer);
@@ -59,29 +59,29 @@ RexxMethod2(int, setExitType,
 
     if (strcmp(type, "NONE") == 0)
     {
-        instanceInfo->exitType = InstanceInfo::NONE;
+        instanceInfo->exitStyle = InstanceInfo::NONE;
     }
     else if (strcmp(type, "CONTEXT") == 0)
     {
-        instanceInfo->exitType = InstanceInfo::CONTEXT;
+        instanceInfo->exitStyle = InstanceInfo::CONTEXT;
     }
     else if (strcmp(type, "DLL") == 0)
     {
-        instanceInfo->exitType = InstanceInfo::REGISTERED_DLL;
+        instanceInfo->exitStyle = InstanceInfo::REGISTERED_DLL;
     }
     else if (strcmp(type, "EXE") == 0)
     {
-        instanceInfo->exitType = InstanceInfo::REGISTERED_EXE;
+        instanceInfo->exitStyle = InstanceInfo::REGISTERED_EXE;
     }
     else
     {
-    instanceInfo->exitType = InstanceInfo::NONE;
+        instanceInfo->exitStyle = InstanceInfo::NONE;
     }
     return 0;
 }
 
 
-RexxMethod1(int, setProgramName,
+RexxMethod2(int, setProgramName,
             CSELF, self,
             CSTRING, name)
 {
@@ -91,7 +91,7 @@ RexxMethod1(int, setProgramName,
 }
 
 
-RexxMethod1(int, setInitialAddress,
+RexxMethod2(int, setInitialAddress,
             CSELF, self,
             CSTRING, name)
 {
@@ -101,7 +101,7 @@ RexxMethod1(int, setInitialAddress,
 }
 
 
-RexxMethod1(int, setSearchPath,
+RexxMethod2(int, setSearchPath,
             CSELF, self,
             CSTRING, path)
 {
@@ -111,7 +111,7 @@ RexxMethod1(int, setSearchPath,
 }
 
 
-RexxMethod1(int, setExtensions,
+RexxMethod2(int, setExtensions,
             CSELF, self,
             CSTRING, extensions)
 {
@@ -121,7 +121,7 @@ RexxMethod1(int, setExtensions,
 }
 
 
-RexxMethod1(int, setLoadLibrary,
+RexxMethod2(int, setLoadLibrary,
             CSELF, self,
             CSTRING, lib)
 {
@@ -136,7 +136,7 @@ RexxMethod1(CSTRING, getExitType,
             CSELF, self)
 {
     InstanceInfo *instanceInfo = (InstanceInfo *)self;
-    switch (instanceInfo->exitType)
+    switch (instanceInfo->exitStyle)
     {
         case InstanceInfo::NONE:
             return "NONE";
@@ -157,7 +157,7 @@ RexxMethod2(int, setFunctionExit,
             CSTRING, setting)
 {
     InstanceInfo *instanceInfo = (InstanceInfo *)self;
-    instaneInfo->fnc = setting;
+    instanceInfo->fnc = setting;
     return 0;
 }
 
@@ -166,7 +166,7 @@ RexxMethod2(int, setCommandExit,
             CSTRING, setting)
 {
     InstanceInfo *instanceInfo = (InstanceInfo *)self;
-    instaneInfo->cmd = setting;
+    instanceInfo->cmd = setting;
     return 0;
 }
 
@@ -175,7 +175,7 @@ RexxMethod2(int, setQueueExit,
             CSTRING, setting)
 {
     InstanceInfo *instanceInfo = (InstanceInfo *)self;
-    instaneInfo->msq = setting;
+    instanceInfo->msq = setting;
     return 0;
 }
 
@@ -184,7 +184,7 @@ RexxMethod2(int, setIOExit,
             CSTRING, setting)
 {
     InstanceInfo *instanceInfo = (InstanceInfo *)self;
-    instaneInfo->sio = setting;
+    instanceInfo->sio = setting;
     return 0;
 }
 
@@ -193,7 +193,7 @@ RexxMethod2(int, setTraceExit,
             CSTRING, setting)
 {
     InstanceInfo *instanceInfo = (InstanceInfo *)self;
-    instaneInfo->trc = setting;
+    instanceInfo->trc = setting;
     return 0;
 }
 
@@ -202,7 +202,7 @@ RexxMethod2(int, setHaltExit,
             CSTRING, setting)
 {
     InstanceInfo *instanceInfo = (InstanceInfo *)self;
-    instaneInfo->hlt = setting;
+    instanceInfo->hlt = setting;
     return 0;
 }
 
@@ -211,7 +211,7 @@ RexxMethod2(int, setInitExit,
             CSTRING, setting)
 {
     InstanceInfo *instanceInfo = (InstanceInfo *)self;
-    instaneInfo->ini = setting;
+    instanceInfo->ini = setting;
     return 0;
 }
 
@@ -220,7 +220,7 @@ RexxMethod2(int, setTermExit,
             CSTRING, setting)
 {
     InstanceInfo *instanceInfo = (InstanceInfo *)self;
-    instaneInfo->ter = setting;
+    instanceInfo->ter = setting;
     return 0;
 }
 
@@ -229,7 +229,7 @@ RexxMethod2(int, setScriptingExit,
             CSTRING, setting)
 {
     InstanceInfo *instanceInfo = (InstanceInfo *)self;
-    instaneInfo->exf = setting;
+    instanceInfo->exf = setting;
     return 0;
 }
 
@@ -238,7 +238,7 @@ RexxMethod2(int, setObjectFunctionExit,
             CSTRING, setting)
 {
     InstanceInfo *instanceInfo = (InstanceInfo *)self;
-    instaneInfo->ofnc = setting;
+    instanceInfo->ofnc = setting;
     return 0;
 }
 
@@ -247,7 +247,7 @@ RexxMethod2(int, setNovalueExit,
             CSTRING, setting)
 {
     InstanceInfo *instanceInfo = (InstanceInfo *)self;
-    instaneInfo->var = setting;
+    instanceInfo->var = setting;
     return 0;
 }
 
@@ -256,7 +256,7 @@ RexxMethod2(int, setValueExit,
             CSTRING, setting)
 {
     InstanceInfo *instanceInfo = (InstanceInfo *)self;
-    instaneInfo->val = setting;
+    instanceInfo->val = setting;
     return 0;
 }
 
@@ -264,84 +264,84 @@ RexxMethod1(CSTRING, getFunctionExit,
             CSELF, self)
 {
     InstanceInfo *instanceInfo = (InstanceInfo *)self;
-    return (const char *)instaneInfo->fnc;
+    return (const char *)instanceInfo->fnc;
 }
 
 RexxMethod1(CSTRING, getCommandExit,
             CSELF, self)
 {
     InstanceInfo *instanceInfo = (InstanceInfo *)self;
-    return (const char *)instaneInfo->cmd;
+    return (const char *)instanceInfo->cmd;
 }
 
 RexxMethod1(CSTRING, getQueueExit,
             CSELF, self)
 {
     InstanceInfo *instanceInfo = (InstanceInfo *)self;
-    return (const char *)instaneInfo->msq;
+    return (const char *)instanceInfo->msq;
 }
 
 RexxMethod1(CSTRING, getIOExit,
             CSELF, self)
 {
     InstanceInfo *instanceInfo = (InstanceInfo *)self;
-    return (const char *)instaneInfo->sio;
+    return (const char *)instanceInfo->sio;
 }
 
 RexxMethod1(CSTRING, getTraceExit,
             CSELF, self)
 {
     InstanceInfo *instanceInfo = (InstanceInfo *)self;
-    return (const char *)instaneInfo->trc;
+    return (const char *)instanceInfo->trc;
 }
 
 RexxMethod1(CSTRING, getHaltExit,
             CSELF, self)
 {
     InstanceInfo *instanceInfo = (InstanceInfo *)self;
-    return (const char *)instaneInfo->hlt;
+    return (const char *)instanceInfo->hlt;
 }
 
 RexxMethod1(CSTRING, getInitExit,
             CSELF, self)
 {
     InstanceInfo *instanceInfo = (InstanceInfo *)self;
-    return (const char *)instaneInfo->ini;
+    return (const char *)instanceInfo->ini;
 }
 
 RexxMethod1(CSTRING, getTermExit,
             CSELF, self)
 {
     InstanceInfo *instanceInfo = (InstanceInfo *)self;
-    return (const char *)instaneInfo->ter;
+    return (const char *)instanceInfo->ter;
 }
 
 RexxMethod1(CSTRING, getScriptingExit,
             CSELF, self)
 {
     InstanceInfo *instanceInfo = (InstanceInfo *)self;
-    return (const char *)instaneInfo->exf;
+    return (const char *)instanceInfo->exf;
 }
 
 RexxMethod1(CSTRING, getObjectFunctionExit,
             CSELF, self)
 {
     InstanceInfo *instanceInfo = (InstanceInfo *)self;
-    return (const char *)instaneInfo->ofnc;
+    return (const char *)instanceInfo->ofnc;
 }
 
 RexxMethod1(CSTRING, getNovalueExit,
             CSELF, self)
 {
     InstanceInfo *instanceInfo = (InstanceInfo *)self;
-    return (const char *)instaneInfo->var;
+    return (const char *)instanceInfo->var;
 }
 
 RexxMethod1(CSTRING, getValueExit,
             CSELF, self)
 {
     InstanceInfo *instanceInfo = (InstanceInfo *)self;
-    return (const char *)instaneInfo->val;
+    return (const char *)instanceInfo->val;
 }
 
 
@@ -369,12 +369,12 @@ RexxMethod3(RexxObjectPtr, callInstanceProgram,
     InstanceInfo *instanceInfo = (InstanceInfo *)self;
     instanceInfo->programName = program;
     instanceInfo->argCount = context->ArraySize(args);
-    for (size_t i = 0; i < instanceInfo->argcount; i++)
+    for (size_t i = 0; i < instanceInfo->argCount; i++)
     {
-        RexxObjectPtr arg = context->ArrayAt(i + 1);
+        RexxObjectPtr arg = context->ArrayAt(args, i + 1);
         if (arg != NULLOBJECT)
         {
-            instanceInfo->arguments[i] = context->String(arg);
+            instanceInfo->arguments[i] = context->CString(arg);
         }
         else
         {
@@ -396,6 +396,13 @@ RexxMethod3(RexxObjectPtr, callInstanceProgram,
 
 RexxMethodEntry orxtest_methods[] = {
     REXX_METHOD(init,                    init),
+    REXX_METHOD(setExitType,             setExitType),
+    REXX_METHOD(getExitType,             getExitType),
+    REXX_METHOD(setProgramName,          setProgramName),
+    REXX_METHOD(setInitialAddress,       setInitialAddress),
+    REXX_METHOD(setSearchPath,           setSearchPath),
+    REXX_METHOD(setExtensions,           setExtensions),
+    REXX_METHOD(setLoadLibrary,          setLoadLibrary),
     REXX_METHOD(setFunctionExit,         setFunctionExit),
     REXX_METHOD(setCommandExit,          setCommandExit),
     REXX_METHOD(setQueueExit,            setQueueExit),
@@ -422,6 +429,9 @@ RexxMethodEntry orxtest_methods[] = {
     REXX_METHOD(getObjectFunctionExit,   getObjectFunctionExit),
     REXX_METHOD(getNovalueExit,          getNovalueExit),
     REXX_METHOD(getValueExit,            getValueExit),
+    REXX_METHOD(getRC,                   getRC),
+    REXX_METHOD(getCode,                 getCode),
+    REXX_METHOD(callInstanceProgram,     callInstanceProgram),
     REXX_LAST_METHOD()
 };
 

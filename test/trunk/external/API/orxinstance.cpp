@@ -582,7 +582,7 @@ int RexxEntry TestContextValueExit(RexxExitContext *context, int code, int subco
 }
 
 
-bool buildContextExitList(InstanceInfo *instanceInfo, RexxContextExit *exitList)
+bool REXXENTRY buildContextExitList(InstanceInfo *instanceInfo, RexxContextExit *exitList)
 {
     int counter = 0;
     if (instanceInfo->fnc.isEnabled())
@@ -680,7 +680,7 @@ bool buildContextExitList(InstanceInfo *instanceInfo, RexxContextExit *exitList)
 }
 
 
-RexxReturnCode createInstance(InstanceInfo *instanceInfo, RexxInstance *&instance, RexxThreadContext *&threadContext)
+RexxReturnCode REXXENTRY createInstance(InstanceInfo *instanceInfo, RexxInstance *&instance, RexxThreadContext *&threadContext)
 {
     RexxOption options[25];      // space for a boatload of options
                                  // space for building exit lists
@@ -688,7 +688,7 @@ RexxReturnCode createInstance(InstanceInfo *instanceInfo, RexxInstance *&instanc
     RXSYSEXIT       registeredExits[RXNOOFEXITS];
     int optionCount = 0;
 
-    switch (instanceInfo->ExitStyle)
+    switch (instanceInfo->exitStyle)
     {
         case InstanceInfo::CONTEXT:
         {
@@ -719,28 +719,28 @@ RexxReturnCode createInstance(InstanceInfo *instanceInfo, RexxInstance *&instanc
 
     }
 
-    if (instanceInfo->extensionPath != null)
+    if (instanceInfo->extensionPath != NULL)
     {
         options[optionCount].optionName = EXTERNAL_CALL_PATH;
         options[optionCount].option = instanceInfo->extensionPath;
         optionCount++;
     }
 
-    if (instanceInfo->extensions != null)
+    if (instanceInfo->extensions != NULL)
     {
         options[optionCount].optionName = EXTERNAL_CALL_EXTENSIONS;
         options[optionCount].option = instanceInfo->extensions;
         optionCount++;
     }
 
-    if (instanceInfo->loadLibrary != null)
+    if (instanceInfo->loadLibrary != NULL)
     {
         options[optionCount].optionName = LOAD_REQUIRED_LIBRARY;
         options[optionCount].option = instanceInfo->loadLibrary;
         optionCount++;
     }
 
-    if (instanceInfo->initialAddress != null)
+    if (instanceInfo->initialAddress != NULL)
     {
         options[optionCount].optionName = INITIAL_ADDRESS_ENVIRONMENT;
         options[optionCount].option = instanceInfo->initialAddress;
@@ -752,13 +752,13 @@ RexxReturnCode createInstance(InstanceInfo *instanceInfo, RexxInstance *&instanc
     optionCount++;
 
     options[optionCount].optionName = NULL;
-    options[optionCount].option = 0;
+    options[optionCount].option = (void *)NULL;
 
     return RexxCreateInterpreter(&instance, &threadContext, options);
 }
 
 
-void invokeProgram(InstanceInfo *instanceInfo)
+void REXXENTRY invokeProgram(InstanceInfo *instanceInfo)
 {
     RexxInstance *instance;
     RexxThreadContext *context;
@@ -767,7 +767,7 @@ void invokeProgram(InstanceInfo *instanceInfo)
     instanceInfo->rc = 0;
     strcpy(instanceInfo->returnResult, "");
 
-    createInstance(instanceInfo, instance, threadContext);
+    createInstance(instanceInfo, instance, context);
 
     RexxArrayObject args = context->NewArray(instanceInfo->argCount);
     for (size_t i = 0; i < instanceInfo->argCount; i++)
@@ -791,7 +791,7 @@ void invokeProgram(InstanceInfo *instanceInfo)
     }
     else
     {
-        CSTRING resultString = context->String(result);
+        CSTRING resultString = context->CString(result);
         strncpy(instanceInfo->returnResult, resultString, sizeof(instanceInfo->returnResult));
     }
 }
