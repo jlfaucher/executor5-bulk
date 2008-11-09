@@ -171,6 +171,10 @@ public:
             ExitAction action;
     };
 
+    InstanceInfo() : exitStyle(NONE), programName(NULL), extensionPath(NULL), initialAddress(NULL),
+        extensions(NULL), loadLibrary(NULL), fnc(), cmd(), msq(), sio(), hlt(), trc(), ini(),
+        ter(), exf(), var(), val(), ofnc(), code(0), rc(0), argCount(0) { }
+
     // the type of exit use
     ExitType exitStyle;
     // the program name

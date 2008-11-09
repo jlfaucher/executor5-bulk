@@ -45,7 +45,7 @@ RexxMethod0(int, init)
     InstanceInfo *instanceInfo = new (context->BufferData(buffer)) InstanceInfo();
     instanceInfo->exitStyle = InstanceInfo::NONE;
     instanceInfo->programName = "";
-    instanceInfo->initialAddress = "";
+    instanceInfo->initialAddress = NULL;
     context->SetObjectVariable("CSELF", buffer);
     return 0;
 }

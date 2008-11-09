@@ -791,7 +791,10 @@ void REXXENTRY invokeProgram(InstanceInfo *instanceInfo)
     }
     else
     {
-        CSTRING resultString = context->CString(result);
-        strncpy(instanceInfo->returnResult, resultString, sizeof(instanceInfo->returnResult));
+        if (result != NULLOBJECT)
+        {
+            CSTRING resultString = context->CString(result);
+            strncpy(instanceInfo->returnResult, resultString, sizeof(instanceInfo->returnResult));
+        }
     }
 }
