@@ -57,7 +57,7 @@ void setContextVariable(const char *name, const char *value)
     shvb.shvname.strptr = name;
     shvb.shvname.strlength = strlen(name);
     shvb.shvvalue.strptr = const_cast<char *>(value);
-    shvb.shvvalue.strlength = sizeof(value);
+    shvb.shvvalue.strlength = strlen(value);
     shvb.shvnamelen = shvb.shvname.strlength;
     shvb.shvvaluelen = shvb.shvvalue.strlength;
     shvb.shvcode = RXSHV_SET;
@@ -431,7 +431,7 @@ int RexxEntry TestInitExit(int code, int subcode, PEXIT exitInfo)
 {
     InstanceInfo *instanceInfo = getApplicationData();
 
-    switch (instanceInfo->sio.action)
+    switch (instanceInfo->ini.action)
     {
         case InstanceInfo::SKIP:
             return RXEXIT_NOT_HANDLED;
@@ -462,7 +462,7 @@ int RexxEntry TestTerminationExit(int code, int subcode, PEXIT exitInfo)
     RXSTRING value;
     MAKERXSTRING(value, buffer, sizeof(buffer));
 
-    getContextVariable("test1", &value);
+    getContextVariable("TEST1", &value);
     if (strcmp(value.strptr, "Hello World") != 0)
     {
         return RXEXIT_RAISE_ERROR;
@@ -586,18 +586,18 @@ void REXXENTRY registerDllExits(void *data)
     void *userData[2];
     userData[1] = data;
 
-    RexxRegisterExitDll("TestFunctionExit", "orxclassicexits",        "TestFunctionExit", (char *)userData, RXEXIT_DROPPABLE);
-    RexxRegisterExitDll("TestObjectFunctionExit", "orxclassicexits",  "TestObjectFunctionExit", (char *)userData, RXEXIT_DROPPABLE);
-    RexxRegisterExitDll("TestScriptFunctionExit", "orxclassicexits",  "TestScriptFunctionExit", (char *)userData, RXEXIT_DROPPABLE);
-    RexxRegisterExitDll("TestCommandExit", "orxclassicexits",         "TestCommandExit", (char *)userData, RXEXIT_DROPPABLE);
-    RexxRegisterExitDll("TestQueueExit", "orxclassicexits",           "TestQueueExit", (char *)userData, RXEXIT_DROPPABLE);
-    RexxRegisterExitDll("TestSessionIOExit", "orxclassicexits",       "TestSessionIOExit", (char *)userData, RXEXIT_DROPPABLE);
-    RexxRegisterExitDll("TestHaltExit", "orxclassicexits",            "TestHaltExit", (char *)userData, RXEXIT_DROPPABLE);
-    RexxRegisterExitDll("TestInitExit", "orxclassicexits",            "TestInitExit", (char *)userData, RXEXIT_DROPPABLE);
-    RexxRegisterExitDll("TestNovalueExit", "orxclassicexits",         "TestNovalueExit", (char *)userData, RXEXIT_DROPPABLE);
-    RexxRegisterExitDll("TestTerminationExit", "orxclassicexits",     "TestTerminationExit", (char *)userData, RXEXIT_DROPPABLE);
-    RexxRegisterExitDll("TestValueExit", "orxclassicexits",           "TestValueExit", (char *)userData, RXEXIT_DROPPABLE);
-    RexxRegisterExitDll("TestTraceExit", "orxclassicexits",           "TestTraceExit", (char *)userData, RXEXIT_DROPPABLE);
+    RexxRegisterExitDll("TestFunctionExit", "orxexits",        "TestFunctionExit", (char *)userData, RXEXIT_DROPPABLE);
+    RexxRegisterExitDll("TestObjectFunctionExit", "orxexits",  "TestObjectFunctionExit", (char *)userData, RXEXIT_DROPPABLE);
+    RexxRegisterExitDll("TestScriptFunctionExit", "orxexits",  "TestScriptFunctionExit", (char *)userData, RXEXIT_DROPPABLE);
+    RexxRegisterExitDll("TestCommandExit", "orxexits",         "TestCommandExit", (char *)userData, RXEXIT_DROPPABLE);
+    RexxRegisterExitDll("TestQueueExit", "orxexits",           "TestQueueExit", (char *)userData, RXEXIT_DROPPABLE);
+    RexxRegisterExitDll("TestSessionIOExit", "orxexits",       "TestSessionIOExit", (char *)userData, RXEXIT_DROPPABLE);
+    RexxRegisterExitDll("TestHaltExit", "orxexits",            "TestHaltExit", (char *)userData, RXEXIT_DROPPABLE);
+    RexxRegisterExitDll("TestInitExit", "orxexits",            "TestInitExit", (char *)userData, RXEXIT_DROPPABLE);
+    RexxRegisterExitDll("TestNovalueExit", "orxexits",         "TestNovalueExit", (char *)userData, RXEXIT_DROPPABLE);
+    RexxRegisterExitDll("TestTerminationExit", "orxexits",     "TestTerminationExit", (char *)userData, RXEXIT_DROPPABLE);
+    RexxRegisterExitDll("TestValueExit", "orxexits",           "TestValueExit", (char *)userData, RXEXIT_DROPPABLE);
+    RexxRegisterExitDll("TestTraceExit", "orxexits",           "TestTraceExit", (char *)userData, RXEXIT_DROPPABLE);
 }
 
 

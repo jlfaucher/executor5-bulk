@@ -145,7 +145,7 @@ int RexxEntry TestContextFunctionExit(RexxExitContext *context, int code, int su
         case InstanceInfo::EXIT_ERROR:
             return RXEXIT_RAISE_ERROR;
         case InstanceInfo::RAISE:
-            context->RaiseException1(Rexx_Error_System_service_user_defined, context->NewStringFromAsciiz("Script Function Exit"));
+            context->RaiseException1(Rexx_Error_System_service_user_defined, context->NewStringFromAsciiz("Function Exit"));
             return RXEXIT_NOT_HANDLED;
     }
 
@@ -195,7 +195,7 @@ int RexxEntry TestContextCommandExit(RexxExitContext *context, int code, int sub
         case InstanceInfo::EXIT_ERROR:
             return RXEXIT_RAISE_ERROR;
         case InstanceInfo::RAISE:
-            context->RaiseException1(Rexx_Error_System_service_user_defined, context->NewStringFromAsciiz("Script Function Exit"));
+            context->RaiseException1(Rexx_Error_System_service_user_defined, context->NewStringFromAsciiz("Command Exit"));
             return RXEXIT_NOT_HANDLED;
     }
 
@@ -266,7 +266,7 @@ int RexxEntry TestContextQueueExit(RexxExitContext *context, int code, int subco
         case InstanceInfo::EXIT_ERROR:
             return RXEXIT_RAISE_ERROR;
         case InstanceInfo::RAISE:
-            context->RaiseException1(Rexx_Error_System_service_user_defined, context->NewStringFromAsciiz("Script Function Exit"));
+            context->RaiseException1(Rexx_Error_System_service_user_defined, context->NewStringFromAsciiz("Queue Exit"));
             return RXEXIT_NOT_HANDLED;
     }
 
@@ -334,7 +334,7 @@ int RexxEntry TestContextSessionIOExit(RexxExitContext *context, int code, int s
         case InstanceInfo::EXIT_ERROR:
             return RXEXIT_RAISE_ERROR;
         case InstanceInfo::RAISE:
-            context->RaiseException1(Rexx_Error_System_service_user_defined, context->NewStringFromAsciiz("Script Function Exit"));
+            context->RaiseException1(Rexx_Error_System_service_user_defined, context->NewStringFromAsciiz("I/O Exit"));
             return RXEXIT_NOT_HANDLED;
     }
 
@@ -403,7 +403,7 @@ int RexxEntry TestContextHaltExit(RexxExitContext *context, int code, int subcod
         case InstanceInfo::EXIT_ERROR:
             return RXEXIT_RAISE_ERROR;
         case InstanceInfo::RAISE:
-            context->RaiseException1(Rexx_Error_System_service_user_defined, context->NewStringFromAsciiz("Script Function Exit"));
+            context->RaiseException1(Rexx_Error_System_service_user_defined, context->NewStringFromAsciiz("Halt Exit"));
             return RXEXIT_NOT_HANDLED;
         case InstanceInfo::HALT:
         {
@@ -434,7 +434,7 @@ int RexxEntry TestContextTraceExit(RexxExitContext *context, int code, int subco
         case InstanceInfo::EXIT_ERROR:
             return RXEXIT_RAISE_ERROR;
         case InstanceInfo::RAISE:
-            context->RaiseException1(Rexx_Error_System_service_user_defined, context->NewStringFromAsciiz("Script Function Exit"));
+            context->RaiseException1(Rexx_Error_System_service_user_defined, context->NewStringFromAsciiz("Trace Exit"));
             return RXEXIT_NOT_HANDLED;
         case InstanceInfo::TRACEON:
         {
@@ -463,7 +463,7 @@ int RexxEntry TestContextInitExit(RexxExitContext *context, int code, int subcod
         case InstanceInfo::EXIT_ERROR:
             return RXEXIT_RAISE_ERROR;
         case InstanceInfo::RAISE:
-            context->RaiseException1(Rexx_Error_System_service_user_defined, context->NewStringFromAsciiz("Script Function Exit"));
+            context->RaiseException1(Rexx_Error_System_service_user_defined, context->NewStringFromAsciiz("Init Exit"));
             return RXEXIT_NOT_HANDLED;
     }
 
@@ -482,7 +482,7 @@ int RexxEntry TestContextTerminationExit(RexxExitContext *context, int code, int
         case InstanceInfo::EXIT_ERROR:
             return RXEXIT_RAISE_ERROR;
         case InstanceInfo::RAISE:
-            context->RaiseException1(Rexx_Error_System_service_user_defined, context->NewStringFromAsciiz("Script Function Exit"));
+            context->RaiseException1(Rexx_Error_System_service_user_defined, context->NewStringFromAsciiz("Termination Exit"));
             return RXEXIT_NOT_HANDLED;
     }
 
@@ -522,7 +522,7 @@ int RexxEntry TestContextObjectFunctionExit(RexxExitContext *context, int code, 
         case InstanceInfo::EXIT_ERROR:
             return RXEXIT_RAISE_ERROR;
         case InstanceInfo::RAISE:
-            context->RaiseException1(Rexx_Error_System_service_user_defined, context->NewStringFromAsciiz("Script Function Exit"));
+            context->RaiseException1(Rexx_Error_System_service_user_defined, context->NewStringFromAsciiz("Object Function Exit"));
             return RXEXIT_NOT_HANDLED;
     }
     return invokeExitFunction(context, "Object", exitInfo);
@@ -539,7 +539,7 @@ int RexxEntry TestContextNovalueExit(RexxExitContext *context, int code, int sub
         case InstanceInfo::EXIT_ERROR:
             return RXEXIT_RAISE_ERROR;
         case InstanceInfo::RAISE:
-            context->RaiseException1(Rexx_Error_System_service_user_defined, context->NewStringFromAsciiz("Script Function Exit"));
+            context->RaiseException1(Rexx_Error_System_service_user_defined, context->NewStringFromAsciiz("Novalue Exit"));
             return RXEXIT_NOT_HANDLED;
     }
 
@@ -564,7 +564,7 @@ int RexxEntry TestContextValueExit(RexxExitContext *context, int code, int subco
         case InstanceInfo::EXIT_ERROR:
             return RXEXIT_RAISE_ERROR;
         case InstanceInfo::RAISE:
-            context->RaiseException1(Rexx_Error_System_service_user_defined, context->NewStringFromAsciiz("Script Function Exit"));
+            context->RaiseException1(Rexx_Error_System_service_user_defined, context->NewStringFromAsciiz("Value() Exit"));
             return RXEXIT_NOT_HANDLED;
     }
 
@@ -696,6 +696,7 @@ RexxReturnCode REXXENTRY createInstance(InstanceInfo *instanceInfo, RexxInstance
             buildContextExitList(instanceInfo, contextExits);
             options[optionCount].option = (void *)contextExits;
             optionCount++;
+            break;
         }
         case InstanceInfo::REGISTERED_DLL:
         {
@@ -704,6 +705,7 @@ RexxReturnCode REXXENTRY createInstance(InstanceInfo *instanceInfo, RexxInstance
             buildRegisteredExitList(instanceInfo, registeredExits);
             options[optionCount].option = (void *)registeredExits;
             optionCount++;
+            break;
         }
         case InstanceInfo::REGISTERED_EXE:
         {
@@ -712,6 +714,7 @@ RexxReturnCode REXXENTRY createInstance(InstanceInfo *instanceInfo, RexxInstance
             buildRegisteredExitList(instanceInfo, registeredExits);
             options[optionCount].option = (void *)registeredExits;
             optionCount++;
+            break;
         }
         default:
             // no options added

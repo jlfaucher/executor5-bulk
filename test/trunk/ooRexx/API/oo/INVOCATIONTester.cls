@@ -39,8 +39,8 @@
 ::class 'INVOCATIONtester' public
 
 ::method init EXTERNAL 'LIBRARY orxinvocation init'
-::method setExitType EXTERNAL 'LIBRARY orxinvocation setExitType'
-::method getExitType EXTERNAL 'LIBRARY orxinvocation getExitType'
+::method 'ExitType=' EXTERNAL 'LIBRARY orxinvocation setExitType'
+::method 'ExitType' EXTERNAL 'LIBRARY orxinvocation getExitType'
 ::method !setProgramName PRIVATE EXTERNAL 'LIBRARY orxinvocation setProgramName'
 ::attribute programName GET
 ::attribute programName SET
