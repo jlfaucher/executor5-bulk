@@ -58,6 +58,7 @@ public:
         NOHALT = 8,
         ALL = 9,
         CONSOLE = 10,
+        CONSOLE_DEBUG = 11,
     } ExitAction;
 
     typedef enum
@@ -119,6 +120,10 @@ public:
                 {
                     action = CONSOLE;
                 }
+                else if (strcmp("DEBUG", a) == 0)
+                {
+                    action = CONSOLE_DEBUG;
+                }
                 else
                 {
                     action = DISABLED;
@@ -163,6 +168,8 @@ public:
                         return "ALL";
                     case CONSOLE:
                         return "CONSOLE";
+                    case CONSOLE_DEBUG:
+                        return "DEBUG";
                 }
                 return "DISABLED";
             }

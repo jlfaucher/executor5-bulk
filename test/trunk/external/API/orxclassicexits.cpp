@@ -330,7 +330,7 @@ int RexxEntry TestSessionIOExit(int code, int subcode, PEXIT exitInfo)
         }
         case RXSIODTR:
         {
-            if (instanceInfo->sio == InstanceInfo::ALL || instanceInfo->sio == InstanceInfo::CONSOLE)
+            if (instanceInfo->sio == InstanceInfo::ALL || instanceInfo->sio == InstanceInfo::CONSOLE_DEBUG)
             {
                 RXSIODTR_PARM *parms = (RXSIODTR_PARM *)exitInfo;
                 strcpy(parms->rxsiodtr_retc.strptr, "trace off");
@@ -357,7 +357,7 @@ int RexxEntry TestSessionIOExit(int code, int subcode, PEXIT exitInfo)
         }
         case RXSIOTRC:
         {
-            if (instanceInfo->sio == InstanceInfo::ALL || instanceInfo->sio == InstanceInfo::CONSOLE)
+            if (instanceInfo->sio == InstanceInfo::ALL || instanceInfo->sio == InstanceInfo::CONSOLE_DEBUG)
             {
                 RXMSQSIZ_PARM *parms = (RXMSQSIZ_PARM *)exitInfo;
                 // this one is really hard to test, so it's sufficient that we got here.
