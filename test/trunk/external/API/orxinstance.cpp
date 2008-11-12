@@ -114,7 +114,7 @@ int invokeExitFunction(RexxExitContext *context, const char *name, PEXIT exitInf
         parms->rxfnc_flags.rxffnfnd = 1;
         return RXEXIT_HANDLED;
     }
-    else if (strcmp(functionName, "TESTARGUMENTS") == 0)
+    else if (strcmp(functionName, "TESTARGUMENTS") == 0 || strcmp(functionName, "TESTARGUMENTS2") == 0)
     {
         RexxArrayObject args = context->NewArray(parms->rxfnc_argc);
         for (int i = 0; i < parms->rxfnc_argc; i++)
@@ -124,7 +124,7 @@ int invokeExitFunction(RexxExitContext *context, const char *name, PEXIT exitInf
                 context->ArrayPut(args, parms->rxfnc_argv[i], i + 1);
             }
         }
-        parms->rxfnc_retc = (RexxObjectPtr)args;
+        parms->rxfnc_retc = (RexxObjectPtr)context->SendMessage2(args, "TOSTRING", context->String("L"), context->String(","));
         return RXEXIT_HANDLED;
     }
     else
