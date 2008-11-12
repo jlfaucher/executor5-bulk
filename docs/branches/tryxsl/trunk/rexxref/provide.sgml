@@ -1,0 +1,2856 @@
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: Reference SGML file.
+    #
+    # Copyright (c) 2005-2007, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    # Author(s):
+    #      W. David Ashley <dashley@us.ibm.com>
+    #
+    #########################################################################
+-->
+<chapter id="provide"><title>Objects and Classes</title>
+<indexterm><primary>object method</primary></indexterm>
+<para>This chapter provides an overview of the Rexx class structure.</para>
+<para>A Rexx object consists of object methods
+<indexterm><primary>class methods</primary></indexterm>
+and object variables ("attributes"). Sending
+a message to an object causes the object to perform some action; a method
+whose name matches the message name defines the action that is performed.
+Only an object's methods can access the object variables belonging to
+an object. EXPOSE instructions within an object's methods specify object
+variables. Any variables not exposed are dropped on return from a method.</para>
+<para>You can create
+an object by sending a message to a class object. An object created from a
+class is an <emphasis>instance</emphasis> of that class. Classes define
+the methods and method names for their instances. The methods a class defines
+for its instances are called the <emphasis>instance methods</emphasis>
+<indexterm><primary>instance methods</primary></indexterm>
+of that class. These are the object methods for the instances. Classes can also
+define <emphasis>class methods</emphasis>, which are a class's own
+object methods.</para>
+
+<note><title>Note</title>
+<para>When referring to object methods (for objects
+other than classes) or instance methods (for classes), this book uses the
+term <emphasis>methods</emphasis> when the meaning is clear from the context.
+When referring to object methods and class methods of classes, this book uses
+the qualified terms to avoid possible confusion.</para></note>
+
+<section id="typcla"><title>Types of Classes</title>
+<para>There are four kinds of classes: </para>
+<itemizedlist>
+<listitem><para>Object classes</para></listitem>
+<listitem><para>Mixin classes</para></listitem>
+<listitem><para>Abstract classes</para></listitem>
+<listitem><para>Metaclasses</para></listitem></itemizedlist>
+<para> The following sections explain these.</para>
+
+<section id="objcla"><title>Object Classes</title>
+<indexterm><primary>object classes</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>types</secondary>
+<tertiary>object</tertiary></indexterm>
+<para>An <emphasis>object class</emphasis> is like a factory
+for producing objects. An object class creates objects (instances) and provides
+methods that these objects can use. An object acquires the instance methods
+of the class to which it belongs at the time of its creation. If a class gains
+additional methods, objects created before the definition of these methods
+do not acquire these methods.</para>
+<para>Because the object methods also define the object variables, object
+classes are factories for creating Rexx objects. The Array class (see
+<link linkend="clsArray">The Array Class</link>)
+is an example of an object class.</para>
+</section>
+
+<section id="xmixin"><title>Mixin Classes</title>
+<indexterm><primary>mixin classes</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>types</secondary>
+<tertiary>mixin</tertiary></indexterm>
+<para>Classes can inherit from more than the single superclass from
+which they were created. This is called
+<emphasis>multiple inheritance</emphasis>. Classes designed
+to add a set of instance and class
+methods to other classes are called <emphasis>mixin classes</emphasis>,
+or simply mixins.</para>
+<para>You can add mixin methods to an existing class by sending an INHERIT
+message or using the INHERIT option on the ::CLASS directive. (See
+<link linkend="dire">Directives</link>.)
+In either case, the class to be inherited must be a mixin. During both class
+creation and multiple inheritance, subclasses inherit both class and instance
+methods from their superclasses.</para>
+<para>Mixins are always associated
+<indexterm><primary>base class for mixins</primary></indexterm>
+with a <emphasis>base class</emphasis>, which is the mixin's first non-mixin
+superclass. Any subclass of the mixin's base class can (directly or indirectly)
+inherit a mixin; other classes cannot.</para>
+<para>To create a new mixin class, you send a MIXINCLASS message to an existing
+class or use the ::CLASS directive with the MIXINCLASS option. A mixin class
+is also an object class and can create instances of the class.</para>
+</section>
+
+<section id="abscla"><title>Abstract Classes</title>
+<indexterm><primary>abstract class, definition</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>types</secondary>
+<tertiary>abstract</tertiary></indexterm>
+<para><emphasis>Abstract classes</emphasis> provide definitions for instance
+methods and class methods
+but are not intended to create instances. Abstract classes often define the
+message interfaces that subclasses should implement.</para>
+<para>You create an abstract class like object or mixin classes. No extra
+messages or keywords on the ::CLASS directive are necessary. Rexx does not
+prevent users from creating instances of abstract classes.</para>
+</section>
+
+<section id="xmetac"><title>Metaclasses</title>
+<indexterm><primary>metaclasses</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>types</secondary>
+<tertiary>metaclass</tertiary></indexterm>
+<para>A <emphasis>metaclass</emphasis> is a class you
+can use to create another class. The only metaclass that Rexx provides is
+.class, the Class class. The Class class is the metaclass of all the classes
+Rexx provides. This means that instances of .class are themselves classes.
+The Class class is like a factory for producing the factories that produce
+objects.</para>
+<para>To change the behavior of an object that is an instance, you generally
+use subclassing. For example, you can create Statarray, a subclass of the
+Array class (see <link linkend="clsArray">The Array Class</link>).
+The statArray class can include a
+method for computing a total of all the numeric elements of an array.</para>
+<programlisting>
+/* Creating an array subclass for statistics */
+
+::class statArray subclass array public
+
+::method init    /*  Initialize running total and forward to superclass */
+  expose total
+  total = 0
+  /* <link linkend="mthMessageNew">init</link>  describes the init method.  */
+  forward class (super)
+
+::method put     /*  Modify to increment running total */
+  expose total
+  use arg value
+  total = total + value  /* Should verify that value is numeric!!! */
+  forward class (super)
+
+::method "[]="   /*  Modify to increment running total */
+  forward message "PUT"
+
+::method remove  /*  Modify to decrement running total */
+  expose total
+  use arg index
+  forward message "AT" continue
+  total = total - result
+  forward class (super)
+
+::method average /*  Return the average of the array elements */
+  expose total
+  return total / self~items
+
+::method total   /*  Return the running total of the array elements */
+  expose total
+  return total
+</programlisting>
+<para>You can use this method on the individual array
+<emphasis>instances</emphasis>, so it is an
+<emphasis>instance method</emphasis>.</para>
+<para>However, if you want to change the behavior of the factory producing the
+arrays, you need a new class method. One way to do
+this is to use the ::METHOD directive with the CLASS option. Another way to
+add a <emphasis>class</emphasis> method is to create a new metaclass that
+changes the behavior
+of the Statarray class. A new metaclass is a subclass of .class.</para>
+<para>You can use a metaclass by specifying it in a SUBCLASS or MIXINCLASS
+message or on a ::CLASS directive with the METACLASS option.</para>
+<para>If you are adding a highly specialized class method useful only for a
+particular class, use the ::METHOD directive with the CLASS option. However,
+if you are adding a class method that would be useful for many classes, such
+as an instance counter that counts how many instances a class creates,
+you use a metaclass.</para>
+<para>The following examples add a class method that keeps a running total of
+instances created. The first version uses the ::METHOD directive with the
+CLASS option. The second version uses a metaclass.</para>
+<para><emphasis role="bold">Version 1</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>metaclass</secondary></indexterm>
+<programlisting>
+/* Adding a class method using ::METHOD */
+
+a = .point~new(1,1)               /* Create some point instances  */
+say "Created point instance" a
+b = .point~new(2,2)               /* create another point instance */
+say "Created point instance" b
+c = .point~new(3,3)               /* create another point instance */
+say "Created point instance" c
+                                  /* ask the point class how many */
+                                  /* instances it has created     */
+say "The point class has created" .point~instances "instances."
+
+
+
+::class point public                /* create Point class           */
+
+::method init class
+  expose instanceCount
+  instanceCount = 0                 /* Initialize instanceCount     */
+  forward class (super)             /* Forward INIT to superclass   */
+
+::method new class
+  expose instanceCount              /* Creating a new instance      */
+  instanceCount = instanceCount + 1 /* Bump the count               */
+  forward class (super)             /* Forward NEW to superclass    */
+
+::method instances class
+  expose instanceCount              /* Return the instance count    */
+  return instanceCount
+
+
+::method init
+  expose xVal yVal                  /* Set object variables         */
+  use arg xVal, yVal                /* as passed on NEW             */
+
+::method string
+  expose xVal yVal                  /* Use object variables         */
+  return "("xVal","yVal")"          /* to return string value       */
+</programlisting>
+<para><emphasis role="bold">Version 2</emphasis></para>
+<programlisting>
+/* Adding a class method using a metaclass  */
+
+a = .point~new(1,1)                    /* Create some point instances  */
+say "Created point instance" a
+b = .point~new(2,2)
+say "Created point instance" b
+c = .point~new(3,3)
+say "Created point instance" c
+                                       /* ask the point class how many */
+                                       /* instances it has created     */
+say "The point class has created" .point~instances "instances."
+
+::class InstanceCounter subclass class /* Create a new metaclass that */
+                                       /* will count its instances     */
+::method init
+  expose instanceCount
+  instanceCount = 0                    /* Initialize instanceCount     */
+  forward class (super)                /* Forward INIT to superclass   */
+
+::method new
+  expose instanceCount                 /* Creating a new instance      */
+  instanceCount = instanceCount + 1    /* Bump the count               */
+  forward class (super)                /* Forward NEW to superclass    */
+
+::method instances
+expose instanceCount                   /* Return the instance count    */
+return instanceCount
+
+
+::class point public metaclass InstanceCounter  /* Create Point class */
+                                       /* using InstanceCounter metaclass */
+::method init
+  expose xVal yVal                     /* Set object variables         */
+  use arg xVal, yVal                   /* as passed on NEW             */
+
+::method string
+  expose xVal yVal                     /* Use object variables         */
+  return "("xVal","yVal")"             /* to return string value       */
+</programlisting>
+</section>
+</section>
+
+<section id="xcremet"><title>Creating and Using Classes and Methods</title>
+<para>You can define a class using either directives or messages.</para>
+<para>To define a class using directives, you place a ::CLASS directive at the
+end of your source program:</para>
+<programlisting>
+::class "Account"
+</programlisting>
+<para>This creates an Account class that is a subclass of the Object class.
+(See <link linkend="clsObject">The Object Class</link> for a description of the
+Object class.)  The string &quot;Account&quot;
+is a string identifier for the new class.</para>
+<para>Now you can use ::METHOD directives to add methods to your new class. The
+::METHOD directives must immediately follow the ::CLASS directive that creates
+the class. </para>
+<programlisting>
+::method type
+  return "an account"
+
+::method "name="
+  expose name
+  use arg name
+
+::method name
+  expose name
+  return name
+</programlisting>
+<para>This adds the methods TYPE, NAME, and NAME= to the Account class.</para>
+<para>You can create a subclass of the Account class and define a method for
+it: </para>
+<programlisting>
+::class "Savings" subclass account
+::method type
+return "a savings account"
+</programlisting>
+<para>Now you can create an instance of the Savings class with the NEW method
+(see <link linkend="mthClassNew">NEW</link>) and send TYPE, NAME, and NAME= messages
+to that instance:</para>
+<programlisting>
+asav = .savings~new
+say asav~type
+asav~name = "John Smith"
+</programlisting>
+<para>The Account class methods NAME and NAME= create a pair of access methods
+to the account object variable NAME. The following directive sequence creates
+the NAME and NAME= methods: </para>
+<programlisting>
+::method "name="
+  expose name
+  use arg name
+
+::method name
+  expose name
+  return name
+</programlisting>
+
+<para>You can replace this with a single ::METHOD directive with
+the ATTRIBUTE option. For example, the directive </para>
+<programlisting>
+::method name attribute
+</programlisting>
+<para>adds two methods, NAME and NAME= to a class. These methods perform the
+same function as the NAME and NAME= methods in the original example. The NAME
+method returns the current value of the object variable NAME; the NAME= method
+assigns a new value to the object variable NAME.</para>
+
+<section id="usingcl"><title>Using Classes</title>
+<para>When you create a new class, it is always a subclass of an existing class.
+You can create new classes with the ::CLASS directive or by sending the SUBCLASS
+or MIXINCLASS message to an existing class. If you specify neither the SUBCLASS
+nor the MIXINCLASS option on the ::CLASS directive, the superclass for the
+new class is the Object class, and it is not a mixin class.</para>
+<para>Example of creating a new class using a message: </para>
+<programlisting>
+persistence = .object~mixinclass("Persistence")
+myarray=.array~subclass("myarray")~~inherit(persistence)
+</programlisting>
+<para>Example of creating a new class using the directive:</para>
+<programlisting>
+::class persistence mixinclass object
+::class myarray subclass array inherit persistence
+</programlisting>
+</section>
+
+<section id="xscope"><title>Scope</title>
+<indexterm><primary>method</primary>
+<secondary>scope</secondary></indexterm>
+<indexterm><primary>scope</primary>
+<secondary>description</secondary></indexterm>
+<para>A <emphasis>scope</emphasis> is the methods
+and object variables defined in a single class. Only methods defined in a
+particular scope can access object variables within that scope. This means
+that object variables in a subclass can have the same names as object variables
+in a superclass, because the object variables are at different scopes.</para>
+</section>
+
+<section id="usesem">
+<title>Defining Instance Methods with SETMETHOD or ENHANCED</title>
+<para>In Rexx, methods are usually associated with instances using classes, but
+it is also possible to add methods directly to an instance using the SETMETHOD
+(see <link linkend="mthObjectSetMethod">SETMETHOD</link>) or ENHANCED (see
+<link linkend="mthClassEnhanced">ENHANCED</link>) method.</para>
+<para>All subclasses of the Object class inherit SETMETHOD. You can use
+SETMETHOD to create one-off objects, objects that must be absolutely
+unique so that a class that is capable of creating other instances is not
+necessary. The Class class also provides an ENHANCED method that lets you
+create new instances of a class with additional methods. The methods and the
+object variables defined on an object with SETMETHOD or ENHANCED form a separate
+scope, like the scopes the class hierarchy defines.</para>
+</section>
+
+<section id="methna"><title>Method Names</title>
+<para>A method
+name can be any string. When an object receives a message, the language processor
+searches for a method whose name matches the message name in uppercase.</para>
+
+<note><title>Note</title>
+<para>The language processor also translates the specified name of all
+methods added to objects into uppercase characters.</para></note>
+<para>You must surround a method name with quotation marks when it contains
+characters that are not allowed in a symbol (for example, the operator
+characters). The following example creates a new class (the Cost class),
+defines a new method (%), creates an instance of the Cost class (mycost),
+and sends a <computeroutput>%</computeroutput> message
+to <computeroutput>mycost</computeroutput>: </para>
+
+<programlisting>
+cost=.object~subclass("A cost")
+cost~define("%", &apos;expose p; say "Enter a price."; pull p; say p*1.07;&apos;)
+mycost=cost~new
+mycost~"%"        /* Produces:  Enter a price.             */
+                  /* If the user specifies a price of 100, */
+                  /* produces: 107.00                      */
+		  </programlisting>
+</section>
+
+<section id="xmeths"><title>Default Search Order for Method Selection</title>
+<indexterm><primary>method</primary>
+<secondary>search order</secondary>
+<tertiary>changing</tertiary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>selection</secondary>
+<tertiary>search order</tertiary></indexterm>
+<indexterm><primary>default</primary>
+<secondary>search order for methods</secondary></indexterm>
+<indexterm><primary>search order</primary>
+<secondary>for methods</secondary>
+<tertiary>default</tertiary></indexterm>
+<para>The search order for a method name matching the message is for: </para>
+<orderedlist>
+<listitem><para>A method the object itself defines with SETMETHOD or ENHANCED.
+(See <link linkend="mthObjectSetMethod">SETMETHOD</link> .)</para></listitem>
+<listitem><para>A method the object's class defines. (Note that an object
+acquires the instance methods of the class to which it belongs at the time of
+its creation. If a class gains additional methods, objects created before the
+definition of these methods do not acquire these methods.)</para></listitem>
+<listitem><para>A method that a superclass of the object's class defines.
+This is also limited to methods that were available when the object was
+created. The order of the INHERIT (see
+<link linkend="mthClassInherit">INHERIT</link>) messages sent to an object's
+class determines the search order of the superclass method definitions.
+</para></listitem></orderedlist>
+<para>This search order places methods of a class before methods of its
+superclasses so that a class can supplement or override inherited methods.
+</para>
+<para>If the language processor does not find a match for the message name, the
+language processor checks the object for a method name UNKNOWN. If it exists,
+the language processor calls the UNKNOWN method and returns as the message
+result any result the UNKNOWN method returns. The UNKNOWN method arguments
+are the original message name and a Rexx array containing the original message
+arguments.</para>
+<para>If the object does not have an UNKNOWN method, the language processor
+raises a NOMETHOD condition.</para>
+</section>
+
+<section id="unkno"><title>Defining an UNKNOWN Method</title>
+<para>When an object that receives a message does not have a matching message
+name, the language processor checks if the object has a method named UNKNOWN.
+If the object has an UNKNOWN method, the language processor calls UNKNOWN,
+passing two arguments. The first argument is the name of the method that was
+not located. The second argument is an array containing the arguments passed
+with the original message.</para>
+<para>If you define an UNKNOWN method, you can use the following syntax:</para>
+<programlisting>
+<![CDATA[
+>>-UNKNOWN(messagename,messageargs)----------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="chsrod"><title>Changing the Search Order for Methods</title>
+<indexterm><primary>search order</primary>
+<secondary>for methods</secondary>
+<tertiary>changing</tertiary></indexterm>
+<indexterm><primary>changing the search order for methods</primary></indexterm>
+<para>You can change the usual search order for methods by: </para>
+<orderedlist>
+<listitem><para>Ensuring that the receiver object is the sender object.
+(You usually do this by specifying the special variable SELF--see
+<link linkend="xself">SELF</link>.)</para></listitem>
+<listitem><para>Specifying a colon and a class symbol after the message name.
+The class symbol can be a variable name or an environment symbol. It identifies
+the class object to be used as the starting point for the method search.</para>
+<para>The class object must be a superclass of the class defining the active
+method, or, if you used SETMETHOD to define the active method, the object's own
+class. The class symbol is usually the special variable SUPER
+(see <link linkend="xsuper">SUPER</link>) but it can be any environment
+symbol or variable name whose value is a valid class.</para></listitem>
+</orderedlist>
+<para>Suppose you create an Account class that is a subclass of the Object
+class, define a TYPE method for the Account class, and create the Savings class
+that is a subclass of Account. You could define a TYPE method for the Savings
+class as follows: </para>
+<programlisting>
+savings~define("TYPE", &apos;return "a savings account"&apos;)
+</programlisting>
+<para>You could change the search order by using the following line: </para>
+<programlisting>
+savings~define("TYPE", &apos;return self~type:super "(savings)"&apos;)
+</programlisting>
+<para>This changes the search order so that the language processor searches for
+the TYPE method first in the Account superclass (rather than in the Savings
+subclass). When you create an instance of the Savings class
+(<computeroutput>asav</computeroutput>)
+and send a TYPE message to <computeroutput>asav</computeroutput>:</para>
+<programlisting>
+say asav~type
+</programlisting>
+<para><computeroutput>an account (savings)</computeroutput> is displayed.
+The TYPE method of the Savings class calls the TYPE method of the Account
+class, and adds the string <computeroutput>(savings)</computeroutput> to the
+results.</para>
+</section>
+
+<section id="pubpri"><title>Public and Private Methods</title>
+<indexterm><primary>method</primary>
+<secondary>public</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>private</secondary></indexterm>
+<indexterm><primary>public method</primary></indexterm>
+<indexterm><primary>private method</primary></indexterm>
+<para>A method can be public or private.
+Any object can send a message that runs a <emphasis>public</emphasis> method.
+A <emphasis>private</emphasis> method runs only when an object sends a
+message to itself (that is, using the variable SELF as the message receiver).
+Private methods include methods at different scopes within the same object.
+(Superclasses can make private methods available to their subclasses while
+hiding those methods from other objects.) A private method is like an internal
+subroutine. It provides common functions to the object methods but is hidden
+from other programs.</para>
+</section>
+
+<section id="creo"><title>Initialization</title>
+<para>Any object requiring initialization at creation time must define an INIT
+method. If this method is defined, the class object runs the INIT method after
+the object is created. If an object has more than one INIT method (for example,
+it is defined in several classes), each INIT method must forward the INIT
+message up the hierarchy to complete the object's initialization.</para>
+
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+asav = .savings~new(1000.00, 6.25)
+say asav~type
+asav~name = "John Smith"
+
+::class Account
+
+::method INIT
+  expose balance
+  use arg balance
+
+::method TYPE
+  return "an account"
+
+::method name attribute
+
+::class Savings subclass Account
+
+::method INIT
+  expose interest_rate
+  use arg balance, interest_rate
+  self~init:super(balance)
+
+::method type
+  return "a savings account"
+</programlisting>
+<para>The NEW method of the Savings class object creates a new Savings object
+and calls the INIT method of the new object. The INIT method arguments are
+the arguments specified on the NEW method. In the Savings INIT method, the
+line: </para>
+<programlisting>
+self~init:super(balance)
+</programlisting>
+<para> calls the INIT method of
+the Account class, using just the balance argument specified on the NEW message.
+</para>
+</section>
+
+<section id="obdes"><title>Object Destruction and Uninitialization</title>
+<para>Object destruction is implicit. When an object is no longer in use, Rexx
+automatically reclaims its storage. If the object has allocated other system
+resources, you must release them at this time. (Rexx cannot release these
+resources, because it is unaware that the object has allocated them.)</para>
+<para>Similarly, other uninitialization processing may be needed, for example,
+by a message object holding an unreported error. An object requiring
+uninitialization
+should define an UNINIT method. If this method is defined, Rexx runs it before
+reclaiming the object's storage. If an object has more than one UNINIT method
+(defined in several classes), each UNINIT method is responsible for sending
+the UNINIT method up the object hierarchy.</para>
+</section>
+
+<section id="reqstr"><title>Required String Values</title>
+<para>Rexx requires a string value in a number of contexts within instructions
+and built-in function calls. </para>
+<itemizedlist>
+<listitem><para>DO statements containing
+<emphasis role="italic">exprr</emphasis> or
+<emphasis role="italic">exprf</emphasis></para></listitem>
+<listitem><para>Substituted values in compound variable names</para></listitem>
+<listitem><para>Commands to external environments</para></listitem>
+<listitem><para>Commands and environment names on ADDRESS instructions
+</para></listitem>
+<listitem><para>Strings for ARG, PARSE, and PULL instructions to be parsed
+</para></listitem>
+<listitem><para>Parenthesized targets on CALL instructions</para></listitem>
+<listitem><para>Subsidiary variable lists on DROP, EXPOSE, and PROCEDURE
+instructions</para></listitem>
+<listitem><para>Instruction strings on INTERPRET instructions</para></listitem>
+<listitem><para>DIGITS, FORM, and FUZZ values on NUMERIC instructions</para>
+</listitem>
+<listitem><para>Options strings on OPTIONS instructions</para></listitem>
+<listitem><para>Data queue strings on PUSH and QUEUE instructions</para>
+</listitem>
+<listitem><para>Label names on SIGNAL VALUE instructions</para></listitem>
+<listitem><para>Trace settings on TRACE VALUE instructions</para></listitem>
+<listitem><para>Arguments to built-in functions</para></listitem>
+<listitem><para>Variable references in parsing templates</para></listitem>
+<listitem><para>Data for PUSH and QUEUE instructions to be processed</para>
+</listitem>
+<listitem><para>Data for the SAY instruction to be displayed</para></listitem>
+<listitem><para>Rexx dyadic operators when the receiving object (the object to
+the left of the operator) is a string</para></listitem></itemizedlist>
+<para>If you supply an object other than a string in these contexts, by default
+the language processor converts it to some string representation and uses
+this. However, the programmer can cause the language processor to raise the
+NOSTRING condition when the supplied object does not have an equivalent string
+value.</para>
+<para>To obtain a string value, the language processor sends a REQUEST("STRING")
+message to the object. Strings and other objects that have string values return
+the appropriate string value for Rexx to use. (This happens automatically
+for strings and for subclasses of the String class because they inherit a
+suitable MAKESTRING method from the String class.) For this mechanism to work
+correctly, you must provide a MAKESTRING method for any other objects with
+string values.</para>
+<para>For other objects without string values (that is, without a MAKESTRING
+method), the action taken depends on the setting of the NOSTRING condition
+trap. If the NOSTRING condition is being trapped (see
+<link linkend="condtra">Conditions and Condition Traps</link>),
+the language processor raises the NOSTRING condition. If the NOSTRING condition
+is not being trapped, the language processor sends a STRING message to the
+object to obtain its readable string representation (see the STRING method
+of the Object class <link linkend="mthObjectString">STRING</link>) and uses this string.
+</para>
+<para>When comparing a string object with the .nil object, if
+the NOSTRING condition is being trapped, then</para>
+<programlisting>
+if string = .nil
+</programlisting>
+<para>will raise the NOSTRING condition, whereas</para>
+<programlisting>
+if .nil = string
+</programlisting>
+<para>will not as the .nil objects "=" method does not expect
+a string as an argument.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+d = .directory~new
+say substr(d,5,7)         /* Produces "rectory" from "a Directory" */
+signal on nostring
+say substr(d,5,7)         /* Raises the NOSTRING condition */
+say substr(d~string,3,6)  /* Displays "Direct" */
+</programlisting>
+<para>For arguments to Rexx object methods, different rules apply. When a
+method expects a string as an argument, the argument object is sent the
+REQUEST("STRING") message. If REQUEST returns the NIL object, then the
+method raises an error.</para>
+</section>
+
+<section id="concurr"><title>Concurrency</title>
+<para>Rexx supports concurrency, multiple methods running
+simultaneously on a single object. See
+<link linkend="xconcur">Concurrency</link>  for a full
+description of concurrency.</para>
+</section>
+</section>
+
+<section id="classmeth"><title>Overview of Classes Provided by Rexx</title>
+<para>This section gives a brief overview of the classes and methods
+Rexx defines.</para>
+<para>Note that there might also be other classes in the system, depending
+on the operating system.</para>
+
+<section id="chi"><title>The Class Hierarchy</title>
+<para>Rexx provides the following classes belonging to the object class:</para>
+<itemizedlist>
+<listitem><para>Alarm class</para></listitem>
+<listitem><para>Array class</para></listitem>
+<listitem><para>Class class</para></listitem>
+<listitem><para>Collection class</para>
+<itemizedlist>
+<listitem><para>MapCollection class</para></listitem>
+<listitem><para>OrderedCollection class</para></listitem>
+<listitem><para>SetCollection class</para></listitem>
+</itemizedlist></listitem>
+<listitem><para>Comparable class</para></listitem>
+<listitem><para>Comparator class</para>
+<itemizedlist>
+<listitem><para>CaselessColumnComparator class</para></listitem>
+<listitem><para>CaselessComparator class</para></listitem>
+<listitem><para>CaselessDescendingComparator class</para></listitem>
+<listitem><para>ColumnComparator class</para></listitem>
+<listitem><para>DescendingComparator class</para></listitem>
+<listitem><para>InvertingComparator class</para></listitem>
+</itemizedlist></listitem>
+<listitem><para>DateTime class</para></listitem>
+<listitem><para>Directory class</para>
+<itemizedlist>
+<listitem><para>Properties class</para></listitem>
+</itemizedlist></listitem>
+<listitem><para>InputOutputStream class</para>
+<itemizedlist>
+<listitem><para>Stream class</para></listitem>
+</itemizedlist></listitem>
+<listitem><para>InputStream class</para></listitem>
+<listitem><para>List class</para></listitem>
+<listitem><para>Message class</para></listitem>
+<listitem><para>Method class</para></listitem>
+<listitem><para>Monitor class</para></listitem>
+<listitem><para>MutableBuffer class</para></listitem>
+<listitem><para>OutputStream class</para></listitem>
+<listitem><para>Queue class</para>
+<itemizedlist>
+<listitem><para>CircularQueue class</para></listitem>
+</itemizedlist></listitem>
+<listitem><para>RegularExpression class</para></listitem>
+<listitem><para>Relation class</para>
+<itemizedlist>
+<listitem><para>Bag class</para></listitem>
+</itemizedlist></listitem>
+<listitem><para>RexxQueue class</para></listitem>
+<listitem><para>Stem class</para></listitem>
+<listitem><para>String class</para></listitem>
+<listitem><para>Supplier class</para>
+<itemizedlist>
+<listitem><para>StreamSupplier class</para></listitem>
+</itemizedlist></listitem>
+<listitem><para>Table class</para>
+<itemizedlist>
+<listitem><para>Set class</para></listitem>
+</itemizedlist></listitem>
+<listitem><para>TimeSpan class</para></listitem>
+</itemizedlist>
+<para>(The classes are in a class hierarchy with subclasses indented below their
+superclasses.)</para>
+<para>Note that there might also be other classes in the system.</para>
+
+<para>The following figures show all the classes.</para>
+
+<figure float="1">
+<title id="meths1">Classes and Inheritance (part 1 of 7)</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<!-- Warning!!!!! - if you modify this file it needs to be copied to the rexxpg! -->
+<imagedata fileref="ooRexxClasses1.png" align="left" scale="90">
+</imageobject>
+</mediaobject>
+</figure>
+
+<figure float="1">
+<title id="meths2">Classes and Inheritance (part 2 of 7)</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<!-- Warning!!!!! - if you modify this file it needs to be copied to the rexxpg! -->
+<imagedata fileref="ooRexxClasses2.png" align="left" scale="90">
+</imageobject>
+</mediaobject>
+</figure>
+
+<figure float="1">
+<title id="meths3">Classes and Inheritance (part 3 of 7)</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<!-- Warning!!!!! - if you modify this file it needs to be copied to the rexxpg! -->
+<imagedata fileref="ooRexxClasses3.png" align="left" scale="90">
+</imageobject>
+</mediaobject>
+</figure>
+
+<figure float="1">
+<title id="meths4">Classes and Inheritance (part 4 of 7)</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<!-- Warning!!!!! - if you modify this file it needs to be copied to the rexxpg! -->
+<imagedata fileref="ooRexxClasses4.png" align="left" scale="90">
+</imageobject>
+</mediaobject>
+</figure>
+
+<figure float="1">
+<title id="meths5">Classes and Inheritance (part 5 of 7)</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<!-- Warning!!!!! - if you modify this file it needs to be copied to the rexxpg! -->
+<imagedata fileref="ooRexxClasses5.png" align="left" scale="90">
+</imageobject>
+</mediaobject>
+</figure>
+
+<figure float="1">
+<title id="meths6">Classes and Inheritance (part 6 of 7)</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxClasses6.png" align="left" scale="90">
+</imageobject>
+</mediaobject>
+</figure>
+
+<figure float="1">
+<title id="meths7">Classes and Inheritance (part 7 of 7)</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxClasses7.png" align="left" scale="90">
+</imageobject>
+</mediaobject>
+</figure>
+</section>
+
+<section id="methodsbyclass"><title>Cross-reference of Methods</title>
+<indexterm><primary>summary</primary>
+<secondary>methods by class</secondary></indexterm>
+<para>The following table lists
+all the methods and the classes that define them. All methods are instance
+methods except where noted.</para>
+
+<table frame="all">
+<title>Summary of Methods and the Classes Defining Them</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Method Name</entry>
+<entry>Class(es)</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>[]</entry>
+<entry>
+    <link linkend="mthArrayAtGet">Array</link>,
+    <link linkend="mthDirectoryAtGet">Directory</link>,
+    <link linkend="mthListAtGet">List</link>,
+    <link linkend="mthQueueAtGet">Queue</link>,
+    <link linkend="mthRelationAtGet">Relation</link>,
+    <link linkend="mthStemAtGet">Stem</link>,
+    <link linkend="mthTableAtGet">Table</link>
+</entry>
+</row>
+<row>
+<entry>[]=</entry>
+<entry>
+    <link linkend="mthArrayPutSet">Array</link>,
+    <link linkend="mthBagPutSet">Bag</link>,
+    <link linkend="mthCollectionAtGet">Collection</link>,
+    <link linkend="mthDirectoryPutSet">Directory</link>,
+    <link linkend="mthListPutSet">List</link>,
+    <link linkend="mthPropertiesPutSet">Properties</link>,
+    <link linkend="mthQueuePutSet">Queue</link>,
+    <link linkend="mthRelationPutSet">Relation</link>,
+    <link linkend="mthSetPutSet">Stem</link>,
+    <link linkend="mthStemPutSet">Stem</link>,
+    <link linkend="mthTablePutSet">Table</link></entry>
+</row>
+<row>
+<entry>abbrev</entry>
+<entry>
+    <link linkend="mthStringAbbrev">String</link>
+</entry>
+</row>
+<row>
+<entry>abs</entry>
+<entry>
+    <link linkend="mthStringAbs">String</link>
+</entry>
+</row>
+<row>
+<entry>addDays</entry>
+<entry>
+    <link linkend="mthDateTimeAddDays">DateTime</link>,
+    <link linkend="mthTimeSpanAddDays">TimeSpan</link>
+</entry>
+</row>
+<row>
+<entry>addHours</entry>
+<entry>
+    <link linkend="mthDateTimeAddHours">DateTime</link>,
+    <link linkend="mthTimeSpanAddHours">TimeSpan</link>
+</entry>
+</row>
+<row>
+<entry>addMicroseconds</entry>
+<entry>
+    <link linkend="mthDateTimeAddMicroseconds">DateTime</link>,
+    <link linkend="mthTimeSpanAddMicroseconds">TimeSpan</link>
+</entry>
+</row>
+<row>
+<entry>addMinutes</entry>
+<entry>
+    <link linkend="mthDateTimeAddMinutes">DateTime</link>,
+    <link linkend="mthTimeSpanAddMinutes">TimeSpan</link>
+</entry>
+</row>
+<row>
+<entry>addSeconds</entry>
+<entry>
+    <link linkend="mthDateTimeAddSeconds">DateTime</link>,
+    <link linkend="mthTimeSpanAddSeconds">TimeSpan</link>
+</entry>
+</row>
+<row>
+<entry>addWeeks</entry>
+<entry>
+    <link linkend="mthDateTimeAddWeeks">DateTime</link>,
+    <link linkend="mthTimeSpanAddWeeks">TimeSpan</link>
+</entry>
+</row>
+<row>
+<entry>addYears</entry>
+<entry>
+    <link linkend="mthDateTimeAddYears">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>allAt</entry>
+<entry>
+    <link linkend="mthRelationAllAt">Relation</link>
+</entry>
+</row>
+<row>
+<entry>allIndex</entry>
+<entry>
+    <link linkend="mthRelationAllIndex">Relation</link>
+</entry>
+</row>
+<row>
+<entry>allIndexes</entry>
+<entry>
+    <link linkend="mthArrayAllIndexes">Array</link>,
+    <link linkend="mthCollectionAllIndexes">Collection</link>,
+    <link linkend="mthDirectoryAllIndexes">Directory</link>,
+    <link linkend="mthListAllIndexes">List</link>,
+    <link linkend="mthQueueAllIndexes">Queue</link>,
+    <link linkend="mthStemAllIndexes">Stem</link>,
+    <link linkend="mthSupplierAllIndexes">Supplier</link>,
+    <link linkend="mthTableAllIndexes">Table</link>
+</entry>
+</row>
+<row>
+<entry>allItems</entry>
+<entry>
+    <link linkend="mthArrayAllItems">Array</link>,
+    <link linkend="mthCollectionAllItems">Collection</link>,
+    <link linkend="mthDirectoryAllItems">Directory</link>,
+    <link linkend="mthListAllItems">List</link>,
+    <link linkend="mthQueueAllItems">Queue</link>,
+    <link linkend="mthRelationAllItems">Relation</link>,
+    <link linkend="mthStemAllItems">Stem</link>,
+    <link linkend="mthSupplierAllItems">Supplier</link>,
+    <link linkend="mthTableAllItems">Table</link>
+</entry>
+</row>
+<row>
+<entry>append</entry>
+<entry>
+    <link linkend="mthArrayAppend">Array</link>,
+    <link linkend="mthListAppend">List</link>,
+    <link linkend="mthMutableBufferAppend">MutableBuffer</link>,
+    <link linkend="mthOrderedCollectionAppend">Ordered Collection</link>,
+    <link linkend="mthQueueAppend">Queue</link>
+</entry>
+</row>
+<row>
+<entry>appendAll</entry>
+<entry>
+    <link linkend="mthOrderedCollectionAppendAll">Ordered Collection</link>,
+</entry>
+</row>
+<row>
+<entry>arguments</entry>
+<entry>
+    <link linkend="mthMessageArguments">Message</link>
+</entry>
+</row>
+<row>
+<entry>arrayIn</entry>
+<entry>
+    <link linkend="mthInputStreamArrayIn">InputStream</link>,
+    <link linkend="mthStreamArrayIn">Stream</link>
+</entry>
+</row>
+<row>
+<entry>arrayOut</entry>
+<entry>
+    <link linkend="mthOutputStreamArrayOut">OutputStream</link>,
+    <link linkend="mthStreamArrayOut">Stream</link>
+</entry>
+</row>
+<row>
+<entry>at</entry>
+<entry>
+    <link linkend="mthArrayAt">Array</link>,
+    <link linkend="mthDirectoryAt">Directory</link>,
+    <link linkend="mthListAt">List</link>,
+    <link linkend="mthQueueAt">Queue</link>,
+    <link linkend="mthRelationAt">Relation</link>,
+    <link linkend="mthStemAt">Stem</link>,
+    <link linkend="mthTableAt">Table</link>
+</entry>
+</row>
+<row>
+<entry>available</entry>
+<entry>
+    <link linkend="mthStreamSupplierAvailable">StreamSupplier</link>,
+    <link linkend="mthSupplierAvailable">Supplier</link>
+</entry>
+</row>
+<row>
+<entry>baseClass</entry>
+<entry>
+    <link linkend="mthClassBaseClass">Class (class and instance method)</link>
+</entry>
+</row>
+<row>
+<entry>baseDate</entry>
+<entry>
+    <link linkend="mthDateTimeBaseDate">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>bitAnd</entry>
+<entry>
+    <link linkend="mthStringBitAnd">String</link>
+</entry>
+</row>
+<row>
+<entry>bitOr</entry>
+<entry>
+    <link linkend="mthStringBitOr">String</link>
+</entry>
+</row>
+<row>
+<entry>bitXor</entry>
+<entry>
+    <link linkend="mthStringBitXor">String</link>
+</entry>
+</row>
+<row>
+<entry>b2x</entry>
+<entry>
+    <link linkend="mthStringB2x">String</link>
+</entry>
+</row>
+<row>
+<entry>cancel</entry>
+<entry>
+    <link linkend="mthAlarmCancel">Alarm</link>
+</entry>
+</row>
+<row>
+<entry>caselessChangeStr</entry>
+<entry>
+    <link linkend="mthStringCaselessChangeStr">String</link>
+</entry>
+</row>
+<row>
+<entry>caselessAbbrev</entry>
+<entry>
+    <link linkend="mthStringCaselessAbbrev">String</link>
+</entry>
+</row>
+<row>
+<entry>caselessCompare</entry>
+<entry>
+    <link linkend="mthStringCaselessCompare">String</link>
+</entry>
+</row>
+<row>
+<entry>caselessCompareTo</entry>
+<entry>
+    <link linkend="mthStringCaselessCompareTo">String</link>
+</entry>
+</row>
+<row>
+<entry>caselessCountStr</entry>
+<entry>
+    <link linkend="mthStringCaselessCountStr">String</link>
+</entry>
+</row>
+<row>
+<entry>caselessEquals</entry>
+<entry>
+    <link linkend="mthStringCaselessEquals">String</link>
+</entry>
+</row>
+<row>
+<entry>caselessLastPos</entry>
+<entry>
+    <link linkend="mthStringCaselessLastPos">String</link>
+</entry>
+</row>
+<row>
+<entry>caselessMatch</entry>
+<entry>
+    <link linkend="mthStringCaselessMatch">String</link>
+</entry>
+</row>
+<row>
+<entry>caselessMatchChar</entry>
+<entry>
+    <link linkend="mthStringCaselessMatchChar">String</link>
+</entry>
+</row>
+<row>
+<entry>caselessPos</entry>
+<entry>
+    <link linkend="mthStringCaselessPos">String</link>
+</entry>
+</row>
+<row>
+<entry>center/centre</entry>
+<entry>
+    <link linkend="mthStringCenter">String</link>
+</entry>
+</row>
+<row>
+<entry>changeStr</entry>
+<entry>
+    <link linkend="mthStringChangeStr">String</link>
+</entry>
+</row>
+<row>
+<entry>charIn</entry>
+<entry>
+    <link linkend="mthInputStreamCharIn">InputStream</link>,
+    <link linkend="mthOutputStreamCharIn">OutputStream</link>,
+    <link linkend="mthStreamCharIn">Stream</link>
+</entry>
+</row>
+<row>
+<entry>charOut</entry>
+<entry>
+    <link linkend="mthInputStreamCharOut">InputStream</link>,
+    <link linkend="mthOutputStreamCharOut">OutputStream</link>,
+    <link linkend="mthStreamCharOut">Stream</link>
+</entry>
+</row>
+<row>
+<entry>chars</entry>
+<entry>
+    <link linkend="mthInputStreamChars">InputStream</link>,
+    <link linkend="mthOutputStreamChars">OutputStream</link>,
+    <link linkend="mthStreamChars">Stream</link>
+</entry>
+</row>
+<row>
+<entry>civilTime</entry>
+<entry>
+    <link linkend="mthDateTimeCivilTime">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>class</entry>
+<entry>
+    <link linkend="mthObjectClass">Object</link>
+</entry>
+</row>
+<row>
+<entry>close</entry>
+<entry>
+    <link linkend="mthInputStreamClose">InputStream</link>,
+    <link linkend="mthOutputStreamClose">OutputStream</link>,
+    <link linkend="mthStreamClose">Stream</link>
+</entry>
+</row>
+<row>
+<entry>command</entry>
+<entry>
+    <link linkend="mthStreamCommand">Stream</link>
+</entry>
+</row>
+<row>
+<entry>compare</entry>
+<entry>
+    <link linkend="mthComparatorCompare">Comparator</link>,
+    <link linkend="mthCaselessColumnComparatorCompare">CaselessColumnComparator</link>,
+    <link linkend="mthCaselessComparatorCompare">CaselessComparator</link>,
+    <link linkend="mthColumnComparatorCompare">ColumnComparator</link>,
+    <link linkend="mthCaselessDescendingComparatorCompare">CaselessDescendingComparator</link>,
+    <link linkend="mthDescendingComparatorCompare">DescendingComparator</link>,
+    <link linkend="mthInvertingComparatorCompare">InvertingComparator</link>,
+    <link linkend="mthStringCompare">String</link>
+</entry>
+</row>
+<row>
+<entry>compareTo</entry>
+<entry>
+    <link linkend="mthComparableCompareTo">Comparable</link>,
+    <link linkend="mthDateTimeCompareTo">DateTime</link>,
+    <link linkend="mthStringCompareTo">String</link>,
+    <link linkend="mthTimeSpanCompareTo">TimeSpan</link>
+</entry>
+</row>
+<row>
+<entry>completed</entry>
+<entry>
+    <link linkend="mthMessageCompleted">Message</link>
+</entry>
+</row>
+<row>
+<entry>copies</entry>
+<entry>
+    <link linkend="mthStringCopies">String</link>
+</entry>
+</row>
+<row>
+<entry>copy</entry>
+<entry>
+    <link linkend="mthObjectCopy">Object</link>
+</entry>
+</row>
+<row>
+<entry>countStr</entry>
+<entry>
+    <link linkend="mthStringCountStr">String</link>
+</entry>
+</row>
+<row>
+<entry>create</entry>
+<entry>
+    <link linkend="mthRexxQueueCreate">RexxQueue (class method)</link>
+</entry>
+</row>
+<row>
+<entry>current</entry>
+<entry>
+    <link linkend="mthMonitorCurrent">Monitor</link>
+</entry>
+</row>
+<row>
+<entry>c2d</entry>
+<entry>
+    <link linkend="mthStringC2d">String</link>
+</entry>
+</row>
+<row>
+<entry>c2x</entry>
+<entry>
+    <link linkend="mthStringC2x">String</link>
+</entry>
+</row>
+<row>
+<entry>dataType</entry>
+<entry>
+    <link linkend="mthStringDataType">String</link>
+</entry>
+</row>
+<row>
+<entry>date</entry>
+<entry>
+    <link linkend="mthDateTimeDate">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>day</entry>
+<entry>
+    <link linkend="mthDateTimeDay">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>dayMinutes</entry>
+<entry>
+    <link linkend="mthDateTimeDayMinutes">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>dayName</entry>
+<entry>
+    <link linkend="mthDateTimeDayName">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>daySeconds</entry>
+<entry>
+    <link linkend="mthDateTimeDaySeconds">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>dayMicroseconds</entry>
+<entry>
+    <link linkend="mthDateTimeDayMicroseconds">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>days</entry>
+<entry>
+    <link linkend="mthTimeSpanDays">TimeSpan</link>
+</entry>
+</row>
+<row>
+<entry>daysInMonth</entry>
+<entry>
+    <link linkend="mthDateTimeDaysInMonth">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>daysInYear</entry>
+<entry>
+    <link linkend="mthDateTimeDaysInYear">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>decodeBase64</entry>
+<entry>
+    <link linkend="mthStringDecodeBase64">String</link>
+</entry>
+</row>
+<row>
+<entry>defaultName</entry>
+<entry>
+    <link linkend="mthClassDefaultName">Class (class and instance method)</link>,
+    <link linkend="mthObjectDefaultName">Object</link>
+</entry>
+</row>
+<row>
+<entry>define</entry>
+<entry>
+    <link linkend="mthClassDefine">Class (class and instance method)</link>
+</entry>
+</row>
+<row>
+<entry>delete</entry>
+<entry>
+    <link linkend="mthClassDelete">Class (class and instance method)</link>,
+    <link linkend="mthMutableBufferDelete">MutableBuffer</link>,
+    <link linkend="mthRexxQueueDeleteClsMethod">RexxQueue (class method)</link>,
+    <link linkend="mthRexxQueueDelete">RexxQueue</link>
+</entry>
+</row>
+<row>
+<entry>delStr</entry>
+<entry>
+    <link linkend="mthStringDelStr">String</link>
+</entry>
+</row>
+<row>
+<entry>delWord</entry>
+<entry>
+    <link linkend="mthStringDelWord">String</link>
+</entry>
+</row>
+<row>
+<entry>description</entry>
+<entry>
+    <link linkend="mthStreamDescription">Stream</link>
+</entry>
+</row>
+<row>
+<entry>destination</entry>
+<entry>
+    <link linkend="mthMonitorDestination">Monitor</link>
+</entry>
+</row>
+<row>
+<entry>difference</entry>
+<entry>
+    <link linkend="mthCollectionDifference">Collection</link>,
+    <link linkend="mthBagDifference">Bag</link>,
+    <link linkend="mthOrderedCollectionDifference">Ordered Collection</link>,
+    <link linkend="mthRelationDifference">Relation</link>,
+</entry>
+</row>
+<row>
+<entry>dimension</entry>
+<entry>
+    <link linkend="mthArrayDimension">Array</link>
+</entry>
+</row>
+<row>
+<entry>duration</entry>
+<entry>
+    <link linkend="mthTimeSpanDuration">TimeSpan</link>
+</entry>
+</row>
+<row>
+<entry>d2c</entry>
+<entry>
+    <link linkend="mthStringD2c">String</link>
+</entry>
+</row>
+<row>
+<entry>d2x</entry>
+<entry>
+    <link linkend="mthStringD2x">String</link>
+</entry>
+</row>
+<row>
+<entry>elapsed</entry>
+<entry>
+    <link linkend="mthDateTimeElapsed">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>empty</entry>
+<entry>
+    <link linkend="mthArrayEmpty">Array</link>,
+    <link linkend="mthDirectoryEmpty">Directory</link>,
+    <link linkend="mthListEmpty">List</link>,
+    <link linkend="mthQueueEmpty">Queue</link>,
+    <link linkend="mthRelationEmpty">Relation</link>,
+    <link linkend="mthRexxQueueEmpty">RexxQueue</link>,
+    <link linkend="mthStemEmpty">Stem</link>,
+    <link linkend="mthTableEmpty">Table</link>
+</entry>
+</row>
+<row>
+<entry>encodeBase64</entry>
+<entry>
+    <link linkend="mthStringEncodeBase64">String</link>
+</entry>
+</row>
+<row>
+<entry>enhanced</entry>
+<entry>
+    <link linkend="mthClassEnhanced">Class (class and instance method)</link>
+</entry>
+</row>
+<row>
+<entry>entry</entry>
+<entry>
+    <link linkend="mthDirectoryEntry">Directory</link>
+</entry>
+</row>
+<row>
+<entry>equals</entry>
+<entry>
+    <link linkend="mthStringEquals">String</link>
+</entry>
+</row>
+<row>
+<entry>errorCondition</entry>
+<entry>
+    <link linkend="mthMessageErrorCondition">Message</link>
+</entry>
+</row>
+<row>
+<entry>europeanDate</entry>
+<entry>
+    <link linkend="mthDateTimeEuropeanDate">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>first</entry>
+<entry>
+    <link linkend="mthArrayFirst">Array</link>,
+    <link linkend="mthListFirst">List</link>.
+    <link linkend="mthQueueFirst">Queue</link>
+</entry>
+</row>
+<row>
+<entry>firstItem</entry>
+<entry>
+    <link linkend="mthListFirstItem">List</link>
+</entry>
+</row>
+<row>
+<entry>flush</entry>
+<entry>
+    <link linkend="mthStreamFlush">Stream</link>
+</entry>
+</row>
+<row>
+<entry>format</entry>
+<entry>
+    <link linkend="mthStringFormat">String</link>
+</entry>
+</row>
+<row>
+<entry>fromBaseDate</entry>
+<entry>
+    <link linkend="mthDateTimeFromBaseDate">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>fromCivilTime</entry>
+<entry>
+    <link linkend="mthDateTimeFromCivilTime">DateTime</link>,
+    <link linkend="mthTimeSpanFromCivilTime">TimeSpan</link>
+</entry>
+</row>
+<row>
+<entry>fromDays</entry>
+<entry>
+    <link linkend="mthTimeSpanFromDays">TimeSpan</link>
+</entry>
+</row>
+<row>
+<entry>fromEuropeanDate</entry>
+<entry>
+    <link linkend="mthDateTimeFromEuropeanDate">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>fromHours</entry>
+<entry>
+    <link linkend="mthTimeSpanFromHours">TimeSpan</link>
+</entry>
+</row>
+<row>
+<entry>fromIsoDate</entry>
+<entry>
+    <link linkend="mthDateTimeFromIsoDate">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>fromLongTime</entry>
+<entry>
+    <link linkend="mthDateTimeFromLongTime">DateTime</link>
+    <link linkend="mthTimeSpanFromLongTime">TimeSpan</link>
+</entry>
+</row>
+<row>
+<entry>fromMicroseconds</entry>
+<entry>
+    <link linkend="mthTimeSpanFromMicroseconds">TimeSpan</link>
+</entry>
+</row>
+<row>
+<entry>fromMinutes</entry>
+<entry>
+    <link linkend="mthTimeSpanFromMinutes">TimeSpan</link>
+</entry>
+</row>
+<row>
+<entry>fromNormalDate</entry>
+<entry>
+    <link linkend="mthDateTimeFromNormalDate">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>fromNormalTime</entry>
+<entry>
+    <link linkend="mthDateTimeFromNormalTime">DateTime</link>,
+    <link linkend="mthTimeSpanFromNormalTime">TimeSpan</link>
+</entry>
+</row>
+<row>
+<entry>fromOrderedDate</entry>
+<entry>
+    <link linkend="mthDateTimeFromOrderedDate">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>fromSeconds</entry>
+<entry>
+    <link linkend="mthTimeSpanFromSeconds">TimeSpan</link>
+</entry>
+</row>
+<row>
+<entry>fromStandardDate</entry>
+<entry>
+    <link linkend="mthDateTimeFromStandardDate">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>fromStringFormat</entry>
+<entry>
+    <link linkend="mthTimeSpanFromStringFormat">TimeSpan</link>
+</entry>
+</row>
+<row>
+<entry>fromTicks</entry>
+<entry>
+    <link linkend="mthDateTimeFromTicks">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>fromUsaDate</entry>
+<entry>
+    <link linkend="mthDateTimeFromUsaDate">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>fullDate</entry>
+<entry>
+    <link linkend="mthDateTimeFullDate">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>get</entry>
+<entry>
+    <link linkend="mthRexxQueueGet">RexxQueue</link>
+</entry>
+</row>
+<row>
+<entry>getBufferSize</entry>
+<entry>
+    <link linkend="mthMutableBufferGetBufferSize">MutableBuffer</link>
+</entry>
+</row>
+<row>
+<entry>getLogical</entry>
+<entry>
+    <link linkend="mthPropertiesGetLogical">Properties</link>
+</entry>
+</row>
+<row>
+<entry>getProperty</entry>
+<entry>
+    <link linkend="mthPropertiesGetProperty">Properties</link>
+</entry>
+</row>
+<row>
+<entry>getWhole</entry>
+<entry>
+    <link linkend="mthPropertiesGetWhole">Properties</link>
+</entry>
+</row>
+<row>
+<entry>hasEntry</entry>
+<entry>
+    <link linkend="mthDirectoryHasEntry">Directory</link>
+</entry>
+</row>
+<row>
+<entry>hasError</entry>
+<entry>
+    <link linkend="mthMessageHasError">Message</link>
+</entry>
+</row>
+<row>
+<entry>hashcode</entry>
+<entry>
+    <link linkend="mthDateTimeHashCode">DateTime</link>,
+    <link linkend="mthTimeSpanHashCode">TimeSpan</link>
+</entry>
+</row>
+<row>
+<entry>hasIndex</entry>
+<entry>
+    <link linkend="mthArrayHasIndex">Array</link>,
+    <link linkend="mthCollectionHasIndex">Collection</link>,
+    <link linkend="mthDirectoryHasIndex">Directory</link>,
+    <link linkend="mthListHasIndex">List</link>,
+    <link linkend="mthQueueHasIndex">Queue</link>,
+    <link linkend="mthRelationHasIndex">Relation</link>,
+    <link linkend="mthStemHasIndex">Stem</link>,
+    <link linkend="mthTableHasIndex">Table</link>
+</entry>
+</row>
+<row>
+<entry>hasItem</entry>
+<entry>
+    <link linkend="mthArrayHasItem">Array</link>,
+    <link linkend="mthCollectionHasItem">Collection</link>,
+    <link linkend="mthDirectoryHasItem">Directory</link>,
+    <link linkend="mthListHasItem">List</link>,
+    <link linkend="mthQueueHasItem">Queue</link>,
+    <link linkend="mthRelationHasItem">Relation</link>,
+    <link linkend="mthStemHasItem">Stem</link>,
+    <link linkend="mthTableHasItem">Table</link>
+</entry>
+</row>
+<row>
+<entry>hasMethod</entry>
+<entry>
+    <link linkend="mthObjectHasMethod">Object</link>
+</entry>
+</row>
+<row>
+<entry>hours</entry>
+<entry>
+    <link linkend="mthDateTimeHours">DateTime</link>,
+    <link linkend="mthTimeSpanHours">TimeSpan</link>
+</entry>
+</row>
+<row>
+<entry>id</entry>
+<entry>
+    <link linkend="mthClassId">Class (class and instance method)</link>
+</entry>
+</row>
+<row>
+<entry>identityHash</entry>
+<entry>
+    <link linkend="mthObjectIdentityHash">Object</link>
+</entry>
+</row>
+<row>
+<entry>index</entry>
+<entry>
+    <link linkend="mthArrayIndex">Array</link>,
+    <link linkend="mthCollectionIndex">Collection</link>,
+    <link linkend="mthDirectoryIndex">Directory</link>,
+    <link linkend="mthListIndex">List</link>,
+    <link linkend="mthQueueIndex">Queue</link>,
+    <link linkend="mthRelationIndex">Relation</link>,
+    <link linkend="mthStemIndex">Stem</link>,
+    <link linkend="mthSupplierIndex">Supplier</link>,
+    <link linkend="mthTableIndex">Table</link>
+</entry>
+</row>
+<row>
+<entry>inherit</entry>
+<entry>
+    <link linkend="mthClassInherit">Class (class and instance method)</link>
+</entry>
+</row>
+<row>
+<entry>init</entry>
+<entry>
+    <link linkend="mthAlarmInit">Alarm</link>,
+    <link linkend="mthCaselessColumnComparatorInit">CaselessColumnComparator</link>,
+    <link linkend="mthColumnComparatorInit">ColumnComparator</link>,
+    <link linkend="mthCircularQueueInit">CircularQueue</link>,
+    <link linkend="mthInvertingComparatorInit">InvertingComparator</link>,
+    <link linkend="mthMonitorInit">Monitor</link>,
+    <link linkend="mthObjectInit">Object</link>,
+    <link linkend="mthRegularExpressionInit">RegularExpression</link>,
+    <link linkend="mthRexxQueueInit">RexxQueue</link>,
+    <link linkend="mthStreamInit">Stream</link>,
+    <link linkend="mthStreamSupplierInit">StreamSupplier</link>,
+    <link linkend="mthSupplierInit">Supplier</link>
+</entry>
+</row>
+<row>
+<entry>insert</entry>
+<entry>
+    <link linkend="mthListInsert">List</link>,
+    <link linkend="mthMutableBufferInsert">MutableBuffer</link>,
+    <link linkend="mthQueueInsert">Queue</link>,
+    <link linkend="mthStringInsert">String</link>
+</entry>
+</row>
+<row>
+<entry>instanceMethod</entry>
+<entry>
+    <link linkend="mthObjectInstanceMethod">Object</link>
+</entry>
+</row>
+<row>
+<entry>instanceMethods</entry>
+<entry>
+    <link linkend="mthObjectInstanceMethods">Object</link>
+</entry>
+</row>
+<row>
+<entry>instanceOf</entry>
+<entry>
+    <link linkend="mthObjectInstanceOf">Object</link>
+</entry>
+</row>
+<row>
+<entry>intersection</entry>
+<entry>
+    <link linkend="mthBagIntersection">Bag</link>,
+    <link linkend="mthCollectionIntersection">Collection</link>,
+    <link linkend="mthOrderedCollectionIntersection">Ordered Collection</link>,
+    <link linkend="mthRelationIntersection">Relation</link>,
+    <link linkend="mthSetIntersection">Set</link>,
+</entry>
+</row>
+<row>
+<entry>isA</entry>
+<entry>
+    <link linkend="mthObjectIsA">Object</link>
+</entry>
+</row>
+<row>
+<entry>isEmpty</entry>
+<entry>
+    <link linkend="mthArrayIsEmpty">Array</link>,
+    <link linkend="mthDirectoryIsEmpty">Directory</link>,
+    <link linkend="mthListIsEmpty">List</link>,
+    <link linkend="mthQueueIsEmpty">Queue</link>,
+    <link linkend="mthRelationIsEmpty">Relation</link>,
+    <link linkend="mthStemIsEmpty">Stem</link>,
+    <link linkend="mthTableIsEmpty">Table</link>
+</entry>
+</row>
+<row>
+<entry>isoDate</entry>
+<entry>
+    <link linkend="mthDateTimeIsoDate">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>isLeapYear</entry>
+<entry>
+    <link linkend="mthDateTimeIsLeapyear">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>isSubclassOf</entry>
+<entry>
+    <link linkend="mthClassIsSubclassOf">Class (class and instance method)</link>
+</entry>
+</row>
+<row>
+<entry>item</entry>
+<entry>
+    <link linkend="mthStreamSupplierItem">StreamSupplier</link>,
+    <link linkend="mthSupplierItem">Supplier</link>
+</entry>
+</row>
+<row>
+<entry>items</entry>
+<entry>
+    <link linkend="mthArrayItems">Array</link>,
+    <link linkend="mthCollectionItems">Collection</link>,
+    <link linkend="mthDirectoryItems">Directory</link>,
+    <link linkend="mthListItems">List</link>,
+    <link linkend="mthQueueItems">Queue</link>,
+    <link linkend="mthRelationItems">Relation</link>,
+    <link linkend="mthStemItems">Stem</link>,
+    <link linkend="mthTableItems">Table</link>
+</entry>
+</row>
+<row>
+<entry>languageDate</entry>
+<entry>
+    <link linkend="mthDateTimeLanguageDate">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>last</entry>
+<entry>
+    <link linkend="mthArrayLast">Array</link>,
+    <link linkend="mthListLast">List</link>,
+    <link linkend="mthQueueLast">Queue</link>
+</entry>
+</row>
+<row>
+<entry>lastItem</entry>
+<entry>
+    <link linkend="mthListLastItem">List</link>
+</entry>
+</row>
+<row>
+<entry>lastPos</entry>
+<entry>
+    <link linkend="mthMutableBufferLastPos">MutableBuffer</link>,
+    <link linkend="mthStringLastPos">String</link>
+</entry>
+</row>
+<row>
+<entry>left</entry>
+<entry>
+    <link linkend="mthStringLeft">String</link>
+</entry>
+</row>
+<row>
+<entry>length</entry>
+<entry>
+    <link linkend="mthMutableBufferLength">MutableBuffer</link>,
+    <link linkend="mthStringLength">String</link>
+</entry>
+</row>
+<row>
+<entry>lineIn</entry>
+<entry>
+    <link linkend="mthInputStreamLineIn">InputStream</link>,
+    <link linkend="mthOutputStreamLineIn">OutputStream</link>,
+    <link linkend="mthRexxQueueLineIn">RexxQueue</link>,
+    <link linkend="mthStreamLineIn">Stream</link>
+</entry>
+</row>
+<row>
+<entry>lineOut</entry>
+<entry>
+    <link linkend="mthInputStreamLineOut">InputStream</link>,
+    <link linkend="mthOutputStreamLineOut">OutputStream</link>,
+    <link linkend="mthRexxQueueLineOut">RexxQueue</link>,
+    <link linkend="mthStreamLineOut">Stream</link>
+</entry>
+</row>
+<row>
+<entry>lines</entry>
+<entry>
+    <link linkend="mthInputStreamLines">InputStream</link>,
+    <link linkend="mthOutputStreamLines">OutputStream</link>,
+    <link linkend="mthStreamLineOut">Stream</link>
+</entry>
+</row>
+<row>
+<entry>load</entry>
+<entry>
+    <link linkend="mthPropertiesLoad">Properties (class and instance method)</link>
+</entry>
+</row>
+<row>
+<entry>longTime</entry>
+<entry>
+    <link linkend="mthDateTimeLongTime">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>lower</entry>
+<entry>
+    <link linkend="mthStringLower">String</link>
+</entry>
+</row>
+<row>
+<entry>makeArray</entry>
+<entry>
+    <link linkend="mthArrayMakeArray">Array</link>,
+    <link linkend="mthCollectionMakeArray">Collection</link>,
+    <link linkend="mthCircularQueueMakeArray">CircularQueue</link>,
+    <link linkend="mthDirectoryMakeArray">Directory</link>,
+    <link linkend="mthListMakeArray">List</link>,
+    <link linkend="mthQueueMakeArray">Queue</link>,
+    <link linkend="mthRelationMakeArray">Relation</link>,
+    <link linkend="mthRexxQueueMakeArray">RexxQueue</link>,
+    <link linkend="mthStemMakeArray">Stem</link>,
+    <link linkend="mthStreamMakeArray">Stream</link>,
+    <link linkend="mthStringMakeArray">String</link>,
+    <link linkend="mthTableMakeArray">Table</link>
+</entry>
+</row>
+<row>
+<entry>makeString</entry>
+<entry>
+    <link linkend="mthArrayMakeString">Array</link>,
+    <link linkend="mthStringMakeString">String</link>
+</entry>
+</row>
+<row>
+<entry>match</entry>
+<entry>
+    <link linkend="mthRegularExpressionMatch">RegularExpression</link>,
+    <link linkend="mthStringMatch">String</link>
+</entry>
+</row>
+<row>
+<entry>matchChar</entry>
+<entry>
+    <link linkend="mthStringMatchChar">String</link>
+</entry>
+</row>
+<row>
+<entry>max</entry>
+<entry>
+    <link linkend="mthStringMax">String</link>
+</entry>
+</row>
+<row>
+<entry>maxDate</entry>
+<entry>
+    <link linkend="mthDateTimeMaxDate">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>messageName</entry>
+<entry>
+    <link linkend="mthMessageMessageName">Message</link>
+</entry>
+</row>
+<row>
+<entry>metaClass</entry>
+<entry>
+    <link linkend="mthClassMetaclass">Class (class and instance method)</link>
+</entry>
+</row>
+<row>
+<entry>method</entry>
+<entry>
+    <link linkend="mthClassMethod">Class (class and instance method)</link>
+</entry>
+</row>
+<row>
+<entry>methods</entry>
+<entry>
+    <link linkend="mthClassMethods">Class (class and instance method)</link>
+</entry>
+</row>
+<row>
+<entry>microseconds</entry>
+<entry>
+    <link linkend="mthDateTimeMicroseconds">DateTime</link>,
+    <link linkend="mthTimeSpanMicroseconds">TimeSpan</link>
+</entry>
+</row>
+<row>
+<entry>min</entry>
+<entry>
+    <link linkend="mthStringMin">String</link>
+</entry>
+</row>
+<row>
+<entry>minDate</entry>
+<entry>
+    <link linkend="mthDateTimeMinDate">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>minutes</entry>
+<entry>
+    <link linkend="mthDateTimeMinutes">DateTime</link>,
+    <link linkend="mthTimeSpanMinutes">TimeSpan</link>
+</entry>
+</row>
+<row>
+<entry>mixinClass</entry>
+<entry>
+    <link linkend="mthClassMixinClass">Class (class and instance method)</link>
+</entry>
+</row>
+<row>
+<entry>month</entry>
+<entry>
+    <link linkend="mthDateTimeMonth">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>monthName</entry>
+<entry>
+    <link linkend="mthDateTimeMonthName">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>new</entry>
+<entry>
+    <link linkend="mthArrayNew">Array (class method)</link>,
+    <link linkend="mthClassNew">Class (class and instance method)</link>,
+    <link linkend="mthDirectoryNew">Directory (class method)</link>,
+    <link linkend="mthListNew">List (class method)</link>,
+    <link linkend="mthMessageNew">Message (class method)</link>,
+    <link linkend="mthMethodNew">Method (class method)</link>,
+    <link linkend="mthMutableBufferNew">MutableBuffer (class method)</link>,
+    <link linkend="mthObjectNew">Object (class method)</link>,
+    <link linkend="mthPropertiesPut">Properties (class method)</link>,
+    <link linkend="mthQueueNew">Queue (class method)</link>,
+    <link linkend="mthRelationNew">Relation (class method)</link>,
+    <link linkend="mthStemNew">Stem (class method)</link>,
+    <link linkend="mthStringNew">String (class method)</link>,
+    <link linkend="mthStreamNew">Stream (class method)</link>,
+    <link linkend="mthSupplierNew">Supplier (class method)</link>,
+    <link linkend="mthTableNew">Table (class method)</link>
+</entry>
+</row>
+<row>
+<entry>newFile</entry>
+<entry>
+    <link linkend="mthMethodNewFile">Method (class method)</link>
+</entry>
+</row>
+<row>
+<entry>next</entry>
+<entry>
+    <link linkend="mthArrayNext">Array</link>,
+    <link linkend="mthListNext">List</link>,
+    <link linkend="mthQueueNext">Queue</link>,
+    <link linkend="mthStreamSupplierNext">StreamSupplier</link>,
+    <link linkend="mthSupplierNext">Supplier</link>
+</entry>
+</row>
+<row>
+<entry>normalDate</entry>
+<entry>
+    <link linkend="mthDateTimeNormalDate">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>normalTime</entry>
+<entry>
+    <link linkend="mthDateTimeNormalTime">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>notify</entry>
+<entry>
+    <link linkend="mthMessageNotify">Message</link>
+</entry>
+</row>
+<row>
+<entry>objectName</entry>
+<entry>
+    <link linkend="mthObjectObjectName">Object</link>
+</entry>
+</row>
+<row>
+<entry>objectName=</entry>
+<entry>
+    <link linkend="mthObjectObjectNameEquals">Object</link>
+</entry>
+</row>
+<row>
+<entry>of</entry>
+<entry>
+    <link linkend="mthArrayOf">Array (class method)</link>,
+    <link linkend="mthBagOf">Bag (class method)</link>,
+    <link linkend="mthCircularQueueOf">CircularQueue (class method)</link>,
+    <link linkend="mthListOf">List (class method)</link>,
+    <link linkend="mthQueueOf">Queue (class method)</link>,
+    <link linkend="mthSetOf">Set (class method)</link>
+</entry>
+</row>
+<row>
+<entry>open</entry>
+<entry>
+    <link linkend="mthInputStreamOpen">InputStream</link>,
+    <link linkend="mthOutputStreamOpen">OutputStream</link>,
+    <link linkend="mthStreamOpen">Stream</link>
+</entry>
+</row>
+<row>
+<entry>Operator Methods (Arithmetic): +, -,
+*, /, %, //, **, prefix&nbsp;+, prefix&nbsp;-</entry>
+<entry>
+    <link linkend="mthStringArithmeticMethods">String</link>
+</entry>
+</row>
+<row>
+<entry>Operator Methods (Comparison): =, \=, >&lt;, &lt;>,
+==, and \==</entry>
+<entry>
+    <link linkend="mthObjectOperators">Object</link>,
+    <link linkend="mthStringArithmeticMethods">String</link>
+</entry>
+</row>
+<row>
+<entry>Operator Methods (Comparison): >, &lt;, >=,
+\&lt;, &lt;=, \>, >>, &lt;&lt;,  >>=, \&lt;&lt;, &lt;&lt;=, and \>></entry>
+<entry>
+    <link linkend="mthStringComparisonMethods">String</link>
+</entry>
+</row>
+<row>
+<entry>Operator Methods (Concatenation): &quot;&quot;
+(abuttal), ||, and &quot; &quot; (blank)</entry>
+<entry>
+    <link linkend="mthStringConcatenationMethods">String</link>
+</entry>
+</row>
+<row>
+<entry>Operator Methods (Logical): &amp;, |, &amp;&amp;,
+and prefix \</entry>
+<entry>
+    <link linkend="mthStringLogicalMethods">String</link>
+</entry>
+</row>
+<row>
+<entry>Operator Methods (Other): == (unary)</entry>
+<entry>
+    <link linkend="mthObjectOperators">Object</link>
+</entry>
+</row>
+<row>
+<entry>orderedDate</entry>
+<entry>
+    <link linkend="mthDateTimeOrderedDate">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>overlay</entry>
+<entry>
+    <link linkend="mthMutableBufferOverlay">MutableBuffer</link>,
+    <link linkend="mthStringOverlay">String</link>
+</entry>
+</row>
+<row>
+<entry>parse</entry>
+<entry>
+    <link linkend="mthRegularExpressionParse">RegularExpression</link>
+</entry>
+</row>
+<row>
+<entry>peek</entry>
+<entry>
+    <link linkend="mthQueuePeek">Queue</link>
+</entry>
+</row>
+<row>
+<entry>pos</entry>
+<entry>
+    <link linkend="mthMutableBufferPos">MutableBuffer</link>,
+    <link linkend="mthRegularExpressionPos">RegularExpression</link>,
+    <link linkend="mthStringPos">String</link>
+</entry>
+</row>
+<row>
+<entry>position</entry>
+<entry>
+    <link linkend="mthInputStreamPosition">InputStream</link>,
+    <link linkend="mthOutputStreamPosition">OutputStream</link>,
+    <link linkend="mthRegularExpressionPosition">RegularExpression</link>,
+    <link linkend="mthStreamPosition">Stream</link>
+</entry>
+</row>
+<row>
+<entry>previous</entry>
+<entry>
+    <link linkend="mthArrayPrevious">Array</link>,
+    <link linkend="mthListPrevious">List</link>,
+    <link linkend="mthQueuePrevious">Queue</link>
+</entry>
+</row>
+<row>
+<entry>pull</entry>
+<entry>
+    <link linkend="mthQueuePull">Queue</link>,
+    <link linkend="mthRexxQueuePull">RexxQueue</link>,
+</entry>
+</row>
+<row>
+<entry>push</entry>
+<entry>
+    <link linkend="mthCircularQueuePush">CircularQueue</link>,
+    <link linkend="mthQueuePush">Queue</link>,
+    <link linkend="mthRexxQueuePush">RexxQueue</link>,
+</entry>
+</row>
+<row>
+<entry>put</entry>
+<entry>
+    <link linkend="mthArrayPut">Array</link>,
+    <link linkend="mthBagPut">Bag</link>,
+    <link linkend="mthCollectionPut">Collection</link>,
+    <link linkend="mthDirectoryPut">Directory</link>,
+    <link linkend="mthListPut">List</link>,
+    <link linkend="mthPropertiesPut">Properties</link>,
+    <link linkend="mthQueuePut">Queue</link>,
+    <link linkend="mthRelationPut">Relation</link>,
+    <link linkend="mthSetPut">Set</link>,
+    <link linkend="mthStemPut">Stem</link>,
+    <link linkend="mthTablePut">Table</link>
+</entry>
+</row>
+<row>
+<entry>putAll</entry>
+<entry>
+    <link linkend="mthBagPutAll">Bag</link>,
+    <link linkend="mthMapCollectionPutAll">Map Collection</link>,
+    <link linkend="mthSetPutAll">Set</link>,
+</entry>
+</row>
+<row>
+<entry>qualify</entry>
+<entry>
+    <link linkend="mthStreamQualify">Stream</link>
+</entry>
+</row>
+<row>
+<entry>query</entry>
+<entry>
+    <link linkend="mthStreamQuery">Stream</link>
+</entry>
+</row>
+<row>
+<entry>queryMixinClass</entry>
+<entry>
+    <link linkend="mthClassQueryMixinClass">Class (class and instance method)</link>
+</entry>
+</row>
+<row>
+<entry>queue</entry>
+<entry>
+    <link linkend="mthCircularQueueQueue">CircularQueue</link>,
+    <link linkend="mthQueueQueue">Queue</link>,
+    <link linkend="mthRexxQueueQueue">RexxQueue</link>
+</entry>
+</row>
+<row>
+<entry>queued</entry>
+<entry>
+    <link linkend="mthRexxQueueQueued">RexxQueue</link>,
+</entry>
+</row>
+<row>
+<entry>remove</entry>
+<entry>
+    <link linkend="mthArrayRemove">Array</link>,
+    <link linkend="mthDirectoryRemove">Directory</link>,
+    <link linkend="mthListRemove">List</link>,
+    <link linkend="mthQueueRemove">Queue</link>,
+    <link linkend="mthRelationRemove">Relation</link>,
+    <link linkend="mthStemRemove">Stem</link>,
+    <link linkend="mthTableRemove">Table</link>
+</entry>
+</row>
+<row>
+<entry>removeItem</entry>
+<entry>
+    <link linkend="mthArrayRemoveItem">Array</link>,
+    <link linkend="mthDirectoryRemoveItem">Directory</link>,
+    <link linkend="mthListRemoveItem">List</link>,
+    <link linkend="mthQueueRemoveItem">Queue</link>,
+    <link linkend="mthRelationRemoveItem">Relation</link>,
+    <link linkend="mthStemRemoveItem">Stem</link>,
+    <link linkend="mthTableRemoveItem">Table</link>
+</entry>
+</row>
+<row>
+<entry>request</entry>
+<entry>
+    <link linkend="mthMutableBufferRequest">MutableBuffer</link>,
+    <link linkend="mthObjectRequest">Object</link>,
+    <link linkend="mthStemRequest">Stem</link>
+</entry>
+</row>
+<row>
+<entry>resize</entry>
+<entry>
+    <link linkend="mthCircularQueueResize">CircularQueue</link>
+</entry>
+</row>
+<row>
+<entry>result</entry>
+<entry>
+    <link linkend="mthMessageResult">Message</link>
+</entry>
+</row>
+<row>
+<entry>reverse</entry>
+<entry>
+    <link linkend="mthStringReverse">String</link>
+</entry>
+</row>
+<row>
+<entry>right</entry>
+<entry>
+    <link linkend="mthStringRight">String</link>
+</entry>
+</row>
+<row>
+<entry>run</entry>
+<entry>
+    <link linkend="mthObjectRun">Object</link>
+</entry>
+</row>
+<row>
+<entry>save</entry>
+<entry>
+    <link linkend="mthPropertiesSave">Properties</link>
+</entry>
+</row>
+<row>
+<entry>say</entry>
+<entry>
+    <link linkend="mthRexxQueueSay">RexxQueue</link>,
+    <link linkend="mthStreamSay">Stream</link>
+</entry>
+</row>
+<row>
+<entry>seconds</entry>
+<entry>
+    <link linkend="mthDateTimeSeconds">DateTime</link>,
+    <link linkend="mthTimeSpanSeconds">TimeSpan</link>
+</entry>
+</row>
+<row>
+<entry>section</entry>
+<entry>
+    <link linkend="mthArraySection">Array</link>,
+    <link linkend="mthListSection">List</link>
+</entry>
+</row>
+<row>
+<entry>seek</entry>
+<entry>
+    <link linkend="mthStreamSeek">Stream</link>
+</entry>
+</row>
+<row>
+<entry>send</entry>
+<entry>
+    <link linkend="mthMessageSend">Message</link>
+</entry>
+</row>
+<row>
+<entry>set</entry>
+<entry>
+    <link linkend="mthRexxQueueSet">RexxQueue</link>
+</entry>
+</row>
+<row>
+<entry>setBufferSize</entry>
+<entry>
+    <link linkend="mthMutableBufferSetBufferSize">MutableBuffer</link>
+</entry>
+</row>
+<row>
+<entry>setEntry</entry>
+<entry>
+    <link linkend="mthDirectorySetEntry">Directory</link>
+</entry>
+</row>
+<row>
+<entry>setGuarded</entry>
+<entry>
+    <link linkend="mthMethodSetGuarded">Method</link>
+</entry>
+</row>
+<row>
+<entry>setLogical</entry>
+<entry>
+    <link linkend="mthPropertiesSetLogical">Properties</link>
+</entry>
+</row>
+<row>
+<entry>setMethod</entry>
+<entry>
+    <link linkend="mthDirectorySetMethod">Directory</link>,
+    <link linkend="mthObjectSetMethod">Object</link>
+</entry>
+</row>
+<row>
+<entry>setPrivate</entry>
+<entry>
+    <link linkend="mthMethodSetPrivate">Method</link>
+</entry>
+</row>
+<row>
+<entry>setProperty</entry>
+<entry>
+    <link linkend="mthPropertiesSetProperty">Properties</link>
+</entry>
+</row>
+<row>
+<entry>setProtected</entry>
+<entry>
+    <link linkend="mthMethodSetProtected">Method</link>
+</entry>
+</row>
+<row>
+<entry>setSecurityManager</entry>
+<entry>
+    <link linkend="mthMethodSetSecurityManager">Method</link>
+</entry>
+</row>
+<row>
+<entry>setUnguarded</entry>
+<entry>
+    <link linkend="mthMethodSetUnguarded">Method</link>
+</entry>
+</row>
+<row>
+<entry>setWhole</entry>
+<entry>
+    <link linkend="mthPropertiesSetWhole">Properties</link>
+</entry>
+</row>
+<row>
+<entry>sign</entry>
+<entry>
+    <link linkend="mthStringSign">String</link>,
+    <link linkend="mthTimeSpanSign">TimeSpan</link>
+</entry>
+</row>
+<row>
+<entry>size</entry>
+<entry>
+    <link linkend="mthArraySize">Array</link>,
+    <link linkend="mthCircularQueueSize">CircularQueue</link>
+</entry>
+</row>
+<row>
+<entry>sort</entry>
+<entry>
+    <link linkend="mthArraySort">Array</link>,
+</entry>
+</row>
+<row>
+<entry>sortWith</entry>
+<entry>
+    <link linkend="mthArraySortWith">Array</link>,
+</entry>
+</row>
+<row>
+<entry>source</entry>
+<entry>
+    <link linkend="mthMethodSource">Method</link>
+</entry>
+</row>
+<row>
+<entry>space</entry>
+<entry>
+    <link linkend="mthStringSpace">String</link>
+</entry>
+</row>
+<row>
+<entry>stableSort</entry>
+<entry>
+    <link linkend="mthArrayStableSort">Array</link>,
+</entry>
+</row>
+<row>
+<entry>stableSortWith</entry>
+<entry>
+    <link linkend="mthArrayStableSortWith">Array</link>,
+</entry>
+</row>
+<row>
+<entry>standardDate</entry>
+<entry>
+    <link linkend="mthDateTimeStandardDate">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>start</entry>
+<entry>
+    <link linkend="mthMessageStart">Message</link>,
+    <link linkend="mthObjectStart">Object</link>
+</entry>
+</row>
+<row>
+<entry>state</entry>
+<entry>
+    <link linkend="mthStreamState">Stream</link>
+</entry>
+</row>
+<row>
+<entry>string</entry>
+<entry>
+    <link linkend="mthCircularQueueString">CircularQueue</link>,
+    <link linkend="mthDateTimeString">DateTime</link>,
+    <link linkend="mthMutableBufferString">MutableBuffer</link>,
+    <link linkend="mthObjectString">Object</link>,
+    <link linkend="mthStreamString">Stream</link>,
+    <link linkend="mthTimeSpanString">TimeSpan</link>
+</entry>
+</row>
+<row>
+<entry>strip</entry>
+<entry>
+    <link linkend="mthStringStrip">String</link>
+</entry>
+</row>
+<row>
+<entry>subChar</entry>
+<entry>
+    <link linkend="mthMutableBufferSubchar">MutableBuffer</link>.
+    <link linkend="mthStringsubchar">String</link>
+</entry>
+</row>
+<row>
+<entry>subClass</entry>
+<entry>
+    <link linkend="mthClassSubclass">Class (class and instance method)</link>
+</entry>
+</row>
+<row>
+<entry>subClasses</entry>
+<entry>
+    <link linkend="mthClassSubclasses">Class (class and instance method)</link>
+</entry>
+</row>
+<row>
+<entry>subset</entry>
+<entry>
+    <link linkend="mthBagSubset">Bag</link>,
+    <link linkend="mthCollectionSubset">Collection</link>
+    <link linkend="mthOrderedCollectionSubset">Ordered Collection</link>,
+    <link linkend="mthRelationSubset">Relation</link>,
+    <link linkend="mthSetSubset">Set</link>,
+</entry>
+</row>
+<row>
+<entry>substr</entry>
+<entry>
+    <link linkend="mthMutableBufferSubstr">MutableBuffer</link>,
+    <link linkend="mthStringSubstr">String</link>
+</entry>
+</row>
+<row>
+<entry>subWord</entry>
+<entry>
+    <link linkend="mthStringSubWord">String</link>
+</entry>
+</row>
+<row>
+<entry>superClasses</entry>
+<entry>
+    <link linkend="mthClassSuperClasses">Class (class and instance method)</link>
+</entry>
+</row>
+<row>
+<entry>supplier</entry>
+<entry>
+    <link linkend="mthArraySupplier">Array</link>,
+    <link linkend="mthCircularQueueSupplier">CircularQueue</link>,
+    <link linkend="mthCollectionSupplier">Collection</link>,
+    <link linkend="mthDirectorySupplier">Directory</link>,
+    <link linkend="mthListSupplier">List</link>,
+    <link linkend="mthQueueSupplier">Queue</link>,
+    <link linkend="mthRelationSupplier">Relation</link>,
+    <link linkend="mthStemSupplier">Stem</link>,
+    <link linkend="mthStreamSupplier">Stream</link>,
+    <link linkend="mthSupplierSupplier">Supplier</link>,
+    <link linkend="mthTableSupplier">Table</link>
+</entry>
+</row>
+<row>
+<entry>target</entry>
+<entry>
+    <link linkend="mthMessageTarget">Message</link>
+</entry>
+</row>
+<row>
+<entry>ticks</entry>
+<entry>
+    <link linkend="mthDateTimeTicks">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>timeOfDay</entry>
+<entry>
+    <link linkend="mthDateTimeTimeOfDay">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>today</entry>
+<entry>
+    <link linkend="mthDateTimeToday">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>toString</entry>
+<entry>
+    <link linkend="mthArrayToString">Array</link>,
+</entry>
+</row>
+<row>
+<entry>totalDays</entry>
+<entry>
+    <link linkend="mthTimeSpanTotalDays">TimeSpan</link>
+</entry>
+</row>
+<row>
+<entry>totalHours</entry>
+<entry>
+    <link linkend="mthTimeSpanTotalHours">TimeSpan</link>
+</entry>
+</row>
+<row>
+<entry>totalMicroseconds</entry>
+<entry>
+    <link linkend="mthTimeSpanTotalMicroseconds">TimeSpan</link>
+</entry>
+</row>
+<row>
+<entry>totalMinutes</entry>
+<entry>
+    <link linkend="mthTimeSpanTotalMinutes">TimeSpan</link>
+</entry>
+</row>
+<row>
+<entry>totalSeconds</entry>
+<entry>
+    <link linkend="mthTimeSpanTotalSeconds">TimeSpan</link>
+</entry>
+</row>
+<row>
+<entry>translate</entry>
+<entry>
+    <link linkend="mthStringTranslate">String</link>
+</entry>
+</row>
+<row>
+<entry>trunc</entry>
+<entry>
+    <link linkend="mthStringTrunc">String</link>
+</entry>
+</row>
+<row>
+<entry>uninherit</entry>
+<entry>
+    <link linkend="mthClassUninherit">Class (class and instance method)</link>
+</entry>
+</row>
+<row>
+<entry>uninit</entry>
+<entry>
+    <link linkend="mthStreamUninit">Stream</link>
+</entry>
+</row>
+<row>
+<entry>union</entry>
+<entry>
+    <link linkend="mthBagUnion">Bag</link>,
+    <link linkend="mthCollectionUnion">Collection</link>,
+    <link linkend="mthOrderedCollectionUnion">Ordered CollectionArray</link>,
+    <link linkend="mthRelationUnion">Relation</link>,
+    <link linkend="mthSetUnion">Set</link>,
+</entry>
+</row>
+<row>
+<entry>unknown</entry>
+<entry>
+    <link linkend="mthDirectoryUnknown">Directory</link>,
+    <link linkend="mthMonitorUnknown">Monitor</link>,
+    <link linkend="mthStemUnknown">Stem</link>
+</entry>
+</row>
+<row>
+<entry>unsetMethod</entry>
+<entry>
+    <link linkend="mthDirectoryUnsetMethod">Directory</link>,
+    <link linkend="mthObjectUnsetMethod">Object</link>
+</entry>
+</row>
+<row>
+<entry>upper</entry>
+<entry>
+    <link linkend="mthStringUpper">String</link>
+</entry>
+</row>
+<row>
+<entry>usaDate</entry>
+<entry>
+    <link linkend="mthDateTimeUsaDate">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>verify</entry>
+<entry>
+    <link linkend="mthStringVerify">String</link>
+</entry>
+</row>
+<row>
+<entry>weekDay</entry>
+<entry>
+    <link linkend="mthDateTimeWeekDay">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>word</entry>
+<entry>
+    <link linkend="mthStringWord">String</link>
+</entry>
+</row>
+<row>
+<entry>wordIndex</entry>
+<entry>
+    <link linkend="mthStringWordIndex">String</link>
+</entry>
+</row>
+<row>
+<entry>wordLength</entry>
+<entry>
+    <link linkend="mthStringWordLength">String</link>
+</entry>
+</row>
+<row>
+<entry>wordPos</entry>
+<entry>
+    <link linkend="mthStringWordPos">String</link>
+</entry>
+</row>
+<row>
+<entry>words</entry>
+<entry>
+    <link linkend="mthStringWords">String</link>
+</entry>
+</row>
+<row>
+<entry>xor</entry>
+<entry>
+    <link linkend="mthBagXor">Bag</link>,
+    <link linkend="mthCollectionXor">Collection</link>,
+    <link linkend="mthOrderedCollectionXor">Ordered Collection</link>,
+    <link linkend="mthRelationXor">Relation</link>,
+    <link linkend="mthSetXor">Set</link>,
+</entry>
+</row>
+<row>
+<entry>x2b</entry>
+<entry>
+    <link linkend="mthStringX2b">String</link>
+</entry>
+</row>
+<row>
+<entry>x2c</entry>
+<entry>
+    <link linkend="mthStringX2c">String</link>
+</entry>
+</row>
+<row>
+<entry>x2d</entry>
+<entry>
+    <link linkend="mthStringX2d">String</link>
+</entry>
+</row>
+<row>
+<entry>year</entry>
+<entry>
+    <link linkend="mthDateTimeYear">DateTime</link>
+</entry>
+</row>
+<row>
+<entry>yearDay</entry>
+<entry>
+    <link linkend="mthDateTimeYearDay">DateTime</link>
+</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+<para>The chapters that follow describe the classes and other objects that Rexx
+provides and their available methods. Rexx provides the objects listed in
+these sections and they are generally available to all methods through
+environment symbols (see <link linkend="ensym">Environment Symbols</link>).
+</para>
+
+<para><emphasis role="bold">Notes:</emphasis></para>
+<orderedlist>
+<listitem><para>In the method descriptions in the chapters that follow, methods
+that return a result begin with the word "returns".</para></listitem>
+<listitem><para>For [] and []= methods, the syntax diagrams include
+the index or indexes within the brackets. These diagrams are intended to show
+how you can use these methods. For example, to retrieve the first element
+of a one-dimensional array named Array1, you would typically use the syntax:
+<programlisting>
+Array1[1]
+</programlisting>
+rather than:
+<programlisting>
+Array1~&quot;[]&quot;(1)
+</programlisting>
+even though the latter is valid and equivalent. For more information,
+see <link linkend="mssg">Message Terms</link> and
+<link linkend="msgit">Message Instructions</link>.</para></listitem>
+<listitem><para>When the argument of a method must be a specific kind of object (such
+as array, class, method, or string) the variable you specify must be of the
+same class as the required object or be able to produce an object of the
+required kind in response to a conversion message. In particular, subclasses
+are acceptable in place of superclasses (unless overridden in a way that
+changes superclass behavior), because they inherit a suitable conversion method
+from their Rexx superclass.</para>
+<para>The REQUEST method of the Object class (see
+<link linkend="mthObjectRequest">request</link>)
+can perform this validation.</para></listitem>
+</orderedlist>
+</section>
+</section>
+</chapter>

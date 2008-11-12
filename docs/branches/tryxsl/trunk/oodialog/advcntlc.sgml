@@ -1,0 +1,1761 @@
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: OODialog Reference SGML file.
+    #
+    # Copyright (c) 2005-2007, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    # Author(s):
+    #      W. David Ashley <dashley@us.ibm.com>
+    #
+    #########################################################################
+-->
+<chapter id="advcntlc"><title>AdvancedControls Class</title>
+<indexterm><primary>AdvancedControls class</primary></indexterm>
+<para>The AdvancedControls class provides methods to
+add and use the Win32 controls tree view control, list view control, tab
+control, slider control, and progress bar. It also provides methods to retrieve
+a specific object for any dialog control.</para>
+<para>To use the methods defined by this mixin class, you must inherit from this
+class by specifying the INHERIT option for the ::CLASS directive in the class
+declaration. For example:</para>
+<programlisting>
+<![CDATA[
+::class NewWin32Dialog SUBCLASS UserDialog INHERIT AdvancedControls
+]]>
+</programlisting>
+<variablelist>
+<varlistentry><term>Requires:</term>
+<listitem><para>The AdvancedControls class requires the class
+definition file <computeroutput>oodwin32.cls</computeroutput>:
+<programlisting>
+<![CDATA[
+::requires oodwin32.cls
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term>Methods:</term>
+<listitem><para>Instances of the AdvancedControls class implement
+the methods listed in the
+<link linkend="t000021">AdvancedControls Instance Methods</link> table.
+
+<table id="t000021" frame="all">
+<title>AdvancedControls Instance Methods</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Method...</entry>
+<entry>...on page</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>AddListControl</entry>
+<entry><link linkend="addlistcontrol">AddListControl</link></entry>
+</row>
+<row>
+<entry>AddProgressBar</entry>
+<entry><link linkend="addprogressbar">AddProgressBar</link></entry>
+</row>
+<row>
+<entry>AddSliderControl</entry>
+<entry><link linkend="addslidercontrol">AddSliderControl</link></entry>
+</row>
+<row>
+<entry>AddTabControl</entry>
+<entry><link linkend="addtabcontrol">AddTabControl</link></entry>
+</row>
+<row>
+<entry>AddTreeControl</entry>
+<entry><link linkend="addtreecontrol">AddTreeControl</link></entry>
+</row>
+<row>
+<entry>ConnectListControl</entry>
+<entry><link linkend="connectlistcontrol">ConnectListControl</link></entry>
+</row>
+<row>
+<entry>ConnectSliderControl</entry>
+<entry><link linkend="connectslidercontrol">ConnectSliderControl</link></entry>
+</row>
+<row>
+<entry>ConnectTreeControl</entry>
+<entry><link linkend="connecttreecontrol">ConnectTreeControl</link></entry>
+</row>
+<row>
+<entry>GetButtonControl</entry>
+<entry><link linkend="getbuttoncontrol">GetButtonControl</link></entry>
+</row>
+<row>
+<entry>GetCheckControl</entry>
+<entry><link linkend="getcheckcontrol">GetCheckControl</link></entry>
+</row>
+<row>
+<entry>GetComboBox</entry>
+<entry><link linkend="getcombobox">GetComboBox</link></entry>
+</row>
+<row>
+<entry>GetEditControl</entry>
+<entry><link linkend="geteditcontrol">GetEditControl</link></entry>
+</row>
+<row>
+<entry>GetGroupBox</entry>
+<entry><link linkend="getgroupbox">GetGroupBox</link></entry>
+</row>
+<row>
+<entry>GetListBox</entry>
+<entry><link linkend="getlistbox">GetListBox</link></entry>
+</row>
+<row>
+<entry>GetListControl</entry>
+<entry><link linkend="getlistcontrol">GetListControl</link></entry>
+</row>
+<row>
+<entry>GetProgressBar</entry>
+<entry><link linkend="getprogressbar">GetProgressBar</link></entry>
+</row>
+<row>
+<entry>GetRadioControl</entry>
+<entry><link linkend="getradiocontrol">GetRadioControl</link></entry>
+</row>
+<row>
+<entry>GetScrollBar</entry>
+<entry><link linkend="getscrollbar">GetScrollBar</link></entry>
+</row>
+<row>
+<entry>GetSliderControl</entry>
+<entry><link linkend="getslidercontrol">GetSliderControl</link></entry>
+</row>
+<row>
+<entry>GetStaticControl</entry>
+<entry><link linkend="getstaticcontrol">GetStaticControl</link></entry>
+</row>
+<row>
+<entry>GetTabControl</entry>
+<entry><link linkend="gettabcontrol">GetTabControl</link></entry>
+</row>
+<row>
+<entry>GetTreeControl</entry>
+<entry><link linkend="gettreecontrol">GetTreeControl</link></entry>
+</row>
+</tbody></tgroup>
+</table>
+</para></listitem></varlistentry>
+</variablelist>
+
+<section id="getstaticcontrol"><title>GetStaticControl</title>
+<indexterm><primary>GetStaticControl</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-anAdvancedControl~GetStaticControl(--id--+-------------+--)-><
+                                            +-,--category-+
+
+
+]]>
+</programlisting>
+
+<para>The GetStaticControl method returns an object of
+the StaticControl class that is assigned to the static dialog item with the
+specified ID. The StaticControl class provides methods to query and manipulate
+static dialog items like static text, group boxes, or frames. The static controls
+must have a positive ID.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>The ID of the static dialog item.
+</para></listitem></varlistentry>
+<varlistentry><term>category</term>
+<listitem><para>The number of the category dialog page containing the requested dialog
+item. This argument must only be specified for category dialogs.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>An object of the StaticControl class or .Nil if the requested dialog
+item does not exist.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example requests an object of dialog item ITEM7 and, if
+the dialog item exists, resizes it, changes the displayed text, and sets another
+background and foreground color:
+<programlisting>
+<![CDATA[
+::class MyDlgClass subclass UserDialog inherit AdvancedControls
+
+::method ReArrange
+  di = self~GetStaticControl("ITEM7")
+  if di == .Nil then return
+  di~Resize(100, 25, "HIDE")
+  di~Title="Processing layout update!"
+  di~SetColor(7,4)
+  di~Show
+  ...
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+
+<note><title>Note</title><para>
+GetStaticControl connects an Object Rexx object with a Windows object.
+If the object does not exist, the NIL object is returned. Therefore, this
+method can only be applied after the Windows dialog has been created (after
+the invocation of <link linkend="h002048">StartIt</link>).
+</para></note>
+</section>
+
+<section id="geteditcontrol"><title>GetEditControl</title>
+<indexterm><primary>GetEditControl</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-anAdvancedControl~GetEditControl(--id--+-------------+--)---><
+                                          +-,--category-+
+
+
+]]>
+</programlisting>
+
+<para>The GetEditControl method returns an object of
+the EditControl class that is assigned to the entry line with the specified
+ID. The EditControl class (see <link linkend="editcontrolc">EditControl Class</link>)
+provides methods to query and manipulate edit controls.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>The ID of the edit control.
+</para></listitem></varlistentry>
+<varlistentry><term>category</term>
+<listitem><para>The number of the category dialog page containing the requested edit
+control. This argument must only be specified for category dialogs.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>An object of the StaticControl class or .Nil
+if the requested edit control does not exist.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example gets an object of the EditControl class
+and checks whether the NAME entry line is empty. If the name field
+is empty, the dialog is not valid.
+<programlisting>
+<![CDATA[
+::class MyDlgClass subclass UserDialog inherit AdvancedControls
+
+::method Validate
+  di = self~GetEditControl("NAME")
+  if di == .Nil then return 0
+  if di~Title~space(0) \="" then return 1
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+
+<note><title>Note</title><para>
+GetEditControl connects an Object Rexx object with a Windows object.
+If the object does not exist, the NIL object is returned. Therefore, this
+method can only be applied after the Windows dialog has been created (after
+the invocation of <link linkend="h002048">StartIt</link>).
+</para></note>
+</section>
+
+<section id="getbuttoncontrol"><title>GetButtonControl</title>
+<indexterm><primary>GetButtonControl</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-anAdvancedControl~GetButtonControl(--id--+-------------+--)-><
+                                            +-,--category-+
+
+
+]]>
+</programlisting>
+
+<para>The GetButtonControl method returns an object of
+the ButtonControl class that is assigned to the push button with the specified
+ID. The ButtonControl class (see <link linkend="buttoncontrolc">ButtonControl Class</link>)
+provides methods to query and manipulate push buttons.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>The ID of the push button.
+</para></listitem></varlistentry>
+<varlistentry><term>category</term>
+<listitem><para>The number of the category dialog page containing the requested push
+button. This argument must only be specified for category dialogs.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>An object of the ButtonControl class or .Nil if the requested push button
+does not exist.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example displays the current state of the OK button by
+retrieving an object of the Button class and calling the State method:
+<programlisting>
+<![CDATA[
+::class MyDlgClass subclass UserDialog inherit AdvancedControls
+
+::method CurrentState
+  di = self~GetButtonControl(1)
+  if di == .Nil then return 0
+  say "State is" di~State
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+
+<note><title>Note</title><para>
+GetButtonControl connects an Object Rexx object with a Windows object.
+If the object does not exist, the NIL object is returned. Therefore, this
+method can only be applied after the Windows dialog has been created (after
+the invocation of <link linkend="h002048">StartIt</link>).
+</para></note>
+</section>
+
+<section id="getradiocontrol"><title>GetRadioControl</title>
+<indexterm><primary>GetRadioControl</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-anAdvancedControl~GetRadioControl(--id--+-------------+--)--><
+                                           +-,--category-+
+
+
+]]>
+</programlisting>
+
+<para>The GetRadioControl method returns an object of
+the RadioButton class that is assigned to the radio button with the specified
+ID. The RadioButton class (see <link linkend="radiobuttonc">RadioButton Class</link>)
+provides methods to query and manipulate radio buttons.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>The ID of the radio button.
+</para></listitem></varlistentry>
+<varlistentry><term>category</term>
+<listitem><para>The number of the category dialog page containing the requested radio
+button. This argument must only be specified for category dialogs.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>An object of the RadioButton class or .Nil if the requested radio button
+does not exist.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example displays a message when radio button CHOICE1 is
+selected:
+<programlisting>
+<![CDATA[
+::class MyDlgClass subclass UserDialog inherit AdvancedControls
+
+::method CurrentState
+  di = self~GetRadioControl("CHOICE1")
+  if di == .Nil then return 0
+  id di~IsChecked = "CHECKED" then say "The radio button is selected!"
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+
+<note><title>Note</title><para>
+GetRadioControl connects an Object Rexx object with a Windows object.
+If the object does not exist, the NIL object is returned. Therefore, this
+method can only be applied after the Windows dialog has been created (after
+the invocation of <link linkend="h002048">StartIt</link>).
+</para></note>
+</section>
+
+<section id="getcheckcontrol"><title>GetCheckControl</title>
+<indexterm><primary>GetCheckControl</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-anAdvancedControl~GetCheckControl(--id--+-------------+--)--><
+                                           +-,--category-+
+
+
+]]>
+</programlisting>
+
+<para>The GetCheckControl method returns an object of
+the CheckBox class that is assigned to the check box with the specified ID.
+The CheckBox class (see <link linkend="checkboxc">CheckBox Class</link>) provides
+methods to query and manipulate check boxes.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>The ID of the check box.
+</para></listitem></varlistentry>
+<varlistentry><term>category</term>
+<listitem><para>The number of the category dialog page containing the requested check
+box. This argument must only be specified for category dialogs.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>An object of the CheckBox class or .Nil if the requested check box does
+not exist.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example displays a message when check box CHOICE1
+is checked:
+<programlisting>
+<![CDATA[
+::class MyDlgClass subclass UserDialog inherit AdvancedControls
+
+::method CurrentState
+  di = self~GetCheckControl("CHOICE1")
+  if di == .Nil then return 0
+  if di~IsChecked = "CHECKED" then say "The check box is checked!"
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+
+<note><title>Note</title><para>
+GetCheckControl connects an Object Rexx object with a Windows object.
+If the object does not exist, the NIL object is returned. Therefore, this
+method can only be applied after the Windows dialog has been created (after
+the invocation of <link linkend="h002048">StartIt</link>).
+</para></note>
+</section>
+
+<section id="getgroupbox"><title>GetGroupBox</title>
+<indexterm><primary>GetGroupBox</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-anAdvancedControl~GetGroupBox(--id--+-------------+--)------><
+                                       +-,--category-+
+
+
+]]>
+</programlisting>
+
+<para>
+  The GetGroupBox method returns an object of the GroupBox class that represents
+  the group box with the specified resource ID. See the
+  <link linkend="groupboxc">GroupBox Class</link> for more detail on group
+  boxes.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>The resource ID of the group box.
+</para></listitem></varlistentry>
+<varlistentry><term>category</term>
+<listitem><para>The number of the category dialog page containing the requested
+group box. This argument must only be specified for category dialogs.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>A GroupBox object or .Nil if the underlying Windows group box
+control does not exist.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example shows how the text (label) of a group box
+  could be changed during program execution:
+<programlisting>
+<![CDATA[
+::class MyPhoneBook subclass ResDialog inherit AdvancedControls
+
+::method onUseFull
+  gb = self~getGroupBox(IDC_GB_TELEPHONE)
+  chkBox = self~getCheckBox(IDC_CHK_USE_FULL)
+  if chkBox~checked then do
+    gb~setTitle("Phone Numbers (including area code)")
+  end
+  else do
+    gb~setTitle("Phone Numbers")
+  end
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+
+<note><title>Note</title>
+<para>
+  GetGroupBox connects the ooDialog object with a Windows control.  If the
+  control does not exist, this connection can not be made. Therefore, this
+  method should only be used after the Windows dialog has been created. In
+  <link linkend="mthInitDialog">initDialog()</link> or at some point in the life
+  cycle of the dialog after initDialog().
+</para></note>
+</section>
+
+<section id="getlistbox"><title>GetListBox</title>
+<indexterm><primary>GetListBox</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-anAdvancedControl~GetListBox(--id--+-------------+--)-------><
+                                      +-,--category-+
+
+
+]]>
+</programlisting>
+
+<para>The GetListBox method returns an object of the
+ListBox class that is assigned to the list box with the specified ID. The
+ListBox class (see <link linkend="listboxc">ListBox Class</link>) provides
+methods to query and manipulate list boxes.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>The ID of the list box.
+</para></listitem></varlistentry>
+<varlistentry><term>category</term>
+<listitem><para>The number of the category dialog page containing the requested list
+box. This argument must only be specified for category dialogs.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>An object of the ListBox class or .Nil if the requested list box does
+not exist.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example removes all entries of list box AREAS and adds
+several new entries. Entry City will be preselected. Object &quot;di&quot; is
+connected to list box AREAS.
+<programlisting>
+<![CDATA[
+::class MyDlgClass subclass UserDialog inherit AdvancedControls
+
+::method UpdateList
+  di = self~GetListBox("AREAS")
+  if di == .Nil then return 0
+  di~DeleteAll
+  di~Add("Town")
+  di~Add("City")
+  di~Add("Green")
+  di~Add("Forest")
+  di~Select("City")
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+
+<note><title>Note</title><para>
+GetListBox connects an Object Rexx object with a Windows object.
+If the object does not exist, the NIL object is returned. Therefore, this
+method can only be applied after the Windows dialog has been created (after
+the invocation of <link linkend="h002048">StartIt</link>).
+</para></note>
+</section>
+
+<section id="getcombobox"><title>GetComboBox</title>
+<indexterm><primary>GetComboBox</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-anAdvancedControl~GetComboBox(--id--+-------------+--)------><
+                                       +-,--category-+
+
+
+]]>
+</programlisting>
+
+<para>The GetComboBox method returns an object of the
+ComboBox class that is assigned to the list box with the specified ID. The
+ComboBox class (see <link linkend="comboboxc">ComboBox Class</link>) provides
+methods to query and manipulate combo boxes.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>The ID of the combo box.
+</para></listitem></varlistentry>
+<varlistentry><term>category</term>
+<listitem><para>The number of the category dialog page containing the requested combo
+box. This argument must only be specified for category dialogs.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>An object of the ComboBox class or .Nil if the requested combo box does
+not exist.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example comes from a fictious accounting program.
+In one of the dialogs for the program, when the user selects a specific city,
+say San Diego, the zip code combo box is populated with the valid zip codes for
+that city.  In the program, <link linkend="symbolicid">symbolic ID</link>s have
+been used for the controls.  The valid zip codes are passed into the method as
+an array.
+<programlisting>
+<![CDATA[
+::class "BillingDlg" subclass RcDialog inherit AdvancedControls MessageExtensions
+
+...
+
+::method setZipCodes
+  use strict arg codes
+
+  combo = self~getComboBox(IDC_COMBO_ZIP)
+  if combo == .Nil then return .false
+
+  lowest = 99999
+  combo~deleteAll
+  do zipCode over codes
+    combo~add(zipCode)
+    if zipCode < lowest then do
+      lowest = zipCode
+    end
+  end
+  combo~select(lowest)
+  return .true
+
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+
+<note><title>Note</title><para>
+GetComboBox connects an Object Rexx object with a Windows object.
+If the object does not exist, the NIL object is returned. Therefore, this
+method can only be applied after the Windows dialog has been created (after
+the invocation of <link linkend="h002048">StartIt</link>).
+</para></note>
+</section>
+
+<section id="getscrollbar"><title>GetScrollBar</title>
+<indexterm><primary>GetScrollBar</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-anAdvancedControl~GetScrollBar(--id--+-------------+--)-----><
+                                        +-,--category-+
+
+
+]]>
+</programlisting>
+
+<para>The GetScrollBar method returns an object of the
+ScrollBar class that is assigned to the scroll bar with the specified ID.
+The ScrollBar class (see <link linkend="scrollbarc">ScrollBar Class</link>) provides
+methods to query and manipulate scroll bars.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>The ID of the scroll bar.
+</para></listitem></varlistentry>
+<varlistentry><term>category</term>
+<listitem><para>The number of the category dialog page containing the requested scroll
+bar. This argument must only be specified for category dialogs.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>An object of the ScrollBar class or .Nil if the requested scroll bar
+does not exist.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example sets a new range and a new position for scroll
+bar HORSB. Object &quot;di&quot; is connected to scroll bar HORSB.
+<programlisting>
+<![CDATA[
+::class MyDlgClass subclass UserDialog inherit AdvancedControls
+
+::method FocusPage
+  di = self~GetScrollBar("HORSB")
+  if di == .Nil then return 0
+  di~SetRange(0, 1000, 0)
+  di~SetPos(500, 1)
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+
+<note><title>Note</title><para>
+GetScrollBar connects an Object Rexx object with a Windows object.
+If the object does not exist, the NIL object is returned. Therefore, this
+method can only be applied after the Windows dialog has been created (after
+the invocation of <link linkend="h002048">StartIt</link>).
+</para></note>
+</section>
+
+<section id="gettreecontrol"><title>GetTreeControl</title>
+<indexterm><primary>GetTreeControl</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-anAdvancedControl~GetTreeControl(--id--+-------------+--)---><
+                                          +-,--category-+
+
+
+]]>
+</programlisting>
+
+<para>The GetTreeControl method returns an object of
+the TreeControl class that is assigned to the tree view with the specified
+ID. The TreeControl class (see <link linkend="treecontrolc">TreeControl Class</link>)
+provides methods to query and manipulate tree views.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>The ID of the tree view.
+</para></listitem></varlistentry>
+<varlistentry><term>category</term>
+<listitem><para>The number of the category dialog page containing the requested tree
+view. This argument must only be specified for category dialogs.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>An object of the TreeControl class or .Nil if the requested tree view
+does not exist.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example initializes tree view 101 by sending message ADD
+to object &quot;tc&quot;, which is assigned to 101 by using GetTreeControl:
+<programlisting>
+<![CDATA[
+::class MyDlgClass subclass UserDialog inherit AdvancedControls
+
+::method InitDialog
+  tc = self~GetTreeControl(101)
+  if tc == .Nil then return
+  tc~Add("Root 1")
+  tc~Add(  ,"Item 1")
+  tc~Add(  ,"Item 2")
+  tc~Add(  ,"Item 3")
+  tc~Add("Root 2", , ,"EXPANDED")
+  tc~Add(  ,"Item 4", , ,"BOLD")
+  tc~Add(  ,"Item 5")
+  tc~Add(  ,"Subroot")
+  tc~Add(  ,    ,"Item 6",3)
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+
+<note><title>Note</title><para>
+GetTreeControl connects an Object Rexx object with a Windows object.
+If the object does not exist, the NIL object is returned. Therefore, this
+method can only be applied after the Windows dialog has been created (after
+the invocation of <link linkend="h002048">StartIt</link>).
+</para></note>
+</section>
+
+<section id="getlistcontrol"><title>GetListControl</title>
+<indexterm><primary>GetListControl</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-anAdvancedControl~GetListControl(--id--+-------------+--)---><
+                                          +-,--category-+
+
+
+]]>
+</programlisting>
+
+<para>The GetListControl method returns an object of
+the ListControl class that is assigned to the list view with the specified
+ID. The ListControl class (see <link linkend="listcontrolc">ListControl Class</link>)
+provides methods to query and manipulate list views.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>The ID of the list view.
+</para></listitem></varlistentry>
+<varlistentry><term>category</term>
+<listitem><para>The number of the category dialog page containing the requested list
+view. This argument must only be specified for category dialogs.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>An object of the ListControl class or .Nil if the requested list view
+does not exist.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example initializes list view 101 by sending message ADD
+to object lc, which is assigned to 101 by using GetListControl:
+<programlisting>
+<![CDATA[
+::class MyDlgClass subclass UserDialog inherit AdvancedControls
+
+::method InitDialog
+  lc = self~GetListControl(101)
+  if lc == .Nil then return
+  lc~~Add(101222)~~Add(,"Smith")~~Add(, ,"John")
+  lc~~Add(101223)~~Add(,"Michael")~~Add(, ,"Carl")
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+
+<note><title>Note</title><para>
+GetListControl connects an Object Rexx object with a Windows object.
+If the object does not exist, the NIL object is returned. Therefore, this
+method can only be applied after the Windows dialog has been created (after
+the invocation of <link linkend="h002048">StartIt</link>).
+</para></note>
+</section>
+
+<section id="getprogressbar"><title>GetProgressBar</title>
+<indexterm><primary>GetProgressBar</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-anAdvancedControl~GetProgressBar(--id--+-------------+--)---><
+                                          +-,--category-+
+
+
+]]>
+</programlisting>
+
+<para>The GetProgressBar method returns an object of
+the ProgressBar Control class that is assigned to the progress bar with the
+specified ID. The ProgressBar class (see
+<link linkend="progressbarc">ProgressBar Class</link>)
+provides methods to query and manipulate progress bars.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>The ID of the progress bar.
+</para></listitem></varlistentry>
+<varlistentry><term>category</term>
+<listitem><para>The number of the category dialog page containing the requested progress
+bar. This argument must only be specified for category dialogs.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>An object of the ProgressBar class or .Nil if the requested progress
+bar does not exist.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example initializes and modifies progress bar PROGRESS
+by sending messages to the object that is returned by GetProgressBar:
+<programlisting>
+<![CDATA[
+::class MyDlgClass subclass UserDialog inherit AdvancedControls
+
+::method InitDialog
+  pb = self~GetProgressBar("PROGRESS")
+  if pb == .Nil then return
+  pb~setstep(50)
+  pb~setrange(,500)
+
+::method UpdateProgress
+  use arg amount
+  self~GetProgressBar("PROGRESS")~SetPos(amount)
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+
+<note><title>Note</title><para>
+GetProgressBar connects an Object Rexx object with a Windows object.
+If the object does not exist, the NIL object is returned. Therefore, this
+method can only be applied after the Windows dialog has been created (after
+the invocation of <link linkend="h002048">StartIt</link>).
+</para></note>
+</section>
+
+<section id="getslidercontrol"><title>GetSliderControl</title>
+<indexterm><primary>GetSliderControl</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-anAdvancedControl~GetSliderControl(--id--+-------------+--)-><
+                                            +-,--category-+
+
+
+]]>
+</programlisting>
+
+<para>The GetSliderControl method returns an object of
+the SliderControl class that is assigned to the track bar with the specified
+ID. The SliderControl class (see
+<link linkend="slidercontrolc">SliderControl Class</link>)
+provides methods to query and manipulate track bars.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>The ID of the track bar.
+</para></listitem></varlistentry>
+<varlistentry><term>category</term>
+<listitem><para>The number of the category dialog page containing the requested track
+bar. This argument must only be specified for category dialogs.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>An object of the SliderControl class or .Nil if the requested track
+bar does not exist.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example initializes track bar 103:
+<programlisting>
+<![CDATA[
+::class MyDlgClass subclass UserDialog inherit AdvancedControls
+
+::method InitTheSlider
+  sl = self~GetSliderControl(103)
+  if sl == .Nil then return
+  no = 0; yes = 1
+  sl~ClearSelRange(no)
+  sl~SetMax(200,no)
+  sl~SetTickFrequency(50)
+  sl~SetTickAt(75)
+  sl~SetSelStart(20, no)
+  sl~SetSelEnd(180, yes)
+  sl~Pos = 167
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+
+<note><title>Note</title><para>
+GetSliderControl connects an Object Rexx object with a Windows object.
+If the object does not exist, the NIL object is returned. Therefore, this
+method can only be applied after the Windows dialog has been created (after
+the invocation of <link linkend="h002048">StartIt</link>).
+</para></note>
+</section>
+
+<section id="gettabcontrol"><title>GetTabControl</title>
+<indexterm><primary>GetTabControl</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-anAdvancedControl~GetTabControl(--id--+-------------+--)----><
+                                         +-,--category-+
+
+
+]]>
+</programlisting>
+
+<para>The GetTabControl method returns an object of the
+TabControl class that is assigned to the tab control with the specified ID.
+The TabControl class (see <link linkend="tabcontrolc">TabControl Class</link>)
+provides methods to query and manipulate tab controls.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>The ID of the tab control.
+</para></listitem></varlistentry>
+<varlistentry><term>category</term>
+<listitem><para>The number of the category dialog page containing the requested tab
+control. This argument must only be specified for category dialogs.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>An object of the TabControl class or .Nil if the requested tab control
+does not exist.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example initializes tab control PAGES to have five tabs:
+<programlisting>
+<![CDATA[
+::class MyDlgClass subclass UserDialog inherit AdvancedControls
+
+::method InitDialog
+  self~GetTabControl("PAGES")~AddSequence("Design","Implementation", ,
+  "Test","Review","Release")
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+
+<note><title>Note</title><para>
+GetTabControl connects an Object Rexx object with a Windows object.
+If the object does not exist, the NIL object is returned. Therefore, this
+method can only be applied after the Windows dialog has been created (after
+the invocation of <link linkend="h002048">StartIt</link>).
+</para></note>
+</section>
+
+<section id="connecttreecontrol"><title>ConnectTreeControl</title>
+<indexterm><primary>ConnectTreeControl</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-anAdvancedControl~ConnectTreeControl(--id--+------------------+--)-><
+                                              +-,--attributeName-+
+
+
+]]>
+</programlisting>
+
+<para>The ConnectTreeControl method creates a new attribute
+and connects it to the tree view <emphasis role="italic">id</emphasis>.
+The attribute has to be synchronized
+manually with the tree view. You can do this globally using the
+<link linkend="h000264">SetData</link> and
+<link linkend="h000269">GetData</link> methods
+or methods provided by the TreeControl class.
+A tree view can contain many items. When the dialog data is set, the first
+tree view item containing the same text as the text stored in the connected
+attribute, is selected. When the data is received, the attribute receives
+the text of the selected tree view item. Usually, the connection is made automatically
+and you do not have to use this method.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:</para>
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>The ID of the tree view that you want to connect.
+</para></listitem></varlistentry>
+<varlistentry><term>attributeName</term>
+<listitem><para>An unused valid Rexx symbol because an attribute with exactly this name
+is added to the dialog object by this method. Blank spaces, ampersands (&amp;),
+and colons (:) are removed from the attributeName.</para>
+<para>If this argument is omitted, is not valid, or already exists, the following
+occurs:</para>
+<itemizedlist>
+<listitem><para>If the ID is numeric, an attribute with the name DATAid is
+used, where <emphasis role="italic">id</emphasis> is the value of the
+first argument.</para></listitem></itemizedlist>
+<itemizedlist>
+<listitem><para>If  the ID is symbolic, the attribute is named as the ID.
+</para></listitem></itemizedlist>
+</listitem></varlistentry>
+</variablelist>
+</listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>In the following example, the tree view with ID 202 is associated with
+the attribute FileName. Then TEST.REX is assigned to the newly created attribute.
+Then the dialog is executed, which preselects TEST.REX in the tree view, if
+it exits. After the dialog is terminated, the selected entry of the tree view
+is copied to the attribute FileName.
+<programlisting>
+<![CDATA[
+MyDialog~ConnectTreeControl(202, "FileName")
+MyDialog~FileName="TEST.REX"
+MyDialog~Execute("SHOWTOP")
+say MyDialog~FileName
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="connectlistcontrol"><title>ConnectListControl</title>
+<indexterm><primary>ConnectListControl</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-anAdvancedControl~ConnectListControl(--id--+------------------+--)-><
+                                              +-,--attributeName-+
+
+
+]]>
+</programlisting>
+
+<para>The ConnectListControl method creates a new attribute
+and connects it to the list view <emphasis role="italic">id</emphasis>.
+The <emphasis role="italic">attributeName</emphasis> is
+a string containing the numbers of the selected lines. The numbers are separated
+by blanks. Therefore, if value of the attribute after
+<link linkend="h000269">GetData</link> is "3 5 6", the third,
+fifth, and sixth items are currently selected,
+or will be selected when <link linkend="h000264">SetData</link>
+is executed. For further information, refer to
+<link linkend="connecttreecontrol">ConnectTreeControl</link>.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>In the following example, the list view with ID 202 is associated with
+the attribute Customers. The first, 14th, and 29th entries in the list are
+preselected.
+<programlisting>
+<![CDATA[
+MyDialog~ConnectListControl(202, "Customers")
+MyDialog~Customers="1 14 29"
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="connectslidercontrol"><title>ConnectSliderControl</title>
+<indexterm><primary>ConnectSliderControl</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-anAdvancedControl~ConnectSliderControl(--id--+------------------+--)-><
+                                                +-,--attributeName-+
+
+
+]]>
+</programlisting>
+
+<para>The ConnectSliderControl method creates a new attribute
+and connects it to the track bar <emphasis role="italic">id</emphasis>.
+The <emphasis role="italic">attributeName</emphasis> is
+the numerical position of the slider. For further information, refer to
+<link linkend="connecttreecontrol">ConnectTreeControl</link>.</para>
+</section>
+
+<section id="connecttabcontrol"><title>ConnectTabControl</title>
+<indexterm><primary>ConnectTabControl</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-anAdvancedControl~ConnectTabControl(--id--+------------------+--)-><
+                                             +-,--attributeName-+
+
+
+]]>
+</programlisting>
+
+<para>The ConnectTabControl method creates a new attribute
+and connects it to the tab control <emphasis role="italic">id</emphasis>.
+The <emphasis role="italic">attributeName</emphasis> is
+the text of the active tab. For further information, refer to
+<link linkend="connecttreecontrol">ConnectTreeControl</link>.</para>
+</section>
+
+<section id="addtreecontrol"><title>AddTreeControl</title>
+<indexterm><primary>AddTreeControl</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-anAdvancedControl~AddTreeControl(--id--,--+---------------+--,--x--,--y-->
+                                             +-attributeName-+
+
+>--,--cx--,--cy--+--------------------------------+--)---------------------><
+                 |       +-------------------+    |
+                 |       V                   |    |
+                 +-,--"----+-ATROOT--------+-+--"-+
+                           +-BUTTONS-------+
+                           +-LINES---------+
+                           +-EDIT----------+
+                           +-HSCROLL-------+
+                           +-VSCROLL-------+
+                           +-SHOWSELALWAYS-+
+                           +-ALL-----------+
+                           +-NODRAG--------+
+                           +-GROUP---------+
+                           +-HIDDEN--------+
+                           +-NOTAB---------+
+                           +-NOBORDER------+
+
+
+]]>
+</programlisting>
+
+<para>The AddTreeControl method adds a tree view to the
+dialog and connects it with a data attribute. For further information on tree
+view controls, refer to <link linkend="treecontrolc">TreeControl Class</link>.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>A unique identifier assigned to the control. You need the ID to refer
+to this control in other methods.
+</para></listitem></varlistentry>
+<varlistentry><term>attributeName</term>
+<listitem><para>The name of the data attribute associated with the dialog item. See
+<link linkend="connecttreecontrol">attributeName</link> to get information on what happens when
+this argument is omitted.
+</para></listitem></varlistentry>
+<varlistentry><term>x, y</term>
+<listitem><para>The position of the upper left corner of the control relative to the
+dialog, in dialog units.
+</para></listitem></varlistentry>
+<varlistentry><term>cx, xy</term>
+<listitem><para>The width and height of the dialog item, in dialog units.
+</para></listitem></varlistentry>
+<varlistentry><term>options</term>
+<listitem><para>This argument determines the behavior and style of the dialog item and
+can be one or more of the following, separated by blanks:
+<variablelist>
+<varlistentry><term>ATROOT</term>
+<listitem><para>The tree view has lines linking child items to the root of the hierarchy.
+</para></listitem></varlistentry>
+<varlistentry><term>BUTTONS</term>
+<listitem><para>The tree view adds a button to the left of each parent item.
+</para></listitem></varlistentry>
+<varlistentry><term>LINES</term>
+<listitem><para>The tree view has lines linking child items to their corresponding parent
+items.
+</para></listitem></varlistentry>
+<varlistentry><term>EDIT</term>
+<listitem><para>The tree view allows the user to edit the labels of tree view items.
+To store the edited text, you must connect a method to the ENDEDIT notification
+or connect the DEFAULTEDIT event handler (see
+<link linkend="connecttreenotify">ConnectTreeNotify</link>).
+</para></listitem></varlistentry>
+<varlistentry><term>HSCROLL</term>
+<listitem><para>The tree view supports a horizontal scroll bar.
+</para></listitem></varlistentry>
+<varlistentry><term>VSCROLL</term>
+<listitem><para>The tree view supports a vertical scroll bar.
+</para></listitem></varlistentry>
+<varlistentry><term>SHOWSELALWAYS</term>
+<listitem><para>A selected item remains selected when the tree view loses focus.
+</para></listitem></varlistentry>
+<varlistentry><term>ALL</term>
+<listitem><para>The options ATROOT, BUTTONS, LINES, EDIT, HSCROLL, and SHOWSELALWAYS
+are all applied.
+</para></listitem></varlistentry>
+<varlistentry><term>NODRAG</term>
+<listitem><para>The tree view is prevented from sending &quot;begin drag&quot; notifications.
+</para></listitem></varlistentry>
+<varlistentry><term>GROUP</term>
+<listitem><para>The first control of a group of controls in which the user can move
+from one control to the next with the arrow key.
+</para></listitem></varlistentry>
+<varlistentry><term>HIDDEN</term>
+<listitem><para>The control is initially hidden.
+</para></listitem></varlistentry>
+<varlistentry><term>NOTAB</term>
+<listitem><para>The tab key cannot be used to move to this control.
+</para></listitem></varlistentry>
+<varlistentry><term>NOBORDER</term>
+<listitem><para>No border is drawn around the control.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example creates a tree view at position x=100 and y=80
+and with a size of width=40 and height=120. The ID of the tree is 555 and
+its data is associated with attribute BRANCH. The tree view uses lines for
+child items and roots, displays a button to the left of each parent item,
+and supports item editing.
+<programlisting>
+<![CDATA[
+MyDialog~AddTreeControl(555, "Branch", 100, 80, 40, 120, ,
+"LINES BUTTON EDIT ATROOT")
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="addlistcontrol"><title>AddListControl</title>
+<indexterm><primary>AddListControl</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-anAdvancedControl~AddListControl(--id--,--+---------------+--,--x,--y-->
+                                             +-attributeName-+
+
+>--,--cx--,--cy--+--------------------------------+--)-------------------><
+                 |       +-------------------+    |
+                 |       V                   |    |
+                 +-,--"----+-ICON----------+-+--"-+
+                           +-SMALLICON-----+
+                           +-LIST----------+
+                           +-REPORT--------+
+                           +-ALIGNLEFT-----+
+                           +-ALIGNTOP------+
+                           +-AUTOARRANGE---+
+                           +-ASCENDING-----+
+                           +-DESCENDING----+
+                           +-EDIT----------+
+                           +-HSCROLL-------+
+                           +-VSCROLL-------+
+                           +-NOSCROLL------+
+                           +-NOHEADER------+
+                           +-NOSORTHEADER--+
+                           +-NOWRAP--------+
+                           +-SINGLESEL-----+
+                           +-SHOWSELALWAYS-+
+                           +-SHAREIMAGES---+
+                           +-GROUP---------+
+                           +-HIDDEN--------+
+                           +-NOTAB---------+
+                           +-NOBORDER------+
+
+
+]]>
+</programlisting>
+
+<para>The AddListControl method adds a list view to the
+dialog and connects it with a data attribute. For further information on list
+view controls, refer to <link linkend="listcontrolc">ListControl Class</link>.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>A unique identifier assigned to the control. You need the ID to refer
+to this control in other methods.
+</para></listitem></varlistentry>
+<varlistentry><term>attributeName</term>
+<listitem><para>The name of the data attribute associated with the dialog item. See
+<link linkend="connecttreecontrol">ConnectTreeControl</link> to get
+information on what happens when this argument is omitted.
+</para></listitem></varlistentry>
+<varlistentry><term>x, y</term>
+<listitem><para>The position of the upper left corner of the control relative to the
+dialog, in dialog units.
+</para></listitem></varlistentry>
+<varlistentry><term>cx, xy</term>
+<listitem><para>The width and height of the dialog item, in dialog units.
+</para></listitem></varlistentry>
+<varlistentry><term>options</term>
+<listitem><para>This argument determines the behavior and style of the dialog item and
+can be one or more of the following, separated by blanks:
+<variablelist>
+<varlistentry><term>ICON</term>
+<listitem><para>Use the icon view. Each item appears as a full-sized icon with a label
+below it. The user can drag the items to any location in the list view control.
+</para></listitem></varlistentry>
+<varlistentry><term>SMALLICON</term>
+<listitem><para>Use the small-icon view. Each item appears as a small icon with a label
+to the right of it. The user can drag the items to any location in the list
+view control.
+</para></listitem></varlistentry>
+<varlistentry><term>LIST</term>
+<listitem><para>Use the list view. Each item appears as a small icon with a label to
+the right of it. Items are arranged in columns and cannot be moved by the
+user.
+</para></listitem></varlistentry>
+<varlistentry><term>REPORT</term>
+<listitem><para>Use the report view. Each item appears on a separate line with information
+arranged in columns. The leftmost column contains the small icon and label,
+and subsequent columns contain subitems.
+</para></listitem></varlistentry>
+<varlistentry><term>ALIGNLEFT</term>
+<listitem><para>In icon and small-icon views, the items are left-aligned.
+</para></listitem></varlistentry>
+<varlistentry><term>ALIGNTOP</term>
+<listitem><para>In icon and small-icon views, the items are aligned with the top of
+the control.
+</para></listitem></varlistentry>
+<varlistentry><term>AUTOARRANGE</term>
+<listitem><para>In icon and small-icon views, the icons are always automatically arranged.
+</para></listitem></varlistentry>
+<varlistentry><term>ASCENDING</term>
+<listitem><para>Sorts items by item text in ascending order.
+</para></listitem></varlistentry>
+<varlistentry><term>DESCENDING</term>
+<listitem><para>Sorts items by item text in descending order.
+</para></listitem></varlistentry>
+<varlistentry><term>EDIT</term>
+<listitem><para>The list view allows the user to edit the list view items. To store
+the edited text, you must connect a method to the ENDEDIT notification or
+you connect the DEFAULTEDIT event handler
+(see <link linkend="connecttreenotify">ConnectTreeNotify</link>).
+</para></listitem></varlistentry>
+<varlistentry><term>HSCROLL</term>
+<listitem><para>The list view supports a horizontal scroll bar.
+</para></listitem></varlistentry>
+<varlistentry><term>VSCROLL</term>
+<listitem><para>The list view supports a vertical scroll bar.
+</para></listitem></varlistentry>
+<varlistentry><term>NOSCROLL</term>
+<listitem><para>Disables scrolling.
+</para></listitem></varlistentry>
+<varlistentry><term>NOHEADER</term>
+<listitem><para>No column header is displayed in the report view. By default, columns
+have headers in the report view.
+</para></listitem></varlistentry>
+<varlistentry><term>NOSORTHEADER</term>
+<listitem><para>Specifies that column headers do not work like buttons. This option
+is useful if clicking a header in the report view does not carry out an action.
+</para></listitem></varlistentry>
+<varlistentry><term>NOWRAP</term>
+<listitem><para>Displays item text on a single line in the icon view. By default, the
+item text can wrap in the icon view.
+</para></listitem></varlistentry>
+<varlistentry><term>SINGLESEL</term>
+<listitem><para>Allows only one item to be selected at a time. By default, several items
+can be selected.
+</para></listitem></varlistentry>
+<varlistentry><term>SHOWSELALWAYS</term>
+<listitem><para>Specifies that a selected item remains selected when the list view loses
+focus.
+</para></listitem></varlistentry>
+<varlistentry><term>DEFAULTEDIT</term>
+<listitem><para>Connects the notification that label editing has been started and ended
+with a predefined event-handling method. This method extracts the newly entered
+text from the notification and modifies the item of which the label was edited.
+If this event is not connected you must provide your own event-handling method
+and connect it with the BEGINEDIT and ENDEDIT events. Otherwise, the edited
+text is lost and the item remains unchanged.
+</para></listitem></varlistentry>
+<varlistentry><term>SHAREIMAGES</term>
+<listitem><para>The control does not take ownership of the image lists assigned to it.
+This option enables an image list to be used with several list controls.
+</para></listitem></varlistentry>
+<varlistentry><term>GROUP</term>
+<listitem><para>Specifies the first control of a group of control in which the user
+can move from one control to the next with the arrow keys.
+</para></listitem></varlistentry>
+<varlistentry><term>HIDDEN</term>
+<listitem><para>The control is initially hidden.
+</para></listitem></varlistentry>
+<varlistentry><term>NOTAB</term>
+<listitem><para>The tab key cannot be used to move to this control.
+</para></listitem></varlistentry>
+<varlistentry><term>NOBORDER</term>
+<listitem><para>No border is drawn around the control.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example creates a list view at position x=100 and y=80
+and with a size of width=40 and height=120. The list view with ID 555 is a
+report view with items sorted in ascending order. It supports item editing
+and column headers do not behave like buttons. Its data is associated with
+attribute EMPLOYEES.
+<programlisting>
+<![CDATA[
+MyDialog~AddListControl(555, "EMPLOYEES", 100, 80, 40, 120, ,
+"REPORT ASCENDING EDIT NOSORTHEADER")
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="addprogressbar"><title>AddProgressBar</title>
+<indexterm><primary>AddProgressBar</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-anAdvancedControl~AddProgressBar(--id--,--x--,--y--,--cx--,--cy-->
+
+>--+---------------------------+--)--------------------------------><
+   |       +--------------+    |
+   |       V              |    |
+   +-,--"----+-VERTICAL-+-+--"-+
+             +-SMOOTH---+
+             +-BORDER---+
+
+
+]]>
+</programlisting>
+
+<para>The AddProgressBar method adds a progress bar to
+the dialog and connects it with a data attribute. For further information
+on progress bar controls, refer to <link linkend="progressbarc">ProgressBar Class</link>.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:</para>
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>A unique identifier assigned to the control. You need the ID to refer
+to this control in other methods.
+</para></listitem></varlistentry>
+<varlistentry><term>x, y</term>
+<listitem><para>The position of the upper left corner of the control relative to the
+dialog, in dialog units.
+</para></listitem></varlistentry>
+<varlistentry><term>cx, xy</term>
+<listitem><para>The width and height of the dialog item, in dialog units.
+</para></listitem></varlistentry>
+<varlistentry><term>options</term>
+<listitem><para>This argument determines the behavior and style of the dialog item and
+can be one or more of the following:</para>
+<variablelist>
+<varlistentry><term>VERTICAL</term>
+<listitem><para>The progress bar is oriented vertically.
+</para></listitem></varlistentry>
+<varlistentry><term>SMOOTH</term>
+<listitem><para>The progress bar is incremented smoothly.
+</para></listitem></varlistentry>
+<varlistentry><term>BORDER</term>
+<listitem><para>A border is drawn around the progress bar.</para>
+</listitem></varlistentry>
+</variablelist>
+<para>If you omit this argument, the progress bar is oriented horizontally.</para>
+</listitem></varlistentry>
+</variablelist>
+</listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example creates a progress bar with ID DONE at the bottom
+of the dialog. The progress bar is as wide as the dialog.
+<programlisting>
+<![CDATA[
+MyDialog~AddProgressBar("DONE",10,MyDialog~sizey-16,MyDialog~sizex-20,12)
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="addslidercontrol"><title>AddSliderControl</title>
+<indexterm><primary>AddSliderControl</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-anAdvancedControl~AddSliderControl(--id--,--+---------------+--,--x-->
+                                               +-attributeName-+
+
+>--,--y--,--cx--,--cy--+---------------------------------+--)----------><
+                       |       +--------------------+    |
+                       |       V                    |    |
+                       +-,--"----+-AUTOTICKS------+-+--"-+
+                                 +-NOTICKS--------+
+                                 +-HORIZONTAL-----+
+                                 +-VERTICAL-------+
+                                 +-TOP------------+
+                                 +-BOTTOM---------+
+                                 +-LEFT-----------+
+                                 +-RIGHT----------+
+                                 +-BOTH-----------+
+                                 +-ENABLESELRANGE-+
+                                 +-GROUP----------+
+                                 +-HIDDEN---------+
+                                 +-NOTAB----------+
+                                 +-NOBORDER-------+
+
+
+]]>
+</programlisting>
+
+<para>The AddSliderControl method adds a slider control
+(track bar) to the dialog and connects it with a data attribute. For further
+information on slider controls, refer to <link linkend="slidercontrolc">SliderControl Class</link>.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>A unique identifier assigned to the control. You need the ID to refer
+to this control in other methods.
+</para></listitem></varlistentry>
+<varlistentry><term>attributeName</term>
+<listitem><para>The name of the data attribute associated with the dialog item. See
+<link linkend="connecttreecontrol">attributeName</link> to get information on what happens when
+this argument is omitted.
+</para></listitem></varlistentry>
+<varlistentry><term>x, y</term>
+<listitem><para>The position of the upper left corner of the control relative to the
+dialog, in dialog units.
+</para></listitem></varlistentry>
+<varlistentry><term>cx, xy</term>
+<listitem><para>The width and height of the dialog item, in dialog units.
+</para></listitem></varlistentry>
+<varlistentry><term>options</term>
+<listitem><para>This argument determines the behavior and style of the dialog item and
+can be one or more of the following:
+<variablelist>
+<varlistentry><term>AUTOTICKS</term>
+<listitem><para>Creates a slider that has a tick mark for each increment in its range
+of values. These tick marks are automatically added when an application calls
+the InitRange method. You cannot use the SetTickAt and SetTickFrequency methods
+to specify the position of the tick marks when you use this option.
+</para></listitem></varlistentry>
+<varlistentry><term>NOTICKS</term>
+<listitem><para>Creates a slider that does not display tick marks.
+</para></listitem></varlistentry>
+<varlistentry><term>HORIZONTAL</term>
+<listitem><para>Orients the slider horizontally. This is the default orientation.
+</para></listitem></varlistentry>
+<varlistentry><term>VERTICAL</term>
+<listitem><para>Orients the slider vertically.
+</para></listitem></varlistentry>
+<varlistentry><term>TOP</term>
+<listitem><para>Displays tick marks along the top of a horizontal slider.
+</para></listitem></varlistentry>
+<varlistentry><term>BOTTOM</term>
+<listitem><para>Displays tick marks along the bottom of a horizontal slider. This option
+can be used together with the TOP option to display tick marks on both sides
+of the slider control.
+</para></listitem></varlistentry>
+<varlistentry><term>LEFT</term>
+<listitem><para>Displays tick marks along the left of a vertical slider.
+</para></listitem></varlistentry>
+<varlistentry><term>RIGHT</term>
+<listitem><para>Displays tick marks along the right of a vertical slider. This option
+can be used together with the LEFT option to display tick marks on both sides
+of the slider control.
+</para></listitem></varlistentry>
+<varlistentry><term>BOTH</term>
+<listitem><para>Displays tick marks on both sides of the slider in any direction.
+</para></listitem></varlistentry>
+<varlistentry><term>ENABLESELRANGE</term>
+<listitem><para>Displays a selection range. If you set this option, the tick marks at
+the starting and ending positions of a selection range are displayed as triangles
+and the selection range is highlighted. This can be used, for example, to
+indicate a preferred selection.
+</para></listitem></varlistentry>
+<varlistentry><term>GROUP</term>
+<listitem><para>Specifies the first control of a group of control in which the user
+can move from one control to the next with the arrow keys.
+</para></listitem></varlistentry>
+<varlistentry><term>HIDDEN</term>
+<listitem><para>The control is initially hidden.
+</para></listitem></varlistentry>
+<varlistentry><term>NOTAB</term>
+<listitem><para>The tab key cannot be used to move to this control.
+</para></listitem></varlistentry>
+<varlistentry><term>NOBORDER</term>
+<listitem><para>No border is drawn around the control.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example creates a vertical slider control at the right
+border of the dialog. The slider with ID PRESSURE displays automatic tick
+marks on both sides. Its position is associated with attribute PRESSURE.
+<programlisting>
+<![CDATA[
+MyDialog~AddSliderControl("PRESSURE", , MyDialog~sizeX-30, 15, 20, ,
+MyDialog~sizeY-30, "VERTICAL BOTH AUTOTICKS")
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="addtabcontrol"><title>AddTabControl</title>
+<indexterm><primary>AddTabControl</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-anAdvancedControl~AddTabControl(--id--,--+---------------+--,--x-->
+                                            +-attributeName-+
+
+>--,--y--,--cx--,--cy--+------------------------------+--)----------><
+                       |       +-----------------+    |
+                       |       V                 |    |
+                       +-,--"----+-ALIGNRIGHT--+-+--"-+
+                                 +-BUTTONS-----+
+                                 +-FIXED-------+
+                                 +-FOCUSNEVER--+
+                                 +-FOCUSONDOWN-+
+                                 +-ICONLEFT----+
+                                 +-LABELLEFT---+
+                                 +-MULTILINE---+
+                                 +-GROUP-------+
+                                 +-HIDDEN------+
+                                 +-NOTAB-------+
+                                 +-NOBORDER----+
+
+
+]]>
+</programlisting>
+
+<para>The AddTabControl method adds a tab control to
+the dialog and connects it with a data attribute. For further information
+on tab controls, refer to <link linkend="tabcontrolc">TabControl Class</link>.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>A unique identifier assigned to the control. You need the ID to refer
+to this control in other methods.
+</para></listitem></varlistentry>
+<varlistentry><term>attributeName</term>
+<listitem><para>The name of the data attribute associated with the dialog item. See
+<link linkend="connecttreecontrol">ConnectTreeControl</link>
+to get information on what happens when this argument is omitted.
+</para></listitem></varlistentry>
+<varlistentry><term>x, y</term>
+<listitem><para>The position of the upper left corner of the control relative to the
+dialog, in dialog units.
+</para></listitem></varlistentry>
+<varlistentry><term>cx, xy</term>
+<listitem><para>The width and height of the dialog item, in dialog units.
+</para></listitem></varlistentry>
+<varlistentry><term>options</term>
+<listitem><para>This argument determines the behavior and style of the dialog item and
+can be one or more of the following:
+<variablelist>
+<varlistentry><term>ALIGNRIGHT</term>
+<listitem><para>Right-justifies tabs. By default, tabs are left-justified within a row.
+</para></listitem></varlistentry>
+<varlistentry><term>BUTTONS</term>
+<listitem><para>Modifies the appearance of the tabs to look like buttons.
+</para></listitem></varlistentry>
+<varlistentry><term>FIXED</term>
+<listitem><para>Makes all tabs equal in width. You cannot use this option with the ALIGNRIGHT
+option.
+</para></listitem></varlistentry>
+<varlistentry><term>FOCUSNEVER</term>
+<listitem><para>A tab never receives the input focus.
+</para></listitem></varlistentry>
+<varlistentry><term>FOCUSONDOWN</term>
+<listitem><para>A tab receives the input focus when clicked (typically with option BUTTONS).
+</para></listitem></varlistentry>
+<varlistentry><term>ICONLEFT</term>
+<listitem><para>Forces the icon to the left, but leaves the tab label centered. By default,
+the control centers the icon and label, with the icon being to the left of
+the label.
+</para></listitem></varlistentry>
+<varlistentry><term>LABELLEFT</term>
+<listitem><para>Left-aligns both the icon and the label.
+</para></listitem></varlistentry>
+<varlistentry><term>MULTILINE</term>
+<listitem><para>Causes a tab control to display several rows of tabs, enabling all tabs
+to be displayed at the same time.
+</para></listitem></varlistentry>
+<varlistentry><term>GROUP</term>
+<listitem><para>Specifies the first control of a group of control in which the user
+can move from one control to the next with the arrow keys.
+</para></listitem></varlistentry>
+<varlistentry><term>HIDDEN</term>
+<listitem><para>The control is initially hidden.
+</para></listitem></varlistentry>
+<varlistentry><term>NOTAB</term>
+<listitem><para>The tab key cannot be used to move to this control.
+</para></listitem></varlistentry>
+<varlistentry><term>NOBORDER</term>
+<listitem><para>No border is drawn around the control.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example creates a tab control with ID PAGES and multiline
+capability. Its data (the selected tab) is associated with attribute CURRENTPAGE.
+<programlisting>
+<![CDATA[
+MyDialog~AddTabControl("PAGES","CURRENTPAGE", 10, 120, 200, 20, ,
+"MULTILINE FIXED")
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+</chapter>

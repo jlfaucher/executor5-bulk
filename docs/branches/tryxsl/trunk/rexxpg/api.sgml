@@ -1,0 +1,103 @@
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: Programming Guide SGML file.
+    #
+    # Copyright (c) 2005-2007, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    # Author(s):
+    #      W. David Ashley <dashley@us.ibm.com>
+    #
+    #########################################################################
+-->
+<appendix id="api4x">
+<title>Rexx C++ Application Programming Interfaces</title>
+<para>This appendix describes how to interface applications to Rexx or extend
+the Rexx language by using Rexx C++ application programming interfaces (APIs).
+As used here, the term application refers to programs
+written in C++. 
+</para>
+<para>The features described here let a C++ application extend many parts of the
+Rexx language or extend an application with Rexx. This includes creating handlers
+for Rexx methods, external functions, and system exits. </para>
+<variablelist>
+<varlistentry><term>Rexx methods</term>
+<listitem><para>are extensions to ooRexx classes. An ooRexx class can define a
+method as being contained in an external shared library.
+</para></listitem></varlistentry>
+<varlistentry><term>Functions</term>
+<listitem><para>are direct extensions of the Rexx language. An application can create
+functions that extend the native Rexx function set. Functions can be general-purpose
+extensions or specific to an application.
+</para></listitem></varlistentry>
+<varlistentry><term>System exits</term>
+<listitem><para>are programmer-defined variations of the operating system.
+The application programmer can tailor the Rexx interpreter behavior by
+replacing Rexx system requests.
+</para></listitem></varlistentry>
+</variablelist>
+<para>Methods, functions, and system exit handlers have similar coding, 
+compilation, and packaging characteristics.
+</para>
+<para>In addition, applications can call methods defined on an ooRexx class and
+execute them from externally defined methods and functions.</para>
+
+<section id="intertreterapi"><title>Rexx Interpreter API</title>
+<para>This section describes how to invoke the Rexx interpreter via the
+RexxCreatInterpreter API.</para>
+</section>
+
+<section id="apiconcepts"><title>Introduction to API Vectors</title>
+<para>This section provides a general description of API vectors and how to use 
+them.</para>
+</section>
+
+<section id="instanceapi"><title>Rexx Instance Interface</title>
+<para>This section describes the Rexx instance interface and the methods it
+provides.</para>
+</section>
+
+<section id="threadapi"><title>Rexx Thread Interface</title>
+<para>This section describes the Rexx thread interface and the methods it
+provides.</para>
+</section>
+
+<section id="buildinglibs"><title>Building an External Library</title>
+<para>This section describes how to build an external library.</para>
+</section>
+
+<section id="exitsapi"><title>Rexx Exits Interface</title>
+<para>This section describes how to define a Rexx exit.</para>
+</section>
+</appendix>

@@ -1,0 +1,664 @@
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: OODialog Reference SGML file.
+    #
+    # Copyright (c) 2005-2007, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    # Author(s):
+    #      W. David Ashley <dashley@us.ibm.com>
+    #
+    #########################################################################
+-->
+<chapter id="comboboxc"><title>ComboBox Class</title>
+<indexterm><primary>ComboBox class</primary></indexterm>
+<para>The ComboBox class provides methods to query and
+modify combo box controls. It inherits all methods of the DialogControl class
+(see <link linkend="dialogcontrolc">DialogControl Class</link>).</para>
+<para>Use the GetComboBox method (see <link linkend="getcombobox">GetComboBox</link>)
+to retrieve an object of the ComboBox class.</para>
+<variablelist>
+<varlistentry><term>Requires:</term>
+<listitem><para>The ComboBox class requires the class definition
+file <computeroutput>oodwin32.cls</computeroutput>:
+<programlisting>
+<![CDATA[
+::requires "oodwin32.cls"
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term>Methods:</term>
+<listitem><para>Instances of the ComboBox class implement the
+methods listed in the
+<link linkend="t000026">ComboBox Instance Methods</link> table.</para>
+
+<table id="t000026" frame="all">
+<title>ComboBox Instance Methods</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Method...</entry>
+<entry>...on page</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>Add</entry>
+<entry><link linkend="addcb">Add</link></entry>
+</row>
+<row>
+<entry>AddDirectory</entry>
+<entry><link linkend="adddirectorycb">AddDirectory</link></entry>
+</row>
+<row>
+<entry>CloseDropDown</entry>
+<entry><link linkend="closedropdown">CloseDropDown</link></entry>
+</row>
+<row>
+<entry>Delete</entry>
+<entry><link linkend="deletecb">Delete</link></entry>
+</row>
+<row>
+<entry>DeleteAll</entry>
+<entry><link linkend="deleteallcb">DeleteAll</link></entry>
+</row>
+<row>
+<entry>EditSelection</entry>
+<entry><link linkend="editselection">EditSelection</link></entry>
+</row>
+<row>
+<entry>Find</entry>
+<entry><link linkend="findcb">Find</link></entry>
+</row>
+<row>
+<entry>GetText</entry>
+<entry><link linkend="gettextcb">GetText</link></entry>
+</row>
+<row>
+<entry>Insert</entry>
+<entry><link linkend="insertcb">Insert</link></entry>
+</row>
+<row>
+<entry>IsDropDownOpen</entry>
+<entry><link linkend="isdropdownopen">IsDropDownOpen</link></entry>
+</row>
+<row>
+<entry>Items</entry>
+<entry><link linkend="itemscb">Items</link></entry>
+</row>
+<row>
+<entry>Modify</entry>
+<entry><link linkend="modifycb">Modify</link></entry>
+</row>
+<row>
+<entry>OpenDropDown</entry>
+<entry><link linkend="opendropdown">OpenDropDown</link></entry>
+</row>
+<row>
+<entry>Select</entry>
+<entry><link linkend="selectcb">Select</link></entry>
+</row>
+<row>
+<entry>SelectIndex</entry>
+<entry><link linkend="selectindexcb">SelectIndex</link></entry>
+</row>
+<row>
+<entry>Selected</entry>
+<entry><link linkend="selectedcb">Selected</link></entry>
+</row>
+<row>
+<entry>SelectedIndex</entry>
+<entry><link linkend="selectedindexcb">SelectedIndex</link></entry>
+</row>
+</tbody></tgroup>
+</table>
+</listitem></varlistentry>
+</variablelist>
+
+<section id="addcb"><title>Add</title>
+<indexterm><primary>Add</primary>
+<secondary>ComboBox class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aComboBox~Add(--listEntry--)--------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The Add method adds a new item to the list of the
+combo box. If the list is not sorted, the new item is added to the end of
+the list.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>listEntry</term>
+<listitem><para>A text string added to the list.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>A one-based index that specifies the position at which the entry has
+been added, or 0 or a value less than 0 to indicate an error.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="insertcb"><title>Insert</title>
+<indexterm><primary>Insert</primary>
+<secondary>ComboBox class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aComboBox~Insert(--+-------+--,--listEntry--)---------------><
+                      +-index-+
+
+
+]]>
+</programlisting>
+
+<para>The Insert method inserts a new item into the list
+of the combo box after the specified item.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>index</term>
+<listitem><para>The index (starting with 1) of the list item after which the new item
+is to be added. If this argument is omitted, the list entry is added after
+the currently selected item.
+</para></listitem></varlistentry>
+<varlistentry><term>listEntry</term>
+<listitem><para>A text string added to the list.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>A one-based index that specifies the position at which the entry has
+been added, or 0 or a value less than 0 to indicate an error.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="deletecb"><title>Delete</title>
+<indexterm><primary>Delete</primary>
+<secondary>ComboBox class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aComboBox~Delete(--index--)---------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The Delete method removes a list item from the
+associated combo box.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>index</term>
+<listitem><para>The index (starting with 1) of the list item to be removed from the
+list. If this argument is omitted, the currently selected item is deleted.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The number of remaining list items, or 0 to indicate an error.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="deleteallcb"><title>DeleteAll</title>
+<indexterm><primary>DeleteAll</primary>
+<secondary>ComboBox class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aComboBox~DeleteAll-----------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The DeleteAll method removes all list items from
+the associated combo box.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>index</term>
+<listitem><para>The index (starting with 1) of the list item to be removed from the
+list. If this argument is omitted, the currently selected item is deleted.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The number of remaining list items, or 0 to indicate an error.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="findcb"><title>Find</title>
+<indexterm><primary>Find</primary>
+<secondary>ComboBox class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aComboBox~Find(--TextorPrefix--+---------------------------------+--)-><
+                                  +-,--+------------+--+----------+-+
+                                       +-startIndex-+  +-,--exact-+
+
+
+]]>
+</programlisting>
+
+<para>The Find method searches the combo box for a list
+entry containing the specified text or prefix. The search is caseless.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>TextorPrefix</term>
+<listitem><para>The text or prefix for which the list is searched.
+</para></listitem></varlistentry>
+<varlistentry><term>startIndex</term>
+<listitem><para>The first list item at which the search is to be started. When the search
+reaches the bottom of the list, it is continued backward. If you
+omit this argument or specify 0, the entire list is searched.
+</para></listitem></varlistentry>
+<varlistentry><term>exact</term>
+<listitem><para>If you specify 1 or E, the text of the list item must exactly match
+the text specified for <emphasis role="italic">TextorPrefix</emphasis>.
+If you omit this argument or specify 0, the list entries are searched for a
+prefix that matches <emphasis role="italic">TextorPrefix</emphasis>.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The one-based index of the list entry that matches the search text,
+or 0 if not found.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="selectedindexcb"><title>SelectedIndex</title>
+<indexterm><primary>SelectedIndex</primary>
+<secondary>ComboBox class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aComboBox~SelectedIndex-------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The SelectedIndex method retrieves the index of
+the currently selected entry of the combo box list. This entry is highlighted
+and surrounded by a dotted border.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The one-based index of the currently selected list entry, or 0 if none
+is selected.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="selectedcb"><title>Selected</title>
+<indexterm><primary>Selected</primary>
+<secondary>ComboBox class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aComboBox~Selected------------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The Selected method retrieves the text of the currently
+selected entry of the combo box list.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The text of the currently selected list entry, or an empty string if
+none is selected.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="selectindexcb"><title>SelectIndex</title>
+<indexterm><primary>SelectIndex</primary>
+<secondary>ComboBox class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aComboBox~SelectIndex(--index--)----------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The SelectIndex method selects the list entry at
+the specified position. The currently selected list item in the combo box
+is highlighted and surrounded by a dotted border.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>index</term>
+<listitem><para>The index (starting with 1) of the list item to be selected. If you
+specify 0 for this argument, the combo box must not contain any selection.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>0 if an error occurred or you specified 0 for
+<emphasis role="italic">index</emphasis> to remove the selection.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="selectcb"><title>Select</title>
+<indexterm><primary>Select</primary>
+<secondary>ComboBox class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aComboBox~Select(--ItemText--)------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The Select method selects the list entry that matches
+the specified text.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>ItemText</term>
+<listitem><para>The text that the combo box is searched for.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>0 if an error occurred or a matching list entry was not found.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="itemscb"><title>Items</title>
+<indexterm><primary>Items</primary>
+<secondary>ComboBox class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aComboBox~Items---------------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The Items method retrieves the number of items
+in the combo box.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The number of items in the combo box list.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="gettextcb"><title>GetText</title>
+<indexterm><primary>GetText</primary>
+<secondary>ComboBox class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aComboBox~GetText(--index--)--------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The GetText method gets the text of the list item
+at the specified position in the combo box.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>index</term>
+<listitem><para>The one-based index of the combo box item containing the text you are
+interested in.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The text of the combo box item at the given position, or an empty string
+if the <emphasis role="italic">index</emphasis> does not refer to an
+item or an error occurred.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="modifycb"><title>Modify</title>
+<indexterm><primary>Modify</primary>
+<secondary>ComboBox class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aComboBox~Modify(--index--,--newText--)---------------------><
+
+
+]]>
+</programlisting>
+
+<para>The Modify method changes the text of the list
+item at the specified position in the combo box.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>index</term>
+<listitem><para>The one-based index of the combo box item of which the text is to be
+changed. If you omit this argument, the currently selected item is modified.
+</para></listitem></varlistentry>
+<varlistentry><term>newText</term>
+<listitem><para>The new text string to be displayed at the given position.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The one-based index of the modified combo box item at the given position.
+The return value is 0 if an error occurred, or -1 if the
+<emphasis role="italic">index</emphasis> does not refer to an item.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="adddirectorycb"><title>AddDirectory</title>
+<indexterm><primary>AddDirectory</primary>
+<secondary>ComboBox class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+                                           +---------------+
+                                           V               |
+>>-aComboBox~AddDirectory(--drvPath--,--"----+-READWRITE-+-+--"--)-><
+                                             +-READONLY--+
+                                             +-HIDDEN----+
+                                             +-SYSTEM----+
+                                             +-DIRECTORY-+
+                                             +-ARCHIVE---+
+
+
+]]>
+</programlisting>
+
+<para>The AddDirectory method adds all or selected file
+names of a given directory to the combo box.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>drvpath</term>
+<listitem><para>The drive, path, and name pattern.
+</para></listitem></varlistentry>
+<varlistentry><term>fileAttributes</term>
+<listitem><para>Specify the file attributes the files must possess in
+order to be added:
+<variablelist>
+<varlistentry><term>READWRITE</term>
+<listitem><para>Normal read/write files (same as none).
+</para></listitem></varlistentry>
+<varlistentry><term>READONLY</term>
+<listitem><para>Files that have the read-only bit.
+</para></listitem></varlistentry>
+<varlistentry><term>HIDDEN</term>
+<listitem><para>Files that have the hidden bit.
+</para></listitem></varlistentry>
+<varlistentry><term>SYSTEM</term>
+<listitem><para>Files that have the system bit.
+</para></listitem></varlistentry>
+<varlistentry><term>DIRECTORY</term>
+<listitem><para>Files that have the directory bit.
+</para></listitem></varlistentry>
+<varlistentry><term>ARCHIVE</term>
+<listitem><para>Files that have the archive bit.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The one-based index of the file name added last to the list,
+or 0 if an error occurred.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example puts the names of all read/write files
+with extension .REX in the given directory of the list box:
+<programlisting>
+<![CDATA[
+MyDialog~AddDirectory(203, drive":\"path"\*.rex", "READWRITE")
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="opendropdown"><title>OpenDropDown</title>
+<indexterm><primary>OpenDropDown</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aComboBox~OpenDropDown--------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The OpenDropDown method opens the list box of the
+associated combo box.</para>
+</section>
+
+<section id="closedropdown"><title>CloseDropDown</title>
+<indexterm><primary>CloseDropDown</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aComboBox~CloseDropDown-------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The CloseDropDown method closes the list box of
+the associated combo box.</para>
+</section>
+
+<section id="isdropdownopen"><title>IsDropDownOpen</title>
+<indexterm><primary>IsDropDownOpen</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aComboBox~IsDropDownOpen------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The IsDropDownOpen method retrieves whether the
+list box of the associated combo box is open, that is, visible.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>1</term>
+<listitem><para>The list box is open.
+</para></listitem></varlistentry>
+<varlistentry><term>0</term>
+<listitem><para>For all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="editselection"><title>EditSelection</title>
+<indexterm><primary>EditSelection</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aComboBox~EditSelection(--startNdx--,--endNdx--)------------><
+
+
+]]>
+</programlisting>
+
+<para>The EditSelection method selects the specified
+text range in the edit control of the associated combo box.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>startNdx</term>
+<listitem><para>The one-based index of the first character in the edit control to be
+selected. If you omit this argument or specify 0, the selection is removed.
+</para></listitem></varlistentry>
+<varlistentry><term>endNdx</term>
+<listitem><para>The one-based index of the last character in the edit control to be
+selected. If you omit this argument or specify 0, the selection is removed.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The selection was successful.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>An error occurred.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+</chapter>
