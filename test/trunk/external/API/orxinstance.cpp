@@ -800,4 +800,6 @@ void REXXENTRY invokeProgram(InstanceInfo *instanceInfo)
             strncpy(instanceInfo->returnResult, resultString, sizeof(instanceInfo->returnResult));
         }
     }
+    // make sure we terminate this first
+    instance->Terminate();
 }
