@@ -415,6 +415,9 @@ int RexxEntry TestTraceExit(int code, int subcode, PEXIT exitInfo)
         {
             RXTRCTST_PARM *parms = (RXTRCTST_PARM *)exitInfo;
             parms->rxtrc_flags.rxftrace = 1;
+            // just one shot at this, otherwise the test rig goes into
+            // a loop in the io intercepter.
+            instanceInfo->trc = InstanceInfo::TRACEOFF;
             return RXEXIT_HANDLED;
         }
         case InstanceInfo::TRACEOFF:

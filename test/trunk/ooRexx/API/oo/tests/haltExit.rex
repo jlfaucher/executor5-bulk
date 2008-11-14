@@ -39,36 +39,12 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-trap = .PullTrap~new
-.input~destination(trap)
-.error~destination(.TraceTrap~new)
 
-trace ?all
-trace off
-.input~destination
-.error~destination
-return trap~result
+signal on halt
+address cmd "HALT"  -- this is handled by the command exit
+x = "NOT CALLED"
+return x
 
-syntax:
-.input~destination
-.error~destination
-raise propagate
+halt:
+   return "CALLED"
 
-::class pullTrap
-::method init
-  expose called
-  called = .false
-
-::method linein
-  expose called
-  called = .true
-  return "trace off"
-
-::method result
-  expose called
-  if called then return "CALLED"
-            else return "NOT CALLED"
-
-::class traceTrap
-::method lineout
-  -- just swallow the line

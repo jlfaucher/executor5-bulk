@@ -39,36 +39,7 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-trap = .PullTrap~new
-.input~destination(trap)
-.error~destination(.TraceTrap~new)
 
-trace ?all
-trace off
-.input~destination
-.error~destination
-return trap~result
+-- just return the value of this variable.
+return value("FOO",,"TEST")
 
-syntax:
-.input~destination
-.error~destination
-raise propagate
-
-::class pullTrap
-::method init
-  expose called
-  called = .false
-
-::method linein
-  expose called
-  called = .true
-  return "trace off"
-
-::method result
-  expose called
-  if called then return "CALLED"
-            else return "NOT CALLED"
-
-::class traceTrap
-::method lineout
-  -- just swallow the line

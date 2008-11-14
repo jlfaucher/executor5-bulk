@@ -440,6 +440,9 @@ int RexxEntry TestContextTraceExit(RexxExitContext *context, int code, int subco
         {
             RXTRCTST_PARM *parms = (RXTRCTST_PARM *)exitInfo;
             parms->rxtrc_flags.rxftrace = 1;
+            // just one shot at this, otherwise the test rig goes into
+            // a loop in the io intercepter.
+            instanceInfo->trc = InstanceInfo::TRACEOFF;
             return RXEXIT_HANDLED;
         }
         case InstanceInfo::TRACEOFF:
@@ -547,7 +550,8 @@ int RexxEntry TestContextNovalueExit(RexxExitContext *context, int code, int sub
 
     if (strcmp(parms->variable_name.strptr, "FOO") == 0)
     {
-        parms->value = context->ArrayOfOne(context->NewStringFromAsciiz("BAR"));
+        // need to just return a string value for proper validation
+        parms->value = context->NewStringFromAsciiz("BAR");
         return RXEXIT_HANDLED;
     }
     return RXEXIT_NOT_HANDLED;
@@ -574,7 +578,8 @@ int RexxEntry TestContextValueExit(RexxExitContext *context, int code, int subco
     {
         if (strcmp(parms->variable_name.strptr, "FOO") == 0)
         {
-            parms->value = context->ArrayOfOne(context->NewStringFromAsciiz("BAR"));
+            // need to just return a string value for proper validation
+            parms->value = context->NewStringFromAsciiz("BAR");
             return RXEXIT_HANDLED;
         }
     }

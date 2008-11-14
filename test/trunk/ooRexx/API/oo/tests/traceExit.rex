@@ -43,8 +43,9 @@ trap = .PullTrap~new
 .input~destination(trap)
 .error~destination(.TraceTrap~new)
 
-trace ?all
-trace off
+address cmd "TRACEON"   -- the command exit handles this
+trace off               -- should also be turned off by the I/O trap
+
 .input~destination
 .error~destination
 return trap~result
@@ -68,6 +69,7 @@ raise propagate
   expose called
   if called then return "CALLED"
             else return "NOT CALLED"
+
 
 ::class traceTrap
 ::method lineout
