@@ -548,10 +548,12 @@ int RexxEntry TestContextNovalueExit(RexxExitContext *context, int code, int sub
 
     RXVARNOVALUE_PARM *parms = (RXVARNOVALUE_PARM *)exitInfo;
 
-    if (strcmp(parms->variable_name.strptr, "FOO") == 0)
+    const char *variableName = context->CString(parms->variable_name);
+
+    if (strcmp(variableName, "FOO") == 0)
     {
         // need to just return a string value for proper validation
-        parms->value = context->NewStringFromAsciiz("BAR");
+        parms->value = context->String("BAR");
         return RXEXIT_HANDLED;
     }
     return RXEXIT_NOT_HANDLED;
@@ -573,13 +575,15 @@ int RexxEntry TestContextValueExit(RexxExitContext *context, int code, int subco
     }
 
     RXVALCALL_PARM *parms = (RXVALCALL_PARM *)exitInfo;
+    const char *selector = context->CString(parms->selector);
 
-    if (strcmp(parms->selector.strptr, "TEST") == 0)
+    if (strcmp(selector, "TEST") == 0)
     {
-        if (strcmp(parms->variable_name.strptr, "FOO") == 0)
+        const char *variableName = context->CString(parms->variable_name);
+        if (strcmp(variableName, "FOO") == 0)
         {
             // need to just return a string value for proper validation
-            parms->value = context->NewStringFromAsciiz("BAR");
+            parms->value = context->String("BAR");
             return RXEXIT_HANDLED;
         }
     }
