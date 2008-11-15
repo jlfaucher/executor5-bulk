@@ -590,6 +590,41 @@ int RexxEntry TestContextValueExit(RexxExitContext *context, int code, int subco
     return RXEXIT_NOT_HANDLED;
 }
 
+RexxObjectPtr RexxEntry TestCommandHandler(RexxExitContext *context, RexxStringObject address, RexxStringObject command)
+{
+    const char *c = context->CString(command);
+
+    // ok, a good address...now do the different commands
+    if (strcmp(c, "GOOD") == 0)
+    {
+        return context->False();
+    }
+    else if (strcmp(c, "ERROR") == 0)
+    {
+        context->RaiseCondition("ERROR", command, NULLOBJECT, context->True());
+        return NULLOBJECT;
+    }
+    else if (strcmp(c, "RAISE") == 0)
+    {
+        context->RaiseException1(Rexx_Error_System_service_user_defined, context->String("Command Handler"));
+        return NULLOBJECT;
+    }
+    else if (strcmp(c, "GETVAR") == 0)
+    {
+        return context->GetContextVariable("TEST1");
+    }
+    else if (strcmp(c, "SETVAR") == 0)
+    {
+        context->SetContextVariable("TEST1", context->String("Hello World"));
+        return context->False();
+    }
+    else
+    {
+        context->RaiseCondition("FAILURE", command, NULLOBJECT, context->WholeNumber(-1));
+        return NULLOBJECT;
+    }
+}
+
 
 bool REXXENTRY buildContextExitList(InstanceInfo *instanceInfo, RexxContextExit *exitList)
 {
@@ -695,6 +730,8 @@ RexxReturnCode REXXENTRY createInstance(InstanceInfo *instanceInfo, RexxInstance
                                  // space for building exit lists
     RexxContextExit contextExits[RXNOOFEXITS];
     RXSYSEXIT       registeredExits[RXNOOFEXITS];
+    RexxContextEnvironment commandHandlers[2];
+    RexxRegisteredEnvironment subcomHandlers[2];
     int optionCount = 0;
 
     switch (instanceInfo->exitStyle)
@@ -758,6 +795,24 @@ RexxReturnCode REXXENTRY createInstance(InstanceInfo *instanceInfo, RexxInstance
         options[optionCount].option = instanceInfo->initialAddress;
         optionCount++;
     }
+
+    commandHandlers[0].name = "TEST";
+    commandHandlers[0].handler = TestCommandHandler;
+    commandHandlers[1].name = NULL;
+    commandHandlers[1].handler = NULL;
+    options[optionCount].optionName = DIRECT_ENVIRONMENTS;
+    options[optionCount].option = commandHandlers;
+    optionCount++;
+
+    subcomHandlers[0].name = "TESTSUBCOM";
+    subcomHandlers[0].registeredName = "TestSubcomHandler";
+    subcomHandlers[1].name = NULL;
+    subcomHandlers[1].registeredName = NULL;
+    options[optionCount].optionName = REGISTERED_ENVIRONMENTS;
+    options[optionCount].option = subcomHandlers;
+    optionCount++;
+
+    registerSubcomHandler(instanceInfo);
 
     options[optionCount].optionName = APPLICATION_DATA;
     options[optionCount].option = (void *)instanceInfo;

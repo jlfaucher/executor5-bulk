@@ -364,21 +364,29 @@ RexxMethod1(wholenumber_t, getCode,
 RexxMethod3(RexxObjectPtr, callInstanceProgram,
             CSELF, self,
             CSTRING, program,
-            RexxArrayObject, args)
+            OPTIONAL_RexxArrayObject, args)
 {
     InstanceInfo *instanceInfo = (InstanceInfo *)self;
     instanceInfo->programName = program;
-    instanceInfo->argCount = context->ArraySize(args);
-    for (size_t i = 0; i < instanceInfo->argCount; i++)
+
+    if (args == NULLOBJECT)
     {
-        RexxObjectPtr arg = context->ArrayAt(args, i + 1);
-        if (arg != NULLOBJECT)
+        instanceInfo->argCount = 0;
+    }
+    else
+    {
+        instanceInfo->argCount = context->ArraySize(args);
+        for (size_t i = 0; i < instanceInfo->argCount; i++)
         {
-            instanceInfo->arguments[i] = context->CString(arg);
-        }
-        else
-        {
-            instanceInfo->arguments[i] = NULL;
+            RexxObjectPtr arg = context->ArrayAt(args, i + 1);
+            if (arg != NULLOBJECT)
+            {
+                instanceInfo->arguments[i] = context->CString(arg);
+            }
+            else
+            {
+                instanceInfo->arguments[i] = NULL;
+            }
         }
     }
 
@@ -401,17 +409,25 @@ RexxMethod3(RexxObjectPtr, callRexxStart,
 {
     InstanceInfo *instanceInfo = (InstanceInfo *)self;
     instanceInfo->programName = program;
-    instanceInfo->argCount = context->ArraySize(args);
-    for (size_t i = 0; i < instanceInfo->argCount; i++)
+
+    if (args == NULLOBJECT)
     {
-        RexxObjectPtr arg = context->ArrayAt(args, i + 1);
-        if (arg != NULLOBJECT)
+        instanceInfo->argCount = 0;
+    }
+    else
+    {
+        instanceInfo->argCount = context->ArraySize(args);
+        for (size_t i = 0; i < instanceInfo->argCount; i++)
         {
-            instanceInfo->arguments[i] = context->CString(arg);
-        }
-        else
-        {
-            instanceInfo->arguments[i] = NULL;
+            RexxObjectPtr arg = context->ArrayAt(args, i + 1);
+            if (arg != NULLOBJECT)
+            {
+                instanceInfo->arguments[i] = context->CString(arg);
+            }
+            else
+            {
+                instanceInfo->arguments[i] = NULL;
+            }
         }
     }
 

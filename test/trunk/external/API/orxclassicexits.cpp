@@ -544,6 +544,59 @@ int RexxEntry TestValueExit(int code, int subcode, PEXIT exitInfo)
 }
 
 
+RexxReturnCode RexxEntry TestSubcomHandler(CONSTRXSTRING *cmd, unsigned short *flags, PRXSTRING retstr)
+{
+    *flags = RXSUBCOM_OK;
+    // ok, a good address...now do the different commands
+    if (strcmp(cmd->strptr, "GOOD") == 0)
+    {
+        strcpy(retstr->strptr, "0");
+        retstr->strlength = 1;
+        return 0;
+    }
+    else if (strcmp(cmd->strptr, "ERROR") == 0)
+    {
+        strcpy(retstr->strptr, "1");
+        retstr->strlength = 1;
+        *flags = RXSUBCOM_ERROR;
+        return 0;
+    }
+    else if (strcmp(cmd->strptr, "SETVAR") == 0)
+    {
+        setContextVariable("TEST1", "Hello World");
+        strcpy(retstr->strptr, "0");
+        retstr->strlength = 1;
+        return 0;
+    }
+    else if (strcmp(cmd->strptr, "GETVAR") == 0)
+    {
+        getContextVariable("TEST1", retstr);
+        return 0;
+    }
+    else
+    {
+        strcpy(retstr->strptr, "-1");
+        retstr->strlength = 2;
+        *flags = RXSUBCOM_FAILURE;
+        return 0;
+    }
+}
+
+void deregisterSubcomHandler()
+{
+    RexxDeregisterSubcom("TestSubcomHandler", NULL);
+}
+
+
+void REXXENTRY registerSubcomHandler(void *data)
+{
+    void *userData[2];
+    userData[1] = data;
+    // make sure this is deregistered first
+    deregisterSubcomHandler();
+    RexxRegisterSubcomExe("TestSubcomHandler", (REXXPFN)TestSubcomHandler, (char *)userData);
+}
+
 
 void REXXENTRY deregisterExits()
 {
