@@ -700,3 +700,54 @@ bool REXXENTRY buildRegisteredExitList(InstanceInfo *instanceInfo, RXSYSEXIT *ex
     }
     return false;
 }
+
+
+void REXXENTRY invokeRexxStart(InstanceInfo *instanceInfo)
+{
+    CONSTRXSTRING args[10];
+    RXSYSEXIT       registeredExits[RXNOOFEXITS];
+    short           callRC = 0;
+    RXSTRING        returnValue;
+
+    instanceInfo->code = 0;
+    instanceInfo->rc = 0;
+    strcpy(instanceInfo->returnResult, "");
+
+    for (size_t i = 0; i < instanceInfo->argCount; i++)
+    {
+        if (instanceInfo->arguments[i] != NULL)
+        {
+            MAKERXSTRING(args[i], instanceInfo->arguments[i], strlen(instanceInfo->arguments[i]));
+        }
+        else
+        {
+            MAKERXSTRING(args[i], NULL, 0);
+        }
+    }
+
+    RXSYSEXIT *exits = NULL;
+
+    if (instanceInfo->exitStyle == InstanceInfo::REGISTERED_DLL)
+    {
+        registerDllExits((void *)instanceInfo);
+        buildRegisteredExitList(instanceInfo, registeredExits);
+        exits = registeredExits;
+    }
+    MAKERXSTRING(returnValue, NULL, 0);
+
+    int rc = RexxStart(instanceInfo->argCount, args, instanceInfo->programName, NULL, instanceInfo->initialAddress, RXCOMMAND, exits, &callRC, &returnValue);
+
+    if (rc < 0)
+    {
+        instanceInfo->rc = -rc;
+    }
+    else
+    {
+        if (returnValue.strptr != NULL)
+        {
+            strncpy(instanceInfo->returnResult, returnValue.strptr, sizeof(instanceInfo->returnResult));
+            RexxFreeMemory(returnValue.strptr);
+        }
+    }
+    deregisterExits();
+}

@@ -807,4 +807,5 @@ void REXXENTRY invokeProgram(InstanceInfo *instanceInfo)
     }
     // make sure we terminate this first
     instance->Terminate();
+    deregisterExits();
 }

@@ -394,6 +394,39 @@ RexxMethod3(RexxObjectPtr, callInstanceProgram,
 }
 
 
+RexxMethod3(RexxObjectPtr, callRexxStart,
+            CSELF, self,
+            CSTRING, program,
+            RexxArrayObject, args)
+{
+    InstanceInfo *instanceInfo = (InstanceInfo *)self;
+    instanceInfo->programName = program;
+    instanceInfo->argCount = context->ArraySize(args);
+    for (size_t i = 0; i < instanceInfo->argCount; i++)
+    {
+        RexxObjectPtr arg = context->ArrayAt(args, i + 1);
+        if (arg != NULLOBJECT)
+        {
+            instanceInfo->arguments[i] = context->CString(arg);
+        }
+        else
+        {
+            instanceInfo->arguments[i] = NULL;
+        }
+    }
+
+    invokeRexxStart(instanceInfo);
+    if (instanceInfo->rc != 0)
+    {
+        return context->Nil();
+    }
+    else
+    {
+        return context->String(instanceInfo->returnResult);
+    }
+}
+
+
 RexxMethodEntry orxtest_methods[] = {
     REXX_METHOD(init,                    init),
     REXX_METHOD(setExitType,             setExitType),
@@ -430,6 +463,7 @@ RexxMethodEntry orxtest_methods[] = {
     REXX_METHOD(getRC,                   getRC),
     REXX_METHOD(getCode,                 getCode),
     REXX_METHOD(callInstanceProgram,     callInstanceProgram),
+    REXX_METHOD(callRexxStart,           callRexxStart),
     REXX_LAST_METHOD()
 };
 

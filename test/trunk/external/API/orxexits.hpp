@@ -223,5 +223,6 @@ bool REXXENTRY buildRegisteredExitList(InstanceInfo *instanceInfo, RXSYSEXIT *ex
 RexxReturnCode REXXENTRY createInstance(InstanceInfo *instanceInfo, RexxInstance *&instance, RexxThreadContext *&threadContext);
 bool REXXENTRY buildContextExitList(InstanceInfo *instanceInfo, RexxContextExit *exitList);
 void REXXENTRY invokeProgram(InstanceInfo *instanceInfo);
+void REXXENTRY invokeRexxStart(InstanceInfo *instanceInfo);
 
 #endif

@@ -96,3 +96,4 @@
 ::method getRC EXTERNAL 'LIBRARY orxinvocation getRC'
 ::method getCode EXTERNAL 'LIBRARY orxinvocation getCode'
 ::method callInstanceProgram EXTERNAL 'LIBRARY orxinvocation callInstanceProgram'
+::method callRexxStart EXTERNAL 'LIBRARY orxinvocation callRexxStart'
