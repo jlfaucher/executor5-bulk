@@ -67,7 +67,8 @@ if \ .local~hasEntry('OOTEST_FRAMEWORK_VERSION') then do
   if \ .local~hasEntry(ooTest.originalWorkingDir) then
     .local~ooTest.originalWorkingDir = directory()
 
-  -- Set up the external library path
+  -- Set up the external library path.  Although this is a bit of a misnomer,
+  -- the external directory may also have regular executables in it.
   j = setExternalLibDir()
 
 end
@@ -147,9 +148,14 @@ return value(name, , 'ENVIRONMENT')
 
   libDir = .ooTest.dir || sl || 'bin' || sl || os
 
+  -- libDir may / will also contain executables.  So add it to the path for all
+  -- OSes.
+  j = addToPath(libDir)
+
   select
     when os == "WINDOWS" then do
-      j = addToPath(libDir)
+      -- Don't currently need to do anything else here.
+      nop
     end
     when os == 'AIX' then do
       curLibPath = getEnvValue("LIBPATH")
