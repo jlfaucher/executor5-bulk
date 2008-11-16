@@ -38,6 +38,7 @@
 
 # Setup
 ORXLFLAGS = --export-dynamic -shared -nostartfiles
+ORXEXELFLAGS = -L. -ldl
 ORXCFLAGS =  -fPIC
 COMMON_SRC_DEPS =
 FUNCTION_SRC_DEPS = $(COMMON_SRC_DEPS)
@@ -61,7 +62,8 @@ endif
 # Build the libraries
 all: $(OOTEST_BIN_DIR)/liborxfunction.so $(OOTEST_BIN_DIR)/liborxmethod.so \
      $(OOTEST_BIN_DIR)/liborxclassic.so $(OOTEST_BIN_DIR)/liborxclassic1.so \
-     $(OOTEST_BIN_DIR)/orxexits.so $(OOTEST_BIN_DIR)/orxinvocation.so
+     $(OOTEST_BIN_DIR)/liborxexits.so $(OOTEST_BIN_DIR)/liborxinvocation.so \
+     $(OOTEST_BIN_DIR)/rexxinstance
 
 $(OOTEST_BIN_DIR)/liborxfunction.so: liborxfunction.so
 	cp liborxfunction.so $(OOTEST_BIN_DIR)
@@ -75,12 +77,14 @@ $(OOTEST_BIN_DIR)/liborxclassic.so: liborxclassic.so
 $(OOTEST_BIN_DIR)/liborxclassic1.so: liborxclassic1.so
 	cp liborxclassic1.so $(OOTEST_BIN_DIR)
 
-$(OOTEST_BIN_DIR)/orxexits.so: orxexits.so
-	cp orxexits.so $(OOTEST_BIN_DIR)
+$(OOTEST_BIN_DIR)/liborxexits.so: liborxexits.so
+	cp liborxexits.so $(OOTEST_BIN_DIR)
 
-$(OOTEST_BIN_DIR)/orxinvocation.so: orxinvocation.so
-	cp orxinvocation.so $(OOTEST_BIN_DIR)
+$(OOTEST_BIN_DIR)/liborxinvocation.so: liborxinvocation.so
+	cp liborxinvocation.so $(OOTEST_BIN_DIR)
 
+$(OOTEST_BIN_DIR)/rexxinstance: rexxinstance
+	cp rexxinstance $(OOTEST_BIN_DIR)
 
 # Build the shared library
 liborxfunction.so: orxfunction.o
@@ -130,13 +134,20 @@ orxclassic1.o: orxclassic1.c $(FUNCTION_SRC_DEPS)
 	gcc -c $(ORXCFLAGS) $(REXX_INCLUDES) orxclassic1.c
 
 # Build the shared library
-orxexits.so: orxclassicexits.o orxinstance.o
-	gcc $(ORXLFLAGS) $(REXX_LIBS) -lrexx -lrexxapi -o orxexits.so orxclassicexits.o orxinstance.o
+liborxexits.so: orxclassicexits.o orxinstance.o
+	gcc $(ORXLFLAGS) $(REXX_LIBS) -lrexx -lrexxapi -o liborxexits.so orxclassicexits.o orxinstance.o
 
 # Build the shared library
-orxinvocation.so: orxinvocation.o
-	gcc $(ORXLFLAGS) $(REXX_LIBS) -lrexx -lrexxapi -o orxinvocation.so orxinvocation.o
+liborxinvocation.so: orxinvocation.o
+	gcc $(ORXLFLAGS) $(REXX_LIBS) -lrexx -lrexxapi -L. -lorxexits -o liborxinvocation.so orxinvocation.o
 
+# Build the executable file
+rexxinstance: rexxinstance.o
+	gcc $(ORXEXELFLAGS) -lorxexits rexxinstance.o -o rexxinstance
+
+# Compile the objects
+rexxinstance.o: rexxinstance.cpp orxexits.hpp
+	gcc -c $(ORXCFLAGS) $(REXX_INCLUDES) rexxinstance.cpp
 
 clean:
 	rm -f *.so *.o $(OOTEST_BIN_DIR)/lib*.so
