@@ -344,7 +344,6 @@ RexxMethod1(CSTRING, getValueExit,
     return (const char *)instanceInfo->val;
 }
 
-
 RexxMethod1(wholenumber_t, getRC,
             CSELF, self)
 {
@@ -357,6 +356,25 @@ RexxMethod1(wholenumber_t, getCode,
             CSELF, self)
 {
      InstanceInfo *instanceInfo = (InstanceInfo *)self;
+     return instanceInfo->code;
+}
+
+RexxMethod2(wholenumber_t, setRC,
+            CSELF, self,
+            int, rc)
+{
+     InstanceInfo *instanceInfo = (InstanceInfo *)self;
+     instanceInfo->rc = rc;
+     return instanceInfo->rc;
+}
+
+
+RexxMethod2(wholenumber_t, setCode,
+            CSELF, self,
+            int, code)
+{
+     InstanceInfo *instanceInfo = (InstanceInfo *)self;
+     instanceInfo->code = code;
      return instanceInfo->code;
 }
 
@@ -478,6 +496,8 @@ RexxMethodEntry orxtest_methods[] = {
     REXX_METHOD(getValueExit,            getValueExit),
     REXX_METHOD(getRC,                   getRC),
     REXX_METHOD(getCode,                 getCode),
+    REXX_METHOD(setRC,                   setRC),
+    REXX_METHOD(setCode,                 setCode),
     REXX_METHOD(callInstanceProgram,     callInstanceProgram),
     REXX_METHOD(callRexxStart,           callRexxStart),
     REXX_LAST_METHOD()

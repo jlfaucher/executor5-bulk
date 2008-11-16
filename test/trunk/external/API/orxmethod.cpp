@@ -1985,7 +1985,7 @@ RexxMethod4(int,
             OPTIONAL_RexxArrayObject, add,
             OPTIONAL_RexxObjectPtr, result)
 {
-    context->RaiseCondition(name, desc, add, result);
+    context->RaiseCondition(name, (RexxStringObject)desc, add, result);
     return 0;
 }
 

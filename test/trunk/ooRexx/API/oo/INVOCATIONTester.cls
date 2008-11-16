@@ -38,7 +38,16 @@
 
 ::class 'INVOCATIONtester' public
 
-::method init EXTERNAL 'LIBRARY orxinvocation init'
+::method init
+  expose programName initialAddress searchPath extensions loadLibrary
+  programName = .nil
+  initialAddress = .nil
+  searchPath = .nil
+  extensions = .nil
+  loadLibrary = .nil
+  self~!init
+
+::method !init PRIVATE EXTERNAL 'LIBRARY orxinvocation init'
 ::method 'ExitType=' EXTERNAL 'LIBRARY orxinvocation setExitType'
 ::method 'ExitType' EXTERNAL 'LIBRARY orxinvocation getExitType'
 ::method !setProgramName PRIVATE EXTERNAL 'LIBRARY orxinvocation setProgramName'
@@ -93,7 +102,104 @@
 ::attribute NovalueExit EXTERNAL 'LIBRARY orxinvocation'
 ::attribute ValueExit EXTERNAL 'LIBRARY orxinvocation'
 
-::method getRC EXTERNAL 'LIBRARY orxinvocation getRC'
-::method getCode EXTERNAL 'LIBRARY orxinvocation getCode'
+::attribute RC EXTERNAL 'LIBRARY orxinvocation'
+::attribute code EXTERNAL 'LIBRARY orxinvocation'
 ::method callInstanceProgram EXTERNAL 'LIBRARY orxinvocation callInstanceProgram'
 ::method callRexxStart EXTERNAL 'LIBRARY orxinvocation callRexxStart'
+
+::class PROCESSTester PUBLIC subclass INVOCATIONTester
+::method callInstanceProgram
+  use arg programName
+  return self~invokeProgram("INSTANCE", programName, arg(2))
+
+::method callRexxStart
+  use arg programName
+  return self~invokeProgram("REXXSTART", programName, arg(2))
+
+::method addExit
+  use arg command, option, value
+  if value \= "DISABLED" then do
+      command~append(option)
+      command~append(value)
+  end
+
+::method invokeProgram
+  use arg method, programName, args
+
+  -- make sure every test starts out clean
+  self~RC = 0
+  self~code = 0
+
+  command = .mutablebuffer~new
+  command~append("rexxinstance ")
+  command~append(method)
+  if self~exitType \= "NONE" then do
+      command~append(" -EXIT ")
+      command~append(self~exitType)
+      self~addExit(command, " -FNC ", self~functionExit)
+      self~addExit(command, " -CMD ", self~commandExit)
+      self~addExit(command, " -MSQ ", self~queueExit)
+      self~addExit(command, " -SIO ", self~IOExit)
+      self~addExit(command, " -HLT ", self~haltExit)
+      self~addExit(command, " -TRC ", self~traceExit)
+      self~addExit(command, " -INI ", self~initExit)
+      self~addExit(command, " -TER ", self~termExit)
+      self~addExit(command, " -EXF ", self~scriptingExit)
+      self~addExit(command, " -EXF ", self~scriptingExit)
+      self~addExit(command, " -OFNC ", self~objectFunctionExit)
+      self~addExit(command, " -VAR ", self~novalueExit)
+      self~addExit(command, " -VAL ", self~valueExit)
+  end
+
+  if self~searchPath \= .nil then do
+      command~append(" -PATH ")
+      command~append('"')
+      command~append(self~searchPath)
+      command~append('"')
+  end
+
+  if self~extensions \= .nil then do
+      command~append(" -EXT ")
+      command~append(self~extensions)
+  end
+
+  if self~initialAddress \= .nil then do
+      command~append(" -ADDRESS ")
+      command~append(self~initialAddress)
+  end
+
+  if self~loadLibrary \= .nil then do
+      command~append(" -LIB ")
+      command~append(self~loadLibrary)
+  end
+
+  -- do the command and each argument as quoted strings
+  command~append(' "')
+  command~append(programName)
+  command~append('"')
+
+  if args~isa(.Array) then do
+      do argument over args
+          command~append(' "')
+          command~append(argument)
+          command~append('"')
+      end
+  end
+
+  testQueue = .rexxqueue~new("TESTQUEUE")
+  testQueue~empty   -- make sure there's nothing in this
+
+  issuedCommand = command~string
+  issuedCommand
+
+  if rc == 0 then do
+      return testQueue~pull
+  end
+  else do
+      response = testQueue~pull
+      if response \= .nil then do
+          parse var response self~rc self~code .
+      end
+      return .nil  -- indicates a failure return
+  end
+

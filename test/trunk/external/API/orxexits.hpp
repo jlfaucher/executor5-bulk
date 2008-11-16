@@ -38,6 +38,7 @@
 #define orsexits_included
 
 #include "oorexxapi.h"
+#include <string.h>
 
 class InstanceInfo
 {
@@ -68,6 +69,12 @@ public:
         REGISTERED_DLL = 2,
         REGISTERED_EXE = 3,
     } ExitType;
+
+    typedef enum
+    {
+        INSTANCE = 0,
+        REXXSTART = 1
+    } CallType;
 
     class ExitConfig
     {
@@ -178,9 +185,11 @@ public:
             ExitAction action;
     };
 
-    InstanceInfo() : exitStyle(NONE), programName(NULL), extensionPath(NULL), initialAddress(NULL),
+    InstanceInfo() : callType(INSTANCE), exitStyle(NONE), programName(NULL), extensionPath(NULL), initialAddress(NULL),
         extensions(NULL), loadLibrary(NULL), fnc(), cmd(), msq(), sio(), hlt(), trc(), ini(),
         ter(), exf(), var(), val(), ofnc(), code(0), rc(0), argCount(0) { }
+
+    CallType callType;
 
     // the type of exit use
     ExitType exitStyle;
@@ -225,5 +234,6 @@ RexxReturnCode REXXENTRY createInstance(InstanceInfo *instanceInfo, RexxInstance
 bool REXXENTRY buildContextExitList(InstanceInfo *instanceInfo, RexxContextExit *exitList);
 void REXXENTRY invokeProgram(InstanceInfo *instanceInfo);
 void REXXENTRY invokeRexxStart(InstanceInfo *instanceInfo);
+void REXXENTRY buildInfo(InstanceInfo *instanceInfo, int argc, char **argv);
 
 #endif

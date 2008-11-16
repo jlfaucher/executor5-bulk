@@ -43,7 +43,7 @@ use arg testTypes
 
   parse source . . s
   group = .TestGroup~new(s)
-  group~add(.INVOCATION.testGroup)
+  group~add(.ProcessInvocation.testGroup)
 
   if arg(1, 'E'), \ group~hasTestTypes(testTypes) then do
     group~markNoTests("This is a native API test and not included in the test types to execute.")
@@ -76,7 +76,7 @@ return .ooTestResult~new(5)~~addException(err)
 ::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
 -- class named exactly like file
-::class "INVOCATION.testGroup" subclass ooTestCase public
+::class "ProcessInvocation.testGroup" subclass ooTestCase public
 
 ::method init class
   forward class (super) continue
@@ -85,32 +85,28 @@ return .ooTestResult~new(5)~~addException(err)
   self~ooTestType = .ooTestTypes~NATIVE_API_TEST
 
 ::method TestCallReturn
-  tester = .InvocationTester~new
+  tester = .ProcessTester~new
   self~assertEquals(0, tester~callInstanceProgram(self~resolveTestProgram('tests/callReturn.rex')))
   self~assertEquals(5, tester~callInstanceProgram(self~resolveTestProgram('tests/callReturn.rex'), .array~of(1,2)))
-  args = .array~new(3)
-  args[1] = 1
-  args[3] = 3
-  self~assertEquals(7, tester~callInstanceProgram(self~resolveTestProgram('tests/callReturn.rex'), args))
 
 ::method TestCallType
-  tester = .InvocationTester~new
+  tester = .ProcessTester~new
   self~assertEquals("COMMAND", tester~callInstanceProgram(self~resolveTestProgram('tests/callType.rex')))
 
 ::method TestInitialAddress
-  tester = .InvocationTester~new
+  tester = .ProcessTester~new
   self~assertEquals(address(), tester~callInstanceProgram(self~resolveTestProgram('tests/initialAddress.rex')))
   tester~initialAddress = "TESTING"
   self~assertEquals("TESTING", tester~callInstanceProgram(self~resolveTestProgram('tests/initialAddress.rex')))
 
 ::method TestSyntaxError
-  tester = .InvocationTester~new
+  tester = .ProcessTester~new
   tester~callInstanceProgram(self~resolveTestProgram('tests/syntaxError.rex'))
   self~assertEquals(42, tester~RC)
   self~assertEquals(42003, tester~code)
 
 ::method TestInitExit
-  tester = .InvocationTester~new
+  tester = .ProcessTester~new
   tester~exitType = "CONTEXT"
   tester~initExit = "SKIP"
   self~assertEquals("TEST1", tester~callInstanceProgram(self~resolveTestProgram('tests/initExit.rex')))
@@ -144,7 +140,7 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertEquals(48001, tester~code)
 
 ::method TestTermExit
-  tester = .InvocationTester~new
+  tester = .ProcessTester~new
   tester~exitType = "CONTEXT"
   tester~termExit = "SKIP"
   tester~callInstanceProgram(self~resolveTestProgram('tests/terminationExit.rex'), .array~of("BAD"))
@@ -185,7 +181,7 @@ return .ooTestResult~new(5)~~addException(err)
 
 
 ::method TestContextCommandExit
-  tester = .InvocationTester~new
+  tester = .ProcessTester~new
   tester~exitType = "CONTEXT"
   tester~commandExit = "SKIP"
   self~assertEquals("FAILURE 30", tester~callInstanceProgram(self~resolveTestProgram('tests/commandExit.rex'), .array~of("FOOBAR", "ECHO")))
@@ -204,7 +200,7 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertEquals(48900, tester~code)
 
 ::method TestExeCommandExit
-  tester = .InvocationTester~new
+  tester = .ProcessTester~new
   tester~exitType = "EXE"
   tester~commandExit = "SKIP"
   self~assertEquals("FAILURE 30", tester~callInstanceProgram(self~resolveTestProgram('tests/commandExit.rex'), .array~of("FOOBAR", "ECHO")))
@@ -219,7 +215,7 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertEquals(48001, tester~code)
 
 ::method TestDllCommandExit
-  tester = .InvocationTester~new
+  tester = .ProcessTester~new
   tester~exitType = "DLL"
   tester~commandExit = "SKIP"
   self~assertEquals("FAILURE 30", tester~callInstanceProgram(self~resolveTestProgram('tests/commandExit.rex'), .array~of("FOOBAR", "ECHO")))
@@ -234,7 +230,7 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertEquals(48001, tester~code)
 
 ::method TestContextFunctionExit
-  tester = .InvocationTester~new
+  tester = .ProcessTester~new
   tester~exitType = "CONTEXT"
   tester~functionExit = "SKIP"
   self~assertEquals("1", tester~callInstanceProgram(self~resolveTestProgram('tests/functionExit.rex'), .array~of("testarguments(1,2)")))
@@ -256,7 +252,7 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertEquals(48900, tester~code)
 
 ::method TestExeFunctionExit
-  tester = .InvocationTester~new
+  tester = .ProcessTester~new
   tester~exitType = "EXE"
   tester~functionExit = "SKIP"
   self~assertEquals("1", tester~callInstanceProgram(self~resolveTestProgram('tests/functionExit.rex'), .array~of("testarguments(1,2)")))
@@ -274,7 +270,7 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertEquals(48001, tester~code)
 
 ::method TestDllFunctionExit
-  tester = .InvocationTester~new
+  tester = .ProcessTester~new
   tester~exitType = "DLL"
   tester~functionExit = "SKIP"
   self~assertEquals("1", tester~callInstanceProgram(self~resolveTestProgram('tests/functionExit.rex'), .array~of("testarguments(1,2)")))
@@ -292,7 +288,7 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertEquals(48001, tester~code)
 
 ::method TestContextObjectFunctionExit
-  tester = .InvocationTester~new
+  tester = .ProcessTester~new
   tester~exitType = "CONTEXT"
   tester~objectFunctionExit = "SKIP"
   self~assertEquals("1", tester~callInstanceProgram(self~resolveTestProgram('tests/functionExit.rex'), .array~of("testarguments(1,2)")))
@@ -310,7 +306,7 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertEquals(1, tester~callInstanceProgram(self~resolveTestProgram('tests/contextVariables.rex')))
 
 ::method TestContextScriptFunctionExit
-  tester = .InvocationTester~new
+  tester = .ProcessTester~new
   tester~exitType = "CONTEXT"
   tester~scriptingExit = "SKIP"
   self~assertEquals("1", tester~callInstanceProgram(self~resolveTestProgram('tests/functionExit.rex'), .array~of("testarguments(1,2)")))
@@ -338,7 +334,7 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertEquals(48900, tester~code)
 
 ::method TestContextQueueExitPush
-  tester = .InvocationTester~new
+  tester = .ProcessTester~new
   tester~exitType = "CONTEXT"
   tester~queueExit = "SKIP"
   self~assertEquals("1", tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitPush.rex')))
@@ -355,7 +351,7 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertEquals(48900, tester~code)
 
 ::method TestExeQueueExitPush
-  tester = .InvocationTester~new
+  tester = .ProcessTester~new
   tester~exitType = "EXE"
   tester~queueExit = "SKIP"
   self~assertEquals("1", tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitPush.rex')))
@@ -368,7 +364,7 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertEquals(48001, tester~code)
 
 ::method TestDllQueueExitPush
-  tester = .InvocationTester~new
+  tester = .ProcessTester~new
   tester~exitType = "DLL"
   tester~queueExit = "SKIP"
   self~assertEquals("1", tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitPush.rex')))
@@ -381,7 +377,7 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertEquals(48001, tester~code)
 
 ::method TestContextQueueExitQueue
-  tester = .InvocationTester~new
+  tester = .ProcessTester~new
   tester~exitType = "CONTEXT"
   tester~queueExit = "SKIP"
   self~assertEquals("1", tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitQueue.rex')))
@@ -398,7 +394,7 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertEquals(48900, tester~code)
 
 ::method TestExeQueueExitQueue
-  tester = .InvocationTester~new
+  tester = .ProcessTester~new
   tester~exitType = "EXE"
   tester~queueExit = "SKIP"
   self~assertEquals("1", tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitQueue.rex')))
@@ -411,7 +407,7 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertEquals(48001, tester~code)
 
 ::method TestDllQueueExitQueue
-  tester = .InvocationTester~new
+  tester = .ProcessTester~new
   tester~exitType = "DLL"
   tester~queueExit = "SKIP"
   self~assertEquals("1", tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitQueue.rex')))
@@ -424,7 +420,7 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertEquals(48001, tester~code)
 
 ::method TestContextQueueExitSize
-  tester = .InvocationTester~new
+  tester = .ProcessTester~new
   tester~exitType = "CONTEXT"
   tester~queueExit = "SKIP"
   self~assertEquals("0", tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitSize.rex')))
@@ -441,7 +437,7 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertEquals(48900, tester~code)
 
 ::method TestExeQueueExitSize
-  tester = .InvocationTester~new
+  tester = .ProcessTester~new
   tester~exitType = "EXE"
   tester~queueExit = "SKIP"
   self~assertEquals("0", tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitSize.rex')))
@@ -454,7 +450,7 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertEquals(48001, tester~code)
 
 ::method TestDllQueueExitSize
-  tester = .InvocationTester~new
+  tester = .ProcessTester~new
   tester~exitType = "DLL"
   tester~queueExit = "SKIP"
   self~assertEquals("0", tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitSize.rex')))
@@ -467,7 +463,7 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertEquals(48001, tester~code)
 
 ::method TestContextQueueExitPull
-  tester = .InvocationTester~new
+  tester = .ProcessTester~new
   tester~exitType = "CONTEXT"
   tester~queueExit = "SKIP"
   self~assertEquals("Bonjour", tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitPull.rex')))
@@ -485,7 +481,7 @@ return .ooTestResult~new(5)~~addException(err)
   .stdque~empty -- safety measure to clear out the queue
 
 ::method TestExeQueueExitPull
-  tester = .InvocationTester~new
+  tester = .ProcessTester~new
   tester~exitType = "EXE"
   tester~queueExit = "SKIP"
   self~assertEquals("Bonjour", tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitPull.rex')))
@@ -499,7 +495,7 @@ return .ooTestResult~new(5)~~addException(err)
   .stdque~empty -- safety measure to clear out the queue
 
 ::method TestDllQueueExitPull
-  tester = .InvocationTester~new
+  tester = .ProcessTester~new
   tester~exitType = "DLL"
   tester~queueExit = "SKIP"
   self~assertEquals("Bonjour", tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitPull.rex')))
@@ -513,7 +509,7 @@ return .ooTestResult~new(5)~~addException(err)
   .stdque~empty -- safety measure to clear out the queue
 
 ::method TestContextQueueExitSet
-  tester = .InvocationTester~new
+  tester = .ProcessTester~new
   tester~exitType = "CONTEXT"
   tester~queueExit = "SKIP"
   .stdque~set('SESSION') -- safety measure to reset the queue
@@ -533,7 +529,7 @@ return .ooTestResult~new(5)~~addException(err)
   .stdque~set('SESSION') -- safety measure to reset the queue
 
 ::method TestExeQueueExitSet
-  tester = .InvocationTester~new
+  tester = .ProcessTester~new
   tester~exitType = "EXE"
   tester~queueExit = "SKIP"
   .stdque~set('SESSION') -- safety measure to reset the queue
@@ -548,7 +544,7 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertEquals(48001, tester~code)
 
 ::method TestDllQueueExitSet
-  tester = .InvocationTester~new
+  tester = .ProcessTester~new
   tester~exitType = "DLL"
   tester~queueExit = "SKIP"
   .stdque~set('SESSION') -- safety measure to reset the queue
@@ -563,7 +559,7 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertEquals(48001, tester~code)
 
 ::method TestContextIOExitSay
-  tester = .InvocationTester~new
+  tester = .ProcessTester~new
   tester~exitType = "CONTEXT"
   tester~ioExit = "SKIP"
   self~assertEquals("HELLO", tester~callInstanceProgram(self~resolveTestProgram('tests/ioExitSay.rex')))
@@ -580,7 +576,7 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertEquals(48900, tester~code)
 
 ::method TestExeIOExitSay
-  tester = .InvocationTester~new
+  tester = .ProcessTester~new
   tester~exitType = "EXE"
   tester~ioExit = "SKIP"
   self~assertEquals("HELLO", tester~callInstanceProgram(self~resolveTestProgram('tests/ioExitSay.rex')))
@@ -593,7 +589,7 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertEquals(48001, tester~code)
 
 ::method TestDllIOExitSay
-  tester = .InvocationTester~new
+  tester = .ProcessTester~new
   tester~exitType = "DLL"
   tester~ioExit = "SKIP"
   self~assertEquals("HELLO", tester~callInstanceProgram(self~resolveTestProgram('tests/ioExitSay.rex')))
@@ -606,7 +602,7 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertEquals(48001, tester~code)
 
 ::method TestContextIOExitTrace
-  tester = .InvocationTester~new
+  tester = .ProcessTester~new
   tester~exitType = "CONTEXT"
   tester~ioExit = "SKIP"
   self~assertEquals("    47 *-* call trace OFF", tester~callInstanceProgram(self~resolveTestProgram('tests/ioExitTrace.rex')))
@@ -623,7 +619,7 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertEquals(48900, tester~code)
 
 ::method TestExeIOExitTrace
-  tester = .InvocationTester~new
+  tester = .ProcessTester~new
   tester~exitType = "EXE"
   tester~ioExit = "SKIP"
   self~assertEquals("    47 *-* call trace OFF", tester~callInstanceProgram(self~resolveTestProgram('tests/ioExitTrace.rex')))
@@ -636,7 +632,7 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertEquals(48001, tester~code)
 
 ::method TestDllIOExitTrace
-  tester = .InvocationTester~new
+  tester = .ProcessTester~new
   tester~exitType = "DLL"
   tester~ioExit = "SKIP"
   self~assertEquals("    47 *-* call trace OFF", tester~callInstanceProgram(self~resolveTestProgram('tests/ioExitTrace.rex')))
@@ -649,7 +645,7 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertEquals(48001, tester~code)
 
 ::method TestContextIOExitPull
-  tester = .InvocationTester~new
+  tester = .ProcessTester~new
   tester~exitType = "CONTEXT"
   tester~ioExit = "SKIP"
   self~assertEquals("Goodnight moon", tester~callInstanceProgram(self~resolveTestProgram('tests/ioExitPull.rex')))
@@ -666,7 +662,7 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertEquals(48900, tester~code)
 
 ::method TestExeIOExitPull
-  tester = .InvocationTester~new
+  tester = .ProcessTester~new
   tester~exitType = "EXE"
   tester~ioExit = "SKIP"
   self~assertEquals("Goodnight moon", tester~callInstanceProgram(self~resolveTestProgram('tests/ioExitPull.rex')))
@@ -679,7 +675,7 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertEquals(48001, tester~code)
 
 ::method TestDllIOExitPull
-  tester = .InvocationTester~new
+  tester = .ProcessTester~new
   tester~exitType = "DLL"
   tester~ioExit = "SKIP"
   self~assertEquals("Goodnight moon", tester~callInstanceProgram(self~resolveTestProgram('tests/ioExitPull.rex')))
@@ -692,7 +688,7 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertEquals(48001, tester~code)
 
 ::method TestContextIOExitDebug
-  tester = .InvocationTester~new
+  tester = .ProcessTester~new
   tester~exitType = "CONTEXT"
   tester~ioExit = "SKIP"
   self~assertEquals("CALLED", tester~callInstanceProgram(self~resolveTestProgram('tests/ioExitDebug.rex')))
@@ -709,7 +705,7 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertEquals(48900, tester~code)
 
 ::method TestExeIOExitDebug
-  tester = .InvocationTester~new
+  tester = .ProcessTester~new
   tester~exitType = "EXE"
   tester~ioExit = "SKIP"
   self~assertEquals("CALLED", tester~callInstanceProgram(self~resolveTestProgram('tests/ioExitDebug.rex')))
@@ -722,7 +718,7 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertEquals(48001, tester~code)
 
 ::method TestDllIOExitDebug
-  tester = .InvocationTester~new
+  tester = .ProcessTester~new
   tester~exitType = "DLL"
   tester~ioExit = "SKIP"
   self~assertEquals("CALLED", tester~callInstanceProgram(self~resolveTestProgram('tests/ioExitDebug.rex')))
@@ -735,7 +731,7 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertEquals(48001, tester~code)
 
 ::method TestContextNovalueExit
-  tester = .InvocationTester~new
+  tester = .ProcessTester~new
   tester~exitType = "CONTEXT"
   tester~novalueExit = "SKIP"
   self~assertEquals("FOO", tester~callInstanceProgram(self~resolveTestProgram('tests/novalueExit.rex')))
@@ -752,7 +748,7 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertEquals(48900, tester~code)
 
 ::method TestContextValueExit
-  tester = .InvocationTester~new
+  tester = .ProcessTester~new
   tester~exitType = "CONTEXT"
   tester~valueExit = "SKIP"
   -- the default behavior is to raise an error for an unknown environment selector
@@ -772,7 +768,7 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertEquals(48900, tester~code)
 
 ::method TestContextHaltExit
-  tester = .InvocationTester~new
+  tester = .ProcessTester~new
   tester~exitType = "CONTEXT"
   -- this is the default behavior until we turn it on using the command exit
   tester~haltExit = "SKIP"
@@ -789,7 +785,7 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertEquals(48900, tester~code)
 
 ::method TestExeHaltExit
-  tester = .InvocationTester~new
+  tester = .ProcessTester~new
   tester~exitType = "EXE"
   -- this is the default behavior until we turn it on using the command exit
   tester~haltExit = "SKIP"
@@ -802,7 +798,7 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertEquals(48001, tester~code)
 
 ::method TestDllHaltExit
-  tester = .InvocationTester~new
+  tester = .ProcessTester~new
   tester~exitType = "DLL"
   -- this is the default behavior until we turn it on using the command exit
   tester~haltExit = "SKIP"
@@ -815,7 +811,7 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertEquals(48001, tester~code)
 
 ::method TestContextTraceExit
-  tester = .InvocationTester~new
+  tester = .ProcessTester~new
   tester~exitType = "CONTEXT"
   -- this is the default behavior until we turn it on using the command exit
   tester~traceExit = "SKIP"
@@ -832,7 +828,7 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertEquals(48900, tester~code)
 
 ::method TestExeTraceExit
-  tester = .InvocationTester~new
+  tester = .ProcessTester~new
   tester~exitType = "EXE"
   -- this is the default behavior until we turn it on using the command exit
   tester~traceExit = "SKIP"
@@ -845,7 +841,7 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertEquals(48001, tester~code)
 
 ::method TestDllTraceExit
-  tester = .InvocationTester~new
+  tester = .ProcessTester~new
   tester~exitType = "DLL"
   -- this is the default behavior until we turn it on using the command exit
   tester~traceExit = "SKIP"
@@ -858,7 +854,7 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertEquals(48001, tester~code)
 
 ::method TestCommandHandler
-  tester = .InvocationTester~new
+  tester = .ProcessTester~new
   self~assertEquals("SUCCESS 0", tester~callInstanceProgram(self~resolveTestProgram('tests/commandHandlerGood.rex'), .array~of("TEST", "GOOD")))
   self~assertEquals("ERROR 1", tester~callInstanceProgram(self~resolveTestProgram('tests/commandHandlerGood.rex'), .array~of("TEST", "ERROR")))
   self~assertEquals("FAILURE -1", tester~callInstanceProgram(self~resolveTestProgram('tests/commandHandlerGood.rex'), .array~of("TEST", "FAILURE")))
@@ -869,7 +865,7 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertEquals("SUCCESS Hello World", tester~callInstanceProgram(self~resolveTestProgram('tests/commandHandlerGetvar.rex'), .array~of("TEST")))
 
 ::method TestSubcomHandler
-  tester = .InvocationTester~new
+  tester = .ProcessTester~new
   self~assertEquals("SUCCESS 0", tester~callInstanceProgram(self~resolveTestProgram('tests/commandHandlerGood.rex'), .array~of("TESTSUBCOM", "GOOD")))
   self~assertEquals("ERROR 1", tester~callInstanceProgram(self~resolveTestProgram('tests/commandHandlerGood.rex'), .array~of("TESTSUBCOM", "ERROR")))
   self~assertEquals("FAILURE -1", tester~callInstanceProgram(self~resolveTestProgram('tests/commandHandlerGood.rex'), .array~of("TESTSUBCOM", "FAILURE")))
@@ -877,7 +873,7 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertEquals("SUCCESS Hello World", tester~callInstanceProgram(self~resolveTestProgram('tests/commandHandlerGetvar.rex'), .array~of("TESTSUBCOM")))
 
 ::method TestPathHandler
-  tester = .InvocationTester~new
+  tester = .ProcessTester~new
   tester~searchPath = self~resolveTestProgram('path')
   tester~extensions = ".test1,.test2"
   self~assertEquals("TEST1 TEST2", tester~callInstanceProgram(self~resolveTestProgram('tests/callPath.rex')))

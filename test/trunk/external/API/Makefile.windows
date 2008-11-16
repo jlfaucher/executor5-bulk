@@ -60,6 +60,7 @@ REXX_INCLUDES = /I"$(API_INCLUDE)" /I"$(API_INCLUDE)\platform\windows"
 LIBS = $(REXX_LIBS)
 WARNINGFLAGS = /W3 /Wp64 /D_CRT_SECURE_NO_DEPRECATE /D_CRT_NONSTDC_NO_DEPRECATE
 
+ORXEXELFLAGS = /NOLOGO /DEBUG -debugtype:cv /SUBSYSTEM:Console $(LIBS) user32.lib comdlg32.lib gdi32.lib kernel32.lib
 ORXLFLAGS = /NOLOGO /DEBUG -debugtype:cv /SUBSYSTEM:Windows $(LIBS) /DLL
 
 ORXCFLAGS =  /nologo /EHsc /Zi /Od /Gr /MTd /D_CRT_SECURE_NO_DEPRECATE $(WARNINGFLAG) $(REXX_INCLUDES) /c
@@ -71,7 +72,8 @@ OOTEST_BIN_DIR = ..\..\bin\WINDOWS
 # Build the libraries
 all: $(OOTEST_BIN_DIR)\orxfunction.dll $(OOTEST_BIN_DIR)\orxmethod.dll \
      $(OOTEST_BIN_DIR)\orxclassic.dll $(OOTEST_BIN_DIR)\orxclassic1.dll \
-     $(OOTEST_BIN_DIR)\orxexits.dll $(OOTEST_BIN_DIR)\orxinvocation.dll
+     $(OOTEST_BIN_DIR)\orxexits.dll $(OOTEST_BIN_DIR)\orxinvocation.dll \
+     $(OOTEST_BIN_DIR)\rexxinstance.exe
 
 $(OOTEST_BIN_DIR)\orxfunction.dll: orxfunction.dll
   copy orxfunction.dll $(OOTEST_BIN_DIR)
@@ -90,6 +92,9 @@ $(OOTEST_BIN_DIR)\orxexits.dll: orxexits.dll
 
 $(OOTEST_BIN_DIR)\orxinvocation.dll: orxinvocation.dll
   copy orxinvocation.dll $(OOTEST_BIN_DIR)
+
+$(OOTEST_BIN_DIR)\rexxinstance.exe: rexxinstance.exe
+  copy rexxinstance.exe $(OOTEST_BIN_DIR)
 
 
 # Build the shared library
@@ -110,15 +115,15 @@ orxmethod.obj: orxmethod.cpp
 	cl $(ORXCFLAGS) orxmethod.cpp
 
 # Build the objects
-orxclassicexits.obj: orxclassicexits.cpp
+orxclassicexits.obj: orxclassicexits.cpp  orxexits.hpp
 	cl $(ORXCFLAGS) orxclassicexits.cpp
 
 # Build the objects
-orxinstance.obj: orxinstance.cpp
+orxinstance.obj: orxinstance.cpp  orxexits.hpp
 	cl $(ORXCFLAGS) orxinstance.cpp
 
 # Build the objects
-orxinvocation.obj: orxinvocation.cpp
+orxinvocation.obj: orxinvocation.cpp  orxexits.hpp
 	cl $(ORXCFLAGS) orxinvocation.cpp
 
 # Build the objects
@@ -133,6 +138,10 @@ orxclassic.dll: orxclassic.obj
 orxclassic.obj: orxclassic.cpp
 	cl $(ORXCFLAGS) orxclassic.cpp
 
+# Build the objects
+rexxinstance.obj: rexxinstance.cpp orxexits.hpp
+	cl $(ORXCFLAGS) rexxinstance.cpp
+
 # Build the shared library
 orxclassic1.dll: orxclassic1.obj
 	link $(ORXLFLAGS) /def:orxclassic1.def orxclassic1.obj
@@ -144,6 +153,11 @@ orxexits.dll: orxclassicexits.obj orxinstance.obj
 # Build the shared library
 orxinvocation.dll: orxinvocation.obj
 	link $(ORXLFLAGS) orxclassicexits.lib /def:orxinvocation.def orxinvocation.obj
+
+# Build the .exe file
+rexxinstance.exe: rexxinstance.obj
+    link $(ORXEXELFLAGS) orxclassicexits.lib rexxinstance.obj -out:$(@B).exe
+
 
 clean:
 	del *.dll *.obj *.ilk *.pdb *.lib *.exp $(OOTEST_BIN_DIR)\*.dll 1>nul 2>&1

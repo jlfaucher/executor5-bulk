@@ -37,6 +37,7 @@
 
 #include "rexx.h"
 #include "orxexits.hpp"
+#include <string.h>
 
 InstanceInfo *getApplicationData()
 {
