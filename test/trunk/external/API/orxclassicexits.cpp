@@ -99,6 +99,7 @@ void dropContextVariable(const char *name)
     RexxVariablePool(&shvb);
 }
 
+extern "C" {
 
 int RexxEntry TestFunctionExit(int code, int subcode, PEXIT exitInfo)
 {
@@ -581,6 +582,7 @@ RexxReturnCode RexxEntry TestSubcomHandler(CONSTRXSTRING *cmd, unsigned short *f
         *flags = RXSUBCOM_FAILURE;
         return 0;
     }
+}
 }
 
 void deregisterSubcomHandler()
