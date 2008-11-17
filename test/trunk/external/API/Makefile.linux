@@ -138,8 +138,8 @@ liborxexits.so: orxclassicexits.o orxinstance.o
 	gcc $(ORXLFLAGS) $(REXX_LIBS) -lrexx -lrexxapi -o liborxexits.so orxclassicexits.o orxinstance.o
 
 # Build the shared library
-liborxinvocation.so: orxinvocation.o
-	gcc $(ORXLFLAGS) $(REXX_LIBS) -lrexx -lrexxapi -L. -lorxexits -o liborxinvocation.so orxinvocation.o
+liborxinvocation.so: orxinvocation.o orxclassicexits.o orxinstance.o
+	gcc $(ORXLFLAGS) $(REXX_LIBS) -lrexx -lrexxapi -L. -o liborxinvocation.so orxinvocation.o orxclassicexits.o orxinstance.o
 
 # Build the executable file
 rexxinstance: rexxinstance.o
