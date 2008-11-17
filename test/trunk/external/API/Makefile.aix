@@ -62,25 +62,35 @@ endif
 # Build the libraries
 all: $(OOTEST_BIN_DIR)/liborxfunction.so $(OOTEST_BIN_DIR)/liborxmethod.so \
      $(OOTEST_BIN_DIR)/liborxclassic.so $(OOTEST_BIN_DIR)/liborxclassic1.so \
-     $(OOTEST_BIN_DIR)/orxexits.so $(OOTEST_BIN_DIR)/orxinvocation.so
+     $(OOTEST_BIN_DIR)/liborxexits.so $(OOTEST_BIN_DIR)/liborxinvocation.so \
+     $(OOTEST_BIN_DIR)/rexxinstance
 
 $(OOTEST_BIN_DIR)/liborxfunction.so: liborxfunction.so
+	slibclean
 	cp liborxfunction.so $(OOTEST_BIN_DIR)
 
 $(OOTEST_BIN_DIR)/liborxmethod.so: liborxmethod.so
+	slibclean
 	cp liborxmethod.so $(OOTEST_BIN_DIR)
 
 $(OOTEST_BIN_DIR)/liborxclassic.so: liborxclassic.so
+	slibclean
 	cp liborxclassic.so $(OOTEST_BIN_DIR)
 
 $(OOTEST_BIN_DIR)/liborxclassic1.so: liborxclassic1.so
+	slibclean
 	cp liborxclassic1.so $(OOTEST_BIN_DIR)
 
-$(OOTEST_BIN_DIR)/orxexits.so: orxexits.so
-	cp orxexits.so $(OOTEST_BIN_DIR)
+$(OOTEST_BIN_DIR)/liborxexits.so: liborxexits.so
+	slibclean
+	cp liborxexits.so $(OOTEST_BIN_DIR)
 
-$(OOTEST_BIN_DIR)/orxinvocation.so: orxinvocation.so
-	cp orxinvocation.so $(OOTEST_BIN_DIR)
+$(OOTEST_BIN_DIR)/liborxinvocation.so: liborxinvocation.so
+	slibclean
+	cp liborxinvocation.so $(OOTEST_BIN_DIR)
+
+$(OOTEST_BIN_DIR)/rexxinstance: rexxinstance
+	cp rexxinstance $(OOTEST_BIN_DIR)
 
 
 # Build the shared library
@@ -100,7 +110,6 @@ liborxmethod.so: orxmethod.o
 orxmethod.o: orxmethod.cpp $(METHOD_SRC_DEPS)
 	xlC_r -c $(ORXCXXFLAGS) $(REXX_INCLUDES) orxmethod.cpp
 
-
 # Build the objects
 orxclassicexits.o: orxclassicexits.cpp
 	xlC_r -c $(ORXCXXFLAGS) $(REXX_INCLUDES) orxclassicexits.cpp
@@ -110,8 +119,12 @@ orxinstance.o: orxinstance.cpp
 	xlC_r -c $(ORXCXXFLAGS) $(REXX_INCLUDES) orxinstance.cpp
 
 # Build the objects
-orxinvocation.o: orxinvocation.cpp
-	xlC_r -c $(ORXCXXFLAGS) $(REXX_INCLUDES) orxinvocation.cpp
+orxinvocation.o: orxinvocation.cpp  orxexits.hpp
+	xlC_r -c $(ORXCFLAGS) $(REXX_INCLUDES) orxinvocation.cpp
+
+# Build the objects
+orxclassic1.o: orxclassic1.c $(FUNCTION_SRC_DEPS)
+	xlc_r -c $(ORXCFLAGS) $(REXX_INCLUDES) orxclassic1.c
 
 # Build the shared library
 liborxclassic.so: orxclassic.o
@@ -121,23 +134,26 @@ liborxclassic.so: orxclassic.o
 orxclassic.o: orxclassic.cpp $(FUNCTION_SRC_DEPS)
 	xlC_r -c $(ORXCXXFLAGS) $(REXX_INCLUDES) orxclassic.cpp
 
-
 # Build the shared library
 liborxclassic1.so: orxclassic1.o
 	xlc_r $(ORXLFLAGS) $(REXX_LIBS) -lrexx -lrexxapi -o liborxclassic1.so orxclassic1.o
 
+# Build the shared library
+liborxexits.so: orxclassicexits.o orxinstance.o
+	xlC_r $(ORXLFLAGS) $(REXX_LIBS) -lrexx -lrexxapi -o liborxexits.so orxclassicexits.o orxinstance.o
+
+# Build the shared library
+liborxinvocation.so: orxinvocation.o
+	xlC_r $(ORXLFLAGS) $(REXX_LIBS) -lrexx -lrexxapi -L. -lorxexits -o liborxinvocation.so orxinvocation.o
+
 # Build the objects
-orxclassic1.o: orxclassic1.c $(FUNCTION_SRC_DEPS)
-	xlc_r -c $(ORXCFLAGS) $(REXX_INCLUDES) orxclassic1.c
+rexxinstance.o: rexxinstance.cpp orxexits.hpp
+	xlC_r -c $(ORXCXXFLAGS) $(REXX_INCLUDES) rexxinstance.cpp
 
-# Build the shared library
-orxexits.so: orxclassicexits.o orxinstance.o
-	xlC_r $(ORXLFLAGS) $(REXX_LIBS) -lrexx -lrexxapi -o orxexits.so orxclassicexits.o orxinstance.o
-
-# Build the shared library
-orxinvocation.so: orxinvocation.o
-	xlC_r $(ORXLFLAGS) $(REXX_LIBS) -lrexx -lrexxapi -o orxinvocation.so orxinvocation.o
+# Build the binary
+rexxinstance: rexxinstance.o
+	xlC_r $(REXX_LIBS) -ldl -lpthread -Wl,-binitfini:_init:_fini -Wl,-brtl -L. -lorxexits -lrexx -lrexxapi rexxinstance.o -o rexxinstance
 
 clean:
-	rm -f *.so *.o $(OOTEST_BIN_DIR)/lib*.so
+	rm -f *.so *.o rexxinstance $(OOTEST_BIN_DIR)/lib*.so
 
