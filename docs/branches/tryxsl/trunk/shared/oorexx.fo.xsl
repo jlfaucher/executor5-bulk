@@ -20,7 +20,7 @@
 <xsl:param name="section.autolabel" select="1" />
 <xsl:param name="section.label.includes.component.label" select="1" />
 <!-- PDF Bookmarks -->
-<xsl:param name="passivetex.extensions" select="1" />
+<xsl:param name="passivetex.extensions" select="0" />
 <!-- Variable List Formatting -->
 <!-- Extra Vertical Space -->
 <!-- Cross Reference Page Numbers -->
