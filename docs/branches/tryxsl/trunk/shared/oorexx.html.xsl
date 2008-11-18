@@ -7,24 +7,4 @@
 
 <xsl:import href="/usr/share/sgml/docbook/xsl-stylesheets/html/docbook.xsl" />
 
-<xsl:template match="symbol[@role = 'symbolfont']">
-  <fo:inline font-family="Symbol">
-     <xsl:call-template name="inline.charseq"/>
-  </fo:inline>
-</xsl:template>
-
-<!-- Style sheet parameters for the ooRexx documents -->
-<!-- Page Layout -->
-<xsl:param name="draft.mode" select="yes" />
-<!-- Chapter and Section Numbering -->
-<xsl:param name="section.autolabel" select="1" />
-<xsl:param name="section.label.includes.component.label" select="1" />
-<!-- PDF Bookmarks -->
-<xsl:param name="passivetex.extensions" select="1" />
-<!-- Variable List Formatting -->
-<!-- Extra Vertical Space -->
-<!-- Cross Reference Page Numbers -->
-<!-- DocBook Icon Graphics -->
-<!-- Printing One Chapter -->
-
 </xsl:stylesheet>
