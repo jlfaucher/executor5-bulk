@@ -42,7 +42,8 @@
 
 
 STYLESHEET = /usr/share/sgml/docbook/xsl-stylesheets/fo/docbook.xsl \
-             ../shared/oorexx.xsl
+             ../shared/oorexx.xsl \
+             ../shared/oorexx.fo.titlepage.xsl
 HTML_STYLESHEET = /usr/share/sgml/docbook/xsl-stylesheets/html/docbook.xsl \
              ../shared/oorexx.xsl
 
@@ -77,7 +78,7 @@ rxsock.pdf: rxsock.fo
 	fop -param fop1.extensions 1 \
 	  -fo rxsock.fo -pdf rxsock.pdf
 
-rxsock.fo: $(IMAGE_FILES) $(HTML_STYLESHEET) svnrev.tmp
+rxsock.fo: $(IMAGE_FILES) $(STYLESHEET) svnrev.tmp
 	xsltproc --output rxsock.fo \
 	  --stringparam use.extensions 1 \
 	  --stringparam fop1.extensions 1 \
@@ -89,6 +90,11 @@ rxsock.html: $(IMAGE_FILES) $(HTML_STYLESHEET) svnrev.tmp
 
 rxsock-html.zip: rxsock.html
 	zip rxsock-html *.html *.jpg
+
+../shared/oorexx.fo.titlepage.xsl: ../shared/titlepage.template.xml
+	xsltproc --output ../shared/oorexx.fo.titlepage.xsl \
+	  /usr/share/sgml/docbook/xsl-stylesheets/template/titlepage.xsl \
+	  ../shared/titlepage.template.xml
 
 svnrev.tmp:
 	svnversion > svnrev.tmp
