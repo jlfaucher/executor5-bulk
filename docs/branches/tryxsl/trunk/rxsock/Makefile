@@ -62,12 +62,6 @@ IMAGE_FILES = oorexx.jpg \
 	      InetAddress.png \
 	      SocketClass.png
 
-JADETEXFMT  = ./pdfjadetex.fmt
-HYPERREFCFG = ./hyperref.cfg
-TEXMF       = /usr/share/texmf
-
-export TEXFORMATS=.:
-
 
 all: pdf html
 
@@ -76,22 +70,21 @@ pdf: rxsock.pdf
 html: rxsock-html.zip
 
 rxsock.pdf: rxsock.fo
-	pdftex --interaction nonstopmode "&pdfxmltex" rxsock.sgml
-	pdftex --interaction nonstopmode "&pdfxmltex" rxsock.sgml
+	fop -param fop1.extensions 1 \
+	  -fo rxsock.fo -pdf rxsock.pdf
 
-rxsock.fo: $(IMAGE_FILES) $(STYLESHEET) $(JADETEXFMT) svnrev.tmp
-	xsltproc --output rxsock.fo --stringparam passivetex.extensions 1 \
-	         --stringparam use.extensions 0 \
-	         ../shared/oorexx.xsl rxsock.sgml
+rxsock.fo: $(IMAGE_FILES) $(HTML_STYLESHEET) svnrev.tmp
+	xsltproc --output rxsock.fo \
+	  --stringparam use.extensions 1 \
+	  --stringparam fop1.extensions 1 \
+	  ../shared/oorexx.fo.xsl rxsock.sgml
 
-book1.htm: $(IMAGE_FILES) $(HTML_STYLESHEET) svnrev.tmp
-	docbook2html -d ../shared/oorexx.html.dsl rxsock.sgml
+rxsock.html: $(IMAGE_FILES) $(HTML_STYLESHEET) svnrev.tmp
+	xsltproc --output rxsock.html \
+	  ../shared/oorexx.html.xsl rxsock.sgml
 
-rxsock-html.zip: book1.htm
-	zip rxsock-html *.htm *.jpg
-
-$(JADETEXFMT): $(HYPERREFCFG)
-	pdftex -ini \&pdflatex pdfjadetex.ini
+rxsock-html.zip: rxsock.html
+	zip rxsock-html *.html *.jpg
 
 svnrev.tmp:
 	svnversion > svnrev.tmp
@@ -100,6 +93,5 @@ svnrev.tmp:
 
 
 clean:
-	rm *.log *.aux *.out *.fmt *.pdf *.fo *.htm *.zip \
-           HTML.index *.tmp
+	rm *.fo *.pdf *.html *.zip *.tmp
 
