@@ -62,6 +62,10 @@ IMAGE_FILES = oorexx.jpg \
 	      InetAddress.png \
 	      SocketClass.png
 
+# The following is so that fop can find the jai class files. Otherwise fop will
+# not be able to process the png graphic files for the pdf document.
+CLASSPATH=/usr/share/java/jai-core.jar:/usr/share/java/jai-codec.jar:$CLASSPATH
+
 
 all: pdf html
 
