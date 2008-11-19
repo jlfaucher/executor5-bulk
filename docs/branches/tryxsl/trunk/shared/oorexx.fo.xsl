@@ -6,6 +6,7 @@
      version="1.0">
 
 <xsl:import href="/usr/share/sgml/docbook/xsl-stylesheets/fo/docbook.xsl" />
+<xsl:import href="../shared/oorexx.fo.titlepage.xsl" />
 
 <xsl:template match="symbol[@role = 'symbolfont']">
   <fo:inline font-family="Symbol">
