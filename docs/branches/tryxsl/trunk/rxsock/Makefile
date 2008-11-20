@@ -42,19 +42,19 @@
 
 
 STYLESHEET = /usr/share/sgml/docbook/xsl-stylesheets/fo/docbook.xsl \
-             ../shared/oorexx.xsl \
+             ../shared/oorexx.fo.xsl \
              ../shared/oorexx.fo.titlepage.xsl
 HTML_STYLESHEET = /usr/share/sgml/docbook/xsl-stylesheets/html/docbook.xsl \
-             ../shared/oorexx.xsl
+             ../shared/oorexx.html.xsl
 
 
 
-SGML_FILES = rxsock.sgml \
-     ../shared/notices.sgml \
-     ../shared/legalstuff.sgml \
-     ../shared/gethelp.sgml \
-     ../shared/CPLv1.0.sgml \
-     socketclass.sgml
+XML_FILES = rxsock.xml \
+     ../shared/notices.xml \
+     ../shared/legalstuff.xml \
+     ../shared/gethelp.xml \
+     ../shared/CPLv1.0.xml \
+     socketclass.xml
 
 IMAGE_FILES = oorexx.jpg \
  	      docbook-1.png \
@@ -78,15 +78,15 @@ rxsock.pdf: rxsock.fo
 	fop -param fop1.extensions 1 \
 	  -fo rxsock.fo -pdf rxsock.pdf
 
-rxsock.fo: $(IMAGE_FILES) $(STYLESHEET) svnrev.tmp
+rxsock.fo: $(IMAGE_FILES) $(XML_FILES) $(STYLESHEET) svnrev.tmp
 	xsltproc --output rxsock.fo \
 	  --stringparam use.extensions 1 \
 	  --stringparam fop1.extensions 1 \
-	  ../shared/oorexx.fo.xsl rxsock.sgml
+	  ../shared/oorexx.fo.xsl rxsock.xml
 
-rxsock.html: $(IMAGE_FILES) $(HTML_STYLESHEET) svnrev.tmp
+rxsock.html: $(IMAGE_FILES) $(XML_FILES) $(HTML_STYLESHEET) svnrev.tmp
 	xsltproc --output rxsock.html \
-	  ../shared/oorexx.html.xsl rxsock.sgml
+	  ../shared/oorexx.html.xsl rxsock.xml
 
 rxsock-html.zip: rxsock.html
 	zip rxsock-html *.html *.jpg
