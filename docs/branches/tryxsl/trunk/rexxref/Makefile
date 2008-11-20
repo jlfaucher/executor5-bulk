@@ -1,8 +1,8 @@
 #----------------------------------------------------------------------------
 #
-# Description: Makefile for the Object Rexx Reference Documents.
+# Description: Makefile for the Object Rexx Sockets Library Documents.
 #
-# Copyright (c) 2005-2007, Rexx Language Association. All rights reserved.
+# Copyright (c) 2005-2008, Rexx Language Association. All rights reserved.
 #
 # This program and the accompanying materials are made available under
 # the terms of the Common Public License v1.0 which accompanies this
@@ -41,48 +41,50 @@
 #----------------------------------------------------------------------------
 
 
-STYLESHEET = /usr/share/sgml/docbook/dsssl-stylesheets/print/docbook.dsl \
-             ../shared/oorexx.print.dsl
-HTML_STYLESHEET = /usr/share/sgml/docbook/dsssl-stylesheets/html/docbook.dsl \
-             ../shared/oorexx.html.dsl
+STYLESHEET = /usr/share/sgml/docbook/xsl-stylesheets/fo/docbook.xsl \
+             ../shared/oorexx.fo.xsl \
+             ../shared/oorexx.fo.titlepage.xsl
+HTML_STYLESHEET = /usr/share/sgml/docbook/xsl-stylesheets/html/docbook.xsl \
+             ../shared/oorexx.html.xsl
 
 
-SGML_FILES = collclasses.sgml \
-	     condtra.sgml \
-	     classes.sgml \
-	     streamclasses.sgml \
-	     utilityclasses.sgml \
-	     winclasses.sgml \
-	     dire.sgml \
-	     errnum.sgml \
-	     errnums.sgml \
-	     funct.sgml \
-	     fundclasses.sgml \
-	     instrc.sgml \
-	     intro.sgml \
-	     iostrms.sgml \
-	     mig.sgml \
-	     numarit.sgml \
-	     oneof.sgml \
-	     parsingch.sgml \
-	     preface.sgml \
-	     provide.sgml \
-	     resvkey.sgml \
-	     rexutil.sgml \
-	     rexxref.sgml \
-	     secman.sgml \
-	     spvard.sgml \
-	     usepcom.sgml \
-	     wsheng.sgml \
-	     xconcur.sgml \
-	     xintdeb.sgml \
-	     collectionclassmethods.sgml \
-	     mapcollectionclassmethods.sgml \
-	     orderedcollectionclassmethods.sgml \
-	     ../shared/legalstuff.sgml \
-	     ../shared/notices.sgml \
-	     ../shared/gethelp.sgml \
-	     ../shared/CPLv1.0.sgml
+
+XML_FILES = collclasses.xml \
+            condtra.xml \
+            classes.xml \
+            streamclasses.xml \
+            utilityclasses.xml \
+            winclasses.xml \
+            dire.xml \
+            errnum.xml \
+            errnums.xml \
+            funct.xml \
+            fundclasses.xml \
+            instrc.xml \
+            intro.xml \
+            iostrms.xml \
+            mig.xml \
+            numarit.xml \
+            oneof.xml \
+            parsingch.xml \
+            preface.xml \
+            provide.xml \
+            resvkey.xml \
+            rexutil.xml \
+            rexxref.xml \
+            secman.xml \
+            spvard.xml \
+            usepcom.xml \
+            wsheng.xml \
+            xconcur.xml \
+            xintdeb.xml \
+            collectionclassmethods.xml \
+            mapcollectionclassmethods.xml \
+            orderedcollectionclassmethods.xml \
+            ../shared/legalstuff.xml \
+            ../shared/notices.xml \
+            ../shared/gethelp.xml \
+            ../shared/CPLv1.0.xml
 
 IMAGE_FILES = ooRexxObjectClass.png \
               ooRexxClassClass.png \
@@ -164,11 +166,9 @@ IMAGE_FILES = ooRexxObjectClass.png \
  	      docbook-1.png \
 	      new_rexxla.jpg
 
-JADETEXFMT  = ./pdfjadetex.fmt
-HYPERREFCFG = ./hyperref.cfg
-TEXMF       = /usr/share/texmf
-
-export TEXFORMATS=.:
+# The following is so that fop can find the jai class files. Otherwise fop will
+# not be able to process the png graphic files for the pdf document.
+CLASSPATH=/usr/share/java/jai-core.jar:/usr/share/java/jai-codec.jar:$CLASSPATH
 
 
 all: pdf html
@@ -177,23 +177,27 @@ pdf: rexxref.pdf
 
 html: rexxref-html.zip
 
-rexxref.pdf: $(IMAGE_FILES) $(STYLESHEET) $(JADETEXFMT) genindex.sgml svnrev.tmp
-	docbook2pdf -d ../shared/oorexx.print.dsl rexxref.sgml
+rexxref.pdf: rexxref.fo
+	fop -param fop1.extensions 1 \
+	  -fo rexxref.fo -pdf rexxref.pdf
 
-book1.htm: $(IMAGE_FILES) $(HTML_STYLESHEET) genindex.sgml svnrev.tmp
-	docbook2html -d ../shared/oorexx.html.dsl rexxref.sgml
+rexxref.fo: $(IMAGE_FILES) $(XML_FILES) $(STYLESHEET) svnrev.tmp
+	xsltproc --output rexxref.fo \
+	  --stringparam use.extensions 0 \
+	  --stringparam fop1.extensions 1 \
+	  ../shared/oorexx.fo.xsl rexxref.xml
 
-rexxref-html.zip: book1.htm
-	zip rexxref-html *.htm *.jpg
+rexxref.html: $(IMAGE_FILES) $(XML_FILES) $(HTML_STYLESHEET) svnrev.tmp
+	xsltproc --output rexxref.html \
+	  ../shared/oorexx.html.xsl rexxref.xml
 
-$(JADETEXFMT): $(HYPERREFCFG)
-	pdftex -ini \&pdflatex pdfjadetex.ini
+rexxref-html.zip: rexxref.html
+	zip rexxref-html *.html *.jpg
 
-genindex.sgml: $(HTML_STYLESHEET) $(SGML_FILES) svnrev.tmp
-	collateindex.pl -N -o genindex.sgml
-	jade -t sgml -d ../shared/oorexx.html.dsl -V html-index rexxref.sgml
-	rm *.htm
-	collateindex.pl -p -g -o genindex.sgml HTML.index
+../shared/oorexx.fo.titlepage.xsl: ../shared/titlepage.template.xml
+	xsltproc --output ../shared/oorexx.fo.titlepage.xsl \
+	  /usr/share/sgml/docbook/xsl-stylesheets/template/titlepage.xsl \
+	  ../shared/titlepage.template.xml
 
 svnrev.tmp:
 	svnversion > svnrev.tmp
@@ -202,6 +206,5 @@ svnrev.tmp:
 
 
 clean:
-	rm *.log *.aux *.out *.fmt *.pdf genindex.sgml *.htm *.zip \
-           HTML.index *.tmp
+	rm *.fo *.pdf *.html *.zip *.tmp
 
