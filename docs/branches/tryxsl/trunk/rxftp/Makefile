@@ -1,8 +1,8 @@
 #----------------------------------------------------------------------------
 #
-# Description: Makefile for the Object Rexx FTP Class library Documents.
+# Description: Makefile for the Object Rexx Sockets Library Documents.
 #
-# Copyright (c) 2005-2007, Rexx Language Association. All rights reserved.
+# Copyright (c) 2005-2008, Rexx Language Association. All rights reserved.
 #
 # This program and the accompanying materials are made available under
 # the terms of the Common Public License v1.0 which accompanies this
@@ -41,27 +41,27 @@
 #----------------------------------------------------------------------------
 
 
-STYLESHEET = /usr/share/sgml/docbook/dsssl-stylesheets/print/docbook.dsl \
-             ../shared/oorexx.print.dsl
-HTML_STYLESHEET = /usr/share/sgml/docbook/dsssl-stylesheets/html/docbook.dsl \
-             ../shared/oorexx.html.dsl
+STYLESHEET = /usr/share/sgml/docbook/xsl-stylesheets/fo/docbook.xsl \
+             ../shared/oorexx.fo.xsl \
+             ../shared/oorexx.fo.titlepage.xsl
+HTML_STYLESHEET = /usr/share/sgml/docbook/xsl-stylesheets/html/docbook.xsl \
+             ../shared/oorexx.html.xsl
 
 
-SGML_FILES = rxftp.sgml \
-     ../shared/notices.sgml \
-     ../shared/legalstuff.sgml \
-     ../shared/gethelp.sgml \
-     ../shared/CPLv1.0.sgml
+
+XML_FILES = rxftp.xml \
+     ../shared/notices.xml \
+     ../shared/legalstuff.xml \
+     ../shared/gethelp.xml \
+     ../shared/CPLv1.0.xml
 
 IMAGE_FILES = oorexx.jpg \
  	      docbook-1.png \
 	      new_rexxla.jpg
 
-JADETEXFMT  = ./pdfjadetex.fmt
-HYPERREFCFG = ./hyperref.cfg
-TEXMF       = /usr/share/texmf
-
-export TEXFORMATS=.:
+# The following is so that fop can find the jai class files. Otherwise fop will
+# not be able to process the png graphic files for the pdf document.
+CLASSPATH=/usr/share/java/jai-core.jar:/usr/share/java/jai-codec.jar:$CLASSPATH
 
 
 all: pdf html
@@ -70,23 +70,27 @@ pdf: rxftp.pdf
 
 html: rxftp-html.zip
 
-rxftp.pdf: $(IMAGE_FILES) $(STYLESHEET) $(JADETEXFMT) genindex.sgml svnrev.tmp
-	docbook2pdf -d ../shared/oorexx.print.dsl rxftp.sgml
+rxftp.pdf: rxftp.fo
+	fop -param fop1.extensions 1 \
+	  -fo rxftp.fo -pdf rxftp.pdf
 
-book1.htm: $(IMAGE_FILES) $(HTML_STYLESHEET) genindex.sgml svnrev.tmp
-	docbook2html -d ../shared/oorexx.html.dsl rxftp.sgml
+rxftp.fo: $(IMAGE_FILES) $(XML_FILES) $(STYLESHEET) svnrev.tmp
+	xsltproc --output rxftp.fo \
+	  --stringparam use.extensions 1 \
+	  --stringparam fop1.extensions 1 \
+	  ../shared/oorexx.fo.xsl rxftp.xml
 
-rxftp-html.zip: book1.htm
-	zip rxftp-html *.htm *.jpg
+rxftp.html: $(IMAGE_FILES) $(XML_FILES) $(HTML_STYLESHEET) svnrev.tmp
+	xsltproc --output rxftp.html \
+	  ../shared/oorexx.html.xsl rxftp.xml
 
-$(JADETEXFMT): $(HYPERREFCFG)
-	pdftex -ini \&pdflatex pdfjadetex.ini
+rxftp-html.zip: rxftp.html
+	zip rxftp-html *.html *.jpg
 
-genindex.sgml: $(HTML_STYLESHEET) $(SGML_FILES) svnrev.tmp
-	collateindex.pl -N -o genindex.sgml
-	jade -t sgml -d ../shared/oorexx.html.dsl -V html-index rxftp.sgml
-	rm *.htm
-	collateindex.pl -p -g -o genindex.sgml HTML.index
+../shared/oorexx.fo.titlepage.xsl: ../shared/titlepage.template.xml
+	xsltproc --output ../shared/oorexx.fo.titlepage.xsl \
+	  /usr/share/sgml/docbook/xsl-stylesheets/template/titlepage.xsl \
+	  ../shared/titlepage.template.xml
 
 svnrev.tmp:
 	svnversion > svnrev.tmp
@@ -95,6 +99,5 @@ svnrev.tmp:
 
 
 clean:
-	rm *.log *.aux *.out *.fmt *.pdf genindex.sgml *.htm *.zip \
-           HTML.index *.tmp
+	rm *.fo *.pdf *.html *.zip *.tmp
 
