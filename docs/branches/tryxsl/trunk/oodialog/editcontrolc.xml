@@ -1389,86 +1389,86 @@ can be changed by accessing the edit control window directly after the edit
 control has been created.
 </para>
 <variablelist>
-<varlistentry><term id="argsAddStyle"><emphasis role="bold">Arguments:</emphasis></term>
-<Listitem><para>The style argument can be one or more of the following keywords.
-(Each keyword is separated by a blank.):
-<variablelist>
-<varlistentry><term>UPPER</term>
-<listitem><para>Converts all characters to uppercase as they are typed into the edit
-control.
-</para></listitem></varlistentry>
-<varlistentry><term>LOWER</term>
-<listitem><para>Converts all characters to lowercase as they are typed into the edit
-control.
-</para></listitem></varlistentry>
-<varlistentry><term>NUMBER</term>
-<listitem><para>Only allows digits to be typed into the edit control.  If the
-user types an non-digit character an information balloon is displayed informing
-the user that only digits are allowd.  This style does not prevent the user from
-pasting non-digits into the control.
-</para></listitem></varlistentry>
-<varlistentry><term>WANTRETURN</term>
-<listitem><para>This keyword only effects multi-line edit controls.  With this
-style when a user hits the enter key the line break characters are inserted into
-the text buffer.  Without the style, when the user hits enter the default push
-button of the dialog is pressed.
-</para></listitem></varlistentry>
-<varlistentry><term>OEM</term>
-<listitem><para>Converts text entered in the edit control from the Windows
-character set to the OEM character set and then back again to the Windows
-character set. This ensures proper character conversion in certain
-circumstances. Microsoft states that this style is most useful when edit
-controls contain file names that will be used with file systems that do not
-support Unicode. For further details see the <link linkend="windowsdoc">Windows
-documentation</link> provided by Microsoft.
-</para></listitem></varlistentry>
-<varlistentry><term>TAB</term>
-<listitem><para>Adds the <link linkend="wstabstop">tabstop</link> tab stop
-style.
-</para></listitem></varlistentry>
-<varlistentry><term>GROUP</term>
-<listitem><para>Adds the <link linkend="wsgroup">group</link> style.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>Negative values indicate error, non-negative values indicate
-success.
-<variablelist>
-<varlistentry><term>-4 or less</term>
-<listitem><para>The value is the negated Operating System Error code.
-The absolute value of the return can be used to look up the error reason in the
-Windows documentation.
-</para></listitem></varlistentry>
-<varlistentry><term>-3</term>
-<listitem><para>The was no valid keyword in the style argument. Note that if the
-style argument contains at least one valid keyword other invalid keywords are
-then ignored.
-</para></listitem></varlistentry>
-<varlistentry><term>-2</term>
-<listitem><para>There is an (internal) problem with the dialog or the dialog
-handle.
-</para></listitem></varlistentry>
-<varlistentry><term>-1</term>
-<listitem><para>There is an (internal) problem with the resource ID or window
-handle of the edit control.
-</para></listitem></varlistentry>
-<varlistentry><term>other</term>
-<listitem><para>The numeric value of the edit control's previous style.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>This example shows the syntax to add the number, tabstop, and
-group styles to an edit control.
-<programlisting>
-<![CDATA[
-editControl = dlg~getEditControl(IDC_ENTRYLINE)
-if .nil == editControl  then return
-editControl~addStyle("NUMBER TAB GROUP")
-]]>
-</programlisting>
-</para></listitem></varlistentry>
+  <varlistentry><term id="argsAddStyle"><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem><para>The style argument can be one or more of the following keywords.
+  (Each keyword is separated by a blank.):
+  <variablelist>
+    <varlistentry><term>UPPER</term>
+    <listitem><para>Converts all characters to uppercase as they are typed into the edit
+    control.
+    </para></listitem></varlistentry>
+    <varlistentry><term>LOWER</term>
+    <listitem><para>Converts all characters to lowercase as they are typed into the edit
+    control.
+    </para></listitem></varlistentry>
+    <varlistentry><term>NUMBER</term>
+    <listitem><para>Only allows digits to be typed into the edit control.  If the
+    user types an non-digit character an information balloon is displayed informing
+    the user that only digits are allowd.  This style does not prevent the user from
+    pasting non-digits into the control.
+    </para></listitem></varlistentry>
+    <varlistentry><term>WANTRETURN</term>
+    <listitem><para>This keyword only effects multi-line edit controls.  With this
+    style when a user hits the enter key the line break characters are inserted into
+    the text buffer.  Without the style, when the user hits enter the default push
+    button of the dialog is pressed.
+    </para></listitem></varlistentry>
+    <varlistentry><term>OEM</term>
+    <listitem><para>Converts text entered in the edit control from the Windows
+    character set to the OEM character set and then back again to the Windows
+    character set. This ensures proper character conversion in certain
+    circumstances. Microsoft states that this style is most useful when edit
+    controls contain file names that will be used with file systems that do not
+    support Unicode. For further details see the <link linkend="windowsdoc">Windows
+    documentation</link> provided by Microsoft.
+    </para></listitem></varlistentry>
+    <varlistentry><term>TAB</term>
+    <listitem><para>Adds the <link linkend="wstabstop">tabstop</link> tab stop
+    style.
+    </para></listitem></varlistentry>
+    <varlistentry><term>GROUP</term>
+    <listitem><para>Adds the <link linkend="wsgroup">group</link> style.
+    </para></listitem></varlistentry>
+  </variablelist>
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem><para>Negative values indicate error, non-negative values indicate
+  success.
+  <variablelist>
+    <varlistentry><term>-4 or less</term>
+    <listitem><para>The value is the negated Operating System Error code.
+    The absolute value of the return can be used to look up the error reason in the
+    Windows documentation.
+    </para></listitem></varlistentry>
+    <varlistentry><term>-3</term>
+    <listitem><para>The was no valid keyword in the style argument. Note that if the
+    style argument contains at least one valid keyword other invalid keywords are
+    then ignored.
+    </para></listitem></varlistentry>
+    <varlistentry><term>-2</term>
+    <listitem><para>There is an (internal) problem with the dialog or the dialog
+    handle.
+    </para></listitem></varlistentry>
+    <varlistentry><term>-1</term>
+    <listitem><para>There is an (internal) problem with the resource ID or window
+    handle of the edit control.
+    </para></listitem></varlistentry>
+    <varlistentry><term>other</term>
+    <listitem><para>The numeric value of the edit control's previous style.
+    </para></listitem></varlistentry>
+  </variablelist>
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem><para>This example shows the syntax to add the number, tabstop, and
+  group styles to an edit control.
+  <programlisting>
+  <![CDATA[
+  editControl = dlg~getEditControl(IDC_ENTRYLINE)
+  if .nil == editControl  then return
+  editControl~addStyle("NUMBER TAB GROUP")
+  ]]>
+  </programlisting>
+  </para></listitem></varlistentry>
 </variablelist>
 
 </section>
@@ -1498,7 +1498,7 @@ control has been created.
 </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<Listitem><para>The style argument can be one or more of the style keywords.
+<listitem><para>The style argument can be one or more of the style keywords.
 (Each keyword is separated by a blank.)  See the <link linkend="argsAddStyle">
 argument list</link> for the <computeroutput>AddStyle</computeroutput> method
 for detals on the keywords.
@@ -1570,7 +1570,7 @@ directly after the edit control has been created.
 </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<Listitem><para>The two arguments can be one or more of the style keywords.
+<listitem><para>The two arguments can be one or more of the style keywords.
 (Each keyword is separated by a blank.)  See the <link linkend="argsAddStyle">
 argument list</link> for the <computeroutput>AddStyle</computeroutput> method
 for detals on the keywords.
@@ -1640,7 +1640,7 @@ style keywords.
 </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<Listitem><para>The method takes no arguments.
+<listitem><para>The method takes no arguments.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
 <listitem><para>A string consisting of blank delimited style keywords.  The

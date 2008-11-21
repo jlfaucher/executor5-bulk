@@ -1990,9 +1990,9 @@ to delete the current line, and Shift-Alt-D delete the current paragraph:
   -- Determine which of the key press combinations this is and take
   -- appropriate action if it is a combination we are interested in.
 
-  isAltD = \ shift & \ control & alt
-  isCtrlD = \ shift & control & \ alt
-  isShiftAltD = shift & \ control & alt
+  isAltD = \ shift &amp; \ control &amp; alt
+  isCtrlD = \ shift &amp; control &amp; \ alt
+  isShiftAltD = shift &amp; \ control &amp; alt
 
   if isAltD then self~deleteWord(editControl)
   if isCtrlD the self~deleteLine(editControl)
