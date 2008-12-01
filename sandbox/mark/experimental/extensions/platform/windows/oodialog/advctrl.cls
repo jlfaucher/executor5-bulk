@@ -66,6 +66,7 @@
        when type = "TAB" then class = .TabControl
        when type = "DT" then class = .DateTimePicker
        when type = "MC" then class = .MonthCalendar
+       when type = "HK" then class = .HotKey
        otherwise return .Nil
    end
    ctrlobj = .nil
@@ -168,6 +169,10 @@
    arr[3] = "DT"
    forward message "GetControl" Arguments (arr)
 
+::method GetHotKey unguarded
+   arr = Arg(1,"A")
+   arr[3] = "HK"
+   forward message "GetControl" Arguments (arr)
 
 ::method ConnectTreeControl unguarded
    use arg id, attributeName
@@ -205,6 +210,12 @@
    if result = -1 then return -1
    return DataTable(self~Adm,"ADD",result,11);     /* new id in result  11 == Month Calendar */
 
+::method ConnectHotKey unguarded
+   use arg id, attributeName
+   /* TODO this is not implemented, not sure if it should be
+   forward message "AddAttribute" continue
+   if result = -1 then return -1
+   return DataTable(self~Adm,"ADD",result,12);*/     /* new id in result  12 == Hot Key */
 
 ::method InternGetNewCtrlStyle
    use arg style, kind
@@ -290,6 +301,9 @@
         if style~wordpos("MCS_NOTODAY")  > 0 then ret = ret || " NOTODAY"
         if style~wordpos("MCS_NOTODAYCIRCLE")  > 0 then ret = ret || " NOCIRCLE"
         if style~wordpos("MCS_WEEKNUMBERS")  > 0 then ret = ret || " WEEKNUMBERS"
+        if style~wordpos("WS_BORDER")  > 0 then ret = ret || " BORDER"
+   end
+   else if kind = "HOTKEY" then do
         if style~wordpos("WS_BORDER")  > 0 then ret = ret || " BORDER"
    end
    if style~wordpos("WS_VSCROLL") > 0 then ret = ret || " VSCROLL"
@@ -384,6 +398,17 @@
        self~ConnectMonthCalendar(symbid, attname)
    end
 
+::method AddHotKey
+   use arg id, attname, x, y, cx, cy, opts
+   symbid = id
+   id = self~ItemAdd(id)
+   if id < 0 then return id
+   if Arg(2, 'O') then attname = "DATA"id
+   opts = self~GetDefaultOpts(opts)
+   self~AktPtr = UsrAddNewCtrl("HOTKEY", self~AktPtr, id, x, y, cx, cy, opts)
+   if self~AutoDetect = 1 then do
+       self~ConnectHotKey(symbid, attname)
+   end
 
 
 /***************************************************************************************************************/
@@ -2178,3 +2203,11 @@
 ::method setDate
   use strict arg day, month, year = (date('S')~left(4))
   return HandleMonthCalendar(self~hwnd, 'S', 'CUR', day month year)
+
+
+::class 'HotKey' subclass DialogControl public
+
+::method set external "LIBRARY oodialog hk_set"
+::method get external "LIBRARY oodialog hk_get"
+::method toText external "LIBRARY oodialog hk_toText"
+::method rules external "LIBRARY oodialog hk_setRules"

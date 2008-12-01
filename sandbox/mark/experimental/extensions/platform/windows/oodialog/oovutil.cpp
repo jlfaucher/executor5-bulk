@@ -2157,6 +2157,11 @@ REXX_METHOD_PROTOTYPE(pbc_setBkColor);
 REXX_METHOD_PROTOTYPE(pbc_setBarColor);
 REXX_METHOD_PROTOTYPE(pbc_test);
 
+REXX_METHOD_PROTOTYPE(hk_set);
+REXX_METHOD_PROTOTYPE(hk_get);
+REXX_METHOD_PROTOTYPE(hk_toText);
+REXX_METHOD_PROTOTYPE(hk_setRules);
+
 REXX_METHOD_PROTOTYPE(bc_cls_checkInGroup);
 REXX_METHOD_PROTOTYPE(gb_setStyle);
 REXX_METHOD_PROTOTYPE(bc_getState);
@@ -2218,6 +2223,10 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(pbc_setBkColor,          pbc_setBkColor),
     REXX_METHOD(pbc_setBarColor,         pbc_setBarColor),
     REXX_METHOD(pbc_test,                pbc_test),
+    REXX_METHOD(hk_set,                  hk_set),
+    REXX_METHOD(hk_get,                  hk_get),
+    REXX_METHOD(hk_toText,               hk_toText),
+    REXX_METHOD(hk_setRules,             hk_setRules),
     REXX_METHOD(bc_cls_checkInGroup,     bc_cls_checkInGroup),
     REXX_METHOD(bc_getState,             bc_getState),
     REXX_METHOD(bc_setState,             bc_setState),

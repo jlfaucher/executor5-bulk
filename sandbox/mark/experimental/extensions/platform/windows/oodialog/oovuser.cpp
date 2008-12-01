@@ -1089,6 +1089,14 @@ size_t RexxEntry UsrAddNewCtrl(const char *funcname, size_t argc, CONSTRXSTRING 
        UAddNamedControl(&p, WC_LISTVIEW, buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], NULL, lStyle);
        RETPTR(p)
    }
+   else if (!strcmp(argv[0].strptr,"HOTKEY"))
+   {
+       if (!strstr(argv[7].strptr,"NOTAB")) lStyle |= WS_TABSTOP;
+
+        /*                                   id       x          y            cx        cy  */
+       UAddNamedControl(&p, HOTKEY_CLASS, buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], NULL, lStyle);
+       RETPTR(p)
+   }
    else if (!strcmp(argv[0].strptr,"PROGRESS"))
    {
        if (strstr(argv[7].strptr,"BORDER")) lStyle |= WS_BORDER;

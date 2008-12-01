@@ -516,6 +516,9 @@
             when class = 'MONTHCAL_CLASS' then
                self~AddMonthCalendar(id, name, x, y, w, h, self~InternGetNewCtrlStyle(style, "MONTH"))
 
+            when class = 'HOTKEY_CLASS' then
+               self~AddHotKey(id, name, x, y, w, h, self~InternGetNewCtrlStyle(style, "HOTKEY"))
+
             otherwise do
                self~errorFile(f, s)
                return 1

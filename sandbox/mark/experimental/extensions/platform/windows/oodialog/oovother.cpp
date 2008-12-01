@@ -3532,6 +3532,169 @@ RexxMethod5(logical_t, pbc_test, OSELF, self, OPTIONAL_int32_t, n1,
     return 1;
 }
 
+/** - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ *  Class: .HotKey
+ *
+ *  .HotKey~register(numeric | [ vKey, modifier ]) returns ID
+ *  .HotKey~unregister(ID) must be ID returned by register
+ *  .HotKey~system(numeric | [ vKey, modifier ])  0 removes
+ *  .HotKey~connect([ dlgObj | controlObj ], msg, numeric)
+ *  .HotKey~toText(numeric)
+ *
+ *  hk = self~getHotKey(id)
+ *
+ *  hk~set(numeric | [ vKey, modifier ])
+ *  hk~get returns numeric
+ *  hk~toText returns string version of numeric.
+ *  hk~setRules(opt invalid, opt invalidModifier)
+ *  plust all of the Class methods.
+ *
+ *  Ctrl + Shift + Alt  EXT WIN
+ *
+ *  MOD_WIN     == 0x8  HOTKEYF_EXT     == 0x8
+ *  MOD_ALT     == 0x1  HOTKEYF_ALT     == 0x4
+ *  MOD_CONTROL == 0x2  HOTKEYF_CONTROL == 0x2
+ *  MOD_SHIFT   == 0x4  HOTKEYF_SHIFT   == 0x1
+ *
+ *
+ *
+ *
+ *
+ *
+ */
+
+WORD getHKModifiers(CSTRING text)
+{
+    WORD flags = 0;
+    char *str = strdupupr(text);
+    if ( str != NULL )
+    {
+        if ( strstr(str, "CTRL") != 0 )
+        {
+            flags |= HOTKEYF_CONTROL;
+        }
+        if ( strstr(str, "ALT") != 0 )
+        {
+            flags |= HOTKEYF_ALT;
+        }
+        if ( strstr(str, "SHIFT") != 0 )
+        {
+            flags |= HOTKEYF_SHIFT;
+        }
+        if ( strstr(str, "EXT") != 0 )
+        {
+            flags |= HOTKEYF_EXT;
+        }
+        free(str);
+    }
+    return flags;
+}
+
+WORD getHKComb(CSTRING text)
+{
+    WORD flags = 0;
+    char *str = strdupupr(text);
+    char *token;
+
+    if ( str != NULL )
+    {
+        token = strtok(str, " ");
+        while( token != NULL  )
+        {
+            printf("token=%s\n", token);
+            if ( strcmp(token, "NONE") == 0 )
+            {
+                flags |= HKCOMB_NONE;
+            }
+            else if ( strcmp(token, "CTRL") == 0 )
+            {
+                flags |= HKCOMB_C;
+            }
+            else if ( strcmp(token, "SHIFT") == 0 )
+            {
+                flags |= HKCOMB_S;
+            }
+            else if ( strcmp(token, "ALT") == 0 )
+            {
+                flags |= HKCOMB_A;
+            }
+            else if ( strcmp(token, "CTRL+SHIFT") == 0 )
+            {
+                flags |= HKCOMB_SC;
+            }
+            else if ( strcmp(token, "CTRL+ALT") == 0 )
+            {
+                flags |= HKCOMB_CA;
+            }
+            else if ( strcmp(token, "SHIFT+ALT") == 0 )
+            {
+                flags |= HKCOMB_SA;
+            }
+            else if ( strcmp(token, "CTRL+SHIFT+ALT") == 0 )
+            {
+                flags |= HKCOMB_SCA;
+            }
+            token = strtok(NULL, " ");
+        }
+        free(str);
+    }
+    return flags;
+}
+
+RexxMethod3(int, hk_set, OSELF, self, uint16_t, key, OPTIONAL_CSTRING, modifier)
+{
+    HWND hwnd = rxGetWindowHandle(context, self);
+
+    if ( argumentExists(3) )
+    {
+        key = MAKEWORD(key, getHKModifiers(modifier));
+    }
+
+    SendMessage(hwnd, HKM_SETHOTKEY, key, 0);
+    return 0;
+}
+
+RexxMethod1(uint16_t, hk_get, OSELF, self)
+{
+    HWND hwnd = rxGetWindowHandle(context, self);
+    return (uint16_t)SendMessage(hwnd, HKM_GETHOTKEY, 0, 0);
+}
+
+CSTRING hkToText(RexxMethodContext * context, WORD key)
+{
+
+
+    //RexxClassObject rxClass = context->FindContextClass("VIRTUALKEYCODES");
+    return "";
+}
+
+RexxMethod1(CSTRING, hk_toText, OSELF, self)
+{
+    HWND hwnd = rxGetWindowHandle(context, self);
+    WORD keyValue = (WORD)SendMessage(hwnd, HKM_GETHOTKEY, 0, 0);
+    return hkToText(context, keyValue);
+}
+
+RexxMethod3(int, hk_setRules, OSELF, self, OPTIONAL_CSTRING, invalid, OPTIONAL_CSTRING, invalidModifier)
+{
+    HWND hwnd = rxGetWindowHandle(context, self);
+
+    WORD inv = HKCOMB_NONE | HKCOMB_S;
+    WORD mod = 0;
+
+    if ( argumentExists(2) )
+    {
+        inv = getHKComb(invalid);
+    }
+
+    if ( argumentExists(3) )
+    {
+        mod = getHKModifiers(invalidModifier);
+    }
+    SendMessage(hwnd, HKM_SETRULES, (WPARAM)inv, MAKELPARAM(mod, 0));
+    return 0;
+}
+
 /**
  *  Methods for the ooDialog class: .ButtonControl and its subclasses
  *  .RadioButton and .CheckBox.
