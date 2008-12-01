@@ -50,6 +50,12 @@ all: $(OR_OUTDIR)\rexxapi.dll $(OR_OUTDIR)\rxapi.exe
 !ERROR Build error, OR_REXXAPISRC not set
 !ENDIF
 
+!IF $(NOT_REXX_EXE_MANIFEST) != ""
+MANIFEST_OPTION = -dMANIFEST_FILE=$(NOT_REXX_EXE_MANIFEST)
+!ENDIF
+
+RXAPI_MANIFEST = $(OR_OUTDIR)\rexxapi.dll.manifest
+
 COMMONINC = -I$(OR_REXXAPISRC)\common -I$(OR_REXXAPISRC)\common\platform\windows
 CLIENTINC = -I$(OR_REXXAPISRC)\client -I$(OR_REXXAPISRC)\client\platform\windows
 SERVERINC = -I$(OR_REXXAPISRC)\server -I$(OR_REXXAPISRC)\server\platform\windows
@@ -112,7 +118,7 @@ $(OR_OUTDIR)\rxapi.exe : $(SERVEROBJS) $(OR_OUTDIR)\rxapi.res
 $(OR_OUTDIR)\rxapi.res: $(OR_REXXAPISRC)\server\platform\windows\rxapi.rc
     @ECHO.
     @ECHO ResourceCompiling $(@B).res
-        $(rc) $(rcflags_common) -r -fo $(OR_OUTDIR)\rxapi.res $(OR_REXXAPISRC)\server\platform\windows\rxapi.rc
+        $(rc) $(rcflags_common) $(MANIFEST_OPTION) -r -fo $(OR_OUTDIR)\rxapi.res $(OR_REXXAPISRC)\server\platform\windows\rxapi.rc
 
 #
 # *** Inference Rule for CPP->OBJ
@@ -172,4 +178,4 @@ $(OR_OUTDIR)\rxapi.res: $(OR_REXXAPISRC)\server\platform\windows\rxapi.rc
 $(OR_OUTDIR)\verinfo.res: $(INT_PLATFORM)\verinfo.rc
     @ECHO.
     @ECHO ResourceCompiling $(@B).res
-        $(rc) $(rcflags_common) -r -fo$(@) $(**)
+        $(rc) $(rcflags_common) $(MANIFEST_OPTION) -r -fo$(@) $(**)

@@ -35,6 +35,12 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 //                                                                            */
 //----------------------------------------------------------------------------*/
+
+#ifdef MANIFEST_FILE
+#include "windows.h"
+CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST MANIFEST_FILE
+#endif
+
 RXAPICO ICON "rxapi.ico"
 
 1 VERSIONINFO

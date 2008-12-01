@@ -178,14 +178,44 @@ lflags_dll = /DLL
 lflags_exe =
 
 #
-# set up the rc flags used
+# set up which (if any) manifest is used
 #
 !IF "$(CPU)" == "X64"
-M_FILE = "rexx64.exe.manifest"
-!ELSE
-M_FILE = "rexx32.exe.manifest"
-!ENDIF
-rcflags_common=rc /DWIN32 -dOOREXX_VER=$(ORX_MAJOR) -dOOREXX_REL=$(ORX_MINOR) -dOOREXX_SUB=$(ORX_MOD_LVL) -dOOREXX_BLD=$(ORX_BLD_LVL) -dOOREXX_VER_STR=\"$(ORX_VER_STR)\" -dOOREXX_COPY_YEAR=\"$(ORX_COPY_YEAR)\" -dMANIFEST_FILE=$(M_FILE)
+
+!IFDEF NOCRTDLL
+REXX_EXE_MANIFEST = "rexx64.exe.manifest"
+NOT_REXX_EXE_MANIFEST = ""
+!ELSE   # NOCRTDLL is not defined
+!IF "$(NODEBUG)" == "1"
+REXX_EXE_MANIFEST = "rexx64.exe.MD.manifest"
+NOT_REXX_EXE_MANIFEST = "not.rexx64.exe.MD.manifest"
+!ELSE   # NODEBUG != 1
+REXX_EXE_MANIFEST = "rexx64.exe.MDd.manifest"
+NOT_REXX_EXE_MANIFEST = "not.rexx64.exe.MDd.manifest"
+!ENDIF  # end if NODEBUG == 1
+!ENDIF  # end if defined NOCRTDLL
+
+!ELSE   # CPU != X64
+
+!IFDEF NOCRTDLL
+REXX_EXE_MANIFEST = "rexx32.exe.manifest"
+NOT_REXX_EXE_MANIFEST = ""
+!ELSE   # NOCRTDLL is not defined
+!IF "$(NODEBUG)" == "1"
+REXX_EXE_MANIFEST = "rexx32.exe.MD.manifest"
+NOT_REXX_EXE_MANIFEST = "not.rexx32.exe.MD.manifest"
+!ELSE   # NODEBUG != 1
+REXX_EXE_MANIFEST = "rexx32.exe.MDd.manifest"
+NOT_REXX_EXE_MANIFEST = "not.rexx32.exe.MDd.manifest"
+!ENDIF  # end if NODEBUG == 1
+!ENDIF  # end if defined NOCRTDLL
+
+!ENDIF  # end if CPU == X64
+
+#
+# set up the rc flags used
+#
+rcflags_common=rc /i $(OR_WINKERNELSRC) /i $(OR_WINKERNELSRC)\manifests /DWIN32 -dOOREXX_VER=$(ORX_MAJOR) -dOOREXX_REL=$(ORX_MINOR) -dOOREXX_SUB=$(ORX_MOD_LVL) -dOOREXX_BLD=$(ORX_BLD_LVL) -dOOREXX_VER_STR=\"$(ORX_VER_STR)\" -dOOREXX_COPY_YEAR=\"$(ORX_COPY_YEAR)\"
 
 #
 # *** Inference Rule for CPP->OBJ

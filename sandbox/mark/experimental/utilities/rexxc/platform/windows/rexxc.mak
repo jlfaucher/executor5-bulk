@@ -83,7 +83,7 @@ COPYICOFILES: $(ICOFILES)
 $(OR_OUTDIR)\rexx.res: $(OR_WINKERNELSRC)\rexx.rc
     @ECHO .
     @ECHO ResourceCompiling $(@B).res
-        $(rc) $(rcflags_common) -r -fo$(OR_OUTDIR)\$(@B).res $(OR_WINKERNELSRC)\$(@B).rc
+        $(rc) $(rcflags_common) -dMANIFEST_FILE=$(REXX_EXE_MANIFEST) -r -fo$(OR_OUTDIR)\$(@B).res $(OR_WINKERNELSRC)\$(@B).rc
 
 #
 # *** Inference Rule for C->OBJ

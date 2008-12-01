@@ -79,8 +79,8 @@ $(OR_OUTDIR)\oodialog.dll:     $(SOURCEF)
     -out:$(OR_OUTDIR)\$(@B).dll
 
 
-# Update the version information block
+# Compile the resources for the ooDialog DLL
 $(OR_OUTDIR)\oodialog.res: $(OR_OODIALOGSRC)\oodialog.rc
     @ECHO .
     @ECHO ResourceCompiling $(@B).res
-        $(rc) $(rcflags_common) /i $(OR_OODIALOGSRC) /i $(OR_WINKERNELSRC) -r -fo$(OR_OUTDIR)\$(@B).res $(OR_OODIALOGSRC)\$(@B).rc
+        $(rc) $(rcflags_common) -dMANIFEST_FILE=$(REXX_EXE_MANIFEST) /i $(OR_OODIALOGSRC) -r -fo$(OR_OUTDIR)\$(@B).res $(OR_OODIALOGSRC)\$(@B).rc
