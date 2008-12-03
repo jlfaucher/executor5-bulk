@@ -142,68 +142,88 @@ file <computeroutput>oodwin32.cls</computeroutput>:
 </thead>
 <tbody>
 <row>
-<entry>ChangeBitmap</entry>
-<entry><link linkend="changebitmap">ChangeBitmap</link></entry>
+<entry>changeBitmap</entry>
+<entry><link linkend="changebitmap">changeBitmap</link></entry>
 </row>
 <row>
-<entry>DimBitmap</entry>
-<entry><link linkend="dimbitmap">DimBitmap</link></entry>
+<entry>click</entry>
+<entry><link linkend="mthClick">click</link></entry>
 </row>
 <row>
-<entry>DisplaceBitmap</entry>
-<entry><link linkend="displacebitmap">DisplaceBitmap</link></entry>
+<entry>dimBitmap</entry>
+<entry><link linkend="dimbitmap">dimBitmap</link></entry>
 </row>
 <row>
-<entry>DrawBitmap</entry>
-<entry><link linkend="drawbitmap">DrawBitmap</link></entry>
+<entry>displaceBitmap</entry>
+<entry><link linkend="displacebitmap">displaceBitmap</link></entry>
 </row>
 <row>
-<entry>getIdealSize</entry>
-<entry><link linkend="mthGetIdealSize">getIdealSize</link></entry>
+<entry>drawBitmap</entry>
+<entry><link linkend="drawbitmap">drawBitmap</link></entry>
+</row>
+<row>
+<entry>getBitmapSizeX</entry>
+<entry><link linkend="getbitmapsizex">getBitmapSizeX</link></entry>
+</row>
+<row>
+<entry>getBitmapSizeY</entry>
+<entry><link linkend="getbitmapsizey">getBitmapSizeY</link></entry>
+</row>
+<row>
+<entry>getBmpDisplacement</entry>
+<entry><link linkend="getbmpdisplacement">getBmpDisplacement</link></entry>
+</row>
+<row>
+<entry>getImage</entry>
+<entry><link linkend="mthGetImage">getImage</link></entry>
+</row>
+<row>
+<entry>getImageList</entry>
+<entry><link linkend="mthGetImageList">getImageList</link></entry>
 </row>
 <row>
 <entry>getTextMargin</entry>
 <entry><link linkend="mthGetTextMargin">getTextMargin</link></entry>
 </row>
 <row>
+<entry>push</entry>
+<entry><link linkend="mthPush">push</link></entry>
+</row>
+<row>
+<entry>scroll</entry>
+<entry><link linkend="scrollbc">scroll</link></entry>
+</row>
+<row>
+<entry>scrollBitmapFromTo</entry>
+<entry><link linkend="scrollbitmapfromto">scrollBitmapFromTo</link></entry>
+</row>
+<row>
+<entry>scrollText</entry>
+<entry><link linkend="scrolltextbc">scrollText</link></entry>
+</row>
+<row>
+<entry>setImage</entry>
+<entry><link linkend="mthSetImage">setImage</link></entry>
+</row>
+<row>
+<entry>setImageList</entry>
+<entry><link linkend="mthSetImageList">setImageList</link></entry>
+</row>
+<row>
 <entry>setTextMargin</entry>
 <entry><link linkend="mthSetTextMargin">setTextMargin</link></entry>
 </row>
 <row>
-<entry>GetBitmapSizeX</entry>
-<entry><link linkend="getbitmapsizex">GetBitmapSizeX</link></entry>
+<entry>state</entry>
+<entry><link linkend="state">state</link></entry>
 </row>
 <row>
-<entry>GetBitmapSizeY</entry>
-<entry><link linkend="getbitmapsizey">GetBitmapSizeY</link></entry>
+<entry>state=</entry>
+<entry><link linkend="statenew">state=</link></entry>
 </row>
 <row>
-<entry>GetBmpDisplacement</entry>
-<entry><link linkend="getbmpdisplacement">GetBmpDisplacement</link></entry>
-</row>
-<row>
-<entry>Scroll</entry>
-<entry><link linkend="scrollbc">Scroll</link></entry>
-</row>
-<row>
-<entry>ScrollBitmapFromTo</entry>
-<entry><link linkend="scrollbitmapfromto">ScrollBitmapFromTo</link></entry>
-</row>
-<row>
-<entry>ScrollText</entry>
-<entry><link linkend="scrolltextbc">ScrollText</link></entry>
-</row>
-<row>
-<entry>State</entry>
-<entry><link linkend="state">State</link></entry>
-</row>
-<row>
-<entry>State=</entry>
-<entry><link linkend="statenew">State=</link></entry>
-</row>
-<row>
-<entry>Style=</entry>
-<entry><link linkend="stylenew">Style=</link></entry>
+<entry>style=</entry>
+<entry><link linkend="stylenew">style=</link></entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -457,7 +477,7 @@ the group.
 </para></listitem></varlistentry>
 <varlistentry><term>CHECKBOX</term>
 <listitem><para>A check box where the state has to be maintained by the
-  programmer.  The state can only be checked or unchecke.
+  programmer.  The state can only be checked or unchecked.
 </para></listitem></varlistentry>
 <varlistentry><term>AUTOCHECKBOX</term>
 <listitem><para>A check box where the operating system maintains the check state
@@ -589,6 +609,100 @@ button~Style="DEFPUSHBUTTON"
 </variablelist>
 </section>
 
+
+<section id="mthClick"><title>click</title>
+<indexterm><primary>click</primary>
+<secondary>ButtonControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aButtonControl~click(--x--,--y--)------------------><
+
+
+]]>
+</programlisting>
+
+<para></para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>x</term>
+<listitem><para>xx.
+</para></listitem></varlistentry>
+<varlistentry><term>y</term>
+<listitem><para>yyy,
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The possible return values are:
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>Success
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>Some error.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>This example ...
+<programlisting>
+<![CDATA[
+x = y
+return 0
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthPush"><title>push</title>
+<indexterm><primary>push</primary>
+<secondary>ButtonControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aButtonControl~push(--x--,--y--)------------------><
+
+
+]]>
+</programlisting>
+
+<para></para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>x</term>
+<listitem><para>xx.
+</para></listitem></varlistentry>
+<varlistentry><term>y</term>
+<listitem><para>yyy,
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The possible return values are:
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>Success
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>Some error.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>This example ...
+<programlisting>
+<![CDATA[
+x = y
+return 0
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
 
 <section id="mthGetIdealSize"><title>getIdealSize</title>
 <indexterm><primary>getIdealSize</primary>
@@ -731,6 +845,198 @@ return 0
 </para></listitem></varlistentry>
 </variablelist>
 </section>
+
+
+<section id="mthGetImageList"><title>getImageList</title>
+<indexterm><primary>getImageList</primary>
+<secondary>ButtonControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aButtonControl~getImageList(--x--,--y--)------------------><
+
+
+]]>
+</programlisting>
+
+<para></para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>x</term>
+<listitem><para>xx.
+</para></listitem></varlistentry>
+<varlistentry><term>y</term>
+<listitem><para>yyy,
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The possible return values are:
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>Success
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>Some error.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>This example ...
+<programlisting>
+<![CDATA[
+x = y
+return 0
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthSetImageList"><title>setImageList</title>
+<indexterm><primary>setImageList</primary>
+<secondary>ButtonControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aButtonControl~setImageList(--x--,--y--)------------------><
+
+
+]]>
+</programlisting>
+
+<para></para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>x</term>
+<listitem><para>xx.
+</para></listitem></varlistentry>
+<varlistentry><term>y</term>
+<listitem><para>yyy,
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The possible return values are:
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>Success
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>Some error.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>This example ...
+<programlisting>
+<![CDATA[
+x = y
+return 0
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthGetImage"><title>getImage</title>
+<indexterm><primary>getImage</primary>
+<secondary>ButtonControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aButtonControl~getImage(--x--,--y--)------------------><
+
+
+]]>
+</programlisting>
+
+<para></para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>x</term>
+<listitem><para>xx.
+</para></listitem></varlistentry>
+<varlistentry><term>y</term>
+<listitem><para>yyy,
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The possible return values are:
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>Success
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>Some error.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>This example ...
+<programlisting>
+<![CDATA[
+x = y
+return 0
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthSetImage"><title>setImage</title>
+<indexterm><primary>setImage</primary>
+<secondary>ButtonControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aButtonControl~setImage(--x--,--y--)------------------><
+
+]]>
+</programlisting>
+
+<para></para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>x</term>
+<listitem><para>xx.
+</para></listitem></varlistentry>
+<varlistentry><term>y</term>
+<listitem><para>yyy,
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The possible return values are:
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>Success
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>Some error.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>This example ...
+<programlisting>
+<![CDATA[
+x = y
+return 0
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
 
 <section id="changebitmap"><title>ChangeBitmap</title>
 <indexterm><primary>ChangeBitmap</primary></indexterm>
