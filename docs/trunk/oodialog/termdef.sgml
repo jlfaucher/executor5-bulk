@@ -228,6 +228,38 @@ pens, brushes, and fonts. A device context can be acquired for a dialog or
 a button; it must be explicitly freed when the text or graphic operations
 are completed.
 </para></listitem></varlistentry>
+<varlistentry><term id="comctl32">Common Controls Library (ComCtl32)</term>
+<listitem>
+<para> The dialog control windows used in dialogs, List-Views, Edit,
+  Tree-Views, etc., are supplied by Microsoft in the common controls library.
+  This is a DLL with the name comctl32.dll.  Every version of Windows is
+  supplied with a common controls library.  However, Microsoft has updated the
+  library a number of times to provide enhanced functionality and improved
+  features
+</para>
+<para>
+  Each new version of the library is backwards compatible with previous
+  versions, but will contain features not available in older versions.  For
+  instance, some of the List-View <link linkend="listControlExtendedStyles">
+  extended styles</link> are only available with a 6.0, or later, version of the
+  common controls library.  ooDialog can only provide the features available in
+  the version of the common controls libray on the system ooDialog is running
+  on.
+</para>
+<para>
+  Therefore, an ooDialog program running on a Windows 2000 machine will not have
+  available some of the features that are available when ooDialog is running on
+  a XP service pack two system.  The DlgUtil class provides a method, <link
+  linkend="mthComCtl32Version">comCtl32Version</link> that allows the programmer
+  to determine the exact version of the common controls library that ooDialog is
+  using.  In the documentation for the ooDialog dialog control classes, features
+  that are not available in all versions of the common control library are
+  noted.  The minimum version of the library that is needed is listed.  In
+  general, at this time, all features of ooDialog are avaialable on Windows XP
+  or later.  This may change in the future as Vista has common control features
+  not available on XP.
+</para>
+</listitem></varlistentry>
 <varlistentry><term>pixel</term>
 <listitem><para>Individual addressable point within a window. VGA screens support 640
 by 480 pixels, SVGA screens support higher resolutions, such as 800 by 600,

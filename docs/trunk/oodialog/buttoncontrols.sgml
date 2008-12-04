@@ -632,7 +632,10 @@ except that the operating system maintains the check state for the programmer.
 <varlistentry><term>NOTIFY</term>
 <listitem><para>Enables a button to send the kill focus and set focus messages.
   See the <link linkend="connectbuttonnotify">ConnectButtonNotify</link> method
-  of the <link linkend="mesextcl">MessageExtensions Class</link>.
+  of the <link linkend="mesextcl">MessageExtensions Class</link>.  If the button
+  does not have this style, kill and set focus events will not be received, if
+  the programmer does <computeroutput>connectButtonNotify()</computeroutput> to
+  connect those events.
 </para></listitem></varlistentry>
 <varlistentry><term>FLAT</term>
 <listitem><para>Gives the button a flat appearance.  This style is not
@@ -698,33 +701,34 @@ button~Style="DEFPUSHBUTTON"
 <secondary>ButtonControl class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aButtonControl~getIdealSize(--x--,--y--)------------------><
-
+>>-aButtonControl~getIdealSize-------------------------------><
 
 ]]>
 </programlisting>
-
-<para></para>
+<para>
+  This method queries the button control for its ideal size.  The ideal size is
+  the size that best fits its text or image.  (If the button has an image list.)
+</para>
 <variablelist>
+<varlistentry><term><emphasis role="bold">ComCtl32 dependent </emphasis></term>
+<listitem>
+<para>
+  This method requires <link linkend="comctl32">Common Control Library</link>
+  version 6.0 or later. If necessary use the <link
+  linkend="mthComCtl32Version">comCtl32Version</link>() method to determine the
+  current version of the library.
+</para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>x</term>
-<listitem><para>xx.
-</para></listitem></varlistentry>
-<varlistentry><term>y</term>
-<listitem><para>yyy,
-</para></listitem></varlistentry>
-</variablelist>
+<listitem><para>This method has no arguments.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
 <listitem><para>The possible return values are:
 <variablelist>
-<varlistentry><term>0</term>
-<listitem><para>Success
+<varlistentry><term>A <link linkend="clsSize">.Size</link> object</term>
+<listitem><para>The ideal size for the button.
 </para></listitem></varlistentry>
-<varlistentry><term>-1</term>
-<listitem><para>Some error.
+<varlistentry><term>The <computeroutput>.nil</computeroutput> object</term>
+<listitem><para>Some unanticipated error.  This is very unlikely.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>

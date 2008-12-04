@@ -94,9 +94,9 @@
 <indexterm><primary>DlgUtil class</primary></indexterm>
 <para>
   All the methods of the DlgUitl class are class methods, there are no instance
-  methods for this class.  The class methods are a collection of common
-  utilities, mostly for converting different Windows values, getting version
-  information, and the like.
+  methods, other than inherited methods, for this class.  The class methods are
+  a collection of common utilities, mostly for converting different Windows
+  values, getting version information, and the like.
 </para>
 <variablelist>
 <varlistentry><term>Requires:</term>
@@ -111,26 +111,25 @@
 <varlistentry><term>Methods:</term>
 <listitem>
 <para>
-  Instances of the DlgUtil class implement the methods listed in the following
-  table:
+  The class methods of DlgUtil are listed in the following table:
 </para>
 <table id="tblDlgUtilMethods" frame="all">
-<title>Name Instance Methods</title>
+<title>Methods of the DlgUtil class</title>
 <tgroup cols="2">
 <thead>
 <row>
 <entry>Method...</entry>
-<entry>...on page</entry>
+<entry>...description</entry>
 </row>
 </thead>
 <tbody>
 <row>
-<entry>version</entry>
+<entry>version (Class Method)</entry>
 <entry><link linkend="mthVersion">version</link></entry>
 </row>
 <row>
-<entry>comctl32Version</entry>
-<entry><link linkend="mthcomctl32Version">comctl32Version</link></entry>
+<entry>comCtl32Version (Class Method)</entry>
+<entry><link linkend="mthComCtl32Version">comCtl32Version</link></entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -138,7 +137,7 @@
 </variablelist>
 
 
-<section id="mthVersion"><title>version</title>
+<section id="mthVersion"><title>version (Class Method)</title>
 <indexterm><primary>version</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -147,7 +146,7 @@
 ]]>
 </programlisting>
 
-<para></para>
+<para>Returns the ooDialog version string.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>There are no arguments for this method.
@@ -156,11 +155,11 @@
 <listitem>
 <para>
   A string specifying the version of ooDialog.  The string has the format:
-  <computeroutput>ooDialog Version x.x.x.SS (an ooRexx Windows
-  Extension)</computeroutput> where x.x.x is the ooRexx interpreter version and
+  <computeroutput>ooDialog Version x.x.x.SS (an ooRexx Windows Extension)
+  </computeroutput> where x.x.x is the ooRexx interpreter version and
   SS is the Subversion revision number of the build.  The actual version string
-  might look like: <computeroutput>ooDialog Version 4.0.0.3734 (an ooRexx Windows
-  Extension)</computeroutput>
+  might look like: <computeroutput>ooDialog Version 4.0.0.3734 (an ooRexx
+  Windows Extension)</computeroutput>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>
@@ -171,8 +170,8 @@
 
 ::requires 'oodPlain.cls'
 
-/* Out put could be:
- *   ooDialog Version 4.0.0.3735 (an ooRexx Windows Extension)
+/* On the screen you might see:
+ *   ooDialog Version 4.0.0.3896 (an ooRexx Windows Extension)
  */
 ]]>
 </programlisting>
@@ -181,46 +180,56 @@
 </section>
 
 
-<section id="mthcomctl32Version"><title>comctl32Version</title>
-<indexterm><primary>comctl32Version</primary></indexterm>
+<section id="mthComCtl32Version"><title>comCtl32Version (Class Method)</title>
+<indexterm><primary>comCtl32Version</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-.DlgUtil~comctl32Version--------------------------------><
+>>-.DlgUtil~comCtl32Version--------------------------------><
 
 
 ]]>
 </programlisting>
 
-<para></para>
+<para>
+  Use this method to determine the version of the<link linkend="comctl32">
+  Common Controls Library</link> used by ooDialog on the current system.
+</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>x</term>
-<listitem><para>xx.
-</para></listitem></varlistentry>
-<varlistentry><term>y</term>
-<listitem><para>yyy,
-</para></listitem></varlistentry>
-</variablelist>
+<listitem><para>There are no arguments to this method.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The possible return values are:
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>Success
-</para></listitem></varlistentry>
-<varlistentry><term>-1</term>
-<listitem><para>Some error.
-</para></listitem></varlistentry>
-</variablelist>
+<listitem>
+<para>
+  This method returns a string in the format <computeroutput>comctl32.dll
+  version 6.0 (XP)</computeroutput>.  The version number is the version number
+  of the common controls library.  The Windows version name in parenthesis is
+  the minimum operating system that includes this version.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>This example ...
+<listitem>
+<para>
+  In the following example, the programmer repositions the dialog controls under
+  certain conditions.  In Windows XP and later, this task is made easier by
+  using the <computeroutput>getIdealSize()</computeroutput> method of the
+  ButtonControl class.  However, the programmer needs the program to also run on
+  Windows 2000.  He uses the <computeroutput>comCtl32Version()</computeroutput>
+  method to determine if the <computeroutput>getIdealSize()</computeroutput>
+  method is available.
 <programlisting>
 <![CDATA[
-x = y
-return 0
+::method repositionControls
+
+  parse value .DlgUtil~comCtl32Version with . . v .
+
+  if v < 6.0 then return self~doW2KReposition
+
+  size = self~getButtonControl(IDC_CHECK_TWO)~getIdealSize
+  if size == .nil then return .false
+
+  -- do the repositioning
+
+return .true
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
@@ -329,23 +338,23 @@ return 0
 </para>
 <variablelist>
 <varlistentry><term>Requires:</term>
-<listitem><para>The Name class requires the class
-definition file <computeroutput>name.cls</computeroutput>:
+<listitem><para>The Point class requires the class definition file
+<computeroutput>oodPlain.cls</computeroutput>:
 <programlisting>
 <![CDATA[
-::requires "name.cls"
+::requires "oodPlain.cls"
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
 <varlistentry><term>Methods:</term>
 <listitem>
 <para>
-  Instances of the Name class implement the methods listed in the following
+  Instances of the Point class implement the methods listed in the following
   table:
 </para>
 
-<table id="tblPointMeth" frame="all">
-<title>Name Instance Methods</title>
+<table id="tblPointMethods" frame="all">
+<title>Point Class and Instance Methods</title>
 <tgroup cols="2">
 <thead>
 <row>
@@ -355,8 +364,8 @@ definition file <computeroutput>name.cls</computeroutput>:
 </thead>
 <tbody>
 <row>
-<entry>init</entry>
-<entry><link linkend="mthInitClsPoint">init</link></entry>
+<entry>new (Class Method)</entry>
+<entry><link linkend="mthNewClsPoint">new</link></entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -364,12 +373,12 @@ definition file <computeroutput>name.cls</computeroutput>:
 </variablelist>
 
 
-<section id="mthInitClsPoint"><title>init</title>
-<indexterm><primary>init</primary>
+<section id="mthNewClsPoint"><title>new (Class Method)</title>
+<indexterm><primary>new</primary>
 <secondary>Point class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aPoint~init(-------------------------)------------------><
+>>-.Point~new(--------------------------)------------------><
 
 ]]>
 </programlisting>
@@ -410,6 +419,98 @@ return 0
 </variablelist>
 </section>
 </section> <!-- End Point Class -->
+
+
+<section id="clsSize"><title>Size Class</title>
+<indexterm><primary>Size class</primary></indexterm>
+<para>
+  A ... is ..
+</para>
+<para>
+</para>
+<variablelist>
+<varlistentry><term>Requires:</term>
+<listitem><para>The Size class requires the class
+definition file <computeroutput>oodPlain.cls</computeroutput>:
+<programlisting>
+<![CDATA[
+::requires "oodPlain.cls"
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term>Methods:</term>
+<listitem>
+<para>
+  Instances of the Size class implement the methods listed in the following
+  table:
+</para>
+
+<table id="tblSizeMethods" frame="all">
+<title>Size Class and Instance Methods</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Method...</entry>
+<entry>...on page</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>new (Class Method)</entry>
+<entry><link linkend="mthNewClsSize">new</link></entry>
+</row>
+</tbody></tgroup>
+</table>
+</listitem></varlistentry>
+</variablelist>
+
+
+<section id="mthNewClsSize"><title>new (Class Method)</title>
+<indexterm><primary>new</primary>
+<secondary>Size class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-.Size~new(---------------------------)------------------><
+
+]]>
+</programlisting>
+
+<para></para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>x</term>
+<listitem><para>xx.
+</para></listitem></varlistentry>
+<varlistentry><term>y</term>
+<listitem><para>yyy,
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The possible return values are:
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>Success
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>Some error.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>This example ...
+<programlisting>
+<![CDATA[
+x = y
+return 0
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+</section> <!-- End Size Class -->
 
 
 <section id="clsDlgArea"><title>DlgArea Class</title>
