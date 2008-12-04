@@ -44,10 +44,9 @@
 <chapter id="utilityclasses"><title>Utility Classes</title>
 <indexterm><primary>Utility Classes</primary></indexterm>
 <para>
-  Utility classes provide ...
-</para>
-<para>
-  And ...
+  The ooDialog framework provides a number of utility classes that are useful
+  when writing more complex programs.  These classes do not easily fit into the
+  category of a type of dialog or a type of dialog control.
 </para>
 <para>
   The classes in the following table are considered utility classes and are
@@ -63,42 +62,364 @@
 </thead>
 <tbody>
 <row>
-<entry>Push Button</entry>
-<entry><link linkend="buttoncontrolc">ButtonControl Class</link></entry>
+<entry>DlgArea Class</entry>
+<entry><link linkend="clsDlgArea">DlgArea Class</link></entry>
 </row>
 <row>
-<entry>Check Box Button</entry>
-<entry><link linkend="checkboxc">CheckBox Class</link></entry>
+<entry>DlgAreaU Class</entry>
+<entry><link linkend="clsDlgAreaU">DlgAreaU Class</link></entry>
 </row>
 <row>
-<entry>Raido Button</entry>
-<entry><link linkend="radiobuttonc">RadioButton Class</link></entry>
+<entry>DlgUtil Class</entry>
+<entry><link linkend="clsDlgUtil">DlgUtil Class</link></entry>
 </row>
 <row>
-<entry>Group Box</entry>
-<entry><link linkend="groupboxc">GroupBox Class</link></entry>
+<entry>Point Class</entry>
+<entry><link linkend="clsPoint">Point Class</link></entry>
 </row>
 <row>
-<entry>Owner Drawn Button</entry>
-<entry><link linkend="anibut">AnimatedButton Class</link>,
-<link linkend="buttoncontrolc">ButtonControl Class</link></entry>
+<entry>Rect Class</entry>
+<entry><link linkend="clsRect">Rect Class</link></entry>
+</row>
+<row>
+<entry>VirtualKeyCodes Class</entry>
+<entry><link linkend="clsVirtualKeyCodes">VirtualKeyCodes Class</link></entry>
 </row>
 </tbody></tgroup>
 </table>
 </para>
 
 
-<section id="dialogareac"><title>DlgArea and DlgAreaU Classes</title>
-<indexterm><primary>DlgArea, DlgAreaU classes</primary></indexterm>
-<para>The DlgArea class provides assistance in laying out the dialog controls in
-a dynamically defined dialog.  The DlgAreaU class provides assistance in
-resizing and / or positioning controls when a dialog is resized.  Used together,
-the two classes provide a convenient way to create resizable dialogs.
+<section id="clsDlgUtil"><title>DlgUtil Class</title>
+<indexterm><primary>DlgUtil class</primary></indexterm>
+<para>
+  All the methods of the DlgUitl class are class methods, there are no instance
+  methods for this class.  The class methods are a collection of common
+  utilities, mostly for converting different Windows values, getting version
+  information, and the like.
 </para>
-<section id="dlgareacls"><title>DlgArea Class</title>
+<variablelist>
+<varlistentry><term>Requires:</term>
+<listitem><para>The DlgUtil class requires the class definition file
+<computeroutput>oodPlain.cls</computeroutput>:
+<programlisting>
+<![CDATA[
+::requires "oodPlain.cls"
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term>Methods:</term>
+<listitem>
+<para>
+  Instances of the DlgUtil class implement the methods listed in the following
+  table:
+</para>
+<table id="tblDlgUtilMethods" frame="all">
+<title>Name Instance Methods</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Method...</entry>
+<entry>...on page</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>version</entry>
+<entry><link linkend="mthVersion">version</link></entry>
+</row>
+<row>
+<entry>comctl32Version</entry>
+<entry><link linkend="mthcomctl32Version">comctl32Version</link></entry>
+</row>
+</tbody></tgroup>
+</table>
+</listitem></varlistentry>
+</variablelist>
+
+
+<section id="mthVersion"><title>version</title>
+<indexterm><primary>version</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-.DlgUtil~version----------------------------------------><
+
+]]>
+</programlisting>
+
+<para></para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>There are no arguments for this method.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem>
+<para>
+  A string specifying the version of ooDialog.  The string has the format:
+  <computeroutput>ooDialog Version x.x.x.SS (an ooRexx Windows
+  Extension)</computeroutput> where x.x.x is the ooRexx interpreter version and
+  SS is the Subversion revision number of the build.  The actual version string
+  might look like: <computeroutput>ooDialog Version 4.0.0.3734 (an ooRexx Windows
+  Extension)</computeroutput>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>
+<programlisting>
+<![CDATA[
+  v = .DlgUtil~version
+  say v
+
+::requires 'oodPlain.cls'
+
+/* Out put could be:
+ *   ooDialog Version 4.0.0.3735 (an ooRexx Windows Extension)
+ */
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthcomctl32Version"><title>comctl32Version</title>
+<indexterm><primary>comctl32Version</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-.DlgUtil~comctl32Version--------------------------------><
+
+
+]]>
+</programlisting>
+
+<para></para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>x</term>
+<listitem><para>xx.
+</para></listitem></varlistentry>
+<varlistentry><term>y</term>
+<listitem><para>yyy,
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The possible return values are:
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>Success
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>Some error.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>This example ...
+<programlisting>
+<![CDATA[
+x = y
+return 0
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+</section>
+
+<section id="clsRect"><title>Rect Class</title>
+<indexterm><primary>Rect class</primary></indexterm>
+<para>
+  A ... is ..
+</para>
+<para>
+</para>
+<variablelist>
+<varlistentry><term>Requires:</term>
+<listitem><para>The Name class requires the class
+definition file <computeroutput>name.cls</computeroutput>:
+<programlisting>
+<![CDATA[
+::requires "name.cls"
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term>Methods:</term>
+<listitem>
+<para>
+  Instances of the Name class implement the methods listed in the following
+  table:
+</para>
+
+<table id="tblRectMethods" frame="all">
+<title>Rect Instance Methods</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Method...</entry>
+<entry>...on page</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>init</entry>
+<entry><link linkend="mthInitClsRect">init</link></entry>
+</row>
+</tbody></tgroup>
+</table>
+</listitem></varlistentry>
+</variablelist>
+
+
+<section id="mthInitClsRect"><title>init</title>
+<indexterm><primary>init</primary>
+<secondary>Rect class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aRect~init(--------------------------)------------------><
+
+]]>
+</programlisting>
+
+<para></para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>x</term>
+<listitem><para>xx.
+</para></listitem></varlistentry>
+<varlistentry><term>y</term>
+<listitem><para>yyy,
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The possible return values are:
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>Success
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>Some error.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>This example ...
+<programlisting>
+<![CDATA[
+x = y
+return 0
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+</section> <!-- End Rect Class -->
+
+
+<chapter id="clsPoint"><title>Point Class</title>
+<indexterm><primary>Point class</primary></indexterm>
+<para>
+  A ... is ..
+</para>
+<para>
+</para>
+<variablelist>
+<varlistentry><term>Requires:</term>
+<listitem><para>The Name class requires the class
+definition file <computeroutput>name.cls</computeroutput>:
+<programlisting>
+<![CDATA[
+::requires "name.cls"
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term>Methods:</term>
+<listitem>
+<para>
+  Instances of the Name class implement the methods listed in the following
+  table:
+</para>
+
+<table id="tblPointMeth" frame="all">
+<title>Name Instance Methods</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Method...</entry>
+<entry>...on page</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>init</entry>
+<entry><link linkend="mthInitClsPoint">init</link></entry>
+</row>
+</tbody></tgroup>
+</table>
+</listitem></varlistentry>
+</variablelist>
+
+
+<section id="mthInitClsPoint"><title>init</title>
+<indexterm><primary>init</primary>
+<secondary>Point class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aPoint~init(-------------------------)------------------><
+
+]]>
+</programlisting>
+
+<para></para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>x</term>
+<listitem><para>xx.
+</para></listitem></varlistentry>
+<varlistentry><term>y</term>
+<listitem><para>yyy,
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The possible return values are:
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>Success
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>Some error.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>This example ...
+<programlisting>
+<![CDATA[
+x = y
+return 0
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+</section> <!-- End Point Class -->
+
+
+<section id="clsDlgArea"><title>DlgArea Class</title>
 <indexterm><primary>DlgArea class</primary></indexterm>
-<para>The DlgArea class defines an area of a UserDialog and provides co-ordinates of and within it.
-It is a helper for the DefineDialog Method of an OODialog UserDialog Object and has no effect on any Windows Object.
+<para>
+  The DlgArea class provides assistance in laying out the dialog controls in a
+  dynamically defined dialog.  The class defines an area of a UserDialog and
+  provides co-ordinates of and within it. It is a helper for the DefineDialog
+  Method of an OODialog UserDialog Object and has no effect on any Windows
+  Object.
 </para>
 <para>To use objects of the DlgArea class include this line in your code:
 </para>
@@ -567,10 +888,14 @@ self~AddButton(1,b~x,b~y(-15),b~w,15,"OK","OK","Default")
 </section>
 </section>
 
-<section id="dlgareaucls"><title>DlgAreaU Class</title>
+<section id="clsDlgAreaU"><title>DlgAreaU Class</title>
 <indexterm><primary>DlgAreaU class</primary></indexterm>
-<para>The DlgAreaU class is a subclass of the DlgArea class that assists the
-creation of dynamically resizable Dialogs.
+<para>
+  The DlgAreaU class is a subclass of the DlgArea class that assists the
+  creation of dynamically resizable Dialogs. This class provides assistance in
+  resizing and / or positioning controls when a dialog is resized.  When the
+  DlgArea and DlgAreaU classes are used together, the they provide a convenient
+  way to create resizable dialogs.
 </para>
 <para>To use objects of the DlgAreaU class include this line in your code:
 </para>
@@ -673,7 +998,6 @@ during a resize event.
 <para>An attribute holding the set of Dialog Ids of widgets not to be resized
 during a resize event.
 </para>
-</section>
 </section>
 
 <section id="dlgareaucreate"><title>Creating Resizeable Dialogs</title>
@@ -919,13 +1243,14 @@ DlgArea example</link>, but now it is resizable by dragging the frame.
 </section>
 </section>
 
-<section id="virtualkeycodesc"><title>VirtualKeyCodes Class</title>
+<section id="clsVirtualKeyCodes"><title>VirtualKeyCodes Class</title>
 <indexterm><primary>VirtualKeyCodes class</primary></indexterm>
-<para>The methods of the VirtualKeyCodes class can be
-used for all objects of the WindowsProgramManager and WindowObject classes.
-These classes inherit from the VirtualKeyCodes class.
-The VirtualKeyCodes class cannot be used as a standalone
-class.</para>
+<para>
+  The methods of the VirtualKeyCodes class can be used for all objects of the
+  WindowsProgramManager and WindowObject classes. These classes inherit from the
+  VirtualKeyCodes class. The VirtualKeyCodes class cannot be used as a
+  standalone class.
+</para>
 <para>The VirtualKeyCodes class requires the class definition
 file <computeroutput>WinSystm.cls</computeroutput>:</para>
 <programlisting>
