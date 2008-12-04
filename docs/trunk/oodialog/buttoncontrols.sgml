@@ -230,13 +230,91 @@ file <computeroutput>oodwin32.cls</computeroutput>:
 </listitem></varlistentry>
 </variablelist>
 
+<section id="mthPush"><title>push</title>
+<indexterm><primary>push</primary>
+<secondary>ButtonControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aButtonControl~push-------------------------------><
+]]>
+</programlisting>
+
+<para>
+  The push method simulates the user pushing the associated button control.  It
+  allows an ooRexx programmer to produce the exact same behavior from within, an
+  ooDialog program, as the behavior produced by the user pushing the button in
+  the dialog.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>There are no arguments to this method.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>This method does not return a value.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>This example comes from an imaginary program that has a list of
+  window handles.  The dialog has a Refresh button that the user can push to
+  update the window list.  The code comes from a section of the program that is
+  checking if a specific window handle is valid.  If the handle is not valid,
+  the code simulates the user pushing the Refresh button to update the window
+  list.
+<programlisting>
+<![CDATA[
+::method validate private
+    use strict arg hwnd
+    if \ self~isWindowHandle(hwnd) then do
+        self~getButtonControl(IDC_PB_REFRESH)~push
+        return .false
+    end
+    ...
+return .true
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthClick"><title>click</title>
+<indexterm><primary>click</primary>
+<secondary>ButtonControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aButtonControl~click-------------------------------><
+]]>
+</programlisting>
+
+<para>
+  The click method programmatically clicks the associated button control.  It
+  simulates the user pusing the button and produces exactly the same behavior as
+  if the user had click on the button.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>This method takes no arguments.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>This method does not return any value.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>This example closes the dialog as if the user had clicked the
+  cancel button.  (Provided of course that the dialog has a cancel button.)
+<programlisting>
+<![CDATA[
+self~getButtonControl(IDCANCEL)~click
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+
 <section id="state"><title>State</title>
 <indexterm><primary>State</primary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aButtonControl~State----------------------------------------><
-
-
 ]]>
 </programlisting>
 
@@ -359,9 +437,14 @@ button~State="FOCUS PUSHED"
 <varlistentry><term><emphasis role="bold">Notes:</emphasis></term>
 <listitem><para>Some points to remember when using this method.
 <orderedlist>
-<listitem><para>A button can be set to only one of the checked, unchecked or
-indeterminate states.  If more than one of these states is specified in the
-text string the button is set to the state that is first in the string.
+<listitem><para>The checked, unchecked or indeterminate states have no meaning
+for a push button.  Setting a push button to one of these states therefore has
+no effect.
+</para></listitem>
+<listitem><para>A radio button or check box can be set to only one of the
+checked, unchecked or indeterminate states.  If more than one of these states is
+specified in the text string the button is set to the state that is first in the
+string.
 </para></listitem>
 <listitem><para>Only 3-state check box buttons can be set to the indeterminate
 state.  If this keyword is used for a button that is not a 3-state button then
@@ -609,100 +692,6 @@ button~Style="DEFPUSHBUTTON"
 </variablelist>
 </section>
 
-
-<section id="mthClick"><title>click</title>
-<indexterm><primary>click</primary>
-<secondary>ButtonControl class</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>-aButtonControl~click(--x--,--y--)------------------><
-
-
-]]>
-</programlisting>
-
-<para></para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>x</term>
-<listitem><para>xx.
-</para></listitem></varlistentry>
-<varlistentry><term>y</term>
-<listitem><para>yyy,
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The possible return values are:
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>Success
-</para></listitem></varlistentry>
-<varlistentry><term>-1</term>
-<listitem><para>Some error.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>This example ...
-<programlisting>
-<![CDATA[
-x = y
-return 0
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="mthPush"><title>push</title>
-<indexterm><primary>push</primary>
-<secondary>ButtonControl class</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>-aButtonControl~push(--x--,--y--)------------------><
-
-
-]]>
-</programlisting>
-
-<para></para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>x</term>
-<listitem><para>xx.
-</para></listitem></varlistentry>
-<varlistentry><term>y</term>
-<listitem><para>yyy,
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The possible return values are:
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>Success
-</para></listitem></varlistentry>
-<varlistentry><term>-1</term>
-<listitem><para>Some error.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>This example ...
-<programlisting>
-<![CDATA[
-x = y
-return 0
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
 
 <section id="mthGetIdealSize"><title>getIdealSize</title>
 <indexterm><primary>getIdealSize</primary>

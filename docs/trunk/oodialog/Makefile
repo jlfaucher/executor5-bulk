@@ -57,7 +57,7 @@ SGML_FILES = advcntlc.sgml \
 	     listboxc.sgml \
 	     listcontrolc.sgml \
 	     mesextcl.sgml \
-	     dlgareac.sgml \
+	     utilityclasses.sgml \
 	     oodialog.sgml \
 	     plainuserdialogc.sgml \
 	     preface.sgml \
@@ -72,7 +72,6 @@ SGML_FILES = advcntlc.sgml \
 	     termdef.sgml \
 	     treecontrolc.sgml \
 	     userdialog.sgml \
-	     virtualkeycodesc.sgml \
 	     ../shared/notices.sgml \
 	     ../shared/legalstuff.sgml \
 	     ../shared/gethelp.sgml \
@@ -131,9 +130,6 @@ svnrev.tmp:
 	svnversion > svnrev.tmp
 
 
-
-
 clean:
-	rm *.log *.aux *.out *.fmt *.pdf genindex.sgml *.htm *.zip \
-           HTML.index *.tmp
+	rm -f *.log *.aux *.out *.fmt *.pdf genindex.sgml *.htm *.zip HTML.index *.tmp
 
