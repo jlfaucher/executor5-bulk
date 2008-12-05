@@ -916,8 +916,28 @@ self~getButtonControl(IDC_PB_SHOW_DETAILS)~setTextMargin(margins)
 <listitem><para>This example ...
 <programlisting>
 <![CDATA[
-x = y
-return 0
+  pbBig  = self~getButtonControl(IDC_PB_BIGRECT)
+  if pbBig <> .nil then do
+    d = pbBig~getImageList
+    if d <> .nil thend
+      p = d~handle
+
+      say 'Got image list:' d
+      say '  handle: ' d~handle
+      say '  rect:   ' d~rect
+      say '  align:  ' d~alignment
+
+      say 'Image margins:' d~rect~left',' d~rect~top',' d~rect~right',' d~rect~bottom
+    end
+  end
+
+/* Output might be for example:
+ *   Got image list: a Directory
+ *     handle:  0x000E60F0
+ *     rect:    a Rect
+ *     align:   BOTTOM
+ *   Image margins: 5, 5, 5, 5
+ */
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
