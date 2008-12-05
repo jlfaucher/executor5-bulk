@@ -697,8 +697,7 @@ button~Style="DEFPUSHBUTTON"
 
 
 <section id="mthGetIdealSize"><title>getIdealSize</title>
-<indexterm><primary>getIdealSize</primary>
-<secondary>ButtonControl class</secondary></indexterm>
+<indexterm><primary>getIdealSize</primary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aButtonControl~getIdealSize-------------------------------><
@@ -728,16 +727,22 @@ button~Style="DEFPUSHBUTTON"
 <listitem><para>The ideal size for the button.
 </para></listitem></varlistentry>
 <varlistentry><term>The <computeroutput>.nil</computeroutput> object</term>
-<listitem><para>Some unanticipated error.  This is very unlikely.
+<listitem><para>Some unanticipated error.  This is very unlikely to happen.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>This example ...
+<listitem><para>
 <programlisting>
 <![CDATA[
-x = y
-return 0
+size = self~getButtonControl(IDC_PB_REVIEW)~getIdealSize
+say 'The ideal height for the button is' size~height'
+say 'The ideal width for the button is' size~width
+
+/* Output might be for example:
+ *   The ideal height for the button is 24
+ *   The ideal width for the button is 45
+ */
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
@@ -746,46 +751,58 @@ return 0
 
 
 <section id="mthGetTextMargin"><title>getTextMargin</title>
-<indexterm><primary>getTextMargin</primary>
-<secondary>ButtonControl class</secondary></indexterm>
+<indexterm><primary>getTextMargin</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aButtonControl~getTextMargin(--x--,--y--)------------------><
-
-
+>>-aButtonControl~getTextMargin-------------------------------><
 ]]>
 </programlisting>
 
-<para></para>
+<para>
+  This method retrieves the margins used to draw within the assoicated button
+  control.
+</para>
 <variablelist>
+<varlistentry><term><emphasis role="bold">ComCtl32 dependent</emphasis></term>
+<listitem>
+<para>
+  This method requires <link linkend="comctl32">Common Control Library</link>
+  version 6.0 or later. If necessary use the <link
+  linkend="mthComCtl32Version">comCtl32Version</link>() method to determine the
+  current version of the library.
+</para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>x</term>
-<listitem><para>xx.
-</para></listitem></varlistentry>
-<varlistentry><term>y</term>
-<listitem><para>yyy,
-</para></listitem></varlistentry>
-</variablelist>
+<listitem><para>This method does not take any arguments.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
 <listitem><para>The possible return values are:
 <variablelist>
-<varlistentry><term>0</term>
-<listitem><para>Success
+<varlistentry><term>A <link linkend="clsRect">.Rect object</link></term>
+<listitem><para>The margin for drawing text in the button.
 </para></listitem></varlistentry>
-<varlistentry><term>-1</term>
-<listitem><para>Some error.
+<varlistentry><term>The <computeroutput>.nil</computeroutput>object.</term>
+<listitem><para>An unanticipated error.  This is not likely to happen.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>This example ...
+<listitem><para>
 <programlisting>
 <![CDATA[
-x = y
-return 0
+margins = self~getButtonControl(IDC_PB_REDRAW)~getTextMagin
+say 'The text margins for the "Refresh" button:'
+say '  Left:  ' margins~left
+say '  Top:   ' margins~top
+say '  Right: ' margins~right
+say '  Bottom:' margins~bottom
+
+/* Output might be for example:
+ *   The text margins for the "Refresh" button:
+ *     Left:   1
+ *     Top:    1
+ *     Right:  1
+ *     Bottom: 1
+ */
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
@@ -797,42 +814,51 @@ return 0
 <secondary>ButtonControl class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aButtonControl~setTextMargin(--x--,--y--)------------------><
-
+>>-aButtonControl~setTextMargin(--margins--)------------------><
 
 ]]>
 </programlisting>
 
-<para></para>
+<para>
+  This method sets the margins for drawing text in the associated button
+  control.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>x</term>
-<listitem><para>xx.
+<varlistentry><term><emphasis role="bold">ComCtl32 dependent</emphasis></term>
+<listitem>
+<para>
+  This method requires <link linkend="comctl32">Common Control Library</link>
+  version 6.0 or later. If necessary use the <link
+  linkend="mthComCtl32Version">comCtl32Version</link>() method to determine the
+  current version of the library.
 </para></listitem></varlistentry>
-<varlistentry><term>y</term>
-<listitem><para>yyy,
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>margins</term>
+<listitem>
+<para>
+  A <link linkend="clsRect">.Rect</link> object describing the new margins.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
 <listitem><para>The possible return values are:
 <variablelist>
-<varlistentry><term>0</term>
+<varlistentry><term><computeroutput>.true</computeroutput></term>
 <listitem><para>Success
 </para></listitem></varlistentry>
-<varlistentry><term>-1</term>
-<listitem><para>Some error.
+<varlistentry><term><computeroutput>.false</computeroutput></term>
+<listitem><para>Failed.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>This example ...
+<listitem><para>This example sets a new text margin of 5 for the button control.
 <programlisting>
 <![CDATA[
-x = y
-return 0
+margins = .Rect~new(5, 5, 5, 5)
+self~getButtonControl(IDC_PB_SHOW_DETAILS)~setTextMargin(margins)
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
@@ -845,33 +871,44 @@ return 0
 <secondary>ButtonControl class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aButtonControl~getImageList(--x--,--y--)------------------><
-
+>>-aButtonControl~getImageList-------------------------------><
 
 ]]>
 </programlisting>
 
-<para></para>
+<para>
+  This method retrieves information describing the image list for the associated
+  button, if there is one.
+</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>x</term>
-<listitem><para>xx.
-</para></listitem></varlistentry>
-<varlistentry><term>y</term>
-<listitem><para>yyy,
-</para></listitem></varlistentry>
-</variablelist>
+<listitem><para>The are no arguments to this method.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
 <listitem><para>The possible return values are:
 <variablelist>
-<varlistentry><term>0</term>
-<listitem><para>Success
+<varlistentry><term>A <computeroutput>.Directory</computeroutput>object.</term>
+<listitem>
+<para>The image list information is returned in a Directory object. The
+  directory object has the following entries:
+  <variablelist>
+  <varlistentry><term>handle</term>
+  <listitem><para>The Windows handle to the image list.
+  </para></listitem></varlistentry>
+  <varlistentry><term>rect</term>
+  <listitem><para>A <link linkend="clsRect">.Rect</link> object that specifies
+    the margin around the image.
+  </para></listitem></varlistentry>
+  <varlistentry><term>alignment</term>
+  <listitem><para>A key word that specifies the alignment of the image list.
+    The key word will be exactly one of these words: TOP LEFT RIGHT BOTTOM
+    CENTER.
+  </para></listitem></varlistentry>
+  </variablelist>
 </para></listitem></varlistentry>
-<varlistentry><term>-1</term>
-<listitem><para>Some error.
+<varlistentry><term>The <computeroutput>.nil</computeroutput> object</term>
+<listitem><para>The .nil object is returned if the button does not have an
+  image list, or for some other unanticipated error.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
