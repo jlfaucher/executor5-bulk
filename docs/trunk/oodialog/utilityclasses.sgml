@@ -140,7 +140,8 @@
 <section id="mthVersion"><title>version (Class Method)</title>
 <indexterm><primary>version</primary></indexterm>
 <programlisting>
-<![CDATA[             +-Full----+
+<![CDATA[
+                      +-Full----+
 >>-.DlgUtil~version(--------------)------------------------><
                       +-Short---+
 ]]>
@@ -182,7 +183,8 @@
 <section id="mthComCtl32Version"><title>comCtl32Version (Class Method)</title>
 <indexterm><primary>comCtl32Version</primary></indexterm>
 <programlisting>
-<![CDATA[                     +-Short---+
+<![CDATA[
+                              +-Short---+
 >>-.DlgUtil~comCtl32Version(--------------)----------------><
                               +-Number--+
                               +-OS------+
@@ -242,14 +244,13 @@
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem>
 <para>
-  In the following example, the programmer repositions the dialog controls under
-  certain conditions.  In Windows XP and later, this task is more accurate if the
-  <computeroutput>getIdealSize()</computeroutput> method of the ButtonControl
-  class is used. However, the programmer needs the application to also run on
-  Windows 2000.  He uses the <computeroutput>comCtl32Version()</computeroutput>
-  method to determine if the <computeroutput>getIdealSize()</computeroutput>
-  method is available.  If it is not available he uses an alternative method,
-  but less accurate method to reposition the controls.
+  In the following example, the programmer repositions the dialog controls under certain
+  conditions.  In Windows XP and later, this task is more accurate if the
+  <computeroutput>getIdealSize()</computeroutput> method of the ButtonControl class is used.
+  However, the programmer needs the application to also run on Windows 2000.  He uses the
+  <computeroutput>comCtl32Version()</computeroutput> method to determine if the <link
+  linkend="mthGetIdealSize">getIdealSize</link> method is available.  If it is not available
+  he uses an alternative, but less accurate method to reposition the controls.
 <programlisting>
 <![CDATA[
 ::method repositionControls
