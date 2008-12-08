@@ -142,6 +142,14 @@ file <computeroutput>oodwin32.cls</computeroutput>:
 </thead>
 <tbody>
 <row>
+<entry>releaseImageList (Class method)</entry>
+<entry><link linkend="mthReleaseImageListClsButonControl">releaseImageList</link></entry>
+</row>
+<row>
+<entry>changeBitmap</entry>
+<entry><link linkend="changebitmap">changeBitmap</link></entry>
+</row>
+<row>
 <entry>changeBitmap</entry>
 <entry><link linkend="changebitmap">changeBitmap</link></entry>
 </row>
@@ -229,6 +237,45 @@ file <computeroutput>oodwin32.cls</computeroutput>:
 </table>
 </listitem></varlistentry>
 </variablelist>
+
+
+<section id="mthReleaseImageListClsButtonControl"><title>releaseImageList</title>
+<indexterm><primary>releaseImageList</primary>
+<secondary>ButtonControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-.ButtonControl~releaseImageList(--handle--)-------------><
+
+]]>
+</programlisting>
+
+<para>
+  Use this method to release the operating system resources assigned to an image
+  list created by the <link linkend="mthSetImageList">setImageList</link>()
+  method.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>handle</term>
+<listitem><para>The handle to the image list.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The method does not return any value.
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>This example ...
+<programlisting>
+<![CDATA[
+x = y
+return 0
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
 
 <section id="mthPush"><title>push</title>
 <indexterm><primary>push</primary>
@@ -885,7 +932,7 @@ self~getButtonControl(IDC_PB_SHOW_DETAILS)~setTextMargin(margins)
 <listitem><para>The are no arguments to this method.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The possible return values are:
+<listitem><para>The return value is:
 <variablelist>
 <varlistentry><term>A <computeroutput>.Directory</computeroutput> object.</term>
 <listitem>
@@ -946,12 +993,11 @@ self~getButtonControl(IDC_PB_SHOW_DETAILS)~setTextMargin(margins)
 
 
 <section id="mthSetImageList"><title>setImageList</title>
-<indexterm><primary>setImageList</primary>
-<secondary>ButtonControl class</secondary></indexterm>
+<indexterm><primary>setImageList</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aButtonControl~setImageList(--x--,--y--)------------------><
-
+>>-aButtonControl~setImageList(--imageList--,--+--------+--,--+-------+--)-><
+                                               +-margin-+     +-align-+
 
 ]]>
 </programlisting>
@@ -980,8 +1026,16 @@ self~getButtonControl(IDC_PB_SHOW_DETAILS)~setTextMargin(margins)
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>This example ...
+<varlistentry id="exampleSetImageList"><term><emphasis role="bold">Example:</emphasis></term>
+<listitem>
+<para>
+  In addition to the setImageList() method, this example uses a number of other methods
+  related to using image lists with buttons. Such as, <link
+  linkend="mthReleaseImageListClsButonControl">releaseImageList</link>, <link
+  linkend="mthGetImageList">getImageList</link>, <link
+  linkend="mthGetIdealSize">getIdealSize</link>, and <link
+  linkend="mthComCtl32Version">comCtl32Version</link>.
+
 <programlisting>
 <![CDATA[
 x = y

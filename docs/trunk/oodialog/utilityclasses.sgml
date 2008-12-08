@@ -140,9 +140,9 @@
 <section id="mthVersion"><title>version (Class Method)</title>
 <indexterm><primary>version</primary></indexterm>
 <programlisting>
-<![CDATA[
->>-.DlgUtil~version----------------------------------------><
-
+<![CDATA[             +-Full----+
+>>-.DlgUtil~version(--------------)------------------------><
+                      +-Short---+
 ]]>
 </programlisting>
 
@@ -179,14 +179,14 @@
 </variablelist>
 </section>
 
-
 <section id="mthComCtl32Version"><title>comCtl32Version (Class Method)</title>
 <indexterm><primary>comCtl32Version</primary></indexterm>
 <programlisting>
-<![CDATA[
->>-.DlgUtil~comCtl32Version--------------------------------><
-
-
+<![CDATA[                     +-Short---+
+>>-.DlgUtil~comCtl32Version(--------------)----------------><
+                              +-Number--+
+                              +-OS------+
+                              +-Full----+
 ]]>
 </programlisting>
 
@@ -196,38 +196,83 @@
 </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>There are no arguments to this method.
+<listitem><para>The single argument is:
+<variablelist>
+<varlistentry><term>format</term>
+<listitem>
+<para>
+  A keyword indicating the format of the returned version string.  Only the first letter is
+  needed and case is not significant.  Any unrecognized keyword is ignored and the default
+  format is used.  The format for each keyword is as follows:
+</para>
+<variablelist>
+<varlistentry><term>Short</term>
+<listitem>
+<para>
+  The version number, for instance <computeroutput>4.72</computeroutput> or
+  <computeroutput>6.0</computeroutput>. This is the default.
+</para></listitem></varlistentry>
+<varlistentry><term>Number</term>
+<listitem><para>This is an alias for short.
+</para></listitem></varlistentry>
+<varlistentry><term>OS</term>
+<listitem>
+<para>
+  The minimum operating system that can be expected to be compatible with the libray.
+  Earlier versions of the common control library were also distributed with Internet
+  Explorer and so an OS part of say, <computeroutput>W98 / IE 4.01</computeroutput> would
+  indicate that the current common control library supports all the features available on
+  Windows 98 or with Internet Explorer 4.01.
+</para></listitem></varlistentry>
+<varlistentry><term>Full</term>
+<listitem>
+<para>
+  The full format string in the format <computeroutput>comctl32.dll version 6.0
+  (XP)</computeroutput>. Where the 6.0 is the number part and XP is the OS part.
+</para></listitem></varlistentry>
+</variablelist>
+</listitem></varlistentry>
+</variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
 <listitem>
 <para>
-  This method returns a string in the format <computeroutput>comctl32.dll
-  version 6.0 (XP)</computeroutput>.  The version number is the version number
-  of the common controls library.  The Windows version name in parenthesis is
-  the minimum operating system that includes this version.
+  This method returns a string in one of the formats described above.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem>
 <para>
   In the following example, the programmer repositions the dialog controls under
-  certain conditions.  In Windows XP and later, this task is made easier by
-  using the <computeroutput>getIdealSize()</computeroutput> method of the
-  ButtonControl class.  However, the programmer needs the program to also run on
+  certain conditions.  In Windows XP and later, this task is more accurate if the
+  <computeroutput>getIdealSize()</computeroutput> method of the ButtonControl
+  class is used. However, the programmer needs the application to also run on
   Windows 2000.  He uses the <computeroutput>comCtl32Version()</computeroutput>
   method to determine if the <computeroutput>getIdealSize()</computeroutput>
-  method is available.
+  method is available.  If it is not available he uses an alternative method,
+  but less accurate method to reposition the controls.
 <programlisting>
 <![CDATA[
 ::method repositionControls
 
-  parse value .DlgUtil~comCtl32Version with . . v .
-
-  if v < 6.0 then return self~doW2KReposition
+  if .DlgUtil~comCtl32Version < 6.0 then return self~doW2KReposition
 
   size = self~getButtonControl(IDC_CHECK_TWO)~getIdealSize
   if size == .nil then return .false
 
   -- do the repositioning
+
+return .true
+]]>
+</programlisting>
+  An alternative way to achieve the same thing might be:
+<programlisting>
+<![CDATA[
+::method repositionControls
+
+  if .DlgUtil~comCtl32Version('O') == "XP" then return self~doXPReposition
+
+  -- Do the less accurate repositioning
+  ...
 
 return .true
 ]]>
@@ -272,8 +317,8 @@ definition file <computeroutput>name.cls</computeroutput>:
 </thead>
 <tbody>
 <row>
-<entry>init</entry>
-<entry><link linkend="mthInitClsRect">init</link></entry>
+<entry>new (Class method)</entry>
+<entry><link linkend="mthNewClsRect">new</link></entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -281,12 +326,12 @@ definition file <computeroutput>name.cls</computeroutput>:
 </variablelist>
 
 
-<section id="mthInitClsRect"><title>init</title>
-<indexterm><primary>init</primary>
+<section id="mthNewClsRect"><title>new (Class method)</title>
+<indexterm><primary>new</primary>
 <secondary>Rect class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aRect~init(--------------------------)------------------><
+>>-aRect~new(---------------------------)------------------><
 
 ]]>
 </programlisting>
