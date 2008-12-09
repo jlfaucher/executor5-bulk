@@ -445,41 +445,63 @@ return .true
 <indexterm><primary>colorRef</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aButtonControl~methodName(--x--,--y--)------------------><
 
+>>-.DlgUtil~colorRef(--R--,--+---+--,--+---+--)------------><
+                             +-G-+     +-B-+
 ]]>
 </programlisting>
 
-<para></para>
+<para>
+  The Windows API uses a COLORREF to specify a RGB color.  This is a 32-bit number with a
+  hexidecimal format of: <computeroutput>0x00bbggrr</computeroutput>.  Windows also defines 2
+  special values, CLR_NONE and CLR_DEFAULT.  The <computeroutput>colorRef</computeroutput>() method
+  provides a way to construct a COLORREF from the red, green, and blue values, or to get the
+  CLR_NONE and CLR_DEFAULT values.  Each color value (red, green, or blue) is a whole number in the
+  range of 0 to 255 inclusive.
+</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The arguments are:
 <variablelist>
-<varlistentry><term>x</term>
-<listitem><para>xx.
+<varlistentry><term>R</term>
+<listitem>
+<para>
+  Either the red component of the RGB color, or one of two keywords.  If a keyword is used for the
+  first argument, it must be the only argument.  If a keyword is not used, all three arguments are
+  required.  Only the first letter of the keyword is needed and case is not significant.  Allowable
+  keywords:
+  <itemizedlist>
+  <listitem><para>DEFAULT used to get the CLR_DEFAULT value.</para></listitem>
+  <listitem><para>NONE used to get the CLR_NONE value.</para></listitem>
+  </itemizedlist>
 </para></listitem></varlistentry>
-<varlistentry><term>y</term>
-<listitem><para>yyy,
+<varlistentry><term>G</term>
+<listitem><para>The green component of the RGB value.
+</para></listitem></varlistentry>
+<varlistentry><term>B</term>
+<listitem><para>The blue component of the RGB value.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The possible return values are:
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>Success
-</para></listitem></varlistentry>
-<varlistentry><term>-1</term>
-<listitem><para>Some error.
-</para></listitem></varlistentry>
-</variablelist>
+<listitem><para>The return is a valid RGB color, or CLR_NONE, or CLR_DEFAULT.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>This example ...
+<listitem><para>
 <programlisting>
 <![CDATA[
-x = y
-return 0
+
+ ref = .DlgUtil~colorRef(245, 89, 255)
+ say 'A fancy puple:' ref '(0x' || ref~d2x~right(8, '0')')'
+ say
+
+::requires 'oodPlain.cls'
+
+/* Output:
+
+A fancy puple: 16734709 (0x00FF59F5)
+
+*/
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
@@ -490,41 +512,55 @@ return 0
 <indexterm><primary>getRValue</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aButtonControl~methodName(--x--,--y--)------------------><
+>>-.DlgUtil~getRValue(--colorRef--)------------------------><
 
 ]]>
 </programlisting>
 
-<para></para>
+<para>Returns the red component of a RGB color.
+</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
+<listitem><para>The argument is:
 <variablelist>
-<varlistentry><term>x</term>
-<listitem><para>xx.
-</para></listitem></varlistentry>
-<varlistentry><term>y</term>
-<listitem><para>yyy,
+<varlistentry><term>colorRef</term>
+<listitem>
+<para>
+  A RGB color, a COLORREF.  See the <link linkend="mthColorRef">colorRef</link>() method for a brief
+  discussion of these terms.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The possible return values are:
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>Success
-</para></listitem></varlistentry>
-<varlistentry><term>-1</term>
-<listitem><para>Some error.
-</para></listitem></varlistentry>
-</variablelist>
+<listitem><para>The return is the red component of the specified RGB color.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>This example ...
-<programlisting>
+<listitem><para>
+<programlisting id="exampleGetRValueClsDlgUtil">
 <![CDATA[
-x = y
-return 0
+  progressBar = self~getProgressBar("IDC_PB_FILES")
+  if progressBar <> .nil then do
+    purple = .DlgUtil~colorRef(245, 89, 255)
+
+    say 'Going to set the background color for the progress bar'
+    oldColor = progressBar~backgroundColor(purple)
+
+    say 'Old background color was:' oldColor '(0x'oldColor~d2x')'
+    say '  Red:  ' .DlgUtil~getRValue(oldColor)
+    say '  Green:' .DlgUtil~getGValue(oldColor)
+    say '  Blue: ' .DlgUtil~getBValue(oldColor)
+    say
+  end
+
+  /* Output might be:
+
+  Going to set the background color for the progress bar
+  Old background color was: 11460781 (0xAEE0AD)
+    Red:   173
+    Green: 224
+    Blue:  174
+
+  */
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
@@ -535,43 +571,31 @@ return 0
 <indexterm><primary>getRValue</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aButtonControl~methodName(--x--,--y--)------------------><
+>>-.DlgUtil~getGValue(--colorRef--)------------------------><
 
 ]]>
 </programlisting>
 
-<para></para>
+<para>Returns the green component of a RGB color.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
+<listitem><para>The argument is:
 <variablelist>
-<varlistentry><term>x</term>
-<listitem><para>xx.
-</para></listitem></varlistentry>
-<varlistentry><term>y</term>
-<listitem><para>yyy,
+<varlistentry><term>colorRef</term>
+<listitem>
+<para>
+  A RGB color, a COLORREF.  See the <link linkend="mthColorRef">colorRef</link>() method for a brief
+  discussion of these terms.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The possible return values are:
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>Success
-</para></listitem></varlistentry>
-<varlistentry><term>-1</term>
-<listitem><para>Some error.
-</para></listitem></varlistentry>
-</variablelist>
+<listitem><para>The return is the green component of the specified RGB color.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>This example ...
-<programlisting>
-<![CDATA[
-x = y
-return 0
-]]>
-</programlisting>
+<listitem>
+<para>
+  See the example for the <link linkend="exampleGetRValueClsDlgUtil">getRValue</link>() method.
 </para></listitem></varlistentry>
 </variablelist>
 </section>
@@ -580,48 +604,37 @@ return 0
 <indexterm><primary>getRValue</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aButtonControl~methodName(--x--,--y--)------------------><
+>>-.DlgUtil~getBValue(--colorRef--)------------------------><
 
 ]]>
 </programlisting>
 
-<para></para>
+<para>Returns the blue component of a RGB color.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
+<listitem><para>The argument is:
 <variablelist>
-<varlistentry><term>x</term>
-<listitem><para>xx.
-</para></listitem></varlistentry>
-<varlistentry><term>y</term>
-<listitem><para>yyy,
+<varlistentry><term>colorRef</term>
+<listitem>
+<para>
+  A RGB color, a COLORREF.  See the <link linkend="mthColorRef">colorRef</link>() method for a brief
+  discussion of these terms.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The possible return values are:
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>Success
-</para></listitem></varlistentry>
-<varlistentry><term>-1</term>
-<listitem><para>Some error.
-</para></listitem></varlistentry>
-</variablelist>
+<listitem><para>The return is the blue component of the specified RGB color.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>This example ...
-<programlisting>
-<![CDATA[
-x = y
-return 0
-]]>
-</programlisting>
+<listitem>
+<para>
+  See the example for the <link linkend="exampleGetRValueClsDlgUtil">getRValue</link>() method.
 </para></listitem></varlistentry>
 </variablelist>
 </section>
 
 </section> <!-- End DlgUtil Class -->
+
 
 <section id="clsRect"><title>Rect Class</title>
 <indexterm><primary>Rect class</primary></indexterm>
