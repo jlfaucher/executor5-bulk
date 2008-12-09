@@ -2008,21 +2008,31 @@ a method with a matching name.
 
 <programlisting>
 <![CDATA[
-::class MyDlgClass subclass UserDialog
+  dlg = .ResizingDialog~new
+  dlg~createCenter(100, 60, "Resize Me", "THICKFRAME")
+  dlg~execute("SHOWTOP")
 
-::method Init
-  self~init:super(...)
-  self~ConnectResize("OnSize")
+::requires 'ooDialog.cls'
 
-::method OnSize
-  use arg sizeEvent, sizeinfo    /* sizeinfo contains information about the
-                                    new width and height */
-  msg = self~PeekDialogMessage
-  if msg~left(6) = "ONSIZE" then return    /* not the last size
-                                                         event message */
-  w = binaryand(sizeinfo, "0x0000FFFF") / self~FactorX
-  h = binaryand(sizeinfo, "0xFFFF0000") % X2D("FFFF") / self~FactorY
+::class 'ResizingDialog' subclass UserDialog
+
+::method init
+  forward class (super) continue
+
+  self~connectResize("onSize")
+
+::method onSize
+  use arg sizeEvent, sizeInfo
+
+  -- Wait until the last size event message, in a series of messages, arrives.
+  msg = self~peekDialogMessage
+  if msg~left(6) = "ONSIZE" then return
+
+  -- sizeInfo contains information about the new width and height in pixels.
+  w = .DlgUtil~loWord(sizeinfo) / self~factorX
+  h = .DlgUtil~hiWord(sizeinfo) / self~factorY
   say "New width=" w ", new height=" h
+
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
@@ -2105,19 +2115,24 @@ a method with a matching name.
 <![CDATA[
 ::class MyDlgClass subclass UserDialog
 
-::method Init
-  self~init:super(...)
-  selfConnectMove("OnMove")
+::method init
+  forward class (super) continue
 
-::method OnMove
-  use arg dummy, posinfo     /* posinfo contains information
-                                   about the new position */
-  msg = self~PeekDialogMessage
-  if msg~left(6) = "ONMOVE" then return    /* not the last move
-                                                      event message */
-  w = binaryand(data, "0x0000FFFF") / self~FactorX
-  h = binaryand(data, "0xFFFF0000") % X2D("FFFF") / self~FactorY
-  say "New x=" x ", new y=" y
+  self~connectMove(onMove)
+
+::method onMove
+  use arg unUsed, posInfo
+
+  -- Look at our message queue to see if the next message in the queue is also
+  -- onMove.  If so, just return.
+  msg = self~peekDialogMessage
+  if msg~left(6) = "ONMOVE" then return
+
+  -- Now, we should be done moving, print out where we are.
+  x = .DlgUtil~loWord(posInfo)
+  y = .DlgUtil~hiWord(posInfo)
+  say 'At coordinate (' x',' y' ) on the screen. (In pixels.)'
+
 ]]>
 </programlisting>
 </para></listitem></varlistentry>

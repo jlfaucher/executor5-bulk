@@ -1213,7 +1213,7 @@ before init:super has been called.</para></listitem>
 <![CDATA[
 ::method Handler
   use arg ev_id, handle
-  id = BinaryAnd(ev_id, "0x0000FFFF")
+  id = .DlgUtil~loWord(ev_id)
   ...
 ]]>
 </programlisting></para></listitem>
@@ -1348,7 +1348,7 @@ before init:super has been called.</para></listitem>
 <![CDATA[
 ::method Handler
   use arg ev_id, handle
-  id = BinaryAnd(ev_id, "0x0000FFFF")
+  id = .DlgUtil~loWord(ev_id)
   ...
 ]]>
 </programlisting></listitem>
@@ -1459,7 +1459,7 @@ before init:super has been called.</para></listitem>
 <![CDATA[
 ::method Handler
   use arg ev_id, handle
-  id = BinaryAnd(ev_id, "0x0000FFFF")
+  id = .DlgUtil~loWord(ev_id)
   ...
 ]]>
 </programlisting></para></listitem>
@@ -1596,7 +1596,7 @@ the window handle of the combo box. Example:
 <![CDATA[
 ::method PlaySong
   use arg eventID, handle
-  id = BinaryAnd(eventID, "0x0000FFFF")
+  id = .DlgUtil~loWord(eventID)
   if id == self~ConstDir["PROFESSIONS"] then
     -- take some action
   ...
@@ -1709,11 +1709,13 @@ for POSITION, which is to be 4:
 
 ::method OnPosition
   use arg ev_pos, hnd
-  pos = ev_pos % "10000"~x2d
-  self~GetScrollBar("MYSCROLL")~SetPos(pos,1)   /* redraw scroll bar
-                                                  with new position */
-  say "Pos=" pos ", event code to verify=" BinaryAnd(ev_pos, ,
-    "0x0000FFFF") "(expected 4)"
+  pos = .DlgUtil~hiWord(ev_pos)
+
+  -- redraw scroll bar with new position
+  self~GetScrollBar("MYSCROLL")~SetPos(pos,1)
+
+  say "Pos:" pos
+  say "Verify event code (should be 4):" .DlgUtil~loWord(ev_pos)
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
@@ -1730,7 +1732,7 @@ by extracting the high-order word.</para>
 <![CDATA[
 ::method Handler
   use arg ev_pos, handle
-  position = ev_pos % "10000"~x2d
+  position = .DlgUtil~hiWord(ev_pos)
 ]]>
 </programlisting>
 <para>If the user changed the
@@ -1842,7 +1844,7 @@ Example:
 <![CDATA[
 ::method Handler
   use arg ev_id, handle
-  id = BinaryAnd(ev_id, "0x0000FFFF")
+  id = .DlgUtil~loWord(ev_id)
 ]]>
 </programlisting></para></listitem>
 </orderedlist>
@@ -1941,7 +1943,7 @@ incorrect.
 <listitem><para>The following example connects the POSITION event (release mouse button
 after dragging) with method PosSet, which extracts the new slider position
 from the notification arguments and displays it together with the event type
-for POSITION, which is to be 4:
+for POSITION, which should be 4:
 <programlisting>
 <![CDATA[
 ::class MyDlgClass subclass UserDialog inherit MessageExtensions
@@ -1952,9 +1954,9 @@ for POSITION, which is to be 4:
 
 ::method PosSet
   use arg ev_pos, hnd
-  pos = ev_pos % "10000"~x2d
-  say "Pos=" pos ", event code to verify=" BinaryAnd(ev_pos, ,
-    "0x0000FFFF") "(expected 4)"
+  pos = .DlgUtil~hiWord(ev_pos)
+
+  say "Verify event code (should be 4):" .DlgUtil~loWord(ev_pos)
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
@@ -1971,7 +1973,7 @@ slider position by extracting the high-oder word. Example:
 <![CDATA[
 ::method Handler
   use arg ev_pos, handle
-  position = ev_pos % "10000"~x2d
+  position = .DlgUtil~hiWord(ev_pos)
 ]]>
 </programlisting></para></listitem>
 </orderedlist>

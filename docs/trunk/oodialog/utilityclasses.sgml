@@ -124,12 +124,36 @@
 </thead>
 <tbody>
 <row>
-<entry>version (Class Method)</entry>
-<entry><link linkend="mthVersion">version</link></entry>
+<entry>colorRef (Class Method)</entry>
+<entry><link linkend="mthColorRef">colorRef</link></entry>
 </row>
 <row>
 <entry>comCtl32Version (Class Method)</entry>
 <entry><link linkend="mthComCtl32Version">comCtl32Version</link></entry>
+</row>
+<row>
+<entry>getBValue (Class Method)</entry>
+<entry><link linkend="mthGetBValue">getBValue</link></entry>
+</row>
+<row>
+<entry>getGValue (Class Method)</entry>
+<entry><link linkend="mthGetGValue">getGValue</link></entry>
+</row>
+<row>
+<entry>getRValue (Class Method)</entry>
+<entry><link linkend="mthGetRValue">getRValue</link></entry>
+</row>
+<row>
+<entry>hiWord (Class Method)</entry>
+<entry><link linkend="mthHiWord">hiWord</link></entry>
+</row>
+<row>
+<entry>loWord (Class Method)</entry>
+<entry><link linkend="mthLoWord">loWord</link></entry>
+</row>
+<row>
+<entry>version (Class Method)</entry>
+<entry><link linkend="mthVersion">version</link></entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -151,29 +175,60 @@
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>There are no arguments for this method.
+<variablelist>
+<varlistentry><term>format</term>
+<listitem>
+<para>
+  A keyword indicating the format of the returned version string.  Only the first letter is
+  needed and case is not significant.  Any unrecognized keyword is ignored and the default
+  format is used.  The format for each keyword is as follows:
+</para>
+<variablelist>
+<varlistentry><term>Full</term>
+<listitem>
+<para>
+  A string specifying the version of ooDialog.  This is the default. The string has the format:
+  <computeroutput>ooDialog Version x.x.x.SS (an ooRexx Windows Extension) </computeroutput> where
+  x.x.x is the ooRexx interpreter version and SS is the Subversion revision number of the build.
+  The actual version string might look like: <computeroutput>ooDialog Version 4.0.0.3734 (an ooRexx
+  Windows Extension)</computeroutput>
+</para></listitem></varlistentry>
+<varlistentry><term>Short</term>
+<listitem><para>Only the x.x.x.SS part of the full version string is returned.
+</para></listitem></varlistentry>
+</variablelist>
+</listitem></varlistentry>
+</variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
 <listitem>
 <para>
-  A string specifying the version of ooDialog.  The string has the format:
-  <computeroutput>ooDialog Version x.x.x.SS (an ooRexx Windows Extension)
-  </computeroutput> where x.x.x is the ooRexx interpreter version and
-  SS is the Subversion revision number of the build.  The actual version string
-  might look like: <computeroutput>ooDialog Version 4.0.0.3734 (an ooRexx
-  Windows Extension)</computeroutput>
+  A string in one of the formats specified above.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>
 <programlisting>
 <![CDATA[
-  v = .DlgUtil~version
-  say v
+v = .DlgUtil~version
+say v
+say
+
+if .DlgUtil~version("SHORT") < 4.1.0.0000 then do
+  say 'Too bad, you are still running ooRexx 4.0.0'
+end
+else do
+  say 'Great you have upgraded past ooRexx 4.1.0'
+end
 
 ::requires 'oodPlain.cls'
 
 /* On the screen you might see:
- *   ooDialog Version 4.0.0.3896 (an ooRexx Windows Extension)
- */
+
+ooDialog Version 4.0.0.3768 (an ooRexx Windows Extension)
+
+Too bad, you are still running ooRexx 4.0.0
+
+*/
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
@@ -281,30 +336,316 @@ return .true
 </para></listitem></varlistentry>
 </variablelist>
 </section>
+
+<section id="mthLoWord"><title>loWord</title>
+<indexterm><primary>loWord</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-.DlgUtil~loWord(--param--)------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The Windows API often packs two values into a single number.  One value in the low-order word and
+  the other value in the high-order word.  In ooDialog this is most often seen in the arguments
+  passed to event notification methods.  This utility method is used to extract the low-order word
+  from a number.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>param</term>
+<listitem><para>The number whose low-order word is needed.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The return is the low-order portion of the number.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem>
+<para>
+  A common place in the Windows API where two values are packed into a single number is where the
+  API deals with position.  This example shows how to extract the x and y position coordinates of a
+  dialog after it has been moved.  The example is complete, it can be cut and pasted into a file and
+  will execute as is.
+<programlisting id="exampleLoWordClsDlgUtil">
+<![CDATA[
+
+  dlg = .MovingDialog~new
+  dlg~createCenter(100, 60, "Move Me")
+  dlg~execute("SHOWTOP")
+
+::requires 'ooDialog.cls'
+
+::class 'MovingDialog' subclass UserDialog
+
+::method init
+  forward class (super) continue
+
+  self~connectMove(onMove)
+
+::method onMove
+  use arg unUsed, posInfo
+
+  -- Look at our message queue to see if the next message in the queue is also
+  -- onMove.  If so, just return.
+  msg = self~peekDialogMessage
+  if msg~left(6) = "ONMOVE" then return
+
+  -- Now, we should be done moving, print out where we are.
+  x = .DlgUtil~loWord(posInfo)
+  y = .DlgUtil~hiWord(posInfo)
+  say 'At coordinate (' x',' y' ) on the screen. (In pixels.)'
+
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
 </section>
+
+<section id="mthHiWord"><title>hiWord</title>
+<indexterm><primary>hiWord</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-.DlgUtil~hiWord(--param--)------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The Windows API often packs two values into a single number.  One value in the low-order word and
+  the other value in the high-order word.  In ooDialog this is most often seen in the arguments
+  passed to event notification methods.  This utility method is used to extract the high-order word
+  from a number.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>param</term>
+<listitem><para>The number whose high-order word is needed.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The return is the high-order portion of the number.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem>
+<para>
+  See the <link linkend="exampleLoWordClsDlgUtil">loWord() example</link>.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthColorRef"><title>colorRef</title>
+<indexterm><primary>colorRef</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aButtonControl~methodName(--x--,--y--)------------------><
+
+]]>
+</programlisting>
+
+<para></para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>x</term>
+<listitem><para>xx.
+</para></listitem></varlistentry>
+<varlistentry><term>y</term>
+<listitem><para>yyy,
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The possible return values are:
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>Success
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>Some error.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>This example ...
+<programlisting>
+<![CDATA[
+x = y
+return 0
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthGetRValue"><title>getRValue</title>
+<indexterm><primary>getRValue</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aButtonControl~methodName(--x--,--y--)------------------><
+
+]]>
+</programlisting>
+
+<para></para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>x</term>
+<listitem><para>xx.
+</para></listitem></varlistentry>
+<varlistentry><term>y</term>
+<listitem><para>yyy,
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The possible return values are:
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>Success
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>Some error.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>This example ...
+<programlisting>
+<![CDATA[
+x = y
+return 0
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthGetGValue"><title>getGValue</title>
+<indexterm><primary>getRValue</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aButtonControl~methodName(--x--,--y--)------------------><
+
+]]>
+</programlisting>
+
+<para></para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>x</term>
+<listitem><para>xx.
+</para></listitem></varlistentry>
+<varlistentry><term>y</term>
+<listitem><para>yyy,
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The possible return values are:
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>Success
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>Some error.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>This example ...
+<programlisting>
+<![CDATA[
+x = y
+return 0
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthGetBValue"><title>getBValue</title>
+<indexterm><primary>getRValue</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aButtonControl~methodName(--x--,--y--)------------------><
+
+]]>
+</programlisting>
+
+<para></para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>x</term>
+<listitem><para>xx.
+</para></listitem></varlistentry>
+<varlistentry><term>y</term>
+<listitem><para>yyy,
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The possible return values are:
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>Success
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>Some error.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>This example ...
+<programlisting>
+<![CDATA[
+x = y
+return 0
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+</section> <!-- End DlgUtil Class -->
 
 <section id="clsRect"><title>Rect Class</title>
 <indexterm><primary>Rect class</primary></indexterm>
 <para>
-  A ... is ..
-</para>
-<para>
+  The Rect object is most often used to represent a rectangle on a coordinate system, specifically
+  the coordinate system used by Windows where the upper left corner is considered (0,0).  However,
+  it is convenient to use the Rect object for other things, for instance the margin around a
+  rectangle.
 </para>
 <variablelist>
 <varlistentry><term>Requires:</term>
-<listitem><para>The Name class requires the class
-definition file <computeroutput>name.cls</computeroutput>:
+<listitem>
+<para>
+  The Rect class requires the class definition file <computeroutput>oodPlain.cls</computeroutput>:
 <programlisting>
 <![CDATA[
-::requires "name.cls"
+::requires "oodPlain.cls"
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
 <varlistentry><term>Methods:</term>
 <listitem>
 <para>
-  Instances of the Name class implement the methods listed in the following
-  table:
+  Instances of the Rect class implement the methods listed in the following table:
 </para>
 
 <table id="tblRectMethods" frame="all">
@@ -321,6 +662,38 @@ definition file <computeroutput>name.cls</computeroutput>:
 <entry>new (Class method)</entry>
 <entry><link linkend="mthNewClsRect">new</link></entry>
 </row>
+<row>
+<entry>bottom</entry>
+<entry><link linkend="mthBottom">bottom</link></entry>
+</row>
+<row>
+<entry>bottom=</entry>
+<entry><link linkend="mthBottomEquals">bottom=</link></entry>
+</row>
+<row>
+<entry>left</entry>
+<entry><link linkend="mthLeft">left</link></entry>
+</row>
+<row>
+<entry>left=</entry>
+<entry><link linkend="mthLeftEquals">left=</link></entry>
+</row>
+<row>
+<entry>right</entry>
+<entry><link linkend="mthRight">right</link></entry>
+</row>
+<row>
+<entry>right=</entry>
+<entry><link linkend="mthRightEquals">right=</link></entry>
+</row>
+<row>
+<entry>top</entry>
+<entry><link linkend="mthTop">top</link></entry>
+</row>
+<row>
+<entry>top=</entry>
+<entry><link linkend="mthTopEquals">top=</link></entry>
+</row>
 </tbody></tgroup>
 </table>
 </listitem></varlistentry>
@@ -332,60 +705,305 @@ definition file <computeroutput>name.cls</computeroutput>:
 <secondary>Rect class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aRect~new(---------------------------)------------------><
+               +-0----+     +-left-+     +-left--+     +-left---+
+>>-aRect~new(--+------+--,--+------+--,--+-------+--,--+--------+--)------><
+               +-left-+     +-top--+     +-right-+     +-bottom-+
 
 ]]>
 </programlisting>
 
-<para></para>
+<para>
+  Instantiates a new Rect object.  All the arguments are whole numbers.
+</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The arguments are:
 <variablelist>
-<varlistentry><term>x</term>
-<listitem><para>xx.
+<varlistentry><term>left</term>
+<listitem><para>The left postion. The default is 0.
 </para></listitem></varlistentry>
-<varlistentry><term>y</term>
-<listitem><para>yyy,
+<varlistentry><term>top</term>
+<listitem><para>The top position. The default is the value of left.
+</para></listitem></varlistentry>
+<varlistentry><term>right</term>
+<listitem><para>The right position. The default is the value of left.
+</para></listitem></varlistentry>
+<varlistentry><term>bottom</term>
+<listitem><para>The bottom position. The default is the value of left.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The possible return values are:
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>Success
+<listitem><para>The new Rect object is returned.
 </para></listitem></varlistentry>
-<varlistentry><term>-1</term>
-<listitem><para>Some error.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>This example ...
+<varlistentry id="exampleNewClsRect"><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>
 <programlisting>
 <![CDATA[
-x = y
-return 0
+r = .Rect~new(3, 4, 13, 9)
+say 'Upper corner ('r~left','r~top') lower corner 'r~right','r~bottom')'
+say
+margin = .Rect~new(5)
+say 'Margins:'
+say '  Left: ' margin~left
+say '  Top   ' margin~top
+say '  Right ' margin~right
+say '  Bottom' margin~bottom
+say
+
+r~left = 55
+r~top = 75
+r~right = 110
+r~bottom = 125
+say 'New upper corner ('r~left','r~top') new lower corner 'r~right','r~bottom')'
+say
+
+/* Output would be:
+Upper corner (3,4) lower corner 13,9)
+
+Margins:
+  Left:  5
+  Top    5
+  Right  5
+  Bottom 5
+
+New upper corner (55,75) new lower corner 110,125)
+
+/*
+
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
 </section>
+
+<section id="mthLeft"><title>left</title>
+<indexterm><primary>left</primary>
+<secondary>Rect class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aRect~left----------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>Retrieves the left value of the rectangle.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>This method takes no arguments
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The return value is the numeric value for the left of the rectangle.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>See <link linkend="exampleNewClsRect">.Rect~new</link> example.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthLeftEquals"><title>left=</title>
+<indexterm><primary>left=</primary>
+<secondary>Rect class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aRect~left=value----------------------------------------><
+
+]]>
+</programlisting>
+
+<para>Sets the left value of the rectangle.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>This has one argument:
+<variablelist>
+<varlistentry><term>value</term>
+<listitem><para>The left value for the rectangle.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>This method does not return a value.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>See <link linkend="exampleNewClsRect">.Rect~new</link> example.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthTop"><title>top</title>
+<indexterm><primary>top</primary>
+<secondary>Rect class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aRect~top-----------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>Retrieves the top value of the rectangle.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>This method takes no arguments
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The return value is the numeric value for the top of the rectangle.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>See <link linkend="exampleNewClsRect">.Rect~new</link> example.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthTopEquals"><title>top=</title>
+<indexterm><primary>top=</primary>
+<secondary>Rect class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aRect~top=value-----------------------------------------><
+
+]]>
+</programlisting>
+
+<para>Sets the top value of the rectangle.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>This method takes one argument:
+<variablelist>
+<varlistentry><term>value</term>
+<listitem><para>The top value for the rectangle.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>This method does not return any value.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>See <link linkend="exampleNewClsRect">.Rect~new</link> example.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthRight"><title>right</title>
+<indexterm><primary>right</primary>
+<secondary>Rect class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aRect~right---------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>Retrieves the right value of the rectangle.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>This method takes no arguments
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The return value is the numeric value for the right of the rectangle.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>See <link linkend="exampleNewClsRect">.Rect~new</link> example.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthRightEquals"><title>right=</title>
+<indexterm><primary>right=</primary>
+<secondary>Rect class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aRect~right=value---------------------------------------><
+
+]]>
+</programlisting>
+
+<para>Sets the right value of the rectangle.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>This method has one argument:
+<variablelist>
+<varlistentry><term>value</term>
+<listitem><para>The new right value for the rectangle.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>There is nor return value for this method.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>See <link linkend="exampleNewClsRect">.Rect~new</link> example.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthBottom"><title>bottom</title>
+<indexterm><primary>bottom</primary>
+<secondary>Rect class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aRect~bottom--------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>Retrieves the bottom value of the rectangle.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>This method takes no arguments
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The return value is the numeric value for the bottom of the rectangle.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>See <link linkend="exampleNewClsRect">.Rect~new</link> example.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthBottomEquals"><title>bottom=</title>
+<indexterm><primary>bottom=</primary>
+<secondary>Rect class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aRect~bottom=value--------------------------------------><
+
+]]>
+</programlisting>
+
+<para>Sets the bottom value of the rectangle.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>This method has one argument:
+<variablelist>
+<varlistentry><term>value</term>
+<listitem><para>The bottom value for the rectangle.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The method does not return a value.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>See <link linkend="exampleNewClsRect">.Rect~new</link> example.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
 </section> <!-- End Rect Class -->
 
 
 <section id="clsPoint"><title>Point Class</title>
 <indexterm><primary>Point class</primary></indexterm>
 <para>
-  A ... is ..
+  The Point class represents a point in a 2-D coordinate system.
 </para>
 <para>
 </para>
 <variablelist>
 <varlistentry><term>Requires:</term>
-<listitem><para>The Point class requires the class definition file
-<computeroutput>oodPlain.cls</computeroutput>:
+<listitem>
+<para>
+  The Point class requires the class definition file <computeroutput>oodPlain.cls</computeroutput>:
 <programlisting>
 <![CDATA[
 ::requires "oodPlain.cls"
@@ -395,8 +1013,7 @@ return 0
 <varlistentry><term>Methods:</term>
 <listitem>
 <para>
-  Instances of the Point class implement the methods listed in the following
-  table:
+  Instances of the Point class implement the methods listed in the following table:
 </para>
 
 <table id="tblPointMethods" frame="all">
@@ -413,6 +1030,22 @@ return 0
 <entry>new (Class Method)</entry>
 <entry><link linkend="mthNewClsPoint">new</link></entry>
 </row>
+<row>
+<entry>x</entry>
+<entry><link linkend="mthX">x</link></entry>
+</row>
+<row>
+<entry>x=</entry>
+<entry><link linkend="mthXEquals">x=</link></entry>
+</row>
+<row>
+<entry>y</entry>
+<entry><link linkend="mthY">y</link></entry>
+</row>
+<row>
+<entry>y=</entry>
+<entry><link linkend="mthYEquals">y=</link></entry>
+</row>
 </tbody></tgroup>
 </table>
 </listitem></varlistentry>
@@ -424,8 +1057,9 @@ return 0
 <secondary>Point class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-.Point~new(--------------------------)------------------><
-
+                +-0-+     +-x-+
+>>-.Point~new(--+---+--,--+---+--)-------------------------><
+                +-x-+     +-y-+
 ]]>
 </programlisting>
 
@@ -435,42 +1069,162 @@ return 0
 <listitem><para>The arguments are:
 <variablelist>
 <varlistentry><term>x</term>
-<listitem><para>xx.
+<listitem><para>The x coordinate of the point.  The default is 0.
 </para></listitem></varlistentry>
 <varlistentry><term>y</term>
-<listitem><para>yyy,
+<listitem><para>The y coordinate of the point.  The default is the x coordinate.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The possible return values are:
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>Success
-</para></listitem></varlistentry>
-<varlistentry><term>-1</term>
-<listitem><para>Some error.
-</para></listitem></varlistentry>
-</variablelist>
+<listitem><para>This method returns a new Point object.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>This example ...
-<programlisting>
+<listitem><para>
+<programlisting id="exampleNewClsPoint">
 <![CDATA[
-x = y
-return 0
+p = .Point~new(45, 90)
+say 'Point p is at ('p~x','p~y')'
+say
+q = .Point~new(55)
+say 'A new point q is at ('q~x','q~y')'
+say
+
+q~x = 150
+q~y = 300
+say 'Changed point q to be at ('q~x','q~y')'
+say
+
+::requires 'oodPlain.cls'
+
+/* Output would be:
+
+Point p is at (45,90)
+
+A new point q is at (55,55)
+
+Changed point q to be at (150,300)
+
+*/
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
 </section>
+
+<section id="mthX"><title>x</title>
+<indexterm><primary>x</primary>
+<secondary>Point class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aPoint~x------------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>Retrieves the x coordinate of the point.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>This method takes no arguments
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The return value is the x coordinate.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>See <link linkend="exampleNewClsPoint">.Point~new</link> example.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthXEquals"><title>x=</title>
+<indexterm><primary>x=</primary>
+<secondary>Point class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aPoint~x=value------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>Sets the x coordinate of the point</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>This method has one argument:
+<variablelist>
+<varlistentry><term>value</term>
+<listitem><para>The new x coordinate for the point.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>This method does not return a value.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>See <link linkend="exampleNewClsPoint">.Point~new</link> example.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthY"><title>y</title>
+<indexterm><primary>y</primary>
+<secondary>Point class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aPoint~y------------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>Retrieves the y coordinate of the point.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>This method takes no arguments
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The return value is the y coordinate of the point.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>See <link linkend="exampleNewClsPoint">.Point~new</link> example.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthYEquals"><title>y=</title>
+<indexterm><primary>y=</primary>
+<secondary>Point class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aPoint~y=value------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>Sets the y coordinate of the point</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>This method has one argument:
+<variablelist>
+<varlistentry><term>value</term>
+<listitem><para>The new y coordinate for the point.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>This method does not return a value.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>See <link linkend="exampleNewClsPoint">.Point~new</link> example.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
 </section> <!-- End Point Class -->
 
 
 <section id="clsSize"><title>Size Class</title>
 <indexterm><primary>Size class</primary></indexterm>
 <para>
-  A ... is ..
+  A Size object encapsulates a width and height dimension in a 2-D coordinate system.
 </para>
 <para>
 </para>
@@ -487,8 +1241,7 @@ definition file <computeroutput>oodPlain.cls</computeroutput>:
 <varlistentry><term>Methods:</term>
 <listitem>
 <para>
-  Instances of the Size class implement the methods listed in the following
-  table:
+  Instances of the Size class implement the methods listed in the following table:
 </para>
 
 <table id="tblSizeMethods" frame="all">
@@ -505,6 +1258,22 @@ definition file <computeroutput>oodPlain.cls</computeroutput>:
 <entry>new (Class Method)</entry>
 <entry><link linkend="mthNewClsSize">new</link></entry>
 </row>
+<row>
+<entry>width</entry>
+<entry><link linkend="mthWidth">width</link></entry>
+</row>
+<row>
+<entry>width=</entry>
+<entry><link linkend="mthWidthEquals">width=</link></entry>
+</row>
+<row>
+<entry>height</entry>
+<entry><link linkend="mthHeight">height</link></entry>
+</row>
+<row>
+<entry>height=</entry>
+<entry><link linkend="mthHeightEquals">height=</link></entry>
+</row>
 </tbody></tgroup>
 </table>
 </listitem></varlistentry>
@@ -516,46 +1285,179 @@ definition file <computeroutput>oodPlain.cls</computeroutput>:
 <secondary>Size class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-.Size~new(---------------------------)------------------><
-
+               +-0-----+     +-width---+
+>>-.Size~new(--+-------+--,--+---------+--)----------------><
+               +-width-+     +-height--+
 ]]>
 </programlisting>
-
-<para></para>
+<para>
+  Instantiates a new Size object with the dimensions specified.
+</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The arguments are:
 <variablelist>
-<varlistentry><term>x</term>
-<listitem><para>xx.
-</para></listitem></varlistentry>
-<varlistentry><term>y</term>
-<listitem><para>yyy,
-</para></listitem></varlistentry>
+<varlistentry><term>width</term>
+<listitem>
+<para>
+  The whole number value of the width of the new object.  The defualt is 0.
+</para>
+</listitem></varlistentry>
+<varlistentry><term>height</term>
+<listitem>
+<para>
+  The whole number value of the height for the new object.  The default is the width value.
+</para>
+</listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The possible return values are:
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>Success
+<listitem><para>This method returns the new Size object.
 </para></listitem></varlistentry>
-<varlistentry><term>-1</term>
-<listitem><para>Some error.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>This example ...
+<varlistentry id="exampleNewClsSize"><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>
 <programlisting>
 <![CDATA[
-x = y
-return 0
+
+size = .Size~new(4, 8)
+say 'Width:' size~width 'Height:' size~height
+say
+size2 = .Size~new(16)
+say 'A new size object:'
+say '  Width: ' size2~width
+say '  Height:' size2~height
+say
+
+size2~width = 100
+size2~height = 300
+say 'New width:' size2~width 'new height:' size2~height
+say
+
+::requires 'oodPlain.cls'
+
+/* Output would be:
+
+Width: 4 Height: 8
+
+A new size object:
+  Width:  16
+  Height: 16
+
+New width: 100 new height: 300
+
+*/
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
 </section>
+
+<section id="mthWidth"><title>width</title>
+<indexterm><primary>width</primary>
+<secondary>Size class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aSize~width---------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>Retrieves the width of the size object.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>This method takes no arguments
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The return value is the width of the object
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>See <link linkend="exampleNewClsSize">.Size~new</link> example.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthWidthEquals"><title>width=</title>
+<indexterm><primary>width=</primary>
+<secondary>Size class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aSize~width=value---------------------------------------><
+
+]]>
+</programlisting>
+
+<para>Sets the width of the size object.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>This method has one argument:
+<variablelist>
+<varlistentry><term>value</term>
+<listitem><para>The new width of the size object.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>This method does not return a value.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>See <link linkend="exampleNewClsSize">.Size~new</link> example.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthHeight"><title>height</title>
+<indexterm><primary>height</primary>
+<secondary>Size class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aSize~height--------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>Retrieves the height of the size object.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>This method takes no arguments
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>Returns the height of the size object.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>See <link linkend="exampleNewClsSize">.Size~new</link> example.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthHeightEquals"><title>height=</title>
+<indexterm><primary>height=</primary>
+<secondary>Size class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aSize~height=value--------------------------------------><
+
+]]>
+</programlisting>
+
+<para>Sets the height of the size object.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>This method has one argument:
+<variablelist>
+<varlistentry><term>value</term>
+<listitem><para>The new height of the size object.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>This method does not return a value.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>See <link linkend="exampleNewClsSize">.Size~new</link> example.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
 </section> <!-- End Size Class -->
 
 
@@ -564,7 +1466,7 @@ return 0
 <para>
   The DlgArea class provides assistance in laying out the dialog controls in a
   dynamically defined dialog.  The class defines an area of a UserDialog and
-  provides co-ordinates of and within it. It is a helper for the DefineDialog
+  provides coordinates of and within it. It is a helper for the DefineDialog
   Method of an OODialog UserDialog Object and has no effect on any Windows
   Object.
 </para>
@@ -601,11 +1503,11 @@ DlgArea on a UserDialog.</para>
 DlgArea Object are:
 <variablelist>
 <varlistentry><term>X</term>
-<listitem><para>The X Co-ordinate in dialog units relative to the UserDialog
+<listitem><para>The X coordinate in dialog units relative to the UserDialog
 of the top left corner of the area you wish to define
 </para></listitem></varlistentry>
 <varlistentry><term>Y</term>
-<listitem><para>The Y Co-ordinate in dialog units relative to the UserDialog
+<listitem><para>The Y coordinate in dialog units relative to the UserDialog
 of the top left corner of the area you wish to define.
 </para></listitem></varlistentry>
 <varlistentry><term>Width</term>
