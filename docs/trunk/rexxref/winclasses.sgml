@@ -1849,10 +1849,11 @@ num = event_log~getNumber
 <indexterm><primary>WindowsManager class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>WindowsManager class</secondary></indexterm>
-<para>The WindowsManager class provides methods to query, manipulate, and
-interact with windows on your desktop. This class is specifically for
-Windows NT and Windows 2000 systems and might not be available on
-other systems.</para>
+<para>
+  The WindowsManager class provides methods to query, manipulate, and interact with windows on your
+  desktop. This class is specifically for the Windows operating sytsem and is not available on other
+  operating systems.
+</para>
 <para>The WindowsManager class is not a built-in class; it is defined in the
 file <computeroutput>WINSYSTM.CLS</computeroutput>. Use a
 <computeroutput>::requires</computeroutput> statement to activate
@@ -1863,6 +1864,7 @@ its function: </para>
 <para><emphasis role="bold">Methods the WindowsManager Class Defines</emphasis>
 </para>
 <itemizedlist>
+<listitem><para>desktopWindow</para></listitem>
 <listitem><para>find</para></listitem>
 <listitem><para>foregroundWindow</para></listitem>
 <listitem><para>windowAtPosition</para></listitem>
@@ -1872,6 +1874,26 @@ its function: </para>
 <listitem><para>pushButtonInWindow</para></listitem>
 <listitem><para>processWindowCommand</para></listitem>
 <listitem><para>broadcastSettingChanged</para></listitem></itemizedlist>
+
+<section id="mthDesktopWindow"><title>desktopWindow</title>
+<indexterm><primary>desktopWindow method</primary>
+<secondary>of WindowsManager class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>desktopWindow method</secondary>
+<tertiary>of WindowsManager class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-desktopWindow-----------------------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Returns an instance of the <link linkend="clsWinObject">WindowObject</link> class that represents
+  the Desktop window.  The Desktop window is the parent of all top-level windows and therefore the
+  ancestor of every window on the system.  If some error happens,
+  <computeroutput>.nil</computeroutput> is returned.  (This is extremely unlikely.)
+</para>
+</section>
 
 <section id="findwm"><title>find</title>
 <indexterm><primary>find method</primary>
