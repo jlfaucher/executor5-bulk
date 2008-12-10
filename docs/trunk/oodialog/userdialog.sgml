@@ -220,8 +220,8 @@ the methods listed in the following table.
 <entry><link linkend="h001722">AddGrayRect</link></entry>
 </row>
 <row>
-<entry>AddGroupBox</entry>
-<entry><link linkend="h001681">AddGroupBox</link></entry>
+<entry>addGroupBox</entry>
+<entry><link linkend="h001681">addGroupBox</link></entry>
 </row>
 <row>
 <entry>AddIcon</entry>
@@ -288,6 +288,10 @@ the methods listed in the following table.
 <entry><link linkend="h001982">AddRadioStem</link></entry>
 </row>
 <row>
+<entry>addStatic</entry>
+<entry><link linkend="mthAddStatic">addStatic</link></entry>
+</row>
+<row>
 <entry>AddScrollBar</entry>
 <entry><link linkend="h001983">AddScrollBar</link></entry>
 </row>
@@ -300,8 +304,8 @@ the methods listed in the following table.
 <entry><link linkend="h001748">AddWhiteFrame</link></entry>
 </row>
 <row>
-<entry>AddWhiteRect</entry>
-<entry><link linkend="h001709">AddWhiteRect</link></entry>
+<entry>addWhiteRect</entry>
+<entry><link linkend="mthAddWhiteRect">addWhiteRect</link></entry>
 </row>
 <row>
 <entry>Create</entry>
@@ -829,110 +833,177 @@ created.
 associated Object Rexx attribute. Add... methods cannot be used after
 <link linkend="h000048">Execute</link> has started.
 </para>
-<note><title>Note</title>
-<para> Unless otherwise stated, the coordinates (the x, y, cx, and cy arguments)
-of the dialog control definitions are specified in dialog units.
-</para></note>
-<para>The behavior and appearance of all dialog controls created using one of
-the Add... methods are controlled by a style option.  For each of the Add...
-methods, one of the arguments consists of a set of keywords that define the
-style of the control being defined.  These keywords allow the programmer to
-change the default behavior and  / or appearance of the control.
+<para id="paraStyleExplanation">
+  The behavior and appearance of all dialog controls created using one of the Add... methods are
+  controlled by a style option.  For each of the Add... methods, one of the arguments consists of a
+  set of keywords that define the style of the control being defined.  These keywords allow the
+  programmer to change the default behavior and  / or appearance of the control.
 </para>
-<para>There are five styles that all dialog controls share.  The following list
-explains these styles and the keywords that are used for the styles.  In many
-cases, there is a common default value for the style and the programmer only
-needs to specify a keyword when she wants a non-default value for the style.
-For instance, normally all dialog controls are created enabled.  The programmer
-would only need to specify the <emphasis role="bold">DISABLED</emphasis> keyword
-when the control should be disabled as the dialog is first displayed.
+<para>
+  There are five styles that all dialog controls share:
+</para>
+<itemizedlist>
+  <listitem><para>Visible</para></listitem>
+  <listitem><para>Enabled</para></listitem>
+  <listitem><para>Border</para></listitem>
+  <listitem><para>Group</para></listitem>
+  <listitem><para>TabStop</para></listitem>
+</itemizedlist>
+<para>
+  The following style keyword list explains these styles and how the keywords are used for the
+  styles.  In many cases, there is a common default value for the style and the programmer only
+  needs to specify a keyword when she wants a non-default value for the style. For instance,
+  normally all dialog controls are created enabled. The programmer would only need to specify the
+  DISABLED keyword when the control should be disabled as the dialog is first displayed.
 </para>
 <variablelist>
-<varlistentry><term id="wsvisible">Visible</term>
-<listitem><para>All windows (and every dialog control is a window) can be
-visible or invisible.  When a control is invisible it is not displayed on the
-screen and the user will not see it.  The control is also not active and will
-not accept any keyboard or mouse input.  But, the control still exists and does
-not lose any of its internal state.  Since the control is invisible, whatever is
-underneath it will be displayed on the screen.  Normally this would be the owner
-dialog.  However, it could also be another dialog control.  If this other dialog
-control is visible, the user will see and can interact with it rather than the
-invisible control.
+<varlistentry><term id="wsvisible"><emphasis role="bold">HIDDEN</emphasis></term>
+  <listitem>
+  <para>
+    All windows (and every dialog control is a window) can be visible or invisible.  When a control
+    is invisible it is not displayed on the screen and the user will not see it.  The control is
+    also not active and will not accept any keyboard or mouse input.  But, the control still exists
+    and does not lose any of its internal state.  Since the control is invisible, whatever is
+    underneath it will be displayed on the screen.  Normally this would be the owner dialog.
+    However, it could also be another dialog control.  If this other dialog control is visible, the
+    user will see and can interact with it rather than the invisible control.
+  </para>
+  <para>
+    In ooDialog by default all controls created using the Add... methods will be created visible.
+    To change the default for any control when using the Add... methods add the HIDDEN keyword to
+    the style argument.  This will make the control invisible when the dialog is first shown on the
+    screen.
+  </para>
+  <para>
+    For any control, the visible style can be changed during program execution by using the <link
+    linkend="hide">Hide</link> or <link linkend="showdc">Show</link> methods. (Or any of the related
+    methods like <link linkend="hidefast">HideFast</link>, <link linkend="display">Display</link>,
+    etc..)
+  </para></listitem>
+</varlistentry>
+<varlistentry><term id="wsdisabled"><emphasis role="bold">DISABLED</emphasis></term>
+  <listitem>
+  <para>
+    All windows can be disabled or enabled.  When a dialog control is disabled it will not accept
+    keyboard or mouse input and therefore the user can not interact with it.  The operating system
+    will draw disabled controls in a different manner than enabled controls to give the user a
+    visual clue that the control is disabled.
+  </para>
+  <para>
+    When using the Add... methods controls will be created enabled.  To change this for any control
+    add the DISABLED keyword to the style argument.  The control will then be disabled when the
+    dialog is first shown on the screen.
+  </para>
+  <para>
+    All controls can have their enabled style changed during program execution by using the <link
+    linkend="disable">Disable</link> or <link linkend="enable">Enable</link> methods. (Or any of the
+    related methods like <link linkend="h001229">DisableItem</link>, <link
+    linkend="h001221">EnableItem</link>, etc..)
+  </para></listitem>
+</varlistentry>
+<varlistentry><term id="wsborder"><emphasis role="bold">BORDER, NOBORDER</emphasis></term>
+  <listitem>
+  <para>
+    Most, but not all, windows are drawn with a border.  When using the Add... methods individual
+    controls are drawn by default with, or without, a border.  The default is changed by using
+    either the BORDER or NOBORDER keywords.  The reference for each individual Add... method notes
+    the default for the control for this style and which keyword is used to change the default.  In
+    general, this style can not be changed after a control is created.
+  </para></listitem>
+</varlistentry>
+<varlistentry>
+  <term id="wsgroup"><emphasis role="bold">GROUP</emphasis></term>
+  <listitem>
+  <para>
+    This style is used to place a series of consecutive dialog controls in a group.  The first
+    control with the group style starts a new group of controls.  This group continues for each
+    control that does not have the group style.  As soon as a successive control is encountered with
+    the group style, a new group is started.  This style is only meaningful for dialog control
+    windows.
+  </para>
+  <para>
+    The Windows dialog manager uses this style to determine the behavior of a dialog, mostly the
+    navigation behavior.  Within a group of controls the user navigates from one control to the
+    other using the arrow keys rather than the tab key.
+  </para>
+  <para>
+    The GROUP keyword is used to give a control the group style when it is created using one of the
+    Add... methods. After the control has been created its group style can be changed during the
+    execution of a dialog by using the <link linkend="mthSetGroup">SetGroup</link> method of the
+    PlainBaseDialog class or the <link linkend="mthGroup">Group</link> method of the DialogControl
+    class.
+  </para></listitem>
+</varlistentry>
+<varlistentry>
+  <term id="wstabstop"><emphasis role="bold">TAB, NOTAB</emphasis></term>
+  <listitem>
+  <para>
+    The tabstop style is another style that is only meaningful with dialog controls.  When a control
+    has the tabstop style the user can navigate to it using the tab key.  If a control does not have
+    this style, the tab key will skip over the control.  Dialog controls in the same class usually
+    all have the same style for tabstop.  As an example, all button controls usually have the
+    tabstop style, whereas all static text controls usually do not have the tabstop style.
+  </para>
+  <para>
+    When a control as added to an UserDialog instance it is given the tabstop style that is normal
+    for the control. The individual Add... methods document the default for the control.  The
+    programmer uses either the TAB or NOTAB keywords to change the default. After controls have been
+    created they can have their tabstop style changed using the <link
+    linkend="mthSetTabSTop">SetTabStop</link> method of the PlainBaseDialog class or the <link
+    linkend="mthTabStop">TabStop</link> method of the DialogControl class.
+  </para></listitem>
+</varlistentry>
+</variablelist>
+<para>
+  All dialog controls have a position and size.  The position of the control is specified by the
+  coordinates of its upper left corner (x, y) and the size is specified by its width (cx) and height
+  (cy).  Windows uses a coordinate system that specifies the upper left corner of the screen as
+  (0,0). Moving to the left in this system increases the x value and moving down increases the y
+  value.  Negative values for either x or y would then move off the screen.  (Normally. This simple
+  explanation becomes more complicated with dual-monitor systems.)
+  <note><title>Note</title>
+  <para>
+    Unless otherwise stated, the coordinates (the x, y, cx, and cy arguments) of the dialog control
+    definitions are specified in dialog units.
+  </para></note>
+  <note><title>Note</title>
+  <para>
+    When dialog controls are defined, their position and size is specified in relation to the upper
+    left corner of the dialog's <emphasis role="italic">client window</emphasis>.  Specifying the
+    position relative to the screen would of course be meaningless as the dialog is moved
+    around.
+  </para></note>
 </para>
-<para>In ooDialog by default all controls created using the Add... methods will
-be created visible.  To change the default for any control when using the Add...
-methods add the <emphasis role="bold">HIDDEN</emphasis> keyword to the style
-argument.  This will make the control invisible when the dialog is first shown
-on the screen.
+<para>
+  All the Add... Methods that create a single control have the following common arguments.  Some of
+  the other Add... Methods that create a group of controls will only take the postion, or the size
+  arguments:
 </para>
-<para>For any control, the visible style can be changed during program execution
-by using the <link linkend="hide">Hide</link> or <link linkend="showdc">Show</link>
-methods.  (Or any of the related methods like <link linkend="hidefast">HideFast</link>,
-<link linkend="display">Display</link>, etc..)
-</para></listitem></varlistentry>
-<varlistentry><term id="wsdisabled">Enabled</term>
-<listitem><para>All windows can be disabled or enabled.  When a dialog control
-is disabled it will not accept keyboard or mouse input and therefore the user
-can not interact with it.  The operating system will draw disabled controls in a
-different manner than enabled controls to give the user a visual clue that the
-control is disabled.</para>
-<para>When using the Add... methods controls will be created enabled.  To
-change this for any control add the <emphasis role="bold">DISABLED</emphasis>
-keyword to the style argument.  The control will then be disabled when the
-dialog is first shown on the screen.
-</para>
-<para>All controls can have their enabled style changed during program execution
-by using the <link linkend="disable">Disable</link> or <link linkend="enable">Enable</link>
-methods.  (Or any of the related methods like <link linkend="h001229">DisableItem</link>,
-<link linkend="h001221">EnableItem</link>, etc..)
-</para></listitem></varlistentry>
-<varlistentry><term id="wsborder">Border</term>
-<listitem><para>Most, but not all, windows are drawn with a border.  When using
-the Add... methods individual controls are drawn by default with, or without, a
-border.  The default is changed by using either the <emphasis role="bold">BORDER</emphasis>
-or <emphasis role="bold">NOBORDER</emphasis> keywords.  The reference for each
-individual Add... method notes the default for the control for this style and
-which keyword is used to change the default.  In general, this style can not be
-changed after a control is created.
-</para></listitem></varlistentry>
-<varlistentry><term id="wsgroup">Group</term>
-<listitem><para>This style is used to place a series of consecutive dialog
-controls in a group.  The first control with the group style starts a new group
-of controls.  This group continues for each control that does not have the group
-style.  As soon as a successive control is encountered with the group style, a
-new group is started.  This style is only meaningful for dialog control windows.
-</para>
-<para>The Windows dialog manager uses this style to determine the behavior of a
-dialog, mostly the navigation behavior.  Within a group of controls the user
-navigates from one control to the other using the arrow keys rather than the tab
-key.
-</para>
-<para>The <emphasis role="bold">GROUP</emphasis> keyword is used to give a
-control the group style when it is created using one of the Add... methods.
-After the control has been created its group style can be changed during the
-execution of a dialog by using the <link
-linkend="mthSetGroup">SetGroup</link> method of the PlainBaseDialog class or
-the <link linkend="mthGroup">Group</link> method of the DialogControl class.
-</para></listitem></varlistentry>
-<varlistentry><term id="wstabstop">Tabstop</term>
-<listitem><para>The tabstop style is another style that is only meaningful with
-dialog controls.  When a control has the tabstop style the user can navigate to
-it using the tab key.  If a control does not have this style, the tab key will
-skip over the control.  Dialog controls in the same class usually all have the
-same style for tabstop.  As an example, all button controls usually have the
-tabstop style, whereas all static text controls usually do not have the tabstop
-style.
-</para>
-<para>When a control as added to an UserDialog instance it is given the tabstop
-style that is normal for the control. The individual Add... methods document the
-default for the control.  The programmer uses either the
-<emphasis role="bold">TAB</emphasis> or
-<emphasis role="bold">NOTAB</emphasis> keywords to change the default. After
-controls have been created they can have their tabstop style changed using the
-<link linkend="mthSetTabSTop">SetTabStop</link> method of the PlainBaseDialog
-class or the <link linkend="mthTabStop">TabStop</link> method of the
-DialogControl class.
-</para></listitem></varlistentry>
+<variablelist id="listControlCoordinates">
+<varlistentry><term id="xCoordinate"><emphasis role="bold">x</emphasis></term>
+  <listitem>
+  <para>
+    The left position of the control in the dialog's client window, in dialog units.
+  </para></listitem>
+</varlistentry>
+<varlistentry><term id="yCoordinate"><emphasis role="bold">y</emphasis></term>
+  <listitem>
+  <para>
+    The top position of the control in the dialog's client window, in dialog units.
+  </para></listitem>
+</varlistentry>
+<varlistentry><term id="cxCoordinate"><emphasis role="bold">cx</emphasis></term>
+  <listitem>
+  <para>
+    The width of the control in dialog units.
+  </para></listitem>
+</varlistentry>
+<varlistentry><term id="cyCoordinate"><emphasis role="bold">cx</emphasis></term>
+  <listitem>
+  <para>
+    The height of the control in dialog units.
+  </para></listitem>
+</varlistentry>
 </variablelist>
 
 <section id="h001647"><title>AddButton</title>
@@ -941,7 +1012,7 @@ DialogControl class.
 <![CDATA[
 >>-aUserDialog~AddButton(--id--,--x--,--y--,--cx--,--cy--,--text-->
 
->--+-----------------------------------------------+--)---------><
+>--+-----------------------------------------------+--)--------><
    +-,--msgToRaise--+----------------------------+-+
                     |       .---------------+    |
                     |       V               |    |
@@ -1324,43 +1395,66 @@ bar of the dialog.)
 </variablelist>
 </section>
 
-<section id="h001681"><title>AddGroupBox</title>
-<indexterm><primary>AddGroupBox</primary></indexterm>
+<section id="h001681"><title>addGroupBox</title>
+<indexterm><primary>addGroupBox</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aUserDialog~AddGroupBox(--x--,--y--,--cx--,--cy--,--text----->
-
->--+------------------------+--)-------------------------------><
-   +-,--"BORDER"--+-------+-+
-                  +-,--id-+
-
+>>-dlg~addGroupBox(--x-,-y-,-cx-,-cy--,--text--+-----------+--------+--)------><
+                                               +-,--style--+-,--id--+
 
 ]]>
 </programlisting>
 
-<para>The AddGroupBox method adds a group box to the
-dialog. A group box has a frame and a title. </para>
+<para>
+  The addGroupBox method adds a group box to the dialog. A group box is actually a button control. A
+  group box can have a frame and a title.
+</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are the same as for <link linkend="h001647">AddButton</link>,
-with the changes listed below:
+<listitem>
 <variablelist>
+<varlistentry><term>x, y, cx, cy</term>
+<listitem><para>The <link linkend="listControlCoordinates">control coordinates</link>
+</para></listitem></varlistentry>
 <varlistentry><term>text</term>
-<listitem><para>The title of the group box
+<listitem><para>The text for the group box title.
 </para></listitem></varlistentry>
-<varlistentry><term>options</term>
+<varlistentry><term>style</term>
+<listitem>
+  <para>
+    A list of the <link linkend="paraStyleExplanation">style</link> keywords separated by spaces:
+    <variablelist>
+      <varlistentry><term>RIGHT</term>
+      <listitem><para>Normaly the text is aligned to the upper left of the group box frame.  This
+        style aligns the text to the upper right of the frame
+      </para></listitem></varlistentry>
+      <varlistentry><term>HIDDEN</term>
+      <listitem><para>The <link linkend="wsvisible">not visible</link> window style.
+      </para></listitem></varlistentry>
+      <varlistentry><term>DISABLED</term>
+      <listitem><para>The <link linkend="wsborder">not enabled</link> window style.
+      </para></listitem></varlistentry>
+      <varlistentry><term>BORDER</term>
+      <listitem><para>The <link linkend="wsborder">border</link> window style.
+      </para></listitem></varlistentry>
+      <varlistentry><term>GROUP</term>
+      <listitem><para>The <link linkend="wsborder">group</link> control style.
+      </para></listitem></varlistentry>
+      <varlistentry><term>TAB</term>
+      <listitem><para>The <link linkend="wsborder">tab</link> control style.
+      </para></listitem></varlistentry>
+    </variablelist>
+  </para></listitem></varlistentry>
+<varlistentry><term>id</term>
 <listitem><para>
-<variablelist>
-<varlistentry><term>BORDER</term>
-<listitem><para>A rectangle is drawn around the group box
+  The resource id of the group box.  By the default a group box is assigned a resource id of -1.
+  Assigning a positive id allows the programmer to modify the group box after it is created, perhaps
+  to change the text of its title, change its postition.
 </para></listitem></varlistentry>
 </variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
+</listitem></varlistentry>
 </variablelist>
 </section>
-
 
 <section id="sectAddStaticControls"><title>Add Static Controls</title>
 <indexterm><primary>Add staic control methods</primary></indexterm>
@@ -1370,8 +1464,8 @@ with the changes listed below:
   linkend="mthAddStatic">addStatic</link> method is all that is needed.  You control the appearance
   and behavior of the static control in the same way as with other controls, by specifying the
   appropriate control styles.  Given the proper combination of style keywords, the
-  <computeroutput>addStatic</computeroutput> can create any static control that the other methods in
-  this section create.
+  <computeroutput>addStatic</computeroutput> method can create any static control that the other
+  methods in this section create.
 </para>
 <para>
   However, there are a large number of style keywords for the static control. Many of the keywords
@@ -1384,9 +1478,9 @@ with the changes listed below:
   A word about frames and rectangles.  In previous versions of the ooDialog reference frames and
   rectangles were documented as though they were a type of separate controls.  They are not, they
   are just a static control with a particular style.  The <link linkend="fig56">Frames and
-  Rectangles</link> picture gives some idea of the different types of static controls.
-
-  <figure id="fig56"><title>Frames and Rectangles in 3D Style</title>
+  Rectangles</link> picture gives some idea of how the different types of static controls can
+  appear.
+  <figure id="fig56"><title>Frames and Rectangles</title>
   <mediaobject>
   <imageobject>
   <!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
@@ -1395,55 +1489,166 @@ with the changes listed below:
   </mediaobject>
   </figure>
 </para>
-<note><title>Note</title>
-<para>
-  The difference between frames and rectangles is subtle
-</para></note>
 
 <section id="mthAddStatic"><title>addStatic</title>
 <indexterm><primary>addStatic</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aUserDialog~AddGrayRect(--x--,--y--,--cx--,--cy-------------->
-
->--+----------------------------------------+--)---------------><
-   +-,--+----------------------+--+-------+-+
-        |    +------------+    |  +-,--id-+
-        |    V            |    |
-        +-"----+-HIDDEN-+-+--"-+
-               +-BORDER-+
-
+                   +_-1_+                     +-,-"TEXT"-+  +-,-""----+
+>>-dlg~addStatic(--+----+--,-x-,-y-,-cx-,-cy--+----------+--+---------+--)----><
+                   +-id-+                     +-,-style--+--+-,-text--+
 
 ]]>
 </programlisting>
-
-<para>The AddGrayRect method adds a gray rectangle to
-the dialog. </para>
+<para>
+  The addStatic method adds any type of static control.
+</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>See <link linkend="h001709">AddWhiteRect</link> for a description of the arguments.
+<listitem><para>
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>
+  The resource id for the control  By default a static control is assigned a resource id of -1.
+  Assigning a positive id allows the programmer to modify the static control after it is created,
+  perhaps to change its text or to change its postition.
+</para></listitem></varlistentry>
+<varlistentry><term>x, y, cx, cy</term>
+<listitem><para>The <link linkend="listControlCoordinates">control coordinates</link>
+</para></listitem></varlistentry>
+<varlistentry><term>style</term>
+<listitem>
+  <para>
+    A list of the <link linkend="paraStyleExplanation">style</link> keywords separated by spaces.
+    The keywords: TEXT, BITMAP, METAFILE, ICON, WHITERECT, GRAYRECT, BLACKRECT, WHITEFRAME,
+    GRAYFRAME, BLACKFRAME, ETCHED, HORZ, and VERT determine the type of static control to be
+    created.  If more than one of these type keywords is specified, which static control is created
+    is undefined.  The other style keywords modify the appearance or behavior of the static control.
+    <variablelist>
+      <varlistentry><term>TEXT</term>
+      <listitem><para>A static text control is created, this is the default.
+      </para></listitem></varlistentry>
+      <varlistentry><term>BITMAP</term>
+      <listitem><para>A static image control is created that will use a bitmap.
+      </para></listitem></varlistentry>
+      <varlistentry><term>METAFILE</term>
+      <listitem><para>A static image control that uses a metafile will be created.
+      </para></listitem></varlistentry>
+      <varlistentry><term>ICON</term>
+      <listitem><para>A static image control that uses an icon will be created.
+      </para></listitem></varlistentry>
+      <varlistentry><term>WHITERECT</term>
+      <listitem><para>keyword explanation
+      </para></listitem></varlistentry>
+      <varlistentry><term>WHITEFRAME</term>
+      <listitem><para>keyword explanation
+      </para></listitem></varlistentry>
+      <varlistentry><term>GRAYRECT</term>
+      <listitem><para>keyword explanation
+      </para></listitem></varlistentry>
+      <varlistentry><term>GRAYFRAME</term>
+      <listitem><para>keyword explanation
+      </para></listitem></varlistentry>
+      <varlistentry><term>BLACKRECT</term>
+      <listitem><para>keyword explanation
+      </para></listitem></varlistentry>
+      <varlistentry><term>BLACKFRAME</term>
+      <listitem><para>keyword explanation
+      </para></listitem></varlistentry>
+      <varlistentry><term>ETCHED</term>
+      <listitem><para>keyword explanation
+      </para></listitem></varlistentry>
+      <varlistentry><term>HORZ</term>
+      <listitem><para>keyword explanation
+      </para></listitem></varlistentry>
+      <varlistentry><term>VERT</term>
+      <listitem><para>keyword explanation
+      </para></listitem></varlistentry>
+      <varlistentry><term>CENTER</term>
+      <listitem><para>keyword explanation
+      </para></listitem></varlistentry>
+      <varlistentry><term>RIGHT</term>
+      <listitem><para>keyword explanation
+      </para></listitem></varlistentry>
+      <varlistentry><term>SIMPLE</term>
+      <listitem><para>keyword explanation
+      </para></listitem></varlistentry>
+      <varlistentry><term>LEFTNOWRAP</term>
+      <listitem><para>keyword explanation
+      </para></listitem></varlistentry>
+      <varlistentry><term>LEFT</term>
+      <listitem><para>keyword explanation
+      </para></listitem></varlistentry>
+      <varlistentry><term>NOTIFY</term>
+      <listitem><para>keyword explanation
+      </para></listitem></varlistentry>
+      <varlistentry><term>SUNKEN</term>
+      <listitem><para>keyword explanation
+      </para></listitem></varlistentry>
+      <varlistentry><term>EDITCONTROL</term>
+      <listitem><para>keyword explanation
+      </para></listitem></varlistentry>
+      <varlistentry><term>ENDELLIPSIS</term>
+      <listitem><para>keyword explanation
+      </para></listitem></varlistentry>
+      <varlistentry><term>NOPREFIX</term>
+      <listitem><para>keyword explanation
+      </para></listitem></varlistentry>
+      <varlistentry><term>PATHELLIPSIS</term>
+      <listitem><para>keyword explanation
+      </para></listitem></varlistentry>
+      <varlistentry><term>WORDELLIPSIS</term>
+      <listitem><para>keyword explanation
+      </para></listitem></varlistentry>
+      <varlistentry><term>CENTERIMAGE</term>
+      <listitem><para>keyword explanation
+      </para></listitem></varlistentry>
+      <varlistentry><term>RIGHTJUST</term>
+      <listitem><para>keyword explanation
+      </para></listitem></varlistentry>
+      <varlistentry><term>SIZECONTROL</term>
+      <listitem><para>keyword explanation
+      </para></listitem></varlistentry>
+      <varlistentry><term>SIZEIMAGE</term>
+      <listitem><para>keyword explanation
+      </para></listitem></varlistentry>
+      <varlistentry><term>HIDDEN</term>
+      <listitem><para>The <link linkend="wsvisible">not visible</link> window style.
+      </para></listitem></varlistentry>
+      <varlistentry><term>DISABLED</term>
+      <listitem><para>The <link linkend="wsborder">not enabled</link> window style.
+      </para></listitem></varlistentry>
+      <varlistentry><term>BORDER</term>
+      <listitem><para>The <link linkend="wsborder">border</link> window style.
+      </para></listitem></varlistentry>
+      <varlistentry><term>GROUP</term>
+      <listitem><para>The <link linkend="wsborder">group</link> control style.
+      </para></listitem></varlistentry>
+      <varlistentry><term>TAB</term>
+      <listitem><para>The <link linkend="wsborder">tab</link> control style.
+      </para></listitem></varlistentry>
+    </variablelist>
+  </para></listitem></varlistentry>
+</variablelist>
 </para></listitem></varlistentry>
 </variablelist>
+
 </section>
 
 
-<section id="h001709"><title>AddWhiteRect</title>
-<indexterm><primary>AddWhiteRect</primary></indexterm>
+<section id="mthAddWhiteRect"><title>addWhiteRect</title>
+<indexterm><primary>addWhiteRect</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aUserDialog~AddWhiteRect(--x--,--y--,--cx--,--cy------------->
 
->--+------------------------------------+--)-------------------><
-   |       +------------+               |
-   |       V            |               |
-   +-,--"----+-HIDDEN-+-+--"--+-------+-+
-             +-BORDER-+       +-,--id-+
+>>-dlg~addWhiteRect(--x-,-y-,-cx-,-cy--,--text--+-----------+--------+--)------><
+                                                +-,--style--+-,--id--+
 
 
 ]]>
 </programlisting>
 
-<para>The AddWhiteRect method adds a white rectangle
+<para>The addWhiteRect method adds a white rectangle
 to the dialog. </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1478,7 +1683,7 @@ measured in dialog units
 <section id="h001748"><title>AddWhiteFrame</title>
 <indexterm><primary>AddWhiteFrame</primary></indexterm>
 <para>The AddWhiteFrame method is currently identical
-to the <link linkend="h001709">AddWhiteRect</link> method.</para>
+to the <link linkend="mthAddWhiteRect">addWhiteRect</link> method.</para>
 </section>
 
 <section id="h001722"><title>AddGrayRect</title>
@@ -1502,7 +1707,7 @@ to the <link linkend="h001709">AddWhiteRect</link> method.</para>
 the dialog. </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>See <link linkend="h001709">AddWhiteRect</link> for a description of the arguments.
+<listitem><para>See <link linkend="mthAddWhiteRect">addWhiteRect</link> for a description of the arguments.
 </para></listitem></varlistentry>
 </variablelist>
 </section>
@@ -1534,7 +1739,7 @@ to the <link linkend="h001722">AddGreyRect</link> method.</para>
 to the dialog. </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>See <link linkend="h001709">AddWhiteRect</link> for a description of the arguments.
+<listitem><para>See <link linkend="mthAddWhiteRect">addWhiteRect</link> for a description of the arguments.
 </para></listitem></varlistentry>
 </variablelist>
 </section>
@@ -1552,7 +1757,7 @@ to the <link linkend="h001735">AddBlackRect</link> method.</para>
 >>-aUserDialog~AddText(--x--,--y--,--+----+--,--+----+--,--text-->
                                      +-cx-+     +-cy-+
 
->--+----------------------------------------+--)----------------><
+>--+----------------------------------------+--)---------------><
    +-,--+----------------------+--+-------+-+
         |    .------------.    |  +-,--id-+
         |    V            |    |
@@ -1615,7 +1820,7 @@ is aligned to the left.
 >>-aUserDialog~AddEntryLine(--id--,--+------+--,--x--,--y--,--cx-->
                                      +-name-+
 
->--+-----------------------------------------------+---)---------><
+>--+-----------------------------------------------+---)-------><
    +-,--+----+--+--------------------------------+-+
         +-cy-+  |       +-------------------+    |
                 |       V                   |    |
@@ -2921,7 +3126,7 @@ with the dialog. </para>
 <indexterm><primary>AddMenuItem</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aUserDialog~AddMenuItem(--name--,--id--,--"--options--"--,--msgToRaise--)-><
+>>-aUserDialog~AddMenuItem(--name--,--id--,--"--options--"--,--msgToRaise--)--><
 
 
 ]]>
