@@ -1361,6 +1361,190 @@ with the changes listed below:
 </variablelist>
 </section>
 
+
+<section id="sectAddStaticControls"><title>Add Static Controls</title>
+<indexterm><primary>Add staic control methods</primary></indexterm>
+<para>
+  The methods in this section are all used to add a static control to the dialog. However, there is
+  no need to use a number of different methods to add static controls.  The <link
+  linkend="mthAddStatic">addStatic</link> method is all that is needed.  You control the appearance
+  and behavior of the static control in the same way as with other controls, by specifying the
+  appropriate control styles.  Given the proper combination of style keywords, the
+  <computeroutput>addStatic</computeroutput> can create any static control that the other methods in
+  this section create.
+<para>
+  However, there are a large number of style keywords for the static control. Many of the keywords
+  have no meaning when used in combination with other keywords.  For instance, the ENDELLIPIS
+  keyword has no meaning if used with the ICON keyword.  The other methods in this section are
+  convenience methods where the number of style keywords are reduced to only those that make sense
+  in combination.
+</para>
+<para>
+  A word about frames and rectangles.  In previous versions of the ooDialog reference frames and
+  rectangles were documented as though they were a type of separate controls.  They are not, they
+  are just a static control with a particular style.  The <link linkend="fig56">Frames and
+  Rectangles</link> picture gives some idea of the different types of static controls.
+
+  <figure id="fig56"><title>Frames and Rectangles in 3D Style</title>
+  <mediaobject>
+  <imageobject>
+  <!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+  <imagedata fileref="rxou0s20.jpg" scale="70">
+  </imageobject>
+  </mediaobject>
+  </figure>
+</para>
+<note><title>Note</title>
+<para>
+  The difference between frames and rectangles is subtle
+</para></note>
+</section>
+
+<section id="mthAddStatic"><title>addStatic</title>
+<indexterm><primary>addStatic</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aUserDialog~AddGrayRect(--x--,--y--,--cx--,--cy-------------->
+
+>--+----------------------------------------+--)---------------><
+   +-,--+----------------------+--+-------+-+
+        |    +------------+    |  +-,--id-+
+        |    V            |    |
+        +-"----+-HIDDEN-+-+--"-+
+               +-BORDER-+
+
+
+]]>
+</programlisting>
+
+<para>The AddGrayRect method adds a gray rectangle to
+the dialog. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>See <link linkend="h001709">AddWhiteRect</link> for a description of the arguments.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="h001709"><title>AddWhiteRect</title>
+<indexterm><primary>AddWhiteRect</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aUserDialog~AddWhiteRect(--x--,--y--,--cx--,--cy------------->
+
+>--+------------------------------------+--)-------------------><
+   |       +------------+               |
+   |       V            |               |
+   +-,--"----+-HIDDEN-+-+--"--+-------+-+
+             +-BORDER-+       +-,--id-+
+
+
+]]>
+</programlisting>
+
+<para>The AddWhiteRect method adds a white rectangle
+to the dialog. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>x, y</term>
+<listitem><para>The position of the rectangle's upper-left corner relative to the dialog
+measured in dialog units
+</para></listitem></varlistentry>
+<varlistentry><term>cx, cy</term>
+<listitem><para>The size of the rectangle in dialog units
+</para></listitem></varlistentry>
+<varlistentry><term>options</term>
+<listitem><para>The options can be:
+<variablelist>
+<varlistentry><term>HIDDEN</term>
+<listitem><para>The frame or rectangle is not visible at startup time
+</para></listitem></varlistentry>
+<varlistentry><term>BORDER</term>
+<listitem><para>A border is drawn around the rectangle or frame
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term>id</term>
+<listitem><para>The ID of the item, -1 is used by default
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="h001748"><title>AddWhiteFrame</title>
+<indexterm><primary>AddWhiteFrame</primary></indexterm>
+<para>The AddWhiteFrame method is currently identical
+to the <link linkend="h001709">AddWhiteRect</link> method.</para>
+</section>
+
+<section id="h001722"><title>AddGrayRect</title>
+<indexterm><primary>AddGrayRect</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aUserDialog~AddGrayRect(--x--,--y--,--cx--,--cy-------------->
+
+>--+----------------------------------------+--)---------------><
+   +-,--+----------------------+--+-------+-+
+        |    +------------+    |  +-,--id-+
+        |    V            |    |
+        +-"----+-HIDDEN-+-+--"-+
+               +-BORDER-+
+
+
+]]>
+</programlisting>
+
+<para>The AddGrayRect method adds a gray rectangle to
+the dialog. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>See <link linkend="h001709">AddWhiteRect</link> for a description of the arguments.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="h001761"><title>AddGreyFrame</title>
+<indexterm><primary>AddGrayFrame</primary></indexterm>
+<para>The AddGreyFrame method is currently identical
+to the <link linkend="h001722">AddGreyRect</link> method.</para>
+</section>
+
+<section id="h001735"><title>AddBlackRect</title>
+<indexterm><primary>AddBlackRect</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aUserDialog~AddBlackRect(--x--,--y--,--cx--,--cy------------->
+
+>--+----------------------------------------+--)---------------><
+   +-,--+----------------------+--+-------+-+
+        |    +------------+    |  +-,--id-+
+        |    V            |    |
+        +-"----+-HIDDEN-+-+--"-+
+               +-BORDER-+
+
+
+]]>
+</programlisting>
+
+<para>The AddBlackRect method adds a black rectangle
+to the dialog. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>See <link linkend="h001709">AddWhiteRect</link> for a description of the arguments.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="h001774"><title>AddBlackFrame</title>
+<indexterm><primary>AddBlackFrame</primary></indexterm>
+<para>The AddBlackFrame method is currently identical
+to the <link linkend="h001735">AddBlackRect</link> method.</para>
+</section>
+
 <section id="mthAddText"><title>AddText</title>
 <indexterm><primary>AddText</primary></indexterm>
 <programlisting>
@@ -1421,6 +1605,7 @@ is aligned to the left.
 </listitem></varlistentry>
 </variablelist>
 </section>
+</section> <!-- End Add Static Controls section -->
 
 <section id="mthAddEntryLine"><title>AddEntryLine</title>
 <indexterm><primary>AddEntryLine</primary></indexterm>
@@ -2513,146 +2698,7 @@ MyDialog~AddButtonGroup(20, 235, , , "&Add 301 AddItem"  ,
 ]]>
 </programlisting>
 </section>
-</section>
 
-<section id="man0007"><title>Frames and Rectangles</title>
-<indexterm><primary>Frames</primary></indexterm>
-<indexterm><primary>Rectangles</primary></indexterm>
-<para>The methods listed below add simple graphical elements to the dialog. They
-are useful for giving the dialog a nice finish. Use <link linkend="fig56">Frames and Rectangles in 3D Style</link> to
-help you find the right element.</para>
-
-<figure id="fig56"><title>Frames and Rectangles in 3D Style</title>
-<mediaobject>
-<imageobject>
-<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
-<imagedata fileref="rxou0s20.jpg" scale="70">
-</imageobject>
-</mediaobject>
-</figure>
-
-<note><title>Note</title><para>
-There is currently no difference between rectangles and frames.
-</para></note>
-
-<section id="h001709"><title>AddWhiteRect</title>
-<indexterm><primary>AddWhiteRect</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aUserDialog~AddWhiteRect(--x--,--y--,--cx--,--cy------------->
-
->--+------------------------------------+--)-------------------><
-   |       +------------+               |
-   |       V            |               |
-   +-,--"----+-HIDDEN-+-+--"--+-------+-+
-             +-BORDER-+       +-,--id-+
-
-
-]]>
-</programlisting>
-
-<para>The AddWhiteRect method adds a white rectangle
-to the dialog. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>x, y</term>
-<listitem><para>The position of the rectangle's upper-left corner relative to the dialog
-measured in dialog units
-</para></listitem></varlistentry>
-<varlistentry><term>cx, cy</term>
-<listitem><para>The size of the rectangle in dialog units
-</para></listitem></varlistentry>
-<varlistentry><term>options</term>
-<listitem><para>The options can be:
-<variablelist>
-<varlistentry><term>HIDDEN</term>
-<listitem><para>The frame or rectangle is not visible at startup time
-</para></listitem></varlistentry>
-<varlistentry><term>BORDER</term>
-<listitem><para>A border is drawn around the rectangle or frame
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the item, -1 is used by default
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="h001748"><title>AddWhiteFrame</title>
-<indexterm><primary>AddWhiteFrame</primary></indexterm>
-<para>The AddWhiteFrame method is currently identical
-to the <link linkend="h001709">AddWhiteRect</link> method.</para>
-</section>
-
-<section id="h001722"><title>AddGrayRect</title>
-<indexterm><primary>AddGrayRect</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aUserDialog~AddGrayRect(--x--,--y--,--cx--,--cy-------------->
-
->--+----------------------------------------+--)---------------><
-   +-,--+----------------------+--+-------+-+
-        |    +------------+    |  +-,--id-+
-        |    V            |    |
-        +-"----+-HIDDEN-+-+--"-+
-               +-BORDER-+
-
-
-]]>
-</programlisting>
-
-<para>The AddGrayRect method adds a gray rectangle to
-the dialog. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>See <link linkend="h001709">AddWhiteRect</link> for a description of the arguments.
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="h001761"><title>AddGreyFrame</title>
-<indexterm><primary>AddGrayFrame</primary></indexterm>
-<para>The AddGreyFrame method is currently identical
-to the <link linkend="h001722">AddGreyRect</link> method.</para>
-</section>
-
-<section id="h001735"><title>AddBlackRect</title>
-<indexterm><primary>AddBlackRect</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aUserDialog~AddBlackRect(--x--,--y--,--cx--,--cy------------->
-
->--+----------------------------------------+--)---------------><
-   +-,--+----------------------+--+-------+-+
-        |    +------------+    |  +-,--id-+
-        |    V            |    |
-        +-"----+-HIDDEN-+-+--"-+
-               +-BORDER-+
-
-
-]]>
-</programlisting>
-
-<para>The AddBlackRect method adds a black rectangle
-to the dialog. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>See <link linkend="h001709">AddWhiteRect</link> for a description of the arguments.
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="h001774"><title>AddBlackFrame</title>
-<indexterm><primary>AddBlackFrame</primary></indexterm>
-<para>The AddBlackFrame method is currently identical
-to the <link linkend="h001735">AddBlackRect</link> method.</para>
-</section>
-</section>
 
 <section id="pkcancelbutton"><title>OK and Cancel Push Buttons</title>
 <indexterm><primary>Cancel push buttons</primary></indexterm>

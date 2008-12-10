@@ -43,19 +43,26 @@
 -->
 <chapter id="staticcontrolc"><title>StaticControl Class</title>
 <indexterm><primary>StaticControl class</primary></indexterm>
-<para>The StaticControl class provides methods to query
-and modify static controls, such as static text, group boxes, and frames.
-It inherits all methods of the DialogControl class (see
-<link linkend="dialogcontrolc">DialogControl Class</link>).</para>
-<para>The StaticControl class requires the class definition
-file <computeroutput>oodwin32.cls</computeroutput>:</para>
+<para>
+  The StaticControl class provides methods to query and modify static controls (static text,
+  rectangles, and frames.) It inherits all methods of the DialogControl class (see  <link
+  linkend="dialogcontrolc">DialogControl Class</link>).  By default, static controls are assigned a
+  resource ID of -1.  There is no way to query or modify static controls unless the control has a
+  positive resource ID.  Which in most circumstances is fine, usually static controls do not need to
+  be modified.  Be sure to assign a positive resource ID to statict controls that will be modified
+  during the execution of a dialog.
+</para>
+<para>
+  The StaticControl class requires the class definition file
+  <computeroutput>oodWin32.cls</computeroutput>:</para>
 <programlisting>
 <![CDATA[
-::requires "oodwin32.cls"
+::requires "oodWin32.cls"
 ]]>
 </programlisting>
-<para>Use the GetStaticControl method (see
-<link linkend="getstaticcontrol">GetStaticControl</link>)
-to retrieve an object of the StaticControl class. To use this method,
-the static control must have a positive ID.</para>
+<para>
+  Use the getStaticControl method (see <link linkend="getstaticcontrol">getStaticControl</link>) to
+  retrieve an object of the StaticControl class. To use this method, the static control must have a
+  positive ID.
+</para>
 </chapter>
