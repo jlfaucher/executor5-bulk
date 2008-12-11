@@ -221,7 +221,7 @@ the methods listed in the following table.
 </row>
 <row>
 <entry>addGroupBox</entry>
-<entry><link linkend="h001681">addGroupBox</link></entry>
+<entry><link linkend="mthAddGroupBox">addGroupBox</link></entry>
 </row>
 <row>
 <entry>AddIcon</entry>
@@ -979,29 +979,43 @@ associated Object Rexx attribute. Add... methods cannot be used after
   the other Add... Methods that create a group of controls will only take the postion, or the size
   arguments:
 </para>
-<variablelist id="listControlCoordinates">
-<varlistentry><term id="xCoordinate"><emphasis role="bold">x</emphasis></term>
+<variablelist id="listCommonArguments">
+<varlistentry><term id="xArgument"><emphasis role="bold">x</emphasis></term>
   <listitem>
   <para>
     The left position of the control in the dialog's client window, in dialog units.
   </para></listitem>
 </varlistentry>
-<varlistentry><term id="yCoordinate"><emphasis role="bold">y</emphasis></term>
+<varlistentry><term id="yArgument"><emphasis role="bold">y</emphasis></term>
   <listitem>
   <para>
     The top position of the control in the dialog's client window, in dialog units.
   </para></listitem>
 </varlistentry>
-<varlistentry><term id="cxCoordinate"><emphasis role="bold">cx</emphasis></term>
+<varlistentry><term id="cxArgument"><emphasis role="bold">cx</emphasis></term>
   <listitem>
   <para>
     The width of the control in dialog units.
   </para></listitem>
 </varlistentry>
-<varlistentry><term id="cyCoordinate"><emphasis role="bold">cx</emphasis></term>
+<varlistentry><term id="cyArgument"><emphasis role="bold">cx</emphasis></term>
   <listitem>
   <para>
     The height of the control in dialog units.
+  </para></listitem>
+</varlistentry>
+<varlistentry><term id="idArgument"><emphasis role="bold">id</emphasis></term>
+  <listitem>
+  <para id="paraResouceIDs">
+    All dialog controls have a numeric <link linkend="resourceid">resource</link> ID. The ooDialog
+    framework is designed to accept a <link linkend="symbolicid">symbolic</link> ID anywhere a
+    resource ID is needed.  All the Add... methods accepted a symbolic ID for the id argument.
+  <para>
+    By default static controls and group boxes are assigned a resource id of -1. However, assigning
+    a positive id allows the programmer to modify the static control or group box after it is
+    created, perhaps to change the text of its title, or to change its postition. Without a positive
+    ID, a static control or group box can not be modified.  Which is fine, normally static controls
+    and group boxes do not need to be modified.
   </para></listitem>
 </varlistentry>
 </variablelist>
@@ -1010,7 +1024,9 @@ associated Object Rexx attribute. Add... methods cannot be used after
 <indexterm><primary>AddButton</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aUserDialog~AddButton(--id--,--x--,--y--,--cx--,--cy--,--text-->
+                                                           +-,-""---+
+>>-aUserDialog~AddButton(--id--,--x--,--y--,--cx--,--cy--,-+--------+---->
+                                                           +-,-text-+
 
 >--+-----------------------------------------------+--)--------><
    +-,--msgToRaise--+----------------------------+-+
@@ -1043,96 +1059,86 @@ a method that is invoked whenever the button is clicked.
 <listitem><para>The arguments are:
 <variablelist>
 <varlistentry><term>id</term>
-<listitem><para>The <link linkend="resourceid">resource ID</link> (numeric or
-symbolic) for the button.  Each control in a dialog (other than static controls)
-must be assigned a unique resource ID.
-</para></listitem></varlistentry>
-<varlistentry><term>x, y</term>
-<listitem><para>The position of the button's upper-left corner relative to the dialog
-measured in dialog units
-</para></listitem></varlistentry>
-<varlistentry><term>cx</term>
-<listitem><para>The width of the button in dialog units
-</para></listitem></varlistentry>
-<varlistentry><term>cy</term>
-<listitem><para>The height of the button in dialog units
+<listitem>
+  <para>
+    The resource <link linkend="idArgument">ID</link> for the button.
+  </para>
+</listitem></varlistentry>
+<varlistentry><term>x, y, cx, cy</term>
+<listitem><para>The <link linkend="listCommonArguments">control coordinates</link>
 </para></listitem></varlistentry>
 <varlistentry><term>text</term>
-<listitem><para>The label that is displayed for the button
+<listitem><para>The text for the label of the button.
 </para></listitem></varlistentry>
 <varlistentry><term>msgToRaise</term>
 <listitem><para>The name of a method of the dialog class that is to be invoked
 each time the button is clicked
 </para></listitem></varlistentry>
 <varlistentry><term>style</term>
-<listitem><para>The last argument can be one or more of the following keywords:
-<variablelist>
-<varlistentry><term>DEFAULT</term>
-<listitem><para>The button becomes the default button in the dialog.
-</para></listitem></varlistentry>
-<varlistentry><term>OWNER</term>
-<listitem><para>The programmer is completely responsible for drawing the button
-when the dialog receives the WM_DRAWITEM message.  Currently this would be
-difficult (but not impossible) to implement in ooDialog.  A simpler approach for
-an owner drawn button is to use a bitmap button.  See the <link
-linkend="mthAddBitmapButton">AddBitmapButton</link> method.
-</para></listitem></varlistentry>
-<varlistentry><term>LEFT</term>
-<listitem><para>Left justifies the text in the button rectangle.  If neither
-LEFT nor RIGHT are specified the text is centered in the button rectangle.
-</para></listitem></varlistentry>
-<varlistentry><term>RIGHT</term>
-<listitem><para>Right justifies the text in the button rectangle.  If neither
-LEFT nor RIGHT are specified the text is centered in the button rectangle.
-</para></listitem></varlistentry>
-<varlistentry><term>TOP</term>
-<listitem><para>The text is aligned at the top of the button rectangle.  If
-neither TOP nor BOTTOM are specified the text is vertically centered in the
-button rectangle.
-</para></listitem></varlistentry>
-<varlistentry><term>BOTTOM</term>
-<listitem><para>The text is aligned at the bottom of the button rectangle.  If
-neither TOP nor BOTTOM are specified the text is vertically centered in the
-button rectangle.
-</para></listitem></varlistentry>
-<varlistentry><term>MULTILINE</term>
-<listitem><para>If the text for the label of the button is longer than the width
-of the button rectangle, the operating system will word wrap the text producing
-more than one line.  The height of the button rectangle has to be sufficient to
-display the extra line(s) or the text is clipped.
-</para></listitem></varlistentry>
-<varlistentry><term>NOTIFY</term>
-<listitem><para>Enables the button to send notifications for the gained focus,
-lost focus, and double click events.  This is only necessary when the <link
-linkend="connectbuttonnotify">ConnectButtonNotify</link> method is used, and
-only for the GOTFOCUS, LOSTFOCUS, or DBLCLK keywords of that method.
-</para></listitem></varlistentry>
-<varlistentry><term>FLAT</term>
-<listitem><para>The button is drawn with a flat appearance, i.e., it is drawn as
-a flat rectangle the label text inside the rectangle.
-</para></listitem></varlistentry>
-<varlistentry><term>HIDDEN</term>
-<listitem><para>Create the button without the <link
-linkend="wsvisible">visible</link> style.
-</para></listitem></varlistentry>
-<varlistentry><term>DISABLED</term>
-<listitem><para>Create the button without the <link
-linkend="wsdisabled">enabled</link> style.
-</para></listitem></varlistentry>
-<varlistentry><term>GROUP</term>
-<listitem><para>Create the button with the <link linkend="wsgroup">group</link>
-style.
-</para></listitem></varlistentry>
-<varlistentry><term>NOTAB</term>
-<listitem><para>Create the button without the <link
-linkend="wstabstop">tabstop</link> style. By default the button is created
-with the tabstop style.
-</para></listitem></varlistentry>
-<varlistentry><term>BORDER</term>
-<listitem><para>Create the button with the <link
-linkend="wsborder">border</link> style.  By default buttons are created
-without a border.
-</para></listitem></varlistentry>
+  <listitem>
+    <para>
+      A list of 0 or more <link linkend="paraStyleExplanation">style</link> keywords separated by
+      spaces:
+      <variablelist>
+      <varlistentry><term>DEFAULT</term>
+      <listitem><para>The button becomes the default button in the dialog.
+      </para></listitem></varlistentry>
+      <varlistentry><term>OWNER</term>
+      <listitem><para>The programmer is completely responsible for drawing the button
+      when the dialog receives the WM_DRAWITEM message.  Currently this would be
+      difficult (but not impossible) to implement in ooDialog.  A simpler approach for
+      an owner drawn button is to use a bitmap button.  See the <link
+      linkend="mthAddBitmapButton">AddBitmapButton</link> method.
+      </para></listitem></varlistentry>
+      <varlistentry><term>LEFT</term>
+      <listitem><para>Left justifies the text in the button rectangle.  If neither
+      LEFT nor RIGHT are specified the text is centered in the button rectangle.
+      </para></listitem></varlistentry>
+      <varlistentry><term>RIGHT</term>
+      <listitem><para>Right justifies the text in the button rectangle.  If neither
+      LEFT nor RIGHT are specified the text is centered in the button rectangle.
+      </para></listitem></varlistentry>
+      <varlistentry><term>TOP</term>
+      <listitem><para>The text is aligned at the top of the button rectangle.  If
+      neither TOP nor BOTTOM are specified the text is vertically centered in the
+      button rectangle.
+      </para></listitem></varlistentry>
+      <varlistentry><term>BOTTOM</term>
+      <listitem><para>The text is aligned at the bottom of the button rectangle.  If
+      neither TOP nor BOTTOM are specified the text is vertically centered in the
+      button rectangle.
+      </para></listitem></varlistentry>
+      <varlistentry><term>MULTILINE</term>
+      <listitem><para>If the text for the label of the button is longer than the width
+      of the button rectangle, the operating system will word wrap the text producing
+      more than one line.  The height of the button rectangle has to be sufficient to
+      display the extra line(s) or the text is clipped.
+      </para></listitem></varlistentry>
+      <varlistentry><term>NOTIFY</term>
+      <listitem><para>Enables the button to send notifications for the gained focus,
+      lost focus, and double click events.  This is only necessary when the <link
+      linkend="connectbuttonnotify">ConnectButtonNotify</link> method is used, and
+      only for the GOTFOCUS, LOSTFOCUS, or DBLCLK keywords of that method.
+      </para></listitem></varlistentry>
+      <varlistentry><term>FLAT</term>
+      <listitem><para>The button is drawn with a flat appearance, i.e., it is drawn as
+      a flat rectangle the label text inside the rectangle.
+      </para></listitem></varlistentry>
+      <varlistentry><term>HIDDEN</term>
+      <listitem><para>The <link linkend="wsvisible">not visible</link> window style.
+      </para></listitem></varlistentry>
+      <varlistentry><term>DISABLED</term>
+      <listitem><para>The <link linkend="wsborder">not enabled</link> window style.
+      </para></listitem></varlistentry>
+      <varlistentry><term>BORDER</term>
+      <listitem><para>The <link linkend="wsborder">border</link> window style.
+      </para></listitem></varlistentry>
+      <varlistentry><term>GROUP</term>
+      <listitem><para>The <link linkend="wsborder">group</link> control style.
+      </para></listitem></varlistentry>
+      <varlistentry><term>NOTAB</term>
+      <listitem><para>The no <link linkend="wsborder">tabstop</link> control style.
+      </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
 </variablelist>
@@ -1395,12 +1401,13 @@ bar of the dialog.)
 </variablelist>
 </section>
 
-<section id="h001681"><title>addGroupBox</title>
+<section id="mthAddGroupBox"><title>addGroupBox</title>
 <indexterm><primary>addGroupBox</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-dlg~addGroupBox(--x-,-y-,-cx-,-cy--,--text--+-----------+--------+--)------><
-                                               +-,--style--+-,--id--+
+                                      +-,-""----+-,--""-----+-,__-1__+
+>>-dlg~addGroupBox(--x-,-y-,-cx-,-cy--+---------+-----------+--------+--)-----><
+                                      +-,-text--+-,--style--+-,--id--+
 
 ]]>
 </programlisting>
@@ -1411,10 +1418,9 @@ bar of the dialog.)
 </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem>
-<variablelist>
+<listitem><variablelist>
 <varlistentry><term>x, y, cx, cy</term>
-<listitem><para>The <link linkend="listControlCoordinates">control coordinates</link>
+<listitem><para>The <link linkend="listCommonArguments">control coordinates</link>
 </para></listitem></varlistentry>
 <varlistentry><term>text</term>
 <listitem><para>The text for the group box title.
@@ -1422,10 +1428,11 @@ bar of the dialog.)
 <varlistentry><term>style</term>
 <listitem>
   <para>
-    A list of the <link linkend="paraStyleExplanation">style</link> keywords separated by spaces:
+    A list of 0 or more <link linkend="paraStyleExplanation">style</link> keywords separated by
+    spaces:
     <variablelist>
       <varlistentry><term>RIGHT</term>
-      <listitem><para>Normaly the text is aligned to the upper left of the group box frame.  This
+      <listitem><para>Normally the text is aligned to the upper left of the group box frame.  This
         style aligns the text to the upper right of the frame
       </para></listitem></varlistentry>
       <varlistentry><term>HIDDEN</term>
@@ -1514,7 +1521,7 @@ bar of the dialog.)
   perhaps to change its text or to change its postition.
 </para></listitem></varlistentry>
 <varlistentry><term>x, y, cx, cy</term>
-<listitem><para>The <link linkend="listControlCoordinates">control coordinates</link>
+<listitem><para>The <link linkend="listCommonArguments">control coordinates</link>
 </para></listitem></varlistentry>
 <varlistentry><term>style</term>
 <listitem>
