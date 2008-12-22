@@ -93,11 +93,78 @@ provides.</para>
 provides.</para>
 </section>
 
+<section id="methodapi"><title>Rexx Method Interface</title>
+<para>This section describes the Rexx method interface and the methods it
+provides.</para>
+</section>
+
+<section id="functionapi"><title>Rexx Function Interface</title>
+<para>This section describes the Rexx external function interface and the methods it
+provides.</para>
+</section>
+
 <section id="buildinglibs"><title>Building an External Library</title>
 <para>This section describes how to build an external library.</para>
 </section>
 
 <section id="exitsapi"><title>Rexx Exits Interface</title>
 <para>This section describes how to define a Rexx exit.</para>
+</section>
+
+<section id="apilisting"><title>Rexx Methods Listing</title>
+<para>This section describes each available method and its associated context.</para>
+
+<section id="mthGetApplicationData"><title>GetApplicationData</title>
+<indexterm><primary>GetApplicationData</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>GetApplicationData</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>GetApplicationData</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>GetApplicationData</secondary></indexterm>
+<para>The GetApplicationData method returns a pointer to the thread specific application data.
+</para>
+<programlisting>
+<![CDATA[
+>>--ptr = context->GetApplicationData();------------------------------><
+]]>
+</programlisting>
+<table frame="all">
+<title>Available Contexts</title>
+<tgroup cols="2">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row>
+<entry>Thread</entry>
+<entry>Yes</entry>
+</row>
+<row>
+<entry>Method</entry>
+<entry>Yes</entry>
+</row>
+<row>
+<entry>Function</entry>
+<entry>Yes</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+<section><title>Arguments</title>
+<para>None.</para>
+</section>
+<section><title>Returns</title>
+<para>A Pointer to the application data.</para>
+</section>
+</section>
+
+
+
+
+
+
+
 </section>
 </appendix>
