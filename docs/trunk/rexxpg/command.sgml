@@ -207,17 +207,62 @@ PATH=C:\WINDOWS
 </programlisting>
 
 <note>
-<para>Whenever you execute a host command
-addressed to the Windows or Unix/Linux command shell, that is, an expression
-that is passed to the
-system by address CMD as described above, a new process is created in which
-the system command handler is executed. When the host command returns, any
-changes to the process environment, such as changing the directory, are not
-passed back to the process running the Rexx program. To avoid this potential
-problem, use a different function such as
-<computeroutput>directory()</computeroutput> instead of
-the command <computeroutput>CD</computeroutput></para></note>
-</section>
+<para>Usually, when executing a host command addressed to the Windows or
+Unix/Linux command shell, that is, an expression that is passed to
+the system by address CMD as described above, a new process is
+created in the system command handler to execute the command.
+Changes in a child process environment do not change
+the parent process environment. Therefore, any change in the
+environment, such as a directory change, made by a host command
+executed in a child process would not be reflected in the process
+running the Rexx program.</para>
+
+<para>The interpreter attempts to mitigate this to some extent by
+executing some host commands in the process running the Rexx
+program, rather than in a child process. This is done so that
+changes to the environment made by executing the host command are
+visible in the process running the Rexx program.</para>
+
+<para>This is only done when the host command line is simple. That is,
+the command line must contain a single command, without redirection
+and without pipe. On Windows this applies to the
+<computeroutput>CD</computeroutput> and <computeroutput>SET</computeroutput>
+commands. On Unix-like systems, including Linux, this applies to
+<computeroutput>cd</computeroutput>, <computeroutput>set</computeroutput>,
+<computeroutput>unset</computeroutput> and <computeroutput>export</computeroutput>.
+Rather than remembering the rules, it may be easier to avoid a potential problem
+by using the built in <computeroutput>directory()</computeroutput> or
+<computeroutput>value()</computeroutput> functions rather than issuing a host command
+for <computeroutput>cd</computeroutput>, <computeroutput>set</computeroutput>, etc.</para>
+
+<para>Some examples for Windows:</para>
+
+<programlisting>
+<![CDATA[
+'cd c:\tmp'               /* executed in Rexx program process */
+'cd "c:\R&D (secret)"'    /* executed in Rexx program process */
+'cd c:\windows && dir c:' /* executed in child process (2 commands) */
+'d:'                      /* executed in Rexx program process */
+'set myvar=my value'      /* executed in Rexx program process */
+]]>
+</programlisting>
+
+<para>Some examples for Unix:</para>
+
+<programlisting>
+<![CDATA[
+'cd'                      /* executed in Rexx program process: go to $HOME directory */
+'cd ~/"R&D (secret)"'     /* executed in Rexx program process: go to $HOME/R&D (secret) */
+'cd ~/"R&D \"secret\""'   /* executed in Rexx program process: go to $HOME/R&D "secret" */
+'cd ~john'                /* executed in Rexx program process: go to John's home directory */
+'cd /tmp && pwd'          /* executed in child process (2 commands) */
+'set myvar=my value'      /* executed in Rexx program process */
+'export myvar=my value'   /* executed in Rexx program process */
+'unset myvar'             /* executed in Rexx program process */
+]]>
+</programlisting>
+
+</note>
 
 <section id="suppres"><title>Command Echo</title>
 <indexterm><primary>echoing commands</primary></indexterm>
@@ -530,7 +575,7 @@ and controlling system errors: </para>
 than Windows. To determine what subcommands you can issue, refer
 to the documentation for the application.</para>
 <para>To make your own applications scriptable from Rexx, see
-<link linkend="classicapi">Rexx Application Programming 
+<link linkend="classicapi">Rexx Application Programming
 Interfaces</link>.</para>
 </section>
 
