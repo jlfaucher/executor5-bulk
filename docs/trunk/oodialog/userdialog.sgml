@@ -1406,7 +1406,6 @@ bar of the dialog.)
 <indexterm><primary>addGroupBox</primary></indexterm>
 <programlisting>
 <![CDATA[
-                                      +-,-""----+-,--""-----+-,__-1__+
 >>-dlg~addGroupBox(--x-,-y-,-cx-,-cy--+---------+-----------+--------+--)-----><
                                       +-,-text--+-,--style--+-,--id--+
 
@@ -1414,53 +1413,79 @@ bar of the dialog.)
 </programlisting>
 
 <para>
-  The addGroupBox method adds a group box to the dialog. A group box is actually a button control. A
-  group box can have a frame and a title.
+  The addGroupBox method adds a group box to the dialog. A group box is a button control, not a
+  static control. A group box can have a frame and a label
 </para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><variablelist>
-<varlistentry><term>x, y, cx, cy</term>
-<listitem><para>The <link linkend="listCommonArguments">control coordinates</link>
-</para></listitem></varlistentry>
-<varlistentry><term>text</term>
-<listitem><para>The text for the group box title.
-</para></listitem></varlistentry>
-<varlistentry><term>style</term>
-<listitem>
-  <para>
-    A list of 0 or more <link linkend="paraStyleExplanation">style</link> keywords separated by
-    spaces:
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
     <variablelist>
-      <varlistentry><term>RIGHT</term>
-      <listitem><para>Normally the text is aligned to the upper left of the group box frame.  This
-        style aligns the text to the upper right of the frame
-      </para></listitem></varlistentry>
-      <varlistentry><term>HIDDEN</term>
-      <listitem><para>The <link linkend="wsvisible">not visible</link> window style.
-      </para></listitem></varlistentry>
-      <varlistentry><term>DISABLED</term>
-      <listitem><para>The <link linkend="wsborder">not enabled</link> window style.
-      </para></listitem></varlistentry>
-      <varlistentry><term>BORDER</term>
-      <listitem><para>The <link linkend="wsborder">border</link> window style.
-      </para></listitem></varlistentry>
-      <varlistentry><term>GROUP</term>
-      <listitem><para>The <link linkend="wsborder">group</link> control style.
-      </para></listitem></varlistentry>
-      <varlistentry><term>TAB</term>
-      <listitem><para>The <link linkend="wsborder">tab</link> control style.
-      </para></listitem></varlistentry>
+      <varlistentry><term>x, y, cx, cy</term>
+      <listitem>
+        <para>
+          The <link linkend="listCommonArguments">control coordinates</link>
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>text</term>
+      <listitem>
+        <para>
+          The text for the group box label
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>style</term>
+      <listitem>
+        <para>
+          A list of 0 or more <link linkend="paraStyleExplanation">style</link> keywords separated by
+          spaces:
+          <variablelist>
+            <varlistentry><term>RIGHT</term>
+            <listitem>
+              <para>
+                Normally the text is aligned to the upper left of the group box frame.  This style
+                aligns the text to the upper right of the frame
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>HIDDEN</term>
+            <listitem>
+              <para>
+                The <link linkend="wsvisible">not visible</link> window style.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>DISABLED</term>
+            <listitem>
+              <para>
+                The <link linkend="wsborder">not enabled</link> window style.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>BORDER</term>
+            <listitem>
+              <para>
+                The <link linkend="wsborder">border</link> window style.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>GROUP</term>
+            <listitem>
+              <para>
+                The <link linkend="wsborder">group</link> control style.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>TAB</term>
+            <listitem>
+              <para>
+                The <link linkend="wsborder">tabstop</link> control style.
+              </para>
+            </listitem></varlistentry>
+          </variablelist>
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>id</term>
+      <listitem>
+        <para>
+          The resource <link linkend="idArgument">ID</link> for the group box.
+        </para>
+      </listitem></varlistentry>
     </variablelist>
-  </para></listitem></varlistentry>
-<varlistentry><term>id</term>
-<listitem><para>
-  The resource id of the group box.  By the default a group box is assigned a resource id of -1.
-  Assigning a positive id allows the programmer to modify the group box after it is created, perhaps
-  to change the text of its title, change its postition.
-</para></listitem></varlistentry>
-</variablelist>
-</listitem></varlistentry>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
@@ -1485,10 +1510,10 @@ bar of the dialog.)
 <para>
   A word about frames and rectangles.  In previous versions of the ooDialog reference frames and
   rectangles were documented as though they were a type of separate controls.  They are not, they
-  are just a static control with a particular style.  The <link linkend="fig56">Frames and
+  are just a static control with a particular style.  The <link linkend="figFramesRects">Frames and
   Rectangles</link> picture gives some idea of how the different types of static controls can
   appear.
-  <figure id="fig56"><title>Frames and Rectangles</title>
+  <figure id="figFramesRects"><title>Frames and Rectangles</title>
   <mediaobject>
   <imageobject>
   <!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
@@ -1502,143 +1527,271 @@ bar of the dialog.)
 <indexterm><primary>addStatic</primary></indexterm>
 <programlisting>
 <![CDATA[
-                   +_-1_+                     +-,-"TEXT"-+  +-,-""----+
+                                              +-,-"TEXT"-+
 >>-dlg~addStatic(--+----+--,-x-,-y-,-cx-,-cy--+----------+--+---------+--)----><
                    +-id-+                     +-,-style--+--+-,-text--+
 
 ]]>
 </programlisting>
 <para>
-  The addStatic method adds any type of static control.
+  The addStatic method adds any type of static control.  The 3 basic types of static controls are
+  static text, static image, and static frames / rectangles.
 </para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>
-  The resource id for the control  By default a static control is assigned a resource id of -1.
-  Assigning a positive id allows the programmer to modify the static control after it is created,
-  perhaps to change its text or to change its postition.
-</para></listitem></varlistentry>
-<varlistentry><term>x, y, cx, cy</term>
-<listitem><para>The <link linkend="listCommonArguments">control coordinates</link>
-</para></listitem></varlistentry>
-<varlistentry><term>style</term>
-<listitem>
-  <para>
-    A list of the <link linkend="paraStyleExplanation">style</link> keywords separated by spaces.
-    The keywords: TEXT, BITMAP, METAFILE, ICON, WHITERECT, GRAYRECT, BLACKRECT, WHITEFRAME,
-    GRAYFRAME, BLACKFRAME, ETCHED, HORZ, and VERT determine the type of static control to be
-    created.  If more than one of these type keywords is specified, which static control is created
-    is undefined.  The other style keywords modify the appearance or behavior of the static control.
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
     <variablelist>
-      <varlistentry><term>TEXT</term>
-      <listitem><para>A static text control is created, this is the default.
-      </para></listitem></varlistentry>
-      <varlistentry><term>BITMAP</term>
-      <listitem><para>A static image control is created that will use a bitmap.
-      </para></listitem></varlistentry>
-      <varlistentry><term>METAFILE</term>
-      <listitem><para>A static image control that uses a metafile will be created.
-      </para></listitem></varlistentry>
-      <varlistentry><term>ICON</term>
-      <listitem><para>A static image control that uses an icon will be created.
-      </para></listitem></varlistentry>
-      <varlistentry><term>WHITERECT</term>
-      <listitem><para>keyword explanation
-      </para></listitem></varlistentry>
-      <varlistentry><term>WHITEFRAME</term>
-      <listitem><para>keyword explanation
-      </para></listitem></varlistentry>
-      <varlistentry><term>GRAYRECT</term>
-      <listitem><para>keyword explanation
-      </para></listitem></varlistentry>
-      <varlistentry><term>GRAYFRAME</term>
-      <listitem><para>keyword explanation
-      </para></listitem></varlistentry>
-      <varlistentry><term>BLACKRECT</term>
-      <listitem><para>keyword explanation
-      </para></listitem></varlistentry>
-      <varlistentry><term>BLACKFRAME</term>
-      <listitem><para>keyword explanation
-      </para></listitem></varlistentry>
-      <varlistentry><term>ETCHED</term>
-      <listitem><para>keyword explanation
-      </para></listitem></varlistentry>
-      <varlistentry><term>HORZ</term>
-      <listitem><para>keyword explanation
-      </para></listitem></varlistentry>
-      <varlistentry><term>VERT</term>
-      <listitem><para>keyword explanation
-      </para></listitem></varlistentry>
-      <varlistentry><term>CENTER</term>
-      <listitem><para>keyword explanation
-      </para></listitem></varlistentry>
-      <varlistentry><term>RIGHT</term>
-      <listitem><para>keyword explanation
-      </para></listitem></varlistentry>
-      <varlistentry><term>SIMPLE</term>
-      <listitem><para>keyword explanation
-      </para></listitem></varlistentry>
-      <varlistentry><term>LEFTNOWRAP</term>
-      <listitem><para>keyword explanation
-      </para></listitem></varlistentry>
-      <varlistentry><term>LEFT</term>
-      <listitem><para>keyword explanation
-      </para></listitem></varlistentry>
-      <varlistentry><term>NOTIFY</term>
-      <listitem><para>keyword explanation
-      </para></listitem></varlistentry>
-      <varlistentry><term>SUNKEN</term>
-      <listitem><para>keyword explanation
-      </para></listitem></varlistentry>
-      <varlistentry><term>EDITCONTROL</term>
-      <listitem><para>keyword explanation
-      </para></listitem></varlistentry>
-      <varlistentry><term>ENDELLIPSIS</term>
-      <listitem><para>keyword explanation
-      </para></listitem></varlistentry>
-      <varlistentry><term>NOPREFIX</term>
-      <listitem><para>keyword explanation
-      </para></listitem></varlistentry>
-      <varlistentry><term>PATHELLIPSIS</term>
-      <listitem><para>keyword explanation
-      </para></listitem></varlistentry>
-      <varlistentry><term>WORDELLIPSIS</term>
-      <listitem><para>keyword explanation
-      </para></listitem></varlistentry>
-      <varlistentry><term>CENTERIMAGE</term>
-      <listitem><para>keyword explanation
-      </para></listitem></varlistentry>
-      <varlistentry><term>RIGHTJUST</term>
-      <listitem><para>keyword explanation
-      </para></listitem></varlistentry>
-      <varlistentry><term>SIZECONTROL</term>
-      <listitem><para>keyword explanation
-      </para></listitem></varlistentry>
-      <varlistentry><term>SIZEIMAGE</term>
-      <listitem><para>keyword explanation
-      </para></listitem></varlistentry>
-      <varlistentry><term>HIDDEN</term>
-      <listitem><para>The <link linkend="wsvisible">not visible</link> window style.
-      </para></listitem></varlistentry>
-      <varlistentry><term>DISABLED</term>
-      <listitem><para>The <link linkend="wsborder">not enabled</link> window style.
-      </para></listitem></varlistentry>
-      <varlistentry><term>BORDER</term>
-      <listitem><para>The <link linkend="wsborder">border</link> window style.
-      </para></listitem></varlistentry>
-      <varlistentry><term>GROUP</term>
-      <listitem><para>The <link linkend="wsborder">group</link> control style.
-      </para></listitem></varlistentry>
-      <varlistentry><term>TAB</term>
-      <listitem><para>The <link linkend="wsborder">tab</link> control style.
-      </para></listitem></varlistentry>
+      <varlistentry><term>id</term>
+      <listitem>
+        <para>
+          The resource <link linkend="idArgument">ID</link> for the static control.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>x, y, cx, cy</term>
+      <listitem>
+        <para>
+          The <link linkend="listCommonArguments">control coordinates</link>
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>style</term>
+      <listitem>
+        <para>
+          A list of 0 or more <link linkend="paraStyleExplanation">style</link> keywords separated by
+          spaces. The keywords: TEXT, BITMAP, METAFILE, ICON, WHITERECT, GRAYRECT, BLACKRECT,
+          WHITEFRAME, GRAYFRAME, BLACKFRAME, ETCHED, HORZ, and VERT determine the type of static
+          control to be created.  If more than one of these type keywords is specified, which static
+          control is created is undefined.  The other style keywords modify the appearance or behavior
+          of the static control.
+          <variablelist>
+            <varlistentry><term>TEXT</term>
+            <listitem>
+              <para>
+                A static text control is created, this is the default.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>BITMAP</term>
+            <listitem>
+              <para>
+                A static image control is created that will use a bitmap.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>METAFILE</term>
+            <listitem>
+              <para>
+                A static image control that uses a metafile will be created.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>ICON</term>
+            <listitem>
+              <para>
+                A static image control that uses an icon will be created.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>WHITERECT</term>
+            <listitem>
+              <para>
+                A <link linkend="figFramesRects">rectangle</link>rectangle filled with the current window
+                background color, which is white in the default color scheme.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>WHITEFRAME</term>
+            <listitem>
+              <para>
+                A <link linkend="figFramesRects">frame</link> drawn with the same color as the window
+                background, which is white in the default color scheme.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>GRAYRECT</term>
+            <listitem>
+              <para>
+                A <link linkend="figFramesRects">rectangle</link>rectangle filled with the current screen
+                background color, which is gray in the default color scheme.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>GRAYFRAME</term>
+            <listitem>
+              <para>
+                A <link linkend="figFramesRects">frame</link> drawn with the same color as the current
+                screen background, which is gray in the default color scheme.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>BLACKRECT</term>
+            <listitem>
+              <para>
+                A <link linkend="figFramesRects">rectangle</link>rectangle filled with the current window
+                frame color, which is black in the default color scheme.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>BLACKFRAME</term>
+            <listitem>
+              <para>
+                A <link linkend="figFramesRects">frame</link> drawn with the same color as the current
+                window frames, which is black in the default color scheme.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>ETCHED</term>
+            <listitem>
+              <para>
+                A <link linkend="figFramesRects">frame</link> drawn with an etched appearance.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>HORZ</term>
+            <listitem>
+              <para>
+                A <link linkend="figFramesRects">frame</link> drawn with an etched appearance, but only
+                the top horizontal line of the frame is drawn.  In other words, this is a single
+                horizontal line, whose position and length are determined by the position and width of
+                the imaginary frame specified by the control coordinates.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>VERT</term>
+            <listitem>
+              <para>
+                A <link linkend="figFramesRects">frame</link> drawn with an etched appearance, but only
+                the left vertical line of the frame is drawn.  In other words, this is a single vertical
+                line, whose position and length are determined by the position and height of the
+                imaginary frame specified by the control coordinates.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>LEFT</term>
+            <listitem>
+              <para>
+                Left aligns text for static text controls.  Lines are automatically word wrapped. Words
+                longer than the width of the control are truncated.  This is the default for static text
+                controls and does not need to be specified.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>CENTER</term>
+            <listitem>
+              <para>
+                Uses centered text alignment for static text controls.  Lines are automatically word
+                wrapped.  Words longer than the width of the control are truncated.  If no text alignment
+                style is specified, the text is left aligned.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>RIGHT</term>
+            <listitem>
+              <para>
+                Right aligns text for static text controls.  Lines are automatically word wrapped. Words
+                longer than the width of the control are truncated.  If no text alignment style is
+                specified, the text is left aligned.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>SIMPLE</term>
+            <listitem>
+              <para>
+                A single line of left-aligned text in the rectangle. The text line cannot be shortened
+                or altered in any way. If the control is disabled, the text is not grayed.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>LEFTNOWRAP</term>
+            <listitem>
+              <para>
+                A single line of text, left-aligned. Tabs are expanded, but words are not wrapped. Text
+                that extends past the end of a line is clipped.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>NOTIFY</term>
+            <listitem>
+              <para>
+                keyword explanation
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>SUNKEN</term>
+            <listitem>
+              <para>
+                keyword explanation
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>EDITCONTROL</term>
+            <listitem>
+              <para>
+                keyword explanation
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>ENDELLIPSIS</term>
+            <listitem>
+              <para>
+                keyword explanation
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>NOPREFIX</term>
+            <listitem>
+              <para>
+                keyword explanation
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>PATHELLIPSIS</term>
+            <listitem>
+              <para>
+                keyword explanation
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>WORDELLIPSIS</term>
+            <listitem>
+              <para>
+                keyword explanation
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>CENTERIMAGE</term>
+            <listitem>
+              <para>
+                keyword explanation
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>RIGHTJUST</term>
+            <listitem>
+              <para>
+                keyword explanation
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>SIZECONTROL</term>
+            <listitem>
+              <para>
+                keyword explanation
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>SIZEIMAGE</term>
+            <listitem>
+              <para>
+                keyword explanation
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>HIDDEN</term>
+            <listitem>
+              <para>
+                The <link linkend="wsvisible">not visible</link> window style.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>DISABLED</term>
+            <listitem>
+              <para>
+                The <link linkend="wsborder">not enabled</link> window style.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>BORDER</term>
+            <listitem>
+              <para>
+                The <link linkend="wsborder">border</link> window style.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>GROUP</term>
+            <listitem>
+              <para>
+                The <link linkend="wsborder">group</link> control style.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>TAB</term>
+            <listitem>
+              <para>
+                The <link linkend="wsborder">tabstop</link> control style.
+              </para>
+            </listitem></varlistentry>
+          </variablelist>
+        </para>
+      </listitem></varlistentry>
     </variablelist>
-  </para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
+  </listitem></varlistentry>
 </variablelist>
 
 </section>

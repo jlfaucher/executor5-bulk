@@ -44,17 +44,23 @@
 <chapter id="resources"><title>Resources</title>
 <indexterm><primary>Resources</primary></indexterm>
 <para>
-  In Windows resources are binary data used in Windows based applications.  The data in standard
-  resources describes things like: dialog boxes, icons, menus, cursors, bitmaps, fonts, etc., familar to
-  ooDialog programmers.  Standard resources also include things accelerator tables, string-table entries,
-  message-table entries, and other resourcess that ooDialog does not currently have support for, but may
-  support in the future.
+  In the Windows OS, a <emphasis role="italic">resource</emphasis>, is binary data used by a
+  Windows-based application.  Usually, the binary data is attached to one of the applicatios's
+  executable files (*.exe or *.dll.)  However, the binary data can also be generated dynamically in
+  memory. (Which is common in ooDialog, for example a UserDialog.)
+</para>
+<para>
+  The data in standard resources describes things like: dialog boxes, icons, menus, cursors,
+  bitmaps, fonts, etc., familar to ooDialog programmers. Standard resources also include things
+  accelerator tables, string-table entries, message-table entries, and other resourcess that
+  ooDialog does not currently have support for, but may support in the future.
 </para>
 <para>
   This chapter describes ooDialog classes that provide access to Windows resources.  The classes allow
-  the oodialog programmer to use and manipulate resources in their ooDialog programs.  The classes listed
-  in the following table are documented in this chapter:
-<table id="tUtilityClasses" frame="all">
+  the oodialog programmer to use and manipulate resources in their ooDialog programs.  This is an
+  area of ooDialog is slated for future improvements.  The classes listed in the following table are
+  documented in this chapter:
+<table id="tblResourcesClasses" frame="all">
 <title>ooDialog Utilitiy Classes</title>
 <tgroup cols="2">
 <thead>
@@ -79,6 +85,431 @@
 </tbody></tgroup>
 </table>
 </para>
+
+<section id="clsImage"><title>Image Class</title>
+<indexterm><primary>Image class</primary></indexterm>
+<para>
+  A ... is ..
+</para>
+<para>
+</para>
+<variablelist>
+<varlistentry><term>Requires:</term>
+<listitem><para>The Image class requires the class
+definition file <computeroutput>ooDialog.cls</computeroutput>:
+<programlisting>
+<![CDATA[
+::requires "ooDialog"
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term>Methods:</term>
+<listitem>
+<para>
+  Instances of the Image class implement the methods listed in the following
+  table:
+</para>
+
+<table id="tblImageMethods" frame="all">
+<title>Image Instance Methods</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Method...</entry>
+<entry>...on page</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>new (Class method)</entry>
+<entry><link linkend="mthNewClsImage">new</link></entry>
+</row>
+<row>
+<entry>id (Class method)</entry>
+<entry><link linkend="mthIdClsImage">id</link></entry>
+</row>
+</tbody></tgroup>
+</table>
+</listitem></varlistentry>
+</variablelist>
+
+
+<section id="mthNewClsImage"><title>new (Class method)</title>
+<indexterm><primary>methodName</primary>
+<secondary>ButtonControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aButtonControl~methodName(--x--,--y--)------------------><
+
+]]>
+</programlisting>
+
+<para></para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>x</term>
+<listitem><para>xx.
+</para></listitem></varlistentry>
+<varlistentry><term>y</term>
+<listitem><para>yyy,
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The possible return values are:
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>Success
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>Some error.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>This example ...
+<programlisting>
+<![CDATA[
+x = y
+return 0
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthIdClsImage"><title>id</title>
+<indexterm><primary>methodName</primary>
+<secondary>ButtonControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aButtonControl~methodName(--x--,--y--)------------------><
+
+]]>
+</programlisting>
+
+<para></para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>x</term>
+<listitem><para>xx.
+</para></listitem></varlistentry>
+<varlistentry><term>y</term>
+<listitem><para>yyy,
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The possible return values are:
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>Success
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>Some error.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>This example ...
+<programlisting>
+<![CDATA[
+x = y
+return 0
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+</section>  <!-- End Image class -->
+
+<section id="clsImageList"><title>ImageList Class</title>
+<indexterm><primary>ImageList class</primary></indexterm>
+<para>
+  A ... is ..
+</para>
+<para>
+</para>
+<variablelist>
+<varlistentry><term>Requires:</term>
+<listitem><para>The ImageList class requires the class
+definition file <computeroutput>ooDialog.cls</computeroutput>:
+<programlisting>
+<![CDATA[
+::requires "ooDialog.cls"
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term>Methods:</term>
+<listitem>
+<para>
+  Instances of the ImageList class implement the methods listed in the following table:
+</para>
+
+<table id="tblImageListMethods" frame="all">
+<title>Image Instance Methods</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Method...</entry>
+<entry>...on page</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>new (Class method)</entry>
+<entry><link linkend="mthNewClsImageList">new</link></entry>
+</row>
+<row>
+<entry>create (Class method)</entry>
+<entry><link linkend="mthCreateClsImageList">id</link></entry>
+</row>
+</tbody></tgroup>
+</table>
+</listitem></varlistentry>
+</variablelist>
+
+
+<section id="mthNewClsImageList"><title>new (Class method)</title>
+<indexterm><primary>methodName</primary>
+<secondary>ButtonControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aButtonControl~methodName(--x--,--y--)------------------><
+
+]]>
+</programlisting>
+
+<para></para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>x</term>
+<listitem><para>xx.
+</para></listitem></varlistentry>
+<varlistentry><term>y</term>
+<listitem><para>yyy,
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The possible return values are:
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>Success
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>Some error.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>This example ...
+<programlisting>
+<![CDATA[
+x = y
+return 0
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthCreateClsImageList"><title>id</title>
+<indexterm><primary>methodName</primary>
+<secondary>ButtonControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aButtonControl~methodName(--x--,--y--)------------------><
+
+]]>
+</programlisting>
+
+<para></para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>x</term>
+<listitem><para>xx.
+</para></listitem></varlistentry>
+<varlistentry><term>y</term>
+<listitem><para>yyy,
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The possible return values are:
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>Success
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>Some error.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>This example ...
+<programlisting>
+<![CDATA[
+x = y
+return 0
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+</section>  <!-- End ImageList class -->
+
+<section id="clsResourceImage"><title>ResourceImage Class</title>
+<indexterm><primary>ResourceImage class</primary></indexterm>
+<para>
+  A ... is ..
+</para>
+<para>
+</para>
+<variablelist>
+<varlistentry><term>Requires:</term>
+<listitem><para>The ResourceImage class requires the class definition file
+<computeroutput>ooDialog.cls</computeroutput>:
+<programlisting>
+<![CDATA[
+::requires "ooDialog.cls"
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term>Methods:</term>
+<listitem>
+<para>
+  Instances of the ResourceImage class implement the methods listed in the following table:
+</para>
+
+<table id="tblResourceImageMethods" frame="all">
+<title>Name Instance Methods</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Method...</entry>
+<entry>...on page</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>new (Class method)</entry>
+<entry><link linkend="mthNewClsResourceImage">new</link></entry>
+</row>
+<row>
+<entry>getImage</entry>
+<entry><link linkend="mthGetImageClsResourceImage">getImage</link></entry>
+</row>
+</tbody></tgroup>
+</table>
+</listitem></varlistentry>
+</variablelist>
+
+
+<section id="mthNewClsResourceImage"><title>new</title>
+<indexterm><primary>new</primary>
+<secondary>ResouceImage class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aButtonControl~methodName(--x--,--y--)------------------><
+
+]]>
+</programlisting>
+
+<para></para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>x</term>
+<listitem><para>xx.
+</para></listitem></varlistentry>
+<varlistentry><term>y</term>
+<listitem><para>yyy,
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The possible return values are:
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>Success
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>Some error.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>This example ...
+<programlisting>
+<![CDATA[
+x = y
+return 0
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthGetImageClsResourceImage"><title>getImage</title>
+<indexterm><primary>getImage</primary>
+<secondary>ResouceImage class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aButtonControl~methodName(--x--,--y--)------------------><
+
+]]>
+</programlisting>
+
+<para></para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>x</term>
+<listitem><para>xx.
+</para></listitem></varlistentry>
+<varlistentry><term>y</term>
+<listitem><para>yyy,
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The possible return values are:
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>Success
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>Some error.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>This example ...
+<programlisting>
+<![CDATA[
+x = y
+return 0
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+</section>  <!--  End ResourceImage class  -->
 
 
 </chapter>
