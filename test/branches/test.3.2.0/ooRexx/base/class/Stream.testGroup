@@ -128,4 +128,34 @@ return testResult
 
   ret = deleteFile(f)
 
+::method test_flush_on_close
+
+  outFile = 'tmpOutDelMe.txt'
+  rexxPrg = 'tmpPrg'
+  src = .array~new
+  src[1] = "file = .stream~new("outFile")"
+  src[2] = "file~lineout('first line') "
+  src[3] = "file~lineout('second line')"
+
+  rexPrg = createRexxPrgFile(src, rexxPrg)
+  self~assertNotSame('', rexPrg)
+
+  outPut = .array~new
+  ret = execRexxPrg(rexxPrg, outPut)
+
+  self~assertSame(0, ret)
+  self~assertTrue(SysIsFile(outFile))
+
+  fsObj = .stream~new(outFile)
+  text = fsObj~arrayin
+  self~assertSame('first line', text[1])
+  self~assertSame('second line', text[2])
+
+  fsObj~close
+  ret = deleteFile(outFile)
+  self~assertSame(0, ret)
+
+  ret = deleteFile(rexxPrg)
+  self~assertSame(0, ret)
+
 -- End of class: Stream.testGroup
