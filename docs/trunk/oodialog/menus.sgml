@@ -1,0 +1,89 @@
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: OODialog Reference SGML file.
+    #
+    # Copyright (c) 2005-2007, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    # Author(s):
+    #      W. David Ashley <dashley@us.ibm.com>
+    #
+    #########################################################################
+-->
+<chapter id="menuclasses"><title>StaticControl Class</title>
+<indexterm><primary>Menus</primary></indexterm>
+
+<note><title>This documentation is preliminary and subject to change</title>
+<para>
+  The menu related classes are new to ooDialog in ooRexx version 4.0.0.  These classes are being
+  documented and made available in the hopes that the users of ooDialog will help in refining the
+  usability of the classes.  Because of this, it is possible that some methods and / or arguments to
+  methods may have slight changes to them in future versions of ooDialog.
+</para></note>
+
+<para>
+  Menus are lists of items that specify options for an application.  Groups of related options are
+  usually placed in submenus.  Clicking a menu item either opens a submenu or causes the application
+  to carry out a command.
+</para>
+<para>
+  Menus are arranged as a hierarchy. A <emphasis role="italic">menu bar</emphasis> is the top of the
+  hiearchy for menus attached to an application window.  The menu bar will containa a list of
+  <emphasis role="italic">menus</emphasis>, and menus can contain <emphasis
+  role="italic">submenus</emphasis>.  Menu bars are often called <emphasis
+  role="italic">top-level</emphasis> menus, while the menus and submenus are also known as
+  <emphasis role="italic">pop-up</emphasis> menus.
+</para>
+<para>
+   A menu <emphasis role="italic">item</emphasis> either carries out a command or opens a submenu.
+   Menu items that do not open a submenu are called <emphasis role="italic">command</emphasis> items
+   or simply commands.
+</para>
+<para>
+  The Menu related classes all require the class definition file
+  <computeroutput>ooDialog.cls</computeroutput>:
+</para>
+<programlisting>
+<![CDATA[
+::requires "ooDialog"
+]]>
+</programlisting>
+<para>
+  Use the getStaticControl method (see <link linkend="getstaticcontrol">getStaticControl</link>) to
+  retrieve an object of the StaticControl class. To use this method, the static control must have a
+  positive ID.
+</para>
+
+
+</chapter>

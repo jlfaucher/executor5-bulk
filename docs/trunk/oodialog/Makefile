@@ -69,6 +69,7 @@ SGML_FILES = advcntlc.sgml \
 	     slidercontrolc.sgml \
 	     staticcontrolc.sgml \
 	     resources.sgml \
+	     menus.sgml \
 	     tabcontrolc.sgml \
 	     termdef.sgml \
 	     treecontrolc.sgml \
