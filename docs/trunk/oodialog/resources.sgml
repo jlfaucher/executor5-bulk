@@ -50,36 +50,36 @@
   memory. (Which is common in ooDialog, for example a UserDialog.)
 </para>
 <para>
-  The data in standard resources describes things like: dialog boxes, icons, menus, cursors,
-  bitmaps, fonts, etc., familar to ooDialog programmers. Standard resources also include things
-  accelerator tables, string-table entries, message-table entries, and other resourcess that
-  ooDialog does not currently have support for, but may support in the future.
+  The data in standard resources describes things, familar to ooDialog programmers like: dialog
+  boxes, icons, menus, cursors, bitmaps, fonts, etc. The standard resources also include accelerator
+  tables, string-table entries, message-table entries, and other resourcess that ooDialog does not
+  currently have support for, but may support in the future.
 </para>
 <para>
   This chapter describes ooDialog classes that provide access to Windows resources.  The classes allow
   the oodialog programmer to use and manipulate resources in their ooDialog programs.  This is an
-  area of ooDialog is slated for future improvements.  The classes listed in the following table are
-  documented in this chapter:
+  area of ooDialog that is slated for future improvements.  The classes listed in the following
+  table are documented in this chapter:
 <table id="tblResourcesClasses" frame="all">
-<title>ooDialog Utilitiy Classes</title>
+<title>ooDialog Resource Classes</title>
 <tgroup cols="2">
 <thead>
 <row>
 <entry>Class</entry>
-<entry>Description</entry>
+<entry>Link to Description</entry>
 </row>
 </thead>
 <tbody>
 <row>
-<entry>Image Class</entry>
+<entry>Image</entry>
 <entry><link linkend="clsImage">Image Class</link></entry>
 </row>
 <row>
-<entry>ImageList Class</entry>
+<entry>ImageList</entry>
 <entry><link linkend="clsImageList">ImageList Class</link></entry>
 </row>
 <row>
-<entry>ResourceImage Class</entry>
+<entry>ResourceImage</entry>
 <entry><link linkend="clsResourceImage">ResourceImage Class</link></entry>
 </row>
 </tbody></tgroup>
@@ -89,29 +89,32 @@
 <section id="clsImage"><title>Image Class</title>
 <indexterm><primary>Image class</primary></indexterm>
 <para>
-  A ... is ..
+  The Image class is used to work with and manipulate images.  Currently, the image types supported
+  include bitmaps, icons, cursors (cusors are a type of icon,) and enhanced metafiles.  The enhanced
+  metafile support is very limited at this time.
 </para>
 <para>
+  The class supports loading images from files, from executable files (*.exe and
+  *.dll,) and from the generally available system resources.
 </para>
 <variablelist>
-<varlistentry><term>Requires:</term>
-<listitem><para>The Image class requires the class
-definition file <computeroutput>ooDialog.cls</computeroutput>:
+<varlistentry><term><emphasis role="bold">Requires:</emphasis></term>
+<listitem><para>The Image class requires the class definition file
+<computeroutput>ooDialog.cls</computeroutput>:
 <programlisting>
 <![CDATA[
 ::requires "ooDialog"
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
-<varlistentry><term>Methods:</term>
+<varlistentry><term><emphasis role="bold">Methods:</emphasis></term>
 <listitem>
 <para>
-  Instances of the Image class implement the methods listed in the following
-  table:
+  Instances of the Image class implement the methods listed in the following table:
 </para>
 
 <table id="tblImageMethods" frame="all">
-<title>Image Instance Methods</title>
+<title>Methods of the .Image Class</title>
 <tgroup cols="2">
 <thead>
 <row>
@@ -121,12 +124,28 @@ definition file <computeroutput>ooDialog.cls</computeroutput>:
 </thead>
 <tbody>
 <row>
-<entry>new (Class method)</entry>
-<entry><link linkend="mthNewClsImage">new</link></entry>
-</row>
-<row>
 <entry>id (Class method)</entry>
 <entry><link linkend="mthIdClsImage">id</link></entry>
+</row>
+<row>
+<entry>getImage (Class method)</entry>
+<entry><link linkend="mthGetImageClsImage">new</link></entry>
+</row>
+<row>
+<entry>colorRef (Class method)</entry>
+<entry><link linkend="mthColorRef">colorRef</link></entry>
+</row>
+<row>
+<entry>getRValue (Class method)</entry>
+<entry><link linkend="mthGetRValue">getRValue</link></entry>
+</row>
+<row>
+<entry>getGValue (Class method)</entry>
+<entry><link linkend="mthGetGValue">getGValue</link></entry>
+</row>
+<row>
+<entry>getBValue (Class method)</entry>
+<entry><link linkend="mthGetBValue">getBValue</link></entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -134,96 +153,142 @@ definition file <computeroutput>ooDialog.cls</computeroutput>:
 </variablelist>
 
 
-<section id="mthNewClsImage"><title>new (Class method)</title>
-<indexterm><primary>methodName</primary>
-<secondary>ButtonControl class</secondary></indexterm>
+<section id="mthIdClsImage"><title>id (Class method)</title>
+<indexterm><primary>id</primary>
+<secondary>Image class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aButtonControl~methodName(--x--,--y--)------------------><
+>>--id(--symbolicName--)---------------------------------------><
 
 ]]>
 </programlisting>
 
-<para></para>
+<para>
+  The id method is used to translate a symbolic name to its integer value.  In general the symbolic
+  name is related to images or color.  Many of the arguments to the methods of classes related to
+  images use the integer value of a symbolic ID in the Windows API.  This method allows the
+  programmer to use the symbolic ID without knowing what the actual integer value is.
+</para>
+<para>
+  Take for example the task of retrieving the 'Question' icon resource from the system using the
+  <link linkend="mthGetImageClsImage">getImage()</link> method.  The ooDialog programmer could
+  either use the numerical value of 32514 or use the id method as follows:
+  <programlisting>
+  <![CDATA[
+    qIcon = .Image~getImage(.Image~id(IDI_QUESTION))
+  ]]>
+  </programlisting>
+</para>
+<para>
+  The symbolic ID keywords are spelled exactly as Microsoft spells them in the <link
+  linkend="windowsdoc">MSDN library</link> which allows the ooDialog to easily look up the meaning
+  of any single ID while at the same time reducing the documentation task for the ooDialog
+  developers.  The keywords are case sensitive and must be all in upper-case.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>x</term>
-<listitem><para>xx.
-</para></listitem></varlistentry>
-<varlistentry><term>y</term>
-<listitem><para>yyy,
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The possible return values are:
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>Success
-</para></listitem></varlistentry>
-<varlistentry><term>-1</term>
-<listitem><para>Some error.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>This example ...
-<programlisting>
-<![CDATA[
-x = y
-return 0
-]]>
-</programlisting>
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      The single required argument is:
+      <variablelist>
+        <varlistentry><term>symbolicName</term>
+        <listitem>
+          <para>
+            The symbolic name whose numeric value is desired.  There any number of symbolic names
+            and they are not listed here.  Rathe the symbolic names are listed in the documentation
+            for the methods they are applicable to.
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The return value is the numeric value of the symbol.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <programlisting>
+    <![CDATA[
+    say 'The numeric value of the IDI_WINLOGO symbol is:' .Image~id(IDI_WINLOGO)
+    /*
+      Output on the console would be:
+
+      The numeric value of the IDI_WINLOGO symbol is: 32517
+    */
+    ]]>
+    </programlisting>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
-
-<section id="mthIdClsImage"><title>id</title>
-<indexterm><primary>methodName</primary>
-<secondary>ButtonControl class</secondary></indexterm>
+<section id="mthGetImageClsImage"><title>getImage (Class method)</title>
+<indexterm><primary>getImage</primary>
+<secondary>Image class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aButtonControl~methodName(--x--,--y--)------------------><
-
+>>--getImage(--id--+--------+--+--------+--+---------+--)-----><
+                   +-,-type-+  +-,-size-+  +-,-flags-+
 ]]>
 </programlisting>
 
-<para></para>
+<para>
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>x</term>
-<listitem><para>xx.
-</para></listitem></varlistentry>
-<varlistentry><term>y</term>
-<listitem><para>yyy,
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The possible return values are:
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>Success
-</para></listitem></varlistentry>
-<varlistentry><term>-1</term>
-<listitem><para>Some error.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>This example ...
-<programlisting>
-<![CDATA[
-x = y
-return 0
-]]>
-</programlisting>
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      The arguments are:
+      <variablelist>
+      <varlistentry><term>id</term>
+      <listitem>
+        <para>
+          xx.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>y</term>
+      <listitem>
+        <para>
+          yyy,
+        </para>
+      </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The possible return values are:
+      <variablelist>
+        <varlistentry><term>0</term>
+        <listitem>
+          <para>
+            Success
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>-1</term>
+        <listitem>
+          <para>
+            Some error.
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example ...
+      <programlisting>
+      <![CDATA[
+      x = y
+      return 0
+      ]]>
+      </programlisting>
+    </para>
+    </listitem></varlistentry>
 </variablelist>
 </section>
 

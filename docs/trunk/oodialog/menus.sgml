@@ -41,17 +41,16 @@
     #
     #########################################################################
 -->
-<chapter id="menuclasses"><title>StaticControl Class</title>
+<chapter id="menuclasses"><title>Menus</title>
 <indexterm><primary>Menus</primary></indexterm>
 
-<note><title>This documentation is preliminary and subject to change</title>
-<para>
-  The menu related classes are new to ooDialog in ooRexx version 4.0.0.  These classes are being
-  documented and made available in the hopes that the users of ooDialog will help in refining the
-  usability of the classes.  Because of this, it is possible that some methods and / or arguments to
-  methods may have slight changes to them in future versions of ooDialog.
+<note><title>Note</title><para>
+  <emphasis role="bold">This documentation is preliminary and subject to change</emphasis> The menu
+  related classes are new to ooDialog in ooRexx version 4.0.0.  These classes are being documented
+  and made available in the hopes that the users of ooDialog will help in refining the usability of
+  the classes.  Because of this, it is possible that some methods and / or arguments to methods may
+  have slight changes to them in future versions of ooDialog.
 </para></note>
-
 <para>
   Menus are lists of items that specify options for an application.  Groups of related options are
   usually placed in submenus.  Clicking a menu item either opens a submenu or causes the application
@@ -68,22 +67,913 @@
 <para>
    A menu <emphasis role="italic">item</emphasis> either carries out a command or opens a submenu.
    Menu items that do not open a submenu are called <emphasis role="italic">command</emphasis> items
-   or simply commands.
+   or simply commands. Only top-level windows can have menu bars.  Child windows can not have a menu
+   bar. If the window has a title bar the system positions a menu bar underneath it. All menus must
+   have an owner window.
 </para>
 <para>
-  The Menu related classes all require the class definition file
-  <computeroutput>ooDialog.cls</computeroutput>:
+   The system also provides <emphasis role="italic">shortcut menus</emphasis> and the <emphasis
+   role="italic">Window</emphasis> menu.  A shortcut menu is not attached to a menu bar and can
+   appear anywhere on the screen.  Shortcut menus are typically activated by the user right-clicking
+   on a specific portion of the screen and the menu items are usually only relevant to what the user
+   clicked on.  For this reason, shortcut menus are often called <emphasis
+   role="italic">contetxt</emphasis> menus.  The Window menu is also knows as the <emphasis
+   role="italic">System</emphasis> menu or the <emphasis role="italic">Control</emphasis> menu.  The
+   System menu is usually managed exclusively by the system.  The user activates the System menu by
+   clicking on the icon in the upper left corner of a window, or by right-clicking anywhere on the
+   title bar. Unlike menu bars, child windows can have a System menu.  It is unusual for a top-level
+   window to not have a System menu.
+</para>
+<para>
+  The Menu related classes in ooDialog all require the class definition file
+  <computeroutput> ooDialog.cls </computeroutput>:
 </para>
 <programlisting>
 <![CDATA[
 ::requires "ooDialog"
 ]]>
 </programlisting>
+
 <para>
-  Use the getStaticControl method (see <link linkend="getstaticcontrol">getStaticControl</link>) to
-  retrieve an object of the StaticControl class. To use this method, the static control must have a
-  positive ID.
+  The menu related classes in the following table are described in this chapter.  The primary
+  classes that the ooDialog programmer will use are the <computeroutput>BinaryMenuBar, UserMenuBar,
+  ScriptMenuBar</computeroutput>, and <computeroutput>PopupMenu</computeroutput>.  The other classes
+  are mixin classes that implement the functionality common to all types of menus. The binary, user,
+  and script menu bar classes all have the same essential functionality.  They just differ in how
+  they are initially created.  The popup menu class is similar to the menu bar classes, it just does
+  not have any methods that are only relevant to a menu bar.
+<table id="tblMenuClasses" frame="all">
+<title>ooDialog Menu Classes</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Class</entry>
+<entry>Link to Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>BinaryMenuBar</entry>
+<entry><link linkend="clsBinaryMenuBar">BinaryMenuBar Class</link></entry>
+</row>
+<row>
+<entry>ScriptMenuBar</entry>
+<entry><link linkend="clsScriptMenuBar">ScriptMenuBar Class</link></entry>
+</row>
+<row>
+<entry>UserMenuBar</entry>
+<entry><link linkend="clsUserMenuBar">UserMenuBar Class</link></entry>
+</row>
+<row>
+<entry>PopupMenu</entry>
+<entry><link linkend="clsPopupMenu">PopupMenu Class</link></entry>
+</row>
+<row>
+<entry>Menu</entry>
+<entry><link linkend="clsMenu">Menu (Mixin Class)</link></entry>
+</row>
+<row>
+<entry>MenuBar</entry>
+<entry><link linkend="clsMenuBar">MenuBar (Mixin Class)</link></entry>
+</row>
+<row>
+<entry>MenuTemplate Class</entry>
+<entry><link linkend="clsMenuTemplate">MenuTemplate (Mixin Class)</link></entry>
+</row>
+</tbody></tgroup>
+</table>
 </para>
 
+<section id="clsBinaryMenuBar"><title>BinaryMenuBar Class</title>
+<indexterm><primary>BinaryMenuBar class</primary></indexterm>
+<para>
+  A ... is ..
+</para>
+<para>
+</para>
+<variablelist>
+  <varlistentry><term>Requires:</term>
+  <listitem>
+    <para>
+      The BinaryMenuBar class requires the class definition file
+      <computeroutput>ooDialog.cls</computeroutput>:
+      <programlisting>
+      <![CDATA[
+      ::requires "ooDialog.cls"
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term>Methods:</term>
+  <listitem>
+    <para>
+      Instances of the BinaryMenuBar class implement the methods listed in the following table:
+    </para>
+    <table id="tblBinaryMenuBarMethods" frame="all">
+    <title>BinaryMenuBar Instance Methods</title>
+    <tgroup cols="2">
+    <thead>
+    <row>
+    <entry>Method...</entry>
+    <entry>...on page</entry>
+    </row>
+    </thead>
+    <tbody>
+    <row>
+    <entry>new (Class method)</entry>
+    <entry><link linkend="mthNewClsBinaryMenuBar">new</link></entry>
+    </row>
+    </tbody></tgroup>
+    </table>
+  </listitem></varlistentry>
+</variablelist>
 
+<section id="mthNewClsBinaryMenuBar"><title>new (Class)</title>
+<indexterm><primary>new</primary>
+<secondary>BinaryMenuBar class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--new(--x--,--y--)---------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Description
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The arguments are:
+    <variablelist>
+      <varlistentry><term>x</term>
+      <listitem>
+        <para>
+          xx.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>y</term>
+      <listitem>
+        <para>
+          yyy,
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The possible return values are:
+      <variablelist>
+        <varlistentry><term>0</term>
+        <listitem>
+          <para>
+            Success
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>-1</term>
+        <listitem>
+          <para>
+            Some error.
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example ...
+      <programlisting>
+      <![CDATA[
+      x = y
+      return 0
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+</section>  <!-- End BinaryMenuBar class -->
+
+<section id="clsScriptMenuBar"><title>ScriptMenuBar Class</title>
+<indexterm><primary>ScriptMenuBar class</primary></indexterm>
+<para>
+  A ... is ..
+</para>
+<para>
+</para>
+<variablelist>
+  <varlistentry><term>Requires:</term>
+  <listitem>
+    <para>
+      The ScriptMenuBar class requires the class definition file <computeroutput>ooDialog.cls</computeroutput>:
+      <programlisting>
+      <![CDATA[
+      ::requires "ooDialog.cls"
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term>Methods:</term>
+  <listitem>
+    <para>
+      Instances of the ScriptMenuBar class implement the methods listed in the following table:
+    </para>
+    <table id="tblScriptMenuBarMethods" frame="all">
+    <title>ScriptMenuBar Instance Methods</title>
+    <tgroup cols="2">
+    <thead>
+    <row>
+    <entry>Method...</entry>
+    <entry>...on page</entry>
+    </row>
+    </thead>
+    <tbody>
+    <row>
+    <entry>new (Class method)</entry>
+    <entry><link linkend="mthNewClsScriptMenuBar">new</link></entry>
+    </row>
+    </tbody></tgroup>
+    </table>
+  </listitem></varlistentry>
+</variablelist>
+
+<section id="mthNewClsScriptMenuBar"><title>new (Class)</title>
+<indexterm><primary>new</primary>
+<secondary>ScriptMenuBar class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--new(--x--,--y--)---------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Description
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The arguments are:
+    <variablelist>
+      <varlistentry><term>x</term>
+      <listitem>
+        <para>
+          xx.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>y</term>
+      <listitem>
+        <para>
+          yyy,
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The possible return values are:
+      <variablelist>
+        <varlistentry><term>0</term>
+        <listitem>
+          <para>
+            Success
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>-1</term>
+        <listitem>
+          <para>
+            Some error.
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example ...
+      <programlisting>
+      <![CDATA[
+      x = y
+      return 0
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+</section>  <!-- End ScriptMenuBar class -->
+
+<!--
+  Could be chapter, or section
+-->
+<section id="clsUserMenuBar"><title>UserMenuBar Class</title>
+<indexterm><primary>UserMenuBar class</primary></indexterm>
+<para>
+  A ... is ..
+</para>
+<para>
+</para>
+<variablelist>
+  <varlistentry><term>Requires:</term>
+  <listitem>
+    <para>
+      The UserMenuBar class requires the class definition file <computeroutput>ooDialog.cls</computeroutput>:
+      <programlisting>
+      <![CDATA[
+      ::requires "ooDialog.cls"
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term>Methods:</term>
+  <listitem>
+    <para>
+      Instances of the UserMenuBar class implement the methods listed in the following table:
+    </para>
+    <table id="tblUserMenuBarMethods" frame="all">
+    <title>UserMenuBar Instance Methods</title>
+    <tgroup cols="2">
+    <thead>
+    <row>
+    <entry>Method...</entry>
+    <entry>...on page</entry>
+    </row>
+    </thead>
+    <tbody>
+    <row>
+    <entry>new (Class method)</entry>
+    <entry><link linkend="mthNewClsUserMenuBar">new</link></entry>
+    </row>
+    </tbody></tgroup>
+    </table>
+  </listitem></varlistentry>
+</variablelist>
+
+<section id="mthNewClsUserMenuBar"><title>new (Class)</title>
+<indexterm><primary>new</primary>
+<secondary>UserMenuBar class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--new(--x--,--y--)---------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Description
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The arguments are:
+    <variablelist>
+      <varlistentry><term>x</term>
+      <listitem>
+        <para>
+          xx.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>y</term>
+      <listitem>
+        <para>
+          yyy,
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The possible return values are:
+      <variablelist>
+        <varlistentry><term>0</term>
+        <listitem>
+          <para>
+            Success
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>-1</term>
+        <listitem>
+          <para>
+            Some error.
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example ...
+      <programlisting>
+      <![CDATA[
+      x = y
+      return 0
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+</section>  <!-- End UserMenuBar class -->
+
+<!--
+  Could be chapter, or section
+-->
+<section id="clsPopupMenu"><title>PopupMenu Class</title>
+<indexterm><primary>PopupMenu class</primary></indexterm>
+<para>
+  A ... is ..
+</para>
+<para>
+</para>
+<variablelist>
+  <varlistentry><term>Requires:</term>
+  <listitem>
+    <para>
+      The PopupMenu class requires the class definition file <computeroutput>ooDialog.cls</computeroutput>:
+      <programlisting>
+      <![CDATA[
+      ::requires "ooDialog.cls"
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term>Methods:</term>
+  <listitem>
+    <para>
+      Instances of the PopupMenu class implement the methods listed in the following table:
+    </para>
+    <table id="tblPopupMenuMethods" frame="all">
+    <title>PopupMenu Instance Methods</title>
+    <tgroup cols="2">
+    <thead>
+    <row>
+    <entry>Method...</entry>
+    <entry>...on page</entry>
+    </row>
+    </thead>
+    <tbody>
+    <row>
+    <entry>new (Class method)</entry>
+    <entry><link linkend="mthNewClsPopupMenu">new</link></entry>
+    </row>
+    </tbody></tgroup>
+    </table>
+  </listitem></varlistentry>
+</variablelist>
+
+<section id="mthNewClsPopupMenu"><title>new (Class)</title>
+<indexterm><primary>new</primary>
+<secondary>PopupMenu class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--new(--x--,--y--)---------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Description
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The arguments are:
+    <variablelist>
+      <varlistentry><term>x</term>
+      <listitem>
+        <para>
+          xx.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>y</term>
+      <listitem>
+        <para>
+          yyy,
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The possible return values are:
+      <variablelist>
+        <varlistentry><term>0</term>
+        <listitem>
+          <para>
+            Success
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>-1</term>
+        <listitem>
+          <para>
+            Some error.
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example ...
+      <programlisting>
+      <![CDATA[
+      x = y
+      return 0
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+</section>  <!-- End PopupMenu class -->
+
+<section id="clsMenu"><title>Menu (Mixin Class)</title>
+<indexterm><primary>Menu class</primary></indexterm>
+<para>
+  A ... is ..
+</para>
+<para>
+</para>
+<variablelist>
+  <varlistentry><term>Requires:</term>
+  <listitem>
+    <para>
+      The Menu class requires the class definition file <computeroutput>ooDialog.cls</computeroutput>:
+      <programlisting>
+      <![CDATA[
+      ::requires "ooDialog.cls"
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term>Methods:</term>
+  <listitem>
+    <para>
+      Classes that inherit from the Menu class will inherit the methods listed in the following
+      table:
+    </para>
+    <table id="tblMenuMethods" frame="all">
+    <title>Menu Methods</title>
+    <tgroup cols="2">
+    <thead>
+    <row>
+    <entry>Method...</entry>
+    <entry>...on page</entry>
+    </row>
+    </thead>
+    <tbody>
+    <row>
+    <entry>getCount</entry>
+    <entry><link linkend="mthGetCountClsMenu">getCount</link></entry>
+    </row>
+    </tbody></tgroup>
+    </table>
+  </listitem></varlistentry>
+</variablelist>
+
+<section id="mthGetCountClsMenu"><title>getCount</title>
+<indexterm><primary>getCount</primary>
+<secondary>Menu class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getCount(--+---------------+--)------------------------><
+               +--menuHandle --+
+
+]]>
+</programlisting>
+
+<para>
+  Determines the number of menu items in a menu.  By default, the number of items in this menu.
+  However, given a menu handle, this method will return the number of items in that menu.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The only, optional, argument is :
+    <variablelist>
+      <varlistentry><term>menuHandle</term>
+      <listitem>
+        <para>
+          A pointer object containing a raw menu handle.
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The number of menu items in the menu.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      <programlisting>
+      <![CDATA[
+      count = menuObj~count
+      say 'The menu has' count 'items.'
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+</section>  <!-- End Menu class -->
+
+<section id="clsMenuBar"><title>MenuBar (Mixin Class)</title>
+<indexterm><primary>MenuBar class</primary></indexterm>
+<para>
+  A ... is ..
+</para>
+<para>
+</para>
+<variablelist>
+  <varlistentry><term>Requires:</term>
+  <listitem>
+    <para>
+      The MenuBar class requires the class definition file <computeroutput>ooDialog.cls</computeroutput>:
+      <programlisting>
+      <![CDATA[
+      ::requires "ooDialog.cls"
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term>Methods:</term>
+  <listitem>
+    <para>
+      Classes that inherit from the MenuBar class will inherit the methods listed in the following
+      table:
+    </para>
+    <table id="tblMenuBarMethods" frame="all">
+    <title>MenuBar Methods</title>
+    <tgroup cols="2">
+    <thead>
+    <row>
+    <entry>Method...</entry>
+    <entry>...on page</entry>
+    </row>
+    </thead>
+    <tbody>
+    <row>
+    <entry>attachTo</entry>
+    <entry><link linkend="mthAttachToClsMenuBar">attachTo</link></entry>
+    </row>
+    </tbody></tgroup>
+    </table>
+  </listitem></varlistentry>
+</variablelist>
+
+<section id="mthAttachToClsMenuBar"><title>attachTo</title>
+<indexterm><primary>attachTo</primary>
+<secondary>MenuBar class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--attachTo(--dlg--)--------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Attaches this menu bar to the specified dialog window.  If the dialog window already has a menu
+  bar attached to it, this method will replace the current menu bar with this menu bar.
+</para>
+<note><title>Note</title>
+<para>
+  <emphasis role="bold">This documents what should be, not what is.</emphasis>
+</para>
+</note>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The required argument is:
+    <variablelist>
+      <varlistentry><term>dlg</term>
+      <listitem>
+        <para>
+          The ooDialog dialog the menu is to be attached to.
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The possible return values are:
+      <variablelist>
+        <varlistentry><term>.nil</term>
+        <listitem>
+          <para>
+            Success, and there was no previous menu attached to the dialog.
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>A menu object</term>
+        <listitem>
+          <para>
+            The previous menu object attached to the dialog.
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example ...
+      <programlisting>
+      <![CDATA[
+      x = y
+      return 0
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+</section>  <!-- End MenuBar class -->
+
+<section id="clsMenuTemplate"><title>MenuTemplate (Mixin Class)</title>
+<indexterm><primary>MenuTemplate class</primary></indexterm>
+<para>
+  The MenuTemplate mixin class provides methods to aid in constructing a menu in memory.  It is
+  inherited by the UserMenuBar and the ScriptMenuBar classes to dynamically create a menu.  Note
+  that it is easier and more reliable to use the <link
+  linkend="clsBinaryMenuBar">BinaryMenuBar</link> class to create dynamic menus.
+</para>
+<variablelist>
+  <varlistentry><term>Requires:</term>
+  <listitem>
+    <para>
+      The MenuTemplate class requires the class definition file <computeroutput>ooDialog.cls</computeroutput>:
+      <programlisting>
+      <![CDATA[
+      ::requires "ooDialog.cls"
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term>Methods:</term>
+  <listitem>
+    <para>
+      Classes that inherit from the MenuTemplate class will inherit the methods listed in the
+      following table:
+    </para>
+    <table id="tblMenuTemplateMethods" frame="all">
+    <title>MenuTemplate Methods</title>
+    <tgroup cols="2">
+    <thead>
+    <row>
+    <entry>Method...</entry>
+    <entry>...on page</entry>
+    </row>
+    </thead>
+    <tbody>
+    <row>
+    <entry>addPopup</entry>
+    <entry><link linkend="mthAddPopupClsMenuTemplate">new</link></entry>
+    </row>
+    </tbody></tgroup>
+    </table>
+  </listitem></varlistentry>
+</variablelist>
+
+<section id="mthAddPopupClsMenuTemplate"><title>addPopup</title>
+<indexterm><primary>addPopup</primary>
+<secondary>MenuTemplate class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+                     +--0---+  +--""---+  +----0-----+
+>>--addPopup(--name--+------+--+-------+--+----------+--)--><
+                     +-,-id-+  +-,-opt-+  +-,-helpID-+
+]]>
+</programlisting>
+
+<para>
+  Description
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The arguments are:
+    <variablelist>
+      <varlistentry><term>name</term>
+      <listitem>
+        <para>
+          The text label of the popup menu.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>id</term>
+      <listitem>
+        <para>
+          The menu item identifier.  If the ID is not supplied than 0 will be used.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>opt</term>
+      <listitem>
+        <para>
+          A list of 0 or more of the folloiwing keywords, separated by spaces, that specify options
+          for the popup menu.  Some options are not applicable for menus on the menu bar. They only
+          apply to menu items in a submenu that open another submenu.
+          <variablelist>
+            <varlistentry><term>CHECK</term>
+            <listitem>
+              <para>
+                 The
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>GRAY</term>
+            <listitem>
+              <para>
+                 The
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>DISABLE</term>
+            <listitem>
+              <para>
+                 The
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>HILITE</term>
+            <listitem>
+              <para>
+                 The
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>DEFAULT</term>
+            <listitem>
+              <para>
+                 T
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>END</term>
+            <listitem>
+              <para>
+                 T
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>SEPARATOR</term>
+            <listitem>
+              <para>
+                 T
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>RIGHT</term>
+            <listitem>
+              <para>
+                 T
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>RADIO</term>
+            <listitem>
+              <para>
+                 T
+              </para>
+            </listitem></varlistentry>
+          </variablelist>
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      This method always returns 0.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example ...
+      <programlisting>
+      <![CDATA[
+      x = y
+      return 0
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+</section>  <!-- End MenuTemplate class -->
 </chapter>
