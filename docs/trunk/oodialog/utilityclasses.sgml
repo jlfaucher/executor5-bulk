@@ -41,25 +41,30 @@
     #
     #########################################################################
 -->
-<chapter id="utilityclasses"><title>Utility Classes</title>
+<chapter id="utilityclasses"><title>Utility Classes and Objects</title>
 <indexterm><primary>Utility Classes</primary></indexterm>
 <para>
-  The ooDialog framework provides a number of utility classes that are useful
-  when writing more complex programs.  These classes do not easily fit into the
-  category of a type of dialog or a type of dialog control.
+  The ooDialog framework provides a number of utility classes that are useful when writing more complex
+  programs.  These classes do not easily fit into the category of a type of dialog or a type of dialog
+  control and are therefore documented separately.  In addition ooDialog places some globally available
+  objects in the <computeroutput>.local</computeroutput> envirnoment.
 </para>
 <para>
-  The classes in the following table are described in this chapter:
+  The classes and objects in the following table are described in this chapter:
 <table id="tUtilityClasses" frame="all">
-<title>ooDialog Utilitiy Classes</title>
+<title>ooDialog Utilitiy Classes and Objects</title>
 <tgroup cols="2">
 <thead>
 <row>
-<entry>Utility Class</entry>
+<entry>Utility Class or Object</entry>
 <entry>Description</entry>
 </row>
 </thead>
 <tbody>
+<row>
+<entry>.SystemErrorCode</entry>
+<entry><link linkend="dotSystemErrorCode">.SystemErrorCode</link></entry>
+</row>
 <row>
 <entry>DlgArea Class</entry>
 <entry><link linkend="clsDlgArea">DlgArea Class</link></entry>
@@ -92,6 +97,59 @@
 </table>
 </para>
 
+<section id="dotSystemErrorCode"><title>.SystemErrorCode</title>
+<indexterm><primary>.SystemErrorCode</primary></indexterm>
+<para>
+  The .SystemErrorCode can be used, at times, to obtain additional information when the invocation of a
+  method generates an operating system error.
+</para>
+<para>
+  ooDialog provides an interface to the Windows operating system APIs.  To be specific, the Win32 APIs,
+  and mostly those dealing with dialogs and other graphical aspects of the user interface.  Some of the
+  Win32 APIs will set a system error code when something goes wrong.  (On the other hand, many of the
+  Win32 APIs do not set a system error code.)
+</para>
+<para>
+  When the ooDialog framework first intializes, it sets the value of .SystemErrorCode to 0.  <emphasis
+  role="italic">Some</emphasis>, of the methods of the ooDialog classes will set the .SystemErrorCode to
+  the value of the system error code when the method detects that a Win32 API has failed and has set the
+  error code.  Most methods do <emphasis role="bold">not</emphasis> change the value of .SystemErrorCode.
+  Only those methods that explicitly document they use .SystemErrorCode will ever change its value.
+</para>
+<para>
+  One consequence of the fact that most methods do not change .SystemErrorCode is that its value is only
+  meaningful immediately after the invocation of a method that is documented as using .SystemErrorCode.
+  Those methods will set the code to 0 and, if they detect a Win32 API has set the system error code to
+  non-zero, they will then set .SystemErrorCode to the value of the system error.  Checking
+  .SystemErrorCode after the invocation of a method that does not set .SystemErrorCode will tell the
+  programmer nothing. Neither that a system error happened, or that it did not happen.
+</para>
+<para>
+  The <link linkend="mthGetImageClsImage">getImage()</link> method of the <link
+  linkend="clsImage">.Image</link> class is one method that does change .SystemErrorCode.  This is an
+  example of a possible usage:
+</para>
+<programlisting>
+<![CDATA[
+image = .Image~getImage("resources\bogus.bmp")
+if image~isNull then do
+  say "Error getting the bogus.bmp image."
+  if .SystemErrorCode <> 0 then do
+    say 'System error code:' .SystemErrorCode
+    say '  system message:' SysGetErrorText(.SystemErrorCode)
+  end
+end
+
+/*
+  Output on the screen might be:
+
+Error getting the bogus.bmp image.
+System error code: 2
+  system message: The system cannot find the file specified.
+*/
+]]>
+</programlisting>
+</section>
 
 <section id="clsDlgUtil"><title>DlgUtil Class</title>
 <indexterm><primary>DlgUtil class</primary></indexterm>
@@ -152,6 +210,10 @@
 <row>
 <entry>loWord (Class Method)</entry>
 <entry><link linkend="mthLoWord">loWord</link></entry>
+</row>
+<row>
+<entry>or (Class Method)</entry>
+<entry><link linkend="mthOrClsDlgUtil">or</link></entry>
 </row>
 <row>
 <entry>version (Class Method)</entry>
@@ -442,6 +504,63 @@ return .true
 </para></listitem></varlistentry>
 </variablelist>
 </section>
+
+
+<section id="mthOrClsDlgUtil"><title>or (Class method)</title>
+<indexterm><primary>or</primary>
+<secondary>DlgUtil class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+         +-,-------+
+         V         |
+>>--or(----number--+--)-----------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Combines any number of numerical values into a single number by 'or'ing the individual numbers
+  together.  This is the typical or operation used by assembly and C programmer's.  The ooDialog
+  programmer does not need to understand the concept to use this method.  Some arguments to some methods
+  in the ooDialog framework can take a value that is a combination of some individual <emphasis
+  role="italic">flags</emphasis>.  The or method is provided to construct this combination.</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details for this method:</emphasis></term>
+  <listitem>
+    <para>
+      Raises syntax errors when incorrect arguments are detected.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The arguments are a series of numbers separated by commas.  Each individual argument must be a
+       whole number.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The return value is a number that is the result of combining all the individual arguments together.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      One method that has an argument that can be the result of combining a number of flags is the <link
+      linkend="mthCreateClsImageList">create()</link> method of the <link
+      linkend="clsImage">.ImageList</link> class.  This is how the or method might be used
+      <programlisting>
+      <![CDATA[
+        flags = .DlgUtil~or(.Image~id(ILC_COLOR24), .Image~id(ILC_MASK))
+
+        -- Create an empty .ImageList object:
+        imageList = .ImageList~create(.Size~new(61, 46), flags, 10, 10);
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DlgUtil::or() [class method?] -->
 
 </section> <!-- End DlgUtil Class -->
 

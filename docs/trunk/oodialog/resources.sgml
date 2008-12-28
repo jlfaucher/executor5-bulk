@@ -45,21 +45,21 @@
 <indexterm><primary>Resources</primary></indexterm>
 <para>
   In the Windows OS, a <emphasis role="italic">resource</emphasis>, is binary data used by a
-  Windows-based application.  Usually, the binary data is attached to one of the applicatios's
-  executable files (*.exe or *.dll.)  However, the binary data can also be generated dynamically in
-  memory. (Which is common in ooDialog, for example a UserDialog.)
+  Windows-based application.  Usually, the binary data is attached to one of the application's executable
+  files (*.exe or *.dll.)  However, the binary data can also be generated dynamically in memory. (Which
+  is common in ooDialog, for example a UserDialog.)
 </para>
 <para>
-  The data in standard resources describes things, familar to ooDialog programmers like: dialog
-  boxes, icons, menus, cursors, bitmaps, fonts, etc. The standard resources also include accelerator
-  tables, string-table entries, message-table entries, and other resourcess that ooDialog does not
-  currently have support for, but may support in the future.
+  The data in standard resources describes things familar to ooDialog programmers like: dialog boxes,
+  icons, menus, cursors, bitmaps, fonts, etc. The standard resources also include accelerator tables,
+  string-table entries, message-table entries, and other resourcess that ooDialog does not currently have
+  support for, but may support in the future.
 </para>
 <para>
   This chapter describes ooDialog classes that provide access to Windows resources.  The classes allow
-  the oodialog programmer to use and manipulate resources in their ooDialog programs.  This is an
-  area of ooDialog that is slated for future improvements.  The classes listed in the following
-  table are documented in this chapter:
+  the oodialog programmer to use and manipulate resources in their ooDialog programs.  This is an area of
+  ooDialog that is slated for future improvements.  The classes listed in the following table are
+  documented in this chapter:
 <table id="tblResourcesClasses" frame="all">
 <title>ooDialog Resource Classes</title>
 <tgroup cols="2">
@@ -94,8 +94,9 @@
   metafile support is very limited at this time.
 </para>
 <para>
-  The class supports loading images from files, from executable files (*.exe and
-  *.dll,) and from the generally available system resources.
+  The class supports loading images from files, from resources contained in any executable files
+  (*.exe and *.dll,) from the files associated with the ooDialog program, and from the generally
+  available system resources.
 </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Requires:</emphasis></term>
@@ -124,34 +125,83 @@
 </thead>
 <tbody>
 <row>
-<entry>id (Class method)</entry>
-<entry><link linkend="mthIdClsImage">id</link></entry>
-</row>
-<row>
-<entry>getImage (Class method)</entry>
-<entry><link linkend="mthGetImageClsImage">new</link></entry>
-</row>
-<row>
 <entry>colorRef (Class method)</entry>
 <entry><link linkend="mthColorRef">colorRef</link></entry>
 </row>
 <row>
-<entry>getRValue (Class method)</entry>
-<entry><link linkend="mthGetRValue">getRValue</link></entry>
+<entry>fromFiles (Class method)</entry>
+<entry><link linkend="mthFromFilesClsImage">fromFiles</link></entry>
+</row>
+<row>
+<entry>fromIDs (Class method)</entry>
+<entry><link linkend="mthFromIDsClsImage">fromIDs</link></entry>
+</row>
+<row>
+<entry>getBValue (Class method)</entry>
+<entry><link linkend="mthGetBValue">getBValue</link></entry>
 </row>
 <row>
 <entry>getGValue (Class method)</entry>
 <entry><link linkend="mthGetGValue">getGValue</link></entry>
 </row>
 <row>
-<entry>getBValue (Class method)</entry>
-<entry><link linkend="mthGetBValue">getBValue</link></entry>
+<entry>getImage (Class method)</entry>
+<entry><link linkend="mthGetImageClsImage">getImage</link></entry>
+</row>
+<row>
+<entry>getRValue (Class method)</entry>
+<entry><link linkend="mthGetRValue">getRValue</link></entry>
+</row>
+<row>
+<entry>id (Class method)</entry>
+<entry><link linkend="mthIdClsImage">id</link></entry>
+</row>
+<row>
+<entry>new (Class method)</entry>
+<entry><link linkend="mthNewClsImage">new</link></entry>
+</row>
+<row>
+<entry>handle</entry>
+<entry><link linkend="mthHandleClsImage">handle</link></entry>
+</row>
+<row>
+<entry>isNull</entry>
+<entry><link linkend="mthIsNullClsImage">isNull</link></entry>
+</row>
+<row>
+<entry>release</entry>
+<entry><link linkend="mthReleaseClsImage">release</link></entry>
+</row>
+<row>
+<entry>systemErrorCode</entry>
+<entry><link linkend="mthSystemErrorCodeClsImage">systemErrorCode</link></entry>
 </row>
 </tbody></tgroup>
 </table>
 </listitem></varlistentry>
 </variablelist>
 
+
+<section id="mthNewClsImage"><title>new (Class)</title>
+<indexterm><primary>new</primary>
+<secondary>Image class</secondary></indexterm>
+
+<para>
+  The Image class does not allow new Image objects to be instantiated from Rexx code using the new()
+  method.  New Image objects are obtained through one of the other Image class methods or they are
+  returned from methods of other classes.
+</para>
+<para>
+  These methods are used to create new Image object(s).
+  <simplelist type='horiz' columns='1'>
+  <member>Image (class) method: <link linkend="mthGetImageClsImage">getImage()</link></member>
+  <member>Image (class) method: <link linkend="mthFromFilesClsImage">fromFiles()</link></member>
+  <member>Image (class) method: <link linkend="mthfromIDsClsImage">fromIDs()</link></member>
+  <member>ResourceImage (instance) method: <link linkend="mthGetImageClsResourceImage">getImage()</link></member>
+  <member>ResourceImage (instance) method: <link linkend="mthGetImagesClsResourceImage">getImages()</link></member>
+  </simplelist>
+</para>
+</section>  <!-- End Image::new() [class method] -->
 
 <section id="mthIdClsImage"><title>id (Class method)</title>
 <indexterm><primary>id</primary>
@@ -173,12 +223,12 @@
   Take for example the task of retrieving the 'Question' icon resource from the system using the
   <link linkend="mthGetImageClsImage">getImage()</link> method.  The ooDialog programmer could
   either use the numerical value of 32514 or use the id method as follows:
+</para>
   <programlisting>
   <![CDATA[
     qIcon = .Image~getImage(.Image~id(IDI_QUESTION))
   ]]>
   </programlisting>
-</para>
 <para>
   The symbolic ID keywords are spelled exactly as Microsoft spells them in the <link
   linkend="windowsdoc">MSDN library</link> which allows the ooDialog to easily look up the meaning
@@ -195,7 +245,7 @@
         <listitem>
           <para>
             The symbolic name whose numeric value is desired.  There any number of symbolic names
-            and they are not listed here.  Rathe the symbolic names are listed in the documentation
+            and they are not listed here.  Rather the symbolic names are listed in the documentation
             for the methods they are applicable to.
           </para>
         </listitem></varlistentry>
@@ -222,7 +272,7 @@
     </programlisting>
   </listitem></varlistentry>
 </variablelist>
-</section>
+</section>  <!-- End Image::id() [class method] -->
 
 <section id="mthGetImageClsImage"><title>getImage (Class method)</title>
 <indexterm><primary>getImage</primary>
@@ -235,14 +285,202 @@
 </programlisting>
 
 <para>
+  Instantiates a new .Image object from either an image file or from one of the system images.  When id
+  is a number then the corresponding system image is used.  Otherwise, id is taken to be the name of an
+  image file.  File names can be either relative or absolute.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details for this method:</emphasis></term>
+  <listitem>
+    <para>
+      Sets <link linkend="dotSystemErrorCode">.SystemErrorCode</link>.
+    </para>
+    <para>
+      Raises syntax errors when incorrect arguments are detected.
+    </para>
+    <para>
+      Pprovides an interface to the Win32 API: <computeroutput>LoadImage()</computeroutput>, when the API
+      is used to load an image from a file or to load one of the system images. Use the <link
+      linkend="windowsdoc">MSDN library</link> documentation to get more information on the arguments to
+      or usage of this method.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <variablelist>
+    <varlistentry><term>id</term>
+    <listitem>
+      <para>
+        If id is a number than it is taken to be the resource id of an image provided by the system. You
+        can use <link linkend="mthIdClsImage">.Image~id()</link> to get the correct numeric value for one
+        of the following symbols:
+        <simplelist type='vert' columns='4'>
+        <member>IDI_APPLICATION</member>
+        <member>IDI_HAND</member>
+        <member>IDI_QUESTION</member>
+        <member>IDI_EXCLAMATION</member>
+        <member>IDI_ASTERISK</member>
+        <member>IDI_WINLOGO</member>
+        <member></member>
+        <member></member>
+        <member></member>
+        <member></member>
+        <member></member>
+        <member></member>
+        <member></member>
+        <member>OCR_NORMAL</member>
+        <member>OCR_IBEAM</member>
+        <member>OCR_WAIT</member>
+        <member>OCR_CROSS</member>
+        <member>OCR_UP</member>
+        <member>OCR_SIZENWSE</member>
+        <member>OCR_SIZENESW</member>
+        <member>OCR_SIZEWE</member>
+        <member>OCR_SIZENS</member>
+        <member>OCR_SIZEALL</member>
+        <member>OCR_NO</member>
+        <member>OCR_HAND</member>
+        <member>OCR_APPSTARTING</member>
+        <member>OBM_CLOSE</member>
+        <member>OBM_UPARROW</member>
+        <member>OBM_DNARROW</member>
+        <member>OBM_RGARROW</member>
+        <member>OBM_LFARROW</member>
+        <member>OBM_REDUCE</member>
+        <member>OBM_ZOOM</member>
+        <member>OBM_RESTORE</member>
+        <member>OBM_REDUCED</member>
+        <member>OBM_ZOOMD</member>
+        <member>OBM_RESTORED</member>
+        <member>OBM_UPARROWD</member>
+        <member>OBM_DNARROWD</member>
+        <member>OBM_RGARROWD</member>
+        <member>OBM_LFARROWD</member>
+        <member>OBM_MNARROW</member>
+        <member>OBM_COMBO</member>
+        <member>OBM_UPARROWI</member>
+        <member>OBM_DNARROWI</member>
+        <member>OBM_RGARROWI</member>
+        <member>OBM_LFARROWI</member>
+        <member>OBM_SIZE</member>
+        <member>OBM_BTSIZE</member>
+        <member>OBM_CHECK</member>
+        <member>OBM_CHECKBOXES</member>
+        <member>OBM_BTNCORNERS</member>
+        </simplelist>
+      </para>
+      <para>
+        If not a number, then id must be the name of an image file.
+      </para>
+    </listitem></varlistentry>
+    <varlistentry><term>type</term>
+    <listitem>
+      <para>
+        Specifies the type of the image, bitmap, icon, cursor, or enhanced metafile. You can use <link
+        linkend="mthIdClsImage">.Image~id()</link> to get the correct numeric value for one of the
+        following symbols:
+        <simplelist type='horiz' columns='2'>
+        <member>IMAGE_BITMAP</member> <member>IMAGE_ICON</member> <member>IMAGE_CURSOR</member>
+        <member>IMAGE_ENHMETAFILE</member>
+        </simplelist>
+      </para>
+      <para>
+        The default is IMAGE_BITMAP.
+      </para>
+    </listitem></varlistentry>
+    <varlistentry><term>size</term>
+    <listitem>
+      <para>
+        A <link linkend="clsSize">.Size</link> object that specifies the size of the image.  The default
+        is a size of 0x0.  Under most circumstances this indicates that the actual size of the image
+        should be used.  However, the <link linkend="windowsdoc">MSDN library</link> documentation should
+        be consulted for other meanings.
+      </para>
+    </listitem></varlistentry>
+    <varlistentry><term>flags</term>
+    <listitem>
+      <para>
+        The combined value of the load resource flags for the LoadImage() API. You can use <link
+        linkend="mthIdClsImage">.Image~id()</link> to get the correct numeric value for the following
+        symbols:
+        <simplelist type='horiz' columns='2'>
+        <member>LR_DEFAULTCOLOR</member>
+        <member>LR_CREATEDIBSECTION</member>
+        <member>LR_DEFAULTSIZE</member>
+        <member>LR_LOADFROMFILE</member>
+        <member>LR_LOADMAP3DCOLORS</member>
+        <member>LR_LOADTRANSPARENT</member>
+        <member>LR_MONOCHROME</member>
+        <member>LR_SHARED</member>
+        <member>LR_VGACOLOR</member>
+        </simplelist>
+      </para>
+      <para>
+        When id specifies a file name, the default flags are LR_LOADFROMFILE, othewise the default flags
+        are LR_SHARED | LR_DEFAULTSIZE.  The <link linkend="mthOrClsDlgUtil">or()</link> method of the
+        <link linkend="clsDlgUtil">.DlgUtil</link> class can be used to combine more than one of the
+        symbols if needed.
+      </para>
+    </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      A .Image object that represents the image specified.  If an error happened, the object may not be
+      valid.  Use the <link linkend="mthIsNullClsImage">isNull()</link> method to check if the image is
+      valid.  If there was an error, <link linkend="dotSystemErrorCode">.SystemErrorCode</link> may help
+      to determine the error.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <programlisting>
+    <![CDATA[
+    flags = .DlgUtil~or(.Image~id(LR_DEFAULTSIZE), .Image~id(LR_SHARED), -
+                        .Image~id(LR_LOADMAP3DCOLORS))
+
+    questionIcon = .Image~getImage(.Image~id(IDI_QUESTION),              -
+                                   .Image~id(IMAGE_ICON),                -
+                                   .Size~new(0, 0), flags)
+    if question~isNull then do
+      say 'Error getting the question icon.  Error code:' .SystemErrorCode
+    end
+
+    /* Note that you can always use the raw numeric value for the args.
+     * This works just as well:
+     */
+    question = .Image~getImage(32514, 1, .Size~new(0, 0), 36928)
+    if question~isNull then do
+      say 'Error getting the question icon.  Error code:' .SystemErrorCode
+    end
+
+    ]]>
+    </programlisting>
+    </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Image::getImage() [class method] -->
+
+
+<section id="mthFromFilesClsImage"><title>fromFiles (Class method)</title>
+<indexterm><primary>fromFiles</primary>
+<secondary>Image class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--fromFiles(--x--,--y--)---------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Description
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
-    <para>
-      The arguments are:
-      <variablelist>
-      <varlistentry><term>id</term>
+    <para>The arguments are:
+    <variablelist>
+      <varlistentry><term>x</term>
       <listitem>
         <para>
           xx.
@@ -254,7 +492,7 @@
           yyy,
         </para>
       </listitem></varlistentry>
-      </variablelist>
+    </variablelist>
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
@@ -288,9 +526,10 @@
       ]]>
       </programlisting>
     </para>
-    </listitem></varlistentry>
+  </listitem></varlistentry>
 </variablelist>
-</section>
+</section>  <!-- End Image::fromFiles() [class method] -->
+
 
 <section id="mthColorRef"><title>colorRef (Class Method)</title>
 <indexterm><primary>colorRef</primary></indexterm>
@@ -343,21 +582,90 @@
 <![CDATA[
 
  ref = .Image~colorRef(245, 89, 255)
- say 'A fancy puple:' ref '(0x' || ref~d2x~right(8, '0')')'
+ say 'A fancy purple:' ref '(0x' || ref~d2x~right(8, '0')')'
  say
 
 ::requires 'oodPlain.cls'
 
 /* Output:
 
-A fancy puple: 16734709 (0x00FF59F5)
+A fancy purple: 16734709 (0x00FF59F5)
 
 */
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
-</section>
+</section>  <!-- End Image::colorRef() [class method] -->
+
+
+<section id="mthFromIDsClsImage"><title>fromIDs (Class method)</title>
+<indexterm><primary>fromIDs</primary>
+<secondary>Image class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--fromIDs(--x--,--y--)---------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Description
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The arguments are:
+    <variablelist>
+      <varlistentry><term>x</term>
+      <listitem>
+        <para>
+          xx.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>y</term>
+      <listitem>
+        <para>
+          yyy,
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The possible return values are:
+      <variablelist>
+        <varlistentry><term>0</term>
+        <listitem>
+          <para>
+            Success
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>-1</term>
+        <listitem>
+          <para>
+            Some error.
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example ...
+      <programlisting>
+      <![CDATA[
+      x = y
+      return 0
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Image::fromIDs() [class method] -->
 
 <section id="mthGetRValue"><title>getRValue (Class Method)</title>
 <indexterm><primary>getRValue</primary></indexterm>
@@ -416,7 +724,7 @@ A fancy puple: 16734709 (0x00FF59F5)
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
-</section>
+</section>  <!-- End Image::getRValue() [class method] -->
 
 <section id="mthGetGValue"><title>getGValue (Class Method)</title>
 <indexterm><primary>getRValue</primary></indexterm>
@@ -449,7 +757,7 @@ A fancy puple: 16734709 (0x00FF59F5)
   See the example for the <link linkend="exampleGetRValueClsImage">getRValue</link>() method.
 </para></listitem></varlistentry>
 </variablelist>
-</section>
+</section>  <!-- End Image::getGValue() [class method] -->
 
 <section id="mthGetBValue"><title>getBValue (Class Method)</title>
 <indexterm><primary>getRValue</primary></indexterm>
@@ -482,9 +790,285 @@ A fancy puple: 16734709 (0x00FF59F5)
   See the example for the <link linkend="exampleGetRValueClsImage">getRValue</link>() method.
 </para></listitem></varlistentry>
 </variablelist>
-</section>
+</section>  <!-- End Image::getBValue() [class method] -->
 
-</section>  <!-- End Image class -->
+
+<section id="mthHandleClsImage"><title>handle</title>
+<indexterm><primary>handle</primary>
+<secondary>Image class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--handle(--x--,--y--)---------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Description
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The arguments are:
+    <variablelist>
+      <varlistentry><term>x</term>
+      <listitem>
+        <para>
+          xx.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>y</term>
+      <listitem>
+        <para>
+          yyy,
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The possible return values are:
+      <variablelist>
+        <varlistentry><term>0</term>
+        <listitem>
+          <para>
+            Success
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>-1</term>
+        <listitem>
+          <para>
+            Some error.
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example ...
+      <programlisting>
+      <![CDATA[
+      x = y
+      return 0
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Image::handle() -->
+
+
+<section id="mthReleaseClsImage"><title>release</title>
+<indexterm><primary>release</primary>
+<secondary>Image class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--release(--x--,--y--)---------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Description
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The arguments are:
+    <variablelist>
+      <varlistentry><term>x</term>
+      <listitem>
+        <para>
+          xx.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>y</term>
+      <listitem>
+        <para>
+          yyy,
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The possible return values are:
+      <variablelist>
+        <varlistentry><term>0</term>
+        <listitem>
+          <para>
+            Success
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>-1</term>
+        <listitem>
+          <para>
+            Some error.
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example ...
+      <programlisting>
+      <![CDATA[
+      x = y
+      return 0
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Image::release() -->
+
+
+<section id="mthIsNullClsImage"><title>isNull</title>
+<indexterm><primary>isNull</primary>
+<secondary>Image class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--isNull(--x--,--y--)---------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Description
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The arguments are:
+    <variablelist>
+      <varlistentry><term>x</term>
+      <listitem>
+        <para>
+          xx.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>y</term>
+      <listitem>
+        <para>
+          yyy,
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The possible return values are:
+      <variablelist>
+        <varlistentry><term>0</term>
+        <listitem>
+          <para>
+            Success
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>-1</term>
+        <listitem>
+          <para>
+            Some error.
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example ...
+      <programlisting>
+      <![CDATA[
+      x = y
+      return 0
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Image::isNull() -->
+
+
+<section id="mthsystemErrorCodeClsImage"><title>systemErrorCode</title>
+<indexterm><primary>systemErrorCode</primary>
+<secondary>Image class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--systemErrorCode(--x--,--y--)---------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Description
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The arguments are:
+    <variablelist>
+      <varlistentry><term>x</term>
+      <listitem>
+        <para>
+          xx.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>y</term>
+      <listitem>
+        <para>
+          yyy,
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The possible return values are:
+      <variablelist>
+        <varlistentry><term>0</term>
+        <listitem>
+          <para>
+            Success
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>-1</term>
+        <listitem>
+          <para>
+            Some error.
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example ...
+      <programlisting>
+      <![CDATA[
+      x = y
+      return 0
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Image::systemErrorCode() -->
+
+</section>  <!--   End Image class -->
 
 <section id="clsImageList"><title>ImageList Class</title>
 <indexterm><primary>ImageList class</primary></indexterm>
@@ -520,12 +1104,60 @@ definition file <computeroutput>ooDialog.cls</computeroutput>:
 </thead>
 <tbody>
 <row>
+<entry>create (Class method)</entry>
+<entry><link linkend="mthCreateClsImageList">id</link></entry>
+</row>
+<row>
 <entry>new (Class method)</entry>
 <entry><link linkend="mthNewClsImageList">new</link></entry>
 </row>
 <row>
-<entry>create (Class method)</entry>
-<entry><link linkend="mthCreateClsImageList">id</link></entry>
+<entry>add</entry>
+<entry><link linkend="mthAddClsImageList">add</link></entry>
+</row>
+<row>
+<entry>addMasked</entry>
+<entry><link linkend="mthAddMaskedClsImageList">addMasked</link></entry>
+</row>
+<row>
+<entry>addIcon</entry>
+<entry><link linkend="mthAddIconClsImageList">addIcon</link></entry>
+</row>
+<row>
+<entry>addImages</entry>
+<entry><link linkend="mthAddImagesClsImageList">addImages</link></entry>
+</row>
+<row>
+<entry>getCount</entry>
+<entry><link linkend="mthGetCountClsImageList">getCount</link></entry>
+</row>
+<row>
+<entry>getImageSize</entry>
+<entry><link linkend="mthGetImageSizeClsImageList">getImageSize</link></entry>
+</row>
+<row>
+<entry>duplicate</entry>
+<entry><link linkend="mthDuplicateClsImageList">duplicate</link></entry>
+</row>
+<row>
+<entry>remove</entry>
+<entry><link linkend="mthRemoveClsImageList">remove</link></entry>
+</row>
+<row>
+<entry>removeAll</entry>
+<entry><link linkend="mthRemoveAllClsImageList">removeAll</link></entry>
+</row>
+<row>
+<entry>release</entry>
+<entry><link linkend="mthReleaseClsImageList">release</link></entry>
+</row>
+<row>
+<entry>handle</entry>
+<entry><link linkend="mthHandleClsImageList">handle</link></entry>
+</row>
+<row>
+<entry>isNull</entry>
+<entry><link linkend="mthIsNullClsImageList">isNull</link></entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -577,14 +1209,14 @@ return 0
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
-</section>
+</section>  <!-- End ImageList::new() [class method] -->
 
-<section id="mthCreateClsImageList"><title>id</title>
-<indexterm><primary>methodName</primary>
-<secondary>ButtonControl class</secondary></indexterm>
+<section id="mthCreateClsImageList"><title>create (Class method)</title>
+<indexterm><primary>create</primary>
+<secondary>ImageList class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aButtonControl~methodName(--x--,--y--)------------------><
+>>--create(------------------------------------------------><
 
 ]]>
 </programlisting>
@@ -623,9 +1255,837 @@ return 0
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
-</section>
+</section>  <!-- End ImageList::create() [class method] -->
 
-</section>  <!-- End ImageList class -->
+
+<section id="mthAddClsImageList"><title>add</title>
+<indexterm><primary>add</primary>
+<secondary>ImageList class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--add(--x--,--y--)---------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Description
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The arguments are:
+    <variablelist>
+      <varlistentry><term>x</term>
+      <listitem>
+        <para>
+          xx.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>y</term>
+      <listitem>
+        <para>
+          yyy,
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The possible return values are:
+      <variablelist>
+        <varlistentry><term>0</term>
+        <listitem>
+          <para>
+            Success
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>-1</term>
+        <listitem>
+          <para>
+            Some error.
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example ...
+      <programlisting>
+      <![CDATA[
+      x = y
+      return 0
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ImageList::add() -->
+
+
+<section id="mthAddMaskedClsImageList"><title>addMasked</title>
+<indexterm><primary>addMasked</primary>
+<secondary>ImageList class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--addMasked(--x--,--y--)---------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Description
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The arguments are:
+    <variablelist>
+      <varlistentry><term>x</term>
+      <listitem>
+        <para>
+          xx.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>y</term>
+      <listitem>
+        <para>
+          yyy,
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The possible return values are:
+      <variablelist>
+        <varlistentry><term>0</term>
+        <listitem>
+          <para>
+            Success
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>-1</term>
+        <listitem>
+          <para>
+            Some error.
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example ...
+      <programlisting>
+      <![CDATA[
+      x = y
+      return 0
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ImageList::addMasked() -->
+
+
+<section id="mthAddIconClsImageList"><title>addIcon</title>
+<indexterm><primary>addIcon</primary>
+<secondary>ImageList class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--addIcon(--x--,--y--)---------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Description
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The arguments are:
+    <variablelist>
+      <varlistentry><term>x</term>
+      <listitem>
+        <para>
+          xx.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>y</term>
+      <listitem>
+        <para>
+          yyy,
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The possible return values are:
+      <variablelist>
+        <varlistentry><term>0</term>
+        <listitem>
+          <para>
+            Success
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>-1</term>
+        <listitem>
+          <para>
+            Some error.
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example ...
+      <programlisting>
+      <![CDATA[
+      x = y
+      return 0
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ImageList::addIcon() -->
+
+
+<section id="mthAddImagesClsImageList"><title>addImages</title>
+<indexterm><primary>addImages</primary>
+<secondary>ImageList class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--addImages(--x--,--y--)---------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Description
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The arguments are:
+    <variablelist>
+      <varlistentry><term>x</term>
+      <listitem>
+        <para>
+          xx.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>y</term>
+      <listitem>
+        <para>
+          yyy,
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The possible return values are:
+      <variablelist>
+        <varlistentry><term>0</term>
+        <listitem>
+          <para>
+            Success
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>-1</term>
+        <listitem>
+          <para>
+            Some error.
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example ...
+      <programlisting>
+      <![CDATA[
+      x = y
+      return 0
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ImageList::addImages() -->
+
+
+<section id="mthGetCountClsImageList"><title>getCount</title>
+<indexterm><primary>getCount</primary>
+<secondary>ImageList class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getCount(--x--,--y--)---------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Description
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The arguments are:
+    <variablelist>
+      <varlistentry><term>x</term>
+      <listitem>
+        <para>
+          xx.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>y</term>
+      <listitem>
+        <para>
+          yyy,
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The possible return values are:
+      <variablelist>
+        <varlistentry><term>0</term>
+        <listitem>
+          <para>
+            Success
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>-1</term>
+        <listitem>
+          <para>
+            Some error.
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example ...
+      <programlisting>
+      <![CDATA[
+      x = y
+      return 0
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ImageList::getCount() -->
+
+
+<section id="mthGetImageSizeClsImageList"><title>getImageSize</title>
+<indexterm><primary>getImageSize</primary>
+<secondary>ImageList class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getImageSize(--x--,--y--)---------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Description
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The arguments are:
+    <variablelist>
+      <varlistentry><term>x</term>
+      <listitem>
+        <para>
+          xx.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>y</term>
+      <listitem>
+        <para>
+          yyy,
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The possible return values are:
+      <variablelist>
+        <varlistentry><term>0</term>
+        <listitem>
+          <para>
+            Success
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>-1</term>
+        <listitem>
+          <para>
+            Some error.
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example ...
+      <programlisting>
+      <![CDATA[
+      x = y
+      return 0
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ImageList::getImageSize() -->
+
+
+<section id="mthDuplicateClsImageList"><title>duplicate</title>
+<indexterm><primary>duplicate</primary>
+<secondary>ImageList class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--duplicate(--x--,--y--)---------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Description
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The arguments are:
+    <variablelist>
+      <varlistentry><term>x</term>
+      <listitem>
+        <para>
+          xx.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>y</term>
+      <listitem>
+        <para>
+          yyy,
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The possible return values are:
+      <variablelist>
+        <varlistentry><term>0</term>
+        <listitem>
+          <para>
+            Success
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>-1</term>
+        <listitem>
+          <para>
+            Some error.
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example ...
+      <programlisting>
+      <![CDATA[
+      x = y
+      return 0
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ImageList::duplicate() -->
+
+
+<section id="mthRemoveClsImageList"><title>remove</title>
+<indexterm><primary>remove</primary>
+<secondary>ImageList class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--remove(--x--,--y--)---------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Description
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The arguments are:
+    <variablelist>
+      <varlistentry><term>x</term>
+      <listitem>
+        <para>
+          xx.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>y</term>
+      <listitem>
+        <para>
+          yyy,
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The possible return values are:
+      <variablelist>
+        <varlistentry><term>0</term>
+        <listitem>
+          <para>
+            Success
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>-1</term>
+        <listitem>
+          <para>
+            Some error.
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example ...
+      <programlisting>
+      <![CDATA[
+      x = y
+      return 0
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ImageList::remove() -->
+
+
+<section id="mthRemoveAllClsImageList"><title>removeAll</title>
+<indexterm><primary>removeAll</primary>
+<secondary>ImageList class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--removeAll(--x--,--y--)---------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Description
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The arguments are:
+    <variablelist>
+      <varlistentry><term>x</term>
+      <listitem>
+        <para>
+          xx.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>y</term>
+      <listitem>
+        <para>
+          yyy,
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The possible return values are:
+      <variablelist>
+        <varlistentry><term>0</term>
+        <listitem>
+          <para>
+            Success
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>-1</term>
+        <listitem>
+          <para>
+            Some error.
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example ...
+      <programlisting>
+      <![CDATA[
+      x = y
+      return 0
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ImageList::removeAll() -->
+
+
+<section id="mthReleaseClsImageList"><title>release</title>
+<indexterm><primary>release</primary>
+<secondary>ImageList class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--release(--x--,--y--)---------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Description
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The arguments are:
+    <variablelist>
+      <varlistentry><term>x</term>
+      <listitem>
+        <para>
+          xx.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>y</term>
+      <listitem>
+        <para>
+          yyy,
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The possible return values are:
+      <variablelist>
+        <varlistentry><term>0</term>
+        <listitem>
+          <para>
+            Success
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>-1</term>
+        <listitem>
+          <para>
+            Some error.
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example ...
+      <programlisting>
+      <![CDATA[
+      x = y
+      return 0
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ImageList::release() -->
+
+
+<section id="mthHandleClsImageList"><title>handle</title>
+<indexterm><primary>handle</primary>
+<secondary>ImageList class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--handle(--x--,--y--)---------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Description
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The arguments are:
+    <variablelist>
+      <varlistentry><term>x</term>
+      <listitem>
+        <para>
+          xx.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>y</term>
+      <listitem>
+        <para>
+          yyy,
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The possible return values are:
+      <variablelist>
+        <varlistentry><term>0</term>
+        <listitem>
+          <para>
+            Success
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>-1</term>
+        <listitem>
+          <para>
+            Some error.
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example ...
+      <programlisting>
+      <![CDATA[
+      x = y
+      return 0
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ImageList::handle() -->
+
+
+<section id="mthIsNullClsImageList"><title>isNull</title>
+<indexterm><primary>isNull</primary>
+<secondary>ImageList class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--isNull(--x--,--y--)---------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Description
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The arguments are:
+    <variablelist>
+      <varlistentry><term>x</term>
+      <listitem>
+        <para>
+          xx.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>y</term>
+      <listitem>
+        <para>
+          yyy,
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The possible return values are:
+      <variablelist>
+        <varlistentry><term>0</term>
+        <listitem>
+          <para>
+            Success
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>-1</term>
+        <listitem>
+          <para>
+            Some error.
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example ...
+      <programlisting>
+      <![CDATA[
+      x = y
+      return 0
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ImageList::isNull() -->
+
+</section>  <!--   End ImageList class -->
 
 <section id="clsResourceImage"><title>ResourceImage Class</title>
 <indexterm><primary>ResourceImage class</primary></indexterm>
@@ -668,18 +2128,38 @@ return 0
 <entry>getImage</entry>
 <entry><link linkend="mthGetImageClsResourceImage">getImage</link></entry>
 </row>
+<row>
+<entry>getImages</entry>
+<entry><link linkend="mthGetImagesClsResourceImage">getImages</link></entry>
+</row>
+<row>
+<entry>handle</entry>
+<entry><link linkend="mthHandleClsResourceImage">handle</link></entry>
+</row>
+<row>
+<entry>isNull</entry>
+<entry><link linkend="mthIsNullClsResourceImage">isNull</link></entry>
+</row>
+<row>
+<entry>release</entry>
+<entry><link linkend="mthReleaseClsResourceImage">release</link></entry>
+</row>
+<row>
+<entry>systemErrorCode</entry>
+<entry><link linkend="mthSystemErrorCodeClsResourceImage">systemErrorCode</link></entry>
+</row>
 </tbody></tgroup>
 </table>
 </listitem></varlistentry>
 </variablelist>
 
 
-<section id="mthNewClsResourceImage"><title>new</title>
+<section id="mthNewClsResourceImage"><title>new (Class method)</title>
 <indexterm><primary>new</primary>
 <secondary>ResouceImage class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aButtonControl~methodName(--x--,--y--)------------------><
+>>--new(---------------------------------------------------><
 
 ]]>
 </programlisting>
@@ -718,7 +2198,7 @@ return 0
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
-</section>
+</section>  <!-- End Resource::new() [class method] -->
 
 <section id="mthGetImageClsResourceImage"><title>getImage</title>
 <indexterm><primary>getImage</primary>
@@ -764,9 +2244,354 @@ return 0
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
-</section>
+</section>  <!-- End ResourceImage::getImage() -->
 
-</section>  <!--  End ResourceImage class  -->
+
+<section id="mthGetImagesClsResourceImage"><title>getImages</title>
+<indexterm><primary>getImages</primary>
+<secondary>ResourceImage class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getImages(--x--,--y--)---------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Description
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The arguments are:
+    <variablelist>
+      <varlistentry><term>x</term>
+      <listitem>
+        <para>
+          xx.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>y</term>
+      <listitem>
+        <para>
+          yyy,
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The possible return values are:
+      <variablelist>
+        <varlistentry><term>0</term>
+        <listitem>
+          <para>
+            Success
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>-1</term>
+        <listitem>
+          <para>
+            Some error.
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example ...
+      <programlisting>
+      <![CDATA[
+      x = y
+      return 0
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ResourceImage::getImages() -->
+
+
+<section id="mthReleaseClsResourceImage"><title>release</title>
+<indexterm><primary>release</primary>
+<secondary>ResourceImage class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--release(--x--,--y--)---------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Description
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The arguments are:
+    <variablelist>
+      <varlistentry><term>x</term>
+      <listitem>
+        <para>
+          xx.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>y</term>
+      <listitem>
+        <para>
+          yyy,
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The possible return values are:
+      <variablelist>
+        <varlistentry><term>0</term>
+        <listitem>
+          <para>
+            Success
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>-1</term>
+        <listitem>
+          <para>
+            Some error.
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example ...
+      <programlisting>
+      <![CDATA[
+      x = y
+      return 0
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ResourceImage::release() -->
+
+
+<section id="mthHandleClsResourceImage"><title>handle</title>
+<indexterm><primary>handle</primary>
+<secondary>ResourceImage class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--handle(--x--,--y--)---------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Description
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The arguments are:
+    <variablelist>
+      <varlistentry><term>x</term>
+      <listitem>
+        <para>
+          xx.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>y</term>
+      <listitem>
+        <para>
+          yyy,
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The possible return values are:
+      <variablelist>
+        <varlistentry><term>0</term>
+        <listitem>
+          <para>
+            Success
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>-1</term>
+        <listitem>
+          <para>
+            Some error.
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example ...
+      <programlisting>
+      <![CDATA[
+      x = y
+      return 0
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ResourceImage::handle() -->
+
+
+<section id="mthIsNullClsResourceImage"><title>isNull</title>
+<indexterm><primary>isNull</primary>
+<secondary>ResourceImage class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--isNull(--x--,--y--)---------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Description
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The arguments are:
+    <variablelist>
+      <varlistentry><term>x</term>
+      <listitem>
+        <para>
+          xx.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>y</term>
+      <listitem>
+        <para>
+          yyy,
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The possible return values are:
+      <variablelist>
+        <varlistentry><term>0</term>
+        <listitem>
+          <para>
+            Success
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>-1</term>
+        <listitem>
+          <para>
+            Some error.
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example ...
+      <programlisting>
+      <![CDATA[
+      x = y
+      return 0
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ResourceImage::isNull() -->
+
+
+<section id="mthSystemErrorCodeClsResourceImage"><title>systemErrorCode</title>
+<indexterm><primary>systemErrorCode</primary>
+<secondary>ResourceImage class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--systemErrorCode(--x--,--y--)---------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Description
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The arguments are:
+    <variablelist>
+      <varlistentry><term>x</term>
+      <listitem>
+        <para>
+          xx.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>y</term>
+      <listitem>
+        <para>
+          yyy,
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The possible return values are:
+      <variablelist>
+        <varlistentry><term>0</term>
+        <listitem>
+          <para>
+            Success
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>-1</term>
+        <listitem>
+          <para>
+            Some error.
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example ...
+      <programlisting>
+      <![CDATA[
+      x = y
+      return 0
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ResourceImage::systemErrorCode() -->
+
+</section>  <!--   End ResourceImage class  -->
 
 
 </chapter>
