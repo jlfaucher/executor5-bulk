@@ -83,13 +83,13 @@ RexxCreatInterpreter API.</para>
 them.</para>
 </section>
 
-<section id="instanceapi"><title>Rexx Instance Interface</title>
-<para>This section describes the Rexx instance interface and the methods it
+<section id="instanceapi"><title>Rexx Interpreter Instance Interface</title>
+<para>This section describes the Rexx interpreter instance interface and the methods it
 provides.</para>
 </section>
 
-<section id="threadapi"><title>Rexx Thread Interface</title>
-<para>This section describes the Rexx thread interface and the methods it
+<section id="threadapi"><title>Rexx Thread Instance Interface</title>
+<para>This section describes the Rexx thread instance interface and the methods it
 provides.</para>
 </section>
 
@@ -114,6 +114,48 @@ provides.</para>
 <section id="apilisting"><title>Rexx Methods Listing</title>
 <para>This section describes each available method and its associated context.</para>
 
+<section id="mthAttachThread"><title>AttachThread</title>
+<indexterm><primary>AttachThread</primary></indexterm>
+<indexterm><primary>Rexx instance context methods</primary>
+<secondary>AttachThread</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>No</entry></row>
+<row><entry>Method</entry><entry>No</entry></row>
+<row><entry>Function</entry><entry>No</entry></row>
+<row><entry>Interpreter</entry><entry>Yes</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+RexxThreadContext *tc
+
+>>--success = context->AttachThread(&tc);-------------------------------><
+]]>
+</programlisting>
+<para>Attaches the current thread to the Rexx interpreter instance pointed to by the
+<emphasis role="italic">context</emphasis> pointer.
+</para>
+<section><title>Arguments</title>
+<variablelist>
+    <varlistentry><term><emphasis role="italic">tc</emphasis></term>
+    <listitem><para>Pointer to a RexxThreadContext pointer.</para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+<section><title>Returns</title>
+<para>Boolean value. 0 = success, 1 = failure.</para>
+</section>
+</section>
+
 <section id="mthGetApplicationData"><title>GetApplicationData</title>
 <indexterm><primary>GetApplicationData</primary></indexterm>
 <indexterm><primary>Thread context methods</primary>
@@ -122,41 +164,220 @@ provides.</para>
 <secondary>GetApplicationData</secondary></indexterm>
 <indexterm><primary>Function context methods</primary>
 <secondary>GetApplicationData</secondary></indexterm>
-<para>The GetApplicationData method returns a pointer to the thread specific application data.
-</para>
-<programlisting>
-<![CDATA[
->>--ptr = context->GetApplicationData();------------------------------><
-]]>
-</programlisting>
-<table frame="all">
-<title>Available Contexts</title>
+<informaltable frame="all">
 <tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
 <entry><emphasis role="bold">Available</emphasis></entry>
 </row>
-<row>
-<entry>Thread</entry>
-<entry>Yes</entry>
-</row>
-<row>
-<entry>Method</entry>
-<entry>Yes</entry>
-</row>
-<row>
-<entry>Function</entry>
-<entry>Yes</entry>
-</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
 </tbody>
 </tgroup>
-</table>
+</informaltable>
+<programlisting>
+<![CDATA[
+>>--ptr = context->GetApplicationData();------------------------------><
+]]>
+</programlisting>
+<para>Returns a pointer to the thread specific application data.
+</para>
 <section><title>Arguments</title>
 <para>None.</para>
 </section>
 <section><title>Returns</title>
 <para>A Pointer to the application data.</para>
+</section>
+</section>
+
+<section id="mthHalt"><title>Halt</title>
+<indexterm><primary>Halt</primary></indexterm>
+<indexterm><primary>Rexx instance context methods</primary>
+<secondary>Halt</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>No</entry></row>
+<row><entry>Method</entry><entry>No</entry></row>
+<row><entry>Function</entry><entry>No</entry></row>
+<row><entry>Interpreter</entry><entry>Yes</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+>>--context->Halt();-----------------------------------------------------><
+]]>
+</programlisting>
+<para>Halts the interpreter.
+</para>
+<section><title>Arguments</title>
+<para>None.</para>
+</section>
+<section><title>Returns</title>
+<para>Void.</para>
+</section>
+</section>
+
+<section id="mthInterpreterVersion"><title>InterpreterVersion</title>
+<indexterm><primary>InterpreterVersion</primary></indexterm>
+<indexterm><primary>Rexx instance context methods</primary>
+<secondary>InterpreterVersion</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>No</entry></row>
+<row><entry>Method</entry><entry>No</entry></row>
+<row><entry>Function</entry><entry>No</entry></row>
+<row><entry>Interpreter</entry><entry>Yes</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+suze_t version;
+
+>>--version = context->InterpreterVersion();----------------------------><
+]]>
+</programlisting>
+<para>Returns the version of the interpreter.
+</para>
+<section><title>Arguments</title>
+<para>None.</para>
+</section>
+<section><title>Returns</title>
+<para>The interpreter version number.</para>
+</section>
+</section>
+
+<section id="mthLanguageLevel"><title>Language Level</title>
+<indexterm><primary>Language Level</primary></indexterm>
+<indexterm><primary>Rexx instance context methods</primary>
+<secondary>LanguageLevel</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>No</entry></row>
+<row><entry>Method</entry><entry>No</entry></row>
+<row><entry>Function</entry><entry>No</entry></row>
+<row><entry>Interpreter</entry><entry>Yes</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+suze_t langlevel;
+
+>>--langlevel = context->LanguageLevel();-------------------------------><
+]]>
+</programlisting>
+<para>Returns the language blevel of the interpreter.
+</para>
+<section><title>Arguments</title>
+<para>None.</para>
+</section>
+<section><title>Returns</title>
+<para>The interpreter language level number.</para>
+</section>
+</section>
+
+<section id="mthSetTrace"><title>SetTrace</title>
+<indexterm><primary>SetTrace</primary></indexterm>
+<indexterm><primary>Rexx instance context methods</primary>
+<secondary>SetTrace</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>No</entry></row>
+<row><entry>Method</entry><entry>No</entry></row>
+<row><entry>Function</entry><entry>No</entry></row>
+<row><entry>Interpreter</entry><entry>Yes</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+logical_t flag;
+
+>>--context->SetTrace(flag);---------------------------------------------><
+]]>
+</programlisting>
+<para>Sets the trace flag of the interpreter.
+</para>
+<section><title>Arguments</title>
+<variablelist>
+    <varlistentry><term><emphasis role="italic">flag</emphasis></term>
+    <listitem><para>Logical boolean flag.</para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+<section><title>Returns</title>
+<para>Void.</para>
+</section>
+</section>
+
+<section id="mthTerminate"><title>Terminate</title>
+<indexterm><primary>Terminate</primary></indexterm>
+<indexterm><primary>Rexx instance context methods</primary>
+<secondary>Terminate</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>No</entry></row>
+<row><entry>Method</entry><entry>No</entry></row>
+<row><entry>Function</entry><entry>No</entry></row>
+<row><entry>Interpreter</entry><entry>Yes</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+>>--context->Terminate();----------------------------------------------><
+]]>
+</programlisting>
+<para>Terminates the current Rexx interpreter instance and releases
+all storage associated with that instance.
+</para>
+<section><title>Arguments</title>
+<para>None.</para>
+</section>
+<section><title>Returns</title>
+<para>Void.</para>
 </section>
 </section>
 
