@@ -98,6 +98,19 @@
   (*.exe and *.dll,) from the files associated with the ooDialog program, and from the generally
   available system resources.
 </para>
+<note><title>Note</title><para>
+  The .Image class is the future direction that ooDialog will take for working with images, including
+  bitmaps.  This is a more flexible approach than the older bitmap methods used when ooDialog was first
+  developed.  It will allow access to more of the modern features of the Windows user interface than the
+  older approach does.  The older bitmap methods were designed to work with Windows 3.1 and have a number
+  of limitations.  The ooDialog programmer is strongly encouraged to migrate her code towards the .Image
+  class.  The older bitmap methods should be considered depracated, to a degree.  Unfortunately,
+  replacement methods for all of the older bitmap methods have not as yet been implmented.  So, the older
+  methods may still be necessary for some situations.
+</para></note>
+<para>
+
+</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Requires:</emphasis></term>
 <listitem><para>The Image class requires the class definition file
@@ -290,19 +303,18 @@
   image file.  File names can be either relative or absolute.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details for this method:</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
     <para>
-      Sets <link linkend="dotSystemErrorCode">.SystemErrorCode</link>.
+      Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
     </para>
     <para>
       Raises syntax errors when incorrect arguments are detected.
     </para>
     <para>
-      Pprovides an interface to the Win32 API: <computeroutput>LoadImage()</computeroutput>, when the API
-      is used to load an image from a file or to load one of the system images. Use the <link
-      linkend="windowsdoc">MSDN library</link> documentation to get more information on the arguments to
-      or usage of this method.
+      Pprovides an interface to the Win32 API: <computeroutput>LoadImage()</computeroutput>. Use the
+      <link linkend="windowsdoc">MSDN library</link> documentation to get more information on the
+      arguments to this method.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -315,57 +327,28 @@
         can use <link linkend="mthIdClsImage">.Image~id()</link> to get the correct numeric value for one
         of the following symbols:
         <simplelist type='vert' columns='4'>
-        <member>IDI_APPLICATION</member>
-        <member>IDI_HAND</member>
-        <member>IDI_QUESTION</member>
-        <member>IDI_EXCLAMATION</member>
-        <member>IDI_ASTERISK</member>
-        <member>IDI_WINLOGO</member>
+        <member>IDI_APPLICATION</member> <member>IDI_HAND</member> <member>IDI_QUESTION</member>
+        <member>IDI_EXCLAMATION</member> <member>IDI_ASTERISK</member> <member>IDI_WINLOGO</member>
+        <member></member> <member></member> <member></member>
+        <member></member> <member></member> <member></member>
         <member></member>
-        <member></member>
-        <member></member>
-        <member></member>
-        <member></member>
-        <member></member>
-        <member></member>
-        <member>OCR_NORMAL</member>
-        <member>OCR_IBEAM</member>
-        <member>OCR_WAIT</member>
-        <member>OCR_CROSS</member>
-        <member>OCR_UP</member>
-        <member>OCR_SIZENWSE</member>
-        <member>OCR_SIZENESW</member>
-        <member>OCR_SIZEWE</member>
-        <member>OCR_SIZENS</member>
-        <member>OCR_SIZEALL</member>
-        <member>OCR_NO</member>
-        <member>OCR_HAND</member>
+
+        <member>OCR_NORMAL</member> <member>OCR_IBEAM</member> <member>OCR_WAIT</member>
+        <member>OCR_CROSS</member> <member>OCR_UP</member> <member>OCR_SIZENWSE</member>
+        <member>OCR_SIZENESW</member> <member>OCR_SIZEWE</member> <member>OCR_SIZENS</member>
+        <member>OCR_SIZEALL</member> <member>OCR_NO</member> <member>OCR_HAND</member>
         <member>OCR_APPSTARTING</member>
-        <member>OBM_CLOSE</member>
-        <member>OBM_UPARROW</member>
-        <member>OBM_DNARROW</member>
-        <member>OBM_RGARROW</member>
-        <member>OBM_LFARROW</member>
-        <member>OBM_REDUCE</member>
-        <member>OBM_ZOOM</member>
-        <member>OBM_RESTORE</member>
-        <member>OBM_REDUCED</member>
-        <member>OBM_ZOOMD</member>
-        <member>OBM_RESTORED</member>
-        <member>OBM_UPARROWD</member>
+
+        <member>OBM_CLOSE</member> <member>OBM_UPARROW</member> <member>OBM_DNARROW</member>
+        <member>OBM_RGARROW</member> <member>OBM_LFARROW</member> <member>OBM_REDUCE</member>
+        <member>OBM_ZOOM</member> <member>OBM_RESTORE</member> <member>OBM_REDUCED</member>
+        <member>OBM_ZOOMD</member> <member>OBM_RESTORED</member> <member>OBM_UPARROWD</member>
         <member>OBM_DNARROWD</member>
-        <member>OBM_RGARROWD</member>
-        <member>OBM_LFARROWD</member>
-        <member>OBM_MNARROW</member>
-        <member>OBM_COMBO</member>
-        <member>OBM_UPARROWI</member>
-        <member>OBM_DNARROWI</member>
-        <member>OBM_RGARROWI</member>
-        <member>OBM_LFARROWI</member>
-        <member>OBM_SIZE</member>
-        <member>OBM_BTSIZE</member>
-        <member>OBM_CHECK</member>
-        <member>OBM_CHECKBOXES</member>
+
+        <member>OBM_RGARROWD</member> <member>OBM_LFARROWD</member> <member>OBM_MNARROW</member>
+        <member>OBM_COMBO</member> <member>OBM_UPARROWI</member> <member>OBM_DNARROWI</member>
+        <member>OBM_RGARROWI</member> <member>OBM_LFARROWI</member> <member>OBM_SIZE</member>
+        <member>OBM_BTSIZE</member> <member>OBM_CHECK</member> <member>OBM_CHECKBOXES</member>
         <member>OBM_BTNCORNERS</member>
         </simplelist>
       </para>
@@ -380,8 +363,8 @@
         linkend="mthIdClsImage">.Image~id()</link> to get the correct numeric value for one of the
         following symbols:
         <simplelist type='horiz' columns='2'>
-        <member>IMAGE_BITMAP</member> <member>IMAGE_ICON</member> <member>IMAGE_CURSOR</member>
-        <member>IMAGE_ENHMETAFILE</member>
+        <member>IMAGE_BITMAP</member> <member>IMAGE_ICON</member>
+        <member>IMAGE_CURSOR</member> <member>IMAGE_ENHMETAFILE</member>
         </simplelist>
       </para>
       <para>
@@ -404,14 +387,10 @@
         linkend="mthIdClsImage">.Image~id()</link> to get the correct numeric value for the following
         symbols:
         <simplelist type='horiz' columns='2'>
-        <member>LR_DEFAULTCOLOR</member>
-        <member>LR_CREATEDIBSECTION</member>
-        <member>LR_DEFAULTSIZE</member>
-        <member>LR_LOADFROMFILE</member>
-        <member>LR_LOADMAP3DCOLORS</member>
-        <member>LR_LOADTRANSPARENT</member>
-        <member>LR_MONOCHROME</member>
-        <member>LR_SHARED</member>
+        <member>LR_DEFAULTCOLOR</member>    <member>LR_CREATEDIBSECTION</member>
+        <member>LR_DEFAULTSIZE</member>     <member>LR_LOADFROMFILE</member>
+        <member>LR_LOADMAP3DCOLORS</member> <member>LR_LOADTRANSPARENT</member>
+        <member>LR_MONOCHROME</member>      <member>LR_SHARED</member>
         <member>LR_VGACOLOR</member>
         </simplelist>
       </para>
@@ -443,15 +422,15 @@
     questionIcon = .Image~getImage(.Image~id(IDI_QUESTION),              -
                                    .Image~id(IMAGE_ICON),                -
                                    .Size~new(0, 0), flags)
-    if question~isNull then do
+    if questionIcon~isNull then do
       say 'Error getting the question icon.  Error code:' .SystemErrorCode
     end
 
     /* Note that you can always use the raw numeric value for the args.
      * This works just as well:
      */
-    question = .Image~getImage(32514, 1, .Size~new(0, 0), 36928)
-    if question~isNull then do
+    questionIcon = .Image~getImage(32514, 1, .Size~new(0, 0), 36928)
+    if questionIcon~isNull then do
       say 'Error getting the question icon.  Error code:' .SystemErrorCode
     end
 
@@ -467,68 +446,225 @@
 <secondary>Image class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--fromFiles(--x--,--y--)---------------------------------------><
-
+>>--fromFiles(--files--+--------+--+--------+--+---------+--)----><
+                       +-,-type-+  +-,-size-+  +-,-flags-+
 ]]>
 </programlisting>
 
 <para>
-  Description
+  Gets an array of .Image objects using an array of file names.  This method is useful to load more
+  than one image at a time, when all the images have the same specifications, type, size, and flags.
 </para>
 <variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+    <para>
+      Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    </para>
+    <para>
+      Raises syntax errors when incorrect arguments are detected.
+    </para>
+    <para>
+      Pprovides an interface to the Win32 API: <computeroutput>LoadImage()</computeroutput>. Use the
+      <link linkend="windowsdoc">MSDN library</link> documentation to get more information on the
+      arguments to this method.
+    </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
-    <para>The arguments are:
     <variablelist>
-      <varlistentry><term>x</term>
+      <varlistentry><term>files</term>
       <listitem>
         <para>
-          xx.
+          An array of file names to use to instantiate the .Image objects.  The array can contain any
+          number of file names, but it can not be sparse.  That is, each index of the array must contain
+          a file name.  If an incorrect item is detected in the array, then a syntax error is raised and
+          no images are returned.
+        </para>
+        <para>
+          On the other hand, if there is an error with the Win32 API loading an image, then no syntax
+          error is raised.  The index in the array for that image is left empty.  One way to check for
+          this type of error is to compare the number of items in the returned array with the number of
+          items in file name array.
         </para>
       </listitem></varlistentry>
-      <varlistentry><term>y</term>
+      <varlistentry><term>type</term>
       <listitem>
         <para>
-          yyy,
+          Specifies the type of the image, bitmap, icon, cursor, or enhanced metafile. You can use <link
+          linkend="mthIdClsImage">.Image~id()</link> to get the correct numeric value for one of the
+          following symbols:
+          <simplelist type='horiz' columns='2'>
+          <member>IMAGE_BITMAP</member> <member>IMAGE_ICON</member>
+          <member>IMAGE_CURSOR</member> <member>IMAGE_ENHMETAFILE</member>
+          </simplelist>
+        </para>
+        <para>
+          The default is IMAGE_BITMAP.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>size</term>
+      <listitem>
+        <para>
+          A <link linkend="clsSize">.Size</link> object that specifies the size of the image.  The default
+          is a size of 0x0.  Under most circumstances this indicates that the actual size of the image
+          should be used.  However, the <link linkend="windowsdoc">MSDN library</link> documentation should
+          be consulted for other meanings.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>flags</term>
+      <listitem>
+        <para>
+          The combined value of the load resource flags for the LoadImage() API. You can use <link
+          linkend="mthIdClsImage">.Image~id()</link> to get the correct numeric value for the following
+          symbols:
+          <simplelist type='horiz' columns='2'>
+          <member>LR_DEFAULTCOLOR</member>    <member>LR_CREATEDIBSECTION</member>
+          <member>LR_DEFAULTSIZE</member>     <member>LR_LOADFROMFILE</member>
+          <member>LR_LOADMAP3DCOLORS</member> <member>LR_LOADTRANSPARENT</member>
+          <member>LR_MONOCHROME</member>      <member>LR_SHARED</member>
+          <member>LR_VGACOLOR</member>
+          </simplelist>
+        </para>
+        <para>
+          The default is LR_LOADFROMFILE.  The <link linkend="mthOrClsDlgUtil">or()</link> method of the
+          <link linkend="clsDlgUtil">.DlgUtil</link> class can be used to combine more than one of the
+          symbols if needed.
         </para>
       </listitem></varlistentry>
     </variablelist>
-    </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
     <para>
-      The possible return values are:
-      <variablelist>
-        <varlistentry><term>0</term>
-        <listitem>
-          <para>
-            Success
-          </para>
-        </listitem></varlistentry>
-        <varlistentry><term>-1</term>
-        <listitem>
-          <para>
-            Some error.
-          </para>
-        </listitem></varlistentry>
-      </variablelist>
+      The method returns an array of .Image objects, one object for each image that was loaded from a
+      file successfully.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
-    <para>
-      This example ...
       <programlisting>
       <![CDATA[
-      x = y
-      return 0
+
+
       ]]>
       </programlisting>
-    </para>
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End Image::fromFiles() [class method] -->
+
+<section id="mthFromIDsClsImage"><title>fromIDs (Class method)</title>
+<indexterm><primary>fromIDs</primary>
+<secondary>Image class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--fromIDs(--ids,--+--------+--+--------+--+---------+--)-----><
+                    +-,-type-+  +-,-size-+  +-,-flags-+
+]]>
+</programlisting>
+
+<para>
+  Uses an array of resource IDs to instantiate and return an array of .Image objects.  This method loads
+  the system image resources referenced by the resource IDs in the array.  The images must all be the
+  same type and size, and use the same load flags.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+    <para>
+      Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    </para>
+    <para>
+      Raises syntax errors when incorrect arguments are detected.
+    </para>
+    <para>
+      Pprovides an interface to the Win32 API: <computeroutput>LoadImage()</computeroutput>. Use the
+      <link linkend="windowsdoc">MSDN library</link> documentation to get more information on the
+      arguments to this method.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <variablelist>
+      <varlistentry><term>ids</term>
+      <listitem>
+        <para>
+          An array of resource IDs to use to instantiate the .Image objects.  The array can contain any
+          number of IDs, but it can not be sparse.  That is, each index of the array must contain a
+          number.  If an incorrect item is detected in the array, then a syntax error is raised and no
+          images are returned.
+        </para>
+        <para>
+          On the other hand, if there is an error with the Win32 API loading an image, then no syntax
+          error is raised.  The index in the array for that image is left empty.  One way to check for
+          this type of error is to compare the number of items in the returned array with the number of
+          items in ID array.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>type</term>
+      <listitem>
+        <para>
+          Specifies the type of the image, bitmap, icon, cursor, or enhanced metafile. You can use <link
+          linkend="mthIdClsImage">.Image~id()</link> to get the correct numeric value for one of the
+          following symbols:
+          <simplelist type='horiz' columns='2'>
+          <member>IMAGE_BITMAP</member> <member>IMAGE_ICON</member>
+          <member>IMAGE_CURSOR</member> <member>IMAGE_ENHMETAFILE</member>
+          </simplelist>
+        </para>
+        <para>
+          The default is IMAGE_ICON
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>size</term>
+      <listitem>
+        <para>
+          A <link linkend="clsSize">.Size</link> object that specifies the size of the image.  The default
+          is a size of 0x0.  Under most circumstances this indicates that the actual size of the image
+          should be used.  However, the <link linkend="windowsdoc">MSDN library</link> documentation should
+          be consulted for other meanings.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>flags</term>
+      <listitem>
+        <para>
+          The combined value of the load resource flags for the LoadImage() API. You can use <link
+          linkend="mthIdClsImage">.Image~id()</link> to get the correct numeric value for the following
+          symbols:
+          <simplelist type='horiz' columns='2'>
+          <member>LR_DEFAULTCOLOR</member>    <member>LR_CREATEDIBSECTION</member>
+          <member>LR_DEFAULTSIZE</member>     <member>LR_LOADFROMFILE</member>
+          <member>LR_LOADMAP3DCOLORS</member> <member>LR_LOADTRANSPARENT</member>
+          <member>LR_MONOCHROME</member>      <member>LR_SHARED</member>
+          <member>LR_VGACOLOR</member>
+          </simplelist>
+        </para>
+        <para>
+          The default is LR_SHARED | LR_DEFAULTSIZE.  The <link linkend="mthOrClsDlgUtil">or()</link>
+          method of the <link linkend="clsDlgUtil">.DlgUtil</link> class can be used to combine more than
+          one of the symbols if needed.
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The method returns an array of .Image objects, one object for each system image that was loaded
+      successfully.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <programlisting>
+    <![CDATA[
+
+
+    ]]>
+    </programlisting>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Image::fromIDs() [class method] -->
 
 
 <section id="mthColorRef"><title>colorRef (Class Method)</title>
@@ -536,136 +672,79 @@
 <programlisting>
 <![CDATA[
 
->>-.Image~colorRef(--R--,--+---+--,--+---+--)--------------><
-                           +-G-+     +-B-+
+>>-.Image~colorRef(--+---+--+-----+--+-----+--)--------------><
+                     +-R-+  +-,-G-+  +-,-B-+
 ]]>
 </programlisting>
 
 <para>
   The Windows API uses a COLORREF to specify a RGB color.  This is a 32-bit number with a
-  hexidecimal format of: <computeroutput>0x00bbggrr</computeroutput>.  Windows also defines 2
-  special values, CLR_NONE and CLR_DEFAULT.  The <computeroutput>colorRef</computeroutput>() method
-  provides a way to construct a COLORREF from the red, green, and blue values, or to get the
-  CLR_NONE and CLR_DEFAULT values.  Each color value (red, green, or blue) is a whole number in the
-  range of 0 to 255 inclusive.
+  hexidecimal format of: <computeroutput>0x00bbggrr</computeroutput>. The
+  <computeroutput>colorRef</computeroutput>() method provides a way to construct a COLORREF from the red,
+  green, and blue values.  Each color value (red, green, or blue) is a whole number in the range of 0 to
+  255 inclusive.
 </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>R</term>
-<listitem>
 <para>
-  Either the red component of the RGB color, or one of two keywords.  If a keyword is used for the
-  first argument, it must be the only argument.  If a keyword is not used, all three arguments are
-  required.  Only the first letter of the keyword is needed and case is not significant.  Allowable
-  keywords:
-  <itemizedlist>
-  <listitem><para>DEFAULT used to get the CLR_DEFAULT value.</para></listitem>
-  <listitem><para>NONE used to get the CLR_NONE value.</para></listitem>
-  </itemizedlist>
-</para></listitem></varlistentry>
-<varlistentry><term>G</term>
-<listitem><para>The green component of the RGB value.
-</para></listitem></varlistentry>
-<varlistentry><term>B</term>
-<listitem><para>The blue component of the RGB value.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The return is a valid RGB color, or CLR_NONE, or CLR_DEFAULT.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>
-<programlisting>
-<![CDATA[
-
- ref = .Image~colorRef(245, 89, 255)
- say 'A fancy purple:' ref '(0x' || ref~d2x~right(8, '0')')'
- say
-
-::requires 'oodPlain.cls'
-
-/* Output:
-
-A fancy purple: 16734709 (0x00FF59F5)
-
-*/
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-</section>  <!-- End Image::colorRef() [class method] -->
-
-
-<section id="mthFromIDsClsImage"><title>fromIDs (Class method)</title>
-<indexterm><primary>fromIDs</primary>
-<secondary>Image class</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--fromIDs(--x--,--y--)---------------------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  Description
+  Windows also defines 2 special values for a COLORREF, CLR_NONE and CLR_DEFAULT.  To get the numeric
+  value for either of these values, use the <link linkend="mthIdClsImage">.Image~id()</link> method.
+  I.e., <computeroutput>ref = .Image~id(CLR_NONE)</computeroutput>.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
-    <para>The arguments are:
+  <para>
+    All the arguments are optional, with 0 being the default for any omitted argument.
     <variablelist>
-      <varlistentry><term>x</term>
+      <varlistentry><term>R</term>
       <listitem>
         <para>
-          xx.
+          The red component of the RGB color.
         </para>
       </listitem></varlistentry>
-      <varlistentry><term>y</term>
+      <varlistentry><term>G</term>
       <listitem>
         <para>
-          yyy,
+          The green component of the RGB value.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>B</term>
+      <listitem>
+        <para>
+          The blue component of the RGB value.
         </para>
       </listitem></varlistentry>
     </variablelist>
-    </para>
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
     <para>
-      The possible return values are:
-      <variablelist>
-        <varlistentry><term>0</term>
-        <listitem>
-          <para>
-            Success
-          </para>
-        </listitem></varlistentry>
-        <varlistentry><term>-1</term>
-        <listitem>
-          <para>
-            Some error.
-          </para>
-        </listitem></varlistentry>
-      </variablelist>
+      The return is a valid RGB color, specified as a COLORREF.  Some method arguments related to images
+      or colors require a COLORREF.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
-    <para>
-      This example ...
-      <programlisting>
-      <![CDATA[
-      x = y
-      return 0
-      ]]>
-      </programlisting>
-    </para>
+    <programlisting>
+    <![CDATA[
+
+     ref = .Image~colorRef(245, 89, 255)
+     say 'A fancy purple:' ref '(0x' || ref~d2x~right(8, '0')')'
+     say
+
+    ::requires 'oodPlain.cls'
+
+    /* Output:
+
+    A fancy purple: 16734709 (0x00FF59F5)
+
+    */
+    ]]>
+    </programlisting>
   </listitem></varlistentry>
 </variablelist>
-</section>  <!-- End Image::fromIDs() [class method] -->
+</section>  <!-- End Image::colorRef() [class method] -->
+
 
 <section id="mthGetRValue"><title>getRValue (Class Method)</title>
 <indexterm><primary>getRValue</primary></indexterm>
@@ -676,53 +755,61 @@ A fancy purple: 16734709 (0x00FF59F5)
 ]]>
 </programlisting>
 
-<para>Returns the red component of a RGB color.
+<para>
+  Returns the red component of a RGB color.
 </para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The argument is:
-<variablelist>
-<varlistentry><term>colorRef</term>
-<listitem>
-<para>
-  A RGB color, a COLORREF.  See the <link linkend="mthColorRef">colorRef</link>() method for a brief
-  discussion of these terms.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The return is the red component of the specified RGB color.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>
-<programlisting id="exampleGetRValueClsImage">
-<![CDATA[
-  progressBar = self~getProgressBar("IDC_PB_FILES")
-  if progressBar <> .nil then do
-    purple = .Image~colorRef(245, 89, 255)
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      The single argument is:
+      <variablelist>
+      <varlistentry><term>colorRef</term>
+      <listitem>
+        <para>
+          A RGB color, a COLORREF.  See the <link linkend="mthColorRef">colorRef</link>() method for a
+          brief discussion of these terms.
+        </para>
+      </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The return is the red component of the specified RGB color.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <programlisting id="exampleGetRValueClsImage">
+    <![CDATA[
+      progressBar = self~getProgressBar("IDC_PB_FILES")
+      if progressBar <> .nil then do
+        purple = .Image~colorRef(245, 89, 255)
 
-    say 'Going to set the background color for the progress bar'
-    oldColor = progressBar~backgroundColor(purple)
+        say 'Going to set the background color for the progress bar'
+        oldColor = progressBar~backgroundColor(purple)
 
-    say 'Old background color was:' oldColor '(0x'oldColor~d2x')'
-    say '  Red:  ' .Image~getRValue(oldColor)
-    say '  Green:' .Image~getGValue(oldColor)
-    say '  Blue: ' .IMage~getBValue(oldColor)
-    say
-  end
+        say 'Old background color was:' oldColor '(0x'oldColor~d2x')'
+        say '  Red:  ' .Image~getRValue(oldColor)
+        say '  Green:' .Image~getGValue(oldColor)
+        say '  Blue: ' .IMage~getBValue(oldColor)
+        say
+      end
 
-  /* Output might be:
+      /* Output might be:
 
-  Going to set the background color for the progress bar
-  Old background color was: 11460781 (0xAEE0AD)
-    Red:   173
-    Green: 224
-    Blue:  174
+      Going to set the background color for the progress bar
+      Old background color was: 11460781 (0xAEE0AD)
+        Red:   173
+        Green: 224
+        Blue:  174
 
-  */
-]]>
-</programlisting>
-</para></listitem></varlistentry>
+      */
+    ]]>
+    </programlisting>
+  </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End Image::getRValue() [class method] -->
 
@@ -735,27 +822,33 @@ A fancy purple: 16734709 (0x00FF59F5)
 ]]>
 </programlisting>
 
-<para>Returns the green component of a RGB color.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The argument is:
-<variablelist>
-<varlistentry><term>colorRef</term>
-<listitem>
 <para>
-  A RGB color, a COLORREF.  See the <link linkend="mthColorRef">colorRef</link>() method for a brief
-  discussion of these terms.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The return is the green component of the specified RGB color.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem>
-<para>
-  See the example for the <link linkend="exampleGetRValueClsImage">getRValue</link>() method.
-</para></listitem></varlistentry>
+  Returns the green component of a RGB color.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <variablelist>
+      <varlistentry><term>colorRef</term>
+      <listitem>
+        <para>
+          A RGB color, a COLORREF.  See the <link linkend="mthColorRef">colorRef</link>() method for a
+          brief discussion of these terms.
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The return is the green component of the specified RGB color.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      See the example for the <link linkend="exampleGetRValueClsImage">getRValue</link>() method.
+    </para></listitem></varlistentry>
 </variablelist>
 </section>  <!-- End Image::getGValue() [class method] -->
 
@@ -768,43 +861,48 @@ A fancy purple: 16734709 (0x00FF59F5)
 ]]>
 </programlisting>
 
-<para>Returns the blue component of a RGB color.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The argument is:
-<variablelist>
-<varlistentry><term>colorRef</term>
-<listitem>
 <para>
-  A RGB color, a COLORREF.  See the <link linkend="mthColorRef">colorRef</link>() method for a brief
-  discussion of these terms.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The return is the blue component of the specified RGB color.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem>
-<para>
-  See the example for the <link linkend="exampleGetRValueClsImage">getRValue</link>() method.
-</para></listitem></varlistentry>
+  Returns the blue component of a RGB color.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <variablelist>
+    <varlistentry><term>colorRef</term>
+    <listitem>
+      <para>
+        A RGB color, a COLORREF.  See the <link linkend="mthColorRef">colorRef</link>() method for a
+        brief discussion of these terms.
+      </para></listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The return is the blue component of the specified RGB color.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      See the example for the <link linkend="exampleGetRValueClsImage">getRValue</link>() method.
+    </para></listitem></varlistentry>
 </variablelist>
 </section>  <!-- End Image::getBValue() [class method] -->
-
 
 <section id="mthHandleClsImage"><title>handle</title>
 <indexterm><primary>handle</primary>
 <secondary>Image class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--handle(--x--,--y--)---------------------------------------><
+>>--handle----------------------------------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  Description
+  Returns the Windows system handle to the image this object represents.  It is an error to invoke this
+  method if the image is null or the image has been released.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
