@@ -133,12 +133,12 @@ return testResult
   outFile = 'tmpOutDelMe.txt'
   rexxPrg = 'tmpPrg'
   src = .array~new
-  src[1] = "file = .stream~new("outFile")"
+  src[1] = 'file = .stream~new("'outFile'")'
   src[2] = "file~lineout('first line') "
   src[3] = "file~lineout('second line')"
 
-  rexPrg = createRexxPrgFile(src, rexxPrg)
-  self~assertNotSame('', rexPrg)
+  rexxPrg = createRexxPrgFile(src, rexxPrg)
+  self~assertNotSame('', rexxPrg)
 
   outPut = .array~new
   ret = execRexxPrg(rexxPrg, outPut)
