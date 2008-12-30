@@ -47,10 +47,10 @@
   In the Windows OS, a <emphasis role="italic">resource</emphasis>, is binary data used by a
   Windows-based application.  Usually, the binary data is attached to one of the application's executable
   files (*.exe or *.dll.)  However, the binary data can also be generated dynamically in memory. (Which
-  is common in ooDialog, for example a UserDialog.)
+  is common in ooDialog, for example the dialog template for a UserDialog is generated in memory.)
 </para>
 <para>
-  The data in standard resources describes things familar to ooDialog programmers like: dialog boxes,
+  The data in standard resources describes things familar to ooDialog programmers like, dialog boxes,
   icons, menus, cursors, bitmaps, fonts, etc. The standard resources also include accelerator tables,
   string-table entries, message-table entries, and other resourcess that ooDialog does not currently have
   support for, but may support in the future.
@@ -108,8 +108,32 @@
   replacement methods for all of the older bitmap methods have not as yet been implmented.  So, the older
   methods may still be necessary for some situations.
 </para></note>
+<para id="paraClsImageRelease">
+  A loaded image takes up some small part of the systems's resources. It is common to release an image
+  when the programmer is done with it.  The .Image class has the <link
+  linkend="mthReleaseClsImage">release()</link> method to allow the programmer to release the image, if
+  desired.  It is <emphasis role="bold">important</emphasis> to note that when the ooDialog program ends,
+  that is when the ooRexx interpreter process ends, the Windows operating system cleans up all the system
+  resources associated with any images used in the ooDialog program.  Not releasing images does no harm
+  and the ooDialog programmer should not be unduly worried about this aspect of images.
+</para>
 <para>
-
+  In addition, when images are loaded as shared, the operating system completely manages them.  Shared
+  images should not be released.  The .Image class tracks which images are loaded as shared and will not
+  call the underlying API to release a shared image. So, again, the ooDialog programmer does not need to
+  worry about mistakenly releasing a shared image.  Once an image is released, it is no longer valid and
+  the object can not be used as an argument to methods requiring a valid image.  This applies to shared
+  images also, even though they are not actually released.
+</para>
+<para>
+  Why then would the ooDialog programmer want to release images?  The main reason would be to minimize
+  the memory footprint of an application.  In a normal ooDialog program, with five to ten images,
+  releasing the images would have no noticeable impact on the memory footprint. However, in a long
+  running Rexx program that opened and closed a lot of dialogs that used images, releasing the images as
+  the dialogs were closed would make a difference in the long run.  The operating system would not clean
+  up the resources used by the images until the main Rexx program ended.  If the main program ran for
+  days, or maybe was never intended to be shut down, it would make sense to release images that were no
+  longer neede.
 </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Requires:</emphasis></term>
@@ -133,7 +157,7 @@
 <thead>
 <row>
 <entry>Method...</entry>
-<entry>...on page</entry>
+<entry>...description</entry>
 </row>
 </thead>
 <tbody>
@@ -195,13 +219,13 @@
 </variablelist>
 
 
-<section id="mthNewClsImage"><title>new (Class)</title>
+<section id="mthNewClsImage"><title>new (Class method)</title>
 <indexterm><primary>new</primary>
 <secondary>Image class</secondary></indexterm>
 
 <para>
   The Image class does not allow new Image objects to be instantiated from Rexx code using the new()
-  method.  New Image objects are obtained through one of the other Image class methods or they are
+  method.  New Image objects are obtained through one of the other Image class methods, or they are
   returned from methods of other classes.
 </para>
 <para>
@@ -235,11 +259,14 @@
 <para>
   Take for example the task of retrieving the 'Question' icon resource from the system using the
   <link linkend="mthGetImageClsImage">getImage()</link> method.  The ooDialog programmer could
-  either use the numerical value of 32514 or use the id method as follows:
+  either use the numerical value of 32514 or use the id method as follows.  Note that the two invocations
+  of getImage() are equivalent:
 </para>
   <programlisting>
   <![CDATA[
     qIcon = .Image~getImage(.Image~id(IDI_QUESTION))
+
+    qIcon = .Image~getImage(32514)
   ]]>
   </programlisting>
 <para>
@@ -312,9 +339,9 @@
       Raises syntax errors when incorrect arguments are detected.
     </para>
     <para>
-      Pprovides an interface to the Win32 API: <computeroutput>LoadImage()</computeroutput>. Use the
-      <link linkend="windowsdoc">MSDN library</link> documentation to get more information on the
-      arguments to this method.
+      Provides an interface to the Win32 API: <computeroutput>LoadImage()</computeroutput>. Use the <link
+      linkend="windowsdoc">MSDN library</link> documentation to get more information on the arguments to
+      this method.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -323,9 +350,13 @@
     <varlistentry><term>id</term>
     <listitem>
       <para>
-        If id is a number than it is taken to be the resource id of an image provided by the system. You
-        can use <link linkend="mthIdClsImage">.Image~id()</link> to get the correct numeric value for one
-        of the following symbols:
+        If not a number, then id must be the name of a stand-alone image file.
+      </para>
+      <para>
+        If id is a number than it is taken to be the resource id of an image provided by the system.  The
+        following are the symbolic names for all the system images. You can use <link
+        linkend="mthIdClsImage">.Image~id()</link> to get the correct numeric value for any of the
+        following symbols:
         <simplelist type='vert' columns='4'>
         <member>IDI_APPLICATION</member> <member>IDI_HAND</member> <member>IDI_QUESTION</member>
         <member>IDI_EXCLAMATION</member> <member>IDI_ASTERISK</member> <member>IDI_WINLOGO</member>
@@ -352,14 +383,11 @@
         <member>OBM_BTNCORNERS</member>
         </simplelist>
       </para>
-      <para>
-        If not a number, then id must be the name of an image file.
-      </para>
     </listitem></varlistentry>
     <varlistentry><term>type</term>
     <listitem>
       <para>
-        Specifies the type of the image, bitmap, icon, cursor, or enhanced metafile. You can use <link
+        Specifies the type of the image: bitmap, icon, cursor, or enhanced metafile. You can use <link
         linkend="mthIdClsImage">.Image~id()</link> to get the correct numeric value for one of the
         following symbols:
         <simplelist type='horiz' columns='2'>
@@ -374,18 +402,22 @@
     <varlistentry><term>size</term>
     <listitem>
       <para>
-        A <link linkend="clsSize">.Size</link> object that specifies the size of the image.  The default
-        is a size of 0x0.  Under most circumstances this indicates that the actual size of the image
-        should be used.  However, the <link linkend="windowsdoc">MSDN library</link> documentation should
-        be consulted for other meanings.
+        A <link linkend="clsSize">.Size</link> object that specifies the size of the image.
+      </para>
+      <para>
+        The default is a size of 0x0.  Under most circumstances this indicates that the actual size of
+        the image should be used.  However, the <link linkend="windowsdoc">MSDN library</link>
+        documentation should be consulted for other meanings.
       </para>
     </listitem></varlistentry>
     <varlistentry><term>flags</term>
     <listitem>
       <para>
-        The combined value of the load resource flags for the LoadImage() API. You can use <link
-        linkend="mthIdClsImage">.Image~id()</link> to get the correct numeric value for the following
-        symbols:
+        The load resource flags for the LoadImage() API.  The flags are one or more of the following
+        symbols. You can use <link linkend="mthIdClsImage">.Image~id()</link> to get the correct numeric
+        value for any of the following symbols.  The <link linkend="mthOrClsDlgUtil">or</link> method of
+        the <link linkend="clsDlgUtil">.DlgUtil</link> class can be used to combine more than one of the
+        symbols if needed.
         <simplelist type='horiz' columns='2'>
         <member>LR_DEFAULTCOLOR</member>    <member>LR_CREATEDIBSECTION</member>
         <member>LR_DEFAULTSIZE</member>     <member>LR_LOADFROMFILE</member>
@@ -396,9 +428,7 @@
       </para>
       <para>
         When id specifies a file name, the default flags are LR_LOADFROMFILE, othewise the default flags
-        are LR_SHARED | LR_DEFAULTSIZE.  The <link linkend="mthOrClsDlgUtil">or()</link> method of the
-        <link linkend="clsDlgUtil">.DlgUtil</link> class can be used to combine more than one of the
-        symbols if needed.
+        are LR_SHARED | LR_DEFAULTSIZE.  Note that the system images must be loaded as shared.
       </para>
     </listitem></varlistentry>
     </variablelist>
@@ -452,7 +482,7 @@
 </programlisting>
 
 <para>
-  Gets an array of .Image objects using an array of file names.  This method is useful to load more
+  Gets an array of .Image objects, using an array of file names.  This method is useful to load more
   than one image at a time, when all the images have the same specifications, type, size, and flags.
 </para>
 <variablelist>
@@ -465,9 +495,9 @@
       Raises syntax errors when incorrect arguments are detected.
     </para>
     <para>
-      Pprovides an interface to the Win32 API: <computeroutput>LoadImage()</computeroutput>. Use the
-      <link linkend="windowsdoc">MSDN library</link> documentation to get more information on the
-      arguments to this method.
+      Provides an interface to the Win32 API: <computeroutput>LoadImage()</computeroutput>. Use the <link
+      linkend="windowsdoc">MSDN library</link> documentation to get more information on the arguments to
+      this method.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -515,9 +545,11 @@
       <varlistentry><term>flags</term>
       <listitem>
         <para>
-          The combined value of the load resource flags for the LoadImage() API. You can use <link
-          linkend="mthIdClsImage">.Image~id()</link> to get the correct numeric value for the following
-          symbols:
+          The load resource flags for the LoadImage() API.  The flags are one or more of the following
+          symbols. You can use <link linkend="mthIdClsImage">.Image~id()</link> to get the correct numeric
+          value for any of the following symbols.  The <link linkend="mthOrClsDlgUtil">or</link> method of
+          the <link linkend="clsDlgUtil">.DlgUtil</link> class can be used to combine more than one of the
+          symbols if needed.
           <simplelist type='horiz' columns='2'>
           <member>LR_DEFAULTCOLOR</member>    <member>LR_CREATEDIBSECTION</member>
           <member>LR_DEFAULTSIZE</member>     <member>LR_LOADFROMFILE</member>
@@ -527,9 +559,7 @@
           </simplelist>
         </para>
         <para>
-          The default is LR_LOADFROMFILE.  The <link linkend="mthOrClsDlgUtil">or()</link> method of the
-          <link linkend="clsDlgUtil">.DlgUtil</link> class can be used to combine more than one of the
-          symbols if needed.
+          The default is LR_LOADFROMFILE.
         </para>
       </listitem></varlistentry>
     </variablelist>
@@ -578,9 +608,9 @@
       Raises syntax errors when incorrect arguments are detected.
     </para>
     <para>
-      Pprovides an interface to the Win32 API: <computeroutput>LoadImage()</computeroutput>. Use the
-      <link linkend="windowsdoc">MSDN library</link> documentation to get more information on the
-      arguments to this method.
+      Provides an interface to the Win32 API: <computeroutput>LoadImage()</computeroutput>. Use the <link
+      linkend="windowsdoc">MSDN library</link> documentation to get more information on the arguments to
+      this method.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -604,7 +634,7 @@
       <varlistentry><term>type</term>
       <listitem>
         <para>
-          Specifies the type of the image, bitmap, icon, cursor, or enhanced metafile. You can use <link
+          Specifies the type of the image: bitmap, icon, cursor, or enhanced metafile. You can use <link
           linkend="mthIdClsImage">.Image~id()</link> to get the correct numeric value for one of the
           following symbols:
           <simplelist type='horiz' columns='2'>
@@ -628,9 +658,11 @@
       <varlistentry><term>flags</term>
       <listitem>
         <para>
-          The combined value of the load resource flags for the LoadImage() API. You can use <link
-          linkend="mthIdClsImage">.Image~id()</link> to get the correct numeric value for the following
-          symbols:
+          The load resource flags for the LoadImage() API.  The flags are one or more of the following
+          symbols. You can use <link linkend="mthIdClsImage">.Image~id()</link> to get the correct numeric
+          value for any of the following symbols.  The <link linkend="mthOrClsDlgUtil">or</link> method of
+          the <link linkend="clsDlgUtil">.DlgUtil</link> class can be used to combine more than one of the
+          symbols if needed.
           <simplelist type='horiz' columns='2'>
           <member>LR_DEFAULTCOLOR</member>    <member>LR_CREATEDIBSECTION</member>
           <member>LR_DEFAULTSIZE</member>     <member>LR_LOADFROMFILE</member>
@@ -640,9 +672,7 @@
           </simplelist>
         </para>
         <para>
-          The default is LR_SHARED | LR_DEFAULTSIZE.  The <link linkend="mthOrClsDlgUtil">or()</link>
-          method of the <link linkend="clsDlgUtil">.DlgUtil</link> class can be used to combine more than
-          one of the symbols if needed.
+          The default is LR_SHARED | LR_DEFAULTSIZE.
         </para>
       </listitem></varlistentry>
     </variablelist>
@@ -828,15 +858,18 @@
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
-    <variablelist>
-      <varlistentry><term>colorRef</term>
-      <listitem>
-        <para>
-          A RGB color, a COLORREF.  See the <link linkend="mthColorRef">colorRef</link>() method for a
-          brief discussion of these terms.
-        </para>
-      </listitem></varlistentry>
-    </variablelist>
+    <para>
+      The single argument is:
+      <variablelist>
+        <varlistentry><term>colorRef</term>
+        <listitem>
+          <para>
+            A RGB color, a COLORREF.  See the <link linkend="mthColorRef">colorRef</link>() method for a
+            brief discussion of these terms.
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
@@ -867,14 +900,17 @@
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
-    <variablelist>
-    <varlistentry><term>colorRef</term>
-    <listitem>
-      <para>
-        A RGB color, a COLORREF.  See the <link linkend="mthColorRef">colorRef</link>() method for a
-        brief discussion of these terms.
-      </para></listitem></varlistentry>
-    </variablelist>
+    <para>
+      The single argument is:
+      <variablelist>
+      <varlistentry><term>colorRef</term>
+      <listitem>
+        <para>
+          A RGB color, a COLORREF.  See the <link linkend="mthColorRef">colorRef</link>() method for a
+          brief discussion of these terms.
+        </para></listitem></varlistentry>
+      </variablelist>
+    </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
@@ -902,59 +938,41 @@
 
 <para>
   Returns the Windows system handle to the image this object represents.  It is an error to invoke this
-  method if the image is null or the image has been released.
+  method if the image is null, or after the image has been released.
+</para>
+<para>
+   Currently, the handle is only useful for display.  In the ooDialog framework, methods that use images
+   for arguments, use the .Image object, not the image handle.  Older methods that use a bitmap handle
+   for a argument will not work with this handle.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
-    <para>The arguments are:
-    <variablelist>
-      <varlistentry><term>x</term>
-      <listitem>
-        <para>
-          xx.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>y</term>
-      <listitem>
-        <para>
-          yyy,
-        </para>
-      </listitem></varlistentry>
-    </variablelist>
+    <para>
+      The method does not have an argument.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
     <para>
-      The possible return values are:
-      <variablelist>
-        <varlistentry><term>0</term>
-        <listitem>
-          <para>
-            Success
-          </para>
-        </listitem></varlistentry>
-        <varlistentry><term>-1</term>
-        <listitem>
-          <para>
-            Some error.
-          </para>
-        </listitem></varlistentry>
-      </variablelist>
+      The return is the handle to the image.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
-    <para>
-      This example ...
-      <programlisting>
-      <![CDATA[
-      x = y
-      return 0
-      ]]>
-      </programlisting>
-    </para>
+    <programlisting>
+    <![CDATA[
+    hIcon = .Image~getImage(.Image~id(IDI_QUESTION), .Image~id(IMAGE_ICON))
+    say 'hIcon:  ' hIcon
+    say ' handle:' hIcon~handle
+
+    /* Output to the console might be (on a 64-bit Windows system)
+
+       hIcon:  an Image
+       handle: 0x000000000001002B
+    */
+    ]]>
+    </programlisting>
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End Image::handle() -->
@@ -965,32 +983,36 @@
 <secondary>Image class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--release(--x--,--y--)---------------------------------------><
+>>--release----------------------------------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  Description
+  Releases the image.  This will free up operating system resources used for the image.  See the
+  introduction to the <link linkend="paraClsImageRelease">.Image class</link> for some discussion on
+  releasing an image.
+</para>
+<para>
+  Once an image object has been released, it is an error to use the object.  However, the <link
+  linkend="mthIsNullClsImage">isNull()</link> and <link
+  linkend="mthSystemErrorCodeClsImage">systemErrorCode()</link> methods can always be used.  The isNull()
+  method will return <computeroutput>.true</computeroutput> after an image object has been released.
+  Shared images should not be released, the operating system manages them.  To prevent the programmer
+  from accidentally releasing a shared image, the .Image object tracks which images are loaded as shared
+  and does not release a shared image if the programmer requests it.
 </para>
 <variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+    <para>
+      Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
-    <para>The arguments are:
-    <variablelist>
-      <varlistentry><term>x</term>
-      <listitem>
-        <para>
-          xx.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>y</term>
-      <listitem>
-        <para>
-          yyy,
-        </para>
-      </listitem></varlistentry>
-    </variablelist>
+    <para>
+      There are no arguments.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
@@ -1001,13 +1023,13 @@
         <varlistentry><term>0</term>
         <listitem>
           <para>
-            Success
+            No error detected.
           </para>
         </listitem></varlistentry>
-        <varlistentry><term>-1</term>
+        <varlistentry><term>non-zero</term>
         <listitem>
           <para>
-            Some error.
+            The operating system error code.
           </para>
         </listitem></varlistentry>
       </variablelist>
@@ -1016,11 +1038,40 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
-      This example ...
+      In this example, when the user presses the Test button, the current image for the static control is
+      replaced by the system question mark image. The old image is no longer needed and it is released.
       <programlisting>
       <![CDATA[
-      x = y
-      return 0
+      ::method onTest
+
+        iconControl = self~getStaticControl(IDC_ICON_QUESTION)
+        if iconControl <> .nil then do
+          hQuestion = .Image~getImage(.Image~id(IDI_QUESTION), .Image~id(IMAGE_ICON))
+          say 'Question icon:' hQuestion~handle
+          if hQuestion~isNull then do
+            say 'errror code:' .SystemErrorCode
+          end
+          else do
+            image = iconControl~setImage(hQuestion)
+            say 'Swapped images:'
+            say '  new icon:' hQuestion~handle
+            say '  old icon:' image~handle
+
+            -- The old image is no longer needed.
+            ret = image~release
+            say 'Released old image return:' ret '.SystemErrorCode:' .SystemErrorCode
+          end
+        end
+
+        /* Output on the screen, on a 64-bit system, might be:
+
+         Question icon: 0x000000000001002B
+         Swapped images:
+           new icon: 0x000000000001002B
+           old icon: 0x0000000001120639
+         Released old image return: 0 .SystemErrorCode: 0
+
+        */
       ]]>
       </programlisting>
     </para>
@@ -1034,62 +1085,51 @@
 <secondary>Image class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--isNull(--x--,--y--)---------------------------------------><
+>>--isNull----------------------------------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  Description
+  The isNull() method tests if the image object is valid.  The image will be null if an error occurred
+  when it was loaded, or if the image has been released.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
-    <para>The arguments are:
-    <variablelist>
-      <varlistentry><term>x</term>
-      <listitem>
-        <para>
-          xx.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>y</term>
-      <listitem>
-        <para>
-          yyy,
-        </para>
-      </listitem></varlistentry>
-    </variablelist>
+    <para>
+      There are no arguments.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
     <para>
-      The possible return values are:
-      <variablelist>
-        <varlistentry><term>0</term>
-        <listitem>
-          <para>
-            Success
-          </para>
-        </listitem></varlistentry>
-        <varlistentry><term>-1</term>
-        <listitem>
-          <para>
-            Some error.
-          </para>
-        </listitem></varlistentry>
-      </variablelist>
+      The method returns <computeroutput>.true</computeroutput> if the image is not valid, is null, and
+      <computeroutput>.false</computeroutput> if the image is not null.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
-      This example ...
+      In this example the programmer wanted to load the system question mark icon, but used the wrong
+      image type.  (He uses IMAGE_BITMAP instead of IMAGE_ICON.)  The system will refuse to load the
+      image.  To test if the image was loaded okay, use the isNull() method.  Note that the getImage()
+      method set the .SystemErrorCode.  As in all software, the error codes are not always that
+      informative.
       <programlisting>
       <![CDATA[
-      x = y
-      return 0
+      hQuestion = .Image~getImage(.Image~id(IDI_QUESTION), .Image~id(IMAGE_BITMAP))
+      if hQuestion~isNull then do
+        say 'System Errror code:' .SystemErrorCode
+        say '  System message:  ' SysGetErrorText(.SystemErrorCode)
+      end
+
+      /* Output would be:
+
+      System Errror code: 1814
+        System message:   The specified resource name cannot be found in the image file.
+
+      */
       ]]>
       </programlisting>
     </para>
@@ -1103,62 +1143,71 @@
 <secondary>Image class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--systemErrorCode(--x--,--y--)---------------------------------------><
+>>--systemErrorCode----------------------------------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  Description
+  The systemErrorCode attribute of the image object will reflect any system error codes that are detected
+  while working with an image object.  This is the same error code as the <link
+  linkend="dotSystemErrorCode">.SystemErrorCode</link> is set to.  This can be useful if the programmer
+  wants to check for an error code at some point when it is possible that .SystemErrorCode has been
+  reset.  (See the example below.)
+</para>
+<para>
+   Like the <link linkend="mthIsNullClsImage">isNull()</link> method this method can be invoked even when
+   the image is not valid.  However, it should not be used to check if the image is valid because it is
+   possible for the value to be 0 and the image to be null.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
-    <para>The arguments are:
-    <variablelist>
-      <varlistentry><term>x</term>
-      <listitem>
-        <para>
-          xx.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>y</term>
-      <listitem>
-        <para>
-          yyy,
-        </para>
-      </listitem></varlistentry>
-    </variablelist>
+    <para>
+      There are no arguments to this method
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
     <para>
-      The possible return values are:
-      <variablelist>
-        <varlistentry><term>0</term>
-        <listitem>
-          <para>
-            Success
-          </para>
-        </listitem></varlistentry>
-        <varlistentry><term>-1</term>
-        <listitem>
-          <para>
-            Some error.
-          </para>
-        </listitem></varlistentry>
-      </variablelist>
+      The value is usually 0, but may be a system error code if one was detected.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
-      This example ...
+      In this example the system error code attribute for an image is checked at a point in the
+      life-cycle of the application when checking the <computeroutput>.SystemErrorCode</computeroutput>
+      would be meaningless:
       <programlisting>
       <![CDATA[
-      x = y
-      return 0
+      ::method onYes
+        expose hIcon
+
+        -- Need to release the icon image, but it is not always valid.
+        if \ hIcon~isNull then hIcon~release
+        else do
+          say 'The icon image is not valid.'
+          say '  Error when it was loaded:' hIcon~systemErrorCode
+          say '  System message:          ' SysGetErrorText(hIcon~systemErrorCode)
+        end
+        return self~ok:super
+
+      /* Output might be:
+
+      The icon image is not valid.
+        Error when it was loaded: 2
+        System message:           The system cannot find the file specified.
+
+      */
+
+      /* Note that the below was the error that caused the above.  The file name
+       * is actually 'shaveIce.ico' not shavedIce.ico.
+       */
+
+        if iconControl <> .nil then do
+          hIcon = .Image~getImage("shavedIce.ico", .Image~id(IMAGE_ICON))
+          ...
       ]]>
       </programlisting>
     </para>
@@ -1171,14 +1220,26 @@
 <section id="clsImageList"><title>ImageList Class</title>
 <indexterm><primary>ImageList class</primary></indexterm>
 <para>
-  A ... is ..
+  An image list is a object used to efficiently manage large sets of images.  Either icons or bitmaps.
+  In an image list, all images are the same size and are accessed by a zero-based index. The images are
+  in screen device format. Optionally, each image in the list can have a matching monochrome bitmap that
+  is used as a mask to draw the image transparently.
 </para>
 <para>
+  The .ImageList object acts as an interface to the underlying operating system Image List, which
+  Microsoft calls a control. Although Microsoft calls the Image List a control and  documents it with the
+  other dialog controls, it is not a control in the same sense as button, edit, or list-view controls.
+  Use the <link linkend="windowsdoc">MSDN library</link> documentation to get more information on exactly
+  how Image Lists work.
+</para>
+<para>
+  Future versions of the .ImageList are intended to provide a complete interface to the underlying Image
+  List control.  At this time not all functionality is implemented.
 </para>
 <variablelist>
 <varlistentry><term>Requires:</term>
-<listitem><para>The ImageList class requires the class
-definition file <computeroutput>ooDialog.cls</computeroutput>:
+<listitem><para>The ImageList class requires the class definition file
+<computeroutput>ooDialog.cls</computeroutput>:
 <programlisting>
 <![CDATA[
 ::requires "ooDialog.cls"
@@ -1197,7 +1258,7 @@ definition file <computeroutput>ooDialog.cls</computeroutput>:
 <thead>
 <row>
 <entry>Method...</entry>
-<entry>...on page</entry>
+<entry>...description page</entry>
 </row>
 </thead>
 <tbody>
@@ -1264,49 +1325,14 @@ definition file <computeroutput>ooDialog.cls</computeroutput>:
 
 
 <section id="mthNewClsImageList"><title>new (Class method)</title>
-<indexterm><primary>methodName</primary>
-<secondary>ButtonControl class</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>-aButtonControl~methodName(--x--,--y--)------------------><
-
-]]>
-</programlisting>
-
-<para></para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>x</term>
-<listitem><para>xx.
-</para></listitem></varlistentry>
-<varlistentry><term>y</term>
-<listitem><para>yyy,
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The possible return values are:
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>Success
-</para></listitem></varlistentry>
-<varlistentry><term>-1</term>
-<listitem><para>Some error.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>This example ...
-<programlisting>
-<![CDATA[
-x = y
-return 0
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
+<indexterm><primary>new</primary>
+<secondary>ImageList class</secondary></indexterm>
+<para>
+  Currently it is not intended for the ooDialog programmer to instantiate an image list object directly
+  using the new method.  This may change in the future and will be documented at that time, if the
+  intention changes.  .ImageList objects are instantiated using the <link
+  linkend="mthCreateClsImageList">create()</link> method.
+</para>
 </section>  <!-- End ImageList::new() [class method] -->
 
 <section id="mthCreateClsImageList"><title>create (Class method)</title>
@@ -1314,44 +1340,83 @@ return 0
 <secondary>ImageList class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--create(------------------------------------------------><
-
+>>--create(--+--------+-+---------+-+--------+-+-------+-----------><
+             +--size--+ +-,-flags-+ +-,count-+ +-,grow-+
 ]]>
 </programlisting>
 
-<para></para>
+<para>
+  Creates a new empty image list of the type specified.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>x</term>
-<listitem><para>xx.
-</para></listitem></varlistentry>
-<varlistentry><term>y</term>
-<listitem><para>yyy,
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The possible return values are:
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>Success
-</para></listitem></varlistentry>
-<varlistentry><term>-1</term>
-<listitem><para>Some error.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>This example ...
-<programlisting>
-<![CDATA[
-x = y
-return 0
-]]>
-</programlisting>
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+    <para>
+      Provides an interface to the <computeroutput>ImageList_Create()</computeroutput> API. Use the <link
+      linkend="windowsdoc">MSDN library</link> documentation to get more information on the arguments to
+      this method.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The arguments are:
+    <variablelist>
+      <varlistentry><term>size</term>
+      <listitem>
+        <para>
+          A <link linkend="clsSize">.Size</link> object that specifies the size of a single image in the
+          image list.  All images in an image list. have the same size.
+        </para>
+        <para>
+          If this argument is omitted the system default size for an icon is used.  This size can vary
+          depending on which version of Windows is running and whether the user has selected to use large
+          icons or not.  A typical size is 32 x 32 (in pixels.)
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>flags</term>
+      <listitem>
+        <para>
+          The flags that specify the type of image list to create. The flags are one or more of the following
+          symbols, but can include only one ILC_COLOR value. You can use <link
+          linkend="mthIdClsImage">.Image~id()</link> to get the correct numeric value for any of the
+          following symbols.  The <link linkend="mthOrClsDlgUtil">or</link> method of the <link
+          linkend="clsDlgUtil">.DlgUtil</link> class can be used to combine the symbols.
+          <simplelist type='horiz' columns='2'>
+          <member>ILC_MASK</member>     <member>ILC_COLOR24</member>
+          <member>ILC_COLOR</member>    <member>ILC_COLOR32</member>
+          <member>ILC_COLORDDB</member> <member>ILC_PALETTE</member>
+          <member>ILC_COLOR4</member>   <member>ILC_MIRROR</member>
+          <member>ILC_COLOR8</member>   <member>ILC_PERITEMMIRROR</member>
+          <member>ILC_COLOR16</member>
+          </simplelist>
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      A new, empty, image list is returned.
+      <note><title>Note</title><para>
+      It is theoretical possible for this method to fail and the returned image list to be null.
+      However, in practice, it is virtually impossible to cause a failure.  Using a size of 0 x 0 seems
+      about the only way.
+      </para></note>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <programlisting>
+  <![CDATA[
+  -- We set the flags to create a 24 bit color, masked image list.
+  flags = .DlgUtil~or(.Image~id(ILC_COLOR24), .Image~id(ILC_MASK))
+
+  -- Create an empty .ImageList object:
+  imageList = .ImageList~create(.Size~new(61, 46), flags, 10, 10);
+  ]]>
+  </programlisting>
+  </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End ImageList::create() [class method] -->
 
