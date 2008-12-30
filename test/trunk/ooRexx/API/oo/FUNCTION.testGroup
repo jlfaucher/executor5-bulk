@@ -531,15 +531,15 @@ return .ooTestResult~new(5)~~addException(err)
 ::method 'testFloat01'
   numeric digits 15
   val = 3.40282347E+38
-  self~assertSame(val, TestFloatArg(val))
+  self~assertFuzzyEquals(val, TestFloatArg(val), 16)
   val = 1.17549435E-38
-  self~assertSame(val, TestFloatArg(val))
+  self~assertFuzzyEquals(val, TestFloatArg(val), 16)
   val = 0
-  self~assertSame(val, TestFloatArg(val))
+  self~assertFuzzyEquals(val, TestFloatArg(val), 16)
   val = 1
-  self~assertSame(val, TestFloatArg(val))
+  self~assertFuzzyEquals(val, TestFloatArg(val), 16)
   val = -1
-  self~assertSame(val, TestFloatArg(val))
+  self~assertFuzzyEquals(val, TestFloatArg(val), 16)
   val = "nan"
   self~assertSame(val, TestFloatArg(val))
   val = "+infinity"
@@ -551,9 +551,9 @@ return .ooTestResult~new(5)~~addException(err)
   val = -3.40282347E+40
   self~assertSame("-infinity", TestFloatArg(val))
   val = 3.40282347E-50
-  self~assertSame(0, TestFloatArg(val))
+  self~assertFuzzyEquals(0, TestFloatArg(val), 16)
   val = -3.40282347E-50
-  self~assertSame(0, TestFloatArg(val))
+  self~assertFuzzyEquals(0, TestFloatArg(val), 16)
 
 ::method 'testFloat02'
   self~expectSyntax('88.921')

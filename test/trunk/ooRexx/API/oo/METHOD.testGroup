@@ -655,19 +655,19 @@ return .ooTestResult~new(5)~~addException(err)
   tester = .METHODtester~new
   numeric digits 15
   val = 3.40282347E+38
-  self~assertSame(val, tester~TestFloatArg(val))
+  self~assertFuzzyEquals(val, tester~TestFloatArg(val), 16)
   val = 1.17549435E-38
-  self~assertSame(val, tester~TestFloatArg(val))
+  self~assertFuzzyEquals(val, tester~TestFloatArg(val), 16)
   val = -3.40282347E+38
-  self~assertSame(val, tester~TestFloatArg(val))
+  self~assertFuzzyEquals(val, tester~TestFloatArg(val), 16)
   val = -1.17549435E-38
-  self~assertSame(val, tester~TestFloatArg(val))
+  self~assertFuzzyEquals(val, tester~TestFloatArg(val), 16)
   val = 0
-  self~assertSame(val, tester~TestFloatArg(val))
+  self~assertFuzzyEquals(val, tester~TestFloatArg(val), 16)
   val = 1
-  self~assertSame(val, tester~TestFloatArg(val))
+  self~assertFuzzyEquals(val, tester~TestFloatArg(val), 16)
   val = -1
-  self~assertSame(val, tester~TestFloatArg(val))
+  self~assertFuzzyEquals(val, tester~TestFloatArg(val), 16)
   val = "nan"
   self~assertSame(val, tester~TestFloatArg(val))
   val = "+infinity"
@@ -675,15 +675,15 @@ return .ooTestResult~new(5)~~addException(err)
   val = "-infinity"
   self~assertSame(val, tester~TestFloatArg(val))
   val = 3.40282347E+40
-  self~assertSame("+infinity", tester~TestFloatArg(val))
+  self~assertFuzzyEquals("+infinity", tester~TestFloatArg(val), 16)
   val = -3.40282347E+40
-  self~assertSame("-infinity", tester~TestFloatArg(val))
+  self~assertFuzzyEquals("-infinity", tester~TestFloatArg(val), 16)
   val = 3.40282347E-50
-  self~assertSame(0, tester~TestFloatArg(val))
+  self~assertFuzzyEquals(0, tester~TestFloatArg(val), 16)
   val = -3.40282347E-50
-  self~assertSame(0, tester~TestFloatArg(val))
-  self~assertSame(1, tester~TestOptionalFloatArg(1))
-  self~assertSame(0, tester~TestOptionalFloatArg())
+  self~assertFuzzyEquals(0, tester~TestFloatArg(val), 16)
+  self~assertFuzzyEquals(1, tester~TestOptionalFloatArg(1), 16)
+  self~assertFuzzyEquals(0, tester~TestOptionalFloatArg(), 16)
 
 ::method 'testFloat02'
   tester = .METHODtester~new
