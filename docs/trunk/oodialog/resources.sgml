@@ -1352,9 +1352,18 @@
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
     <para>
+      Raises syntax errors when incorrect arguments are detected.
+    </para>
+    <para>
       Provides an interface to the <computeroutput>ImageList_Create()</computeroutput> API. Use the <link
       linkend="windowsdoc">MSDN library</link> documentation to get more information on the arguments to
       this method.
+    </para>
+    <para>
+      The ILC_MIRROR and ILC_PERITEMMIRROR flags require <link linkend="comctl32">Common Control
+      Library</link> version 6.0 or later. If necessary use the <link
+      linkend="mthComCtl32Version">comCtl32Version</link>() method to determine the current version of
+      the library.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1426,29 +1435,47 @@
 <secondary>ImageList class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--add(--x--,--y--)---------------------------------------><
-
+>>--add(--image-+---------+--)-----------------------------><
+                +-,-mask--+
 ]]>
 </programlisting>
 
 <para>
-  Description
+  Adds a bitmap image or images to the image list.  The number of images is inferred from the width of
+  the added bitmap.  Optionally adds the mask for the bitmap(s).  If the image list does not use a mask,
+  the mask argument is ignored, even if it is present.
+</para>
+<para>
+  Internally the image list makes a copy of the bitmap.  After the method returns, the original image can
+  be released if it is not needed anymore.
 </para>
 <variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+    <para>
+      Raises syntax errors when incorrect arguments are detected.
+    </para>
+    <para>
+      Provides an interface to the <computeroutput>ImageList_Add()</computeroutput> API. The <link
+      linkend="windowsdoc">MSDN library</link> documentation can provide more information on this method.
+    </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
     <para>The arguments are:
     <variablelist>
-      <varlistentry><term>x</term>
+      <varlistentry><term>image</term>
       <listitem>
         <para>
-          xx.
+          The .Image object that represents the image to add.  This must be a bitmap image.  The width of
+          the image determines the number of images added.  (Remember all images in a image list are the
+          same size.)
         </para>
       </listitem></varlistentry>
-      <varlistentry><term>y</term>
+      <varlistentry><term>mask</term>
       <listitem>
         <para>
-          yyy,
+          The mask(s) to use with the image(s).  This must be a bitmap image.
         </para>
       </listitem></varlistentry>
     </variablelist>
@@ -1457,31 +1484,28 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
     <para>
-      The possible return values are:
-      <variablelist>
-        <varlistentry><term>0</term>
-        <listitem>
-          <para>
-            Success
-          </para>
-        </listitem></varlistentry>
-        <varlistentry><term>-1</term>
-        <listitem>
-          <para>
-            Some error.
-          </para>
-        </listitem></varlistentry>
-      </variablelist>
+      On success, the index of the first image added is returned, otherwise -1 is returned.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
-      This example ...
+      This example sets the image list for a list-view control.  The images are loaded from psdemolv.bmp
+      which is a bitmap 16 pixels high by 64 pixels wide, containing 4 individual images.  Since the
+      image list is created with a size of 16 x 16, when the add() method is used, the image list infers
+      that the bitmap is 4 images.
       <programlisting>
       <![CDATA[
-      x = y
-      return 0
+      -- Set the images for the items in the list-view.
+      image = .Image~getImage("bmp\psdemolv.bmp")
+      imageList = .ImageList~create(.Size~new(16, 16), .Image~id(ILC_COLOR8), 4, 0)
+      if \image~isNull,  \imageList~isNull then do
+         imageList~add(image)
+         lc~setImageList(imageList, .Image~id(LVSIL_SMALL))
+
+         -- The image list makes a copy of the bitmap, so we can release it now.
+         image~release
+      end
       ]]>
       </programlisting>
     </para>
@@ -1495,29 +1519,47 @@
 <secondary>ImageList class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--addMasked(--x--,--y--)---------------------------------------><
+>>--addMasked(--image-,-cRef--)----------------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  Description
+  Adds a bitmap image, or images, to the image list.  The COLOREF cRef is used to generate the mask.
+</para>
+<para>
+  Internally the image list makes a copy of the bitmap.  After the method returns, the original image can
+  be released if it is not needed anymore.
 </para>
 <variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+    <para>
+      Raises syntax errors when incorrect arguments are detected.
+    </para>
+    <para>
+      Provides an interface to the <computeroutput>ImageList_AddMasked()</computeroutput> API. The <link
+      linkend="windowsdoc">MSDN library</link> documentation can provide more information on this method.
+    </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
     <para>The arguments are:
     <variablelist>
-      <varlistentry><term>x</term>
+      <varlistentry><term>image</term>
       <listitem>
         <para>
-          xx.
+          The .Image object that represents the image to add.  This must be a bitmap image.  The width of
+          the image determines the number of images added.  (Remember all images in a image list are the
+          same size.)
         </para>
       </listitem></varlistentry>
-      <varlistentry><term>y</term>
+      <varlistentry><term>cRef</term>
       <listitem>
         <para>
-          yyy,
+          The <link linkend="mthColorRef">color</link> to use to generate the mask. In the added image,
+          each pixel that matches this color is changed to black, and the corresponding bit in the mask
+          is set to 1.
         </para>
       </listitem></varlistentry>
     </variablelist>
@@ -1526,31 +1568,40 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
     <para>
-      The possible return values are:
-      <variablelist>
-        <varlistentry><term>0</term>
-        <listitem>
-          <para>
-            Success
-          </para>
-        </listitem></varlistentry>
-        <varlistentry><term>-1</term>
-        <listitem>
-          <para>
-            Some error.
-          </para>
-        </listitem></varlistentry>
-      </variablelist>
+      On success, the index of the first added image is returned, otherwise -1 is returned.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
-      This example ...
+      This example comes from a dialog with a Tab control.  An image list is used to set an icon for each
+      tab.  Each icon is a colored letter on a white background.  Using a white color to generate the
+      mask causes the image to be drawn tranparently.  The colored letter itself shows, and the rest of
+      the image lets the underlying color show through.
       <programlisting>
       <![CDATA[
-      x = y
-      return 0
+      -- Add all the tabs, including the index into the image list for an icon for
+      -- each tab.
+      tc~AddFullSeq("Red", 0, ,"Green", 1, , "Moss", 2, , "Blue", 3, ,   -
+                    "Purple", 4, ,  "Cyan", 5, , "Gray", 6)
+
+      -- Create a COLORREF (pure white) and load our bitmap.
+      cRef = .Image~colorRef(255, 255, 255)
+      image = .Image~getImage("bmp\psdemoTab.bmp")
+
+      -- Create our image list, as a masked image list.
+      imageList = .ImageList~create(.Size~new(16, 16),                   -
+                                    .DlgUtil~or(.Image~id(ILC_COLOR24),  -
+                                    .Image~id(ILC_MASK)),                -
+                                     10, 0)
+
+      if \image~isNull,  \imageList~isNull then do
+         imageList~addMasked(image, cRef)
+         tc~setImageList(imageList)
+
+         image~release
+      end
+
       ]]>
       </programlisting>
     </para>
@@ -1564,23 +1615,36 @@
 <secondary>ImageList class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--addIcon(--x--,--y--)---------------------------------------><
+>>--addIcon(--image--)-----------------------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  Description
+  Adds an icon or cursor image to the image list.  If this image list is masked, then both the image and
+  mask bitmaps of the icon or cursor are  copied. If it is not masked, then only the image bitmap is
+  copied.
+</para>
+<para>
+  Internally the image list makes a copy of the bitmap.  After the method returns, the original image can
+  be released if it is not needed anymore.
 </para>
 <variablelist>
+    <para>
+      Raises syntax errors when incorrect arguments are detected.
+    </para>
+    <para>
+      Provides an interface to the <computeroutput>ImageList_AddIcon()</computeroutput> API. The <link
+      linkend="windowsdoc">MSDN library</link> documentation can provide more information on this method.
+    </para>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
-    <para>The arguments are:
+    <para>The only argument is:
     <variablelist>
-      <varlistentry><term>x</term>
+      <varlistentry><term>image</term>
       <listitem>
         <para>
-          xx.
+          The .Image object that represents the image to add.  This must be an icon or cursor image.
         </para>
       </listitem></varlistentry>
       <varlistentry><term>y</term>
@@ -1595,31 +1659,35 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
     <para>
-      The possible return values are:
-      <variablelist>
-        <varlistentry><term>0</term>
-        <listitem>
-          <para>
-            Success
-          </para>
-        </listitem></varlistentry>
-        <varlistentry><term>-1</term>
-        <listitem>
-          <para>
-            Some error.
-          </para>
-        </listitem></varlistentry>
-      </variablelist>
+      This method returns the index of the added icon or cursor on success, otherwise -1 is returned.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
-      This example ...
-      <programlisting>
-      <![CDATA[
-      x = y
-      return 0
+      Here the system icon images are loaded and then displayed in a list-view. Each icon will show in
+      the list-view with the text for the icon being its numeric resource ID. Since the system icons are
+      shared, the icon images are not released after they are added to the image list.
+      <programlisting> <![CDATA[
+      ids = .array~new() ids[ 1] = .Image~id(IDI_APPLICATION)
+      ids[ 2] = .Image~id(IDI_HAND) ids[ 3] = .Image~id(IDI_QUESTION)
+      ids[ 4] = .Image~id(IDI_EXCLAMATION) ids[ 5] = .Image~id(IDI_ASTERISK)
+      ids[ 6] = .Image~id(IDI_WINLOGO)
+
+      flags = .DlgUtil~or(.Image~id(ILC_COLOR8), .Image~id(ILC_MASK))
+
+      imageList = .ImageList~create(.Size~new(32, 32), flags, 20, 10)
+
+      do i = 1 to ids~items
+        image = .Image~getImage(ids[i], .Image~id(IMAGE_ICON))
+        imageList~addIcon(image)
+      end
+
+      list~setImageList(imageList, .Image~id(LVSIL_NORMAL))
+
+      do i = 1 to ids~items
+        list~add(ids[i], i - 1)
+      end
       ]]>
       </programlisting>
     </para>
