@@ -62,8 +62,9 @@ variable1 variable2 variable3
 </programlisting>
 <indexterm><primary>template</primary>
 <secondary>definition</secondary></indexterm>
-<para>This kind of template parses the source string into blank-delimited words.
-More complicated templates contain patterns in addition to variable names:
+<para>This kind of template parses the source string into whitespace-delimited
+words. More complicated templates contain patterns in addition to variable
+names:
 </para>
 <indexterm><primary>string</primary>
 <secondary>patterns</secondary>
@@ -134,8 +135,9 @@ The data to be parsed is between the keywords
 <computeroutput>PARSE VALUE</computeroutput> and the keyword
 <computeroutput>WITH</computeroutput>, the source string
 <computeroutput>time and tide</computeroutput>. Parsing divides the source
-string into blank-delimited words and assigns them to the variables named in the
-template as follows:</para>
+string into whitespace-delimited words and assigns them to the variables named
+in the template as follows:
+</para>
 <programlisting>
 var1="time"
 var2="and"
@@ -207,10 +209,16 @@ parse var satellites Earth Jupiter              /* Earth="moon"  */
 <secondary>in parsing, treatment of</secondary></indexterm>
 <indexterm><primary>parsing</primary>
 <secondary>treatment of blanks</secondary></indexterm>
-into words removes leading and trailing blanks from each word before it is
-assigned to a variable. The exception to this is the word or group of words
-assigned to the last variable. The last variable in a template receives leftover
-data, preserving extra leading and trailing blanks. Here is an example:</para>
+<indexterm><primary>whitespace</primary>
+<secondary>in parsing, treatment of</secondary></indexterm>
+<indexterm><primary>parsing</primary>
+<secondary>treatment of whitespace</secondary></indexterm>
+into words removes
+leading and trailing whitespace characters from each word before it is assigned
+to a variable. The exception to this is the word or group of words assigned to
+the last variable. The last variable in a template receives leftover data,
+preserving extra leading and trailing whitespace characters. Here is an example:
+</para>
 <programlisting>
 /* Preserving extra blanks                                       */
 solar5="Mercury Venus  Earth   Mars     Jupiter  "
@@ -233,8 +241,9 @@ It also keeps all five blanks between
 <computeroutput>Mars</computeroutput> and
 <computeroutput>Jupiter</computeroutput> and
 both trailing blanks after <computeroutput>Jupiter</computeroutput>.</para>
-<para>Parsing removes no blanks if the template contains only one variable. For
-example: </para>
+<para>Parsing removes no whitespace characters if the template contains only one
+variable. For example:
+</para>
 <programlisting>
 parse value "   Pluto   " with var1        /* var1="   Pluto   "*/
 </programlisting>
@@ -269,7 +278,7 @@ It is useful as a &quot;dummy variable&quot; in a list of variables or to
 collect unwanted information at the end of a string. And it saves the overhead
 of unneeded variables.</para>
 <para>The period in the first example is a placeholder. Be sure to separate
-adjacent periods with spaces; otherwise, an error results.</para>
+adjacent periods with whitespace; otherwise, an error results.</para>
 <indexterm><primary>examples</primary>
 <secondary>period as a placeholder</secondary></indexterm>
 <indexterm><primary>parsing</primary>
@@ -512,7 +521,8 @@ do n=1 to 3
   If lastname="Evans" &amp; firstname="Mary Ann" then say "By George!"
 end                                             /* same results  */
 </programlisting>
-<para>Blanks between the sign and the number are insignificant. Therefore,
+<para>Whitespace characters between the sign and the number are insignificant.
+Therefore,
 <computeroutput>+10</computeroutput> and
 <computeroutput>+&nbsp;10</computeroutput> have the same meaning. Note that
 +0 is a valid relative positional pattern.</para>
@@ -602,7 +612,8 @@ do n=1 to 3
   If lastname="Evans" &amp; firstname="Mary Ann" then say "By George!"
 end                                             /* same results  */
 </programlisting>
-<para>Blanks between the trigger and the number are insignificant. Therefore,
+<para>Whitespace characters between the trigger and the number are
+insignificant. Therefore,
 <computeroutput>&gt;10</computeroutput> and
 <computeroutput>&gt;&nbsp;10</computeroutput> have the same meaning. Note that
 &gt;0 &lt;0 and are valid length positional pattern.</para>
@@ -688,7 +699,7 @@ section of the template.</para>
 assigns the entire string into <computeroutput>ln</computeroutput>
 without removing any blanks. This is because <computeroutput>ln</computeroutput>
 is the only variable in this section of the template.
-(For details about treatment of blanks, see
+(For details about treatment of whitespace characters, see
 <link linkend="simtem">Simple Templates for Parsing into Words</link>.)</para>
 <indexterm><primary>examples</primary>
 <secondary>combining positional pattern and parsing into words</secondary>
@@ -724,7 +735,8 @@ receives <computeroutput>"E"</computeroutput>. Both
 <computeroutput>var3</computeroutput> and <computeroutput>var4</computeroutput>
 receive <computeroutput>"&nbsp;X"</computeroutput> (with a blank before the
 <computeroutput>X</computeroutput>) because each is the only variable
-in its section of the template. (For details on treatment of blanks, see
+in its section of the template. (For details on treatment of whitespace
+characters, see
 <link linkend="simtem">Simple Templates for Parsing into Words</link>.)</para>
 </section>
 </section>
@@ -750,8 +762,9 @@ in its section of the template. (For details on treatment of blanks, see
 <para> You might want
 to specify a pattern by using the value of a variable or expression instead of a fixed string
 or number. You do this by placing an expression in parentheses.
-This is a variable reference. Blanks are not necessary
-inside or outside the parentheses, but you can add them if you wish.</para>
+This is a variable reference. Whitespace characters are not necessary inside or
+outside the parentheses, but you can add them if you wish.
+</para>
 <para>The template in the next parsing instruction contains the following
 literal string pattern <computeroutput>".&nbsp;"</computeroutput>.</para>
 <programlisting>

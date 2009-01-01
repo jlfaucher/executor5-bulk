@@ -146,7 +146,7 @@ The time component will be set to the beginning of the input day (00:00:00.00000
 <para>
 If specified, <emphasis role="italic">separator</emphasis>
 identifies the field separator character used in the string.  The separator must be a single character
-or the null string ("").  A space (" ") is the default separator.</para>
+or the null string ("").  A blank (" ") is the default separator.</para>
 </section>
 
 <section id="mthDateTimeFromEuropeanDate"><title>fromEuropeanDate (Class Method)</title>
@@ -1034,7 +1034,8 @@ result in microseconds being subtracted from the DateTime value.
 <para>
 Returns the number of complete days (that is, not including the
 current day) since and including the base date, 1 January 0001, in the format:
-<emphasis role="italic">dddddd</emphasis> (no leading zeros or blanks).
+<emphasis role="italic">dddddd</emphasis> (no leading zeros or whitespace
+characters).
 </para>
 <para>The base date of 1 January 1970 is determined
 by extending the current Gregorian calendar backward (365 days each year,
@@ -1175,7 +1176,7 @@ Returns the name of the DateTime day, in English.
 If specified, <emphasis role="italic">separator</emphasis>
 identifies the field separator character used in the returned date.
 The separator must be a single character
-or the null string ("").  A space (" ") is the default separator.
+or the null string ("").  A blank (" ") is the default separator.
 </para>
 </section>
 
@@ -1541,7 +1542,7 @@ a number of seconds
 starting at the present time. If you use the date and time format, you can specify
 a date in the default format (<computeroutput>&apos;dd Mmm yyyy&apos;</computeroutput>)
 after the time with a single blank separating the time and date. Leading and
-trailing blanks are not allowed in the
+trailing whitespace characters are not allowed in the
 <emphasis role="italic">atime</emphasis>. If you do not
 specify a date, the language processor uses the first future occurrence of the
 specified time. You can use the <emphasis role="bold">cancel</emphasis>
@@ -3371,11 +3372,11 @@ a non-negative whole number.
 <computeroutput>0</computeroutput> if
 <emphasis role="italic">phrase</emphasis> contains no words or
 if <emphasis role="italic">phrase</emphasis> is not found.
-Word matches are made independent of case.
-Several blanks
-between words in either <emphasis role="italic">phrase</emphasis> or the
-receiving buffer are treated as a single blank for the
-comparison, but, otherwise, the words must match exactly.</para>
+Word matches are made independent of case. Multiple whitespace characters
+between words in either
+<emphasis role="italic">phrase</emphasis> or the receiving buffer are treated as
+a single blank for the comparison, but, otherwise, the words must match
+exactly.</para>
 <para>By default the search starts at the first word in the receiving
 string.
 You can override this by specifying <emphasis
@@ -3469,8 +3470,9 @@ buffer content.</para>
 
 <para>Deletes a substring from the mutable buffer substring that starts at the
 <emphasis role="italic">n</emphasis>th word and is of
-<emphasis role="italic">length</emphasis> blank-delimited
-words. If you omit <emphasis role="italic">length</emphasis>, or if
+<emphasis role="italic">length</emphasis> whitespace-delimited words. If you
+omit
+<emphasis role="italic">length</emphasis>, or if
 <emphasis role="italic">length</emphasis> is greater than
 the number of words from <emphasis role="italic">n</emphasis> to the end of the
 receiving bufffer, the
@@ -3480,8 +3482,9 @@ method deletes the remaining words in the receiving buffer (including the
 zero. The <emphasis role="italic">n</emphasis> must be a positive whole number.
 If <emphasis role="italic">n</emphasis> is greater than
 the number of words in the receiving buffer, the method returns the receiving
-buffer unchanged. The portion deleted includes any blanks following the final
-word involved but none of the blanks preceding the first word involved.
+buffer unchanged. The portion deleted includes any whitespace characters
+following the final word involved but none of the whitespace characters
+preceding the first word involved.
 </para>
 </section>
 
@@ -3897,12 +3900,12 @@ The default <emphasis>pad</emphasis> character is a blank.</para>
 
 <para>Returns the substring of the receiving buffer that starts at the
 <emphasis role="italic">n</emphasis>th word and is up to
-<emphasis role="italic">length</emphasis> blank-delimited words. The
+<emphasis role="italic">length</emphasis> whitespace-delimited words. The
 <emphasis role="italic">n</emphasis> must be a positive whole number.
 If you omit <emphasis role="italic">length</emphasis>, it defaults
 to the number of remaining words in the receiving buffer. The returned string
-never has leading or trailing blanks, but includes all blanks between the
-selected words.
+never has leading or trailing whitespace characters, but includes all whitespace
+characters between the selected words.
 </para>
 </section>
 
@@ -4067,9 +4070,9 @@ returns the <emphasis role="italic">start</emphasis> value.</para>
 ]]>
 </programlisting>
 
-<para>Returns the <emphasis role="italic">n</emphasis>th blank-delimited word
-in the receiving buffer or the null string if the receiving buffer has fewer
-than
+<para>Returns the <emphasis role="italic">n</emphasis>th whitespace-delimited
+word in the receiving buffer or the null string if the receiving buffer has
+fewer than
 <emphasis role="italic">n</emphasis> words. The
 <emphasis role="italic">n</emphasis> must be a positive whole number. This
 method is exactly equivalent
@@ -4089,9 +4092,10 @@ to <computeroutput>receiving_buffer~subWord(n,1)</computeroutput>.</para>
 </programlisting>
 
 <para>Returns the position of the first character in the
-<emphasis role="italic">n</emphasis>th blank-delimited
-word in the receiving buffer. It returns <computeroutput>0</computeroutput> if
-the receiving buffer has fewer than
+<emphasis role="italic">n</emphasis>th whitespace-delimited word in the
+receiving buffer. It returns
+           <computeroutput>0</computeroutput> if the receiving buffer has fewer
+than
 <emphasis role="italic">n</emphasis> words. The
 <emphasis role="italic">n</emphasis> must be a positive whole number.
 </para>
@@ -4113,7 +4117,7 @@ the receiving buffer has fewer than
 </programlisting>
 
 <para>Returns the length of the <emphasis role="italic">n</emphasis>th
-blank-delimited word in the receiving buffer or
+whitespace-delimited word in the receiving buffer or
 <computeroutput>0</computeroutput> if the receiving buffer has fewer than
 <emphasis role="italic">n</emphasis> words. The <emphasis
 role="italic">n</emphasis> must be a positive whole number.</para>
@@ -4139,10 +4143,11 @@ role="italic">n</emphasis> must be a positive whole number.</para>
 <emphasis role="italic">phrase</emphasis> found in the receiving buffer, or
 <computeroutput>0</computeroutput> if
 <emphasis role="italic">phrase</emphasis> contains no words or
-if <emphasis role="italic">phrase</emphasis> is not found. Several blanks
-between words in either <emphasis role="italic">phrase</emphasis> or the
-receiving buffer are treated as a single blank for the
-comparison, but, otherwise, the words must match exactly.</para>
+if <emphasis role="italic">phrase</emphasis> is not found. Multiple whitespace
+characters between words in either
+<emphasis role="italic">phrase</emphasis> or the receiving buffer are treated as
+a single blank for the comparison, but, otherwise, the words must match
+exactly.</para>
 <para>By default the search starts at the first word in the receiving buffer.
 You can override this by specifying
 <emphasis role="italic">start</emphasis> (which must be positive), the word at
@@ -4170,7 +4175,7 @@ which the search is to be started.</para>
 ]]>
 </programlisting>
 
-<para>Returns the number of blank-delimited words in the receiving buffer.
+<para>Returns the number of whitespace-delimited words in the receiving buffer.
 </para>
 </section>
 </section>

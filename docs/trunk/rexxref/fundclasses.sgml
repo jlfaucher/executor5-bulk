@@ -1777,8 +1777,9 @@ two operands.</para>
 are numeric, the language processor does a numeric comparison (ignoring, for
 example, leading zeros--see <link linkend="numcom">Numeric Comparisons</link>).
 Otherwise, it treats
-both terms as character strings, ignoring leading and trailing blanks and
-padding the shorter string on the right with blanks.</para>
+both terms as character strings, ignoring leading and trailing whitespace
+characters and padding the shorter string on the right with blanks.
+</para>
 <para>Character comparison and strict comparison operations are both
 case-sensitive,
 and for both the exact collating order can depend on the character set. In
@@ -2099,12 +2100,13 @@ for information about the ABS built-in function.)</para>
 binary string converted to hexadecimal.</para>
 <para>The receiving string is a string of binary
 (<computeroutput>0</computeroutput> or <computeroutput>1</computeroutput>)
-digits. It can be of any length. It can optionally include blanks (at 4-digit
-boundaries only, not leading or trailing). These are to improve readability;
-the language processor ignores them.</para>
+digits. It can be of any length. It can optionally include whitespace characters
+(at 4-digit boundaries only, not leading or trailing). These are to improve
+readability; the language processor ignores them.
+</para>
 <para>The returned string uses uppercase alphabetic characters for the values
 <computeroutput>A</computeroutput>-<computeroutput>F</computeroutput> and does
-not include blanks.</para>
+not include whitespace.</para>
 <para>If the receiving binary string is a null string,
 <emphasis role="bold">b2x</emphasis> returns a null string.
 If the number of binary digits in the receiving string is not a multiple of
@@ -2373,8 +2375,8 @@ receiving string <computeroutput>1</computeroutput> returns
 is the ASCII representation of <computeroutput>1</computeroutput>.</para>
 <para>The returned string has uppercase alphabetic characters for the values
 <computeroutput>A</computeroutput>-<computeroutput>F</computeroutput> and does
-not include blanks. The receiving string
-can be of any length. If the receiving string is null,
+not include whitespace. The receiving string can be of any length. If the
+receiving string is null,
 <emphasis role="bold">c2x</emphasis> returns a null string.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
@@ -2851,11 +2853,11 @@ a non-negative whole number.
 receiving string, or <computeroutput>0</computeroutput> if
 <emphasis role="italic">phrase</emphasis> contains no words or
 if <emphasis role="italic">phrase</emphasis> is not found.
-Word matches are made independent of case.
-Several blanks
-between words in either <emphasis role="italic">phrase</emphasis> or the
-receiving string are treated as a single blank for the
-comparison, but, otherwise, the words must match exactly.</para>
+Word matches are made independent of case. Several whitespace characters between
+words in either
+<emphasis role="italic">phrase</emphasis> or the receiving string are treated as
+a single blank for the comparison, but, otherwise, the words must match
+exactly.</para>
 <para>By default the search starts at the first word in the receiving
 string.
 You can override this by specifying <emphasis
@@ -3200,7 +3202,7 @@ for information about the D2C built-in function.)</para>
 string, a decimal number converted to hexadecimal. The returned string uses
 uppercase alphabetic characters for the values
 <computeroutput>A</computeroutput>-<computeroutput>F</computeroutput> and does
-not include blanks.</para>
+not include whitespace.</para>
 <para>The receiving string must not have more digits than the current setting
 of NUMERIC DIGITS.</para>
 <para>If you specify <emphasis role="italic">n</emphasis>, it is the length of
@@ -3291,9 +3293,9 @@ string contains only characters from the ranges
 <varlistentry><term>Binary</term>
 <listitem><para>returns <computeroutput>1</computeroutput> if the receiving
 string contains only the characters <computeroutput>0</computeroutput> or
-<computeroutput>1</computeroutput>, or a blank. Blanks can appear only between
-groups of 4 binary characters. It also returns 1 if string is
-a null string, which is a valid binary string.
+<computeroutput>1</computeroutput>, or whitespace. Whitespace characters can
+appear only between groups of 4 binary characters. It also returns 1 if string
+is a null string, which is a valid binary string.
 </para></listitem></varlistentry>
 <varlistentry><term>Lowercase</term>
 <listitem><para>returns <computeroutput>1</computeroutput> if the receiving
@@ -3342,9 +3344,9 @@ string is a whole number under the current setting of NUMERIC DIGITS.
 string contains only characters from the ranges
 <computeroutput>a</computeroutput>-<computeroutput>f</computeroutput>,
 <computeroutput>A</computeroutput>-<computeroutput>F</computeroutput>,
-<computeroutput>0</computeroutput>-<computeroutput>9</computeroutput>,
-and blank (as long as blanks appear
-only between pairs of hexadecimal characters). Also returns
+<computeroutput>0</computeroutput>-<computeroutput>9</computeroutput>, and
+whitespace characters (as long as whitespace characters appear only between
+pairs of hexadecimal characters). Also returns
 <computeroutput>1</computeroutput> if
 the receiving string is a null string.
 </para></listitem></varlistentry>
@@ -3493,8 +3495,10 @@ method deletes the remaining words in the receiving string (including the
 zero. The <emphasis role="italic">n</emphasis> must be a positive whole number.
 If <emphasis role="italic">n</emphasis> is greater than
 the number of words in the receiving string, the method returns the receiving
-string unchanged. The string deleted includes any blanks following the final
-word involved but none of the blanks preceding the first word involved.</para>
+string unchanged. The string deleted includes any whitespace characters
+following the final word involved but none of the whitespace characters
+preceding the first word involved.
+</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>delWord method</secondary></indexterm>
@@ -4339,11 +4343,11 @@ for information about the SIGN built-in function.)</para>
 
 <para>Returns a copy of receiving string, with
 <emphasis role="italic">n</emphasis>&nbsp;<emphasis role="italic">pad</emphasis>
-characters between each blank-delimited word. If you specify
+characters between each whitespace-delimited word. If you specify
 <emphasis role="italic">n</emphasis>, it must
 be a positive whole number or zero. If it is
-<computeroutput>0</computeroutput>, all blanks are
-removed. Leading and trailing blanks are always removed. The default for
+<computeroutput>0</computeroutput>, all whitespace characters are removed.
+Leading and trailing whitespace characters are always removed. The default for
 <emphasis role="italic">n</emphasis> is <computeroutput>1</computeroutput>,
 and the default <emphasis role="italic">pad</emphasis> character is a blank.
 </para>
@@ -4369,15 +4373,17 @@ for information about the SPACE built-in function.)</para>
 <tertiary>of String class</tertiary></indexterm>
 <indexterm><primary>blanks</primary>
 <secondary>removal with strip method</secondary></indexterm>
+<indexterm><primary>whitespace</primary>
+<secondary>removal with strip method</secondary></indexterm>
 <indexterm><primary>character</primary>
 <secondary>removal with strip method</secondary></indexterm>
 <indexterm><primary>leading</primary>
 <secondary>zeros</secondary>
 <tertiary>removing with strip method</tertiary></indexterm>
 <indexterm><primary>leading</primary>
-<secondary>blank removal with strip method</secondary></indexterm>
+<secondary>whitespace removal with strip method</secondary></indexterm>
 <indexterm><primary>trailing</primary>
-<secondary>blank removed using strip method</secondary></indexterm>
+<secondary>whitespace removed using strip method</secondary></indexterm>
 <indexterm><primary>zeros</primary>
 <secondary>removal with strip method</secondary></indexterm>
 
@@ -4515,8 +4521,9 @@ for information about the SUBSTR built-in function.)</para>
 <emphasis role="italic">n</emphasis> must be a positive whole number.
 If you omit <emphasis role="italic">length</emphasis>, it defaults
 to the number of remaining words in the receiving string. The returned string
-never has leading or trailing blanks, but includes all blanks between the
-selected words.</para>
+never has leading or trailing whitespace, but includes all whitespace characters
+between the selected words.
+</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>subWord method</secondary></indexterm>
@@ -4786,9 +4793,10 @@ for information about the VERIFY built-in function.)</para>
 ]]>
 </programlisting>
 
-<para>Returns the <emphasis role="italic">n</emphasis>th blank-delimited word
-in the receiving string or the null string if the receiving string has
-fewer than <emphasis role="italic">n</emphasis> words. The
+<para>Returns the <emphasis role="italic">n</emphasis>th whitespace-delimited
+word in the receiving string or the null string if the receiving string has
+fewer than
+<emphasis role="italic">n</emphasis> words. The
 <emphasis role="italic">n</emphasis> must be a positive whole number. This
 method is exactly equivalent
 to <computeroutput>receiving_string~subWord(n,1)</computeroutput>.</para>
@@ -4816,10 +4824,11 @@ for information about the WORD built-in function.)</para>
 </programlisting>
 
 <para>Returns the position of the first character in the
-<emphasis role="italic">n</emphasis>th blank-delimited
-word in the receiving string. It returns <computeroutput>0</computeroutput>
-if the receiving string has fewer than <emphasis role="italic">n</emphasis>
-words. The <emphasis role="italic">n</emphasis> must be a positive whole number.
+<emphasis role="italic">n</emphasis>th whitespace-delimited word in the
+receiving string. It returns
+<computeroutput>0</computeroutput> if the receiving string has fewer than
+<emphasis role="italic">n</emphasis> words. The <emphasis
+role="italic">n</emphasis> must be a positive whole number.
 </para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
@@ -4849,7 +4858,7 @@ function.)</para>
 </programlisting>
 
 <para>Returns the length of the <emphasis role="italic">n</emphasis>th
-blank-delimited word in the receiving
+whitespace-delimited word in the receiving
 string or <computeroutput>0</computeroutput> if the receiving string has fewer
 than <emphasis role="italic">n</emphasis> words.
 The <emphasis role="italic">n</emphasis> must be a positive whole number.</para>
@@ -4886,10 +4895,11 @@ function.)</para>
 <emphasis role="italic">phrase</emphasis> found in the
 receiving string, or <computeroutput>0</computeroutput> if
 <emphasis role="italic">phrase</emphasis> contains no words or
-if <emphasis role="italic">phrase</emphasis> is not found. Several blanks
-between words in either <emphasis role="italic">phrase</emphasis> or the
-receiving string are treated as a single blank for the
-comparison, but, otherwise, the words must match exactly.</para>
+if <emphasis role="italic">phrase</emphasis> is not found. Several whitespace
+characters between words in either
+<emphasis role="italic">phrase</emphasis> or the receiving string are treated as
+a single blank for the comparison, but, otherwise, the words must match
+exactly.</para>
 <para>By default the search starts at the first word in the receiving string.
 You can override this by specifying <emphasis role="italic">start</emphasis>
 (which must be positive),
@@ -4932,7 +4942,7 @@ function.)</para>
 ]]>
 </programlisting>
 
-<para>Returns the number of blank-delimited words in the receiving string.
+<para>Returns the number of whitespace-delimited words in the receiving string.
 </para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
@@ -4966,10 +4976,11 @@ for information about the WORDS built-in function.)</para>
 string, which is a string of hexadecimal characters converted to binary. The
 receiving string can be of any length. Each hexadecimal character is converted
 to a string of 4 binary digits. The receiving string can optionally include
-blanks (at byte boundaries only, not leading or trailing) to improve
-readability; they are ignored.</para>
+whitespace characters (at byte boundaries only, not leading or trailing) to
+improve readability; they are ignored.
+</para>
 <para>The returned string has a length that is a multiple of four, and does not
-include any blanks.</para>
+include any whitespace.</para>
 <para>If the receiving string is null, the method returns a null string.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
@@ -5016,8 +5027,10 @@ string, which is a hexadecimal string converted to character. The returned strin
 is half as many bytes as the receiving string. The receiving string can be
 any length. If necessary, it is padded with a leading 0 to make an even number
 of hexadecimal digits.</para>
-<para>You can optionally include blanks in the receiving string (at byte boundaries
-only, not leading or trailing) to improve readability; they are ignored.</para>
+<para>You can optionally include whitespace in the receiving string (at byte
+boundaries only, not leading or trailing) to improve readability; they are
+ignored.
+</para>
 <para>If the receiving string is null, the method returns a null string.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
@@ -5052,9 +5065,10 @@ for information about the X2C built-in function.)</para>
 string of hexadecimal characters. If the result cannot be expressed as a whole
 number, an error results. That is, the result must not have more digits than
 the current setting of NUMERIC DIGITS.</para>
-<para>You can optionally include blanks in the receiving string (at byte
-boundaries only, not leading or trailing) to improve readability; they are
-ignored.</para>
+<para>You can optionally include whitespace characters in the receiving string
+(at byte boundaries only, not leading or trailing) to improve readability; they
+are ignored.
+</para>
 <para>If the receiving string is null, the method returns
 <computeroutput>0</computeroutput>.</para>
 <para>If you do not specify <emphasis role="italic">n</emphasis>,

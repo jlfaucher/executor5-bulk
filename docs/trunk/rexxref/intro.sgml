@@ -466,10 +466,12 @@ of the first line. For more information on comments, refer to
 <para>A Rexx program is built from a series of
 <emphasis>clauses</emphasis> that are composed of: </para>
 <itemizedlist>
-<listitem><para>Zero or more blanks (which are ignored)</para></listitem>
+<listitem><para>Zero or more whitespace characters (blank or horizontal tabs)
+(which are ignored)</para></listitem>
 <listitem><para>A sequence of tokens (see
 <link linkend="xtokens">Tokens</link>)</para></listitem>
-<listitem><para>Zero or more blanks (again ignored)</para></listitem>
+<listitem><para>Zero or more whitespace characters (again
+ignored)</para></listitem>
 <listitem><para>A semicolon (;)
 <indexterm><primary>semicolons</primary>
 <secondary>within a clause</secondary></indexterm>
@@ -478,9 +480,12 @@ implies.</para></listitem></itemizedlist>
 <para>Conceptually,
 each clause is scanned from left to right before processing, and the tokens
 composing it are identified. Instruction keywords are recognized at this stage,
-comments are removed, and several blanks (except within literal strings) are
-converted to single blanks.  Blanks adjacent to operator characters and special
+comments are removed, and sequences of whitespace characters (except within
+literal strings) are converted to single blanks.  Whitespace characters adjacent
+to operator characters and special
 <indexterm><primary>blanks</primary>
+<secondary>adjacent to special character</secondary></indexterm>
+<indexterm><primary>whitespace</primary>
 <secondary>adjacent to special character</secondary></indexterm>
 characters are also removed.</para>
 
@@ -630,8 +635,9 @@ using the line comment.</para>
 <para>A <emphasis>token</emphasis> is the unit of low-level syntax from which
 clauses are built. Programs written in Rexx are composed of tokens. Tokens
 can be of any length, up to an implementation-restricted maximum. They are
-separated by blanks or comments, or by the nature of the tokens themselves.
-The classes of tokens are:</para>
+separated by whitespace or comments, or by the nature of the tokens themselves.
+The classes of tokens are:
+</para>
 <itemizedlist>
 <listitem><para>Literal strings</para></listitem>
 <listitem><para>Hexadecimal strings</para></listitem>
@@ -718,18 +724,20 @@ hexadecimal digits
 grouped in pairs. A single leading
 0 is assumed, if necessary, at the beginning of the string to make an even
 number of hexadecimal digits. The groups of digits are optionally separated
-by one or more blanks, and the whole sequence is delimited by single or double
-quotation marks and immediately followed by the symbol
+by one or more whitespace characters, and the whole sequence is delimited by
+single or double quotation marks and immediately followed by the symbol
 <computeroutput>X</computeroutput> or <computeroutput>x</computeroutput>.
 Neither <computeroutput>x</computeroutput> nor
-<computeroutput>X</computeroutput> can be part of a longer symbol.
-The blanks, which can only be byte boundaries (and not at the beginning or
-end of the string), are to improve readability.  The language processor ignores
-them.</para>
+<computeroutput>X</computeroutput> can be part of a longer symbol. The
+whitespace characters, which can only be byte boundaries (and not at the
+beginning or end of the string), are to improve readability.  The language
+processor ignores them.
+</para>
 <para>A hexadecimal string is a literal string formed by packing the hexadecimal
-digits given. Packing the hexadecimal digits removes blanks and converts each
-pair of hexadecimal digits into its equivalent character, for example, "41"X
-to A.</para>
+digits given. Packing the hexadecimal digits removes whitespace and converts
+each pair of hexadecimal digits into its equivalent character, for example,
+"41"X to A.
+</para>
 <para>Hexadecimal strings let you include characters in a program even if you
 cannot directly enter the characters themselves. These are valid hexadecimal
 strings: </para>
@@ -754,8 +762,9 @@ are identical, as are "20"x and a blank, and must be treated identically.
 <tertiary>implementation maximum</tertiary></indexterm>
 <indexterm><primary>implementation maximum</primary>
 <secondary>hexadecimal strings</secondary></indexterm>
-The packed length of a hexadecimal string (the string with blanks
-removed) is unlimited.</para>
+The packed length of a hexadecimal string (the string with whitespace removed)
+is unlimited.
+</para>
 </section>
 
 <section id="binstrings"><title>Binary Strings</title>
@@ -778,15 +787,16 @@ binary digits (<computeroutput>0</computeroutput> or
 <computeroutput>1</computeroutput>) in groups of 8 (bytes) or 4 (nibbles).
 The first group can have less than four digits; in this case, up to three
 0 digits are assumed to the left of the first digit, making a total of four
-digits. The groups of digits are optionally separated by one or more blanks,
-and the whole sequence is delimited by matching single or double quotation
-marks and immediately followed by the symbol
+digits. The groups of digits are optionally separated by one or more whitespace
+characters, and the whole sequence is delimited by matching single or double
+quotation marks and immediately followed by the symbol
 <computeroutput>b</computeroutput> or <computeroutput>B</computeroutput>.
 Neither <computeroutput>b</computeroutput> nor
 <computeroutput>B</computeroutput> can be part of a longer symbol. The
-blanks, which can only be byte or nibble boundaries (and not at the beginning
-or end of the string), are to improve readability. The language processor
-ignores them.</para>
+whitespace characters, which can only be byte or nibble boundaries (and not at
+the beginning or end of the string), are to improve readability. The language
+processor ignores them.
+</para>
 <para>A binary string is a literal string formed by packing the binary digits
 given. If the number of binary digits is not a multiple of 8, leading zeros
 are added on the left to make a multiple of 8 before packing. Binary strings
@@ -905,10 +915,11 @@ a full definition of numbers.</para>
 <para>Numbers
 <indexterm><primary>restrictions</primary>
 <secondary>embedded in numbers</secondary></indexterm>
-can have leading blanks (before and after the sign) and trailing blanks. Blanks
-cannot be embedded among the digits of a number or in the exponential part.
-Note that a symbol or a literal string can be a number. A number cannot be
-the name of a variable.</para>
+can have leading whitespace (before and after the sign) and trailing whitespace.
+Whitespace characters cannot be embedded among the digits of a number or in the
+exponential part. Note that a symbol or a literal string can be a number. A
+number cannot be the name of a variable.
+</para>
 <para>These are valid numbers: </para>
 <programlisting>
 12
@@ -964,8 +975,9 @@ A few of these are also used in parsing templates, and the equal sign
 <tertiary>to indicate assignment</tertiary></indexterm>
 and the sequences <computeroutput>+=, -=, *= /=, %=, //=, ||=, &amp;=, |=, and &amp;&amp;=</computeroutput>
 are also
-used to indicate assignment. Blanks adjacent to operator characters are removed.
-Therefore, the following are identical in meaning: </para>
+used to indicate assignment. Whitespace characters adjacent to operator
+characters are removed. Therefore, the following are identical in meaning:
+</para>
 <programlisting>
 345>=123
 345 >=123
@@ -1026,12 +1038,13 @@ have special significance when found outside of literal strings: </para>
 <para>These characters constitute the set of special characters. They all act
 as token delimiters, and
 <indexterm><primary>parentheses</primary>
-<secondary>adjacent to blanks</secondary></indexterm>
-blanks adjacent to any of these are removed. There
-is an exception: a blank adjacent to the outside of a parenthesis or bracket
-is deleted only if it is also adjacent to another special character (unless
-the character is a parenthesis or bracket and the blank is outside it, too).
-For example, the language processor does not remove the blank in
+<secondary>adjacent to whitespace</secondary></indexterm> whitespace characters
+(blank or horizontal tab)
+adjacent to any of these are removed. There is an exception: a whitespace
+character adjacent to the outside of a parenthesis or bracket is deleted only if
+it is also adjacent to another special character (unless the character is a
+parenthesis or bracket and the whitespace character is outside it, too). For
+example, the language processor does not remove the blank in
 <computeroutput>A&nbsp;(Z)</computeroutput>. This is a concatenation that is
 not equivalent to <computeroutput>A(Z)</computeroutput>,
 a function call. The language processor removes the blanks in
@@ -1226,12 +1239,12 @@ of an operation, such as an addition, to be carried out on one or two terms.
 Each operator, except for the prefix operators, acts on two terms, which can
 be symbols, strings, function calls, message terms, intermediate results,
 or subexpressions. Each prefix operator acts on the term or subexpression
-that follows it. Blanks (and comments) adjacent to operator characters have
-no effect on the operator; thus, operators constructed from more than one
-character can have embedded blanks and comments. In addition, one or more
-blanks, if they occur in expressions but are not adjacent to another operator,
-also act as an operator. The language processor functionally translates
-operators into message terms. For dyadic operators,
+that follows it. Whitespace characters (and comments) adjacent to operator
+characters have no effect on the operator; thus, operators constructed from more
+than one character can have embedded whitespace and comments. In addition, one
+or more whitespace characters, if they occur in expressions but are not adjacent
+to another operator, also act as an operator. The language processor
+functionally translates operators into message terms. For dyadic operators,
 <indexterm><primary>dyadic operators</primary></indexterm>
 which operate on two terms, the
 language processor sends the operator as a message to the term on the left,
@@ -1456,8 +1469,9 @@ operands.</para>
 involved are numeric, a numeric comparison (see
 <link linkend="numcom">Numeric Comparisons</link>) is
 effected. Otherwise, both terms are treated as character strings, leading
-and trailing blanks are ignored, and the shorter string is padded with blanks
-on the right.</para>
+and trailing whitespace characters are ignored, and the shorter string is padded
+with blanks on the right.
+</para>
 <para>Character comparison and strict comparison operations are both
 case-sensitive, and the exact collating order might depend on the
 character set used for the implementation. In an ASCII environment,
@@ -1974,8 +1988,9 @@ the methods included in each stage of the message.</para>
 <secondary>null</secondary></indexterm>
 <indexterm><primary>null</primary>
 <secondary>clauses</secondary></indexterm>
-<para>A clause consisting only of blanks, comments, or both
-is a <emphasis>null clause</emphasis>. It is completely ignored.</para>
+<para>A clause consisting only of whitespace characterss, comments, or both is a
+<emphasis>null clause
+</emphasis>. It is completely ignored.</para>
 
 <note><title>Note</title>
 <para>A null clause is not an instruction; for example, putting an extra

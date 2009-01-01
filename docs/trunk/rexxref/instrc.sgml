@@ -97,15 +97,16 @@ not recommended).</para>
 individual instructions. For example, the symbols VALUE and WITH are subkeywords
 in the ADDRESS and PARSE instructions, respectively. For details, see the
 description of each instruction.</para>
-<para>Blanks adjacent to keywords separate the keyword from the subsequent token.
-One or more blanks following VALUE are required to separate
-the <emphasis role="italic">expression</emphasis> from the
-subkeyword in the example following: </para>
-<programlisting>
-ADDRESS VALUE expression
+<para>Whitespace characters (blanks or horizontal tabs) adjacent to keywords
+separate the keyword from the subsequent token. One or more whitespace
+characters following VALUE are required to separate the
+<emphasis role="italic">expression
+</emphasis> from the subkeyword in the example following: </para>
+<programlisting> ADDRESS VALUE expression
 </programlisting>
-<para>However, no blank is required after the VALUE subkeyword
-in the following example, although it would improve readability: </para>
+<para>However, no whitespace character is required after the VALUE subkeyword in
+the following example, although it would improve readability:
+</para>
 <programlisting>
 ADDRESS VALUE"ENVIR"||number
 </programlisting>
@@ -275,8 +276,9 @@ instruction:</para>
 
 <para>The <emphasis role="italic">template_list</emphasis> can be a single
 template or list of templates separated by commas.
-Each template consists of one or more symbols separated by blanks, patterns,
-or both.</para>
+Each template consists of one or more symbols separated by whitespace
+characters, patterns, or both.
+</para>
 <para>Unless a subroutine, internal function, or method is processed, the
 objects passed as parameters to the program are converted to string values
 and parsed into variables according to the rules described in
@@ -833,15 +835,16 @@ original uninitialized state. If <emphasis role="italic">name</emphasis>
 is not enclosed in parentheses, it identifies
 a variable you want to drop and must be a symbol that is a valid variable
 name, separated from any other <emphasis role="italic">name</emphasis>
-by one or more blanks or comments.</para>
+by one or more whitespace characters or comments.</para>
 <para>If parentheses enclose a single
 <emphasis role="italic">name</emphasis>, then its value is used as a
 <indexterm><primary>subsidiary list</primary></indexterm>
-subsidiary list of variables to drop. Blanks are not necessary inside or
-outside the parentheses, but you can add them if desired. This subsidiary
-list must follow the same rules as the original list, that is, be valid character
-strings separated by blanks, except that no parentheses are allowed. The list
-needs not contain any names--that is, it can be empty.</para>
+subsidiary list of variables to drop. Whitespace characters are not necessary
+inside or outside the parentheses, but you can add them if desired. This
+subsidiary list must follow the same rules as the original list, that is, be
+valid character strings separated by whitespace, except that no parentheses are
+allowed. The list needs not contain any names--that is, it can be empty.
+</para>
 <para>Variables are dropped from left to right. It is not an error to specify
 a name more than once or to drop a variable that is not known. If an exposed
 variable is named (see <link linkend="keyExpose">EXPOSE</link>
@@ -983,13 +986,13 @@ instruction of the method.</para>
 <para>If parentheses enclose a single <emphasis role="italic">name</emphasis>,
 then, after the variable <emphasis role="italic">name</emphasis> is exposed,
 the character string value of <emphasis role="italic">name</emphasis> is
-immediately used as a subsidiary list of
-variables. Blanks are not necessary inside or outside the parentheses, but
-you can add them if desired.
-<indexterm><primary>subsidiary list</primary></indexterm>
-This subsidiary list must follow the same rules
-as the original list, that is, valid variable names separated by blanks, except
-that no parentheses are allowed.</para>
+immediately used as a subsidiary list of variables. Whitespace characters are
+not necessary inside or outside the parentheses, but you can add them if
+desired.
+<indexterm><primary>subsidiary list</primary></indexterm> This subsidiary list
+must follow the same rules as the original list, that is, valid variable names
+separated by whitespace characters, except that no parentheses are
+allowed.</para>
 <para>Variables are exposed in sequence from left to right. It is not an error
 to specify a name more than once, or to specify a name that has not been used
 as a variable.</para>
@@ -1983,7 +1986,7 @@ in lowercase.</para>
 <tertiary>in PARSE instruction</tertiary></indexterm>
 <para>The <emphasis role="italic">template_list</emphasis> can be a
 single template or list of templates separated by commas. Each
-template consists of one or more symbols separated by blanks, patterns, or
+template consists of one or more symbols separated by whitespace, patterns, or
 both.</para>
 <para>Each template is applied to a single source string. Specifying several
 templates is not a syntax error, but only the PARSE ARG variant can supply
@@ -2226,17 +2229,20 @@ variables are accessible, and any changes are persistent even on RETURN from
 the routine. If the <emphasis role="italic">name</emphasis> is not enclosed
 in parentheses, it identifies a variable
 you want to expose and must be a symbol that is a valid variable name, separated
-from any other <emphasis role="italic">name</emphasis> with one or more blanks.
+from any other <emphasis role="italic">name</emphasis> with one or more
+whitespace characters.
 </para>
 <para>If parentheses enclose a single <emphasis role="italic">name</emphasis>,
 then, after the variable <emphasis role="italic">name</emphasis> is exposed,
 the character string value of <emphasis role="italic">name</emphasis> is
-immediately used as a subsidiary list of variables. Blanks are not
-necessary inside or outside the parentheses, but you can add them if desired.
+immediately used as a subsidiary list of variables. Whitespace characters are
+not necessary inside or outside the parentheses, but you can add them if
+desired.
 <indexterm><primary>subsidiary list</primary></indexterm>
 This subsidiary list must follow the same rules
-as the original list, that is, valid variable names separated by blanks, except
-that no parentheses are allowed.</para>
+as the original list, that is, valid variable names separated by whitespace
+characters, except that no parentheses are allowed.
+</para>
 <para>Variables are exposed from left to right. It is not an error to specify
 a name more than once, or to specify a name that the caller has not used as
 a variable.</para>
@@ -2387,7 +2393,7 @@ no further action is taken and the string is thus effectively discarded.
 The <emphasis role="italic">template_list</emphasis> can be a single
 template or list of templates separated
 by commas, but PULL parses only one source string. Each template consists
-of one or more symbols separated by blanks, patterns, or both.</para>
+of one or more symbols separated by whitespace, patterns, or both.</para>
 <para>If you specify several comma-separated templates, variables in templates
 other than the first one are assigned the null string. The string is translated
 to uppercase (that is, lowercase
@@ -3315,7 +3321,8 @@ This setting is recommended for general debugging.
 one of the alphabetic character options. You can specify the prefix more
 than once, if desired.  Each occurrence
 of a prefix on an instruction reverses the action of the previous prefix.
- The prefix must immediately precede the option (no intervening blanks).</para>
+ The prefix must immediately precede the option (no intervening
+ whitespace).</para>
 <para>The prefix <computeroutput>?</computeroutput>
 controls interactive debugging.  During normal execution, a TRACE option
 with a prefix of <computeroutput>?</computeroutput>
@@ -3409,15 +3416,15 @@ TRACE ?R
 <indexterm><primary>indentation during tracing</primary></indexterm>
 formatting (indentation) according to its logical depth of nesting, for example.
 Results, if requested, are indented by two extra spaces and are enclosed in
-double quotation marks so that leading and trailing blanks are apparent. Any
-control codes in the data encoding (ASCII values less than "20"x)
-are replaced by a question mark (?) to avoid screen interference. Results
-other than strings appear in the string representation obtained by sending
-them a <computeroutput>STRING</computeroutput>
-message. The resulting string is enclosed in parentheses.
-The line number in the program precedes the first clause traced on any line.
-All lines displayed during tracing have a three-character prefix to identify
-the type of data being traced.  These can be: </para>
+double quotation marks so that leading and trailing whitespace characters are
+apparent. Any control codes in the data encoding (ASCII values less than "20"x)
+are replaced by a question mark (?) to avoid screen interference. Results other
+than strings appear in the string representation obtained by sending them a
+<computeroutput>STRING</computeroutput> message. The resulting string is
+enclosed in parentheses. The line number in the program precedes the first
+clause traced on any line. All lines displayed during tracing have a
+three-character prefix to identify the type of data being traced.  These can be:
+</para>
 <indexterm><primary>tracing</primary>
 <secondary>data identifiers</secondary></indexterm>
 <variablelist>

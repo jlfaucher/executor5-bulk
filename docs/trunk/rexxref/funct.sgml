@@ -95,8 +95,10 @@ between the
 parentheses. These expressions are called the arguments to the function. Each
 argument expression can include further function calls.</para>
 <para>Note that the left parenthesis must be adjacent to the name of the function,
-with no blank in between. (A blank operator would be assumed at this point
-instead.) Only a comment can appear between the name and the left parenthesis.</para>
+with no whitespace characters in between. (A blank operator would be assumed at
+this point instead.) Only a comment can appear between the name and the left
+parenthesis.
+</para>
 <para>The arguments
 <indexterm><primary>arguments</primary>
 <secondary>passing to functions</secondary></indexterm>
@@ -347,7 +349,7 @@ The following are general notes on the built-in functions: </para>
 <itemizedlist>
 <listitem><para>The parentheses in a function are always needed, even if no arguments
 are required. The first parenthesis must follow the name of the function with
-no space in between.</para></listitem>
+no whitespace in between.</para></listitem>
 <listitem><para>The built-in functions internally work with NUMERIC DIGITS 9 and NUMERIC
 FUZZ 0 and are unaffected by changes to the NUMERIC settings, except where
 stated. Any argument named as a <emphasis role="italic">number</emphasis>
@@ -517,8 +519,9 @@ ABS(" -0.307")    ->    0.307
 <secondary>determining current environment</secondary></indexterm>
 <indexterm><primary>environment</primary>
 <secondary>determining current using ADDRESS function</secondary></indexterm>
-to which commands are currently submitted. Trailing blanks are removed from
-the result.</para>
+to which commands are currently submitted. Trailing whitespace characters are
+removed from the result.
+</para>
 <para>Here is an example:</para>
 <indexterm><primary>ADDRESS function</primary>
 <secondary>example</secondary></indexterm>
@@ -633,8 +636,8 @@ if there are no explicit argument strings. That is, it is the position of the
 last explicitly specified argument string.</para></listitem>
 <listitem><para>Programs called as commands can have only 0 or 1 argument strings. The
 program has 0 argument strings if it is called with the name only and has
-1 argument string if anything else (including blanks) is included in the
-command.</para></listitem>
+1 argument string if anything else (including whitespace characters) is included
+in the command.</para></listitem>
 <listitem><para>Programs called by the RexxStart entry point can have several argument
 strings. (See the
 <citetitle pubwork="book">Open Object Rexx: Programming Guide</citetitle>
@@ -672,12 +675,13 @@ or internal routine with the ARG or PARSE ARG instructions.</para></listitem>
 <para>The <emphasis role="italic">binary_string</emphasis> is a string of
 binary (<computeroutput>0</computeroutput> or
 <computeroutput>1</computeroutput>) digits. It can be of any length. You can
-optionally include blanks in <emphasis role="italic">binary_string</emphasis>
-(at 4-digit boundaries only, not leading or trailing)
-to improve readability; they are ignored.</para>
+optionally include whitespace characters in <emphasis role="italic">binary_string</emphasis>
+(at 4-digit boundaries only, not leading or trailing) to improve readability;
+they are ignored.
+</para>
 <para>The returned string uses uppercase alphabetical characters for the
 values <computeroutput>A</computeroutput>-<computeroutput>F</computeroutput>,
-and does not include blanks.</para>
+and does not include blanks or horizontal tabs.</para>
 <para>If <emphasis role="italic">binary_string</emphasis> is the null string,
 B2X returns a null string. If the number of binary digits in
 <emphasis role="italic">binary_string</emphasis> is not a multiple
@@ -997,9 +1001,10 @@ ASCII system, C2X(1) returns <computeroutput>31</computeroutput> because the
 ASCII representation of the character 1 is "31"X.</para>
 <para>The string returned uses uppercase alphabetical characters for the values
 <computeroutput>A</computeroutput>-<computeroutput>F</computeroutput>
-and does not include blanks. The <emphasis role="italic">string</emphasis> can
-be of any length. If <emphasis role="italic">string</emphasis>
-is null, a null string is returned.</para>
+and does not include whitespace characters. The <emphasis role="italic">string</emphasis>
+can be of any length. If
+<emphasis role="italic">string</emphasis> is null, a null string is
+returned.</para>
 <para>Here are some examples:</para>
 <indexterm><primary>C2X function</primary>
 <secondary>example</secondary></indexterm>
@@ -1424,7 +1429,7 @@ condition has been trapped, the language processor returns the NIL object.
 <listitem><para>returns the name of the current trapped condition.
 For user conditions, the returned string is a concatenation of the word
 <computeroutput>USER</computeroutput> and the
-user condition name, separated by a blank.
+user condition name, separated by a whitespace character.
 </para></listitem></varlistentry>
 <varlistentry><term>Description</term>
 <listitem><para>returns any descriptive string associated with the current
@@ -1641,7 +1646,7 @@ and "FF"x).</para>
 <emphasis role="italic">wholenumber</emphasis>, a decimal number, converted to
 hexadecimal. The returned string uses uppercase alphabetics for the values
 <computeroutput>A</computeroutput>-<computeroutput>F</computeroutput> and does
-not include blanks.</para>
+not include whitespace characters.</para>
 <para><emphasis role="italic">Wholenumber</emphasis> must not have more digits
 than the current setting of NUMERIC DIGITS.</para>
 <para>If you specify <emphasis role="italic">n</emphasis>,
@@ -1737,10 +1742,11 @@ and <computeroutput>0</computeroutput>-<computeroutput>9</computeroutput>.
 </para></listitem></varlistentry>
 <varlistentry><term>Binary</term>
 <listitem><para>returns <computeroutput>1</computeroutput> if
-<emphasis role="italic">string</emphasis> contains only the character
-<computeroutput>0</computeroutput> or <computeroutput>1</computeroutput>,
-or a blank. Blanks can appear only between groups
-of 4 binary characters. It also returns <computeroutput>1</computeroutput> if
+<emphasis role="italic">string</emphasis> contains only the characters
+<computeroutput>0</computeroutput> or <computeroutput>1</computeroutput>, or
+whitespace. Whitespace characters can appear only between groups of 4 binary
+characters. It also returns
+<computeroutput>1</computeroutput> if
 <emphasis role="italic">string</emphasis> is
 a null string, which is a valid binary string.
 </para></listitem></varlistentry>
@@ -1794,9 +1800,9 @@ the current setting of NUMERIC DIGITS.
 <emphasis role="italic">string</emphasis> contains only characters from
 the ranges <computeroutput>a</computeroutput>-<computeroutput>f</computeroutput>,
 <computeroutput>A</computeroutput>-<computeroutput>F</computeroutput>,
-<computeroutput>0</computeroutput>-<computeroutput>9</computeroutput>,
-and blank (as long as blanks appear only between
-pairs of hexadecimal characters). It also returns
+<computeroutput>0</computeroutput>-<computeroutput>9</computeroutput>, and
+whitespace (as long as the whitespace characters appear only between pairs of
+hexadecimal characters). It also returns
 <computeroutput>1</computeroutput> if <emphasis role="italic">string</emphasis>
 is a null string, which is a valid hexadecimal string.
 </para></listitem></varlistentry>
@@ -1875,9 +1881,9 @@ English name of the month are used.</para>
 </term>
 <listitem><para>returns the number of complete days (that is, not including the
 current day) since and including the base date, 1 January 0001, in the format:
-<emphasis role="italic">dddddd</emphasis> (no leading zeros or blanks).
-The expression <computeroutput>DATE("B")//7</computeroutput> returns a number
-in the range
+<emphasis role="italic">dddddd</emphasis> (no leading zeros or whitespace). The
+expression <computeroutput>DATE("B")//7</computeroutput> returns a number in the
+range
 <computeroutput>0</computeroutput>-<computeroutput>6</computeroutput> that
 corresponds to the current day of the week, where
 <computeroutput>0</computeroutput> is Monday and
@@ -1896,7 +1902,7 @@ system that created the Gregorian calendar originally.</para></note>
 </term>
 <listitem><para>returns the number of days, including the current day, that have passed
 this year in the format <emphasis role="italic">ddd</emphasis>
-(no leading zeros or blanks).
+(no leading zeros or whitespace).
 </para></listitem></varlistentry>
 <varlistentry><term>European
 <indexterm><primary>European option of DATE function</primary></indexterm>
@@ -1908,7 +1914,8 @@ this year in the format <emphasis role="italic">ddd</emphasis>
 </term>
 <listitem><para>returns the number of microseconds
 since 00:00:00.000000 on 1 January 0001, in the format:
-<emphasis role="italic">dddddddddddddddddd</emphasis> (no leading zeros or blanks).
+<emphasis role="italic">dddddddddddddddddd</emphasis> (no leading zeros or
+whitespace).
 </para>
 <note><title>Notes</title>
 <para>The base date of 1 January 0001 is determined
@@ -1966,7 +1973,8 @@ for example).
 </term>
 <listitem><para>returns the number of seconds
 since 00:00:00.000000 on 1 January 1970, in the format:
-<emphasis role="italic">dddddddddddd</emphasis> (no leading zeros or blanks).
+<emphasis role="italic">dddddddddddd</emphasis> (no leading zeros or
+whitespace).
 </para>
 <note><title>Notes</title>
 <para>The base date of 1 January 1970 is determined
@@ -2175,8 +2183,9 @@ DELSTR("abcde",6)      ->    "abcde"
 
 <para>Returns <emphasis role="italic">string</emphasis> after deleting the
 substring that starts at the <emphasis role="italic">n</emphasis>th word and
-is of <emphasis role="italic">length</emphasis> blank-delimited words. If you
-omit <emphasis role="italic">length</emphasis>, or if
+is of <emphasis role="italic">length</emphasis> whitespace-delimited words. If
+you omit
+<emphasis role="italic">length</emphasis>, or if
 <emphasis role="italic">length</emphasis> is greater than the number of words
 from <emphasis role="italic">n</emphasis> to the end of
 <emphasis role="italic">string</emphasis>, the function deletes the remaining
@@ -2188,8 +2197,9 @@ must be a positive whole number.
 If <emphasis role="italic">n</emphasis> is greater than the number of words in
 <emphasis role="italic">string</emphasis>, the function returns
 <emphasis role="italic">string</emphasis> unchanged. The string deleted includes any
-blanks following the final word involved but none of the blanks preceding
-the first word involved.</para>
+whitespace characters following the final word involved but none of the
+whitespace preceding the first word involved.
+</para>
 <para>Here are some examples:</para>
 <indexterm><primary>DELWORD function</primary>
 <secondary>example</secondary></indexterm>
@@ -3779,13 +3789,13 @@ SOURCELINE(1)   ->   "/* This is a 10-line Rexx program */"
 ]]>
 </programlisting>
 
-<para>Returns the blank-delimited words in
+<para>Returns the whitespace-delimited words in
 <emphasis role="italic">string</emphasis> with
 <emphasis role="italic">n pad</emphasis> characters
 between each word. If you specify <emphasis role="italic">n</emphasis>,
 it must be a positive whole number or zero. If it is
-<computeroutput>0</computeroutput>, all blanks are removed. Leading and
-trailing blanks are always removed. The default for
+<computeroutput>0</computeroutput>, all whitespace characters are removed.
+Leading and trailing whitespace characters are always removed. The default for
 <emphasis role="italic">n</emphasis> is <computeroutput>1</computeroutput>,
 and the default <emphasis role="italic">pad</emphasis> character is a blank.
 </para>
@@ -4265,13 +4275,15 @@ stream("..\file.txt","c","query timestamp")
 <secondary>STRIP</secondary></indexterm>
 <indexterm><primary>blanks</primary>
 <secondary>removal with STRIP function</secondary></indexterm>
+<indexterm><primary>whitespace</primary>
+<secondary>removal with STRIP function</secondary></indexterm>
 <indexterm><primary>leading</primary>
 <secondary>zeros</secondary>
 <tertiary>removing with STRIP function</tertiary></indexterm>
 <indexterm><primary>leading</primary>
-<secondary>leading blank removal with STRIP function</secondary></indexterm>
+<secondary>leading whitespace removal with STRIP function</secondary></indexterm>
 <indexterm><primary>trailing</primary>
-<secondary>blank removed using STRIP function</secondary></indexterm>
+<secondary>whitespace removed using STRIP function</secondary></indexterm>
 <indexterm><primary>zeros</primary>
 <secondary>removal with STRIP function</secondary></indexterm>
 
@@ -4304,7 +4316,8 @@ is the default.
 </para></listitem></varlistentry>
 </variablelist>
 <para>The third argument, <emphasis role="italic">char</emphasis>, specifies
-the character to be removed, and the default is a blank. If you specify
+the character to be removed, and the default is to remove all whitespace
+characters. If you specify
 <emphasis role="italic">char</emphasis>, it must be exactly
 one character long.</para>
 <para>Here are some examples:</para>
@@ -4397,13 +4410,15 @@ than one substring is to be extracted from a string. See also
 <para>Returns the substring of <emphasis role="italic">string</emphasis> that
 starts at the <emphasis role="italic">n</emphasis>th
 word, and is up to <emphasis role="italic">length</emphasis>
-blank-delimited words. <emphasis role="italic">n</emphasis> must
-be a positive whole number. If you omit
+whitespace-delimited words.
+<emphasis role="italic">n</emphasis> must be a positive whole number. If you
+omit
 <emphasis role="italic">length</emphasis>, it defaults to the
 number of remaining words in <emphasis role="italic">string</emphasis>.
 The returned string never has
-leading or trailing blanks, but includes all blanks between the selected
-words.</para>
+leading or trailing whitespace, but includes all whitespace characters between
+the selected words.
+</para>
 <para>Here are some examples:</para>
 <indexterm><primary>SUBWORD function</primary>
 <secondary>example</secondary></indexterm>
@@ -4513,8 +4528,9 @@ minute) for consistency with other TIME results.
 <varlistentry><term>Elapsed</term>
 <listitem><para>returns sssssssss.uuuuuu, the number of seconds and microseconds
 since the elapsed-time clock (described later) was started or reset. The returned
-number has no leading zeros or blanks, and the setting of NUMERIC DIGITS does
-not affect it. The number has always four trailing zeros in the decimal portion. </para>
+number has no leading zeros or whitespace, and the setting of NUMERIC DIGITS
+does not affect it. The number has always four trailing zeros in the decimal
+portion.</para>
 <para>The language processor calculates elapsed time by subtracting the time at
 which the elapsed-time clock was started or reset from the current time. It
 is possible to change the system time clock while the system is running.
@@ -4534,7 +4550,8 @@ to be unreliable during LAN initialization.</para>
 </term>
 <listitem><para>returns the number of microseconds
 since 00:00:00.000000 on 1 January 0001, in the format:
-<emphasis role="italic">dddddddddddddddddd</emphasis> (no leading zeros or blanks).
+<emphasis role="italic">dddddddddddddddddd</emphasis> (no leading zeros or
+whitespace).
 </para>
 <note><title>Notes</title>
 <para>The base date of 1 January 0001 is determined
@@ -4552,8 +4569,9 @@ to a minimum value of 18 when performing timestamp arithmetic.</para>
 <indexterm><primary>hours calculated from midnight</primary></indexterm>
 </term>
 <listitem><para>returns up to two characters giving the number of hours
-since midnight in the format hh (no leading zeros or blanks, except for a
-result of <computeroutput>0</computeroutput>).
+since midnight in the format hh (no leading zeros or whitespace, except for a
+result of
+<computeroutput>0</computeroutput>).
 </para></listitem></varlistentry>
 <varlistentry><term>Long</term>
 <listitem><para>returns time in the format hh:mm:ss.uuuuuu (where uuuuuu are
@@ -4563,8 +4581,9 @@ microseconds).
 <indexterm><primary>minutes calculated from midnight</primary></indexterm>
 </term>
 <listitem><para>returns up to four characters giving the number of minutes
-since midnight in the format mmmm (no leading zeros or blanks, except for a
-result of <computeroutput>0</computeroutput>).
+since midnight in the format mmmm (no leading zeros or whitespace, except for a
+result of
+<computeroutput>0</computeroutput>).
 </para></listitem></varlistentry>
 <varlistentry><term>Normal</term>
 <listitem><para>returns the time in the default format hh:mm:ss. The hours
@@ -4584,8 +4603,9 @@ can be converted to UTC by adding the time('O') value.
 <listitem><para>returns sssssssss.uuuuuu, the number of seconds and microseconds
 since the elapsed-time clock (described later) was started or reset and also
 resets the elapsed-time clock to zero. The returned number has no leading
-zeros or blanks, and the setting of NUMERIC DIGITS does not affect it. The
-number always has four trailing zeros in the decimal portion.</para>
+zeros or whitespace, and the setting of NUMERIC DIGITS does not affect it. The
+number always has four trailing zeros in the decimal portion.
+</para>
 <para>See the Elapsed option for more information on resetting the system
 time clock.</para>
 </listitem></varlistentry>
@@ -4593,15 +4613,17 @@ time clock.</para>
 <indexterm><primary>seconds calculated from midnight</primary></indexterm>
 </term>
 <listitem><para>returns up to five characters giving the number of seconds
-since midnight in the format sssss (no leading zeros or blanks, except for
-a result of <computeroutput>0</computeroutput>).
+since midnight in the format sssss (no leading zeros or whitespace, except for a
+result of
+<computeroutput>0</computeroutput>).
 </para></listitem></varlistentry>
 <varlistentry><term>Ticks
 <indexterm><primary>Ticks option of Time function</primary></indexterm>
 </term>
 <listitem><para>returns the number of seconds
 since 00:00:00.000000 on 1 January 1970, in the format:
-<emphasis role="italic">dddddddddddd</emphasis> (no leading zeros or blanks).
+<emphasis role="italic">dddddddddddd</emphasis> (no leading zeros or
+whitespace).
 </para>
 <note><title>Notes</title>
 <para>The base date of 1 January 1970 is determined
@@ -5294,9 +5316,10 @@ VERIFY("AB3CD5","1234567890","M",4)    ->    6
 ]]>
 </programlisting>
 
-<para>Returns the <emphasis role="italic">n</emphasis>th blank-delimited word
-in <emphasis role="italic">string</emphasis> or returns
-the null string if less than <emphasis role="italic">n</emphasis> words are in
+<para>Returns the <emphasis role="italic">n</emphasis>th whitespace-delimited
+word in
+<emphasis role="italic">string</emphasis> or returns the null string if less
+than <emphasis role="italic">n</emphasis> words are in
 <emphasis role="italic">string</emphasis>. <emphasis role="italic">n</emphasis>
 must be a positive whole number. This function is equal to
 SUBWORD(<emphasis role="italic">string</emphasis>,
@@ -5328,8 +5351,8 @@ WORD("Now is the time",5)    ->    ""
 </programlisting>
 
 <para>Returns the position of the first character in the
-<emphasis role="italic">n</emphasis>th blank-delimited
-word in <emphasis role="italic">string</emphasis> or returns
+<emphasis role="italic">n</emphasis>th whitespace-delimited word in <emphasis
+role="italic">string</emphasis> or returns
 <computeroutput>0</computeroutput> if less than
 <emphasis role="italic">n</emphasis> words
 are in <emphasis role="italic">string</emphasis>.
@@ -5363,7 +5386,7 @@ WORDINDEX("Now is the time",6)    ->    0
 </programlisting>
 
 <para>Returns the length of the <emphasis role="italic">n</emphasis>th
-blank-delimited word in the <emphasis role="italic">string</emphasis> or
+whitespace-delimited word in the <emphasis role="italic">string</emphasis> or
 returns <computeroutput>0</computeroutput> if less than
 <emphasis role="italic">n</emphasis> words are in the
 <emphasis role="italic">string</emphasis>.
@@ -5403,7 +5426,7 @@ WORDLENGTH("Now is the time",6)       ->    0
 <emphasis role="italic">string</emphasis> or returns
 <computeroutput>0</computeroutput> if <emphasis role="italic">phrase</emphasis>
 contains no words or if <emphasis role="italic">phrase</emphasis> is not found.
-Several blanks between words in either
+Several whitespace characters between words in either
 <emphasis role="italic">phrase</emphasis> or
 <emphasis role="italic">string</emphasis> are treated as a single blank for
 the comparison, but otherwise the words must match exactly.</para>
@@ -5451,7 +5474,7 @@ WORDPOS("be","To be or not to be",3)          ->  6
 ]]>
 </programlisting>
 
-<para>Returns the number of blank-delimited words in
+<para>Returns the number of whitespace-delimited words in
 <emphasis role="italic">string</emphasis>.</para>
 <para>Here are some examples:</para>
 <indexterm><primary>WORDS function</primary>
@@ -5488,12 +5511,12 @@ WORDS(" ")                  ->    0
 to binary. The <emphasis role="italic">hexstring</emphasis> is a string of
 hexadecimal characters. It
 can be of any length.  Each hexadecimal character is converted to a string
-of 4 binary digits. You can optionally include blanks in
+of 4 binary digits. You can optionally include whitespace characters in
 <emphasis role="italic">hexstring</emphasis> (at
 byte boundaries only, not leading or trailing) to improve readability; they
 are ignored.</para>
 <para>The returned string has a length that is a multiple of 4, and does not
-include any blanks.</para>
+include any whitespace.</para>
 <para>If <emphasis role="italic">hexstring</emphasis> is null, the function
 returns a null string.</para>
 <para>Here are some examples:</para>
@@ -5543,7 +5566,7 @@ to character. The returned string has half as many bytes as the original
 <emphasis role="italic">hexstring</emphasis> can be of any length. If
 necessary, it is padded with a leading zero to make an even number
 of hexadecimal digits.</para>
-<para>You can optionally include blanks in
+<para>You can optionally include whitespace characters in
 <emphasis role="italic">hexstring</emphasis> (at byte boundaries
 only, not leading or trailing) to improve readability; they are ignored.</para>
 <para>If <emphasis role="italic">hexstring</emphasis> is null, the function
@@ -5586,7 +5609,7 @@ X2C("3732 73")      ->  "72s"       /*  ASCII             */
 characters. If the result cannot be expressed
 as a whole number, an error occurs. That is, the result must not have more
 digits than the current setting of NUMERIC DIGITS.</para>
-<para>You can optionally include blanks in
+<para>You can optionally include whitespace characters in
 <emphasis role="italic">hexstring</emphasis> (at byte boundaries
 only, not leading or trailing) to aid readability; they are ignored.</para>
 <para>If <emphasis role="italic">hexstring</emphasis> is null, the function

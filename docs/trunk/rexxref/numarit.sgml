@@ -54,8 +54,9 @@
 <secondary>in numbers</secondary></indexterm>
 <para>This chapter gives an overview of the arithmetic facilities of the Rexx
 language.</para>
-<para> Numbers can be expressed flexibly. Leading and trailing blanks are
-permitted, and exponential notation can be used. Valid numbers are, for example:
+<para> Numbers can be expressed flexibly. Leading and trailing whitespace
+characters are permitted, and exponential notation can be used. Valid numbers
+are, for example:
 </para>
 <programlisting>
 12             /* a whole number                      */
@@ -70,19 +71,19 @@ permitted, and exponential notation can be used. Valid numbers are, for example:
 <para>A number in Rexx is defined as follows:</para>
 <programlisting>
 <![CDATA[
->>-+--------+--+------------------+--+-digits--------+---------->
-   +-blanks-+  +-sign--+--------+-+  +-digits.digits-+
-                       +-blanks-+    +-.digits-------+
-                                     +-digits.-------+
+>>-+------------+--+----------------------+--+-digits--------+---------->
+   +-whitespace-+  +-sign--+------------+-+  +-digits.digits-+
+                           +-whitespace-+    +-.digits-------+
+                                             +-digits.-------+
 
->--+--------+--------------------------------------------------><
-   +-blanks-+
+>--+------------+--------------------------------------------------><
+   +-whitespace-+
 ]]>
 </programlisting>
 
 <variablelist>
-<varlistentry><term>blanks</term>
-<listitem><para>are one or more spaces.
+<varlistentry><term>whitespace</term>
+<listitem><para>are one or more blanks or horizontal tab characters.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="italic">sign</emphasis></term>
 <listitem><para>is either <computeroutput>+</computeroutput> or
@@ -331,13 +332,13 @@ form. Because this is misleading, the result is expressed as
 <para>The definition of numbers is, therefore, extended as follows:</para>
 <programlisting>
 <![CDATA[
->>-+--------+--+------------------+--+-digits--------+---------->
-   +-blanks-+  +-sign--+--------+-+  +-digits.digits-+
-                       +-blanks-+    +-.digits-------+
-                                     +-digits.-------+
+>>-+------------+--+----------------------+--+-digits--------+---------->
+   +-whitespace-+  +-sign--+------------+-+  +-digits.digits-+
+                           +-whitespace-+    +-.digits-------+
+                                             +-digits.-------+
 
->--+---------------------+--+--------+-------------------------><
-   +-E--+------+--digits-+  +-blanks-+
+>--+---------------------+--+------------+-------------------------><
+   +-E--+------+--digits-+  +-whitespace-+
         +-sign-+
 ]]>
 </programlisting>
@@ -450,8 +451,9 @@ use any of them for comparing numeric strings.  However, you should not use
 <computeroutput>&lt;&lt;</computeroutput>,
 <computeroutput>\&lt;&lt;</computeroutput>,
 and <computeroutput>&not;&lt;&lt;</computeroutput>
-for comparing numbers because leading and trailing blanks and leading
-zeros are significant with these operators.</para>
+for comparing numbers because leading and trailing whitespace characters and
+leading zeros are significant with these operators.
+</para>
 <para>Numeric values are compared by subtracting the two numbers (calculating
 the difference) and then comparing the result with 0. That is, the operation:
 </para>
